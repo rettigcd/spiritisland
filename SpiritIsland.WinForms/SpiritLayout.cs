@@ -6,21 +6,22 @@ namespace SpiritIsland.WinForms;
 
 public class SpiritLayout {
 
-	public SpiritLayout(Graphics graphics, Spirit spirit, Rectangle bounds, int margin ) {
-		var rects = bounds.InflateBy(-margin).SplitVerticallyByWeight( margin, 
+	public SpiritLayout( Spirit spirit, Rectangle bounds, int margin, VisibleButtonContainer buttonContainer ) {
+
+		Rectangle[] rects = bounds.InflateBy(-margin).SplitVerticallyByWeight( margin, 
 			200f, // Growth
 			300f, // Presence Tracks
 			480f, // Innates
 			60f   // elements
 		);
 		Calc_GrowthRow(spirit,rects[0],margin);
-		trackLayout = new PresenceTrackLayout(rects[1],spirit,margin);
-		int height = Calc_Innates( spirit, graphics, rects[2], margin );
+		trackLayout = new PresenceTrackLayout(rects[1],spirit,margin, buttonContainer);
+		int height = Calc_Innates( spirit, rects[2], margin, buttonContainer );
 		// If Innates are too tall, shrink them down.
 		if(height > rects[2].Height) {
 			var r = rects[2];
 			var scaledRect = new Rectangle(r.X,r.Y,r.Width * r.Height / height, r.Height);
-			Calc_Innates( spirit, graphics, scaledRect, margin );
+			Calc_Innates( spirit, scaledRect, margin, buttonContainer );
 		}
 		Elements = new ElementLayout(rects[3]);
 	}
@@ -40,7 +41,7 @@ public class SpiritLayout {
 		growthLayout = new GrowthLayout(spirit.GrowthTrack.Options, growthBounds);
 	}
 
-	int Calc_Innates( Spirit spirit, Graphics graphics, Rectangle bounds, int margin ) {
+	int Calc_Innates( Spirit spirit, Rectangle bounds, int margin, VisibleButtonContainer buttonContainer ) {
 
 		int columnCount = spirit.InnatePowers.Length <= 4 ? 2 : 3;
 		float textHeightMultiplier = spirit.InnatePowers.Length <= 4 ? 0.033f : 0.042f; // if we go to 3 columns, text needs to be larger.
@@ -52,7 +53,7 @@ public class SpiritLayout {
 			var power = spirit.InnatePowers[i];
 			Rectangle singleBounds = innateBounds[i % columnCount];
 
-			var innateLayout = new InnateLayout( power, singleBounds.X, singleBounds.Y, singleBounds.Width, textHeightMultiplier, graphics );
+			var innateLayout = new InnateLayout( power, singleBounds.X, singleBounds.Y, singleBounds.Width, textHeightMultiplier, buttonContainer );
 			findLayoutByPower[power] = innateLayout;
 
 			// Scooch this box down so we can put next one there

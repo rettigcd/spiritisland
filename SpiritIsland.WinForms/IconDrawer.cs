@@ -1,20 +1,21 @@
 ﻿using System.Drawing;
 
 namespace SpiritIsland.WinForms {
-	// $$$
+
 	class IconDrawer {
 
-		readonly Graphics graphics;
-		readonly CachedImageDrawer imageDrawer;
+		readonly Graphics _graphics;
+		readonly CachedImageDrawer _cachedImageDrawer;
+
 		public IconDrawer( Graphics graphics, CachedImageDrawer imageDrawer ) {
-			this.graphics = graphics;
-			this.imageDrawer = imageDrawer;
+			_graphics = graphics;
+			_cachedImageDrawer = imageDrawer;
 		}
 
 		public void DrawTheIcon( IconDescriptor icon, RectangleF bounds ) {
 
 			if(icon == null) {
-				graphics.FillRectangle( Brushes.Black, bounds );
+				_graphics.FillRectangle( Brushes.Black, bounds );
 				return;
 			}
 
@@ -25,7 +26,7 @@ namespace SpiritIsland.WinForms {
 
 			// -- Main - Background
 			if(icon.BackgroundImg != default) {
-				graphics.DrawImageFitBoth( imageDrawer.GetImage(icon.BackgroundImg), mainBounds );
+				_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage(icon.BackgroundImg), mainBounds );
 			}
 
 			// -- Main - Content --
@@ -41,7 +42,7 @@ namespace SpiritIsland.WinForms {
 				if(icon.Text != null) {
 					Font font = ResourceImages.Singleton.UseGameFont( contentBounds.Height );
 					StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-					graphics.DrawString( icon.Text, font, Brushes.Black, contentBounds, center );
+					_graphics.DrawString( icon.Text, font, Brushes.Black, contentBounds, center );
 				}
 
 				// Content - Images
@@ -51,10 +52,10 @@ namespace SpiritIsland.WinForms {
 						float w = contentBounds.Width * scale, h = contentBounds.Height * scale;
 						var cb1 = new RectangleF(contentBounds.X,contentBounds.Y,w,h);
 						var cb2 = new RectangleF( contentBounds.X+ contentBounds.Width*(1f - scale), contentBounds.Y+contentBounds.Height* (1f - scale), w, h );
-						graphics.DrawImageFitBoth( imageDrawer.GetImage( icon.ContentImg ), cb1 );
-						graphics.DrawImageFitBoth( imageDrawer.GetImage( icon.ContentImg2 ), cb2 );
+						_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg ), cb1 );
+						_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg2 ), cb2 );
 					} else
-						graphics.DrawImageFitBoth( imageDrawer.GetImage( icon.ContentImg ), contentBounds );
+						_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg ), contentBounds );
 				}
 
 			}

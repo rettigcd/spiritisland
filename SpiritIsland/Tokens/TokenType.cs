@@ -19,6 +19,8 @@ public class TokenType {
 	static readonly public InvisibleToken DoRavage    = new InvisibleToken( "Ravage" );
 
 	static readonly public TokenClass OpenTheWays = new UniqueToken( "OpenTheWays", '=', Img.OpenTheWays );
-	static readonly public TokenClass Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
+
+	// Anything using TokenType.Element MUST implement IVisibleToken also
+	static readonly public UniqueToken Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
 
 }

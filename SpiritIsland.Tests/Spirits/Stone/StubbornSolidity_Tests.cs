@@ -62,7 +62,7 @@ public class StubbornSolidity_Tests {
 	[Trait( "Feature", "Frozen" )]
 	[Trait("Invaders","Ravage")]
 	[Fact]
-	public void LotsOfInvaders_DahanUnchanged_InvadersDamaged() {
+	public async Task LotsOfInvaders_DahanUnchanged_InvadersDamaged() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA(); 
 		GameState gameState = new GameState(spirit,board);
@@ -74,7 +74,7 @@ public class StubbornSolidity_Tests {
 		tokens.InitDefault(Invader.Explorer, 10 );
 
 		//   And: Played StubbornSolidity
-		Play_StubbornSolidity_On( spirit, gameState, tokens );
+		await Play_StubbornSolidity_On( spirit, gameState, tokens );
 
 		//  When: Ravaging
 		tokens.DoARavage().Wait();
@@ -89,7 +89,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public void FrozenDahan_DontMove() {
+	public async Task FrozenDahan_DontMove() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -103,12 +103,12 @@ public class StubbornSolidity_Tests {
 		adjacentSpace.InitDefault( TokenType.Dahan, 2 );
 
 		//   And: Played StubbornSolidity on target
-		Play_StubbornSolidity_On( spirit, gameState, targetSpace );
+		await Play_StubbornSolidity_On( spirit, gameState, targetSpace );
 		//   And: Played StubbornSolidity on adjacent
-		Play_StubbornSolidity_On( spirit, gameState, adjacentSpace );
+		await Play_StubbornSolidity_On( spirit, gameState, adjacentSpace );
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
-		using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<CallToMigrate>().ActivateAsync( spirit.BindMyPowers( gameState, uow2 ) );
 		spirit.NextDecision().HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 
@@ -122,7 +122,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public void DahanMovedIn_BecomeFrozen() {
+	public async Task DahanMovedIn_BecomeFrozen() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -135,10 +135,10 @@ public class StubbornSolidity_Tests {
 		adjacentSpace.InitDefault( TokenType.Dahan, 2 );
 
 		//   And: Played StubbornSolidity on target
-		Play_StubbornSolidity_On( spirit, gameState, targetSpace );
+		await Play_StubbornSolidity_On( spirit, gameState, targetSpace );
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
-		using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<CallToMigrate>().ActivateAsync( spirit.BindMyPowers( gameState, uow2 ) );
 		spirit.NextDecision().HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 
@@ -158,7 +158,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public void ReplacingDahan_NoChange() {
+	public async Task ReplacingDahan_NoChange() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -169,10 +169,10 @@ public class StubbornSolidity_Tests {
 		spirit.Presence.Adjust( targetSpace, 1 );
 
 		//   And: Played StubbornSolidity
-		Play_StubbornSolidity_On( spirit, gameState, targetSpace );
+		await Play_StubbornSolidity_On( spirit, gameState, targetSpace );
 
 		//  When: Playing card that replaces Dahan - Dissolve the Bonds of Kinship
-		using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<DissolveTheBondsOfKinship>().ActivateAsync( spirit.BindMyPowers( gameState, uow2 ) );
 		//   And: target space with frozen dahan
 		task.IsCompleted.ShouldBeFalse();
@@ -186,7 +186,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public void TargetingDetectsFrozenDahan() {
+	public async Task TargetingDetectsFrozenDahan() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -197,10 +197,10 @@ public class StubbornSolidity_Tests {
 		spirit.Presence.Adjust(spaceState,1);
 
 		//   And: Played StubbornSolidity
-		Play_StubbornSolidity_On(spirit,gameState,spaceState);
+		await Play_StubbornSolidity_On(spirit,gameState,spaceState);
 
 		//  When: Playing card that targets a Dahan space CallToTrade
-		using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<CallToTrade>().ActivateAsync(spirit.BindMyPowers(gameState,uow2));
 
 		//  Then: can still target space with frozen dahan
@@ -208,8 +208,8 @@ public class StubbornSolidity_Tests {
 		spirit.NextDecision().HasPrompt("Call to Trade: Target Space").HasOptions("A5").Choose("A5");
 	}
 
-	static void Play_StubbornSolidity_On( Spirit spirit, GameState gameState, SpaceState targetSpace ) {
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+	static async Task Play_StubbornSolidity_On( Spirit spirit, GameState gameState, SpaceState targetSpace ) {
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		StubbornSolidity.ActAsync( spirit.BindMyPowers( gameState, actionScope ).Target( targetSpace.Space ) ).Wait();
 	}
 

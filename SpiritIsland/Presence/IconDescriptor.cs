@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Transactions;
+
+namespace SpiritIsland;
 
 public class IconDescriptor {
 
@@ -12,5 +14,4 @@ public class IconDescriptor {
 
 	public IconDescriptor Sub;
 	public IconDescriptor BigSub; // for Starlights...
-
 }

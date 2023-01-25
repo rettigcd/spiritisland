@@ -31,7 +31,7 @@ public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 	// Null for non-execution groups
 	public int? Group { get; }
 
-	string IOption.Text => Elements.BuildElementString() + " - " + Description;
+	string IOption.Text => Elements.BuildElementString() + " - " + Description; // $$$$$$
 
 	public virtual bool IsActive( ElementCounts activatedElements ) => activatedElements.Contains( Elements );
 
@@ -50,11 +50,14 @@ public class DisplayOnlyAttribute : InnateOptionAttribute {
 }
 
 public interface IDrawableInnateOption : IOption {
+
 	/// <summary> The threshold to display to the left of the description </summary>
 	/// <remarks> Not using .Elements directly because some thresholds are not elements.</remarks>
 	string ThresholdString { get; }
+
 	string Description { get; }
 
 	ElementCounts Elements { get; }
+
 	bool IsActive( ElementCounts activatedElements );
 }

@@ -18,7 +18,7 @@ namespace SpiritIsland.WinForms {
 			this.layout = layout;
 		}
 
-		public void Paint( Graphics graphics, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions ) {
+		public void Paint( Graphics graphics, IList<GrowthActionFactory> clickableGrowthActions ) {
 			this.graphics = graphics;
 
 			using var optionPen = new Pen( Color.Blue, 6f );
@@ -50,19 +50,12 @@ namespace SpiritIsland.WinForms {
 			graphics.DrawImage( cachedImageLayer, layout.Bounds );
 
 
-			DrawHotspots( graphics, clickableGrowthOptions, clickableGrowthActions, highlightPen );
+			DrawHotspots( graphics, clickableGrowthActions, highlightPen );
 
 		}
 
-		private void DrawHotspots( Graphics graphics, IList<GrowthOption> clickableGrowthOptions, IList<GrowthActionFactory> clickableGrowthActions, Pen highlightPen ) {
-			if(clickableGrowthOptions == null ) return; // !!! this is happening for OCean
+		void DrawHotspots( Graphics graphics, IList<GrowthActionFactory> clickableGrowthActions, Pen highlightPen ) {
 
-			// Growth Options
-			foreach(var (opt, rect) in layout.EachGrowth())
-				if(clickableGrowthOptions.Contains( opt ))
-					graphics.DrawRectangle( highlightPen, rect.ToInts() );
-
-			// Growth Actions
 			foreach(var (action, rect) in layout.EachAction())
 				if(clickableGrowthActions.Contains( action ))
 					graphics.DrawRectangle( highlightPen, rect.ToInts() );
@@ -334,8 +327,7 @@ namespace SpiritIsland.WinForms {
 		}
 
 		public void Dispose() {
-			if(cachedImageLayer != null)
-				cachedImageLayer.Dispose();
+			cachedImageLayer?.Dispose();
 		}
 
 		static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );

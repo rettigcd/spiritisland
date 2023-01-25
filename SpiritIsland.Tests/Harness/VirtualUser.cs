@@ -287,7 +287,7 @@ public class VirtualUser {
 		int close = options.IndexOf( markers[1], open );
 		if(close == -1) throw new FormatException( "No '" + markers[1] + "' found for indicating choice" );
 		string choice = options.Substring( open + 1, close - open - 1 );
-		options = string.Concat( options[..open], options.AsSpan( open + 1, close - open - 1 ), options[(close + 1)..] );
+		options = string.Concat( options.AsSpan()[..open], options.AsSpan( open + 1, close - open - 1 ), options.AsSpan()[(close + 1)..] );
 		return (options, choice);
 	}
 

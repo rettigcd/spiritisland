@@ -3,7 +3,7 @@
 /// <summary>
 /// Indivisible group of actions, all of which must be resolved.
 /// </summary>
-public class GrowthOption : IOption {
+public class GrowthOption : IOption { // This is an IOption so Startlight can select which option to add.
 
 	/// <summary> When negative, prevents growth option unless user has sufficient energy to satisfy </summary>
 	public int GainEnergy = 0;

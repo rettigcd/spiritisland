@@ -4,7 +4,7 @@ public class SerpentPresence : SpiritPresence {
 
 
 	readonly static Track fakeEarth = new Track("earth energy" ) {
-		Icon = new IconDescriptor { Text = "><" }
+		Icon = new IconDescriptor { Text = "X" }
 	};
 
 	public SerpentPresence():base(

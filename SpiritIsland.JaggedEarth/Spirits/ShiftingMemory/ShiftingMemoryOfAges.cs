@@ -137,8 +137,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 	protected ElementCounts actionElements; // null unless we are in the middle of an action
 
 	public override async Task<bool> HasElements( ElementCounts subset ) {
-		if( actionElements == null ) 
-			actionElements = Elements.Clone();
+		actionElements ??= Elements.Clone();
 		if( actionElements.Contains( subset ) ) return true;
 
 		// Check if we have prepared element markers to fill the missing elements
@@ -164,8 +163,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		var elementOptions = innateOptions.Select(x=>x.Elements);
 
 		// Init the elements that are active for this action only.
-		if( actionElements == null ) 
-			actionElements = Elements.Clone();
+		actionElements ??= Elements.Clone();
 
 		var highestAlreadyMatch = innateOptions
 			.OrderByDescending(e=>e.Elements.Total)

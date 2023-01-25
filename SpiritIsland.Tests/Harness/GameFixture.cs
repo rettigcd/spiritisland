@@ -16,10 +16,8 @@ class GameFixture {
 	}
 
 	public GameFixture Start() {
-		if(spirit == null)
-			spirit = new TestSpirit(PowerCard.For<WashAway>());
-		if(board == null)
-			board = Board.BuildBoardA();
+		spirit ??= new TestSpirit(PowerCard.For<WashAway>());
+		board ??= Board.BuildBoardA();
 
 		gameState = new GameState(spirit,board);
 		gameState.Initialize();

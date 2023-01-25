@@ -51,7 +51,7 @@ public class BrandenburgPrussia : IAdversary {
 
 	public void PostInitialization( GameState gameState ) {}
 
-	static Task LandRush( GameState gs ) {
+	static async Task LandRush( GameState gs ) {
 		// Land Rush: On each board with Town / City, add 1 Town to a land without Town
 
 		var counts = gs.AllActiveSpaces
@@ -71,13 +71,12 @@ public class BrandenburgPrussia : IAdversary {
 			.Select( grp => grp.OrderBy( ss => ss.Space.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
-		using UnitOfWork actionScope = gs.StartAction( ActionCategory.Default );
+		await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Default );
 		foreach(SpaceState bs in buildSpaces)
-			bs.Bind(actionScope).AddDefault(Invader.Town, 1, AddReason.Build);
+			await bs.Bind(actionScope).AddDefault(Invader.Town, 1, AddReason.Build);
 
 		gs.LogDebug("Land Rush: Adding 1 town to "+buildSpaces.Select(x=>x.Space.Text).Order().Join(","));
 
-		return Task.CompletedTask;
 	}
 
 

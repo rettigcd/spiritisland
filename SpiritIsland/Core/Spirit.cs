@@ -534,7 +534,7 @@ public abstract partial class Spirit : IOption {
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		if(prompt == null) prompt = "Target Space.";
+		prompt ??= "Target Space.";
 		IEnumerable<SpaceState> spaces = GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria );
 		return this.Gateway.Decision( new Select.Space( prompt, spaces.Select( x => x.Space ), Present.Always ));
 	}

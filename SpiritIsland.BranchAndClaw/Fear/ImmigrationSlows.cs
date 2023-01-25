@@ -13,8 +13,7 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 
 		foreach(var board in ctx.GameState.Island.Boards) {
 			var lowest = ctx.GameState.Tokens.PowerUp(board.Spaces).FirstOrDefault(card.MatchesCard);
-			if(lowest != null)
-				lowest.Skip1Build( Name );
+			lowest?.Skip1Build( Name );
 		}
 		return Task.CompletedTask;
 	}

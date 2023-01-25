@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
@@ -24,6 +25,7 @@ public class ResourceImages {
 	readonly PrivateFontCollection Fonts;
 
 	public Font UseGameFont( float fontHeight ) => new Font( Fonts.Families[0], fontHeight, GraphicsUnit.Pixel );
+
 	public Font UseInvaderFont( float fontHeight ) => new Font( Fonts.Families[1], fontHeight, GraphicsUnit.Pixel );
 
 	void LoadFont(string file) {
@@ -179,6 +181,106 @@ public class ResourceImages {
 		_cache.Add(key, image);
 		return image;
 	}
+
+	public Image GetGeneralInstructions( string description, float textEmSize, Size rowSize ) {
+		string key = "gi_" + description.Replace(' ','_')[..50] +".png";
+		if(_cache.Contains(key)){
+			var image = _cache.Get(key);
+			if( rowSize.Width < image.Width) return image;
+			image.Dispose(); // do small - regenerate
+		}
+		using var tempBitmap = new Bitmap(rowSize.Width, rowSize.Width); // Height is wrong
+		using Graphics graphics = Graphics.FromImage(tempBitmap);
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+
+		var layout = new WrappingLayout( textEmSize, rowSize, new Point(0,0), graphics );
+		layout.CalcWrappingString( description, FontStyle.Regular );
+		layout.FinalizeBounds();
+		layout.Paint(graphics);
+
+		Bitmap bitmap = tempBitmap.Clone( layout.Bounds, tempBitmap.PixelFormat );
+
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+
+	public Image GetInnateOption( IDrawableInnateOption innateOption, float emSize, Size rowSize ) {
+		string key = "innateOpt_" + innateOption.Text.Replace( ' ', '_' ).Replace( '/', '_' ).Replace( '.', '_' ) + ".png";
+		if(_cache.Contains( key )) {
+			var image = _cache.Get( key );
+			if(rowSize.Width < image.Width) return image;
+			image.Dispose(); // do small - regenerate
+		}
+
+		using Bitmap tempBitmap = new Bitmap( rowSize.Width, rowSize.Width*2 ); // Height is wrong
+		using Graphics graphics = Graphics.FromImage( tempBitmap );
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+
+		// Elements Thresholds
+		var layout = new WrappingLayout(
+			emSize,
+			rowSize: rowSize,
+			topLeft: new Point(0,0),
+			graphics
+		) { Indent = rowSize.Height / 2 };  // (3) indent
+
+		// top overhand margin
+		layout.AddIconRowOverflowHeight(); // create top buffer for over hanging enlarged tokens
+
+		// Elements in bold
+		layout.CalcWrappingString( innateOption.ThresholdString, FontStyle.Bold );
+
+		// Tab
+		layout.Tab( 2, FontStyle.Bold );
+
+		// Text
+		layout.CalcWrappingString( innateOption.Description, FontStyle.Regular );
+
+		layout.AddIconRowOverflowHeight(); // create bottom buffer for over hanging enlarged tokens
+
+		layout.FinalizeBounds();
+
+		layout.Paint(graphics);
+
+		Bitmap bitmap = tempBitmap.Clone( layout.Bounds, tempBitmap.PixelFormat );
+
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+	public Image GetTrack( IconDescriptor icon ) {
+		string key = "track " + GetKey( icon ) + ".png";
+		if(_cache.Contains(key)) return _cache.Get(key);
+
+		const int dimension = 200;
+		Bitmap bitmap = new Bitmap( dimension, dimension );
+		RectangleF bounds = new RectangleF(0,0,dimension,dimension );
+		using Graphics graphics = Graphics.FromImage( bitmap );
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+		using var cachedImageDrawer = new CachedImageDrawer();
+		new IconDrawer( graphics, cachedImageDrawer ).DrawTheIcon( icon, bounds );
+
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+	static string GetKey( IconDescriptor icon ) {
+		var items = new List<string>();
+		if(!string.IsNullOrEmpty(icon.Text)) items.Add( icon.Text );
+		if(icon.BackgroundImg != default) items.Add( icon.BackgroundImg.ToString() );
+
+		if(icon.ContentImg != default) items.Add( "1-" + icon.ContentImg.ToString() );
+		if(icon.ContentImg2 != default) items.Add( "2-" + icon.ContentImg2.ToString() );
+		if(icon.Super != default) items.Add( "Sup(" + GetKey( icon.Super ) + ")" );
+		if(icon.Sub != default) items.Add( "Sub(" + GetKey( icon.Sub ) + ")" );
+		if(icon.BigSub != default) items.Add( "(" + GetKey( icon.BigSub ) + ")" );
+		return string.Join( " ", items );
+	}
+
 
 	readonly ImageCache _cache = new ImageCache();
 

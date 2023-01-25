@@ -42,10 +42,6 @@ public class SpiritPresence {
 	public IEnumerable<Track> CoverOptions
 		=> Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
 
-	public IReadOnlyCollection<Track> GetEnergyTrack() => Energy.Slots;
-
-	public IReadOnlyCollection<Track> GetCardPlayTrack() => CardPlays.Slots;
-
 	public int EnergyPerTurn { get; private set; } // !!! this needs saved with memento
 
 	// ! These 2 tracks are only public so they can be accessed from Tests.

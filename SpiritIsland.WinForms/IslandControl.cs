@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.Select;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -54,8 +55,6 @@ public partial class IslandControl : Control {
 		_spirit    = gameState.Spirits.Single();
 		_adversary = adversary;
 
-		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
-		
 		// Init new Presence, Defend, Isolate
 		_presenceImg = ResourceImages.Singleton.GetPresenceImage( presenceAppearance.BaseImage );
 		_tokenImages[TokenType.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
@@ -65,8 +64,21 @@ public partial class IslandControl : Control {
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Isolate] );
 		// !! we could cache these if we could serialize the Adjustment into a caching-key
 
-		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new FeatherAndFlame.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
+		// Init Button Container
+		_buttonContainer.Clear();
+		foreach(InnatePower power in _spirit.InnatePowers) {
+			_buttonContainer.Add( power, new InnateButton() );
+			foreach(IDrawableInnateOption innatePowerOption in power.DrawableOptions)
+				_buttonContainer.Add( innatePowerOption, new InnateOptionsBtn( _spirit, innatePowerOption ) );
+		}
+		foreach(Track energySlot in _spirit.Presence.Energy.Slots)
+			_buttonContainer.Add( energySlot, new PresenceSlotButton( _spirit.Presence.Energy, energySlot, _presenceImg ) );
+		foreach(Track cardSlot in _spirit.Presence.CardPlays.Slots)
+			_buttonContainer.Add( cardSlot, new PresenceSlotButton( _spirit.Presence.CardPlays, cardSlot, _presenceImg ) );
 
+		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
+
+		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new FeatherAndFlame.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
 	}
 
 	#endregion constructor / Init
@@ -99,8 +111,10 @@ public partial class IslandControl : Control {
 	SpiritLayout _spiritLayout;
 	AdversaryConfig _adversary;
 
-	void CalcSpiritLayout( Graphics graphics, Rectangle bounds ) {
-		_spiritLayout = new SpiritLayout( graphics, _spirit, bounds, 10 );
+	readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();
+
+	void CalcSpiritLayout( Rectangle bounds ) {
+		_spiritLayout = new SpiritLayout( _spirit, bounds, 10, _buttonContainer );
 		growthOptionCount = _spirit.GrowthTrack.Options.Length;
 	}
 	int growthOptionCount = -1; // auto-update when Starlight adds option
@@ -176,10 +190,14 @@ public partial class IslandControl : Control {
 
 			DrawPowerCards( pe.Graphics );
 
+			_buttonContainer.Paint( pe.Graphics );
+
 			// Pop-ups - draw last, because they are pop-ups and should be on top.
 			DrawDeckPopUp( pe.Graphics );
 			DrawElementsPopUp( pe.Graphics );
 			DrawFearPopUp( pe.Graphics );
+
+
 
 			if(_debug)
 				RegionLayout.DrawRects( pe.Graphics );
@@ -195,7 +213,7 @@ public partial class IslandControl : Control {
 
 	public void GameState_NewLogEntry( ILogEntry obj ) {
 		if(obj is LogPhase phaseEvent) {
-			if(_phaseImage != null) _phaseImage.Dispose();
+			_phaseImage?.Dispose();
 			_phaseImage = phaseEvent.phase switch {
 				Phase.Growth => ResourceImages.Singleton.GetImage( Img.Coin ),
 				Phase.Fast   => ResourceImages.Singleton.GetImage( Img.Icon_Fast ),
@@ -547,12 +565,12 @@ public partial class IslandControl : Control {
 	}
 
 	void DrawPowerCards( Graphics graphics ) {
-		if(_cardData.Layout == null)
-			_cardData.Layout = new CardLayout( RegionLayout.CardRectPopup );
+		_cardData.Layout ??= new CardLayout( RegionLayout.CardRectPopup );
 		_cardData.DrawParts( graphics );
 	}
 
 	void DrawRow( Graphics graphics, SpaceState spaceState, float iconWidth ) {
+
 		var tokenTypes = new List<IVisibleToken> {
 			TokenType.Defend, TokenType.Blight, // These don't show up in .OfAnyType if they are dynamic
 			TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate
@@ -774,18 +792,12 @@ public partial class IslandControl : Control {
 		if( _spiritLayout is null
 			|| growthOptionCount != _spirit.GrowthTrack.Options.Length
 		) {
-			CalcSpiritLayout( graphics, bounds );
+			CalcSpiritLayout( bounds );
 			_spiritPainter?.SetLayout( _spiritLayout );
 		}
 
 		graphics.FillRectangle( SpiritPanelBackgroundBrush, bounds );
-		_spiritPainter.Paint( graphics,
-			options_InnatePower,
-			options_DrawableInate,
-			options_GrowthOptions,
-			options_GrowthActions,
-			options_Track
-		);
+		_spiritPainter.Paint( graphics, options_GrowthActions );
 	}
 
 	void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {
@@ -825,30 +837,9 @@ public partial class IslandControl : Control {
 
 	void RecordSpiritHotspots() {
 		// Growth Options/Actions
-		foreach(var opt in options_GrowthOptions)
-			if(_spiritLayout.growthLayout.HasOption( opt ))
-				hotSpots.Add( opt, _spiritLayout.growthLayout[opt] );
 		foreach(var act in options_GrowthActions)
 			if(_spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
 				hotSpots.Add( act, _spiritLayout.growthLayout[act] );
-		// Presence
-		foreach(var track in options_Track)
-			hotSpots.Add( track, _spiritLayout.trackLayout.ClickRectFor( track ) );
-		// Innates - Select Innate Power
-		foreach(var power in options_InnatePower)
-			hotSpots.Add( power, _spiritLayout.findLayoutByPower[power].Bounds );
-
-		// Innates - Select Innate Option (for shifting memory)
-		var innateOptionBounds = _spiritLayout.InnateLayouts
-			.SelectMany( x => x.Options )
-			.ToDictionary( x=> x.InnateOption, x=>x.Bounds );
-		// Loop through the clickable innates
-		foreach(IDrawableInnateOption innateOption in options_DrawableInate) {
-			// Find the bounds that belongs to this Innate
-			Rectangle bounds = innateOptionBounds[innateOption];
-			hotSpots.Add( innateOption, bounds );
-		}
-
 	}
 
 	Image AccessTokenImage( IVisibleToken imageToken ) {
@@ -887,13 +878,8 @@ public partial class IslandControl : Control {
 	protected override void OnClick( EventArgs e ) {
 		var clientCoords = PointToClient( Control.MousePosition );
 		IOption option = FindOption( clientCoords );
-		if(option is Space space)
-			SpaceClicked?.Invoke(space);
-		else if(option is Token invader)
-			TokenClicked?.Invoke( invader );
-		else if(option is SpaceToken st)
-			SpaceTokenClicked?.Invoke( st );
-		else if( option != null )
+
+		if( option != null )
 			OptionSelected?.Invoke(option);
 		else
 			_cardData.GetClickAction( clientCoords )?.Invoke();
@@ -940,7 +926,8 @@ public partial class IslandControl : Control {
 	IOption FindOption( Point clientCoords ) {
 		return FindInvader( clientCoords )
 			?? FindSpaces( clientCoords )
-			?? FindHotSpot( clientCoords );
+			?? FindHotSpot( clientCoords )
+			?? _buttonContainer.FindEnabledOption( clientCoords);
 	}
 
 	IOption FindSpaces( Point clientCoords ) {
@@ -968,9 +955,6 @@ public partial class IslandControl : Control {
 	#region User Action Events - Notify main form
 
 	public event Action<IOption> OptionSelected;
-	public event Action<Space> SpaceClicked;
-	public event Action<Token> TokenClicked;
-	public event Action<SpaceToken> SpaceTokenClicked;
 
 	#endregion
 
@@ -979,27 +963,39 @@ public partial class IslandControl : Control {
 	#region private Option fields
 
 	void OptionProvider_OptionsChanged( IDecision decision ) {
+		_decision = decision;
 
-		// These decision_ variables contain additional info the options need to render them on the screen
-		decision_SpaceToken          = decision as Select.TypedDecision<SpaceToken>;	// Identifies option as SpaceToken
-		decision_DeployedPresence    = decision as Select.DeployedPresence;				// Identifies option as SpaceToken
-		decision_DeckToDrawFrom      = decision as Select.DeckToDrawFrom;
-		decision_Element             = decision as Select.Element;
-		decision_AdjacentInfo        = decision is Select.IHaveAdjacentInfo adjacenInfoProvider ? adjacenInfoProvider.AdjacentInfo : null;
-		decision_Token               = decision is Select.IHaveTokenInfo ti ? ti.Token : null;
+		// Keep (for now)
+		options_Space = decision.Options.OfType<Space>().ToArray();
+		decision_SpaceToken = decision as Select.TypedDecision<SpaceToken>; // Identifies option as SpaceToken
+		decision_AdjacentInfo = decision is Select.IHaveAdjacentInfo adjacenInfoProvider ? adjacenInfoProvider.AdjacentInfo : null;
 
-		// These option_ variables contain everything they need to render on screen
-		options_Space         = decision.Options.OfType<Space>().ToArray();
-		options_FearPopUp	  = decision.Options.OfType<IFearCard>().FirstOrDefault();
-		options_BlightPopUp   = decision.Options.OfType<IBlightCard>().FirstOrDefault();
-		options_Track		  = decision.Options.OfType<Track>().ToArray();
-		options_InnatePower	  = decision.Options.OfType<InnatePower>().ToArray();
-		options_DrawableInate = decision.Options.OfType<IDrawableInnateOption>().ToArray();
-		options_GrowthOptions = decision.Options.OfType<GrowthOption>().ToArray();
-		options_GrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray();
+		// !!! Merge into SpaceToken
+		decision_Token = decision is Select.IHaveTokenInfo ti ? ti.Token : null;
+		decision_DeployedPresence = decision as Select.DeployedPresence;                // Identifies option as SpaceToken
 
-		_cardData.HandleNewDecision(decision);
+		// !!! Buttonize these
+		options_GrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray(); // Need to update when starlight adds new
+		_cardData.HandleNewDecision( decision ); // Need to add/remove when user changes views
+
+		// !!! Buttonize Pop-ups - need to add dynamically and be able to remove themselves when done/clicked
+		options_FearPopUp = decision.Options.OfType<IFearCard>().FirstOrDefault();
+		options_BlightPopUp = decision.Options.OfType<IBlightCard>().FirstOrDefault();
+
+		// !!! ADD Special Rules (Spirit) button click - BTN needs to handle its own Click event
+		// !!! ADD Adversary Button click - BTN needs to handle its own Click event
+
+		// Dialog Style Popup where multiple buttons are on a common background, and only draw when active.
+		decision_DeckToDrawFrom = decision as Select.DeckToDrawFrom;
+		decision_Element        = decision as Select.Element;
+
+		// Option Buttons
+		_buttonContainer.DisableAll();
+		foreach(IOption option in _decision.Options)
+			_buttonContainer.Enable( option );
 	}
+
+	IDecision _decision;
 
 	Token decision_Token; // the already-known token associated with a decision.  Like presence being placed or token that is being pushed to a destination.
 
@@ -1011,10 +1007,6 @@ public partial class IslandControl : Control {
 
 	IFearCard				options_FearPopUp;
 	IBlightCard		        options_BlightPopUp;
-	Track[]                 options_Track; // until 1st decision is available
-	InnatePower[]           options_InnatePower;
-	IDrawableInnateOption[] options_DrawableInate;
-	GrowthOption[]          options_GrowthOptions;
 	GrowthActionFactory[]   options_GrowthActions;
 	Space[]					options_Space;
 

@@ -19,10 +19,6 @@ public partial class Form1 : Form, IHaveOptions {
 	public event Action<IDecision> NewDecision;
 
 	void Form1_Load( object sender, EventArgs e ) {
-
-		this.islandControl.SpaceClicked += Select;
-		this.islandControl.TokenClicked += Select;
-		this.islandControl.SpaceTokenClicked += Select;
 		this.islandControl.OptionSelected += Select;
 	}
 

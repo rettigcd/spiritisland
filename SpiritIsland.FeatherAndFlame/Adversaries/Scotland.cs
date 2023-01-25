@@ -76,7 +76,7 @@ public class Scotland : IAdversary {
 
 	public void PostInitialization( GameState gamestate ) { }
 
-	static Task PortsSprawlOutward_Escalation( GameState gameState ) {
+	static async Task PortsSprawlOutward_Escalation( GameState gameState ) {
 		// On the single board with the most Coastal Town / City,
 		var board = gameState.Island.Boards
 			.OrderByDescending( b => gameState.Tokens.PowerUp( b.Spaces.Where( s => s.IsCoastal ) )
@@ -88,11 +88,10 @@ public class Scotland : IAdversary {
 			.OrderBy( ss => ss.Sum( Invader.Town ) )
 			.Take( gameState.Spirits.Length )
 			.ToArray();
-		using(var actionScope = gameState.StartAction( ActionCategory.Adversary ))
+		await using(var actionScope = gameState.StartAction( ActionCategory.Adversary ))
 			foreach(SpaceState ss in spacesToAddTown)
-				ss.Bind( null ).AddDefault( Invader.Town, 1, AddReason.Build );
+				await ss.Bind( null ).AddDefault( Invader.Town, 1, AddReason.Build );
 		gameState.Log(new LogDebug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.Select(x=>x.Space.Text).Join(",")));
-		return Task.CompletedTask;
 	}
 
 	static void SeizeOpportunity( GameState gameState ) {

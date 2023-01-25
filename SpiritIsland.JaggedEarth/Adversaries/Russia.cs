@@ -89,7 +89,7 @@ public class Russia : IAdversary {
 			.GroupBy( s => s.Board.Board )
 			.ToDictionary( s => s.Key, s => s.ToArray() );
 
-		using var actionScope = gameState.StartAction( ActionCategory.Adversary ); // !!! ??? should this be 1 for everything or 1/board or 1/space
+		await using var actionScope = gameState.StartAction( ActionCategory.Adversary ); // !!! ??? should this be 1 for everything or 1/board or 1/space
 
 		// If no beasts anywhere, can't add explorers.
 		if(!beastsSpacesForBoard.Any()) return;

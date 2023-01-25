@@ -66,7 +66,7 @@ public class Volcano_Tests {
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
 	[Fact]
-	public void PowerDestroyingPresence_CausesDamage() {
+	public async Task PowerDestroyingPresence_CausesDamage() {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[5]];
 
@@ -76,7 +76,7 @@ public class Volcano_Tests {
 		spirit.Presence.Adjust( space, 3 );
 
 		//  When: they destroying presence via Powercard
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<GrowthThroughSacrifice>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().HasPrompt( "Select presence to destroy" ).HasOptions( space.Space.Text ).Choose( space.Space );
 
@@ -116,7 +116,7 @@ public class Volcano_Tests {
 	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
 	[Trait( "Targeting", "Range" )]
 	[Fact]
-	public void PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
+	public async Task PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
 		var (spirit, gameState, board) = Init();
 		SpaceState targetSpace = gameState.Tokens[board[5]];
 		SpaceState dahanSpace = gameState.Tokens[board[2]];
@@ -128,7 +128,7 @@ public class Volcano_Tests {
 		dahanSpace.Dahan.Init( 2 );
 
 		//  When: they destroying presence via Powercard
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<BargainsOfPowerAndProtection>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().HasPrompt( "Bargains of Power and Protection: Target Space" ).Choose( "A5" );
 		spirit.NextDecision().HasPrompt( "Select presence to remove from game." ).HasOptions( "A5" ).Choose( "A5" );
@@ -143,7 +143,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData(7, "A5,A6,A7,A8" )]        // Target space is not on Tower => normal range
 	[InlineData( 8, "A1,A4,A5,A6,A7,A8" )] // Target space is on Tower => range boost
-	public void PeeksTower_ExtendsRangeFor_UtterACurseOfDreadAndBone( int towerSpaceNum, string expectedRangeOptions) {
+	public async Task PeeksTower_ExtendsRangeFor_UtterACurseOfDreadAndBone( int towerSpaceNum, string expectedRangeOptions) {
 		var (spirit, gameState, board) = Init();
 		SpaceState towerSpace = gameState.Tokens[board[towerSpaceNum]];
 		SpaceState targetSpace = gameState.Tokens[board[8]];
@@ -156,7 +156,7 @@ public class Volcano_Tests {
 		targetSpace.Init( TokenType.Blight, 1 );
 
 		//  When: Utter a curse
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<UtterACurseOfDreadAndBone>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().Choose( targetSpace.Space );
 		spirit.NextDecision().HasPrompt( "Select Power Option" ).HasOptions( "Add Badland,Add Disease,Add Strife" ).Choose( "Add Disease" );
@@ -173,7 +173,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData( 2, "A8" )]        // range-0
 	[InlineData( 3, "A5,A6,A7,A8" )] // range-1
-	public void PeeksTower_ExtendsRangeFor_UnleashATorrent( int presenceInTower, string expectedRangeOptions ) {
+	public async Task PeeksTower_ExtendsRangeFor_UnleashATorrent( int presenceInTower, string expectedRangeOptions ) {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[8]];
 
@@ -183,7 +183,7 @@ public class Volcano_Tests {
 		spirit.Energy=1;
 
 		//  When: Unleash a Torrent
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<UnleashATorrentOfTheSelfsOwnEssence>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().HasPrompt( "Select Power Option" )
 			.HasOptions( "Gain 4 energy, Forget a Power Card to gain 4 more,Pay X Energy (min 1) to deal X Damage in a land at range 0" )
@@ -201,7 +201,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData( 2, "A5,A6,A7,A8" )]       // range-1
 	[InlineData( 3, "A1,A4,A5,A6,A7,A8" )] // range-2
-	public void PeeksTower_ExtendsRangesFor_PerilsOfTheDeepIsland( int presenceInTower, string expectedRangeOptions ) {
+	public async Task PeeksTower_ExtendsRangesFor_PerilsOfTheDeepIsland( int presenceInTower, string expectedRangeOptions ) {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[8]];
 
@@ -211,7 +211,7 @@ public class Volcano_Tests {
 		spirit.Energy = 1;
 
 		//  When: Perils of the Deepest Island
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<PerilsOfTheDeepestIsland>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().Choose(space.Space);
 
@@ -223,7 +223,7 @@ public class Volcano_Tests {
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
 	[Fact]
-	public void ExplosiveErruption_Level0_CausesDamage() {
+	public async Task ExplosiveErruption_Level0_CausesDamage() {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[5]];
 
@@ -235,7 +235,7 @@ public class Volcano_Tests {
 		spirit.Configure().Elements( "0 fire,0 earth" );
 
 		//  When: they trigger Explosive Erruption in target
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
 		//   And: Destroy 2 presence
@@ -257,7 +257,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData( 0 )]
 	[InlineData( 2 )]
-	public void ExplosiveErruption_Level1_CausesDamage( int badlandsCount ) {
+	public async Task ExplosiveErruption_Level1_CausesDamage( int badlandsCount ) {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[5]];
 		SpaceState adjacent = gameState.Tokens[board[7]];
@@ -275,7 +275,7 @@ public class Volcano_Tests {
 		spirit.Configure().Elements( "2 fire,2 earth" );
 
 		//  When: they trigger Explosive Erruption in target
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
 		//   And: Destroy 2 presence
@@ -306,7 +306,7 @@ public class Volcano_Tests {
 	[InlineData( 4 )]
 	[InlineData( 6 )]
 	[InlineData( 10 )]
-	public void ExplosiveEruption( int presenceDestroyed ) {
+	public async Task ExplosiveEruption( int presenceDestroyed ) {
 		var (spirit, gameState, board) = Init();
 		SpaceState targetSpace = gameState.Tokens[board[8]];
 		SpaceState adjPresence = gameState.Tokens[board[7]];
@@ -331,7 +331,7 @@ public class Volcano_Tests {
 		gameState.IslandWontBlight();
 
 		// When: activate Innate
-		using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = InnatePower.For<ExplosiveEruption>().ActivateAsync( spirit.BindMyPowers( gameState, actionScope ) );
 		spirit.NextDecision().HasOptions("A7,A8").Choose( targetSpace.Space );
 

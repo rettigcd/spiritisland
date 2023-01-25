@@ -7,13 +7,12 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 
 	public string Description => "For each (original) beast on land, push, do 1 damage, or 1 fear if invaders are present.";
 
-	public bool IsApplicable( TargetSpaceCtx ctx ) => originalBeastCounts[ctx.Space] > 0;// use original, not current. Incase anything moved.
+	public bool IsApplicable( TargetSpaceCtx ctx ) => _originalBeastCounts[ctx.Space] > 0;// use original, not current. Incase anything moved.
 
 	public async Task Execute( TargetSpaceCtx ctx ) {
 
 		// The first space/time it is called on, init original Beast positions
-		if( originalBeastCounts == null )
-			originalBeastCounts = ctx.GameState.AllActiveSpaces
+		_originalBeastCounts ??= ctx.GameState.AllActiveSpaces
 				.ToDictionary( s => s.Space, s => s.Beasts.Count )
 				.ToCountDict();
 
@@ -24,7 +23,7 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 
 		bool startedWithInvaders = ctx.HasInvaders;
 
-		int count = originalBeastCounts[ctx.Space];
+		int count = _originalBeastCounts[ctx.Space];
 		if( count == 0 ) return;
 
 		// Damage
@@ -41,7 +40,7 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 
 	#region private
 
-	CountDictionary<Space> originalBeastCounts;
+	CountDictionary<Space> _originalBeastCounts;
 
 	static async Task<int> PartialDamageToInvaders( TargetSpaceCtx ctx, int damage ) {
 		if(damage == 0) return 0; // not necessary, just saves some cycles

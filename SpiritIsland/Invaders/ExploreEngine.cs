@@ -56,9 +56,10 @@ public class ExploreEngine {
 		foreach(var exploreTokens in tokenSpacesToExplore) {
 			int exploreCount = exploreTokens[TokenType.DoExplore];
 			exploreTokens.Init( TokenType.DoExplore, 0 );
-			while(0 < exploreCount--)
-				using(UnitOfWork actionScope = gs.StartAction( ActionCategory.Invader ))
-					await ExploreSingleSpace( exploreTokens, gs, actionScope, escalation );
+			while(0 < exploreCount--) {
+				await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Invader );
+				await ExploreSingleSpace( exploreTokens, gs, actionScope, escalation );
+			}
 		}
 	}
 

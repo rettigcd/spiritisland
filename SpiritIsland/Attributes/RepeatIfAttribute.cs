@@ -9,10 +9,10 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 	public RepeatIfAttribute(string elementThreshold, params string[] additionalThresholds) {
 		var repeats = new List<IDrawableInnateOption> {
-			new DrawableInnateOption( elementThreshold, "Repeat this Power." )
+			new DrawableRepeatOption( elementThreshold, "Repeat this Power." )
 		};
 		if(additionalThresholds != null && additionalThresholds.Length>0)
-			repeats.AddRange( additionalThresholds.Select( t => new DrawableInnateOption(t,"Repeat this Power again.") ) );
+			repeats.AddRange( additionalThresholds.Select( t => new DrawableRepeatOption(t,"Repeat this Power again.") ) );
 		this.Thresholds = repeats.ToArray();
 	}
 
@@ -39,8 +39,8 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 }
 
-public class DrawableInnateOption : IDrawableInnateOption {
-	public DrawableInnateOption( string thresholds, string description ) {
+public class DrawableRepeatOption : IDrawableInnateOption {
+	public DrawableRepeatOption( string thresholds, string description ) {
 		Elements = ElementCounts.Parse(thresholds);
 		Description = description;
 	}

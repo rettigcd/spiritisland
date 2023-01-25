@@ -7,6 +7,7 @@ static class BlightCardBuilder {
 	static public Bitmap BuildBlighted( IBlightCard card ) {
 		Bitmap bitmap = new Bitmap( 400, 640 );
 		Graphics graphics = Graphics.FromImage( bitmap );
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
 		var bounds = new Rectangle( 0, 0, bitmap.Width, bitmap.Height );
@@ -38,6 +39,7 @@ static class BlightCardBuilder {
 	static public Bitmap BuildHealthy() {
 		Bitmap bitmap = new Bitmap( 400, 640 );
 		Graphics graphics = Graphics.FromImage( bitmap );
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
 		var bounds = new Rectangle( 0, 0, bitmap.Width, bitmap.Height );

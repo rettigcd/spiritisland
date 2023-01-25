@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> 
-/// Configures how how GrowthActionGroups may be selected
+/// Configures how GrowthActionGroups may be selected
 /// </summary>
 /// <remarks>
 /// GrowhTrack > GrowthPickGroups > GrowthActionGroup
@@ -10,7 +10,6 @@
 /// Rampant Green has 2, 1 for 1st Growth Option and 1 for the last 3.
 /// </remarks>
 public class GrowthPickGroups {
-	// !! Merge this Grouping Functionality up into the GrowthTrack using GroupIds instead of these pick groups.
 
 	#region constructor
 	/// <summary> Allows user to select N of the Action Groups// </summary>

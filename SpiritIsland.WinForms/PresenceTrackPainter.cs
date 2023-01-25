@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace SpiritIsland.WinForms {
 
@@ -21,72 +22,62 @@ namespace SpiritIsland.WinForms {
 			presenceColor.Adjustment?.Adjust( _presenceImg );
 		}
 
-		public void Paint( Graphics graphics, Track[] clickableTrackOptions, CachedImageDrawer imageDrawer ) {
+		public void Paint( Graphics graphics, CachedImageDrawer imageDrawer ) {
 			// Set single-thread variables
-			this.clickableTrackOptions = clickableTrackOptions;
-			this.imageDrawer = imageDrawer;
+//			this.clickableTrackOptions = clickableTrackOptions;
+//			this._cachedImageDrawer = imageDrawer;
 
 			// Bottom Layer - cache it
 			if(_cachedBackgroundImage == null)
 				CalculateBackgroundImage();
 			graphics.DrawImage(_cachedBackgroundImage,_layout.Bounds);
 
-			// Middle Layer - Hotspots
-			PaintHighlights( graphics );
-
 			// Top Layer - Presence
 			PaintPresence( graphics );
+
 			// Draw current energy
-			new IconDrawer(graphics,imageDrawer).DrawTheIcon(new IconDescriptor { Text = _spirit.Energy.ToString() }, _layout.BigCoin );
+			new IconDrawer(graphics,imageDrawer).DrawTheIcon(new IconDescriptor { Text = _spirit.Energy.ToString() }, _layout.BigCoin ); // !!! simplify
 
 		}
 
 		void CalculateBackgroundImage() {
 			_cachedBackgroundImage = new Bitmap( this._layout.Bounds.Width, this._layout.Bounds.Height );
 
-			using Graphics g = Graphics.FromImage( _cachedBackgroundImage );
-			g.TranslateTransform( -_layout.Bounds.X, -_layout.Bounds.Y );
+			using Graphics graphics = Graphics.FromImage( _cachedBackgroundImage );
+			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+			graphics.TranslateTransform( -_layout.Bounds.X, -_layout.Bounds.Y );
 
-			PaintLabels(g);
-			var iconDrawer = new IconDrawer(g,imageDrawer);
-			iconDrawer.DrawTheIcon(new IconDescriptor { BackgroundImg = Img.Coin }, _layout.BigCoin );
+			PaintLabels(graphics);
 
-			// debug
-			//foreach(var track in CardTrack.Union( EnergyTrack )) {
-			//	var slot = _layout.SlotLookup[track];
-			//	g.DrawRectangle( Pens.Red, slot.DebugBounds );
-			//	g.DrawRectangle( Pens.Green, slot.TrackRect.ToInts() );
-			//}
+			using(var coin = ResourceImages.Singleton.GetTrack( new IconDescriptor { BackgroundImg = Img.Coin } ))
+				graphics.DrawImage(coin, _layout.BigCoin );
 
+			foreach(Track track in EnergySlots)
+				((PresenceSlotButton)_layout.SlotLookup[track]).PaintBackground(graphics);
 
-			foreach(var track in EnergyTrack)
-				iconDrawer.DrawTheIcon( track.Icon, _layout.SlotLookup[track].TrackRect );
-
-			foreach(var track in this.CardTrack)
-				iconDrawer.DrawTheIcon( track.Icon, _layout.SlotLookup[track].TrackRect );
+			foreach(Track track in this.CardPlaySlots)
+				((PresenceSlotButton)_layout.SlotLookup[track]).PaintBackground( graphics );
 
 		}
 
-		void PaintHighlights(Graphics graphics) {
-			using Pen highlightPen = new( Color.Red, 8f );
-			foreach(var track in clickableTrackOptions)
-				graphics.DrawEllipse( highlightPen, _layout.SlotLookup[track].PresenceRect );
-		}
-
-		void PaintLabels(Graphics graphics) {
+		void PaintLabels( Graphics graphics ) {
 			using Font simpleFont = ResourceImages.Singleton.UseGameFont( 20f );
 			graphics.DrawString( "Energy", simpleFont, Brushes.Black, _layout.EnergyTitleLocation );
 			graphics.DrawString( "Cards", simpleFont, Brushes.Black, _layout.CardPlayTitleLocation );
 		}
 
-		void PaintPresence(Graphics graphics) {
-			foreach(var track in EnergyTrack)
-				if(!EnergyRevealed.Contains(track))
-					graphics.DrawImage( _presenceImg, _layout.SlotLookup[track].PresenceRect );
 
-			foreach(var track in CardTrack)
-				if(!CardRevealed.Contains(track))
-					graphics.DrawImage( _presenceImg, _layout.SlotLookup[track].PresenceRect );
+		void PaintPresence(Graphics graphics) {
+
+			//foreach(var track in EnergyTrack) {
+			//	var btn = (SlotMetricsButton)_layout.SlotLookup[track];
+			//	btn.Paint( graphics, clickableTrackOptions.Contains( track ) );
+			//}
+
+			//foreach(var track in CardTrack) {
+			//	var btn = (SlotMetricsButton)_layout.SlotLookup[track];
+			//	btn.Paint( graphics, clickableTrackOptions.Contains( track ) );
+			//}
 
 			PaintDestroyed( graphics );
 
@@ -134,30 +125,24 @@ namespace SpiritIsland.WinForms {
 
 		#region private 
 
-		Track[] EnergyTrack => _spirit.Presence.GetEnergyTrack().ToArray();
-		Track[] EnergyRevealed => _spirit.Presence.Energy.Revealed.ToArray();
+		Track[] EnergySlots => _spirit.Presence.Energy.Slots.ToArray();
+//		Track[] EnergyRevealed => _spirit.Presence.Energy.Revealed.ToArray();
 
-		Track[] CardTrack => _spirit.Presence.GetCardPlayTrack().ToArray();
-		Track[] CardRevealed => _spirit.Presence.CardPlays.Revealed.ToArray();
+		Track[] CardPlaySlots => _spirit.Presence.CardPlays.Slots.ToArray();
+//		Track[] CardRevealed => _spirit.Presence.CardPlays.Revealed.ToArray();
 
 		readonly Spirit _spirit;
 		readonly PresenceTrackLayout _layout;
 		Bitmap _presenceImg;
 
 		// Single threaded / instance methods
-		CachedImageDrawer imageDrawer;
-		Track[] clickableTrackOptions;
+//		CachedImageDrawer _cachedImageDrawer;
+//		Track[] clickableTrackOptions;
 
 		Bitmap _cachedBackgroundImage;
 
 		#endregion
 
-	}
-
-	public struct SlotMetrics {
-		public Rectangle PresenceRect;
-		public RectangleF TrackRect;
-		public Rectangle DebugBounds;
 	}
 
 }

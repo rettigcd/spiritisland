@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace SpiritIsland.WinForms;
+
 public class InnateLayout {
 
 	public Rectangle Bounds;
@@ -12,22 +11,16 @@ public class InnateLayout {
 	public Rectangle[] AttributeRows;
 	public Rectangle[] AttributeLabelCells;
 	public Rectangle[] AttributeValueCells;
-	public WrappingText GeneralInstructions;
-	public WrappingText_InnateOptions[] Options;
-
-	readonly ImageSizeCalculator _imageSizeCalculator;
-
+	public GeneralInstructions GeneralInstructions;
 
 	#region constructor
 
-	public InnateLayout(InnatePower power, int x, int y, int width, float textHeightMultiplier, Graphics graphics ) {
-		textEmSize = width * textHeightMultiplier;
+	public InnateLayout( InnatePower power, int x, int y, int width, float textHeightMultiplier, VisibleButtonContainer buttonContainer ) {
 
-		rowHeight     = (int)(textEmSize * 2.1f);
-		_imageSizeCalculator = new ImageSizeCalculator( 
-			iconDimension:    (int)(textEmSize * 1.9f),
-			elementDimension: (int)(textEmSize * 2.4f)
-		);
+		_textEmSize = width * textHeightMultiplier;
+
+		_rowHeight                    = (int)(_textEmSize * 2.0f);
+		_generalInstructionsRowHeight = (int)(_textEmSize * 1.5f);
 
 		int margin = (int)(width * .02f); // 2% of width
 		int workingWidth = width - margin * 2;
@@ -41,96 +34,49 @@ public class InnateLayout {
 		AttributeLabelCells = AttributeRows[0].SplitHorizontally( 3 );
 		AttributeValueCells = AttributeRows[1].SplitHorizontally( 3 );
 
-		// Options
-		var options = new List<WrappingText_InnateOptions>();
-		int optionY = AttributeBounds.Bottom + (int)(rowHeight * 0.5f);
+		int optionY = AttributeBounds.Bottom + (int)(_rowHeight * 0.5f);
 
 		// General instructions
 		if(!string.IsNullOrEmpty( power.GeneralInstructions )) {
-			GeneralInstructions = CalcGeneralInstructionsLayout( power.GeneralInstructions, AttributeBounds.Left, optionY, workingWidth, graphics );
-			optionY = GeneralInstructions.Bounds.Bottom;
+			GeneralInstructions = CalcGeneralInstructionsLayout( power.GeneralInstructions, AttributeBounds.Left, optionY, workingWidth );
+			optionY = GeneralInstructions.Bounds.Bottom
+				+ (int)(_rowHeight * .4f); // spacer between items
 		}
 
-		foreach( var innatePowerOption in power.DrawableOptions ) {
-			var wrapInfo = CalcInnateOptionLayout( innatePowerOption, AttributeBounds.Left, optionY, workingWidth, graphics );
-			options.Add( wrapInfo );
-			optionY = wrapInfo.Bounds.Bottom + (int)(rowHeight*.5f);
+		// Options
+		foreach(IDrawableInnateOption innatePowerOption in power.DrawableOptions ) {
+			var optionBtn = (InnateOptionsBtn)buttonContainer[innatePowerOption];
+
+			// Update Position
+			optionBtn.SetPosition( _textEmSize, rowSize: new Size( workingWidth, _rowHeight ), new Point( AttributeBounds.Left, optionY ) );
+
+			// Next
+			optionY = optionBtn.Bounds.Bottom 
+				+ (int)(_rowHeight*.4f); // spacer between items
 		}
-		Options = options.ToArray();
+
 		Bounds = new Rectangle( x, y, width, optionY - y );
-
+		((InnateButton)buttonContainer[power]).Bounds= Bounds;
 	}
 
 	#endregion
 
 	// !!! group these with the GameFont somehow
-	public Font UsingRegularFont() => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Regular, GraphicsUnit.Pixel );
-	public Font UsingBoldFont()    => new Font( FontFamily.GenericSansSerif, textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
+	public Font UsingBoldFont()    => new Font( FontFamily.GenericSansSerif, _textEmSize, FontStyle.Bold, GraphicsUnit.Pixel );
 
 	#region private methods
 
-	WrappingText CalcGeneralInstructionsLayout( string description, int left, int top, int width, Graphics graphics ) {
-
-		var wrappingLayout = new WrappingLayout(
-			topLeft: new Point( left, top ),
-			rowSize: new Size( width, rowHeight ),
-			_imageSizeCalculator,
-			graphics
-		);
-
-		// Text
-		using Font font = UsingRegularFont();
-		wrappingLayout.MeasuringFont = font;
-		var (tokens, regularTexts) = wrappingLayout.CalcWrappingString( description );
-
-		return new WrappingText {
-			tokens = tokens,
-			regularTexts = regularTexts,
-			Bounds = wrappingLayout.FinalizeBounds()
-		};
-
-	}
-
-	WrappingText_InnateOptions CalcInnateOptionLayout( IDrawableInnateOption option, int left, int originalY, int width, Graphics graphics ) {
-
-		// Elements Thresholds
-		var wrappingLayout = new WrappingLayout( 
-			topLeft: new Point(left, originalY),
-			rowSize: new Size( width, rowHeight ),
-			_imageSizeCalculator, 
-			graphics
-		) { Indent = rowHeight/2 };
-
-		// Elements in bold
-		using var boldFont = UsingBoldFont();
-		wrappingLayout.MeasuringFont = boldFont; 
-		var (elementTokens, elementText) = wrappingLayout.CalcWrappingString( option.ThresholdString );
-
-		// margin
-		wrappingLayout.Tab(2);
-
-		// Text
-		using var font = UsingRegularFont(); //
-		wrappingLayout.MeasuringFont = font;
-		var (tokens, regularTexts) = wrappingLayout.CalcWrappingString( option.Description );
-
-
-		return new WrappingText_InnateOptions {
-			InnateOption = option,
-			tokens       = elementTokens.Union( tokens ).ToList(),
-			boldTexts    = elementText,
-			regularTexts = regularTexts,
-			Bounds       = wrappingLayout.FinalizeBounds(),
-		};
-
+	GeneralInstructions CalcGeneralInstructionsLayout( string description, int left, int top, int width) {
+		return new GeneralInstructions( description, _textEmSize, rowSize: new Size( width, _generalInstructionsRowHeight ), topLeft: new Point( left, top ) );
 	}
 
 	#endregion
 
 	#region temp / private fields
 
-	public readonly float textEmSize;
-	readonly int rowHeight;
+	public readonly float _textEmSize;
+	readonly int _rowHeight;
+	readonly int _generalInstructionsRowHeight;
 
 	#endregion
 
@@ -142,23 +88,9 @@ public class TokenPosition {
 }
 
 public class TextPosition {
-	public string Text;
-	public RectangleF Bounds;
-}
-
-public class WrappingText {
-	public List<TokenPosition> tokens = new List<TokenPosition>();
-
-	public List<TextPosition> boldTexts = new List<TextPosition>();
-
-	public List<TextPosition> regularTexts = new List<TextPosition>();
-
-	public Rectangle Bounds;
-
-}
-
-public class WrappingText_InnateOptions : WrappingText {
-	public IDrawableInnateOption InnateOption;
+	public TextPosition( string text, RectangleF bounds ) { Text = text; Bounds = bounds; }
+	public readonly string Text;
+	public readonly RectangleF Bounds;
 }
 
 

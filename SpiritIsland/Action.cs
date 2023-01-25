@@ -4,7 +4,9 @@ namespace SpiritIsland;
 /// <summary>
 /// A Spirit Island 'Action'
 /// </summary>
-public sealed class UnitOfWork : IAsyncDisposable, IDisposable {
+public sealed class UnitOfWork : IAsyncDisposable
+//	, IDisposable
+{
 
 	#region constructor
 	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory, TerrainMapper terrainMapper ) {
@@ -39,12 +41,12 @@ public sealed class UnitOfWork : IAsyncDisposable, IDisposable {
 		await _endOfAction.InvokeAsync(this);
 	}
 
-	public void Dispose() {
-		// DANGEROUS - Only use this for Tests.
-		if(_endOfThisAciton != null)
-			_endOfThisAciton.InvokeAsync( this ).Wait();
-		_endOfAction.InvokeAsync( this ).Wait();
-	}
+	//public void Dispose() {
+	//	// DANGEROUS - Only use this for Tests.
+	//	if(_endOfThisAciton != null)
+	//		_endOfThisAciton.InvokeAsync( this ).Wait();
+	//	_endOfAction.InvokeAsync( this ).Wait();
+	//}
 
 	public void AtEndOfThisAction(Func<UnitOfWork,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
 	public void AtEndOfThisAction( Action<UnitOfWork> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );

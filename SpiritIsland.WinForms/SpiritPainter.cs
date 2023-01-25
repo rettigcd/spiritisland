@@ -33,33 +33,26 @@ namespace SpiritIsland.WinForms {
 				.ToArray();
 		}
 
-		public void Paint( 
-			Graphics graphics,
-			InnatePower[] innateOptions,
-			IDrawableInnateOption[] innateGroupOptions,
-			GrowthOption[] selectableGrowthOptions,
-			GrowthActionFactory[] selectableGrowthActions,
-			Track[] clickableTrackOptions
-		) {
+		public void Paint( Graphics graphics, GrowthActionFactory[] selectableGrowthActions ) {
 			using var imageDrawer = new CachedImageDrawer();
 
 			DrawSpiritImage( graphics );
 
 			using(new StopWatch("Growth"))
-				growthPainter.Paint( graphics, selectableGrowthOptions, selectableGrowthActions );
+				growthPainter.Paint( graphics, selectableGrowthActions );
 
 			using(new StopWatch("Presence"))
-				presencePainter.Paint( graphics, clickableTrackOptions, imageDrawer );
+				presencePainter.Paint( graphics, imageDrawer );
 
 			using(new StopWatch( "Innates" ))
-				Draw_Innates( graphics, innateOptions, innateGroupOptions, imageDrawer );
+				Draw_Innates( graphics, imageDrawer );
 
 			Draw_Elements( graphics );
 		}
 
-		void Draw_Innates( Graphics graphics, InnatePower[] innateOptions, IDrawableInnateOption[] innateGroupOptions, CachedImageDrawer imageDrawer ) {
+		void Draw_Innates( Graphics graphics, CachedImageDrawer imageDrawer ) {
 			foreach(var painter in innatePainters)
-				painter.DrawFromLayout( graphics, imageDrawer, _spirit.Elements, innateOptions, innateGroupOptions );
+				painter.DrawFromLayout( graphics, imageDrawer );
 		}
 
 		void DrawSpiritImage( Graphics graphics ) {

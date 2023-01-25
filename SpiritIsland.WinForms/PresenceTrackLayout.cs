@@ -6,11 +6,11 @@ namespace SpiritIsland.WinForms {
 
 	public class PresenceTrackLayout {
 
-		public PresenceTrackLayout(Rectangle bounds, Spirit spirit, int margin ) {
+		public PresenceTrackLayout(Rectangle bounds, Spirit spirit, int margin, VisibleButtonContainer buttonContainer ) {
 			this.Bounds = bounds;
 
-			var energySlots = spirit.Presence.GetEnergyTrack();
-			var cardSlots = spirit.Presence.GetCardPlayTrack();
+			var energySlots = spirit.Presence.Energy.Slots;
+			var cardSlots = spirit.Presence.CardPlays.Slots;
 
 			// Slot-Size
 			int slotsNeeded = Math.Max( cardSlots.Count, energySlots.Count ) + 2;// +2 for energy & Destroyed;
@@ -24,9 +24,8 @@ namespace SpiritIsland.WinForms {
 			int presenceWidth = (int)(slotSize.Width * 0.8f);
 			Size presenceSize = new Size( presenceWidth, presenceWidth * 112 / 126 ); // presence icons are 126W x 112H
 
-			CalcEnergyTrackLayout( spirit, energyBoundsRect, slotSize, presenceSize );
-			CalculateCardPlaySlots( spirit, cardBoundsRect, slotSize, presenceSize );
-
+			CalcEnergyTrackLayout( spirit, energyBoundsRect, slotSize, presenceSize, buttonContainer );
+			CalculateCardPlaySlots( spirit, cardBoundsRect, slotSize, presenceSize, buttonContainer );
 			CalcDestroyedAndTimeLayout( bounds, margin, slotSize, presenceSize );
 
 			CalcBigCoinLayout( bounds, slotSize.Width );
@@ -39,7 +38,7 @@ namespace SpiritIsland.WinForms {
 		public Point EnergyTitleLocation;
 		public Point CardPlayTitleLocation;
 
-		public Dictionary<Track,SlotMetrics> SlotLookup = new Dictionary<Track, SlotMetrics>();
+		public Dictionary<Track,PresenceSlotLayout> SlotLookup = new Dictionary<Track, PresenceSlotLayout>();
 
 		public Rectangle Time;
 		public RectangleF BigCoin; // Why is this float?
@@ -48,25 +47,29 @@ namespace SpiritIsland.WinForms {
 
 		#region private
 
-		void CalcEnergyTrackLayout( Spirit spirit, Rectangle bounds, Size slotSize, Size presenceSize ) {
+		void CalcEnergyTrackLayout( Spirit spirit, Rectangle bounds, Size slotSize, Size presenceSize, VisibleButtonContainer buttonContainer ) {
 
 			int currentX = bounds.X;
 
 			// Energy Slots
 			float coinWidth = slotSize.Width * 0.8f;
 			float coinMargin = (slotSize.Width - coinWidth) / 2;
-			foreach(var energySlot in spirit.Presence.GetEnergyTrack()) {
-				SlotLookup.Add( energySlot, new SlotMetrics {
-					DebugBounds = new Rectangle( currentX, bounds.Y, slotSize.Width, slotSize.Height ),
-					PresenceRect = new Rectangle( currentX + (slotSize.Width - presenceSize.Width) / 2, bounds.Y, presenceSize.Width, presenceSize.Height ),
-					TrackRect = new RectangleF( currentX + coinMargin, bounds.Bottom - coinWidth-coinMargin, coinWidth, coinWidth )
-				} );
+
+			var presenceTrack = spirit.Presence.Energy;
+			foreach(Track energySlot in presenceTrack.Slots) {
+				var button = (PresenceSlotButton)buttonContainer[energySlot];
+
+				button.DebugBounds  = new Rectangle( currentX, bounds.Y, slotSize.Width, slotSize.Height );
+				button.PresenceRect = new Rectangle( currentX + (slotSize.Width - presenceSize.Width) / 2, bounds.Y, presenceSize.Width, presenceSize.Height );
+				button.TrackRect    = new RectangleF( currentX + coinMargin, bounds.Bottom - coinWidth - coinMargin, coinWidth, coinWidth );
+
+				SlotLookup.Add( energySlot, button );
 				currentX += slotSize.Width;
 			}
 
 		}
 
-		void CalculateCardPlaySlots( Spirit spirit, Rectangle bounds, Size slotSize, Size presenceSize ) {
+		void CalculateCardPlaySlots( Spirit spirit, Rectangle bounds, Size slotSize, Size presenceSize, VisibleButtonContainer buttonContainer ) {
 			int slotWidth = slotSize.Width;
 			int x=bounds.X;
 			int y=bounds.Y;
@@ -78,12 +81,14 @@ namespace SpiritIsland.WinForms {
 			float usableWidth = slotSize.Width - 2 * margin;
 			int cardY = (int)(bounds.Bottom - margin - usableWidth);
 
-			foreach(var status in spirit.Presence.GetCardPlayTrack()) {
-				SlotLookup.Add( status, new SlotMetrics {
-					DebugBounds = new Rectangle( x, y, slotSize.Width, slotSize.Height ),
-					PresenceRect = new Rectangle( x + (int)((slotWidth - presenceSize.Width) / 2), y, presenceSize.Width, presenceSize.Height ),
-					TrackRect    = new RectangleF( x + slotWidth * .1f, cardY, usableWidth, usableWidth )
-				} );
+			foreach(Track cardSlot in spirit.Presence.CardPlays.Slots) {
+				var button = (PresenceSlotButton)buttonContainer[cardSlot];
+
+				button.DebugBounds = new Rectangle( x, y, slotSize.Width, slotSize.Height );
+				button.PresenceRect = new Rectangle( x + (int)((slotWidth - presenceSize.Width) / 2), y, presenceSize.Width, presenceSize.Height );
+				button.TrackRect = new RectangleF( x + slotWidth * .1f, cardY, usableWidth, usableWidth );
+				
+				SlotLookup.Add( cardSlot, button );
 				x += (int)slotWidth;
 			}
 
@@ -94,7 +99,7 @@ namespace SpiritIsland.WinForms {
 			int energyRowHeight = slotSize.Height;
 			int destroyedAndTimeY = (int)(bounds.Y + energyRowHeight + margin + slotWidth * .5f);
 
-			SlotLookup.Add( Track.Destroyed, new SlotMetrics {
+			SlotLookup.Add( Track.Destroyed, new PresenceSlotLayout { // !!! not 100% sure this is correct
 				PresenceRect = new Rectangle(
 					(int)(bounds.Right - 2 * slotWidth),
 					destroyedAndTimeY,

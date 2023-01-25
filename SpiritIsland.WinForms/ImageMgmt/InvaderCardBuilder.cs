@@ -9,6 +9,7 @@ class InvaderCardBuilder {
 
 		Bitmap bitmap = new Bitmap( 200, 320 );
 		Graphics graphics = Graphics.FromImage( bitmap );
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 		var perimeter = new PointF[] {
 			// Top Half
 			new PointF( 20    , 160 ),
@@ -108,6 +109,7 @@ class InvaderCardBuilder {
 		Rectangle cardRect = new Rectangle( 0, 0, 200, 320 );
 		Bitmap bitmap = new Bitmap( 200, 320 );
 		Graphics graphics = Graphics.FromImage( bitmap );
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
 		// Outside
 		using(SolidBrush brush = new SolidBrush( Color.LightSteelBlue ))

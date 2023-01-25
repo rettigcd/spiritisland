@@ -113,7 +113,7 @@ public enum Align {
 	Far
 }
 
-public struct SubArray<T> {
+public readonly struct SubArray<T> {
 	readonly int _start;
 	readonly T[] _array;
 	public SubArray( T[] array, int start=0 ) {  _array = array; _start = start; }

@@ -135,7 +135,7 @@ public class Russia_Tests {
 	}
 
 	[Fact]
-	public void Level2_PowerOnCoast_PushExplorerToLandOnly() {
+	public async Task Level2_PowerOnCoast_PushExplorerToLandOnly() {
 		var cfg = Given_RussiaLevel( 2 ).SetBoards( "A" ).SetSpirits( RiverSurges.Name );
 		GameState gameState = BuildGame( cfg );
 		Spirit spirit = gameState.Spirits[0];
@@ -147,7 +147,7 @@ public class Russia_Tests {
 		SpaceState destination = gameState.Tokens[boardA[4]];
 		destination.Clear();
 		//  When: power destroys
-		using var actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using var actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task t = TheJungleHungers.ActAsync( spirit.BindMyPowers( gameState, actionScope ).Target(a3.Space) );
 		//  Then: we push 1 explorer to a Land-space (not A0-ocean)
 		t.IsCompleted.ShouldBeFalse();

@@ -5,7 +5,7 @@ namespace SpiritIsland.WinForms;
 
 static class DataFolder {
 	public static string GetRootPath() {
-		string folder = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ), "spiritisland" );
+		string folder = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ), "SpiritIsland" );
 		if(!Directory.Exists( folder ))
 			Directory.CreateDirectory( folder );
 		return folder;

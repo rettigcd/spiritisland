@@ -5,7 +5,7 @@ public class FieryVengeance_Tests {
 
 	[Trait("SpecialRule", "Wreak Vengeance for the Land's Corruption" )]
 	[Fact]
-	public void FieryVengeance_BlightCausesBadlandDamage() {
+	public async Task FieryVengeance_BlightCausesBadlandDamage() {
 		// Given: 2 spirits (vengeance + 1)
 		Spirit vengeance = new VengeanceAsABurningPlague();
 		Spirit spirit2 = new RiverSurges();
@@ -24,7 +24,7 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Destroyed++;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
-		using var actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
+		await using var actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
 		Task task = PowerCard.For<FieryVengeance>().ActivateAsync( vengeance.BindMyPowers(gameState,actionScope) );
 		vengeance.NextDecision().HasPrompt( "Fiery Vengeance: Target Spirit" ).HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" ).Choose( "River Surges in Sunlight" );
 
@@ -38,7 +38,7 @@ public class FieryVengeance_Tests {
 	}
 
 	[Fact]
-	public void FieryVengeance_NoDestroyedPresence_NoAction() {
+	public async Task FieryVengeance_NoDestroyedPresence_NoAction() {
 		// Given: 2 spirits (vengeance + 1)
 		Spirit vengeance = new VengeanceAsABurningPlague();
 		Spirit spirit2 = new RiverSurges();
@@ -57,7 +57,7 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Destroyed = 0;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
-		using var actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using var actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
 		Task task = PowerCard.For<FieryVengeance>().ActivateAsync( vengeance.BindMyPowers( gameState, actionScope ) );
 		vengeance.NextDecision().HasPrompt( "Fiery Vengeance: Target Spirit" ).HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" ).Choose( "River Surges in Sunlight" );
 

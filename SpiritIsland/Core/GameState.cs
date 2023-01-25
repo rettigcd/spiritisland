@@ -386,8 +386,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			src.blightOnCard = blightOnCard;
 			src.BlightCard.CardFlipped = isBlighted;
 			for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
-			if(src.MajorCards != null ) src.MajorCards.RestoreFrom( major );
-			if(src.MinorCards != null ) src.MinorCards.RestoreFrom( minor );
+			src.MajorCards?.RestoreFrom( major );
+			src.MinorCards?.RestoreFrom( minor );
 			src.InvaderDeck.LoadFrom( invaderDeck );
 			src.Fear.LoadFrom( fear );
 			src.Tokens.LoadFrom( tokens );

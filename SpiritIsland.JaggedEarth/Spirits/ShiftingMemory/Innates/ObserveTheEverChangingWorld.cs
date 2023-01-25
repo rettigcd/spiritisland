@@ -20,7 +20,11 @@ public class ObserveTheEverChangingWorld {
 }
 
 
-public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
+public class ObserveWorldMod : Token
+	, IVisibleToken
+	, IHandleTokenAdded
+	, IHandleTokenRemoved
+{
 
 	// !!! It seems like adding / removing presence tokens should trigger this also, but I don't think it triggers the Token Added/Removed event.
 
@@ -29,10 +33,7 @@ public class ObserveWorldMod : Token, IHandleTokenAdded, IHandleTokenRemoved {
 	public TokenClass Class => TokenType.Element;
 	public string Text => ObserveTheEverChangingWorld.Name;
 
-	// public string SpaceAbreviation => $"AnyElement({_index})";
-	// readonly int _index;
-	// static int _total = 0;
-
+	public Img Img => TokenType.Element.Img;
 
 	readonly ShiftingMemoryOfAges _spirit;
 	readonly HashSet<UnitOfWork> _appliedToTheseActions = new HashSet<UnitOfWork>();

@@ -5,7 +5,7 @@ public class LingeringPestilence_Tests {
 
 	[Trait("SpecialRule", "LingeringPestilence" )]
 	[Fact]
-	public void Powers_DoNotGenerateDisease() {
+	public async Task Powers_DoNotGenerateDisease() {
 
 		Spirit self = new VengeanceAsABurningPlague();
 		Board boardA = Board.BuildBoardA();
@@ -16,7 +16,7 @@ public class LingeringPestilence_Tests {
 		self.Presence.Adjust( space, 2 );
 
 		// When: a spirit power destroys presence
-		using UnitOfWork actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
+		await using UnitOfWork actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
 		Task t = GrowthThroughSacrifice.ActAsync( self.BindMyPowers(gameState,actionScope).TargetSpirit(self) );
 		self.NextDecision().HasPrompt( "Select presence to destroy" ).HasOptions("A5").Choose("A5");
 		// (!! this is kind of a crappy sequence for Growth-thru-sacrifice.  Can we clean up the wording / choice order?)
