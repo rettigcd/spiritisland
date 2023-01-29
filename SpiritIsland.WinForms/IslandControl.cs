@@ -45,14 +45,14 @@ public partial class IslandControl : Control {
 
 		_spiritLayout = null;
 		_cardData.Layout = null;
-		_cardData.SpiritCardInfo = new SpiritCardInfo(gameState.Spirits[0]); // !!! 1 spirit only
+		_cardData.SpiritCardInfo = new SpiritCardInfo( gameState.Spirits[0] ); // !!! 1 spirit only
 
-		optionProvider.NewDecision += OptionProvider_OptionsChanged;
+		optionProvider.NewDecision += OptionProvider_OptionsChanged; // !!! this handler is getting added multiple times
 
 		ClearCachedBackgroundImage();
 
 		_gameState = gameState;
-		_spirit    = gameState.Spirits.Single();
+		_spirit = gameState.Spirits.Single();
 		_adversary = adversary;
 
 		// Init new Presence, Defend, Isolate
@@ -65,6 +65,14 @@ public partial class IslandControl : Control {
 		// !! we could cache these if we could serialize the Adjustment into a caching-key
 
 		// Init Button Container
+		InitButtonContainer();
+
+		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
+
+		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new FeatherAndFlame.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
+	}
+
+	void InitButtonContainer() {
 		_buttonContainer.Clear();
 		foreach(InnatePower power in _spirit.InnatePowers) {
 			_buttonContainer.Add( power, new InnateButton() );
@@ -77,12 +85,6 @@ public partial class IslandControl : Control {
 			_buttonContainer.Add( cardSlot, new PresenceSlotButton( _spirit.Presence.CardPlays, cardSlot, _presenceImg ) );
 		foreach(var action in _spirit.GrowthTrack.Options.SelectMany( optionGroup => optionGroup.GrowthActions ))
 			_buttonContainer.Add( action, new GrowthButton() );
-
-
-
-		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
-
-		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new FeatherAndFlame.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
 	}
 
 	#endregion constructor / Init
@@ -226,6 +228,12 @@ public partial class IslandControl : Control {
 				_ => null,
 			};
 			Invalidate();
+		}
+		if(obj is LayoutChanged) {
+			InitButtonContainer(); // rescan to Starlight
+			_layout = new RegionLayoutClass( ClientRectangle );
+			ClearCachedBackgroundImage();
+			this.Invalidate();
 		}
 	}
 	Image _phaseImage; // updates on Log Events
@@ -466,7 +474,6 @@ public partial class IslandControl : Control {
 
 		// Draw
 		using Font buildRavageFont = UseGameFont( textHeight ); // 
-//		using Font invaderStageFont = UseInvaderFont( textHeight * 2 );
 		foreach(InvaderCardMetrics cardMetric in cardMetrics)
 			cardMetric.Draw( graphics, buildRavageFont );
 
@@ -503,7 +510,8 @@ public partial class IslandControl : Control {
 
 		_insidePoints[spaceState.Space].Init(spaceState);
 
-		float iconWidth = _boardScreenRect.Width * .040f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+//		float iconWidth = _boardScreenRect.Width * .04f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+		float iconWidth = _boardScreenRect.Width * .05f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 
 		if(_debug)
 			DrawTokenTargets( graphics, spaceState, iconWidth );
@@ -770,7 +778,7 @@ public partial class IslandControl : Control {
 		}
 
 		graphics.FillRectangle( SpiritPanelBackgroundBrush, bounds );
-		_spiritPainter.Paint( graphics, options_GrowthActions );
+		_spiritPainter.Paint( graphics );
 	}
 
 	void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {

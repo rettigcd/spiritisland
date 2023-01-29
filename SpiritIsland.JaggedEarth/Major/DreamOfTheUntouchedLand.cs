@@ -2,7 +2,9 @@
 
 public class DreamOfTheUntouchedLand {
 
-	[MajorCard("Dream of the Untouched Land",6,Element.Moon,Element.Water,Element.Earth,Element.Plant,Element.Animal), Fast, FromSacredSite(1)]
+	const string Name = "Dream of the Untouched Land";
+
+	[MajorCard(Name,6,Element.Moon,Element.Water,Element.Earth,Element.Plant,Element.Animal), Fast, FromSacredSite(1)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// remove up to 3 blight
 		await ctx.RemoveBlight( 3 );
@@ -41,8 +43,8 @@ public class DreamOfTheUntouchedLand {
 			// !!! from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.
 
 			// Notify board changed.
-			foreach(var spirit in ctx.GameState.Spirits)
-				spirit.Gateway.NotifyBoardChanged();
+			ctx.GameState.Log( new LayoutChanged($"{Name} added Board {newBoard.Name}") );
+
 		}
 
 

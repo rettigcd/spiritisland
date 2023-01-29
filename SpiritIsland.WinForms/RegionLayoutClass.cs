@@ -33,7 +33,7 @@ class RegionLayoutClass {
 		(PhaseRect,(AdversaryFlagRect, (InvaderCardRect, (BlightRect, (FearPoolRect, _))))) = _infoRect
 			.InflateBy( -MARGIN )
 			.SplitHorizontallyRelativeToHeight( MARGIN, Align.Far, 1.4f, AdversaryFlagWidths, InvaderCards, BlightWidths, FearWidths );
-		(OptionRect,_) = IslandRect.SplitHorizontallyByWeight(0,.1f,.9f);
+		(OptionRect,_) = IslandRect.InflateBy(-MARGIN).SplitHorizontallyByWeight(0,.1f,.9f);
 		(_,(CardRectPopup,_)) = _mainRect.SplitVerticallyByWeight(0, .5f, .5f);
 
 		PhaseRect = PhaseRect.InflateBy(-20);

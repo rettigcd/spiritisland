@@ -2,6 +2,14 @@
 ====  Clean Up Items  ====
 ==========================
 
+Spirit Dialog Image sizes need scaled with DPI
+"DONE" could be bigger
+When selecting Space,  allow a MUCH bigger area as the hotspot (but don't necessarily draw the circle bigger)
+Collapsed "summary" view of card so easier to see Island/board
+Zoomed view of card so easier to read text.
+
+
+
 5 Cache-A Organize Cache into folders
 5 Cache-B Draw Fear Cards OR Download them on the fly
 5 Buttons - (pop-ups, flags, special rules, Spaces?, SpaceTokens?, Cards?)

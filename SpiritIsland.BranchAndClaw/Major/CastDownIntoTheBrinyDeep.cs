@@ -1,8 +1,11 @@
-﻿namespace SpiritIsland.BranchAndClaw;
+﻿using System.Xml.Linq;
+
+namespace SpiritIsland.BranchAndClaw;
 
 public class CastDownIntoTheBrinyDeep {
+	const string Name = "Cast Down Into the Briny Deep";
 
-	[MajorCard( "Cast Down Into the Briny Deep", 9, Element.Sun, Element.Moon, Element.Water, Element.Earth )]
+	[MajorCard( Name, 9, Element.Sun, Element.Moon, Element.Water, Element.Earth )]
 	[Slow]
 	[FromSacredSite( 1, Target.Coastal )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
@@ -38,6 +41,7 @@ public class CastDownIntoTheBrinyDeep {
 				ctx.GameState.Island.RemoveBoard( board );
 
 		}
+		ctx.GameState.Log( new LayoutChanged( $"{Name} destroyed Board {board.Name}" ) );
 	}
 
 	static async Task DestroyTokens( SelfCtx ctx, SpaceState[] spaces ) {

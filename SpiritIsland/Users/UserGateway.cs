@@ -5,7 +5,6 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	#region IUserPortal
 
 	public event Action<IDecision> NewWaitingDecision;
-	public event Action BoardChanged;
 
 	IDecisionMaker CacheNextDecision( bool block ) {
 		if(userAccessedDecision == null) {
@@ -64,10 +63,6 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	#endregion
 
 	#endregion
-
-	public void NotifyBoardChanged() {
-		BoardChanged?.Invoke();
-	}
 
 	public SpaceToken Preloaded { get; set; }
 

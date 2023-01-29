@@ -50,7 +50,6 @@ public class RavageEntry : ILogEntry {
 	public string Msg( LogLevel _ ) => Ravaged.ToString();
 }
 
-
 public class SpaceExplored : InvaderActionEntry {
 	public SpaceExplored( Space space ):base( space + ":gains explorer" ) { Space = space; }
 	public Space Space { get; }
@@ -88,6 +87,14 @@ public class LogException : ILogEntry {
 
 public class LogDebug : ILogEntry {
 	public LogDebug( string text ) { this.text = text; }
+	readonly string text;
+	public LogLevel Level => LogLevel.Debug;
+
+	public string Msg( LogLevel _ ) => text;
+}
+
+public class LayoutChanged : ILogEntry {
+	public LayoutChanged( string text ) { this.text = text; }
 	readonly string text;
 	public LogLevel Level => LogLevel.Debug;
 

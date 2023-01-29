@@ -47,7 +47,7 @@ namespace SpiritIsland.WinForms {
 
 			foreach(var action in growthOptions.SelectMany( optionGroup=>optionGroup.GrowthActions )) {
 				// HACK - to catch when starlight adds growth options (because we don't have any event to track that)
-				try { _ = buttonContainer[action]; } catch( System.Exception) { buttonContainer.Add(action, new GrowthButton() ); }
+				// try { _ = buttonContainer[action]; } catch( System.Exception) { buttonContainer.Add(action, new GrowthButton() ); }
 
 				((GrowthButton)buttonContainer[action]).Bounds = actionRects[action].ToInts();
 			}

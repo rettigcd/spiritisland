@@ -33,7 +33,7 @@ namespace SpiritIsland.WinForms {
 				.ToArray();
 		}
 
-		public void Paint( Graphics graphics, GrowthActionFactory[] selectableGrowthActions ) {
+		public void Paint( Graphics graphics ) {
 			using var imageDrawer = new CachedImageDrawer();
 
 			DrawSpiritImage( graphics );

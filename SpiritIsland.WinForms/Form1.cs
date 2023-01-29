@@ -74,7 +74,7 @@ public partial class Form1 : Form, IHaveOptions {
 			IOption option = decision.Options[i];
 			var textSize = calc.CalcSize( option.Text );
 
-			var btn = BuildOptionButton( option, new Size( (int)textSize.Width + 10, (int)textSize.Height + 10 ) );
+			var btn = BuildOptionButton( option, new Size( (int)(textSize.Width + textSize.Height*2), (int)textSize.Height + 10 ) );
 			_optionButtons.Add( btn );
 		}
 
@@ -170,7 +170,6 @@ public partial class Form1 : Form, IHaveOptions {
 		game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
 
 		game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
-		game.Spirit.Gateway.BoardChanged += ()=>this.islandControl.RefreshLayout();
 
 		gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 		gameState.NewLogEntry += islandControl.GameState_NewLogEntry;
