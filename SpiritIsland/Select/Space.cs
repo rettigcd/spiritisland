@@ -1,43 +1,61 @@
 ﻿namespace SpiritIsland.Select;
 
-using SiSpace = SpiritIsland.Space;
+public class Space : TypedDecision<SpiritIsland.Space>, IHaveArrows {
 
-public class Space : TypedDecision<SiSpace>, IHaveAdjacentInfo, IHaveTokenInfo {
+	#region Moving (existing) SpaceTokens
 
-	#region Adjacent
+	static public Space PushPresence( SpiritIsland.Space source, IEnumerable<SpaceState> destinationOptions, Present present, IVisibleToken presenceToken )
+		=> Space.ForMoving_SpaceToken("Push Presence to", source, destinationOptions, present, presenceToken );
 
-	static public Space PushPresence(SiSpace source, IEnumerable<SpaceState> destinationOptions, Present present, Token presenceToken )
-		=> Space.ForAdjacent("Push Presence to", source, AdjacentDirection.Outgoing, destinationOptions, present, presenceToken );
+	static public Space MoveToken( SpiritIsland.Space source, IEnumerable<SpaceState> destinationOptions, Present present, IVisibleToken token )
+		=> Space.ForMoving_SpaceToken( "Move token(s) to", source, destinationOptions, present, token );
 
-	public static Space ToPlacePresence( IEnumerable<SpiritIsland.Space> destinationOptions, Present present, Token presenceToken )
-		=> new Space( "Where would you like to place your presence?", destinationOptions, present ) { Token = presenceToken };
+	static public Space PushToken( IVisibleToken token, SpiritIsland.Space source, IEnumerable<SpaceState> destinationOptions, Present present )
+		=> Space.ForMoving_SpaceToken( "Push " + token.ToString() + " to", source, destinationOptions, present, token );
 
-	static public Space MoveToken( SiSpace source, IEnumerable<SpaceState> destinationOptions, Present present, Token token )
-		=> Space.ForAdjacent( "Move token(s) to", source, AdjacentDirection.Outgoing, destinationOptions, present, token );
+	static public Space ForMoving_SpaceToken( string prompt, SpiritIsland.Space source, IEnumerable<SpaceState> spaces, Present present, IVisibleToken tokenToAddToTarget ) {
+		return new Space( prompt, spaces, present, tokenToAddToTarget ) { Source = source };
+	}
 
-	static public Space PushToken( Token token, SiSpace source, IEnumerable<SpaceState> destinationOptions, Present present )
-		=> Space.ForAdjacent( "Push " + token.ToString() + " to", source, AdjacentDirection.Outgoing, destinationOptions, present, token );
+	#endregion Moving (existing) SpaceTokens
 
-	static public Space ForAdjacent( string prompt, SiSpace source, AdjacentDirection gatherPush, IEnumerable<SpaceState> spaces, Present present, Token tokenToAddToTarget ) {
-		return new Space( prompt, spaces.OrderBy( x => x.Space.Label ), present ) {
-			AdjacentInfo = new AdjacentInfo {
-				Central = source,
-				Direction = gatherPush,
-				Adjacent = spaces.Select(x=>x.Space).ToArray(),
-			},
-			Token = tokenToAddToTarget,
-		};
+	#region Placing (new) Token
+
+	static public Space ToPlacePresence( IEnumerable<SpiritIsland.SpaceState> options, Present present, IVisibleToken tokenToAdd )
+		=> new Space( "Where would you like to place your presence?", options, present, tokenToAdd );
+
+	static public Space ToPlaceToken( string prompt, IEnumerable<SpaceState> options, Present present, IVisibleToken tokenToAdd )
+		=> new Space( prompt, options, present, tokenToAdd );
+
+	#endregion Placing (new )Tokens
+
+	#region constructors
+
+	public Space( string prompt, IEnumerable<SpiritIsland.Space> spaces, Present present )
+		: base( prompt, spaces.OrderBy( x => x.Label ), present ) 
+	{
+		Spaces = spaces.OrderBy( x => x.Label ).ToArray();
+	}
+
+	public Space( string prompt, IEnumerable<SpaceState> spaces, Present present )
+		: base( prompt, spaces.Select(x=>x.Space).OrderBy( x => x.Label ), present ) 
+	{
+		Spaces = spaces.Select( x => x.Space ).OrderBy( x => x.Label ).ToArray();
+	}
+
+	/// <summary>
+	/// Selects a space that will receive a token
+	/// </summary>
+	public Space( string prompt, IEnumerable<SpaceState> spaces, Present present, IVisibleToken tokenToReceive )
+		: base( prompt, spaces.Select( x => x.Space ).OrderBy( x => x.Label ), present ) 
+	{
+		Token = tokenToReceive;
+		Spaces = spaces.Select( x => x.Space ).OrderBy( x => x.Label ).ToArray();
 	}
 
 	#endregion
 
-	public Space( string prompt, IEnumerable<SiSpace> spaces, Present present )
-		: base( prompt, spaces.OrderBy( x => x.Label ), present ) {
-	}
-
-	public Space( string prompt, IEnumerable<SpaceState> spaces, Present present )
-		: base( prompt, spaces.Select(x=>x.Space).OrderBy( x => x.Label ), present ) {
-	}
+	public SpiritIsland.Space[] Spaces {  get; }
 
 	/// <summary> Token to be added to selected space </summary>
 	/// <remarks> 
@@ -45,7 +63,14 @@ public class Space : TypedDecision<SiSpace>, IHaveAdjacentInfo, IHaveTokenInfo {
 	///		pushing/moving/placing: presence, 
 	///		pushing/moving: tokens 
 	///	</remarks>
-	public Token Token { get; set; }
-	public AdjacentInfo AdjacentInfo { get; private set; } // Outgoing (pushing/moving)
+	public IVisibleToken Token { get; }
+
+	// Only Set when we want to draw outgoing arrows
+	// !!! return Arrow enumerator, then make this private
+	public SpiritIsland.Space Source { get; set; } 
+
+	public IEnumerable<Arrow> Arrows => Source == null || Token == null 
+		? Array.Empty<Arrow>()
+		: Spaces.Select(dstSpace => new Arrow {	Token = Token, From = Source, To = dstSpace } );
 
 }

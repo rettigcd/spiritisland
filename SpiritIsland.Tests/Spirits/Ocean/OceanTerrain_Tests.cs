@@ -95,7 +95,9 @@ public class OceanTerrain_Tests {
 			Choose("A0");
 
 			// bring Thunderspeaker along
-			NextDecision.HasPrompt( "Move presence with Dahan?" ).HasOptions( "A2,Done" ).Choose("A2");
+			NextDecision.HasPrompt( "Move presence with Dahan?" )
+				.HasOptions( "SpiritIsland.SpiritPresenceToken on A2,Done" )
+				.Choose( "SpiritIsland.SpiritPresenceToken on A2" );
 			
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
@@ -312,7 +314,7 @@ public class OceanTerrain_Tests {
 				.Choose( "A1" );
 		}
 		// Thunderspeaker goes along
-		Choose( "A2" );
+		Choose( "SpiritIsland.SpiritPresenceToken on A2" );
 
 		// When: Pushes 2nd dahan into Ocean
 		IsActive( task ); Choose( "D@2" );
@@ -325,7 +327,7 @@ public class OceanTerrain_Tests {
 				.Choose("A1");
 
 			// End of Action - Thunder speaker exits ocean
-			Choose( "A0" );
+			Choose( "SpiritIsland.SpiritPresenceToken on A0" );
 		}
 	}
 

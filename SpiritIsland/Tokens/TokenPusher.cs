@@ -53,7 +53,7 @@ public class TokenPusher {
 		return pushedToSpaces.ToArray();
 	}
 
-	public async Task<Space> PushToken( Token token ) {
+	public async Task<Space> PushToken( IVisibleToken token ) {
 		Space destination = await SelectDestination( token );
 		if(destination == null) return null;
 
@@ -75,7 +75,7 @@ public class TokenPusher {
 	}
 	Func<Token,Space,Space,Task> _customAction;
 
-	protected virtual async Task<Space> SelectDestination( Token token ) {
+	protected virtual async Task<Space> SelectDestination( IVisibleToken token ) {
 		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent
 			.Where( ctx.TerrainMapper.IsInPlay );
 		foreach(var filter in destinationFilters)

@@ -30,7 +30,12 @@ class ManyMindsPresence : SpiritPresence {
 
 		var srcBeasts = args.RemovedFrom.Beasts;
 		if(srcBeasts.Count > 0 // force moved our virtual beast
-			&& await Self.Gateway.Decision( Select.DeployedPresence.Gather( "Move 2 presence with Beast?", args.AddedTo.Space, new []{ args.RemovedFrom } ) ) == null
+			&& await Self.Gateway.Decision( Select.DeployedPresence.Gather( 
+				"Move 2 presence with Beast?", 
+				args.AddedTo.Space, 
+				new []{ args.RemovedFrom },
+				Token
+			) ) == null
 		) return; // not moving presence
 
 		await Move2Presence( args.AddedTo.AccessGameState(), args );

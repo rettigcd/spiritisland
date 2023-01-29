@@ -1,7 +1,6 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.JaggedEarth;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace SpiritIsland.WinForms {
@@ -18,7 +17,7 @@ namespace SpiritIsland.WinForms {
 			this.layout = layout;
 		}
 
-		public void Paint( Graphics graphics, IList<GrowthActionFactory> clickableGrowthActions ) {
+		public void Paint( Graphics graphics ) {
 			this.graphics = graphics;
 
 			using var optionPen = new Pen( Color.Blue, 6f );
@@ -49,16 +48,6 @@ namespace SpiritIsland.WinForms {
 			}
 			graphics.DrawImage( cachedImageLayer, layout.Bounds );
 
-
-			DrawHotspots( graphics, clickableGrowthActions, highlightPen );
-
-		}
-
-		void DrawHotspots( Graphics graphics, IList<GrowthActionFactory> clickableGrowthActions, Pen highlightPen ) {
-
-			foreach(var (action, rect) in layout.EachAction())
-				if(clickableGrowthActions.Contains( action ))
-					graphics.DrawRectangle( highlightPen, rect.ToInts() );
 		}
 
 		void DrawAction( GrowthActionFactory action, RectangleF rect ) {

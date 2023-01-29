@@ -70,7 +70,7 @@ class MistsShiftAndFlow {
 			.Where( a => a.AddedTo.Space == gatherDst )
 			.Select( a => a.RemovedFrom )
 			.ToArray();
-		var gatherSource = await _spirit.Gateway.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions ) );
+		var gatherSource = (await _spirit.Gateway.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions, _spirit.Presence.Token  )))?.Space;
 		if(gatherSource == null) return;
 
 		await _ctx.Presence.Move( gatherSource, gatherDst );

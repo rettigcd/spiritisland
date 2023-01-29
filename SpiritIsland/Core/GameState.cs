@@ -169,10 +169,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		// Cascade blight
 		if(effect.Cascade) {
-			Space cascadeTo = await Spirits[0].Gateway.Decision( Select.Space.ForAdjacent(
+			Space cascadeTo = await Spirits[0].Gateway.Decision( Select.Space.ForMoving_SpaceToken(
 				$"Cascade blight from {args.AddedTo.Space.Label} to",
 				args.AddedTo.Space,
-				Select.AdjacentDirection.Outgoing,
 				CascadingBlightOptions(args.AddedTo),
 				Present.Always,
 				TokenType.Blight

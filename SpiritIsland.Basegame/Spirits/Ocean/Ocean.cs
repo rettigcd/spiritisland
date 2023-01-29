@@ -84,7 +84,7 @@ public class Ocean : Spirit {
 				.Distinct()
 				.ToArray();;
 			// And Ocean chooses to save it
-			var destination = await this.Gateway.Decision(Select.Space.PushToken(args.Token,args.AddedTo.Space,moveOptions, Present.Done));
+			var destination = await this.Gateway.Decision(Select.Space.PushToken((IVisibleToken)args.Token,args.AddedTo.Space,moveOptions, Present.Done));
 			if( destination != null ) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				args.ActionScope.AtEndOfThisAction(async _ => {

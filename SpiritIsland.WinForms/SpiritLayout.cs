@@ -14,7 +14,7 @@ public class SpiritLayout {
 			480f, // Innates
 			60f   // elements
 		);
-		Calc_GrowthRow(spirit,rects[0],margin);
+		Calc_GrowthRow(spirit,rects[0],margin,buttonContainer);
 		trackLayout = new PresenceTrackLayout(rects[1],spirit,margin, buttonContainer);
 		int height = Calc_Innates( spirit, rects[2], margin, buttonContainer );
 		// If Innates are too tall, shrink them down.
@@ -34,11 +34,11 @@ public class SpiritLayout {
 
 	public IEnumerable<InnateLayout> InnateLayouts => findLayoutByPower.Values;
 
-	void Calc_GrowthRow( Spirit spirit, Rectangle bounds, int margin ) {
+	void Calc_GrowthRow( Spirit spirit, Rectangle bounds, int margin, VisibleButtonContainer buttonContainer ) {
 		// Calc: Layout (image & growth)
 		imgBounds = new Rectangle( bounds.X, bounds.Y, bounds.Height * 3 / 2, bounds.Height );
 		var growthBounds = new Rectangle( bounds.X + imgBounds.Width + margin, bounds.Y, bounds.Width - imgBounds.Width - margin, bounds.Height );
-		growthLayout = new GrowthLayout(spirit.GrowthTrack.Options, growthBounds);
+		growthLayout = new GrowthLayout(spirit.GrowthTrack.Options, growthBounds, buttonContainer );
 	}
 
 	int Calc_Innates( Spirit spirit, Rectangle bounds, int margin, VisibleButtonContainer buttonContainer ) {

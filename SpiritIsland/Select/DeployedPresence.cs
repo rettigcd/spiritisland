@@ -1,65 +1,38 @@
-﻿namespace SpiritIsland.Select;
+﻿
+namespace SpiritIsland.Select;
 
-// !!! Replace with Select-Space-For-Known-Token
-// DeployedPresence - a special case of:
-//	Select-Space-For-Known-Token
-//		- which allows the user to only need to specify the space, not the token
-// UI handles finding the presence token.
+public static class DeployedPresence {
 
-
-
-// Selects Deployed Presence on a space
-// When we have multiple spirits, need to add which spirit this is.
-public class DeployedPresence : TypedDecision<SpiritIsland.Space>, IHaveAdjacentInfo {
-
-	public static DeployedPresence ToPush( ReadOnlyBoundPresence presence, Present present=Present.Done ) 
+	public static Space ToPush( ReadOnlyBoundPresence presence, Present present=Present.Done ) 
 		=> All("Select Presence to push.", presence, present);
 
-	static public DeployedPresence ToDestroy(string prompt, ReadOnlyBoundPresence presence )
+	static public Space ToDestroy(string prompt, ReadOnlyBoundPresence presence )
 		=> All(prompt, presence, Present.Always);
 
-	static public DeployedPresence ToDestroy(string prompt, ReadOnlyBoundPresence presence, Func<SpiritIsland.SpaceState,bool> filter)
+	static public Space ToDestroy(string prompt, ReadOnlyBoundPresence presence, Func<SpiritIsland.SpaceState,bool> filter)
 		=> Some(prompt, presence, filter, Present.Always);
 
-	static public DeployedPresence ToDestroy(string prompt, IEnumerable<SpiritIsland.SpaceState> spaces, Present present ) 
-		=> new DeployedPresence( prompt, spaces, present );
+	static public Space ToDestroy(string prompt, IVisibleToken presenceToken, IEnumerable<SpiritIsland.SpaceState> spaces ) 
+		=> new Space( prompt, spaces, Present.Always, presenceToken );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
-	static public DeployedPresence All(string prompt, ReadOnlyBoundPresence presence, Present present )
-		=> new DeployedPresence( prompt, presence.SpaceStates, present);
+	static public Space All(string prompt, ReadOnlyBoundPresence presence, Present present )
+		=> new Space( prompt, presence.SpaceStates, present, presence.Token );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
-	static public DeployedPresence Movable( string prompt, ReadOnlyBoundPresence presence, Present present )
-		=> new DeployedPresence( prompt, presence.MovableSpaceStates, present );
+	static public Space Movable( string prompt, ReadOnlyBoundPresence presence, Present present )
+		=> new Space( prompt, presence.MovableSpaceStates, present, presence.Token );
 
-	static public DeployedPresence Some(string prompt, ReadOnlyBoundPresence presence, Func<SpiritIsland.SpaceState,bool> filter, Present present )
-		=> new DeployedPresence( prompt, presence.SpaceStates.Where(filter), present);
+	static public Space Some(string prompt, ReadOnlyBoundPresence presence, Func<SpiritIsland.SpaceState,bool> filter, Present present )
+		=> new Space( prompt, presence.SpaceStates.Where(filter), present, presence.Token );
 
 	/// <summary> Targets Sacred Sites </summary>
-	static public DeployedPresence SacredSites(string prompt, ReadOnlyBoundPresence presence, Present present )
-		=> new DeployedPresence( prompt, presence.SacredSites, present);
+	static public Space SacredSites(string prompt, ReadOnlyBoundPresence presence, Present present )
+		=> new Space( prompt, presence.SacredSites, present, presence.Token );
 
-	static public DeployedPresence Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from ) 
-		=> new DeployedPresence(prompt, from, Present.Done ) {
-			AdjacentInfo = new AdjacentInfo {
-				Central = to,
-				Adjacent = from.Select(x=>x.Space).ToArray(),
-				Direction = AdjacentDirection.Incoming
-			}
-		};
-
-	#region constructor
-
-	/// <summary> Target SPECIFIC spaces containing deployed presence </summary>
-	public DeployedPresence( string prompt, IEnumerable<SpiritIsland.SpaceState> onSpaces, Present present )
-		:base( prompt, onSpaces.Select(x=>x.Space), present )
-	{}
-
-	#endregion
-
-	/// <summary> Set when Gathering Presence </summary>
-	public AdjacentInfo AdjacentInfo { get; private set; } // Incoming - Gathering Presence
+	static public TokenFromManySpaces Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from, Token presenceToken ) 
+		=> TokenFromManySpaces.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IVisibleToken)presenceToken)), Present.Done, to );
 
 }

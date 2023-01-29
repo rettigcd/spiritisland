@@ -22,7 +22,11 @@ public class MovePresenceWithTokens {
 
 		// Using 'Gather' here so user can click on existing Presence in Source
 		// If we used 'Push', user would click on Destination instead of Source
-		var source = await _spirit.Gateway.Decision( Select.DeployedPresence.Gather("Move presence with "+ args.TokenRemoved.Class.Label+"?", args.AddedTo.Space, new SpaceState[]{ args.RemovedFrom } ) );
+		var source = await _spirit.Gateway.Decision( Select.DeployedPresence.Gather(
+			"Move presence with "+ args.TokenRemoved.Class.Label+"?", 
+			args.AddedTo.Space, 
+			new SpaceState[]{ args.RemovedFrom }, _spirit.Presence.Token 
+		) );
 		if( source != null )
 			// !! This is interesting... This might be a DIFFERENT spirit that is moving the dahan,
 			// but WE are calling Bind-MY-Power

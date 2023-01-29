@@ -6,7 +6,8 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 
 	public string Prompt { get; }
 
-	public IOption[] Options { get; }
+	IOption[] IDecision.Options => _allOptions;
+	readonly IOption[] _allOptions;
 
 	public TypedDecision(
 		string prompt,
@@ -19,7 +20,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 			optionList.Add(TextOption.Done);
 
 		Prompt = prompt;
-		Options = optionList.ToArray();
+		_allOptions = optionList.ToArray();
 		AllowAutoSelect = present == Present.AutoSelectSingle;
 
 	}
@@ -35,7 +36,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 			optionList.Add(new TextOption(cancelPrompt));
 
 		Prompt = prompt;
-		Options = optionList.ToArray();
+		_allOptions = optionList.ToArray();
 		AllowAutoSelect = false;
 
 	}

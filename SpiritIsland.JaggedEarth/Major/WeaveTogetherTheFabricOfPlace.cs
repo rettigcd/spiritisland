@@ -83,7 +83,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			int count = spirit.Presence.CountOn( srcTokens ); // ! don't check 'can-move', ALWAyS need to adjust/move/cleanup this presence.
 
 			while(count > 0) {
-				var dst = await spirit.Gateway.Decision( Select.Space.ForAdjacent( "Distribute preseence to:", space, Select.AdjacentDirection.Outgoing, dstOptions, Present.Done, spirit.Presence.Token ) );
+				var dst = await spirit.Gateway.Decision( Select.Space.ForMoving_SpaceToken( "Distribute preseence to:", space, dstOptions, Present.Done, spirit.Presence.Token ) );
 				if(dst == null) break;
 
 				// Move - force it, even for presence that can't be moved.

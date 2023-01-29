@@ -7,7 +7,7 @@ public class TokenPusher_FixedDestination : TokenPusher {
 		this.destination = destination;
 	}
 
-	protected override Task<Space> SelectDestination( Token token ) {
+	protected override Task<Space> SelectDestination( IVisibleToken token ) {
 		return Task.FromResult(destination);
 	}
 

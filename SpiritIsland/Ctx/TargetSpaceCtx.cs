@@ -350,21 +350,15 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion
 
 	/// <param name="tokenToAdd">IF we are adding a token, supply it so UI can better pick target sapce</param>
-	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Token tokenToAdd = null, Func<TargetSpaceCtx, bool> filter = null ) {
+	/// <remarks>
+	/// Use 1 - Simply selecting adjacent land
+	/// Use 2 - Select land to place token in.
+	/// </remarks>
+	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {
 		var options = Tokens.Adjacent;
 		if(filter != null)
 			options = options.Where( s => filter( Target( s.Space ) ) );
-		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always, tokenToAdd ) ); // !! could let caller pass in direction if appropriate
-		return space != null ? Target( space )
-			: null;
-	}
-
-	public async Task<TargetSpaceCtx> SelectAdjacentLandOrSelf( string prompt, System.Func<TargetSpaceCtx, bool> filter = null ) {
-		List<SpaceState> options = Tokens.Adjacent.ToList();
-		options.Add(Tokens);
-		if(filter != null)
-			options = options.Where( s => filter( Target( s.Space ) ) ).ToList();
-		var space = await Decision( Select.Space.ForAdjacent( prompt, Space, Select.AdjacentDirection.None, options, Present.Always, null ) );
+		var space = await Decision( new Select.Space( prompt, options, Present.Always ) );
 		return space != null ? Target( space )
 			: null;
 	}

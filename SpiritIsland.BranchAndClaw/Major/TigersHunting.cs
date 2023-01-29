@@ -26,7 +26,7 @@ public class TigersHunting {
 		if(await ctx.YouHave("2 sun,2 moon,3 animal")) {
 			//   1 damage in adjacent land without blight,
 			//   and +1 damage per beast there
-			var noBlight = await ctx.SelectAdjacentLand( "1 Damage in land w/o blight", TokenType.Blight, ctx=>!ctx.HasBlight);
+			var noBlight = await ctx.SelectAdjacentLand( "1 Damage in land w/o blight", ctx=>!ctx.HasBlight);
 			if(noBlight != null)
 				await noBlight.DamageInvaders(1 + noBlight.Beasts.Count );
 		}

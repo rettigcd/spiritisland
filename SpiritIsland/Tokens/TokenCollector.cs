@@ -33,7 +33,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		while(0 < (options = GetSpaceTokenOptions()).Length) {
 			// !! maybe make the next line virtual instead of the GroupsToGather
 			string prompt = actionPromptPrefix + RemainingQuota.Select( x => x.ToString() ).Join( ", " );
-			var source = await _destinationCtx.Decision( Select.TokenFromManySpaces.ToCollect( prompt, _destinationCtx.Space, options, present ) );
+			var source = await _destinationCtx.Decision( Select.TokenFromManySpaces.ToCollect( prompt, options, present, _destinationCtx.Space ) );
 			if(source == null) break;
 			await _destinationCtx.Move( source.Token, source.Space, _destinationCtx.Space );
 			MarkAsCollected( source );

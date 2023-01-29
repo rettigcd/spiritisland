@@ -75,6 +75,10 @@ public partial class IslandControl : Control {
 			_buttonContainer.Add( energySlot, new PresenceSlotButton( _spirit.Presence.Energy, energySlot, _presenceImg ) );
 		foreach(Track cardSlot in _spirit.Presence.CardPlays.Slots)
 			_buttonContainer.Add( cardSlot, new PresenceSlotButton( _spirit.Presence.CardPlays, cardSlot, _presenceImg ) );
+		foreach(var action in _spirit.GrowthTrack.Options.SelectMany( optionGroup => optionGroup.GrowthActions ))
+			_buttonContainer.Add( action, new GrowthButton() );
+
+
 
 		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
 
@@ -155,9 +159,8 @@ public partial class IslandControl : Control {
 	protected override void OnPaint( PaintEventArgs pe ) {
 		base.OnPaint( pe );
 
-		optionRects.Clear();
 		_tokenLocations.Clear();
-		hotSpots.Clear(); // Clear this at beginning so any of the DrawX methods can add to it
+		_hotSpots.Clear(); // Clear this at beginning so any of the DrawX methods can add to it
 
 		if(_gameState is null) return;
 
@@ -186,6 +189,8 @@ public partial class IslandControl : Control {
 				DrawHotSpots_Space( pe.Graphics, hotSpotPen );
 			}
 
+			DrawArrows( pe.Graphics );
+
 			DrawSpirit( pe.Graphics, RegionLayout.SpiritRect );
 
 			DrawPowerCards( pe.Graphics );
@@ -206,9 +211,9 @@ public partial class IslandControl : Control {
 		// non drawing - record Hot spots
 		RecordSpiritHotspots();
 		if(options_FearPopUp is not null) 
-			hotSpots.Add(options_FearPopUp, RegionLayout.PopupFearRect );
+			_hotSpots.Add(options_FearPopUp, RegionLayout.PopupFearRect );
 		else if(options_BlightPopUp is not null)
-			hotSpots.Add( options_BlightPopUp, RegionLayout.PopupFearRect );
+			_hotSpots.Add( options_BlightPopUp, RegionLayout.PopupFearRect );
 	}
 
 	public void GameState_NewLogEntry( ILogEntry obj ) {
@@ -621,7 +626,7 @@ public partial class IslandControl : Control {
 	void DrawElementsPopUp(Graphics graphics ) {
 		if(decision_Element is null) return;
 
-		var elementOptions = decision_Element.Options.OfType<ItemOption<Element>>().ToArray();
+		var elementOptions = decision_Element.ElementOptions;
 		int count = elementOptions.Length;
 
 		RectangleF bounds = RegionLayout.ElementPopUpBounds( count );
@@ -644,11 +649,11 @@ public partial class IslandControl : Control {
 		float contentSize = bounds.Height - actualMargin * 2;
 		float x = bounds.X + actualMargin;
 		float y = bounds.Y + actualMargin;
-		foreach(var opt in elementOptions) {
-			using var img = ResourceImages.Singleton.GetImage( opt.Item.GetTokenImg() );
+		foreach(var elementOption in elementOptions) {
+			using var img = ResourceImages.Singleton.GetImage( elementOption.Item.GetTokenImg() );
 			var rect = new RectangleF( x, y, contentSize, contentSize );
 			graphics.DrawImage( img, rect );
-			hotSpots.Add( opt, rect );
+			_hotSpots.Add( elementOption, rect );
 
 			x += (contentSize + actualMargin);
 		}
@@ -668,8 +673,8 @@ public partial class IslandControl : Control {
 
 		// Hotspots
 		// !! we are assuming minor is first...
-		hotSpots.Add( decision_DeckToDrawFrom.Options[0], minorRect );
-		hotSpots.Add( decision_DeckToDrawFrom.Options[1], majorRect );
+		_hotSpots.Add( decision_DeckToDrawFrom.PowerTypes[0], minorRect );
+		_hotSpots.Add( decision_DeckToDrawFrom.PowerTypes[1], majorRect );
 
 		graphics.FillRectangle( PopupBackgroundBrush, bounds );
 		using var minorImage = Image.FromFile( ".\\images\\minor.png" );
@@ -694,91 +699,59 @@ public partial class IslandControl : Control {
 	#region Draw HotSpots - spaces / space tokens
 
 	void DrawHotSpots_SpaceToken( Graphics graphics, Pen pen ) {
-
-		// adjacent
-		if(decision_AdjacentInfo != null)
-			DrawAdjacentArrows( graphics );
+		if(_decision is not Select.TokenFromManySpaces spaceTokenDecision) return;
 
 		// Draw SpaceToken option hotspots & record option location
-		if(decision_SpaceToken != null)
-			foreach(SpaceToken spaceToken in decision_SpaceToken.Options.OfType<SpaceToken>())
-				DrawSpaceTokenHotspot( graphics, pen, spaceToken, spaceToken );
+		foreach(SpaceToken spaceToken in spaceTokenDecision.SpaceTokens)
+			DrawSpaceTokenHotspot( graphics, pen, spaceToken, spaceToken );
+	}
 
-		if(decision_DeployedPresence != null) {
-			options_Space = null; // disable circle drawing
-			foreach(Space space in decision_DeployedPresence.Options.OfType<Space>())
-				DrawSpaceTokenHotspot( graphics, pen, space, new SpaceToken( space, _spirit.Presence.Token ) );
-		}
-
+	void DrawArrows( Graphics graphics ) {
+		if(_decision is not IHaveArrows quiver) return;
+		using Pen pushArrowPen = UsingArrowPen;
+		foreach(Arrow arrow in quiver.Arrows)
+			graphics.DrawArrow( pushArrowPen, GetPortPoint( arrow.From, arrow.Token ), GetPortPoint( arrow.To, arrow.Token ) );
 	}
 
 	void DrawHotSpots_Space( Graphics graphics, Pen pen ) {
-		if(options_Space != null)
-			foreach(Space space in options_Space) {
-				PointF center = GetPortPoint( space ); // _mapper.Map( space.Layout.Center );
-				graphics.DrawEllipse( pen, center.X - hotspotRadius, center.Y - hotspotRadius, hotspotRadius * 2, hotspotRadius * 2 );
-			}
+		if(_decision is not Select.Space selectSpace) return;
+		foreach(Space space in selectSpace.Spaces) {
+			Point center = GetPortPoint( space, selectSpace.Token ); // _mapper.Map( space.Layout.Center );
+			graphics.DrawEllipse( pen, center.X - hotspotRadius, center.Y - hotspotRadius, hotspotRadius * 2, hotspotRadius * 2 );
+		}
 	}
 
-	void DrawSpaceTokenHotspot(
+	void DrawSpaceTokenHotspot(	// SpaceTokens and DeployedPresence
 		Graphics graphics,
 		Pen pen,
 		IOption option,  // the actual option to record
 		SpaceToken st   // the effective SpaceToken (location) of the option
 	) {
-		if( !_tokenLocations.ContainsKey( st ) ) 
-			return; // does this ever happen?
 
-		var rect = _tokenLocations[st];
+		Rectangle rect;
+		if( _tokenLocations.ContainsKey( st ) )
+			// Real
+			rect = _tokenLocations[st];
+		else {
+			// Virtual
+			var p = _mapper.Map( _insidePoints[st.Space].GetPointFor( st.Token ) ).ToInts();
+			rect = new Rectangle( p.X-hotspotRadius, p.Y-hotspotRadius, hotspotRadius*2, hotspotRadius*2 ); // !!! use token size, whatever that is.
+		}
+
 		rect.Inflate( 2, 2 );
-		optionRects.Add( (rect, option) );
+		_hotSpots.Add( option, rect );
 		graphics.DrawRectangle( pen, rect );
 
-		if(decision_AdjacentInfo != null) {
-			if( decision_AdjacentInfo.Direction == SpiritIsland.Select.AdjacentDirection.Incoming ) {
-				var from = new PointF( rect.X + rect.Width / 2, rect.Y + rect.Height / 2 );
-				var to = _mapper.Map(
-					_insidePoints[decision_AdjacentInfo.Central].GetPointFor( st.Token )
-                );
-				using var arrowPen = UsingArrowPen;
-				graphics.DrawArrow( arrowPen, from, to );
-			}
-		}
-
 	}
 
-	PointF GetPortPoint( Space space ) {
-		PointF worldCoord = decision_Token is IVisibleToken vt
-			? _insidePoints[space].GetPointFor( vt )
+	Point GetPortPoint( Space space, IVisibleToken visibileTokens ) {
+		PointF worldCoord = visibileTokens != null
+			? _insidePoints[space].GetPointFor( visibileTokens )
 			: space.Layout.Center; // normal space 
-		return _mapper.Map( worldCoord );
+		return _mapper.Map( worldCoord ).ToInts();
 	}
 
-	void DrawAdjacentArrows( Graphics graphics ) {
 
-		var center = GetPortPoint( decision_AdjacentInfo.Central );
-
-		// !!! When gathering, Adjacent doesn't have Token info, only space info
-		// So, for gathering, don't supply 
-		var others = decision_AdjacentInfo.Adjacent
-			.Select( x => GetPortPoint( x ) )
-			.ToArray();
-
-		using Pen p = UsingArrowPen;
-		switch(decision_AdjacentInfo.Direction) {
-
-			case SpiritIsland.Select.AdjacentDirection.Incoming:
-				if(decision_DeployedPresence == null) // stop extra arrow for thunderspeaker moving with dahan
-					foreach(var other in others)
-						graphics.DrawArrow( p, other, center );
-				break;
-
-			case SpiritIsland.Select.AdjacentDirection.Outgoing:
-				foreach(var other in others)
-					graphics.DrawArrow( p, center, other );
-				break;
-		}
-	}
 	static Pen UsingArrowPen => new Pen( ArrowColor, 7 );
 
 
@@ -839,7 +812,7 @@ public partial class IslandControl : Control {
 		// Growth Options/Actions
 		foreach(var act in options_GrowthActions)
 			if(_spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
-				hotSpots.Add( act, _spiritLayout.growthLayout[act] );
+				_hotSpots.Add( act, _spiritLayout.growthLayout[act] );
 	}
 
 	Image AccessTokenImage( IVisibleToken imageToken ) {
@@ -913,9 +886,7 @@ public partial class IslandControl : Control {
 	protected override void OnMouseMove( MouseEventArgs e ) {
 		base.OnMouseMove( e );
 
-		if(options_Space==null) return;
-
-		var point = this.PointToClient( Control.MousePosition );
+		Point point = this.PointToClient( Control.MousePosition );
 		bool inCircle = FindOption( point ) != null
 			|| _cardData.GetClickAction( point ) != null;
 
@@ -924,17 +895,17 @@ public partial class IslandControl : Control {
 	}
 
 	IOption FindOption( Point clientCoords ) {
-		return FindInvader( clientCoords )
-			?? FindSpaces( clientCoords )
+		return FindSpaces( clientCoords )
 			?? FindHotSpot( clientCoords )
 			?? _buttonContainer.FindEnabledOption( clientCoords);
 	}
 
 	IOption FindSpaces( Point clientCoords ) {
-		return options_Space?.Select( s => {
-				PointF center = GetPortPoint( s );
-				float dx = clientCoords.X - center.X;
-				float dy = clientCoords.Y - center.Y;
+		return _decision is not Select.Space selectSpace ? null
+			: (IOption)selectSpace.Spaces.Select( s => {
+				Point center = GetPortPoint( s, selectSpace.Token );
+				int dx = clientCoords.X - center.X;
+				int dy = clientCoords.Y - center.Y;
 				return new { Space = s, d2 = dx * dx + dy * dy };
 			} )
 			.Where( x => x.d2 < hotspotRadius * hotspotRadius )
@@ -943,14 +914,7 @@ public partial class IslandControl : Control {
 			.FirstOrDefault();
 	}
 
-	IOption FindInvader( Point clientCoords ) {
-		return optionRects
-			.Where(t=>t.Item1.Contains(clientCoords))
-			.Select(t=>t.Item2)
-			.FirstOrDefault();
-	}
-
-	IOption FindHotSpot( Point clientCoords ) => hotSpots.Keys.FirstOrDefault(key=>hotSpots[key].Contains(clientCoords));
+	IOption FindHotSpot( Point clientCoords ) => _hotSpots.Keys.FirstOrDefault(key=>_hotSpots[key].Contains(clientCoords));
 
 	#region User Action Events - Notify main form
 
@@ -964,15 +928,6 @@ public partial class IslandControl : Control {
 
 	void OptionProvider_OptionsChanged( IDecision decision ) {
 		_decision = decision;
-
-		// Keep (for now)
-		options_Space = decision.Options.OfType<Space>().ToArray();
-		decision_SpaceToken = decision as Select.TypedDecision<SpaceToken>; // Identifies option as SpaceToken
-		decision_AdjacentInfo = decision is Select.IHaveAdjacentInfo adjacenInfoProvider ? adjacenInfoProvider.AdjacentInfo : null;
-
-		// !!! Merge into SpaceToken
-		decision_Token = decision is Select.IHaveTokenInfo ti ? ti.Token : null;
-		decision_DeployedPresence = decision as Select.DeployedPresence;                // Identifies option as SpaceToken
 
 		// !!! Buttonize these
 		options_GrowthActions = decision.Options.OfType<GrowthActionFactory>().ToArray(); // Need to update when starlight adds new
@@ -997,20 +952,12 @@ public partial class IslandControl : Control {
 
 	IDecision _decision;
 
-	Token decision_Token; // the already-known token associated with a decision.  Like presence being placed or token that is being pushed to a destination.
-
-	Select.AdjacentInfo              decision_AdjacentInfo;
-	Select.TypedDecision<SpaceToken> decision_SpaceToken;
-	Select.DeployedPresence          decision_DeployedPresence;
 	Select.DeckToDrawFrom            decision_DeckToDrawFrom;
 	Select.Element                   decision_Element;
 
 	IFearCard				options_FearPopUp;
 	IBlightCard		        options_BlightPopUp;
 	GrowthActionFactory[]   options_GrowthActions;
-	Space[]					options_Space;
-
-	readonly List<(Rectangle,IOption)> optionRects = new List<(Rectangle, IOption)>();
 
 	#endregion
 
@@ -1031,7 +978,7 @@ public partial class IslandControl : Control {
 	Rectangle _boardScreenRect;
 	Bitmap _cachedBackground;
 
-	readonly Dictionary<IOption, RectangleF> hotSpots = new();
+	readonly Dictionary<IOption, RectangleF> _hotSpots = new();
 
 	#endregion
 
@@ -1064,7 +1011,7 @@ public partial class IslandControl : Control {
 
 	#region Color & Appearance
 
-	const float hotspotRadius = 40f;
+	const int hotspotRadius = 40;
 	static Color ArrowColor => Color.DeepSkyBlue;
 	static Color SacredSiteColor => Color.Yellow;
 	static Color HotSpotColor => Color.Aquamarine;

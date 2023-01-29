@@ -32,6 +32,9 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	// This is the non-Targetting version that skips over the TargetSourceCalc
 	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, bool forPower )
 		=> _self.FindSpacesWithinRange( _gameState, targetCriteria, forPower ); // !! Only being used with Power since we are assuming the Terrain Mapper
+
+	public IVisibleToken Token => _inner.Token;
+
 	#region User Decisions
 
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
@@ -64,7 +67,6 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	public async Task<Space> SelectDestinationWithinRange( TargetCriteria targetCriteria, bool forPower ) {
 		var options = FindSpacesWithinRange( targetCriteria, forPower )
 			.Where( CanBePlacedOn )
-			.Select( x=>x.Space )
 			.ToArray();
 		return await _self.Gateway.Decision( Select.Space.ToPlacePresence( options, Present.Always, _inner.Token ) );
 	}
@@ -128,8 +130,9 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	/// <returns>Place in Ocean, Growth through sacrifice</returns>
 	/// !!! should Have an Action ID
 	public async Task Place( params Space[] destinationOptions ) {
-		var from = await SelectSource();
-		var to = await _self.Gateway.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always, _inner.Token ) );
+
+		IOption from = await SelectSource();
+		Space to = await _self.Gateway.Decision( Select.Space.ToPlacePresence( _gameState.Tokens.PowerUp( destinationOptions ), Present.Always, _inner.Token ) );
 		await _self.Presence.Place( from, to, _gameState, _actionScope );
 	}
 

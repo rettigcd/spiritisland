@@ -39,7 +39,7 @@ namespace SpiritIsland.WinForms {
 			DrawSpiritImage( graphics );
 
 			using(new StopWatch("Growth"))
-				growthPainter.Paint( graphics, selectableGrowthActions );
+				growthPainter.Paint( graphics );
 
 			using(new StopWatch("Presence"))
 				presencePainter.Paint( graphics, imageDrawer );

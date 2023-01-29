@@ -2,13 +2,12 @@
 ====  Clean Up Items  ====
 ==========================
 
-4 UI - Graphics.DrawMixed(...)
+5 Cache-A Organize Cache into folders
+5 Cache-B Draw Fear Cards OR Download them on the fly
+5 Buttons - (pop-ups, flags, special rules, Spaces?, SpaceTokens?, Cards?)
+
 
 4 UI - Draw Power Cards - OR Download them on the fly
-4 UI - Draw Fear Cards OR Download them on the fly
-4 UI - Cache: Innates
-
-4 Standardize TokenSpace selection on receivers end.
 
 4 Multi Player
 	== Option 1 == 

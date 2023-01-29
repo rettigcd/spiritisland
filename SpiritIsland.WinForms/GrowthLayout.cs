@@ -11,7 +11,7 @@ namespace SpiritIsland.WinForms {
 
 		public Rectangle Bounds { get; }
 
-		public GrowthLayout(GrowthOption[] growthOptions, Rectangle bounds){
+		public GrowthLayout(GrowthOption[] growthOptions, Rectangle bounds, VisibleButtonContainer buttonContainer){
 			this.Bounds = bounds;
 
 			int actionCount = growthOptions.Sum(op=>op.GrowthActions.Length);
@@ -29,9 +29,9 @@ namespace SpiritIsland.WinForms {
 			int actionIndex = 0;
 			foreach(var g in growthOptions) {
 				float gx = x;
-				foreach(var a in g.GrowthActions) {
-					Actions[actionIndex++] = a;
-					actionRects.Add(a,RectangleF.Inflate( new RectangleF(x,0,actionWidth,actionHeight), -.1f* actionWidth, -.1f*actionHeight));
+				foreach(var action in g.GrowthActions) {
+					Actions[actionIndex++] = action;
+					actionRects.Add(action,RectangleF.Inflate( new RectangleF(x,0,actionWidth,actionHeight), -.1f* actionWidth, -.1f*actionHeight));
 					x += actionWidth;
 				}
 				optionRects.Add( g, new RectangleF(gx,0,x-gx,actionHeight) );
@@ -42,6 +42,15 @@ namespace SpiritIsland.WinForms {
 			// Fit to Bounds
 			ScaleToFit(bounds.Width,bounds.Height);
 			Translate(bounds.X,bounds.Y);
+
+
+
+			foreach(var action in growthOptions.SelectMany( optionGroup=>optionGroup.GrowthActions )) {
+				// HACK - to catch when starlight adds growth options (because we don't have any event to track that)
+				try { _ = buttonContainer[action]; } catch( System.Exception) { buttonContainer.Add(action, new GrowthButton() ); }
+
+				((GrowthButton)buttonContainer[action]).Bounds = actionRects[action].ToInts();
+			}
 		}
 
 		void ScaleToFit(float width,float height) {

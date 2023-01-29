@@ -36,7 +36,7 @@ public class PentUpCalamity {
 
 		while(options.Length > 0) {
 			// This is kind of special purpose
-			var removeTokenDecision = new Select.TokenFrom1Space(
+			var removeTokenDecision = new Select.TokenFromManySpaces(
 				$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})"
 				, ctx.Space, options , Present.Done
 			);

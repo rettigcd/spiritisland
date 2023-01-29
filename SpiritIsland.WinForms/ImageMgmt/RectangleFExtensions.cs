@@ -11,4 +11,8 @@ static public class RectangleFExtensions {
 
 	static public RectangleF Translate( this RectangleF src, float deltaX, float deltaY ) => new RectangleF( src.X + deltaX, src.Y + deltaY, src.Width, src.Height );
 
+	
+
+	static public Point ToInts( this PointF src ) => new Point((int)(src.X+.5f), (int)(src.Y+.5f));
+
 }

@@ -8,8 +8,15 @@ public class ExplosiveEruption {
 	[ExplosiveInnateOption( "2 fire, 2 earth", 2, "In one land within range 1, X Damage",0)]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction( ctx.ActionScope );
-		TargetSpaceCtx spaceCtx = await ctx.SelectAdjacentLandOrSelf($"Apply {destroyedCount} damage to");
-		await spaceCtx.DamageInvaders(destroyedCount );
+
+		Space space = await ctx.Self.Gateway.Decision( new Select.Space(
+			$"Apply {destroyedCount} damage to",
+			ctx.Tokens.Range( 1 ),
+			Present.Always
+		) );
+		if( space == null ) return;
+
+		await ctx.Target( space ).DamageInvaders(destroyedCount );
 	}
 
 	[ExplosiveInnateOption( "3 fire, 3 earth", 4, "Generate X fear.",1)]

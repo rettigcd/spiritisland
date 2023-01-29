@@ -64,7 +64,7 @@ public class FlowingAndSilentFormsDartBy {
 			: await ctx.Decision( new Select.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
 		var options = adj.Where(other.Presence.HasMovableTokens);
-		var source = await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, options ) );
+		var source = (await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, options, other.Presence.Token ) ))?.Space;
 		if(source == null) return;
 		// # to move
 		int numToMove = (other.Presence.CountOn(ctx.GameState.Tokens[source]) > 1 && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))

@@ -30,7 +30,7 @@ public partial class SweepIntoTheSea {
 			.SetTargets( oceans )
 			.Calculate();
 		int curDistance = distanceFromOceans[ctx.Tokens];
-		var closerSpace = await ctx.SelectAdjacentLand( "Push explorer/town towards ocean", null, a => distanceFromOceans[a.Tokens] < curDistance );
+		var closerSpace = await ctx.SelectAdjacentLand( "Push explorer/town towards ocean", a => distanceFromOceans[a.Tokens] < curDistance );
 		return closerSpace;
 	}
 
