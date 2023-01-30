@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
@@ -21,12 +20,12 @@ public class InnateOptionsBtn : IButton {
 	public void Paint( Graphics graphics, bool enabled ) {
 
 		if(enabled) {
-			ControlPaint.DrawButton( graphics, Bounds.InflateBy(3), ButtonState.Normal );
-			using Pen highlightPen = new( Color.Red, 2f ); 
+			ControlPaint.DrawButton( graphics, Bounds.InflateBy( 3 ), ButtonState.Normal );
+			using Pen highlightPen = new( Color.Red, 2f );
 			graphics.DrawRectangle( highlightPen, Bounds.InflateBy( 1 ) );
 		}
 
-		if( _innateOption.IsActive( _spirit.Elements ) )
+		if(_innateOption.IsActive( _spirit.Elements ))
 			graphics.FillRectangle( Brushes.PeachPuff, Bounds );
 
 		using Image img = UsingImage;

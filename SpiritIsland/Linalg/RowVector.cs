@@ -20,5 +20,6 @@ public record struct RowVector( float X, float Y ) {
 		return new RowVector( (float)(row * colMat.Col0), (float)(row * colMat.Col1) );
 	}
 	static public RowVector operator-(RowVector v) => new RowVector( -v.X, -v.Y );
+	static public RowVector operator -( RowVector v1, RowVector v2 ) => new RowVector( v1.X-v2.X, v1.Y-v2.Y );
 }
 

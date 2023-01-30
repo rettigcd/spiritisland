@@ -36,7 +36,9 @@ class RegionLayoutClass {
 		(OptionRect,_) = IslandRect.InflateBy(-MARGIN).SplitHorizontallyByWeight(0,.1f,.9f);
 		(_,(CardRectPopup,_)) = _mainRect.SplitVerticallyByWeight(0, .5f, .5f);
 
-		PhaseRect = PhaseRect.InflateBy(-20);
+		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
+		SpiritRect = SpiritRect.FitBoth(new Size(SpiritRect.Width,(int)(SpiritRect.Width*1.1)),Align.Far,Align.Near);
+		PhaseRect = PhaseRect.InflateBy( (int)(PhaseRect.Height*.05) );
 	}
 
 	#endregion

@@ -50,10 +50,15 @@ public class RiverSurges : Spirit {
 public class RiverPresence : SpiritPresence {
 	public RiverPresence( PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) { }
 
-	public override bool IsSacredSite( SpaceState space ) => 2 <= space[Token] || space.Space.IsWetland; // !!! will this detect 2 of Downpours presence as wetland?
+	// !!! Combine both of these SS tests into 1 so that we don't have to test both of them
+	// AND so they both use TerrainMapper
+
+	public override bool IsSacredSite( SpaceState space ) => base.IsSacredSite( space ) 
+		|| (1 <= space[Token] && space.Space.IsWetland);  // !!! will this detect 2 of Downpours presence as wetland? Not using TerrainMapper!
 
 	public override IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper mapper ) => gs.AllActiveSpaces
-		.Where( s => mapper.MatchesTerrain( s, Terrain.Wetland ) && IsOn(s) )
-		.Union( base.SacredSiteStates(gs,mapper) )
+		.Where( s => mapper.MatchesTerrain( s, Terrain.Wetland ) && IsOn( s ) )
+		.Union( base.SacredSiteStates( gs, mapper ) )
 		.Distinct();
+
 }

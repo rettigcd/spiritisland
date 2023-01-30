@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace SpiritIsland.WinForms; 
+namespace SpiritIsland.WinForms;
 
 public class SpiritLayout {
 

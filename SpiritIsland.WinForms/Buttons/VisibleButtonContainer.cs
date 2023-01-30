@@ -5,14 +5,14 @@ namespace SpiritIsland.WinForms;
 
 public class VisibleButtonContainer {
 
-	public void Add(IOption option, IButton btn ) {
+	public void Add( IOption option, IButton btn ) {
 		_disabled.Add( option, btn );
 	}
 
-	public IButton this[ IOption option] {
+	public IButton this[IOption option] {
 		get {
-			return _disabled.ContainsKey( option ) 
-				? _disabled[option] 
+			return _disabled.ContainsKey( option )
+				? _disabled[option]
 				: _enabled[option];
 		}
 	}
@@ -24,11 +24,11 @@ public class VisibleButtonContainer {
 
 	public void DisableAll() {
 		foreach(var pair in _enabled)
-			_disabled.Add(pair.Key,pair.Value);
+			_disabled.Add( pair.Key, pair.Value );
 		_enabled.Clear();
 	}
 
-	public void EnableOptions(IDecision decision ) {
+	public void EnableOptions( IDecision decision ) {
 		DisableAll();
 		foreach(IOption option in decision.Options)
 			if(_disabled.ContainsKey( option ))
@@ -44,7 +44,7 @@ public class VisibleButtonContainer {
 	}
 
 	public IOption FindEnabledOption( Point clientCoords ) {
-		foreach(var pair in _enabled )
+		foreach(var pair in _enabled)
 			if(pair.Value.Bounds.Contains( clientCoords )) return pair.Key;
 		return null;
 	}

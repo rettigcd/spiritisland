@@ -24,7 +24,7 @@ public class ResourceImages {
 
 	readonly PrivateFontCollection Fonts;
 
-	public Font UseGameFont( float fontHeight ) => new Font( Fonts.Families[0], fontHeight, GraphicsUnit.Pixel );
+	public Font UseGameFont( float fontHeight ) => new Font( Fonts.Families[0], Math.Max(4,fontHeight), GraphicsUnit.Pixel );
 
 	public Font UseInvaderFont( float fontHeight ) => new Font( Fonts.Families[1], fontHeight, GraphicsUnit.Pixel );
 

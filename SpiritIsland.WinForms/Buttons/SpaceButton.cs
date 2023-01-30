@@ -8,17 +8,20 @@ public class SpaceButton : IButton {
 	readonly Func<Space, IVisibleToken, Point> _locationMapper;
 	readonly Space _space;
 	readonly int _hotSpotRadius;
+	int TokenSize { get; set; }
 
-	public SpaceButton(Func<Space,IVisibleToken,Point> locationMapper, Space space, int hotSpotRadius) {
+	public SpaceButton( Func<Space, IVisibleToken, Point> locationMapper, Space space, int hotSpotRadius ) {
 		_locationMapper = locationMapper;
 		_space = space;
 		_hotSpotRadius = hotSpotRadius;
+		TokenSize = hotSpotRadius * 2;
 	}
 
-	public Rectangle Bounds { 
-		get{ 
-			var center = _locationMapper(_space,_focusToken);
-			return new Rectangle(center.X-_hotSpotRadius, center.Y-_hotSpotRadius, _hotSpotRadius*2, _hotSpotRadius*2 );
+	public Rectangle Bounds {
+		get {
+			var center = _locationMapper( _space, _focusToken );
+			int radius = (int)(_hotSpotRadius * (_focusToken != null ? 1f : 1.5f)); // make space selection circles a little larger
+			return new Rectangle( center.X - radius, center.Y - radius, radius * 2, radius * 2 );
 		}
 	}
 

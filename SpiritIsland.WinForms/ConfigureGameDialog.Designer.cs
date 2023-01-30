@@ -211,6 +211,7 @@ namespace SpiritIsland.WinForms {
             this.spiritLabel.Size = new System.Drawing.Size(34, 15);
             this.spiritLabel.TabIndex = 19;
             this.spiritLabel.Text = "&Spirit";
+            this.spiritLabel.Click += new System.EventHandler(this.spiritLabel_Click);
             // 
             // ConfigureGameDialog
             // 

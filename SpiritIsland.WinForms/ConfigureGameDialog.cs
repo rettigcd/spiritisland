@@ -5,6 +5,8 @@ using SpiritIsland.FeatherAndFlame;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using System.Collections.Generic;
 
 namespace SpiritIsland.WinForms;
 
@@ -35,6 +37,9 @@ public partial class ConfigureGameDialog : Form {
 	}
 
 	void Init_SpiritList() {
+		int tileWidth = _spiritListView.Width / 2 - 20;
+		_spiritListView.TileSize = new Size( tileWidth, _spiritImageList.ImageSize.Height * 9/8 );
+
 		_spiritListView.Items.Clear();
 		_spiritImageList.Images.Clear();
 
@@ -198,6 +203,10 @@ public partial class ConfigureGameDialog : Form {
 
 	ScenarioLevel[] adjustments;
 
+	void spiritLabel_Click( object sender, EventArgs e ) {
+		_spiritListView.View = _spiritListView.View == View.LargeIcon ? View.Tile : View.LargeIcon;
+		spiritLabel.Text = $"Spirit - {_spiritListView.View}";
+	}
 }
 
 public class GameConfigPlusToken : GameConfiguration {

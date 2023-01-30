@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Select;
+using SpiritIsland.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -38,41 +39,38 @@ public partial class IslandControl : Control {
 	}
 
 	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
+
+		// Wind down old
+
 		// Dispose old spirit tokens
 		_presenceImg?.Dispose();
 		_tokenImages[TokenType.Defend]?.Dispose();
 		_tokenImages[TokenType.Isolate]?.Dispose();
 
-		_spiritLayout = null;
-		_cardData.Layout = null;
+		// Setup New
+		_gameState = gameState;
+		_spirit = gameState.Spirits.Single();
+		_adversary = adversary;
 		_cardData.SpiritCardInfo = new SpiritCardInfo( gameState.Spirits[0] ); // !!! 1 spirit only
 
 		optionProvider.NewDecision += OptionProvider_OptionsChanged; // !!! this handler is getting added multiple times
 
-		ClearCachedBackgroundImage();
-
-		_gameState = gameState;
-		_spirit = gameState.Spirits.Single();
-		_adversary = adversary;
-
 		// Init new Presence, Defend, Isolate
+		// !! we could cache these if we could serialize the Adjustment into a caching-key
+
 		_presenceImg = ResourceImages.Singleton.GetPresenceImage( presenceAppearance.BaseImage );
 		_tokenImages[TokenType.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
 		_tokenImages[TokenType.Isolate] = ResourceImages.Singleton.GetImage( Img.Isolate );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_presenceImg );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Defend] );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Isolate] );
-		// !! we could cache these if we could serialize the Adjustment into a caching-key
-
-		// Init Button Container
-		InitButtonContainer();
 
 		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
 
-		// foreach(var blight in new GameBuilder(new Basegame.GameComponentProvider(),new BranchAndClaw.GameComponentProvider(),new FeatherAndFlame.GameComponentProvider(),new JaggedEarth.GameComponentProvider()).BuildBlightCards()) ResourceImages.Singleton.GetBlightCard(blight).Dispose();
+		Invalidate_GameLayout();
 	}
 
-	void InitButtonContainer() {
+	void AddButtonsToContainer() {
 		_buttonContainer.Clear();
 		foreach(InnatePower power in _spirit.InnatePowers) {
 			_buttonContainer.Add( power, new InnateButton() );
@@ -93,13 +91,25 @@ public partial class IslandControl : Control {
 
 	#region Calc Layout
 
-	RegionLayoutClass RegionLayout => _layout ??= new RegionLayoutClass(ClientRectangle);
-	RegionLayoutClass _layout;
+	// Window Dependent
+	RegionLayoutClass RegionLayout => _regionLayout ??= new RegionLayoutClass( ClientRectangle );
+	RegionLayoutClass _regionLayout; // depends ONLY on the window/client, NOT on the game
 	public Rectangle OptionBounds => RegionLayout.OptionRect;
 
-	// Layout
+	// Game Dependent
+	RectangleF BoardWorldRect => _boardWorldRect ??= CalcIslandWorldBounds();
+	RectangleF? _boardWorldRect;
+	Dictionary<Space, ManageInternalPoints> InsidePoints => _insidePoints ??= _gameState.AllSpaces.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
+	Dictionary<Space, ManageInternalPoints> _insidePoints;
 
-	RectangleF CalcIslandExtents() {
+	// Game & Window Dependent
+	Rectangle gw_boardScreenRect;
+	PointMapper gw_mapper; // Maps from normallized space to Client space.
+	Bitmap gw_cachedBackground;
+	SpiritLayout gw_spiritLayout;
+	int gw_IconWidth;
+
+	RectangleF CalcIslandWorldBounds() {
 		float left = float.MaxValue;
 		float top = float.MaxValue;
 		float right = float.MinValue;
@@ -115,43 +125,20 @@ public partial class IslandControl : Control {
 		return new RectangleF( left-CUSHION, top - CUSHION, right - left+2*CUSHION, bottom - top+2*CUSHION );
 	}
 
-
-	SpiritLayout _spiritLayout;
 	AdversaryConfig _adversary;
 
 	readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();
 
-	void CalcSpiritLayout( Rectangle bounds ) {
-		_spiritLayout = new SpiritLayout( _spirit, bounds, 10, _buttonContainer );
-		growthOptionCount = _spirit.GrowthTrack.Options.Length;
-	}
-	int growthOptionCount = -1; // auto-update when Starlight adds option
-
-	/// <summary>
-	/// Maps from normallized space to Client space.
-	/// </summary>
-	PointMapper _mapper;
-
-	static Matrix3D CalcMatrixForDrawingAtOrigin( RectangleF worldRect, Rectangle viewportRect ) {
+	static Matrix3D CalcWorldToScreenMatrix( RectangleF worldRect, Rectangle viewportRect ) {
 		// calculate scaling Assuming height limited
 		float scale = viewportRect.Height / worldRect.Height;
 
 		var islandBitmapMatrix
 			= RowVector.Translate( -worldRect.X, -worldRect.Y ) // translate to origin
 			* RowVector.Scale( scale, -scale ) // flip-y and scale
-			* RowVector.Translate( 0, viewportRect.Height ); // because 0,0 is at the bottom,left
+			* RowVector.Translate( 0, viewportRect.Height ) // because 0,0 is at the bottom,left
+			* RowVector.Translate( viewportRect.X, viewportRect.Y ); // translate to viewport origin
 		return islandBitmapMatrix;
-	}
-
-	static Rectangle FitClientBounds( Rectangle bounds ) {
-		const float windowRatio = 1.05f;
-		if(bounds.Width > bounds.Height / windowRatio) {
-			int widthClip = bounds.Width - (int)(bounds.Height / windowRatio);
-			bounds.X += widthClip;
-			bounds.Width -= widthClip;
-		} else
-			bounds.Height = (int)(bounds.Width * windowRatio);
-		return bounds;
 	}
 
 	static Rectangle FitWidth( float x, float y, float width, Size sz ) {
@@ -168,11 +155,14 @@ public partial class IslandControl : Control {
 
 		if(_gameState is null) return;
 
+		if(gw_cachedBackground == null)
+			GameLayout_Calculate();
+
 		StopWatch.timeLog.Clear();
 
 		using(new StopWatch( "Total" )) {
 
-			DrawBoard_Static( pe );
+			pe.Graphics.DrawImage( gw_cachedBackground, gw_boardScreenRect );
 
 			DrawGameRound( pe.Graphics );
 
@@ -188,25 +178,20 @@ public partial class IslandControl : Control {
 			foreach(SpaceState space in _gameState.AllSpaces)
 				DecorateSpace( pe.Graphics, space );
 
-			using(var hotSpotPen = new Pen( Color.Aquamarine, 5 )) {
-				DrawHotSpots_SpaceToken( pe.Graphics, hotSpotPen );
-//				DrawHotSpots_Space( pe.Graphics, hotSpotPen );
-			}
+			DrawHotSpots_SpaceToken( pe.Graphics );
 
 			DrawArrows( pe.Graphics );
 
-			DrawSpirit( pe.Graphics, RegionLayout.SpiritRect );
-
-			DrawPowerCards( pe.Graphics );
+			DrawSpirit( pe.Graphics );
 
 			_buttonContainer.Paint( pe.Graphics );
+
+			DrawPowerCards( pe.Graphics );
 
 			// Pop-ups - draw last, because they are pop-ups and should be on top.
 			DrawDeckPopUp( pe.Graphics );
 			DrawElementsPopUp( pe.Graphics );
 			DrawFearPopUp( pe.Graphics );
-
-
 
 			if(_debug)
 				RegionLayout.DrawRects( pe.Graphics );
@@ -231,73 +216,25 @@ public partial class IslandControl : Control {
 			};
 			Invalidate();
 		}
-		if(obj is LayoutChanged) {
-			InitButtonContainer(); // rescan to Starlight
-			_layout = new RegionLayoutClass( ClientRectangle );
-			ClearCachedBackgroundImage();
-			this.Invalidate();
-		}
+		if(obj is LayoutChanged)
+			Invalidate_GameLayout();
 	}
 	Image _phaseImage; // updates on Log Events
 
 	void DrawPhase( Graphics graphics ){
 		if(_phaseImage != null)
-			graphics.DrawImage( _phaseImage, _layout.PhaseRect.FitBoth( _phaseImage.Size));
+			graphics.DrawImage( _phaseImage, RegionLayout.PhaseRect.FitBoth( _phaseImage.Size));
 	}
 
 	#region Draw Static Board
 
-	void DrawBoard_Static( PaintEventArgs pe ) {
-		using var stopwatch = new StopWatch( "Island-static" );
-
-		if(_cachedBackground == null) {
-
-			// Map world-coord island Rect onto viewport
-			var boardWorldRect = CalcIslandExtents();
-
-			// create a viewport size screen we can draw on.
-			var bounds = RegionLayout.IslandRect; // size available
-
-			_boardScreenRect = RegionLayout.IslandRect
-				// .InflateBy( -10 )
-				.FitBoth(boardWorldRect.Scale(1000).ToInts().Size, Align.Center, Align.Near);
-
-			Matrix3D originDrawingMatrix = CalcMatrixForDrawingAtOrigin( boardWorldRect, _boardScreenRect );
-			PointMapper originMapper = new PointMapper( originDrawingMatrix );
-
-			_cachedBackground = new Bitmap( _boardScreenRect.Width, _boardScreenRect.Height );
-			using Graphics graphics = Graphics.FromImage( _cachedBackground );
-
-			foreach(Board board in _gameState.Island.Boards)
-				DrawBoardSpacesOnly( graphics, board, originMapper );
-
-			// calc spots to put tokens
-			_insidePoints = _gameState.AllSpaces
-				.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
-
-			// Label board spaces
-			foreach(var (space,manager) in _insidePoints.Select(x=>(x.Key,x.Value)))
-				graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, originMapper.Map( manager.NameLocation ) );
-
-
-			var normalPaintMatrix = originDrawingMatrix
-				* RowVector.Translate( _boardScreenRect.X, _boardScreenRect.Y ); // translate to view port
-			_mapper = new PointMapper( normalPaintMatrix );
-
-		}
-
-		pe.Graphics.DrawImage( _cachedBackground, 
-			_boardScreenRect.X, _boardScreenRect.Y, 
-			_cachedBackground.Width, _cachedBackground.Height 
-		);
-	}
-
-	static void DrawBoardSpacesOnly( Graphics graphics, Board board, PointMapper bitmapMapper ) {
+	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
 		var perimeterPen = new Pen( SpacePerimeterColor, 5f );
 		var normalizedBoardLayout = board.Layout;
 		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
-			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( board[i] );
-			var points = normalizedBoardLayout.Spaces[i].Corners.Select( bitmapMapper.Map ).ToArray();
+			var space = board[i];
+			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
+			var points = normalizedBoardLayout.Spaces[i].Corners.Select( gw_mapper.Map ).ToArray();
 
 			// Draw blocky
 			//pe.Graphics.FillPolygon( brush, points );
@@ -306,6 +243,10 @@ public partial class IslandControl : Control {
 			// Draw smoothy
 			graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
 			graphics.DrawClosedCurve( perimeterPen, points, .25f, FillMode.Alternate );
+
+			// Draw Label
+			PointF nameLocation = gw_mapper.Map( InsidePoints[space].NameLocation );
+			graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, nameLocation );
 		}
 
 	}
@@ -505,9 +446,9 @@ public partial class IslandControl : Control {
 
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
 
-		_insidePoints[spaceState.Space].Init(spaceState);
+		InsidePoints[spaceState.Space].Init(spaceState);
 
-		float iconWidth = _boardScreenRect.Width * .05f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+		int iconWidth = gw_IconWidth;//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 
 		if(_debug)
 			DrawTokenTargets( graphics, spaceState, iconWidth );
@@ -520,9 +461,9 @@ public partial class IslandControl : Control {
 	}
 
 	void DrawTokenTargets( Graphics graphics, SpaceState spaceState, float iconWidth ) {
-		foreach(var tk in _insidePoints[spaceState.Space]._dict) {
+		foreach(var tk in InsidePoints[spaceState.Space]._dict) {
 			var img = ResourceImages.Singleton.GetGhostImage( tk.Key.Img );
-			var p = _mapper.Map( new PointF( tk.Value.X, tk.Value.Y ) );
+			var p = gw_mapper.Map( new PointF( tk.Value.X, tk.Value.Y ) );
 			Rectangle rect = FitWidth( p.X - iconWidth / 2, p.Y - iconWidth / 2, iconWidth, img.Size );
 			graphics.DrawImage( img, rect );
 		}
@@ -542,7 +483,7 @@ public partial class IslandControl : Control {
 		foreach(IVisibleToken token in orderedInvaders) {
 
 			// New way
-			PointF center = _mapper.Map( _insidePoints[ss.Space].GetPointFor( token ) );
+			PointF center = gw_mapper.Map( InsidePoints[ss.Space].GetPointFor( token ) );
 			float x = center.X-iconWidth/2;
 			float y = center.Y-iconWidth/2; //!! approximate - need Image to get actual Height to scale
 
@@ -600,7 +541,7 @@ public partial class IslandControl : Control {
 			// calc rect
 			float iconHeight = iconWidth / img.Width * img.Height;
 
-			PointF pt = _mapper.Map( _insidePoints[spaceState.Space].GetPointFor(token) );
+			PointF pt = gw_mapper.Map( InsidePoints[spaceState.Space].GetPointFor(token) );
 			Rectangle rect = new Rectangle( (int)(pt.X-iconWidth/2), (int)(pt.Y-iconHeight/2), (int)iconWidth, (int)iconHeight );
 
 			// record token location
@@ -702,10 +643,11 @@ public partial class IslandControl : Control {
 
 	#region Draw HotSpots - spaces / space tokens
 
-	void DrawHotSpots_SpaceToken( Graphics graphics, Pen pen ) {
+	void DrawHotSpots_SpaceToken( Graphics graphics ) {
 		if(_decision is not Select.TokenFromManySpaces spaceTokenDecision) return;
 
 		// Draw SpaceToken option hotspots & record option location
+		using Pen pen = new Pen( Color.Aquamarine, 5 );
 		foreach(SpaceToken spaceToken in spaceTokenDecision.SpaceTokens)
 			DrawSpaceTokenHotspot( graphics, pen, spaceToken, spaceToken );
 	}
@@ -730,7 +672,7 @@ public partial class IslandControl : Control {
 			rect = _tokenLocations[st];
 		else {
 			// Virtual
-			var p = _mapper.Map( _insidePoints[st.Space].GetPointFor( st.Token ) ).ToInts();
+			var p = gw_mapper.Map( InsidePoints[st.Space].GetPointFor( st.Token ) ).ToInts();
 			rect = new Rectangle( p.X-hotspotRadius, p.Y-hotspotRadius, hotspotRadius*2, hotspotRadius*2 ); // !!! use token size, whatever that is.
 		}
 
@@ -744,9 +686,9 @@ public partial class IslandControl : Control {
 
 	Point GetPortPoint( Space space, IVisibleToken visibileTokens ) {
 		PointF worldCoord = visibileTokens != null
-			? _insidePoints[space].GetPointFor( visibileTokens )
+			? InsidePoints[space].GetPointFor( visibileTokens )
 			: space.Layout.Center; // normal space 
-		return _mapper.Map( worldCoord ).ToInts();
+		return gw_mapper.Map( worldCoord ).ToInts();
 	}
 
 
@@ -755,19 +697,8 @@ public partial class IslandControl : Control {
 
 	#endregion
 
-	void DrawSpirit( Graphics graphics, Rectangle bounds ) {
-
-		bounds = FitClientBounds( bounds );
-
-		// Layout
-		if( _spiritLayout is null
-			|| growthOptionCount != _spirit.GrowthTrack.Options.Length
-		) {
-			CalcSpiritLayout( bounds );
-			_spiritPainter?.SetLayout( _spiritLayout );
-		}
-
-		graphics.FillRectangle( SpiritPanelBackgroundBrush, bounds );
+	void DrawSpirit( Graphics graphics ) {
+		graphics.FillRectangle( SpiritPanelBackgroundBrush, RegionLayout.SpiritRect );
 		_spiritPainter.Paint( graphics );
 	}
 
@@ -777,7 +708,7 @@ public partial class IslandControl : Control {
 
 		using var brush = UseMultiSpaceBrush( multi );
 
-		var points = multi.Layout.Corners.Select( _mapper.Map ).ToArray();
+		var points = multi.Layout.Corners.Select( gw_mapper.Map ).ToArray();
 		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
 		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
 		// graphics.FillPolygon( brush, points );
@@ -809,8 +740,8 @@ public partial class IslandControl : Control {
 	void RecordSpiritHotspots() {
 		// Growth Options/Actions
 		foreach(var act in options_GrowthActions)
-			if(_spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
-				_hotSpots.Add( act, _spiritLayout.growthLayout[act] );
+			if(gw_spiritLayout.growthLayout.HasAction( act )) // there might be delayed setup actions here that don't have a rect
+				_hotSpots.Add( act, gw_spiritLayout.growthLayout[act] );
 	}
 
 	Image AccessTokenImage( IVisibleToken imageToken ) {
@@ -826,24 +757,61 @@ public partial class IslandControl : Control {
 
 	protected override void OnSizeChanged( EventArgs e ) {
 		base.OnSizeChanged( e );
-		_layout = new RegionLayoutClass( ClientRectangle );
-		_spiritLayout = null;
+
+		// Refresh window-dependent stuff
+		_regionLayout = null;
+
+		// Cascade
+		Invalidate_GameWindowLayout();
+	}
+
+	void GameLayout_Calculate() {
+
+		// Depends on Gamestate And Window
+		gw_boardScreenRect = RegionLayout.IslandRect.FitBoth( BoardWorldRect.Scale( 1000 ).ToInts().Size, Align.Center, Align.Near );
+		gw_mapper = new PointMapper( CalcWorldToScreenMatrix( BoardWorldRect, gw_boardScreenRect ) );
+		gw_IconWidth = (int)( gw_mapper.XScale * .075f );
+
+		// !! could delay initializing Layout until we get here
+		gw_spiritLayout = new SpiritLayout( _spirit, RegionLayout.SpiritRect, 10, _buttonContainer );
+		_spiritPainter?.SetLayout( gw_spiritLayout );
+
+		// ------------------
+		// Cached Background 
+		// ------------------
+		gw_cachedBackground = new Bitmap( gw_boardScreenRect.Width, gw_boardScreenRect.Height );
+		using Graphics graphics = Graphics.FromImage( gw_cachedBackground );
+		graphics.TranslateTransform( -gw_boardScreenRect.X, -gw_boardScreenRect.Y );
+		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+		foreach(Board board in _gameState.Island.Boards)
+			DrawBoardSpacesOnly( graphics, board );
+	}
+
+	/// <summary>
+	/// Invalidtes pieces that are Game-Dependent, then triggers Game/Window layout invalidation
+	/// </summary>
+	void Invalidate_GameLayout() {
+		_insidePoints = null;
+		_boardWorldRect = null;
+		AddButtonsToContainer();
+
+		// Cascade to layout that depends on this
+		Invalidate_GameWindowLayout();
+	}
+
+	void Invalidate_GameWindowLayout() {
+
+		// This stuff needs recalculated when either game changes OR window changes
+
+		gw_spiritLayout = null;
 		_cardData.Layout = null;
-		RefreshLayout();
-		ClearCachedBackgroundImage();
-		this.Invalidate();
-	}
 
-	public void RefreshLayout() { // called from parent when we get a new Option
-		ClearCachedBackgroundImage();
-		this.Invalidate();
-	}
-
-	void ClearCachedBackgroundImage() {
-		if(_cachedBackground != null) {
-			_cachedBackground.Dispose();
-			_cachedBackground = null;
+		if(gw_cachedBackground != null) {
+			gw_cachedBackground.Dispose();
+			gw_cachedBackground = null;
 		}
+		Invalidate();
 	}
 
 	protected override void OnClick( EventArgs e ) {
@@ -856,7 +824,7 @@ public partial class IslandControl : Control {
 			_cardData.GetClickAction( clientCoords )?.Invoke();
 
 		// Spirit => Special Rules
-		if(_spiritLayout != null && _spiritLayout.imgBounds.Contains( clientCoords )) {
+		if(gw_spiritLayout != null && gw_spiritLayout.imgBounds.Contains( clientCoords )) {
 			string msg = this._spirit.SpecialRules.Select(r=>r.ToString()).Join("\r\n\r\n");
 			MessageBox.Show( msg );
 		}
@@ -948,18 +916,13 @@ public partial class IslandControl : Control {
 	// When we are presented with a decision, the location of each option is pulled from here
 	// and added to the HotSpots.
 	readonly Dictionary<SpaceToken, Rectangle> _tokenLocations = new Dictionary<SpaceToken, Rectangle>();
+	readonly Dictionary<IOption, RectangleF> _hotSpots = new();
 
-	Dictionary<Space, ManageInternalPoints> _insidePoints;
 
 	readonly CardUi _cardData;
 	SpiritPainter _spiritPainter;
 	GameState _gameState;
 	Spirit _spirit;
-
-	Rectangle _boardScreenRect;
-	Bitmap _cachedBackground;
-
-	readonly Dictionary<IOption, RectangleF> _hotSpots = new();
 
 	#endregion
 
@@ -995,7 +958,6 @@ public partial class IslandControl : Control {
 	const int hotspotRadius = 40;
 	static Color ArrowColor => Color.DeepSkyBlue;
 	static Color SacredSiteColor => Color.Yellow;
-	static Color HotSpotColor => Color.Aquamarine;
 	static Color SpacePerimeterColor => Color.Black;
 	static Color MultiSpacePerimeterColor => Color.Gold;
 

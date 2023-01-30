@@ -100,12 +100,18 @@ public partial class Form1 : Form, IHaveOptions {
 	}
 
 	Button BuildOptionButton( IOption option, Size sz ) {
+
+		bool useMnemonic = (option.Text == "Done");
+
 		var btn = new Button {
 			Dock = DockStyle.None,
 			Text = option.Text,
 			Size = sz,
-			Tag = option
+			Tag = option,
+			UseMnemonic = useMnemonic,
 		};
+		if( useMnemonic ) btn.Text = "&" + btn.Text;
+
 		btn.Click += Btn_Click;
 		Controls.Add( btn );
 		btn.BringToFront();

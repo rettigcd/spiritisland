@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using SpiritIsland;
 
 namespace SpiritIsland.WinForms;
 
@@ -33,7 +34,7 @@ public class WrappingLayout {
 
 	#endregion
 
-	Font UsingFont(FontStyle style) => new Font( FontFamily.GenericSansSerif, _textEmSize, style, GraphicsUnit.Pixel );
+	Font UsingFont( FontStyle style ) => new Font( FontFamily.GenericSansSerif, _textEmSize, style, GraphicsUnit.Pixel );
 
 	#region constructor
 	public WrappingLayout(
@@ -46,8 +47,8 @@ public class WrappingLayout {
 		_textEmSize = textEmSize;
 		int iconDimension = (int)(_textEmSize * 1.8f);
 		int elementDimension = (int)(_textEmSize * 2.4f);
-		_imageSizeCalculator = new ImageSizeCalculator( iconDimension, elementDimension	);
-		_maxIconHeight = System.Math.Max(iconDimension, elementDimension);
+		_imageSizeCalculator = new ImageSizeCalculator( iconDimension, elementDimension );
+		_maxIconHeight = System.Math.Max( iconDimension, elementDimension );
 
 		_topLeft = topLeft;
 		_rowSize = rowSize;
@@ -81,12 +82,12 @@ public class WrappingLayout {
 
 		// Add or us existing
 		List<TextPosition> texts;
-		if(_texts.ContainsKey(fontStyle))
+		if(_texts.ContainsKey( fontStyle ))
 			texts = _texts[fontStyle];
 		else {
 			texts = new List<TextPosition>();
 			_texts.Add( fontStyle, texts );
-		} 
+		}
 
 
 		var descriptionParts = InnatePower.Tokenize( description );
@@ -96,7 +97,7 @@ public class WrappingLayout {
 
 				// - Token -
 
-				var ( sz, img ) = _imageSizeCalculator.GetTokenDetails( part[1..^1] );
+				var (sz, img) = _imageSizeCalculator.GetTokenDetails( part[1..^1] );
 				_tokens.Add( new TokenPosition { TokenImg = img, Rect = AddToken( sz ) } );
 
 			} else {
@@ -191,14 +192,14 @@ public class WrappingLayout {
 	int _nextLineStartingX => _topLeft.X + Indent;
 
 	public void FinalizeBounds() {
-		if( _nextLineStartingX < _x )
+		if(_nextLineStartingX < _x)
 			GoToNextLine();
 		var x = new Rectangle( _topLeft.X, _topLeft.Y, _rowSize.Width, _y - _topLeft.Y );
 		_bounds = x;
 	}
 
-	public Rectangle Bounds => _bounds ?? throw new System.InvalidOperationException("Bounds not finalized.");
-    Rectangle? _bounds;
+	public Rectangle Bounds => _bounds ?? throw new System.InvalidOperationException( "Bounds not finalized." );
+	Rectangle? _bounds;
 
 	public void IncY( int deltaY ) { _y += deltaY; }
 
