@@ -42,6 +42,8 @@ public class InnateOptionsBtn : IButton {
 		return this;
 	}
 
+	void IButton.SyncDataToDecision( IDecision _ ) { }
+
 	#region private
 
 	Image UsingImage => ResourceImages.Singleton.GetInnateOption( _innateOption, _emSize, _rowSize );

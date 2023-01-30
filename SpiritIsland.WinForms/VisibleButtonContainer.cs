@@ -28,11 +28,19 @@ public class VisibleButtonContainer {
 		_enabled.Clear();
 	}
 
-	public void Enable(IOption option ) {
-		if(_disabled.ContainsKey( option )) {
-			_enabled.Add( option, _disabled[option]);
-			_disabled.Remove( option );
-		}
+	public void EnableOptions(IDecision decision ) {
+		DisableAll();
+		foreach(IOption option in decision.Options)
+			if(_disabled.ContainsKey( option ))
+				EnableSingle( option, decision );
+	}
+
+	void EnableSingle( IOption option, IDecision decision ) {
+		var button = _disabled[option]; // grab old
+		_disabled.Remove( option );
+
+		_enabled.Add( option, button ); // add to new
+		button.SyncDataToDecision( decision );
 	}
 
 	public IOption FindEnabledOption( Point clientCoords ) {

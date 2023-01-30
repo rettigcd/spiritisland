@@ -9,10 +9,15 @@ Collapsed "summary" view of card so easier to see Island/board
 Zoomed view of card so easier to read text.
 
 
-
 5 Cache-A Organize Cache into folders
 5 Cache-B Draw Fear Cards OR Download them on the fly
-5 Buttons - (pop-ups, flags, special rules, Spaces?, SpaceTokens?, Cards?)
+5 Buttons - (
+	Fear/Blight pop-up		=> Many Options that are hidden
+	flags, special rules,	=> Normal Buttons
+	Deck / Elements			=> 
+*	SpaceTokens?			=> temporary, Some are virtual, change often
+*	Cards					=> change often
+
 
 
 4 UI - Draw Power Cards - OR Download them on the fly

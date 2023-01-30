@@ -85,6 +85,8 @@ public partial class IslandControl : Control {
 			_buttonContainer.Add( cardSlot, new PresenceSlotButton( _spirit.Presence.CardPlays, cardSlot, _presenceImg ) );
 		foreach(var action in _spirit.GrowthTrack.Options.SelectMany( optionGroup => optionGroup.GrowthActions ))
 			_buttonContainer.Add( action, new GrowthButton() );
+		foreach(var spaceState in _gameState.AllSpaces)
+			_buttonContainer.Add( spaceState.Space, new SpaceButton( GetPortPoint ,spaceState.Space, hotspotRadius ) );
 	}
 
 	#endregion constructor / Init
@@ -186,9 +188,9 @@ public partial class IslandControl : Control {
 			foreach(SpaceState space in _gameState.AllSpaces)
 				DecorateSpace( pe.Graphics, space );
 
-			using(var hotSpotPen = new Pen( HotSpotColor, 5 )) {
+			using(var hotSpotPen = new Pen( Color.Aquamarine, 5 )) {
 				DrawHotSpots_SpaceToken( pe.Graphics, hotSpotPen );
-				DrawHotSpots_Space( pe.Graphics, hotSpotPen );
+//				DrawHotSpots_Space( pe.Graphics, hotSpotPen );
 			}
 
 			DrawArrows( pe.Graphics );
@@ -260,13 +262,8 @@ public partial class IslandControl : Control {
 				// .InflateBy( -10 )
 				.FitBoth(boardWorldRect.Scale(1000).ToInts().Size, Align.Center, Align.Near);
 
-			//// Calculate the size that fits
-			//_boardScreenSize = (bounds.Width * boardWorldRect.Height < boardWorldRect.Width * bounds.Height)
-			//	? new Rectangle( 20, 60, bounds.Width, (int)(boardWorldRect.Height * bounds.Width / boardWorldRect.Width) )
-			//	: new Rectangle( 20, 60, (int)(boardWorldRect.Width * bounds.Height / boardWorldRect.Height), bounds.Height );
-
-			var originDrawing = CalcMatrixForDrawingAtOrigin( boardWorldRect, _boardScreenRect );
-			var originMapper = new PointMapper( originDrawing );
+			Matrix3D originDrawingMatrix = CalcMatrixForDrawingAtOrigin( boardWorldRect, _boardScreenRect );
+			PointMapper originMapper = new PointMapper( originDrawingMatrix );
 
 			_cachedBackground = new Bitmap( _boardScreenRect.Width, _boardScreenRect.Height );
 			using Graphics graphics = Graphics.FromImage( _cachedBackground );
@@ -283,7 +280,7 @@ public partial class IslandControl : Control {
 				graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, originMapper.Map( manager.NameLocation ) );
 
 
-			var normalPaintMatrix = originDrawing
+			var normalPaintMatrix = originDrawingMatrix
 				* RowVector.Translate( _boardScreenRect.X, _boardScreenRect.Y ); // translate to view port
 			_mapper = new PointMapper( normalPaintMatrix );
 
@@ -510,7 +507,6 @@ public partial class IslandControl : Control {
 
 		_insidePoints[spaceState.Space].Init(spaceState);
 
-//		float iconWidth = _boardScreenRect.Width * .04f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 		float iconWidth = _boardScreenRect.Width * .05f; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 
 		if(_debug)
@@ -721,14 +717,6 @@ public partial class IslandControl : Control {
 			graphics.DrawArrow( pushArrowPen, GetPortPoint( arrow.From, arrow.Token ), GetPortPoint( arrow.To, arrow.Token ) );
 	}
 
-	void DrawHotSpots_Space( Graphics graphics, Pen pen ) {
-		if(_decision is not Select.Space selectSpace) return;
-		foreach(Space space in selectSpace.Spaces) {
-			Point center = GetPortPoint( space, selectSpace.Token ); // _mapper.Map( space.Layout.Center );
-			graphics.DrawEllipse( pen, center.X - hotspotRadius, center.Y - hotspotRadius, hotspotRadius * 2, hotspotRadius * 2 );
-		}
-	}
-
 	void DrawSpaceTokenHotspot(	// SpaceTokens and DeployedPresence
 		Graphics graphics,
 		Pen pen,
@@ -751,6 +739,8 @@ public partial class IslandControl : Control {
 		graphics.DrawRectangle( pen, rect );
 
 	}
+
+
 
 	Point GetPortPoint( Space space, IVisibleToken visibileTokens ) {
 		PointF worldCoord = visibileTokens != null
@@ -903,23 +893,8 @@ public partial class IslandControl : Control {
 	}
 
 	IOption FindOption( Point clientCoords ) {
-		return FindSpaces( clientCoords )
-			?? FindHotSpot( clientCoords )
+		return FindHotSpot( clientCoords )
 			?? _buttonContainer.FindEnabledOption( clientCoords);
-	}
-
-	IOption FindSpaces( Point clientCoords ) {
-		return _decision is not Select.Space selectSpace ? null
-			: (IOption)selectSpace.Spaces.Select( s => {
-				Point center = GetPortPoint( s, selectSpace.Token );
-				int dx = clientCoords.X - center.X;
-				int dy = clientCoords.Y - center.Y;
-				return new { Space = s, d2 = dx * dx + dy * dy };
-			} )
-			.Where( x => x.d2 < hotspotRadius * hotspotRadius )
-			.OrderBy( x => x.d2 )
-			.Select( x => x.Space )
-			.FirstOrDefault();
 	}
 
 	IOption FindHotSpot( Point clientCoords ) => _hotSpots.Keys.FirstOrDefault(key=>_hotSpots[key].Contains(clientCoords));
@@ -953,9 +928,7 @@ public partial class IslandControl : Control {
 		decision_Element        = decision as Select.Element;
 
 		// Option Buttons
-		_buttonContainer.DisableAll();
-		foreach(IOption option in _decision.Options)
-			_buttonContainer.Enable( option );
+		_buttonContainer.EnableOptions(_decision);
 	}
 
 	IDecision _decision;

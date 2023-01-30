@@ -33,7 +33,7 @@ public class PresenceSlotButton : PresenceSlotLayout, IButton {
 			graphics.DrawImage( _presenceImage, PresenceRect );
 	}
 
-
+	void IButton.SyncDataToDecision( IDecision _ ) { }
 }
 
 
