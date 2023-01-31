@@ -233,7 +233,10 @@ public partial class Board {
 	public void Add( Space space, Space[] adjacents ) {
 		spaces = spaces.Union( new[] {space}).ToArray();
 		space.SetAdjacentToSpaces(adjacents);
-	} // Absolute Stasis / Weave togehter
+
+		// !!! need to update .Layout also
+
+	} // Weave togehter
 
 	/// <returns>Old adjacents</returns>
 	public Space[] Remove( Space space ) {
@@ -241,7 +244,10 @@ public partial class Board {
 		space.Disconnect();
 		spaces = spaces.Where(s => s != space ).ToArray();
 		return oldAdj;
-	} // Absolute Stasis / Weave together
+
+		// !!! need to update .Layout also
+
+	} // Weave together
 	#endregion
 
 	public Space Ocean => Spaces.Single( space => space.IsOcean );

@@ -2,6 +2,17 @@
 ====  Clean Up Items  ====
 ==========================
 
+5 Pre-select Token for Power Cards
+
+5 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.
+
+5 Simplify Wrapping Text
+	=> Pass in the TopLeft coordinates when painting.
+	=> Lowers complexity from Rectangle to a Size
+
+Weave Together
+	BUG - Massive Flooding did not recognize Weaved-Together SS source.
+
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON
 !	flags, special rules,	=> Normal Buttons

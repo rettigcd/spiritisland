@@ -37,11 +37,15 @@ public class WeaveTogetherTheFabricOfPlace {
 		var adjacents = space.Adjacent.Union( other.Adjacent ).Distinct().Where(s=>s!=space&&s!=other).ToList();
 
 		// Disconnect space
-		var removeSpace = space.RemoveFromBoard();
-		var removeOther = other.RemoveFromBoard();
+		Restoreable removeSpace = space.RemoveFromBoard();
+		Restoreable removeOther = other.RemoveFromBoard();
 
 		// Add Multi
 		multi.AddToBoards( adjacents.Distinct() );
+
+		// !!! Any game-wide mod-tokens are going to be put on next space, but will be difficult to split since they aren't visible
+
+		gameState.Log( new LayoutChanged($"{space.Text} and {other.Text} were woven together") );
 
 		// When this effect expires
 		gameState.TimePasses_ThisRound.Push( async (gs) => {
@@ -51,9 +55,10 @@ public class WeaveTogetherTheFabricOfPlace {
 			removeOther.Restore();
 			removeSpace.Restore();
 
+			gameState.Log( new LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
+
 			// divide pieces as you wish.
 			await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Spirit_Power );
-			await DistributePresence( space, other, gs, actionScope );
 			await DistributeTokens( originatorCtx, space, other, gs, actionScope );
 		});
 
@@ -62,39 +67,38 @@ public class WeaveTogetherTheFabricOfPlace {
 
 	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs, UnitOfWork _ ) {
 		// Distribute Tokens (All of them are considered moved.)
-		// !!! not counting unmoved tokens as moved li
-
-		// !!! any old invisible tokens are not being redistributed
-		var srcTokens = gs.Tokens[space];
-		while(srcTokens.Keys.Any()) {
-			var token = (await ctx.Decision( Select.TokenFrom1Space.TokenToPush( space, 100, srcTokens.Keys.OfType<IVisibleToken>().ToArray(), Present.Done ) ))?.Token;
-			if(token == null) break;
-			await ctx.Move( token, space, other );
-		}
+		var tokens = gs.Tokens[space].Keys.OfType<IVisibleToken>().ToArray();
+		var tokenClasses = tokens.Select( x => x.Class ).Distinct().ToArray();
+		await new TokenGatherer( ctx.Target( other ) )
+			.AddGroup( int.MaxValue, tokenClasses )
+			.FilterSource( ss => ss.Space == space )
+			.GatherUpToN();
+		// !!! Remove / Add un-moved tokens so they act like they were moved.
+		// !!! Divy up invisible mod tokens.
 	}
 
-	static async Task DistributePresence( Space space, Space other, GameState gs, UnitOfWork actionScope ) {
-		var dstOptions = new[] { gs.Tokens[other] };
-		var srcTokens = gs.Tokens[space];
+	//static async Task DistributePresence( Space space, Space other, GameState gs, UnitOfWork actionScope ) {
+	//	var dstOptions = new[] { gs.Tokens[other] };
+	//	var srcTokens = gs.Tokens[space];
 
-		foreach(var spirit in gs.Spirits) {
+	//	foreach(var spirit in gs.Spirits) {
 
-			var boundPresence = new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionScope );
-			int count = spirit.Presence.CountOn( srcTokens ); // ! don't check 'can-move', ALWAyS need to adjust/move/cleanup this presence.
+	//		var boundPresence = new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionScope );
+	//		int count = spirit.Presence.CountOn( srcTokens ); // ! don't check 'can-move', ALWAyS need to adjust/move/cleanup this presence.
 
-			while(count > 0) {
-				var dst = await spirit.Gateway.Decision( Select.Space.ForMoving_SpaceToken( "Distribute preseence to:", space, dstOptions, Present.Done, spirit.Presence.Token ) );
-				if(dst == null) break;
+	//		while(count > 0) {
+	//			var dst = await spirit.Gateway.Decision( Select.Space.ForMoving_SpaceToken( "Distribute preseence to:", space, dstOptions, Present.Done, spirit.Presence.Token ) );
+	//			if(dst == null) break;
 
-				// Move - force it, even for presence that can't be moved.
-				// await boundPresence.Move( space, other );
-				spirit.Presence.Adjust( gs.Tokens[space], -1 );
-				await boundPresence.PlaceOn( other ); // trigger move event.
+	//			// Move - force it, even for presence that can't be moved.
+	//			// await boundPresence.Move( space, other );
+	//			spirit.Presence.Adjust( gs.Tokens[space], -1 );
+	//			await boundPresence.PlaceOn( other ); // trigger move event.
 
-				--count;
-			}
-		}
-	}
+	//			--count;
+	//		}
+	//	}
+	//}
 
 	static void MoveAllItemsOnSpace(GameState gs, Space src, Space dst ) {
 		var srcTokens = gs.Tokens[src];

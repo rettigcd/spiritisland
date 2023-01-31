@@ -1,6 +1,4 @@
-﻿using SpiritIsland.BranchAndClaw;
-using SpiritIsland.Select;
-using SpiritIsland.WinForms;
+﻿using SpiritIsland.Select;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -39,7 +37,7 @@ public partial class IslandControl : Control {
 
 	}
 
-	public void Init( GameState gameState, IHaveOptions optionProvider, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
+	public void Init( GameState gameState, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
 
 		// Wind down old
 
@@ -54,7 +52,6 @@ public partial class IslandControl : Control {
 		_adversary = adversary;
 		_cardData.SpiritCardInfo = new SpiritCardInfo( gameState.Spirits[0] ); // !!! 1 spirit only
 
-		optionProvider.NewDecision += OptionProvider_OptionsChanged; // !!! this handler is getting added multiple times
 
 		// Init new Presence, Defend, Isolate
 		// !! we could cache these if we could serialize the Adjustment into a caching-key
@@ -100,7 +97,19 @@ public partial class IslandControl : Control {
 	// Game Dependent
 	RectangleF BoardWorldRect => _boardWorldRect ??= CalcIslandWorldBounds();
 	RectangleF? _boardWorldRect;
-	Dictionary<Space, ManageInternalPoints> InsidePoints => _insidePoints ??= _gameState.AllSpaces.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
+
+	//Dictionary<Space, ManageInternalPoints> InsidePoints => _insidePoints 
+	//	??= _gameState.AllSpaces.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
+
+	ManageInternalPoints InsidePoints( Space space ) {
+		_insidePoints ??= _gameState.AllSpaces.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
+
+		// In case Weave-Together has occurred and the event hasn't propogated here yet.
+		if(!_insidePoints.ContainsKey( space ))
+			_insidePoints.Add( space, new ManageInternalPoints( _gameState.Tokens[space] ) );
+
+		return _insidePoints[space];
+	}
 	Dictionary<Space, ManageInternalPoints> _insidePoints;
 
 	// Game & Window Dependent
@@ -230,12 +239,17 @@ public partial class IslandControl : Control {
 	#region Draw Static Board
 
 	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
-		var perimeterPen = new Pen( SpacePerimeterColor, 5f );
-		var normalizedBoardLayout = board.Layout;
-		for(int i = 0; i < normalizedBoardLayout.Spaces.Length; ++i) {
-			var space = board[i];
+		Pen perimeterPen = new Pen( SpacePerimeterColor, 5f );
+
+		// !!! Bug - Layout needs updated when we weave stuff together.  Out of sync with # of spaces on board.
+		BoardLayout normalizedBoardLayout = board.Layout;
+
+		foreach(var space in board.AllSpaces) {
+			// Space space = board[i];
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
-			var points = normalizedBoardLayout.Spaces[i].Corners.Select( gw_mapper.Map ).ToArray();
+			// SpaceLayout spaceLayout = normalizedBoardLayout.Spaces[i];
+			SpaceLayout spaceLayout = space.Layout;
+			PointF[] points = spaceLayout.Corners.Select( gw_mapper.Map ).ToArray();
 
 			// Draw blocky
 			//pe.Graphics.FillPolygon( brush, points );
@@ -246,7 +260,7 @@ public partial class IslandControl : Control {
 			graphics.DrawClosedCurve( perimeterPen, points, .25f, FillMode.Alternate );
 
 			// Draw Label
-			PointF nameLocation = gw_mapper.Map( InsidePoints[space].NameLocation );
+			PointF nameLocation = gw_mapper.Map( InsidePoints(space).NameLocation );
 			graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, nameLocation );
 		}
 
@@ -447,7 +461,7 @@ public partial class IslandControl : Control {
 
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
 
-		InsidePoints[spaceState.Space].Init(spaceState);
+		InsidePoints(spaceState.Space).Init(spaceState);
 
 		int iconWidth = gw_IconWidth;//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 
@@ -462,7 +476,7 @@ public partial class IslandControl : Control {
 	}
 
 	void DrawTokenTargets( Graphics graphics, SpaceState spaceState, float iconWidth ) {
-		foreach(var tk in InsidePoints[spaceState.Space]._dict) {
+		foreach(var tk in InsidePoints(spaceState.Space)._dict) {
 			var img = ResourceImages.Singleton.GetGhostImage( tk.Key.Img );
 			var p = gw_mapper.Map( new PointF( tk.Value.X, tk.Value.Y ) );
 			Rectangle rect = FitWidth( p.X - iconWidth / 2, p.Y - iconWidth / 2, iconWidth, img.Size );
@@ -484,7 +498,7 @@ public partial class IslandControl : Control {
 		foreach(IVisibleToken token in orderedInvaders) {
 
 			// New way
-			PointF center = gw_mapper.Map( InsidePoints[ss.Space].GetPointFor( token ) );
+			PointF center = gw_mapper.Map( InsidePoints(ss.Space).GetPointFor( token ) );
 			float x = center.X-iconWidth/2;
 			float y = center.Y-iconWidth/2; //!! approximate - need Image to get actual Height to scale
 
@@ -542,7 +556,7 @@ public partial class IslandControl : Control {
 			// calc rect
 			float iconHeight = iconWidth / img.Width * img.Height;
 
-			PointF pt = gw_mapper.Map( InsidePoints[spaceState.Space].GetPointFor(token) );
+			PointF pt = gw_mapper.Map( InsidePoints(spaceState.Space).GetPointFor(token) );
 			Rectangle rect = new Rectangle( (int)(pt.X-iconWidth/2), (int)(pt.Y-iconHeight/2), (int)iconWidth, (int)iconHeight );
 
 			// record token location
@@ -673,7 +687,7 @@ public partial class IslandControl : Control {
 			rect = _tokenLocations[st];
 		else {
 			// Virtual
-			var p = gw_mapper.Map( InsidePoints[st.Space].GetPointFor( st.Token ) ).ToInts();
+			var p = gw_mapper.Map( InsidePoints(st.Space).GetPointFor( st.Token ) ).ToInts();
 			rect = new Rectangle( p.X-hotspotRadius, p.Y-hotspotRadius, hotspotRadius*2, hotspotRadius*2 ); // !!! use token size, whatever that is.
 		}
 
@@ -687,7 +701,7 @@ public partial class IslandControl : Control {
 
 	Point GetPortPoint( Space space, IVisibleToken visibileTokens ) {
 		PointF worldCoord = visibileTokens != null
-			? InsidePoints[space].GetPointFor( visibileTokens )
+			? InsidePoints(space).GetPointFor( visibileTokens )
 			: space.Layout.Center; // normal space 
 		return gw_mapper.Map( worldCoord ).ToInts();
 	}
@@ -870,6 +884,7 @@ public partial class IslandControl : Control {
 
 	#region User Action Events - Notify main form
 
+
 	public event Action<IOption> OptionSelected;
 
 	#endregion
@@ -878,7 +893,7 @@ public partial class IslandControl : Control {
 
 	#region private Option fields
 
-	void OptionProvider_OptionsChanged( IDecision decision ) {
+	public void OptionProvider_OptionsChanged( IDecision decision ) {
 		_decision = decision;
 
 		// !!! Buttonize these

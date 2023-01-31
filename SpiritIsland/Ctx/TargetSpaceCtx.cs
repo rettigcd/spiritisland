@@ -355,10 +355,10 @@ public class TargetSpaceCtx : SelfCtx {
 	/// Use 2 - Select land to place token in.
 	/// </remarks>
 	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {
-		var options = Tokens.Adjacent;
+		var spaceOptions = Tokens.Adjacent.Where(TerrainMapper.IsInPlay);
 		if(filter != null)
-			options = options.Where( s => filter( Target( s.Space ) ) );
-		var space = await Decision( new Select.Space( prompt, options, Present.Always ) );
+			spaceOptions = spaceOptions.Where( s => filter( Target( s.Space ) ) );
+		var space = await Decision( new Select.Space( prompt, spaceOptions, Present.Always ) );
 		return space != null ? Target( space )
 			: null;
 	}

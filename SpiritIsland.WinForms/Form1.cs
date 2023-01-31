@@ -15,8 +15,6 @@ public partial class Form1 : Form, IHaveOptions {
 		InitializeComponent();
 		logForm = new LogForm();
 
-//		Action initArtwork = InitArtwork;
-//		initArtwork.BeginInvoke(null,null);
 		_ = Task.Run(InitArtwork);
 	}
 
@@ -30,7 +28,8 @@ public partial class Form1 : Form, IHaveOptions {
 	public event Action<IDecision> NewDecision;
 
 	void Form1_Load( object sender, EventArgs e ) {
-		this.islandControl.OptionSelected += Select;
+		this.islandControl.OptionSelected += Select; // Allow Form to feed selection into IslandControl
+		NewDecision += islandControl.OptionProvider_OptionsChanged;
 	}
 
 	void Select( IOption option ) {
@@ -191,7 +190,8 @@ public partial class Form1 : Form, IHaveOptions {
 		gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 		gameState.NewLogEntry += islandControl.GameState_NewLogEntry;
 
-		this.islandControl.Init( game.GameState, this, gc.Token, gc.Adversary );
+		this.islandControl.Init( game.GameState, gc.Token, gc.Adversary );
+
 		this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
 
 		// start the game

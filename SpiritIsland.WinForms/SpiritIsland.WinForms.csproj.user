@@ -20,8 +20,5 @@
     <Compile Update="LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="StatusControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
   </ItemGroup>
 </Project>
