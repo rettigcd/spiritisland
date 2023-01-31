@@ -25,7 +25,7 @@ public class Quarantine_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Theory]
-	[InlineData(false)] // 1st card is configed as costal
+	[InlineData(false)] // 1st card is configed as coastal
 	[InlineData(true)]  // A1 A2 A3 are coastland and stopped by Fear
 	public void Level1_ExploreDoesNotAffectCoastland( bool activateFearCard ) {
 
@@ -76,7 +76,7 @@ public class Quarantine_Tests {
 		log.Assert_Ravaged("A4", "A7"); // Sand
 		log.Assert_Built( "A1", "A2", "A3" ); // Costal
 		if( activateFearCard )
-			log.Assert_Explored(); // neither A3 (costal) nor A8 (hanging off of Diseased town) explored
+			log.Assert_Explored(); // neither A3 (coastal) nor A8 (hanging off of Diseased town) explored
 		else
 			log.Assert_Explored( "A3", "A8" );
 
@@ -100,7 +100,7 @@ public class Quarantine_Tests {
 		ctx.TargetSpace("A1").Tokens.Init("1E@1,1Z");
 		ctx.TargetSpace("A2").Tokens.Init("1E@1");
 		ctx.TargetSpace("A3").Tokens.Init("1E@1");
-		// Explore lands (jungle:A3 & A8) have a source (A3 is costal, A8 is town in A5)
+		// Explore lands (jungle:A3 & A8) have a source (A3 is coastal, A8 is town in A5)
 		ctx.TargetSpace("A5").Tokens.Init("1T@2");
 		ctx.TargetSpace("A8").Tokens.Init("1Z");
 

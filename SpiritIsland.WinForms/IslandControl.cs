@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Select;
+﻿using SpiritIsland.BranchAndClaw;
+using SpiritIsland.Select;
 using SpiritIsland.WinForms;
 using System;
 using System.Collections.Generic;
@@ -284,7 +285,7 @@ public partial class IslandControl : Control {
 		int margin = Math.Max( 5, (int)(outterBounds.Height * .05f) );
 		var bounds = outterBounds.InflateBy(-margin);
 
-		using var cardImg = ResourceImages.Singleton.FearCard(); // Maybe load this with the control and not dispose of it every time we draw.
+		using var cardImg = ResourceImages.Singleton.FearCardBack(); // Maybe load this with the control and not dispose of it every time we draw.
 
 		// -1 slot width for #/# and 
 		// -1 slot width for last fear token
@@ -327,7 +328,7 @@ public partial class IslandControl : Control {
 			// Draw Card
 			var top = _gameState.Fear.ActivatedCards.Peek();
 			if(top.Flipped) {
-				using Image img = new FearCardImageManager().GetImage( top );
+				using Image img = FearCardImageManager.GetImage( top );
 				graphics.DrawImage( img, activatedCardRect );
 			} else {
 				graphics.DrawImage( cardImg, activatedCardRect );
@@ -341,7 +342,7 @@ public partial class IslandControl : Control {
 		if(0 < future) {
 			var top = _gameState.Fear.Deck.Peek();
 			if(top.Flipped) {
-				using Image img = new FearCardImageManager().GetImage( top );
+				using Image img = FearCardImageManager.GetImage( top );
 				graphics.DrawImage( img, futureCardRect );
 			} else {
 				// Draw Card
@@ -630,7 +631,7 @@ public partial class IslandControl : Control {
 
 	void DrawFearPopUp( Graphics graphics ) {
 		if(options_FearPopUp is not null) {
-			using Image img = new FearCardImageManager().GetImage( options_FearPopUp );
+			using Image img = FearCardImageManager.GetImage( options_FearPopUp );
 			graphics.DrawImage( img, RegionLayout.PopupFearRect );
 		}
 		if(options_BlightPopUp is not null) {

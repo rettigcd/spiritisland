@@ -11,12 +11,12 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 		=> ReduceDamageAndDontHeal( 1, Invader.City )
 		.Execute(ctx);
 
-	[FearLevel( 2, "Town / City each deal -1 Damage during Ravage. Invaders do not heal Damage at the end of this turn." )]
+	[FearLevel( 2, "Town/City each deal -1 Damage during Ravage. Invaders do not heal Damage at the end of this turn." )]
 	public Task Level2( GameCtx ctx )
 		=> ReduceDamageAndDontHeal( 1, Invader.Town_City )
 		.Execute( ctx );
 
-	[FearLevel( 3, "Town / City each deal -2 Damage during Ravage. Invaders do not heal Damage at the end of this turn." )]
+	[FearLevel( 3, "Town/City each deal -2 Damage during Ravage. Invaders do not heal Damage at the end of this turn." )]
 	public Task Level3( GameCtx ctx )
 		=> ReduceDamageAndDontHeal( 2, Invader.Town_City )
 		.Execute( ctx );

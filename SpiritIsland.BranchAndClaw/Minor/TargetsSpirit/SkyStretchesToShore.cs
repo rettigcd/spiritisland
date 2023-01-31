@@ -10,7 +10,7 @@ public class SkyStretchesToShore {
 		// this turn, target spirit may use 1 slow power as if it were fast or vice versa
 		ctx.Other.AddActionFactory( new ResolveSlowDuringFast_OrViseVersa() );
 
-		// Target Spirit gains +3 range for targeting costal lands only
+		// Target Spirit gains +3 range for targeting coastal lands only
 		RangeCalcRestorer.Save(ctx.Other,ctx.GameState);
 		_ = new SkyStretchesToShoreApi( ctx.Other ); // Auto-binds to spirit
 

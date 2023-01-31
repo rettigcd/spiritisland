@@ -11,14 +11,14 @@ public class EmigrationAccelerates : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Is.Coastal )
 			.ForEachSpirit().Execute(ctx);
 
-	[FearLevel( 2, "Each player removes 1 Explorer / Town from a Coastal land." )]
+	[FearLevel( 2, "Each player removes 1 Explorer/Town from a Coastal land." )]
 	public Task Level2( GameCtx ctx ) 
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Is.Coastal )
 			.ForEachSpirit()
 		.Execute( ctx );
 
-	[FearLevel( 3, "Each player removes 1 Explorer / Town from any land." )]
+	[FearLevel( 3, "Each player removes 1 Explorer/Town from any land." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.In().SpiritPickedLand()

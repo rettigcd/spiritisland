@@ -4,7 +4,7 @@ public class Unrest : FearCardBase, IFearCard {
 	public const string Name = "Unrest";
 	public string Text => Name;
 
-	[FearLevel( 1, "Each player adds 1 strife to a town." )]
+	[FearLevel( 1, "Each player adds 1 Strife to a Town." )]
 	public Task Level1( GameCtx ctx )
 		=> Cmd.AddStrifeTo(1,Invader.Town)
 			.In().SpiritPickedLand()
@@ -12,7 +12,7 @@ public class Unrest : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.Execute(ctx);
 
-	[FearLevel( 2, "Each player adds 1 strife to a town.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
+	[FearLevel( 2, "Each player adds 1 Strife to a Town. For the rest of this turn, Invaders have -1 health per Strife to a minimum of 1." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.Multiple(
 				Cmd.AddStrifeTo( 1, Invader.Town ).In().SpiritPickedLand().ByPickingToken( Invader.Town ).ForEachSpirit(),
@@ -20,7 +20,7 @@ public class Unrest : FearCardBase, IFearCard {
 			)
 			.Execute(ctx);
 
-	[FearLevel( 3, "Each player adds 1 strife to an invader.  For the rest of this turn, invaders have -1 health per strife to a minimum of 1." )]
+	[FearLevel( 3, "Each player adds 1 Strife to an Invader. For the rest of this turn, Invaders have -1 health per Strife to a minimum of 1." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.Multiple(
 				Cmd.AddStrife(1).In().SpiritPickedLand().ByPickingToken( Invader.Any ).ForEachSpirit(),

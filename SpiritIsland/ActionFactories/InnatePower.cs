@@ -155,42 +155,6 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		// Elements
 	}
 
-	public static string[] Tokenize( string s ) => TokenParser.Tokenize( s );
-
-}
-
-public static class TokenParser {
-	public static string[] Tokenize( string s ) {
-
-		var tokens = new Regex( "sacred site|destroyedpresence|presence|fast|slow"
-			+ "|dahan|blight|fear|city|town|explorer"
-			+ "|sun|moon|air|fire|water|plant|animal|earth"
-			+ "|beast|disease|strife|wilds|badlands"
-			+ "|\\+1range" 
-		).Matches( s ).Cast<Match>().ToList();
-
-		var results = new List<string>();
-
-		int cur = 0;
-		while(cur < s.Length) {
-			// no more tokens, go to the end
-			if(tokens.Count == 0) {
-				results.Add( s[cur..] );
-				break;
-			}
-			var nextToken = tokens[0];
-			if(nextToken.Index == cur) {
-				results.Add( "{"+nextToken.Value+"}" );
-				cur = nextToken.Index + nextToken.Length;
-				tokens.RemoveAt( 0 );
-			} else {
-				results.Add( s[cur..nextToken.Index] );
-				cur = nextToken.Index;
-			}
-		}
-		return results.ToArray();
-	}
-
 }
 
 public enum LandOrSpirit { None, Land, Spirit }

@@ -32,10 +32,10 @@ public class StrongAndConstantCurrents{
 
 	static public SpaceAction MoveUpTo2DahanToAnotherCostal => new SpaceAction("Move up to 2 Dahan between target land and one other Costal land.", MoveDahanAction );
 
-	// Move up to 2 between target land and one other costal Land.
+	// Move up to 2 between target land and one other coastal Land.
 	static async Task MoveDahanAction( TargetSpaceCtx ctx ) {
 		int count = 2;
-		var costalCtxs = ctx.GameState.AllActiveSpaces
+		var coastalCtxs = ctx.GameState.AllActiveSpaces
 			.Select( s=>ctx.Target(s.Space) )
 			.Where( x => x.IsCoastal )
 			.Select( x=> x.Tokens )
@@ -43,16 +43,16 @@ public class StrongAndConstantCurrents{
 
 		while(0 < count) {
 
-			var costalWithDahan = costalCtxs
+			var coastalWithDahan = coastalCtxs
 				.SelectMany( x => x.Dahan.NormalKeys.Select(k=>new SpaceToken(x.Space,k)))
 				.ToArray();
 
 			// From
-			var selected = await ctx.Decision( new Select.TokenFromManySpaces( "Select Dahan to move to/from"+ctx.Space, costalWithDahan, Present.Done, ctx.Space ));
+			var selected = await ctx.Decision( new Select.TokenFromManySpaces( "Select Dahan to move to/from"+ctx.Space, coastalWithDahan, Present.Done, ctx.Space ));
 
 			// To:
 			var destination = (selected.Space != ctx.Space) ? ctx.Space
-				: await ctx.Decision( Select.Space.PushToken( selected.Token, selected.Space, costalCtxs, Present.Always ) );
+				: await ctx.Decision( Select.Space.PushToken( selected.Token, selected.Space, coastalCtxs, Present.Always ) );
 
 			await ctx.Move( selected.Token, selected.Space, destination );
 

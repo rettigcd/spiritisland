@@ -5,14 +5,14 @@ public class Isolation : FearCardBase, IFearCard {
 	public const string Name = "Isolation";
 	public string Text => Name;
 
-	[FearLevel( 1, "Each player removes 1 Explorer / Town from a land where it is the only Invader." )]
+	[FearLevel( 1, "Each player removes 1 Explorer/Town from a land where it is the only Invader." )]
 	public Task Level1( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns(1)
 			.From().SpiritPickedLand().Which( Has.Only1ExplorerTown )
 			.ForEachSpirit()
 			.Execute( ctx );
 
-	[FearLevel( 2, "Each player removes 1 Explorer / Town from a land with 2 or fewer Invaders." )]
+	[FearLevel( 2, "Each player removes 1 Explorer/Town from a land with 2 or fewer Invaders." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Has.TwoOrFewerInvaders )

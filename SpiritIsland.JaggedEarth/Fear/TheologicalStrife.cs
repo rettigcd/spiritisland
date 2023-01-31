@@ -10,7 +10,7 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 		=> EachPlayerAddsStrifeInALandWithPresence
 			.Execute( ctx );
 
-	[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
+	[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per Sacred Site they have in lands with Invaders." )]
 	public async Task Level2( GameCtx ctx ) { 
 
 		// Each player adds 1 Strife in a land with Presence

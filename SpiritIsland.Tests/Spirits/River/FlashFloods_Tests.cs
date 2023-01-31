@@ -18,7 +18,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		var board = Board.BuildBoardA();
 		gameState.Island = new Island( board );
 
-		//   And: Presence on A2 (city/costal)
+		//   And: Presence on A2 (city/coastal)
 		var presenceSpace = board[2];
 		spirit.Presence.PlaceOn( presenceSpace, gameState );
 		//   And: 1 of each type of Invaders in Inland space (A4)
@@ -52,7 +52,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		gameState = new GameState( spirit, board ) {
 			Phase = Phase.Fast
 		};
-		//   And: Presence on A2 (city/costal)
+		//   And: Presence on A2 (city/coastal)
 		var presenceSpace = board[2];
 		spirit.Presence.PlaceOn(presenceSpace, gameState);
 		//   And: 1 of each type of Invaders in Costal space (A2)

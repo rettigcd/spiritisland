@@ -82,16 +82,3 @@ public class InnateLayout {
 	#endregion
 
 }
-
-public class TokenPosition {
-	public Img TokenImg;
-	public Rectangle Rect;
-}
-
-public class TextPosition {
-	public TextPosition( string text, RectangleF bounds ) { Text = text; Bounds = bounds; }
-	public readonly string Text;
-	public readonly RectangleF Bounds;
-}
-
-

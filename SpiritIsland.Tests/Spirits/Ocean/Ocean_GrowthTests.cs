@@ -92,7 +92,7 @@ public class Ocean_GrowthTests : GrowthTests {
 	public void PowerPlaceAndPush( string starting, string placeOptions, string ending ) {
 		// gain power card
 		// push 1 presense from each ocean
-		// add presense on costal land range 1
+		// add presense on coastal land range 1
 		_gameState.Island = new Island( BoardA, BoardB, BoardC );
 		Given_HasPresence( starting );
 

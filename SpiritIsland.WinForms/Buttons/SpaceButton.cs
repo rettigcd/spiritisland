@@ -8,13 +8,13 @@ public class SpaceButton : IButton {
 	readonly Func<Space, IVisibleToken, Point> _locationMapper;
 	readonly Space _space;
 	readonly int _hotSpotRadius;
-	int TokenSize { get; set; }
+//	int TokenSize { get; set; }
 
 	public SpaceButton( Func<Space, IVisibleToken, Point> locationMapper, Space space, int hotSpotRadius ) {
 		_locationMapper = locationMapper;
 		_space = space;
 		_hotSpotRadius = hotSpotRadius;
-		TokenSize = hotSpotRadius * 2;
+//		TokenSize = hotSpotRadius * 2;
 	}
 
 	public Rectangle Bounds {

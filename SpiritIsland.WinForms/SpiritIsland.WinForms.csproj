@@ -79,6 +79,7 @@
     <None Remove="images\icons\ReclaimAll.png" />
     <None Remove="images\icons\Reclaim_Half.png" />
     <None Remove="images\icons\red-x.png" />
+    <None Remove="images\icons\Sacredsite.png" />
     <None Remove="images\icons\Simple_air.png" />
     <None Remove="images\icons\Simple_animal.png" />
     <None Remove="images\icons\Simple_earth.png" />
@@ -125,6 +126,10 @@
     <None Remove="images\Presenceicon.png" />
     <None Remove="images\presence\greenorangeswirl.png" />
     <None Remove="images\presence\red.png" />
+    <None Remove="images\textures\cracks.jpg" />
+    <None Remove="images\textures\flowing.jpg" />
+    <None Remove="images\textures\parchment.jpg" />
+    <None Remove="images\textures\smoke.png" />
     <None Remove="images\tokens\1 cardplay.png" />
     <None Remove="images\tokens\2 cardplay.png" />
     <None Remove="images\tokens\20211007_220859.jpg" />
@@ -278,6 +283,7 @@
     <EmbeddedResource Include="images\icons\ReclaimAll.png" />
     <EmbeddedResource Include="images\icons\Reclaim_Half.png" />
     <EmbeddedResource Include="images\icons\red-x.png" />
+    <EmbeddedResource Include="images\icons\Sacredsite.png" />
     <EmbeddedResource Include="images\icons\Simple_air.png" />
     <EmbeddedResource Include="images\icons\Simple_animal.png" />
     <EmbeddedResource Include="images\icons\Simple_earth.png" />
@@ -308,6 +314,9 @@
     <EmbeddedResource Include="images\minor_inverted.png" />
     <EmbeddedResource Include="images\presence\greenorangeswirl.png" />
     <EmbeddedResource Include="images\presence\red.png" />
+    <EmbeddedResource Include="images\textures\cracks.jpg" />
+    <EmbeddedResource Include="images\textures\flowing.jpg" />
+    <EmbeddedResource Include="images\textures\parchment.jpg" />
     <EmbeddedResource Include="images\tokens\badlands.png" />
     <EmbeddedResource Include="images\tokens\beast.png" />
     <EmbeddedResource Include="images\tokens\blight.png" />
@@ -356,6 +365,10 @@
   <ItemGroup>
     <EmbeddedResource Include="images\icons\TownCityOrBlight.png" />
     <EmbeddedResource Include="playsir-regular.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="images\textures\smoke.png" />
   </ItemGroup>
 
   <ItemGroup>

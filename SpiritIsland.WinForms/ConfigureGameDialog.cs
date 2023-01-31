@@ -5,8 +5,6 @@ using SpiritIsland.FeatherAndFlame;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-using System.Collections.Generic;
 
 namespace SpiritIsland.WinForms;
 

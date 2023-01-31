@@ -60,17 +60,19 @@ public class ResourceImages {
 	public Bitmap GetImage( Img img )               => GetResourceImage( ToResource( img ) );
 	public Bitmap Strife()                          => GetResourceImage("tokens.strife.png");
 	public Bitmap Fear()                            => GetResourceImage("tokens.fear.png");
-	public Bitmap FearCard()                        => GetResourceImage("tokens.fearcard.png");
+	public Bitmap FearCardBack()                    => GetResourceImage("tokens.fearcard.png");
 	public Bitmap RedX()                            => GetResourceImage("icons.red-x.png");
 	public Bitmap Hourglass()                       => GetResourceImage("icons.hourglass.png");
 	public Bitmap TerrorLevel( int terrorLevel )    => GetResourceImage($"icons.TerrorLevel{terrorLevel}.png" );
 	public Bitmap GetInvaderCard(string text)       => GetResourceImage($"invaders.{text}");
-	
+
+	public Bitmap Texture( string texture ) => GetResourceImage( $"textures.{texture}" );
+
 	public Image GetInvaderCard( InvaderCard card ) {
 		if( !card.Flipped )
 			return GetInvaderCardBack( card.InvaderStage );
 
-		string key = $"invaders.{card.Text}.png";
+		string key = $"invaders\\{card.Text}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap image = InvaderCardBuilder.BuildInvaderCard( card );
@@ -79,7 +81,7 @@ public class ResourceImages {
 	}
 
 	Image GetInvaderCardBack( int stage ) {
-		string key = $"invaders.back_{stage}.png";
+		string key = $"invaders\\back_{stage}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap image = InvaderCardBuilder.BuildInvaderCardBack( stage );
@@ -87,9 +89,22 @@ public class ResourceImages {
 		return image;
 	}
 
+	static string FearKey( IFearCard fearCard ) => $"fear\\{fearCard.Text}.png";
+	public Image GetFearCard( IFearCard card ) {
+		InitFearCard( card );
+		return _cache.Get( FearKey(card) );
+	}
+
+	public void InitFearCard( IFearCard card ) {
+		string key = FearKey( card );
+		if(_cache.Contains( key )) return;
+		using Bitmap img = (Bitmap)FearCardImageManager.GetImage( card );
+		_cache.Add( key, img );
+	}
+
 
 	public Image GetBlightCard( IBlightCard card ) {
-		string key = "bi_" + card.Name + ".png";
+		string key = "blight\\" + card.Name + ".png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap bitmap = BlightCardBuilder.BuildBlighted( card );
@@ -100,7 +115,7 @@ public class ResourceImages {
 	}
 
 	public Image GetHealthBlightCard() {
-		string key = "bi_healthy.png";
+		string key = "blight\\healthy.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap bitmap = BlightCardBuilder.BuildHealthy();
@@ -112,7 +127,7 @@ public class ResourceImages {
 
 	public Image GetGhostImage( Img img ) {
 
-		string key = $"ghost {img}.png";
+		string key = $"ghosts\\{img}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap image = GetImage( img );
@@ -183,7 +198,7 @@ public class ResourceImages {
 	}
 
 	public Image GetGeneralInstructions( string description, float textEmSize, Size rowSize ) {
-		string key = "gi_" + description.Replace(' ','_')[..50] +".png";
+		string key = "innateOptions\\gi_" + description.Replace(' ','_')[..50] +".png";
 		if(_cache.Contains(key)){
 			var image = _cache.Get(key);
 			if( rowSize.Width < image.Width) return image;
@@ -207,7 +222,7 @@ public class ResourceImages {
 
 
 	public Image GetInnateOption( IDrawableInnateOption innateOption, float emSize, Size rowSize ) {
-		string key = "innateOpt_" + innateOption.Text.Replace( ' ', '_' ).Replace( '/', '_' ).Replace( '.', '_' ) + ".png";
+		string key = "innateOptions\\" + innateOption.Text.Replace( ' ', '_' ).Replace( '/', '_' ).Replace( '.', '_' ) + ".png";
 		if(_cache.Contains( key )) {
 			var image = _cache.Get( key );
 			if(rowSize.Width < image.Width) return image;
@@ -252,7 +267,7 @@ public class ResourceImages {
 	}
 
 	public Image GetTrack( IconDescriptor icon ) {
-		string key = "track " + GetKey( icon ) + ".png";
+		string key = "track\\" + GetKey( icon ) + ".png";
 		if(_cache.Contains(key)) return _cache.Get(key);
 
 		const int dimension = 200;
@@ -377,6 +392,7 @@ public class ResourceImages {
 		Img.Icon_Wilds              => "icons.Wildsicon.png",
 		Img.Icon_Fast               => "icons.Fasticon.png",
 		Img.Icon_Presence           => "icons.Presenceicon.png",
+		Img.Icon_Sacredsite         => "icons.Sacredsite.png",
 		Img.Icon_Slow               => "icons.Slowicon.png",
 		Img.Icon_Disease            => "icons.Diseaseicon.png",
 		Img.Icon_Strife             => "icons.Strifeicon.png",

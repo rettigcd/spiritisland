@@ -36,7 +36,7 @@ public class Ocean : Spirit {
 				new PlaceInOcean(),
 				new PlaceInOcean()
 			), 
-			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on costal land range 1
+			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on coastal land range 1
 			new GrowthOption( 
 				new PushPresenceFromOcean(),
 				new DrawPowerCard(),

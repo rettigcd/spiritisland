@@ -14,13 +14,13 @@ public class AngryMobs : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.Execute( ctx );
 
-	[FearLevel( 2, "In each land with 2 or more Explorer, destroy 1 Explorer / Town per 2 Explorer." )] 
+	[FearLevel( 2, "In each land with 2 or more Explorer, destroy 1 Explorer/Town per 2 Explorer." )] 
 	public Task Level2( GameCtx ctx )
 		=> Level2_Each2ExplorersDestroy_ExplorerOrTown
 			.In().EachActiveLand() // Don't need filter because it is on the Command
 			.Execute( ctx );
 
-	[FearLevel( 3, "Terror Level 3: In each land with 2 or more Explorer, destroy 1 Invader per 2 Explorer." )] 
+	[FearLevel( 3, "In each land with 2 or more Explorer, destroy 1 Invader per 2 Explorer." )] 
 	public Task Level3( GameCtx gameCtx )
 		=> Level3_Each2ExplorersDestroy_Invader
 			.In().EachActiveLand() // don't need filter because it is on the command.

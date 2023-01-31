@@ -5,12 +5,12 @@ public class Quarantine : FearCardBase, IFearCard {
 	public const string Name = "Quarantine";
 	public string Text => Name;
 
-	[FearLevel( 1, "Explore does not affect coastal lands." )]
+	[FearLevel( 1, "Explore does not affect Coastal lands." )]
 	public Task Level1( GameCtx ctx )
 		=> Cmd.Skip1Explore( Name ).In().EachActiveLand().Which( Is.Coastal )
 		.Execute( ctx );
 
-	[FearLevel( 2, "Explore does not affect coastal lands. Lands with disease are not a source of invaders when exploring." )]
+	[FearLevel( 2, "Explore does not affect Coastal lands. Lands with Disease are not a source of Invaders when exploring." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.Multiple(
 			Cmd.Skip1Explore( Name ).In().EachActiveLand().Which( Is.Coastal ),
@@ -18,7 +18,7 @@ public class Quarantine : FearCardBase, IFearCard {
 		)
 		.Execute(ctx);
 
-	[FearLevel( 3, "Explore does not affect coastal lands.  Invaders do not act in lands with disease." )]
+	[FearLevel( 3, "Explore does not affect Coastal lands. Invaders do not act in lands with Disease." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.Multiple(
 			Cmd.Skip1Explore( Name ).In().EachActiveLand().Which( Is.Coastal ),

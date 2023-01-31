@@ -159,7 +159,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		Board board = Board.BuildBoardA();
 		gameState.Island = new Island(board);
 
-		//   And: Presence on A5 (city/costal)
+		//   And: Presence on A5 (city/coastal)
 		var presenceSpace = board.Spaces.Single(s=>s.Label==startingPresence);
 		spirit.Presence.PlaceOn(presenceSpace, gameState);
 

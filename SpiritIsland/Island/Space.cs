@@ -55,7 +55,7 @@ public abstract class Space
 
 	#endregion
 
-	/// <summary> If adjacent to ocean, sets is-costal </summary>
+	/// <summary> If adjacent to ocean, sets is-coastal </summary>
 	public void SetAdjacentToSpaces( params Space[] spaces ) {
 		foreach(var land in spaces) {
 			Connect( land );

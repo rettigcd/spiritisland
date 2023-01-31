@@ -5,19 +5,19 @@ namespace SpiritIsland.WinForms;
 
 public class ImageSizeCalculator {
 
-	readonly int _iconDimension;
-	readonly int _elementDimension;
+	public int IconDimension { get; set; }
+	public int ElementDimension { get; set; }
 
 	public ImageSizeCalculator(int iconDimension, int elementDimension ) {
-		_iconDimension = iconDimension;
-		_elementDimension = elementDimension;
+		IconDimension = iconDimension;
+		ElementDimension = elementDimension;
 	}
 
 	public (Size,Img) GetTokenDetails( string tokenName ) {
 		var img = SimpleWordToIcon( tokenName );
 		var size = "sun|moon|air|fire|water|plant|animal|earth".Contains( tokenName )
-			? new Size( _elementDimension, _elementDimension )          // elements get special size
-			: CalcIconSize( img, _iconDimension ); // non-elements must fit inside iconDimension
+			? new Size( ElementDimension, ElementDimension )          // elements get special size
+			: CalcIconSize( img, IconDimension ); // non-elements must fit inside iconDimension
 		return (size,img);
 	}
 
@@ -37,6 +37,7 @@ public class ImageSizeCalculator {
 	static Img SimpleWordToIcon( string token ) {
 		return token switch {
 			"dahan" => Img.Icon_Dahan,
+			"sacred site" => Img.Icon_Sacredsite,
 			"city" => Img.Icon_City,
 			"town" => Img.Icon_Town,
 			"explorer" => Img.Icon_Explorer,

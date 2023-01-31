@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using SpiritIsland;
 
 namespace SpiritIsland.WinForms;
@@ -9,30 +10,6 @@ namespace SpiritIsland.WinForms;
 /// Generic wrap-column text layout engine
 /// </summary>
 public class WrappingLayout {
-
-	#region layout things
-
-	// Generic layout
-	readonly Point _topLeft;
-	readonly Size _rowSize;
-	readonly int _textCenterOffset;
-
-	int Right => _topLeft.X + _rowSize.Width;
-	int RemainingWidth => _topLeft.X + _rowSize.Width - _x;
-
-	public readonly float _textEmSize;
-
-	// Moves as we add stuff
-	int _x;
-	int _y;
-
-	readonly Graphics _graphics; // determining text size
-	readonly ImageSizeCalculator _imageSizeCalculator;// determining icon size
-
-	public readonly List<TokenPosition> _tokens = new();
-	public readonly Dictionary<FontStyle, List<TextPosition>> _texts = new();
-
-	#endregion
 
 	Font UsingFont( FontStyle style ) => new Font( FontFamily.GenericSansSerif, _textEmSize, style, GraphicsUnit.Pixel );
 
@@ -60,6 +37,11 @@ public class WrappingLayout {
 		_graphics = graphics;
 	}
 	#endregion
+
+	public int IconDimension {
+		get => _imageSizeCalculator.IconDimension;
+		set => _imageSizeCalculator.IconDimension = value;
+	}
 
 	readonly int _maxIconHeight; // the larger of the icons and the elements
 
@@ -90,15 +72,14 @@ public class WrappingLayout {
 		}
 
 
-		var descriptionParts = InnatePower.Tokenize( description );
+		var descriptionParts = TokenParser.Tokenize( description );
 
 		foreach(var part in descriptionParts) {
 			if(part[0] == '{' && part[^1] == '}') {
 
 				// - Token -
-
 				var (sz, img) = _imageSizeCalculator.GetTokenDetails( part[1..^1] );
-				_tokens.Add( new TokenPosition { TokenImg = img, Rect = AddToken( sz ) } );
+				AddToken( img, sz );
 
 			} else {
 
@@ -111,12 +92,20 @@ public class WrappingLayout {
 
 					if(lengthThatFits == currentString.Length) {
 						// it all fits
-						texts.Add( new TextPosition( currentString, GetFullFitString( currentString ) ) );
+						float fullLength = Measure( currentString );
+						var fullLengthToken = new TextPosition( currentString, GetFullFitString( fullLength ) );
+						texts.Add( fullLengthToken );
+						_rowItems.Add( fullLengthToken );
 						break;
 					} else {
 						// only part fits
 						string phraseThatFits = currentString[..lengthThatFits];
-						texts.Add( new TextPosition( phraseThatFits, GetPartialFitString( currentString ) ) );
+						float partialLength = Measure( phraseThatFits );
+						var partialLengthToken = new TextPosition( phraseThatFits, GetPartialFitString( partialLength ) );
+						texts.Add( partialLengthToken );
+						_rowItems.Add( partialLengthToken );
+						LineComplete();
+
 						currentString = currentString[lengthThatFits..].Trim();
 					}
 				}
@@ -151,49 +140,59 @@ public class WrappingLayout {
 		return bestLength;
 	}
 
-	RectangleF GetFullFitString( string text ) => GetFullFitString( Measure( text ) );
-
-	RectangleF GetPartialFitString( string text ) => GetPartialFitString( Measure( text ) );
-
 	/// <summary> Centers vertically on line </summary>
-	Rectangle AddToken( Size tokenSize ) {
+	void AddToken( Img img, Size tokenSize ) {
 
-		// Give tokens a small left margin (if they are not at beginning of the line)
-		_x += (int)(_rowSize.Height * .05f);
+		// If not 1st item on line, Give tokens a small left margin
+		if(0 < _rowItems.Count)
+			_x += (int)(_rowSize.Height * .05f);
 
 		// Wrap?
 		bool wrap = Right < _x + tokenSize.Width;
 		if(wrap)
-			GoToNextLine();
+			LineComplete();
 
 		int tokenY = _y + _textCenterOffset - tokenSize.Height / 2;
 		var rect = new Rectangle( _x, tokenY, tokenSize.Width, tokenSize.Height );
 
 		_x += tokenSize.Width;
 
-		return rect;
+		var imgToken = new TokenPosition( img, rect );
+		_tokens.Add( imgToken );
+		_rowItems.Add( imgToken );
 	}
 
-	public RectangleF GetFullFitString( float width ) {
+	RectangleF GetFullFitString( float width ) {
 		var rect = new RectangleF( _x, _y, width, _rowSize.Height );
 		_x += (int)width;
 		return rect;
 	}
 
-	public RectangleF GetPartialFitString( float width ) {
+	RectangleF GetPartialFitString( float width ) {
 		var b = new RectangleF( _x, _y, width, _rowSize.Height );
-		GoToNextLine();
+		_x += (int)width; // move to end so we can calculate RemainingWidth for alignment.
 		return b;
 	}
-	public void GoToNextLine() {
-		_x = _nextLineStartingX;
+
+	void LineComplete() {
+		// Capture Row width
+		++RowCount;
+
+		// Horizontal Alignment
+		int offset = HorizontalAlignment switch { Align.Center => RemainingWidth / 2, Align.Far => RemainingWidth, _ => 0 };
+		foreach(IMoveHorizontally moveable in _rowItems)
+			moveable.Move( offset );
+		_rowItems.Clear();
+		
+		// Go to Next Line
+		_x = NextLineStartingX;
 		_y += _rowSize.Height;
+
 	}
-	int _nextLineStartingX => _topLeft.X + Indent;
 
 	public void FinalizeBounds() {
-		if(_nextLineStartingX < _x)
-			GoToNextLine();
+		if(NextLineStartingX < _x)
+			LineComplete();
 		var x = new Rectangle( _topLeft.X, _topLeft.Y, _rowSize.Width, _y - _topLeft.Y );
 		_bounds = x;
 	}
@@ -203,6 +202,21 @@ public class WrappingLayout {
 
 	public void IncY( int deltaY ) { _y += deltaY; }
 
+	public void PrivateAdjust( int deltaX, int deltaY ) {
+		foreach(var t in _tokens) { 
+			t.Bounds.X+= deltaX;
+			t.Bounds.Y+= deltaY;
+		}
+		foreach(var pair in _texts)
+			foreach(var t in pair.Value) {
+				t.Bounds.X+= deltaX;
+				t.Bounds.Y+= deltaY;
+			}
+		if(_bounds.HasValue) {
+			Rectangle b = _bounds.Value;
+			_bounds = new Rectangle( b.X+deltaX, b.Y+deltaY, b.Width, b.Height );
+		}
+	}
 
 	public void Paint( Graphics graphics ) {
 		var layout = this;
@@ -210,7 +224,7 @@ public class WrappingLayout {
 		// Draw Tokens
 		using(var imageDrawer = new CachedImageDrawer())
 			foreach(TokenPosition tp in layout._tokens)
-				imageDrawer.Draw( graphics, tp.TokenImg, tp.Rect );
+				imageDrawer.Draw( graphics, tp.TokenImg, tp.Bounds );
 
 		// Draw Text
 		using var verticalAlignCenter = new StringFormat { LineAlignment = StringAlignment.Center };
@@ -220,7 +234,86 @@ public class WrappingLayout {
 					graphics.DrawString( sp.Text, font, Brushes.Black, sp.Bounds, verticalAlignCenter );
 	}
 
+	#region layout things
+
+	// Generic layout
+	readonly Point _topLeft;
+	readonly Size _rowSize;
+	readonly int _textCenterOffset;
+
+	int Right             => _topLeft.X + _rowSize.Width;
+	int RemainingWidth    => _topLeft.X + _rowSize.Width - _x;
+	int NextLineStartingX => _topLeft.X + Indent;
+
+	// Moves as we add stuff
+	int _x;
+	int _y;
+
+	readonly Graphics _graphics; // determining text size
+	readonly ImageSizeCalculator _imageSizeCalculator;// determining icon size
+
+	public int RowCount { get; private set; } = 0;
+	public readonly float _textEmSize;
+
+	public Align HorizontalAlignment = Align.Near; // left
+	public readonly List<TokenPosition> _tokens = new();
+	public readonly Dictionary<FontStyle, List<TextPosition>> _texts = new();
+
+	readonly List<IMoveHorizontally> _rowItems = new();
+
+	#endregion
+
+	interface IMoveHorizontally { void Move( int deltaX ); }
+
+	public class TokenPosition : IMoveHorizontally {
+		public TokenPosition( Img tokenImg, RectangleF rect ) { TokenImg = tokenImg; Bounds = rect; }
+		public Img TokenImg;
+		public RectangleF Bounds;
+		public void Move( int deltaX ) => Bounds.X += deltaX;
+	}
+
+	public class TextPosition : IMoveHorizontally {
+		public TextPosition( string text, RectangleF bounds ) { Text = text; Bounds = bounds; }
+		public readonly string Text;
+		public RectangleF Bounds;
+		public void Move( int deltaX ) => Bounds.X += (float)deltaX;
+	}
 
 }
 
+public static class TokenParser {
+	public static string[] Tokenize( string s ) {
+
+		var tokens = new Regex( "sacred site|destroyedpresence|presence|fast|slow"
+			+ "|dahan|blight|fear|city|town|explorer"
+			+ "|sun|moon|air|fire|water|plant|animal|earth"
+			+ "|beast|disease|strife|wilds|badlands"
+			+ "|\\+1range", RegexOptions.IgnoreCase
+		).Matches( s ).Cast<Match>().ToList();
+
+		var results = new List<string>();
+
+		int cur = 0;
+		while(cur < s.Length) {
+			// no more tokens, go to the end
+			if(tokens.Count == 0) {
+				results.Add( s[cur..] );
+				break;
+			}
+			var nextToken = tokens[0];
+			if(nextToken.Index == cur) {
+				// Add this token to the results
+				results.Add( "{" + nextToken.Value.ToLower() + "}" );
+				cur = nextToken.Index + nextToken.Length;
+				tokens.RemoveAt( 0 );
+			} else {
+				// Add strings to the results
+				results.Add( s[cur..nextToken.Index] );
+				cur = nextToken.Index;
+			}
+		}
+		return results.ToArray();
+	}
+
+}
 

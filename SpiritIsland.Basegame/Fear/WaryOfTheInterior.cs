@@ -13,7 +13,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.Execute(ctx);
 		
-	[FearLevel( 2, "Each player removes 1 Explorer / Town from an Inland land." )]
+	[FearLevel( 2, "Each player removes 1 Explorer/Town from an Inland land." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Is.Inland )
@@ -21,7 +21,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.Execute( ctx );
 
-	[FearLevel( 3, "Each player removes 1 Explorer / Town from any land." )]
+	[FearLevel( 3, "Each player removes 1 Explorer/Town from any land." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand()

@@ -5,7 +5,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 	public const string Name = "Fear of the Unseen";
 	public string Text => Name;
 
-	[FearLevel( 1, "Each player removes 1 Explorer / Town from a land with SacredSite." )]
+	[FearLevel( 1, "Each player removes 1 Explorer/Town from a land with Sacred Site." )]
 	public Task Level1( GameCtx fearCtx ) {
 		return Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Has.MySacredSite )
@@ -14,7 +14,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 			.Execute( fearCtx );
 	}
 
-	[FearLevel( 2, "Each player removes 1 Explorer / Town from a land with Presence." )]
+	[FearLevel( 2, "Each player removes 1 Explorer/Town from a land with Presence." )]
 	public Task Level2( GameCtx fearCtx ) {
 		return Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Has.YourPresence )
@@ -23,7 +23,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 			.Execute( fearCtx );
 	}
 
-	[FearLevel( 3, "Each player removes 1 Explorer / Town from a land with Presence, or 1 City from a land with SacredSite." )]
+	[FearLevel( 3, "Each player removes 1 Explorer/Town from a land with Presence, or 1 City from a land with Sacred Site." )]
 	public Task Level3( GameCtx ctx ) {
 		return Cmd.Pick1(  // !! this could be flattened
 				Cmd.RemoveExplorersOrTowns( 1 ).From().SpiritPickedLand().Which( Has.YourPresence ),

@@ -107,7 +107,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	//	Boon of Vigor => 0 => fast,any spirit		=> sun, water, plant	=> If you target yourself, gain 1 energy.  If you target another spirit, they gain 1 energy per power card they played this turn
 	//	River's Bounty => 0 => slow, range 0, any	=> sun, water, animal	=> gather up to 2 dahan.  If ther are now at least 2 dahan, add 1 dahan and gain +1 energy
 	//	Wash Away => 1 => slow, range 1, any		=> water mountain		=> Push up to 3 explorers / towns
-	//	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is costal +1 damage.
+	//	Flash Floods => 2 => fast, range 1, any		=> sun, water			=> 1 Damange.  If target land is coastal +1 damage.
 
 	[Theory]
 	[InlineData("Boon of Vigor")]

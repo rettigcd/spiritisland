@@ -13,7 +13,7 @@ public class Retreat : FearCardBase, IFearCard {
 			.Execute( ctx );
 	}
 
-	[FearLevel( 2, "Each player may Push up to 3 Explorer / Town from an Inland land." )]
+	[FearLevel( 2, "Each player may Push up to 3 Explorer/Town from an Inland land." )]
 	public Task Level2( GameCtx ctx ) {
 		return Cmd.PushUpToNInvaders( 3, Invader.Explorer_Town )
 			.From().SpiritPickedLand().Which( Is.Inland )
@@ -21,7 +21,7 @@ public class Retreat : FearCardBase, IFearCard {
 			.Execute( ctx );
 	}
 
-	[FearLevel( 3, "Each player may Push any number of Explorer / Town from one land." )]
+	[FearLevel( 3, "Each player may Push any number of Explorer/Town from one land." )]
 	public Task Level3( GameCtx ctx ) {
 		return Cmd.PushUpToNInvaders( int.MaxValue, Invader.Explorer_Town )
 			.From().SpiritPickedLand()

@@ -5,13 +5,13 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 	public const string Name = "Explorers are Reluctant";
 	public string Text => Name;
 
-	[FearLevel( 1, "During the next normal explore, skip the lowest-numbered land matching the invader card on each board." )]
+	[FearLevel( 1, "During the next normal Explore, skip the lowest-numbered land matching the Invader card on each board." )]
 	public Task Level1( GameCtx ctx )
-		=> Cmd.Adjust1Token("Skip the lowest-numbered land matching the invader card", new SkipLowestNumberedExplore(Name) )
+		=> Cmd.Adjust1Token("Skip the lowest-numbered land matching the Invader card", new SkipLowestNumberedExplore(Name) )
 			.In().EachActiveLand()
 			.Execute( ctx );
 
-	[FearLevel( 2, "Skip the next normal explore. During the next invader phase, draw an adidtional explore card." )]
+	[FearLevel( 2, "Skip the next normal Explore. During the next Invader phase, draw an adidtional Explore card." )]
 	public Task Level2( GameCtx ctx ) {
 		var deck = ctx.GameState.InvaderDeck;
 		deck.Explore.SkipNextNormal();
@@ -19,7 +19,7 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
-	[FearLevel( 3, "Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
+	[FearLevel( 3, "Skip the next normal Explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
 	public Task Level3( GameCtx ctx ) {
 		ctx.GameState.AddToAllActiveSpaces(new SkipExploreTo(Name)); // !!! Does this still trigger the escalation ???
 		return Task.CompletedTask;

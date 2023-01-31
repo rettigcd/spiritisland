@@ -4,7 +4,7 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 	public const string Name = "Immigration Slows";
 	public string Text => Name;
 
-	[FearLevel( 1, "During the next normal build, skip the lowest-numbered land matching the invader card on each board." )]
+	[FearLevel( 1, "During the next normal build, skip the lowest-numbered land matching the Invader card on each board." )]
 	public Task Level1( GameCtx ctx ) {
 
 		// this is the next normal build,
@@ -18,7 +18,7 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
-	[FearLevel( 2, "Skip the next normal build. The build card remains in place instead of shifting left." )]
+	[FearLevel( 2, "Skip the next normal Build. The Build card remains in place instead of shifting left." )]
 	public Task Level2( GameCtx ctx ) {
 		var build = ctx.GameState.InvaderDeck.Build;
 		// Skip the next normal build.
@@ -29,7 +29,7 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
-	[FearLevel( 3, "Skip the next normal build.  The build card shifts left as usual." )]
+	[FearLevel( 3, "Skip the next normal build. The build card shifts left as usual." )]
 	public Task Level3( GameCtx ctx ) {
 		// Skip the next normal build.
 		ctx.GameState.InvaderDeck.Build.SkipNextNormal();

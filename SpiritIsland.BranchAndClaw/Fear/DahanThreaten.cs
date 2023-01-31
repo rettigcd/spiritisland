@@ -5,7 +5,7 @@ public class DahanThreaten : FearCardBase, IFearCard {
 	public const string Name = "Dahan Threaten";
 	public string Text => Name;
 
-	[FearLevel( 1, "each player adds 1 strife in a land with dahan" )]
+	[FearLevel( 1, "Each player adds 1 Strife in a land with Dahan." )]
 	public Task Level1( GameCtx ctx )
 		=> Cmd.AddStrife(1)
 			.In()
@@ -15,14 +15,14 @@ public class DahanThreaten : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.Execute( ctx );
 
-	[FearLevel( 2, "each player adds 1 strife in a land with dahan. For the rest of this turn, invaders have -1 health per strife to a minimum of 1" )]
+	[FearLevel( 2, "Each player adds 1 Strife in a land with Dahan. For the rest of this turn, Invaders have -1 health per Strife to a minimum of 1." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.Multiple(
 				Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.Dahan ).ForEachSpirit(),
 				Cmd.StrifePenalizesHealth
 			).Execute( ctx );
 
-	[FearLevel( 3, "Each player adds 1 strife in a land with dahan.  In every land with strife, 1 damage per dahan" )]
+	[FearLevel( 3, "Each player adds 1 Strife in a land with Dahan. In every land with Strife, 1 Damage per Dahan." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.Multiple(
 			Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.Dahan ).ForEachSpirit(),

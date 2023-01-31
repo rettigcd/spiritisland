@@ -12,7 +12,7 @@ public class SenseOfDread : FearCardBase, IFearCard {
 			.Execute( ctx );
 	}
 
-	[FearLevel(2, "On Each Board: Remove 1 Explorer / Town from a land matching a Ravage card." )]
+	[FearLevel(2, "On Each Board: Remove 1 Explorer/Town from a land matching a Ravage card." )]
 	public Task Level2( GameCtx ctx ) { 
 		return Cmd.RemoveExplorersOrTowns( 1 ).From().OneLandPerBoard().Which( MatchesRavageCard )
 			.ForEachBoard()

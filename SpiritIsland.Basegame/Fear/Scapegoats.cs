@@ -17,7 +17,7 @@ public class Scapegoats : FearCardBase, IFearCard {
 			.In().EachActiveLand()
 			.Execute( ctx );
 
-	[FearLevel( 3, "Destroy all Explorer in lands with Town / City. Each City destroys 1 Town in its land." )]
+	[FearLevel( 3, "Destroy all Explorer in lands with Town/City. Each City destroys 1 Town in its land." )]
 	public Task Level3( GameCtx ctx )
 		=> DestroyAllExplorersAnd1TowPerCity
 			.In().EachActiveLand()

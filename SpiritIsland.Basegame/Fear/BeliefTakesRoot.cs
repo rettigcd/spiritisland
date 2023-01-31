@@ -11,7 +11,7 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 			.On().EachActiveLand().Which( Has.AnySpiritPresence )
 			.Execute( ctx );
 
-	[FearLevel( 2, "Defend 2 in all lands with Presence. Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders." )]
+	[FearLevel( 2, "Defend 2 in all lands with Presence. Each Spirit gains 1 Energy per Sacred Site they have in lands with Invaders." )]
 	public async Task Level2( GameCtx ctx ) {
 		await Cmd.Defend( 2 )
 			.On().EachActiveLand().Which( Has.AnySpiritPresence )

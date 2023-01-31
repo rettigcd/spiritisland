@@ -7,7 +7,7 @@ public class TidalBoon {
 	[SpiritCard(Name,1,Element.Moon,Element.Water,Element.Earth),Slow,AnotherSpirit]
 	static public async Task Act( TargetSpiritCtx ctx ) {
 
-		// If dahan are pushed to your ocean, you may move them to any costal land instead of drowning them.
+		// If dahan are pushed to your ocean, you may move them to any coastal land instead of drowning them.
 		Ocean.EnableSavingDahan(ctx.ActionScope);
 
 		// target spirit gains 2 energy 

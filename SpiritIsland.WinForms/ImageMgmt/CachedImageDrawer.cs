@@ -13,7 +13,7 @@ namespace SpiritIsland.WinForms {
 
 		public CachedImageDrawer() {}
 
-		public void Draw(Graphics graphics, Img img, Rectangle rect) {
+		public void Draw(Graphics graphics, Img img, RectangleF rect) {
 			graphics.DrawImage( GetImage(img), rect );
 		}
 

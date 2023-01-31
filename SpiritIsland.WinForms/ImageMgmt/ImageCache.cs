@@ -40,6 +40,12 @@ class ImageCache {
 		const long quality = 80L; // 1..100?
 		var encoderParameters = new EncoderParameters( 1 );
 		encoderParameters.Param[0] = new EncoderParameter( Encoder.Quality, quality );
+
+		// Enshure subfolder exists.
+		string directory = System.IO.Path.GetDirectoryName( filePathAndName );
+		if(!Directory.Exists(directory))
+			Directory.CreateDirectory(directory);
+
 		bmp.Save( filePathAndName, codec, encoderParameters );
 	}
 

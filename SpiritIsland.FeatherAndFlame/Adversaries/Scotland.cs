@@ -104,7 +104,7 @@ public class Scotland : IAdversary {
 	void TradeHub( GameState gameState ) {
 		int coastalCityLandCount = gameState.AllSpaces.Count( s => s.Has( Invader.City ) );
 		if( gameState.Island.Boards.Length < coastalCityLandCount )
-			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} costal lands have cities.");
+			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");
 	}
 
 }

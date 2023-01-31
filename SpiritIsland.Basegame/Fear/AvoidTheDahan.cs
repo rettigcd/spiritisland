@@ -18,7 +18,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 		}
 	);
 
-	[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town / City." )]
+	[FearLevel( 2, "Invaders do not Build in lands where Dahan outnumber Town/City." )]
 	public Task Level2( GameCtx ctx )
 		=> StopBuildWhereDahanOutnumberTownsCities
 			.In().EachActiveLand()

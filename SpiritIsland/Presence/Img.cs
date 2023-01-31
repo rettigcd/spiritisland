@@ -96,6 +96,7 @@ public enum Img {
 	Icon_Wilds,
 	Icon_Fast,
 	Icon_Presence,
+	Icon_Sacredsite,
 	Icon_Slow,
 	Icon_Disease,
 	Icon_Strife,

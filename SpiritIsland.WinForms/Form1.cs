@@ -1,8 +1,10 @@
-﻿using SpiritIsland.SinglePlayer;
+﻿using SpiritIsland.BranchAndClaw;
+using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
@@ -12,6 +14,15 @@ public partial class Form1 : Form, IHaveOptions {
 	public Form1() {
 		InitializeComponent();
 		logForm = new LogForm();
+
+//		Action initArtwork = InitArtwork;
+//		initArtwork.BeginInvoke(null,null);
+		_ = Task.Run(InitArtwork);
+	}
+
+	void InitArtwork() {
+		foreach(IFearCard fearCard in ConfigureGameDialog.GameBuilder.BuildFearCards())
+			ResourceImages.Singleton.InitFearCard( fearCard );
 	}
 
 	readonly LogForm logForm;
