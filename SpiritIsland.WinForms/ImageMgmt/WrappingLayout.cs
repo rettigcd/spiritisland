@@ -20,7 +20,6 @@ public class WrappingLayout {
 	public WrappingLayout(
 		float textEmSize,
 		Size rowSize,
-		Point topLeft,
 		Graphics graphics
 	) {
 		// Font and Icon sizes
@@ -30,12 +29,11 @@ public class WrappingLayout {
 		_imageSizeCalculator = new ImageSizeCalculator( iconDimension, elementDimension );
 		_maxIconHeight = System.Math.Max( iconDimension, elementDimension );
 
-		_topLeft = topLeft;
 		_rowSize = rowSize;
 		_textCenterOffset = (int)(_rowSize.Height * .45f);
 
-		_x = topLeft.X;
-		_y = topLeft.Y;
+		_x = 0;
+		_y = 0;
 
 		_graphics = graphics;
 	}
@@ -196,39 +194,43 @@ public class WrappingLayout {
 	public void FinalizeBounds() {
 		if(NextLineStartingX < _x)
 			LineComplete();
-		var x = new Rectangle( _topLeft.X, _topLeft.Y, _rowSize.Width, _y - _topLeft.Y );
-		_bounds = x;
+
+		_size = new Size( _rowSize.Width, _y );
+		//_bounds = new Rectangle( new Point(0, 0), Size );
 	}
 
-	public Rectangle Bounds => _bounds ?? throw new System.InvalidOperationException( "Bounds not finalized." );
-	Rectangle? _bounds;
+//	public Rectangle Bounds => _bounds ?? throw new System.InvalidOperationException( "Bounds not finalized." );
+//	Rectangle? _bounds;
+
+	public Size Size => _size ?? throw new System.InvalidOperationException( "Size not finalized." );
+	Size? _size;
+
 
 	public void IncY( int deltaY ) { _y += deltaY; }
 
-	void PrivateAdjust( int deltaX, int deltaY ) {
+	public void Adjust( int deltaX, int deltaY ) {
 		foreach(var t in _tokens) { 
 			t.Bounds.X+= deltaX;
 			t.Bounds.Y+= deltaY;
 		}
 		foreach(var pair in _texts)
-			foreach(var t in pair.Value) {
+			foreach(TextPosition t in pair.Value) {
 				t.Bounds.X+= deltaX;
 				t.Bounds.Y+= deltaY;
 			}
-		if(_bounds.HasValue) {
-			Rectangle b = _bounds.Value;
-			_bounds = new Rectangle( b.X+deltaX, b.Y+deltaY, b.Width, b.Height );
-		}
 	}
 
-	public void Align(int width, int height) {
+	/// <summary>
+	/// Shifts the Drawing Space by shifting everything inside of it.
+	/// Called AFTER layout has been finalized and final height is known.
+	/// </summary>
+	/// <remarks>This is different from horizontal center alignment inside the drawing space.</remarks>
+	public void CenterDrawingSpace( Size sizeOfContainer) {
 		// Align Vertically - Center   !!! move this into .FinalizeBounds  OR Create a method Called .AlignVertically( Align.Center, ToHeight )
-		int remainingHeight = height - Bounds.Height;
-		int adjustX = (width - _rowSize.Width) / 2;
-		int adjustY = remainingHeight / 2;
-		PrivateAdjust( adjustX, adjustY );
+		int adjustX = (sizeOfContainer.Width  - Size.Width) / 2;
+		int adjustY = (sizeOfContainer.Height - Size.Height) / 2;
+		Adjust( adjustX, adjustY );
 	}
-
 
 	public void Paint( Graphics graphics ) {
 		var layout = this;
@@ -249,13 +251,12 @@ public class WrappingLayout {
 	#region layout things
 
 	// Generic layout
-	readonly Point _topLeft;
 	readonly Size _rowSize;
 	readonly int _textCenterOffset;
 
-	int Right             => _topLeft.X + _rowSize.Width;
-	int RemainingWidth    => _topLeft.X + _rowSize.Width - _x;
-	int NextLineStartingX => _topLeft.X + Indent;
+	int Right             => _rowSize.Width;
+	int RemainingWidth    => _rowSize.Width - _x;
+	int NextLineStartingX => Indent;
 
 	// Moves as we add stuff
 	int _x;

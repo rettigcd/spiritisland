@@ -88,7 +88,7 @@ sealed public class FearCardImageManager {
 
 				// generate
 				rowSize = new Size( textBounds.Width- widthReduction, rowHeight );
-				layout = new WrappingLayout( emSize, rowSize, textBounds.Location, graphics ) {
+				layout = new WrappingLayout( emSize, rowSize, graphics ) {
 					IconDimension = iconSize,
 					HorizontalAlignment = Align.Center,
 				};
@@ -98,7 +98,8 @@ sealed public class FearCardImageManager {
 				widthReduction -= 20;
 			} while( 0 < widthReduction && 2 < layout.RowCount );
 
-			layout.Align( textBounds.Width, outterArea.Height );
+			layout.Adjust( textBounds.X, textBounds.Y );
+			layout.CenterDrawingSpace( textBounds.Size );
 
 			layout.Paint( graphics );
 		}

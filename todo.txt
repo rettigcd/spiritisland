@@ -4,14 +4,8 @@
 
 5 Pre-select Token for Power Cards
 
-5 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.
-
-5 Simplify Wrapping Text
-	=> Pass in the TopLeft coordinates when painting.
-	=> Lowers complexity from Rectangle to a Size
-
 Weave Together
-	BUG - Massive Flooding did not recognize Weaved-Together SS source.
+	BUG - Massive Flooding did not recognize Weaved-Together SS source.  - Is this going off of Tokens.Keys and it hasn't been added yet.
 
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON
@@ -39,13 +33,11 @@ Weave Together
 
 4 Action => Move Finders Hook to Action-start - event
 
+
 ======
 
-3 Flatten Fear Cards so user can pick SpaceToken instead of 2 step space then token
-3 Change Fear Cards to Fluent Commands
+3 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.
 3 UI - Cleanup Presence-Track image generation
-3 UI - Make clickable things on screen into Buttons with their own .Click() method
-
 3 UI - Tokens - Publish token events to the UI so that it can show token changing animation.
 3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
 

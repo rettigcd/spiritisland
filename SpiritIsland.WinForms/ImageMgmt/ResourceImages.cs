@@ -89,8 +89,8 @@ public class ResourceImages {
 		return image;
 	}
 
-	const bool saveSpace = true; // for fear card images
-	const bool clipCorners = true;
+	readonly static bool saveSpace = false; // for fear card images
+	readonly static bool clipCorners = true;
 	static string FearKey( IFearCard fearCard ) => $"fear\\{fearCard.Text}." + (saveSpace ? "jpg" : "png");
 	public Image GetFearCard( IFearCard card ) {
 		InitFearCard( card );
@@ -221,12 +221,12 @@ public class ResourceImages {
 		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
 
-		var layout = new WrappingLayout( textEmSize, rowSize, new Point(0,0), graphics );
+		var layout = new WrappingLayout( textEmSize, rowSize, graphics );
 		layout.CalcWrappingString( description, FontStyle.Regular );
 		layout.FinalizeBounds();
 		layout.Paint(graphics);
 
-		Bitmap bitmap = tempBitmap.Clone( layout.Bounds, tempBitmap.PixelFormat );
+		Bitmap bitmap = tempBitmap.Clone( new Rectangle( new Point(0,0), layout.Size ), tempBitmap.PixelFormat );
 
 		_cache.Add( key, bitmap );
 		return bitmap;
@@ -250,7 +250,6 @@ public class ResourceImages {
 		var layout = new WrappingLayout(
 			emSize,
 			rowSize: rowSize,
-			topLeft: new Point(0,0),
 			graphics
 		) { Indent = rowSize.Height / 2 };  // (3) indent
 
@@ -272,7 +271,7 @@ public class ResourceImages {
 
 		layout.Paint(graphics);
 
-		Bitmap bitmap = tempBitmap.Clone( layout.Bounds, tempBitmap.PixelFormat );
+		Bitmap bitmap = tempBitmap.Clone( new Rectangle( new Point(0,0), layout.Size ), tempBitmap.PixelFormat );
 
 		_cache.Add( key, bitmap );
 		return bitmap;
