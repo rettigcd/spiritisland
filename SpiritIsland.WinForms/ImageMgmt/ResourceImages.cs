@@ -89,10 +89,21 @@ public class ResourceImages {
 		return image;
 	}
 
-	static string FearKey( IFearCard fearCard ) => $"fear\\{fearCard.Text}.png";
+	const bool saveSpace = true;
+	static string FearKey( IFearCard fearCard ) => $"fear\\{fearCard.Text}." + (saveSpace ? "jpg" : "png");
 	public Image GetFearCard( IFearCard card ) {
 		InitFearCard( card );
-		return _cache.Get( FearKey(card) );
+		Image img = _cache.Get( FearKey(card) );
+		if(saveSpace) {
+			Bitmap noCornerBitmap = new Bitmap( img.Width, img.Height );
+			using Graphics graphics = Graphics.FromImage( noCornerBitmap );
+			Brush brush = new TextureBrush( img );
+			graphics.FillPath( brush, new Rectangle(new Point(0,0),img.Size).RoundCorners(18));
+			brush.Dispose();
+			img.Dispose();
+			img = noCornerBitmap;
+		}
+		return img;
 	}
 
 	public void InitFearCard( IFearCard card ) {
