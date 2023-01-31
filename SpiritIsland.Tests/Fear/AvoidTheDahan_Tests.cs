@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Fear;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Fear;
 
 // For calculating pre-ravage invaders required to end with known post-ravage invaders/dahan use:
 // Town(start) = Town(end) + Dahan(end)

@@ -98,7 +98,7 @@ public class Ocean : Spirit {
 		}
 
 		// Drown them immediately
-		args.GameState.Log( new LogDebug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
+		args.GameState.Log( new Log.Debug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
 		await args.GameState.Invaders.On( args.AddedTo.Space, args.ActionScope ).DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
@@ -113,7 +113,7 @@ public class Ocean : Spirit {
 		if( earnedEnergy == 0 ) return;
 
 		int cashedInHealth = spiritCount * earnedEnergy;
-		gs.Log( new LogDebug($"Ocean gained {earnedEnergy} energy from cashing in {cashedInHealth} health of drowned invaders."));
+		gs.Log( new Log.Debug($"Ocean gained {earnedEnergy} energy from cashing in {cashedInHealth} health of drowned invaders."));
 
 		// Update Ocean
 		drownedInvaderHealthAccumulator -= cashedInHealth;

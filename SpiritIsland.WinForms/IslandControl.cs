@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Select;
+﻿using SpiritIsland.Log;
+using SpiritIsland.Select;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -216,7 +217,7 @@ public partial class IslandControl : Control {
 	}
 
 	public void GameState_NewLogEntry( ILogEntry obj ) {
-		if(obj is LogPhase phaseEvent) {
+		if(obj is Log.Phase phaseEvent) {
 			_phaseImage?.Dispose();
 			_phaseImage = phaseEvent.phase switch {
 				Phase.Growth => ResourceImages.Singleton.GetImage( Img.Coin ),
@@ -278,7 +279,7 @@ public partial class IslandControl : Control {
 		if(_gameState.Result != null) {
 
 			brush = _gameState.Result.Result == GameOverResult.Victory ? GameTextBrush_Victory : GameTextBrush_Defeat;
-			snippet = _gameState.Result.Msg();
+			snippet = _gameState.Result.Msg( LogLevel.Info );
 		}
 		graphics.DrawString( $"Round {_gameState.RoundNumber} - {snippet}", font, brush, 0, 0 );
 

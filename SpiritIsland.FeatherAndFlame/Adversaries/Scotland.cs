@@ -91,14 +91,14 @@ public class Scotland : IAdversary {
 		await using(var actionScope = gameState.StartAction( ActionCategory.Adversary ))
 			foreach(SpaceState ss in spacesToAddTown)
 				await ss.Bind( null ).AddDefault( Invader.Town, 1, AddReason.Build );
-		gameState.Log(new LogDebug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.Select(x=>x.Space.Text).Join(",")));
+		gameState.Log(new SpiritIsland.Log.Debug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.Select(x=>x.Space.Text).Join(",")));
 	}
 
 	static void SeizeOpportunity( GameState gameState ) {
 		// Add 1 City to land #2
 		foreach(Board board in gameState.Island.Boards)
 			gameState.Tokens[board[2]].AdjustDefault( Invader.City, 1 );
-		gameState.Log(new LogDebug("Seize Opportunity - adding 1 city to space 2 of each board."));
+		gameState.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
 	}
 
 	void TradeHub( GameState gameState ) {

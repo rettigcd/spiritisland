@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Spirits.OceanNS;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Spirits.OceanNS;
 
 public class OceanTerrain_Tests {
 
@@ -89,7 +91,7 @@ public class OceanTerrain_Tests {
 
 		if( withOcean) {
 			var log = new List<string>();
-			gameState.NewLogEntry += (e) => { if( e is LogDebug ) log.Add( e.Msg() ); };
+			gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
 
 			// Push into Ocean and let Thunderspeaker ride along
 			Choose("A0");
@@ -122,7 +124,7 @@ public class OceanTerrain_Tests {
 		// track starting energy
 		int oceanStartingEnergy = oceanSpirit.Energy;
 		var debugLog = new List<string>();
-		gameState.NewLogEntry += ( e ) => { if(e is LogDebug) debugLog.Add( e.Msg() ); };
+		gameState.NewLogEntry += ( e ) => { if(e is Debug) debugLog.Add( e.Msg() ); };
 
 		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 

@@ -45,7 +45,7 @@ public class WeaveTogetherTheFabricOfPlace {
 
 		// !!! Any game-wide mod-tokens are going to be put on next space, but will be difficult to split since they aren't visible
 
-		gameState.Log( new LayoutChanged($"{space.Text} and {other.Text} were woven together") );
+		gameState.Log( new Log.LayoutChanged($"{space.Text} and {other.Text} were woven together") );
 
 		// When this effect expires
 		gameState.TimePasses_ThisRound.Push( async (gs) => {
@@ -55,7 +55,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			removeOther.Restore();
 			removeSpace.Restore();
 
-			gameState.Log( new LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
+			gameState.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
 
 			// divide pieces as you wish.
 			await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Spirit_Power );

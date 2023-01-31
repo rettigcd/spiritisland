@@ -80,10 +80,10 @@ public class SelfCtx {
 		cardToFlip.Flipped = true;
 		await Self.Select( label, new IOption[] { cardToFlip }, Present.Always );
 		if( cardToFlip.ActivatedTerrorLevel.HasValue )
-			GameState.Log( new LogDebug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
+			GameState.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
 		else
 			for(int i=1;i<=3;++i)
-				GameState.Log( new LogDebug($"{i} => {cardToFlip.GetDescription(i)}") );
+				GameState.Log( new Log.Debug($"{i} => {cardToFlip.GetDescription(i)}") );
 	}
 
 	#region Draw Cards

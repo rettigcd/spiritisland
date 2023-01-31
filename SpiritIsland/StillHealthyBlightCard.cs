@@ -13,7 +13,7 @@ public class StillHealthyBlightCard : BlightCardBase {
 		gs.BlightCards.RemoveAt(0);
 		// It comes into play already flipped
 		gs.BlightCard.OnBlightDepleated(gs);
-		gs.Log( new IslandBlighted( gs.BlightCard ) );
+		gs.Log( new Log.IslandBlighted( gs.BlightCard ) );
 	}
 
 }

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Minor;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Minor;
 
 public class CallToTrade_Tests {
 

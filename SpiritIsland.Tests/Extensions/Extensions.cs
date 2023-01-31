@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests;
 
 static internal class Extensions {
 
@@ -71,5 +73,7 @@ static internal class Extensions {
 	static public void InitTestInvaderDeck(this GameState gameState, params InvaderCard[] cards ) {
 		gameState.InvaderDeck = new InvaderDeck( cards.ToList(), null );// Don't try to inspect unused!
 	}
+
+	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );
 
 }

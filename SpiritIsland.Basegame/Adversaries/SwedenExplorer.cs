@@ -16,7 +16,7 @@ class SwedenExplorer : ExploreEngine {
 
 			dahan.Adjust( dahanToConvert, -1 );
 			tokens.Adjust( townToAdd, 1 );
-			gs.Log( new InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}" ) );
+			gs.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}" ) );
 		}
 	}
 

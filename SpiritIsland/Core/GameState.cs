@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland;
 
 public class GameState : IHaveHealthPenaltyPerStrife {
 
@@ -306,7 +308,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	#endregion
 
 	public void Log( ILogEntry entry ) => NewLogEntry?.Invoke( entry );
-	public void LogDebug( string debugMsg ) => Log( new LogDebug(debugMsg) );
+	public void LogDebug( string debugMsg ) => Log( new Debug(debugMsg) );
 
 	public async Task TriggerTimePasses() {
 

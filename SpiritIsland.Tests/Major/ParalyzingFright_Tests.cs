@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Major;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Major;
 
 [Trait( "Invaders", "Ravage" )]
 [Trait( "Invaders", "Build" )]

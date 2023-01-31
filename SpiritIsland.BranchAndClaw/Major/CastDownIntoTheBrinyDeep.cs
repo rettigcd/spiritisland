@@ -41,7 +41,7 @@ public class CastDownIntoTheBrinyDeep {
 				ctx.GameState.Island.RemoveBoard( board );
 
 		}
-		ctx.GameState.Log( new LayoutChanged( $"{Name} destroyed Board {board.Name}" ) );
+		ctx.GameState.Log( new Log.LayoutChanged( $"{Name} destroyed Board {board.Name}" ) );
 	}
 
 	static async Task DestroyTokens( SelfCtx ctx, SpaceState[] spaces ) {

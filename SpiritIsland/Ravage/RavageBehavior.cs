@@ -50,7 +50,7 @@ public class RavageBehavior {
 
 			await RavageSequence( this, data );
 
-			data.GameState.Log( new RavageEntry( data.Result ) );
+			data.GameState.Log( new Log.RavageEntry( data.Result ) );
 		}
 		finally {
 			if(data.ActionScope != null) {

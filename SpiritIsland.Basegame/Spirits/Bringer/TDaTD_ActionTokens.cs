@@ -40,7 +40,7 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 		Adjust( newToken, 1 );
 
 		var gameState = _selfCtx.GameState;
-		gameState.Log( new LogDebug( "Dream 1000 deaths destroy." ) );
+		gameState.Log( new SpiritIsland.Log.Debug( "Dream 1000 deaths destroy." ) );
 
 		// Record Here
 		RecordSpaceWithDreamers( this );

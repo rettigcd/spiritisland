@@ -43,7 +43,7 @@ public class DreamOfTheUntouchedLand {
 			// !!! from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.
 
 			// Notify board changed.
-			ctx.GameState.Log( new LayoutChanged($"{Name} added Board {newBoard.Name}") );
+			ctx.GameState.Log( new Log.LayoutChanged($"{Name} added Board {newBoard.Name}") );
 
 		}
 

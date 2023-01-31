@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland;
 
 public class GameOver : ILogEntry {
 

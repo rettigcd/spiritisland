@@ -17,7 +17,7 @@ public class DreadApparitions {
 		ctx.GameState.Fear.FearAdded.ForRound.Add( ( gs, args ) => {
 			if(!args.FromDestroyedInvaders && args.space == ctx.Space) {
 				gs.Tokens[args.space].Defend.Add( args.Count );
-				gs.Log(new LogDebug( $"{args.Count} Fear => +{args.Count} Defend ({Name})" ));
+				gs.Log(new Log.Debug( $"{args.Count} Fear => +{args.Count} Defend ({Name})" ));
 			}
 		} );
 

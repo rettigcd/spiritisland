@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Fear;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Fear;
 
 public class TradeSuffers_Tests {
 

@@ -19,7 +19,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 		Tokens.Adjust( original, -1 );
 		Tokens.Adjust( newToken, 1 );
 
-		GameState.Log( new LogDebug( "Dream 1000 deaths destroy." ) );
+		GameState.Log( new SpiritIsland.Log.Debug( "Dream 1000 deaths destroy." ) );
 
 		// Record Here
 		RecordSpaceWithDreamers( Tokens );

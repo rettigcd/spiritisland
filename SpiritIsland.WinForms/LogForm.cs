@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using SpiritIsland.Log;
 
 namespace SpiritIsland.WinForms {
 	public partial class LogForm : Form {

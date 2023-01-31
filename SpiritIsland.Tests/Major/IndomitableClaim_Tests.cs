@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Major;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Major;
 
 public class IndomitableClaim_Tests {
 

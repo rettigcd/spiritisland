@@ -3,7 +3,7 @@
 public class ExploreEngine {
 
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
-		gameState.Log( new InvaderActionEntry( "Exploring:" + card.Text ) );
+		gameState.Log( new Log.InvaderActionEntry( "Exploring:" + card.Text ) );
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
 		await DoExplore( gameState, tokenSpacesToExplore, card.HasEscalation );
 
@@ -69,7 +69,7 @@ public class ExploreEngine {
 			if(await stopper.Skip( ctx, tokens ))
 				return;
 
-		gs.Log( new SpaceExplored( tokens.Space ) );
+		gs.Log( new Log.SpaceExplored( tokens.Space ) );
 		await AddToken( tokens.Bind( actionScope ) );
 	}
 

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland;
 
 sealed public class UserGateway : IUserPortal, IEnginePortal {
 
@@ -103,7 +105,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	void Log( DecisionLogEntry entry ) {
 		DecisionMade?.Invoke(entry);
-		selections.Add( entry.Msg() );
+		selections.Add( entry.Msg(LogLevel.Info) );
 	}
 
 	public event Action<DecisionLogEntry> DecisionMade;
@@ -141,7 +143,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 			else if(Decision.Options.Contains( selection ))
 				_pendingPromise.TrySetResult( tt );
 			else
-				_pendingPromise.TrySetException( new Exception( $"{selection.Text} not found in options" ) );
+				_pendingPromise.TrySetException( new System.Exception( $"{selection.Text} not found in options" ) );
 		}
 
 		public void IssueCommand( IGameStateCommand cmd ) {

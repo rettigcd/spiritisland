@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests; 
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests;
 class GameFixture {
 
 	public Spirit spirit;

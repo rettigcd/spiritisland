@@ -10,7 +10,7 @@ public class Quarantine_Tests {
 	public Quarantine_Tests() {
 		var powerCard = PowerCard.For<CallToTend>();
 		var (userLocal,ctxLocal) = TestSpirit.SetupGame( powerCard, (Action<GameState>)(gs=>{ 
-			gs.NewLogEntry += (s) => { if(s is InvaderActionEntry or RavageEntry) log.Enqueue( s.Msg()); };
+			gs.NewLogEntry += (s) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) log.Enqueue( s.Msg() ); };
 			gs.InitTestInvaderDeck(
 				(InvaderCard)SpiritIsland.InvaderCard.Stage1( Terrain.Sand), // not on coast
 				(InvaderCard)SpiritIsland.InvaderCard.Stage2Costal(),

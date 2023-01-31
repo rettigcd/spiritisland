@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.BranchAndClaw;
+using SpiritIsland.Log;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
@@ -200,10 +201,10 @@ public partial class Form1 : Form, IHaveOptions {
 	}
 
 	void GameState_NewLogEntry( ILogEntry obj ) {
-		logForm.AppendLine(obj.Msg(), obj.Level);
+		logForm.AppendLine(obj.Msg(LogLevel.Info), obj.Level);
 
 		if(obj is GameOver wle)
-			Action_NewWaitingDecision( new Select.TypedDecision<TextOption>(wle.Msg(), Array.Empty<TextOption>() ) ); // clear options
+			Action_NewWaitingDecision( new Select.TypedDecision<TextOption>(wle.Msg( LogLevel.Info ), Array.Empty<TextOption>() ) ); // clear options
 	}
 
 	void ExitToolStripMenuItem_Click( object sender, EventArgs e ) {
