@@ -5,7 +5,7 @@ public class AllFearCards_Tests {
 
 	[Theory]
 	[MemberData( nameof( FearCards ) )]
-	public void HaveProperlyFormattedDescriptions( string _, string[] descriptions ) {
+	public void HaveProperlyFormattedDescriptions( string title, string[] descriptions ) {
 		var descriptiondProblem = new List<string>();
 		for(int i = 0; i < 3; ++i) {
 			var problems = new List<string>();
@@ -50,7 +50,7 @@ public class AllFearCards_Tests {
 			if(0 <problems.Count)
 				descriptiondProblem.Add($"{i+1}:"+problems.Join(","));
 		}
-		descriptiondProblem.Join("\r\n").ShouldBeEmpty();
+		descriptiondProblem.Join("\r\n").ShouldBeEmpty(title);
 	}
 
 	public static IEnumerable<object[]> FearCards => ConfigurableTestFixture.GameBuilder.BuildFearCards()

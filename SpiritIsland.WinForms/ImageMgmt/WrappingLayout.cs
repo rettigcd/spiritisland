@@ -11,6 +11,9 @@ namespace SpiritIsland.WinForms;
 /// </summary>
 public class WrappingLayout {
 
+	// !!! Sacred Site icons suck
+	// !! \r\n should causes new line( Dahan reclaim fishing grounds )
+
 	Font UsingFont( FontStyle style ) => new Font( FontFamily.GenericSansSerif, _textEmSize, style, GraphicsUnit.Pixel );
 
 	#region constructor
@@ -179,7 +182,7 @@ public class WrappingLayout {
 		++RowCount;
 
 		// Horizontal Alignment
-		int offset = HorizontalAlignment switch { Align.Center => RemainingWidth / 2, Align.Far => RemainingWidth, _ => 0 };
+		int offset = HorizontalAlignment switch { WinForms.Align.Center => RemainingWidth / 2, WinForms.Align.Far => RemainingWidth, _ => 0 };
 		foreach(IMoveHorizontally moveable in _rowItems)
 			moveable.Move( offset );
 		_rowItems.Clear();
@@ -202,7 +205,7 @@ public class WrappingLayout {
 
 	public void IncY( int deltaY ) { _y += deltaY; }
 
-	public void PrivateAdjust( int deltaX, int deltaY ) {
+	void PrivateAdjust( int deltaX, int deltaY ) {
 		foreach(var t in _tokens) { 
 			t.Bounds.X+= deltaX;
 			t.Bounds.Y+= deltaY;
@@ -217,6 +220,15 @@ public class WrappingLayout {
 			_bounds = new Rectangle( b.X+deltaX, b.Y+deltaY, b.Width, b.Height );
 		}
 	}
+
+	public void Align(int width, int height) {
+		// Align Vertically - Center   !!! move this into .FinalizeBounds  OR Create a method Called .AlignVertically( Align.Center, ToHeight )
+		int remainingHeight = height - Bounds.Height;
+		int adjustX = (width - _rowSize.Width) / 2;
+		int adjustY = remainingHeight / 2;
+		PrivateAdjust( adjustX, adjustY );
+	}
+
 
 	public void Paint( Graphics graphics ) {
 		var layout = this;
@@ -255,7 +267,7 @@ public class WrappingLayout {
 	public int RowCount { get; private set; } = 0;
 	public readonly float _textEmSize;
 
-	public Align HorizontalAlignment = Align.Near; // left
+	public Align HorizontalAlignment = WinForms.Align.Near; // left
 	public readonly List<TokenPosition> _tokens = new();
 	public readonly Dictionary<FontStyle, List<TextPosition>> _texts = new();
 

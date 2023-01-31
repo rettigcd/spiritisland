@@ -2,9 +2,6 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 Cache-A Organize Cache into folders
-5 Cache-B Draw Fear Cards OR Download them on the fly
-
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON
 !	flags, special rules,	=> Normal Buttons

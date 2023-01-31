@@ -89,12 +89,13 @@ public class ResourceImages {
 		return image;
 	}
 
-	const bool saveSpace = true;
+	const bool saveSpace = true; // for fear card images
+	const bool clipCorners = true;
 	static string FearKey( IFearCard fearCard ) => $"fear\\{fearCard.Text}." + (saveSpace ? "jpg" : "png");
 	public Image GetFearCard( IFearCard card ) {
 		InitFearCard( card );
 		Image img = _cache.Get( FearKey(card) );
-		if(saveSpace) {
+		if(saveSpace && clipCorners) {
 			Bitmap noCornerBitmap = new Bitmap( img.Width, img.Height );
 			using Graphics graphics = Graphics.FromImage( noCornerBitmap );
 			Brush brush = new TextureBrush( img );
