@@ -21,9 +21,10 @@ public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
 
 		var space = await ctx.Self.TargetsSpace( ctx, powerName+": Target Space"
-			, sourceCriteria
-			, ctx.TerrainMapper.Specify( range, TargetFilter )
-			, ctx.TerrainMapper.Specify( range+1, Target.Beast ) // extend 1 for beast
+			, preselect: null
+			, _sourceCriteria
+			, ctx.TerrainMapper.Specify( _range, TargetFilter )
+			, ctx.TerrainMapper.Specify( _range+1, Target.Beast ) // extend 1 for beast
 		);
 		return space == null ? null : ctx.Target(space);
 	}

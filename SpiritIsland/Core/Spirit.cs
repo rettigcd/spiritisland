@@ -528,19 +528,36 @@ public abstract partial class Spirit : IOption {
 
 	/// <summary> Used EXCLUSIVELY For Targeting a PowerCard's Space </summary>
 	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
-	public virtual Task<Space> TargetsSpace( 
+	public virtual async Task<Space> TargetsSpace( 
 		SelfCtx ctx, // this has the new Action for this action.
 		string prompt,
+		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
 		prompt ??= "Target Space.";
 		IEnumerable<SpaceState> spaces = GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria );
-		return this.Gateway.Decision( new Select.Space( prompt, spaces.Select( x => x.Space ), Present.Always ));
+
+		if(preselect != null) {
+			var spaceTokenOptions = spaces
+				.SelectMany(ss=>ss
+					.OfAnyClass(preselect.TokenClasses)
+					.Cast<IVisibleToken>()
+					.Select(vt=>new SpaceToken(ss.Space,vt))
+				)
+				.ToArray();
+
+			SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( preselect.Prompt, spaceTokenOptions, Present.Always ) );
+			if(st == null) return null;
+			Gateway.Preloaded = st;
+			return st.Space;
+		}
+
+		return await this.Gateway.Decision( new Select.Space( prompt, spaces.Select( x => x.Space ), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
-	protected IEnumerable<SpaceState> GetPowerTargetOptions(
+	protected virtual IEnumerable<SpaceState> GetPowerTargetOptions(
 		GameState gameState,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges

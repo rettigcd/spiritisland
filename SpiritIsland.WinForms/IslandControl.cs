@@ -914,6 +914,8 @@ public partial class IslandControl : Control {
 
 		// Option Buttons
 		_buttonContainer.EnableOptions(_decision);
+
+		Invalidate();
 	}
 
 	IDecision _decision;

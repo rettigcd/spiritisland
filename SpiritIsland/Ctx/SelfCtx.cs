@@ -84,6 +84,8 @@ public class SelfCtx {
 		else
 			for(int i=1;i<=3;++i)
 				GameState.Log( new Log.Debug($"{i} => {cardToFlip.GetDescription(i)}") );
+
+
 	}
 
 	#region Draw Cards

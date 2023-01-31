@@ -5,26 +5,29 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 	#region constructor
 
 	PowerCard( MethodBase methodBase, GeneratesContextAttribute targetAttr ) {
-		this.methodBase = methodBase;
-		this.targetAttr = targetAttr;
-		cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
-		speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
-		this.repeatAttr = methodBase.GetCustomAttribute<RepeatAttribute>();
+		_methodBase = methodBase;
+		_targetAttr = targetAttr;
+		_cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
+		_speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
+		_repeatAttr = methodBase.GetCustomAttribute<RepeatAttribute>();
+
+		if(_targetAttr is TargetSpaceAttribute tsa )
+			tsa.Preselect = methodBase.GetCustomAttribute<PreselectAttribute>();
 	}
 
 	#endregion
 
 	public string Text => $"{Name} ${Cost} ({DisplaySpeed})";
-	public string Name         => cardAttr.Name;
-	public Phase DisplaySpeed         => speedAttr.DisplaySpeed;
+	public string Name         => _cardAttr.Name;
+	public Phase DisplaySpeed         => _speedAttr.DisplaySpeed;
 	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
-	public int Cost            => cardAttr.Cost;
-	public ElementCounts Elements  => cardAttr.Elements;
-	public PowerType PowerType => cardAttr.PowerType;
-	public Type MethodType     => methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
+	public int Cost            => _cardAttr.Cost;
+	public ElementCounts Elements  => _cardAttr.Elements;
+	public PowerType PowerType => _cardAttr.PowerType;
+	public Type MethodType     => _methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
-	public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
+	public LandOrSpirit LandOrSpirit => _targetAttr.LandOrSpirit;
 
 	public bool CouldActivateDuring( Phase requestSpeed, Spirit spirit ){
 		return SpeedBehavior.CouldBeActiveFor(requestSpeed,spirit);
@@ -34,8 +37,8 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		// Don't check speed here.  Slow card may have been made fast (Lightning's Swift Strike)
 
 		await ActivateInnerAsync( ctx );
-		if(repeatAttr != null) {
-			var repeater = repeatAttr.GetRepeater();
+		if(_repeatAttr != null) {
+			var repeater = _repeatAttr.GetRepeater();
 			while(await repeater.ShouldRepeat( ctx.Self ))
 				await ActivateInnerAsync( ctx );
 		}
@@ -43,30 +46,30 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 	}
 
 	async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
-		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx );
+		LastTarget = await _targetAttr.GetTargetCtx( Name, spiritCtx );
 		if(LastTarget != null) // Can't find a tar
 			await InvokeOnObjectCtx( LastTarget );
 	}
 
 	/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
 	public Task InvokeOn( TargetSpaceCtx ctx ) {
-		return targetAttr.LandOrSpirit != LandOrSpirit.Land
+		return _targetAttr.LandOrSpirit != LandOrSpirit.Land
 			? throw new InvalidOperationException("Cannot invoke spirit-based PowerCard using TargetSpaceCtx")
 			: InvokeOnObjectCtx(ctx);
 	}
 
-	Task InvokeOnObjectCtx(object ctx) => (Task)methodBase.Invoke( null, new object[] { ctx } );
+	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke( null, new object[] { ctx } );
 
 	#region private
 
-	ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? speedAttr;
+	ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? _speedAttr;
 
 	public object LastTarget { get; private set; }
 
-	readonly SpeedAttribute speedAttr;
-	readonly CardAttribute cardAttr;
-	readonly MethodBase methodBase;
-	readonly RepeatAttribute repeatAttr;
+	readonly SpeedAttribute _speedAttr;
+	readonly CardAttribute _cardAttr;
+	readonly MethodBase _methodBase;
+	readonly RepeatAttribute _repeatAttr;
 
 	#endregion
 
@@ -98,6 +101,6 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 	#endregion
 
-	readonly GeneratesContextAttribute targetAttr;
+	readonly GeneratesContextAttribute _targetAttr;
 
 }

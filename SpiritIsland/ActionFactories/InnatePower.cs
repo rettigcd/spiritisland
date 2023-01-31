@@ -12,14 +12,14 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 	protected InnatePower(Type actionType, GeneratesContextAttribute targetAttr){
 
-		innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
-		speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
+		_innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
+		_speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
 			?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
-		this.targetAttr = targetAttr;
-		this.repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
+		this._targetAttr = targetAttr;
+		this._repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
 
-		Name = innatePowerAttr.Name;
-		GeneralInstructions = innatePowerAttr.GeneralInstructions;
+		Name = _innatePowerAttr.Name;
+		GeneralInstructions = _innatePowerAttr.GeneralInstructions;
 
 		// try static method (spirit / major / minor)
 		var elementListByMethod = actionType
@@ -28,7 +28,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 			.Where( x => x.Attr != null )
 			.ToList();
 
-		executionGroups = elementListByMethod
+		_executionGroups = elementListByMethod
 			// filter first - so we only have groups that have matches
 			.Where( x => x.Attr.Group.HasValue )
 			.GroupBy( x => x.Attr.Group.Value )
@@ -39,8 +39,8 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 			.Select(x=>x.Attr)
 			.Cast<IDrawableInnateOption>()
 			.ToList();
-		if(this.repeatAttr!=null)
-			drawableOptions.AddRange( repeatAttr.Thresholds );
+		if(this._repeatAttr!=null)
+			drawableOptions.AddRange( _repeatAttr.Thresholds );
 		DrawableOptions = drawableOptions;
 
 	}
@@ -48,7 +48,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 	#endregion
 
 	#region Speed
-	public Phase DisplaySpeed => speedAttr.DisplaySpeed;
+	public Phase DisplaySpeed => _speedAttr.DisplaySpeed;
 	/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
 	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
@@ -66,7 +66,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		return SpeedBehavior.CouldBeActiveFor( requestSpeed, spirit );
 	}
 
-	ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? speedAttr;
+	ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? _speedAttr;
 
 	#endregion
 
@@ -76,11 +76,11 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 	public string Text => Name;
 
-	public string TargetFilter => this.targetAttr.TargetFilter;
+	public string TargetFilter => this._targetAttr.TargetFilter;
 
-	public string RangeText => this.targetAttr.RangeText;
+	public string RangeText => this._targetAttr.RangeText;
 
-	public LandOrSpirit LandOrSpirit => targetAttr.LandOrSpirit;
+	public LandOrSpirit LandOrSpirit => _targetAttr.LandOrSpirit;
 
 	public string GeneralInstructions { get; }
 
@@ -90,8 +90,8 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
 		await ActivateInnerAsync( ctx );
-		if( repeatAttr != null) {
-			var repeater = repeatAttr.GetRepeater();
+		if( _repeatAttr != null) {
+			var repeater = _repeatAttr.GetRepeater();
 			while( await repeater.ShouldRepeat(ctx.Self) )
 				await ActivateInnerAsync( ctx );
 		}
@@ -100,7 +100,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 	protected virtual async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
 
 		// Do this 1st so Volcano can destroy its presence before we evaluate our options
-		LastTarget = await targetAttr.GetTargetCtx( Name, spiritCtx );
+		LastTarget = await _targetAttr.GetTargetCtx( Name, spiritCtx );
 		if(LastTarget == null) return;
 
 		List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
@@ -120,7 +120,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		// Not using LINQ because of the AWAIT in the loop.
 
 		var lastMethods = new List<MethodInfo>();
-		foreach(MethodTuple[] grp in executionGroups) {
+		foreach(MethodTuple[] grp in _executionGroups) {
 
 			// Ask spirit which methods they can activate
 			var match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr), spiritCtx.ActionScope );
@@ -135,11 +135,11 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 
 	public object LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
 
-	readonly InnatePowerAttribute innatePowerAttr;
-	readonly protected SpeedAttribute speedAttr;
-	readonly GeneratesContextAttribute targetAttr;
-	readonly RepeatAttribute repeatAttr;
-	readonly MethodTuple[][] executionGroups;
+	readonly InnatePowerAttribute _innatePowerAttr;
+	readonly protected SpeedAttribute _speedAttr;
+	readonly GeneratesContextAttribute _targetAttr;
+	readonly RepeatAttribute _repeatAttr;
+	readonly MethodTuple[][] _executionGroups;
 
 	class MethodTuple {
 		public MethodTuple(MethodInfo m ) {

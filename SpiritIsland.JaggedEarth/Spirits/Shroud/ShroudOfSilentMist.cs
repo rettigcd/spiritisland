@@ -110,9 +110,8 @@ public class ShroudOfSilentMist : Spirit {
 
 	public override async Task<Space> TargetsSpace( 
 		SelfCtx ctx,
-
 		string prompt,
-
+		IPreselect _,
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {

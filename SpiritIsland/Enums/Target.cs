@@ -20,7 +20,7 @@ public static class Target {
 
 	public const string Invaders         = "Invaders";
 	public const string NoInvader        = "no invader";
-	public const string TownOrExplorer   = "TownOrExplorer";
+	public const string ExplorerOrTown   = "TownOrExplorer";
 	public const string TownOrCity       = "TownOrCity";
 	public const string City             = "Cities";
 

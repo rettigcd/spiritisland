@@ -32,43 +32,31 @@ public class Shadows : Spirit {
 	/// </summary>
 	public override async Task<Space> TargetsSpace( 
 		SelfCtx ctx,  // has the actual ActionScope for this Action
-		string prompt, 
+		string prompt,
+		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria 
 	) {
-		// no money, do normal
-		if(Energy == 0)
-			return await base.TargetsSpace( ctx, prompt, sourceCriteria, targetCriteria );
+		var space = await base.TargetsSpace( ctx, prompt, preselect, sourceCriteria, targetCriteria );
 
-		// find normal Targetable spaces
-		var normalSpaces = GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria );
-
-		// find dahan-only spaces that are not in targetable spaces
-		var dahanOnlySpaces = ctx.GameState.AllActiveSpaces
-			.Where( s=>s.Dahan.Any )
-			.Except(normalSpaces)
-			.ToArray();
-		// no dahan-only spaces, do normal
-		if(dahanOnlySpaces.Length == 0)
-			return await base.TargetsSpace( ctx, prompt, sourceCriteria, targetCriteria);
-
-		// append Target-Dahan option to end of list
-		List<IOption> options = normalSpaces.Cast<IOption>().ToList();
-		options.Add(new TextOption("Pay 1 energy to target land with dahan"));
-
-		// let them select normal, or choose to pay
-		IOption option = await this.Select("Select land to target.",options.ToArray(), Present.Always);
-
-		// if they select regular space, use it
-		if(option is Space space)
-			return space;
-
-		// pay 1 energy
-		--Energy;
-
-		// pick from dahan-only spaces
-		return await this.Gateway.Decision( new Select.Space( "Target land with dahan", dahanOnlySpaces, Present.Always));
+		if( 0<Energy && !base.GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria ).Any( s => s.Space == space ) ) 
+			--Energy;
+	
+		return space;
 	}
+
+
+	protected override IEnumerable<SpaceState> GetPowerTargetOptions(
+		GameState gameState,
+		TargetingSourceCriteria sourceCriteria,
+		params TargetCriteria[] targetCriteria
+	) {
+		var normalSpaces = base.GetPowerTargetOptions( gameState, sourceCriteria, targetCriteria );
+		return Energy <= 0 
+			? normalSpaces
+			: normalSpaces.Union( gameState.AllActiveSpaces.Where( s => s.Dahan.Any ) );
+	}
+
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 

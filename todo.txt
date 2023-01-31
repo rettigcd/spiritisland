@@ -2,8 +2,6 @@
 ====  Clean Up Items  ====
 ==========================
 
-5 Pre-select Token for Power Cards
-
 Weave Together
 	BUG - Massive Flooding did not recognize Weaved-Together SS source.  - Is this going off of Tokens.Keys and it hasn't been added yet.
 
