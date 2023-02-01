@@ -7,13 +7,13 @@ public class SpreadingWilds {
 	[InnateOption( "2 sun", "Push 1 explorer from target land per 2sun you have.", 0 )]
 	static public Task Option1( TargetSpaceCtx ctx ) {
 		// push 1 explorer from target land per 2 sun you have
-		return ctx.Push(ctx.Self.Elements[Element.Sun]/2,Invader.Explorer);
+		return ctx.Push(ctx.Self.Elements[Element.Sun]/2,Human.Explorer);
 	}
 
 	[InnateOption( "1 plant", "If target land has no explorer, add 1 wilds.", 1 )]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		// if target land has no explorer, add 1 wilds
-		if( !ctx.Tokens.HasAny(Invader.Explorer) )
+		if( !ctx.Tokens.HasAny(Human.Explorer) )
 			await ctx.Wilds.Add(1);
 	}
 

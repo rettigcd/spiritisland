@@ -3,7 +3,7 @@
 /// <summary>
 /// Base class Token for Skips and mods. Hidden
 /// </summary>
-public class BaseModToken : TokenWithEndOfRoundCleanup {
+public class BaseModToken : ITokenWithEndOfRoundCleanup {
 
 	protected BaseModToken( string label, UsageCost cost, bool keepForever = false ) {
 		Text = label;
@@ -31,7 +31,7 @@ public class BaseModToken : TokenWithEndOfRoundCleanup {
 
 	#endregion
 
-	void TokenWithEndOfRoundCleanup.EndOfRoundCleanup( SpaceState spaceState ) {
+	void ITokenWithEndOfRoundCleanup.EndOfRoundCleanup( SpaceState spaceState ) {
 		if( _keepForever ) return; // no cleanup
 
 		if( 1 < spaceState[this] )

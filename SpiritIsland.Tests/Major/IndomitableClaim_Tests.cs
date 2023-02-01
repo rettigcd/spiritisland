@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Log;
-
-namespace SpiritIsland.Tests.Major;
+﻿namespace SpiritIsland.Tests.Major;
 
 public class IndomitableClaim_Tests {
 
@@ -34,9 +32,9 @@ public class IndomitableClaim_Tests {
 		ctx.Self.Presence.PlaceOn(spaceCtx.Space, spaceCtx.GameState);
 
 		//  And: it has 3 explorers
-		spaceCtx.Tokens.InitDefault( Invader.Explorer, 3 );
-		spaceCtx.Tokens.InitDefault( Invader.Town, 0 );
-		spaceCtx.Tokens.InitDefault( Invader.City, 0 ); // if we had to advance cards, might have buit a city
+		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );
+		spaceCtx.Tokens.InitDefault( Human.Town, 0 );
+		spaceCtx.Tokens.InitDefault( Human.City, 0 ); // if we had to advance cards, might have buit a city
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 		//  And 2 dahan
 		spaceCtx.Dahan.Init(2);

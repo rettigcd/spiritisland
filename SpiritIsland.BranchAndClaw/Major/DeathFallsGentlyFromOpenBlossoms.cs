@@ -20,7 +20,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 			// Add 1 disease to 2 adjacent lands with invaders.
 			var options = ctx.Tokens.Adjacent.Where( x => x.HasInvaders() );
 			for(int i = 0; i < 2; ++i) {
-				Space space = await ctx.Self.Gateway.Decision( Select.Space.ToPlaceToken( $"Add disease to ({i + 1} of 2)", options, Present.Always, TokenType.Disease ) );
+				Space space = await ctx.Self.Gateway.Decision( Select.Space.ToPlaceToken( $"Add disease to ({i + 1} of 2)", options, Present.Always, Token.Disease ) );
 				if( space != null )
 					await ctx.Target(space).Disease.Add( 1 );
 			}

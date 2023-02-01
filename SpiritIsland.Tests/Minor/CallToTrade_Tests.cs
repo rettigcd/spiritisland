@@ -143,7 +143,7 @@ public class CallToTrade_Tests {
 	static void Given_NoSuroundingTowns( TargetSpaceCtx spaceCtx ) {
 		// Simplifies power card because it has a Gather-Towns we don't want to deal with.
 		foreach(var adjState in spaceCtx.Adjacent)
-			adjState.InitDefault( Invader.Town, 0 );
+			adjState.InitDefault( Human.Town, 0 );
 	}
 
 	static void Given_NoSuroundingDahan( TargetSpaceCtx spaceCtx ) {
@@ -158,9 +158,9 @@ public class CallToTrade_Tests {
 
 	static void Given_HasOnly3Explorers( TargetSpaceCtx spaceCtx ) {
 		//  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
-		spaceCtx.Tokens.InitDefault( Invader.Explorer, 3 );
-		spaceCtx.Tokens.InitDefault( Invader.Town    , 0 );
-		spaceCtx.Tokens.InitDefault( Invader.City    , 0 ); // if we had to advance cards, might have buit a city
+		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );
+		spaceCtx.Tokens.InitDefault( Human.Town    , 0 );
+		spaceCtx.Tokens.InitDefault( Human.City    , 0 ); // if we had to advance cards, might have buit a city
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 	}
 

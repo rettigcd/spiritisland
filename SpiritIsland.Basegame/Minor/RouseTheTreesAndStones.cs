@@ -9,7 +9,7 @@ public class RouseTheTreesAndStones {
 		// 2 damage
 		await ctx.DamageInvaders(2);
 		// push 1 explorer
-		await ctx.Push(1,Invader.Explorer);
+		await ctx.Push(1,Human.Explorer);
 	}
 
 }

@@ -20,14 +20,14 @@ public class FlowLikeWaterReachLikeAir {
 
 		var mover = new TokenPusher_FixedDestination( ctx.Target( src ), destination );
 		// bringing up to 2 explorers, 2 towns and 2 dahan along with it.
-		mover.AddGroup( 2, Invader.Explorer );
-		mover.AddGroup( 2, Invader.Town );
-		mover.AddGroup( 2, TokenType.Dahan );
+		mover.AddGroup( 2, Human.Explorer );
+		mover.AddGroup( 2, Human.Town );
+		mover.AddGroup( 2, Human.Dahan );
 
 		// if you hvae 2 air, 2 water, the moved presence may also bring along up to 2 cities and up to 2 blight.
 		if(bringCityAndBlight) {
-			mover.AddGroup( 2, Invader.City );
-			mover.AddGroup( 2, TokenType.Blight );
+			mover.AddGroup( 2, Human.City );
+			mover.AddGroup( 2, Token.Blight );
 		}
 
 		await mover.MoveUpToN();

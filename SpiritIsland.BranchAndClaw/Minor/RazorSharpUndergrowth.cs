@@ -8,7 +8,7 @@ public class RazorSharpUndergrowth {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// destroy 1 explorer
-		await ctx.Invaders.DestroyNOfClass(1,Invader.Explorer);
+		await ctx.Invaders.DestroyNOfClass(1,Human.Explorer);
 		// and 1 dahan
 		await ctx.Dahan.Destroy( 1 );
 		// add 1 wilds

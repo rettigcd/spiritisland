@@ -22,12 +22,12 @@ public class SwallowTheLandDwellers {
 		// drown 1 explorer, 1 town, and 1 dahan
 
 		// drown 1 explorer ( drop 1 explorer in the ocean to drown )
-		var explorerToDrown = ctx.Tokens.OfClass(Invader.Explorer).Cast<HealthToken>().OrderBy(x=>x.StrifeCount).FirstOrDefault();
+		var explorerToDrown = ctx.Tokens.OfClass(Human.Explorer).Cast<HumanToken>().OrderBy(x=>x.StrifeCount).FirstOrDefault();
 		if(explorerToDrown != null)
 			await ctx.MoveTo( explorerToDrown, drowningOcean );
 
 		// drop town in the ocean to drown
-		var townToDrown = ctx.Tokens.OfClass(Invader.Town).Cast<HealthToken>()
+		var townToDrown = ctx.Tokens.OfClass(Human.Town).Cast<HumanToken>()
 			.OrderByDescending(x=>x.FullHealth) // items with most health - usually are all the same
 			.ThenBy(x=>x.Damage) // pick least damaged
 			.FirstOrDefault();

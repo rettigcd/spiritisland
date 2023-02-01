@@ -10,13 +10,13 @@ public class ThrivingCommunitites : BlightCardBase {
 		.ForEachBoard();
 
 	static SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
-		var spaceToken = await ctx.Decision( Select.Invader.ToReplace("upgrade",ctx.Space,ctx.Tokens.OfAnyHealthClass(Invader.Explorer_Town)));
+		var spaceToken = await ctx.Decision( Select.Invader.ToReplace("upgrade",ctx.Space,ctx.Tokens.OfAnyHealthClass(Human.Explorer_Town)));
 		await ctx.Remove(spaceToken.Token,1,RemoveReason.Replaced);
 		// !!! if select invader with strife, we should keep the strife.
-		var newTokenClass = (spaceToken.Token.Class == Invader.Explorer)
-			? Invader.Town
-			: Invader.City;
+		var newTokenClass = (spaceToken.Token.Class == Human.Explorer)
+			? Human.Town
+			: Human.City;
 		await ctx.AddDefault( newTokenClass, 1, AddReason.AsReplacement );
-	}).OnlyExecuteIf( x => x.Tokens.HasAny( Invader.Explorer_Town ) );
+	}).OnlyExecuteIf( x => x.Tokens.HasAny( Human.Explorer_Town ) );
 
 }

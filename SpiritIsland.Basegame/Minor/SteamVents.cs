@@ -11,12 +11,12 @@ public class SteamVents {
 		await ctx.SelectActionOption(
 			new SpaceAction(
 				"Destroy 1 explorer", 
-				ctx => ctx.Invaders.DestroyNOfClass( 1, Invader.Explorer ) 
+				ctx => ctx.Invaders.DestroyNOfClass( 1, Human.Explorer ) 
 			),
 			new SpaceAction(
 				"Destroy 1 town", 
-				ctx => ctx.Invaders.DestroyNOfClass( 1, Invader.Town )
-			).OnlyExecuteIf( ctx.Tokens.Has(Invader.Town) && await ctx.YouHave("3 earth") )
+				ctx => ctx.Invaders.DestroyNOfClass( 1, Human.Town )
+			).OnlyExecuteIf( ctx.Tokens.Has(Human.Town) && await ctx.YouHave("3 earth") )
 		);
 	}
 

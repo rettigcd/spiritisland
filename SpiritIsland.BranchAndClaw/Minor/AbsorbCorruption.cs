@@ -9,7 +9,7 @@ public class AbsorbCorruption {
 
 		static bool CanRemoveBlight(TargetSpaceCtx ctx ) => ctx.Blight.Any && 1 <= ctx.Self.Energy;
 
-		var gatherBlight = new SpaceAction( "Gather 1 blight", ctx => ctx.Gather( 1, TokenType.Blight ) );
+		var gatherBlight = new SpaceAction( "Gather 1 blight", ctx => ctx.Gather( 1, Token.Blight ) );
 		var removeBlight = new SpaceAction( "Pay 1 Energy to remove 1 blight",  Pay1EnergyToRemoveBlight )
 			.OnlyExecuteIf( CanRemoveBlight );
 

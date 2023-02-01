@@ -30,8 +30,8 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 
 		// In the land with the most Explorer
 		SpaceState PickSpaceWithMostExplorers(Board board) => gameState.Tokens.PowerUp( board.Spaces )
-			.Where( ss => 0 < ss.Sum( Invader.Explorer ) ) //  (min. of 1)
-			.OrderByDescending( ss => ss.Sum( Invader.Explorer ) )
+			.Where( ss => 0 < ss.Sum( Human.Explorer ) ) //  (min. of 1)
+			.OrderByDescending( ss => ss.Sum( Human.Explorer ) )
 			.FirstOrDefault();
 		var landsWithMostExplorers = boardsWithNoNewBlight
 			.Select( PickSpaceWithMostExplorers )
@@ -40,8 +40,8 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 
 		foreach(var land in landsWithMostExplorers) {
 			// add 1 Explorer and 1 Town.
-			land.AdjustDefault( Invader.Explorer, 1 );
-			land.AdjustDefault( Invader.Town, 1 );
+			land.AdjustDefault( Human.Explorer, 1 );
+			land.AdjustDefault( Human.Town, 1 );
 		}
 		if( landsWithMostExplorers.Any() )
 			gameState.LogDebug("Pressure for Fast Profit: Added 1T+1E to "
@@ -53,7 +53,7 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 	#region mods
 
 	async Task IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ) {
-		if(args.Token == TokenType.Blight
+		if(args.Token == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
 			_receivedRavageBlight.Add( args.AddedTo.Space.Board );// log
@@ -70,11 +70,11 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 		const string key = "A Sense of Pending Disaster";
 		SpaceState[] pushOptions;
 		if(HasASenseOfPendingDisaster
-			&& args.Token.Class == Invader.Explorer     // Is explorer
+			&& args.Token.Class == Human.Explorer     // Is explorer
 			&& args.Reason == RemoveReason.Destroyed   // destroying
-			&& args.Space[TokenType.Isolate] == 0 // not isolated
+			&& args.Space[Token.Isolate] == 0 // not isolated
 			&& !args.ActionScope.ContainsKey( key ) // first time
-			&& 0 < (pushOptions = args.Space.Adjacent.Where( ss => args.ActionScope.TerrainMapper.IsInPlay( ss ) && ss[TokenType.Isolate] == 0 ).ToArray()).Length
+			&& 0 < (pushOptions = args.Space.Adjacent.Where( ss => args.ActionScope.TerrainMapper.IsInPlay( ss ) && ss[Token.Isolate] == 0 ).ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
 			args.ActionScope[key] = true; // don't save any more

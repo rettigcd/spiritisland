@@ -17,10 +17,10 @@ public class ActionableSpaceState : SpaceState {
 	// It is questionable if this should be here since adjusting shouldn't make any difference
 	// but in this case, it COULD destroy a token.
 
-	public async Task AdjustHealthOfAll( int delta, params HealthTokenClass[] tokenClasses ) {
+	public async Task AdjustHealthOfAll( int delta, params HumanTokenClass[] tokenClasses ) {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
-			var tokens = OfClass( tokenClass ).Cast<HealthToken>();
+			var tokens = OfClass( tokenClass ).Cast<HumanToken>();
 			var orderedTokens = delta < 0
 				? tokens.OrderBy( x => x.FullHealth ).ToArray()
 				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
@@ -31,7 +31,7 @@ public class ActionableSpaceState : SpaceState {
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
 	/// <returns> The # of remaining Adjusted tokens. </returns>
-	public async Task<(HealthToken, int)> AdjustHealthOf( HealthToken token, int delta, int count ) {
+	public async Task<(HumanToken, int)> AdjustHealthOf( HumanToken token, int delta, int count ) {
 		count = Math.Min( this[token], count );
 		if(count == 0) return (token, 0);
 
@@ -51,16 +51,16 @@ public class ActionableSpaceState : SpaceState {
 	#endregion
 
 
-	public Task AddDefault( HealthTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
+	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Add( GetDefault( tokenClass ), count, addReason );
 
 
 	// Convenience only
-	public Task Destroy( Token token, int count ) => token is HealthToken ht
+	public Task Destroy( IToken token, int count ) => token is HumanToken ht
 		? ht.Destroy( this, count )
 		: Remove( token, count, RemoveReason.Destroyed );
 
-	public async Task<TokenAddedArgs> Add( Token token, int count, AddReason addReason = AddReason.Added ) {
+	public async Task<TokenAddedArgs> Add( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = Add_Silent( token, count, addReason );
 		if(addResult != null) {
 			addResult.GameState = this._api.AccessGameState();
@@ -70,7 +70,7 @@ public class ActionableSpaceState : SpaceState {
 		return addResult;
 	}
 
-	TokenAddedArgs Add_Silent( Token token, int count, AddReason addReason = AddReason.Added ) {
+	TokenAddedArgs Add_Silent( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
@@ -90,7 +90,7 @@ public class ActionableSpaceState : SpaceState {
 
 
 	/// <summary> returns null if no token removed </summary>
-	public virtual async Task<PublishTokenRemovedArgs> Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public virtual async Task<PublishTokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		var cmd = await Remove_Silent( token, count, reason );
 		if(cmd != null) {
 			var e = cmd.MakeEvent(); // !!! clean this up.  Don't need cmd and event
@@ -101,7 +101,7 @@ public class ActionableSpaceState : SpaceState {
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
-	protected async Task<PublishTokenRemovedArgs> Remove_Silent( Token token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	protected async Task<PublishTokenRemovedArgs> Remove_Silent( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
@@ -120,7 +120,7 @@ public class ActionableSpaceState : SpaceState {
 		return new PublishTokenRemovedArgs( removingArgs.Token, reason, ActionScope, this, removingArgs.Count );
 	}
 
-	public async Task AddStrifeTo( HealthToken invader, int count = 1 ) {
+	public async Task AddStrifeTo( HumanToken invader, int count = 1 ) {
 
 		// Remove old type from 
 		if(this[invader] < count)
@@ -139,7 +139,7 @@ public class ActionableSpaceState : SpaceState {
 	}
 
 	/// <summary> Gathering / Pushing + a few others </summary>
-	public async Task MoveTo( Token token, Space destination ) {
+	public async Task MoveTo( IToken token, Space destination ) {
 		// Current implementation favors:
 		//		switching token types prior to Add/Remove so events handlers don't switch token type
 		//		perfoming the add/remove action After the Adding/Removing modifications
@@ -178,9 +178,9 @@ public class ActionableSpaceState : SpaceState {
 
 	}
 
-	public virtual HealthToken GetNewDamagedToken( HealthToken invaderToken, int availableDamage ) 
+	public virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) 
 		=> invaderToken.AddDamage( availableDamage );
-	public virtual Task<int> DestroyNTokens( HealthToken invaderToDestroy, int countToDestroy ) {
+	public virtual Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
 		return invaderToDestroy.Destroy( this, countToDestroy );
 	}
 

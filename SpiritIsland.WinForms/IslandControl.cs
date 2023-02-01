@@ -44,8 +44,8 @@ public partial class IslandControl : Control {
 
 		// Dispose old spirit tokens
 		_presenceImg?.Dispose();
-		_tokenImages[TokenType.Defend]?.Dispose();
-		_tokenImages[TokenType.Isolate]?.Dispose();
+		_tokenImages[Token.Defend]?.Dispose();
+		_tokenImages[Token.Isolate]?.Dispose();
 
 		// Setup New
 		_gameState = gameState;
@@ -58,11 +58,11 @@ public partial class IslandControl : Control {
 		// !! we could cache these if we could serialize the Adjustment into a caching-key
 
 		_presenceImg = ResourceImages.Singleton.GetPresenceImage( presenceAppearance.BaseImage );
-		_tokenImages[TokenType.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
-		_tokenImages[TokenType.Isolate] = ResourceImages.Singleton.GetImage( Img.Isolate );
+		_tokenImages[Token.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
+		_tokenImages[Token.Isolate] = ResourceImages.Singleton.GetImage( Img.Isolate );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_presenceImg );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Defend] );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[TokenType.Isolate] );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Defend] );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Isolate] );
 
 		_spiritPainter = new SpiritPainter( _spirit, presenceAppearance );
 
@@ -388,7 +388,7 @@ public partial class IslandControl : Control {
 		RectangleF CalcBounds( int i ) => new RectangleF( bounds.X + slotWidth + margin + step * i, bounds.Y + margin, tokenWidth, tokenHeight );
 
 		// draw fear tokens
-		var img = this._tokenImages[TokenType.Blight];
+		var img = this._tokenImages[Token.Blight];
 		for(int i = 0; i < count; ++i)
 			graphics.DrawImage( img, CalcBounds( i ) );
 
@@ -489,7 +489,7 @@ public partial class IslandControl : Control {
 
 		var orderedInvaders = ss.Keys
 			.Where( k => k.Class.Category == TokenCategory.Invader )
-			.Cast<HealthToken>()
+			.Cast<HumanToken>()
 			// Major ordering: (Type > Strife)
 			.OrderByDescending( i => i.FullHealth )
 			.ThenBy( x => x.StrifeCount )
@@ -505,7 +505,7 @@ public partial class IslandControl : Control {
 
 			// Strife
 			IVisibleToken imageToken;
-			if(token is HealthToken si && 0 < si.StrifeCount) {
+			if(token is HumanToken si && 0 < si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
 
 				Rectangle strifeRect = FitWidth( x, y, iconWidth, _strife.Size );
@@ -538,12 +538,12 @@ public partial class IslandControl : Control {
 	void DrawRow( Graphics graphics, SpaceState spaceState, float iconWidth ) {
 
 		var tokenTypes = new List<IVisibleToken> {
-			TokenType.Defend, TokenType.Blight, // These don't show up in .OfAnyType if they are dynamic
-			TokenType.Beast, TokenType.Wilds, TokenType.Disease, TokenType.Badlands, TokenType.Isolate
+			Token.Defend, Token.Blight, // These don't show up in .OfAnyType if they are dynamic
+			Token.Beast, Token.Wilds, Token.Disease, Token.Badlands, Token.Isolate
 		}	.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
 			.Union( spaceState.OfAnyClass( _spirit.Presence.Token ) )
-			.Union( spaceState.OfAnyClass( TokenType.Element ) )
-			.Union( spaceState.OfClass( TokenType.OpenTheWays ) )
+			.Union( spaceState.OfAnyClass( Token.Element ) )
+			.Union( spaceState.OfClass( Token.OpenTheWays ) )
 			.Cast<IVisibleToken>()
 			.ToArray();
 
@@ -767,7 +767,7 @@ public partial class IslandControl : Control {
 	}
 
 	static Bitmap GetTokenImage( IVisibleToken token ) {
-		return token is HealthToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
+		return token is HumanToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
 			: ResourceImages.Singleton.GetImage( token.Img );
 	}
 
@@ -952,15 +952,15 @@ public partial class IslandControl : Control {
 		_strife = images.Strife();
 		_fearTokenImage = images.Fear();
 		_grayFear = images.FearGray();
-		_tokenImages = new Dictionary<Token, Image> {
-			[TokenType.Blight] = images.GetImage( Img.Blight ),
-			[TokenType.Beast] = images.GetImage( Img.Beast ),
-			[TokenType.Wilds] = images.GetImage( Img.Wilds ),
-			[TokenType.Disease] = images.GetImage( Img.Disease ),
-			[TokenType.Badlands] = images.GetImage( Img.Badlands ),
+		_tokenImages = new Dictionary<IToken, Image> {
+			[Token.Blight] = images.GetImage( Img.Blight ),
+			[Token.Beast] = images.GetImage( Img.Beast ),
+			[Token.Wilds] = images.GetImage( Img.Wilds ),
+			[Token.Disease] = images.GetImage( Img.Disease ),
+			[Token.Badlands] = images.GetImage( Img.Badlands ),
 			// assign slot so we can access via key when we need to ?.Dispose() when initializing spirit
-			[TokenType.Defend] = null,
-			[TokenType.Isolate] = null,
+			[Token.Defend] = null,
+			[Token.Isolate] = null,
 		};
 	}
 
@@ -968,7 +968,7 @@ public partial class IslandControl : Control {
 	Image _strife;
 	Image _fearTokenImage;
 	Image _grayFear;
-	Dictionary<Token, Image> _tokenImages; // because we need different images for different damaged invaders.
+	Dictionary<IToken, Image> _tokenImages; // because we need different images for different damaged invaders.
 
 	#endregion
 

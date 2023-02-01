@@ -138,7 +138,7 @@ public class AbsoluteStasis_Tests {
 		destination.DoAnExplore(cfg.GameState).Wait(8);
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfClass(Invader.Explorer).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfClass(Human.Explorer).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -159,7 +159,7 @@ public class AbsoluteStasis_Tests {
 		destination.DoAnExplore( cfg.GameState ).Wait( 8 );
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfClass( Invader.Explorer ).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfClass( Human.Explorer ).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Build
@@ -174,13 +174,13 @@ public class AbsoluteStasis_Tests {
 		cfg.InitTokens( space, "1E@1" );
 		// And: space is in stasis
 		SpacePutInStasis( space.Text );
-		Assert_SpaceHasCountTokens(space, Invader.Town, 0 );
+		Assert_SpaceHasCountTokens(space, Human.Town, 0 );
 
 		// When: Invaders Build
 		space.DoABuild( cfg.GameState ).Wait( 8 );
 
 		//  Then: no explorers in Jungle spaces.
-		Assert_SpaceHasCountTokens( space, Invader.Town, 0 );
+		Assert_SpaceHasCountTokens( space, Human.Town, 0 );
 	}
 
 	// M Invaders Don't Ravage
@@ -195,13 +195,13 @@ public class AbsoluteStasis_Tests {
 		cfg.InitTokens( space, "1E@1,1D@2" );
 		// And: space is in stasis
 		SpacePutInStasis( space.Text );
-		Assert_SpaceHasCountTokens( space, Invader.Town, 0 );
+		Assert_SpaceHasCountTokens( space, Human.Town, 0 );
 
 		// When: Invaders Ravage
 		space.DoARavage( cfg.GameState ).Wait( 8 );
 
 		//  Then: explorers and dahan unchanged
-		Assert_SpaceHasCountTokens( space, Invader.Explorer, 1 );
+		Assert_SpaceHasCountTokens( space, Human.Explorer, 1 );
 	}
 
 	// stasis space is included in win/loss check

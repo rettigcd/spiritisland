@@ -15,9 +15,9 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 	public async Task<bool> Skip( GameState gameState, SpaceState space ) {
 		int maxRemovable = _self.Presence.CountOn( space ) * 2;
 
-		int explorerCount = space.Sum( Invader.Explorer );
+		int explorerCount = space.Sum( Human.Explorer );
 
-		var explorerTypes = space.OfClass( Invader.Explorer ).Cast<IVisibleToken>().ToList();
+		var explorerTypes = space.OfClass( Human.Explorer ).Cast<IVisibleToken>().ToList();
 
 		int removableCount = System.Math.Min( maxRemovable, explorerCount );
 		int removed = 0;

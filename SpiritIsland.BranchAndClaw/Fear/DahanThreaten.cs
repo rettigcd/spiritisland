@@ -11,7 +11,7 @@ public class DahanThreaten : FearCardBase, IFearCard {
 			.In()
 			.SpiritPickedLand()
 			.Which( Has.Dahan )
-			.ByPickingToken( Invader.Any )
+			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
 			.Execute( ctx );
 

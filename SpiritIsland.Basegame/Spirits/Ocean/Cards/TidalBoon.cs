@@ -18,8 +18,8 @@ public class TidalBoon {
 
 		await pushLand
 			.Pusher
-			.AddGroup(1,Invader.Town)
-			.AddGroup(2,TokenType.Dahan)
+			.AddGroup(1,Human.Town)
+			.AddGroup(2,Human.Dahan)
 			.MoveUpToN();
 	}
 

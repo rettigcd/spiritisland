@@ -35,7 +35,7 @@ public class TransformToAMurderousDarkness {
 		await otherCtx.Badlands.Add( count, AddReason.AsReplacement );
 
 		// Push any number of those Badlands.
-		await otherCtx.PushUpTo( count, TokenType.Badlands );
+		await otherCtx.PushUpTo( count, Token.Badlands );
 
 		// 3 fear.
 		otherCtx.AddFear( 3 );

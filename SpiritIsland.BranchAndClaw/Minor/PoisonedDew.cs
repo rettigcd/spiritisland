@@ -11,7 +11,7 @@ public class PoisonedDew {
 			? int.MaxValue
 			: 1;
 
-		return ctx.Invaders.DestroyNOfClass(countToDestroy,Invader.Explorer);
+		return ctx.Invaders.DestroyNOfClass(countToDestroy,Human.Explorer);
 	}
 
 }

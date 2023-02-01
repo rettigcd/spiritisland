@@ -72,13 +72,13 @@ public class PreselectAttribute : Attribute, IPreselect {
 		Prompt = prompt;
 		TokenClasses = classString.Split( ',' )
 			.Select( x => x switch {
-				"Explorer" => (TokenClass)Invader.Explorer,
-				"Town" => (TokenClass)Invader.Town,
-				"City" => (TokenClass)Invader.City,
-				"Beast" => (TokenClass)TokenType.Beast,
-				"Disease" => (TokenClass)TokenType.Disease,
-				"Wilds" => (TokenClass)TokenType.Wilds,
-				"Dahan" => (TokenClass)TokenType.Dahan,
+				"Explorer" => (TokenClass)Human.Explorer,
+				"Town" => (TokenClass)Human.Town,
+				"City" => (TokenClass)Human.City,
+				"Beast" => (TokenClass)Token.Beast,
+				"Disease" => (TokenClass)Token.Disease,
+				"Wilds" => (TokenClass)Token.Wilds,
+				"Dahan" => (TokenClass)Human.Dahan,
 				_ => throw new Exception( $"{x} not known" )
 			} ).ToArray();
 	}

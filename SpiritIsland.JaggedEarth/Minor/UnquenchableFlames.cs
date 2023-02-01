@@ -6,7 +6,7 @@ public class UnquenchableFlames{
 		ctx.AddFear( 1 );
 
 		// 1 Damage to town/city.
-		await ctx.DamageInvaders(1,Invader.Town_City);
+		await ctx.DamageInvaders(1,Human.Town_City);
 
 		// Invaders do not heal Damage at end of turn.
 		ctx.GameState.Healer.Skip( ctx.Space );

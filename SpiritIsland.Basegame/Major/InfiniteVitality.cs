@@ -8,7 +8,7 @@ public class InfiniteVitality {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// Dahan have +4 health while in target land.
-		await ctx.AdjustTokensHealthForRound( 4, TokenType.Dahan );
+		await ctx.AdjustTokensHealthForRound( 4, Human.Dahan );
 
 		// whenever blight would be added to target land, instead leave it on the card
 		ctx.Blight.Blocked = true;

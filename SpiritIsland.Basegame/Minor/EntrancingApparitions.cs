@@ -12,7 +12,7 @@ public class EntrancingApparitions {
 
 		// if no invaders are present, gather 2 explorers
 		if(!ctx.HasInvaders)
-			await ctx.GatherUpTo(2, Invader.Explorer);
+			await ctx.GatherUpTo(2, Human.Explorer);
 
 	}
 

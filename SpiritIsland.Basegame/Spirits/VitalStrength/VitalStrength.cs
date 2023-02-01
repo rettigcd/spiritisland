@@ -31,7 +31,7 @@ public class VitalStrength : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		InitPresence( board, gs );
-		gs.Tokens.Dynamic.ForGame.Register( new EarthsVitality(this).DefendOnSpace, TokenType.Defend );
+		gs.Tokens.Dynamic.ForGame.Register( new EarthsVitality(this).DefendOnSpace, Token.Defend );
 	}
 
 	class EarthsVitality {

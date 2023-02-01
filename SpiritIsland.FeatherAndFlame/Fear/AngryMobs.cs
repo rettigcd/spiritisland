@@ -1,5 +1,4 @@
-﻿
-namespace SpiritIsland.FeatherAndFlame;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
 public class AngryMobs : FearCardBase, IFearCard {
 
@@ -10,7 +9,7 @@ public class AngryMobs : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> new SpaceAction( "may replace 1 Town with 2 Explorer and gain 1 Fear.", Level1_MayReplace1TownWith2ExplorersAndGain1Fear )
 			.In().SpiritPickedLand()
-			.ByPickingToken( Invader.Town )
+			.ByPickingToken( Human.Town )
 			.ForEachSpirit()
 			.Execute( ctx );
 
@@ -27,11 +26,11 @@ public class AngryMobs : FearCardBase, IFearCard {
 			.Execute( gameCtx );
 
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
-		var token = (await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Replace 1 Town with 2 Explorers", ctx.Space, ctx.Tokens.OfClass(Invader.Town).Cast<IVisibleToken>(), Present.Done ) ))?.Token;
+		var token = (await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Replace 1 Town with 2 Explorers", ctx.Space, ctx.Tokens.OfClass(Human.Town).Cast<IVisibleToken>(), Present.Done ) ))?.Token;
 		if(token == null) return;
 
 		ctx.Tokens.Adjust( token, -1 );
-		ctx.Tokens.AdjustDefault( Invader.Explorer, 2 );
+		ctx.Tokens.AdjustDefault( Human.Explorer, 2 );
 
 		ctx.AddFear( 1 );
 	}
@@ -39,14 +38,14 @@ public class AngryMobs : FearCardBase, IFearCard {
 
 	static public SpaceAction Level2_Each2ExplorersDestroy_ExplorerOrTown => new SpaceAction(
 		$"Destroy 1 Explorer/Towns per 2 Explorers",
-		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Invader.Explorer ) / 2, Invader.Explorer_Town )
+		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Human.Explorer ) / 2, Human.Explorer_Town )
 	).OnlyExecuteIf( Has2OrMoreExplorers );
 
 	static public SpaceAction Level3_Each2ExplorersDestroy_Invader => new SpaceAction(
 		$"Destroy 1 Invader per 2 Explorers",
-		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Invader.Explorer ) / 2, Invader.Any )
+		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Human.Explorer ) / 2, Human.Invader )
 	).OnlyExecuteIf( Has2OrMoreExplorers );
 
-	static bool Has2OrMoreExplorers( TargetSpaceCtx ss ) => 2 <= ss.Tokens.Sum( Invader.Explorer );
+	static bool Has2OrMoreExplorers( TargetSpaceCtx ss ) => 2 <= ss.Tokens.Sum( Human.Explorer );
 
 }

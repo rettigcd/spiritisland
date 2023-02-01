@@ -19,8 +19,8 @@ public class WordsOfWarning_Tests : ThunderCards  {
 
 		//  and: 4 explorers + 1 city
 		var counts = gs.Tokens[ a[2] ];
-		counts.AdjustDefault( Invader.Explorer, 4 );
-		counts.AdjustDefault( Invader.City, 1 );
+		counts.AdjustDefault( Human.Explorer, 4 );
+		counts.AdjustDefault( Human.City, 1 );
 		// and activate card
 		When_ActivateCard( WordsOfWarning.Name );
 			

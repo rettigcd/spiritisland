@@ -19,8 +19,8 @@ public class Badlands_Tests {
 
 		//  And: 1 bad lands, 1 explorer, 1 dahan, 1 defend
 		tokens.Badlands.Init(1);
-		tokens.InitDefault( Invader.Explorer, 1 );
-		tokens.InitDefault( TokenType.Dahan, 1 );
+		tokens.InitDefault( Human.Explorer, 1 );
+		tokens.InitDefault( Human.Dahan, 1 );
 		tokens.Defend.Add(1);
 		tokens.Summary.ShouldBe("1D@2,1E@1,1G,1M");
 
@@ -58,8 +58,8 @@ public class Badlands_Tests {
 
 		//  And: 1 bad lands, 1 explorer, 1 dahan
 		tokens.Badlands.Init(1);
-		tokens.InitDefault( Invader.Explorer, 1);
-		tokens.InitDefault(TokenType.Dahan, 1);
+		tokens.InitDefault( Human.Explorer, 1);
+		tokens.InitDefault(Human.Dahan, 1);
 		tokens.Summary.ShouldBe("1D@2,1E@1,1M");
 
 		// When: Grow, Skip Buy, then Ravage

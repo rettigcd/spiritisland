@@ -129,7 +129,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public string FormatOptions => Spirit.Gateway.Next.FormatOptions();
 
-	public void ChoosePush( Token token, Space destination ) {
+	public void ChoosePush( IToken token, Space destination ) {
 		NextDecision.Choose( token.Text ); // passing Text in case options are actually SpaceTokens
 		NextDecision.Choose( destination );
 	}

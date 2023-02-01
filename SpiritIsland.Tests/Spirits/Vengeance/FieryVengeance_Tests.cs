@@ -18,7 +18,7 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Adjust( space, 1 );
 		space.InitTokens("1T@2");
 		//   And: 1 Blight!
-		space.Init( TokenType.Blight, 1 );
+		space.Init( Token.Blight, 1 );
 
 		//   And: spirit 2 has destroyed presence
 		spirit2.Presence.Destroyed++;
@@ -51,7 +51,7 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Adjust( space, 1 );
 		space.InitTokens( "1T@2" );
 		//   And: 1 Blight!
-		space.Init( TokenType.Blight, 1 );
+		space.Init( Token.Blight, 1 );
 
 		//   And: spirit 2 has NO destroyed presence
 		spirit2.Presence.Destroyed = 0;

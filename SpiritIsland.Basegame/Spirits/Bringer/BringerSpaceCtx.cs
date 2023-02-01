@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame;
+﻿
+
+namespace SpiritIsland.Basegame;
 
 public class BringerSpaceCtx : TargetSpaceCtx {
 
@@ -8,7 +10,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 	public override ActionableSpaceState TokensOn( Space space ) => new TDaTD_ActionTokens( this, space );
 
 
-	public async Task<int> Destroy1TokenEx( HealthToken original ) {
+	public async Task<int> Destroy1TokenEx( HumanToken original ) {
 		var tc = original.Class;
 		if( tc.Category != TokenCategory.Invader || tc.Variant != TokenVariant.Default ) return 0; // only push normal invaders
 
@@ -57,15 +59,15 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 	static void WakeUpDreamers( SpaceState spaceState ) {
 		var dreamers = spaceState.OfCategory( TokenCategory.Invader )
-			.Cast<HealthToken>()
+			.Cast<HumanToken>()
 			.Where( x => x.Class.Variant == TokenVariant.Dreaming )
 			.ToArray();
-		foreach(HealthToken dreamer in dreamers)
+		foreach(HumanToken dreamer in dreamers)
 			spaceState.ReplaceAllWith( dreamer, ToggleDreamer( dreamer ) );
 	}
 
 	static void RemoveDreamDamage( SpaceState spaceState ) {
-		var damagedInvaders = spaceState.Keys.OfType<HealthToken>()
+		var damagedInvaders = spaceState.Keys.OfType<HumanToken>()
 			.Where( t => t.DreamDamage != 0 )
 			.ToArray();
 		foreach(var damagedInvader in damagedInvaders)
@@ -79,20 +81,20 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 	#region static DreamTokens
 
-	static public readonly HealthTokenClass DreamingCity = new HealthTokenClass( "City_Dreaming", TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
-	static public readonly HealthTokenClass DreamingTown = new HealthTokenClass( "Town_Dreaming", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
-	static public readonly HealthTokenClass DreamingExplorer = new HealthTokenClass( "Explorer_Dreaming", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingCity = new HumanTokenClass( "City_Dreaming", TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingTown = new HumanTokenClass( "Town_Dreaming", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingExplorer = new HumanTokenClass( "Explorer_Dreaming", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
 
-	static public HealthToken ToggleDreamer( HealthToken token ) => token.SwitchClass( ToggleDreaming( token.Class ) );
+	static public HumanToken ToggleDreamer( HumanToken token ) => token.SwitchClass( ToggleDreaming( token.Class ) );
 
-	static public HealthTokenClass ToggleDreaming( HealthTokenClass tokenClass ) {
+	static public HumanTokenClass ToggleDreaming( HumanTokenClass tokenClass ) {
 		if(tokenClass.Category == TokenCategory.Invader) {
-			if(tokenClass == Invader.Explorer) return DreamingExplorer;
-			if(tokenClass == Invader.Town) return DreamingTown;
-			if(tokenClass == Invader.City) return DreamingCity;
-			if(tokenClass == DreamingExplorer) return Invader.Explorer;
-			if(tokenClass == DreamingTown) return Invader.Town;
-			if(tokenClass == DreamingCity) return Invader.City;
+			if(tokenClass == Human.Explorer) return DreamingExplorer;
+			if(tokenClass == Human.Town) return DreamingTown;
+			if(tokenClass == Human.City) return DreamingCity;
+			if(tokenClass == DreamingExplorer) return Human.Explorer;
+			if(tokenClass == DreamingTown) return Human.Town;
+			if(tokenClass == DreamingCity) return Human.City;
 		}
 		throw new ArgumentException( $"{tokenClass} is not explorer, town, or city." );
 	}

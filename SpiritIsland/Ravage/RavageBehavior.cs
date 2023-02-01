@@ -8,12 +8,12 @@ public class RavageBehavior {
 	// Order / Who is damaged
 	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
 	// Gets the Aggregate damage from attackers. (default action does this by calling AttackDamageFrom1)
-	public Func<RavageBehavior, CountDictionary<HealthToken>, SpaceState, int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
+	public Func<RavageBehavior, CountDictionary<HumanToken>, SpaceState, int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
 	public Func<RavageBehavior, RavageData, int, Task> DamageDefenders = DamageDefenders_Default;
-	public Func<SpaceState, HealthToken, int> AttackDamageFrom1 = AttackDamageFrom1_Default;
-	public CountDictionary<Token> NotParticipating { get; set; } = new CountDictionary<Token>();
-	public Func<HealthToken, bool> IsAttacker { get; set; } = null;
-	public Func<HealthToken, bool> IsDefender { get; set; } = null;
+	public Func<SpaceState, HumanToken, int> AttackDamageFrom1 = AttackDamageFrom1_Default;
+	public CountDictionary<IToken> NotParticipating { get; set; } = new CountDictionary<IToken>();
+	public Func<HumanToken, bool> IsAttacker { get; set; } = null;
+	public Func<HumanToken, bool> IsDefender { get; set; } = null;
 	public int AttackersDefend = 0; // reduces the damage inflicted by the defenders onto the attackers.  Not exactly correct, but close
 
 	public RavageBehavior Clone() {
@@ -91,7 +91,7 @@ public class RavageBehavior {
 		// https://querki.net/u/darker/spirit-island-faq/#!Voice+of+Command 
 		var participatingExplorers = defenders.Keys
 			.Where( k => k.Class.Category == TokenCategory.Invader ) //! all defending invaders, even dreaming/frozen invaders
-			.OfType<HealthToken>()
+			.OfType<HumanToken>()
 			.OrderByDescending( x => x.RemainingHealth )
 			.ThenBy( x => x.StrifeCount ) // non strifed first
 			.ToArray();
@@ -110,12 +110,12 @@ public class RavageBehavior {
 
 		// Dahan
 		var damagableDahan = defenders.Keys
-			.Cast<HealthToken>()
-			.Where( k => k.Class == TokenType.Dahan )  // Normal only, filters out frozen/sleeping
+			.Cast<HumanToken>()
+			.Where( k => k.Class == Human.Dahan )  // Normal only, filters out frozen/sleeping
 			.OrderBy( t => t.RemainingHealth ) // kill damaged dahan first
 			.ToArray();
 
-		var dahan = new HealthTokenClassBinding( data.Tokens, TokenType.Dahan, data.ActionScope );
+		var dahan = new HealthTokenClassBinding( data.Tokens, Human.Dahan, data.ActionScope );
 
 		foreach(var dahanToken in damagableDahan) {
 
@@ -167,13 +167,13 @@ public class RavageBehavior {
 	}
 
 	/// <returns>New attacker finvaders</returns>
-	static CountDictionary<HealthToken> FromEachStrifed_RemoveOneStrife( RavageData ra ) {
-		CountDictionary<HealthToken> participatingInvaders = ra.Result.startingAttackers;
+	static CountDictionary<HumanToken> FromEachStrifed_RemoveOneStrife( RavageData ra ) {
+		CountDictionary<HumanToken> participatingInvaders = ra.Result.startingAttackers;
 
 		var newAttackers = participatingInvaders.Clone();
 
 		var strifed = participatingInvaders.Keys
-			.OfType<HealthToken>()
+			.OfType<HumanToken>()
 			.Where( x => x.StrifeCount > 0 )
 			.OrderBy( x => x.StrifeCount ) // smallest first
 			.ToArray();
@@ -191,20 +191,20 @@ public class RavageBehavior {
 	}
 
 	static public int GetDamageInflictedByDefenders( RavageBehavior behavior, RavageData data ) {
-		CountDictionary<HealthToken> participants = GetDefenders( behavior,data);
+		CountDictionary<HumanToken> participants = GetDefenders( behavior,data);
 		int damageFromDefenders = participants.Sum( pair => data.Tokens.AttackDamageFrom1( pair.Key ) * pair.Value );
 		return Math.Max( 0, damageFromDefenders - behavior.AttackersDefend );
 	}
 
-	static int GetDamageFromParticipatingAttackers_Default( RavageBehavior behavior, CountDictionary<HealthToken> participatingAttacker, SpaceState tokens ) {
+	static int GetDamageFromParticipatingAttackers_Default( RavageBehavior behavior, CountDictionary<HumanToken> participatingAttacker, SpaceState tokens ) {
 
 		return participatingAttacker.Keys
-			.OfType<HealthToken>()
+			.OfType<HumanToken>()
 			.Where( x => x.StrifeCount == 0 )
 			.Select( attacker => behavior.AttackDamageFrom1( tokens, attacker ) * participatingAttacker[attacker] ).Sum();
 	}
 
-	static int AttackDamageFrom1_Default( SpaceState tokens, HealthToken ht ) => tokens.AttackDamageFrom1( ht );
+	static int AttackDamageFrom1_Default( SpaceState tokens, HumanToken ht ) => tokens.AttackDamageFrom1( ht );
 
 
 	/// <returns>(city-dead,town-dead,explorer-dead)</returns>
@@ -219,7 +219,7 @@ public class RavageBehavior {
 		var remaningAttackers = ra.CurrentAttackers.Clone();
 
 		while(remainingDamageToApply > 0 && remaningAttackers.Any()) {
-			HealthToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
+			HumanToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
 
 			// Apply real damage
 			var (damageInflicted, _) = await ra.InvaderBinding.ApplyDamageTo1( remainingDamageToApply, attackerToDamage );
@@ -240,12 +240,12 @@ public class RavageBehavior {
 
 	#region Static Smart Damage to Invaders
 
-	public static HealthToken PickSmartInvaderToDamage( CountDictionary<HealthToken> participatingInvaders, int availableDamage ) {
+	public static HumanToken PickSmartInvaderToDamage( CountDictionary<HumanToken> participatingInvaders, int availableDamage ) {
 		return PickItemToKill( participatingInvaders.Keys, availableDamage )
 			?? PickItemToDamage( participatingInvaders.Keys );
 	}
 
-	public static HealthToken PickItemToKill( IEnumerable<HealthToken> candidates, int availableDamage ) {
+	public static HumanToken PickItemToKill( IEnumerable<HumanToken> candidates, int availableDamage ) {
 		return candidates
 			.Where( specific => specific.RemainingHealth <= availableDamage ) // can be killed
 			.OrderByDescending( k => k.FullHealth ) // pick items with most Full Health
@@ -253,7 +253,7 @@ public class RavageBehavior {
 			.FirstOrDefault();
 	}
 
-	public static HealthToken PickItemToDamage( IEnumerable<HealthToken> candidates ) {
+	public static HumanToken PickItemToDamage( IEnumerable<HumanToken> candidates ) {
 		return candidates
 			.OrderBy( i => i.RemainingHealth ) // closest to dead
 			.ThenByDescending( i => i.FullHealth ) // biggest impact
@@ -262,18 +262,18 @@ public class RavageBehavior {
 
 	#endregion
 
-	public static CountDictionary<HealthToken> GetAttackers( RavageBehavior behavior, RavageData data ) 
+	public static CountDictionary<HumanToken> GetAttackers( RavageBehavior behavior, RavageData data ) 
 		=> GetParticipantCounts( behavior, data, behavior.IsAttacker ?? IsInvader );
 
-	static public CountDictionary<HealthToken> GetDefenders( RavageBehavior behavior, RavageData data ) 
+	static public CountDictionary<HumanToken> GetDefenders( RavageBehavior behavior, RavageData data ) 
 		=> GetParticipantCounts( behavior, data, behavior.IsDefender ?? IsDahan );
 
-	static bool IsInvader( Token token ) => token.Class.Category == TokenCategory.Invader;
-	static bool IsDahan( Token token ) => token.Class.Category == TokenCategory.Dahan; // all Dahan, including Frozen
+	static bool IsInvader( IToken token ) => token.Class.Category == TokenCategory.Invader;
+	static bool IsDahan( IToken token ) => token.Class.Category == TokenCategory.Dahan; // all Dahan, including Frozen
 
-	static CountDictionary<HealthToken> GetParticipantCounts( RavageBehavior cfg, RavageData ra, Func<HealthToken, bool> filter ) {
-		var participants = new CountDictionary<HealthToken>();
-		foreach(var token in ra.Tokens.Keys.OfType<HealthToken>().Where( filter ))
+	static CountDictionary<HumanToken> GetParticipantCounts( RavageBehavior cfg, RavageData ra, Func<HumanToken, bool> filter ) {
+		var participants = new CountDictionary<HumanToken>();
+		foreach(var token in ra.Tokens.Keys.OfType<HumanToken>().Where( filter ))
 			participants[token] = Math.Max( 0, ra.Tokens[token] - cfg.NotParticipating[token] );
 		return participants;
 	}

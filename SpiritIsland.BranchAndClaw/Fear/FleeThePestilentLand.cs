@@ -9,7 +9,7 @@ class FleeThePestilentLand : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns(1)
 			.In().SpiritPickedLand().Which( Has.Disease )
-			.ByPickingToken(Invader.Explorer_Town)
+			.ByPickingToken(Human.Explorer_Town)
 			.ForEachSpirit()
 			.Execute( ctx );
 

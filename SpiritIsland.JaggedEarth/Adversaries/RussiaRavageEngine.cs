@@ -29,7 +29,7 @@ class RussiaRavageEngine : RavageEngine {
 	const string CompetitionName = "Competition Among Hunters";
 	protected override bool MatchesCardForRavage( InvaderCard card, SpaceState spaceState ) {
 		if( base.MatchesCardForRavage( card, spaceState ) ) return true;
-		bool hasCompetition = ShouldCheckCompetitionAmongHunters && 3 <= spaceState.Sum( Invader.Explorer );
+		bool hasCompetition = ShouldCheckCompetitionAmongHunters && 3 <= spaceState.Sum( Human.Explorer );
 		if(hasCompetition)
 			spaceState.AccessGameState().LogDebug($"{CompetitionName} causes ravage on {spaceState.Space.Text}");
 		return hasCompetition;

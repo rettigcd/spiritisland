@@ -26,7 +26,7 @@ public class PentUpCalamity {
 	}
 
 	static async Task RemoveTokensForFearAndDamage( TargetSpaceCtx ctx ) {
-		var removed = new List<Token>();
+		var removed = new List<IToken>();
 		IVisibleToken[] options = GetRemovableTokens( ctx );
 
 		// if you have 2 moon, 3 fire: if you have remvoed tokens, return up to 2 of them.  Otherwise, add 2 strife
@@ -68,16 +68,16 @@ public class PentUpCalamity {
 				await ctx.AddStrife();
 	}
 
-	static async Task RemoveToken( TargetSpaceCtx ctx, Token tokenToRemove ) {
-		if(tokenToRemove is HealthToken invader)
+	static async Task RemoveToken( TargetSpaceCtx ctx, IToken tokenToRemove ) {
+		if(tokenToRemove is HumanToken invader)
 			await ctx.AddStrifeTo( invader, -1 );
 		else
 			await ctx.Remove( tokenToRemove, 1 );
 	}
 
 	static IVisibleToken[] GetRemovableTokens( TargetSpaceCtx ctx ) {
-		var options = ctx.Tokens.OfAnyClass( TokenType.Beast, TokenType.Disease, TokenType.Wilds ).ToList();
-		options.AddRange( ctx.Tokens.Keys.OfType<HealthToken>() );
+		var options = ctx.Tokens.OfAnyClass( Token.Beast, Token.Disease, Token.Wilds ).ToList();
+		options.AddRange( ctx.Tokens.Keys.OfType<HumanToken>() );
 		return options.Cast<IVisibleToken>().ToArray();
 	}
 

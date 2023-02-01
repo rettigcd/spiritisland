@@ -10,8 +10,8 @@ public class RainOfAsh {
 
 		// Push 2 dahan and 2 explorer / town to land(s) without your presence.
 		return ctx.Pusher
-			.AddGroup( 2, Invader.Explorer_Town )
-			.AddGroup( 2, TokenType.Dahan )
+			.AddGroup( 2, Human.Explorer_Town )
+			.AddGroup( 2, Human.Dahan )
 			.FilterDestinations( s => !ctx.Self.Presence.IsOn(s) )
 			.MoveN();
 	}

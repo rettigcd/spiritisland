@@ -39,10 +39,10 @@ public class FranceExplorer : ExploreEngine {
 	static DecisionOption<BoardCtx> AddExplorerToLandWithoutAny => new DecisionOption<BoardCtx>(
 		"Add Explorer to Land without any",
 		async boardCtx => {
-			var options = boardCtx.Board.Spaces.Where( s => !boardCtx.GameState.Tokens[s].HasAny( Invader.Explorer ) ).ToArray();
+			var options = boardCtx.Board.Spaces.Where( s => !boardCtx.GameState.Tokens[s].HasAny( Human.Explorer ) ).ToArray();
 			var space = await boardCtx.Decision( new Select.Space( "Add explorer", options, Present.Always ) );
 			if(space != null)
-				await boardCtx.GameState.Tokens[space].Bind( boardCtx.ActionScope ).AddDefault( Invader.Explorer, 1 );
+				await boardCtx.GameState.Tokens[space].Bind( boardCtx.ActionScope ).AddDefault( Human.Explorer, 1 );
 		}
 	);
 
@@ -50,7 +50,7 @@ public class FranceExplorer : ExploreEngine {
 	async Task DoFrontierExploration( GameState gs, SpaceState[] tokenSpacesToExplore ) {
 		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
-			if(!exploreTokens.HasAny( Invader.Town_City ))
+			if(!exploreTokens.HasAny( Human.Town_City ))
 				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ), false ); // !!! implemented as a new Action - Should it be???
 	}
 
@@ -59,7 +59,7 @@ public class FranceExplorer : ExploreEngine {
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
 		static DecisionOption<SelfCtx> SelectSpaceAction( SpaceState s ) {
-			return s.HasAny( Invader.Town_City )
+			return s.HasAny( Human.Town_City )
 				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Space.Text, null )
 				: new DecisionOption<SelfCtx>( "", null );
 		}

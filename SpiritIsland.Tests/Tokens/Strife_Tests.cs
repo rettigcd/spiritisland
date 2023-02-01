@@ -3,8 +3,8 @@
 [Trait("Token","Strife")]
 public class Strife_Tests {
 
-	readonly HealthToken city;
-	readonly HealthToken strifedCity;
+	readonly HumanToken city;
+	readonly HumanToken strifedCity;
 
 	public Strife_Tests() {
 		city = StdTokens.City;
@@ -51,7 +51,7 @@ public class Strife_Tests {
 	[Fact]
 	public void AddingStrife() {
 		int expected = 0;
-		HealthToken inv = city;
+		HumanToken inv = city;
 		void Add(int delta ) {
 			expected+=delta;
 			inv = inv.AddStrife(delta);
@@ -79,7 +79,7 @@ public class Strife_Tests {
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
 		counts.Bind( default ).AddStrifeTo( StdTokens.Town ).Wait();
-		var strifedTown = counts.OfClass(Invader.Town).Single( k => k != StdTokens.Town );
+		var strifedTown = counts.OfClass(Human.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
 		var destination = space.Adjacent.First( IsInPlay );
@@ -112,8 +112,8 @@ public class Strife_Tests {
 			case "2C@2":  counts.Init( city2, 2); break;
 			case "1C@2^": counts.Init( city2, 1); counts.Bind( default ).AddStrifeTo( city2 ).Wait(); break;
 			case "1C@3,1T@2":
-				counts.InitDefault( Invader.City, 1 );
-				counts.InitDefault( Invader.Town, 1 );
+				counts.InitDefault( Human.City, 1 );
+				counts.InitDefault( Human.Town, 1 );
 				break;
 			default: throw new Exception( "staring invaders [" + startingInvaders + "] not in list" );
 		}
@@ -142,9 +142,9 @@ public class Strife_Tests {
 	[Fact]
 	public void StrifedCityStillFoundAfterStrifeBasedHealthChange() {
 		// Given: dictionary contains a strifed city
-		var counts = new CountDictionary<Token>();
+		var counts = new CountDictionary<IToken>();
 		var holder = new HealthPenaltyHolder();
-		var token = new HealthToken(Invader.City,holder,3,0,1);
+		var token = new HumanToken(Human.City,holder,3,0,1);
 		counts[token] = 1;
 		// When: adjust health based on strife
 		holder.HealthPenaltyPerStrife = 1;			// !!! STOP USING global variables.

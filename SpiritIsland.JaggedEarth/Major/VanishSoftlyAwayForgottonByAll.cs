@@ -26,16 +26,16 @@ public class VanishSoftlyAwayForgottonByAll {
 		}
 	}
 
-	static Token[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.InvaderTokens().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
+	static IToken[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.InvaderTokens().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
 
 
 	static SpaceAction RemoveInvader => new SpaceAction(
 		"Remove 1 Invader", 
-		ctx => ctx.Invaders.RemoveLeastDesirable( Invader.Any )
+		ctx => ctx.Invaders.RemoveLeastDesirable( Human.Invader )
 	);
 
 	static SpaceAction RemoveExplorerOrTown => new SpaceAction( "Remove 1 Explorer/Town", 
-		ctx => ctx.Invaders.RemoveLeastDesirable( Invader.Explorer_Town )
+		ctx => ctx.Invaders.RemoveLeastDesirable( Human.Explorer_Town )
 	);
 
 

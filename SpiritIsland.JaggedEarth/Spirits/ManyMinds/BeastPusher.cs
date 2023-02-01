@@ -8,7 +8,7 @@ class BeastPusher : TokenPusher {
 	public BeastPusher( TargetSpaceCtx ctx ) : base( ctx ) { }
 
 	protected override async Task<Space> SelectDestination( IVisibleToken token ) {
-		int range = token == TokenType.Beast ? 2 : 1;
+		int range = token == Token.Beast ? 2 : 1;
 
 		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Range( range ) // this is a push, not a range
 			.Where( s => ctx.Target(s.Space).IsInPlay );

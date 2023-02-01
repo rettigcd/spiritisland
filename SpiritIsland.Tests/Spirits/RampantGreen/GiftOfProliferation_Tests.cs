@@ -33,7 +33,7 @@ public class GiftOfProliferation_Tests {
 
 		// Given: presence on board
 		setup.Spirit.Presence.Adjust( space, 2 );
-		space.Init( TokenType.Blight, 0 );
+		space.Init( Token.Blight, 0 );
 
 		//  When: Card played
 		var task = GiftOfProliferation.ActionAsync( setup.TargetSelf );

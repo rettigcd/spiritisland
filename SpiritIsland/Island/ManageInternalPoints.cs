@@ -73,7 +73,7 @@ public class ManageInternalPoints {
 		throw new Exception("Unable find open slot.");
 	}
 
-	static void Validate( Token token ) {
+	static void Validate( IToken token ) {
 		if(token is not IVisibleToken)
 			throw new InvalidOperationException( "Token {token} does not appear on screen." );
 	}
@@ -93,7 +93,7 @@ public class ManageInternalPoints {
 	public ManageInternalPoints Init( SpaceState allTokens ) {
 
 		// invader groups
-		var groups = allTokens.Keys.OfType<HealthToken>()
+		var groups = allTokens.Keys.OfType<HumanToken>()
 			.Where(x=>x.Class.Category == TokenCategory.Invader)
 			.GroupBy(x=>x.Class)
 			.ToArray();
@@ -148,7 +148,7 @@ public class ManageInternalPoints {
 		// --------------
 		// Try to find on the Boarder
 		for(int i = 0; i < _borderPoints.Length; i++) {
-			Token slotToken = _borderTokens[i];
+			IToken slotToken = _borderTokens[i];
 			if(slotToken is null || spaceState[slotToken] == 0) {
 				_borderTokens[i] = token;
 				Validate( token );
@@ -160,10 +160,10 @@ public class ManageInternalPoints {
 
 	}
 
-	void InitInvaderGroup( HealthTokenClass tokenClass, IEnumerable<HealthToken> tokenGroup, SpaceState allTokens ) {
+	void InitInvaderGroup( HumanTokenClass tokenClass, IEnumerable<HumanToken> tokenGroup, SpaceState allTokens ) {
 
-		HealthToken[] GetRegisteredTokens() => _dict.Keys
-			.OfType<HealthToken>()
+		HumanToken[] GetRegisteredTokens() => _dict.Keys
+			.OfType<HumanToken>()
 			.Where( x => x.Class == tokenClass )
 			.ToArray();
 

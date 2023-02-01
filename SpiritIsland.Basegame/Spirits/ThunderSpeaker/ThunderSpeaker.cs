@@ -52,7 +52,7 @@ public class Thunderspeaker : Spirit {
 		Presence.Adjust( gs.Tokens[spots[1]],1 );
 
 		// Special Rules -Ally of the Dahan - Your presense may move with dahan
-		gs.Tokens.TokenMoved.ForGame.Add( new MovePresenceWithTokens( this, TokenType.Dahan ).CheckForMove );
+		gs.Tokens.TokenMoved.ForGame.Add( new MovePresenceWithTokens( this, Human.Dahan ).CheckForMove );
 
 		// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense within 1
 		gs.AddToAllActiveSpaces( new TokenRemovedHandler( "Sworn to Victory", DestroyNearbyPresence, true) );
@@ -61,7 +61,7 @@ public class Thunderspeaker : Spirit {
 	async Task DestroyNearbyPresence( ITokenRemovedArgs args ) {
 		if( args.Reason != RemoveReason.Destroyed ) return;
 		if(args.ActionScope.Category != ActionCategory.Invader) return;
-		if(args.Token.Class != TokenType.Dahan) return;
+		if(args.Token.Class != Human.Dahan) return;
 
 		string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";
 

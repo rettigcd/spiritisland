@@ -17,7 +17,7 @@ public class TravelersBoon {
 		// ( total, not for each presence).
 		if( 0 < movedTokens.Length)
 		await new TokenCollectorFromSpecifiedSources( destinationCtx, movedTokens.Select( x => ctx.GameState.Tokens[x.Space] ).Distinct().ToArray() )
-			.AddGroup( 1, Invader.Any.Plus( TokenType.Dahan, TokenType.Beast ) )
+			.AddGroup( 1, Human.Invader.Plus( Human.Dahan, Token.Beast ) )
 			.CollectUpToN();
 
 	}

@@ -1,6 +1,5 @@
 ﻿namespace SpiritIsland.Tests.Fear;
 
-
 [Trait( "Invaders", "Ravage" )]
 public class BeliefTakesRoot_Tests {
 
@@ -74,7 +73,7 @@ public class BeliefTakesRoot_Tests {
 		// Add: dahan
 		gameState.DahanOn( ravageSpace ).Init( desiredCount );
 		// Add towns
-		gameState.Tokens[ravageSpace].AdjustDefault( Invader.Town, desiredCount );
+		gameState.Tokens[ravageSpace].AdjustDefault( Human.Town, desiredCount );
 
 		//   And: Presence
 		while(presenceCount-->0)

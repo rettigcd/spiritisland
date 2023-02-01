@@ -93,7 +93,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 	public override BlightTokenBinding Blight => new TricksterBlight( this, ActionScope );
 
-	public override async Task AddStrife( params HealthTokenClass[] groups ) {
+	public override async Task AddStrife( params HumanTokenClass[] groups ) {
 		await base.AddStrife( groups );
 
 		if( Self.Energy == 0 ) return;
@@ -107,7 +107,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 		var invader2 = await Self.Gateway.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;
 		--Self.Energy;
-		await Target( invader2.Space ).AddStrifeTo( (HealthToken)invader2.Token );
+		await Target( invader2.Space ).AddStrifeTo( (HumanToken)invader2.Token );
 
 	}
 

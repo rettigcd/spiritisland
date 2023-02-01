@@ -15,7 +15,7 @@ public class MistsOfOblivion {
 			if(0 < mayDestroyed
 				&& args.ActionScope == ctx.ActionScope
 				&& args.Reason == RemoveReason.Destroyed
-				&& args.Token.Class.IsOneOf( Invader.Town_City )
+				&& args.Token.Class.IsOneOf( Human.Town_City )
 			) {
 				ctx.AddFear( 1 );
 				--mayDestroyed;

@@ -43,7 +43,7 @@ public class ToDreamAThousandDeaths_Tests {
 		const int count = 2;
 
 		// Given: 2 explorers
-		_ctx.Tokens.AdjustDefault(Invader.Explorer, count );
+		_ctx.Tokens.AdjustDefault(Human.Explorer, count );
 
 		// When: causing 1 damage to each invader
 		switch(method) {
@@ -71,7 +71,7 @@ public class ToDreamAThousandDeaths_Tests {
 		// pushes town
 
 		// Given: 2 town
-		_ctx.Tokens.AdjustDefault( Invader.Town, count );
+		_ctx.Tokens.AdjustDefault( Human.Town, count );
 
 		// When: destroying towns
 		_ = DestroyAllExplorersAndTownsAsync( _ctx );
@@ -94,7 +94,7 @@ public class ToDreamAThousandDeaths_Tests {
 	public void DreamDamageResetsEachPower() {
 
 		// Given: 2 explorers
-		_ctx.Tokens.AdjustDefault( Invader.City, 1 );
+		_ctx.Tokens.AdjustDefault( Human.City, 1 );
 
 		// When: 3 separate actinos cause 1 damage
 		async Task Run3Async() {

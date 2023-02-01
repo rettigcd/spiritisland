@@ -50,8 +50,8 @@ public class Sweden : IAdversary {
 
 		// Level 3 - Fine Steel for Tools and Guns: (Town deal 3 Damage, City deal 5 Damage)
 		if(3 <= Level) {
-			gameState.Tokens.Attack[Invader.Town] = 3;
-			gameState.Tokens.Attack[Invader.City] = 5;
+			gameState.Tokens.Attack[Human.Town] = 3;
+			gameState.Tokens.Attack[Human.City] = 5;
 			// no logging, Ravage has plenty of it.
 		}
 
@@ -69,7 +69,7 @@ public class Sweden : IAdversary {
 				).ToArray();
 
 			foreach(var leastInvaderSpace in addTownSpaces)
-				leastInvaderSpace.AdjustDefault( Invader.Town, 1 );
+				leastInvaderSpace.AdjustDefault( Human.Town, 1 );
 
 			gameState.LogDebug("Royal Backing - added 1 town to "+addTownSpaces.Select(x=>x.Space.Text).Order().Join(","));
 		}
@@ -77,15 +77,15 @@ public class Sweden : IAdversary {
 		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
 		if(5 <= Level) {
 			var mod = new TokenAddedHandler("Sweden", args => {
-				if(args.Reason == AddReason.Ravage && args.Token == TokenType.Blight) {
+				if(args.Reason == AddReason.Ravage && args.Token == Token.Blight) {
 					var noBuildAdjacents = args.AddedTo.Adjacent
-						.Where( adj => !adj.HasAny( Invader.Town_City ) )
+						.Where( adj => !adj.HasAny( Human.Town_City ) )
 						.ToArray();
 
 					var selection = noBuildAdjacents.FirstOrDefault(); // !!! user select which space to add it to
 
 					if(selection != null) {
-						selection.AdjustDefault( Invader.Town, 1 );
+						selection.AdjustDefault( Human.Town, 1 );
 						args.GameState.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Space.Text}.");
 					}
 				}
@@ -100,7 +100,7 @@ public class Sweden : IAdversary {
 				.ToArray();
 			
 			foreach(SpaceState space in spaces ) {
-				space.AdjustDefault( Invader.Town, 1 );
+				space.AdjustDefault( Human.Town, 1 );
 				space.Blight.Adjust(1);
 			}
 			gameState.LogDebug("Prospecting Outpost: Adding Town/Blight to "+spaces.Select(s=>s.Space.Text).Order().Join(","));
@@ -126,7 +126,7 @@ public class Sweden : IAdversary {
 			.ToArray();
 		foreach(var space4 in additionalCitySpaces) {
 			// Add City to 4
-			space4.AdjustDefault( Invader.City, 1 );
+			space4.AdjustDefault( Human.City, 1 );
 
 			// If 4 has blight, 
 			if(space4.Blight.Any) {

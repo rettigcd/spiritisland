@@ -17,7 +17,7 @@ class WhyDontYouAndThemFight {
 		var invaders = ctx.Tokens.InvaderTokens().ToArray();
 		if(invaders.Length == 0 || !ctx.Dahan.Any) return;
 		var decision = new Select.TokenFromManySpaces( "Select invader to fight 1 dahan", ctx.Space, invaders, Present.Always );
-		var spaceInvader = (HealthToken)(await ctx.Decision(decision))?.Token;
+		var spaceInvader = (HumanToken)(await ctx.Decision(decision))?.Token;
 
 		// Calc Invader Damage
 		var (damageFromInvader,newInvaderToken) = GetDamageFromInvader( ctx.Invaders, spaceInvader );
@@ -33,7 +33,7 @@ class WhyDontYouAndThemFight {
 
 	}
 
-	static (int,HealthToken) GetDamageFromInvader( InvaderBinding invaderBinding, HealthToken invader ) {
+	static (int,HumanToken) GetDamageFromInvader( InvaderBinding invaderBinding, HumanToken invader ) {
 		return 0 < invader.StrifeCount
 			? (0,invaderBinding.Tokens.RemoveStrife( invader, 1 )) 
 			: (invaderBinding.Tokens.AttackDamageFrom1( invader ),invader);
@@ -46,7 +46,7 @@ class WhyDontYouAndThemFight {
 			// 2 damage
 			await ctx.DamageInvaders(2);
 		else // otherwise, you may gather 1 beast
-			await ctx.GatherUpTo(1,TokenType.Beast);
+			await ctx.GatherUpTo(1,Token.Beast);
 	}
 
 

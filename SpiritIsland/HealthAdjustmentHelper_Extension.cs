@@ -2,20 +2,20 @@
 
 public static class HealthAdjustmentHelper_Extension {
 
-	public static async Task AdjustTokensHealthForRound( this TargetSpaceCtx ctx, int deltaHealth, params HealthTokenClass[] tokenClasses ) {
+	public static async Task AdjustTokensHealthForRound( this TargetSpaceCtx ctx, int deltaHealth, params HumanTokenClass[] tokenClasses ) {
 
 		// Adjust in land
 		await ctx.Tokens.AdjustHealthOfAll( deltaHealth, tokenClasses ); // ActionScope needed if token is destoryed.
 
 		// Add (covers simple-add AND move-in)
 		ctx.Tokens.Adjust( new TokenAddingHandler( args => {
-			if(args.Token is HealthToken healthToken && tokenClasses.Contains( args.Token.Class ))
+			if(args.Token is HumanToken healthToken && tokenClasses.Contains( args.Token.Class ))
 				args.Token = healthToken.AddHealth( deltaHealth );
 		} ), 1 );
 
 		// Remove (covers simple-remove AND move-out)
 		var removingToken = new TokenRemovingHandler( async args => {
-			if(args.Token is HealthToken healthToken
+			if(args.Token is HumanToken healthToken
 				&& tokenClasses.Contains( args.Token.Class )
 			)
 				// Downgrade the existing tokens health

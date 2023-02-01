@@ -9,7 +9,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx ) 
 		=> Cmd.RemoveExplorers(1)
 			.From().SpiritPickedLand().Which( Is.Inland )
-			.ByPickingToken( Invader.Explorer )
+			.ByPickingToken( Human.Explorer )
 			.ForEachSpirit()
 			.Execute(ctx);
 		
@@ -17,7 +17,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 	public Task Level2( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Is.Inland )
-			.ByPickingToken( Invader.Explorer_Town )
+			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
 			.Execute( ctx );
 
@@ -25,7 +25,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 	public Task Level3( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand()
-			.ByPickingToken( Invader.Explorer_Town )
+			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
 			.Execute( ctx );
 }

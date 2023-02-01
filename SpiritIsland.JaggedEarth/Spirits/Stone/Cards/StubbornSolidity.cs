@@ -17,24 +17,24 @@ public class StubbornSolidity {
 
 		// Freeze future dahn moved into this land. 
 		ctx.GameState.Tokens.TokenMoved.ForRound.Add( args=> {
-			if(args.TokenAdded.Class == TokenType.Dahan && args.AddedTo == ctx.Tokens && args.TokenAdded is HealthToken ht)
+			if(args.TokenAdded.Class == Human.Dahan && args.AddedTo == ctx.Tokens && args.TokenAdded is HumanToken ht)
 				args.AddedTo.ReplaceNWith( args.Count, ht, ht.SwitchClass( FrozenDahan ) );
 		} );
 		ctx.Tokens.Adjust( new TokenAddedHandler(Name, args => {
-			if(args.Token.Class == TokenType.Dahan && args.Token is HealthToken ht)
+			if(args.Token.Class == Human.Dahan && args.Token is HumanToken ht)
 				args.AddedTo.ReplaceNWith( args.Count, ht, ht.SwitchClass( FrozenDahan ) );
 		} ), 1 );
 
 		// Restore at end of round - !!! Could instead create a custom token that cleans up its own mess.
 		ctx.GameState.TimePasses_ThisRound.Push( (gs)=>{
-			foreach( HealthToken x in ctx.Tokens.OfClass(FrozenDahan).ToArray().Cast<HealthToken>())
-				ctx.Tokens.ReplaceAllWith( x, x.SwitchClass( TokenType.Dahan ) );
+			foreach( HumanToken x in ctx.Tokens.OfClass(FrozenDahan).ToArray().Cast<HumanToken>())
+				ctx.Tokens.ReplaceAllWith( x, x.SwitchClass( Human.Dahan ) );
 			return Task.CompletedTask;
 		} );
 
 		return Task.CompletedTask;
 	}
 
-	static public readonly HealthTokenClass FrozenDahan = new HealthTokenClass( "Dahan", TokenCategory.Dahan, 0, Img.Dahan, 2, TokenVariant.Frozen );
+	static public readonly HumanTokenClass FrozenDahan = new HumanTokenClass( "Dahan", TokenCategory.Dahan, 0, Img.Dahan, 2, TokenVariant.Frozen );
 
 }

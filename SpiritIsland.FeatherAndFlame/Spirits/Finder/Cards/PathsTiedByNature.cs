@@ -12,7 +12,7 @@ public class PathsTiedByNature {
 			.ToArray();
 
 		await ctx.MoveTokensOut(2, ctx.TerrainMapper.Specify(2,currentTerrain)
-			, Invader.Any.Plus( TokenType.Dahan, TokenType.Beast )
+			, Human.Invader.Plus( Human.Dahan, Token.Beast )
 				.Union( ctx.AllPresenceTokens ).ToArray()
 		);
 	}

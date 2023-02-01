@@ -4,10 +4,10 @@ public class InvadersRavaged {
 
 	public Space Space;
 
-	public CountDictionary<HealthToken> startingAttackers;
-	public CountDictionary<HealthToken> startingDefenders;
-	public CountDictionary<HealthToken> endingDefenders;
-	public CountDictionary<HealthToken> endingAttackers;
+	public CountDictionary<HumanToken> startingAttackers;
+	public CountDictionary<HumanToken> startingDefenders;
+	public CountDictionary<HumanToken> endingDefenders;
+	public CountDictionary<HumanToken> endingAttackers;
 
 	public int defend;
 

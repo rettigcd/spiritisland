@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Spirits.Volcano; 
+﻿namespace SpiritIsland.Tests.Spirits.Volcano;
 
 public class Volcano_Tests {
 
@@ -71,7 +71,7 @@ public class Volcano_Tests {
 		SpaceState space = gameState.Tokens[board[5]];
 
 		// Given: explorers, presence, and dahan
-		space.InitDefault( Invader.Explorer, 3 );
+		space.InitDefault( Human.Explorer, 3 );
 		space.Dahan.Init( 3 );
 		spirit.Presence.Adjust( space, 3 );
 
@@ -97,7 +97,7 @@ public class Volcano_Tests {
 		SpaceState space = gameState.Tokens[board[5]];
 
 		// Given: 3 explorers, 3 presence
-		space.InitDefault( Invader.Explorer, 3 );
+		space.InitDefault( Human.Explorer, 3 );
 		spirit.Presence.Adjust( space, 3 );
 
 		//   And: Island Won't blight
@@ -134,7 +134,7 @@ public class Volcano_Tests {
 		spirit.NextDecision().HasPrompt( "Select presence to remove from game." ).HasOptions( "A5" ).Choose( "A5" );
 
 		//  Then: range-2 item has a defend.
-		dahanSpace[TokenType.Defend].ShouldBe(2); // 1 per dahan
+		dahanSpace[Token.Defend].ShouldBe(2); // 1 per dahan
 		Assert_IsDone( spirit, task );
 	}
 
@@ -153,7 +153,7 @@ public class Volcano_Tests {
 		//   And: enough elements to trigger threshold
 		spirit.Configure().Elements("3 moon,2 animal");
 		//   And: 1 blight in target land
-		targetSpace.Init( TokenType.Blight, 1 );
+		targetSpace.Init( Token.Blight, 1 );
 
 		//  When: Utter a curse
 		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
@@ -161,7 +161,7 @@ public class Volcano_Tests {
 		spirit.NextDecision().Choose( targetSpace.Space );
 		spirit.NextDecision().HasPrompt( "Select Power Option" ).HasOptions( "Add Badland,Add Disease,Add Strife" ).Choose( "Add Disease" );
 		//  Then: if the tower==target, then large range, else smaller range
-		spirit.NextDecision().HasPrompt( "Add Dizease" ).HasOptions( expectedRangeOptions ).ChooseFirst();
+		spirit.NextDecision().HasPrompt( "Add Disease" ).HasOptions( expectedRangeOptions ).ChooseFirst();
 
 		spirit.NextDecision().HasPrompt( "Select land for 1 Damage" ).HasOptions( "A5,A6,A7" ).ChooseFirst(); // Adjacent, NOT Range
 
@@ -228,7 +228,7 @@ public class Volcano_Tests {
 		SpaceState space = gameState.Tokens[board[5]];
 
 		// Given: 10 explorers 10 dahan, 4 presence, n-badlands
-		space.InitDefault( Invader.Explorer, 10 );
+		space.InitDefault( Human.Explorer, 10 );
 		space.Dahan.Init( 10 );
 		spirit.Presence.Adjust( space, 4 );
 		//   But: not enough elements to trigger Tier-1
@@ -263,14 +263,14 @@ public class Volcano_Tests {
 		SpaceState adjacent = gameState.Tokens[board[7]];
 
 		// Given: 10 explorers 10 dahan, 10 presence, n-badlands
-		space.InitDefault( Invader.Explorer, 10 );
+		space.InitDefault( Human.Explorer, 10 );
 		space.Dahan.Init( 10 );
 		spirit.Presence.Adjust( space, 10 );
-		space.Init( TokenType.Badlands, badlandsCount );
+		space.Init( Token.Badlands, badlandsCount );
 		//   And: 10 exploreres, 10 dahan in adjacent
-		adjacent.InitDefault( Invader.Explorer, 10 );
+		adjacent.InitDefault( Human.Explorer, 10 );
 		adjacent.Dahan.Init( 10 );
-		adjacent.Init( TokenType.Badlands, badlandsCount );
+		adjacent.Init( Token.Badlands, badlandsCount );
 		//   And: 2 fire and 2 earth
 		spirit.Configure().Elements( "2 fire,2 earth" );
 
@@ -317,15 +317,15 @@ public class Volcano_Tests {
 
 		//   And: TargetSpace => 12 presence, 20 explorers
 		spirit.Presence.Adjust( targetSpace, 12 );
-		targetSpace.InitDefault( Invader.Explorer, 20 );
+		targetSpace.InitDefault( Human.Explorer, 20 );
 
 		//   And: AdjPresence => 1 presence, 20 explorers
 		spirit.Presence.Adjust( adjPresence, 1 );
-		adjPresence.InitDefault( Invader.Explorer, 20 );
+		adjPresence.InitDefault( Human.Explorer, 20 );
 
 		//   And: AdjBlight => 1 blight, 10 explorers
 		adjBlight.Blight.Init(1);
-		adjBlight.InitDefault( Invader.Explorer, 20 );
+		adjBlight.InitDefault( Human.Explorer, 20 );
 
 		//  And: Island won't blight
 		gameState.IslandWontBlight();

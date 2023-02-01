@@ -17,8 +17,8 @@ public class SwallowTheLandDwellers_Tests {
 		var space = fxt.GameState.Tokens[fxt.Board[2]];
 		fxt.Spirit.Presence.Adjust( space, 1 );
 		//   And: explorer and town on A2
-		space.InitDefault( Invader.Explorer, 1 );
-		space.InitDefault( Invader.Town, 1 );
+		space.InitDefault( Human.Explorer, 1 );
+		space.InitDefault( Human.Town, 1 );
 
 		// When: we use Swallow the Land Dwellers
 		fxt.Spirit.AddActionFactory( PowerCard.For<SwallowTheLandDwellers>() );

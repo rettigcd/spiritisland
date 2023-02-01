@@ -6,7 +6,7 @@ public interface IIslandTokenApi {
 
 	int GetDynamicTokensFor( SpaceState space, UniqueToken token );
 
-	HealthToken GetDefault( HealthTokenClass tokenClass );
+	HumanToken GetDefault( HumanTokenClass tokenClass );
 
 	IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces );
 
@@ -15,6 +15,6 @@ public interface IIslandTokenApi {
 
 	GameState AccessGameState();
 
-	int InvaderAttack( HealthTokenClass tokenClass );
+	int InvaderAttack( HumanTokenClass tokenClass );
 
 }

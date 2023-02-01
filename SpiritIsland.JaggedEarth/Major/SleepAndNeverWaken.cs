@@ -12,7 +12,7 @@ public class SleepAndNeverWaken {
 		// Track # of exlorers removed.
 		int removed = 0;
 		void CountDestroyedExplorers( ITokenRemovedArgs args ) {
-			if(args.Token.Class == Invader.Explorer)
+			if(args.Token.Class == Human.Explorer)
 				removed += args.Count;
 		}
 		ctx.Tokens.Adjust( new TokenRemovedHandler(Name,CountDestroyedExplorers), 1 );
@@ -32,7 +32,7 @@ public class SleepAndNeverWaken {
 
 		SpaceToken[] CalcOptions() => fromSpaces
 			.SelectMany(
-				space => ctx.GameState.Tokens[space].OfClass(Invader.Explorer)
+				space => ctx.GameState.Tokens[space].OfClass(Human.Explorer)
 					.Select( t => new SpaceToken(space, (IVisibleToken)t ) )
 			)
 			.ToArray();

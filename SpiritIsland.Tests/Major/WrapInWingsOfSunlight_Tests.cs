@@ -58,9 +58,9 @@ public class WrapInWingsOfSunlight_Tests {
 		// Given: A5 has 3 Towns, Dahans, and Explorers
 		var src = board[5];
 		var tokens = gameState.Tokens[src];
-		tokens.InitDefault( TokenType.Dahan , 3);
-		tokens.InitDefault( Invader.Explorer, 3);
-		tokens.InitDefault( Invader.Town    , 3);
+		tokens.InitDefault( Human.Dahan , 3);
+		tokens.InitDefault( Human.Explorer, 3);
+		tokens.InitDefault( Human.Town    , 3);
 
 		//  And: spirit has presence on A5
 		spirit.Presence.PlaceOn(src,gameState);

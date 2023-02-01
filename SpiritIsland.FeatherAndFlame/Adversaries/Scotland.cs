@@ -80,29 +80,29 @@ public class Scotland : IAdversary {
 		// On the single board with the most Coastal Town / City,
 		var board = gameState.Island.Boards
 			.OrderByDescending( b => gameState.Tokens.PowerUp( b.Spaces.Where( s => s.IsCoastal ) )
-					.Sum( ss => ss.SumAny( Invader.Town_City ) ) )
+					.Sum( ss => ss.SumAny( Human.Town_City ) ) )
 			.First();
 		// add 1 Town to the N lands with the fewest Town( N = # of players.)
 		var spacesToAddTown = gameState.Tokens.PowerUp( board.Spaces )
 			.Where( gameState.Island.Terrain.IsInPlay )
-			.OrderBy( ss => ss.Sum( Invader.Town ) )
+			.OrderBy( ss => ss.Sum( Human.Town ) )
 			.Take( gameState.Spirits.Length )
 			.ToArray();
 		await using(var actionScope = gameState.StartAction( ActionCategory.Adversary ))
 			foreach(SpaceState ss in spacesToAddTown)
-				await ss.Bind( null ).AddDefault( Invader.Town, 1, AddReason.Build );
+				await ss.Bind( null ).AddDefault( Human.Town, 1, AddReason.Build );
 		gameState.Log(new SpiritIsland.Log.Debug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.Select(x=>x.Space.Text).Join(",")));
 	}
 
 	static void SeizeOpportunity( GameState gameState ) {
 		// Add 1 City to land #2
 		foreach(Board board in gameState.Island.Boards)
-			gameState.Tokens[board[2]].AdjustDefault( Invader.City, 1 );
+			gameState.Tokens[board[2]].AdjustDefault( Human.City, 1 );
 		gameState.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
 	}
 
 	void TradeHub( GameState gameState ) {
-		int coastalCityLandCount = gameState.AllSpaces.Count( s => s.Has( Invader.City ) );
+		int coastalCityLandCount = gameState.AllSpaces.Count( s => s.Has( Human.City ) );
 		if( gameState.Island.Boards.Length < coastalCityLandCount )
 			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");
 	}

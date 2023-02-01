@@ -62,18 +62,18 @@ public class TokenPusher {
 		return destination;
 	}
 
-	protected virtual async Task MoveSingleToken( Token token, Space source, Space destination ) {
+	protected virtual async Task MoveSingleToken( IToken token, Space source, Space destination ) {
 		await ctx.Move( token, source, destination );    // !!! if moving into frozen land, freeze Dahan
 		if( _customAction != null )
 			await _customAction( token, source, destination );
 	}
 
 
-	public TokenPusher AddCustomMoveAction( Func<Token,Space,Space,Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
+	public TokenPusher AddCustomMoveAction( Func<IToken,Space,Space,Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
 		this._customAction = customeAction;
 		return this;
 	}
-	Func<Token,Space,Space,Task> _customAction;
+	Func<IToken,Space,Space,Task> _customAction;
 
 	protected virtual async Task<Space> SelectDestination( IVisibleToken token ) {
 		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent

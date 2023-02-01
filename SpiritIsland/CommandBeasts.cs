@@ -30,7 +30,7 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 		count -= await PartialDamageToInvaders( ctx, count);
 
 		// Push
-		count -= (await ctx.PushUpTo(count, TokenType.Beast)).Length;
+		count -= (await ctx.PushUpTo(count, Token.Beast)).Length;
 
 		// Fear
 		if( startedWithInvaders )
@@ -49,7 +49,7 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 		int badlandCount = ctx.Badlands.Count;
 		damage += badlandCount;
 
-		int damageDone = await ctx.Invaders.UserSelectedPartialDamage( damage, ctx.Self, Invader.Any );
+		int damageDone = await ctx.Invaders.UserSelectedPartialDamage( damage, ctx.Self, Human.Invader );
 		return damageDone == 0 
 			? 0 // no damage done
 			: Math.Max( 1, damageDone - badlandCount ); // some damage done, remove badland damage.

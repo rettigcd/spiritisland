@@ -26,7 +26,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 
 	static SpaceAction StopBuildWhereDahanOutnumberTownsCities => new SpaceAction( "Stop Build if dahan outnumber towns/cities.",
 		ctx => {
-			var token = new SkipBuild_Custom( Name, true, ( _, space, _1 ) => space.SumAny( Invader.Town_City ) < space.Dahan.CountAll );
+			var token = new SkipBuild_Custom( Name, true, ( _, space, _1 ) => space.SumAny( Human.Town_City ) < space.Dahan.CountAll );
 			ctx.Tokens.Adjust( token, 1 );
 		}
 	);

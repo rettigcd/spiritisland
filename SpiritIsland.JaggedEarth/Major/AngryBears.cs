@@ -15,7 +15,7 @@ public class AngryBears {
 			// otherwise, +2 Damage,
 			await ctx.DamageInvaders(2);
 			// and Push up to 1 beast.
-			await ctx.PushUpTo(1,TokenType.Beast);
+			await ctx.PushUpTo(1,Token.Beast);
 		}
 
 		if(await ctx.YouHave("2 fire,3 animal" )) {
@@ -24,13 +24,13 @@ public class AngryBears {
 			// destroy 1 explorer/town in an adjacent land with beast
 			var tokens = ctx.Adjacent
 				.Where(x=>x.Beasts.Any)
-				.SelectMany(x=>x.OfClass(Invader.Explorer)
+				.SelectMany(x=>x.OfClass(Human.Explorer)
 					.Select(t=>new SpaceToken(x.Space, (IVisibleToken)t ))
 				)
 				.ToArray();
 			var st = await ctx.Decision(new Select.TokenFromManySpaces("Destroy Explorer",tokens, Present.Always));
 			if(st != null)
-				await ctx.Target(st.Space).Invaders.DestroyNTokens( (HealthToken)st.Token, 1 );
+				await ctx.Target(st.Space).Invaders.DestroyNTokens( (HumanToken)st.Token, 1 );
 		}
 
 	}

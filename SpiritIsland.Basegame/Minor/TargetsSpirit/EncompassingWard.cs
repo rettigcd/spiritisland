@@ -14,7 +14,7 @@ public class EncompassingWard {
 		// https://querki.net/u/darker/spirit-island-faq/#!.7w4ganu
 		ctx.GameState.Tokens.Dynamic.ForRound.Register(
 			space => ctx.Other.Presence.IsOn(space) ? 2 : 0, 
-			TokenType.Defend
+			Token.Defend
 		);
 
 		// !! this didn't display, is something wrong?

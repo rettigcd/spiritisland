@@ -3,7 +3,7 @@
 
 public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
-	public BlightTokenBindingNoEvents( SpaceState tokens ) : base( tokens, TokenType.Blight ) { }
+	public BlightTokenBindingNoEvents( SpaceState tokens ) : base( tokens, Token.Blight ) { }
 
 	/// <summary> Allows Power Cards to block blight on this space. </summary>
 	public bool Blocked {
@@ -36,13 +36,13 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 	// Event?  So it doesn't need to know about other spaces & gamestate?
 	public async Task Add( int count, AddReason reason = AddReason.Added ) {
 		if(!Blocked)
-			await _actionTokens.Add( TokenType.Blight, count, reason );
+			await _actionTokens.Add( Token.Blight, count, reason );
 	}
 
 	// Remove:
 	// override by trickster
 	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
-		return _actionTokens.Remove( TokenType.Blight, count, reason );
+		return _actionTokens.Remove( Token.Blight, count, reason );
 	}
 
 }

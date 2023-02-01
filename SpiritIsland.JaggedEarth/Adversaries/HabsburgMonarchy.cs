@@ -71,7 +71,7 @@ public class HabsburgMonarchy : IAdversary {
 		if(6 <= Level) {
 			var originalBehavior = gameState.DefaultRavageBehavior.GetDamageFromParticipatingAttackers;
 			gameState.DefaultRavageBehavior.GetDamageFromParticipatingAttackers = (behavior, counts, spaceState) => {
-				bool hasNeighborTown = spaceState.Adjacent.Any( s => s.Has( Invader.Town ) );
+				bool hasNeighborTown = spaceState.Adjacent.Any( s => s.Has( Human.Town ) );
 				// Not logging additional damage here because Ravage is already very verbose.
 				return originalBehavior( behavior, counts, spaceState )
 					+ (hasNeighborTown ? 2 : 0);
@@ -108,7 +108,7 @@ public class HabsburgMonarchy : IAdversary {
 
 			var spaces = gameState.Tokens.PowerUp(board.Spaces).ToArray();
 			// add 1 City to a Coastal land without City
-			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Invader.City)==0);
+			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Human.City)==0);
 			if( coastWithoutCity != null)
 				newCitySpaces.Add( coastWithoutCity );
 
@@ -123,11 +123,11 @@ public class HabsburgMonarchy : IAdversary {
 		// Take action
 		await using var actionScope = gameState.StartAction( ActionCategory.Invader ); // ??? is this really an action?
 		foreach(var newTownSpace in newTownSpaces)
-			await newTownSpace.Bind( actionScope ).AddDefault( Invader.Town, 1, AddReason.Build );
+			await newTownSpace.Bind( actionScope ).AddDefault( Human.Town, 1, AddReason.Build );
 
 		foreach(var citySpace in newCitySpaces)
 			await citySpace.Bind( actionScope )
-				.AddDefault( Invader.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
+				.AddDefault( Human.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
 
 		// Log it
 		var logParts = new List<string>();
@@ -153,7 +153,7 @@ public class HabsburgMonarchy : IAdversary {
 
 		// add 1 Town
 		foreach(SpaceState space in spaces)
-			space.AdjustDefault( Invader.Town, 1 );
+			space.AdjustDefault( Human.Town, 1 );
 
 		gameState.LogDebug($"More Rural than Urban: Added towns to "+spaces.Select(x=>x.Space.Text).Order().Join(","));
 	}
@@ -173,12 +173,12 @@ public class HabsburgMonarchy : IAdversary {
 		int townsToAdd = spaces.Sum( x => x.Blight.Count ) switch { <= 2 => 2, <= 4 => 1, _ => 0 };
 
 		for(int i = 0; i < townsToAdd; ++i) {
-			var addSpaces = spaces.Where( x => x.SumAny( TokenType.Blight, Invader.Town ) == 0 ).ToArray();
+			var addSpaces = spaces.Where( x => x.SumAny( Token.Blight, Human.Town ) == 0 ).ToArray();
 			if(addSpaces.Length == 0) break;
 
 			var criteria = new Select.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Select( x => x.Space ), Present.Always );
 			var addSpace = await ctx.Self.Gateway.Decision( criteria );
-			await ctx.GameState.Tokens[addSpace].Bind( ctx.ActionScope ).AddDefault( Invader.Town, 1, AddReason.Build );
+			await ctx.GameState.Tokens[addSpace].Bind( ctx.ActionScope ).AddDefault( Human.Town, 1, AddReason.Build );
 		}
 	}
 

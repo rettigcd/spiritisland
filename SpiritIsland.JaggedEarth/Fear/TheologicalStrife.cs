@@ -40,7 +40,7 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 		=> Cmd.AddStrife( 1 )
 			.In().SpiritPickedLand()
 			.Which( Has.YourPresence )
-			.ByPickingToken( Invader.Any )
+			.ByPickingToken( Human.Invader )
 			.ForEachSpirit();
 
 }

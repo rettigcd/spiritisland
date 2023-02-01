@@ -73,7 +73,7 @@ public StonesUnyieldingDefiance() : base(
 		Presence.Adjust(ss,1);
 
 		// 1 in an adjacent land that has Blight(if possible)
-		var space2 = ss.Adjacent.FirstOrDefault(s=>s[TokenType.Blight]>0)
+		var space2 = ss.Adjacent.FirstOrDefault(s=>s[Token.Blight]>0)
 			// or is Sands(if not)
 			?? ss.Adjacent.First(s=>s.Space.IsSand);
 		Presence.Adjust(space2,1);

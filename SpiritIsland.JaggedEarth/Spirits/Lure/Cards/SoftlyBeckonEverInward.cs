@@ -7,13 +7,13 @@ public class SoftlyBeckonEverInward {
 
 		await ctx.Gatherer
 			// gather up to 2 explorers
-			.AddGroup(2,Invader.Explorer)
+			.AddGroup(2,Human.Explorer)
 			// gather up to 2 towns
-			.AddGroup(2,Invader.Town)
+			.AddGroup(2,Human.Town)
 			// gather up to 2 beast
-			.AddGroup(2,TokenType.Beast)
+			.AddGroup(2,Token.Beast)
 			// gather up to 2 dahan
-			.AddGroup(2,TokenType.Dahan)
+			.AddGroup(2,Human.Dahan)
 			.GatherUpToN();
 
 	}

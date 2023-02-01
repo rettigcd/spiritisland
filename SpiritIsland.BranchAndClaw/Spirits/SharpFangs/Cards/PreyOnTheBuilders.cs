@@ -9,7 +9,7 @@ public class PreyOnTheBuilders {
 	[FromPresence(0)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// you may gather 1 beast
-		await ctx.GatherUpTo(1, TokenType.Beast);
+		await ctx.GatherUpTo(1, Token.Beast);
 
 		if( ctx.Beasts.Any )
 			ctx.Skip1Build( Name );

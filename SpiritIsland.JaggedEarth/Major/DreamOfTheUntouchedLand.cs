@@ -30,7 +30,7 @@ public class DreamOfTheUntouchedLand {
 			ctx.GameState.Island.AddBoard( newBoard.Sides[2], existingBoard.Sides[2] );
 
 			// add 2 beast, 2 wilds, 2 badlands
-			foreach(var token in new Token[] { TokenType.Beast, TokenType.Wilds, TokenType.Badlands})
+			foreach(var token in new IToken[] { Token.Beast, Token.Wilds, Token.Badlands})
 				for(int i = 0; i < 2; ++i)
 					(await ctx.SelectSpace($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ) )).Tokens.Adjust(token,1);
 			// and up to 2 presence (from any Spirits) anywhere on it.

@@ -2,7 +2,7 @@
 
 public class Invader_Tests {
 
-	static Token Parse(string s ) {
+	static IToken Parse(string s ) {
 		return s switch {
 			"C@3" => StdTokens.City,
 			"C@2" => StdTokens.City2,
@@ -133,7 +133,7 @@ public class Invader_Tests {
 		var board = Board.BuildBoardA();
 		var gameState = new GameState( new RiverSurges(), board );
 		//   And: explorer on target space
-		gameState.Tokens[ board[5] ].AdjustDefault(Invader.Explorer,1);
+		gameState.Tokens[ board[5] ].AdjustDefault(Human.Explorer,1);
 
 		// When: exploring (wet lands
 		_ = new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single(c=>c.Text=="W"), gameState );

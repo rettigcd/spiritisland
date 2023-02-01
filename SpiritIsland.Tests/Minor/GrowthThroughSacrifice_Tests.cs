@@ -35,7 +35,7 @@ public class GrowthThroughSacrifice_Tests {
 
 		// Given: 1 blight on board where presence is
 		setup.Spirit.Presence.Adjust( space, 2 );
-		space.Init(TokenType.Blight,1);
+		space.Init(Token.Blight,1);
 		space.Blight.Count.ShouldBe( 1 );
 
 		//  When: Card played
@@ -80,7 +80,7 @@ public class GrowthThroughSacrifice_Tests {
 
 		// Given: presence on board
 		setup.Spirit.Presence.Adjust( space, 2 );
-		space.Init( TokenType.Blight, 0 );
+		space.Init( Token.Blight, 0 );
 
 		//  When: Card played
 		var task = GrowthThroughSacrifice.ActAsync( setup.TargetSelf );

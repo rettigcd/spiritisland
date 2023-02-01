@@ -14,7 +14,7 @@ public class TerrifyingChase {
 		int startingInvaderCount = ctx.Tokens.InvaderTotal();
 
 		// first push invaders
-		await ctx.Push(pushCount, Invader.Explorer_Town.Plus(TokenType.Dahan));
+		await ctx.Push(pushCount, Human.Explorer_Town.Plus(Human.Dahan));
 
 		// if you pushed any invaders, 2 fear
 		if( ctx.Tokens.InvaderTotal() < startingInvaderCount )

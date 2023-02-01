@@ -25,7 +25,7 @@ public class DahanSaver {
 
 	public void ReduceDestroyCount( RemovingTokenArgs args ) {
 
-		bool shouldReduce = args.Token.Class == TokenType.Dahan // Dahan
+		bool shouldReduce = args.Token.Class == Human.Dahan // Dahan
 			&& (args.Reason == RemoveReason.Destroyed) // Destroyed
 			&& (byAction.Count < maxActionCount || byAction.ContainsKey( args.ActionScope ));              // can effect more action OR already added
 
@@ -38,7 +38,7 @@ public class DahanSaver {
 				args.Count -= adjustment;
 				byAction[args.ActionScope] += adjustment;
 				// restore to full health
-				var savedToken = (HealthToken)args.Token;
+				var savedToken = (HumanToken)args.Token;
 				space.Adjust( args.Token, -adjustment );
 				space.Adjust( savedToken.Healthy, adjustment );
 			} else {

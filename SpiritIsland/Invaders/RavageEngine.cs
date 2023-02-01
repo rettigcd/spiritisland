@@ -14,11 +14,11 @@ public class RavageEngine {
 
 		// Add Ravage tokens to spaces with invaders
 		foreach(var s in ravageSpacesWithInvaders)
-			s.Adjust( TokenType.DoRavage, 1 );
+			s.Adjust( ModToken.DoRavage, 1 );
 
 		// get spaces with just-added Ravages + any previously added ravages
 		var spacesWithDoRavage = gameState.AllActiveSpaces
-			.Where( ss => ss[TokenType.DoRavage] > 0 )
+			.Where( ss => ss[ModToken.DoRavage] > 0 )
 			.ToArray();
 
 		foreach(var ravageSpace in spacesWithDoRavage)
@@ -33,8 +33,8 @@ public class RavageEngine {
 	}
 
 	static int PullRavageTokens( SpaceState ravageSpace ) {
-		int ravageCount = ravageSpace[TokenType.DoRavage];
-		ravageSpace.Init( TokenType.DoRavage, 0 );
+		int ravageCount = ravageSpace[ModToken.DoRavage];
+		ravageSpace.Init( ModToken.DoRavage, 0 );
 		return ravageCount;
 	}
 

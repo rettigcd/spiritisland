@@ -8,7 +8,7 @@ public class TooNearTheJungle {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		ctx.AddFear(1);
-		await ctx.Invaders.DestroyNOfAnyClass(1,Invader.Explorer);
+		await ctx.Invaders.DestroyNOfAnyClass(1,Human.Explorer);
 	}
 
 }

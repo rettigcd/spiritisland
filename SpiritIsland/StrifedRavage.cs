@@ -56,11 +56,11 @@ public static class StrifedRavage {
 
 		// !!! ??? Do badlands cause damage here?
 
-		foreach(HealthToken strifedInvader in strifedInvaders)
+		foreach(HumanToken strifedInvader in strifedInvaders)
 			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader, actionScope );
 	}
 
-	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HealthToken originalInvader, UnitOfWork actionScope ) {
+	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HumanToken originalInvader, UnitOfWork actionScope ) {
 		var newInvader = originalInvader.AddDamage( originalInvader.StrifeCount );
 		if(newInvader == originalInvader) return;
 

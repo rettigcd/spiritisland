@@ -8,7 +8,7 @@ public class OverenthusiasticArson {
 	static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
 
 		// Destroy 1 town
-		await ctx.Invaders.DestroyNOfClass(1,Invader.Town);
+		await ctx.Invaders.DestroyNOfClass(1,Human.Town);
 
 		// discard the top card of the minor power deck.
 		var card = ctx.GameState.MinorCards.FlipNext();

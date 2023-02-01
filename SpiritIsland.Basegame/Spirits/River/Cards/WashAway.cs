@@ -9,7 +9,7 @@ public class WashAway {
 	[FromPresence(1,Target.ExplorerOrTown)]
 //	[Preselect("Push up to 3", "Explorer,Town" )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
-		await ctx.PushUpTo( 3, Invader.Explorer_Town );
+		await ctx.PushUpTo( 3, Human.Explorer_Town );
 	}
 
 }

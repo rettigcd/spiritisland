@@ -7,7 +7,7 @@ public class PyroclasticFlow {
 	[FromPresenceIn( 1, Terrain.Mountain )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// 2 damage. Destroy all explorers
-		await ctx.Invaders.DestroyAll(Invader.Explorer);
+		await ctx.Invaders.DestroyAll(Human.Explorer);
 		int damage = 2;
 
 		// if target land is J/W, add 1 blight

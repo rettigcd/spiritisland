@@ -45,7 +45,7 @@ public class InstrumentsOfTheirOwnRuin {
 		// they damage invaders in adjacent lands instead of dahan and the land.
 
 		// Get damage
-		int damageFromCenter = ctx.Tokens.InvaderTokens().OfType<HealthToken>()
+		int damageFromCenter = ctx.Tokens.InvaderTokens().OfType<HumanToken>()
 			.Where( x => x.StrifeCount > 0 )
 			.Sum( si => ctx.Tokens.AttackDamageFrom1( si ) * ctx.Tokens[si] );
 
@@ -76,7 +76,7 @@ public class InstrumentsOfTheirOwnRuin {
 
 			// apply 1 damage to selected invader
 			// !Note - using shared UnitOfWork across spaces because it is a ravage on only 1 space
-			await ctx.GameState.Invaders.On(invader.Space, ravageAction.ActionScope ).ApplyDamageTo1(1,(HealthToken)invader.Token);
+			await ctx.GameState.Invaders.On(invader.Space, ravageAction.ActionScope ).ApplyDamageTo1(1,(HumanToken)invader.Token);
 		}
 
 	}

@@ -19,7 +19,7 @@ public class SkiesHeraldTheSeasonOfReturn{
 		// Gather up to 2 dahan.
 		await ctx.GatherUpToNDahan(2);
 		// Push 1 blight.
-		await ctx.Push(1,TokenType.Blight);
+		await ctx.Push(1,Token.Blight);
 	}
 
 }

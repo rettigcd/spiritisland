@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public class HealthTokenClass : TokenClass {
+public class HumanTokenClass : TokenClass {
 
-	public HealthTokenClass( string label, TokenCategory category, int fearGeneratedWhenDestroyed, Img img, int expectedHealth, TokenVariant variant=default ) {
+	public HumanTokenClass( string label, TokenCategory category, int fearGeneratedWhenDestroyed, Img img, int expectedHealth, TokenVariant variant=default ) {
 		Label = label;
 		Category = category;
 		FearGeneratedWhenDestroyed = fearGeneratedWhenDestroyed;

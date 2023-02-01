@@ -9,7 +9,7 @@ public class CallOfTheDeeps {
 
 		// Gather 1 explorer, if target land is the ocean, you may gather another explorer
 		int count = ctx.Is(Terrain.Ocean) ? 2 : 1;
-		return ctx.GatherUpTo(count,Invader.Explorer);
+		return ctx.GatherUpTo(count,Human.Explorer);
 
 	}
 

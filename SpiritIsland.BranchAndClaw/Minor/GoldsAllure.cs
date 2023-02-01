@@ -6,8 +6,8 @@ public class GoldsAllure {
 	[Slow]
 	[FromPresence(1,Target.Mountain)]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
-		await ctx.Gather(1,Invader.Explorer);
-		await ctx.Gather(1,Invader.Town);
+		await ctx.Gather(1,Human.Explorer);
+		await ctx.Gather(1,Human.Town);
 		await ctx.AddStrife();
 	}
 

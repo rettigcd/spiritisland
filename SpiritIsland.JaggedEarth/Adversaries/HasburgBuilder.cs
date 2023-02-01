@@ -24,7 +24,7 @@ class HasburgBuilder : BuildEngine {
 			TargetSpaceCtx ctx = new SelfCtx( spirit, gameState, actionScope ).Target( space.Space );
 			await new TokenGatherer( ctx )
 				// Gather 1 Town 
-				.AddGroup( 1, Invader.Town )
+				.AddGroup( 1, Human.Town )
 				// from a land not matching a Build Card.
 				.FilterSource( ss => !cardDependentBuildSpaces.Contains( ss ) )
 				.GatherN();
@@ -38,10 +38,10 @@ class HasburgBuilder : BuildEngine {
 
 	class HasburgSpaceBuilder : BuildOnceOnSpace {
 		public HasburgSpaceBuilder( GameState gs, SpaceState spaceState ) : base( gs, spaceState ) { }
-		protected override (int, HealthTokenClass) DetermineWhatToAdd() {  
+		protected override (int, HumanTokenClass) DetermineWhatToAdd() {  
 			var (count,tokenClass) = base.DetermineWhatToAdd();
-			return (tokenClass == Invader.City && !_tokens.Space.IsCoastal && !_tokens.Space.IsOcean)
-				? (2,Invader.Town)
+			return (tokenClass == Human.City && !_tokens.Space.IsCoastal && !_tokens.Space.IsOcean)
+				? (2,Human.Town)
 				: (count,tokenClass);
 		}
 	}

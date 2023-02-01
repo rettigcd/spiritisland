@@ -28,7 +28,7 @@ public class StormSwath {
 
 			// in lands where you did Damage, Destroy 1 town
 			foreach(var space in new[] { ctx.Space, origin, thirdSpace }.Distinct())
-				await ctx.Target( space ).Invaders.DestroyNOfClass( 1, Invader.Town );
+				await ctx.Target( space ).Invaders.DestroyNOfClass( 1, Human.Town );
 		}
 	}
 

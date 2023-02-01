@@ -11,7 +11,7 @@ public class TerrifyingNightmares {
 		ctx.AddFear( 2 );
 
 		// push up to 4 explorers or towns
-		await ctx.PushUpTo(4, Invader.Explorer_Town);
+		await ctx.PushUpTo(4, Human.Explorer_Town);
 
 		// if you have 4 moon, +4 fear
 		if( await ctx.YouHave("4 moon") )

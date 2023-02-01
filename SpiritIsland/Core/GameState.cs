@@ -132,7 +132,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// Does all the special actions when blight is added.
 	/// </summary>
 	async Task BlightAddedCheck( ITokenAddedArgs args ){
-		if(args.Token != TokenType.Blight) return; // token-added event handler for blight only
+		if(args.Token != Token.Blight) return; // token-added event handler for blight only
 
 		bool takingFromBlightCard = args.Reason switch {
 			AddReason.AsReplacement  => false,
@@ -176,7 +176,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 				args.AddedTo.Space,
 				CascadingBlightOptions(args.AddedTo),
 				Present.Always,
-				TokenType.Blight
+				Token.Blight
 			));
 			await Tokens[ cascadeTo ].Blight.Bind(args.ActionScope).Add(1, args.Reason); // Cascading blight shares original blights reason.
 		}
@@ -192,7 +192,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// Event handler for token removed that checks blight-only
 	/// </summary>
 	void BlightRemovedCheck( ITokenRemovedArgs args ) {
-		if(args.Token == TokenType.Blight
+		if(args.Token == Token.Blight
 			&& !args.Reason.IsOneOf(
 				RemoveReason.MovedFrom, // pushing / gathering blight
 				RemoveReason.Replaced   // just in case...
@@ -203,7 +203,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	public void AddToAllActiveSpaces( TokenWithEndOfRoundCleanup token ) {
+	public void AddToAllActiveSpaces( ITokenWithEndOfRoundCleanup token ) {
 		foreach(SpaceState space in AllActiveSpaces)
 			space.Adjust( token, 1 );
 	}
@@ -219,7 +219,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		var buildCard = InvaderDeck.Build.Cards.FirstOrDefault();
 		if(buildCard == null) return;
 		foreach(var space in target.Where(buildCard.MatchesCard).ToArray())
-			space.Adjust( TokenType.DoBuild, 1 );
+			space.Adjust( ModToken.DoBuild, 1 );
 	}
 
 	public void PourTimeSideways_Add1Explore( params SpaceState[] target ) {
@@ -227,7 +227,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		var exploreCard = InvaderDeck.Explore.Cards.FirstOrDefault();
 		if(exploreCard == null) return;
 		foreach(var space in target.Where( exploreCard.MatchesCard ).ToArray())
-			space.Adjust( TokenType.DoExplore, 1 );
+			space.Adjust( ModToken.DoExplore, 1 );
 	}
 
 	#endregion Pour Time Sideways - Add Invader actions
@@ -275,8 +275,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	// Win Loss Predicates
 	static void CheckTerrorLevelVictory( GameState gs ){
 
-		bool NoCity( SpaceState space ) => space.Sum( Invader.City ) == 0;
-		bool NoCityOrTown( SpaceState space ) => space.SumAny( Invader.Town_City ) == 0;
+		bool NoCity( SpaceState space ) => space.Sum( Human.City ) == 0;
+		bool NoCityOrTown( SpaceState space ) => space.SumAny( Human.Town_City ) == 0;
 		bool NoInvader( SpaceState space ) => !space.HasInvaders();
 		var (filter,description) = gs.Fear.TerrorLevel switch {
 			4 => (_ => true, "Victory"),

@@ -10,7 +10,7 @@ class ScotlandBuildEngine : BuildEngine {
 	bool ChartTheCoastline( SpaceState spaceState ) {
 		if( !ShouldChartTheCoastline ) return false;
 		bool isCharted = spaceState.Space.IsCoastal 
-			&& spaceState.Adjacent.Any( adj => adj.Has( Invader.City ) );
+			&& spaceState.Adjacent.Any( adj => adj.Has( Human.City ) );
 		if( isCharted )
 			_chartedCoastland.Add(spaceState.Space.Text);
 		return isCharted;

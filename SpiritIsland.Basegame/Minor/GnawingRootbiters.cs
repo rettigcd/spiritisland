@@ -8,7 +8,7 @@ public class GnawingRootbiters {
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// push up to 2 towns
-		return ctx.PushUpTo(2,Invader.Town);
+		return ctx.PushUpTo(2,Human.Town);
 	}
 
 }

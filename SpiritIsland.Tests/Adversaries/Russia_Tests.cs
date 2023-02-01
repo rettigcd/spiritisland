@@ -13,8 +13,8 @@ public class Russia_Tests {
 		//  And: no explorers on 2 spaces
 		SpaceState beastSpace1 = gameState.Tokens[ board[1] ];
 		SpaceState beastSpace2 = gameState.Tokens[ board[4] ];
-		beastSpace1.InitDefault(Invader.Explorer,0);
-		beastSpace2.InitDefault( Invader.Explorer, 0 );
+		beastSpace1.InitDefault(Human.Explorer,0);
+		beastSpace2.InitDefault( Human.Explorer, 0 );
 
 		//   And: a stage-2 escalation card
 		var a8 = gameState.Tokens[board[8]];
@@ -34,8 +34,8 @@ public class Russia_Tests {
 		t.IsCompleted.ShouldBeFalse();
 		spirit.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (2 of 2)" ).HasOptions( "A1,A4" ).Choose( beastSpace2.Space.Text );
 
-		beastSpace1.Sum(Invader.Explorer).ShouldBe(1);
-		beastSpace2.Sum( Invader.Explorer ).ShouldBe( 1 );
+		beastSpace1.Sum(Human.Explorer).ShouldBe(1);
+		beastSpace2.Sum( Human.Explorer ).ShouldBe( 1 );
 
 		// All done
 		t.IsCompleted.ShouldBeTrue();
@@ -58,8 +58,8 @@ public class Russia_Tests {
 		//  And: board 2 has 2 spaces with beasts and no explorers
 		SpaceState beastSpace1 = gameState.Tokens[board1[5]];
 		SpaceState beastSpace2 = gameState.Tokens[board1[8]];
-		beastSpace1.InitDefault( Invader.Explorer, 0 );
-		beastSpace2.InitDefault( Invader.Explorer, 0 );
+		beastSpace1.InitDefault( Human.Explorer, 0 );
+		beastSpace2.InitDefault( Human.Explorer, 0 );
 		beastSpace1.Beasts.Adjust( 1 );
 		beastSpace2.Beasts.Adjust( 1 );
 
@@ -83,8 +83,8 @@ public class Russia_Tests {
 		t.IsCompleted.ShouldBeFalse();
 		spirit1.NextDecision().HasPrompt( "Escalation - Add Explorer for board B (2 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace2.Space.Text );
 
-		beastSpace1.Sum( Invader.Explorer ).ShouldBe( 2 );
-		beastSpace2.Sum( Invader.Explorer ).ShouldBe( 3 ); // +1 normal explore
+		beastSpace1.Sum( Human.Explorer ).ShouldBe( 2 );
+		beastSpace2.Sum( Human.Explorer ).ShouldBe( 3 ); // +1 normal explore
 
 		// All done
 		t.IsCompleted.ShouldBeTrue();

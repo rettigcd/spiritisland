@@ -3,16 +3,16 @@
 public class HealthTokenClassBinding_NoEvents {
 
 	readonly protected SpaceState _tokens;
-	readonly protected HealthTokenClass _tokenClass;
+	readonly protected HumanTokenClass _tokenClass;
 
-	public HealthTokenClassBinding_NoEvents( SpaceState tokens, HealthTokenClass tokenClass ) {
+	public HealthTokenClassBinding_NoEvents( SpaceState tokens, HumanTokenClass tokenClass ) {
 		_tokens = tokens;
 		_tokenClass = tokenClass;
 	}
 
 	public HealthTokenClassBinding_NoEvents( HealthTokenClassBinding_NoEvents src ) {
 		_tokens = src._tokens;
-		_tokenClass = TokenType.Dahan;
+		_tokenClass = Human.Dahan;
 	}
 
 	#region All TokenCategory.Dahan, including Frozen/Stasis
@@ -21,13 +21,13 @@ public class HealthTokenClassBinding_NoEvents {
 	#endregion
 
 	/// <summary> All of the Normal Tokens (not frozen, dream) </summary>
-	public HealthToken[] NormalKeys => _tokens.OfHealthClass( _tokenClass );
+	public HumanToken[] NormalKeys => _tokens.OfHealthClass( _tokenClass );
 
-	public void Init( int count ) => _tokens.InitDefault( TokenType.Dahan, count );
+	public void Init( int count ) => _tokens.InitDefault( Human.Dahan, count );
 
-	public void Adjust( Token token, int delta ) => _tokens.Adjust( token, delta );
+	public void Adjust( IToken token, int delta ) => _tokens.Adjust( token, delta );
 
-	public void Init( Token token, int count ) => _tokens.Init( token, count );
+	public void Init( IToken token, int count ) => _tokens.Init( token, count );
 
 	public HealthTokenClassBinding Bind( UnitOfWork actionScope ) => new HealthTokenClassBinding(this,actionScope);
 }
@@ -44,7 +44,7 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 		_actionScope = actionScope;
 	}
 
-	public HealthTokenClassBinding( SpaceState tokens, HealthTokenClass tokenClass, UnitOfWork actionScope ):base(tokens,tokenClass ) {
+	public HealthTokenClassBinding( SpaceState tokens, HumanTokenClass tokenClass, UnitOfWork actionScope ):base(tokens,tokenClass ) {
 		_actionScope = actionScope;
 	}
 
@@ -52,11 +52,11 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 
 	/// <summary> Adds a Token from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
-		return ActionTokens.AddDefault( TokenType.Dahan, count, reason );
+		return ActionTokens.AddDefault( Human.Dahan, count, reason );
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
-	public async Task<Token> Remove1( Token toRemove, RemoveReason reason ) {
+	public async Task<IToken> Remove1( IToken toRemove, RemoveReason reason ) {
 		if( _tokens[toRemove] == 0 )
 			return null; // unable to remove desired token
 
@@ -91,7 +91,7 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 		// When Spirit Powers Damage the Dahan,
 		// you may choose how that Damage is allocated, just like when you Damage Invaders.
 
-		HealthToken mostHealthy = null;
+		HumanToken mostHealthy = null;
 		while( 0<remainingDamageToDahan 
 			&& (mostHealthy=NormalKeys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
 		) {
@@ -99,7 +99,7 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 			int countToApply1DamageTo = Math.Min(remainingDamageToDahan, _tokens[mostHealthy]);
 			remainingDamageToDahan -= countToApply1DamageTo;
 
-			HealthToken damagedToken = mostHealthy.AddDamage( 1 );
+			HumanToken damagedToken = mostHealthy.AddDamage( 1 );
 			if(damagedToken.IsDestroyed) {
 				await DestroyToken( mostHealthy, countToApply1DamageTo );
 			} else {
@@ -112,7 +112,7 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 
 	/// <summary>Applies Damage Efficiently</summary>
 	/// <returns>Remaining/unused damage</returns>
-	public async Task<int> ApplyDamage_Efficiently( int remainingDamageToDahan, HealthToken token ) {
+	public async Task<int> ApplyDamage_Efficiently( int remainingDamageToDahan, HumanToken token ) {
 		// Destroy what can be destroyed
 		if(token.RemainingHealth <= remainingDamageToDahan) {
 			int countDestroyed = remainingDamageToDahan / token.RemainingHealth;
@@ -147,12 +147,12 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 		}
 	}
 
-	public virtual async Task<int> DestroyToken( HealthToken token, int count ) {
+	public virtual async Task<int> DestroyToken( HumanToken token, int count ) {
 		return await token.Destroy( ActionTokens, count );
 	}
 
 	public virtual async Task DestroyAll() {
-		foreach(HealthToken token in NormalKeys.ToArray())
+		foreach(HumanToken token in NormalKeys.ToArray())
 			await token.DestroyAll( ActionTokens );
 	}
 

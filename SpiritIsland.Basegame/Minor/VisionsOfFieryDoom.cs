@@ -10,7 +10,7 @@ public class VisionsOfFieryDoom {
 		ctx.AddFear( 1 );
 
 		// Push 1 explorer/town
-		await ctx.Push( 1, Invader.Explorer_Town );
+		await ctx.Push( 1, Human.Explorer_Town );
 
 		if(await ctx.YouHave("2 fire"))
 			ctx.AddFear( 1 );

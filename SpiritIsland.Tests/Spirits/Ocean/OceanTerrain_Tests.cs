@@ -133,8 +133,8 @@ public class OceanTerrain_Tests {
 
 		//   And: 2 towns and 2 explorers on space
 		SpaceState a2 = gameState.Tokens[boardA[2]];
-		a2.InitDefault( Invader.Town, 2 );
-		a2.InitDefault( Invader.Explorer, 2 );
+		a2.InitDefault( Human.Town, 2 );
+		a2.InitDefault( Human.Explorer, 2 );
 
 		//   And: Thundersepearker on A2 only
 		Given_PrimaryPresenceOnA2Only();
@@ -283,8 +283,8 @@ public class OceanTerrain_Tests {
 
 		// Given: Dahan and Town on A2
 		SpaceState a2 = gameState.Tokens[boardA[2]];
-		a2.InitDefault( TokenType.Dahan, 2 );
-		a2.InitDefault( Invader.Town, 1 );
+		a2.InitDefault( Human.Dahan, 2 );
+		a2.InitDefault( Human.Town, 1 );
 
 		// Given: ocean in either A0 (saving dahan) or A1 (not saving)
 		Space oceanSpace = savedByOcean ? boardA[0] : boardA[1];

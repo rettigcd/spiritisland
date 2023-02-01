@@ -20,7 +20,7 @@ public class ObserveTheEverChangingWorld {
 }
 
 
-public class ObserveWorldMod : Token
+public class ObserveWorldMod : IToken
 	, IVisibleToken
 	, IHandleTokenAdded
 	, IHandleTokenRemoved
@@ -30,10 +30,10 @@ public class ObserveWorldMod : Token
 
 	string _tokenSummary;
 
-	public TokenClass Class => TokenType.Element;
+	public TokenClass Class => Token.Element;
 	public string Text => ObserveTheEverChangingWorld.Name;
 
-	public Img Img => TokenType.Element.Img;
+	public Img Img => Token.Element.Img;
 
 	readonly ShiftingMemoryOfAges _spirit;
 	readonly HashSet<UnitOfWork> _appliedToTheseActions = new HashSet<UnitOfWork>();

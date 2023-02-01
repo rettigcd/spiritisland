@@ -40,7 +40,7 @@ public class FireStorm {
 
 		while(fireDamage > 0 && invaderTokens.Any()) {
 			SpaceToken token = await ctx.Decision( new Select.TokenFromManySpaces($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
-			await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,(HealthToken)token.Token);
+			await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,(HumanToken)token.Token);
 			--fireDamage;
 		}
 	}
@@ -65,7 +65,7 @@ public class FireStorm {
 		// Destroy all invaders and Beasts
 		var beasts = spaceCtx.Beasts;
 		await beasts.Destroy( beasts.Count );
-		await spaceCtx.Invaders.DestroyNOfAnyClass(int.MaxValue,Invader.Any);
+		await spaceCtx.Invaders.DestroyNOfAnyClass(int.MaxValue,Human.Invader);
 
 		// Add 1 blight
 		await ctx.AddBlight(1);

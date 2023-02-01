@@ -8,8 +8,8 @@ public class TheJungleHungers {
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		// destroys all explorers and towns
-		await ctx.Invaders.DestroyAll( Invader.Explorer);
-		await ctx.Invaders.DestroyAll( Invader.Town );
+		await ctx.Invaders.DestroyAll( Human.Explorer);
+		await ctx.Invaders.DestroyAll( Human.Town );
 
 		// Destroy all dahan
 		bool destroyAllDahan = true;
@@ -17,7 +17,7 @@ public class TheJungleHungers {
 		// if you have 2 moon, 3 plant
 		if(await ctx.YouHave( "2 moon,3 plant" )) {
 			// Destroy 1 city
-			await ctx.Invaders.DestroyNOfClass( 1, Invader.City );
+			await ctx.Invaders.DestroyNOfClass( 1, Human.City );
 			// do not destroy dahan
 			destroyAllDahan = false;
 		}

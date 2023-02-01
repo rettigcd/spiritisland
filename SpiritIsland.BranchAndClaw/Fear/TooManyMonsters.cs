@@ -9,7 +9,7 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx ) 
 		=> Cmd.RemoveExplorersOrTowns(1)
 			.In().SpiritPickedLand().Which( Has.Beast )
-			.ByPickingToken(Invader.Explorer_Town)
+			.ByPickingToken(Human.Explorer_Town)
 			.ForEachSpirit()
 			.Execute(ctx);
 
@@ -28,15 +28,15 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 			.Execute( ctx );
 
 	Task Remove_Level2( TargetSpaceCtx ctx ) {
-		var remover = new TokenRemover( ctx ).AddGroup( 1, Invader.Explorer );
-		if(ctx.Beasts.Any) remover.AddGroup( 1, Invader.Town );
+		var remover = new TokenRemover( ctx ).AddGroup( 1, Human.Explorer );
+		if(ctx.Beasts.Any) remover.AddGroup( 1, Human.Town );
 		return remover.RemoveN();
 	}
 
 	Task Remove_Level3( TargetSpaceCtx ctx ) {
 		var remover = ctx.Beasts.Any
-			? new TokenRemover( ctx ).AddGroup( 2, Invader.Explorer ).AddGroup( 2, Invader.Town )
-			: new TokenRemover( ctx ).AddGroup( 1, Invader.Explorer_Town );
+			? new TokenRemover( ctx ).AddGroup( 2, Human.Explorer ).AddGroup( 2, Human.Town )
+			: new TokenRemover( ctx ).AddGroup( 1, Human.Explorer_Town );
 
 		return remover.RemoveN();
 	}

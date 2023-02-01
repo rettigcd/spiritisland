@@ -4,15 +4,15 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 
 	public static void Init( this SpaceState currentTokens, string expectedInvaderSummary ) {
 
-		CountDictionary<Token> desiredTokens = new();
+		CountDictionary<IToken> desiredTokens = new();
 		if(!string.IsNullOrEmpty( expectedInvaderSummary )) { 
 			foreach(var part in expectedInvaderSummary.Split( ',' )) {
-				Token token = part[1..] switch {
+				IToken token = part[1..] switch {
 					"E@1" => StdTokens.Explorer,
 					"T@2" => StdTokens.Town,
 					"C@3" => StdTokens.City,
 					"D@2" => StdTokens.Dahan,
-					"Z" => TokenType.Disease,
+					"Z" => Token.Disease,
 					_ => throw new ArgumentException("invalide tokentype found in "+expectedInvaderSummary)
 				};
 				desiredTokens.Add(token, int.Parse(part[..1] ) );

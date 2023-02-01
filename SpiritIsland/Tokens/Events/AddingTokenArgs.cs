@@ -13,7 +13,7 @@ public class AddingTokenArgs {
 	public UnitOfWork ActionScope { get; }
 
 	// Modifiable
-	public Token Token { get; set; }
+	public IToken Token { get; set; }
 	public int Count {
 		get { return _count; }
 		set {

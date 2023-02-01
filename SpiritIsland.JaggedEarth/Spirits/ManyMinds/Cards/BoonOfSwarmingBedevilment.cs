@@ -6,7 +6,7 @@ public class BoonOfSwarmingBedevilment {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 		// for the rest of this turn, each of target Spirit's presence grants Defend 1 in its land.
 		int PresenceAsToken(SpaceState space) => ctx.Self.Presence.CountOn(space);
-		ctx.GameState.Tokens.Dynamic.ForRound.Register( PresenceAsToken, TokenType.Defend );
+		ctx.GameState.Tokens.Dynamic.ForRound.Register( PresenceAsToken, Token.Defend );
 
 		// Target Spirit may Push up to 1 of their presence.
 		await ctx.OtherCtx.Presence.PushUpTo1();

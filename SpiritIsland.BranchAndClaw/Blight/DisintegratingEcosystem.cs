@@ -11,7 +11,7 @@ public class DisintegratingEcosystem : BlightCardBase {
 				// destroy 1 beast,
 				Cmd.DestroyBeast(1).In().OneLandPerBoard(),
 				// then add 1 blight to a land with town/city
-				Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "a land with town/city", x => x.Tokens.HasAny(Invader.Town_City) ) )
+				Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "a land with town/city", x => x.Tokens.HasAny(Human.Town_City) ) )
 			)
 		);
 

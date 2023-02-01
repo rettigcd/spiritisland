@@ -12,19 +12,19 @@ public class HazardsSpreadAcrossTheIsland{
 		var tokenChoice = (await ctx.Decision(new Select.TokenFromManySpaces("Select hazard to add to "+ctx.Space.Label, candidates, Present.Always))).Token;
 
 		// choosing disease costs 1 energy.
-		if( tokenChoice == TokenType.Disease )
+		if( tokenChoice == Token.Disease )
 			ctx.Self.Energy--;
 
 		// Add 1 of that type of token to target land.
-		if( tokenChoice is HealthToken ht && 0 < ht.StrifeCount )
+		if( tokenChoice is HumanToken ht && 0 < ht.StrifeCount )
 			await ctx.AddStrife();
 		else
 			await ctx.Tokens.Add(tokenChoice,1);
 	}
 
 	static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {
-		var tokenTypes = Invader.Any // finds .Any finds strife
-			.Plus( TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds );
+		var tokenTypes = Human.Invader // finds .Any finds strife
+			.Plus( Token.Badlands, Token.Beast, Token.Disease, Token.Wilds );
 		var candidates = ctx.Adjacent
 			.SelectMany( adjState => adjState.Keys.OfType<IVisibleToken>()
 				.Where( IsTokenOfInterest )
@@ -34,14 +34,14 @@ public class HazardsSpreadAcrossTheIsland{
 			.Select( grp => grp.First() )
 			.ToArray();
 		return ctx.Self.Energy == 0
-			? candidates.Where( st => st.Token != TokenType.Disease).ToArray()
+			? candidates.Where( st => st.Token != Token.Disease).ToArray()
 			: candidates;
 	}
 
-	static readonly TokenClass[] InterestedTokenTypes = new TokenClass[] { TokenType.Badlands, TokenType.Beast, TokenType.Disease, TokenType.Wilds };
-	static bool IsTokenOfInterest( Token token ) {
+	static readonly TokenClass[] InterestedTokenTypes = new TokenClass[] { Token.Badlands, Token.Beast, Token.Disease, Token.Wilds };
+	static bool IsTokenOfInterest( IToken token ) {
 		return InterestedTokenTypes.Contains( token.Class )
-			|| token is HealthToken ht && 0<ht.StrifeCount;
+			|| token is HumanToken ht && 0<ht.StrifeCount;
 	}
 
 }

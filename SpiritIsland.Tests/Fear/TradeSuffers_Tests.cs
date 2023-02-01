@@ -103,7 +103,7 @@ public class TradeSuffers_Tests {
 
 		// So it doesn't cascade during ravage
 		foreach(var space in ctx.GameState.AllSpaces)
-			space.Init(TokenType.Blight, 0); // Don't trigger events
+			space.Init(Token.Blight, 0); // Don't trigger events
 
 		user.DoesNothingForARound();
 	}

@@ -6,7 +6,7 @@ public class DisorientingLandscape {
 	[Fast]
 	[FromSacredSite( 2 )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
-		await ctx.Push(1, Invader.Explorer);
+		await ctx.Push(1, Human.Explorer);
 
 		if(ctx.Space.IsOneOf(Terrain.Mountain,Terrain.Jungle))
 			await ctx.Wilds.Add(1);

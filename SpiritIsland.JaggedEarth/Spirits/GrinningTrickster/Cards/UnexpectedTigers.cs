@@ -11,9 +11,9 @@ public class UnexpectedTigers {
 		// If you can gather 1 beast,
 		if( ctx.Adjacent.Any(s=>s.Beasts.Any) ) {
 			// do so,
-			await ctx.Gather(1,TokenType.Beast);
+			await ctx.Gather(1,Token.Beast);
 			// then push 1 explorer.
-			await ctx.Push(1,Invader.Explorer);
+			await ctx.Push(1,Human.Explorer);
 		} else {
 			// othersie, add 1 beast
 			await ctx.Beasts.Add(1);

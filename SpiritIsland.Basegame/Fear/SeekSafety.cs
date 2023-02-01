@@ -38,7 +38,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 
 		// Select Source
 		var sourceOptions = ctx.GameState.AllActiveSpaces
-			.Where( s => s.Has( Invader.Explorer ) && HasNeighborWithMoreBuildings( s ) )
+			.Where( s => s.Has( Human.Explorer ) && HasNeighborWithMoreBuildings( s ) )
 			.Select( s => s.Space )
 			.ToArray();
 		if(sourceOptions.Length == 0) return;
@@ -47,13 +47,13 @@ public class SeekSafety : FearCardBase, IFearCard {
 		if(source == null) return; // continue => next spirit, break/return => no more spirits
 
 		// Push
-		await ctx.Target( source ).PushUpTo( 1, Invader.Explorer );
+		await ctx.Target( source ).PushUpTo( 1, Human.Explorer );
 	}
 
 	static async Task GatherExplorerOrTown( TargetSpaceCtx destCtx ) {
 		var invadersToGather = new List<TokenClass>();
-		if(destCtx.Tokens.Has( Invader.City )) invadersToGather.Add( Invader.Town );
-		if(destCtx.Tokens.Has( Invader.Town )) invadersToGather.Add( Invader.Explorer );
+		if(destCtx.Tokens.Has( Human.City )) invadersToGather.Add( Human.Town );
+		if(destCtx.Tokens.Has( Human.Town )) invadersToGather.Add( Human.Explorer );
 		TokenClass[] invadersToGatherArray = invadersToGather.ToArray();
 		await destCtx.GatherUpTo( 1, invadersToGatherArray );
 	}

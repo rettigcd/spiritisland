@@ -22,7 +22,7 @@ public class LandOfHauntsAndEmbers {
 			pushCount += 2;
 		}
 
-		await ctx.PushUpTo(pushCount,Invader.Explorer_Town);
+		await ctx.PushUpTo(pushCount,Human.Explorer_Town);
 
 		// add 1 blight
 		await ctx.AddBlight( 1 );

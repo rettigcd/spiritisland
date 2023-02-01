@@ -8,7 +8,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region constructor
 
-	public SpaceState( Space space, CountDictionary<Token> counts, IIslandTokenApi tokenApi, GameState gameState ) {
+	public SpaceState( Space space, CountDictionary<IToken> counts, IIslandTokenApi tokenApi, GameState gameState ) {
 		Space = space;
 		_counts = counts;
 		_api = tokenApi;
@@ -29,7 +29,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public BoardState Board => new BoardState( Space.Board, _gameState );
 
-	public int this[Token specific] {
+	public int this[IToken specific] {
 		get {
 			ValidateNotDead( specific );
 			int count = _counts[specific];
@@ -43,19 +43,19 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		}
 	}
 
-	public IEnumerable<Token> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
+	public IEnumerable<IToken> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
 
 	#region Enumeration / Detection(HaS) / Summing
 
-	protected IEnumerable<Token> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
-	protected IEnumerable<Token> OfClassInternal( TokenClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
-	protected IEnumerable<Token> OfAnyClassInternal( params TokenClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
+	protected IEnumerable<IToken> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
+	protected IEnumerable<IToken> OfClassInternal( TokenClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
+	protected IEnumerable<IToken> OfAnyClassInternal( params TokenClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
 
-	public Token[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
-	public Token[] OfClass( TokenClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
-	public Token[] OfAnyClass( params TokenClass[] classes ) => OfAnyClassInternal( classes ).ToArray();
-	public HealthToken[] OfHealthClass( HealthTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HealthToken>().ToArray();
-	public HealthToken[] OfAnyHealthClass( params HealthTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HealthToken>().ToArray();
+	public IToken[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
+	public IToken[] OfClass( TokenClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
+	public IToken[] OfAnyClass( params TokenClass[] classes ) => OfAnyClassInternal( classes ).ToArray();
+	public HumanToken[] OfHealthClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
+	public HumanToken[] OfAnyHealthClass( params HumanTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HumanToken>().ToArray();
 
 	public bool Has( TokenClass inv ) => OfClassInternal( inv ).Any();
 	public bool Has( TokenCategory cat ) => OfCategoryInternal( cat ).Any();
@@ -80,11 +80,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public virtual BlightTokenBindingNoEvents Blight => new BlightTokenBindingNoEvents( this );
 	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
-	public TokenBindingNoEvents Beasts => new ( this, TokenType.Beast );
-	public TokenBindingNoEvents Disease => new ( this, TokenType.Disease );
-	public TokenBindingNoEvents Wilds => new ( this, TokenType.Wilds );
-	public TokenBindingNoEvents Badlands => new ( this, TokenType.Badlands ); // This should not be used directly from inside Actions
-	public HealthTokenClassBinding_NoEvents Dahan => new HealthTokenClassBinding_NoEvents( this, TokenType.Dahan );
+	public TokenBindingNoEvents Beasts => new ( this, Token.Beast );
+	public TokenBindingNoEvents Disease => new ( this, Token.Disease );
+	public TokenBindingNoEvents Wilds => new ( this, Token.Wilds );
+	public TokenBindingNoEvents Badlands => new ( this, Token.Badlands ); // This should not be used directly from inside Actions
+	public HealthTokenClassBinding_NoEvents Dahan => new HealthTokenClassBinding_NoEvents( this, Human.Dahan );
 	//public HealthTokenClassBinding_NoEvents Explorers => new HealthTokenClassBinding_NoEvents( this, Invader.Explorer );
 	//public HealthTokenClassBinding_NoEvents Towns => new HealthTokenClassBinding_NoEvents( this, Invader.Town );
 	//public HealthTokenClassBinding_NoEvents Cities => new HealthTokenClassBinding_NoEvents( this, Invader.City );
@@ -93,12 +93,12 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region private
 
-	static void ValidateNotDead( Token specific ) {
-		if(specific is HealthToken ht && ht.RemainingHealth == 0) 
+	static void ValidateNotDead( IToken specific ) {
+		if(specific is HumanToken ht && ht.RemainingHealth == 0) 
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
-	public readonly CountDictionary<Token> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
+	public readonly CountDictionary<IToken> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
 	protected readonly IIslandTokenApi _api;
 	protected readonly GameState _gameState; // !! merge this usage into token api, I guess.  Here for access to island.
 
@@ -107,29 +107,29 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	#region Non-event Generationg Token Changes
 
 	/// <summary> Non-event-triggering setup </summary>
-	public void Adjust( Token specific, int delta ) {
-		if(specific is HealthToken ht && ht.RemainingHealth == 0) 
+	public void Adjust( IToken specific, int delta ) {
+		if(specific is HumanToken ht && ht.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
 		_counts[specific] += delta;
 	}
 
-	public void InitDefault( HealthTokenClass tokenClass, int value )
+	public void InitDefault( HumanTokenClass tokenClass, int value )
 		=> Init( GetDefault( tokenClass ), value );
 
-	public void AdjustDefault( HealthTokenClass tokenClass, int delta ) 
+	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public void Init( Token specific, int value ) {
+	public void Init( IToken specific, int value ) {
 		_counts[specific] = value;
 	}
 
-	public HealthToken GetDefault( HealthTokenClass tokenClass ) => this._api.GetDefault( tokenClass );
+	public HumanToken GetDefault( HumanTokenClass tokenClass ) => this._api.GetDefault( tokenClass );
 
-	public void ReplaceAllWith( Token original, Token replacement ) {
+	public void ReplaceAllWith( IToken original, IToken replacement ) {
 		Adjust( replacement, this[original] );
 		Init( original, 0 );
 	}
-	public void ReplaceNWith( int countToReplace, Token oldToken, Token newToken ) {
+	public void ReplaceNWith( int countToReplace, IToken oldToken, IToken newToken ) {
 		countToReplace = Math.Min( countToReplace, this[oldToken] );
 		Adjust( oldToken, -countToReplace );
 		Adjust( newToken, countToReplace );
@@ -146,29 +146,29 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	#region Invader Specific
 
 	/// <summary> Includes dreaming invaders. </summary>
-	public IEnumerable<HealthToken> InvaderTokens() => OfCategory( TokenCategory.Invader ).Cast<HealthToken>();
+	public IEnumerable<HumanToken> InvaderTokens() => OfCategory( TokenCategory.Invader ).Cast<HumanToken>();
 
 	public bool HasInvaders() => Has( TokenCategory.Invader );
 
-	public bool HasStrife => Keys.OfType<HealthToken>().Any(x=>0<x.StrifeCount);
-	public int StrifeCount => Keys.OfType<HealthToken>().Sum( x => x.StrifeCount );
+	public bool HasStrife => Keys.OfType<HumanToken>().Any(x=>0<x.StrifeCount);
+	public int StrifeCount => Keys.OfType<HumanToken>().Sum( x => x.StrifeCount );
 
-	public int CountStrife() => Keys.OfType<HealthToken>().Where(x=>x.StrifeCount>0).Sum( t => _counts[t] );
+	public int CountStrife() => Keys.OfType<HumanToken>().Where(x=>x.StrifeCount>0).Sum( t => _counts[t] );
 
-	public int TownsAndCitiesCount() => this.SumAny( Invader.Town_City );
+	public int TownsAndCitiesCount() => this.SumAny( Human.Town_City );
 
 	public int InvaderTotal() => InvaderTokens().Sum( i => _counts[i] );
 
 	#endregion
 
-	public HealthToken RemoveStrife( HealthToken orig, int tokenCount ) {
-		HealthToken lessStrifed = orig.AddStrife( -1 );
+	public HumanToken RemoveStrife( HumanToken orig, int tokenCount ) {
+		HumanToken lessStrifed = orig.AddStrife( -1 );
 		this[lessStrifed] += tokenCount;
 		this[orig] -= tokenCount;
 		return lessStrifed;
 	}
 
-	public int AttackDamageFrom1( HealthToken ht ) => ht.Class.Category == TokenCategory.Dahan 
+	public int AttackDamageFrom1( HumanToken ht ) => ht.Class.Category == TokenCategory.Dahan 
 		? 2
 		: _api.InvaderAttack( ht.Class );
 
@@ -208,7 +208,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public void SkipAllBuilds( string label, params TokenClass[] stoppedClasses ) {
 		if(stoppedClasses == null || stoppedClasses.Length == 0)
-			stoppedClasses = Invader.Town_City;
+			stoppedClasses = Human.Town_City;
 		Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
 	}
 
@@ -234,7 +234,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public void TimePasses() {
 		Blight.Blocked = false; // !!! move inside cleanup token???
 
-		foreach(var cleanup in Keys.OfType<TokenWithEndOfRoundCleanup>().ToArray())
+		foreach(var cleanup in Keys.OfType<ITokenWithEndOfRoundCleanup>().ToArray())
 			cleanup.EndOfRoundCleanup( this );
 	}
 

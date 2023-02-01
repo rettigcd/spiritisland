@@ -7,7 +7,7 @@ class Gather1Beast : GrowthActionFactory {
 			.SelectMany(p=>p.Range(2)) // Growth option so this Range ok
 			.Distinct();
 		var to = await ctx.Decision( new Select.Space( "Gather beast to", options.Select(x=>x.Space), Present.Always ));
-		await ctx.Target(to).GatherUpTo(1,TokenType.Beast);
+		await ctx.Target(to).GatherUpTo(1,Token.Beast);
 	}
 
 }

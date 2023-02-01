@@ -8,7 +8,7 @@ public class DarknessSwallowsTheUnwary {
 
 	[InnateOption("2 moon,1 fire","Gather 1 explorer.")]
 	public static async Task Gather1Explorer( TargetSpaceCtx ctx ) {
-		await ctx.GatherUpTo( 1, Invader.Explorer );
+		await ctx.GatherUpTo( 1, Human.Explorer );
 	}
 
 	[InnateOption("3 moon,2 fire","Destroy up to 2 explorer. 1 fear per explorer destroyed.")]
@@ -17,7 +17,7 @@ public class DarknessSwallowsTheUnwary {
 
 		// destroy 2 explorers (+1 fear/kill)
 		var grp = ctx.Invaders;
-		int destroyed = await grp.DestroyNOfClass( 2, Invader.Explorer );
+		int destroyed = await grp.DestroyNOfClass( 2, Human.Explorer );
 		ctx.AddFear( destroyed );
 	}
 

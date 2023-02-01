@@ -16,7 +16,7 @@ public class TalonsOfLightning {
 		if( await ctx.YouHave("3 fire,3 air" )){
 			// destroy 1 town in each adjacent land
 			foreach(var neighbor in ctx.Tokens.Adjacent)
-				await ctx.Target(neighbor.Space).Invaders.DestroyNOfClass( 1,Invader.Town);
+				await ctx.Target(neighbor.Space).Invaders.DestroyNOfClass( 1,Human.Town);
 
 		}
 

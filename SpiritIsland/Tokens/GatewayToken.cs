@@ -2,7 +2,8 @@
 
 /// <summary> Since tokens are directional, create separate 1 for each end. </summary>
 /// <remarks> Must be in Engine project so that Memento can save/restore it.</remarks>
-public class GatewayToken : Token {
+public class GatewayToken : IToken {
+
 	public SpaceState From { get; }
 	public SpaceState To { get; }
 	public GatewayToken( SpaceState from, SpaceState to ) {
@@ -16,7 +17,7 @@ public class GatewayToken : Token {
 		From.Init( this, 0 );
 		From.LinkedViaWays = null;
 	}
-	public TokenClass Class => TokenType.OpenTheWays;
+	public TokenClass Class => Token.OpenTheWays;
 	public string Text => "Gateway";
 
 }

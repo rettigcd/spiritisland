@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Spirits.Thunder; 
+﻿namespace SpiritIsland.Tests.Spirits.Thunder;
 
 public class SuddenAmbush_Tests : ThunderCards {
 
@@ -24,7 +24,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		// Given: dahan on a3
 		gs.DahanOn(a[3]).Init(1);
 		//  and: 2 explorers on a2
-		gs.Tokens[a[2]].AdjustDefault(Invader.Explorer,2);
+		gs.Tokens[a[2]].AdjustDefault(Human.Explorer,2);
 
 		When_ActivateCard( SuddenAmbush.Name );
 		User.TargetsLand(SuddenAmbush.Name, "A1,[A2],A4,A5,A6");
@@ -40,7 +40,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		gs.DahanOn( a[2] ).Init(1);
 		gs.DahanOn( a[1] ).Init(2);
 		//  and: 5 explorers on a1
-		gs.Tokens[a[1]].AdjustDefault( Invader.Explorer, 5 );
+		gs.Tokens[a[1]].AdjustDefault( Human.Explorer, 5 );
 
 		When_ActivateCard( SuddenAmbush.Name );
 
@@ -58,7 +58,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		gs.DahanOn(a[2]).Init(1);
 		gs.DahanOn(a[1]).Init(2);
 		//  and: 1 town on a1
-		gs.Tokens[a[1]].AdjustDefault( Invader.Town, 1 );
+		gs.Tokens[a[1]].AdjustDefault( Human.Town, 1 );
 
 		When_ActivateCard(SuddenAmbush.Name);
 

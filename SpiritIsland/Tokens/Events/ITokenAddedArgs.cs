@@ -18,7 +18,7 @@
 // if we need a 'Change' event, it can implements both Add / Remove interfaces
 
 public interface ITokenAddedArgs {
-	public Token Token { get; } // need specific so we can act on it (push/damage/destroy),  !!! ??? Should this be IVisibleToken
+	public IToken Token { get; } // need specific so we can act on it (push/damage/destroy),  !!! ??? Should this be IVisibleToken
 	public int Count { get; }
 	public ActionableSpaceState AddedTo { get; }
 	public AddReason Reason { get; }

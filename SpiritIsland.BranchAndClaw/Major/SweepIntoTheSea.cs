@@ -14,14 +14,14 @@ public partial class SweepIntoTheSea {
 	static async Task DoPower( TargetSpaceCtx ctx ) {
 		await ctx.SelectActionOption(
 			new SpaceAction( "Push explorers and towns toward nearest ocean", PushExplorersAndTownsTowardsOcean ),
-			new SpaceAction( "Destroy all explorers and towns", ctx => ctx.Invaders.DestroyAll( Invader.Explorer_Town ) ).OnlyExecuteIf( x => x.IsCoastal )
+			new SpaceAction( "Destroy all explorers and towns", ctx => ctx.Invaders.DestroyAll( Human.Explorer_Town ) ).OnlyExecuteIf( x => x.IsCoastal )
 		);
 	}
 
 	static async Task PushExplorersAndTownsTowardsOcean( TargetSpaceCtx ctx ) {
 		// push all explorers and town one land toward the nearest ocean
 		var closerSpace = await SelectSpaceCloserToTheOcean( ctx );
-		await PushAllTokensTo( ctx, closerSpace, Invader.Explorer_Town );
+		await PushAllTokensTo( ctx, closerSpace, Human.Explorer_Town );
 	}
 
 	static async Task<TargetSpaceCtx> SelectSpaceCloserToTheOcean( TargetSpaceCtx ctx ) {
@@ -34,7 +34,7 @@ public partial class SweepIntoTheSea {
 		return closerSpace;
 	}
 
-	static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params HealthTokenClass[] groups ) {
+	static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params HumanTokenClass[] groups ) {
 		while(ctx.Tokens.HasAny( groups ))
 			await ctx.Move( ctx.Tokens.OfAnyHealthClass( groups ).First(), ctx.Space, destination.Space );
 	}

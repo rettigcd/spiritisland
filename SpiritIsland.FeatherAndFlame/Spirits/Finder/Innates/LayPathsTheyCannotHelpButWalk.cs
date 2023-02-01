@@ -17,13 +17,13 @@ public class LayPathsTheyCannotHelpButWalk {
 		var pusher = ctx.Pusher;
 
 		// Push up to half( rounded down ) of Invaders from target land.
-		AddHalf(pusher, ctx.Tokens, Invader.Any );
+		AddHalf(pusher, ctx.Tokens, Human.Invader );
 		// Do likewise for dahan
-		AddHalf(pusher, ctx.Tokens, TokenType.Dahan);
+		AddHalf(pusher, ctx.Tokens, Human.Dahan);
 		// Presence
 		AddHalf( pusher, ctx.Tokens, ctx.AllPresenceTokens );
 		// and beast( each separately ).
-		AddHalf( pusher, ctx.Tokens, TokenType.Beast );
+		AddHalf( pusher, ctx.Tokens, Token.Beast );
 
 		await pusher.MoveUpToN();
 	}
@@ -36,7 +36,7 @@ public class LayPathsTheyCannotHelpButWalk {
 
 	[InnateOption( "2 sun,2 air", "Push up to 1 Invader/dahan/presence/beast." )]
 	static public Task Option2( TargetSpaceCtx ctx ) {
-		return ctx.Push(1, Invader.Any.Concat( ctx.AllPresenceTokens ).Plus( TokenType.Dahan ) );
+		return ctx.Push(1, Human.Invader.Concat( ctx.AllPresenceTokens ).Plus( Human.Dahan ) );
 	}
 
 }

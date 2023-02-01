@@ -9,7 +9,7 @@ public class DahanAttack : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx ) 
 		=> Cmd.RemoveExplorers( 1 )
 			.In().SpiritPickedLand().Which( Has.Dahan )
-			.ByPickingToken( Invader.Explorer )
+			.ByPickingToken( Human.Explorer )
 			.ForEachSpirit()
 			.Execute(ctx);
 

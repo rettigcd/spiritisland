@@ -111,7 +111,7 @@ public static class ExtendDictionary {
 	/// <summary>Gets all tokens that have a SpaceAbreviation</summary>
 	/// <returns>([Key][count]) ordered alphabetically or '[none]' if empty</returns>
 	/// <example>1C@3,1E@1,1T@2</example>
-	static public string TokenSummary<T>( this CountDictionary<T> dict ) where T:Token {
+	static public string TokenSummary<T>( this CountDictionary<T> dict ) where T:IToken {
 		return dict.Count == 0 ? "[none]"
 			: dict.Keys
 				.OfType<IAppearInSpaceAbreviation>()

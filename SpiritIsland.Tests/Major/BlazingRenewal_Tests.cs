@@ -35,7 +35,7 @@ public class BlazingRenewal_Tests {
 
 		// Given: presence on board
 		setup.Spirit.Presence.Adjust( space, 2 );
-		space.Init( TokenType.Blight, 0 );
+		space.Init( Token.Blight, 0 );
 
 		//  And: 2 destroyed presence
 		setup.Spirit.Presence.Destroyed = 2;

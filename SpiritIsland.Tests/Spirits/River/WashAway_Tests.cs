@@ -30,9 +30,9 @@ public class WashAway_Tests : SpiritCards_Tests {
 		var board = gameState.Island.Boards[0];
 		Space targetSpace = board[4];
 		var grp = gameState.Tokens[targetSpace];
-		grp.AdjustDefault( Invader.Explorer, explorerCount );
-		grp.AdjustDefault( Invader.Town, townCount );
-		grp.AdjustDefault( Invader.City, cityCount );
+		grp.AdjustDefault( Human.Explorer, explorerCount );
+		grp.AdjustDefault( Human.Town, townCount );
+		grp.AdjustDefault( Human.City, cityCount );
 
 		When_PlayingCard();
 
@@ -59,7 +59,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		// 1 explorer on A4
 		var board = gameState.Island.Boards[0];
 		Space targetSpace = board[2];
-		gameState.Tokens[targetSpace].AdjustDefault(Invader.Explorer, 1);
+		gameState.Tokens[targetSpace].AdjustDefault(Human.Explorer, 1);
 
 		When_PlayingCard();
 
@@ -77,8 +77,8 @@ public class WashAway_Tests : SpiritCards_Tests {
 		var board = gameState.Island.Boards[0];
 		Space targetSpace = board[4];
 		var grp =gameState.Tokens[targetSpace];
-		grp.AdjustDefault( Invader.Explorer, 1 );
-		grp.AdjustDefault( Invader.Town, 1 );
+		grp.AdjustDefault( Human.Explorer, 1 );
+		grp.AdjustDefault( Human.Town, 1 );
 
 		var explorerDestination = board[2];
 		var townDestination = board[3];
@@ -134,7 +134,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		// 31 explorers on A4
 		var board = gameState.Island.Boards[0];
 		Space targetSpace = board[4];
-		gameState.Tokens[ targetSpace ].AdjustDefault( Invader.Explorer, 3 );
+		gameState.Tokens[ targetSpace ].AdjustDefault( Human.Explorer, 3 );
 
 		//  When: activating card
 		When_PlayingCard();

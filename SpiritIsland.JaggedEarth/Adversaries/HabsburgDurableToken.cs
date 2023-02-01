@@ -2,19 +2,19 @@
 
 // Durable Towns - Have +2 health, Destroy does 2 points of damage.
 class HabsburgDurableToken 
-	: HealthToken
+	: HumanToken
 	, IHandleRemovingToken  // removing Durable, switch to normal
 	, IHandleTokenAdded     // check for Blight, switch to normal
 
 {
-	public HabsburgDurableToken( HealthToken orig )
+	public HabsburgDurableToken( HumanToken orig )
 		: base( orig.Class, orig._healthPenaltyHolder, orig.FullHealth + 2, orig.Damage, orig.StrifeCount ) { }
-	protected HabsburgDurableToken( HealthTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage, int strifeCount, int nightmareDamage )
+	protected HabsburgDurableToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage, int strifeCount, int nightmareDamage )
 		: base( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage ) { }
 	public override async Task<int> Destroy( ActionableSpaceState tokens, int count ) {
 		count = Math.Min( count, tokens[this] ); // clip
 		if(0 < count) {
-			HealthToken damagedToken = this.AddDamage( 2 );
+			HumanToken damagedToken = this.AddDamage( 2 );
 			if(damagedToken.IsDestroyed)
 				await base.Destroy( tokens, count );
 			else
@@ -22,16 +22,16 @@ class HabsburgDurableToken
 		}
 		return count;
 	}
-	protected override HealthToken NewHealthToken( HealthTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0, int nightmareDamage = 0 )
+	protected override HumanToken NewHealthToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0, int nightmareDamage = 0 )
 		=> new HabsburgDurableToken( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage );
-	public HealthToken Restore() => new HealthToken( Class, _healthPenaltyHolder, FullHealth - 2, Damage, StrifeCount );
+	public HumanToken Restore() => new HumanToken( Class, _healthPenaltyHolder, FullHealth - 2, Damage, StrifeCount );
 
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
 		// If adding first blight
-		if(args.Token == TokenType.Blight && args.AddedTo.Blight.Count == 1) {
+		if(args.Token == Token.Blight && args.AddedTo.Blight.Count == 1) {
 			// switch back to normal
-			HealthToken restored = Restore();
+			HumanToken restored = Restore();
 			if(restored.IsDestroyed)
 				await DestroyAll( args.AddedTo );
 			else

@@ -14,7 +14,7 @@ public class InsatiableHungerOfTheSwarm {
 			await beasts.Add(2);
 
 			// Gather up to 2 beasts
-			await ctx.GatherUpTo( 2, TokenType.Beast );
+			await ctx.GatherUpTo( 2, Token.Beast );
 
 			// each beast deals:
 			// 1 fear

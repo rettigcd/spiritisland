@@ -15,10 +15,10 @@ public class StubbornSolidity_Tests {
 		fxt.InitRavageCard( space );
 
 		//   And: no dahan
-		tokens.InitDefault(TokenType.Dahan, 0);
+		tokens.InitDefault(Human.Dahan, 0);
 
 		//   And: enough explorers to cause blight
-		tokens.InitDefault(Invader.Explorer, 2);
+		tokens.InitDefault(Human.Explorer, 2);
 
 		//  When: Card Played  (grow,select card,play card)
 		//   And: Invader actions proceed
@@ -45,10 +45,10 @@ public class StubbornSolidity_Tests {
 		fxt.InitRavageCard( space );
 
 		//   And: dahan in space
-		tokens.InitDefault(TokenType.Dahan, dahanCount);
+		tokens.InitDefault(Human.Dahan, dahanCount);
 
 		//   And: enough explorers to cause blight
-		tokens.InitDefault(Invader.Explorer, 2);
+		tokens.InitDefault(Human.Explorer, 2);
 
 		//  When: Card Played  (grow,select card,play card)
 		//   And: Invader actions proceed
@@ -70,8 +70,8 @@ public class StubbornSolidity_Tests {
 		SpaceState tokens = gameState.Tokens[ board[5] ];
 
 		// Given: 4 dahan, 10 explorers
-		tokens.InitDefault(TokenType.Dahan, 4 );
-		tokens.InitDefault(Invader.Explorer, 10 );
+		tokens.InitDefault(Human.Dahan, 4 );
+		tokens.InitDefault(Human.Explorer, 10 );
 
 		//   And: Played StubbornSolidity
 		await Play_StubbornSolidity_On( spirit, gameState, tokens );
@@ -97,10 +97,10 @@ public class StubbornSolidity_Tests {
 		SpaceState adjacentSpace = gameState.Tokens[board[7]];
 
 		// Given: 3 dahan & presence in Target
-		targetSpace.InitDefault( TokenType.Dahan, 3 );
+		targetSpace.InitDefault( Human.Dahan, 3 );
 		spirit.Presence.Adjust( targetSpace, 3 );
 		//   And: 3 dahan in Adjacent
-		adjacentSpace.InitDefault( TokenType.Dahan, 2 );
+		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
 		//   And: Played StubbornSolidity on target
 		await Play_StubbornSolidity_On( spirit, gameState, targetSpace );
@@ -132,7 +132,7 @@ public class StubbornSolidity_Tests {
 		// Given: presence in Target
 		spirit.Presence.Adjust( targetSpace, 1 );
 		//   And: 3 dahan in Adjacent
-		adjacentSpace.InitDefault( TokenType.Dahan, 2 );
+		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
 		//   And: Played StubbornSolidity on target
 		await Play_StubbornSolidity_On( spirit, gameState, targetSpace );
@@ -165,7 +165,7 @@ public class StubbornSolidity_Tests {
 		SpaceState targetSpace = gameState.Tokens[board[5]];
 
 		// Given: dahan & presence
-		targetSpace.InitDefault( TokenType.Dahan, 1 );
+		targetSpace.InitDefault( Human.Dahan, 1 );
 		spirit.Presence.Adjust( targetSpace, 1 );
 
 		//   And: Played StubbornSolidity
@@ -193,7 +193,7 @@ public class StubbornSolidity_Tests {
 		SpaceState spaceState = gameState.Tokens[board[5]];
 
 		// Given: dahan & presence
-		spaceState.InitDefault( TokenType.Dahan, 1 );
+		spaceState.InitDefault( Human.Dahan, 1 );
 		spirit.Presence.Adjust(spaceState,1);
 
 		//   And: Played StubbornSolidity

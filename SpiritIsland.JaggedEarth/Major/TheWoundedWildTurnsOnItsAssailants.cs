@@ -10,7 +10,7 @@ public class TheWoundedWildTurnsOnItsAssailants {
 		await ctx.Badlands.Add( 2 );
 
 		// Gather up to 2 beast
-		await ctx.GatherUpTo(2,TokenType.Beast);
+		await ctx.GatherUpTo(2,Token.Beast);
 
 		// (watch for invaders destroyed in this land)
 		int destroyed = 0;

@@ -8,7 +8,7 @@ public class InciteTheMob {
 		int startingInvaderCount = ctx.Tokens.InvaderTotal();
 
 		// 1 invader with strife deals damage to other invaders (not to each)
-		var strifedInvaderWithMostDamage = ctx.Tokens.InvaderTokens().OfType<HealthToken>()
+		var strifedInvaderWithMostDamage = ctx.Tokens.InvaderTokens().OfType<HumanToken>()
 			.OrderByDescending( x => x.FullHealth )
 			.FirstOrDefault();
 		int damage = strifedInvaderWithMostDamage != null ? strifedInvaderWithMostDamage.FullHealth : 0;

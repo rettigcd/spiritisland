@@ -32,7 +32,7 @@ public static class DeployedPresence {
 	static public Space SacredSites(string prompt, ReadOnlyBoundPresence presence, Present present )
 		=> new Space( prompt, presence.SacredSites, present, presence.Token );
 
-	static public TokenFromManySpaces Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from, Token presenceToken ) 
+	static public TokenFromManySpaces Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from, IToken presenceToken ) 
 		=> TokenFromManySpaces.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IVisibleToken)presenceToken)), Present.Done, to );
 
 }

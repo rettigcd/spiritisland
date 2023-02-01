@@ -6,22 +6,22 @@ public class Token_Tests {
 
 	[Fact]
 	public void SummariesAreUnique() {
-		var tokens = new Token[] {
+		var tokens = new IToken[] {
 			StdTokens.Explorer,
 			StdTokens.Town1,StdTokens.Town,
 			StdTokens.City1,StdTokens.City2,StdTokens.City,
 			StdTokens.Dahan1,StdTokens.Dahan,
-			TokenType.Blight, // conflict with Beast
-			TokenType.Defend,
-			TokenType.Beast,
-			TokenType.Disease,
-			TokenType.Wilds
+			Token.Blight, // conflict with Beast
+			Token.Defend,
+			Token.Beast,
+			Token.Disease,
+			Token.Wilds
 		};
 
 		var conflicts = tokens
 			.GroupBy( t => t.ToString() )
 			.Where( grp => grp.Count() > 1 )
-			.Select( grp => grp.Key + " is used for:" + grp.Select( t => t.Class.Label + ":" + (t is HealthToken ht ? ht.RemainingHealth : 0) ).Join( ", " ) )
+			.Select( grp => grp.Key + " is used for:" + grp.Select( t => t.Class.Label + ":" + (t is HumanToken ht ? ht.RemainingHealth : 0) ).Join( ", " ) )
 			.Join( "\r\n" );
 
 		conflicts.ShouldBe( "" );
@@ -36,7 +36,7 @@ public class Token_Tests {
 		SpaceState spaceState = gs.AllSpaces.First( s=>IsInPlay(s.Space) && !s.HasInvaders() );
 		//   And: 1 neighboring town
 		var neighbor = spaceState.Adjacent.First();
-		neighbor.AdjustDefault( Invader.Town, 1 );
+		neighbor.AdjustDefault( Human.Town, 1 );
 		//   And: 1 wilds there
 		spaceState.Wilds.Init(1);
 
@@ -57,7 +57,7 @@ public class Token_Tests {
 
 		// Given: a space with ONLY 1 explorer
 		SpaceState space = gs.AllSpaces.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
-		space.AdjustDefault( Invader.Explorer, 1 ); // add explorer
+		space.AdjustDefault( Human.Explorer, 1 ); // add explorer
 		//   And: 1 diseases there
 		await space.Disease.Bind(gs.StartAction( ActionCategory.Default ) ).Add(1);
 

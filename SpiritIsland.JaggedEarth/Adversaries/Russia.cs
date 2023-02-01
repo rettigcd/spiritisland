@@ -104,7 +104,7 @@ public class Russia : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var criteria = new Select.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Select( x => x.Space ), Present.Always );
 				var addSpace = await spirit.Gateway.Decision( criteria );
-				await gameState.Tokens[addSpace].Bind( actionScope ).AddDefault( Invader.Explorer, 1, AddReason.Explore );
+				await gameState.Tokens[addSpace].Bind( actionScope ).AddDefault( Human.Explorer, 1, AddReason.Explore );
 			}
 		}
 	}
@@ -136,19 +136,19 @@ public class Russia : IAdversary {
 		var highestSpaces = gameState.Island.Boards
 			.Select( board => board.Spaces
 				.Select( gameState.Tokens.GetTokensFor )
-				.Where( x => x.SumAny( Invader.Town_City ) == 0 )
+				.Where( x => x.SumAny( Human.Town_City ) == 0 )
 				.Last() 
 			).ToArray();
 		foreach(var highestLandWithoutTownCity in highestSpaces) {
-			highestLandWithoutTownCity.AdjustDefault(Invader.Explorer,1);
-			highestLandWithoutTownCity.Adjust(TokenType.Beast,1);
+			highestLandWithoutTownCity.AdjustDefault(Human.Explorer,1);
+			highestLandWithoutTownCity.Adjust(Token.Beast,1);
 		}
 		gameState.LogDebug($"Hunters Bring Home Shell and Hide - Added Beast & Explorers to: " + highestSpaces.Select(s=>s.Space.Text).OrderBy(s=>s).Join(","));
 	}
 
 	static void ExplorersDo2Damage( GameState gameState ) {
 		// Change explorers damage to 2
-		gameState.Tokens.Attack[Invader.Explorer] = 2;
+		gameState.Tokens.Attack[Human.Explorer] = 2;
 
 	}
 

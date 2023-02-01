@@ -4,7 +4,7 @@ using System.Drawing;
 namespace SpiritIsland.WinForms;
 
 class HealthTokenBuilder {
-	public static Bitmap GetHealthTokenImage( HealthToken ht ) {
+	public static Bitmap GetHealthTokenImage( HumanToken ht ) {
 
 		Bitmap orig = ResourceImages.Singleton.GetImage( ht.Class.Img );
 

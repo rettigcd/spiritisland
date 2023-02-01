@@ -19,7 +19,7 @@ class ScotlandExploreEngine : ExploreEngine {
 			&& tokens.Space.IsCoastal
 			&& _initialExploreTownsAdded[tokens.Space.Board] < 2 // max of 2
 		) {
-			await tokens.AddDefault( Invader.Town, 1, AddReason.Explore );
+			await tokens.AddDefault( Human.Town, 1, AddReason.Explore );
 			_initialExploreTownsAdded[tokens.Space.Board]++;
 			tokens.AccessGameState().Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+tokens.Space.Text) );
 		} else {

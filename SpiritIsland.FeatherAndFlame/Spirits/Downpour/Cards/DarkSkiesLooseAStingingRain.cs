@@ -1,6 +1,5 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-
 public class DarkSkiesLooseAStingingRain {
 
 	const string Name = "Dark Skies Loose a Stinging Rain";
@@ -14,8 +13,8 @@ public class DarkSkiesLooseAStingingRain {
 
 		// Push up to 1 explorer and up to 2 dahan
 		return ctx.Pusher
-			.AddGroup(1,Invader.Explorer)
-			.AddGroup(2,TokenType.Dahan)
+			.AddGroup(1,Human.Explorer)
+			.AddGroup(2,Human.Dahan)
 			.MoveUpToN();
 	}
 

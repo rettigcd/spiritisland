@@ -13,18 +13,18 @@ class ManyMindsPresence : SpiritPresence {
 		await base.PlaceOn( space, actionScope );
 		// if created sacred site, create virtual beast
 		if(CountOn( space ) == 2)
-			space.Adjust(TokenType.Beast,1); // virtual so don't trigger an event.
+			space.Adjust( SpiritIsland.Token.Beast,1); // virtual so don't trigger an event.
 	}
 
 	protected override async Task RemoveFrom_NoCheck( SpaceState space, int count ) {
 		await base.RemoveFrom_NoCheck( space, count );
 		// if destroyed sacred site, remove virtual beast
 		if( CountOn( space ) == 1 )
-			space.Adjust(TokenType.Beast, 1); // !!! virtual tokens don't trigger events
+			space.Adjust( SpiritIsland.Token.Beast, 1); // !!! virtual tokens don't trigger events
 	}
 
 	async Task TokenMoved( ITokenMovedArgs args ) {
-		if(args.TokenRemoved.Class != TokenType.Beast) return; // not a beast
+		if(args.TokenRemoved.Class != SpiritIsland.Token.Beast) return; // not a beast
 		if(this.CountOn( args.RemovedFrom ) < 2) return; // not our Sacred Site
 
 
@@ -73,7 +73,7 @@ class ManyMindsPresence : SpiritPresence {
 	}
 
 	async Task TokenDestroyed(ITokenRemovedArgs args) {
-		if(args.Token.Class != TokenType.Beast) return; // not a beast
+		if(args.Token.Class != SpiritIsland.Token.Beast) return; // not a beast
 		if(this.CountOn(args.RemovedFrom)<2) return; // not our Sacred Site
 		if(args.RemovedFrom.Beasts.Count == 0){ // no more beasts
 			// Destroying the sacred-site beast, destroyes the sacred site

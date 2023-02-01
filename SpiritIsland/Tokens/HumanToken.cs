@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland;
 
-public class HealthToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<HealthToken> {
+public class HumanToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
 
-	public HealthToken( 
-		HealthTokenClass tokenClass, 
+	public HumanToken( 
+		HumanTokenClass tokenClass, 
 		IHaveHealthPenaltyPerStrife penaltyHolder, 
 		int rawFullHealth, 
 		int damage = 0, 
@@ -25,8 +25,8 @@ public class HealthToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<
 			+ (strifeCount == 0 ? "" : new string( '^', StrifeCount ));
 	}
 
-	public HealthTokenClass Class { get; }
-	TokenClass Token.Class => this.Class;
+	public HumanTokenClass Class { get; }
+	TokenClass IToken.Class => this.Class;
 
 	/// <summary>The effective FullHealth of a token. Minimum of 1; </summary>
 	public int FullHealth => Math.Max(1, _rawFullHealth - StrifeCount * _healthPenaltyHolder.HealthPenaltyPerStrife );
@@ -67,25 +67,25 @@ public class HealthToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<
 	#region Token mutation generators
 
 	// so we can override it in derived types and not switch back to HealthToken base
-	protected virtual HealthToken NewHealthToken(
-		HealthTokenClass tokenClass,
+	protected virtual HumanToken NewHealthToken(
+		HumanTokenClass tokenClass,
 		IHaveHealthPenaltyPerStrife penaltyHolder,
 		int rawFullHealth,
 		int damage = 0,
 		int strifeCount = 0,
 		int nightmareDamage = 0
-	) => new HealthToken( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage );
+	) => new HumanToken( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage );
 
-	public HealthToken HavingStrife(int strifeCount) {
+	public HumanToken HavingStrife(int strifeCount) {
 		return strifeCount < 0 ? throw new System.ArgumentOutOfRangeException(nameof(strifeCount),$"strife Count = {strifeCount}")
 			: strifeCount == StrifeCount ? this
 			: NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount );
 	}
 
 	/// <returns>a new token with the adjusted strife</returns>
-	public HealthToken AddStrife( int deltaStrife ) => HavingStrife( StrifeCount + deltaStrife );
+	public HumanToken AddStrife( int deltaStrife ) => HavingStrife( StrifeCount + deltaStrife );
 
-	public HealthToken AddDamage( int damage, int nightmareDamage=0 ) {
+	public HumanToken AddDamage( int damage, int nightmareDamage=0 ) {
 		int newDamage = Math.Min( Damage + damage, _rawFullHealth ); // Give regular damage priority
 		// only allow nightmare damage to take up whatever remaining health is available
 		int newNightmareDamage = Math.Min( nightmareDamage + DreamDamage, _rawFullHealth-newDamage );
@@ -93,13 +93,13 @@ public class HealthToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<
 	}
 
 	// For Dream a 1000 Deaths, make token not in the Invader TokenCategory
-	public HealthToken SwitchClass( HealthTokenClass newClass )
+	public HumanToken SwitchClass( HumanTokenClass newClass )
 		=> NewHealthToken( newClass, _healthPenaltyHolder, _rawFullHealth, Damage, StrifeCount, DreamDamage );
 
-	public HealthToken Healthy 
+	public HumanToken Healthy 
 		=> NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, 0, StrifeCount );
 
-	public HealthToken AddHealth( int delta ) {
+	public HumanToken AddHealth( int delta ) {
 		int newHealth = Math.Max(1, _rawFullHealth + delta );
 		return newHealth == _rawFullHealth ? this
 			: NewHealthToken( Class, _healthPenaltyHolder, newHealth, Damage, StrifeCount );
@@ -116,9 +116,9 @@ public class HealthToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<
 		+ 5 * DreamDamage
 		+ 7 * StrifeCount;
 
-	public override bool Equals( object obj ) => this.Equals( obj as HealthToken );
+	public override bool Equals( object obj ) => this.Equals( obj as HumanToken );
 
-	public bool Equals( HealthToken other ) {
+	public bool Equals( HumanToken other ) {
 		return other != null
 			&& other.Class == Class
 			&& other._rawFullHealth == _rawFullHealth

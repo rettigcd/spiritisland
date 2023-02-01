@@ -13,7 +13,7 @@ public class SuddenAmbush {
 		await ctx.GatherUpToNDahan( 1 );
 
 		// Each dahan destroys 1 explorer
-		await ctx.Invaders.DestroyNOfClass( ctx.Dahan.CountAll, Invader.Explorer );
+		await ctx.Invaders.DestroyNOfClass( ctx.Dahan.CountAll, Human.Explorer );
 	}
 
 }

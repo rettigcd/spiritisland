@@ -20,7 +20,7 @@ public class VolcanicEruption {
 		// if you have 4 fire, 3 earth:
 		if(await ctx.YouHave( "4 fire,3 earth" )) {
 			// Destroy all invaders.
-			await ctx.Invaders.DestroyAll( Invader.Any );
+			await ctx.Invaders.DestroyAll( Human.Invader );
 			// Add 1 wilds.
 			await ctx.Wilds.Add(1);
 			// In  each adjacent land:

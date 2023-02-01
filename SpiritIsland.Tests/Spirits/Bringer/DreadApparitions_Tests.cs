@@ -39,13 +39,13 @@ public class DreadApparitions_Tests {
 
 
 		// has town
-		ctx.Tokens.AdjustDefault( Invader.Town, 1 );
+		ctx.Tokens.AdjustDefault( Human.Town, 1 );
 
 		async Task When() {
 			// Given: using Dread Apparitions
 			await DreadApparitions.ActAsync( ctx );
 			// When: destroying the town
-			await ctx.Invaders.DestroyNOfClass(1,Invader.Town);
+			await ctx.Invaders.DestroyNOfClass(1,Human.Town);
 		}
 		_ = When();
 
@@ -61,11 +61,11 @@ public class DreadApparitions_Tests {
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 		// has city
-		ctx.Tokens.AdjustDefault( Invader.City, 1 );
+		ctx.Tokens.AdjustDefault( Human.City, 1 );
 
 		await DreadApparitions.ActAsync( ctx );
 		// When: destroying the city
-		await ctx.Invaders.DestroyNOfClass( 1, Invader.City );
+		await ctx.Invaders.DestroyNOfClass( 1, Human.City );
 
 		// Then: 5 fear should have triggered 2 defend
 		Assert_DefenceIs( 5+1 ); // Dread Apparitions has 1 fear
@@ -80,7 +80,7 @@ public class DreadApparitions_Tests {
 		ctx.GameState.IslandWontBlight();
 
 		// has 1 city and lots of dahan
-		ctx.Tokens.AdjustDefault( Invader.City, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
+		ctx.Tokens.AdjustDefault( Human.City, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
 		ctx.Dahan.Init(10);
 
 		// Given: using Dread Apparitions
@@ -99,7 +99,7 @@ public class DreadApparitions_Tests {
 	[Fact]
 	public void FearInOtherLand_Generates0() {
 		// has 1 city and lots of dahan
-		ctx.Tokens.AdjustDefault( Invader.City, 1 );
+		ctx.Tokens.AdjustDefault( Human.City, 1 );
 		ctx.Dahan.Init( 10 );
 
 		async Task When() {

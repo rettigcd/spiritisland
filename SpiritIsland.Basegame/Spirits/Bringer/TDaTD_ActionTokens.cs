@@ -12,7 +12,7 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 		_selfCtx = selfCtx;
 	}
 
-	public override async Task<PublishTokenRemovedArgs> Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public override async Task<PublishTokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(reason != RemoveReason.Destroyed)
 			return await base.Remove( token, count, reason );
 
@@ -23,11 +23,11 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 		return null; // nothing removed
 	}
 
-	async Task Destroy1Token( Token token ) {
+	async Task Destroy1Token( IToken token ) {
 
 		// for everything BUT normal invaders, we do nothing
 		if(token.Class.Category != TokenCategory.Invader) return; 
-		HealthToken invaderToken = (HealthToken)token;
+		HumanToken invaderToken = (HumanToken)token;
 		if(invaderToken.Class.Variant != TokenVariant.Default) return; 
 		
 		// Normal Invaders - Push
@@ -67,13 +67,13 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 	const string SpacesWithDreamers = "SpacesWithDreamers";
 
 
-	public override HealthToken GetNewDamagedToken( HealthToken invaderToken, int availableDamage ) {
+	public override HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) {
 		// since we are doing dream-damage, record here
 		RecordSpaceWithDreamers( this );
 		return invaderToken.AddDamage( 0, availableDamage );
 	}
 
-	public override async Task<int> DestroyNTokens( HealthToken invaderToDestroy, int countToDestroy ) {
+	public override async Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
 		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
 		for(int i = 0; i < countToDestroy; ++i)
 			await Destroy1Token( invaderToDestroy );

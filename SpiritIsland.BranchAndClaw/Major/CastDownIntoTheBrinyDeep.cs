@@ -12,7 +12,7 @@ public class CastDownIntoTheBrinyDeep {
 		// 6 fear
 		ctx.AddFear(6);
 		// destroy all invaders
-		await ctx.Invaders.DestroyAll(Invader.Any);
+		await ctx.Invaders.DestroyAll(Human.Invader);
 
 		// if you have (2 sun, 2 moon, 4 water, 4 earth):
 		if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth"))
@@ -51,7 +51,7 @@ public class CastDownIntoTheBrinyDeep {
 			var targetCtx = ctx.Target(space); // !!! switch this to using ActionableSpaceState once Bringer implements it.
 
 			// Destroy Invaders
-			await targetCtx.Invaders.DestroyAll( Invader.Any );
+			await targetCtx.Invaders.DestroyAll( Human.Invader );
 
 			// Destroy Dahan
 			await targetCtx.Dahan.DestroyAll();

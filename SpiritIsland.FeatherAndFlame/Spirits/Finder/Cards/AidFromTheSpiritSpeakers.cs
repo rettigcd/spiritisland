@@ -9,7 +9,7 @@ public class AidFromTheSpiritSpeakers {
 		// For each dahan, you may move 1 Invader / dahan / presence / beast to a land within range - 2 that has dahan.
 		await ctx.MoveTokensOut( max: ctx.Dahan.CountAll
 			, ctx.TerrainMapper.Specify( 2, Target.Dahan )
-			, Invader.Any.Plus(TokenType.Dahan,TokenType.Beast)
+			, Human.Invader.Plus(Human.Dahan,Token.Beast)
 				.Union( ctx.AllPresenceTokens )
 				.ToArray()
 			);

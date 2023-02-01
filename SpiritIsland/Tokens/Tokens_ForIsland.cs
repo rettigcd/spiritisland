@@ -9,11 +9,11 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		this._gameStateForEventArgs = gs;
 
 		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
-		TokenDefaults = new Dictionary<HealthTokenClass, HealthToken> {
-			[Invader.City]     = new HealthToken( Invader.City, PenaltyHolder, 3 ),
-			[Invader.Town]     = new HealthToken( Invader.Town, PenaltyHolder, 2 ),
-			[Invader.Explorer] = new HealthToken( Invader.Explorer, PenaltyHolder, 1 ),
-			[TokenType.Dahan]  = new HealthToken( TokenType.Dahan, PenaltyHolder, 2 ),
+		TokenDefaults = new Dictionary<HumanTokenClass, HumanToken> {
+			[Human.City]     = new HumanToken( Human.City, PenaltyHolder, 3 ),
+			[Human.Town]     = new HumanToken( Human.Town, PenaltyHolder, 2 ),
+			[Human.Explorer] = new HumanToken( Human.Explorer, PenaltyHolder, 1 ),
+			[Human.Dahan]  = new HumanToken( Human.Dahan, PenaltyHolder, 2 ),
 		};
 
 		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
@@ -30,7 +30,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public SpaceState this[Space space] {
 		get {
 			if(!tokenCounts.ContainsKey( space )) {
-				tokenCounts[space] = new SpaceState( space, new CountDictionary<Token>(), this, this._gameStateForEventArgs );
+				tokenCounts[space] = new SpaceState( space, new CountDictionary<IToken>(), this, this._gameStateForEventArgs );
 			}
 			return tokenCounts[space];
 		}
@@ -46,15 +46,15 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	}
 
 	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
-	readonly public Dictionary<HealthTokenClass, HealthToken> TokenDefaults;
+	readonly public Dictionary<HumanTokenClass, HumanToken> TokenDefaults;
 
-	HealthToken IIslandTokenApi.GetDefault( HealthTokenClass tokenClass ) => TokenDefaults[tokenClass];
+	HumanToken IIslandTokenApi.GetDefault( HumanTokenClass tokenClass ) => TokenDefaults[tokenClass];
 
-	public int InvaderAttack( HealthTokenClass tokenClass ) => Attack[tokenClass];
-	public readonly Dictionary<HealthTokenClass, int> Attack = new Dictionary<HealthTokenClass, int> {
-		[Invader.Explorer] = 1,
-		[Invader.Town] = 2,
-		[Invader.City] = 3,
+	public int InvaderAttack( HumanTokenClass tokenClass ) => Attack[tokenClass];
+	public readonly Dictionary<HumanTokenClass, int> Attack = new Dictionary<HumanTokenClass, int> {
+		[Human.Explorer] = 1,
+		[Human.Town] = 2,
+		[Human.City] = 3,
 	};
 
 	public readonly DualAsyncEvent<ITokenMovedArgs> TokenMoved = new DualAsyncEvent<ITokenMovedArgs>();
@@ -105,9 +105,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			// Restore Dynamic tokens
 			src.Dynamic.LoadFrom( dynamicTokens );
 		}
-		readonly Dictionary<Space, CountDictionary<Token>> _tokenCounts = new Dictionary<Space, CountDictionary<Token>>();
+		readonly Dictionary<Space, CountDictionary<IToken>> _tokenCounts = new Dictionary<Space, CountDictionary<IToken>>();
 		readonly Dictionary<Space, bool> _inStasis;
-		readonly Dictionary<HealthTokenClass, HealthToken> tokenDefaults = new Dictionary<HealthTokenClass, HealthToken>();
+		readonly Dictionary<HumanTokenClass, HumanToken> tokenDefaults = new Dictionary<HumanTokenClass, HumanToken>();
 		readonly IMemento<DualDynamicTokens> dynamicTokens;
 	}
 

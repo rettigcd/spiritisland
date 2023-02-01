@@ -10,9 +10,9 @@ public class StemTheFlowOfFreshWater {
 		// If target land is mountain or sand, 
 		if( ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ) ) {
 			// instead 1 damange to EACH town/city
-			await ctx.DamageEachInvader(1, Invader.Town_City);
+			await ctx.DamageEachInvader(1, Human.Town_City);
 		} else {
-			await ctx.DamageInvaders( 1, Invader.Town_City );
+			await ctx.DamageInvaders( 1, Human.Town_City );
 		}
 
 	}

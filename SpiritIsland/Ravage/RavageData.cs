@@ -20,7 +20,7 @@ public class RavageData {
 	public readonly GameState GameState;
 	public readonly SpaceState Tokens;
 
-	public CountDictionary<HealthToken> CurrentAttackers; // tokens might change if strife is removed
+	public CountDictionary<HumanToken> CurrentAttackers; // tokens might change if strife is removed
 	public UnitOfWork ActionScope { get; set; } // This ONLY has a value during the ravage.  Not before nor after.
 	public InvaderBinding InvaderBinding;
 

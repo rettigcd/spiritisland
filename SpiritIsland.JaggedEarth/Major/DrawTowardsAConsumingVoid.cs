@@ -35,11 +35,11 @@ public class DrawTowardsAConsumingVoid {
 
 	static async Task PerformEffect( TargetSpaceCtx ctx ) {
 		// Gather 1 explorer,town,city,dahan,presence, and beast from each adjacent land.
-		var tokenGroups = Invader.Any.Plus( TokenType.Dahan, TokenType.Beast );
+		var tokenGroups = Human.Invader.Plus( Human.Dahan, Token.Beast );
 		foreach(var adjState in ctx.Adjacent) {
 			// move tokens
 			foreach(var tokenGroup in tokenGroups) {
-				var tokenToGather = adjState.OfClass( tokenGroup ).OrderByDescending( x => x is HealthToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
+				var tokenToGather = adjState.OfClass( tokenGroup ).OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
 				if(tokenToGather != null)
 					await ctx.Move( tokenToGather, adjState.Space, ctx.Space );
 			}

@@ -10,7 +10,7 @@ class BeastGatherer : TokenGatherer {
 	protected override SpaceToken[] GetSpaceTokenOptions(){
 		var items = new List<SpaceToken>();
 		foreach(var group in RemainingTypes) {
-			int range = group == TokenType.Beast ? 2 : 1;
+			int range = group == Token.Beast ? 2 : 1;
 			foreach(var space in _destinationCtx.Tokens.Range( range )) // gather, not Range
 				foreach(var token in space.OfClass(group).Cast<IVisibleToken>())
 					items.Add(new SpaceToken(space.Space,token));

@@ -11,14 +11,14 @@ public class ManifestIncarnation {
 		ctx.AddFear(6);
 
 		// +1 fear for each town/city and for each of your presence in target land.
-		int fearCount = ctx.Tokens.SumAny( Invader.Town_City )
+		int fearCount = ctx.Tokens.SumAny( Human.Town_City )
 			+ ctx.Self.Presence.Placed(ctx.GameState).Count(x=>x==ctx.Tokens);
 		ctx.AddFear(fearCount);
 
 		// Remove 1 city, 1 town and 1 explorer.
-		await ctx.RemoveInvader(Invader.City);
-		await ctx.RemoveInvader(Invader.Town);
-		await ctx.RemoveInvader(Invader.Explorer);
+		await ctx.RemoveInvader(Human.City);
+		await ctx.RemoveInvader(Human.Town);
+		await ctx.RemoveInvader(Human.Explorer);
 
 		// if you have 3 sun and 3 moon, invaders do -6 damage on their ravage.
 		if(await ctx.YouHave("3 sun,3 moon"))

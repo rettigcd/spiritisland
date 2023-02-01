@@ -10,12 +10,12 @@ public class LostInTheSwirlingHaze {
 
 	[InnateOption("2 air,3 water","Push up to 2 explorer/dahan.")]
 	static public Task Option2(TargetSpaceCtx ctx){
-		return ctx.PushUpTo(2,Invader.Explorer,TokenType.Dahan);
+		return ctx.PushUpTo(2,Human.Explorer,Human.Dahan);
 	}
 
 	[InnateOption("3 air,4 water","Push up to 2 explorer/dahan.")]
 	static public Task Option3(TargetSpaceCtx ctx){
-		return ctx.PushUpTo(2,Invader.Explorer,TokenType.Dahan);
+		return ctx.PushUpTo(2,Human.Explorer,Human.Dahan);
 	}
 
 }

@@ -23,9 +23,9 @@ public class TokenLocation_Tests {
 		var ss = gs.Tokens[board[5]];
 		var layout = new ManageInternalPoints( ss );
 
-		var explorer = ss.GetDefault(Invader.Explorer);
-		var town = ss.GetDefault(Invader.Town);
-		var city = ss.GetDefault(Invader.City);
+		var explorer = ss.GetDefault(Human.Explorer);
+		var town = ss.GetDefault(Human.Town);
+		var city = ss.GetDefault(Human.City);
 		ss.InitTokens("1E@1,1T@2,1C@3");
 
 		var ePoint = layout.Init( ss ).GetPointFor( explorer );

@@ -25,10 +25,10 @@ public class Space1 : Space {
 	public void InitTokens( SpaceState tokens ) {
 		// ! Using 'Adjust' so they don't sqush stuff setup by Adversaries
 		StartUpCounts initialCounts = StartUpCounts;
-		tokens.AdjustDefault( Invader.City, initialCounts.Cities );
-		tokens.AdjustDefault( Invader.Town, initialCounts.Towns );
-		tokens.AdjustDefault( Invader.Explorer, initialCounts.Explorers );
-		tokens.AdjustDefault( TokenType.Dahan, initialCounts.Dahan );
+		tokens.AdjustDefault( Human.City, initialCounts.Cities );
+		tokens.AdjustDefault( Human.Town, initialCounts.Towns );
+		tokens.AdjustDefault( Human.Explorer, initialCounts.Explorers );
+		tokens.AdjustDefault( Human.Dahan, initialCounts.Dahan );
 		tokens.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}
 

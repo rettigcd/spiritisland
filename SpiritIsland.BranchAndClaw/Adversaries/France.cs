@@ -46,7 +46,7 @@ public class France : IAdversary {
 		int slowBlightCount = 0; // !!! this doesn't save / load with Rewinds
 
 		void DoFranceStuff( ITokenRemovedArgs args ) {
-			if(args.Token != TokenType.Blight
+			if(args.Token != Token.Blight
 				|| args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced )
 			) return;
 
@@ -67,9 +67,9 @@ public class France : IAdversary {
 		foreach(var board in gameState.Island.Boards) {
 			// add 1 Town to the highest-numbered land without Town.
 			var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
-			gameState.Tokens[highLandWithoutTown].AdjustDefault( Invader.Town, 1 );
+			gameState.Tokens[highLandWithoutTown].AdjustDefault( Human.Town, 1 );
 			// Add 1 Town to land #1.
-			gameState.Tokens[board[1]].AdjustDefault( Invader.Town, 1 );
+			gameState.Tokens[board[1]].AdjustDefault( Human.Town, 1 );
 		}
 	}
 
@@ -108,27 +108,27 @@ public class France : IAdversary {
 	static DecisionOption<BoardCtx> AddStrifeToTown => new DecisionOption<BoardCtx>(
 		"Add a strife to a town"
 		, async boardCtx => {
-			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
+			SpaceToken[] options = boardCtx.FindTokens( Human.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.TokensOn(st.Space).AddStrifeTo( (HealthToken)st.Token, 1 );
+				await boardCtx.TokensOn(st.Space).AddStrifeTo( (HumanToken)st.Token, 1 );
 		} );
 
 	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
 		"Add 2 strife to any city/town"
 		, async boardCtx => {
-			SpaceToken[] options = boardCtx.FindTokens( Invader.Town_City );
+			SpaceToken[] options = boardCtx.FindTokens( Human.Town_City );
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
-					await boardCtx.TokensOn(st.Space).AddStrifeTo( (HealthToken)st.Token, 1 );
+					await boardCtx.TokensOn(st.Space).AddStrifeTo( (HumanToken)st.Token, 1 );
 			}
 		} );
 
 	static DecisionOption<BoardCtx> DestroyTown => new DecisionOption<BoardCtx>(
 		"Destroy a town"
 		, async boardCtx => {
-			SpaceToken[] options = boardCtx.FindTokens( Invader.Town );
+			SpaceToken[] options = boardCtx.FindTokens( Human.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Destory a town", options, Present.Always ) );
 			if(st != null)
 				await boardCtx.TokensOn(st.Space).Destroy( st.Token, 1 );

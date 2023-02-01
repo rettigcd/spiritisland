@@ -24,7 +24,7 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 		return this;
 	}
 
-	public NLandsPerBoard ByPickingToken( Func<TargetSpaceCtx, IEnumerable<Token>> tokenFactory ) {
+	public NLandsPerBoard ByPickingToken( Func<TargetSpaceCtx, IEnumerable<IToken>> tokenFactory ) {
 		_tokenFactory = tokenFactory;
 		_firstPickTokenClasses = null; // not usedtokenClasses;
 		return this;
@@ -70,12 +70,12 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 
 	#region private
 
-	IEnumerable<Token> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyClass( _firstPickTokenClasses );
+	IEnumerable<IToken> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyClass( _firstPickTokenClasses );
 
 	async Task<TargetSpaceCtx> PickSpaceBySelectingToken( SelfCtx ctx, TargetSpaceCtx[] spaceOptions ) {
 
 		// Get options
-		Func<TargetSpaceCtx,IEnumerable<Token>> tokenFactory = GetTokensMatchingClass;
+		Func<TargetSpaceCtx,IEnumerable<IToken>> tokenFactory = GetTokensMatchingClass;
 		SpaceToken[] spaceTokenOptions = spaceOptions
 			.SelectMany( x => 
 				tokenFactory(x)
@@ -104,7 +104,7 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 	TargetSpaceCtxFilter _landCriteria;
 	readonly int _count;
 	TokenClass[] _firstPickTokenClasses;
-	Func<TargetSpaceCtx, IEnumerable<Token>> _tokenFactory;
+	Func<TargetSpaceCtx, IEnumerable<IToken>> _tokenFactory;
 
 	#endregion
 

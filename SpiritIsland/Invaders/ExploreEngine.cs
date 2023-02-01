@@ -18,7 +18,7 @@ public class ExploreEngine {
 	static protected SpaceState[] PreExplore( InvaderCard card, GameState gs ) {
 
 		// Modify
-		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Invader.Town_City );
+		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Human.Town_City );
 
 		var sources = gs.AllActiveSpaces
 			.Where( IsExplorerSource )
@@ -45,17 +45,17 @@ public class ExploreEngine {
 
 
 		foreach(var x in spacesWeExplore)
-			x.Adjust( TokenType.DoExplore, 1 );
+			x.Adjust( ModToken.DoExplore, 1 );
 
 		return gs.AllActiveSpaces
-			.Where( x => x[TokenType.DoExplore] > 0 )
+			.Where( x => x[ModToken.DoExplore] > 0 )
 			.ToArray();
 	}
 
 	protected async Task DoExplore( GameState gs, SpaceState[] tokenSpacesToExplore, bool escalation ) {
 		foreach(var exploreTokens in tokenSpacesToExplore) {
-			int exploreCount = exploreTokens[TokenType.DoExplore];
-			exploreTokens.Init( TokenType.DoExplore, 0 );
+			int exploreCount = exploreTokens[ModToken.DoExplore];
+			exploreTokens.Init( ModToken.DoExplore, 0 );
 			while(0 < exploreCount--) {
 				await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Invader );
 				await ExploreSingleSpace( exploreTokens, gs, actionScope, escalation );
@@ -74,5 +74,5 @@ public class ExploreEngine {
 	}
 
 	protected virtual async Task AddToken( ActionableSpaceState tokens ) 
-		=> await tokens.AddDefault( Invader.Explorer, 1, AddReason.Explore );
+		=> await tokens.AddDefault( Human.Explorer, 1, AddReason.Explore );
 }

@@ -8,7 +8,7 @@ public class DelusionsOfDanger {
 	static public Task ActionAsync(TargetSpaceCtx ctx){
 
 		return ctx.SelectActionOption(
-			new SpaceAction( "Push 1 Explorer", ctx => ctx.Push( 1, Invader.Explorer ) ),
+			new SpaceAction( "Push 1 Explorer", ctx => ctx.Push( 1, Human.Explorer ) ),
 			new SpaceAction( "2 fear", ctx => ctx.AddFear( 2 ) )
 		);
 

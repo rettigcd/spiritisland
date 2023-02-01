@@ -1,5 +1,4 @@
-﻿
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace SpiritIsland.Tests;
 
@@ -28,18 +27,18 @@ public static class SpaceExtentions {
 
 
 	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)(\^*)" );
-	static (int, Token) ParseToken( string part ) {
+	static (int, IToken) ParseToken( string part ) {
 		var match = tokenParser.Match( part );
 		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}] Example: 1T@2." );
 		var tokenClass = match.Groups[2].Value switch {
-			"C" => Invader.City,
-			"T" => Invader.Town,
-			"E" => Invader.Explorer,
-			"D" => TokenType.Dahan,
+			"C" => Human.City,
+			"T" => Human.Town,
+			"E" => Human.Explorer,
+			"D" => Human.Dahan,
 			_ => throw new Exception( $"Invalid TokenClass [{match.Groups[2].Value}]" ),
 		};
 		int fullHealth = tokenClass.ExpectedHealthHint;
-		var token = new HealthToken(
+		var token = new HumanToken(
 			tokenClass,
 			defaultPenalty,
 			fullHealth,

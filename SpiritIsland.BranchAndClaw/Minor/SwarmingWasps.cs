@@ -9,7 +9,7 @@ public class SwarmingWasps {
 
 		return ctx.SelectActionOption(
 			new SpaceAction( "Add 1 beast", ctx => ctx.Beasts.Add(1) ),
-			new SpaceAction( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Invader.Explorer ) )
+			new SpaceAction( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Human.Explorer ) )
 				.OnlyExecuteIf( x=>x.Beasts.Any )
 		);
 

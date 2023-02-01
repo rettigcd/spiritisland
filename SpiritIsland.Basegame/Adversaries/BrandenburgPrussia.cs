@@ -45,7 +45,7 @@ public class BrandenburgPrussia : IAdversary {
 
 	static void FastStart( GameState gameState ) {
 		foreach(var board in gameState.Island.Boards)
-			gameState.Tokens[board[3]].AdjustDefault( Invader.Town, 1 );
+			gameState.Tokens[board[3]].AdjustDefault( Human.Town, 1 );
 		gameState.LogDebug("Adding 1 town to land #3");
 	}
 
@@ -60,20 +60,20 @@ public class BrandenburgPrussia : IAdversary {
 		// s.SumAny(Invader.Town,Invader.City)
 
 		var boards = gs.Island.Boards
-			.Where( b => b.Spaces.Any( s => counts[s].SumAny( Invader.Town_City ) > 0 ) )
+			.Where( b => b.Spaces.Any( s => counts[s].SumAny( Human.Town_City ) > 0 ) )
 			.ToHashSet();
 
 		var terrainMapper = gs.Island.Terrain;
 
 		var buildSpaces = counts.Values
-			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Invader.Town_City ) == 0 && terrainMapper.IsInPlay( ss ) )
+			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Human.Town_City ) == 0 && terrainMapper.IsInPlay( ss ) )
 			.GroupBy( space => space.Space.Board )
 			.Select( grp => grp.OrderBy( ss => ss.Space.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();
 
 		await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Default );
 		foreach(SpaceState bs in buildSpaces)
-			await bs.Bind(actionScope).AddDefault(Invader.Town, 1, AddReason.Build);
+			await bs.Bind(actionScope).AddDefault(Human.Town, 1, AddReason.Build);
 
 		gs.LogDebug("Land Rush: Adding 1 town to "+buildSpaces.Select(x=>x.Space.Text).Order().Join(","));
 

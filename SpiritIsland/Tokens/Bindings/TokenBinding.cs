@@ -2,10 +2,10 @@
 
 public class TokenBindingNoEvents {
 	readonly protected SpaceState _tokens;
-	readonly protected Token _token;
+	readonly protected IToken _token;
 
 	#region constructor
-	public TokenBindingNoEvents( SpaceState tokens, Token token ) {
+	public TokenBindingNoEvents( SpaceState tokens, IToken token ) {
 		this._tokens = tokens;
 		this._token = token;
 	}

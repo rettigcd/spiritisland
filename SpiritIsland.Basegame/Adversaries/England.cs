@@ -80,15 +80,15 @@ public class England : IAdversary {
 
 	static void LocalAutonomy( GameState gameState ) {
 		// Level 5 - towns/cities have +1 health
-		gameState.Tokens.TokenDefaults[Invader.City] = new HealthToken( Invader.City, gameState, 4 );
-		gameState.Tokens.TokenDefaults[Invader.Town] = new HealthToken( Invader.Town, gameState, 3 );
+		gameState.Tokens.TokenDefaults[Human.City] = new HumanToken( Human.City, gameState, 4 );
+		gameState.Tokens.TokenDefaults[Human.Town] = new HumanToken( Human.Town, gameState, 3 );
 	}
 
 	static void CriminalsAndMalcontents( GameState gameState ) {
 		// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
 		foreach(var board in gameState.Island.Boards) {
-			gameState.Tokens[board[1]].AdjustDefault( Invader.City, 1 );
-			gameState.Tokens[board[2]].AdjustDefault( Invader.Town, 1 );
+			gameState.Tokens[board[1]].AdjustDefault( Human.City, 1 );
+			gameState.Tokens[board[2]].AdjustDefault( Human.Town, 1 );
 		}
 		gameState.LogDebug("Criminals & Malcontents: Adding additional city to #1 and town to #2");
 	}
@@ -100,7 +100,7 @@ public class England : IAdversary {
 		// Finds the space on each board with the most town/city.
 		// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
 		SpaceState[] buildSpaces = gs.AllActiveSpaces
-			.Select( ss => new { SpaceState = ss, Count = ss.SumAny( Invader.Town_City ) } )
+			.Select( ss => new { SpaceState = ss, Count = ss.SumAny( Human.Town_City ) } )
 			.Where( x => x.Count > 0 )
 			.GroupBy( x => x.SpaceState.Space.Board )
 			.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x => x.SpaceState.Space.Text ).First().SpaceState )
@@ -116,7 +116,7 @@ public class England : IAdversary {
 		const string Name = "Proud & Mighty Capital";
 		// Additional Loss Condition
 		// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
-		static bool IsCapital(SpaceState s) => 7 <= s.SumAny( Invader.Town_City );
+		static bool IsCapital(SpaceState s) => 7 <= s.SumAny( Human.Town_City );
 		var capital = gs.AllSpaces.FirstOrDefault( IsCapital );
 		if( capital != null )
 			GameOverException.Lost($"{Name} on {capital.Space.Text}");

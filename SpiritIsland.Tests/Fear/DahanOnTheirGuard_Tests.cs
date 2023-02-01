@@ -67,7 +67,7 @@ public class DahanOnTheirGuard_Tests {
 		gameState.DahanOn( ravageSpace ).Init( desiredDahan );
 		Assert.Equal(desiredDahan,gameState.DahanOn(ravageSpace).CountAll);
 
-		gameState.Tokens[ravageSpace].AdjustDefault( Invader.Town, desiredTown );
+		gameState.Tokens[ravageSpace].AdjustDefault( Human.Town, desiredTown );
 	}
 
 	readonly GameState gameState;

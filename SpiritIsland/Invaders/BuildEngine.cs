@@ -17,7 +17,7 @@ public class BuildEngine {
 			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it
 			.ToArray();
 		foreach(SpaceState tokens in spacesMatchingCardCriteria)
-			tokens.Adjust( TokenType.DoBuild, 1 );
+			tokens.Adjust( ModToken.DoBuild, 1 );
 
 		// log any spaces that look like they should get built on but didn't
 		var noBuildsSpaceNames = cardDependentBuildSpaces   // Space that should be build on
@@ -34,7 +34,7 @@ public class BuildEngine {
 		// Scan for all Build Tokens - both Card-Build-Spaces plus any pre-existing DoBuilds
 		// ** May contain more than just Normal Build, due to rule/power that added extra ones.
 		var matchingSpacesWithBuildTokens = gameState.AllActiveSpaces
-			.Where( tokens => 0 < tokens[TokenType.DoBuild] )
+			.Where( tokens => 0 < tokens[ModToken.DoBuild] )
 			.OrderBy( tokens => tokens.Space.Label )
 			.ToArray();
 
@@ -51,8 +51,8 @@ public class BuildEngine {
 	}
 
 	static int PullBuildTokens( SpaceState tokens ) {
-		int buildCounts = tokens[TokenType.DoBuild];
-		tokens.Init( TokenType.DoBuild, 0 );
+		int buildCounts = tokens[ModToken.DoBuild];
+		tokens.Init( ModToken.DoBuild, 0 );
 		return buildCounts;
 	}
 
@@ -98,10 +98,10 @@ public class BuildOnceOnSpace {
 		return invaderToAdd.Label;
 	}
 
-	protected virtual (int,HealthTokenClass) DetermineWhatToAdd() {
-		int townCount = _tokens.Sum( Invader.Town );
-		int cityCount = _tokens.Sum( Invader.City );
-		HealthTokenClass invaderToAdd = cityCount < townCount ? Invader.City : Invader.Town;
+	protected virtual (int,HumanTokenClass) DetermineWhatToAdd() {
+		int townCount = _tokens.Sum( Human.Town );
+		int cityCount = _tokens.Sum( Human.City );
+		HumanTokenClass invaderToAdd = cityCount < townCount ? Human.City : Human.Town;
 		int countToAdd = 1;
 		return (countToAdd, invaderToAdd);
 	}

@@ -37,9 +37,9 @@ public class TargetSpaceCtx : SelfCtx {
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
 	public void Isolate() {
-		Tokens.Init(TokenType.Isolate,1); // not a real token
+		Tokens.Init(Token.Isolate,1); // not a real token
 		GameState.TimePasses_ThisRound.Push( (gs)=>{ 
-			Tokens.Init(TokenType.Isolate,0);
+			Tokens.Init(Token.Isolate,0);
 			return Task.CompletedTask; 
 		} ); // !! could just sweep entire board instead...
 	}
@@ -50,11 +50,11 @@ public class TargetSpaceCtx : SelfCtx {
 	public virtual TokenBinding Badlands     => Tokens.Badlands.Bind( ActionScope );
 	public virtual HealthTokenClassBinding Dahan   => Tokens.Dahan.Bind( ActionScope ); // Powers that interact with dahan, MUST go through this property 
 	public virtual BlightTokenBinding Blight => Tokens.Blight.Bind( ActionScope );
-	public Task AddDefault( HealthTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
+	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
-	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
+	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
 		=> Tokens.Remove( token, count, reason );
-	public Task Destroy( Token token, int count ) 
+	public Task Destroy( IToken token, int count ) 
 		=> Tokens.Destroy( token, count );
 
 	#endregion
@@ -88,9 +88,9 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#region Push
 
-	public Task<Space[]> PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, TokenType.Dahan );
+	public Task<Space[]> PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, Human.Dahan );
 
-	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, TokenType.Dahan );
+	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
 
 	// overriden by Grinning Tricksters Let's See what happens
 	/// <returns>Spaces pushed too.</returns>
@@ -108,10 +108,10 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// Binds to Dahan
 	public Task GatherUpToNDahan( int dahanToGather )
-		=> this.GatherUpTo( dahanToGather, TokenType.Dahan );
+		=> this.GatherUpTo( dahanToGather, Human.Dahan );
 
 	public Task GatherDahan( int countToGather )
-		=> this.Gather( countToGather, TokenType.Dahan);
+		=> this.Gather( countToGather, Human.Dahan);
 
 	// overriden by Grinning Tricketsrs 'Let's see what happens'
 	public virtual Task GatherUpTo( int countToGather, params TokenClass[] groups )
@@ -124,7 +124,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion Gather
 
-	public Task MoveTo( Token token, Space to ) => Tokens.MoveTo( token, to );
+	public Task MoveTo( IToken token, Space to ) => Tokens.MoveTo( token, to );
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay );
@@ -198,10 +198,10 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// For strifed Damage
 	// !!! ??? Can this be combined with DamageInvaders() to remove duplication?
-	public async Task StrifedDamageOtherInvaders( int originalDamage, HealthToken damageSource, bool excludeSource ) {
+	public async Task StrifedDamageOtherInvaders( int originalDamage, HumanToken damageSource, bool excludeSource ) {
 
-		HealthToken damageSourceToExclude = excludeSource ? damageSource : null;
-		HealthToken[] invadersToDamage() => Tokens.InvaderTokens()
+		HumanToken damageSourceToExclude = excludeSource ? damageSource : null;
+		HumanToken[] invadersToDamage() => Tokens.InvaderTokens()
 			.Where( t => t != damageSourceToExclude )
 			.ToArray();
 
@@ -264,7 +264,7 @@ public class TargetSpaceCtx : SelfCtx {
 		while(count-- > 0) {
 			var st = await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
 			if(st == null) break;
-			var invader = (HealthToken)st.Token;
+			var invader = (HumanToken)st.Token;
 			invaders.Remove( invader );
 			var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
 			if(damaged.RemainingHealth > 0)
@@ -278,7 +278,7 @@ public class TargetSpaceCtx : SelfCtx {
 		while(additionalTotalDamage > 0) {
 			var st = await Decision( Select.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
 			if(st == null) break;
-			var invader = (HealthToken)st.Token;
+			var invader = (HumanToken)st.Token;
 			int index = invaders.IndexOf( invader );
 			var (_, moreDamaged) = await Invaders.ApplyDamageTo1( 1, invader );
 			if(moreDamaged.RemainingHealth > 0)
@@ -308,14 +308,14 @@ public class TargetSpaceCtx : SelfCtx {
 	#region Add Strife
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public virtual async Task AddStrife( params HealthTokenClass[] groups ) {
+	public virtual async Task AddStrife( params HumanTokenClass[] groups ) {
 		var st = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
 		if(st == null) return;
-		var invader = (HealthToken)st.Token;
+		var invader = (HumanToken)st.Token;
 		await Tokens.AddStrifeTo( invader );
 	}
 
-	public Task AddStrifeTo( HealthToken invader, int count = 1 ) {
+	public Task AddStrifeTo( HumanToken invader, int count = 1 ) {
 		return Tokens.AddStrifeTo( invader, count );
 	}
 

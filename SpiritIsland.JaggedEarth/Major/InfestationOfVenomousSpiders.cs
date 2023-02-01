@@ -10,7 +10,7 @@ public class InfestationOfVenomousSpiders {
 		await ctx.Beasts.Add(1);
 
 		// Gather up to 1 beast.
-		await ctx.GatherUpTo(1, TokenType.Beast);
+		await ctx.GatherUpTo(1, Token.Beast);
 
 		// if you have 2 air 2 earth 3 animal: after this power causes invaders to skip an action, 4 damage.
 		Func<GameState,SpaceState,Task> causeAdditionalDamage = await ctx.YouHave("2 air,3 animal")

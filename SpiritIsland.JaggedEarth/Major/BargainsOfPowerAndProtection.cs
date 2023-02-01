@@ -15,7 +15,7 @@ public class BargainsOfPowerAndProtection {
 
 		// From now on: Each dahan within range of 1 of your presence provides
 		// Defend 1 in its land,
-		ctx.GameState.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1(ctx).DefendOn, TokenType.Defend );
+		ctx.GameState.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1(ctx).DefendOn, Token.Defend );
 
 		// and you gain 1 less Energy each turn.
 		ctx.Self.EnergyCollected.ForGame.Add( spirit => --spirit.Energy );

@@ -31,12 +31,12 @@ public class UnnaturalProliferation : BlightCardBase {
 			var terrainMapper = ctx.GameState.Island.Terrain;
 			var spaceOptions = ctx.Board.Spaces
 				.Where( terrainMapper.IsInPlay )
-				.GroupBy( s=>ctx.GameState.Tokens[s].SumAny(Invader.Town_City) )
+				.GroupBy( s=>ctx.GameState.Tokens[s].SumAny(Human.Town_City) )
 				.OrderBy( grp => grp.Key )
 				.First()
 				.ToArray();
 			TargetSpaceCtx space = await ctx.SelectSpace("Add 2 cities",spaceOptions);
-			await space.AddDefault(Invader.City, 2, AddReason.Added);
+			await space.AddDefault(Human.City, 2, AddReason.Added);
 		}
 	);
 

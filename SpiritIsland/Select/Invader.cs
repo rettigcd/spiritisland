@@ -5,13 +5,13 @@
 /// </summary>
 public static class Invader {
 
-	public static TokenFromManySpaces ToReplace( string actionVerb, SpiritIsland.Space space, IEnumerable<Token> options, Present present = Present.Always ) 
-		=> new TokenFromManySpaces( $"Select invader to {actionVerb}", space, options.Cast<HealthToken>(), present );
+	public static TokenFromManySpaces ToReplace( string actionVerb, SpiritIsland.Space space, IEnumerable<IToken> options, Present present = Present.Always ) 
+		=> new TokenFromManySpaces( $"Select invader to {actionVerb}", space, options.Cast<HumanToken>(), present );
 
 	public static TokenFromManySpaces ToRemove( SpiritIsland.Space space, IEnumerable<IVisibleToken> options ) 
 		=> new TokenFromManySpaces( "Remove invader", space, options, Present.Always );
 
-	public static TokenFromManySpaces ToRemoveByHealth( SpiritIsland.Space space, IEnumerable<HealthToken> invaders, int remainingDamage )
+	public static TokenFromManySpaces ToRemoveByHealth( SpiritIsland.Space space, IEnumerable<HumanToken> invaders, int remainingDamage )
 		=> new TokenFromManySpaces( $"Remove up to {remainingDamage} health of invaders.", space, invaders.Where( x => x.RemainingHealth <= remainingDamage ), Present.Done ) ;
 
 	public static TokenFromManySpaces ForIndividualDamage(int damagePerInvader, SpiritIsland.Space space, IEnumerable<IVisibleToken> invaders)
@@ -20,7 +20,7 @@ public static class Invader {
 	public static TokenFromManySpaces ForAggregateDamage( SpiritIsland.Space space, IVisibleToken[] invaderTokens, int aggregateDamage, Present present) 
 		=> new TokenFromManySpaces( $"Damage ({aggregateDamage} remaining)",space, invaderTokens, present );
 
-	public static TokenFromManySpaces ForAggregateDamageFromSource( SpiritIsland.Space space, HealthToken source, IVisibleToken[] invaderTokens, int aggregateDamage, Present present )
+	public static TokenFromManySpaces ForAggregateDamageFromSource( SpiritIsland.Space space, HumanToken source, IVisibleToken[] invaderTokens, int aggregateDamage, Present present )
 		=> new TokenFromManySpaces( $"Damage from {source} ({aggregateDamage} remaining)", space, invaderTokens, present );
 
 	public static TokenFromManySpaces ForBadlandDamage(int remainingDamage, SpiritIsland.Space space, IEnumerable<IVisibleToken> invaders)

@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Spirits.River; 
+﻿namespace SpiritIsland.Tests.Spirits.River;
 
 public class FlashFloods_Tests : SpiritCards_Tests {
 
@@ -24,9 +24,9 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		//   And: 1 of each type of Invaders in Inland space (A4)
 		Space targetSpace = board[4];
 		var counts = gameState.Tokens[targetSpace];
-		counts.AdjustDefault( Invader.City, 1 );
-		counts.AdjustDefault( Invader.Town, 1 );
-		counts.AdjustDefault( Invader.Explorer, 1 );
+		counts.AdjustDefault( Human.City, 1 );
+		counts.AdjustDefault( Human.Town, 1 );
+		counts.AdjustDefault( Human.Explorer, 1 );
 		gameState.Assert_Invaders( targetSpace, "1C@3,1T@2,1E@1" );
 
 		//   And: Purchased FlashFloods
@@ -58,9 +58,9 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		//   And: 1 of each type of Invaders in Costal space (A2)
 		Space targetSpace = board[2];
 		var grp = gameState.Tokens[targetSpace];
-		grp.AdjustDefault( Invader.City, 1 );
-		grp.AdjustDefault( Invader.Town, 1 );
-		grp.AdjustDefault( Invader.Explorer, 1);
+		grp.AdjustDefault( Human.City, 1 );
+		grp.AdjustDefault( Human.Town, 1 );
+		grp.AdjustDefault( Human.Explorer, 1);
 		gameState.Assert_Invaders(targetSpace, "1C@3,1T@2,1E@1" );
 
 		//   And: Purchased FlashFloods

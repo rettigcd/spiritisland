@@ -42,11 +42,11 @@ static internal class Extensions {
 
 	static public void Assert_DreamingInvaders( this GameState gameState, Space space, string expectedString ) {
 
-		static int Order_CitiesTownsExplorers( HealthToken invader )
+		static int Order_CitiesTownsExplorers( HumanToken invader )
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
 		var tokens = gameState.Tokens[space];
 		string dreamerSummary = tokens.OfCategory(TokenCategory.Invader)
-			.Cast<HealthToken>()
+			.Cast<HumanToken>()
 			.Where(x=>x.Class.Variant == TokenVariant.Dreaming)
 			.OrderBy( Order_CitiesTownsExplorers )
 			.Select( invader => tokens[invader] + invader.ToString() )
@@ -62,7 +62,7 @@ static internal class Extensions {
 	static public string InvaderSummary( this SpaceState dict ) {
 
 		// !!! Deprecate this.  Use .Invaders (to get just the invaders) then .Summary
-		static int Order_CitiesTownsExplorers( HealthToken invader )
+		static int Order_CitiesTownsExplorers( HumanToken invader )
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
 		return dict.InvaderTokens()
 			.OrderBy( Order_CitiesTownsExplorers )

@@ -34,14 +34,14 @@ internal class RainAndMudSupressConflict {
 
 		// In your lands, Invaders and Dahan have -1 Health( min 1 )
 		foreach(var space in ctx.Presence.Spaces) {
-			await ctx.Target(space).AdjustTokensHealthForRound(-1,TokenType.Dahan);
-			await ctx.Target( space ).AdjustTokensHealthForRound( -1, Invader.Any );
+			await ctx.Target(space).AdjustTokensHealthForRound(-1,Human.Dahan);
+			await ctx.Target( space ).AdjustTokensHealthForRound( -1, Human.Invader );
 		}
 	}
 
 	static public void MakeThingsMuddy( SelfCtx ctx ) {
 		// Each of your Presence grants Defend 1
-		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => ctx.Self.Presence.CountOn( sp ), TokenType.Defend );
+		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => ctx.Self.Presence.CountOn( sp ), Token.Defend );
 		// lowers Dahan counterattack damage by 1
 		ctx.GameState.AddToAllActiveSpaces( new MudToken( ctx.Self, 1 ) );
 		MarkAsUsed( ctx );

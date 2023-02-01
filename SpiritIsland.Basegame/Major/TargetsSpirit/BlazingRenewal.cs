@@ -30,7 +30,7 @@ public class BlazingRenewal {
 		// 2 damage to each town/city in that land.
 
 		var selfPickLandCtx = ctx.Target( space );
-			await selfPickLandCtx.DamageEachInvader(2,Invader.Town_City);
+			await selfPickLandCtx.DamageEachInvader(2,Human.Town_City);
 
 		// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
 		if( await ctx.YouHave("3 fire,3 earth,2 plant") )

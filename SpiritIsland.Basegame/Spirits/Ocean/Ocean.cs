@@ -74,7 +74,7 @@ public class Ocean : Spirit {
 	);
 
 	async Task Drowning( ITokenAddedArgs args ) {
-		if( args.Token is not HealthToken ht ) return;
+		if( args.Token is not HumanToken ht ) return;
 
 		// If we are saving a dahan
 		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan(args.ActionScope) && Presence.IsOn( args.AddedTo )	) {

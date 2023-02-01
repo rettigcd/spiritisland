@@ -37,7 +37,7 @@ public class InvaderBinding {
 
 	/// <summary> Not Badland-aware </summary>
 	/// <returns>(damage inflicted,damagedInvader)</returns>
-	public async Task<(int,HealthToken)> ApplyDamageTo1( int availableDamage, HealthToken originalInvader ) {
+	public async Task<(int,HumanToken)> ApplyDamageTo1( int availableDamage, HumanToken originalInvader ) {
 
 		var damagedInvader = GetNewDamagedToken( originalInvader, availableDamage );
 
@@ -47,7 +47,7 @@ public class InvaderBinding {
 		return (damageInflicted, damagedInvader);
 	}
 
-	async Task ReplaceOrDestroyOriginalToken( HealthToken invaderToken, HealthToken damagedInvader ) {
+	async Task ReplaceOrDestroyOriginalToken( HumanToken invaderToken, HumanToken damagedInvader ) {
 		if(!damagedInvader.IsDestroyed) {
 			Tokens.Adjust( invaderToken, -1 );
 			Tokens.Adjust( damagedInvader, 1 );
@@ -55,7 +55,7 @@ public class InvaderBinding {
 			await DestroyNTokens( invaderToken, 1 );
 	}
 
-	protected virtual HealthToken GetNewDamagedToken( HealthToken invaderToken, int availableDamage ) 
+	protected virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) 
 		=> Tokens.GetNewDamagedToken( invaderToken, availableDamage );
 
 
@@ -63,14 +63,14 @@ public class InvaderBinding {
 
 	#region Destroy
 
-	public virtual async Task DestroyAll( params HealthTokenClass[] tokenClasses ) {
+	public virtual async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
 		var tokensToDestroy = Tokens.OfAnyHealthClass( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
 			await token.DestroyAll( Tokens );
 	}
 
-	public async Task DestroyNOfAnyClass( int count, params HealthTokenClass[] generics ) {
-		HealthToken[] invadersToDestroy;
+	public async Task DestroyNOfAnyClass( int count, params HumanTokenClass[] generics ) {
+		HumanToken[] invadersToDestroy;
 		while(
 			0 < count 
 			&& (invadersToDestroy = Tokens.OfAnyHealthClass( generics ).ToArray()).Length > 0
@@ -87,12 +87,12 @@ public class InvaderBinding {
 
 
 	// destroy CLASS
-	public async Task<int> DestroyNOfClass( int countToDestroy, HealthTokenClass invaderClass ) {
+	public async Task<int> DestroyNOfClass( int countToDestroy, HumanTokenClass invaderClass ) {
 		countToDestroy = Math.Min( countToDestroy, Tokens.Sum( invaderClass ) );
 		int remaining = countToDestroy; // capture
 
 		while(0 < remaining) {
-			var next = Tokens.OfClass( invaderClass ).Cast<HealthToken>()
+			var next = Tokens.OfClass( invaderClass ).Cast<HumanToken>()
 				.OrderByDescending( x => x.FullHealth )
 				.ThenBy( x => x.StrifeCount )
 				.ThenBy( x => x.FullDamage )
@@ -104,7 +104,7 @@ public class InvaderBinding {
 	}
 
 	// destroy TOKEN
-	public virtual Task<int> DestroyNTokens( HealthToken invaderToDestroy, int countToDestroy ) {
+	public virtual Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
 		return Tokens.DestroyNTokens( invaderToDestroy, countToDestroy );
 	}
 
@@ -123,7 +123,7 @@ public class InvaderBinding {
 		if(Tokens.SumAny(removables) == 0) return;
 
 		var invaderToRemove = Tokens.OfAnyClass( removables )
-			.Cast<HealthToken>()
+			.Cast<HumanToken>()
 			.OrderByDescending( g => g.FullHealth )
 			.ThenBy( k => k.StrifeCount )  // un-strifed first
 			.ThenByDescending( g => g.RemainingHealth )
@@ -133,7 +133,7 @@ public class InvaderBinding {
 			await Tokens.Remove( invaderToRemove, 1 );
 	}
 
-	public Task Remove( Token token, int count, RemoveReason reason = RemoveReason.Removed )
+	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
 		=> Tokens.Remove( token, count, reason );
 
 	#endregion
@@ -142,15 +142,15 @@ public class InvaderBinding {
 
 	// This is needed when strifed invaders ravage OTHER tokens. Need to be able to exclude specific token
 	// !!! ??? can this be merged with UserSelectedDamage above?
-	public async Task<int> UserSelected_ApplyDamageToSpecificToken( int damage, Spirit damagePicker, HealthToken source, Func<HealthToken[]> allowedTypes ) {
+	public async Task<int> UserSelected_ApplyDamageToSpecificToken( int damage, Spirit damagePicker, HumanToken source, Func<HumanToken[]> allowedTypes ) {
 		if(damage == 0) return 0;
 
 		IVisibleToken[] options;
 		int damageInflicted = 0;
-		while(0 < damage && (options = Tokens.Keys.OfType<HealthToken>().Intersect( allowedTypes() ).ToArray()).Length > 0) {
+		while(0 < damage && (options = Tokens.Keys.OfType<HumanToken>().Intersect( allowedTypes() ).ToArray()).Length > 0) {
 			var st = await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamageFromSource( Tokens.Space, source, options, damage, Present.Always ) );
 			if( st == null) break;
-			var invaderToDamage = (HealthToken)st.Token;
+			var invaderToDamage = (HumanToken)st.Token;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;
 			++damageInflicted;
@@ -160,7 +160,7 @@ public class InvaderBinding {
 
 	public Task<int> UserSelectedDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
 		if(allowedTypes == null || allowedTypes.Length == 0)
-			allowedTypes = Invader.Any;
+			allowedTypes = Human.Invader;
 		return UserSelectedDamage( damage, damagePicker, Present.Always, allowedTypes );
 	}
 
@@ -173,14 +173,14 @@ public class InvaderBinding {
 	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params TokenClass[] allowedTypes ) {
 		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)
-			allowedTypes = Invader.Any;
+			allowedTypes = Human.Invader;
 
 		IVisibleToken[] invaderTokens;
 		int damageInflicted = 0;
 		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).Cast<IVisibleToken>().ToArray()).Length > 0) {
 			var st = await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamage( Tokens.Space, invaderTokens, damage, present ) );
 			if(st==null) break;
-			var invaderToDamage = (HealthToken)st.Token;
+			var invaderToDamage = (HumanToken)st.Token;
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;
 			++damageInflicted;
@@ -195,8 +195,8 @@ public class InvaderBinding {
 	/// </summary>
 	static public void HealTokens( SpaceState counts ) {
 
-		void RestoreAllToDefault( Token token ) {
-			if(token is not HealthToken ht || ht.FullDamage == 0) return;
+		void RestoreAllToDefault( IToken token ) {
+			if(token is not HumanToken ht || ht.FullDamage == 0) return;
 			int num = counts[token];
 			counts.Adjust( ht.Healthy, num );
 			counts.Adjust( token, -num );
@@ -207,9 +207,9 @@ public class InvaderBinding {
 				RestoreAllToDefault( token );
 		}
 
-		HealGroup( Invader.City );
-		HealGroup( Invader.Town );
-		HealGroup( TokenType.Dahan );
+		HealGroup( Human.City );
+		HealGroup( Human.Town );
+		HealGroup( Human.Dahan );
 	}
 
 }
