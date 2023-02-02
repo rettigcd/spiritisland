@@ -27,22 +27,24 @@ public class ManageInternalPoints {
 			.GetInternalHexPoints( stepSize )
 			.ToArray();
 
+		_dict = new Dictionary<IVisibleToken, PointF>();
+
 		// internal - prefered
-		_internalPoints = ss.Space.Layout
+		var internalPoints = ss.Space.Layout
 			.GetInternalHexPoints( stepSize )
 			.Where( p => stepSize*.6f < ss.Space.Layout.DistanceFromBorder( p ) )
 			.ToArray();
 		new Random( ss.Space.Text.GetHashCode() ) // use the randomizer every time so pieces don't bounce around when we resize
-			.Shuffle( _internalPoints );
+			.Shuffle( internalPoints );
 
 		// border - backup
-		_borderPoints = points.Except( _internalPoints )
+		var borderPoints = points.Except( internalPoints )
 			.OrderByDescending( ss.Space.Layout.DistanceFromBorder )
 			.ToArray();
 
-		_internalTokens = new IVisibleToken[_internalPoints.Length];
-		_borderTokens = new IVisibleToken[_borderPoints.Length];
-		_dict = new Dictionary<IVisibleToken, PointF>();
+		_randomInternal = new TokenPointArray( _dict, internalPoints );
+		_border = new TokenPointArray( _dict, borderPoints );
+
 	}
 
 	#endregion
@@ -52,43 +54,19 @@ public class ManageInternalPoints {
 		if(_dict.ContainsKey(token)) return _dict[token];
 
 		// This is called when we are requesting location for a token that is not currently on this space.
-		// !!! Add Border options here
-
-		// !!! what if they ask for explorer location????
 
 		// Find a Randome fresh / unused spot
-		int? pick = token.Class.Category switch {
+		bool assigned = token.Class.Category switch {
 			TokenCategory.Dahan or
-			TokenCategory.Presence => FindRightOpenInternalSlot(),
+			TokenCategory.Presence => _randomInternal.AssignRightSlot( token ),
 			TokenCategory.Blight or
-			TokenCategory.Invader => FindLeftOpenInternalSlot(),
-			_ => FindRandomNewSlot(), // !!! this needs to use the border also.
-		};
-
-		if(pick.HasValue) {
-			AssignInternalToken( token, pick.Value );
-			return _dict[token];
+			TokenCategory.Invader => _randomInternal.AssignLeftSlot( token ),
+			_ => _randomInternal.AssignNextSlot( token ),
 		}
+			|| _border.AssignNextSlot( token );
 
-		throw new Exception("Unable find open slot.");
+		return assigned ? _dict[token] : throw new Exception("Unable find open slot.");
 	}
-
-	static void Validate( IToken token ) {
-		if(token is not IVisibleToken)
-			throw new InvalidOperationException( "Token {token} does not appear on screen." );
-	}
-
-	void AssignInternalToken( IVisibleToken token, int index ) {
-		Validate( token );
-		lock(_locker) {
-			if( _internalTokens[index] != null )
-				throw new InvalidOperationException($"Internal Token Slot {index} already assigned.");
-			_internalTokens[index] = token;
-			Validate( token );
-			_dict[token] = _internalPoints[index];
-		}
-	}
-	readonly object _locker = new object();
 
 	public ManageInternalPoints Init( SpaceState allTokens ) {
 
@@ -110,6 +88,9 @@ public class ManageInternalPoints {
 		return this;
 	}
 
+	public IEnumerable<(IVisibleToken Key, PointF Value)> Assignments() 
+		=> _dict.Select( p => (p.Key, p.Value) );
+
 	#region private helper methods
 
 	void AssignPointFor( IVisibleToken token, SpaceState spaceState ) {
@@ -120,45 +101,23 @@ public class ManageInternalPoints {
 		// Already assigned
 		if(_dict.ContainsKey( token )) return;
 
-		// --------------
 		// -- Internal --
-		// --------------
-		// Find a Randome fresh / unused spot
-		int? pick = token.Class.Category switch {
+		bool assigned = token.Class.Category switch {
 			TokenCategory.Dahan or
-			TokenCategory.Presence => FindRightOpenInternalSlot(),
+			TokenCategory.Presence => _randomInternal.AssignRightSlot(token),
 			TokenCategory.Blight or
-			TokenCategory.Invader => FindLeftOpenInternalSlot(),
-			_ => FindRandomNewSlot(),
-		};
+			TokenCategory.Invader => _randomInternal.AssignLeftSlot(token),
+			_ => false, // fall through
+		} || AssignOldSlot( token, spaceState );
 
-		if(pick.HasValue) {
-			AssignInternalToken(token, pick.Value);
-			return;
-		}
-
-		pick = FindRandomOldSlot( spaceState ); // can be combined with switch above once we solve what is picking used spots.
-		if(pick.HasValue) {
-			AssignInternalToken( token, pick.Value );
-			return;
-		}
-
-		// --------------
-		// -- Border ----
-		// --------------
-		// Try to find on the Boarder
-		for(int i = 0; i < _borderPoints.Length; i++) {
-			IToken slotToken = _borderTokens[i];
-			if(slotToken is null || spaceState[slotToken] == 0) {
-				_borderTokens[i] = token;
-				Validate( token );
-				_dict[token] = _borderPoints[i];
-				return;
-			}
-		}
-		throw new InvalidOperationException( $"Ran out of slots for tokens." );
+		if(!assigned)
+			throw new InvalidOperationException( $"Ran out of slots for tokens." );
 
 	}
+
+	bool AssignOldSlot( IVisibleToken token, SpaceState spaceState )
+		=> _randomInternal.AssignNextSlot(token, spaceState)
+		|| _border.AssignNextSlot(token, spaceState);
 
 	void InitInvaderGroup( HumanTokenClass tokenClass, IEnumerable<HumanToken> tokenGroup, SpaceState allTokens ) {
 
@@ -172,9 +131,10 @@ public class ManageInternalPoints {
 			.OrderByDescending( x => x.StrifeCount )
 			.ThenByDescending( x => x.Damage )
 			.ToArray();
-		foreach(var token in orderedTokens) {
 
-			var registeredTokens = GetRegisteredTokens();
+		foreach(HumanToken token in orderedTokens) {
+
+			HumanToken[] registeredTokens = GetRegisteredTokens();
 
 			// Take the most-damaged (closest to the begining) vacated spot
 			var moreDamagedRegistered = registeredTokens
@@ -183,7 +143,6 @@ public class ManageInternalPoints {
 				.Where( t => allTokens[t] == 0 && _dict.ContainsKey( t ) )
 				.FirstOrDefault();
 			if( moreDamagedRegistered is not null ) {
-				Validate( token );
 				_dict[token] = _dict[moreDamagedRegistered];
 				_dict.Remove( moreDamagedRegistered );
 				continue;
@@ -199,25 +158,18 @@ public class ManageInternalPoints {
 				.ThenBy( x => x.Damage )
 				.FirstOrDefault();
 			if(moreHealthyRegistered is not null && moreHealthyRegistered.Damage < token.Damage) {
-				Validate( token );
 				_dict[token] = _dict[moreHealthyRegistered];
 				_dict.Remove( moreHealthyRegistered );
 				continue;
 			}
 
 			// Find Left-most-open
-			int? invaderPick = FindLeftOpenInternalSlot();
-			if(invaderPick.HasValue) {
-				AssignInternalToken(token,invaderPick.Value);
+			if(_randomInternal.AssignLeftSlot(token))
 				continue;
-			}
 
-			invaderPick = FindRandomOldSlot( allTokens );
-			if(invaderPick.HasValue) {
-				AssignInternalToken( token, invaderPick.Value );
+			// Boarders
+			if(_border.AssignNextSlot( token, allTokens ) )
 				continue;
-			}
-
 
 			// return FindBorderPoint( token, allTokens );
 			throw new Exception( "border points not set up." );
@@ -225,75 +177,104 @@ public class ManageInternalPoints {
 
 	}
 
-	int? FindRightOpenInternalSlot() {
-		int? bestIndex = null;
-		float mostRight = float.MinValue;
-		for(int i = 0; i < _internalPoints.Length; i++)
-			if(_internalTokens[i] is null
-				&& mostRight < _internalPoints[i].X
-			) {
-				bestIndex = i;
-				mostRight = _internalPoints[i].X;
-			}
-		return bestIndex;
-	}
+	#endregion
 
-	int? FindLeftOpenInternalSlot() {
-		int? bestIndex = null;
-		float mostLeft = float.MaxValue;
-		for(int i = 0; i < _internalPoints.Length; i++)
-			if(_internalTokens[i] is null && _internalPoints[i].X < mostLeft ) {
-				bestIndex = i;
-				mostLeft = _internalPoints[i].X;
-			}
-		return bestIndex;
-	}
+	class TokenPointArray {
 
-	//int? FindLeftOpenBoarderSlot() {
-	//	int? bestIndex = 0;
-	//	float mostLeft = float.MaxValue;
-	//	for(int i = 0; i < _borderPoints.Length; i++)
-	//		if(_borderTokens[i] is null && _borderPoints[i].X < mostLeft) {
-	//			bestIndex = i;
-	//			mostLeft = _borderPoints[i].X;
-	//		}
-	//	return bestIndex;
-	//}
+		public TokenPointArray( Dictionary<IVisibleToken, PointF> dict, PointF[] points ) { 
+			_dict = dict;
+			_points = points;
+			_tokens = new IVisibleToken[points.Length];
+		}
 
-	int? FindRandomNewSlot() {
-		for(int i = 0; i < _internalPoints.Length; i++)
-			if(_internalTokens[i] is null)
-				return i;
-		return null;
-	}
+		public bool AssignLeftSlot( IVisibleToken visibleToken ) {
+			int? index = FindLeftSlot();
+			if(!index.HasValue) return false;
+			AssignToken( visibleToken, index.Value );
+			return true;
+		}
 
-	int? FindRandomOldSlot( SpaceState spaceState ) {
-		// Find an old unused spot that is no longer used.
-		for(int i = 0; i < _internalPoints.Length; i++) {
-			var token = _internalTokens[i];
-			if(spaceState[ token ] == 0) {
-				_internalTokens[i] = null;
-				return i;
+		public bool AssignRightSlot( IVisibleToken visibleToken ) {
+			int? index = FindRightSlot();
+			if(!index.HasValue) return false;
+			AssignToken( visibleToken, index.Value );
+			return true;
+		}
+
+		public bool AssignNextSlot( IVisibleToken visibleToken, SpaceState spaceState= null ) {
+			int? index = FindNextSlot(spaceState);
+			if(!index.HasValue) return false;
+			AssignToken( visibleToken, index.Value );
+			return true;
+		}
+
+		int? FindLeftSlot() {
+			int? bestIndex = null;
+			float mostLeft = float.MaxValue;
+			for(int i = 0; i < _points.Length; i++)
+				if(_tokens[i] is null
+					&& _points[i].X < mostLeft
+				) {
+					bestIndex = i;
+					mostLeft = _points[i].X;
+				}
+			return bestIndex;
+		}
+
+		int? FindRightSlot() {
+			int? bestIndex = null;
+			float mostRight = float.MinValue;
+			for(int i = 0; i < _points.Length; i++)
+				if(_tokens[i] is null
+					&& mostRight < _points[i].X
+				) {
+					bestIndex = i;
+					mostRight = _points[i].X;
+				}
+			return bestIndex;
+		}
+
+		int? FindNextSlot( SpaceState spaceState = null ) {
+
+			// Prefer free slots
+			for(int i = 0; i < _tokens.Length; i++)
+				if(_tokens[i] is null)
+					return i;
+
+			if(spaceState != null)
+				// Find old spot that is now available
+				for(int i = 0; i < _tokens.Length; i++) {
+					IVisibleToken token = _tokens[i];
+					if(spaceState[token] == 0) {
+						_tokens[i] = null;
+						return i;
+					}
+				}
+
+			return null;
+		}
+
+		void AssignToken( IVisibleToken token, int index ) {
+			lock(_locker) {
+				if(_tokens[index] != null)
+					throw new InvalidOperationException( $"Internal Token Slot {index} already assigned." );
+				_tokens[index] = token;
+				_dict[token] = _points[index];
 			}
 		}
-		return null;
+
+		readonly object _locker = new object();
+		readonly IVisibleToken[] _tokens;
+		readonly PointF[] _points;
+		readonly Dictionary<IVisibleToken, PointF> _dict;
+
 	}
-
-
-	#endregion
 
 	#region private token location fields
 
-	// These are the points available
-	readonly PointF[] _internalPoints;    // completely inside
-	readonly PointF[] _borderPoints; // inside but near border
-
-	// Token assignments
-	public readonly Dictionary<IVisibleToken, PointF> _dict; // !!! only temp public
-
-	// ??? What the hell are these?
-	readonly IVisibleToken[] _internalTokens;
-	readonly IVisibleToken[] _borderTokens;
+	readonly Dictionary<IVisibleToken, PointF> _dict;
+	readonly TokenPointArray _border;
+	readonly TokenPointArray _randomInternal;
 
 	#endregion
 

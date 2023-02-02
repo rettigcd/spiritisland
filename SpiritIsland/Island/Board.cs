@@ -2,7 +2,9 @@
 
 public partial class Board {
 
-	public BoardLayout Layout { get; set; }
+	// Only use for repositioning board!
+	// When spaces are joined (Weave Together), this still has the original spaces, not the joined one.
+	public BoardLayout OriginalLayout { get; set; }
 
 	#region factories
 
@@ -49,7 +51,7 @@ public partial class Board {
 		board.DefineSide(8,7).BreakAt(5);		// Side 1
 		board.DefineSide(7,5,4,3).BreakAt(1,3,7);// Side 2
 
-		board.Layout = layout;
+		board.OriginalLayout = layout;
 
 		return board;
 	}
@@ -82,7 +84,7 @@ public partial class Board {
 		board.DefineSide(8,7).BreakAt(5);		// Side 1
 		board.DefineSide(7,4,3).BreakAt(1,5);    // Side 2
 
-		board.Layout = layout;
+		board.OriginalLayout = layout;
 
 		return board;
 	}
@@ -115,7 +117,7 @@ public partial class Board {
 		board.DefineSide(8,7,4).BreakAt(7,11);	// Side 1
 		board.DefineSide(4,3).BreakAt(7);       // Side 2
 
-		board.Layout = layout;
+		board.OriginalLayout = layout;
 
 		return board;
 	}
@@ -148,7 +150,7 @@ public partial class Board {
 		board.DefineSide(8,7,6).BreakAt(5,11);	// Side 1
 		board.DefineSide(6,4,3).BreakAt(3,9);   // Side 2
 
-		board.Layout = layout;
+		board.OriginalLayout = layout;
 
 		return board;
 	}
@@ -181,7 +183,7 @@ public partial class Board {
 		board.DefineSide( 8, 6 ).BreakAt( 9 );   // Side 1
 		board.DefineSide( 6, 4, 3 ).BreakAt( 1, 7 );   // Side 2
 
-		board.Layout = layout;
+		board.OriginalLayout = layout;
 
 		return board;
 	}
@@ -214,7 +216,7 @@ public partial class Board {
 		board.DefineSide( 8, 7 ).BreakAt( 7 );   // Side 1
 		board.DefineSide( 7, 4, 3 ).BreakAt( 3, 9 );   // Side 2
 
-		board.Layout = layout;
+		board.OriginalLayout = layout;
 
 		return board;
 	}
@@ -233,9 +235,6 @@ public partial class Board {
 	public void Add( Space space, Space[] adjacents ) {
 		spaces = spaces.Union( new[] {space}).ToArray();
 		space.SetAdjacentToSpaces(adjacents);
-
-		// !!! need to update .Layout also
-
 	} // Weave togehter
 
 	/// <returns>Old adjacents</returns>
@@ -244,9 +243,6 @@ public partial class Board {
 		space.Disconnect();
 		spaces = spaces.Where(s => s != space ).ToArray();
 		return oldAdj;
-
-		// !!! need to update .Layout also
-
 	} // Weave together
 	#endregion
 

@@ -126,7 +126,7 @@ public partial class IslandControl : Control {
 		float right = float.MinValue;
 		float bottom = float.MinValue;
 		foreach(var board in _gameState.Island.Boards) {
-			var e = board.Layout.CalcExtents();
+			var e = board.OriginalLayout.CalcExtents();
 			if(e.Left < left) left = e.Left;
 			if(e.Top < top) top = e.Top;
 			if(e.Right > right) right = e.Right;
@@ -243,7 +243,7 @@ public partial class IslandControl : Control {
 		Pen perimeterPen = new Pen( SpacePerimeterColor, 5f );
 
 		// !!! Bug - Layout needs updated when we weave stuff together.  Out of sync with # of spaces on board.
-		BoardLayout normalizedBoardLayout = board.Layout;
+		BoardLayout normalizedBoardLayout = board.OriginalLayout;
 
 		foreach(var space in board.AllSpaces) {
 			// Space space = board[i];
@@ -477,10 +477,10 @@ public partial class IslandControl : Control {
 	}
 
 	void DrawTokenTargets( Graphics graphics, SpaceState spaceState, float iconWidth ) {
-		foreach(var tk in InsidePoints(spaceState.Space)._dict) {
-			var img = ResourceImages.Singleton.GetGhostImage( tk.Key.Img );
-			var p = gw_mapper.Map( new PointF( tk.Value.X, tk.Value.Y ) );
-			Rectangle rect = FitWidth( p.X - iconWidth / 2, p.Y - iconWidth / 2, iconWidth, img.Size );
+		foreach(var (token,point) in InsidePoints( spaceState.Space ).Assignments()) {
+			using Image img = ResourceImages.Singleton.GetGhostImage( token.Img );
+			var clientPoint = gw_mapper.Map( new PointF( point.X, point.Y ) );
+			Rectangle rect = FitWidth( clientPoint.X - iconWidth / 2, clientPoint.Y - iconWidth / 2, iconWidth, img.Size );
 			graphics.DrawImage( img, rect );
 		}
 	}

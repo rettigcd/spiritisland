@@ -25,7 +25,7 @@ public class DreamOfTheUntouchedLand {
 			// Reconfigure 1-board island to 2-board island - !! only works if starting with 1 board
 			var existingBoard = ctx.GameState.Island.Boards[0];
 
-			existingBoard.Layout.ReMap( new PointMapper( RowVector.RotateDegrees( 120 ) ) ); // reorient for 2-board
+			existingBoard.OriginalLayout.ReMap( new PointMapper( RowVector.RotateDegrees( 120 ) ) ); // reorient for 2-board
 
 			ctx.GameState.Island.AddBoard( newBoard.Sides[2], existingBoard.Sides[2] );
 

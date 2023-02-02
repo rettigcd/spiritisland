@@ -59,8 +59,8 @@ public class BoardSide {
 		int stationarySideIndex = Array.IndexOf( stationarySide.Board.Sides, stationarySide );
 		int movingSideIndex = Array.IndexOf( movingSide.Board.Sides, movingSide );
 
-		var stationaryLayout = stationarySide.Board.Layout;
-		var movingLayout = movingSide.Board.Layout;
+		var stationaryLayout = stationarySide.Board.OriginalLayout;
+		var movingLayout = movingSide.Board.OriginalLayout;
 
 		var stationaryTarget = stationaryLayout.boardCorners[ stationarySideIndex ]; // 1st point on the side
 		var movingAlignmentPoint = movingLayout.boardCorners[ movingSideIndex + 1 ]; // 2nd point on the side - the point we are going to move to the stationaryTarget

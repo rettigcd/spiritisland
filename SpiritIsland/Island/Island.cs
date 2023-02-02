@@ -42,7 +42,6 @@ public class Island {
 		}
 	}
 
-	// !!! Review the use cases for each TerrainMapper - Determine if all are necessary or could be renamed for their use.
 	public readonly TerrainMapper Terrain           = new TerrainMapper(); // Default
 	public          TerrainMapper Terrain_ForPower  = new TerrainMapper();
 	public          TerrainMapper Terrain_ForBlight = new TerrainMapper(); // This is ONLY called for blight inside gamestate.
