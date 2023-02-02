@@ -13,7 +13,7 @@ public class RemovingTokenArgs {
 	public UnitOfWork ActionScope => Space.ActionScope;
 
 	// modifiable
-	public IToken Token { get; set; } // !!! Should this be IVisibleToken?   
+	public IVisibleToken Token { get; set; }
 	// !!! Should all Add/Remove/Destroy tokens take IVisibleTokens only ???
 
 	public int Count {

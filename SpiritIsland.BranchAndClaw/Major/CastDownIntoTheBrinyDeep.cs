@@ -58,7 +58,7 @@ public class CastDownIntoTheBrinyDeep {
 
 			if(!ctx.Self.Text.StartsWith("Bringer")) // !!!
 				// Destroy all other tokens
-				foreach(var token in space.Keys.ToArray())
+				foreach(var token in space.Keys.OfType<IVisibleToken>().ToArray())
 					await targetCtx.Tokens.Destroy( token, space[token] );
 
 		}

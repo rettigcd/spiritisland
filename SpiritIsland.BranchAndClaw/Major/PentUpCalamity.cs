@@ -68,7 +68,7 @@ public class PentUpCalamity {
 				await ctx.AddStrife();
 	}
 
-	static async Task RemoveToken( TargetSpaceCtx ctx, IToken tokenToRemove ) {
+	static async Task RemoveToken( TargetSpaceCtx ctx, IVisibleToken tokenToRemove ) {
 		if(tokenToRemove is HumanToken invader)
 			await ctx.AddStrifeTo( invader, -1 );
 		else

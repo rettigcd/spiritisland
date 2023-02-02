@@ -56,7 +56,7 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
-	public async Task<IToken> Remove1( IToken toRemove, RemoveReason reason ) {
+	public async Task<IToken> Remove1( IVisibleToken toRemove, RemoveReason reason ) {
 		if( _tokens[toRemove] == 0 )
 			return null; // unable to remove desired token
 

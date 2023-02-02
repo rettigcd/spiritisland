@@ -26,7 +26,7 @@ public class VanishSoftlyAwayForgottonByAll {
 		}
 	}
 
-	static IToken[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.InvaderTokens().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
+	static HumanToken[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.InvaderTokens().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
 
 
 	static SpaceAction RemoveInvader => new SpaceAction(

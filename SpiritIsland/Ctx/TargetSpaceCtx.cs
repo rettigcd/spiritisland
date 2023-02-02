@@ -52,10 +52,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public virtual BlightTokenBinding Blight => Tokens.Blight.Bind( ActionScope );
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
-	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
+	public Task Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed )
 		=> Tokens.Remove( token, count, reason );
-	public Task Destroy( IToken token, int count ) 
-		=> Tokens.Destroy( token, count );
 
 	#endregion
 

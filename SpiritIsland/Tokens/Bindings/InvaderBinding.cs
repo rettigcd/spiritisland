@@ -133,7 +133,7 @@ public class InvaderBinding {
 			await Tokens.Remove( invaderToRemove, 1 );
 	}
 
-	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
+	public Task Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed )
 		=> Tokens.Remove( token, count, reason );
 
 	#endregion

@@ -3,7 +3,7 @@
 
 public class PublishTokenRemovedArgs {
 
-	public PublishTokenRemovedArgs( IToken token, RemoveReason reason, UnitOfWork actionScope, SpaceState space, int count ) {
+	public PublishTokenRemovedArgs( IVisibleToken token, RemoveReason reason, UnitOfWork actionScope, SpaceState space, int count ) {
 		Token = token;
 		_reason = reason;
 		_actionScope = actionScope;
@@ -11,7 +11,7 @@ public class PublishTokenRemovedArgs {
 		Count = count;
 	}
 
-	public IToken Token { get; }
+	public IVisibleToken Token { get; }
 	public int Count { get; }
 	readonly SpaceState _space;
 	readonly RemoveReason _reason;
@@ -26,14 +26,14 @@ public class PublishTokenRemovedArgs {
 /// </summary>
 public class TokenRemovedArgs : ITokenRemovedArgs {
 
-	public TokenRemovedArgs(IToken token, RemoveReason reason, UnitOfWork action, SpaceState space, int count ) {
+	public TokenRemovedArgs(IVisibleToken token, RemoveReason reason, UnitOfWork action, SpaceState space, int count ) {
 		Token = token;
 		Reason = reason;
 		ActionScope = action ?? throw new ArgumentNullException(nameof(action));
 		RemovedFrom = space;
 		Count = count;
 	}
-	public IToken Token { get; }
+	public IVisibleToken Token { get; }
 	public SpaceState RemovedFrom { get; set; } // !!! why are these settable?
 	public int Count { get; set; }			// !!! set???
 	public RemoveReason Reason { get; }

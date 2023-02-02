@@ -56,7 +56,7 @@ public class ActionableSpaceState : SpaceState {
 
 
 	// Convenience only
-	public Task Destroy( IToken token, int count ) => token is HumanToken ht
+	public Task Destroy( IVisibleToken token, int count ) => token is HumanToken ht
 		? ht.Destroy( this, count )
 		: Remove( token, count, RemoveReason.Destroyed );
 
@@ -90,7 +90,7 @@ public class ActionableSpaceState : SpaceState {
 
 
 	/// <summary> returns null if no token removed </summary>
-	public virtual async Task<PublishTokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public virtual async Task<PublishTokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		var cmd = await Remove_Silent( token, count, reason );
 		if(cmd != null) {
 			var e = cmd.MakeEvent(); // !!! clean this up.  Don't need cmd and event
@@ -101,7 +101,7 @@ public class ActionableSpaceState : SpaceState {
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
-	protected async Task<PublishTokenRemovedArgs> Remove_Silent( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	protected async Task<PublishTokenRemovedArgs> Remove_Silent( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust

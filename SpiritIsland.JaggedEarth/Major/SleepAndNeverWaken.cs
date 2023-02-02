@@ -41,9 +41,9 @@ public class SleepAndNeverWaken {
 		while( count-- > 0 
 			&& (options=CalcOptions()).Length > 0 
 		) {
-			var token = await ctx.Decision( new Select.TokenFromManySpaces($"Select Explorer to remove. ({count+1} remaining)", options, Present.Done));
-			if(token == null ) break;
-			await ctx.Target(token.Space).Remove(token.Token,1);
+			var spaceToken = await ctx.Decision( new Select.TokenFromManySpaces($"Select Explorer to remove. ({count+1} remaining)", options, Present.Done));
+			if(spaceToken == null ) break;
+			await ctx.Target(spaceToken.Space).Remove(spaceToken.Token,1);
 		}
 
 	}
