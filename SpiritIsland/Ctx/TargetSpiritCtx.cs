@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// Only used for Powers.  So binding other spirits, uses starting spirits powers.
+/// </summary>
 public class TargetSpiritCtx : SelfCtx {
 
 	public TargetSpiritCtx( SelfCtx ctx, Spirit target ) : base( ctx ) {
@@ -10,7 +13,7 @@ public class TargetSpiritCtx : SelfCtx {
 
 	public SelfCtx OtherCtx => Other==Self 
 		? this 
-		: Self.BindMyPowers( Other,GameState,ActionScope ); // ??? !!! do we ever Target Other Spirits outside of powers.  I think not.
+		: Self.BindMyPowers( Other,GameState,ActionScope ); // This is ONLY used for Powers
 		// Vengeance has special rules when using its powers, need to be able to bind those powers to other spirits.
 
 }

@@ -193,8 +193,26 @@ class GrowthPainter : IDisposable{
 	}
 
 	static Bitmap GetTargetFilterIcon( string filterEnum ) {
-		Img img = FilterEnumExtension.GetImgEnum( filterEnum );
+		Img img = GetImgEnum( filterEnum );
 		return img == default ? null : GetImage( img );
+	}
+
+	static Img GetImgEnum( string filterEnum ) {
+		const string OR = "Or";
+		Img img = filterEnum switch {
+			Target.Dahan                           => Img.Icon_Dahan,
+			Target.Jungle + OR + Target.Wetland    => Img.Icon_JungleOrWetland,
+			Target.Dahan + OR + Target.Invaders    => Img.Icon_DahanOrInvaders,
+			Target.Coastal                         => Img.Icon_Coastal,
+			Target.Presence + OR + Target.Wilds    => Img.Icon_PresenceOrWilds,
+			Target.NoBlight                        => Img.Icon_NoBlight,
+			Target.Beast + OR + Target.Jungle      => Img.Icon_BeastOrJungle,
+			Target.Ocean                           => Img.Icon_Ocean,
+			Target.Mountain + OR + Target.Presence => Img.Icon_MountainOrPresence,
+			Target.TownOrCity + OR + Target.Blight => Img.Icon_TownCityOrBlight,
+			_                                      => Img.None, // Inland, Any
+		};
+		return img;
 	}
 
 	void MovePresence( RectangleF rect, int range ) {

@@ -100,7 +100,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	public Task Move( Space from, Space to ) => _inner.Move(from,to, _gameState, _actionScope );
 	public Task PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space], _actionScope );
 	public Task Destroy( Space space, int count, DestoryPresenceCause actionType ) => _inner.Destroy( space, _gameState, count, actionType, _actionScope );
-	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing, !!! should have an Action ID
+	public Task RemoveFrom( Space space ) => _inner.RemoveFrom( space, _gameState ); // Generally used for Replacing, !!! should have an Action ID, should generate TokenRemoved events
 	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState,_actionScope);
 
 

@@ -40,7 +40,7 @@ public class InstrumentsOfTheirOwnRuin {
 		// - occurs in multiple spaces
 		// - total damage is from a single centralized space
 		// - When applying damage, prefer to use up badland damage first, and save general distributed damage for other spaces.
-		// - We can't use BonusDamage Pool because that doesn't have a short-circuit to not use all of the bonus damage.
+		// - !!! We can't use BonusDamage Pool because that doesn't have a short-circuit to not use all of the bonus damage.
 
 		// they damage invaders in adjacent lands instead of dahan and the land.
 
@@ -60,23 +60,24 @@ public class InstrumentsOfTheirOwnRuin {
 		while( (spaceOptions = ctx.Adjacent.Where( adj => adj.HasInvaders() && HasDamage( adj.Space ) ).ToArray()).Length > 0 ) {
 			// select target invader
 			var invaderOptions = spaceOptions.SelectMany(space=>space.InvaderTokens().Select(t=>new SpaceToken(space.Space,t))).ToArray();
-			var invader = await ctx.Decision( new Select.TokenFromManySpaces($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
-			if(invader == null) break;
+			var damagedInvader = await ctx.Decision( new Select.TokenFromManySpaces($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
+			if(damagedInvader == null) break;
 
-			if(activatedBadlandDamage[invader.Space] > 0) {
+			if(activatedBadlandDamage[damagedInvader.Space] > 0) {
 				// use badlands
-				activatedBadlandDamage[invader.Space]--;
+				activatedBadlandDamage[damagedInvader.Space]--;
 			} else {
 				// use original
 				damageFromCenter--;
 				// if badlands not activated
-				activatedBadlandDamage[invader.Space] = availableBadlandDamage[invader.Space];
-				availableBadlandDamage[invader.Space] = 0;
+				activatedBadlandDamage[damagedInvader.Space] = availableBadlandDamage[damagedInvader.Space];
+				availableBadlandDamage[damagedInvader.Space] = 0;
 			}
 
 			// apply 1 damage to selected invader
 			// !Note - using shared UnitOfWork across spaces because it is a ravage on only 1 space
-			await ctx.GameState.Invaders.On(invader.Space, ravageAction.ActionScope ).ApplyDamageTo1(1,(HumanToken)invader.Token);
+			await new InvaderBinding( ctx.GameState.Tokens[damagedInvader.Space], ravageAction.ActionScope )
+				.ApplyDamageTo1( 1, (HumanToken)damagedInvader.Token );
 		}
 
 	}

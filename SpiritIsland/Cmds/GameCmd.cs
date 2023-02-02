@@ -12,12 +12,14 @@ public static partial class Cmd {
 	static public (IExecuteOn<TargetSpaceCtx> action, string preposition) On( this IExecuteOn<TargetSpaceCtx> spaceAction ) => (spaceAction, "on");
 
 	// How we select the land
+	// !!! Page 10 of JE says Each Land (Spirit picked or otherwise) is a new action
 	static public SpiritPicksLandAction SpiritPickedLand( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new SpiritPicksLandAction( x.spaceAction, x.preposition );
 	static public EachActiveLand EachActiveLand( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new EachActiveLand( x.spaceAction, x.preposition );
 	static public NLandsPerBoard OneLandPerBoard( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new NLandsPerBoard( x.spaceAction, x.preposition, 1 );
 	static public NLandsPerBoard NDifferentLands( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x, int count ) => new NLandsPerBoard( x.spaceAction, x.preposition, count );
 
 	// For each: Board
+	// !!! Page 10 of JE says Each Board is a new action
 	static public GameCtxCmd ForEachBoard( this IExecuteOn<BoardCtx> boardAction )
 		=> new GameCtxCmd(
 			"On each board, " + boardAction.Description,
@@ -31,6 +33,7 @@ public static partial class Cmd {
 		);
 
 	// For each: Spirit
+	// !!! Page 10 of JE says Each Spirit is a new action
 	static public DecisionOption<GameCtx> ForEachSpirit( this IExecuteOn<SelfCtx> action )
 		=> new GameCtxCmd(
 			"For each spirit, " + action.Description,

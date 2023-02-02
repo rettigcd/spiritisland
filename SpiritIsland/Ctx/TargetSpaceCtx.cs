@@ -130,14 +130,14 @@ public class TargetSpaceCtx : SelfCtx {
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay );
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
-	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	// !!! This is Range-From-Here.  Compare it to BoundPresence.FindSpacesWithinRange & Spirit.FindSpacesWithinRange which is Range-From-Presence
-	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria ) => Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
-		new SpaceState[] { Tokens },
-		targetCriteria
-	)
-		.Where( TerrainMapper.IsInPlay ); // !!! is this necessary?  Does the RangeCalc already check this?
 	public IEnumerable<SpaceState> Range( int range ) => Range( TerrainMapper.Specify(range) );
+
+	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
+	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria ) 
+		=> Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
+			new SpaceState[] { Tokens },
+			targetCriteria
+		); // don't need to check .IsInPlay because TargetCriteria does that.
 
 	#region Terrain
 
@@ -225,7 +225,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	DamagePool BonusDamage => _bonusDamageFromSpirit ??= new DamagePool( Self.BonusDamage );
 
-	DamagePool BadlandDamage => _badlandDamage ??= new DamagePool( Badlands.Count );
+	DamagePool BadlandDamage => _badlandDamage ??= new DamagePool( Badlands.Count ); // !!! This is once per action.  Move to ActionScope
 
 	class DamagePool {
 

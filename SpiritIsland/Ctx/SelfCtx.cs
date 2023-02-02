@@ -127,25 +127,4 @@ public class SelfCtx {
 
 	#endregion
 
-	#region High level fear-specific decisions
-
-	// !!! Decompose this and use the builder-block Cmds
-	public async Task<Space> RemoveNTokensFromOneSpace( IEnumerable<Space> spaceOptions, int count, params TokenClass[] removables ) {
-
-		var spaceCtx = await SelectSpace( "Remove invader from", spaceOptions );
-		if(spaceCtx == null) return null;
-
-
-		var options = spaceCtx.Tokens.OfAnyClass(removables).Cast<IVisibleToken>().ToArray();
-		while(0<count && 0<options.Length) {
-			var tokenToRemove = (await spaceCtx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove(spaceCtx.Space, count, options, Present.Always) ))?.Token;
-			await spaceCtx.Tokens.Remove(tokenToRemove,1);
-			options = spaceCtx.Tokens.OfAnyClass( removables ).Cast<IVisibleToken>().ToArray(); // next
-			--count;
-		}
-		return spaceCtx?.Space;
-	}
-
-	#endregion
-
 }

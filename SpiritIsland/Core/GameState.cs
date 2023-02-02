@@ -21,7 +21,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		// Note: don't init invader deck here, let users substitute
 		RoundNumber = 1;
 		Fear = new Fear( this );
-		Invaders = new Invaders( this );
 		Tokens = new Tokens_ForIsland( this );
 
 		AddToAllActiveSpaces( new TokenAddedHandler( "Cascade Blight", BlightAddedCheck, true ) ); // Combine these 2 into a class.
@@ -104,7 +103,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		set { _invaderDeck = value; }
 	}
 	InvaderDeck _invaderDeck;
-	public Invaders Invaders { get; } // creates ravage/damage objects - Obsolete - just make Tokens do this.
 	public int blightOnCard; // 2 per player + 1
 	public IBlightCard BlightCard = new NullBlightCard();
 	public List<IBlightCard> BlightCards = new List<IBlightCard>();

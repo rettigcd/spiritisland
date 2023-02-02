@@ -32,24 +32,3 @@ public static class Target {
 	public const string Presence         = "Presence";
 	public const string BlightAndInvaders= "Blight+Invaders";
 }
-
-static public class FilterEnumExtension {
-	static public Img GetImgEnum( string filterEnum ) {
-		// !!! Move the filterEnum closer to where the filter is defined, not here.
-		Img img = filterEnum switch {
-			Target.Dahan                         => Img.Icon_Dahan,
-			Target.Jungle+"Or"+Target.Wetland    => Img.Icon_JungleOrWetland,
-			Target.Dahan+"Or"+Target.Invaders    => Img.Icon_DahanOrInvaders,
-			Target.Coastal                       => Img.Icon_Coastal,
-			Target.Presence+"Or"+Target.Wilds    => Img.Icon_PresenceOrWilds,
-			Target.NoBlight                      => Img.Icon_NoBlight,
-			Target.Beast+"Or"+Target.Jungle      => Img.Icon_BeastOrJungle,
-			Target.Ocean                         => Img.Icon_Ocean,
-			Target.Mountain+"Or"+Target.Presence => Img.Icon_MountainOrPresence,
-			Target.TownOrCity+"Or"+Target.Blight => Img.Icon_TownCityOrBlight,
-			_                                    => Img.None, // Inland, Any
-		};
-		return img;
-	}
-
-}

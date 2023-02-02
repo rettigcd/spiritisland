@@ -8,10 +8,8 @@ public abstract class InvaderSlot {
 	public void SkipNextNormal() { skipCount++; }
 	public virtual async Task Execute( GameState gs ) {
 		foreach(var card in Cards)
-			if(skipCount > 0)
+			if(0 < skipCount)
 				skipCount--;
-			else if(card.Skip)
-				card.Skip = false; // !!!! not sure if Card.Skip is ever set to true.
 			else
 				await ActivateCard(card,gs);
 	}
@@ -19,11 +17,11 @@ public abstract class InvaderSlot {
 	public List<InvaderCard> GetCardsToAdvance() {
 		var result = new List<InvaderCard>();
 		for(int i=0; i < Cards.Count; ++i)
-			if(holdBackCount > 0)
-				holdBackCount--;
+			if(0 < holdBackCount)
+				--holdBackCount;
 			else {
 				result.Add(Cards[i]);
-				Cards.RemoveAt(i--);
+				Cards.RemoveAt(i--); // post-decrement is correct
 			}
 		return result;
 	}

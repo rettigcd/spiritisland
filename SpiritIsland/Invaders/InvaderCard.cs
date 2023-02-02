@@ -21,9 +21,6 @@ public sealed class InvaderCard : IOption {
 
 	public event Func<GameState,Task> CardFlipped;
 
-	public bool HoldBack { get; set; } = false;
-	public bool Skip { get; set; } = false;
-
 	public int InvaderStage { get; }
 
 	public string Text { get; }
