@@ -15,6 +15,14 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
 	static readonly UniqueToken blockBlightToken = new UniqueToken( "block-blight", 'X', Img.None, TokenCategory.None );
 
+	class BlightToken : ITokenWithEndOfRoundCleanup {
+		public TokenClass Class => ActionModTokenClass.Singleton;
+		public string Text => "block blight";
+		public void EndOfRoundCleanup( SpaceState spaceState ) {
+			spaceState.Init(this,0);
+		}
+	}
+
 }
 
 

@@ -34,8 +34,8 @@ public class TokenRemovedArgs : ITokenRemovedArgs {
 		Count = count;
 	}
 	public IVisibleToken Token { get; }
-	public SpaceState RemovedFrom { get; set; } // !!! why are these settable?
-	public int Count { get; set; }			// !!! set???
+	public SpaceState RemovedFrom { get; }
+	public int Count { get; }
 	public RemoveReason Reason { get; }
 	public UnitOfWork ActionScope { get; }
 }

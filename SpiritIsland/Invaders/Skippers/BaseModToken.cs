@@ -15,21 +15,7 @@ public class BaseModToken : ITokenWithEndOfRoundCleanup {
 
 	public string Text { get; }
 
-	public TokenClass Class => _classSingleton;
-
-	#region static TokenClass
-
-	static readonly TokenClass _classSingleton = new ActionModTokenClass();
-
-	class ActionModTokenClass : TokenClass {
-
-		static readonly public TokenClass Class = new ActionModTokenClass();
-		public string Label => "Mod";
-
-		public TokenCategory Category => TokenCategory.Skipper;
-	}
-
-	#endregion
+	public TokenClass Class => ActionModTokenClass.Singleton;
 
 	void ITokenWithEndOfRoundCleanup.EndOfRoundCleanup( SpaceState spaceState ) {
 		if( _keepForever ) return; // no cleanup
@@ -41,4 +27,14 @@ public class BaseModToken : ITokenWithEndOfRoundCleanup {
 
 	readonly bool _keepForever;
 
+}
+
+class ActionModTokenClass : TokenClass {
+
+	public static readonly TokenClass Singleton = new ActionModTokenClass();
+
+	static readonly public TokenClass Class = new ActionModTokenClass();
+	public string Label => "Mod";
+
+	public TokenCategory Category => TokenCategory.Skipper;
 }

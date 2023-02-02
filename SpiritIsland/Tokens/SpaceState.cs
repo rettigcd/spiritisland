@@ -201,7 +201,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public void Skip1Ravage( string label ) => Adjust( new SkipRavage( label ), 1 );
 
-	// !!! can we have 2 of these tokens?, will it throw an exception?, will it stop 2 builds?
 	public void Skip1Build( string label ) => Adjust( SkipBuild.Default( label ), 1 );
 
 	public void Skip1Explore( string label ) => Adjust( new SkipExploreTo( label ), 1 );
@@ -232,8 +231,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	#endregion
 
 	public void TimePasses() {
-		Blight.Blocked = false; // !!! move inside cleanup token???
-
 		foreach(var cleanup in Keys.OfType<ITokenWithEndOfRoundCleanup>().ToArray())
 			cleanup.EndOfRoundCleanup( this );
 	}

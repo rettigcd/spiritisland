@@ -14,7 +14,6 @@ public class RemovingTokenArgs {
 
 	// modifiable
 	public IVisibleToken Token { get; set; }
-	// !!! Should all Add/Remove/Destroy tokens take IVisibleTokens only ???
 
 	public int Count {
 		get { return _count; }

@@ -252,7 +252,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Find All Invaders
 		var invaders = new List<IVisibleToken>();
-		foreach(var token in Tokens.InvaderTokens())
+		foreach(HumanToken token in Tokens.InvaderTokens())
 			for(int i = 0; i < Tokens[token]; ++i)
 				invaders.Add( token );
 
@@ -262,7 +262,7 @@ public class TargetSpaceCtx : SelfCtx {
 		while(count-- > 0) {
 			var st = await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
 			if(st == null) break;
-			var invader = (HumanToken)st.Token;
+			HumanToken invader = (HumanToken)st.Token;
 			invaders.Remove( invader );
 			var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
 			if(damaged.RemainingHealth > 0)

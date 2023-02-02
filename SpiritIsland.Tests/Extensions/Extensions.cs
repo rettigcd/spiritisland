@@ -66,7 +66,7 @@ static internal class Extensions {
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
 		return dict.InvaderTokens()
 			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => dict._counts[invader] + invader.ToString() )
+			.Select( invader => dict[invader] + invader.ToString() )
 			.Join( "," );
 	}
 
