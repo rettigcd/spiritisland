@@ -76,28 +76,18 @@ public class France : IAdversary {
 	static void AddSlaveRebellionEvent( GameState gameState ) {
 		var gameCtx = new GameCtx( gameState, ActionCategory.Adversary );
 
-		// !!! This should really be post-blighted island effects, but oh-well...
 		gameState.StartOfInvaderPhase.ForGame.Add( async gs => {
 			if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
 			if(gs.InvaderDeck.InvaderStage < 3) {
 				// On Each Board: Add Strife to 1 Town.
 				await Cmd.ForEachBoard( AddStrifeToTown ).Execute( gameCtx );
 			} else {
-
-				// !!! review this and see if it is constructed correctly
-
 				// On Each Board:
-				await Cmd.Multiple(
-					Cmd.ForEachBoard(
-						Cmd.Multiple<BoardCtx>(
-							"Destory 1 town, add strife to any Town/City, then invader takes 1 Damage per Strife it has",
-							DestroyTown, // Destroy 1 Town.
-							Add2StrifeToCityOrTown // Add Strife to any 2 Town/City.
-						)
-					),
-					// Then each invader takes 1 damage per strife it has.
-					new DecisionOption<GameCtx>(
-						"each invader takes 1 damage per strife it has", 
+				await Cmd.ForEachBoard(
+					Cmd.Multiple<BoardCtx>(
+						"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
+						DestroyTown,
+						Add2StrifeToCityOrTown,
 						StrifedRavage.StrifedInvadersTakeDamagePerStrife
 					)
 				).Execute( gameCtx );

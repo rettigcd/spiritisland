@@ -16,12 +16,10 @@ public static class DeployedPresence {
 		=> new Space( prompt, spaces, Present.Always, presenceToken );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
-	/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
 	static public Space All(string prompt, ReadOnlyBoundPresence presence, Present present )
 		=> new Space( prompt, presence.SpaceStates, present, presence.Token );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
-	/// !!! figure out different reasons .All is called and pull some of the generic ones into this class as factory methods
 	static public Space Movable( string prompt, ReadOnlyBoundPresence presence, Present present )
 		=> new Space( prompt, presence.MovableSpaceStates, present, presence.Token );
 

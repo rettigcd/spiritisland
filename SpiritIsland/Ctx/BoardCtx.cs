@@ -5,21 +5,14 @@
 /// </summary>
 public class BoardCtx : SelfCtx {
 
+	#region private static
+
 	static public Spirit FindSpirit( GameState gameState, int boardIndex)
 		=> gameState.Spirits[boardIndex < gameState.Spirits.Length ? boardIndex : 0];
 
-	static public Spirit FindSpirit( GameState gameState, Board board ) {
-		int index = 0;
-		foreach(var b in gameState.Island.Boards) {
-			if(b == board) {
-				return gameState.Spirits[index];
-			}
-			++index;
-		}
-		return gameState.Spirits[0];
-	}
+	#endregion
 
-	public Board Board { get; }
+	#region constructors
 
 	public BoardCtx( Spirit spirit, GameState gs, Board board, UnitOfWork actionScope )
 		:base(spirit, gs, actionScope ) {
@@ -30,9 +23,22 @@ public class BoardCtx : SelfCtx {
 		Board = board;
 	}
 
-	public Task SelectActionOption( params IExecuteOn<BoardCtx>[] options ) => SelectActionOption( "Select Power Option", options );
-	public Task SelectActionOption( string prompt, params IExecuteOn<BoardCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
-	public Task SelectAction_Optional( string prompt, params IExecuteOn<BoardCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
+	#endregion
+
+	public Board Board { get; }
+
+	public IEnumerable<SpaceState> ActiveSpaces => GameState.Tokens.PowerUp( this.Board.Spaces );
+
+	static public Spirit FindSpirit( GameState gameState, Board board ) {
+		int index = 0;
+		foreach(Board b in gameState.Island.Boards) {
+			if(b == board) 
+				return gameState.Spirits[index];
+			++index;
+		}
+		return gameState.Spirits[0];
+	}
+
 
 	public SpaceToken[] FindTokens( params TokenClass[] tokenClasses ) {
 		return Board.Spaces

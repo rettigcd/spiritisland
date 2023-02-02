@@ -91,7 +91,7 @@ public class Ocean : Spirit {
 					//don't use original because that may or may not have been for a power.
 					await using UnitOfWork childAction = args.GameState.StartAction( ActionCategory.Default );
 					await BindSelf( args.GameState, childAction )
-						.Move( args.Token, args.AddedTo.Space, destination );
+						.Move( (IVisibleToken)args.Token, args.AddedTo.Space, destination );
 				} );
 				return; // the move it, don't drown it
 			}

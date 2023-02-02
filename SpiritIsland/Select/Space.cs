@@ -14,7 +14,7 @@ public class Space : TypedDecision<SpiritIsland.Space>, IHaveArrows {
 		=> Space.ForMoving_SpaceToken( "Push " + token.ToString() + " to", source, destinationOptions, present, token );
 
 	static public Space ForMoving_SpaceToken( string prompt, SpiritIsland.Space source, IEnumerable<SpaceState> spaces, Present present, IVisibleToken tokenToAddToTarget ) {
-		return new Space( prompt, spaces, present, tokenToAddToTarget ) { Source = source };
+		return new Space( prompt, spaces, present, tokenToAddToTarget ) { _source = source };
 	}
 
 	#endregion Moving (existing) SpaceTokens
@@ -65,12 +65,11 @@ public class Space : TypedDecision<SpiritIsland.Space>, IHaveArrows {
 	///	</remarks>
 	public IVisibleToken Token { get; }
 
-	// Only Set when we want to draw outgoing arrows
-	// !!! return Arrow enumerator, then make this private
-	public SpiritIsland.Space Source { get; set; } 
-
-	public IEnumerable<Arrow> Arrows => Source == null || Token == null 
+	public IEnumerable<Arrow> Arrows => _source == null || Token == null 
 		? Array.Empty<Arrow>()
-		: Spaces.Select(dstSpace => new Arrow {	Token = Token, From = Source, To = dstSpace } );
+		: Spaces.Select(dstSpace => new Arrow {	Token = Token, From = _source, To = dstSpace } );
+
+	// Only Set when we want to draw outgoing arrows
+	SpiritIsland.Space _source;
 
 }

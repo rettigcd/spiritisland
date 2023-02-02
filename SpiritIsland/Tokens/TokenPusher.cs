@@ -62,7 +62,7 @@ public class TokenPusher {
 		return destination;
 	}
 
-	protected virtual async Task MoveSingleToken( IToken token, Space source, Space destination ) {
+	protected virtual async Task MoveSingleToken( IVisibleToken token, Space source, Space destination ) {
 		await ctx.Move( token, source, destination );    // !!! if moving into frozen land, freeze Dahan
 		if( _customAction != null )
 			await _customAction( token, source, destination );

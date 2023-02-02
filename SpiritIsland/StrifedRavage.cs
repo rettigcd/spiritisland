@@ -43,9 +43,12 @@ public static class StrifedRavage {
 
 	#region Strife caused Damage to Self
 
-	public static async Task StrifedInvadersTakeDamagePerStrife( GameCtx gameCtx ) {
-		foreach(var space in gameCtx.GameState.AllActiveSpaces)
-			await EachInvaderTakesDamageByStrifeCount( space, gameCtx.ActionScope );
+	public static IExecuteOn<BoardCtx> StrifedInvadersTakeDamagePerStrife 
+		=> new DecisionOption<BoardCtx>( "each invader takes 1 damage per strife it has", StrifedInvadersTakeDamagePerStrifeImp );
+
+	static async Task StrifedInvadersTakeDamagePerStrifeImp( BoardCtx boardCtx ) {
+		foreach(var space in boardCtx.ActiveSpaces)
+			await EachInvaderTakesDamageByStrifeCount( space, boardCtx.ActionScope );
 	}
 
 	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens, UnitOfWork actionScope ) {

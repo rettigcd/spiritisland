@@ -13,14 +13,6 @@ public class AddingTokenArgs {
 	public UnitOfWork ActionScope { get; }
 
 	// Modifiable
-	public IToken Token { get; set; }
-	public int Count {
-		get { return _count; }
-		set {
-			// !!! something is making this negative
-			if(value < 0) throw new ArgumentOutOfRangeException( nameof( value ), value, "Removing Token Args cannot be < 0" );
-			_count = value;
-		}
-	}
-	int _count;
+	public IVisibleToken Token { get; set; }
+	public int Count { get; set; }
 }

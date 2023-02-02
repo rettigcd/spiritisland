@@ -2,7 +2,7 @@
 
 public class TokenAddedArgs : ITokenAddedArgs {
 
-	public TokenAddedArgs(ActionableSpaceState space, IToken token, AddReason addReason, int count, UnitOfWork actionScope ) {
+	public TokenAddedArgs(ActionableSpaceState space, IVisibleToken token, AddReason addReason, int count, UnitOfWork actionScope ) {
 		AddedTo = space;
 		Token = token;
 		Reason = addReason;
@@ -10,7 +10,7 @@ public class TokenAddedArgs : ITokenAddedArgs {
 		ActionScope = actionScope;
 	}
 
-	public IToken Token { get; } // need specific so we can act on it (push/damage/destroy)
+	public IVisibleToken Token { get; }
 	public ActionableSpaceState AddedTo { get; }
 
 	public int Count { get; }

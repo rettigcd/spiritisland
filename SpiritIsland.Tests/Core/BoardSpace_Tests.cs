@@ -40,8 +40,17 @@ public class BoardSpace_Tests {
 		Assert.Contains( neighbor2, neighbors );
 		//  And: Neighbors are 2 away from each other
 		Assert.Contains( neighbor2, neighbor1.Range( 2 ) );
-		Assert.Contains( neighbor1, neighbor2.SpacesExactly( 2 ) );
+		Assert.Contains( neighbor1, SpacesExactly( neighbor2, 2 ) );
 	}
+
+	static IEnumerable<Space> SpacesExactly( Space space, int distance ) { // !!! this should be deprecated or moved to Test project - only used in tests
+		return distance switch {
+			0 => new Space[] { space },
+			1 => space.Adjacent,
+			_ => space.CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
+		};
+	}
+
 
 	#region Internal Board Connectivity
 
@@ -368,7 +377,7 @@ public class BoardSpace_Tests {
 	#region private
 
 	static void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
-		Assert.Equal( needles, source.SpacesExactly( distance ) );
+		Assert.Equal( needles, SpacesExactly( source, distance ) );
 	}
 
 	#endregion

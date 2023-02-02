@@ -17,7 +17,6 @@ public class SinglePlayerGame {
 
 	public SinglePlayerGame(GameState gameState,bool start=true){
 		this.GameState = gameState;
-//		gameState.Initialize();
 		Spirit = gameState.Spirits.Single(); // this player only handles single-player.
 		this.UserPortal = Spirit.Gateway;
 		if(start)

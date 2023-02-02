@@ -42,7 +42,7 @@ public class SpiritPresence {
 	public IEnumerable<Track> CoverOptions
 		=> Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
 
-	public int EnergyPerTurn { get; private set; } // !!! this needs saved with memento
+	public int EnergyPerTurn { get; private set; }
 
 	// ! These 2 tracks are only public so they can be accessed from Tests.
 	// ! Not accessed from production code
@@ -213,7 +213,7 @@ public class SpiritPresence {
 		return placed.AsReadOnly();
 	}
 
-	// !!! one item for each space that has presence
+	// !!! deprecate one item for each space that has presence
 	public IEnumerable<Space> Spaces( GameState gs ) => SpaceStates( gs ).Select( x => x.Space );
 
 	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
@@ -234,7 +234,7 @@ public class SpiritPresence {
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 	/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
-	// !!! This is called for 2 different reasons...
+	// !!! This is called for 2 different reasons... repace with Tokens Add/Remove/Adjust
 	// (1) To move presence to another location on the board - no End-of-Game check is necessary
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
 	protected virtual Task RemoveFrom_NoCheck( SpaceState space, int count=1 ) { 

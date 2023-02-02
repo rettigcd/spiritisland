@@ -39,8 +39,9 @@ public class SelfCtx {
 	/// Simple wrapper around GameState.Tokens.Move 
 	/// Used for Gathering / Pushing (and other stuff)
 	/// </summary>
-	public Task Move(IToken token, Space from, Space to )
-		=> Target(from).Tokens.MoveTo( token, to );
+	public Task Move( IVisibleToken token, Space from, Space to )
+		=> Target( from ).Tokens.MoveTo( token, to );
+
 
 	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
 

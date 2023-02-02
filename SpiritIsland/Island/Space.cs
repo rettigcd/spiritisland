@@ -63,14 +63,6 @@ public abstract class Space
 		}
 	}
 
-	public IEnumerable<Space> SpacesExactly( int distance ) { // !!! this should be deprecated or moved to Test project - only used in tests
-		return distance switch {
-			0 => new Space[] { this },
-			1 => adjacent,
-			_ => this.CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
-		};
-	}
-
 	#region Connect / Disconnect
 
 	void Connect( Space adjacent ) {

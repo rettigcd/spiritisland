@@ -60,7 +60,7 @@ public class ActionableSpaceState : SpaceState {
 		? ht.Destroy( this, count )
 		: Remove( token, count, RemoveReason.Destroyed );
 
-	public async Task<TokenAddedArgs> Add( IToken token, int count, AddReason addReason = AddReason.Added ) {
+	public async Task<TokenAddedArgs> Add( IVisibleToken token, int count, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = Add_Silent( token, count, addReason );
 		if(addResult != null) {
 			addResult.GameState = this._api.AccessGameState();
@@ -70,7 +70,7 @@ public class ActionableSpaceState : SpaceState {
 		return addResult;
 	}
 
-	TokenAddedArgs Add_Silent( IToken token, int count, AddReason addReason = AddReason.Added ) {
+	TokenAddedArgs Add_Silent( IVisibleToken token, int count, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
@@ -139,7 +139,7 @@ public class ActionableSpaceState : SpaceState {
 	}
 
 	/// <summary> Gathering / Pushing + a few others </summary>
-	public async Task MoveTo( IToken token, Space destination ) {
+	public async Task MoveTo( IVisibleToken token, Space destination ) {
 		// Current implementation favors:
 		//		switching token types prior to Add/Remove so events handlers don't switch token type
 		//		perfoming the add/remove action After the Adding/Removing modifications
