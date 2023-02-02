@@ -13,10 +13,9 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 		var spaces = base.GetTargetOptionsFromKnownSource( source, targetCriteria )
 			.ToList();
 
-		// Add towers
-		bool isTargetingInnate = targetCriteria is InnateTargetCriteria;
-		if( !isTargetingInnate) {
-			var towers = source
+		if(targetCriteria is not InnateTargetCriteria) {
+			// Add towers +3 range
+			SpaceState[] towers = source
 				.Where( s => 3 <= _self.Presence.CountOn( s ) )
 				.ToArray();
 			if(towers.Length > 0)
@@ -26,9 +25,10 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 		return spaces.Distinct();
 	}
 
+	// This class could be used on All Innates to identify them as innates.
 	public class InnateTargetCriteria : TargetCriteria {
-		public InnateTargetCriteria( TerrainMapper terrainMapper, int range, params string[] filters ) 
-			:base( terrainMapper, range, filters ) { }
+		public InnateTargetCriteria( TerrainMapper terrainMapper, int range, Spirit spirit, params string[] filters ) 
+			:base( terrainMapper, range, spirit, filters ) { }
 	}
 
 }

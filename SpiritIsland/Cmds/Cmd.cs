@@ -45,7 +45,7 @@ public static partial class Cmd {
 		}
 	} );
 	// -- Remove --
-	static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.Blight.Remove(1, RemoveReason.ReturnedToCard ));
+	static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.Blight.Remove(1));
 
 	static public SpaceAction RemoveExplorers(int count) => RemoveUpToNTokens(count,Human.Explorer);
 	static public SpaceAction RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);

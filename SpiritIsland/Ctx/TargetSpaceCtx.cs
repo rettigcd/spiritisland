@@ -154,7 +154,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task AddBlight(int delta, AddReason reason = AddReason.Added ) => Blight.Add( delta, reason );
 
 	/// <summary> Returns blight from the board to the blight card. </summary>
-	public Task RemoveBlight(int count=1) => Blight.Remove( count, RemoveReason.ReturnedToCard );
+	public Task RemoveBlight(int count=1) => Blight.Remove( count );
 
 	public int BlightOnSpace => Blight.Count;
 

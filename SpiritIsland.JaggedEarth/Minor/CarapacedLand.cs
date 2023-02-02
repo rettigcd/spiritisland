@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class CarapacedLand{ 
 		
@@ -16,15 +18,17 @@ public class CarapacedLand{
 // If targeting a land with beast, this Power has +1 range.
 public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
 
-	public Range0Or1ForTargetingBeast() : base(0, Target.Any ) {}
+	public Range0Or1ForTargetingBeast() : base(0) {}
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
 
 		var space = await ctx.Self.TargetsSpace( ctx, powerName+": Target Space"
 			, preselect: null
 			, _sourceCriteria
-			, ctx.TerrainMapper.Specify( _range, TargetFilter )
-			, ctx.TerrainMapper.Specify( _range+1, Target.Beast ) // extend 1 for beast
+			, new TargetCriteria[]{
+				ctx.TerrainMapper.Specify( _range ),
+				new TargetCriteria( ctx.TerrainMapper, _range+1, ctx.Self, Target.Beast ) // extend 1 for beast
+			}
 		);
 		return space == null ? null : ctx.Target(space);
 	}

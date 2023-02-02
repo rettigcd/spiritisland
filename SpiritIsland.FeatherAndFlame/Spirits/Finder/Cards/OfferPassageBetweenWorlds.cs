@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.FeatherAndFlame;
+﻿using System;
+
+namespace SpiritIsland.FeatherAndFlame;
 
 public class OfferPassageBetweenWorlds {
 
@@ -8,7 +10,7 @@ public class OfferPassageBetweenWorlds {
 
 		return ctx.SelectActionOption(
 			new SpaceAction( "Move up to 4 dahan between target land and one of your lands.",
-				xx => xx.MoveTokensOut( 4, ctx.TerrainMapper.Specify( int.MaxValue, Target.Presence ), Human.Dahan )
+				xx => xx.MoveTokensOut( 4, new TargetCriteria( ctx.TerrainMapper, int.MaxValue, ctx.Self, Target.Presence ), Human.Dahan )
 			),
 			Cmd.NextTimeDestroy2FewerDahan
 		);

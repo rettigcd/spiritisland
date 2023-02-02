@@ -30,6 +30,7 @@ public static class Target {
 	public const string TwoBeasts        = "2 Beasts";
 
 	public const string Presence         = "Presence";
+	public const string BlightAndInvaders= "Blight+Invaders";
 }
 
 static public class FilterEnumExtension {

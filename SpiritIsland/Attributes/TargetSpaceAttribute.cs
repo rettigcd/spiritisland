@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System;
+
+namespace SpiritIsland;
 
 public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
@@ -19,13 +21,6 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ){
 
-		//TokenClass[] preselects = powerName switch {
-		//	"Massive Flooding" => Invader.Explorer_Town,
-		//	"Flash Floods" => Invader.Any,
-		//	"Wash Away" => Invader.Explorer_Town,
-		//	_ => null
-		//};
-
 		var space = await ctx.Self.TargetsSpace( ctx, powerName+": Target Space", Preselect,
 			_sourceCriteria,
 			await GetCriteria( ctx )
@@ -34,7 +29,7 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 	}
 
 	protected virtual async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) 
-		=> ctx.TerrainMapper.Specify( await CalcRange( ctx ), _targetFilters );
+		=> new TargetCriteria( ctx.TerrainMapper, await CalcRange( ctx ), ctx.Self, _targetFilters );
 
 	/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
 	protected virtual Task<int> CalcRange( SelfCtx ctx ) => Task.FromResult( _range );

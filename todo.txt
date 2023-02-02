@@ -2,6 +2,9 @@
 ====  Clean Up Items  ====
 ==========================
 
+Replace ForRound actions with ModTokens
+	Need tokens to have different classes, so presence can be Presence && Beast && Badlands
+
 Weave Together
 	BUG - Massive Flooding did not recognize Weaved-Together SS source.  - Is this going off of Tokens.Keys and it hasn't been added yet.
 

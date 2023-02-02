@@ -2,10 +2,6 @@
 
 public class HeartOfTheWildfire : Spirit {
 
-	static HeartOfTheWildfire() {
-		SpaceFilterMap.Register(ThreateningFlames.BlightAndInvaders,(ctx)=>ctx.Tokens.Blight.Any && ctx.Tokens.HasInvaders());
-	}
-
 	public const string Name = "Heart of the Wildfire";
 
 	static Track FirePlantEnergy => new Track( "fire,plant", Element.Fire, Element.Plant ) {

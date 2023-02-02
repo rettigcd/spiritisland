@@ -6,7 +6,7 @@ public enum RemoveReason {
 	UsedUp,            // Wilds, Disease, Strife
 	Destroyed,
 	Replaced,          // with another token
-	ReturnedToCard,    // Blight
+//	ReturnedToCard,    // Blight - nothing cares that blight is returned to card
 	MovedFrom
 }
 

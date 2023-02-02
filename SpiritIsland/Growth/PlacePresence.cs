@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland;
 
+/// <summary> Growth Action </summary>
 public class PlacePresence : GrowthActionFactory {
 
 	#region constructors
@@ -32,11 +33,6 @@ public class PlacePresence : GrowthActionFactory {
 		GetTargetCriteria( ctx ), 
 		false
 	);
-	protected virtual TargetCriteria GetTargetCriteria( SelfCtx ctx ) => ctx.TerrainMapper.Specify( Range, FilterEnums );
-}
-
-public class PlacePresenceOnSelf : PlacePresence {
-	public PlacePresenceOnSelf( int range, params string[] filterEnum ):base(range,filterEnum) {}
-	protected override TargetCriteria GetTargetCriteria( SelfCtx ctx ) 
-		=> new TargetCriteria( ctx.TerrainMapper, Range, ctx.Self, FilterEnums);
+	protected virtual TargetCriteria GetTargetCriteria( SelfCtx ctx )
+		=> new TargetCriteria( ctx.TerrainMapper, Range, ctx.Self, FilterEnums );
 }

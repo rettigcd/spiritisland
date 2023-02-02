@@ -117,12 +117,8 @@ public abstract partial class Spirit : IOption {
 	}
 	public DualAsyncEvent<Spirit> EnergyCollected = new DualAsyncEvent<Spirit>();
 
-	// !!! Seems like this should be private / protected and not called from outside.
 
-
-	// !!! ALSO - This shouldn't be a SelfCtx because that starts a new Action
-	// !!! Create the SelfCtx inside the ResolveAction method
-	public async Task ResolveActions( GameState gs ) {
+	public async Task ResolveActions( GameState gs ) {  // !!! Seems like this should be private / protected and not called from outside.
 		Phase phase = gs.Phase;
 
 		while( GetAvailableActions( phase ).Any()
@@ -417,7 +413,7 @@ public abstract partial class Spirit : IOption {
 		// !!! there is a bug somewhere that allows duplicate cards in this list and crashes
 		//  (maybe from Unlock the Gates of Deepest Power)
 		var debug = new HashSet<PowerCard>();
-		foreach(var d in getPowerCardOptions())
+		foreach(PowerCard d in getPowerCardOptions())
 			if(debug.Contains(d)) throw new Exception($"Card {d.Name} found twice"); else debug.Add(d);
 
 		PowerCard[] powerCardOptions;
@@ -509,7 +505,7 @@ public abstract partial class Spirit : IOption {
 	// Overriden by Trickster because it costs them presence
 	public virtual async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
 		if(ctx.Blight.Any)
-			await ctx.Blight.Remove( count, RemoveReason.ReturnedToCard ); // !!! get rid of this ReturnedToCard bit
+			await ctx.Blight.Remove( count );
 	}
 
 	#endregion
