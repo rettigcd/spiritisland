@@ -64,10 +64,12 @@ class CommandBeastAction : IActionFactory {
 
 	public string Text => Name;
 
-	public Task ActivateAsync( SelfCtx ctx ) {
+	public async Task ActivateAsync( SelfCtx ctx ) {
 		Used = true;
-		var gameCtx = new GameCtx( ctx.GameState, ActionCategory.Special );
-		return new CommandBeasts().In().EachActiveLand().Execute( gameCtx );
+
+		await using var actionScope = ctx.GameState.StartAction( ActionCategory.Special ); // replace generic scope passed in.
+		GameCtx gameCtx = new GameCtx( ctx.GameState, actionScope );
+		await new CommandBeasts().In().EachActiveLand().Execute( gameCtx );
 	}
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
 	public bool Used { get; private set; }

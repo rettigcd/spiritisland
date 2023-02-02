@@ -5,7 +5,7 @@ public class Discord_Tests {
 	[Trait( "Token", "Strife" )]
 	[Trait( "Invader", "Ravage" )]
 	[Fact]
-	public void Level3_StrifedInvadersDamageEachOther() {
+	public async Task Level3_StrifedInvadersDamageEachOther() {
 
 		var fxt = new ConfigurableTestFixture();
 		// Given: City and Town
@@ -13,7 +13,9 @@ public class Discord_Tests {
 		fxt.InitTokens( space, "1C@3,1T@2" );
 
 		// When:
-		var task = new Discord().Level3( new GameCtx( fxt.GameState, ActionCategory.Fear ) );
+		await using var actionScope = fxt.GameState.StartAction( ActionCategory.Fear );
+
+		var task = new Discord().Level3( new GameCtx( fxt.GameState, actionScope ) );
 
 		fxt.Choose(space.Text); // select space to add strife
 		fxt.Choose("C@3"); // strife the city

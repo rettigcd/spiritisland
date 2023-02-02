@@ -17,14 +17,14 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 		int explorerCount = space.Sum( Human.Explorer );
 
-		var explorerTypes = space.OfClass( Human.Explorer ).Cast<IVisibleToken>().ToList();
+		List<HumanToken> explorerTypes = space.OfHumanClass( Human.Explorer ).ToList();
 
 		int removableCount = System.Math.Min( maxRemovable, explorerCount );
 		int removed = 0;
 		while(removed < removableCount) {
 			// Select type to not participate (strifed / non-strifed)
-			var explorerTypeToNotParticipate = explorerTypes.Count == 1 ? explorerTypes[0]
-				: (await _self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( space.Space, 1, explorerTypes.ToArray(), Present.Done ) ))?.Token;
+			HumanToken explorerTypeToNotParticipate = explorerTypes.Count == 1 ? explorerTypes[0]
+				: (HumanToken)( await _self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( space.Space, 1, explorerTypes.ToArray(), Present.Done ) ))?.Token;
 			if(explorerTypeToNotParticipate == null) break;
 
 			var countToNotParticipate = await _self.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );

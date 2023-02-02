@@ -8,7 +8,7 @@ public class PromisingFarmlands : BlightCardBase {
 		// Add 1 town and 1 city
 		Cmd.Multiple(Cmd.AddTown(1),Cmd.AddCity(1))
 			// to an inland land with no town/city
-			.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "an inland land with no town/city", x => x.IsInland && !x.Tokens.HasAny(Human.Town_City) ))
+			.To().OneLandPerBoard().Which( Has.InlandWithNoTownOrCity )
 	);
 
 }

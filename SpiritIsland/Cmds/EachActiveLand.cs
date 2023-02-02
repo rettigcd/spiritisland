@@ -5,11 +5,9 @@
 /// </summary>
 public class EachActiveLand : IExecuteOn<GameCtx> {
 
-	static readonly TargetSpaceCtxFilter AnyLand = new TargetSpaceCtxFilter( "any land", _ => true );
-
 	readonly IExecuteOn<TargetSpaceCtx> _spaceAction;
 	readonly string _preposition;
-	TargetSpaceCtxFilter _landCriteria = AnyLand;
+	TargetSpaceCtxFilter _landCriteria = Is.AnyLand;
 
 	public EachActiveLand( IExecuteOn<TargetSpaceCtx> spaceAction, string preposition ) {
 		_preposition = preposition;
@@ -20,8 +18,9 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 	public async Task Execute( GameCtx ctx ) {
 		var gameState = ctx.GameState;
 		for(int i = 0; i < gameState.Island.Boards.Length; ++i) {
-			SelfCtx decisionMaker = gameState.Spirits[i < gameState.Spirits.Length ? i : 0].BindSelf( gameState, ctx.ActionScope ); // use Head spirit for extra board - !!! this already defined somewhere
 			Board board = gameState.Island.Boards[i];
+			var spirit = BoardCtx.FindSpirit( gameState, board );
+			SelfCtx decisionMaker = spirit.BindSelf( gameState, ctx.ActionScope );
 			var spacesCtxs = ctx.GameState.Tokens
 				.PowerUp( board.Spaces )
 				.Where( ctx.ActionScope.TerrainMapper.IsInPlay )

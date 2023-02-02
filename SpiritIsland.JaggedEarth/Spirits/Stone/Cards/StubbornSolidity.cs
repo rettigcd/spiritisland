@@ -27,7 +27,7 @@ public class StubbornSolidity {
 
 		// Restore at end of round - !!! Could instead create a custom token that cleans up its own mess.
 		ctx.GameState.TimePasses_ThisRound.Push( (gs)=>{
-			foreach( HumanToken x in ctx.Tokens.OfClass(FrozenDahan).ToArray().Cast<HumanToken>())
+			foreach( HumanToken x in ctx.Tokens.OfHumanClass(FrozenDahan).ToArray())
 				ctx.Tokens.ReplaceAllWith( x, x.SwitchClass( Human.Dahan ) );
 			return Task.CompletedTask;
 		} );

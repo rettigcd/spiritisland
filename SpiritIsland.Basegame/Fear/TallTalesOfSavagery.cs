@@ -31,10 +31,10 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 	static async Task RemoveTownOr2Explorers_method( TargetSpaceCtx ctx ) { // !! maybe we should let the player choose in case town was strifed
 		var invaders = ctx.Invaders;
 		if(ctx.Tokens.Has( Human.Town ))
-			await invaders.RemoveLeastDesirable( Human.Town );
+			await invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Town );
 		else
-			await invaders.RemoveLeastDesirable( Human.Explorer );
-			await invaders.RemoveLeastDesirable( Human.Explorer );
+			await invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer );
+			await invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer );
 	}
 
 }

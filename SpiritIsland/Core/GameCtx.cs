@@ -3,7 +3,7 @@
 public class GameCtx {
 
 	public readonly GameState GameState;
-	public readonly UnitOfWork ActionScope;
+	public readonly UnitOfWork ActionScope; // !!! Check if GameCtx is ever used or are new action-scopes created with foreach land, board, spirit
 
 	#region constructor
 
@@ -11,12 +11,6 @@ public class GameCtx {
 	public GameCtx( GameState gs, UnitOfWork actionScope ) {
 		this.GameState = gs;
 		ActionScope = actionScope;
-	}
-
-	public GameCtx( GameState gs, ActionCategory cat ) {
-		// !!! Nothing that uses this is disposing of the UnitOfWork at the end  (France & Tests)
-		this.GameState = gs;
-		ActionScope = gs.StartAction( cat );
 	}
 
 	#endregion constructor

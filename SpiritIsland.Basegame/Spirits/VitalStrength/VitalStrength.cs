@@ -39,7 +39,7 @@ public class VitalStrength : Spirit {
 		readonly SpiritPresence presence;
 		public EarthsVitality( Spirit spirit ) { presence = spirit.Presence; }
 		public int DefendOnSpace( SpaceState space ) 
-			=> presence.IsSacredSite(space) ? 3 : 0; // !!! is default here correct ???
+			=> presence.IsSacredSite(space) ? 3 : 0;
 	}
 
 	void InitPresence( Board board, GameState gameState ){

@@ -26,7 +26,8 @@ public class AngryMobs : FearCardBase, IFearCard {
 			.Execute( gameCtx );
 
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
-		var token = (await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Replace 1 Town with 2 Explorers", ctx.Space, ctx.Tokens.OfClass(Human.Town).Cast<IVisibleToken>(), Present.Done ) ))?.Token;
+		var options = ctx.Tokens.OfHumanClass( Human.Town );
+		var token = (await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Replace 1 Town with 2 Explorers", ctx.Space, options, Present.Done ) ))?.Token;
 		if(token == null) return;
 
 		ctx.Tokens.Adjust( token, -1 );

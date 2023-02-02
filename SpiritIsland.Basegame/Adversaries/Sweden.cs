@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame;
+﻿using System.ComponentModel.Design;
+
+namespace SpiritIsland.Basegame;
 
 public class Sweden : IAdversary {
 
@@ -41,6 +43,8 @@ public class Sweden : IAdversary {
 			gameState.LandDamaged.ForGame.Add( async args => {
 				if(6 <= args.Damage) {
 					// !!! how do we take from card but not cascade?
+					if(args.Space.Blight.Blocked)
+
 					// !!! This shouldn't destroy presence?  Does it?
 					await args.Space.Blight.Bind(args.Space.ActionScope).Add(1);
 					args.GameState.LogDebug("Heavy Mining: additional blight on "+args.Space.Space.Text);
@@ -76,17 +80,19 @@ public class Sweden : IAdversary {
 
 		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
 		if(5 <= Level) {
-			var mod = new TokenAddedHandler("Sweden", args => {
+			var mod = new TokenAddedHandler("Sweden", async args => {
+				// When ravage adds at least 1 blight to a land
 				if(args.Reason == AddReason.Ravage && args.Token == Token.Blight) {
 					var noBuildAdjacents = args.AddedTo.Adjacent
 						.Where( adj => !adj.HasAny( Human.Town_City ) )
 						.ToArray();
 
-					var selection = noBuildAdjacents.FirstOrDefault(); // !!! user select which space to add it to
+					var spirit = BoardCtx.FindSpirit( args.GameState, args.AddedTo.Space.Board );
 
+					var selection = await spirit.Gateway.Decision(Select.Space.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.AddedTo.GetDefault( Human.Town ) ) );
 					if(selection != null) {
-						selection.AdjustDefault( Human.Town, 1 );
-						args.GameState.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Space.Text}.");
+						args.GameState.Tokens[selection].AdjustDefault( Human.Town, 1 );
+						args.GameState.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Text}.");
 					}
 				}
 			}, true );

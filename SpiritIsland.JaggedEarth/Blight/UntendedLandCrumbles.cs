@@ -16,7 +16,7 @@ public class UntendedLandCrumbles : BlightCardBase {
 		);
 
 	static IExecuteOn<BoardCtx> AddBlightAdjacentToBligtht =>
-		Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "land adjacent to blight" , ctx => ctx.Tokens.Adjacent.Any( adj => adj.Blight.Any ) ) );
+		Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( Is.AdjacentToBlight );
 
 	static IExecuteOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new DecisionOption<BoardCtx>(
 		$"Joinly pay {requiredEnergy} energy",

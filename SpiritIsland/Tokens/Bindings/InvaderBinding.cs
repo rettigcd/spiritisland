@@ -64,7 +64,7 @@ public class InvaderBinding {
 	#region Destroy
 
 	public virtual async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
-		var tokensToDestroy = Tokens.OfAnyHealthClass( tokenClasses ).ToArray();
+		var tokensToDestroy = Tokens.OfAnyHumanClass( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
 			await token.DestroyAll( Tokens );
 	}
@@ -73,7 +73,7 @@ public class InvaderBinding {
 		HumanToken[] invadersToDestroy;
 		while(
 			0 < count 
-			&& (invadersToDestroy = Tokens.OfAnyHealthClass( generics ).ToArray()).Length > 0
+			&& (invadersToDestroy = Tokens.OfAnyHumanClass( generics ).ToArray()).Length > 0
 		) {
 			var invader = invadersToDestroy
 				.OrderByDescending( x => x.FullHealth )
@@ -92,7 +92,7 @@ public class InvaderBinding {
 		int remaining = countToDestroy; // capture
 
 		while(0 < remaining) {
-			var next = Tokens.OfClass( invaderClass ).Cast<HumanToken>()
+			var next = Tokens.OfHumanClass( invaderClass )
 				.OrderByDescending( x => x.FullHealth )
 				.ThenBy( x => x.StrifeCount )
 				.ThenBy( x => x.FullDamage )
@@ -119,7 +119,7 @@ public class InvaderBinding {
 	/// Sticking on InvaderGroup is the only place I can think to put it.
 	/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 	/// </remarks>
-	public async Task RemoveLeastDesirable( params TokenClass[] removables ) {
+	public async Task RemoveLeastDesirable( RemoveReason reason = RemoveReason.Removed, params TokenClass[] removables ) {
 		if(Tokens.SumAny(removables) == 0) return;
 
 		var invaderToRemove = Tokens.OfAnyClass( removables )
@@ -130,7 +130,7 @@ public class InvaderBinding {
 			.FirstOrDefault();
 
 		if(invaderToRemove != null)
-			await Tokens.Remove( invaderToRemove, 1 );
+			await Tokens.Remove( invaderToRemove, 1, reason );
 	}
 
 	public Task Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed )
@@ -202,8 +202,8 @@ public class InvaderBinding {
 			counts.Adjust( token, -num );
 		}
 
-		void HealGroup( TokenClass group ) {
-			foreach(var token in counts.OfClass( group ).ToArray())
+		void HealGroup( HumanTokenClass group ) {
+			foreach(var token in counts.OfHumanClass( group ).ToArray())
 				RestoreAllToDefault( token );
 		}
 

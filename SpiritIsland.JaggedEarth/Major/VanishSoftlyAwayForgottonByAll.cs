@@ -31,11 +31,11 @@ public class VanishSoftlyAwayForgottonByAll {
 
 	static SpaceAction RemoveInvader => new SpaceAction(
 		"Remove 1 Invader", 
-		ctx => ctx.Invaders.RemoveLeastDesirable( Human.Invader )
+		ctx => ctx.Invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Invader )
 	);
 
 	static SpaceAction RemoveExplorerOrTown => new SpaceAction( "Remove 1 Explorer/Town", 
-		ctx => ctx.Invaders.RemoveLeastDesirable( Human.Explorer_Town )
+		ctx => ctx.Invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer_Town )
 	);
 
 

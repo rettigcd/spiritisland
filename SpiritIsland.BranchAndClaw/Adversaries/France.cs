@@ -74,24 +74,23 @@ public class France : IAdversary {
 	}
 
 	static void AddSlaveRebellionEvent( GameState gameState ) {
-		var gameCtx = new GameCtx( gameState, ActionCategory.Adversary );
-
+		
 		gameState.StartOfInvaderPhase.ForGame.Add( async gs => {
 			if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
-			if(gs.InvaderDeck.InvaderStage < 3) {
-				// On Each Board: Add Strife to 1 Town.
-				await Cmd.ForEachBoard( AddStrifeToTown ).Execute( gameCtx );
-			} else {
-				// On Each Board:
-				await Cmd.ForEachBoard(
-					Cmd.Multiple<BoardCtx>(
-						"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
-						DestroyTown,
-						Add2StrifeToCityOrTown,
-						StrifedRavage.StrifedInvadersTakeDamagePerStrife
-					)
-				).Execute( gameCtx );
-			}
+
+			DecisionOption<BoardCtx> cmd = (gs.InvaderDeck.InvaderStage < 3)
+				? AddStrifeToTown
+				: Cmd.Multiple<BoardCtx>(
+					"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
+					DestroyTown,
+					Add2StrifeToCityOrTown,
+					StrifedRavage.StrifedInvadersTakeDamagePerStrife
+				);
+
+			await using var actionScope = gs.StartAction( ActionCategory.Adversary );
+			GameCtx gameCtx = new GameCtx( gameState, actionScope );
+			await cmd.ForEachBoard().Execute( gameCtx );
+
 		} );
 	}
 

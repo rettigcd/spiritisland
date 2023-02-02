@@ -15,7 +15,8 @@ public class FranceExplorer : ExploreEngine {
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
 		await DoExplore( gameState, tokenSpacesToExplore, false );
 
-		var gameCtx = new GameCtx( gameState, ActionCategory.Adversary ); // 1 action for all these things.
+		await using var scope = gameState.StartAction( ActionCategory.Adversary );
+		GameCtx gameCtx = new GameCtx( gameState, scope );
 
 		if(hasFrontierExploration)
 			await DoFrontierExploration( gameState, tokenSpacesToExplore );

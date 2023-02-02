@@ -20,7 +20,7 @@ public class ActionableSpaceState : SpaceState {
 	public async Task AdjustHealthOfAll( int delta, params HumanTokenClass[] tokenClasses ) {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
-			var tokens = OfClass( tokenClass ).Cast<HumanToken>();
+			var tokens = OfHumanClass( tokenClass );
 			var orderedTokens = delta < 0
 				? tokens.OrderBy( x => x.FullHealth ).ToArray()
 				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
@@ -90,18 +90,17 @@ public class ActionableSpaceState : SpaceState {
 
 
 	/// <summary> returns null if no token removed </summary>
-	public virtual async Task<PublishTokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
-		var cmd = await Remove_Silent( token, count, reason );
-		if(cmd != null) {
-			var e = cmd.MakeEvent(); // !!! clean this up.  Don't need cmd and event
+	public virtual async Task<TokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+		var e = await Remove_Silent( token, count, reason );
+		if(e != null) {
 			foreach(var handler in Keys.OfType<IHandleTokenRemoved>().ToArray())
 				await handler.HandleTokenRemoved( e );
 		}
-		return cmd;
+		return e;
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
-	protected async Task<PublishTokenRemovedArgs> Remove_Silent( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	protected async Task<TokenRemovedArgs> Remove_Silent( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
@@ -117,7 +116,8 @@ public class ActionableSpaceState : SpaceState {
 		this[removingArgs.Token] -= removingArgs.Count;
 
 		// Post-Remove event
-		return new PublishTokenRemovedArgs( removingArgs.Token, reason, ActionScope, this, removingArgs.Count );
+		return new TokenRemovedArgs( removingArgs.Token, reason, ActionScope, this, removingArgs.Count );
+
 	}
 
 	public async Task AddStrifeTo( HumanToken invader, int count = 1 ) {

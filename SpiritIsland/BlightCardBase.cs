@@ -26,8 +26,10 @@ public abstract class BlightCardBase : IBlightCard {
 
 			// Execute Immediate command
 			var immediately = Immediately;
-			if(immediately != null)
-				await immediately.Execute( new GameCtx( gs, ActionCategory.Blight ) );
+			if(immediately != null) {
+				await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Blight );
+				await immediately.Execute( new GameCtx( gs, actionScope ) );
+			}
 
 		} else
 			Side2Depleted(gs);

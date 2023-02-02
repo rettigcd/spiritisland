@@ -2,8 +2,6 @@
 
 static public class PowerCardExtensions_ForWinForms {
 
-	// !!! move this into the UI / WebForms project
-
 	public static string GetImageFilename( this PowerCard card ) {
 		string filename = card.Name
 			.Replace( ',', '_' )

@@ -320,7 +320,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	public Task RemoveInvader( TokenClass group ) => Invaders.RemoveLeastDesirable( group );
+	public Task RemoveInvader( TokenClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
 
 	/// <summary> adds Target to Fear context </summary>
 	public override void AddFear( int count ) { 

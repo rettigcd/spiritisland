@@ -12,7 +12,7 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 		_selfCtx = selfCtx;
 	}
 
-	public override async Task<PublishTokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public override async Task<TokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(reason != RemoveReason.Destroyed)
 			return await base.Remove( token, count, reason );
 

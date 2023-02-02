@@ -4,7 +4,7 @@ public class ScapeGoats_Tests {
 
 	[Trait("Invaders","Ravage")]
 	[Fact]
-	public void Level2_StrifedInvadersDoDamage() {
+	public async Task Level2_StrifedInvadersDoDamage() {
 
 		var fxt = new ConfigurableTestFixture();
 		// Given: Strifed City with 3 explorers
@@ -16,7 +16,8 @@ public class ScapeGoats_Tests {
 		fxt.InitTokens( townSpace, "1T@2^,3E@1" );
 
 		// When:
-		var task = new Scapegoats().Level2(new GameCtx(fxt.GameState, ActionCategory.Default));
+		await using var scope = fxt.GameState.StartAction( ActionCategory.Invader );
+		Task task = new Scapegoats().Level2(new GameCtx(fxt.GameState, scope));
 
 		// Then: city destroys 2 explorers, leaving 1
 		fxt.GameState.Tokens[citySpace].InvaderSummary().ShouldBe("1C@3^,1E@1");

@@ -3,7 +3,7 @@
 public class SenseOfDread_Tests {
 
 	[Fact]
-	public void Remove1Explorer() {
+	public async Task Remove1Explorer() {
 		var fix = new ConfigurableTestFixture();
 		var ravageSpace = fix.GameState.Island.Boards[0][5];
 		fix.InitRavageCard( ravageSpace.BuildInvaderCard() );
@@ -12,7 +12,8 @@ public class SenseOfDread_Tests {
 		fix.InitTokens(ravageSpace, "2E@1");
 
 		// When: activeate fear card
-		var task = new SenseOfDread().Level1( new GameCtx(fix.GameState,ActionCategory.Default ) );
+		await using var scope = fix.GameState.StartAction(ActionCategory.Invader);
+		var task = new SenseOfDread().Level1( new GameCtx(fix.GameState,scope ) );
 
 		// And remove 1 explorer from ravage space
 		fix.Choose( ravageSpace.Text ); // select ravage space

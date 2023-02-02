@@ -37,7 +37,7 @@ public static partial class Cmd {
 	// -- Screwy Strife Stuff --
 	static public DecisionOption<GameCtx> StrifePenalizesHealth => new DecisionOption<GameCtx>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
 	static public SpaceAction EachStrifeDamagesInvader => new SpaceAction( "Invaders take 1 damage per strife", async ctx=>{ 
-		var tokens = ctx.Tokens.OfAnyHealthClass( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
+		var tokens = ctx.Tokens.OfAnyHumanClass( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
 		foreach(var token in tokens) {
 			int count = ctx.Tokens[token];
 			while(0 < count--)

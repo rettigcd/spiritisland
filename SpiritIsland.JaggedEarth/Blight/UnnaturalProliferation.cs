@@ -24,7 +24,7 @@ public class UnnaturalProliferation : BlightCardBase {
 	);
 
 	static IExecuteOn<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
-		.To().OneLandPerBoard().Which( new TargetSpaceCtxFilter( "a land with dahan.", tokens => tokens.Dahan.Any ) );
+		.To().OneLandPerBoard().Which( Has.Dahan );
 
 	static DecisionOption<BoardCtx> Add2CitiesToLandWithFewest => new DecisionOption<BoardCtx>(
 		"Add 2 cities to the land with fewest town/city.", async ctx => {

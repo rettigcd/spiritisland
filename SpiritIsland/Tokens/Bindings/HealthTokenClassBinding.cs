@@ -21,7 +21,7 @@ public class HealthTokenClassBinding_NoEvents {
 	#endregion
 
 	/// <summary> All of the Normal Tokens (not frozen, dream) </summary>
-	public HumanToken[] NormalKeys => _tokens.OfHealthClass( _tokenClass );
+	public HumanToken[] NormalKeys => _tokens.OfHumanClass( _tokenClass );
 
 	public void Init( int count ) => _tokens.InitDefault( Human.Dahan, count );
 

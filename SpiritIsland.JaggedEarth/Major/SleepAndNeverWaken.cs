@@ -32,8 +32,8 @@ public class SleepAndNeverWaken {
 
 		SpaceToken[] CalcOptions() => fromSpaces
 			.SelectMany(
-				space => ctx.GameState.Tokens[space].OfClass(Human.Explorer)
-					.Select( t => new SpaceToken(space, (IVisibleToken)t ) )
+				space => ctx.GameState.Tokens[space].OfHumanClass(Human.Explorer)
+					.Select( t => new SpaceToken(space, t ) )
 			)
 			.ToArray();
 

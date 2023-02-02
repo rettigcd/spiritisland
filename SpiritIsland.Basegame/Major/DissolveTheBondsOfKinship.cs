@@ -35,7 +35,7 @@ public class DissolveTheBondsOfKinship {
 		int explorerCount = ctx.Tokens.Sum( Human.Explorer );
 		while(explorerCount > 0) {
 			// select token
-			var tokenOptions = ctx.Tokens.OfClass( Human.Explorer ).Cast<IVisibleToken>().ToArray();
+			var tokenOptions = ctx.Tokens.OfHumanClass( Human.Explorer ).ToArray();
 
 			var token = (await ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( ctx.Space, explorerCount, tokenOptions, Present.Always ) ))?.Token;
 			if(token == null) break;
@@ -56,7 +56,7 @@ public class DissolveTheBondsOfKinship {
 		}
 
 		static int GetAttackDamageFrom( TargetSpaceCtx ctx, HumanTokenClass cc ) {
-			return ctx.Tokens.OfClass( cc ).Sum( t => ctx.Tokens[t] * ctx.Tokens.AttackDamageFrom1( (HumanToken)t ) );
+			return ctx.Tokens.OfHumanClass( cc ).Sum( t => ctx.Tokens[t] * ctx.Tokens.AttackDamageFrom1( (HumanToken)t ) );
 		}
 	}
 

@@ -11,7 +11,7 @@ class HabsburgMakeTownsDurable
 		// If removing last blight from space
 		if(args.Token == Token.Blight && !args.RemovedFrom.Blight.Any)
 			// Switch all towns to Durable
-			foreach(HumanToken t in args.RemovedFrom.OfClass( Human.Town ).Cast<HumanToken>())
+			foreach(HumanToken t in args.RemovedFrom.OfHumanClass( Human.Town ))
 				args.RemovedFrom.ReplaceAllWith( t, new HabsburgDurableToken( t ) );
 		return Task.CompletedTask;
 	}

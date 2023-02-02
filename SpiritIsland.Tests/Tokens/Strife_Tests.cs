@@ -79,7 +79,7 @@ public class Strife_Tests {
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
 		counts.Bind( default ).AddStrifeTo( StdTokens.Town ).Wait();
-		var strifedTown = (IVisibleToken)counts.OfClass(Human.Town).Single( k => k != StdTokens.Town );
+		var strifedTown = (IVisibleToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
 		var destination = space.Adjacent.First( IsInPlay );

@@ -53,7 +53,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
-		SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) ); // !!! need description
+		SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
 
 		if(st != null) {
 			ctx.Self.Gateway.Preloaded = st;
@@ -70,7 +70,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 	readonly HashSet<Space> _disallowedSpaces = new HashSet<Space>();
 
 	// configurable
-	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= new TargetSpaceCtxFilter( "any land", _ => true );
+	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;
 
 	readonly string _landPreposition;
 	Present _present = Present.Always;

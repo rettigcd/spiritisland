@@ -47,15 +47,16 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Enumeration / Detection(HaS) / Summing
 
-	protected IEnumerable<IToken> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
-	protected IEnumerable<IToken> OfClassInternal( TokenClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
-	protected IEnumerable<IToken> OfAnyClassInternal( params TokenClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
-
 	public IToken[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
 	public IToken[] OfClass( TokenClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
 	public IToken[] OfAnyClass( params TokenClass[] classes ) => OfAnyClassInternal( classes ).ToArray();
-	public HumanToken[] OfHealthClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
-	public HumanToken[] OfAnyHealthClass( params HumanTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HumanToken>().ToArray();
+
+	public HumanToken[] OfHumanClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
+	public HumanToken[] OfAnyHumanClass( params HumanTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HumanToken>().ToArray();
+
+	protected IEnumerable<IToken> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
+	protected IEnumerable<IToken> OfClassInternal( TokenClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
+	protected IEnumerable<IToken> OfAnyClassInternal( params TokenClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
 
 	public bool Has( TokenClass inv ) => OfClassInternal( inv ).Any();
 	public bool Has( TokenCategory cat ) => OfCategoryInternal( cat ).Any();

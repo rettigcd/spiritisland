@@ -138,7 +138,7 @@ public class AbsoluteStasis_Tests {
 		destination.DoAnExplore(cfg.GameState).Wait(8);
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfClass(Human.Explorer).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfHumanClass(Human.Explorer).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -159,7 +159,7 @@ public class AbsoluteStasis_Tests {
 		destination.DoAnExplore( cfg.GameState ).Wait( 8 );
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfClass( Human.Explorer ).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].OfHumanClass( Human.Explorer ).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Build

@@ -41,7 +41,7 @@ class FranceBuilder : BuildEngine {
 		// remove explorers
 		int numToReplace = explorerCount - 1;
 		while(numToReplace > 0) {
-			var explorerToken = tokens.OfClass( Human.Explorer ).Cast<HumanToken>().OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
+			var explorerToken = tokens.OfHumanClass( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
 			int count = Math.Min( tokens[explorerToken], numToReplace );
 			// Replace
 			tokens.Adjust( explorerToken, -count );
