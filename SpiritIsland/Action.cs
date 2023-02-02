@@ -70,7 +70,6 @@ public enum ActionCategory {
 	Spirit_SpecialRule, // which specified After X, do Y
 	Spirit_PresenceTrackIcon,
 	//	GainEnery, // specifiec on preence track
-	//	PlayingAllPowerCards, // !!! Is this real? It means Finder couldn't switch between cards.
 	//	SpiritualRituals,
 
 	Invader,

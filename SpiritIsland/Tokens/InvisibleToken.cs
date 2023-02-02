@@ -19,7 +19,7 @@ public class InvisibleToken : IToken, TokenClass {
 
 	public TokenCategory Category { get; }
 
-	string IOption.Text => Label;
+//	string IOption.Text => Label;
 
 	#endregion
 

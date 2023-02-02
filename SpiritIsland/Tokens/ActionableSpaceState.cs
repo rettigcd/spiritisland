@@ -63,7 +63,7 @@ public class ActionableSpaceState : SpaceState {
 	public async Task<TokenAddedArgs> Add( IVisibleToken token, int count, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = Add_Silent( token, count, addReason );
 		if(addResult != null) {
-			addResult.GameState = this._api.AccessGameState();
+			addResult.GameState = _gameState;
 			foreach(var handler in Keys.OfType<IHandleTokenAdded>().ToArray())
 				await handler.HandleTokenAdded( addResult );
 		}

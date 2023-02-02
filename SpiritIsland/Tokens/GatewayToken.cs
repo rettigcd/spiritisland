@@ -18,6 +18,6 @@ public class GatewayToken : IToken {
 		From.LinkedViaWays = null;
 	}
 	public TokenClass Class => Token.OpenTheWays;
-	public string Text => "Gateway";
+	// public string Text => "Gateway";
 
 }

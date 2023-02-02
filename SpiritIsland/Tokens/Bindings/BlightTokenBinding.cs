@@ -17,7 +17,7 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
 	class BlightToken : ITokenWithEndOfRoundCleanup {
 		public TokenClass Class => ActionModTokenClass.Singleton;
-		public string Text => "block blight";
+		// public string Text => "block blight";
 		public void EndOfRoundCleanup( SpaceState spaceState ) {
 			spaceState.Init(this,0);
 		}

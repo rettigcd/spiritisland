@@ -139,7 +139,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Event-Generating Token Changes
 
-	public GameState AccessGameState() => _api.AccessGameState();
+	public GameState AccessGameState() => _gameState;
 
 	#endregion
 

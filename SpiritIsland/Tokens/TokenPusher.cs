@@ -70,7 +70,7 @@ public class TokenPusher {
 
 
 	public TokenPusher AddCustomMoveAction( Func<IToken,Space,Space,Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
-		this._customAction = customeAction;
+		_customAction = customeAction;
 		return this;
 	}
 	Func<IToken,Space,Space,Task> _customAction;

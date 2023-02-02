@@ -3,13 +3,12 @@
 public class TokenRemover {
 
 	public TokenRemover( TargetSpaceCtx ctx ) {
-		this.ctx = ctx;
-		this.source = ctx.Space;
+		_ctx = ctx;
 	}
 
 	public TokenRemover AddGroup(int count,params TokenClass[] groups ) {
 
-		count = System.Math.Min( count, ctx.GameState.Tokens[source].SumAny(groups) );
+		count = System.Math.Min( count, _ctx.Tokens.SumAny(groups) );
 
 		int index = sharedGroupCounts.Count;
 		sharedGroupCounts.Add( count );
@@ -24,7 +23,7 @@ public class TokenRemover {
 
 	async Task Exec( Present present ) {
 
-		var counts = ctx.Target(source).Tokens;
+		var counts = _ctx.Tokens;
 		IVisibleToken[] GetTokens() {
 			var groupsWithRemainingCounts = indexLookupByGroup
 				.Where( pair => sharedGroupCounts[pair.Value] > 0 )
@@ -38,11 +37,11 @@ public class TokenRemover {
 		IVisibleToken[] tokens;
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
-			var token = (await ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( source, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
+			var token = (await _ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( _ctx.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
 			if(token == null) break;
 
 			// Remove
-			await ctx.Target(source).Remove( token, 1, RemoveReason.Removed);
+			await _ctx.Remove( token, 1, RemoveReason.Removed);
 
 			// Book keeping
 			--sharedGroupCounts[indexLookupByGroup[token.Class]]; // decrement count
@@ -52,10 +51,7 @@ public class TokenRemover {
 
 	#region private
 
-	// !!! why doesn't this use a TargeSpaceCtx?
-
-	protected readonly SelfCtx ctx;
-	protected readonly Space source;
+	protected readonly TargetSpaceCtx _ctx;
 	protected readonly List<Func<Space,bool>> destinationFilters = new List<Func<Space, bool>>();
 
 	// if we remove 3 explorer/town,
