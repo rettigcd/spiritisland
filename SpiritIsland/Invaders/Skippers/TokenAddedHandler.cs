@@ -4,7 +4,7 @@ public interface IHandleTokenAdded {
 	Task HandleTokenAdded( ITokenAddedArgs args );
 }
 
-public class TokenAddedHandler : BaseModToken, IHandleTokenAdded {
+public class TokenAddedHandler : SelfCleaningToken, IHandleTokenAdded {
 	readonly Func<ITokenAddedArgs, Task> _func;
 	readonly Action<ITokenAddedArgs> _action;
 	public TokenAddedHandler(Action<ITokenAddedArgs> handler, bool keepForever = false) : base(keepForever) {

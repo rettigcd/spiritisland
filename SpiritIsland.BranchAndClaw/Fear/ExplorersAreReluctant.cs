@@ -27,7 +27,7 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 
 }
 
-sealed public class SkipLowestNumberedExplore : BaseModToken, ISkipExploreTo {
+sealed public class SkipLowestNumberedExplore : SelfCleaningToken, ISkipExploreTo {
 
 	public SkipLowestNumberedExplore() : base() {}
 

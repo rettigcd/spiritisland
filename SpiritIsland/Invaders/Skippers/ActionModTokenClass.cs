@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-class ActionModTokenClass : TokenClass {
+public class ActionModTokenClass : TokenClass {
 
 	public static readonly TokenClass Singleton = new ActionModTokenClass();
 

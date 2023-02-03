@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops either 1 or ALL explores </summary>
-public class SkipExploreTo : BaseModToken, ISkipExploreTo {
+public class SkipExploreTo : SelfCleaningToken, ISkipExploreTo {
 
 	public SkipExploreTo():base() { }
 

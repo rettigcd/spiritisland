@@ -1,18 +1,20 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Base class Token for Skips and mods. Hidden
+/// Cleans up itself at end of round.
+/// Base class Token for Skips and mods.
 /// </summary>
 /// <remarks>
 /// Provides .Class, and ability to auto-cleanup at end of round.
 /// </remarks>
-public class BaseModToken : ITokenWithEndOfRoundCleanup {
+public class SelfCleaningToken : ITokenWithEndOfRoundCleanup {
 
-	protected BaseModToken() {
+	/// <summary> Automatically removes token at end of round. </summary>
+	protected SelfCleaningToken() {
 		_keepForever = false;
 	}
 
-	protected BaseModToken( bool keepForever ) {
+	protected SelfCleaningToken( bool keepForever ) {
 		_keepForever = keepForever;
 	}
 

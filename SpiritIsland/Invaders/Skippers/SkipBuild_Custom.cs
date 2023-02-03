@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-sealed public class SkipBuild_Custom : BaseModToken, ISkipBuilds {
+sealed public class SkipBuild_Custom : SelfCleaningToken, ISkipBuilds {
 
 	public SkipBuild_Custom( string label, bool stopAll, Func<GameCtx, SpaceState, TokenClass, bool> func ) : base() {
 		Text = label; 

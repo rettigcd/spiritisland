@@ -1,10 +1,12 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 class HabsburgMakeTownsDurable
-	: BaseModToken
+	: IToken
 	, IHandleTokenRemoved
 	, IHandleAddingToken {
-	public HabsburgMakeTownsDurable() : base( true ) { }
+	public HabsburgMakeTownsDurable(){ }
+
+	public TokenClass Class => ActionModTokenClass.Singleton;
 
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
 		// Level 4 - Durable / Herds Thrive

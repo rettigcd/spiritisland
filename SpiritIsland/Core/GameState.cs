@@ -201,7 +201,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	public void AddToAllActiveSpaces( ITokenWithEndOfRoundCleanup token ) {
+	public void AddToAllActiveSpaces( IToken token ) {
 		foreach(SpaceState space in AllActiveSpaces)
 			space.Adjust( token, 1 );
 	}

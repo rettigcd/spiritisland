@@ -26,7 +26,7 @@ public class CallToTrade {
 		ctx.Tokens.Adjust( new ReplaceRavageWithBuild(), 1);
 	}
 
-	class ReplaceRavageWithBuild : BaseModToken, ISkipRavages {
+	class ReplaceRavageWithBuild : SelfCleaningToken, ISkipRavages {
 
 		public ReplaceRavageWithBuild() : base() { }
 

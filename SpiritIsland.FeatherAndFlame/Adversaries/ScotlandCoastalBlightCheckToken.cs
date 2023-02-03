@@ -1,9 +1,12 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-class ScotlandCoastalBlightCheckToken : BaseModToken, IHandleTokenAdded {
+class ScotlandCoastalBlightCheckToken : IHandleTokenAdded, IToken {
+
 	const string Name = "Runoff and Bilgewater";
-	public ScotlandCoastalBlightCheckToken() : base( true ) {
-	}
+
+	public ScotlandCoastalBlightCheckToken() {}
+
+	public TokenClass Class => ActionModTokenClass.Singleton;
 
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
 		// After a Ravage Action adds Blight to a Coastal Land,

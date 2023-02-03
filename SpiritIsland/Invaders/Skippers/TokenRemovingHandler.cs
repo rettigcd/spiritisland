@@ -4,7 +4,7 @@ public interface IHandleRemovingToken {
 	Task ModifyRemoving( RemovingTokenArgs args );
 }
 
-public class TokenRemovingHandler : BaseModToken, IHandleRemovingToken {
+public class TokenRemovingHandler : SelfCleaningToken, IHandleRemovingToken {
 
 	readonly Action<RemovingTokenArgs> _action;
 	readonly Func<RemovingTokenArgs,Task> _func;

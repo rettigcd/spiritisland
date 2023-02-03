@@ -13,11 +13,10 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 
 	public new BlightTokenBinding Bind(UnitOfWork guid) => new BlightTokenBinding(_tokens, guid);
 
-	static readonly UniqueToken blockBlightToken = new UniqueToken( "block-blight", 'X', Img.None, TokenCategory.None );
+	static readonly BlockBlightToken blockBlightToken = new BlockBlightToken(); // !!! Needs tests that removes at end of round.
 
-	class BlightToken : ITokenWithEndOfRoundCleanup {
+	class BlockBlightToken : ITokenWithEndOfRoundCleanup {
 		public TokenClass Class => ActionModTokenClass.Singleton;
-		// public string Text => "block blight";
 		public void EndOfRoundCleanup( SpaceState spaceState ) {
 			spaceState.Init(this,0);
 		}

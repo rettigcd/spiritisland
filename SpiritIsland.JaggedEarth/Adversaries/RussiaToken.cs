@@ -1,12 +1,14 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
+class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 
 	#region construction
 
-	public RussiaToken() : base( true ) { }
+	public RussiaToken() {}
 
 	#endregion
+
+	public TokenClass Class => ActionModTokenClass.Singleton;
 
 	public bool HasASenseOfPendingDisaster { get; set; }
 

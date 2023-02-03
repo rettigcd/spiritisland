@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SkipAnyInvaderAction : BaseModToken, ISkipRavages, ISkipBuilds, ISkipExploreTo {
+public class SkipAnyInvaderAction : SelfCleaningToken, ISkipRavages, ISkipBuilds, ISkipExploreTo {
 
 	readonly Func<GameState, SpaceState, Task> _alternativeAction;
 	readonly Spirit _spirit;

@@ -4,7 +4,7 @@ public interface IHandleAddingToken {
 	void ModifyAdding( AddingTokenArgs args );
 }
 
-public class TokenAddingHandler : BaseModToken, IHandleAddingToken {
+public class TokenAddingHandler : SelfCleaningToken, IHandleAddingToken {
 
 	readonly Action<AddingTokenArgs> _action;
 
