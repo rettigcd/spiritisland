@@ -63,7 +63,7 @@ public class Ocean : Spirit {
 
 		AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
-		var drownMod = new TokenAddedHandler( "Ocean", Drowning, true);
+		var drownMod = new TokenAddedHandler( Drowning, true);
 		foreach(Board b in gameState.Island.Boards)
 			gameState.Tokens[b.Ocean].Adjust( drownMod, 1 );
 	}

@@ -63,7 +63,7 @@ public static class Has {
 }
 
 public static class Is {
-	static public XFilter AnyLand = new XFilter( "any land", _ => true );
+	static public XFilter AnyLand => new XFilter( "any land", _ => true );
 
 	static public XFilter Inland => new XFilter( "Inland", x => !x.IsCoastal && x.IsInPlay );
 	static public XFilter Coastal => new XFilter( "coastal land", ctx => ctx.IsCoastal );

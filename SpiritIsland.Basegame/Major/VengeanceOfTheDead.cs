@@ -19,7 +19,7 @@ public class VengeanceOfTheDead {
 				// 1 damage per token destroyed
 				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 		}
-		ctx.Tokens.Adjust( new TokenRemovedHandler(Name, DealVengenceDamage ), 1 );
+		ctx.Tokens.Adjust( new TokenRemovedHandler( DealVengenceDamage ), 1 );
 
 		// if you have 3 animal
 		if(await ctx.YouHave( "3 animal" ))

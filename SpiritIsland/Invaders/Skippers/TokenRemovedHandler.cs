@@ -7,10 +7,10 @@ public interface IHandleTokenRemoved {
 public class TokenRemovedHandler : BaseModToken, IHandleTokenRemoved {
 	readonly Func<ITokenRemovedArgs, Task> _func;
 	readonly Action<ITokenRemovedArgs> _action;
-	public TokenRemovedHandler( string label, Action<ITokenRemovedArgs> handler, bool keepForever = false ) : base( label, UsageCost.Free, keepForever ) {
+	public TokenRemovedHandler( Action<ITokenRemovedArgs> handler, bool keepForever = false ) : base( keepForever ) {
 		_action = handler;
 	}
-	public TokenRemovedHandler( string label, Func<ITokenRemovedArgs, Task> handler, bool keepForever = false ) : base( label, UsageCost.Free, keepForever ) {
+	public TokenRemovedHandler( Func<ITokenRemovedArgs, Task> handler, bool keepForever = false ) : base( keepForever ) {
 		_func = handler;
 	}
 

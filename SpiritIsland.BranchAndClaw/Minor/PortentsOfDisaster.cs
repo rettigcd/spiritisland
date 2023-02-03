@@ -21,7 +21,7 @@ public class PortentsOfDisaster {
 			}
 			return Task.CompletedTask;
 		}
-		ctx.Tokens.Adjust( new TokenRemovedHandler( Name, Add1MoreFearForFirstDestroyedInvader ), 1 );
+		ctx.Tokens.Adjust( new TokenRemovedHandler( Add1MoreFearForFirstDestroyedInvader ), 1 );
 
 		return Task.CompletedTask;
 	}

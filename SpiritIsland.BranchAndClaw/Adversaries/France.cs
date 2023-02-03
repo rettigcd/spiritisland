@@ -59,7 +59,7 @@ public class France : IAdversary {
 			}
 		}
 
-		gameState.AddToAllActiveSpaces( new TokenRemovedHandler("France",DoFranceStuff,true) );
+		gameState.AddToAllActiveSpaces( new TokenRemovedHandler(DoFranceStuff,true) );
 	}
 
 	static void EarlyPlantation( GameState gameState ) {

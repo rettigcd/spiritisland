@@ -7,10 +7,10 @@ public interface IHandleTokenAdded {
 public class TokenAddedHandler : BaseModToken, IHandleTokenAdded {
 	readonly Func<ITokenAddedArgs, Task> _func;
 	readonly Action<ITokenAddedArgs> _action;
-	public TokenAddedHandler( string label, Action<ITokenAddedArgs> handler, bool keepForever = false ):base(label, UsageCost.Free, keepForever ) {
+	public TokenAddedHandler(Action<ITokenAddedArgs> handler, bool keepForever = false) : base(keepForever) {
 		_action = handler;
 	}
-	public TokenAddedHandler( string label, Func<ITokenAddedArgs, Task> handler, bool keepForever = false ) : base( label, UsageCost.Free, keepForever ) {
+	public TokenAddedHandler(Func<ITokenAddedArgs, Task> handler, bool keepForever = false) : base(keepForever) {
 		_func = handler;
 	}
 

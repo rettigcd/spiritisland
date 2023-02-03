@@ -55,7 +55,7 @@ public class FinderOfPathsUnseen : Spirit {
 		// !!! change this to a setup-action where spirit places a presence on space 1 of 1 board.
 		Presence.Adjust( gameState.Tokens[board[1]], 1 );
 
-		gameState.AddToAllActiveSpaces( new TokenRemovedHandler( "Responsibilitiy to the Dead", ResponsibilityToTheDead_Handler, true ) );
+		gameState.AddToAllActiveSpaces( new TokenRemovedHandler( ResponsibilityToTheDead_Handler, true ) );
 
 		_openTheWays = new OpenTheWays( this );
 		gameState.EndOfAction.ForGame.Add( _openTheWays.CheckPresenceAtBothEnds );

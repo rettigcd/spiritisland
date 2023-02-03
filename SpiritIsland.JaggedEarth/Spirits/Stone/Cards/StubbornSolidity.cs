@@ -20,7 +20,7 @@ public class StubbornSolidity {
 			if(args.TokenAdded.Class == Human.Dahan && args.AddedTo == ctx.Tokens && args.TokenAdded is HumanToken ht)
 				args.AddedTo.ReplaceNWith( args.Count, ht, ht.SwitchClass( FrozenDahan ) );
 		} );
-		ctx.Tokens.Adjust( new TokenAddedHandler(Name, args => {
+		ctx.Tokens.Adjust( new TokenAddedHandler( args => {
 			if(args.Token.Class == Human.Dahan && args.Token is HumanToken ht)
 				args.AddedTo.ReplaceNWith( args.Count, ht, ht.SwitchClass( FrozenDahan ) );
 		} ), 1 );

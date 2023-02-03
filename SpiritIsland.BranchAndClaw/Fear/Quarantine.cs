@@ -14,7 +14,7 @@ public class Quarantine : FearCardBase, IFearCard {
 	public Task Level2( GameCtx ctx )
 		=> Cmd.Multiple(
 			Cmd.Skip1Explore( Name ).In().EachActiveLand().Which( Is.Coastal ),
-			Cmd.Adjust1Token( "are not a source of invaders when exploring", new SkipExploreFrom( Name ) ).In().EachActiveLand().Which( Has.Disease )
+			Cmd.Adjust1Token( "are not a source of invaders when exploring", new SkipExploreFrom() ).In().EachActiveLand().Which( Has.Disease )
 		)
 		.Execute(ctx);
 

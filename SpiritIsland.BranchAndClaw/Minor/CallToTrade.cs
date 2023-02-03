@@ -28,7 +28,11 @@ public class CallToTrade {
 
 	class ReplaceRavageWithBuild : BaseModToken, ISkipRavages {
 
-		public ReplaceRavageWithBuild() : base( Name, UsageCost.Free ) { }
+		public ReplaceRavageWithBuild() : base() { }
+
+		/// <summary> Used by skips to determine which skip to use. </summary>
+		public UsageCost Cost => UsageCost.Free;
+
 
 		public Task<bool> Skip( GameState gameState, SpaceState space ) {
 			space.Adjust( this, -1 );

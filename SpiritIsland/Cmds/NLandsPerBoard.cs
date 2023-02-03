@@ -100,7 +100,7 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 
 	readonly IExecuteOn<TargetSpaceCtx> _spaceAction;
 	readonly string _preposition;
-	TargetSpaceCtxFilter LandCriteria => Is.AnyLand;
+	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;
 	TargetSpaceCtxFilter _landCriteria;
 	readonly int _count;
 	TokenClass[] _firstPickTokenClasses;

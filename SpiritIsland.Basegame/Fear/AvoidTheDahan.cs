@@ -13,7 +13,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 
 	static SpaceAction StopExploreInLandsWithAtLeast2Dahan => new SpaceAction( "Stop Explore if 2 dahan",
 		ctx => {
-			var token = new SkipExploreTo_Custom( Name, true, ( _, space ) => 2 <= space.Dahan.CountAll );
+			var token = new SkipExploreTo_Custom( true, ( _, space ) => 2 <= space.Dahan.CountAll );
 			ctx.Tokens.Adjust( token, 1 );
 		}
 	);

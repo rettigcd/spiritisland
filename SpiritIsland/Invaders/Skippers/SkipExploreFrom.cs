@@ -3,6 +3,6 @@
 /// <summary> Stops space from being a source of Explorers</summary>
 sealed public class SkipExploreFrom : BaseModToken, ISkipExploreFrom {
 
-	public SkipExploreFrom( string label ) : base( label, UsageCost.Free ) { }
+	public SkipExploreFrom() : base() { }
 
 }

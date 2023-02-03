@@ -4,7 +4,7 @@ class RussiaToken : BaseModToken, IHandleTokenAdded, IHandleRemovingToken {
 
 	#region construction
 
-	public RussiaToken() : base( "Russia", UsageCost.Free, true ) { }
+	public RussiaToken() : base( true ) { }
 
 	#endregion
 

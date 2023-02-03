@@ -9,10 +9,10 @@ public class TokenRemovingHandler : BaseModToken, IHandleRemovingToken {
 	readonly Action<RemovingTokenArgs> _action;
 	readonly Func<RemovingTokenArgs,Task> _func;
 
-	public TokenRemovingHandler(Action<RemovingTokenArgs> action):base( "modify removing", UsageCost.Free ) {
+	public TokenRemovingHandler(Action<RemovingTokenArgs> action):base() {
 		_action = action;
 	}
-	public TokenRemovingHandler( Func<RemovingTokenArgs,Task> func ) : base( "modify removing", UsageCost.Free ) {
+	public TokenRemovingHandler( Func<RemovingTokenArgs,Task> func ) : base() {
 		_func = func;
 	}
 

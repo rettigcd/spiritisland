@@ -8,7 +8,7 @@ public class TokenAddingHandler : BaseModToken, IHandleAddingToken {
 
 	readonly Action<AddingTokenArgs> _action;
 
-	public TokenAddingHandler( Action<AddingTokenArgs> action ) : base( "modify adding", UsageCost.Free ) {
+	public TokenAddingHandler( Action<AddingTokenArgs> action ) : base() {
 		_action = action;
 	}
 

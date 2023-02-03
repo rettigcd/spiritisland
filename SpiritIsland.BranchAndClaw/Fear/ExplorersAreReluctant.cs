@@ -7,7 +7,7 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 
 	[FearLevel( 1, "During the next normal Explore, skip the lowest-numbered land matching the Invader card on each board." )]
 	public Task Level1( GameCtx ctx )
-		=> Cmd.Adjust1Token("Skip the lowest-numbered land matching the Invader card", new SkipLowestNumberedExplore(Name) )
+		=> Cmd.Adjust1Token("Skip the lowest-numbered land matching the Invader card", new SkipLowestNumberedExplore() )
 			.In().EachActiveLand()
 			.Execute( ctx );
 
@@ -21,7 +21,7 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 
 	[FearLevel( 3, "Skip the next normal Explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
 	public Task Level3( GameCtx ctx ) {
-		ctx.GameState.AddToAllActiveSpaces(new SkipExploreTo(Name)); // !!! Does this still trigger the escalation ???
+		ctx.GameState.AddToAllActiveSpaces(new SkipExploreTo()); // !!! Does this still trigger the escalation ???
 		return Task.CompletedTask;
 	}
 
@@ -29,7 +29,7 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 
 sealed public class SkipLowestNumberedExplore : BaseModToken, ISkipExploreTo {
 
-	public SkipLowestNumberedExplore( string label ) : base( label, UsageCost.Free ) {}
+	public SkipLowestNumberedExplore() : base() {}
 
 	public Task<bool> Skip( GameCtx gameCtx, SpaceState spaceState ) {
 		// Remove
@@ -39,6 +39,10 @@ sealed public class SkipLowestNumberedExplore : BaseModToken, ISkipExploreTo {
 		// Return if this is the lowest
 		return Task.FromResult( _lowest[spaceState.Space.Board] == spaceState );
 	}
+
+	/// <summary> Used by skips to determine which skip to use. </summary>
+	public UsageCost Cost => UsageCost.Free;
+
 
 	void InitLowest( GameCtx gameCtx ) {
 		var card = gameCtx.GameState.InvaderDeck.Explore.Cards.FirstOrDefault();

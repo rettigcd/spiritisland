@@ -17,7 +17,7 @@ public class ConfoundingMists {
 	static void PushFutureInvadersFromLands( TargetSpaceCtx ctx ) {
 
 		// each invader added to target land this turn may be immediatley pushed to any adjacent land
-		ctx.Tokens.Adjust( new TokenAddedHandler(Name,PushAddedInvader), 1);
+		ctx.Tokens.Adjust( new TokenAddedHandler(PushAddedInvader), 1);
 
 		async Task PushAddedInvader( ITokenAddedArgs args ) {
 			if( args.Reason.IsOneOf( AddReason.Explore, AddReason.Build) ) // ??? is there any other way to add invaders?

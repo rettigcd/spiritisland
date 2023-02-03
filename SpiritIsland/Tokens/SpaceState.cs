@@ -200,11 +200,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		Skip1Explore( label );
 	}
 
-	public void Skip1Ravage( string label ) => Adjust( new SkipRavage( label ), 1 );
+	public void Skip1Ravage( string _ ) => Adjust( new SkipRavage(), 1 );
 
 	public void Skip1Build( string label ) => Adjust( SkipBuild.Default( label ), 1 );
 
-	public void Skip1Explore( string label ) => Adjust( new SkipExploreTo( label ), 1 );
+	public void Skip1Explore( string _ ) => Adjust( new SkipExploreTo(), 1 );
 
 	public void SkipAllBuilds( string label, params TokenClass[] stoppedClasses ) {
 		if(stoppedClasses == null || stoppedClasses.Length == 0)

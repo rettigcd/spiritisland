@@ -4,7 +4,7 @@ class HabsburgMakeTownsDurable
 	: BaseModToken
 	, IHandleTokenRemoved
 	, IHandleAddingToken {
-	public HabsburgMakeTownsDurable() : base( "HabsburgToken", UsageCost.Free, true ) { }
+	public HabsburgMakeTownsDurable() : base( true ) { }
 
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
 		// Level 4 - Durable / Herds Thrive

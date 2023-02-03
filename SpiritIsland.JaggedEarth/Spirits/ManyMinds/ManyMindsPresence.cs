@@ -6,7 +6,7 @@ class ManyMindsPresence : SpiritPresence {
 
 	public void Watch( GameState gs ) {
 		gs.Tokens.TokenMoved.ForGame.Add( TokenMoved );
-		gs.AddToAllActiveSpaces( new TokenRemovedHandler( "ManyMindsPresence", TokenRemoved, true ) );
+		gs.AddToAllActiveSpaces( new TokenRemovedHandler( TokenRemoved, true ) );
 	}
 
 	public override async Task PlaceOn( SpaceState space, UnitOfWork actionScope ) {

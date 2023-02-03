@@ -80,7 +80,7 @@ public class Sweden : IAdversary {
 
 		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
 		if(5 <= Level) {
-			var mod = new TokenAddedHandler("Sweden", async args => {
+			var mod = new TokenAddedHandler(async args => {
 				// When ravage adds at least 1 blight to a land
 				if(args.Reason == AddReason.Ravage && args.Token == Token.Blight) {
 					var noBuildAdjacents = args.AddedTo.Adjacent

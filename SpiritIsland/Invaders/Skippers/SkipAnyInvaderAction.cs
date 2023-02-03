@@ -2,15 +2,21 @@
 
 public class SkipAnyInvaderAction : BaseModToken, ISkipRavages, ISkipBuilds, ISkipExploreTo {
 
-	readonly Func<GameState, SpaceState, Task> alternativeAction;
+	readonly Func<GameState, SpaceState, Task> _alternativeAction;
 	readonly Spirit _spirit;
 
 	public SkipAnyInvaderAction( string label, Spirit spirit, Func<GameState, SpaceState, Task> alternativeAction = null )
-		:base(label,UsageCost.Heavy ) // rated this high because it can stop builds and ravages also, maybe it should be lower
+		:base() // rated this high because it can stop builds and ravages also, maybe it should be lower
 	{
+		Text = label;
 		_spirit = spirit;
-		this.alternativeAction = alternativeAction;
+		_alternativeAction = alternativeAction;
 	}
+
+	/// <summary> Used by skips to determine which skip to use. </summary>
+	public UsageCost Cost => UsageCost.Heavy;
+
+	public string Text {get;}
 
 	Task<bool> ISkipRavages.Skip( GameState gameState, SpaceState space )
 		=> MakeDecision( gameState, space, "Ravage" );
@@ -26,8 +32,8 @@ public class SkipAnyInvaderAction : BaseModToken, ISkipRavages, ISkipBuilds, ISk
 			return false;
 
 		space.Adjust( this, -1 );
-		if(alternativeAction != null)
-			await alternativeAction( gameState, space );
+		if(_alternativeAction != null)
+			await _alternativeAction( gameState, space );
 		return true;
 	}
 

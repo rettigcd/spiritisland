@@ -8,8 +8,8 @@ public class StranglingFirevine_Tests {
 
 		// Track actions
 		HashSet<UnitOfWork> actionScopes = new HashSet<UnitOfWork>();
-		fxt.GameState.AddToAllActiveSpaces(new TokenAddedHandler("loggin", x => actionScopes.Add( x.ActionScope ), true ) );
-		fxt.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( "loggin", x => actionScopes.Add( x.ActionScope ), true ) );
+		fxt.GameState.AddToAllActiveSpaces(new TokenAddedHandler(x => actionScopes.Add( x.ActionScope ), true ) );
+		fxt.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( x => actionScopes.Add( x.ActionScope ), true ) );
 		fxt.GameState.Tokens.TokenMoved.ForGame.Add( x => actionScopes.Add( x.ActionScope ) );
 
 		// Given: has escalation elements (to make sure we test all parts of this card)

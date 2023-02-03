@@ -3,17 +3,18 @@
 /// <summary>
 /// Base class Token for Skips and mods. Hidden
 /// </summary>
+/// <remarks>
+/// Provides .Class, and ability to auto-cleanup at end of round.
+/// </remarks>
 public class BaseModToken : ITokenWithEndOfRoundCleanup {
 
-	protected BaseModToken( string label, UsageCost cost, bool keepForever = false ) {
-		Text = label;
-		Cost = cost;
-		_keepForever = keepForever;
+	protected BaseModToken() {
+		_keepForever = false;
 	}
 
-	public UsageCost Cost { get; } // not needed by everything, but needed by most
-
-	public string Text { get; }
+	protected BaseModToken( bool keepForever ) {
+		_keepForever = keepForever;
+	}
 
 	public TokenClass Class => ActionModTokenClass.Singleton;
 
@@ -27,14 +28,4 @@ public class BaseModToken : ITokenWithEndOfRoundCleanup {
 
 	readonly bool _keepForever;
 
-}
-
-class ActionModTokenClass : TokenClass {
-
-	public static readonly TokenClass Singleton = new ActionModTokenClass();
-
-	static readonly public TokenClass Class = new ActionModTokenClass();
-	public string Label => "Mod";
-
-	public TokenCategory Category => TokenCategory.Skipper;
 }

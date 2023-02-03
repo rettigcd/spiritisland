@@ -9,7 +9,7 @@ public class BloodDrawsPredators{
 
 		// After the next time Invaders are Desttroyed in target land:
 		TokenAddedHandler mod = null; // initialized 1st so method can refer to it.
-		mod = new TokenAddedHandler( Name, async ( args ) => {
+		mod = new TokenAddedHandler( async ( args ) => {
 			args.AddedTo.Adjust(mod,-1); // remove token
 
 			// Add 1 Beast,

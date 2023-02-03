@@ -23,8 +23,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Fear = new Fear( this );
 		Tokens = new Tokens_ForIsland( this );
 
-		AddToAllActiveSpaces( new TokenAddedHandler( "Cascade Blight", BlightAddedCheck, true ) ); // Combine these 2 into a class.
-		AddToAllActiveSpaces( new TokenRemovedHandler( "Cascade Blight", BlightRemovedCheck, true) );
+		AddToAllActiveSpaces( new TokenAddedHandler( BlightAddedCheck, true ) ); // Combine these 2 into a class.
+		AddToAllActiveSpaces( new TokenRemovedHandler( BlightRemovedCheck, true) );
 
 		TimePasses_WholeGame += TokenCleanUp;
 		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;

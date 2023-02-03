@@ -60,10 +60,13 @@ internal class RainAndMudSupressConflict {
 class MudToken : BaseModToken, ISkipRavages {
 	readonly Spirit _self;
 	readonly int _count;
-	public MudToken( Spirit self, int count ):base("RainAndMud", UsageCost.Free ) {
+	public MudToken( Spirit self, int count ):base() {
 		_self = self;
 		_count = count;
 	}
+
+	/// <summary> Used by skips to determine which skip to use. </summary>
+	public UsageCost Cost => UsageCost.Free;
 
 	Task<bool> ISkipRavages.Skip( GameState gameState, SpaceState space ) {
 		gameState.ModifyRavage( space.Space, cfg => cfg.AttackersDefend += (_self.Presence.CountOn( space ) * _count) );

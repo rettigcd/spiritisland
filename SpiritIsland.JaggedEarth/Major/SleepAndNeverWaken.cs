@@ -15,7 +15,7 @@ public class SleepAndNeverWaken {
 			if(args.Token.Class == Human.Explorer)
 				removed += args.Count;
 		}
-		ctx.Tokens.Adjust( new TokenRemovedHandler(Name,CountDestroyedExplorers), 1 );
+		ctx.Tokens.Adjust( new TokenRemovedHandler(CountDestroyedExplorers), 1 );
 
 		// remove up to 2 explorer.
 		await Cmd.RemoveExplorers(2).Execute(ctx);

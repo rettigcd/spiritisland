@@ -2,7 +2,7 @@
 
 class ScotlandCoastalBlightCheckToken : BaseModToken, IHandleTokenAdded {
 	const string Name = "Runoff and Bilgewater";
-	public ScotlandCoastalBlightCheckToken() : base( Name, UsageCost.Free, true ) {
+	public ScotlandCoastalBlightCheckToken() : base( true ) {
 	}
 
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {

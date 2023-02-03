@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class DahanSaver {
+public class DahanSaver : BaseModToken {
 
 	public static Action<TargetSpaceCtx> DestroyFewer( int maxPerAction, int maxActionCount ) {
 		return ctx => {
@@ -17,7 +17,7 @@ public class DahanSaver {
 	readonly int maxPerAction;
 	#endregion
 
-	DahanSaver( SpaceState space, int maxPerAction, int maxActionCount ) {
+	DahanSaver( SpaceState space, int maxPerAction, int maxActionCount ) :base() {
 		this.space = space;
 		this.maxActionCount = maxActionCount;
 		this.maxPerAction   = maxPerAction;
