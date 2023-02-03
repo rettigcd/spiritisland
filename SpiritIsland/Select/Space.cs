@@ -38,19 +38,19 @@ public class Space : TypedDecision<SpiritIsland.Space>, IHaveArrows {
 	}
 
 	public Space( string prompt, IEnumerable<SpaceState> spaces, Present present )
-		: base( prompt, spaces.Select(x=>x.Space).OrderBy( x => x.Label ), present ) 
+		: base( prompt, spaces.Downgrade().OrderBy( x => x.Label ), present ) 
 	{
-		Spaces = spaces.Select( x => x.Space ).OrderBy( x => x.Label ).ToArray();
+		Spaces = spaces.Downgrade().OrderBy( x => x.Label ).ToArray();
 	}
 
 	/// <summary>
 	/// Selects a space that will receive a token
 	/// </summary>
 	public Space( string prompt, IEnumerable<SpaceState> spaces, Present present, IVisibleToken tokenToReceive )
-		: base( prompt, spaces.Select( x => x.Space ).OrderBy( x => x.Label ), present ) 
+		: base( prompt, spaces.Downgrade().OrderBy( x => x.Label ), present ) 
 	{
 		Token = tokenToReceive;
-		Spaces = spaces.Select( x => x.Space ).OrderBy( x => x.Label ).ToArray();
+		Spaces = spaces.Downgrade().OrderBy( x => x.Label ).ToArray();
 	}
 
 	#endregion

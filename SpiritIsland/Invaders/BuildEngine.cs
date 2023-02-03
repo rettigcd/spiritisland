@@ -22,7 +22,7 @@ public class BuildEngine {
 		// log any spaces that look like they should get built on but didn't
 		var noBuildsSpaceNames = cardDependentBuildSpaces   // Space that should be build on
 			.Except( spacesMatchingCardCriteria )    // Spaces that we are actually building on.
-			.Select( x => x.Space.Text )
+			.SelectLabels()
 			.ToArray();
 
 		if(0 < noBuildsSpaceNames.Length)

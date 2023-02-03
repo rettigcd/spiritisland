@@ -134,7 +134,7 @@ class MistsShiftAndFlow {
 			.ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = new ReadOnlyBoundPresence( _spirit, _ctx.GameState).SpaceStates
+		var flowedSources = new ReadOnlyBoundPresence( _spirit, _ctx.GameState).ActiveSpaceStates
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Where( IsInPlay ) // Don't allow flow into ocean.
@@ -167,15 +167,15 @@ class MistsShiftAndFlow {
 
 		public SpaceCounts(GameState gameState, Spirit spirit) : base() {
 			// _spirit = spirit;
-			SpaceStates = gameState.AllActiveSpaces.Where( spirit.Presence.IsOn );
-			foreach(var ss in SpaceStates)
+			ActiveSpaceStates = gameState.AllActiveSpaces.Where( spirit.Presence.IsOn );
+			foreach(var ss in ActiveSpaceStates)
 				Add(ss.Space,spirit.Presence.CountOn(ss));
 		}
 
-		IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
-		public IEnumerable<SpaceState> SpaceStates { get; }
+		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
+		public IEnumerable<SpaceState> ActiveSpaceStates { get; }
 
-		public IEnumerable<SpaceState> SacredSites => SpaceStates.Where( k => 1 < this[k.Space] ); // !!! This won't work for River that has SS on wetlands.
+		public IEnumerable<SpaceState> SacredSites => ActiveSpaceStates.Where( k => 1 < this[k.Space] ); // !!! This won't work for River that has SS on wetlands.
 
 	}
 

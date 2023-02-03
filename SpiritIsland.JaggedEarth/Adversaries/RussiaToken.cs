@@ -47,7 +47,7 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 		}
 		if( landsWithMostExplorers.Any() )
 			gameState.LogDebug("Pressure for Fast Profit: Added 1T+1E to "
-				+landsWithMostExplorers.Select(x=>x.Space.Text).Order().Join(",")
+				+landsWithMostExplorers.SelectLabels().Order().Join(",")
 			);
 		
 	}

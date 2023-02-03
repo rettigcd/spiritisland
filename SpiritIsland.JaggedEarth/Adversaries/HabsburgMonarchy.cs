@@ -132,9 +132,9 @@ public class HabsburgMonarchy : IAdversary {
 		// Log it
 		var logParts = new List<string>();
 		if(newCitySpaces.Any())
-			logParts.Add("1 city to "+ newCitySpaces.Select(x=>x.Space.Text).Join(","));
+			logParts.Add("1 city to "+ newCitySpaces.SelectLabels().Join(","));
 		if(newTownSpaces.Any())
-			logParts.Add( "1 town to " + newTownSpaces.Select( x => x.Space.Text ).Join( "," ) );
+			logParts.Add( "1 town to " + newTownSpaces.SelectLabels().Join( "," ) );
 		gameState.LogDebug("Wave of Immigration: Adding " + logParts.Join(" and "));
 	}
 
@@ -155,7 +155,7 @@ public class HabsburgMonarchy : IAdversary {
 		foreach(SpaceState space in spaces)
 			space.AdjustDefault( Human.Town, 1 );
 
-		gameState.LogDebug($"More Rural than Urban: Added towns to "+spaces.Select(x=>x.Space.Text).Order().Join(","));
+		gameState.LogDebug($"More Rural than Urban: Added towns to "+spaces.SelectLabels().Order().Join(","));
 	}
 
 	async Task SeekPrimeTerritory_Escalation( GameState gameState ) {
@@ -176,7 +176,7 @@ public class HabsburgMonarchy : IAdversary {
 			var addSpaces = spaces.Where( x => x.SumAny( Token.Blight, Human.Town ) == 0 ).ToArray();
 			if(addSpaces.Length == 0) break;
 
-			var criteria = new Select.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Select( x => x.Space ), Present.Always );
+			var criteria = new Select.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
 			var addSpace = await ctx.Self.Gateway.Decision( criteria );
 			await ctx.GameState.Tokens[addSpace].Bind( ctx.ActionScope ).AddDefault( Human.Town, 1, AddReason.Build );
 		}

@@ -549,7 +549,7 @@ public abstract partial class Spirit : IOption {
 			return st.Space;
 		}
 
-		return await this.Gateway.Decision( new Select.Space( prompt, spaces.Select( x => x.Space ), Present.Always ));
+		return await this.Gateway.Decision( new Select.Space( prompt, spaces.Downgrade(), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
@@ -577,7 +577,7 @@ public abstract partial class Spirit : IOption {
 	// Non-targetting, For Power, Range-From Presence finder
 	public IEnumerable<SpaceState> FindSpacesWithinRange( GameState gameState, TargetCriteria targetCriteria, bool forPower ) {
 		return (forPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton)
-			.GetTargetOptionsFromKnownSource( Presence.SpaceStates( gameState ), targetCriteria );
+			.GetTargetOptionsFromKnownSource( Presence.ActiveSpaceStates( gameState ), targetCriteria );
 	}
 
 	#endregion

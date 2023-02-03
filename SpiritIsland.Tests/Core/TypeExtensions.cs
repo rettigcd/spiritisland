@@ -14,6 +14,6 @@ static public class TypeExtensions {
 	}
 
 	static public TargetSpaceCtx TargetSpace( this SelfCtx ctx, string spaceLabel ) 
-		=> ctx.Target( ctx.GameState.AllSpaces.Select(x=>x.Space).First(s=>s.Label==spaceLabel) ); // !!! Testing extension - move to testing project
+		=> ctx.Target( ctx.GameState.AllSpaces.Downgrade().First(s=>s.Label==spaceLabel) ); // !!! Testing extension - move to testing project
 
 }

@@ -30,10 +30,7 @@ public class FireAndFlood {
 			.ToArray();
 
 		// 2nd target options, range 2 from Possible SSs
-		IEnumerable<Space> secondTargetOptions = ctx.Range( 2 )
-			.Select(x=>x.Space); // TODO - get rid of this
-
-		return await ctx.Decision( new Select.Space( "Select space to target.", secondTargetOptions, Present.Always ) );
+		return await ctx.Decision( new Select.Space( "Select space to target.", ctx.Range( 2 ).Downgrade(), Present.Always ) );
 	}
 
 	static async Task Apply3DamageInOneOfThese( TargetSpaceCtx ctx, Space secondTarget, string damageType ) {

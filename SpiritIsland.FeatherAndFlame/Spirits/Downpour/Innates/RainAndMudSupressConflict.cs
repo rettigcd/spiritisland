@@ -33,9 +33,10 @@ internal class RainAndMudSupressConflict {
 		ctx.AddFear(2);
 
 		// In your lands, Invaders and Dahan have -1 Health( min 1 )
-		foreach(var space in ctx.Presence.Spaces) {
-			await ctx.Target(space).AdjustTokensHealthForRound(-1,Human.Dahan);
-			await ctx.Target( space ).AdjustTokensHealthForRound( -1, Human.Invader );
+		foreach(var space in ctx.Presence.ActiveSpaceStates) {
+			var targetCtx = ctx.Target( space );
+			await targetCtx.AdjustTokensHealthForRound( -1,Human.Dahan );
+			await targetCtx.AdjustTokensHealthForRound( -1, Human.Invader );
 		}
 	}
 

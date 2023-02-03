@@ -15,11 +15,11 @@ class OpenTheWays : IActionFactory {
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
-		var options = ctx.Presence.Spaces.ToList();
+		var options = ctx.Presence.ActiveSpaceStates.ToList();
 		// Select 2 space to link
-		var end0 = (await ctx.SelectSpace( "Select 1st space to make adjacent", options )).Tokens;
-		options.Remove( end0.Space );
-		var end1 = (await ctx.SelectSpace( "Select 2nd space to make adjacent", options )).Tokens;
+		var end0 = (await ctx.SelectSpace( "Select 1st space to make adjacent", options.Downgrade() )).Tokens;
+		options.Remove( end0 );
+		var end1 = (await ctx.SelectSpace( "Select 2nd space to make adjacent", options.Downgrade() )).Tokens;
 
 		Link( ref _token0, end0, end1 );
 		Link( ref _token1, end1, end0 );

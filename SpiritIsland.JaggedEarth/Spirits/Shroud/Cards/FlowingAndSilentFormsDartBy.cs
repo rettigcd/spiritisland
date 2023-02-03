@@ -39,7 +39,7 @@ public class FlowingAndSilentFormsDartBy {
 			if( space == this.protectedSpace 
 				&& spirit.Presence.HasMovableTokens(gs.Tokens[space])
 			) {
-				var dst = await spirit.Gateway.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens[space].Adjacent.Select(x=>x.Space),Present.Done));
+				var dst = await spirit.Gateway.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens[space].Adjacent.Downgrade(),Present.Done));
 				if(dst != null) {
 					while(0 < count--)
 						await presence.Move(space,dst,gs, actionScope);

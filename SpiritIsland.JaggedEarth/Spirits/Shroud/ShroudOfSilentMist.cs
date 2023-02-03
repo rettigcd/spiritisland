@@ -65,11 +65,10 @@ public class ShroudOfSilentMist : Spirit {
 	Task GameState_TimePasses_WholeGame( GameState gs ) {
 		gainedCoolEnergyThisTurn = false;
 
-		bool SpaceHasDamagedInvaders( Space s ) => gs.Tokens[s].InvaderTokens()
-			.Any( i=>i.RemainingHealth<i.FullHealth );
+		static bool SpaceHasDamagedInvaders( SpaceState ss ) => ss.InvaderTokens().Any( i=>i.RemainingHealth<i.FullHealth );
 
 		// During Time Passes:
-		int myLandsWithDamagedInvaders = new ReadOnlyBoundPresence( this, gs, gs.Island.Terrain ).Spaces.Count( SpaceHasDamagedInvaders );
+		int myLandsWithDamagedInvaders = new ReadOnlyBoundPresence( this, gs, gs.Island.Terrain ).ActiveSpaceStates.Count( SpaceHasDamagedInvaders );
 
 		// 1 fear (max 5) per land of yours with Damaged Invaders.
 		gs.Fear.AddDirect(new FearArgs( Math.Min(5,myLandsWithDamagedInvaders) ) );

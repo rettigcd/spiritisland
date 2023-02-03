@@ -28,7 +28,7 @@ class DrenchTheLandscape : TerrainMapper, ICalcPowerTargetingSource {
 		GameState gs
 	) {
 		var sources = sourceCriteria.From switch {
-			From.Presence => presence.SpaceStates,
+			From.Presence => presence.ActiveSpaceStates,
 			From.SacredSite => SacredSites(gs),
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};

@@ -349,12 +349,12 @@ public class OceanTerrain_Tests {
 	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
 
 	void Given_PrimaryPresenceOnlyOn( Space space ) {
-		foreach(Space s in primarySpirit.Presence.Spaces( gameState ).ToArray())
-			primarySpirit.Presence.Adjust( gameState.Tokens[s], -1 );
+		foreach(SpaceState ss in primarySpirit.Presence.ActiveSpaceStates( gameState ).ToArray())
+			primarySpirit.Presence.Adjust( ss, -1 );
 
 		// Add to
 		primarySpirit.Presence.Adjust( gameState.Tokens[space], 1 );
-		primarySpirit.Presence.Spaces( gameState ).Select( s => s.Text ).Join( "," ).ShouldBe( space.Text );
+		primarySpirit.Presence.ActiveSpaceStates( gameState ).SelectLabels().Join( "," ).ShouldBe( space.Text );
 	}
 
 	

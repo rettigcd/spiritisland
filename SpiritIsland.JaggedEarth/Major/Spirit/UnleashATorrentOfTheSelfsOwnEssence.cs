@@ -35,8 +35,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 		if(damage == 0) return;
 
 		//  in a land at range-0
-		var options = ctx.Presence.FindSpacesWithinRange( ctx.TerrainMapper.Specify( 0 ), true )
-			.Select(x=>x.Space);
+		var options = ctx.Presence.FindSpacesWithinRange( ctx.TerrainMapper.Specify( 0 ), true ).Downgrade();
 		var land = await ctx.Decision( new Select.Space( $"{damage} Damage", options,Present.Always ) );
 
 		ctx.Self.Energy -= damage;

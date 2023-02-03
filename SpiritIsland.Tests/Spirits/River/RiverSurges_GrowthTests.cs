@@ -199,7 +199,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		};
 		_gameState = new GameState( river, board );
 		river.InitSpirit(board,_gameState);
-		Assert.Equal(expectedStartingSpaces,new ReadOnlyBoundPresence( river, _gameState ).Spaces.Select(s=>s.Label).Join(","));
+		Assert.Equal(expectedStartingSpaces,new ReadOnlyBoundPresence( river, _gameState ).ActiveSpaceStates.SelectLabels().Join(","));
 	}
 
 	#endregion

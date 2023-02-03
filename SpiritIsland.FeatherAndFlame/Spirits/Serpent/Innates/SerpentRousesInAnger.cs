@@ -37,7 +37,7 @@ public class SerpentRousesInAnger {
 				.Where(space => space.HasInvaders())
 				.ToArray();
 			foreach(var land in invaderLands) {
-				var landsCreatingDamage = new HashSet<Space>(land.InOrAdjacentTo.Select(x=>x.Space));
+				var landsCreatingDamage = new HashSet<Space>(land.InOrAdjacentTo.Downgrade());
 				int damage = land.InOrAdjacentTo.Sum( ctx.Self.Presence.CountOn );
 				await ctx.DamageInvaders(damage);
 			}

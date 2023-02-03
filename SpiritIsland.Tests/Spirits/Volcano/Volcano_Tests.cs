@@ -29,8 +29,8 @@ public class Volcano_Tests {
 		Space a6 = board[6];
 
 		// Given: Only Presence is on A5
-		foreach(Space s in spirit.Presence.Spaces( gameState ).ToArray())
-			spirit.Presence.Adjust( gameState.Tokens[s], -1 );
+		foreach(SpaceState ss in spirit.Presence.ActiveSpaceStates( gameState ).ToArray())
+			spirit.Presence.Adjust( ss, -1 );
 		spirit.Presence.Adjust(gameState.Tokens[a6], presenceCount);
 
 		// When: Activating a Range-0 card
@@ -50,8 +50,8 @@ public class Volcano_Tests {
 		Space a6 = board[6];
 
 		// Given: 3 presence on A6
-		foreach(Space s in spirit.Presence.Spaces( gameState ).ToArray())
-			spirit.Presence.Adjust( gameState.Tokens[s], -1 );
+		foreach(SpaceState ss in spirit.Presence.ActiveSpaceStates( gameState ).ToArray())
+			spirit.Presence.Adjust( ss, -1 );
 		spirit.Presence.Adjust( gameState.Tokens[a6], 3 );
 
 		// When: Activating Growth Range-0 presence

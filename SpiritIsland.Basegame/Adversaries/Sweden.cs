@@ -75,7 +75,7 @@ public class Sweden : IAdversary {
 			foreach(var leastInvaderSpace in addTownSpaces)
 				leastInvaderSpace.AdjustDefault( Human.Town, 1 );
 
-			gameState.LogDebug("Royal Backing - added 1 town to "+addTownSpaces.Select(x=>x.Space.Text).Order().Join(","));
+			gameState.LogDebug("Royal Backing - added 1 town to "+addTownSpaces.SelectLabels().Order().Join(","));
 		}
 
 		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
@@ -109,7 +109,7 @@ public class Sweden : IAdversary {
 				space.AdjustDefault( Human.Town, 1 );
 				space.Blight.Adjust(1);
 			}
-			gameState.LogDebug("Prospecting Outpost: Adding Town/Blight to "+spaces.Select(s=>s.Space.Text).Order().Join(","));
+			gameState.LogDebug("Prospecting Outpost: Adding Town/Blight to "+spaces.SelectLabels().Order().Join(","));
 
 		}
 	}
@@ -142,7 +142,7 @@ public class Sweden : IAdversary {
 			}
 		}
 
-		gameState.LogDebug($"Population Pressure At Home: adding 1 city to "+additionalCitySpaces.Select(s=>s.Space.Text).Order().Join(","));
+		gameState.LogDebug($"Population Pressure At Home: adding 1 city to "+additionalCitySpaces.SelectLabels().Order().Join(","));
 	}
 }
 

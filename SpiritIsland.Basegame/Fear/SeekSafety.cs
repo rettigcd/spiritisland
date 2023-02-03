@@ -33,13 +33,13 @@ public class SeekSafety : FearCardBase, IFearCard {
 				s => s.TownsAndCitiesCount()
 			);
 
-		Space[] GetNeighborWithMoreBuildings( SpaceState s ) => s.Adjacent.Select( s => s.Space ).Where( n => buildingCounts[n] > buildingCounts[s.Space] ).ToArray();
+		Space[] GetNeighborWithMoreBuildings( SpaceState s ) => s.Adjacent.Downgrade().Where( n => buildingCounts[n] > buildingCounts[s.Space] ).ToArray();
 		bool HasNeighborWithMoreBuildings( SpaceState s ) => GetNeighborWithMoreBuildings( s ).Any();
 
 		// Select Source
 		var sourceOptions = ctx.GameState.AllActiveSpaces
 			.Where( s => s.Has( Human.Explorer ) && HasNeighborWithMoreBuildings( s ) )
-			.Select( s => s.Space )
+			.Downgrade()
 			.ToArray();
 		if(sourceOptions.Length == 0) return;
 

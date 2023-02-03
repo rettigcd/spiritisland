@@ -193,16 +193,14 @@ public class SpiritPresence {
 	#region Exposed Data
 
 	public IEnumerable<Space> SacredSites( GameState gs, TerrainMapper tm ) 
-		=> SacredSiteStates(gs,tm).Select( s => s.Space );
+		=> SacredSiteStates(gs,tm).Downgrade();
 	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
 		.Where( IsSacredSite );
 
 	public int Total( GameState gs ) => gs.AllSpaces.Sum(CountOn);
 
-	// !!! deprecate one item for each space that has presence
-	public IEnumerable<Space> Spaces( GameState gs ) => SpaceStates( gs ).Select( x => x.Space );
-
-	public IEnumerable<SpaceState> SpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
+	/// <summary> All *Active* Spaces </summary>
+	public IEnumerable<SpaceState> ActiveSpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
 
 	#endregion Exposed Data
 
@@ -220,7 +218,6 @@ public class SpiritPresence {
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 	/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
-	// !!! This is called for 2 different reasons... repace with Tokens Add/Remove/Adjust
 	// (1) To move presence to another location on the board - no End-of-Game check is necessary
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
 	protected virtual Task RemoveFrom_NoCheck( SpaceState space, int count=1 ) { 

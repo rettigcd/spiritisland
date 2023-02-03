@@ -6,7 +6,7 @@ public class RenewingBoon{
 	static public async Task ActAsync( TargetSpiritCtx ctx ){
 
 		// Choose a land where you and target Spirit both have presence.
-		var spaceOptions = ctx.Presence.Spaces.Intersect( ctx.OtherCtx.Presence.Spaces )
+		var spaceOptions = ctx.Presence.ActiveSpaceStates.Intersect( ctx.OtherCtx.Presence.ActiveSpaceStates )
 			.ToArray();
 		var space = await ctx.Decision(new Select.Space("",spaceOptions,Present.Always));
 		if( space == null) return;

@@ -26,7 +26,7 @@ public class GrantHatredARavenousForm {
 			// add 1 strife in up to 3 adjacent lands.
 			var tokenSpaces = ctx.Adjacent
 				.Where(s => s.HasInvaders())
-				.Select( x => x.Space )
+				.Downgrade()
 				.ToList();
 			for(int i = 0; tokenSpaces.Count >0 && i < 3; ++i) {
 				var space = await ctx.Decision(new Select.Space("Add Strife", tokenSpaces, Present.Done));

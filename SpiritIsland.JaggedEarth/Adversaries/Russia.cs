@@ -102,7 +102,7 @@ public class Russia : IAdversary {
 				? beastsSpacesForBoard[board]
 				: beastsSpacesForBoard.Values.SelectMany( x => x );
 			for(int i = 0; i < 2; ++i) {
-				var criteria = new Select.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Select( x => x.Space ), Present.Always );
+				var criteria = new Select.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Downgrade(), Present.Always );
 				var addSpace = await spirit.Gateway.Decision( criteria );
 				await gameState.Tokens[addSpace].Bind( actionScope ).AddDefault( Human.Explorer, 1, AddReason.Explore );
 			}
@@ -143,7 +143,7 @@ public class Russia : IAdversary {
 			highestLandWithoutTownCity.AdjustDefault(Human.Explorer,1);
 			highestLandWithoutTownCity.Adjust(Token.Beast,1);
 		}
-		gameState.LogDebug($"Hunters Bring Home Shell and Hide - Added Beast & Explorers to: " + highestSpaces.Select(s=>s.Space.Text).OrderBy(s=>s).Join(","));
+		gameState.LogDebug($"Hunters Bring Home Shell and Hide - Added Beast & Explorers to: " + highestSpaces.SelectLabels().OrderBy(s=>s).Join(","));
 	}
 
 	static void ExplorersDo2Damage( GameState gameState ) {

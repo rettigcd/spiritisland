@@ -16,7 +16,7 @@ public class SwallowTheLandDwellers {
 
 		// find place to drown then
 		var drowningOcean = new ReadOnlyBoundPresence( ocean, ctx.GameState )
-			.Spaces.First() // find any space the ocean has presnece
+			.ActiveSpaceStates.First().Space // find any space the ocean has presnece
 			.Board.Ocean; // find the Ocean space on that board
 
 		// drown 1 explorer, 1 town, and 1 dahan

@@ -134,7 +134,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	public void TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
 		spirit.Presence.PlaceOn(board[8], gameState);
-		var targetOptions = new ReadOnlyBoundPresence( spirit, gameState).Spaces.ToArray();
+		var targetOptions = new ReadOnlyBoundPresence( spirit, gameState).ActiveSpaceStates.ToArray();
 		Assert.Equal(2,targetOptions.Length);
 
 		//   And: 2 dahan in A5 (touches both)
@@ -155,8 +155,8 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void TwoDahanOnPresenceSpace(){
 		// Given: spirit has presence on A4
-		var targetOptions = new ReadOnlyBoundPresence( spirit, gameState).Spaces.ToArray();
-		Assert.Single( targetOptions);
+		var targetOptions = new ReadOnlyBoundPresence( spirit, gameState).ActiveSpaceStates.ToArray();
+		Assert.Single( targetOptions );
 
 		//   And: 2 dahan in A5 (touches both)
 		Given_AddDahan(2,board[4]);

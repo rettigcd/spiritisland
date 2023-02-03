@@ -22,11 +22,14 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	}
 	#endregion
 
+	// !!! Note - Some of these are pass-thru and ignore GameState and possibly could be simplified.
+	// This class is all about binding presence to gamestate so stuff that ignores gamestate maybe doesn't go here.
+
 	public bool CanBePlacedOn( SpaceState space ) => _inner.CanBePlacedOn( space, _terrainMapper );
 	public bool IsSacredSite( Space space ) => _inner.IsSacredSite( _gameState.Tokens[space] );
-	public IEnumerable<Space> Spaces => _inner.Spaces( _gameState ); // !!! Move everything that calls this over to SpaceStates, then remove this.
-	public IEnumerable<SpaceState> SpaceStates => _inner.SpaceStates( _gameState );
-	public IEnumerable<SpaceState> MovableSpaceStates => _inner.SpaceStates( _gameState ).Where(_inner.HasMovableTokens);
+
+	public IEnumerable<SpaceState> ActiveSpaceStates => _inner.ActiveSpaceStates( _gameState );
+	public IEnumerable<SpaceState> MovableSpaceStates => _inner.ActiveSpaceStates( _gameState ).Where(_inner.HasMovableTokens);
 	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState, _terrainMapper );
 
 	// This is the non-Targetting version that skips over the TargetSourceCalc
