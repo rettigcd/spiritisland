@@ -17,17 +17,17 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 
 	public async Task Execute( GameCtx ctx ) {
 		var gameState = ctx.GameState;
-		for(int i = 0; i < gameState.Island.Boards.Length; ++i) {
-			Board board = gameState.Island.Boards[i];
-			var spirit = BoardCtx.FindSpirit( gameState, board );
+		foreach(Board board in gameState.Island.Boards) {
+			Spirit spirit = BoardCtx.FindSpirit( gameState, board );
 			SelfCtx decisionMaker = spirit.BindSelf( gameState, ctx.ActionScope );
 			var spacesCtxs = ctx.GameState.Tokens
 				.PowerUp( board.Spaces )
 				.Where( ctx.ActionScope.TerrainMapper.IsInPlay )
 				.Select( decisionMaker.Target )
 				.Where( _landCriteria.Filter );
-			foreach(var ss in spacesCtxs)
-				await _spaceAction.Execute( ss );
+			foreach(TargetSpaceCtx ss in spacesCtxs)
+				for(int i=0;i<board.InvaderActionCount;++i)
+					await _spaceAction.Execute( ss );
 		}
 
 	}

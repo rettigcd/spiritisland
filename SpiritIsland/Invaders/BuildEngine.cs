@@ -17,7 +17,7 @@ public class BuildEngine {
 			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it
 			.ToArray();
 		foreach(SpaceState tokens in spacesMatchingCardCriteria)
-			tokens.Adjust( ModToken.DoBuild, 1 );
+			tokens.Adjust( ModToken.DoBuild, tokens.Space.Board.InvaderActionCount );
 
 		// log any spaces that look like they should get built on but didn't
 		var noBuildsSpaceNames = cardDependentBuildSpaces   // Space that should be build on

@@ -27,7 +27,8 @@ public static partial class Cmd {
 				var gs = ctx.GameState;
 				for(int boardIndex = 0; boardIndex < gs.Island.Boards.Length; ++boardIndex) {
 					BoardCtx boardCtx = new BoardCtx( gs, gs.Island.Boards[boardIndex], ctx.ActionScope );
-					await boardAction.Execute( boardCtx );
+					for(int i=0;i<boardCtx.Board.InvaderActionCount;++i)
+						await boardAction.Execute( boardCtx );
 				}
 			}
 		);

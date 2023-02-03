@@ -14,7 +14,7 @@ public class RavageEngine {
 
 		// Add Ravage tokens to spaces with invaders
 		foreach(var s in ravageSpacesWithInvaders)
-			s.Adjust( ModToken.DoRavage, 1 );
+			s.Adjust( ModToken.DoRavage, s.Space.Board.InvaderActionCount );
 
 		// get spaces with just-added Ravages + any previously added ravages
 		var spacesWithDoRavage = gameState.AllActiveSpaces

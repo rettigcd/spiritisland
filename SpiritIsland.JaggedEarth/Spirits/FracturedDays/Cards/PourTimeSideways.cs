@@ -12,27 +12,23 @@ class PourTimeSideways {
 
 		// Move 1 of your presence to a different land with your presence.
 		var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Presence, Present.Always ) );
-		if(ctx.Self.Presence.HasMovableTokens( ctx.GameState.Tokens[src] )) {
-			var dstOptions = ctx.Presence.ActiveSpaceStates.Where( s => s.Space != src );
-			var dst = await ctx.Decision( Select.Space.ForMoving_SpaceToken( "Move preseence to:", src, dstOptions, Present.Always, ctx.Self.Presence.Token ) );
-			await ctx.Presence.Move( src, dst );
-			if(src.Board == dst.Board) return;
-		}
+		if(!ctx.Self.Presence.HasMovableTokens( ctx.GameState.Tokens[src] )) return;
+		var dstOptions = ctx.Presence.ActiveSpaceStates.Where( s => s.Space != src );
+		var dst = await ctx.Decision( Select.Space.ForMoving_SpaceToken( "Move preseence to:", src, dstOptions, Present.Always, ctx.Self.Presence.Token ) );
+		await ctx.Presence.Move( src, dst );
+		if(src.Board == dst.Board) return;
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
-		foreach(var space in ctx.GameState.Tokens.PowerUp(src.Board.Spaces)) {
-			space.Skip1Explore( Name );
-			space.Skip1Build( Name );
-			space.Skip1Ravage(Name);
-		}
+		if(0<src.Board.InvaderActionCount) --src.Board.InvaderActionCount;
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.
-		foreach(var space in src.Board.Spaces) {
-			var tokens = ctx.GameState.Tokens[space];
-			ctx.GameState.PourTimeSideways_Add1Build( tokens );
-			ctx.GameState.PourTimeSideways_Add1Explore( tokens );
-			ctx.GameState.PourTimeSideways_Add1Ravage( tokens );
-		}
+		++dst.Board.InvaderActionCount;
+
+		ctx.GameState.TimePasses_ThisRound.Push( gs => { 
+			dst.Board.InvaderActionCount = 1;
+			src.Board.InvaderActionCount = 1;
+			return Task.CompletedTask;
+		} );
 	}
 
 }

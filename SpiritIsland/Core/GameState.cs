@@ -206,30 +206,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			space.Adjust( token, 1 );
 	}
 
-	#region Pour Time Sideways - Add Invader actions
-
-	public void PourTimeSideways_Add1Ravage( SpaceState spacesToAdd ) {
-		throw new System.NotImplementedException( "!!! should only add to cards that match space" );
-	}
-
-	public void PourTimeSideways_Add1Build( params SpaceState[] target ) {
-		// !!! instead, call Invader build card twice.
-		var buildCard = InvaderDeck.Build.Cards.FirstOrDefault();
-		if(buildCard == null) return;
-		foreach(var space in target.Where(buildCard.MatchesCard).ToArray())
-			space.Adjust( ModToken.DoBuild, 1 );
-	}
-
-	public void PourTimeSideways_Add1Explore( params SpaceState[] target ) {
-		// !!! This should only add to spaces that match invader card
-		var exploreCard = InvaderDeck.Explore.Cards.FirstOrDefault();
-		if(exploreCard == null) return;
-		foreach(var space in target.Where( exploreCard.MatchesCard ).ToArray())
-			space.Adjust( ModToken.DoExplore, 1 );
-	}
-
-	#endregion Pour Time Sideways - Add Invader actions
-
 	#region Configure Ravage
 
 	public RavageBehavior GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : DefaultRavageBehavior.Clone();
