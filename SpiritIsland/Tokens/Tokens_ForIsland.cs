@@ -28,14 +28,12 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public SpaceState this[Space space] {
 		get {
-			if(!tokenCounts.ContainsKey( space )) {
-				tokenCounts[space] = new SpaceState( space, new CountDictionary<IToken>(), this, _gameState );
+			if(!_tokenCounts.ContainsKey( space )) {
+				_tokenCounts[space] = new SpaceState( space, new CountDictionary<IToken>(), this, _gameState );
 			}
-			return tokenCounts[space];
+			return _tokenCounts[space];
 		}
 	}
-
-	readonly Dictionary<Space, SpaceState> tokenCounts = new Dictionary<Space, SpaceState>();
 
 	public int GetDynamicTokensFor( SpaceState space, UniqueToken token ) 
 		=> Dynamic.GetTokensFor( space, token );
@@ -43,9 +41,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public async Task Publish_Moved( TokenMovedArgs args ) {
 		await TokenMoved.InvokeAsync( args );
 	}
-
-	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
-	readonly public Dictionary<HumanTokenClass, HumanToken> TokenDefaults;
 
 	HumanToken IIslandTokenApi.GetDefault( HumanTokenClass tokenClass ) => TokenDefaults[tokenClass];
 
@@ -73,17 +68,17 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
 			// Save TokenCounts
-			foreach(var (space,countsDict) in src.tokenCounts.Select( x => ((Space)x.Key, x.Value._counts) ))
+			foreach(var (space,countsDict) in src._tokenCounts.Select( x => ((Space)x.Key, x.Value._counts) ))
 				_tokenCounts[space] = countsDict.Clone();
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
 			// dynamicTokens_ForGame
 			dynamicTokens = src.Dynamic.SaveToMemento();
-			_inStasis = src.tokenCounts.Keys.ToDictionary(s=>s,s=>s.InStasis);
+			_inStasis = src._tokenCounts.Keys.ToDictionary(s=>s,s=>s.InStasis);
 		}
 		public void Restore( Tokens_ForIsland src ) {
 			// Restore TokenCounts
-			src.tokenCounts.Clear();
+			src._tokenCounts.Clear();
 			foreach(var space in _tokenCounts.Keys) {
 				// statis
 				space.InStasis = _inStasis[space];
@@ -111,5 +106,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	}
 
 	#endregion Memento
+
+	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
+	readonly public Dictionary<HumanTokenClass, HumanToken> TokenDefaults;
+	readonly Dictionary<Space, SpaceState> _tokenCounts = new Dictionary<Space, SpaceState>();
 
 }
