@@ -1,19 +1,19 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Card is played again, but does not cost energy
+/// Card is repeated, but does not cost energy
 /// </summary>
-public class ReplayCardForFree : IActionFactory {
+public class RepeatCardForFree : IActionFactory {
 
 	#region constructors
 
 	/// <summary> Replay any discard card for free. </summary>
-	public ReplayCardForFree() {
+	public RepeatCardForFree() {
 		this.maxCost = int.MaxValue;
 	}
 
 	/// <summary> Replay discard card for free limited by maxCost. </summary>
-	public ReplayCardForFree( int maxCost ) {
+	public RepeatCardForFree( int maxCost ) {
 		this.maxCost = maxCost;
 	}
 
@@ -34,7 +34,7 @@ public class ReplayCardForFree : IActionFactory {
 			.ToArray(); 
 		if(options.Length == 0) return;
 
-		PowerCard factory = await ctx.Self.SelectPowerCard( "Select card to replay", options, CardUse.Repeat, Present.Always );
+		PowerCard factory = await ctx.Self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Done );
 		if(factory == null) return;
 
 		ctx.Self.AddActionFactory( factory );

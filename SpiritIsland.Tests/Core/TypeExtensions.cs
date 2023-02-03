@@ -13,7 +13,4 @@ static public class TypeExtensions {
 		return assemblyRefType.Assembly.GetTypes().Where( HasMinorMethod ).Select( PowerCard.For ).ToArray();
 	}
 
-	static public TargetSpaceCtx TargetSpace( this SelfCtx ctx, string spaceLabel ) 
-		=> ctx.Target( ctx.GameState.AllSpaces.Downgrade().First(s=>s.Label==spaceLabel) ); // !!! Testing extension - move to testing project
-
 }

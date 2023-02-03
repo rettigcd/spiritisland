@@ -36,13 +36,11 @@ class DrenchTheLandscape : TerrainMapper, ICalcPowerTargetingSource {
 		// !!! This only treats Spaces as Wetlands for Targeting-Source and not for everything else that tests for Wetlands.
 		// !!! If we set all the TerrainMappers correctly, then we wouldn't need to override CalcSource
 
-		return sourceCriteria.Terrain.HasValue
-			// If we are filltering on water
-			? sourceCriteria.Terrain.Value == Terrain.Wetland
-				// Add Sacred Sites in, explicitly
-				? sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) ).Union( SacredSites( gs ) )
-				: sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) )
-			: sources;
+		return !sourceCriteria.Terrain.HasValue 
+				? sources
+			: sourceCriteria.Terrain.Value != Terrain.Wetland
+				? sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) )
+			: sources.Where( space => space.Space.Is( sourceCriteria.Terrain.Value ) ).Union( SacredSites( gs ) );
 	}
 
 }

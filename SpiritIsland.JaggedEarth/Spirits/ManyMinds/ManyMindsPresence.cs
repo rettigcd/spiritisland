@@ -20,7 +20,7 @@ class ManyMindsPresence : SpiritPresence {
 		await base.RemoveFrom_NoCheck( space, count );
 		// if destroyed sacred site, remove virtual beast
 		if( CountOn( space ) == 1 )
-			space.Adjust( SpiritIsland.Token.Beast, 1); // !!! virtual tokens don't trigger events
+			space.Adjust( SpiritIsland.Token.Beast, 1);
 	}
 
 	async Task TokenMoved( ITokenMovedArgs args ) {

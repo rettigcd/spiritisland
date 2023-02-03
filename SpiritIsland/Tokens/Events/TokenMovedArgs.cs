@@ -8,15 +8,14 @@ public class TokenMovedArgs : ITokenMovedArgs {
 		AddedTo = addedTo;
 	}
 
-	public int Count { get; set; }
-
-	public IToken TokenRemoved { get; set; } // sometimes different than TokenAdded due to Adding/Removing mods
+	public UnitOfWork ActionScope { get; }
 	public SpaceState RemovedFrom { get; }
-
-	public IToken TokenAdded { get; set; }
 	public SpaceState AddedTo { get; }
 
-	public UnitOfWork ActionScope { get; }
+
+	public int Count { get; set; }
+	public IToken TokenRemoved { get; set; } // sometimes different than TokenAdded due to Adding/Removing mods
+	public IToken TokenAdded { get; set; }
 
 }
 

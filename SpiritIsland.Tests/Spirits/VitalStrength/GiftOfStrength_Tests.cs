@@ -17,6 +17,7 @@ public class GiftOfStrength_Tests {
 	}
 
 	[Fact]
+	[Trait("something","repeat card")]
 	public void Replaying_FastCards() {
 
 		// Given: Earth has enough elements to trigger GOS
@@ -45,8 +46,8 @@ public class GiftOfStrength_Tests {
 
 		// Then: user can replay ONLY the played: Fast-1 card.
 		User.SelectsFastAction( "Fast-0,[Replay Card (max cost:1)]" );
-		User.AssertDecision( "Select card to replay", "Fast-1 $1 (Fast)", "Fast-1 $1 (Fast)" ); // !!! should there be a ,Done here?
-
+		spirit.NextDecision().HasPrompt( "Select card to repeat" ).HasOptions( "Fast-1 $1 (Fast),Done" )
+			.Choose( "Fast-1 $1 (Fast)" );
 	}
 
 	private void PlayCards( PowerCard[] cards ) {
@@ -55,6 +56,7 @@ public class GiftOfStrength_Tests {
 	}
 
 	[Fact]
+	[Trait( "something", "repeat card" )]
 	public void Replaying_SlowCards() {
 
 		// Given: Earth has enough elements to trigger GOS
@@ -93,7 +95,8 @@ public class GiftOfStrength_Tests {
 
 		// When: Replaying card
 		User.SelectsSlowAction( "Slow-0,Slow-2,[Replay Card (max cost:1)]" );
-		User.AssertDecision( "Select card to replay", "Slow-1 $1 (Slow)", "Slow-1 $1 (Slow)" ); // !!! should there be a ,Done here?
+		spirit.NextDecision().HasPrompt( "Select card to repeat" ).HasOptions( "Slow-1 $1 (Slow),Done" )
+			.Choose( "Slow-1 $1 (Slow)" );
 	}
 
 	void User_PlaysGiftOfStrengthOnSelf() {

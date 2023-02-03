@@ -48,7 +48,7 @@ public class DrawTowardsAConsumingVoid {
 				.Where( s => s.Presence.HasMovableTokens(adjState) )
 				.ToArray();
 			if(movableSpiritsInSpace.Length > 0) {
-				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, movableSpiritsInSpace, Present.AutoSelectSingle ) ); // !!! switch to Gather Presence when we can support multiple spirits
+				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, movableSpiritsInSpace, Present.AutoSelectSingle ) );
 				await ctx.NewSelf(spiritToGather).Presence.Move( adjState.Space, ctx.Space );
 			}
 		}

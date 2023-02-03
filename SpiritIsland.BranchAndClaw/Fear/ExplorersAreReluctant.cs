@@ -21,7 +21,7 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 
 	[FearLevel( 3, "Skip the next normal Explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
 	public Task Level3( GameCtx ctx ) {
-		ctx.GameState.AddToAllActiveSpaces(new SkipExploreTo()); // !!! Does this still trigger the escalation ???
+		ctx.GameState.AddToAllActiveSpaces(new SkipExploreTo());
 		return Task.CompletedTask;
 	}
 

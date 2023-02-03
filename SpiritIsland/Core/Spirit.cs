@@ -536,11 +536,7 @@ public abstract partial class Spirit : IOption {
 
 		if(preselect != null) {
 			var spaceTokenOptions = spaces
-				.SelectMany(ss=>ss
-					.OfAnyClass(preselect.TokenClasses)
-					.Cast<IVisibleToken>()
-					.Select(vt=>new SpaceToken(ss.Space,vt))
-				)
+				.SelectMany( ss=>ss.SpaceTokensOfAnyClass(preselect.TokenClasses) )
 				.ToArray();
 
 			SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( preselect.Prompt, spaceTokenOptions, Present.Always ) );

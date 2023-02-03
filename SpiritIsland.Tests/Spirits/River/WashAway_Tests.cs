@@ -111,7 +111,6 @@ public class WashAway_Tests : SpiritCards_Tests {
 		var invaderDestination = board[2];
 
 		When_PlayingCard();
-		System.Threading.Thread.Sleep(50); // !!! is this necessary?
 
 		User.TargetsLand( WashAway.Name, targetSpace.Label );
 		User.OptionallyPushesInvaderTo("T@1","A1,[A2],A3,A5");

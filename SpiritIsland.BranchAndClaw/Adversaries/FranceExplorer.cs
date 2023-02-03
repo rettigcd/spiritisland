@@ -52,7 +52,7 @@ public class FranceExplorer : ExploreEngine {
 		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			if(!exploreTokens.HasAny( Human.Town_City ))
-				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ), false ); // !!! implemented as a new Action - Should it be???
+				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ), false );
 	}
 
 	static Task DemandForNewCashCrops( GameCtx ctx, InvaderCard card ) {

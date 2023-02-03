@@ -31,10 +31,7 @@ public class SleepAndNeverWaken {
 	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {
 
 		SpaceToken[] CalcOptions() => fromSpaces
-			.SelectMany(
-				space => ctx.GameState.Tokens[space].OfHumanClass(Human.Explorer)
-					.Select( t => new SpaceToken(space, t ) )
-			)
+			.SelectMany( space => ctx.GameState.Tokens[space].SpaceTokensOfClass(Human.Explorer) )
 			.ToArray();
 
 		SpaceToken[] options;

@@ -12,37 +12,34 @@ public class UnlockTheGatesOfDeepestPower {
 
 		// if 2 of each element,
 		if(await ctx.YouHave("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" ))
-			await PlayCardByPayingHalfCostOrForgetting( card, ctx.OtherCtx );
-
+			// target spirit may now play the major power they keep by:
+			await ctx.OtherCtx.SelectAction_Optional( $"Play {card.Name} now by:",
+				PayHalfOfCardsCost_PlayCard( card ),
+				ForgetCardAtEndOfTurn_PlayCard( card )
+			);
 	}
 
-	static async Task PlayCardByPayingHalfCostOrForgetting( PowerCard card, SelfCtx ctx ) {
-
-		// target spirit may now play the major power they keep by:
-		//    * paying half its cost (round up) OR
+	static SelfAction PayHalfOfCardsCost_PlayCard( PowerCard card ) {
 		int cost = (card.Cost + card.Cost % 2) / 2;
-		var payingHalfCostOption = new SelfAction(
+		return new SelfAction(
 			$"paying {cost}",
-			ctx => ctx.Self.PlayCard(card, cost)
+			ctx => ctx.Self.PlayCard( card, cost )
 		).OnlyExecuteIf( x => cost <= x.Self.Energy );
+	}
+
+	static SelfAction ForgetCardAtEndOfTurn_PlayCard( PowerCard card ) {
 
 		//    * forgetting it at the end of turn.
 		var forgettingCardOption = new SelfAction(
 			$"forgetting at end of turn",
 			ctx => {
-				ctx.Self.PlayCard(card, 0); 
-				ctx.GameState.TimePasses_ThisRound.Push( (gs)=> { 
-					ctx.Self.Forget( card ); return Task.CompletedTask; // this must run befire cards are moved to discard, or it will be forgotten for Shifting Memories
-				});
+				ctx.Self.PlayCard( card, 0 );
+				ctx.GameState.TimePasses_ThisRound.Push( ( gs ) => {
+					ctx.Self.Forget( card ); 
+					return Task.CompletedTask; // this must run before cards are moved to discard, or it will be forgotten for Shifting Memories
+				} );
 			}
 		);
-
-		// !!! It gains all elmemental thresholds.  - implement!
-
-		await ctx.SelectAction_Optional( $"Play {card.Name} now by:",
-			payingHalfCostOption,
-			forgettingCardOption
-		);
+		return forgettingCardOption;
 	}
-
 }

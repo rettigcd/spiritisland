@@ -22,7 +22,12 @@ public class VanishSoftlyAwayForgottonByAll {
 		if( await ctx.YouHave("3 moon,3 air" )) {
 			// in any 2 lands with 4 or more invaders: remove 1 invader
 			var options = ctx.GameState.AllActiveSpaces.Where( s => 4 <= s.InvaderTotal() ).ToArray();
-			// !!! implement
+
+			await Cmd.RemoveInvaders(1)
+				.From().SpiritPickedLand().Which( Has.AtLeastN( 4, Human.Invader ) )
+				.EachSpiritPicks(4).AllDifferent()
+				.Execute(ctx);
+
 		}
 	}
 

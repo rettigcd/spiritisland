@@ -26,7 +26,7 @@ public static class Has {
 	static public XFilter Invaders           => new XFilter( "has invaders", x => x.HasInvaders );
 	static public XFilter Only1ExplorerTown  => new XFilter( "has only 1 explorer or town", x => x.Tokens.SumAny( Human.Explorer_Town ) == 1 && !x.Tokens.Has( Human.City ) );
 	static public XFilter TwoOrFewerInvaders => new XFilter( "has 2 or fewer invaders", x => x.Tokens.SumAny( Human.Invader ) <= 2 );
-	static public XFilter TwoOrMoreInvaders  => new XFilter( "has at least 2 invaders", x => 2 <= x.Tokens.SumAny( Human.Invader ) );
+	static public XFilter AtLeastN( int count, params TokenClass[] tokenClasses ) => new TargetSpaceCtxFilter( $"{count} or more {tokenClasses.Select( x => x.Label ).Join( "/" )}", x => count <= x.Tokens.SumAny( tokenClasses ) );
 	static public XFilter TownOrCity         => new XFilter( "has town/city", ctx => ctx.Tokens.HasAny( Human.Town_City ) );
 	static public XFilter NoCity             => new XFilter( "has no City", x => !x.Tokens.Has( Human.City ) );
 	static public XFilter City               => new XFilter( "has city", x => x.Tokens.Has( Human.City ) );

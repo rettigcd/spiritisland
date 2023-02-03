@@ -15,25 +15,29 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 	public bool IsApplicable( SelfCtx ctx ) => true;
 
 	public async Task Execute( SelfCtx ctx ) {
-		var spaceOptions = ctx.GameState.AllActiveSpaces
-			.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
-			.Select( s => ctx.Target( s.Space ) )
-			.Where( ctx => ctx.IsInPlay )       // land-only, exclude normal ocean
-			.Where( _spaceAction.IsApplicable )  // Matches action Criteria
-			.Where( LandCriteria.Filter )
-			.ToArray();
-		if(spaceOptions.Length == 0) return;
 
-		TargetSpaceCtx spaceCtx = _firstPickTokenClasses != null
-			? await PickSpaceBySelectingToken( ctx, spaceOptions )
-			: await ctx.SelectSpace( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
+		for(int i = 0; i < this._landsPerSpirit; ++i) {
 
-		if(spaceCtx == null) return;
+			var spaceOptions = ctx.GameState.AllActiveSpaces
+				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
+				.Select( s => ctx.Target( s.Space ) )
+				.Where( ctx => ctx.IsInPlay )       // land-only, exclude normal ocean
+				.Where( _spaceAction.IsApplicable )  // Matches action Criteria
+				.Where( LandCriteria.Filter )
+				.ToArray();
+			if(spaceOptions.Length == 0) return;
 
-		if(_chooseDifferentLands)
-			_disallowedSpaces.Add( spaceCtx.Space );
+			TargetSpaceCtx spaceCtx = _firstPickTokenClasses != null
+				? await PickSpaceBySelectingToken( ctx, spaceOptions )
+				: await ctx.SelectSpace( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
 
-		await _spaceAction.Execute( spaceCtx );
+			if(spaceCtx == null) return;
+
+			if(_chooseDifferentLands)
+				_disallowedSpaces.Add( spaceCtx.Space );
+
+			await _spaceAction.Execute( spaceCtx );
+		}
 	}
 
 	#region Configue Methods
@@ -42,6 +46,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 	public SpiritPicksLandAction MakeOptional() { _present = Present.Done; return this; }
 	public SpiritPicksLandAction AllDifferent() {  _chooseDifferentLands = true; return this; }
 	public SpiritPicksLandAction ByPickingToken( params TokenClass[] tokenClasses ) { _firstPickTokenClasses = tokenClasses; return this; }
+	public SpiritPicksLandAction EachSpiritPicks( int count ) { _landsPerSpirit = count; return this; }
 
 	#endregion
 
@@ -49,7 +54,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 
 	async Task<TargetSpaceCtx> PickSpaceBySelectingToken( SelfCtx ctx, TargetSpaceCtx[] spaceOptions ) {
 		// Get options
-		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Tokens.OfAnyClass( _firstPickTokenClasses ).Cast<IVisibleToken>().Select( t => new SpaceToken( x.Space, t ) );
+		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Tokens.SpaceTokensOfAnyClass( _firstPickTokenClasses );
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
@@ -76,6 +81,6 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 	Present _present = Present.Always;
 	bool _chooseDifferentLands = false;
 	TokenClass[] _firstPickTokenClasses;
-
+	int _landsPerSpirit = 1;
 	#endregion
 }

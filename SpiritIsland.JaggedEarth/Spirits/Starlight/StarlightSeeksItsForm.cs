@@ -42,7 +42,7 @@ public class StarlightSeeksItsForm : Spirit {
 		),
 		Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption2 },
 	};
-	static Track NewGrowth3 => new PickNewGrowthOption( true
+	static Track NewGrowth3 => new PickNewGrowthOption( add1Energy:true
 			, new GrowthOption( new ReclaimAll() )
 			, new GrowthOption( new DrawPowerCard(), new GainEnergy( 1 ) )
 		).AssignElementFor( new Track( "so3" ) {
@@ -88,12 +88,12 @@ public class StarlightSeeksItsForm : Spirit {
 			new CompoundPresenceTrack(
 				new PresenceTrack( Track.Energy1, Track.Energy2, Track_PickElement, Track.Energy4),
 				new PresenceTrack( 0, NewGrowth1 ),
-				new PresenceTrack( 0, Track_Gain1Energy, NewGrowth3 ) // missing +1 energies
+				new PresenceTrack( 0, Track_Gain1Energy, NewGrowth3 )
 			),
 			new CompoundPresenceTrack(
 				new PresenceTrack( Track.Card2, Track_PickElement, Track_PickElement, Track.Card3 ),
 				new PresenceTrack( 0, NewGrowth2 ),
-				new PresenceTrack( 0, Track_Gain1Energy, NewGrowth4 ) // !!! missing +1 energies
+				new PresenceTrack( 0, Track_Gain1Energy, NewGrowth4 )
 			)
 		)
 		,PowerCard.For<BoonOfReimagining>()

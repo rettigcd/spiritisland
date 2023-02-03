@@ -21,7 +21,7 @@ public class AbsorbEssence {
 
 		// Target spirit gains 1 ANY and 1 energy
 		ctx.Other.Energy += 1;
-		ctx.Other.Elements[Element.Any]++;  // !!! ??? When are ANY converted?  Should spirit do that now instead of adding an ANY element?
+		ctx.Other.Elements[Element.Any]++;  // This is converted when it is needed.
 	}
 
 }

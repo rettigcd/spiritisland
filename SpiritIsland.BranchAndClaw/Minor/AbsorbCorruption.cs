@@ -25,7 +25,7 @@ public class AbsorbCorruption {
 	}
 
 	static void Pay1EnergyToRemoveBlight( TargetSpaceCtx ctx ) {
-		ctx.RemoveBlight(); // !!! put in safe guard that we don't just do this: ctx.Blight.Count--   because that doesn't put it back on the card.
+		ctx.RemoveBlight();
 		ctx.Self.Energy--;
 	}
 

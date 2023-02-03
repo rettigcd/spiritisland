@@ -85,7 +85,7 @@ public class HeartOfTheWildfire : Spirit {
 		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) { 
 			await base.Place( from, to, gs, actionScope );
 
-			// !!! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
+			// !! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
 			int fireCount = TrackElements[Element.Fire];

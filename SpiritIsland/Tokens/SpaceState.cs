@@ -49,10 +49,16 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public IToken[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
 	public IToken[] OfClass( TokenClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
-	public IToken[] OfAnyClass( params TokenClass[] classes ) => OfAnyClassInternal( classes ).ToArray();
+	public IToken[] OfAnyClass( params TokenClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
 
 	public HumanToken[] OfHumanClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
 	public HumanToken[] OfAnyHumanClass( params HumanTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HumanToken>().ToArray();
+
+	// 2 SpaceToken helper classes
+	public IEnumerable<SpaceToken> SpaceTokensOfClass( TokenClass tokenClass ) 
+		=> OfClassInternal( tokenClass ).OfType<IVisibleToken>().Select(x=>new SpaceToken(Space,x));
+	public IEnumerable<SpaceToken> SpaceTokensOfAnyClass( params TokenClass[] tokenClasses )
+		=> OfAnyClassInternal( tokenClasses ).OfType<IVisibleToken>().Select( x => new SpaceToken( Space, x ) );
 
 	protected IEnumerable<IToken> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
 	protected IEnumerable<IToken> OfClassInternal( TokenClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );

@@ -218,7 +218,7 @@ public class RiverSurges_GrowthTests2 : RiverGame {
 	public void Reclaim1_TriggersImmediately(){
 		// pull card track 2 * 2 = triggers reclaim 
 
-		// !!! I think there is an await missing between SelectsGrowthOptions(1) and the 1st place-precense
+		// I think there is an await missing between SelectsGrowthOptions(1) and the 1st place-precense
 		// which causes the thread to return before the engine has queued up the PlacePresence decision
 		// Problem only appears in things that use RiverGame base class.
 

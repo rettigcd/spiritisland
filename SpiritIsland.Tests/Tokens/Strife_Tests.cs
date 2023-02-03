@@ -147,7 +147,7 @@ public class Strife_Tests {
 		var token = new HumanToken(Human.City,holder,3,0,1);
 		counts[token] = 1;
 		// When: adjust health based on strife
-		holder.HealthPenaltyPerStrife = 1;			// !!! STOP USING global variables.
+		holder.HealthPenaltyPerStrife = 1;
 		// Then: can still find token in dictionary
 		counts.ContainsKey(token).ShouldBeTrue();
 	}

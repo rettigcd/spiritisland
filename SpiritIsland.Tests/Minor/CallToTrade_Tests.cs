@@ -129,7 +129,7 @@ public class CallToTrade_Tests {
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1C@3,1T@2,4E@1" );
 	}
 
-	// TwoRavages_BecomesBuildAndRavage - !!! how do I construct 2 ravages?
+	// TwoRavages_BecomesBuildAndRavage - !!! Put 2 cards in the Ravage slot that trigger the same space. Show only 1 ravage happens
 
 	#region Given / When
 

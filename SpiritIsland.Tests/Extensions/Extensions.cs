@@ -76,4 +76,7 @@ static internal class Extensions {
 
 	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );
 
+	static public TargetSpaceCtx TargetSpace( this SelfCtx ctx, string spaceLabel )
+		=> ctx.Target( ctx.GameState.AllSpaces.Downgrade().First( s => s.Label == spaceLabel ) );
+
 }

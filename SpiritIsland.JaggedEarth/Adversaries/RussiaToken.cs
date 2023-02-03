@@ -82,18 +82,10 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 			args.ActionScope[key] = true; // don't save any more
 
 			GameState gs = args.Space.AccessGameState();
-			Spirit spirit = args.ActionScope.Owner ?? FindSpiritForBoard( gs, args.Space.Space.Board );
+			Spirit spirit = args.ActionScope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
 			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( (IVisibleToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
 			await args.Space.MoveTo( (IVisibleToken)args.Token, destination );
 		}
-	}
-
-	static Spirit FindSpiritForBoard( GameState gameState, Board board ) {
-		// !!! bug if board is added / removed
-		for(int i = 0; i < gameState.Spirits.Length; ++i)
-			if(gameState.Island.Boards[i] == board)
-				return gameState.Spirits[i];
-		throw new ArgumentOutOfRangeException( nameof( board ) );
 	}
 
 	#endregion mods

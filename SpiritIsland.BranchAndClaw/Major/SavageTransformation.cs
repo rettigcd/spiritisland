@@ -21,9 +21,7 @@ public class SavageTransformation {
 
 	static async Task ReplaceExplorerWithBeast( TargetSpaceCtx origCtx, int range ) {
 		var options = origCtx.Tokens.Range( range )
-			.SelectMany(
-				ss => ss.OfHumanClass( Human.Explorer ).Select( t => new SpaceToken( ss.Space, t ) ) // !!! does this happen offent enough to make it a method on SpaceState???
-			);
+			.SelectMany( ss => ss.SpaceTokensOfClass( Human.Explorer ) );
 
 		SpaceToken spaceToken2 = await origCtx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Replace additional with Beast", options, Present.Always ) );
 		if(spaceToken2 == null) return;

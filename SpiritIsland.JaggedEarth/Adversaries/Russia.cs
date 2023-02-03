@@ -96,7 +96,7 @@ public class Russia : IAdversary {
 
 		for(int boardIndex = 0; boardIndex < gameState.Island.Boards.Length; ++boardIndex) {
 			Board board = gameState.Island.Boards[boardIndex];
-			Spirit spirit = gameState.Spirits[boardIndex]; // !!! wrong if board is added or removed.
+			Spirit spirit = BoardCtx.FindSpirit(gameState, board);
 
 			var addSpaces = beastsSpacesForBoard.ContainsKey( board )
 				? beastsSpacesForBoard[board]

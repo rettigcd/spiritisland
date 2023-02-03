@@ -123,7 +123,8 @@ public class VirtualUser {
 	public void AcknowledgesFearCard( string fearCard ) {
 		var parts = fearCard.Split(" : ");
 		var cardName = parts[0];// We used to include Level and Description but now we only use the Fear Card Name
-		AssertDecision( "Activating Fear", cardName, cardName ); // some of the fear cards have commas in them
+		NextDecision.HasPrompt( "Activating Fear" ).HasOptions( cardName ).ChooseFirst( cardName );// some of the fear cards have commas in them
+
 	}
 
 
@@ -135,7 +136,8 @@ public class VirtualUser {
 		var (options,choice) = SplitOptionsAndChoice( actions );
 		choice = PowerNameToText( choice );
 		options = options.Split(',').Select( PowerNameToText ).Join(",");
-		AssertDecision( "Select Slow to resolve", options+",Done", choice );
+		NextDecision.HasPrompt( "Select Slow to resolve" ).HasOptions( options + ",Done" ).ChooseFirst( choice );
+
 	}
 
 	/// <example>Fast-0,(Fast-1),Fast-2,Gift of Strength</example>
@@ -145,7 +147,7 @@ public class VirtualUser {
 		choice = PowerNameToText( choice );
 		options = options.Split(',').Select( PowerNameToText ).Join(",");
 
-		AssertDecision( "Select Fast to resolve", options + ",Done", choice );
+		NextDecision.HasPrompt( "Select Fast to resolve" ).HasOptions( options + ",Done" ).ChooseFirst( choice );
 	}
 
 	string PowerNameToText( string choice ) {

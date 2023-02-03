@@ -16,8 +16,8 @@ public class DreamOfTheUntouchedLand {
 		if(await ctx.YouHave( "3 moon,2 water,3 earth,2 plant" )) {
 
 			// Max. (1x/game) !!! Check only works for solo games
-			if(ctx.GameState.Island.Boards.Length > 1)
-				throw new NotImplementedException( "Adding boards is only implemented for islans with 1 board." );
+			if(1 < ctx.GameState.Island.Boards.Length)
+				throw new NotImplementedException( "Adding boards is only implemented for islands with 1 board." );
 
 			// Add a random new island board next to target board ignore its setup icons.
 			Board newBoard = PickNewRandomBoard( ctx );

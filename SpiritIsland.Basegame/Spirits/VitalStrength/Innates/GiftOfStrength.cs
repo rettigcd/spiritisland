@@ -25,7 +25,7 @@ public class GiftOfStrength {
 	}
 
 	static Task RepeatPowerCard( Spirit spirit, int maxCost ) {
-		spirit.AddActionFactory( new ReplayCardForFree(maxCost) );
+		spirit.AddActionFactory( new RepeatCardForFree(maxCost) );
 		return Task.CompletedTask;
 	}
 
