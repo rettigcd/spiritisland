@@ -223,7 +223,7 @@ public class AbsoluteStasis_Tests {
 		//   And: space is in stasis
 		SpacePutInStasis( space.Text );
 		//   And: should check win/loss
-		cfg.GameState.ShouldCheckWinLoss = true;
+		cfg.GameState.AddWinLossCheck();
 
 		try{
 			//  When: destroy that extra presence (triggers win/loss check)

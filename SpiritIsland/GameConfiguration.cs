@@ -99,7 +99,7 @@ public class GameBuilder {
 		adversary.PreInitialization( gameState );
 
 		// Enable Win / Loss Check
-		gameState.ShouldCheckWinLoss = true; // !!! instead of this, load win/loss states into the check-list for real games
+		gameState.AddWinLossCheck();
 
 		gameState.Initialize();
 

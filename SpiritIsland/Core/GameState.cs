@@ -256,17 +256,14 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	#region Win / Loss
 
 	readonly List<Action<GameState>> WinLossChecks = new List<Action<GameState>>();
-	public void AddWinLossCheck( Action<GameState> action ) => WinLossChecks.Add( action );
-	public bool ShouldCheckWinLoss {
-		set {
-			WinLossChecks.Clear();
-			if(value)
-				WinLossChecks.Add(CheckTerrorLevelVictory);
-		}
-	}
+
+	/// <summary>
+	/// Used to add the standard TerrorLevelVictory check or custom Adversary checks
+	/// </summary>
+	public void AddWinLossCheck( Action<GameState> action = null ) => WinLossChecks.Add( action ?? CheckTerrorLevelVictory );
 
 	public void CheckWinLoss() {
-		foreach(var check in WinLossChecks)
+		foreach(Action<GameState> check in WinLossChecks)
 			check(this);
 	}
 
