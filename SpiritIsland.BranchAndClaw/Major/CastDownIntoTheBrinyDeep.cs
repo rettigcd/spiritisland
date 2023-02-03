@@ -27,14 +27,8 @@ public class CastDownIntoTheBrinyDeep {
 		await DestroyTokens( ctx, activeSpaces );
 
 		if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api should have method called "Destroy Space" or "DestroyBoard"
-
-			// destroy presence - !!! ??? Should Bringer destroy its own presence?
-			foreach(var spirit in ctx.GameState.Spirits)
-				foreach(var p in spirit.Presence.Placed( ctx.GameState ).Where(p=>p.Space.Board==board).ToArray() )
-					await ctx.NewSelf(spirit).Presence.Destroy(p.Space, 1, DestoryPresenceCause.SpiritPower );
-
 			// destroy board - spaces
-			foreach(var space in activeSpaces)
+			foreach(SpaceState space in activeSpaces)
 				board.Remove( space.Space );
 
 			if(!board.Spaces.Any())
@@ -58,9 +52,10 @@ public class CastDownIntoTheBrinyDeep {
 
 			if(!ctx.Self.Text.StartsWith("Bringer")) // !!!
 				// Destroy all other tokens
-				foreach(var token in space.Keys.OfType<IVisibleToken>().ToArray())
+				// !!! this destroys presence also, Should figure out why one of the parameters is: DestoryPresenceCause.SpiritPower
+				// !!! also, we possibly just destroyed presence. Do we need to do a Win/Loss check here?
+				foreach(IVisibleToken token in space.Keys.OfType<IVisibleToken>().ToArray())
 					await targetCtx.Tokens.Destroy( token, space[token] );
-
 		}
 	}
 

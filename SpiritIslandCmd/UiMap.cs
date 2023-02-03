@@ -11,10 +11,10 @@ namespace SpiritIslandCmd {
 		public string Prompt;
 		public Dictionary<string,IOption> dict;
 		public List<string> descList;
-		readonly SinglePlayerGame game;
+		readonly SinglePlayerGame _game;
 
 		public UiMap(SinglePlayerGame game ){
-			this.game=game;
+			this._game=game;
 			var decisionProvider = game.UserPortal;
 			var decision = decisionProvider.Next;
 			Prompt = decision.Prompt;
@@ -67,7 +67,7 @@ namespace SpiritIslandCmd {
 		public string ToPrompt() => Prompt + descList.Select( d => "\r\n\t" + d ).Join( "" );
 
 		public string FormatSpace( Space space ) {
-			var gameState = game.GameState;
+			var gameState = _game.GameState;
 			var deck = gameState.InvaderDeck;
 			var tokens = gameState.Tokens[space];
 			bool ravage = deck.Ravage.Cards.Count > 0 && deck.Ravage.Cards[0].MatchesCard( tokens ); // !! show multiple, not just first
@@ -91,7 +91,7 @@ namespace SpiritIslandCmd {
 			string blight = (blightCount > 0) ? ("B" + blightCount) :"  ";
 
 			// presence
-			string pres = game.Spirit.Presence.Placed(this.game.GameState).Where(p=>p.Space==space).Select(x=>"P").Join("");
+			string pres = _game.GameState.AllActiveSpaces.Where(_game.Spirit.Presence.IsOn).Select(x=>"P").Join("");
 			return $"{space.Label} {threat}\t{dahan}\t{details}\t{blight}\t{pres}";
 		}
 
@@ -105,7 +105,7 @@ namespace SpiritIslandCmd {
 		}
 
 		public string FormatFactory(IActionFactory factory, int nameWidth=1){
-			var spirit = game.Spirit;
+			var spirit = _game.Spirit;
 			var speed = factory is IFlexibleSpeedActionFactory flex ? flex.DisplaySpeed : Phase.None;
 			char speedChar = speed.ToString()[0];
 			char unresolved = spirit.GetAvailableActions(speed).Contains(factory) ? '*' : ' ';

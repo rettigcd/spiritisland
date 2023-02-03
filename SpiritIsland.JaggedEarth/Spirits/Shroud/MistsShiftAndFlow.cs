@@ -81,7 +81,7 @@ class MistsShiftAndFlow {
 	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
 
-		var pretendPresence = new SpaceCounts( target.AccessGameState(), _spirit.Presence.Placed(this._gameState).Select(x=>x.Space) );
+		var pretendPresence = new SpaceCounts( _gameState, _spirit );
 
 		var spacesInRange = target.Range(1) // this is a Gather
 			.Where( IsInPlay )
@@ -162,20 +162,20 @@ class MistsShiftAndFlow {
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {
+	
+		// readonly Spirit _spirit;
 
-		//public SpaceCounts(GameState gs ) {
-		//	_gs = gs ?? throw new ArgumentNullException( nameof(gs)) ;
-		//}
-		readonly GameState _gs;
-
-		public SpaceCounts(GameState gs, IEnumerable<Space> spaces ) : base( spaces ) {
-			_gs = gs ?? throw new ArgumentNullException( nameof( gs ) );
+		public SpaceCounts(GameState gameState, Spirit spirit) : base() {
+			// _spirit = spirit;
+			SpaceStates = gameState.AllActiveSpaces.Where( spirit.Presence.IsOn );
+			foreach(var ss in SpaceStates)
+				Add(ss.Space,spirit.Presence.CountOn(ss));
 		}
 
-		public IEnumerable<Space> Spaces => this.Keys;
-		public IEnumerable<SpaceState> SpaceStates => this.Keys.Select(x=>_gs.Tokens[x]);
+		IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
+		public IEnumerable<SpaceState> SpaceStates { get; }
 
-		public IEnumerable<SpaceState> SacredSites => this.Keys.Where( k => this[k] > 1 ).Select(x=>_gs.Tokens[x]);
+		public IEnumerable<SpaceState> SacredSites => SpaceStates.Where( k => 1 < this[k.Space] ); // !!! This won't work for River that has SS on wetlands.
 
 	}
 

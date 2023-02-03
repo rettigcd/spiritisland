@@ -48,7 +48,7 @@ public class Bringer_GrowthTests : GrowthTests {
 		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 
 		Assert_GainsFirstMinorCard();
-		Assert_BoardPresenceIs( "A1A1" );
+		Assert_BoardPresenceIs( "A1:2" );
 	}
 
 	[Fact] 
@@ -72,7 +72,7 @@ public class Bringer_GrowthTests : GrowthTests {
 
 		Assert.Equal(2,spirit.EnergyPerTurn);
 		Assert_HasEnergy(2+2);
-		Assert_BoardPresenceIs("T5T6");
+		Assert_BoardPresenceIs("T5:1,T6:1");
 	}
 
 	[Trait("Presence","EnergyTrack")]

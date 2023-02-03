@@ -47,7 +47,7 @@ public class Keeper_GrowthTests : GrowthTests {
 
 		Assert_AllCardsAvailableToPlay();      // A
 		Assert_HasEnergy( 2 + 2 );             // A & C
-		Assert_BoardPresenceIs( "A3A3" );      // C
+		Assert_BoardPresenceIs( "A3:2" );      // C
 	}
 
 
@@ -69,7 +69,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		Assert_AllCardsAvailableToPlay( 4+1);     // A
 		Assert_HasEnergy( 10 + 2-3+1 );                // A & D
 		// Assert_HasPowerProgressionCard(0); // D
-		Assert_BoardPresenceIs( "A3A7" );        // D
+		Assert_BoardPresenceIs( "A3:1,A7:1" );        // D
 
 	}
 
@@ -89,7 +89,7 @@ public class Keeper_GrowthTests : GrowthTests {
 
 		// Assert_HasPowerProgressionCard( 0); // B
 		Assert_HasEnergy( 1 + 2 );             // C
-		Assert_BoardPresenceIs( "A3A3" );     // C
+		Assert_BoardPresenceIs( "A3:2" );     // C
 	}
 
 	[Fact]
@@ -110,7 +110,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		// Assert_HasPowerProgressionCard( 0); // B
 		// Assert_HasPowerProgressionCard( 1 ); // B
 		Assert_HasCardAvailable( CallToBloodshed.Name ); // D
-		Assert_BoardPresenceIs( "A3A7" );     // D
+		Assert_BoardPresenceIs( "A3:1,A7:1" );     // D
 		Assert_HasEnergy( 10 + 2 - 3 );
 	}
 

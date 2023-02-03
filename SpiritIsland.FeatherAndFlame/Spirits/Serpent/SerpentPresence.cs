@@ -14,7 +14,7 @@ public class SerpentPresence : SpiritPresence {
 	}
 
 	public override IEnumerable<Track> RevealOptions(GameState gs) {
-		if(MaxPresenceOnBoard == Placed(gs).Count ) yield break;
+		if(MaxPresenceOnBoard == Total(gs) ) yield break;
 
 		var energyNext = Energy.RevealOptions.FirstOrDefault();
 		if( energyNext != null && (energyNext != Track.EarthEnergy || CardPlays.Revealed.Count() == 4 ) )

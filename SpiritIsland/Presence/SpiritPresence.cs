@@ -197,21 +197,7 @@ public class SpiritPresence {
 	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
 		.Where( IsSacredSite );
 
-	/// <summary>
-	/// One item for each presence
-	/// </summary>
-	/// <returns>1 item for each token on each space</returns>
-	public IReadOnlyCollection<SpaceState> Placed( GameState gs ) {
-
-		// !!! this method is an abomination
-		// Deprecate!
-
-		var placed = new List<SpaceState>();
-		foreach(var space in gs.AllActiveSpaces.Where( IsOn ))
-			for(int i = 0; i < CountOn( space ); ++i)
-				placed.Add( space );
-		return placed.AsReadOnly();
-	}
+	public int Total( GameState gs ) => gs.AllSpaces.Sum(CountOn);
 
 	// !!! deprecate one item for each space that has presence
 	public IEnumerable<Space> Spaces( GameState gs ) => SpaceStates( gs ).Select( x => x.Space );

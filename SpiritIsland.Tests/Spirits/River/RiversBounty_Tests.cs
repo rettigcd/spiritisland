@@ -33,6 +33,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		Assert_CardStatus( card, 0, Phase.Slow, "sun water animal" );
 	}
 
+	Space Given_SpiritHas1Presence() => gameState.AllActiveSpaces.Where( spirit.Presence.IsOn ).Single().Space;
 
 	// 1 target, 0 dahan, 1 to gather       => resolved, dahan gathered, no child
 	// 1 target, 1 dahan, 1 to gather        => resolved, dahan gathered, child!
@@ -50,13 +51,13 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		int endingEnergy
 	) {
 		// Given: spirit has 1 presence
-		SpaceState target = spirit.Presence.Placed(gameState).Single();
+		Space target = Given_SpiritHas1Presence();
 
 		//   And: presence space has dahan
-		Given_AddDahan( startingCount, target.Space );
+		Given_AddDahan( startingCount, target );
 
 		//   And: neighbors have some dahan
-		Space neighbor = target.Space.Adjacent.First();
+		Space neighbor = target.Adjacent.First();
 		Given_AddDahan( dahanToGather, neighbor );
 
 		When_PlayingCard();
@@ -74,7 +75,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		if(dahanToGather > 1)
 			User.GathersOptionalToken( token );
 
-		Assert_DahanCount( target.Space, endingCount );
+		Assert_DahanCount( target, endingCount );
 		spirit.Energy.ShouldBe( endingEnergy );
 	}
 
@@ -85,7 +86,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void DahanComingDifferentLands() {
 		// Given: spirit has 1 presence
-		Space target = spirit.Presence.Placed(gameState).Single().Space;
+		Space target = Given_SpiritHas1Presence();
 
 		//   And: neighbors have 1 dahan each 
 		const int dahanToGather = 2;
@@ -107,7 +108,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void DamagedDahanComingDifferentLands() {
 		// Given: spirit has 1 presence
-		Space target = spirit.Presence.Placed(gameState).Single().Space;
+		Space target = Given_SpiritHas1Presence();
 
 		//   And: neighbors have 1 damaged dahan each 
 		const int dahanToGather = 2;

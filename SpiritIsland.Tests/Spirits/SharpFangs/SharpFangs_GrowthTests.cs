@@ -38,7 +38,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		Assert_HasEnergy( 10 -1 + 1 );         // A
 		// Assert_HasPowerProgressionCard( 0 );   // A
 
-		Assert_BoardPresenceIs( "A2A3" );    // B
+		Assert_BoardPresenceIs( "A2:1,A3:1" );    // B
 	}
 
 	[Fact]
@@ -90,7 +90,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 
 		User.SkipsPresenceReplacementWithBeasts();
 
-		Assert_BoardPresenceIs( "A2A3" );  // B
+		Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
 		Assert_HasEnergy( 1 + 1 );         // C
 		// Assert_HasPowerProgressionCard( 0 );    // A
 	}
@@ -106,7 +106,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		User.SkipsPresenceReplacementWithBeasts();
 
 
-		Assert_BoardPresenceIs( "A2A3" );  // B
+		Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
 		Assert_HasEnergy( 3 + 1 );         // D
 	}
 
