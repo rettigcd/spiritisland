@@ -40,7 +40,6 @@ public class ObserveWorldMod : IToken
 
 	public ObserveWorldMod( TargetSpaceCtx ctx ) {
 		_spirit = (ShiftingMemoryOfAges)ctx.Self;
-		// _index = _total++;
 		_tokenSummary = ctx.Tokens.Summary;
 	}
 
@@ -65,13 +64,11 @@ public class ObserveWorldMod : IToken
 		_appliedToTheseActions.Add( actionScope ); // limit to 1 change per action
 		_tokenSummary = space.Summary;
 
+		// This web page states SMOA shouldn't get the element until after the Action completes.
+		// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
 		actionScope.AtEndOfThisAction(async _ => {
 			space.Adjust( this, -1 );
-
-			// !!! This web page states SMOA shouldn't get the element until after the Action completes.
-			// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
 			await _spirit.PrepareElement( space.Space.Label );
-
 		} );
 
 

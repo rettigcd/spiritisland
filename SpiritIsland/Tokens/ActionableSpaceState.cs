@@ -91,11 +91,16 @@ public class ActionableSpaceState : SpaceState {
 
 	/// <summary> returns null if no token removed </summary>
 	public virtual async Task<TokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+
+		// grab event handlers BEFORE the token is removed, so token can self-handle its own removal
+		var tokenRemovedHandlers = Keys.OfType<IHandleTokenRemoved>().ToArray();
+
 		var e = await Remove_Silent( token, count, reason );
-		if(e != null) {
-			foreach(var handler in Keys.OfType<IHandleTokenRemoved>().ToArray())
-				await handler.HandleTokenRemoved( e );
-		}
+		if(e == null) return null;
+
+		foreach(IHandleTokenRemoved handler in tokenRemovedHandlers)
+			await handler.HandleTokenRemoved( e );
+
 		return e;
 	}
 

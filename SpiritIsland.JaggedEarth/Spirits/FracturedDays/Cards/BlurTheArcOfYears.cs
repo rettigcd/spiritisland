@@ -32,7 +32,7 @@ class BlurTheArcOfYears {
 		if(hasInvaders) {
 			var deck = ctx.GameState.InvaderDeck;
 			await deck.Build.Engine.Do1Build( ctx.GameState, ctx.Tokens );
-			await ctx.Tokens.Ravage(); // !!! log this
+			await ctx.Tokens.Ravage();
 		}
 
 		// If dahan are present: Add 1 dahan. Push up to 2 dahan.

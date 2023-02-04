@@ -99,7 +99,7 @@ public class GameBuilder {
 		adversary.PreInitialization( gameState );
 
 		// Enable Win / Loss Check
-		gameState.AddWinLossCheck();
+		gameState.AddStandardWinLossCheck();
 
 		gameState.Initialize();
 

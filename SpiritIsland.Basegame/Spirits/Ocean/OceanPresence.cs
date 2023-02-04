@@ -2,35 +2,59 @@
 
 public class OceanPresence : SpiritPresence {
 
-	public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) {}
+	public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) {
+		Token = new OceanToken();
+	}
 
 	public override bool CanBePlacedOn( SpaceState s, TerrainMapper tm ) 
 		=> tm.MatchesTerrain( s, Terrain.Ocean ) || tm.IsCoastal( s );
 
-	public override async Task PlaceOn( SpaceState space, UnitOfWork actionScope ) {
-		await base.PlaceOn( space, actionScope );
-		currentBoards.Add( space.Space.Board );
-	}
-
 	public override void Adjust( SpaceState space, int count ) {
 		space.Adjust( Token, count );
-		if(space[Token]>0)
-			currentBoards.Add( space.Space.Board );
+		((OceanToken)Token).Adjust(space.Space,count);
+	}
+
+	public bool IsOnBoard(Board board) => ((OceanToken) Token).IsOnBoard(board); // _currentBoards.Contains(board);
+
+
+}
+
+public class OceanToken : SpiritPresenceToken, IHandleTokenAdded, IHandleTokenRemoved {
+	public OceanToken() {
+		_currentBoards = new HashSet<Board>();
+	}
+
+	public Task HandleTokenAdded( ITokenAddedArgs args ) {
+		if(args.Token!=this) return Task.CompletedTask;
+		
+		_currentBoards.Add(args.AddedTo.Space.Board);
+		_spaces[args.AddedTo.Space] += args.Count;
+
+		return Task.CompletedTask;
+	}
+	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
+		if(args.Token==this) {
+			_spaces[args.RemovedFrom.Space] -= args.Count;
+			CheckIfBoardStillPresent( args.RemovedFrom.Space.Board );
+		}
+		return Task.CompletedTask;
+	}
+
+	public void Adjust( Space space, int delta) { 
+		_spaces[space] += delta;
+		if(0 <= delta)
+			_currentBoards.Add(space.Board);
 		else
-			currentBoards.Remove( space.Space.Board );
+			CheckIfBoardStillPresent( space.Board );
 	}
 
-
-	protected override async Task RemoveFrom_NoCheck( SpaceState space, int count ) {
-		await base.RemoveFrom_NoCheck( space, count );
-		var board = space.Board;
-		bool isOnBoard = board.Spaces.Any( IsOn );
-		if(!isOnBoard )
-			currentBoards.Remove( board.Board );
+	void CheckIfBoardStillPresent( Board board ) {
+		if(!_spaces.Keys.Any( s => s.Board == board ))
+			_currentBoards.Remove( board );
 	}
 
-	public bool IsOnBoard(Board board) => currentBoards.Contains(board);
+	public bool IsOnBoard( Board board ) => _currentBoards.Contains( board );
 
-	readonly HashSet<Board> currentBoards = new HashSet<Board>();
-
+	readonly CountDictionary<Space> _spaces = new CountDictionary<Space>(); // !!! Save state in memento
+	readonly HashSet<Board> _currentBoards;
 }

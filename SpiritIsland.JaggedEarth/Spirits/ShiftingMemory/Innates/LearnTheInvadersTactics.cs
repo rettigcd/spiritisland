@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 [InnatePower("Learn the Invaders' Tactics"), Fast, FromPresence(1,Target.Invaders)]
-public class LearnTheInvadersActions {
+public class LearnTheInvadersTactics {
 
 	[InnateOption("2 earth","Defend 2")]
 	static public Task Option1(TargetSpaceCtx ctx ) {

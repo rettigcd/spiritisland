@@ -16,6 +16,7 @@ class ManyMindsPresence : SpiritPresence {
 			space.Adjust( SpiritIsland.Token.Beast,1); // virtual so don't trigger an event.
 	}
 
+	// !!! instead of overridingthis, could token implement a TokenRemoved/ing handler to detect it?
 	protected override async Task RemoveFrom_NoCheck( SpaceState space, int count ) {
 		await base.RemoveFrom_NoCheck( space, count );
 		// if destroyed sacred site, remove virtual beast

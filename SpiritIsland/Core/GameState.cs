@@ -236,7 +236,12 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Used to add the standard TerrorLevelVictory check or custom Adversary checks
 	/// </summary>
-	public void AddWinLossCheck( Action<GameState> action = null ) => WinLossChecks.Add( action ?? CheckTerrorLevelVictory );
+	public void AddStandardWinLossCheck() {
+		WinLossChecks.Add( CheckTerrorLevelVictory );
+		WinLossChecks.Add( CheckIfSpiritIsDestroyed );
+	}
+
+	public void AddWinLossCheck( Action<GameState> action ) => WinLossChecks.Add( action );
 
 	public void CheckWinLoss() {
 		foreach(Action<GameState> check in WinLossChecks)
@@ -258,6 +263,13 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if( gs.AllSpaces.All( filter ) )
 			GameOverException.Win($"Terror Level {gs.Fear.TerrorLevel} - {description}");
 	}
+
+	static void CheckIfSpiritIsDestroyed( GameState gs ) {
+		foreach(Spirit spirit in gs.Spirits)
+			if(!gs.AllSpaces.Any( spirit.Presence.IsOn ))
+				GameOverException.Lost( $"{spirit.Text} is Destroyed" );
+	}
+
 
 	#endregion
 

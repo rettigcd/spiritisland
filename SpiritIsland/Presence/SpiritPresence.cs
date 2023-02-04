@@ -17,7 +17,7 @@ public class SpiritPresence {
 
 		InitEnergyAndCardPlays();
 
-		this.Token = new SpiritPresenceToken();
+		Token = new SpiritPresenceToken();
 	}
 
 	protected void InitEnergyAndCardPlays() {
@@ -111,11 +111,6 @@ public class SpiritPresence {
 		}
 	}
 
-	public async Task RemoveFrom( Space space, GameState gs ) {
-		await RemoveFrom_NoCheck( gs.Tokens[space] );
-		CheckIfSpiritIsDestroyed( gs );
-	}
-
 	public Task ReturnDestroyedToTrack( Track dst ) {
 
 		// src / from
@@ -136,17 +131,7 @@ public class SpiritPresence {
 
 	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && IsOn( spaceState );
 
-	public bool CanMove { get; set; } = true;
-
-	public async Task Move( Space from, Space to, GameState gs, UnitOfWork actionScope ) {
-		await RemoveFrom_NoCheck( gs.Tokens[from] );
-		await PlaceOn( gs.Tokens[to], actionScope );
-	}
-
-	public virtual async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope, AddReason blightAddedReason = AddReason.None ) {
-		await DestroyBehavior.DestroyPresenceApi( this, space, gs, count, actionType, actionScope );
-		CheckIfSpiritIsDestroyed( gs );
-	}
+	public bool CanMove { get; set; } = true; // Spirit effect - Settle Into Hunting Grounds
 
 	protected virtual async Task RevealTrack( Track track, GameState gs ) {
 		if(track == Track.Destroyed && Destroyed > 0)
@@ -171,11 +156,6 @@ public class SpiritPresence {
 			EnergyPerTurn = track.Energy.Value;
 		if(track.CardPlay.HasValue && CardPlayCount < track.CardPlay.Value)
 			CardPlayCount = track.CardPlay.Value;
-	}
-
-	void CheckIfSpiritIsDestroyed(GameState gs) {
-		if(!gs.AllSpaces.Any(IsOn))
-			GameOverException.Lost( "Spirit is Destroyed" ); // !! if we had access to the Spirit here, we could say who it was.
 	}
 
 	public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
@@ -204,7 +184,16 @@ public class SpiritPresence {
 
 	#endregion Exposed Data
 
-	#region Is this Setup or Game play?
+	#region Token / SpaceState stuff we can merge into SpaceState
+
+	public async Task Move( Space from, Space to, GameState gs, UnitOfWork actionScope ) {
+		await RemoveFrom_NoCheck( gs.Tokens[from] );
+		await PlaceOn( gs.Tokens[to], actionScope );
+	}
+
+	public virtual async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope, AddReason blightAddedReason = AddReason.None ) {
+		await DestroyBehavior.DestroyPresenceApi( this, space, gs, count, actionType, actionScope );
+	}
 
 	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionScope ) {
 		await space.Bind( actionScope ).Add(Token,1);
@@ -213,17 +202,21 @@ public class SpiritPresence {
 		space.Adjust( Token, count );
 	}
 
-	#endregion
-
-	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
-
 	/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
 	// (1) To move presence to another location on the board - no End-of-Game check is necessary
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
-	protected virtual Task RemoveFrom_NoCheck( SpaceState space, int count=1 ) { 
-		space.Adjust(Token,-count);
+	protected virtual Task RemoveFrom_NoCheck( SpaceState space, int count = 1 ) {
+		space.Adjust( Token, -count );
 		return Task.CompletedTask;
 	}
+
+	public async Task RemoveFrom( Space space, GameState gs ) {
+		await RemoveFrom_NoCheck( gs.Tokens[space] );
+	}
+
+	#endregion
+
+	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
 	public SpiritPresenceToken Token { get; protected set; }
 
