@@ -82,7 +82,7 @@ public class ActionableSpaceState : SpaceState {
 		if(addingArgs.Count == 0) return null;
 
 		// Do Add
-		this[addingArgs.Token] += addingArgs.Count;
+		Adjust(addingArgs.Token, addingArgs.Count);
 
 		// Post-Add event
 		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count, ActionScope );
@@ -118,7 +118,7 @@ public class ActionableSpaceState : SpaceState {
 		if(removingArgs.Count == 0) return null;
 
 		// Do Remove
-		this[removingArgs.Token] -= removingArgs.Count;
+		Adjust(removingArgs.Token, -removingArgs.Count);
 
 		// Post-Remove event
 		return new TokenRemovedArgs( removingArgs.Token, reason, ActionScope, this, removingArgs.Count );
@@ -130,11 +130,11 @@ public class ActionableSpaceState : SpaceState {
 		// Remove old type from 
 		if(this[invader] < count)
 			throw new ArgumentOutOfRangeException( $"collection does not contain {count} {invader}" );
-		this[invader] -= count;
+		Adjust(invader, -count);
 
 		// Add new strifed
 		var strifed = invader.HavingStrife( invader.StrifeCount + 1 );
-		this[strifed] += count;
+		Adjust(strifed, count);
 
 		// !!! Adding / Removing a strife needs to trigger a token-change event for Observe the Ever Changing World
 		// !!! Test that a ravage that does nothing but removes a strife, triggers Observe the Ever Changing World

@@ -2,12 +2,12 @@
 
 public enum RemoveReason {
 	None,
-	Removed,           // Generic 'Remove X' command
-	UsedUp,            // Wilds, Disease, Strife
-	Destroyed,
-	Replaced,          // with another token
-//	ReturnedToCard,    // Blight - nothing cares that blight is returned to card
-	MovedFrom
+	Removed,    // Pulled from Game - Willingly
+	Destroyed,  // Pulled from Game - Unwillingly
+	Replaced,   // Pulled from Game - To be replaced with another
+	UsedUp,     // Wilds, Disease, Strife
+	MovedFrom   // Placed on another space.
+	//	ReturnedToCard,    // Blight - nothing cares that blight is returned to card
 }
 
 static public class RemoveReasonExtension {

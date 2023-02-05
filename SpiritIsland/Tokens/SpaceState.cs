@@ -37,10 +37,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 				count += _api.GetDynamicTokensFor(this, ut);
 			return count;
 		}
-		protected set {
-			ValidateNotDead( specific );
-			_counts[specific] = value; 
-		}
 	}
 
 	public IEnumerable<IToken> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
@@ -115,8 +111,10 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	/// <summary> Non-event-triggering setup </summary>
 	public void Adjust( IToken specific, int delta ) {
-		if(specific is HumanToken ht && ht.RemainingHealth == 0) 
+		if(specific is HumanToken human && human.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
+		if(specific is ITrackMySpaces selfTracker)
+			selfTracker.Adjust(Space,delta);
 		_counts[specific] += delta;
 	}
 
@@ -170,8 +168,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public HumanToken RemoveStrife( HumanToken orig, int tokenCount ) {
 		HumanToken lessStrifed = orig.AddStrife( -1 );
-		this[lessStrifed] += tokenCount;
-		this[orig] -= tokenCount;
+		Adjust(lessStrifed, tokenCount);
+		Adjust(orig, -tokenCount);
 		return lessStrifed;
 	}
 
