@@ -103,7 +103,7 @@ public class OceanTerrain_Tests {
 			
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
-			oceanSpace.Summary.ShouldBe("");
+			oceanSpace.Summary.ShouldBe("[none]");
 			log.Single().ShouldBe("Drowning 1D@2 on A0");
 
 			//  And: and leave thunderspeaker in the ocean.
@@ -288,7 +288,7 @@ public class OceanTerrain_Tests {
 
 		// Given: ocean in either A0 (saving dahan) or A1 (not saving)
 		Space oceanSpace = savedByOcean ? boardA[0] : boardA[1];
-		oceanSpirit.Presence.Adjust( gameState.Tokens[oceanSpace], 1 );
+		SpiritExtensions.Adjust( oceanSpirit.Presence, gameState.Tokens[oceanSpace], 1 );
 
 		// When: Tidal Boon is played (by Ocean)
 		gameState.Phase = Phase.Slow;
@@ -344,16 +344,16 @@ public class OceanTerrain_Tests {
 		return gameState;
 	}
 
-	void Given_OceanOnPrimaryBoard() => oceanSpirit.Presence.Adjust( gameState.Tokens[boardA[0]], 1 ); // put ocean presence on primary's board, but not in the ocean
+	void Given_OceanOnPrimaryBoard() => SpiritExtensions.Adjust( oceanSpirit.Presence, gameState.Tokens[boardA[0]], 1 ); // put ocean presence on primary's board, but not in the ocean
 
 	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
 
 	void Given_PrimaryPresenceOnlyOn( Space space ) {
 		foreach(SpaceState ss in primarySpirit.Presence.ActiveSpaceStates( gameState ).ToArray())
-			primarySpirit.Presence.Adjust( ss, -1 );
+			SpiritExtensions.Adjust( primarySpirit.Presence, ss, -1 );
 
 		// Add to
-		primarySpirit.Presence.Adjust( gameState.Tokens[space], 1 );
+		SpiritExtensions.Adjust( primarySpirit.Presence, gameState.Tokens[space], 1 );
 		primarySpirit.Presence.ActiveSpaceStates( gameState ).SelectLabels().Join( "," ).ShouldBe( space.Text );
 	}
 

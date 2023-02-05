@@ -158,7 +158,7 @@ public class Russia_Tests {
 		destination.Summary.ShouldBe( "1E@1" );
 
 		//   And: remaining explorers is 0
-		a3.Summary.ShouldBe( "" );
+		a3.Summary.ShouldBe( "[none]" );
 	}
 
 	[Fact]

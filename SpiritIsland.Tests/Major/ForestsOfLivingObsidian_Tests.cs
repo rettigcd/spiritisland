@@ -46,7 +46,7 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.InitElements( "2 sun,3 fire,3 earth" );
 
 		//  And: target land has 1 presence, 2 Cities
-		fix.Spirit.Presence.Adjust( spaceState, 1 );
+		SpiritExtensions.Adjust( fix.Spirit.Presence, spaceState, 1 );
 		fix.InitTokens( space1, "3C@3" );
 
 		// When: play card

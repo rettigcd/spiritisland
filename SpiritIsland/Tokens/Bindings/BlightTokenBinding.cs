@@ -42,8 +42,10 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 	// hook for Stone to Prevent
 	// Event?  So it doesn't need to know about other spaces & gamestate?
 	public async Task Add( int count, AddReason reason = AddReason.Added ) {
-		if(!Blocked)
-			await _actionTokens.Add( Token.Blight, count, reason );
+		if(Blocked) return;
+
+		RecordBlightAdded( _actionTokens.ActionScope, reason );
+		await _actionTokens.Add( Token.Blight, count, reason );
 	}
 
 	// Remove:
@@ -51,5 +53,13 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
 		return _actionTokens.Remove( Token.Blight, count, reason );
 	}
+
+	#region Blight Cause
+
+	const string BlightAddedStr = "BlightCause";
+	static void RecordBlightAdded( UnitOfWork actionScope, AddReason reason ) => actionScope[BlightAddedStr] = reason;
+	public static AddReason GetAddReason( UnitOfWork actionScope ) => actionScope.ContainsKey(BlightAddedStr) ? (AddReason)actionScope[BlightAddedStr] : AddReason.None;
+
+	#endregion
 
 }

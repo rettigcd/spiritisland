@@ -23,9 +23,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Fear = new Fear( this );
 		Tokens = new Tokens_ForIsland( this );
 
-		AddToAllActiveSpaces( new TokenAddedHandler( BlightAddedCheck, true ) ); // Combine these 2 into a class.
-		AddToAllActiveSpaces( new TokenRemovedHandler( BlightRemovedCheck, true) );
-
 		TimePasses_WholeGame += TokenCleanUp;
 		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
 		TimePasses_WholeGame += EndOfAction.ForRound.Clear;
@@ -126,78 +123,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			await ss.Blight.Bind(ss.ActionScope).Add(1, AddReason.Ravage);
 	}
 
-	/// <summary>
-	/// Does all the special actions when blight is added.
-	/// </summary>
-	async Task BlightAddedCheck( ITokenAddedArgs args ){
-		if(args.Token != Token.Blight) return; // token-added event handler for blight only
-
-		bool takingFromBlightCard = args.Reason switch {
-			AddReason.AsReplacement  => false,
-			AddReason.MovedTo        => false,
-			AddReason.Added          => true, // Generic add
-			AddReason.Ravage         => true, // blight from ravage
-			AddReason.BlightedIsland => true, // blight from blighted island card
-			AddReason.SpecialRule    => true, // Heart of wildfire - Blight from add presence
-			_ => throw new ArgumentException(nameof(args.Reason))
-		};
-		if( !takingFromBlightCard ) return;
-
-		// remove from card.
-		await TakeFromBlightSouce( args.Count, args.AddedTo );
-
-		if(BlightCard != null && blightOnCard <= 0) {
-			await Spirits[0].Select( "Island blighted", new IOption[] { BlightCard }, Present.Always );
-
-			Log( new IslandBlighted( BlightCard ) );
-			await BlightCard.OnBlightDepleated( this );
-		}
-
-		// Calc side effects
-		var effect = new AddBlightEffect { 
-			DestroyPresence = true, 
-			Cascade = args.AddedTo.Blight.Count != 1, 
-			AddedTo = args.AddedTo
-		};
-		await ModifyBlightAddedEffect.InvokeAsync(effect);
-
-		// Destory presence
-		if(effect.DestroyPresence)
-			foreach(var spirit in Spirits)
-				if(spirit.Presence.IsOn( args.AddedTo ))
-					await spirit.Presence.Destroy( args.AddedTo.Space, this, 1, DestoryPresenceCause.Blight, args.ActionScope, args.Reason );
-
-		// Cascade blight
-		if(effect.Cascade) {
-			Space cascadeTo = await Spirits[0].Gateway.Decision( Select.Space.ForMoving_SpaceToken(
-				$"Cascade blight from {args.AddedTo.Space.Label} to",
-				args.AddedTo.Space,
-				CascadingBlightOptions(args.AddedTo),
-				Present.Always,
-				Token.Blight
-			));
-			await Tokens[ cascadeTo ].Blight.Bind(args.ActionScope).Add(1, args.Reason); // Cascading blight shares original blights reason.
-		}
-
-	}
-
-	IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent
+	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent
 		 .Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
 			 || Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
-
-
-	/// <summary>
-	/// Event handler for token removed that checks blight-only
-	/// </summary>
-	void BlightRemovedCheck( ITokenRemovedArgs args ) {
-		if(args.Token == Token.Blight
-			&& !args.Reason.IsOneOf(
-				RemoveReason.MovedFrom, // pushing / gathering blight
-				RemoveReason.Replaced   // just in case...
-			)
-		)
-			this.blightOnCard += args.Count;
-	}
 
 	#endregion
 
@@ -285,7 +213,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, UnitOfWork actionScope ) {
 		var boundPresence = new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight );
 		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", boundPresence ) );
-		await spirit.Presence.Destroy( presenceSpace, gs, 1, DestoryPresenceCause.BlightedIsland, actionScope );
+		await gs.Tokens[presenceSpace].Bind(actionScope).Destroy(spirit.Presence.Token,1);
 	}
 
 	#endregion
@@ -341,7 +269,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 	Func<int, SpaceState, Task> _takeFromBlightSouce;
 
-	public Func<Spirit, GameState, UnitOfWork, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct distruction from Blight Card, not cascading
+	public Func<Spirit, GameState, UnitOfWork, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct destruction from Blight Card, not cascading
 
 	public Healer Healer = new Healer(); // replacable Behavior
 

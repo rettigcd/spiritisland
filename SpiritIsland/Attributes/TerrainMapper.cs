@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Provides 3 services
@@ -15,9 +17,7 @@ public class TerrainMapper {
 
 	// InPlay
 	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
-	public bool IsInPlay( SpaceState spaceState ) => IsInPlay( spaceState.Space );
-	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
-	public virtual bool IsInPlay( Space space ) => !space.Is( Terrain.Ocean );
+	public virtual bool IsInPlay( SpaceState spaceState ) => !spaceState.Space.Is( Terrain.Ocean );
 
 	// Ocean / Coastal / Inland
 	public virtual bool IsCoastal( SpaceState spaceState ) => spaceState.Space.IsCoastal;

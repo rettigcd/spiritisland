@@ -15,7 +15,7 @@ public class FieryVengeance_Tests {
 
 		//   And: spirit 2 presence, blight & town on a space
 		SpaceState space = gameState.Tokens[board1[5]];
-		spirit2.Presence.Adjust( space, 1 );
+		SpiritExtensions.Adjust( spirit2.Presence, space, 1 );
 		space.InitTokens("1T@2");
 		//   And: 1 Blight!
 		space.Init( Token.Blight, 1 );
@@ -48,7 +48,7 @@ public class FieryVengeance_Tests {
 
 		//   And: spirit 2 presence, blight & town on a space
 		SpaceState space = gameState.Tokens[board1[5]];
-		spirit2.Presence.Adjust( space, 1 );
+		SpiritExtensions.Adjust( spirit2.Presence, space, 1 );
 		space.InitTokens( "1T@2" );
 		//   And: 1 Blight!
 		space.Init( Token.Blight, 1 );

@@ -47,9 +47,9 @@ public class Thunderspeaker : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 
 		// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
-		var spots = board.Spaces.OrderByDescending( s => gs.DahanOn(s).CountAll ).Take( 2 ).ToArray();
-		Presence.Adjust( gs.Tokens[spots[0]],1 );
-		Presence.Adjust( gs.Tokens[spots[1]],1 );
+		var mostDahanSpots = board.Spaces.OrderByDescending( s => gs.DahanOn(s).CountAll ).Take( 2 ).ToArray();
+		gs.Tokens[mostDahanSpots[0]].Adjust(Presence.Token, 1);
+		gs.Tokens[mostDahanSpots[1]].Adjust(Presence.Token, 1);
 
 		// Special Rules -Ally of the Dahan - Your presense may move with dahan
 		gs.Tokens.TokenMoved.ForGame.Add( new MovePresenceWithTokens( this, Human.Dahan ).CheckForMove );
@@ -73,7 +73,7 @@ public class Thunderspeaker : Spirit {
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
 			var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( prompt, Presence.Token, options ) );
-			await Presence.Destroy(space, args.RemovedFrom.AccessGameState(), 1, DestoryPresenceCause.DahanDestroyed, args.ActionScope );
+			await args.RemovedFrom.Bind(args.ActionScope).Destroy( Presence.Token, 1 );
 		}
 
 	}

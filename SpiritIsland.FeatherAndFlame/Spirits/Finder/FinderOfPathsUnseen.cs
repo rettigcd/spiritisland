@@ -48,12 +48,12 @@ public class FinderOfPathsUnseen : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 
-		// Put 1 PResence on your starting board in land #3.
-		Presence.Adjust( gameState.Tokens[board[3]], 1 );
+		// Put 1 Presence on your starting board in land #3.
+		gameState.Tokens[board[3]].Adjust(Presence.Token, 1);
 
 		// Put 1 presence on any board in land #1.
 		// !!! change this to a setup-action where spirit places a presence on space 1 of 1 board.
-		Presence.Adjust( gameState.Tokens[board[1]], 1 );
+		gameState.Tokens[board[1]].Adjust(Presence.Token, 1);
 
 		gameState.AddToAllActiveSpaces( new TokenRemovedHandler( ResponsibilityToTheDead_Handler, true ) );
 

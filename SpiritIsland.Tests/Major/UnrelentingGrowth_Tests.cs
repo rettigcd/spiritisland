@@ -34,7 +34,7 @@ public class UnrelentingGrowth_Tests {
 		var space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Text == restrictedSpace )];
 
 		// Given: presence on board
-		setup.Spirit.Presence.Adjust( space, 2 );
+		SpiritExtensions.Adjust( setup.Spirit.Presence, space, 2 );
 		space.Init( Token.Blight, 0 );
 
 		//  And: 2 destroyed presence

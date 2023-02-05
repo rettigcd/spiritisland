@@ -1,6 +1,9 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresenceToken : IVisibleToken, TokenClass, ITrackMySpaces {
+public class SpiritPresenceToken : IVisibleToken, TokenClass
+	, ITrackMySpaces 
+	, IHandleTokenRemoved
+{
 
 	public SpiritPresenceToken() {
 		Text = "Presence";      // !!! this only works in SOLO.
@@ -20,16 +23,22 @@ public class SpiritPresenceToken : IVisibleToken, TokenClass, ITrackMySpaces {
 
 	#endregion
 
-	public void Adjust( Space space, int delta ) {
-		_spaces[space] += delta;
-		_boards[space.Board] += delta;
+	/// <summary>
+	/// Override this to add behavior that IS NOT destroyed presenced.
+	/// </summary>
+	public async Task HandleTokenRemoved( ITokenRemovedArgs args ) {
+		if(args.Token == this && args.Reason.IsDestroyingPresence()) {
+			Destroyed += args.Count; // no in OnPresenceDestroyed because I don't want overrides to need to call Base.
+			await OnPresenceDestroyed( args );
+		}
 	}
 
-	public bool IsOn(Board board) => 0 < _boards[board];
-	public bool IsOn( Space space ) => 0 < _spaces[space];
-	public int this[Board board] => _boards[board];
-	public int this[Space space] => _spaces[space];
+	/// <summary> Override to handle DESTROYING/REMOVING/REPLACING Presence </summary>
+	/// <remarks> Overrides do not need to call base, nothing is in here.</remarks>
+	protected virtual Task OnPresenceDestroyed( ITokenRemovedArgs args ) => Task.CompletedTask;
 
-	readonly CountDictionary<Space> _spaces= new CountDictionary<Space>();
-	readonly CountDictionary<Board> _boards= new CountDictionary<Board>();
+	protected bool DestroysPresence( RemovingTokenArgs args ) => args.Token == this && args.Reason.IsDestroyingPresence();
+
+	public int Destroyed { get; set; }
+
 }

@@ -77,29 +77,6 @@ public class WeaveTogetherTheFabricOfPlace {
 		// !!! Divy up invisible mod tokens.
 	}
 
-	//static async Task DistributePresence( Space space, Space other, GameState gs, UnitOfWork actionScope ) {
-	//	var dstOptions = new[] { gs.Tokens[other] };
-	//	var srcTokens = gs.Tokens[space];
-
-	//	foreach(var spirit in gs.Spirits) {
-
-	//		var boundPresence = new BoundPresence( spirit, gs, gs.Island.Terrain_ForPower, actionScope );
-	//		int count = spirit.Presence.CountOn( srcTokens ); // ! don't check 'can-move', ALWAyS need to adjust/move/cleanup this presence.
-
-	//		while(count > 0) {
-	//			var dst = await spirit.Gateway.Decision( Select.Space.ForMoving_SpaceToken( "Distribute preseence to:", space, dstOptions, Present.Done, spirit.Presence.Token ) );
-	//			if(dst == null) break;
-
-	//			// Move - force it, even for presence that can't be moved.
-	//			// await boundPresence.Move( space, other );
-	//			spirit.Presence.Adjust( gs.Tokens[space], -1 );
-	//			await boundPresence.PlaceOn( other ); // trigger move event.
-
-	//			--count;
-	//		}
-	//	}
-	//}
-
 	static void MoveAllItemsOnSpace(GameState gs, Space src, Space dst ) {
 		var srcTokens = gs.Tokens[src];
 		var dstTokens = gs.Tokens[dst];
@@ -111,8 +88,8 @@ public class WeaveTogetherTheFabricOfPlace {
 		foreach(var spirit in gs.Spirits) {
 			var presence = spirit.Presence;
 			int count = presence.CountOn( srcTokens );
-			presence.Adjust( srcTokens, -count);
-			presence.Adjust( dstTokens, count);
+			srcTokens.Adjust( presence.Token, -count);
+			dstTokens.Adjust( presence.Token, count );
 		}
 	}
 

@@ -50,6 +50,8 @@ static public class IEnumerableExtensions {
 	static public bool IsOneOf( this TokenClass needle, params TokenClass[] haystack )
 		=> haystack.Contains( needle );
 
+	static public bool IsDestroyingPresence( this RemoveReason reason ) => reason.IsOneOf( RemoveReason.Destroyed, RemoveReason.Replaced, RemoveReason.Removed );
+
 	static public void SetItems<T>(this List<T> list, params T[] items ) { list.Clear(); list.AddRange(items);}
 
 	static public void SetItems<T>(this HashSet<T> hashSet, params T[] items ) { hashSet.Clear(); foreach(var item in items) hashSet.Add(item);}

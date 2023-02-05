@@ -65,6 +65,21 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		ClearEventHandlers_ForRound();
 	}
 
+	#region ITrackMySpaces
+
+	// This should ONLY be called from SpaceState.Adjust so that tokens SpaceState & this stay in sync.
+	void IIslandTokenApi.Adjust( ITrackMySpaces token, Space space, int delta ) {
+		if(!_boardCounts.ContainsKey(token)) _boardCounts.Add(token,new CountDictionary<Board>());
+		_boardCounts[token][space.Board] += delta;
+	}
+
+	public bool IsOn( ITrackMySpaces token, Board board )
+		=> _boardCounts.ContainsKey( token ) && 0 < _boardCounts[token][board];
+
+	readonly Dictionary<ITrackMySpaces,CountDictionary<Board>> _boardCounts = new Dictionary<ITrackMySpaces, CountDictionary<Board>>();
+
+	#endregion
+
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
 			// Save TokenCounts
@@ -79,8 +94,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		public void Restore( Tokens_ForIsland src ) {
 			// Restore TokenCounts
 			src._tokenCounts.Clear();
+			src._boardCounts.Clear();
+			var tokenApi = (IIslandTokenApi)src;
 			foreach(var space in _tokenCounts.Keys) {
-				// statis
+				// stasis
 				space.InStasis = _inStasis[space];
 
 				// Token counts
@@ -90,6 +107,8 @@ public class Tokens_ForIsland : IIslandTokenApi {
 					tokens.LinkedViaWays = token is GatewayToken gt 
 						? gt.To // reapply
 						: null; // make sure we clear ones that are no longer linked
+					if(tokens is ITrackMySpaces tms)
+						tokenApi.Adjust(tms,space,count);
 				}
 			}
 			// Restore Defaults

@@ -34,11 +34,11 @@ public partial class Keeper : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ){
 		// In the highest-numbered Jungle.
-		var space = gs.Tokens[ board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last() ];
+		var highestNumberedJungle = gs.Tokens[ board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last() ];
 		// Put 1 Presence
-		Presence.Adjust( space, 1 );
+		highestNumberedJungle.Adjust(Presence.Token,1);
 		// 1 Wild 
-		space.Wilds.Init(1);
+		highestNumberedJungle.Wilds.Init(1);
 	}
 
 }

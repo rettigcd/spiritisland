@@ -51,7 +51,7 @@ public class ManyMindsMoveAsOne : Spirit {
 
 		(Presence as ManyMindsPresence).Watch(gameState);
 
-		Presence.Adjust(land,1);
+		land.Adjust(Presence.Token, 1);
 		land.Beasts.Init(1);
 
 	}

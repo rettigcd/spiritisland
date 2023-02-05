@@ -62,8 +62,8 @@ public class Shadows : Spirit {
 
 		var higestJungle = board.Spaces.Last( s=>s.IsJungle );
 
-		this.Presence.Adjust( gs.Tokens[higestJungle],2 );
-		this.Presence.Adjust( gs.Tokens[board[5]], 1 );
+		gs.Tokens[higestJungle].Adjust(Presence.Token,2 );
+		gs.Tokens[board[5]].Adjust(Presence.Token, 1);
 	}
 
 }

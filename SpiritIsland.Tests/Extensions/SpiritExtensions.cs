@@ -7,4 +7,6 @@ public static class SpiritExtensions {
 
 	internal static SpiritConfigContext Configure( this Spirit spirit ) => new SpiritConfigContext( spirit );
 
+	internal static void Adjust( this SpiritPresence presence, SpaceState space, int count ) => space.Adjust( presence.Token, count );
+
 }

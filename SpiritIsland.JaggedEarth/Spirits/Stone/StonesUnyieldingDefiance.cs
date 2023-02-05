@@ -70,13 +70,12 @@ public StonesUnyieldingDefiance() : base(
 			.Select( s => gameState.Tokens[s] )
 			.Where(s=>s.Dahan.CountAll==0)
 			.First();
-		Presence.Adjust(ss,1);
+		ss.Adjust(Presence.Token,1);
 
-		// 1 in an adjacent land that has Blight(if possible)
-		var space2 = ss.Adjacent.FirstOrDefault(s=>s[Token.Blight]>0)
-			// or is Sands(if not)
-			?? ss.Adjacent.First(s=>s.Space.IsSand);
-		Presence.Adjust(space2,1);
+		// 1 in an adjacent land that has Blight(if possible) or is Sands(if not)
+		SpaceState adjacentWithBlight = ss.Adjacent.FirstOrDefault(s=>s[Token.Blight]>0);
+		SpaceState adjacentWithSand = ss.Adjacent.First( s => s.Space.IsSand );
+		(adjacentWithBlight ?? adjacentWithSand).Adjust(Presence.Token,1);
 
 		// Bestow the Endurance of Bedrock
 		gameState.ModifyBlightAddedEffect.ForGame.Add(BestowTheEnduranceOfBedrock);

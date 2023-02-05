@@ -1,4 +1,7 @@
-﻿namespace SpiritIsland.FeatherAndFlame;
+﻿using SpiritIsland.Select;
+using System.Buffers.Text;
+
+namespace SpiritIsland.FeatherAndFlame;
 
 public class HeartOfTheWildfire : Spirit {
 
@@ -62,7 +65,7 @@ public class HeartOfTheWildfire : Spirit {
 		var space = board.Spaces.Last(x=>x.IsSand);
 		var spaceState = gameState.Tokens[space];
 		// Put 3 presence
-		Presence.Adjust( spaceState, 3);
+		spaceState.Adjust(Presence.Token,3);
 		// and 2 blight
 		spaceState.Blight.Adjust(2); // Blight comes from the box, not the blight card
 	}
@@ -82,35 +85,44 @@ public class HeartOfTheWildfire : Spirit {
 				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FirePlantEnergy, Track.Energy3 ),
 				new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 )
 			) { }
-		public override async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) { 
-			await base.Place( from, to, gs, actionScope );
 
-			// !! There is a bug here somehow that after placeing the 2nd fire, track, still returned only 1 
+		public override void SetSpirit( Spirit spirit ) { 
+			base.SetSpirit( spirit );
+			Token = new WildfireToken( spirit );
+		}
+
+	}
+
+	class WildfireToken : SpiritPresenceToken, IHandleRemovingToken, IHandleTokenAdded {
+
+		readonly Spirit _spirit;
+		public WildfireToken( Spirit spirit ) {
+			_spirit = spirit;
+		}
+
+		public Task ModifyRemoving( RemovingTokenArgs args ) {
+
+			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presenceicon.png. ( This includes cascades.)
+			if( DestroysPresence(args) && BlightAddedDueToSpiritEffects( args.ActionScope )	) args.Count = 0;
+			return Task.CompletedTask;
+		}
+
+		static bool BlightAddedDueToSpiritEffects( UnitOfWork actionScope ) => !BlightTokenBinding.GetAddReason( actionScope )
+			.IsOneOf( AddReason.Ravage, AddReason.BlightedIsland, AddReason.None );
+
+		public async Task HandleTokenAdded( ITokenAddedArgs args ) {
+			// !! There is a bug here somehow that after placing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
-			int fireCount = TrackElements[Element.Fire];
-
-			var ctx = Self.BindSelf( gs, actionScope ).Target( to );
+			int fireCount = _spirit.Presence.TrackElements[Element.Fire];
+			var ctx = _spirit.BindSelf( args.GameState, args.ActionScope ).Target( args.AddedTo );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight
 			if(2 <= fireCount)
 				await ctx.AddBlight( 1, AddReason.SpecialRule );
 		}
-
-		public override async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope, AddReason blightAddedReason = AddReason.None ) {
-
-			// Blight added
-			if( actionType == DestoryPresenceCause.Blight
-				// due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc)
-				&& blightAddedReason != AddReason.BlightedIsland && blightAddedReason != AddReason.Ravage
-			)
-				// does not destroy your presence. (including cascades)"
-				return;
-
-			await base.Destroy( space, gs, count, actionType, actionScope, blightAddedReason );
-		}
-
 	}
+
 
 }

@@ -13,7 +13,7 @@ public class LingeringPestilence_Tests {
 
 		// Given: a space with presence
 		SpaceState space = gameState.Tokens[boardA[5]];
-		self.Presence.Adjust( space, 2 );
+		SpiritExtensions.Adjust( self.Presence, space, 2 );
 
 		// When: a spirit power destroys presence
 		await using UnitOfWork actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
@@ -24,7 +24,7 @@ public class LingeringPestilence_Tests {
 		self.NextDecision().HasPrompt( "Select Power Option" ).HasOptions( "Remove 1 blight from one of your lands,Add 1 presence to one of your lands" ).Choose( "Remove 1 blight from one of your lands" );
 
 		// Then: no disease was added
-		space.Summary.ShouldBe("");
+		space.Summary.ShouldBe("[none]");
 
 		t.IsCompleted.ShouldBeTrue();
 	}
@@ -39,7 +39,7 @@ public class LingeringPestilence_Tests {
 
 		// Given: a space with presence
 		SpaceState space = gameState.Tokens[boardA[5]];
-		self.Presence.Adjust( space, 2 );
+		SpiritExtensions.Adjust( self.Presence, space, 2 );
 		//   And: invaders
 		space.InitTokens("1C@3");
 		//   And: island won't bight

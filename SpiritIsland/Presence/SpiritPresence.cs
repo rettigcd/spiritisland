@@ -26,7 +26,7 @@ public class SpiritPresence {
 	}
 
 	public virtual void SetSpirit( Spirit spirit ) {
-		if(Self!=null) throw new InvalidOperationException();
+		if(Self != null) throw new InvalidOperationException();
 		Self = spirit;
 	}
 
@@ -36,7 +36,7 @@ public class SpiritPresence {
 
 	#region Tracks / Board
 
-	public virtual IEnumerable<Track> RevealOptions(GameState _) 
+	public virtual IEnumerable<Track> RevealOptions( GameState _ )
 		=> Energy.RevealOptions.Union( CardPlays.RevealOptions );
 
 	public IEnumerable<Track> CoverOptions
@@ -49,11 +49,14 @@ public class SpiritPresence {
 	public IPresenceTrack Energy { get; }
 	public IPresenceTrack CardPlays { get; }
 
-	public int Destroyed { get; set; }
+	public int Destroyed {
+		get => Token.Destroyed;
+		set => Token.Destroyed = value;
+	}
 
 	/// <summary> Removes a Destroyed Presence from the game. </summary>
 	public void RemoveDestroyed( int count ) {
-		if(count>Destroyed) throw new ArgumentOutOfRangeException(nameof(count));
+		if(count > Destroyed) throw new ArgumentOutOfRangeException( nameof( count ) );
 		Destroyed -= count;
 	}
 
@@ -61,11 +64,11 @@ public class SpiritPresence {
 
 	#region Readonly 
 
-	public IEnumerable<IActionFactory> RevealedActions 
+	public IEnumerable<IActionFactory> RevealedActions
 		=> CardPlays.Revealed
-			.Union(Energy.Revealed)
-			.Select(x => x.Action)
-			.Where(x => x != null);
+			.Union( Energy.Revealed )
+			.Select( x => x.Action )
+			.Where( x => x != null );
 
 	public int CardPlayCount { get; private set; }
 
@@ -94,18 +97,13 @@ public class SpiritPresence {
 
 	#region Game-Play things you can do with presence
 
-	public virtual async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) {
-		await TakeFrom( from, gs );
-		await PlaceOn( gs.Tokens[to], actionScope ); 
-	}
-
 	public async Task TakeFrom( IOption from, GameState gs ) {
 		if(from is Track track) {
 			await RevealTrack( track, gs );
 		} else if(from is Space space) {
 			var fromSpace = gs.Tokens[space];
-			if(IsOn(fromSpace))
-				await RemoveFrom_NoCheck( fromSpace );
+			if(IsOn( fromSpace ))
+				await Adjust_ForRemoving( fromSpace, -1 );
 			else
 				throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
 		}
@@ -136,11 +134,11 @@ public class SpiritPresence {
 	protected virtual async Task RevealTrack( Track track, GameState gs ) {
 		if(track == Track.Destroyed && Destroyed > 0)
 			--Destroyed;
-		else{
+		else {
 			bool energyRevealed = await Energy.Reveal( track, gs );
 			if(!energyRevealed) {
 				bool cardRevealed = await CardPlays.Reveal( track, gs );
-				if( !cardRevealed )
+				if(!cardRevealed)
 					throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 			}
 		}
@@ -158,26 +156,16 @@ public class SpiritPresence {
 			CardPlayCount = track.CardPlay.Value;
 	}
 
-	public IDestroyPresenceBehavour DestroyBehavior = new DefaultDestroyBehavior(); // replaceable / plugable
-
-	public class DefaultDestroyBehavior : IDestroyPresenceBehavour {
-		public virtual Task DestroyPresenceApi(SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope ) {
-			presence.RemoveFrom_NoCheck( gs.Tokens[space], count );
-			presence.Destroyed += count;
-			return Task.CompletedTask;
-		}
-	}
-
 	#endregion
 
 	#region Exposed Data
 
-	public IEnumerable<Space> SacredSites( GameState gs, TerrainMapper tm ) 
-		=> SacredSiteStates(gs,tm).Downgrade();
+	public IEnumerable<Space> SacredSites( GameState gs, TerrainMapper tm )
+		=> SacredSiteStates( gs, tm ).Downgrade();
 	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
 		.Where( IsSacredSite );
 
-	public int Total( GameState gs ) => gs.AllSpaces.Sum(CountOn);
+	public int Total( GameState gs ) => gs.AllSpaces.Sum( CountOn );
 
 	/// <summary> All *Active* Spaces </summary>
 	public IEnumerable<SpaceState> ActiveSpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
@@ -186,32 +174,21 @@ public class SpiritPresence {
 
 	#region Token / SpaceState stuff we can merge into SpaceState
 
-	public async Task Move( Space from, Space to, GameState gs, UnitOfWork actionScope ) {
-		await RemoveFrom_NoCheck( gs.Tokens[from] );
+	public async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) {
+		await TakeFrom( from, gs );
 		await PlaceOn( gs.Tokens[to], actionScope );
 	}
 
-	public virtual async Task Destroy( Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope, AddReason blightAddedReason = AddReason.None ) {
-		await DestroyBehavior.DestroyPresenceApi( this, space, gs, count, actionType, actionScope );
-	}
-
-	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionScope ) {
-		await space.Bind( actionScope ).Add(Token,1);
-	}
-	public virtual void Adjust( SpaceState space, int count ) {
-		space.Adjust( Token, count );
+	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionScope ) { // overriden by ManyMinds
+		await space.Bind( actionScope ).Add( Token, 1 );
 	}
 
 	/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
 	// (1) To move presence to another location on the board - no End-of-Game check is necessary
 	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
-	protected virtual Task RemoveFrom_NoCheck( SpaceState space, int count = 1 ) {
-		space.Adjust( Token, -count );
+	public virtual Task Adjust_ForRemoving( SpaceState space, int count ) { // overridden by ManyMinds
+		space.Adjust( Token, count ); // !!! only used for remove
 		return Task.CompletedTask;
-	}
-
-	public async Task RemoveFrom( Space space, GameState gs ) {
-		await RemoveFrom_NoCheck( gs.Tokens[space] );
 	}
 
 	#endregion
@@ -223,19 +200,19 @@ public class SpiritPresence {
 	#region Memento
 
 	// Revealed Count + Placed.
-	public virtual IMemento<SpiritPresence> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<SpiritPresence> memento ) => ((Memento)memento).Restore(this);
+	public virtual IMemento<SpiritPresence> SaveToMemento() => new Memento( this );
+	public virtual void LoadFrom( IMemento<SpiritPresence> memento ) => ((Memento)memento).Restore( this );
 
 	protected class Memento : IMemento<SpiritPresence> {
-		public Memento(SpiritPresence src) {
+		public Memento( SpiritPresence src ) {
 			energy = src.Energy.SaveToMemento();
 			cardPlays = src.CardPlays.SaveToMemento();
 			destroyed = src.Destroyed;
 			energyPerTurn = src.EnergyPerTurn;
 		}
-		public void Restore(SpiritPresence src ) {
-			src.Energy.LoadFrom(energy);
-			src.CardPlays.LoadFrom(cardPlays);
+		public void Restore( SpiritPresence src ) {
+			src.Energy.LoadFrom( energy );
+			src.CardPlays.LoadFrom( cardPlays );
 			src.Destroyed = destroyed;
 			src.EnergyPerTurn = energyPerTurn;
 		}

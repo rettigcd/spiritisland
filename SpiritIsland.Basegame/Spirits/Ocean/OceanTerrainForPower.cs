@@ -16,21 +16,19 @@ public class OceanTerrainForPower : TerrainMapper {
 
 	public override bool MatchesTerrain( SpaceState space, params Terrain[] options ) 
 		=> original.MatchesTerrain( space, options ) // try default behavior first
-		|| IsOceansOcean( space.Space ) && options.Contains( Terrain.Wetland ); // as backup, check special rule
+		|| IsOceansOcean( space ) && options.Contains( Terrain.Wetland ); // as backup, check special rule
 
 	public override bool IsCoastal( SpaceState ss ) 
 		=> original.IsCoastal( ss ) // check default 1st
-			|| IsOceansOcean( ss.Space ); // if that fails, check special rule
+			|| IsOceansOcean( ss ); // if that fails, check special rule
 
-	public override bool IsInPlay( Space space ) => IsOceansOcean( space ) || original.IsInPlay( space );
+	public override bool IsInPlay( SpaceState spaceState ) => IsOceansOcean( spaceState ) || original.IsInPlay( spaceState );
 
 	#region private
 
-	bool IsOceansOcean( Space space ) {
-		bool a = space.IsOcean;
-		bool b = oceanPresence.IsOnBoard( space.Board );
-		return a && b;
-		// return space.IsOcean && oceanPresence.IsOnBoard( space.Board );
+	bool IsOceansOcean( SpaceState spaceState ) {
+		return spaceState.Space.IsOcean 
+			&& spaceState.HasTokenOnBoard( oceanPresence.Token );
 	}
 	readonly OceanPresence oceanPresence;
 	readonly TerrainMapper original;

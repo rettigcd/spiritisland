@@ -17,8 +17,8 @@ class ManyMindsPresence : SpiritPresence {
 	}
 
 	// !!! instead of overridingthis, could token implement a TokenRemoved/ing handler to detect it?
-	protected override async Task RemoveFrom_NoCheck( SpaceState space, int count ) {
-		await base.RemoveFrom_NoCheck( space, count );
+	public override async Task Adjust_ForRemoving( SpaceState space, int count ) {
+		await base.Adjust_ForRemoving( space, -count );
 		// if destroyed sacred site, remove virtual beast
 		if( CountOn( space ) == 1 )
 			space.Adjust( SpiritIsland.Token.Beast, 1);
@@ -50,7 +50,7 @@ class ManyMindsPresence : SpiritPresence {
 	async Task Move2Presence( GameState gs, ITokenMovedArgs args ) {
 		// Move 2 of our presence
 		for(int i = 0; i < 2; ++i) {
-			await base.RemoveFrom_NoCheck( gs.Tokens[args.RemovedFrom.Space] ); // using base because we don't want to trigger anything
+			await base.Adjust_ForRemoving( gs.Tokens[args.RemovedFrom.Space], -1 ); // using base because we don't want to trigger anything
 			await base.PlaceOn( args.AddedTo, args.ActionScope );
 		}
 	}
@@ -81,10 +81,9 @@ class ManyMindsPresence : SpiritPresence {
 
 			// the only time we care about what destroyed the presence is for Vengencence as a burning plague.
 			// since this is Many Minds, we don't care about that value.
-			var dontCareActionType = DestoryPresenceCause.None;
 
 			// destroy sacred site
-			await base.Destroy(args.RemovedFrom.Space, args.RemovedFrom.AccessGameState(), 2, dontCareActionType, args.ActionScope);
+			await args.RemovedFrom.Bind(args.ActionScope).Destroy(Token,2);
 		}
 	}
 

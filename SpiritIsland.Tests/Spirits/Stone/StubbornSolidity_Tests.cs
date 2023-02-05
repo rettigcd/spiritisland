@@ -98,7 +98,7 @@ public class StubbornSolidity_Tests {
 
 		// Given: 3 dahan & presence in Target
 		targetSpace.InitDefault( Human.Dahan, 3 );
-		spirit.Presence.Adjust( targetSpace, 3 );
+		SpiritExtensions.Adjust( spirit.Presence, targetSpace, 3 );
 		//   And: 3 dahan in Adjacent
 		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
@@ -130,7 +130,7 @@ public class StubbornSolidity_Tests {
 		SpaceState adjacentSpace = gameState.Tokens[board[7]];
 
 		// Given: presence in Target
-		spirit.Presence.Adjust( targetSpace, 1 );
+		SpiritExtensions.Adjust( spirit.Presence, targetSpace, 1 );
 		//   And: 3 dahan in Adjacent
 		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
@@ -147,7 +147,7 @@ public class StubbornSolidity_Tests {
 		spirit.NextDecision().HasPrompt( "Gather up to 2 Dahan" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
 
 		//  Then: dahan were gathered
-		adjacentSpace.Summary.ShouldBe( "" );
+		adjacentSpace.Summary.ShouldBe( "[none]" );
 
 		//   But: Dahan became frozen and were not pushed
 		targetSpace.Summary.ShouldBe( "2D@2" ); // no defends
@@ -166,7 +166,7 @@ public class StubbornSolidity_Tests {
 
 		// Given: dahan & presence
 		targetSpace.InitDefault( Human.Dahan, 1 );
-		spirit.Presence.Adjust( targetSpace, 1 );
+		SpiritExtensions.Adjust( spirit.Presence, targetSpace, 1 );
 
 		//   And: Played StubbornSolidity
 		await Play_StubbornSolidity_On( spirit, gameState, targetSpace );
@@ -194,7 +194,7 @@ public class StubbornSolidity_Tests {
 
 		// Given: dahan & presence
 		spaceState.InitDefault( Human.Dahan, 1 );
-		spirit.Presence.Adjust(spaceState,1);
+		SpiritExtensions.Adjust( spirit.Presence, spaceState, 1 );
 
 		//   And: Played StubbornSolidity
 		await Play_StubbornSolidity_On(spirit,gameState,spaceState);

@@ -43,7 +43,7 @@ public class SharpFangs : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		var highestJungle = gs.Tokens[ board.Spaces.Where(x=>x.IsJungle).Last() ];
-		Presence.Adjust(highestJungle,1);
+		highestJungle.Adjust(Presence.Token,1);
 		highestJungle.Beasts.Init(1);
 
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())

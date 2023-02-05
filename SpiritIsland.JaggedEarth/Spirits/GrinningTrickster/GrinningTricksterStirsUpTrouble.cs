@@ -39,9 +39,9 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Place presence on highest numbered land with dahan
-		Presence.Adjust( gs.Tokens[board.Spaces.Where(s=>gs.Tokens[s].Dahan.Any).Last()], 1 );
+		gs.Tokens[board.Spaces.Where(s => gs.Tokens[s].Dahan.Any).Last()].Adjust(Presence.Token, 1);
 		// and in land #4
-		Presence.Adjust( gs.Tokens[board[4]], 1 );
+		gs.Tokens[board[4]].Adjust(Presence.Token, 1);
 
 	}
 

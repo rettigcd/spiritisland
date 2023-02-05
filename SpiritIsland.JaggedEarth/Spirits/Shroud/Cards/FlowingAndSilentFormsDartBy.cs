@@ -11,8 +11,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		// When presence in target land would be Destroyed, its owner may, if possible instead Push that presence.
 		// (do it for all spirits, not just the ones currently here)
-		foreach(var spirit in ctx.GameState.Spirits)
-			ctx.GameState.TimePasses_ThisRound.Push( new PushInsteadOfDestroy(spirit,ctx.Space).Restore );
+		ctx.Tokens.Init(new PushInsteadOfDestroy(),1);
 
 		// You may Gather 1 presence / Sacred site of another Spirit (with their permission).
 		await GatherSomeonesPresence( ctx );
@@ -20,40 +19,25 @@ public class FlowingAndSilentFormsDartBy {
 	}
 
 
-	class PushInsteadOfDestroy : IDestroyPresenceBehavour {
+	class PushInsteadOfDestroy : ITokenWithEndOfRoundCleanup, IHandleRemovingToken {
+		public TokenClass Class => ActionModTokenClass.Class;
 
-		readonly Spirit spirit;
-		readonly IDestroyPresenceBehavour originalBehavior;
-		readonly Space protectedSpace;
+		public void EndOfRoundCleanup( SpaceState spaceState ) => spaceState.Init(this,0);
 
-		public PushInsteadOfDestroy(Spirit spirit, Space protectedSpace) {
-			this.spirit = spirit;
-			this.protectedSpace = protectedSpace;
-			this.originalBehavior = spirit.Presence.DestroyBehavior;
-			spirit.Presence.DestroyBehavior = this;
+		public async Task ModifyRemoving( RemovingTokenArgs args ) {
+			if( !(args.Token is SpiritPresenceToken && args.Reason.IsDestroyingPresence()) ) return;
 
+			GameState gs = args.Space.AccessGameState();
+			Spirit spirit = gs.Spirits.First( s => s.Presence.Token == args.Token );
+
+			if( !spirit.Presence.HasMovableTokens( args.Space ) ) return;
+			
+			var dst = await spirit.Gateway.Decision( new Select.Space( "Instead of destroying, push presence to:", args.Space.Adjacent.Downgrade(), Present.Done ) );
+			if(dst == null) return;
+
+			while(0 < args.Count--)
+				await args.Space.MoveTo(args.Token, dst);
 		}
-
-		public async Task DestroyPresenceApi( SpiritPresence presence, Space space, GameState gs, int count, DestoryPresenceCause actionType, UnitOfWork actionScope ) {
-			// pushes all to the same space
-			if( space == this.protectedSpace 
-				&& spirit.Presence.HasMovableTokens(gs.Tokens[space])
-			) {
-				var dst = await spirit.Gateway.Decision(new Select.Space("Instead of destroying, push presence to:", gs.Tokens[space].Adjacent.Downgrade(),Present.Done));
-				if(dst != null) {
-					while(0 < count--)
-						await presence.Move(space,dst,gs, actionScope);
-					return;
-				}
-			}
-			await originalBehavior.DestroyPresenceApi(presence, space, gs, count, actionType, actionScope );
-		}
-
-		public Task Restore( GameState _ ) {
-			spirit.Presence.DestroyBehavior = originalBehavior;
-			return Task.CompletedTask;
-		}
-
 	}
 
 	static async Task GatherSomeonesPresence( TargetSpaceCtx ctx ) {

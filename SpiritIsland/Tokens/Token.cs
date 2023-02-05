@@ -2,7 +2,7 @@
 
 public static class Token {
 
-	static public readonly UniqueToken Blight   = new UniqueToken ( "Blight",  'B', Img.Blight, TokenCategory.Blight ); // replace with a non-health type
+	static public readonly UniqueToken Blight   = new BlightToken ( "Blight",  'B', Img.Blight ); // replace with a non-health type
 
 	// BaseGame
 	static public readonly UniqueToken Defend   = new UniqueToken ( "Defend",  'G', Img.Defend ); // G:Guard D is for Dahan

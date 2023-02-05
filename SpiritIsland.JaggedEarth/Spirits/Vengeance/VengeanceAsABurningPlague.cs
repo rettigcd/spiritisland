@@ -29,16 +29,18 @@ public class VengeanceAsABurningPlague : Spirit {
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {  
 		TerrorOfASlowlyUnfoldingPlague_Rule,
-		LingeringPestilence.Rule,
+		LingeringPestilenceToken.Rule,
 		WreakVengeanceForTheLandsCorruption.Rule
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put 2 presence ontyour starting board:
 		// 1 in a land with blight.
-		Presence.Adjust(gameState.Tokens[board.Spaces.First(s=>gameState.Tokens[s].Blight.Any)], 1);
+		SpaceState landWithoutBlight = gameState.Tokens.PowerUp( board.Spaces ).First( s => s.Blight.Any );
+		landWithoutBlight.Adjust( Presence.Token, 1);
 		// 1 in a Wetland without dahan
-		Presence.Adjust(gameState.Tokens[board.Spaces.First(s=>s.IsWetland && !gameState.Tokens[s].Dahan.Any)], 1);
+		SpaceState wetlandsWithoutDahan = gameState.Tokens.PowerUp( board.Spaces ).First( s => s.Space.IsWetland && !s.Dahan.Any );
+		wetlandsWithoutDahan.Adjust( Presence.Token, 1);
 
 		gameState.Disease_StopBuildBehavior = TerrorOfASlowlyUnfoldingPlague_Handler;
 

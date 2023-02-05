@@ -112,9 +112,11 @@ public static class ExtendDictionary {
 	/// <returns>([Key][count]) ordered alphabetically or '[none]' if empty</returns>
 	/// <example>1C@3,1E@1,1T@2</example>
 	static public string TokenSummary<T>( this CountDictionary<T> dict ) where T:IToken {
-		return dict.Count == 0 ? "[none]"
-			: dict.Keys
-				.OfType<IAppearInSpaceAbreviation>()
+		var abbrevTokens = dict.Keys
+			.OfType<IAppearInSpaceAbreviation>()
+			.ToArray();
+		return abbrevTokens.Length == 0 ? "[none]"
+			: abbrevTokens
 				.OrderBy( t => t.SpaceAbreviation )
 				.Select( t => dict[(T)t] + t.SpaceAbreviation )
 				.Join( "," );

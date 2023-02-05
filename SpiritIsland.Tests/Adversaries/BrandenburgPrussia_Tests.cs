@@ -115,7 +115,7 @@ public class BrandenburgPrussia_Tests {
 	} );
 
 	void Assert_Level1TownAdded( bool added ) 
-		=> fxt.GameState.Tokens[fxt.Board[3]].Summary.ShouldBe( added ? "2D@2,1T@2" : "" );
+		=> fxt.GameState.Tokens[fxt.Board[3]].Summary.ShouldBe( added ? "2D@2,1T@2" : "[none]" );
 
 	void Assert_FearLevels( int v1, int v2, int v3 ) {
 		// level 1

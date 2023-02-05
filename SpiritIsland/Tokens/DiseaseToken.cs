@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public class DiseaseToken : UniqueToken, ISkipBuilds {
 	public DiseaseToken(string label, char k, Img img) : base(label,k, img) {

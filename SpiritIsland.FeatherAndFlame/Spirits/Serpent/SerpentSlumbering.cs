@@ -33,7 +33,7 @@ public class SerpentSlumbering : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Setup: put 1 presence on #5
-		Presence.Adjust( gameState.Tokens[board[5]], 1 );
+		gameState.Tokens[board[5]].Adjust(Presence.Token, 1);
 	}
 
 }

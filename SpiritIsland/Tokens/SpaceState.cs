@@ -113,9 +113,13 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public void Adjust( IToken specific, int delta ) {
 		if(specific is HumanToken human && human.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
-		if(specific is ITrackMySpaces selfTracker)
-			selfTracker.Adjust(Space,delta);
+		if(specific is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta);
 		_counts[specific] += delta;
+	}
+
+	public void Init( IToken specific, int newValue ) {
+		int old = _counts[specific];
+		Adjust( specific, newValue-old ); // go through Adjust so that we keep ITrackMySpaces in sync
 	}
 
 	public void InitDefault( HumanTokenClass tokenClass, int value )
@@ -123,10 +127,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
-
-	public void Init( IToken specific, int value ) {
-		_counts[specific] = value;
-	}
 
 	public HumanToken GetDefault( HumanTokenClass tokenClass ) => this._api.GetDefault( tokenClass );
 
@@ -228,10 +228,17 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#endregion
 
-	#region NON-POWER Terrain
+	#region Ocean Helpers
 
-	public bool IsInPlay_NonPowerOnly => AccessGameState().Island.Terrain.IsInPlay( this );
-	public bool IsInland_NonPowerOnly => AccessGameState().Island.Terrain.IsInland( this );
+	public void AdjustTrackedToken( ITrackMySpaces token, int delta ) {
+//		token.Adjust( Space, delta );
+		_api.Adjust(token,Space,delta);
+	}
+
+	public bool HasTokenOnBoard( ITrackMySpaces token ) {
+//		return token.IsOn( Space.Board );
+		return _api.IsOn(token,Space.Board);
+	}
 
 	#endregion
 

@@ -27,7 +27,7 @@ public class SettleIntoHuntingGrounds_Tests {
 		var a5 = gameState.Tokens[ board[5] ];
 
 		// Given: Presence on a5 and a6
-		spirit.Presence.Adjust(a5,1);
+		SpiritExtensions.Adjust( spirit.Presence, a5, 1 );
 
 		//  When: played Settle Into Hunting Grounds
 		await using var actionScope = gameState.StartAction(ActionCategory.Spirit_Power );
