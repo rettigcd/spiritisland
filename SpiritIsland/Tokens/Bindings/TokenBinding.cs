@@ -50,3 +50,62 @@ public class TokenBinding : TokenBindingNoEvents {
 
 }
 
+
+
+
+
+
+
+
+/// <summary>
+/// Binds to Unique tokens but uses the CLASS to search for ancillary Tokens like ManyMinds-Beast Token
+/// </summary>
+public class BeastBinding_NoEvents {
+	readonly protected SpaceState _spaceState;
+	readonly protected UniqueToken _uniqueToken;
+
+	#region constructor
+	public BeastBinding_NoEvents( SpaceState spaceState, UniqueToken defaultToken ) {
+		_spaceState = spaceState;
+		_uniqueToken = defaultToken;
+	}
+	public BeastBinding_NoEvents( BeastBinding_NoEvents src ) {
+		_spaceState = src._spaceState;
+		_uniqueToken = src._uniqueToken;
+	}
+	#endregion
+
+	public bool Any => Count > 0;
+
+	public virtual int Count => _spaceState.Sum( _uniqueToken );
+
+	public void Init( int count ) => _spaceState.Init( _uniqueToken, count );
+
+	public void Adjust( int delta ) => _spaceState.Adjust( _uniqueToken, delta );
+
+	public BeastBinding Bind( UnitOfWork actionScope ) => new BeastBinding( this, actionScope );
+}
+
+public class BeastBinding : BeastBinding_NoEvents {
+
+	#region constructor
+
+	public BeastBinding( BeastBinding_NoEvents src, UnitOfWork actionScope ) : base( src ) {
+		_actionTokens = _spaceState.Bind( actionScope ?? throw new ArgumentOutOfRangeException( nameof( actionScope ), "Action ID cannot be default." ) );
+	}
+
+	#endregion
+
+	public virtual Task Add( int count, AddReason reason = AddReason.Added )
+		=> _actionTokens.Add( _uniqueToken, count, reason );
+
+	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
+		=> _actionTokens.Remove( _uniqueToken, count, reason );
+
+	public Task Destroy( int count ) => Remove( count, RemoveReason.Destroyed );
+
+	public static implicit operator int( BeastBinding b ) => b.Count;
+
+	readonly ActionableSpaceState _actionTokens;
+
+}

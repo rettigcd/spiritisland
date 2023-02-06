@@ -8,7 +8,7 @@ public class GainTime : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		if(ctx.Self is FracturedDaysSplitTheSky fracturedDays)
-			await fracturedDays.GainTime( delta, ctx.GameState );
+			await fracturedDays.GainTime(delta, ctx.GameState,ctx.ActionScope);
 	}
 
 	public override string Name => $"GainTime({delta})";

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 
@@ -101,13 +103,13 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	#endregion
 
 	public async Task Move( Space from, Space to ) { 
-		// _inner.Move(from,to, _gameState, _actionScope );
-		await _inner.Adjust_ForRemoving( _gameState.Tokens[from], -1 ); // This should really be a .Remove, not an Adjust
-		await _inner.PlaceOn( _gameState.Tokens[to], _actionScope );
+		await _gameState.Tokens[from].Bind(_actionScope).MoveTo(_inner.Token, to );
 	}
-	public Task PlaceOn( Space space ) => _inner.PlaceOn( _gameState.Tokens[space], _actionScope );
+	public Task PlaceOn( Space space ) => _gameState.Tokens[space].Bind( _actionScope ).Add( Token, 1 );
 	public Task Destroy( Space space, int count, DestoryPresenceCause _ ) => _gameState.Tokens[space].Bind( _actionScope ).Destroy( _inner.Token, count );
-	public Task RemoveFrom( Space space ) => _inner.Adjust_ForRemoving( _gameState.Tokens[space], -1 ); // Generally used for Replacing, !!! should have an Action ID, should generate TokenRemoved events
+	public Task RemoveFrom( Space space ) {
+		return _gameState.Tokens[space].Bind(_actionScope).Remove( Token, 1, RemoveReason.Removed );
+	}
 	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState,_actionScope);
 
 		// !!! should have an action ID

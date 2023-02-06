@@ -2,12 +2,12 @@
 public class BargainsOfPowerAndProtection {
 
 	[MajorCard("Bargains of Power and Protection",2,Element.Sun,Element.Water,Element.Earth,Element.Animal), Fast, FromPresence(0,Target.Dahan)]
-	public static async Task ActAsync(TargetSpaceCtx ctx ) {
+	public static async Task ActAsync( TargetSpaceCtx ctx ) {
 		// Remove 1 of your presence on the island from the game, setting it on the Reminder Card.
 		// if you have 3 sun 2 water 2 earth: the presence instead comes from your presence track.
 		if( await ctx.YouHave("3 sun,2 water,2 earth" )) {
 			var presenceToRemove = await ctx.Presence.SelectSource("remove from game");
-			await ctx.Self.Presence.TakeFrom( presenceToRemove, ctx.GameState ); // !!! trigger Win/Loss check???
+			await ctx.Self.Presence.TakeFrom( presenceToRemove, ctx.GameState, ctx.ActionScope );
 		} else {
 			var presenceToRemove = await ctx.Decision( Select.DeployedPresence.All("Select presence to remove from game.", ctx.Presence, Present.Always));
 			await ctx.Presence.RemoveFrom( presenceToRemove );

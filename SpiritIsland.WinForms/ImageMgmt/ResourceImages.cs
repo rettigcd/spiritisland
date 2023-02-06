@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.JaggedEarth;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
@@ -311,6 +312,27 @@ public class ResourceImages {
 	readonly ImageCache _cache = new ImageCache();
 
 	#region private
+
+	public Image GetTokenImage( IVisibleToken token ) {
+		return token is HumanToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
+			: token is ManyMindsBeast ? GetManyMindsBeast()
+			: GetImage( token.Img );
+	}
+
+	Image GetManyMindsBeast() {
+		string key = "many-minds-beast.png";
+		if(_cache.Contains(key)) return _cache.Get(key);
+
+		Bitmap img = GetImage(Img.Beast);
+		using Graphics graphics = Graphics.FromImage( img );
+
+		const int sacredSiteYellow = 60;
+		new PixelAdjustment(new HslColorAdjuster(new HSL( sacredSiteYellow, 40,50)).GetNewColor).Adjust(img);
+		// graphics.FillEllipse(Brushes.Purple, new Rectangle(0,0,img.Width,img.Height).InflateBy(-img.Width/3 ));
+
+		_cache.Add(key,img);
+		return img;
+	}
 
 	public Bitmap GetResourceImage( string filename ) {
 		var imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+filename );

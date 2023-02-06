@@ -539,8 +539,9 @@ public partial class IslandControl : Control {
 
 		var tokenTypes = new List<IVisibleToken> {
 			Token.Defend, Token.Blight, // These don't show up in .OfAnyType if they are dynamic
-			Token.Beast, Token.Wilds, Token.Disease, Token.Badlands, Token.Isolate
+			Token.Wilds, Token.Disease, Token.Badlands, Token.Isolate
 		}	.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
+			.Union( spaceState.OfClass( Token.Beast ) )
 			.Union( spaceState.OfAnyClass( _spirit.Presence.Token ) )
 			.Union( spaceState.OfAnyClass( Token.Element ) )
 			.Union( spaceState.OfClass( Token.OpenTheWays ) )
@@ -762,13 +763,8 @@ public partial class IslandControl : Control {
 
 	Image AccessTokenImage( IVisibleToken imageToken ) {
 		if(!_tokenImages.ContainsKey( imageToken ))
-			_tokenImages[imageToken] = GetTokenImage( imageToken );
+			_tokenImages[imageToken] = ResourceImages.Singleton.GetTokenImage( imageToken );
 		return _tokenImages[imageToken];
-	}
-
-	static Bitmap GetTokenImage( IVisibleToken token ) {
-		return token is HumanToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
-			: ResourceImages.Singleton.GetImage( token.Img );
 	}
 
 	protected override void OnSizeChanged( EventArgs e ) {

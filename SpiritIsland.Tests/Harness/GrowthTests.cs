@@ -44,7 +44,7 @@ public class GrowthTests {
 
 	protected void Given_HasPresence( params Space[] spaces ) {
 		foreach(var x in spaces)
-			spirit.Presence.PlaceOn( x, _gameState );
+			spirit.Presence.PlaceOn( x, _gameState ).Wait();
 	}
 
 	protected void Given_HasPresence( string presenceString ) {

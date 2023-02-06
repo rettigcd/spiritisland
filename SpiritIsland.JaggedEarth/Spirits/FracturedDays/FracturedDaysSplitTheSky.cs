@@ -90,14 +90,14 @@ public class FracturedDaysSplitTheSky : Spirit {
 	public List<PowerCard> DtnwMinor { get; private set; }
 	public List<PowerCard> DtnwMajor { get; private set; }
 
-	public async Task GainTime( int count, GameState gameState ) {
+	public async Task GainTime( int count, GameState gameState, UnitOfWork actionScope ) {
 		while(count > 0) {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
 			var from = (IOption)await Gateway.Decision( Select.TrackSlot.ToReveal( selectPrompt, this, gameState ) )
 					?? (IOption)await Gateway.Decision( Select.DeployedPresence.All( selectPrompt, new ReadOnlyBoundPresence( this, gameState, gameState.Island.Terrain), Present.Done ) ); // Cancel
 
-			await Presence.TakeFrom( from, gameState );
+			await Presence.TakeFrom( from, gameState, actionScope );
 			Time++;
 
 			--count;

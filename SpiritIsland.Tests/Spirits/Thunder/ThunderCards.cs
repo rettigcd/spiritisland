@@ -12,7 +12,7 @@ public class ThunderCards {
 		gs = new GameState( spirit, a );
 
 		// And: Spirit in spot 1
-		spirit.Presence.PlaceOn( a[1], gs );
+		spirit.Presence.PlaceOn(a[1], gs).Wait();
 
 		action = spirit.Gateway;
 	}

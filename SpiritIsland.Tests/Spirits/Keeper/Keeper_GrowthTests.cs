@@ -142,7 +142,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		var space = board[5];
 		_gameState.DahanOn(space).Init(2);
 		//   and presence on that space
-		spirit.Presence.PlaceOn( space, _gameState );
+		spirit.Presence.PlaceOn(space, _gameState).Wait();
 
 		// When: we place a presence on that space
 		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, _gameState, _gameState.StartAction( ActionCategory.Default ) );

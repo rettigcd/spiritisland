@@ -24,7 +24,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		tokens.InitDefault( Human.Town, 3 );
 
 		//  And: spirit has presence on A5
-		spirit.Presence.PlaceOn(a5,gameState);
+		spirit.Presence.PlaceOn(a5, gameState).Wait();
 
 		//  And: A1 has nothing on it
 		var a1 = board[1];

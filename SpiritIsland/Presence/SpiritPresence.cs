@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 // == Presence/GameState Strategy ==
 // * If GameState is only used for getting SpaceState, pass in SpaceState instead. (1 parameter is better than 2)
@@ -21,8 +23,8 @@ public class SpiritPresence {
 	}
 
 	protected void InitEnergyAndCardPlays() {
-		foreach(var r in Energy.Revealed) CheckEnergyAndCardPlays( r );
-		foreach(var r in CardPlays.Revealed) CheckEnergyAndCardPlays( r );
+		foreach(Track r in Energy.Revealed) CheckEnergyAndCardPlays( r );
+		foreach(Track r in CardPlays.Revealed) CheckEnergyAndCardPlays( r );
 	}
 
 	public virtual void SetSpirit( Spirit spirit ) {
@@ -97,16 +99,24 @@ public class SpiritPresence {
 
 	#region Game-Play things you can do with presence
 
-	public async Task TakeFrom( IOption from, GameState gs ) {
-		if(from is Track track) {
+	public async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) {
+		await TakeFrom( from, gs, actionScope );
+		await gs.Tokens[to].Bind( actionScope ).Add( Token, 1 );
+	}
+
+	public async Task TakeFrom( IOption from, GameState gs, UnitOfWork actionScope ) {
+		if(from is Track track)
 			await RevealTrack( track, gs );
-		} else if(from is Space space) {
-			var fromSpace = gs.Tokens[space];
-			if(IsOn( fromSpace ))
-				await Adjust_ForRemoving( fromSpace, -1 );
-			else
-				throw new ArgumentException( "Can't pull from island space:" + from.ToString() );
-		}
+		else if(from is Space space)
+			await TakeFromSpace( space, gs, actionScope );
+	}
+
+	async Task TakeFromSpace( Space space, GameState gs, UnitOfWork actionScope ) {
+		ActionableSpaceState fromSpace = gs.Tokens[space].Bind( actionScope );
+		if(IsOn( fromSpace ))
+			await fromSpace.Remove( Token, 1, RemoveReason.MovedFrom );
+		else
+			throw new ArgumentException( "Can't pull from island space:" + space.ToString() );
 	}
 
 	public Task ReturnDestroyedToTrack( Track dst ) {
@@ -171,27 +181,6 @@ public class SpiritPresence {
 	public IEnumerable<SpaceState> ActiveSpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
 
 	#endregion Exposed Data
-
-	#region Token / SpaceState stuff we can merge into SpaceState
-
-	public async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) {
-		await TakeFrom( from, gs );
-		await PlaceOn( gs.Tokens[to], actionScope );
-	}
-
-	public async virtual Task PlaceOn( SpaceState space, UnitOfWork actionScope ) { // overriden by ManyMinds
-		await space.Bind( actionScope ).Add( Token, 1 );
-	}
-
-	/// <remarks>public so we can remove it for Replacing with Beast and advanced spirit strangness</remarks>
-	// (1) To move presence to another location on the board - no End-of-Game check is necessary
-	// (2) Presence is replaced with something else. End-of-Game check IS necessary.
-	public virtual Task Adjust_ForRemoving( SpaceState space, int count ) { // overridden by ManyMinds
-		space.Adjust( Token, count ); // !!! only used for remove
-		return Task.CompletedTask;
-	}
-
-	#endregion
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 

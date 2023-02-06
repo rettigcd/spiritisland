@@ -44,7 +44,7 @@ public class TargetSpaceCtx : SelfCtx {
 		} ); // !! could just sweep entire board instead...
 	}
 
-	public TokenBinding Beasts               => Tokens.Beasts.Bind( ActionScope );
+	public BeastBinding Beasts               => Tokens.Beasts.Bind( ActionScope );
 	public TokenBinding Disease              => Tokens.Disease.Bind( ActionScope );
 	public TokenBinding Wilds                => Tokens.Wilds.Bind( ActionScope );
 	public virtual TokenBinding Badlands     => Tokens.Badlands.Bind( ActionScope );

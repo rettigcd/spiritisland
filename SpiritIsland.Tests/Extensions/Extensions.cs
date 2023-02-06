@@ -4,8 +4,10 @@ namespace SpiritIsland.Tests;
 
 static internal class Extensions {
 
-	public static Task PlaceOn( this SpiritPresence presence, Space space, GameState gameState )
-		=> presence.PlaceOn( gameState.Tokens[space], gameState.StartAction( ActionCategory.Default ) );
+	public static async Task PlaceOn( this SpiritPresence presence, Space space, GameState gameState ) {
+		await using UnitOfWork scope = gameState.StartAction ( ActionCategory.Default );
+		await gameState.Tokens[space].Bind( scope).Add( presence.Token, 1 );
+	}
 
 	#region Generating Explorer Action on a space
 

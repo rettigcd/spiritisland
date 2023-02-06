@@ -83,7 +83,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public virtual BlightTokenBindingNoEvents Blight => new BlightTokenBindingNoEvents( this );
 	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
-	public TokenBindingNoEvents Beasts => new ( this, Token.Beast );
+	public BeastBinding_NoEvents Beasts => new ( this, Token.Beast );
 	public TokenBindingNoEvents Disease => new ( this, Token.Disease );
 	public TokenBindingNoEvents Wilds => new ( this, Token.Wilds );
 	public TokenBindingNoEvents Badlands => new ( this, Token.Badlands ); // This should not be used directly from inside Actions

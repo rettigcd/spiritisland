@@ -150,7 +150,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 		for(int i = 1; i < revealedSpaces; i++) {
 			var choice = track.RevealOptions.First();
-			await presence.TakeFrom( choice, GameState );
+			await presence.TakeFrom( choice, GameState, null ); // !! Don't call TakeFrom, call: await presence.RevealTrack( track, GameState );
 		}
 		Spirit.EnergyPerTurn.ShouldBe( expectedEnergyGrowth );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
@@ -165,7 +165,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 		for(int i = 1; i < revealedSpaces; i++) {
 			var choice = track.RevealOptions.First();
-			await presence.TakeFrom( choice, GameState );
+			await presence.TakeFrom( choice, GameState, actionScope:null ); // !! null action scope ok since we KNOW choice is not coming from a space.
 		}
 		Spirit.NumberOfCardsPlayablePerTurn.ShouldBe( expectedCardPlayCount );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );

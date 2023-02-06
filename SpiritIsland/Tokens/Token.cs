@@ -10,6 +10,9 @@ public static class Token {
 
 	// Branch and Claw
 	static readonly public UniqueToken Beast   = new UniqueToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
+//	static readonly public SimpleTokenClass Beast = new SimpleTokenClass( "Beast" );
+//	static readonly public SimpleToken BeastImp = new SimpleToken(Beast, 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
+
 	static readonly public UniqueToken Wilds   = new WildsToken( "Wilds", 'W', Img.Wilds );
 	static readonly public UniqueToken Disease = new DiseaseToken( "Disease", 'Z', Img.Disease );
 
