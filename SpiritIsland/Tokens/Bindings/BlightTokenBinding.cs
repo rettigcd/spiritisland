@@ -11,7 +11,7 @@ public class BlightTokenBindingNoEvents : TokenBindingNoEvents {
 		set => _tokens.Init( blockBlightToken, value ? 1 : 0 );
 	}
 
-	public new BlightTokenBinding Bind(UnitOfWork guid) => new BlightTokenBinding(_tokens, guid);
+	public new BlightTokenBinding BindScope() => new BlightTokenBinding(_tokens );
 
 	static readonly BlockBlightToken blockBlightToken = new BlockBlightToken(); // !!! Needs tests that removes at end of round.
 
@@ -30,10 +30,10 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 
 	readonly ActionableSpaceState _actionTokens;
 
-	public BlightTokenBinding( SpaceState tokens, UnitOfWork actionScope )
+	public BlightTokenBinding( SpaceState tokens )
 		:base( tokens ) 
 	{
-		_actionTokens = tokens.Bind( actionScope );
+		_actionTokens = tokens.BindScope();
 	}
 
 	// Add:
@@ -44,7 +44,7 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 	public async Task Add( int count, AddReason reason = AddReason.Added ) {
 		if(Blocked) return;
 
-		RecordBlightAdded( _actionTokens.ActionScope, reason );
+		RecordBlightAdded( reason );
 		await _actionTokens.Add( Token.Blight, count, reason );
 	}
 
@@ -57,8 +57,8 @@ public class BlightTokenBinding : BlightTokenBindingNoEvents {
 	#region Blight Cause
 
 	const string BlightAddedStr = "BlightCause";
-	static void RecordBlightAdded( UnitOfWork actionScope, AddReason reason ) => actionScope[BlightAddedStr] = reason;
-	public static AddReason GetAddReason( UnitOfWork actionScope ) => actionScope.ContainsKey(BlightAddedStr) ? (AddReason)actionScope[BlightAddedStr] : AddReason.None;
+	static void RecordBlightAdded( AddReason reason ) => UnitOfWork.Current[BlightAddedStr] = reason;
+	public static AddReason GetAddReason() => UnitOfWork.Current.SafeGet( BlightAddedStr, AddReason.None );
 
 	#endregion
 

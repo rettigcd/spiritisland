@@ -9,11 +9,13 @@ public class MistsOfOblivion {
 	[FromPresence(3)]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
+		var originalScope = UnitOfWork.Current;
+
 		// 1 fear per town/city this power destroys (to a max of 4)
 		int mayDestroyed = 4;
 		void DoMists( ITokenRemovedArgs args ) {
 			if(0 < mayDestroyed
-				&& args.ActionScope == ctx.ActionScope
+				&& UnitOfWork.Current == originalScope
 				&& args.Reason == RemoveReason.Destroyed
 				&& args.Token.Class.IsOneOf( Human.Town_City )
 			) {

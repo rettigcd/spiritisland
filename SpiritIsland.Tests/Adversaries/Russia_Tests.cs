@@ -148,7 +148,7 @@ public class Russia_Tests {
 		destination.Clear();
 		//  When: power destroys
 		await using var actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task t = TheJungleHungers.ActAsync( spirit.BindMyPowers( gameState, actionScope ).Target(a3.Space) );
+		Task t = TheJungleHungers.ActAsync( spirit.BindMyPowers( gameState ).Target(a3.Space) );
 		//  Then: we push 1 explorer to a Land-space (not A0-ocean)
 		t.IsCompleted.ShouldBeFalse();
 		spirit.NextDecision().HasPrompt( "Push E@1 to" ).HasOptions( "A2,A4" ).Choose( destination.Space.Text );

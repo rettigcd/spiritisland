@@ -255,5 +255,5 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	// ! To ensure we don't side-step any Spirit Powers, All calls to this for Spirit Powers
 	// should go through SelfCtx / TargetSpaceCtx / TargetSpiritCtx
 	// Calls for Invader actions, Adversaries, etc, can call direclty.
-	public virtual ActionableSpaceState Bind( UnitOfWork actionScope ) => new ActionableSpaceState( this, actionScope );
+	public virtual ActionableSpaceState BindScope() => new ActionableSpaceState( this );
 }

@@ -79,10 +79,10 @@ public class Fear {
 
 			await using var actionScope = gs.StartAction( ActionCategory.Fear );
 			foreach(var spirit in gs.Spirits)
-				await spirit.BindSelf(gs, actionScope ).FlipFearCard(fearCard,true);
+				await spirit.BindSelf(gs).FlipFearCard(fearCard,true);
 
 
-			var ctx = new GameCtx( gs, actionScope );
+			var ctx = new GameCtx( gs );
 			switch(TerrorLevel) {
 				case 1: await fearCard.Level1( ctx ); break;
 				case 2: await fearCard.Level2( ctx ); break;

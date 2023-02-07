@@ -59,13 +59,13 @@ public class WeaveTogetherTheFabricOfPlace {
 
 			// divide pieces as you wish.
 			await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Spirit_Power );
-			await DistributeTokens( originatorCtx, space, other, gs, actionScope );
+			await DistributeTokens( originatorCtx, space, other, gs );
 		});
 
 		return multi;
 	}
 
-	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs, UnitOfWork _ ) {
+	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs ) {
 		// Distribute Tokens (All of them are considered moved.)
 		var tokens = gs.Tokens[space].Keys.OfType<IVisibleToken>().ToArray();
 		var tokenClasses = tokens.Select( x => x.Class ).Distinct().ToArray();

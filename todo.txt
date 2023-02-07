@@ -8,6 +8,10 @@ Replace ForRound actions with ModTokens
 Weave Together
 	BUG - Massive Flooding did not recognize Weaved-Together SS source.  - Is this going off of Tokens.Keys and it hasn't been added yet.
 
+5 Make TerrainMapper Ambient like ActionScope
+
+Maybe Make GameState Ambient like Action Scope.  (really?)
+
 
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON

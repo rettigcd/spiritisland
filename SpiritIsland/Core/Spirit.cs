@@ -44,7 +44,7 @@ public abstract partial class Spirit : IOption {
 	/// <summary>
 	/// Checks elements available, and commits them (like the 'Any' element)
 	/// </summary>
-	public virtual async Task<bool> HasElements( ElementCounts subset, UnitOfWork _ ) {
+	public virtual async Task<bool> HasElements( ElementCounts subset ) {
 		// For normal spirits without Prepared Elements, this is the same as Could Have Elements
 		if( Elements.Contains(subset) ) return true;
 		int wildCount = Elements[Element.Any];
@@ -62,10 +62,10 @@ public abstract partial class Spirit : IOption {
 		return false;
 	}
 
-	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork actionScope ) {
+	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
 		IDrawableInnateOption match = null;
 		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
-			if(await HasElements( option.Elements, actionScope ))
+			if(await HasElements( option.Elements ))
 				match = option;
 		return match;
 	}
@@ -82,7 +82,7 @@ public abstract partial class Spirit : IOption {
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
 		await using var action = gameState.StartAction( ActionCategory.Spirit_Growth );
-		var ctx = BindSelf( gameState, action );
+		var ctx = BindSelf( gameState );
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
@@ -130,8 +130,6 @@ public abstract partial class Spirit : IOption {
 	public async Task<bool> ResolveAction( Phase phase, GameState gs ) {
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
 
-		// Create a new UnitOfWork each time we resolve an Action
-
 		var category = phase switch {
 			Phase.Init or
 			Phase.Growth => ActionCategory.Spirit_Growth,
@@ -145,9 +143,9 @@ public abstract partial class Spirit : IOption {
 
 		SelfCtx ctx = phase switch {
 			Phase.Init or
-			Phase.Growth => BindSelf( gs, actionScope ),
+			Phase.Growth => BindSelf( gs ),
 			Phase.Fast or 
-			Phase.Slow => BindMyPowers( gs, actionScope ),
+			Phase.Slow => BindMyPowers( gs ),
 			_ => throw new InvalidOperationException(),
 		};
 
@@ -311,7 +309,7 @@ public abstract partial class Spirit : IOption {
 	}
 	int _energy;
 
-	public SpiritPresence Presence {get; }
+	public SpiritPresence Presence {get;}
 
 	/// <summary> Energy gain per turn </summary>
 	public int EnergyPerTurn => Presence.EnergyPerTurn;
@@ -337,15 +335,15 @@ public abstract partial class Spirit : IOption {
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
 	#region Bind helpers
-	public SelfCtx BindSelf( GameState gameState, UnitOfWork actionScope ) => BindDefault( this, gameState, actionScope );
-	public SelfCtx BindMyPowers( GameState gameState, UnitOfWork actionScope ) => BindMyPowers( this, gameState, actionScope );
+	public SelfCtx BindSelf( GameState gameState ) => BindDefault( this, gameState );
+	public SelfCtx BindMyPowers( GameState gameState ) => BindMyPowers( this, gameState );
 	#endregion Bind helpers
 
-	public virtual SelfCtx BindDefault( Spirit spirit, GameState gameState, UnitOfWork actionScope )
-		=> new SelfCtx( spirit, gameState, actionScope );
+	public virtual SelfCtx BindDefault( Spirit spirit, GameState gameState )
+		=> new SelfCtx( spirit, gameState );
 
-	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork actionScope )
-		=> new SelfCtx( spirit, gameState, actionScope );
+	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState )
+		=> new SelfCtx( spirit, gameState );
 
 	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers

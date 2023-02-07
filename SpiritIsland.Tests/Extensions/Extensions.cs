@@ -6,7 +6,7 @@ static internal class Extensions {
 
 	public static async Task PlaceOn( this SpiritPresence presence, Space space, GameState gameState ) {
 		await using UnitOfWork scope = gameState.StartAction ( ActionCategory.Default );
-		await gameState.Tokens[space].Bind( scope).Add( presence.Token, 1 );
+		await gameState.Tokens[space].BindScope().Add( presence.Token, 1 );
 	}
 
 	#region Generating Explorer Action on a space

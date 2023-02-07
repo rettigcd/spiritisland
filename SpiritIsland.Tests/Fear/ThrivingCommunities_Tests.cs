@@ -18,7 +18,7 @@ public class ThrivingCommunities_Tests {
 
 		// When: execute blight card
 		await using var scope = fxt.GameState.StartAction( ActionCategory.Blight );
-		var task = new ThrivingCommunitites().Immediately.Execute( new GameCtx( fxt.GameState, scope ));
+		var task = new ThrivingCommunitites().Immediately.Execute( new GameCtx( fxt.GameState ));
 		//  And: choose the only 2 spaces
 		fxt.Choose( space1.Text ); fxt.Choose( "E@1" );
 		fxt.Choose( space2.Text ); fxt.Choose( "T@2" );

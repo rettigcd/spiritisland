@@ -2,8 +2,8 @@
 
 class SwedenExplorer : ExploreEngine {
 
-	protected override async Task ExploreSingleSpace( SpaceState tokens, GameState gs, UnitOfWork actionScope, bool escalation ) {
-		await base.ExploreSingleSpace( tokens, gs, actionScope, escalation );
+	protected override async Task ExploreSingleSpace( SpaceState tokens, GameState gs, bool escalation ) {
+		await base.ExploreSingleSpace( tokens, gs, escalation );
 		if( escalation )
 			SwayedByTheInvaders( tokens, gs );
 	}

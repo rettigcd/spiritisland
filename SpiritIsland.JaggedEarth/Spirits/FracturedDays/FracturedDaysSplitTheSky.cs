@@ -40,15 +40,15 @@ public class FracturedDaysSplitTheSky : Spirit {
 				new Gain1Element(Element.Moon), 
 				new DrawPowerCard(), 
 				new PlacePresence(2), 
-				g2Repeater.Bind( new GainTime(1) ),
-				g2Repeater.Bind( new PlayExtraCardThisTurn(2) )
+				g2Repeater.BindAction( new GainTime(1) ),
+				g2Repeater.BindAction( new PlayExtraCardThisTurn(2) )
 			),
 			new GrowthOption(
 				new Gain1Element(Element.Sun),
 				new DrawPowerCardFromDaysThatNeverWere(),
 				new MovePresence(4),
-				g3Repeater.Bind( new GainTime(1) ),
-				g3Repeater.Bind( new GainEnergy(2) )
+				g3Repeater.BindAction( new GainTime(1) ),
+				g3Repeater.BindAction( new GainEnergy(2) )
 			)
 		);
 			
@@ -90,14 +90,14 @@ public class FracturedDaysSplitTheSky : Spirit {
 	public List<PowerCard> DtnwMinor { get; private set; }
 	public List<PowerCard> DtnwMajor { get; private set; }
 
-	public async Task GainTime( int count, GameState gameState, UnitOfWork actionScope ) {
+	public async Task GainTime( int count, GameState gameState ) {
 		while(count > 0) {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
 			var from = (IOption)await Gateway.Decision( Select.TrackSlot.ToReveal( selectPrompt, this, gameState ) )
 					?? (IOption)await Gateway.Decision( Select.DeployedPresence.All( selectPrompt, new ReadOnlyBoundPresence( this, gameState, gameState.Island.Terrain), Present.Done ) ); // Cancel
 
-			await Presence.TakeFrom( from, gameState, actionScope );
+			await Presence.TakeFrom( from, gameState );
 			Time++;
 
 			--count;

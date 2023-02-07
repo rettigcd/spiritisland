@@ -8,21 +8,18 @@ public class SelfCtx {
 
 	public Spirit Self { get; }
 	public GameState GameState { get; }
-	public TerrainMapper TerrainMapper => ActionScope.TerrainMapper;
-	public UnitOfWork ActionScope { get; }
+	public TerrainMapper TerrainMapper => UnitOfWork.Current.TerrainMapper;
 
 	#region constructor
 
-	public SelfCtx( Spirit self, GameState gameState, UnitOfWork actionScope ) {
+	public SelfCtx( Spirit self, GameState gameState ) {
 		Self = self;
 		GameState = gameState;
-		ActionScope = actionScope;
 	}
 
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
 		GameState = src.GameState;
-		ActionScope = src.ActionScope;
 	}
 
 	#endregion constructor
@@ -43,7 +40,7 @@ public class SelfCtx {
 		=> Target( from ).Tokens.MoveTo( token, to );
 
 
-	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString), ActionScope );
+	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
 
 	#endregion
 
@@ -59,7 +56,7 @@ public class SelfCtx {
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 
-	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState, ActionScope );
+	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState );
 
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
@@ -73,7 +70,7 @@ public class SelfCtx {
 		return Target( space );
 	}
 
-	public virtual ActionableSpaceState TokensOn( Space space ) => GameState.Tokens[space].Bind( ActionScope );
+	public virtual ActionableSpaceState TokensOn( Space space ) => GameState.Tokens[space].BindScope();
 
 	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
 		string label = activating ? "Activating Fear" : "Done";

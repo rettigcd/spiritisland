@@ -27,7 +27,9 @@ class FranceBuilder : BuildEngine {
 				.Where( terrainMapper.IsInPlay )
 				.OrderBy( t => t.Sum( Human.Town ) )
 				.First();
-			await buildSpace.Bind( gs.StartAction( ActionCategory.Adversary ) ).AddDefault( Human.Town, 1 ); // !! ??? Should all builds share a single unit-of-work?
+			// !!!
+			_ = gs.StartAction( ActionCategory.Adversary ); // !!! Dispose or don't use
+			await buildSpace.BindScope().AddDefault( Human.Town, 1 );
 		}
 	}
 

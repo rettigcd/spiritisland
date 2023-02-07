@@ -39,19 +39,16 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 		return 0;
 	}
 
-	public void RecordSpaceWithDreamers( SpaceState spaceState ) {
-		var list = ActionScope.ContainsKey( SpacesWithDreamers )
-			? (HashSet<SpaceState>)ActionScope[SpacesWithDreamers]
-			: (HashSet<SpaceState>)(ActionScope[SpacesWithDreamers] = new HashSet<SpaceState>());
-		list.Add( spaceState );
+	static public void RecordSpaceWithDreamers( SpaceState spaceState ) {
+		UnitOfWork.Current.SafeGet( SpacesWithDreamers, ()=> new HashSet<SpaceState>() )
+			.Add( spaceState );
 	}
 
 	#region static - restore invaders
 
-	static public void CleanupDreamDamage( UnitOfWork actionScope ) {
-		if(!actionScope.ContainsKey( SpacesWithDreamers )) return;
-
-		foreach(var spaceState in (IEnumerable<SpaceState>)actionScope[SpacesWithDreamers]) {
+	static public void CleanupDreamDamage(UnitOfWork actionScope) { // ! this one is ok
+		var spaces = actionScope.SafeGet( SpacesWithDreamers, Enumerable.Empty<SpaceState>() );
+		foreach(SpaceState spaceState in spaces) {
 			RemoveDreamDamage( spaceState );
 			WakeUpDreamers( spaceState );
 		}

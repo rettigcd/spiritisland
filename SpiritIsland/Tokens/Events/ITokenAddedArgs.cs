@@ -23,7 +23,6 @@ public interface ITokenAddedArgs {
 	public ActionableSpaceState AddedTo { get; }
 	public AddReason Reason { get; }
 	public GameState GameState { get; }
-	public UnitOfWork ActionScope { get; }
 }
 
 

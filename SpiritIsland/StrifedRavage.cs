@@ -36,7 +36,7 @@ public static class StrifedRavage {
 		foreach(var space in ctx.GameState.AllActiveSpaces)
 			foreach( var token in space.InvaderTokens() )
 				if(token.IsDestroyed)
-					await space.Bind( ctx.ActionScope ).Destroy( token, space[token] );
+					await space.BindScope().Destroy( token, space[token] );
 	}
 
 	#endregion
@@ -48,10 +48,10 @@ public static class StrifedRavage {
 
 	static async Task StrifedInvadersTakeDamagePerStrifeImp( BoardCtx boardCtx ) {
 		foreach(var space in boardCtx.ActiveSpaces)
-			await EachInvaderTakesDamageByStrifeCount( space, boardCtx.ActionScope );
+			await EachInvaderTakesDamageByStrifeCount( space );
 	}
 
-	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens, UnitOfWork actionScope ) {
+	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens ) {
 		var strifedInvaders = tokens.InvaderTokens()
 			.Where( x => 0 < x.StrifeCount )
 			.OrderBy( x => x.RemainingHealth )
@@ -60,15 +60,15 @@ public static class StrifedRavage {
 		// !!! ??? Do badlands cause damage here?
 
 		foreach(HumanToken strifedInvader in strifedInvaders)
-			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader, actionScope );
+			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader );
 	}
 
-	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HumanToken originalInvader, UnitOfWork actionScope ) {
+	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HumanToken originalInvader ) {
 		var newInvader = originalInvader.AddDamage( originalInvader.StrifeCount );
 		if(newInvader == originalInvader) return;
 
 		if(newInvader.IsDestroyed)
-			await tokens.Bind( actionScope ).Destroy( originalInvader, tokens[originalInvader] );
+			await tokens.BindScope().Destroy( originalInvader, tokens[originalInvader] );
 		else {
 			tokens.Adjust( newInvader, tokens[originalInvader] );
 			tokens.Init( originalInvader, 0 );

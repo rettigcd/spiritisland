@@ -94,7 +94,7 @@ class MistsShiftAndFlow {
 				pretendPresence[src.Space]--; // move presence OFF of source
 
 				if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
-					allowed.Add( new TokenMovedArgs( src, dst, _ctx.ActionScope ) ); // Impled that Count=1 and Token=Presence
+					allowed.Add( new TokenMovedArgs( src, dst ) ); // Impled that Count=1 and Token=Presence
 
 				pretendPresence[src.Space]++; // resore source
 			}

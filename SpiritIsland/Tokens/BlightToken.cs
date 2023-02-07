@@ -57,7 +57,7 @@ public class BlightToken : UniqueToken
 				Present.Always,
 				Token.Blight
 			) );
-			await gs.Tokens[cascadeTo].Blight.Bind( args.ActionScope ).Add( 1, args.Reason ); // Cascading blight shares original blights reason.
+			await gs.Tokens[cascadeTo].Blight.BindScope().Add( 1, args.Reason ); // Cascading blight shares original blights reason.
 		}
 
 	}

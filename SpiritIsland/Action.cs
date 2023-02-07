@@ -4,9 +4,12 @@ namespace SpiritIsland;
 /// <summary>
 /// A Spirit Island 'Action'
 /// </summary>
-public sealed class UnitOfWork : IAsyncDisposable
-//	, IDisposable
-{
+public sealed class UnitOfWork : IAsyncDisposable {
+
+	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
+	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
+	public static UnitOfWork Current => _current.Value ?? throw new InvalidOperationException("Current action is null");
+	readonly static AsyncLocal<UnitOfWork> _current = new AsyncLocal<UnitOfWork>(); // value gets shallow-copied into child calls and post-awaited states.
 
 	#region constructor
 	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory, TerrainMapper terrainMapper ) {
@@ -14,11 +17,16 @@ public sealed class UnitOfWork : IAsyncDisposable
 		_endOfAction = endOfAction;
 		Category = actionCategory;
 		TerrainMapper = terrainMapper;
+
+		_old = _current.Value;
+		_current.Value = this;
 	}
 	#endregion
 
 	public readonly ActionCategory Category;
 	public readonly TerrainMapper TerrainMapper;
+
+	readonly UnitOfWork _old;
 
 	// spirit (if any) that owns the action. Null for non-spirit actions
 	public Spirit Owner { get; set; }
@@ -28,6 +36,15 @@ public sealed class UnitOfWork : IAsyncDisposable
 	#region action-scoped data
 	// String / object dictionary to track action things
 	public bool ContainsKey(string key) => dict != null && dict.ContainsKey( key );
+
+	public T SafeGet<T>(string key, T defaultValue=default) => ContainsKey(key) ? (T) this[key] : defaultValue;
+
+	public T SafeGet<T>( string key, Func<T> initFunc ) {  
+		if(ContainsKey( key )) return (T)this[key];
+		T newValue = initFunc();
+		this[key] = newValue;
+		return newValue;
+	}
 
 	public object this[string key]{
 		get => ContainsKey(key) ? dict[key] : throw new InvalidOperationException($"{key} was not set");
@@ -39,14 +56,10 @@ public sealed class UnitOfWork : IAsyncDisposable
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
 		await _endOfAction.InvokeAsync(this);
-	}
 
-	//public void Dispose() {
-	//	// DANGEROUS - Only use this for Tests.
-	//	if(_endOfThisAciton != null)
-	//		_endOfThisAciton.InvokeAsync( this ).Wait();
-	//	_endOfAction.InvokeAsync( this ).Wait();
-	//}
+		if(_current.Value != this) throw new Exception("DUDE! Actions out of order.");
+		_current.Value = _old; // restore it
+	}
 
 	public void AtEndOfThisAction(Func<UnitOfWork,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
 	public void AtEndOfThisAction( Action<UnitOfWork> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );

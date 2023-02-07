@@ -41,15 +41,16 @@ public class ObserveWorldMod : IToken
 	}
 
 	public Task HandleTokenAdded( ITokenAddedArgs args ) {
-		Check( args.AddedTo, args.ActionScope );
+		Check( args.AddedTo );
 		return Task.CompletedTask;
 	}
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
-		Check( args.RemovedFrom, args.ActionScope );
+		Check( args.RemovedFrom );
 		return Task.CompletedTask;
 	}
 
-	void Check( SpaceState space, UnitOfWork actionScope ) {
+	void Check( SpaceState space ) {
+		var actionScope = UnitOfWork.Current;
 		if(    _appliedToTheseActions.Contains( actionScope ) // already did this action 
 			|| _tokenSummary == space.Summary   // no change in tokens
 		)

@@ -68,7 +68,7 @@ class CommandBeastAction : IActionFactory {
 		Used = true;
 
 		await using var actionScope = ctx.GameState.StartAction( ActionCategory.Special ); // replace generic scope passed in.
-		GameCtx gameCtx = new GameCtx( ctx.GameState, actionScope );
+		GameCtx gameCtx = new GameCtx( ctx.GameState );
 		await new CommandBeasts().In().EachActiveLand().Execute( gameCtx );
 	}
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;

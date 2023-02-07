@@ -7,7 +7,7 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 	readonly SelfCtx _selfCtx;
 
 	public TDaTD_ActionTokens( SelfCtx selfCtx, Space space ) 
-		: base( selfCtx.GameState.Tokens[space], selfCtx.ActionScope ) 
+		: base( selfCtx.GameState.Tokens[space] ) 
 	{
 		_selfCtx = selfCtx;
 	}
@@ -43,7 +43,7 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 		gameState.Log( new SpiritIsland.Log.Debug( "Dream 1000 deaths destroy." ) );
 
 		// Record Here
-		RecordSpaceWithDreamers( this );
+		BringerSpaceCtx.RecordSpaceWithDreamers( this );
 
 		// Add fear
 		gameState.Fear.AddDirect( new FearArgs( newToken.Class.FearGeneratedWhenDestroyed ) { space = Space } );
@@ -53,23 +53,14 @@ public class TDaTD_ActionTokens : ActionableSpaceState {
 			var options = Adjacent.Where( gameState.Island.Terrain_ForPower.IsInPlay );
 			Space destination = await _selfCtx.Decision( Select.Space.PushToken( newToken, Space, options, Present.Always ) );
 			await MoveTo( newToken, destination ); // there is no Push(Token), so this will have to do.
-			RecordSpaceWithDreamers( gameState.Tokens[destination] );
+			BringerSpaceCtx.RecordSpaceWithDreamers( gameState.Tokens[destination] );
 		}
 
 	}
 
-	public void RecordSpaceWithDreamers( SpaceState spaceState ) {
-		var list = ActionScope.ContainsKey( SpacesWithDreamers )
-			? (HashSet<SpaceState>)ActionScope[SpacesWithDreamers]
-			: (HashSet<SpaceState>)(ActionScope[SpacesWithDreamers] = new HashSet<SpaceState>());
-		list.Add( spaceState );
-	}
-	const string SpacesWithDreamers = "SpacesWithDreamers";
-
-
 	public override HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) {
 		// since we are doing dream-damage, record here
-		RecordSpaceWithDreamers( this );
+		BringerSpaceCtx.RecordSpaceWithDreamers( this );
 		return invaderToken.AddDamage( 0, availableDamage );
 	}
 

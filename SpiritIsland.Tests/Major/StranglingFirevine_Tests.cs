@@ -8,9 +8,9 @@ public class StranglingFirevine_Tests {
 
 		// Track actions
 		HashSet<UnitOfWork> actionScopes = new HashSet<UnitOfWork>();
-		fxt.GameState.AddToAllActiveSpaces(new TokenAddedHandler(x => actionScopes.Add( x.ActionScope ), true ) );
-		fxt.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( x => actionScopes.Add( x.ActionScope ), true ) );
-		fxt.GameState.Tokens.TokenMoved.ForGame.Add( x => actionScopes.Add( x.ActionScope ) );
+		fxt.GameState.AddToAllActiveSpaces(new TokenAddedHandler(x => actionScopes.Add( UnitOfWork.Current ), true ) );
+		fxt.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( x => actionScopes.Add( UnitOfWork.Current ), true ) );
+		fxt.GameState.Tokens.TokenMoved.ForGame.Add( x => actionScopes.Add( UnitOfWork.Current ) );
 
 		// Given: has escalation elements (to make sure we test all parts of this card)
 		fxt.InitElements("2 fire,3 plant");

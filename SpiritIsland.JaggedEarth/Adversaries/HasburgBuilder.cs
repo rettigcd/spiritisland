@@ -21,7 +21,7 @@ class HasburgBuilder : BuildEngine {
 		// In each land matching a Build Card
 		foreach(SpaceState space in cardDependentBuildSpaces) {
 			Spirit spirit = BoardCtx.FindSpirit( gameState, space.Space.Board );
-			TargetSpaceCtx ctx = new SelfCtx( spirit, gameState, actionScope ).Target( space.Space );
+			TargetSpaceCtx ctx = new SelfCtx( spirit, gameState ).Target( space.Space );
 			await new TokenGatherer( ctx )
 				// Gather 1 Town 
 				.AddGroup( 1, Human.Town )

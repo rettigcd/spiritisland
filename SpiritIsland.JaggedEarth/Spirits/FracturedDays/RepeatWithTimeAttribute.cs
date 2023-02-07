@@ -19,7 +19,7 @@ class RepeatWithTimeAttribute : RepeatAttribute {
 		readonly int max;
 		int previousUse = 1; // assume when we repeat, we've already used it once.
 		public Repeater(int max ) { this.max = max; }
-		public async Task<bool> ShouldRepeat( Spirit spirit, UnitOfWork _ ) {
+		public async Task<bool> ShouldRepeat( Spirit spirit ) {
 
 			if( spirit is FracturedDaysSplitTheSky fracturedDays
 				&& previousUse <= max

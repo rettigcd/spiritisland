@@ -23,16 +23,16 @@ public class DahanSaver : SelfCleaningToken, IHandleRemovingToken {
 
 		bool shouldReduce = args.Token.Class == Human.Dahan // Dahan
 			&& (args.Reason == RemoveReason.Destroyed) // Destroyed
-			&& (byAction.Count < maxActionCount || byAction.ContainsKey( args.ActionScope ));              // can effect more action OR already added
+			&& (byAction.Count < maxActionCount || byAction.ContainsKey( UnitOfWork.Current ));              // can effect more action OR already added
 
 		if(shouldReduce) {
 			// If we haven't saved our allotment
-			int previous = byAction[args.ActionScope];
+			int previous = byAction[UnitOfWork.Current];
 			if(previous < maxPerAction) {  // // remaining adjustments for this action
 				// save some dahan
 				int adjustment = Math.Min( maxPerAction - previous, args.Count );
 				args.Count -= adjustment;
-				byAction[args.ActionScope] += adjustment;
+				byAction[UnitOfWork.Current] += adjustment;
 				// restore to full health
 				var savedToken = (HumanToken)args.Token;
 				space.Adjust( args.Token, -adjustment );

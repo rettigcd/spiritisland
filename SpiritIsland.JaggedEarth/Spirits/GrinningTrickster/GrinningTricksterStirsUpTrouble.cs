@@ -77,13 +77,13 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await ctx.Presence.Destroy( space, 1, DestoryPresenceCause.SpiritPower );
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork actionScope ) 
-		=> new TricksterCtx( spirit, gameState, actionScope ?? throw new ArgumentNullException(nameof(actionScope)) );
+	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) 
+		=> new TricksterCtx( spirit, gameState );
 }
 
 // Only use this when Trickster is using their own Powers
 class TricksterCtx : SelfCtx {
-	public TricksterCtx(Spirit spirit, GameState gs, UnitOfWork actionScope) : base( spirit, gs, actionScope ) { }
+	public TricksterCtx(Spirit spirit, GameState gs) : base( spirit, gs ) { }
 	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
 }
 
@@ -91,7 +91,7 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 
 	public TricksterSpaceCtx(SelfCtx ctx, Space space):base( ctx, space ) {}
 
-	public override BlightTokenBinding Blight => new TricksterBlight( this, ActionScope );
+	public override BlightTokenBinding Blight => new TricksterBlight( this );
 
 	public override async Task AddStrife( params HumanTokenClass[] groups ) {
 		await base.AddStrife( groups );
@@ -119,7 +119,7 @@ public class TricksterBlight : BlightTokenBinding {
 	readonly TricksterSpaceCtx ctx;
 	readonly GrinningTricksterStirsUpTrouble trickster;
 
-	public TricksterBlight( TricksterSpaceCtx ctx, UnitOfWork actionScope ) :base( ctx.Tokens, actionScope ) {
+	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens ) {
 		this.ctx = ctx;
 		trickster = (GrinningTricksterStirsUpTrouble)ctx.Self;
 	}

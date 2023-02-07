@@ -145,7 +145,8 @@ public class Keeper_GrowthTests : GrowthTests {
 		spirit.Presence.PlaceOn(space, _gameState).Wait();
 
 		// When: we place a presence on that space
-		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, _gameState, _gameState.StartAction( ActionCategory.Default ) );
+		_ = _gameState.StartAction( ActionCategory.Default ); // !!! dispose or remove
+		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, _gameState );
 
 		User.PushesTokensTo("D@2","A1,[A4],A6,A7,A8",2);
 		User.PushesTokensTo("D@2","A1,A4,A6,[A7],A8");

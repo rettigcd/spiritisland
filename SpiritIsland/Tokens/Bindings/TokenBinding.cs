@@ -23,15 +23,15 @@ public class TokenBindingNoEvents {
 
 	public void Adjust( int delta ) => _tokens.Adjust( _token, delta );
 
-	public TokenBinding Bind(UnitOfWork actionScope) => new TokenBinding(this,actionScope);
+	public TokenBinding BindScope() => new TokenBinding(this);
 }
 
 public class TokenBinding : TokenBindingNoEvents {
 
 	#region constructor
 
-	public TokenBinding( TokenBindingNoEvents src, UnitOfWork actionScope ) : base( src ) {
-		_actionTokens = _tokens.Bind( actionScope ?? throw new ArgumentOutOfRangeException( nameof( actionScope ), "Action ID cannot be default." ) );
+	public TokenBinding( TokenBindingNoEvents src ) : base( src ) {
+		_actionTokens = _tokens.BindScope();
 	}
 
 	#endregion
@@ -83,15 +83,15 @@ public class BeastBinding_NoEvents {
 
 	public void Adjust( int delta ) => _spaceState.Adjust( _uniqueToken, delta );
 
-	public BeastBinding Bind( UnitOfWork actionScope ) => new BeastBinding( this, actionScope );
+	public BeastBinding BindScope() => new BeastBinding( this );
 }
 
 public class BeastBinding : BeastBinding_NoEvents {
 
 	#region constructor
 
-	public BeastBinding( BeastBinding_NoEvents src, UnitOfWork actionScope ) : base( src ) {
-		_actionTokens = _spaceState.Bind( actionScope ?? throw new ArgumentOutOfRangeException( nameof( actionScope ), "Action ID cannot be default." ) );
+	public BeastBinding( BeastBinding_NoEvents src ) : base( src ) {
+		_actionTokens = _spaceState.BindScope();
 	}
 
 	#endregion

@@ -123,10 +123,10 @@ public class HabsburgMonarchy : IAdversary {
 		// Take action
 		await using var actionScope = gameState.StartAction( ActionCategory.Invader ); // ??? is this really an action?
 		foreach(var newTownSpace in newTownSpaces)
-			await newTownSpace.Bind( actionScope ).AddDefault( Human.Town, 1, AddReason.Build );
+			await newTownSpace.BindScope().AddDefault( Human.Town, 1, AddReason.Build );
 
 		foreach(var citySpace in newCitySpaces)
-			await citySpace.Bind( actionScope )
+			await citySpace.BindScope()
 				.AddDefault( Human.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
 
 		// Log it
@@ -164,7 +164,7 @@ public class HabsburgMonarchy : IAdversary {
 
 		// On each board
 		await Cmd.ForEachBoard( new DecisionOption<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
-			.Execute( new GameCtx( gameState, actionScope ) );
+			.Execute( new GameCtx( gameState ) );
 
 	}
 
@@ -178,7 +178,7 @@ public class HabsburgMonarchy : IAdversary {
 
 			var criteria = new Select.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
 			var addSpace = await ctx.Self.Gateway.Decision( criteria );
-			await ctx.GameState.Tokens[addSpace].Bind( ctx.ActionScope ).AddDefault( Human.Town, 1, AddReason.Build );
+			await ctx.GameState.Tokens[addSpace].BindScope().AddDefault( Human.Town, 1, AddReason.Build );
 		}
 	}
 

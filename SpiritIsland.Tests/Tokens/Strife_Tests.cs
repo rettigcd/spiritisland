@@ -70,20 +70,23 @@ public class Strife_Tests {
 	static bool IsInPlay( Space space ) => !space.IsOcean;
 
 	[Fact]
-	public void MoveStrife() {
+	public async Task MoveStrife() {
+
 		var board = Board.BuildBoardB();
 		var gs = new GameState( new Shadows(), board );
 		var space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
 		var counts = gs.Tokens[space];
 
+		await using var scope = gs.StartAction( ActionCategory.Default );
+
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
-		counts.Bind( default ).AddStrifeTo( StdTokens.Town ).Wait();
+		counts.BindScope().AddStrifeTo( StdTokens.Town ).Wait();
 		var strifedTown = (IVisibleToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
 		var destination = space.Adjacent.First( IsInPlay );
-		_ = gs.Tokens[space].Bind( gs.StartAction( ActionCategory.Default ) ).MoveTo( strifedTown, destination ); // _ = ??
+		_ = gs.Tokens[space].BindScope().MoveTo( strifedTown, destination ); // _ = ??
 
 		// Then:
 		counts.InvaderSummary().ShouldBe( "1T@2" );
@@ -110,7 +113,7 @@ public class Strife_Tests {
 		// Given: staring invaders
 		switch(startingInvaders) {
 			case "2C@2":  counts.Init( city2, 2); break;
-			case "1C@2^": counts.Init( city2, 1); counts.Bind( default ).AddStrifeTo( city2 ).Wait(); break;
+			case "1C@2^": counts.Init( city2, 1); counts.BindScope().AddStrifeTo( city2 ).Wait(); break;
 			case "1C@3,1T@2":
 				counts.InitDefault( Human.City, 1 );
 				counts.InitDefault( Human.Town, 1 );
@@ -119,7 +122,7 @@ public class Strife_Tests {
 		}
 
 		// When: add strife
-		var actionableSpace = counts.Bind( default );
+		var actionableSpace = counts.BindScope();
 		switch(addTo) {
 			case "C@2": actionableSpace.AddStrifeTo( city2 ).Wait(); break;
 			case "C@2^": actionableSpace.AddStrifeTo( city2.HavingStrife( 1 ) ).Wait(); break;

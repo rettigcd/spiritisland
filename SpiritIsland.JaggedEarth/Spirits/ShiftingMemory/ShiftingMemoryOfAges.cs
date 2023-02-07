@@ -134,16 +134,11 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public readonly ElementCounts PreparedElements = new ElementCounts();
 
-	ElementCounts ActiveElementsForAction( UnitOfWork actionScope ) {
-		const string key = "ActionElements";
-		if(actionScope.ContainsKey(key)) return (ElementCounts)actionScope[key];
-		var counts = Elements.Clone();
-		actionScope[key] = counts;
-		return counts;
-	}
+	ElementCounts ActiveElementsForAction() 
+		=> UnitOfWork.Current.SafeGet( "ActionElements", ()=> Elements.Clone() );
 
-	public override async Task<bool> HasElements( ElementCounts subset, UnitOfWork actionScope ) {
-		var actionElements = ActiveElementsForAction(actionScope);
+	public override async Task<bool> HasElements( ElementCounts subset ) {
+		var actionElements = ActiveElementsForAction();
 		if( actionElements.Contains( subset ) ) return true;
 
 		// Check if we have prepared element markers to fill the missing elements
@@ -161,12 +156,12 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return false;
 	}
 
-	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork actionScope ) {
+	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
 
 		var elementOptions = innateOptions.Select(x=>x.Elements);
 
 		// Init the elements that are active for this action only.
-		var actionElements = ActiveElementsForAction( actionScope );
+		var actionElements = ActiveElementsForAction();
 
 		var highestAlreadyMatch = innateOptions
 			.OrderByDescending(e=>e.Elements.Total)

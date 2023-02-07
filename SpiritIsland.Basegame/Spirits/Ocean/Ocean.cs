@@ -77,7 +77,7 @@ public class Ocean : Spirit {
 		if( args.Token is not HumanToken ht ) return;
 
 		// If we are saving a dahan
-		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan(args.ActionScope) && Presence.IsOn( args.AddedTo )	) {
+		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan() && Presence.IsOn( args.AddedTo )	) {
 			var moveOptions = args.GameState.Island.Boards
 				.Select(x=>args.GameState.Tokens[x.Ocean])
 				.SelectMany(x=>x.Adjacent)
@@ -87,10 +87,10 @@ public class Ocean : Spirit {
 			var destination = await this.Gateway.Decision(Select.Space.PushToken((IVisibleToken)args.Token,args.AddedTo.Space,moveOptions, Present.Done));
 			if( destination != null ) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
-				args.ActionScope.AtEndOfThisAction(async _ => {
+				UnitOfWork.Current.AtEndOfThisAction(async _ => {
 					//don't use original because that may or may not have been for a power.
 					await using UnitOfWork childAction = args.GameState.StartAction( ActionCategory.Default );
-					await BindSelf( args.GameState, childAction )
+					await BindSelf( args.GameState )
 						.Move( (IVisibleToken)args.Token, args.AddedTo.Space, destination );
 				} );
 				return; // the move it, don't drown it
@@ -99,7 +99,7 @@ public class Ocean : Spirit {
 
 		// Drown them immediately
 		args.GameState.Log( new Log.Debug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
-		await new InvaderBinding( args.GameState.Tokens[args.AddedTo.Space], args.ActionScope ).DestroyNTokens( ht, args.Count );
+		await new InvaderBinding( args.GameState.Tokens[args.AddedTo.Space] ).DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
 		if(args.Token.Class.Category == TokenCategory.Invader)
@@ -123,7 +123,7 @@ public class Ocean : Spirit {
 	int drownedInvaderHealthAccumulator = 0;
 
 	// ! Hook for Tidal Boon
-	static public void EnableSavingDahan( UnitOfWork actionScope ) { actionScope[SaveDahan] = true; }
-	static public bool ShouldSaveDahan( UnitOfWork actionScope ) => actionScope.ContainsKey( SaveDahan );
+	static public void EnableSavingDahan() { UnitOfWork.Current[SaveDahan] = true; }
+	static public bool ShouldSaveDahan() => UnitOfWork.Current.ContainsKey( SaveDahan );
 	const string SaveDahan = "SaveDahanFromDrowning";
 }

@@ -88,13 +88,13 @@ public class BuildOnceOnSpace {
 			.ToArray();
 
 		// Check for Stoppers
-		var gameCtx = new GameCtx( _gameState, actionScope );
+		var gameCtx = new GameCtx( _gameState );
 		foreach(var stopper in buildStoppers)
 			if(await stopper.Skip( gameCtx, _tokens, invaderToAdd ))
 				return "build stopped by " + stopper.Text;
 
 		// build it
-		await _tokens.Bind( gameCtx.ActionScope ).AddDefault( invaderToAdd, countToAdd, AddReason.Build );
+		await _tokens.BindScope().AddDefault( invaderToAdd, countToAdd, AddReason.Build );
 		return invaderToAdd.Label;
 	}
 

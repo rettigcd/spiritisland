@@ -46,7 +46,7 @@ public class Sweden : IAdversary {
 					if(args.Space.Blight.Blocked)
 
 					// !!! This shouldn't destroy presence?  Does it?
-					await args.Space.Blight.Bind(args.Space.ActionScope).Add(1);
+					await args.Space.Blight.BindScope().Add(1);
 					args.GameState.LogDebug("Heavy Mining: additional blight on "+args.Space.Space.Text);
 				}
 			} );

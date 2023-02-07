@@ -5,5 +5,4 @@ public interface ITokenRemovedArgs {
 	public int Count { get; }
 	public SpaceState RemovedFrom { get; }
 	public RemoveReason Reason { get; }
-	public UnitOfWork ActionScope { get; }
 };

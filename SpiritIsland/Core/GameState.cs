@@ -120,7 +120,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		} );
 
 		if(DamageToBlightLand <= damageInflictedFromInvaders )
-			await ss.Blight.Bind(ss.ActionScope).Add(1, AddReason.Ravage);
+			await ss.Blight.BindScope().Add(1, AddReason.Ravage);
 	}
 
 	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent
@@ -210,10 +210,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		return Task.CompletedTask;
 	}
 
-	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs, UnitOfWork actionScope ) {
+	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
 		var boundPresence = new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight );
 		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", boundPresence ) );
-		await gs.Tokens[presenceSpace].Bind(actionScope).Destroy(spirit.Presence.Token,1);
+		await gs.Tokens[presenceSpace].BindScope().Destroy(spirit.Presence.Token,1);
 	}
 
 	#endregion
@@ -257,7 +257,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Func<GameCtx,SpaceState,TokenClass,Task<bool>> Disease_StopBuildBehavior = Disease_StopBuildBehavior_Default;
 	static async Task<bool> Disease_StopBuildBehavior_Default( GameCtx ctx, SpaceState tokens, TokenClass _ ) {
-		await tokens.Disease.Bind( ctx.ActionScope ).Remove( 1, RemoveReason.UsedUp );
+		await tokens.Disease.BindScope().Remove( 1, RemoveReason.UsedUp );
 		return true;
 	}
 
@@ -269,7 +269,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 	Func<int, SpaceState, Task> _takeFromBlightSouce;
 
-	public Func<Spirit, GameState, UnitOfWork, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct destruction from Blight Card, not cascading
+	public Func<Spirit, GameState, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct destruction from Blight Card, not cascading
 
 	public Healer Healer = new Healer(); // replacable Behavior
 

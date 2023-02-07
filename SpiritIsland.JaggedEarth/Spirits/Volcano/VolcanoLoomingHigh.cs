@@ -47,14 +47,15 @@ public class VolcanoLoomingHigh : Spirit {
 		this.AddActionFactory(new Setup_PlacePresenceOnMountain());
 	}
 
-	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork actionScope ) {
+	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
+
 		IDrawableInnateOption match = null;
-		int destroyedThisAction = VolcanoPresence.GetPresenceDestroyedThisAction( actionScope );
+		int destroyedThisAction = VolcanoPresence.GetPresenceDestroyedThisAction();
 		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total )) {
 			if(option is ExplosiveInnateOptionAttribute ex && destroyedThisAction < ex.DestroyedPresenceThreshold)
 				continue;
 
-			if(await HasElements( option.Elements, actionScope ))
+			if(await HasElements( option.Elements ))
 				match = option;
 		}
 		return match;

@@ -38,12 +38,12 @@ public class TargetSpaceCtx : SelfCtx {
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
 	public void Isolate() => Tokens.Init(Token.Isolate,1);
 
-	public BeastBinding Beasts               => Tokens.Beasts.Bind( ActionScope );
-	public TokenBinding Disease              => Tokens.Disease.Bind( ActionScope );
-	public TokenBinding Wilds                => Tokens.Wilds.Bind( ActionScope );
-	public virtual TokenBinding Badlands     => Tokens.Badlands.Bind( ActionScope );
-	public virtual HealthTokenClassBinding Dahan   => Tokens.Dahan.Bind( ActionScope ); // Powers that interact with dahan, MUST go through this property 
-	public virtual BlightTokenBinding Blight => Tokens.Blight.Bind( ActionScope );
+	public BeastBinding Beasts               => Tokens.Beasts.BindScope();
+	public TokenBinding Disease              => Tokens.Disease.BindScope();
+	public TokenBinding Wilds                => Tokens.Wilds.BindScope();
+	public virtual TokenBinding Badlands     => Tokens.Badlands.BindScope();
+	public virtual HealthTokenClassBinding Dahan   => Tokens.Dahan.BindScope(); // Powers that interact with dahan, MUST go through this property 
+	public virtual BlightTokenBinding Blight => Tokens.Blight.BindScope();
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
 	public Task Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed )
@@ -385,7 +385,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public async Task PlacePresenceHere() {
 		var from = await Presence.SelectSource();
-		await Self.Presence.Place( from, Space, GameState, ActionScope ); //!! use Bounded presence instead
+		await Self.Presence.Place( from, Space, GameState ); //!! use Bounded presence instead
 	}
 
 	#endregion

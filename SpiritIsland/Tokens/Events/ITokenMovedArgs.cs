@@ -8,7 +8,5 @@ public interface ITokenMovedArgs {
 
 	IToken TokenAdded { get; }
 	SpaceState AddedTo { get; }
-
-	UnitOfWork ActionScope { get; }
 }
 

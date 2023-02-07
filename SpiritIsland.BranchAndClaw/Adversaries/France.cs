@@ -100,7 +100,7 @@ public class France : IAdversary {
 				);
 
 			await using var actionScope = gs.StartAction( ActionCategory.Adversary );
-			GameCtx gameCtx = new GameCtx( gameState, actionScope );
+			GameCtx gameCtx = new GameCtx( gameState );
 			await cmd.ForEachBoard().Execute( gameCtx );
 
 		} );

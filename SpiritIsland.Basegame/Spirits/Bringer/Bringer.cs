@@ -47,7 +47,6 @@ public class Bringer : Spirit {
 		gs.EndOfAction.ForGame.Add( BringerSpaceCtx.CleanupDreamDamage );
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState, UnitOfWork actionScope ) 
-		=> new BringerCtx( spirit, gameState, actionScope ?? throw new ArgumentNullException(nameof(actionScope) ) );
+	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new BringerCtx( spirit, gameState );
 
 }

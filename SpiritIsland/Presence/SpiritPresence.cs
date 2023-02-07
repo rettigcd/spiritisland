@@ -99,20 +99,20 @@ public class SpiritPresence {
 
 	#region Game-Play things you can do with presence
 
-	public async Task Place( IOption from, Space to, GameState gs, UnitOfWork actionScope ) {
-		await TakeFrom( from, gs, actionScope );
-		await gs.Tokens[to].Bind( actionScope ).Add( Token, 1 );
+	public async Task Place( IOption from, Space to, GameState gs ) {
+		await TakeFrom( from, gs );
+		await gs.Tokens[to].BindScope().Add( Token, 1 );
 	}
 
-	public async Task TakeFrom( IOption from, GameState gs, UnitOfWork actionScope ) {
+	public async Task TakeFrom( IOption from, GameState gs ) {
 		if(from is Track track)
 			await RevealTrack( track, gs );
 		else if(from is Space space)
-			await TakeFromSpace( space, gs, actionScope );
+			await TakeFromSpace( space, gs );
 	}
 
-	async Task TakeFromSpace( Space space, GameState gs, UnitOfWork actionScope ) {
-		ActionableSpaceState fromSpace = gs.Tokens[space].Bind( actionScope );
+	async Task TakeFromSpace( Space space, GameState gs ) {
+		ActionableSpaceState fromSpace = gs.Tokens[space].BindScope();
 		if(IsOn( fromSpace ))
 			await fromSpace.Remove( Token, 1, RemoveReason.MovedFrom );
 		else

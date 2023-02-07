@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using static System.Formats.Asn1.AsnWriter;
+
+namespace SpiritIsland.JaggedEarth;
 
 class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 
@@ -61,7 +63,7 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 			_receivedRavageBlight.Add( args.AddedTo.Space.Board );// log
 
 			if( args.AddedTo.Beasts.Any ) {
-				await args.AddedTo.Beasts.Bind( args.ActionScope ).Destroy( 1 );
+				await args.AddedTo.Beasts.BindScope().Destroy( 1 );
 				_beastsDestroyed++;
 				args.GameState.LogDebug($"Blight on {args.AddedTo.Space.Text} destroys 1 beast.");
 			}
@@ -71,17 +73,18 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 	async Task IHandleRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		const string key = "A Sense of Pending Disaster";
 		SpaceState[] pushOptions;
+		var scope = UnitOfWork.Current;
 		if(HasASenseOfPendingDisaster
 			&& args.Token.Class == Human.Explorer     // Is explorer
 			&& args.Reason == RemoveReason.Destroyed // destroying
-			&& !args.ActionScope.ContainsKey( key )  // first time
-			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.Where( ss => args.ActionScope.TerrainMapper.IsInPlay( ss ) ).ToArray()).Length
+			&& !UnitOfWork.Current.ContainsKey( key )  // first time
+			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.Where( ss => scope.TerrainMapper.IsInPlay( ss ) ).ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
-			args.ActionScope[key] = true; // don't save any more
+			scope[key] = true; // don't save any more
 
 			GameState gs = args.Space.AccessGameState();
-			Spirit spirit = args.ActionScope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
+			Spirit spirit = scope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
 			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( (IVisibleToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
 			await args.Space.MoveTo( (IVisibleToken)args.Token, destination );
 		}

@@ -4,8 +4,8 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( SpaceState tokens, UnitOfWork actionScope) {
-		Tokens = tokens.Bind( actionScope ?? throw new ArgumentNullException( nameof( actionScope ) ) );
+	public InvaderBinding( SpaceState tokens) {
+		Tokens = tokens.BindScope();
 	}
 
 	public InvaderBinding( ActionableSpaceState tokens ) {

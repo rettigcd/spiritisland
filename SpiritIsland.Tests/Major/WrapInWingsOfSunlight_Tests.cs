@@ -28,8 +28,8 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		var action = gameState.StartAction( ActionCategory.Spirit_Power );
-		_ = PlayCard( spirit.BindMyPowers( gameState, action ).Target(src) );
+		_ = gameState.StartAction( ActionCategory.Spirit_Power ); // !!! dispose
+		_ = PlayCard( spirit.BindMyPowers( gameState ).Target(src) );
 
 		user.NextDecision.HasPrompt( "Move up to (5)" ).HasOptions("D@2,Done").Choose( "D@2" ); // Pick space and 1st token
 		user.NextDecision.HasPrompt( "Move tokens to" ).HasOptions( "A1,A2,A3,A4,A5,A6,A7,A8" ).Choose( dst ); // pick destination
@@ -71,8 +71,8 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		var action = gameState.StartAction( ActionCategory.Spirit_Power );
-		_ = PlayCard( spirit.BindMyPowers( gameState, action ).Target(src) );
+		_ = gameState.StartAction( ActionCategory.Spirit_Power ); // !!! Get rid of or Dispose
+		_ = PlayCard( spirit.BindMyPowers( gameState ).Target(src) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecisionInfo( "Push (2)", "[D@2],E@1,T@2" );

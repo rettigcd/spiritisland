@@ -42,7 +42,7 @@ class TestSpirit : Spirit {
 
 		var user = new VirtualTestUser( spirit );
 		var action = gs.StartAction( ActionCategory.Default );
-		var starterCtx = spirit.BindSelf( gs, action );
+		var starterCtx = spirit.BindSelf( gs );
 
 		// Disable destroying presence
 		// starterCtx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };

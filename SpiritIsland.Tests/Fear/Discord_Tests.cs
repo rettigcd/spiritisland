@@ -15,7 +15,7 @@ public class Discord_Tests {
 		// When:
 		await using var actionScope = fxt.GameState.StartAction( ActionCategory.Fear );
 
-		var task = new Discord().Level3( new GameCtx( fxt.GameState, actionScope ) );
+		var task = new Discord().Level3( new GameCtx( fxt.GameState ) );
 
 		fxt.Choose(space.Text); // select space to add strife
 		fxt.Choose("C@3"); // strife the city

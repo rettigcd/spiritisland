@@ -45,6 +45,6 @@ public class ActionRepeater {
 				spirit.RemoveFromUnresolvedActions( factory );
 	}
 
-	public GrowthActionFactory Bind( GrowthActionFactory inner ) => new RepeatableActionFactory( inner, this );
+	public GrowthActionFactory BindAction( GrowthActionFactory inner ) => new RepeatableActionFactory( inner, this );
 
 }

@@ -2,13 +2,11 @@
 
 public class TokenMovedArgs : ITokenMovedArgs {
 
-	public TokenMovedArgs( SpaceState removedFrom, SpaceState addedTo, UnitOfWork actionScope ) {
-		ActionScope = actionScope;
+	public TokenMovedArgs( SpaceState removedFrom, SpaceState addedTo ) {
 		RemovedFrom = removedFrom;
 		AddedTo = addedTo;
 	}
 
-	public UnitOfWork ActionScope { get; }
 	public SpaceState RemovedFrom { get; }
 	public SpaceState AddedTo { get; }
 

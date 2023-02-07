@@ -7,8 +7,8 @@ internal class RainAndMudSupressConflict {
 	const string Name = "Rain and Mud Suppress Conflict";
 
 	// Use unit of work to coordinate between tier levels
-	static bool WasUsed( SelfCtx ctx) => ctx.ActionScope.ContainsKey(Name);
-	static void MarkAsUsed( SelfCtx ctx ) => ctx.ActionScope[ Name ] = true;
+	static bool WasUsed() => UnitOfWork.Current.ContainsKey(Name);
+	static void MarkAsUsed() => UnitOfWork.Current[ Name ] = true;
 
 	const string Tier1Elements = "1 air,3 water";
 
@@ -45,14 +45,14 @@ internal class RainAndMudSupressConflict {
 		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => ctx.Self.Presence.CountOn( sp ), Token.Defend );
 		// lowers Dahan counterattack damage by 1
 		ctx.GameState.AddToAllActiveSpaces( new MudToken( ctx.Self, 1 ) );
-		MarkAsUsed( ctx );
+		MarkAsUsed();
 	}
 
 	// Replace with DoRavage
 	//	 sets based on presence
 	//   doesn't remove self (so works for multiple ravages)
 
-	static async Task<bool> DontWantMoreMud( SelfCtx ctx ) => WasUsed( ctx )
+	static async Task<bool> DontWantMoreMud( SelfCtx ctx ) => WasUsed()
 			&& !await ctx.Self.UserSelectsFirstText( "Apply Additional Tier?", "Yes, we want more mud.", "No, thank you." );
 
 }

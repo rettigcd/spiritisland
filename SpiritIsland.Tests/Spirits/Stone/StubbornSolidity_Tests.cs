@@ -109,7 +109,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
 		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<CallToMigrate>().ActivateAsync( spirit.BindMyPowers( gameState, uow2 ) );
+		Task task = PowerCard.For<CallToMigrate>().ActivateAsync( spirit.BindMyPowers( gameState ) );
 		spirit.NextDecision().HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 
 		//  Then: Dahan are still there (not replaced)
@@ -139,7 +139,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
 		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<CallToMigrate>().ActivateAsync( spirit.BindMyPowers( gameState, uow2 ) );
+		Task task = PowerCard.For<CallToMigrate>().ActivateAsync( spirit.BindMyPowers( gameState ) );
 		spirit.NextDecision().HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 
 		//   And: outside dahan are gathered
@@ -173,7 +173,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that replaces Dahan - Dissolve the Bonds of Kinship
 		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<DissolveTheBondsOfKinship>().ActivateAsync( spirit.BindMyPowers( gameState, uow2 ) );
+		Task task = PowerCard.For<DissolveTheBondsOfKinship>().ActivateAsync( spirit.BindMyPowers( gameState ) );
 		//   And: target space with frozen dahan
 		task.IsCompleted.ShouldBeFalse();
 		spirit.NextDecision().HasPrompt( DissolveTheBondsOfKinship.Name + ": Target Space" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( targetSpace.Space );
@@ -201,7 +201,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that targets a Dahan space CallToTrade
 		await using UnitOfWork uow2 = gameState.StartAction( ActionCategory.Spirit_Power );
-		Task task = PowerCard.For<CallToTrade>().ActivateAsync(spirit.BindMyPowers(gameState,uow2));
+		Task task = PowerCard.For<CallToTrade>().ActivateAsync(spirit.BindMyPowers(gameState));
 
 		//  Then: can still target space with frozen dahan
 		task.IsCompleted.ShouldBeFalse();
@@ -210,7 +210,7 @@ public class StubbornSolidity_Tests {
 
 	static async Task Play_StubbornSolidity_On( Spirit spirit, GameState gameState, SpaceState targetSpace ) {
 		await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
-		StubbornSolidity.ActAsync( spirit.BindMyPowers( gameState, actionScope ).Target( targetSpace.Space ) ).Wait();
+		StubbornSolidity.ActAsync( spirit.BindMyPowers( gameState ).Target( targetSpace.Space ) ).Wait();
 	}
 
 	static void BuysAndUses( GameFixture fxt, string cardName ) {

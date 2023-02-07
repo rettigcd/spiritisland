@@ -88,7 +88,7 @@ public class TradeSuffers_Tests {
 
 		// When: fear card
 		await using var scope = fxt.GameState.StartAction( ActionCategory.Fear );
-		var task = new TradeSuffers().Level3( new GameCtx( fxt.GameState, scope ) );
+		var task = new TradeSuffers().Level3( new GameCtx( fxt.GameState ) );
 		//  And: user selects a1
 		fxt.Choose( space.Text );
 		//  And: user choses not to replace (this is what we are testing...)

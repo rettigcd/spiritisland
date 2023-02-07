@@ -26,9 +26,9 @@ public class RepeatIfAttribute : RepeatAttribute {
 			this.thresholds = thresholds.ToList();
 		}
 
-		public async Task<bool> ShouldRepeat( Spirit spirit, UnitOfWork actionScope ) {
+		public async Task<bool> ShouldRepeat( Spirit spirit ) {
 			foreach(var threshold in thresholds) {
-				if( await spirit.HasElements(threshold.Elements, actionScope ) ) {
+				if( await spirit.HasElements(threshold.Elements ) ) {
 					thresholds.Remove(threshold);
 					return true;
 				}

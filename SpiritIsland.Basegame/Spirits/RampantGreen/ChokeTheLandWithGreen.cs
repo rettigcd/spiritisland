@@ -38,7 +38,7 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		if(stop == null) return false;
 
 		await using var actionScope = gs.StartAction( ActionCategory.Spirit_SpecialRule ); // Special Rules! - it is the invader actions we are stopping
-		await gs.Tokens[stop].Bind( actionScope ).Destroy( _self.Presence.Token, 1 );
+		await gs.Tokens[stop].BindScope().Destroy( _self.Presence.Token, 1 );
 		_self.Energy -= energyCost;
 
 		return true;

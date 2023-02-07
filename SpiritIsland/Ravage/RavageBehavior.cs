@@ -43,8 +43,8 @@ public class RavageBehavior {
 				return; 
 			}
 
-		data.ActionScope = data.GameState.StartAction( ActionCategory.Invader );
-		data.InvaderBinding = new InvaderBinding( data.Tokens, data.ActionScope );
+		var scope = data.GameState.StartAction( ActionCategory.Invader );
+		data.InvaderBinding = new InvaderBinding( data.Tokens );
 
 		try {
 			// Record starting state
@@ -56,9 +56,8 @@ public class RavageBehavior {
 			data.GameState.Log( new Log.RavageEntry( data.Result ) );
 		}
 		finally {
-			if(data.ActionScope != null) {
-				await data.ActionScope.DisposeAsync();
-				data.ActionScope = null;
+			if(scope != null) {
+				await scope.DisposeAsync();
 				data.InvaderBinding = null;
 			}
 		}
@@ -118,7 +117,7 @@ public class RavageBehavior {
 			.OrderBy( t => t.RemainingHealth ) // kill damaged dahan first
 			.ToArray();
 
-		var dahan = new HealthTokenClassBinding( data.Tokens, Human.Dahan, data.ActionScope );
+		var dahan = new HealthTokenClassBinding( data.Tokens, Human.Dahan );
 
 		foreach(var dahanToken in damagableDahan) {
 

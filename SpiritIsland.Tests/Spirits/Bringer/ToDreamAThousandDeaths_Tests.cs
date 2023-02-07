@@ -8,7 +8,6 @@ public class ToDreamAThousandDeaths_Tests {
 	readonly TargetSpaceCtx _ctx;
 	readonly Spirit _spirit;
 	readonly VirtualUser _user;
-	readonly UnitOfWork _actionScope;
 
 	public ToDreamAThousandDeaths_Tests(){
 		_spirit = new Bringer();
@@ -16,7 +15,7 @@ public class ToDreamAThousandDeaths_Tests {
 		_board = Board.BuildBoardA();
 		_gameState = new GameState( _spirit, _board );
 		_gameState.Initialize();
-		_actionScope = _gameState.StartAction( ActionCategory.Spirit_Power );
+		_ = _gameState.StartAction( ActionCategory.Spirit_Power ); // !!! get rid of or Dispose
 		_ctx = MakeFreshPowerCtx();
 
 		// Disable destroying presence
@@ -24,8 +23,8 @@ public class ToDreamAThousandDeaths_Tests {
 
 	}
 
-	TargetSpaceCtx MakeFreshPowerCtx(UnitOfWork actionScope=null) {
-		var ctx = _spirit.BindMyPowers(_gameState, actionScope ?? _actionScope ); // This is correct usage.
+	TargetSpaceCtx MakeFreshPowerCtx() {
+		var ctx = _spirit.BindMyPowers(_gameState ); // This is correct usage.
 		return ctx.Target( _board[5] );
 	}
 
@@ -112,7 +111,7 @@ public class ToDreamAThousandDeaths_Tests {
 
 	async Task Run_OneDamageToEachAsync() {
 		await using var actionScope = this._gameState.StartAction( ActionCategory.Spirit_Power );
-		await OneDamageToEachAsync( MakeFreshPowerCtx(actionScope) );
+		await OneDamageToEachAsync( MakeFreshPowerCtx() );
 	}
 
 	[Fact]

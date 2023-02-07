@@ -6,7 +6,7 @@ public class AbsoluteStasis_Tests {
 
 	[Trait("SpecialRule","OceanInPlay")]
 	[Fact]
-	public void CannotTargetInPlayOceans() {
+	public async Task CannotTargetInPlayOceans() {
 		// Given: Ocean is in play
 		cfg.Spirit = new Ocean();
 		//   And: Ocean presence is in ocean
@@ -15,7 +15,8 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.Initialize();
 
 		{
-			var selfCtx = cfg.SelfCtx;
+			await using var scope = cfg.GameState.StartAction(ActionCategory.Spirit_Power);
+			var selfCtx = cfg.Spirit.BindMyPowers(cfg.GameState);
 
 			//  When: targeting with other card
 			Task mesmerizedTranquilityTask = PowerCard.For<MesmerizedTranquility>()

@@ -16,7 +16,7 @@ public class FranceExplorer : ExploreEngine {
 		await DoExplore( gameState, tokenSpacesToExplore, false );
 
 		await using var scope = gameState.StartAction( ActionCategory.Adversary );
-		GameCtx gameCtx = new GameCtx( gameState, scope );
+		GameCtx gameCtx = new GameCtx( gameState );
 
 		if(hasFrontierExploration)
 			await DoFrontierExploration( gameState, tokenSpacesToExplore );
@@ -43,7 +43,7 @@ public class FranceExplorer : ExploreEngine {
 			var options = boardCtx.Board.Spaces.Where( s => !boardCtx.GameState.Tokens[s].HasAny( Human.Explorer ) ).ToArray();
 			var space = await boardCtx.Decision( new Select.Space( "Add explorer", options, Present.Always ) );
 			if(space != null)
-				await boardCtx.GameState.Tokens[space].Bind( boardCtx.ActionScope ).AddDefault( Human.Explorer, 1 );
+				await boardCtx.GameState.Tokens[space].BindScope().AddDefault( Human.Explorer, 1 );
 		}
 	);
 
@@ -51,8 +51,10 @@ public class FranceExplorer : ExploreEngine {
 	async Task DoFrontierExploration( GameState gs, SpaceState[] tokenSpacesToExplore ) {
 		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
-			if(!exploreTokens.HasAny( Human.Town_City ))
-				await ExploreSingleSpace( exploreTokens, gs, gs.StartAction( ActionCategory.Adversary ), false );
+			if(!exploreTokens.HasAny( Human.Town_City )) {
+				await using var scope = gs.StartAction( ActionCategory.Adversary );
+				await ExploreSingleSpace( exploreTokens, gs, false );
+			}
 	}
 
 	static Task DemandForNewCashCrops( GameCtx ctx, InvaderCard card ) {

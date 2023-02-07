@@ -59,7 +59,8 @@ public class Token_Tests {
 		SpaceState space = gs.AllSpaces.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
 		space.AdjustDefault( Human.Explorer, 1 ); // add explorer
 		//   And: 1 diseases there
-		await space.Disease.Bind(gs.StartAction( ActionCategory.Default ) ).Add(1);
+		_ = gs.StartAction( ActionCategory.Default ); // !!! dispoose
+		await space.Disease.BindScope().Add(1);
 
 		//  When: we build there
 		await space.Space.DoABuild( gs );

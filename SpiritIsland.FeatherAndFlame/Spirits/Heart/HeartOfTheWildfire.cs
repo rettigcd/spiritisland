@@ -103,11 +103,11 @@ public class HeartOfTheWildfire : Spirit {
 		public Task ModifyRemoving( RemovingTokenArgs args ) {
 
 			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presenceicon.png. ( This includes cascades.)
-			if( DestroysPresence(args) && BlightAddedDueToSpiritEffects( args.ActionScope )	) args.Count = 0;
+			if( DestroysPresence(args) && BlightAddedDueToSpiritEffects()	) args.Count = 0;
 			return Task.CompletedTask;
 		}
 
-		static bool BlightAddedDueToSpiritEffects( UnitOfWork actionScope ) => !BlightTokenBinding.GetAddReason( actionScope )
+		static bool BlightAddedDueToSpiritEffects() => !BlightTokenBinding.GetAddReason()
 			.IsOneOf( AddReason.Ravage, AddReason.BlightedIsland, AddReason.None );
 
 		public async Task HandleTokenAdded( ITokenAddedArgs args ) {
@@ -115,7 +115,7 @@ public class HeartOfTheWildfire : Spirit {
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
 			int fireCount = _spirit.Presence.TrackElements[Element.Fire];
-			var ctx = _spirit.BindSelf( args.GameState, args.ActionScope ).Target( args.AddedTo );
+			var ctx = _spirit.BindSelf( args.GameState ).Target( args.AddedTo );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight

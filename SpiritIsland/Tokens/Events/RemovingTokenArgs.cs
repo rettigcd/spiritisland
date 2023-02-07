@@ -10,7 +10,6 @@ public class RemovingTokenArgs {
 	// Read-only
 	public ActionableSpaceState Space { get; }
 	public RemoveReason Reason { get; }
-	public UnitOfWork ActionScope => Space.ActionScope;
 
 	// modifiable
 	public IVisibleToken Token { get; set; }

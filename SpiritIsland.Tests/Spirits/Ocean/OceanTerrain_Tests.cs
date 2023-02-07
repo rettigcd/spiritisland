@@ -32,7 +32,7 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that targets ANY-terrain Range-1 (Call To Guard - Range 1, Any land)
 		await using UnitOfWork action = gameState.StartAction( ActionCategory.Spirit_Power );
-		SelfCtx ctx = primarySpirit.BindMyPowers( gameState, action );
+		SelfCtx ctx = primarySpirit.BindMyPowers( gameState );
 		_ = PowerCard.For<CallToGuard>().ActivateAsync( ctx );
 
 		// Then: Targetting does not inculde Ocean
@@ -52,7 +52,7 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that targets WETLANDS (Talons ofLightning - Range 1, M/W)
 		await using UnitOfWork action = gameState.StartAction( ActionCategory.Spirit_Power );
-		SelfCtx ctx = primarySpirit.BindMyPowers( gameState, action );
+		SelfCtx ctx = primarySpirit.BindMyPowers( gameState );
 		_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( ctx );
 
 		// Then: Targetting options INCLUDES Ocean
@@ -78,8 +78,8 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that Pushes Dahan
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
-		await using UnitOfWork action = gameState.StartAction( ActionCategory.Spirit_Power );
-		SelfCtx ctx = primarySpirit.BindMyPowers( gameState, action );
+		await using UnitOfWork action = gameState.StartAction( ActionCategory.Spirit_Power ); // !!! needed?
+		SelfCtx ctx = primarySpirit.BindMyPowers( gameState );
 		_ = PowerCard.For<CallToTend>().ActivateAsync( ctx );
 		//  And: Targets A2 (that has a dahan on it)
 		Choose( "A2" );
@@ -142,7 +142,7 @@ public class OceanTerrain_Tests {
 		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
 		await using UnitOfWork action = gameState.StartAction( ActionCategory.Spirit_Power );
-		SelfCtx ctx = primarySpirit.BindMyPowers( gameState, action );
+		SelfCtx ctx = primarySpirit.BindMyPowers( gameState );
 		_ = PowerCard.For<LandOfHauntsAndEmbers>().ActivateAsync( ctx );
 		//  And: Targets A2
 		Choose( a2.Space.Text );

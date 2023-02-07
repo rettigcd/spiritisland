@@ -92,7 +92,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		await ActivateInnerAsync( ctx );
 		if( _repeatAttr != null) {
 			var repeater = _repeatAttr.GetRepeater();
-			while( await repeater.ShouldRepeat(ctx.Self,ctx.ActionScope) )
+			while( await repeater.ShouldRepeat(ctx.Self) )
 				await ActivateInnerAsync( ctx );
 		}
 	}
@@ -123,7 +123,7 @@ public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		foreach(MethodTuple[] grp in _executionGroups) {
 
 			// Ask spirit which methods they can activate
-			var match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr), spiritCtx.ActionScope );
+			var match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr) );
 
 			// Find matching method and it to execute-list
 			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;

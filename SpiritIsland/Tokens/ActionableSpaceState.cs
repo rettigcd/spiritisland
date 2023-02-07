@@ -6,11 +6,7 @@
 /// </summary>
 public class ActionableSpaceState : SpaceState {
 
-	public UnitOfWork ActionScope { get; }
-
-	public ActionableSpaceState( SpaceState spaceState, UnitOfWork actionScope ):base(spaceState) {
-		ActionScope = actionScope;
-	}
+	public ActionableSpaceState( SpaceState spaceState ):base(spaceState) {}
 
 	#region Adjust Health
 
@@ -74,7 +70,7 @@ public class ActionableSpaceState : SpaceState {
 		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
-		var addingArgs = new AddingTokenArgs( this, addReason, ActionScope ) { Count = count, Token = token };
+		var addingArgs = new AddingTokenArgs( this, addReason ) { Count = count, Token = token };
 		foreach(var mod in Keys.OfType<IHandleAddingToken>().ToArray())
 			mod.ModifyAdding( addingArgs );
 
@@ -85,7 +81,7 @@ public class ActionableSpaceState : SpaceState {
 		Adjust(addingArgs.Token, addingArgs.Count);
 
 		// Post-Add event
-		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count, ActionScope );
+		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count );
 	}
 
 
@@ -121,7 +117,7 @@ public class ActionableSpaceState : SpaceState {
 		Adjust(removingArgs.Token, -removingArgs.Count);
 
 		// Post-Remove event
-		return new TokenRemovedArgs( removingArgs.Token, reason, ActionScope, this, removingArgs.Count );
+		return new TokenRemovedArgs( removingArgs.Token, reason, this, removingArgs.Count );
 
 	}
 
@@ -168,11 +164,11 @@ public class ActionableSpaceState : SpaceState {
 
 		// Add to destination
 		var dstTokens = _api.GetTokensFor( destination );
-		var addResult = await dstTokens.Bind(ActionScope).Add( token, removeResults.Count, AddReason.MovedTo );
+		var addResult = await dstTokens.BindScope().Add( token, removeResults.Count, AddReason.MovedTo );
 		if(addResult == null) return;
 
 		// Publish
-		await _api.Publish_Moved( new TokenMovedArgs( this, dstTokens, ActionScope ) { // !! _original ????
+		await _api.Publish_Moved( new TokenMovedArgs( this, dstTokens ) { // !! _original ????
 			// removed
 			TokenRemoved = removeResults.Token,
 			// added
@@ -191,7 +187,6 @@ public class ActionableSpaceState : SpaceState {
 
 	// Hopefully this is never called.
 	// But if it is, do something reasonable
-	public override ActionableSpaceState Bind( UnitOfWork actionScope )
-		=> actionScope == this.ActionScope ? this : new ActionableSpaceState( this, actionScope );
+	public override ActionableSpaceState BindScope() => this;
 
 }

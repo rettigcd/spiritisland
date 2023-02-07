@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 
@@ -92,25 +90,21 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	#region constructor
 
 	public BoundPresence(SelfCtx ctx):base(ctx) { 
-		_actionScope = ctx.ActionScope;
-	}
-	public BoundPresence( Spirit self, GameState gs, TerrainMapper terrainMapper, UnitOfWork actionScope ) : base( self, gs, terrainMapper ) {
-		_actionScope = actionScope;
 	}
 
-	readonly protected UnitOfWork _actionScope;
+	public BoundPresence( Spirit self, GameState gs, TerrainMapper terrainMapper ) : base( self, gs, terrainMapper ) {}
 
 	#endregion
 
 	public async Task Move( Space from, Space to ) { 
-		await _gameState.Tokens[from].Bind(_actionScope).MoveTo(_inner.Token, to );
+		await _gameState.Tokens[from].BindScope().MoveTo(_inner.Token, to );
 	}
-	public Task PlaceOn( Space space ) => _gameState.Tokens[space].Bind( _actionScope ).Add( Token, 1 );
-	public Task Destroy( Space space, int count, DestoryPresenceCause _ ) => _gameState.Tokens[space].Bind( _actionScope ).Destroy( _inner.Token, count );
+	public Task PlaceOn( Space space ) => _gameState.Tokens[space].BindScope().Add( Token, 1 );
+	public Task Destroy( Space space, int count, DestoryPresenceCause _ ) => _gameState.Tokens[space].BindScope().Destroy( _inner.Token, count );
 	public Task RemoveFrom( Space space ) {
-		return _gameState.Tokens[space].Bind(_actionScope).Remove( Token, 1, RemoveReason.Removed );
+		return _gameState.Tokens[space].BindScope().Remove( Token, 1, RemoveReason.Removed );
 	}
-	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState,_actionScope);
+	public Task Place( IOption from, Space to) => _inner.Place(from,to,_gameState);
 
 		// !!! should have an action ID
 		public async Task<(Space, Space)> PushUpTo1() {
@@ -130,7 +124,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 	public async Task<(IOption,Space)> PlaceWithin( TargetCriteria targetCriteria, bool forPower ) {
 		IOption from = await SelectSource();
 		Space to = await SelectDestinationWithinRange( targetCriteria, forPower );
-		await _self.Presence.Place( from, to, _gameState, _actionScope );
+		await _self.Presence.Place( from, to, _gameState );
 		return(from, to);
 	}
 
@@ -141,7 +135,7 @@ public class BoundPresence : ReadOnlyBoundPresence {
 
 		IOption from = await SelectSource();
 		Space to = await _self.Gateway.Decision( Select.Space.ToPlacePresence( _gameState.Tokens.PowerUp( destinationOptions ), Present.Always, _inner.Token ) );
-		await _self.Presence.Place( from, to, _gameState, _actionScope );
+		await _self.Presence.Place( from, to, _gameState );
 	}
 
 	/// !!! should Have an Action ID

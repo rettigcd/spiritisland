@@ -7,7 +7,7 @@ public class ExplosiveEruption {
 
 	[ExplosiveInnateOption( "2 fire, 2 earth", 2, "In one land within range 1, X Damage",0)]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
-		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction( ctx.ActionScope );
+		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction();
 
 		Space space = await ctx.Self.Gateway.Decision( new Select.Space(
 			$"Apply {destroyedCount} damage to",
@@ -21,7 +21,7 @@ public class ExplosiveEruption {
 
 	[ExplosiveInnateOption( "3 fire, 3 earth", 4, "Generate X fear.",1)]
 	static public Task Option2( TargetSpaceCtx ctx ) {
-		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction( ctx.ActionScope );
+		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction();
 		ctx.AddFear( destroyedCount );
 		return Task.CompletedTask;
 	}
@@ -34,7 +34,7 @@ public class ExplosiveEruption {
 			await ctx.Target(adj).DamageInvaders(4);
 
 		// Add 1 blight to target land; doing so does not Destroy your presence.
-		VolcanoPresence.SetDontDestroyPresenceOn( ctx.ActionScope, ctx.Space );
+		VolcanoPresence.SetDontDestroyPresenceOn( ctx.Space );
 		await ctx.AddBlight(1);
 	}
 

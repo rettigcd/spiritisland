@@ -58,19 +58,19 @@ public class ExploreEngine {
 			exploreTokens.Init( ModToken.DoExplore, 0 );
 			while(0 < exploreCount--) {
 				await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Invader );
-				await ExploreSingleSpace( exploreTokens, gs, actionScope, escalation );
+				await ExploreSingleSpace( exploreTokens, gs, escalation );
 			}
 		}
 	}
 
-	protected virtual async Task ExploreSingleSpace( SpaceState tokens, GameState gs, UnitOfWork actionScope, bool escalation ) {
-		var ctx = new GameCtx( gs, actionScope );
+	protected virtual async Task ExploreSingleSpace( SpaceState tokens, GameState gs, bool escalation ) {
+		var ctx = new GameCtx( gs );
 		foreach(var stopper in tokens.Keys.OfType<ISkipExploreTo>().ToArray())
 			if(await stopper.Skip( ctx, tokens ))
 				return;
 
 		gs.Log( new Log.SpaceExplored( tokens.Space ) );
-		await AddToken( tokens.Bind( actionScope ) );
+		await AddToken( tokens.BindScope() );
 	}
 
 	protected virtual async Task AddToken( ActionableSpaceState tokens ) 

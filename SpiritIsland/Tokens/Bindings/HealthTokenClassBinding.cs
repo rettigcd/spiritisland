@@ -29,24 +29,19 @@ public class HealthTokenClassBinding_NoEvents {
 
 	public void Init( IToken token, int count ) => _tokens.Init( token, count );
 
-	public HealthTokenClassBinding Bind( UnitOfWork actionScope ) => new HealthTokenClassBinding(this,actionScope);
+	public HealthTokenClassBinding BindScope() => new HealthTokenClassBinding(this);
 }
 
 public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 
-	ActionableSpaceState ActionTokens => _actionTokens ??= _tokens.Bind(_actionScope);
+	ActionableSpaceState ActionTokens => _actionTokens ??= _tokens.BindScope();
 	ActionableSpaceState _actionTokens;
-	readonly UnitOfWork _actionScope;
 
 	#region constructors
 
-	public HealthTokenClassBinding( HealthTokenClassBinding_NoEvents src, UnitOfWork actionScope ):base(src) {
-		_actionScope = actionScope;
-	}
+	public HealthTokenClassBinding( HealthTokenClassBinding_NoEvents src ):base(src) {}
 
-	public HealthTokenClassBinding( SpaceState tokens, HumanTokenClass tokenClass, UnitOfWork actionScope ):base(tokens,tokenClass ) {
-		_actionScope = actionScope;
-	}
+	public HealthTokenClassBinding( SpaceState tokens, HumanTokenClass tokenClass):base(tokens,tokenClass ) {}
 
 	#endregion
 
