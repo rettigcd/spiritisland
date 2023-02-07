@@ -14,11 +14,13 @@ public class ScotlandRavageEngine : RavageEngine {
 			.Where( ss => !ss.Space.IsOcean && !ss.Space.IsCoastal )
 			// that matches a Ravage card
 			.Where( card.MatchesCard )
-			// and is within 1 of town/ city
-			.Where( ss => ss.HasAny( Human.Town_City ) || ss.Adjacent.Any( adj => adj.HasAny( Human.Town_City ) ) ) // !!! What about Isolate?, maybe we need a 2nd .Adjacent called .Adjacent_NotIsolated
+			// and is within 1 of town/city
+			.Where( ss => ss.HasAny( Human.Town_City ) 
+				|| ss.Adjacent.Any( adj => adj.HasAny( Human.Town_City ) ) )
 			.ToArray();
 		// add 1 Town 
 		foreach(var ss in spaces)
 			ss.AdjustDefault( Human.Town, 1 ); // !! if we had access to the Ravage Action, we should .Bind() to that, and call .AddDefault
 	}
+
 }

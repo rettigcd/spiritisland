@@ -22,13 +22,15 @@ public class OceanTerrainForPower : TerrainMapper {
 		=> original.IsCoastal( ss ) // check default 1st
 			|| IsOceansOcean( ss ); // if that fails, check special rule
 
-	public override bool IsInPlay( SpaceState spaceState ) => IsOceansOcean( spaceState ) || original.IsInPlay( spaceState );
+	public override bool IsInPlay( SpaceState spaceState ) 
+		=> original.IsInPlay( spaceState ) 
+			|| IsOceansOcean( spaceState );
 
 	#region private
 
 	bool IsOceansOcean( SpaceState spaceState ) {
-		return spaceState.Space.IsOcean 
-			&& spaceState.HasTokenOnBoard( oceanPresence.Token );
+		return spaceState.Space.IsOcean
+			&& spaceState.HasTokenOnBoard( oceanPresence.Token ); // only call this when actually on ocean
 	}
 	readonly OceanPresence oceanPresence;
 	readonly TerrainMapper original;

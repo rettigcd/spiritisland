@@ -5,8 +5,7 @@ public class EnglandBuilder : BuildEngine {
 		return base.ShouldBuildOnSpace( spaceState )
 			|| IsAdjacentTo2OrMoreCitiesOrTowns( spaceState );
 	}
-	static bool IsAdjacentTo2OrMoreCitiesOrTowns( SpaceState tokens ) => !tokens.Has( Token.Isolate )
-		&& 2 <= tokens.Adjacent.Sum( adj => CityTownCounts( adj ) );
+	static bool IsAdjacentTo2OrMoreCitiesOrTowns( SpaceState tokens ) => 2 <= tokens.Adjacent_ForInvaders.Sum( adj => CityTownCounts( adj ) );
 	static int CityTownCounts( SpaceState space ) => space.SumAny( Human.Town_City );
 
 }

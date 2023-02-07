@@ -73,10 +73,9 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 		SpaceState[] pushOptions;
 		if(HasASenseOfPendingDisaster
 			&& args.Token.Class == Human.Explorer     // Is explorer
-			&& args.Reason == RemoveReason.Destroyed   // destroying
-			&& args.Space[Token.Isolate] == 0 // not isolated
-			&& !args.ActionScope.ContainsKey( key ) // first time
-			&& 0 < (pushOptions = args.Space.Adjacent.Where( ss => args.ActionScope.TerrainMapper.IsInPlay( ss ) && ss[Token.Isolate] == 0 ).ToArray()).Length
+			&& args.Reason == RemoveReason.Destroyed // destroying
+			&& !args.ActionScope.ContainsKey( key )  // first time
+			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.Where( ss => args.ActionScope.TerrainMapper.IsInPlay( ss ) ).ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
 			args.ActionScope[key] = true; // don't save any more

@@ -187,12 +187,17 @@ public class SpaceState : HasNeighbors<SpaceState> {
 			yield return LinkedViaWays;
 	} }
 
+	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();
+
 	public SpaceState LinkedViaWays; // HACK - for Finder
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 
 	/// <summary> Explicitly named so not to confuse with Powers - Range commands. </summary>
 	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );
+
+	/// <summary> Has no Isolate token. </summary>
+	public bool IsConnected => this[Token.Isolate] == 0;
 
 	#endregion
 
@@ -227,13 +232,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Ocean Helpers
 
-	public void AdjustTrackedToken( ITrackMySpaces token, int delta ) {
-//		token.Adjust( Space, delta );
+	void AdjustTrackedToken( ITrackMySpaces token, int delta ) {
 		_api.Adjust(token,Space,delta);
 	}
 
 	public bool HasTokenOnBoard( ITrackMySpaces token ) {
-//		return token.IsOn( Space.Board );
 		return _api.IsOn(token,Space.Board);
 	}
 

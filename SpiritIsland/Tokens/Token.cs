@@ -6,7 +6,7 @@ public static class Token {
 
 	// BaseGame
 	static public readonly UniqueToken Defend   = new UniqueToken ( "Defend",  'G', Img.Defend ); // G:Guard D is for Dahan
-	static readonly public UniqueToken Isolate  = new UniqueToken ( "Isolate", 'I', Img.Isolate );
+	static readonly public UniqueToken Isolate  = new IsolateToken( "Isolate", 'I', Img.Isolate );
 
 	// Branch and Claw
 	static readonly public UniqueToken Beast   = new UniqueToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight

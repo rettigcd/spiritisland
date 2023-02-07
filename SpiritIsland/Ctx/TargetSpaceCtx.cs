@@ -36,13 +36,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
-	public void Isolate() {
-		Tokens.Init(Token.Isolate,1); // not a real token
-		GameState.TimePasses_ThisRound.Push( (gs)=>{ 
-			Tokens.Init(Token.Isolate,0);
-			return Task.CompletedTask; 
-		} ); // !! could just sweep entire board instead...
-	}
+	public void Isolate() => Tokens.Init(Token.Isolate,1);
 
 	public BeastBinding Beasts               => Tokens.Beasts.Bind( ActionScope );
 	public TokenBinding Disease              => Tokens.Disease.Bind( ActionScope );
