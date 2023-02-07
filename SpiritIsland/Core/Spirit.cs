@@ -82,7 +82,7 @@ public abstract partial class Spirit : IOption {
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
 		await using var action = gameState.StartAction( ActionCategory.Spirit_Growth );
-		var ctx = BindSelf( gameState );
+		var ctx = BindSelf();
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
@@ -143,7 +143,7 @@ public abstract partial class Spirit : IOption {
 
 		SelfCtx ctx = phase switch {
 			Phase.Init or
-			Phase.Growth => BindSelf( gs ),
+			Phase.Growth => BindSelf(),
 			Phase.Fast or 
 			Phase.Slow => BindMyPowers( gs ),
 			_ => throw new InvalidOperationException(),
@@ -302,6 +302,8 @@ public abstract partial class Spirit : IOption {
 
 	#region presence
 
+	public SpiritPresenceToken Token => Presence.Token; // helper shortcut
+
 	/// <summary> # of coins in the bank. </summary>
 	public int Energy { 
 		get => _energy;
@@ -335,15 +337,13 @@ public abstract partial class Spirit : IOption {
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
 	#region Bind helpers
-	public SelfCtx BindSelf( GameState gameState ) => BindDefault( this, gameState );
+	public SelfCtx BindSelf() => BindDefault( this );
 	public SelfCtx BindMyPowers( GameState gameState ) => BindMyPowers( this, gameState );
 	#endregion Bind helpers
 
-	public virtual SelfCtx BindDefault( Spirit spirit, GameState gameState )
-		=> new SelfCtx( spirit, gameState );
+	public virtual SelfCtx BindDefault( Spirit spirit )	=> new SelfCtx( spirit );
 
-	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState )
-		=> new SelfCtx( spirit, gameState );
+	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new SelfCtx( spirit );
 
 	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers
@@ -554,7 +554,7 @@ public abstract partial class Spirit : IOption {
 	) {	
 		// Converts SourceCriteria to Spaces
 		IEnumerable<SpaceState> sources = TargetingSourceCalc.FindSources( 
-			new ReadOnlyBoundPresence(this, gameState), 
+			this.Presence,
 			sourceCriteria,
 			gameState		// needed only for Entwined power - to get the other spirit's location
 		).ToArray();
@@ -569,9 +569,9 @@ public abstract partial class Spirit : IOption {
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder
-	public IEnumerable<SpaceState> FindSpacesWithinRange( GameState gameState, TargetCriteria targetCriteria, bool forPower ) {
+	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, bool forPower ) {
 		return (forPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton)
-			.GetTargetOptionsFromKnownSource( Presence.ActiveSpaceStates( gameState ), targetCriteria );
+			.GetTargetOptionsFromKnownSource( Presence.ActiveSpaceStates, targetCriteria );
 	}
 
 	#endregion

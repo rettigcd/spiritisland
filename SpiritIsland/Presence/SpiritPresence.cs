@@ -1,12 +1,6 @@
-﻿using SpiritIsland.Select;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland;
-
-// == Presence/GameState Strategy ==
-// * If GameState is only used for getting SpaceState, pass in SpaceState instead. (1 parameter is better than 2)
-// Methods on SpiritPresence should only be called from BoundedPresence aka PresenceState
-
-public class SpiritPresence {
+public class SpiritPresence : IKnowSpiritLocations {
 
 	#region constructors
 
@@ -38,7 +32,7 @@ public class SpiritPresence {
 
 	#region Tracks / Board
 
-	public virtual IEnumerable<Track> RevealOptions( GameState _ )
+	public virtual IEnumerable<Track> RevealOptions()
 		=> Energy.RevealOptions.Union( CardPlays.RevealOptions );
 
 	public IEnumerable<Track> CoverOptions
@@ -99,20 +93,20 @@ public class SpiritPresence {
 
 	#region Game-Play things you can do with presence
 
-	public async Task Place( IOption from, Space to, GameState gs ) {
-		await TakeFrom( from, gs );
-		await gs.Tokens[to].BindScope().Add( Token, 1 );
+	public async Task Place( IOption from, Space to ) {
+		await TakeFrom( from );
+		await to.Tokens.Add( Token, 1 );
 	}
 
-	public async Task TakeFrom( IOption from, GameState gs ) {
+	public async Task TakeFrom( IOption from ) {
 		if(from is Track track)
-			await RevealTrack( track, gs );
+			await RevealTrack( track );
 		else if(from is Space space)
-			await TakeFromSpace( space, gs );
+			await TakeFromSpace( space );
 	}
 
-	async Task TakeFromSpace( Space space, GameState gs ) {
-		ActionableSpaceState fromSpace = gs.Tokens[space].BindScope();
+	async Task TakeFromSpace( Space space ) {
+		SpaceState fromSpace = space.Tokens;
 		if(IsOn( fromSpace ))
 			await fromSpace.Remove( Token, 1, RemoveReason.MovedFrom );
 		else
@@ -141,13 +135,13 @@ public class SpiritPresence {
 
 	public bool CanMove { get; set; } = true; // Spirit effect - Settle Into Hunting Grounds
 
-	protected virtual async Task RevealTrack( Track track, GameState gs ) {
+	protected virtual async Task RevealTrack( Track track ) {
 		if(track == Track.Destroyed && Destroyed > 0)
 			--Destroyed;
 		else {
-			bool energyRevealed = await Energy.Reveal( track, gs );
+			bool energyRevealed = await Energy.Reveal( track );
 			if(!energyRevealed) {
-				bool cardRevealed = await CardPlays.Reveal( track, gs );
+				bool cardRevealed = await CardPlays.Reveal( track );
 				if(!cardRevealed)
 					throw new ArgumentException( "Can't pull from track:" + track.ToString() );
 			}
@@ -170,15 +164,18 @@ public class SpiritPresence {
 
 	#region Exposed Data
 
-	public IEnumerable<Space> SacredSites( GameState gs )
-		=> SacredSiteStates( gs ).Downgrade();
-	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs ) => gs.AllActiveSpaces
-		.Where( IsSacredSite );
+	public IEnumerable<Space> SacredSites() => SacredSiteStates.Downgrade();
 
-	public int Total( GameState gs ) => gs.AllSpaces.Sum( CountOn );
+	public virtual IEnumerable<SpaceState> SacredSiteStates => GameState.Current.AllActiveSpaces.Where( IsSacredSite );
+
+	public int Total() => GameState.Current.AllSpaces.Sum( CountOn );
 
 	/// <summary> All *Active* Spaces </summary>
-	public IEnumerable<SpaceState> ActiveSpaceStates( GameState gs ) => gs.AllActiveSpaces.Where( IsOn );
+	public IEnumerable<SpaceState> ActiveSpaceStates => GameState.Current.AllActiveSpaces.Where( IsOn );
+//	IEnumerable<SpaceState> IKnowSpiritLocations.ActiveSpaceStates => ActiveSpaceStates;
+
+	public IEnumerable<SpaceState> MovableSpaceStates => ActiveSpaceStates.Where( HasMovableTokens );
+
 
 	#endregion Exposed Data
 

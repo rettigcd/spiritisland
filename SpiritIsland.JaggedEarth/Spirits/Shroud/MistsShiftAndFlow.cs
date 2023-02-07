@@ -70,10 +70,10 @@ class MistsShiftAndFlow {
 			.Where( a => a.AddedTo.Space == gatherDst )
 			.Select( a => a.RemovedFrom )
 			.ToArray();
-		var gatherSource = (await _spirit.Gateway.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions, _spirit.Presence.Token  )))?.Space;
+		var gatherSource = (await _spirit.Gateway.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions, _spirit.Token  )))?.Space;
 		if(gatherSource == null) return;
 
-		await _ctx.Presence.Move( gatherSource, gatherDst );
+		await _ctx.Self.Token.Move( gatherSource, gatherDst );
 	}
 
 	bool IsInPlay( SpaceState space ) => _gameState.Island.Terrain_ForPower.IsInPlay( space );
@@ -127,14 +127,14 @@ class MistsShiftAndFlow {
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = _spirit.TargetingSourceCalc.FindSources( new ReadOnlyBoundPresence( _spirit, _gameState ), _sourceCriteria, _gameState );
+		var sources = _spirit.TargetingSourceCalc.FindSources( _spirit.Presence, _sourceCriteria, _gameState );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = sources
 			.SelectMany( s => s.Range( 2 ) ).Distinct() // I think this is a gather thing also
 			.ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = new ReadOnlyBoundPresence( _spirit, _ctx.GameState).ActiveSpaceStates
+		var flowedSources = _spirit.Presence.ActiveSpaceStates
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Where( IsInPlay ) // Don't allow flow into ocean.
@@ -175,7 +175,7 @@ class MistsShiftAndFlow {
 		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
 		public IEnumerable<SpaceState> ActiveSpaceStates { get; }
 
-		public IEnumerable<SpaceState> SacredSites => ActiveSpaceStates.Where( k => 1 < this[k.Space] ); // !!! This won't work for River that has SS on wetlands.
+		public IEnumerable<SpaceState> SacredSiteStates => ActiveSpaceStates.Where( k => 1 < this[k.Space] ); // !!! This won't work for River that has SS on wetlands.
 
 	}
 

@@ -46,7 +46,7 @@ public class Sweden : IAdversary {
 					if(args.Space.Blight.Blocked)
 
 					// !!! This shouldn't destroy presence?  Does it?
-					await args.Space.Blight.BindScope().Add(1);
+					await args.Space.Blight.Add(1);
 					args.GameState.LogDebug("Heavy Mining: additional blight on "+args.Space.Space.Text);
 				}
 			} );
@@ -87,12 +87,13 @@ public class Sweden : IAdversary {
 						.Where( adj => !adj.HasAny( Human.Town_City ) )
 						.ToArray();
 
-					var spirit = BoardCtx.FindSpirit( args.GameState, args.AddedTo.Space.Board );
+					var gs = GameState.Current;
+					var spirit = BoardCtx.FindSpirit( gs, args.AddedTo.Space.Board );
 
 					var selection = await spirit.Gateway.Decision(Select.Space.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.AddedTo.GetDefault( Human.Town ) ) );
 					if(selection != null) {
-						args.GameState.Tokens[selection].AdjustDefault( Human.Town, 1 );
-						args.GameState.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Text}.");
+						gs.Tokens[selection].AdjustDefault( Human.Town, 1 );
+						gs.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Text}.");
 					}
 				}
 			}, true );

@@ -116,9 +116,9 @@ public class AbsoluteStasis_Tests {
 		SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
-		cfg.SelfCtx.Presence.ActiveSpaceStates.Count( x => x.Space.Text == "A8" ).ShouldBe( 0 );
+		cfg.SelfCtx.Self.Presence.ActiveSpaceStates.Count( x => x.Space.Text == "A8" ).ShouldBe( 0 );
 		//   And: no SS found
-		cfg.Presence.SacredSites( cfg.GameState ).Count( x => x.Text == "A8" ).ShouldBe( 0 );
+		cfg.Presence.SacredSites().Count( x => x.Text == "A8" ).ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -228,7 +228,7 @@ public class AbsoluteStasis_Tests {
 
 		try{
 			//  When: destroy that extra presence (triggers win/loss check)
-			cfg.SelfCtx.Presence.Destroy( destroyPresenceSpace, 1, DestoryPresenceCause.SpiritPower ).Wait();
+			destroyPresenceSpace.Tokens.Destroy(cfg.Presence.Token,1).Wait();
 			//  When: we check win/loss
 			cfg.GameState.CheckWinLoss();
 		} catch( GameOverException ) {
@@ -279,7 +279,7 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), 0 );
 		cfg.GameState.MajorCards = new PowerCardDeck( typeof( RiversBounty ).GetMajors(), 0 );
 		cfg.GameState.Initialize();
-		cfg.Presence.SacredSites( cfg.GameState ).Select( x => x.Text ).Join( "," ).ShouldBe( "A8" );
+		cfg.Presence.SacredSites().Select( x => x.Text ).Join( "," ).ShouldBe( "A8" );
 	}
 
 	void Assert_SpaceHasCountTokens( Space space, TokenClass tokenClass, int expectedCount ) {

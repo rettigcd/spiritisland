@@ -55,11 +55,11 @@ public class ManyMindsMoveAsOne : Spirit {
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) 
-		=> new ManyMindsCtx( spirit, gameState );
+		=> new ManyMindsCtx( spirit );
 
 	public class ManyMindsCtx : SelfCtx {
 
-		public ManyMindsCtx(Spirit spirit, GameState gs ):base( spirit, gs ) { }
+		public ManyMindsCtx(Spirit spirit):base( spirit ) { }
 
 		public override TargetSpaceCtx Target( Space space ) => new ManyMindsSpaceCtx(this,space);
 	}

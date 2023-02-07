@@ -11,7 +11,7 @@ public class ToweringWrath {
 		ctx.AddFear( 2 );
 
 		// for each of your SS in / adjacent to target land, 2 damage
-		int sacredSiteCount = ctx.Tokens.InOrAdjacentTo.Intersect( ctx.Presence.SacredSites ).Count() ; // In/adjacent
+		int sacredSiteCount = ctx.Tokens.InOrAdjacentTo.Intersect( ctx.Self.Presence.SacredSiteStates ).Count() ; // In/adjacent
 		await ctx.DamageInvaders( 2 * sacredSiteCount );
 
 		// destroy all dahan

@@ -23,7 +23,7 @@ public class DefaultPowerSourceCalculator : ICalcPowerTargetingSource {
 	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria, GameState gameState ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.ActiveSpaceStates,
-			From.SacredSite => presence.SacredSites,
+			From.SacredSite => presence.SacredSiteStates,
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
 		return sourceCriteria.Terrain.HasValue

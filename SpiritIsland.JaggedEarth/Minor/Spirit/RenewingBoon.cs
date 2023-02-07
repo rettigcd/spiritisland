@@ -6,7 +6,7 @@ public class RenewingBoon{
 	static public async Task ActAsync( TargetSpiritCtx ctx ){
 
 		// Choose a land where you and target Spirit both have presence.
-		var spaceOptions = ctx.Presence.ActiveSpaceStates.Intersect( ctx.OtherCtx.Presence.ActiveSpaceStates )
+		var spaceOptions = ctx.Self.Presence.ActiveSpaceStates.Intersect( ctx.OtherCtx.Self.Presence.ActiveSpaceStates )
 			.ToArray();
 		var space = await ctx.Decision(new Select.Space("",spaceOptions,Present.Always));
 		if( space == null) return;
@@ -16,7 +16,7 @@ public class RenewingBoon{
 
 		// and target Spirit may add 1 of their Destroyed presence.
 		var otherCtx = ctx.OtherCtx.Target( space );
-		if( otherCtx.Presence.CanBePlacedOn(otherCtx.Tokens) )   // filter by the OTHER spirits placeable options
+		if( otherCtx.Self.Presence.CanBePlacedOn(otherCtx.Tokens) )   // filter by the OTHER spirits placeable options
 			await otherCtx.Presence.PlaceDestroyedHere(); // ! "May" Add - let them choose
 	}
 

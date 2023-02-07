@@ -6,7 +6,7 @@ class Setup_PlacePresenceOnBeastLand : GrowthActionFactory {
 		var gameState = ctx.GameState;
 		var options = gameState.AllSpaces.Where( space=>space.Beasts.Any );
 		var space = await ctx.Decision(new Select.Space("Add presence to",options, Present.Always));
-		await ctx.Presence.PlaceOn(space);
+		await ctx.Self.Token.AddTo(space);
 	}
 
 	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;

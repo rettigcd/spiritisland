@@ -30,7 +30,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 			var countToNotParticipate = await _self.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );
 
 			if(countToNotParticipate > 0)
-				space.AccessGameState().ModifyRavage( space.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate ); // !!! move ModifyRavage into SpaceState so we don't have to call .AccessGameState()
+				GameState.Current.ModifyRavage( space.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate ); // !!! move ModifyRavage into SpaceState so we don't have to call .AccessGameState()
 
 			explorerTypes.Remove( explorerTypeToNotParticipate ); // don't let them select the same type twice and over-count the # of non-participants of that type.
 

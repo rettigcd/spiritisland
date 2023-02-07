@@ -2,8 +2,8 @@
 
 public class TrackSlot : TypedDecision<Track> {
 
-	static public TrackSlot ToReveal( string prompt, SpiritIsland.Spirit spirit, GameState gs )
-		=> new TrackSlot( prompt, spirit.Presence.RevealOptions(gs), "Take Presence from Board" );
+	static public TrackSlot ToReveal( string prompt, SpiritIsland.Spirit spirit )
+		=> new TrackSlot( prompt, spirit.Presence.RevealOptions(), "Take Presence from Board" );
 
 	static public TrackSlot ToCover( SpiritIsland.Spirit spirit )
 		=> new TrackSlot( "Select Destination to return presence", spirit.Presence.CoverOptions );

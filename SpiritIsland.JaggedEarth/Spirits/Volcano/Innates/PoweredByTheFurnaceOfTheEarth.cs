@@ -24,8 +24,8 @@ public class PoweredByTheFurnaceOfTheEarth {
 	}
 
 	[InnateOption("5 fire","Return up to 2 of your destroyed presence to your presence tracks.",3)]
-	static public Task Option4(TargetSpaceCtx ctx ) {
-		return ctx.Presence.ReturnUpToNDestroyedToTrack(2);
-	}
+	static public Task Option4( TargetSpaceCtx ctx ) =>  ctx.Self.ReturnUpToNDestroyedToTrack(2);
+
+
 
 }

@@ -36,7 +36,7 @@ public static class StrifedRavage {
 		foreach(var space in ctx.GameState.AllActiveSpaces)
 			foreach( var token in space.InvaderTokens() )
 				if(token.IsDestroyed)
-					await space.BindScope().Destroy( token, space[token] );
+					await space.Destroy( token, space[token] );
 	}
 
 	#endregion
@@ -68,7 +68,7 @@ public static class StrifedRavage {
 		if(newInvader == originalInvader) return;
 
 		if(newInvader.IsDestroyed)
-			await tokens.BindScope().Destroy( originalInvader, tokens[originalInvader] );
+			await tokens.Destroy( originalInvader, tokens[originalInvader] );
 		else {
 			tokens.Adjust( newInvader, tokens[originalInvader] );
 			tokens.Init( originalInvader, 0 );

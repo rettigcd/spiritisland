@@ -8,11 +8,11 @@ public class BargainsOfPowerAndProtection {
 		// Remove 1 of your presence on the island from the game, setting it on the Reminder Card.
 		// if you have 3 sun 2 water 2 earth: the presence instead comes from your presence track.
 		if( await ctx.YouHave("3 sun,2 water,2 earth" )) {
-			var presenceToRemove = await ctx.Presence.SelectSource("remove from game");
-			await ctx.Self.Presence.TakeFrom( presenceToRemove, ctx.GameState );
+			var presenceToRemove = await ctx.Self.SelectSourcePresence("remove from game"); // Come from track or board
+			await ctx.Self.Presence.TakeFrom( presenceToRemove );
 		} else {
-			var presenceToRemove = await ctx.Decision( Select.DeployedPresence.All("Select presence to remove from game.", ctx.Presence, Present.Always));
-			await ctx.Presence.RemoveFrom( presenceToRemove );
+			var presenceToRemove = await ctx.Decision( Select.DeployedPresence.All("Select presence to remove from game.", ctx.Self.Presence, Present.Always));
+			await ctx.Self.Token.RemoveFrom( presenceToRemove );
 		}
 
 		// From now on: Each dahan within range of 1 of your presence provides
@@ -35,7 +35,7 @@ public class BargainsOfPowerAndProtection {
 			// !! This is kind of slow to do for every space.
 			// ??? Is there some way we can cache this inside the UnitOfWork?
 
-			var match = ctx.Presence.FindSpacesWithinRange( new TargetCriteria( 1 ), true )
+			var match = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ), true )
 				.FirstOrDefault( opt => opt == space);
 			return match?.Dahan.CountAll ?? 0;
 		}

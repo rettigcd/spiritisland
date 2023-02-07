@@ -90,7 +90,7 @@ public class Scotland : IAdversary {
 			.ToArray();
 		await using(var actionScope = gameState.StartAction( ActionCategory.Adversary ))
 			foreach(SpaceState ss in spacesToAddTown)
-				await ss.BindScope().AddDefault( Human.Town, 1, AddReason.Build );
+				await ss.AddDefault( Human.Town, 1, AddReason.Build );
 		gameState.Log(new SpiritIsland.Log.Debug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.SelectLabels().Join(",")));
 	}
 

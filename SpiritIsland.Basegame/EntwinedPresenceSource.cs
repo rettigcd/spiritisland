@@ -17,7 +17,7 @@ class EntwinedPresenceSource : ICalcPowerTargetingSource {
 		List<SpaceState> sources = new();
 		// Find source of original
 		for(int i = 0; i<spirits.Length; ++i)
-			sources.AddRange(origApis[i].FindSources( new ReadOnlyBoundPresence( spirits[i], gs ), sourceCriteria, gs ) );
+			sources.AddRange(origApis[i].FindSources( spirits[i].Presence, sourceCriteria, gs ) );
 		return sources.Distinct();
 	}
 }

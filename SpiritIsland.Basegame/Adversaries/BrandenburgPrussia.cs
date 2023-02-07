@@ -73,7 +73,7 @@ public class BrandenburgPrussia : IAdversary {
 
 		await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Default );
 		foreach(SpaceState bs in buildSpaces)
-			await bs.BindScope().AddDefault(Human.Town, 1, AddReason.Build);
+			await bs.AddDefault(Human.Town, 1, AddReason.Build);
 
 		gs.LogDebug("Land Rush: Adding 1 town to "+buildSpaces.SelectLabels().Order().Join(","));
 

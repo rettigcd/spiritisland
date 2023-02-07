@@ -18,8 +18,8 @@ public class RampantGreenPresence : SpiritPresence {
 
 	public string Text => throw new NotImplementedException();
 
-	public override IEnumerable<Track> RevealOptions(GameState gs) { 
-		var options = base.RevealOptions(gs).ToList();
+	public override IEnumerable<Track> RevealOptions() { 
+		var options = base.RevealOptions().ToList();
 		if( Destroyed>0 ) options.Add(Track.Destroyed);
 		return options;
 	}

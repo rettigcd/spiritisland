@@ -7,7 +7,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 	public BringerSpaceCtx(BringerCtx ctx,Space space ) : base( ctx, space ) { }
 
 	// This does not derive from BringerCtx but from TargetSpaceCtx, so we need to override it here also.
-	public override ActionableSpaceState TokensOn( Space space ) => new TDaTD_ActionTokens( this, space );
+	public override SpaceState TokensOn( Space space ) => new TDaTD_ActionTokens( this, space );
 
 
 	public async Task<int> Destroy1TokenEx( HumanToken original ) {

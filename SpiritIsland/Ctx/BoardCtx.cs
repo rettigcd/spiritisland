@@ -14,12 +14,12 @@ public class BoardCtx : SelfCtx {
 
 	#region constructors
 
-	public BoardCtx( Spirit spirit, GameState gs, Board board )
-		:base(spirit, gs ) {
+	public BoardCtx( Spirit spirit, Board board )
+		:base(spirit ) {
 		Board = board;
 	}
 	public BoardCtx( GameState gs, Board board )
-		: base( FindSpirit(gs,board), gs ) {
+		: base( FindSpirit(gs,board) ) {
 		Board = board;
 	}
 

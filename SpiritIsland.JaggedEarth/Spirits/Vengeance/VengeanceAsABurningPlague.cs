@@ -51,15 +51,16 @@ public class VengeanceAsABurningPlague : Spirit {
 		"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
 	);
 
+	// override the behavior Disease uses for this game.
 	async Task<bool> TerrorOfASlowlyUnfoldingPlague_Handler( GameCtx gameCtx, SpaceState tokens, TokenClass tokenClass ) {
 		bool stoppedByDisease = await this.UserSelectsFirstText( $"Stop pending {tokenClass.Label} build on {tokens.Space.Label}.", "Yes, -1 Disease", "No, +1 Fear, keep Disease " );
 		if(stoppedByDisease)
-			await tokens.Disease.BindScope().Remove( 1, RemoveReason.UsedUp ); // !!! Maybe this should be different UoW
+			await tokens.Disease.Remove( 1, RemoveReason.UsedUp );
 		else
 			gameCtx.GameState.Fear.AddDirect( new FearArgs( 1 ) { space = tokens.Space } );
 		return stoppedByDisease;
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new VengenceCtx( spirit, gameState );
+	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new VengenceCtx( spirit );
 
 }

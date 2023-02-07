@@ -68,6 +68,9 @@ static public class IEnumerableExtensions {
 	static public IEnumerable<T> Order<T>(this IEnumerable<T> src) => src.OrderBy(x => x);
 
 	public static IEnumerable<Space> Downgrade(this IEnumerable<SpaceState> spaceStates) => spaceStates.Select(x=>x.Space);
+
+	public static IEnumerable<SpaceState> Upgrade(this IEnumerable<Space> spaces) => GameState.Current.Tokens.PowerUp(spaces);
+
 	public static IEnumerable<string> SelectLabels(this IEnumerable<SpaceState> spaceStates) => spaceStates.Select(x=>x.Space.Text);
 
 }

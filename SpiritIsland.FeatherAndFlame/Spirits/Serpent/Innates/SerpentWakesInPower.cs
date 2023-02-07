@@ -25,13 +25,13 @@ public class SerpentWakesInPower {
 		await Option1Async( ctx );
 
 		// Add 1 presence, range-1.
-		await ctx.Presence.PlaceWithin( new TargetCriteria( 1 ), true);
+		await ctx.Self.PlacePresenceWithin( new TargetCriteria( 1 ), true);
 
 		// Other spirits with 2 or more Absorbed Presence may do likewise.
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>2<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await ctx.NewSelf(spirit).Presence.PlaceWithin( new TargetCriteria( 1 ), true);
+			await spirit.PlacePresenceWithin( new TargetCriteria( 1 ), true);
 
 	}
 
@@ -46,7 +46,7 @@ public class SerpentWakesInPower {
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>3<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await ctx.NewSelf(spirit).DrawMajor( false, 4 );
+			await spirit.BindSelf().DrawMajor( false, 4 );
 	}
 
 }

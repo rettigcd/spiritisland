@@ -123,11 +123,10 @@ public class HabsburgMonarchy : IAdversary {
 		// Take action
 		await using var actionScope = gameState.StartAction( ActionCategory.Invader ); // ??? is this really an action?
 		foreach(var newTownSpace in newTownSpaces)
-			await newTownSpace.BindScope().AddDefault( Human.Town, 1, AddReason.Build );
+			await newTownSpace.AddDefault( Human.Town, 1, AddReason.Build );
 
 		foreach(var citySpace in newCitySpaces)
-			await citySpace.BindScope()
-				.AddDefault( Human.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
+			await citySpace.AddDefault( Human.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
 
 		// Log it
 		var logParts = new List<string>();
@@ -178,7 +177,7 @@ public class HabsburgMonarchy : IAdversary {
 
 			var criteria = new Select.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
 			var addSpace = await ctx.Self.Gateway.Decision( criteria );
-			await ctx.GameState.Tokens[addSpace].BindScope().AddDefault( Human.Town, 1, AddReason.Build );
+			await ctx.GameState.Tokens[addSpace].AddDefault( Human.Town, 1, AddReason.Build );
 		}
 	}
 

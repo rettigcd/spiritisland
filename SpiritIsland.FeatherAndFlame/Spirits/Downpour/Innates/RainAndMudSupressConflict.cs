@@ -33,7 +33,7 @@ internal class RainAndMudSupressConflict {
 		ctx.AddFear(2);
 
 		// In your lands, Invaders and Dahan have -1 Health( min 1 )
-		foreach(var space in ctx.Presence.ActiveSpaceStates) {
+		foreach(var space in ctx.Self.Presence.ActiveSpaceStates) {
 			var targetCtx = ctx.Target( space );
 			await targetCtx.AdjustTokensHealthForRound( -1,Human.Dahan );
 			await targetCtx.AdjustTokensHealthForRound( -1, Human.Invader );
@@ -70,7 +70,7 @@ class MudToken : SelfCleaningToken, ISkipRavages {
 	public UsageCost Cost => UsageCost.Free;
 
 	Task<bool> ISkipRavages.Skip( SpaceState space ) {
-		space.AccessGameState().ModifyRavage( space.Space, cfg => cfg.AttackersDefend += (_self.Presence.CountOn( space ) * _count) ); // !!! move this into SpaceState so we can remove accessing GameState
+		GameState.Current.ModifyRavage( space.Space, cfg => cfg.AttackersDefend += (_self.Presence.CountOn( space ) * _count) ); // !!! move this into SpaceState so we can remove accessing GameState
 		// Doesn't remove self so it is in place for all ravages
 		// removed because it is inserted as a temp token.
 		return Task.FromResult( false );

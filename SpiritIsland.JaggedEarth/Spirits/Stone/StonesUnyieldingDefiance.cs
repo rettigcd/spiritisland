@@ -73,7 +73,7 @@ public StonesUnyieldingDefiance() : base(
 		ss.Adjust(Presence.Token,1);
 
 		// 1 in an adjacent land that has Blight(if possible) or is Sands(if not)
-		SpaceState adjacentWithBlight = ss.Adjacent.FirstOrDefault(s=>s[Token.Blight]>0);
+		SpaceState adjacentWithBlight = ss.Adjacent.FirstOrDefault(s=>s[SpiritIsland.Token.Blight]>0);
 		SpaceState adjacentWithSand = ss.Adjacent.First( s => s.Space.IsSand );
 		(adjacentWithBlight ?? adjacentWithSand).Adjust(Presence.Token,1);
 

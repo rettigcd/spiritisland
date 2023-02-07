@@ -94,7 +94,7 @@ public class BuildOnceOnSpace {
 				return "build stopped by " + stopper.Text;
 
 		// build it
-		await _tokens.BindScope().AddDefault( invaderToAdd, countToAdd, AddReason.Build );
+		await _tokens.AddDefault( invaderToAdd, countToAdd, AddReason.Build );
 		return invaderToAdd.Label;
 	}
 

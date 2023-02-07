@@ -49,7 +49,7 @@ public class SharpFangs : Spirit {
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
 		this.AddActionFactory(new Setup_PlacePresenceOnBeastLand());
 
-		var x = new SpiritIsland.MovePresenceWithTokens( this, Token.Beast );
+		var x = new SpiritIsland.MovePresenceWithTokens( this, SpiritIsland.Token.Beast );
 		gs.Tokens.TokenMoved.ForGame.Add( x.CheckForMove );
 	}
 

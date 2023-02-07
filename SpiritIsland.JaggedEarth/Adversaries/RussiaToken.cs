@@ -63,9 +63,9 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 			_receivedRavageBlight.Add( args.AddedTo.Space.Board );// log
 
 			if( args.AddedTo.Beasts.Any ) {
-				await args.AddedTo.Beasts.BindScope().Destroy( 1 );
+				await args.AddedTo.Beasts.Destroy( 1 );
 				_beastsDestroyed++;
-				args.GameState.LogDebug($"Blight on {args.AddedTo.Space.Text} destroys 1 beast.");
+				GameState.Current.LogDebug($"Blight on {args.AddedTo.Space.Text} destroys 1 beast.");
 			}
 		}
 	}
@@ -83,7 +83,7 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 			--args.Count; // destroy one fewer
 			scope[key] = true; // don't save any more
 
-			GameState gs = args.Space.AccessGameState();
+			GameState gs = GameState.Current;
 			Spirit spirit = scope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
 			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( (IVisibleToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
 			await args.Space.MoveTo( (IVisibleToken)args.Token, destination );

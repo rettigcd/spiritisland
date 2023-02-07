@@ -12,10 +12,11 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	readonly static AsyncLocal<UnitOfWork> _current = new AsyncLocal<UnitOfWork>(); // value gets shallow-copied into child calls and post-awaited states.
 
 	#region constructor
-	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory, TerrainMapper terrainMapper ) {
+	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory, GameState _, TerrainMapper terrainMapper ) {
 		Id = Guid.NewGuid();
 		_endOfAction = endOfAction;
 		Category = actionCategory;
+//		GameState = gameState;
 		TerrainMapper = terrainMapper;
 
 		_old = _current.Value;
@@ -24,6 +25,7 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	#endregion
 
 	public readonly ActionCategory Category;
+//	public readonly GameState GameState;
 	public readonly TerrainMapper TerrainMapper;
 
 	readonly UnitOfWork _old;

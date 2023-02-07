@@ -15,7 +15,7 @@ class OpenTheWays : IActionFactory {
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
-		var options = ctx.Presence.ActiveSpaceStates.ToList();
+		var options = ctx.Self.Presence.ActiveSpaceStates.ToList();
 		// Select 2 space to link
 		var end0 = (await ctx.SelectSpace( "Select 1st space to make adjacent", options.Downgrade() )).Tokens;
 		options.Remove( end0 );

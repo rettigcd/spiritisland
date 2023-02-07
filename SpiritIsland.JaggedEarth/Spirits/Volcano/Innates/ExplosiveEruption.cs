@@ -70,7 +70,7 @@ class ErruptionAttribute : FromPresenceAttribute {
 		int count = await target.Self.SelectNumber( "# of presence to destroy?", target.Presence.Count, 0 );
 
 		// Destroy them now
-		await target.Presence.Destroy( target.Space, count, DestoryPresenceCause.SpiritPower );
+		await target.Tokens.Destroy( ctx.Self.Token, count );
 
 		return target;
 	}

@@ -25,13 +25,13 @@ public class MovePresenceWithTokens {
 		var source = await _spirit.Gateway.Decision( Select.DeployedPresence.Gather(
 			"Move presence with "+ args.TokenRemoved.Class.Label+"?", 
 			args.AddedTo.Space, 
-			new SpaceState[]{ args.RemovedFrom }, _spirit.Presence.Token 
+			new SpaceState[]{ args.RemovedFrom }, _spirit.Token 
 		) );
 		if( source != null )
 			// !! This is interesting... This might be a DIFFERENT spirit that is moving the dahan,
 			// but WE are calling Bind-MY-Power
 			// maybe we should be binding the original spirits power instead of this.
-			await _spirit.BindMyPowers( args.AddedTo.AccessGameState() ).Presence.Move( args.RemovedFrom.Space, args.AddedTo.Space );
+			await _spirit.Token.Move( args.RemovedFrom, args.AddedTo );
 	}
 
 	#region private field

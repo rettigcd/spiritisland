@@ -29,10 +29,7 @@ public class PlacePresence : GrowthActionFactory {
 
 	public override string Name {get;}
 
-	public override Task ActivateAsync( SelfCtx ctx ) => ctx.Presence.PlaceWithin( 
-		GetTargetCriteria( ctx ), 
-		false
-	);
-	protected virtual TargetCriteria GetTargetCriteria( SelfCtx ctx )
-		=> new TargetCriteria( Range, ctx.Self, FilterEnums );
+	public override Task ActivateAsync( SelfCtx ctx ) => ctx.Self.PlacePresenceWithin( GetTargetCriteria( ctx ), false );
+
+	protected virtual TargetCriteria GetTargetCriteria( SelfCtx ctx ) => new TargetCriteria( Range, ctx.Self, FilterEnums );
 }

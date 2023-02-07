@@ -56,12 +56,14 @@ public class RiverPresence : SpiritPresence {
 	public override bool IsSacredSite( SpaceState space ) => base.IsSacredSite( space ) 
 		|| (1 <= space[Token] && space.Space.IsWetland);  // !!! will this detect 2 of Downpours presence as wetland? Not using TerrainMapper!
 
-	public override IEnumerable<SpaceState> SacredSiteStates( GameState gs ) {
-		var mapper = UnitOfWork.Current.TerrainMapper;
-		return gs.AllActiveSpaces
-			.Where( s => mapper.MatchesTerrain( s, Terrain.Wetland ) && IsOn( s ) )
-			.Union( base.SacredSiteStates( gs ) )
-			.Distinct();
+	public override IEnumerable<SpaceState> SacredSiteStates{
+		get {
+			var scope = UnitOfWork.Current;
+			return GameState.Current.AllActiveSpaces
+				.Where( s => scope.TerrainMapper.MatchesTerrain( s, Terrain.Wetland ) && IsOn( s ) )
+				.Union( base.SacredSiteStates )
+				.Distinct();
+		}
 	}
 
 }

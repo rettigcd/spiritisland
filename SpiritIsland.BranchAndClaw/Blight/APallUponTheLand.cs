@@ -27,8 +27,7 @@ public class APallUponTheLand : BlightCardBase {
 			if(spiritOptions.Length == 0) return;
 			var spirit = spiritOptions.Length == 1 ? spiritOptions[0]
 				: await boardCtx.Decision( new Select.Spirit( "Destroy 1 presence.", spiritOptions ) );
-			await boardCtx.TargetSpirit( spirit )
-				.Presence.DestroyOneFromAnywhere( DestoryPresenceCause.BlightedIsland, s=>s.Space.Board == boardCtx.Board );
+			await spirit.DestroyOnePresenceFromAnywhere( s=>s.Space.Board == boardCtx.Board );
 		} );
 
 }

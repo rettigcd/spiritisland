@@ -542,7 +542,7 @@ public partial class IslandControl : Control {
 			Token.Wilds, Token.Disease, Token.Badlands, Token.Isolate
 		}	.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
 			.Union( spaceState.OfClass( Token.Beast ) )
-			.Union( spaceState.OfAnyClass( _spirit.Presence.Token ) )
+			.Union( spaceState.OfAnyClass( _spirit.Token ) )
 			.Union( spaceState.OfAnyClass( Token.Element ) )
 			.Union( spaceState.OfClass( Token.OpenTheWays ) )
 			.Cast<IVisibleToken>()

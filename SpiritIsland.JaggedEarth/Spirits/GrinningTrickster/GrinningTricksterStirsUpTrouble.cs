@@ -69,23 +69,18 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		await base.RemoveBlight( ctx,count );
 	}
 
-	public async Task CleaningUpMessesIsSuckADrag( TargetSpaceCtx ctx ) {
+	static public async Task CleaningUpMessesIsSuckADrag( TargetSpaceCtx ctx ) {
 		if(ctx.Blight.Any)
-			await PickPresenceToDestroy( ctx );
-	}
-
-	async Task PickPresenceToDestroy( TargetSpaceCtx ctx ) {
-		var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup", ctx.Presence ) );
-		await ctx.Presence.Destroy( space, 1, DestoryPresenceCause.SpiritPower );
+			await ctx.Self.PickPresenceToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" );
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) 
-		=> new TricksterCtx( spirit, gameState );
+		=> new TricksterCtx( spirit );
 }
 
 // Only use this when Trickster is using their own Powers
 class TricksterCtx : SelfCtx {
-	public TricksterCtx(Spirit spirit, GameState gs) : base( spirit, gs ) { }
+	public TricksterCtx(Spirit spirit) : base( spirit ) { }
 	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
 }
 
@@ -119,15 +114,13 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 public class TricksterBlight : BlightTokenBinding {
 
 	readonly TricksterSpaceCtx ctx;
-	readonly GrinningTricksterStirsUpTrouble trickster;
 
 	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens ) {
 		this.ctx = ctx;
-		trickster = (GrinningTricksterStirsUpTrouble)ctx.Self;
 	}
 
 	public override async Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
-		await trickster.CleaningUpMessesIsSuckADrag( ctx ); // feature envy?
+		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuckADrag( ctx ); // feature envy?
 		await base.Remove( count, reason );
 	}
 }

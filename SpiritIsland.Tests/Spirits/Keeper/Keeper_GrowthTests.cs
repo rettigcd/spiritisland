@@ -146,12 +146,12 @@ public class Keeper_GrowthTests : GrowthTests {
 
 		// When: we place a presence on that space
 		_ = _gameState.StartAction( ActionCategory.Default ); // !!! dispose or remove
-		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space, _gameState );
+		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space );
 
 		User.PushesTokensTo("D@2","A1,[A4],A6,A7,A8",2);
 		User.PushesTokensTo("D@2","A1,A4,A6,[A7],A8");
 
-		spirit.Presence.SacredSites( _gameState ).ShouldContain(space);
+		spirit.Presence.SacredSites().ShouldContain(space);
 		_gameState.Tokens[space].Dahan.CountAll.ShouldBe(0,"SS should push dahan from space");
 	}
 

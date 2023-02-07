@@ -4,17 +4,13 @@ public class InvaderBinding {
 
 	#region constructor
 
-	public InvaderBinding( SpaceState tokens) {
-		Tokens = tokens.BindScope();
-	}
-
-	public InvaderBinding( ActionableSpaceState tokens ) {
+	public InvaderBinding( SpaceState tokens ) {
 		Tokens = tokens;
 	}
 
 	#endregion
 
-	public readonly ActionableSpaceState Tokens;
+	public readonly SpaceState Tokens;
 
 	#region Apply Damage To...
 

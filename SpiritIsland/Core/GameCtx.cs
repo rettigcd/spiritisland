@@ -14,7 +14,7 @@ public class GameCtx {
 
 	public IEnumerable<SelfCtx> Spirits {
 		get {
-			return this.GameState.Spirits.Select( s => s.BindSelf( GameState ) );
+			return this.GameState.Spirits.Select( s => s.BindSelf() );
 		}
 	}
 

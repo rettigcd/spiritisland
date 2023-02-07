@@ -1,16 +1,16 @@
 ﻿namespace SpiritIsland;
 
-public class HealthTokenClassBinding_NoEvents {
+public class HealthTokenClassBinding {
 
 	readonly protected SpaceState _tokens;
 	readonly protected HumanTokenClass _tokenClass;
 
-	public HealthTokenClassBinding_NoEvents( SpaceState tokens, HumanTokenClass tokenClass ) {
+	public HealthTokenClassBinding( SpaceState tokens, HumanTokenClass tokenClass ) {
 		_tokens = tokens;
 		_tokenClass = tokenClass;
 	}
 
-	public HealthTokenClassBinding_NoEvents( HealthTokenClassBinding_NoEvents src ) {
+	public HealthTokenClassBinding( HealthTokenClassBinding src ) {
 		_tokens = src._tokens;
 		_tokenClass = Human.Dahan;
 	}
@@ -29,33 +29,17 @@ public class HealthTokenClassBinding_NoEvents {
 
 	public void Init( IToken token, int count ) => _tokens.Init( token, count );
 
-	public HealthTokenClassBinding BindScope() => new HealthTokenClassBinding(this);
-}
-
-public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
-
-	ActionableSpaceState ActionTokens => _actionTokens ??= _tokens.BindScope();
-	ActionableSpaceState _actionTokens;
-
-	#region constructors
-
-	public HealthTokenClassBinding( HealthTokenClassBinding_NoEvents src ):base(src) {}
-
-	public HealthTokenClassBinding( SpaceState tokens, HumanTokenClass tokenClass):base(tokens,tokenClass ) {}
-
-	#endregion
-
 	/// <summary> Adds a Token from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
-		return ActionTokens.AddDefault( Human.Dahan, count, reason );
+		return _tokens.AddDefault( Human.Dahan, count, reason );
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
 	public async Task<IToken> Remove1( IVisibleToken toRemove, RemoveReason reason ) {
-		if( _tokens[toRemove] == 0 )
+		if(_tokens[toRemove] == 0)
 			return null; // unable to remove desired token
 
-		await ActionTokens.Remove( toRemove, 1, reason );
+		await _tokens.Remove( toRemove, 1, reason );
 		return toRemove;
 	}
 
@@ -63,12 +47,12 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 
 	public async Task Apply1DamageToAll() { // Called By Power (i.e. not invaders)
 		var before = NormalKeys
-			.OrderByDescending(x=>x.Damage) // most damaged to least damaged so they don't cascade
-			.ToArray(); 
+			.OrderByDescending( x => x.Damage ) // most damaged to least damaged so they don't cascade
+			.ToArray();
 		foreach(var token in before) {
 			int origCount = _tokens[token];
 			var newToken = token.AddDamage( 1 );
-			if( !newToken.IsDestroyed ) {
+			if(!newToken.IsDestroyed) {
 				// Apply 1 damage to all
 				_tokens.Init( token, 0 );
 				_tokens.Adjust( newToken, origCount );
@@ -87,11 +71,11 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 		// you may choose how that Damage is allocated, just like when you Damage Invaders.
 
 		HumanToken mostHealthy = null;
-		while( 0<remainingDamageToDahan 
-			&& (mostHealthy=NormalKeys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
+		while(0 < remainingDamageToDahan
+			&& (mostHealthy = NormalKeys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
 		) {
 			// determine # to apply 1 damage 2
-			int countToApply1DamageTo = Math.Min(remainingDamageToDahan, _tokens[mostHealthy]);
+			int countToApply1DamageTo = Math.Min( remainingDamageToDahan, _tokens[mostHealthy] );
 			remainingDamageToDahan -= countToApply1DamageTo;
 
 			HumanToken damagedToken = mostHealthy.AddDamage( 1 );
@@ -136,20 +120,21 @@ public class HealthTokenClassBinding : HealthTokenClassBinding_NoEvents {
 			.ToArray(); // least health first.
 		foreach(var token in before) {
 			// Destroy what can be destroyed
-			int destroyed = Math.Min(countToDestroy, _tokens[token]);
+			int destroyed = Math.Min( countToDestroy, _tokens[token] );
 			await DestroyToken( token, destroyed );
 			countToDestroy -= destroyed;
 		}
 	}
 
 	public virtual async Task<int> DestroyToken( HumanToken token, int count ) {
-		return await token.Destroy( ActionTokens, count );
+		return await token.Destroy( _tokens, count );
 	}
 
 	public virtual async Task DestroyAll() {
 		foreach(HumanToken token in NormalKeys.ToArray())
-			await token.DestroyAll( ActionTokens );
+			await token.DestroyAll( _tokens );
 	}
 
 	#endregion
+
 }

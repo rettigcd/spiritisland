@@ -2,35 +2,25 @@
 
 public class SelfCtx {
 
-	#region private fields
-	BoundPresence _presence; // lazy loaded
-	#endregion
-
 	public Spirit Self { get; }
-	public GameState GameState { get; }
+	public GameState GameState => _gameState ??= GameState.Current;
+	GameState _gameState;
 
 	protected TerrainMapper TerrainMapper => _terrainMapper ??= UnitOfWork.Current.TerrainMapper;
 	TerrainMapper _terrainMapper;
 
 	#region constructor
 
-	public SelfCtx( Spirit self, GameState gameState ) {
+	public SelfCtx( Spirit self ) {
 		Self = self;
-		GameState = gameState;
 	}
 
 	protected SelfCtx(SelfCtx src) {
 		Self = src.Self;
-		GameState = src.GameState;
 	}
 
 	#endregion constructor
 
-	#region Presence
-
-	public virtual BoundPresence Presence => _presence ??= new BoundPresence(this);
-
-	#endregion
 
 	#region convenience Read-Only methods
 
@@ -58,21 +48,22 @@ public class SelfCtx {
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 
-	public SelfCtx NewSelf( Spirit spirit ) => spirit.BindSelf( GameState );
-
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
-		var space = await Decision( Select.DeployedPresence.All( prompt, Presence, Present.Always ) );
+		var space = await Decision( Select.DeployedPresence.All( prompt, Self.Presence, Present.Always ) );
 		return Target( space );
 	}
 
 	// Visually, selects the [space] which has presence.
 	public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
-		var space = await Decision( new Select.Space(prompt, Presence.ActiveSpaceStates, Present.Always ) );
+		var space = await Decision( new Select.Space(prompt, Self.Presence.ActiveSpaceStates, Present.Always ) );
 		return Target( space );
 	}
 
-	public virtual ActionableSpaceState TokensOn( Space space ) => GameState.Tokens[space].BindScope();
+	// This exists so Bringer can override things that happen to tokens.
+	// !!! It would be easy to accidentally go around this by calling GameState.Current.Tokens[].
+	// Maybe the Space=>Token upgrader needs to go through ActionScope which can be set by the spirits for individual actions.
+	public virtual SpaceState TokensOn( Space space ) => GameState.Tokens[space];
 
 	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
 		string label = activating ? "Activating Fear" : "Done";

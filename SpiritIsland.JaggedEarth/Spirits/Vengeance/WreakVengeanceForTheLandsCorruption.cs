@@ -6,9 +6,9 @@ class WreakVengeanceForTheLandsCorruption : TokenBinding {
 	readonly TokenBinding _blight;
 
 	public WreakVengeanceForTheLandsCorruption(SpaceState tokens ) 
-		: base( new TokenBindingNoEvents( tokens, Token.Badlands ) )
+		: base( new TokenBinding( tokens, Token.Badlands ) )
 	{
-		_blight = new TokenBinding( new TokenBindingNoEvents( tokens,Token.Blight ) );
+		_blight = new TokenBinding( new TokenBinding( tokens,Token.Blight ) );
 	}
 
 	public static SpecialRule Rule => new SpecialRule(

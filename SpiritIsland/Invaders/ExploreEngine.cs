@@ -70,9 +70,9 @@ public class ExploreEngine {
 				return;
 
 		gs.Log( new Log.SpaceExplored( tokens.Space ) );
-		await AddToken( tokens.BindScope() );
+		await AddToken( tokens );
 	}
 
-	protected virtual async Task AddToken( ActionableSpaceState tokens ) 
+	protected virtual async Task AddToken( SpaceState tokens ) 
 		=> await tokens.AddDefault( Human.Explorer, 1, AddReason.Explore );
 }

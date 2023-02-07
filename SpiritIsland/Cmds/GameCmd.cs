@@ -40,7 +40,7 @@ public static partial class Cmd {
 			"For each spirit, " + action.Description,
 			async ctx => {
 				foreach(Spirit spirit in ctx.GameState.Spirits)
-					await action.Execute( spirit.BindSelf( ctx.GameState ) );
+					await action.Execute( spirit.BindSelf() );
 			}
 		);
 
@@ -50,7 +50,7 @@ public static partial class Cmd {
 		gs => gs.GameState.TimePasses_ThisRound.Push( cmd.Execute ) // There are no actions here, just game reconfig
 	);
 
-	static public GameCtxCmd AtTheStartOfEachInvaderPhase( GameCtxCmd cmd ) => new GameCtxCmd(
+	static public GameCtxCmd AtTheStartOfEachInvaderPhase( this GameCtxCmd cmd ) => new GameCtxCmd(
 		"At the start of each Invader Phase, " + cmd.Description,
 		ctx => ctx.GameState.StartOfInvaderPhase.ForGame.Add( ( _ ) => cmd.Execute( ctx ) )
 	);

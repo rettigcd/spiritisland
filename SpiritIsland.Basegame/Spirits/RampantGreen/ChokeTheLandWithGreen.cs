@@ -30,7 +30,7 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 	async Task<bool> SkipInvaderAction( SpaceState space, string actionDescription ) {
 		if(!IsSacredSite( space )) return false;
 
-		GameState gs = space.AccessGameState();
+		GameState gs = GameState.Current;
 		int energyCost = gs.BlightCard.CardFlipped ? 1 : 0;
 		if(_self.Energy < energyCost) return false;
 
@@ -38,7 +38,7 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		if(stop == null) return false;
 
 		await using var actionScope = gs.StartAction( ActionCategory.Spirit_SpecialRule ); // Special Rules! - it is the invader actions we are stopping
-		await gs.Tokens[stop].BindScope().Destroy( _self.Presence.Token, 1 );
+		await gs.Tokens[stop].Destroy( _self.Token, 1 );
 		_self.Energy -= energyCost;
 
 		return true;

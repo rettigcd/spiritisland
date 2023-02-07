@@ -11,7 +11,7 @@ class HabsburgDurableToken
 		: base( orig.Class, orig._healthPenaltyHolder, orig.FullHealth + 2, orig.Damage, orig.StrifeCount ) { }
 	protected HabsburgDurableToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage, int strifeCount, int nightmareDamage )
 		: base( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage ) { }
-	public override async Task<int> Destroy( ActionableSpaceState tokens, int count ) {
+	public override async Task<int> Destroy( SpaceState tokens, int count ) {
 		count = Math.Min( count, tokens[this] ); // clip
 		if(0 < count) {
 			HumanToken damagedToken = this.AddDamage( 2 );

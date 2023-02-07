@@ -2,10 +2,10 @@
 
 public class SkipAnyInvaderAction : SelfCleaningToken, ISkipRavages, ISkipBuilds, ISkipExploreTo {
 
-	readonly Func<GameState, SpaceState, Task> _alternativeAction;
+	readonly Func<SpaceState, Task> _alternativeAction;
 	readonly Spirit _spirit;
 
-	public SkipAnyInvaderAction( string label, Spirit spirit, Func<GameState, SpaceState, Task> alternativeAction = null )
+	public SkipAnyInvaderAction( string label, Spirit spirit, Func<SpaceState, Task> alternativeAction = null )
 		:base() // rated this high because it can stop builds and ravages also, maybe it should be lower
 	{
 		Text = label;
@@ -30,7 +30,7 @@ public class SkipAnyInvaderAction : SelfCleaningToken, ISkipRavages, ISkipBuilds
 
 		space.Adjust( this, -1 );
 		if(_alternativeAction != null)
-			await _alternativeAction( space.AccessGameState(), space );
+			await _alternativeAction( space );
 		return true;
 	}
 

@@ -31,7 +31,7 @@ class RussiaRavageEngine : RavageEngine {
 		if( base.MatchesCardForRavage( card, spaceState ) ) return true;
 		bool hasCompetition = ShouldCheckCompetitionAmongHunters && 3 <= spaceState.Sum( Human.Explorer );
 		if(hasCompetition)
-			spaceState.AccessGameState().LogDebug($"{CompetitionName} causes ravage on {spaceState.Space.Text}");
+			GameState.Current.LogDebug($"{CompetitionName} causes ravage on {spaceState.Space.Text}");
 		return hasCompetition;
 	}
 

@@ -8,7 +8,7 @@ public class GrowthThroughSacrifice {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// destroy one of your presence
-		await ctx.Presence.DestroyOneFromAnywhere( DestoryPresenceCause.SpiritPower );
+		await ctx.Self.DestroyOnePresenceFromAnywhere();
 
 		// If 2 sun, do both in the same land
 		await TargetSpiritAction( ctx.OtherCtx, await ctx.YouHave( "2 sun" ) );
@@ -24,7 +24,7 @@ public class GrowthThroughSacrifice {
 
 		var removeBlight = new SpaceAction( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );
 		var addPresence = new SpaceAction( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() )
-			.OnlyExecuteIf( x=>x.Presence.CanBePlacedOn(x.Tokens) );
+			.OnlyExecuteIf( x=>x.Self.Presence.CanBePlacedOn(x.Tokens) );
 
 		if(!doBoth)
 			await spaceCtx.SelectActionOption( removeBlight, addPresence );

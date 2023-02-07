@@ -10,7 +10,7 @@ public interface IPresenceTrack {
 
 	// Modify/Act
 	void AddElementsTo( ElementCounts elements );
-	Task<bool> Reveal( Track track, GameState gameState );
+	Task<bool> Reveal( Track track );
 	bool Return( Track track );
 	AsyncEvent<TrackRevealedArgs> TrackRevealed { get; }
 
@@ -21,12 +21,7 @@ public interface IPresenceTrack {
 }
 
 public class TrackRevealedArgs {
-
-	public TrackRevealedArgs( Track track, GameState gameState ) {
-		Track = track;
-		GameState = gameState ?? throw new ArgumentNullException( nameof( gameState ) );
-	}
-
+	public TrackRevealedArgs( Track track ) { Track = track; }
 	public Track Track { get; }
-	public GameState GameState { get;}
+
 }

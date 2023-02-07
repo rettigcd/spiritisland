@@ -2,13 +2,13 @@
 
 public class RemovingTokenArgs {
 
-	public RemovingTokenArgs( ActionableSpaceState space, RemoveReason reason ) {
+	public RemovingTokenArgs( SpaceState space, RemoveReason reason ) {
 		Space = space;
 		Reason = reason;
 	}
 
 	// Read-only
-	public ActionableSpaceState Space { get; }
+	public SpaceState Space { get; }
 	public RemoveReason Reason { get; }
 
 	// modifiable

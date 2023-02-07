@@ -29,7 +29,7 @@ class FranceBuilder : BuildEngine {
 				.First();
 			// !!!
 			_ = gs.StartAction( ActionCategory.Adversary ); // !!! Dispose or don't use
-			await buildSpace.BindScope().AddDefault( Human.Town, 1 );
+			await buildSpace.AddDefault( Human.Town, 1 );
 		}
 	}
 

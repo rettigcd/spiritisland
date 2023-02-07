@@ -73,7 +73,7 @@ public class Thunderspeaker : Spirit {
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
 			var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( prompt, Presence.Token, options ) );
-			await args.RemovedFrom.BindScope().Destroy( Presence.Token, 1 );
+			await args.RemovedFrom.Destroy( Presence.Token, 1 );
 		}
 
 	}

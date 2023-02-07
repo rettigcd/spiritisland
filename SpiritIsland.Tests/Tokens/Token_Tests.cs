@@ -60,7 +60,7 @@ public class Token_Tests {
 		space.AdjustDefault( Human.Explorer, 1 ); // add explorer
 		//   And: 1 diseases there
 		_ = gs.StartAction( ActionCategory.Default ); // !!! dispoose
-		await space.Disease.BindScope().Add(1);
+		await space.Disease.Add(1);
 
 		//  When: we build there
 		await space.Space.DoABuild( gs );

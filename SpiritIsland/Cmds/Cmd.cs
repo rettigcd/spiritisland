@@ -144,11 +144,11 @@ public static partial class Cmd {
 
 
 	// WTH are these doing in here?
-	static public SelfAction DestroyPresence( DestoryPresenceCause actionType ) => new SelfAction( "Destroy 1 presence.", ctx => ctx.Presence.DestroyOneFromAnywhere( actionType ) );
+	static public SelfAction DestroyPresence() => new SelfAction( "Destroy 1 presence.", ctx => ctx.Self.DestroyOnePresenceFromAnywhere() );
 	static public SelfAction ForgetPowerCard => new SelfAction( "Forget Power card", ctx => ctx.Self.ForgetOne() );
-	static public SelfAction DestroyPresence( int count, DestoryPresenceCause actionType ) => new SelfAction( 
+	static public SelfAction DestroyPresence( int count ) => new SelfAction( 
 		$"Destroy {count} presence", 
-		async ctx => { for(int i = 0; i < count; ++i) await ctx.Presence.DestroyOneFromAnywhere( actionType );}
+		async ctx => { for(int i = 0; i < count; ++i) await ctx.Self.DestroyOnePresenceFromAnywhere();}
 	);
 
 }

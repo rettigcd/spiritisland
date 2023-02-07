@@ -104,7 +104,7 @@ public class Russia : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var criteria = new Select.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Downgrade(), Present.Always );
 				var addSpace = await spirit.Gateway.Decision( criteria );
-				await gameState.Tokens[addSpace].BindScope().AddDefault( Human.Explorer, 1, AddReason.Explore );
+				await gameState.Tokens[addSpace].AddDefault( Human.Explorer, 1, AddReason.Explore );
 			}
 		}
 	}

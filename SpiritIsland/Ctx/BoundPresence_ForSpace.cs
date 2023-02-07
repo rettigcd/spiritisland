@@ -1,41 +1,39 @@
 ﻿namespace SpiritIsland;
 
-public class BoundPresence_ForSpace : BoundPresence {
-
-	#region constructor
+public class BoundPresence_ForSpace {
 
 	readonly TargetSpaceCtx ctx;
+	readonly Spirit _self;
 
-	public BoundPresence_ForSpace(TargetSpaceCtx ctx ) : base( ctx ) {
+	public BoundPresence_ForSpace(TargetSpaceCtx ctx ) {
 		this.ctx = ctx;
+		_self = ctx.Self;
 	}
 
-	#endregion
+	public bool IsSelfSacredSite => _self.Presence.IsSacredSite(ctx.Tokens);
 
-	public bool IsSelfSacredSite => IsSacredSite(ctx.Space);
+	public bool IsHere       => _self.Presence.IsOn( ctx.Tokens );
 
-	public bool IsHere       => ctx.Self.Presence.IsOn( ctx.Tokens );
-
-	public int Count => ctx.Self.Presence.CountOn(ctx.Tokens);
+	public int Count => _self.Presence.CountOn(ctx.Tokens);
 
 	public async Task PlaceDestroyedHere( int count = 1 ) {
-		count = Math.Min(count, ctx.Self.Presence.Destroyed);
+		count = Math.Min(count, _self.Presence.Destroyed);
 		while(count-- > 0 )
-			await ctx.Self.Presence.Place( Track.Destroyed, ctx.Space, ctx.GameState );
+			await _self.Presence.Place( Track.Destroyed, ctx.Space );
 	} 
 
 	public async Task PlaceHere() {
-		var from = await SelectSource_Movable();
-		await ctx.Presence.Place( from, ctx.Space );
+		var from = await _self.SelectMovablePresence();
+		await ctx.Self.Presence.Place( from, ctx.Space );
 	}
 
 	public async Task MoveHereFromAnywhere(int count) {
 
 		while(count > 0) {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable
-			var from = await ctx.Presence.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
+			var from = await ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
 			if( ctx.Self.Presence.HasMovableTokens(ctx.GameState.Tokens[from]))
-				await Move( from, ctx.Space );
+				await _self.Token.Move( from, ctx.Tokens );
 			count--;
 		}
 	}

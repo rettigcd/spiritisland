@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public enum DestoryPresenceCause {
+public enum DestoryPresenceCause {  // !!! remove if not used
 	None,
 	SpiritPower,    // One use of a Power;
 	DahanDestroyed, // Thunderspeaker

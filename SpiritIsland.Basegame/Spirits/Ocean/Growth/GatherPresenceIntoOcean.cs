@@ -4,7 +4,7 @@ public class GatherPresenceIntoOcean : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 
-		List<SpaceState> gatherSpaces = ctx.Presence.ActiveSpaceStates
+		List<SpaceState> gatherSpaces = ctx.Self.Presence.ActiveSpaceStates
 			.Where( p => p.Space.IsCoastal )
 			.Select( p => p.Adjacent.Single( o => o.Space.IsOcean ) )
 			.Distinct()
@@ -21,7 +21,7 @@ public class GatherPresenceIntoOcean : GrowthActionFactory {
 			));
 
 			// apply...
-			await ctx.Presence.Move( source, currentTarget.Space );
+			await ctx.Self.Token.Move( source.Tokens, currentTarget );
 
 			// next
 			gatherSpaces.RemoveAt( 0 );

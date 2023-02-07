@@ -24,7 +24,7 @@ public class BlightToken : UniqueToken
 		if(!takingFromBlightCard) return;
 
 		// remove from card.
-		var gs = args.GameState;
+		var gs = GameState.Current;
 		await gs.TakeFromBlightSouce( args.Count, args.AddedTo );
 
 		if(gs.BlightCard != null && gs.blightOnCard <= 0) {
@@ -46,7 +46,7 @@ public class BlightToken : UniqueToken
 		if(effect.DestroyPresence)
 			foreach(Spirit spirit in gs.Spirits)
 				if(spirit.Presence.IsOn( args.AddedTo ))
-					await args.AddedTo.Destroy( spirit.Presence.Token, 1 );
+					await args.AddedTo.Destroy( spirit.Token, 1 );
 
 		// Cascade blight
 		if(effect.Cascade) {
@@ -57,7 +57,7 @@ public class BlightToken : UniqueToken
 				Present.Always,
 				Token.Blight
 			) );
-			await gs.Tokens[cascadeTo].Blight.BindScope().Add( 1, args.Reason ); // Cascading blight shares original blights reason.
+			await gs.Tokens[cascadeTo].Blight.Add( 1, args.Reason ); // Cascading blight shares original blights reason.
 		}
 
 	}
@@ -68,7 +68,7 @@ public class BlightToken : UniqueToken
 				RemoveReason.MovedFrom, // pushing / gathering blight
 				RemoveReason.Replaced   // just in case...
 			)
-		)	args.RemovedFrom.AccessGameState().blightOnCard += args.Count;
+		)	GameState.Current.blightOnCard += args.Count;
 		return Task.CompletedTask;
 	}
 }

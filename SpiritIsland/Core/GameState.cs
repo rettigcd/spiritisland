@@ -4,6 +4,10 @@ namespace SpiritIsland;
 
 public class GameState : IHaveHealthPenaltyPerStrife {
 
+	public static GameState Current => _current.Value;
+	readonly static AsyncLocal<GameState> _current = new AsyncLocal<GameState>(); // value gets shallow-copied into child calls and post-awaited states.
+
+
 	#region constructors
 
 	/// <summary>
@@ -13,6 +17,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public GameState(Spirit[] spirits,Board[] boards){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
+
+		_current.Value = this;
 
 		this.Island = new Island( boards );
 
@@ -110,7 +116,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public int DamageToBlightLand = 2;
 
-	public async Task DamageLandFromRavage( ActionableSpaceState ss, int damageInflictedFromInvaders ) {
+	public async Task DamageLandFromRavage( SpaceState ss, int damageInflictedFromInvaders ) {
 		if(damageInflictedFromInvaders==0) return;
 
 		await LandDamaged.InvokeAsync( new LandDamagedArgs { 
@@ -120,7 +126,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		} );
 
 		if(DamageToBlightLand <= damageInflictedFromInvaders )
-			await ss.Blight.BindScope().Add(1, AddReason.Ravage);
+			await ss.Blight.Add(1, AddReason.Ravage);
 	}
 
 	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent
@@ -149,12 +155,12 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	public HealthTokenClassBinding_NoEvents DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
+	public HealthTokenClassBinding DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
 	/// <param name="cat">Has no functional use.  Just helps us keep straight in our head what kind of action this is.</param>
 	public UnitOfWork StartAction( ActionCategory cat ) {
 		var terrainMapper = cat == ActionCategory.Spirit_Power ? Island.Terrain_ForPower : Island.Terrain; // ??? What about other terrains, like for fear? Is that an action?
-		return new UnitOfWork( EndOfAction, cat, terrainMapper );
+		return new UnitOfWork( EndOfAction, cat, this, terrainMapper );
 	}
 
 	#region Win / Loss
@@ -211,9 +217,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
-		var boundPresence = new ReadOnlyBoundPresence( spirit, gs );
-		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", boundPresence ) );
-		await gs.Tokens[presenceSpace].BindScope().Destroy(spirit.Presence.Token,1);
+		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit.Presence ) );
+		await gs.Tokens[presenceSpace].Destroy(spirit.Token,1);
 	}
 
 	#endregion
@@ -257,7 +262,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Func<GameCtx,SpaceState,TokenClass,Task<bool>> Disease_StopBuildBehavior = Disease_StopBuildBehavior_Default;
 	static async Task<bool> Disease_StopBuildBehavior_Default( GameCtx ctx, SpaceState tokens, TokenClass _ ) {
-		await tokens.Disease.BindScope().Remove( 1, RemoveReason.UsedUp );
+		await tokens.Disease.Remove( 1, RemoveReason.UsedUp );
 		return true;
 	}
 
@@ -342,7 +347,7 @@ public class Healer {
 
 public class LandDamagedArgs {
 	public GameState GameState;
-	public ActionableSpaceState Space;
+	public SpaceState Space;
 	public int Damage;
 }
 

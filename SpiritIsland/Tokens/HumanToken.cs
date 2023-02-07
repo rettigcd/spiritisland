@@ -41,22 +41,22 @@ public class HumanToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<H
 
 	public bool IsDestroyed => FullHealth <= FullDamage;
 
-	public virtual async Task<int> Destroy( ActionableSpaceState tokens, int count ) {
+	public virtual async Task<int> Destroy( SpaceState tokens, int count ) {
 		count = Math.Min(count, tokens[this]);
 		var result = await tokens.Remove( this, count, RemoveReason.Destroyed );
 		if(result is null) return 0; // maybe SpaceState prevented their removal.
-		tokens.AccessGameState().Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
+		GameState.Current.Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
 			space = tokens.Space
 		} );
 		return result.Count;
 	}
 
-	public virtual async Task<int> DestroyAll( ActionableSpaceState tokens ) {
+	public virtual async Task<int> DestroyAll( SpaceState tokens ) {
 		int count = tokens[this];
 		var result = await tokens.Remove( this, count, RemoveReason.Destroyed );
 		if(result is null) return 0; // maybe SpaceState prevented their removal.
-		tokens.AccessGameState().Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
+		GameState.Current.Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
 			space = tokens.Space
 		} );

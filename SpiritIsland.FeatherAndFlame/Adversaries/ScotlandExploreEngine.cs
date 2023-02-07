@@ -14,14 +14,14 @@ class ScotlandExploreEngine : ExploreEngine {
 		_initialExploreTownsAdded = null; // done with initial explore.
 	}
 
-	protected override async Task AddToken( ActionableSpaceState tokens ) {
+	protected override async Task AddToken( SpaceState tokens ) {
 		if( _initialExploreTownsAdded != null // Initial explore
 			&& tokens.Space.IsCoastal
 			&& _initialExploreTownsAdded[tokens.Space.Board] < 2 // max of 2
 		) {
 			await tokens.AddDefault( Human.Town, 1, AddReason.Explore );
 			_initialExploreTownsAdded[tokens.Space.Board]++;
-			tokens.AccessGameState().Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+tokens.Space.Text) );
+			GameState.Current.Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+tokens.Space.Text) );
 		} else {
 			await base.AddToken( tokens );
 		}

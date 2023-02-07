@@ -1,13 +1,12 @@
 ﻿namespace SpiritIsland;
 
+// !!! Get rid of this.  It is pointless.
 public class BoardState {
 
 	public Board Board { get; }
-	readonly GameState gameState;
 
-	public BoardState(Board board, GameState gameState) {
+	public BoardState(Board board) {
 		this.Board = board;
-		this.gameState = gameState;
 	}
-	public IEnumerable<SpaceState> Spaces => Board.Spaces.Select(s=>gameState.Tokens[s]);
+	public IEnumerable<SpaceState> Spaces => Board.Spaces.Upgrade();
 }

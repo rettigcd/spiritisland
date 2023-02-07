@@ -87,10 +87,10 @@ public class FinderOfPathsUnseen : Spirit {
 			if(Energy > 0) --Energy; else ++preseneceToDestroy;
 
 			// Do presence destroy
-			var gameState = args.RemovedFrom.AccessGameState();
-			var presence = new BoundPresence( this, gameState );
+			var gameState = GameState.Current;
+			// var presence = new BoundPresence( this, gameState );
 			while(preseneceToDestroy-- > 0)
-				await presence.DestroyOneFromAnywhere( DestoryPresenceCause.SpiritPower );
+				await this.DestroyOnePresenceFromAnywhere();
 
 			// only once per action
 			scope[AllReadyDestroyedSomePresence] = true;
@@ -121,7 +121,7 @@ public class Setup_PlacePresenceOnSpace1 : GrowthActionFactory {
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		var options = ctx.GameState.Island.Boards.Select( b => b[1] );
 		var space = await ctx.Decision( new Select.Space( "Add presence to", options, Present.Always ) );
-		await ctx.Presence.PlaceOn( space );
+		await ctx.Self.Token.AddTo( space );
 	}
 	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
 

@@ -10,6 +10,6 @@ public class LingeringPestilenceToken : SpiritPresenceToken {
 	protected override async Task OnPresenceDestroyed( ITokenRemovedArgs args ){ 
 		await base.OnPresenceDestroyed( args );
 		if( UnitOfWork.Current.Category != ActionCategory.Spirit_Power )
-			await args.RemovedFrom.Disease.BindScope().Add( 1 );
+			await args.RemovedFrom.Disease.Add( 1 );
 	}
 }

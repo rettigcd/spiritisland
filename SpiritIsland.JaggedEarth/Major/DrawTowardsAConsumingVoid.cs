@@ -49,7 +49,7 @@ public class DrawTowardsAConsumingVoid {
 				.ToArray();
 			if(movableSpiritsInSpace.Length > 0) {
 				var spiritToGather = await ctx.Decision( new Select.Spirit( Name, movableSpiritsInSpace, Present.AutoSelectSingle ) );
-				await ctx.NewSelf(spiritToGather).Presence.Move( adjState.Space, ctx.Space );
+				await spiritToGather.Token.Move( adjState, ctx.Tokens );
 			}
 		}
 
@@ -61,7 +61,7 @@ public class DrawTowardsAConsumingVoid {
 		// destroy 1 presence from each Spirit.
 		foreach(var spirit in ctx.GameState.Spirits)
 			if(spirit.Presence.IsOn( ctx.Tokens ))
-				await ctx.NewSelf(spirit).Presence.Destroy( ctx.Space, 1, DestoryPresenceCause.SpiritPower );
+				await ctx.Tokens.Destroy( spirit.Token, 1 );
 
 		// Remove 2 beast
 		await ctx.Beasts.Remove( 2, RemoveReason.Removed );

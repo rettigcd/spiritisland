@@ -7,7 +7,7 @@ public class TargetSpaceCtx : SelfCtx {
 	DamagePool _bonusDamageFromSpirit;
 	InvaderBinding _invadersRO;
 	BoundPresence_ForSpace _presence;
-	ActionableSpaceState _tokens;
+	SpaceState _tokens;
 	#endregion
 
 	public Space Space { get; }
@@ -32,18 +32,18 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Tokens));
 	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Tokens));
 
-	public ActionableSpaceState Tokens => _tokens ??= TokensOn(Space);
+	public SpaceState Tokens => _tokens ??= TokensOn( Space );
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
 	public void Isolate() => Tokens.Init(Token.Isolate,1);
 
-	public BeastBinding Beasts               => Tokens.Beasts.BindScope();
-	public TokenBinding Disease              => Tokens.Disease.BindScope();
-	public TokenBinding Wilds                => Tokens.Wilds.BindScope();
-	public virtual TokenBinding Badlands     => Tokens.Badlands.BindScope();
-	public virtual HealthTokenClassBinding Dahan   => Tokens.Dahan.BindScope(); // Powers that interact with dahan, MUST go through this property 
-	public virtual BlightTokenBinding Blight => Tokens.Blight.BindScope();
+	public BeastBinding Beasts               => Tokens.Beasts;
+	public TokenBinding Disease              => Tokens.Disease;
+	public TokenBinding Wilds                => Tokens.Wilds;
+	public virtual TokenBinding Badlands     => Tokens.Badlands;
+	public virtual HealthTokenClassBinding Dahan   => Tokens.Dahan; // Powers that interact with dahan, MUST go through this property 
+	public virtual BlightTokenBinding Blight => Tokens.Blight;
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
 	public Task Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed )
@@ -372,20 +372,20 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#region presence
 
-	public new BoundPresence_ForSpace Presence => _presence ??= new BoundPresence_ForSpace(this);
+	public BoundPresence_ForSpace Presence => _presence ??= new BoundPresence_ForSpace(this);
 
 
 	// ! See base class for more Presence options
 
-	public bool IsSelfSacredSite => Presence.IsSacredSite(Space);
+	public bool IsSelfSacredSite => Self.Presence.IsSacredSite(Tokens);
 
 	public int PresenceCount => Self.Presence.CountOn(Tokens);
 
 	public bool IsPresent => Self.Presence.IsOn( Tokens );
 
 	public async Task PlacePresenceHere() {
-		var from = await Presence.SelectSource();
-		await Self.Presence.Place( from, Space, GameState ); //!! use Bounded presence instead
+		var from = await Self.SelectSourcePresence();
+		await Self.Presence.Place( from, Space );
 	}
 
 	#endregion
@@ -406,7 +406,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
 	public TokenClass[] AllPresenceTokens => GameState.Spirits
-		.Select( s => s.Presence.Token )
+		.Select( s => s.Token )
 		.ToArray();
 
 }

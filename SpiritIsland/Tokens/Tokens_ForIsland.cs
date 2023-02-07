@@ -2,10 +2,7 @@
 
 public class Tokens_ForIsland : IIslandTokenApi {
 
-	readonly GameState _gameState; // captures so we can give it to SpaceState
-
 	public Tokens_ForIsland( GameState gs ) {
-		_gameState = gs;
 
 		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
 		TokenDefaults = new Dictionary<HumanTokenClass, HumanToken> {
@@ -29,7 +26,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public SpaceState this[Space space] {
 		get {
 			if(!_tokenCounts.ContainsKey( space )) {
-				_tokenCounts[space] = new SpaceState( space, new CountDictionary<IToken>(), this, _gameState );
+				_tokenCounts[space] = new SpaceState( space, new CountDictionary<IToken>(), this );
 			}
 			return _tokenCounts[space];
 		}

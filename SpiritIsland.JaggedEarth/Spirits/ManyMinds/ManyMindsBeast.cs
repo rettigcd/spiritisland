@@ -34,7 +34,7 @@ public class ManyMindsBeast : IVisibleToken, IHandleTokenAdded, IHandleTokenRemo
 
 		// Page 28 of JE says that 'Removing' presence is treated the same as Destroying, just voluntary
 
-		var tokens = args.RemovedFrom.BindScope();
+		var tokens = args.RemovedFrom;
 		if(args.Reason.IsDestroyingPresence())
 			await tokens.Destroy( _presenceToken, 2 );
 		else if( args.Reason == RemoveReason.MovedFrom )

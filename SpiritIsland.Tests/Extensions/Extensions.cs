@@ -6,7 +6,7 @@ static internal class Extensions {
 
 	public static async Task PlaceOn( this SpiritPresence presence, Space space, GameState gameState ) {
 		await using UnitOfWork scope = gameState.StartAction ( ActionCategory.Default );
-		await gameState.Tokens[space].BindScope().Add( presence.Token, 1 );
+		await gameState.Tokens[space].Add( presence.Token, 1 );
 	}
 
 	#region Generating Explorer Action on a space
@@ -18,7 +18,7 @@ static internal class Extensions {
 
 	// !!! should these use slots or Engines?
 	static public Task DoARavage( this SpaceState space ) 
-		=> new RavageSlot().ActivateCard(  space.Space.BuildInvaderCard(), space.AccessGameState() );
+		=> new RavageSlot().ActivateCard(  space.Space.BuildInvaderCard(), GameState.Current );
 	static public Task DoARavage( this Space space, GameState gs ) 
 		=> new RavageSlot().ActivateCard( space.BuildInvaderCard(), gs );
 
@@ -58,7 +58,7 @@ static internal class Extensions {
 
 	static public void SetRevealedCount( this IPresenceTrack sut, int value ) {
 		while(sut.Revealed.Count() < value)
-			sut.Reveal( sut.RevealOptions.Single(), null );
+			sut.Reveal( sut.RevealOptions.Single() );
 	}
 
 	static public string InvaderSummary( this SpaceState dict ) {

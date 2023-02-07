@@ -20,9 +20,8 @@
 public interface ITokenAddedArgs {
 	public IVisibleToken Token { get; } // need specific so we can act on it (push/damage/destroy)
 	public int Count { get; }
-	public ActionableSpaceState AddedTo { get; }
+	public SpaceState AddedTo { get; }
 	public AddReason Reason { get; }
-	public GameState GameState { get; }
 }
 
 

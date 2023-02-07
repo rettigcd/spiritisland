@@ -79,7 +79,7 @@ public class Fear {
 
 			await using var actionScope = gs.StartAction( ActionCategory.Fear );
 			foreach(var spirit in gs.Spirits)
-				await spirit.BindSelf(gs).FlipFearCard(fearCard,true);
+				await spirit.BindSelf().FlipFearCard(fearCard,true);
 
 
 			var ctx = new GameCtx( gs );

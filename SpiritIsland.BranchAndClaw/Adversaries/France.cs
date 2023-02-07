@@ -61,7 +61,7 @@ public class France : IAdversary {
 		void DoFranceStuff( ITokenRemovedArgs args ) {
 			if(args.Token != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
 
-			var slowBlight = args.RemovedFrom.AccessGameState().Tokens[FrancePanel].Blight;
+			var slowBlight = GameState.Current.Tokens[FrancePanel].Blight;
 			if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
 				gameState.blightOnCard += slowBlight.Count;
 				slowBlight.Init(0);
@@ -112,7 +112,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Human.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.TokensOn(st.Space).AddStrifeTo( (HumanToken)st.Token, 1 );
+				await st.Space.Tokens.AddStrifeTo( (HumanToken)st.Token, 1 );
 		} );
 
 	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
@@ -122,7 +122,7 @@ public class France : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
-					await boardCtx.TokensOn(st.Space).AddStrifeTo( (HumanToken)st.Token, 1 );
+					await st.Space.Tokens.AddStrifeTo( (HumanToken)st.Token, 1 );
 			}
 		} );
 
@@ -132,7 +132,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Human.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Destory a town", options, Present.Always ) );
 			if(st != null)
-				await boardCtx.TokensOn(st.Space).Destroy( st.Token, 1 );
+				await st.Space.Tokens.Destroy( st.Token, 1 );
 		} );
 
 	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {

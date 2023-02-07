@@ -8,8 +8,8 @@ public class TravelersBoon {
 
 		// Target Spirit moves up to 3 of their presence to one of your lands.
 		var otherCtx = ctx.OtherCtx;
-		var destinationCtx = await otherCtx.SelectSpace("Move up to 3 of your presence to:", ctx.Presence.ActiveSpaceStates.Downgrade() );
-		var movedTokens = await new TokenCollectorFromSpecifiedSources( destinationCtx, otherCtx.Presence.ActiveSpaceStates.ToArray() )
+		var destinationCtx = await otherCtx.SelectSpace("Move up to 3 of your presence to:", ctx.Self.Presence.ActiveSpaceStates.Downgrade() );
+		var movedTokens = await new TokenCollectorFromSpecifiedSources( destinationCtx, otherCtx.Self.Presence.ActiveSpaceStates.ToArray() )
 			.AddGroup(3,otherCtx.Self.Presence.Token)
 			.CollectUpToN();
 

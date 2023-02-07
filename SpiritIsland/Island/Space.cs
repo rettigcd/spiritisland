@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public interface Restoreable {
 	public void Restore();
@@ -62,6 +60,9 @@ public abstract class Space
 			land.Connect( this );
 		}
 	}
+
+	public SpaceState Tokens => GameState.Current.Tokens[this];
+	public static implicit operator SpaceState( Space space) => GameState.Current.Tokens[space];
 
 	#region Connect / Disconnect
 

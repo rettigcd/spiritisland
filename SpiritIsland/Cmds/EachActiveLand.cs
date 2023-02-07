@@ -19,7 +19,7 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 		var gameState = ctx.GameState;
 		foreach(Board board in gameState.Island.Boards) {
 			Spirit spirit = BoardCtx.FindSpirit( gameState, board );
-			SelfCtx decisionMaker = spirit.BindSelf( gameState );
+			SelfCtx decisionMaker = spirit.BindSelf();
 			var spacesCtxs = ctx.GameState.Tokens
 				.PowerUp( board.Spaces )
 				.Where( UnitOfWork.Current.TerrainMapper.IsInPlay )

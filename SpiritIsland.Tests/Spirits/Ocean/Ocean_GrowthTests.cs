@@ -30,7 +30,7 @@ public class Ocean_GrowthTests : GrowthTests {
 
 		if(gather != null){
 			_ = _gameState.StartAction( ActionCategory.Default ); // !!! dispose
-			_ = gather.ActivateAsync( spirit.BindSelf( _gameState ) );
+			_ = gather.ActivateAsync( spirit.BindSelf() );
 			while(!spirit.Gateway.IsResolved){
 				var source = spirit.Gateway.Next.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
 				spirit.Gateway.Choose( spirit.Gateway.Next, source );

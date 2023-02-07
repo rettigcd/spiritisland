@@ -8,7 +8,7 @@ Replace ForRound actions with ModTokens
 Weave Together
 	BUG - Massive Flooding did not recognize Weaved-Together SS source.  - Is this going off of Tokens.Keys and it hasn't been added yet.
 
-Maybe Make GameState Ambient like Action Scope.  (really?)
+When gathering multiple token types with multiple landing locations, just use the general Space location as central destination.
 
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON

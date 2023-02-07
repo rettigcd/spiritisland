@@ -11,11 +11,11 @@ class PourTimeSideways {
 		await frac.SpendTime( 3 );
 
 		// Move 1 of your presence to a different land with your presence.
-		var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Presence, Present.Always ) );
+		var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Self.Presence, Present.Always ) );
 		if(!ctx.Self.Presence.HasMovableTokens( ctx.GameState.Tokens[src] )) return;
-		var dstOptions = ctx.Presence.ActiveSpaceStates.Where( s => s.Space != src );
-		var dst = await ctx.Decision( Select.Space.ForMoving_SpaceToken( "Move preseence to:", src, dstOptions, Present.Always, ctx.Self.Presence.Token ) );
-		await ctx.Presence.Move( src, dst );
+		var dstOptions = ctx.Self.Presence.ActiveSpaceStates.Where( s => s.Space != src );
+		var dst = await ctx.Decision( Select.Space.ForMoving_SpaceToken( "Move preseence to:", src, dstOptions, Present.Always, ctx.Self.Token ) );
+		await ctx.Self.Presence.Token.Move( src, dst );
 		if(src.Board == dst.Board) return;
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.

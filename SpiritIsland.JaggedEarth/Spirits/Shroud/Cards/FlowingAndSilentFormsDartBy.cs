@@ -27,8 +27,8 @@ public class FlowingAndSilentFormsDartBy {
 		public async Task ModifyRemoving( RemovingTokenArgs args ) {
 			if( !(args.Token is SpiritPresenceToken && args.Reason.IsDestroyingPresence()) ) return;
 
-			GameState gs = args.Space.AccessGameState();
-			Spirit spirit = gs.Spirits.First( s => s.Presence.Token == args.Token );
+			GameState gs = GameState.Current;
+			Spirit spirit = gs.Spirits.First( s => s.Token == args.Token );
 
 			if( !spirit.Presence.HasMovableTokens( args.Space ) ) return;
 			
@@ -48,7 +48,7 @@ public class FlowingAndSilentFormsDartBy {
 			: await ctx.Decision( new Select.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
 		var options = adj.Where(other.Presence.HasMovableTokens);
-		var source = (await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, options, other.Presence.Token ) ))?.Space;
+		var source = (await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, options, other.Token ) ))?.Space;
 		if(source == null) return;
 		// # to move
 		int numToMove = (other.Presence.CountOn(ctx.GameState.Tokens[source]) > 1 && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
@@ -60,7 +60,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		// move
 		while(numToMove-->0)
-			await ctx.NewSelf(other).Presence.Move(source,ctx.Space);
+			await other.Token.Move(source,ctx.Tokens);
 	}
 
 }

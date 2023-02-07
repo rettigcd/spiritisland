@@ -13,8 +13,8 @@ public class SerpentPresence : SpiritPresence {
 	){
 	}
 
-	public override IEnumerable<Track> RevealOptions(GameState gs) {
-		if(MaxPresenceOnBoard == Total(gs) ) yield break;
+	public override IEnumerable<Track> RevealOptions() {
+		if(MaxPresenceOnBoard == Total() ) yield break;
 
 		var energyNext = Energy.RevealOptions.FirstOrDefault();
 		if( energyNext != null && (energyNext != Track.EarthEnergy || CardPlays.Revealed.Count() == 4 ) )
@@ -30,11 +30,11 @@ public class SerpentPresence : SpiritPresence {
 
 	public int MaxPresenceOnBoard => new int[]{5,7,8,10,11,12,13 }[AbsorbedPresences.Count];
 
-	protected override async Task RevealTrack( Track track, GameState gs ) {
-		await base.RevealTrack( track, gs );
+	protected override async Task RevealTrack( Track track ) {
+		await base.RevealTrack( track );
 		// When top row clears earth energy, clear the lower one too
 		if( track == Track.EarthEnergy )
-			await base.RevealTrack( fakeEarth, gs );
+			await base.RevealTrack( fakeEarth );
 	}
 
 }

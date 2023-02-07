@@ -30,7 +30,7 @@ public class UnrelentingGrowth {
 		// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 		// Select destination
-		var to = await ctx.Presence.SelectDestinationWithinRange( new TargetCriteria( 1 ), true );
+		var to = await ctx.Self.SelectDestinationWithinRange( new TargetCriteria( 1 ), true );
 
 		// add wilds
 		var toCtx = ctx.Target( to );
@@ -38,9 +38,9 @@ public class UnrelentingGrowth {
 
 		// Add presence
 		for(int i = 0; i < 2; ++i) {
-			var from = await ctx.Presence.SelectSource_Movable();
+			var from = await ctx.Self.SelectMovablePresence();
 			if(from !=null)
-				await ctx.Presence.Place( from, to );
+				await ctx.Self.Presence.Place( from, to );
 		}
 
 		return toCtx;

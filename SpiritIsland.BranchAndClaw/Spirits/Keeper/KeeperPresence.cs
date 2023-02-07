@@ -31,14 +31,14 @@ public class KeeperToken : SpiritPresenceToken, IHandleTokenAdded {
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
 		if(args.Token != this) return;
 
-		var gs = args.GameState;
+		var gs = GameState.Current;
 		int tokenCount = args.AddedTo[this];
 		bool createdSacredSite = (tokenCount-args.Count) < 2 && 2<= tokenCount;
 
 		if(createdSacredSite && args.AddedTo.Dahan.Any) {
 			var selfCtx = UnitOfWork.Current.Category == ActionCategory.Spirit_Power
 				? _spirit.BindMyPowers( gs )
-				: _spirit.BindSelf( gs );
+				: _spirit.BindSelf();
 			await selfCtx.Target( args.AddedTo ).PushDahan( int.MaxValue );
 		}
 	}

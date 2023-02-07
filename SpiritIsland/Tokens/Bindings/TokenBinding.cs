@@ -1,15 +1,15 @@
 ﻿namespace SpiritIsland;
 
-public class TokenBindingNoEvents {
+public class TokenBinding {
 	readonly protected SpaceState _tokens;
 	readonly protected IVisibleToken _token;
 
 	#region constructor
-	public TokenBindingNoEvents( SpaceState tokens, IVisibleToken token ) {
+	public TokenBinding( SpaceState tokens, IVisibleToken token ) {
 		_tokens = tokens;
 		_token = token;
 	}
-	public TokenBindingNoEvents( TokenBindingNoEvents src ) {
+	public TokenBinding( TokenBinding src ) {
 		_tokens = src._tokens;
 		_token = src._token;
 	}
@@ -23,36 +23,14 @@ public class TokenBindingNoEvents {
 
 	public void Adjust( int delta ) => _tokens.Adjust( _token, delta );
 
-	public TokenBinding BindScope() => new TokenBinding(this);
-}
-
-public class TokenBinding : TokenBindingNoEvents {
-
-	#region constructor
-
-	public TokenBinding( TokenBindingNoEvents src ) : base( src ) {
-		_actionTokens = _tokens.BindScope();
-	}
-
-	#endregion
-
 	public virtual Task Add( int count, AddReason reason = AddReason.Added )
-		=> _actionTokens.Add( _token, count, reason );
+		=> _tokens.Add( _token, count, reason );
 
-	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) 
-		=> _actionTokens.Remove( _token, count, reason );
-
-	public Task Destroy( int count ) => Remove( count, RemoveReason.Destroyed );
+	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
+		=> _tokens.Remove( _token, count, reason );
 
 	public static implicit operator int( TokenBinding b ) => b.Count;
-
-	readonly ActionableSpaceState _actionTokens;
-
 }
-
-
-
-
 
 
 
@@ -60,16 +38,16 @@ public class TokenBinding : TokenBindingNoEvents {
 /// <summary>
 /// Binds to Unique tokens but uses the CLASS to search for ancillary Tokens like ManyMinds-Beast Token
 /// </summary>
-public class BeastBinding_NoEvents {
+public class BeastBinding {
 	readonly protected SpaceState _spaceState;
 	readonly protected UniqueToken _uniqueToken;
 
 	#region constructor
-	public BeastBinding_NoEvents( SpaceState spaceState, UniqueToken defaultToken ) {
+	public BeastBinding( SpaceState spaceState, UniqueToken defaultToken ) {
 		_spaceState = spaceState;
 		_uniqueToken = defaultToken;
 	}
-	public BeastBinding_NoEvents( BeastBinding_NoEvents src ) {
+	public BeastBinding( BeastBinding src ) {
 		_spaceState = src._spaceState;
 		_uniqueToken = src._uniqueToken;
 	}
@@ -83,29 +61,12 @@ public class BeastBinding_NoEvents {
 
 	public void Adjust( int delta ) => _spaceState.Adjust( _uniqueToken, delta );
 
-	public BeastBinding BindScope() => new BeastBinding( this );
-}
+	public Task Add( int count, AddReason reason = AddReason.Added )
+		=> _spaceState.Add( _uniqueToken, count, reason );
 
-public class BeastBinding : BeastBinding_NoEvents {
-
-	#region constructor
-
-	public BeastBinding( BeastBinding_NoEvents src ) : base( src ) {
-		_actionTokens = _spaceState.BindScope();
-	}
-
-	#endregion
-
-	public virtual Task Add( int count, AddReason reason = AddReason.Added )
-		=> _actionTokens.Add( _uniqueToken, count, reason );
-
-	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
-		=> _actionTokens.Remove( _uniqueToken, count, reason );
+	public Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
+		=> _spaceState.Remove( _uniqueToken, count, reason );
 
 	public Task Destroy( int count ) => Remove( count, RemoveReason.Destroyed );
-
-	public static implicit operator int( BeastBinding b ) => b.Count;
-
-	readonly ActionableSpaceState _actionTokens;
 
 }

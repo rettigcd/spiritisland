@@ -8,7 +8,7 @@ namespace SpiritIsland.JaggedEarth;
 class PlacePresenceAndRunAction : PlacePresence {
 	public PlacePresenceAndRunAction(int range):base(range) { }
 	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var (from,_) = await ctx.Presence.PlaceWithin( new TargetCriteria( Range ), false );
+		var (from,_) = await ctx.Self.PlacePresenceWithin( new TargetCriteria( Range ), false );
 		if( from is Track track && track.Action != null )
 			await track.Action.ActivateAsync( ctx );
 	}

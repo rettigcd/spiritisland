@@ -13,10 +13,8 @@ public class FlowLikeWaterReachLikeAir {
 		RangeCalcRestorer.Save(ctx.Self,ctx.GameState);
 		RangeExtender.Extend( ctx.Self, 2 );
 
-
-
 		// Target spirit may push 1 of their presence to an adjacent land
-		var (src,destination) = await ctx.Presence.PushUpTo1();
+		var (src,destination) = await ctx.Self.PushUpTo1Presence();
 
 		var mover = new TokenPusher_FixedDestination( ctx.Target( src ), destination );
 		// bringing up to 2 explorers, 2 towns and 2 dahan along with it.

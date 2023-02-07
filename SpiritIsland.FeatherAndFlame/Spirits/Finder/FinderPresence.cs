@@ -140,10 +140,10 @@ public class FinderTrack : IPresenceTrack {
 		return true;
 	}
 
-	public async Task<bool> Reveal( Track track, GameState gameState ) {
+	public async Task<bool> Reveal( Track track ) {
 		if(!_lookup.ContainsKey( track )) return false;
 		_lookup[track].Reveal();
-		await TrackRevealed?.InvokeAsync(new TrackRevealedArgs( track, gameState));
+		await TrackRevealed?.InvokeAsync(new TrackRevealedArgs( track ));
 		return true;
 	}
 

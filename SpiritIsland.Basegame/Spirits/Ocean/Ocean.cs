@@ -75,11 +75,12 @@ public class Ocean : Spirit {
 
 	async Task Drowning( ITokenAddedArgs args ) {
 		if( args.Token is not HumanToken ht ) return;
+		var gs = GameState.Current;
 
 		// If we are saving a dahan
 		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan() && Presence.IsOn( args.AddedTo )	) {
-			var moveOptions = args.GameState.Island.Boards
-				.Select(x=>args.GameState.Tokens[x.Ocean])
+			var moveOptions = gs.Island.Boards
+				.Select(x=>gs.Tokens[x.Ocean])
 				.SelectMany(x=>x.Adjacent)
 				.Distinct()
 				.ToArray();;
@@ -89,8 +90,8 @@ public class Ocean : Spirit {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				UnitOfWork.Current.AtEndOfThisAction(async _ => {
 					//don't use original because that may or may not have been for a power.
-					await using UnitOfWork childAction = args.GameState.StartAction( ActionCategory.Default );
-					await BindSelf( args.GameState )
+					await using UnitOfWork childAction = gs.StartAction( ActionCategory.Default );
+					await BindSelf()
 						.Move( (IVisibleToken)args.Token, args.AddedTo.Space, destination );
 				} );
 				return; // the move it, don't drown it
@@ -98,13 +99,13 @@ public class Ocean : Spirit {
 		}
 
 		// Drown them immediately
-		args.GameState.Log( new Log.Debug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
-		await new InvaderBinding( args.GameState.Tokens[args.AddedTo.Space] ).DestroyNTokens( ht, args.Count );
+		gs.Log( new Log.Debug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
+		await new InvaderBinding( gs.Tokens[args.AddedTo.Space] ).DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
 		if(args.Token.Class.Category == TokenCategory.Invader)
 			drownedInvaderHealthAccumulator += (ht.FullHealth * args.Count);
-		CashInDrownedHealthForEnergy( args.GameState );
+		CashInDrownedHealthForEnergy( gs );
 	}
 
 	void CashInDrownedHealthForEnergy( GameState gs ) {

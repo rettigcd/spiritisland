@@ -19,7 +19,7 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 		// Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders.
 		await Cmd.ForEachSpirit( new SelfAction(
 			"Gain 1 Energy per SacredSite Spirit has in lands with Invaders"
-			, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites(ctx.GameState).Count( ss => spiritCtx.Target(ss).HasInvaders )
+			, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites().Count( ss => spiritCtx.Target(ss).HasInvaders )
 		)).Execute( ctx );
 
 	}

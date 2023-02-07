@@ -13,8 +13,8 @@ public class InfestationOfVenomousSpiders {
 		await ctx.GatherUpTo(1, Token.Beast);
 
 		// if you have 2 air 2 earth 3 animal: after this power causes invaders to skip an action, 4 damage.
-		Func<GameState,SpaceState,Task> causeAdditionalDamage = await ctx.YouHave("2 air,3 animal")
-			? (GameState gs,SpaceState space) => ctx.Target(space.Space).DamageInvaders(4) // this correctly uses Bringers ctx to do Dream damage
+		Func<SpaceState,Task> causeAdditionalDamage = await ctx.YouHave("2 air,3 animal")
+			? (SpaceState space) => ctx.Target(space.Space).DamageInvaders(4) // this correctly uses Bringers ctx to do Dream damage
 			: null;
 
 		// For each beast,

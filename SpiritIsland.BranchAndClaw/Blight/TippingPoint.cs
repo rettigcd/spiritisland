@@ -7,7 +7,7 @@ public class TippingPoint : BlightCardBase {
 	public override DecisionOption<GameCtx> Immediately 
 		=> Cmd.ForEachSpirit( 
 			// destroys 3 presence
-			Cmd.DestroyPresence(3,DestoryPresenceCause.BlightedIsland)
+			Cmd.DestroyPresence(3)
 		);
 
 }
