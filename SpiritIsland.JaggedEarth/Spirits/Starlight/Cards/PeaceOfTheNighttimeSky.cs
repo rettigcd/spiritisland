@@ -25,7 +25,7 @@ public class RepeatForPeace : RepeatAttribute {
 
 		bool repeated = false;
 
-		public async Task<bool> ShouldRepeat( Spirit self ) {
+		public async Task<bool> ShouldRepeat( Spirit self, UnitOfWork _ ) {
 			if( repeated
 				|| !await self.UserSelectsFirstText( "Repeat Power,Forget Card,+1 moon", "Yes, forget it", "no thanks." )
 			) return false;

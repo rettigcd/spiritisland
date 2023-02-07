@@ -54,7 +54,7 @@ public class VolcanoLoomingHigh : Spirit {
 			if(option is ExplosiveInnateOptionAttribute ex && destroyedThisAction < ex.DestroyedPresenceThreshold)
 				continue;
 
-			if(await HasElements( option.Elements ))
+			if(await HasElements( option.Elements, actionScope ))
 				match = option;
 		}
 		return match;

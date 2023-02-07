@@ -43,7 +43,7 @@ public class SelfCtx {
 		=> Target( from ).Tokens.MoveTo( token, to );
 
 
-	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString) );
+	public Task<bool> YouHave( string elementString ) => Self.HasElements( ElementCounts.Parse(elementString), ActionScope );
 
 	#endregion
 

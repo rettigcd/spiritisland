@@ -44,7 +44,7 @@ public abstract partial class Spirit : IOption {
 	/// <summary>
 	/// Checks elements available, and commits them (like the 'Any' element)
 	/// </summary>
-	public virtual async Task<bool> HasElements( ElementCounts subset ) {
+	public virtual async Task<bool> HasElements( ElementCounts subset, UnitOfWork _ ) {
 		// For normal spirits without Prepared Elements, this is the same as Could Have Elements
 		if( Elements.Contains(subset) ) return true;
 		int wildCount = Elements[Element.Any];
@@ -62,10 +62,10 @@ public abstract partial class Spirit : IOption {
 		return false;
 	}
 
-	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork actinScope ) {
+	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork actionScope ) {
 		IDrawableInnateOption match = null;
 		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
-			if(await HasElements( option.Elements ))
+			if(await HasElements( option.Elements, actionScope ))
 				match = option;
 		return match;
 	}

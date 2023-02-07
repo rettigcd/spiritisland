@@ -134,10 +134,16 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public readonly ElementCounts PreparedElements = new ElementCounts();
 
-	protected ElementCounts actionElements; // null unless we are in the middle of an action
+	ElementCounts ActiveElementsForAction( UnitOfWork actionScope ) {
+		const string key = "ActionElements";
+		if(actionScope.ContainsKey(key)) return (ElementCounts)actionScope[key];
+		var counts = Elements.Clone();
+		actionScope[key] = counts;
+		return counts;
+	}
 
-	public override async Task<bool> HasElements( ElementCounts subset ) {
-		actionElements ??= Elements.Clone();
+	public override async Task<bool> HasElements( ElementCounts subset, UnitOfWork actionScope ) {
+		var actionElements = ActiveElementsForAction(actionScope);
 		if( actionElements.Contains( subset ) ) return true;
 
 		// Check if we have prepared element markers to fill the missing elements
@@ -155,15 +161,12 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return false;
 	}
 
-	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork _ ) {
-
-		// !!! instead of storing actionElements in the spirit, store them in the UnitOfWork
-
+	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions, UnitOfWork actionScope ) {
 
 		var elementOptions = innateOptions.Select(x=>x.Elements);
 
 		// Init the elements that are active for this action only.
-		actionElements ??= Elements.Clone();
+		var actionElements = ActiveElementsForAction( actionScope );
 
 		var highestAlreadyMatch = innateOptions
 			.OrderByDescending(e=>e.Elements.Total)
@@ -205,15 +208,6 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		}
 
 		return highestAlreadyMatch;
-	}
-
-	public override async Task TakeAction(IActionFactory factory, SelfCtx ctx) {
-		actionElements = null; // make sure these are cleared out for every action
-		try {
-			await base.TakeAction(factory,ctx);
-		} finally {
-			actionElements = null;
-		}
 	}
 
 	public override IMemento<Spirit> SaveToMemento() => new ShiftingMemento(this);
