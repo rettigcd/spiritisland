@@ -12,7 +12,7 @@ public class VirtualUser {
 
 	#region Growth
 
-	DecisionContext NextDecision => spirit.NextDecision();
+	public DecisionContext NextDecision => spirit.NextDecision();
 
 	public void Growth_SelectsOption( string growthOption ) {
 		NextDecision.HasPrompt( "Select Growth Option" )

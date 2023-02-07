@@ -75,15 +75,16 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Select 1st Token destination (like Push, Arrows!)
 		var destinationOptions = Range( targetCriteria );
-		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Always, firstToken ) );
+		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Always, firstToken, remaining ) );
 		if( destination == null ) return null;
 		
 		await Move( firstToken, Space, destination );
 		--remaining;
 
 		while(0 < remaining--) {
-			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().Select(t=>new SpaceToken(Space,t)).ToArray();
-			var nextToken = await Decision( Select.TokenFromManySpaces.ToCollect($"Move to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
+			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>()
+				.Select(t=>new SpaceToken(Space,t,false)).ToArray();
+			var nextToken = await Decision( Select.TokenFromManySpaces.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
 			if(nextToken == null ) break;
 			
 			await Move( nextToken.Token, nextToken.Space, destination );
@@ -219,13 +220,6 @@ public class TargetSpaceCtx : SelfCtx {
 	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
 
 	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( Tokens );
-
-	public void SkipAllInvaderActions(string label) => Tokens.SkipAllInvaderActions( label );
-
-	public void Skip1Build( string label ) => Tokens.Skip1Build( label );
-
-	public void Skip1Ravage( string label ) => Tokens.Skip1Ravage( label );
-
 
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear

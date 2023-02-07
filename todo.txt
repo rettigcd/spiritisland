@@ -8,6 +8,7 @@ Replace ForRound actions with ModTokens
 Weave Together
 	BUG - Massive Flooding did not recognize Weaved-Together SS source.  - Is this going off of Tokens.Keys and it hasn't been added yet.
 
+
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON
 !	flags, special rules,	=> Normal Buttons
@@ -18,6 +19,8 @@ Weave Together
 4 UI - Draw Power Cards - OR Download them on the fly
 	Cards - Collapsed "summary" view of card so easier to see Island/board
 	Cards - Zoomed view of card so easier to read text.
+
+4 UI - Draw stop power cards from hiding the board.
 
 4 Multi Player
 	== Option 1 == 
@@ -35,6 +38,7 @@ Weave Together
 4 Action => Move Finders Hook to Action-start - event
 
 
+ManyMinds - Set out-of-band toggle on beasts, at start of action, make smart choices based on phase, then use user choice sync for powers
 ======
 
 3 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.

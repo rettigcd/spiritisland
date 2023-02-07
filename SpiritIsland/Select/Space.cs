@@ -7,8 +7,9 @@ public class Space : TypedDecision<SpiritIsland.Space>, IHaveArrows {
 	static public Space PushPresence( SpiritIsland.Space source, IEnumerable<SpaceState> destinationOptions, Present present, IVisibleToken presenceToken )
 		=> Space.ForMoving_SpaceToken("Push Presence to", source, destinationOptions, present, presenceToken );
 
-	static public Space MoveToken( SpiritIsland.Space source, IEnumerable<SpaceState> destinationOptions, Present present, IVisibleToken token )
-		=> Space.ForMoving_SpaceToken( "Move token(s) to", source, destinationOptions, present, token );
+	static public Space MoveToken( SpiritIsland.Space source, IEnumerable<SpaceState> destinationOptions, Present present, IVisibleToken token, int? count = null )
+		=> Space.ForMoving_SpaceToken( $"Move {TokensStr(count)} to", source, destinationOptions, present, token );
+	static string TokensStr(int? count) => !count.HasValue ? "token(s)" : count.Value == 1 ? "token" : "tokens";
 
 	static public Space PushToken( IVisibleToken token, SpiritIsland.Space source, IEnumerable<SpaceState> destinationOptions, Present present )
 		=> Space.ForMoving_SpaceToken( "Push " + token.ToString() + " to", source, destinationOptions, present, token );

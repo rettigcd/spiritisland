@@ -25,9 +25,6 @@ public class ObserveWorldMod : IToken
 	, IHandleTokenAdded
 	, IHandleTokenRemoved
 {
-
-	// !!! It seems like adding / removing presence tokens should trigger this also, but I don't think it triggers the Token Added/Removed event.
-
 	string _tokenSummary;
 
 	public TokenClass Class => Token.Element;

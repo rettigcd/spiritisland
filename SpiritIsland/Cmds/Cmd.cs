@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Xml.Linq;
+
+namespace SpiritIsland;
 
 public static partial class Cmd {
 
@@ -133,10 +135,12 @@ public static partial class Cmd {
 		DahanSaver.DestroyFewer( 2, int.MaxValue )
 	);
 
-	// Skip Invader Actions
-	static public SpaceAction Skip1Build(string name) => new SpaceAction("Stop the next Build", ctx=>ctx.Tokens.Skip1Build(name));
-	static public SpaceAction Skip1Explore( string name ) => new SpaceAction( "Skip the next Explore", ctx => ctx.Tokens.Skip1Explore( name ) );
-	static public SpaceAction SkipAllInvaderActions( string name ) => new SpaceAction( "Skip All Invader Actions", ctx => ctx.Tokens.SkipAllInvaderActions( name ) );
+	static public class Skip {
+		static public SpaceAction Build( string name ) => new SpaceAction( "Stop the next Build", ctx => ctx.Tokens.Skip1Build( name ) );
+		static public SpaceAction Explore( string name ) => new SpaceAction( "Skip the next Explore", ctx => ctx.Tokens.Skip1Explore( name ) );
+		static public SpaceAction AllInvaderActions( string name ) => new SpaceAction( "Skip All Invader Actions", ctx => ctx.Tokens.SkipAllInvaderActions( name ) );
+		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
+	}
 
 
 	// WTH are these doing in here?

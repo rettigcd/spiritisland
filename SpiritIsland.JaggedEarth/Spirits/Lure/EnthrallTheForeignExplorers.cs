@@ -12,7 +12,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 	public UsageCost Cost => UsageCost.Free; // doesn't cost anything to use.
 
-	public async Task<bool> Skip( GameState gameState, SpaceState space ) {
+	public async Task<bool> Skip( SpaceState space ) {
 		int maxRemovable = _self.Presence.CountOn( space ) * 2;
 
 		int explorerCount = space.Sum( Human.Explorer );
@@ -30,7 +30,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 			var countToNotParticipate = await _self.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );
 
 			if(countToNotParticipate > 0)
-				gameState.ModifyRavage( space.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate );
+				space.AccessGameState().ModifyRavage( space.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate ); // !!! move ModifyRavage into SpaceState so we don't have to call .AccessGameState()
 
 			explorerTypes.Remove( explorerTypeToNotParticipate ); // don't let them select the same type twice and over-count the # of non-participants of that type.
 

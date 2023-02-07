@@ -7,7 +7,7 @@ public class SleepAndNeverWaken {
 	[MajorCard(Name,3,Element.Moon,Element.Air,Element.Earth,Element.Animal), Fast, FromPresenceIn(2,Terrain.Sand)]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// invaders skip all actions in target land.
-		ctx.SkipAllInvaderActions( Name );
+		ctx.Tokens.SkipAllInvaderActions( Name );
 
 		// Track # of exlorers removed.
 		int removed = 0;

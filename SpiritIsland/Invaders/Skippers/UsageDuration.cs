@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public enum UsageDuration {
-	OneSkipThisTurn, // first, default
+	SkipOneThisTurn, // first, default
 	SkipAllThisTurn
 };
 

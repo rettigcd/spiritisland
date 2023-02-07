@@ -41,7 +41,6 @@ class ThePastReturnsAgain {
 		deck.Discards.Add( newCard ); // face down
 
 		// The Discarded card stays face-down.
-		// !!! deck / card has no knowledge of face-up/face-down, if spirit plays this card again, they will see the 'face-down' card
 	}
 
 	// Reuse this for Events

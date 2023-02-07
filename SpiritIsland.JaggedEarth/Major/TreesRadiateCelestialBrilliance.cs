@@ -12,7 +12,7 @@ public class TreesRadiateCelestialBrilliance {
 		ctx.Defend(6);
 
 		// this turn, Invdaders in target land skip the next Build Action.
-		ctx.Skip1Build( Name );
+		ctx.Tokens.Skip1Build( Name );
 
 		// if you have 3 sun 2 moon 2 plant
 		if(await ctx.YouHave("3 sun,2 moon,2 plant"))

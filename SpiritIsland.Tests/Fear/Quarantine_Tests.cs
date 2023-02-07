@@ -147,7 +147,7 @@ public class Quarantine_Tests {
 		ctx.TargetSpace("A8").Tokens.Init("");
 
 		if(skipARavage)
-			ctx.TargetSpace( "A4" ).Tokens.Skip1Ravage("Test");
+			ctx.TargetSpace( "A4" ).Tokens.SkipRavage("Test");
 
 		log.Clear();
 		AdvanceToInvaderPhase();

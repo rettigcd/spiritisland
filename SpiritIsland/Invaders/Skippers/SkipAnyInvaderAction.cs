@@ -18,22 +18,19 @@ public class SkipAnyInvaderAction : SelfCleaningToken, ISkipRavages, ISkipBuilds
 
 	public string Text {get;}
 
-	Task<bool> ISkipRavages.Skip( GameState gameState, SpaceState space )
-		=> MakeDecision( gameState, space, "Ravage" );
+	Task<bool> ISkipRavages.Skip( SpaceState space ) => MakeDecision( space, "Ravage" );
 
-	Task<bool> ISkipBuilds.Skip( GameCtx gameCtx, SpaceState space, TokenClass buildClass )
-		=> MakeDecision( gameCtx.GameState, space, "Building " + buildClass.Label );
+	Task<bool> ISkipBuilds.Skip( GameCtx _, SpaceState space, TokenClass buildClass ) => MakeDecision( space, "Building " + buildClass.Label );
 
-	Task<bool> ISkipExploreTo.Skip( GameCtx gameCtx, SpaceState space )
-		=> MakeDecision( gameCtx.GameState, space, "Explore" );
+	Task<bool> ISkipExploreTo.Skip( GameCtx _, SpaceState space ) => MakeDecision( space, "Explore" );
 
-	async Task<bool> MakeDecision( GameState gameState, SpaceState space, string stoppableAction ) {
+	async Task<bool> MakeDecision( SpaceState space, string stoppableAction ) {
 		if( !await _spirit.UserSelectsFirstText(Text,  $"Stop {stoppableAction} on {space.Space.Label}?", "No thank you.") )
 			return false;
 
 		space.Adjust( this, -1 );
 		if(_alternativeAction != null)
-			await _alternativeAction( gameState, space );
+			await _alternativeAction( space.AccessGameState(), space );
 		return true;
 	}
 

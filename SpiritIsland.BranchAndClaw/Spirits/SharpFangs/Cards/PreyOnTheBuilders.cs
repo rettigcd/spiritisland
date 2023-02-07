@@ -12,7 +12,7 @@ public class PreyOnTheBuilders {
 		await ctx.GatherUpTo(1, Token.Beast);
 
 		if( ctx.Beasts.Any )
-			ctx.Skip1Build( Name );
+			ctx.Tokens.Skip1Build( Name );
 
 	}
 

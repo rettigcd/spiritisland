@@ -34,7 +34,7 @@ public class CallToTrade {
 		public UsageCost Cost => UsageCost.Free;
 
 
-		public Task<bool> Skip( GameState gameState, SpaceState space ) {
+		public Task<bool> Skip( SpaceState space ) {
 			space.Adjust( this, -1 );
 
 			// Add Build

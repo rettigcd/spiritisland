@@ -28,6 +28,7 @@ public class RavageBehavior {
 		};
 	}
 
+	/// <summary> Executes up to 1 potential Ravage </summary>
 	public async Task Exec( SpaceState tokens, GameState gameState ) {
 		RavageData data = new RavageData( tokens, gameState );
 
@@ -36,9 +37,11 @@ public class RavageBehavior {
 			.OrderBy( s => s.Cost )
 			.ToArray();
 
-		foreach(var stopper in stoppers)
-			if(await stopper.Skip( data.GameState, data.Tokens ))
-				return; // baby steps, don't break tests.  Eventually we want: $"stopped by {stopper.Text}";
+		foreach(ISkipRavages stopper in stoppers)
+			if(await stopper.Skip( data.Tokens )) {
+				// baby steps, don't break tests.  Eventually we want: $"stopped by {stopper.SourceLabel}";
+				return; 
+			}
 
 		data.ActionScope = data.GameState.StartAction( ActionCategory.Invader );
 		data.InvaderBinding = new InvaderBinding( data.Tokens, data.ActionScope );

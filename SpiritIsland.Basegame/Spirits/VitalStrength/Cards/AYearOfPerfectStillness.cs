@@ -8,7 +8,7 @@ public class AYearOfPerfectStillness {
 	[Fast]
 	[FromPresence(1)]
 	static public Task Act(TargetSpaceCtx ctx){
-		ctx.SkipAllInvaderActions(Name);
+		ctx.Tokens.SkipAllInvaderActions(Name);
 		return Task.CompletedTask;
 	}
 

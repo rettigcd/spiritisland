@@ -69,8 +69,8 @@ class MudToken : SelfCleaningToken, ISkipRavages {
 	/// <summary> Used by skips to determine which skip to use. </summary>
 	public UsageCost Cost => UsageCost.Free;
 
-	Task<bool> ISkipRavages.Skip( GameState gameState, SpaceState space ) {
-		gameState.ModifyRavage( space.Space, cfg => cfg.AttackersDefend += (_self.Presence.CountOn( space ) * _count) );
+	Task<bool> ISkipRavages.Skip( SpaceState space ) {
+		space.AccessGameState().ModifyRavage( space.Space, cfg => cfg.AttackersDefend += (_self.Presence.CountOn( space ) * _count) ); // !!! move this into SpaceState so we can remove accessing GameState
 		// Doesn't remove self so it is in place for all ravages
 		// removed because it is inserted as a temp token.
 		return Task.FromResult( false );

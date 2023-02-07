@@ -199,27 +199,24 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	#region Skip API
 
 	public void SkipAllInvaderActions( string label ) {
-		Skip1Ravage( label );
-		Skip1Build( label );
-		Skip1Explore( label );
+		SkipRavage( label, UsageDuration.SkipAllThisTurn );
+		SkipAllBuilds( label );
+		Skip1Explore( label ); // !!! Should be: Skip ALL Explores
 	}
 
-	public void Skip1Ravage( string _ ) => Adjust( new SkipRavage(), 1 );
+	public void SkipRavage( string label, UsageDuration duration = UsageDuration.SkipOneThisTurn ) => Adjust( new SkipRavage(label, duration), 1 );
 
 	public void Skip1Build( string label ) => Adjust( SkipBuild.Default( label ), 1 );
 
-	public void Skip1Explore( string _ ) => Adjust( new SkipExploreTo(), 1 );
+	public void SkipAllBuilds( string label, params TokenClass[] stoppedClasses ) => Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
 
-	public void SkipAllBuilds( string label, params TokenClass[] stoppedClasses ) {
-		if(stoppedClasses == null || stoppedClasses.Length == 0)
-			stoppedClasses = Human.Town_City;
-		Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
-	}
+	public void Skip1Explore( string _ ) => Adjust( new SkipExploreTo(), 1 );
 
 	#endregion
 
 	#region Ravage
 
+	/// <summary> Does 1 potential Ravage (if no stopper tokens) </summary>
 	public Task Ravage() {
 		GameState gameState = AccessGameState();
 		RavageBehavior cfg = gameState.GetRavageConfiguration( Space );

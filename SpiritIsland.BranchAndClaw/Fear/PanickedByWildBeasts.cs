@@ -15,14 +15,14 @@ public class PanickedByWildBeasts : FearCardBase, IFearCard {
 	public Task Level2( GameCtx ctx )
 		=> Cmd.Multiple(
 			Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.BeastOrIsAdjacentToBeast ).ForEachSpirit(),
-			Cmd.Multiple(Cmd.Skip1Build(Name),Cmd.Skip1Explore(Name)).In().EachActiveLand().Which( Has.Beast )
+			Cmd.Multiple(Cmd.Skip.Build(Name),Cmd.Skip.Explore(Name)).In().EachActiveLand().Which( Has.Beast )
 		).Execute( ctx );
 
 	[FearLevel( 3, "Each player adds 1 Strife in a land with or adjacent to Beast. Invaders skip all normal actions in lands with Beast." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.Multiple(
 			Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.BeastOrIsAdjacentToBeast ).ForEachSpirit(),
-			Cmd.SkipAllInvaderActions( Name ).In().EachActiveLand().Which( Has.Beast )
+			Cmd.Skip.AllInvaderActions( Name ).In().EachActiveLand().Which( Has.Beast )
 		).Execute( ctx );
 
 }

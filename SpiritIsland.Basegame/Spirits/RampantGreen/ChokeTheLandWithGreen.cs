@@ -20,16 +20,17 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 
 	bool IsSacredSite( SpaceState space ) => 2 <= space[this]; // !! could make public and promote to base class and have SpiritPresence use it.
 
-	async Task<bool> ISkipRavages.Skip( GameState gameState, SpaceState space ) {
-		return await SkipInvaderAction( gameState, space,"ravage");
+	async Task<bool> ISkipRavages.Skip( SpaceState space ) {
+		return await SkipInvaderAction( space, "ravage" );
 	}
 
-	async Task<bool> ISkipBuilds.Skip( GameCtx gameCtx, SpaceState space, TokenClass buildClass )
-		=> await SkipInvaderAction( gameCtx.GameState, space, $"build of {buildClass.Label}" );
+	async Task<bool> ISkipBuilds.Skip( GameCtx _, SpaceState space, TokenClass buildClass )
+		=> await SkipInvaderAction( space, $"build of {buildClass.Label}" );
 
-	async Task<bool> SkipInvaderAction( GameState gs, SpaceState space, string actionDescription ) {
+	async Task<bool> SkipInvaderAction( SpaceState space, string actionDescription ) {
 		if(!IsSacredSite( space )) return false;
 
+		GameState gs = space.AccessGameState();
 		int energyCost = gs.BlightCard.CardFlipped ? 1 : 0;
 		if(_self.Energy < energyCost) return false;
 
