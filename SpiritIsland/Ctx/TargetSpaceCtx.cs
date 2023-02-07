@@ -63,24 +63,79 @@ public class TargetSpaceCtx : SelfCtx {
 
 		if(!Tokens.HasAny( tokenClass )) return null;
 
-		// Select Destination
+		// Gather is:  Space (dst,token-unknown) - SpaceToken (src-tokens)
+		// Push is: SpaceToken (src-token) - Space (dst,token-known) 
+
+
+		// Select 1st Token to move (like Push, no arrows)
+		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray(); 
+		int remaining = max;
+		var firstToken = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
+		if(firstToken == null) return null;
+
+		// Select 1st Token destination (like Push, Arrows!)
 		var destinationOptions = Range( targetCriteria );
-		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
+		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Always, firstToken ) );
+		if( destination == null ) return null;
+		
+		await Move( firstToken, Space, destination );
+		--remaining;
 
-		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
-		int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
-		while(tokenOptions.Length > 0 && remaining > 0 ) {
-			// Select Token and move
-			var token = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
-			if(token == null) break;
-			await Move( token, Space, destination );
-
-			// Next
-			--remaining;
-			tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
+		while(0 < remaining--) {
+			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().Select(t=>new SpaceToken(Space,t)).ToArray();
+			var nextToken = await Decision( Select.TokenFromManySpaces.ToCollect($"Move to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
+			if(nextToken == null ) break;
+			
+			await Move( nextToken.Token, nextToken.Space, destination );
 		}
 
 		return destination;
+
+		//// Select Destination
+		//var destinationOptions = Range( targetCriteria );
+		//Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
+
+		//var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
+		//int remaining = Math.Min( Tokens.SumAny( tokenClass ), max );
+		//while(tokenOptions.Length > 0 && remaining > 0) {
+		//	// Select Token and move
+		//	var token = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
+		//	if(token == null) break;
+		//	await Move( token, Space, destination );
+
+		//	// Next
+		//	--remaining;
+		//	tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
+		//}
+
+		// 1st token to push (SpaceToken) (src-token) 
+		// 2nd Destinatin (Space),token-known
+
+		// 3rd SpaceToken (token,src-known)
+
+		// Select 1st Token to move  (TokenSpace) Push
+		// Select Destination		(Space)
+		// Select Remaining Tokens to follow  (Gather
+
+
+		// Select Destination
+		//var destinationOptions = Range( targetCriteria );
+		//Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
+
+		//var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
+		//int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
+		//while(tokenOptions.Length > 0 && remaining > 0 ) {
+		//	// Select Token and move
+		//	var token = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
+		//	if(token == null) break;
+		//	await Move( token, Space, destination );
+
+		//	// Next
+		//	--remaining;
+		//	tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
+		//}
+
+		//return destination;
 
 	}
 

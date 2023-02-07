@@ -31,13 +31,12 @@ public class WrapInWingsOfSunlight_Tests {
 		var action = gameState.StartAction( ActionCategory.Spirit_Power );
 		_ = PlayCard( spirit.BindMyPowers( gameState, action ).Target(src) );
 
-		//  And: Can bring 2 of each
-		user.AssertDecision( "Move token(s) to", "A1,A2,A3,A4,A5,A6,A7,A8,Done", dst.Label );
-		user.AssertDecisionInfo( "Move up to (5)", "[D@2],Done" );
-		user.AssertDecisionInfo( "Move up to (4)", "[D@2],Done" );
-		user.AssertDecisionInfo( "Move up to (3)", "[D@2],Done" );
-		user.AssertDecisionInfo( "Move up to (2)", "[D@2],Done" );
-		user.AssertDecisionInfo( "Move up to (1)", "[D@2],Done" );
+		user.NextDecision.HasPrompt( "Move up to (5)" ).HasOptions("D@2,Done").Choose( "D@2" ); // Pick space and 1st token
+		user.NextDecision.HasPrompt( "Move tokens to" ).HasOptions( "A1,A2,A3,A4,A5,A6,A7,A8" ).Choose( dst ); // pick destination
+		user.NextDecision.HasPrompt( "Move up to (4) to A1" ).HasOptions("D@2,Done").Choose( "D@2" ); // pick remaining tokens
+		user.NextDecision.HasPrompt( "Move up to (3) to A1" ).HasOptions("D@2,Done").Choose( "D@2" );
+		user.NextDecision.HasPrompt( "Move up to (2) to A1" ).HasOptions("D@2,Done").Choose( "D@2" );
+		user.NextDecision.HasPrompt( "Move up to (1) to A1" ).HasOptions("D@2,Done").Choose( "D@2" );
 
 		// Then: target 2 of each
 		var dstTokens = gameState.Tokens[dst];

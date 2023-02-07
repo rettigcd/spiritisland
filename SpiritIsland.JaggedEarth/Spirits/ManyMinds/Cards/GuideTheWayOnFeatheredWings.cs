@@ -11,6 +11,7 @@ public class GuideTheWayOnFeatheredWings {
 
 	static public async Task MoveBeastAndFriends(TargetSpaceCtx ctx, int steps ) {
 		if(steps <= 0 ) return;
+
 		// move beast
 		Space destination = await ctx.MoveTokensOut(1, ctx.TerrainMapper.Specify( 1 ), Token.Beast );
 		if(destination == null) return;
