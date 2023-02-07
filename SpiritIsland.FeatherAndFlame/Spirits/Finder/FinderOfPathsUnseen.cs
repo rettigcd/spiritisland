@@ -52,8 +52,7 @@ public class FinderOfPathsUnseen : Spirit {
 		gameState.Tokens[board[3]].Adjust(Presence.Token, 1);
 
 		// Put 1 presence on any board in land #1.
-		// !!! change this to a setup-action where spirit places a presence on space 1 of 1 board.
-		gameState.Tokens[board[1]].Adjust(Presence.Token, 1);
+		AddActionFactory( new Setup_PlacePresenceOnSpace1() ); // let user pick initial space
 
 		gameState.AddToAllActiveSpaces( new TokenRemovedHandler( ResponsibilityToTheDead_Handler, true ) );
 
@@ -112,5 +111,17 @@ public class FinderOfPathsUnseen : Spirit {
 	}
 
 	OpenTheWays _openTheWays;
+
+}
+
+public class Setup_PlacePresenceOnSpace1 : GrowthActionFactory {
+
+	// Put 1 presence on any board in land #1.
+	public override async Task ActivateAsync( SelfCtx ctx ) {
+		var options = ctx.GameState.Island.Boards.Select( b => b[1] );
+		var space = await ctx.Decision( new Select.Space( "Add presence to", options, Present.Always ) );
+		await ctx.Presence.PlaceOn( space );
+	}
+	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
 
 }
