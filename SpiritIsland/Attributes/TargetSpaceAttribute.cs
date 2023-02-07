@@ -29,7 +29,7 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 	}
 
 	protected virtual async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) 
-		=> new TargetCriteria( ctx.TerrainMapper, await CalcRange( ctx ), ctx.Self, _targetFilters );
+		=> new TargetCriteria( await CalcRange( ctx ), ctx.Self, _targetFilters );
 
 	/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
 	protected virtual Task<int> CalcRange( SelfCtx ctx ) => Task.FromResult( _range );

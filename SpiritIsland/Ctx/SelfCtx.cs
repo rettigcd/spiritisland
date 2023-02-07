@@ -8,7 +8,9 @@ public class SelfCtx {
 
 	public Spirit Self { get; }
 	public GameState GameState { get; }
-	public TerrainMapper TerrainMapper => UnitOfWork.Current.TerrainMapper;
+
+	protected TerrainMapper TerrainMapper => _terrainMapper ??= UnitOfWork.Current.TerrainMapper;
+	TerrainMapper _terrainMapper;
 
 	#region constructor
 

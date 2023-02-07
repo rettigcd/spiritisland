@@ -6,31 +6,22 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	public ReadOnlyBoundPresence( SelfCtx ctx ) {
 		_self = ctx.Self;
 		_gameState = ctx.GameState;
-		_terrainMapper = ctx.TerrainMapper;
 	}
-	public ReadOnlyBoundPresence( Spirit self, GameState gameState, TerrainMapper terrainMapper ) {
-		_self = self;
-		_gameState = gameState;
-		_terrainMapper = terrainMapper;
-	}
-
-	/// <summary> Constructs a ReadOnlyBoundPresence for POWER </summary>
 	public ReadOnlyBoundPresence( Spirit self, GameState gameState ) {
 		_self = self;
 		_gameState = gameState;
-		_terrainMapper = gameState.Island.Terrain_ForPower;
 	}
 	#endregion
 
 	// !!! Note - Some of these are pass-thru and ignore GameState and possibly could be simplified.
 	// This class is all about binding presence to gamestate so stuff that ignores gamestate maybe doesn't go here.
 
-	public bool CanBePlacedOn( SpaceState space ) => _inner.CanBePlacedOn( space, _terrainMapper );
+	public bool CanBePlacedOn( SpaceState space ) => _inner.CanBePlacedOn( space );
 	public bool IsSacredSite( Space space ) => _inner.IsSacredSite( _gameState.Tokens[space] );
 
 	public IEnumerable<SpaceState> ActiveSpaceStates => _inner.ActiveSpaceStates( _gameState );
 	public IEnumerable<SpaceState> MovableSpaceStates => _inner.ActiveSpaceStates( _gameState ).Where(_inner.HasMovableTokens);
-	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState, _terrainMapper );
+	public IEnumerable<SpaceState> SacredSites => _inner.SacredSiteStates( _gameState );
 
 	// This is the non-Targetting version that skips over the TargetSourceCalc
 	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, bool forPower )
@@ -79,7 +70,8 @@ public class ReadOnlyBoundPresence : IKnowSpiritLocations {
 	#region readonly fields
 	readonly protected Spirit _self;
 	readonly protected GameState _gameState;
-	readonly protected TerrainMapper _terrainMapper;
+	protected TerrainMapper TerrainMapper => _terrainMapper ??= UnitOfWork.Current.TerrainMapper;
+	TerrainMapper _terrainMapper;
 	protected SpiritPresence _inner => _self.Presence;
 	#endregion
 }
@@ -89,10 +81,8 @@ public class BoundPresence : ReadOnlyBoundPresence {
 
 	#region constructor
 
-	public BoundPresence(SelfCtx ctx):base(ctx) { 
-	}
-
-	public BoundPresence( Spirit self, GameState gs, TerrainMapper terrainMapper ) : base( self, gs, terrainMapper ) {}
+	public BoundPresence(SelfCtx ctx):base(ctx) {}
+	public BoundPresence( Spirit self, GameState gs ) : base( self, gs ) {}
 
 	#endregion
 

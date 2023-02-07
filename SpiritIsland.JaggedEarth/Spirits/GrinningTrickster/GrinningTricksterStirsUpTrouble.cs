@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class GrinningTricksterStirsUpTrouble : Spirit {
 
@@ -99,8 +101,8 @@ public class TricksterSpaceCtx : TargetSpaceCtx {
 		if( Self.Energy == 0 ) return;
 
 		var nearbyInvaders = Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( 
-			new SpaceState[] { Tokens }, 
-			TerrainMapper.Specify( 1 )
+			new SpaceState[] { Tokens },
+			new TargetCriteria( 1 )
 		)
 			.SelectMany( s => s.InvaderTokens().Select( t => new SpaceToken( s.Space, t ) ) )
 			.ToArray();

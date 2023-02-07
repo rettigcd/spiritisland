@@ -10,7 +10,7 @@ public class OfferPassageBetweenWorlds {
 
 		return ctx.SelectActionOption(
 			new SpaceAction( "Move up to 4 dahan between target land and one of your lands.",
-				xx => xx.MoveTokensOut( 4, new TargetCriteria( ctx.TerrainMapper, int.MaxValue, ctx.Self, Target.Presence ), Human.Dahan )
+				xx => xx.MoveTokensOut( 4, new TargetCriteria( int.MaxValue, ctx.Self, Target.Presence ), Human.Dahan )
 			),
 			Cmd.NextTimeDestroy2FewerDahan
 		);

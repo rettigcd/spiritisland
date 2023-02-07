@@ -178,7 +178,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay );
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
-	public IEnumerable<SpaceState> Range( int range ) => Range( TerrainMapper.Specify(range) );
+	public IEnumerable<SpaceState> Range( int range ) => Range( new TargetCriteria( range ) );
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria ) 

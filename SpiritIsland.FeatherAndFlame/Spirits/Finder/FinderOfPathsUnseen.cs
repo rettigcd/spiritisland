@@ -88,7 +88,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 			// Do presence destroy
 			var gameState = args.RemovedFrom.AccessGameState();
-			var presence = new BoundPresence( this, gameState, gameState.Island.Terrain_ForPower );
+			var presence = new BoundPresence( this, gameState );
 			while(preseneceToDestroy-- > 0)
 				await presence.DestroyOneFromAnywhere( DestoryPresenceCause.SpiritPower );
 

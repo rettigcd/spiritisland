@@ -31,7 +31,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 		// Push towns and explorers
 		if(newToken.Class != BringerSpaceCtx.DreamingCity) {
-			var destination = await Decision( Select.Space.PushToken( newToken, Space, Tokens.Adjacent.Where( TerrainMapper.IsInPlay ), Present.Always ) );
+			var destination = await Decision( Select.Space.PushToken( newToken, Space, Tokens.Adjacent.Where( UnitOfWork.Current.TerrainMapper.IsInPlay ), Present.Always ) );
 			await Tokens.MoveTo( newToken, destination ); // there is no Push(Token), so this will have to do.
 			RecordSpaceWithDreamers( GameState.Tokens[destination] );
 		}

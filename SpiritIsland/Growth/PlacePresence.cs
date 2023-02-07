@@ -34,5 +34,5 @@ public class PlacePresence : GrowthActionFactory {
 		false
 	);
 	protected virtual TargetCriteria GetTargetCriteria( SelfCtx ctx )
-		=> new TargetCriteria( ctx.TerrainMapper, Range, ctx.Self, FilterEnums );
+		=> new TargetCriteria( Range, ctx.Self, FilterEnums );
 }

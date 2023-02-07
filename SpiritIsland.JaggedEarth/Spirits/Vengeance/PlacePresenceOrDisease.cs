@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class PlacePresenceOrDisease : PlacePresence {
 
@@ -10,7 +12,7 @@ public class PlacePresenceOrDisease : PlacePresence {
 			return;
 		}
 
-		Space to = await ctx.Presence.SelectDestinationWithinRange( ctx.TerrainMapper.Specify(1), false );
+		Space to = await ctx.Presence.SelectDestinationWithinRange( new TargetCriteria( 1 ), false );
 		await ctx.Target(to).Disease.Add(1);
 
 	}

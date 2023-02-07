@@ -10,10 +10,10 @@ public class PathsTiedByNature {
 
 		// Move up to 2 Invaders / dahan / presence / beast to a land within range - 2 that has the same terrain.
 		var currentTerrain = new[] { Target.Jungle, Target.Mountain, Target.Sand, Target.Wetland }
-			.Where( t => new TargetCriteria( ctx.TerrainMapper, 0, ctx.Self, t ).Matches(ctx.Tokens) )
+			.Where( t => new TargetCriteria( 0, ctx.Self, t ).Matches(ctx.Tokens) )
 		.ToArray();
 
-		await ctx.MoveTokensOut(2, new TargetCriteria( ctx.TerrainMapper, 2, ctx.Self, currentTerrain )
+		await ctx.MoveTokensOut(2, new TargetCriteria( 2, ctx.Self, currentTerrain )
 			, Human.Invader.Plus( Human.Dahan, Token.Beast )
 				.Union( ctx.AllPresenceTokens ).ToArray()
 		);

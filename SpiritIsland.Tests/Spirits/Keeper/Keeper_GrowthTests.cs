@@ -151,7 +151,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		User.PushesTokensTo("D@2","A1,[A4],A6,A7,A8",2);
 		User.PushesTokensTo("D@2","A1,A4,A6,[A7],A8");
 
-		spirit.Presence.SacredSites( _gameState, new TerrainMapper() ).ShouldContain(space);
+		spirit.Presence.SacredSites( _gameState ).ShouldContain(space);
 		_gameState.Tokens[space].Dahan.CountAll.ShouldBe(0,"SS should push dahan from space");
 	}
 

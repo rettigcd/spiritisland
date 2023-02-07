@@ -10,16 +10,14 @@ public class TargetCriteria {
 	#region constructor
 
 	/// <summary> For no-filter criteria </summary>
-	public TargetCriteria( TerrainMapper terrainMapper, int range ) {
-		_terrainMapper = terrainMapper;
+	public TargetCriteria( int range ) {
 		Range = range;
 		_filters = Array.Empty<string>();
 		_self = null; // Don't need to bind spirit since no filters test for spirit.
 	}
 
 	/// <summary> For early binding Spirit dependent criteria </summary>
-	public TargetCriteria( TerrainMapper terrainMapper, int range, Spirit self, params string[] filters ) {
-		_terrainMapper = terrainMapper;
+	public TargetCriteria( int range, Spirit self, params string[] filters ) {
 		Range = range;
 		_self = self;
 		_filters = filters ?? throw new ArgumentNullException( nameof( filters ) );
@@ -30,13 +28,13 @@ public class TargetCriteria {
 	public int Range { get; }
 
 	public bool Matches( SpaceState state ){
-		if(!_terrainMapper.IsInPlay( state )) return false;
+		if(!TerrainMapper.IsInPlay( state )) return false;
 
 		// since we are doing a MatchAny (OR), we need at least 1 criteria or it won't match anything
 		// (if we were to do a MatchAll (AND), then we wouldn't need any criteria)
 		if(_filters.Length == 0) return true;
 
-		SpaceStateWithPresence allStateData = new SpaceStateWithPresence( state, _self, _terrainMapper );
+		SpaceStateWithPresence allStateData = new SpaceStateWithPresence( state, _self, TerrainMapper );
 
 		if(_filters.Length == 1) return Matches(_filters[0], allStateData );
 
@@ -45,11 +43,12 @@ public class TargetCriteria {
 	}
 
 	// Virtual so OfferPassageBetweenWorlds can do multiple criteria
-	public virtual TargetCriteria ExtendRange( int extension ) => new TargetCriteria( _terrainMapper, Range + extension, _self, _filters );
+	public virtual TargetCriteria ExtendRange( int extension ) => new TargetCriteria( Range + extension, _self, _filters );
 
 	#region private
 	readonly string[] _filters;
-	readonly TerrainMapper _terrainMapper;
+	TerrainMapper TerrainMapper => _terrainMapper ??= UnitOfWork.Current.TerrainMapper;
+	TerrainMapper _terrainMapper;
 	readonly Spirit _self;
 	#endregion
 
@@ -60,7 +59,7 @@ public class TargetCriteria {
 		#region constructor
 		public SpaceStateWithPresence( SpaceState spaceState, Spirit focusSpirit, TerrainMapper tm ) {
 			Tokens = spaceState;
-			this._focusSpirit = focusSpirit;
+			_focusSpirit = focusSpirit;
 			_terrainMapper = tm;
 		}
 		#endregion

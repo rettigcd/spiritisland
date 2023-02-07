@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class GuideTheWayOnFeatheredWings {
 
@@ -13,7 +15,7 @@ public class GuideTheWayOnFeatheredWings {
 		if(steps <= 0 ) return;
 
 		// move beast
-		Space destination = await ctx.MoveTokensOut(1, ctx.TerrainMapper.Specify( 1 ), Token.Beast );
+		Space destination = await ctx.MoveTokensOut(1, new TargetCriteria( 1 ), Token.Beast );
 		if(destination == null) return;
 			
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.

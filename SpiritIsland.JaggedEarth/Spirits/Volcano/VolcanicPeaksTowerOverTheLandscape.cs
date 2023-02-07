@@ -27,8 +27,8 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 
 	// This class could be used on All Innates to identify them as innates.
 	public class InnateTargetCriteria : TargetCriteria {
-		public InnateTargetCriteria( TerrainMapper terrainMapper, int range, Spirit spirit, params string[] filters ) 
-			:base( terrainMapper, range, spirit, filters ) { }
+		public InnateTargetCriteria( int range, Spirit spirit, params string[] filters ) 
+			:base( range, spirit, filters ) { }
 	}
 
 }

@@ -12,7 +12,7 @@ public class MovePresence : GrowthActionFactory, IActionFactory {
 		var src = await ctx.Decision( Select.DeployedPresence.All("Move presence from:", ctx.Presence, Present.Always ) );
 		var dstOptions = ctx.GameState.Tokens[src]
 			.Range(Range) // this is ok, since it is a Growth action, not a power action
-			.Where( ctx.TerrainMapper.IsInPlay );
+			.Where( UnitOfWork.Current.TerrainMapper.IsInPlay );
 		var dst = await ctx.Decision( Select.Space.ForMoving_SpaceToken("Move presence to:", src, dstOptions, Present.Always, ctx.Self.Presence.Token));
 		await ctx.Presence.Move( src, dst );
 	}

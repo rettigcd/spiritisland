@@ -211,7 +211,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
-		var boundPresence = new ReadOnlyBoundPresence( spirit, gs, gs.Island.Terrain_ForBlight );
+		var boundPresence = new ReadOnlyBoundPresence( spirit, gs );
 		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", boundPresence ) );
 		await gs.Tokens[presenceSpace].BindScope().Destroy(spirit.Presence.Token,1);
 	}

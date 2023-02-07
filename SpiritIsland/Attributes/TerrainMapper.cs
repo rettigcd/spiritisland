@@ -10,8 +10,6 @@ namespace SpiritIsland;
 /// </summary>
 public class TerrainMapper {
 
-	public TargetCriteria Specify( int range ) => new TargetCriteria( this, range );
-
 	// Terrain
 	public virtual bool MatchesTerrain( SpaceState ss, params Terrain[] options ) => ss.Space.IsOneOf( options );
 

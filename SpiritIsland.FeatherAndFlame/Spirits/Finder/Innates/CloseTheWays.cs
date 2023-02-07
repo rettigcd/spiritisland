@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.FeatherAndFlame;
+﻿using System;
+
+namespace SpiritIsland.FeatherAndFlame;
 
 // fast, range 1, any
 // Target each level of this as a separate Power
@@ -28,7 +30,7 @@ public class CloseTheWays {
 			var space = await ctx.Self.TargetsSpace(ctx, "Target Additional Space To Close",
 				preselect: null,
 				new TargetingSourceCriteria(From.Presence),
-				ctx.TerrainMapper.Specify(1)
+				new TargetCriteria( 1 )
 			);
 			ctx = ctx.Target(space);
 		}

@@ -90,7 +90,7 @@ public class SpiritPresence {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	public virtual bool CanBePlacedOn( SpaceState spaceState, TerrainMapper mapper ) => mapper.IsInPlay( spaceState );
+	public virtual bool CanBePlacedOn( SpaceState spaceState ) => UnitOfWork.Current.TerrainMapper.IsInPlay( spaceState );
 	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token];
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
 	public int CountOn( SpaceState spaceState ) => spaceState[Token];
@@ -170,9 +170,9 @@ public class SpiritPresence {
 
 	#region Exposed Data
 
-	public IEnumerable<Space> SacredSites( GameState gs, TerrainMapper tm )
-		=> SacredSiteStates( gs, tm ).Downgrade();
-	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs, TerrainMapper _ ) => gs.AllActiveSpaces
+	public IEnumerable<Space> SacredSites( GameState gs )
+		=> SacredSiteStates( gs ).Downgrade();
+	public virtual IEnumerable<SpaceState> SacredSiteStates( GameState gs ) => gs.AllActiveSpaces
 		.Where( IsSacredSite );
 
 	public int Total( GameState gs ) => gs.AllSpaces.Sum( CountOn );

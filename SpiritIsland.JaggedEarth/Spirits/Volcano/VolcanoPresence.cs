@@ -6,7 +6,7 @@ namespace SpiritIsland.JaggedEarth;
 class VolcanoPresence : SpiritPresence {
 	public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
 
-	public override bool CanBePlacedOn( SpaceState s, TerrainMapper tm ) => tm.MatchesTerrain( s, Terrain.Mountain );
+	public override bool CanBePlacedOn( SpaceState s ) => UnitOfWork.Current.TerrainMapper.MatchesTerrain( s, Terrain.Mountain );
 
 	public override void SetSpirit( Spirit spirit ) {
 		base.SetSpirit( spirit );

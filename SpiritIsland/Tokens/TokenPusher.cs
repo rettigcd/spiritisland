@@ -77,7 +77,7 @@ public class TokenPusher {
 
 	protected virtual async Task<Space> SelectDestination( IVisibleToken token ) {
 		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent
-			.Where( ctx.TerrainMapper.IsInPlay );
+			.Where( UnitOfWork.Current.TerrainMapper.IsInPlay );
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 

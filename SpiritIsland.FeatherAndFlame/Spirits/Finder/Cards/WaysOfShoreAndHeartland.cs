@@ -6,11 +6,13 @@ public class WaysOfShoreAndHeartland {
 	[Slow,FromPresence( 2 )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
+		var tm = UnitOfWork.Current.TerrainMapper;
+
 		// Push up to 2 Invaders / Dahan / Presence / Beast
 		await ctx.Pusher
 			.AddGroup(2, Human.Invader.Plus( Human.Dahan, Token.Beast ).Concat(ctx.AllPresenceTokens).ToArray() )
 			// to a land that is also Coastal / Inland( whichever the target land is)
-			.FilterDestinations( ctx.IsCoastal ? ctx.TerrainMapper.IsCoastal : ctx.TerrainMapper.IsInland )
+			.FilterDestinations( ctx.IsCoastal ? tm.IsCoastal : tm.IsInland )
 			.MoveUpToN();
 	}
 

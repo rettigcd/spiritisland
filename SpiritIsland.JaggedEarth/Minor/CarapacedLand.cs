@@ -26,8 +26,8 @@ public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
 			, preselect: null
 			, _sourceCriteria
 			, new TargetCriteria[]{
-				ctx.TerrainMapper.Specify( _range ),
-				new TargetCriteria( ctx.TerrainMapper, _range+1, ctx.Self, Target.Beast ) // extend 1 for beast
+				new TargetCriteria( _range ),
+				new TargetCriteria( _range+1, ctx.Self, Target.Beast ) // extend 1 for beast
 			}
 		);
 		return space == null ? null : ctx.Target(space);

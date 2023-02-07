@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System;
+
+namespace SpiritIsland.JaggedEarth;
 public class BargainsOfPowerAndProtection {
 
 	[MajorCard("Bargains of Power and Protection",2,Element.Sun,Element.Water,Element.Earth,Element.Animal), Fast, FromPresence(0,Target.Dahan)]
@@ -33,7 +35,7 @@ public class BargainsOfPowerAndProtection {
 			// !! This is kind of slow to do for every space.
 			// ??? Is there some way we can cache this inside the UnitOfWork?
 
-			var match = ctx.Presence.FindSpacesWithinRange( ctx.TerrainMapper.Specify( 1 ), true )
+			var match = ctx.Presence.FindSpacesWithinRange( new TargetCriteria( 1 ), true )
 				.FirstOrDefault( opt => opt == space);
 			return match?.Dahan.CountAll ?? 0;
 		}
