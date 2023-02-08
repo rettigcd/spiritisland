@@ -20,7 +20,7 @@ public class SkipAnyInvaderAction : SelfCleaningToken, ISkipRavages, ISkipBuilds
 
 	Task<bool> ISkipRavages.Skip( SpaceState space ) => MakeDecision( space, "Ravage" );
 
-	Task<bool> ISkipBuilds.Skip( GameCtx _, SpaceState space, TokenClass buildClass ) => MakeDecision( space, "Building " + buildClass.Label );
+	Task<bool> ISkipBuilds.Skip( SpaceState space, TokenClass buildClass ) => MakeDecision( space, "Building " + buildClass.Label );
 
 	Task<bool> ISkipExploreTo.Skip( GameCtx _, SpaceState space ) => MakeDecision( space, "Explore" );
 

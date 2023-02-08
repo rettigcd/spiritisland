@@ -23,7 +23,7 @@ public class UtterACurseOfDreadAndBone {
 		// if you have 3 moon 2 animal:
 		if( await ctx.YouHave("3 moon,2 animal" )) {
 			// For each type of token you added, add 1 more within range 1.
-			if(0<badland)	await AddTokenToLandWithinRange(ctx,Token.Badlands,1);
+			if(0<badland)	await AddTokenToLandWithinRange(ctx, Token.Badlands,1);
 			if(0<disease)	await AddTokenToLandWithinRange(ctx, Token.Disease,1);
 			if(0<strife)	await AddStrifeToLandWithinRange (ctx, 1 );
 
@@ -35,10 +35,16 @@ public class UtterACurseOfDreadAndBone {
 
 	static int BlightInOrAdjacent( TargetSpaceCtx ctx ) => ctx.Range(1).Sum(s=>s.Blight.Count);
 
-	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, IVisibleToken token, int range ) {
-		var space = await ctx.Decision(new Select.Space($"Add {token.Text}",ctx.Range(range), Present.Always));
-		await ctx.Target(space).Tokens.Add( token,1);
+	//static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, IVisibleToken token, int range ) {
+	//	var space = await ctx.Decision(new Select.Space($"Add {token.Text}",ctx.Range(range), Present.Always));
+	//	await ctx.Target(space).Tokens.Add( token,1);
+	//}
+
+	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, TokenClass tokenClass, int range ) {
+		var space = await ctx.Decision( new Select.Space( $"Add {tokenClass.Label}", ctx.Range( range ), Present.Always ) );
+		await ctx.Target(space).Tokens.AddDefault(tokenClass, 1);
 	}
+
 
 	static async Task AddStrifeToLandWithinRange( TargetSpaceCtx ctx, int range ) {
 		var space = await ctx.Decision(new Select.Space("Add Strife",ctx.Range(range), Present.Always));

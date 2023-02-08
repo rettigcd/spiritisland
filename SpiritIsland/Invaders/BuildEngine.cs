@@ -88,9 +88,8 @@ public class BuildOnceOnSpace {
 			.ToArray();
 
 		// Check for Stoppers
-		var gameCtx = new GameCtx( _gameState );
-		foreach(var stopper in buildStoppers)
-			if(await stopper.Skip( gameCtx, _tokens, invaderToAdd ))
+		foreach(ISkipBuilds stopper in buildStoppers)
+			if(await stopper.Skip( _tokens, invaderToAdd ))
 				return "build stopped by " + stopper.Text;
 
 		// build it

@@ -1,35 +1,38 @@
 ﻿namespace SpiritIsland;
 
 public class TokenBinding {
-	readonly protected SpaceState _tokens;
-	readonly protected IVisibleToken _token;
+
+	public IVisibleToken Default { get; }
 
 	#region constructor
 	public TokenBinding( SpaceState tokens, IVisibleToken token ) {
 		_tokens = tokens;
-		_token = token;
+		Default = token;
 	}
+
 	public TokenBinding( TokenBinding src ) {
 		_tokens = src._tokens;
-		_token = src._token;
+		Default = src.Default;
 	}
 	#endregion
 
 	public bool Any => Count > 0;
 
-	public virtual int Count => _tokens[_token];
+	public virtual int Count => _tokens[Default];
 
-	public void Init( int count ) => _tokens.Init( _token, count );
+	public void Init( int count ) => _tokens.Init( Default, count );
 
-	public void Adjust( int delta ) => _tokens.Adjust( _token, delta );
+	public void Adjust( int delta ) => _tokens.Adjust( Default, delta );
 
 	public virtual Task Add( int count, AddReason reason = AddReason.Added )
-		=> _tokens.Add( _token, count, reason );
+		=> _tokens.Add( Default, count, reason );
 
 	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
-		=> _tokens.Remove( _token, count, reason );
+		=> _tokens.Remove( Default, count, reason );
 
 	public static implicit operator int( TokenBinding b ) => b.Count;
+
+	readonly protected SpaceState _tokens;
 }
 
 

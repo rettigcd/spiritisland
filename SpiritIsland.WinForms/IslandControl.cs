@@ -539,12 +539,10 @@ public partial class IslandControl : Control {
 
 		var tokenTypes = new List<IVisibleToken> {
 			Token.Defend, Token.Blight, // These don't show up in .OfAnyType if they are dynamic
-			Token.Wilds, Token.Disease, Token.Badlands, Token.Isolate
+			Token.Wilds, Token.Badlands, Token.Isolate
 		}	.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
 			.Union( spaceState.OfClass( Token.Beast ) )
-			.Union( spaceState.OfAnyClass( _spirit.Token ) )
-			.Union( spaceState.OfAnyClass( Token.Element ) )
-			.Union( spaceState.OfClass( Token.OpenTheWays ) )
+			.Union( spaceState.OfAnyClass( _spirit.Token, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
 			.Cast<IVisibleToken>()
 			.ToArray();
 
@@ -952,7 +950,7 @@ public partial class IslandControl : Control {
 			[Token.Blight] = images.GetImage( Img.Blight ),
 			[Token.Beast] = images.GetImage( Img.Beast ),
 			[Token.Wilds] = images.GetImage( Img.Wilds ),
-			[Token.Disease] = images.GetImage( Img.Disease ),
+			// [Token.Disease] = images.GetImage( Img.Disease ),
 			[Token.Badlands] = images.GetImage( Img.Badlands ),
 			// assign slot so we can access via key when we need to ?.Dispose() when initializing spirit
 			[Token.Defend] = null,

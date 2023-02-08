@@ -12,7 +12,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 					"T@2" => StdTokens.Town,
 					"C@3" => StdTokens.City,
 					"D@2" => StdTokens.Dahan,
-					"Z" => Token.Disease,
+					"Z"   => StdTokens.Disease,
 					_ => throw new ArgumentException("invalide tokentype found in "+expectedInvaderSummary)
 				};
 				desiredTokens.Add(token, int.Parse(part[..1] ) );

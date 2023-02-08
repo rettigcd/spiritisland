@@ -5,7 +5,7 @@ public interface ISkipBuilds : IToken {
 	UsageCost Cost {get;}
 	/// <returns>True if Build is stopped</returns>
 	/// <remarks>Uses Invader-Action to perform work since remove-disease/remove-wilds isn't really an 'Action'</remarks>
-	Task<bool> Skip( GameCtx gameState, SpaceState space, TokenClass buildClass );
+	Task<bool> Skip( SpaceState space, TokenClass buildClass );
 
 	string Text { get; }
 }

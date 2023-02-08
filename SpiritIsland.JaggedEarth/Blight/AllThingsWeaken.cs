@@ -21,18 +21,18 @@ public class AllThingsWeaken : BlightCardBase {
 		new DecisionOption<GameState>("Invaders have -1 Health.", gs => {
 			// change the defaults
 			var defaults = gs.Tokens.TokenDefaults;
-			foreach(var invaderClass in defaults.Keys.ToArray()){
-				var current = defaults[invaderClass];
+			foreach(var invaderClass in defaults.Keys.OfType<HumanTokenClass>().ToArray()){
+				HumanToken current = (HumanToken)defaults[invaderClass];
 				defaults[invaderClass] = current.AddHealth(-1);
 			}
 
 			// replace/update existing tokens
 			foreach(var ss in gs.AllActiveSpaces) {
-				var tokenTypes = ss.Keys.OfType<HumanToken>()
+				var humanTokenTypes = ss.Keys.OfType<HumanToken>()
 					.Where(x=>x.FullHealth > 1)
 					.OrderBy(x=>x.FullHealth)
 					.ToArray(); // least health first
-				foreach(var oldToken in tokenTypes) {
+				foreach(HumanToken oldToken in humanTokenTypes) {
 					var newToken = oldToken.AddHealth(-1);
 					ss.Adjust( newToken, ss[oldToken] );
 					ss.Init( oldToken, 0 );

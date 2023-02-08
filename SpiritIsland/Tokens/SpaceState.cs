@@ -82,7 +82,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public virtual BlightTokenBinding Blight => new BlightTokenBinding( this );
 	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
 	public BeastBinding Beasts => new ( this, Token.Beast );
-	public TokenBinding Disease => new ( this, Token.Disease );
+	public TokenBinding Disease => new ( this, _api.GetDefault( Token.Disease ) );
 	public TokenBinding Wilds => new ( this, Token.Wilds );
 	public TokenBinding Badlands => new ( this, Token.Badlands ); // This should not be used directly from inside Actions
 	public HealthTokenClassBinding Dahan => new HealthTokenClassBinding( this, Human.Dahan );
@@ -125,7 +125,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public HumanToken GetDefault( HumanTokenClass tokenClass ) => this._api.GetDefault( tokenClass );
+	public HumanToken GetDefault( HumanTokenClass tokenClass ) => (HumanToken)_api.GetDefault( tokenClass );
+	public IVisibleToken GetDefault( TokenClass tokenClass ) => _api.GetDefault( tokenClass );
 
 	public void ReplaceAllWith( IToken original, IToken replacement ) {
 		Adjust( replacement, this[original] );
@@ -303,7 +304,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		return (newToken, count);
 	}
 
-	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
+	public Task AddDefault( TokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Add( GetDefault( tokenClass ), count, addReason );
 
 

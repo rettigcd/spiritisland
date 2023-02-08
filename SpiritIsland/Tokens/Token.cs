@@ -10,17 +10,15 @@ public static class Token {
 
 	// Branch and Claw
 	static readonly public UniqueToken Beast   = new UniqueToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
-//	static readonly public SimpleTokenClass Beast = new SimpleTokenClass( "Beast" );
-//	static readonly public SimpleToken BeastImp = new SimpleToken(Beast, 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
-
 	static readonly public UniqueToken Wilds   = new WildsToken( "Wilds", 'W', Img.Wilds );
-	static readonly public UniqueToken Disease = new DiseaseToken( "Disease", 'Z', Img.Disease );
+	static readonly public TokenClass Disease  = new DiseaseToken();
 
 	// Jagged Earth
 	static readonly public UniqueToken Badlands = new UniqueToken ( "Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
 	static readonly public UniqueToken Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
 	static readonly public TokenClass OpenTheWays = new UniqueToken( "OpenTheWays", '=', Img.OpenTheWays );
 
+	static public DiseaseToken Disease_Original => (DiseaseToken)Disease; // Don't use this directly.  Use .Disease instead.
 }
 
 public static class ModToken {

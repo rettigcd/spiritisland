@@ -23,7 +23,7 @@ public class SkipBuild : SelfCleaningToken, ISkipBuilds {
 
 	bool Stops( TokenClass buildClass ) => _stoppedClasses.Contains( buildClass );
 
-	public virtual Task<bool> Skip( GameCtx _, SpaceState space, TokenClass buildClass ) {
+	public virtual Task<bool> Skip( SpaceState space, TokenClass buildClass ) {
 		if( !Stops( buildClass ) ) return Task.FromResult(false); // not stopped
 
 		if(_duration == UsageDuration.SkipOneThisTurn )

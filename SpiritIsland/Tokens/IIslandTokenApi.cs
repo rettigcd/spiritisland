@@ -6,7 +6,7 @@ public interface IIslandTokenApi {
 
 	int GetDynamicTokensFor( SpaceState space, UniqueToken token );
 
-	HumanToken GetDefault( HumanTokenClass tokenClass );
+	IVisibleToken GetDefault( TokenClass tokenClass );
 
 	IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces );
 

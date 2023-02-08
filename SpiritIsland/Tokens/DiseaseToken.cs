@@ -3,15 +3,16 @@
 namespace SpiritIsland;
 
 public class DiseaseToken : UniqueToken, ISkipBuilds {
-	public DiseaseToken(string label, char k, Img img) : base(label,k, img) {
-		Text= label;
-	}
+	const string DiseaseText = "Disease";
+	public DiseaseToken() : base( DiseaseText, 'Z', Img.Disease ) {}
 
 	public UsageCost Cost => UsageCost.Something; // we do lose the token
 
-	public string Text { get; }
+	public string Text => DiseaseText;
 
-	public Task<bool> Skip( GameCtx gameCtx, SpaceState space, TokenClass buildClass ) {
-		return gameCtx.GameState.Disease_StopBuildBehavior( gameCtx, space, buildClass);
+	public virtual async Task<bool> Skip( SpaceState tokens, TokenClass _ ) {
+		await tokens.Disease.Remove( 1, RemoveReason.UsedUp );
+		return true;
 	}
+
 }

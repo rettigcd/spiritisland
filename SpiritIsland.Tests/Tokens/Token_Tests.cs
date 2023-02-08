@@ -11,10 +11,10 @@ public class Token_Tests {
 			StdTokens.Town1,StdTokens.Town,
 			StdTokens.City1,StdTokens.City2,StdTokens.City,
 			StdTokens.Dahan1,StdTokens.Dahan,
+			StdTokens.Disease,
 			Token.Blight, // conflict with Beast
 			Token.Defend,
 			Token.Beast,
-			Token.Disease,
 			Token.Wilds
 		};
 

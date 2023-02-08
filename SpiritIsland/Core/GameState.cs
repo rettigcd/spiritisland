@@ -260,12 +260,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Game-Wide overrideable Behavior
 
-	public Func<GameCtx,SpaceState,TokenClass,Task<bool>> Disease_StopBuildBehavior = Disease_StopBuildBehavior_Default;
-	static async Task<bool> Disease_StopBuildBehavior_Default( GameCtx ctx, SpaceState tokens, TokenClass _ ) {
-		await tokens.Disease.Remove( 1, RemoveReason.UsedUp );
-		return true;
-	}
-
 	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
 
 	public Func<int, SpaceState, Task> TakeFromBlightSouce {

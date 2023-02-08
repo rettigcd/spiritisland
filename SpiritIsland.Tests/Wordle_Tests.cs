@@ -1,10 +1,16 @@
-﻿/*
+﻿namespace SpiritIsland.Tests;
+
+public class AAA_Temp {
+	//[Fact]
+	//public void Test() {
+	//	("["+string.Join("][", "a good\t day to 123. ".Split() )+"]").ShouldBe("");
+	//}
+}
+
+/*
 
 using System.Text;
 using System.Text.RegularExpressions;
-
-namespace SpiritIsland.Tests;
-
 
 public class Wordle_Tests {
 

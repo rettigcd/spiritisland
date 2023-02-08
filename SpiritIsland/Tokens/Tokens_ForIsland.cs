@@ -5,15 +5,24 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public Tokens_ForIsland( GameState gs ) {
 
 		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
-		TokenDefaults = new Dictionary<HumanTokenClass, HumanToken> {
+
+		TokenDefaults = new Dictionary<TokenClass, IVisibleToken> {
 			[Human.City]     = new HumanToken( Human.City, PenaltyHolder, 3 ),
 			[Human.Town]     = new HumanToken( Human.Town, PenaltyHolder, 2 ),
 			[Human.Explorer] = new HumanToken( Human.Explorer, PenaltyHolder, 1 ),
-			[Human.Dahan]  = new HumanToken( Human.Dahan, PenaltyHolder, 2 ),
+			[Human.Dahan]    = new HumanToken( Human.Dahan, PenaltyHolder, 2 ),
+			[Token.Disease]  = (UniqueToken)Token.Disease,
 		};
 
 		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
 	}
+
+	#region Configuration
+
+	IVisibleToken IIslandTokenApi.GetDefault( TokenClass tokenClass ) => TokenDefaults[tokenClass];
+	public readonly Dictionary<TokenClass, IVisibleToken> TokenDefaults;
+
+	#endregion
 
 	Task ClearEventHandlers_ForRound() {
 		TokenMoved.ForRound.Clear();
@@ -39,7 +48,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		await TokenMoved.InvokeAsync( args );
 	}
 
-	HumanToken IIslandTokenApi.GetDefault( HumanTokenClass tokenClass ) => TokenDefaults[tokenClass];
 
 	public int InvaderAttack( HumanTokenClass tokenClass ) => Attack[tokenClass];
 	public readonly Dictionary<HumanTokenClass, int> Attack = new Dictionary<HumanTokenClass, int> {
@@ -117,14 +125,13 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		}
 		readonly Dictionary<Space, CountDictionary<IToken>> _tokenCounts = new Dictionary<Space, CountDictionary<IToken>>();
 		readonly Dictionary<Space, bool> _inStasis;
-		readonly Dictionary<HumanTokenClass, HumanToken> tokenDefaults = new Dictionary<HumanTokenClass, HumanToken>();
+		readonly Dictionary<TokenClass, IVisibleToken> tokenDefaults = new Dictionary<TokenClass, IVisibleToken>();
 		readonly IMemento<DualDynamicTokens> dynamicTokens;
 	}
 
 	#endregion Memento
 
 	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
-	readonly public Dictionary<HumanTokenClass, HumanToken> TokenDefaults;
 	readonly Dictionary<Space, SpaceState> _tokenCounts = new Dictionary<Space, SpaceState>();
 
 }
