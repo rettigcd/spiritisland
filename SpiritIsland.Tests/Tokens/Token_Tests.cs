@@ -6,7 +6,7 @@ public class Token_Tests {
 
 	[Fact]
 	public void SummariesAreUnique() {
-		var tokens = new IToken[] {
+		var tokens = new ISpaceEntity[] {
 			StdTokens.Explorer,
 			StdTokens.Town1,StdTokens.Town,
 			StdTokens.City1,StdTokens.City2,StdTokens.City,

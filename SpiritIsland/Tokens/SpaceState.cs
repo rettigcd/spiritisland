@@ -11,7 +11,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region constructor
 
-	public SpaceState( Space space, CountDictionary<IToken> counts, IIslandTokenApi tokenApi ) {
+	public SpaceState( Space space, CountDictionary<ISpaceEntity> counts, IIslandTokenApi tokenApi ) {
 		Space = space;
 		_counts = counts;
 		_api = tokenApi;
@@ -19,7 +19,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	/// <summary> Clone / copy constructor </summary>
 	protected SpaceState( SpaceState src ) {
-		this.Space = src.Space;
+		Space = src.Space;
 		_counts = src._counts;
 		_api = src._api;
 	}
@@ -30,44 +30,44 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public BoardState Board => new BoardState( Space.Board );
 
-	public int this[IToken specific] {
+	public int this[ISpaceEntity specific] {
 		get {
 			ValidateNotDead( specific );
 			int count = _counts[specific];
-			if( specific is UniqueToken ut )
+			if( specific is TokenClassToken ut )
 				count += _api.GetDynamicTokensFor(this, ut);
 			return count;
 		}
 	}
 
-	public IEnumerable<IToken> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
+	public IEnumerable<ISpaceEntity> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
 
 	#region Enumeration / Detection(HaS) / Summing
 
-	public IToken[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
-	public IToken[] OfClass( TokenClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
-	public IToken[] OfAnyClass( params TokenClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
+	public ISpaceEntity[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
+	public ISpaceEntity[] OfClass( IEntityClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
+	public ISpaceEntity[] OfAnyClass( params IEntityClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
 
 	public HumanToken[] OfHumanClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
 	public HumanToken[] OfAnyHumanClass( params HumanTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HumanToken>().ToArray();
 
 	// 2 SpaceToken helper classes
-	public IEnumerable<SpaceToken> SpaceTokensOfClass( TokenClass tokenClass ) 
-		=> OfClassInternal( tokenClass ).OfType<IVisibleToken>().Select(x=>new SpaceToken(Space,x));
-	public IEnumerable<SpaceToken> SpaceTokensOfAnyClass( params TokenClass[] tokenClasses )
-		=> OfAnyClassInternal( tokenClasses ).OfType<IVisibleToken>().Select( x => new SpaceToken( Space, x ) );
+	public IEnumerable<SpaceToken> SpaceTokensOfClass( IEntityClass tokenClass ) 
+		=> OfClassInternal( tokenClass ).OfType<IToken>().Select(x=>new SpaceToken(Space,x));
+	public IEnumerable<SpaceToken> SpaceTokensOfAnyClass( params IEntityClass[] tokenClasses )
+		=> OfAnyClassInternal( tokenClasses ).OfType<IToken>().Select( x => new SpaceToken( Space, x ) );
 
-	protected IEnumerable<IToken> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
-	protected IEnumerable<IToken> OfClassInternal( TokenClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
-	protected IEnumerable<IToken> OfAnyClassInternal( params TokenClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
+	protected IEnumerable<ISpaceEntity> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
+	protected IEnumerable<ISpaceEntity> OfClassInternal( IEntityClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
+	protected IEnumerable<ISpaceEntity> OfAnyClassInternal( params IEntityClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
 
-	public bool Has( TokenClass inv ) => OfClassInternal( inv ).Any();
+	public bool Has( IEntityClass inv ) => OfClassInternal( inv ).Any();
 	public bool Has( TokenCategory cat ) => OfCategoryInternal( cat ).Any();
-	public bool HasAny( params TokenClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Any();
+	public bool HasAny( params IEntityClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Any();
 
-	public int Sum( TokenClass tokenClass ) => OfClassInternal( tokenClass ).Sum( k => _counts[k] );
+	public int Sum( IEntityClass tokenClass ) => OfClassInternal( tokenClass ).Sum( k => _counts[k] );
 	public int Sum( TokenCategory category ) => OfCategoryInternal( category ).Sum( k => _counts[k] );
-	public int SumAny( params TokenClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Sum( k => _counts[k] );
+	public int SumAny( params IEntityClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Sum( k => _counts[k] );
 
 	#endregion
 
@@ -97,12 +97,12 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region fields
 
-	static void ValidateNotDead( IToken specific ) {
+	static void ValidateNotDead( ISpaceEntity specific ) {
 		if(specific is HumanToken ht && ht.RemainingHealth == 0) 
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
-	readonly CountDictionary<IToken> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
+	readonly CountDictionary<ISpaceEntity> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
 	protected readonly IIslandTokenApi _api;
 
 	#endregion
@@ -110,14 +110,14 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	#region Non-event Generationg Token Changes
 
 	/// <summary> Non-event-triggering setup </summary>
-	public void Adjust( IToken specific, int delta ) {
+	public void Adjust( ISpaceEntity specific, int delta ) {
 		if(specific is HumanToken human && human.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
 		if(specific is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta);
 		_counts[specific] += delta;
 	}
 
-	public void Init( IToken specific, int newValue ) {
+	public void Init( ISpaceEntity specific, int newValue ) {
 		int old = _counts[specific];
 		Adjust( specific, newValue-old ); // go through Adjust so that we keep ITrackMySpaces in sync
 	}
@@ -128,14 +128,14 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public HumanToken GetDefault( HumanTokenClass tokenClass ) => (HumanToken)_api.GetDefault( tokenClass );
-	public IVisibleToken GetDefault( TokenClass tokenClass ) => _api.GetDefault( tokenClass );
+	public HumanToken GetDefaultHuman( HumanTokenClass tokenClass ) => (HumanToken)_api.GetDefault( tokenClass );
+	public IToken GetDefault( IEntityClass tokenClass ) => _api.GetDefault( tokenClass );
 
-	public void ReplaceAllWith( IToken original, IToken replacement ) {
+	public void ReplaceAllWith( ISpaceEntity original, ISpaceEntity replacement ) {
 		Adjust( replacement, this[original] );
 		Init( original, 0 );
 	}
-	public void ReplaceNWith( int countToReplace, IToken oldToken, IToken newToken ) {
+	public void ReplaceNWith( int countToReplace, ISpaceEntity oldToken, ISpaceEntity newToken ) {
 		countToReplace = Math.Min( countToReplace, this[oldToken] );
 		Adjust( oldToken, -countToReplace );
 		Adjust( newToken, countToReplace );
@@ -206,7 +206,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	public void Skip1Build( string label ) => Adjust( SkipBuild.Default( label ), 1 );
 
-	public void SkipAllBuilds( string label, params TokenClass[] stoppedClasses ) => Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
+	public void SkipAllBuilds( string label, params IEntityClass[] stoppedClasses ) => Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
 
 	public void Skip1Explore( string _ ) => Adjust( new SkipExploreTo(), 1 );
 
@@ -301,16 +301,16 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		return (newToken, count);
 	}
 
-	public Task AddDefault( TokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
+	public Task AddDefault( IEntityClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Add( GetDefault( tokenClass ), count, addReason );
 
 
 	// Convenience only
-	public Task Destroy( IVisibleToken token, int count ) => token is HumanToken ht
+	public Task Destroy( IToken token, int count ) => token is HumanToken ht
 		? ht.Destroy( this, count )
 		: Remove( token, count, RemoveReason.Destroyed );
 
-	public async Task<TokenAddedArgs> Add( IVisibleToken token, int count, AddReason addReason = AddReason.Added ) {
+	public async Task<TokenAddedArgs> Add( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = Add_Silent( token, count, addReason );
 		if(addResult != null)
 			foreach(IHandleTokenAdded handler in Keys.OfType<IHandleTokenAdded>().ToArray())
@@ -318,7 +318,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		return addResult;
 	}
 
-	TokenAddedArgs Add_Silent( IVisibleToken token, int count, AddReason addReason = AddReason.Added ) {
+	TokenAddedArgs Add_Silent( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
@@ -338,7 +338,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 
 	/// <summary> returns null if no token removed </summary>
-	public virtual async Task<TokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public virtual async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 
 		// grab event handlers BEFORE the token is removed, so token can self-handle its own removal
 		var tokenRemovedHandlers = Keys.OfType<IHandleTokenRemoved>().ToArray();
@@ -353,7 +353,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
-	protected async Task<TokenRemovedArgs> Remove_Silent( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	protected async Task<TokenRemovedArgs> Remove_Silent( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
@@ -374,7 +374,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	}
 
 	/// <summary> Gathering / Pushing + a few others </summary>
-	public async Task MoveTo( IVisibleToken token, Space destination ) {
+	public async Task MoveTo( IToken token, Space destination ) {
 		// Current implementation favors:
 		//		switching token types prior to Add/Remove so events handlers don't switch token type
 		//		perfoming the add/remove action After the Adding/Removing modifications

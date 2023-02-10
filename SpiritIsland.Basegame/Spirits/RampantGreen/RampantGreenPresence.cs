@@ -14,7 +14,7 @@ public class RampantGreenPresence : SpiritPresence {
 		Token = new ChokeTheLandWithGreen((ASpreadOfRampantGreen)spirit);
 	}
 
-	public TokenClass Class => throw new NotImplementedException();
+	public IEntityClass Class => throw new NotImplementedException();
 
 	public string Text => throw new NotImplementedException();
 

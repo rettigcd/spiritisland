@@ -12,7 +12,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		_selfCtx = selfCtx;
 	}
 
-	public override async Task<TokenRemovedArgs> Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public override async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(reason != RemoveReason.Destroyed)
 			return await base.Remove( token, count, reason );
 
@@ -23,7 +23,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		return null; // nothing removed
 	}
 
-	async Task Destroy1Token( IToken token ) {
+	async Task Destroy1Token( ISpaceEntity token ) {
 
 		// for everything BUT normal invaders, we do nothing
 		if(token.Class.Category != TokenCategory.Invader) return; 

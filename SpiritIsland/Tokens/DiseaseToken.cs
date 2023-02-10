@@ -2,7 +2,7 @@
 
 namespace SpiritIsland;
 
-public class DiseaseToken : UniqueToken, ISkipBuilds {
+public class DiseaseToken : TokenClassToken, ISkipBuilds {
 	const string DiseaseText = "Disease";
 	public DiseaseToken() : base( DiseaseText, 'Z', Img.Disease ) {}
 
@@ -10,7 +10,7 @@ public class DiseaseToken : UniqueToken, ISkipBuilds {
 
 	public string Text => DiseaseText;
 
-	public virtual async Task<bool> Skip( SpaceState tokens, TokenClass _ ) {
+	public virtual async Task<bool> Skip( SpaceState tokens, IEntityClass _ ) {
 		await tokens.Disease.Remove( 1, RemoveReason.UsedUp );
 		return true;
 	}

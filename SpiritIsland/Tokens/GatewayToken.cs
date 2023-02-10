@@ -2,7 +2,7 @@
 
 /// <summary> Since tokens are directional, create separate 1 for each end. </summary>
 /// <remarks> Must be in Engine project so that Memento can save/restore it.</remarks>
-public class GatewayToken : IToken, IHandleTokenRemoved {
+public class GatewayToken : ISpaceEntity, IHandleTokenRemoved {
 
 	SpaceState From { get; }
 	public SpaceState To { get; }
@@ -19,7 +19,7 @@ public class GatewayToken : IToken, IHandleTokenRemoved {
 		From.Init( this, 0 );
 		To.Init( this, 0 );
 	}
-	public TokenClass Class => Token.OpenTheWays;
+	public IEntityClass Class => Token.OpenTheWays;
 
 	public SpaceState GetLinked( SpaceState end ) => end == From ? To : end == To ? From : null; // doesn't link.
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {

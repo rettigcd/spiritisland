@@ -67,26 +67,26 @@ public class PreselectAttribute : Attribute, IPreselect {
 		Prompt = prompt;
 		TokenClasses = classString.Split( ',' )
 			.Select( x => x switch {
-				"Explorer" => (TokenClass)Human.Explorer,
-				"Town" => (TokenClass)Human.Town,
-				"City" => (TokenClass)Human.City,
-				"Beast" => (TokenClass)Token.Beast,
-				"Disease" => (TokenClass)Token.Disease,
-				"Wilds" => (TokenClass)Token.Wilds,
-				"Dahan" => (TokenClass)Human.Dahan,
+				"Explorer" => (IEntityClass)Human.Explorer,
+				"Town" => (IEntityClass)Human.Town,
+				"City" => (IEntityClass)Human.City,
+				"Beast" => (IEntityClass)Token.Beast,
+				"Disease" => (IEntityClass)Token.Disease,
+				"Wilds" => (IEntityClass)Token.Wilds,
+				"Dahan" => (IEntityClass)Human.Dahan,
 				_ => throw new Exception( $"{x} not known" )
 			} ).ToArray();
 	}
 
 	public string Prompt { get; }
 
-	public TokenClass[] TokenClasses { get; }
+	public IEntityClass[] TokenClasses { get; }
 
 }
 
 /// <summary> Provides token/prompt info to enable selecing token and space at the same time (when appropriate). </summary>
 public interface IPreselect {
 	string Prompt { get; }
-	TokenClass[] TokenClasses { get; }
+	IEntityClass[] TokenClasses { get; }
 }
 

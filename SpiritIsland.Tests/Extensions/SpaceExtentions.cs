@@ -27,7 +27,7 @@ public static class SpaceExtentions {
 
 
 	static readonly Regex tokenParser = new Regex( @"(\d+)(\w)@(\d+)(\^*)" );
-	static (int, IToken) ParseToken( string part ) {
+	static (int, ISpaceEntity) ParseToken( string part ) {
 		var match = tokenParser.Match( part );
 		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}] Example: 1T@2." );
 		var tokenClass = match.Groups[2].Value switch {

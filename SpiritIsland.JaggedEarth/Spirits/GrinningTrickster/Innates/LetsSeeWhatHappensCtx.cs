@@ -16,7 +16,7 @@ class LetsSeeWhatHappensCtx : TargetSpaceCtx {
 	/// <summary>
 	/// Change PushUpTo to PushAll
 	/// </summary>
-	public override Task<Space[]> PushUpTo( int countToPush, params TokenClass[] groups ) 
+	public override Task<Space[]> PushUpTo( int countToPush, params IEntityClass[] groups ) 
 		=> new TokenPusher( this )
 			.AddGroup( countToPush, groups )
 			.MoveN();
@@ -24,7 +24,7 @@ class LetsSeeWhatHappensCtx : TargetSpaceCtx {
 	/// <summary>
 	/// Change GatherUpTO to GatherAll
 	/// </summary>
-	public override Task GatherUpTo( int countToGather, params TokenClass[] ofType )
+	public override Task GatherUpTo( int countToGather, params IEntityClass[] ofType )
 		=> this.Gather( countToGather, ofType );
 
 }

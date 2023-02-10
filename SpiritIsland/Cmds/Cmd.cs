@@ -13,14 +13,14 @@ public static partial class Cmd {
 	// Gather
 	static public SpaceAction GatherUpToNDahan( int count ) => new SpaceAction( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
 	static public SpaceAction GatherUpToNExplorers( int count ) => new SpaceAction( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Human.Explorer));
-	static public SpaceAction GatherUpToNInvaders( int count, params TokenClass[] classes ) => new SpaceAction( $"Gather up to {count} " + classes.Select(c=>c.Label).Join("/"), ctx => ctx.GatherUpTo( count, classes ) );
+	static public SpaceAction GatherUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceAction( $"Gather up to {count} " + classes.Select(c=>c.Label).Join("/"), ctx => ctx.GatherUpTo( count, classes ) );
 
 	// Push
 	static public SpaceAction PushUpToNDahan( int count ) => new SpaceAction( $"Push up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) ).OnlyExecuteIf(ctx=>ctx.Dahan.Any );
 	static public SpaceAction PushNDahan(int count ) => new SpaceAction( $"Push {count} dahan", ctx => ctx.PushDahan( count ) ).OnlyExecuteIf( ctx=>ctx.Dahan.Any );
 	static public SpaceAction PushUpToNExplorers( int count ) => new SpaceAction( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Human.Explorer)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Explorer ) );
 	static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Human.Town)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Town ) );
-	static public SpaceAction PushUpToNInvaders( int count, params TokenClass[] classes ) => new SpaceAction( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Tokens.HasAny( classes ) );
+	static public SpaceAction PushUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceAction( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Tokens.HasAny( classes ) );
 	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Human.Explorer_Town ) ).OnlyExecuteIf( ctx=>ctx.Tokens.HasAny( Human.Explorer_Town ) );
 
 	// -- Add ---
@@ -35,7 +35,7 @@ public static partial class Cmd {
 			$"Add {count} Strife to "+String.Join(",",tokenClasses.Select(x=>x.Label)), 
 			async ctx => { for(int i = 0; i < count; ++i) await ctx.AddStrife( tokenClasses ); }
 		); 
-	static public SpaceAction Adjust1Token( string description, IToken token ) => new SpaceAction( description, ctx => ctx.Tokens.Adjust(token,1) );
+	static public SpaceAction Adjust1Token( string description, ISpaceEntity token ) => new SpaceAction( description, ctx => ctx.Tokens.Adjust(token,1) );
 	// -- Screwy Strife Stuff --
 	static public DecisionOption<GameCtx> StrifePenalizesHealth => new DecisionOption<GameCtx>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
 	static public SpaceAction EachStrifeDamagesInvader => new SpaceAction( "Invaders take 1 damage per strife", async ctx=>{ 
@@ -55,8 +55,8 @@ public static partial class Cmd {
 	static public SpaceAction RemoveCities(int count) => RemoveUpToNTokens(count,Human.City);
 	static public SpaceAction RemoveInvaders(int count) => RemoveUpToNTokens(count,Human.Invader);
 
-	static public SpaceAction RemoveUpToNTokens(int count,params TokenClass[] tokenClasses) {
-		Func<TokenClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
+	static public SpaceAction RemoveUpToNTokens(int count,params IEntityClass[] tokenClasses) {
+		Func<IEntityClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
 		return new SpaceAction($"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast(", "," or "),
 			ctx => new TokenRemover(ctx).AddGroup(count, tokenClasses).RemoveUpToN()
 		).OnlyExecuteIf( x => x.Tokens.HasAny(tokenClasses));

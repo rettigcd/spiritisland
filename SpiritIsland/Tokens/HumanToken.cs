@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class HumanToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
+public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
 
 	public HumanToken( 
 		HumanTokenClass tokenClass, 
@@ -26,7 +26,7 @@ public class HumanToken : IVisibleToken, IAppearInSpaceAbreviation, IEquatable<H
 	}
 
 	public HumanTokenClass Class { get; }
-	TokenClass IToken.Class => this.Class;
+	IEntityClass ISpaceEntity.Class => this.Class;
 
 	/// <summary>The effective FullHealth of a token. Minimum of 1; </summary>
 	public int FullHealth => Math.Max(1, _rawFullHealth - StrifeCount * _healthPenaltyHolder.HealthPenaltyPerStrife );

@@ -18,7 +18,7 @@ public class SelfCleaningToken : ITokenWithEndOfRoundCleanup {
 		_keepForever = keepForever;
 	}
 
-	public TokenClass Class => ActionModTokenClass.Singleton;
+	public IEntityClass Class => ActionModTokenClass.Singleton;
 
 	void ITokenWithEndOfRoundCleanup.EndOfRoundCleanup( SpaceState spaceState ) {
 		if( _keepForever ) return; // no cleanup

@@ -2,7 +2,7 @@
 
 public class Invader_Tests {
 
-	static IToken Parse(string s ) {
+	static ISpaceEntity Parse(string s ) {
 		return s switch {
 			"C@3" => StdTokens.City,
 			"C@2" => StdTokens.City2,

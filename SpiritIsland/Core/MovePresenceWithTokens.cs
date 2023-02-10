@@ -3,7 +3,7 @@
 // used both for thunderspeaker and sharp fangs
 public class MovePresenceWithTokens {
 
-	public MovePresenceWithTokens( Spirit spirit, TokenClass tokenClass ) { 
+	public MovePresenceWithTokens( Spirit spirit, IEntityClass tokenClass ) { 
 		_spirit = spirit; 
 		_tokenClass = tokenClass;
 	}
@@ -36,7 +36,7 @@ public class MovePresenceWithTokens {
 
 	#region private field
 	readonly Spirit _spirit;
-	readonly TokenClass _tokenClass;
+	readonly IEntityClass _tokenClass;
 	#endregion
 
 }

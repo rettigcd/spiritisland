@@ -6,12 +6,12 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
 
-		TokenDefaults = new Dictionary<TokenClass, IVisibleToken> {
+		TokenDefaults = new Dictionary<IEntityClass, IToken> {
 			[Human.City]     = new HumanToken( Human.City, PenaltyHolder, 3 ),
 			[Human.Town]     = new HumanToken( Human.Town, PenaltyHolder, 2 ),
 			[Human.Explorer] = new HumanToken( Human.Explorer, PenaltyHolder, 1 ),
 			[Human.Dahan]    = new HumanToken( Human.Dahan, PenaltyHolder, 2 ),
-			[Token.Disease]  = (UniqueToken)Token.Disease,
+			[Token.Disease]  = (TokenClassToken)Token.Disease,
 		};
 
 		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
@@ -19,8 +19,8 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	#region Configuration
 
-	IVisibleToken IIslandTokenApi.GetDefault( TokenClass tokenClass ) => TokenDefaults[tokenClass];
-	public readonly Dictionary<TokenClass, IVisibleToken> TokenDefaults;
+	IToken IIslandTokenApi.GetDefault( IEntityClass tokenClass ) => TokenDefaults[tokenClass];
+	public readonly Dictionary<IEntityClass, IToken> TokenDefaults;
 
 	#endregion
 
@@ -34,10 +34,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public SpaceState this[Space space] => new SpaceState( space, GetTokens( space ), this );
 
-	CountDictionary<IToken> GetTokens( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<IToken>() );
+	CountDictionary<ISpaceEntity> GetTokens( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
 
 
-	public int GetDynamicTokensFor( SpaceState space, UniqueToken token ) 
+	public int GetDynamicTokensFor( SpaceState space, TokenClassToken token ) 
 		=> Dynamic.GetTokensFor( space, token );
 
 	public async Task Publish_Moved( TokenMovedArgs args ) {
@@ -116,15 +116,15 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			// Restore Dynamic tokens
 			src.Dynamic.LoadFrom( dynamicTokens );
 		}
-		readonly Dictionary<Space, CountDictionary<IToken>> _tokenCounts = new Dictionary<Space, CountDictionary<IToken>>();
+		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
 		readonly Dictionary<Space, bool> _inStasis;
-		readonly Dictionary<TokenClass, IVisibleToken> tokenDefaults = new Dictionary<TokenClass, IVisibleToken>();
+		readonly Dictionary<IEntityClass, IToken> tokenDefaults = new Dictionary<IEntityClass, IToken>();
 		readonly IMemento<DualDynamicTokens> dynamicTokens;
 	}
 
 	#endregion Memento
 
 	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
-	readonly Dictionary<Space, CountDictionary<IToken>> _tokenCounts = new Dictionary<Space, CountDictionary<IToken>>();
+	readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
 
 }

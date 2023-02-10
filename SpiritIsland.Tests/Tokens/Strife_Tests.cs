@@ -82,7 +82,7 @@ public class Strife_Tests {
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
 		counts.AddStrifeTo( StdTokens.Town ).Wait();
-		var strifedTown = (IVisibleToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
+		var strifedTown = (IToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
 		var destination = space.Adjacent.First( IsInPlay );
@@ -145,7 +145,7 @@ public class Strife_Tests {
 	[Fact]
 	public void StrifedCityStillFoundAfterStrifeBasedHealthChange() {
 		// Given: dictionary contains a strifed city
-		var counts = new CountDictionary<IToken>();
+		var counts = new CountDictionary<ISpaceEntity>();
 		var holder = new HealthPenaltyHolder();
 		var token = new HumanToken(Human.City,holder,3,0,1);
 		counts[token] = 1;

@@ -13,7 +13,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 	/// Constructs SpaceToken options for 1 space
 	/// NO arrows
 	/// </summary>
-	public TokenFromManySpaces( string prompt, SpiritIsland.Space sourceSpace, IEnumerable<IVisibleToken> options, Present present )
+	public TokenFromManySpaces( string prompt, SpiritIsland.Space sourceSpace, IEnumerable<IToken> options, Present present )
 		: base( prompt, options.Select( t => new SpaceToken( sourceSpace, t, false ) ), present ) 
 	{
 		SpaceTokens = options.Select( t => new SpaceToken( sourceSpace, t, false ) ).ToArray();

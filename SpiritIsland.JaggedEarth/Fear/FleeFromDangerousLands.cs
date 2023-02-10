@@ -31,7 +31,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 
 	Task Level3_Remove( TargetSpaceCtx ctx ) => new TokenRemover( ctx ).AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN();
 
-	static TokenClass[] TokensClassesFor( TargetSpaceCtx ctx ) => HasDangerousLandImp( ctx ) ? Human.Invader : Human.Explorer_Town;
+	static IEntityClass[] TokensClassesFor( TargetSpaceCtx ctx ) => HasDangerousLandImp( ctx ) ? Human.Invader : Human.Explorer_Town;
 
 	static TargetSpaceCtxFilter HasDangerousLands => new TargetSpaceCtxFilter( "a land with Badlands/Wilds/Dahan.", HasDangerousLandImp );
 	static bool HasDangerousLandImp( TargetSpaceCtx ctx ) => ctx.Tokens.Badlands.Any || ctx.Tokens.Wilds.Any || ctx.Tokens.Dahan.Any;

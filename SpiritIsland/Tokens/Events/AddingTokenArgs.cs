@@ -11,6 +11,6 @@ public class AddingTokenArgs {
 	public AddReason Reason { get; }
 
 	// Modifiable
-	public IVisibleToken Token { get; set; }
+	public IToken Token { get; set; }
 	public int Count { get; set; }
 }

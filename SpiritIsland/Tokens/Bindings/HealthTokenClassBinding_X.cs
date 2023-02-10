@@ -25,9 +25,9 @@ public class HealthTokenClassBinding {
 
 	public void Init( int count ) => _tokens.InitDefault( Human.Dahan, count );
 
-	public void Adjust( IToken token, int delta ) => _tokens.Adjust( token, delta );
+	public void Adjust( ISpaceEntity token, int delta ) => _tokens.Adjust( token, delta );
 
-	public void Init( IToken token, int count ) => _tokens.Init( token, count );
+	public void Init( ISpaceEntity token, int count ) => _tokens.Init( token, count );
 
 	/// <summary> Adds a Token from the bag, or out of thin air. </summary>
 	public Task Add( int count, AddReason reason = AddReason.Added ) {
@@ -35,7 +35,7 @@ public class HealthTokenClassBinding {
 	}
 
 	// Called from .Move() and .Dissolve the Bonds
-	public async Task<IToken> Remove1( IVisibleToken toRemove, RemoveReason reason ) {
+	public async Task<ISpaceEntity> Remove1( IToken toRemove, RemoveReason reason ) {
 		if(_tokens[toRemove] == 0)
 			return null; // unable to remove desired token
 

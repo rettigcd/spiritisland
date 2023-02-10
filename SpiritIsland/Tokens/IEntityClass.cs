@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public interface TokenClass {
+public interface IEntityClass {
 
 	string Label { get; }
 

@@ -1,8 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public class UniqueToken : TokenClass, IVisibleToken, IAppearInSpaceAbreviation {
+/// <summary>
+/// Token that implements its own ISpaceEntity.Class
+/// </summary>
+public class TokenClassToken : IToken, IEntityClass, IAppearInSpaceAbreviation {
 
-	public UniqueToken(string label, char initial, Img img, TokenCategory cat = TokenCategory.None) {
+	public TokenClassToken(string label, char initial, Img img, TokenCategory cat = TokenCategory.None) {
 		Label = label;
 		_summary = initial.ToString();
 		Img = img;
@@ -10,7 +13,7 @@ public class UniqueToken : TokenClass, IVisibleToken, IAppearInSpaceAbreviation 
 	}
 
 	/// <summary> Invisible token constructor </summary>
-	public UniqueToken( string label, TokenCategory cat = TokenCategory.None ) {
+	public TokenClassToken( string label, TokenCategory cat = TokenCategory.None ) {
 		Label = label;
 		_summary = "";			// invisible, does not appear in summary list
 		Img = Img.None;	// invisible, does not appear on board
@@ -19,7 +22,7 @@ public class UniqueToken : TokenClass, IVisibleToken, IAppearInSpaceAbreviation 
 
 	#region Token
 
-	public TokenClass Class => this;
+	public IEntityClass Class => this;
 
 	public Img Img { get; }
 

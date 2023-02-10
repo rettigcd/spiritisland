@@ -282,7 +282,7 @@ public class AbsoluteStasis_Tests {
 		cfg.Presence.SacredSites().Select( x => x.Text ).Join( "," ).ShouldBe( "A8" );
 	}
 
-	void Assert_SpaceHasCountTokens( Space space, TokenClass tokenClass, int expectedCount ) {
+	void Assert_SpaceHasCountTokens( Space space, IEntityClass tokenClass, int expectedCount ) {
 		cfg.GameState.Tokens[space].OfClass( tokenClass ).Length.ShouldBe( expectedCount );
 	}
 

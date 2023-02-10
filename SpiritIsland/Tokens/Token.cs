@@ -2,21 +2,21 @@
 
 public static class Token {
 
-	static public readonly UniqueToken Blight   = new BlightToken ( "Blight",  'B', Img.Blight ); // replace with a non-health type
+	static public readonly TokenClassToken Blight   = new BlightToken ( "Blight",  'B', Img.Blight ); // replace with a non-health type
 
 	// BaseGame
-	static public readonly UniqueToken Defend   = new UniqueToken ( "Defend",  'G', Img.Defend ); // G:Guard D is for Dahan
-	static readonly public UniqueToken Isolate  = new IsolateToken( "Isolate", 'I', Img.Isolate );
+	static public readonly TokenClassToken Defend   = new TokenClassToken ( "Defend",  'G', Img.Defend ); // G:Guard D is for Dahan
+	static readonly public TokenClassToken Isolate  = new IsolateToken( "Isolate", 'I', Img.Isolate );
 
 	// Branch and Claw
-	static readonly public UniqueToken Beast   = new UniqueToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
-	static readonly public UniqueToken Wilds   = new WildsToken( "Wilds", 'W', Img.Wilds );
-	static readonly public TokenClass Disease  = new DiseaseToken();
+	static readonly public TokenClassToken Beast   = new TokenClassToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
+	static readonly public TokenClassToken Wilds   = new WildsToken( "Wilds", 'W', Img.Wilds );
+	static readonly public IEntityClass Disease  = new DiseaseToken();
 
 	// Jagged Earth
-	static readonly public UniqueToken Badlands = new UniqueToken ( "Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
-	static readonly public UniqueToken Element = new UniqueToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
-	static readonly public TokenClass OpenTheWays = new UniqueToken( "OpenTheWays", '=', Img.OpenTheWays );
+	static readonly public TokenClassToken Badlands = new TokenClassToken ( "Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
+	static readonly public TokenClassToken Element = new TokenClassToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
+	static readonly public IEntityClass OpenTheWays = new TokenClassToken( "OpenTheWays", '=', Img.OpenTheWays );
 
 	static public DiseaseToken Disease_Original => (DiseaseToken)Disease; // Don't use this directly.  Use .Disease instead.
 }

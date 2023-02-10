@@ -5,12 +5,12 @@ namespace SpiritIsland.WinForms;
 
 public class SpaceButton : IButton {
 
-	readonly Func<Space, IVisibleToken, Point> _locationMapper;
+	readonly Func<Space, IToken, Point> _locationMapper;
 	readonly Space _space;
 	readonly int _hotSpotRadius;
 //	int TokenSize { get; set; }
 
-	public SpaceButton( Func<Space, IVisibleToken, Point> locationMapper, Space space, int hotSpotRadius ) {
+	public SpaceButton( Func<Space, IToken, Point> locationMapper, Space space, int hotSpotRadius ) {
 		_locationMapper = locationMapper;
 		_space = space;
 		_hotSpotRadius = hotSpotRadius;
@@ -35,5 +35,5 @@ public class SpaceButton : IButton {
 	void IButton.SyncDataToDecision( IDecision d ) {
 		_focusToken = ((Select.Space)d).Token;
 	}
-	IVisibleToken _focusToken;
+	IToken _focusToken;
 }

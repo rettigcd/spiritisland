@@ -12,7 +12,7 @@ public static class DeployedPresence {
 	static public Space ToDestroy(string prompt, SpiritPresence presence, Func<SpiritIsland.SpaceState,bool> filter)
 		=> Some(prompt, presence, filter, Present.Always);
 
-	static public Space ToDestroy(string prompt, IVisibleToken presenceToken, IEnumerable<SpiritIsland.SpaceState> spaces ) 
+	static public Space ToDestroy(string prompt, IToken presenceToken, IEnumerable<SpiritIsland.SpaceState> spaces ) 
 		=> new Space( prompt, spaces, Present.Always, presenceToken );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
@@ -30,7 +30,7 @@ public static class DeployedPresence {
 	static public Space SacredSites(string prompt, SpiritPresence presence, Present present )
 		=> new Space( prompt, presence.SacredSiteStates, present, presence.Token );
 
-	static public TokenFromManySpaces Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from, IToken presenceToken ) 
-		=> TokenFromManySpaces.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IVisibleToken)presenceToken)), Present.Done, to );
+	static public TokenFromManySpaces Gather(string prompt, SpiritIsland.Space to, IEnumerable<SpiritIsland.SpaceState> from, ISpaceEntity presenceToken ) 
+		=> TokenFromManySpaces.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IToken)presenceToken)), Present.Done, to );
 
 }

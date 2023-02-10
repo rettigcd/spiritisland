@@ -313,7 +313,7 @@ public class ResourceImages {
 
 	#region private
 
-	public Image GetTokenImage( IVisibleToken token ) {
+	public Image GetTokenImage( IToken token ) {
 		return token is HumanToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
 			: token is ManyMindsBeast ? GetManyMindsBeast()
 			: GetImage( token.Img );

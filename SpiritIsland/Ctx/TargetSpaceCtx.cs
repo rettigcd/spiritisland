@@ -46,14 +46,14 @@ public class TargetSpaceCtx : SelfCtx {
 	public virtual BlightTokenBinding Blight => Tokens.Blight;
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
-	public Task Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed )
+	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
 		=> Tokens.Remove( token, count, reason );
 
 	#endregion
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	/// <returns>Destination</returns>
-	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, params TokenClass[] tokenClass ) {
+	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, params IEntityClass[] tokenClass ) {
 
 		if(!Tokens.HasAny( tokenClass )) return null;
 
@@ -62,7 +62,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 
 		// Select 1st Token to move (like Push, no arrows)
-		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray(); 
+		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>().ToArray(); 
 		int remaining = max;
 		var firstToken = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
 		if(firstToken == null) return null;
@@ -76,7 +76,7 @@ public class TargetSpaceCtx : SelfCtx {
 		--remaining;
 
 		while(0 < remaining--) {
-			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>()
+			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>()
 				.Select(t=>new SpaceToken(Space,t,false)).ToArray();
 			var nextToken = await Decision( Select.TokenFromManySpaces.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
 			if(nextToken == null ) break;
@@ -142,10 +142,10 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// overriden by Grinning Tricksters Let's See what happens
 	/// <returns>Spaces pushed too.</returns>
-	public virtual Task<Space[]> PushUpTo( int countToPush, params TokenClass[] groups )
+	public virtual Task<Space[]> PushUpTo( int countToPush, params IEntityClass[] groups )
 		=> Pusher.AddGroup( countToPush, groups ).MoveUpToN();
 
-	public Task<Space[]> Push( int countToPush, params TokenClass[] groups )
+	public Task<Space[]> Push( int countToPush, params IEntityClass[] groups )
 		=> Pusher.AddGroup( countToPush, groups ).MoveN();
 
 	public virtual TokenPusher Pusher => new TokenPusher( this );
@@ -162,17 +162,17 @@ public class TargetSpaceCtx : SelfCtx {
 		=> this.Gather( countToGather, Human.Dahan);
 
 	// overriden by Grinning Tricketsrs 'Let's see what happens'
-	public virtual Task GatherUpTo( int countToGather, params TokenClass[] groups )
+	public virtual Task GatherUpTo( int countToGather, params IEntityClass[] groups )
 		=> Gatherer.AddGroup(countToGather, groups).GatherUpToN();
 
-	public Task Gather( int countToGather, params TokenClass[] groups )
+	public Task Gather( int countToGather, params IEntityClass[] groups )
 		=> Gatherer.AddGroup(countToGather,groups).GatherN();
 
 	public virtual TokenGatherer Gatherer => new TokenGatherer( this );
 
 	#endregion Gather
 
-	public Task MoveTo( IVisibleToken token, Space to ) => Tokens.MoveTo( token, to );
+	public Task MoveTo( IToken token, Space to ) => Tokens.MoveTo( token, to );
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay );
@@ -217,7 +217,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear
-	public async Task DamageInvaders( int originalDamage, params TokenClass[] allowedTypes ) {
+	public async Task DamageInvaders( int originalDamage, params IEntityClass[] allowedTypes ) {
 
 		// Calculate Total Damage available
 		int sumAvailableDamage = originalDamage;
@@ -282,7 +282,7 @@ public class TargetSpaceCtx : SelfCtx {
 		public int Remaining => remaining;
 	}
 
-	public async Task DamageEachInvader( int individualDamage, params TokenClass[] generic ) {
+	public async Task DamageEachInvader( int individualDamage, params IEntityClass[] generic ) {
 		await Invaders.ApplyDamageToEach( individualDamage, generic );
 		await Invaders.UserSelectedDamage( Badlands.Count, Self,generic ); // !!! use badland DamagePool
 	}
@@ -294,13 +294,13 @@ public class TargetSpaceCtx : SelfCtx {
 		// For Veil the Nights Hunt, badland damage can only be added to invaders already damaged. Might be different for other powers.
 
 		// Find All Invaders
-		var invaders = new List<IVisibleToken>();
+		var invaders = new List<IToken>();
 		foreach(HumanToken token in Tokens.InvaderTokens())
 			for(int i = 0; i < Tokens[token]; ++i)
 				invaders.Add( token );
 
 		// Limit # to select
-		var damagedInvaders = new List<IVisibleToken>();
+		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
 			var st = await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
@@ -315,7 +315,7 @@ public class TargetSpaceCtx : SelfCtx {
 		await ApplyDamageToSpecificTokens( damagedInvaders, Badlands.Count );
 	}
 
-	async Task ApplyDamageToSpecificTokens( List<IVisibleToken> invaders, int additionalTotalDamage ) {
+	async Task ApplyDamageToSpecificTokens( List<IToken> invaders, int additionalTotalDamage ) {
 		while(additionalTotalDamage > 0) {
 			var st = await Decision( Select.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
 			if(st == null) break;
@@ -363,7 +363,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	public Task RemoveInvader( TokenClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
+	public Task RemoveInvader( IEntityClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
 
 	/// <summary> adds Target to Fear context </summary>
 	public override void AddFear( int count ) { 
@@ -405,7 +405,7 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
-	public TokenClass[] AllPresenceTokens => GameState.Spirits
+	public IEntityClass[] AllPresenceTokens => GameState.Spirits
 		.Select( s => s.Token )
 		.ToArray();
 

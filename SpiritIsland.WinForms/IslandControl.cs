@@ -496,7 +496,7 @@ public partial class IslandControl : Control {
 			// Minor ordering: (remaining health)
 			.ThenBy( i => i.RemainingHealth ); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
 
-		foreach(IVisibleToken token in orderedInvaders) {
+		foreach(IToken token in orderedInvaders) {
 
 			// New way
 			PointF center = gw_mapper.Map( InsidePoints(ss.Space).GetPointFor( token ) );
@@ -504,7 +504,7 @@ public partial class IslandControl : Control {
 			float y = center.Y-iconWidth/2; //!! approximate - need Image to get actual Height to scale
 
 			// Strife
-			IVisibleToken imageToken;
+			IToken imageToken;
 			if(token is HumanToken si && 0 < si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
 
@@ -537,13 +537,13 @@ public partial class IslandControl : Control {
 
 	void DrawRow( Graphics graphics, SpaceState spaceState, float iconWidth ) {
 
-		var tokenTypes = new List<IVisibleToken> {
+		var tokenTypes = new List<IToken> {
 			Token.Defend, Token.Blight, // These don't show up in .OfAnyType if they are dynamic
 			Token.Wilds, Token.Badlands, Token.Isolate
 		}	.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
 			.Union( spaceState.OfClass( Token.Beast ) )
 			.Union( spaceState.OfAnyClass( _spirit.Token, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
-			.Cast<IVisibleToken>()
+			.Cast<IToken>()
 			.ToArray();
 
 		foreach(var token in tokenTypes) {
@@ -699,7 +699,7 @@ public partial class IslandControl : Control {
 
 
 
-	Point GetPortPoint( Space space, IVisibleToken visibileTokens ) {
+	Point GetPortPoint( Space space, IToken visibileTokens ) {
 		PointF worldCoord = visibileTokens != null
 			? InsidePoints(space).GetPointFor( visibileTokens )
 			: space.Layout.Center; // normal space 
@@ -759,7 +759,7 @@ public partial class IslandControl : Control {
 				_hotSpots.Add( act, gw_spiritLayout.growthLayout[act] );
 	}
 
-	Image AccessTokenImage( IVisibleToken imageToken ) {
+	Image AccessTokenImage( IToken imageToken ) {
 		if(!_tokenImages.ContainsKey( imageToken ))
 			_tokenImages[imageToken] = ResourceImages.Singleton.GetTokenImage( imageToken );
 		return _tokenImages[imageToken];
@@ -946,7 +946,7 @@ public partial class IslandControl : Control {
 		_strife = images.Strife();
 		_fearTokenImage = images.Fear();
 		_grayFear = images.FearGray();
-		_tokenImages = new Dictionary<IToken, Image> {
+		_tokenImages = new Dictionary<ISpaceEntity, Image> {
 			[Token.Blight] = images.GetImage( Img.Blight ),
 			[Token.Beast] = images.GetImage( Img.Beast ),
 			[Token.Wilds] = images.GetImage( Img.Wilds ),
@@ -962,7 +962,7 @@ public partial class IslandControl : Control {
 	Image _strife;
 	Image _fearTokenImage;
 	Image _grayFear;
-	Dictionary<IToken, Image> _tokenImages; // because we need different images for different damaged invaders.
+	Dictionary<ISpaceEntity, Image> _tokenImages; // because we need different images for different damaged invaders.
 
 	#endregion
 

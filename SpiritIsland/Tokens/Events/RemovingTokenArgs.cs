@@ -12,7 +12,7 @@ public class RemovingTokenArgs {
 	public RemoveReason Reason { get; }
 
 	// modifiable
-	public IVisibleToken Token { get; set; }
+	public IToken Token { get; set; }
 
 	public int Count {
 		get { return _count; }

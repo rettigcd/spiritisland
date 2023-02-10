@@ -16,7 +16,7 @@ internal static class StdTokens {
 		Explorer = new HumanToken( Human.Explorer, _penaltyHolder, 1, 0 );
 		Dahan = new HumanToken( Human.Dahan, _penaltyHolder, 2, 0 );
 		Dahan1 = new HumanToken( Human.Dahan, _penaltyHolder, 2, 1 );
-		Disease = (UniqueToken)Token.Disease;
+		Disease = (TokenClassToken)Token.Disease;
 	}
 
 	public static readonly HumanToken City;
@@ -30,6 +30,6 @@ internal static class StdTokens {
 
 	public static readonly HumanToken Dahan;
 	public static readonly HumanToken Dahan1;
-	public static readonly UniqueToken Disease;
+	public static readonly TokenClassToken Disease;
 
 }

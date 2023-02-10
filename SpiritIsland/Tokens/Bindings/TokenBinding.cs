@@ -2,10 +2,10 @@
 
 public class TokenBinding {
 
-	public IVisibleToken Default { get; }
+	public IToken Default { get; }
 
 	#region constructor
-	public TokenBinding( SpaceState tokens, IVisibleToken token ) {
+	public TokenBinding( SpaceState tokens, IToken token ) {
 		_tokens = tokens;
 		Default = token;
 	}
@@ -43,10 +43,10 @@ public class TokenBinding {
 /// </summary>
 public class BeastBinding {
 	readonly protected SpaceState _spaceState;
-	readonly protected UniqueToken _uniqueToken;
+	readonly protected TokenClassToken _uniqueToken;
 
 	#region constructor
-	public BeastBinding( SpaceState spaceState, UniqueToken defaultToken ) {
+	public BeastBinding( SpaceState spaceState, TokenClassToken defaultToken ) {
 		_spaceState = spaceState;
 		_uniqueToken = defaultToken;
 	}

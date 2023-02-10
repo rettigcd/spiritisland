@@ -5,7 +5,7 @@
 ///  - it simplifies selecting Beasts vs Presence-Beasts
 ///  - simplifies Moving the Presence with the Presence-Beasts into the AddedTo space.
 /// </remarks>
-public class ManyMindsBeast : IVisibleToken, IHandleTokenAdded, IHandleTokenRemoved {
+public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemoved {
 
 	readonly ManyMindsToken _presenceToken;
 
@@ -15,7 +15,7 @@ public class ManyMindsBeast : IVisibleToken, IHandleTokenAdded, IHandleTokenRemo
 
 	public Img Img => Img.Beast;
 
-	public TokenClass Class => Token.Beast;
+	public IEntityClass Class => Token.Beast;
 
 	public string Text => "ManyMind-SS-Beast";
 

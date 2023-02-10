@@ -54,13 +54,13 @@ static public class SpiritSelectExtensions {
 		return (source, destination);
 	}
 
-	static public Task Move( this IVisibleToken token, SpaceState from, SpaceState to ) {
+	static public Task Move( this IToken token, SpaceState from, SpaceState to ) {
 		return from.MoveTo( token, to.Space );
 	}
 
-	static public Task AddTo( this IVisibleToken token, SpaceState spaceState ) => spaceState.Add( token, 1 );
+	static public Task AddTo( this IToken token, SpaceState spaceState ) => spaceState.Add( token, 1 );
 
-	static public Task RemoveFrom( this IVisibleToken token, SpaceState spaceState ) => spaceState.Remove( token, 1 );
+	static public Task RemoveFrom( this IToken token, SpaceState spaceState ) => spaceState.Remove( token, 1 );
 
 	static public async Task<(IOption, Space)> PlacePresenceWithin( this Spirit self, TargetCriteria targetCriteria, bool forPower ) {
 		IOption from = await self.SelectSourcePresence();

@@ -25,7 +25,7 @@ public class UnnervingPall {
 	static async Task SelectUpTo3DamagedInvadersToNotParticipate( TargetSpaceCtx ctx ) {
 
 		// Find Damaged Invaders
-		var damagedInvaders = new List<IToken>();
+		var damagedInvaders = new List<ISpaceEntity>();
 		foreach(var token in ctx.Tokens.InvaderTokens().Where( t => t.RemainingHealth < t.FullHealth ))
 			for(int i = 0; i < ctx.Tokens[token]; ++i)
 				damagedInvaders.Add( token );
@@ -33,13 +33,13 @@ public class UnnervingPall {
 			return;
 
 		// Create a list to hold ones we've selected to exclude
-		var skipInvaders = new List<IToken>();
+		var skipInvaders = new List<ISpaceEntity>();
 		// Select up to 3 to put in the skip-list
 		int remaining = 3;
 		while(remaining-- > 0 && damagedInvaders.Count > 0) {
 			var decision = new Select.TokenFromManySpaces(
 				"Select invader to not participate in ravage", ctx.Space,
-				damagedInvaders.Distinct().Cast<IVisibleToken>(),
+				damagedInvaders.Distinct().Cast<IToken>(),
 				Present.Done
 			);
 			var skip = (await ctx.Decision( decision ))?.Token;

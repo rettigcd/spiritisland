@@ -40,7 +40,7 @@ public class BoardCtx : SelfCtx {
 	}
 
 
-	public SpaceToken[] FindTokens( params TokenClass[] tokenClasses ) {
+	public SpaceToken[] FindTokens( params IEntityClass[] tokenClasses ) {
 		return Board.Spaces
 			.SelectMany( s => GameState.Tokens[s].SpaceTokensOfAnyClass( tokenClasses ) )
 			.ToArray();

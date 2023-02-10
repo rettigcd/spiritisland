@@ -4,9 +4,9 @@ public interface IIslandTokenApi {
 
 	Task Publish_Moved( TokenMovedArgs args );
 
-	int GetDynamicTokensFor( SpaceState space, UniqueToken token );
+	int GetDynamicTokensFor( SpaceState space, TokenClassToken token );
 
-	IVisibleToken GetDefault( TokenClass tokenClass );
+	IToken GetDefault( IEntityClass tokenClass );
 
 	IEnumerable<SpaceState> PowerUp( IEnumerable<Space> spaces );
 

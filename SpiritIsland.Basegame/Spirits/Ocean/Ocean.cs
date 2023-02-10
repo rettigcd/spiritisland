@@ -85,14 +85,14 @@ public class Ocean : Spirit {
 				.Distinct()
 				.ToArray();;
 			// And Ocean chooses to save it
-			var destination = await this.Gateway.Decision(Select.Space.PushToken((IVisibleToken)args.Token,args.AddedTo.Space,moveOptions, Present.Done));
+			var destination = await this.Gateway.Decision(Select.Space.PushToken((IToken)args.Token,args.AddedTo.Space,moveOptions, Present.Done));
 			if( destination != null ) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				UnitOfWork.Current.AtEndOfThisAction(async _ => {
 					//don't use original because that may or may not have been for a power.
 					await using UnitOfWork childAction = gs.StartAction( ActionCategory.Default );
 					await BindSelf()
-						.Move( (IVisibleToken)args.Token, args.AddedTo.Space, destination );
+						.Move( (IToken)args.Token, args.AddedTo.Space, destination );
 				} );
 				return; // the move it, don't drown it
 			}

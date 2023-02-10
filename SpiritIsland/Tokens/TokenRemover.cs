@@ -6,7 +6,7 @@ public class TokenRemover {
 		_ctx = ctx;
 	}
 
-	public TokenRemover AddGroup(int count,params TokenClass[] groups ) {
+	public TokenRemover AddGroup(int count,params IEntityClass[] groups ) {
 
 		count = System.Math.Min( count, _ctx.Tokens.SumAny(groups) );
 
@@ -24,17 +24,17 @@ public class TokenRemover {
 	async Task Exec( Present present ) {
 
 		var counts = _ctx.Tokens;
-		IVisibleToken[] GetTokens() {
+		IToken[] GetTokens() {
 			var groupsWithRemainingCounts = indexLookupByGroup
 				.Where( pair => sharedGroupCounts[pair.Value] > 0 )
 				.Select( p => p.Key )
 				.ToArray();
 			return counts.OfAnyClass( groupsWithRemainingCounts )
-				.Cast<IVisibleToken>()
+				.Cast<IToken>()
 				.ToArray(); // !!! Make Dahan Freezable
 		}
 
-		IVisibleToken[] tokens;
+		IToken[] tokens;
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
 			var token = (await _ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( _ctx.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
@@ -61,7 +61,7 @@ public class TokenRemover {
 
 	readonly List<int> sharedGroupCounts = new(); // the # we push from each group
 
-	readonly Dictionary<TokenClass, int> indexLookupByGroup = new(); // map from group back to its count
+	readonly Dictionary<IEntityClass, int> indexLookupByGroup = new(); // map from group back to its count
 
 	#endregion
 

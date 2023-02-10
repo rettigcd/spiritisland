@@ -4,10 +4,10 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 
 	public static void Init( this SpaceState currentTokens, string expectedInvaderSummary ) {
 
-		CountDictionary<IToken> desiredTokens = new();
+		CountDictionary<ISpaceEntity> desiredTokens = new();
 		if(!string.IsNullOrEmpty( expectedInvaderSummary )) { 
 			foreach(var part in expectedInvaderSummary.Split( ',' )) {
-				IToken token = part[1..] switch {
+				ISpaceEntity token = part[1..] switch {
 					"E@1" => StdTokens.Explorer,
 					"T@2" => StdTokens.Town,
 					"C@3" => StdTokens.City,

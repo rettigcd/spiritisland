@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresenceToken : IVisibleToken, TokenClass
+public class SpiritPresenceToken : IToken, IEntityClass
 	, ITrackMySpaces 
 	, IHandleTokenRemoved
 {
@@ -12,14 +12,14 @@ public class SpiritPresenceToken : IVisibleToken, TokenClass
 	#region Token parts
 
 	public string Text { get; }
-	Img IVisibleToken.Img => Img.Icon_Presence;
-	public TokenClass Class => this;
+	Img IToken.Img => Img.Icon_Presence;
+	public IEntityClass Class => this;
 
 	#endregion
 
 	#region TokenClass parts
-	string TokenClass.Label => "Presence";
-	TokenCategory TokenClass.Category => TokenCategory.Presence;
+	string IEntityClass.Label => "Presence";
+	TokenCategory IEntityClass.Category => TokenCategory.Presence;
 
 	#endregion
 

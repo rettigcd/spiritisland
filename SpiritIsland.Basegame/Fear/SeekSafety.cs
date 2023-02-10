@@ -51,10 +51,10 @@ public class SeekSafety : FearCardBase, IFearCard {
 	}
 
 	static async Task GatherExplorerOrTown( TargetSpaceCtx destCtx ) {
-		var invadersToGather = new List<TokenClass>();
+		var invadersToGather = new List<IEntityClass>();
 		if(destCtx.Tokens.Has( Human.City )) invadersToGather.Add( Human.Town );
 		if(destCtx.Tokens.Has( Human.Town )) invadersToGather.Add( Human.Explorer );
-		TokenClass[] invadersToGatherArray = invadersToGather.ToArray();
+		IEntityClass[] invadersToGatherArray = invadersToGather.ToArray();
 		await destCtx.GatherUpTo( 1, invadersToGatherArray );
 	}
 	

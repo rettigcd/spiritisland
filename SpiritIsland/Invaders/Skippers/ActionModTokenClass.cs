@@ -1,10 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public class ActionModTokenClass : TokenClass {
+public class ActionModTokenClass : IEntityClass {
 
-	public static readonly TokenClass Singleton = new ActionModTokenClass();
+	public static readonly IEntityClass Singleton = new ActionModTokenClass();
 
-	static readonly public TokenClass Class = new ActionModTokenClass();
+	static readonly public IEntityClass Class = new ActionModTokenClass();
 	public string Label => "Mod";
 
 	public TokenCategory Category => TokenCategory.Skipper;

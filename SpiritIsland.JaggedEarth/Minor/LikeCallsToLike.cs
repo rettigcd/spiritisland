@@ -13,7 +13,7 @@ public class LikeCallsToLike{
 		await GatherLike( ctx, Token.Beast );
 	}
 
-	static async Task GatherLike( TargetSpaceCtx ctx, TokenClass tokenTypeOfInterest ) {
+	static async Task GatherLike( TargetSpaceCtx ctx, IEntityClass tokenTypeOfInterest ) {
 		if(ctx.Tokens.HasAny( tokenTypeOfInterest ))
 			await ctx.GatherUpTo( 1, tokenTypeOfInterest );
 	}

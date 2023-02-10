@@ -18,13 +18,13 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 	#region Configure
 
 	public NLandsPerBoard Which(TargetSpaceCtxFilter spaceFilter ) { _landCriteria = spaceFilter; return this; }
-	public NLandsPerBoard ByPickingToken( params TokenClass[] tokenClasses ) { 
+	public NLandsPerBoard ByPickingToken( params IEntityClass[] tokenClasses ) { 
 		_tokenFactory = GetTokensMatchingClass;
 		_firstPickTokenClasses = tokenClasses; 
 		return this;
 	}
 
-	public NLandsPerBoard ByPickingToken( Func<TargetSpaceCtx, IEnumerable<IToken>> tokenFactory ) {
+	public NLandsPerBoard ByPickingToken( Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> tokenFactory ) {
 		_tokenFactory = tokenFactory;
 		_firstPickTokenClasses = null; // not usedtokenClasses;
 		return this;
@@ -70,16 +70,16 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 
 	#region private
 
-	IEnumerable<IToken> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyClass( _firstPickTokenClasses );
+	IEnumerable<ISpaceEntity> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyClass( _firstPickTokenClasses );
 
 	async Task<TargetSpaceCtx> PickSpaceBySelectingToken( SelfCtx ctx, TargetSpaceCtx[] spaceOptions ) {
 
 		// Get options
-		Func<TargetSpaceCtx,IEnumerable<IToken>> tokenFactory = GetTokensMatchingClass;
+		Func<TargetSpaceCtx,IEnumerable<ISpaceEntity>> tokenFactory = GetTokensMatchingClass;
 		SpaceToken[] spaceTokenOptions = spaceOptions
 			.SelectMany( x => 
 				tokenFactory(x)
-					.Cast<IVisibleToken>()
+					.Cast<IToken>()
 					.Select( t => new SpaceToken( x.Space, t ) )
 			)
 			.ToArray();
@@ -103,8 +103,8 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;
 	TargetSpaceCtxFilter _landCriteria;
 	readonly int _count;
-	TokenClass[] _firstPickTokenClasses;
-	Func<TargetSpaceCtx, IEnumerable<IToken>> _tokenFactory;
+	IEntityClass[] _firstPickTokenClasses;
+	Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> _tokenFactory;
 
 	#endregion
 

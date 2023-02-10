@@ -7,7 +7,7 @@ public class TokenPusher {
 		this.source = ctx.Space;
 	}
 
-	public TokenPusher AddGroup(int count,params TokenClass[] groups ) {
+	public TokenPusher AddGroup(int count,params IEntityClass[] groups ) {
 
 		count = System.Math.Min( count, ctx.GameState.Tokens[source].SumAny(groups) );
 
@@ -26,17 +26,17 @@ public class TokenPusher {
 	async Task<Space[]> Exec( Present present ) {
 
 		var counts = ctx.Target(source).Tokens;
-		IVisibleToken[] GetTokens() {
+		IToken[] GetTokens() {
 			var groupsWithRemainingCounts = indexLookupByGroup
 				.Where( pair => sharedGroupCounts[pair.Value] > 0 )
 				.Select( p => p.Key )
 				.ToArray();
-			return counts.OfAnyClass( groupsWithRemainingCounts ).Cast<IVisibleToken>().ToArray(); // !!! Make Dahan Freezable
+			return counts.OfAnyClass( groupsWithRemainingCounts ).Cast<IToken>().ToArray(); // !!! Make Dahan Freezable
 		}
 
 		var pushedToSpaces = new List<Space>();
 
-		IVisibleToken[] tokens;
+		IToken[] tokens;
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
 			var token = (await ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( source, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
@@ -53,7 +53,7 @@ public class TokenPusher {
 		return pushedToSpaces.ToArray();
 	}
 
-	public async Task<Space> PushToken( IVisibleToken token ) {
+	public async Task<Space> PushToken( IToken token ) {
 		Space destination = await SelectDestination( token );
 		if(destination == null) return null;
 
@@ -62,20 +62,20 @@ public class TokenPusher {
 		return destination;
 	}
 
-	protected virtual async Task MoveSingleToken( IVisibleToken token, Space source, Space destination ) {
+	protected virtual async Task MoveSingleToken( IToken token, Space source, Space destination ) {
 		await ctx.Move( token, source, destination );    // !!! if moving into frozen land, freeze Dahan
 		if( _customAction != null )
 			await _customAction( token, source, destination );
 	}
 
 
-	public TokenPusher AddCustomMoveAction( Func<IToken,Space,Space,Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
+	public TokenPusher AddCustomMoveAction( Func<ISpaceEntity,Space,Space,Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
 		_customAction = customeAction;
 		return this;
 	}
-	Func<IToken,Space,Space,Task> _customAction;
+	Func<ISpaceEntity,Space,Space,Task> _customAction;
 
-	protected virtual async Task<Space> SelectDestination( IVisibleToken token ) {
+	protected virtual async Task<Space> SelectDestination( IToken token ) {
 		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent
 			.Where( UnitOfWork.Current.TerrainMapper.IsInPlay );
 		foreach(var filter in destinationFilters)
@@ -102,7 +102,7 @@ public class TokenPusher {
 
 	readonly List<int> sharedGroupCounts = new(); // the # we push from each group
 
-	readonly Dictionary<TokenClass, int> indexLookupByGroup = new(); // map from group back to its count
+	readonly Dictionary<IEntityClass, int> indexLookupByGroup = new(); // map from group back to its count
 
 	#endregion
 

@@ -15,7 +15,7 @@ static public class ReplaceInvader {
 		// Add new
 		var newInvaderClass = oldInvader.Class == Human.City ? Human.Town : Human.Explorer;
 
-		var newTokenWithoutDamage = ctx.Tokens.GetDefault( newInvaderClass ).AddStrife(oldInvader.StrifeCount);
+		var newTokenWithoutDamage = ctx.Tokens.GetDefaultHuman( newInvaderClass ).AddStrife(oldInvader.StrifeCount);
 		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
 
 		if(!newTokenWithDamage.IsDestroyed )

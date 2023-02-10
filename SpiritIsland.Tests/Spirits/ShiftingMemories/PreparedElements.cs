@@ -6,7 +6,7 @@ public class PreparedElements {
 
 	[Fact]
 	public void TwoStacksOnASpace() {
-		var tokens = new CountDictionary<IToken>();
+		var tokens = new CountDictionary<ISpaceEntity>();
 
 		var spirit = new ShiftingMemoryOfAges();
 		var board = Board.BuildBoardA();

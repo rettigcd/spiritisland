@@ -14,7 +14,7 @@ public class Plaguebearers {
 			.AddGroup( ctx.Disease.Count, Human.Explorer_Town.Plus(Human.Dahan) )
 			.AddCustomMoveAction( async ( movingToken, from, to ) => {
 				// 1 disease may move with each Pushed piece.
-				var options = ctx.Tokens.OfClass(Token.Disease).OfType<IVisibleToken>().Select(t=> new SpaceToken(from, t)).ToArray();
+				var options = ctx.Tokens.OfClass(Token.Disease).OfType<IToken>().Select(t=> new SpaceToken(from, t)).ToArray();
 				var diseaseToken = await ctx.Decision( Select.TokenFromManySpaces.ToCollect( "Move up to 1 Disease", options, Present.Done, to ) );
 				if( diseaseToken != null )
 					await ctx.Move(diseaseToken.Token, diseaseToken.Space,to);

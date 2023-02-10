@@ -17,7 +17,7 @@ public class ACircuitousAndWendingJourney {
 		return pusher.MoveUpToN();
 	}
 
-	static void AddHalf( TokenPusher pusher, SpaceState tokens, params TokenClass[] groups ) {
+	static void AddHalf( TokenPusher pusher, SpaceState tokens, params IEntityClass[] groups ) {
 		int count = (tokens.SumAny( groups )+1) / 2; // +1 causes rounds up
 		pusher.AddGroup( count, groups );
 	}

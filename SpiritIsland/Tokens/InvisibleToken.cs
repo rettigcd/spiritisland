@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InvisibleToken : IToken, TokenClass {
+public class InvisibleToken : ISpaceEntity, IEntityClass {
 
 	public InvisibleToken( string label, TokenCategory cat = TokenCategory.None ) {
 		this.Label = label;
@@ -9,7 +9,7 @@ public class InvisibleToken : IToken, TokenClass {
 
 	#region Token
 
-	TokenClass IToken.Class => this;
+	IEntityClass ISpaceEntity.Class => this;
 
 	#endregion
 

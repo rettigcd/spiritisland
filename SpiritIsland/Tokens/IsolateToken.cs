@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class IsolateToken : UniqueToken, ITokenWithEndOfRoundCleanup {
+public class IsolateToken : TokenClassToken, ITokenWithEndOfRoundCleanup {
 	public IsolateToken( string label, char initial, Img img, TokenCategory cat = TokenCategory.None ) 
 		: base( label, initial, img, cat ) {}
 

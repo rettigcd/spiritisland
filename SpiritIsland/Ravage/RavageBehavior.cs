@@ -11,7 +11,7 @@ public class RavageBehavior {
 	public Func<RavageBehavior, CountDictionary<HumanToken>, SpaceState, int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
 	public Func<RavageBehavior, RavageData, int, Task> DamageDefenders = DamageDefenders_Default;
 	public Func<SpaceState, HumanToken, int> AttackDamageFrom1 = AttackDamageFrom1_Default;
-	public CountDictionary<IToken> NotParticipating { get; set; } = new CountDictionary<IToken>();
+	public CountDictionary<ISpaceEntity> NotParticipating { get; set; } = new CountDictionary<ISpaceEntity>();
 	public Func<HumanToken, bool> IsAttacker { get; set; } = null;
 	public Func<HumanToken, bool> IsDefender { get; set; } = null;
 	public int AttackersDefend = 0; // reduces the damage inflicted by the defenders onto the attackers.  Not exactly correct, but close
@@ -270,8 +270,8 @@ public class RavageBehavior {
 	static public CountDictionary<HumanToken> GetDefenders( RavageBehavior behavior, RavageData data ) 
 		=> GetParticipantCounts( behavior, data, behavior.IsDefender ?? IsDahan );
 
-	static bool IsInvader( IToken token ) => token.Class.Category == TokenCategory.Invader;
-	static bool IsDahan( IToken token ) => token.Class.Category == TokenCategory.Dahan; // all Dahan, including Frozen
+	static bool IsInvader( ISpaceEntity token ) => token.Class.Category == TokenCategory.Invader;
+	static bool IsDahan( ISpaceEntity token ) => token.Class.Category == TokenCategory.Dahan; // all Dahan, including Frozen
 
 	static CountDictionary<HumanToken> GetParticipantCounts( RavageBehavior cfg, RavageData ra, Func<HumanToken, bool> filter ) {
 		var participants = new CountDictionary<HumanToken>();

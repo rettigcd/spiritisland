@@ -14,7 +14,7 @@ public class BlightTokenBinding : TokenBinding {
 	static readonly BlockBlightToken blockBlightToken = new BlockBlightToken(); // !!! Needs tests that removes at end of round.
 
 	class BlockBlightToken : ITokenWithEndOfRoundCleanup {
-		public TokenClass Class => ActionModTokenClass.Singleton;
+		public IEntityClass Class => ActionModTokenClass.Singleton;
 		public void EndOfRoundCleanup( SpaceState spaceState ) {
 			spaceState.Init(this,0);
 		}

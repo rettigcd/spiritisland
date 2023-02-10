@@ -2,7 +2,7 @@
 
 namespace SpiritIsland;
 
-public class BlightToken : UniqueToken
+public class BlightToken : TokenClassToken
 	, IHandleTokenAdded
 	, IHandleTokenRemoved
 {

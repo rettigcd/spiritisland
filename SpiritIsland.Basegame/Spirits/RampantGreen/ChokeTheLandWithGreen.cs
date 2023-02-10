@@ -24,7 +24,7 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		return await SkipInvaderAction( space, "ravage" );
 	}
 
-	async Task<bool> ISkipBuilds.Skip( SpaceState space, TokenClass buildClass )
+	async Task<bool> ISkipBuilds.Skip( SpaceState space, IEntityClass buildClass )
 		=> await SkipInvaderAction( space, $"build of {buildClass.Label}" );
 
 	async Task<bool> SkipInvaderAction( SpaceState space, string actionDescription ) {

@@ -45,7 +45,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 	public SpiritPicksLandAction Which( TargetSpaceCtxFilter filter ) { _landCriteria = filter; return this; }
 	public SpiritPicksLandAction MakeOptional() { _present = Present.Done; return this; }
 	public SpiritPicksLandAction AllDifferent() {  _chooseDifferentLands = true; return this; }
-	public SpiritPicksLandAction ByPickingToken( params TokenClass[] tokenClasses ) { _firstPickTokenClasses = tokenClasses; return this; }
+	public SpiritPicksLandAction ByPickingToken( params IEntityClass[] tokenClasses ) { _firstPickTokenClasses = tokenClasses; return this; }
 	public SpiritPicksLandAction EachSpiritPicks( int count ) { _landsPerSpirit = count; return this; }
 
 	#endregion
@@ -80,7 +80,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 	readonly string _landPreposition;
 	Present _present = Present.Always;
 	bool _chooseDifferentLands = false;
-	TokenClass[] _firstPickTokenClasses;
+	IEntityClass[] _firstPickTokenClasses;
 	int _landsPerSpirit = 1;
 	#endregion
 }

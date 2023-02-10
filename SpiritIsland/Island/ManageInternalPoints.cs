@@ -27,7 +27,7 @@ public class ManageInternalPoints {
 			.GetInternalHexPoints( stepSize )
 			.ToArray();
 
-		_dict = new Dictionary<IVisibleToken, PointF>();
+		_dict = new Dictionary<IToken, PointF>();
 
 		// internal - prefered
 		var internalPoints = ss.Space.Layout
@@ -49,7 +49,7 @@ public class ManageInternalPoints {
 
 	#endregion
 
-	public PointF GetPointFor( IVisibleToken token ) {
+	public PointF GetPointFor( IToken token ) {
 
 		if(_dict.ContainsKey(token)) return _dict[token];
 
@@ -81,19 +81,19 @@ public class ManageInternalPoints {
 		// non-invaders
 		var nonInvaders = allTokens.Keys
 			.Where( x => x.Class.Category != TokenCategory.Invader )
-			.OfType<IVisibleToken>();
-		foreach(IVisibleToken nonInvader in nonInvaders )
+			.OfType<IToken>();
+		foreach(IToken nonInvader in nonInvaders )
 			AssignPointFor(nonInvader,allTokens);
 
 		return this;
 	}
 
-	public IEnumerable<(IVisibleToken Key, PointF Value)> Assignments() 
+	public IEnumerable<(IToken Key, PointF Value)> Assignments() 
 		=> _dict.Select( p => (p.Key, p.Value) );
 
 	#region private helper methods
 
-	void AssignPointFor( IVisibleToken token, SpaceState spaceState ) {
+	void AssignPointFor( IToken token, SpaceState spaceState ) {
 
 		if(token.Class.Category == TokenCategory.Invader)
 			throw new Exception( "invaders not handled here" );
@@ -115,7 +115,7 @@ public class ManageInternalPoints {
 
 	}
 
-	bool AssignOldSlot( IVisibleToken token, SpaceState spaceState )
+	bool AssignOldSlot( IToken token, SpaceState spaceState )
 		=> _randomInternal.AssignNextSlot(token, spaceState)
 		|| _border.AssignNextSlot(token, spaceState);
 
@@ -181,27 +181,27 @@ public class ManageInternalPoints {
 
 	class TokenPointArray {
 
-		public TokenPointArray( Dictionary<IVisibleToken, PointF> dict, PointF[] points ) { 
+		public TokenPointArray( Dictionary<IToken, PointF> dict, PointF[] points ) { 
 			_dict = dict;
 			_points = points;
-			_tokens = new IVisibleToken[points.Length];
+			_tokens = new IToken[points.Length];
 		}
 
-		public bool AssignLeftSlot( IVisibleToken visibleToken ) {
+		public bool AssignLeftSlot( IToken visibleToken ) {
 			int? index = FindLeftSlot();
 			if(!index.HasValue) return false;
 			AssignToken( visibleToken, index.Value );
 			return true;
 		}
 
-		public bool AssignRightSlot( IVisibleToken visibleToken ) {
+		public bool AssignRightSlot( IToken visibleToken ) {
 			int? index = FindRightSlot();
 			if(!index.HasValue) return false;
 			AssignToken( visibleToken, index.Value );
 			return true;
 		}
 
-		public bool AssignNextSlot( IVisibleToken visibleToken, SpaceState spaceState= null ) {
+		public bool AssignNextSlot( IToken visibleToken, SpaceState spaceState= null ) {
 			int? index = FindNextSlot(spaceState);
 			if(!index.HasValue) return false;
 			AssignToken( visibleToken, index.Value );
@@ -244,7 +244,7 @@ public class ManageInternalPoints {
 			if(spaceState != null)
 				// Find old spot that is now available
 				for(int i = 0; i < _tokens.Length; i++) {
-					IVisibleToken token = _tokens[i];
+					IToken token = _tokens[i];
 					if(spaceState[token] == 0) {
 						_tokens[i] = null;
 						return i;
@@ -254,7 +254,7 @@ public class ManageInternalPoints {
 			return null;
 		}
 
-		void AssignToken( IVisibleToken token, int index ) {
+		void AssignToken( IToken token, int index ) {
 			lock(_locker) {
 				if(_tokens[index] != null)
 					throw new InvalidOperationException( $"Internal Token Slot {index} already assigned." );
@@ -264,15 +264,15 @@ public class ManageInternalPoints {
 		}
 
 		readonly object _locker = new object();
-		readonly IVisibleToken[] _tokens;
+		readonly IToken[] _tokens;
 		readonly PointF[] _points;
-		readonly Dictionary<IVisibleToken, PointF> _dict;
+		readonly Dictionary<IToken, PointF> _dict;
 
 	}
 
 	#region private token location fields
 
-	readonly Dictionary<IVisibleToken, PointF> _dict;
+	readonly Dictionary<IToken, PointF> _dict;
 	readonly TokenPointArray _border;
 	readonly TokenPointArray _randomInternal;
 

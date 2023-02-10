@@ -3,11 +3,11 @@
 public class DualDynamicTokens {
 	readonly public DynamicTokens ForGame = new DynamicTokens();
 	readonly public DynamicTokens ForRound = new DynamicTokens();
-	public void RegisterDynamic( System.Func<SpaceState, int> calcCountOnSpace, UniqueToken targetToken, bool entireGame ) {
+	public void RegisterDynamic( System.Func<SpaceState, int> calcCountOnSpace, TokenClassToken targetToken, bool entireGame ) {
 		var dTokens = entireGame ? ForGame : ForRound;
 		dTokens.Register( calcCountOnSpace, targetToken );
 	}
-	public int GetTokensFor( SpaceState space, UniqueToken token )
+	public int GetTokensFor( SpaceState space, TokenClassToken token )
 		=> ForGame.GetDynamicTokenFor( space, token )
 		+ ForRound.GetDynamicTokenFor( space, token );
 

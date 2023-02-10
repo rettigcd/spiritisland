@@ -20,14 +20,14 @@ public class ObserveTheEverChangingWorld {
 }
 
 
-public class ObserveWorldMod : IToken
-	, IVisibleToken
+public class ObserveWorldMod : ISpaceEntity
+	, IToken
 	, IHandleTokenAdded
 	, IHandleTokenRemoved
 {
 	string _tokenSummary;
 
-	public TokenClass Class => Token.Element;
+	public IEntityClass Class => Token.Element;
 	public string Text => ObserveTheEverChangingWorld.Name;
 
 	public Img Img => Token.Element.Img;

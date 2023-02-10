@@ -15,7 +15,7 @@ public class InvaderBinding {
 	#region Apply Damage To...
 
 	/// <summary> Not Badland-aware </summary>
-	public async Task ApplyDamageToEach( int individualDamage, params TokenClass[] generic ) {
+	public async Task ApplyDamageToEach( int individualDamage, params IEntityClass[] generic ) {
 
 		var invaders = Tokens.InvaderTokens()
 			.OrderBy(x=>x.RemainingHealth) // do damaged first to clear them out
@@ -115,7 +115,7 @@ public class InvaderBinding {
 	/// Sticking on InvaderGroup is the only place I can think to put it.
 	/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 	/// </remarks>
-	public async Task RemoveLeastDesirable( RemoveReason reason = RemoveReason.Removed, params TokenClass[] removables ) {
+	public async Task RemoveLeastDesirable( RemoveReason reason = RemoveReason.Removed, params IEntityClass[] removables ) {
 		if(Tokens.SumAny(removables) == 0) return;
 
 		var invaderToRemove = Tokens.OfAnyClass( removables )
@@ -129,7 +129,7 @@ public class InvaderBinding {
 			await Tokens.Remove( invaderToRemove, 1, reason );
 	}
 
-	public Task Remove( IVisibleToken token, int count, RemoveReason reason = RemoveReason.Removed )
+	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
 		=> Tokens.Remove( token, count, reason );
 
 	#endregion
@@ -141,7 +141,7 @@ public class InvaderBinding {
 	public async Task<int> UserSelected_ApplyDamageToSpecificToken( int damage, Spirit damagePicker, HumanToken source, Func<HumanToken[]> allowedTypes ) {
 		if(damage == 0) return 0;
 
-		IVisibleToken[] options;
+		IToken[] options;
 		int damageInflicted = 0;
 		while(0 < damage && (options = Tokens.Keys.OfType<HumanToken>().Intersect( allowedTypes() ).ToArray()).Length > 0) {
 			var st = await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamageFromSource( Tokens.Space, source, options, damage, Present.Always ) );
@@ -154,26 +154,26 @@ public class InvaderBinding {
 		return damageInflicted;
 	}
 
-	public Task<int> UserSelectedDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
+	public Task<int> UserSelectedDamage( int damage, Spirit damagePicker, params IEntityClass[] allowedTypes ) {
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = Human.Invader;
 		return UserSelectedDamage( damage, damagePicker, Present.Always, allowedTypes );
 	}
 
-	public Task<int> UserSelectedPartialDamage( int damage, Spirit damagePicker, params TokenClass[] allowedTypes ) {
+	public Task<int> UserSelectedPartialDamage( int damage, Spirit damagePicker, params IEntityClass[] allowedTypes ) {
 		return UserSelectedDamage(damage,damagePicker, Present.Done, allowedTypes );
 	}
 
 	// This is the standard way of picking - by TokenClass
 	// ??? !!! can we remove this and use DamageToSpecificTokens instead?
-	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params TokenClass[] allowedTypes ) {
+	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params IEntityClass[] allowedTypes ) {
 		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = Human.Invader;
 
-		IVisibleToken[] invaderTokens;
+		IToken[] invaderTokens;
 		int damageInflicted = 0;
-		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).Cast<IVisibleToken>().ToArray()).Length > 0) {
+		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).Cast<IToken>().ToArray()).Length > 0) {
 			var st = await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamage( Tokens.Space, invaderTokens, damage, present ) );
 			if(st==null) break;
 			var invaderToDamage = (HumanToken)st.Token;
@@ -191,7 +191,7 @@ public class InvaderBinding {
 	/// </summary>
 	static public void HealTokens( SpaceState counts ) {
 
-		void RestoreAllToDefault( IToken token ) {
+		void RestoreAllToDefault( ISpaceEntity token ) {
 			if(token is not HumanToken ht || ht.FullDamage == 0) return;
 			int num = counts[token];
 			counts.Adjust( ht.Healthy, num );

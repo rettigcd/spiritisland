@@ -3,17 +3,17 @@
 public class SpaceToken : IOption {
 
 	/// <param name="showSpace">If all of the tokens are on the same space, don't show it in the text.</param>
-	public SpaceToken( Space space, IVisibleToken token, bool showSpace=true ) { 
+	public SpaceToken( Space space, IToken token, bool showSpace=true ) { 
 		Space = space; 
 		Token = token;
 		Text = showSpace ? $"{Token} on {space.Label}" : $"{Token}";
 	}
 
 	public Space Space { get; }
-	public IVisibleToken Token { get; }
+	public IToken Token { get; }
 	public string Text { get; }
 
-	public void Deconstruct(out Space space, out IVisibleToken token) {
+	public void Deconstruct(out Space space, out IToken token) {
 		space = Space;
 		token = Token;
 	}

@@ -26,7 +26,7 @@ public class HazardsSpreadAcrossTheIsland{
 		var tokenTypes = Human.Invader // finds .Any finds strife
 			.Plus( Token.Badlands, Token.Beast, Token.Disease, Token.Wilds );
 		var candidates = ctx.Adjacent
-			.SelectMany( adjState => adjState.Keys.OfType<IVisibleToken>()
+			.SelectMany( adjState => adjState.Keys.OfType<IToken>()
 				.Where( IsTokenOfInterest )
 				.Select( token => new SpaceToken( adjState.Space, token ) )
 			)
@@ -38,8 +38,8 @@ public class HazardsSpreadAcrossTheIsland{
 			: candidates;
 	}
 
-	static readonly TokenClass[] InterestedTokenTypes = new TokenClass[] { Token.Badlands, Token.Beast, Token.Disease, Token.Wilds };
-	static bool IsTokenOfInterest( IToken token ) {
+	static readonly IEntityClass[] InterestedTokenTypes = new IEntityClass[] { Token.Badlands, Token.Beast, Token.Disease, Token.Wilds };
+	static bool IsTokenOfInterest( ISpaceEntity token ) {
 		return InterestedTokenTypes.Contains( token.Class )
 			|| token is HumanToken ht && 0<ht.StrifeCount;
 	}

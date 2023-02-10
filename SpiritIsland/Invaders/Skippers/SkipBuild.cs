@@ -3,12 +3,12 @@
 /// <summary> Stops either 1 or ALL builds. </summary>
 public class SkipBuild : SelfCleaningToken, ISkipBuilds {
 
-	readonly TokenClass[] _stoppedClasses;
+	readonly IEntityClass[] _stoppedClasses;
 	readonly UsageDuration _duration;
 
 	static public SkipBuild Default( string label ) => new SkipBuild( label, UsageDuration.SkipOneThisTurn );
 	
-	public SkipBuild( string label, UsageDuration duration, params TokenClass[] stoppedTokenClasses ):base() {
+	public SkipBuild( string label, UsageDuration duration, params IEntityClass[] stoppedTokenClasses ):base() {
 		Text = label;
 		_duration = duration;
 
@@ -21,9 +21,9 @@ public class SkipBuild : SelfCleaningToken, ISkipBuilds {
 
 	public string Text { get; }
 
-	bool Stops( TokenClass buildClass ) => _stoppedClasses.Contains( buildClass );
+	bool Stops( IEntityClass buildClass ) => _stoppedClasses.Contains( buildClass );
 
-	public virtual Task<bool> Skip( SpaceState space, TokenClass buildClass ) {
+	public virtual Task<bool> Skip( SpaceState space, IEntityClass buildClass ) {
 		if( !Stops( buildClass ) ) return Task.FromResult(false); // not stopped
 
 		if(_duration == UsageDuration.SkipOneThisTurn )

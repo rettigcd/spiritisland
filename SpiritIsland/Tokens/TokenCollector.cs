@@ -8,7 +8,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 
 	protected readonly TargetSpaceCtx _destinationCtx;
 	readonly protected List<CollectQuota> sharedGroupCounts = new(); // the # we push from each group
-	readonly protected Dictionary<TokenClass, int> indexLookupByClass = new(); // map from group back to its count
+	readonly protected Dictionary<IEntityClass, int> indexLookupByClass = new(); // map from group back to its count
 
 	protected TokenCollector(TargetSpaceCtx destinationCtx ) {
 		_destinationCtx = destinationCtx;
@@ -16,7 +16,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 
 	protected abstract IEnumerable<SpaceState> PossibleGatherSources { get; }
 
-	public DerivedType AddGroup( int countToGather, params TokenClass[] classes ) {
+	public DerivedType AddGroup( int countToGather, params IEntityClass[] classes ) {
 		int countIndex = sharedGroupCounts.Count;
 		sharedGroupCounts.Add( new CollectQuota( countToGather, classes ) );
 		foreach(var tokenClass in classes)
@@ -42,7 +42,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		return collected.ToArray();
 	}
 
-	protected TokenClass[] RemainingTypes => indexLookupByClass
+	protected IEntityClass[] RemainingTypes => indexLookupByClass
 		.Where( pair => sharedGroupCounts[pair.Value].count > 0 )
 		.Select( pair => pair.Key )
 		.ToArray();
@@ -52,7 +52,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 	protected virtual SpaceToken[] GetSpaceTokenOptions() => PossibleGatherSources
 		.SelectMany( sourceSpaceState => sourceSpaceState
 			.OfAnyClass( RemainingTypes )
-			.Select( tokens => new SpaceToken( sourceSpaceState.Space, (IVisibleToken)tokens ) )
+			.Select( tokens => new SpaceToken( sourceSpaceState.Space, (IToken)tokens ) )
 		)
 		.ToArray();
 
@@ -66,12 +66,12 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 
 public class CollectQuota {
 
-	public CollectQuota( int count, params TokenClass[] classes ) {
+	public CollectQuota( int count, params IEntityClass[] classes ) {
 		this.count = count;
 		this.classes = classes;
 	}
 
 	public int count;
-	public TokenClass[] classes;
+	public IEntityClass[] classes;
 	public override string ToString() => count + " " + classes.Select( c => c.Label ).Join( "/" );
 }

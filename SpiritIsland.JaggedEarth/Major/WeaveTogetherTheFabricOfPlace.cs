@@ -67,7 +67,7 @@ public class WeaveTogetherTheFabricOfPlace {
 
 	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs ) {
 		// Distribute Tokens (All of them are considered moved.)
-		var tokens = gs.Tokens[space].Keys.OfType<IVisibleToken>().ToArray();
+		var tokens = gs.Tokens[space].Keys.OfType<IToken>().ToArray();
 		var tokenClasses = tokens.Select( x => x.Class ).Distinct().ToArray();
 		await new TokenGatherer( ctx.Target( other ) )
 			.AddGroup( int.MaxValue, tokenClasses )

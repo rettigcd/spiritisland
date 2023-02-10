@@ -23,7 +23,7 @@ public class ManyMindsToken : SpiritPresenceToken, IHandleTokenAdded, IHandleTok
 		return Task.CompletedTask;
 	}
 
-	void UpdateBeastCount( IToken token, SpaceState ss ) {
+	void UpdateBeastCount( ISpaceEntity token, SpaceState ss ) {
 		if(token != this) return;
 		int beastCount = ss[this] < 2 ? 0 : 1;
 		ss.Init(_beastToken,beastCount);

@@ -41,7 +41,7 @@ public class DrawTowardsAConsumingVoid {
 			foreach(var tokenGroup in tokenGroups) {
 				var tokenToGather = adjState.OfClass( tokenGroup ).OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
 				if(tokenToGather != null)
-					await ctx.Move( (IVisibleToken)tokenToGather, adjState.Space, ctx.Space );
+					await ctx.Move( (IToken)tokenToGather, adjState.Space, ctx.Space );
 			}
 			// move presense
 			var movableSpiritsInSpace = ctx.GameState.Spirits

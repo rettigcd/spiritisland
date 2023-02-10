@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.JaggedEarth;
 
-class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
+class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 
 	#region construction
 
@@ -10,7 +10,7 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 
 	#endregion
 
-	public TokenClass Class => ActionModTokenClass.Singleton;
+	public IEntityClass Class => ActionModTokenClass.Singleton;
 
 	public bool HasASenseOfPendingDisaster { get; set; }
 
@@ -85,8 +85,8 @@ class RussiaToken : IToken, IHandleTokenAdded, IHandleRemovingToken {
 
 			GameState gs = GameState.Current;
 			Spirit spirit = scope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
-			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( (IVisibleToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
-			await args.Space.MoveTo( (IVisibleToken)args.Token, destination );
+			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( (IToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
+			await args.Space.MoveTo( (IToken)args.Token, destination );
 		}
 	}
 

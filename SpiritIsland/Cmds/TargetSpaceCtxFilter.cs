@@ -26,7 +26,7 @@ public static class Has {
 	static public XFilter Invaders           => new XFilter( "has invaders", x => x.HasInvaders );
 	static public XFilter Only1ExplorerTown  => new XFilter( "has only 1 explorer or town", x => x.Tokens.SumAny( Human.Explorer_Town ) == 1 && !x.Tokens.Has( Human.City ) );
 	static public XFilter TwoOrFewerInvaders => new XFilter( "has 2 or fewer invaders", x => x.Tokens.SumAny( Human.Invader ) <= 2 );
-	static public XFilter AtLeastN( int count, params TokenClass[] tokenClasses ) => new TargetSpaceCtxFilter( $"{count} or more {tokenClasses.Select( x => x.Label ).Join( "/" )}", x => count <= x.Tokens.SumAny( tokenClasses ) );
+	static public XFilter AtLeastN( int count, params IEntityClass[] tokenClasses ) => new TargetSpaceCtxFilter( $"{count} or more {tokenClasses.Select( x => x.Label ).Join( "/" )}", x => count <= x.Tokens.SumAny( tokenClasses ) );
 	static public XFilter TownOrCity         => new XFilter( "has town/city", ctx => ctx.Tokens.HasAny( Human.Town_City ) );
 	static public XFilter NoCity             => new XFilter( "has no City", x => !x.Tokens.Has( Human.City ) );
 	static public XFilter City               => new XFilter( "has city", x => x.Tokens.Has( Human.City ) );
@@ -42,7 +42,7 @@ public static class Has {
 	// BAC tokens
 	static public XFilter BeastDiseaseOrDahan                   => new XFilter( "has beast, disease, or dahan", ctx => ctx.Tokens.Dahan.Any || ctx.Tokens.Beasts.Any || ctx.Tokens.Disease.Any );
 	static public XFilter BeastOrIsAdjacentToBeast              => new XFilter( "has beast or is adjacent to beast", ctx => ctx.Range( 1 ).Any( x => x.Beasts.Any ) );
-	static public XFilter Token(TokenClass tokenClass)          => new XFilter( "has "+tokenClass.Label, ctx => ctx.Tokens.Has(tokenClass) );
+	static public XFilter Token(IEntityClass tokenClass)          => new XFilter( "has "+tokenClass.Label, ctx => ctx.Tokens.Has(tokenClass) );
 	static public XFilter Beast                                 => Token( SpiritIsland.Token.Beast);
 	static public XFilter AnyBacToken                           => new XFilter( "has Badlands / Beasts / Disease / Wilds / Strife", ctx=>{ var t=ctx.Tokens; return t.Badlands.Any || t.Beasts.Any || t.Disease.Any || t.Wilds.Any || t.HasStrife; } );
 	static public XFilter AnyBacTokenOrAdjacentTo(int adjCount) => new XFilter( "has Badlands / Beasts / Disease / Wilds / Strife or adjacent to "+adjCount,  ctx => 1 <= Count(ctx) || adjCount <= ctx.AdjacentCtxs.Sum(Count) );

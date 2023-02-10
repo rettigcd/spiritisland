@@ -25,11 +25,11 @@ sealed public class SkipBuild_Custom : SelfCleaningToken, ISkipBuilds {
 
 	public string Text { get; }
 
-	public Task<bool> Skip( SpaceState space, TokenClass buildClass ) {
+	public Task<bool> Skip( SpaceState space, IEntityClass buildClass ) {
 		if( !_stopAll )
 			space.Adjust( this, -1 );
 		return _func( space, buildClass );
 	}
-	readonly Func<SpaceState, TokenClass, Task<bool>> _func;
+	readonly Func<SpaceState, IEntityClass, Task<bool>> _func;
 	readonly bool _stopAll;
 }

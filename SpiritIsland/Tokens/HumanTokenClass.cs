@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class HumanTokenClass : TokenClass {
+public class HumanTokenClass : IEntityClass {
 
 	public HumanTokenClass( string label, TokenCategory category, int fearGeneratedWhenDestroyed, Img img, int expectedHealth, TokenVariant variant=default ) {
 		Label = label;
