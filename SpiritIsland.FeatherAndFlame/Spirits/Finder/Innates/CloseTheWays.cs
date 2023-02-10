@@ -24,7 +24,7 @@ public class CloseTheWays {
 	static public Task Option3( TargetSpaceCtx ctx ) => DoIsolate( ctx );
 
 	static async Task DoIsolate(TargetSpaceCtx ctx) {
-		bool previouslyRun = UnitOfWork.Current.ContainsKey( Name );
+		bool previouslyRun = ActionScope.Current.ContainsKey( Name );
 		if(previouslyRun) {
 			// Target a New Space
 			var space = await ctx.Self.TargetsSpace(ctx, "Target Additional Space To Close",
@@ -34,7 +34,7 @@ public class CloseTheWays {
 			);
 			ctx = ctx.Target(space);
 		}
-		UnitOfWork.Current[Name] = true; // mark as ran
+		ActionScope.Current[Name] = true; // mark as ran
 
 		ctx.Isolate();
 	}

@@ -121,7 +121,7 @@ public class HabsburgMonarchy : IAdversary {
 		}
 
 		// Take action
-		await using var actionScope = gameState.StartAction( ActionCategory.Invader ); // ??? is this really an action?
+		await using var actionScope = new ActionScope( ActionCategory.Invader ); // ??? is this really an action?
 		foreach(var newTownSpace in newTownSpaces)
 			await newTownSpace.AddDefault( Human.Town, 1, AddReason.Build );
 
@@ -159,7 +159,7 @@ public class HabsburgMonarchy : IAdversary {
 
 	async Task SeekPrimeTerritory_Escalation( GameState gameState ) {
 
-		await using var actionScope = gameState.StartAction(ActionCategory.Default);
+		await using var actionScope = new ActionScope( ActionCategory.Default);
 
 		// On each board
 		await Cmd.ForEachBoard( new DecisionOption<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )

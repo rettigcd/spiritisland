@@ -33,7 +33,7 @@ public class ObserveWorldMod : ISpaceEntity
 	public Img Img => Token.Element.Img;
 
 	readonly ShiftingMemoryOfAges _spirit;
-	readonly HashSet<UnitOfWork> _appliedToTheseActions = new HashSet<UnitOfWork>();
+	readonly HashSet<ActionScope> _appliedToTheseActions = new HashSet<ActionScope>();
 
 	public ObserveWorldMod( TargetSpaceCtx ctx ) {
 		_spirit = (ShiftingMemoryOfAges)ctx.Self;
@@ -50,7 +50,7 @@ public class ObserveWorldMod : ISpaceEntity
 	}
 
 	void Check( SpaceState space ) {
-		var actionScope = UnitOfWork.Current;
+		var actionScope = ActionScope.Current;
 		if(    _appliedToTheseActions.Contains( actionScope ) // already did this action 
 			|| _tokenSummary == space.Summary   // no change in tokens
 		)

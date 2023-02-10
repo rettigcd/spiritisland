@@ -100,7 +100,7 @@ public class Russia : IAdversary {
 				? beastsSpacesForBoard[board]
 				: beastsSpacesForBoard.Values.SelectMany( x => x );
 			for(int i = 0; i < 2; ++i) {
-				await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Adversary );
+				await using ActionScope actionScope = new ActionScope( ActionCategory.Adversary );
 				var criteria = new Select.ASpace( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Downgrade(), Present.Always );
 				Space addSpace = await spirit.Gateway.Decision( criteria );
 				await gameState.Tokens[addSpace].AddDefault( Human.Explorer, 1, AddReason.Explore );

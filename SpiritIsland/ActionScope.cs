@@ -4,15 +4,15 @@ namespace SpiritIsland;
 /// <summary>
 /// A Spirit Island 'Action'
 /// </summary>
-public sealed class UnitOfWork : IAsyncDisposable {
+public sealed class ActionScope : IAsyncDisposable {
 
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
-	public static UnitOfWork Current => _current.Value ?? throw new InvalidOperationException("Current action is null");
-	readonly static AsyncLocal<UnitOfWork> _current = new AsyncLocal<UnitOfWork>(); // value gets shallow-copied into child calls and post-awaited states.
+	public static ActionScope Current => _current.Value ?? throw new InvalidOperationException("Current action is null");
+	readonly static AsyncLocal<ActionScope> _current = new AsyncLocal<ActionScope>(); // value gets shallow-copied into child calls and post-awaited states.
 
 	#region constructor
-	public UnitOfWork( ActionCategory actionCategory, TerrainMapper terrainMapper = null ) {
+	public ActionScope( ActionCategory actionCategory, TerrainMapper terrainMapper = null ) {
 		Id = Guid.NewGuid();
 		Category = actionCategory;
 
@@ -29,7 +29,7 @@ public sealed class UnitOfWork : IAsyncDisposable {
 			: GameState.Current.Island.Terrain;
 	TerrainMapper _terrainMapper;
 
-	readonly UnitOfWork _old;
+	readonly ActionScope _old;
 
 	// spirit (if any) that owns the action. Null for non-spirit actions
 	public Spirit Owner { get; set; }
@@ -63,10 +63,10 @@ public sealed class UnitOfWork : IAsyncDisposable {
 		_current.Value = _old; // restore it
 	}
 
-	public void AtEndOfThisAction(Func<UnitOfWork,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
-	public void AtEndOfThisAction( Action<UnitOfWork> action ) => (_endOfThisAciton ??= new AsyncEvent<UnitOfWork>()).Add( action );
+	public void AtEndOfThisAction(Func<ActionScope,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );
+	public void AtEndOfThisAction( Action<ActionScope> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );
 
-	AsyncEvent<UnitOfWork> _endOfThisAciton;
+	AsyncEvent<ActionScope> _endOfThisAciton;
 
 	#region private
 	Dictionary<string, object> dict;

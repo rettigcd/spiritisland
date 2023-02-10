@@ -7,8 +7,8 @@ internal class RainAndMudSupressConflict {
 	const string Name = "Rain and Mud Suppress Conflict";
 
 	// Use unit of work to coordinate between tier levels
-	static bool WasUsed() => UnitOfWork.Current.ContainsKey(Name);
-	static void MarkAsUsed() => UnitOfWork.Current[ Name ] = true;
+	static bool WasUsed() => ActionScope.Current.ContainsKey(Name);
+	static void MarkAsUsed() => ActionScope.Current[ Name ] = true;
 
 	const string Tier1Elements = "1 air,3 water";
 

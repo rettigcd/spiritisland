@@ -22,7 +22,7 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 			SelfCtx decisionMaker = spirit.BindSelf();
 			var spacesCtxs = ctx.GameState.Tokens
 				.PowerUp( board.Spaces )
-				.Where( UnitOfWork.Current.TerrainMapper.IsInPlay )
+				.Where( ActionScope.Current.TerrainMapper.IsInPlay )
 				.Select( decisionMaker.Target )
 				.Where( _landCriteria.Filter );
 			foreach(TargetSpaceCtx ss in spacesCtxs)

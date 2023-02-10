@@ -72,7 +72,7 @@ public class FinderOfPathsUnseen : Spirit {
 	);
 	async Task ResponsibilityToTheDead_Handler( ITokenRemovedArgs args ) {
 		const string AllReadyDestroyedSomePresence = "FinderAlreadyDestroyedPresence";
-		var scope = UnitOfWork.Current;
+		var scope = ActionScope.Current;
 		if(scope.ContainsKey( AllReadyDestroyedSomePresence )
 			// After one of your Actions
 			&& scope.Owner == this

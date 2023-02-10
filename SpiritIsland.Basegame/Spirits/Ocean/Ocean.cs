@@ -88,9 +88,9 @@ public class Ocean : Spirit {
 			var destination = await this.Gateway.Decision(Select.ASpace.PushToken((IToken)args.Token,args.AddedTo.Space,moveOptions, Present.Done));
 			if( destination != null ) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
-				UnitOfWork.Current.AtEndOfThisAction(async _ => {
+				ActionScope.Current.AtEndOfThisAction(async _ => {
 					//don't use original because that may or may not have been for a power.
-					await using UnitOfWork childAction = gs.StartAction( ActionCategory.Default );
+					await using ActionScope childAction = new ActionScope( ActionCategory.Default );
 					await BindSelf()
 						.Move( (IToken)args.Token, args.AddedTo.Space, destination );
 				} );
@@ -124,7 +124,7 @@ public class Ocean : Spirit {
 	int drownedInvaderHealthAccumulator = 0;
 
 	// ! Hook for Tidal Boon
-	static public void EnableSavingDahan() { UnitOfWork.Current[SaveDahan] = true; }
-	static public bool ShouldSaveDahan() => UnitOfWork.Current.ContainsKey( SaveDahan );
+	static public void EnableSavingDahan() { ActionScope.Current[SaveDahan] = true; }
+	static public bool ShouldSaveDahan() => ActionScope.Current.ContainsKey( SaveDahan );
 	const string SaveDahan = "SaveDahanFromDrowning";
 }

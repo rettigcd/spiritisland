@@ -21,8 +21,8 @@ public class BlightTokenBinding : TokenBinding {
 	}
 
 	const string BlightAddedStr = "BlightCause";
-	static void RecordBlightAdded( AddReason reason ) => UnitOfWork.Current[BlightAddedStr] = reason;
-	public static AddReason GetAddReason() => UnitOfWork.Current.SafeGet( BlightAddedStr, AddReason.None );
+	static void RecordBlightAdded( AddReason reason ) => ActionScope.Current[BlightAddedStr] = reason;
+	public static AddReason GetAddReason() => ActionScope.Current.SafeGet( BlightAddedStr, AddReason.None );
 
 	// Add:
 	// take from card

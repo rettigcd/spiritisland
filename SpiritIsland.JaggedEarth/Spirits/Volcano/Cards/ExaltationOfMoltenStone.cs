@@ -29,7 +29,7 @@ public class ExaltationOfMoltenStone {
 
 		public ExtendRange1FromMountain( ICalcRange originalApi ) {
 			_originalApi = originalApi;
-			_powerTerrainMapper = UnitOfWork.Current.TerrainMapper;
+			_powerTerrainMapper = ActionScope.Current.TerrainMapper;
 		}
 
 		public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( 

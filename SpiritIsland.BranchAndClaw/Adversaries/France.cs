@@ -99,7 +99,7 @@ public class France : IAdversary {
 					StrifedRavage.StrifedInvadersTakeDamagePerStrife
 				);
 
-			await using var actionScope = gs.StartAction( ActionCategory.Adversary );
+			await using var actionScope = new ActionScope( ActionCategory.Adversary );
 			GameCtx gameCtx = new GameCtx( gameState );
 			await cmd.ForEachBoard().Execute( gameCtx );
 

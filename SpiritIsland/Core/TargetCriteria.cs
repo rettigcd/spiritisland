@@ -47,7 +47,7 @@ public class TargetCriteria {
 
 	#region private
 	readonly string[] _filters;
-	TerrainMapper TerrainMapper => _terrainMapper ??= UnitOfWork.Current.TerrainMapper;
+	TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
 	TerrainMapper _terrainMapper;
 	readonly Spirit _self;
 	#endregion

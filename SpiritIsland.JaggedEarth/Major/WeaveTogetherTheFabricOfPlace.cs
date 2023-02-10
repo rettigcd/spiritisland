@@ -58,7 +58,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			gameState.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
 
 			// divide pieces as you wish.
-			await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Spirit_Power );
+			await using ActionScope actionScope = new ActionScope( ActionCategory.Spirit_Power );
 			await DistributeTokens( originatorCtx, space, other, gs );
 		});
 

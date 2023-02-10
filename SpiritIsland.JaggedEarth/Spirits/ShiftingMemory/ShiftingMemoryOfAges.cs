@@ -135,7 +135,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 	public readonly ElementCounts PreparedElements = new ElementCounts();
 
 	ElementCounts ActiveElementsForAction() 
-		=> UnitOfWork.Current.SafeGet( "ActionElements", ()=> Elements.Clone() );
+		=> ActionScope.Current.SafeGet( "ActionElements", ()=> Elements.Clone() );
 
 	public override async Task<bool> HasElements( ElementCounts subset ) {
 		var actionElements = ActiveElementsForAction();

@@ -81,7 +81,7 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
-		await using var action = gameState.StartAction( ActionCategory.Spirit_Growth );
+		await using var action = new ActionScope( ActionCategory.Spirit_Growth );
 		var ctx = BindSelf();
 
 		// Auto run the auto-runs.
@@ -138,7 +138,7 @@ public abstract partial class Spirit : IOption {
 			_ => throw new InvalidOperationException(),
 		};
 
-		await using var actionScope = gs.StartAction( category );
+		await using var actionScope = new ActionScope( category );
 		actionScope.Owner = this;
 
 		SelfCtx ctx = phase switch {

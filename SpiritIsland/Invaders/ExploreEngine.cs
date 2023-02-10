@@ -57,7 +57,7 @@ public class ExploreEngine {
 			int exploreCount = exploreTokens[ModToken.DoExplore];
 			exploreTokens.Init( ModToken.DoExplore, 0 );
 			while(0 < exploreCount--) {
-				await using UnitOfWork actionScope = gs.StartAction( ActionCategory.Invader );
+				await using ActionScope actionScope = new ActionScope( ActionCategory.Invader );
 				await ExploreSingleSpace( exploreTokens, gs, escalation );
 			}
 		}

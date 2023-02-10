@@ -6,7 +6,7 @@ public class WaysOfShoreAndHeartland {
 	[Slow,FromPresence( 2 )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		var tm = UnitOfWork.Current.TerrainMapper;
+		var tm = ActionScope.Current.TerrainMapper;
 
 		// Push up to 2 Invaders / Dahan / Presence / Beast
 		await ctx.Pusher

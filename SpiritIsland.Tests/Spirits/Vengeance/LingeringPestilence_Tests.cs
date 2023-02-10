@@ -16,7 +16,7 @@ public class LingeringPestilence_Tests {
 		SpiritExtensions.Adjust( self.Presence, space, 2 );
 
 		// When: a spirit power destroys presence
-		await using UnitOfWork actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
+		await using ActionScope actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
 		Task t = GrowthThroughSacrifice.ActAsync( self.BindMyPowers(gameState).TargetSpirit(self) );
 		self.NextDecision().HasPrompt( "Select presence to destroy" ).HasOptions("A5").Choose("A5");
 		// (!! this is kind of a crappy sequence for Growth-thru-sacrifice.  Can we clean up the wording / choice order?)

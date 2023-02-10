@@ -156,10 +156,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public HealthTokenClassBinding DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
-	public UnitOfWork StartAction( ActionCategory cat, TerrainMapper terrainMapper = null ) { // !!! Remove this
-		return new UnitOfWork( cat, terrainMapper );
-	}
-
 	#region Win / Loss
 
 	readonly List<Action<GameState>> WinLossChecks = new List<Action<GameState>>();

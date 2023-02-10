@@ -5,7 +5,7 @@ namespace SpiritIsland.Tests;
 static internal class Extensions {
 
 	public static async Task PlaceOn( this SpiritPresence presence, Space space, GameState gameState ) {
-		await using UnitOfWork scope = gameState.StartAction ( ActionCategory.Default );
+		await using ActionScope scope = gameState.StartAction ( ActionCategory.Default );
 		await gameState.Tokens[space].Add( presence.Token, 1 );
 	}
 
@@ -80,5 +80,9 @@ static internal class Extensions {
 
 	static public TargetSpaceCtx TargetSpace( this SelfCtx ctx, string spaceLabel )
 		=> ctx.Target( ctx.GameState.AllSpaces.Downgrade().First( s => s.Label == spaceLabel ) );
+
+	static public ActionScope StartAction( this GameState _, ActionCategory cat, TerrainMapper terrainMapper = null ) { // !!! Remove this
+		return new ActionScope( cat, terrainMapper );
+	}
 
 }

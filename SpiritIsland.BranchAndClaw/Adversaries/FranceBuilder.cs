@@ -28,7 +28,7 @@ class FranceBuilder : BuildEngine {
 				.OrderBy( t => t.Sum( Human.Town ) )
 				.First();
 			// !!!
-			_ = gs.StartAction( ActionCategory.Adversary ); // !!! Dispose or don't use
+			_ = new ActionScope( ActionCategory.Adversary ); // !!! Dispose or don't use
 			await buildSpace.AddDefault( Human.Town, 1 );
 		}
 	}

@@ -43,7 +43,7 @@ public class RavageBehavior {
 				return; 
 			}
 
-		var scope = data.GameState.StartAction( ActionCategory.Invader );
+		var scope = new ActionScope( ActionCategory.Invader );
 		data.InvaderBinding = new InvaderBinding( data.Tokens );
 
 		try {

@@ -84,7 +84,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	public virtual bool CanBePlacedOn( SpaceState spaceState ) => UnitOfWork.Current.TerrainMapper.IsInPlay( spaceState );
+	public virtual bool CanBePlacedOn( SpaceState spaceState ) => ActionScope.Current.TerrainMapper.IsInPlay( spaceState );
 	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token];
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
 	public int CountOn( SpaceState spaceState ) => spaceState[Token];

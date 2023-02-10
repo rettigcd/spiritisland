@@ -73,11 +73,11 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 	async Task IHandleRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		const string key = "A Sense of Pending Disaster";
 		SpaceState[] pushOptions;
-		var scope = UnitOfWork.Current;
+		var scope = ActionScope.Current;
 		if(HasASenseOfPendingDisaster
 			&& args.Token.Class == Human.Explorer     // Is explorer
 			&& args.Reason == RemoveReason.Destroyed // destroying
-			&& !UnitOfWork.Current.ContainsKey( key )  // first time
+			&& !ActionScope.Current.ContainsKey( key )  // first time
 			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.Where( ss => scope.TerrainMapper.IsInPlay( ss ) ).ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer

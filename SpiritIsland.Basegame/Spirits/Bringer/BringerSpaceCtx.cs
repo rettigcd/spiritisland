@@ -31,7 +31,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 		// Push towns and explorers
 		if(newToken.Class != BringerSpaceCtx.DreamingCity) {
-			var destination = await Decision( Select.ASpace.PushToken( newToken, Space, Tokens.Adjacent.Where( UnitOfWork.Current.TerrainMapper.IsInPlay ), Present.Always ) );
+			var destination = await Decision( Select.ASpace.PushToken( newToken, Space, Tokens.Adjacent.Where( ActionScope.Current.TerrainMapper.IsInPlay ), Present.Always ) );
 			await Tokens.MoveTo( newToken, destination ); // there is no Push(Token), so this will have to do.
 			RecordSpaceWithDreamers( GameState.Tokens[destination] );
 		}
@@ -40,7 +40,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 	}
 
 	static public void RecordSpaceWithDreamers( SpaceState spaceState ) {
-		var scope = UnitOfWork.Current;
+		var scope = ActionScope.Current;
 
 		// if this is first time we have a space
 		bool isFirstTime = !scope.ContainsKey( SpacesWithDreamers );
@@ -53,7 +53,7 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 
 	#region static - restore invaders
 
-	static public void CleanupDreamDamage(UnitOfWork actionScope) { // ! this one is ok
+	static public void CleanupDreamDamage(ActionScope actionScope) { // ! this one is ok
 		var spaces = actionScope.SafeGet( SpacesWithDreamers, Enumerable.Empty<SpaceState>() );
 		foreach(SpaceState spaceState in spaces) {
 			RemoveDreamDamage( spaceState );

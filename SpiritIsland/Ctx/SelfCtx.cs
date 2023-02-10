@@ -6,7 +6,7 @@ public class SelfCtx {
 	public GameState GameState => _gameState ??= GameState.Current;
 	GameState _gameState;
 
-	protected TerrainMapper TerrainMapper => _terrainMapper ??= UnitOfWork.Current.TerrainMapper;
+	protected TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
 	TerrainMapper _terrainMapper;
 
 	#region constructor
