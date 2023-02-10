@@ -1,4 +1,7 @@
-﻿namespace SpiritIsland;
+﻿using System;
+using System.Data.Common;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
@@ -92,15 +95,16 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#endregion
 
-	#region private
+	#region fields
 
 	static void ValidateNotDead( IToken specific ) {
 		if(specific is HumanToken ht && ht.RemainingHealth == 0) 
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
-	public readonly CountDictionary<IToken> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
+	readonly CountDictionary<IToken> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
 	protected readonly IIslandTokenApi _api;
+	public SpaceState LinkedViaWays; // HACK - for Finder  - !!! BUG - This MUST be a token or its state will be lost.
 
 	#endregion
 
@@ -165,8 +169,7 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		return lessStrifed;
 	}
 
-	public int AttackDamageFrom1( HumanToken ht ) => ht.Class.Category == TokenCategory.Dahan 
-		? 2
+	public int AttackDamageFrom1( HumanToken ht ) => ht.Class.Category == TokenCategory.Dahan ? 2
 		: _api.InvaderAttack( ht.Class );
 
 	#region Adjacent Properties
@@ -181,8 +184,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 	} }
 
 	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();
-
-	public SpaceState LinkedViaWays; // HACK - for Finder
 
 	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
 
@@ -240,18 +241,15 @@ public class SpaceState : HasNeighbors<SpaceState> {
 			cleanup.EndOfRoundCleanup( this );
 	}
 
-	// Utter a Curse of Dread and Bone requires these overrides
-	public override bool Equals( object obj ) => obj is SpaceState other && other.Space == Space;
+	#region GetHashCode and Equals
+
+	// Utter a Curse of Dread and Bone & Bargains of Power require these overrides:
 	public override int GetHashCode() => Space.GetHashCode();
+	public override bool Equals( object obj ) => obj is SpaceState other && other.Space == Space;
+	public static bool operator ==( SpaceState ss1, SpaceState ss2 ) => Object.ReferenceEquals( ss1, ss2) || ss1.Equals(ss2);
+	public static bool operator !=( SpaceState ss1, SpaceState ss2 ) => !(ss1==ss2);
 
-
-	// ! To ensure we don't side-step any Spirit Powers, All calls to this for Spirit Powers
-	// should go through SelfCtx / TargetSpaceCtx / TargetSpiritCtx
-	// Calls for Invader actions, Adversaries, etc, can call direclty.
-
-	////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////
+	#endregion
 
 	// It is questionable if this should be here since adjusting shouldn't make any difference
 	// but in this case, it COULD destroy a token.

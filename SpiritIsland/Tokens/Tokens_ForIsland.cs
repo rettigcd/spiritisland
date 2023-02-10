@@ -32,14 +32,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public SpaceState GetTokensFor( Space space ) => this[space];
 
-	public SpaceState this[Space space] {
-		get {
-			if(!_tokenCounts.ContainsKey( space )) {
-				_tokenCounts[space] = new SpaceState( space, new CountDictionary<IToken>(), this );
-			}
-			return _tokenCounts[space];
-		}
-	}
+	public SpaceState this[Space space] => new SpaceState( space, GetTokens( space ), this );
+
+	CountDictionary<IToken> GetTokens( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<IToken>() );
+
 
 	public int GetDynamicTokensFor( SpaceState space, UniqueToken token ) 
 		=> Dynamic.GetTokensFor( space, token );
@@ -88,7 +84,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
 			// Save TokenCounts
-			foreach(var (space,countsDict) in src._tokenCounts.Select( x => ((Space)x.Key, x.Value._counts) ))
+			foreach(var (space,countsDict) in src._tokenCounts.Select( x => (x.Key, x.Value) ))
 				_tokenCounts[space] = countsDict.Clone();
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
@@ -132,6 +128,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	#endregion Memento
 
 	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
-	readonly Dictionary<Space, SpaceState> _tokenCounts = new Dictionary<Space, SpaceState>();
+	readonly Dictionary<Space, CountDictionary<IToken>> _tokenCounts = new Dictionary<Space, CountDictionary<IToken>>();
 
 }

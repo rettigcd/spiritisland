@@ -36,7 +36,7 @@ public class BargainsOfPowerAndProtection {
 			// ??? Is there some way we can cache this inside the UnitOfWork?
 
 			var match = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ), true )
-				.FirstOrDefault( opt => opt == space);
+				.FirstOrDefault( opt => opt.Equals(space) );
 			return match?.Dahan.CountAll ?? 0;
 		}
 	}

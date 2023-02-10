@@ -10,7 +10,7 @@ public class GiftOfTwinnedDays{
 		ctx.Other.AddActionFactory(new RepeatCheapestCardForCost( Name ) );
 
 		// You may do likewise.
-		ctx.Self.AddActionFactory(new RepeatCheapestCardForCost( Name ) ); // !!! Must EXCLUDE Gift of Twinned Days
+		ctx.Self.AddActionFactory(new RepeatCheapestCardForCost( Name ) ); // Exclude: Gift of Twinned Days
 
 		return Task.CompletedTask;
 	}
