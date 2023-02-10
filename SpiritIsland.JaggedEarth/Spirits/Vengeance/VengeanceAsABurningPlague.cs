@@ -34,7 +34,7 @@ public class VengeanceAsABurningPlague : Spirit {
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
-		// Put 2 presence ontyour starting board:
+		// Put 2 presence on your starting board:
 		// 1 in a land with blight.
 		SpaceState landWithoutBlight = gameState.Tokens.PowerUp( board.Spaces ).First( s => s.Blight.Any );
 		landWithoutBlight.Adjust( Presence.Token, 1);

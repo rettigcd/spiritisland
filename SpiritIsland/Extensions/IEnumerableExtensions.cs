@@ -73,4 +73,11 @@ static public class IEnumerableExtensions {
 
 	public static IEnumerable<string> SelectLabels(this IEnumerable<SpaceState> spaceStates) => spaceStates.Select(x=>x.Space.Text);
 
+	public static Value Get<Key,Value>(this IDictionary<Key,Value> dict, Key key, Func<Value> newValueGenerator) {
+		if(dict.ContainsKey(key)) return dict[key];
+		Value newValue = newValueGenerator();
+		dict.Add(key,newValue);
+		return newValue;
+	}
+
 }
