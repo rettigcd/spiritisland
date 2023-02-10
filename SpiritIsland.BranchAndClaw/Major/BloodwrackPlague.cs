@@ -21,7 +21,7 @@ public class BloodwrackPlague {
 			ctx.AddFear(2);
 			// For each disease in target land, do 1 damage in target or adjacent land
 			int damage = disease.Count;
-			var space = await ctx.Decision(new Select.Space($"Select space to apply {damage} damage", ctx.Range(1), Present.Always )); // can we wrap this and make it easier to call?
+			var space = await ctx.Decision(new Select.ASpace($"Select space to apply {damage} damage", ctx.Range(1), Present.Always )); // can we wrap this and make it easier to call?
 			await ctx.Target(space).DamageInvaders( damage );
 		}
 	}

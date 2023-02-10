@@ -69,7 +69,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Select 1st Token destination (like Push, Arrows!)
 		var destinationOptions = Range( targetCriteria );
-		Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Always, firstToken, remaining ) );
+		Space destination = await Decision( Select.ASpace.MoveToken( Space, destinationOptions, Present.Always, firstToken, remaining ) );
 		if( destination == null ) return null;
 		
 		await Move( firstToken, Space, destination );
@@ -399,7 +399,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var spaceOptions = Tokens.Adjacent.Where(TerrainMapper.IsInPlay);
 		if(filter != null)
 			spaceOptions = spaceOptions.Where( s => filter( Target( s.Space ) ) );
-		var space = await Decision( new Select.Space( prompt, spaceOptions, Present.Always ) );
+		var space = await Decision( new Select.ASpace( prompt, spaceOptions, Present.Always ) );
 		return space != null ? Target( space )
 			: null;
 	}

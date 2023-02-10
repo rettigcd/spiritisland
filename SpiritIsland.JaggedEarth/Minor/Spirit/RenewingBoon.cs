@@ -8,7 +8,7 @@ public class RenewingBoon{
 		// Choose a land where you and target Spirit both have presence.
 		var spaceOptions = ctx.Self.Presence.ActiveSpaceStates.Intersect( ctx.OtherCtx.Self.Presence.ActiveSpaceStates )
 			.ToArray();
-		var space = await ctx.Decision(new Select.Space("",spaceOptions,Present.Always));
+		var space = await ctx.Decision(new Select.ASpace("",spaceOptions,Present.Always));
 		if( space == null) return;
 
 		// In that land: Remove 1 blight

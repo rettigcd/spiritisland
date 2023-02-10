@@ -44,7 +44,7 @@ public class DissolveTheBondsOfKinship {
 			var destinationOptions = explorerCount > unpushedLands.Count
 				? ctx.Tokens.Adjacent.ToArray() // allow anywhere
 				: unpushedLands.ToArray(); // force to un-pushed lands
-			var destination = await ctx.Decision( Select.Space.PushToken( token, ctx.Space, destinationOptions, Present.Always ) );
+			var destination = await ctx.Decision( Select.ASpace.PushToken( token, ctx.Space, destinationOptions, Present.Always ) );
 			var dstTokens = ctx.GameState.Tokens[destination];
 
 			// Move

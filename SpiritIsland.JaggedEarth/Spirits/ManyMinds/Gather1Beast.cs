@@ -6,7 +6,7 @@ class Gather1Beast : GrowthActionFactory {
 		var options = ctx.GameState.Tokens.PowerUp(ctx.Self.Presence.ActiveSpaceStates.Downgrade() )
 			.SelectMany(p=>p.Range(2)) // Growth option so this Range ok
 			.Distinct();
-		var to = await ctx.Decision( new Select.Space( "Gather beast to", options.Downgrade(), Present.Always ));
+		var to = await ctx.Decision( new Select.ASpace( "Gather beast to", options.Downgrade(), Present.Always ));
 		await ctx.Target(to).GatherUpTo(1,Token.Beast);
 	}
 

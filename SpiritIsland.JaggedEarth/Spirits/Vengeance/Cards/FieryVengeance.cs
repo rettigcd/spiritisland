@@ -11,7 +11,7 @@ public class FieryVengeance {
 		ctx.Other.Presence.RemoveDestroyed(1);
 
 		// 1 fear and 1 damage in one of target Spirit's lands.
-		var space = await ctx.Other.Gateway.Decision(new Select.Space("1 fear + 1 damage", ctx.OtherCtx.Self.Presence.ActiveSpaceStates.Downgrade(), Present.Always));
+		var space = await ctx.Other.Gateway.Decision(new Select.ASpace("1 fear + 1 damage", ctx.OtherCtx.Self.Presence.ActiveSpaceStates.Downgrade(), Present.Always));
 		var spaceCtx = ctx.OtherCtx.Target(space);
 		spaceCtx.AddFear(1);
 		await spaceCtx.DamageInvaders(1);

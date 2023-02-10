@@ -2,10 +2,10 @@
 
 public class TrackSlot : TypedDecision<Track> {
 
-	static public TrackSlot ToReveal( string prompt, SpiritIsland.Spirit spirit )
+	static public TrackSlot ToReveal( string prompt, Spirit spirit )
 		=> new TrackSlot( prompt, spirit.Presence.RevealOptions(), "Take Presence from Board" );
 
-	static public TrackSlot ToCover( SpiritIsland.Spirit spirit )
+	static public TrackSlot ToCover( Spirit spirit )
 		=> new TrackSlot( "Select Destination to return presence", spirit.Presence.CoverOptions );
 
 	TrackSlot( string prompt, IEnumerable<Track> trackOptions, string cancelOption = null )

@@ -2,11 +2,11 @@
 
 static public class SpiritSelectExtensions {
 
-	static public Task<SpiritIsland.Space> SelectSacredSite( this Spirit self, string prompt )
+	static public Task<Space> SelectSacredSite( this Spirit self, string prompt )
 		=> self.Gateway.Decision( Select.DeployedPresence.SacredSites( prompt, self.Presence, Present.Always ) );
 
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
-	static public async Task<IOption> SelectMovablePresence( this SpiritIsland.Spirit self, string actionPhrase = "move" ) {
+	static public async Task<IOption> SelectMovablePresence( this Spirit self, string actionPhrase = "move" ) {
 		string prompt = $"Select Presence to {actionPhrase}";
 		return (IOption)await self.Gateway.Decision( Select.TrackSlot.ToReveal( prompt, self ) )
 			?? await self.Gateway.Decision( Select.DeployedPresence.Movable( prompt, self, Present.Always ) );
@@ -28,7 +28,7 @@ static public class SpiritSelectExtensions {
 		var options = self.FindSpacesWithinRange( targetCriteria, forPower )
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
-		return await self.Gateway.Decision( Select.Space.ToPlacePresence( options, Present.Always, self.Token ) );
+		return await self.Gateway.Decision( Select.ASpace.ToPlacePresence( options, Present.Always, self.Token ) );
 	}
 
 	static public Task<Space> SelectDeployed( this Spirit self, string prompt )
@@ -49,7 +49,7 @@ static public class SpiritSelectExtensions {
 		if(source == null) return (null, null);
 
 		// Select destination
-		Space destination = await self.Gateway.Decision( Select.Space.PushPresence( source, source.Tokens.Adjacent, Present.Always, self.Token ) );
+		Space destination = await self.Gateway.Decision( Select.ASpace.PushPresence( source, source.Tokens.Adjacent, Present.Always, self.Token ) );
 		await source.Tokens.MoveTo( self.Token, destination );
 		return (source, destination);
 	}
@@ -83,7 +83,7 @@ static public class SpiritSelectExtensions {
 	/// <returns>Place in Ocean, Growth through sacrifice</returns>
 	static public async Task PlacePresenceOn1( this Spirit self, params SpaceState[] destinationOptions ) {
 		IOption from = await self.SelectSourcePresence();
-		Space to = await self.Gateway.Decision( Select.Space.ToPlacePresence( destinationOptions, Present.Always, self.Token ) );
+		Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( destinationOptions, Present.Always, self.Token ) );
 		await self.Presence.Place( from, to );
 	}
 

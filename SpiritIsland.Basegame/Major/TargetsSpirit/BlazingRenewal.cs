@@ -22,7 +22,7 @@ public class BlazingRenewal {
 		if( targetOptions.Length == 0 ) return;
 
 		// Jonah says Originating Spirit's decision.  However, Querki says: Target Spirit makes the decision.
-		var space = await ctx.OtherCtx.Decision( Select.Space.ToPlacePresence( targetOptions, Present.Always, ctx.Other.Token ) );
+		var space = await ctx.OtherCtx.Decision( Select.ASpace.ToPlacePresence( targetOptions, Present.Always, ctx.Other.Token ) );
 		// target spirit adds 2 of their destroyed presence
 		await ctx.OtherCtx
 			.Target( space )

@@ -14,7 +14,7 @@ class PourTimeSideways {
 		var src = await ctx.Decision( Select.DeployedPresence.All( "Move presence from:", ctx.Self.Presence, Present.Always ) );
 		if(!ctx.Self.Presence.HasMovableTokens( ctx.GameState.Tokens[src] )) return;
 		var dstOptions = ctx.Self.Presence.ActiveSpaceStates.Where( s => s.Space != src );
-		var dst = await ctx.Decision( Select.Space.ForMoving_SpaceToken( "Move preseence to:", src, dstOptions, Present.Always, ctx.Self.Token ) );
+		var dst = await ctx.Decision( Select.ASpace.ForMoving_SpaceToken( "Move preseence to:", src, dstOptions, Present.Always, ctx.Self.Token ) );
 		await ctx.Self.Presence.Token.Move( src, dst );
 		if(src.Board == dst.Board) return;
 

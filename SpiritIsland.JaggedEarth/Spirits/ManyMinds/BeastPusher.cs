@@ -16,7 +16,7 @@ class BeastPusher : TokenPusher {
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await ctx.Decision( Select.Space.PushToken( token, source, destinationOptions, Present.Always ) );
+		return await ctx.Decision( Select.ASpace.PushToken( token, source, destinationOptions, Present.Always ) );
 	}
 
 }

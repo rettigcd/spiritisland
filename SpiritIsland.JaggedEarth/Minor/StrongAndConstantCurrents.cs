@@ -52,7 +52,7 @@ public class StrongAndConstantCurrents{
 
 			// To:
 			var destination = (selected.Space != ctx.Space) ? ctx.Space
-				: await ctx.Decision( Select.Space.PushToken( selected.Token, selected.Space, coastalCtxs, Present.Always ) );
+				: await ctx.Decision( Select.ASpace.PushToken( selected.Token, selected.Space, coastalCtxs, Present.Always ) );
 
 			await ctx.Move( selected.Token, selected.Space, destination );
 

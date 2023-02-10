@@ -13,7 +13,7 @@ public class PushPresenceFromOcean : GrowthActionFactory {
 			var currentSource = pushSpaces[0];
 
 			// #pushpresence
-			Space destination = await ctx.Decision( Select.Space.PushPresence( currentSource.Space, currentSource.Adjacent, Present.Always, ctx.Self.Token ));
+			Space destination = await ctx.Decision( Select.ASpace.PushPresence( currentSource.Space, currentSource.Adjacent, Present.Always, ctx.Self.Token ));
 
 			// apply...
 			await ctx.Self.Token.Move( currentSource, destination );

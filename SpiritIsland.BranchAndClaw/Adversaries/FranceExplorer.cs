@@ -41,7 +41,7 @@ public class FranceExplorer : ExploreEngine {
 		"Add Explorer to Land without any",
 		async boardCtx => {
 			var options = boardCtx.Board.Spaces.Where( s => !boardCtx.GameState.Tokens[s].HasAny( Human.Explorer ) ).ToArray();
-			var space = await boardCtx.Decision( new Select.Space( "Add explorer", options, Present.Always ) );
+			var space = await boardCtx.Decision( new Select.ASpace( "Add explorer", options, Present.Always ) );
 			if(space != null)
 				await boardCtx.GameState.Tokens[space].AddDefault( Human.Explorer, 1 );
 		}

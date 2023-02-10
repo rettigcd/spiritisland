@@ -32,7 +32,7 @@ public class FlowingAndSilentFormsDartBy {
 
 			if( !spirit.Presence.HasMovableTokens( args.Space ) ) return;
 			
-			var dst = await spirit.Gateway.Decision( new Select.Space( "Instead of destroying, push presence to:", args.Space.Adjacent.Downgrade(), Present.Done ) );
+			var dst = await spirit.Gateway.Decision( new Select.ASpace( "Instead of destroying, push presence to:", args.Space.Adjacent.Downgrade(), Present.Done ) );
 			if(dst == null) return;
 
 			while(0 < args.Count--)
@@ -45,7 +45,7 @@ public class FlowingAndSilentFormsDartBy {
 		// Pick Spirit
 		var nearbySpirits = ctx.GameState.Spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
 		Spirit other = ctx.GameState.Spirits.Length == 1 ? ctx.Self
-			: await ctx.Decision( new Select.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
+			: await ctx.Decision( new Select.ASpirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
 		var options = adj.Where(other.Presence.HasMovableTokens);
 		var source = (await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, options, other.Token ) ))?.Space;

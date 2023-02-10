@@ -2,8 +2,8 @@
 
 public class Arrow {
 	public IToken Token;
-	public SpiritIsland.Space From;
-	public SpiritIsland.Space To;
+	public Space From;
+	public Space To;
 }
 
 public interface IHaveArrows {

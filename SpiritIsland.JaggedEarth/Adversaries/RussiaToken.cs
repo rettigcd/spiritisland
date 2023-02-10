@@ -85,7 +85,7 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 
 			GameState gs = GameState.Current;
 			Spirit spirit = scope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
-			Space destination = await spirit.Gateway.Decision( Select.Space.PushToken( (IToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
+			Space destination = await spirit.Gateway.Decision( Select.ASpace.PushToken( (IToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
 			await args.Space.MoveTo( (IToken)args.Token, destination );
 		}
 	}

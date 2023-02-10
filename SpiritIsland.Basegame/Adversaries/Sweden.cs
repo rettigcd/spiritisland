@@ -90,7 +90,7 @@ public class Sweden : IAdversary {
 					var gs = GameState.Current;
 					var spirit = BoardCtx.FindSpirit( gs, args.AddedTo.Space.Board );
 
-					var selection = await spirit.Gateway.Decision(Select.Space.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.AddedTo.GetDefault( Human.Town ) ) );
+					var selection = await spirit.Gateway.Decision(Select.ASpace.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.AddedTo.GetDefault( Human.Town ) ) );
 					if(selection != null) {
 						gs.Tokens[selection].AdjustDefault( Human.Town, 1 );
 						gs.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Text}.");

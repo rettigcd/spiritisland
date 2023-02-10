@@ -33,7 +33,7 @@ public class SpaceButton : IButton {
 	}
 
 	void IButton.SyncDataToDecision( IDecision d ) {
-		_focusToken = ((Select.Space)d).Token;
+		_focusToken = ((Select.ASpace)d).Token;
 	}
 	IToken _focusToken;
 }

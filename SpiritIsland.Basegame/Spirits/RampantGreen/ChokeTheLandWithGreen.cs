@@ -34,7 +34,7 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		int energyCost = gs.BlightCard.CardFlipped ? 1 : 0;
 		if(_self.Energy < energyCost) return false;
 
-		var stop = await _self.Gateway.Decision( new Select.Space( $"Stop {actionDescription} on {space.Space.Text} by destroying 1 presence", new Space[] { space.Space }, Present.Done ) );
+		var stop = await _self.Gateway.Decision( new Select.ASpace( $"Stop {actionDescription} on {space.Space.Text} by destroying 1 presence", new Space[] { space.Space }, Present.Done ) );
 		if(stop == null) return false;
 
 		await using var actionScope = gs.StartAction( ActionCategory.Spirit_SpecialRule ); // Special Rules! - it is the invader actions we are stopping

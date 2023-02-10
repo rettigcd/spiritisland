@@ -4,7 +4,7 @@
 public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 
 	/// <summary> Adds Adjacent Info for Collecting (moving/gathering) </summary>
-	static public TokenFromManySpaces ToCollect( string prompt, IEnumerable<SpaceToken> tokens, Present present, SpiritIsland.Space to ) 
+	static public TokenFromManySpaces ToCollect( string prompt, IEnumerable<SpaceToken> tokens, Present present, Space to ) 
 		=> new TokenFromManySpaces( prompt, tokens, present, to );
 
 	#region constructor
@@ -13,7 +13,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 	/// Constructs SpaceToken options for 1 space
 	/// NO arrows
 	/// </summary>
-	public TokenFromManySpaces( string prompt, SpiritIsland.Space sourceSpace, IEnumerable<IToken> options, Present present )
+	public TokenFromManySpaces( string prompt, Space sourceSpace, IEnumerable<IToken> options, Present present )
 		: base( prompt, options.Select( t => new SpaceToken( sourceSpace, t, false ) ), present ) 
 	{
 		SpaceTokens = options.Select( t => new SpaceToken( sourceSpace, t, false ) ).ToArray();
@@ -33,7 +33,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 	/// Constructs SpaceToken options for MANY spaces 
 	/// WITH arrows
 	/// </summary>
-	public TokenFromManySpaces( string prompt, IEnumerable<SpaceToken> tokens, Present present, SpiritIsland.Space destination )
+	public TokenFromManySpaces( string prompt, IEnumerable<SpaceToken> tokens, Present present, Space destination )
 		: base( prompt, tokens, present ) 
 	{
 		SpaceTokens = tokens.ToArray();
@@ -44,7 +44,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 
 	public SpaceToken[] SpaceTokens { get; }
 
-	public SpiritIsland.Space Destination { get; private set; }
+	public Space Destination { get; private set; }
 
 	public IEnumerable<Arrow> Arrows => Destination == null
 		? Array.Empty<Arrow>()

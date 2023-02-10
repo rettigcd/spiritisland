@@ -50,7 +50,7 @@ public class BlightToken : TokenClassToken
 
 		// Cascade blight
 		if(effect.Cascade) {
-			Space cascadeTo = await gs.Spirits[0].Gateway.Decision( Select.Space.ForMoving_SpaceToken(
+			Space cascadeTo = await gs.Spirits[0].Gateway.Decision( Select.ASpace.ForMoving_SpaceToken(
 				$"Cascade blight from {args.AddedTo.Space.Label} to",
 				args.AddedTo.Space,
 				gs.CascadingBlightOptions( args.AddedTo ),

@@ -31,7 +31,7 @@ public class PunishThoseWhoTrespass {
 
 		int remainingDamage = damage - damageToTarget;
 		if(remainingDamage > 0) {
-			var secondaryTarget = await ctx.Decision(new Select.Space(
+			var secondaryTarget = await ctx.Decision(new Select.ASpace(
 				$"Apply {remainingDamage} reamaining damage"
 				,ctx.Self.Presence.ActiveSpaceStates.Downgrade()
 				, Present.Always

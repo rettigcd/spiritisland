@@ -543,7 +543,7 @@ public abstract partial class Spirit : IOption {
 			return st.Space;
 		}
 
-		return await this.Gateway.Decision( new Select.Space( prompt, spaces.Downgrade(), Present.Always ));
+		return await this.Gateway.Decision( new Select.ASpace( prompt, spaces.Downgrade(), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS

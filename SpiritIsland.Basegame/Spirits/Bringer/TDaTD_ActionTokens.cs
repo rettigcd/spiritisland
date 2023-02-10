@@ -51,7 +51,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		// Push towns and explorers
 		if(newToken.Class != BringerSpaceCtx.DreamingCity) {
 			var options = Adjacent.Where( gameState.Island.Terrain_ForPower.IsInPlay );
-			Space destination = await _selfCtx.Decision( Select.Space.PushToken( newToken, Space, options, Present.Always ) );
+			Space destination = await _selfCtx.Decision( Select.ASpace.PushToken( newToken, Space, options, Present.Always ) );
 			await MoveTo( newToken, destination ); // there is no Push(Token), so this will have to do.
 			BringerSpaceCtx.RecordSpaceWithDreamers( gameState.Tokens[destination] );
 		}
