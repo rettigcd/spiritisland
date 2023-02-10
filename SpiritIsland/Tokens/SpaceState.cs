@@ -104,7 +104,6 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	readonly CountDictionary<IToken> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
 	protected readonly IIslandTokenApi _api;
-	public SpaceState LinkedViaWays; // HACK - for Finder  - !!! BUG - This MUST be a token or its state will be lost.
 
 	#endregion
 
@@ -179,8 +178,8 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		foreach(var space in Space.Adjacent)
 			yield return gameState.Tokens[space];
 
-		if(LinkedViaWays != null && !LinkedViaWays.Space.InStasis)
-			yield return LinkedViaWays;
+		foreach(var gateway in Keys.OfType<GatewayToken>())
+            yield return gateway.GetLinked(this);
 	} }
 
 	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();

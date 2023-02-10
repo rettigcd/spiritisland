@@ -8,6 +8,8 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { ResponsibilityToTheDead_Rule, OpenTheWays.Rule };
 
+	public GatewayToken GatewayToken; // !!! token state not preserved for Rewind/Memento
+
 	#region constructor / initilization
 
 	public FinderOfPathsUnseen() : base(
@@ -56,8 +58,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 		gameState.AddToAllActiveSpaces( new TokenRemovedHandler( ResponsibilityToTheDead_Handler, true ) );
 
-		_openTheWays = new OpenTheWays( this );
-		gameState.EndOfAction.ForGame.Add( _openTheWays.CheckPresenceAtBothEnds );
+		_openTheWays = new OpenTheWays();
 
 	}
 

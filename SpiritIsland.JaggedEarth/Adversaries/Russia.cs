@@ -89,8 +89,6 @@ public class Russia : IAdversary {
 			.GroupBy( s => s.Board.Board )
 			.ToDictionary( s => s.Key, s => s.ToArray() );
 
-		await using var actionScope = gameState.StartAction( ActionCategory.Adversary ); // !!! ??? should this be 1 for everything or 1/board or 1/space
-
 		// If no beasts anywhere, can't add explorers.
 		if(!beastsSpacesForBoard.Any()) return;
 
@@ -102,8 +100,9 @@ public class Russia : IAdversary {
 				? beastsSpacesForBoard[board]
 				: beastsSpacesForBoard.Values.SelectMany( x => x );
 			for(int i = 0; i < 2; ++i) {
+				await using UnitOfWork actionScope = gameState.StartAction( ActionCategory.Adversary );
 				var criteria = new Select.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Downgrade(), Present.Always );
-				var addSpace = await spirit.Gateway.Decision( criteria );
+				Space addSpace = await spirit.Gateway.Decision( criteria );
 				await gameState.Tokens[addSpace].AddDefault( Human.Explorer, 1, AddReason.Explore );
 			}
 		}

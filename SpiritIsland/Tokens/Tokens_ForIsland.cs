@@ -105,9 +105,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 				SpaceState tokens = src[space];
 				foreach(var (token,count) in _tokenCounts[space].Select(x=>(x.Key,x.Value))) {
 					tokens.Init(token, count);
-					tokens.LinkedViaWays = token is GatewayToken gt 
-						? gt.To // reapply
-						: null; // make sure we clear ones that are no longer linked
 					if(tokens is ITrackMySpaces tms)
 						tokenApi.Adjust(tms,space,count);
 				}
