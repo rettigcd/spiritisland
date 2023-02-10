@@ -42,9 +42,6 @@ public class Bringer : Spirit {
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
 		var space = gs.Tokens[startingIn];
 		space.Adjust( Presence.Token, 2 );
-
-		// Restore Dreamed damaged tokens to original state
-		gs.EndOfAction.ForGame.Add( BringerSpaceCtx.CleanupDreamDamage );
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new BringerCtx( spirit );

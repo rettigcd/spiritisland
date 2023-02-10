@@ -12,12 +12,11 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	readonly static AsyncLocal<UnitOfWork> _current = new AsyncLocal<UnitOfWork>(); // value gets shallow-copied into child calls and post-awaited states.
 
 	#region constructor
-	public UnitOfWork( DualAsyncEvent<UnitOfWork> endOfAction, ActionCategory actionCategory, GameState _, TerrainMapper terrainMapper ) {
+	public UnitOfWork( ActionCategory actionCategory, TerrainMapper terrainMapper = null ) {
 		Id = Guid.NewGuid();
-		_endOfAction = endOfAction;
 		Category = actionCategory;
-//		GameState = gameState;
-		TerrainMapper = terrainMapper;
+
+		_terrainMapper = terrainMapper;
 
 		_old = _current.Value;
 		_current.Value = this;
@@ -25,8 +24,10 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	#endregion
 
 	public readonly ActionCategory Category;
-//	public readonly GameState GameState;
-	public readonly TerrainMapper TerrainMapper;
+	public TerrainMapper TerrainMapper => _terrainMapper ??= Category == ActionCategory.Spirit_Power
+			? GameState.Current.Island.Terrain_ForPower
+			: GameState.Current.Island.Terrain;
+	TerrainMapper _terrainMapper;
 
 	readonly UnitOfWork _old;
 
@@ -57,7 +58,6 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	public async ValueTask DisposeAsync() {
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
-		await _endOfAction.InvokeAsync(this);
 
 		if(_current.Value != this) throw new Exception("DUDE! Actions out of order.");
 		_current.Value = _old; // restore it
@@ -69,7 +69,6 @@ public sealed class UnitOfWork : IAsyncDisposable {
 	AsyncEvent<UnitOfWork> _endOfThisAciton;
 
 	#region private
-	readonly DualAsyncEvent<UnitOfWork> _endOfAction;
 	Dictionary<string, object> dict;
 	#endregion
 }

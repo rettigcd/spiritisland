@@ -40,7 +40,14 @@ public class BringerSpaceCtx : TargetSpaceCtx {
 	}
 
 	static public void RecordSpaceWithDreamers( SpaceState spaceState ) {
-		UnitOfWork.Current.SafeGet( SpacesWithDreamers, ()=> new HashSet<SpaceState>() )
+		var scope = UnitOfWork.Current;
+
+		// if this is first time we have a space
+		bool isFirstTime = !scope.ContainsKey( SpacesWithDreamers );
+		if( isFirstTime)
+			scope.AtEndOfThisAction( CleanupDreamDamage );
+
+		scope.SafeGet( SpacesWithDreamers, ()=> new HashSet<SpaceState>() )
 			.Add( spaceState );
 	}
 

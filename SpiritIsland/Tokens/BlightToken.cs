@@ -71,4 +71,5 @@ public class BlightToken : TokenClassToken
 		)	GameState.Current.blightOnCard += args.Count;
 		return Task.CompletedTask;
 	}
+
 }

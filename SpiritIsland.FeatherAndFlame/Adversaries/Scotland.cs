@@ -56,13 +56,13 @@ public class Scotland : IAdversary {
 
 		// Level 5 - Runoff and Bilgewater:
 		if(5 <= Level) {
+			// After a Ravage Action adds Blight to a Coastal Land, add 1 Blight to that board's Ocean (without cascading).
 			var token = new ScotlandCoastalBlightCheckToken();
 			foreach(var ss in gameState.AllActiveSpaces.Where( ss => ss.Space.IsCoastal ))
 				ss.Adjust(token,1);
 
 			// Treat the Ocean as a Coastal Wetland for this rule and for Blight removal/movement.
-			// !!! Can gather/push blight into ocean and target ocean for removing it.  
-			// Can't gather/push other things into the ocean or target for non-blight removal.
+			// !!! Mustbe able to target ocean for removing it.
 		}
 
 		// LEvel 6 - Exports Fuel Inward Growth:

@@ -14,7 +14,7 @@ class ScotlandCoastalBlightCheckToken : IHandleTokenAdded, ISpaceEntity {
 		if(args.Token == Token.Blight && args.Reason == AddReason.Ravage) {
 			var space = args.AddedTo.Adjacent
 				.First( adj => adj.Space.IsOcean && adj.Space.Board == args.AddedTo.Space.Board );
-			await space.Blight.Add( 1, AddReason.Ravage ); // !!! won't this cause cascading???
+			await space.Blight.Add( 1, AddReason.Ravage ); // !!! won't this cause cascading??? Must STOP
 			GameState.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {args.AddedTo.Space.Text} caused additional blight on {space.Space.Text}"));
 		}
 	}

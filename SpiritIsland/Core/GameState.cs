@@ -31,7 +31,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		TimePasses_WholeGame += TokenCleanUp;
 		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
-		TimePasses_WholeGame += EndOfAction.ForRound.Clear;
 	}
 
 	/// <summary>
@@ -157,10 +156,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public HealthTokenClassBinding DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
-	/// <param name="cat">Has no functional use.  Just helps us keep straight in our head what kind of action this is.</param>
-	public UnitOfWork StartAction( ActionCategory cat ) {
-		var terrainMapper = cat == ActionCategory.Spirit_Power ? Island.Terrain_ForPower : Island.Terrain; // ??? What about other terrains, like for fear? Is that an action?
-		return new UnitOfWork( EndOfAction, cat, this, terrainMapper );
+	public UnitOfWork StartAction( ActionCategory cat, TerrainMapper terrainMapper = null ) { // !!! Remove this
+		return new UnitOfWork( cat, terrainMapper );
 	}
 
 	#region Win / Loss
@@ -251,7 +248,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public event Action<ILogEntry> NewLogEntry;
 	public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>();          // Blight effects
 	public DualAsyncEvent<LandDamagedArgs> LandDamaged     = new DualAsyncEvent<LandDamagedArgs>();    // Let Them Break Themselves Against the Stone
-	public DualAsyncEvent<UnitOfWork> EndOfAction          = new DualAsyncEvent<UnitOfWork>();
 
 	public event Func<GameState,Task> TimePasses_WholeGame;                                               // Spirit cleanup
 	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop
