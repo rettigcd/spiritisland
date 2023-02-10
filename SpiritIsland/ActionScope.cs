@@ -11,6 +11,9 @@ public sealed class ActionScope : IAsyncDisposable {
 	public static ActionScope Current => _current.Value ?? throw new InvalidOperationException("Current action is null");
 	readonly static AsyncLocal<ActionScope> _current = new AsyncLocal<ActionScope>(); // value gets shallow-copied into child calls and post-awaited states.
 
+	public static TerrainMapper CurrentTerrain => _current.Value?.TerrainMapper ?? _defaultMapper;
+	static readonly TerrainMapper _defaultMapper = new TerrainMapper();
+
 	#region constructor
 	public ActionScope( ActionCategory actionCategory, TerrainMapper terrainMapper = null ) {
 		Id = Guid.NewGuid();

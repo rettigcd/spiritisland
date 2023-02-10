@@ -245,7 +245,7 @@ public partial class IslandControl : Control {
 		// !!! Bug - Layout needs updated when we weave stuff together.  Out of sync with # of spaces on board.
 		BoardLayout normalizedBoardLayout = board.OriginalLayout;
 
-		foreach(var space in board.AllSpaces) {
+		foreach(var space in board.Spaces_All) {
 			// Space space = board[i];
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
 			// SpaceLayout spaceLayout = normalizedBoardLayout.Spaces[i];

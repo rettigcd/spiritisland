@@ -27,7 +27,7 @@ public class BoardCtx : SelfCtx {
 
 	public Board Board { get; }
 
-	public IEnumerable<SpaceState> ActiveSpaces => GameState.Tokens.PowerUp( this.Board.Spaces );
+	public IEnumerable<SpaceState> ActiveSpaces => Board.Spaces.Upgrade();
 
 	static public Spirit FindSpirit( GameState gameState, Board board ) {
 		int index = 0;

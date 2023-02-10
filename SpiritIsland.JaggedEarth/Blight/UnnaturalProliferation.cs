@@ -29,7 +29,7 @@ public class UnnaturalProliferation : BlightCardBase {
 	static DecisionOption<BoardCtx> Add2CitiesToLandWithFewest => new DecisionOption<BoardCtx>(
 		"Add 2 cities to the land with fewest town/city.", async ctx => {
 			var terrainMapper = ctx.GameState.Island.Terrain;
-			var spaceOptions = ctx.GameState.Tokens.PowerUp( ctx.Board.Spaces )
+			var spaceOptions = ctx.Board.Spaces.Upgrade()
 				.Where( terrainMapper.IsInPlay )
 				.GroupBy( ss=>ss.SumAny(Human.Town_City) )
 				.OrderBy( grp => grp.Key )

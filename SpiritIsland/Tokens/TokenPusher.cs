@@ -76,8 +76,7 @@ public class TokenPusher {
 	Func<ISpaceEntity,Space,Space,Task> _customAction;
 
 	protected virtual async Task<Space> SelectDestination( IToken token ) {
-		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent
-			.Where( ActionScope.Current.TerrainMapper.IsInPlay );
+		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent;
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 

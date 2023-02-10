@@ -9,7 +9,7 @@ public class PromisesOfProtection_Tests {
 		// Setup
 		var fxt = new ConfigurableTestFixture();
 		var targetSpace = fxt.Board[5];
-		var dahanSource = targetSpace.Adjacent.First();
+		var dahanSource = targetSpace.Adjacent_All.First();
 		var selectDahanFromSource = "D@2 on " + dahanSource.Text;
 		var ctx = fxt.SelfCtx.Target( targetSpace );
 

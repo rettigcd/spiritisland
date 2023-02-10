@@ -175,7 +175,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task MoveTo( IToken token, Space to ) => Tokens.MoveTo( token, to );
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent.Where( TerrainMapper.IsInPlay );
+	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent;
 	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
 
 	public IEnumerable<SpaceState> Range( int range ) => Range( new TargetCriteria( range ) );
@@ -396,7 +396,7 @@ public class TargetSpaceCtx : SelfCtx {
 	/// Use 2 - Select land to place token in.
 	/// </remarks>
 	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {
-		var spaceOptions = Tokens.Adjacent.Where(TerrainMapper.IsInPlay);
+		var spaceOptions = Tokens.Adjacent;
 		if(filter != null)
 			spaceOptions = spaceOptions.Where( s => filter( Target( s.Space ) ) );
 		var space = await Decision( new Select.ASpace( prompt, spaceOptions, Present.Always ) );

@@ -57,7 +57,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		Given_AddDahan( startingCount, target );
 
 		//   And: neighbors have some dahan
-		Space neighbor = target.Adjacent.First();
+		Space neighbor = target.Adjacent_All.First();
 		Given_AddDahan( dahanToGather, neighbor );
 
 		When_PlayingCard();
@@ -90,7 +90,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 
 		//   And: neighbors have 1 dahan each 
 		const int dahanToGather = 2;
-		var neighbors = target.Adjacent.ToArray();
+		var neighbors = target.Adjacent_All.ToArray();
 		for(int i=0;i<dahanToGather;++i)
 			Given_AddDahan( 1, neighbors[i] );
 

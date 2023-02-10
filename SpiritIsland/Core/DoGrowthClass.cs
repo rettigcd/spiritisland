@@ -8,7 +8,6 @@ public abstract partial class Spirit {
 		const string PROMPT = "Select Growth";
 
 		readonly Spirit spirit;
-		readonly GameState gameState;
 		readonly IGrowthPhaseInstance inst;
 
 		GrowthOption[] growthOptions;
@@ -17,9 +16,8 @@ public abstract partial class Spirit {
 		Func<IActionFactory,Task> execute;
 		#endregion
 
-		public DoGrowthClass(Spirit spirit,GameState gameState) {
+		public DoGrowthClass(Spirit spirit,GameState _) {
 			this.spirit = spirit;
-			this.gameState = gameState;
 			inst = spirit.GrowthTrack.GetInstance();
 			InitActionsForAllAvailableOptions();
 		}

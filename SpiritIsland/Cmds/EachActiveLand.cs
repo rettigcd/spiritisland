@@ -20,8 +20,7 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 		foreach(Board board in gameState.Island.Boards) {
 			Spirit spirit = BoardCtx.FindSpirit( gameState, board );
 			SelfCtx decisionMaker = spirit.BindSelf();
-			var spacesCtxs = ctx.GameState.Tokens
-				.PowerUp( board.Spaces )
+			var spacesCtxs = board.Spaces.Upgrade()
 				.Where( ActionScope.Current.TerrainMapper.IsInPlay )
 				.Select( decisionMaker.Target )
 				.Where( _landCriteria.Filter );

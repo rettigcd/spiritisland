@@ -69,7 +69,7 @@ public class FranceExplorer : ExploreEngine {
 
 		return Cmd.ForEachBoard( new DecisionOption<BoardCtx>(
 			"Place town or blight matching Explore card."
-			, boardCtx => Cmd.Pick1( boardCtx.GameState.Tokens.PowerUp( boardCtx.Board.Spaces )
+			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces.Upgrade()
 				.Where( card.MatchesCard )
 				.Select( SelectSpaceAction )
 				.ToArray()

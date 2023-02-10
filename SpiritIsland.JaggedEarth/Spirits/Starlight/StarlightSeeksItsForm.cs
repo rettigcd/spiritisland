@@ -119,7 +119,7 @@ public class StarlightSeeksItsForm : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put presence in land with blight
-		gameState.Tokens.PowerUp(board.Spaces).First(s => s.Blight.Any).Adjust(Presence.Token, 1);
+		board.Spaces.Upgrade().First(s => s.Blight.Any).Adjust(Presence.Token, 1);
 	}
 
 }

@@ -3,7 +3,7 @@
 class Gather1Beast : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var options = ctx.GameState.Tokens.PowerUp(ctx.Self.Presence.ActiveSpaceStates.Downgrade() )
+		var options = ctx.Self.Presence.ActiveSpaceStates
 			.SelectMany(p=>p.Range(2)) // Growth option so this Range ok
 			.Distinct();
 		var to = await ctx.Decision( new Select.ASpace( "Gather beast to", options.Downgrade(), Present.Always ));

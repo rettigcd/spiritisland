@@ -41,9 +41,9 @@ public class ExplosiveEruption {
 	[ExplosiveInnateOption( "5 fire, 3 air, 5 earth",10,"In each land within range 2, +4 Damage.  In each land adjacent to the target, add 1 blight if it doesn't have any.",3)]
 	static public async Task Option4(TargetSpaceCtx ctx ) {
 		// In each land within range 2, (This range cannot be extended)
-		foreach(SpaceState space in ctx.GameState.Tokens.PowerUp( ctx.Space.Range( 2 ) ))
+		foreach( Space space in ctx.Space.Range(2) )
 			// +4 Damage.
-			await ctx.Target(space.Space).DamageInvaders(4);
+			await ctx.Target(space).DamageInvaders(4);
 
 		// In each land adjacent to the target
 		// add 1 blight if it doesn't have any.

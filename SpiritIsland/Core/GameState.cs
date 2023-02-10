@@ -90,7 +90,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Tokens_ForIsland Tokens { get; }
 	public IEnumerable<SpaceState> AllSpaces => Island.Boards
-		.SelectMany(b=>b.AllSpaces)
+		.SelectMany(b=>b.Spaces_All)
 		.Select(Tokens.GetTokensFor);
 
 	/// <summary> Active, Not in statis </summary>
@@ -128,7 +128,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			await ss.Blight.Add(1, AddReason.Ravage);
 	}
 
-	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent
+	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_All
 		 .Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
 			 || Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 

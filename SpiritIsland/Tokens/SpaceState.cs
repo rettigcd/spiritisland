@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data.Common;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
@@ -173,14 +170,18 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Adjacent Properties
 
-	public IEnumerable<SpaceState> Adjacent { get {
-        var gameState = GameState.Current;
-		foreach(var space in Space.Adjacent)
-			yield return gameState.Tokens[space];
+	public IEnumerable<SpaceState> Adjacent_All { 
+		get {
+			var gameState = GameState.Current;
+			foreach(var space in Space.Adjacent_All)
+				yield return gameState.Tokens[space];
 
-		foreach(var gateway in Keys.OfType<GatewayToken>())
-            yield return gateway.GetLinked(this);
-	} }
+			foreach(var gateway in Keys.OfType<GatewayToken>())
+				yield return gateway.GetLinked(this);
+		}
+	}
+
+	public IEnumerable<SpaceState> Adjacent => Adjacent_All.Where( ActionScope.CurrentTerrain.IsInPlay );
 
 	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();
 

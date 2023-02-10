@@ -85,7 +85,7 @@ public class Strife_Tests {
 		var strifedTown = (IToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
-		var destination = space.Adjacent.First( IsInPlay );
+		var destination = space.Adjacent_All.First( IsInPlay );
 		_ = gs.Tokens[space].MoveTo( strifedTown, destination ); // _ = ??
 
 		// Then:

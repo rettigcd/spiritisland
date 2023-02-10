@@ -106,7 +106,7 @@ public class HabsburgMonarchy : IAdversary {
 		// on each board
 		foreach(Board board in gameState.Island.Boards) {
 
-			var spaces = gameState.Tokens.PowerUp(board.Spaces).ToArray();
+			var spaces = board.Spaces.Upgrade().ToArray();
 			// add 1 City to a Coastal land without City
 			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Human.City)==0);
 			if( coastWithoutCity != null)
@@ -168,7 +168,7 @@ public class HabsburgMonarchy : IAdversary {
 	}
 
 	static async Task IfTooHealthyAddBlight(BoardCtx ctx) {
-		var spaces = ctx.GameState.Tokens.PowerUp( ctx.Board.Spaces ).ToArray();
+		var spaces = ctx.Board.Spaces.Upgrade().ToArray();
 		int townsToAdd = spaces.Sum( x => x.Blight.Count ) switch { <= 2 => 2, <= 4 => 1, _ => 0 };
 
 		for(int i = 0; i < townsToAdd; ++i) {

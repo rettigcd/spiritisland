@@ -224,12 +224,11 @@ public partial class Board {
 
 	#endregion
 
-	/// <summary>
-	/// These Spaces start out in numeric order at beginning of game but are not guaranteed to stay in numeric order. (Absolute Statis removes spaces from board and restores them.)
-	/// </summary>
+/// <summary>The Active (not in stasis) spaces on the board.</summary>
 	public IEnumerable<Space> Spaces => spaces.Where(Space.IsActive);
 
-	public IEnumerable<Space> AllSpaces => spaces;
+	/// <summary>All spaces, including the ones in Stasis.</summary>
+	public IEnumerable<Space> Spaces_All => spaces;
 
 	#region Add / Remove spaces from board
 	public void Add( Space space, Space[] adjacents ) {
@@ -239,7 +238,7 @@ public partial class Board {
 
 	/// <returns>Old adjacents</returns>
 	public Space[] Remove( Space space ) {
-		var oldAdj = space.Adjacent.ToArray();
+		var oldAdj = space.Adjacent_All.ToArray();
 		space.Disconnect();
 		spaces = spaces.Where(s => s != space ).ToArray();
 		return oldAdj;

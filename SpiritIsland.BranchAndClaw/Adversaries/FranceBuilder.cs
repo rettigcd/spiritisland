@@ -15,16 +15,14 @@ class FranceBuilder : BuildEngine {
 		if(_hasSlaveLabor)
 			DoSlaveLabor( spaceState );
 		if(_hasTriangleTrade)
-			await DoTriangleTrade( gameState, spaceState, initialCityCount );
+			await DoTriangleTrade( spaceState, initialCityCount );
 	}
 
-	static async Task DoTriangleTrade( GameState gs, SpaceState tokens, int initialCityCount ) {
+	static async Task DoTriangleTrade( SpaceState tokens, int initialCityCount ) {
 		// Whenever Invaders Build a Coastal City
 		if(tokens.Space.IsCoastal && tokens.Sum( Human.City ) > initialCityCount) {
-			var terrainMapper = gs.Island.Terrain;
 			// add 1 Town to the adjacent land with the fewest Town.
 			var buildSpace = tokens.Adjacent
-				.Where( terrainMapper.IsInPlay )
 				.OrderBy( t => t.Sum( Human.Town ) )
 				.First();
 			// !!!

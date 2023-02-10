@@ -47,7 +47,7 @@ public abstract class Space
 	public static bool IsActive( Space space ) => !space.InStasis;
 
 	#region Connectivity
-	public IEnumerable<Space> Adjacent => adjacent.Where(IsActive);
+	public IEnumerable<Space> Adjacent_All => adjacent.Where(IsActive);
 
 	public IEnumerable<Space> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
 

@@ -34,7 +34,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		MoveAllItemsOnSpace( gameState, space, multi );
 
 		// Calculate Adjacents
-		var adjacents = space.Adjacent.Union( other.Adjacent ).Distinct().Where(s=>s!=space&&s!=other).ToList();
+		var adjacents = space.Adjacent_All.Union( other.Adjacent_All ).Distinct().Where(s=>s!=space&&s!=other).ToList();
 
 		// Disconnect space
 		Restoreable removeSpace = space.RemoveFromBoard();

@@ -79,11 +79,11 @@ public class Scotland : IAdversary {
 	static async Task PortsSprawlOutward_Escalation( GameState gameState ) {
 		// On the single board with the most Coastal Town / City,
 		var board = gameState.Island.Boards
-			.OrderByDescending( b => gameState.Tokens.PowerUp( b.Spaces.Where( s => s.IsCoastal ) )
+			.OrderByDescending( b => b.Spaces.Where( s => s.IsCoastal ).Upgrade()
 					.Sum( ss => ss.SumAny( Human.Town_City ) ) )
 			.First();
 		// add 1 Town to the N lands with the fewest Town( N = # of players.)
-		var spacesToAddTown = gameState.Tokens.PowerUp( board.Spaces )
+		var spacesToAddTown = board.Spaces.Upgrade()
 			.Where( gameState.Island.Terrain.IsInPlay )
 			.OrderBy( ss => ss.Sum( Human.Town ) )
 			.Take( gameState.Spirits.Length )
