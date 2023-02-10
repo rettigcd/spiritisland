@@ -13,7 +13,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 		InitEnergyAndCardPlays();
 
-		Token = new SpiritPresenceToken();
 	}
 
 	protected void InitEnergyAndCardPlays() {
@@ -24,6 +23,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public virtual void SetSpirit( Spirit spirit ) {
 		if(Self != null) throw new InvalidOperationException();
 		Self = spirit;
+		Token = new SpiritPresenceToken(spirit);
 	}
 
 	protected Spirit Self { get; set; }
@@ -172,7 +172,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	/// <summary> All *Active* Spaces </summary>
 	public IEnumerable<SpaceState> ActiveSpaceStates => GameState.Current.AllActiveSpaces.Where( IsOn );
-//	IEnumerable<SpaceState> IKnowSpiritLocations.ActiveSpaceStates => ActiveSpaceStates;
 
 	public IEnumerable<SpaceState> MovableSpaceStates => ActiveSpaceStates.Where( HasMovableTokens );
 
@@ -181,7 +180,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
-	public SpiritPresenceToken Token { get; protected set; }
+	public SpiritPresenceToken Token { 	get; protected set; }
 
 	#region Memento
 

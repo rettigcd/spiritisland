@@ -12,7 +12,7 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 
 	readonly ASpreadOfRampantGreen _self;
 
-	public ChokeTheLandWithGreen( ASpreadOfRampantGreen self ) {
+	public ChokeTheLandWithGreen( ASpreadOfRampantGreen self ):base(self) {
 		_self = self;
 	}
 

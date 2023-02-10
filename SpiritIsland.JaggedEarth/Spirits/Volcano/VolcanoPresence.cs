@@ -27,10 +27,8 @@ class VolcanoPresence : SpiritPresence {
 }
 
 public class VolcanoToken : SpiritPresenceToken, IHandleRemovingToken {
-	readonly Spirit _spirit;
-	public VolcanoToken(Spirit spirit ) {
-		_spirit = spirit;
-	}
+
+	public VolcanoToken(Spirit spirit ):base(spirit) {}
 
 	public Task ModifyRemoving( RemovingTokenArgs args ) {
 

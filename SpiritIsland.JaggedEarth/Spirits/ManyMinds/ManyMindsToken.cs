@@ -7,7 +7,7 @@ public class ManyMindsToken : SpiritPresenceToken, IHandleTokenAdded, IHandleTok
 
 	#region constructor
 
-	public ManyMindsToken() {
+	public ManyMindsToken(Spirit spirit):base(spirit) {
 		_beastToken = new ManyMindsBeast(this);
 	}
 

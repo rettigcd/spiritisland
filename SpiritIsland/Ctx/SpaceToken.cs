@@ -6,7 +6,7 @@ public class SpaceToken : IOption {
 	public SpaceToken( Space space, IToken token, bool showSpace=true ) { 
 		Space = space; 
 		Token = token;
-		Text = showSpace ? $"{Token} on {space.Label}" : $"{Token}";
+		Text = showSpace ? $"{Token.Text} on {space.Label}" : $"{Token}";
 	}
 
 	public Space Space { get; }

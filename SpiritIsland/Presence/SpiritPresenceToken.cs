@@ -1,17 +1,22 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public class SpiritPresenceToken : IToken, IEntityClass
 	, ITrackMySpaces 
 	, IHandleTokenRemoved
 {
 
-	public SpiritPresenceToken() {
-		Text = "Presence";      // !!! this only works in SOLO.
+	public SpiritPresenceToken(Spirit spirit) {
+		_spirit = spirit;
 	}
+
+	protected readonly Spirit _spirit;
+
 
 	#region Token parts
 
-	public string Text { get; }
+	public string Text => _spirit.Text;
 	Img IToken.Img => Img.Icon_Presence;
 	public IEntityClass Class => this;
 

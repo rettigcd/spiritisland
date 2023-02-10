@@ -7,13 +7,12 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 		"For each of your presence in a land, ignore up to 2 explorer during the Ravage Step and any Ravage Action."
 	);
 
-	readonly Spirit _self;
-	public EnthrallTheForeignExplorers(Spirit self ) { _self = self; }
+	public EnthrallTheForeignExplorers( Spirit self ):base(self) {}
 
 	public UsageCost Cost => UsageCost.Free; // doesn't cost anything to use.
 
 	public async Task<bool> Skip( SpaceState space ) {
-		int maxRemovable = _self.Presence.CountOn( space ) * 2;
+		int maxRemovable = _spirit.Presence.CountOn( space ) * 2;
 
 		int explorerCount = space.Sum( Human.Explorer );
 
@@ -24,10 +23,10 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 		while(removed < removableCount) {
 			// Select type to not participate (strifed / non-strifed)
 			HumanToken explorerTypeToNotParticipate = explorerTypes.Count == 1 ? explorerTypes[0]
-				: (HumanToken)( await _self.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( space.Space, 1, explorerTypes.ToArray(), Present.Done ) ))?.Token;
+				: (HumanToken)( await _spirit.Gateway.Decision( Select.TokenFrom1Space.TokenToRemove( space.Space, 1, explorerTypes.ToArray(), Present.Done ) ))?.Token;
 			if(explorerTypeToNotParticipate == null) break;
 
-			var countToNotParticipate = await _self.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );
+			var countToNotParticipate = await _spirit.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );
 
 			if(countToNotParticipate > 0)
 				GameState.Current.ModifyRavage( space.Space, cfg => cfg.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate ); // !!! move ModifyRavage into SpaceState so we don't have to call .AccessGameState()

@@ -95,10 +95,7 @@ public class HeartOfTheWildfire : Spirit {
 
 	class WildfireToken : SpiritPresenceToken, IHandleRemovingToken, IHandleTokenAdded {
 
-		readonly Spirit _spirit;
-		public WildfireToken( Spirit spirit ) {
-			_spirit = spirit;
-		}
+		public WildfireToken( Spirit spirit ):base(spirit) {}
 
 		public Task ModifyRemoving( RemovingTokenArgs args ) {
 

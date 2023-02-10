@@ -13,7 +13,7 @@ public partial class Keeper {
 
 		public override void SetSpirit( Spirit spirit ) { 
 			base.SetSpirit( spirit );
-			Token = new KeeperToken( spirit);
+			Token = new KeeperToken( spirit );
 		}
 
 	}
@@ -22,11 +22,7 @@ public partial class Keeper {
 
 public class KeeperToken : SpiritPresenceToken, IHandleTokenAdded {
 
-	readonly Spirit _spirit;
-
-	public KeeperToken(Spirit spirit ) {
-		_spirit= spirit;
-	}
+	public KeeperToken(Spirit spirit):base(spirit) {}
 
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
 		if(args.Token != this) return;
