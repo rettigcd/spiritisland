@@ -28,7 +28,6 @@ public class TargetCriteria {
 	public int Range { get; }
 
 	public bool Matches( SpaceState state ){
-		if(!TerrainMapper.IsInPlay( state )) return false;
 
 		// since we are doing a MatchAny (OR), we need at least 1 criteria or it won't match anything
 		// (if we were to do a MatchAll (AND), then we wouldn't need any criteria)

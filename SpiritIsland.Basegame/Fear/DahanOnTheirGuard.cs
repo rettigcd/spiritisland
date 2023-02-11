@@ -24,7 +24,7 @@ public class DahanOnTheirGuard : FearCardBase, IFearCard {
 	}
 
 	static void DefendIt( GameState gs, Func<SpaceState, int> calcDefense ) {
-		foreach(var space in gs.AllActiveSpaces.Where( s=>s.Dahan.Any ))
+		foreach(var space in gs.Spaces.Where( s=>s.Dahan.Any ))
 			space.Defend.Add( calcDefense( space ) );
 	}
 

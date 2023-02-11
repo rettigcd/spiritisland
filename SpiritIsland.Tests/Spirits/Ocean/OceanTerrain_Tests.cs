@@ -301,7 +301,7 @@ public class OceanTerrain_Tests {
 
 		//  And: Pushes town into ocean
 		IsActive( task ); Choose( "T@2" );
-		IsActive( task ); Choose( "A0" );
+		IsActive( task ); NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
 
 		// Then: Ocean gets 1 energy (2 health / 2 players = 1 energy)
 		oceanSpirit.Energy.ShouldBe( 1 );

@@ -99,7 +99,7 @@ public class England : IAdversary {
 
 		// Finds the space on each board with the most town/city.
 		// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
-		SpaceState[] buildSpaces = gs.AllActiveSpaces
+		SpaceState[] buildSpaces = gs.Spaces
 			.Select( ss => new { SpaceState = ss, Count = ss.SumAny( Human.Town_City ) } )
 			.Where( x => x.Count > 0 )
 			.GroupBy( x => x.SpaceState.Space.Board )
@@ -117,7 +117,7 @@ public class England : IAdversary {
 		// Additional Loss Condition
 		// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
 		static bool IsCapital(SpaceState s) => 7 <= s.SumAny( Human.Town_City );
-		var capital = gs.AllSpaces.FirstOrDefault( IsCapital );
+		var capital = gs.Spaces_Unfiltered.FirstOrDefault( IsCapital );
 		if( capital != null )
 			GameOverException.Lost($"{Name} on {capital.Space.Text}");
 	}

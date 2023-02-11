@@ -9,17 +9,18 @@ public class Quarantine_Tests {
 
 	public Quarantine_Tests() {
 		var powerCard = PowerCard.For<CallToTend>();
-		var (userLocal,ctxLocal) = TestSpirit.SetupGame( powerCard, (Action<GameState>)(gs=>{ 
-			gs.NewLogEntry += (s) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) log.Enqueue( s.Msg() ); };
+		var (userLocal,ctxLocal) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs=>{ 
+			gs.NewLogEntry += (s) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
 			gs.InitTestInvaderDeck(
-				(InvaderCard)SpiritIsland.InvaderCard.Stage1( Terrain.Sand), // not on coast
-				(InvaderCard)SpiritIsland.InvaderCard.Stage2Costal(),
-				(InvaderCard)SpiritIsland.InvaderCard.Stage1( Terrain.Jungle)
+				InvaderCard.Stage1( Terrain.Sand), // not on coast
+				InvaderCard.Stage2Costal(),
+				InvaderCard.Stage1( Terrain.Jungle),
+				InvaderCard.Stage1( Terrain.Wetland ) // one extra so we don't trigger 'Time runs out loss'
 			);
 		}) );
-		user = userLocal;
-		ctx = ctxLocal;
-		log.Clear(); // skip over initial Explorer setup
+		_user = userLocal;
+		_ctx = ctxLocal;
+		_log.Clear(); // skip over initial Explorer setup
 	}
 
 	[Trait( "Invaders", "Explore" )]
@@ -31,18 +32,18 @@ public class Quarantine_Tests {
 
 		// Given: Activate fear card
 		if(activateFearCard)
-			ctx.ActivateFearCard( card );
+			_ctx.ActivateFearCard( card );
 
 		AdvanceToInvaderPhase();
 
 		if(activateFearCard)
-			user.AcknowledgesFearCard( FearAck1 );
+			_user.AcknowledgesFearCard( FearAck1 );
 
-		log.Assert_Built( "A4", "A7" ); // Sand
+		_log.Assert_Built( "A4", "A7" ); // Sand
 		if( activateFearCard )
-			log.Assert_Explored();
+			_log.Assert_Explored();
 		else
-			log.Assert_Explored( "A1","A2","A3" );
+			_log.Assert_Explored( "A1","A2","A3" );
 	}
 
 	[Trait( "Invaders", "Explore" )]
@@ -56,29 +57,29 @@ public class Quarantine_Tests {
 		AdvanceToInvaderPhase();
 
 		// The only thing around A8 (a jungle) is a diseased town
-		ctx.TargetSpace("A5").Tokens.Init("");
-		ctx.TargetSpace("A6").Tokens.Init("");
-		ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
-		ctx.TargetSpace("A8").Tokens.Init("");
+		_ctx.TargetSpace("A5").Tokens.Init("");
+		_ctx.TargetSpace("A6").Tokens.Init("");
+		_ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
+		_ctx.TargetSpace("A8").Tokens.Init("");
 
 		// Given: Activate fear card
 		if(activateFearCard) {
-			ctx.ActivateFearCard( card );
-			ctx.ElevateTerrorLevelTo(2);
+			_ctx.ActivateFearCard( card );
+			_ctx.ElevateTerrorLevelTo(2);
 		}
 
-		log.Clear();
+		_log.Clear();
 		AdvanceToInvaderPhase();
 
 		if(activateFearCard)
-			user.AcknowledgesFearCard( FearAck2 );
+			_user.AcknowledgesFearCard( FearAck2 );
 
-		log.Assert_Ravaged("A4", "A7"); // Sand
-		log.Assert_Built( "A1", "A2", "A3" ); // Costal
+		_log.Assert_Ravaged("A4", "A7"); // Sand
+		_log.Assert_Built( "A1", "A2", "A3" ); // Costal
 		if( activateFearCard )
-			log.Assert_Explored(); // neither A3 (coastal) nor A8 (hanging off of Diseased town) explored
+			_log.Assert_Explored(); // neither A3 (coastal) nor A8 (hanging off of Diseased town) explored
 		else
-			log.Assert_Explored( "A3", "A8" );
+			_log.Assert_Explored( "A3", "A8" );
 
 	}
 
@@ -92,38 +93,41 @@ public class Quarantine_Tests {
 		// Skip over the coastal build
 		AdvanceToInvaderPhase();
 
+		_ = _user.NextDecision; // wait for engine to catch up
+
 		// Ravage lands (sand:A4 & A7) have a disease
 		// The only thing around A8 (a jungle) is a diseased town
-		ctx.TargetSpace("A4").Tokens.Init("1E@1,1Z"); // diZease
-		ctx.TargetSpace("A7").Tokens.Init("1E@1,1Z"); // diZease
+		_ctx.TargetSpace("A4").Tokens.Init("1E@1,1Z"); // diZease
+		_ctx.TargetSpace("A7").Tokens.Init("1E@1,1Z"); // diZease
 		// Build lands (Costal:A1..3) all have explorers, A1 has a disease too
-		ctx.TargetSpace("A1").Tokens.Init("1E@1,1Z");
-		ctx.TargetSpace("A2").Tokens.Init("1E@1");
-		ctx.TargetSpace("A3").Tokens.Init("1E@1");
+		_ctx.TargetSpace("A1").Tokens.Init("1E@1,1Z");
+		_ctx.TargetSpace("A2").Tokens.Init("1E@1");
+		_ctx.TargetSpace("A3").Tokens.Init("1E@1");
 		// Explore lands (jungle:A3 & A8) have a source (A3 is coastal, A8 is town in A5)
-		ctx.TargetSpace("A5").Tokens.Init("1T@2");
-		ctx.TargetSpace("A8").Tokens.Init("1Z");
+		_ctx.TargetSpace("A5").Tokens.Init("1T@2");
+		_ctx.TargetSpace("A8").Tokens.Init("1Z");
 
 		// Given: Activate fear card
 		if(activateFearCard) {
-			ctx.ActivateFearCard( card );
-			ctx.ElevateTerrorLevelTo(3);
+			_ctx.ActivateFearCard( card );
+			_ctx.ElevateTerrorLevelTo(3);
 		}
 
-		log.Clear();
+		_log.Clear();
 		AdvanceToInvaderPhase();
 
 		if(activateFearCard)
-			user.AcknowledgesFearCard( FearAck3 );
+			_user.AcknowledgesFearCard( FearAck3 );
 
+		_ = _user.NextDecision; // Wait for invader actions to finish
 		if( activateFearCard) {
-			log.Assert_Ravaged();            // Sand (all hvae disease)
-			log.Assert_Built( "A1: build stopped by Quarantine", "A2", "A3" );  // Coastal (A1 has disease)
-			log.Assert_Explored();           // A3 is coastland, A8 has a disease
+			_log.Assert_Ravaged();            // Sand (all hvae disease)
+			_log.Assert_Built( "A1: build stopped by Quarantine", "A2", "A3" );  // Coastal (A1 has disease)
+			_log.Assert_Explored();           // A3 is coastland, A8 has a disease
 		} else {
-			log.Assert_Ravaged ("A4", "A7");         // Sand
-			log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
-			log.Assert_Explored( "A3", "A8" );
+			_log.Assert_Ravaged ("A4", "A7");         // Sand
+			_log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
+			_log.Assert_Explored( "A3", "A8" );
 		}
 
 	}
@@ -141,24 +145,24 @@ public class Quarantine_Tests {
 		AdvanceToInvaderPhase();
 
 		// The only thing around A8 (a jungle) is a diseased town
-		ctx.TargetSpace("A5").Tokens.Init("");
-		ctx.TargetSpace("A6").Tokens.Init("");
-		ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
-		ctx.TargetSpace("A8").Tokens.Init("");
+		_ctx.TargetSpace("A5").Tokens.Init("");
+		_ctx.TargetSpace("A6").Tokens.Init("");
+		_ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
+		_ctx.TargetSpace("A8").Tokens.Init("");
 
 		if(skipARavage)
-			ctx.TargetSpace( "A4" ).Tokens.SkipRavage("Test");
+			_ctx.TargetSpace( "A4" ).Tokens.SkipRavage("Test");
 
-		log.Clear();
+		_log.Clear();
 		AdvanceToInvaderPhase();
 
 		if(skipARavage)
-			log.Assert_Ravaged ( "A7" );             // Sand - A4 skipped
+			_log.Assert_Ravaged ( "A7" );             // Sand - A4 skipped
 		else
-			log.Assert_Ravaged ( "A4", "A7" );       // Sand
+			_log.Assert_Ravaged ( "A4", "A7" );       // Sand
 
-		log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
-		log.Assert_Explored( "A3", "A8" );
+		_log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
+		_log.Assert_Explored( "A3", "A8" );
 
 	}
 
@@ -166,13 +170,13 @@ public class Quarantine_Tests {
 
 	#region protected / private
 
-	protected VirtualTestUser user;
-	protected SelfCtx ctx;
-	protected Queue<string> log = new();
+	protected VirtualTestUser _user;
+	protected SelfCtx _ctx;
+	protected Queue<string> _log = new();
 
 	protected void AdvanceToInvaderPhase() {
-		ctx.ClearAllBlight();
-		user.DoesNothingForARound();
+		_ctx.ClearAllBlight();
+		_user.AdvancesToStartOfNextInvaderPhase();
 	}
 
 	#endregion

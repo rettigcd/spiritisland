@@ -5,7 +5,9 @@ public class RavageEngine {
 
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		gameState.Log( new Log.InvaderActionEntry( "Ravaging:" + card.Text ) );
-		var ravageSpacesMatchingCard = gameState.AllActiveSpaces.Where( ss => MatchesCardForRavage( card, ss ) ).ToList();
+		var ravageSpacesMatchingCard = gameState.Spaces
+			.Where( ss => MatchesCardForRavage( card, ss ) )
+			.ToList();
 
 		// find ravage spaces that have invaders
 		var ravageSpacesWithInvaders = ravageSpacesMatchingCard
@@ -17,7 +19,7 @@ public class RavageEngine {
 			s.Adjust( ModToken.DoRavage, s.Space.Board.InvaderActionCount );
 
 		// get spaces with just-added Ravages + any previously added ravages
-		var spacesWithDoRavage = gameState.AllActiveSpaces
+		var spacesWithDoRavage = gameState.Spaces
 			.Where( ss => ss[ModToken.DoRavage] > 0 )
 			.ToArray();
 

@@ -82,9 +82,11 @@ public class Russia : IAdversary {
 	#region private methods
 
 	static async Task StalkThePredators( GameState gameState ) {
-		// Add 2 explorers/board to lands with beast.
 
-		var beastsSpacesForBoard = gameState.AllActiveSpaces
+		var ambient = GameState.Current;
+
+		// Add 2 explorers/board to lands with beast.
+		var beastsSpacesForBoard = gameState.Spaces
 			.Where( s => s.Beasts.Any )
 			.GroupBy( s => s.Board.Board )
 			.ToDictionary( s => s.Key, s => s.ToArray() );

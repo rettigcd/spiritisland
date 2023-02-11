@@ -36,9 +36,7 @@ public class StormSwath {
 
 		return await ctx.Decision( new Select.ASpace(
 			"Select land for 1 damge to each invader",
-			ctx.Adjacent
-				.Intersect( ctx.Target( origin ).Adjacent )
-				.Where( s => ctx.Target( s ).IsInPlay ),
+			ctx.Adjacent.Intersect( ctx.Target( origin ).Adjacent ),
 			Present.AutoSelectSingle
 		) );
 	}

@@ -52,7 +52,6 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 			var spaceOptions = ctx.Board.Spaces
 				.Except( used )
 				.Select( ctx.Target )
-				.Where( x => x.IsInPlay )           // layer 2 filter
 				.Where( _spaceAction.IsApplicable )  // Matches action criteria  (Can't act on items that aren't there)
 				.Where( LandCriteria.Filter )        // Matches custom space - criteria
 				.ToArray();

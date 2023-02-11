@@ -27,7 +27,7 @@ public class AllThingsWeaken : BlightCardBase {
 			}
 
 			// replace/update existing tokens
-			foreach(var ss in gs.AllActiveSpaces) {
+			foreach(var ss in gs.Spaces) {
 				var humanTokenTypes = ss.Keys.OfType<HumanToken>()
 					.Where(x=>x.FullHealth > 1)
 					.OrderBy(x=>x.FullHealth)

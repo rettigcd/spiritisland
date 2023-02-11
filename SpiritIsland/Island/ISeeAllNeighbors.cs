@@ -1,14 +1,14 @@
 ﻿namespace SpiritIsland;
 
-public interface HasNeighbors<T> {
-	IEnumerable<T> Adjacent_All { get; }
+public interface ISeeAllNeighbors<T> {
+	IEnumerable<T> Adjacent_Unfiltered { get; }
 }
 
 public static class HasNeighborsExtensions {
 
 	// Calculates distances using spaces that are not "In Play", but Does NOT use spaces that are in Stasis
 
-	public static Dictionary<T, int> CalcDistances<T>( this T starter, int maxDistanceToFind ) where T : HasNeighbors<T> {
+	public static Dictionary<T, int> CalcDistances<T>( this T starter, int maxDistanceToFind ) where T : ISeeAllNeighbors<T> {
 
 		Queue<T> spacesLessThanLimit = new Queue<T>();
 		// collects distances that are <= distance
@@ -21,7 +21,7 @@ public static class HasNeighborsExtensions {
 			var cur = spacesLessThanLimit.Dequeue();
 			int neighborDist = shortestDistances[cur] + 1;
 			bool neighborIsLessThanLimit = neighborDist < maxDistanceToFind;
-			foreach(var a in cur.Adjacent_All) {
+			foreach(var a in cur.Adjacent_Unfiltered) {
 				if(shortestDistances.ContainsKey( a ) && shortestDistances[a] <= neighborDist)
 					continue;
 				shortestDistances[a] = neighborDist;

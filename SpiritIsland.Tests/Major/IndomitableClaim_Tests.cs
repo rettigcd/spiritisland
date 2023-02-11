@@ -11,7 +11,7 @@ public class IndomitableClaim_Tests {
 	public void StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<IndomitableClaim>(), (Action<GameState>)((gs)=>{ 
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<IndomitableClaim>(), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
@@ -23,7 +23,7 @@ public class IndomitableClaim_Tests {
 		invaderLog.Clear();
 
 		// and: there is a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
-		var spaceCtx = ctx.GameState.AllSpaces
+		var spaceCtx = ctx.GameState.Spaces_Unfiltered
 			.Select( x=>ctx.Target(x.Space) )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );

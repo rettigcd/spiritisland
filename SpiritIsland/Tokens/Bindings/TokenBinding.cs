@@ -56,7 +56,13 @@ public class BeastBinding {
 	}
 	#endregion
 
-	public bool Any => Count > 0;
+//	public bool Any => 0 < Count;
+	public bool Any {  
+		get { 
+			int c= Count;
+			return 0 < c;
+		}
+	}
 
 	public virtual int Count => _spaceState.Sum( _uniqueToken );
 

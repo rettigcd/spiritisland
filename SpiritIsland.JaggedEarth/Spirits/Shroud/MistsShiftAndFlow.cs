@@ -76,15 +76,12 @@ class MistsShiftAndFlow {
 		await _ctx.Self.Token.Move( gatherSource, gatherDst );
 	}
 
-	bool IsInPlay( SpaceState space ) => _gameState.Island.Terrain_ForPower.IsInPlay( space );
-
 	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
 
 		var pretendPresence = new SpaceCounts( _gameState, _spirit );
 
 		var spacesInRange = target.Range(1) // this is a Gather
-			.Where( IsInPlay )
 			.ToArray();
 
 		foreach(SpaceState dst in spacesInRange) {
@@ -137,7 +134,6 @@ class MistsShiftAndFlow {
 		var flowedSources = _spirit.Presence.ActiveSpaceStates
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
-			.Where( IsInPlay ) // Don't allow flow into ocean.
 			.Except( sources ); // exclude previously found sources
 		if(_sourceCriteria.Terrain.HasValue)
 			flowedSources = flowedSources.Where( s => s.Space.Is( _sourceCriteria.Terrain.Value ) );
@@ -167,7 +163,7 @@ class MistsShiftAndFlow {
 
 		public SpaceCounts(GameState gameState, Spirit spirit) : base() {
 			// _spirit = spirit;
-			ActiveSpaceStates = gameState.AllActiveSpaces.Where( spirit.Presence.IsOn );
+			ActiveSpaceStates = gameState.Spaces.Where( spirit.Presence.IsOn );
 			foreach(var ss in ActiveSpaceStates)
 				Add(ss.Space,spirit.Presence.CountOn(ss));
 		}

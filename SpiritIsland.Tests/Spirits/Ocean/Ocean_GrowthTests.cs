@@ -79,7 +79,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		// Given: island has 2 boards, hence 2 oceans
 		_gameState.Island = new Island( BoardA, BoardB );
 
-		_ = When_Growing( 1 );
+		Task t = When_Growing( 1 );
 
 		User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay,Take Presence from Board", "[A0],B0" );
 		User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,Take Presence from Board", "A0,[B0]" );

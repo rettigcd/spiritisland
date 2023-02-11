@@ -5,7 +5,7 @@ namespace SpiritIsland.Tests.Minor;
 public class CallToTrade_Tests {
 
 	static IEnumerable<TargetSpaceCtx> AllTargets( SelfCtx ctx ) {
-		return ctx.GameState.AllSpaces
+		return ctx.GameState.Spaces_Unfiltered
 			.Select( s => ctx.Target(s.Space) );
 	}
 
@@ -16,7 +16,7 @@ public class CallToTrade_Tests {
 	[Fact]
 	public void NoRavage_NoBuild() {
 
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
 
 		// Given: a space that is not part of the build nor ravage
 		var spaceCtx = AllTargets( ctx )
@@ -40,10 +40,10 @@ public class CallToTrade_Tests {
 	[Trait("Feature","Gather")]
 	[Fact]
 	public void OneRavage_ReplacedWithBuild() {
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
 
 		// Given: advance to 2nd round where we have a ravage
-		user.DoesNothingForARound();
+		user.AdvancesToStartOfNextInvaderPhase();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
 		var spaceCtx = AllTargets( ctx )
@@ -70,13 +70,13 @@ public class CallToTrade_Tests {
 	[Trait("Feature","Gather")]
 	[Fact]
 	public void TerrorLevel3_RavageRemainsRavage() {
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>() );
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
 
 		// Elevate to Terror Level 3
 		Given_TerrorLevelIs3( ctx );
 
 		// Given: advance to 2nd round where we have a ravage
-		user.DoesNothingForARound();
+		user.AdvancesToStartOfNextInvaderPhase();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
 		var spaceCtx = AllTargets( ctx )
@@ -103,14 +103,14 @@ public class CallToTrade_Tests {
 		List<string> invaderLog = new List<string>();
 
 		// Given: Going to Ravage / Build in Jungle
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<CallToTrade>(), (Action<GameState>)((gs)=>{ 
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>(), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
 		}) );
 
 		// Given: advance to 2nd round where we have a ravage
-		user.DoesNothingForARound();
+		user.AdvancesToStartOfNextInvaderPhase();
 		invaderLog.Clear();
 
 		// Given: a space that IS-RAVAGE AND BUILD

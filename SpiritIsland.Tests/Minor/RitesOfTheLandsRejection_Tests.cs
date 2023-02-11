@@ -9,10 +9,10 @@ public class RitesOfTheLandsRejection_Tests {
 	[InlineDataAttribute(true,"1E@1")]
 	public void SingleBuild(bool playsCard, string result) {
 
-		var (user,ctx) = TestSpirit.SetupGame( PowerCard.For<RitesOfTheLandsRejection>() );
+		var (user,ctx) = TestSpirit.StartGame( PowerCard.For<RitesOfTheLandsRejection>() );
 
 		// Given: find a space with 1 explorer
-		var space = ctx.GameState.AllSpaces
+		var space = ctx.GameState.Spaces_Unfiltered
 			.First( s => s.InvaderSummary() == "1E@1" );
 
 		//   And: add Dahan (because card requires it)

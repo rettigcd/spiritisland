@@ -15,7 +15,7 @@ public class TerrainMapper {
 
 	// InPlay
 	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
-	public bool IsInPlay( SpaceState spaceState ) => !spaceState.Space.Is( Terrain.Ocean );
+	public bool IsInPlay( SpaceState spaceState ) => IsInPlay( spaceState.Space );
 
 	public virtual bool IsInPlay( Space space ) => !space.Is( Terrain.Ocean );
 

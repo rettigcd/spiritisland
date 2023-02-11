@@ -85,7 +85,7 @@ public class Strife_Tests {
 		var strifedTown = (IToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
-		var destination = space.Adjacent_All.First( IsInPlay );
+		var destination = space.Adjacent_Unfiltered.First( IsInPlay );
 		_ = gs.Tokens[space].MoveTo( strifedTown, destination ); // _ = ??
 
 		// Then:
@@ -158,7 +158,7 @@ public class Strife_Tests {
 	[Fact]
 	public async Task Strife_Stops_Ravage() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
-		var space = gs.AllSpaces
+		var space = gs.Spaces_Unfiltered
 			.First( s => IsInPlay(s.Space) && !s.HasInvaders() );
 
 		// Given: 1 strifed city

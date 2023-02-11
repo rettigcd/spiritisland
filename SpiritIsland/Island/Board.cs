@@ -224,11 +224,14 @@ public partial class Board {
 
 	#endregion
 
-/// <summary>The Active (not in stasis) spaces on the board.</summary>
-	public IEnumerable<Space> Spaces => spaces.Where(Space.IsActive);
+	/// <summary>The Active (not in stasis) spaces on the board.</summary>
+	public IEnumerable<Space> Spaces => spaces.Where(Space.IsActive).IsInPlay();
+
+	public IEnumerable<Space> Spaces_IncludeOcean => spaces.Where( Space.IsActive );
+
 
 	/// <summary>All spaces, including the ones in Stasis.</summary>
-	public IEnumerable<Space> Spaces_All => spaces;
+	public IEnumerable<Space> Spaces_Unfiltered => spaces;
 
 	#region Add / Remove spaces from board
 	public void Add( Space space, Space[] adjacents ) {
@@ -238,7 +241,7 @@ public partial class Board {
 
 	/// <returns>Old adjacents</returns>
 	public Space[] Remove( Space space ) {
-		var oldAdj = space.Adjacent_All.ToArray();
+		var oldAdj = space.Adjacent_Unfiltered.ToArray();
 		space.Disconnect();
 		spaces = spaces.Where(s => s != space ).ToArray();
 		return oldAdj;
@@ -249,7 +252,7 @@ public partial class Board {
 	// To do this, we probably need to pull the Layout coordinates out of The Board/Space classes and move to the UI.
 	public int InvaderActionCount { get; set; } = 1;
 
-	public Space Ocean => Spaces.Single( space => space.IsOcean );
+	public Space Ocean => Spaces_IncludeOcean.Single( s => s.IsOcean );
 
 	public Space this[int index]{ get => spaces[index]; }
 

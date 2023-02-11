@@ -60,6 +60,7 @@ public class WrapInWingsOfSunlight_Tests {
 		tokens.InitDefault( Human.Dahan , 3);
 		tokens.InitDefault( Human.Explorer, 3);
 		tokens.InitDefault( Human.Town    , 3);
+		tokens.Beasts.Init(0);
 
 		//  And: spirit has presence on A5
 		spirit.Presence.PlaceOn(src,gameState).Wait();

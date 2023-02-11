@@ -82,7 +82,7 @@ public partial class IslandControl : Control {
 			_buttonContainer.Add( cardSlot, new PresenceSlotButton( _spirit.Presence.CardPlays, cardSlot, _presenceImg ) );
 		foreach(var action in _spirit.GrowthTrack.Options.SelectMany( optionGroup => optionGroup.GrowthActions ))
 			_buttonContainer.Add( action, new GrowthButton() );
-		foreach(var spaceState in _gameState.AllSpaces)
+		foreach(var spaceState in _gameState.Spaces_Unfiltered)
 			_buttonContainer.Add( spaceState.Space, new SpaceButton( GetPortPoint ,spaceState.Space, hotspotRadius ) );
 	}
 
@@ -103,7 +103,7 @@ public partial class IslandControl : Control {
 	//	??= _gameState.AllSpaces.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
 
 	ManageInternalPoints InsidePoints( Space space ) {
-		_insidePoints ??= _gameState.AllSpaces.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
+		_insidePoints ??= _gameState.Spaces_Unfiltered.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
 
 		// In case Weave-Together has occurred and the event hasn't propogated here yet.
 		if(!_insidePoints.ContainsKey( space ))
@@ -186,7 +186,7 @@ public partial class IslandControl : Control {
 			DrawInvaderCards( pe.Graphics ); // other than highlights, do this last since it contains the Fear Card that we want to be on top of everything.
 
 			// Island / Spaces
-			foreach(SpaceState space in _gameState.AllSpaces)
+			foreach(SpaceState space in _gameState.Spaces_Unfiltered)
 				DecorateSpace( pe.Graphics, space );
 
 			DrawHotSpots_SpaceToken( pe.Graphics );
@@ -245,7 +245,7 @@ public partial class IslandControl : Control {
 		// !!! Bug - Layout needs updated when we weave stuff together.  Out of sync with # of spaces on board.
 		BoardLayout normalizedBoardLayout = board.OriginalLayout;
 
-		foreach(var space in board.Spaces_All) {
+		foreach(var space in board.Spaces_Unfiltered) {
 			// Space space = board[i];
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
 			// SpaceLayout spaceLayout = normalizedBoardLayout.Spaces[i];

@@ -9,7 +9,7 @@ public class ScotlandRavageEngine : RavageEngine {
 	}
 
 	static void FuelInwardGrowth( InvaderCard card, GameState gameState ) {
-		var spaces = gameState.AllSpaces
+		var spaces = gameState.Spaces_Unfiltered
 			// to each Inland land
 			.Where( ss => !ss.Space.IsOcean && !ss.Space.IsCoastal )
 			// that matches a Ravage card

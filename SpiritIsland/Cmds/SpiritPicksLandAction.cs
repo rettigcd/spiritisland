@@ -18,10 +18,9 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 
 		for(int i = 0; i < this._landsPerSpirit; ++i) {
 
-			var spaceOptions = ctx.GameState.AllActiveSpaces
+			var spaceOptions = ctx.GameState.Spaces
 				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
 				.Select( s => ctx.Target( s.Space ) )
-				.Where( ctx => ctx.IsInPlay )       // land-only, exclude normal ocean
 				.Where( _spaceAction.IsApplicable )  // Matches action Criteria
 				.Where( LandCriteria.Filter )
 				.ToArray();

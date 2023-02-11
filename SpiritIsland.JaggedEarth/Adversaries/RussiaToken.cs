@@ -16,7 +16,7 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 
 	public void HuntersSwarmTheIsland( GameState gameState ) {
 		// Put beast Destroyed by Adversary rules on this panel.If there are ever more beast on this panel than on the island, the Invaders win.
-		int remainingBeasts = gameState.AllSpaces.Sum( s => s.Beasts.Count );
+		int remainingBeasts = gameState.Spaces_Unfiltered.Sum( s => s.Beasts.Count );
 		if(remainingBeasts < _beastsDestroyed)
 			GameOverException.Lost( $"Russia-Hunters Swarm the Island (beasts remaining:{remainingBeasts} killed:{_beastsDestroyed})" );
 	}
@@ -78,7 +78,7 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 			&& args.Token.Class == Human.Explorer     // Is explorer
 			&& args.Reason == RemoveReason.Destroyed // destroying
 			&& !ActionScope.Current.ContainsKey( key )  // first time
-			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.Where( ss => scope.TerrainMapper.IsInPlay( ss ) ).ToArray()).Length
+			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.IsInPlay().ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
 			scope[key] = true; // don't save any more

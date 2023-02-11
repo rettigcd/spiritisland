@@ -48,7 +48,7 @@ public class InvaderDeck {
 			destination = slot.Cards;
 		}
 
-		CheckIfTimeRunsOut();
+		CheckIfTimeRunsOut(); // !!! should this be part of the CheckWinLoss = true; stuff?
 		InitExploreSlot();
 	}
 

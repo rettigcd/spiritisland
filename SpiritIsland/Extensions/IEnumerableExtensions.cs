@@ -70,6 +70,9 @@ static public class IEnumerableExtensions {
 	public static IEnumerable<Space> Downgrade(this IEnumerable<SpaceState> spaceStates) => spaceStates.Select(x=>x.Space);
 
 	public static IEnumerable<SpaceState> Upgrade(this IEnumerable<Space> spaces) => GameState.Current.Tokens.Upgrade(spaces);
+	public static IEnumerable<Space> IsInPlay( this IEnumerable<Space> spaces ) => spaces.Where( ActionScope.CurrentTerrain.IsInPlay );
+
+	public static IEnumerable<SpaceState> IsInPlay( this IEnumerable<SpaceState> spaces ) => spaces.Where( ActionScope.CurrentTerrain.IsInPlay );
 
 	public static IEnumerable<string> SelectLabels(this IEnumerable<SpaceState> spaceStates) => spaceStates.Select(x=>x.Space.Text);
 

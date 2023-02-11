@@ -148,37 +148,39 @@ public class Invader_Tests {
 
 	[Trait( "Invaders", "Explore" )]
 	[Theory]
-	[InlineData("A1","T@2")]
-	[InlineData("A4","T@1")]
-	[InlineData("A5","T@2")]
-	[InlineData("A6","T@1")]
-	[InlineData("A7","T@2")]
-	[InlineData("A8","T@1")]
-	[InlineData("A1","C@3")]
-	[InlineData("A4","C@2")]
-	[InlineData("A5","C@1")]
-	[InlineData("A6","C@3")]
-	[InlineData("A7","C@2")]
-	[InlineData("A8","C@1")]
-	public void InOrNextToTown_ExploresTownSpace(string townSpaceLabel,string invaderKey) {
+	[InlineData( "A1", "T@2" )]
+	[InlineData( "A1", "C@3" )]
+	[InlineData( "A4", "C@2" )]
+	[InlineData( "A4", "T@1" )]
+	[InlineData( "A5", "C@1" )]
+	[InlineData( "A5", "T@2" )]
+	[InlineData( "A6", "C@3" )]
+	[InlineData( "A6", "T@1" )]
+	[InlineData( "A7", "T@2" )]
+	[InlineData( "A7", "C@2" )]
+	[InlineData( "A8", "T@1" )]
+	[InlineData( "A8", "C@1" )]
+	public async Task InOrNextToTown_ExploresTownSpace(string townSpaceLabel,string invaderKey) {
 		// Given: game on Board A
 		var board = Board.BuildBoardA();
 		var gameState = new GameState( new RiverSurges(), board );
-		//   And: Town on or next to wet land
+
+		//   And: Town on or next to A5 (a wet land)
 		var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
 		var sourceInvader = Parse(invaderKey);
 		gameState.Tokens[sourceSpace].Adjust(sourceInvader,1);
 
+		var log = new List<string>();
+		gameState.NewLogEntry += (e) => log.Add(e.Msg(Log.LogLevel.Info));
+
 		// When: exploring (wet lands
-		_ = new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "W" ), gameState );
+		InvaderCard card = InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "W" );
+		await new ExploreSlot().ActivateCard( card, gameState );
 
 		// Then: Explores A2 and other space only
 		foreach(var space in board.Spaces){
 			var invaders = gameState.Tokens[space];
-			Assert.Equal(
-				space.IsWetland ? 1 : 0
-				,invaders[ StdTokens.Explorer ]
-			);
+			invaders[StdTokens.Explorer].ShouldBe( space.IsWetland ? 1 : 0, space.Text );
 		}
 	}
 

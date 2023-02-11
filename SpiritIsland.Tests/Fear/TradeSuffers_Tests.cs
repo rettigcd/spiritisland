@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Log;
-
-namespace SpiritIsland.Tests.Fear;
+﻿namespace SpiritIsland.Tests.Fear;
 
 public class TradeSuffers_Tests {
 
@@ -8,13 +6,13 @@ public class TradeSuffers_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		var (user, ctx) = TestSpirit.SetupGame( PowerCard.For<RiversBounty>(), gs => {
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<RiversBounty>(), gs => {
 			var fear = gs.Fear;
 			AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
-			gs.NewLogEntry += (s) => log.Add(s.Msg());
+			gs.NewLogEntry += (s) => _log.Add(s.Msg());
 		} );
-		this.user = user;
-		this.ctx = ctx;
+		this._user = user;
+		this._ctx = ctx;
 	}
 
 	[Fact]
@@ -22,23 +20,23 @@ public class TradeSuffers_Tests {
 	public void Level1_CityIsNotDamagedDuringRavage_NoBuild() {
 
 		// Disable destroying presence
-		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 		// Invaders do not Build in lands with City.
 
 		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndDoNothing();
-		ClearBlightAndDoNothing();
+		ClearBlightAndAdvanceToStartOfInvaderPhase();
+		ClearBlightAndAdvanceToStartOfInvaderPhase();
 
 		ActivateFearCard( new TradeSuffers() );
 
 		// Given: 1 city and nothing else
-		var spaceCtx = ctx.TargetSpace( "A7" );
+		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("1C@3");
 
 		// When: activating fear
-		ClearBlightAndDoNothing();
-		user.AcknowledgesFearCard( FearCard );
+		ClearBlightAndAdvanceToStartOfInvaderPhase();
+		_user.AcknowledgesFearCard( FearCard );
 
 		// Ravage: no dahan, no change:			1B@1,1C@3
 		// Build: City present => no build		1B@1,1C@3
@@ -50,23 +48,30 @@ public class TradeSuffers_Tests {
 
 	[Fact]
 	public void Level1_CityDestroyedDuringRavage_Build() {
-
+		
 		// Disable destroying presence
-		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndDoNothing();
-		ClearBlightAndDoNothing();
+		ClearBlightAndAdvanceToStartOfInvaderPhase();
+		ClearBlightAndAdvanceToStartOfInvaderPhase();
 
+		//  And: Fear card is active and ready to flip
 		ActivateFearCard( new TradeSuffers() );
+		ClearBlightAndAdvanceToStartOfInvaderPhase();
+
+		var log = new List<string>();
+		_ctx.GameState.NewLogEntry += ( le ) => { log.Add( le.Msg( Log.LogLevel.Info ) ); };
 
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer
-		var spaceCtx = ctx.TargetSpace( "A7" );
-		spaceCtx.Tokens.Init("1C@3,4D@2,2E@1");
+		_ = _user.NextDecision; // Wait for invader phase to finish before we make modifications
+		var spaceCtx = _ctx.TargetSpace( "A7" );
+		spaceCtx.Tokens.Init( "1C@3,4D@2,2E@1" );
 
 		// When: activating fear
-		ClearBlightAndDoNothing();
-		user.AcknowledgesFearCard( FearCard );
+		_user.AcknowledgesFearCard( FearCard );
+
+		_ = _user.NextDecision; // Wait for invader phase to finish
 
 		// Ravage-a: 1 city + 2 explorers do 5 damage killing 2 dahan    1B@1,1C@1,2D@2,2E@1
 		// Ravage-b: 2 dahan do 4 damage killing city and 1 explorer     1B@1,2D@2,1E@1 
@@ -100,25 +105,25 @@ public class TradeSuffers_Tests {
 		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
 
-	void ClearBlightAndDoNothing() {
+	void ClearBlightAndAdvanceToStartOfInvaderPhase() {
 
 		// So it doesn't cascade during ravage
-		foreach(var space in ctx.GameState.AllSpaces)
+		foreach(var space in _ctx.GameState.Spaces_Unfiltered)
 			space.Init(Token.Blight, 0); // Don't trigger events
 
-		user.DoesNothingForARound();
+		_user.AdvancesToStartOfNextInvaderPhase();
 	}
 
 	void ActivateFearCard(IFearCard fearCard) {
-		var fear = ctx.GameState.Fear;
+		var fear = _ctx.GameState.Fear;
 		fear.Deck.Pop(); // remove old
 		fear.PushOntoDeck( fearCard );
 		fear.AddDirect( new FearArgs( fear.PoolMax ) );
 	}
 
-	readonly VirtualTestUser user;
-	readonly SelfCtx ctx;
-	readonly List<string> log = new();
+	readonly VirtualTestUser _user;
+	readonly SelfCtx _ctx;
+	readonly List<string> _log = new();
 
 }
 

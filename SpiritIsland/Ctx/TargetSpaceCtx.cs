@@ -194,7 +194,6 @@ public class TargetSpaceCtx : SelfCtx {
 	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
 	public bool IsCoastal => TerrainMapper.IsCoastal( Tokens );
 	public bool IsInland => TerrainMapper.IsInland( Tokens );
-	public bool IsInPlay => TerrainMapper.IsInPlay( Tokens );
 	#endregion
 
 	public bool HasBlight => Blight.Any;

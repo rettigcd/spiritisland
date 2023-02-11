@@ -22,7 +22,8 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 
 		AdvanceToInvaderPhase();
 		user.AcknowledgesFearCard( FearAck1 );
-		System.Threading.Thread.Sleep(5);
+		
+		_ = user.NextDecision; // wait for engine to catch up
 
 		log.Assert_Ravaged( "A3", "A8" );
 		log.Assert_Built( "A2: build stopped", "A5" ); // Skipped A2
@@ -51,6 +52,7 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 		log.Assert_Explored( "A2", "A5" );
 
 		// Card Advance #3 - End of 1st round
+		_ = user.NextDecision; // Wait for engine to sync up
 
 		// Given: Explorers Are Reluctant
 		ctx.ActivateFearCard( card );
@@ -59,15 +61,15 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 
 		AdvanceToInvaderPhase();
 		user.AcknowledgesFearCard( FearAck2 );
-		System.Threading.Thread.Sleep(5);
+		_ = user.NextDecision; // Wait for engine to sync up
 
 		// Card Advance #4 - End of 2st round
-
 		log.Assert_Ravaged( "A3", "A8" );
 		log.Assert_Explored("A4","A7");
 
 		AdvanceToInvaderPhase();
-		System.Threading.Thread.Sleep(5);
+		//System.Threading.Thread.Sleep(5);
+		_ = user.NextDecision;
 
 		// no ravage
 		log.Assert_Built( "A2", "A5" ); // double up Builds

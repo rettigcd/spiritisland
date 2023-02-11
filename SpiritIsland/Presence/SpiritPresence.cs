@@ -84,7 +84,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	public virtual bool CanBePlacedOn( SpaceState spaceState ) => ActionScope.Current.TerrainMapper.IsInPlay( spaceState );
+	public virtual bool CanBePlacedOn( SpaceState spaceState ) 
+		=> ActionScope.Current.TerrainMapper.IsInPlay( spaceState );
 	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token];
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
 	public int CountOn( SpaceState spaceState ) => spaceState[Token];
@@ -166,12 +167,12 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public IEnumerable<Space> SacredSites() => SacredSiteStates.Downgrade();
 
-	public virtual IEnumerable<SpaceState> SacredSiteStates => GameState.Current.AllActiveSpaces.Where( IsSacredSite );
+	public virtual IEnumerable<SpaceState> SacredSiteStates => GameState.Current.Spaces_AndNotInPlay.Where( IsSacredSite );
 
-	public int Total() => GameState.Current.AllSpaces.Sum( CountOn );
+	public int Total() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
 
 	/// <summary> All *Active* Spaces </summary>
-	public IEnumerable<SpaceState> ActiveSpaceStates => GameState.Current.AllActiveSpaces.Where( IsOn );
+	public IEnumerable<SpaceState> ActiveSpaceStates => GameState.Current.Spaces_AndNotInPlay.Where( IsOn );
 
 	public IEnumerable<SpaceState> MovableSpaceStates => ActiveSpaceStates.Where( HasMovableTokens );
 

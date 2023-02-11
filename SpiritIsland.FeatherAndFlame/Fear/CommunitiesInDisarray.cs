@@ -29,7 +29,7 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 					? Math.Max( 0, originalDamageFrom1( ss, ht ) - damagePenalty ) // apply penalty
 					: originalDamageFrom1( ss, ht ); // else, use original
 			}
-			foreach(var space in ctx.GameState.AllActiveSpaces) {
+			foreach(var space in ctx.GameState.Spaces) {
 				ctx.GameState.ModifyRavage( space.Space, ReduceDamage );
 				ctx.GameState.Healer.Skip( space.Space );
 			}

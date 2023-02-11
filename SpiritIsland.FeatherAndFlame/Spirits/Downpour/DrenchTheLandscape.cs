@@ -19,7 +19,7 @@ class DrenchTheLandscape : TerrainMapper, ICalcPowerTargetingSource {
 		=> original.MatchesTerrain( space, options )
 		|| options.Contains( Terrain.Wetland ) && spirit.Presence.IsSacredSite( space );
 
-	IEnumerable<SpaceState> SacredSites(GameState gs) => gs.AllActiveSpaces
+	IEnumerable<SpaceState> SacredSites(GameState gs) => gs.Spaces
 		.Where( spirit.Presence.IsSacredSite ); // Downpours SS are not dependent on special terrain rules.
 
 	public IEnumerable<SpaceState> FindSources( 

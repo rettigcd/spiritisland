@@ -79,7 +79,7 @@ static internal class Extensions {
 	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );
 
 	static public TargetSpaceCtx TargetSpace( this SelfCtx ctx, string spaceLabel )
-		=> ctx.Target( ctx.GameState.AllSpaces.Downgrade().First( s => s.Label == spaceLabel ) );
+		=> ctx.Target( ctx.GameState.Spaces_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
 
 	static public ActionScope StartAction( this GameState _, ActionCategory cat, TerrainMapper terrainMapper = null ) { // !!! Remove this
 		return new ActionScope( cat, terrainMapper );

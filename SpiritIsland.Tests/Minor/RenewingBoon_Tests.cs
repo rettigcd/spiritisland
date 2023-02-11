@@ -28,7 +28,7 @@ public class RenewingBoon_Tests {
 		var gameState = new GameState( spirit, Board.BuildBoardA() );
 
 		//  And: a space that they can't place presence on
-		SpaceState space = gameState.AllActiveSpaces.Single( x => x.Space.Text == restrictedSpace );
+		SpaceState space = gameState.Spaces.Single( x => x.Space.Text == restrictedSpace );
 
 		//  But: Presence already on Space (via Indomitable Claim)
 		SpiritExtensions.Adjust( spirit.Presence, space, 1 );

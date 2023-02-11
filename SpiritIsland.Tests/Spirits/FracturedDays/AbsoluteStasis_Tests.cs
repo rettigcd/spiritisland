@@ -248,7 +248,7 @@ public class AbsoluteStasis_Tests {
 		SpacePutInStasis( space.Text );
 
 		// Then: space still apears in list of All Spaces
-		cfg.GameState.AllSpaces.ShouldContain( cfg.GameState.Tokens[space] );
+		cfg.GameState.Spaces_Unfiltered.ShouldContain( cfg.GameState.Tokens[space] );
 
 	}
 

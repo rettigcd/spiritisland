@@ -22,8 +22,8 @@ public class BoardSpace_Tests {
 		var land2 = MakeSpace();
 		land1.SetAdjacentToSpaces( land2 );
 		// Then: land2 is adjacent to land 1
-		Assert.Contains( land1, land2.Adjacent_All );
-		Assert.Contains( land2, land1.Adjacent_All );
+		Assert.Contains( land1, land2.Adjacent_Unfiltered );
+		Assert.Contains( land2, land1.Adjacent_Unfiltered );
 	}
 
 	[Fact]
@@ -46,7 +46,7 @@ public class BoardSpace_Tests {
 	static IEnumerable<Space> SpacesExactly( Space space, int distance ) { // !!! this should be deprecated or moved to Test project - only used in tests
 		return distance switch {
 			0 => new Space[] { space },
-			1 => space.Adjacent_All,
+			1 => space.Adjacent_Unfiltered,
 			_ => space.CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
 		};
 	}
@@ -253,7 +253,7 @@ public class BoardSpace_Tests {
 	//}
 
 	static void Assert_BoardSpacesTouch( Space startingSpace, Space neighbor ) {
-		Assert.Contains( neighbor, startingSpace.Adjacent_All );// , $"{a.Label} should touch {b.Label}" );
+		Assert.Contains( neighbor, startingSpace.Adjacent_Unfiltered );// , $"{a.Label} should touch {b.Label}" );
 	}
 
 	[Fact]

@@ -12,7 +12,7 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 	public async Task Execute( TargetSpaceCtx ctx ) {
 
 		// The first space/time it is called on, init original Beast positions
-		_originalBeastCounts ??= ctx.GameState.AllActiveSpaces
+		_originalBeastCounts ??= ctx.GameState.Spaces
 				.ToDictionary( s => s.Space, s => s.Beasts.Count )
 				.ToCountDict();
 

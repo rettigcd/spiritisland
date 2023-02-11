@@ -21,7 +21,6 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 			Spirit spirit = BoardCtx.FindSpirit( gameState, board );
 			SelfCtx decisionMaker = spirit.BindSelf();
 			var spacesCtxs = board.Spaces.Upgrade()
-				.Where( ActionScope.Current.TerrainMapper.IsInPlay )
 				.Select( decisionMaker.Target )
 				.Where( _landCriteria.Filter );
 			foreach(TargetSpaceCtx ss in spacesCtxs)

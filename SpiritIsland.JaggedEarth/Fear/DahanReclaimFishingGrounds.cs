@@ -35,7 +35,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	}
 
 	static async Task SpiritsActOnDifferentCostalLands( GameCtx ctx, Func<TargetSpaceCtx, Task> act ) {
-		var options = ctx.GameState.AllActiveSpaces
+		var options = ctx.GameState.Spaces
 			.Downgrade()
 			.Where(s=>s.IsCoastal) // !!! this will miss oceans when Ocean is in play.
 			.ToList();

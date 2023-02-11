@@ -30,7 +30,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 
 	public static void ClearAllBlight( this SelfCtx ctx ) {
 		// So it doesn't cascade and require extra interactions...
-		foreach(var space in ctx.GameState.AllSpaces)
+		foreach(var space in ctx.GameState.Spaces_Unfiltered)
 			space.Blight.Init(0); // don't trigger events
 	}
 
@@ -58,6 +58,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 	static string WaitForNextLogItem( Queue<string> log ) {
 		if(log.Count == 0)
 			System.Threading.Thread.Sleep(5); // Wait for Engine to catch up
+		log.Count.ShouldBeGreaterThan(0,"One of the following issues occured: (a)Didn't wait long enough for invader action to complete. (b)BG thread threw exception, (c)test-condition failed.");
 		return log.Dequeue();
 	}
 

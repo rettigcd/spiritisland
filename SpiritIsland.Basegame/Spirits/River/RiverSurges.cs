@@ -59,7 +59,7 @@ public class RiverPresence : SpiritPresence {
 	public override IEnumerable<SpaceState> SacredSiteStates{
 		get {
 			var scope = ActionScope.Current;
-			return GameState.Current.AllActiveSpaces
+			return GameState.Current.Spaces
 				.Where( s => scope.TerrainMapper.MatchesTerrain( s, Terrain.Wetland ) && IsOn( s ) )
 				.Union( base.SacredSiteStates )
 				.Distinct();

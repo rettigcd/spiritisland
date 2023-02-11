@@ -124,6 +124,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	#endregion Memento
 
+	public override string ToString() => _tokenCounts
+		.Select(p=>p.Key+":"+p.Value.TokenSummary())
+		.Join(" ");
+
 	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
 	readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
 

@@ -20,21 +20,19 @@ public class ExploreEngine {
 		// Modify
 		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Human.Town_City );
 
-		var sources = gs.AllActiveSpaces
+		var sources = gs.Spaces_AndNotInPlay
 			.Where( IsExplorerSource )
 			.Where( ss => !ss.Keys.OfType<ISkipExploreFrom>().Any() )
 			.ToHashSet();
 
-
-		var exploreRoutes = gs.AllActiveSpaces.Where( card.MatchesCard )
-			.SelectMany( dst => dst.Range( 1 )
-				.Where( sources.Contains )
-				.Select( src => new ExploreRoute { Source = src, Destination = dst } )
+		var exploreRoutes = sources.SelectMany(
+			source=>source.Adjacent_ForInvaders.Union(new []{source})
+				.Where( card.MatchesCard )
+				.Select(dst => new ExploreRoute { Source = source, Destination = dst })
 			)
 			.OrderBy( route => route.Destination.Space.Label )
 			.ThenBy( route => route.Source.Space.Label )
 			.ToArray();
-
 
 		var spacesWeExplore = exploreRoutes
 			.Where( rt => rt.IsValid )
@@ -47,7 +45,7 @@ public class ExploreEngine {
 		foreach(var x in spacesWeExplore)
 			x.Adjust( ModToken.DoExplore, x.Space.Board.InvaderActionCount );
 
-		return gs.AllActiveSpaces
+		return gs.Spaces
 			.Where( x => x[ModToken.DoExplore] > 0 )
 			.ToArray();
 	}

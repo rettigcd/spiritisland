@@ -4,7 +4,7 @@
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
 /// Has same Scope as GameState (not bound to an ActionScope
 /// </summary>
-public class SpaceState : HasNeighbors<SpaceState> {
+public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#region constructor
 
@@ -170,10 +170,10 @@ public class SpaceState : HasNeighbors<SpaceState> {
 
 	#region Adjacent Properties
 
-	public IEnumerable<SpaceState> Adjacent_All { 
+	public IEnumerable<SpaceState> Adjacent_Unfiltered { 
 		get {
 			var gameState = GameState.Current;
-			foreach(var space in Space.Adjacent_All)
+			foreach(var space in Space.Adjacent_Unfiltered)
 				yield return gameState.Tokens[space];
 
 			foreach(var gateway in Keys.OfType<GatewayToken>())
@@ -181,11 +181,11 @@ public class SpaceState : HasNeighbors<SpaceState> {
 		}
 	}
 
-	public IEnumerable<SpaceState> Adjacent => Adjacent_All.Where( ActionScope.CurrentTerrain.IsInPlay );
+	public IEnumerable<SpaceState> Adjacent => Adjacent_Unfiltered.IsInPlay();
 
 	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();
 
-	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys;
+	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys.IsInPlay();
 
 	/// <summary> Explicitly named so not to confuse with Powers - Range commands. </summary>
 	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );

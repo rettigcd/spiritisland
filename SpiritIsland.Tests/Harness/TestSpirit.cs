@@ -26,7 +26,7 @@ class TestSpirit : Spirit {
 		Presence.PlaceOn(space, gameState).Wait();
 	}
 
-	static public (VirtualTestUser, SelfCtx) SetupGame( 
+	static public (VirtualTestUser, SelfCtx) StartGame( 
 		PowerCard powerCard, 
 		Action<GameState> modGameState = null 
 	) {
@@ -70,7 +70,7 @@ public class VirtualTestUser : VirtualUser {
 		Growth_SelectAction( "ReclaimAll" );
 	}
 
-	public void DoesNothingForARound() {
+	public void AdvancesToStartOfNextInvaderPhase() {
 		Grows();
 		IsDoneBuyingCards();
 	}

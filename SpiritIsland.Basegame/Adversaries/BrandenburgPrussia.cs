@@ -54,7 +54,7 @@ public class BrandenburgPrussia : IAdversary {
 	static async Task LandRush( GameState gs ) {
 		// Land Rush: On each board with Town / City, add 1 Town to a land without Town
 
-		var counts = gs.AllActiveSpaces
+		var counts = gs.Spaces.IsInPlay()
 			.ToDictionary( s => s.Space, s => s );
 
 		// s.SumAny(Invader.Town,Invader.City)
@@ -66,7 +66,7 @@ public class BrandenburgPrussia : IAdversary {
 		var terrainMapper = gs.Island.Terrain;
 
 		var buildSpaces = counts.Values
-			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Human.Town_City ) == 0 && terrainMapper.IsInPlay( ss ) )
+			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Human.Town_City ) == 0 )
 			.GroupBy( space => space.Space.Board )
 			.Select( grp => grp.OrderBy( ss => ss.Space.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
 			.ToArray();

@@ -27,7 +27,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 
 	static async Task PushExplorerIntoSpaceWithMoreTownsOrCities( SelfCtx ctx ) {
 
-		Dictionary<Space, int> buildingCounts = ctx.GameState.AllActiveSpaces
+		Dictionary<Space, int> buildingCounts = ctx.GameState.Spaces
 			.ToDictionary(
 				s => s.Space,
 				s => s.TownsAndCitiesCount()
@@ -37,7 +37,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 		bool HasNeighborWithMoreBuildings( SpaceState s ) => GetNeighborWithMoreBuildings( s ).Any();
 
 		// Select Source
-		var sourceOptions = ctx.GameState.AllActiveSpaces
+		var sourceOptions = ctx.GameState.Spaces
 			.Where( s => s.Has( Human.Explorer ) && HasNeighborWithMoreBuildings( s ) )
 			.Downgrade()
 			.ToArray();

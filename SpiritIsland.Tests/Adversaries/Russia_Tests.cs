@@ -21,6 +21,7 @@ public class Russia_Tests {
 		InvaderCard card = gameState.InvaderDeck.UnrevealedCards.First(x=>x.InvaderStage==2 && x.MatchesCard( a8 ) );
 
 		// Given: beasts on 2 other spaces
+		gameState.Tokens[ board[5] ].Beasts.Init(0);
 		beastSpace1.Beasts.Adjust(1);
 		beastSpace2.Beasts.Adjust(1);
 
@@ -30,9 +31,13 @@ public class Russia_Tests {
 		// Then: user can place 2 explorers in either of the 2 beast spaces
 		Spirit spirit = gameState.Spirits[0];
 		t.IsCompleted.ShouldBeFalse();
-		spirit.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (1 of 2)" ).HasOptions("A1,A4").Choose(beastSpace1.Space.Text);
+		spirit.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (1 of 2)" )
+			.HasOptions("A1,A4")
+			.Choose(beastSpace1.Space.Text);
 		t.IsCompleted.ShouldBeFalse();
-		spirit.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (2 of 2)" ).HasOptions( "A1,A4" ).Choose( beastSpace2.Space.Text );
+		spirit.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (2 of 2)" )
+			.HasOptions( "A1,A4" )
+			.Choose( beastSpace2.Space.Text );
 
 		beastSpace1.Sum(Human.Explorer).ShouldBe(1);
 		beastSpace2.Sum( Human.Explorer ).ShouldBe( 1 );

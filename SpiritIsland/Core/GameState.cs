@@ -7,7 +7,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public static GameState Current => _current.Value;
 	readonly static AsyncLocal<GameState> _current = new AsyncLocal<GameState>(); // value gets shallow-copied into child calls and post-awaited states.
 
-
 	#region constructors
 
 	/// <summary>
@@ -71,7 +70,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	Task TokenCleanUp( GameState gs ) {
 		Healer.HealAll( gs ); // called at end of round.
-		foreach(var spaceToken in AllSpaces)
+		foreach(var spaceToken in Spaces_Unfiltered)
 			spaceToken.TimePasses();
 
 		return Task.CompletedTask;
@@ -89,14 +88,14 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public Spirit[] Spirits { get; }
 
 	public Tokens_ForIsland Tokens { get; }
-	public IEnumerable<SpaceState> AllSpaces => Island.Boards
-		.SelectMany(b=>b.Spaces_All)
+	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards.SelectMany(b=>b.Spaces_Unfiltered)
 		.Select(Tokens.GetTokensFor);
 
 	/// <summary> Active, Not in statis </summary>
-	public IEnumerable<SpaceState> AllActiveSpaces => Island.Boards
-		.SelectMany( b => b.Spaces )
-		.Select( Tokens.GetTokensFor );
+	public IEnumerable<SpaceState> Spaces => Island.Boards.SelectMany( b => b.Spaces ).Select( Tokens.GetTokensFor );
+
+	public IEnumerable<SpaceState> Spaces_AndNotInPlay => Island.Boards.SelectMany( b => b.Spaces_IncludeOcean ).Select( Tokens.GetTokensFor );
+
 
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }
@@ -128,14 +127,14 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			await ss.Blight.Add(1, AddReason.Ravage);
 	}
 
-	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_All
+	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Unfiltered
 		 .Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
 			 || Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 
 	#endregion
 
 	public void AddToAllActiveSpaces( ISpaceEntity token ) {
-		foreach(SpaceState space in AllActiveSpaces)
+		foreach(SpaceState space in Spaces)
 			space.Adjust( token, 1 );
 	}
 
@@ -187,13 +186,13 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			2 => (NoCityOrTown, "no towns or cities"),
 			_ => (NoInvader, "no invaders")
 		};
-		if( gs.AllSpaces.All( filter ) )
+		if( gs.Spaces_Unfiltered.All( filter ) )
 			GameOverException.Win($"Terror Level {gs.Fear.TerrorLevel} - {description}");
 	}
 
 	static void CheckIfSpiritIsDestroyed( GameState gs ) {
 		foreach(Spirit spirit in gs.Spirits)
-			if(!gs.AllSpaces.Any( spirit.Presence.IsOn ))
+			if(!gs.Spaces_Unfiltered.Any( spirit.Presence.IsOn ))
 				GameOverException.Lost( $"{spirit.Text} is Destroyed" );
 	}
 
@@ -224,7 +223,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		_ravageConfig.Clear();
 
 		// Clear Defend
-		foreach(var s in AllSpaces)
+		foreach(var s in Spaces_Unfiltered)
 			s.Defend.Clear();
 
 		// Do Custom end-of-round cleanup stuff before round switches over
@@ -315,7 +314,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 public class Healer {
 
 	public virtual void HealAll( GameState gs ) {
-		foreach(SpaceState ss in gs.AllSpaces )
+		foreach(SpaceState ss in gs.Spaces_Unfiltered )
 			HealSpace( ss );
 		skipHealSpaces.Clear();
 	}

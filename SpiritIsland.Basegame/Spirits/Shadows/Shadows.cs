@@ -54,7 +54,7 @@ public class Shadows : Spirit {
 		var normalSpaces = base.GetPowerTargetOptions( gameState, sourceCriteria, targetCriteria );
 		return Energy <= 0 
 			? normalSpaces
-			: normalSpaces.Union( gameState.AllActiveSpaces.Where( s => s.Dahan.Any ) );
+			: normalSpaces.Union( gameState.Spaces.Where( s => s.Dahan.Any ) );
 	}
 
 

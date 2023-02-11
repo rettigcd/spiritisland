@@ -6,7 +6,7 @@ public class TestInvaderDeckSequence_Base {
 
 	protected TestInvaderDeckSequence_Base() {
 		var powerCard = PowerCard.For<CallToTend>();
-		var (userLocal,ctxLocal) = TestSpirit.SetupGame(powerCard,gs=>{ 
+		var (userLocal,ctxLocal) = TestSpirit.StartGame(powerCard,gs=>{ 
 			gs.NewLogEntry += RecordLogItem; // (s) => log.Enqueue(s.Msg);
 		} );
 		user = userLocal;
@@ -25,7 +25,7 @@ public class TestInvaderDeckSequence_Base {
 
 	protected void AdvanceToInvaderPhase() {
 		ctx.ClearAllBlight();
-		user.DoesNothingForARound();
+		user.AdvancesToStartOfNextInvaderPhase();
 	}
 
 }

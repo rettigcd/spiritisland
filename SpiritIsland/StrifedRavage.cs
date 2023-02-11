@@ -33,7 +33,7 @@ public static class StrifedRavage {
 		ctx.GameState.TimePasses_ThisRound.Push( x => { --ctx.GameState.HealthPenaltyPerStrife; return Task.CompletedTask; } );
 
 		// Check if anything is destroyed
-		foreach(var space in ctx.GameState.AllActiveSpaces)
+		foreach(var space in ctx.GameState.Spaces)
 			foreach( var token in space.InvaderTokens() )
 				if(token.IsDestroyed)
 					await space.Destroy( token, space[token] );

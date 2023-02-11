@@ -42,7 +42,7 @@ class GameFixture {
 	public TargetSpaceCtx TargetSpace( string spaceLabel ) { 
 		var action = gameState.StartAction( ActionCategory.Default ); // !!! nothing is disposing this
 		return spirit.BindSelf()
-			.Target( gameState.AllSpaces.Single( x => x.Space.Label == spaceLabel ).Space );
+			.Target( gameState.Spaces_Unfiltered.Single( x => x.Space.Label == spaceLabel ).Space );
 	}
 
 	public void InitRavageCard( Space space ) => gameState.InvaderDeck.Ravage.Cards.Add( space.BuildInvaderCard() );

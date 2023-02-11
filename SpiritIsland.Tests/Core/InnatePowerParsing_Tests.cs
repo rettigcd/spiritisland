@@ -19,8 +19,9 @@ public class InnatePowerParsing_Tests {
 //	[InlineData( "Push 1 explorer from target land per 2 sun you have.", "Push 1 |{explorer}| from target land per 2 |{sun}| you have." )]
 //	[InlineData( "If target land has no explorer, add 1 wilds.", "If target land has no |{explorer}|, add 1 |{wilds}|." )]
 //	[InlineData( "This Power has +1range", "This Power has |{+1range}" )]
-//	public void Tokenize(string _, string _1 ) {
-////		TokenParser.Tokenize.	InnatePower.Tokenize( original ).Join("|").ShouldBe(parsedAndJoined);
+//	public void Tokenize( string original, string parsedAndJoined ) {
+//		// This code is in UI project
+////		TokenParser.Tokenize.InnatePower.Tokenize( original ).Join("|").ShouldBe(parsedAndJoined);
 //	}
 
 }

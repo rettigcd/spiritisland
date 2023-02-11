@@ -21,6 +21,7 @@ public class Badlands_Tests {
 		tokens.Badlands.Init(1);
 		tokens.InitDefault( Human.Explorer, 1 );
 		tokens.InitDefault( Human.Dahan, 1 );
+		tokens.Beasts.Init( 0 );
 		tokens.Defend.Add(1);
 		tokens.Summary.ShouldBe("1D@2,1E@1,1G,1M");
 
@@ -45,8 +46,7 @@ public class Badlands_Tests {
 	[Trait("Invaders","Ravage")]
 	[Fact]
 	public void InvaderDamageToDahan_BadlandDamageToDahan() {
-		var fxt = new GameFixture()
-			.Start();
+		var fxt = new GameFixture().Start();
 
 		// Given: a space to ravage on.
 		var space = fxt.board[5];
@@ -60,6 +60,7 @@ public class Badlands_Tests {
 		tokens.Badlands.Init(1);
 		tokens.InitDefault( Human.Explorer, 1);
 		tokens.InitDefault(Human.Dahan, 1);
+		tokens.Beasts.Init(0);
 		tokens.Summary.ShouldBe("1D@2,1E@1,1M");
 
 		// When: Grow, Skip Buy, then Ravage

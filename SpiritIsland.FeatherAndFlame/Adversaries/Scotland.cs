@@ -58,7 +58,7 @@ public class Scotland : IAdversary {
 		if(5 <= Level) {
 			// After a Ravage Action adds Blight to a Coastal Land, add 1 Blight to that board's Ocean (without cascading).
 			var token = new ScotlandCoastalBlightCheckToken();
-			foreach(var ss in gameState.AllActiveSpaces.Where( ss => ss.Space.IsCoastal ))
+			foreach(var ss in gameState.Spaces.Where( ss => ss.Space.IsCoastal ))
 				ss.Adjust(token,1);
 
 			// Treat the Ocean as a Coastal Wetland for this rule and for Blight removal/movement.
@@ -84,7 +84,6 @@ public class Scotland : IAdversary {
 			.First();
 		// add 1 Town to the N lands with the fewest Town( N = # of players.)
 		var spacesToAddTown = board.Spaces.Upgrade()
-			.Where( gameState.Island.Terrain.IsInPlay )
 			.OrderBy( ss => ss.Sum( Human.Town ) )
 			.Take( gameState.Spirits.Length )
 			.ToArray();
@@ -102,7 +101,7 @@ public class Scotland : IAdversary {
 	}
 
 	void TradeHub( GameState gameState ) {
-		int coastalCityLandCount = gameState.AllSpaces.Count( s => s.Has( Human.City ) );
+		int coastalCityLandCount = gameState.Spaces_Unfiltered.Count( s => s.Has( Human.City ) );
 		if( gameState.Island.Boards.Length < coastalCityLandCount )
 			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");
 	}
