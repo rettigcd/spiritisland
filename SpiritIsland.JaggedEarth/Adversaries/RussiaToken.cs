@@ -81,12 +81,14 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.IsInPlay().ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
-			scope[key] = true; // don't save any more
+			if(args.Mode == RemoveMode.Live) {
+				scope[key] = true; // don't save any more
 
-			GameState gs = GameState.Current;
-			Spirit spirit = scope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
-			Space destination = await spirit.Gateway.Decision( Select.ASpace.PushToken( (IToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
-			await args.Space.MoveTo( (IToken)args.Token, destination );
+				GameState gs = GameState.Current;
+				Spirit spirit = scope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
+				Space destination = await spirit.Gateway.Decision( Select.ASpace.PushToken( (IToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
+				await args.Space.MoveTo( (IToken)args.Token, destination );
+			}
 		}
 	}
 

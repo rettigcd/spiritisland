@@ -24,14 +24,14 @@ class HabsburgDurableToken
 	}
 	protected override HumanToken NewHealthToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0, int nightmareDamage = 0 )
 		=> new HabsburgDurableToken( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage );
-	public HumanToken Restore() => new HumanToken( Class, _healthPenaltyHolder, FullHealth - 2, Damage, StrifeCount );
+	public HumanToken GetRestoreToken() => new HumanToken( Class, _healthPenaltyHolder, FullHealth - 2, Damage, StrifeCount );
 
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
 		// If adding first blight
 		if(args.Token == Token.Blight && args.AddedTo.Blight.Count == 1) {
 			// switch back to normal
-			HumanToken restored = Restore();
+			HumanToken restored = GetRestoreToken();
 			if(restored.IsDestroyed)
 				await DestroyAll( args.AddedTo );
 			else
@@ -42,11 +42,12 @@ class HabsburgDurableToken
 		// If removing this (Durable) token from space
 		if(args.Token == this) {
 			// switch it back to normal.
-			var restored = Restore();
+			HumanToken restored = GetRestoreToken();
 			if(restored.IsDestroyed) {
-				await base.Destroy( args.Space, args.Count ); // must call Base to ensure it gets destroyed
+				if(args.Mode == RemoveMode.Live)
+					await base.Destroy( args.Space, args.Count ); // must call Base to ensure it gets destroyed
 				args.Count = 0;
-			} else {
+			} else if(args.Mode == RemoveMode.Live) {
 				args.Space.ReplaceNWith( args.Count, this, restored );
 				args.Token = restored;
 			}

@@ -571,7 +571,7 @@ public abstract partial class Spirit : IOption {
 	// Non-targetting, For Power, Range-From Presence finder
 	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, bool forPower ) {
 		return (forPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton)
-			.GetTargetOptionsFromKnownSource( Presence.ActiveSpaceStates, targetCriteria );
+			.GetTargetOptionsFromKnownSource( Presence.SpaceStates, targetCriteria );
 	}
 
 	#endregion

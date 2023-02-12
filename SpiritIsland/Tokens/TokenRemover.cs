@@ -31,7 +31,7 @@ public class TokenRemover {
 				.ToArray();
 			return counts.OfAnyClass( groupsWithRemainingCounts )
 				.Cast<IToken>()
-				.ToArray(); // !!! Make Dahan Freezable
+				.ToArray();
 		}
 
 		IToken[] tokens;

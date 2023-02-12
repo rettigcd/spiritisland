@@ -17,14 +17,14 @@ public static class DeployedPresence {
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	static public ASpace All(string prompt, SpiritPresence presence, Present present )
-		=> new ASpace( prompt, presence.ActiveSpaceStates, present, presence.Token );
+		=> new ASpace( prompt, presence.SpaceStates, present, presence.Token );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	static public ASpace Movable( string prompt, Spirit spirit, Present present )
 		=> new ASpace( prompt, spirit.Presence.MovableSpaceStates, present, spirit.Token );
 
 	static public ASpace Some(string prompt, SpiritPresence presence, Func<SpaceState,bool> filter, Present present )
-		=> new ASpace( prompt, presence.ActiveSpaceStates.Where(filter), present, presence.Token );
+		=> new ASpace( prompt, presence.SpaceStates.Where(filter), present, presence.Token );
 
 	/// <summary> Targets Sacred Sites </summary>
 	static public ASpace SacredSites(string prompt, SpiritPresence presence, Present present )

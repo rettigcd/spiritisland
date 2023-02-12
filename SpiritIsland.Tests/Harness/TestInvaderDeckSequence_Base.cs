@@ -9,7 +9,7 @@ public class TestInvaderDeckSequence_Base {
 		var (userLocal,ctxLocal) = TestSpirit.StartGame(powerCard,gs=>{ 
 			gs.NewLogEntry += RecordLogItem; // (s) => log.Enqueue(s.Msg);
 		} );
-		user = userLocal;
+		_user = userLocal;
 		ctx = ctxLocal;
 		log.Clear(); // skip over initial Explorer setup
 	}
@@ -19,13 +19,13 @@ public class TestInvaderDeckSequence_Base {
 			log.Enqueue(s.Msg());
 	}
 
-	protected VirtualTestUser user;
+	protected VirtualTestUser _user;
 	protected SelfCtx ctx;
 	protected Queue<string> log = new();
 
 	protected void AdvanceToInvaderPhase() {
 		ctx.ClearAllBlight();
-		user.AdvancesToStartOfNextInvaderPhase();
+		_user.AdvancesToStartOfNextInvaderPhase();
 	}
 
 }

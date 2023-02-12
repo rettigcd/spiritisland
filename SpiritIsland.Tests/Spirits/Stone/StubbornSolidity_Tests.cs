@@ -118,6 +118,7 @@ public class StubbornSolidity_Tests {
 
 		//   And: all done, nothing to push/pull
 		task.IsCompleted.ShouldBeTrue();
+
 	}
 
 	[Trait( "Feature", "Frozen" )]
@@ -152,7 +153,10 @@ public class StubbornSolidity_Tests {
 		//   But: Dahan became frozen and were not pushed
 		targetSpace.Summary.ShouldBe( "2D@2" ); // no defends
 
+		targetSpace.Sum( Human.Dahan ).ShouldBe(2);
 		task.IsCompleted.ShouldBeTrue();
+
+
 	}
 
 

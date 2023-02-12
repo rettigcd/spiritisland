@@ -1,9 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface IHandleTokenRemoved {
-	Task HandleTokenRemoved( ITokenRemovedArgs args );
-}
-
 public class TokenRemovedHandler : SelfCleaningToken, IHandleTokenRemoved {
 	readonly Func<ITokenRemovedArgs, Task> _func;
 	readonly Action<ITokenRemovedArgs> _action;

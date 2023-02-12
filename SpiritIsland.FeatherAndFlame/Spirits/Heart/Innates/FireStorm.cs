@@ -29,7 +29,7 @@ public class FireStorm {
 		await ctx.DamageInvaders( 1 ); // because they targetted a land, only select invaders from that land.
 		--fireDamage;
 
-		var spacesWithPresenceAndBlight = ctx.Self.Presence.ActiveSpaceStates
+		var spacesWithPresenceAndBlight = ctx.Self.Presence.SpaceStates
 			.Where( x=>x.Blight.Any )
 			.ToArray();
 
@@ -53,7 +53,7 @@ public class FireStorm {
 	[InnateOption( "7 fire", "In a land with blight where you have presence, Push all dahan.  Destroy all Invaders and beast. 1 blight.", 1 )]
 	static public async Task Option4( TargetSpaceCtx ctx ) {
 		// In a land with blight and presence  (Select a space, not necessarily the one you targetted with power (I guess...)
-		var spacesWithPresenceAndBlight = ctx.Self.Presence.ActiveSpaceStates.Where( s=>s.Blight.Any );
+		var spacesWithPresenceAndBlight = ctx.Self.Presence.SpaceStates.Where( s=>s.Blight.Any );
 		var space = await ctx.Decision( new Select.ASpace($"Push all dahan, destroy invaders and beast, 1 blight",spacesWithPresenceAndBlight,Present.Always));
 		var spaceCtx = ctx.Target( space );
 

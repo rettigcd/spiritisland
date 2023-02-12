@@ -17,15 +17,15 @@ internal class GiftOfAbundance {
 
 		// Either you or target Spirit may add 1 Destroyed presence to a wetland where you have presence.
 		// Select spirit
-		static bool isWetland(SpaceState space) => space.Space.IsOneOf(Terrain.Wetland); // !!! ??? Does this detect non-wetlands where Downpour has 2 presence?
+		static bool isWetland(SpaceState space) => TerrainMapper.Current.MatchesTerrain( space, Terrain.Wetland );
 		var spiritsWithPresenceInWetland = new[] { ctx, ctx.OtherCtx }
 			.Distinct() // if solo
-			.Where( ctx => 0<ctx.Self.Presence.Destroyed && ctx.Self.Presence.ActiveSpaceStates.Any(isWetland));
+			.Where( ctx => 0<ctx.Self.Presence.Destroyed && ctx.Self.Presence.SpaceStates.Any(isWetland));
 		Spirit presenceTarget = await ctx.OtherCtx.Decision( new Select.ASpirit( Name, spiritsWithPresenceInWetland.Select(x=>x.Self), Present.AutoSelectSingle ) );
 		if(presenceTarget == null ) return;
 		SelfCtx restoringSpiritCtx = presenceTarget == ctx.Self ? ctx : ctx.OtherCtx;
 
-		var spaceOptions = restoringSpiritCtx.Self.Presence.ActiveSpaceStates.Where(isWetland);
+		var spaceOptions = restoringSpiritCtx.Self.Presence.SpaceStates.Where(isWetland);
 		var space = await restoringSpiritCtx.Decision( new Select.ASpace("Restore 1 destroyed presence", spaceOptions, Present.Always ) );
 		if( space != null )
 			await restoringSpiritCtx.Target(space).Presence.PlaceDestroyedHere();

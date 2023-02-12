@@ -18,6 +18,7 @@ public static class HealthAdjustmentHelper_Extension {
 
 		// Remove (covers simple-remove AND move-out)
 		var removingToken = new TokenRemovingHandler( async args => {
+			if(args.Mode == RemoveMode.Test) return;
 			if(args.Token is HumanToken healthToken
 				&& tokenClasses.Contains( args.Token.Class )
 			)

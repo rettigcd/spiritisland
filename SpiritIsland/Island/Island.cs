@@ -31,11 +31,6 @@ public class Island {
 	}
 	#endregion
 
-	/// <summary> Hook for Pour Time Sideways, defaults to 1. </summary>
-	public readonly TerrainMapper Terrain  = new TerrainMapper(); // Default
-	public TerrainMapper Terrain_ForPower  = new TerrainMapper();
-	public TerrainMapper Terrain_ForBlight = new TerrainMapper(); // This is ONLY called for blight inside gamestate.
-
 	public Board[] Boards { get; private set; }
 
 	public void RemoveBoard( Board b ) {

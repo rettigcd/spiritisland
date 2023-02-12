@@ -131,7 +131,7 @@ class MistsShiftAndFlow {
 			.ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = _spirit.Presence.ActiveSpaceStates
+		var flowedSources = _spirit.Presence.SpaceStates
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Except( sources ); // exclude previously found sources
@@ -159,19 +159,18 @@ class MistsShiftAndFlow {
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {
 	
-		// readonly Spirit _spirit;
+		readonly Spirit _spirit;
 
 		public SpaceCounts(GameState gameState, Spirit spirit) : base() {
-			// _spirit = spirit;
-			ActiveSpaceStates = gameState.Spaces.Where( spirit.Presence.IsOn );
-			foreach(var ss in ActiveSpaceStates)
+			_spirit = spirit;
+			foreach(var ss in SpaceStates)
 				Add(ss.Space,spirit.Presence.CountOn(ss));
 		}
 
 		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
-		public IEnumerable<SpaceState> ActiveSpaceStates { get; }
+		public IEnumerable<SpaceState> SpaceStates => _spirit.Presence.SpaceStates;
 
-		public IEnumerable<SpaceState> SacredSiteStates => ActiveSpaceStates.Where( k => 1 < this[k.Space] ); // !!! This won't work for River that has SS on wetlands.
+		public IEnumerable<SpaceState> SacredSiteStates => _spirit.Presence.SacredSiteStates;
 
 	}
 

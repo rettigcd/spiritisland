@@ -20,14 +20,16 @@ public interface ICalcRange {
 /// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
 /// </summary>
 public class DefaultPowerSourceCalculator : ICalcPowerTargetingSource {
+	// ! Should work for any action because we are now referencing TerrainMapper.Current instead of directly accessing the ForPower one.
+
 	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria, GameState gameState ) {
 		var sources = sourceCriteria.From switch {
-			From.Presence => presence.ActiveSpaceStates,
+			From.Presence => presence.SpaceStates,
 			From.SacredSite => presence.SacredSiteStates,
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
 		return sourceCriteria.Terrain.HasValue
-			? sources.Where( space => gameState.Island.Terrain_ForPower.MatchesTerrain( space, sourceCriteria.Terrain.Value ) )
+			? sources.Where( space => TerrainMapper.Current.MatchesTerrain( space, sourceCriteria.Terrain.Value ) )
 			: sources;
 	}
 

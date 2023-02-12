@@ -25,8 +25,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public Space Space { get; }
 
-	public BoardState Board => new BoardState( Space.Board );
-
 	public int this[ISpaceEntity specific] {
 		get {
 			ValidateNotDead( specific );
@@ -44,6 +42,17 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public ISpaceEntity[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
 	public ISpaceEntity[] OfClass( IEntityClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
 	public ISpaceEntity[] OfAnyClass( params IEntityClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
+	public IToken[] RemovableOfAnyClass( RemoveReason reason, params IEntityClass[] classes ) {
+		var stoppers = Keys.OfType<IHandleRemovingToken>();
+		return OfAnyClass( classes ).Cast<IToken>()
+			.Where( token => {
+				var removingArgs = new RemovingTokenArgs( this, reason, RemoveMode.Test ) { Count = 1, Token = token };
+				foreach(var stopper in stoppers)
+					stopper.ModifyRemoving(removingArgs);
+				return removingArgs.Count == 1;
+			} )
+			.ToArray();
+	}
 
 	public HumanToken[] OfHumanClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
 	public HumanToken[] OfAnyHumanClass( params HumanTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HumanToken>().ToArray();
@@ -99,7 +108,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
-	readonly CountDictionary<ISpaceEntity> _counts; // !!! public for Tokens_ForIsland Memento, create own momento.
+	readonly CountDictionary<ISpaceEntity> _counts;
 	protected readonly IIslandTokenApi _api;
 
 	#endregion
@@ -358,7 +367,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
-		var removingArgs = new RemovingTokenArgs( this, reason ) { Count = count, Token = token };
+		var removingArgs = new RemovingTokenArgs( this, reason, RemoveMode.Live ) { Count = count, Token = token };
 		foreach(var mod in Keys.OfType<IHandleRemovingToken>().ToArray())
 			await mod.ModifyRemoving( removingArgs );
 

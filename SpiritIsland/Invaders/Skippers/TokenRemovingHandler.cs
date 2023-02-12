@@ -1,9 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface IHandleRemovingToken {
-	Task ModifyRemoving( RemovingTokenArgs args );
-}
-
 public class TokenRemovingHandler : SelfCleaningToken, IHandleRemovingToken {
 
 	readonly Action<RemovingTokenArgs> _action;

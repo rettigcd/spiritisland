@@ -128,8 +128,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	}
 
 	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Unfiltered
-		 .Where( x => !Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
-			 || Island.Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
+		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
+			 || Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 
 	#endregion
 
@@ -165,6 +165,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public void AddStandardWinLossCheck() {
 		WinLossChecks.Add( CheckTerrorLevelVictory );
 		WinLossChecks.Add( CheckIfSpiritIsDestroyed );
+		WinLossChecks.Add( CheckIfTimeRunsOut );
 	}
 
 	public void AddWinLossCheck( Action<GameState> action ) => WinLossChecks.Add( action );
@@ -196,6 +197,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 				GameOverException.Lost( $"{spirit.Text} is Destroyed" );
 	}
 
+	static void CheckIfTimeRunsOut( GameState gs ) {
+		var deck = gs.InvaderDeck;
+		if(deck.Explore.Cards.Count == 0 && deck.UnrevealedCards.Count == 0)
+			GameOverException.Lost( "Time runs out" );
+	}
 
 	#endregion
 
@@ -249,7 +255,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	#region Game-Wide overrideable Behavior
+	#region Configuration - Game-Wide overrideable / Behavior
 
 	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
 
@@ -262,6 +268,20 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public Func<Spirit, GameState, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct destruction from Blight Card, not cascading
 
 	public Healer Healer = new Healer(); // replacable Behavior
+
+
+	// !! If we decide to split up Config stuff, move this to ActionScope
+	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
+	readonly TerrainMapper DefaultTerrain = new TerrainMapper(); // Default
+	Dictionary<ActionCategory,TerrainMapper> _terrains = new Dictionary<ActionCategory, TerrainMapper>();
+	public TerrainMapper Terrain_ForBlight = new TerrainMapper(); // This is ONLY called for blight inside gamestate.
+
+	public TerrainMapper GetTerrain( ActionCategory cat ) => _terrains.ContainsKey(cat) ? _terrains[cat] : DefaultTerrain;
+
+	public void ReplaceTerrain(Func<TerrainMapper,TerrainMapper> replacer, params ActionCategory[] cats ) {
+		foreach(var cat in cats)
+			_terrains[cat] = replacer( GetTerrain(cat) );
+	}
 
 	#endregion overrideable Game-Wide Behavior
 

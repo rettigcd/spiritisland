@@ -98,9 +98,13 @@ public class HeartOfTheWildfire : Spirit {
 		public WildfireToken( Spirit spirit ):base(spirit) {}
 
 		public Task ModifyRemoving( RemovingTokenArgs args ) {
+			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presence. ( This includes cascades.)
+			if( DestroysPresence(args) && BlightAddedDueToSpiritEffects() ){
+				if(args.Mode == RemoveMode.Live)
+					GameState.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));
+				args.Count = 0;
 
-			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presenceicon.png. ( This includes cascades.)
-			if( DestroysPresence(args) && BlightAddedDueToSpiritEffects()	) args.Count = 0;
+			}
 			return Task.CompletedTask;
 		}
 

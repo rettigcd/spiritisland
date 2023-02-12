@@ -95,6 +95,9 @@ public class AvoidTheDahan_Tests {
 	[Fact]
 	public void Level2_3DahanAtFear_1DahanAtBuild_DoBuild() {
 
+		var log = new List<string>();
+		_ctx.GameState.NewLogEntry += x => log.Add(x.Msg());
+
 		// Fill all Invaders spaces with the A7 card
 		ClearBlightAndDoNothingForARound();
 		ClearBlightAndDoNothingForARound();
@@ -102,6 +105,7 @@ public class AvoidTheDahan_Tests {
 		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo(2);
 
+		_ = _user.NextDecision; // Wait for engine to catch up
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init( "3D@2,2T@2" );

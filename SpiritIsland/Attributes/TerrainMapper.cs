@@ -10,14 +10,18 @@ namespace SpiritIsland;
 /// </summary>
 public class TerrainMapper {
 
+	#region static
+
+	public static TerrainMapper Current => ActionScope._TryGetCurrent?.TerrainMapper ?? _defaultMapper;
+	static readonly TerrainMapper _defaultMapper = new TerrainMapper();
+
+	#endregion
+
+	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
+	public virtual bool IsInPlay( Space space ) => !space.Is( Terrain.Ocean );
+
 	// Terrain
 	public virtual bool MatchesTerrain( SpaceState ss, params Terrain[] options ) => ss.Space.IsOneOf( options );
-
-	// InPlay
-	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
-	public bool IsInPlay( SpaceState spaceState ) => IsInPlay( spaceState.Space );
-
-	public virtual bool IsInPlay( Space space ) => !space.Is( Terrain.Ocean );
 
 	// Ocean / Coastal / Inland
 	public virtual bool IsCoastal( SpaceState spaceState ) => spaceState.Space.IsCoastal;

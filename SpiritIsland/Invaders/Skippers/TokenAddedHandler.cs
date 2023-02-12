@@ -1,9 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface IHandleTokenAdded {
-	Task HandleTokenAdded( ITokenAddedArgs args );
-}
-
 public class TokenAddedHandler : SelfCleaningToken, IHandleTokenAdded {
 	readonly Func<ITokenAddedArgs, Task> _func;
 	readonly Action<ITokenAddedArgs> _action;

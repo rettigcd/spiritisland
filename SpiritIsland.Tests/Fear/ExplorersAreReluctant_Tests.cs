@@ -12,17 +12,20 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
 		AdvanceToInvaderPhase();
+		_ = _user.NextDecision; // Wait for engine to finish
 
 		log.Assert_Built( "A3", "A8" );
 		log.Assert_Explored( "A2", "A5" );
 
 		AdvanceToInvaderPhase();
+		_ = _user.NextDecision; // Wait for engine to finish
 
 		log.Assert_Ravaged( "A3", "A8" );
 		log.Assert_Built( "A2", "A5" );
 		log.Assert_Explored( "A4", "A7" );
 
 		AdvanceToInvaderPhase();
+		_ = _user.NextDecision; // Wait for engine to finish
 
 		log.Assert_Ravaged( "A2", "A5" );
 		log.Assert_Built( "A4", "A7" );
@@ -51,7 +54,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		ctx.ActivateFearCard(new ExplorersAreReluctant());
 
 		AdvanceToInvaderPhase();
-		user.AcknowledgesFearCard("Explorers are Reluctant : 1 : During the next normal explore, skip the lowest-numbered land matching the invader card on each board.");
+		_user.AcknowledgesFearCard("Explorers are Reluctant : 1 : During the next normal explore, skip the lowest-numbered land matching the invader card on each board.");
 		System.Threading.Thread.Sleep(5);
 
 		// Ravage:Jungle, Build:Wetland, Explore: Sand
@@ -94,7 +97,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		ctx.ElevateTerrorLevelTo( 2 );
 
 		AdvanceToInvaderPhase();
-		user.AcknowledgesFearCard( "Explorers are Reluctant : 2 : Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
+		_user.AcknowledgesFearCard( "Explorers are Reluctant : 2 : Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
 		System.Threading.Thread.Sleep(5);
 
 		// Card Advance #4 - End of 2st round
@@ -121,6 +124,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
 
 		AdvanceToInvaderPhase();
+		_ = _user.NextDecision; // Wait for invader phase to complete.
 
 		log.Assert_Built( "A3", "A8" );
 		log.Assert_Explored( "A2", "A5" );
@@ -130,14 +134,16 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		ctx.ElevateTerrorLevelTo( 3 );
 
 		AdvanceToInvaderPhase();
-		user.AcknowledgesFearCard("Explorers are Reluctant : 3 : Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.");
-		System.Threading.Thread.Sleep(5);
+		_user.AcknowledgesFearCard("Explorers are Reluctant : 3 : Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.");
+		_ = _user.NextDecision; // Wait for invader phase to complete.
 
 		log.Assert_Ravaged( "A3", "A8" );
 		log.Assert_Built( "A2", "A5" );
 		log.Assert_Explored(); // Skipped A4 & A7
 
 		AdvanceToInvaderPhase();
+
+		_ = _user.NextDecision; // Wait for invader phase to complete.
 
 		log.Assert_Ravaged( "A2", "A5" );
 

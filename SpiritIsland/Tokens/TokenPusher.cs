@@ -3,17 +3,18 @@
 public class TokenPusher {
 
 	public TokenPusher( TargetSpaceCtx ctx ) {
-		this.ctx = ctx;
-		this.source = ctx.Space;
+		_ctx = ctx;
+		_source = ctx.Space;
 	}
 
 	public TokenPusher AddGroup(int count,params IEntityClass[] groups ) {
 
-		count = System.Math.Min( count, ctx.GameState.Tokens[source].SumAny(groups) );
+		count = System.Math.Min( count, _ctx.GameState.Tokens[_source].SumAny(groups) );
 
 		int index = sharedGroupCounts.Count;
 		sharedGroupCounts.Add( count );
-		foreach(var group in groups) 
+
+		foreach(IEntityClass group in groups) 
 			indexLookupByGroup.Add( group, index );
 
 		return this; // chain together
@@ -25,13 +26,15 @@ public class TokenPusher {
 	/// <returns>Spaces pushed too.</returns>
 	async Task<Space[]> Exec( Present present ) {
 
-		var counts = ctx.Target(source).Tokens;
+		var counts = _ctx.Target(_source).Tokens;
 		IToken[] GetTokens() {
 			var groupsWithRemainingCounts = indexLookupByGroup
-				.Where( pair => sharedGroupCounts[pair.Value] > 0 )
+				.Where( pair => 0 < sharedGroupCounts[pair.Value] )
 				.Select( p => p.Key )
 				.ToArray();
-			return counts.OfAnyClass( groupsWithRemainingCounts ).Cast<IToken>().ToArray(); // !!! Make Dahan Freezable
+			return counts.RemovableOfAnyClass( RemoveReason.MovedFrom, groupsWithRemainingCounts )
+				.Cast<IToken>()
+				.ToArray();
 		}
 
 		var pushedToSpaces = new List<Space>();
@@ -39,7 +42,7 @@ public class TokenPusher {
 		IToken[] tokens;
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
-			var token = (await ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( source, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
+			var token = (await _ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( _source, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
 			if(token == null) break;
 
 			// Push to Destination
@@ -57,13 +60,13 @@ public class TokenPusher {
 		Space destination = await SelectDestination( token );
 		if(destination == null) return null;
 
-		await MoveSingleToken( token, source, destination );
+		await MoveSingleToken( token, _source, destination );
 
 		return destination;
 	}
 
 	protected virtual async Task MoveSingleToken( IToken token, Space source, Space destination ) {
-		await ctx.Move( token, source, destination );    // !!! if moving into frozen land, freeze Dahan
+		await _ctx.Move( token, source, destination );
 		if( _customAction != null )
 			await _customAction( token, source, destination );
 	}
@@ -76,11 +79,11 @@ public class TokenPusher {
 	Func<ISpaceEntity,Space,Space,Task> _customAction;
 
 	protected virtual async Task<Space> SelectDestination( IToken token ) {
-		IEnumerable<SpaceState> destinationOptions = ctx.GameState.Tokens[source].Adjacent;
+		IEnumerable<SpaceState> destinationOptions = _ctx.GameState.Tokens[_source].Adjacent;
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await ctx.Decision( Select.ASpace.PushToken( token, source, destinationOptions, Present.Always ) );
+		return await _ctx.Decision( Select.ASpace.PushToken( token, _source, destinationOptions, Present.Always ) );
 	}
 
 	public TokenPusher FilterDestinations(Func<SpaceState,bool> destinationFilter ) {
@@ -90,8 +93,8 @@ public class TokenPusher {
 
 	#region private
 
-	protected readonly SelfCtx ctx;
-	protected readonly Space source;
+	protected readonly SelfCtx _ctx;
+	protected readonly Space _source;
 	protected readonly List<Func<SpaceState,bool>> destinationFilters = new List<Func<SpaceState, bool>>();
 
 	// if we push 3 explorer/town,

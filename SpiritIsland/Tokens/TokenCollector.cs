@@ -51,7 +51,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 	/// <remarks>virtual because BeastGatherer can gather from extended range</remarks>
 	protected virtual SpaceToken[] GetSpaceTokenOptions() => PossibleGatherSources
 		.SelectMany( sourceSpaceState => sourceSpaceState
-			.OfAnyClass( RemainingTypes )
+			.RemovableOfAnyClass( RemoveReason.MovedFrom, RemainingTypes )
 			.Select( tokens => new SpaceToken( sourceSpaceState.Space, (IToken)tokens ) )
 		)
 		.ToArray();

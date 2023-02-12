@@ -2,7 +2,9 @@
 
 public class InfiniteVitality {
 
-	[MajorCard( "Infinite Vitality", 3, Element.Earth, Element.Plant, Element.Animal )]
+	const string Name = "Infinite Vitality";
+
+	[MajorCard( Name, 3, Element.Earth, Element.Plant, Element.Animal )]
 	[Fast]
 	[FromSacredSite( 1 )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
@@ -15,7 +17,10 @@ public class InfiniteVitality {
 
 		if( await ctx.YouHave( "4 earth" )) {
 			// Dahan ignore damage and destruction effects.
-			ctx.ModifyRavage( behavior => behavior.DamageDefenders = ( _, _1, _2 ) => Task.CompletedTask ); // !!! this only stops dahan destruction during RAVAGE.  Needs to protect from power cards too.
+			ctx.ModifyRavage( behavior => behavior.DamageDefenders = ( _, _1, _2 ) => Task.CompletedTask ); // this stops dahan destruction during RAVAGE.
+
+			ctx.Tokens.Init( new StopDamageAndDestruction(Name), 1 ); // stop damage other times
+
 			// Remove 1 blight from target or adjacent
 			await RemoveBlightFromLandOrAdjacent( ctx );
 		}
@@ -30,4 +35,27 @@ public class InfiniteVitality {
 			await ctx.Target( unblightLand ).RemoveBlight();
 	}
 
+}
+
+class StopDamageAndDestruction : ITokenWithEndOfRoundCleanup, IStopDahanDamage, IHandleRemovingToken {
+
+	string _sourceName;
+	public StopDamageAndDestruction(string sourceName ) {
+		_sourceName = sourceName;
+	}
+
+	public IEntityClass Class => ActionModTokenClass.Singleton;
+
+	public Task ModifyRemoving( RemovingTokenArgs args ) {
+		if(args.Token.Class == Human.Dahan && args.Reason == RemoveReason.Destroyed) {
+			if(args.Mode == RemoveMode.Live)
+				GameState.Current.Log( new Log.Debug( $"{_sourceName} stopping {args.Count} Dahan from being destroyed." ) );
+			args.Count = 0;
+		}
+		return Task.CompletedTask;
+	}
+
+	public void EndOfRoundCleanup( SpaceState spaceState ) {
+		spaceState.Init(this,0);
+	}
 }

@@ -9,10 +9,8 @@ public sealed class ActionScope : IAsyncDisposable {
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
 	public static ActionScope Current => _current.Value ?? throw new InvalidOperationException("Current action is null");
+	public static ActionScope _TryGetCurrent => _current.Value; // gets current action if there is one, null otherwise
 	readonly static AsyncLocal<ActionScope> _current = new AsyncLocal<ActionScope>(); // value gets shallow-copied into child calls and post-awaited states.
-
-	public static TerrainMapper CurrentTerrain => _current.Value?.TerrainMapper ?? _defaultMapper;
-	static readonly TerrainMapper _defaultMapper = new TerrainMapper();
 
 	#region constructor
 	public ActionScope( ActionCategory actionCategory, TerrainMapper terrainMapper = null ) {
@@ -27,9 +25,7 @@ public sealed class ActionScope : IAsyncDisposable {
 	#endregion
 
 	public readonly ActionCategory Category;
-	public TerrainMapper TerrainMapper => _terrainMapper ??= Category == ActionCategory.Spirit_Power
-			? GameState.Current.Island.Terrain_ForPower
-			: GameState.Current.Island.Terrain;
+	public TerrainMapper TerrainMapper => _terrainMapper ??= GameState.Current.GetTerrain( Category );
 	TerrainMapper _terrainMapper;
 
 	readonly ActionScope _old;
@@ -62,7 +58,9 @@ public sealed class ActionScope : IAsyncDisposable {
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
 
-		if(_current.Value != this) throw new Exception("DUDE! Actions out of order.");
+		var current = _current.Value;
+		if( current != this) 
+			throw new Exception($"Disposing {Category}/{Id} but .Current is {current.Category}/{current.Id}");
 		_current.Value = _old; // restore it
 	}
 

@@ -63,7 +63,7 @@ public class BrandenburgPrussia : IAdversary {
 			.Where( b => b.Spaces.Any( s => counts[s].SumAny( Human.Town_City ) > 0 ) )
 			.ToHashSet();
 
-		var terrainMapper = gs.Island.Terrain;
+		var terrainMapper = TerrainMapper.Current;
 
 		var buildSpaces = counts.Values
 			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Human.Town_City ) == 0 )

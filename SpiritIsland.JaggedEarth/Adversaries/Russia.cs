@@ -88,7 +88,7 @@ public class Russia : IAdversary {
 		// Add 2 explorers/board to lands with beast.
 		var beastsSpacesForBoard = gameState.Spaces
 			.Where( s => s.Beasts.Any )
-			.GroupBy( s => s.Board.Board )
+			.GroupBy( s => s.Space.Board )
 			.ToDictionary( s => s.Key, s => s.ToArray() );
 
 		// If no beasts anywhere, can't add explorers.

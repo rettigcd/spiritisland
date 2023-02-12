@@ -4,7 +4,7 @@ public class PushPresenceFromOcean : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 
-		var pushSpaces = ctx.Self.Presence.ActiveSpaceStates
+		var pushSpaces = ctx.Self.Presence.SpaceStates
 			.Where( p => p.Space.IsOcean )
 			.Distinct()
 			.ToList();

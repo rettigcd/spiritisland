@@ -57,7 +57,6 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 		pourDownPower = new PourDownPower(this);
 
-
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -65,11 +64,10 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		gameState.Tokens[board.Spaces.First(x => x.IsWetland)].Adjust(Presence.Token, 1);
 		gameState.TimePasses_WholeGame += _ => { pourDownPower.Reset(); return Task.CompletedTask; };
 
-		// !!! Fixes Terrain: ForPower, but does set any of the other Terrains
-		// If we use this for the other terrains also, then this would solve our Other Spirits use as wetlands problem.
-		var drenchTheLandscape = new DrenchTheLandscape( this, gameState.Island.Terrain_ForPower );
-		gameState.Island.Terrain_ForPower = drenchTheLandscape;
-		TargetingSourceCalc = drenchTheLandscape;
+		gameState.ReplaceTerrain( old => {
+			var drenchTheLandscape = new DrenchTheLandscape( this, old );
+			return drenchTheLandscape;
+		}, ActionCategory.Spirit_Power, ActionCategory.Spirit_Growth, ActionCategory.Spirit_SpecialRule );
 	}
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {

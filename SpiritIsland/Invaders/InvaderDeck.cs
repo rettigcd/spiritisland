@@ -48,7 +48,6 @@ public class InvaderDeck {
 			destination = slot.Cards;
 		}
 
-		CheckIfTimeRunsOut(); // !!! should this be part of the CheckWinLoss = true; stuff?
 		InitExploreSlot();
 	}
 
@@ -61,15 +60,6 @@ public class InvaderDeck {
 			Explore.Cards.Add( unrevealedCard );
 		}
 	}
-
-	#region private methods
-
-	void CheckIfTimeRunsOut() {
-		if(Explore.Cards.Count == 0 && UnrevealedCards.Count == 0)
-			GameOverException.Lost( "Time runs out" );
-	}
-
-	#endregion
 
 	#region private fields
 

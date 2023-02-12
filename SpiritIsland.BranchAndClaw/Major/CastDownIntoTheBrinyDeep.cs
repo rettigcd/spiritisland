@@ -52,8 +52,6 @@ public class CastDownIntoTheBrinyDeep {
 
 			if(!ctx.Self.Text.StartsWith("Bringer")) // !!!
 				// Destroy all other tokens
-				// !!! this destroys presence also, Should figure out why one of the parameters is: DestoryPresenceCause.SpiritPower
-				// !!! also, we possibly just destroyed presence. Do we need to do a Win/Loss check here?
 				foreach(IToken token in space.Keys.OfType<IToken>().ToArray())
 					await targetCtx.Tokens.Destroy( token, space[token] );
 		}
