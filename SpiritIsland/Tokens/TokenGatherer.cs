@@ -3,15 +3,15 @@
 /// <summary> Collects tokens from adjacent spaces. aka "Gathers" </summary>
 public class TokenGatherer : TokenCollector<TokenGatherer> {
 
-	public TokenGatherer(TargetSpaceCtx ctx):base(ctx) {}
+	public TokenGatherer(Spirit self, SpaceState tokens):base(self,tokens) {}
 
 	public Task<SpaceToken[]> GatherN() => Collect( "Gather ", Present.Always );
 
-	public Task<SpaceToken[]> GatherUpToN() => Collect( "Gather up to ", Present.Done );
+	public virtual Task<SpaceToken[]> GatherUpToN() => Collect( "Gather up to ", Present.Done );
 
 	protected override IEnumerable<SpaceState> PossibleGatherSources 
-		=> _filterSource == null ? _destinationCtx.Adjacent
-		: _destinationCtx.Adjacent.Where( _filterSource );
+		=> _filterSource == null ? _destinationTokens.Adjacent
+		: _destinationTokens.Adjacent.Where( _filterSource );
 
 	Func<SpaceState, bool> _filterSource;
 	public TokenGatherer FilterSource( Func<SpaceState,bool> filterSource ) {

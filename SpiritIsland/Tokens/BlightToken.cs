@@ -57,7 +57,7 @@ public class BlightToken : TokenClassToken
 				Present.Always,
 				Token.Blight
 			) );
-			await gs.Tokens[cascadeTo].Blight.Add( 1, args.Reason ); // Cascading blight shares original blights reason.
+			await cascadeTo.Tokens.Blight.Add( 1, args.Reason ); // Cascading blight shares original blights reason.
 		}
 
 	}

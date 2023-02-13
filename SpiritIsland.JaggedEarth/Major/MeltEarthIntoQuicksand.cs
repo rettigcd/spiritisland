@@ -17,7 +17,7 @@ public class MeltEarthIntoQuicksand {
 		// After invaders / dahan are Moved into target land, Destroy them.
 		ctx.Tokens.Adjust( new TokenAddedHandler( async ( args ) => {
 			if(args.Token.Class.Category.IsOneOf( TokenCategory.Invader, TokenCategory.Dahan ) )
-				await args.AddedTo.Destroy( args.Token, args.Count ); // !!! This looks like it might go around Bringer's powers.  Test!
+				await args.AddedTo.Destroy( args.Token, args.Count );
 		} ), 1 );
 
 		// if you have 2 moon, 4 water, 2 earth:

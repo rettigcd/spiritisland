@@ -2,7 +2,9 @@
 
 public class TokenCollectorFromSpecifiedSources : TokenCollector<TokenCollectorFromSpecifiedSources> {
 
-	public TokenCollectorFromSpecifiedSources( TargetSpaceCtx destinationCtx, params SpaceState[] sources ) : base( destinationCtx ) {
+	public TokenCollectorFromSpecifiedSources( TargetSpaceCtx ctx, params SpaceState[] sources ) 
+		: base( ctx.Self, ctx.Tokens )
+	{
 		PossibleGatherSources = sources;
 	}
 	protected override IEnumerable<SpaceState> PossibleGatherSources { get; }

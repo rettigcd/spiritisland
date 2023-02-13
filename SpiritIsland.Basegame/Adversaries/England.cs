@@ -87,8 +87,8 @@ public class England : IAdversary {
 	static void CriminalsAndMalcontents( GameState gameState ) {
 		// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
 		foreach(var board in gameState.Island.Boards) {
-			gameState.Tokens[board[1]].AdjustDefault( Human.City, 1 );
-			gameState.Tokens[board[2]].AdjustDefault( Human.Town, 1 );
+			board[1].Tokens.AdjustDefault( Human.City, 1 );
+			board[2].Tokens.AdjustDefault( Human.Town, 1 );
 		}
 		gameState.LogDebug("Criminals & Malcontents: Adding additional city to #1 and town to #2");
 	}

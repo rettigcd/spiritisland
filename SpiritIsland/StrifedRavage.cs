@@ -57,7 +57,7 @@ public static class StrifedRavage {
 			.OrderBy( x => x.RemainingHealth )
 			.ToArray(); // get the lowest ones first so we can reduce without them cascading
 
-		// !!! ??? Do badlands cause damage here?
+		// ! Not doing Badland damage here since I don't want to an a UI/await
 
 		foreach(HumanToken strifedInvader in strifedInvaders)
 			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader );

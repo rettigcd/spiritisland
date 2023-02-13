@@ -84,7 +84,7 @@ namespace SpiritIslandCmd {
 				.Join( "," );
 
 			// dahan
-			int dahanCount = gameState.DahanOn( space ).CountAll;
+			int dahanCount = space.Tokens.Dahan.CountAll;
 			string dahan = (dahanCount > 0) ? ("D" + dahanCount) :"  ";
 
 			int blightCount = gameState.Tokens[ space ].Blight.Count;

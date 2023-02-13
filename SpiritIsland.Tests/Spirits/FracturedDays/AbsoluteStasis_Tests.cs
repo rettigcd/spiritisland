@@ -16,7 +16,7 @@ public class AbsoluteStasis_Tests {
 
 		{
 			await using var scope = cfg.GameState.StartAction(ActionCategory.Spirit_Power);
-			var selfCtx = cfg.Spirit.BindMyPowers(cfg.GameState);
+			var selfCtx = cfg.Spirit.BindMyPowers();
 
 			//  When: targeting with other card
 			Task mesmerizedTranquilityTask = PowerCard.For<MesmerizedTranquility>()

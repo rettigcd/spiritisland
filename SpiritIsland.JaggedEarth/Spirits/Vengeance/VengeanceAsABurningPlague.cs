@@ -36,10 +36,10 @@ public class VengeanceAsABurningPlague : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put 2 presence on your starting board:
 		// 1 in a land with blight.
-		SpaceState landWithoutBlight = board.Spaces.Upgrade().First( s => s.Blight.Any );
+		SpaceState landWithoutBlight = board.Spaces.Tokens().First( s => s.Blight.Any );
 		landWithoutBlight.Adjust( Presence.Token, 1);
 		// 1 in a Wetland without dahan
-		SpaceState wetlandsWithoutDahan = board.Spaces.Upgrade().First( s => s.Space.IsWetland && !s.Dahan.Any );
+		SpaceState wetlandsWithoutDahan = board.Spaces.Tokens().First( s => s.Space.IsWetland && !s.Dahan.Any );
 		wetlandsWithoutDahan.Adjust( Presence.Token, 1);
 
 		// Swap out old Disease with new.
@@ -49,6 +49,9 @@ public class VengeanceAsABurningPlague : Spirit {
 			space.ReplaceAllWith(SpiritIsland.Token.Disease_Original,newDisease);
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new VengenceCtx( spirit );
+	public override SelfCtx BindMyPowers( Spirit spirit ) {
+		ActionScope.Current.Upgrader = (ss) => new VengeanceSpaceState( ss );
+		return new SelfCtx( spirit );
+	}
 
 }

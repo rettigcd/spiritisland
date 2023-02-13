@@ -19,10 +19,9 @@ class HasburgBuilder : BuildEngine {
 		ActionScope actionScope = new ActionScope( ActionCategory.Invader );// ??? !! should we reuse the original action?
 
 		// In each land matching a Build Card
-		foreach(SpaceState space in cardDependentBuildSpaces) {
-			Spirit spirit = BoardCtx.FindSpirit( gameState, space.Space.Board );
-			TargetSpaceCtx ctx = new SelfCtx( spirit ).Target( space.Space );
-			await new TokenGatherer( ctx )
+		foreach(SpaceState spaceState in cardDependentBuildSpaces) {
+			Spirit spirit = BoardCtx.FindSpirit( gameState, spaceState.Space.Board );
+			await spaceState.Gather( spirit )
 				// Gather 1 Town 
 				.AddGroup( 1, Human.Town )
 				// from a land not matching a Build Card.

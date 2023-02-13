@@ -61,7 +61,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
-		gameState.Tokens[board.Spaces.First(x => x.IsWetland)].Adjust(Presence.Token, 1);
+		board.Spaces.First(x => x.IsWetland).Tokens.Adjust(Token, 1);
 		gameState.TimePasses_WholeGame += _ => { pourDownPower.Reset(); return Task.CompletedTask; };
 
 		gameState.ReplaceTerrain( old => {

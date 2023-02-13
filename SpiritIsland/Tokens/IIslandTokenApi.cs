@@ -8,8 +8,6 @@ public interface IIslandTokenApi {
 
 	IToken GetDefault( IEntityClass tokenClass );
 
-	IEnumerable<SpaceState> Upgrade( IEnumerable<Space> spaces );
-
 	SpaceState this[Space space] { get; }
 	SpaceState GetTokensFor( Space space );
 

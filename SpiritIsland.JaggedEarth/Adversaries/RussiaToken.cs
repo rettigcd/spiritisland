@@ -33,7 +33,7 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 		var boardsWithNoNewBlight = gameState.Island.Boards.Except( _receivedRavageBlight );
 
 		// In the land with the most Explorer
-		static SpaceState PickSpaceWithMostExplorers(Board board) => board.Spaces.Upgrade()
+		static SpaceState PickSpaceWithMostExplorers(Board board) => board.Spaces.Tokens()
 			.Where( ss => 0 < ss.Sum( Human.Explorer ) ) //  (min. of 1)
 			.OrderByDescending( ss => ss.Sum( Human.Explorer ) )
 			.FirstOrDefault();

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class ManyMindsMoveAsOne : Spirit {
+public partial class ManyMindsMoveAsOne : Spirit {
 
 	public const string Name = "Many Minds Move as One";
 
@@ -47,29 +47,16 @@ public class ManyMindsMoveAsOne : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put 1 presence and 1 beast on yoru starting borad, in a land with beast.
-		var land = gameState.Tokens[ board.Spaces.First(x=>gameState.Tokens[x].Beasts.Any) ];
+		var land = board.Spaces.Tokens().First( x => x.Beasts.Any );
 
 		land.Adjust(Presence.Token, 1);
 		land.Beasts.Init(1);
 
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) 
-		=> new ManyMindsCtx( spirit );
-
-	public class ManyMindsCtx : SelfCtx {
-
-		public ManyMindsCtx(Spirit spirit):base( spirit ) { }
-
-		public override TargetSpaceCtx Target( Space space ) => new ManyMindsSpaceCtx(this,space);
-	}
-
-	public class ManyMindsSpaceCtx : TargetSpaceCtx {
-		public ManyMindsSpaceCtx(SelfCtx ctx,Space space ) : base( ctx, space ) { }
-
-		public override TokenGatherer Gatherer => new BeastGatherer( this );
-
-		public override TokenPusher Pusher => new BeastPusher( this );
+	public override SelfCtx BindMyPowers( Spirit spirit ) {
+		ActionScope.Current.Upgrader = x => new ManyMindTokens(x);
+		return new SelfCtx( spirit );
 	}
 
 }

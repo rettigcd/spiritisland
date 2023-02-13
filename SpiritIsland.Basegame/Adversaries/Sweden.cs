@@ -64,8 +64,7 @@ public class Sweden : IAdversary {
 			var card = gameState.InvaderDeck.UnrevealedCards[0];
 			gameState.InvaderDeck.UnrevealedCards.RemoveAt(0);
 			var addTownSpaces = gameState.Island.Boards
-				.Select(board => board.Spaces
-					.Select( gameState.Tokens.GetTokensFor )
+				.Select(board => board.Spaces.Tokens()
 					.Where( card.MatchesCard )
 					.OrderBy( s => s.InvaderTotal() )
 					// If there are 2 spaces with 'least # of invaders', just auto-picks one of them.
@@ -92,7 +91,7 @@ public class Sweden : IAdversary {
 
 					var selection = await spirit.Gateway.Decision(Select.ASpace.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.AddedTo.GetDefault( Human.Town ) ) );
 					if(selection != null) {
-						gs.Tokens[selection].AdjustDefault( Human.Town, 1 );
+						selection.Tokens.AdjustDefault( Human.Town, 1 );
 						gs.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Text}.");
 					}
 				}
@@ -103,7 +102,7 @@ public class Sweden : IAdversary {
 		// Level 6 - Prospecting Outpost: Setup +1Town +1 blight on Land 8
 		if(6 <= Level) {
 			var spaces = gameState.Island.Boards
-				.Select( board => gameState.Tokens[board[8]] )
+				.Select( board => board[8].Tokens )
 				.ToArray();
 			
 			foreach(SpaceState space in spaces ) {
@@ -129,7 +128,7 @@ public class Sweden : IAdversary {
 		//	On boards where land #4 starts with Blight, put that Blight in land #5 instead.
 		
 		var additionalCitySpaces = gameState.Island.Boards
-			.Select( board => gameState.Tokens[board[4]])
+			.Select( board => board[4].Tokens)
 			.ToArray();
 		foreach(var space4 in additionalCitySpaces) {
 			// Add City to 4
@@ -139,7 +138,7 @@ public class Sweden : IAdversary {
 			if(space4.Blight.Any) {
 				// bump it to 5
 				space4.Blight.Adjust( -1 );
-				gameState.Tokens[space4.Space.Board[5]].Blight.Adjust( 1 );
+				space4.Space.Board[5].Tokens.Blight.Adjust( 1 );
 			}
 		}
 

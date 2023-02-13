@@ -52,7 +52,7 @@ public class SpiritCards_Tests {
 
 	protected void When_PlayingCard() {
 		_ = gameState.StartAction( ActionCategory.Spirit_Power ); // !!! nothing is disposing of this.
-		_ = card.ActivateAsync( spirit.BindMyPowers( gameState ) );
+		_ = card.ActivateAsync( spirit.BindMyPowers() );
 	}
 
 }

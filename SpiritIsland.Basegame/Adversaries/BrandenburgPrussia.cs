@@ -45,7 +45,7 @@ public class BrandenburgPrussia : IAdversary {
 
 	static void FastStart( GameState gameState ) {
 		foreach(var board in gameState.Island.Boards)
-			gameState.Tokens[board[3]].AdjustDefault( Human.Town, 1 );
+			board[3].Tokens.AdjustDefault( Human.Town, 1 );
 		gameState.LogDebug("Adding 1 town to land #3");
 	}
 

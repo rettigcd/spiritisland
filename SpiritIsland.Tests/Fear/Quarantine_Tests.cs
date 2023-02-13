@@ -143,7 +143,7 @@ public class Quarantine_Tests {
 
 		// Skip over the coastal build
 		AdvanceToInvaderPhase();
-		_ = _user.NextDecision; // Wait for engine to finish
+		_user.WaitForNext();
 
 		// The only thing around A8 (a jungle) is a diseased town
 		_ctx.TargetSpace("A5").Tokens.Init("");
@@ -156,7 +156,7 @@ public class Quarantine_Tests {
 
 		_log.Clear();
 		AdvanceToInvaderPhase();
-		_ = _user.NextDecision; // Wait for engine to finish
+		_user.WaitForNext();
 
 		if(skipARavage)
 			_log.Assert_Ravaged ( "A7" );             // Sand - A4 skipped

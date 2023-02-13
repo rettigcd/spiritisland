@@ -17,6 +17,9 @@ public class ForestsOfLivingObsidian {
 		bool fromSS = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(new SpaceState[] {ctx.Tokens }, new TargetCriteria(0) )
 			.Any(ctx.Self.Presence.IsSacredSite); // using range calculator in case they used range extender.
 
+
+		string s = ActionScope.Current.Id.ToString();
+
 		int damageToEach = fromSS ? 2 : 1; 
 		await ctx.DamageEachInvader( damageToEach );
 

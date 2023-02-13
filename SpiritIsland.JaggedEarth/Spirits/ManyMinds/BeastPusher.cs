@@ -5,18 +5,18 @@
 /// </summary>
 class BeastPusher : TokenPusher {
 
-	public BeastPusher( TargetSpaceCtx ctx ) : base( ctx ) { }
+	public BeastPusher( Spirit self, SpaceState tokens ) : base( self, tokens ) { }
 
 	protected override async Task<Space> SelectDestination( IToken token ) {
 		int range = token == Token.Beast ? 2 : 1;
 
 		// this is a push, not a range
-		IEnumerable<SpaceState> destinationOptions = _ctx.GameState.Tokens[_source].Range( range );
+		IEnumerable<SpaceState> destinationOptions = _tokens.Range( range );
 
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await _ctx.Decision( Select.ASpace.PushToken( token, _source, destinationOptions, Present.Always ) );
+		return await _self.Gateway.Decision( Select.ASpace.PushToken( token, _tokens.Space, destinationOptions, Present.Always ) );
 	}
 
 }

@@ -3,8 +3,6 @@
 public class TargetSpaceCtx : SelfCtx {
 
 	#region private fields
-	DamagePool _badlandDamage;
-	DamagePool _bonusDamageFromSpirit;
 	InvaderBinding _invadersRO;
 	BoundPresence_ForSpace _presence;
 	SpaceState _tokens;
@@ -26,24 +24,35 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion
 
 
-	public Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) => SelectActionOption( "Select Power Option", options );
-	public Task SelectActionOption( string prompt, params IExecuteOn<TargetSpaceCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
+	public virtual async Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) {
+		IExecuteOn<TargetSpaceCtx>[] applicable = options
+			.Where( opt => opt != null && opt.IsApplicable( this ) )
+			.ToArray();
+
+		string text = await Self.SelectText( "Select Power Option", applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
+
+		if(text != null && text != TextOption.Done.Text) {
+			var selectedOption = applicable.Single( a => a.Description == text );
+			await selectedOption.Execute( this );
+		}
+	}
+
 
 	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Tokens));
 	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Tokens));
 
-	public SpaceState Tokens => _tokens ??= TokensOn( Space );
+	public SpaceState Tokens => _tokens ??= Space.Tokens;
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
 	public void Isolate() => Tokens.Init(Token.Isolate,1);
 
-	public BeastBinding Beasts               => Tokens.Beasts;
-	public TokenBinding Disease              => Tokens.Disease;
-	public TokenBinding Wilds                => Tokens.Wilds;
-	public virtual TokenBinding Badlands     => Tokens.Badlands;
-	public virtual HealthTokenClassBinding Dahan   => Tokens.Dahan; // Powers that interact with dahan, MUST go through this property 
-	public virtual BlightTokenBinding Blight => Tokens.Blight;
+	public BeastBinding Beasts              => Tokens.Beasts;
+	public TokenBinding Disease             => Tokens.Disease;
+	public TokenBinding Wilds               => Tokens.Wilds;
+	public TokenBinding Badlands			=> Tokens.Badlands;
+	public BlightTokenBinding Blight        => Tokens.Blight;
+	public HealthTokenClassBinding Dahan    => Tokens.Dahan;
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
 	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
@@ -86,52 +95,6 @@ public class TargetSpaceCtx : SelfCtx {
 
 		return destination;
 
-		//// Select Destination
-		//var destinationOptions = Range( targetCriteria );
-		//Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
-
-		//var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
-		//int remaining = Math.Min( Tokens.SumAny( tokenClass ), max );
-		//while(tokenOptions.Length > 0 && remaining > 0) {
-		//	// Select Token and move
-		//	var token = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
-		//	if(token == null) break;
-		//	await Move( token, Space, destination );
-
-		//	// Next
-		//	--remaining;
-		//	tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
-		//}
-
-		// 1st token to push (SpaceToken) (src-token) 
-		// 2nd Destinatin (Space),token-known
-
-		// 3rd SpaceToken (token,src-known)
-
-		// Select 1st Token to move  (TokenSpace) Push
-		// Select Destination		(Space)
-		// Select Remaining Tokens to follow  (Gather
-
-
-		// Select Destination
-		//var destinationOptions = Range( targetCriteria );
-		//Space destination = await Decision( Select.Space.MoveToken( Space, destinationOptions, Present.Done, null ) );
-
-		//var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
-		//int remaining = Math.Min( Tokens.SumAny(tokenClass), max );
-		//while(tokenOptions.Length > 0 && remaining > 0 ) {
-		//	// Select Token and move
-		//	var token = (await Decision( Select.TokenFrom1Space.TokenToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
-		//	if(token == null) break;
-		//	await Move( token, Space, destination );
-
-		//	// Next
-		//	--remaining;
-		//	tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IVisibleToken>().ToArray();
-		//}
-
-		//return destination;
-
 	}
 
 	#region Push
@@ -140,15 +103,14 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
 
-	// overriden by Grinning Tricksters Let's See what happens
 	/// <returns>Spaces pushed too.</returns>
-	public virtual Task<Space[]> PushUpTo( int countToPush, params IEntityClass[] groups )
+	public Task<Space[]> PushUpTo( int countToPush, params IEntityClass[] groups )
 		=> Pusher.AddGroup( countToPush, groups ).MoveUpToN();
 
 	public Task<Space[]> Push( int countToPush, params IEntityClass[] groups )
 		=> Pusher.AddGroup( countToPush, groups ).MoveN();
 
-	public virtual TokenPusher Pusher => new TokenPusher( this );
+	public TokenPusher Pusher => Tokens.Pusher( Self );
 
 	#endregion Push
 
@@ -161,14 +123,13 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task GatherDahan( int countToGather )
 		=> this.Gather( countToGather, Human.Dahan);
 
-	// overriden by Grinning Tricketsrs 'Let's see what happens'
-	public virtual Task GatherUpTo( int countToGather, params IEntityClass[] groups )
+	public Task GatherUpTo( int countToGather, params IEntityClass[] groups )
 		=> Gatherer.AddGroup(countToGather, groups).GatherUpToN();
 
 	public Task Gather( int countToGather, params IEntityClass[] groups )
 		=> Gatherer.AddGroup(countToGather,groups).GatherN();
 
-	public virtual TokenGatherer Gatherer => new TokenGatherer( this );
+	public TokenGatherer Gatherer => Tokens.Gather( Self );
 
 	#endregion Gather
 
@@ -212,28 +173,19 @@ public class TargetSpaceCtx : SelfCtx {
 	// The current targets power
 	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
 
-	protected virtual InvaderBinding GetInvaders() => new InvaderBinding( Tokens );
+	protected InvaderBinding GetInvaders() => new InvaderBinding( Tokens );
 
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear
 	public async Task DamageInvaders( int originalDamage, params IEntityClass[] allowedTypes ) {
 
 		// Calculate Total Damage available
-		int sumAvailableDamage = originalDamage;
-		sumAvailableDamage += BonusDamage.Remaining;
-		if(0 < originalDamage)
-			sumAvailableDamage += BadlandDamage.Remaining;
+		var combinedDamage = Tokens.BonusDamageForAction( originalDamage );
 
 		// Apply Damage
-		int damageApplied = await Invaders.UserSelectedDamage( sumAvailableDamage, Self, allowedTypes );
-		int poolDamageToAccountFor = damageApplied - originalDamage;
+		int damageApplied = await Invaders.UserSelectedDamage( Self, combinedDamage.Available, allowedTypes );
 
-		// Remove bonus damage from damage pools
-		poolDamageToAccountFor -= BadlandDamage.ReducePoolDamage( poolDamageToAccountFor );
-		poolDamageToAccountFor -= BonusDamage.ReducePoolDamage( poolDamageToAccountFor );
-
-		if(poolDamageToAccountFor > 0)
-			throw new Exception( "somehow we did more damage than we have available" );
+		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
 	// For strifed Damage
@@ -241,55 +193,27 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task StrifedDamageOtherInvaders( int originalDamage, HumanToken damageSource, bool excludeSource ) {
 
 		HumanToken damageSourceToExclude = excludeSource ? damageSource : null;
-		HumanToken[] invadersToDamage() => Tokens.InvaderTokens()
-			.Where( t => t != damageSourceToExclude )
-			.ToArray();
-
-		// Calculate Total Damage available
-		int sumAvailableDamage = originalDamage;
-		sumAvailableDamage += BonusDamage.Remaining;
-		if(0 < originalDamage)
-			sumAvailableDamage += BadlandDamage.Remaining;
+		HumanToken[] invadersToDamage() => Tokens.InvaderTokens().Where( t => t != damageSourceToExclude ).ToArray();
 
 		// Apply Damage
-		int damageApplied = await Invaders.UserSelected_ApplyDamageToSpecificToken( sumAvailableDamage, Self, damageSource, invadersToDamage );
-		int poolDamageToAccountFor = damageApplied - originalDamage;
-
-		// Remove bonus damage from damage pools
-		poolDamageToAccountFor -= BadlandDamage.ReducePoolDamage( poolDamageToAccountFor );
-		poolDamageToAccountFor -= BonusDamage.ReducePoolDamage( poolDamageToAccountFor );
-
-		if(poolDamageToAccountFor > 0)
-			throw new Exception( "somehow we did more damage than we have available" );
+		var combined = Tokens.BonusDamageForAction( originalDamage );
+		int damageApplied = await Invaders.UserSelected_ApplyDamageToSpecificToken( combined.Available, Self, damageSource, invadersToDamage );
+		combined.TrackDamageDone( damageApplied );
 	}
 
-	DamagePool BonusDamage => _bonusDamageFromSpirit ??= new DamagePool( Self.BonusDamage );
-
-	DamagePool BadlandDamage => _badlandDamage ??= new DamagePool( Badlands.Count ); // !!! This is once per action.  Move to ActionScope
-
-	class DamagePool {
-
-		public DamagePool( int init ) { remaining = init; }
-
-		public int ReducePoolDamage( int poolDamageToAccountFor ) {
-			int damageFromBadlandPool = Math.Min( remaining, poolDamageToAccountFor );
-			remaining -= damageFromBadlandPool;
-			return damageFromBadlandPool;
-		}
-
-		int remaining;
-		public int Remaining => remaining;
-	}
+	// !!! If we do any damage and there is badlands, we need to check at the end of the Action that all damage was done.
+	// !!! Maybe - could pass an optional flag to early damage, indicating badlands is optional, because more damage is coming.
 
 	public async Task DamageEachInvader( int individualDamage, params IEntityClass[] generic ) {
 		await Invaders.ApplyDamageToEach( individualDamage, generic );
-		await Invaders.UserSelectedDamage( Badlands.Count, Self,generic ); // !!! use badland DamagePool
+		var bonusDamage = Tokens.BonusDamageForAction();
+		int damageApplied = await Invaders.UserSelectedDamage( Self, bonusDamage.Available, generic );
+		bonusDamage.TrackDamageDone( damageApplied );
 	}
 
 	public async Task Apply1DamageToDifferentInvaders( int count ) {
 		const int damagePerInvader = 1;
 
-		// !!! Add Damage Pool (badlands / Flame's Furry) to this.
 		// For Veil the Nights Hunt, badland damage can only be added to invaders already damaged. Might be different for other powers.
 
 		// Find All Invaders
@@ -307,58 +231,59 @@ public class TargetSpaceCtx : SelfCtx {
 			HumanToken invader = (HumanToken)st.Token;
 			invaders.Remove( invader );
 			var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
-			if(damaged.RemainingHealth > 0)
+			if(0 < damaged.RemainingHealth)
 				damagedInvaders.Add( damaged );
 		}
 
-		await ApplyDamageToSpecificTokens( damagedInvaders, Badlands.Count );
+		var combined = Tokens.BonusDamageForAction();
+		int damageDone = await ApplyDamageToSpecificTokens( damagedInvaders, combined.Available );
+		combined.TrackDamageDone(damageDone); 
 	}
 
-	async Task ApplyDamageToSpecificTokens( List<IToken> invaders, int additionalTotalDamage ) {
-		while(additionalTotalDamage > 0) {
+	async Task<int> ApplyDamageToSpecificTokens( List<IToken> invaders, int additionalTotalDamage ) {
+		int done = 0;
+
+		while(0 < additionalTotalDamage) {
 			var st = await Decision( Select.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
 			if(st == null) break;
 			var invader = (HumanToken)st.Token;
 			int index = invaders.IndexOf( invader );
-			var (_, moreDamaged) = await Invaders.ApplyDamageTo1( 1, invader );
-			if(moreDamaged.RemainingHealth > 0)
-				invaders[index] = moreDamaged;
+			var (_, moreDamagedToken) = await Invaders.ApplyDamageTo1( 1, invader );
+			++done;
+			if( 0 < moreDamagedToken.RemainingHealth )
+				invaders[index] = moreDamagedToken;
 			else
 				invaders.RemoveAt( index );
 		}
+		return done;
 	}
 
 
 	public async Task DamageDahan( int damage ) {
 		if(damage == 0) return;
 
-		// !!! This is not correct, if card has multiple Damage-Dahans, adds badland multiple times.
-		damage += Badlands.Count;
-
-		// and damage to dahan.
-		await Dahan.ApplyDamage_Inefficiently( damage );
+		var totalDamage = Tokens.BadlandDamageForDahan( damage );
+		int applied = await Dahan.ApplyDamage_Inefficiently( totalDamage.Available );
+		totalDamage.TrackDamageDone( applied );
 	}
 
 	/// <summary> Incomporates bad lands </summary>
 	public async Task Apply1DamageToEachDahan() {
+
 		await Dahan.Apply1DamageToAll();
-		await Dahan.ApplyDamage_Inefficiently( Badlands.Count);
+		var moreDamage = Tokens.BadlandDamageForDahan();
+		int applied = await Dahan.ApplyDamage_Inefficiently( moreDamage.Available );
+		moreDamage.TrackDamageDone( applied );
 	}
 
 	#region Add Strife
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public virtual async Task AddStrife( params HumanTokenClass[] groups ) {
-		var st = await Decision( Select.Invader.ForStrife( Tokens, groups ) );
-		if(st == null) return;
-		var invader = (HumanToken)st.Token;
-		await Tokens.AddStrifeTo( invader );
-	}
+	public Task AddStrife( params HumanTokenClass[] groups ) => Self.AddStrife( Tokens, groups );
 
-	public Task AddStrifeTo( HumanToken invader, int count = 1 ) {
-		return Tokens.AddStrifeTo( invader, count );
+	public Task AddRemoveStrifeTo( HumanToken invader, int count = 1 ) {
+		return Tokens.AddRemoveStrifeTo( invader, count );
 	}
-
 
 	#endregion
 

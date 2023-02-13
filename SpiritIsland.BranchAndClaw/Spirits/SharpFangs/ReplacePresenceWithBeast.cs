@@ -9,7 +9,7 @@ public class ReplacePresenceWithBeast : GrowthActionFactory {
 		if(space == null) return;
 
 		await ctx.Self.Token.RemoveFrom(space);
-		await ctx.GameState.Tokens[space].Beasts.Add(1);
+		await space.Tokens.Beasts.Add(1);
 
 	}
 

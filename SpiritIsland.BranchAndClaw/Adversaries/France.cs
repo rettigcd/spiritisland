@@ -61,7 +61,7 @@ public class France : IAdversary {
 		void DoFranceStuff( ITokenRemovedArgs args ) {
 			if(args.Token != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
 
-			var slowBlight = GameState.Current.Tokens[FrancePanel].Blight;
+			var slowBlight = FrancePanel.Tokens.Blight;
 			if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
 				gameState.blightOnCard += slowBlight.Count;
 				slowBlight.Init(0);
@@ -79,9 +79,9 @@ public class France : IAdversary {
 		foreach(var board in gameState.Island.Boards) {
 			// add 1 Town to the highest-numbered land without Town.
 			var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
-			gameState.Tokens[highLandWithoutTown].AdjustDefault( Human.Town, 1 );
+			highLandWithoutTown.Tokens.AdjustDefault( Human.Town, 1 );
 			// Add 1 Town to land #1.
-			gameState.Tokens[board[1]].AdjustDefault( Human.Town, 1 );
+			board[1].Tokens.AdjustDefault( Human.Town, 1 );
 		}
 	}
 
@@ -112,7 +112,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.FindTokens( Human.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
 			if(st != null)
-				await st.Space.Tokens.AddStrifeTo( (HumanToken)st.Token, 1 );
+				await st.Space.Tokens.AddRemoveStrifeTo( (HumanToken)st.Token, 1 );
 		} );
 
 	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
@@ -122,7 +122,7 @@ public class France : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
-					await st.Space.Tokens.AddStrifeTo( (HumanToken)st.Token, 1 );
+					await st.Space.Tokens.AddRemoveStrifeTo( (HumanToken)st.Token, 1 );
 			}
 		} );
 

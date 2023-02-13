@@ -22,7 +22,7 @@ public class CastDownIntoTheBrinyDeep {
 	static async Task DestroyBoard( SelfCtx ctx, Board board ) {
 		// destroy the board containing target land and everything on that board.
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
-		var activeSpaces = board.Spaces.Upgrade().ToArray();
+		var activeSpaces = board.Spaces.Tokens().ToArray();
 
 		await DestroyTokens( ctx, activeSpaces );
 
@@ -42,7 +42,7 @@ public class CastDownIntoTheBrinyDeep {
 
 		foreach(SpaceState space in spaces) {
 
-			var targetCtx = ctx.Target(space); // !!! switch this to using ActionableSpaceState once Bringer implements it.
+			var targetCtx = ctx.Target(space);
 
 			// Destroy Invaders
 			await targetCtx.Invaders.DestroyAll( Human.Invader );

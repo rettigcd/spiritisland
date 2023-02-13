@@ -12,7 +12,7 @@ public class PreparedElements {
 		var board = Board.BuildBoardA();
 		var gs = new GameState( spirit, board );
 		_ = gs.StartAction( ActionCategory.Spirit_Power ); // !!! dispose or get rid of if we don't need it.
-		var ctx = spirit.BindMyPowers(gs).Target(board[5]);
+		var ctx = spirit.BindMyPowers().Target(board[5]);
 
 		var el1 = new ObserveWorldMod(ctx);
 		var el2 = new ObserveWorldMod(ctx);

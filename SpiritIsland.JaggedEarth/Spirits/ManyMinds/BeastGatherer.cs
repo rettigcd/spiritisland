@@ -5,13 +5,13 @@
 /// </summary>
 class BeastGatherer : TokenGatherer {
 
-	public BeastGatherer( TargetSpaceCtx ctx ) : base( ctx ) { }
+	public BeastGatherer( Spirit self, SpaceState tokens ) : base( self, tokens ) { }
 
 	protected override SpaceToken[] GetSpaceTokenOptions(){
 		var items = new List<SpaceToken>();
 		foreach(var group in RemainingTypes) {
 			int range = group == Token.Beast ? 2 : 1;
-			foreach(var space in _destinationCtx.Tokens.Range( range )) // gather, not Range
+			foreach(var space in _destinationTokens.Range( range )) // gather, not Range
 				foreach(var token in space.OfClass(group).OfType<IToken>())
 					items.Add(new SpaceToken(space.Space,token));
 		}

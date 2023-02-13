@@ -49,21 +49,15 @@ public class HeartOfTheWildfire : Spirit {
 
 	public override string Text => Name;
 
-	static readonly SpecialRule DestructiveNature = new SpecialRule(
-		"Destructive Nature",
-		"Blight added due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your presence. (including cascades)"
-		// !!!When Destroying presence from blight, need Cause so we can tell if destroyoing it due to Ravage or something else.
-	);
-
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {
 		BlazingPresence.Rule,
-		DestructiveNature
+		WildfireToken.DestructiveNature_Rule
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// in the hightest-numbered Sands on your starting board
 		var space = board.Spaces.Last(x=>x.IsSand);
-		var spaceState = gameState.Tokens[space];
+		var spaceState = space.Tokens;
 		// Put 3 presence
 		spaceState.Adjust(Presence.Token,3);
 		// and 2 blight
@@ -94,6 +88,11 @@ public class HeartOfTheWildfire : Spirit {
 	}
 
 	class WildfireToken : SpiritPresenceToken, IHandleRemovingToken, IHandleTokenAdded {
+
+		static public readonly SpecialRule DestructiveNature_Rule = new SpecialRule(
+			"Destructive Nature",
+			"Blight added due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your presence. (including cascades)"
+		);
 
 		public WildfireToken( Spirit spirit ):base(spirit) {}
 

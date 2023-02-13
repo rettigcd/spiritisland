@@ -40,7 +40,8 @@ public class InstrumentsOfTheirOwnRuin {
 		// - occurs in multiple spaces
 		// - total damage is from a single centralized space
 		// - When applying damage, prefer to use up badland damage first, and save general distributed damage for other spaces.
-		// - !!! We can't use BonusDamage Pool because that doesn't have a short-circuit to not use all of the bonus damage.
+
+		// - This isn't perfect but it is good enough.
 
 		// they damage invaders in adjacent lands instead of dahan and the land.
 
@@ -50,10 +51,10 @@ public class InstrumentsOfTheirOwnRuin {
 			.Sum( si => ctx.Tokens.AttackDamageFrom1( si ) * ctx.Tokens[si] );
 
 		// Calc Total Badlands damage available
-		var tokens = ctx.GameState.Tokens;
+//		var tokens = ctx.GameState.Tokens;
 		var availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x.Space,x=>x.Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.
 		var activatedBadlandDamage = new CountDictionary<Space>(); // initializes when they do first damage in land, then used until depleated
-		bool HasDamage(Space space) => damageFromCenter > 0 || activatedBadlandDamage[space]>0;
+		bool HasDamage(Space space) => 0 < damageFromCenter || activatedBadlandDamage[space]>0;
 
 		// While any invaders && (damageFromStrifed>0 || )damage && any explorers
 		SpaceState[] spaceOptions;
@@ -63,7 +64,7 @@ public class InstrumentsOfTheirOwnRuin {
 			var damagedInvader = await ctx.Decision( new Select.TokenFromManySpaces($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
 			if(damagedInvader == null) break;
 
-			if(activatedBadlandDamage[damagedInvader.Space] > 0) {
+			if(0 < activatedBadlandDamage[damagedInvader.Space]) {
 				// use badlands
 				activatedBadlandDamage[damagedInvader.Space]--;
 			} else {
@@ -76,7 +77,7 @@ public class InstrumentsOfTheirOwnRuin {
 
 			// apply 1 damage to selected invader
 			// !Note - using shared UnitOfWork across spaces because it is a ravage on only 1 space
-			await new InvaderBinding( ctx.GameState.Tokens[damagedInvader.Space] )
+			await new InvaderBinding( damagedInvader.Space.Tokens )
 				.ApplyDamageTo1( 1, (HumanToken)damagedInvader.Token );
 		}
 

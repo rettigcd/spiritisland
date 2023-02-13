@@ -9,6 +9,6 @@ public class Push1DahanFromLands : GrowthActionFactory, IActionFactory {
 		var source = await ctx.Decision(new Select.TokenFromManySpaces("Select dahan to push from land",dahanOptions,Present.Done));
 		if(source == null) return;
 
-		await new TokenPusher( ctx.Target(source.Space) ).PushToken( source.Token );
+		await new TokenPusher( ctx.Self, source.Space.Tokens ).PushToken( source.Token );
 	}
 }

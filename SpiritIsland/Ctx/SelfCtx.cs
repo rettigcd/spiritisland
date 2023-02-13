@@ -42,8 +42,7 @@ public class SelfCtx {
 
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Gateway.Decision( originalDecision );
 
-
-	public virtual TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
+	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space ); // Trickster
 	public TargetSpaceCtx Target( SpaceState ss ) => Target(ss.Space);
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
@@ -59,11 +58,6 @@ public class SelfCtx {
 		var space = await Decision( new Select.ASpace(prompt, Self.Presence.SpaceStates, Present.Always ) );
 		return Target( space );
 	}
-
-	// This exists so Bringer can override things that happen to tokens.
-	// !!! It would be easy to accidentally go around this by calling GameState.Current.Tokens[].
-	// Maybe the Space=>Token upgrader needs to go through ActionScope which can be set by the spirits for individual actions.
-	public virtual SpaceState TokensOn( Space space ) => GameState.Tokens[space];
 
 	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
 		string label = activating ? "Activating Fear" : "Done";
@@ -99,25 +93,28 @@ public class SelfCtx {
 
 	// overriden by Grinning Trickster's Lets See What Happens
 
-	public Task SelectActionOption( params IExecuteOn<SelfCtx>[] options ) => SelectActionOption( "Select Power Option", options );
-	public Task SelectActionOption( string prompt, params IExecuteOn<SelfCtx>[] options )=> SelectAction_Inner( prompt, options, Present.AutoSelectSingle, this );
-	public Task SelectAction_Optional( string prompt, params IExecuteOn<SelfCtx>[] options )=> SelectAction_Inner( prompt, options, Present.Done, this );
+	public Task SelectActionOption( params IExecuteOn<SelfCtx>[] options ) 
+		=> SelectAction_Inner1( "Select Power Option", options, Present.AutoSelectSingle );
 
-	virtual protected async Task SelectAction_Inner<T>( string prompt, IExecuteOn<T>[] options, Present present, T ctx ) {
+	public Task SelectAction_Optional( string prompt, params IExecuteOn<SelfCtx>[] options )
+		=> SelectAction_Inner1( prompt, options, Present.Done );
 
-		IExecuteOn<T>[] applicable = options
-			.Where( opt => opt != null && opt.IsApplicable(ctx) )
+	protected async Task SelectAction_Inner1(
+		string prompt,
+		IExecuteOn<SelfCtx>[] options,
+		Present present
+	) {
+		IExecuteOn<SelfCtx>[] applicable = options
+			.Where( opt => opt != null && opt.IsApplicable( this ) )
 			.ToArray();
 
 		string text = await Self.SelectText( prompt, applicable.Select( a => a.Description ).ToArray(), present );
 
 		if(text != null && text != TextOption.Done.Text) {
 			var selectedOption = applicable.Single( a => a.Description == text );
-			await selectedOption.Execute( ctx );
+			await selectedOption.Execute( this );
 		}
 	}
-
-	public virtual Task Execute( IExecuteOn<SelfCtx> actionOption ) => actionOption.Execute(this);
 
 	#endregion
 

@@ -35,7 +35,7 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 		Given_HasPresence( board[3] );
 		//	 And: dahan on initial spot
 		foreach(string s in initialDahanSquares.Split( ',' ))
-			_gameState.DahanOn( board[int.Parse( s )] ).Init(1);
+			board[int.Parse( s )].Tokens.Dahan.Init(1);
 
 		_ = When_Growing( 1 );
 

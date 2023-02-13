@@ -39,8 +39,11 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		await ActivateInnerAsync( ctx );
 		if(_repeatAttr != null) {
 			var repeater = _repeatAttr.GetRepeater();
-			while(await repeater.ShouldRepeat( ctx.Self ))
+			while(await repeater.ShouldRepeat( ctx.Self )) {
+				await using var anotherScope = new ActionScope(ActionCategory.Spirit_Power);
+				anotherScope.Owner = ctx.Self;
 				await ActivateInnerAsync( ctx );
+			}
 		}
 
 	}

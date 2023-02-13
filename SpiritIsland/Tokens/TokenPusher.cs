@@ -2,14 +2,14 @@
 
 public class TokenPusher {
 
-	public TokenPusher( TargetSpaceCtx ctx ) {
-		_ctx = ctx;
-		_source = ctx.Space;
+	public TokenPusher( Spirit self, SpaceState tokens ) {
+		_self = self;
+		_tokens = tokens;
 	}
 
 	public TokenPusher AddGroup(int count,params IEntityClass[] groups ) {
 
-		count = System.Math.Min( count, _ctx.GameState.Tokens[_source].SumAny(groups) );
+		count = System.Math.Min( count, _tokens.SumAny(groups) );
 
 		int index = sharedGroupCounts.Count;
 		sharedGroupCounts.Add( count );
@@ -21,12 +21,12 @@ public class TokenPusher {
 	}
 
 	public Task<Space[]> MoveN() => Exec( Present.Always );
-	public Task<Space[]> MoveUpToN() => Exec( Present.Done );
+	public virtual Task<Space[]> MoveUpToN() => Exec( Present.Done );
 
 	/// <returns>Spaces pushed too.</returns>
 	async Task<Space[]> Exec( Present present ) {
 
-		var counts = _ctx.Target(_source).Tokens;
+		var counts = _tokens;
 		IToken[] GetTokens() {
 			var groupsWithRemainingCounts = indexLookupByGroup
 				.Where( pair => 0 < sharedGroupCounts[pair.Value] )
@@ -42,7 +42,7 @@ public class TokenPusher {
 		IToken[] tokens;
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
-			var token = (await _ctx.Self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( _source, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
+			var token = (await _self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( _tokens.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
 			if(token == null) break;
 
 			// Push to Destination
@@ -60,15 +60,15 @@ public class TokenPusher {
 		Space destination = await SelectDestination( token );
 		if(destination == null) return null;
 
-		await MoveSingleToken( token, _source, destination );
+		await MoveSingleToken( token, _tokens, destination );
 
 		return destination;
 	}
 
-	protected virtual async Task MoveSingleToken( IToken token, Space source, Space destination ) {
-		await _ctx.Move( token, source, destination );
+	protected virtual async Task MoveSingleToken( IToken token, SpaceState source, SpaceState destination ) {
+		await token.Move( source, destination );
 		if( _customAction != null )
-			await _customAction( token, source, destination );
+			await _customAction( token, source.Space, destination.Space ); // !!! upgrade to Tokens
 	}
 
 
@@ -79,11 +79,11 @@ public class TokenPusher {
 	Func<ISpaceEntity,Space,Space,Task> _customAction;
 
 	protected virtual async Task<Space> SelectDestination( IToken token ) {
-		IEnumerable<SpaceState> destinationOptions = _ctx.GameState.Tokens[_source].Adjacent;
+		IEnumerable<SpaceState> destinationOptions = _tokens.Adjacent;
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await _ctx.Decision( Select.ASpace.PushToken( token, _source, destinationOptions, Present.Always ) );
+		return await _self.Gateway.Decision( Select.ASpace.PushToken( token, _tokens.Space, destinationOptions, Present.Always ) );
 	}
 
 	public TokenPusher FilterDestinations(Func<SpaceState,bool> destinationFilter ) {
@@ -93,8 +93,9 @@ public class TokenPusher {
 
 	#region private
 
-	protected readonly SelfCtx _ctx;
-	protected readonly Space _source;
+	protected readonly Spirit _self;
+	protected readonly SpaceState _tokens;
+
 	protected readonly List<Func<SpaceState,bool>> destinationFilters = new List<Func<SpaceState, bool>>();
 
 	// if we push 3 explorer/town,

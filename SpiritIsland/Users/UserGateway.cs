@@ -8,19 +8,19 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	public event Action<IDecision> NewWaitingDecision;
 
-	IDecisionMaker CacheNextDecision( bool block ) {
+	IDecisionMaker CacheNextDecision( int? waitMs ) {
 		if(userAccessedDecision == null) {
-			WaitForSignal(block);
+			WaitForSignal( waitMs );
 			userAccessedDecision = activeDecisionMaker;
 		}
 		return userAccessedDecision;
 	}
 
-	void WaitForSignal(bool block ) {
-		if(block)
-	 		signal.WaitOne(); // normal
+	void WaitForSignal(int? milliseconds) {
+		if(milliseconds.HasValue)
+			signal.WaitOne( milliseconds.Value );
 		else
-			signal.WaitOne(0);
+			signal.WaitOne(); // normal
 	}
 
 	public bool WaitForNextDecision( int milliseconds ) {
@@ -34,7 +34,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
 	public void GoBackToBeginningOfRound( int targetRound ) {
-		var poppedDecisionMaker = CacheNextDecision(true);
+		var poppedDecisionMaker = CacheNextDecision( null );
 		this.activeDecisionMaker = null;
 		this.userAccessedDecision = null;
 		poppedDecisionMaker.IssueCommand( new Rewind( targetRound ) );
@@ -42,13 +42,15 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	#region Blocking
 
-	public IDecision Next => CacheNextDecision( true )?.Decision;
-	IDecision IUserPortal.Current => CacheNextDecision( false )?.Decision;
+	public IDecision Next => CacheNextDecision( null )?.Decision;
+	IDecision IUserPortal.Current => CacheNextDecision( 0 )?.Decision;
+
+	public bool WaitForNext(int ms) => CacheNextDecision( ms ) != null;
 
 	public bool IsResolved => activeDecisionMaker == null;
 
 	public void Choose(IDecision _, IOption selection,bool block=true) {
-		var currentDecisionMaker = CacheNextDecision(block);
+		var currentDecisionMaker = CacheNextDecision( null );
 		if(currentDecisionMaker == null) return;
 		var currentDecision = currentDecisionMaker.Decision;
 		this.activeDecisionMaker = null;

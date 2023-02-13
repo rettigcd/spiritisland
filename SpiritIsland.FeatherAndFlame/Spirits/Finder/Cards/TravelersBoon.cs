@@ -16,7 +16,7 @@ public class TravelersBoon {
 		// They may move up to 1 Invader, 1 dahan, and 1 beast along with their presence.
 		// ( total, not for each presence).
 		if( 0 < movedTokens.Length)
-		await new TokenCollectorFromSpecifiedSources( destinationCtx, movedTokens.Select( x => ctx.GameState.Tokens[x.Space] ).Distinct().ToArray() )
+		await new TokenCollectorFromSpecifiedSources( destinationCtx, movedTokens.Select( x => x.Space.Tokens ).Distinct().ToArray() )
 			.AddGroup( 1, Human.Invader.Plus( Human.Dahan, Token.Beast ) )
 			.CollectUpToN();
 

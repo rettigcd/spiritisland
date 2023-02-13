@@ -7,7 +7,7 @@ class ManyMindsPresence : SpiritPresence {
 
 	public override void SetSpirit( Spirit spirit ) { 
 		base.SetSpirit( spirit );
-		Token = new ManyMindsToken( spirit );
+		Token = new ManyMindsPresenceToken( spirit );
 	}
 
 }

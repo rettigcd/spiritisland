@@ -2,19 +2,20 @@
 
 public class DreadApparitions_Tests {
 
-	readonly Board board;
-	readonly TargetSpaceCtx ctx;
+	Board board;
+	TargetSpaceCtx ctx;
 
-	public DreadApparitions_Tests() {
+	void Init() {
 		Bringer spirit = new Bringer();
 		board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
 		_ = gs.StartAction( ActionCategory.Spirit_Power ); // !!! not disposing
-		ctx = spirit.BindMyPowers( gs ).Target( board[5] );
+		ctx = spirit.BindMyPowers().Target( board[5] );
 	}
 
 	[Fact]
 	public void DirectFear_GeneratesDefend() {
+		Init();
 
 		async Task When() {
 			// Given: using Dread Apparitions
@@ -27,12 +28,13 @@ public class DreadApparitions_Tests {
 		Assert_DefenceIs( 2+1 ); // +1 from D.A.
 	}
 
-	private void Assert_DefenceIs(int expectedDefence) {
+	void Assert_DefenceIs(int expectedDefence) {
 		ctx.Tokens.Defend.Count.ShouldBe( expectedDefence );
 	}
 
 	[Fact]
 	public void TownDamage_Generates2Defend() {
+		Init();
 
 		// Disable destroying presence
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
@@ -57,6 +59,8 @@ public class DreadApparitions_Tests {
 	// Generate 5 DATD fear by 'killing' a city - should defend 5
 	[Fact]
 	public async Task CityDamage_Generates5Defend() {
+		Init();
+
 		// Disable destroying presence
 		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
 
@@ -75,29 +79,53 @@ public class DreadApparitions_Tests {
 	[Fact]
 	public async Task DahanDamage_Generates0() {
 
+		Bringer spirit = new Bringer();
+		var board = Board.BuildBoardA();
+		GameState gs = new GameState( spirit, board );
+		var tokens = board[5].Tokens;
+
+		var log = gs.LogAsStrings();
+
 		// Disable destroying presence
-		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
-		ctx.GameState.IslandWontBlight();
+		gs.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		gs.IslandWontBlight();
+
+		string startingGuid = ActionScope.Current.Id.ToString();
 
 		// has 1 city and lots of dahan
-		ctx.Tokens.AdjustDefault( Human.City, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
-		ctx.Dahan.Init(10);
+		tokens.AdjustDefault( Human.City, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
+		tokens.Dahan.Init(10);
 
 		// Given: using Dread Apparitions
-		await DreadApparitions.ActAsync( ctx );
+		async Task DoIt(){
+			await using var myScope = new ActionScope( ActionCategory.Spirit_Power );
+			string powerGuid = ActionScope.Current.Id.ToString();
+			var ctx = spirit.BindMyPowers().Target( board[5] );
+			await DreadApparitions.ActAsync( ctx ); // !!! This await causes the execution ctx to shallow copy so when scope cleans up, it is cleaning up the copy. and leaving the scope on the stack for the original
+		}
+
+		await DoIt(); // !!!BUG - added an await here to make a copy of the ActionScope to preservice the original action scope
+
+		var postActionGuid = ActionScope.Current.Id.ToString();
+		postActionGuid.ShouldBe(startingGuid);
 
 		// When: dahan destroy the city
-		await ctx.Tokens.DoARavage();
+		await tokens.DoARavage();
 
 		// Then: 2 fear from city
-		Assert_GeneratedFear(2+1); // normal (1 from Dread Apparitions)
-		// and 1 defend bonus
-		Assert_DefenceIs( 1 ); // from dread apparitions
+		// Assert_GeneratedFear(2+1); // normal (1 from Dread Apparitions)
+		var fear = gs.Fear;
+		int actualFear = fear.EarnedFear + 4 * fear.ActivatedCards.Count;
+		actualFear.ShouldBe(2+1);
 
+		// and 1 defend bonus
+		tokens.Defend.Count.ShouldBe( 1 ); // from dread apparitions
 	}
 
 	[Fact]
 	public void FearInOtherLand_Generates0() {
+		Init();
+
 		// has 1 city and lots of dahan
 		ctx.Tokens.AdjustDefault( Human.City, 1 );
 		ctx.Dahan.Init( 10 );
@@ -113,16 +141,6 @@ public class DreadApparitions_Tests {
 
 		// but no defend bonus
 		Assert_DefenceIs( 1 ); // 1=>Dread Apparitions
-
-	}
-
-
-	void Assert_GeneratedFear( int expectedFearCount ) {
-
-		int actualFear = ctx.GameState.Fear.EarnedFear
-			+ 4 * ctx.GameState.Fear.ActivatedCards.Count;
-
-		actualFear.ShouldBe(expectedFearCount,"fear count is wrong");
 
 	}
 

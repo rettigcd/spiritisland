@@ -56,7 +56,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
 
-	public IEnumerable<SpaceState> Upgrade( IEnumerable<Space> spaces ) => spaces.Select( s => this[s] );
+//	public IEnumerable<SpaceState> Upgrade( IEnumerable<Space> spaces ) => spaces.Select( s => this[s] );
 
 	#region Memento
 

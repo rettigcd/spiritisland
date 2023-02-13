@@ -42,7 +42,7 @@ public class LightningsSwiftStrike : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: put 2 pressence in highest numbered sands
 		var space = board.Spaces.Reverse().First(x=>x.IsSand);
-		var tokens = gs.Tokens[space];
+		var tokens = space.Tokens;
 		tokens.Adjust(Presence.Token, 2);
 
 		gs.TimePasses_WholeGame += Gs_TimePassed;
@@ -64,19 +64,19 @@ public class LightningsSwiftStrike : Spirit {
 
 	}
 
-	public override Task TakeAction( IActionFactory factory, SelfCtx ctx ) {
+	public override Task TakeAction( IActionFactory factory, Phase phase ) {
 
 		// we can decrement any time a slow card is used,
 		// even during slow because we no longer care about this
-		if(ctx.GameState.Phase == Phase.Fast
+		if(phase == Phase.Fast
 			&& factory.CouldActivateDuring( Phase.Slow, this )
 			&& factory is IFlexibleSpeedActionFactory flexSpeedFactory
 		) {
 			++usedAirForFastCount;
-			TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, ctx.GameState );
+			TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, GameState.Current );
 		}
 
-		return base.TakeAction(factory,ctx);
+		return base.TakeAction(factory,phase);
 	}
 
 

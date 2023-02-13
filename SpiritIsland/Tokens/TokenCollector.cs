@@ -6,12 +6,16 @@
 /// </summary>
 public abstract class TokenCollector<DerivedType> where DerivedType : TokenCollector<DerivedType> {
 
-	protected readonly TargetSpaceCtx _destinationCtx;
+
+	protected readonly SpaceState _destinationTokens;
+	protected readonly Spirit _self;
+
 	readonly protected List<CollectQuota> sharedGroupCounts = new(); // the # we push from each group
 	readonly protected Dictionary<IEntityClass, int> indexLookupByClass = new(); // map from group back to its count
 
-	protected TokenCollector(TargetSpaceCtx destinationCtx ) {
-		_destinationCtx = destinationCtx;
+	protected TokenCollector(Spirit self, SpaceState destinatinTokens ) {
+		_self = self;
+		_destinationTokens = destinatinTokens;
 	}
 
 	protected abstract IEnumerable<SpaceState> PossibleGatherSources { get; }
@@ -33,9 +37,9 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		while(0 < (options = GetSpaceTokenOptions()).Length) {
 			// !! maybe make the next line virtual instead of the GroupsToGather
 			string prompt = actionPromptPrefix + RemainingQuota.Select( x => x.ToString() ).Join( ", " );
-			var source = await _destinationCtx.Decision( Select.TokenFromManySpaces.ToCollect( prompt, options, present, _destinationCtx.Space ) );
+			var source = await _self.Gateway.Decision( Select.TokenFromManySpaces.ToCollect( prompt, options, present, _destinationTokens.Space ) );
 			if(source == null) break;
-			await _destinationCtx.Move( source.Token, source.Space, _destinationCtx.Space );
+			await source.Token.Move( source.Space.Tokens, _destinationTokens );
 			MarkAsCollected( source );
 			collected.Add( source );
 		}

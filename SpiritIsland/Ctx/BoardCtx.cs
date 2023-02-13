@@ -27,7 +27,7 @@ public class BoardCtx : SelfCtx {
 
 	public Board Board { get; }
 
-	public IEnumerable<SpaceState> ActiveSpaces => Board.Spaces.Upgrade();
+	public IEnumerable<SpaceState> ActiveSpaces => Board.Spaces.Tokens();
 
 	static public Spirit FindSpirit( GameState gameState, Board board ) {
 		int index = 0;
@@ -42,7 +42,7 @@ public class BoardCtx : SelfCtx {
 
 	public SpaceToken[] FindTokens( params IEntityClass[] tokenClasses ) {
 		return Board.Spaces
-			.SelectMany( s => GameState.Tokens[s].SpaceTokensOfAnyClass( tokenClasses ) )
+			.SelectMany( s => s.Tokens.SpaceTokensOfAnyClass( tokenClasses ) )
 			.ToArray();
 	}
 

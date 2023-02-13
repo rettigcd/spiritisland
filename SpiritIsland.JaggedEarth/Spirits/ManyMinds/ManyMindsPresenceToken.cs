@@ -3,11 +3,11 @@
 /// <summary>
 /// Adds/Removes a single Beast token for a Sacred Site
 /// </summary>
-public class ManyMindsToken : SpiritPresenceToken, IHandleTokenAdded, IHandleTokenRemoved {
+public class ManyMindsPresenceToken : SpiritPresenceToken, IHandleTokenAdded, IHandleTokenRemoved {
 
 	#region constructor
 
-	public ManyMindsToken(Spirit spirit):base(spirit) {
+	public ManyMindsPresenceToken(Spirit spirit):base(spirit) {
 		_beastToken = new ManyMindsBeast(this);
 	}
 

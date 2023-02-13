@@ -41,86 +41,47 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Place presence on highest numbered land with dahan
-		gs.Tokens[board.Spaces.Where(s => gs.Tokens[s].Dahan.Any).Last()].Adjust(Presence.Token, 1);
+		board.Spaces.Tokens().Where( s => s.Dahan.Any ).Last().Adjust(Presence.Token, 1);
 		// and in land #4
-		gs.Tokens[board[4]].Adjust(Presence.Token, 1);
+		board[4].Tokens.Adjust(Presence.Token, 1);
 
 	}
-
-	// A Real Flair for Discord
-	// After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land."
-	//public override async Task AddStrife( TargetSpaceCtx ctx, Token invader ) {
-	//	await base.AddStrife( ctx, invader );
-	//	if(Energy==0) return;
-	//	var nearbyInvaders = ctx.Space.Range(1)
-	//		.SelectMany(s=>ctx.Target(s).Tokens.Invaders().Select(t=>new SpaceToken(s,t)))
-	//		.ToArray();
-	//	var invader2 = await Action.Decision(new Select.TokenFromManySpaces("Add additional strife for 1 energy",nearbyInvaders,Present.Done));
-	//	if(invader2 == null) return;
-	//	Energy--;
-	//	await base.AddStrife( ctx.Target(invader2.Space), invader2.Token);
-	//}
-	// !!!!! was this AddStrife.. thing added to derived context ????
-
 
 	// Cleanup Up Messes is such a drag
 	public override async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
-		await CleaningUpMessesIsSuckADrag( ctx );
+		await CleaningUpMessesIsSuckADrag( ctx.Self, ctx.Tokens );
 		await base.RemoveBlight( ctx,count );
 	}
 
-	static public async Task CleaningUpMessesIsSuckADrag( TargetSpaceCtx ctx ) {
-		if(ctx.Blight.Any)
-			await ctx.Self.PickPresenceToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" );
+	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, SpaceState tokens ) {
+		if(tokens.Blight.Any)
+			await spirit.PickPresenceToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" );
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) 
-		=> new TricksterCtx( spirit );
-}
+	public override SelfCtx BindMyPowers( Spirit spirit ) {
+		ActionScope.Current.Upgrader = (x) => new TrixterTokens( x );
+		return new SelfCtx( spirit );
+	}
 
-// Only use this when Trickster is using their own Powers
-class TricksterCtx : SelfCtx {
-	public TricksterCtx(Spirit spirit) : base( spirit ) { }
-	public override TargetSpaceCtx Target( Space space ) => new TricksterSpaceCtx( this, space );
-}
+	public override async Task AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
 
-public class TricksterSpaceCtx : TargetSpaceCtx {
+		// ! Maybe this hould be in Trixter, and not in the Tokens...
 
-	public TricksterSpaceCtx(SelfCtx ctx, Space space):base( ctx, space ) {}
+		var st = await Gateway.Decision( Select.Invader.ForStrife( tokens, groups ) );
+		if(st == null) return;
+		var invader = (HumanToken)st.Token;
+		await tokens.AddRemoveStrifeTo( invader );
 
-	public override BlightTokenBinding Blight => new TricksterBlight( this );
+		if(Energy == 0) return;
 
-	public override async Task AddStrife( params HumanTokenClass[] groups ) {
-		await base.AddStrife( groups );
-
-		if( Self.Energy == 0 ) return;
-
-		var nearbyInvaders = Self.PowerRangeCalc.GetTargetOptionsFromKnownSource( 
-			new SpaceState[] { Tokens },
-			new TargetCriteria( 1 )
-		)
+		var nearbyInvaders = PowerRangeCalc.GetTargetOptionsFromKnownSource( tokens.Adjacent, new TargetCriteria( 1 ) )
 			.SelectMany( s => s.InvaderTokens().Select( t => new SpaceToken( s.Space, t ) ) )
 			.ToArray();
-		var invader2 = await Self.Gateway.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		var invader2 = await Gateway.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;
-		--Self.Energy;
-		await Target( invader2.Space ).AddStrifeTo( (HumanToken)invader2.Token );
+		--Energy;
+		await invader2.Space.Tokens.AddRemoveStrifeTo( (HumanToken)invader2.Token );
 
 	}
 
-}
-
-// !!! merge this into TricksterSpaceCtx
-public class TricksterBlight : BlightTokenBinding {
-
-	readonly TricksterSpaceCtx ctx;
-
-	public TricksterBlight( TricksterSpaceCtx ctx ) :base( ctx.Tokens ) {
-		this.ctx = ctx;
-	}
-
-	public override async Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
-		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuckADrag( ctx ); // feature envy?
-		await base.Remove( count, reason );
-	}
 }

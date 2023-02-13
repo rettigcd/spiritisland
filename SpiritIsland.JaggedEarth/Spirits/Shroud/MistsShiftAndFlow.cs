@@ -79,7 +79,7 @@ class MistsShiftAndFlow {
 	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
 		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
 
-		var pretendPresence = new SpaceCounts( _gameState, _spirit );
+		var pretendPresence = new SpaceCounts( _spirit );
 
 		var spacesInRange = target.Range(1) // this is a Gather
 			.ToArray();
@@ -120,7 +120,7 @@ class MistsShiftAndFlow {
 		// For small ranges, flow-targets will be larger.
 
 		var target = await _spirit.Gateway.Decision( new Select.ASpace( _prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
-		return this._gameState.Tokens[target];
+		return target.Tokens;
 	}
 
 	void CalculateSpaceGroups() {
@@ -161,7 +161,7 @@ class MistsShiftAndFlow {
 	
 		readonly Spirit _spirit;
 
-		public SpaceCounts(GameState gameState, Spirit spirit) : base() {
+		public SpaceCounts(Spirit spirit) : base() {
 			_spirit = spirit;
 			foreach(var ss in SpaceStates)
 				Add(ss.Space,spirit.Presence.CountOn(ss));

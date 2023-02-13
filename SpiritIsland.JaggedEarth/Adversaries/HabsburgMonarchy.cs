@@ -106,7 +106,7 @@ public class HabsburgMonarchy : IAdversary {
 		// on each board
 		foreach(Board board in gameState.Island.Boards) {
 
-			var spaces = board.Spaces.Upgrade().ToArray();
+			var spaces = board.Spaces.Tokens().ToArray();
 			// add 1 City to a Coastal land without City
 			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Human.City)==0);
 			if( coastWithoutCity != null)
@@ -142,12 +142,13 @@ public class HabsburgMonarchy : IAdversary {
 		
 		// on each board,
 		var spaces = gameState.Island.Boards
-			.SelectMany( board => new SpaceState[] {
+			.SelectMany( board => new Space[] {
 				// on land #2 
-				gameState.Tokens[board[2]],
+				board[2],
 				// and the highest-numbered land without Setup symbols,
-				gameState.Tokens[board.Spaces.Last( x => ((Space1)x).StartUpCounts.IsEmpty )]
+				board.Spaces.Last(x =>((Space1) x).StartUpCounts.IsEmpty)
 			} )
+			.Tokens()
 			.ToArray();
 
 		// add 1 Town
@@ -168,7 +169,7 @@ public class HabsburgMonarchy : IAdversary {
 	}
 
 	static async Task IfTooHealthyAddBlight(BoardCtx ctx) {
-		var spaces = ctx.Board.Spaces.Upgrade().ToArray();
+		var spaces = ctx.Board.Spaces.Tokens().ToArray();
 		int townsToAdd = spaces.Sum( x => x.Blight.Count ) switch { <= 2 => 2, <= 4 => 1, _ => 0 };
 
 		for(int i = 0; i < townsToAdd; ++i) {
@@ -177,7 +178,7 @@ public class HabsburgMonarchy : IAdversary {
 
 			var criteria = new Select.ASpace( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
 			var addSpace = await ctx.Self.Gateway.Decision( criteria );
-			await ctx.GameState.Tokens[addSpace].AddDefault( Human.Town, 1, AddReason.Build );
+			await addSpace.Tokens.AddDefault( Human.Town, 1, AddReason.Build );
 		}
 	}
 

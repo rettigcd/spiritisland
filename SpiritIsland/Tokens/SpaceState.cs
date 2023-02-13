@@ -93,7 +93,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public BeastBinding Beasts => new ( this, Token.Beast );
 	public TokenBinding Disease => new ( this, _api.GetDefault( Token.Disease ) );
 	public TokenBinding Wilds => new ( this, Token.Wilds );
-	public TokenBinding Badlands => new ( this, Token.Badlands ); // This should not be used directly from inside Actions
+	public virtual TokenBinding Badlands => new ( this, Token.Badlands ); // This should not be used directly from inside Actions
 	public HealthTokenClassBinding Dahan => new HealthTokenClassBinding( this, Human.Dahan );
 	//public HealthTokenClassBinding_NoEvents Explorers => new HealthTokenClassBinding_NoEvents( this, Invader.Explorer );
 	//public HealthTokenClassBinding_NoEvents Towns => new HealthTokenClassBinding_NoEvents( this, Invader.Town );
@@ -181,9 +181,8 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public IEnumerable<SpaceState> Adjacent_Unfiltered { 
 		get {
-			var gameState = GameState.Current;
 			foreach(var space in Space.Adjacent_Unfiltered)
-				yield return gameState.Tokens[space];
+				yield return space.Tokens;
 
 			foreach(var gateway in Keys.OfType<GatewayToken>())
 				yield return gateway.GetLinked(this);
@@ -275,7 +274,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
-	public async Task AddStrifeTo( HumanToken invader, int count = 1 ) {
+	public async Task AddRemoveStrifeTo( HumanToken invader, int count = 1 ) {
 
 		// Remove old type from 
 		if(this[invader] < count)
@@ -384,7 +383,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	/// <summary> Gathering / Pushing + a few others </summary>
-	public async Task MoveTo( IToken token, Space destination ) {
+	public async Task MoveTo( IToken token, SpaceState dstTokens ) {
 		// Current implementation favors:
 		//		switching token types prior to Add/Remove so events handlers don't switch token type
 		//		perfoming the add/remove action After the Adding/Removing modifications
@@ -407,7 +406,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		if(removeResults is null) return; // can be prevented by Remove-Mods
 
 		// Add to destination
-		var dstTokens = _api.GetTokensFor( destination );
 		var addResult = await dstTokens.Add( token, removeResults.Count, AddReason.MovedTo );
 		if(addResult == null) return;
 
@@ -429,4 +427,92 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		return invaderToDestroy.Destroy( this, countToDestroy );
 	}
 
+	public virtual TokenGatherer Gather( Spirit self ) => new TokenGatherer( self, this );
+
+	public virtual TokenPusher Pusher( Spirit self ) => new TokenPusher( self, this );
+
+	#region Bonus Damage
+
+	// pass in null if we don't need to track original damage (like 1 damage per)
+	// pass in a # if this is joining with original damage and needs tracked.
+	public BonusDamage BonusDamageForAction( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( this, "Invaders" ), DamagePool.BonusDamage(), trackOriginalDamage );
+	public BonusDamage BadlandDamageForDahan( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( this, "Dahan" ), new DamagePool(0), trackOriginalDamage );
+
+	#endregion
+
+}
+
+/// <summary>
+/// Tracks Bonus Damage for the Action based on # of Badlands and Spirit-bonus.
+/// </summary>
+public class BonusDamage {
+	readonly int _originalDamage;
+	readonly DamagePool _badlands;
+	readonly DamagePool _bonus;
+
+	/// <summary> May or may not have Original damage.  Track it and acount for it. </summary>
+	public BonusDamage( DamagePool badlands, DamagePool bonusDamage, int? originalDamage ) {
+		_badlands = badlands;
+		_bonus = bonusDamage;
+
+		if(originalDamage.HasValue) {
+			// only triggers if there was actual damage done and we need to account for it.
+			_originalDamage = originalDamage.Value;
+
+			Available = originalDamage.Value + _bonus.Remaining;
+			if(0 < originalDamage)
+				Available += _badlands.Remaining;
+		} else {
+			// Original damage is known to have happened and we don't need to track it.
+			_originalDamage = 0;
+
+			Available = _bonus.Remaining + _badlands.Remaining;
+		}
+	}
+
+	public int Available { get; }
+
+	public void TrackDamageDone( int damageApplied ) {
+		// Remove bonus damage from damage pools
+		int poolDamageToAccountFor = damageApplied - _originalDamage;
+		poolDamageToAccountFor -= _badlands.ReducePoolDamage( poolDamageToAccountFor );
+		poolDamageToAccountFor -= _bonus.ReducePoolDamage( poolDamageToAccountFor );
+
+		if(poolDamageToAccountFor > 0)
+			throw new Exception( "somehow we did more damage than we have available" );
+	}
+}
+
+public class DamagePool {
+
+	public static DamagePool BadlandDamage( SpaceState ss, string groupName ) {
+		// Note - this locks in Badland Count the 1st time we do damage.  Adding badlands after that has no effect.
+		var actionScope = ActionScope.Current;
+		string key = "BadlandDamage_" + ss.Space.Label +"_" + groupName;
+		if(actionScope.ContainsKey( key )) return (DamagePool)actionScope[key];
+		var pool = new DamagePool( ss.Badlands.Count );
+		actionScope[key] = pool;
+		return pool;
+	}
+
+	public static DamagePool BonusDamage() {
+		// Note - this locks in Badland Count the 1st time we do damage.  Adding badlands after that has no effect.
+		var actionScope = ActionScope.Current;
+		string key = "BonusDamage";
+		if(actionScope.ContainsKey( key )) return (DamagePool)actionScope[key];
+		var pool = new DamagePool( actionScope?.Owner?.BonusDamage ?? 0 );
+		actionScope[key] = pool;
+		return pool;
+	}
+
+	public DamagePool( int init ) { remaining = init; }
+
+	public int ReducePoolDamage( int poolDamageToAccountFor ) {
+		int damageFromBadlandPool = Math.Min( remaining, poolDamageToAccountFor );
+		remaining -= damageFromBadlandPool;
+		return damageFromBadlandPool;
+	}
+
+	int remaining;
+	public int Remaining => remaining;
 }

@@ -140,7 +140,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	public void SacredSitesPushDahan() {
 		// Given: space with 2 dahan
 		var space = board[5];
-		_gameState.DahanOn(space).Init(2);
+		space.Tokens.Dahan.Init(2);
 		//   and presence on that space
 		spirit.Presence.PlaceOn(space, _gameState).Wait();
 

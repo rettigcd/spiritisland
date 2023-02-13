@@ -40,10 +40,10 @@ public class FranceExplorer : ExploreEngine {
 	static DecisionOption<BoardCtx> AddExplorerToLandWithoutAny => new DecisionOption<BoardCtx>(
 		"Add Explorer to Land without any",
 		async boardCtx => {
-			var options = boardCtx.Board.Spaces.Where( s => !boardCtx.GameState.Tokens[s].HasAny( Human.Explorer ) ).ToArray();
+			var options = boardCtx.Board.Spaces.Where( s => !s.Tokens.HasAny( Human.Explorer ) ).ToArray();
 			var space = await boardCtx.Decision( new Select.ASpace( "Add explorer", options, Present.Always ) );
 			if(space != null)
-				await boardCtx.GameState.Tokens[space].AddDefault( Human.Explorer, 1 );
+				await space.Tokens.AddDefault( Human.Explorer, 1 );
 		}
 	);
 
@@ -69,7 +69,7 @@ public class FranceExplorer : ExploreEngine {
 
 		return Cmd.ForEachBoard( new DecisionOption<BoardCtx>(
 			"Place town or blight matching Explore card."
-			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces.Upgrade()
+			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces.Tokens()
 				.Where( card.MatchesCard )
 				.Select( SelectSpaceAction )
 				.ToArray()

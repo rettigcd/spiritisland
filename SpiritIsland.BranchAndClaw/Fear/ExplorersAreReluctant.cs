@@ -48,7 +48,7 @@ sealed public class SkipLowestNumberedExplore : SelfCleaningToken, ISkipExploreT
 		var card = gameCtx.GameState.InvaderDeck.Explore.Cards.FirstOrDefault();
 		_lowest = card == null ? new Dictionary<Board, SpaceState>()
 			: gameCtx.GameState.Island.Boards
-				.ToDictionary( brd => brd, brd => brd.Spaces.Upgrade().FirstOrDefault( card.MatchesCard ) );
+				.ToDictionary( brd => brd, brd => brd.Spaces.Tokens().FirstOrDefault( card.MatchesCard ) );
 	}
 
 	Dictionary<Board, SpaceState> _lowest = null;

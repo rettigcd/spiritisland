@@ -34,7 +34,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 			_ = ex.ToString(); 
 		} } 
 		_ = gameState.StartAction( ActionCategory.Spirit_Power ); // !!! not being disposed
-		_ = PlayCard( spirit.BindMyPowers( gameState ).TargetSpirit(spirit) );
+		_ = PlayCard( spirit.BindMyPowers().TargetSpirit(spirit) );
 
 		//  And: Can bring 2 of each
 		user.AssertDecisionInfo( "Select Presence to push.", "[A5],Done" );

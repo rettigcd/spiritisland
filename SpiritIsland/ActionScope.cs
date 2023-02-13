@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Reflection.Metadata.Ecma335;
+
 namespace SpiritIsland;
 
 /// <summary>
@@ -6,32 +8,66 @@ namespace SpiritIsland;
 /// </summary>
 public sealed class ActionScope : IAsyncDisposable {
 
+	#region scope container
+	class ActionScopeContainer {
+		public ActionScope Current = new ActionScope(); // default
+	}
+	static ActionScopeContainer Container => _container.Value ??= new ActionScopeContainer();
+	readonly static AsyncLocal<ActionScopeContainer> _container = new AsyncLocal<ActionScopeContainer>(); // value gets shallow-copied into child calls and post-awaited states.
+	#endregion
+
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
-	public static ActionScope Current => _current.Value ?? throw new InvalidOperationException("Current action is null");
-	public static ActionScope _TryGetCurrent => _current.Value; // gets current action if there is one, null otherwise
-	readonly static AsyncLocal<ActionScope> _current = new AsyncLocal<ActionScope>(); // value gets shallow-copied into child calls and post-awaited states.
+	public static ActionScope Current => Container.Current;
 
 	#region constructor
+
+	// The default / game-starting scope
+
+	ActionScope() {
+		Id = Guid.NewGuid();
+		_neverCache = true; // !! Since it is a singleton, make usable across multiple execution contexts
+	}
+
 	public ActionScope( ActionCategory actionCategory, TerrainMapper terrainMapper = null ) {
 		Id = Guid.NewGuid();
 		Category = actionCategory;
 
-		_terrainMapper = terrainMapper;
+		_terrainMapper = terrainMapper; // may be null
 
-		_old = _current.Value;
-		_current.Value = this;
+		_old = Container.Current;
+		Container.Current = this;
 	}
 	#endregion
 
-	public readonly ActionCategory Category;
-	public TerrainMapper TerrainMapper => _terrainMapper ??= GameState.Current.GetTerrain( Category );
+	public ActionCategory Category { get; }
+
+	public GameState GameState => _neverCache ? GameState.Current : _gameState ??= GameState.Current;
+	GameState _gameState;
+	readonly bool _neverCache = false; // for the root Action...
+
+	public SpaceState AccessTokens(Space space) => _upgrader( GameState.Tokens[space] );
+	public Func<SpaceState, SpaceState> Upgrader {
+		set {
+			if(_neverCache) throw new InvalidOperationException( "Can't set owner on default scope" );
+			_upgrader = value;
+		}
+	}
+	Func<SpaceState, SpaceState> _upgrader = DefaultUpgrader;
+	static SpaceState DefaultUpgrader(SpaceState ss) => ss;
+
+	public TerrainMapper TerrainMapper => _terrainMapper 
+		??= (GameState?.GetTerrain( Category ) ?? new TerrainMapper()); // If not GameState / configuration, use default
 	TerrainMapper _terrainMapper;
 
 	readonly ActionScope _old;
 
 	// spirit (if any) that owns the action. Null for non-spirit actions
-	public Spirit Owner { get; set; }
+	public Spirit Owner { 
+		get => _owner;
+		set { if(_neverCache) throw new InvalidOperationException("Can't set owner on default scope"); _owner = value; }
+	}
+	Spirit _owner;
 
 	public Guid Id { get; }
 
@@ -58,10 +94,12 @@ public sealed class ActionScope : IAsyncDisposable {
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
 
-		var current = _current.Value;
-		if( current != this) 
+		var container = Container;
+		var current = container.Current;
+		if(current != this) 
 			throw new Exception($"Disposing {Category}/{Id} but .Current is {current.Category}/{current.Id}");
-		_current.Value = _old; // restore it
+
+		container.Current = _old;
 	}
 
 	public void AtEndOfThisAction(Func<ActionScope,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );

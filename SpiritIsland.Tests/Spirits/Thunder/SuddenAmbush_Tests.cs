@@ -22,7 +22,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 	[Fact]
 	public void Gather1_Kill1() {
 		// Given: dahan on a3
-		gs.DahanOn(a[3]).Init(1);
+		a[3].Tokens.Dahan.Init(1);
 		//  and: 2 explorers on a2
 		gs.Tokens[a[2]].AdjustDefault(Human.Explorer,2);
 
@@ -37,8 +37,8 @@ public class SuddenAmbush_Tests : ThunderCards {
 	[Fact]
 	public void Gather1_Kills3() {
 		// Given: 1 dahan on a2 & 2 dahan on a1
-		gs.DahanOn( a[2] ).Init(1);
-		gs.DahanOn( a[1] ).Init(2);
+		a[2].Tokens.Dahan.Init(1);
+		a[1].Tokens.Dahan.Init(2);
 		//  and: 5 explorers on a1
 		gs.Tokens[a[1]].AdjustDefault( Human.Explorer, 5 );
 
@@ -55,8 +55,8 @@ public class SuddenAmbush_Tests : ThunderCards {
 	[Fact]
 	public void DoesntKillTown() {
 		// Given: 1 dahan on a2 & 2 dahan on a1
-		gs.DahanOn(a[2]).Init(1);
-		gs.DahanOn(a[1]).Init(2);
+		a[2].Tokens.Dahan.Init(1);
+		a[1].Tokens.Dahan.Init(2);
 		//  and: 1 town on a1
 		gs.Tokens[a[1]].AdjustDefault( Human.Town, 1 );
 

@@ -14,26 +14,26 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 
 		AdvanceToInvaderPhase();
 
-		log.Assert_Built( "A3", "A8" );
-		log.Assert_Explored( "A2", "A5" );
+		_log.Assert_Built( "A3", "A8" );
+		_log.Assert_Explored( "A2", "A5" );
 
 		// Given: Explorers Are Reluctant
-		ctx.ActivateFearCard( card );
+		_ctx.ActivateFearCard( card );
 
 		AdvanceToInvaderPhase();
 		_user.AcknowledgesFearCard( FearAck1 );
 		
 		_ = _user.NextDecision; // wait for engine to catch up
 
-		log.Assert_Ravaged( "A3", "A8" );
-		log.Assert_Built( "A2: build stopped", "A5" ); // Skipped A2
-		log.Assert_Explored( "A4", "A7" ); 
+		_log.Assert_Ravaged( "A3", "A8" );
+		_log.Assert_Built( "A2: build stopped", "A5" ); // Skipped A2
+		_log.Assert_Explored( "A4", "A7" ); 
 
 		AdvanceToInvaderPhase();
 
-		log.Assert_Ravaged( "A2", "A5" );
-		log.Assert_Built( "A4", "A7" );
-		log.Assert_Explored( "A3", "A8" );
+		_log.Assert_Ravaged( "A2", "A5" );
+		_log.Assert_Built( "A4", "A7" );
+		_log.Assert_Explored( "A3", "A8" );
 
 	}
 
@@ -48,33 +48,33 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 
 		AdvanceToInvaderPhase();
 
-		log.Assert_Built( "A3", "A8" );
-		log.Assert_Explored( "A2", "A5" );
+		_user.WaitForNext();
+		_log.Assert_Built( "A3", "A8" );
+		_log.Assert_Explored( "A2", "A5" );
 
 		// Card Advance #3 - End of 1st round
-		_ = _user.NextDecision; // Wait for engine to sync up
+		_user.WaitForNext();
 
 		// Given: Explorers Are Reluctant
-		ctx.ActivateFearCard( card );
+		_ctx.ActivateFearCard( card );
 		//   And: Terror Level 2
-		ctx.ElevateTerrorLevelTo( 2 );
+		_ctx.ElevateTerrorLevelTo( 2 );
 
 		AdvanceToInvaderPhase();
 		_user.AcknowledgesFearCard( FearAck2 );
-		_ = _user.NextDecision; // Wait for engine to sync up
+		_user.WaitForNext();
 
 		// Card Advance #4 - End of 2st round
-		log.Assert_Ravaged( "A3", "A8" );
-		log.Assert_Explored("A4","A7");
+		_log.Assert_Ravaged( "A3", "A8" );
+		_log.Assert_Explored("A4","A7");
 
 		AdvanceToInvaderPhase();
-		//System.Threading.Thread.Sleep(5);
-		_ = _user.NextDecision;
+		_user.WaitForNext();
 
 		// no ravage
-		log.Assert_Built( "A2", "A5" ); // double up Builds
-		log.Assert_Built( "A4", "A7" ); // double up Builds
-		log.Assert_Explored( "A3", "A8" );
+		_log.Assert_Built( "A2", "A5" ); // double up Builds
+		_log.Assert_Built( "A4", "A7" ); // double up Builds
+		_log.Assert_Explored( "A3", "A8" );
 
 	}
 
@@ -87,26 +87,26 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 		AdvanceToInvaderPhase();
 		System.Threading.Thread.Sleep(5);
 
-		log.Assert_Built( "A3", "A8" );
-		log.Assert_Explored( "A2", "A5" );
+		_log.Assert_Built( "A3", "A8" );
+		_log.Assert_Explored( "A2", "A5" );
 
 		// Given: Explorers Are Reluctant
-		ctx.ActivateFearCard( card );
-		ctx.ElevateTerrorLevelTo( 3 );
+		_ctx.ActivateFearCard( card );
+		_ctx.ElevateTerrorLevelTo( 3 );
 
 		AdvanceToInvaderPhase();
 		_user.AcknowledgesFearCard( FearAck3 );
 		System.Threading.Thread.Sleep(5);
 
-		log.Assert_Ravaged( "A3", "A8" );
-		log.Assert_Explored("A4", "A7");
+		_log.Assert_Ravaged( "A3", "A8" );
+		_log.Assert_Explored("A4", "A7");
 
 		AdvanceToInvaderPhase();
 		System.Threading.Thread.Sleep(5);
 
-		log.Assert_Ravaged( "A2", "A5" );
-		log.Assert_Built("A4", "A7"); // normal build
-		log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
+		_log.Assert_Ravaged( "A2", "A5" );
+		_log.Assert_Built("A4", "A7"); // normal build
+		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
 
 	}
 

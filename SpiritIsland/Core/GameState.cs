@@ -4,7 +4,7 @@ namespace SpiritIsland;
 
 public class GameState : IHaveHealthPenaltyPerStrife {
 
-	public static GameState Current => _current.Value;
+	public static GameState Current => _current.Value; // !!! Only access from the ActionScope
 	readonly static AsyncLocal<GameState> _current = new AsyncLocal<GameState>(); // value gets shallow-copied into child calls and post-awaited states.
 
 	#region constructors
@@ -88,13 +88,12 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public Spirit[] Spirits { get; }
 
 	public Tokens_ForIsland Tokens { get; }
-	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards.SelectMany(b=>b.Spaces_Unfiltered)
-		.Select(Tokens.GetTokensFor);
+	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards.SelectMany(b=>b.Spaces_Unfiltered).Tokens();
 
 	/// <summary> Active, Not in statis </summary>
-	public IEnumerable<SpaceState> Spaces => Island.Boards.SelectMany( b => b.Spaces ).Select( Tokens.GetTokensFor );
+	public IEnumerable<SpaceState> Spaces => Island.Boards.SelectMany( b => b.Spaces ).Tokens();
 
-	public IEnumerable<SpaceState> Spaces_AndNotInPlay => Island.Boards.SelectMany( b => b.Spaces_IncludeOcean ).Select( Tokens.GetTokensFor );
+	public IEnumerable<SpaceState> Spaces_AndNotInPlay => Island.Boards.SelectMany( b => b.Spaces_IncludeOcean ).Tokens();
 
 
 	public PowerCardDeck MajorCards {get; set; }
@@ -152,8 +151,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	readonly Dictionary<Space, RavageBehavior> _ravageConfig = new Dictionary<Space, RavageBehavior>(); // change ravage state of a Space
 
 	#endregion
-
-	public HealthTokenClassBinding DahanOn( Space space ) => Tokens[space].Dahan; // Obsolete - use TargetSpaceCtx
 
 	#region Win / Loss
 
@@ -216,7 +213,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
 		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit.Presence ) );
-		await gs.Tokens[presenceSpace].Destroy(spirit.Token,1);
+		await presenceSpace.Tokens.Destroy(spirit.Token,1);
 	}
 
 	#endregion
@@ -273,7 +270,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	// !! If we decide to split up Config stuff, move this to ActionScope
 	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
 	readonly TerrainMapper DefaultTerrain = new TerrainMapper(); // Default
-	Dictionary<ActionCategory,TerrainMapper> _terrains = new Dictionary<ActionCategory, TerrainMapper>();
+	readonly Dictionary<ActionCategory,TerrainMapper> _terrains = new Dictionary<ActionCategory, TerrainMapper>();
 	public TerrainMapper Terrain_ForBlight = new TerrainMapper(); // This is ONLY called for blight inside gamestate.
 
 	public TerrainMapper GetTerrain( ActionCategory cat ) => _terrains.ContainsKey(cat) ? _terrains[cat] : DefaultTerrain;

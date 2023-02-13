@@ -59,17 +59,17 @@ public class WeaveTogetherTheFabricOfPlace {
 
 			// divide pieces as you wish.
 			await using ActionScope actionScope = new ActionScope( ActionCategory.Spirit_Power );
-			await DistributeTokens( originatorCtx, space, other, gs );
+			await DistributeTokens( originatorCtx, space, other );
 		});
 
 		return multi;
 	}
 
-	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other, GameState gs ) {
+	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other ) {
 		// Distribute Tokens (All of them are considered moved.)
-		var tokens = gs.Tokens[space].Keys.OfType<IToken>().ToArray();
+		var tokens = space.Tokens.Keys.OfType<IToken>().ToArray();
 		var tokenClasses = tokens.Select( x => x.Class ).Distinct().ToArray();
-		await new TokenGatherer( ctx.Target( other ) )
+		await other.Tokens.Gather( ctx.Self )
 			.AddGroup( int.MaxValue, tokenClasses )
 			.FilterSource( ss => ss.Space == space )
 			.GatherUpToN();
@@ -78,8 +78,8 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	static void MoveAllItemsOnSpace(GameState gs, Space src, Space dst ) {
-		var srcTokens = gs.Tokens[src];
-		var dstTokens = gs.Tokens[dst];
+		var srcTokens = src.Tokens;
+		var dstTokens = dst.Tokens;
 		foreach(var token in srcTokens.Keys.ToArray()) {
 			int count = srcTokens[token];
 			srcTokens.Adjust(token, -count);

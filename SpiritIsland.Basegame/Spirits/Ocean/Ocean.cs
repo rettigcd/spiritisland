@@ -59,13 +59,13 @@ public class Ocean : Spirit {
 		gameState.Terrain_ForBlight = new OceanTerrainForPower( gameState.Terrain_ForBlight, this );
 
 		// Place in Ocean
-		gameState.Tokens[board.Ocean].Adjust(Presence.Token,1);
+		board.Ocean.Tokens.Adjust(Presence.Token,1);
 
 		AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
 
 		var drownMod = new TokenAddedHandler( Drowning, true);
 		foreach(Board b in gameState.Island.Boards)
-			gameState.Tokens[b.Ocean].Adjust( drownMod, 1 );
+			b.Ocean.Tokens.Adjust( drownMod, 1 );
 	}
 
 	readonly SpecialRule DrowningRule = new SpecialRule(
@@ -80,7 +80,8 @@ public class Ocean : Spirit {
 		// If we are saving a dahan
 		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan() && Presence.IsOn( args.AddedTo )	) {
 			var moveOptions = gs.Island.Boards
-				.Select(x=>gs.Tokens[x.Ocean])
+				.Select(x=>x.Ocean)
+				.Tokens()
 				.SelectMany(x=>x.Adjacent)
 				.Distinct()
 				.ToArray();
@@ -100,7 +101,7 @@ public class Ocean : Spirit {
 
 		// Drown them immediately
 		gs.Log( new Log.Debug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
-		await new InvaderBinding( gs.Tokens[args.AddedTo.Space] ).DestroyNTokens( ht, args.Count );
+		await new InvaderBinding( args.AddedTo.Space.Tokens ).DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
 		if(args.Token.Class.Category == TokenCategory.Invader)

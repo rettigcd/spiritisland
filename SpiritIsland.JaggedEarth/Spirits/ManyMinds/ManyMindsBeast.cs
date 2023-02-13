@@ -7,9 +7,9 @@
 /// </remarks>
 public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemoved {
 
-	readonly ManyMindsToken _presenceToken;
+	readonly ManyMindsPresenceToken _presenceToken;
 
-	public ManyMindsBeast(ManyMindsToken presenceToken ) {
+	public ManyMindsBeast(ManyMindsPresenceToken presenceToken ) {
 		_presenceToken= presenceToken;
 	}
 

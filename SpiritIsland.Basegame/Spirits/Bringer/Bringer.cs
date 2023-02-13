@@ -40,10 +40,13 @@ public class Bringer : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: 2 presense in highest numbered sands
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
-		var space = gs.Tokens[startingIn];
+		var space = startingIn.Tokens;
 		space.Adjust( Presence.Token, 2 );
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new BringerCtx( spirit );
+	public override SelfCtx BindMyPowers( Spirit spirit ) { 
+		ActionScope.Current.Upgrader = x => new TDaTD_ActionTokens(x);
+		return new SelfCtx( spirit );
+	}
 
 }

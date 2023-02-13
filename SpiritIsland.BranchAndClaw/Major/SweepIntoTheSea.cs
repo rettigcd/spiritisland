@@ -25,7 +25,7 @@ public partial class SweepIntoTheSea {
 	}
 
 	static async Task<TargetSpaceCtx> SelectSpaceCloserToTheOcean( TargetSpaceCtx ctx ) {
-		var oceans = ctx.GameState.Island.Boards.Select( b => ctx.GameState.Tokens[b.Ocean] );
+		var oceans = ctx.GameState.Island.Boards.Select( b => b.Ocean.Tokens );
 		var distanceFromOceans = new DistanceFromOceanCalculator()
 			.SetTargets( oceans )
 			.Calculate();

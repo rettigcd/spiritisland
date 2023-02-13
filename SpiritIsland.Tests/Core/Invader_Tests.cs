@@ -288,7 +288,7 @@ public class Invader_Tests {
 			int count = unit[0] - '0';
 			string itemSummary = unit[1..];
 			if(itemSummary=="D@2"){
-				gameState.DahanOn(space).Init(count);
+				space.Tokens.Dahan.Init(count);
 			} else {
 				var invader = Parse(itemSummary);
 				gameState.Tokens[space].Adjust(invader,count);

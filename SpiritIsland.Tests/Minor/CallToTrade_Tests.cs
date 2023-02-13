@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Log;
-
-namespace SpiritIsland.Tests.Minor;
+﻿namespace SpiritIsland.Tests.Minor;
 
 public class CallToTrade_Tests {
 
@@ -37,27 +35,27 @@ public class CallToTrade_Tests {
 	[Trait( "Invaders", "Ravage" )]
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
-	[Trait("Feature","Gather")]
+	[Trait( "Feature","Gather" )]
 	[Fact]
 	public void OneRavage_ReplacedWithBuild() {
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
 
 		// Given: advance to 2nd round where we have a ravage
 		user.AdvancesToStartOfNextInvaderPhase();
+		user.WaitForNext();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
 		var spaceCtx = AllTargets( ctx )
 			.Last( s => s.MatchesRavageCard && !s.MatchesBuildCard ); // last stays away from city and ocean
-																		//  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
+
+		//  And: it has 3 explorers (in case dahan attacks during ravage, would still 1 left over
 		Given_HasOnly3Explorers( spaceCtx );
 		Given_Has2Dahan( spaceCtx );
 		Given_NoSuroundingTowns( spaceCtx );
 		Given_NoSuroundingDahan( spaceCtx );
 
-		string info = $"{spaceCtx.Space.Label} {ctx.GameState.InvaderDeck.Build.Cards.Single()} ";
-
-
 		When_GrowsBuysAndActivatesCard( user, spaceCtx );
+		user.WaitForNext();
 
 		// Then: Card converted ravage to a build
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1T@2,3E@1" );
@@ -77,6 +75,7 @@ public class CallToTrade_Tests {
 
 		// Given: advance to 2nd round where we have a ravage
 		user.AdvancesToStartOfNextInvaderPhase();
+		user.WaitForNext();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
 		var spaceCtx = AllTargets( ctx )

@@ -10,7 +10,7 @@ public class SerpentRousesInAnger {
 		// For each fire & earth you have
 		int count = Math.Min( ctx.Self.Elements[Element.Fire], ctx.Self.Elements[Element.Earth]);
 		// 1 Damage to 1 town / city.
-		return ctx.Invaders.UserSelectedDamage(count,ctx.Self,Human.Town_City);
+		return ctx.Invaders.UserSelectedDamage( ctx.Self, count, Human.Town_City );
 	}
 
 	[InnateOption( "2 moon 2 earth", "For each 2 moon 2 earth you have, 2 fear and you may Push 1 town from target land." )]

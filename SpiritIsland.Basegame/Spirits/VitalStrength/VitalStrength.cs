@@ -30,7 +30,7 @@ public class VitalStrength : Spirit {
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
-		InitPresence( board, gs );
+		InitPresence( board );
 		gs.Tokens.Dynamic.ForGame.Register( new EarthsVitality(this).DefendOnSpace, SpiritIsland.Token.Defend );
 	}
 
@@ -42,11 +42,11 @@ public class VitalStrength : Spirit {
 			=> presence.IsSacredSite(space) ? 3 : 0;
 	}
 
-	void InitPresence( Board board, GameState gameState ){
-		var higestJungle = gameState.Tokens[ board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsJungle ) ];
-		var higestMountain = gameState.Tokens[ board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsMountain ) ];
-		higestMountain.Adjust( Presence.Token, 2 );
-		higestJungle.Adjust( Presence.Token, 1 );
+	void InitPresence( Board board ){
+		var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsJungle );
+		var higestMountain = board.Spaces.OrderByDescending(s => s.Label).First(s => s.IsMountain);
+		higestMountain.Tokens.Adjust( Presence.Token, 2 );
+		higestJungle.Tokens.Adjust( Presence.Token, 1 );
 	}
 
 }

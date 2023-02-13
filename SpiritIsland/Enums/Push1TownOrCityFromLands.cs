@@ -8,6 +8,6 @@ public class Push1TownOrCityFromLands : GrowthActionFactory, IActionFactory {
 		var source = await ctx.Decision( new Select.TokenFromManySpaces( "Select town/city to push from land", dahanOptions, Present.Done ) );
 		if(source == null) return;
 
-		await new TokenPusher( ctx.Target( source.Space ) ).PushToken( source.Token );
+		await new TokenPusher( ctx.Self, source.Space.Tokens ).PushToken( source.Token );
 	}
 }

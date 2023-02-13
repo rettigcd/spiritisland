@@ -61,8 +61,8 @@ public abstract class Space
 		}
 	}
 
-	public SpaceState Tokens => GameState.Current.Tokens[this];
-	public static implicit operator SpaceState( Space space) => GameState.Current.Tokens[space];
+	public SpaceState Tokens => ActionScope.Current.AccessTokens(this);
+	public static implicit operator SpaceState( Space space) => space.Tokens;
 
 	#region Connect / Disconnect
 

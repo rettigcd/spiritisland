@@ -55,9 +55,9 @@ public class ShroudOfSilentMist : Spirit {
 
 		// Place presence in:
 		// (a) Highest # mountains,
-		gameState.Tokens[board.Spaces.Where(s => s.IsMountain).Last()].Adjust(Presence.Token, 1);
+		board.Spaces.Where(s => s.IsMountain).Last().Tokens.Adjust(Presence.Token, 1);
 		// (b) highest # wetlands
-		gameState.Tokens[board.Spaces.Where(s => s.IsWetland).Last()].Adjust(Presence.Token, 1);
+		board.Spaces.Where(s => s.IsWetland).Last().Tokens.Adjust(Presence.Token, 1);
 
 		gameState.TimePasses_WholeGame += GameState_TimePasses_WholeGame;
 	}

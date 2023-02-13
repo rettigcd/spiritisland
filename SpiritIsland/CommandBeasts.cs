@@ -45,11 +45,12 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 	static async Task<int> PartialDamageToInvaders( TargetSpaceCtx ctx, int damage ) {
 		if(damage == 0) return 0; // not necessary, just saves some cycles
 
-		// !!! This is not correct, if card has multiple Damages, adds badland multiple times.
 		int badlandCount = ctx.Badlands.Count;
-		damage += badlandCount;
 
+		var totalDamage = ctx.Tokens.BonusDamageForAction( damage );
 		int damageDone = await ctx.Invaders.UserSelectedPartialDamage( damage, ctx.Self, Human.Invader );
+		totalDamage.TrackDamageDone( damageDone );
+
 		return damageDone == 0 
 			? 0 // no damage done
 			: Math.Max( 1, damageDone - badlandCount ); // some damage done, remove badland damage.

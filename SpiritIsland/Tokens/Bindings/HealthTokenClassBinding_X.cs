@@ -67,12 +67,14 @@ public class HealthTokenClassBinding {
 	}
 
 	/// <summary>Applies Damage Inefficiently</summary>
-	public async Task ApplyDamage_Inefficiently( int remainingDamageToDahan ) {
-		if(_tokens.Keys.OfType<IStopDahanDamage>().Any()) return;
+	public async Task<int> ApplyDamage_Inefficiently( int remainingDamageToDahan ) {
+		if(_tokens.Keys.OfType<IStopDahanDamage>().Any()) return 0;
 
 		// From BAC Rulebook p.16
 		// When Spirit Powers Damage the Dahan,
 		// you may choose how that Damage is allocated, just like when you Damage Invaders.
+
+		int total = 0;
 
 		HumanToken mostHealthy = null;
 		while(0 < remainingDamageToDahan
@@ -81,6 +83,7 @@ public class HealthTokenClassBinding {
 			// determine # to apply 1 damage 2
 			int countToApply1DamageTo = Math.Min( remainingDamageToDahan, _tokens[mostHealthy] );
 			remainingDamageToDahan -= countToApply1DamageTo;
+			total += countToApply1DamageTo;
 
 			HumanToken damagedToken = mostHealthy.AddDamage( 1 );
 			if(damagedToken.IsDestroyed) {
@@ -91,6 +94,7 @@ public class HealthTokenClassBinding {
 			}
 		}
 
+		return total;
 	}
 
 	/// <summary>Applies Damage Efficiently</summary>

@@ -12,8 +12,7 @@ public class TerrainMapper {
 
 	#region static
 
-	public static TerrainMapper Current => ActionScope._TryGetCurrent?.TerrainMapper ?? _defaultMapper;
-	static readonly TerrainMapper _defaultMapper = new TerrainMapper();
+	public static TerrainMapper Current => ActionScope.Current.TerrainMapper;
 
 	#endregion
 

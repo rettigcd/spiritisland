@@ -24,6 +24,7 @@ public class LetsSeeWhatHappens {
 	}
 
 	static async Task<PowerCard> DawCardAndActivateAtMax( TargetSpaceCtx ctx ) {
+
 		// Discard Minor Powers from the deck until you get one that targets a land.
 		PowerCard card = DiscardMinorPowersUntilYouTargetLand( ctx );
 
@@ -31,6 +32,10 @@ public class LetsSeeWhatHappens {
 		await ctx.Self.SelectFactory( "Perform All Action at Max", new IActionFactory[] { card } );
 
 		// Use immediately. All 'up to' instructions must be used at max and 'OR's treated as 'AND's "
+		await using var maxScope = new ActionScope( ActionCategory.Spirit_Power );
+		maxScope.Owner = ctx.Self;
+		maxScope.Upgrader = (x) => new TrixterTokens(x,runAtMax:true);
+
 		await card.InvokeOn( new LetsSeeWhatHappensCtx( ctx ) );
 		return card;
 	}

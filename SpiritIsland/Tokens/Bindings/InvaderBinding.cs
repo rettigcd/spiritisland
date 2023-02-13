@@ -22,7 +22,7 @@ public class InvaderBinding {
 			.ToArray();
 
 		// Filter if appropriate
-		if(generic != null && generic.Length>0)
+		if(generic != null && 0<generic.Length)
 			invaders = invaders.Where(t=>generic.Contains(t.Class)).ToArray();
 
 		foreach(var invader in invaders)
@@ -154,7 +154,7 @@ public class InvaderBinding {
 		return damageInflicted;
 	}
 
-	public Task<int> UserSelectedDamage( int damage, Spirit damagePicker, params IEntityClass[] allowedTypes ) {
+	public Task<int> UserSelectedDamage( Spirit damagePicker, int damage, params IEntityClass[] allowedTypes ) {
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = Human.Invader;
 		return UserSelectedDamage( damage, damagePicker, Present.Always, allowedTypes );

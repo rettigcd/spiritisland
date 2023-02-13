@@ -79,11 +79,11 @@ public class Scotland : IAdversary {
 	static async Task PortsSprawlOutward_Escalation( GameState gameState ) {
 		// On the single board with the most Coastal Town / City,
 		var board = gameState.Island.Boards
-			.OrderByDescending( b => b.Spaces.Where( s => s.IsCoastal ).Upgrade()
+			.OrderByDescending( b => b.Spaces.Where( s => s.IsCoastal ).Tokens()
 					.Sum( ss => ss.SumAny( Human.Town_City ) ) )
 			.First();
 		// add 1 Town to the N lands with the fewest Town( N = # of players.)
-		var spacesToAddTown = board.Spaces.Upgrade()
+		var spacesToAddTown = board.Spaces.Tokens()
 			.OrderBy( ss => ss.Sum( Human.Town ) )
 			.Take( gameState.Spirits.Length )
 			.ToArray();
@@ -96,7 +96,7 @@ public class Scotland : IAdversary {
 	static void SeizeOpportunity( GameState gameState ) {
 		// Add 1 City to land #2
 		foreach(Board board in gameState.Island.Boards)
-			gameState.Tokens[board[2]].AdjustDefault( Human.City, 1 );
+			board[2].Tokens.AdjustDefault( Human.City, 1 );
 		gameState.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
 	}
 

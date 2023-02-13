@@ -122,32 +122,14 @@ public abstract partial class Spirit : IOption {
 		Phase phase = gs.Phase;
 
 		while( GetAvailableActions( phase ).Any()
-			&& await ResolveAction( phase, gs )
+			&& await ResolveAction( phase )
 		) {}
 
 	}
 
-	public async Task<bool> ResolveAction( Phase phase, GameState gs ) {
+	public async Task<bool> ResolveAction( Phase phase ) {
+
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
-
-		var category = phase switch {
-			Phase.Init or
-			Phase.Growth => ActionCategory.Spirit_Growth,
-			Phase.Fast or
-			Phase.Slow => ActionCategory.Spirit_Power,
-			_ => throw new InvalidOperationException(),
-		};
-
-		await using var actionScope = new ActionScope( category );
-		actionScope.Owner = this;
-
-		SelfCtx ctx = phase switch {
-			Phase.Init or
-			Phase.Growth => BindSelf(),
-			Phase.Fast or 
-			Phase.Slow => BindMyPowers( gs ),
-			_ => throw new InvalidOperationException(),
-		};
 
 		// -------------
 		// Select Actions to resolve
@@ -166,7 +148,7 @@ public abstract partial class Spirit : IOption {
 		if(!options.Contains( option ))
 			throw new Exception( "Dude! - You selected something that wasn't an option" );
 
-		await TakeAction( option, ctx );
+		await TakeAction( option, phase );
 		return true;
 	}
 
@@ -288,7 +270,24 @@ public abstract partial class Spirit : IOption {
 		availableActions.Add( factory );
 	}
 
-	public virtual async Task TakeAction(IActionFactory factory, SelfCtx ctx) {
+	public virtual async Task TakeAction(IActionFactory factory, Phase phase) {
+		var category = phase switch {
+			Phase.Init or
+			Phase.Growth => ActionCategory.Spirit_Growth,
+			Phase.Fast or
+			Phase.Slow => ActionCategory.Spirit_Power,
+			_ => throw new InvalidOperationException(),
+		};
+		await using var actionScope = new ActionScope( category );
+		actionScope.Owner = this;
+		SelfCtx ctx = phase switch {
+			Phase.Init or
+			Phase.Growth => BindSelf(),
+			Phase.Fast or
+			Phase.Slow => BindMyPowers(),
+			_ => throw new InvalidOperationException(),
+		};
+
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( ctx );
 		if(factory is IRecordLastTarget lastTargetRecorder )
@@ -296,7 +295,7 @@ public abstract partial class Spirit : IOption {
 		ctx.GameState.CheckWinLoss(); // @@@
 	}
 
-	public AsyncEvent<ActionTaken> ActionTaken_ThisRound = new AsyncEvent<ActionTaken>();
+	public AsyncEvent<ActionTaken> ActionTaken_ThisRound = new AsyncEvent<ActionTaken>(); // !!! put this in end-of-action-scope handle.
 
 	#endregion
 
@@ -338,12 +337,12 @@ public abstract partial class Spirit : IOption {
 
 	#region Bind helpers
 	public SelfCtx BindSelf() => BindDefault( this );
-	public SelfCtx BindMyPowers( GameState gameState ) => BindMyPowers( this, gameState );
+	public SelfCtx BindMyPowers() => BindMyPowers( this );
 	#endregion Bind helpers
 
 	public virtual SelfCtx BindDefault( Spirit spirit )	=> new SelfCtx( spirit );
 
-	public virtual SelfCtx BindMyPowers( Spirit spirit, GameState gameState ) => new SelfCtx( spirit );
+	public virtual SelfCtx BindMyPowers( Spirit spirit ) => new SelfCtx( spirit );
 
 	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers
@@ -578,6 +577,15 @@ public abstract partial class Spirit : IOption {
 
 	// Works like badlands.
 	public int BonusDamage { get; set; } // This is a hack for Flame's Fury
+
+
+	/// <param name="groups">Option: if null/empty, no filtering</param>
+	public virtual async Task AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
+		var st = await Gateway.Decision( Select.Invader.ForStrife( tokens, groups ) );
+		if(st == null) return;
+		var invader = (HumanToken)st.Token;
+		await tokens.AddRemoveStrifeTo( invader );
+	}
 
 }
 
