@@ -59,7 +59,7 @@ public class France : IAdversary {
 		// As soon as you have 3 Blight per player here, move it all back to the Blight Card.
 
 		void DoFranceStuff( ITokenRemovedArgs args ) {
-			if(args.Token != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
+			if(args.Removed != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
 
 			var slowBlight = FrancePanel.Tokens.Blight;
 			if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {

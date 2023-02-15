@@ -48,7 +48,7 @@ public class VolcanoToken : SpiritPresenceToken, IHandleRemovingToken {
 		var selfCtx = ActionScope.Current.Category == ActionCategory.Spirit_Power // ??? is this needed => && actionScope.Owner == spirit
 			? _spirit.BindMyPowers()
 			: _spirit.BindSelf();
-		var ctx = selfCtx.Target( args.RemovedFrom );
+		var ctx = selfCtx.Target( args.From );
 
 		await ctx.DamageInvaders( args.Count );
 

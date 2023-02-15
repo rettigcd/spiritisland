@@ -54,7 +54,7 @@ static public class SpiritSelectExtensions {
 		return (source, destination);
 	}
 
-	static public Task Move( this IToken token, SpaceState from, SpaceState to ) {
+	static public Task<TokenMovedArgs> Move( this IToken token, SpaceState from, SpaceState to ) {
 		return from.MoveTo( token, to.Space );
 	}
 

@@ -31,8 +31,8 @@ public class SpiritPresenceToken : IToken, IEntityClass
 	/// <summary>
 	/// Override this to add behavior that IS NOT destroyed presenced.
 	/// </summary>
-	public async Task HandleTokenRemoved( ITokenRemovedArgs args ) {
-		if(args.Token == this && args.Reason.IsDestroyingPresence()) {
+	public virtual async Task HandleTokenRemoved( ITokenRemovedArgs args ) {
+		if(args.Removed == this && args.Reason.IsDestroyingPresence()) {
 			Destroyed += args.Count; // no in OnPresenceDestroyed because I don't want overrides to need to call Base.
 			await OnPresenceDestroyed( args );
 		}

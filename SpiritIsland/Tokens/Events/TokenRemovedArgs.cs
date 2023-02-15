@@ -6,13 +6,13 @@
 public class TokenRemovedArgs : ITokenRemovedArgs {
 
 	public TokenRemovedArgs(IToken token, RemoveReason reason, SpaceState space, int count ) {
-		Token = token;
+		Removed = token;
 		Reason = reason;
-		RemovedFrom = space;
+		From = space;
 		Count = count;
 	}
-	public IToken Token { get; }
-	public SpaceState RemovedFrom { get; }
+	public IToken Removed { get; }
+	public SpaceState From { get; }
 	public int Count { get; }
 	public RemoveReason Reason { get; }
 }

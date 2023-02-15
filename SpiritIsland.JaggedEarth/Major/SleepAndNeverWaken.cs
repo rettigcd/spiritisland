@@ -12,7 +12,7 @@ public class SleepAndNeverWaken {
 		// Track # of exlorers removed.
 		int removed = 0;
 		void CountDestroyedExplorers( ITokenRemovedArgs args ) {
-			if(args.Token.Class == Human.Explorer)
+			if(args.Removed.Class == Human.Explorer)
 				removed += args.Count;
 		}
 		ctx.Tokens.Adjust( new TokenRemovedHandler(CountDestroyedExplorers), 1 );

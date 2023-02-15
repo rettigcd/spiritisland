@@ -81,18 +81,18 @@ public class Sweden : IAdversary {
 		if(5 <= Level) {
 			var mod = new TokenAddedHandler(async args => {
 				// When ravage adds at least 1 blight to a land
-				if(args.Reason == AddReason.Ravage && args.Token == Token.Blight) {
-					var noBuildAdjacents = args.AddedTo.Adjacent
+				if(args.Reason == AddReason.Ravage && args.Added == Token.Blight) {
+					var noBuildAdjacents = args.To.Adjacent
 						.Where( adj => !adj.HasAny( Human.Town_City ) )
 						.ToArray();
 
 					var gs = GameState.Current;
-					var spirit = BoardCtx.FindSpirit( gs, args.AddedTo.Space.Board );
+					var spirit = BoardCtx.FindSpirit( gs, args.To.Space.Board );
 
-					var selection = await spirit.Gateway.Decision(Select.ASpace.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.AddedTo.GetDefault( Human.Town ) ) );
+					var selection = await spirit.Gateway.Decision(Select.ASpace.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.To.GetDefault( Human.Town ) ) );
 					if(selection != null) {
 						selection.Tokens.AdjustDefault( Human.Town, 1 );
-						gs.LogDebug($"Mining Rush: Blight on {args.AddedTo.Space.Text} caused +1 Town on {selection.Text}.");
+						gs.LogDebug($"Mining Rush: Blight on {args.To.Space.Text} caused +1 Town on {selection.Text}.");
 					}
 				}
 			}, true );

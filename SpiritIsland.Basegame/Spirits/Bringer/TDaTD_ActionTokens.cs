@@ -61,7 +61,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		return invaderToken.AddDamage( 0, availableDamage );
 	}
 
-	public override async Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
+	public override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
 		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
 		for(int i = 0; i < countToDestroy; ++i)
 			await Destroy1Token( invaderToDestroy );

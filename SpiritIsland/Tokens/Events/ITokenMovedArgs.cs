@@ -3,10 +3,10 @@
 public interface ITokenMovedArgs {
 	int Count { get; }
 
-	ISpaceEntity TokenRemoved { get; }
-	SpaceState RemovedFrom { get; }
+	IToken Removed { get; }
+	SpaceState From { get; }
 
-	ISpaceEntity TokenAdded { get; }
-	SpaceState AddedTo { get; }
+	IToken Added { get; }
+	SpaceState To { get; }
 }
 

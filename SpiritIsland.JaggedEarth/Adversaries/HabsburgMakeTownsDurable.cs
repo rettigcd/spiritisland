@@ -11,10 +11,10 @@ class HabsburgMakeTownsDurable
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
 		// Level 4 - Durable / Herds Thrive
 		// If removing last blight from space
-		if(args.Token == Token.Blight && !args.RemovedFrom.Blight.Any)
+		if(args.Removed == Token.Blight && !args.From.Blight.Any)
 			// Switch all towns to Durable
-			foreach(HumanToken t in args.RemovedFrom.OfHumanClass( Human.Town ))
-				args.RemovedFrom.ReplaceAllWith( t, new HabsburgDurableToken( t ) );
+			foreach(HumanToken t in args.From.OfHumanClass( Human.Town ))
+				args.From.ReplaceAllWith( t, new HabsburgDurableToken( t ) );
 		return Task.CompletedTask;
 	}
 

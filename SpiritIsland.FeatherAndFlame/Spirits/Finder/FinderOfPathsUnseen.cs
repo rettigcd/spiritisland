@@ -79,7 +79,7 @@ public class FinderOfPathsUnseen : Spirit {
 			// Destroys 1 or more
 			&& args.Reason == RemoveReason.Destroyed
 			// Dahan/Invaders,
-			&& args.Token.Class.Category.IsOneOf( TokenCategory.Invader, TokenCategory.Dahan )
+			&& args.Removed.Class.Category.IsOneOf( TokenCategory.Invader, TokenCategory.Dahan )
 		// or directly triggers their Destruction my moving them,
 		) {
 			// Destroy 1 of your Presnce and lose 1 Energy.

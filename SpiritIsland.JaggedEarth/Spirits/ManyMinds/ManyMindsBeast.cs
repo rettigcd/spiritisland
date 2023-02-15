@@ -21,20 +21,20 @@ public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemoved {
 
 	public Task HandleTokenAdded( ITokenAddedArgs args ) {
 		// If we added it, it came from somewhere and represented 2 presence.
-		if(args.Token == this) {
+		if(args.Added == this) {
 			if(args.Reason != AddReason.MovedTo) throw new InvalidOperationException($"adding MM-Beast reason {args.Reason}");
-			args.AddedTo.Adjust(_presenceToken,2);
-			args.AddedTo.Init( this, 1 ); // limit to max 1
+			args.To.Adjust(_presenceToken,2);
+			args.To.Init( this, 1 ); // limit to max 1
 		}
 		return Task.CompletedTask;
 	}
 
 	public async Task HandleTokenRemoved( ITokenRemovedArgs args ) {
-		if(args.Token != this) return;
+		if(args.Removed != this) return;
 
 		// Page 28 of JE says that 'Removing' presence is treated the same as Destroying, just voluntary
 
-		var tokens = args.RemovedFrom;
+		var tokens = args.From;
 		if(args.Reason.IsDestroyingPresence())
 			await tokens.Destroy( _presenceToken, 2 );
 		else if( args.Reason == RemoveReason.MovedFrom )

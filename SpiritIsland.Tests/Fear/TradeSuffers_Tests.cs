@@ -31,6 +31,7 @@ public class TradeSuffers_Tests {
 		ActivateFearCard( new TradeSuffers() );
 
 		// Given: 1 city and nothing else
+		_user.WaitForNext();
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("1C@3");
 

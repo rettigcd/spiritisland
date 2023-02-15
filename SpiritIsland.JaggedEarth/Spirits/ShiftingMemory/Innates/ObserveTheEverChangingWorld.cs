@@ -41,11 +41,11 @@ public class ObserveWorldMod : ISpaceEntity
 	}
 
 	public Task HandleTokenAdded( ITokenAddedArgs args ) {
-		Check( args.AddedTo );
+		Check( args.To );
 		return Task.CompletedTask;
 	}
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
-		Check( args.RemovedFrom );
+		Check( args.From );
 		return Task.CompletedTask;
 	}
 

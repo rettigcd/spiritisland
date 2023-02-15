@@ -25,16 +25,16 @@ public class KeeperToken : SpiritPresenceToken, IHandleTokenAdded {
 	public KeeperToken(Spirit spirit):base(spirit) {}
 
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
-		if(args.Token != this) return;
+		if(args.Added != this) return;
 
-		int tokenCount = args.AddedTo[this];
+		int tokenCount = args.To[this];
 		bool createdSacredSite = (tokenCount-args.Count) < 2 && 2<= tokenCount;
 
-		if(createdSacredSite && args.AddedTo.Dahan.Any) {
+		if(createdSacredSite && args.To.Dahan.Any) {
 			var selfCtx = ActionScope.Current.Category == ActionCategory.Spirit_Power
 				? _spirit.BindMyPowers()
 				: _spirit.BindSelf();
-			await selfCtx.Target( args.AddedTo ).PushDahan( int.MaxValue );
+			await selfCtx.Target( args.To ).PushDahan( int.MaxValue );
 		}
 	}
 }

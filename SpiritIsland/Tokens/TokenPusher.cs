@@ -66,17 +66,17 @@ public class TokenPusher {
 	}
 
 	protected virtual async Task MoveSingleToken( IToken token, SpaceState source, SpaceState destination ) {
-		await token.Move( source, destination );
+		TokenMovedArgs moveResult = await token.Move( source, destination );
 		if( _customAction != null )
-			await _customAction( token, source.Space, destination.Space ); // !!! upgrade to Tokens
+			await _customAction( moveResult );
 	}
 
 
-	public TokenPusher AddCustomMoveAction( Func<ISpaceEntity,Space,Space,Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
+	public TokenPusher OnMove( Func<TokenMovedArgs, Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
 		_customAction = customeAction;
 		return this;
 	}
-	Func<ISpaceEntity,Space,Space,Task> _customAction;
+	Func<TokenMovedArgs, Task> _customAction;
 
 	protected virtual async Task<Space> SelectDestination( IToken token ) {
 		IEnumerable<SpaceState> destinationOptions = _tokens.Adjacent;

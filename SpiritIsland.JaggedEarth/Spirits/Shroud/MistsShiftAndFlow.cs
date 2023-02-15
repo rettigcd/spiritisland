@@ -55,7 +55,7 @@ class MistsShiftAndFlow {
 	}
 
 	async Task FlowPresence( SpaceState target ) {
-		List<TokenMovedArgs> allowed = FindFlowsThatAllowUsToHitTarget( target );
+		List<MistMove> allowed = FindFlowsThatAllowUsToHitTarget( target );
 
 		// Flow (Gather) - Destination (To)
 		var gatherDst = await _spirit.Gateway.Decision( new Select.ASpace(
@@ -76,8 +76,8 @@ class MistsShiftAndFlow {
 		await _ctx.Self.Token.Move( gatherSource, gatherDst );
 	}
 
-	List<TokenMovedArgs> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
-		List<TokenMovedArgs> allowed = new List<TokenMovedArgs>();
+	List<MistMove> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
+		List<MistMove> allowed = new List<MistMove>();
 
 		var pretendPresence = new SpaceCounts( _spirit );
 
@@ -91,7 +91,7 @@ class MistsShiftAndFlow {
 				pretendPresence[src.Space]--; // move presence OFF of source
 
 				if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
-					allowed.Add( new TokenMovedArgs( src, dst ) ); // Impled that Count=1 and Token=Presence
+					allowed.Add( new MistMove( src, dst ) ); // Impled that Count=1 and Token=Presence
 
 				pretendPresence[src.Space]++; // resore source
 			}
@@ -173,5 +173,7 @@ class MistsShiftAndFlow {
 		public IEnumerable<SpaceState> SacredSiteStates => _spirit.Presence.SacredSiteStates;
 
 	}
+
+	record MistMove( SpaceState RemovedFrom, SpaceState AddedTo );
 
 }

@@ -29,13 +29,13 @@ class HabsburgDurableToken
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
 		// If adding first blight
-		if(args.Token == Token.Blight && args.AddedTo.Blight.Count == 1) {
+		if(args.Added == Token.Blight && args.To.Blight.Count == 1) {
 			// switch back to normal
 			HumanToken restored = GetRestoreToken();
 			if(restored.IsDestroyed)
-				await DestroyAll( args.AddedTo );
+				await DestroyAll( args.To );
 			else
-				args.AddedTo.ReplaceAllWith( this, restored );
+				args.To.ReplaceAllWith( this, restored );
 		}
 	}
 	public async Task ModifyRemoving( RemovingTokenArgs args ) {

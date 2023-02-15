@@ -14,7 +14,7 @@ public class PortentsOfDisaster {
 		Task Add1MoreFearForFirstDestroyedInvader( ITokenRemovedArgs args ) {
 			if( addFear 
 				&& args.Reason.IsDestroy()
-				&& args.Token.Class.Category == TokenCategory.Invader
+				&& args.Removed.Class.Category == TokenCategory.Invader
 			){ // !! create an override .IsInvader()
 				ctx.AddFear(1);
 				addFear = false;

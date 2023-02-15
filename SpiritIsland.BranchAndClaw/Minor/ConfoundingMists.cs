@@ -21,7 +21,7 @@ public class ConfoundingMists {
 
 		async Task PushAddedInvader( ITokenAddedArgs args ) {
 			if( args.Reason.IsOneOf( AddReason.Explore, AddReason.Build) ) // ??? is there any other way to add invaders?
-				await ctx.Pusher.PushToken( (IToken)args.Token );
+				await ctx.Pusher.PushToken( (IToken)args.Added );
 		}
 	}
 

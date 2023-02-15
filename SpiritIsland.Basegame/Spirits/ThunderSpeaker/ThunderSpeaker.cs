@@ -45,35 +45,36 @@ public class Thunderspeaker : Spirit {
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
+		// Special Rules -Ally of the Dahan - Your presense may move with dahan
+		Presence.Token = new FollowingPresenceToken( this, Human.Dahan ); // replace BEFORE we init the board
 
 		// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
 		var mostDahanSpots = board.Spaces.OrderByDescending( s => s.Tokens.Dahan.CountAll ).Take( 2 ).ToArray();
 		mostDahanSpots[0].Tokens.Adjust(Presence.Token, 1);
 		mostDahanSpots[1].Tokens.Adjust(Presence.Token, 1);
 
-		// Special Rules -Ally of the Dahan - Your presense may move with dahan
-		gs.Tokens.TokenMoved.ForGame.Add( new MovePresenceWithTokens( this, Human.Dahan ).CheckForMove );
-
 		// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense within 1
 		gs.AddToAllActiveSpaces( new TokenRemovedHandler( DestroyNearbyPresence, true) );
+
+
 	}
 
 	async Task DestroyNearbyPresence( ITokenRemovedArgs args ) {
 		if( args.Reason != RemoveReason.Destroyed ) return;
 		if( ActionScope.Current.Category != ActionCategory.Invader) return;
-		if(args.Token.Class != Human.Dahan) return;
+		if(args.Removed.Class != Human.Dahan) return;
 
 		string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";
 
 		int numToDestroy = args.Count;
 		SpaceState[] options;
-		SpaceState[] Intersect() => args.RemovedFrom.InOrAdjacentTo // Ravage Only, not dependent on PowerRangeCalculator
+		SpaceState[] Intersect() => args.From.InOrAdjacentTo // Ravage Only, not dependent on PowerRangeCalculator
 			.Where( Presence.IsOn )
 			.ToArray();
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
 			var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( prompt, Presence.Token, options ) );
-			await args.RemovedFrom.Destroy( Presence.Token, 1 );
+			await args.From.Destroy( Presence.Token, 1 );
 		}
 
 	}

@@ -42,15 +42,14 @@ public class SharpFangs : Spirit {
 	//}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
+		Presence.Token = new FollowingPresenceToken( this, SpiritIsland.Token.Beast );
+
 		var highestJungle = board.Spaces.Where(x => x.IsJungle).Last().Tokens;
 		highestJungle.Adjust(Presence.Token,1);
 		highestJungle.Beasts.Init(1);
 
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
 		this.AddActionFactory(new Setup_PlacePresenceOnBeastLand());
-
-		var x = new SpiritIsland.MovePresenceWithTokens( this, SpiritIsland.Token.Beast );
-		gs.Tokens.TokenMoved.ForGame.Add( x.CheckForMove );
 	}
 
 }

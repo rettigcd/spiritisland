@@ -182,7 +182,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
 
-	public SpiritPresenceToken Token { 	get; protected set; }
+	public SpiritPresenceToken Token { 	get; set; }
 
 	#region Memento
 

@@ -74,11 +74,11 @@ public class Ocean : Spirit {
 	);
 
 	async Task Drowning( ITokenAddedArgs args ) {
-		if( args.Token is not HumanToken ht ) return;
+		if( args.Added is not HumanToken ht ) return;
 		var gs = GameState.Current;
 
 		// If we are saving a dahan
-		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan() && Presence.IsOn( args.AddedTo )	) {
+		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan() && Presence.IsOn( args.To )	) {
 			var moveOptions = gs.Island.Boards
 				.Select(x=>x.Ocean)
 				.Tokens()
@@ -86,25 +86,25 @@ public class Ocean : Spirit {
 				.Distinct()
 				.ToArray();
 			// And Ocean chooses to save it
-			var destination = await this.Gateway.Decision(Select.ASpace.PushToken(args.Token,args.AddedTo.Space,moveOptions, Present.Done));
+			var destination = await this.Gateway.Decision(Select.ASpace.PushToken(args.Added,args.To.Space,moveOptions, Present.Done));
 			if( destination != null ) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				ActionScope.Current.AtEndOfThisAction(async _ => {
 					//don't use original because that may or may not have been for a power.
 					await using ActionScope childAction = new ActionScope( ActionCategory.Default );
 					await BindSelf()
-						.Move( (IToken)args.Token, args.AddedTo.Space, destination );
+						.Move( (IToken)args.Added, args.To.Space, destination );
 				} );
 				return; // the move it, don't drown it
 			}
 		}
 
 		// Drown them immediately
-		gs.Log( new Log.Debug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.AddedTo.Space}") );
-		await new InvaderBinding( args.AddedTo.Space.Tokens ).DestroyNTokens( ht, args.Count );
+		gs.Log( new Log.Debug($"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To.Space}") );
+		await new InvaderBinding( args.To.Space.Tokens ).DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
-		if(args.Token.Class.Category == TokenCategory.Invader)
+		if(args.Added.Class.Category == TokenCategory.Invader)
 			drownedInvaderHealthAccumulator += (ht.FullHealth * args.Count);
 		CashInDrownedHealthForEnergy( gs );
 	}

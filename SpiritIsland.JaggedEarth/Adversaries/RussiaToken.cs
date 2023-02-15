@@ -57,15 +57,15 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 	#region mods
 
 	async Task IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ) {
-		if(args.Token == Token.Blight
+		if(args.Added == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
-			_receivedRavageBlight.Add( args.AddedTo.Space.Board );// log
+			_receivedRavageBlight.Add( args.To.Space.Board );// log
 
-			if( args.AddedTo.Beasts.Any ) {
-				await args.AddedTo.Beasts.Destroy( 1 );
+			if( args.To.Beasts.Any ) {
+				await args.To.Beasts.Destroy( 1 );
 				_beastsDestroyed++;
-				GameState.Current.LogDebug($"Blight on {args.AddedTo.Space.Text} destroys 1 beast.");
+				GameState.Current.LogDebug($"Blight on {args.To.Space.Text} destroys 1 beast.");
 			}
 		}
 	}

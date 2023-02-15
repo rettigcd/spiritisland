@@ -15,7 +15,7 @@ public class VengeanceOfTheDead {
 		async Task DealVengenceDamage( ITokenRemovedArgs args ) {
 			if( !args.Reason.IsDestroy() ) return;
 			//  ...a town / city / dahan in target land
-			if( args.Token.Class.IsOneOf( Human.Town_City.Plus( Human.Dahan ) ) )
+			if( args.Removed.Class.IsOneOf( Human.Town_City.Plus( Human.Dahan ) ) )
 				// 1 damage per token destroyed
 				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 		}

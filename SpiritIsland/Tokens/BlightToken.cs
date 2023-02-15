@@ -10,7 +10,7 @@ public class BlightToken : TokenClassToken
 
 	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
 
-		if(args.Token != this) return; // token-added event handler for blight only
+		if(args.Added != this) return; // token-added event handler for blight only
 
 		bool takingFromBlightCard = args.Reason switch {
 			AddReason.AsReplacement => false,
@@ -25,7 +25,7 @@ public class BlightToken : TokenClassToken
 
 		// remove from card.
 		var gs = GameState.Current;
-		await gs.TakeFromBlightSouce( args.Count, args.AddedTo );
+		await gs.TakeFromBlightSouce( args.Count, args.To );
 
 		if(gs.BlightCard != null && gs.blightOnCard <= 0) {
 			await gs.Spirits[0].Select( "Island blighted", new IOption[] { gs.BlightCard }, Present.Always );
@@ -37,23 +37,23 @@ public class BlightToken : TokenClassToken
 		// Calc side effects
 		var effect = new AddBlightEffect {
 			DestroyPresence = true,
-			Cascade = args.AddedTo.Blight.Count != 1,
-			AddedTo = args.AddedTo
+			Cascade = args.To.Blight.Count != 1,
+			AddedTo = args.To
 		};
 		await gs.ModifyBlightAddedEffect.InvokeAsync( effect );
 
 		// Destory presence
 		if(effect.DestroyPresence)
 			foreach(Spirit spirit in gs.Spirits)
-				if(spirit.Presence.IsOn( args.AddedTo ))
-					await args.AddedTo.Destroy( spirit.Token, 1 );
+				if(spirit.Presence.IsOn( args.To ))
+					await args.To.Destroy( spirit.Token, 1 );
 
 		// Cascade blight
 		if(effect.Cascade) {
 			Space cascadeTo = await gs.Spirits[0].Gateway.Decision( Select.ASpace.ForMoving_SpaceToken(
-				$"Cascade blight from {args.AddedTo.Space.Label} to",
-				args.AddedTo.Space,
-				gs.CascadingBlightOptions( args.AddedTo ),
+				$"Cascade blight from {args.To.Space.Label} to",
+				args.To.Space,
+				gs.CascadingBlightOptions( args.To ),
 				Present.Always,
 				Token.Blight
 			) );
@@ -63,7 +63,7 @@ public class BlightToken : TokenClassToken
 	}
 
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
-		if(args.Token == Token.Blight
+		if(args.Removed == Token.Blight
 			&& !args.Reason.IsOneOf(
 				RemoveReason.MovedFrom, // pushing / gathering blight
 				RemoveReason.Replaced   // just in case...

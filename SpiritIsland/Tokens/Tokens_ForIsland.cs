@@ -25,7 +25,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	#endregion
 
 	Task ClearEventHandlers_ForRound() {
-		TokenMoved.ForRound.Clear();
 		Dynamic.ForRound.Clear();
 		return Task.CompletedTask;
 	}
@@ -40,11 +39,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public int GetDynamicTokensFor( SpaceState space, TokenClassToken token ) 
 		=> Dynamic.GetTokensFor( space, token );
 
-	public async Task Publish_Moved( TokenMovedArgs args ) {
-		await TokenMoved.InvokeAsync( args );
-	}
-
-
 	public int InvaderAttack( HumanTokenClass tokenClass ) => Attack[tokenClass];
 	public readonly Dictionary<HumanTokenClass, int> Attack = new Dictionary<HumanTokenClass, int> {
 		[Human.Explorer] = 1,
@@ -52,11 +46,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		[Human.City] = 3,
 	};
 
-	public readonly DualAsyncEvent<ITokenMovedArgs> TokenMoved = new DualAsyncEvent<ITokenMovedArgs>();
-
 	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
-
-//	public IEnumerable<SpaceState> Upgrade( IEnumerable<Space> spaces ) => spaces.Select( s => this[s] );
 
 	#region Memento
 

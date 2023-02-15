@@ -23,7 +23,7 @@ public class GatewayToken : ISpaceEntity, IHandleTokenRemoved {
 
 	public SpaceState GetLinked( SpaceState end ) => end == From ? To : end == To ? From : null; // doesn't link.
 	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
-		if(args.Token == _presence && args.RemovedFrom[_presence] < 2)
+		if(args.Removed == _presence && args.From[_presence] < 2)
 			RemoveSelf(); // !!! maybe instead of removing now, remove at end of action
 
 		return Task.CompletedTask;

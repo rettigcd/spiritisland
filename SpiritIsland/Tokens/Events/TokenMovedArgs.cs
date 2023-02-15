@@ -1,19 +1,32 @@
 ﻿namespace SpiritIsland;
 
-public class TokenMovedArgs : ITokenMovedArgs {
+public class TokenMovedArgs : ITokenMovedArgs, ITokenAddedArgs, ITokenRemovedArgs {
 
-	public TokenMovedArgs( SpaceState removedFrom, SpaceState addedTo ) {
-		RemovedFrom = removedFrom;
-		AddedTo = addedTo;
+	public TokenMovedArgs( ITokenRemovedArgs from, ITokenAddedArgs to ) {
+		if(from.Count != to.Count)
+			throw new InvalidOperationException("Moving token should never change its count.");
+
+		Removed = from.Removed;
+		From    = from.From;
+
+		Added = to.Added;
+		To    = to.To;
+
+		Count = to.Count;
 	}
 
-	public SpaceState RemovedFrom { get; }
-	public SpaceState AddedTo { get; }
+	public IToken Removed { get; }
+	public SpaceState From { get; }
 
+	public IToken Added { get; } // might be different from removed due to Adding mods
+	public SpaceState To { get; }
 
-	public int Count { get; set; }
-	public ISpaceEntity TokenRemoved { get; set; } // sometimes different than TokenAdded due to Adding/Removing mods
-	public ISpaceEntity TokenAdded { get; set; }
+	public int Count { get; }
+
+	#region Move Reasons
+	RemoveReason ITokenRemovedArgs.Reason => RemoveReason.MovedFrom;
+	AddReason ITokenAddedArgs.Reason => AddReason.MovedTo;
+	#endregion Reasons
 
 }
 

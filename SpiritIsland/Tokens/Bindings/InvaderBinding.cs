@@ -101,7 +101,7 @@ public class InvaderBinding {
 
 	// destroy TOKEN
 	public virtual Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
-		return Tokens.DestroyNTokens( invaderToDestroy, countToDestroy );
+		return Tokens.DestroyNInvaders( invaderToDestroy, countToDestroy );
 	}
 
 	#endregion Destroy

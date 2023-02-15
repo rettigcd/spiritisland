@@ -14,12 +14,12 @@ public class ManyMindsPresenceToken : SpiritPresenceToken, IHandleTokenAdded, IH
 	#endregion
 
 	Task IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ){
-		UpdateBeastCount( args.Token, args.AddedTo );
+		UpdateBeastCount( args.Added, args.To );
 		return Task.CompletedTask;
 	}
 
 	Task IHandleTokenRemoved.HandleTokenRemoved( ITokenRemovedArgs args ){
-		UpdateBeastCount( args.Token, args.RemovedFrom );
+		UpdateBeastCount( args.Removed, args.From );
 		return Task.CompletedTask;
 	}
 

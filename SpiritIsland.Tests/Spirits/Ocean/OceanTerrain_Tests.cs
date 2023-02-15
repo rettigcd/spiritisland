@@ -274,9 +274,8 @@ public class OceanTerrain_Tests {
 	[Theory]
 	[InlineData(true),InlineData (false)]
 	public void TidalBoon_EnergyAndDahan(bool savedByOcean) {
+
 		// Given thunderspeaker / ocean game
-		var log = new List<string>();
-		gameState.NewLogEntry += (x) => log.Add(x.Msg());
 
 		// Given: Primary on A2
 		Given_PrimaryPresenceOnA2Only();
@@ -309,14 +308,15 @@ public class OceanTerrain_Tests {
 		// When: Pushes 1st Dahan into Ocean
 		IsActive( task ); Choose( "D@2" );
 		IsActive( task ); Choose( "A0" );
+		// Thunderspeaker goes along
+		Choose( "Thunderspeaker on A2" );
+
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
 			oceanSpirit.NextDecision()
 				.HasOptions( "A1,A2,A3,B1,B2,B3,Done" )
 				.Choose( "A1" );
 		}
-		// Thunderspeaker goes along
-		Choose( "Thunderspeaker on A2" );
 
 		// When: Pushes 2nd dahan into Ocean
 		IsActive( task ); Choose( "D@2" );

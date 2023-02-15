@@ -9,7 +9,6 @@ public class TigersHunting_Tests {
 		HashSet<ActionScope> actionScopes = new HashSet<ActionScope>();
 		fixture.GameState.AddToAllActiveSpaces( new TokenAddedHandler( x => actionScopes.Add( ActionScope.Current ), true ) );
 		fixture.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( x => actionScopes.Add( ActionScope.Current ), true ) );
-		fixture.GameState.Tokens.TokenMoved.ForGame.Add( x => actionScopes.Add( ActionScope.Current ) );
 
 		// Given: space 5
 		var space = fixture.GameState.Island.Boards[0][5];

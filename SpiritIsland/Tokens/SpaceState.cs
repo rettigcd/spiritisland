@@ -208,7 +208,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public void SkipAllInvaderActions( string label ) {
 		SkipRavage( label, UsageDuration.SkipAllThisTurn );
 		SkipAllBuilds( label );
-		Skip1Explore( label ); // !!! Should be: Skip ALL Explores
+		Adjust( new SkipExploreTo(skipAll:true), 1 );
 	}
 
 	public void SkipRavage( string label, UsageDuration duration = UsageDuration.SkipOneThisTurn ) => Adjust( new SkipRavage(label, duration), 1 );
@@ -348,9 +348,11 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	/// <summary> returns null if no token removed </summary>
 	public virtual async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+		if( reason == RemoveReason.MovedFrom )
+			throw new ArgumentException("Moving Tokens must be done from the .Move method for events to work properly",nameof(reason));
 
 		// grab event handlers BEFORE the token is removed, so token can self-handle its own removal
-		var tokenRemovedHandlers = Keys.OfType<IHandleTokenRemoved>().ToArray();
+		var tokenRemovedHandlers = GrabHandlers_TokenRemoved();
 
 		var e = await Remove_Silent( token, count, reason );
 		if(e == null) return null;
@@ -361,8 +363,11 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		return e;
 	}
 
+	// grab event handlers BEFORE the token is removed, so token can self-handle its own removal
+	IHandleTokenRemoved[] GrabHandlers_TokenRemoved() => Keys.OfType<IHandleTokenRemoved>().ToArray();
+
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
-	protected async Task<TokenRemovedArgs> Remove_Silent( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	protected virtual async Task<TokenRemovedArgs> Remove_Silent( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		// Pre-Remove check/adjust
@@ -383,7 +388,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	/// <summary> Gathering / Pushing + a few others </summary>
-	public async Task MoveTo( IToken token, SpaceState dstTokens ) {
+	public async Task<TokenMovedArgs> MoveTo( IToken token, SpaceState dstTokens ) {
 		// Current implementation favors:
 		//		switching token types prior to Add/Remove so events handlers don't switch token type
 		//		perfoming the add/remove action After the Adding/Removing modifications
@@ -399,31 +404,33 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		//		Don't allow Adding to modify count
 		//		Move has 2 tokens, token added and token removed
 
-		if(this[token] == 0) return; // unable to remove desired token
+		if(this[token] == 0) return null; // unable to remove desired token
+		var tokenRemovedHandlers = GrabHandlers_TokenRemoved();
 
 		// Remove from source
-		var removeResults = await Remove( token, 1, RemoveReason.MovedFrom );
-		if(removeResults is null) return; // can be prevented by Remove-Mods
+		TokenRemovedArgs removeResult = await Remove_Silent( token, 1, RemoveReason.MovedFrom );
+		if(removeResult == null) return null;
 
 		// Add to destination
-		var addResult = await dstTokens.Add( token, removeResults.Count, AddReason.MovedTo );
-		if(addResult == null) return;
+		TokenAddedArgs addResult = dstTokens.Add_Silent( token, 1, AddReason.MovedTo );
+		if(addResult == null) return null;
 
 		// Publish
-		await _api.Publish_Moved( new TokenMovedArgs( this, dstTokens ) { // !! _original ????
-																		  // removed
-			TokenRemoved = removeResults.Token,
-			// added
-			TokenAdded = addResult.Token,
-			// general
-			Count = 1,
-		} );
+		var tokenMoved = new TokenMovedArgs( removeResult, addResult );
 
+		foreach(IHandleTokenRemoved handler in tokenRemovedHandlers)
+			await handler.HandleTokenRemoved( tokenMoved );
+
+		foreach(IHandleTokenAdded handler in dstTokens.Keys.OfType<IHandleTokenAdded>().ToArray())
+			await handler.HandleTokenAdded( tokenMoved );
+
+		return tokenMoved;
 	}
 
 	public virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage )
 		=> invaderToken.AddDamage( availableDamage );
-	public virtual Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
+
+	public virtual Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
 		return invaderToDestroy.Destroy( this, countToDestroy );
 	}
 

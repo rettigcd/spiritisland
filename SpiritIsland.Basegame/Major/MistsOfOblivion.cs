@@ -17,7 +17,7 @@ public class MistsOfOblivion {
 			if(0 < mayDestroyed
 				&& ActionScope.Current == originalScope
 				&& args.Reason == RemoveReason.Destroyed
-				&& args.Token.Class.IsOneOf( Human.Town_City )
+				&& args.Removed.Class.IsOneOf( Human.Town_City )
 			) {
 				ctx.AddFear( 1 );
 				--mayDestroyed;
