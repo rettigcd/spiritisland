@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface ITokenWithEndOfRoundCleanup : ISpaceEntity {
+public interface ISpaceEntityWithEndOfRoundCleanup : ISpaceEntity {
 	void EndOfRoundCleanup(SpaceState spaceState);
 }

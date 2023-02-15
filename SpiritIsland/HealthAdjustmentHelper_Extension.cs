@@ -5,37 +5,47 @@ public static class HealthAdjustmentHelper_Extension {
 	public static async Task AdjustTokensHealthForRound( this TargetSpaceCtx ctx, int deltaHealth, params HumanTokenClass[] tokenClasses ) {
 		// Doing this on TargetSpaceCtx because adjusting health could destroy a town.
 
-		var tokens = ctx.Tokens;
+		await ctx.Tokens.AdjustHealthOfAll( deltaHealth, tokenClasses );
+		ctx.Tokens.Adjust( new HealthAdjustmentToken( deltaHealth, tokenClasses ), 1 );
+	}
 
-		// Adjust in land
-		await tokens.AdjustHealthOfAll( deltaHealth, tokenClasses ); // ActionScope needed if token is destoryed.
+	public class HealthAdjustmentToken : BaseModEntity
+		, IHandleAddingToken
+		, IHandleRemovingToken
+		, ISpaceEntityWithEndOfRoundCleanup
+	{
+
+		public HealthAdjustmentToken( int deltaHealth, params HumanTokenClass[] tokenClasses ) { 
+			_deltaHealth = deltaHealth;
+			_tokenClasses = tokenClasses;
+		}
 
 		// Add (covers simple-add AND move-in)
-		tokens.Adjust( new TokenAddingHandler( args => {
-			if(args.Token is HumanToken healthToken && tokenClasses.Contains( args.Token.Class ))
-				args.Token = healthToken.AddHealth( deltaHealth );
-		} ), 1 );
+		public void ModifyAdding( AddingTokenArgs args ){
+			if(args.Token is HumanToken healthToken && _tokenClasses.Contains( args.Token.Class ))
+				args.Token = healthToken.AddHealth( _deltaHealth );
+		}
 
 		// Remove (covers simple-remove AND move-out)
-		var removingToken = new TokenRemovingHandler( async args => {
+		public async Task ModifyRemoving( RemovingTokenArgs args ) {
 			if(args.Mode == RemoveMode.Test) return;
-			if(args.Token is HumanToken healthToken
-				&& tokenClasses.Contains( args.Token.Class )
-			)
+			if(args.Token is HumanToken healthToken && _tokenClasses.Contains( args.Token.Class ))
 				// Downgrade the existing tokens health
 				// AND change what we are removing to be the downgraded token
 				// tokens being destroyed may reduce the count also.
-				(args.Token, args.Count) = await tokens.AdjustHealthOf( healthToken, -deltaHealth, args.Count );
-		} );
-		tokens.Adjust( removingToken, 1 );
+				(args.Token, args.Count) = await args.Space.AdjustHealthOf( healthToken, -_deltaHealth, args.Count );
+		}
 
-		// Add handler to restore ALL at end of round.
-		var gameState = ctx.GameState;
-		gameState.TimePasses_ThisRound.Push( async gs => {
-			// Ensure the dahan are healed before we restore their health.
-			gameState.Healer.HealSpace( tokens );
-			await tokens.AdjustHealthOfAll( -deltaHealth, tokenClasses );
-		} );
+		// Cleanup
+		public void EndOfRoundCleanup( SpaceState tokens ) {
+			GameState.Current.Healer.HealSpace( tokens );
+			tokens.AdjustHealthOfAll( -_deltaHealth, _tokenClasses ).Wait(); // This should be ok because tokens are healed.
+			tokens.Init(this,0);
+		}
+
+		readonly HumanTokenClass[] _tokenClasses;
+		readonly int _deltaHealth;
+
 	}
 
 }

@@ -18,7 +18,7 @@ public class StubbornSolidity {
 
 }
 
-public class StubbornSolidityBehavior : ITokenWithEndOfRoundCleanup
+public class StubbornSolidityBehavior : ISpaceEntityWithEndOfRoundCleanup
 	, IHandleRemovingToken
 	, IStopDahanDamage
 {

@@ -7,7 +7,7 @@
 /// <remarks>
 /// Provides .Class, and ability to auto-cleanup at end of round.
 /// </remarks>
-public class SelfCleaningToken : ITokenWithEndOfRoundCleanup {
+public class SelfCleaningToken : BaseModEntity, ISpaceEntityWithEndOfRoundCleanup {
 
 	/// <summary> Automatically removes token at end of round. </summary>
 	protected SelfCleaningToken() {
@@ -18,9 +18,7 @@ public class SelfCleaningToken : ITokenWithEndOfRoundCleanup {
 		_keepForever = keepForever;
 	}
 
-	public IEntityClass Class => ActionModTokenClass.Singleton;
-
-	void ITokenWithEndOfRoundCleanup.EndOfRoundCleanup( SpaceState spaceState ) {
+	void ISpaceEntityWithEndOfRoundCleanup.EndOfRoundCleanup( SpaceState spaceState ) {
 		if( _keepForever ) return; // no cleanup
 
 		if( 1 < spaceState[this] )
@@ -30,4 +28,8 @@ public class SelfCleaningToken : ITokenWithEndOfRoundCleanup {
 
 	readonly bool _keepForever;
 
+}
+
+public class BaseModEntity : ISpaceEntity {
+	public IEntityClass Class => ActionModTokenClass.Singleton;
 }

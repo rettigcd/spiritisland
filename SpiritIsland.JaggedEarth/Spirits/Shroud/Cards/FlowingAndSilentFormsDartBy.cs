@@ -19,7 +19,7 @@ public class FlowingAndSilentFormsDartBy {
 	}
 
 
-	class PushInsteadOfDestroy : ITokenWithEndOfRoundCleanup, IHandleRemovingToken {
+	class PushInsteadOfDestroy : ISpaceEntityWithEndOfRoundCleanup, IHandleRemovingToken {
 		public IEntityClass Class => ActionModTokenClass.Class;
 
 		public void EndOfRoundCleanup( SpaceState spaceState ) => spaceState.Init(this,0);

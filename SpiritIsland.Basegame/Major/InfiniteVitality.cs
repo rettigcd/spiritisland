@@ -37,7 +37,7 @@ public class InfiniteVitality {
 
 }
 
-class StopDamageAndDestruction : ITokenWithEndOfRoundCleanup, IStopDahanDamage, IHandleRemovingToken {
+class StopDamageAndDestruction : ISpaceEntityWithEndOfRoundCleanup, IStopDahanDamage, IHandleRemovingToken {
 
 	readonly string _sourceName;
 	public StopDamageAndDestruction(string sourceName ) {

@@ -245,7 +245,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	#endregion
 
 	public void TimePasses() {
-		foreach(var cleanup in Keys.OfType<ITokenWithEndOfRoundCleanup>().ToArray())
+		foreach(var cleanup in Keys.OfType<ISpaceEntityWithEndOfRoundCleanup>().ToArray())
 			cleanup.EndOfRoundCleanup( this );
 	}
 
@@ -302,11 +302,13 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 		if(newToken.IsDestroyed) {
 			await Destroy( token, count ); // destroy the old token
+			GameState.Current.LogDebug($"{Space.Text} Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation} => Destroyed!");
 			return (token, 0);
 		}
 
 		Adjust( token, -count );
 		Adjust( newToken, count );
+		GameState.Current.LogDebug( $"Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
 		return (newToken, count);
 	}
 
@@ -412,7 +414,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		if(removeResult == null) return null;
 
 		// Add to destination
-		TokenAddedArgs addResult = dstTokens.Add_Silent( token, 1, AddReason.MovedTo );
+		TokenAddedArgs addResult = dstTokens.Add_Silent( /* Modified, NOT original */ removeResult.Removed, 1, AddReason.MovedTo );
 		if(addResult == null) return null;
 
 		// Publish
