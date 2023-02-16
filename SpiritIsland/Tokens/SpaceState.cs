@@ -189,6 +189,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
+	/// <summary> Existing </summary>
 	public IEnumerable<SpaceState> Adjacent => Adjacent_Existing.IsInPlay();
 
 	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();

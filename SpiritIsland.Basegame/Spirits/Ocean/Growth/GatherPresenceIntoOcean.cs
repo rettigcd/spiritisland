@@ -4,8 +4,9 @@ public class GatherPresenceIntoOcean : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 
-		List<SpaceState> gatherSpaces = ctx.Self.Presence.SpaceStates
-			.Where( p => p.Space.IsCoastal )
+		List<SpaceState> gatherSpaces = ctx.Self.Presence.Spaces
+			.Where( p => p.IsCoastal )
+			.Tokens()
 			.Select( p => p.Adjacent_Existing.Single( o => o.Space.IsOcean ) ) // Ocean is not in Play during Growth
 			.Distinct()
 			.ToList();

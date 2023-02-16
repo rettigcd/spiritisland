@@ -15,7 +15,7 @@ public class GiftOfLivingEnergy {
 			++ctx.Other.Energy;
 
 		// if you have at least 2 SS, target spirit gains +1 energy
-		if(2 <= ctx.Self.Presence.SacredSiteStates.Count())
+		if(2 <= ctx.Self.Presence.SacredSites.Count())
 			++ctx.Other.Energy;
 
 		return Task.CompletedTask;

@@ -116,9 +116,9 @@ public class AbsoluteStasis_Tests {
 		SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
-		cfg.SelfCtx.Self.Presence.SpaceStates.Count( x => x.Space.Text == "A8" ).ShouldBe( 0 );
+		cfg.SelfCtx.Self.Presence.Spaces.Count( x => x.Text == "A8" ).ShouldBe( 0 );
 		//   And: no SS found
-		cfg.Presence.SacredSites().Count( x => x.Text == "A8" ).ShouldBe( 0 );
+		cfg.Presence.SacredSites.Downgrade().Count( x => x.Text == "A8" ).ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -279,7 +279,7 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), 0 );
 		cfg.GameState.MajorCards = new PowerCardDeck( typeof( RiversBounty ).GetMajors(), 0 );
 		cfg.GameState.Initialize();
-		cfg.Presence.SacredSites().Select( x => x.Text ).Join( "," ).ShouldBe( "A8" );
+		cfg.Presence.SacredSites.Select( x => x.Space.Text ).Join( "," ).ShouldBe( "A8" );
 	}
 
 	void Assert_SpaceHasCountTokens( Space space, IEntityClass tokenClass, int expectedCount ) {

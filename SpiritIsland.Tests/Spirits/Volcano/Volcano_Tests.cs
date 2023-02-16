@@ -29,7 +29,7 @@ public class Volcano_Tests {
 		Space a6 = board[6];
 
 		// Given: Only Presence is on A5
-		foreach(SpaceState ss in spirit.Presence.SpaceStates.ToArray())
+		foreach(SpaceState ss in spirit.Presence.Spaces.Tokens().ToArray())
 			SpiritExtensions.Adjust( spirit.Presence, ss, -1 );
 		SpiritExtensions.Adjust( spirit.Presence, gameState.Tokens[a6], presenceCount );
 
@@ -50,7 +50,7 @@ public class Volcano_Tests {
 		Space a6 = board[6];
 
 		// Given: 3 presence on A6
-		foreach(SpaceState ss in spirit.Presence.SpaceStates.ToArray())
+		foreach(SpaceState ss in spirit.Presence.Spaces.Tokens().ToArray())
 			SpiritExtensions.Adjust( spirit.Presence, ss, -1 );
 		SpiritExtensions.Adjust( spirit.Presence, gameState.Tokens[a6], 3 );
 

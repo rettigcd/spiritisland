@@ -133,6 +133,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 			: throw new ArgumentException( "Unable to find location to restore presence" );
 	}
 
+	/// <remarks>Convenience - checks CanMove and token on space</remarks>
 	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && spaceState.Has(Token);
 
 	public bool CanMove { get; set; } = true; // Spirit effect - Settle Into Hunting Grounds
@@ -166,18 +167,16 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	#region Exposed Data
 
-	public IEnumerable<Space> SacredSites() => SacredSiteStates.Downgrade();
+	/// <summary> Existing </summary>
+	/// <remarks> Determining SS requires Tokens so default type for SS is SpaceState. </remarks>
+	public IEnumerable<SpaceState> SacredSites => Spaces.Tokens().Where( IsSacredSite );
 
-	public IEnumerable<SpaceState> SacredSiteStates 
-		=> GameState.Current.Spaces_Existing.Where( IsSacredSite );
+	/// <summary> Existing Spaces </summary>
+	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
+	public IEnumerable<Space> Spaces => GameState.Current.Tokens.Spaces_Existing( Token );
 
-	public int Total() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
-
-	/// <summary> All Existing Spaces </summary>
-	public IEnumerable<SpaceState> SpaceStates => GameState.Current.Tokens.Spaces_Existing(Token).Tokens();
-
-	public IEnumerable<SpaceState> MovableSpaceStates => SpaceStates.Where( HasMovableTokens );
-
+	/// <summary> Unfiltered </summary>
+	public int TotalOnIsland() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
 
 	#endregion Exposed Data
 

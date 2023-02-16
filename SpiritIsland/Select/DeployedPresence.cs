@@ -17,18 +17,18 @@ public static class DeployedPresence {
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	static public ASpace All(string prompt, SpiritPresence presence, Present present )
-		=> new ASpace( prompt, presence.SpaceStates, present, presence.Token );
+		=> new ASpace( prompt, presence.Spaces.Tokens(), present, presence.Token );
 
 	/// <summary> Targets ALL spaces containing deployed presence </summary>
 	static public ASpace Movable( string prompt, Spirit spirit, Present present )
-		=> new ASpace( prompt, spirit.Presence.MovableSpaceStates, present, spirit.Token );
+		=> new ASpace( prompt, spirit.Presence.CanMove ? spirit.Presence.Spaces.Tokens() : Enumerable.Empty<SpaceState>(), present, spirit.Token );
 
 	static public ASpace Some(string prompt, SpiritPresence presence, Func<SpaceState,bool> filter, Present present )
-		=> new ASpace( prompt, presence.SpaceStates.Where(filter), present, presence.Token );
+		=> new ASpace( prompt, presence.Spaces.Tokens().Where(filter), present, presence.Token );
 
 	/// <summary> Targets Sacred Sites </summary>
 	static public ASpace SacredSites(string prompt, SpiritPresence presence, Present present )
-		=> new ASpace( prompt, presence.SacredSiteStates, present, presence.Token );
+		=> new ASpace( prompt, presence.SacredSites, present, presence.Token );
 
 	static public TokenFromManySpaces Gather(string prompt, Space to, IEnumerable<SpiritIsland.SpaceState> from, ISpaceEntity presenceToken ) 
 		=> TokenFromManySpaces.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IToken)presenceToken)), Present.Done, to );

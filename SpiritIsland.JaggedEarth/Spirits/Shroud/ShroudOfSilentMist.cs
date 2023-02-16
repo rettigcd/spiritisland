@@ -68,7 +68,7 @@ public class ShroudOfSilentMist : Spirit {
 		static bool SpaceHasDamagedInvaders( SpaceState ss ) => ss.InvaderTokens().Any( i=>i.RemainingHealth<i.FullHealth );
 
 		// During Time Passes:
-		int myLandsWithDamagedInvaders = this.Presence.SpaceStates.Count( SpaceHasDamagedInvaders );
+		int myLandsWithDamagedInvaders = this.Presence.Spaces.Tokens().Count( SpaceHasDamagedInvaders );
 
 		// 1 fear (max 5) per land of yours with Damaged Invaders.
 		gs.Fear.AddDirect(new FearArgs( Math.Min(5,myLandsWithDamagedInvaders) ) );

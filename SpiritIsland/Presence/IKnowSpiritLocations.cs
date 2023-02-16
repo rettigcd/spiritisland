@@ -3,7 +3,7 @@
 /// <summary> Feeds the Source Calculator. </summary>
 public interface IKnowSpiritLocations {
 
-	IEnumerable<SpaceState> SpaceStates { get; }
+	IEnumerable<Space> Spaces { get; }
 
-	IEnumerable<SpaceState> SacredSiteStates { get; } // And Special Rules
+	IEnumerable<SpaceState> SacredSites { get; } // And Special Rules
 }

@@ -48,6 +48,7 @@ public abstract class Space
 	public static bool Exists( Space space ) => space.DoesExists;
 
 	#region Connectivity
+	/// <summary> Existing </summary>
 	public IEnumerable<Space> Adjacent_Existing => adjacent.Where(Exists);
 
 	public IEnumerable<Space> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
