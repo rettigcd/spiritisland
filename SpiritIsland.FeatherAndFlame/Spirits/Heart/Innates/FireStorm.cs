@@ -39,7 +39,7 @@ public class FireStorm {
 
 		while(fireDamage > 0 && invaderTokens.Any()) {
 			SpaceToken token = await ctx.Decision( new Select.TokenFromManySpaces($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
-			await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,(HumanToken)token.Token);
+			await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,token.Token.AsHuman());
 			--fireDamage;
 		}
 	}

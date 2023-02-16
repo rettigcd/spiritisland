@@ -33,9 +33,8 @@ public class DahanSaver : SelfCleaningToken, IHandleRemovingToken {
 				if(args.Mode == RemoveMode.Live) {
 					byAction[ActionScope.Current] += adjustment;
 					// restore to full health
-					var savedToken = (HumanToken)args.Token;
 					space.Adjust( args.Token, -adjustment );
-					space.Adjust( savedToken.Healthy, adjustment );
+					space.Adjust( args.Token.AsHuman().Healthy, adjustment );
 				}
 			} else {
 				// make sure our already-saved dahan stay saved

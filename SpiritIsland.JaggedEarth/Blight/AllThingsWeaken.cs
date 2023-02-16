@@ -22,7 +22,7 @@ public class AllThingsWeaken : BlightCardBase {
 			// change the defaults
 			var defaults = gs.Tokens.TokenDefaults;
 			foreach(var invaderClass in defaults.Keys.OfType<HumanTokenClass>().ToArray()){
-				HumanToken current = (HumanToken)defaults[invaderClass];
+				HumanToken current = defaults[invaderClass].AsHuman();
 				defaults[invaderClass] = current.AddHealth(-1);
 			}
 

@@ -228,7 +228,7 @@ public class TargetSpaceCtx : SelfCtx {
 		while(count-- > 0) {
 			var st = await Decision( Select.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
 			if(st == null) break;
-			HumanToken invader = (HumanToken)st.Token;
+			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
 			var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
 			if(0 < damaged.RemainingHealth)
@@ -246,7 +246,7 @@ public class TargetSpaceCtx : SelfCtx {
 		while(0 < additionalTotalDamage) {
 			var st = await Decision( Select.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
 			if(st == null) break;
-			var invader = (HumanToken)st.Token;
+			var invader = st.Token.AsHuman();
 			int index = invaders.IndexOf( invader );
 			var (_, moreDamagedToken) = await Invaders.ApplyDamageTo1( 1, invader );
 			++done;

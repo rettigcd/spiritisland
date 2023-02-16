@@ -26,16 +26,15 @@ public class ForsakeSocietyToChaseAfterDreams {
 
 	static async Task Dissolve(TargetSpaceCtx ctx, params HumanTokenClass[] invaderCats) {
 		var decision = Select.Invader.ToReplace("dissolve", ctx.Space, ctx.Tokens.OfAnyHumanClass( invaderCats ) );
-		var invader = (HumanToken)(await ctx.Decision( decision ))?.Token;
+		var invader = (await ctx.Decision(decision))?.Token.AsHuman();
 		if(invader == null) return;
 
 		// Replace
 		if(invader.Class != Human.Explorer) {
 			await ctx.Invaders.Remove(invader,1,RemoveReason.Replaced);
-			await ctx.AddDefault( Human.Explorer,invader.RemainingHealth, AddReason.AsReplacement );
+			int numberOfExplorersToAdd = Math.Max(0,invader.Class.ExpectedHealthHint - invader.Damage);
+			await ctx.AddDefault( Human.Explorer, numberOfExplorersToAdd, AddReason.AsReplacement );
 		}
-
-		// !!! If they are damaged, should we distribute that damage and destroy some of the explorers?
 
 		// Push to new land
 		await ctx.Pusher

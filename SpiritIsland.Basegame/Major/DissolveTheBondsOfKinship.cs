@@ -58,7 +58,7 @@ public class DissolveTheBondsOfKinship {
 		}
 
 		static int GetAttackDamageFrom( TargetSpaceCtx ctx, HumanTokenClass cc ) {
-			return ctx.Tokens.OfHumanClass( cc ).Sum( t => ctx.Tokens[t] * ctx.Tokens.AttackDamageFrom1( (HumanToken)t ) );
+			return ctx.Tokens.OfHumanClass( cc ).Sum( t => ctx.Tokens[t] * ctx.Tokens.AttackDamageFrom1( t ) );
 		}
 	}
 

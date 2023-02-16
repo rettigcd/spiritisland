@@ -69,8 +69,8 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 		var st = await Gateway.Decision( Select.Invader.ForStrife( tokens, groups ) );
 		if(st == null) return;
-		var invader = (HumanToken)st.Token;
-		await tokens.Add1StrifeTo( invader );
+		
+		await tokens.Add1StrifeTo( st.Token.AsHuman() );
 
 		if(Energy == 0) return;
 
@@ -80,7 +80,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		var invader2 = await Gateway.Decision( new Select.TokenFromManySpaces( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;
 		--Energy;
-		await invader2.Space.Tokens.Add1StrifeTo( (HumanToken)invader2.Token );
+		await invader2.Space.Tokens.Add1StrifeTo( invader2.Token.AsHuman() );
 
 	}
 

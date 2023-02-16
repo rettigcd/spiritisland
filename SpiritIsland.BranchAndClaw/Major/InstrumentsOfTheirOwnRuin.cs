@@ -78,7 +78,7 @@ public class InstrumentsOfTheirOwnRuin {
 			// apply 1 damage to selected invader
 			// !Note - using shared UnitOfWork across spaces because it is a ravage on only 1 space
 			await new InvaderBinding( damagedInvader.Space.Tokens )
-				.ApplyDamageTo1( 1, (HumanToken)damagedInvader.Token );
+				.ApplyDamageTo1( 1, damagedInvader.Token.AsHuman() );
 		}
 
 	}

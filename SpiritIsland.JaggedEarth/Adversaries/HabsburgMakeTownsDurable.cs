@@ -23,7 +23,7 @@ class HabsburgMakeTownsDurable
 		// if adding a normal town to a space with no blight
 		if(args.Token.Class == Human.Town && !args.Space.Blight.Any)
 			// change to durable
-			args.Token = new HabsburgDurableToken( (HumanToken)args.Token );
+			args.Token = new HabsburgDurableToken( args.Token.AsHuman() );
 	}
 }
 

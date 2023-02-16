@@ -134,7 +134,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public HumanToken GetDefaultHuman( HumanTokenClass tokenClass ) => (HumanToken)_api.GetDefault( tokenClass );
 	public IToken GetDefault( IEntityClass tokenClass ) => _api.GetDefault( tokenClass );
 
 	public void ReplaceAllWith( ISpaceEntity original, ISpaceEntity replacement ) {

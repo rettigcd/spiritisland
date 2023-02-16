@@ -7,7 +7,7 @@ static public class ReplaceInvader {
 		var options = ctx.Tokens.OfAnyHumanClass( groups );
 		var st = await ctx.Self.Gateway.Decision( Select.Invader.ToReplace( "downgrade", ctx.Space, options, present ) );
 		if(st == null) return;
-		HumanToken oldInvader = (HumanToken)st.Token;
+		HumanToken oldInvader = st.Token.AsHuman();
 
 		// remove old invader
 		ctx.Tokens.Adjust( oldInvader, -1 );
@@ -15,7 +15,7 @@ static public class ReplaceInvader {
 		// Add new
 		var newInvaderClass = oldInvader.Class == Human.City ? Human.Town : Human.Explorer;
 
-		var newTokenWithoutDamage = ctx.Tokens.GetDefaultHuman( newInvaderClass ).AddStrife(oldInvader.StrifeCount);
+		var newTokenWithoutDamage = ctx.Tokens.GetDefault( newInvaderClass ).AsHuman().AddStrife(oldInvader.StrifeCount);
 		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
 
 		if(!newTokenWithDamage.IsDestroyed )
@@ -33,7 +33,7 @@ static public class ReplaceInvader {
 		var tokens = ctx.Tokens;
 		var st = await ctx.Self.Gateway.Decision( Select.Invader.ToReplace("disolve", ctx.Space, tokens.OfHumanClass( oldInvader ) ) );
 		if(st == null) return;
-		var tokenToRemove = (HumanToken)st.Token;
+		var tokenToRemove = st.Token.AsHuman();
 
 		// remove
 		tokens.Adjust( tokenToRemove, -1 );

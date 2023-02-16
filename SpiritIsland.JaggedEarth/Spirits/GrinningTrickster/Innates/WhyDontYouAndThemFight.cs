@@ -17,7 +17,7 @@ class WhyDontYouAndThemFight {
 		var invaders = ctx.Tokens.InvaderTokens().ToArray();
 		if(invaders.Length == 0 || !ctx.Dahan.Any) return;
 		var decision = new Select.TokenFromManySpaces( "Select invader to fight 1 dahan", ctx.Space, invaders, Present.Always );
-		var spaceInvader = (HumanToken)(await ctx.Decision(decision))?.Token;
+		var spaceInvader = (await ctx.Decision(decision))?.Token.AsHuman();
 
 		// Calc Invader Damage
 		var (damageFromInvader,newInvaderToken) = await GetDamageFromInvader( ctx.Invaders, spaceInvader );

@@ -20,11 +20,11 @@ public class TDaTD_ActionTokens : SpaceState {
 		return null; // nothing removed
 	}
 
-	async Task Destroy1Token( ISpaceEntity token ) {
+	async Task Destroy1Token( IToken token ) {
 
 		// for everything BUT normal invaders, we do nothing
 		if(token.Class.Category != TokenCategory.Invader) return; 
-		HumanToken invaderToken = (HumanToken)token;
+		HumanToken invaderToken = token.AsHuman();
 		if(invaderToken.Class.Variant != TokenVariant.Default) return; 
 		
 		// Normal Invaders - Push
