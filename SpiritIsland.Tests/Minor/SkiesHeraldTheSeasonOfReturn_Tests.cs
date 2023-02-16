@@ -8,7 +8,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
 		var space = fix.Board[5];
 		var spaceState = fix.GameState.Tokens[space];
-		var dahanDestination = space.Adjacent_Unfiltered.First();
+		var dahanDestination = space.Adjacent_Existing.First();
 
 		// Given: Keeper has a destroyed presence
 		fix.Spirit.Presence.Destroyed = 1;

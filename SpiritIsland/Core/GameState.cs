@@ -88,12 +88,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public Spirit[] Spirits { get; }
 
 	public Tokens_ForIsland Tokens { get; }
-	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards.SelectMany(b=>b.Spaces_Unfiltered).Tokens();
 
 	/// <summary> Active, Not in statis </summary>
-	public IEnumerable<SpaceState> Spaces => Island.Boards.SelectMany( b => b.Spaces ).Tokens();
-
-	public IEnumerable<SpaceState> Spaces_AndNotInPlay => Island.Boards.SelectMany( b => b.Spaces_IncludeOcean ).Tokens();
+	public IEnumerable<SpaceState> Spaces            => Island.Boards.SelectMany( b => b.Spaces ).Tokens();
+	public IEnumerable<SpaceState> Spaces_Existing   => Island.Boards.SelectMany( b => b.Spaces_Existing ).Tokens();
+	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards.SelectMany( b => b.Spaces_Unfiltered ).Tokens();
 
 
 	public PowerCardDeck MajorCards {get; set; }
@@ -126,7 +125,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			await ss.Blight.Add(1, AddReason.Ravage);
 	}
 
-	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Unfiltered
+	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Existing
 		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
 			 || Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 

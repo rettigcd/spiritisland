@@ -67,7 +67,9 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	}
 
 	public bool IsOn( ITrackMySpaces token, Board board ) => _boardCounts.ContainsKey( token ) && 0 < _boardCounts[token][board];
-	public IEnumerable<Space> Spaces( ITrackMySpaces token ) => _spaceCounts.ContainsKey( token ) ? _spaceCounts[token].Keys : Enumerable.Empty<Space>();
+	public IEnumerable<Space> Spaces_Existing( ITrackMySpaces token ) => _spaceCounts.ContainsKey( token ) 
+		? _spaceCounts[token].Keys.Where( Space.Exists ) 
+		: Enumerable.Empty<Space>();
 	public bool HasTokens( ITrackMySpaces token ) => _boardCounts.ContainsKey( token ) && _boardCounts[token].Any();
 
 	readonly Dictionary<ITrackMySpaces,CountDictionary<Board>> _boardCounts = new Dictionary<ITrackMySpaces, CountDictionary<Board>>();
@@ -84,7 +86,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
 			// dynamicTokens_ForGame
 			dynamicTokens = src.Dynamic.SaveToMemento();
-			_inStasis = src._tokenCounts.Keys.ToDictionary(s=>s,s=>s.InStasis);
+			_doesNotExist = src._tokenCounts.Keys.Where(s=>!s.DoesExists).ToArray();
 		}
 		public void Restore( Tokens_ForIsland src ) {
 			// Restore TokenCounts
@@ -94,7 +96,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			var tokenApi = (IIslandTokenApi)src;
 			foreach(var space in _tokenCounts.Keys) {
 				// stasis
-				space.InStasis = _inStasis[space];
+				space.DoesExists = true; // when false, set below
 
 				// Token counts
 				SpaceState tokens = src[space];
@@ -104,6 +106,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 						tokenApi.Adjust(tms,space,count);
 				}
 			}
+			foreach(var space in _doesNotExist) space.DoesExists = false;
 			// Restore Defaults
 			src.TokenDefaults.Clear();
 			foreach(var pair in tokenDefaults)
@@ -112,7 +115,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			src.Dynamic.LoadFrom( dynamicTokens );
 		}
 		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
-		readonly Dictionary<Space, bool> _inStasis;
+		readonly Space[] _doesNotExist;
 		readonly Dictionary<IEntityClass, IToken> tokenDefaults = new Dictionary<IEntityClass, IToken>();
 		readonly IMemento<DualDynamicTokens> dynamicTokens;
 	}

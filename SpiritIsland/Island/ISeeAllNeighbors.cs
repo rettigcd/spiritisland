@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public interface ISeeAllNeighbors<T> {
-	IEnumerable<T> Adjacent_Unfiltered { get; }
+	IEnumerable<T> Adjacent_Existing { get; }
 }
 
 public static class HasNeighborsExtensions {
@@ -21,7 +21,7 @@ public static class HasNeighborsExtensions {
 			var cur = spacesLessThanLimit.Dequeue();
 			int neighborDist = shortestDistances[cur] + 1;
 			bool neighborIsLessThanLimit = neighborDist < maxDistanceToFind;
-			foreach(var a in cur.Adjacent_Unfiltered) {
+			foreach(var a in cur.Adjacent_Existing) {
 				if(shortestDistances.ContainsKey( a ) && shortestDistances[a] <= neighborDist)
 					continue;
 				shortestDistances[a] = neighborDist;

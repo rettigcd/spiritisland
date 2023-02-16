@@ -69,7 +69,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		var fixture = new ConfigurableTestFixture();
 		var space = fixture.Board[5];
 		var spaceState = fixture.GameState.Tokens[space];
-		var destination = space.Adjacent_Unfiltered.Last();
+		var destination = space.Adjacent_Existing.Last();
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
 		SpiritExtensions.Adjust( fixture.Spirit.Presence, spaceState.Adjacent.First(), 2 );

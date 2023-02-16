@@ -43,11 +43,12 @@ public abstract class Space
 	public abstract bool IsOneOf( params Terrain[] options );
 	public abstract SpaceLayout Layout { get; }
 
-	public bool InStasis { get; set; }
-	public static bool IsActive( Space space ) => !space.InStasis;
+	//public bool InStasis { get => !Exists; }
+	public bool DoesExists { get; set; } = true;
+	public static bool Exists( Space space ) => space.DoesExists;
 
 	#region Connectivity
-	public IEnumerable<Space> Adjacent_Unfiltered => adjacent.Where(IsActive);
+	public IEnumerable<Space> Adjacent_Existing => adjacent.Where(Exists);
 
 	public IEnumerable<Space> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
 

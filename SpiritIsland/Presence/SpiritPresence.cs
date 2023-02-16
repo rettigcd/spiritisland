@@ -169,12 +169,12 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public IEnumerable<Space> SacredSites() => SacredSiteStates.Downgrade();
 
 	public IEnumerable<SpaceState> SacredSiteStates 
-		=> GameState.Current.Spaces_AndNotInPlay.Where( IsSacredSite );
+		=> GameState.Current.Spaces_Existing.Where( IsSacredSite );
 
 	public int Total() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
 
-	/// <summary> All *Active* Spaces </summary>
-	public IEnumerable<SpaceState> SpaceStates => GameState.Current.Tokens.Spaces(Token).Where(Space.IsActive).Tokens();
+	/// <summary> All Existing Spaces </summary>
+	public IEnumerable<SpaceState> SpaceStates => GameState.Current.Tokens.Spaces_Existing(Token).Tokens();
 
 	public IEnumerable<SpaceState> MovableSpaceStates => SpaceStates.Where( HasMovableTokens );
 

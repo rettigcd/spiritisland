@@ -6,7 +6,7 @@ public class GatherPresenceIntoOcean : GrowthActionFactory {
 
 		List<SpaceState> gatherSpaces = ctx.Self.Presence.SpaceStates
 			.Where( p => p.Space.IsCoastal )
-			.Select( p => p.Adjacent_Unfiltered.Single( o => o.Space.IsOcean ) ) // Ocean is not in Play during Growth
+			.Select( p => p.Adjacent_Existing.Single( o => o.Space.IsOcean ) ) // Ocean is not in Play during Growth
 			.Distinct()
 			.ToList();
 

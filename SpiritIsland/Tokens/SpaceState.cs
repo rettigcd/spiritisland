@@ -179,9 +179,9 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#region Adjacent Properties
 
-	public IEnumerable<SpaceState> Adjacent_Unfiltered { 
+	public IEnumerable<SpaceState> Adjacent_Existing { 
 		get {
-			foreach(var space in Space.Adjacent_Unfiltered)
+			foreach(var space in Space.Adjacent_Existing)
 				yield return space.Tokens;
 
 			foreach(var gateway in Keys.OfType<GatewayToken>())
@@ -189,7 +189,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
-	public IEnumerable<SpaceState> Adjacent => Adjacent_Unfiltered.IsInPlay();
+	public IEnumerable<SpaceState> Adjacent => Adjacent_Existing.IsInPlay();
 
 	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();
 

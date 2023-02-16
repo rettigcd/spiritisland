@@ -49,7 +49,7 @@ public class GrowthTests {
 
 	protected void Given_HasPresence( string presenceString ) {
 		Dictionary<string,Space> spaceLookup = _gameState.Island.Boards
-			.SelectMany(b=>b.Spaces_IncludeOcean)
+			.SelectMany(b=>b.Spaces_Existing)
 			.ToDictionary(s=>s.Label,s=>s);
 		var spaces = new Space[presenceString.Length/2];
 		for(int i=0;i*2<presenceString.Length;i++)
@@ -80,7 +80,7 @@ public class GrowthTests {
 	#region Asserts
 
 	protected void Assert_BoardPresenceIs( string expected ) {
-		var actual = _gameState.Spaces_AndNotInPlay.Where( spirit.Presence.IsOn ).Select(s=>s.Space.Label+":"+s[spirit.Token]).Order().Join(",");
+		var actual = _gameState.Spaces_Existing.Where( spirit.Presence.IsOn ).Select(s=>s.Space.Label+":"+s[spirit.Token]).Order().Join(",");
 		Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 	}
 

@@ -15,7 +15,7 @@ public class AbsoluteStasis {
 
 		// Until the end of the slow phase, target land and everything in it cease to exist for all purposes except checking victory/defeat.
 			
-		ctx.Space.InStasis = true;
+		ctx.Space.DoesExists = false;
 
 		// you cannot target into, out of, or through where the land was.
 
@@ -23,7 +23,7 @@ public class AbsoluteStasis {
 		// Restore 
 		// --------
 		ctx.GameState.TimePasses_ThisRound.Push( ( gs ) => {
-			ctx.Space.InStasis = false;
+			ctx.Space.DoesExists = true;
 			return Task.CompletedTask;
 		} );
 

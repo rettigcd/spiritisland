@@ -12,7 +12,7 @@ class ScotlandCoastalBlightCheckToken : IHandleTokenAdded, ISpaceEntity {
 		// After a Ravage Action adds Blight to a Coastal Land,
 		// add 1 Blight to that board's Ocean (without cascading).
 		if(args.Added == Token.Blight && args.Reason == AddReason.Ravage) {
-			var space = args.To.Adjacent_Unfiltered // Ocean is not in play here
+			var space = args.To.Adjacent_Existing // Ocean is not in play here
 				.First( adj => adj.Space.IsOcean && adj.Space.Board == args.To.Space.Board );
 			await space.Blight.Add( 1, AddReason.Ravage ); // !!! won't this cause cascading??? Must STOP
 			GameState.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {args.To.Space.Text} caused additional blight on {space.Space.Text}"));

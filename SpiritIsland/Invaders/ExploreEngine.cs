@@ -20,7 +20,7 @@ public class ExploreEngine {
 		// Modify
 		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Human.Town_City );
 
-		var sources = gs.Spaces_AndNotInPlay
+		var sources = gs.Spaces_Existing
 			.Where( IsExplorerSource )
 			.Where( ss => !ss.Keys.OfType<ISkipExploreFrom>().Any() )
 			.ToHashSet();
