@@ -9,6 +9,5 @@ public interface IIslandTokenApi {
 	int InvaderAttack( HumanTokenClass tokenClass );
 
 	void Adjust( ITrackMySpaces token, Space space, int delta );
-	bool IsOn( ITrackMySpaces token, Board board );
 
 }

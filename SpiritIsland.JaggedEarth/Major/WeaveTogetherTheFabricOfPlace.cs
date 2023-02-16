@@ -87,7 +87,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 		foreach(var spirit in gs.Spirits) {
 			var presence = spirit.Presence;
-			int count = presence.CountOn( srcTokens );
+			int count = srcTokens[presence.Token];
 			srcTokens.Adjust( presence.Token, -count);
 			dstTokens.Adjust( presence.Token, count );
 		}

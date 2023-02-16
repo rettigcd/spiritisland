@@ -360,7 +360,7 @@ public class Volcano_Tests {
 			ApplyDamageToExplorers( spirit, task, 4, adjPresence ); // A7
 
 			// target
-			spirit.Presence.CountOn( targetSpace ).ShouldBe( 12 - presenceDestroyed ); // if this is 1 too low, blight destroyed presence
+			targetSpace[spirit.Token].ShouldBe( 12 - presenceDestroyed ); // if this is 1 too low, blight destroyed presence
 			targetSpace.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed+4)}E@1" );
 			// adj-blight
 			adjBlight.Summary.ShouldBe( $"1B,{20-(presenceDestroyed+4)}E@1" );
@@ -378,14 +378,14 @@ public class Volcano_Tests {
 			ApplyDamageToExplorers( spirit, task, 1, adjPresence ); // A7
 
 			// Then: target
-			spirit.Presence.CountOn( targetSpace ).ShouldBe( 12 - presenceDestroyed ); // if this is 1 too low, blight destroyed presence
+			targetSpace[spirit.Token].ShouldBe( 12 - presenceDestroyed ); // if this is 1 too low, blight destroyed presence
 			targetSpace.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4 + 4)}E@1" );
 
 			// Then: adj-blight
 			adjBlight.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4 + 4)}E@1" );
 
 			// Then: adj-presence
-			spirit.Presence.CountOn( adjPresence ).ShouldBe( 0 );
+			adjPresence[spirit.Token].ShouldBe( 0 );
 			adjPresence.Summary.ShouldBe( $"1B,{20 - (4 + 4 + 1)}E@1" );
 
 		}

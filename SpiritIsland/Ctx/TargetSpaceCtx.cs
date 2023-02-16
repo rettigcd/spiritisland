@@ -303,9 +303,9 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public bool IsSelfSacredSite => Self.Presence.IsSacredSite(Tokens);
 
-	public int PresenceCount => Self.Presence.CountOn(Tokens);
+	public int PresenceCount => Tokens[Self.Token];
 
-	public bool IsPresent => Self.Presence.IsOn( Tokens );
+	public bool IsPresent => Tokens.Has(Self.Token);
 
 	public async Task PlacePresenceHere() {
 		var from = await Self.SelectSourcePresence();

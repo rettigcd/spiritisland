@@ -78,7 +78,7 @@ public class Ocean : Spirit {
 		var gs = GameState.Current;
 
 		// If we are saving a dahan
-		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan() && Presence.IsOn( args.To )	) {
+		if( ht.Class.Category == TokenCategory.Dahan && ShouldSaveDahan() && args.To.Has(Presence.Token)	) {
 			var moveOptions = gs.Island.Boards
 				.Select(x=>x.Ocean)
 				.Tokens()

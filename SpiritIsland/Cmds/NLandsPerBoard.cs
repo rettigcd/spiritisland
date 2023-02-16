@@ -42,11 +42,9 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 
 		var used = new List<Space>();
 
-		// !!! although filtering by the Action Criteria is helpful most of the time,
+		// Although filtering by the Action Criteria is helpful most of the time,
 		// There might be instances when players wants to pick the no-op action.
-		// Therefore we might not want to filter based on the action.
-		// Maybe pass both spaces to UI so UI can determine which options to make available.
-
+		// In those cases, do NOT use the .Filtering
 		for(int i=0; i<_count; i++ ) {
 
 			var spaceOptions = ctx.Board.Spaces

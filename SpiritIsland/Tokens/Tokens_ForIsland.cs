@@ -62,12 +62,16 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	void IIslandTokenApi.Adjust( ITrackMySpaces token, Space space, int delta ) {
 		if(!_boardCounts.ContainsKey(token)) _boardCounts.Add(token,new CountDictionary<Board>());
 		_boardCounts[token][space.Board] += delta;
+		if(!_spaceCounts.ContainsKey( token )) _spaceCounts.Add( token, new CountDictionary<Space>() );
+		_spaceCounts[token][space] += delta;
 	}
 
-	public bool IsOn( ITrackMySpaces token, Board board )
-		=> _boardCounts.ContainsKey( token ) && 0 < _boardCounts[token][board];
+	public bool IsOn( ITrackMySpaces token, Board board ) => _boardCounts.ContainsKey( token ) && 0 < _boardCounts[token][board];
+	public IEnumerable<Space> Spaces( ITrackMySpaces token ) => _spaceCounts.ContainsKey( token ) ? _spaceCounts[token].Keys : Enumerable.Empty<Space>();
+	public bool HasTokens( ITrackMySpaces token ) => _boardCounts.ContainsKey( token ) && _boardCounts[token].Any();
 
 	readonly Dictionary<ITrackMySpaces,CountDictionary<Board>> _boardCounts = new Dictionary<ITrackMySpaces, CountDictionary<Board>>();
+	readonly Dictionary<ITrackMySpaces, CountDictionary<Space>> _spaceCounts = new Dictionary<ITrackMySpaces, CountDictionary<Space>>();
 
 	#endregion
 
@@ -86,6 +90,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			// Restore TokenCounts
 			src._tokenCounts.Clear();
 			src._boardCounts.Clear();
+			src._spaceCounts.Clear();
 			var tokenApi = (IIslandTokenApi)src;
 			foreach(var space in _tokenCounts.Keys) {
 				// stasis

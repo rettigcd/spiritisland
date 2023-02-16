@@ -8,7 +8,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 	[FearLevel(1, "On Each Board: Push 1 Explorer/Town from a land with Badlands/Wilds/Dahan." )]
 	public Task Level1( GameCtx ctx )
 		=> Cmd.PushExplorersOrTowns( 1 )
-			.From().OneLandPerBoard().Which( HasDangerousLands )
+			.From().OneLandPerBoard().Which( Has.DangerousLands )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachBoard()
 			.Execute( ctx );
@@ -16,7 +16,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 	[FearLevel(2, "On Each Board: Remove 1 Explorer/Town from a land with Badlands/Wilds/Dahan." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
-			.From().OneLandPerBoard().Which( HasDangerousLands )
+			.From().OneLandPerBoard().Which( Has.DangerousLands )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachBoard()
 			.Execute( ctx );
@@ -31,10 +31,6 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 
 	Task Level3_Remove( TargetSpaceCtx ctx ) => new TokenRemover( ctx ).AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN();
 
-	static IEntityClass[] TokensClassesFor( TargetSpaceCtx ctx ) => HasDangerousLandImp( ctx ) ? Human.Invader : Human.Explorer_Town;
-
-	static TargetSpaceCtxFilter HasDangerousLands => new TargetSpaceCtxFilter( "a land with Badlands/Wilds/Dahan.", HasDangerousLandImp );
-	static bool HasDangerousLandImp( TargetSpaceCtx ctx ) => ctx.Tokens.Badlands.Any || ctx.Tokens.Wilds.Any || ctx.Tokens.Dahan.Any;
-
+	static IEntityClass[] TokensClassesFor( TargetSpaceCtx ctx ) => Has.DangerousLands.Filter( ctx ) ? Human.Invader : Human.Explorer_Town;
 
 }

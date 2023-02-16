@@ -67,7 +67,7 @@ public class ASpace : TypedDecision<Space>, IHaveArrows {
 	public IToken Token { get; }
 
 	public IEnumerable<Arrow> Arrows => _source == null || Token == null 
-		? Array.Empty<Arrow>()
+		? Enumerable.Empty<Arrow>()
 		: Spaces.Select(dstSpace => new Arrow {	Token = Token, From = _source, To = dstSpace } );
 
 	// Only Set when we want to draw outgoing arrows

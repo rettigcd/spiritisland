@@ -12,7 +12,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 	public UsageCost Cost => UsageCost.Free; // doesn't cost anything to use.
 
 	public async Task<bool> Skip( SpaceState space ) {
-		int maxRemovable = _spirit.Presence.CountOn( space ) * 2;
+		int maxRemovable = space[_spirit.Token] * 2;
 
 		int explorerCount = space.Sum( Human.Explorer );
 

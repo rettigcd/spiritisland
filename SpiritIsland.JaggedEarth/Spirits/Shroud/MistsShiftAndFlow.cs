@@ -87,7 +87,7 @@ class MistsShiftAndFlow {
 		foreach(SpaceState dst in spacesInRange) {
 			pretendPresence[dst.Space]++; // move  presence ON TO destination
 
-			foreach(SpaceState src in dst.Adjacent.Where( s=>_spirit.Presence.IsOn(s) )) {
+			foreach(SpaceState src in dst.Adjacent.Where( _spirit.Presence.IsOn )) {
 				pretendPresence[src.Space]--; // move presence OFF of source
 
 				if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
@@ -164,7 +164,7 @@ class MistsShiftAndFlow {
 		public SpaceCounts(Spirit spirit) : base() {
 			_spirit = spirit;
 			foreach(var ss in SpaceStates)
-				Add(ss.Space,spirit.Presence.CountOn(ss));
+				Add(ss.Space,ss[spirit.Token]);
 		}
 
 		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;

@@ -49,7 +49,7 @@ public class LingeringPestilence_Tests {
 		space.DoARavage().Wait();
 
 		// Then: presence is destroyed
-		self.Presence.CountOn( space ).ShouldBe(1);
+		space[self.Token].ShouldBe(1);
 
 		//  And: Disease was added
 		space.Disease.Count.ShouldBe(1);

@@ -107,7 +107,7 @@ public class OceanTerrain_Tests {
 			log.Single().ShouldBe("Drowning 1D@2 on A0");
 
 			//  And: and leave thunderspeaker in the ocean.
-			primarySpirit.Presence.IsOn( oceanSpace ).ShouldBeTrue();
+			oceanSpace.Has(primarySpirit.Token).ShouldBeTrue();
 
 			// And should NOT adjust energy
 			oceanSpirit.Energy.ShouldBe(oceanStartingEnergy);

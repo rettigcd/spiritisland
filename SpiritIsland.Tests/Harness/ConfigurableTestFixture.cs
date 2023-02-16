@@ -107,7 +107,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public void InitPresence( Space space, int count ) {
 		var spaceState = GameState.Tokens[space];
-		var dif = count - Presence.CountOn( spaceState );
+		var dif = count - spaceState[Presence.Token];
 		SpiritExtensions.Adjust( Presence, spaceState, dif );
 	}
 

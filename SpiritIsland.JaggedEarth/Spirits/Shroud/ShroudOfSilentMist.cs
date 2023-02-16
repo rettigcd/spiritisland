@@ -138,7 +138,7 @@ class SlowAndSilentDeathHealer : Healer {
 	//}
 
 	public override void HealSpace( SpaceState tokens ) {
-		if( !spirit.Presence.IsOn(tokens) )
+		if( !tokens.Has(spirit.Token) )
 			base.HealSpace( tokens );
 	}
 

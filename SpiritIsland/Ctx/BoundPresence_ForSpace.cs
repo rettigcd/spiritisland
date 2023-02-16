@@ -12,9 +12,9 @@ public class BoundPresence_ForSpace {
 
 	public bool IsSelfSacredSite => _self.Presence.IsSacredSite(ctx.Tokens);
 
-	public bool IsHere       => _self.Presence.IsOn( ctx.Tokens );
+	public bool IsHere       => ctx.Tokens.Has(_self.Token);
 
-	public int Count => _self.Presence.CountOn(ctx.Tokens);
+	public int Count => ctx.Tokens[_self.Token];
 
 	public async Task PlaceDestroyedHere( int count = 1 ) {
 		count = Math.Min(count, _self.Presence.Destroyed);

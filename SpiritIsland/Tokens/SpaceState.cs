@@ -238,10 +238,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		_api.Adjust(token,Space,delta);
 	}
 
-	public bool HasTokenOnBoard( ITrackMySpaces token ) {
-		return _api.IsOn(token,Space.Board);
-	}
-
 	#endregion
 
 	public void TimePasses() {

@@ -45,7 +45,7 @@ public class BlightToken : TokenClassToken
 		// Destory presence
 		if(effect.DestroyPresence)
 			foreach(Spirit spirit in gs.Spirits)
-				if(spirit.Presence.IsOn( args.To ))
+				if(args.To.Has(spirit.Token))
 					await args.To.Destroy( spirit.Token, 1 );
 
 		// Cascade blight

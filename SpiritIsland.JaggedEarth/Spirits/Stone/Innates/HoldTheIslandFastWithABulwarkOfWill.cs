@@ -44,7 +44,7 @@ class PayEnergyToTakeFromCard {
 	/// <returns># of blight to remove from card</returns>
 	async Task AddBlight( int delta, SpaceState space ) {
 		bool takeFromBagInstead = 0 < delta
-			&& spirit.Presence.IsOn( space )
+			&& space.Has(spirit.Token)
 			&& cost <= spirit.Energy
 			&& await spirit.UserSelectsFirstText( $"New Blight on {space.Space.Label}, take from:", $"Bag (for {cost})", "card" );
 

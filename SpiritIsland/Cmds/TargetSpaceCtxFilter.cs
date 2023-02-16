@@ -7,7 +7,6 @@ public class TargetSpaceCtxFilter {
 	public readonly Func<TargetSpaceCtx, bool> Filter;
 	public readonly string Description;
 
-	// !!! pull these all into the Has/Is classes.
 	public TargetSpaceCtxFilter( string description, Func<TargetSpaceCtx, bool> filter ) {
 		Description = description;
 		Filter = filter;
@@ -59,6 +58,8 @@ public static class Has {
 		$"a land with dahan or adjacent to at least {adjacentDahanThreshold} dahan",
 		ctx => ctx.Dahan.Any || adjacentDahanThreshold <= ctx.AdjacentCtxs.Sum( x => x.Dahan.CountAll )
 	);
+
+	static public XFilter DangerousLands => new TargetSpaceCtxFilter( "a land with Badlands/Wilds/Dahan.", ( TargetSpaceCtx ctx ) => ctx.Tokens.Badlands.Any || ctx.Tokens.Wilds.Any || ctx.Tokens.Dahan.Any );
 
 }
 

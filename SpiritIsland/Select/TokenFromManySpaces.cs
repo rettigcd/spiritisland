@@ -47,7 +47,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 	public Space Destination { get; private set; }
 
 	public IEnumerable<Arrow> Arrows => Destination == null
-		? Array.Empty<Arrow>()
+		? Enumerable.Empty<Arrow>()
 		: SpaceTokens.Select( st => new Arrow { Token = st.Token, From = st.Space, To = Destination } );
 
 

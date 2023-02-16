@@ -84,11 +84,12 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	public virtual bool CanBePlacedOn( SpaceState spaceState ) 
-		=> ActionScope.Current.TerrainMapper.IsInPlay( spaceState.Space );
-	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token];
+	public virtual bool CanBePlacedOn( SpaceState spaceState ) => ActionScope.Current.TerrainMapper.IsInPlay( spaceState.Space );
+
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
-	public int CountOn( SpaceState spaceState ) => spaceState[Token];
+
+	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token]; // For Predicate in a .Where(...)
+	public int CountOn( SpaceState spaceState ) => spaceState[Token]; // For Mapper in a .Select(...)
 
 	#endregion
 
@@ -108,7 +109,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	async Task TakeFromSpace( Space space ) {
 		SpaceState fromSpace = space.Tokens;
-		if(IsOn( fromSpace ))
+		if(fromSpace.Has(Token))
 			await fromSpace.Remove( Token, 1, RemoveReason.MovedFrom );
 		else
 			throw new ArgumentException( "Can't pull from island space:" + space.ToString() );
@@ -132,7 +133,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 			: throw new ArgumentException( "Unable to find location to restore presence" );
 	}
 
-	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && IsOn( spaceState );
+	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && spaceState.Has(Token);
 
 	public bool CanMove { get; set; } = true; // Spirit effect - Settle Into Hunting Grounds
 
@@ -173,7 +174,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public int Total() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
 
 	/// <summary> All *Active* Spaces </summary>
-	public IEnumerable<SpaceState> SpaceStates => GameState.Current.Spaces_AndNotInPlay.Where( IsOn );
+	public IEnumerable<SpaceState> SpaceStates => GameState.Current.Tokens.Spaces(Token).Where(Space.IsActive).Tokens();
 
 	public IEnumerable<SpaceState> MovableSpaceStates => SpaceStates.Where( HasMovableTokens );
 

@@ -66,7 +66,7 @@ public class TargetCriteria {
 		public SpaceState Tokens { get; }
 
 		// Bound Spirit
-		public bool IsPresent => _focusSpirit.Presence.IsOn( Tokens );
+		public bool IsPresent => Tokens.Has(_focusSpirit.Token);
 		readonly Spirit _focusSpirit;
 
 		// Bound TerrainMapper
