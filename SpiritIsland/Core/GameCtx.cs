@@ -3,13 +3,10 @@
 public class GameCtx {
 
 	public readonly GameState GameState;
-
-	#region constructor
+	public readonly ActionCategory Category = ActionCategory.Fear;
 
 	public GameCtx( GameState gs ) {
 		this.GameState = gs;
 	}
-
-	#endregion constructor
 
 }

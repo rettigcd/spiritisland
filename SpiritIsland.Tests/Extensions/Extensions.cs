@@ -81,8 +81,8 @@ static internal class Extensions {
 	static public TargetSpaceCtx TargetSpace( this SelfCtx ctx, string spaceLabel )
 		=> ctx.Target( ctx.GameState.Spaces_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
 
-	static public ActionScope StartAction( this GameState _, ActionCategory cat, TerrainMapper terrainMapper = null ) { // !!! Remove this
-		return new ActionScope( cat, terrainMapper );
+	static public ActionScope StartAction( this GameState _, ActionCategory cat ) {
+		return new ActionScope( cat );
 	}
 
 }

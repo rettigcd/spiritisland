@@ -19,7 +19,6 @@ public static partial class Cmd {
 	static public NLandsPerBoard NDifferentLands( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x, int count ) => new NLandsPerBoard( x.spaceAction, x.preposition, count );
 
 	// For each: Board
-	// !!! Page 10 of JE says Each Board is a new action
 	static public GameCtxCmd ForEachBoard( this IExecuteOn<BoardCtx> boardAction )
 		=> new GameCtxCmd(
 			"On each board, " + boardAction.Description,
@@ -27,20 +26,25 @@ public static partial class Cmd {
 				var gs = ctx.GameState;
 				for(int boardIndex = 0; boardIndex < gs.Island.Boards.Length; ++boardIndex) {
 					BoardCtx boardCtx = new BoardCtx( gs, gs.Island.Boards[boardIndex] );
-					for(int i=0;i<boardCtx.Board.InvaderActionCount;++i)
+					for(int i = 0; i < boardCtx.Board.InvaderActionCount; ++i) {
+						// Page 10 of JE says Each Board is a new action
+						await using var actionScope = new ActionScope( ctx.Category );
 						await boardAction.Execute( boardCtx );
+					}
 				}
 			}
 		);
 
 	// For each: Spirit
-	// !!! Page 10 of JE says Each Spirit is a new action
 	static public DecisionOption<GameCtx> ForEachSpirit( this IExecuteOn<SelfCtx> action )
 		=> new GameCtxCmd(
 			"For each spirit, " + action.Description,
 			async ctx => {
-				foreach(Spirit spirit in ctx.GameState.Spirits)
+				foreach(Spirit spirit in ctx.GameState.Spirits) {
+					// Page 10 of JE says Each Spirit is a new action
+					await using var actionScope = new ActionScope( ctx.Category );
 					await action.Execute( spirit.BindSelf() );
+				}
 			}
 		);
 

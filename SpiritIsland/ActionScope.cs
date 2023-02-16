@@ -29,11 +29,9 @@ public sealed class ActionScope : IAsyncDisposable {
 		_neverCache = true; // !! Since it is a singleton, make usable across multiple execution contexts
 	}
 
-	public ActionScope( ActionCategory actionCategory, TerrainMapper terrainMapper = null ) {
+	public ActionScope( ActionCategory actionCategory ) {
 		Id = Guid.NewGuid();
 		Category = actionCategory;
-
-		_terrainMapper = terrainMapper; // may be null
 
 		_old = Container.Current;
 		Container.Current = this;
