@@ -19,7 +19,7 @@ public class WordsOfWarning {
 	}
 
 	static async Task SimultaneousDamage( RavageBehavior behavior, RavageData data ) {
-		int damageFromInvaders = RavageBehavior.GetDamageInflictedByAttackers(behavior,data);
+		int damageFromInvaders = await RavageBehavior.GetDamageInflictedByAttackers(behavior,data);
 		int damageFromDahan = RavageBehavior.GetDamageInflictedByDefenders( behavior,data );
 
 		await RavageBehavior.DamageLand( data, damageFromInvaders );

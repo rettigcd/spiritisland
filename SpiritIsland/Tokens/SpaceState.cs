@@ -167,13 +167,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#endregion
 
-	public HumanToken RemoveStrife( HumanToken orig, int tokenCount ) {
-		HumanToken lessStrifed = orig.AddStrife( -1 );
-		Adjust(lessStrifed, tokenCount);
-		Adjust(orig, -tokenCount);
-		return lessStrifed;
-	}
-
 	public int AttackDamageFrom1( HumanToken ht ) => ht.Class.Category == TokenCategory.Dahan ? 2
 		: _api.InvaderAttack( ht.Class );
 
@@ -271,22 +264,24 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
-	public async Task AddRemoveStrifeTo( HumanToken invader, int count = 1 ) {
+	public Task<HumanToken> Add1StrifeTo( HumanToken invader ) => AddRemoveStrife( invader, 1, 1 );
 
-		// Remove old type from 
-		if(this[invader] < count)
-			throw new ArgumentOutOfRangeException( $"collection does not contain {count} {invader}" );
-		Adjust( invader, -count );
+	public Task<HumanToken> Remove1StrifeFrom( HumanToken invader, int tokenCount ) => AddRemoveStrife(invader,-1,tokenCount);
 
-		// Add new strifed
-		var strifed = invader.HavingStrife( invader.StrifeCount + 1 );
-		Adjust( strifed, count );
+	async Task<HumanToken> AddRemoveStrife( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
 
-		// !!! Adding / Removing a strife needs to trigger a token-change event for Observe the Ever Changing World
-		// !!! Test that a ravage that does nothing but removes a strife, triggers Observe the Ever Changing World
+		if(this[originalInvader] < tokenCount)
+			throw new ArgumentOutOfRangeException( $"collection does not contain {tokenCount} {originalInvader}" );
 
-		if(strifed.IsDestroyed) // due to a strife-health penalty
-			await Destroy( strifed, this[strifed] );
+		var newInvader = originalInvader.AddStrife( strifeDelta );
+		// We need to generate events (for Observe the Ever changing World) so we will use the Replace reason
+		await Remove( originalInvader, tokenCount, RemoveReason.Replaced );
+		await Add( newInvader, tokenCount, AddReason.AsReplacement );
+
+		if(newInvader.IsDestroyed) // due to a strife-health penalty
+			await Destroy( newInvader, this[newInvader] );
+
+		return newInvader;
 	}
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>

@@ -70,7 +70,7 @@ public class PentUpCalamity {
 
 	static async Task RemoveToken( TargetSpaceCtx ctx, IToken tokenToRemove ) {
 		if(tokenToRemove is HumanToken invader)
-			await ctx.AddRemoveStrifeTo( invader, -1 );
+			await ctx.Tokens.Remove1StrifeFrom( invader, 1 );
 		else
 			await ctx.Remove( tokenToRemove, 1 );
 	}

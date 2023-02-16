@@ -81,7 +81,7 @@ public class Strife_Tests {
 
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
-		counts.AddRemoveStrifeTo( StdTokens.Town ).Wait();
+		counts.Add1StrifeTo( StdTokens.Town ).Wait();
 		var strifedTown = (IToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
 
 		// When: move
@@ -113,7 +113,7 @@ public class Strife_Tests {
 		// Given: staring invaders
 		switch(startingInvaders) {
 			case "2C@2":  counts.Init( city2, 2); break;
-			case "1C@2^": counts.Init( city2, 1); counts.AddRemoveStrifeTo( city2 ).Wait(); break;
+			case "1C@2^": counts.Init( city2, 1); counts.Add1StrifeTo( city2 ).Wait(); break;
 			case "1C@3,1T@2":
 				counts.InitDefault( Human.City, 1 );
 				counts.InitDefault( Human.Town, 1 );
@@ -124,11 +124,11 @@ public class Strife_Tests {
 		// When: add strife
 		var actionableSpace = counts;
 		switch(addTo) {
-			case "C@2": actionableSpace.AddRemoveStrifeTo( city2 ).Wait(); break;
-			case "C@2^": actionableSpace.AddRemoveStrifeTo( city2.HavingStrife( 1 ) ).Wait(); break;
+			case "C@2": actionableSpace.Add1StrifeTo( city2 ).Wait(); break;
+			case "C@2^": actionableSpace.Add1StrifeTo( city2.HavingStrife( 1 ) ).Wait(); break;
 			case "1C@3,1T@2":
-				actionableSpace.AddRemoveStrifeTo( StdTokens.City ).Wait();
-				actionableSpace.AddRemoveStrifeTo( StdTokens.Town ).Wait();
+				actionableSpace.Add1StrifeTo( StdTokens.City ).Wait();
+				actionableSpace.Add1StrifeTo( StdTokens.Town ).Wait();
 				break;
 			default: throw new Exception( "add to not in list" );
 		}

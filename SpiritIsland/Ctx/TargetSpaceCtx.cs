@@ -281,10 +281,6 @@ public class TargetSpaceCtx : SelfCtx {
 	/// <param name="groups">Option: if null/empty, no filtering</param>
 	public Task AddStrife( params HumanTokenClass[] groups ) => Self.AddStrife( Tokens, groups );
 
-	public Task AddRemoveStrifeTo( HumanToken invader, int count = 1 ) {
-		return Tokens.AddRemoveStrifeTo( invader, count );
-	}
-
 	#endregion
 
 	public Task RemoveInvader( IEntityClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );

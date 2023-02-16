@@ -65,7 +65,7 @@ public class RavageBehavior {
 
 	static async Task RavageSequence_Default( RavageBehavior behavior, RavageData data ) {
 		// Default Ravage Sequence
-		int damageInflictedByAttackers = GetDamageInflictedByAttackers( behavior, data );
+		int damageInflictedByAttackers = await GetDamageInflictedByAttackers( behavior, data );
 		await behavior.DamageDefenders( behavior, data, damageInflictedByAttackers );
 		int damageFromDefenders = RavageBehavior.GetDamageInflictedByDefenders( behavior,data );
 		await DamageAttackers( data, damageFromDefenders );
@@ -154,12 +154,12 @@ public class RavageBehavior {
 	}
 
 	/// <summary> Defend has already been applied. </summary>
-	static public int GetDamageInflictedByAttackers( RavageBehavior behavior, RavageData data ) {
+	static public async Task<int> GetDamageInflictedByAttackers( RavageBehavior behavior, RavageData data ) {
 
 		// CurrentAttackers
 		int rawDamageFromAttackers = behavior.GetDamageFromParticipatingAttackers( behavior, data.Result.startingAttackers, data.Tokens );
 
-		data.CurrentAttackers = FromEachStrifed_RemoveOneStrife( data ); // does not change start state, modifies gs.Tokens[...] instead
+		data.CurrentAttackers = await FromEachStrifed_RemoveOneStrife( data ); // does not change start state, modifies gs.Tokens[...] instead
 
 		// Defend
 		data.Result.defend = data.Tokens.Defend.Count;
@@ -169,7 +169,7 @@ public class RavageBehavior {
 	}
 
 	/// <returns>New attacker finvaders</returns>
-	static CountDictionary<HumanToken> FromEachStrifed_RemoveOneStrife( RavageData ra ) {
+	static async Task<CountDictionary<HumanToken>> FromEachStrifed_RemoveOneStrife( RavageData ra ) {
 		CountDictionary<HumanToken> participatingInvaders = ra.Result.startingAttackers;
 
 		var newAttackers = participatingInvaders.Clone();
@@ -186,7 +186,7 @@ public class RavageBehavior {
 			newAttackers[orig.AddStrife( -1 )] += count;
 
 			// update real tokens
-			ra.Tokens.RemoveStrife( orig, ra.Tokens[orig] );
+			await ra.Tokens.Remove1StrifeFrom( orig, ra.Tokens[orig] );
 		}
 
 		return newAttackers;

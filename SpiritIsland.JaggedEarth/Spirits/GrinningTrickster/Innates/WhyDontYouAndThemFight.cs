@@ -20,7 +20,7 @@ class WhyDontYouAndThemFight {
 		var spaceInvader = (HumanToken)(await ctx.Decision(decision))?.Token;
 
 		// Calc Invader Damage
-		var (damageFromInvader,newInvaderToken) = GetDamageFromInvader( ctx.Invaders, spaceInvader );
+		var (damageFromInvader,newInvaderToken) = await GetDamageFromInvader( ctx.Invaders, spaceInvader );
 		// Calc Dahan Damage
 		int damageFromDahan = 2;
 			
@@ -33,9 +33,9 @@ class WhyDontYouAndThemFight {
 
 	}
 
-	static (int,HumanToken) GetDamageFromInvader( InvaderBinding invaderBinding, HumanToken invader ) {
+	static async Task<(int,HumanToken)> GetDamageFromInvader( InvaderBinding invaderBinding, HumanToken invader ) {
 		return 0 < invader.StrifeCount
-			? (0,invaderBinding.Tokens.RemoveStrife( invader, 1 )) 
+			? (0,await invaderBinding.Tokens.Remove1StrifeFrom( invader, 1 )) 
 			: (invaderBinding.Tokens.AttackDamageFrom1( invader ),invader);
 	}
 

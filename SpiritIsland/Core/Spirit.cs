@@ -584,7 +584,7 @@ public abstract partial class Spirit : IOption {
 		var st = await Gateway.Decision( Select.Invader.ForStrife( tokens, groups ) );
 		if(st == null) return;
 		var invader = (HumanToken)st.Token;
-		await tokens.AddRemoveStrifeTo( invader );
+		await tokens.Add1StrifeTo( invader );
 	}
 
 }
