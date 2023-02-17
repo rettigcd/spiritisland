@@ -10,7 +10,7 @@ public class ConcealingShadows {
 		ctx.AddFear(1);
 
 		// dahan take no damage from ravaging invaders this turn
-		ctx.GameState.ModifyRavage( ctx.Space, behavior => behavior.DamageDefenders = (_,_1,_2) => Task.CompletedTask );
+		ctx.Tokens.RavageBehavior.DamageDefenders = ( _, _1, _2 ) => Task.CompletedTask;
 
 		return Task.CompletedTask;
 	}

@@ -2,15 +2,13 @@
 
 namespace SpiritIsland.JaggedEarth;
 
-class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
+class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenAsync {
 
 	#region construction
 
 	public RussiaToken() {}
 
 	#endregion
-
-	public IEntityClass Class => ActionModTokenClass.Singleton;
 
 	public bool HasASenseOfPendingDisaster { get; set; }
 
@@ -56,7 +54,7 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 
 	#region mods
 
-	async Task IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ) {
+	async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( ITokenAddedArgs args ) {
 		if(args.Added == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
@@ -70,7 +68,7 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 		}
 	}
 
-	async Task IHandleRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		const string key = "A Sense of Pending Disaster";
 		SpaceState[] pushOptions;
 		var scope = ActionScope.Current;
@@ -78,16 +76,15 @@ class RussiaToken : ISpaceEntity, IHandleTokenAdded, IHandleRemovingToken {
 			&& args.Token.Class == Human.Explorer     // Is explorer
 			&& args.Reason == RemoveReason.Destroyed // destroying
 			&& !ActionScope.Current.ContainsKey( key )  // first time
-			&& 0 < (pushOptions = args.Space.Adjacent_ForInvaders.IsInPlay().ToArray()).Length
+			&& 0 < (pushOptions = args.From.Adjacent_ForInvaders.IsInPlay().ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
 			if(args.Mode == RemoveMode.Live) {
 				scope[key] = true; // don't save any more
 
-				GameState gs = GameState.Current;
-				Spirit spirit = scope.Owner ?? BoardCtx.FindSpirit( gs, args.Space.Space.Board );
-				Space destination = await spirit.Gateway.Decision( Select.ASpace.PushToken( (IToken)args.Token, args.Space.Space, pushOptions, Present.Always ) );
-				await args.Space.MoveTo( (IToken)args.Token, destination );
+				Spirit spirit = scope.Owner ?? args.From.Space.Board.FindSpirit();
+				Space destination = await spirit.Gateway.Decision( Select.ASpace.PushToken( (IToken)args.Token, args.From.Space, pushOptions, Present.Always ) );
+				await args.From.MoveTo( (IToken)args.Token, destination );
 			}
 		}
 	}

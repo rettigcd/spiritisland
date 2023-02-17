@@ -100,3 +100,9 @@ public abstract class Space
 	#endregion
 
 }
+public class FakeSpace : Space {
+	public FakeSpace( string name ) : base( name ) { }
+	public override SpaceLayout Layout => throw new NotImplementedException();
+	public override bool Is( Terrain terrain ) => false;
+	public override bool IsOneOf( params Terrain[] options ) => false;
+}

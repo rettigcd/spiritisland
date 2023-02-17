@@ -8,7 +8,12 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { ResponsibilityToTheDead_Rule, OpenTheWays.Rule };
 
-	public GatewayToken GatewayToken; // !!! token state not preserved for Rewind/Memento
+	public GatewayToken GatewayToken;
+
+	protected override object _customSaveValue {
+		get => GatewayToken;
+		set => GatewayToken = (GatewayToken)value;
+	}
 
 	#region constructor / initilization
 
@@ -56,7 +61,7 @@ public class FinderOfPathsUnseen : Spirit {
 		// Put 1 presence on any board in land #1.
 		AddActionFactory( new Setup_PlacePresenceOnSpace1() ); // let user pick initial space
 
-		gameState.AddToAllActiveSpaces( new TokenRemovedHandler( ResponsibilityToTheDead_Handler, true ) );
+		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( ResponsibilityToTheDead_Handler ) );
 
 		_openTheWays = new OpenTheWays();
 
@@ -70,32 +75,35 @@ public class FinderOfPathsUnseen : Spirit {
 		"Responsibilities to the Dead",
 		"After one of your Actions Destroys 1 or more Dahan/Invaders, or directly triggers their Destruction my moving them, Destroy 1 of your Presnce and lose 1 Energy.  If you have no Energy to lose, Destroy another Presence."
 	);
-	async Task ResponsibilityToTheDead_Handler( ITokenRemovedArgs args ) {
+	Task ResponsibilityToTheDead_Handler( ITokenRemovedArgs args ) {
 		const string AllReadyDestroyedSomePresence = "FinderAlreadyDestroyedPresence";
 		var scope = ActionScope.Current;
-		if(scope.ContainsKey( AllReadyDestroyedSomePresence )
+		if( !scope.ContainsKey( AllReadyDestroyedSomePresence )
 			// After one of your Actions
 			&& scope.Owner == this
 			// Destroys 1 or more
 			&& args.Reason == RemoveReason.Destroyed
 			// Dahan/Invaders,
 			&& args.Removed.Class.Category.IsOneOf( TokenCategory.Invader, TokenCategory.Dahan )
-		// or directly triggers their Destruction my moving them,
+			// or directly triggers their Destruction my moving them,
 		) {
-			// Destroy 1 of your Presnce and lose 1 Energy.
-			int preseneceToDestroy = 1;
-			// If you have no Energy to lose, Destroy another Presence.
-			if(Energy > 0) --Energy; else ++preseneceToDestroy;
-
-			// Do presence destroy
-			var gameState = GameState.Current;
-			// var presence = new BoundPresence( this, gameState );
-			while(preseneceToDestroy-- > 0)
-				await this.DestroyOnePresenceFromAnywhere();
-
 			// only once per action
 			scope[AllReadyDestroyedSomePresence] = true;
+
+			// After
+			scope.AtEndOfThisAction( async action => {
+				// Destroy 1 of your Presnce and lose 1 Energy.
+				int preseneceToDestroy = 1;
+				// If you have no Energy to lose, Destroy another Presence.
+				if(0 < Energy) --Energy; else ++preseneceToDestroy;
+
+				// Do presence destroy
+				while(preseneceToDestroy-- > 0)
+					await this.DestroyOnePresenceFromAnywhere();
+			} );
+
 		}
+		return Task.CompletedTask;
 	}
 
 	#endregion Responsibility To The Dead
@@ -113,17 +121,5 @@ public class FinderOfPathsUnseen : Spirit {
 	}
 
 	OpenTheWays _openTheWays;
-
-}
-
-public class Setup_PlacePresenceOnSpace1 : GrowthActionFactory {
-
-	// Put 1 presence on any board in land #1.
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var options = ctx.GameState.Island.Boards.Select( b => b[1] );
-		var space = await ctx.Decision( new Select.ASpace( "Add presence to", options, Present.Always ) );
-		await ctx.Self.Token.AddTo( space );
-	}
-	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
 
 }

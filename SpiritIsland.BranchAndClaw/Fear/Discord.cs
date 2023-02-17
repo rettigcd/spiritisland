@@ -25,5 +25,8 @@ public class Discord : FearCardBase, IFearCard {
 			).Execute( ctx );
 
 	static IExecuteOn<GameCtx> EachPlayerAdd1StrifeInADifferentLand 
-		=> Cmd.AddStrife( 1 ).In().SpiritPickedLand().Which( Has.AtLeastN(2,Human.Invader) ).AllDifferent().ForEachSpirit();
+		=> Cmd.AddStrife( 1 )
+			.In().SpiritPickedLand().AllDifferent().Which( Has.AtLeastN(2,Human.Invader) )
+			.ByPickingToken(Human.Invader)
+			.ForEachSpirit();
 }

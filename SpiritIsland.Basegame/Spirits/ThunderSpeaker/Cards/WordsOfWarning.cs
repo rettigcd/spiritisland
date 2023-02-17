@@ -13,7 +13,7 @@ public class WordsOfWarning {
 		ctx.Defend(3);
 
 		// During Ravage, dahan in target land deal damage simultaneiously with invaders
-		ctx.GameState.ModifyRavage( ctx.Space, cfg => cfg.RavageSequence = SimultaneousDamage );
+		ctx.Tokens.RavageBehavior.RavageSequence = SimultaneousDamage;
 
 		return Task.CompletedTask;
 	}

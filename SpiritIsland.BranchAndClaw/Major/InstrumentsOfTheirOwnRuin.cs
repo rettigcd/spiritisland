@@ -27,13 +27,13 @@ public class InstrumentsOfTheirOwnRuin {
 		await StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders.Execute( ctx );
 	}
 
-
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
 		ctx.ModifyRavage( cfg => cfg.RavageSequence = ( _, _ ) => RavageSequence_DamageInvadersInAdjacentLand(ctx ) );
 		return Task.CompletedTask;
 	}
 
-	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx ) { // !!! is there any ravage mods that need included here???
+	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx ) { 
+
 		// Note - this works regardless of them ravaging in target land or not. yay!
 
 		// This ravage is totally different from any other.
@@ -51,7 +51,6 @@ public class InstrumentsOfTheirOwnRuin {
 			.Sum( si => ctx.Tokens.AttackDamageFrom1( si ) * ctx.Tokens[si] );
 
 		// Calc Total Badlands damage available
-//		var tokens = ctx.GameState.Tokens;
 		var availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x.Space,x=>x.Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.
 		var activatedBadlandDamage = new CountDictionary<Space>(); // initializes when they do first damage in land, then used until depleated
 		bool HasDamage(Space space) => 0 < damageFromCenter || activatedBadlandDamage[space]>0;
@@ -82,7 +81,5 @@ public class InstrumentsOfTheirOwnRuin {
 		}
 
 	}
-
-	// Deal
 
 }

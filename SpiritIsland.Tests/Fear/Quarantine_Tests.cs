@@ -34,11 +34,12 @@ public class Quarantine_Tests {
 		if(activateFearCard)
 			_ctx.ActivateFearCard( card );
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 
 		if(activateFearCard)
 			_user.AcknowledgesFearCard( FearAck1 );
 
+		_user.WaitForNext();
 		_log.Assert_Built( "A4", "A7" ); // Sand
 		if( activateFearCard )
 			_log.Assert_Explored();
@@ -54,26 +55,29 @@ public class Quarantine_Tests {
 	public void Level2_ExploreDoesNotAffectCoastlandNorComeFromDiseasedSpots( bool activateFearCard ) {
 
 		// Skip over the coastal build
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
+
+		_user.WaitForNext(); // start of Round 2
 
 		// The only thing around A8 (a jungle) is a diseased town
-		_ctx.TargetSpace("A5").Tokens.Init("");
-		_ctx.TargetSpace("A6").Tokens.Init("");
-		_ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
-		_ctx.TargetSpace("A8").Tokens.Init("");
+		_ctx.TargetSpace( "A5" ).Tokens.Init( "" );
+		_ctx.TargetSpace( "A6" ).Tokens.Init( "" );
+		_ctx.TargetSpace( "A7" ).Tokens.Init( "1T@2,1Z" ); // town & diZease
+		_ctx.TargetSpace( "A8" ).Tokens.Init( "" );
 
 		// Given: Activate fear card
 		if(activateFearCard) {
 			_ctx.ActivateFearCard( card );
-			_ctx.ElevateTerrorLevelTo(2);
+			_ctx.ElevateTerrorLevelTo( 2 );
 		}
-
 		_log.Clear();
-		AdvanceToInvaderPhase();
+
+		GrowAndBuyNoCards();
 
 		if(activateFearCard)
 			_user.AcknowledgesFearCard( FearAck2 );
 
+		_user.WaitForNext();
 		_log.Assert_Ravaged("A4", "A7"); // Sand
 		_log.Assert_Built( "A1", "A2", "A3" ); // Costal
 		if( activateFearCard )
@@ -91,7 +95,7 @@ public class Quarantine_Tests {
 	public void Level3_NoCoastalExplore_NoActionInDiseasedLands( bool activateFearCard ) {
 
 		// Skip over the coastal build
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 
 		_ = _user.NextDecision; // wait for engine to catch up
 
@@ -114,7 +118,7 @@ public class Quarantine_Tests {
 		}
 
 		_log.Clear();
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 
 		if(activateFearCard)
 			_user.AcknowledgesFearCard( FearAck3 );
@@ -141,11 +145,11 @@ public class Quarantine_Tests {
 	public void SkipRavageWorks( bool skipARavage ) {
 		// Not really for quarantine, just a general test without a home
 
-		// Skip over the coastal build
-		AdvanceToInvaderPhase();
-		_user.WaitForNext();
+		// Given: on round 2 (Skip over the coastal build)
+		GrowAndBuyNoCards();
+		_user.WaitForNext(); // start of round 2
 
-		// The only thing around A8 (a jungle) is a diseased town
+		// And: The only thing around A8 (a jungle) is a diseased town
 		_ctx.TargetSpace("A5").Tokens.Init("");
 		_ctx.TargetSpace("A6").Tokens.Init("");
 		_ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
@@ -153,11 +157,13 @@ public class Quarantine_Tests {
 
 		if(skipARavage)
 			_ctx.TargetSpace( "A4" ).Tokens.SkipRavage("Test");
-
 		_log.Clear();
-		AdvanceToInvaderPhase();
-		_user.WaitForNext();
 
+		// When: step through next round
+		GrowAndBuyNoCards();
+		_user.WaitForNext(); // start of round 3
+
+		// Then:
 		if(skipARavage)
 			_log.Assert_Ravaged ( "A7" );             // Sand - A4 skipped
 		else
@@ -176,9 +182,9 @@ public class Quarantine_Tests {
 	protected SelfCtx _ctx;
 	protected Queue<string> _log = new();
 
-	protected void AdvanceToInvaderPhase() {
+	protected void GrowAndBuyNoCards() {
 		_ctx.ClearAllBlight();
-		_user.AdvancesToStartOfNextInvaderPhase();
+		_user.GrowAndBuyNoCards();
 	}
 
 	#endregion

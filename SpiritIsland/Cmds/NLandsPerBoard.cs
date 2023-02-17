@@ -83,15 +83,9 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 
 		// Select
 		SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		ctx.Self.Gateway.Preloaded = st ?? SpaceToken.Null;
 
-		if(st != null) {
-			ctx.Self.Gateway.Preloaded = st;
-			return ctx.Target( st.Space );
-		}
-
-		// !!! Bug - We need to Load into the Preloaded property a 'no-choice/null' option so the auto-picker knows to pick nothing.
-		return null;
-
+		return st == null ? null : ctx.Target( st.Space );
 	}
 
 

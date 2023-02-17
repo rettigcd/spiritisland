@@ -20,7 +20,7 @@ public static class StrifedRavage {
 					p.Value * invaderBinding.Tokens.AttackDamageFrom1( p.Key ), // total damage from this type.
 					p.Key, // the source of the damage
 					p.Value==1 // exclude source if there is only 1 - it can't damage itself.
-				);
+			);
 		}
 	);
 
@@ -47,7 +47,7 @@ public static class StrifedRavage {
 		=> new DecisionOption<BoardCtx>( "each invader takes 1 damage per strife it has", StrifedInvadersTakeDamagePerStrifeImp );
 
 	static async Task StrifedInvadersTakeDamagePerStrifeImp( BoardCtx boardCtx ) {
-		foreach(var space in boardCtx.ActiveSpaces)
+		foreach(var space in boardCtx.Board.Spaces.Tokens())
 			await EachInvaderTakesDamageByStrifeCount( space );
 	}
 

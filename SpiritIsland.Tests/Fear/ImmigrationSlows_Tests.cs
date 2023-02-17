@@ -12,24 +12,24 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 	public void Level1_SkipBuildInLowestNumberedLand() {
 		// 1: During the next normal build, skip the lowest-numbered land matching the invader card on each board.
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
+		_user.WaitForNext(); // start of round 2
 
 		_log.Assert_Built( "A3", "A8" );
 		_log.Assert_Explored( "A2", "A5" );
 
 		// Given: Explorers Are Reluctant
 		_ctx.ActivateFearCard( card );
-
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( FearAck1 );
-		
-		_ = _user.NextDecision; // wait for engine to catch up
+		_user.WaitForNext(); // start of round 3
 
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Built( "A2: build stopped", "A5" ); // Skipped A2
 		_log.Assert_Explored( "A4", "A7" ); 
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
+		_user.WaitForNext(); // start of round 4
 
 		_log.Assert_Ravaged( "A2", "A5" );
 		_log.Assert_Built( "A4", "A7" );
@@ -46,7 +46,7 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 		// Card Advance #1 - Turn up first Explore Card
 		// Card Advance #2 - Advance Explore Card to Build
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 
 		_user.WaitForNext();
 		_log.Assert_Built( "A3", "A8" );
@@ -60,7 +60,7 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 		//   And: Terror Level 2
 		_ctx.ElevateTerrorLevelTo( 2 );
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( FearAck2 );
 		_user.WaitForNext();
 
@@ -68,7 +68,7 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Explored("A4","A7");
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_user.WaitForNext();
 
 		// no ravage
@@ -84,7 +84,7 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 	public void Level3_DelayExplore1Round() {
 		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		System.Threading.Thread.Sleep(5);
 
 		_log.Assert_Built( "A3", "A8" );
@@ -94,14 +94,14 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 		_ctx.ActivateFearCard( card );
 		_ctx.ElevateTerrorLevelTo( 3 );
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( FearAck3 );
 		System.Threading.Thread.Sleep(5);
 
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Explored("A4", "A7");
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		System.Threading.Thread.Sleep(5);
 
 		_log.Assert_Ravaged( "A2", "A5" );

@@ -1,7 +1,4 @@
-﻿using SpiritIsland.Select;
-using System.Xml.Linq;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 class VolcanoPresence : SpiritPresence {
 	public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
@@ -13,10 +10,7 @@ class VolcanoPresence : SpiritPresence {
 		Token = new VolcanoToken( spirit );
 	}
 
-	const string DontDestroyPresenceOnStr = "Don't Destroy Presence On Space";
-	static public void SetDontDestroyPresenceOn( Space space ) => ActionScope.Current[DontDestroyPresenceOnStr] = space;
-
-	public static bool DontDestroyPresenceOn( Space space )	=> space == ActionScope.Current.SafeGet<Space>( DontDestroyPresenceOnStr );
+	static public ActionScopeValue<Space> SafeSpace = new( "Don't Destroy Presence On Space", (Space)default );
 
 	const string DestroyedPresenceCount = "DestroyedPresenceCount";
 	static public int GetPresenceDestroyedThisAction() => ActionScope.Current.SafeGet( DestroyedPresenceCount, 0 );
@@ -26,16 +20,13 @@ class VolcanoPresence : SpiritPresence {
 
 }
 
-public class VolcanoToken : SpiritPresenceToken, IHandleRemovingToken {
+public class VolcanoToken : SpiritPresenceToken, IModifyRemovingToken {
 
 	public VolcanoToken(Spirit spirit ):base(spirit) {}
 
-	public Task ModifyRemoving( RemovingTokenArgs args ) {
-
-		if( DestroysPresence( args ) && VolcanoPresence.DontDestroyPresenceOn( args.Space.Space )	)
+	public void ModifyRemoving( RemovingTokenArgs args ) {
+		if( DestroysPresence( args ) && VolcanoPresence.SafeSpace.Value == args.From.Space )
 			args.Count = 0;
-
-		return Task.CompletedTask;
 	}
 
 	protected override async Task OnPresenceDestroyed( ITokenRemovedArgs args ) {

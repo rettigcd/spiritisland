@@ -24,7 +24,7 @@ public class ThrivingCommunities_Tests {
 		fxt.Choose( space2.Text ); fxt.Choose( "T@2" );
 
 		// Then: it should complete successfully
-		task.IsCompletedSuccessfully.ShouldBeTrue();
+		task.Wait(4000);task.IsCompletedSuccessfully.ShouldBeTrue();
 		//  And: spaces should have towns
 		fxt.GameState.Tokens[ space1 ].InvaderSummary().ShouldBe( "1T@2" );
 		fxt.GameState.Tokens[ space2 ].InvaderSummary().ShouldBe( "1C@3" );

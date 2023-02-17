@@ -27,12 +27,12 @@ public class TokenPusher {
 	async Task<Space[]> Exec( Present present ) {
 
 		var counts = _tokens;
-		IToken[] GetTokens() {
+		async Task<IToken[]> GetTokens() {
 			var groupsWithRemainingCounts = indexLookupByGroup
 				.Where( pair => 0 < sharedGroupCounts[pair.Value] )
 				.Select( p => p.Key )
 				.ToArray();
-			return counts.RemovableOfAnyClass( RemoveReason.MovedFrom, groupsWithRemainingCounts )
+			return (await counts.RemovableOfAnyClass( RemoveReason.MovedFrom, groupsWithRemainingCounts ))
 				.Cast<IToken>()
 				.ToArray();
 		}
@@ -40,7 +40,7 @@ public class TokenPusher {
 		var pushedToSpaces = new List<Space>();
 
 		IToken[] tokens;
-		while(0 < (tokens = GetTokens()).Length) {
+		while(0 < (tokens = await GetTokens()).Length) {
 			// Select Token
 			var token = (await _self.Gateway.Decision( Select.TokenFrom1Space.TokenToPush( _tokens.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
 			if(token == null) break;

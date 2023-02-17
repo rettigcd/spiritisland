@@ -80,17 +80,21 @@ public StonesUnyieldingDefiance() : base(
 		(adjacentWithBlight ?? adjacentWithSand).Adjust(Presence.Token,1);
 
 		// Bestow the Endurance of Bedrock
-		gameState.ModifyBlightAddedEffect.ForGame.Add(BestowTheEnduranceOfBedrock);
+		gameState.AddIslandMod(new BestowTheEnduranceOfBedrock(Token));
 	}
 
-	void BestowTheEnduranceOfBedrock( AddBlightEffect effect ) {
-		// When blight is added to one of your lands,
-		// if the blight is less than or equal to your presence, 
-		if( effect.AddedTo.Blight.Count <= effect.AddedTo[Token] ){
-			// it does not cascade or destroy presence (yours or others')."
-			effect.Cascade = false;
-			effect.DestroyPresence = false;
+}
+
+class BestowTheEnduranceOfBedrock : BaseModEntity, IModifyAddingToken {
+	readonly SpiritPresenceToken _token;
+	public BestowTheEnduranceOfBedrock( SpiritPresenceToken token ) {
+		_token = token;
+	}
+	public void ModifyAdding( AddingTokenArgs args ) {
+		if(args.Token == Token.Blight && args.To.Blight.Count <= args.To[_token]) {
+			// it does not cascade or destroy presence (yours or others').
+			BlightToken.ForThisAction.ShouldCascade = false;
+			BlightToken.ForThisAction.DestroyPresence = false;
 		}
 	}
-
 }

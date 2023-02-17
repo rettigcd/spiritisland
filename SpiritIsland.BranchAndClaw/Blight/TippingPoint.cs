@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class TippingPoint : BlightCardBase {
+public class TippingPoint : BlightCard {
 
 	public TippingPoint():base("Tipping Point", "Immediately, destroy 3 presence from each Spirit.", 5 ) { }
 

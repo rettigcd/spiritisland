@@ -17,16 +17,19 @@ public class Discord_Tests {
 
 		var task = new Discord().Level3( new GameCtx( fxt.GameState ) );
 
-		fxt.Choose(space.Text); // select space to add strife
-		fxt.Choose("C@3"); // strife the city
+		fxt.NextDecision.HasPrompt( "Select token for Add 1 Strife." )
+			.HasOptions( "C@3 on A6,T@2 on A6" )
+			.Choose( "C@3 on A6" );
 		
 		fxt.Choose("T@2"); // damage town
 		fxt.Choose("T@1"); // damage it again.
 
 		// Then: city destroys 2 explorers, leaving 1
+		task.Wait(1000);
+		task.IsCompletedSuccessfully.ShouldBeTrue();
+
 		fxt.GameState.Tokens[space].InvaderSummary().ShouldBe( "1C@3^" );
 
-		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
 
 }

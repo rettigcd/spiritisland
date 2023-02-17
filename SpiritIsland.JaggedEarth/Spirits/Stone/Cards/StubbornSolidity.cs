@@ -18,22 +18,17 @@ public class StubbornSolidity {
 
 }
 
-public class StubbornSolidityBehavior : ISpaceEntityWithEndOfRoundCleanup
-	, IHandleRemovingToken
+public class StubbornSolidityBehavior : IModifyRemovingToken
 	, IStopDahanDamage
+	, IEndWhenTimePasses
 {
 
-	public IEntityClass Class => ActionModTokenClass.Singleton;
+	public IEntityClass Class => ActionModTokenClass.Mod;
 
-	public Task ModifyRemoving( RemovingTokenArgs args ) {
+	public void ModifyRemoving( RemovingTokenArgs args ) {
 		if(	args.Token.Class == Human.Dahan ) args.Count = 0;
 		if( args.Mode == RemoveMode.Live )
 			GameState.Current.Log(new Log.Debug("Stuborn Solidity stopping Dahan from being changed."));
-		return Task.CompletedTask;
-	}
-
-	public void EndOfRoundCleanup( SpaceState spaceState ) {
-		spaceState.Init( this, 0 );
 	}
 
 }

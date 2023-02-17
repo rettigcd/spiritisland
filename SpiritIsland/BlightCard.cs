@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public abstract class BlightCardBase : IBlightCard {
+public abstract class BlightCard : IBlightCard {
 
-	protected BlightCardBase(string name, string description, int side2BlightPerPlayer ) {
+	static readonly public FakeSpace Space = new FakeSpace( "BlightCard" ); // stores slow blight
+
+	protected BlightCard(string name, string description, int side2BlightPerPlayer ) {
 		Name = name;
 		Description = description;
 		this.startingBlightPerPlayer = 2;
@@ -16,13 +18,13 @@ public abstract class BlightCardBase : IBlightCard {
 	string IOption.Text => Name;
 
 	public void OnGameStart( GameState gs ) {
-		gs.blightOnCard = startingBlightPerPlayer * gs.Spirits.Length + 1; // +1 from Jan 2021 errata
+		Tokens(gs).Init( startingBlightPerPlayer * gs.Spirits.Length + 1 );// +1 from Jan 2021 errata
 	}
 
 	public async Task OnBlightDepleated( GameState gs ) {
 		if(!CardFlipped) {
 			CardFlipped = true;
-			gs.blightOnCard += side2BlightPerPlayer * gs.Spirits.Length;
+			await Tokens(gs).Add( side2BlightPerPlayer * gs.Spirits.Length );
 
 			// Execute Immediate command
 			var immediately = Immediately;
@@ -35,6 +37,8 @@ public abstract class BlightCardBase : IBlightCard {
 			Side2Depleted(gs);
 
 	}
+
+	static BlightTokenBinding Tokens(GameState gs) => gs.Tokens[Space].Blight;
 
 	public abstract IExecuteOn<GameCtx> Immediately { get; }
 

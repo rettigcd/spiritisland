@@ -25,7 +25,7 @@ public static partial class Cmd {
 			async ctx => {
 				var gs = ctx.GameState;
 				for(int boardIndex = 0; boardIndex < gs.Island.Boards.Length; ++boardIndex) {
-					BoardCtx boardCtx = new BoardCtx( gs, gs.Island.Boards[boardIndex] );
+					BoardCtx boardCtx = new BoardCtx( gs.Island.Boards[boardIndex] );
 					for(int i = 0; i < boardCtx.Board.InvaderActionCount; ++i) {
 						// Page 10 of JE says Each Board is a new action
 						await using var actionScope = new ActionScope( ctx.Category );
@@ -56,7 +56,7 @@ public static partial class Cmd {
 
 	static public GameCtxCmd AtTheStartOfEachInvaderPhase( this GameCtxCmd cmd ) => new GameCtxCmd(
 		"At the start of each Invader Phase, " + cmd.Description,
-		ctx => ctx.GameState.StartOfInvaderPhase.ForGame.Add( ( _ ) => cmd.Execute( ctx ) )
+		ctx => ctx.GameState.StartOfInvaderPhase.Add( ( _ ) => cmd.Execute( ctx ) )
 	);
 
 }

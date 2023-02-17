@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops 1 Ravage. </summary>
-public class SkipRavage : SelfCleaningToken, ISkipRavages {
+public class SkipRavage : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
 
 	public SkipRavage( string label, UsageDuration duration = UsageDuration.SkipOneThisTurn ) : base() {
 		SourceLabel = label;

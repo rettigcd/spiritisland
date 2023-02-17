@@ -5,8 +5,8 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 	public FollowingPresenceToken( Spirit spirit, IEntityClass leaderClass ) : base( spirit ) {
 		_leaderClass = leaderClass;
 	}
-	public override async Task HandleTokenRemoved( ITokenRemovedArgs args ) {
-		await base.HandleTokenRemoved( args );
+	public override async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
+		await base.HandleTokenRemovedAsync( args );
 		if(args.Removed.Class == _leaderClass && args is ITokenMovedArgs moved)
 			await _spirit.TryToFollow( moved );
 	}

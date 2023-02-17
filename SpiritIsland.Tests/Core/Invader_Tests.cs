@@ -242,7 +242,7 @@ public class Invader_Tests {
 		gameState = new GameState( new RiverSurges(), board );
 		gameState.IslandWontBlight();
 		// Disable destroying presence
-		gameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		gameState.DisableBlightEffect();
 
 		// Given: Invaders on a Mountain space
 		var space = board[1];

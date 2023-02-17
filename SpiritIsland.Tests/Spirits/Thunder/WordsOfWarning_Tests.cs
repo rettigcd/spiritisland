@@ -9,7 +9,7 @@ public class WordsOfWarning_Tests : ThunderCards  {
 
 		// Disable destroying presence
 		// gs.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
-		gs.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		gs.DisableBlightEffect();
 
 
 		// Given: 2 dahan on a2

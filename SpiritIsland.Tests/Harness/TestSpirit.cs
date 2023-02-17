@@ -41,12 +41,11 @@ class TestSpirit : Spirit {
 		_ = new SinglePlayer.SinglePlayerGame( gs );
 
 		var user = new VirtualTestUser( spirit );
-		var action = gs.StartAction( ActionCategory.Default );
 		var starterCtx = spirit.BindSelf();
 
 		// Disable destroying presence
 		// starterCtx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
-		starterCtx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		starterCtx.GameState.DisableBlightEffect();
 
 
 		return (user,starterCtx);
@@ -70,7 +69,7 @@ public class VirtualTestUser : VirtualUser {
 		Growth_SelectAction( "ReclaimAll" );
 	}
 
-	public void AdvancesToStartOfNextInvaderPhase() {
+	public void GrowAndBuyNoCards() {
 		Grows();
 		IsDoneBuyingCards();
 	}

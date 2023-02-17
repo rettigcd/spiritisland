@@ -55,7 +55,7 @@ public class GameBuilder {
 		var blightCards = BuildBlightCards();
 
 		// GameState
-		var gameState = new GameState( spirits, boards );
+		var gameState = new GameState( spirits, boards, cfg.ShuffleNumber );
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
 		var randomizer = new Random( cfg.ShuffleNumber );

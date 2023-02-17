@@ -9,22 +9,22 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void NormalInvaderPhases() {
 
 		// Disable destroying presence
-		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.DisableBlightEffect();
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_ = _user.NextDecision; // Wait for engine to finish
 
 		_log.Assert_Built( "A3", "A8" );
 		_log.Assert_Explored( "A2", "A5" );
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_ = _user.NextDecision; // Wait for engine to finish
 
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Built( "A2", "A5" );
 		_log.Assert_Explored( "A4", "A7" );
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_ = _user.NextDecision; // Wait for engine to finish
 
 		_log.Assert_Ravaged( "A2", "A5" );
@@ -39,12 +39,14 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level1_SkipExploreInLowestNumberedLand() {
 
 		// Disable destroying presence
-		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.DisableBlightEffect();
 
 
 		// 1: "During the next normal explore, skip the lowest-numbered land matching the invader card on each board.
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
+
+		_user.WaitForNext();
 
 		// Ravage:-, Build:Jungle, Explore: Wetland
 		_log.Assert_Built( "A3", "A8" );    // Jungle
@@ -53,16 +55,16 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		// Given: Explorers Are Reluctant
 		_ctx.ActivateFearCard(new ExplorersAreReluctant());
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard("Explorers are Reluctant : 1 : During the next normal explore, skip the lowest-numbered land matching the invader card on each board.");
-		System.Threading.Thread.Sleep(5);
+		_user.WaitForNext();
 
 		// Ravage:Jungle, Build:Wetland, Explore: Sand
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Built( "A2", "A5" );
 		_log.Assert_Explored( "A7" ); // Skipped A4
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 
 		// Ravage:Wetland, Build:Sand, Explore: Jungle-2
 		//log.Assert_Ravaged( "A2", "A5" );
@@ -77,14 +79,14 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level2_DelayExplore1Round() {
 
 		// Disable destroying presence
-		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.DisableBlightEffect();
 
 		// 2: Skip the next normal explore.  During the next invader phase, draw an adidtional explore card.
 
 		// Card Advance #1 - Turn up first Explore Card
 		// Card Advance #2 - Advance Explore Card to Build
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 
 		_log.Assert_Built( "A3", "A8" );
 		_log.Assert_Explored( "A2", "A5" );
@@ -96,7 +98,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		//   And: Terror Level 2
 		_ctx.ElevateTerrorLevelTo( 2 );
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( "Explorers are Reluctant : 2 : Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
 		System.Threading.Thread.Sleep(5);
 
@@ -105,7 +107,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Built( "A2", "A5" );
 
-		AdvanceToInvaderPhase();
+		GrowAndBuyNoCards();
 
 		_log.Assert_Ravaged( "A2", "A5" );
 		_log.Assert_Explored( "A4", "A7" ); // A4 & A7 happen together with next
@@ -119,13 +121,15 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level3_DelayExplore1Round() {
 
 		// Disable destroying presence
-		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.DisableBlightEffect();
 
 		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
 
-		AdvanceToInvaderPhase();
-		_ = _user.NextDecision; // Wait for invader phase to complete.
+		// When Round 1 comes and goes
+		GrowAndBuyNoCards(); // Begin Round 1
+		_user.WaitForNext(); // End Round 1
 
+		// Then:
 		_log.Assert_Built( "A3", "A8" );
 		_log.Assert_Explored( "A2", "A5" );
 
@@ -133,20 +137,22 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		_ctx.ActivateFearCard(new ExplorersAreReluctant());
 		_ctx.ElevateTerrorLevelTo( 3 );
 
-		AdvanceToInvaderPhase();
+		// When Round 2 comes and goes
+		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard("Explorers are Reluctant : 3 : Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.");
-		_ = _user.NextDecision; // Wait for invader phase to complete.
+		_user.WaitForNext();
 
+		// Then:
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Built( "A2", "A5" );
 		_log.Assert_Explored(); // Skipped A4 & A7
 
-		AdvanceToInvaderPhase();
+		// When: Round 3 comes and goes
+		GrowAndBuyNoCards();
+		_user.WaitForNext();
 
-		_ = _user.NextDecision; // Wait for invader phase to complete.
-
+		// Then:
 		_log.Assert_Ravaged( "A2", "A5" );
-
 		_log.Assert_Built(/*"A4", "A7"*/); // we are currently filtering out spaces that have no explorers so they don't show up here.
 		_log.Dequeue().ShouldStartWith( "No build due" );
 		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next

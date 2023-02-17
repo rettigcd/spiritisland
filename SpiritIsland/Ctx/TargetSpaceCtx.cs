@@ -168,7 +168,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public bool HasInvaders => Tokens.HasInvaders();
 
-	public void ModifyRavage( Action<RavageBehavior> action ) => GameState.ModifyRavage(Space,action);
+	public void ModifyRavage( Action<RavageBehavior> action ) => action( Tokens.RavageBehavior );
 
 	// The current targets power
 	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
@@ -184,21 +184,21 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Apply Damage
 		int damageApplied = await Invaders.UserSelectedDamage( Self, combinedDamage.Available, allowedTypes );
-
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
 	// For strifed Damage
-	// !!! ??? Can this be combined with DamageInvaders() to remove duplication?
 	public async Task StrifedDamageOtherInvaders( int originalDamage, HumanToken damageSource, bool excludeSource ) {
 
 		HumanToken damageSourceToExclude = excludeSource ? damageSource : null;
 		HumanToken[] invadersToDamage() => Tokens.InvaderTokens().Where( t => t != damageSourceToExclude ).ToArray();
 
+		// Calculate Total Damage available
+		var combinedDamage = Tokens.BonusDamageForAction( originalDamage );
+
 		// Apply Damage
-		var combined = Tokens.BonusDamageForAction( originalDamage );
-		int damageApplied = await Invaders.UserSelected_ApplyDamageToSpecificToken( combined.Available, Self, damageSource, invadersToDamage );
-		combined.TrackDamageDone( damageApplied );
+		int damageApplied = await Invaders.UserSelected_ApplyDamageToSpecificToken( combinedDamage.Available, Self, damageSource, invadersToDamage );
+		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
 	// !!! If we do any damage and there is badlands, we need to check at the end of the Action that all damage was done.

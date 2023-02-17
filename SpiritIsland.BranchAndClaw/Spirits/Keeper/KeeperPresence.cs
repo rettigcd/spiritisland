@@ -20,11 +20,11 @@ public partial class Keeper {
 
 }
 
-public class KeeperToken : SpiritPresenceToken, IHandleTokenAdded {
+public class KeeperToken : SpiritPresenceToken, IHandleTokenAddedAsync {
 
 	public KeeperToken(Spirit spirit):base(spirit) {}
 
-	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
 		if(args.Added != this) return;
 
 		int tokenCount = args.To[this];

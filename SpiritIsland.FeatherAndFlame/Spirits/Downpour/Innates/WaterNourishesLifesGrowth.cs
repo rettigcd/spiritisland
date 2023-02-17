@@ -28,7 +28,7 @@ internal class WaterNourishesLifesGrowth {
 	[InnateOption( "7 water,2 earth,3 plant", "When Blight would be added to target land, instead leave it on the card.", 2 )]
 	static public Task Option3( TargetSpaceCtx ctx ) {
 		// When Blight would be added to target land, instead leave it on the card.
-		ctx.Blight.Blocked = true; // auto-cleared at end of round
+		ctx.Blight.Block(); // auto-cleared at end of round
 		return Task.CompletedTask;
 	}
 

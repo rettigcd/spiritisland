@@ -16,7 +16,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 
 	public async Task Execute( SelfCtx ctx ) {
 
-		for(int i = 0; i < this._landsPerSpirit; ++i) {
+		for(int i = 0; i < _landsPerSpirit; ++i) {
 
 			var spaceOptions = ctx.GameState.Spaces
 				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
@@ -58,15 +58,9 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 
 		// Select
 		SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		ctx.Self.Gateway.Preloaded = st ?? SpaceToken.Null;
 
-		if(st != null) {
-			ctx.Self.Gateway.Preloaded = st;
-			return ctx.Target( st.Space );
-		}
-
-		// !!! Bug - We need to Load into the Preloaded property a 'no-choice/null' option so the auto-picker knows to pick nothing.
-		return null;
-
+		return st == null ? null : ctx.Target( st.Space );
 	}
 	string _diffString => _chooseDifferentLands ? "different " : "";
 	TargetSpaceCtxFilter _landCriteria;

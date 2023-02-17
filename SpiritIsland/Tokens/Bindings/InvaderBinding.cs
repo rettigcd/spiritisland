@@ -137,7 +137,6 @@ public class InvaderBinding {
 	#region UserSelected
 
 	// This is needed when strifed invaders ravage OTHER tokens. Need to be able to exclude specific token
-	// !!! ??? can this be merged with UserSelectedDamage above?
 	public async Task<int> UserSelected_ApplyDamageToSpecificToken( int damage, Spirit damagePicker, HumanToken source, Func<HumanToken[]> allowedTypes ) {
 		if(damage == 0) return 0;
 
@@ -165,7 +164,6 @@ public class InvaderBinding {
 	}
 
 	// This is the standard way of picking - by TokenClass
-	// ??? !!! can we remove this and use DamageToSpecificTokens instead?
 	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params IEntityClass[] allowedTypes ) {
 		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)

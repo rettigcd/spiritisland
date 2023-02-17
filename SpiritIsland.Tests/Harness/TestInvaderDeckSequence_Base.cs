@@ -17,9 +17,9 @@ public class TestInvaderDeckSequence_Base {
 	protected SelfCtx _ctx;
 	protected Queue<string> _log;
 
-	protected void AdvanceToInvaderPhase() {
+	protected void GrowAndBuyNoCards() {
 		_ctx.ClearAllBlight();
-		_user.AdvancesToStartOfNextInvaderPhase();
+		_user.GrowAndBuyNoCards();
 	}
 
 }

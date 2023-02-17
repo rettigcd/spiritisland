@@ -14,7 +14,6 @@ class ThePastReturnsAgain {
 
 		if(frac.Time < cost) return;
 
-		// !!! Implementing this as 1 spirit, but once we have >1 player, switch to all spirits can pay
 		int existingEnergy = ctx.GameState.Spirits.Sum( s => s.Energy );
 		if(existingEnergy < cost) return;
 

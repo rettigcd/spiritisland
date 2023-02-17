@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class DahanSaver : SelfCleaningToken, IHandleRemovingToken {
+public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingTokenAsync {
 
 	public static Action<TargetSpaceCtx> DestroyFewer( int maxPerAction, int maxActionCount )
 		=> ctx => ctx.Tokens.Adjust( new DahanSaver( ctx.Tokens, maxPerAction, maxActionCount ), 1 );
@@ -18,7 +18,7 @@ public class DahanSaver : SelfCleaningToken, IHandleRemovingToken {
 		this.maxPerAction   = maxPerAction;
 	}
 
-	Task IHandleRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		bool shouldReduce = args.Token.Class == Human.Dahan // Dahan
 			&& (args.Reason == RemoveReason.Destroyed) // Destroyed
 			&& (byAction.Count < maxActionCount || byAction.ContainsKey( ActionScope.Current )); // can effect more action OR already added

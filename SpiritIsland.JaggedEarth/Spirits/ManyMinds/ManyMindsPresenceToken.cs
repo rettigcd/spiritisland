@@ -3,7 +3,10 @@
 /// <summary>
 /// Adds/Removes a single Beast token for a Sacred Site
 /// </summary>
-public class ManyMindsPresenceToken : SpiritPresenceToken, IHandleTokenAdded, IHandleTokenRemoved {
+public class ManyMindsPresenceToken 
+	: SpiritPresenceToken
+	, IHandleTokenAdded
+	, IHandleTokenRemoved {
 
 	#region constructor
 
@@ -13,14 +16,12 @@ public class ManyMindsPresenceToken : SpiritPresenceToken, IHandleTokenAdded, IH
 
 	#endregion
 
-	Task IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ){
+	void IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ){
 		UpdateBeastCount( args.Added, args.To );
-		return Task.CompletedTask;
 	}
 
-	Task IHandleTokenRemoved.HandleTokenRemoved( ITokenRemovedArgs args ){
+	void IHandleTokenRemoved.HandleTokenRemoved( ITokenRemovedArgs args ){
 		UpdateBeastCount( args.Removed, args.From );
-		return Task.CompletedTask;
 	}
 
 	void UpdateBeastCount( ISpaceEntity token, SpaceState ss ) {

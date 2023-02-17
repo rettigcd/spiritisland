@@ -10,16 +10,17 @@ public class NullBlightCard : IBlightCard {
 
 	public IExecuteOn<GameCtx> Immediately => new DecisionOption<GameCtx>("no action", _ => { });
 
-	public Task OnBlightDepleated( GameState gs ) {
+	public async Task OnBlightDepleated( GameState gs ) {
 		if(!CardFlipped) {
 			CardFlipped = true;
-			gs.blightOnCard += 4 * gs.Spirits.Length;
+			await Tokens( gs ).Add( 4 * gs.Spirits.Length );
+			gs.blightOnCard_Add( 4 * gs.Spirits.Length );
 		}
-		return Task.CompletedTask;
 	}
 
 	public void OnGameStart( GameState gs ) {
-		gs.blightOnCard += 5 * gs.Spirits.Length;
+		Tokens(gs).Init( 5 * gs.Spirits.Length );
 	}
 
+	static BlightTokenBinding Tokens(GameState gs) => gs.Tokens[BlightCard.Space].Blight;
 }

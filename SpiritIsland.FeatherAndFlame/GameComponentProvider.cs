@@ -34,6 +34,6 @@ public class GameComponentProvider : IGameComponentProvider {
 		new SpreadingTimidity()
 	};
 
-	public IBlightCard[] BlightCards => Array.Empty<BlightCardBase>();
+	public IBlightCard[] BlightCards => Array.Empty<BlightCard>();
 
 }

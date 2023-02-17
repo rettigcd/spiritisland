@@ -70,6 +70,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	public SpaceToken Preloaded { get; set; }
 
+
 	/// <summary>
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 	/// </summary>
@@ -87,10 +88,11 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 			// Auto-Select NULL
 			promise.TrySetResult( null );
 		else if(Preloaded != null) {
-			if(!decision.Options.Contains(Preloaded))
+			bool isNull = Preloaded == SpaceToken.Null;
+			if(!isNull && !decision.Options.Contains(Preloaded))
 				throw new InvalidOperationException( $"Preloaded option {Preloaded.Text} not an option for "+decision.Prompt );
 			IOption preloaded = Preloaded; Preloaded = null;
-			decisionMaker.Select( preloaded );
+			decisionMaker.Select( isNull ? null : preloaded );
 		} else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
 			// Auto-Select Single
 			decisionMaker.Select( decision.Options[0] );

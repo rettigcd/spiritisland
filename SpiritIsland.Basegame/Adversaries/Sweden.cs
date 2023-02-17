@@ -39,18 +39,9 @@ public class Sweden : IAdversary {
 
 		//	Level 1 - Heavy Mining: >=6 +1 blight
 		//	The additional Blight does not destroy Presence or cause cascades.
-		if(1 <= Level) {
-			gameState.LandDamaged.ForGame.Add( async args => {
-				if(6 <= args.Damage) {
-					// !!! how do we take from card but not cascade?
-					if(args.Space.Blight.Blocked)
-
-					// !!! This shouldn't destroy presence?  Does it?
-					await args.Space.Blight.Add(1);
-					args.GameState.LogDebug("Heavy Mining: additional blight on "+args.Space.Space.Text);
-				}
-			} );
-		}
+		HeavyMining heavyMining = new HeavyMining();
+		if(1 <= Level)
+			gameState.AddIslandMod( heavyMining );
 
 		// Level 3 - Fine Steel for Tools and Guns: (Town deal 3 Damage, City deal 5 Damage)
 		if(3 <= Level) {
@@ -78,26 +69,8 @@ public class Sweden : IAdversary {
 		}
 
 		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
-		if(5 <= Level) {
-			var mod = new TokenAddedHandler(async args => {
-				// When ravage adds at least 1 blight to a land
-				if(args.Reason == AddReason.Ravage && args.Added == Token.Blight) {
-					var noBuildAdjacents = args.To.Adjacent
-						.Where( adj => !adj.HasAny( Human.Town_City ) )
-						.ToArray();
-
-					var gs = GameState.Current;
-					var spirit = BoardCtx.FindSpirit( gs, args.To.Space.Board );
-
-					var selection = await spirit.Gateway.Decision(Select.ASpace.ToPlaceToken("Mining Rush: Place Town",noBuildAdjacents,Present.Always, args.To.GetDefault( Human.Town ) ) );
-					if(selection != null) {
-						selection.Tokens.AdjustDefault( Human.Town, 1 );
-						gs.LogDebug($"Mining Rush: Blight on {args.To.Space.Text} caused +1 Town on {selection.Text}.");
-					}
-				}
-			}, true );
-			gameState.AddToAllActiveSpaces( mod );
-		}
+		if(5 <= Level)
+			heavyMining.MiningRush = true;
 
 		// Level 6 - Prospecting Outpost: Setup +1Town +1 blight on Land 8
 		if(6 <= Level) {
@@ -146,3 +119,42 @@ public class Sweden : IAdversary {
 	}
 }
 
+//	Level 1 - Heavy Mining: >=6 +1 blight
+//	The additional Blight does not destroy Presence or cause cascades.
+class HeavyMining : BaseModEntity, IHandleTokenAddedAsync {
+
+	public bool MiningRush { get; set; }
+
+	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+
+		//	Level 1 - Heavy Mining: >=6 +1 blight
+		//	The additional Blight does not destroy Presence or cause cascades.
+		if(args.Added == LandDamage.Token && 6 <= args.To[args.Added]) {
+
+			var config = BlightToken.ForThisAction;
+			config.DestroyPresence = false;
+			config.ShouldCascade = false;
+
+			await args.To.Blight.Add( 1 );
+			GameState.Current.LogDebug( "Heavy Mining: additional blight on " + args.To.Space.Text );
+		}
+
+		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
+		if(MiningRush)
+			// When ravage adds at least 1 blight to a land
+			if(args.Reason == AddReason.Ravage && args.Added == Token.Blight) {
+				var noBuildAdjacents = args.To.Adjacent
+					.Where( adj => !adj.HasAny( Human.Town_City ) )
+					.ToArray();
+
+				var spirit = args.To.Space.Board.FindSpirit();
+
+				var selection = await spirit.Gateway.Decision( Select.ASpace.ToPlaceToken( "Mining Rush: Place Town", noBuildAdjacents, Present.Always, args.To.GetDefault( Human.Town ) ) );
+				if(selection != null) {
+					selection.Tokens.AdjustDefault( Human.Town, 1 );
+					GameState.Current.LogDebug( $"Mining Rush: Blight on {args.To.Space.Text} caused +1 Town on {selection.Text}." );
+				}
+			}
+
+	}
+}

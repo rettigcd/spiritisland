@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class TokenAddingHandler : SelfCleaningToken, IHandleAddingToken {
+public class TokenAddingHandler : BaseModEntity, IEndWhenTimePasses, IModifyAddingToken {
 
 	readonly Action<AddingTokenArgs> _action;
 
@@ -8,5 +8,7 @@ public class TokenAddingHandler : SelfCleaningToken, IHandleAddingToken {
 		_action = action;
 	}
 
-	public void ModifyAdding( AddingTokenArgs args ) => _action( args );
+	public void ModifyAdding( AddingTokenArgs args ) { 
+		_action( args );
+	}
 }

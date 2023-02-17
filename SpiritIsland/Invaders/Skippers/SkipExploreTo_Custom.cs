@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-sealed public class SkipExploreTo_Custom : SelfCleaningToken, ISkipExploreTo {
+sealed public class SkipExploreTo_Custom : BaseModEntity, IEndWhenTimePasses, ISkipExploreTo {
 
 	public SkipExploreTo_Custom( bool stopAll, Func<GameCtx, SpaceState, bool> func ) : base() {
 		_stopAll = stopAll;

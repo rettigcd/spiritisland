@@ -17,7 +17,7 @@ public class ToDreamAThousandDeaths_Tests {
 		_ = _gameState.StartAction( ActionCategory.Spirit_Power ); // !!! get rid of or Dispose
 
 		// Disable destroying presence
-		_gameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_gameState.DisableBlightEffect();
 
 	}
 
@@ -150,7 +150,7 @@ public class ToDreamAThousandDeaths_Tests {
 	[Fact]
 	public async Task MaxKillOnce() {
 
-		var log = GameState.Current.LogAsStrings();
+		var log = GameState.Current.LogAsStringList();
 
 		var tokens = _board[5].Tokens;
 

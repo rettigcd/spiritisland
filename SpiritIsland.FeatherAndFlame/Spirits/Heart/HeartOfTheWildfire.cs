@@ -87,7 +87,7 @@ public class HeartOfTheWildfire : Spirit {
 
 	}
 
-	class WildfireToken : SpiritPresenceToken, IHandleRemovingToken, IHandleTokenAdded {
+	class WildfireToken : SpiritPresenceToken, IModifyRemovingTokenAsync, IHandleTokenAddedAsync {
 
 		static public readonly SpecialRule DestructiveNature_Rule = new SpecialRule(
 			"Destructive Nature",
@@ -96,7 +96,7 @@ public class HeartOfTheWildfire : Spirit {
 
 		public WildfireToken( Spirit spirit ):base(spirit) {}
 
-		public Task ModifyRemoving( RemovingTokenArgs args ) {
+		public Task ModifyRemovingAsync( RemovingTokenArgs args ) {
 			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presence. ( This includes cascades.)
 			if( DestroysPresence(args) && BlightAddedDueToSpiritEffects() ){
 				if(args.Mode == RemoveMode.Live)
@@ -107,10 +107,10 @@ public class HeartOfTheWildfire : Spirit {
 			return Task.CompletedTask;
 		}
 
-		static bool BlightAddedDueToSpiritEffects() => !BlightTokenBinding.GetAddReason()
+		static bool BlightAddedDueToSpiritEffects() => !BlightToken.ForThisAction.AddReason
 			.IsOneOf( AddReason.Ravage, AddReason.BlightedIsland, AddReason.None );
 
-		public async Task HandleTokenAdded( ITokenAddedArgs args ) {
+		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
 			// !! There is a bug here somehow that after placing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)

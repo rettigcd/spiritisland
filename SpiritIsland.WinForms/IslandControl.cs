@@ -377,7 +377,7 @@ public partial class IslandControl : Control {
 		int margin = Math.Max( 5, (int)(bounds.Height * .05f) );
 		int slotWidth = bounds.Height;
 
-		int count = this._gameState.blightOnCard;
+		int count = _gameState.Tokens[BlightCard.Space].Blight.Count;
 		int maxSpaces = 6;
 
 		float step = (bounds.Width - 2 * margin - 2 * slotWidth) / (maxSpaces - 1);

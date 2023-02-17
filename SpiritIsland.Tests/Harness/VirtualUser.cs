@@ -4,7 +4,7 @@ public class VirtualUser {
 	#region constructor
 
 	public VirtualUser(Spirit spirit ) { 
-		this.spirit = spirit;
+		this._spirit = spirit;
 		this.userPortal = spirit.Gateway;
 	}
 
@@ -12,8 +12,8 @@ public class VirtualUser {
 
 	#region Growth
 
-	public DecisionContext NextDecision => spirit.NextDecision();
-	public void WaitForNext() => spirit.WaitForNext();
+	public DecisionContext NextDecision => _spirit.NextDecision();
+	public void WaitForNext() => _spirit.WaitForNext();
 
 	public void Growth_SelectsOption( string growthOption ) {
 		NextDecision.HasPrompt( "Select Growth Option" )
@@ -54,20 +54,21 @@ public class VirtualUser {
 	}
 
 	public void Growth_PlacesEnergyPresence( string placeOptions ) 
-		=> PlacesPresence( spirit.Presence.Energy.RevealOptions.Single(), placeOptions );
+		=> PlacesPresence( _spirit.Presence.Energy.RevealOptions.Single(), placeOptions );
 
 	public void Growth_PlacesPresence( string placeOptions ) {
+		_spirit.WaitForNext();
 		string[] parts = placeOptions.Split('>');
 		Track source = parts[0].ToLower() switch {
-			"energy" => spirit.Presence.Energy.RevealOptions.Single(),
-			"cardplay" => spirit.Presence.CardPlays.RevealOptions.Single(),
-			"cardplays" => spirit.Presence.CardPlays.RevealOptions.Single(),
+			"energy" => _spirit.Presence.Energy.RevealOptions.Single(),
+			"cardplay" => _spirit.Presence.CardPlays.RevealOptions.Single(),
+			"cardplays" => _spirit.Presence.CardPlays.RevealOptions.Single(),
 			_ => throw new ArgumentOutOfRangeException(nameof(placeOptions)),
 		};
 		PlacesPresence( source, parts[1] );
 	}
 
-	public void PlacesCardPlayPresence( string placeOptions ) => PlacesPresence( spirit.Presence.CardPlays.RevealOptions.Single(), placeOptions );
+	public void PlacesCardPlayPresence( string placeOptions ) => PlacesPresence( _spirit.Presence.CardPlays.RevealOptions.Single(), placeOptions );
 
 	public void PlacesPresence( Track source, string placeOptions ) {
 
@@ -111,7 +112,8 @@ public class VirtualUser {
 	#endregion
 
 	public void PlaysCard( string cardName ) {
-		var card = this.spirit.Hand.First(c=>c.Name == cardName);
+		_spirit.WaitForNext();
+		var card = this._spirit.Hand.First(c=>c.Name == cardName);
 		BuysPowerCard( card );
 	}
 
@@ -152,7 +154,7 @@ public class VirtualUser {
 	}
 
 	string PowerNameToText( string choice ) {
-		return this.spirit.InPlay.FirstOrDefault( c => c.Name == choice )?.Text 
+		return this._spirit.InPlay.FirstOrDefault( c => c.Name == choice )?.Text 
 			?? choice; // it is an Innate Power and not in the purchased card list.
 	}
 
@@ -296,7 +298,7 @@ public class VirtualUser {
 
 	#endregion
 
-	readonly protected Spirit spirit;
+	readonly protected Spirit _spirit;
 	readonly protected IUserPortal userPortal;
 
 }

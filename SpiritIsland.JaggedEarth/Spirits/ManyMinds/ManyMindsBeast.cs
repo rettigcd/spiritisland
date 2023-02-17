@@ -5,7 +5,7 @@
 ///  - it simplifies selecting Beasts vs Presence-Beasts
 ///  - simplifies Moving the Presence with the Presence-Beasts into the AddedTo space.
 /// </remarks>
-public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemoved {
+public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemovedAsync {
 
 	readonly ManyMindsPresenceToken _presenceToken;
 
@@ -19,17 +19,16 @@ public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemoved {
 
 	public string Text => "ManyMind-SS-Beast";
 
-	public Task HandleTokenAdded( ITokenAddedArgs args ) {
+	public void HandleTokenAdded( ITokenAddedArgs args ) {
 		// If we added it, it came from somewhere and represented 2 presence.
 		if(args.Added == this) {
 			if(args.Reason != AddReason.MovedTo) throw new InvalidOperationException($"adding MM-Beast reason {args.Reason}");
 			args.To.Adjust(_presenceToken,2);
 			args.To.Init( this, 1 ); // limit to max 1
 		}
-		return Task.CompletedTask;
 	}
 
-	public async Task HandleTokenRemoved( ITokenRemovedArgs args ) {
+	public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		if(args.Removed != this) return;
 
 		// Page 28 of JE says that 'Removing' presence is treated the same as Destroying, just voluntary

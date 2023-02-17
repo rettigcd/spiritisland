@@ -8,10 +8,9 @@ public class MesmerizedTranquility{
 		ctx.Isolate();
 
 		// Each Invader does -1 Damage.
-		ctx.GameState.ModifyRavage( ctx.Space, behavior => {
-			var old = behavior.AttackDamageFrom1;
-			behavior.AttackDamageFrom1 = (ss,t) => Math.Max(0, old(ss,t)-1);
-		});
+		var cfg = ctx.Tokens.RavageBehavior;
+		var old = cfg.AttackDamageFrom1;
+		cfg.AttackDamageFrom1 = (ss,t) => Math.Max(0, old(ss,t)-1);
 
 		return Task.CompletedTask;
 	}

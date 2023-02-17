@@ -13,11 +13,11 @@ class EntwinedPresenceSource : ICalcPowerTargetingSource {
 			spirit.TargetingSourceCalc = this;
 	}
 
-	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria, GameState gs ) {
+	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria ) {
 		List<SpaceState> sources = new();
 		// Find source of original
 		for(int i = 0; i<spirits.Length; ++i)
-			sources.AddRange(origApis[i].FindSources( spirits[i].Presence, sourceCriteria, gs ) );
+			sources.AddRange(origApis[i].FindSources( spirits[i].Presence, sourceCriteria ) );
 		return sources.Distinct();
 	}
 }

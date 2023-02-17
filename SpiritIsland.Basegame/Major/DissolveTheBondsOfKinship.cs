@@ -15,7 +15,7 @@ public class DissolveTheBondsOfKinship {
 		await ReplaceInvader.SingleInvaderWithExplorers( ctx, Human.Town, 1 );
 
 		// replace 1 dahan with 1 explorer.
-		var toRemove = ctx.Tokens.RemovableOfAnyClass(RemoveReason.Replaced, Human.Dahan)
+		var toRemove = (await ctx.Tokens.RemovableOfAnyClass(RemoveReason.Replaced, Human.Dahan))
 			.Cast<HumanToken>()
 			.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
 		if( await ctx.Dahan.Remove1( toRemove, RemoveReason.Replaced) != null )

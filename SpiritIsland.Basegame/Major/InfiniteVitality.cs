@@ -13,7 +13,7 @@ public class InfiniteVitality {
 		await ctx.AdjustTokensHealthForRound( 4, Human.Dahan );
 
 		// whenever blight would be added to target land, instead leave it on the card
-		ctx.Blight.Blocked = true;
+		ctx.Blight.Block();
 
 		if( await ctx.YouHave( "4 earth" )) {
 			// Dahan ignore damage and destruction effects.
@@ -37,16 +37,20 @@ public class InfiniteVitality {
 
 }
 
-class StopDamageAndDestruction : ISpaceEntityWithEndOfRoundCleanup, IStopDahanDamage, IHandleRemovingToken {
+class StopDamageAndDestruction 
+	: IStopDahanDamage
+	, IModifyRemovingTokenAsync 
+	, IEndWhenTimePasses
+{
 
 	readonly string _sourceName;
 	public StopDamageAndDestruction(string sourceName ) {
 		_sourceName = sourceName;
 	}
 
-	public IEntityClass Class => ActionModTokenClass.Singleton;
+	public IEntityClass Class => ActionModTokenClass.Mod;
 
-	public Task ModifyRemoving( RemovingTokenArgs args ) {
+	public Task ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(args.Token.Class == Human.Dahan && args.Reason == RemoveReason.Destroyed) {
 			if(args.Mode == RemoveMode.Live)
 				GameState.Current.Log( new Log.Debug( $"{_sourceName} stopping {args.Count} Dahan from being destroyed." ) );
@@ -55,7 +59,4 @@ class StopDamageAndDestruction : ISpaceEntityWithEndOfRoundCleanup, IStopDahanDa
 		return Task.CompletedTask;
 	}
 
-	public void EndOfRoundCleanup( SpaceState spaceState ) {
-		spaceState.Init(this,0);
-	}
 }

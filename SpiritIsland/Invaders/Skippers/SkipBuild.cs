@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops either 1 or ALL builds. </summary>
-public class SkipBuild : SelfCleaningToken, ISkipBuilds {
+public class SkipBuild : BaseModEntity, IEndWhenTimePasses, ISkipBuilds {
 
 	readonly IEntityClass[] _stoppedClasses;
 	readonly UsageDuration _duration;

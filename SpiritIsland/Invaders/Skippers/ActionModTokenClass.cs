@@ -2,10 +2,11 @@
 
 public class ActionModTokenClass : IEntityClass {
 
-	public static readonly IEntityClass Singleton = new ActionModTokenClass();
+	public static readonly ActionModTokenClass Mod = new ActionModTokenClass("Mod");
 
-	static readonly public IEntityClass Class = new ActionModTokenClass();
-	public string Label => "Mod";
+	public ActionModTokenClass(string label ) {  Label = label; }
+
+	public string Label { get; }
 
 	public TokenCategory Category => TokenCategory.Skipper;
 }

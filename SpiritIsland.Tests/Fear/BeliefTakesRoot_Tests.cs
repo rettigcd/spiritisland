@@ -40,9 +40,9 @@ public class BeliefTakesRoot_Tests {
 	public void Level1_NoBlightDahanLives() {
 		Given_DahanAndTownsInSpaceWithPresence(1,1);
 
-		_ =  When_AddFearApplyFearAndRavage();
-
+		Task t =  When_AddFearApplyFearAndRavage();
 		User.AcknowledgesFearCard( FearCardAction );
+		t.Wait( 4000 ); t.IsCompletedSuccessfully.ShouldBeTrue();
 
 		// Then: 1 dahan left
 		Assert.Equal( 1, ravageSpace.Tokens.Dahan.CountAll );
@@ -57,9 +57,11 @@ public class BeliefTakesRoot_Tests {
 	public void Level1_DefendNotMoreThan2() { // not more th
 		Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
 
-		_ = When_AddFearApplyFearAndRavage();
+		Task t = When_AddFearApplyFearAndRavage();
 
 		User.AcknowledgesFearCard( FearCardAction );
+
+		t.Wait(4000); t.IsCompletedSuccessfully.ShouldBeTrue();
 
 		// Then: 1 dahan left
 		Assert.Equal( 1, ravageSpace.Tokens.Dahan.CountAll );

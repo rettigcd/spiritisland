@@ -11,7 +11,7 @@ class VisionsOfAShiftingFuture {
 		InvaderCard topCard = deck[0];
 		await ctx.Self.SelectText(topCard.Text,new string[] {"Shuffle with next top card." },Present.Always);
 		deck.RemoveAt(0);
-		InsertIntoTop2( deck, topCard );
+		InsertIntoTop2( ctx.Self, deck, topCard );
 	}
 
 	[InnateOption("2 sun,3 moon,2 air","Instead of returning-and-shuffling, you may put the card you looked at on the bottom of its deck.  You may not do this for cards specially placed during Setup.")]
@@ -21,13 +21,13 @@ class VisionsOfAShiftingFuture {
 		deck.RemoveAt(0);
 
 		if( await ctx.Self.UserSelectsFirstText(topCard.Text,new string[] {"Shuffle with next top card.", "Move to bottom of deck." }) )
-			InsertIntoTop2( deck, topCard );
+			InsertIntoTop2( ctx.Self, deck, topCard );
 		else
 			deck.Add(topCard);
 	}
 
-	static void InsertIntoTop2( List<InvaderCard> deck, InvaderCard topCard ) {
-		int index = new System.Random().Next( 2 );// !!! use the Shuffle # instead of a random one
+	static void InsertIntoTop2( Spirit spirit, List<InvaderCard> deck, InvaderCard topCard ) {
+		int index = ((FracturedDaysSplitTheSky)spirit).NextRandom(2);
 		deck.Insert( index, topCard );
 	}
 

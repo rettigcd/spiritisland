@@ -41,7 +41,7 @@ public class CallToTrade_Tests {
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
 
 		// Given: advance to 2nd round where we have a ravage
-		user.AdvancesToStartOfNextInvaderPhase();
+		user.GrowAndBuyNoCards();
 		user.WaitForNext();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
@@ -74,7 +74,7 @@ public class CallToTrade_Tests {
 		Given_TerrorLevelIs3( ctx );
 
 		// Given: advance to 2nd round where we have a ravage
-		user.AdvancesToStartOfNextInvaderPhase();
+		user.GrowAndBuyNoCards();
 		user.WaitForNext();
 
 		// Given: a space that IS-RAVAGE but NOT-BUILD
@@ -109,7 +109,7 @@ public class CallToTrade_Tests {
 		}) );
 
 		// Given: advance to 2nd round where we have a ravage
-		user.AdvancesToStartOfNextInvaderPhase();
+		user.GrowAndBuyNoCards();
 		invaderLog.Clear();
 
 		// Given: a space that IS-RAVAGE AND BUILD

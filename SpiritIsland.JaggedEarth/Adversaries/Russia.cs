@@ -96,7 +96,7 @@ public class Russia : IAdversary {
 
 		for(int boardIndex = 0; boardIndex < gameState.Island.Boards.Length; ++boardIndex) {
 			Board board = gameState.Island.Boards[boardIndex];
-			Spirit spirit = BoardCtx.FindSpirit(gameState, board);
+			Spirit spirit = board.FindSpirit();
 
 			var addSpaces = beastsSpacesForBoard.ContainsKey( board )
 				? beastsSpacesForBoard[board]
@@ -155,7 +155,7 @@ public class Russia : IAdversary {
 
 	void RavageBlightDestroysBeasts( GameState gameState ) {
 		// Add action that destroys beasts from Ravage-Blight
-		gameState.AddToAllActiveSpaces( _token );
+		gameState.AddIslandMod( _token );
 	}
 
 	readonly RussiaToken _token = new RussiaToken();

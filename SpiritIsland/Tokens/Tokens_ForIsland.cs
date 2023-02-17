@@ -14,6 +14,10 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			[Token.Disease]  = (TokenClassToken)Token.Disease,
 		};
 
+		_islandMods = new CountDictionary<ISpaceEntity>();
+		// stick it in here so it is persisted and cleaned up during time passes
+		_tokenCounts.Add( new FakeSpace( "Island-Mods" ), _islandMods );
+
 		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
 	}
 
@@ -24,6 +28,15 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	#endregion
 
+	readonly CountDictionary<ISpaceEntity> _islandMods;
+	public void TimePasses() {
+		foreach(var pair in _tokenCounts)
+			new SpaceState(pair.Key,pair.Value,_islandMods.Keys,this).TimePasses();
+	}
+
+	public void AddIslandMod( BaseModEntity token ) { ++_islandMods[token]; }
+
+
 	Task ClearEventHandlers_ForRound() {
 		Dynamic.ForRound.Clear();
 		return Task.CompletedTask;
@@ -31,7 +44,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public SpaceState GetTokensFor( Space space ) => this[space];
 
-	public SpaceState this[Space space] => new SpaceState( space, GetTokens( space ), this );
+	public SpaceState this[Space space] => new SpaceState( space, GetTokens( space ), _islandMods.Keys, this );
 
 	CountDictionary<ISpaceEntity> GetTokens( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
 
@@ -125,6 +138,11 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	public override string ToString() => _tokenCounts
 		.Select(p=>p.Key+":"+p.Value.TokenSummary())
 		.Join(" ");
+
+	public string ToVerboseString() => _tokenCounts
+		.OrderBy( p => p.Key.Label )
+		.Select( p => p.Key + ":" + p.Value.TokensVerbose() )
+		.Join( "\r\n" );
 
 	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
 	readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();

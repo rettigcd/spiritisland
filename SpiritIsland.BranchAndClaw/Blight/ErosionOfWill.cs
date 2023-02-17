@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class ErosionOfWill : BlightCardBase {
+public class ErosionOfWill : BlightCard {
 
 	public ErosionOfWill():base("Erosion of Will", "Immediately, 2 fear per player. Each Spirit destroys 1 of their presence and loses 1 Energy.", 3 ) { }
 

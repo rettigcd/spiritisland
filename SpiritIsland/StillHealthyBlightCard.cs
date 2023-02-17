@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class StillHealthyBlightCard : BlightCardBase {
+public class StillHealthyBlightCard : BlightCard {
 
 	public StillHealthyBlightCard(string title, string description, int additinalBlightWhenFlipped)
 		:base( title, description, additinalBlightWhenFlipped ) { }

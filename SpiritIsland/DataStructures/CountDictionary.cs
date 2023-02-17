@@ -122,4 +122,19 @@ public static class ExtendDictionary {
 				.Join( "," );
 	}
 
+	static public string TokensVerbose( this CountDictionary<ISpaceEntity> dict ){
+		var abbrevTokens = dict.Keys.ToArray();
+		return abbrevTokens.Length == 0 ? "[none]"
+			: abbrevTokens
+				.OrderBy( t => t is IAppearInSpaceAbreviation vis ? vis.SpaceAbreviation : "ZZZZ" )
+				.Select( t => dict[t] + FriendlyAbreviation(t) )
+				.Join( "," );
+	}
+
+	static string FriendlyAbreviation( ISpaceEntity t ) {
+		return t is IAppearInSpaceAbreviation vis ? vis.SpaceAbreviation
+			: t is SpiritPresenceToken spirit ? spirit.Text
+			: t.GetType().Name;
+	}
+
 }

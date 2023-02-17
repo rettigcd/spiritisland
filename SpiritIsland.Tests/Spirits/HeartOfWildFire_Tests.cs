@@ -1,0 +1,55 @@
+﻿namespace SpiritIsland.Tests.Spirits; 
+
+public class HeartOfWildFire_Tests {
+
+	[Trait("Blight","Destroy Presence")]
+	[Fact]
+	public async Task BlightAddedDueToSpiritEffects_DoesNotDestroyPresence() {
+		Spirit spirit = new HeartOfTheWildfire();
+		Board boardB = Board.BuildBoardB();
+		var gs = new GameState( spirit, boardB );
+		gs.IslandWontBlight();
+
+		var space = boardB[8];
+		var tokens = space.Tokens;
+
+		// Given: presence on B8
+		tokens.Init(spirit.Token,1);
+
+		// When: adding blight to space via spirit powers
+		await using var scope = new ActionScope(ActionCategory.Spirit_Power);
+		_ = LandOfHauntsAndEmbers.Act(spirit.BindMyPowers().Target(space)); // nothing to push
+
+		// Then: presence should still be there
+		tokens[spirit.Token].ShouldBe(1);
+		// and make sure we added blight
+		tokens.Blight.Count.ShouldBe(1);
+	}
+
+	[Trait( "Blight", "Destroy Presence" )]
+	[Fact]
+	public void BlightAddedFromRavage_DestroysPresence() {
+		Spirit spirit = new HeartOfTheWildfire();
+		Board boardB = Board.BuildBoardB();
+		var gs = new GameState( spirit, boardB );
+		gs.IslandWontBlight();
+
+		var space = boardB[8];
+		var tokens = space.Tokens;
+
+		// Given: presence on B8
+		tokens.Init( spirit.Token, 1 );
+		// And: a town
+		tokens.InitDefault(Human.Town, 1);
+
+		// When: adding blight to space via spirit powers
+		_ = tokens.Ravage();
+
+		// Then: presence should still be gone
+		tokens.Has(spirit.Token).ShouldBeFalse();
+		// and make sure we added blight
+		tokens.Blight.Count.ShouldBe( 1 );
+	}
+
+
+}

@@ -60,7 +60,7 @@ public class HabsburgMonarchy : IAdversary {
 
 		// Level 4 - Herds Thrive in Verdant Lands (durable towns)
 		if( 4 <= Level)
-			gameState.AddToAllActiveSpaces( new HabsburgMakeTownsDurable() );
+			gameState.AddIslandMod( new HabsburgMakeTownsDurable() );
 
 		// Level 5 - Wave of Immigration - Invader Card #5 => +1 Coastal City, +3 non-blight Towns
 		
@@ -69,8 +69,8 @@ public class HabsburgMonarchy : IAdversary {
 
 		// Level 6 - Far-Flung Herds, +2 Ravage damage if adjacent town
 		if(6 <= Level) {
-			var originalBehavior = gameState.DefaultRavageBehavior.GetDamageFromParticipatingAttackers;
-			gameState.DefaultRavageBehavior.GetDamageFromParticipatingAttackers = (behavior, counts, spaceState) => {
+			var originalBehavior = RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers;
+			RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers = (behavior, counts, spaceState) => {
 				bool hasNeighborTown = spaceState.Adjacent.Any( s => s.Has( Human.Town ) );
 				// Not logging additional damage here because Ravage is already very verbose.
 				return originalBehavior( behavior, counts, spaceState )
@@ -79,23 +79,14 @@ public class HabsburgMonarchy : IAdversary {
 		}
 
 		// Additional loss condition - too many 8+blight
-		gameState.LandDamaged.ForGame.Add( IrreparableDamage_CheckExcessiveLandDamage );
-		gameState.AddWinLossCheck( IrreparableDamage_LossCheck );
-
+		var tooManyBlight = new TooManyBlight();
+		gameState.AddIslandMod(tooManyBlight);
+		gameState.AddWinLossCheck(tooManyBlight.IrreparableDamage_LossCheck);
 	}
 
 	public void PostInitialization( GameState gamestate ) { }
 
 	#region private
-
-	void IrreparableDamage_CheckExcessiveLandDamage( LandDamagedArgs args ) { // For Loss Condition
-		if(8 <= args.Damage) ++_badbadBlightCount;
-	}
-
-	void IrreparableDamage_LossCheck( GameState gameState ) {
-		if(gameState.Spirits.Length < _badbadBlightCount)
-			GameOverException.Lost( $"Irreparable Damage - {_badbadBlightCount} blight were added from 8+ land damage." );
-	}
 
 	static async Task WaveOfImmigration( GameState gameState ) {
 		// Level 5
@@ -182,11 +173,26 @@ public class HabsburgMonarchy : IAdversary {
 		}
 	}
 
-	int _badbadBlightCount = 0;
-
 	#endregion
 
 }
+
+class TooManyBlight : BaseModEntity, IHandleTokenAddedAsync {
+	int _badbadBlightCount = 0;
+	public Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		bool shouldAddBlight = args.Added == LandDamage.Token && 8 <= args.To[args.Added]
+			&& 8 <= args.To[args.Added];
+		if(shouldAddBlight)
+			_badbadBlightCount += args.Count;
+		return Task.CompletedTask;
+	}
+	public void IrreparableDamage_LossCheck( GameState gameState ) {
+		if(gameState.Spirits.Length < _badbadBlightCount)
+			GameOverException.Lost( $"Irreparable Damage - {_badbadBlightCount} blight were added from 8+ land damage." );
+	}
+
+}
+
 
 
 /*

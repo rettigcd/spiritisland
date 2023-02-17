@@ -34,7 +34,7 @@ public class ExplosiveEruption {
 			await ctx.Target(adj).DamageInvaders(4);
 
 		// Add 1 blight to target land; doing so does not Destroy your presence.
-		VolcanoPresence.SetDontDestroyPresenceOn( ctx.Space );
+		VolcanoPresence.SafeSpace.Value = ctx.Space;
 		await ctx.AddBlight(1);
 	}
 

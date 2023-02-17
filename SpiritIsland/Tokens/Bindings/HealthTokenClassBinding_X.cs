@@ -122,7 +122,8 @@ public class HealthTokenClassBinding {
 
 	#region Destroy
 
-	// !!! This destroy is using Least-Efficient, for Invaders, we want this to be MOST efficient
+	// This destroy is using Least-Efficient (dahan-only)
+	// for Invaders, we would want this to be MOST efficient
 	public async Task Destroy( int countToDestroy ) {
 
 		var before = NormalKeys

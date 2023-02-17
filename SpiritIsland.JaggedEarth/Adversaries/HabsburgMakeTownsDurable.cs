@@ -1,27 +1,24 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 class HabsburgMakeTownsDurable
-	: ISpaceEntity
+	:  BaseModEntity
 	, IHandleTokenRemoved
-	, IHandleAddingToken {
+	, IModifyAddingToken {
 	public HabsburgMakeTownsDurable(){ }
 
-	public IEntityClass Class => ActionModTokenClass.Singleton;
-
-	public Task HandleTokenRemoved( ITokenRemovedArgs args ) {
+	public void HandleTokenRemoved( ITokenRemovedArgs args ) {
 		// Level 4 - Durable / Herds Thrive
 		// If removing last blight from space
 		if(args.Removed == Token.Blight && !args.From.Blight.Any)
 			// Switch all towns to Durable
 			foreach(HumanToken t in args.From.OfHumanClass( Human.Town ))
 				args.From.ReplaceAllWith( t, new HabsburgDurableToken( t ) );
-		return Task.CompletedTask;
 	}
 
 	public void ModifyAdding( AddingTokenArgs args ) {
 		// Level 4 - Durable / Herds Thrive
 		// if adding a normal town to a space with no blight
-		if(args.Token.Class == Human.Town && !args.Space.Blight.Any)
+		if(args.Token.Class == Human.Town && !args.To.Blight.Any)
 			// change to durable
 			args.Token = new HabsburgDurableToken( args.Token.AsHuman() );
 	}

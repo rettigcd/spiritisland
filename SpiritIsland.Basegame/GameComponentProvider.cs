@@ -112,7 +112,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new WaryOfTheInterior(),
 	};
 
-	public IBlightCard[] BlightCards => new BlightCardBase[] {
+	public IBlightCard[] BlightCards => new BlightCard[] {
 		new DownwardSpiral(),
 		new MemoryFadesToDust(),
 	};

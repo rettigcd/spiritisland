@@ -8,9 +8,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#region constructor
 
-	public SpaceState( Space space, CountDictionary<ISpaceEntity> counts, IIslandTokenApi tokenApi ) {
+	public SpaceState( Space space, CountDictionary<ISpaceEntity> counts, IEnumerable<ISpaceEntity> islandMods, IIslandTokenApi tokenApi ) {
 		Space = space;
 		_counts = counts;
+		_islandMods = islandMods;
 		_api = tokenApi;
 	}
 
@@ -18,11 +19,11 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	protected SpaceState( SpaceState src ) {
 		Space = src.Space;
 		_counts = src._counts;
+		_islandMods = src._islandMods;
 		_api = src._api;
 	}
 
 	#endregion
-
 	public Space Space { get; }
 
 	public int this[ISpaceEntity specific] {
@@ -42,16 +43,23 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public ISpaceEntity[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
 	public ISpaceEntity[] OfClass( IEntityClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
 	public ISpaceEntity[] OfAnyClass( params IEntityClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
-	public IToken[] RemovableOfAnyClass( RemoveReason reason, params IEntityClass[] classes ) {
-		var stoppers = Keys.OfType<IHandleRemovingToken>();
-		return OfAnyClass( classes ).Cast<IToken>()
-			.Where( token => {
-				var removingArgs = new RemovingTokenArgs( this, reason, RemoveMode.Test ) { Count = 1, Token = token };
-				foreach(var stopper in stoppers)
-					stopper.ModifyRemoving(removingArgs);
-				return removingArgs.Count == 1;
-			} )
-			.ToArray();
+	public async Task<IToken[]> RemovableOfAnyClass( RemoveReason reason, params IEntityClass[] classes ) {
+
+		IModifyRemovingToken[] stoppers = Keys.OfType<IModifyRemovingToken>().ToArray();
+		IModifyRemovingTokenAsync[] stoppersAsync = Keys.OfType<IModifyRemovingTokenAsync>().ToArray();
+
+		var removable = new List<IToken>();
+		foreach(IToken token in OfAnyClass( classes ).Cast<IToken>()) {
+			var args = new RemovingTokenArgs( this, reason, RemoveMode.Test ) { Count = 1, Token = token };
+			foreach(var stopper in stoppers)
+				if(0 < args.Count)
+					stopper.ModifyRemoving( args );
+			if(0 < args.Count)
+				await stoppersAsync.Select( x => x.ModifyRemovingAsync( args ) ).WhenAll();
+			if(0 < args.Count)
+				removable.Add(token);
+		}
+		return removable.ToArray();
 	}
 
 	public HumanToken[] OfHumanClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
@@ -109,6 +117,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	readonly CountDictionary<ISpaceEntity> _counts;
+	readonly IEnumerable<ISpaceEntity> _islandMods;
 	protected readonly IIslandTokenApi _api;
 
 	#endregion
@@ -181,7 +190,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
-	/// <summary> Existing </summary>
+	/// <summary> Existing & IsInPlay </summary>
 	public IEnumerable<SpaceState> Adjacent => Adjacent_Existing.IsInPlay();
 
 	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();
@@ -214,17 +223,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#endregion
 
-	#region Ravage
-
-	/// <summary> Does 1 potential Ravage (if no stopper tokens) </summary>
-	public Task Ravage() {
-		GameState gameState = GameState.Current;
-		RavageBehavior cfg = gameState.GetRavageConfiguration( Space );
-		return cfg.Exec( this, gameState );
-	}
-
-	#endregion
-
 	#region Ocean Helpers
 
 	void AdjustTrackedToken( ITrackMySpaces token, int delta ) {
@@ -232,11 +230,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	#endregion
-
-	public void TimePasses() {
-		foreach(var cleanup in Keys.OfType<ISpaceEntityWithEndOfRoundCleanup>().ToArray())
-			cleanup.EndOfRoundCleanup( this );
-	}
 
 	#region GetHashCode and Equals
 
@@ -313,20 +306,22 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		: Remove( token, count, RemoveReason.Destroyed );
 
 	public async Task<TokenAddedArgs> Add( IToken token, int count, AddReason addReason = AddReason.Added ) {
-		TokenAddedArgs addResult = Add_Silent( token, count, addReason );
-		if(addResult != null)
-			foreach(IHandleTokenAdded handler in Keys.OfType<IHandleTokenAdded>().ToArray())
-				await handler.HandleTokenAdded( addResult );
+		TokenAddedArgs addResult = await Add_Silent( token, count, addReason );
+		if(addResult == null) return null;
+
+		await HandleAdded( addResult );
+
 		return addResult;
 	}
 
-	TokenAddedArgs Add_Silent( IToken token, int count, AddReason addReason = AddReason.Added ) {
+	async Task<TokenAddedArgs> Add_Silent( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
 		var addingArgs = new AddingTokenArgs( this, addReason ) { Count = count, Token = token };
-		foreach(var mod in Keys.OfType<IHandleAddingToken>().ToArray())
-			mod.ModifyAdding( addingArgs );
+
+		// Modify Adding
+		await ModifyAdding( addingArgs );
 
 		if(addingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( addingArgs.Count ) );
 		if(addingArgs.Count == 0) return null;
@@ -338,38 +333,31 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count );
 	}
 
-
 	/// <summary> returns null if no token removed </summary>
 	public virtual async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if( reason == RemoveReason.MovedFrom )
 			throw new ArgumentException("Moving Tokens must be done from the .Move method for events to work properly",nameof(reason));
 
 		// grab event handlers BEFORE the token is removed, so token can self-handle its own removal
-		var tokenRemovedHandlers = GrabHandlers_TokenRemoved();
+		var removedHandler = RemovedHandlerSnapshop;
 
 		var e = await Remove_Silent( token, count, reason );
 		if(e == null) return null;
 
-		foreach(IHandleTokenRemoved handler in tokenRemovedHandlers)
-			await handler.HandleTokenRemoved( e );
+		await removedHandler.Handle(e);
 
 		return e;
 	}
-
-	// grab event handlers BEFORE the token is removed, so token can self-handle its own removal
-	IHandleTokenRemoved[] GrabHandlers_TokenRemoved() => Keys.OfType<IHandleTokenRemoved>().ToArray();
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
 	protected virtual async Task<TokenRemovedArgs> Remove_Silent( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
-		// Pre-Remove check/adjust
+		// Pre-Remove check/adjust (sync)
 		var removingArgs = new RemovingTokenArgs( this, reason, RemoveMode.Live ) { Count = count, Token = token };
-		foreach(var mod in Keys.OfType<IHandleRemovingToken>().ToArray())
-			await mod.ModifyRemoving( removingArgs );
+		await ModifyRemoving( removingArgs );
 
 		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
-
 		if(removingArgs.Count == 0) return null;
 
 		// Do Remove
@@ -398,27 +386,84 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		//		Move has 2 tokens, token added and token removed
 
 		if(this[token] == 0) return null; // unable to remove desired token
-		var tokenRemovedHandlers = GrabHandlers_TokenRemoved();
+
+		var removedHandlers = RemovedHandlerSnapshop;
 
 		// Remove from source
 		TokenRemovedArgs removeResult = await Remove_Silent( token, 1, RemoveReason.MovedFrom );
 		if(removeResult == null) return null;
 
 		// Add to destination
-		TokenAddedArgs addResult = dstTokens.Add_Silent( /* Modified, NOT original */ removeResult.Removed, 1, AddReason.MovedTo );
+		TokenAddedArgs addResult = await dstTokens.Add_Silent( /* Modified, NOT original */ removeResult.Removed, 1, AddReason.MovedTo );
 		if(addResult == null) return null;
 
 		// Publish
 		var tokenMoved = new TokenMovedArgs( removeResult, addResult );
 
-		foreach(IHandleTokenRemoved handler in tokenRemovedHandlers)
-			await handler.HandleTokenRemoved( tokenMoved );
-
-		foreach(IHandleTokenAdded handler in dstTokens.Keys.OfType<IHandleTokenAdded>().ToArray())
-			await handler.HandleTokenAdded( tokenMoved );
+		await removedHandlers.Handle( tokenMoved );
+		await dstTokens.HandleAdded( tokenMoved );
 
 		return tokenMoved;
 	}
+
+	#region Mods
+	//-------------
+	ISpaceEntity[] KeySnapshop => Keys.Union(_islandMods).ToArray(); 
+
+	Task ModifyRemoving( RemovingTokenArgs args ) {
+		var keyArray = KeySnapshop;
+		foreach(var mod in keyArray.OfType<IModifyRemovingToken>())
+			if(0 < args.Count)
+				mod.ModifyRemoving( args );
+		return keyArray.OfType<IModifyRemovingTokenAsync>()
+			.Select( x => x.ModifyRemovingAsync( args ) )
+			.WhenAll();
+	}
+
+	class RemovedHandlers {
+		readonly ISpaceEntity[] _keyArray;
+		public RemovedHandlers( ISpaceEntity[] keyArray ) { _keyArray = keyArray; }
+		public Task Handle( ITokenRemovedArgs args ) {
+			foreach(IHandleTokenRemoved handler in _keyArray.OfType<IHandleTokenRemoved>())
+				handler.HandleTokenRemoved( args );
+			return _keyArray.OfType<IHandleTokenRemovedAsync>()
+				.Select( x => x.HandleTokenRemovedAsync( args ) )
+				.WhenAll();
+		}
+	}
+	RemovedHandlers RemovedHandlerSnapshop => new RemovedHandlers( KeySnapshop );
+
+	Task ModifyAdding( AddingTokenArgs args ) {
+		var keyArray = KeySnapshop; 
+		foreach(var mod in keyArray.OfType<IModifyAddingToken>()) 
+			if(0 < args.Count)
+				mod.ModifyAdding( args );
+		return keyArray.OfType<IModifyAddingTokenAsync>()
+			.Select( x => x.ModifyAddingAsync( args ) )
+			.WhenAll();
+	}
+
+	Task HandleAdded( ITokenAddedArgs args ) {
+		var keyArray = KeySnapshop;
+		foreach(var handler in keyArray.OfType<IHandleTokenAdded>())
+			handler.HandleTokenAdded( args );
+		return keyArray.OfType<IHandleTokenAddedAsync>()
+			.Select( x => x.HandleTokenAddedAsync( args ) )
+			.WhenAll();
+	}
+
+	public void TimePasses() {
+		var keyArray = KeySnapshop;
+		foreach(var cleanup in keyArray.OfType<ISpaceEntityWithEndOfRoundCleanup>())
+			cleanup.EndOfRoundCleanup( this );
+
+		// remove keys (this-space-only, no entities from Island Mods)
+		foreach(var removeMe in Keys.OfType<IEndWhenTimePasses>().ToArray())
+			Init(removeMe,0);
+	}
+
+	//-------------
+	#endregion Mods
 
 	public virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage )
 		=> invaderToken.AddDamage( availableDamage );
@@ -437,6 +482,24 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	// pass in a # if this is joining with original damage and needs tracked.
 	public BonusDamage BonusDamageForAction( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( this, "Invaders" ), DamagePool.BonusDamage(), trackOriginalDamage );
 	public BonusDamage BadlandDamageForDahan( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( this, "Dahan" ), new DamagePool(0), trackOriginalDamage );
+
+	#endregion
+
+	#region Ravage
+
+	/// <summary> Does 1 potential Ravage (if no stopper tokens) </summary>
+	public Task Ravage() => RavageBehavior.Exec( this );
+
+	public RavageBehavior RavageBehavior {
+		get {
+			var mod = (RavageBehavior)OfClass( SpiritIsland.RavageBehavior.Class ).FirstOrDefault();
+			if(mod == null) {
+				mod = RavageBehavior.DefaultBehavior.Clone();
+				Init( mod, 1 );
+			}
+			return mod;
+		}
+	}
 
 	#endregion
 

@@ -37,7 +37,7 @@ public class DreadApparitions_Tests {
 		Init();
 
 		// Disable destroying presence
-		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		ctx.GameState.DisableBlightEffect();
 
 
 		// has town
@@ -62,7 +62,7 @@ public class DreadApparitions_Tests {
 		Init();
 
 		// Disable destroying presence
-		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		ctx.GameState.DisableBlightEffect();
 
 		// has city
 		ctx.Tokens.AdjustDefault( Human.City, 1 );
@@ -84,10 +84,8 @@ public class DreadApparitions_Tests {
 		GameState gs = new GameState( spirit, board );
 		var tokens = board[5].Tokens;
 
-		var log = gs.LogAsStrings();
-
 		// Disable destroying presence
-		gs.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		gs.DisableBlightEffect();
 		gs.IslandWontBlight();
 
 		string startingGuid = ActionScope.Current.Id.ToString();

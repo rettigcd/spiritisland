@@ -7,9 +7,9 @@ public class RavageData {
 
 	#region constructor
 
-	public RavageData( SpaceState tokens, GameState gameState ) {
+	public RavageData( SpaceState tokens ) {
 		Tokens = tokens;
-		GameState = gameState;
+		GameState = GameState.Current;
 		Result = new InvadersRavaged { Space = tokens.Space };
 	}
 

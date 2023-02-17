@@ -74,19 +74,17 @@ public class TDaTD_ActionTokens : SpaceState {
 		var scope = ActionScope.Current;
 
 		// if this is first time we have a space
-		bool isFirstTime = !scope.ContainsKey( SpacesWithDreamers );
+		bool isFirstTime = !SpacesWithDreamers.HasValue;
 		if(isFirstTime)
 			scope.AtEndOfThisAction( CleanupDreamDamage );
 
-		scope.SafeGet( SpacesWithDreamers, () => new HashSet<SpaceState>() )
-			.Add( spaceState );
+		SpacesWithDreamers.Value.Add( spaceState );
 	}
 
 	#region static - restore invaders
 
 	static public void CleanupDreamDamage( ActionScope actionScope ) { // ! this one is ok
-		var spaces = actionScope.SafeGet( SpacesWithDreamers, Enumerable.Empty<SpaceState>() );
-		foreach(SpaceState spaceState in spaces) {
+		foreach(SpaceState spaceState in SpacesWithDreamers.Value) {
 			RemoveDreamDamage( spaceState );
 			WakeUpDreamers( spaceState );
 		}
@@ -136,7 +134,10 @@ public class TDaTD_ActionTokens : SpaceState {
 
 	#endregion
 
-	const string SpacesWithDreamers = "SpacesWithDreamers";
+	static readonly ActionScopeValue<HashSet<SpaceState>> SpacesWithDreamers = new( 
+		"SpacesWithDreamers", 
+		() => new HashSet<SpaceState>()
+	);
 
 	#endregion
 

@@ -96,7 +96,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new Unrest(),
 	};
 
-	public IBlightCard[] BlightCards => new BlightCardBase[] {
+	public IBlightCard[] BlightCards => new BlightCard[] {
 		new AidFromLesserSpirits(),
 		new APallUponTheLand(),
 		new BackAgainstTheWall(),

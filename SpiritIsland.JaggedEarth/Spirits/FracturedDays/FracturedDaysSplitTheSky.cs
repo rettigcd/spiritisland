@@ -64,7 +64,11 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	}
 
+	Random _randomizer;
+	public int NextRandom(int n) => _randomizer.Next(n); // access repeatable random # for Visions of Shifting Future
+
 	protected override void InitializeInternal( Board board, GameState gs ) {
+		_randomizer = new Random( gs.ShuffleNumber + 2837 ); // 2837 so not using same shuffle as others
 
 		// 1 in lowest-numbered land with 1 dahan
 		var lowestLandWith1Dahan = gs.Tokens[ board.Spaces.First(s=>s.Tokens.Dahan.CountAll==1) ];

@@ -19,12 +19,10 @@ public class FlowingAndSilentFormsDartBy {
 	}
 
 
-	class PushInsteadOfDestroy : ISpaceEntityWithEndOfRoundCleanup, IHandleRemovingToken {
-		public IEntityClass Class => ActionModTokenClass.Class;
+	class PushInsteadOfDestroy : IModifyRemovingTokenAsync, IEndWhenTimePasses {
+		public IEntityClass Class => ActionModTokenClass.Mod;
 
-		public void EndOfRoundCleanup( SpaceState spaceState ) => spaceState.Init(this,0);
-
-		public async Task ModifyRemoving( RemovingTokenArgs args ) {
+		public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
 			if( !(args.Token is SpiritPresenceToken && args.Reason.IsDestroyingPresence()) ) return;
 
 			if( args.Mode == RemoveMode.Test) return;
@@ -32,13 +30,13 @@ public class FlowingAndSilentFormsDartBy {
 			GameState gs = GameState.Current;
 			Spirit spirit = gs.Spirits.First( s => s.Token == args.Token );
 
-			if( !spirit.Presence.HasMovableTokens( args.Space ) ) return;
+			if( !spirit.Presence.HasMovableTokens( args.From ) ) return;
 			
-			var dst = await spirit.Gateway.Decision( new Select.ASpace( "Instead of destroying, push presence to:", args.Space.Adjacent.Downgrade(), Present.Done ) );
+			var dst = await spirit.Gateway.Decision( new Select.ASpace( "Instead of destroying, push presence to:", args.From.Adjacent.Downgrade(), Present.Done ) );
 			if(dst == null) return;
 
 			while(0 < args.Count--)
-				await args.Space.MoveTo(args.Token, dst);
+				await args.From.MoveTo(args.Token, dst);
 		}
 	}
 

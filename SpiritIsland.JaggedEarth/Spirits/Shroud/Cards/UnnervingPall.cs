@@ -49,11 +49,12 @@ public class UnnervingPall {
 		}
 
 		// If we selected any, remove them from the fight
-		if(skipInvaders.Count > 0)
-			ctx.GameState.ModifyRavage( ctx.Space, cfg => {
-				foreach(var s in skipInvaders)
-					cfg.NotParticipating[s]++;
-			} );
+		if(skipInvaders.Count > 0) {
+			var cfg = ctx.Tokens.RavageBehavior;
+			foreach(var s in skipInvaders)
+				cfg.NotParticipating[s]++;
+		}
+
 	}
 
 }

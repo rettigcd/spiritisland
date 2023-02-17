@@ -1,10 +1,8 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class SpiritPresenceToken : IToken, IEntityClass
 	, ITrackMySpaces 
-	, IHandleTokenRemoved
+	, IHandleTokenRemovedAsync
 {
 
 	public SpiritPresenceToken(Spirit spirit) {
@@ -31,7 +29,7 @@ public class SpiritPresenceToken : IToken, IEntityClass
 	/// <summary>
 	/// Override this to add behavior that IS NOT destroyed presenced.
 	/// </summary>
-	public virtual async Task HandleTokenRemoved( ITokenRemovedArgs args ) {
+	public virtual async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		if(args.Removed == this && args.Reason.IsDestroyingPresence()) {
 			Destroyed += args.Count; // no in OnPresenceDestroyed because I don't want overrides to need to call Base.
 			await OnPresenceDestroyed( args );

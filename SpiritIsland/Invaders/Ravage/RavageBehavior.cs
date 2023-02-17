@@ -1,9 +1,16 @@
-﻿namespace SpiritIsland;
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Configures Dahan and Invader behavior on a per-space bases.
 /// </summary>
-public class RavageBehavior {
+public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
+
+	public static readonly IEntityClass Class = new ActionModTokenClass("RavageBehavior");
+	public static RavageBehavior DefaultBehavior => GameState.Current.DefaultRavageBehavior;
+
+	IEntityClass ISpaceEntity.Class => Class;
 
 	// Order / Who is damaged
 	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
@@ -14,6 +21,7 @@ public class RavageBehavior {
 	public CountDictionary<ISpaceEntity> NotParticipating { get; set; } = new CountDictionary<ISpaceEntity>();
 	public Func<HumanToken, bool> IsAttacker { get; set; } = null;
 	public Func<HumanToken, bool> IsDefender { get; set; } = null;
+
 	public int AttackersDefend = 0; // reduces the damage inflicted by the defenders onto the attackers.  Not exactly correct, but close
 
 	public RavageBehavior Clone() {
@@ -29,8 +37,8 @@ public class RavageBehavior {
 	}
 
 	/// <summary> Executes up to 1 potential Ravage </summary>
-	public async Task Exec( SpaceState tokens, GameState gameState ) {
-		RavageData data = new RavageData( tokens, gameState );
+	public async Task Exec( SpaceState tokens ) {
+		RavageData data = new RavageData( tokens );
 
 		// Check for Stoppers
 		var stoppers = data.Tokens.Keys.OfType<ISkipRavages>()
@@ -237,7 +245,10 @@ public class RavageBehavior {
 	}
 
 	static public async Task DamageLand( RavageData ra, int damageInflictedFromInvaders ) {
-		await ra.GameState.DamageLandFromRavage( ra.InvaderBinding.Tokens, damageInflictedFromInvaders );
+		if(damageInflictedFromInvaders == 0) return;
+
+		await ra.InvaderBinding.Tokens
+			.Add(LandDamage.Token, damageInflictedFromInvaders );
 	}
 
 	#region Static Smart Damage to Invaders
@@ -279,7 +290,5 @@ public class RavageBehavior {
 			participants[token] = Math.Max( 0, ra.Tokens[token] - cfg.NotParticipating[token] );
 		return participants;
 	}
-
-
 
 }

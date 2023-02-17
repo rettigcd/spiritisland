@@ -27,7 +27,7 @@ public class AvoidTheDahan_Tests {
 		this._ctx = ctx;
 
 		// Disable destroying presence
-		ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade=false;x.DestroyPresence=false; } );
+		ctx.GameState.DisableBlightEffect();
 
 	}
 
@@ -53,13 +53,15 @@ public class AvoidTheDahan_Tests {
 	public void Level1_NoExplore() {
 
 		var spaceCtx = _ctx.TargetSpace( "A7" );
+
+		_user.WaitForNext();
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
 
 		ActivateFearCard(new AvoidTheDahan());
 
 		ClearBlightAndDoNothingForARound();
-		_user.AcknowledgesFearCard( Level1Text );
 
+		_user.AcknowledgesFearCard( Level1Text );
 		spaceCtx.Tokens.InvaderSummary().ShouldBe("");
 
 	}
@@ -72,9 +74,11 @@ public class AvoidTheDahan_Tests {
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
 
 		ClearBlightAndDoNothingForARound();
+		_user.WaitForNext();
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2,1E@1" );
 
 		ClearBlightAndDoNothingForARound();
+		_user.WaitForNext();
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2,2E@1,1T@2" );
 
 		// When: activating: 'Avoid the Dahan'
@@ -87,6 +91,7 @@ public class AvoidTheDahan_Tests {
 		// Build should make a city                        => 2 explorers, 1 town, 1 city
 		// Explore should add an explorer (dahan are gone) => 3 explorers, 1 town, 1 city
 
+		_user.WaitForNext();
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1C@3,1T@2,3E@1" );
 
 	}
@@ -95,9 +100,6 @@ public class AvoidTheDahan_Tests {
 	[Fact]
 	public void Level2_3DahanAtFear_1DahanAtBuild_DoBuild() {
 
-		var log = new List<string>();
-		_ctx.GameState.NewLogEntry += x => log.Add(x.Msg());
-
 		// Fill all Invaders spaces with the A7 card
 		ClearBlightAndDoNothingForARound();
 		ClearBlightAndDoNothingForARound();
@@ -105,7 +107,7 @@ public class AvoidTheDahan_Tests {
 		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo(2);
 
-		_ = _user.NextDecision; // Wait for engine to catch up
+		_user.WaitForNext();
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init( "3D@2,2T@2" );
@@ -121,6 +123,7 @@ public class AvoidTheDahan_Tests {
 
 		// Build: Build city:	1B@1,1C@3,1D@2,1T@2
 		// Explore: +1			1B@1,1C@3,1D@2,1E@1,1T@2
+		_user.WaitForNext();
 		spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1D@2,1E@1,1T@2" );
 	}
 
@@ -137,6 +140,7 @@ public class AvoidTheDahan_Tests {
 		ElevateTerrorLevelTo(2);
 
 		// Given: Dahan(2) outnumber town/city(0)  + 3 explorer (to enable build)
+		_user.WaitForNext();
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("2D@2,3E@1");
 
@@ -148,6 +152,7 @@ public class AvoidTheDahan_Tests {
 		// Ravage: 3 explorers kill 1 dahan, 1 dahan kills 2 explorer:  1B@1,1D@2,1E@1
 		// Build: 1 dahan out numbers town/cities (0), no build:  1B@1,1D@2,1E@1
 		// Explore: +1   1D@2,2E@1
+		_user.WaitForNext();
 		spaceCtx.Tokens.Summary.ShouldBe( "1B,1D@2,2E@1" );
 	}
 
@@ -159,10 +164,12 @@ public class AvoidTheDahan_Tests {
 		ClearBlightAndDoNothingForARound();
 		ClearBlightAndDoNothingForARound();
 
+		_user.WaitForNext();
 		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo( 3 );
 
 		// Given: Starting out Dahan(3) outnumber town/city(2)
+		_user.WaitForNext();
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
@@ -177,6 +184,7 @@ public class AvoidTheDahan_Tests {
 
 		// Build: no build      1B@1,1D@2,1T@2
 		// Explore: +1			1B@1,1D@2,1E@1,1T@2
+		_user.WaitForNext();
 		spaceCtx.Tokens.Summary.ShouldBe( "1B,1D@2,1E@1,1T@2" );
 	}
 
@@ -238,7 +246,7 @@ public class AvoidTheDahan_Tests {
 
 	void ClearBlightAndDoNothingForARound() {
 		_ctx.ClearAllBlight();
-		_user.AdvancesToStartOfNextInvaderPhase();
+		_user.GrowAndBuyNoCards();
 	}
 
 	readonly VirtualTestUser _user;

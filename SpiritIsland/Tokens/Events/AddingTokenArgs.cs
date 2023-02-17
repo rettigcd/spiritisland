@@ -2,12 +2,12 @@
 
 public class AddingTokenArgs {
 
-	public AddingTokenArgs(SpaceState spaceState, AddReason addReason ) {
-		Space = spaceState;
+	public AddingTokenArgs(SpaceState to, AddReason addReason ) {
+		To = to;
 		Reason = addReason;
 	}
 
-	public SpaceState Space { get; }
+	public SpaceState To { get; }
 	public AddReason Reason { get; }
 
 	// Modifiable

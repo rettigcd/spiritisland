@@ -5,8 +5,7 @@ public enum From { None, Presence, SacredSite };
 public interface ICalcPowerTargetingSource {
 	IEnumerable<SpaceState> FindSources( 
 		IKnowSpiritLocations presence, 
-		TargetingSourceCriteria criteria, 
-		GameState gs					// in case we need extra game data (for Entwined Powers)
+		TargetingSourceCriteria criteria
 	);
 }
 
@@ -22,7 +21,7 @@ public interface ICalcRange {
 public class DefaultPowerSourceCalculator : ICalcPowerTargetingSource {
 	// ! Should work for any action because we are now referencing TerrainMapper.Current instead of directly accessing the ForPower one.
 
-	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria, GameState gameState ) {
+	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria ) {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.Spaces.Tokens(),
 			From.SacredSite => presence.SacredSites,

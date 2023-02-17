@@ -10,18 +10,22 @@ public class ConfoundingMists {
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
 			new SpaceAction("Defend 4", ctx => ctx.Defend(4) ),
-			new SpaceAction("Invaders added to target are immediately pushed", PushFutureInvadersFromLands )
+			new SpaceAction(
+				"Invaders added to target are immediately pushed",
+				ctx => ctx.Tokens.Adjust( new MistPusher( ctx.Self ), 1 )
+			)
 		);
 	}
 
-	static void PushFutureInvadersFromLands( TargetSpaceCtx ctx ) {
-
-		// each invader added to target land this turn may be immediatley pushed to any adjacent land
-		ctx.Tokens.Adjust( new TokenAddedHandler(PushAddedInvader), 1);
-
-		async Task PushAddedInvader( ITokenAddedArgs args ) {
-			if( args.Reason.IsOneOf( AddReason.Explore, AddReason.Build) ) // ??? is there any other way to add invaders?
-				await ctx.Pusher.PushToken( (IToken)args.Added );
+	class MistPusher : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
+		readonly Spirit _spirit;
+		public MistPusher(Spirit spirit ) { _spirit=spirit; }
+		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+			// each invader added to target land this turn may be immediatley pushed to any adjacent land
+			if(	args.Added.Class.IsOneOf(Human.Invader) 
+				&& args.Reason.IsOneOf( AddReason.Added, AddReason.MovedTo, AddReason.Explore, AddReason.Build )
+			)
+				await new TokenPusher(_spirit,args.To).PushToken( (IToken)args.Added );
 		}
 	}
 

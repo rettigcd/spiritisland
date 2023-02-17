@@ -18,7 +18,7 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 	public async Task Execute( GameCtx ctx ) {
 		var gameState = ctx.GameState;
 		foreach(Board board in gameState.Island.Boards) {
-			Spirit spirit = BoardCtx.FindSpirit( gameState, board );
+			Spirit spirit = board.FindSpirit();
 			SelfCtx decisionMaker = spirit.BindSelf();
 			var spacesCtxs = board.Spaces.Tokens()
 				.Select( decisionMaker.Target )

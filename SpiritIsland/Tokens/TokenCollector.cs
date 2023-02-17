@@ -34,7 +34,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		var collected = new List<SpaceToken>();
 
 		SpaceToken[] options;
-		while(0 < (options = GetSpaceTokenOptions()).Length) {
+		while(0 < (options = await GetSpaceTokenOptions()).Length) {
 			// !! maybe make the next line virtual instead of the GroupsToGather
 			string prompt = actionPromptPrefix + RemainingQuota.Select( x => x.ToString() ).Join( ", " );
 			var source = await _self.Gateway.Decision( Select.TokenFromManySpaces.ToCollect( prompt, options, present, _destinationTokens.Space ) );
@@ -53,12 +53,16 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 
 	/// <returns>Specific tokens that can collected.</returns>
 	/// <remarks>virtual because BeastGatherer can gather from extended range</remarks>
-	protected virtual SpaceToken[] GetSpaceTokenOptions() => PossibleGatherSources
-		.SelectMany( sourceSpaceState => sourceSpaceState
-			.RemovableOfAnyClass( RemoveReason.MovedFrom, RemainingTypes )
-			.Select( tokens => new SpaceToken( sourceSpaceState.Space, (IToken)tokens ) )
-		)
-		.ToArray();
+	protected virtual async Task<SpaceToken[]> GetSpaceTokenOptions() { 
+		var options = new List<SpaceToken>();
+		foreach(var sourceSpaceState in PossibleGatherSources) {
+			options.AddRange(
+				(await sourceSpaceState.RemovableOfAnyClass( RemoveReason.MovedFrom, RemainingTypes ))
+					.Select( tokens => new SpaceToken( sourceSpaceState.Space, tokens ) )
+			);
+		}
+		return options.ToArray();
+	}
 
 	/// <summary> The remaining quota of each token class </summary>
 	protected IEnumerable<CollectQuota> RemainingQuota => sharedGroupCounts.Where( g => g.count > 0 );

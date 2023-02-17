@@ -5,14 +5,6 @@
 Additional Loss Condition
 Sprawling Plantations: Before Setup, return all but 7 Town per player to the box. Invaders win if you ever cannot place a Town.
 
-6	(10) 14( 4 / 5 / 5 )	
-!!! Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer.
-
-Make sure ALL fear cards use the Cmds to remove explorers
-
-Option: Fear cards get an Instance of Commands to Choose from this overrides it
-Option: Cmds become static public readonly, and this card swaps out all of the ones that might replace explorers ones that can detect if we are in fear or not with other actions.
-
 */
 
 public class France : IAdversary {
@@ -42,36 +34,33 @@ public class France : IAdversary {
 			AddSlaveRebellionEvent( gameState );
 		if( 3 <= Level)
 			EarlyPlantation( gameState );
-		if( 5 < Level )
+		if( 5 <= Level )
 			SlowHealingEcosystem( gameState );
+		if( 6 <= Level )
+			gameState.AddIslandMod( new FearPushesExplorers() );
 	}
 
-	class FakeSpace : Space {
-		public FakeSpace() : base( "FranceAdversaryPanel" ) { }
-		public override SpaceLayout Layout => throw new NotImplementedException();
-		public override bool Is( Terrain terrain ) => false;
-		public override bool IsOneOf( params Terrain[] options ) => false;
-	}
-	static readonly FakeSpace FrancePanel = new FakeSpace(); // stores slow blight
+	static readonly FakeSpace FrancePanel = new FakeSpace( "FranceAdversaryPanel" ); // stores slow blight
 
 	static void SlowHealingEcosystem( GameState gameState ) {
 		// When you remove Blight from the board, put it here instead of onto the Blight Card.
 		// As soon as you have 3 Blight per player here, move it all back to the Blight Card.
 
-		void DoFranceStuff( ITokenRemovedArgs args ) {
+		async Task DoFranceStuff( ITokenRemovedArgs args ) {
 			if(args.Removed != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
 
 			var slowBlight = FrancePanel.Tokens.Blight;
+			var blightCard = BlightCard.Space.Tokens;
 			if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
-				gameState.blightOnCard += slowBlight.Count;
+				await blightCard.Add(Token.Blight,1);
 				slowBlight.Init(0);
 			} else {
-				--gameState.blightOnCard;
+				await blightCard.Remove(Token.Blight,1);
 				slowBlight.Adjust(1);
 			}
 		}
 
-		gameState.AddToAllActiveSpaces( new TokenRemovedHandler(DoFranceStuff,true) );
+		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent(DoFranceStuff) );
 	}
 
 	static void EarlyPlantation( GameState gameState ) {
@@ -87,7 +76,7 @@ public class France : IAdversary {
 
 	static void AddSlaveRebellionEvent( GameState gameState ) {
 		
-		gameState.StartOfInvaderPhase.ForGame.Add( async gs => {
+		gameState.StartOfInvaderPhase.Add( async gs => {
 			if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
 
 			DecisionOption<BoardCtx> cmd = (gs.InvaderDeck.InvaderStage < 3)
@@ -109,7 +98,7 @@ public class France : IAdversary {
 	static DecisionOption<BoardCtx> AddStrifeToTown => new DecisionOption<BoardCtx>(
 		"Add a strife to a town"
 		, async boardCtx => {
-			SpaceToken[] options = boardCtx.FindTokens( Human.Town );
+			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
 			if(st != null)
 				await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() );
@@ -118,7 +107,7 @@ public class France : IAdversary {
 	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
 		"Add 2 strife to any city/town"
 		, async boardCtx => {
-			SpaceToken[] options = boardCtx.FindTokens( Human.Town_City );
+			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town_City );
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
@@ -129,7 +118,7 @@ public class France : IAdversary {
 	static DecisionOption<BoardCtx> DestroyTown => new DecisionOption<BoardCtx>(
 		"Destroy a town"
 		, async boardCtx => {
-			SpaceToken[] options = boardCtx.FindTokens( Human.Town );
+			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
 			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Destory a town", options, Present.Always ) );
 			if(st != null)
 				await st.Space.Tokens.Destroy( st.Token, 1 );
@@ -152,4 +141,29 @@ public class France : IAdversary {
 		new ScenarioLevel(10, 4,5,5, "Persistent Explorers", "After resolving an Explore Card, on each board add 1 Explorer to a land without any.  Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer." ),
 	};
 
+}
+
+class FearPushesExplorers : BaseModEntity, IModifyRemovingTokenAsync {
+
+	// Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer.
+	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+		if(args.Token.Class == Human.Explorer 
+			&& args.Reason == RemoveReason.Removed
+			&& ActionScope.Current.Category == ActionCategory.Fear
+		) {
+			Spirit spirit = args.From.Space.Board.FindSpirit();
+
+			SpaceState[] destinationOptions = args.From.Adjacent_ForInvaders.ToArray();
+
+			var pusher = new TokenPusher( spirit, args.From )
+				.FilterDestinations( destinationOptions.Contains );
+
+			int attempts = args.Count; // generally this is 1
+			while(0 < attempts--) {
+				var space = await pusher.PushToken( args.Token ); // ? Can we reuse a pusher?
+				// if push was successful, don't remove
+				if( space != null ) --args.Count;
+			}
+		}
+	}
 }

@@ -7,9 +7,8 @@ public class StranglingFirevine_Tests {
 		var fxt = new ConfigurableTestFixture();
 
 		// Track actions
-		HashSet<ActionScope> actionScopes = new HashSet<ActionScope>();
-		fxt.GameState.AddToAllActiveSpaces(new TokenAddedHandler(x => actionScopes.Add( ActionScope.Current ), true ) );
-		fxt.GameState.AddToAllActiveSpaces( new TokenRemovedHandler( x => actionScopes.Add( ActionScope.Current ), true ) );
+		var tracker = new ActionScopeTracker();
+		fxt.GameState.AddIslandMod( tracker );
 
 		// Given: has escalation elements (to make sure we test all parts of this card)
 		fxt.InitElements("2 fire,3 plant");
@@ -40,10 +39,22 @@ public class StranglingFirevine_Tests {
 		fxt.GameState.Tokens[space].Summary.ShouldBe("1W");
 
 		//  And: both destroys were in a single action
-		actionScopes.Count.ShouldBe( 1 );
+		tracker.Count.ShouldBe( 1 );
 
 		//  Then: it is complete and nothing happens.
 		task.IsCompleted.ShouldBeTrue();
 	}
+
+}
+public class ActionScopeTracker : BaseModEntity, IHandleTokenAdded, IHandleTokenRemoved {
+
+	readonly HashSet<ActionScope> _scopes = new();
+	public int Count => _scopes.Count;
+
+	void IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs _ ) 
+		=> _scopes.Add( ActionScope.Current );
+
+	void IHandleTokenRemoved.HandleTokenRemoved(SpiritIsland.ITokenRemovedArgs _) 
+		=> _scopes.Add( ActionScope.Current );
 
 }

@@ -8,7 +8,6 @@ class MistsShiftAndFlow {
 	#region private fields
 
 	readonly ShroudOfSilentMist _spirit;
-	readonly GameState _gameState;
 	readonly SelfCtx _ctx;
 	readonly string _prompt;
 	readonly TargetingSourceCriteria _sourceCriteria;
@@ -28,7 +27,6 @@ class MistsShiftAndFlow {
 
 	public MistsShiftAndFlow(SelfCtx ctx, string prompt, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria) {
 		_spirit = (ShroudOfSilentMist)ctx.Self;
-		_gameState = ctx.GameState;
 		_ctx = ctx;
 		_prompt = prompt ?? "Target Space.";
 		_sourceCriteria = sourceCriteria;
@@ -103,7 +101,7 @@ class MistsShiftAndFlow {
 	}
 
 	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, SpaceState target ) {
-		var targetSource = _spirit.TargetingSourceCalc.FindSources( presence, _sourceCriteria, _gameState );
+		var targetSource = _spirit.TargetingSourceCalc.FindSources( presence, _sourceCriteria );
 		var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 		bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 		return hitsTarget;
@@ -124,7 +122,7 @@ class MistsShiftAndFlow {
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = _spirit.TargetingSourceCalc.FindSources( _spirit.Presence, _sourceCriteria, _gameState );
+		var sources = _spirit.TargetingSourceCalc.FindSources( _spirit.Presence, _sourceCriteria );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = sources
 			.SelectMany( s => s.Range( 2 ) ).Distinct() // I think this is a gather thing also

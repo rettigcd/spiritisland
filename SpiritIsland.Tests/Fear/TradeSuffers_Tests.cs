@@ -20,24 +20,25 @@ public class TradeSuffers_Tests {
 	public void Level1_CityIsNotDamagedDuringRavage_NoBuild() {
 
 		// Disable destroying presence
-		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.DisableBlightEffect();
 
 		// Invaders do not Build in lands with City.
 
 		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndAdvanceToStartOfInvaderPhase();
-		ClearBlightAndAdvanceToStartOfInvaderPhase();
+		ClearBlight_GrowAndBuyNoCards(); // All of Round 1 - stops at round 2
+		ClearBlight_GrowAndBuyNoCards(); // start of round 2
+		_user.WaitForNext();			 // start of round 3
 
 		ActivateFearCard( new TradeSuffers() );
 
 		// Given: 1 city and nothing else
-		_user.WaitForNext();
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("1C@3");
 
 		// When: activating fear
-		ClearBlightAndAdvanceToStartOfInvaderPhase();
+		ClearBlight_GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( FearCard );
+		_user.WaitForNext(); // start of round 4
 
 		// Ravage: no dahan, no change:			1B@1,1C@3
 		// Build: City present => no build		1B@1,1C@3
@@ -51,15 +52,15 @@ public class TradeSuffers_Tests {
 	public void Level1_CityDestroyedDuringRavage_Build() {
 		
 		// Disable destroying presence
-		_ctx.GameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		_ctx.GameState.DisableBlightEffect();
 
 		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndAdvanceToStartOfInvaderPhase();
-		ClearBlightAndAdvanceToStartOfInvaderPhase();
+		ClearBlight_GrowAndBuyNoCards();
+		ClearBlight_GrowAndBuyNoCards();
 
 		//  And: Fear card is active and ready to flip
 		ActivateFearCard( new TradeSuffers() );
-		ClearBlightAndAdvanceToStartOfInvaderPhase();
+		ClearBlight_GrowAndBuyNoCards();
 
 		var log = new List<string>();
 		_ctx.GameState.NewLogEntry += ( le ) => { log.Add( le.Msg( Log.LogLevel.Info ) ); };
@@ -106,13 +107,13 @@ public class TradeSuffers_Tests {
 		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
 
-	void ClearBlightAndAdvanceToStartOfInvaderPhase() {
+	void ClearBlight_GrowAndBuyNoCards() {
 
 		// So it doesn't cascade during ravage
 		foreach(var space in _ctx.GameState.Spaces_Unfiltered)
 			space.Init(Token.Blight, 0); // Don't trigger events
 
-		_user.AdvancesToStartOfNextInvaderPhase();
+		_user.GrowAndBuyNoCards();
 	}
 
 	void ActivateFearCard(IFearCard fearCard) {

@@ -10,12 +10,19 @@ public class CallToGuard{
 
 		// Then, if Dahan are present, either:
 		if(ctx.Dahan.Any)
-			await ctx.SelectActionOption( Cmd.Defend1PerDahan, DamageAddedOrMovedInvaders );
+			await ctx.SelectActionOption( 
+				Cmd.Defend1PerDahan, 
+				DamageAddedOrMovedInvaders
+			);
 	}
 
-	static SpaceAction DamageAddedOrMovedInvaders => new SpaceAction("After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
-		, (ctx) => {
-			ctx.Tokens.Adjust( new TokenAddedHandler(args => ctx.Invaders.ApplyDamageTo1(1, args.Added.AsHuman() )), 1 );
-		} );
+	static SpaceAction DamageAddedOrMovedInvaders => new SpaceAction(
+		"After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
+		, (ctx) => ctx.Tokens.Adjust( new DamageNewInvaders(), 1 )
+	);
 
+	class DamageNewInvaders : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
+		public Task HandleTokenAddedAsync( ITokenAddedArgs args )
+			=> new InvaderBinding( args.To ).ApplyDamageTo1( 1, args.Added.AsHuman() );
+	}
 }

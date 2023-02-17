@@ -103,7 +103,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new TheologicalStrife()
 	};
 
-	public IBlightCard[] BlightCards => new BlightCardBase[] {
+	public IBlightCard[] BlightCards => new BlightCard[] {
 		new AllThingsWeaken(),
 		new InvadersFindTheLandToTheirLiking(),
 		new PowerCorrodesTheSpirit(),

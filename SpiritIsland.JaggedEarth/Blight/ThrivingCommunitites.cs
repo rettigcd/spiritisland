@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class ThrivingCommunitites : BlightCardBase {
+public class ThrivingCommunitites : BlightCard {
 
 	public ThrivingCommunitites():base("Thriving Communitites", "Immediately, on each board: In 4 different lands with explorer/town, Replace 1 town with 1 city or Replace 1 explorer with 1 town.", 4) {}
 

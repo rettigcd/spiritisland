@@ -7,7 +7,7 @@ class BeastGatherer : TokenGatherer {
 
 	public BeastGatherer( Spirit self, SpaceState tokens ) : base( self, tokens ) { }
 
-	protected override SpaceToken[] GetSpaceTokenOptions(){
+	protected override Task<SpaceToken[]> GetSpaceTokenOptions(){
 		var items = new List<SpaceToken>();
 		foreach(var group in RemainingTypes) {
 			int range = group == Token.Beast ? 2 : 1;
@@ -15,7 +15,7 @@ class BeastGatherer : TokenGatherer {
 				foreach(var token in space.OfClass(group).OfType<IToken>())
 					items.Add(new SpaceToken(space.Space,token));
 		}
-		return items.ToArray();
+		return Task.FromResult( items.ToArray() );
 	}
 
 }

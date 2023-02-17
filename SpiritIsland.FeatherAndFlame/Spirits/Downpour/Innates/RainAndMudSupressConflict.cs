@@ -44,7 +44,7 @@ internal class RainAndMudSupressConflict {
 		// Each of your Presence grants Defend 1
 		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => sp[ctx.Self.Token], Token.Defend );
 		// lowers Dahan counterattack damage by 1
-		ctx.GameState.AddToAllActiveSpaces( new MudToken( ctx.Self, 1 ) );
+		ctx.GameState.AddIslandMod( new MudToken( ctx.Self, 1 ) );
 		MarkAsUsed();
 	}
 
@@ -58,10 +58,10 @@ internal class RainAndMudSupressConflict {
 }
 
 
-class MudToken : SelfCleaningToken, ISkipRavages {
+class MudToken : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
 	readonly Spirit _self;
 	readonly int _count;
-	public MudToken( Spirit self, int count ):base() {
+	public MudToken( Spirit self, int count ):base() { // removes itself
 		_self = self;
 		_count = count;
 	}
@@ -70,7 +70,9 @@ class MudToken : SelfCleaningToken, ISkipRavages {
 	public UsageCost Cost => UsageCost.Free;
 
 	Task<bool> ISkipRavages.Skip( SpaceState space ) {
-		GameState.Current.ModifyRavage( space.Space, cfg => cfg.AttackersDefend += (space[_self.Token] * _count) ); // !!! move this into SpaceState so we can remove accessing GameState
+
+		space.RavageBehavior.AttackersDefend += space[_self.Token] * _count;
+
 		// Doesn't remove self so it is in place for all ravages
 		// removed because it is inserted as a temp token.
 		return Task.FromResult( false );

@@ -30,7 +30,7 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 					: originalDamageFrom1( ss, ht ); // else, use original
 			}
 			foreach(var space in ctx.GameState.Spaces) {
-				ctx.GameState.ModifyRavage( space.Space, ReduceDamage );
+				ReduceDamage( space.RavageBehavior );
 				ctx.GameState.Healer.Skip( space.Space );
 			}
 

@@ -6,7 +6,8 @@ public enum RemoveReason {
 	Destroyed,  // Pulled from Game - Unwillingly
 	Replaced,   // Pulled from Game - To be replaced with another
 	UsedUp,     // Wilds, Disease, Strife
-	MovedFrom   // Placed on another space.
+	MovedFrom,  // Placed on another space.
+	TakingFromCard // Stops BlightToken.HandleRemoved from putting it back on the card.
 	//	ReturnedToCard,    // Blight - nothing cares that blight is returned to card
 }
 

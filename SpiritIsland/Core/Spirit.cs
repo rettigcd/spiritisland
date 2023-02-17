@@ -7,7 +7,7 @@ public abstract partial class Spirit : IOption {
 	public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
 		Presence = presence;
 		Presence.SetSpirit( this );
-		Presence.TrackRevealed.ForGame.Add( args => Elements.AddRange(args.Track.Elements) );
+		Presence.TrackRevealed.Add( args => Elements.AddRange(args.Track.Elements) );
 
 		foreach(var card in initialCards)
 			AddCardToHand(card);
@@ -115,10 +115,10 @@ public abstract partial class Spirit : IOption {
 			await action.ActivateAsync( ctx );
 
 	}
-	public DualAsyncEvent<Spirit> EnergyCollected = new DualAsyncEvent<Spirit>();
 
+	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
 
-	public async Task ResolveActions( GameState gs ) {  // !!! Seems like this should be private / protected and not called from outside.
+	public async Task ResolveActions( GameState gs ) {
 		Phase phase = gs.Phase;
 
 		while( GetAvailableActions( phase ).Any()
@@ -314,7 +314,7 @@ public abstract partial class Spirit : IOption {
 
 	/// <summary> Energy gain per turn </summary>
 	public int EnergyPerTurn => Presence.EnergyPerTurn;
-	public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayCount + tempCardPlayBoost;
+	public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayPerTurn + tempCardPlayBoost;
 
 	public int tempCardPlayBoost = 0;
 
@@ -407,7 +407,6 @@ public abstract partial class Spirit : IOption {
 			.Where( c => c.Cost <= Energy )
 			.ToArray();
 
-		// !!! there is a bug somewhere that allows duplicate cards in this list and crashes
 		//  (maybe from Unlock the Gates of Deepest Power)
 		var debug = new HashSet<PowerCard>();
 		foreach(PowerCard d in getPowerCardOptions())
@@ -446,8 +445,15 @@ public abstract partial class Spirit : IOption {
 	#endregion
 
 	#region Save/Load Memento
-	public virtual IMemento<Spirit> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<Spirit> memento ) => ((Memento)memento).Restore(this);
+	public IMemento<Spirit> SaveToMemento() => new Memento(this);
+	public void LoadFrom( IMemento<Spirit> memento ) => ((Memento)memento).Restore(this);
+
+
+	// Whatever this returns, get saved to the memento
+	protected virtual object _customSaveValue {
+		get { return null; }
+		set { }
+	}
 
 	protected class Memento : IMemento<Spirit> {
 		public Memento(Spirit spirit) {
@@ -463,6 +469,7 @@ public abstract partial class Spirit : IOption {
 			usedActions = spirit.usedActions.ToArray();
 			usedInnates = spirit.usedInnates.ToArray();
 			energyCollected = spirit.EnergyCollected.SaveToMemento();
+			tag = spirit._customSaveValue;
 		}
 		public void Restore(Spirit spirit) {
 			spirit.Energy = energy;
@@ -478,10 +485,7 @@ public abstract partial class Spirit : IOption {
 			spirit.InitElementsFromPresence();
 			spirit.BonusDamage = 0; // assuming beginning of round
 			spirit.EnergyCollected.LoadFrom( energyCollected );
-		}
-		static public void InitFromArray(ElementCounts dict, KeyValuePair<Element,int>[] array ) {
-			dict.Clear(); 
-			foreach(var p in array) dict[p.Key]=p.Value;
+			spirit._customSaveValue = tag;
 		}
 		readonly int energy;
 		readonly int bonusCardPlay;
@@ -493,8 +497,14 @@ public abstract partial class Spirit : IOption {
 		readonly IActionFactory[] available;
 		readonly IActionFactory[] usedActions;
 		readonly InnatePower[] usedInnates;
-		readonly IMemento<DualAsyncEvent<Spirit>> energyCollected;
+		readonly IMemento<AsyncEvent<Spirit>> energyCollected;
+		readonly object tag;
 	}
+	static public void InitFromArray( ElementCounts dict, KeyValuePair<Element, int>[] array ) {
+		dict.Clear();
+		foreach(var p in array) dict[p.Key] = p.Value;
+	}
+
 	#endregion
 
 	#region Power Plug-ins
@@ -514,8 +524,8 @@ public abstract partial class Spirit : IOption {
 	/// Don't use it for non-power calculations.
 	/// Don't use it for non-targeting Range-only calculations.
 	/// </summary>
-	// !!! make this private so nothing tries to use it.  All targetting should go through Spirit methods
 	public ICalcPowerTargetingSource TargetingSourceCalc = new DefaultPowerSourceCalculator();
+
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
 	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
 
@@ -537,9 +547,8 @@ public abstract partial class Spirit : IOption {
 				.ToArray();
 
 			SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( preselect.Prompt, spaceTokenOptions, Present.Always ) );
-			if(st == null) return null;
-			Gateway.Preloaded = st;
-			return st.Space;
+			Gateway.Preloaded = st ?? SpaceToken.Null;
+			return st?.Space;
 		}
 
 		return await this.Gateway.Decision( new Select.ASpace( prompt, spaces.Downgrade(), Present.Always ));
@@ -552,11 +561,9 @@ public abstract partial class Spirit : IOption {
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
 		// Converts SourceCriteria to Spaces
-		IEnumerable<SpaceState> sources = TargetingSourceCalc.FindSources( 
-			this.Presence,
-			sourceCriteria,
-			gameState		// needed only for Entwined power - to get the other spirit's location
-		).ToArray();
+		IEnumerable<SpaceState> sources = TargetingSourceCalc
+			.FindSources( Presence, sourceCriteria )
+			.ToArray();
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		var debugResults = targetCriteria

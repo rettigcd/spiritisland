@@ -2,15 +2,17 @@
 
 public class RemovingTokenArgs {
 
-	public RemovingTokenArgs( SpaceState space, RemoveReason reason, RemoveMode mode ) {
-		Space = space;
+	public RemovingTokenArgs( SpaceState from, RemoveReason reason, RemoveMode mode ) {
+		From = from;
 		Reason = reason;
 		Mode = mode;
 	}
 
 	// Read-only
-	public SpaceState Space { get; }
+	public SpaceState From { get; }
 	public RemoveReason Reason { get; }
+
+	// Test Remove / Live Remove
 	public RemoveMode Mode { get; }
 
 	// modifiable

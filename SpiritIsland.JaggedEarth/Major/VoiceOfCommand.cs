@@ -20,10 +20,9 @@ public class VoiceOfCommand {
 		ctx.Defend(2);
 
 		// During Ravage Actions, explorer fight alongside dahan. (Deal/take Damage at the same time, and to/from the same source.)
-		ctx.GameState.ModifyRavage( ctx.Space, cfg =>{ 
-			cfg.IsAttacker = (token) => token.Class.IsOneOf( Human.Town_City );
-			cfg.IsDefender = (token) => token.Class.IsOneOf( Human.Explorer, Human.Dahan);
-		});
+		var cfg = ctx.Tokens.RavageBehavior;
+		cfg.IsAttacker = (token) => token.Class.IsOneOf( Human.Town_City );
+		cfg.IsDefender = (token) => token.Class.IsOneOf( Human.Explorer, Human.Dahan);
 	}
 
 }

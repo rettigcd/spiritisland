@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection.Metadata.Ecma335;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// A Spirit Island 'Action'
@@ -95,7 +92,13 @@ public sealed class ActionScope : IAsyncDisposable {
 		var container = Container;
 		var current = container.Current;
 		if(current != this) 
-			throw new Exception($"Disposing {Category}/{Id} but .Current is {current.Category}/{current.Id}");
+			throw new Exception($"Error SI01: Disposing {Category}/{Id} but .Current is {current.Category}/{current.Id}");
+			// SI01 - Scenarios that cause this:
+			// 1) An ActionScope is missing a using and doesn't dispose of itself.
+			//    The parent goes to dispose of itself and finds the child still set as current
+			// 2) During testing... Parent ActionScope created on different thread than child ActionScope.
+			//    Exception occurs on Parent thread which tries to dispose bethrow bubbling up the exception
+			//    However, child ActionScope is still running and hasn't cleaned itself up yet.
 
 		container.Current = _old;
 	}

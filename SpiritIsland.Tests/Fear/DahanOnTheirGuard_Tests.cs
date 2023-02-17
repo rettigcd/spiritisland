@@ -24,7 +24,7 @@ public class DahanOnTheirGuard_Tests {
 	public async Task NoFearCard_NormalRavage() {
 
 		// Disable destroying presence
-		gameState.ModifyBlightAddedEffect.ForGame.Add( x => { x.Cascade = false; x.DestroyPresence = false; } );
+		gameState.DisableBlightEffect();
 
 		Given_DahanAndTowns( 2, 2 );
 

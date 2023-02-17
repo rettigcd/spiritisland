@@ -15,6 +15,8 @@
 	Many Minds - Presence as beasts
 	Many Minds - push/gather beast range 2
 
+Adding multiple blights to 1 space only destroys 1 presence
+
 === Grouping 2 - Traits ===
 
 SpaceState

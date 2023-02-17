@@ -11,10 +11,14 @@ public class EntrapTheForcesOfCorruption{
 		ctx.Isolate();
 
 		// When blight is added to target land, it doesn't cascade.
-		ctx.GameState.ModifyBlightAddedEffect.ForRound.Add( x => {
-			if(x.AddedTo.Space == ctx.Space)
-				x.Cascade = false;
-		} );
+		ctx.Tokens.Init(new StopCascade(),1);
+	}
+
+	class StopCascade : BaseModEntity, IEndWhenTimePasses, IModifyAddingToken {
+		public void ModifyAdding( AddingTokenArgs args ) {
+			if(args.Token == Token.Blight)
+				BlightToken.ForThisAction.ShouldCascade = false;
+		}
 	}
 
 }

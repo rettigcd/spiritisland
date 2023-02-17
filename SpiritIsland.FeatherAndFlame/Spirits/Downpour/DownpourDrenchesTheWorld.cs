@@ -80,9 +80,9 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			base.RemoveFromUnresolvedActions(selectedActionFactory);
 	}
 
-	public override void LoadFrom( IMemento<Spirit> memento ) { 
-		base.LoadFrom( memento );
-		pourDownPower.Reset();
+	protected override object _customSaveValue { 
+		get => base._customSaveValue;
+		set => pourDownPower.Reset();
 	}
 
 	readonly PourDownPower pourDownPower;

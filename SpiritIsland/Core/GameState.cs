@@ -12,16 +12,17 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Simplified constructor for single-player
 	/// </summary>
-	public GameState( Spirit spirit, Board board ) : this(new Spirit[]{ spirit }, new Board[] {board}  ) {}
+	public GameState( Spirit spirit, Board board, int gameNumber = 0 ) 
+		: this(new Spirit[]{ spirit }, new Board[] {board}, gameNumber ) {}
 
-	public GameState(Spirit[] spirits,Board[] boards){
+	public GameState(Spirit[] spirits,Board[] boards, int gameNumber = 0 ){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 
 		_current.Value = this;
 
-		this.Island = new Island( boards );
-
-		this.Spirits = spirits;
+		Island = new Island( boards );
+		Spirits = spirits;
+		ShuffleNumber = gameNumber;
 
 		// Note: don't init invader deck here, let users substitute
 		RoundNumber = 1;
@@ -29,8 +30,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Tokens = new Tokens_ForIsland( this );
 
 		TimePasses_WholeGame += TokenCleanUp;
-		TimePasses_WholeGame += ModifyBlightAddedEffect.ForRound.Clear;
 	}
+	public int ShuffleNumber { get; } // used to generate different shuffle #s
 
 	/// <summary>
 	/// Called AFTER everything has been configured. and BEFORE players make first move.
@@ -70,9 +71,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	Task TokenCleanUp( GameState gs ) {
 		Healer.HealAll( gs ); // called at end of round.
-		foreach(var spaceToken in Spaces_Unfiltered)
-			spaceToken.TimePasses();
-
+		Tokens.TimePasses();
 		return Task.CompletedTask;
 	}
 
@@ -102,7 +101,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		set { _invaderDeck = value; }
 	}
 	InvaderDeck _invaderDeck;
-	public int blightOnCard; // 2 per player + 1
+
+	public void blightOnCard_Add( int count ) 
+		=> Tokens[SpiritIsland.BlightCard.Space].Adjust( Token.Blight, count );
+
 	public IBlightCard BlightCard = new NullBlightCard();
 	public List<IBlightCard> BlightCards = new List<IBlightCard>();
 	public GameOver Result = null;
@@ -110,20 +112,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Blight
 
-	public int DamageToBlightLand = 2;
-
-	public async Task DamageLandFromRavage( SpaceState ss, int damageInflictedFromInvaders ) {
-		if(damageInflictedFromInvaders==0) return;
-
-		await LandDamaged.InvokeAsync( new LandDamagedArgs { 
-			GameState = this,
-			Space = ss,
-			Damage = damageInflictedFromInvaders
-		} );
-
-		if(DamageToBlightLand <= damageInflictedFromInvaders )
-			await ss.Blight.Add(1, AddReason.Ravage);
-	}
+	public int DamageToBlightLand = 2; // Config - !!! save in memento
 
 	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Existing
 		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
@@ -131,25 +120,12 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion
 
-	public void AddToAllActiveSpaces( ISpaceEntity token ) {
-		foreach(SpaceState space in Spaces)
-			space.Adjust( token, 1 );
+	public void AddIslandMod( BaseModEntity mod ) => Tokens.AddIslandMod( mod );
+
+	public void AddToAllActiveSpaces( BaseModEntity mod ) {
+		foreach(var space in this.Spaces_Existing)
+			space.Adjust(mod,1);
 	}
-
-	#region Configure Ravage
-
-	public RavageBehavior GetRavageConfiguration( Space space ) => _ravageConfig.ContainsKey( space ) ? _ravageConfig[space] : DefaultRavageBehavior.Clone();
-
-	public void ModifyRavage( Space space, Action<RavageBehavior> action ) {
-		if(!_ravageConfig.ContainsKey( space ))
-			_ravageConfig.Add( space, DefaultRavageBehavior.Clone() );
-		action( _ravageConfig[space] );
-	}
-	public readonly RavageBehavior DefaultRavageBehavior = new RavageBehavior();
-
-	readonly Dictionary<Space, RavageBehavior> _ravageConfig = new Dictionary<Space, RavageBehavior>(); // change ravage state of a Space
-
-	#endregion
 
 	#region Win / Loss
 
@@ -204,25 +180,24 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	#region Default API methods
 
 	/// <returns># of blight to remove from card</returns>
-	Task Default_TakeBlightFromSource( int count, SpaceState _ ) {
+	public async Task TakeBlightFromCard( int count ) {
 		if( count < 0 ) throw new ArgumentOutOfRangeException(nameof(count));
-		this.blightOnCard -= count;
-		return Task.CompletedTask;
-	}
+		var blightCard = Tokens[SpiritIsland.BlightCard.Space];
 
-	static async Task DefaultDestroy1PresenceFromBlightCard( Spirit spirit, GameState gs ) {
-		var presenceSpace = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Blighted Island: Select presence to destroy.", spirit.Presence ) );
-		await presenceSpace.Tokens.Destroy(spirit.Token,1);
+		await blightCard.Remove(Token.Blight, count, RemoveReason.TakingFromCard ); // stops from putting back on card
+
+		if(BlightCard != null && blightCard[Token.Blight] <= 0) {
+			await Spirits[0].Select( "Island blighted", new IOption[] { BlightCard }, Present.Always );
+			Log( new IslandBlighted( BlightCard ) );
+			await BlightCard.OnBlightDepleated( this );
+		}
 	}
 
 	#endregion
 
 	public void Log( ILogEntry entry ) => NewLogEntry?.Invoke( entry );
 	public void LogDebug( string debugMsg ) => Log( new Debug(debugMsg) );
-
 	public async Task TriggerTimePasses() {
-
-		_ravageConfig.Clear();
 
 		// Clear Defend
 		foreach(var s in Spaces_Unfiltered)
@@ -243,8 +218,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	// - Events -
 	public event Action<ILogEntry> NewLogEntry;
-	public DualAsyncEvent<GameState> StartOfInvaderPhase   = new DualAsyncEvent<GameState>();          // Blight effects
-	public DualAsyncEvent<LandDamagedArgs> LandDamaged     = new DualAsyncEvent<LandDamagedArgs>();    // Let Them Break Themselves Against the Stone
+	public AsyncEvent<GameState> StartOfInvaderPhase = new(); // Blight effects
 
 	public event Func<GameState,Task> TimePasses_WholeGame;                                               // Spirit cleanup
 	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop
@@ -253,18 +227,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Configuration - Game-Wide overrideable / Behavior
 
-	public DualAsyncEvent<AddBlightEffect> ModifyBlightAddedEffect = new DualAsyncEvent<AddBlightEffect>();
-
-	public Func<int, SpaceState, Task> TakeFromBlightSouce {
-		get { return _takeFromBlightSouce ?? Default_TakeBlightFromSource; }
-		set { _takeFromBlightSouce = value; }
-	}
-	Func<int, SpaceState, Task> _takeFromBlightSouce;
-
-	public Func<Spirit, GameState, Task> Destroy1PresenceFromBlightCard = DefaultDestroy1PresenceFromBlightCard; // Direct destruction from Blight Card, not cascading
+	public readonly RavageBehavior DefaultRavageBehavior = new RavageBehavior();
 
 	public Healer Healer = new Healer(); // replacable Behavior
-
 
 	// !! If we decide to split up Config stuff, move this to ActionScope
 	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
@@ -289,7 +254,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	protected class Memento : IMemento<GameState> {
 		public Memento(GameState src) {
 			roundNumber  = src.RoundNumber;
-			blightOnCard = src.blightOnCard;
+//			blightOnCard = src.blightOnCard;
 			isBlighted   = src.BlightCard.CardFlipped;
 			spirits      = src.Spirits.Select(s=>s.SaveToMemento()).ToArray();
 			if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
@@ -301,7 +266,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		}
 		public void Restore(GameState src ) {
 			src.RoundNumber = roundNumber;
-			src.blightOnCard = blightOnCard;
+//			src.blightOnCard_Init( blightOnCard );
 			src.BlightCard.CardFlipped = isBlighted;
 			for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
 			src.MajorCards?.RestoreFrom( major );
@@ -312,7 +277,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
 		}
 		readonly int roundNumber;
-		readonly int blightOnCard;
+//		readonly int blightOnCard;
 		readonly bool isBlighted;
 		readonly IMemento<Spirit>[] spirits;
 		readonly IMemento<PowerCardDeck> major;
@@ -320,7 +285,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		readonly IMemento<InvaderDeck> invaderDeck;
 		readonly IMemento<Fear> fear;
 		readonly IMemento<Tokens_ForIsland> tokens;
-		readonly IMemento<DualAsyncEvent<GameState>> startOfInvaderPhase;
+		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
 	}
 
 	#endregion Memento
@@ -346,14 +311,4 @@ public class Healer {
 
 }
 
-public class LandDamagedArgs {
-	public GameState GameState;
-	public SpaceState Space;
-	public int Damage;
-}
-
-public class AddBlightEffect {
-	public bool Cascade;
-	public bool DestroyPresence;
-	public SpaceState AddedTo;
-}
+public class LandDamagedArgs { public SpaceState Space; }

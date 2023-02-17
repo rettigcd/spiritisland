@@ -30,32 +30,6 @@ static internal class Extensions {
 
 	#endregion
 
-	/// <summary> Replaces all Invader Cards with null-cards that don't ravage/build/explore</summary>
-	static public void DisableInvaderDeck( this GameState gs ) {
-		var nullCard = InvaderCard.Stage1( Terrain.None );
-		gs.InitTestInvaderDeck( new byte[12].Select( _ => nullCard ).ToArray() );
-	}
-
-	static public void IslandWontBlight( this GameState gameState ) => gameState.blightOnCard = 100;
-
-	static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
-		gameState.Tokens[space].InvaderSummary().ShouldBe( expectedString );
-	}
-
-	static public void Assert_DreamingInvaders( this GameState gameState, Space space, string expectedString ) {
-
-		static int Order_CitiesTownsExplorers( HumanToken invader )
-			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
-		var tokens = gameState.Tokens[space];
-		string dreamerSummary = tokens.OfCategory(TokenCategory.Invader)
-			.Cast<HumanToken>()
-			.Where(x=>x.Class.Variant == TokenVariant.Dreaming)
-			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => tokens[invader] + invader.ToString() )
-			.Join( "," );
-		dreamerSummary.ShouldBe( expectedString );
-	}
-
 	static public void SetRevealedCount( this IPresenceTrack sut, int value ) {
 		while(sut.Revealed.Count() < value)
 			sut.Reveal( sut.RevealOptions.Single() );

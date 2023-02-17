@@ -3,8 +3,8 @@
 // Durable Towns - Have +2 health, Destroy does 2 points of damage.
 class HabsburgDurableToken 
 	: HumanToken
-	, IHandleRemovingToken  // removing Durable, switch to normal
-	, IHandleTokenAdded     // check for Blight, switch to normal
+	, IModifyRemovingTokenAsync  // removing Durable, switch to normal
+	, IHandleTokenAddedAsync     // check for Blight, switch to normal
 
 {
 	public HabsburgDurableToken( HumanToken orig )
@@ -27,7 +27,7 @@ class HabsburgDurableToken
 	public HumanToken GetRestoreToken() => new HumanToken( Class, _healthPenaltyHolder, FullHealth - 2, Damage, StrifeCount );
 
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
-	public async Task HandleTokenAdded( ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
 		// If adding first blight
 		if(args.Added == Token.Blight && args.To.Blight.Count == 1) {
 			// switch back to normal
@@ -38,17 +38,17 @@ class HabsburgDurableToken
 				args.To.ReplaceAllWith( this, restored );
 		}
 	}
-	public async Task ModifyRemoving( RemovingTokenArgs args ) {
+	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// If removing this (Durable) token from space
 		if(args.Token == this) {
 			// switch it back to normal.
 			HumanToken restored = GetRestoreToken();
 			if(restored.IsDestroyed) {
 				if(args.Mode == RemoveMode.Live)
-					await base.Destroy( args.Space, args.Count ); // must call Base to ensure it gets destroyed
+					await base.Destroy( args.From, args.Count ); // must call Base to ensure it gets destroyed
 				args.Count = 0;
 			} else if(args.Mode == RemoveMode.Live) {
-				args.Space.ReplaceNWith( args.Count, this, restored );
+				args.From.ReplaceNWith( args.Count, this, restored );
 				args.Token = restored;
 			}
 		}

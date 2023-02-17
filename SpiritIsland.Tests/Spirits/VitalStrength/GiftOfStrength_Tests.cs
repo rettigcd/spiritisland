@@ -22,6 +22,7 @@ public class GiftOfStrength_Tests {
 
 		// Given: Earth has enough elements to trigger GOS
 		User.SelectsGrowthA_Reclaim_PP2();
+		User.WaitForNext();
 		spirit.Elements[Element.Sun] = 1;
 		spirit.Elements[Element.Earth] = 2;
 		spirit.Elements[Element.Plant] = 2;

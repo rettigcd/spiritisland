@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class AidFromLesserSpirits : BlightCardBase {
+public class AidFromLesserSpirits : BlightCard {
 
 	public AidFromLesserSpirits():base("Aid from Lesser Spirits", "Immediatly, draw 1 Minor Power Card per player plus 1 more.  Give 1 to each Spirit.  They may be used every turn as if played, but cost no Card Plays/Energy.  Place unselected card in Minor Powers discard pile.", 2 ) { }
 
@@ -19,7 +19,7 @@ public class AidFromLesserSpirits : BlightCardBase {
 				// They may be used every turn as if played, but cost no card plays/energy.
 				// (don't put card in hand, because we don't want them discarding or forgetting, or playing normally.)
 				// (Just add it and its elements every time.)
-				spirit.EnergyCollected.ForGame.Add( ( Spirit s ) => {
+				spirit.EnergyCollected.Add( ( Spirit s ) => {
 					s.AddActionFactory( card );
 					s.Elements.AddRange( card.Elements );
 				});

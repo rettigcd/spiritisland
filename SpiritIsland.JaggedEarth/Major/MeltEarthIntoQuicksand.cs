@@ -15,10 +15,7 @@ public class MeltEarthIntoQuicksand {
 		ctx.Isolate();
 
 		// After invaders / dahan are Moved into target land, Destroy them.
-		ctx.Tokens.Adjust( new TokenAddedHandler( async ( args ) => {
-			if(args.Added.Class.Category.IsOneOf( TokenCategory.Invader, TokenCategory.Dahan ) )
-				await args.To.Destroy( args.Added, args.Count );
-		} ), 1 );
+		ctx.Tokens.Adjust( new Quicksand(), 1 );
 
 		// if you have 2 moon, 4 water, 2 earth:
 		if( await ctx.YouHave("2 moon,4 water,2 earth" )) {
@@ -33,4 +30,10 @@ public class MeltEarthIntoQuicksand {
 
 	}
 
+	class Quicksand : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
+		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+			if(args.Added.Class.Category.IsOneOf( TokenCategory.Invader, TokenCategory.Dahan ))
+				await args.To.Destroy( args.Added, args.Count );
+		}
+	}
 }

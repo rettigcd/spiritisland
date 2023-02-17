@@ -248,8 +248,11 @@ public partial class Board {
 	} // Weave together
 	#endregion
 
-	// !!! Boards need saved to Memento, InvaderActions & Spaces because both of those can be changed
-	// To do this, we probably need to pull the Layout coordinates out of The Board/Space classes and move to the UI.
+	// !!! Boards need saved to Memento,
+	// Spaces Active/Inactive can be changed
+	// Weave Together and cast down can change board spaces to and all the linkage.
+	// To do this, we probably need to pull the Layout coordinates out of The Board/Space classes
+	// and move to the UI.
 	public int InvaderActionCount { get; set; } = 1;
 
 	public Space Ocean => Spaces_Existing.Single( s => s.IsOcean );

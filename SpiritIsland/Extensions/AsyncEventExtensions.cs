@@ -13,4 +13,11 @@ static public class AsyncEventExtensions {
 		var handlers = func.GetInvocationList().Cast<Func<Arg, Task>>();
 		await Task.WhenAll( handlers.Select( handler => handler( arg ) ).ToArray() );
 	}
+
+	// In Parallel
+	static public Task WhenAll( this IEnumerable<Task> tasks ) => Task.WhenAll( tasks );
+
+	// In Series
+	// static public async Task WhenAll( this IEnumerable<Task> tasks ) { foreach(var task in tasks) await task; }
+
 }

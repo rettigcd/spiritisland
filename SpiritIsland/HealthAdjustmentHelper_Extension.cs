@@ -10,8 +10,8 @@ public static class HealthAdjustmentHelper_Extension {
 	}
 
 	public class HealthAdjustmentToken : BaseModEntity
-		, IHandleAddingToken
-		, IHandleRemovingToken
+		, IModifyAddingToken
+		, IModifyRemovingTokenAsync
 		, ISpaceEntityWithEndOfRoundCleanup
 	{
 
@@ -27,13 +27,13 @@ public static class HealthAdjustmentHelper_Extension {
 		}
 
 		// Remove (covers simple-remove AND move-out)
-		public async Task ModifyRemoving( RemovingTokenArgs args ) {
+		public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
 			if(args.Mode == RemoveMode.Test) return;
 			if(args.Token is HumanToken healthToken && _tokenClasses.Contains( args.Token.Class ))
 				// Downgrade the existing tokens health
 				// AND change what we are removing to be the downgraded token
 				// tokens being destroyed may reduce the count also.
-				(args.Token, args.Count) = await args.Space.AdjustHealthOf( healthToken, -_deltaHealth, args.Count );
+				(args.Token, args.Count) = await args.From.AdjustHealthOf( healthToken, -_deltaHealth, args.Count );
 		}
 
 		// Cleanup

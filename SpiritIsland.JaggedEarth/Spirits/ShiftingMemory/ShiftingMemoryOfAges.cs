@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
@@ -134,8 +136,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public readonly ElementCounts PreparedElements = new ElementCounts();
 
-	ElementCounts ActiveElementsForAction() 
-		=> ActionScope.Current.SafeGet( "ActionElements", ()=> Elements.Clone() );
+	ElementCounts ActiveElementsForAction() => ActionScope.Current.SafeGet( "ActionElements", ()=> Elements.Clone() );
 
 	public override async Task<bool> HasElements( ElementCounts subset ) {
 		var actionElements = ActiveElementsForAction();
@@ -205,18 +206,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return highestAlreadyMatch;
 	}
 
-	public override IMemento<Spirit> SaveToMemento() => new ShiftingMemento(this);
-	public override void LoadFrom( IMemento<Spirit> memento ) => ((ShiftingMemento)memento).Restore( this );
-
-	class ShiftingMemento : Spirit.Memento {
-		readonly KeyValuePair<Element, int>[] preparedElements;
-		public ShiftingMemento(ShiftingMemoryOfAges spirit):base(spirit) {
-			preparedElements = spirit.PreparedElements.ToArray();
-		}
-		public void Restore( ShiftingMemoryOfAges spirit ) { 
-			base.Restore( spirit );
-			InitFromArray( spirit.PreparedElements, preparedElements);
-		}
+	protected override object _customSaveValue { 
+		get => PreparedElements.ToArray();
+		set => InitFromArray( PreparedElements, (KeyValuePair<Element, int>[])value );
 	}
 
 }

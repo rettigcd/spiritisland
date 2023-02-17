@@ -16,8 +16,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 	}
 
 	protected void InitEnergyAndCardPlays() {
-		foreach(Track r in Energy.Revealed) CheckEnergyAndCardPlays( r );
-		foreach(Track r in CardPlays.Revealed) CheckEnergyAndCardPlays( r );
+		EnergyPerTurn = Revealed.Max( x => x.Energy ?? 0 );
+		CardPlayPerTurn = Revealed.Max( x => x.CardPlay ?? 0 );
 	}
 
 	public virtual void SetSpirit( Spirit spirit ) {
@@ -32,18 +32,78 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	#region Tracks / Board
 
-	public virtual IEnumerable<Track> RevealOptions()
-		=> Energy.RevealOptions.Union( CardPlays.RevealOptions );
-
-	public IEnumerable<Track> CoverOptions
-		=> Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
-
+	// # of Energy & CardPlays  / Tern
 	public int EnergyPerTurn { get; private set; }
+	public int CardPlayPerTurn { get; private set; }
 
-	// ! These 2 tracks are only public so they can be accessed from Tests.
-	// ! Not accessed from production code
+	// ------------------------------
+	// ----  Presence Tracks  -------
+	// ------------------------------
+
+	// (These 2 tracks are only public so they can be accessed from Tests. - Not accessed from production code.)
 	public IPresenceTrack Energy { get; }
 	public IPresenceTrack CardPlays { get; }
+
+	// ------------------------------
+	// ----  Aggregate Track  -------
+	// ------------------------------
+	public IEnumerable<IActionFactory> RevealedActions => Revealed
+		.Select( x => x.Action )
+		.Where( x => x != null );
+
+	public ElementCounts TrackElements {
+		get {
+			var elements = new ElementCounts();
+			Energy.AddElementsTo( elements );
+			CardPlays.AddElementsTo( elements );
+			return elements;
+		}
+	}
+
+	public virtual IEnumerable<Track> RevealOptions() => Energy.RevealOptions.Union( CardPlays.RevealOptions );
+	public IEnumerable<Track> CoverOptions => Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
+
+	IEnumerable<Track> Revealed => Energy.Revealed.Union(CardPlays.Revealed );
+
+	// ------------------------------
+	// ----  Reveal / Return  -------
+	// ------------------------------
+
+	protected virtual async Task RevealTrack( Track track ) {
+		if(track == Track.Destroyed && 0 < Destroyed)
+			--Destroyed;
+		else {
+			bool energyRevealed = await Energy.Reveal( track );
+			if(!energyRevealed) {
+				bool cardRevealed = await CardPlays.Reveal( track );
+				if(!cardRevealed)
+					throw new ArgumentException( "Can't pull from track:" + track.ToString() );
+			}
+		}
+	}
+
+	Task OnRevealed( TrackRevealedArgs args ) {
+		EnergyPerTurn = Math.Max( EnergyPerTurn, args.Track.Energy ?? 0 );
+		CardPlayPerTurn = Math.Max( CardPlayPerTurn, args.Track.CardPlay ?? 0 );
+		return TrackRevealed.InvokeAsync( args );
+	}
+
+	public Task Return( Track dst ) {
+
+		// Rescan Energy & CardPlays
+		InitEnergyAndCardPlays();
+
+		return (Energy.Return( dst ) || CardPlays.Return( dst ))
+			? Task.CompletedTask
+			: throw new ArgumentException( "Unable to find location to restore presence" );
+	}
+
+
+	#endregion
+
+	// ------------------------
+	// ----  Destroyed  -------
+	// ------------------------
 
 	public int Destroyed {
 		get => Token.Destroyed;
@@ -56,28 +116,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 		Destroyed -= count;
 	}
 
-	#endregion
-
-	#region Readonly 
-
-	public IEnumerable<IActionFactory> RevealedActions
-		=> CardPlays.Revealed
-			.Union( Energy.Revealed )
-			.Select( x => x.Action )
-			.Where( x => x != null );
-
-	public int CardPlayCount { get; private set; }
-
-	public ElementCounts TrackElements {
-		get {
-			var elements = new ElementCounts();
-			Energy.AddElementsTo( elements );
-			CardPlays.AddElementsTo( elements );
-			return elements;
-		}
-	}
-
-	#endregion
 
 	#region nice Predicate methods 
 
@@ -121,47 +159,14 @@ public class SpiritPresence : IKnowSpiritLocations {
 		if(Destroyed <= 0) throw new InvalidOperationException( "There is no Destroyed presence to return." );
 		--Destroyed;
 
-		// !!! This should reduce card plays or energy but I can't find that anywhere.
-
 		// To
 		return Return( dst );
-	}
-
-	public Task Return( Track dst ) {
-		return (Energy.Return( dst ) || CardPlays.Return( dst ))
-			? Task.CompletedTask
-			: throw new ArgumentException( "Unable to find location to restore presence" );
 	}
 
 	/// <remarks>Convenience - checks CanMove and token on space</remarks>
 	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && spaceState.Has(Token);
 
 	public bool CanMove { get; set; } = true; // Spirit effect - Settle Into Hunting Grounds
-
-	protected virtual async Task RevealTrack( Track track ) {
-		if(track == Track.Destroyed && Destroyed > 0)
-			--Destroyed;
-		else {
-			bool energyRevealed = await Energy.Reveal( track );
-			if(!energyRevealed) {
-				bool cardRevealed = await CardPlays.Reveal( track );
-				if(!cardRevealed)
-					throw new ArgumentException( "Can't pull from track:" + track.ToString() );
-			}
-		}
-	}
-
-	Task OnRevealed( TrackRevealedArgs args ) {
-		CheckEnergyAndCardPlays( args.Track );
-		return TrackRevealed.InvokeAsync( args );
-	}
-
-	void CheckEnergyAndCardPlays( Track track ) {
-		if(track.Energy.HasValue && EnergyPerTurn < track.Energy.Value)
-			EnergyPerTurn = track.Energy.Value;
-		if(track.CardPlay.HasValue && CardPlayCount < track.CardPlay.Value)
-			CardPlayCount = track.CardPlay.Value;
-	}
 
 	#endregion
 
@@ -180,7 +185,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	#endregion Exposed Data
 
-	public DualAsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new DualAsyncEvent<TrackRevealedArgs>();
+	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new();
 
 	public SpiritPresenceToken Token { 	get; set; }
 

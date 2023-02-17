@@ -1,6 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public class SkipAnyInvaderAction : SelfCleaningToken, ISkipRavages, ISkipBuilds, ISkipExploreTo {
+public class SkipAnyInvaderAction : BaseModEntity
+	, IEndWhenTimePasses
+	, ISkipRavages
+	, ISkipBuilds
+	, ISkipExploreTo
+{
 
 	readonly Func<SpaceState, Task> _alternativeAction;
 	readonly Spirit _spirit;

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class APallUponTheLand : BlightCardBase {
+public class APallUponTheLand : BlightCard {
 
 	public APallUponTheLand():base("A Pall Upon the Land", "Immediately, on each board: destroy 1 presence and remove 1 town.", 3 ) { }
 
@@ -19,9 +19,10 @@ public class APallUponTheLand : BlightCardBase {
 		=> new DecisionOption<BoardCtx>("Destroy 1 presence.", async boardCtx => {
 			// !! this could be any spirits presence - Who picks?   When having multiple players, this should be a parallel decision where spirit volunteers
 			// for now, just have the 1st spirit pick (House Rules advantage)
+			var gs = GameState.Current;
 
-			bool IsOnBoard(Spirit spirit) => boardCtx.ActiveSpaces.Any(spirit.Presence.IsOn);
-			var spiritOptions = boardCtx.GameState.Spirits
+			bool IsOnBoard(Spirit spirit) => gs.Tokens.IsOn( spirit.Token, boardCtx.Board );
+			var spiritOptions = gs.Spirits
 				.Where( IsOnBoard )
 				.ToArray();
 			if(spiritOptions.Length == 0) return;

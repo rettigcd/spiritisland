@@ -22,7 +22,7 @@ public class SenseOfDread_Tests {
 		// Then: there should be 1 explorer left.
 		fix.GameState.Tokens[ravageSpace].InvaderSummary().ShouldBe("1E@1");
 
-		task.IsCompletedSuccessfully.ShouldBeTrue();
+		task.Wait(4000); task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
 
 }
