@@ -1,7 +1,8 @@
-﻿using static System.Formats.Asn1.AsnWriter;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth;
-
+/// <summary>
+/// Logs which spaces receive blight during ravage.
+/// </summary>
 class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenAsync {
 
 	#region construction
@@ -22,6 +23,9 @@ class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenA
 	public void PreRavage() {
 		_receivedRavageBlight.Clear();
 	}
+	/// <summary>
+	/// Tracks which boards received blight during Ravage - this turn only
+	/// </summary>
 	readonly HashSet<Board> _receivedRavageBlight = new HashSet<Board>();
 
 	public void PressureForFastProfit( GameState gameState ) {
@@ -58,7 +62,7 @@ class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenA
 		if(args.Added == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
-			_receivedRavageBlight.Add( args.To.Space.Board );// log
+			_receivedRavageBlight.UnionWith( args.To.Space.Boards ); // log
 
 			if( args.To.Beasts.Any ) {
 				await args.To.Beasts.Destroy( 1 );
@@ -82,7 +86,7 @@ class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenA
 			if(args.Mode == RemoveMode.Live) {
 				scope[key] = true; // don't save any more
 
-				Spirit spirit = scope.Owner ?? args.From.Space.Board.FindSpirit();
+				Spirit spirit = scope.Owner ?? args.From.Space.Boards[0].FindSpirit();
 				Space destination = await spirit.Gateway.Decision( Select.ASpace.PushToken( (IToken)args.Token, args.From.Space, pushOptions, Present.Always ) );
 				await args.From.MoveTo( (IToken)args.Token, destination );
 			}

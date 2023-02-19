@@ -111,7 +111,7 @@ public class Sweden : IAdversary {
 			if(space4.Blight.Any) {
 				// bump it to 5
 				space4.Blight.Adjust( -1 );
-				space4.Space.Board[5].Tokens.Blight.Adjust( 1 );
+				space4.Space.Boards.First()[5].Tokens.Blight.Adjust( 1 );
 			}
 		}
 
@@ -147,7 +147,7 @@ class HeavyMining : BaseModEntity, IHandleTokenAddedAsync {
 					.Where( adj => !adj.HasAny( Human.Town_City ) )
 					.ToArray();
 
-				var spirit = args.To.Space.Board.FindSpirit();
+				var spirit = args.To.Space.Boards[0].FindSpirit();
 
 				var selection = await spirit.Gateway.Decision( Select.ASpace.ToPlaceToken( "Mining Rush: Place Town", noBuildAdjacents, Present.Always, args.To.GetDefault( Human.Town ) ) );
 				if(selection != null) {

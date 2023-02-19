@@ -30,8 +30,8 @@ public class WeaveTogetherTheFabricOfPlace {
 		var gameState = originatorCtx.GameState;
 
 		var multi = new MultiSpace( space, other );
-		MoveAllItemsOnSpace( gameState, other, multi );
-		MoveAllItemsOnSpace( gameState, space, multi );
+		MoveItemsOnSpace( other, multi, true );
+		MoveItemsOnSpace( space, multi, true );
 
 		// Calculate Adjacents
 		var adjacents = space.Adjacent_Existing.Union( other.Adjacent_Existing ).Distinct().Where(s=>s!=space&&s!=other).ToList();
@@ -41,55 +41,75 @@ public class WeaveTogetherTheFabricOfPlace {
 		Restoreable removeOther = other.RemoveFromBoard();
 
 		// Add Multi
-		multi.AddToBoards( adjacents.Distinct() );
-
-		// !!! Any game-wide mod-tokens are going to be put on next space, but will be difficult to split since they aren't visible
+		multi.AddToBoardsAndSetAdjacent( adjacents.Distinct() );
 
 		gameState.Log( new Log.LayoutChanged($"{space.Text} and {other.Text} were woven together") );
 
 		// When this effect expires
 		gameState.TimePasses_ThisRound.Push( async (gs) => {
 
-			MoveAllItemsOnSpace( gs, multi, space );
+			MoveItemsOnSpace( multi, space, false );
 			multi.RemoveFromBoard();
 			removeOther.Restore();
 			removeSpace.Restore();
 
 			gameState.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
 
-			// divide pieces as you wish.
-			await using ActionScope actionScope = new ActionScope( ActionCategory.Spirit_Power );
-			await DistributeTokens( originatorCtx, space, other );
-		});
+			await DistributeVisibleTokens( originatorCtx, space, other );
+
+			CopyNewModsToBoth( space, other, multi );
+		} );
 
 		return multi;
 	}
 
-	static async Task DistributeTokens( SelfCtx ctx, Space space, Space other ) {
-		// Distribute Tokens (All of them are considered moved.)
-		var tokens = space.Tokens.Keys.OfType<IToken>().ToArray();
-		var tokenClasses = tokens.Select( x => x.Class ).Distinct().ToArray();
-		await other.Tokens.Gather( ctx.Self )
-			.AddGroup( int.MaxValue, tokenClasses )
-			.FilterSource( ss => ss.Space == space )
-			.GatherUpToN();
-		// !!! Remove / Add un-moved tokens so they act like they were moved.
-		// !!! Divy up invisible mod tokens.
+	static void CopyNewModsToBoth( Space space, Space other, MultiSpace multi ) {
+		var a = space.Tokens;
+		var b = other.Tokens;
+		var newMods = multi.Tokens.Keys.Where( k => k is not IToken )
+			.Except( a.Keys )
+			.Except( b.Keys )
+			.ToArray();
+		foreach(var x in newMods) {
+			a.Init( x, 1 );
+			b.Init( x, 1 );
+		}
 	}
 
-	static void MoveAllItemsOnSpace(GameState gs, Space src, Space dst ) {
+	static async Task DistributeVisibleTokens( SelfCtx ctx, Space from, Space to ) {
+		await using ActionScope actionScope = new ActionScope( ActionCategory.Spirit_Power );
+
+		var fromTokens = from.Tokens;
+		var toTokens = to.Tokens;
+
+		// Distribute Tokens (All of them are considered moved.)
+		var tokenClasses = fromTokens.Keys.OfType<IToken>()
+			.Select( x => x.Class ).Distinct()
+			.ToArray();
+		await toTokens.Gather( ctx.Self )
+			.AddGroup( int.MaxValue, tokenClasses )
+			.FilterSource( ss => ss.Space == from )
+			.GatherUpToN();
+
+		// Move remaining onto themselves so they look moved.
+		await fromTokens.Keys.OfType<IToken>()
+			.ToArray()
+			.Select(re => fromTokens.MoveTo(re,fromTokens))
+			.WhenAll();
+	}
+
+	static void MoveItemsOnSpace( Space src, Space dst, bool copyInvisible ) {
 		var srcTokens = src.Tokens;
 		var dstTokens = dst.Tokens;
-		foreach(var token in srcTokens.Keys.ToArray()) {
-			int count = srcTokens[token];
-			srcTokens.Adjust(token, -count);
-			dstTokens.Adjust(token, count);
-		}
-		foreach(var spirit in gs.Spirits) {
-			var presence = spirit.Presence;
-			int count = srcTokens[presence.Token];
-			srcTokens.Adjust( presence.Token, -count);
-			dstTokens.Adjust( presence.Token, count );
+		foreach(var key in srcTokens.Keys.ToArray()) {
+			int count = srcTokens[key];
+			if(key is IToken) {
+				// move visible
+				srcTokens.Adjust(key, -count);
+				dstTokens.Adjust(key, count);
+			} else if( copyInvisible )
+				// copy invisible (orig keep their invisible mods)
+				dstTokens.Adjust(key, count);
 		}
 	}
 

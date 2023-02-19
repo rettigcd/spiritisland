@@ -37,7 +37,9 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 		// Find Lowest space
 		if(_lowest == null) InitLowest( gameCtx );
 		// Return if this is the lowest
-		return Task.FromResult( _lowest[spaceState.Space.Board] == spaceState );
+		bool isLowestOnABoard = spaceState.Space.Boards
+			.Any( board => _lowest[board] == spaceState);
+		return Task.FromResult( isLowestOnABoard );
 	}
 
 	/// <summary> Used by skips to determine which skip to use. </summary>

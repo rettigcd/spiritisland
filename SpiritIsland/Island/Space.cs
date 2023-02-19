@@ -10,16 +10,12 @@ public abstract class Space
 {
 
 	readonly List<Space> adjacent = new List<Space>();
-	Board _board;
 
 	protected Space(string label) {
 		this.Label = label;
 	}
 
-	public Board Board {
-		get => _board;
-		set { if(_board != null) throw new InvalidOperationException( "cannot set board twice" ); _board = value; }
-	}
+	public virtual Board[] Boards { get; protected set; }
 
 	public string Label { get; }
 
@@ -43,7 +39,8 @@ public abstract class Space
 	public abstract bool IsOneOf( params Terrain[] options );
 	public abstract SpaceLayout Layout { get; }
 
-	//public bool InStasis { get => !Exists; }
+	public abstract int InvaderActionCount { get; }
+
 	public bool DoesExists { get; set; } = true;
 	public static bool Exists( Space space ) => space.DoesExists;
 
@@ -86,13 +83,14 @@ public abstract class Space
 		public Space[] OldAdjacents { get; set; }
 
 		public void Restore() {
-			space.Board.Add( space, OldAdjacents );
+			foreach(var board in space.Boards) board.AddSpace( space );
+			space.SetAdjacentToSpaces( OldAdjacents );
 		}
 	}
 
 	public virtual Restoreable RemoveFromBoard() {
 		return new DisconnectSpaceResults {
-			OldAdjacents = Board.Remove(this),
+			OldAdjacents = Boards.SelectMany(b=>b.Remove(this)).Distinct().ToArray(),
 			space = this,
 		};
 	}
@@ -103,6 +101,7 @@ public abstract class Space
 public class FakeSpace : Space {
 	public FakeSpace( string name ) : base( name ) { }
 	public override SpaceLayout Layout => throw new NotImplementedException();
+	public override int InvaderActionCount => 0;
 	public override bool Is( Terrain terrain ) => false;
 	public override bool IsOneOf( params Terrain[] options ) => false;
 }

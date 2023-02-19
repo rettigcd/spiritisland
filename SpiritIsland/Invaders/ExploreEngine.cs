@@ -43,7 +43,7 @@ public class ExploreEngine {
 
 
 		foreach(var x in spacesWeExplore)
-			x.Adjust( ModToken.DoExplore, x.Space.Board.InvaderActionCount );
+			x.Adjust( ModToken.DoExplore, x.Space.InvaderActionCount );
 
 		return gs.Spaces
 			.Where( x => x[ModToken.DoExplore] > 0 )

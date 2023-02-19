@@ -88,10 +88,19 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Tokens_ForIsland Tokens { get; }
 
-	/// <summary> Active, Not in statis </summary>
-	public IEnumerable<SpaceState> Spaces            => Island.Boards.SelectMany( b => b.Spaces ).Tokens();
-	public IEnumerable<SpaceState> Spaces_Existing   => Island.Boards.SelectMany( b => b.Spaces_Existing ).Tokens();
-	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards.SelectMany( b => b.Spaces_Unfiltered ).Tokens();
+	/// <summary> InPlay, Not in statis </summary>
+	public IEnumerable<SpaceState> Spaces            => Island.Boards
+		.SelectMany( b => b.Spaces )
+		.Distinct() // MultiSpaces
+		.Tokens();
+	public IEnumerable<SpaceState> Spaces_Existing   => Island.Boards
+		.SelectMany( b => b.Spaces_Existing )
+		.Distinct() // MultiSpaces
+		.Tokens();
+	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards
+		.SelectMany( b => b.Spaces_Unfiltered )
+		.Distinct() // MultiSpaces
+		.Tokens();
 
 
 	public PowerCardDeck MajorCards {get; set; }

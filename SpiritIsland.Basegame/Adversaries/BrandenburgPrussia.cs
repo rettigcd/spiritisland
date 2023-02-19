@@ -57,27 +57,29 @@ public class BrandenburgPrussia : IAdversary {
 		var counts = gs.Spaces.IsInPlay()
 			.ToDictionary( s => s.Space, s => s );
 
-		// s.SumAny(Invader.Town,Invader.City)
-
-		var boards = gs.Island.Boards
+		var boardsWithTownOrCity = gs.Island.Boards
 			.Where( b => b.Spaces.Any( s => counts[s].SumAny( Human.Town_City ) > 0 ) )
 			.ToHashSet();
 
 		var terrainMapper = TerrainMapper.Current;
 
-		var buildSpaces = counts.Values
-			.Where( ss => boards.Contains( ss.Space.Board ) && ss.SumAny( Human.Town_City ) == 0 )
-			.GroupBy( space => space.Space.Board )
-			.Select( grp => grp.OrderBy( ss => ss.Space.Text ).First() ) // (!! simplification) when multiple, select closest to coast.
+		var buildSpaces = boardsWithTownOrCity
+			.Select( FirstNonBuildingSpace )
+			.Where( x => x != null )
 			.ToArray();
 
 		await using ActionScope actionScope = new ActionScope( ActionCategory.Default );
 		foreach(SpaceState bs in buildSpaces)
-			await bs.AddDefault(Human.Town, 1, AddReason.Build);
+			await bs.AddDefault( Human.Town, 1, AddReason.Build );
 
-		gs.LogDebug("Land Rush: Adding 1 town to "+buildSpaces.SelectLabels().Order().Join(","));
+		gs.LogDebug( "Land Rush: Adding 1 town to " + buildSpaces.SelectLabels().Order().Join( "," ) );
 
 	}
 
+	static SpaceState FirstNonBuildingSpace( Board board )
+		=> board.Spaces.Tokens()
+			.Where( ss => ss.SumAny( Human.Town_City ) == 0 )
+			.OrderBy( ss => ss.Space.Text )
+			.FirstOrDefault(); // (!! simplification) when multiple, select closest to coast.;
 
 }

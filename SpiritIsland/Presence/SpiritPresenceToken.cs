@@ -46,4 +46,5 @@ public class SpiritPresenceToken : IToken, IEntityClass
 
 	public int Destroyed { get; set; }
 
+	public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn( this, board );
 }

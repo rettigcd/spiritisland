@@ -79,7 +79,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 			.ToArray();
 
 		var decision = new Select.TokenFromManySpaces( "Presence to destroy", options, Present.Always );
-		var token = await args.To.Space.Board.FindSpirit().Gateway
+		var token = await args.To.Space.Boards[0].FindSpirit().Gateway
 			.Decision(decision);
 
 		if(token == null) return;

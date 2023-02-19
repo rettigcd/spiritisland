@@ -234,9 +234,8 @@ public partial class Board {
 	public IEnumerable<Space> Spaces_Unfiltered => spaces;
 
 	#region Add / Remove spaces from board
-	public void Add( Space space, Space[] adjacents ) {
+	public void AddSpace( Space space ) {
 		spaces = spaces.Union( new[] {space}).ToArray();
-		space.SetAdjacentToSpaces(adjacents);
 	} // Weave togehter
 
 	/// <returns>Old adjacents</returns>
@@ -261,7 +260,7 @@ public partial class Board {
 
 	#region constructor
 
-	public Board(string name, params Space[] spaces){
+	public Board(string name, params Space1[] spaces){
 		this.Name = name;
 		this.spaces = spaces;
 		foreach(var space in spaces) space.Board = this;

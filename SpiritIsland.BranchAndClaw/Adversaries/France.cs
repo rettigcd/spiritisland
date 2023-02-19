@@ -151,7 +151,7 @@ class FearPushesExplorers : BaseModEntity, IModifyRemovingTokenAsync {
 			&& args.Reason == RemoveReason.Removed
 			&& ActionScope.Current.Category == ActionCategory.Fear
 		) {
-			Spirit spirit = args.From.Space.Board.FindSpirit();
+			Spirit spirit = args.From.Space.Boards.First().FindSpirit();
 
 			SpaceState[] destinationOptions = args.From.Adjacent_ForInvaders.ToArray();
 

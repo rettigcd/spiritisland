@@ -98,18 +98,27 @@ public class England : IAdversary {
 		// Building Boom: On each board with Town / City, Build in the land with the most Town / City
 
 		// Finds the space on each board with the most town/city.
-		// When multiple town/city have max #, picks the one closests to the coast (for simplicity)
-		SpaceState[] buildSpaces = gs.Spaces
-			.Select( ss => new { SpaceState = ss, Count = ss.SumAny( Human.Town_City ) } )
-			.Where( x => x.Count > 0 )
-			.GroupBy( x => x.SpaceState.Space.Board )
-			.Select( grp => grp.OrderByDescending( x => x.Count ).ThenBy( x => x.SpaceState.Space.Text ).First().SpaceState )
+		SpaceState[] buildSpaces = gs.Island.Boards
+			.Select( FindSpaceWithMostTownsOrCities )
+			.Where( x=>x!=null )
+			.Distinct() // for multi-space
 			.ToArray();
 
 		var buildOnce = gs.InvaderDeck.Build.Engine.Do1Build;
 		foreach(var space in buildSpaces)
 			await buildOnce( gs, space );
 
+	}
+
+	static SpaceState FindSpaceWithMostTownsOrCities( Board board ) {
+		// When multiple town/city have max #,
+		// picks the one closests to the coast (for simplicity)
+		return board.Spaces.Tokens()
+			.Select( ss => new { SpaceState = ss, Count = ss.SumAny( Human.Town_City ) } )
+			.Where( x => 0 < x.Count )
+			.OrderByDescending( x => x.Count )
+			.ThenBy( x => x.SpaceState.Space.Text ) // closest to the coast
+			.FirstOrDefault()?.SpaceState;
 	}
 
 	static void ProudAndMightyCapital( GameState gs ) {

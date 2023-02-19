@@ -16,17 +16,19 @@ class PourTimeSideways {
 		var dstOptions = ctx.Self.Presence.Spaces.Tokens().Where( s => s.Space != src );
 		var dst = await ctx.Decision( Select.ASpace.ForMoving_SpaceToken( "Move preseence to:", src, dstOptions, Present.Always, ctx.Self.Token ) );
 		await ctx.Self.Presence.Token.Move( src, dst );
-		if(src.Board == dst.Board) return;
+		if(src.Boards.Intersect(dst.Boards).Any()) return;
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
-		if(0<src.Board.InvaderActionCount) --src.Board.InvaderActionCount;
+		foreach(var board in src.Boards)
+			if(0<board.InvaderActionCount) --board.InvaderActionCount;
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.
-		++dst.Board.InvaderActionCount;
+		foreach(var board in dst.Boards)
+			++board.InvaderActionCount;
 
-		ctx.GameState.TimePasses_ThisRound.Push( gs => { 
-			dst.Board.InvaderActionCount = 1;
-			src.Board.InvaderActionCount = 1;
+		ctx.GameState.TimePasses_ThisRound.Push( gs => {
+			foreach(var b in dst.Boards.Union(src.Boards))
+				b.InvaderActionCount = 1;
 			return Task.CompletedTask;
 		} );
 	}

@@ -20,7 +20,7 @@ class ScotlandCoastalBlightCheckToken
 		if(args.Added == Token.Blight && args.Reason == AddReason.Ravage) {
 			BlightToken.ForThisAction.ShouldCascade = false;
 			var space = args.To.Adjacent_Existing // Ocean is not in play here
-				.First( adj => adj.Space.IsOcean && adj.Space.Board == args.To.Space.Board );
+				.First( adj => adj.Space.IsOcean ); // ignoring rule about ocean being on this board, just using adjacent
 			await space.Blight.Add( 1, AddReason.Ravage );
 			GameState.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {args.To.Space.Text} caused additional blight on {space.Space.Text}"));
 		}
@@ -42,7 +42,7 @@ class ScotlandCoastalBlightCheckToken
 		if(blightedOptions.Count==0) return;
 
 		// Find spirit
-		Spirit spirit = args.From.Space.Board.FindSpirit();
+		Spirit spirit = args.From.Space.Boards[0].FindSpirit();
 
 		// Create list of blight they might want to remove.
 		blightedOptions.Add( args.From );

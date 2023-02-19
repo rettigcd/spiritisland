@@ -3,36 +3,43 @@
 public class MultiSpace : Space {
 
 	public MultiSpace(params Space[] spaces)
-		:base( string.Join(":", BuildParts(spaces).Select(p=>p.Label)) ) 
+		:base( string.Join(":", CollectOrigSpaces(spaces).Select(p=>p.Label)) ) 
 	{
-		this.Parts = BuildParts( spaces );
-		this.Board = Parts[0].Board; // !!! this isn't right if we join 2 boards.
+		OrigSpaces = CollectOrigSpaces( spaces );
+		Boards = OrigSpaces.SelectMany(s=>s.Boards).Distinct().ToArray();
 
 		var merged = spaces[0].Layout.Corners;
 		for(int i = 1; i < spaces.Length; ++i)
 			merged = Polygons.JoinAdjacentPolgons( merged, spaces[i].Layout.Corners );
 		Layout = new SpaceLayout(merged);
+
 	}
 
-	static Space1[] BuildParts( Space[] spaces ) {
+	public override int InvaderActionCount => OrigSpaces.Sum(s=>s.InvaderActionCount) / OrigSpaces.Length;
+
+	static Space1[] CollectOrigSpaces( Space[] spaces ) {
 		var parts = new List<Space1>();
 		foreach(var space in spaces)
 			if(space is Space1 one)
 				parts.Add( one );
 			else if(space is MultiSpace many)
-				parts.AddRange( many.Parts );
+				parts.AddRange( many.OrigSpaces );
 		return parts.OrderBy(p=>p.Text).ToArray();
 	}
 
-	public override bool Is( Terrain terrain ) => Parts.Any(part => part.Is(terrain));
-	public override bool IsOneOf( params Terrain[] options ) => Parts.Any(part => part.IsOneOf(options));
+	public override bool Is( Terrain terrain ) => OrigSpaces.Any(part => part.Is(terrain));
+	public override bool IsOneOf( params Terrain[] options ) => OrigSpaces.Any(part => part.IsOneOf(options));
 
-	public Space1[] Parts { get; }
+	public Space1[] OrigSpaces { get; }
 
 	public override SpaceLayout Layout { get; }
 
-	public void AddToBoards(IEnumerable<Space> adjacents) {
-		Board.Add( this, adjacents.ToArray() ); // !!! only adding to 1st board.  if joining 2 boards, needs added to both
+	public void AddToBoardsAndSetAdjacent(IEnumerable<Space> adjacents) {
+		foreach(var board in Boards)
+			board.AddSpace( this );
+
+		SetAdjacentToSpaces( adjacents.ToArray() );
+
 	}
 
 }

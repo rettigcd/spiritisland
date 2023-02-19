@@ -85,11 +85,11 @@ public class Russia : IAdversary {
 
 		var ambient = GameState.Current;
 
-		// Add 2 explorers/board to lands with beast.
-		var beastsSpacesForBoard = gameState.Spaces
-			.Where( s => s.Beasts.Any )
-			.GroupBy( s => s.Space.Board )
-			.ToDictionary( s => s.Key, s => s.ToArray() );
+		// Add 2 explorers per board to lands with beast.
+		Dictionary<Board, SpaceState[]> beastsSpacesForBoard = gameState.Island.Boards
+			.Select( b => new { board=b, spaces= SpacesWithBeasts(b) } )
+			.Where( x=>0<x.spaces.Length)
+			.ToDictionary( x=>x.board, x=>x.spaces );
 
 		// If no beasts anywhere, can't add explorers.
 		if(!beastsSpacesForBoard.Any()) return;
@@ -98,7 +98,8 @@ public class Russia : IAdversary {
 			Board board = gameState.Island.Boards[boardIndex];
 			Spirit spirit = board.FindSpirit();
 
-			var addSpaces = beastsSpacesForBoard.ContainsKey( board )
+			bool boardHasBeastSpaces = beastsSpacesForBoard.ContainsKey( board );
+			var addSpaces = boardHasBeastSpaces
 				? beastsSpacesForBoard[board]
 				: beastsSpacesForBoard.Values.SelectMany( x => x );
 			for(int i = 0; i < 2; ++i) {
@@ -109,6 +110,9 @@ public class Russia : IAdversary {
 			}
 		}
 	}
+
+	static SpaceState[] SpacesWithBeasts( Board board ) 
+		=> board.Spaces.Tokens().Where( s => s.Beasts.Any ).ToArray();
 
 	static void EntrenchInTheFaceOfFear( GameState gameState ) {
 		// Level 5

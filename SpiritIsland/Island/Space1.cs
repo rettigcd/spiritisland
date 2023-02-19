@@ -14,6 +14,16 @@ public class Space1 : Space {
 
 	#endregion
 
+	public Board Board {
+		set {
+			if(_board != null) throw new InvalidOperationException( "cannot set board twice" );
+			_board = value;
+			Boards = new Board[] { value };
+		}
+	}
+	Board _board;
+	public override int InvaderActionCount => _board.InvaderActionCount;
+
 	public override bool IsOneOf(params Terrain[] options) => options.Contains(_terrain);
 
 	public override bool Is( Terrain terrain ) => _terrain == terrain;

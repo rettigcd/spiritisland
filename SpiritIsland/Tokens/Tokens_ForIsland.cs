@@ -74,7 +74,8 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	// This should ONLY be called from SpaceState.Adjust so that tokens SpaceState & this stay in sync.
 	void IIslandTokenApi.Adjust( ITrackMySpaces token, Space space, int delta ) {
 		if(!_boardCounts.ContainsKey(token)) _boardCounts.Add(token,new CountDictionary<Board>());
-		_boardCounts[token][space.Board] += delta;
+		foreach(var board in space.Boards)
+			_boardCounts[token][board] += delta;
 		if(!_spaceCounts.ContainsKey( token )) _spaceCounts.Add( token, new CountDictionary<Space>() );
 		_spaceCounts[token][space] += delta;
 	}

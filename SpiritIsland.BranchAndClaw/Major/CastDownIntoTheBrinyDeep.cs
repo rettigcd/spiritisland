@@ -4,6 +4,7 @@ namespace SpiritIsland.BranchAndClaw;
 
 public class CastDownIntoTheBrinyDeep {
 	const string Name = "Cast Down Into the Briny Deep";
+	// https://querki.net/raw/darker/spirit-island-faq/Cast+Down+into+the+Briny+Deep
 
 	[MajorCard( Name, 9, Element.Sun, Element.Moon, Element.Water, Element.Earth )]
 	[Slow]
@@ -15,8 +16,17 @@ public class CastDownIntoTheBrinyDeep {
 		await ctx.Invaders.DestroyAll(Human.Invader);
 
 		// if you have (2 sun, 2 moon, 4 water, 4 earth):
-		if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth"))
-			await DestroyBoard( ctx, ctx.Space.Board );
+		if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth" )) {
+			// Pick board
+			// (from querki, if space has multiple boards, user selects.)
+			var boards = ctx.Space.Boards;
+			var options = boards.Select(b=>b.Name).Order().ToArray();
+			string name = await ctx.Self.SelectText("Pick Board To Destroy",options,Present.AutoSelectSingle);
+			var board = boards.Single(b=>b.Name == name);
+
+			// Destroy it
+			await DestroyBoard( ctx, board );
+		}
 	}
 
 	static async Task DestroyBoard( SelfCtx ctx, Board board ) {

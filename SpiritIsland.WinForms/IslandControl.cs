@@ -734,7 +734,7 @@ public partial class IslandControl : Control {
 	static LinearGradientBrush UseMultiSpaceBrush( MultiSpace multi ) {
 		var brush = new LinearGradientBrush( new Rectangle( 0, 0, 30, 30 ), Color.Transparent, Color.Transparent, 45F );
 
-		var colors = multi.Parts
+		var colors = multi.OrigSpaces
 			.Select( x => Color.FromArgb( 92, SpaceColor( x ) ) )
 			.ToArray();
 

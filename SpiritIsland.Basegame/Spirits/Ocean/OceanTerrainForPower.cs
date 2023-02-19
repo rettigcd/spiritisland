@@ -30,7 +30,7 @@ public class OceanTerrainForPower : TerrainMapper {
 
 	bool IsOceansOcean( Space space ) {
 		return space.IsOcean
-			&& GameState.Current.Tokens.IsOn( _oceanPresence.Token, space.Board ); // only call this when actually on ocean
+			&& space.Boards.Any( _oceanPresence.Token.IsOn ); // only call this when actually on ocean
 	}
 	readonly OceanPresence _oceanPresence;
 	readonly TerrainMapper _original;

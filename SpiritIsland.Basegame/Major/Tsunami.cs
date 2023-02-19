@@ -18,8 +18,9 @@ public class Tsunami {
 		await ctx.Dahan.Destroy( 2 );
 
 		if(await ctx.YouHave("3 water,2 earth")){
-			var otherCoastalsOnSameBoard = ctx.Space.Board
-				.Spaces.Where( s=> s != ctx.Space && ctx.Target(s).IsCoastal )
+			var otherCoastalsOnSameBoard = ctx.Space.Boards
+				.SelectMany(b=>b.Spaces.Where( s=> s != ctx.Space && ctx.Target(s).IsCoastal ) )
+				.Distinct()
 				.ToArray();
 
 			foreach(var otherCoast in otherCoastalsOnSameBoard)

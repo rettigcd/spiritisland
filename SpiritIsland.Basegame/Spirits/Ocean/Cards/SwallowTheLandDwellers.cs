@@ -16,7 +16,7 @@ public class SwallowTheLandDwellers {
 
 		// find place to drown then
 		var drowningOcean = ocean.Presence.Spaces.First() // find any space the ocean has presnece
-			.Board.Ocean; // find the Ocean space on that board
+			.Boards[0].Ocean; // find the Ocean space on that board
 
 		// drown 1 explorer, 1 town, and 1 dahan
 
