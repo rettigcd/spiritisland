@@ -25,7 +25,7 @@ public class VolcanoToken : SpiritPresenceToken, IModifyRemovingToken {
 	public VolcanoToken(Spirit spirit ):base(spirit) {}
 
 	public void ModifyRemoving( RemovingTokenArgs args ) {
-		if( DestroysPresence( args ) && VolcanoPresence.SafeSpace.Value == args.From.Space )
+		if( DestroysMyPresence( args ) && VolcanoPresence.SafeSpace.Value == args.From.Space )
 			args.Count = 0;
 	}
 

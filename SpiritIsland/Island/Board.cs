@@ -145,7 +145,7 @@ public partial class Board {
 	}
 
 	static public Board BuildBoardE( BoardOrientation orientation = null ) {
-		var layout = BoardLayout.BoardE();
+
 		var board = new Board( "E"
 			, orientation ?? BoardOrientation.Home
 			, new Space1( Terrain.Ocean,    "E0")
@@ -231,12 +231,7 @@ public partial class Board {
 	} // Weave together
 	#endregion
 
-	// !!! Boards need saved to Memento,
-	// Spaces Active/Inactive can be changed
-	// Weave Together and cast down can change board spaces to and all the linkage.
-	// To do this, we probably need to pull the Layout coordinates out of The Board/Space classes
-	// and move to the UI.
-	public int InvaderActionCount { get; set; } = 1;
+	public int InvaderActionCount { get; set; } = 1;  // !!! save to memento
 
 	public Space Ocean => Spaces_Existing.Single( s => s.IsOcean );
 

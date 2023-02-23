@@ -38,8 +38,8 @@ public partial class IslandControl : Control {
 
 	}
 
-	Dictionary<Space, SpaceLayout> _spaceLayouts = new Dictionary<Space, SpaceLayout>();
-	Dictionary<Board, BoardLayout> _boardLayouts = new Dictionary<Board, BoardLayout>();
+	readonly Dictionary<Space, SpaceLayout> _spaceLayouts = new Dictionary<Space, SpaceLayout>();
+	readonly Dictionary<Board, BoardLayout> _boardLayouts = new Dictionary<Board, BoardLayout>();
 	BoardLayout LayoutFor(Board board ) {
 		if(_boardLayouts.ContainsKey(board)) return _boardLayouts[board];
 		BoardLayout layout = BoardLayout.Get(board.Name).ReMap(board.Orientation.GetTransformMatrix());
@@ -280,7 +280,6 @@ public partial class IslandControl : Control {
 		foreach(var space in board.Spaces_Unfiltered) {
 			// Space space = board[i];
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
-			// SpaceLayout spaceLayout = normalizedBoardLayout.Spaces[i];
 			SpaceLayout spaceLayout = MyLayout( space );
 			PointF[] points = spaceLayout.Corners.Select( gw_mapper.Map ).ToArray();
 
@@ -568,7 +567,7 @@ public partial class IslandControl : Control {
 		}
 
 	}
-	List<RectangleSubscript> _subscripts= new List<RectangleSubscript>();
+	readonly List<RectangleSubscript> _subscripts= new List<RectangleSubscript>();
 
 	void DrawPowerCards( Graphics graphics ) {
 		_cardData.Layout ??= new CardLayout( RegionLayout.CardRectPopup );

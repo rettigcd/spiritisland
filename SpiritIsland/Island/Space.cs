@@ -28,6 +28,7 @@ public abstract class Space
 	public bool IsMountain => Is( Terrain.Mountain );	
 
 	public bool IsOcean => Is( Terrain.Ocean );
+	public bool IsDestroyed => Is( Terrain.Destroyed );
 
 	public bool IsCoastal { get; set; }
 
@@ -40,7 +41,7 @@ public abstract class Space
 
 	public abstract int InvaderActionCount { get; }
 
-	public bool DoesExists { get; set; } = true;
+	public bool DoesExists { get; set; } = true; // absolute Stasis
 	public static bool Exists( Space space ) => space.DoesExists;
 
 	#region Connectivity
@@ -96,11 +97,4 @@ public abstract class Space
 
 	#endregion
 
-}
-public class FakeSpace : Space {
-	public FakeSpace( string name ) : base( name ) { }
-
-	public override int InvaderActionCount => 0;
-	public override bool Is( Terrain terrain ) => false;
-	public override bool IsOneOf( params Terrain[] options ) => false;
 }

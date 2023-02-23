@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace SpiritIsland.BranchAndClaw;
+﻿namespace SpiritIsland.BranchAndClaw;
 
 public class CastDownIntoTheBrinyDeep {
 	const string Name = "Cast Down Into the Briny Deep";
@@ -32,39 +30,43 @@ public class CastDownIntoTheBrinyDeep {
 	static async Task DestroyBoard( SelfCtx ctx, Board board ) {
 		// destroy the board containing target land and everything on that board.
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
-		var activeSpaces = board.Spaces.Tokens().ToArray();
 
-		await DestroyTokens( ctx, activeSpaces );
+		var existingSpaces = board.Spaces_Existing.Tokens().ToArray();
+		foreach(SpaceState spaceState in existingSpaces )
+			await spaceState.DestroySpace();
 
-		if(!ctx.Self.Text.StartsWith( "Bringer" )) { // !!! Maybe Api should have method called "Destroy Space" or "DestroyBoard"
-			// destroy board - spaces
-			foreach(SpaceState space in activeSpaces)
-				board.Remove( space.Space );
+		// Scan for tokens that are in an illegal state
+		foreach(SpaceState spaceState in existingSpaces)
+			CleanUpInvalidSpace( spaceState );
 
-			if(!board.Spaces.Any())
-				ctx.GameState.Island.RemoveBoard( board );
-
-		}
 		ctx.GameState.Log( new Log.LayoutChanged( $"{Name} destroyed Board {board.Name}" ) );
 	}
 
-	static async Task DestroyTokens( SelfCtx ctx, SpaceState[] spaces ) {
+	static void CleanUpInvalidSpace( SpaceState spaceState ) {
+		if(TerrainMapper.Current.IsInPlay( spaceState.Space )) return;
 
-		foreach(SpaceState space in spaces) {
+		HumanToken[] cleanup = spaceState.Keys.OfType<HumanToken>().ToArray();
+		if(!cleanup.Any()) return;
 
-			var targetCtx = ctx.Target(space);
-
-			// Destroy Invaders
-			await targetCtx.Invaders.DestroyAll( Human.Invader );
-
-			// Destroy Dahan
-			await targetCtx.Dahan.DestroyAll();
-
-			if(!ctx.Self.Text.StartsWith("Bringer")) // !!!
-				// Destroy all other tokens
-				foreach(IToken token in space.Keys.OfType<IToken>().ToArray())
-					await targetCtx.Tokens.Destroy( token, space[token] );
-		}
+		SpaceState target = FindClosestInPlaySpace( spaceState );
+		foreach(HumanToken token in cleanup)
+			TransferToken( spaceState, target, token );
 	}
 
+	static void TransferToken( SpaceState spaceState, SpaceState target, HumanToken token ) {
+		// Place on destination
+		target?.Init( token, spaceState[token] );
+		// remove from origin
+		spaceState.Init( token, 0 );
+	}
+
+	static SpaceState FindClosestInPlaySpace( SpaceState spaceState ) {
+		int range = 0;
+		SpaceState target;
+		var mapper = TerrainMapper.Current;
+		do {
+			target = spaceState.Range( ++range ).FirstOrDefault( x => mapper.IsInPlay( x.Space ) );
+		}while(target == null && 20 < range);
+		return target;
+	}
 }

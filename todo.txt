@@ -2,13 +2,48 @@
 ====  Clean Up Items  ====
 ==========================
 
-Replace ForRound actions with ModTokens
-	Need tokens to have different classes, so presence can be Presence && Beast && Badlands
+BUG: Blighted Island happens twice
 
-Weave Together
-	BUG - Massive Flooding did not recognize Weaved-Together SS source.  - Is this going off of Tokens.Keys and it hasn't been added yet.
+Idea: When multiple, reduce size a little and draw them stacked.
+Idea: Change spirit,island,cards sizes based on what is in in focus.
+Played Cards Icon could be dynamic and show cards played.
+Hand cards could be dynamic.
+Fear cards look fuzzy. Generate larger pics?
+Blight cards can be drawn better.
+Spirits should have Abreviations for their token.
+
+User Setting:
+	Preloaded Token or not
+Game Options
+	Cast-down is Ocean or Sunk
 
 When gathering multiple token types with multiple landing locations, just use the general Space location as central destination.
+
+Cast Down Options 
+// https://querki.net/raw/darker/spirit-island-faq/Illegally+placed+pieces
+* switch to ocean space				range-N	 0-additional state 				Track-Terrain
+* Mark as not "InPlay"				range-N  1-additional state	InPlay-changes	Track-Sunk
+* Treat the same as Absolute Stasis	No-range 0-additional state
+* Multi-space Joins to Adjacent Ocean?
+
+Rename SpaceState to SpaceTokens
+
+Cheat Menu - 
+	Reclaim all cards, 
+	Add Card To Hand, 
+	+10 energy, 
+	+5 of each elementt, 
+	Return Blight to Card
+	Activate Fear Card
+
+5 Ocean adds InPlay token to Ocean when it moves
+	When removing Ocean from board, ocean becomes invalid and tokens get pushed to the nearest InPlay space.
+
+Infinite Vitality saves dahan from CastDown / non-humans stay where they are
+
+5
+DREAM OF THE UNTOUCHED - // !!! from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.	C:\Users\retti\Desktop\spiritisland\SpiritIsland.JaggedEarth\Major\DreamOfTheUntouchedLand.cs	43	7
+DREAM OF THE UNTOUCHED - // Max. (1x/game) !!! Check only works for solo games	C:\Users\retti\Desktop\spiritisland\SpiritIsland.JaggedEarth\Major\DreamOfTheUntouchedLand.cs	18	22
 
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON

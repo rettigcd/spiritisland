@@ -72,7 +72,7 @@ public class TokenPusher {
 	}
 
 
-	public TokenPusher OnMove( Func<TokenMovedArgs, Task> customeAction ) { // !!! The args could be the move event, why aren't we using that event instead of this?
+	public TokenPusher OnMove( Func<TokenMovedArgs, Task> customeAction ) {
 		_customAction = customeAction;
 		return this;
 	}

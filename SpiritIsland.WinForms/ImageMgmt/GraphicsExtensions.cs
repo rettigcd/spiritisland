@@ -25,7 +25,6 @@ static public class GraphicsExtensions {
 
 		SizeF sz = graphics.MeasureString( txt, superSubScriptFont );
 		var numRect = new RectangleF( rect.Right - sz.Width-(rect.Width/8), rect.Bottom - sz.Height, sz.Width + 3, sz.Height + 2 );
-//		var numRect = new RectangleF( rect.Left+(rect.Width - sz.Width)/2, rect.Bottom - sz.Height, sz.Width + 3, sz.Height + 2 );
 		graphics.FillEllipse( Brushes.White, numRect );
 		graphics.DrawEllipse( Pens.Black, numRect );
 		graphics.DrawString( txt, superSubScriptFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );
@@ -131,6 +130,7 @@ public enum Align {
 	Far
 }
 
+// For Deconstructing an Array into parts
 public readonly struct SubArray<T> {
 	readonly int _start;
 	readonly T[] _array;
@@ -141,3 +141,5 @@ public readonly struct SubArray<T> {
 		rest = new SubArray<T>(_array,_start+1);
 	}
 }
+
+// 

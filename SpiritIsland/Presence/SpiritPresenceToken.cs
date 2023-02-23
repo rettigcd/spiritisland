@@ -40,7 +40,7 @@ public class SpiritPresenceToken : IToken, IEntityClass
 	/// <remarks> Overrides do not need to call base, nothing is in here.</remarks>
 	protected virtual Task OnPresenceDestroyed( ITokenRemovedArgs args ) => Task.CompletedTask;
 
-	protected bool DestroysPresence( RemovingTokenArgs args ) { 
+	protected bool DestroysMyPresence( RemovingTokenArgs args ) { 
 		return args.Token == this && args.Reason.IsDestroyingPresence();
 	}
 

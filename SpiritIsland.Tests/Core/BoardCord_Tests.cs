@@ -22,11 +22,11 @@ public class BoardCord_Tests {
 		Assert_CornersShouldBe(board.Orientation, expected );
 	}
 
-	void Assert_CornersShouldBe( BoardOrientation board, string expectedCorners ) {
+	static void Assert_CornersShouldBe( BoardOrientation board, string expectedCorners ) {
 		string.Join("",board.Corners.Select(s=>s.ToString())).ShouldBe( expectedCorners );
 	}
 
-	PointF[] GetCornerPoints(BoardOrientation orientation )
+	static PointF[] GetCornerPoints(BoardOrientation orientation )
 		=> BoardLayout.Get("B").ReMap( orientation.GetTransformMatrix() ).BoardCorners;
 
 	// Layout - when we align boards, the new boards move and have the correct corners.
@@ -170,7 +170,7 @@ public class BoardCord_Tests {
 		Board b = Board.BuildBoardB(orien);
 
 		// When build the island
-		Func<Island> action = () => new Island( a, b );
+		Island action() => new Island( a, b );
 
 		// Then: get an exception
 		Should.Throw<ArgumentException>( action );

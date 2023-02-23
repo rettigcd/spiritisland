@@ -162,11 +162,12 @@ public class ResourceImages {
 	static Color MakePartiallyTransparent( Color x ) => Color.FromArgb( Math.Min( (byte)92, x.A ), x );
 
 	public Brush UseSpaceBrush( Space space ) {
-		Terrain terrain = space.IsWetland ? Terrain.Wetland
+		Terrain terrain 
+			= space.IsWetland ? Terrain.Wetland
 			: space.IsJungle ? Terrain.Jungle
 			: space.IsMountain ? Terrain.Mountain
 			: space.IsSand ? Terrain.Sand
-			: space.IsOcean ? Terrain.Ocean
+			: (space.IsOcean || space.IsDestroyed) ? Terrain.Ocean
 			: throw new ArgumentException( $"No terrain found for {space.Text}", nameof( space ) );
 		return UseTerrainBrush( terrain );
 	}

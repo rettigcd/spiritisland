@@ -90,5 +90,33 @@ public class Island {
 		ValidateAccessibleOceans();
 	}
 
+	#region Memento
+
+	public virtual IMemento<Island> SaveToMemento() => new Memento( this );
+	public virtual void LoadFrom( IMemento<Island> memento ) => ((Memento)memento).Restore( this );
+
+	protected class Memento : IMemento<Island> {
+		public Memento( Island src ) {
+			boards = src.Boards.Select( b => new BoardInfo( b ) ).ToArray();
+			nativeTerrain = src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<Space1>()
+				.ToDictionary(s=>s.Text,s=>s.NativeTerrain);
+		}
+		public void Restore( Island src ) {
+			src.Boards = boards.Select( b => b.Restore() ).ToArray();
+			foreach(Space1 space in src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<Space1>())
+				space.NativeTerrain = nativeTerrain[space.Text];
+		}
+		readonly BoardInfo[] boards;
+		readonly Dictionary<string,Terrain> nativeTerrain;
+	}
+
+	class BoardInfo {
+		public BoardInfo( Board b ) { Name = b.Name; Orientation = b.Orientation; }
+		string Name { get; set; }
+		BoardOrientation Orientation { get; set; }
+		public Board Restore() => new Board( Name, Orientation );
+	}
+
+	#endregion
 
 }

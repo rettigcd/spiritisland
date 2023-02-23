@@ -7,7 +7,7 @@ public class Space1 : Space {
 	public Space1(Terrain terrain, string label, string startingItems="" )
 		:base(label)
 	{
-		_terrain = terrain;
+		NativeTerrain = terrain;
 		StartUpCounts = new StartUpCounts(startingItems);
 	}
 
@@ -25,9 +25,9 @@ public class Space1 : Space {
 	Board _board;
 	public override int InvaderActionCount => _board.InvaderActionCount;
 
-	public override bool IsOneOf(params Terrain[] options) => options.Contains(_terrain);
+	public override bool IsOneOf(params Terrain[] options) => options.Contains(NativeTerrain);
 
-	public override bool Is( Terrain terrain ) => _terrain == terrain;
+	public override bool Is( Terrain terrain ) => NativeTerrain == terrain;
 
 	public StartUpCounts StartUpCounts { get; }
 
@@ -41,6 +41,6 @@ public class Space1 : Space {
 		tokens.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}
 
-	readonly Terrain _terrain;
+	public Terrain NativeTerrain {get; set; }
 
 }

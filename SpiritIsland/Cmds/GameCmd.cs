@@ -12,7 +12,7 @@ public static partial class Cmd {
 	static public (IExecuteOn<TargetSpaceCtx> action, string preposition) On( this IExecuteOn<TargetSpaceCtx> spaceAction ) => (spaceAction, "on");
 
 	// How we select the land
-	// !!! Page 10 of JE says Each Land (Spirit picked or otherwise) is a new action
+	// Page 10 of JE says Each Land (Spirit picked or otherwise) is a new action
 	static public SpiritPicksLandAction SpiritPickedLand( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new SpiritPicksLandAction( x.spaceAction, x.preposition );
 	static public EachActiveLand EachActiveLand( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new EachActiveLand( x.spaceAction, x.preposition );
 	static public NLandsPerBoard OneLandPerBoard( this (IExecuteOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new NLandsPerBoard( x.spaceAction, x.preposition, 1 );

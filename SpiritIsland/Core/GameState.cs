@@ -253,6 +253,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			_terrains[cat] = replacer( GetTerrain(cat) );
 	}
 
+	// User Preference Stuff
+	// CastDown uses Ocean vs Destroyed
+	// Use Pre-select/pre-load
+
 	#endregion overrideable Game-Wide Behavior
 
 	#region Memento
@@ -271,7 +275,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			fear         = src.Fear.SaveToMemento();
 			tokens       = src.Tokens.SaveToMemento();
 			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
-			boards = src.Island.Boards.Select(b=>new BoardInfo(b)).ToArray();
+			island = src.Island.SaveToMemento();
 		}
 		public void Restore(GameState src ) {
 			src.RoundNumber = roundNumber;
@@ -283,7 +287,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			src.Fear.LoadFrom( fear );
 			src.Tokens.LoadFrom( tokens );
 			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
-			src.Island = new Island( boards.Select(b=>b.Restore()).ToArray() );
+			src.Island.LoadFrom( island );
 		}
 		readonly int roundNumber;
 		readonly bool isBlighted;
@@ -294,14 +298,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		readonly IMemento<Fear> fear;
 		readonly IMemento<Tokens_ForIsland> tokens;
 		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
-		readonly BoardInfo[] boards;
-	}
-
-	class BoardInfo {
-		public BoardInfo(Board b ) { Name=b.Name; Orientation=b.Orientation; }
-		string Name { get; set; }
-		BoardOrientation Orientation { get; set; }
-		public Board Restore() => new Board(Name, Orientation);
+		readonly IMemento<Island> island;
 	}
 
 	#endregion Memento

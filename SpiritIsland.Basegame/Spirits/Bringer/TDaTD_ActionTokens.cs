@@ -9,22 +9,37 @@ public class TDaTD_ActionTokens : SpaceState {
 	{
 	}
 
+	public override async Task DestroySpace() {
+		// Destroy Invaders
+		await new InvaderBinding( this ).DestroyAll( Human.Invader );
+		// Destroy Bringer's presence
+		await Destroy( BringerPresence, this[BringerPresence] );
+	}
+
 	public override async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
-		if(reason != RemoveReason.Destroyed)
+		if(reason != RemoveReason.Destroyed || token == BringerPresence)
 			return await base.Remove( token, count, reason );
 
-		count = Math.Min(count, this[token]);
-		while(0<count--)
-			await Destroy1Token( token );
+		if(token.Class.Category == TokenCategory.Invader)
+			await DestroyNInvaders( token.AsHuman(), this[token] );
 
 		return null; // nothing removed
 	}
 
-	async Task Destroy1Token( IToken token ) {
+	public override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
+		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
+		for(int i = 0; i < countToDestroy; ++i)
+			await Destroy1Invader( invaderToDestroy );
+		return countToDestroy;
+	}
+
+	SpiritPresenceToken BringerPresence => _bringerPresence ??= ActionScope.Current.Owner.Token;
+	SpiritPresenceToken _bringerPresence;
+
+	async Task Destroy1Invader( HumanToken invaderToken ) {
 
 		// for everything BUT normal invaders, we do nothing
-		if(token.Class.Category != TokenCategory.Invader) return; 
-		HumanToken invaderToken = token.AsHuman();
+		if(invaderToken.Class.Category != TokenCategory.Invader) return; 
 		if(invaderToken.Class.Variant != TokenVariant.Default) return; 
 		
 		// Normal Invaders - Push
@@ -59,13 +74,6 @@ public class TDaTD_ActionTokens : SpaceState {
 		// since we are doing dream-damage, record here
 		RecordSpaceWithDreamers( this );
 		return invaderToken.AddDamage( 0, availableDamage );
-	}
-
-	public override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
-		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
-		for(int i = 0; i < countToDestroy; ++i)
-			await Destroy1Token( invaderToDestroy );
-		return countToDestroy;
 	}
 
 	#region static Dreaming

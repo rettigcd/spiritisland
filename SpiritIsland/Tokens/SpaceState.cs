@@ -503,79 +503,27 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#endregion
 
-}
+	public virtual async Task DestroySpace() {
 
-/// <summary>
-/// Tracks Bonus Damage for the Action based on # of Badlands and Spirit-bonus.
-/// </summary>
-public class BonusDamage {
-	readonly int _originalDamage;
-	readonly DamagePool _badlands;
-	readonly DamagePool _bonus;
+		// Destroy Invaders
+		await new InvaderBinding( this ).DestroyAll( Human.Invader );
 
-	/// <summary> May or may not have Original damage.  Track it and acount for it. </summary>
-	public BonusDamage( DamagePool badlands, DamagePool bonusDamage, int? originalDamage ) {
-		_badlands = badlands;
-		_bonus = bonusDamage;
+		// Destroy Dahan
+		await Dahan.DestroyAll();
 
-		if(originalDamage.HasValue) {
-			// only triggers if there was actual damage done and we need to account for it.
-			_originalDamage = originalDamage.Value;
+		// Blight is removed from the game and does not go back to the card
+		Blight.Init(0);
 
-			Available = originalDamage.Value + _bonus.Remaining;
-			if(0 < originalDamage)
-				Available += _badlands.Remaining;
-		} else {
-			// Original damage is known to have happened and we don't need to track it.
-			_originalDamage = 0;
+		// Destroy all other tokens
+		foreach(IToken token in Keys.OfType<IToken>().ToArray())
+			await Destroy( token, this[token] );
 
-			Available = _bonus.Remaining + _badlands.Remaining;
-		}
+		if(Space is Space1 s1)
+			s1.NativeTerrain = Terrain.Destroyed;
+		else if(Space is MultiSpace ms)
+			foreach(var part in ms.OrigSpaces)
+				part.NativeTerrain = Terrain.Destroyed;
+
 	}
 
-	public int Available { get; }
-
-	public void TrackDamageDone( int damageApplied ) {
-		// Remove bonus damage from damage pools
-		int poolDamageToAccountFor = damageApplied - _originalDamage;
-		poolDamageToAccountFor -= _badlands.ReducePoolDamage( poolDamageToAccountFor );
-		poolDamageToAccountFor -= _bonus.ReducePoolDamage( poolDamageToAccountFor );
-
-		if(poolDamageToAccountFor > 0)
-			throw new Exception( "somehow we did more damage than we have available" );
-	}
-}
-
-public class DamagePool {
-
-	public static DamagePool BadlandDamage( SpaceState ss, string groupName ) {
-		// Note - this locks in Badland Count the 1st time we do damage.  Adding badlands after that has no effect.
-		var actionScope = ActionScope.Current;
-		string key = "BadlandDamage_" + ss.Space.Label +"_" + groupName;
-		if(actionScope.ContainsKey( key )) return (DamagePool)actionScope[key];
-		var pool = new DamagePool( ss.Badlands.Count );
-		actionScope[key] = pool;
-		return pool;
-	}
-
-	public static DamagePool BonusDamage() {
-		// Note - this locks in Badland Count the 1st time we do damage.  Adding badlands after that has no effect.
-		var actionScope = ActionScope.Current;
-		string key = "BonusDamage";
-		if(actionScope.ContainsKey( key )) return (DamagePool)actionScope[key];
-		var pool = new DamagePool( actionScope?.Owner?.BonusDamage ?? 0 );
-		actionScope[key] = pool;
-		return pool;
-	}
-
-	public DamagePool( int init ) { remaining = init; }
-
-	public int ReducePoolDamage( int poolDamageToAccountFor ) {
-		int damageFromBadlandPool = Math.Min( remaining, poolDamageToAccountFor );
-		remaining -= damageFromBadlandPool;
-		return damageFromBadlandPool;
-	}
-
-	int remaining;
-	public int Remaining => remaining;
 }
