@@ -1,9 +1,6 @@
 ﻿namespace SpiritIsland;
 
 public class SpaceToken : IOption {
-
-	public static readonly SpaceToken Null = new SpaceToken();
-
 	SpaceToken() { } // Null SpaceToken
 
 	/// <param name="showSpace">If all of the tokens are on the same space, don't show it in the text.</param>

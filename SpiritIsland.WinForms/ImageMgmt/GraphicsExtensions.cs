@@ -4,6 +4,8 @@ using System.Drawing.Drawing2D;
 
 namespace SpiritIsland.WinForms;
 
+public record RectangleSubscript( Rectangle Rect, string Text);
+
 static public class GraphicsExtensions {
 
 	#region Draw Images / Super-script - Subscript text
@@ -11,13 +13,19 @@ static public class GraphicsExtensions {
 	readonly static Font superSubScriptFont = new( "Arial", 7, FontStyle.Bold, GraphicsUnit.Point );
 
 	static public void DrawCountIfHigherThan( this Graphics graphics, RectangleF rect, int count, int highestHidden = 1 ) {
-		if(count > highestHidden)
-			DrawSubscript(graphics, rect.ToInts(), "x" + count);
+		if(highestHidden < count) {
+			var subscript = new RectangleSubscript( rect.ToInts(), "x" + count );
+			DrawSubscript(graphics, subscript);
+		}
 	}
 
-	static public void DrawSubscript(this Graphics graphics, Rectangle rect, string txt ) {
+	static public void DrawSubscript(this Graphics graphics, RectangleSubscript subscript ) {
+		Rectangle rect = subscript.Rect;
+		string txt = subscript.Text;
+
 		SizeF sz = graphics.MeasureString( txt, superSubScriptFont );
-		var numRect = new RectangleF( rect.Right - sz.Width+2, rect.Bottom - sz.Height, sz.Width + 3, sz.Height + 2 );
+		var numRect = new RectangleF( rect.Right - sz.Width-(rect.Width/8), rect.Bottom - sz.Height, sz.Width + 3, sz.Height + 2 );
+//		var numRect = new RectangleF( rect.Left+(rect.Width - sz.Width)/2, rect.Bottom - sz.Height, sz.Width + 3, sz.Height + 2 );
 		graphics.FillEllipse( Brushes.White, numRect );
 		graphics.DrawEllipse( Pens.Black, numRect );
 		graphics.DrawString( txt, superSubScriptFont, Brushes.Black, numRect.X + 2, numRect.Y + 2 );

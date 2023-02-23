@@ -37,6 +37,7 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	public ActionCategory Category { get; }
 
+	// !!!During some Race condition, when rewinding, GameState.Current is coming back null.
 	public GameState GameState => _neverCache ? GameState.Current : _gameState ??= GameState.Current;
 	GameState _gameState;
 	readonly bool _neverCache = false; // for the root Action...

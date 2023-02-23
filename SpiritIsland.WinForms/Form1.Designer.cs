@@ -39,15 +39,16 @@ namespace SpiritIsland.WinForms {
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleDebugUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spaceTokensToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // promptLabel
+            // _promptLabel
             // 
             this._promptLabel.AutoSize = true;
             this._promptLabel.Location = new System.Drawing.Point(7, 27);
             this._promptLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this._promptLabel.Name = "promptLabel";
+            this._promptLabel.Name = "_promptLabel";
             this._promptLabel.Size = new System.Drawing.Size(95, 15);
             this._promptLabel.TabIndex = 1;
             this._promptLabel.Text = "Decision Prompt";
@@ -55,6 +56,7 @@ namespace SpiritIsland.WinForms {
             // islandControl
             // 
             this.islandControl.BackColor = System.Drawing.Color.Aqua;
+            this.islandControl.Debug = false;
             this.islandControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.islandControl.Location = new System.Drawing.Point(0, 24);
             this.islandControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
@@ -135,7 +137,8 @@ namespace SpiritIsland.WinForms {
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.gameLogToolStripMenuItem,
-            this.toggleDebugUIToolStripMenuItem});
+            this.toggleDebugUIToolStripMenuItem,
+            this.spaceTokensToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
@@ -153,6 +156,13 @@ namespace SpiritIsland.WinForms {
             this.toggleDebugUIToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.toggleDebugUIToolStripMenuItem.Text = "Toggle Debug UI";
             this.toggleDebugUIToolStripMenuItem.Click += new System.EventHandler(this.ToggleDebugUIToolStripMenuItem_Click);
+            // 
+            // spaceTokensToolStripMenuItem
+            // 
+            this.spaceTokensToolStripMenuItem.Name = "spaceTokensToolStripMenuItem";
+            this.spaceTokensToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spaceTokensToolStripMenuItem.Text = "Space Tokens";
+            this.spaceTokensToolStripMenuItem.Click += new System.EventHandler(this.spaceTokensToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -189,6 +199,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.ToolStripMenuItem rewindMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toggleDebugUIToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem spaceTokensToolStripMenuItem;
 	}
 }
 

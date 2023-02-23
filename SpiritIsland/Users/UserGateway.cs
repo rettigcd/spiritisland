@@ -68,6 +68,12 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	#endregion
 
+	/// <remarks>
+	/// When there is no match, this gets set to null.
+	/// This is fine because:
+	/// Whatever criteria prevented them from having a match, will also prevent having any matches 
+	/// and this will not be referenced/used.
+	/// </remarks>
 	public SpaceToken Preloaded { get; set; }
 
 
@@ -88,11 +94,11 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 			// Auto-Select NULL
 			promise.TrySetResult( null );
 		else if(Preloaded != null) {
-			bool isNull = Preloaded == SpaceToken.Null;
-			if(!isNull && !decision.Options.Contains(Preloaded))
+			if( !decision.Options.Contains(Preloaded) )
 				throw new InvalidOperationException( $"Preloaded option {Preloaded.Text} not an option for "+decision.Prompt );
-			IOption preloaded = Preloaded; Preloaded = null;
-			decisionMaker.Select( isNull ? null : preloaded );
+			IOption preloaded = Preloaded;
+			Preloaded = null;
+			decisionMaker.Select( preloaded );
 		} else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
 			// Auto-Select Single
 			decisionMaker.Select( decision.Options[0] );

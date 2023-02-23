@@ -462,6 +462,8 @@ public partial class IslandControl : Control {
 
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
 
+		_subscripts.Clear();
+
 		InsidePoints(spaceState.Space).Init(spaceState);
 
 		int iconWidth = gw_IconWidth;//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
@@ -474,6 +476,9 @@ public partial class IslandControl : Control {
 
 		DrawInvaderRow( graphics, spaceState, iconWidth );
 		DrawRow( graphics, spaceState, iconWidth );
+
+		foreach(var sub in _subscripts) // Draw these last so they are on top of the tokens AND VISIBLE
+			graphics.DrawSubscript(sub);
 	}
 
 	void DrawTokenTargets( Graphics graphics, SpaceState spaceState, float iconWidth ) {
@@ -524,11 +529,14 @@ public partial class IslandControl : Control {
 			// Draw Token
 			graphics.DrawImage( img, rect );
 			// Count
-			graphics.DrawCountIfHigherThan( rect, ss[token] );
+			if(1 < ss[token])
+				_subscripts.Add( new RectangleSubscript( rect, "x" + ss[token] ) );
+			//graphics.DrawCountIfHigherThan( rect, ss[token] );
 
 		}
 
 	}
+	List<RectangleSubscript> _subscripts= new List<RectangleSubscript>();
 
 	void DrawPowerCards( Graphics graphics ) {
 		_cardData.Layout ??= new CardLayout( RegionLayout.CardRectPopup );
@@ -573,7 +581,10 @@ public partial class IslandControl : Control {
 
 			// Draw Tokens
 			graphics.DrawImage( img, rect );
-			graphics.DrawCountIfHigherThan( rect, count );
+			// graphics.DrawCountIfHigherThan( rect, count );
+			if(1 < count)
+				_subscripts.Add( new RectangleSubscript( rect, "x" + count ) );
+
 		}
 
 

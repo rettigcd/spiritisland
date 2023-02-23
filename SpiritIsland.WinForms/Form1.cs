@@ -258,5 +258,8 @@ public partial class Form1 : Form, IHaveOptions {
 		((ToolStripMenuItem)sender).Checked = islandControl.Debug = !islandControl.Debug;
 	}
 
+	void spaceTokensToolStripMenuItem_Click( object sender, EventArgs e ) {
+		MessageBox.Show( this.game.GameState.Tokens.ToVerboseString(), "Space Tokens" );
+	}
 }
 

@@ -121,9 +121,9 @@ public abstract partial class Spirit : IOption {
 	public async Task ResolveActions( GameState gs ) {
 		Phase phase = gs.Phase;
 
-		while( GetAvailableActions( phase ).Any()
+		while(GetAvailableActions( phase ).Any()
 			&& await ResolveAction( phase )
-		) {}
+		) { }
 
 	}
 
@@ -538,8 +538,12 @@ public abstract partial class Spirit : IOption {
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		prompt ??= "Target Space.";
-		IEnumerable<SpaceState> spaces = GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria );
+		SpaceState[] spaces = GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria ).ToArray();
+		
+		if(spaces.Length == 0) {
+			GameState.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
+			return null;
+		}
 
 		if(preselect != null) {
 			var spaceTokenOptions = spaces
@@ -547,7 +551,7 @@ public abstract partial class Spirit : IOption {
 				.ToArray();
 
 			SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( preselect.Prompt, spaceTokenOptions, Present.Always ) );
-			Gateway.Preloaded = st ?? SpaceToken.Null;
+			Gateway.Preloaded = st;
 			return st?.Space;
 		}
 
