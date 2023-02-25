@@ -19,9 +19,10 @@ public class TokenLocation_Tests {
 	[Fact]
 	public void RemembersInvaders() {
 		var board = Board.BuildBoardA();
+
 		var gs = new GameState(new RiverSurges(),board);
 		var ss = gs.Tokens[board[5]];
-		var layout = new ManageInternalPoints( ss );
+		var layout = new ManageInternalPoints( ss, BoardLayout.Get( "A" ).ForSpace( ss.Space ) );
 
 		var explorer = ss.GetDefault(Human.Explorer);
 		var town = ss.GetDefault(Human.Town).AsHuman();

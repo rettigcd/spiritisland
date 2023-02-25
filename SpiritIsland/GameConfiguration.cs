@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SpiritIsland;
 
 public class GameConfiguration {
 
@@ -34,7 +36,36 @@ public class GameBuilder {
 	).ToArray();
 
 #pragma warning disable CA1822 // Mark members as static
-	public Board[] BuildBoards( params string[] boards ) => boards.Select(board => SpiritIsland.Board.BuildBoard( board ) ).ToArray();
+	public Board[] BuildBoards( params string[] boardNames ) {
+		BoardOrientation[] layout = boardNames.Length switch {
+			1 => OneBoardLayout,
+			2 => TwoBoardLayout,
+			3 => ThreeBoardLayout,
+			4 => FourBoardLayout,
+			_ => throw new ArgumentOutOfRangeException( nameof( boardNames ), "Orienation of more than 4 boards not defined.")
+		};
+		Board[] boards = new Board[boardNames.Length];
+		for(int i=0;i<boards.Length;++i)
+			boards[i] = Board.BuildBoard( boardNames[i], layout[i] );
+		return boards;
+	}
+	static public BoardOrientation[] OneBoardLayout => new[] { BoardOrientation.Home };
+	static public BoardOrientation[] TwoBoardLayout => new[] { 
+		BoardOrientation.Home,
+		BoardOrientation.ToMatchSide( 0, BoardOrientation.Home.SideCoord(0))
+	};
+	static public BoardOrientation[] ThreeBoardLayout => new[] {
+		BoardOrientation.Home,
+		BoardOrientation.ToMatchSide( 0, BoardOrientation.Home.SideCoord(1)),
+		BoardOrientation.ToMatchSide( 1, BoardOrientation.Home.SideCoord(0))
+	};
+	static public BoardOrientation[] FourBoardLayout { get {
+		var bl = BoardOrientation.Home;
+		BoardOrientation tl = BoardOrientation.ToMatchSide( 0, bl.SideCoord(2));
+		BoardOrientation tr = BoardOrientation.ToMatchSide( 1, tl.SideCoord(1));
+		BoardOrientation br = BoardOrientation.ToMatchSide( 1, bl.SideCoord(1));
+		return new[] { bl,tl,tr,br };
+	}}
 #pragma warning restore CA1822 // Mark members as static
 
 	public IAdversary BuildAdversary( AdversaryConfig cfg ) {

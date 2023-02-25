@@ -33,10 +33,12 @@ public class GrowthTests {
 
 	#region Board factories
 
-	static protected Board BoardA => Board.BuildBoardA();
-	static protected Board BoardB => Board.BuildBoardB();
-	static protected Board BoardC => Board.BuildBoardC();
-	static protected Board BoardD => Board.BuildBoardD();
+	static protected Board BoardA => Board.BuildBoardA( GameBuilder.FourBoardLayout[0] );
+	static protected Board BoardB => Board.BuildBoardB( GameBuilder.FourBoardLayout[1] );
+	static protected Board BoardC => Board.BuildBoardC( GameBuilder.FourBoardLayout[2] );
+	static protected Board BoardD => Board.BuildBoardD( GameBuilder.FourBoardLayout[3] );
+
+
 
 	#endregion
 

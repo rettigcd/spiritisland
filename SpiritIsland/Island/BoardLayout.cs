@@ -8,23 +8,26 @@ namespace SpiritIsland;
 /// </summary>
 public class BoardLayout {
 
-	public PointF[] perimeter; // for connecting boards
+	public PointF[] perimeter; // counter-clockwise, starting at origin
 	public SpaceLayout[] Spaces;
 
-	public PointF[] boardCorners = new PointF[] {
-		topLeftCorner,
-		topRightCorner, // Side-0 origin (after 180 rotation)
-		bottomRightCorner, // Side-1 origin after -60 rotation
+	// counter-clockwise, starting at origin
+	public PointF[] BoardCorners => _boardCorners;
+	readonly PointF[] _boardCorners = new PointF[] {
 		origin, // Side-2 origin (no rotation)
+		bottomRightCorner, // Side-1 origin after -60 rotation
+		topRightCorner, // Side-0 origin (after 180 rotation)
+		topLeftCorner,
 	};
-
-	public double SideRotationDegrees(int i) {
-		var from = boardCorners[i];
-		var to = boardCorners[i+1];
-		return Math.Atan2(to.Y-from.Y,to.X-from.X) * 180 / Math.PI;
+	
+	public SpaceLayout ForSpace(Space space ) {
+		int index = space.Text[1] - 48;
+		return Spaces[index];
 	}
 
-	public void ReMap( PointMapper mapper ) {
+	public BoardLayout ReMap( Matrix3D transform ) {
+
+		var mapper = new PointMapper( transform );
 
 		// perimeter
 		for(int i=0;i<perimeter.Length;++i)
@@ -34,11 +37,12 @@ public class BoardLayout {
 			space.ReMap(mapper);
 
 		// origin
-		for(int i = 0; i< boardCorners.Length; ++i) {
-			var src = boardCorners[i];
+		for(int i = 0; i < _boardCorners.Length; ++i) {
+			var src = _boardCorners[i];
 			var dst = mapper.Map( src );
-			boardCorners[i] = dst;
+			_boardCorners[i] = dst;
 		}
+		return this;
 	}
 
 	public RectangleF CalcExtents() {
@@ -54,7 +58,6 @@ public class BoardLayout {
 		}
 		return new RectangleF( minX, minY, maxX - minX, maxY - minY );
 	}
-
 
 	#region private static
 
@@ -121,6 +124,17 @@ public class BoardLayout {
 	static readonly PointF[] rig;
 
 	#endregion
+
+	static public BoardLayout Get(string name )
+		=> name switch { 
+			"A" => BoardA(), 
+			"B" => BoardB(),
+			"C" => BoardC(),
+			"D" => BoardD(),
+			"E" => BoardE(),
+			"F" => BoardF(),
+			_ => null,
+		};
 
 	static public BoardLayout BoardA() {
 

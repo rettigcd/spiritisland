@@ -4,19 +4,20 @@ public class Space1 : Space {
 
 	#region constructor
 
-	public Space1(Terrain terrain, string label, SpaceLayout layout, string startingItems="" )
+	public Space1(Terrain terrain, string label, string startingItems="" )
 		:base(label)
 	{
 		_terrain = terrain;
 		StartUpCounts = new StartUpCounts(startingItems);
-		Layout = layout;
 	}
 
 	#endregion
 
 	public Board Board {
+		get { return _board; }
 		set {
-			if(_board != null) throw new InvalidOperationException( "cannot set board twice" );
+			if(_board != null) 
+				throw new InvalidOperationException( "cannot set board twice" );
 			_board = value;
 			Boards = new Board[] { value };
 		}
@@ -27,8 +28,6 @@ public class Space1 : Space {
 	public override bool IsOneOf(params Terrain[] options) => options.Contains(_terrain);
 
 	public override bool Is( Terrain terrain ) => _terrain == terrain;
-
-	public override SpaceLayout Layout { get; }
 
 	public StartUpCounts StartUpCounts { get; }
 

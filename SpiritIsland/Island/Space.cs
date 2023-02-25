@@ -37,7 +37,6 @@ public abstract class Space
 
 	public abstract bool Is( Terrain terrain );
 	public abstract bool IsOneOf( params Terrain[] options );
-	public abstract SpaceLayout Layout { get; }
 
 	public abstract int InvaderActionCount { get; }
 
@@ -100,7 +99,7 @@ public abstract class Space
 }
 public class FakeSpace : Space {
 	public FakeSpace( string name ) : base( name ) { }
-	public override SpaceLayout Layout => throw new NotImplementedException();
+
 	public override int InvaderActionCount => 0;
 	public override bool Is( Terrain terrain ) => false;
 	public override bool IsOneOf( params Terrain[] options ) => false;

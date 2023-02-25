@@ -9,37 +9,37 @@ public class ManageInternalPoints {
 
 	#region constructor
 
-	public ManageInternalPoints( SpaceState ss ) {
+	public ManageInternalPoints( SpaceState ss, SpaceLayout layout ) {
 		const float stepSize = .06f; // .07
 		const float minDistanceFromBoarder = .012f; //.015
 
-		NameLocation = ss.Space.Layout.GetInternalHexPoints( .02f )
-			.Where( p => minDistanceFromBoarder < ss.Space.Layout.DistanceFromBorder(p) )
+		NameLocation = layout.GetInternalHexPoints( .02f )
+			.Where( p => minDistanceFromBoarder < layout.DistanceFromBorder(p) )
 			.OrderBy( p => { 
-				var bounds = ss.Space.Layout.Bounds;
+				var bounds = layout.Bounds;
 				float dx = p.X-bounds.X;
 				float dy = p.Y-bounds.Bottom;
 				return dx*dx+dy*dy;
 			} )
 			.First();
 
-		var points = ss.Space.Layout
+		var points = layout
 			.GetInternalHexPoints( stepSize )
 			.ToArray();
 
 		_dict = new Dictionary<IToken, PointF>();
 
 		// internal - prefered
-		var internalPoints = ss.Space.Layout
+		var internalPoints = layout
 			.GetInternalHexPoints( stepSize )
-			.Where( p => stepSize*.6f < ss.Space.Layout.DistanceFromBorder( p ) )
+			.Where( p => stepSize*.6f < layout.DistanceFromBorder( p ) )
 			.ToArray();
 		new Random( ss.Space.Text.GetHashCode() ) // use the randomizer every time so pieces don't bounce around when we resize
 			.Shuffle( internalPoints );
 
 		// border - backup
 		var borderPoints = points.Except( internalPoints )
-			.OrderByDescending( ss.Space.Layout.DistanceFromBorder )
+			.OrderByDescending( layout.DistanceFromBorder )
 			.ToArray();
 
 		_randomInternal = new TokenPointArray( _dict, internalPoints );

@@ -7,12 +7,6 @@ public class MultiSpace : Space {
 	{
 		OrigSpaces = CollectOrigSpaces( spaces );
 		Boards = OrigSpaces.SelectMany(s=>s.Boards).Distinct().ToArray();
-
-		var merged = spaces[0].Layout.Corners;
-		for(int i = 1; i < spaces.Length; ++i)
-			merged = Polygons.JoinAdjacentPolgons( merged, spaces[i].Layout.Corners );
-		Layout = new SpaceLayout(merged);
-
 	}
 
 	public override int InvaderActionCount => OrigSpaces.Sum(s=>s.InvaderActionCount) / OrigSpaces.Length;
@@ -31,8 +25,6 @@ public class MultiSpace : Space {
 	public override bool IsOneOf( params Terrain[] options ) => OrigSpaces.Any(part => part.IsOneOf(options));
 
 	public Space1[] OrigSpaces { get; }
-
-	public override SpaceLayout Layout { get; }
 
 	public void AddToBoardsAndSetAdjacent(IEnumerable<Space> adjacents) {
 		foreach(var board in Boards)

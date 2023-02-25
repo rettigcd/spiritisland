@@ -71,18 +71,12 @@ public class BoardSpace_Tests {
 
 	#endregion
 
-	static Board BoardA => Board.BuildBoardA();
-	static Board BoardB => Board.BuildBoardB();
-	static Board BoardC => Board.BuildBoardC();
-	static Board BoardD => Board.BuildBoardD();
-
 	[Fact]
 	public void PlaceTiles() {
 
-		var tileB = BoardB;
-		var tileD = BoardD;
-
-		tileB.Sides[2].ConnectTo( tileD.Sides[0], false );
+		var tileD = Boards.D;
+		var tileB = Board.BuildBoardB( new BoardOrientation(new BoardCoord(0,1),0) );
+		_ = new Island(tileB,tileD);
 
 		Assert_BoardSpacesTouch( tileB[3], tileD[1] );
 		Assert_BoardSpacesTouch( tileB[4], tileD[1] ); 
@@ -90,155 +84,19 @@ public class BoardSpace_Tests {
 		Assert_BoardSpacesTouch( tileB[7], tileD[8] ); 
 	}
 
-	// Layout - when we align boards, the new boards move and have the correct corners.
-	[Fact]
-	public void JoiningSides0To0() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[0].MoveLayoutTo( boardA.Sides[0] );
-		// Then:
-		bCorners[0].ShouldBe( 1.5f, BoardLayout.boardHeight );
-		bCorners[1].ShouldBe( 0.5f, BoardLayout.boardHeight );
-		bCorners[2].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
-		bCorners[3].ShouldBe( 2f, 2 * BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides0To1() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[1].MoveLayoutTo(boardA.Sides[0]);
-		// Then:
-		bCorners[0].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
-		bCorners[1].ShouldBe( 1.5f, BoardLayout.boardHeight );
-		bCorners[2].ShouldBe( 0.5f, BoardLayout.boardHeight );
-		bCorners[3].ShouldBe( 0, 2 * BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides0To2() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[2].MoveLayoutTo(boardA.Sides[0]);
-		// Then:
-		bCorners[0].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
-		bCorners[1].ShouldBe( 2f, 2 * BoardLayout.boardHeight );
-		bCorners[2].ShouldBe( 1.5f, BoardLayout.boardHeight );
-		bCorners[3].ShouldBe( 0.5f, BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides1To0() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[0].MoveLayoutTo(boardA.Sides[1]);
-		// Then:
-		bCorners[0].ShouldBe( 1, 0 );
-		bCorners[1].ShouldBe( 1.5f, BoardLayout.boardHeight );
-		bCorners[2].ShouldBe( 2, 0 );
-		bCorners[3].ShouldBe( 1.5f, -BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides1To1() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[1].MoveLayoutTo(boardA.Sides[1]);
-		// Then:
-		bCorners[0].ShouldBe( 2, 0 );
-		bCorners[1].ShouldBe( 1, 0 );
-		bCorners[2].ShouldBe( 1.5f, BoardLayout.boardHeight );
-		bCorners[3].ShouldBe( 2.5f, BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides1To2() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[2].MoveLayoutTo(boardA.Sides[1]);
-		// Then:
-		bCorners[0].ShouldBe( 2, 0 );
-		bCorners[1].ShouldBe( 1.5f, -BoardLayout.boardHeight );
-		bCorners[2].ShouldBe( 1, 0 );
-		bCorners[3].ShouldBe( 1.5f, BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides2To0() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[0].MoveLayoutTo(boardA.Sides[2]);
-		// Then:
-		bCorners[0].ShouldBe( 0, 0 );
-		bCorners[1].ShouldBe( 1, 0 );
-		bCorners[2].ShouldBe( 0.5f, -BoardLayout.boardHeight );
-		bCorners[3].ShouldBe( -0.5f, -BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides2To1() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[1].MoveLayoutTo( boardA.Sides[2] );
-		// Then:
-		bCorners[0].ShouldBe( 0.5f, -BoardLayout.boardHeight );
-		bCorners[1].ShouldBe( 0, 0 );
-		bCorners[2].ShouldBe( 1, 0 );
-		bCorners[3].ShouldBe( 1.5f, -BoardLayout.boardHeight );
-	}
-
-	[Fact]
-	public void JoiningSides2To2() {
-
-		var boardA = BoardA;
-		var boardB = BoardB;
-		// Side 0 to 0
-		var bCorners = boardB.OriginalLayout.boardCorners;
-		boardB.Sides[2].MoveLayoutTo( boardA.Sides[2] );
-		// Then:
-		bCorners[0].ShouldBe( 0.5f, -BoardLayout.boardHeight );
-		bCorners[1].ShouldBe( -0.5f, -BoardLayout.boardHeight );
-		bCorners[2].ShouldBe( 0, 0 );
-		bCorners[3].ShouldBe( 1, 0 );
-	}
-
-
 	[Fact]
 	public void Island_1Board(){
-		var _ = new Island(BoardC);
+		var _ = new Island(Boards.C);
 		// no connectivity to test
 	}
 
 	[Fact]
 	public void Island_2Boards() {
-		var boardC = BoardC;
-		var boardD = BoardD;
+		var layout = GameBuilder.TwoBoardLayout;
+		Board boardC = Board.BuildBoard( "C", layout[0] );
+		Board boardD = Board.BuildBoard( "D", layout[1] );
 
-		var _ = new Island( boardC, boardD );
+		_ = new Island( boardC, boardD );
 
 		// The are properly connected as a 2-board island
 		Assert_BoardSpacesTouch( boardC[3], boardD[6] ); 
@@ -258,10 +116,10 @@ public class BoardSpace_Tests {
 
 	[Fact]
 	public void Island_3Boards(){
-		var b = Board.BuildBoardB();
-		var c = Board.BuildBoardC();
-		var d = Board.BuildBoardD();
-
+		var layout = GameBuilder.ThreeBoardLayout;
+		Board b = Board.BuildBoard( "B", layout[0] );
+		Board c = Board.BuildBoard( "C", layout[2] );
+		Board d = Board.BuildBoard( "D", layout[1] );
 		var _ = new Island(b,c,d);
 
 		Assert_BoardSpacesTouch( b[3], c[8] );
@@ -284,12 +142,13 @@ public class BoardSpace_Tests {
 
 	[Fact]
 	public void Island_4Boards(){
-		var a = BoardA;
-		var b = BoardB;
-		var c = BoardC;
-		var d = BoardD;
+		var layout = GameBuilder.FourBoardLayout;
+		Board b = Board.BuildBoard( "B", layout[0] );
+		Board a = Board.BuildBoard( "A", layout[1] );
+		Board c = Board.BuildBoard( "C", layout[3] );
+		Board d = Board.BuildBoard( "D", layout[2] );
 
-		var _ = new Island(a, b, c, d);
+		_ = new Island(a, b, c, d);
 
 		Assert_BoardSpacesTouch( a[3], b[1] );
 		Assert_BoardSpacesTouch( a[3], b[6] );

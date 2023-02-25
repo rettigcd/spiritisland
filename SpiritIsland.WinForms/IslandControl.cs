@@ -38,9 +38,20 @@ public partial class IslandControl : Control {
 
 	}
 
+	Dictionary<Space, SpaceLayout> _spaceLayouts = new Dictionary<Space, SpaceLayout>();
+	Dictionary<Board, BoardLayout> _boardLayouts = new Dictionary<Board, BoardLayout>();
+	BoardLayout LayoutFor(Board board ) {
+		if(_boardLayouts.ContainsKey(board)) return _boardLayouts[board];
+		BoardLayout layout = BoardLayout.Get(board.Name).ReMap(board.Orientation.GetTransformMatrix());
+		_boardLayouts.Add(board,layout);
+		return layout;
+	}
+
 	public void Init( GameState gameState, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
 
 		// Wind down old
+		_boardLayouts.Clear();
+		_spaceLayouts.Clear();
 
 		// Dispose old spirit tokens
 		_presenceImg?.Dispose();
@@ -102,12 +113,36 @@ public partial class IslandControl : Control {
 	//Dictionary<Space, ManageInternalPoints> InsidePoints => _insidePoints 
 	//	??= _gameState.AllSpaces.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
 
+	SpaceLayout MyLayout( Space space ) {
+		if(space is Space1 s1) {
+			if(!_spaceLayouts.ContainsKey( space )) {
+				_spaceLayouts.Add( space, LayoutFor(s1.Board).ForSpace(space)  );
+			}
+			return _spaceLayouts[space];
+		}
+
+		if(space is MultiSpace ms) {
+			var spaces = ms.OrigSpaces;
+			var merged = MyLayout(spaces[0]).Corners;
+			for(int i = 1; i < spaces.Length; ++i)
+				merged = Polygons.JoinAdjacentPolgons( merged, MyLayout(spaces[i]).Corners );
+			return new SpaceLayout( merged );
+		}
+		throw new ArgumentException("Unknown space type");
+	}
+
 	ManageInternalPoints InsidePoints( Space space ) {
-		_insidePoints ??= _gameState.Spaces_Unfiltered.ToDictionary( ss => ss.Space, ss => new ManageInternalPoints( ss ) );
+		_insidePoints ??= _gameState.Spaces_Unfiltered
+			.ToDictionary( 
+				ss => ss.Space, 
+				ss => new ManageInternalPoints( ss, MyLayout( ss.Space ) )
+			);
 
 		// In case Weave-Together has occurred and the event hasn't propogated here yet.
-		if(!_insidePoints.ContainsKey( space ))
-			_insidePoints.Add( space, new ManageInternalPoints( _gameState.Tokens[space] ) );
+		if(!_insidePoints.ContainsKey( space )) {
+			var ss = _gameState.Tokens[space];
+			_insidePoints.Add( space, new ManageInternalPoints( ss, MyLayout( ss.Space ) ) );
+		}
 
 		return _insidePoints[space];
 	}
@@ -126,7 +161,7 @@ public partial class IslandControl : Control {
 		float right = float.MinValue;
 		float bottom = float.MinValue;
 		foreach(var board in _gameState.Island.Boards) {
-			var e = board.OriginalLayout.CalcExtents();
+			var e = LayoutFor(board).CalcExtents();
 			if(e.Left < left) left = e.Left;
 			if(e.Top < top) top = e.Top;
 			if(e.Right > right) right = e.Right;
@@ -242,14 +277,11 @@ public partial class IslandControl : Control {
 	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
 		Pen perimeterPen = new Pen( SpacePerimeterColor, 5f );
 
-		// !!! Bug - Layout needs updated when we weave stuff together.  Out of sync with # of spaces on board.
-		BoardLayout normalizedBoardLayout = board.OriginalLayout;
-
 		foreach(var space in board.Spaces_Unfiltered) {
 			// Space space = board[i];
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
 			// SpaceLayout spaceLayout = normalizedBoardLayout.Spaces[i];
-			SpaceLayout spaceLayout = space.Layout;
+			SpaceLayout spaceLayout = MyLayout( space );
 			PointF[] points = spaceLayout.Corners.Select( gw_mapper.Map ).ToArray();
 
 			// Draw blocky
@@ -713,7 +745,7 @@ public partial class IslandControl : Control {
 	Point GetPortPoint( Space space, IToken visibileTokens ) {
 		PointF worldCoord = visibileTokens != null
 			? InsidePoints(space).GetPointFor( visibileTokens )
-			: space.Layout.Center; // normal space 
+			: MyLayout( space ).Center; // normal space 
 		return gw_mapper.Map( worldCoord ).ToInts();
 	}
 
@@ -734,7 +766,8 @@ public partial class IslandControl : Control {
 
 		using var brush = UseMultiSpaceBrush( multi );
 
-		var points = multi.Layout.Corners.Select( gw_mapper.Map ).ToArray();
+//		var boardLayout = multi.Boards[0].Layout;
+		var points =  MyLayout(multi).Corners.Select( gw_mapper.Map ).ToArray();
 		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
 		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
 		// graphics.FillPolygon( brush, points );

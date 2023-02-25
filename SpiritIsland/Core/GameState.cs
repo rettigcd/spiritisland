@@ -263,7 +263,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	protected class Memento : IMemento<GameState> {
 		public Memento(GameState src) {
 			roundNumber  = src.RoundNumber;
-//			blightOnCard = src.blightOnCard;
 			isBlighted   = src.BlightCard.CardFlipped;
 			spirits      = src.Spirits.Select(s=>s.SaveToMemento()).ToArray();
 			if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
@@ -272,10 +271,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			fear         = src.Fear.SaveToMemento();
 			tokens       = src.Tokens.SaveToMemento();
 			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
+			boards = src.Island.Boards.Select(b=>new BoardInfo(b)).ToArray();
 		}
 		public void Restore(GameState src ) {
 			src.RoundNumber = roundNumber;
-//			src.blightOnCard_Init( blightOnCard );
 			src.BlightCard.CardFlipped = isBlighted;
 			for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
 			src.MajorCards?.RestoreFrom( major );
@@ -284,9 +283,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			src.Fear.LoadFrom( fear );
 			src.Tokens.LoadFrom( tokens );
 			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
+			src.Island = new Island( boards.Select(b=>b.Restore()).ToArray() );
 		}
 		readonly int roundNumber;
-//		readonly int blightOnCard;
 		readonly bool isBlighted;
 		readonly IMemento<Spirit>[] spirits;
 		readonly IMemento<PowerCardDeck> major;
@@ -295,6 +294,14 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		readonly IMemento<Fear> fear;
 		readonly IMemento<Tokens_ForIsland> tokens;
 		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
+		readonly BoardInfo[] boards;
+	}
+
+	class BoardInfo {
+		public BoardInfo(Board b ) { Name=b.Name; Orientation=b.Orientation; }
+		string Name { get; set; }
+		BoardOrientation Orientation { get; set; }
+		public Board Restore() => new Board(Name, Orientation);
 	}
 
 	#endregion Memento

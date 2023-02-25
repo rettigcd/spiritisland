@@ -1,35 +1,79 @@
 ﻿namespace SpiritIsland;
+
 public class Island {
 
 	#region constructor
-	public Island(params Board[] boards){
-		this.Boards = boards;
-		switch(boards.Length){
-			case 1: break;
-			case 2:
-				// Make adjacent
-				boards[1].Sides[2].ConnectTo( boards[0].Sides[2], true );
-				break;
-			case 3:
-				// aligns the board CCW going around island permiter
-				// when veiwing from ocean, board-0 is on left of board-1
-				boards[2].Sides[2].ConnectTo( boards[0].Sides[1], true );
-				boards[1].Sides[1].ConnectTo( boards[0].Sides[2], true );
-				boards[1].Sides[2].ConnectTo( boards[2].Sides[1], false );
-				break;
-			case 4:
-				// aligns the board CCW going around island permiter
-				// when veiwing from ocean, board-0 is on left of board-1
-				boards[3].Sides[1].ConnectTo( boards[0].Sides[1], true );
-				boards[1].Sides[0].ConnectTo( boards[0].Sides[2], true );
-				boards[2].Sides[1].ConnectTo( boards[1].Sides[1], true );
-				boards[2].Sides[2].ConnectTo( boards[3].Sides[0], false );
-				break;
+	public Island(params Board[] boards) {
+		Boards = boards; // assigning before validation to simplify validation code
 
-			default: throw new ArgumentOutOfRangeException(nameof(boards.Length),"wrong # of boards");
+		ValidateNoOverlap();
+		ValidateAccessibleOceans();
+
+		ConnectSides();
+	}
+
+	void ValidateAccessibleOceans() {
+		if(HidesAnOcean(Boards.Select(b=>b.Orientation)))
+			throw new ArgumentException( $"Invalid layout. Ocean is hidden." );
+	}
+
+	static bool HidesAnOcean(IEnumerable<BoardOrientation> boards) {
+		HashSet<SideCoords> sides = new();
+		foreach(var board in boards)
+			for(int i = 0; i < 3; ++i)
+				sides.Add( board.SideCoord( i ) );
+		return boards.Any( b => sides.Contains( b.OceanSideReversed ) );
+	}
+
+	void ValidateNoOverlap() {
+		if(HasOverlap(Boards.Select(b=>b.Orientation)))
+			throw new Exception( "Boards overlap" );
+	}
+
+	static bool HasOverlap(IEnumerable<BoardOrientation> boards) {
+		var boardCount = boards.Count();
+		return boards.Select( b => b.OddCorner ).Distinct().Count() != boardCount
+			|| boards.Select( b => b.EvenCorner ).Distinct().Count() != boardCount;
+	}
+
+	void ConnectSides() {
+		for(int b1 = 0; b1 < Boards.Length - 1; ++b1) {
+			Board focusBoard = Boards[b1];
+			var remainingBoards = Boards.Skip(b1);
+			for(int s1 = 0; s1 < 3; s1++) {
+				SideCoords focusSide = focusBoard.Orientation.SideCoord(s1);
+				SideCoords side1Reversed = new SideCoords(focusSide.To,focusSide.From);
+				foreach(Board board2 in remainingBoards) {
+					for(int s2 = 0; s2<3; ++s2) {
+						SideCoords side2 = board2.Orientation.SideCoord( s2 );
+						if(side1Reversed == side2)
+							board2.Sides[s2].ConnectTo( focusBoard.Sides[s1] );
+					}
+				}
+			}
 		}
 	}
+
 	#endregion
+
+	public BoardOrientation[] AvailableConnections() {
+		var openSides = Boards.SelectMany(board=>board.Orientation.Sides)
+			.GroupBy(s=>s)
+			.Where(grp=>grp.Count() == 1)
+			.Select(grp=>grp.Key)
+			.ToArray();
+
+		var boardList = Boards.Select(b=>b.Orientation).ToList();
+		boardList.Insert(0, null);
+
+		return openSides
+			.SelectMany(side => new int[] {0,1,2 }.Select(i=>BoardOrientation.ToMatchSide(i,side) ))
+			.Where(newOrient=> {
+				boardList[0] = newOrient;
+				return !HasOverlap(boardList) && !HidesAnOcean(boardList);
+			} )
+			.ToArray();
+	}
 
 	public Board[] Boards { get; private set; }
 
@@ -38,10 +82,12 @@ public class Island {
 	}
 
 	public void AddBoard( BoardSide newBoardSide, BoardSide existing ) {
-		newBoardSide.ConnectTo( existing, true );
+		newBoardSide.ConnectTo( existing );
 		var boardList = Boards.ToList();
 		boardList.Add( newBoardSide.Board );
 		Boards = boardList.ToArray();
+		ValidateNoOverlap();
+		ValidateAccessibleOceans();
 	}
 
 

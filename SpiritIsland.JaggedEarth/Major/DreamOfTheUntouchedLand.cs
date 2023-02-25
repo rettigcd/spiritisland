@@ -25,9 +25,7 @@ public class DreamOfTheUntouchedLand {
 			// Reconfigure 1-board island to 2-board island - !! only works if starting with 1 board
 			var existingBoard = ctx.GameState.Island.Boards[0];
 
-			existingBoard.OriginalLayout.ReMap( new PointMapper( RowVector.RotateDegrees( 120 ) ) ); // reorient for 2-board
-
-			ctx.GameState.Island.AddBoard( newBoard.Sides[2], existingBoard.Sides[2] );
+			ctx.GameState.Island.AddBoard( newBoard.Sides[0], existingBoard.Sides[0] );
 
 			// add 2 beast, 2 wilds, 2 badlands
 			foreach(var token in new ISpaceEntity[] { Token.Beast, Token.Wilds, Token.Badlands})
@@ -51,10 +49,17 @@ public class DreamOfTheUntouchedLand {
 
 	}
 
-	private static Board PickNewRandomBoard( TargetSpaceCtx ctx ) {
+	static Board PickNewRandomBoard( TargetSpaceCtx ctx ) {
+		var rand = new Random( ctx.GameState.ShuffleNumber +56127);
+		// pick board
 		var boardsToChooseFrom = Board.AvailableBoards.Except( ctx.GameState.Island.Boards.Select( b => b.Name ) ).ToList();
-		var boardName = boardsToChooseFrom[(int)(DateTime.Now.Ticks % 4)];// !! Could hook into Random-Seed thing.
-		var newBoard = Board.BuildBoard( boardName );
-		return newBoard;
+		string boardName = boardsToChooseFrom[ rand.Next( boardsToChooseFrom.Count) ];
+
+		// pick orentation
+		var orientationOptions = ctx.GameState.Island.AvailableConnections();
+		BoardOrientation orientation = orientationOptions[rand.Next( orientationOptions.Length)];
+
+		return Board.BuildBoard( boardName, orientation );
 	}
+
 }

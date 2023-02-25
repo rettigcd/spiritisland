@@ -24,7 +24,7 @@ public class SpiritCards_Tests {
 	protected void Given_GameWithSpirits(params Spirit[] spirits) {
 		var boards = new List<Board> { Board.BuildBoardA() };
 		if(0 < spirits.Length)
-			boards.Add( Board.BuildBoardB() );
+			boards.Add( Board.BuildBoardB( Boards.Attach1 ) );
 
 		gameState = new GameState( spirits, boards.ToArray() );
 	}
