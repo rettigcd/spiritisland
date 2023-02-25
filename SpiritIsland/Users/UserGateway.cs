@@ -77,6 +77,9 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	public SpaceToken Preloaded { get; set; }
 
 
+	readonly public static AsyncLocal<bool> UsePreselect = new AsyncLocal<bool>(); // !! combine with other preferences into a 'preference' object.
+
+
 	/// <summary>
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 	/// </summary>

@@ -12,7 +12,7 @@ public class MassiveFlooding_Tests : RiverGame {
 			Phase = Phase.Slow
 		};
 
-		game = new SinglePlayerGame( gs );
+		game = new SinglePlayerGame(gs).Start();
 
 	}
 

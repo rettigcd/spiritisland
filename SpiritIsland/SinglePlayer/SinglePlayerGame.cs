@@ -13,22 +13,24 @@ public class SinglePlayerGame {
 
 	public bool LogExceptions { get; set; }
 
+	// User preferences
+	public bool EnablePreselects; // Tokens and spaces together
+
 	#region constructor 
 
-	public SinglePlayerGame(GameState gameState,bool start=true){
+	public SinglePlayerGame(GameState gameState){
 		this.GameState = gameState;
 		Spirit = gameState.Spirits.Single(); // this player only handles single-player.
 		this.UserPortal = Spirit.Gateway;
-		if(start)
-			Start();
 	}
 
 
 	#endregion
 
-	public void Start() {
+	public SinglePlayerGame Start() {
 
 		async Task LoopAsync() {
+			UserGateway.UsePreselect.Value = EnablePreselects;
 			try {
 				// Handle any unresolved Initialization action - (ocean/beast)
 				GameState.Phase = Phase.Init;
@@ -81,6 +83,7 @@ public class SinglePlayerGame {
 		}
 		_ = LoopAsync();
 
+		return this;
 	}
 
 	void LogPhase() => GameState.Log( new Log.Phase( GameState.Phase ) );

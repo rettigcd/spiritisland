@@ -13,7 +13,7 @@ public class GiftOfStrength_Tests {
 		User = new VirtualEarthUser( spirit );
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
-		game = new SinglePlayerGame( gs );
+		game = new SinglePlayerGame(gs).Start();
 	}
 
 	[Fact]

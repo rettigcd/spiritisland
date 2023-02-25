@@ -545,7 +545,7 @@ public abstract partial class Spirit : IOption {
 			return null;
 		}
 
-		if(preselect != null) {
+		if(preselect != null && UserGateway.UsePreselect.Value) {
 			var spaceTokenOptions = spaces
 				.SelectMany( ss=>ss.SpaceTokensOfAnyClass(preselect.TokenClasses) )
 				.ToArray();

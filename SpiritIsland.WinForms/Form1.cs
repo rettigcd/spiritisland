@@ -184,7 +184,10 @@ public partial class Form1 : Form, IHaveOptions {
 		logForm.AppendLine($"=== Game: {gc.Spirits[0]} : {gc.Boards[0]} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info ); // !!! show multiple boards/spirits
 
 		GameState gameState = ConfigureGameDialog.GameBuilder.BuildGame( gc );
-		game = new SinglePlayerGame( gameState, false ) { LogExceptions = true };
+		game = new SinglePlayerGame( gameState ) { 
+			LogExceptions = true,
+			EnablePreselects = true,
+		};
 
 		game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
 

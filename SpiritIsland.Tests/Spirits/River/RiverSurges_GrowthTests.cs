@@ -211,7 +211,7 @@ public class RiverSurges_GrowthTests2 : RiverGame {
 	public RiverSurges_GrowthTests2(){
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
-		game = new SinglePlayer.SinglePlayerGame(gs);
+		game = new SinglePlayer.SinglePlayerGame(gs).Start();
 	}
 
  	[Fact]
