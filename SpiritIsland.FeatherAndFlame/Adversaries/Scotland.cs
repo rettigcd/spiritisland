@@ -62,7 +62,6 @@ public class Scotland : IAdversary {
 				ss.Adjust(token,1);
 
 			// Treat the Ocean as a Coastal Wetland for this rule and for Blight removal/movement.
-			// !!! Mustbe able to target ocean for removing it.
 		}
 
 		// LEvel 6 - Exports Fuel Inward Growth:

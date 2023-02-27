@@ -25,9 +25,9 @@ public class SkipAnyInvaderAction : BaseModEntity
 
 	Task<bool> ISkipRavages.Skip( SpaceState space ) => MakeDecision( space, "Ravage" );
 
-	Task<bool> ISkipBuilds.Skip( SpaceState space, IEntityClass buildClass ) => MakeDecision( space, "Building " + buildClass.Label );
+	Task<bool> ISkipBuilds.Skip( SpaceState space ) => MakeDecision( space, "Building " );
 
-	Task<bool> ISkipExploreTo.Skip( GameCtx _, SpaceState space ) => MakeDecision( space, "Explore" );
+	Task<bool> ISkipExploreTo.Skip( SpaceState space ) => MakeDecision( space, "Explore" );
 
 	async Task<bool> MakeDecision( SpaceState space, string stoppableAction ) {
 		if( !await _spirit.UserSelectsFirstText(Text,  $"Stop {stoppableAction} on {space.Space.Label}?", "No thank you.") )

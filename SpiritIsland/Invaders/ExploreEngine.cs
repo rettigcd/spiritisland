@@ -22,7 +22,7 @@ public class ExploreEngine {
 
 		var sources = gs.Spaces_Existing
 			.Where( IsExplorerSource )
-			.Where( ss => !ss.Keys.OfType<ISkipExploreFrom>().Any() )
+			.Where( ss => !ss.ModsOfType<ISkipExploreFrom>().Any() )
 			.ToHashSet();
 
 		var exploreRoutes = sources.SelectMany(
@@ -62,9 +62,9 @@ public class ExploreEngine {
 	}
 
 	protected virtual async Task ExploreSingleSpace( SpaceState tokens, GameState gs, bool escalation ) {
-		var ctx = new GameCtx( gs );
-		foreach(var stopper in tokens.Keys.OfType<ISkipExploreTo>().ToArray())
-			if(await stopper.Skip( ctx, tokens ))
+
+		foreach(ISkipExploreTo stopper in tokens.ModsOfType<ISkipExploreTo>().ToArray())
+			if(await stopper.Skip( tokens ))
 				return;
 
 		gs.Log( new Log.SpaceExplored( tokens.Space ) );

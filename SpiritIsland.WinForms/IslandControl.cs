@@ -523,9 +523,8 @@ public partial class IslandControl : Control {
 
 	void DrawInvaderRow( Graphics graphics, SpaceState ss, float iconWidth ) {
 
-		var orderedInvaders = ss.Keys
+		var orderedInvaders = ss.OfTypeHuman()
 			.Where( k => k.Class.Category == TokenCategory.Invader )
-			.Cast<HumanToken>()
 			// Major ordering: (Type > Strife)
 			.OrderByDescending( i => i.FullHealth )
 			.ThenBy( x => x.StrifeCount )

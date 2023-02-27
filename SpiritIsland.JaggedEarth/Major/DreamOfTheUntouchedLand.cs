@@ -13,11 +13,9 @@ public class DreamOfTheUntouchedLand {
 		await Cmd.RemoveUpToNHealthOfInvaders( 3 ).Execute( ctx );
 
 		// if you have 3 moon, 2 water  3 earth 2 plant
-		if(await ctx.YouHave( "3 moon,2 water,3 earth,2 plant" )) {
-
-			// Max. (1x/game) !!! Check only works for solo games
-			if(1 < ctx.GameState.Island.Boards.Length)
-				throw new NotImplementedException( "Adding boards is only implemented for islands with 1 board." );
+		if(await ctx.YouHave( "3 moon,2 water,3 earth,2 plant" )
+			&& ctx.GameState.Island.Boards.Length == ctx.GameState.Spirits.Length
+		) {
 
 			// Add a random new island board next to target board ignore its setup icons.
 			Board newBoard = PickNewRandomBoard( ctx );
@@ -38,7 +36,8 @@ public class DreamOfTheUntouchedLand {
 				await spirit.PlacePresenceOn1( newBoard.Spaces.Where(x=>!x.IsOcean ).Tokens().ToArray());
 			}
 					
-			// !!! from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.
+			// from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.
+			ctx.GameState.AddIslandMod( new InvadersSkip1Board() );
 
 			// Notify board changed.
 			ctx.GameState.Log( new Log.LayoutChanged($"{Name} added Board {newBoard.Name}") );
@@ -62,4 +61,31 @@ public class DreamOfTheUntouchedLand {
 		return Board.BuildBoard( boardName, orientation );
 	}
 
+}
+
+class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExploreTo, ISpaceEntityWithEndOfRoundCleanup {
+	public UsageCost Cost => UsageCost.Free;
+	public string Text => "Invaders Skip 1 Board";
+
+	public async Task<bool> Skip( SpaceState space ) {
+		return space.Space.Boards.Contains( await BoardToSkip() );
+	}
+
+	async Task<Board> BoardToSkip() {
+		if(_toSkip != null) return _toSkip;
+
+		// Select board to skip for this round.
+		var gameState = GameState.Current;
+		Board[] boards = gameState.Island.Boards;
+		string boardToSkip = await gameState.Spirits[0].SelectText( "Select Board to skip all Invader actins", boards.Select( b => b.Name ).ToArray(), Present.Always );
+		_toSkip = boards.First( b => b.Name == boardToSkip );
+
+		return _toSkip;
+	}
+
+	public void EndOfRoundCleanup( SpaceState tokens ) {
+		_toSkip = null; // reset for next round.
+	}
+
+	Board _toSkip = null;
 }

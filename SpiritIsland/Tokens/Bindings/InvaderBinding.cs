@@ -142,7 +142,7 @@ public class InvaderBinding {
 
 		IToken[] options;
 		int damageInflicted = 0;
-		while(0 < damage && (options = Tokens.Keys.OfType<HumanToken>().Intersect( allowedTypes() ).ToArray()).Length > 0) {
+		while(0 < damage && (options = Tokens.OfTypeHuman().Intersect( allowedTypes() ).ToArray()).Length > 0) {
 			var st = await damagePicker.Gateway.Decision( Select.Invader.ForAggregateDamageFromSource( Tokens.Space, source, options, damage, Present.Always ) );
 			if( st == null) break;
 			var invaderToDamage = st.Token.AsHuman();

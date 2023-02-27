@@ -39,11 +39,7 @@ Cheat Menu -
 5 Ocean adds InPlay token to Ocean when it moves
 	When removing Ocean from board, ocean becomes invalid and tokens get pushed to the nearest InPlay space.
 
-Infinite Vitality saves dahan from CastDown / non-humans stay where they are
-
-5
-DREAM OF THE UNTOUCHED - // !!! from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.	C:\Users\retti\Desktop\spiritisland\SpiritIsland.JaggedEarth\Major\DreamOfTheUntouchedLand.cs	43	7
-DREAM OF THE UNTOUCHED - // Max. (1x/game) !!! Check only works for solo games	C:\Users\retti\Desktop\spiritisland\SpiritIsland.JaggedEarth\Major\DreamOfTheUntouchedLand.cs	18	22
+Infinite Vitality saves dahan from CastDown / non-humans stay where they are - test
 
 5 Buttons - (
 !	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON

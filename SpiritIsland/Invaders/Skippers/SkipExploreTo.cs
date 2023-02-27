@@ -7,7 +7,7 @@ public class SkipExploreTo : BaseModEntity, IEndWhenTimePasses, ISkipExploreTo {
 		_skipAll = skipAll;
 	}
 
-	public virtual Task<bool> Skip( GameCtx _, SpaceState space ) {
+	public virtual Task<bool> Skip( SpaceState space ) {
 		if(!_skipAll)
 			space.Adjust( this, -1 ); // remove this token
 		return Task.FromResult( true ); // stopped

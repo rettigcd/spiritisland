@@ -31,11 +31,11 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 
 	public SkipLowestNumberedExplore() : base() {}
 
-	public Task<bool> Skip( GameCtx gameCtx, SpaceState spaceState ) {
+	public Task<bool> Skip( SpaceState spaceState ) {
 		// Remove
 		spaceState.Adjust( this, -1 );
 		// Find Lowest space
-		if(_lowest == null) InitLowest( gameCtx );
+		if(_lowest == null) InitLowest();
 		// Return if this is the lowest
 		bool isLowestOnABoard = spaceState.Space.Boards
 			.Any( board => _lowest[board] == spaceState);
@@ -46,10 +46,11 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 	public UsageCost Cost => UsageCost.Free;
 
 
-	void InitLowest( GameCtx gameCtx ) {
-		var card = gameCtx.GameState.InvaderDeck.Explore.Cards.FirstOrDefault();
+	void InitLowest() {
+		GameState gameState = GameState.Current;
+		var card = gameState.InvaderDeck.Explore.Cards.FirstOrDefault();
 		_lowest = card == null ? new Dictionary<Board, SpaceState>()
-			: gameCtx.GameState.Island.Boards
+			: gameState.Island.Boards
 				.ToDictionary( brd => brd, brd => brd.Spaces.Tokens().FirstOrDefault( card.MatchesCard ) );
 	}
 

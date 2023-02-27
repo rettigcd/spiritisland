@@ -83,7 +83,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		var toTokens = to.Tokens;
 
 		// Distribute Tokens (All of them are considered moved.)
-		var tokenClasses = fromTokens.Keys.OfType<IToken>()
+		var tokenClasses = fromTokens.OfType<IToken>()
 			.Select( x => x.Class ).Distinct()
 			.ToArray();
 		await toTokens.Gather( ctx.Self )
@@ -92,7 +92,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			.GatherUpToN();
 
 		// Move remaining onto themselves so they look moved.
-		await fromTokens.Keys.OfType<IToken>()
+		await fromTokens.OfType<IToken>()
 			.ToArray()
 			.Select(re => fromTokens.MoveTo(re,fromTokens))
 			.WhenAll();

@@ -10,7 +10,7 @@ public class DiseaseToken : TokenClassToken, ISkipBuilds {
 
 	public string Text => DiseaseText;
 
-	public virtual async Task<bool> Skip( SpaceState tokens, IEntityClass _ ) {
+	public virtual async Task<bool> Skip( SpaceState tokens ) {
 		await tokens.Disease.Remove( 1, RemoveReason.UsedUp );
 		return true;
 	}

@@ -23,8 +23,8 @@ public class SkipBuild : BaseModEntity, IEndWhenTimePasses, ISkipBuilds {
 
 	bool Stops( IEntityClass buildClass ) => _stoppedClasses.Contains( buildClass );
 
-	public virtual Task<bool> Skip( SpaceState space, IEntityClass buildClass ) {
-		if( !Stops( buildClass ) ) return Task.FromResult(false); // not stopped
+	public virtual Task<bool> Skip( SpaceState space ) {
+		if( !Stops( BuildEngine.InvaderToAdd.Value ) ) return Task.FromResult(false); // not stopped
 
 		if(_duration == UsageDuration.SkipOneThisTurn )
 			space.Adjust( this, -1 ); // remove this token

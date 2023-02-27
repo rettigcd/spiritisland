@@ -71,7 +71,7 @@ public class ManageInternalPoints {
 	public ManageInternalPoints Init( SpaceState allTokens ) {
 
 		// invader groups
-		var groups = allTokens.Keys.OfType<HumanToken>()
+		var groups = allTokens.OfTypeHuman()
 			.Where(x=>x.Class.Category == TokenCategory.Invader)
 			.GroupBy(x=>x.Class)
 			.ToArray();
@@ -79,9 +79,8 @@ public class ManageInternalPoints {
 			InitInvaderGroup(group.Key,group,allTokens);
 
 		// non-invaders
-		var nonInvaders = allTokens.Keys
-			.Where( x => x.Class.Category != TokenCategory.Invader )
-			.OfType<IToken>();
+		var nonInvaders = allTokens.OfType<IToken>()
+			.Where( x => x.Class.Category != TokenCategory.Invader );
 		foreach(IToken nonInvader in nonInvaders )
 			AssignPointFor(nonInvader,allTokens);
 

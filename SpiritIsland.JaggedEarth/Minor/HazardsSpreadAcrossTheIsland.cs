@@ -26,7 +26,7 @@ public class HazardsSpreadAcrossTheIsland{
 		var tokenTypes = Human.Invader // finds .Any finds strife
 			.Plus( Token.Badlands, Token.Beast, Token.Disease, Token.Wilds );
 		var candidates = ctx.Adjacent
-			.SelectMany( adjState => adjState.Keys.OfType<IToken>()
+			.SelectMany( adjState => adjState.OfType<IToken>()
 				.Where( IsTokenOfInterest )
 				.Select( token => new SpaceToken( adjState.Space, token ) )
 			)

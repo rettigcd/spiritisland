@@ -46,7 +46,7 @@ public class HealthTokenClassBinding {
 	#region Damage
 
 	public async Task Apply1DamageToAll() { // Called By Power (i.e. not invaders)
-		if(_tokens.Keys.OfType<IStopDahanDamage>().Any()) return;
+		if(_tokens.ModsOfType<IStopDahanDamage>().Any()) return;
 
 		var before = NormalKeys
 			.OrderByDescending( x => x.Damage ) // most damaged to least damaged so they don't cascade
@@ -68,7 +68,7 @@ public class HealthTokenClassBinding {
 
 	/// <summary>Applies Damage Inefficiently</summary>
 	public async Task<int> ApplyDamage_Inefficiently( int remainingDamageToDahan ) {
-		if(_tokens.Keys.OfType<IStopDahanDamage>().Any()) return 0;
+		if(_tokens.ModsOfType<IStopDahanDamage>().Any()) return 0;
 
 		// From BAC Rulebook p.16
 		// When Spirit Powers Damage the Dahan,
@@ -100,7 +100,7 @@ public class HealthTokenClassBinding {
 	/// <summary>Applies Damage Efficiently</summary>
 	/// <returns>Remaining/unused damage</returns>
 	public async Task<int> ApplyDamage_Efficiently( int remainingDamageToDahan, HumanToken token ) {
-		if(_tokens.Keys.OfType<IStopDahanDamage>().Any()) return remainingDamageToDahan;
+		if(_tokens.ModsOfType<IStopDahanDamage>().Any()) return remainingDamageToDahan;
 
 		// Destroy what can be destroyed
 		if(token.RemainingHealth <= remainingDamageToDahan) {

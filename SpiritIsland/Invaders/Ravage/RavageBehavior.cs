@@ -41,7 +41,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		RavageData data = new RavageData( tokens );
 
 		// Check for Stoppers
-		var stoppers = data.Tokens.Keys.OfType<ISkipRavages>()
+		var stoppers = data.Tokens.ModsOfType<ISkipRavages>()
 			.OrderBy( s => s.Cost )
 			.ToArray();
 
@@ -286,7 +286,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	static CountDictionary<HumanToken> GetParticipantCounts( RavageBehavior cfg, RavageData ra, Func<HumanToken, bool> filter ) {
 		var participants = new CountDictionary<HumanToken>();
-		foreach(var token in ra.Tokens.Keys.OfType<HumanToken>().Where( filter ))
+		foreach(var token in ra.Tokens.OfTypeHuman().Where( filter ))
 			participants[token] = Math.Max( 0, ra.Tokens[token] - cfg.NotParticipating[token] );
 		return participants;
 	}

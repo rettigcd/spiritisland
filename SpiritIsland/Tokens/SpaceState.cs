@@ -38,6 +38,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public IEnumerable<ISpaceEntity> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
 
+	public IEnumerable<T> OfType<T>() => Keys.OfType<T>();
+	public IEnumerable<HumanToken> OfTypeHuman() => OfType<HumanToken>();
+	public IEnumerable<T> ModsOfType<T>() => Keys.Union( _islandMods ).OfType<T>();
+
 	#region Enumeration / Detection(HaS) / Summing
 
 	public ISpaceEntity[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
@@ -45,8 +49,8 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public ISpaceEntity[] OfAnyClass( params IEntityClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
 	public async Task<IToken[]> RemovableOfAnyClass( RemoveReason reason, params IEntityClass[] classes ) {
 
-		IModifyRemovingToken[] stoppers = Keys.OfType<IModifyRemovingToken>().ToArray();
-		IModifyRemovingTokenAsync[] stoppersAsync = Keys.OfType<IModifyRemovingTokenAsync>().ToArray();
+		IModifyRemovingToken[] stoppers = ModsOfType<IModifyRemovingToken>().ToArray();
+		IModifyRemovingTokenAsync[] stoppersAsync = ModsOfType<IModifyRemovingTokenAsync>().ToArray();
 
 		var removable = new List<IToken>();
 		foreach(IToken token in OfAnyClass( classes ).Cast<IToken>()) {
@@ -164,10 +168,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public bool HasInvaders() => Has( TokenCategory.Invader );
 
-	public bool HasStrife => Keys.OfType<HumanToken>().Any(x=>0<x.StrifeCount);
-	public int StrifeCount => Keys.OfType<HumanToken>().Sum( x => x.StrifeCount );
+	public bool HasStrife => OfTypeHuman().Any(x=>0<x.StrifeCount);
+	public int StrifeCount => OfTypeHuman().Sum( x => x.StrifeCount );
 
-	public int CountStrife() => Keys.OfType<HumanToken>().Where(x=>x.StrifeCount>0).Sum( t => _counts[t] );
+	public int CountStrife() => OfTypeHuman().Where(x=>x.StrifeCount>0).Sum( t => _counts[t] );
 
 	public int TownsAndCitiesCount() => this.SumAny( Human.Town_City );
 
@@ -185,7 +189,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 			foreach(var space in Space.Adjacent_Existing)
 				yield return space.Tokens;
 
-			foreach(var gateway in Keys.OfType<GatewayToken>())
+			foreach(var gateway in OfType<GatewayToken>())
 				yield return gateway.GetLinked(this);
 		}
 	}
@@ -408,14 +412,14 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#region Mods
 	//-------------
-	ISpaceEntity[] KeySnapshop => Keys.Union(_islandMods).ToArray(); 
+	ISpaceEntity[] ModSnapshop => Keys.Union(_islandMods).ToArray();
 
 	Task ModifyRemoving( RemovingTokenArgs args ) {
-		var keyArray = KeySnapshop;
-		foreach(var mod in keyArray.OfType<IModifyRemovingToken>())
+		var modArray = ModSnapshop;
+		foreach(var mod in modArray.OfType<IModifyRemovingToken>())
 			if(0 < args.Count)
 				mod.ModifyRemoving( args );
-		return keyArray.OfType<IModifyRemovingTokenAsync>()
+		return modArray.OfType<IModifyRemovingTokenAsync>()
 			.Select( x => x.ModifyRemovingAsync( args ) )
 			.WhenAll();
 	}
@@ -431,10 +435,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 				.WhenAll();
 		}
 	}
-	RemovedHandlers RemovedHandlerSnapshop => new RemovedHandlers( KeySnapshop );
+	RemovedHandlers RemovedHandlerSnapshop => new RemovedHandlers( ModSnapshop );
 
 	Task ModifyAdding( AddingTokenArgs args ) {
-		var keyArray = KeySnapshop; 
+		var keyArray = ModSnapshop; 
 		foreach(var mod in keyArray.OfType<IModifyAddingToken>()) 
 			if(0 < args.Count)
 				mod.ModifyAdding( args );
@@ -444,7 +448,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	Task HandleAdded( ITokenAddedArgs args ) {
-		var keyArray = KeySnapshop;
+		var keyArray = ModSnapshop;
 		foreach(var handler in keyArray.OfType<IHandleTokenAdded>())
 			handler.HandleTokenAdded( args );
 		return keyArray.OfType<IHandleTokenAddedAsync>()
@@ -453,12 +457,12 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	public void TimePasses() {
-		var keyArray = KeySnapshop;
+		var keyArray = ModSnapshop;
 		foreach(var cleanup in keyArray.OfType<ISpaceEntityWithEndOfRoundCleanup>())
 			cleanup.EndOfRoundCleanup( this );
 
 		// remove keys (this-space-only, no entities from Island Mods)
-		foreach(var removeMe in Keys.OfType<IEndWhenTimePasses>().ToArray())
+		foreach(var removeMe in OfType<IEndWhenTimePasses>().ToArray())
 			Init(removeMe,0);
 	}
 
@@ -515,7 +519,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		Blight.Init(0);
 
 		// Destroy all other tokens
-		foreach(IToken token in Keys.OfType<IToken>().ToArray())
+		foreach(IToken token in OfType<IToken>().ToArray())
 			await Destroy( token, this[token] );
 
 		if(Space is Space1 s1)

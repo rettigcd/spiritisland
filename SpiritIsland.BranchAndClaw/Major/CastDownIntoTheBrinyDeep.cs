@@ -45,7 +45,7 @@ public class CastDownIntoTheBrinyDeep {
 	static void CleanUpInvalidSpace( SpaceState spaceState ) {
 		if(TerrainMapper.Current.IsInPlay( spaceState.Space )) return;
 
-		HumanToken[] cleanup = spaceState.Keys.OfType<HumanToken>().ToArray();
+		HumanToken[] cleanup = spaceState.OfTypeHuman().ToArray();
 		if(!cleanup.Any()) return;
 
 		SpaceState target = FindClosestInPlaySpace( spaceState );

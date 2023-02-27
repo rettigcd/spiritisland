@@ -14,7 +14,8 @@ public class TerrorOfASlowlyUnfoldingPlague : DiseaseToken {
 		_spirit = spirit;
 	}
 
-	public override async Task<bool> Skip( SpaceState tokens, IEntityClass buildClass ) {
+	public override async Task<bool> Skip( SpaceState tokens ) {
+		IEntityClass buildClass = BuildEngine.InvaderToAdd.Value;
 
 		bool allowBuild = tokens.Has(_spirit.Token)
 			&& await _spirit.UserSelectsFirstText( $"Allow pending {buildClass.Label} build on {tokens.Space.Label}?", "Yes, Keep Disease +1 Fear", "No, stop build" );
@@ -24,7 +25,7 @@ public class TerrorOfASlowlyUnfoldingPlague : DiseaseToken {
 			return false;
 		}
 
-		return await base.Skip( tokens, buildClass );
+		return await base.Skip( tokens );
 	}
 
 }

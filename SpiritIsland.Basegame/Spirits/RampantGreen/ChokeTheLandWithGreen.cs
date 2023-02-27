@@ -24,8 +24,8 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		return await SkipInvaderAction( space, "ravage" );
 	}
 
-	async Task<bool> ISkipBuilds.Skip( SpaceState space, IEntityClass buildClass )
-		=> await SkipInvaderAction( space, $"build of {buildClass.Label}" );
+	async Task<bool> ISkipBuilds.Skip( SpaceState space )
+		=> await SkipInvaderAction( space, $"build of {BuildEngine.InvaderToAdd.Value.Label}" );
 
 	async Task<bool> SkipInvaderAction( SpaceState space, string actionDescription ) {
 		if(!IsSacredSite( space )) return false;

@@ -108,7 +108,7 @@ public class TDaTD_ActionTokens : SpaceState {
 	}
 
 	static void RemoveDreamDamage( SpaceState spaceState ) {
-		var damagedInvaders = spaceState.Keys.OfType<HumanToken>()
+		var damagedInvaders = spaceState.OfTypeHuman()
 			.Where( t => t.DreamDamage != 0 )
 			.ToArray();
 		foreach(var damagedInvader in damagedInvaders)
