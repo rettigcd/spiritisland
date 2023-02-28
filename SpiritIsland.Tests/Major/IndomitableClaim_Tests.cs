@@ -21,9 +21,10 @@ public class IndomitableClaim_Tests {
 		user.Grows();
 		user.IsDoneBuyingCards();
 		invaderLog.Clear();
+		user.WaitForNext();
 
 		// and: there is a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
-		var spaceCtx = ctx.GameState.Spaces_Unfiltered
+		TargetSpaceCtx spaceCtx = ctx.GameState.Spaces_Unfiltered
 			.Select( x=>ctx.Target(x.Space) )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );

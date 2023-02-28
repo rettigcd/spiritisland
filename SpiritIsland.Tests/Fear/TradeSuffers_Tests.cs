@@ -94,7 +94,7 @@ public class TradeSuffers_Tests {
 		fxt.InitTokens( space, "1C@3" );
 
 		// When: fear card
-		await using var scope = fxt.GameState.StartAction( ActionCategory.Fear );
+		await using var scope = await ActionScope.Start(ActionCategory.Fear);
 		var task = new TradeSuffers().Level3( new GameCtx( fxt.GameState ) );
 		//  And: user selects a1
 		fxt.Choose( space.Text );

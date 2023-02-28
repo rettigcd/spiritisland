@@ -43,6 +43,7 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 		//		User.Growth_SelectsOption( "PlacePresence(3) / GainEnergy(3)" );
 		User.Growth_SelectAction( "PlacePresence(3)" );
 		User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );
+		GrowthTask.Wait();
 
 		Assert_HasEnergy(3+1); // 1 from energy track
 	}

@@ -25,7 +25,7 @@ class FranceBuilder : BuildEngine {
 			var buildSpace = tokens.Adjacent
 				.OrderBy( t => t.Sum( Human.Town ) )
 				.First();
-			await using var scope = new ActionScope( ActionCategory.Adversary );
+			await using var scope = await ActionScope.Start(ActionCategory.Adversary);
 			await buildSpace.AddDefault( Human.Town, 1 );
 		}
 	}

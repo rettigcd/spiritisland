@@ -28,10 +28,11 @@ public class BeliefTakesRoot_Tests {
 
 		Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-		_ = When_AddFearApplyFearAndRavage();
+		Task t = When_AddFearApplyFearAndRavage();
 		User.AcknowledgesFearCard("Null Fear Card : 1 : x");
 
 		// Then: all dahan killed
+		t.Wait();
 		ravageSpace.Tokens.Dahan.CountAll.ShouldBe(0);
 		gameState.Tokens[ravageSpace].Blight.Any.ShouldBe(true);
 	}

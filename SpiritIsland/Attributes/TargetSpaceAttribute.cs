@@ -1,11 +1,10 @@
-﻿using System;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
-	//readonly protected From fromSourceEnum;
-	//readonly protected Terrain? sourceTerrain;
+	public static SpaceState TargettedSpace => _targettedSpace.Value;
+	static ActionScopeValue<SpaceState> _targettedSpace = new ActionScopeValue<SpaceState>("Targetted Space");
+
 	readonly protected TargetingSourceCriteria _sourceCriteria;
 
 	protected readonly string[] _targetFilters;
@@ -25,7 +24,10 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 			_sourceCriteria,
 			await GetCriteria( ctx )
 		);
-		return space == null ? null : ctx.Target(space);
+		if(space == null) return null;
+		var target = ctx.Target( space );
+		_targettedSpace.Value = target.Tokens;
+		return target;
 	}
 
 	protected virtual async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) 

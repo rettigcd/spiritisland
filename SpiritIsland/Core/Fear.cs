@@ -77,7 +77,7 @@ public class Fear {
 			// show card to each user
 			fearCard.ActivatedTerrorLevel = TerrorLevel;
 
-			await using var actionScope = new ActionScope( ActionCategory.Fear );
+			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
 			foreach(var spirit in gs.Spirits)
 				await spirit.BindSelf().FlipFearCard(fearCard,true);
 

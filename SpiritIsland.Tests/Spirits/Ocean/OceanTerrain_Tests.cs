@@ -31,7 +31,7 @@ public class OceanTerrain_Tests {
 		Given_PrimaryPresenceOnA2Only();
 
 		// When: Thundersepearker Activates a card that targets ANY-terrain Range-1 (Call To Guard - Range 1, Any land)
-		await using ActionScope action = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power);
 		SelfCtx ctx = primarySpirit.BindMyPowers();
 		_ = PowerCard.For<CallToGuard>().ActivateAsync( ctx );
 
@@ -51,7 +51,7 @@ public class OceanTerrain_Tests {
 		Given_OceanOnPrimaryBoard();
 
 		// When: Thundersepearker Activates a card that targets WETLANDS (Talons ofLightning - Range 1, M/W)
-		await using ActionScope action = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power);
 		SelfCtx ctx = primarySpirit.BindMyPowers();
 		_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( ctx );
 
@@ -78,7 +78,7 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that Pushes Dahan
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
-		await using ActionScope action = gameState.StartAction( ActionCategory.Spirit_Power ); // !!! needed?
+		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power); // !!! needed?
 		SelfCtx ctx = primarySpirit.BindMyPowers();
 		_ = PowerCard.For<CallToTend>().ActivateAsync( ctx );
 		//  And: Targets A2 (that has a dahan on it)
@@ -141,7 +141,7 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
-		await using ActionScope action = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power);
 		SelfCtx ctx = primarySpirit.BindMyPowers();
 		_ = PowerCard.For<LandOfHauntsAndEmbers>().ActivateAsync( ctx );
 		//  And: Targets A2
@@ -262,9 +262,10 @@ public class OceanTerrain_Tests {
 			// Then: can target out of wetland
 			actionTask.IsCompleted.ShouldBeFalse();
 			NextDecision.HasOptions("A0,A1,A2,A3");
-		} else
+		} else {
 			// Then: cannot target anything, done
-			actionTask.IsCompleted.ShouldBeTrue();
+			actionTask.Wait();
+		}
 
 	}
 

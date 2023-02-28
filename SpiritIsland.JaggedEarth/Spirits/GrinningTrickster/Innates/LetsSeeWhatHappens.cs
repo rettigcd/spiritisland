@@ -32,7 +32,7 @@ public class LetsSeeWhatHappens {
 		await ctx.Self.SelectFactory( "Perform All Action at Max", new IActionFactory[] { card } );
 
 		// Use immediately. All 'up to' instructions must be used at max and 'OR's treated as 'AND's "
-		await using var maxScope = new ActionScope( ActionCategory.Spirit_Power );
+		await using var maxScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		maxScope.Owner = ctx.Self;
 		maxScope.Upgrader = (x) => new TrixterTokens(x,runAtMax:true);
 

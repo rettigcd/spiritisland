@@ -30,6 +30,7 @@ public class Badlands_Tests {
 		fxt.user.IsDoneBuyingCards();
 
 		//  Then: ravage happened
+		fxt.user.WaitForNext();
 		fxt.gameState.RoundNumber.ShouldBe(2);
 		fxt.ravages.Count.ShouldBe(1);
 		var ravage = fxt.ravages[0];
@@ -68,6 +69,7 @@ public class Badlands_Tests {
 		fxt.user.IsDoneBuyingCards();
 
 		//  Then: ravage happened
+		fxt.user.WaitForNext();
 		fxt.gameState.RoundNumber.ShouldBe(2);
 		fxt.ravages.Count.ShouldBe(1);
 		var ravage = fxt.ravages[0];

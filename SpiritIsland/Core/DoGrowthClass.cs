@@ -34,7 +34,7 @@ public abstract partial class Spirit {
 		}
 
 		async Task ExecuteRemainingGrowth( IActionFactory selectedAction ) {
-			await using var action = new ActionScope( ActionCategory.Spirit_Growth );
+			await using var action = await ActionScope.Start(ActionCategory.Spirit_Growth);
 			await spirit.TakeAction( selectedAction, Phase.Growth );
 			await InitRemainingActionsFromOption();
 		}
@@ -45,7 +45,7 @@ public abstract partial class Spirit {
 			inst.MarkAsUsed( option );
 
 			// Resolve Growth Option
-			await using var actionScope = new ActionScope( ActionCategory.Spirit_Growth );
+			await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Growth);
 			var ctx = spirit.BindSelf();
 
 			// Auto run the auto-runs.
@@ -93,7 +93,7 @@ public abstract partial class Spirit {
 		async Task ApplyRevealedPResenceTracks() {
 			InitActionsForAllAvailableOptions();
 			if(!HasActions) {
-				await using var action = new ActionScope( ActionCategory.Spirit_PresenceTrackIcon );
+				await using var action = await ActionScope.Start(ActionCategory.Spirit_PresenceTrackIcon);
 				await spirit.ApplyRevealedPresenceTracks( spirit.BindSelf() );
 			}
 		}

@@ -15,7 +15,7 @@ public class FranceExplorer : ExploreEngine {
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
 		await DoExplore( gameState, tokenSpacesToExplore, false );
 
-		await using var scope = new ActionScope( ActionCategory.Adversary );
+		await using var scope = await ActionScope.Start(ActionCategory.Adversary);
 		GameCtx gameCtx = new GameCtx( gameState );
 
 		if(hasFrontierExploration)
@@ -52,7 +52,7 @@ public class FranceExplorer : ExploreEngine {
 		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			if(!exploreTokens.HasAny( Human.Town_City )) {
-				await using var scope = new ActionScope( ActionCategory.Adversary );
+				await using var scope = await ActionScope.Start(ActionCategory.Adversary);
 				await ExploreSingleSpace( exploreTokens, gs, false );
 			}
 	}

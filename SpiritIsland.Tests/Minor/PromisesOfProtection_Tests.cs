@@ -7,6 +7,7 @@ public class PromisesOfProtection_Tests {
 	public void PromisesOfProtection_IsStackable() {
 
 		// Setup
+		ActionScope.Initialize();
 		var fxt = new ConfigurableTestFixture();
 		var targetSpace = fxt.Board[5];
 		var dahanSource = targetSpace.Adjacent_Existing.First();

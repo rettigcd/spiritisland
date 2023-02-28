@@ -12,7 +12,7 @@ public class SenseOfDread_Tests {
 		fix.InitTokens(ravageSpace, "2E@1");
 
 		// When: activeate fear card
-		await using var scope = fix.GameState.StartAction(ActionCategory.Invader);
+		await using var scope = await ActionScope.Start(ActionCategory.Invader);
 		var task = new SenseOfDread().Level1( new GameCtx(fix.GameState ) );
 
 		// And remove 1 explorer from ravage space

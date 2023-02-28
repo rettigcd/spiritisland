@@ -15,6 +15,8 @@ public class AvoidTheDahan_Tests {
 	#region constructor
 
 	public AvoidTheDahan_Tests() {
+//		ActionScope.Initialize();
+
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
@@ -45,6 +47,7 @@ public class AvoidTheDahan_Tests {
 		ClearBlightAndDoNothingForARound();
 		_user.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
 
+		_user.WaitForNext();
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1E@1" );
 	}
 

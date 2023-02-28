@@ -43,6 +43,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 
 		When_StartingGrowth();
 		User.SelectsGrowthB_2PP();
+		GrowthTask.Wait();
 
 		Assert.Equal(2,spirit.EnergyPerTurn);
 		Assert_HasEnergy( 2 ); // 2 from energy track
@@ -58,8 +59,8 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		Given_HasPresence( board[3] );
 
 		When_StartingGrowth();
-
 		User.SelectsGrowthC_Draw_Energy();
+		GrowthTask.Wait();
 
 		Assert_HasCardAvailable( "Drought" );
 		Assert_HasEnergy( 1 ); // didn't increase energy track.
@@ -211,7 +212,7 @@ public class RiverSurges_GrowthTests2 : RiverGame {
 	public RiverSurges_GrowthTests2(){
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
-		game = new SinglePlayer.SinglePlayerGame(gs).Start();
+		_game = new SinglePlayer.SinglePlayerGame(gs).Start();
 	}
 
  	[Fact]
@@ -227,7 +228,7 @@ public class RiverSurges_GrowthTests2 : RiverGame {
 		User.PlaysCard( WashAway.Name );
 		User.PlaysCard( RiversBounty.Name );
 
-		game.Spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
+		_game.Spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
 		User.IsDoneWith(Phase.Slow);
 
 		User.SelectsGrowthB_2PP("cardplays>A5","cardplays>A5");
@@ -236,7 +237,7 @@ public class RiverSurges_GrowthTests2 : RiverGame {
 		User.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),[River's Bounty $0 (Slow)]" );
 
 		// Can buy all 3 of River's cards including Bounty
-		game.Spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
+		_game.Spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
 
 		User.PlaysCard( RiversBounty.Name ); // 0
 		User.PlaysCard( BoonOfVigor.Name );  // 0

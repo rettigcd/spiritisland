@@ -13,7 +13,7 @@ public class Discord_Tests {
 		fxt.InitTokens( space, "1C@3,1T@2" );
 
 		// When:
-		await using var actionScope = fxt.GameState.StartAction( ActionCategory.Fear );
+		await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
 
 		var task = new Discord().Level3( new GameCtx( fxt.GameState ) );
 

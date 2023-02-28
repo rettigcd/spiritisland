@@ -65,6 +65,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		User.Growth_SelectAction( "DrawPowerCard", 1 ); // there are 2. select the 2nd one (index=1)
 		User.SelectsMinorDeck();
 		User.SelectMinorPowerCard();
+		GrowthTask.Wait();
 
 		// Gain 3 energy did not trigger
 

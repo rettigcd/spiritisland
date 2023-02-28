@@ -15,7 +15,7 @@ public class BuildOnceOnSpace {
 
 	async Task<string> GetResult() {
 
-		await using var actionScope = new ActionScope( ActionCategory.Invader );
+		await using var actionScope = await ActionScope.Start(ActionCategory.Invader);
 
 		// Determine type to build
 		var (countToAdd, invaderToAdd) = DetermineWhatToAdd();

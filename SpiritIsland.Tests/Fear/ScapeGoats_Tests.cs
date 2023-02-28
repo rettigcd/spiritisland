@@ -16,7 +16,7 @@ public class ScapeGoats_Tests {
 		fxt.InitTokens( townSpace, "1T@2^,3E@1" );
 
 		// When:
-		await using var scope = fxt.GameState.StartAction( ActionCategory.Invader );
+		await using var scope = await ActionScope.Start(ActionCategory.Invader);
 		Task task = new Scapegoats().Level2(new GameCtx(fxt.GameState));
 		task.Wait(5000);task.IsCompletedSuccessfully.ShouldBeTrue();
 

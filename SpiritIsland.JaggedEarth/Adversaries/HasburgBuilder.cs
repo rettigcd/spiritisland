@@ -16,7 +16,7 @@ class HasburgBuilder : BuildEngine {
 
 	static async Task MigratoryHerders( InvaderCard card, GameState gameState ) {
 		SpaceState[] cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
-		ActionScope actionScope = new ActionScope( ActionCategory.Invader );// ??? !! should we reuse the original action?
+		ActionScope actionScope = await ActionScope.Start(ActionCategory.Invader);// ??? !! should we reuse the original action?
 
 		// In each land matching a Build Card
 		foreach(SpaceState spaceState in cardDependentBuildSpaces) {

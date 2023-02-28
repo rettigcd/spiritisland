@@ -94,7 +94,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public SelfCtx SelfCtx {
 		get {
-			GameState.StartAction( ActionCategory.Spirit_Growth); // nothing is disposing this !!!
+			ActionScope.Start_NoStartActions( ActionCategory.Spirit_Growth); // nothing is disposing this !!!
 			_selfCtx ??= Spirit.BindMyPowers();
 			return _selfCtx;
 		}

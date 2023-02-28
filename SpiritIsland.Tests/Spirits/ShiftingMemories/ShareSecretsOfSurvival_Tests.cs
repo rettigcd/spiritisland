@@ -3,6 +3,10 @@
 [Trait("Feature","DestroyFewerDahan")]
 public class ShareSecretsOfSurvival_Tests {
 
+	public ShareSecretsOfSurvival_Tests() {
+		ActionScope.Initialize();
+	}
+
 	[Theory]
 	// more damage than dahan - makes sure saved dahan are not re-damaged by additional damage
 	[InlineData( "10T@2", "1B,10T@2" )]

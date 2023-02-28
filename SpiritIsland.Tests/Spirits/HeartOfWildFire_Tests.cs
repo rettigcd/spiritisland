@@ -17,7 +17,7 @@ public class HeartOfWildFire_Tests {
 		tokens.Init(spirit.Token,1);
 
 		// When: adding blight to space via spirit powers
-		await using var scope = new ActionScope(ActionCategory.Spirit_Power);
+		await using var scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		_ = LandOfHauntsAndEmbers.Act(spirit.BindMyPowers().Target(space)); // nothing to push
 
 		// Then: presence should still be there
@@ -43,7 +43,7 @@ public class HeartOfWildFire_Tests {
 		tokens.InitDefault(Human.Town, 1);
 
 		// When: adding blight to space via spirit powers
-		_ = tokens.Ravage();
+		tokens.Ravage().Wait();
 
 		// Then: presence should still be gone
 		tokens.Has(spirit.Token).ShouldBeFalse();

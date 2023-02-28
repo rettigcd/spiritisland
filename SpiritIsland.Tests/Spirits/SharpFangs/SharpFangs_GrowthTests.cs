@@ -5,6 +5,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	readonly GameState gsbac;
 
 	public SharpFangs_GrowthTests() : base( new SharpFangs() ) {
+		ActionScope.Initialize();
 
 		gsbac = new GameState( spirit, board );
 		_gameState = gsbac;
@@ -31,6 +32,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		When_SharpFangsGrow();
 		User_GrowthA_ReclaimAll_Energy_DrawCard();
 		User_GrowthB_PlacePresence();
+		GrowthTask.Wait();
 
 		User.SkipsPresenceReplacementWithBeasts();
 
@@ -50,9 +52,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		When_SharpFangsGrow();
 		User_GrowthC_DrawCard_GainEnergy(); // gain 1 energy before we spend it
 		User_GrowthA_ReclaimAll_Energy_DrawCard();
-
-//			User.SkipsPresenceReplacementWithBeasts();
-
+		GrowthTask.Wait();
 
 		Assert_AllCardsAvailableToPlay( 5 + 1 );  // A
 		Assert_HasEnergy( 0 + 1 );            // A & C
@@ -70,10 +70,9 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		When_SharpFangsGrow();
 		User_GrowthD_GainEnergy();
 		User_GrowthA_ReclaimAll_Energy_DrawCard();
+		GrowthTask.Wait();
 
-//			User.SkipsPresenceReplacementWithBeasts();
-
-		Assert_AllCardsAvailableToPlay(5);      // A
+		Assert_AllCardsAvailableToPlay( 5);      // A
 		// Assert_HasPowerProgressionCard( 0 );    // A
 		Assert_HasEnergy( 3-1+1 );      // A & D
 
@@ -87,6 +86,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		When_SharpFangsGrow();
 		User_GrowthB_PlacePresence();
 		User_GrowthC_DrawCard_GainEnergy();
+		GrowthTask.Wait();
 
 		User.SkipsPresenceReplacementWithBeasts();
 
@@ -100,11 +100,11 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		// b) add a presense to jungle or a land with beasts ( range 3)
 		// d) +3 energy
 
-		When_SharpFangsGrow();
+		When_SharpFangsGrow(); // !!! These When Grows should use Pass-A-Blick to remove the GrowthTask.Wait
 		User_GrowthB_PlacePresence();
 		User_GrowthD_GainEnergy();
 		User.SkipsPresenceReplacementWithBeasts();
-
+		GrowthTask.Wait();
 
 		Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
 		Assert_HasEnergy( 3 + 1 );         // D
@@ -118,6 +118,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		When_SharpFangsGrow();
 		User_GrowthC_DrawCard_GainEnergy();
 		User_GrowthD_GainEnergy();
+		GrowthTask.Wait();
 
 		// Assert_HasPowerProgressionCard( 0 );    // C
 		Assert_HasEnergy( 1 + 3 + 1 );     // C + D

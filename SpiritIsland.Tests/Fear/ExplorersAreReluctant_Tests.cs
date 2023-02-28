@@ -88,6 +88,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 
 		GrowAndBuyNoCards();
 
+		_user.WaitForNext();
 		_log.Assert_Built( "A3", "A8" );
 		_log.Assert_Explored( "A2", "A5" );
 
@@ -104,11 +105,13 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 
 		// Card Advance #4 - End of 2st round
 
+		_user.WaitForNext();
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Built( "A2", "A5" );
 
 		GrowAndBuyNoCards();
 
+		_user.WaitForNext();
 		_log.Assert_Ravaged( "A2", "A5" );
 		_log.Assert_Explored( "A4", "A7" ); // A4 & A7 happen together with next
 		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next

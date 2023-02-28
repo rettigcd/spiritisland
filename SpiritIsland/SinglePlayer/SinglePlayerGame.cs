@@ -30,6 +30,7 @@ public class SinglePlayerGame {
 	public SinglePlayerGame Start() {
 
 		async Task LoopAsync() {
+			ActionScope.Initialize();
 			UserGateway.UsePreselect.Value = EnablePreselects;
 			try {
 				// Handle any unresolved Initialization action - (ocean/beast)

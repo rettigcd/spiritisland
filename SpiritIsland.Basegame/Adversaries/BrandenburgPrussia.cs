@@ -68,7 +68,7 @@ public class BrandenburgPrussia : IAdversary {
 			.Where( x => x != null )
 			.ToArray();
 
-		await using ActionScope actionScope = new ActionScope( ActionCategory.Default );
+		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Default);
 		foreach(SpaceState bs in buildSpaces)
 			await bs.AddDefault( Human.Town, 1, AddReason.Build );
 

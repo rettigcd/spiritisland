@@ -32,7 +32,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				ActionScope.Current.AtEndOfThisAction( async _ => {
 					//don't use original because that may or may not have been for a power.
-					await using ActionScope childAction = new ActionScope( ActionCategory.Default );
+					await using ActionScope childAction = await ActionScope.Start(ActionCategory.Default);
 					await _spirit.BindSelf()
 						.Move( args.Added, args.To.Space, destination );
 				} );

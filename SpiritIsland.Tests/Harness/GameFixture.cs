@@ -40,7 +40,7 @@ class GameFixture {
 	}
 
 	public TargetSpaceCtx TargetSpace( string spaceLabel ) { 
-		var action = gameState.StartAction( ActionCategory.Default ); // !!! nothing is disposing this
+		var action = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! nothing is disposing this
 		return spirit.BindSelf()
 			.Target( gameState.Spaces_Unfiltered.Single( x => x.Space.Label == spaceLabel ).Space );
 	}

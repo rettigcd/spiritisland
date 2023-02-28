@@ -30,7 +30,7 @@ public class SettleIntoHuntingGrounds_Tests {
 		SpiritExtensions.Adjust( spirit.Presence, a5, 1 );
 
 		//  When: played Settle Into Hunting Grounds
-		await using var actionScope = gameState.StartAction(ActionCategory.Spirit_Power );
+		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Power );
 		Task task = SettleIntoHuntingGrounds.ActAsync( spirit.BindMyPowers() );
 		task.IsCompleted.ShouldBeTrue();
 

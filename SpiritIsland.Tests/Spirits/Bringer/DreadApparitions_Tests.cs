@@ -9,7 +9,7 @@ public class DreadApparitions_Tests {
 		Bringer spirit = new Bringer();
 		board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
-		_ = gs.StartAction( ActionCategory.Spirit_Power ); // !!! not disposing
+		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! not disposing
 		ctx = spirit.BindMyPowers().Target( board[5] );
 	}
 
@@ -96,7 +96,7 @@ public class DreadApparitions_Tests {
 
 		// Given: using Dread Apparitions
 		async Task DoIt(){
-			await using var myScope = new ActionScope( ActionCategory.Spirit_Power );
+			await using var myScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 			string powerGuid = ActionScope.Current.Id.ToString();
 			var ctx = spirit.BindMyPowers().Target( board[5] );
 			await DreadApparitions.ActAsync( ctx ); // !!! This await causes the execution ctx to shallow copy so when scope cleans up, it is cleaning up the copy. and leaving the scope on the stack for the original

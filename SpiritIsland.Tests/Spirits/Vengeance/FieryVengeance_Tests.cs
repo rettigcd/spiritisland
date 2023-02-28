@@ -1,5 +1,4 @@
-﻿
-namespace SpiritIsland.Tests.Spirits.Vengeance;
+﻿namespace SpiritIsland.Tests.Spirits.Vengeance;
 
 public class FieryVengeance_Tests {
 
@@ -24,8 +23,9 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Destroyed++;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
-		await using var actionScope = gameState.StartAction(ActionCategory.Spirit_Power);
-		Task task = PowerCard.For<FieryVengeance>().ActivateAsync( vengeance.BindMyPowers() );
+		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
+		SelfCtx ctx = vengeance.BindMyPowers();
+		Task task = PowerCard.For<FieryVengeance>().ActivateAsync( ctx );
 		vengeance.NextDecision().HasPrompt( "Fiery Vengeance: Target Spirit" ).HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" ).Choose( "River Surges in Sunlight" );
 
 		//  Then: spirit 2 does 2 damage and kills town
@@ -57,7 +57,7 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Destroyed = 0;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
-		await using var actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		Task task = PowerCard.For<FieryVengeance>().ActivateAsync( vengeance.BindMyPowers() );
 		vengeance.NextDecision().HasPrompt( "Fiery Vengeance: Target Spirit" ).HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" ).Choose( "River Surges in Sunlight" );
 

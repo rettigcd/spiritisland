@@ -89,6 +89,7 @@ public class CallToTrade_Tests {
 		When_GrowsBuysAndActivatesCard( user, spaceCtx );
 
 		// Then: Ravage remains - 3 explorers kill 1 dahan, remaining dahan kills 2 explorers
+		user.WaitForNext();
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1E@1" );
 	}
 
@@ -113,6 +114,7 @@ public class CallToTrade_Tests {
 		invaderLog.Clear();
 
 		// Given: a space that IS-RAVAGE AND BUILD
+		user.WaitForNext();
 		var spaceCtx = AllTargets( ctx )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
@@ -125,6 +127,7 @@ public class CallToTrade_Tests {
 
 		When_GrowsBuysAndActivatesCard( user, spaceCtx );
 
+		user.WaitForNext();
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1C@3,1T@2,4E@1" );
 	}
 

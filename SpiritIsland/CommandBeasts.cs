@@ -68,7 +68,7 @@ class CommandBeastAction : IActionFactory {
 	public async Task ActivateAsync( SelfCtx ctx ) {
 		Used = true;
 
-		await using var actionScope = new ActionScope( ActionCategory.Special ); // replace generic scope passed in.
+		await using var actionScope = await ActionScope.Start(ActionCategory.Special); // replace generic scope passed in.
 		GameCtx gameCtx = new GameCtx( ctx.GameState );
 		await new CommandBeasts().In().EachActiveLand().Execute( gameCtx );
 	}

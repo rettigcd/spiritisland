@@ -6,6 +6,7 @@ public class Keeper_GrowthTests : GrowthTests {
 
 	public Keeper_GrowthTests() : base( new Keeper() ) {
 		gsbac = new GameState( spirit, board );
+		ActionScope.Initialize();
 		_gameState = gsbac;
 		InitMinorDeck();
 	}
@@ -24,6 +25,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		When_StartingGrowth();
 		User_Activates_A();
 		User_Activates_B();
+		GrowthTask.Wait();
 
 		Assert_AllCardsAvailableToPlay( 1 + 4 );
 		Assert_HasEnergy( 1 + 2 );
@@ -44,6 +46,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		When_StartingGrowth();
 		User_Activates_A();
 		User_Activates_C();
+		GrowthTask.Wait();
 
 		Assert_AllCardsAvailableToPlay();      // A
 		Assert_HasEnergy( 2 + 2 );             // A & C
@@ -65,6 +68,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		When_StartingGrowth();
 		User_Activates_A();
 		User_Activates_D();
+		GrowthTask.Wait();
 
 		Assert_AllCardsAvailableToPlay( 4+1);     // A
 		Assert_HasEnergy( 10 + 2-3+1 );                // A & D
@@ -86,6 +90,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		When_StartingGrowth();
 		User_Activates_B();
 		User_Activates_C();
+		GrowthTask.Wait();
 
 		// Assert_HasPowerProgressionCard( 0); // B
 		Assert_HasEnergy( 1 + 2 );             // C
@@ -129,6 +134,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		When_StartingGrowth();
 		User_Activates_C();
 		User_Activates_D();
+		GrowthTask.Wait();
 
 		Assert_HasEnergy( startingEnergy + spirit.EnergyPerTurn - 2  );          // C & D
 		// Assert_HasPowerProgressionCard(0); // D
@@ -145,7 +151,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		spirit.Presence.PlaceOn(space, _gameState).Wait();
 
 		// When: we place a presence on that space
-		_ = _gameState.StartAction( ActionCategory.Default ); // !!! dispose or remove
+		_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispose or remove
 		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space );
 
 		User.PushesTokensTo("D@2","A1,[A4],A6,A7,A8",2);

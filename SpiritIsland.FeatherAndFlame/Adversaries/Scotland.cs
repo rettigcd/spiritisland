@@ -86,7 +86,7 @@ public class Scotland : IAdversary {
 			.OrderBy( ss => ss.Sum( Human.Town ) )
 			.Take( gameState.Spirits.Length )
 			.ToArray();
-		await using(var actionScope = new ActionScope( ActionCategory.Adversary ))
+		await using(var actionScope = await ActionScope.Start(ActionCategory.Adversary))
 			foreach(SpaceState ss in spacesToAddTown)
 				await ss.AddDefault( Human.Town, 1, AddReason.Build );
 		gameState.Log(new SpiritIsland.Log.Debug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.SelectLabels().Join(",")));

@@ -85,8 +85,8 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
 
 		GrowAndBuyNoCards();
-		System.Threading.Thread.Sleep(5);
 
+		_user.WaitForNext();
 		_log.Assert_Built( "A3", "A8" );
 		_log.Assert_Explored( "A2", "A5" );
 
@@ -96,14 +96,14 @@ public class ImmigrationSlows_Tests : TestInvaderDeckSequence_Base {
 
 		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( FearAck3 );
-		System.Threading.Thread.Sleep(5);
 
+		_user.WaitForNext();
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Explored("A4", "A7");
 
 		GrowAndBuyNoCards();
-		System.Threading.Thread.Sleep(5);
 
+		_user.WaitForNext();
 		_log.Assert_Ravaged( "A2", "A5" );
 		_log.Assert_Built("A4", "A7"); // normal build
 		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next

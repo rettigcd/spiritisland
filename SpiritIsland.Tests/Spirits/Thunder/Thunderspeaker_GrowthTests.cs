@@ -51,9 +51,9 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 		Given_HasPresence( board[1] );
 
 		When_StartingGrowth();
-
 		User.Growth_SelectAction( "PlacePresence(1)" );
 		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+		GrowthTask.Wait();
 
 		Assert.Equal(1,spirit.EnergyPerTurn);
 		Assert_HasEnergy( 4+1 );

@@ -14,7 +14,7 @@ public class ToDreamAThousandDeaths_Tests {
 		_board = Board.BuildBoardA();
 		_gameState = new GameState( _spirit, _board );
 		_gameState.Initialize();
-		_ = _gameState.StartAction( ActionCategory.Spirit_Power ); // !!! get rid of or Dispose
+		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! get rid of or Dispose
 
 		// Disable destroying presence
 		_gameState.DisableBlightEffect();
@@ -46,7 +46,7 @@ public class ToDreamAThousandDeaths_Tests {
 		tokens.AdjustDefault(Human.Explorer, count );
 
 		// When: causing 1 damage to each invader
-		await using ActionScope scope = new ActionScope( ActionCategory.Spirit_Power );
+		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		var ctx = MakeFreshPowerCtx(scope);
 		switch(method) {
 			case "damage": _ = OneDamageToEachAsync( ctx ); break;
@@ -73,7 +73,7 @@ public class ToDreamAThousandDeaths_Tests {
 		// generate 2 fear per town destroyed,
 		// pushes town
 
-		await using ActionScope scope = new ActionScope( ActionCategory.Spirit_Power );
+		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		var ctx = MakeFreshPowerCtx( scope );
 
 		// Given: 2 town
@@ -99,7 +99,7 @@ public class ToDreamAThousandDeaths_Tests {
 	[Fact]
 	public async Task DreamDamageResetsEachPower() {
 
-		await using ActionScope scope = new ActionScope( ActionCategory.Spirit_Power );
+		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		var ctx = MakeFreshPowerCtx( scope );
 
 		// Given: 2 explorers
@@ -111,7 +111,7 @@ public class ToDreamAThousandDeaths_Tests {
 			await Run_OneDamageToEachAsync();
 			await Run_OneDamageToEachAsync();
 		}
-		_ = Run3Async();
+		Run3Async().Wait();
 
 		_user.Assert_Done();
 
@@ -120,7 +120,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	async Task Run_OneDamageToEachAsync() {
-		await using var actionScope = this._gameState.StartAction( ActionCategory.Spirit_Power );
+		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		await OneDamageToEachAsync( MakeFreshPowerCtx( actionScope ) );
 	}
 
@@ -158,7 +158,7 @@ public class ToDreamAThousandDeaths_Tests {
 		tokens.Adjust( StdTokens.City1, 1 );
 
 		{
-			await using ActionScope scope = new ActionScope( ActionCategory.Spirit_Power );
+			await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 
 			// When: doing 4 points of damage
 			Task t = FourDamage( MakeFreshPowerCtx( scope ) );

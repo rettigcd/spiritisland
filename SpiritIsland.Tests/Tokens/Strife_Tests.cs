@@ -77,7 +77,7 @@ public class Strife_Tests {
 		var space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
 		var counts = gs.Tokens[space];
 
-		await using var scope = gs.StartAction( ActionCategory.Default );
+		await using var scope = await ActionScope.Start( ActionCategory.Default );
 
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);

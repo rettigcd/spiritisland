@@ -32,7 +32,7 @@ public class RitesOfTheLandsRejection_Tests {
 			user.IsDoneWith( Phase.Fast );
 
 		// Then: space should have a building
-		System.Threading.Thread.Sleep(10);
+		user.WaitForNext();
 		space.InvaderSummary().ShouldBe( result );
 
 	}

@@ -81,7 +81,7 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
-		await using var action = new ActionScope( ActionCategory.Spirit_Growth );
+		await using var action = await ActionScope.Start(ActionCategory.Spirit_Growth);
 		var ctx = BindSelf();
 
 		// Auto run the auto-runs.
@@ -278,7 +278,7 @@ public abstract partial class Spirit : IOption {
 			Phase.Slow => ActionCategory.Spirit_Power,
 			_ => throw new InvalidOperationException(),
 		};
-		await using var actionScope = new ActionScope( category );
+		await using var actionScope = await ActionScope.Start( category );
 		actionScope.Owner = this;
 		SelfCtx ctx = phase switch {
 			Phase.Init or
@@ -290,12 +290,8 @@ public abstract partial class Spirit : IOption {
 
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( ctx );
-		if(factory is IRecordLastTarget lastTargetRecorder )
-			await ActionTaken_ThisRound.InvokeAsync( new ActionTaken(factory,lastTargetRecorder.LastTarget) );
 		ctx.GameState.CheckWinLoss(); // @@@
 	}
-
-	public AsyncEvent<ActionTaken> ActionTaken_ThisRound = new AsyncEvent<ActionTaken>(); // !!! put this in end-of-action-scope handle.
 
 	#endregion
 
@@ -358,7 +354,6 @@ public abstract partial class Spirit : IOption {
 		// Elements
 		InitElementsFromPresence();
 
-		ActionTaken_ThisRound.Clear();
 		return Task.CompletedTask;
 	}
 

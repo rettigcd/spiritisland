@@ -4,6 +4,10 @@ public class AbsoluteStasis_Tests {
 
 	readonly ConfigurableTestFixture cfg = new ConfigurableTestFixture();
 
+	public AbsoluteStasis_Tests() {
+		ActionScope.Initialize();
+	}
+
 	[Trait("SpecialRule","OceanInPlay")]
 	[Fact]
 	public async Task CannotTargetInPlayOceans() {
@@ -15,7 +19,7 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.Initialize();
 
 		{
-			await using var scope = cfg.GameState.StartAction(ActionCategory.Spirit_Power);
+			await using var scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 			var selfCtx = cfg.Spirit.BindMyPowers();
 
 			//  When: targeting with other card

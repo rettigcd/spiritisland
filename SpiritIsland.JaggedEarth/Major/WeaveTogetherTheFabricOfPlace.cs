@@ -77,7 +77,7 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	static async Task DistributeVisibleTokens( SelfCtx ctx, Space from, Space to ) {
-		await using ActionScope actionScope = new ActionScope( ActionCategory.Spirit_Power );
+		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 
 		var fromTokens = from.Tokens;
 		var toTokens = to.Tokens;

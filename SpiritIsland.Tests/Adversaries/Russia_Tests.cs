@@ -152,7 +152,7 @@ public class Russia_Tests {
 		SpaceState destination = gameState.Tokens[boardA[4]];
 		destination.Clear();
 		//  When: power destroys
-		await using var actionScope = gameState.StartAction( ActionCategory.Spirit_Power );
+		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		Task t = TheJungleHungers.ActAsync( spirit.BindMyPowers().Target(a3.Space) );
 		//  Then: we push 1 explorer to a Land-space (not A0-ocean)
 		t.IsCompleted.ShouldBeFalse();
@@ -184,12 +184,12 @@ public class Russia_Tests {
 		a5.Clear().InitTokens("1D@2,3E@1");
 
 		//  When: card ravages
-		Task t = gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState );
+		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState )
+			.Wait();
 
 		//  Then: dahan is destroyed and land is blighted
 		a5.Summary.ShouldBe("1B,3E@1");
 
-		t.IsCompleted.ShouldBeTrue();
 	}
 
 	[Fact]

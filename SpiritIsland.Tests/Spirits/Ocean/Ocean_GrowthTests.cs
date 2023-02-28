@@ -2,7 +2,9 @@
 
 public class Ocean_GrowthTests : GrowthTests {
 
-	public Ocean_GrowthTests():base( new Ocean() ) {}
+	public Ocean_GrowthTests():base( new Ocean() ) {
+		ActionScope.Initialize();
+	}
 
 	[Theory]
 	[InlineData("A0","","A0:1")]
@@ -29,7 +31,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 		if(gather != null){
-			_ = _gameState.StartAction( ActionCategory.Default ); // !!! dispose
+			_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispose
 			_ = gather.ActivateAsync( spirit.BindSelf() );
 			while(!spirit.Gateway.IsResolved){
 				var source = spirit.Gateway.Next.Options.Single(x=>moveBySrc.ContainsKey(x.Text));

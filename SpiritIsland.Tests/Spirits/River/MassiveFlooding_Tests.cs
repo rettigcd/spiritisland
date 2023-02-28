@@ -7,12 +7,14 @@ public class MassiveFlooding_Tests : RiverGame {
 	readonly GameState gs;
 
 	public MassiveFlooding_Tests():base(){
+		ActionScope.Initialize();
+
 		// Given: River
 		gs = new GameState( spirit, Board.BuildBoardA() ) {
 			Phase = Phase.Slow
 		};
 
-		game = new SinglePlayerGame(gs).Start();
+		_game = new SinglePlayerGame(gs).Start();
 
 	}
 

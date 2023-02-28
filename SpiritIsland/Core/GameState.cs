@@ -30,6 +30,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Tokens = new Tokens_ForIsland( this );
 
 		TimePasses_WholeGame += TokenCleanUp;
+
+		ActionScope.Initialize(); // ! This is here for tests.
 	}
 	public int ShuffleNumber { get; } // used to generate different shuffle #s
 
@@ -37,6 +39,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// Called AFTER everything has been configured. and BEFORE players make first move.
 	/// </summary>
 	public void Initialize() {
+		ActionScope.Initialize();
 		PlaceStartingTokens(); 
 		InitialExplore();
 		InitSpirits();// ManyMinds requires the beast to be in place, so this goes after tokens are placed.

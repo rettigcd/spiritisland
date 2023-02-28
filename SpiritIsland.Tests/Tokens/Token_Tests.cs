@@ -41,7 +41,8 @@ public class Token_Tests {
 		spaceState.Wilds.Init(1);
 
 		//  When: we explore there
-		_ = spaceState.Space.DoAnExplore( gs );
+		spaceState.Space.DoAnExplore( gs )
+			.Wait();
 
 		//  Then: still no invaders
 		spaceState.HasInvaders().ShouldBeFalse("there should be no explorers in "+spaceState.Space.Label);
@@ -59,7 +60,7 @@ public class Token_Tests {
 		SpaceState space = gs.Spaces_Unfiltered.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
 		space.AdjustDefault( Human.Explorer, 1 ); // add explorer
 		//   And: 1 diseases there
-		_ = gs.StartAction( ActionCategory.Default ); // !!! dispoose
+		_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispoose
 		await space.Disease.Add(1);
 
 		//  When: we build there

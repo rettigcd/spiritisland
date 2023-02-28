@@ -28,7 +28,7 @@ public static partial class Cmd {
 					BoardCtx boardCtx = new BoardCtx( gs.Island.Boards[boardIndex] );
 					for(int i = 0; i < boardCtx.Board.InvaderActionCount; ++i) {
 						// Page 10 of JE says Each Board is a new action
-						await using var actionScope = new ActionScope( ctx.Category );
+						await using var actionScope = await ActionScope.Start( ctx.Category );
 						await boardAction.Execute( boardCtx );
 					}
 				}
@@ -42,7 +42,7 @@ public static partial class Cmd {
 			async ctx => {
 				foreach(Spirit spirit in ctx.GameState.Spirits) {
 					// Page 10 of JE says Each Spirit is a new action
-					await using var actionScope = new ActionScope( ctx.Category );
+					await using var actionScope = await ActionScope.Start( ctx.Category );
 					await action.Execute( spirit.BindSelf() );
 				}
 			}

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InnatePower : IFlexibleSpeedActionFactory, IRecordLastTarget {
+public class InnatePower : IFlexibleSpeedActionFactory {
 
 	#region Constructors and factories
 

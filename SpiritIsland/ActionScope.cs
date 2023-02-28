@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.ComponentModel;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// A Spirit Island 'Action'
@@ -6,42 +8,76 @@
 public sealed class ActionScope : IAsyncDisposable {
 
 	#region scope container
-	class ActionScopeContainer {
-		public ActionScope Current = new ActionScope(); // default
-	}
-	static ActionScopeContainer Container => _container.Value ??= new ActionScopeContainer();
-	readonly static AsyncLocal<ActionScopeContainer> _container = new AsyncLocal<ActionScopeContainer>(); // value gets shallow-copied into child calls and post-awaited states.
-	#endregion
 
+	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
+	static public void Initialize() {
+		_scopeContainer.Value = new ActionScopeContainer();
+	}
+
+	class ActionScopeContainer {
+		public ActionScopeContainer() {
+			Id = Guid.NewGuid();
+			Current = new ActionScope(this); // default
+			StartOfActionHandlers = new List<IRunAtStartOfAction>();
+		}
+		readonly Guid Id;
+		public ActionScope Current; // default
+		public readonly List<IRunAtStartOfAction> StartOfActionHandlers;
+		public override string ToString() => Id.ToString();
+		public Task RunStartOfActionHandlers() {
+			IRunAtStartOfAction[] snapshop = StartOfActionHandlers.ToArray(); // so handlers can modify the List
+			return Task.WhenAll( snapshop.Select( x => x.Start( Current ) ) );
+
+		}
+	}
+
+	// Good Reading on Execution Context and async/await
+	// https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/
+	// https://stackoverflow.com/questions/39795286/does-async-await-increases-context-switching
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
 	public static ActionScope Current => Container.Current;
+	public static List<IRunAtStartOfAction> StartOfActionHandlers => Container.StartOfActionHandlers;
+	static ActionScopeContainer Container => _scopeContainer.Value ?? throw new InvalidOperationException( NotInitializedMessage );
+	readonly static AsyncLocal<ActionScopeContainer> _scopeContainer = new AsyncLocal<ActionScopeContainer>(); // value gets shallow-copied into child calls and post-awaited states.
+
+	const string NotInitializedMessage = "ActionScope not initialized. Call ActionScope.Initialize() from root ExecutionContext.";
+
+	#endregion
 
 	#region constructor
 
 	// The default / game-starting scope
 
-	ActionScope() {
+	ActionScope( ActionScopeContainer container ) {
 		Id = Guid.NewGuid();
+		_container = container;
 		_neverCache = true; // !! Since it is a singleton, make usable across multiple execution contexts
 	}
 
-	public ActionScope( ActionCategory actionCategory ) {
+	/// <summary> For Testing only </summary>
+	public static ActionScope Start_NoStartActions( ActionCategory cat ) => new ActionScope( cat, Container );
+
+	public static async Task<ActionScope> Start( ActionCategory cat ) {
+		ActionScopeContainer container = Container;				// grab from ExecutionContext
+		ActionScope scope = new ActionScope( cat, container );  // start new (and assign current)
+		await container.RunStartOfActionHandlers();
+		return scope;
+	}
+
+	ActionScope( ActionCategory actionCategory, ActionScopeContainer container ) {
 		Id = Guid.NewGuid();
 		Category = actionCategory;
+		_container = container;
 
-		_old = Container.Current;
-		Container.Current = this;
+		_old = _container.Current;
+		_container.Current = this;
 	}
 	#endregion
 
 	public ActionCategory Category { get; }
 
-	// !!!During some Race condition, when rewinding, GameState.Current is coming back null.
 	public GameState GameState => _neverCache ? GameState.Current : _gameState ??= GameState.Current;
-	GameState _gameState;
-	readonly bool _neverCache = false; // for the root Action...
-
 	public SpaceState AccessTokens(Space space) => _upgrader( GameState.Tokens[space] );
 	public Func<SpaceState, SpaceState> Upgrader {
 		set {
@@ -49,21 +85,15 @@ public sealed class ActionScope : IAsyncDisposable {
 			_upgrader = value;
 		}
 	}
-	Func<SpaceState, SpaceState> _upgrader = DefaultUpgrader;
-	static SpaceState DefaultUpgrader(SpaceState ss) => ss;
 
 	public TerrainMapper TerrainMapper => _terrainMapper 
 		??= (GameState?.GetTerrain( Category ) ?? new TerrainMapper()); // If not GameState / configuration, use default
-	TerrainMapper _terrainMapper;
-
-	readonly ActionScope _old;
 
 	// spirit (if any) that owns the action. Null for non-spirit actions
 	public Spirit Owner { 
 		get => _owner;
 		set { if(_neverCache) throw new InvalidOperationException("Can't set owner on default scope"); _owner = value; }
 	}
-	Spirit _owner;
 
 	public Guid Id { get; }
 
@@ -90,8 +120,7 @@ public sealed class ActionScope : IAsyncDisposable {
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
 
-		var container = Container;
-		var current = container.Current;
+		var current = _container.Current;
 		if(current != this) 
 			throw new Exception($"Error SI01: Disposing {Category}/{Id} but .Current is {current.Category}/{current.Id}");
 			// SI01 - Scenarios that cause this:
@@ -100,17 +129,24 @@ public sealed class ActionScope : IAsyncDisposable {
 			// 2) During testing... Parent ActionScope created on different thread than child ActionScope.
 			//    Exception occurs on Parent thread which tries to dispose bethrow bubbling up the exception
 			//    However, child ActionScope is still running and hasn't cleaned itself up yet.
+			// 3) The Container was initialized in a child execution context, not the root/parent context.
 
-		container.Current = _old;
+		_container.Current = _old;
 	}
 
 	public void AtEndOfThisAction(Func<ActionScope,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );
 	public void AtEndOfThisAction( Action<ActionScope> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );
 
-	AsyncEvent<ActionScope> _endOfThisAciton;
-
 	#region private
+	readonly ActionScopeContainer _container;
+	readonly bool _neverCache = false; // for the root Action...
+	readonly ActionScope _old;
 	Dictionary<string, object> dict;
+	AsyncEvent<ActionScope> _endOfThisAciton;
+	TerrainMapper _terrainMapper;
+	GameState _gameState;
+	Func<SpaceState, SpaceState> _upgrader = ss=>ss;
+	Spirit _owner;
 	#endregion
 }
 

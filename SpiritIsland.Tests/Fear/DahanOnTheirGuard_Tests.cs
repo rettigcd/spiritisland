@@ -51,10 +51,11 @@ public class DahanOnTheirGuard_Tests {
 			await gameState.Fear.Apply();
 			await new RavageSlot().ActivateCard( invaderCard, gameState );
 		}
-		_ = DoIt();
+		var task = DoIt();
 		User.AcknowledgesFearCard( "Dahan on their Guard : 1 : In each land, Defend 1 per Dahan." );
 
 		// Then: 0 dahan left
+		task.Wait();
 		ravageSpace.Tokens.Dahan.CountAll.ShouldBe( 2 );
 
 		//   And: 2 towns

@@ -4,6 +4,7 @@ public class ActionScope_Tests {
 
 	[Fact]
 	public async Task Original_IsRestored() {
+		ActionScope.Initialize();
 		Guid childId; // grab later
 
 		// Given: we know the default/original action scope
@@ -11,7 +12,7 @@ public class ActionScope_Tests {
 
 		{
 			// And: we create a child actions scope
-			await using var childScope = new ActionScope(ActionCategory.Spirit_Power);
+			await using var childScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 			childId = childScope.Id;
 
 			// When: we cross the await boundary (causing a TaskLocal copy)

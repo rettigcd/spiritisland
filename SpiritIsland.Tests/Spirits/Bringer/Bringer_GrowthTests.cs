@@ -70,6 +70,7 @@ public class Bringer_GrowthTests : GrowthTests {
 		User.Growth_SelectAction( $"PlacePresence(4,{Target.Dahan}Or{Target.Invaders})" );
 		User.Growth_PlacesEnergyPresence( "T6;T7;T8;T9" );
 
+		GrowthTask.Wait();
 		Assert.Equal(2,spirit.EnergyPerTurn);
 		Assert_HasEnergy(2+2);
 		Assert_BoardPresenceIs("T5:1,T6:1");

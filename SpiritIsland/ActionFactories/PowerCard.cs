@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
+public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 	#region constructor
 
@@ -40,7 +40,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory, IRecordLastTarget {
 		if(_repeatAttr != null) {
 			var repeater = _repeatAttr.GetRepeater();
 			while(await repeater.ShouldRepeat( ctx.Self )) {
-				await using var anotherScope = new ActionScope(ActionCategory.Spirit_Power);
+				await using var anotherScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 				anotherScope.Owner = ctx.Self;
 				await ActivateInnerAsync( ctx );
 			}

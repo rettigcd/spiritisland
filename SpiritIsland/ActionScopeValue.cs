@@ -8,7 +8,7 @@ public class ActionScopeValue<T> {
 	/// <summary>
 	/// Returns default value until it is manually initialized.
 	/// </summary>
-	public ActionScopeValue(string key, T defaultValue){
+	public ActionScopeValue(string key, T defaultValue = default){
 		_key = key;
 		_defaultValue = defaultValue;
 	}

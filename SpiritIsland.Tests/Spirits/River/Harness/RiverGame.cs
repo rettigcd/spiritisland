@@ -9,7 +9,7 @@ public class RiverGame {
 		User = new VirtualRiverUser( spirit );
 	}
 
-	protected SinglePlayerGame game;
+	protected SinglePlayerGame _game;
 	protected readonly Spirit spirit;
 	protected readonly VirtualRiverUser User;
 }

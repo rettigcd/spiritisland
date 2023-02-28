@@ -65,6 +65,7 @@ public class GiftOfStrength_Tests {
 		spirit.Elements[Element.Sun] = 1;
 		spirit.Elements[Element.Earth] = 2;
 		spirit.Elements[Element.Plant] = 2;
+		spirit.Energy = 20;
 
 		//  And: Earth has 4 cards
 		var cards = new PowerCard[] {
@@ -81,6 +82,7 @@ public class GiftOfStrength_Tests {
 		//spirit.AddActionFactory( MakePowerCard( Slow0 ) ); // not played
 		//spirit.AddActionFactory( MakePowerCard( Slow1 ) ); // played - should appear
 		//spirit.AddActionFactory( MakePowerCard( Slow2 ) ); // played - no - too expensive
+		User.WaitForNext();
 		User.IsDoneBuyingCards();
 
 		//  And: played GOS on self
