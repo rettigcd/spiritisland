@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Log;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class BlightToken : TokenClassToken
 	, IHandleTokenAddedAsync
@@ -14,16 +12,12 @@ public class BlightToken : TokenClassToken
 		if(!ShouldDoBlightAddedEffects( args.Reason )) return;
 
 		var gs = GameState.Current;
-		var config = Config.Value;
+		BlightConfig config = Config.Value;
 
-		config.AddReason = args.Reason; // So Presence-Destruction knows where blight game from
+		config.BlightFromCardTrigger = args;
 
 		// remove from source (usually card)
-		Func<int, SpaceState, Task> sourceTaker = config.CustomTakeFromBlightSouce;
-		if(sourceTaker!=null)
-			await sourceTaker( args.Count, args.To );
-		else
-			await gs.TakeBlightFromCard( args.Count );
+		await gs.TakeBlightFromCard( args.Count );
 
 		// Destory presence
 		if(config.DestroyPresence)
@@ -98,14 +92,10 @@ public class LandDamage : IToken, IHandleTokenAddedAsync {
 }
 
 public class BlightConfig {
-	public AddReason AddReason;
+
+	public ITokenAddedArgs BlightFromCardTrigger;
+
 	public bool ShouldCascade = true;
 	public bool TakeFromCard = true;
 	public bool DestroyPresence = true;
-
-	// !!! Instead of this override,
-	// If the Blight Card was a "Space",
-	// then we could add a Token-Event-Mod to that space
-	// to stop the blight being taken from the card.
-	public Func<int, SpaceState, Task> CustomTakeFromBlightSouce;
 }

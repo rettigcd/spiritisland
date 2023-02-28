@@ -104,7 +104,7 @@ public class HeartOfTheWildfire : Spirit {
 			return Task.CompletedTask;
 		}
 
-		static bool BlightAddedDueToSpiritEffects() => !BlightToken.ForThisAction.AddReason
+		static bool BlightAddedDueToSpiritEffects() => !BlightToken.ForThisAction.BlightFromCardTrigger.Reason
 			.IsOneOf( AddReason.Ravage, AddReason.BlightedIsland, AddReason.None );
 
 		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {

@@ -5,13 +5,13 @@ class HoldTheIslandFastWithABulwarkOfWill {
 
 	[InnateOption("2 earth","When blight is added to one of your lands, you may pay 2 Energy per blight to take it from the box instead of the Blight Card.")]
 	static public Task Option1( SelfCtx ctx ) {
-		ctx.GameState.AddIslandMod( new PayEnergyToTakeFromCard(ctx,2) ); // needs removed
+		ctx.GameState.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(ctx,2), 1 );
 		return Task.CompletedTask;
 	}
 
 	[InnateOption("4 earth","The cost is 1 Energy instead of 2")]
 	static public Task Option2( SelfCtx ctx ) {
-		ctx.GameState.AddIslandMod( new PayEnergyToTakeFromCard(ctx,1) ); // needs removed
+		ctx.GameState.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(ctx,1), 1 );
 		return Task.CompletedTask;
 	}
 
@@ -23,38 +23,36 @@ class HoldTheIslandFastWithABulwarkOfWill {
 
 }
 
-class PayEnergyToTakeFromCard 
+/// <summary>
+/// Add this to Blight Card to stop blight from coming off of it.
+/// </summary>
+class PayEnergyToTakeFromBox 
 	: BaseModEntity
-	, IModifyAddingToken
+	, IModifyRemovingTokenAsync
 	, IEndWhenTimePasses
 {
-
 	readonly Spirit _spirit;
 	readonly int _cost;
 
-	public PayEnergyToTakeFromCard( SelfCtx ctx, int cost ) {
+	public PayEnergyToTakeFromBox( SelfCtx ctx, int cost ) {
 		_spirit = ctx.Self;
 		_cost = cost;
 	}
 
-	public void ModifyAdding( AddingTokenArgs args ) {
-		if( args.Token == Token.Blight 
-			&& 0 < args.Count 
-			&& args.To.Has( _spirit.Token )
-		)
-			BlightToken.ForThisAction.CustomTakeFromBlightSouce = this.AddBlight;
-	}
+	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+		if( args.Token != Token.Blight || 0 == args.Count ) return;
+		
+		var cause = BlightToken.ForThisAction.BlightFromCardTrigger;
+		if( cause.To.Has( _spirit.Token ) // was taken from space with presence
+		) {
+			bool takeFromBoxInstead = _cost <= _spirit.Energy
+				&& await _spirit.UserSelectsFirstText( $"New Blight on {cause.To.Space.Label}, take from:", $"Bag (for {_cost})", "card" );
+			if(takeFromBoxInstead) {
+				_spirit.Energy -= _cost;
+				args.Count = 0;
+			}
+		}
 
-	async Task AddBlight( int delta, SpaceState space ) {
-		bool takeFromBagInstead = 0 < delta
-			&& space.Has( _spirit.Token )
-			&& _cost <= _spirit.Energy
-			&& await _spirit.UserSelectsFirstText( $"New Blight on {space.Space.Label}, take from:", $"Bag (for {_cost})", "card" );
-
-		if(takeFromBagInstead)
-			_spirit.Energy -= _cost;
-		else
-			await GameState.Current.TakeBlightFromCard( delta );
 	}
 
 }

@@ -4,7 +4,7 @@ namespace SpiritIsland;
 
 public class GameState : IHaveHealthPenaltyPerStrife {
 
-	public static GameState Current => _current.Value; // !!! Only access from the ActionScope
+	public static GameState Current => _current.Value; // !! We might want to only access from the ActionScope
 	readonly static AsyncLocal<GameState> _current = new AsyncLocal<GameState>(); // value gets shallow-copied into child calls and post-awaited states.
 
 	#region constructors
