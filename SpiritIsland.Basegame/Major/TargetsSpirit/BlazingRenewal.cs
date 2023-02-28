@@ -9,35 +9,49 @@ public class BlazingRenewal {
 	[AnySpirit]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
-		if( ctx.Other.Presence.Destroyed == 0 ) return;
-		var otherCtx = ctx.OtherCtx;
+		if(ctx.Other.Presence.Destroyed == 0) return;
+		SelfCtx otherCtx = ctx.OtherCtx;
 
-		// target spirit adds 2 of their destroyed presence
-		// into a single land, up to range 2 from your presence.
+		Space space = await SelectTarget( ctx, otherCtx );
 
+		if(space != null)
+			await OtherSpiritsAction(
+				ctx.OtherCtx.Target( space ),
+				// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
+				await ctx.YouHave( "3 fire,3 earth,2 plant" )
+			);
+
+	}
+
+	private static async Task<Space> SelectTarget( TargetSpiritCtx ctx, SelfCtx otherCtx ) {
 		// A Range extender effects the "Spirit's Actions".  (so Originating spirit's range determines which spaces)
-		var targetOptions = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 2 ), true)
-			.Where( otherCtx.Self.Presence.CanBePlacedOn )	// filter by the OTHER spirits placeable options
+		var targetOptions = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 2 ), true )
+			.Where( otherCtx.Self.Presence.CanBePlacedOn )  // filter by the OTHER spirits placeable options
 			.ToArray();
-		if( targetOptions.Length == 0 ) return;
-
 		// Jonah says Originating Spirit's decision.  However, Querki says: Target Spirit makes the decision.
-		var space = await ctx.OtherCtx.Decision( Select.ASpace.ToPlacePresence( targetOptions, Present.Always, ctx.Other.Token ) );
+		Space space = (targetOptions.Length == 0) ? null
+			: await ctx.OtherCtx.Decision( Select.ASpace.ToPlacePresence( targetOptions, Present.Always, ctx.Other.Token ) );
+		return space;
+	}
+
+	static async Task OtherSpiritsAction( TargetSpaceCtx ctx, bool escalate ) {
+
 		// target spirit adds 2 of their destroyed presence
-		await ctx.OtherCtx
-			.Target( space )
-			.Presence.PlaceDestroyedHere( 2 );
+		await ctx.Presence.PlaceDestroyedHere( 2 );
 
 		// if any presence was added,
 		// 2 damage to each town/city in that land.
 
-		var selfPickLandCtx = ctx.Target( space );
-			await selfPickLandCtx.DamageEachInvader(2,Human.Town_City);
+		// Do damage to city town
+		await ctx.DamageEachInvader( 2, Human.Town_City );
 
-		// if you have 3 fire, 3 earth , 2 plant, 4 damage in that land
-		if( await ctx.YouHave("3 fire,3 earth,2 plant") )
-			await selfPickLandCtx.DamageInvaders(4);
+		// Do escalation first to allow badland damage to be applied to anything
+		if(escalate)
+			await ctx.DamageInvaders( 4 );
+
+		// This isn't 100% correct.
+		// If escalation and Badlands, then should be able to apply badlands to explorers.
+		// For simplifiation, just going to force it on the City/Towns if possible.
 
 	}
-
 }

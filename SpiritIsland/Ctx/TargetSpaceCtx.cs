@@ -201,13 +201,11 @@ public class TargetSpaceCtx : SelfCtx {
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
-	// !!! If we do any damage and there is badlands, we need to check at the end of the Action that all damage was done.
-	// !!! Maybe - could pass an optional flag to early damage, indicating badlands is optional, because more damage is coming.
-
-	public async Task DamageEachInvader( int individualDamage, params IEntityClass[] generic ) {
-		await Invaders.ApplyDamageToEach( individualDamage, generic );
+	public Task DamageEachInvader( int individualDamage ) => DamageEachInvader( individualDamage, Human.Invader);
+	public async Task DamageEachInvader( int individualDamage, IEntityClass[] tokenClasses ) {
+		await Invaders.ApplyDamageToEach( individualDamage, tokenClasses );
 		var bonusDamage = BonusDamageForAction();
-		int damageApplied = await Invaders.UserSelectedDamage( Self, bonusDamage.Available, generic );
+		int damageApplied = await Invaders.UserSelectedDamage( Self, bonusDamage.Available, tokenClasses );
 		bonusDamage.TrackDamageDone( damageApplied );
 	}
 

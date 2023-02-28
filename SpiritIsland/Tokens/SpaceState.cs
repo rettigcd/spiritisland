@@ -105,11 +105,8 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public BeastBinding Beasts => new ( this, Token.Beast );
 	public TokenBinding Disease => new ( this, _api.GetDefault( Token.Disease ) );
 	public TokenBinding Wilds => new ( this, Token.Wilds );
-	public virtual TokenBinding Badlands => new ( this, Token.Badlands ); // This should not be used directly from inside Actions
+	public virtual TokenBinding Badlands => new ( this, Token.Badlands );
 	public HealthTokenClassBinding Dahan => new HealthTokenClassBinding( this, Human.Dahan );
-	//public HealthTokenClassBinding_NoEvents Explorers => new HealthTokenClassBinding_NoEvents( this, Invader.Explorer );
-	//public HealthTokenClassBinding_NoEvents Towns => new HealthTokenClassBinding_NoEvents( this, Invader.Town );
-	//public HealthTokenClassBinding_NoEvents Cities => new HealthTokenClassBinding_NoEvents( this, Invader.City );
 
 	#endregion
 
