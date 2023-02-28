@@ -51,7 +51,6 @@ public class SpiritCards_Tests {
 	}
 
 	protected void When_PlayingCard() {
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! nothing is disposing of this.
 		_ = card.ActivateAsync( spirit.BindMyPowers() );
 	}
 

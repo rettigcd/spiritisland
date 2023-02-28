@@ -28,7 +28,6 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! dispose
 		_ = PlayCard( spirit.BindMyPowers().Target(src) );
 
 		user.NextDecision.HasPrompt( "Move up to (5)" ).HasOptions("D@2,Done").Choose( "D@2" ); // Pick space and 1st token
@@ -72,7 +71,6 @@ public class WrapInWingsOfSunlight_Tests {
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! Get rid of or Dispose
 		_ = PlayCard( spirit.BindMyPowers().Target(src) );
 
 		//  And: Can bring 2 of each

@@ -6,7 +6,7 @@ public class DownPour_Tests {
 
 	[Trait("SpecialRule","DrenchTheLandscape")]
 	[Fact]
-	public void TargetLandUsingPresenceAsWetlands() {
+	public async Task TargetLandUsingPresenceAsWetlands() {
 		
 		// Given: Downpour
 		fxt.Spirit = new DownpourDrenchesTheWorld();
@@ -24,7 +24,8 @@ public class DownPour_Tests {
 
 		// When: play card
 		var card = PowerCard.For<DarkSkiesLooseAStingingRain>();
-		var task = card.ActivateAsync( fxt.SelfCtx );
+		await using var actionSCope = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Growth );
+		Task task = card.ActivateAsync( fxt.SelfCtx );
 		task.IsCompletedSuccessfully.ShouldBeFalse();
 
 		// Then: can target out of 2-presence non wetland

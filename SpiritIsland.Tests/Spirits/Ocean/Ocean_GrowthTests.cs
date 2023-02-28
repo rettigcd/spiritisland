@@ -31,7 +31,6 @@ public class Ocean_GrowthTests : GrowthTests {
 		GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 		if(gather != null){
-			_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispose
 			_ = gather.ActivateAsync( spirit.BindSelf() );
 			while(!spirit.Gateway.IsResolved){
 				var source = spirit.Gateway.Next.Options.Single(x=>moveBySrc.ContainsKey(x.Text));

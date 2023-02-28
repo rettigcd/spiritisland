@@ -32,8 +32,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		// When: playing Card
 		static async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
-		} } 
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! not being disposed
+		} }
 		_ = PlayCard( spirit.BindMyPowers().TargetSpirit(spirit) );
 
 		//  And: Can bring 2 of each

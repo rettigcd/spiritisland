@@ -5,17 +5,18 @@ public class DreadApparitions_Tests {
 	Board board;
 	TargetSpaceCtx ctx;
 
-	void Init() {
+	ActionScope Init() {
 		Bringer spirit = new Bringer();
 		board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! not disposing
+		var scope = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power );
 		ctx = spirit.BindMyPowers().Target( board[5] );
+		return scope;
 	}
 
 	[Fact]
-	public void DirectFear_GeneratesDefend() {
-		Init();
+	public async Task DirectFear_GeneratesDefend() {
+		await using var x = Init();
 
 		async Task When() {
 			// Given: using Dread Apparitions
@@ -33,8 +34,8 @@ public class DreadApparitions_Tests {
 	}
 
 	[Fact]
-	public void TownDamage_Generates2Defend() {
-		Init();
+	public async Task TownDamage_Generates2Defend() {
+		await using var x = Init();
 
 		// Disable destroying presence
 		ctx.GameState.DisableBlightEffect();
@@ -59,7 +60,7 @@ public class DreadApparitions_Tests {
 	// Generate 5 DATD fear by 'killing' a city - should defend 5
 	[Fact]
 	public async Task CityDamage_Generates5Defend() {
-		Init();
+		await using var x = Init();
 
 		// Disable destroying presence
 		ctx.GameState.DisableBlightEffect();

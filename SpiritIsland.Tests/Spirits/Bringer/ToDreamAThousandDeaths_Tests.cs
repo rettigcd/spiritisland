@@ -14,7 +14,6 @@ public class ToDreamAThousandDeaths_Tests {
 		_board = Board.BuildBoardA();
 		_gameState = new GameState( _spirit, _board );
 		_gameState.Initialize();
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! get rid of or Dispose
 
 		// Disable destroying presence
 		_gameState.DisableBlightEffect();

@@ -60,7 +60,6 @@ public class Token_Tests {
 		SpaceState space = gs.Spaces_Unfiltered.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
 		space.AdjustDefault( Human.Explorer, 1 ); // add explorer
 		//   And: 1 diseases there
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispoose
 		await space.Disease.Add(1);
 
 		//  When: we build there

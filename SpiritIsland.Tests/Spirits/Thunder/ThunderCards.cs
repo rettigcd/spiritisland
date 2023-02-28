@@ -21,7 +21,7 @@ public class ThunderCards {
 
 		async Task Run() {
 			try {
-				var action = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! dispose
+//				var action = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power ); // !!! dispose
 				await spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit.BindMyPowers() ); 
 			}
 			catch(Exception ex) {
