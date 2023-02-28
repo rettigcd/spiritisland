@@ -180,7 +180,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task DamageInvaders( int originalDamage, params IEntityClass[] allowedTypes ) {
 
 		// Calculate Total Damage available
-		var combinedDamage = Tokens.BonusDamageForAction( originalDamage );
+		var combinedDamage = BonusDamageForAction( originalDamage );
 
 		// Apply Damage
 		int damageApplied = await Invaders.UserSelectedDamage( Self, combinedDamage.Available, allowedTypes );
@@ -194,7 +194,7 @@ public class TargetSpaceCtx : SelfCtx {
 		HumanToken[] invadersToDamage() => Tokens.InvaderTokens().Where( t => t != damageSourceToExclude ).ToArray();
 
 		// Calculate Total Damage available
-		var combinedDamage = Tokens.BonusDamageForAction( originalDamage );
+		var combinedDamage = BonusDamageForAction( originalDamage );
 
 		// Apply Damage
 		int damageApplied = await Invaders.UserSelected_ApplyDamageToSpecificToken( combinedDamage.Available, Self, damageSource, invadersToDamage );
@@ -206,7 +206,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public async Task DamageEachInvader( int individualDamage, params IEntityClass[] generic ) {
 		await Invaders.ApplyDamageToEach( individualDamage, generic );
-		var bonusDamage = Tokens.BonusDamageForAction();
+		var bonusDamage = BonusDamageForAction();
 		int damageApplied = await Invaders.UserSelectedDamage( Self, bonusDamage.Available, generic );
 		bonusDamage.TrackDamageDone( damageApplied );
 	}
@@ -235,7 +235,7 @@ public class TargetSpaceCtx : SelfCtx {
 				damagedInvaders.Add( damaged );
 		}
 
-		var combined = Tokens.BonusDamageForAction();
+		var combined = BonusDamageForAction();
 		int damageDone = await ApplyDamageToSpecificTokens( damagedInvaders, combined.Available );
 		combined.TrackDamageDone(damageDone); 
 	}
@@ -262,7 +262,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task DamageDahan( int damage ) {
 		if(damage == 0) return;
 
-		var totalDamage = Tokens.BadlandDamageForDahan( damage );
+		var totalDamage = BadlandDamageForDahan( damage );
 		int applied = await Dahan.ApplyDamage_Inefficiently( totalDamage.Available );
 		totalDamage.TrackDamageDone( applied );
 	}
@@ -271,7 +271,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task Apply1DamageToEachDahan() {
 
 		await Dahan.Apply1DamageToAll();
-		var moreDamage = Tokens.BadlandDamageForDahan();
+		var moreDamage = BadlandDamageForDahan();
 		int applied = await Dahan.ApplyDamage_Inefficiently( moreDamage.Available );
 		moreDamage.TrackDamageDone( applied );
 	}
@@ -289,6 +289,16 @@ public class TargetSpaceCtx : SelfCtx {
 	public override void AddFear( int count ) { 
 		GameState.Fear.AddDirect( new FearArgs( count ) { space = Space } );
 	}
+
+	#region Bonus Damage
+
+	// pass in null if we don't need to track original damage (like 1 damage per)
+	// pass in a # if this is joining with original damage and needs tracked.
+	public BonusDamage BonusDamageForAction( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( Tokens, "Invaders" ), DamagePool.BonusDamage(), trackOriginalDamage );
+	public BonusDamage BadlandDamageForDahan( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( Tokens, "Dahan" ), new DamagePool( 0 ), trackOriginalDamage );
+
+	#endregion
+
 
 	#region presence
 

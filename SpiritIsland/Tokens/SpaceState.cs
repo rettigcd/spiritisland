@@ -480,15 +480,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public virtual TokenPusher Pusher( Spirit self ) => new TokenPusher( self, this );
 
-	#region Bonus Damage
-
-	// pass in null if we don't need to track original damage (like 1 damage per)
-	// pass in a # if this is joining with original damage and needs tracked.
-	public BonusDamage BonusDamageForAction( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( this, "Invaders" ), DamagePool.BonusDamage(), trackOriginalDamage );
-	public BonusDamage BadlandDamageForDahan( int? trackOriginalDamage = null ) => new BonusDamage( DamagePool.BadlandDamage( this, "Dahan" ), new DamagePool(0), trackOriginalDamage );
-
-	#endregion
-
 	#region Ravage
 
 	/// <summary> Does 1 potential Ravage (if no stopper tokens) </summary>
