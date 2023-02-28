@@ -111,10 +111,11 @@ public class Island {
 	}
 
 	class BoardInfo {
-		public BoardInfo( Board b ) { Name = b.Name; Orientation = b.Orientation; }
+		public BoardInfo( Board b ) { Name = b.Name; Orientation = b.Orientation; InvaderActionCount=b.InvaderActionCount; }
 		string Name { get; set; }
 		BoardOrientation Orientation { get; set; }
-		public Board Restore() => new Board( Name, Orientation );
+		public int InvaderActionCount { get; set;}
+		public Board Restore() => new Board( Name, Orientation ){ InvaderActionCount = InvaderActionCount };
 	}
 
 	#endregion

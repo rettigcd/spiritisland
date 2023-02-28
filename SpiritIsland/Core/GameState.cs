@@ -121,7 +121,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Blight
 
-	public int DamageToBlightLand = 2; // Config - !!! save in memento
+	public int DamageToBlightLand = 2;
 
 	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Existing
 		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
@@ -276,6 +276,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			tokens       = src.Tokens.SaveToMemento();
 			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
 			island = src.Island.SaveToMemento();
+			damageToBlightLand = src.DamageToBlightLand;
 		}
 		public void Restore(GameState src ) {
 			src.RoundNumber = roundNumber;
@@ -288,6 +289,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			src.Tokens.LoadFrom( tokens );
 			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
 			src.Island.LoadFrom( island );
+			src.DamageToBlightLand = damageToBlightLand;
 		}
 		readonly int roundNumber;
 		readonly bool isBlighted;
@@ -299,6 +301,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		readonly IMemento<Tokens_ForIsland> tokens;
 		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
 		readonly IMemento<Island> island;
+		readonly int damageToBlightLand;
 	}
 
 	#endregion Memento

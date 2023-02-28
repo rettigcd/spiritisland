@@ -231,10 +231,10 @@ public partial class Board {
 	} // Weave together
 	#endregion
 
-	public int InvaderActionCount { get; set; } = 1;  // !!! save to memento
+	public int InvaderActionCount { get; set; } = 1;
 
 	public Space Ocean => Spaces_Existing.Single( s => s.IsOcean );
-
+	
 	public Space this[int index]{ get => _spaces[index]; }
 
 	#region constructor
