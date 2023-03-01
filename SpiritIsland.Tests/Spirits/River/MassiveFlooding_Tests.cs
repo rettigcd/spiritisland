@@ -77,7 +77,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		SpiritExtensions.Adjust( fixture.Spirit.Presence, spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-2 of Massive Flooding
 		fixture.InitElements("3 water,2 sun");
-		//   And: target has 1 city, 4 towns, 5 explorers - !!! collapse this to 1 line
+		//   And: target has 1 city, 4 towns, 5 explorers
 		fixture.InitTokens( space, "1C@3,4T@2,5E@1");
 
 		//  When: activate innate
@@ -108,7 +108,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		SpiritExtensions.Adjust( fixture.Spirit.Presence, spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-3 of Massive Flooding
 		fixture.InitElements( "3 sun,4 water,1 earth" );
-		//   And: target has 1 city, 4 towns, 5 explorers - !!! collapse this to 1 line
+		//   And: target has 1 city, 4 towns, 5 explorers
 		fixture.InitTokens( space, "1C@3,4T@2,5E@1" );
 
 		//  When: activate innate

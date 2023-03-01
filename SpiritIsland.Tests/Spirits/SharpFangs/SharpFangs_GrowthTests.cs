@@ -34,7 +34,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		User_GrowthB_PlacePresence();
 		GrowthTask.Wait();
 
-		User.SkipsPresenceReplacementWithBeasts();
+		// User.SkipsPresenceReplacementWithBeasts();
 
 		Assert_AllCardsAvailableToPlay( 4+1);  // A
 		Assert_HasEnergy( 10 -1 + 1 );         // A
@@ -88,7 +88,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		User_GrowthC_DrawCard_GainEnergy();
 		GrowthTask.Wait();
 
-		User.SkipsPresenceReplacementWithBeasts();
+		// User.SkipsPresenceReplacementWithBeasts();
 
 		Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
 		Assert_HasEnergy( 1 + 1 );         // C
@@ -103,7 +103,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		When_SharpFangsGrow(); // !!! These When Grows should use Pass-A-Blick to remove the GrowthTask.Wait
 		User_GrowthB_PlacePresence();
 		User_GrowthD_GainEnergy();
-		User.SkipsPresenceReplacementWithBeasts();
+		// User.SkipsPresenceReplacementWithBeasts();
 		GrowthTask.Wait();
 
 		Assert_BoardPresenceIs( "A2:1,A3:1" );  // B

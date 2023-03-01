@@ -108,7 +108,7 @@ public class Volcano_Tests {
 		gameState.IslandWontBlight();
 
 		//  When: they ravage and cause blight, destroying 1 presence
-		Task task = space.DoARavage();
+		Task task = space.Ravage();
 
 		//  Then: destroyed presence causes 1 damage to explorer
 		ApplyDamageToExplorers(spirit,task,1, space );

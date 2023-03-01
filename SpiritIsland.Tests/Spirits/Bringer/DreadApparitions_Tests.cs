@@ -100,16 +100,16 @@ public class DreadApparitions_Tests {
 			await using var myScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 			string powerGuid = ActionScope.Current.Id.ToString();
 			var ctx = spirit.BindMyPowers().Target( board[5] );
-			await DreadApparitions.ActAsync( ctx ); // !!! This await causes the execution ctx to shallow copy so when scope cleans up, it is cleaning up the copy. and leaving the scope on the stack for the original
+			await DreadApparitions.ActAsync( ctx );
 		}
 
-		await DoIt(); // !!!BUG - added an await here to make a copy of the ActionScope to preservice the original action scope
+		await DoIt();
 
 		var postActionGuid = ActionScope.Current.Id.ToString();
 		postActionGuid.ShouldBe(startingGuid);
 
 		// When: dahan destroy the city
-		await tokens.DoARavage();
+		await tokens.Ravage();
 
 		// Then: 2 fear from city
 		// Assert_GeneratedFear(2+1); // normal (1 from Dread Apparitions)

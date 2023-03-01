@@ -1,6 +1,10 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// The Engine + card management
+/// </summary>
 public abstract class InvaderSlot {
+
 	public InvaderSlot(string label ) { Label = label;}
 	public string Label { get; }
 	public List<InvaderCard> Cards { get; } = new List<InvaderCard>();

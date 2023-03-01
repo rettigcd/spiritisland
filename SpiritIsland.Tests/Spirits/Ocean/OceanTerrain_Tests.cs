@@ -78,7 +78,7 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that Pushes Dahan
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
-		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power); // !!! needed?
+		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power); // required to signal it is a spirit power
 		SelfCtx ctx = primarySpirit.BindMyPowers();
 		_ = PowerCard.For<CallToTend>().ActivateAsync( ctx );
 		//  And: Targets A2 (that has a dahan on it)
@@ -185,7 +185,7 @@ public class OceanTerrain_Tests {
 		a2.Dahan.Init(0);
 
 		//  When: invaders ravage and cause blight
-		_ = boardA[2].DoARavage(gameState);
+		_ = boardA[2].Tokens.Ravage();
 
 		// Then: we can/can't cascade into ocean
 		NextDecision

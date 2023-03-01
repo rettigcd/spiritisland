@@ -191,27 +191,6 @@ public class VirtualUser {
 		AssertDecisionInfo( "Push "+invaderChoice+" to", destinations );
 	}
 
-	#region SharpFangs-spirit Specific
-
-#pragma warning disable CA1822 // Mark members as static
-	/// <summary> for Sharp Fangs </summary>
-	public void SkipsPresenceReplacementWithBeasts() {
-#pragma warning restore CA1822 // Mark members as static
-
-		//// !!! pop this out and put in Sharp Fangs
-		//var current = userPortal.GetCurrent();
-		//var selection = current.Options.First(x=>x.Text.StartsWith("ReplacePresenceWithBeast"));
-		//Choose( selection );
-
-		//System.Threading.Thread.Sleep(5);
-		//current = userPortal.GetCurrent();
-		//selection = current.Options.First(x=>x.Text.StartsWith("Done"));
-		//Choose( selection );
-
-	}
-
-	#endregion
-
 	#region Ocean-Spirit Specific
 
 	public void GathersPresenceIntoOcean() {

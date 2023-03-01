@@ -203,7 +203,7 @@ public class AbsoluteStasis_Tests {
 		Assert_SpaceHasCountTokens( space, Human.Town, 0 );
 
 		// When: Invaders Ravage
-		space.DoARavage( cfg.GameState ).Wait( 8 );
+		new RavageSlot().ActivateCard( space.BuildInvaderCard(), GameState.Current ).Wait();
 
 		//  Then: explorers and dahan unchanged
 		Assert_SpaceHasCountTokens( space, Human.Explorer, 1 );

@@ -43,7 +43,7 @@ public class BoardSpace_Tests {
 		Assert.Contains( neighbor1, SpacesExactly( neighbor2, 2 ) );
 	}
 
-	static IEnumerable<Space> SpacesExactly( Space space, int distance ) { // !!! this should be deprecated or moved to Test project - only used in tests
+	static IEnumerable<Space> SpacesExactly( Space space, int distance ) {
 		return distance switch {
 			0 => new Space[] { space },
 			1 => space.Adjacent_Existing,

@@ -78,7 +78,7 @@ public class StubbornSolidity_Tests {
 		await Play_StubbornSolidity_On( spirit, gameState, tokens );
 
 		//  When: Ravaging
-		tokens.DoARavage().Wait();
+		tokens.Ravage().Wait();
 
 		//  Then: All 4 dahan remain
 		//   And: 10-4=6 points of damage to the land => Blight,

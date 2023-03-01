@@ -107,7 +107,7 @@ public class Russia_Tests {
 		a7.Summary.ShouldBe( "1A,2D@2,1E@1" ); // 1A is beast
 
 		//  When: Ravage on that space
-		a7.DoARavage().Wait();
+		a7.Ravage().Wait();
 
 		//  Then: explorer did 2 damage and killed 1 dahan and created 1 blight and removed the Beast
 		a7.Summary.ShouldBe( "1B,1D@2" );
@@ -125,7 +125,7 @@ public class Russia_Tests {
 		SpaceState a1 = gameState.Tokens[boardA[1]];
 		a1.Clear();
 		//  When: ravage
-		Task t = a5.DoARavage();
+		Task t = a5.Ravage();
 		//  Then: we push 1
 		t.IsCompleted.ShouldBeFalse();
 		Spirit spirit = gameState.Spirits[0];

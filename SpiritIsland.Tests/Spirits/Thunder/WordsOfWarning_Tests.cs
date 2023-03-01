@@ -28,7 +28,7 @@ public class WordsOfWarning_Tests : ThunderCards  {
 
 		// When: ravaging on A2
 		gs.IslandWontBlight();
-		await a[2].DoARavage( gs );
+		await a[2].Tokens.Ravage();
 
 		// Then: 1 explorer left
 		// Words of Warning defend 3 cancelling out City attack leaving only 4 damage from explorers
