@@ -241,7 +241,7 @@ public class Invader_Tests {
 	[Trait( "Invaders", "Ravage" )]
 	[Theory]
 	[InlineData("3D@2,1T@2,1E@1","1D@2,1D@1")]
-	public async Task Ravage(string startingUnits,string endingUnits) {
+	public void Ravage(string startingUnits,string endingUnits) {
 		gameState = new GameState( new RiverSurges(), board );
 		gameState.IslandWontBlight();
 		// Disable destroying presence

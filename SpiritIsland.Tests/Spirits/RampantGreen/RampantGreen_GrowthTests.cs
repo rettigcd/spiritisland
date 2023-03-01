@@ -86,7 +86,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 5, 2, "plant" )]
 	[InlineDataAttribute( 6, 2, "2 plant" )]
 	[InlineDataAttribute( 7, 3, "2 plant" )]
-	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {// !!! still async
 		var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
 		await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}

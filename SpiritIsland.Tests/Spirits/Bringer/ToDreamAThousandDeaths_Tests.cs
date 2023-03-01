@@ -44,17 +44,15 @@ public class ToDreamAThousandDeaths_Tests {
 		// Given: 2 explorers
 		tokens.AdjustDefault(Human.Explorer, count );
 
-		// When: causing 1 damage to each invader
+		// When: damaging / destroying each invader
 		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
-		var ctx = MakeFreshPowerCtx(scope);
-		switch(method) {
-			case "damage": _ = OneDamageToEachAsync( ctx ); break;
-			case "destroy": _ = DestroyAllExplorersAndTownsAsync( ctx ); break;
-		}
-
-		// Then: dream-death allows User pushes them
-		for(int i = 0; i < count; ++i)
-			_user.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
+		Func<TargetSpaceCtx,Task> powerCardActionAsync = (method switch { "damage" => OneDamageToEachAsync, "destroy" => DestroyAllExplorersAndTownsAsync, _ => throw new Exception(nameof(method)) });
+		powerCardActionAsync( MakeFreshPowerCtx( scope ) )
+			.FinishUp(method, () => {
+				// Then: dream-death allows User pushes them
+				for(int i = 0; i < count; ++i)
+					_user.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
+			} );
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 );
@@ -67,7 +65,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	[Fact]
-	public async Task KillingTown_GeneratesFear_PushesIt() {
+	public async Task KillingTown_GeneratesFear_PushesIt() {// !!! still async
 		int count = 2;
 		// generate 2 fear per town destroyed,
 		// pushes town
@@ -96,7 +94,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	[Fact]
-	public async Task DreamDamageResetsEachPower() {
+	public async Task DreamDamageResetsEachPower() {// !!! still async
 
 		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		var ctx = MakeFreshPowerCtx( scope );
@@ -125,9 +123,6 @@ public class ToDreamAThousandDeaths_Tests {
 
 	[Fact]
 	public async Task ConsecutivePowersCanDreamKillMultipletimes() {
-
-//		await using ActionScope scope = new ActionScope( ActionCategory.Spirit_Power );
-//		var ctx = MakeFreshPowerCtx( scope );
 
 		// Given: 1 very-damaged city
 		var tokens = _board[5].Tokens;

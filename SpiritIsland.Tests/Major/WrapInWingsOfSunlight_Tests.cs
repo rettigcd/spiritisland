@@ -24,7 +24,7 @@ public class WrapInWingsOfSunlight_Tests {
 		var dst = board[1];
 		gameState.Tokens[dst].Dahan.Init(0);
 
-		// When: playing Card
+		// When: playing Card  // !!! still async
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await WrapInWingsOfSunlight.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 
@@ -67,7 +67,7 @@ public class WrapInWingsOfSunlight_Tests {
 		//  And: dst has nothing on it
 		var dst = board[8];
 
-		// When: playing Card
+		// When: playing Card  // !!! still async
 		static async Task PlayCard(TargetSpaceCtx ctx) { try { await TerrifyingChase.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} } 

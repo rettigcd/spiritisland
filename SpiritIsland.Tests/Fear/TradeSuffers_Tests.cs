@@ -84,7 +84,7 @@ public class TradeSuffers_Tests {
 	}
 
 	[Fact]
-	public async Task Level3_DoesntForceCityReplace() {
+	public void Level3_DoesntForceCityReplace() {
 		// "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 		var fxt = new ConfigurableTestFixture();
 

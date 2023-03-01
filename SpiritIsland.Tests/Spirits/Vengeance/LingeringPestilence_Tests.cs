@@ -5,7 +5,7 @@ public class LingeringPestilence_Tests {
 
 	[Trait("SpecialRule", "LingeringPestilence" )]
 	[Fact]
-	public async Task Powers_DoNotGenerateDisease() {
+	public async Task Powers_DoNotGenerateDisease() {// !!! still async
 
 		Spirit self = new VengeanceAsABurningPlague();
 		Board boardA = Board.BuildBoardA();

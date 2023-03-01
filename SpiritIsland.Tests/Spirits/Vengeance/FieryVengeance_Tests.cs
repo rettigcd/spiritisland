@@ -4,7 +4,7 @@ public class FieryVengeance_Tests {
 
 	[Trait("SpecialRule", "Wreak Vengeance for the Land's Corruption" )]
 	[Fact]
-	public async Task FieryVengeance_BlightCausesBadlandDamage() {
+	public async Task FieryVengeance_BlightCausesBadlandDamage() { // !!! still async
 		// Given: 2 spirits (vengeance + 1)
 		Spirit vengeance = new VengeanceAsABurningPlague();
 		Spirit spirit2 = new RiverSurges();
@@ -38,7 +38,7 @@ public class FieryVengeance_Tests {
 	}
 
 	[Fact]
-	public async Task FieryVengeance_NoDestroyedPresence_NoAction() {
+	public async Task FieryVengeance_NoDestroyedPresence_NoAction() {// !!! still async
 		// Given: 2 spirits (vengeance + 1)
 		Spirit vengeance = new VengeanceAsABurningPlague();
 		Spirit spirit2 = new RiverSurges();

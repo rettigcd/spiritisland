@@ -10,7 +10,7 @@ public class AbsoluteStasis_Tests {
 
 	[Trait("SpecialRule","OceanInPlay")]
 	[Fact]
-	public async Task CannotTargetInPlayOceans() {
+	public void CannotTargetInPlayOceans() {
 		// Given: Ocean is in play
 		cfg.Spirit = new Ocean();
 		//   And: Ocean presence is in ocean
@@ -19,27 +19,21 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.Initialize();
 
 		{
-			await using var scope = await ActionScope.Start(ActionCategory.Spirit_Power);
-			var selfCtx = cfg.Spirit.BindMyPowers();
-
-			//  When: targeting with other card
-			PowerCard.For<MesmerizedTranquility>().ActivateAsync( selfCtx )
-				.FinishUp("Mesmerized Tranquility",()=> {
-					//  Then: Ocean is an option
-					cfg.FormatOptions.ShouldContain( "A0" );
-					cfg.Choose( "A0" );
-				} );
+			cfg.Spirit.When_ResolvingCard<MesmerizedTranquility>( () => {
+				//  Then: Ocean is an option
+				cfg.FormatOptions.ShouldContain( "A0" );
+				cfg.Choose( "A0" );
+			} );
 		}
 
 		{
 			// But...
 			// When: targetting with Absolute Statis
-			PowerCard.For<AbsoluteStasis>().ActivateAsync( cfg.SelfCtx )
-				.FinishUp("Absolute Statis", ()=> {
-					// Then: Ocean is NOT an option (nothing to select)
-					cfg.FormatOptions.ShouldNotContain( "A0" );
-					cfg.Choose( "A1" );
-				} );
+			cfg.Spirit.When_ResolvingCard<AbsoluteStasis>( () => {
+				// Then: Ocean is NOT an option (nothing to select)
+				cfg.FormatOptions.ShouldNotContain( "A0" );
+				cfg.Choose( "A1" );
+			} );
 		}
 	}
 
@@ -48,25 +42,19 @@ public class AbsoluteStasis_Tests {
 	[Fact]
 	public void CannotTargetIntoStasisSpace() {
 		SpiritIs_FacturedDaysSplitTheSky();
-		// Given: a spaces is put into stasis
 
-		PowerCard.For<AbsoluteStasis>().ActivateAsync(cfg.SelfCtx)
-			.FinishUp(AbsoluteStasis.Name, () => {
-				cfg.FormatOptions.ShouldBe( "A1,A4,A5,A6,A7,A8" );
-				cfg.Choose( "A5" );
-			} );
+		// Given: a spaces is put into stasis
+		Given_SpacePutInStasis( "A5" );
 
 		//  When: targetting a second card
-		PowerCard.For<DevouringAnts>().ActivateAsync(cfg.SelfCtx)
-			.FinishUp(DevouringAnts.Name, () => {
-				//  Then: stasis space is not an option.
-				cfg.FormatOptions.ShouldBe( "A6,A7,A8" );
-				cfg.Choose( "A8" );
-				// cleanup
-				cfg.Choose( "T@2" );
-				cfg.Choose( "T@1" );
-			} );
-
+		cfg.Spirit.When_ResolvingCard<DevouringAnts>( () => {
+			//  Then: stasis space is not an option.
+			cfg.FormatOptions.ShouldBe( "A6,A7,A8" );
+			cfg.Choose( "A8" );
+			// cleanup
+			cfg.Choose( "T@2" );
+			cfg.Choose( "T@1" );
+		} );
 	}
 
 	[Trait( "Space", "State" )]
@@ -77,14 +65,13 @@ public class AbsoluteStasis_Tests {
 		SpiritIs_FacturedDaysSplitTheSky();
 
 		// Given: a spaces is put into stasis
-		PowerCard.For<AbsoluteStasis>().ActivateAsync( cfg.SelfCtx )
-			.FinishUp(AbsoluteStasis.Name, ()=> {
-				cfg.FormatOptions.ShouldBe( "A1,A4,A5,A6,A7,A8" );
-				cfg.Choose( "A5" );
-			} );
+		cfg.Spirit.When_ResolvingCard<AbsoluteStasis>( () => {
+			cfg.FormatOptions.ShouldBe( "A1,A4,A5,A6,A7,A8" );
+			cfg.Choose( "A5" );
+		} );
 
 		//  When: targetting a second card
-		PowerCard.For<PillarOfLivingFlame>().ActivateAsync( cfg.SelfCtx ).FinishUp(PillarOfLivingFlame.Name, () => {
+		cfg.Spirit.When_ResolvingCard<PillarOfLivingFlame>(()=> {
 			//  Then: stasis space is not an option.
 			cfg.FormatOptions.ShouldBe( "A1,A6,A7,A8" );
 			cfg.Choose( "A8" );
@@ -103,7 +90,7 @@ public class AbsoluteStasis_Tests {
 		SpiritIs_FacturedDaysSplitTheSky();
 
 		// Given: the only SS is put into stasis
-		SpacePutInStasis( "A8" );
+		Given_SpacePutInStasis( "A8" );
 
 		//  When: targetting a second card
 		PowerCard.For<PillarOfLivingFlame>().ActivateAsync( cfg.SelfCtx )
@@ -118,7 +105,7 @@ public class AbsoluteStasis_Tests {
 		SpiritIs_FacturedDaysSplitTheSky();
 
 		// When: the only SS is put into stasis
-		SpacePutInStasis("A8");
+		Given_SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
 		cfg.SelfCtx.Self.Presence.Spaces.Count( x => x.Text == "A8" ).ShouldBe( 0 );
@@ -138,7 +125,7 @@ public class AbsoluteStasis_Tests {
 		// Given: Town on A8
 		cfg.InitTokens( source, "1T@2");
 		// And: source is in stasis
-		SpacePutInStasis( source.Text );
+		Given_SpacePutInStasis( source.Text );
 
 		// When: Invaders Explore - destination
 		destination.When_Exploring();
@@ -159,7 +146,7 @@ public class AbsoluteStasis_Tests {
 		// Given: Town on A8
 		cfg.InitTokens( source, "1T@2" );
 		// And: Dst is in stasis
-		SpacePutInStasis( destination.Text );
+		Given_SpacePutInStasis( destination.Text );
 
 		// When: Invaders Explore - destination
 		destination.When_Exploring();
@@ -179,7 +166,7 @@ public class AbsoluteStasis_Tests {
 		// Given: Explorer on space
 		cfg.InitTokens( space, "1E@1" );
 		// And: space is in stasis
-		SpacePutInStasis( space.Text );
+		Given_SpacePutInStasis( space.Text );
 		Assert_SpaceHasCountTokens(space, Human.Town, 0 );
 
 		// When: Invaders Build
@@ -200,7 +187,7 @@ public class AbsoluteStasis_Tests {
 		// Given: 1 Explorer and 1 Dahan on space
 		cfg.InitTokens( space, "1E@1,1D@2" );
 		// And: space is in stasis
-		SpacePutInStasis( space.Text );
+		Given_SpacePutInStasis( space.Text );
 		Assert_SpaceHasCountTokens( space, Human.Town, 0 );
 
 		// When: Invaders Ravage
@@ -227,7 +214,7 @@ public class AbsoluteStasis_Tests {
 		//   And: 1 city (so we don't win with 0 invaders)
 		cfg.InitTokens( space, "1C@3");
 		//   And: space is in stasis
-		SpacePutInStasis( space.Text );
+		Given_SpacePutInStasis( space.Text );
 		//   And: should check win/loss
 		cfg.GameState.AddStandardWinLossCheck();
 
@@ -250,7 +237,7 @@ public class AbsoluteStasis_Tests {
 		var space = cfg.Board[7];
 
 		// When: space is put in stasis
-		SpacePutInStasis( space.Text );
+		Given_SpacePutInStasis( space.Text );
 
 		// Then: space still apears in list of All Spaces
 		cfg.GameState.Spaces_Unfiltered.ShouldContain( cfg.GameState.Tokens[space] );
@@ -269,12 +256,11 @@ public class AbsoluteStasis_Tests {
 
 	// when round is over, space and tokens are restored
 
-	void SpacePutInStasis( string spaceToStasisize ) {
-		PowerCard.For<AbsoluteStasis>().ActivateAsync( cfg.SelfCtx )
-			.FinishUp( AbsoluteStasis.Name, () => {
-				cfg.FormatOptions.ShouldBe( "A1,A4,A5,A6,A7,A8" );
-				cfg.Choose( spaceToStasisize );
-			} );
+	void Given_SpacePutInStasis( string spaceToStasisize ) {
+		cfg.Spirit.When_ResolvingCard<AbsoluteStasis>( () => {
+			cfg.FormatOptions.ShouldBe( "A1,A4,A5,A6,A7,A8" );
+			cfg.Choose( spaceToStasisize );
+		} );
 	}
 
 	void SpiritIs_FacturedDaysSplitTheSky() {

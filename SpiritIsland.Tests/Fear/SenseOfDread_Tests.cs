@@ -3,7 +3,7 @@
 public class SenseOfDread_Tests {
 
 	[Fact]
-	public async Task Remove1Explorer() {
+	public void Remove1Explorer() {
 		var fix = new ConfigurableTestFixture();
 		var ravageSpace = fix.GameState.Island.Boards[0][5];
 		fix.InitRavageCard( ravageSpace.BuildInvaderCard() );

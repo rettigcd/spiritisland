@@ -81,7 +81,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,4)]
 	[InlineDataAttribute(7,5)]
-	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ) {// !!! still async
 		var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
 		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}

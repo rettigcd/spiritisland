@@ -70,7 +70,7 @@ public class Strife_Tests {
 	static bool IsInPlay( Space space ) => !space.IsOcean;
 
 	[Fact]
-	public async Task MoveStrife() {
+	public async Task MoveStrife() {// !!! still async
 
 		var board = Board.BuildBoardB();
 		var gs = new GameState( new Shadows(), board );
@@ -157,7 +157,7 @@ public class Strife_Tests {
 	}
 
 	[Fact]
-	public async Task Strife_Stops_Ravage() {
+	public async Task Strife_Stops_Ravage() {// !!! still async
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 		var space = gs.Spaces_Unfiltered
 			.First( s => IsInPlay(s.Space) && !s.HasInvaders() );

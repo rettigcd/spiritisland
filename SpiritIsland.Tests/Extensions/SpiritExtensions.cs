@@ -35,4 +35,14 @@ public static class SpiritExtensions {
 			.FinishUp($"Growth option {option}", userActions);
 	}
 
+	internal static void When_ResolvingCard<T>( this Spirit spirit, Action userActions = null ) {
+		static async Task ScopeWrapper( PowerCard card, Spirit spirit ) {
+			await using ActionScope scope = await ActionScope.Start( ActionCategory.Spirit_Power );
+			SelfCtx selfCtx = spirit.BindMyPowers();
+			await card.ActivateAsync( selfCtx );
+		}
+		ScopeWrapper( PowerCard.For<T>(), spirit ).FinishUp( typeof( T ).Name, userActions );
+	}
+
+
 }

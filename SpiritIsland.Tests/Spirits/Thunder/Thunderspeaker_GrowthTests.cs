@@ -82,7 +82,7 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	[InlineDataAttribute(5,3,1)]
 	[InlineDataAttribute(6,3,1)]
 	[InlineDataAttribute(7,4,1)]
-	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ){
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {// !!! still async
 		var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
 		await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		fix.VerifyReclaim1Count( reclaimCount );

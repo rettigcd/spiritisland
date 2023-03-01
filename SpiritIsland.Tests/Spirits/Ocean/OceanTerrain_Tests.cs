@@ -24,25 +24,27 @@ public class OceanTerrain_Tests {
 
 	[Trait("SpecialRule","OceanInPlay")]
 	[Fact]
-	public async Task CannotTargetOcean() {
+	public void CannotTargetOcean() {
 		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
 		//   And: Thundersepearker on A2 only
 		Given_PrimaryPresenceOnA2Only();
 
 		// When: Thundersepearker Activates a card that targets ANY-terrain Range-1 (Call To Guard - Range 1, Any land)
-		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power);
-		SelfCtx ctx = primarySpirit.BindMyPowers();
-		_ = PowerCard.For<CallToGuard>().ActivateAsync( ctx );
+		primarySpirit.When_ResolvingCard<CallToGuard>( () => {
 
-		// Then: Targetting does not inculde Ocean
-		NextDecision.HasOptions( "A1,A2,A3,A4" );
+			// Then: Targetting does not inculde Ocean
+			NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose("A1");
+			// cleanup
+			NextDecision.Choose("Done");
+		} );
+
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
 	[Fact]
-	public async Task WithOcean_CanTargetOceanAsWetland() {
-		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
+	public async Task WithOcean_CanTargetOceanAsWetland() {// !!! still async
+														   // Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
 		//   And: Thundersepearker on A2 only
 		Given_PrimaryPresenceOnA2Only();

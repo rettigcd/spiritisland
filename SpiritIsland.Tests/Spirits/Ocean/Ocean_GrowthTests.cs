@@ -120,7 +120,7 @@ public class Ocean_GrowthTests : GrowthTests {
 	[InlineDataAttribute(5,1,"moon water earth")]
 	[InlineDataAttribute(6,1,"moon 2 water earth")]
 	[InlineDataAttribute(7,2, "moon 2 water earth" )]
-	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {// !!! still async
 		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
 		await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}

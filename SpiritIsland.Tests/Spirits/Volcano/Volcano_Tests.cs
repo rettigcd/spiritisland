@@ -25,7 +25,7 @@ public class Volcano_Tests {
 	[Trait("SpecialRule", VolcanicPeaksTowerOverTheLandscape.Name )]
 	[InlineData(2,"A6")]
 	[InlineData(3,"A1,A5,A6,A8")]
-	public async Task Range(int presenceCount, string expectedOptions ) {
+	public async Task Range(int presenceCount, string expectedOptions ) {// !!! still async
 		// Your Power Cards gain +1 Range if you have 3 or more Presence in the origin land.
 
 		// Given: Volcano
@@ -120,7 +120,7 @@ public class Volcano_Tests {
 	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
 	[Trait( "Targeting", "Range" )]
 	[Fact]
-	public async Task PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
+	public async Task PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {// !!! still async
 		var (spirit, gameState, board) = Init();
 		SpaceState targetSpace = gameState.Tokens[board[5]];
 		SpaceState dahanSpace = gameState.Tokens[board[2]];
@@ -205,7 +205,7 @@ public class Volcano_Tests {
 	[Theory]
 	[InlineData( 2, "A5,A6,A7,A8" )]       // range-1
 	[InlineData( 3, "A1,A4,A5,A6,A7,A8" )] // range-2
-	public async Task PeeksTower_ExtendsRangesFor_PerilsOfTheDeepIsland( int presenceInTower, string expectedRangeOptions ) {
+	public async Task PeeksTower_ExtendsRangesFor_PerilsOfTheDeepIsland( int presenceInTower, string expectedRangeOptions ) {// !!! still async
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[8]];
 
@@ -227,7 +227,7 @@ public class Volcano_Tests {
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
 	[Fact]
-	public async Task ExplosiveErruption_Level0_CausesDamage() {
+	public async Task ExplosiveErruption_Level0_CausesDamage() {// !!! still async
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[5]];
 
@@ -310,7 +310,7 @@ public class Volcano_Tests {
 	[InlineData( 4 )]
 	[InlineData( 6 )]
 	[InlineData( 10 )]
-	public async Task ExplosiveEruption( int presenceDestroyed ) {
+	public async Task ExplosiveEruption( int presenceDestroyed ) {// !!! still async
 		var (spirit, gameState, board) = Init();
 		SpaceState targetSpace = gameState.Tokens[board[8]];
 		SpaceState adjPresence = gameState.Tokens[board[7]];

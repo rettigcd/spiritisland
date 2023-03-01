@@ -22,7 +22,7 @@ public class SettleIntoHuntingGrounds_Tests {
 	// Push From Ocean
 
 	[Fact]
-	public async Task CanFreezePresence() {
+	public async Task CanFreezePresence() { // !!! still async
 		var (spirit,gameState,board) = Init();
 		var a5 = gameState.Tokens[ board[5] ];
 

@@ -21,7 +21,7 @@ public class DahanOnTheirGuard_Tests {
 
 	[Trait( "Feature", "Defend" )]
 	[Fact]
-	public async Task NoFearCard_NormalRavage() {
+	public async Task NoFearCard_NormalRavage() { // !!! still async
 
 		// Disable destroying presence
 		gameState.DisableBlightEffect();

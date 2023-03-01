@@ -131,7 +131,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 5, 2, "plant 2 animal" )]
 	[InlineDataAttribute( 6, 3, "plant 2 animal" )]
 	[InlineDataAttribute( 7, 4, "plant 2 animal" )]
-	public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {// !!! still async
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
 		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements);
 	}

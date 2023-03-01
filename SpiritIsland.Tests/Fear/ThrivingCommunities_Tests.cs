@@ -3,7 +3,7 @@
 public class ThrivingCommunities_Tests {
 
 	[Fact]
-	public async Task FewerThan4Spaces_DoesntCrash() {
+	public void FewerThan4Spaces_DoesntCrash() {
 
 		// on each board:
 		// Replace 1 town with a city or Replace 1 explorer with 1 town
@@ -18,7 +18,7 @@ public class ThrivingCommunities_Tests {
 
 		// When: execute blight card
 		new ThrivingCommunitites().Immediately.Execute( new GameCtx( fxt.GameState ))
-			.FinishUp(ThrivingCommunitites.Name,()=> {
+			.FinishUp("Thriving Communities",()=> {
 				//  And: choose the only 2 spaces
 				fxt.Choose( explorerSpace.Text ); fxt.Choose( "E@1" );
 				fxt.Choose( townSpace.Text ); fxt.Choose( "T@2" );

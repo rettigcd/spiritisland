@@ -66,7 +66,7 @@ public class Lightning_GrowthTests : GrowthTests{
 	[InlineDataAttribute(6,4)]
 	[InlineDataAttribute(7,4)]
 	[InlineDataAttribute(8,5)]
-	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {// !!! still async
 		var fixture = new ConfigurableTestFixture { Spirit = new LightningsSwiftStrike() };
 		await fixture.VerifyEnergyTrack(revealedSpaces,expectedEnergyGrowth,"");
 	}
@@ -78,7 +78,7 @@ public class Lightning_GrowthTests : GrowthTests{
 	[InlineDataAttribute(3,4)]
 	[InlineDataAttribute(4,5)]
 	[InlineDataAttribute(5,6)]
-	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {// !!! still async
 		var fixture = new ConfigurableTestFixture { Spirit = new LightningsSwiftStrike() };
 		await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}

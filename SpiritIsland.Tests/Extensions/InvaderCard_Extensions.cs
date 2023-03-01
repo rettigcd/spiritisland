@@ -31,7 +31,7 @@ static class InvaderCard_Extensions {
 			1 => card.Level1( ctx ),
 			2 => card.Level2( ctx ),
 			3 => card.Level3( ctx ),
-			_ => throw new ArgumentOutOfRangeException()
+			_ => throw new ArgumentOutOfRangeException(nameof(level))
 		}).FinishUp( $"{card.GetType().Name}-{level}", userActions );
 	}
 

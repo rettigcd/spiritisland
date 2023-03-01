@@ -52,7 +52,7 @@ public class Token_Tests {
 
 	[Trait( "Token", "Disease" )]
 	[Fact]
-	public async Task Disease_Stops_Build() {
+	public async Task Disease_Stops_Build() {// !!! still async
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 
 		// Given: a space with ONLY 1 explorer

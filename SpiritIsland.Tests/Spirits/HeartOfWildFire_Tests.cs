@@ -4,7 +4,7 @@ public class HeartOfWildFire_Tests {
 
 	[Trait("Blight","Destroy Presence")]
 	[Fact]
-	public async Task BlightAddedDueToSpiritEffects_DoesNotDestroyPresence() {
+	public async Task BlightAddedDueToSpiritEffects_DoesNotDestroyPresence() {// !!! still async
 		Spirit spirit = new HeartOfTheWildfire();
 		Board boardB = Board.BuildBoardB();
 		var gs = new GameState( spirit, boardB );

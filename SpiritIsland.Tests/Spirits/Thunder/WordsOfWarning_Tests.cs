@@ -3,7 +3,7 @@
 public class WordsOfWarning_Tests : ThunderCards  {
 
 	[Fact]
-	public async Task DeadDahanDoDamage() {
+	public async Task DeadDahanDoDamage() { // !!! still async
 
 		gs.Phase = Phase.Fast;
 

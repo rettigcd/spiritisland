@@ -4,7 +4,7 @@ public class ScapeGoats_Tests {
 
 	[Trait("Invaders","Ravage")]
 	[Fact]
-	public async Task Level2_StrifedInvadersDoDamage() {
+	public void Level2_StrifedInvadersDoDamage() {
 
 		var fxt = new ConfigurableTestFixture();
 		// Given: Strifed City with 3 explorers

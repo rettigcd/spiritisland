@@ -112,9 +112,9 @@ public class Island {
 
 	class BoardInfo {
 		public BoardInfo( Board b ) { _name = b.Name; _orientation = b.Orientation; _invaderActionCount=b.InvaderActionCount; }
-		string _name;
-		BoardOrientation _orientation;
-		int _invaderActionCount;
+		readonly string _name;
+		readonly BoardOrientation _orientation;
+		readonly int _invaderActionCount;
 		public Board Restore() {
 			var board = Board.BuildBoard( _name, _orientation ); // supplies spaces
 			board.InvaderActionCount = _invaderActionCount;

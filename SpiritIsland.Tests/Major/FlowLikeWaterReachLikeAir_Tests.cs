@@ -29,7 +29,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		//  And: A1 has nothing on it
 		var a1 = board[1];
 
-		// When: playing Card
+		// When: playing Card // !!! still async
 		static async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
 			_ = ex.ToString(); 
 		} }

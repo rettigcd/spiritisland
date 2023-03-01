@@ -8,14 +8,14 @@ public class DreadApparitions_Tests {
 	ActionScope Init() {
 		Bringer spirit = new Bringer();
 		board = Board.BuildBoardA();
-		GameState gs = new GameState( spirit, board );
-		var scope = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power );
+		_ = new GameState( spirit, board );
+		ActionScope scope = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power );
 		ctx = spirit.BindMyPowers().Target( board[5] );
 		return scope;
 	}
 
 	[Fact]
-	public async Task DirectFear_GeneratesDefend() {
+	public async Task DirectFear_GeneratesDefend() {// !!! still async
 		await using var x = Init();
 
 		async Task When() {
@@ -34,7 +34,7 @@ public class DreadApparitions_Tests {
 	}
 
 	[Fact]
-	public async Task TownDamage_Generates2Defend() {
+	public async Task TownDamage_Generates2Defend() {// !!! still async
 		await using var x = Init();
 
 		// Disable destroying presence
@@ -78,7 +78,7 @@ public class DreadApparitions_Tests {
 	}
 
 	[Fact]
-	public async Task DahanDamage_Generates0() {
+	public async Task DahanDamage_Generates0() {// !!! still async
 
 		Bringer spirit = new Bringer();
 		var board = Board.BuildBoardA();

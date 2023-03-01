@@ -3,7 +3,7 @@
 public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 	public static SpaceState TargettedSpace => _targettedSpace.Value;
-	static ActionScopeValue<SpaceState> _targettedSpace = new ActionScopeValue<SpaceState>("Targetted Space");
+	readonly static ActionScopeValue<SpaceState> _targettedSpace = new ActionScopeValue<SpaceState>("Targetted Space");
 
 	readonly protected TargetingSourceCriteria _sourceCriteria;
 

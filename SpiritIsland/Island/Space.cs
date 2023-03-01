@@ -102,8 +102,8 @@ public abstract class Space
 	// Overriding so that when game is rewound and board state is restored, tokens from old spaces appear on new spaces.
 	public override int GetHashCode() => Text.GetHashCode();
 	public override bool Equals( object obj ) => Equals( obj as Space );
-	public bool Equals( Space other ) => !Object.ReferenceEquals(other,null) && other.Text == Text;
-	static public bool operator==(Space left, Space right) => Object.ReferenceEquals(left,right) || !Object.ReferenceEquals(left,null) && left.Equals( right );
+	public bool Equals( Space other ) => other is not null && other.Text == Text;
+	static public bool operator==(Space left, Space right) => Object.ReferenceEquals(left,right) || left is not null && left.Equals( right );
 	static public bool operator!=(Space left, Space right) => !left.Equals(right); 
 	#endregion
 }
