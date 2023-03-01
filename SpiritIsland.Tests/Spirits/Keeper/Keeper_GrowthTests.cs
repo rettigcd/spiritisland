@@ -149,7 +149,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		var space = _board[5];
 		space.Tokens.Dahan.Init(2);
 		//   and presence on that space
-		_spirit.Presence.PlaceOn(space, _gameState).Wait();
+		_spirit.Presence.When_PlacingOn(space);
 
 		// When: we place a presence on that space
 		_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispose or remove

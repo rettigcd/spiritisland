@@ -6,16 +6,16 @@ public class BeliefTakesRoot_Tests {
 	#region constructor
 
 	public BeliefTakesRoot_Tests() {
-		spirit = new LightningsSwiftStrike();
-		User = new VirtualUser( spirit );
-		gameState = new GameState( spirit, Board.BuildBoardA() );
-		gameState.DisableInvaderDeck();
-		gameState.Initialize(); 
-		gameState.Fear.Deck.Pop();
-		gameState.Fear.PushOntoDeck( new BeliefTakesRoot() );
+		_spirit = new LightningsSwiftStrike();
+		User = new VirtualUser( _spirit );
+		_gameState = new GameState( _spirit, Board.BuildBoardA() );
+		_gameState.DisableInvaderDeck();
+		_gameState.Initialize(); 
+		_gameState.Fear.Deck.Pop();
+		_gameState.Fear.PushOntoDeck( new BeliefTakesRoot() );
 
-		invaderCard = InvaderDeckBuilder.Level1Cards[0];
-		ravageSpace = gameState.Island.Boards[0].Spaces.Where( ((InvaderCard)invaderCard).MatchesCard ).First();
+		_invaderCard = InvaderDeckBuilder.Level1Cards[0];
+		_ravageSpace = _gameState.Island.Boards[0].Spaces.Where( ((InvaderCard)_invaderCard).MatchesCard ).First();
 	}
 
 	#endregion
@@ -23,34 +23,36 @@ public class BeliefTakesRoot_Tests {
 	[Fact]
 	public void NullFearCard_NormalRavage() {
 
-		gameState.Fear.Deck.Pop();
-		gameState.Fear.PushOntoDeck( new NullFearCard() );
+		_gameState.Fear.Deck.Pop();
+		_gameState.Fear.PushOntoDeck( new NullFearCard() );
 
 		Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-		When_AddFearApplyFearAndRavage( () => {
+		When_AddFearApplyFear( () => {
 			User.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
 		} );
+		_invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
-		ravageSpace.Tokens.Dahan.CountAll.ShouldBe(0);
-		gameState.Tokens[ravageSpace].Blight.Any.ShouldBe(true);
+		_ravageSpace.Tokens.Dahan.CountAll.ShouldBe(0);
+		_gameState.Tokens[_ravageSpace].Blight.Any.ShouldBe(true);
 	}
 
 	[Fact]
 	public void Level1_NoBlightDahanLives() {
 		Given_DahanAndTownsInSpaceWithPresence(1,1);
 
-		When_AddFearApplyFearAndRavage( ()=> {
+		When_AddFearApplyFear( ()=> {
 			User.AcknowledgesFearCard( FearCardAction );
 		} );
+		_invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, ravageSpace.Tokens.Dahan.CountAll );
+		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
 
 		//   And: 0 towns
-		gameState.Assert_Invaders(ravageSpace,"");
-		Assert.False( gameState.Tokens[ ravageSpace ].Blight.Any );
+		_gameState.Assert_Invaders(_ravageSpace,"");
+		Assert.False( _gameState.Tokens[ _ravageSpace ].Blight.Any );
 
 	}
 
@@ -58,53 +60,41 @@ public class BeliefTakesRoot_Tests {
 	public void Level1_DefendNotMoreThan2() { // not more th
 		Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
 
-		When_AddFearApplyFearAndRavage( () => {
+		When_AddFearApplyFear( () => {
 			User.AcknowledgesFearCard( FearCardAction );
 		} );
+		_invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, ravageSpace.Tokens.Dahan.CountAll );
+		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
 
 		//   And: 0 towns
-		gameState.Assert_Invaders(ravageSpace, "1T@2" );
-		Assert.True( gameState.Tokens[ ravageSpace ].Blight.Any );
+		_gameState.Assert_Invaders(_ravageSpace, "1T@2" );
+		Assert.True( _gameState.Tokens[ _ravageSpace ].Blight.Any );
 	}
 
 	void Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
 		// Add: dahan
-		ravageSpace.Tokens.Dahan.Init( desiredCount );
+		_ravageSpace.Tokens.Dahan.Init( desiredCount );
 		// Add towns
-		gameState.Tokens[ravageSpace].AdjustDefault( Human.Town, desiredCount );
+		_gameState.Tokens[_ravageSpace].AdjustDefault( Human.Town, desiredCount );
 
 		//   And: Presence
 		while(presenceCount-->0)
-			spirit.Presence.PlaceOn(ravageSpace, gameState).Wait();
+			_spirit.Presence.When_PlacingOn(_ravageSpace);
 	}
 
-	//Task When_AddFearApplyFearAndRavage() {
-	//	gameState.Fear.AddDirect( new FearArgs( 4 ) );
-	//	return FearAndRavage();
-	//}
-
-	void When_AddFearApplyFearAndRavage(Action userActions) {
-		gameState.Fear.AddDirect( new FearArgs( 4 ) );
-		Task t = FearAndRavage();
-		userActions();
-		t.Wait(3000);
-		if(!t.IsCompletedSuccessfully)
-			throw new Exception("Fear/Ravage did not complete in a timely manner.");
-	}
-
-	async Task FearAndRavage() {
-		await gameState.Fear.Apply();
-		await new RavageSlot().ActivateCard( invaderCard, gameState );
+	void When_AddFearApplyFear(Action userActions) {
+		_gameState.Fear.AddDirect( new FearArgs( 4 ) );
+		_gameState.Fear.Apply()
+			.FinishUp("Fear",userActions);
 	}
 
 	const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";
-	readonly GameState gameState;
-	readonly InvaderCard invaderCard;
-	readonly Space ravageSpace;
-	readonly Spirit spirit;
+	readonly GameState _gameState;
+	readonly InvaderCard _invaderCard;
+	readonly Space _ravageSpace;
+	readonly Spirit _spirit;
 	readonly VirtualUser User;
 
 }

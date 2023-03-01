@@ -21,24 +21,18 @@ public static class SpiritExtensions {
 
 	internal static void Adjust( this SpiritPresence presence, SpaceState space, int count ) => space.Adjust( presence.Token, count );
 
-
 	internal static void When_Growing(this Spirit spirit, Action userActions) {
 		var gs = GameState.Current;
 		gs.Phase = Phase.Growth;
-		Task growthTask = spirit.DoGrowth( gs );
-		userActions();
-		growthTask.Wait( 3000 );
-		growthTask.IsCompletedSuccessfully.ShouldBeTrue( "Growth task did not complete in aloted time." );
+		spirit.DoGrowth( gs )
+			.FinishUp("Growth", userActions);
 	}
 
 	internal static void When_Growing( this Spirit spirit, int option, Action userActions ) {
 		var gs = GameState.Current;
 		gs.Phase = Phase.Growth;
-		Task t = spirit.GrowAndResolve( spirit.GrowthTrack.Options[option], gs );
-		userActions();
-		t.Wait( 3000 );
-		if(!t.IsCompletedSuccessfully)
-			throw new Exception( $"Growth option {option} did not complete in a timely manner." );
+		spirit.GrowAndResolve( spirit.GrowthTrack.Options[option], gs )
+			.FinishUp($"Growth option {option}", userActions);
 	}
 
 }

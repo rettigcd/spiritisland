@@ -16,7 +16,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		gameState.Phase = Phase.Slow;
 
 		//   And: Presence on A4
-		spirit.Presence.PlaceOn(board[4], gameState).Wait();
+		spirit.Presence.When_PlacingOn(board[4]);
 
 		//   And: Purchased WashAway
 		card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
@@ -133,7 +133,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
-		spirit.Presence.PlaceOn(board[8], gameState).Wait();
+		spirit.Presence.When_PlacingOn(board[8]);
 		var targetOptions = spirit.Presence.Spaces.Tokens().ToArray();
 		Assert.Equal(2,targetOptions.Length);
 

@@ -94,17 +94,15 @@ public class TradeSuffers_Tests {
 		fxt.InitTokens( space, "1C@3" );
 
 		// When: fear card
-		await using var scope = await ActionScope.Start(ActionCategory.Fear);
-		var task = new TradeSuffers().Level3( new GameCtx( fxt.GameState ) );
-		//  And: user selects a1
-		fxt.Choose( space.Text );
-		//  And: user choses not to replace (this is what we are testing...)
-		fxt.Choose( "Done" );
+		new TradeSuffers().When_InvokingLevel(3, () => {
+			//  And: user selects a1
+			fxt.Choose( space.Text );
+			//  And: user choses not to replace (this is what we are testing...)
+			fxt.Choose( "Done" );
+		});
 
 		// Then:
 		fxt.GameState.Tokens[space].InvaderSummary().ShouldBe( "1C@3" );
-
-		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
 
 	void ClearBlight_GrowAndBuyNoCards() {

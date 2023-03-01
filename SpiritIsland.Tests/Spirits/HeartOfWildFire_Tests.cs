@@ -42,8 +42,8 @@ public class HeartOfWildFire_Tests {
 		// And: a town
 		tokens.InitDefault(Human.Town, 1);
 
-		// When: adding blight to space via spirit powers
-		tokens.Ravage().Wait();
+		// When: adding blight to space from ravage
+		tokens.Space.When_Ravaging();
 
 		// Then: presence should still be gone
 		tokens.Has(spirit.Token).ShouldBeFalse();

@@ -138,7 +138,7 @@ public class Invader_Tests {
 
 		// When: exploring (wet lands
 		new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single(c=>c.Text=="W"), gameState )
-			.Wait();
+			.FinishUp("Explore Phase");
 
 		// Then: 1 Explorer on A2 (new explored)
 		//  and A5 (original) - proves explorers aren't reference types like towns
@@ -204,7 +204,7 @@ public class Invader_Tests {
 
 		// When: build in Sand
 		new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "S" ), gameState)
-			.Wait();
+			.FinishUp("Build Phase");
 
 		// Then: 2 Sand spaces should have ending Invader Count
 		gameState.Assert_Invaders( board[4], endingInvaderCount );
@@ -254,7 +254,8 @@ public class Invader_Tests {
 		Assert_UnitsAre( startingUnits, space );
 
 		// When: Ravaging in Mountains
-		await new RavageEngine().ActivateCard( InvaderCard.Stage1( Terrain.Mountain ), gameState );
+		InvaderCard.Stage1( Terrain.Mountain ).When_Ravaging();
+		// await new RavageEngine().ActivateCard( InvaderCard.Stage1( Terrain.Mountain ), gameState );
 
 		Assert_UnitsAre( endingUnits, space );
 	}

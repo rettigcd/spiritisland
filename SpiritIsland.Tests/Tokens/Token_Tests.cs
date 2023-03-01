@@ -41,8 +41,7 @@ public class Token_Tests {
 		spaceState.Wilds.Init(1);
 
 		//  When: we explore there
-		spaceState.Space.DoAnExplore( gs )
-			.Wait();
+		spaceState.Space.When_Exploring();
 
 		//  Then: still no invaders
 		spaceState.HasInvaders().ShouldBeFalse("there should be no explorers in "+spaceState.Space.Label);
@@ -63,7 +62,7 @@ public class Token_Tests {
 		await space.Disease.Add(1);
 
 		//  When: we build there
-		await space.Space.DoABuild( gs );
+		space.Space.When_Building();
 
 		//  Then: still no towns (just original explorer)
 		gs.Assert_Invaders(space.Space, "1E@1" ); // "should be no town on "+space.Label

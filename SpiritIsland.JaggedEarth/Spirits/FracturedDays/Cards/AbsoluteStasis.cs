@@ -2,7 +2,9 @@
 
 public class AbsoluteStasis {
 
-	[SpiritCard("Absolute Stasis",1,Element.Sun,Element.Air,Element.Earth), Fast]
+	public const string Name = "Absolute Stasis";
+
+	[SpiritCard(Name,1,Element.Sun,Element.Air,Element.Earth), Fast]
 	// This cannot target an Ocean even if Oceans are in play.
 	[FromSacredSite(2,Target.NotOcean)]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {

@@ -16,9 +16,7 @@ public class ScapeGoats_Tests {
 		fxt.InitTokens( townSpace, "1T@2^,3E@1" );
 
 		// When:
-		await using var scope = await ActionScope.Start(ActionCategory.Invader);
-		Task task = new Scapegoats().Level2(new GameCtx(fxt.GameState));
-		task.Wait(5000);task.IsCompletedSuccessfully.ShouldBeTrue();
+		new Scapegoats().When_InvokingLevel(2);
 
 		// Then: city destroys 2 explorers, leaving 1
 		fxt.GameState.Tokens[citySpace].InvaderSummary().ShouldBe("1C@3^,1E@1");
@@ -26,7 +24,6 @@ public class ScapeGoats_Tests {
 		//  And: town destroys 1 explorer, leaving 2
 		fxt.GameState.Tokens[townSpace].InvaderSummary().ShouldBe( "1T@2^,2E@1" );
 
-		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
 
 }

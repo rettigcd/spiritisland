@@ -37,7 +37,7 @@ public class ShareSecretsOfSurvival_Tests {
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
-		fxt.GameState.Tokens[space].Ravage().Wait();
+		space.When_Ravaging();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
@@ -74,7 +74,7 @@ public class ShareSecretsOfSurvival_Tests {
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
-		fxt.GameState.Tokens[space].Ravage().Wait();
+		space.When_Ravaging();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );

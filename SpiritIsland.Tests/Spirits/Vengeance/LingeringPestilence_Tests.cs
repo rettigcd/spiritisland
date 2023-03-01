@@ -46,7 +46,7 @@ public class LingeringPestilence_Tests {
 		gameState.IslandWontBlight();
 
 		// When: the city ravages
-		space.Ravage().Wait();
+		space.Space.When_Ravaging();
 
 		// Then: presence is destroyed
 		space[self.Token].ShouldBe(1);

@@ -43,19 +43,16 @@ public class DahanOnTheirGuard_Tests {
 		Given_DahanAndTowns( 4, 4 );
 		// 4 dahan should defend 4
 
-		//   And: 4 fear / player
-		gameState.Fear.AddDirect( new FearArgs( 4 ) );
-
 		// When: Doing Invader phase (fear+ragage)
-		async Task DoIt() {
-			await gameState.Fear.Apply();
-			await new RavageSlot().ActivateCard( invaderCard, gameState );
-		}
-		var task = DoIt();
-		User.AcknowledgesFearCard( "Dahan on their Guard : 1 : In each land, Defend 1 per Dahan." );
+
+		gameState.Fear.AddDirect( new FearArgs( 4 ) );
+		gameState.Fear.Apply().FinishUp( DahanOnTheirGuard.Name, () => {
+			User.AcknowledgesFearCard( "Dahan on their Guard : 1 : In each land, Defend 1 per Dahan." );
+		} );
+
+		invaderCard.When_Ravaging(); // await new RavageSlot().ActivateCard( , gameState );
 
 		// Then: 0 dahan left
-		task.Wait();
 		ravageSpace.Tokens.Dahan.CountAll.ShouldBe( 2 );
 
 		//   And: 2 towns

@@ -4,9 +4,9 @@ namespace SpiritIsland.Tests;
 
 static internal class Extensions {
 
-	public static async Task PlaceOn( this SpiritPresence presence, Space space, GameState gameState ) {
-		await using ActionScope scope = await ActionScope.Start(ActionCategory.Default);
-		await gameState.Tokens[space].Add( presence.Token, 1 );
+	// !!! a bunch of things are probably using this as a Given, in which case they should just use .Init
+	public static void When_PlacingOn( this SpiritPresence presence, Space space ) {
+		space.Tokens.Add( presence.Token, 1 ).FinishUp("PP");
 	}
 
 	#region Generating Explorer Action on a space
@@ -16,11 +16,11 @@ static internal class Extensions {
 		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 	}
 
-	static public Task DoABuild( this Space space, GameState gameState )
-		=> new BuildEngine().ActivateCard( space.BuildInvaderCard(), gameState );
-	static public Task DoAnExplore( this Space space, GameState gs ) 
-		=> new ExploreEngine().ActivateCard( space.BuildInvaderCard(), gs );
+	static public void When_Ravaging( this Space space ) => space.BuildInvaderCard().When_Ravaging();
 
+	static public void When_Building( this Space space ) => space.BuildInvaderCard().When_Building();
+
+	static public void When_Exploring( this Space space ) => space.BuildInvaderCard().When_Exploring();
 
 	#endregion
 

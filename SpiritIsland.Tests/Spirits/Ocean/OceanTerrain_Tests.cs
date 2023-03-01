@@ -255,17 +255,13 @@ public class OceanTerrain_Tests {
 		primarySpirit.Energy = 5;
 		primarySpirit.AddActionFactory(PowerCard.For<CleansingFloods>());
 		gameState.Phase = Phase.Slow;
-		var actionTask = primarySpirit.ResolveActions( gameState );
-		Choose( "Cleansing Floods $5 (Slow)" );
-
-		if( withOcean) {
-			// Then: can target out of wetland
-			actionTask.IsCompleted.ShouldBeFalse();
-			NextDecision.HasOptions("A0,A1,A2,A3");
-		} else {
-			// Then: cannot target anything, done
-			actionTask.Wait();
-		}
+		primarySpirit.ResolveActions( gameState ).FinishUp("Cleansing Flood", ()=> {
+			Choose( "Cleansing Floods $5 (Slow)" );
+			if(withOcean) {
+				// Then: can target out of wetland
+				NextDecision.HasOptions( "A0,A1,A2,A3" ).Choose("A1");
+			}
+		} );
 
 	}
 

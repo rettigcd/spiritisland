@@ -18,7 +18,7 @@ public class WrapInWingsOfSunlight_Tests {
 		gameState.Tokens[src].Dahan.Init(10);
 
 		//  And: spirit has presence on A3
-		spirit.Presence.PlaceOn(src, gameState).Wait();
+		spirit.Presence.When_PlacingOn(src);
 
 		//  And: Destination has no Dahan on it
 		var dst = board[1];
@@ -62,7 +62,7 @@ public class WrapInWingsOfSunlight_Tests {
 		tokens.Beasts.Init(0);
 
 		//  And: spirit has presence on A5
-		spirit.Presence.PlaceOn(src,gameState).Wait();
+		spirit.Presence.When_PlacingOn(src);
 
 		//  And: dst has nothing on it
 		var dst = board[8];

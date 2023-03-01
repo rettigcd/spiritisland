@@ -107,7 +107,7 @@ public class Russia_Tests {
 		a7.Summary.ShouldBe( "1A,2D@2,1E@1" ); // 1A is beast
 
 		//  When: Ravage on that space
-		a7.Ravage().Wait();
+		a7.Space.When_Ravaging();
 
 		//  Then: explorer did 2 damage and killed 1 dahan and created 1 blight and removed the Beast
 		a7.Summary.ShouldBe( "1B,1D@2" );
@@ -183,9 +183,8 @@ public class Russia_Tests {
 		//   And: 3 explorers and 1 dahan on space
 		a5.Clear().InitTokens("1D@2,3E@1");
 
-		//  When: card ravages
-		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState )
-			.Wait();
+		//  When: card ravages (Can't do card.When_Ravaging because we are testing Russias replacement of the Engine)
+		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState ).Wait();
 
 		//  Then: dahan is destroyed and land is blighted
 		a5.Summary.ShouldBe("1B,3E@1");
@@ -211,9 +210,8 @@ public class Russia_Tests {
 		a5.Clear().InitTokens( orig );
 
 		//  When: card builds & explore
-		gameState.InvaderDeck.Build.ActivateCard( card, gameState ).Wait();
-		gameState.InvaderDeck.Explore.ActivateCard(card, gameState).Wait();
-//		card.Explore( gameState ).Wait();
+		card.When_Building();
+		card.When_Exploring();
 
 		//  Then: no change
 		a5.Summary.ShouldBe( orig );

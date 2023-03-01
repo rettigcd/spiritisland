@@ -78,16 +78,16 @@ public class Fear {
 			fearCard.ActivatedTerrorLevel = TerrorLevel;
 
 			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
-			foreach(var spirit in gs.Spirits)
+			foreach(Spirit spirit in gs.Spirits)
 				await spirit.BindSelf().FlipFearCard(fearCard,true);
 
-
 			var ctx = new GameCtx( gs );
-			switch(TerrorLevel) {
-				case 1: await fearCard.Level1( ctx ); break;
-				case 2: await fearCard.Level2( ctx ); break;
-				case 3: await fearCard.Level3( ctx ); break;
-			}
+			await (TerrorLevel switch {
+				1 => fearCard.Level1( ctx ),
+				2 => fearCard.Level2( ctx ),
+				3 => fearCard.Level3( ctx ),
+				_ => throw new ArgumentOutOfRangeException(),
+			});
 
 			++ResolvedCards; // record discard cards (for England-6)
 		}

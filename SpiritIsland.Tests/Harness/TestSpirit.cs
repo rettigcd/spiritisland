@@ -22,8 +22,8 @@ class TestSpirit : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Has sacred site on space 5
 		var space = board[5];
-		Presence.PlaceOn(space, gameState).Wait();
-		Presence.PlaceOn(space, gameState).Wait();
+		Presence.When_PlacingOn(space);
+		Presence.When_PlacingOn(space);
 	}
 
 	static public (VirtualTestUser, SelfCtx) StartGame( 

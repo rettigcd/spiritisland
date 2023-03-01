@@ -2,7 +2,9 @@
 
 public class PillarOfLivingFlame {
 
-	[MajorCard("Pillar of Living Flame",5,Element.Fire)]
+	public const string Name = "Pillar of Living Flame";
+
+	[MajorCard( Name, 5,Element.Fire)]
 	[Slow]
 	[FromSacredSite(2)]
 	static public async Task ActionAsync(TargetSpaceCtx ctx){

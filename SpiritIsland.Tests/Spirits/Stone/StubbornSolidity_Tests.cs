@@ -78,7 +78,7 @@ public class StubbornSolidity_Tests {
 		await Play_StubbornSolidity_On( spirit, gameState, tokens );
 
 		//  When: Ravaging
-		tokens.Ravage().Wait();
+		tokens.Space.When_Ravaging();
 
 		//  Then: All 4 dahan remain
 		//   And: 10-4=6 points of damage to the land => Blight,
@@ -215,7 +215,7 @@ public class StubbornSolidity_Tests {
 
 	static async Task Play_StubbornSolidity_On( Spirit spirit, GameState gameState, SpaceState targetSpace ) {
 		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
-		StubbornSolidity.ActAsync( spirit.BindMyPowers().Target( targetSpace.Space ) ).Wait();
+		StubbornSolidity.ActAsync( spirit.BindMyPowers().Target( targetSpace.Space ) ).FinishUp(StubbornSolidity.Name);
 	}
 
 	static void BuysAndUses( GameFixture fxt, string cardName ) {

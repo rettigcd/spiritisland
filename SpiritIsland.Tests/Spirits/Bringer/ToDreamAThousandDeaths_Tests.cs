@@ -110,7 +110,7 @@ public class ToDreamAThousandDeaths_Tests {
 			await Run_OneDamageToEachAsync();
 			await Run_OneDamageToEachAsync();
 		}
-		Run3Async().Wait();
+		Run3Async().FinishUp("run-3");
 
 		_user.Assert_Done();
 
@@ -160,9 +160,10 @@ public class ToDreamAThousandDeaths_Tests {
 			await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 
 			// When: doing 4 points of damage
-			Task t = FourDamage( MakeFreshPowerCtx( scope ) );
-			_user.SelectsDamageRecipient(4,"C@1");
-			t.Wait();
+			FourDamage( MakeFreshPowerCtx( scope ) )
+				.FinishUp("4 damage", ()=> {
+					_user.SelectsDamageRecipient( 4, "C@1" );
+				} );
 
 			// Then: 0-fear
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
