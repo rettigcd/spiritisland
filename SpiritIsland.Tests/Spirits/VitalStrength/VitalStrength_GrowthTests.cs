@@ -6,18 +6,18 @@ public class VitalStrength_GrowthTests : GrowthTests {
 
 	public VitalStrength_GrowthTests()
 		:base( new VitalStrength() ){
-		User = new VirtualEarthUser( spirit );
+		User = new VirtualEarthUser( _spirit );
 	}
 
 	[Fact]
 	public void ReclaimAndPresence() {
 		// (A) reclaim, +1 presense range 2
 		Given_HalfOfPowercardsPlayed();
-		Given_HasPresence( board[3] );
+		Given_HasPresence( _board[3] );
 
-		When_StartingGrowth();
-
-		User.SelectsGrowthA_Reclaim_PP2();
+		_spirit.When_Growing( () => {
+			User.SelectsGrowthA_Reclaim_PP2();
+		} );
 
 		this.Assert_AllCardsAvailableToPlay();
 
@@ -26,25 +26,25 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	[Fact]
 	public void PowercardAndPresence() {
 		// (B) +1 power card, +1 presense range 0
-		Given_HasPresence( board[4] );
+		Given_HasPresence( _board[4] );
 
-		When_StartingGrowth();
+		_spirit.When_Growing( () => {
+			User.SelectsGrowthB_DrawCard_PP0();
+		} );
 
-		User.SelectsGrowthB_DrawCard_PP0();
-
-		Assert.Equal( 5, spirit.Hand.Count );
+		Assert.Equal( 5, _spirit.Hand.Count );
 	}
 
 	[Fact]
 	public void PresenseAndEnergy() {
 		// (C) +1 presence range 1, +2 energy
-		Given_HasPresence( board[1] );
+		Given_HasPresence( _board[1] );
 
-		When_StartingGrowth();
+		_spirit.When_Growing(() => { 
+			User.SelectsGrowthC_Energy_PP1(); 
+		});
 
-		User.SelectsGrowthC_Energy_PP1();
-
-		Assert.Equal( 3, spirit.EnergyPerTurn );
+		Assert.Equal( 3, _spirit.EnergyPerTurn );
 		Assert_HasEnergy( 3 + 2 );
 	}
 

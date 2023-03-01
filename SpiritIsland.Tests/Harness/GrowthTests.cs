@@ -2,18 +2,18 @@
 
 public class GrowthTests {
 
-	protected Spirit spirit;
 	protected VirtualUser User {get; }
 
+	protected Spirit _spirit;
 	protected GameState _gameState;
-	protected Board board;
+	protected Board _board;
 
 	protected GrowthTests(Spirit spirit):base(){
 		// PlayerState requires Spirit to be known because Spirit creates playerState.
-		this.spirit = spirit;
-		this.User = new VirtualUser(spirit);
-		board = BoardA;
-		_gameState = new GameState(spirit, board );
+		_spirit = spirit;
+		User = new VirtualUser(spirit);
+		_board = BoardA;
+		_gameState = new GameState(spirit, _board );
 		InitMinorDeck();
 	}
 
@@ -46,7 +46,7 @@ public class GrowthTests {
 
 	protected void Given_HasPresence( params Space[] spaces ) {
 		foreach(var x in spaces)
-			spirit.Presence.PlaceOn( x, _gameState ).Wait();
+			_spirit.Presence.PlaceOn( x, _gameState ).Wait();
 	}
 
 	protected void Given_HasPresence( string presenceString ) {
@@ -60,45 +60,36 @@ public class GrowthTests {
 	}
 
 	protected void Given_HalfOfPowercardsPlayed() {
-		Discard(spirit.Hand.Count-1);
-		Discard(spirit.Hand.Count-1);
+		Discard(_spirit.Hand.Count-1);
+		Discard(_spirit.Hand.Count-1);
 	}
 	void Discard(int idx){
-		spirit.DiscardPile.Add( spirit.Hand[idx] );
-		spirit.Hand.RemoveAt( idx );
+		_spirit.DiscardPile.Add( _spirit.Hand[idx] );
+		_spirit.Hand.RemoveAt( idx );
 	}
 
 	#endregion
 
-	protected Task When_Growing( int option) {
-		try {
-			_gameState.Phase = Phase.Growth;
-			return spirit.GrowAndResolve( spirit.GrowthTrack.Options[option],_gameState);
-		} catch {
-			throw;
-		}
-	}
-
 	#region Asserts
 
 	protected void Assert_BoardPresenceIs( string expected ) {
-		var actual = _gameState.Spaces_Existing.Where( spirit.Presence.IsOn ).Select(s=>s.Space.Label+":"+s[spirit.Token]).Order().Join(",");
+		var actual = _gameState.Spaces_Existing.Where( _spirit.Presence.IsOn ).Select(s=>s.Space.Label+":"+s[_spirit.Token]).Order().Join(",");
 		Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 	}
 
 	protected void Assert_HasCardAvailable( string name ){
 		bool nameMatches( PowerCard card ) => string.Compare(name,card.Name,true) == 0;
-		Assert.True(spirit.Hand.Any( nameMatches ), $"Hand does not contain {name}.  Hand has "+spirit.Hand.Select(x=>x.Text).Join(",") );
+		Assert.True(_spirit.Hand.Any( nameMatches ), $"Hand does not contain {name}.  Hand has "+_spirit.Hand.Select(x=>x.Text).Join(",") );
 	}
 
 	protected void Assert_AllCardsAvailableToPlay(int expectedAvailableCount = 4) {
 		// Then: all cards reclaimed (including unplayed)
-		Assert.Empty( spirit.DiscardPile ); // , "Should not be any cards in 'played' pile" );
-		spirit.Hand.Count.ShouldBe( expectedAvailableCount );
+		Assert.Empty( _spirit.DiscardPile ); // , "Should not be any cards in 'played' pile" );
+		_spirit.Hand.Count.ShouldBe( expectedAvailableCount );
 	}
 
 	protected void Assert_HasEnergy( int expectedChange ) {
-		spirit.Energy.ShouldBe( expectedChange );
+		_spirit.Energy.ShouldBe( expectedChange );
 	}
 
 	#endregion
@@ -111,22 +102,16 @@ public class GrowthTests {
 	}
 
 	public void Assert_CardTrackIs( int expectedCards ) {
-		Assert.Equal( expectedCards, spirit.NumberOfCardsPlayablePerTurn );
+		Assert.Equal( expectedCards, _spirit.NumberOfCardsPlayablePerTurn );
 	}
 
 	public void Assert_EnergyTrackIs( int expectedEnergy ) {
-		Assert.Equal( expectedEnergy, spirit.EnergyPerTurn );
+		Assert.Equal( expectedEnergy, _spirit.EnergyPerTurn );
 	}
-
-	protected void When_StartingGrowth() {
-		_gameState.Phase = Phase.Growth;
-		GrowthTask = spirit.DoGrowth( _gameState );
-	}
-	protected Task GrowthTask;
 
 	protected void PlayCard(params PowerCard[] cards ) {
 		foreach(var card in cards)
-			spirit.PlayCard( card );
+			_spirit.PlayCard( card );
 	}
 
 	#endregion

@@ -5,7 +5,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	protected new VirtualRiverUser User;
 
 	public RiverSurges_GrowthTests():base( new RiverSurges() ){
-		User = new VirtualRiverUser( spirit );
+		User = new VirtualRiverUser( _spirit );
 	}
 
 	#region growth
@@ -16,15 +16,15 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		// Given: using power pregression
 
 		//   And: all cards played
-		spirit.DiscardPile.AddRange( spirit.Hand );
-		spirit.Hand.Clear();
+		_spirit.DiscardPile.AddRange( _spirit.Hand );
+		_spirit.Hand.Clear();
 
 		//  And: energy track is at 1
-		Assert.Equal( 1, spirit.EnergyPerTurn );
+		Assert.Equal( 1, _spirit.EnergyPerTurn );
 
-		When_StartingGrowth();
-
-		User.SelectsGrowthA_Reclaim();
+		_spirit.When_Growing( () => {
+			User.SelectsGrowthA_Reclaim();
+		} );
 
 		Assert_AllCardsAvailableToPlay( 5 );
 		Assert_HasCardAvailable( "Drought" ); // gains 1st card drawn
@@ -38,16 +38,16 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		// +1 presense within 1, +1 presense range 1
 		// +1 power card, +1 presense range 2
 
-		Given_HasPresence( board[3] );
-		spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
+		Given_HasPresence( _board[3] );
+		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 
-		When_StartingGrowth();
-		User.SelectsGrowthB_2PP();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User.SelectsGrowthB_2PP();
+		} );
 
-		Assert.Equal(2,spirit.EnergyPerTurn);
+		Assert.Equal(2,_spirit.EnergyPerTurn);
 		Assert_HasEnergy( 2 ); // 2 from energy track
-		spirit.Presence.Energy.Revealed.Count().ShouldBe(3); // # of spaces revealed, not energy per turn
+		_spirit.Presence.Energy.Revealed.Count().ShouldBe(3); // # of spaces revealed, not energy per turn
 	}
 
 	[Fact]
@@ -55,17 +55,17 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		// +1 power card, 
 		// +1 presense range 2
 
-		spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
-		Given_HasPresence( board[3] );
+		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
+		Given_HasPresence( _board[3] );
 
-		When_StartingGrowth();
-		User.SelectsGrowthC_Draw_Energy();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User.SelectsGrowthC_Draw_Energy();
+		} );
 
 		Assert_HasCardAvailable( "Drought" );
 		Assert_HasEnergy( 1 ); // didn't increase energy track.
-		spirit.Presence.Energy.Revealed.Count().ShouldBe(1);
-		spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
+		_spirit.Presence.Energy.Revealed.Count().ShouldBe(1);
+		_spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
 	}
 
 	#endregion
@@ -118,29 +118,29 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	public void SufficientEnergyToBuy(string cardName) {
 
 		var card = FindSpiritsAvailableCard( cardName );
-		spirit.Energy = card.Cost;
+		_spirit.Energy = card.Cost;
 
 		// When:
 		PlayCard( card );
 
 		// Then: card is in Active/play list
-		Assert.Contains( spirit.InPlay, c => c == card );
+		Assert.Contains( _spirit.InPlay, c => c == card );
 
 		//  And: card is not in Available list
-		Assert.DoesNotContain( spirit.Hand, c => c == card );
+		Assert.DoesNotContain( _spirit.Hand, c => c == card );
 
 		Assert_CardInActionListIf( card );
 
 		// Assert_InnateInActionListIf(Speed.Fast); // we now put all actions in the list at the same time
 
 		// Money is spent
-		Assert.Equal( 0, spirit.Energy );
+		Assert.Equal( 0, _spirit.Energy );
 
 	}
 
 	protected void Assert_CardInActionListIf(PowerCard card) {
 
-		var unresolvedCards = spirit.GetAvailableActions(card.DisplaySpeed)
+		var unresolvedCards = _spirit.GetAvailableActions(card.DisplaySpeed)
 			.OfType<PowerCard>()
 			.ToArray();
 
@@ -152,8 +152,8 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[InlineData("Wash Away")]
 	[InlineData("Flash Floods")]
 	public void InsufficientEnergyToBuy(string cardName){
-		var card = spirit.Hand.VerboseSingle(c=>c.Name == cardName);
-		spirit.Energy = card.Cost - 1;
+		var card = _spirit.Hand.VerboseSingle(c=>c.Name == cardName);
+		_spirit.Energy = card.Cost - 1;
 
 		// When:
 		void Purchase() => PlayCard( card );
@@ -174,11 +174,11 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	}
 
 	void Discard(PowerCard card) {
-		spirit.Hand.Remove(card);
-		spirit.DiscardPile.Add(card);
+		_spirit.Hand.Remove(card);
+		_spirit.DiscardPile.Add(card);
 	}
 
-	PowerCard FindSpiritsAvailableCard(string cardName) => spirit.Hand.VerboseSingle(c => c.Name == cardName);
+	PowerCard FindSpiritsAvailableCard(string cardName) => _spirit.Hand.VerboseSingle(c => c.Name == cardName);
 
 	#endregion
 

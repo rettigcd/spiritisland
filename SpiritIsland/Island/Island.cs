@@ -111,11 +111,15 @@ public class Island {
 	}
 
 	class BoardInfo {
-		public BoardInfo( Board b ) { Name = b.Name; Orientation = b.Orientation; InvaderActionCount=b.InvaderActionCount; }
-		string Name { get; set; }
-		BoardOrientation Orientation { get; set; }
-		public int InvaderActionCount { get; set;}
-		public Board Restore() => new Board( Name, Orientation ){ InvaderActionCount = InvaderActionCount };
+		public BoardInfo( Board b ) { _name = b.Name; _orientation = b.Orientation; _invaderActionCount=b.InvaderActionCount; }
+		string _name;
+		BoardOrientation _orientation;
+		int _invaderActionCount;
+		public Board Restore() {
+			var board = Board.BuildBoard( _name, _orientation ); // supplies spaces
+			board.InvaderActionCount = _invaderActionCount;
+			return board;
+		}
 	}
 
 	#endregion

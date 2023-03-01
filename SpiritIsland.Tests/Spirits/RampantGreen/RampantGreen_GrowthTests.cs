@@ -14,14 +14,14 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 		// reclaim, +1 power card
 		Given_HalfOfPowercardsPlayed();
-		Given_HasPresence( board[2] );
+		Given_HasPresence( _board[2] );
 
-		When_StartingGrowth();
-		User_SelectAlwaysGrowthOption();
-
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
+		_spirit.When_Growing( () => {
+			User_SelectAlwaysGrowthOption();
+			User.Growth_DrawsPowerCard();
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
+		} );
 
 		Assert_AllCardsAvailableToPlay( 5);
 	}
@@ -32,46 +32,44 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		// +1 presense range 1, play +1 extra card this turn
 
 		// Presense Options
-		Given_HasPresence( board[2] );
+		Given_HasPresence( _board[2] );
 
-		Assert.Equal( 1, spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
+		Assert.Equal( 1, _spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
 
-		When_StartingGrowth();
-		User_SelectAlwaysGrowthOption();
-
-		User.Growth_SelectAction( "PlacePresence(1)" );
-		User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
+		_spirit.When_Growing( () => {
+			User_SelectAlwaysGrowthOption();
+			User.Growth_SelectAction( "PlacePresence(1)" );
+			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
+		} );
 
 		// Player Gains +1 card to play this round
-		Assert.Equal( 2, spirit.NumberOfCardsPlayablePerTurn ); // , "Should gain 1 card to play this turn.");
+		Assert.Equal( 2, _spirit.NumberOfCardsPlayablePerTurn ); // , "Should gain 1 card to play this turn.");
 
 		// But count drops back down after played
-		spirit.PlayCard( spirit.Hand[0] );
-		spirit.tempCardPlayBoost = 0; // makes test pass, but Rampant Green test is testing wrong thing
+		_spirit.PlayCard( _spirit.Hand[0] );
+		_spirit.tempCardPlayBoost = 0; // makes test pass, but Rampant Green test is testing wrong thing
 
 		// Back to original
-		Assert.Equal( 1, spirit.NumberOfCardsPlayablePerTurn ); // ,"Available card count should be back to original");
+		Assert.Equal( 1, _spirit.NumberOfCardsPlayablePerTurn ); // ,"Available card count should be back to original");
 
 	}
 
 	[Fact]
 	public void GainEnergy_PowerCard_JWPresence() {
-		Given_HasPresence( board[2] );
+		Given_HasPresence( _board[2] );
 
-		When_StartingGrowth();
-
-		User_SelectAlwaysGrowthOption();
-
-		User.Growth_SelectAction( "DrawPowerCard", 1 ); // there are 2. select the 2nd one (index=1)
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User_SelectAlwaysGrowthOption();
+			User.Growth_SelectAction( "DrawPowerCard", 1 ); // there are 2. select the 2nd one (index=1)
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
+		} );
 
 		// Gain 3 energy did not trigger
 
-		Assert.Equal( 1, spirit.EnergyPerTurn );
+		Assert.Equal( 1, _spirit.EnergyPerTurn );
 		Assert_HasEnergy( 3 + 1 );
-		spirit.Hand.Count.ShouldBe( 5 );
+		_spirit.Hand.Count.ShouldBe( 5 );
 	}
 
 	void User_SelectAlwaysGrowthOption() {

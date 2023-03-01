@@ -10,40 +10,40 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 		// reclaim, gain power Card
 		Given_HalfOfPowercardsPlayed();
 
-		_ = When_Growing( 0 );
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
+		_spirit.When_Growing( 0, () => {
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
+		} );
 
-		Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
+		Assert.Equal(5,_spirit.Hand.Count); // drew 1 card
 	}
 
 	[Fact]
 	public void PowerAndPresence(){
 		// gain power card, add a presense range 1
-		Given_HasPresence( board[1] );
+		Given_HasPresence( _board[1] );
 
-		_ = When_Growing(1);
+		_spirit.When_Growing( 1, () => {
+			User.Growth_DrawsPowerCard();
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
 
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
+			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+		} );
 
-		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
-
-		Assert.Equal(5,this.spirit.Hand.Count); // drew 1 card
+		Assert.Equal(5,_spirit.Hand.Count); // drew 1 card
 	}
 
 	[Fact]
 	public void PresenceAndEnergy(){
 		// add a presence within 3, +3 energy
-		Given_HasPresence( board[3] );
+		Given_HasPresence( _board[3] );
 
-		When_StartingGrowth();
-
-		//		User.Growth_SelectsOption( "PlacePresence(3) / GainEnergy(3)" );
-		User.Growth_SelectAction( "PlacePresence(3)" );
-		User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			//		User.Growth_SelectsOption( "PlacePresence(3) / GainEnergy(3)" );
+			User.Growth_SelectAction( "PlacePresence(3)" );
+			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );
+		} );
 
 		Assert_HasEnergy(3+1); // 1 from energy track
 	}

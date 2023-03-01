@@ -36,9 +36,10 @@ public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemovedAsyn
 		var tokens = args.From;
 		if(args.Reason.IsDestroyingPresence())
 			await tokens.Destroy( _presenceToken, 2 );
-		else if( args.Reason == RemoveReason.MovedFrom )
-			await tokens.Remove( _presenceToken, 2, RemoveReason.MovedFrom);
-		else
+		else if( args is ITokenMovedArgs movedArgs) {
+			await _presenceToken.Move( movedArgs.From, movedArgs.To );
+			await _presenceToken.Move( movedArgs.From, movedArgs.To );
+		} else
 			throw new InvalidOperationException( "MM SS Beast should never be UsedUp nor .None" );
 
 	}

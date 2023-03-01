@@ -20,7 +20,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		Given_IslandIsABC();
 		Given_HasPresence( starting );
 
-		spirit.QueueUpGrowth(spirit.GrowthTrack.Options[0]);
+		_spirit.QueueUpGrowth(_spirit.GrowthTrack.Options[0]);
 
 		// since options are move source, key on that
 		var moveBySrc = select.Split(',')
@@ -28,13 +28,13 @@ public class Ocean_GrowthTests : GrowthTests {
 			.Select(s=>s.Split('>'))
 			.ToDictionary(a=>a[0],a=>a[1]);
 
-		GatherPresenceIntoOcean gather = spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
+		GatherPresenceIntoOcean gather = _spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 		if(gather != null){
-			_ = gather.ActivateAsync( spirit.BindSelf() );
-			while(!spirit.Gateway.IsResolved){
-				var source = spirit.Gateway.Next.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
-				spirit.Gateway.Choose( spirit.Gateway.Next, source );
+			_ = gather.ActivateAsync( _spirit.BindSelf() );
+			while(!_spirit.Gateway.IsResolved){
+				var source = _spirit.Gateway.Next.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+				_spirit.Gateway.Choose( _spirit.Gateway.Next, source );
 			}
 		}
 
@@ -60,13 +60,14 @@ public class Ocean_GrowthTests : GrowthTests {
 		// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 
 		Given_HalfOfPowercardsPlayed();
-		_ = When_Growing( 0 );
 
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
+		_spirit.When_Growing( 0, () => {
+			User.Growth_DrawsPowerCard();
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
 
-		User.GathersPresenceIntoOcean();
+			User.GathersPresenceIntoOcean();
+		} );
 
 		Assert_AllCardsAvailableToPlay( 4 + 1 );
 		Assert_GainsFirstMinorCard();
@@ -80,10 +81,10 @@ public class Ocean_GrowthTests : GrowthTests {
 		// Given: island has 2 boards, hence 2 oceans
 		_gameState.Island = new Island( BoardA, BoardB );
 
-		_ = When_Growing( 1 );
-
-		User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay,Take Presence from Board", "[A0],B0" );
-		User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,Take Presence from Board", "A0,[B0]" );
+		_spirit.When_Growing( 1, () => {
+			User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay,Take Presence from Board", "[A0],B0" );
+			User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,Take Presence from Board", "A0,[B0]" );
+		} );
 
 		Assert_HasEnergy( 1 );
 	}
@@ -97,14 +98,14 @@ public class Ocean_GrowthTests : GrowthTests {
 		_gameState.Island = new Island( BoardA, BoardB, BoardC );
 		Given_HasPresence( starting );
 
-		_ = When_Growing( 2 );
+		_spirit.When_Growing( 2, () => {
+			User.Growth_PlacesEnergyPresence( placeOptions );
+			User.Growth_DrawsPowerCard();
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
 
-		User.Growth_PlacesEnergyPresence( placeOptions );
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
-
-		User.PushesPresenceFromOcean("A1,[A2],A3");
+			User.PushesPresenceFromOcean( "A1,[A2],A3" );
+		} );
 
 		Assert_GainsFirstMinorCard();
 		Assert_BoardPresenceIs( ending );

@@ -8,18 +8,18 @@ public class BoardSpace_Tests {
 	[InlineData( 1 )]
 	[InlineData( 2 )]
 	public void Space_IsWithinXDistanceFromSelf( int distance ) {
-		var space = MakeSpace();
+		var space = MakeSpace("T1");
 		var spaces = space.Range( distance );
 		Assert.Contains( space, spaces );
 	}
 
-	static Space1 MakeSpace() => new(Terrain.None,"",null);
+	static Space1 MakeSpace(string name) => new(Terrain.None,name,null);
 
 	[Fact]
 	public void Adjacentcy_IsTransitive() {
 		// Given: land-1 is adjacent to land-2
-		var land1 = MakeSpace();
-		var land2 = MakeSpace();
+		var land1 = MakeSpace("T1");
+		var land2 = MakeSpace("t2");
 		land1.SetAdjacentToSpaces( land2 );
 		// Then: land2 is adjacent to land 1
 		Assert.Contains( land1, land2.Adjacent_Existing );
@@ -29,28 +29,29 @@ public class BoardSpace_Tests {
 	[Fact]
 	public void MultipleNeighbors() {
 		// Given space has 2 neighbors
-		var main = MakeSpace();
-		var neighbor1 = MakeSpace();
-		var neighbor2 = MakeSpace();
+		Space1 main = MakeSpace("N0");
+		Space1 neighbor1 = MakeSpace("N1");
+		Space1 neighbor2 = MakeSpace("N2");
 		main.SetAdjacentToSpaces( neighbor1 );
 		main.SetAdjacentToSpaces( neighbor2 );
+
 		// Then: it is adjacent to both
 		var neighbors = main.Range( 1 );
 		Assert.Contains( neighbor1, neighbors );
 		Assert.Contains( neighbor2, neighbors );
+
 		//  And: Neighbors are 2 away from each other
 		Assert.Contains( neighbor2, neighbor1.Range( 2 ) );
-		Assert.Contains( neighbor1, SpacesExactly( neighbor2, 2 ) );
+		SpacesExactly( neighbor2, 2 ).ToArray().ShouldContain( neighbor1 );
+		//Assert.Contains( neighbor1,  );
 	}
 
-	static IEnumerable<Space> SpacesExactly( Space space, int distance ) {
-		return distance switch {
+	static IEnumerable<Space> SpacesExactly( Space space, int distance )
+		=> distance switch {
 			0 => new Space[] { space },
 			1 => space.Adjacent_Existing,
 			_ => space.CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
 		};
-	}
-
 
 	#region Internal Board Connectivity
 

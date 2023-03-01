@@ -5,7 +5,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	readonly GameState gsbac;
 
 	public Keeper_GrowthTests() : base( new Keeper() ) {
-		gsbac = new GameState( spirit, board );
+		gsbac = new GameState( _spirit, _board );
 		ActionScope.Initialize();
 		_gameState = gsbac;
 		InitMinorDeck();
@@ -22,10 +22,10 @@ public class Keeper_GrowthTests : GrowthTests {
 		// b) +1 power card
 		Given_HalfOfPowercardsPlayed();
 
-		When_StartingGrowth();
-		User_Activates_A();
-		User_Activates_B();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User_Activates_A();
+			User_Activates_B();
+		} );
 
 		Assert_AllCardsAvailableToPlay( 1 + 4 );
 		Assert_HasEnergy( 1 + 2 );
@@ -37,16 +37,16 @@ public class Keeper_GrowthTests : GrowthTests {
 		// a) reclaim, +1 energy
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
-		Given_HasPresence( board[3] );
+		Given_HasPresence( _board[3] );
 		Given_HalfOfPowercardsPlayed();
-		Given_HasWilds( board[8] ); // 3 spaces away
+		Given_HasWilds( _board[8] ); // 3 spaces away
 
 		_gameState.Phase = Phase.Growth;
 
-		When_StartingGrowth();
-		User_Activates_A();
-		User_Activates_C();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User_Activates_A();
+			User_Activates_C();
+		} );
 
 		Assert_AllCardsAvailableToPlay();      // A
 		Assert_HasEnergy( 2 + 2 );             // A & C
@@ -56,19 +56,19 @@ public class Keeper_GrowthTests : GrowthTests {
 
 	[Fact]
 	public void A_Reclaim_Energy_D_Presence_PowerCard_LoseEnergy() {
-		spirit.Energy = 10; // so we can -3 it
+		_spirit.Energy = 10; // so we can -3 it
 		// a) reclaim, +1 energy
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
 		Given_HalfOfPowercardsPlayed();
-		Given_HasPresence( board[3] );
+		Given_HasPresence( _board[3] );
 		Given_BlightEverywhereExcept7();
 
-		When_StartingGrowth();
-		User_Activates_A();
-		User_Activates_D();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User_Activates_A();
+			User_Activates_D();
+		} );
 
 		Assert_AllCardsAvailableToPlay( 4+1);     // A
 		Assert_HasEnergy( 10 + 2-3+1 );                // A & D
@@ -83,14 +83,14 @@ public class Keeper_GrowthTests : GrowthTests {
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
 		// Given: presence at A3  (default island is Board A)
-		Given_HasPresence( board[3] );
+		Given_HasPresence( _board[3] );
 		// Given: 1 wilds, 3 away
-		Given_HasWilds( board[8] );
+		Given_HasWilds( _board[8] );
 
-		When_StartingGrowth();
-		User_Activates_B();
-		User_Activates_C();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () =>{
+			User_Activates_B();
+			User_Activates_C();
+		} );
 
 		// Assert_HasPowerProgressionCard( 0); // B
 		Assert_HasEnergy( 1 + 2 );             // C
@@ -103,14 +103,15 @@ public class Keeper_GrowthTests : GrowthTests {
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
-		Given_HasPresence( board[3] );
+		Given_HasPresence( _board[3] );
 		Given_BlightEverywhereExcept7();
-		spirit.Energy = 10; // so we can do this option
+		_spirit.Energy = 10; // so we can do this option
 
 		_gameState.Phase = Phase.Growth;
-		When_StartingGrowth();
-		User_Activates_B();
-		User_Activates_D();
+		_spirit.When_Growing( () => {
+			User_Activates_B();
+			User_Activates_D();
+		} );
 
 		// Assert_HasPowerProgressionCard( 0); // B
 		// Assert_HasPowerProgressionCard( 1 ); // B
@@ -122,21 +123,21 @@ public class Keeper_GrowthTests : GrowthTests {
 	[Fact]
 	public void C_Presence_Energy_D_Presence_PowerCard_LoseEnergy() {
 		const int startingEnergy = 10;
-		spirit.Energy = startingEnergy;
+		_spirit.Energy = startingEnergy;
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
-		Given_HasPresence( board[3] );
-		Given_HasWilds( board[8] );
+		Given_HasPresence( _board[3] );
+		Given_HasWilds( _board[8] );
 		Given_BlightEverywhereExcept7();
 
-		When_StartingGrowth();
-		User_Activates_C();
-		User_Activates_D();
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User_Activates_C();
+			User_Activates_D();
+		} );
 
-		Assert_HasEnergy( startingEnergy + spirit.EnergyPerTurn - 2  );          // C & D
+		Assert_HasEnergy( startingEnergy + _spirit.EnergyPerTurn - 2  );          // C & D
 		// Assert_HasPowerProgressionCard(0); // D
 
 	}
@@ -145,19 +146,19 @@ public class Keeper_GrowthTests : GrowthTests {
 	[Fact]
 	public void SacredSitesPushDahan() {
 		// Given: space with 2 dahan
-		var space = board[5];
+		var space = _board[5];
 		space.Tokens.Dahan.Init(2);
 		//   and presence on that space
-		spirit.Presence.PlaceOn(space, _gameState).Wait();
+		_spirit.Presence.PlaceOn(space, _gameState).Wait();
 
 		// When: we place a presence on that space
 		_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispose or remove
-		_ = spirit.Presence.Place( spirit.Presence.Energy.RevealOptions.Single(), space );
+		_ = _spirit.Presence.Place( _spirit.Presence.Energy.RevealOptions.Single(), space );
 
 		User.PushesTokensTo("D@2","A1,[A4],A6,A7,A8",2);
 		User.PushesTokensTo("D@2","A1,A4,A6,[A7],A8");
 
-		spirit.Presence.SacredSites.Downgrade().ShouldContain(space);
+		_spirit.Presence.SacredSites.Downgrade().ShouldContain(space);
 		_gameState.Tokens[space].Dahan.CountAll.ShouldBe(0,"SS should push dahan from space");
 	}
 
@@ -193,14 +194,14 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void Given_BlightEverywhereExcept7() {
-		AddBlight( board[1] );
-		AddBlight( board[2] );
-		AddBlight( board[3] );
-		AddBlight( board[4] );
-		AddBlight( board[5] );
-		AddBlight( board[6] );
-		AddBlight( board[8] );
-		_gameState.Tokens[ board[7] ].Blight.Count.ShouldBe( 0 );
+		AddBlight( _board[1] );
+		AddBlight( _board[2] );
+		AddBlight( _board[3] );
+		AddBlight( _board[4] );
+		AddBlight( _board[5] );
+		AddBlight( _board[6] );
+		AddBlight( _board[8] );
+		_gameState.Tokens[ _board[7] ].Blight.Count.ShouldBe( 0 );
 	}
 
 	void Given_HasWilds( Space space ) {

@@ -1,10 +1,9 @@
-﻿using System;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class GuideTheWayOnFeatheredWings {
 
 	[SpiritCard("Guide the Way on Feathered Wings", 0, Element.Sun,Element.Air,Element.Animal), Fast, FromPresence(1)]
+	[Preselect( "Select Guide", "Beast" )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 		// Move 1 beast  up to two lands.
 		return MoveBeastAndFriends( ctx, 2 );

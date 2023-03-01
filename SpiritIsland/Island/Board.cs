@@ -246,6 +246,8 @@ public partial class Board {
 	){
 		Name = name;
 		Orientation = orientation;
+		if(spaces.Length == 0)
+			throw new Exception("Each Board should have 9 spaces but this one has 0.");
 
 		// attach spaces
 		_spaces = spaces;

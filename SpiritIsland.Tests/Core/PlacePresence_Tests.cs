@@ -23,25 +23,28 @@ public class PlacePresence_Tests : GrowthTests {
 	}
 
 	public PlacePresence_Tests():base(new TestSpirit()){
-		Given_HasPresence(board[1]);
+		Given_HasPresence(_board[1]);
 	}
 
 
 	[Fact]
 	public void PullsFrom_EnergyTrack() {
 		// Given: spirit has one place presence action
-		_ = When_Growing(0);
 
-		User.PlacePresenceLocations( spirit.Presence.Energy.RevealOptions.Single(), "A1;A2" );
+		_spirit.When_Growing(0, ()=> {
+			User.PlacePresenceLocations( _spirit.Presence.Energy.RevealOptions.Single(), "A1;A2" );
+		} );
 
-		spirit.Presence.Energy.Revealed.Count().ShouldBe(2);
+		_spirit.Presence.Energy.Revealed.Count().ShouldBe(2);
 	}
 
 	[Fact]
 	public void PullsFrom_CardTrack(){
-		_ = When_Growing( 0 );
-		User.PlacePresenceLocations( spirit.Presence.CardPlays.RevealOptions.Single(), "A1;A2" );
-		spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
+		_spirit.When_Growing( 0, () => {
+			User.PlacePresenceLocations( _spirit.Presence.CardPlays.RevealOptions.Single(), "A1;A2" );
+		} );
+
+		_spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
 	}
 
 }

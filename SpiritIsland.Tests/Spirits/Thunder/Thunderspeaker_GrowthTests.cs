@@ -9,16 +9,15 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 		// Growth Option 1 - Reclaim All, +2 Power cards
 		Given_HalfOfPowercardsPlayed();
 
-		When_StartingGrowth();
+		_spirit.When_Growing( () => {
+			User.Growth_DrawsPowerCard();
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
 
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
-
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
-
+			User.Growth_DrawsPowerCard();
+			User.SelectsMinorDeck();
+			User.SelectMinorPowerCard();
+		} );
 
 		Assert_AllCardsAvailableToPlay( 6);
 		Assert_HasEnergy(1);
@@ -32,14 +31,15 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	public void TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
 		// +1 presense within 2 - contains dahan
 		// +1 presense within 1 - contains dahan
-		Given_HasPresence( board[3] );
+		Given_HasPresence( _board[3] );
 		//	 And: dahan on initial spot
 		foreach(string s in initialDahanSquares.Split( ',' ))
-			board[int.Parse( s )].Tokens.Dahan.Init(1);
+			_board[int.Parse( s )].Tokens.Dahan.Init(1);
 
-		_ = When_Growing( 1 );
-
-		User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
+		_spirit.When_Growing( 1, () => {
+			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
+			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
+		} );
 
 		Assert_HasEnergy( 0 );
 
@@ -48,14 +48,14 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	[Fact]
 	public void PresenseAndEnergy() {
 		// +1 presense within 1, +4 energy
-		Given_HasPresence( board[1] );
+		Given_HasPresence( _board[1] );
 
-		When_StartingGrowth();
-		User.Growth_SelectAction( "PlacePresence(1)" );
-		User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
-		GrowthTask.Wait();
+		_spirit.When_Growing( () => {
+			User.Growth_SelectAction( "PlacePresence(1)" );
+			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+		});
 
-		Assert.Equal(1,spirit.EnergyPerTurn);
+		Assert.Equal(1,_spirit.EnergyPerTurn);
 		Assert_HasEnergy( 4+1 );
 
 	}

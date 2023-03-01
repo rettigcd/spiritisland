@@ -7,6 +7,7 @@ public interface Restoreable {
 public abstract class Space 
 	: IOption 
 	, ISeeAllNeighbors<Space>
+	, IEquatable<Space>
 {
 
 	readonly List<Space> adjacent = new List<Space>();
@@ -97,4 +98,12 @@ public abstract class Space
 
 	#endregion
 
+	#region override Equality
+	// Overriding so that when game is rewound and board state is restored, tokens from old spaces appear on new spaces.
+	public override int GetHashCode() => Text.GetHashCode();
+	public override bool Equals( object obj ) => Equals( obj as Space );
+	public bool Equals( Space other ) => !Object.ReferenceEquals(other,null) && other.Text == Text;
+	static public bool operator==(Space left, Space right) => Object.ReferenceEquals(left,right) || !Object.ReferenceEquals(left,null) && left.Equals( right );
+	static public bool operator!=(Space left, Space right) => !left.Equals(right); 
+	#endregion
 }
