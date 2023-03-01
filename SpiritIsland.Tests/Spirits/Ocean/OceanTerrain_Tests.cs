@@ -98,8 +98,8 @@ public class OceanTerrain_Tests {
 
 			// bring Thunderspeaker along
 			NextDecision.HasPrompt( "Move presence with Dahan?" )
-				.HasOptions( "Thunderspeaker on A2,Done" )
-				.Choose( "Thunderspeaker on A2" );
+				.HasOptions( "T on A2,Done" )
+				.Choose( "T on A2" );
 			
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
@@ -310,7 +310,7 @@ public class OceanTerrain_Tests {
 		IsActive( task ); Choose( "D@2" );
 		IsActive( task ); Choose( "A0" );
 		// Thunderspeaker goes along
-		Choose( "Thunderspeaker on A2" );
+		Choose( "T on A2" );
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
@@ -330,7 +330,7 @@ public class OceanTerrain_Tests {
 				.Choose("A1");
 
 			// End of Action - Thunder speaker exits ocean
-			Choose( "Thunderspeaker on A0" );
+			Choose( "T on A0" );
 		}
 	}
 

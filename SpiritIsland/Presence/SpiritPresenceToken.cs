@@ -9,12 +9,23 @@ public class SpiritPresenceToken : IToken, IEntityClass
 		_spirit = spirit;
 	}
 
+	static string Abreviate(string words) {
+		var lowercaseWords = "in,of,the,a,and,as";
+		return words.Split(' ','-')
+			.Select(word => {
+				char k = word[0];
+				if( lowercaseWords.Contains( word.ToLower() ) ) k = char.ToLower(k);
+				return k.ToString();
+			} )
+			.Join("");
+	}
+
 	protected readonly Spirit _spirit;
 
 
 	#region Token parts
 
-	public string Text => _spirit.Text;
+	public string Text => Abreviate( _spirit.Text );
 	Img IToken.Img => Img.Icon_Presence;
 	public IEntityClass Class => this;
 

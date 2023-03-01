@@ -1,5 +1,22 @@
 === Grouping 1 ===
 
+TODO Russia // !!! Level 2 - Test/Implement - Isolate prevents pushing explorer	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	223	5
+TODO Russia // !!! Level 5 - Test	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	224	5
+TODO Russia // !!! Level 6 - Test	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	225	5
+TODO Range // !!! should also test +2 range on all powers	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Major\FlowLikeWaterReachLikeAir_Tests.cs	5	5
+
+TODO Ravage // TwoRavages_BecomesBuildAndRavage - !!! Put 2 cards in the Ravage slot that trigger the same space. Show only 1 ravage happens	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Minor\CallToTrade_Tests.cs	131	40
+TODO Build //		public void Has2Builds_NoBuild() {} // !!! how do I construct 2 builds?	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Minor\RitesOfTheLandsRejection_Tests.cs	41	45
+
+TODO Settle Into Hunting Grounds// !!! Mists Shift and Flow(Shroud special rule)	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Major\SettleIntoHuntingGrounds_Tests.cs	7	5
+
+TODO MMMA1	Growth "Gather" should gather 2 spaces
+TODO MMMA1	Beset and Confound the Invaders Should only Target spaces with minimum # of beasts.  (beasts should draw with elements)
+TODO MMMA1	Guide the Way on Feathered Wings, should not be able to swap beast tokens (presence or normal, but don't switch)
+TODO MMMA1	TEST: During Growth - Gather at range 2.
+TODO MMMA1	TEST: when moving MM-Beast, presence seems to be duplicating or incrementing in destination
+TODO MMMA1 - Move beast and pull 2 dahan with it.
+
 0) Modifications to Range
 	Talons of Lightning - extended / conditional range 
 	Sap the Strength of Multitudes - range changes
@@ -47,7 +64,6 @@ Rain And Mud Suppress Conflict
 === Grouping 3 - Categories ===
 
 Move - does not allow moving into Ocean
-	- MMMA1 - Move beast and pull 2 dahan with it.
 
 Check that Dahan Raid does REAL damage for Bringer, not dream-damage
 

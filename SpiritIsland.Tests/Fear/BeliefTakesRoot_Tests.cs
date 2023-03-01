@@ -28,11 +28,11 @@ public class BeliefTakesRoot_Tests {
 
 		Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-		Task t = When_AddFearApplyFearAndRavage();
-		User.AcknowledgesFearCard("Null Fear Card : 1 : x");
+		When_AddFearApplyFearAndRavage( () => {
+			User.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
+		} );
 
 		// Then: all dahan killed
-		t.Wait();
 		ravageSpace.Tokens.Dahan.CountAll.ShouldBe(0);
 		gameState.Tokens[ravageSpace].Blight.Any.ShouldBe(true);
 	}
@@ -41,9 +41,9 @@ public class BeliefTakesRoot_Tests {
 	public void Level1_NoBlightDahanLives() {
 		Given_DahanAndTownsInSpaceWithPresence(1,1);
 
-		Task t =  When_AddFearApplyFearAndRavage();
-		User.AcknowledgesFearCard( FearCardAction );
-		t.Wait( 4000 ); t.IsCompletedSuccessfully.ShouldBeTrue();
+		When_AddFearApplyFearAndRavage( ()=> {
+			User.AcknowledgesFearCard( FearCardAction );
+		} );
 
 		// Then: 1 dahan left
 		Assert.Equal( 1, ravageSpace.Tokens.Dahan.CountAll );
@@ -58,11 +58,9 @@ public class BeliefTakesRoot_Tests {
 	public void Level1_DefendNotMoreThan2() { // not more th
 		Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
 
-		Task t = When_AddFearApplyFearAndRavage();
-
-		User.AcknowledgesFearCard( FearCardAction );
-
-		t.Wait(4000); t.IsCompletedSuccessfully.ShouldBeTrue();
+		When_AddFearApplyFearAndRavage( () => {
+			User.AcknowledgesFearCard( FearCardAction );
+		} );
 
 		// Then: 1 dahan left
 		Assert.Equal( 1, ravageSpace.Tokens.Dahan.CountAll );
@@ -83,8 +81,21 @@ public class BeliefTakesRoot_Tests {
 			spirit.Presence.PlaceOn(ravageSpace, gameState).Wait();
 	}
 
-	async Task When_AddFearApplyFearAndRavage() {
+	//Task When_AddFearApplyFearAndRavage() {
+	//	gameState.Fear.AddDirect( new FearArgs( 4 ) );
+	//	return FearAndRavage();
+	//}
+
+	void When_AddFearApplyFearAndRavage(Action userActions) {
 		gameState.Fear.AddDirect( new FearArgs( 4 ) );
+		Task t = FearAndRavage();
+		userActions();
+		t.Wait(3000);
+		if(!t.IsCompletedSuccessfully)
+			throw new Exception("Fear/Ravage did not complete in a timely manner.");
+	}
+
+	async Task FearAndRavage() {
 		await gameState.Fear.Apply();
 		await new RavageSlot().ActivateCard( invaderCard, gameState );
 	}
