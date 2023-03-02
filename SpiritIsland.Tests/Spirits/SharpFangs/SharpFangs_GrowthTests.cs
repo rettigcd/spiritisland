@@ -131,9 +131,9 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 5, 2, "plant 2 animal" )]
 	[InlineDataAttribute( 6, 3, "plant 2 animal" )]
 	[InlineDataAttribute( 7, 4, "plant 2 animal" )]
-	public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {// !!! still async
+	public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements);
+		fix.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Theory]
@@ -143,27 +143,10 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 4, 3, 1 )]
 	[InlineDataAttribute( 5, 4, 1 )]
 	[InlineDataAttribute( 6, 5, 2 )]
-	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
+	public void CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		fix.VerifyReclaim1Count(reclaimCount);
-
-		//// cards:	2 2 3 reclaim-1 4 5&reclaim-1
-		//spirit.Presence.CardPlays.SetRevealedCount( revealedSpaces );
-		//Assert_PresenceTracksAre( 1, expectedCardPlayCount );
-		//Given_HalfOfPowercardsPlayed();
-
-		//// Test the reclaim bit
-		//Given_HasPresence( board[3] ); // added extra presence, need to 
-
-		//gameState.Phase = Phase.Growth;
-		//When_SharpFangsGrow();
-
-		//User_GrowthC_DrawCard_GainEnergy();
-		//User_GrowthD_GainEnergy();
-
-		//while(reclaimCount-- > 0)
-		//	User.Reclaims1CardIfAny();
 	}
 
 	[Trait( "Spirit", "SetupAction" )]

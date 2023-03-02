@@ -120,7 +120,7 @@ public class Russia_Tests {
 		Board boardA = gameState.Island.Boards[0];
 		SpaceState a5 = gameState.Tokens[boardA[5]];
 		// Given: 2 explorers and 10 dahan on a space
-		a5.InitTokens("10D@2,2E@1");
+		a5.Given_HasTokens("10D@2,2E@1");
 		//   And: no explorers on push-destination
 		SpaceState a1 = gameState.Tokens[boardA[1]];
 		a1.Clear();
@@ -147,7 +147,7 @@ public class Russia_Tests {
 		Board boardA = gameState.Island.Boards[0];
 		SpaceState a3 = gameState.Tokens[boardA[3]];
 		// Given: 10 explorers on a space
-		a3.InitTokens( "10E@1" );
+		a3.Given_HasTokens( "10E@1" );
 		//   And: no explorers on push-destination
 		SpaceState destination = gameState.Tokens[boardA[4]];
 		destination.Clear();
@@ -181,7 +181,7 @@ public class Russia_Tests {
 		card.MatchesCard( a5 ).ShouldBeFalse();
 
 		//   And: 3 explorers and 1 dahan on space
-		a5.Clear().InitTokens("1D@2,3E@1");
+		a5.Clear().Given_HasTokens("1D@2,3E@1");
 
 		//  When: card ravages (Can't do card.When_Ravaging because we are testing Russias replacement of the Engine)
 		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState ).Wait();
@@ -207,7 +207,7 @@ public class Russia_Tests {
 
 		//   And: 3 explorers and 1 dahan on space
 		const string orig = "1D@2,3E@1";
-		a5.Clear().InitTokens( orig );
+		a5.Clear().Given_HasTokens( orig );
 
 		//  When: card builds & explore
 		card.When_Building();

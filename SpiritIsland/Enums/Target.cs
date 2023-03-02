@@ -31,4 +31,5 @@ public static class Target {
 
 	public const string Presence         = "Presence";
 	public const string BlightAndInvaders= "Blight+Invaders";
+	public const string TwoBeastPlusInvaders = "2Beast + Invaders";
 }

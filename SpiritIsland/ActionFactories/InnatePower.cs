@@ -148,7 +148,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		}
 		public MethodInfo Method { get; }
 		public InnateOptionAttribute Attr { get; }
-		public ElementCounts  Elements => Attr.Elements;
+//		public ElementCounts  Elements => Attr.Elements;
 
 		// Execution
 		// Display Words

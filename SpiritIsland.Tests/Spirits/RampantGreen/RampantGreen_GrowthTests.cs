@@ -86,9 +86,9 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 5, 2, "plant" )]
 	[InlineDataAttribute( 6, 2, "2 plant" )]
 	[InlineDataAttribute( 7, 3, "2 plant" )]
-	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {// !!! still async
+	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
-		await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -99,9 +99,9 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,2)]
 	[InlineDataAttribute(5,3)]
 	[InlineDataAttribute(6,4)]
-	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
+	public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 		var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
-		await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
 }

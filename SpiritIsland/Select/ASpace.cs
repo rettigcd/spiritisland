@@ -12,7 +12,7 @@ public class ASpace : TypedDecision<Space>, IHaveArrows {
 	static string TokensStr(int? count) => !count.HasValue ? "token(s)" : count.Value == 1 ? "token" : "tokens";
 
 	static public ASpace PushToken( IToken token, Space source, IEnumerable<SpaceState> destinationOptions, Present present )
-		=> ASpace.ForMoving_SpaceToken( "Push " + token.ToString() + " to", source, destinationOptions, present, token );
+		=> ASpace.ForMoving_SpaceToken( "Push " + token.Text + " to", source, destinationOptions, present, token );
 
 	static public ASpace ForMoving_SpaceToken( string prompt, Space source, IEnumerable<SpaceState> spaces, Present present, IToken tokenToAddToTarget ) {
 		return new ASpace( prompt, spaces, present, tokenToAddToTarget ) { _source = source };

@@ -2,145 +2,118 @@
 
 public class DreadApparitions_Tests {
 
-	Board board;
-	TargetSpaceCtx ctx;
+	public DreadApparitions_Tests() {
+		ActionScope.Initialize();
+	}
 
-	ActionScope Init() {
+	[Fact]
+	public void DirectFear_GeneratesDefend() {
 		Bringer spirit = new Bringer();
-		board = Board.BuildBoardA();
+		Board board = Board.BuildBoardA();
+		Space a5 = board[5];
 		_ = new GameState( spirit, board );
-		ActionScope scope = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Power );
-		ctx = spirit.BindMyPowers().Target( board[5] );
-		return scope;
+
+		// Given: DA run
+		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+
+		// When: generating 2 fear
+		spirit.When_TargetingSpace( a5, ctx=> ctx.AddFear(2) );
+
+		// Then: also get 3 defend
+		a5.Tokens.Defend.Count.ShouldBe( 2+1 );// +1 from D.A.
 	}
 
 	[Fact]
-	public async Task DirectFear_GeneratesDefend() {// !!! still async
-		await using var x = Init();
+	public void TownDamage_Generates2Defend() {
 
-		async Task When() {
-			// Given: using Dread Apparitions
-			await DreadApparitions.ActAsync( ctx );
-			// When: generating 2 fear
-			ctx.AddFear( 2 );
-		}
-		_ = When();
+		Bringer spirit = new Bringer();
+		Board board = Board.BuildBoardA();
+		Space a5 = board[5];
+		GameState gs = new GameState( spirit, board );
+		gs.DisableBlightEffect();
 
-		Assert_DefenceIs( 2+1 ); // +1 from D.A.
-	}
+		// Given: 
+		a5.Given_HasTokens("1T@2");
+		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
-	void Assert_DefenceIs(int expectedDefence) {
-		ctx.Tokens.Defend.Count.ShouldBe( expectedDefence );
-	}
-
-	[Fact]
-	public async Task TownDamage_Generates2Defend() {// !!! still async
-		await using var x = Init();
-
-		// Disable destroying presence
-		ctx.GameState.DisableBlightEffect();
-
-
-		// has town
-		ctx.Tokens.AdjustDefault( Human.Town, 1 );
-
-		async Task When() {
-			// Given: using Dread Apparitions
-			await DreadApparitions.ActAsync( ctx );
-			// When: destroying the town
-			await ctx.Invaders.DestroyNOfClass(1,Human.Town);
-		}
-		_ = When();
+		// When: destroying the town with Power
+		spirit.When_TargetingSpace( a5, ctx => ctx.Invaders.DestroyNOfClass( 1, Human.Town ), (u) => {
+			u.NextDecision.HasPrompt( "Push T@2 to" ).Choose( "A4" );
+		} );
 
 		// Then: 2 fear should have triggered 2 defend
-		Assert_DefenceIs( 2+1 ); // +1 Dread App...
+		a5.Tokens.Defend.Count.ShouldBe( 2+1 );
 
 	}
 
 	// Generate 5 DATD fear by 'killing' a city - should defend 5
 	[Fact]
-	public async Task CityDamage_Generates5Defend() {
-		await using var x = Init();
+	public void CityDamage_Generates5Defend() {
+		Spirit spirit = new Bringer();
+		Board board = Board.BuildBoardA();
+		Space a5 = board[5];
+		GameState gs = new GameState( spirit, board );
+		gs.DisableBlightEffect();
 
-		// Disable destroying presence
-		ctx.GameState.DisableBlightEffect();
+		// Given
+		a5.Given_HasTokens("1C@3");
+		spirit.Given_HasPresenceOn(a5);
+		//  And
+		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
-		// has city
-		ctx.Tokens.AdjustDefault( Human.City, 1 );
-
-		await DreadApparitions.ActAsync( ctx );
-		// When: destroying the city
-		await ctx.Invaders.DestroyNOfClass( 1, Human.City );
+		// When: destroying city
+		spirit.When_TargetingSpace(a5, ctx => ctx.Invaders.DestroyNOfClass( 1, Human.City ) );
 
 		// Then: 5 fear should have triggered 2 defend
-		Assert_DefenceIs( 5+1 ); // Dread Apparitions has 1 fear
+		board[5].Tokens.Defend.Count.ShouldBe( 5+1 );// Dread Apparitions has 1 fear
 
 	}
 
 	[Fact]
-	public async Task DahanDamage_Generates0() {// !!! still async
+	public void DahanDamage_Generates0() {
 
 		Bringer spirit = new Bringer();
-		var board = Board.BuildBoardA();
+		Board board = Board.BuildBoardA();
+		Space a5 = board[5];
 		GameState gs = new GameState( spirit, board );
-		var tokens = board[5].Tokens;
-
-		// Disable destroying presence
+		SpaceState tokens = a5.Tokens;
 		gs.DisableBlightEffect();
 		gs.IslandWontBlight();
 
-		string startingGuid = ActionScope.Current.Id.ToString();
 
-		// has 1 city and lots of dahan
-		tokens.AdjustDefault( Human.City, 1 ); // don't use ctx.Invaders because it has a fake/dream invader count
-		tokens.Dahan.Init(10);
-
-		// Given: using Dread Apparitions
-		async Task DoIt(){
-			await using var myScope = await ActionScope.Start(ActionCategory.Spirit_Power);
-			string powerGuid = ActionScope.Current.Id.ToString();
-			var ctx = spirit.BindMyPowers().Target( board[5] );
-			await DreadApparitions.ActAsync( ctx );
-		}
-
-		await DoIt();
-
-		var postActionGuid = ActionScope.Current.Id.ToString();
-		postActionGuid.ShouldBe(startingGuid);
+		// Given: has 1 city and lots of dahan
+		tokens.Given_HasTokens("1C@3,10D@2");
+		spirit.Presence.Given_Adjust(tokens,1);
+		//   And: used Dread Apparitions
+		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: dahan destroy the city
-		await tokens.Ravage();
+		tokens.Space.When_Ravaging();
 
 		// Then: 2 fear from city
-		// Assert_GeneratedFear(2+1); // normal (1 from Dread Apparitions)
-		var fear = gs.Fear;
+		SpiritIsland.Fear fear = gs.Fear;
 		int actualFear = fear.EarnedFear + 4 * fear.ActivatedCards.Count;
-		actualFear.ShouldBe(2+1);
-
-		// and 1 defend bonus
+		actualFear.ShouldBe(2+1);// normal (1 from Dread Apparitions)
+		//  And: 1 defend bonus
 		tokens.Defend.Count.ShouldBe( 1 ); // from dread apparitions
 	}
 
 	[Fact]
 	public void FearInOtherLand_Generates0() {
-		Init();
+		Bringer spirit = new Bringer();
+		Board board = Board.BuildBoardA(); Space a5 = board[5];
+		_ = new GameState( spirit, board );
 
-		// has 1 city and lots of dahan
-		ctx.Tokens.AdjustDefault( Human.City, 1 );
-		ctx.Dahan.Init( 10 );
+		// Given: has 1 city and lots of dahan
+		a5.Tokens.Given_HasTokens("1C@3,10D@2");
+		//   And: triggered DA
+		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
-		async Task When() {
-			// Given: using Dread Apparitions
-			await DreadApparitions.ActAsync( ctx );
+		// When: Power causes fear in a different land
+		spirit.When_TargetingSpace( a5, ctx => ctx.GameState.Fear.AddDirect( new FearArgs( 6 ) { space = board[1] } ) );
 
-			// When: Power causes fear in a different land
-			ctx.GameState.Fear.AddDirect(new FearArgs( 6 ) { space = board[1] } );
-		}
-		_ = When();
-
-		// but no defend bonus
-		Assert_DefenceIs( 1 ); // 1=>Dread Apparitions
-
+		// Then: no defend bonus
+		board[5].Tokens.Defend.Count.ShouldBe( 1+0 );// 1=>Dread Apparitions
 	}
 
 }

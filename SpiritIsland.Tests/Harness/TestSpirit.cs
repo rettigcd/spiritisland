@@ -62,7 +62,7 @@ public class TestPresenceTrack : PresenceTrack {
 
 public class VirtualTestUser : VirtualUser {
 
-	public VirtualTestUser(Spirit spirit ) : base( spirit ) { }
+	public VirtualTestUser( Spirit spirit ) : base( spirit ) { }
 
 	/// <summary> Growth for Test Spirit </summary>
 	public void Grows() {

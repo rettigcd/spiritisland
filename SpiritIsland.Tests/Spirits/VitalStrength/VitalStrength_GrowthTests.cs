@@ -56,9 +56,9 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,6)]
 	[InlineDataAttribute(5,7)]
 	[InlineDataAttribute(6,8)]
-	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
+	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
 		var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
-		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -69,9 +69,9 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,2)]
 	[InlineDataAttribute(5,3)]
 	[InlineDataAttribute(6,4)]
-	public Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
+	public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 		var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
-		return fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
+		fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 	}
 
 }

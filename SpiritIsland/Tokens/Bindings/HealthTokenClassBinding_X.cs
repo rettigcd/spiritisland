@@ -36,7 +36,7 @@ public class HealthTokenClassBinding {
 
 	// Called from .Move() and .Dissolve the Bonds
 	public async Task<ISpaceEntity> Remove1( IToken toRemove, RemoveReason reason ) {
-		if(_tokens[toRemove] == 0)
+		if(toRemove==null || _tokens[toRemove] == 0)
 			return null; // unable to remove desired token
 
 		await _tokens.Remove( toRemove, 1, reason );

@@ -1,11 +1,12 @@
-﻿namespace SpiritIsland.Tests; 
+﻿namespace SpiritIsland.Tests;
+
 public class VirtualUser {
 
 	#region constructor
 
 	public VirtualUser(Spirit spirit ) { 
-		this._spirit = spirit;
-		this.userPortal = spirit.Gateway;
+		_spirit = spirit;
+		_userPortal = spirit.Gateway;
 	}
 
 	#endregion
@@ -73,7 +74,7 @@ public class VirtualUser {
 	public void PlacesPresence( Track source, string placeOptions ) {
 
 		// If Place Presence is the only action in the growth option, it will auto-select and it will skip over this step
-		var current = userPortal.Next;
+		var current = _userPortal.Next;
 		var op = current.Options.FirstOrDefault( o => o.Text.StartsWith( "PlacePre" ) );
 		if(op != null)
 			NextDecision.Choose( op );
@@ -87,7 +88,7 @@ public class VirtualUser {
 
 		// place on board - first option
 		string[] expectedOptions = placeOptions.Split( ';' );
-		var destinationDecision = userPortal.Next;
+		var destinationDecision = _userPortal.Next;
 		var actualOptions = destinationDecision.Options;
 		var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
 		if(choice == null)
@@ -104,9 +105,9 @@ public class VirtualUser {
 	}
 
 	public void Reclaims1CardIfAny() {
-		var current = userPortal.Next;
+		var current = _userPortal.Next;
 		if(current.Options.Length>0)
-			userPortal.Choose( current, current.Options[0] );
+			_userPortal.Choose( current, current.Options[0] );
 	}
 
 	#endregion
@@ -239,7 +240,7 @@ public class VirtualUser {
 	public void ActivateFear()         => NextDecision.HasPrompt( "Activating Fear" ).ChooseFirst();
 
 	public void Assert_Done() {
-		userPortal.IsResolved.ShouldBeTrue();
+		_userPortal.IsResolved.ShouldBeTrue();
 	}
 
 	#region protected
@@ -278,7 +279,7 @@ public class VirtualUser {
 	#endregion
 
 	readonly protected Spirit _spirit;
-	readonly protected IUserPortal userPortal;
+	readonly protected IUserPortal _userPortal;
 
 }
 

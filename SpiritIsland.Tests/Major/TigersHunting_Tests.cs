@@ -26,7 +26,7 @@ public class TigersHunting_Tests {
 		tracker.Count.ShouldBe( 1 );
 
 		// push up to 2 beasts
-		fixture.Choose("A"); // 'A' is selecting the beast
+		fixture.Choose("Beast"); // 'A' is selecting the beast
 		fixture.Choose("A7");
 
 		// Then everything was a single action. 

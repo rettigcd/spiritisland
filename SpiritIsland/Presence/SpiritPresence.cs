@@ -116,7 +116,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 		Destroyed -= count;
 	}
 
-
 	#region nice Predicate methods 
 
 	/// <summary>

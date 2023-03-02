@@ -15,7 +15,7 @@ public class SwallowTheLandDwellers_Tests {
 
 		// Given: Ocean on A2
 		var space = fxt.GameState.Tokens[fxt.Board[2]];
-		SpiritExtensions.Adjust( fxt.Spirit.Presence, space, 1 );
+		SpiritExtensions.Given_Adjust( fxt.Spirit.Presence, space, 1 );
 		//   And: explorer and town on A2
 		space.InitDefault( Human.Explorer, 1 );
 		space.InitDefault( Human.Town, 1 );

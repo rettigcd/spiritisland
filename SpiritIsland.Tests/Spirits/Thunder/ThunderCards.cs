@@ -17,21 +17,6 @@ public class ThunderCards {
 		action = spirit.Gateway;
 	}
 
-	protected void When_ActivateCard( string cardName ) {
-
-		async Task Run() {
-			try {
-				await spirit.Hand.Single( x => x.Name == cardName ).ActivateAsync( spirit.BindMyPowers() ); // !!! still async
-			}
-			catch(Exception ex) {
-				_ = ex.ToString();
-			}
-		}
-
-
-		_ = Run();
-	}
-
 	protected readonly Spirit spirit;
 	protected readonly VirtualUser User;
 	protected readonly Board a;

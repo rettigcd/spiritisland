@@ -145,7 +145,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 		public ActionHelper( IDecisionPlus decision, TaskCompletionSource<T> promise ) {
 			Decision = decision;
-			this._pendingPromise = promise;
+			_pendingPromise = promise;
 		}
 
 		public IDecisionPlus Decision { get; }

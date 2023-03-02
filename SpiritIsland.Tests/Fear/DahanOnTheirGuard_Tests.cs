@@ -21,7 +21,7 @@ public class DahanOnTheirGuard_Tests {
 
 	[Trait( "Feature", "Defend" )]
 	[Fact]
-	public async Task NoFearCard_NormalRavage() { // !!! still async
+	public void NoFearCard_NormalRavage() {
 
 		// Disable destroying presence
 		gameState.DisableBlightEffect();
@@ -29,8 +29,8 @@ public class DahanOnTheirGuard_Tests {
 		Given_DahanAndTowns( 2, 2 );
 
 		// When: Doing Invader phase (fear+ragage)
-		await gameState.Fear.Apply();
-		await new RavageSlot().ActivateCard( invaderCard, gameState );
+		gameState.Fear.Apply().FinishUp("fear");
+		invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
 		Assert.Equal( 0, ravageSpace.Tokens.Dahan.CountAll );

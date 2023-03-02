@@ -27,7 +27,7 @@ public class TokenLocation_Tests {
 		var explorer = ss.GetDefault(Human.Explorer);
 		var town = ss.GetDefault(Human.Town).AsHuman();
 		var city = ss.GetDefault(Human.City).AsHuman();
-		ss.InitTokens("1E@1,1T@2,1C@3");
+		ss.Given_HasTokens("1E@1,1T@2,1C@3");
 
 		var ePoint = layout.Init( ss ).GetPointFor( explorer );
 		var tPoint = layout.GetPointFor( town );
@@ -35,32 +35,32 @@ public class TokenLocation_Tests {
 
 		// When: individual invaders are present
 		// Then: each invader should be in its old location
-		ss.Clear().InitTokens("1E@1");
+		ss.Clear().Given_HasTokens("1E@1");
 		layout.Init( ss ).GetPointFor( explorer ).ShouldBe(ePoint);
 
-		ss.Clear().InitTokens( "2T@2" );
+		ss.Clear().Given_HasTokens( "2T@2" );
 		layout.Init( ss ).GetPointFor( town ).ShouldBe( tPoint );
 
-		ss.Clear().InitTokens( "2C@3" );
+		ss.Clear().Given_HasTokens( "2C@3" );
 		layout.Init( ss ).GetPointFor( city ).ShouldBe( cPoint );
 
 		// When: town is damaged
-		ss.Clear().InitTokens("1T@1,1T@2");
+		ss.Clear().Given_HasTokens("1T@1,1T@2");
 		// Then: Damaged town gets primary spot
 		layout.Init( ss ).GetPointFor( town.AddDamage(1) ).ShouldBe( tPoint );
 		//  And: healthy town gets some otherspot
 		layout.GetPointFor( town ).ShouldNotBe( tPoint );
 
 		// When: town heals and everything is healthy, it goes back to original spot
-		ss.Clear().InitTokens("2T@2");
+		ss.Clear().Given_HasTokens("2T@2");
 		layout.Init( ss ).GetPointFor( town ).ShouldBe( tPoint );
 
 		// When: city is damaged once
-		ss.Clear().InitTokens( "1C@2,2C@3" );
+		ss.Clear().Given_HasTokens( "1C@2,2C@3" );
 		layout.Init( ss ).GetPointFor( city.AddDamage( 1 ) ).ShouldBe( cPoint );
 		var c2Point = layout.GetPointFor( city );
 
-		ss.Clear().InitTokens( "1C@1,2C@3" );
+		ss.Clear().Given_HasTokens( "1C@1,2C@3" );
 		layout.Init(ss).GetPointFor( city.AddDamage( 2 ) ).ShouldBe( cPoint );
 		layout.GetPointFor( city ).ShouldBe( c2Point );
 

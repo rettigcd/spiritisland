@@ -106,11 +106,11 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	public void InitPresence( Space space, int count ) {
 		var spaceState = GameState.Tokens[space];
 		var dif = count - spaceState[Presence.Token];
-		SpiritExtensions.Adjust( Presence, spaceState, dif );
+		SpiritExtensions.Given_Adjust( Presence, spaceState, dif );
 	}
 
 	public void InitTokens( Space space, string tokenString ) {
-		GameState.Tokens[space].InitTokens( tokenString );
+		GameState.Tokens[space].Given_HasTokens( tokenString );
 	}
 
 	public int HealthPenaltyPerStrife { get; set; }
@@ -141,15 +141,15 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	#region Canned Tests
 
-	public async Task VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-
-		var presence = Spirit.Presence;
-		var track = presence.Energy;
-
+	static async Task TakeFromTrack( int revealedSpaces, SpiritPresence presence, IPresenceTrack track ) {
 		for(int i = 1; i < revealedSpaces; i++) {
 			var choice = track.RevealOptions.First();
 			await presence.TakeFrom( choice ); // !! Don't call TakeFrom, call: await presence.RevealTrack( track, GameState );
 		}
+	}
+
+	public void VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.Energy ).FinishUp("Taking from Energy Track");
 		Spirit.EnergyPerTurn.ShouldBe( expectedEnergyGrowth );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}
@@ -157,14 +157,8 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Operates strictly with the Presence tracks.
 	/// </summary>
-	public async Task VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
-		var presence = Spirit.Presence;
-		var track = presence.CardPlays;
-
-		for(int i = 1; i < revealedSpaces; i++) {
-			var choice = track.RevealOptions.First();
-			await presence.TakeFrom( choice );
-		}
+	public void VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
+		TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.CardPlays ).FinishUp( "Taking from Card Track" );
 		Spirit.NumberOfCardsPlayablePerTurn.ShouldBe( expectedCardPlayCount );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}

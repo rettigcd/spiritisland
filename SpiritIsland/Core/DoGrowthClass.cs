@@ -35,6 +35,7 @@ public abstract partial class Spirit {
 
 		async Task ExecuteRemainingGrowth( IActionFactory selectedAction ) {
 			await using var action = await ActionScope.Start(ActionCategory.Spirit_Growth);
+			spirit.BindSelf();
 			await spirit.TakeAction( selectedAction, Phase.Growth );
 			await InitRemainingActionsFromOption();
 		}

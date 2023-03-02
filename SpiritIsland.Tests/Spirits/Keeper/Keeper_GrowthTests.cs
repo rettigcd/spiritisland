@@ -172,9 +172,9 @@ public class Keeper_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 6, 7, "sun plant" )]
 	[InlineDataAttribute( 7, 8, "sun plant" )]
 	[InlineDataAttribute( 8, 9, "sun plant" )]
-	public Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
-		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Theory]
@@ -184,9 +184,9 @@ public class Keeper_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 4, 3 )]
 	[InlineDataAttribute( 5, 4 )]
 	[InlineDataAttribute( 6, 5 )]
-	public Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+	public void CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
-		return fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
+		fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 	}
 
 	void AddBlight( Space space ) {

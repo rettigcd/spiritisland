@@ -65,42 +65,38 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	[Fact]
-	public async Task KillingTown_GeneratesFear_PushesIt() {// !!! still async
-		int count = 2;
+	public void KillingTown_GeneratesFear_PushesIt() {
+		const int count = 2;
 		// generate 2 fear per town destroyed,
 		// pushes town
 
-		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
-		var ctx = MakeFreshPowerCtx( scope );
-
-		// Given: 2 town
-		ctx.Tokens.AdjustDefault( Human.Town, count );
+		// Given: 2 towns on A5
+		_board[5].Given_HasTokens($"{count}T@2");
+		//   And: nothing on A8
+		_board[8].Given_NoTokens();
 
 		// When: destroying towns
-		_ = DestroyAllExplorersAndTownsAsync( ctx );
-
-		// Then: dream-death allows User pushes them
-		for(int i = 0; i < count; ++i)
-			_user.PushSelectedTokenTo( "T@2","A1,A4,A6,[A7],A8" );
+		_spirit.When_TargetingSpace( _board[5], DestroyAllExplorersAndTownsAsync, (user)=>{
+			// Then: dream-death allows User pushes them
+			for(int i = 0; i < count; ++i)
+				user.PushSelectedTokenTo( "T@2", "A1,A4,A6,A7,[A8]" );
+		} );
 
 		// And:4-fear
 		Assert_GeneratedFear( count * 2 );
-
-		//  and: town on destination
-		ctx.GameState.Assert_DreamingInvaders( _board[7], $"{count}T@2" );
-		//  and: not at origin
-		ctx.GameState.Assert_Invaders( _board[5], $"" );
+		// And: town on destination
+		_board[8].Tokens.Summary.ShouldBe( $"{count}T@2" );
+		// And: not at origin
+		_gameState.Assert_Invaders( _board[5], "" );
 
 	}
 
 	[Fact]
-	public async Task DreamDamageResetsEachPower() {// !!! still async
-
-		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
-		var ctx = MakeFreshPowerCtx( scope );
+	public void DreamDamageResetsEachPower() {
 
 		// Given: 2 explorers
-		ctx.Tokens.AdjustDefault( Human.City, 1 );
+		_board[5].Given_HasTokens("1C@3");
+		// ctx.Tokens.AdjustDefault( Human.City, 1 );
 
 		// When: 3 separate actinos cause 1 damage
 		async Task Run3Async() {

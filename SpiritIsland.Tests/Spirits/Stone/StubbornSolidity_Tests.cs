@@ -99,7 +99,7 @@ public class StubbornSolidity_Tests {
 
 		// Given: 3 dahan & presence in Target
 		targetSpace.InitDefault( Human.Dahan, 3 );
-		SpiritExtensions.Adjust( spirit.Presence, targetSpace, 3 );
+		SpiritExtensions.Given_Adjust( spirit.Presence, targetSpace, 3 );
 		//   And: 3 dahan in Adjacent
 		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
@@ -114,7 +114,7 @@ public class StubbornSolidity_Tests {
 		} );
 
 		//  Then: Dahan are still there (not replaced)
-		targetSpace.Summary.ShouldBe( "3D@2,3G" );
+		targetSpace.Summary.ShouldBe( "3D@2,3G,3SUD" );
 		adjacentSpace.Summary.ShouldBe( "2D@2,2G" );
 
 	}
@@ -129,7 +129,7 @@ public class StubbornSolidity_Tests {
 		SpaceState adjacentSpace = gameState.Tokens[board[7]];
 
 		// Given: presence in Target
-		SpiritExtensions.Adjust( spirit.Presence, targetSpace, 1 );
+		SpiritExtensions.Given_Adjust( spirit.Presence, targetSpace, 1 );
 		//   And: 3 dahan in Adjacent
 		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
@@ -148,7 +148,7 @@ public class StubbornSolidity_Tests {
 		adjacentSpace.Summary.ShouldBe( "[none]" );
 
 		//   But: Dahan became frozen and were not pushed
-		targetSpace.Summary.ShouldBe( "2D@2" ); // no defends
+		targetSpace.Summary.ShouldBe( "2D@2,1SUD" ); // no defends
 
 		targetSpace.Sum( Human.Dahan ).ShouldBe(2);
 	}
@@ -156,7 +156,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public async Task ReplacingDahan_NoChange() {// !!! still async
+	public void ReplacingDahan_NoChange() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -164,22 +164,20 @@ public class StubbornSolidity_Tests {
 
 		// Given: dahan & presence
 		targetSpace.InitDefault( Human.Dahan, 1 );
-		SpiritExtensions.Adjust( spirit.Presence, targetSpace, 1 );
+		SpiritExtensions.Given_Adjust( spirit.Presence, targetSpace, 1 );
 
 		//   And: Played StubbornSolidity
 		Play_StubbornSolidity_On( spirit, targetSpace );
 
 		//  When: Playing card that replaces Dahan - Dissolve the Bonds of Kinship
-		await using ActionScope uow2 = await ActionScope.Start(ActionCategory.Spirit_Power);
-		Task task = PowerCard.For<DissolveTheBondsOfKinship>().ActivateAsync( spirit.BindMyPowers() );
-		//   And: target space with frozen dahan
-		task.IsCompleted.ShouldBeFalse();
-		spirit.NextDecision().HasPrompt( DissolveTheBondsOfKinship.Name + ": Target Space" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( targetSpace.Space );
+		spirit.When_ResolvingCard<DissolveTheBondsOfKinship>(()=> {
+			spirit.NextDecision().HasPrompt( DissolveTheBondsOfKinship.Name + ": Target Space" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( targetSpace.Space );
+		} );
+
+
 
 		//  Then: Dahan are still there (not replaced)
-		targetSpace.Summary.ShouldBe( "1D@2,1G" ); // 1G => Defend-1 from Stubborn Solidity
-		//   And: all done
-		task.IsCompleted.ShouldBeTrue();
+		targetSpace.Summary.ShouldBe( "1D@2,1G,1SUD" ); // 1G => Defend-1 from Stubborn Solidity
 	}
 
 	[Trait( "Feature", "Frozen" )]
@@ -192,7 +190,7 @@ public class StubbornSolidity_Tests {
 
 		// Given: dahan & presence
 		spaceState.InitDefault( Human.Dahan, 1 );
-		SpiritExtensions.Adjust( spirit.Presence, spaceState, 1 );
+		SpiritExtensions.Given_Adjust( spirit.Presence, spaceState, 1 );
 
 		//   And: Played StubbornSolidity
 		Play_StubbornSolidity_On(spirit,spaceState);

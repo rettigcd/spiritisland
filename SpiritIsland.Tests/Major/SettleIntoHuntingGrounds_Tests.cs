@@ -22,20 +22,14 @@ public class SettleIntoHuntingGrounds_Tests {
 	// Push From Ocean
 
 	[Fact]
-	public async Task CanFreezePresence() { // !!! still async
+	public void CanFreezePresence() {
 		var (spirit,gameState,board) = Init();
 		var a5 = gameState.Tokens[ board[5] ];
 
 		// Given: Presence on a5 and a6
-		SpiritExtensions.Adjust( spirit.Presence, a5, 1 );
+		SpiritExtensions.Given_Adjust( spirit.Presence, a5, 1 );
 
-		//  When: played Settle Into Hunting Grounds
-		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Power );
-		Task task = SettleIntoHuntingGrounds.ActAsync( spirit.BindMyPowers() );
-		task.IsCompleted.ShouldBeTrue();
-
-
-
+		spirit.When_ResolvingCard<SettleIntoHuntingGrounds>();
 	}
 
 	static (Spirit,GameState,Board) Init() {

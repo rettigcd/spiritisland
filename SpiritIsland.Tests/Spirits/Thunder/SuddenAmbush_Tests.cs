@@ -15,8 +15,9 @@ public class SuddenAmbush_Tests : ThunderCards {
 
 	[Fact]
 	public void NoDahanToGather() {
-		When_ActivateCard( SuddenAmbush.Name );
-		User.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6");
+		spirit.When_ResolvingCard<SuddenAmbush>( () => {
+			User.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6" );
+		} );
 	}
 
 	[Fact]
@@ -26,9 +27,10 @@ public class SuddenAmbush_Tests : ThunderCards {
 		//  and: 2 explorers on a2
 		gs.Tokens[a[2]].AdjustDefault(Human.Explorer,2);
 
-		When_ActivateCard( SuddenAmbush.Name );
-		User.TargetsLand(SuddenAmbush.Name, "A1,[A2],A4,A5,A6");
-		User.GathersOptionalToken("D@2 on A3");
+		spirit.When_ResolvingCard<SuddenAmbush>( () => {
+			User.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6" );
+			User.GathersOptionalToken( "D@2 on A3" );
+		} );
 
 		// Then: 1 explorer left
 		gs.Assert_Invaders( a[2], "1E@1" );
@@ -42,10 +44,10 @@ public class SuddenAmbush_Tests : ThunderCards {
 		//  and: 5 explorers on a1
 		gs.Tokens[a[1]].AdjustDefault( Human.Explorer, 5 );
 
-		When_ActivateCard( SuddenAmbush.Name );
-
-		User.TargetsLand(SuddenAmbush.Name,"[A1],A2,A4,A5,A6");
-		User.GathersOptionalToken("D@2 on A2");
+		spirit.When_ResolvingCard<SuddenAmbush>( () => {
+			User.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
+			User.GathersOptionalToken( "D@2 on A2" );
+		} );
 
 		// Then: 5-2-1 = 2 explorers left
 		gs.Assert_Invaders( a[1], "2E@1" );
@@ -60,10 +62,10 @@ public class SuddenAmbush_Tests : ThunderCards {
 		//  and: 1 town on a1
 		gs.Tokens[a[1]].AdjustDefault( Human.Town, 1 );
 
-		When_ActivateCard(SuddenAmbush.Name);
-
-		User.TargetsLand(SuddenAmbush.Name,"[A1],A2,A4,A5,A6");
-		User.GathersOptionalToken("D@2 on A2");
+		spirit.When_ResolvingCard<SuddenAmbush>( () => {
+			User.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
+			User.GathersOptionalToken( "D@2 on A2" );
+		} );
 
 		// Then: 5-2-1 = 2 explorers left
 		gs.Assert_Invaders(a[1], "1T@2" );

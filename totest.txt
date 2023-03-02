@@ -1,21 +1,15 @@
+Russia // !!! Level 2 - Test/Implement - Isolate prevents pushing explorer	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	223	5
+Russia // !!! Level 5 - Test	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	224	5
+Russia // !!! Level 6 - Test	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	225	5
+
+Range // !!! should also test +2 range on all powers	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Major\FlowLikeWaterReachLikeAir_Tests.cs	5	5
+
+Ravage // TwoRavages_BecomesBuildAndRavage - !!! Put 2 cards in the Ravage slot that trigger the same space. Show only 1 ravage happens	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Minor\CallToTrade_Tests.cs	131	40
+Build //		public void Has2Builds_NoBuild() {} // !!! how do I construct 2 builds?	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Minor\RitesOfTheLandsRejection_Tests.cs	41	45
+
+Settle Into Hunting Grounds// !!! Mists Shift and Flow(Shroud special rule)	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Major\SettleIntoHuntingGrounds_Tests.cs	7	5
+
 === Grouping 1 ===
-
-TODO Russia // !!! Level 2 - Test/Implement - Isolate prevents pushing explorer	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	223	5
-TODO Russia // !!! Level 5 - Test	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	224	5
-TODO Russia // !!! Level 6 - Test	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Adversaries\Russia_Tests.cs	225	5
-TODO Range // !!! should also test +2 range on all powers	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Major\FlowLikeWaterReachLikeAir_Tests.cs	5	5
-
-TODO Ravage // TwoRavages_BecomesBuildAndRavage - !!! Put 2 cards in the Ravage slot that trigger the same space. Show only 1 ravage happens	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Minor\CallToTrade_Tests.cs	131	40
-TODO Build //		public void Has2Builds_NoBuild() {} // !!! how do I construct 2 builds?	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Minor\RitesOfTheLandsRejection_Tests.cs	41	45
-
-TODO Settle Into Hunting Grounds// !!! Mists Shift and Flow(Shroud special rule)	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Major\SettleIntoHuntingGrounds_Tests.cs	7	5
-
-TODO MMMA1	Growth "Gather" should gather 2 spaces
-TODO MMMA1	Beset and Confound the Invaders Should only Target spaces with minimum # of beasts.  (beasts should draw with elements)
-TODO MMMA1	Guide the Way on Feathered Wings, should not be able to swap beast tokens (presence or normal, but don't switch)
-TODO MMMA1	TEST: During Growth - Gather at range 2.
-TODO MMMA1	TEST: when moving MM-Beast, presence seems to be duplicating or incrementing in destination
-TODO MMMA1 - Move beast and pull 2 dahan with it.
 
 0) Modifications to Range
 	Talons of Lightning - extended / conditional range 
@@ -28,16 +22,9 @@ TODO MMMA1 - Move beast and pull 2 dahan with it.
 	Vengeanance - destroyed by anything EXCEPT spirit action, add 1 disease where presence was destroyed
 	Vengeanance - for Actions, treat blight as also badlands
 
-3) Many Minds
-	Many Minds - Presence as beasts
-	Many Minds - push/gather beast range 2
-
 Adding multiple blights to 1 space only destroys 1 presence
 
 === Grouping 2 - Traits ===
-
-SpaceState
-	Frozen Dahan - Moving Dahan into Frozen land should freeze them.
 
 Special Rules
 	Downpour - SS as wetland
@@ -51,11 +38,9 @@ Special Rules
 Invaders-Ravage
 	Configure Ravage - do all combinations work?
 
-Settle into Hunting Grounds - can't move presence
 Bringer - Any Elements Assignment
 Stone - Innate 1 & 2
 Stone - icons on track - draw card
-Volcano - Explosive Eruption
 Trickster - Why don't you and them fight
 
 Rain And Mud Suppress Conflict

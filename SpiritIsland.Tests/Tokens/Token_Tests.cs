@@ -52,14 +52,12 @@ public class Token_Tests {
 
 	[Trait( "Token", "Disease" )]
 	[Fact]
-	public async Task Disease_Stops_Build() {// !!! still async
+	public void Disease_Stops_Build() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 
 		// Given: a space with ONLY 1 explorer
 		SpaceState space = gs.Spaces_Unfiltered.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
-		space.AdjustDefault( Human.Explorer, 1 ); // add explorer
-		//   And: 1 diseases there
-		await space.Disease.Add(1);
+		space.Given_HasTokens("1E@1,1Z");
 
 		//  When: we build there
 		space.Space.When_Building();

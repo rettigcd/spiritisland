@@ -122,6 +122,7 @@ public class TargetCriteria {
 		// Special
 		[Target.TwoBeasts         ] = (ctx) => 2<=ctx.Tokens.Beasts.Count,
 		[Target.BlightAndInvaders ] = (ctx) => ctx.Tokens.Blight.Any && ctx.Tokens.HasInvaders(),
+		[Target.TwoBeastPlusInvaders]=(ctx) => 2 <= ctx.Tokens.Beasts.Count && ctx.Tokens.HasInvaders(),
 
 	};
 	#endregion

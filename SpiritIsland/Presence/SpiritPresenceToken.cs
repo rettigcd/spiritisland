@@ -3,6 +3,7 @@
 public class SpiritPresenceToken : IToken, IEntityClass
 	, ITrackMySpaces 
 	, IHandleTokenRemovedAsync
+	, IAppearInSpaceAbreviation
 {
 
 	public SpiritPresenceToken(Spirit spirit) {
@@ -56,6 +57,8 @@ public class SpiritPresenceToken : IToken, IEntityClass
 	}
 
 	public int Destroyed { get; set; }
+
+	public string SpaceAbreviation => Abreviate( _spirit.Text );
 
 	public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn( this, board );
 }

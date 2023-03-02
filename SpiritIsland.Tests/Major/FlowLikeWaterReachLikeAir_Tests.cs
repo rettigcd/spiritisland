@@ -29,21 +29,18 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		//  And: A1 has nothing on it
 		var a1 = board[1];
 
-		// When: playing Card // !!! still async
-		static async Task PlayCard(TargetSpiritCtx ctx) { try { await FlowLikeWaterReachLikeAir.ActAsync( ctx ); } catch(Exception ex) { 
-			_ = ex.ToString(); 
-		} }
-		_ = PlayCard( spirit.BindMyPowers().TargetSpirit(spirit) );
-
-		//  And: Can bring 2 of each
-		user.AssertDecisionInfo( "Select Presence to push.", "[A5],Done" );
-		user.AssertDecisionInfo( "Push Presence to", "[A1],A4,A6,A7,A8" );
-		user.AssertDecisionInfo( "Push up to (6)", "[D@2],E@1,T@2,Done" );
-		user.AssertDecisionInfo( "Push up to (5)", "[D@2],E@1,T@2,Done" );
-		user.AssertDecisionInfo( "Push up to (4)", "[E@1],T@2,Done" );
-		user.AssertDecisionInfo( "Push up to (3)", "[E@1],T@2,Done" );
-		user.AssertDecisionInfo( "Push up to (2)", "[T@2],Done" );
-		user.AssertDecisionInfo( "Push up to (1)", "[T@2],Done" );
+		// When: playing Card
+		spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( () => {
+			//  And: Can bring 2 of each
+			user.AssertDecisionInfo( "Select Presence to push.", "[A5],Done" );
+			user.AssertDecisionInfo( "Push Presence to", "[A1],A4,A6,A7,A8" );
+			user.AssertDecisionInfo( "Push up to (6)", "[D@2],E@1,T@2,Done" );
+			user.AssertDecisionInfo( "Push up to (5)", "[D@2],E@1,T@2,Done" );
+			user.AssertDecisionInfo( "Push up to (4)", "[E@1],T@2,Done" );
+			user.AssertDecisionInfo( "Push up to (3)", "[E@1],T@2,Done" );
+			user.AssertDecisionInfo( "Push up to (2)", "[T@2],Done" );
+			user.AssertDecisionInfo( "Push up to (1)", "[T@2],Done" );
+		} );
 
 		// Then: target 2 of each
 		var dst = gameState.Tokens[a1];

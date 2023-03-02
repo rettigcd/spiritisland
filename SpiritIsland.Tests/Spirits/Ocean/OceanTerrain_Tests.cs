@@ -43,8 +43,8 @@ public class OceanTerrain_Tests {
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
 	[Fact]
-	public async Task WithOcean_CanTargetOceanAsWetland() {// !!! still async
-														   // Given: 2-spirit-game with Thundersepearker on A and Ocean on B
+	public void WithOcean_CanTargetOceanAsWetland() {
+		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
 		//   And: Thundersepearker on A2 only
 		Given_PrimaryPresenceOnA2Only();
@@ -53,12 +53,10 @@ public class OceanTerrain_Tests {
 		Given_OceanOnPrimaryBoard();
 
 		// When: Thundersepearker Activates a card that targets WETLANDS (Talons ofLightning - Range 1, M/W)
-		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power);
-		SelfCtx ctx = primarySpirit.BindMyPowers();
-		_ = PowerCard.For<TalonsOfLightning>().ActivateAsync( ctx );
-
-		// Then: Targetting options INCLUDES Ocean
-		NextDecision.HasOptions( "A0,A1,A2" );
+		primarySpirit.When_ResolvingCard<TalonsOfLightning>( () => {
+			// Then: Targetting options INCLUDES Ocean
+			NextDecision.HasOptions( "A0,A1,A2" ).Choose("A0");
+		} );
 
 	}
 
@@ -105,7 +103,7 @@ public class OceanTerrain_Tests {
 			
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
-			oceanSpace.Summary.ShouldBe("[none]");
+			oceanSpace.Summary.ShouldBe("1OHG,1T");
 			log.Single().ShouldBe("Drowning 1D@2 on A0");
 
 			//  And: and leave thunderspeaker in the ocean.
@@ -286,7 +284,7 @@ public class OceanTerrain_Tests {
 
 		// Given: ocean in either A0 (saving dahan) or A1 (not saving)
 		Space oceanSpace = savedByOcean ? boardA[0] : boardA[1];
-		SpiritExtensions.Adjust( oceanSpirit.Presence, gameState.Tokens[oceanSpace], 1 );
+		SpiritExtensions.Given_Adjust( oceanSpirit.Presence, gameState.Tokens[oceanSpace], 1 );
 
 		// When: Tidal Boon is played (by Ocean)
 		gameState.Phase = Phase.Slow;
@@ -343,16 +341,16 @@ public class OceanTerrain_Tests {
 		return gameState;
 	}
 
-	void Given_OceanOnPrimaryBoard() => SpiritExtensions.Adjust( oceanSpirit.Presence, gameState.Tokens[boardA[0]], 1 ); // put ocean presence on primary's board, but not in the ocean
+	void Given_OceanOnPrimaryBoard() => SpiritExtensions.Given_Adjust( oceanSpirit.Presence, gameState.Tokens[boardA[0]], 1 ); // put ocean presence on primary's board, but not in the ocean
 
 	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
 
 	void Given_PrimaryPresenceOnlyOn( Space space ) {
 		foreach(SpaceState ss in primarySpirit.Presence.Spaces.Tokens().ToArray())
-			SpiritExtensions.Adjust( primarySpirit.Presence, ss, -1 );
+			SpiritExtensions.Given_Adjust( primarySpirit.Presence, ss, -1 );
 
 		// Add to
-		SpiritExtensions.Adjust( primarySpirit.Presence, gameState.Tokens[space], 1 );
+		SpiritExtensions.Given_Adjust( primarySpirit.Presence, gameState.Tokens[space], 1 );
 		primarySpirit.Presence.Spaces.Tokens().SelectLabels().Join( "," ).ShouldBe( space.Text );
 	}
 

@@ -70,14 +70,12 @@ public class Strife_Tests {
 	static bool IsInPlay( Space space ) => !space.IsOcean;
 
 	[Fact]
-	public async Task MoveStrife() {// !!! still async
+	public void MoveStrife() {
 
-		var board = Board.BuildBoardB();
-		var gs = new GameState( new Shadows(), board );
-		var space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
-		var counts = gs.Tokens[space];
-
-		await using var scope = await ActionScope.Start( ActionCategory.Default );
+		Board board = Board.BuildBoardB();
+		GameState gs = new GameState( new Shadows(), board );
+		Space space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
+		SpaceState counts = gs.Tokens[space];
 
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
@@ -157,24 +155,24 @@ public class Strife_Tests {
 	}
 
 	[Fact]
-	public async Task Strife_Stops_Ravage() {// !!! still async
+	public void Strife_Stops_Ravage() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
-		var space = gs.Spaces_Unfiltered
+		var tokens = gs.Spaces_Unfiltered
 			.First( s => IsInPlay(s.Space) && !s.HasInvaders() );
 
 		// Given: 1 strifed city
-		var counts = space;
+		var counts = tokens;
 		counts.Init(StdTokens.City.HavingStrife( 1 ), 1);
 		counts.InvaderSummary().ShouldBe( "1C@3^", "strife should be used up" );
 
 		//   and: 1 dahan
-		space.Dahan.Init( 1 );
+		tokens.Dahan.Init( 1 );
 
 		//  When: we ravage there
-		await space.Ravage();
+		tokens.Space.When_Ravaging();
 
 		//  Then: dahan survives
-		space.Dahan.CountAll.ShouldBe( 1, "dahan should survive due to strife on town" );
+		tokens.Dahan.CountAll.ShouldBe( 1, "dahan should survive due to strife on town" );
 
 		//   and so does city, but strife is gone
 		counts.InvaderSummary().ShouldBe( "1C@1", "strife should be used up" );
