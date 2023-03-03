@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public static partial class Cmd {
 

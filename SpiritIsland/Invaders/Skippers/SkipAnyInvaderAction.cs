@@ -30,7 +30,7 @@ public class SkipAnyInvaderAction : BaseModEntity
 	Task<bool> ISkipExploreTo.Skip( SpaceState space ) => MakeDecision( space, "Explore" );
 
 	async Task<bool> MakeDecision( SpaceState space, string stoppableAction ) {
-		if( !await _spirit.UserSelectsFirstText(Text,  $"Stop {stoppableAction} on {space.Space.Label}?", "No thank you.") )
+		if( !await _spirit.UserSelectsFirstText($"{Text} - Stop {stoppableAction} on {space.Space.Label}?", $"Yes, Stop {space.Space.Label} {stoppableAction}.", "No thank you.") )
 			return false;
 
 		space.Adjust( this, -1 );
