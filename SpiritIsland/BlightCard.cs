@@ -23,19 +23,24 @@ public abstract class BlightCard : IBlightCard {
 
 	public async Task OnBlightDepleated( GameState gs ) {
 		if(!CardFlipped) {
-			CardFlipped = true;
-			await Tokens(gs).Add( side2BlightPerPlayer * gs.Spirits.Length );
-
-			// Execute Immediate command
-			var immediately = Immediately;
-			if(immediately != null) {
-				await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Blight);
-				await immediately.Execute( new GameCtx( gs ) );
-			}
+			await Side1Depleted( gs );
 
 		} else
 			Side2Depleted(gs);
 
+	}
+
+	async Task Side1Depleted( GameState gs ) {
+		CardFlipped = true;
+
+		Tokens( gs ).Adjust( side2BlightPerPlayer * gs.Spirits.Length ); // ! Don't call .Add() here or token events will auto-remove what we just added.
+
+		// Execute Immediate command
+		var immediately = Immediately;
+		if(immediately != null) {
+			await using ActionScope actionScope = await ActionScope.Start( ActionCategory.Blight );
+			await immediately.Execute( new GameCtx( gs ) );
+		}
 	}
 
 	static BlightTokenBinding Tokens(GameState gs) => gs.Tokens[Space].Blight;
