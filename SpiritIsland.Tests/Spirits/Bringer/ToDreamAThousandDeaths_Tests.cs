@@ -47,8 +47,8 @@ public class ToDreamAThousandDeaths_Tests {
 		// When: damaging / destroying each invader
 		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		Func<TargetSpaceCtx,Task> powerCardActionAsync = (method switch { "damage" => OneDamageToEachAsync, "destroy" => DestroyAllExplorersAndTownsAsync, _ => throw new Exception(nameof(method)) });
-		powerCardActionAsync( MakeFreshPowerCtx( scope ) )
-			.FinishUp(method, () => {
+		await powerCardActionAsync( MakeFreshPowerCtx( scope ) )
+			.AwaitUserToComplete(method, () => {
 				// Then: dream-death allows User pushes them
 				for(int i = 0; i < count; ++i)
 					_user.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
@@ -65,7 +65,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	[Fact]
-	public void KillingTown_GeneratesFear_PushesIt() {
+	public async Task KillingTown_GeneratesFear_PushesIt() {
 		const int count = 2;
 		// generate 2 fear per town destroyed,
 		// pushes town
@@ -76,7 +76,7 @@ public class ToDreamAThousandDeaths_Tests {
 		_board[8].Given_NoTokens();
 
 		// When: destroying towns
-		_spirit.When_TargetingSpace( _board[5], DestroyAllExplorersAndTownsAsync, (user)=>{
+		await _spirit.When_TargetingSpace( _board[5], DestroyAllExplorersAndTownsAsync, (user)=>{
 			// Then: dream-death allows User pushes them
 			for(int i = 0; i < count; ++i)
 				user.PushSelectedTokenTo( "T@2", "A1,A4,A6,A7,[A8]" );
@@ -92,7 +92,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	[Fact]
-	public void DreamDamageResetsEachPower() {
+	public async Task DreamDamageResetsEachPower() {
 
 		// Given: 2 explorers
 		_board[5].Given_HasTokens("1C@3");
@@ -104,7 +104,7 @@ public class ToDreamAThousandDeaths_Tests {
 			await Run_OneDamageToEachAsync();
 			await Run_OneDamageToEachAsync();
 		}
-		Run3Async().FinishUp("run-3");
+		await Run3Async().ShouldComplete("run-3");
 
 		_user.Assert_Done();
 
@@ -151,8 +151,8 @@ public class ToDreamAThousandDeaths_Tests {
 			await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 
 			// When: doing 4 points of damage
-			FourDamage( MakeFreshPowerCtx( scope ) )
-				.FinishUp("4 damage", ()=> {
+			await FourDamage( MakeFreshPowerCtx( scope ) )
+				.AwaitUserToComplete("4 damage", ()=> {
 					_user.SelectsDamageRecipient( 4, "C@1" );
 				} );
 

@@ -7,24 +7,24 @@ public class DreadApparitions_Tests {
 	}
 
 	[Fact]
-	public void DirectFear_GeneratesDefend() {
+	public async Task DirectFear_GeneratesDefend() {
 		Bringer spirit = new Bringer();
 		Board board = Board.BuildBoardA();
 		Space a5 = board[5];
 		_ = new GameState( spirit, board );
 
 		// Given: DA run
-		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: generating 2 fear
-		spirit.When_TargetingSpace( a5, ctx=> ctx.AddFear(2) );
+		await spirit.When_TargetingSpace( a5, ctx=> ctx.AddFear(2) );
 
 		// Then: also get 3 defend
 		a5.Tokens.Defend.Count.ShouldBe( 2+1 );// +1 from D.A.
 	}
 
 	[Fact]
-	public void TownDamage_Generates2Defend() {
+	public async Task TownDamage_Generates2Defend() {
 
 		Bringer spirit = new Bringer();
 		Board board = Board.BuildBoardA();
@@ -34,10 +34,10 @@ public class DreadApparitions_Tests {
 
 		// Given: 
 		a5.Given_HasTokens("1T@2");
-		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: destroying the town with Power
-		spirit.When_TargetingSpace( a5, ctx => ctx.Invaders.DestroyNOfClass( 1, Human.Town ), (u) => {
+		await spirit.When_TargetingSpace( a5, async ctx => await ctx.Invaders.DestroyNOfClass( 1, Human.Town ), (u) => {
 			u.NextDecision.HasPrompt( "Push T@2 to" ).Choose( "A4" );
 		} );
 
@@ -48,7 +48,7 @@ public class DreadApparitions_Tests {
 
 	// Generate 5 DATD fear by 'killing' a city - should defend 5
 	[Fact]
-	public void CityDamage_Generates5Defend() {
+	public async Task CityDamage_Generates5Defend() {
 		Spirit spirit = new Bringer();
 		Board board = Board.BuildBoardA();
 		Space a5 = board[5];
@@ -59,10 +59,10 @@ public class DreadApparitions_Tests {
 		a5.Given_HasTokens("1C@3");
 		spirit.Given_HasPresenceOn(a5);
 		//  And
-		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: destroying city
-		spirit.When_TargetingSpace(a5, ctx => ctx.Invaders.DestroyNOfClass( 1, Human.City ) );
+		await spirit.When_TargetingSpace(a5, ctx => ctx.Invaders.DestroyNOfClass( 1, Human.City ) );
 
 		// Then: 5 fear should have triggered 2 defend
 		board[5].Tokens.Defend.Count.ShouldBe( 5+1 );// Dread Apparitions has 1 fear
@@ -70,7 +70,7 @@ public class DreadApparitions_Tests {
 	}
 
 	[Fact]
-	public void DahanDamage_Generates0() {
+	public async Task DahanDamage_Generates0() {
 
 		Bringer spirit = new Bringer();
 		Board board = Board.BuildBoardA();
@@ -85,10 +85,10 @@ public class DreadApparitions_Tests {
 		tokens.Given_HasTokens("1C@3,10D@2");
 		spirit.Presence.Given_Adjust(tokens,1);
 		//   And: used Dread Apparitions
-		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: dahan destroy the city
-		tokens.Space.When_Ravaging();
+		await tokens.Space.When_Ravaging();
 
 		// Then: 2 fear from city
 		SpiritIsland.Fear fear = gs.Fear;
@@ -99,7 +99,7 @@ public class DreadApparitions_Tests {
 	}
 
 	[Fact]
-	public void FearInOtherLand_Generates0() {
+	public async Task FearInOtherLand_Generates0() {
 		Bringer spirit = new Bringer();
 		Board board = Board.BuildBoardA(); Space a5 = board[5];
 		_ = new GameState( spirit, board );
@@ -107,10 +107,10 @@ public class DreadApparitions_Tests {
 		// Given: has 1 city and lots of dahan
 		a5.Tokens.Given_HasTokens("1C@3,10D@2");
 		//   And: triggered DA
-		spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: Power causes fear in a different land
-		spirit.When_TargetingSpace( a5, ctx => ctx.GameState.Fear.AddDirect( new FearArgs( 6 ) { space = board[1] } ) );
+		await spirit.When_TargetingSpace( a5, ctx => ctx.GameState.Fear.AddDirect( new FearArgs( 6 ) { space = board[1] } ) );
 
 		// Then: no defend bonus
 		board[5].Tokens.Defend.Count.ShouldBe( 1+0 );// 1=>Dread Apparitions

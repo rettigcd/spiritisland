@@ -148,8 +148,8 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 		}
 	}
 
-	public void VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-		TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.Energy ).FinishUp("Taking from Energy Track");
+	public async Task VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		await TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.Energy ).ShouldComplete( "Taking from Energy Track");
 		Spirit.EnergyPerTurn.ShouldBe( expectedEnergyGrowth );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}
@@ -157,8 +157,8 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Operates strictly with the Presence tracks.
 	/// </summary>
-	public void VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
-		TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.CardPlays ).FinishUp( "Taking from Card Track" );
+	public async Task VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
+		await TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.CardPlays ).ShouldComplete( "Taking from Card Track" );
 		Spirit.NumberOfCardsPlayablePerTurn.ShouldBe( expectedCardPlayCount );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}

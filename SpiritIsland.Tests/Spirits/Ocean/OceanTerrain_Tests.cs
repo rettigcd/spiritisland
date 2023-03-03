@@ -24,26 +24,26 @@ public class OceanTerrain_Tests {
 
 	[Trait("SpecialRule","OceanInPlay")]
 	[Fact]
-	public void CannotTargetOcean() {
+	public async Task CannotTargetOcean() {
 		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
 		//   And: Thundersepearker on A2 only
 		Given_PrimaryPresenceOnA2Only();
 
 		// When: Thundersepearker Activates a card that targets ANY-terrain Range-1 (Call To Guard - Range 1, Any land)
-		primarySpirit.When_ResolvingCard<CallToGuard>( () => {
+		await primarySpirit.When_ResolvingCard<CallToGuard>( (user) => {
 
 			// Then: Targetting does not inculde Ocean
-			NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose("A1");
+			user.NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose("A1");
 			// cleanup
-			NextDecision.Choose("Done");
+			user.NextDecision.Choose("Done");
 		} );
 
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
 	[Fact]
-	public void WithOcean_CanTargetOceanAsWetland() {
+	public async Task WithOcean_CanTargetOceanAsWetland() {
 		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
 		//   And: Thundersepearker on A2 only
@@ -53,9 +53,9 @@ public class OceanTerrain_Tests {
 		Given_OceanOnPrimaryBoard();
 
 		// When: Thundersepearker Activates a card that targets WETLANDS (Talons ofLightning - Range 1, M/W)
-		primarySpirit.When_ResolvingCard<TalonsOfLightning>( () => {
+		await primarySpirit.When_ResolvingCard<TalonsOfLightning>( (user) => {
 			// Then: Targetting options INCLUDES Ocean
-			NextDecision.HasOptions( "A0,A1,A2" ).Choose("A0");
+			user.NextDecision.HasOptions( "A0,A1,A2" ).Choose("A0");
 		} );
 
 	}
@@ -241,7 +241,7 @@ public class OceanTerrain_Tests {
 	[Trait("SpecialRule","OceanInPlay")]
 	[Theory]
 	[InlineData(true),InlineData(false)]
-	public void TargetOutOfOceanAsWetland( bool withOcean ) {
+	public async Task TargetOutOfOceanAsWetland( bool withOcean ) {
 
 		// Given: with/without ocean
 		if( withOcean )
@@ -255,7 +255,7 @@ public class OceanTerrain_Tests {
 		primarySpirit.Energy = 5;
 		primarySpirit.AddActionFactory(PowerCard.For<CleansingFloods>());
 		gameState.Phase = Phase.Slow;
-		primarySpirit.ResolveActions( gameState ).FinishUp("Cleansing Flood", ()=> {
+		await primarySpirit.ResolveActions( gameState ).AwaitUserToComplete("Cleansing Flood", ()=> {
 			Choose( "Cleansing Floods $5 (Slow)" );
 			if(withOcean) {
 				// Then: can target out of wetland

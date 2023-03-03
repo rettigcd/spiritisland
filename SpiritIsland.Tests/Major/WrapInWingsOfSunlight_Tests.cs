@@ -4,7 +4,7 @@ public class WrapInWingsOfSunlight_Tests {
 
 	[Trait("Feature","Move")]
 	[Fact]
-	public void Move5() {
+	public async Task Move5() {
 		// Setup
 		var spirit = new TestSpirit(PowerCard.For<WrapInWingsOfSunlight>());
 		var user = new VirtualUser( spirit );
@@ -18,15 +18,15 @@ public class WrapInWingsOfSunlight_Tests {
 		gameState.Tokens[src].Dahan.Init(10);
 
 		//  And: spirit has presence on A3
-		spirit.Presence.When_PlacingOn(src);
+		spirit.Given_HasPresenceOn(src);
 
 		//  And: Destination has no Dahan on it
 		var dst = board[1];
 		gameState.Tokens[dst].Dahan.Init(0);
 
 		// When: playing Card 
-		spirit.When_ResolvingCard<WrapInWingsOfSunlight>(()=> {
-			user.NextDecision.Choose(src.Text);
+		await spirit.When_ResolvingCard<WrapInWingsOfSunlight>((user)=> {
+			user.Choose(src.Text);
 			user.NextDecision.HasPrompt( "Move up to (5)" ).HasOptions( "D@2,Done" ).Choose( "D@2" ); // Pick space and 1st token
 			user.NextDecision.HasPrompt( "Move tokens to" ).HasOptions( "A1,A2,A3,A4,A5,A6,A7,A8" ).Choose( dst ); // pick destination
 			user.NextDecision.HasPrompt( "Move up to (4) to A1" ).HasOptions( "D@2,Done" ).Choose( "D@2" ); // pick remaining tokens
@@ -42,7 +42,7 @@ public class WrapInWingsOfSunlight_Tests {
 
 	[Trait("Feature","Push")]
 	[Fact]
-	public void TerrifyingChase_PushDahan_NoBeast() {
+	public async Task TerrifyingChase_PushDahan_NoBeast() {
 		// Setup
 		var spirit = new TestSpirit(PowerCard.For<TerrifyingChase>());
 		var user = new VirtualUser( spirit );
@@ -60,14 +60,14 @@ public class WrapInWingsOfSunlight_Tests {
 		tokens.Beasts.Init(0);
 
 		//  And: spirit has presence on A5
-		spirit.Presence.When_PlacingOn(src);
+		spirit.Given_HasPresenceOn(src);
 
 		//  And: dst has nothing on it
 		var dst = board[8];
 
 		// When: playing Card
-		spirit.When_ResolvingCard<TerrifyingChase>( () => {
-			user.NextDecision.Choose(src.Text);
+		await spirit.When_ResolvingCard<TerrifyingChase>( (user) => {
+			user.Choose(src.Text);
 			//  And: bringing 2 of each
 			user.AssertDecisionInfo( "Push (2)", "[D@2],E@1,T@2" );
 			user.AssertDecision( "Push D@2 to", "A1,A4,A6,A7,A8", dst.Label );

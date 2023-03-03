@@ -25,7 +25,7 @@ public class ShareSecretsOfSurvival_Tests {
 	[InlineData( "1D@1,1D@2,1C@3,1E@1", "1B,2D@2" )]
 	[InlineData( "3D@1,1T@2", "1B,1D@1,2D@2" )]
 	[InlineData( "2D@2,1C@3,1T@2,1E@1", "1B,2D@2,1T@2" )]
-	public void Destroy2Fewer_EachTime(string startingTokens, string expectedEndingTokens ) {
+	public async Task Destroy2Fewer_EachTime(string startingTokens, string expectedEndingTokens ) {
 		var fxt = new ConfigurableTestFixture();
 		var space = fxt.Board[5];
 		// Given: # of Dahan and Towns
@@ -37,7 +37,7 @@ public class ShareSecretsOfSurvival_Tests {
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
-		space.When_Ravaging();
+		await space.When_Ravaging();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
@@ -61,7 +61,7 @@ public class ShareSecretsOfSurvival_Tests {
 	[InlineData( "1D@1,1D@2,1C@3,1E@1", "1B,2D@2" )]
 	[InlineData( "3D@1,1T@2", "1B,1D@1,2D@2" )]
 	[InlineData( "2D@2,1C@3,1T@2,1E@1", "1B,2D@2,1T@2" )]
-	public void Destroy2Fewer_NextTime( string startingTokens, string expectedEndingTokens ) {
+	public async Task Destroy2Fewer_NextTime( string startingTokens, string expectedEndingTokens ) {
 
 
 		var fxt = new ConfigurableTestFixture();
@@ -74,7 +74,7 @@ public class ShareSecretsOfSurvival_Tests {
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
-		space.When_Ravaging();
+		await space.When_Ravaging();
 
 		//  Then: expected dahan
 		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );

@@ -4,7 +4,7 @@ public class FieryVengeance_Tests {
 
 	[Trait("SpecialRule", "Wreak Vengeance for the Land's Corruption" )]
 	[Fact]
-	public void FieryVengeance_BlightCausesBadlandDamage() {
+	public async Task FieryVengeance_BlightCausesBadlandDamage() {
 
 		// Given: 2 spirits (vengeance + 1)
 		Spirit vengeance = new VengeanceAsABurningPlague();
@@ -22,13 +22,14 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Destroyed++;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
-		vengeance.When_ResolvingCard<FieryVengeance>( () => {
-			vengeance.NextDecision().HasPrompt( "Fiery Vengeance: Target Spirit" ).HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" ).Choose( "River Surges in Sunlight" );
+		await vengeance.When_ResolvingCard<FieryVengeance>( (user) => {
+			user.NextDecision.HasPrompt( "Fiery Vengeance: Target Spirit" ).HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" ).Choose( "River Surges in Sunlight" );
 
 			//  Then: spirit 2 does 2 damage and kills town
-			spirit2.NextDecision().HasPrompt( "1 fear + 1 damage" ).HasOptions( "A5" ).Choose( "A5" );
-			spirit2.NextDecision().HasPrompt( "Damage (2 remaining)" ).HasOptions( "T@2" ).Choose( "T@2" );
-			spirit2.NextDecision().HasPrompt( "Damage (1 remaining)" ).HasOptions( "T@1" ).Choose( "T@1" );
+			VirtualUser user2 = new VirtualUser(spirit2);
+			user2.NextDecision.HasPrompt( "1 fear + 1 damage" ).HasOptions( "A5" ).Choose( "A5" );
+			user2.NextDecision.HasPrompt( "Damage (2 remaining)" ).HasOptions( "T@2" ).Choose( "T@2" );
+			user2.NextDecision.HasPrompt( "Damage (1 remaining)" ).HasOptions( "T@1" ).Choose( "T@1" );
 		} );
 
 		space.Summary.ShouldBe("1B,1RSiS");
@@ -36,7 +37,7 @@ public class FieryVengeance_Tests {
 	}
 
 	[Fact]
-	public void FieryVengeance_NoDestroyedPresence_NoAction() {
+	public async Task FieryVengeance_NoDestroyedPresence_NoAction() {
 		// Given: 2 spirits (vengeance + 1)
 		Spirit vengeance = new VengeanceAsABurningPlague();
 		Spirit spirit2 = new RiverSurges();
@@ -53,8 +54,10 @@ public class FieryVengeance_Tests {
 		spirit2.Presence.Destroyed = 0;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
-		vengeance.When_ResolvingCard<FieryVengeance>( () => {
-			vengeance.NextDecision().HasPrompt( "Fiery Vengeance: Target Spirit" ).HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" ).Choose( "River Surges in Sunlight" );
+		await vengeance.When_ResolvingCard<FieryVengeance>( (user) => {
+			user.NextDecision.HasPrompt( "Fiery Vengeance: Target Spirit" )
+				.HasOptions( "Vengeance as a Burning Plague,River Surges in Sunlight" )
+				.Choose( "River Surges in Sunlight" );
 		} );
 
 	}

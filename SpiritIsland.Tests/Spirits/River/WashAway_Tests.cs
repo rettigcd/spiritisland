@@ -160,7 +160,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 		//   And: Presence on A5 (city/coastal)
 		var presenceSpace = board.Spaces.Single(s=>s.Label==startingPresence);
-		spirit.Presence.When_PlacingOn(presenceSpace);
+		spirit.Given_HasPresenceOn(presenceSpace);
 
 		//   And: Purchased WashAway
 		card = spirit.Hand.Single(c => c.Name == WashAway.Name);

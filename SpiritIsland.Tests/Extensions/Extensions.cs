@@ -4,11 +4,6 @@ namespace SpiritIsland.Tests;
 
 static internal class Extensions {
 
-	// !!! a bunch of things are probably using this as a Given, in which case they should just use .Init
-	public static void When_PlacingOn( this SpiritPresence presence, Space space ) {
-		space.Tokens.Add( presence.Token, 1 ).FinishUp("PP");
-	}
-
 	#region Generating Explorer Action on a space
 
 	static public InvaderCard BuildInvaderCard( this Space space ) {
@@ -16,18 +11,13 @@ static internal class Extensions {
 		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 	}
 
-	static public void When_Ravaging( this Space space ) => space.BuildInvaderCard().When_Ravaging();
+	static public Task When_Ravaging( this Space space ) => space.BuildInvaderCard().When_Ravaging();
 
-	static public void When_Building( this Space space ) => space.BuildInvaderCard().When_Building();
+	static public Task When_Building( this Space space ) => space.BuildInvaderCard().When_Building();
 
-	static public void When_Exploring( this Space space ) => space.BuildInvaderCard().When_Exploring();
+	static public Task When_Exploring( this Space space ) => space.BuildInvaderCard().When_Exploring();
 
 	#endregion
-
-	static public void SetRevealedCount( this IPresenceTrack sut, int value ) {
-		while(sut.Revealed.Count() < value)
-			sut.Reveal( sut.RevealOptions.Single() );
-	}
 
 	static public string InvaderSummary( this SpaceState dict ) {
 		static int Order_CitiesTownsExplorers( HumanToken invader )

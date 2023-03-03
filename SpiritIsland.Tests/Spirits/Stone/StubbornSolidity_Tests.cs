@@ -63,7 +63,7 @@ public class StubbornSolidity_Tests {
 	[Trait( "Feature", "Frozen" )]
 	[Trait("Invaders","Ravage")]
 	[Fact]
-	public void LotsOfInvaders_DahanUnchanged_InvadersDamaged() {
+	public async Task LotsOfInvaders_DahanUnchanged_InvadersDamaged() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA(); 
 		GameState gameState = new GameState(spirit,board);
@@ -75,10 +75,10 @@ public class StubbornSolidity_Tests {
 		tokens.InitDefault(Human.Explorer, 10 );
 
 		//   And: Played StubbornSolidity
-		Play_StubbornSolidity_On( spirit, tokens );
+		await Play_StubbornSolidity_On( spirit, tokens );
 
 		//  When: Ravaging
-		tokens.Space.When_Ravaging();
+		await tokens.Space.When_Ravaging();
 
 		//  Then: All 4 dahan remain
 		//   And: 10-4=6 points of damage to the land => Blight,
@@ -90,7 +90,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public void FrozenDahan_DontMove() {
+	public async Task FrozenDahan_DontMove() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -104,13 +104,13 @@ public class StubbornSolidity_Tests {
 		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
 		//   And: Played StubbornSolidity on target
-		Play_StubbornSolidity_On( spirit, targetSpace );
+		await Play_StubbornSolidity_On( spirit, targetSpace );
 		//   And: Played StubbornSolidity on adjacent
-		Play_StubbornSolidity_On( spirit, adjacentSpace );
+		await Play_StubbornSolidity_On( spirit, adjacentSpace );
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
-		spirit.When_ResolvingCard<CallToMigrate>( () => {
-			spirit.NextDecision().HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
+		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
+			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 		} );
 
 		//  Then: Dahan are still there (not replaced)
@@ -121,7 +121,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public void DahanMovedIn_BecomeFrozen() {
+	public async Task DahanMovedIn_BecomeFrozen() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -134,14 +134,14 @@ public class StubbornSolidity_Tests {
 		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
 		//   And: Played StubbornSolidity on target
-		Play_StubbornSolidity_On( spirit, targetSpace );
+		await Play_StubbornSolidity_On( spirit, targetSpace );
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
-		spirit.When_ResolvingCard<CallToMigrate>( () => {
-			spirit.NextDecision().HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
+		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
+			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 			//   And: outside dahan are gathered
-			spirit.NextDecision().HasPrompt( "Gather up to 3 Dahan" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
-			spirit.NextDecision().HasPrompt( "Gather up to 2 Dahan" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
+			user.NextDecision.HasPrompt( "Gather up to 3 Dahan" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
+			user.NextDecision.HasPrompt( "Gather up to 2 Dahan" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
 		} );
 
 		//  Then: dahan were gathered
@@ -156,7 +156,7 @@ public class StubbornSolidity_Tests {
 
 	[Trait( "Feature", "Frozen" )]
 	[Fact]
-	public void ReplacingDahan_NoChange() {
+	public async Task ReplacingDahan_NoChange() {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
@@ -167,14 +167,12 @@ public class StubbornSolidity_Tests {
 		SpiritExtensions.Given_Adjust( spirit.Presence, targetSpace, 1 );
 
 		//   And: Played StubbornSolidity
-		Play_StubbornSolidity_On( spirit, targetSpace );
+		await Play_StubbornSolidity_On( spirit, targetSpace );
 
 		//  When: Playing card that replaces Dahan - Dissolve the Bonds of Kinship
-		spirit.When_ResolvingCard<DissolveTheBondsOfKinship>(()=> {
-			spirit.NextDecision().HasPrompt( DissolveTheBondsOfKinship.Name + ": Target Space" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( targetSpace.Space );
+		await spirit.When_ResolvingCard<DissolveTheBondsOfKinship>((user)=> {
+			user.NextDecision.HasPrompt( DissolveTheBondsOfKinship.Name + ": Target Space" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( targetSpace.Space );
 		} );
-
-
 
 		//  Then: Dahan are still there (not replaced)
 		targetSpace.Summary.ShouldBe( "1D@2,1G,1SUD" ); // 1G => Defend-1 from Stubborn Solidity
@@ -193,7 +191,7 @@ public class StubbornSolidity_Tests {
 		SpiritExtensions.Given_Adjust( spirit.Presence, spaceState, 1 );
 
 		//   And: Played StubbornSolidity
-		Play_StubbornSolidity_On(spirit,spaceState);
+		await Play_StubbornSolidity_On(spirit,spaceState);
 
 		//  When: Playing card that targets a Dahan space CallToTrade
 		await using ActionScope uow2 = await ActionScope.Start(ActionCategory.Spirit_Power);
@@ -204,8 +202,8 @@ public class StubbornSolidity_Tests {
 		spirit.NextDecision().HasPrompt("Call to Trade: Target Space").HasOptions("A5").Choose("A5");
 	}
 
-	static void Play_StubbornSolidity_On( Spirit spirit, SpaceState targetSpace ) {
-		StubbornSolidity.ActAsync( spirit.BindMyPowers().Target( targetSpace.Space ) ).FinishUp(StubbornSolidity.Name);
+	static Task Play_StubbornSolidity_On( Spirit spirit, SpaceState targetSpace ) {
+		return StubbornSolidity.ActAsync( spirit.BindMyPowers().Target( targetSpace.Space ) ).ShouldComplete(StubbornSolidity.Name);
 	}
 
 	static void BuysAndUses( GameFixture fxt, string cardName ) {

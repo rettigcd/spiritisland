@@ -23,13 +23,13 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	// d) +3 energy
 
 	[Fact]
-	public void AB() {
+	public async Task AB() {
 		_spirit.Energy = 10; 
 		// a) cost -1, reclaim cards, gain +1 power card
 		// b) add a presense to jungle or a land with beasts ( range 3)
 		Given_HalfOfPowercardsPlayed();
 
-		When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( () => {
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 			User_GrowthB_PlacePresence();
 		} );
@@ -43,13 +43,13 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void AC() {
+	public async Task AC() {
 		// a) cost -1, reclaim cards, gain +1 power card
 		// c) gain power card, gain +1 energy
 
 		Given_HalfOfPowercardsPlayed();
 
-		When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( () => {
 			User_GrowthC_DrawCard_GainEnergy(); // gain 1 energy before we spend it
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 		} );
@@ -61,13 +61,13 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void AD() {
+	public async Task AD() {
 		// d) 3 energy
 		// a) -1 energy, reclaim cards, gain +1 power card
 
 		Given_HalfOfPowercardsPlayed();
 
-		When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( () => {
 			User_GrowthD_GainEnergy();
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 		} );
@@ -79,11 +79,11 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void BC() {
+	public async Task BC() {
 		// b) add a presense to jungle or a land with beasts ( range 3)
 		// c) gain power card, gain +1 energy
 
-		When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( () => {
 			User_GrowthB_PlacePresence();
 			User_GrowthC_DrawCard_GainEnergy();
 		} );
@@ -96,11 +96,11 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void BD() {
+	public async Task BD() {
 		// b) add a presense to jungle or a land with beasts ( range 3)
 		// d) +3 energy
 
-		When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( () => {
 			User_GrowthB_PlacePresence();
 			User_GrowthD_GainEnergy();
 		} );
@@ -110,11 +110,11 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void CD() {
+	public async Task CD() {
 		// c) gain power card, gain +1 energy
 		// d) +3 energy
 
-		When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( () => {
 			User_GrowthC_DrawCard_GainEnergy();
 			User_GrowthD_GainEnergy();
 		} );
@@ -131,9 +131,9 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 5, 2, "plant 2 animal" )]
 	[InlineDataAttribute( 6, 3, "plant 2 animal" )]
 	[InlineDataAttribute( 7, 4, "plant 2 animal" )]
-	public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		fix.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+		await fix.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Theory]
@@ -143,9 +143,9 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 4, 3, 1 )]
 	[InlineDataAttribute( 5, 4, 1 )]
 	[InlineDataAttribute( 6, 5, 2 )]
-	public void CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
+	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		fix.VerifyReclaim1Count(reclaimCount);
 	}
 
@@ -157,9 +157,9 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		fxt.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
 	}
 
-	void When_SharpFangsGrow(Action userAction) {
+	async Task When_SharpFangsGrow(Action userAction) {
 		_gameState.Phase = Phase.Growth;
-		_spirit.When_Growing(userAction);
+		await _spirit.When_Growing(userAction);
 	}
 
 	void User_GrowthA_ReclaimAll_Energy_DrawCard() {

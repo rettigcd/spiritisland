@@ -10,13 +10,13 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	// +1 power card, +3 energy
 
 	[Fact]
-	public void Reclaim_PowerCard_JWPresence() {
+	public async Task Reclaim_PowerCard_JWPresence() {
 		// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 		// reclaim, +1 power card
 		Given_HalfOfPowercardsPlayed();
 		Given_HasPresence( _board[2] );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_SelectAlwaysGrowthOption();
 			User.Growth_DrawsPowerCard();
 			User.SelectsMinorDeck();
@@ -27,7 +27,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void PlayExtraCard_2Presence() {
+	public async Task PlayExtraCard_2Presence() {
 		// +1 presense to jungle or wetland - range 2
 		// +1 presense range 1, play +1 extra card this turn
 
@@ -36,7 +36,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 
 		Assert.Equal( 1, _spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_SelectAlwaysGrowthOption();
 			User.Growth_SelectAction( "PlacePresence(1)" );
 			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
@@ -55,10 +55,10 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void GainEnergy_PowerCard_JWPresence() {
+	public async Task GainEnergy_PowerCard_JWPresence() {
 		Given_HasPresence( _board[2] );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_SelectAlwaysGrowthOption();
 			User.Growth_SelectAction( "DrawPowerCard", 1 ); // there are 2. select the 2nd one (index=1)
 			User.SelectsMinorDeck();
@@ -86,9 +86,9 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 5, 2, "plant" )]
 	[InlineDataAttribute( 6, 2, "2 plant" )]
 	[InlineDataAttribute( 7, 3, "2 plant" )]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
-		fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+		await fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -99,9 +99,9 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,2)]
 	[InlineDataAttribute(5,3)]
 	[InlineDataAttribute(6,4)]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
 		var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
-		fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
 }

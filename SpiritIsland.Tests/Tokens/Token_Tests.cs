@@ -29,7 +29,7 @@ public class Token_Tests {
 
 	[Trait("Token","Wilds")]
 	[Fact]
-	public void Wilds_Stops_Explore() {
+	public async Task Wilds_Stops_Explore() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC());
 
 		// Given: a space with no invaders
@@ -41,7 +41,7 @@ public class Token_Tests {
 		spaceState.Wilds.Init(1);
 
 		//  When: we explore there
-		spaceState.Space.When_Exploring();
+		await spaceState.Space.When_Exploring();
 
 		//  Then: still no invaders
 		spaceState.HasInvaders().ShouldBeFalse("there should be no explorers in "+spaceState.Space.Label);
@@ -52,7 +52,7 @@ public class Token_Tests {
 
 	[Trait( "Token", "Disease" )]
 	[Fact]
-	public void Disease_Stops_Build() {
+	public async Task Disease_Stops_Build() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 
 		// Given: a space with ONLY 1 explorer
@@ -60,7 +60,7 @@ public class Token_Tests {
 		space.Given_HasTokens("1E@1,1Z");
 
 		//  When: we build there
-		space.Space.When_Building();
+		await space.Space.When_Building();
 
 		//  Then: still no towns (just original explorer)
 		gs.Assert_Invaders(space.Space, "1E@1" ); // "should be no town on "+space.Label

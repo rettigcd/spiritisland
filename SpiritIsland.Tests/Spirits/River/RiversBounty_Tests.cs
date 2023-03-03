@@ -16,7 +16,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		gameState.Phase = Phase.Slow;
 
 		//   And: Presence on A4
-		spirit.Presence.When_PlacingOn(board[4]);
+		spirit.Given_HasPresenceOn( board[4] );
 
 		//   And: Purchased WashAway
 		card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
@@ -131,10 +131,10 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 
 
 	[Fact]
-	public void TwoPresenceSpaces(){
+	public async Task TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
-		spirit.Presence.When_PlacingOn(board[8]);
-		var targetOptions = spirit.Presence.Spaces.Tokens().ToArray();
+		spirit.Given_HasPresenceOn(board[8]);
+		SpaceState[] targetOptions = spirit.Presence.Spaces.Tokens().ToArray();
 		Assert.Equal(2,targetOptions.Length);
 
 		//   And: 2 dahan in A5 (touches both)

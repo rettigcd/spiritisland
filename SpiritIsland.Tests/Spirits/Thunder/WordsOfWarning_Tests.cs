@@ -3,7 +3,7 @@
 public class WordsOfWarning_Tests : ThunderCards  {
 
 	[Fact]
-	public void DeadDahanDoDamage() {
+	public async Task DeadDahanDoDamage() {
 
 		gs.Phase = Phase.Fast;
 
@@ -22,13 +22,13 @@ public class WordsOfWarning_Tests : ThunderCards  {
 		counts.AdjustDefault( Human.Explorer, 4 );
 		counts.AdjustDefault( Human.City, 1 );
 		// and activate card
-		spirit.When_ResolvingCard<WordsOfWarning>( () => {
-			User.TargetsLand( WordsOfWarning.Name, "[A2],A4" );
+		await spirit.When_ResolvingCard<WordsOfWarning>( (user) => {
+			user.TargetsLand( WordsOfWarning.Name, "[A2],A4" );
 		} );
 
 		// When: ravaging on A2
 		gs.IslandWontBlight();
-		a[2].When_Ravaging();
+		await a[2].When_Ravaging();
 
 		// Then: 1 explorer left
 		// Words of Warning defend 3 cancelling out City attack leaving only 4 damage from explorers

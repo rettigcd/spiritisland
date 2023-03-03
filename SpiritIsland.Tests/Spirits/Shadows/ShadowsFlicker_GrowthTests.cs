@@ -6,11 +6,11 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void Reclaim_PowerCard(){
+	public async Task Reclaim_PowerCard(){
 		// reclaim, gain power Card
 		Given_HalfOfPowercardsPlayed();
 
-		_spirit.When_Growing( 0, () => {
+		await _spirit.When_Growing( 0, () => {
 			User.SelectsMinorDeck();
 			User.SelectMinorPowerCard();
 		} );
@@ -19,11 +19,11 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void PowerAndPresence(){
+	public async Task PowerAndPresence(){
 		// gain power card, add a presense range 1
 		Given_HasPresence( _board[1] );
 
-		_spirit.When_Growing( 1, () => {
+		await _spirit.When_Growing( 1, () => {
 			User.Growth_DrawsPowerCard();
 			User.SelectsMinorDeck();
 			User.SelectMinorPowerCard();
@@ -35,11 +35,11 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void PresenceAndEnergy(){
+	public async Task PresenceAndEnergy(){
 		// add a presence within 3, +3 energy
 		Given_HasPresence( _board[3] );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			//		User.Growth_SelectsOption( "PlacePresence(3) / GainEnergy(3)" );
 			User.Growth_SelectAction( "PlacePresence(3)" );
 			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );
@@ -56,9 +56,9 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,4)]
 	[InlineDataAttribute(5,5)]
 	[InlineDataAttribute(6,6)]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
 		var fix = new ConfigurableTestFixture { Spirit = new Shadows() };
-		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -69,9 +69,9 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,3)]
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,5)]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
 		var fix = new ConfigurableTestFixture { Spirit = new Shadows() };
-		fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
+		await fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
 	}
 
 }

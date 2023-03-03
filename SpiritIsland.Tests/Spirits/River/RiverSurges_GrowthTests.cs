@@ -11,7 +11,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	#region growth
 
 	[Fact]
-	public void Reclaim_DrawCard_Energy() {
+	public async Task Reclaim_DrawCard_Energy() {
 
 		// Given: using power pregression
 
@@ -22,7 +22,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		//  And: energy track is at 1
 		Assert.Equal( 1, _spirit.EnergyPerTurn );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User.SelectsGrowthA_Reclaim();
 		} );
 
@@ -33,7 +33,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void TwoPresence() {
+	public async Task TwoPresence() {
 		// reclaim, +1 power card, +1 energy
 		// +1 presense within 1, +1 presense range 1
 		// +1 power card, +1 presense range 2
@@ -41,7 +41,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		Given_HasPresence( _board[3] );
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User.SelectsGrowthB_2PP();
 		} );
 
@@ -51,14 +51,14 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void Power_Presence() {
+	public async Task Power_Presence() {
 		// +1 power card, 
 		// +1 presense range 2
 
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 		Given_HasPresence( _board[3] );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User.SelectsGrowthC_Draw_Energy();
 		} );
 
@@ -81,9 +81,9 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,4)]
 	[InlineDataAttribute(7,5)]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ) {
 		var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
-		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -95,9 +95,9 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[InlineDataAttribute(5,3,true)]
 	[InlineDataAttribute(6,4,true)]
 	[InlineDataAttribute(7,5,true)]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ) {
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ) {
 		var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
-		fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		fix.VerifyReclaim1Count( canReclaim1? 1 : 0 );
 	}
 

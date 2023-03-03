@@ -8,7 +8,7 @@ public class IndomitableClaim_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public void StopsAllInvaderActions() {
+	public async Task StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<IndomitableClaim>(), (Action<GameState>)((gs)=>{ 
@@ -30,7 +30,7 @@ public class IndomitableClaim_Tests {
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
 		// And: we have a presence in that land
-		ctx.Self.Presence.When_PlacingOn(spaceCtx.Space);
+		ctx.Self.Given_HasPresenceOn( spaceCtx.Space );
 
 		//  And: it has 3 explorers
 		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );

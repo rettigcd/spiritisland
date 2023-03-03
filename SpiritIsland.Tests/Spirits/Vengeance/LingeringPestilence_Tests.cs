@@ -5,7 +5,7 @@ public class LingeringPestilence_Tests {
 
 	[Trait("SpecialRule", "LingeringPestilence" )]
 	[Fact]
-	public void Powers_DoNotGenerateDisease() {
+	public async Task Powers_DoNotGenerateDisease() {
 
 		Spirit self = new VengeanceAsABurningPlague();
 		Board boardA = Board.BuildBoardA();
@@ -16,11 +16,11 @@ public class LingeringPestilence_Tests {
 		SpiritExtensions.Given_Adjust( self.Presence, space, 2 );
 
 		// When: a spirit power destroys presence
-		self.When_ResolvingCard<GrowthThroughSacrifice>( () => {
-			self.NextDecision().HasPrompt( "Select presence to destroy" ).HasOptions( "A5" ).Choose( "A5" );
+		await self.When_ResolvingCard<GrowthThroughSacrifice>( (user) => {
+			user.NextDecision.HasPrompt( "Select presence to destroy" ).HasOptions( "A5" ).Choose( "A5" );
 			// (!! this is kind of a crappy sequence for Growth-thru-sacrifice.  Can we clean up the wording / choice order?)
-			self.NextDecision().HasPrompt( "Select location to Remove Blight OR Add Presence" ).HasOptions( "A5" ).Choose( "A5" );
-			self.NextDecision().HasPrompt( "Select Power Option" ).HasOptions( "Remove 1 blight from one of your lands,Add 1 presence to one of your lands" ).Choose( "Remove 1 blight from one of your lands" );
+			user.NextDecision.HasPrompt( "Select location to Remove Blight OR Add Presence" ).HasOptions( "A5" ).Choose( "A5" );
+			user.NextDecision.HasPrompt( "Select Power Option" ).HasOptions( "Remove 1 blight from one of your lands,Add 1 presence to one of your lands" ).Choose( "Remove 1 blight from one of your lands" );
 		} );
 
 		// Then: no disease was added
@@ -29,7 +29,7 @@ public class LingeringPestilence_Tests {
 
 	[Trait( "SpecialRule", "LingeringPestilence" )]
 	[Fact]
-	public void Ravage_GeneratesDisease() {
+	public async Task Ravage_GeneratesDisease() {
 
 		Spirit self = new VengeanceAsABurningPlague();
 		Board boardA = Board.BuildBoardA();
@@ -44,7 +44,7 @@ public class LingeringPestilence_Tests {
 		gameState.IslandWontBlight();
 
 		// When: the city ravages
-		space.Space.When_Ravaging();
+		await space.Space.When_Ravaging();
 
 		// Then: presence is destroyed
 		space[self.Token].ShouldBe(1);

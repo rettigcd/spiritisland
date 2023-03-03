@@ -22,14 +22,14 @@ public class SettleIntoHuntingGrounds_Tests {
 	// Push From Ocean
 
 	[Fact]
-	public void CanFreezePresence() {
+	public async Task CanFreezePresence() {
 		var (spirit,gameState,board) = Init();
 		var a5 = gameState.Tokens[ board[5] ];
 
 		// Given: Presence on a5 and a6
 		SpiritExtensions.Given_Adjust( spirit.Presence, a5, 1 );
 
-		spirit.When_ResolvingCard<SettleIntoHuntingGrounds>();
+		await spirit.When_ResolvingCard<SettleIntoHuntingGrounds>();
 	}
 
 	static (Spirit,GameState,Board) Init() {

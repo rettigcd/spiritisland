@@ -28,10 +28,10 @@ public class PlacePresence_Tests : GrowthTests {
 
 
 	[Fact]
-	public void PullsFrom_EnergyTrack() {
+	public async Task PullsFrom_EnergyTrack() {
 		// Given: spirit has one place presence action
 
-		_spirit.When_Growing(0, ()=> {
+		await _spirit.When_Growing(0, ()=> {
 			User.PlacePresenceLocations( _spirit.Presence.Energy.RevealOptions.Single(), "A1;A2" );
 		} );
 
@@ -39,8 +39,8 @@ public class PlacePresence_Tests : GrowthTests {
 	}
 
 	[Fact]
-	public void PullsFrom_CardTrack(){
-		_spirit.When_Growing( 0, () => {
+	public async Task PullsFrom_CardTrack(){
+		await _spirit.When_Growing( 0, () => {
 			User.PlacePresenceLocations( _spirit.Presence.CardPlays.RevealOptions.Single(), "A1;A2" );
 		} );
 

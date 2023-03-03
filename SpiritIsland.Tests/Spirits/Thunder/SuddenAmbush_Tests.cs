@@ -14,22 +14,22 @@ public class SuddenAmbush_Tests : ThunderCards {
 	}
 
 	[Fact]
-	public void NoDahanToGather() {
-		spirit.When_ResolvingCard<SuddenAmbush>( () => {
-			User.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6" );
+	public async Task NoDahanToGather() {
+		await spirit.When_ResolvingCard<SuddenAmbush>( (user) => {
+			user.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6" );
 		} );
 	}
 
 	[Fact]
-	public void Gather1_Kill1() {
+	public async Task Gather1_Kill1() {
 		// Given: dahan on a3
 		a[3].Tokens.Dahan.Init(1);
 		//  and: 2 explorers on a2
 		gs.Tokens[a[2]].AdjustDefault(Human.Explorer,2);
 
-		spirit.When_ResolvingCard<SuddenAmbush>( () => {
-			User.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6" );
-			User.GathersOptionalToken( "D@2 on A3" );
+		await spirit.When_ResolvingCard<SuddenAmbush>( (user) => {
+			user.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6" );
+			user.GathersOptionalToken( "D@2 on A3" );
 		} );
 
 		// Then: 1 explorer left
@@ -37,16 +37,16 @@ public class SuddenAmbush_Tests : ThunderCards {
 	}
 
 	[Fact]
-	public void Gather1_Kills3() {
+	public async Task Gather1_Kills3() {
 		// Given: 1 dahan on a2 & 2 dahan on a1
 		a[2].Tokens.Dahan.Init(1);
 		a[1].Tokens.Dahan.Init(2);
 		//  and: 5 explorers on a1
 		gs.Tokens[a[1]].AdjustDefault( Human.Explorer, 5 );
 
-		spirit.When_ResolvingCard<SuddenAmbush>( () => {
-			User.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
-			User.GathersOptionalToken( "D@2 on A2" );
+		await spirit.When_ResolvingCard<SuddenAmbush>( (user) => {
+			user.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
+			user.GathersOptionalToken( "D@2 on A2" );
 		} );
 
 		// Then: 5-2-1 = 2 explorers left
@@ -55,16 +55,16 @@ public class SuddenAmbush_Tests : ThunderCards {
 
 	[Trait("Feature","Gather")]
 	[Fact]
-	public void DoesntKillTown() {
+	public async Task DoesntKillTown() {
 		// Given: 1 dahan on a2 & 2 dahan on a1
 		a[2].Tokens.Dahan.Init(1);
 		a[1].Tokens.Dahan.Init(2);
 		//  and: 1 town on a1
 		gs.Tokens[a[1]].AdjustDefault( Human.Town, 1 );
 
-		spirit.When_ResolvingCard<SuddenAmbush>( () => {
-			User.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
-			User.GathersOptionalToken( "D@2 on A2" );
+		await spirit.When_ResolvingCard<SuddenAmbush>( (user) => {
+			user.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
+			user.GathersOptionalToken( "D@2 on A2" );
 		} );
 
 		// Then: 5-2-1 = 2 explorers left

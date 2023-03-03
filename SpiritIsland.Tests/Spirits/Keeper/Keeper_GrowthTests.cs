@@ -17,12 +17,12 @@ public class Keeper_GrowthTests : GrowthTests {
 	// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 	[Fact]
-	public void A_Reclaim_Energy_B_Powercard() {
+	public async Task A_Reclaim_Energy_B_Powercard() {
 		// a) reclaim, +1 energy
 		// b) +1 power card
 		Given_HalfOfPowercardsPlayed();
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_Activates_A();
 			User_Activates_B();
 		} );
@@ -33,7 +33,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void A_Reclaim_Energy_C_Presence_Energy() {
+	public async Task A_Reclaim_Energy_C_Presence_Energy() {
 		// a) reclaim, +1 energy
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
@@ -43,7 +43,7 @@ public class Keeper_GrowthTests : GrowthTests {
 
 		_gameState.Phase = Phase.Growth;
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_Activates_A();
 			User_Activates_C();
 		} );
@@ -55,7 +55,7 @@ public class Keeper_GrowthTests : GrowthTests {
 
 
 	[Fact]
-	public void A_Reclaim_Energy_D_Presence_PowerCard_LoseEnergy() {
+	public async Task A_Reclaim_Energy_D_Presence_PowerCard_LoseEnergy() {
 		_spirit.Energy = 10; // so we can -3 it
 		// a) reclaim, +1 energy
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
@@ -65,7 +65,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		Given_HasPresence( _board[3] );
 		Given_BlightEverywhereExcept7();
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_Activates_A();
 			User_Activates_D();
 		} );
@@ -78,7 +78,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void B_Powercard_C_Presence_Energy() {
+	public async Task B_Powercard_C_Presence_Energy() {
 		// b) +1 power card
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
@@ -87,7 +87,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		// Given: 1 wilds, 3 away
 		Given_HasWilds( _board[8] );
 
-		_spirit.When_Growing( () =>{
+		await _spirit.When_Growing( () =>{
 			User_Activates_B();
 			User_Activates_C();
 		} );
@@ -98,7 +98,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void B_Powercard_D_Presence_PowerCard_LoseEnergy() {
+	public async Task B_Powercard_D_Presence_PowerCard_LoseEnergy() {
 		// b) +1 power card
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
@@ -108,7 +108,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		_spirit.Energy = 10; // so we can do this option
 
 		_gameState.Phase = Phase.Growth;
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_Activates_B();
 			User_Activates_D();
 		} );
@@ -121,7 +121,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void C_Presence_Energy_D_Presence_PowerCard_LoseEnergy() {
+	public async Task C_Presence_Energy_D_Presence_PowerCard_LoseEnergy() {
 		const int startingEnergy = 10;
 		_spirit.Energy = startingEnergy;
 		// c) add presense range 3 containing (wilds or presense), +1 energy
@@ -132,7 +132,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		Given_HasWilds( _board[8] );
 		Given_BlightEverywhereExcept7();
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User_Activates_C();
 			User_Activates_D();
 		} );
@@ -144,19 +144,20 @@ public class Keeper_GrowthTests : GrowthTests {
 
 	[Trait("Feature","Push")]
 	[Fact]
-	public void SacredSitesPushDahan() {
+	public async Task SacredSitesPushDahan() {
+		Space space = _board[5];
 		// Given: space with 2 dahan
-		var space = _board[5];
-		space.Tokens.Dahan.Init(2);
+		space.Given_HasTokens("2D@2");
 		//   and presence on that space
-		_spirit.Presence.When_PlacingOn(space);
+		_spirit.Given_HasPresenceOn(space);
 
 		// When: we place a presence on that space
-		_ = ActionScope.Start_NoStartActions( ActionCategory.Default ); // !!! dispose or remove
-		_ = _spirit.Presence.Place( _spirit.Presence.Energy.RevealOptions.Single(), space );
-
-		User.PushesTokensTo("D@2","A1,[A4],A6,A7,A8",2);
-		User.PushesTokensTo("D@2","A1,A4,A6,[A7],A8");
+		await _spirit.Presence.Place( _spirit.Presence.Energy.RevealOptions.Single(), space )
+			.AwaitUser( _spirit, user => {
+				user.PushesTokensTo( "D@2", "A1,[A4],A6,A7,A8", 2 );
+				user.PushesTokensTo( "D@2", "A1,A4,A6,[A7],A8" );
+			} )
+			.ShouldComplete();
 
 		_spirit.Presence.SacredSites.Downgrade().ShouldContain(space);
 		_gameState.Tokens[space].Dahan.CountAll.ShouldBe(0,"SS should push dahan from space");
@@ -172,9 +173,9 @@ public class Keeper_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 6, 7, "sun plant" )]
 	[InlineDataAttribute( 7, 8, "sun plant" )]
 	[InlineDataAttribute( 8, 9, "sun plant" )]
-	public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
-		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Theory]
@@ -184,9 +185,9 @@ public class Keeper_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 4, 3 )]
 	[InlineDataAttribute( 5, 4 )]
 	[InlineDataAttribute( 6, 5 )]
-	public void CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
-		fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
+		await fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 	}
 
 	void AddBlight( Space space ) {

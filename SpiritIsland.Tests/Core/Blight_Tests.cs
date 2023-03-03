@@ -4,7 +4,7 @@ public class Blight_Tests {
 
 	[Trait("Blight","FlipCard")]
 	[Fact]
-	public void Taking3Blight_FlipsCard() {
+	public async Task Taking3Blight_FlipsCard() {
 		Spirit spirit = new RiverSurges();
 		Board board = Board.BuildBoardD();
 		GameState gs = new GameState(spirit,board);
@@ -17,7 +17,7 @@ public class Blight_Tests {
 		gs.BlightCard.CardFlipped.ShouldBeFalse();
 
 		// When: Taking Blight from Card
-		gs.TakeBlightFromCard(3).FinishUp("Taking Blight From Card", () => {
+		await gs.TakeBlightFromCard(3).AwaitUserToComplete("Taking Blight From Card", () => {
 			VirtualUser u = new VirtualUser(spirit);
 			u.NextDecision.HasPrompt("Island blighted").Choose( "Invaders Find the Land to Their Liking" );
 		} );

@@ -7,7 +7,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 	[Trait("Feature","Push")]
 	[Trait( "Targeting", "Range" )]
 	[Fact]
-	public void CanBring_2TownDahanExplorer() {
+	public async Task CanBring_2TownDahanExplorer() {
 		// Setup
 		var spirit = new TestSpirit(PowerCard.For<FlowLikeWaterReachLikeAir>());
 		var user = new VirtualUser( spirit );
@@ -24,13 +24,13 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		tokens.InitDefault( Human.Town, 3 );
 
 		//  And: spirit has presence on A5
-		spirit.Presence.When_PlacingOn(a5);
+		spirit.Given_HasPresenceOn(a5);
 
 		//  And: A1 has nothing on it
 		var a1 = board[1];
 
 		// When: playing Card
-		spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( () => {
+		await spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( (user) => {
 			//  And: Can bring 2 of each
 			user.AssertDecisionInfo( "Select Presence to push.", "[A5],Done" );
 			user.AssertDecisionInfo( "Push Presence to", "[A1],A4,A6,A7,A8" );

@@ -8,7 +8,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 	public FlashFloods_Tests():base(new RiverSurges() ) { }
 
 	[Fact]
-	public void FlashFloods_Inland() {
+	public async Task FlashFloods_Inland() {
 
 		Given_GameWithSpirits( spirit );
 		gameState.Phase = Phase.Fast;
@@ -20,7 +20,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 
 		//   And: Presence on A2 (city/coastal)
 		var presenceSpace = board[2];
-		spirit.Presence.When_PlacingOn(presenceSpace);
+		spirit.Given_HasPresenceOn(presenceSpace);
 		//   And: 1 of each type of Invaders in Inland space (A4)
 		Space targetSpace = board[4];
 		var counts = gameState.Tokens[targetSpace];
@@ -45,7 +45,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 	}
 
 	[Fact]
-	public void FlashFloods_Costal() {
+	public async Task FlashFloods_Costal() {
 		// Given: River
 		//   And: a game on Board-A
 		var board = Board.BuildBoardA();
@@ -54,7 +54,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		};
 		//   And: Presence on A2 (city/coastal)
 		var presenceSpace = board[2];
-		spirit.Presence.When_PlacingOn(presenceSpace);
+		spirit.Given_HasPresenceOn(presenceSpace);
 		//   And: 1 of each type of Invaders in Costal space (A2)
 		Space targetSpace = board[2];
 		var grp = gameState.Tokens[targetSpace];

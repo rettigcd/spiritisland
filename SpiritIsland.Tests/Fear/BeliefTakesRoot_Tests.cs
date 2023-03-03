@@ -21,17 +21,17 @@ public class BeliefTakesRoot_Tests {
 	#endregion
 
 	[Fact]
-	public void NullFearCard_NormalRavage() {
+	public async Task NullFearCard_NormalRavage() {
 
 		_gameState.Fear.Deck.Pop();
 		_gameState.Fear.PushOntoDeck( new NullFearCard() );
 
-		Given_DahanAndTownsInSpaceWithPresence(10,1);
+		await Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-		When_AddFearApplyFear( () => {
+		await When_AddFearApplyFear( () => {
 			User.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
 		} );
-		_invaderCard.When_Ravaging();
+		await _invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
 		_ravageSpace.Tokens.Dahan.CountAll.ShouldBe(0);
@@ -39,13 +39,13 @@ public class BeliefTakesRoot_Tests {
 	}
 
 	[Fact]
-	public void Level1_NoBlightDahanLives() {
-		Given_DahanAndTownsInSpaceWithPresence(1,1);
+	public async Task Level1_NoBlightDahanLives() {
+		await Given_DahanAndTownsInSpaceWithPresence(1, 1);
 
-		When_AddFearApplyFear( ()=> {
+		await When_AddFearApplyFear( ()=> {
 			User.AcknowledgesFearCard( FearCardAction );
 		} );
-		_invaderCard.When_Ravaging();
+		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
 		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
@@ -57,13 +57,13 @@ public class BeliefTakesRoot_Tests {
 	}
 
 	[Fact]
-	public void Level1_DefendNotMoreThan2() { // not more th
-		Given_DahanAndTownsInSpaceWithPresence( 2, 5 );
+	public async Task Level1_DefendNotMoreThan2() { // not more th
+		await Given_DahanAndTownsInSpaceWithPresence(2, 5);
 
-		When_AddFearApplyFear( () => {
+		await When_AddFearApplyFear( () => {
 			User.AcknowledgesFearCard( FearCardAction );
 		} );
-		_invaderCard.When_Ravaging();
+		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
 		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
@@ -73,7 +73,7 @@ public class BeliefTakesRoot_Tests {
 		Assert.True( _gameState.Tokens[ _ravageSpace ].Blight.Any );
 	}
 
-	void Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
+	async Task Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
 		// Add: dahan
 		_ravageSpace.Tokens.Dahan.Init( desiredCount );
 		// Add towns
@@ -81,13 +81,12 @@ public class BeliefTakesRoot_Tests {
 
 		//   And: Presence
 		while(presenceCount-->0)
-			_spirit.Presence.When_PlacingOn(_ravageSpace);
+			_spirit.Given_HasPresenceOn(_ravageSpace);
 	}
 
-	void When_AddFearApplyFear(Action userActions) {
+	async Task When_AddFearApplyFear(Action userActions) {
 		_gameState.Fear.AddDirect( new FearArgs( 4 ) );
-		_gameState.Fear.Apply()
-			.FinishUp("Fear",userActions);
+		await _gameState.Fear.Apply().AwaitUserToComplete( "Fear", userActions );
 	}
 
 	const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";

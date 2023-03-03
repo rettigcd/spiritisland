@@ -10,7 +10,7 @@ public class ParalyzingFright_Tests {
 	// ! should also test without meeting element threshold
 
 	[Fact]
-	public void StopsAllInvaderActions() {
+	public async Task StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<ParalyzingFright>(), (Action<GameState>)((gs)=>{ 
@@ -32,8 +32,7 @@ public class ParalyzingFright_Tests {
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
 		// And: we have a SS in that land
-		ctx.Self.Presence.When_PlacingOn(spaceCtx.Space);
-		ctx.Self.Presence.When_PlacingOn(spaceCtx.Space);
+		ctx.Self.Given_HasPresenceOn(spaceCtx.Space, 2 );
 
 		//  And: it has 3 explorers
 		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );

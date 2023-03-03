@@ -46,7 +46,7 @@ public class GrowthTests {
 
 	protected void Given_HasPresence( params Space[] spaces ) {
 		foreach(var x in spaces)
-			_spirit.Presence.When_PlacingOn(x);
+			_spirit.Given_HasPresenceOn(x);
 	}
 
 	protected void Given_HasPresence( string presenceString ) {

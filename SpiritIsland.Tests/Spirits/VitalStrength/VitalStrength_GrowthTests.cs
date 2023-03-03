@@ -10,12 +10,12 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void ReclaimAndPresence() {
+	public async Task ReclaimAndPresence() {
 		// (A) reclaim, +1 presense range 2
 		Given_HalfOfPowercardsPlayed();
 		Given_HasPresence( _board[3] );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User.SelectsGrowthA_Reclaim_PP2();
 		} );
 
@@ -24,11 +24,11 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void PowercardAndPresence() {
+	public async Task PowercardAndPresence() {
 		// (B) +1 power card, +1 presense range 0
 		Given_HasPresence( _board[4] );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User.SelectsGrowthB_DrawCard_PP0();
 		} );
 
@@ -36,11 +36,11 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void PresenseAndEnergy() {
+	public async Task PresenseAndEnergy() {
 		// (C) +1 presence range 1, +2 energy
 		Given_HasPresence( _board[1] );
 
-		_spirit.When_Growing(() => { 
+		await _spirit.When_Growing(() => { 
 			User.SelectsGrowthC_Energy_PP1(); 
 		});
 
@@ -56,9 +56,9 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,6)]
 	[InlineDataAttribute(5,7)]
 	[InlineDataAttribute(6,8)]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
 		var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
-		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -69,9 +69,9 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,2)]
 	[InlineDataAttribute(5,3)]
 	[InlineDataAttribute(6,4)]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
 		var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
-		fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
+		await fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 	}
 
 }

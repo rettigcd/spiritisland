@@ -84,7 +84,7 @@ public class TradeSuffers_Tests {
 	}
 
 	[Fact]
-	public void Level3_DoesntForceCityReplace() {
+	public async Task Level3_DoesntForceCityReplace() {
 		// "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 		var fxt = new ConfigurableTestFixture();
 
@@ -94,7 +94,7 @@ public class TradeSuffers_Tests {
 		fxt.InitTokens( space, "1C@3" );
 
 		// When: fear card
-		new TradeSuffers().When_InvokingLevel(3, () => {
+		await new TradeSuffers().When_InvokingLevel(3, () => {
 			//  And: user selects a1
 			fxt.Choose( space.Text );
 			//  And: user choses not to replace (this is what we are testing...)

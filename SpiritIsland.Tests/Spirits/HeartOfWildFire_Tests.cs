@@ -4,7 +4,7 @@ public class HeartOfWildFire_Tests {
 
 	[Trait("Blight","Destroy Presence")]
 	[Fact]
-	public void BlightAddedDueToSpiritEffects_DoesNotDestroyPresence() {
+	public async Task BlightAddedDueToSpiritEffects_DoesNotDestroyPresence() {
 		Spirit spirit = new HeartOfTheWildfire();
 		Board boardB = Board.BuildBoardB();
 		var gs = new GameState( spirit, boardB );
@@ -19,8 +19,8 @@ public class HeartOfWildFire_Tests {
 		// When: adding blight to space via spirit powers
 		//await using var scope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		//_ = LandOfHauntsAndEmbers.Act(spirit.BindMyPowers().Target(space)); // nothing to push
-		spirit.When_ResolvingCard<LandOfHauntsAndEmbers>( () => { 
-			spirit.NextDecision().Choose(space);
+		await spirit.When_ResolvingCard<LandOfHauntsAndEmbers>( (user) => { 
+			user.Choose(space);
 		} );
 
 		// Then: presence should still be there
@@ -31,7 +31,7 @@ public class HeartOfWildFire_Tests {
 
 	[Trait( "Blight", "Destroy Presence" )]
 	[Fact]
-	public void BlightAddedFromRavage_DestroysPresence() {
+	public async Task BlightAddedFromRavage_DestroysPresence() {
 		Spirit spirit = new HeartOfTheWildfire();
 		Board boardB = Board.BuildBoardB();
 		var gs = new GameState( spirit, boardB );
@@ -46,7 +46,7 @@ public class HeartOfWildFire_Tests {
 		tokens.InitDefault(Human.Town, 1);
 
 		// When: adding blight to space from ravage
-		tokens.Space.When_Ravaging();
+		await tokens.Space.When_Ravaging();
 
 		// Then: presence should still be gone
 		tokens.Has(spirit.Token).ShouldBeFalse();

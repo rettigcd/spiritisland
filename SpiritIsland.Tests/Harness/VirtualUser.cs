@@ -16,6 +16,11 @@ public class VirtualUser {
 	public DecisionContext NextDecision => _spirit.NextDecision();
 	public void WaitForNext() => _spirit.WaitForNext();
 
+	
+	// shortcuts for when we don't have to check prompt or available options
+	public void Choose(string option) => NextDecision.Choose(option);
+	public void Choose( IOption option ) => NextDecision.Choose( option );
+
 	public void Growth_SelectsOption( string growthOption ) {
 		NextDecision.HasPrompt( "Select Growth Option" )
 			.Choose( growthOption );

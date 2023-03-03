@@ -8,7 +8,7 @@ public class ManyMinds_Tests {
 
 	[Fact]
 	[Trait( "Feature", "Gather" )]
-	public void GrowthGathering_HasRange2() {
+	public async Task GrowthGathering_HasRange2() {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
 		Board board = Board.BuildBoardA();
 		GameState gs = new GameState(spirit,board);
@@ -19,17 +19,17 @@ public class ManyMinds_Tests {
 		//   And: Beast on 7
 		board[7].Given_HasTokens("1A");
 
-		spirit.When_ResolvingCard<PreyOnTheBuilders>(()=> {
-			spirit.NextDecision().Choose( "A1" );
+		await spirit.When_ResolvingCard<PreyOnTheBuilders>((user)=> {
+			user.Choose( "A1" );
 
 			// Then: can gather beast 2 spaces away
-			spirit.NextDecision().Choose( "Beast on A7" );
+			user.Choose( "Beast on A7" );
 		} );
 	}
 
 	[Fact]
 	[Trait("Feature","Gather")]
-	public void PowerGathering_HasRange2() {
+	public async Task PowerGathering_HasRange2() {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
 		Board board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
@@ -41,7 +41,7 @@ public class ManyMinds_Tests {
 		board[7].Given_HasTokens( "1A" );
 
 
-		spirit.When_Growing( () => {
+		await spirit.When_Growing( () => {
 			// Then: can gather 1 beast
 			spirit.NextDecision().Choose( "Gather1Beast" );
 			// And: Target 2 spaces away (A1)
@@ -64,7 +64,7 @@ public class ManyMinds_Tests {
 	[InlineData( 4, 0, true )]
 	[InlineData( 2, 2, false )]
 	[Trait("Feature","Move")]
-	public void MovingMMBeast_Moves2Presence(int startingSrcPresence, int startingDstPresence, bool srcEndsWithBeast) {
+	public async Task MovingMMBeast_Moves2Presence(int startingSrcPresence, int startingDstPresence, bool srcEndsWithBeast) {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
 		Board board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
@@ -72,15 +72,15 @@ public class ManyMinds_Tests {
 		SpaceState dstTokens = board[2].Tokens;
 
 		// Given: presence on A1 (src)
-		srcTokens.Add(spirit.Token, startingSrcPresence ).FinishUp("add 2 presence"); // use .Add event triggers extra beast
+		await srcTokens.Add(spirit.Token, startingSrcPresence ).ShouldComplete("add 2 presence"); // use .Add event triggers extra beast
 
 		//   And: maybe presence on A2 (dest)
 		if(0<startingDstPresence)
-			dstTokens.Add( spirit.Token, startingSrcPresence ).FinishUp( "add 2 presence" ); // use .Add event triggers extra beast
+			await dstTokens.Add( spirit.Token, startingSrcPresence ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
 
 		//  When: moving
 		IToken beast = (IToken)srcTokens.OfClass(Token.Beast).First();
-		srcTokens.MoveTo(beast, dstTokens ).FinishUp("move best");
+		await srcTokens.MoveTo(beast, dstTokens ).ShouldComplete("move best");
 
 		// Then
 		spirit.Presence.CountOn(srcTokens).ShouldBe( startingSrcPresence-2 );
@@ -93,33 +93,33 @@ public class ManyMinds_Tests {
 
 	[Fact]
 	[Trait( "Feature", "Move" )]
-	public void GuideTheWay_CantSwitchBeastsMidflight() {
+	public async Task GuideTheWay_CantSwitchBeastsMidflight() {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
 		Board board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
 
 		// Given: 2 presence and 2 dahan on A1
 		spirit.Given_HasPresenceOn( board[1],2 );
-		board[1].Tokens.Add( spirit.Token, 2 ).FinishUp( "add 2 presence" ); // use .Add event triggers extra beast
+		await board[1].Tokens.Add( spirit.Token, 2 ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
 
 		board[1].Given_HasTokens("2D@2");
 		//   And: Beast on 5
 		board[5].Given_HasTokens( "1A" );
 
 		// When: playing Guide the Way on Feathered Wings
-		spirit.When_ResolvingCard<GuideTheWayOnFeatheredWings>( () => {
-			spirit.NextDecision().Choose( "A1" );
-			spirit.NextDecision().HasPrompt( "Move up to (1)" ).Choose( "SS-Beast" );
-			spirit.NextDecision().HasPrompt( "Move token to" ).Choose( "A5" );
-			spirit.NextDecision().HasPrompt( "Move up to 2 Dahan" ).Choose( "D@2 on A1" );
-			spirit.NextDecision().HasPrompt( "Move up to 1 Dahan" ).Choose( "D@2 on A1" );
+		await spirit.When_ResolvingCard<GuideTheWayOnFeatheredWings>( (user) => {
+			user.Choose( "A1" );
+			user.NextDecision.HasPrompt( "Move up to (1)" ).Choose( "SS-Beast" );
+			user.NextDecision.HasPrompt( "Move token to" ).Choose( "A5" );
+			user.NextDecision.HasPrompt( "Move up to 2 Dahan" ).Choose( "D@2 on A1" );
+			user.NextDecision.HasPrompt( "Move up to 1 Dahan" ).Choose( "D@2 on A1" );
 
 			// Then: only original SS-Beast is available for 2nd step. (the other Beast token is not an option)
-			spirit.NextDecision().HasPrompt( "Move SS-Beast to" ).Choose( "A7" );
+			user.NextDecision.HasPrompt( "Move SS-Beast to" ).Choose( "A7" );
 
 			// Cleanup
-			spirit.NextDecision().HasPrompt( "Move up to 2 Dahan" ).Choose( "D@2 on A5" );
-			spirit.NextDecision().HasPrompt( "Move up to 1 Dahan" ).Choose( "D@2 on A5" );
+			user.NextDecision.HasPrompt( "Move up to 2 Dahan" ).Choose( "D@2 on A5" );
+			user.NextDecision.HasPrompt( "Move up to 1 Dahan" ).Choose( "D@2 on A5" );
 		} );
 
 		//  And: Final slot has 2 presence, 2 dahan, and 1 beast
@@ -127,7 +127,7 @@ public class ManyMinds_Tests {
 	}
 
 	[Fact]
-	public void BesetAndCounfound_Requires2BeastAndInvaders() {
+	public async Task BesetAndCounfound_Requires2BeastAndInvaders() {
 		// Card reads that we need only target Invaders
 		// But it is super confusing to target a space with 0 or 1 beasts
 		// So I modified it to require 2 beasts also.
@@ -149,9 +149,9 @@ public class ManyMinds_Tests {
 		//   And: A7: 2 Beasts AND Invaders
 		board[7].Given_HasTokens( "2A,2E@1" );
 
-		spirit.When_ResolvingInnate<BesetAndConfoundTheInvaders>( () => {
+		await spirit.When_ResolvingInnate<BesetAndConfoundTheInvaders>( (user) => {
 			// Then: only the space with both is targetable
-			spirit.NextDecision().HasPrompt( "Beset and Confound the Invaders: Target Space" ).HasOptions("A7").Choose("A7");
+			user.NextDecision.HasPrompt( "Beset and Confound the Invaders: Target Space" ).HasOptions("A7").Choose("A7");
 		} );
 
 		// And: should have defend-2

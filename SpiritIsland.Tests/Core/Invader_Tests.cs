@@ -129,7 +129,7 @@ public class Invader_Tests {
 
 	[Trait( "Invaders", "Explore" )]
 	[Fact]
-	public void NoTownsOrCities_HasStartingExplorer_ExploreCoast() {
+	public async Task NoTownsOrCities_HasStartingExplorer_ExploreCoast() {
 		// Given: game on Board A
 		var board = Board.BuildBoardA();
 		var gameState = new GameState( new RiverSurges(), board );
@@ -137,8 +137,8 @@ public class Invader_Tests {
 		gameState.Tokens[ board[5] ].AdjustDefault(Human.Explorer,1);
 
 		// When: exploring (wet lands
-		new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single(c=>c.Text=="W"), gameState )
-			.FinishUp("Explore Phase");
+		await new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single(c=>c.Text=="W"), gameState )
+			.ShouldComplete( "Explore Phase");
 
 		// Then: 1 Explorer on A2 (new explored)
 		//  and A5 (original) - proves explorers aren't reference types like towns
@@ -194,7 +194,7 @@ public class Invader_Tests {
 	[InlineData("C@3","1C@3,1T@2")]
 	[InlineData("C@2","1C@2,1T@2")]
 	[InlineData("C@1","1C@1,1T@2")]
-	public void BuildInSpaceWithAnyInvader(string preInvaders,string endingInvaderCount) {
+	public async Task BuildInSpaceWithAnyInvader(string preInvaders,string endingInvaderCount) {
 		// Given: game on Board A
 		gameState = new GameState( new RiverSurges(), board );
 		//   And: invader on every space
@@ -203,8 +203,8 @@ public class Invader_Tests {
 			gameState.Tokens[space].Adjust( startingInvader, 1 );
 
 		// When: build in Sand
-		new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "S" ), gameState)
-			.FinishUp("Build Phase");
+		await new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "S" ), gameState)
+			.ShouldComplete( "Build Phase");
 
 		// Then: 2 Sand spaces should have ending Invader Count
 		gameState.Assert_Invaders( board[4], endingInvaderCount );
@@ -241,7 +241,7 @@ public class Invader_Tests {
 	[Trait( "Invaders", "Ravage" )]
 	[Theory]
 	[InlineData("3D@2,1T@2,1E@1","1D@2,1D@1")]
-	public void Ravage(string startingUnits,string endingUnits) {
+	public async Task Ravage(string startingUnits,string endingUnits) {
 		gameState = new GameState( new RiverSurges(), board );
 		gameState.IslandWontBlight();
 		// Disable destroying presence
@@ -254,7 +254,7 @@ public class Invader_Tests {
 		Assert_UnitsAre( startingUnits, space );
 
 		// When: Ravaging in Mountains
-		InvaderCard.Stage1( Terrain.Mountain ).When_Ravaging();
+		await InvaderCard.Stage1( Terrain.Mountain ).When_Ravaging();
 		// await new RavageEngine().ActivateCard( InvaderCard.Stage1( Terrain.Mountain ), gameState );
 
 		Assert_UnitsAre( endingUnits, space );

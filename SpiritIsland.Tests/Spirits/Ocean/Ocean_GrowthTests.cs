@@ -56,12 +56,12 @@ public class Ocean_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void ReclaimGather_NonGatherParts() {
+	public async Task ReclaimGather_NonGatherParts() {
 		// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 
 		Given_HalfOfPowercardsPlayed();
 
-		_spirit.When_Growing( 0, () => {
+		await _spirit.When_Growing( 0, () => {
 			User.Growth_DrawsPowerCard();
 			User.SelectsMinorDeck();
 			User.SelectMinorPowerCard();
@@ -75,13 +75,13 @@ public class Ocean_GrowthTests : GrowthTests {
 	}
 
 	[Fact]
-	public void TwoPresenceInOceans() {
+	public async Task TwoPresenceInOceans() {
 		// +1 presence range any ocean, +1 presense in any ociean, +1 energy
 
 		// Given: island has 2 boards, hence 2 oceans
 		_gameState.Island = new Island( BoardA, BoardB );
 
-		_spirit.When_Growing( 1, () => {
+		await _spirit.When_Growing( 1, () => {
 			User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay,Take Presence from Board", "[A0],B0" );
 			User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,Take Presence from Board", "A0,[B0]" );
 		} );
@@ -91,14 +91,14 @@ public class Ocean_GrowthTests : GrowthTests {
 
 	[Theory]
 	[InlineData("A0","A1;A2;A3","A1:1,A2:1")]
-	public void PowerPlaceAndPush( string starting, string placeOptions, string ending ) {
+	public async Task PowerPlaceAndPush( string starting, string placeOptions, string ending ) {
 		// gain power card
 		// push 1 presense from each ocean
 		// add presense on coastal land range 1
 		_gameState.Island = new Island( BoardA, BoardB, BoardC );
 		Given_HasPresence( starting );
 
-		_spirit.When_Growing( 2, () => {
+		await _spirit.When_Growing( 2, () => {
 			User.Growth_PlacesEnergyPresence( placeOptions );
 			User.Growth_DrawsPowerCard();
 			User.SelectsMinorDeck();
@@ -120,9 +120,9 @@ public class Ocean_GrowthTests : GrowthTests {
 	[InlineDataAttribute(5,1,"moon water earth")]
 	[InlineDataAttribute(6,1,"moon 2 water earth")]
 	[InlineDataAttribute(7,2, "moon 2 water earth" )]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-		fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		await fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -133,9 +133,9 @@ public class Ocean_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,3)]
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,5)]
-	public void CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-		fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		await fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
 	[Trait("Spirit","SetupAction")]

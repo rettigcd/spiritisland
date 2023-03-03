@@ -96,7 +96,7 @@ public class Russia_Tests {
 	}
 
 	[Fact]
-	public void Level1_Placement_And2Damage() {
+	public async Task Level1_Placement_And2Damage() {
 		// Given: Russia, Level 1
 		var cfg = Given_RussiaLevel( 1 ).SetBoards( "A" ).SetSpirits( RiverSurges.Name );
 		GameState gameState = BuildGame( cfg );
@@ -107,7 +107,7 @@ public class Russia_Tests {
 		a7.Summary.ShouldBe( "1A,2D@2,1E@1" ); // 1A is beast
 
 		//  When: Ravage on that space
-		a7.Space.When_Ravaging();
+		await a7.Space.When_Ravaging();
 
 		//  Then: explorer did 2 damage and killed 1 dahan and created 1 blight and removed the Beast
 		a7.Summary.ShouldBe( "1B,1D@2" );
@@ -192,7 +192,7 @@ public class Russia_Tests {
 	}
 
 	[Fact]
-	public void Level3_3InvadersDontBuildNorExplore() {
+	public async Task Level3_3InvadersDontBuildNorExplore() {
 		var cfg = Given_RussiaLevel( 3 ).SetBoards( "A" ).SetSpirits( RiverSurges.Name );
 		GameState gameState = BuildGame( cfg );
 		Board boardA = gameState.Island.Boards[0];
@@ -210,8 +210,8 @@ public class Russia_Tests {
 		a5.Clear().Given_HasTokens( orig );
 
 		//  When: card builds & explore
-		card.When_Building();
-		card.When_Exploring();
+		await card.When_Building();
+		await card.When_Exploring();
 
 		//  Then: no change
 		a5.Summary.ShouldBe( orig );

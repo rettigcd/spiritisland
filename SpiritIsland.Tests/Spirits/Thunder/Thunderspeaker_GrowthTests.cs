@@ -5,11 +5,11 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	public Thunderspeaker_GrowthTests():base( new Thunderspeaker() ) {}
 
 	[Fact]
-	public void ReclaimAnd2PowerCards() {
+	public async Task ReclaimAnd2PowerCards() {
 		// Growth Option 1 - Reclaim All, +2 Power cards
 		Given_HalfOfPowercardsPlayed();
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User.Growth_DrawsPowerCard();
 			User.SelectsMinorDeck();
 			User.SelectMinorPowerCard();
@@ -28,7 +28,7 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	[InlineData( "3,4,8", "A3;A4" )]
 	[InlineData( "4,8", "A4" )]
 	[InlineData( "1,4,8", "A1;A4" )]
-	public void TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
+	public async Task TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
 		// +1 presense within 2 - contains dahan
 		// +1 presense within 1 - contains dahan
 		Given_HasPresence( _board[3] );
@@ -36,7 +36,7 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 		foreach(string s in initialDahanSquares.Split( ',' ))
 			_board[int.Parse( s )].Tokens.Dahan.Init(1);
 
-		_spirit.When_Growing( 1, () => {
+		await _spirit.When_Growing( 1, () => {
 			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
 			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
 		} );
@@ -46,11 +46,11 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	}
 
 	[Fact]
-	public void PresenseAndEnergy() {
+	public async Task PresenseAndEnergy() {
 		// +1 presense within 1, +4 energy
 		Given_HasPresence( _board[1] );
 
-		_spirit.When_Growing( () => {
+		await _spirit.When_Growing( () => {
 			User.Growth_SelectAction( "PlacePresence(1)" );
 			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 		});
@@ -68,9 +68,9 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	[InlineDataAttribute(4,2, "fire air" )]
 	[InlineDataAttribute(5,2, "sun fire air" )]
 	[InlineDataAttribute(6,3, "sun fire air" )]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
-		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -82,9 +82,9 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	[InlineDataAttribute(5,3,1)]
 	[InlineDataAttribute(6,3,1)]
 	[InlineDataAttribute(7,4,1)]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
-		fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		fix.VerifyReclaim1Count( reclaimCount );
 	}
 
