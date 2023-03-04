@@ -15,7 +15,7 @@ class TestSpirit : Spirit {
 		);
 	}
 
-	public override string Text => "CardPlayTestSpirit";
+	public override string Text => "Test Spirit";
 
 	public override SpecialRule[] SpecialRules => throw new NotImplementedException();
 
@@ -43,9 +43,7 @@ class TestSpirit : Spirit {
 		var starterCtx = spirit.BindSelf();
 
 		// Disable destroying presence
-		// starterCtx.GameState.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		starterCtx.GameState.DisableBlightEffect();
-
 
 		return (user,starterCtx);
 	}

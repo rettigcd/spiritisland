@@ -2,32 +2,20 @@
 
 public class FlowLikeWaterReachLikeAir_Tests {
 
-	// !!! should also test +2 range on all powers
-
 	[Trait("Feature","Push")]
-	[Trait( "Targeting", "Range" )]
 	[Fact]
 	public async Task CanBring_2TownDahanExplorer() {
 		// Setup
-		var spirit = new TestSpirit(PowerCard.For<FlowLikeWaterReachLikeAir>());
-		var user = new VirtualUser( spirit );
-		var board = Board.BuildBoardA();
-		var gameState = new GameState( spirit, board );
-		gameState.DisableInvaderDeck();
-		gameState.Initialize();
+		TestSpirit spirit = new TestSpirit(PowerCard.For<FlowLikeWaterReachLikeAir>());
+		Board board = Board.BuildBoardA();
+		GameState gameState = new GameState( spirit, board );
 
-		// Given: A5 has 3 Towns, Dahans, and Explorers
-		var a5 = board[5];
-		var tokens = gameState.Tokens[a5];
-		tokens.InitDefault( Human.Dahan, 3 );
-		tokens.InitDefault( Human.Explorer, 3 );
-		tokens.InitDefault( Human.Town, 3 );
-
-		//  And: spirit has presence on A5
-		spirit.Given_HasPresenceOn(a5);
-
+		// Given: A5 has 3 Towns, Dahans, Explorers, & Presence(TS)
+		Space a5 = board[5];
+		SpaceState tokens = gameState.Tokens[a5];
+		tokens.Given_HasTokens("3D@2,3E@1,3T@2,1TS");
 		//  And: A1 has nothing on it
-		var a1 = board[1];
+		Space a1 = board[1];
 
 		// When: playing Card
 		await spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( (user) => {
@@ -43,12 +31,29 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		} );
 
 		// Then: target 2 of each
-		var dst = gameState.Tokens[a1];
-		dst[StdTokens.Dahan].ShouldBe(2);
-		dst[StdTokens.Explorer].ShouldBe(2);
-		dst[StdTokens.Town].ShouldBe(2);
+		a1.Tokens.Summary.ShouldBe( "2D@2,2E@1,2T@2,1TS" );
 	}
-	
+
+	[Trait( "Targeting", "Range" )]
+	[Fact]
+	public async Task ExtendsRange2() {
+		// Setup
+		TestSpirit spirit = new TestSpirit( PowerCard.For<FlowLikeWaterReachLikeAir>() );
+		Board board = Board.BuildBoardA();
+		GameState gameState = new GameState( spirit, board );
+
+		// Given: Presence on A8 Presence(TS)
+		board[3].Tokens.Given_HasTokens( "1TS" );
+		//   And: played Flow Like Water
+		await spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( u => u.Choose( "Done" ) );
+
+		//  When: targetting a power of Range 0
+		await spirit.When_ResolvingCard<MesmerizedTranquility>( user => {
+			// Then: everything in range 2 is available
+			user.NextDecision.HasOptions("A1,A2,A3,A4,A5").Choose("A5");
+		} );
+	}
+
 }
 
 

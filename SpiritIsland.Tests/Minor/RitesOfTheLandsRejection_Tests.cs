@@ -37,7 +37,34 @@ public class RitesOfTheLandsRejection_Tests {
 
 	}
 
-	//		[Fact]
-	//		public void Has2Builds_NoBuild() {} // !!! how do I construct 2 builds?
+	[Trait( "Invaders", "Build" )]
+	[Trait( "Invaders", "Deck" )]
+	[Fact]
+	public void Has2Builds_BothStopped() {
+
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<RitesOfTheLandsRejection>() );
+
+		// Given: find a space with 1 explorer
+		SpaceState space = ctx.GameState.Spaces_Unfiltered.First( s => s.InvaderSummary() == "1E@1" );
+		//   And: add Dahan (because card requires it)
+		space.Given_HasTokens("1D@2");
+		//   And: The build card appears twice
+		List<InvaderCard> buildCards = ctx.GameState.InvaderDeck.Build.Cards;
+		buildCards.Add( buildCards[0] );
+
+		// When: growing
+		user.Grows();
+
+		//  And: purchase test card
+		user.PlaysCard( RitesOfTheLandsRejection.Name );
+		user.SelectsFastAction( RitesOfTheLandsRejection.Name );
+		user.Choose( space.Space.Label ); // target land
+		user.NextDecision.HasPrompt("Select Power Option").Choose("Stop build - 1 fear / (Dahan or T/C)" );
+
+		// Then: space should have a building
+		user.WaitForNext();
+		space.InvaderSummary().ShouldBe( "1E@1" );
+
+	}
 
 }

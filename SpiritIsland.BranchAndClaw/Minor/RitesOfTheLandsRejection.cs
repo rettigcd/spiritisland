@@ -11,7 +11,7 @@ public class RitesOfTheLandsRejection {
 
 		static void StopBuild_FearForCitiesTownsAndDahan(TargetSpaceCtx ctx) {
 			// Invaders Do not build in target land this turn
-			ctx.Tokens.Skip1Build( Name );
+			ctx.Tokens.SkipAllBuilds( Name );
 
 			// 1 fear per town/city OR 1 fear per dahan, whichever is less
 			int cityTownCount = ctx.Tokens.SumAny( Human.Town_City );

@@ -15,6 +15,7 @@ public class FlowLikeWaterReachLikeAir {
 
 		// Target spirit may push 1 of their presence to an adjacent land
 		var (src,destination) = await ctx.Self.PushUpTo1Presence();
+		if(destination is null) return;
 
 		var mover = new TokenPusher_FixedDestination( ctx.Target( src ), destination );
 		// bringing up to 2 explorers, 2 towns and 2 dahan along with it.

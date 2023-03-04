@@ -73,7 +73,7 @@ public class ToDreamAThousandDeaths_Tests {
 		// Given: 2 towns on A5
 		_board[5].Given_HasTokens($"{count}T@2");
 		//   And: nothing on A8
-		_board[8].Given_NoTokens();
+		_board[8].Given_ClearTokens();
 
 		// When: destroying towns
 		await _spirit.When_TargetingSpace( _board[5], DestroyAllExplorersAndTownsAsync, (user)=>{

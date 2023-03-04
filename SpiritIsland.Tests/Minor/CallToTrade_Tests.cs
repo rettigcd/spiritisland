@@ -131,7 +131,39 @@ public class CallToTrade_Tests {
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1C@3,1T@2,4E@1" );
 	}
 
-	// TwoRavages_BecomesBuildAndRavage - !!! Put 2 cards in the Ravage slot that trigger the same space. Show only 1 ravage happens
+	[Fact]
+	public void TwoRavages_BecomesBuildAndRavage() {
+
+		// Given: Going to Ravage / Build in Jungle
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>(), (Action<GameState>)(( gs ) => {
+			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle );
+			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
+		}) );
+		var invaderLog = ctx.GameState.LogAsStringList();
+
+		// Given: advance to 2nd round where we have a ravage
+		user.GrowAndBuyNoCards();
+		invaderLog.Clear();
+
+		// Given: a space that IS RAVAGE
+		user.WaitForNext();
+		var spaceCtx = AllTargets( ctx ).Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
+		invaderLog.Add( "Selected target:" + spaceCtx.Space.Label );
+		//   And: there are 2 ravages for that space
+		List<InvaderCard> ravageCards = ctx.GameState.InvaderDeck.Ravage.Cards; ravageCards.Add( ravageCards[0] );
+
+		//  And: it has 3 explorers and 2 dahan (in case dahan attacks during ravage, would still 1 left over
+		spaceCtx.Space.Given_ClearTokens().Given_HasTokens("3E@1,2D@2");
+		Given_NoSuroundingTowns( spaceCtx );
+		Given_NoSuroundingDahan( spaceCtx );
+
+		// When:
+		When_GrowsBuysAndActivatesCard( user, spaceCtx );
+		user.WaitForNext();
+
+		// Then: it ravaged => 1E@1, 1D@2, then built => 1
+		spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1D@2,2E@1,1T@2" );
+	}
 
 	#region Given / When
 

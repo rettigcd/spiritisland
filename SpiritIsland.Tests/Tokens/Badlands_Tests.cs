@@ -23,7 +23,7 @@ public class Badlands_Tests {
 		tokens.InitDefault( Human.Dahan, 1 );
 		tokens.Beasts.Init( 0 );
 		tokens.Defend.Add(1);
-		tokens.Summary.ShouldBe("2C,1D@2,1E@1,1G,1M");
+		tokens.Summary.ShouldBe("1D@2,1E@1,1G,1M,2TS");
 
 		// When: Grow, Skip Buy, then Ravage
 		fxt.user.Growth_SelectAction( "ReclaimAll" );
@@ -62,7 +62,7 @@ public class Badlands_Tests {
 		tokens.InitDefault( Human.Explorer, 1);
 		tokens.InitDefault(Human.Dahan, 1);
 		tokens.Beasts.Init(0);
-		tokens.Summary.ShouldBe("2C,1D@2,1E@1,1M");
+		tokens.Summary.ShouldBe( "1D@2,1E@1,1M,2TS" );
 
 		// When: Grow, Skip Buy, then Ravage
 		fxt.user.Growth_SelectAction( "ReclaimAll" );
