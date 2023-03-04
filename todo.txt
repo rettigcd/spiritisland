@@ -2,8 +2,6 @@
 ====  Clean Up Items  ====
 ==========================
 
-Pusher should check class, not token.
-
 Idea: When multiple, reduce size a little and draw them stacked.
 Idea: Change spirit,island,cards sizes based on what is in in focus.
 Played Cards Icon could be dynamic and show cards played.
