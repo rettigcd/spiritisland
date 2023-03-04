@@ -8,7 +8,7 @@ public class IndomitableClaim_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public async Task StopsAllInvaderActions() {
+	public void StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<IndomitableClaim>(), (Action<GameState>)((gs)=>{ 

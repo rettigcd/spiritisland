@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
@@ -8,13 +9,11 @@ public class SpaceButton : IButton {
 	readonly Func<Space, IToken, Point> _locationMapper;
 	readonly Space _space;
 	readonly int _hotSpotRadius;
-//	int TokenSize { get; set; }
 
 	public SpaceButton( Func<Space, IToken, Point> locationMapper, Space space, int hotSpotRadius ) {
 		_locationMapper = locationMapper;
 		_space = space;
 		_hotSpotRadius = hotSpotRadius;
-//		TokenSize = hotSpotRadius * 2;
 	}
 
 	public Rectangle Bounds {

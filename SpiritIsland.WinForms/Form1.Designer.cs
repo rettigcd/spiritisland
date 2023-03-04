@@ -27,7 +27,7 @@ namespace SpiritIsland.WinForms {
 		private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this._promptLabel = new System.Windows.Forms.Label();
-            this.islandControl = new SpiritIsland.WinForms.IslandControl();
+            this._islandControl = new SpiritIsland.WinForms.IslandControl();
             this.textIslandSplitter = new System.Windows.Forms.Splitter();
             this.textPanel = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -55,15 +55,15 @@ namespace SpiritIsland.WinForms {
             // 
             // islandControl
             // 
-            this.islandControl.BackColor = System.Drawing.Color.Aqua;
-            this.islandControl.Debug = false;
-            this.islandControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.islandControl.Location = new System.Drawing.Point(0, 24);
-            this.islandControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.islandControl.Name = "islandControl";
-            this.islandControl.Size = new System.Drawing.Size(1164, 642);
-            this.islandControl.TabIndex = 2;
-            this.islandControl.Text = "islandControl1";
+            this._islandControl.BackColor = System.Drawing.Color.Aqua;
+            this._islandControl.Debug = false;
+            this._islandControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._islandControl.Location = new System.Drawing.Point(0, 24);
+            this._islandControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this._islandControl.Name = "islandControl";
+            this._islandControl.Size = new System.Drawing.Size(1164, 642);
+            this._islandControl.TabIndex = 2;
+            this._islandControl.Text = "islandControl1";
             // 
             // textIslandSplitter
             // 
@@ -170,7 +170,7 @@ namespace SpiritIsland.WinForms {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1164, 666);
             this.Controls.Add(this._promptLabel);
-            this.Controls.Add(this.islandControl);
+            this.Controls.Add(this._islandControl);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -187,7 +187,7 @@ namespace SpiritIsland.WinForms {
 
 		#endregion
 		private System.Windows.Forms.Label _promptLabel;
-		private IslandControl islandControl;
+		private IslandControl _islandControl;
 		private System.Windows.Forms.Splitter textIslandSplitter;
 		private System.Windows.Forms.Panel textPanel;
 		private System.Windows.Forms.MenuStrip menuStrip1;

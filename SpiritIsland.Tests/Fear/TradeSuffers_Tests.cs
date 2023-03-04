@@ -69,7 +69,6 @@ public class TradeSuffers_Tests {
 
 		// Round 3
 		//  And: Fear card is active and ready to flip
-		List<string> log = _ctx.GameState.LogAsStringList();
 		ActivateFearCard( new TradeSuffers() );
 		ClearBlight();
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer

@@ -1,40 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
 
-class CardUi {
+class CardPanel : IPanel {
 
-	public SpiritCardInfo SpiritCardInfo {
-		set {
-			_spiritCardInfo = value;
-			_currentDeck = _spiritCardInfo.AllDecks.First( x => x.Icon == Img.Deck_Hand );
+	public CardPanel(SharedCtx ctx, Control parentControl) {
+		_ctx = ctx;
+
+		_spiritCardInfo = new SpiritCardInfo( _ctx._spirit );
+		_currentDeck = _spiritCardInfo.AllDecks
+			.First( x => x.Icon == Img.Deck_Hand );
+
+		_onAppearanceChanged = parentControl.Invalidate;
+	}
+
+	public Rectangle Bounds { 
+		get => _bounds;
+		set { 
+			_bounds = value;
+			_layout = null;
 		}
 	}
 
-	public CardLayout Layout {
-		get { return _layout; }
-		set { _layout = value; }
-	}
+	public void OnGameLayoutChanged() { _layout = null; }
 
-	public event Action<PowerCard> CardClicked;
-	public event Action AppearanceChanged;
+	#region Paint
 
-	#region Draw / Paint
+	public void Paint(Graphics graphics) {
 
-	public void DrawParts(Graphics graphics) {
-		if(_spiritCardInfo==null) return;
+		_layout ??= new CardLayout( _bounds );
 
 		for(int i = 0; i< _spiritCardInfo.AllDecks.Length; ++i)
-			DrawDeckTab( graphics, i );
+			PaintDeckTab( graphics, i );
 
 		if(_currentDeck != null) {
 			// DrawCardBackdrop( graphics );
 			for(int i = 0; i < _currentDeck.Cards.Count; ++i)
-				DrawCard( graphics, _currentDeck.Cards[i], i );
+				PaintCard( graphics, _currentDeck.Cards[i], i );
 		}
 	}
 
@@ -47,7 +53,7 @@ class CardUi {
 	//	graphics.FillRectangle( brush, bgRect );
 	//}
 
-	void DrawDeckTab( Graphics graphics, int index ) {
+	void PaintDeckTab( Graphics graphics, int index ) {
 		DeckInfo deck = _spiritCardInfo.AllDecks[index];
 		if(deck.Cards.Count == 0) return;
 		Rectangle bounds = _layout.GetTabBounds( index );
@@ -64,7 +70,7 @@ class CardUi {
 		graphics.DrawCountIfHigherThan( bounds, deck.Cards.Count, 0 );
 	}
 
-	void DrawCard( Graphics graphics, PowerCard card, int index ) {
+	void PaintCard( Graphics graphics, PowerCard card, int index ) {
 
 		int totalCardCount = _currentDeck.Cards.Count;
 		var cardRect = _layout.GetCardRect( index, totalCardCount );
@@ -105,9 +111,9 @@ class CardUi {
 
 	}
 
-	#endregion Draw / Paint 
+	#endregion Paint 
 
-	public Action GetClickAction( Point coords ) {
+	public Action GetClickableAction( Point coords ) {
 		if( _spiritCardInfo == null || _layout == null ) return null;
 		// Deck Tabs
 		for(int i = 0; i < _spiritCardInfo.AllDecks.Length; ++i) {
@@ -115,7 +121,7 @@ class CardUi {
 			if(clickedDeck.Cards.Any() && _layout.GetTabBounds( i ).Contains( coords ))
 				return () => { 
 					_currentDeck = clickedDeck == _currentDeck ? null : clickedDeck;
-					AppearanceChanged?.Invoke();
+					_onAppearanceChanged?.Invoke();
 				};
 		}
 
@@ -124,13 +130,15 @@ class CardUi {
 			for(int i = 0; i < _currentDeck.Cards.Count; ++i)
 				if(_layout.GetCardRect( i, _currentDeck.Cards.Count ).Contains( coords )) {
 					PowerCard card = _currentDeck.Cards[i];
-					return _options.Contains( card ) ? (() => CardClicked?.Invoke( card )) : null;
+					return _options.Contains( card ) 
+						? (() => _ctx.SelectOption( card ))
+						: null;
 				}
 
 		return null;
 	}
 
-	public void HandleNewDecision( IDecision decision ) {
+	public void ActivateOptions( IDecision decision ) {
 
 		_pickPowerCardDecision = decision as Select.PowerCard; // capture so we can display card-action
 
@@ -144,7 +152,7 @@ class CardUi {
 		// If there are cards to display but we aren't on them, switch
 		if(_currentDeck==null || !_currentDeck.HasOption)
 			_currentDeck = _spiritCardInfo.AllDecks.FirstOrDefault( x => x.HasOption )
-				?? null; // _spiritCardInfo.AllDecks.FirstOrDefault( x => x.Icon == Img.Deck_Hand );
+				?? null;
 
 	}
 
@@ -166,13 +174,14 @@ class CardUi {
 		}
 	}
 
-	Select.PowerCard _pickPowerCardDecision;	// 1
+	Select.PowerCard _pickPowerCardDecision;
 	HashSet<PowerCard> _options;                               
-	DeckInfo _currentDeck;						// 2
-	SpiritCardInfo _spiritCardInfo;				// 3
-	CardLayout _layout;							// 4
+	DeckInfo _currentDeck;
+	Rectangle _bounds;
+	CardLayout _layout;
 
-
+	readonly SharedCtx _ctx;
+	readonly SpiritCardInfo _spiritCardInfo;
 	readonly CardImageManager _images = new CardImageManager();
-
+	readonly Action _onAppearanceChanged;
 }

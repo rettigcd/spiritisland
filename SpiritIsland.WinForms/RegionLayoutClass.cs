@@ -7,9 +7,8 @@ namespace SpiritIsland.WinForms;
 class RegionLayoutClass {
 
 	const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
-	const float INFOBAR_HEIGHT = .1f; // % of height to use for info-bar
+	const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
 
-	Rectangle _infoRect;
 	Rectangle _mainRect;
 	readonly Rectangle _rect;
 
@@ -28,13 +27,15 @@ class RegionLayoutClass {
 		const float BlightWidths = 3f;
 		const float FearWidths = 6f;
 
-		(_infoRect,(_mainRect,_)) = rect.SplitVerticallyByWeight( 0, INFOBAR_HEIGHT, 1f - INFOBAR_HEIGHT ); // 0 margin because items in infoBar get their own margin.
+		(StatusRect,(_mainRect,_)) = rect.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT ); // 0 margin because items in infoBar get their own margin.
 		( IslandRect, (SpiritRect, _)) = _mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
-		(PhaseRect,(AdversaryFlagRect, (InvaderCardRect, (BlightRect, (FearPoolRect, _))))) = _infoRect
+
+		(PhaseRect,(AdversaryFlagRect, (InvaderCardRect, (BlightRect, (FearPoolRect, _))))) = StatusRect
 			.InflateBy( -MARGIN )
 			.SplitHorizontallyRelativeToHeight( MARGIN, Align.Far, 1.4f, AdversaryFlagWidths, InvaderCards, BlightWidths, FearWidths );
+
 		(OptionRect,_) = IslandRect.InflateBy(-MARGIN).SplitHorizontallyByWeight(0,.1f,.9f);
-		(_,(CardRectPopup,_)) = _mainRect.SplitVerticallyByWeight(0, .5f, .5f);
+		(_,(CardRect,_)) = _mainRect.SplitVerticallyByWeight(0, .5f, .5f);
 
 		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
 		SpiritRect = SpiritRect.FitBoth(new Size(SpiritRect.Width,(int)(SpiritRect.Width*1.1)),Align.Far,Align.Near);
@@ -45,12 +46,14 @@ class RegionLayoutClass {
 
 	public Rectangle SpiritRect        { get; }
 	public Rectangle IslandRect        { get; }
+	public Rectangle StatusRect        { get; }
+	public Rectangle CardRect          { get; }
 	public Rectangle PhaseRect         { get; }
 	public Rectangle AdversaryFlagRect { get; }
 	public Rectangle FearPoolRect      { get; }
 	public Rectangle BlightRect        { get; }
 	public Rectangle InvaderCardRect   { get; }
-	public Rectangle OptionRect { get; }
+	public Rectangle OptionRect        { get; }
 
 	#region pop-ups
 
@@ -61,8 +64,6 @@ class RegionLayoutClass {
 		return new Rectangle( _rect.X + (_rect.Width - fearWidth)/2, _rect.Y + (_rect.Height - fearHeight) / 2, fearWidth, fearHeight );
 
 	} }
-
-	public Rectangle CardRectPopup { get; }
 
 	public Rectangle ElementPopUpBounds( int count ) {
 		// calculate layout based on count
@@ -93,12 +94,10 @@ class RegionLayoutClass {
 			["Island"]         = IslandRect,
 			["Spirit"]         = SpiritRect,
 			// Debug
-//			["InfoBar"]			= _infoRect,
-//			["Main"]            = _mainRect,
 			// popups
 			["Element Bounds"] = ElementPopUpBounds( 10 ),
 			["Popup Fear"]     = PopupFearRect,
-			["Cards"]          = CardRectPopup,
+			["Cards"]          = CardRect,
 			["Minor/Major"]    = MinorMajorDeckSelectionPopup,
 		};
 

@@ -121,15 +121,6 @@ static public class GraphicsExtensions {
 
 }
 
-public enum Align { 
-	Default, 
-	/// <summary> Left / Top </summary>
-	Near, 
-	Center,
-	/// <summary> Right / Bottom </summary>
-	Far
-}
-
 // For Deconstructing an Array into parts
 public readonly struct SubArray<T> {
 	readonly int _start;

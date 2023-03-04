@@ -131,7 +131,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 
 
 	[Fact]
-	public async Task TwoPresenceSpaces(){
+	public void TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
 		spirit.Given_HasPresenceOn(board[8]);
 		SpaceState[] targetOptions = spirit.Presence.Spaces.Tokens().ToArray();

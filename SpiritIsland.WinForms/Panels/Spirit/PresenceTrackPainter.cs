@@ -14,18 +14,15 @@ namespace SpiritIsland.WinForms {
 		public PresenceTrackPainter( 
 			Spirit spirit, 
 			PresenceTrackLayout layout,
-			PresenceTokenAppearance presenceColor
+			TokenImageProvider tip
 		) {
 			_spirit = spirit;
 			_layout = layout;
-			_presenceImg = ResourceImages.Singleton.GetPresenceImage( presenceColor.BaseImage );
-			presenceColor.Adjustment?.Adjust( _presenceImg );
-		}
 
+			_presenceImg = tip._presenceImg;
+		}
 		public void Paint( Graphics graphics, CachedImageDrawer imageDrawer ) {
 			// Set single-thread variables
-//			this.clickableTrackOptions = clickableTrackOptions;
-//			this._cachedImageDrawer = imageDrawer;
 
 			// Bottom Layer - cache it
 			if(_cachedBackgroundImage == null)
@@ -119,25 +116,17 @@ namespace SpiritIsland.WinForms {
 		public void Dispose() {
 			_cachedBackgroundImage?.Dispose();
 			_cachedBackgroundImage = null;
-			_presenceImg?.Dispose();
-			_presenceImg = null;
 		}
 
 		#region private 
 
 		Track[] EnergySlots => _spirit.Presence.Energy.Slots.ToArray();
-//		Track[] EnergyRevealed => _spirit.Presence.Energy.Revealed.ToArray();
 
 		Track[] CardPlaySlots => _spirit.Presence.CardPlays.Slots.ToArray();
-//		Track[] CardRevealed => _spirit.Presence.CardPlays.Revealed.ToArray();
 
 		readonly Spirit _spirit;
 		readonly PresenceTrackLayout _layout;
-		Bitmap _presenceImg;
-
-		// Single threaded / instance methods
-//		CachedImageDrawer _cachedImageDrawer;
-//		Track[] clickableTrackOptions;
+		Image _presenceImg;
 
 		Bitmap _cachedBackgroundImage;
 

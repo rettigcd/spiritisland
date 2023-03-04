@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
-public static class RectangleExtensions {
+public static class Rectangle_Extensions {
 
 	#region Split Vertically
 
@@ -110,7 +110,7 @@ public static class RectangleExtensions {
 
 	#endregion Split Horizontally
 
-	#region Integers - InflateBy, Fit
+	#region InflateBy, Fit
 
 	/// <returns>a new rectangle inflated by # of pixels on each side</returns>
 	static public Rectangle InflateBy( this Rectangle rect, int delta ) {
@@ -151,4 +151,7 @@ public static class RectangleExtensions {
 
 	#endregion
 
+	static public Size FitWidth( this Size sz, int width ) => new Size( width, width * sz.Height / sz.Width );
+
 }
+

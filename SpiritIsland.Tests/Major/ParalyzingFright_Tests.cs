@@ -10,7 +10,7 @@ public class ParalyzingFright_Tests {
 	// ! should also test without meeting element threshold
 
 	[Fact]
-	public async Task StopsAllInvaderActions() {
+	public void StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<ParalyzingFright>(), (Action<GameState>)((gs)=>{ 

@@ -7,7 +7,7 @@ public static class SpaceExtentions {
 
 	/// <summary> Inits these tokens but leaves the non-listed alone. </summary>
 	static public SpaceState Given_HasTokens( this Space space, string tokenString ) => space.Tokens.Given_HasTokens( tokenString );
-	static public SpaceState Given_HasTokens( this SpaceState tokens, string tokenString, bool clearPrevious=false ) {
+	static public SpaceState Given_HasTokens( this SpaceState tokens, string tokenString ) {
 		foreach(string part in tokenString.Split( ',' ))
 			InitToken( tokens, part );
 		return tokens;

@@ -1,0 +1,11 @@
+﻿namespace SpiritIsland.WinForms;
+
+public enum Align {
+	Default,
+	/// <summary> Left / Top </summary>
+	Near,
+	Center,
+	/// <summary> Right / Bottom </summary>
+	Far
+}
+

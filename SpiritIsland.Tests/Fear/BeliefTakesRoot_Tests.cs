@@ -26,7 +26,7 @@ public class BeliefTakesRoot_Tests {
 		_gameState.Fear.Deck.Pop();
 		_gameState.Fear.PushOntoDeck( new NullFearCard() );
 
-		await Given_DahanAndTownsInSpaceWithPresence(10,1);
+		Given_DahanAndTownsInSpaceWithPresence(10,1);
 
 		await When_AddFearApplyFear( () => {
 			User.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
@@ -40,7 +40,7 @@ public class BeliefTakesRoot_Tests {
 
 	[Fact]
 	public async Task Level1_NoBlightDahanLives() {
-		await Given_DahanAndTownsInSpaceWithPresence(1, 1);
+		Given_DahanAndTownsInSpaceWithPresence(1, 1);
 
 		await When_AddFearApplyFear( ()=> {
 			User.AcknowledgesFearCard( FearCardAction );
@@ -58,7 +58,7 @@ public class BeliefTakesRoot_Tests {
 
 	[Fact]
 	public async Task Level1_DefendNotMoreThan2() { // not more th
-		await Given_DahanAndTownsInSpaceWithPresence(2, 5);
+		Given_DahanAndTownsInSpaceWithPresence(2, 5);
 
 		await When_AddFearApplyFear( () => {
 			User.AcknowledgesFearCard( FearCardAction );
@@ -73,7 +73,7 @@ public class BeliefTakesRoot_Tests {
 		Assert.True( _gameState.Tokens[ _ravageSpace ].Blight.Any );
 	}
 
-	async Task Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
+	void Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
 		// Add: dahan
 		_ravageSpace.Tokens.Dahan.Init( desiredCount );
 		// Add towns

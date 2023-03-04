@@ -111,7 +111,7 @@ public class SettleIntoHuntingGrounds_Tests {
 	static (Spirit,Board) Init() {
 		RiverSurges spirit = new RiverSurges();
 		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState(spirit,board);
+		_ = new GameState(spirit,board);
 		return (spirit,board);
 	}
 

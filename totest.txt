@@ -1,4 +1,3 @@
-Settle Into Hunting Grounds// !!! Mists Shift and Flow(Shroud special rule)	C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Tests\Major\SettleIntoHuntingGrounds_Tests.cs	7	5
 
 === Grouping 1 ===
 
@@ -18,7 +17,6 @@ Adding multiple blights to 1 space only destroys 1 presence
 === Grouping 2 - Traits ===
 
 Special Rules
-	Downpour - SS as wetland
 	Finder - Open the Ways - shuts off during invader rounds (explore)
 	Shiftin Memories - Element Rewind
 	Shroud - slow and silent death

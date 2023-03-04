@@ -8,7 +8,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 	public FlashFloods_Tests():base(new RiverSurges() ) { }
 
 	[Fact]
-	public async Task FlashFloods_Inland() {
+	public void FlashFloods_Inland() {
 
 		Given_GameWithSpirits( spirit );
 		gameState.Phase = Phase.Fast;
@@ -45,7 +45,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 	}
 
 	[Fact]
-	public async Task FlashFloods_Costal() {
+	public void FlashFloods_Costal() {
 		// Given: River
 		//   And: a game on Board-A
 		var board = Board.BuildBoardA();

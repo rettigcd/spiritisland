@@ -9,7 +9,8 @@ public class ManageInternalPoints {
 
 	#region constructor
 
-	public ManageInternalPoints( SpaceState ss, SpaceLayout layout ) {
+	public ManageInternalPoints( Space mySpace, SpaceLayout layout ) {
+
 		const float stepSize = .06f; // .07
 		const float minDistanceFromBoarder = .012f; //.015
 
@@ -34,7 +35,7 @@ public class ManageInternalPoints {
 			.GetInternalHexPoints( stepSize )
 			.Where( p => stepSize*.6f < layout.DistanceFromBorder( p ) )
 			.ToArray();
-		new Random( ss.Space.Text.GetHashCode() ) // use the randomizer every time so pieces don't bounce around when we resize
+		new Random( mySpace.Text.GetHashCode() ) // use the randomizer every time so pieces don't bounce around when we resize
 			.Shuffle( internalPoints );
 
 		// border - backup

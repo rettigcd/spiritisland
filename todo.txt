@@ -8,7 +8,6 @@ Played Cards Icon could be dynamic and show cards played.
 Hand cards could be dynamic.
 Fear cards look fuzzy. Generate larger pics?
 Blight cards can be drawn better.
-Spirits should have Abreviations for their token.
 
 User Setting:
 	Preloaded Token or not
@@ -16,15 +15,6 @@ Game Options
 	Cast-down is Ocean or Sunk
 
 When gathering multiple token types with multiple landing locations, just use the general Space location as central destination.
-
-Cast Down Options 
-// https://querki.net/raw/darker/spirit-island-faq/Illegally+placed+pieces
-* switch to ocean space				range-N	 0-additional state 				Track-Terrain
-* Mark as not "InPlay"				range-N  1-additional state	InPlay-changes	Track-Sunk
-* Treat the same as Absolute Stasis	No-range 0-additional state
-* Multi-space Joins to Adjacent Ocean?
-
-Rename SpaceState to SpaceTokens
 
 Cheat Menu - 
 	Reclaim all cards, 
@@ -35,7 +25,6 @@ Cheat Menu -
 	Activate Fear Card
 
 5 Ocean adds InPlay token to Ocean when it moves
-	When removing Ocean from board, ocean becomes invalid and tokens get pushed to the nearest InPlay space.
 
 Infinite Vitality saves dahan from CastDown / non-humans stay where they are - test
 

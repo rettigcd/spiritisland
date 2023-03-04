@@ -29,8 +29,8 @@ public partial class Form1 : Form, IHaveOptions {
 	public event Action<IDecision> NewDecision;
 
 	void Form1_Load( object sender, EventArgs e ) {
-		this.islandControl.OptionSelected += Select; // Allow Form to feed selection into IslandControl
-		NewDecision += islandControl.OptionProvider_OptionsChanged;
+		_islandControl.OptionSelected += Select; // Allow Form to feed selection into IslandControl
+		NewDecision += _islandControl.OptionProvider_OptionsChanged;
 	}
 
 	void Select( IOption option ) {
@@ -56,7 +56,7 @@ public partial class Form1 : Form, IHaveOptions {
 
 		InitDecisionControls( decision );
 
-		islandControl.Invalidate();
+		_islandControl.Invalidate();
 
 		// Trigger Next event....
 		NewDecision?.Invoke( decision );
@@ -96,9 +96,9 @@ public partial class Form1 : Form, IHaveOptions {
 	// !! (call this bit when window is resized)
 	void PositionOptionControls() {
 		
-		var bounds = this.islandControl.OptionBounds;
+		var bounds = this._islandControl.OptionBounds;
 		var p = bounds.Location;
-		p.Offset( islandControl.Location );
+		p.Offset( _islandControl.Location );
 		_promptLabel.Location = p;
 		int x = _promptLabel.Bounds.Left;
 		int y = _promptLabel.Bounds.Bottom + 10;
@@ -192,9 +192,9 @@ public partial class Form1 : Form, IHaveOptions {
 		game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
 
 		gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
-		gameState.NewLogEntry += islandControl.GameState_NewLogEntry;
+		gameState.NewLogEntry += _islandControl.GameState_NewLogEntry;
 
-		this.islandControl.Init( game.GameState, gc.Token, gc.Adversary );
+		this._islandControl.Init( game.GameState, gc.Token, gc.Adversary );
 
 		this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
 
@@ -258,7 +258,7 @@ public partial class Form1 : Form, IHaveOptions {
 	}
 
 	void ToggleDebugUIToolStripMenuItem_Click( object sender, EventArgs e ) {
-		((ToolStripMenuItem)sender).Checked = islandControl.Debug = !islandControl.Debug;
+		((ToolStripMenuItem)sender).Checked = _islandControl.Debug = !_islandControl.Debug;
 	}
 
 	void spaceTokensToolStripMenuItem_Click( object sender, EventArgs e ) {

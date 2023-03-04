@@ -9,12 +9,25 @@ public class VisibleButtonContainer {
 		_disabled.Add( option, btn );
 	}
 
+	public void AddTransientEnabled( IOption option, IButton btn ) {
+		_enabled.Add( option, btn );
+		_transient.Add( option );
+	}
+
 	public IButton this[IOption option] {
 		get {
 			return _disabled.ContainsKey( option )
 				? _disabled[option]
 				: _enabled[option];
 		}
+	}
+
+	public void ClearTransient() {
+		foreach(IOption x in _transient) {
+			_enabled.Remove( x );
+			_disabled.Remove( x );
+		}
+		_transient.Clear();
 	}
 
 	public void Clear() {
@@ -60,5 +73,6 @@ public class VisibleButtonContainer {
 
 	readonly Dictionary<IOption, IButton> _enabled = new Dictionary<IOption, IButton>();
 	readonly Dictionary<IOption, IButton> _disabled = new Dictionary<IOption, IButton>();
+	readonly List<IOption> _transient = new List<IOption>();
 
 }
