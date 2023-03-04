@@ -13,10 +13,10 @@ public class DrawTowardsAConsumingVoid {
 		if( ctx.Self.InPlay.Count == 1) { // assuming this card must be the one in play
 
 			// any number of times
-			var allCards = ctx.Self.InPlay.Union( ctx.Self.DiscardPile ).Union( ctx.Self.Hand ).ToArray();
-			var major = allCards.Where( x=> x.PowerType == PowerType.Major ).ToList();
-			var minor = allCards.Where( x=> x.PowerType != PowerType.Minor ).ToList();
-			var unique = allCards.Where( x=>x.PowerType == PowerType.Spirit).ToList();
+			PowerCard[] allCards = ctx.Self.InPlay.Union( ctx.Self.DiscardPile ).Union( ctx.Self.Hand ).ToArray();
+			List<PowerCard> major = allCards.Where( x=> x.PowerType == PowerType.Major ).ToList();
+			List<PowerCard> minor = allCards.Where( x=> x.PowerType != PowerType.Minor ).ToList();
+			List<PowerCard> unique = allCards.Where( x=>x.PowerType == PowerType.Spirit).ToList();
 			while( 0 < major.Count
 				&& 0 < minor.Count
 				&& 0 < unique.Count
@@ -36,22 +36,8 @@ public class DrawTowardsAConsumingVoid {
 	static async Task PerformEffect( TargetSpaceCtx ctx ) {
 		// Gather 1 explorer,town,city,dahan,presence, and beast from each adjacent land.
 		var tokenGroups = Human.Invader.Plus( Human.Dahan, Token.Beast );
-		foreach(var adjState in ctx.Adjacent) {
-			// move tokens
-			foreach(var tokenGroup in tokenGroups) {
-				var tokenToGather = adjState.OfClass( tokenGroup ).OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 ).FirstOrDefault();
-				if(tokenToGather != null)
-					await ctx.Move( (IToken)tokenToGather, adjState.Space, ctx.Space );
-			}
-			// move presense
-			var movableSpiritsInSpace = ctx.GameState.Spirits
-				.Where( s => s.Presence.HasMovableTokens(adjState) )
-				.ToArray();
-			if(movableSpiritsInSpace.Length > 0) {
-				var spiritToGather = await ctx.Decision( new Select.ASpirit( Name, movableSpiritsInSpace, Present.AutoSelectSingle ) );
-				await spiritToGather.Token.Move( adjState, ctx.Tokens );
-			}
-		}
+		foreach(var adjState in ctx.Adjacent)
+			await MoveTokensFromAdjacentSpace( ctx, tokenGroups, adjState );
 
 		// 4 fear.  15 damage. 5 damage to dahan.
 		ctx.AddFear( 4 );
@@ -65,5 +51,24 @@ public class DrawTowardsAConsumingVoid {
 
 		// Remove 2 beast
 		await ctx.Beasts.Remove( 2, RemoveReason.Removed );
+	}
+
+	static async Task MoveTokensFromAdjacentSpace( TargetSpaceCtx ctx, IEntityClass[] tokenGroups, SpaceState adjState ) {
+		// move tokens
+		foreach(IEntityClass tokenGroup in tokenGroups) {
+			ISpaceEntity tokenToGather = adjState.OfClass( tokenGroup )
+				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )
+				.FirstOrDefault();
+			if(tokenToGather != null)
+				await ctx.Move( (IToken)tokenToGather, adjState.Space, ctx.Space );
+		}
+		// move presense
+		var movableSpiritsInSpace = ctx.GameState.Spirits
+			.Where( s => s.Presence.HasMovableTokens( adjState ) )
+			.ToArray();
+		if( 0<movableSpiritsInSpace.Length ) {
+			var spiritToGather = await ctx.Decision( new Select.ASpirit( Name, movableSpiritsInSpace, Present.AutoSelectSingle ) );
+			await spiritToGather.Token.Move( adjState, ctx.Tokens );
+		}
 	}
 }

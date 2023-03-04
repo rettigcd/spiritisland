@@ -53,27 +53,36 @@ public class TradeSuffers_Tests {
 		
 		// Disable destroying presence
 		_ctx.GameState.DisableBlightEffect();
+		ClearBlight();
 
 		// Fill all Invaders spaces with the A7 card
-		ClearBlight_GrowAndBuyNoCards();
-		ClearBlight_GrowAndBuyNoCards();
+		// Round 1
+		_user.Grows();
+		_user.IsDoneBuyingCards();
+		_user.WaitForNext();
 
+        // Round 2
+		ClearBlight();
+		_user.Grows();
+		_user.IsDoneBuyingCards();
+		_user.WaitForNext();
+
+		// Round 3
 		//  And: Fear card is active and ready to flip
+		List<string> log = _ctx.GameState.LogAsStringList();
 		ActivateFearCard( new TradeSuffers() );
-		ClearBlight_GrowAndBuyNoCards();
-
-		var log = new List<string>();
-		_ctx.GameState.NewLogEntry += ( le ) => { log.Add( le.Msg( Log.LogLevel.Info ) ); };
-
+		ClearBlight();
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer
-		_ = _user.NextDecision; // Wait for invader phase to finish before we make modifications
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		TargetSpaceCtx spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init( "1C@3,4D@2,2E@1" );
+		_user.Grows();
+		_user.IsDoneBuyingCards();
+		_user.WaitForNext();
 
 		// When: activating fear
 		_user.AcknowledgesFearCard( FearCard );
 
-		_ = _user.NextDecision; // Wait for invader phase to finish
+		_user.WaitForNext();
 
 		// Ravage-a: 1 city + 2 explorers do 5 damage killing 2 dahan    1B@1,1C@1,2D@2,2E@1
 		// Ravage-b: 2 dahan do 4 damage killing city and 1 explorer     1B@1,2D@2,1E@1 
@@ -106,12 +115,14 @@ public class TradeSuffers_Tests {
 	}
 
 	void ClearBlight_GrowAndBuyNoCards() {
-
-		// So it doesn't cascade during ravage
-		foreach(var space in _ctx.GameState.Spaces_Unfiltered)
-			space.Init(Token.Blight, 0); // Don't trigger events
-
+		ClearBlight();
 		_user.GrowAndBuyNoCards();
+	}
+
+	private void ClearBlight() {
+		// So it doesn't cascade during ravage
+		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)
+			space.Init( Token.Blight, 0 ); // Don't trigger events
 	}
 
 	void ActivateFearCard(IFearCard fearCard) {

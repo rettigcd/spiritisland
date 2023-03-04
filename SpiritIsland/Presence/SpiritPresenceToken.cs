@@ -7,7 +7,9 @@ public class SpiritPresenceToken : IToken, IEntityClass
 {
 
 	public SpiritPresenceToken(Spirit spirit) {
-		_spirit = spirit;
+		_spirit = spirit; 
+		Text = Abreviate( _spirit.Text );
+		SpaceAbreviation = Abreviate( _spirit.Text );
 	}
 
 	static string Abreviate(string words) {
@@ -26,7 +28,8 @@ public class SpiritPresenceToken : IToken, IEntityClass
 
 	#region Token parts
 
-	public string Text => Abreviate( _spirit.Text );
+	/// <summary> Used when displaying [TokenName on Space] </summary>
+	public string Text { get; protected set; }
 	Img IToken.Img => Img.Icon_Presence;
 	public IEntityClass Class => this;
 
@@ -58,7 +61,9 @@ public class SpiritPresenceToken : IToken, IEntityClass
 
 	public int Destroyed { get; set; }
 
-	public string SpaceAbreviation => Abreviate( _spirit.Text );
+	public string SpaceAbreviation { get; protected set; }
 
 	public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn( this, board );
+
+	public bool CanMove => _spirit.Presence.CanMove;
 }

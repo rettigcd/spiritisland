@@ -104,19 +104,28 @@ public class AvoidTheDahan_Tests {
 	public void Level2_3DahanAtFear_1DahanAtBuild_DoBuild() {
 
 		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndDoNothingForARound();
-		ClearBlightAndDoNothingForARound();
+		// Round 1
+		_user.Grows();
+		_user.IsDoneBuyingCards();
+		_user.WaitForNext();
 
+		// Round 2
+		_ctx.ClearAllBlight();
+		_user.Grows();
+		_user.IsDoneBuyingCards();
+		_user.WaitForNext();
+
+		// Round 3
 		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo(2);
-
-		_user.WaitForNext();
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
 		// When: activating fear
-		ClearBlightAndDoNothingForARound();
+		_ctx.ClearAllBlight();
+		_user.Grows();
+		_user.IsDoneBuyingCards();
 		_user.AcknowledgesFearCard( Level2Text );
 
 		// Ravage: 2 towns kill 2 dahan leaving 1, 1 dahan kills 1 town leaving 1:  1B@1,1D@2,1T@2
@@ -136,19 +145,27 @@ public class AvoidTheDahan_Tests {
 		// "Invaders do not Build in lands where Dahan outnumber Town / City."
 
 		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndDoNothingForARound();
-		ClearBlightAndDoNothingForARound();
+		// Round 1
+		_user.Grows();
+		_user.IsDoneBuyingCards();
 
+		// Round 2
+		_ctx.ClearAllBlight();
+		_user.Grows();
+		_user.IsDoneBuyingCards();
+		_user.WaitForNext();
+
+		// Round 3
+		_ctx.ClearAllBlight();
 		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo(2);
-
 		// Given: Dahan(2) outnumber town/city(0)  + 3 explorer (to enable build)
-		_user.WaitForNext();
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		TargetSpaceCtx spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("2D@2,3E@1");
 
 		// When: activating fear
-		ClearBlightAndDoNothingForARound();
+		_user.Grows();
+		_user.IsDoneBuyingCards();
 		_user.AcknowledgesFearCard( Level2Text );
 
 		// Then: no build

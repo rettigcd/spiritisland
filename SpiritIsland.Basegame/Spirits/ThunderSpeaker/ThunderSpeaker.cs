@@ -12,7 +12,7 @@ public class Thunderspeaker : Spirit {
 	public override string Text => Name;
 
 	public Thunderspeaker():base(
-		new SpiritPresence(
+		new ThunderspeakerPresence(
 			new PresenceTrack( Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card3, Track.Card4 )
 		),
@@ -45,11 +45,8 @@ public class Thunderspeaker : Spirit {
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
-		// Special Rules -Ally of the Dahan - Your presense may move with dahan
-		Presence.Token = new FollowingPresenceToken( this, Human.Dahan ); // replace BEFORE we init the board
-
 		// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
-		var mostDahanSpots = board.Spaces.OrderByDescending( s => s.Tokens.Dahan.CountAll ).Take( 2 ).ToArray();
+		Space[] mostDahanSpots = board.Spaces.OrderByDescending( s => s.Tokens.Dahan.CountAll ).Take( 2 ).ToArray();
 		mostDahanSpots[0].Tokens.Adjust(Presence.Token, 1);
 		mostDahanSpots[1].Tokens.Adjust(Presence.Token, 1);
 
@@ -80,3 +77,12 @@ public class Thunderspeaker : Spirit {
 	}
 
 }
+
+class ThunderspeakerPresence : SpiritPresence {
+	public ThunderspeakerPresence( IPresenceTrack a, IPresenceTrack b ) : base( a, b ) { }
+	public override void SetSpirit( Spirit spirit ) {
+		base.SetSpirit( spirit );
+		Token = new FollowingPresenceToken( spirit, Human.Dahan ); // replace BEFORE we init the board
+	}
+}
+

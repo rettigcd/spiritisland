@@ -62,6 +62,7 @@ public class OceanTerrain_Tests {
 
 	[Trait( "SpecialRule", "OceanInPlay")]
 	[Trait( "SpecialRule", "Drowning" )]
+	[Trait( "SpecialRule", "Ally of the Dahan")]
 	[Theory]
 	[InlineData(false),InlineData(true)]
 	public async Task PushDahanIntoOcean(bool withOcean) {
@@ -98,12 +99,12 @@ public class OceanTerrain_Tests {
 
 			// bring Thunderspeaker along
 			NextDecision.HasPrompt( "Move presence with Dahan?" )
-				.HasOptions( "T on A2,Done" )
-				.Choose( "T on A2" );
+				.HasOptions( "Ts on A2,Done" )
+				.Choose( "Ts on A2" );
 			
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
-			oceanSpace.Summary.ShouldBe("1OHG,1T");
+			oceanSpace.Summary.ShouldBe("1OHG,1Ts");
 			log.Single().ShouldBe("Drowning 1D@2 on A0");
 
 			//  And: and leave thunderspeaker in the ocean.
@@ -306,7 +307,7 @@ public class OceanTerrain_Tests {
 		IsActive( task ); Choose( "D@2" );
 		IsActive( task ); Choose( "A0" );
 		// Thunderspeaker goes along
-		Choose( "T on A2" );
+		Choose( "Ts on A2" );
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
@@ -326,7 +327,7 @@ public class OceanTerrain_Tests {
 				.Choose("A1");
 
 			// End of Action - Thunder speaker exits ocean
-			Choose( "T on A0" );
+			Choose( "Ts on A0" );
 		}
 	}
 

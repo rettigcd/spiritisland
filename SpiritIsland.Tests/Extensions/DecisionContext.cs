@@ -25,8 +25,11 @@ public class DecisionContext {
 
 	public DecisionContext HasPrompt( string prompt ) {
 		AssertIsReady( prompt );
-		_current.Prompt.ShouldBe( prompt, $"{prompt}:[any]:[first]", StringCompareShould.IgnoreCase );
-		return this;
+		return string.Compare( _current.Prompt, prompt, true )==0 ? this 
+			: throw new ArgumentException($"Invalid prompt '{prompt}' in {Format(_current)}");
+	}
+	static string Format(IDecision decision ) {
+		return decision.Prompt+":"+decision.Options.Select(o=>o.Text).Join(",");
 	}
 
 	// Prompt-Prefix, .Text
@@ -63,39 +66,31 @@ public class DecisionContext {
 	#endregion
 
 	public void ChooseFirst()
-		=> ChooseAndWait( _current.Options.First() );
+		=> Choose( _current.Options.First() );
 
 	public void ChooseFirst( string optionText, int skip = 0 )
-		=> ChooseAndWait( _current.FindFirstChoice( optionText, skip ) );
+		=> Choose( _current.FindFirstChoice( optionText, skip ) );
 
 	public void ChooseFirstThatStartsWith( string optionPrefix )
-		=> ChooseAndWait( _current.FindFirstChoiceStartsWith( optionPrefix ) );
+		=> Choose( _current.FindFirstChoiceStartsWith( optionPrefix ) );
 
 	public void Choose( string optionText )
-		=> ChooseAndWait( _current.FindChoice( optionText ) );
+		=> Choose( _current.FindChoice( optionText ) );
 
 	public void Choose( int index )
-		=> ChooseAndWait( _current.Options[index] );
+		=> Choose( _current.Options[index] );
 
 	public void Choose( IOption choice )
-		=> ChooseAndWait( _current.FindChoice( choice ) );
+		=> _gateway.Choose( _current, choice );
 
 	public string Format() => _current.FormatDecision();
 
 	#region private helper methods
 
-	void ChooseAndWait( IOption choice ) {
-		_gateway.Choose( _current, choice );
-		WaitForSignal();
-	}
-
 	void AssertIsReady( string prompt ) {
 		// This line tests that are currently waiting at a decision
 		// It breaks tests that get to a decision then wait for the engine to catch up.
 		_gateway.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
-	}
-	void WaitForSignal() {
-		_gateway.WaitForNextDecision( 10 );
 	}
 
 	#endregion

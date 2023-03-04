@@ -4,6 +4,7 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 	readonly IEntityClass _leaderClass;
 	public FollowingPresenceToken( Spirit spirit, IEntityClass leaderClass ) : base( spirit ) {
 		_leaderClass = leaderClass;
+		Text = SpaceAbreviation = "Ts";// to not conflict with Towns
 	}
 	public override async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		await base.HandleTokenRemovedAsync( args );

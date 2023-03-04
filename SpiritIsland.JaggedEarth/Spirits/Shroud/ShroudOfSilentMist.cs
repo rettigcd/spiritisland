@@ -110,11 +110,14 @@ public class ShroudOfSilentMist : Spirit {
 	public override async Task<Space> TargetsSpace( 
 		SelfCtx ctx,
 		string prompt,
-		IPreselect _,
+		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
-		var x = new MistsShiftAndFlow(ctx,prompt,sourceCriteria,targetCriteria);
+		if(!Presence.CanMove)
+			return await base.TargetsSpace( ctx, prompt, preselect, sourceCriteria, targetCriteria );
+
+		MistsShiftAndFlow x = new MistsShiftAndFlow(ctx,prompt,sourceCriteria,targetCriteria);
 		return (await x.TargetAndFlow()).Space;
 	}
 

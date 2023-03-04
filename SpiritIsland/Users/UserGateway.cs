@@ -9,11 +9,11 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	public event Action<IDecision> NewWaitingDecision;
 
 	IDecisionMaker CacheNextDecision( int? waitMs ) {
-		if(userAccessedDecision == null) {
+		if(_userAccessedDecision == null) {
 			WaitForSignal( waitMs );
-			userAccessedDecision = activeDecisionMaker;
+			_userAccessedDecision = _activeDecisionMaker;
 		}
-		return userAccessedDecision;
+		return _userAccessedDecision;
 	}
 
 	void WaitForSignal(int? milliseconds) {
@@ -25,7 +25,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	public bool WaitForNextDecision( int milliseconds ) {
 		if(signal.WaitOne( milliseconds )) {
-			userAccessedDecision = activeDecisionMaker;
+			_userAccessedDecision = _activeDecisionMaker;
 			return true;
 		}
 		return false;
@@ -35,8 +35,8 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
 	public void GoBackToBeginningOfRound( int targetRound ) {
 		var poppedDecisionMaker = CacheNextDecision( null );
-		this.activeDecisionMaker = null;
-		this.userAccessedDecision = null;
+		_activeDecisionMaker = null;
+		_userAccessedDecision = null;
 		poppedDecisionMaker.IssueCommand( new Rewind( targetRound ) );
 	}
 
@@ -47,14 +47,14 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	public bool WaitForNext(int ms) => CacheNextDecision( ms ) != null;
 
-	public bool IsResolved => activeDecisionMaker == null;
+	public bool IsResolved => _activeDecisionMaker == null;
 
 	public void Choose(IDecision _, IOption selection,bool block=true) {
 		var currentDecisionMaker = CacheNextDecision( null );
 		if(currentDecisionMaker == null) return;
-		var currentDecision = currentDecisionMaker.Decision;
-		this.activeDecisionMaker = null;
-		this.userAccessedDecision = null;
+		IDecisionPlus currentDecision = currentDecisionMaker.Decision;
+		_activeDecisionMaker = null;
+		_userAccessedDecision = null;
 
 		if(!currentDecision.Options.Contains( selection ))
 			throw new ArgumentException( selection.Text + " not found in options("+ currentDecision.Options.Select(x=>x.Text).Join(",") + ")" );
@@ -86,8 +86,8 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption {
 		if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
 
-		if(activeDecisionMaker != null) 
-			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{originalDecision.Prompt}], Previous:[{activeDecisionMaker.Decision.Prompt}] ");
+		if(_activeDecisionMaker != null) 
+			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{originalDecision.Prompt}], Previous:[{_activeDecisionMaker.Decision.Prompt}] ");
 
 		var promise = new TaskCompletionSource<T>();
 		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
@@ -107,7 +107,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 			decisionMaker.Select( decision.Options[0] );
 			Log( new DecisionLogEntry( decision.Options[0], decision, true ) );
 		} else {
-			activeDecisionMaker = decisionMaker;
+			_activeDecisionMaker = decisionMaker;
 			signal.Set();
 			NewWaitingDecision?.Invoke(decision);
 		}
@@ -125,8 +125,8 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	public readonly List<string> selections = new List<string>();
 
 	readonly AutoResetEvent signal = new AutoResetEvent( false );
-	IDecisionMaker activeDecisionMaker;
-	IDecisionMaker userAccessedDecision;
+	IDecisionMaker _activeDecisionMaker;
+	IDecisionMaker _userAccessedDecision;
 
 	#endregion
 

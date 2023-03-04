@@ -6,6 +6,9 @@ class PourTimeSideways {
 	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ), Fast, Yourself]
 	static public async Task ActAsync( SelfCtx ctx ) {
 		if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
+
+		if(!ctx.Self.Presence.CanMove) return;
+
 		// Cost to Use: 3 Time
 		if(frac.Time <3) return;
 		await frac.SpendTime( 3 );

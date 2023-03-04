@@ -28,6 +28,7 @@ public class BoundPresence_ForSpace {
 	}
 
 	public async Task MoveHereFromAnywhere(int count) {
+		if(!_self.Presence.CanMove) return;
 
 		while(count > 0) {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable

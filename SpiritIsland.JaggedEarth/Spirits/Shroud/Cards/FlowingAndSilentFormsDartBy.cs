@@ -23,9 +23,11 @@ public class FlowingAndSilentFormsDartBy {
 		public IEntityClass Class => ActionModTokenClass.Mod;
 
 		public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
-			if( !(args.Token is SpiritPresenceToken && args.Reason.IsDestroyingPresence()) ) return;
-
-			if( args.Mode == RemoveMode.Test) return;
+			if( args.Mode == RemoveMode.Test
+				|| !args.Reason.IsDestroyingPresence()
+				|| args.Token is not SpiritPresenceToken spt 
+				|| !spt.CanMove
+			) return;
 
 			GameState gs = GameState.Current;
 			Spirit spirit = gs.Spirits.First( s => s.Token == args.Token );

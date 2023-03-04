@@ -147,7 +147,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	async Task TakeFromSpace( Space space ) {
 		SpaceState fromSpace = space.Tokens;
 		if(fromSpace.Has(Token))
-			await fromSpace.Remove( Token, 1, RemoveReason.MovedFrom );
+			await fromSpace.Remove( Token, 1, RemoveReason.Removed ); // This is not a .MovedFrom because that needs done from .Move
 		else
 			throw new ArgumentException( "Can't pull from island space:" + space.ToString() );
 	}
