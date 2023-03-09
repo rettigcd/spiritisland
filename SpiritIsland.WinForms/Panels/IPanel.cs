@@ -9,4 +9,5 @@ internal interface IPanel {
 	void OnGameLayoutChanged();
 	void ActivateOptions( IDecision decision );
 	Action GetClickableAction( Point clientCoords );
+	int OptionCount { get; }
 }

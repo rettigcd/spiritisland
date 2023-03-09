@@ -33,6 +33,8 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 		}
 	}
 
+	public int OptionCount => _buttonContainer.ActivatedOptions;
+
 	public void Dispose() {
 		_growthPainter?.Dispose();
 

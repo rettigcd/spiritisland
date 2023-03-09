@@ -18,8 +18,8 @@ public class StranglingFirevine {
 		var originatingOptions = ctx.Range(1)
 			.Where( a=> ctx.Self.Presence.Spaces.Tokens().Contains(a) && ctx.Target(a).Is(Terrain.Sand) ) // using Smart-terrain in case some spirit rule modifies terrain
 			.ToArray();
-		var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions.Downgrade(), Present.AutoSelectSingle);
-		if(originalCtx == null) throw new InvalidOperationException("Could not find required originating Sands with presence.");
+		var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions.Downgrade(), Present.AutoSelectSingle) 
+			?? throw new InvalidOperationException("Could not find required originating Sands with presence.");
 		await originalCtx.Wilds.Add(1);
 
 		// 1 damage per wilds in / adjacent to target land.

@@ -95,9 +95,8 @@ public class VirtualUser {
 		string[] expectedOptions = placeOptions.Split( ';' );
 		var destinationDecision = _userPortal.Next;
 		var actualOptions = destinationDecision.Options;
-		var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] );
-		if(choice == null)
-			throw new System.ArgumentOutOfRangeException( nameof( placeOptions ), $"'{expectedOptions[0]}' not found in " + actualOptions.Select( o => o.Text ).Join( "," ) );
+		var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] ) 
+			?? throw new System.ArgumentOutOfRangeException( nameof( placeOptions ), $"'{expectedOptions[0]}' not found in " + actualOptions.Select( o => o.Text ).Join( "," ) );
 		NextDecision.Choose( choice );
 	}
 

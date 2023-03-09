@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
@@ -33,6 +34,8 @@ public partial class IslandControl : Control {
 		_islandPanel = new IslandPanel( _ctx );
 	}
 
+	readonly bool Overlapped = false;
+
 	public void Init( GameState gameState, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
 
 		// Dispose old spirit tokens
@@ -59,7 +62,11 @@ public partial class IslandControl : Control {
 	RegionLayoutClass RegionLayout {
 		get {
 			if( _regionLayout == null) {
-				_regionLayout = new RegionLayoutClass( ClientRectangle );
+
+				_regionLayout = Overlapped ? RegionLayoutClass.Overlapping( ClientRectangle )
+					: ( FocusPanel == _cardPanel) ? RegionLayoutClass.ForCardFocused( ClientRectangle )
+					: RegionLayoutClass.ForIslandFocused( ClientRectangle );
+
 				_islandPanel.Bounds = _regionLayout.IslandRect;
 				_spiritPanel.Bounds = _regionLayout.SpiritRect;
 				_cardPanel.Bounds   = _regionLayout.CardRect;
@@ -67,6 +74,14 @@ public partial class IslandControl : Control {
 			}
 			return _regionLayout;
 		}
+		//set {
+		//	_regionLayout = value;
+		//	_islandPanel.Bounds = _regionLayout.IslandRect;
+		//	_spiritPanel.Bounds = _regionLayout.SpiritRect;
+		//	_cardPanel.Bounds = _regionLayout.CardRect;
+		//	_statusPanel.Bounds = _regionLayout.StatusRect;
+		//	Invalidate();
+		//}
 	}
 
 	RegionLayoutClass _regionLayout; // depends ONLY on the window/client, NOT on the game
@@ -214,6 +229,11 @@ public partial class IslandControl : Control {
 			return;
 		}
 
+		var panel = new[] { _cardPanel, _islandPanel, _spiritPanel, _statusPanel }
+			.Where( x => x.Bounds.Contains( clientCoords ) )
+			.FirstOrDefault();
+		if(panel != null)
+			FocusPanel = panel;
 	}
 
 	Action GetClickableAction( Point clientCoords )
@@ -232,31 +252,24 @@ public partial class IslandControl : Control {
 
 	}
 
-	IPanel PanelUnderPoint(Point clientCoords ) 
-		=> _islandPanel.Bounds.Contains(clientCoords )? _islandPanel
-			: _spiritPanel.Bounds.Contains(clientCoords )? _spiritPanel
-			: null;
-
 	IOption FindOptionUnderPoint( Point clientCoords ) => _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains(clientCoords) );
 
 	#region User Action Events - Notify main form
-
 
 	public event Action<IOption> OptionSelected;
 	public void SelectOption(IOption option) => OptionSelected?.Invoke( option );
 
 	#endregion
 
-	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
-
-	#region private Option fields
-
 	public void OptionProvider_OptionsChanged( IDecision decision ) {
 		_spiritPanel.ActivateOptions( decision );
 		_islandPanel.ActivateOptions( decision );
 		_cardPanel.ActivateOptions( decision );
 
-		_decision = decision;
+		IPanel max = _islandPanel;
+		if( max.OptionCount < _spiritPanel.OptionCount ) max = _spiritPanel;
+		if( max.OptionCount < _cardPanel.OptionCount ) max = _cardPanel;
+		FocusPanel = max;
 
 		// !!! Buttonize Pop-ups - need to add dynamically and be able to remove themselves when done/clicked
 		options_FearPopUp = decision.Options.OfType<IFearCard>().FirstOrDefault();
@@ -272,15 +285,22 @@ public partial class IslandControl : Control {
 		Invalidate();
 	}
 
-	IDecision _decision;
+	IPanel FocusPanel {
+		get => _focusPanel;
+		set {
+			if(_focusPanel == value) return; // no change
+			_focusPanel = value;
+			_regionLayout = null;
+			Invalidate();
+		}
+	}
+	IPanel _focusPanel;
 
 	Select.DeckToDrawFrom            decision_DeckToDrawFrom;
 	Select.Element                   decision_Element;
 
 	IFearCard				options_FearPopUp;
 	IBlightCard		        options_BlightPopUp;
-
-	#endregion
 
 	#region private Misc fields
 

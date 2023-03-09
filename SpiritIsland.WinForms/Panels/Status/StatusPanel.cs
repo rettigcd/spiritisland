@@ -26,6 +26,8 @@ internal class StatusPanel : IPanel {
 		}
 	}
 
+	public int OptionCount => 0;
+
 	public Rectangle Bounds { 
 		get => _bounds;
 		set {

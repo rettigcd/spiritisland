@@ -31,6 +31,8 @@ class IslandPanel : IPanel {
 		}
 	}
 
+	public int OptionCount { get; private set; }
+
 	// !! Instead of putting Gamestate in the _sharedCtx, pass in here.
 	public void OnGameLayoutChanged() { _worldLayout = null; WorldLayoutChanged?.Invoke(); }
 
@@ -42,6 +44,8 @@ class IslandPanel : IPanel {
 		DrawBackground( graphics );
 
 		_buttonContainer.ClearTransient();
+		if(_decision is Select.TokenFromManySpaces spaceTokenDecision)
+			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
 		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)
 			DecorateSpace( graphics, space );
@@ -60,6 +64,8 @@ class IslandPanel : IPanel {
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
 		_buttonContainer.EnableOptions( decision );
+
+		this.OptionCount = _buttonContainer.ActivatedOptions + _outstandingSpaceTokenOptions.Count;
 	}
 
 	public Action GetClickableAction( Point clientCoords ) {

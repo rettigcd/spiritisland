@@ -6,90 +6,117 @@ namespace SpiritIsland.WinForms;
 
 class RegionLayoutClass {
 
-	const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
-	const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
+	public static RegionLayoutClass Overlapping(Rectangle rect ) {
+		var x = new RegionLayoutClass( rect );
 
-	Rectangle _mainRect;
-	readonly Rectangle _rect;
+		const int MARGIN = 10;
+		const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
+		const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
 
-	public float GameLabelFontHeight => _height * .05f;
-	int _width => _rect.Width;
-	int _height => _rect.Height;
+		Rectangle mainRect;
+		(x.StatusRect, (mainRect, _)) = rect.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT ); // 0 margin because items in infoBar get their own margin.
+		(x.IslandRect, (x.SpiritRect, _)) = mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
+
+
+		(x.OptionRect, _) = x.IslandRect.InflateBy( -MARGIN ).SplitHorizontallyByWeight( 0, .1f, .9f );
+		(_, (x.CardRect, _)) = mainRect.SplitVerticallyByWeight( 0, .5f, .5f );
+
+		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
+		x.SpiritRect = x.SpiritRect.FitBoth( new Size( x.SpiritRect.Width, (int)(x.SpiritRect.Width * 1.1) ), Align.Far, Align.Near );
+		return x;
+	}
+
+	public static RegionLayoutClass ForIslandFocused(Rectangle bounds ) {
+		var x = new RegionLayoutClass( bounds );
+
+		const int MARGIN = 10;
+		const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
+		const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
+		const float CARD_HEIGHT = .15f;
+
+		Rectangle mainRect;
+		(x.StatusRect, (mainRect, (x.CardRect,_))) = bounds.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT-CARD_HEIGHT, CARD_HEIGHT ); // 0 margin because items in infoBar get their own margin.
+
+		Rectangle spiritLimit;
+		(x.IslandRect, (spiritLimit, _)) = mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
+
+		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
+		x.SpiritRect = spiritLimit.FitBoth( new Size( spiritLimit.Width, (int)(spiritLimit.Width * 1.1) ), Align.Far, Align.Near );
+
+		(x.OptionRect, _) = x.IslandRect.InflateBy( -MARGIN ).SplitHorizontallyByWeight( 0, .1f, .9f );
+
+		return x;
+	}
+
+	public static RegionLayoutClass ForCardFocused( Rectangle bounds ) {
+		var x = new RegionLayoutClass( bounds );
+
+		const int MARGIN = 10;
+		const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
+		const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
+		const float CARD_HEIGHT = .40f;
+
+		Rectangle mainRect;
+		(x.StatusRect, (mainRect, (x.CardRect,_))) = bounds.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT - CARD_HEIGHT, CARD_HEIGHT ); // 0 margin because items in infoBar get their own margin.
+
+		(x.IslandRect, (x.SpiritRect, _)) = mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
+
+		(x.OptionRect, _) = x.IslandRect.InflateBy( -MARGIN ).SplitHorizontallyByWeight( 0, .1f, .9f );
+
+		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
+		x.SpiritRect = x.SpiritRect.FitBoth( new Size( x.SpiritRect.Width, (int)(x.SpiritRect.Width * 1.1) ), Align.Far, Align.Near );
+
+		return x;
+	}
+
 
 	#region Constructor
 
-	public RegionLayoutClass( Rectangle rect ) {
-		_rect = rect;
-
-		const int MARGIN = 10;
-		const float AdversaryFlagWidths = 1.5f;
-		const float InvaderCards = 4.5f;
-		const float BlightWidths = 3f;
-		const float FearWidths = 6f;
-
-		(StatusRect,(_mainRect,_)) = rect.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT ); // 0 margin because items in infoBar get their own margin.
-		( IslandRect, (SpiritRect, _)) = _mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
-
-		(PhaseRect,(AdversaryFlagRect, (InvaderCardRect, (BlightRect, (FearPoolRect, _))))) = StatusRect
-			.InflateBy( -MARGIN )
-			.SplitHorizontallyRelativeToHeight( MARGIN, Align.Far, 1.4f, AdversaryFlagWidths, InvaderCards, BlightWidths, FearWidths );
-
-		(OptionRect,_) = IslandRect.InflateBy(-MARGIN).SplitHorizontallyByWeight(0,.1f,.9f);
-		(_,(CardRect,_)) = _mainRect.SplitVerticallyByWeight(0, .5f, .5f);
-
-		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
-		SpiritRect = SpiritRect.FitBoth(new Size(SpiritRect.Width,(int)(SpiritRect.Width*1.1)),Align.Far,Align.Near);
-		PhaseRect = PhaseRect.InflateBy( (int)(PhaseRect.Height*.05) );
-	}
+	RegionLayoutClass( Rectangle bounds ) { _bounds = bounds; }
 
 	#endregion
 
-	public Rectangle SpiritRect        { get; }
-	public Rectangle IslandRect        { get; }
-	public Rectangle StatusRect        { get; }
-	public Rectangle CardRect          { get; }
-	public Rectangle PhaseRect         { get; }
-	public Rectangle AdversaryFlagRect { get; }
-	public Rectangle FearPoolRect      { get; }
-	public Rectangle BlightRect        { get; }
-	public Rectangle InvaderCardRect   { get; }
-	public Rectangle OptionRect        { get; }
+	readonly Rectangle _bounds;
+	public Rectangle SpiritRect        { get; private set; }
+	public Rectangle IslandRect        { get; private set; }
+	public Rectangle StatusRect        { get; private set;}
+	public Rectangle CardRect          { get; private set; }
+	public Rectangle OptionRect        { get; private set; }
 
 	#region pop-ups
 
 	public Rectangle PopupFearRect { get {
 		// Active Fear Layout
-		int fearHeight = (int)(_rect.Height * .5f);
+		int fearHeight = (int)(_bounds.Height * .5f);
 		int fearWidth = fearHeight*2/3;
-		return new Rectangle( _rect.X + (_rect.Width - fearWidth)/2, _rect.Y + (_rect.Height - fearHeight) / 2, fearWidth, fearHeight );
+		return new Rectangle( _bounds.X + (_bounds.Width - fearWidth)/2, _bounds.Y + (_bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
 
 	} }
 
 	public Rectangle ElementPopUpBounds( int count ) {
 		// calculate layout based on count
-		int maxHeight = (int)(_height * .16f);
-		int maxWidth = (int)(_width * .75f);
+		int height = _bounds.Height;
+		int width = _bounds.Width;
+		int maxHeight = (int)(height * .16f);
+		int maxWidth = (int)(width * .75f);
 		int desiredMmargin = 20;
 
-		var maxBounds = new Rectangle( (_width - maxWidth) / 2, (_height - maxHeight) / 2, maxWidth, maxHeight ); // max size allowed to use
+		var maxBounds = new Rectangle( (width - maxWidth) / 2, (height - maxHeight) / 2, maxWidth, maxHeight ); // max size allowed to use
 		var desiredSize = new Size( count * (maxHeight - desiredMmargin) + desiredMmargin, maxHeight ); // share we want.
 		return maxBounds.FitBoth( desiredSize );
 	}
 
-	public Rectangle MinorMajorDeckSelectionPopup{ get { 
-		int boundsHeight = _height / 3; // cards take up 1/3 of window vertically
+	public Rectangle MinorMajorDeckSelectionPopup{ get {
+		int height = _bounds.Height;
+		int boundsHeight = height / 3; // cards take up 1/3 of window vertically
 		int boundsWidth = boundsHeight * 16 / 10;
-		return new Rectangle( 0 + (_width - boundsWidth) / 2, (_height - boundsHeight)/2, boundsWidth, boundsHeight );
+		return new Rectangle( 0 + (_bounds.Width - boundsWidth) / 2, (height - boundsHeight)/2, boundsWidth, boundsHeight );
 	} }
 
 	#endregion
 
 	public void DrawRects( Graphics graphics ) {
 		var rects = new Dictionary<string, Rectangle>() {
-			["Fear Pool"]      = FearPoolRect,
-			["Adversary Flag"] = AdversaryFlagRect,
-			["Blight"]         = BlightRect,
-			["Invader Cards"]  = InvaderCardRect,
 			["Options"]        = OptionRect,
 			["Island"]         = IslandRect,
 			["Spirit"]         = SpiritRect,

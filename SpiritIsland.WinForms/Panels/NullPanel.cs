@@ -9,4 +9,5 @@ public class NullPanel : IPanel {
 	public Action GetClickableAction( Point clientCoords ) => null;
 	public void OnGameLayoutChanged() { }
 	public void Paint( Graphics graphics ) { }
+	public int OptionCount => 0;
 }

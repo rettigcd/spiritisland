@@ -126,7 +126,7 @@ namespace SpiritIsland.WinForms {
 
 		readonly Spirit _spirit;
 		readonly PresenceTrackLayout _layout;
-		Image _presenceImg;
+		readonly Image _presenceImg;
 
 		Bitmap _cachedBackgroundImage;
 

@@ -39,8 +39,33 @@ class CardPanel : IPanel {
 
 		if(_currentDeck != null) {
 			// DrawCardBackdrop( graphics );
-			for(int i = 0; i < _currentDeck.Cards.Count; ++i)
-				PaintCard( graphics, _currentDeck.Cards[i], i );
+			int countToShow = Math.Min(_layout.MaxCards, _currentDeck.Cards.Count- _currentDeck.FirstCard );
+			for(int i = 0; i < countToShow; ++i)
+				PaintCard( graphics, _currentDeck.Cards[i+_currentDeck.FirstCard], i );
+
+			// Prev
+			if(0 < _currentDeck.FirstCard) {
+				int l = _layout.PrevArrow.Left, r = _layout.PrevArrow.Right, yOffset = (r-l);
+				Point point = new Point(l,_layout.PrevArrow.Top + _layout.PrevArrow.Height/2);
+				Point above = new Point(r, point.Y - yOffset);
+				Point below = new Point(r, point.Y + yOffset );
+				Rectangle box = new Rectangle( l, point.Y - yOffset, (r-l)*4/5, yOffset * 2 ); 
+				graphics.FillPolygon(Brushes.Gold, new[] {above,point,below });
+				using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
+				graphics.DrawString( _currentDeck.FirstCard.ToString(), SystemFonts.MessageBoxFont, Brushes.Black, box, alignCenter );
+			}
+
+			// Next
+			if(_currentDeck.FirstCard+countToShow < _currentDeck.Cards.Count) {
+				int l = _layout.NextArrow.Left, r = _layout.NextArrow.Right, yOffset = (r - l);
+				Point point = new Point( r, _layout.NextArrow.Top + _layout.NextArrow.Height / 2 );
+				Point above = new Point( l, point.Y - yOffset );
+				Point below = new Point( l, point.Y + yOffset );
+				graphics.FillPolygon( Brushes.Gold, new[] { above, point, below } );
+				Rectangle box = new Rectangle(l+(r-l)/5,point.Y - yOffset, (r-l)*4/5, yOffset*2);
+				using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
+				graphics.DrawString( (_currentDeck.Cards.Count-_currentDeck.FirstCard-countToShow).ToString(), SystemFonts.MessageBoxFont, Brushes.Black, box, alignCenter );
+			}
 		}
 	}
 
@@ -126,14 +151,31 @@ class CardPanel : IPanel {
 		}
 
 		// Cards
-		if(_currentDeck != null)
-			for(int i = 0; i < _currentDeck.Cards.Count; ++i)
+		if(_currentDeck != null) {
+			int countToShow = Math.Min( _layout.MaxCards, _currentDeck.Cards.Count- _currentDeck.FirstCard );
+			for(int i = 0; i < countToShow; ++i)
 				if(_layout.GetCardRect( i, _currentDeck.Cards.Count ).Contains( coords )) {
-					PowerCard card = _currentDeck.Cards[i];
+					PowerCard card = _currentDeck.Cards[_currentDeck.FirstCard+i];
 					return _options.Contains( card ) 
 						? (() => _ctx.SelectOption( card ))
 						: null;
 				}
+
+			if(_layout.NextArrow.Contains( coords )) {
+				return () => {
+					_currentDeck.FirstCard++;
+					_onAppearanceChanged?.Invoke();
+				};
+			}
+
+			if(0 < _currentDeck.FirstCard && _layout.PrevArrow.Contains( coords )) {
+				return () => {
+					_currentDeck.FirstCard--;
+					_onAppearanceChanged?.Invoke();
+				};
+			}
+
+		}
 
 		return null;
 	}
@@ -155,6 +197,8 @@ class CardPanel : IPanel {
 				?? null;
 
 	}
+
+	public int OptionCount => _options.Count;
 
 	void UpdateWhichDeckTabsContainOptions() {
 		foreach(DeckInfo deck in _spiritCardInfo.AllDecks)

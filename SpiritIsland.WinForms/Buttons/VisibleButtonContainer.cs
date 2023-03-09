@@ -22,6 +22,8 @@ public class VisibleButtonContainer {
 		}
 	}
 
+	public int ActivatedOptions => _enabled.Count;
+
 	public void ClearTransient() {
 		foreach(IOption x in _transient) {
 			_enabled.Remove( x );
