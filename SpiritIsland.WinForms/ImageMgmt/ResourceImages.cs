@@ -335,8 +335,11 @@ public class ResourceImages {
 		return img;
 	}
 
+
+	static readonly Bitmap Invisible = new Bitmap( 1, 1 );
 	public Bitmap GetResourceImage( string filename ) {
-		var imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+filename );
+		if(filename is null) return Invisible;
+		Stream imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+filename );
 		return new Bitmap( imgStream );
 	}
 
