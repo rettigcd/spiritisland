@@ -7,8 +7,11 @@ static public class SpiritDecisionExtensions {
 		return spirit.Gateway.Decision( new Select.TypedDecision<T>( prompt, options, present ) );
 	}
 
-	static public Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
-		return spirit.Gateway.Decision( new Select.PowerCard( prompt, cardUse, options.ToArray(), present ) );
+	static public async Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
+		spirit.DraftDeck.AddRange( options.Except(spirit.Decks.SelectMany(x=>x.PowerCards)) );
+		PowerCard card = await spirit.Gateway.Decision( new Select.PowerCard( prompt, cardUse, options.ToArray(), present ) );
+		spirit.DraftDeck.Clear();
+		return card;
 	}
 
 	static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present = Present.Always ) {
