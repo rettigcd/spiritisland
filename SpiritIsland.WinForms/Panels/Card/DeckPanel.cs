@@ -8,28 +8,9 @@ namespace SpiritIsland.WinForms;
 
 class DeckPanel : IPanel {
 
-	public DeckPanel( SharedCtx ctx, Control parentControl ) {
+	public DeckPanel( SharedCtx ctx, List<PowerCard> deck, Control parentControl ) {
 		_ctx = ctx;
-
-		InitDecks( _ctx._spirit );
-
-		_currentDeck = AllDecks
-			.First( x => x.Icon == Img.Deck_Hand );
-
 		_onAppearanceChanged = parentControl.Invalidate;
-	}
-
-
-	void InitDecks( Spirit spirit ) {
-		// == Decks ==
-		DeckCount = spirit.Decks.Length;
-		ExtraDeck = new DeckInfo { Cards = new List<PowerCard>(), Icon = Img.GainCard };
-
-		var decks = spirit.Decks
-			.Select( x => new DeckInfo { Cards = x.PowerCards, Icon = x.Icon } )
-			.ToList();
-		decks.Add( ExtraDeck );
-		AllDecks = decks.ToArray();
 	}
 
 	public Rectangle Bounds {
@@ -48,38 +29,33 @@ class DeckPanel : IPanel {
 
 		_layout ??= new CardLayout( _bounds );
 
-		for(int i = 0; i < AllDecks.Length; ++i)
-			PaintDeckTab( graphics, i );
+		// DrawCardBackdrop( graphics );
+		int countToShow = Math.Min( _layout.MaxCards, _cards.Count - _firstCard );
+		for(int i = 0; i < countToShow; ++i)
+			PaintCard( graphics, _cards[i + _firstCard], i );
 
-		if(_currentDeck != null) {
-			// DrawCardBackdrop( graphics );
-			int countToShow = Math.Min( _layout.MaxCards, _currentDeck.Cards.Count - _currentDeck.FirstCard );
-			for(int i = 0; i < countToShow; ++i)
-				PaintCard( graphics, _currentDeck.Cards[i + _currentDeck.FirstCard], i );
+		// Prev
+		if(0 < _firstCard) {
+			int l = _layout.PrevArrow.Left, r = _layout.PrevArrow.Right, yOffset = (r - l);
+			Point point = new Point( l, _layout.PrevArrow.Top + _layout.PrevArrow.Height / 2 );
+			Point above = new Point( r, point.Y - yOffset );
+			Point below = new Point( r, point.Y + yOffset );
+			Rectangle box = new Rectangle( l, point.Y - yOffset, (r - l) * 4 / 5, yOffset * 2 );
+			graphics.FillPolygon( Brushes.Gold, new[] { above, point, below } );
+			using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
+			graphics.DrawString( _firstCard.ToString(), SystemFonts.MessageBoxFont, Brushes.Black, box, alignCenter );
+		}
 
-			// Prev
-			if(0 < _currentDeck.FirstCard) {
-				int l = _layout.PrevArrow.Left, r = _layout.PrevArrow.Right, yOffset = (r - l);
-				Point point = new Point( l, _layout.PrevArrow.Top + _layout.PrevArrow.Height / 2 );
-				Point above = new Point( r, point.Y - yOffset );
-				Point below = new Point( r, point.Y + yOffset );
-				Rectangle box = new Rectangle( l, point.Y - yOffset, (r - l) * 4 / 5, yOffset * 2 );
-				graphics.FillPolygon( Brushes.Gold, new[] { above, point, below } );
-				using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
-				graphics.DrawString( _currentDeck.FirstCard.ToString(), SystemFonts.MessageBoxFont, Brushes.Black, box, alignCenter );
-			}
-
-			// Next
-			if(_currentDeck.FirstCard + countToShow < _currentDeck.Cards.Count) {
-				int l = _layout.NextArrow.Left, r = _layout.NextArrow.Right, yOffset = (r - l);
-				Point point = new Point( r, _layout.NextArrow.Top + _layout.NextArrow.Height / 2 );
-				Point above = new Point( l, point.Y - yOffset );
-				Point below = new Point( l, point.Y + yOffset );
-				graphics.FillPolygon( Brushes.Gold, new[] { above, point, below } );
-				Rectangle box = new Rectangle( l + (r - l) / 5, point.Y - yOffset, (r - l) * 4 / 5, yOffset * 2 );
-				using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
-				graphics.DrawString( (_currentDeck.Cards.Count - _currentDeck.FirstCard - countToShow).ToString(), SystemFonts.MessageBoxFont, Brushes.Black, box, alignCenter );
-			}
+		// Next
+		if(_firstCard + countToShow < _cards.Count) {
+			int l = _layout.NextArrow.Left, r = _layout.NextArrow.Right, yOffset = (r - l);
+			Point point = new Point( r, _layout.NextArrow.Top + _layout.NextArrow.Height / 2 );
+			Point above = new Point( l, point.Y - yOffset );
+			Point below = new Point( l, point.Y + yOffset );
+			graphics.FillPolygon( Brushes.Gold, new[] { above, point, below } );
+			Rectangle box = new Rectangle( l + (r - l) / 5, point.Y - yOffset, (r - l) * 4 / 5, yOffset * 2 );
+			using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
+			graphics.DrawString( (_cards.Count - _firstCard - countToShow).ToString(), SystemFonts.MessageBoxFont, Brushes.Black, box, alignCenter );
 		}
 	}
 
@@ -92,26 +68,9 @@ class DeckPanel : IPanel {
 	//	graphics.FillRectangle( brush, bgRect );
 	//}
 
-	void PaintDeckTab( Graphics graphics, int index ) {
-		DeckInfo deck = AllDecks[index];
-		if(deck.Cards.Count == 0) return;
-		Rectangle bounds = _layout.GetTabBounds( index );
-
-		// Yellow - Selected
-		if(deck == _currentDeck)
-			graphics.FillRectangle( Brushes.Yellow, bounds );
-		// Icon
-		graphics.DrawImageFitBoth( ResourceImages.Singleton.GetImage( deck.Icon ), bounds );
-		// Contains Option cards
-		if(deck.HasOption)
-			graphics.DrawRectangle( Pens.Red, bounds );
-		// Counts
-		graphics.DrawCountIfHigherThan( bounds, deck.Cards.Count, 0 );
-	}
-
 	void PaintCard( Graphics graphics, PowerCard card, int index ) {
 
-		int totalCardCount = _currentDeck.Cards.Count;
+		int totalCardCount = _cards.Count;
 		var cardRect = _layout.GetCardRect( index, totalCardCount );
 
 		bool isAnOption = _options.Contains( card );
@@ -154,41 +113,29 @@ class DeckPanel : IPanel {
 
 	public Action GetClickableAction( Point coords ) {
 		if(_layout == null) return null;
-		// Deck Tabs
-		for(int i = 0; i < AllDecks.Length; ++i) {
-			var clickedDeck = AllDecks[i];
-			if(clickedDeck.Cards.Any() && _layout.GetTabBounds( i ).Contains( coords ))
-				return () => {
-					_currentDeck = clickedDeck == _currentDeck ? null : clickedDeck;
-					_onAppearanceChanged?.Invoke();
-				};
-		}
 
 		// Cards
-		if(_currentDeck != null) {
-			int countToShow = Math.Min( _layout.MaxCards, _currentDeck.Cards.Count - _currentDeck.FirstCard );
-			for(int i = 0; i < countToShow; ++i)
-				if(_layout.GetCardRect( i, _currentDeck.Cards.Count ).Contains( coords )) {
-					PowerCard card = _currentDeck.Cards[_currentDeck.FirstCard + i];
-					return _options.Contains( card )
-						? (() => _ctx.SelectOption( card ))
-						: null;
-				}
-
-			if(_layout.NextArrow.Contains( coords )) {
-				return () => {
-					_currentDeck.FirstCard++;
-					_onAppearanceChanged?.Invoke();
-				};
+		int countToShow = Math.Min( _layout.MaxCards, _cards.Count - _firstCard );
+		for(int i = 0; i < countToShow; ++i)
+			if(_layout.GetCardRect( i, _cards.Count ).Contains( coords )) {
+				PowerCard card = _cards[_firstCard + i];
+				return _options.Contains( card )
+					? (() => _ctx.SelectOption( card ))
+					: null;
 			}
 
-			if(0 < _currentDeck.FirstCard && _layout.PrevArrow.Contains( coords )) {
-				return () => {
-					_currentDeck.FirstCard--;
-					_onAppearanceChanged?.Invoke();
-				};
-			}
+		if(_layout.NextArrow.Contains( coords )) {
+			return () => {
+				_firstCard++;
+				_onAppearanceChanged?.Invoke();
+			};
+		}
 
+		if(0 < _firstCard && _layout.PrevArrow.Contains( coords )) {
+			return () => {
+				_firstCard--;
+				_onAppearanceChanged?.Invoke();
+			};
 		}
 
 		return null;
@@ -204,44 +151,24 @@ class DeckPanel : IPanel {
 
 		// Track which Deck/Tabs have options
 		UpdateWhichDeckTabsContainOptions();
-
-		// If there are cards to display but we aren't on them, switch
-		if(_currentDeck == null || !_currentDeck.HasOption)
-			_currentDeck = AllDecks.FirstOrDefault( x => x.HasOption )
-				?? null;
-
 	}
 
 	public int OptionCount => _options.Count;
 
 	void UpdateWhichDeckTabsContainOptions() {
-		foreach(DeckInfo deck in AllDecks)
-			deck.HasOption = false;
-		ExtraDeck.Cards.Clear();
-		ExtraDeck.HasOption = false;
-
-		foreach(PowerCard card in _options) {
-			var deck = AllDecks.Take( DeckCount )
-				.FirstOrDefault( d => d.Cards.Contains( card ) );
-			if(deck != null)
-				deck.HasOption = true;
-			else {
-				ExtraDeck.Cards.Add( card );
-				ExtraDeck.HasOption = true;
-			}
-		}
+		HasOption = _options.Intersect(_cards).Any();
 	}
 
 	Select.PowerCard _pickPowerCardDecision;
 	HashSet<PowerCard> _options;
-	DeckInfo _currentDeck;
 	Rectangle _bounds;
 	CardLayout _layout;
 
 	// Spirit Settings
-	int DeckCount;
-	DeckInfo[] AllDecks;
-	DeckInfo ExtraDeck;
+	List<PowerCard> _cards;
+	Img Icon = Img.GainCard;
+	int _firstCard;
+	bool HasOption;
 
 	readonly SharedCtx _ctx;
 	readonly CardImageManager _images = new CardImageManager();
