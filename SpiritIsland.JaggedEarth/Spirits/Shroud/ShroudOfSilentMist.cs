@@ -81,23 +81,12 @@ public class ShroudOfSilentMist : Spirit {
 
 	#region Draw Cards (Gather from the Cool And Dark)
 
-	public override async Task<DrawCardResult> Draw( GameState gameState ) {
-		var result = await base.Draw( gameState );
+	protected override async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ) {
+		var result = await base.DrawInner( deck, numberToDraw, numberToKeep, forgetACard );
 		CheckForCoolEnergy( result.Selected );
 		return result;
 	}
 
-	public override async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw = 4, int numberToKeep=1 ) {
-		var result = await base.DrawMajor( gameState, forgetCard, numberToDraw, numberToKeep );
-		CheckForCoolEnergy( result.Selected );
-		return result;
-	}
-
-	public override async Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw = 4, int numberToKeep = 1 ) {
-		var result = await base.DrawMinor( gameState, numberToDraw, numberToKeep );
-		CheckForCoolEnergy( result.Selected );
-		return result;
-	}
 	void CheckForCoolEnergy(PowerCard card ) {
 		if(gainedCoolEnergyThisTurn) return;
 		if(card.Elements[Element.Fire]>0) return;

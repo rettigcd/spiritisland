@@ -9,7 +9,7 @@ public class DrawPowerCard : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		for(int i=0;i<count;++i)
-			await ctx.Self.Draw(ctx.GameState);
+			await ctx.Self.Draw();
 	}
 
 }

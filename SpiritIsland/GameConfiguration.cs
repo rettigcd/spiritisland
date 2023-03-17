@@ -103,10 +103,10 @@ public class GameBuilder {
 		gameState.InvaderDeck = adversary.InvaderDeckBuilder.Build( invaderSeed );
 
 		// (2) Major Power Cards
-		gameState.MajorCards = new PowerCardDeck( BuildMajorCards(), majorSeed );
+		gameState.MajorCards = new PowerCardDeck( BuildMajorCards(), majorSeed, PowerType.Major );
 
 		// (3) Minor Power Cards
-		gameState.MinorCards = new PowerCardDeck( BuildMinorCards(), minorSeed );
+		gameState.MinorCards = new PowerCardDeck( BuildMinorCards(), minorSeed, PowerType.Minor );
 
 		// (4) Fear Cards
 		if(adversary.FearCardsPerLevel != null)

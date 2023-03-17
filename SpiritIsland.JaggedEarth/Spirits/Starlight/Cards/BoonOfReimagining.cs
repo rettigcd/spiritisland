@@ -11,7 +11,7 @@ public class BoonOfReimagining {
 
 		// If they do, they draw 6 minor Power Cards and gain 2 of them.
 		if( powerCard != null )
-			await otherCtx.Self.DrawMinor(otherCtx.GameState, 6, 2);
+			await otherCtx.Self.DrawMinor(6, 2);
 
 		// If you target another Spirit, they gain 1 Energy.
 		if( ctx.Self != ctx.Other )

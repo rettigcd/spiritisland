@@ -2,8 +2,10 @@
 
 public class DrawFromDeck {
 
-	public static async Task<PowerType> SelectPowerCardType( Spirit spirit ) {
-		return await spirit.Gateway.Decision( new Select.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
+	public static async Task<PowerCardDeck> SelectPowerCardDeck( Spirit spirit ) {
+		PowerType powerType = await spirit.Gateway.Decision( new Select.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
+		GameState gs = GameState.Current;
+		return powerType == PowerType.Minor ? gs.MinorCards : gs.MajorCards;
 	}
 
 	static public async Task<DrawCardResult> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, int numberToKeep ) {

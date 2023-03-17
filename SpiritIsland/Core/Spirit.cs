@@ -365,26 +365,24 @@ public abstract partial class Spirit : IOption {
 	// pluggable, draw power card
 	#region Draw Card
 
-	public virtual async Task<DrawCardResult> Draw( GameState gameState ) {
-
-		PowerType powerType = await DrawFromDeck.SelectPowerCardType( this );
-		DrawCardResult result = powerType == PowerType.Minor
-			? await DrawFromDeck.DrawInner( this, gameState.MinorCards, 4, 1 )
-			: await DrawFromDeck.DrawInner( this, gameState.MajorCards, 4, 1 );
-
-		if (result.PowerType == PowerType.Major )
-			await this.ForgetOne();
-		return result;
+	public async Task<DrawCardResult> Draw(Func<PowerCardDeck,Task<bool>> forgetCardForMajor = null) {
+		PowerCardDeck deck = await DrawFromDeck.SelectPowerCardDeck( this );
+		bool forget = (deck.PowerType == PowerType.Major) // is major
+			&& (forgetCardForMajor == null || await forgetCardForMajor( deck ));
+		return await DrawInner(deck, 4, 1, forget );
 	}
 
-	public virtual Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw=4, int numberToKeep=1 ) 
-		=> DrawFromDeck.DrawInner( this, gameState.MinorCards, numberToDraw, numberToKeep );
+	public Task<DrawCardResult> DrawMinor( int numberToDraw=4, int numberToKeep=1 )
+		=> DrawInner( GameState.Current.MinorCards, numberToDraw, numberToKeep, false );
 
-	public virtual async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw=4, int numberToKeep=1 ) {
-		var result = await DrawFromDeck.DrawInner( this, gameState.MajorCards, numberToDraw, numberToKeep );
-		if(forgetCard)
+	public Task<DrawCardResult> DrawMajor( bool forgetCard = true, int numberToDraw=4, int numberToKeep=1 )
+		=> DrawInner( GameState.Current.MajorCards, numberToDraw, numberToKeep, forgetCard );
+
+	protected virtual async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ) {
+		var card = await DrawFromDeck.DrawInner( this, deck, numberToDraw, numberToKeep );
+		if(forgetACard)
 			await this.ForgetOne();
-		return result;
+		return card;
 	}
 
 	#endregion

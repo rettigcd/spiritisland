@@ -119,15 +119,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	public int Time { get; private set; }
 
-
-	public override async Task<DrawCardResult> DrawMinor( GameState gameState, int numberToDraw = 4, int numberToKeep = 1 ) {
-		var result = await base.DrawMinor( gameState, numberToDraw, numberToKeep );
-		await Keep1ForDaysThatNeverWere(result);
-		return result;
-	}
-
-	public override async Task<DrawCardResult> DrawMajor( GameState gameState, bool forgetCard = true, int numberToDraw = 4, int numberToKeep = 1 ) {
-		var result = await base.DrawMajor( gameState, forgetCard, numberToDraw, numberToKeep );
+	protected override async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ){
+		var result = await base.DrawInner( deck, numberToDraw, numberToKeep, forgetACard );
 		await Keep1ForDaysThatNeverWere( result );
 		return result;
 	}

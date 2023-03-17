@@ -171,20 +171,24 @@ public class PowerCardDeck_Tests {
 		var user = new VirtualUser(spirit);
 		var randomizer = new Random();
 		var gs = new GameState( spirit, Board.BuildBoardC() ) {
-			MajorCards = new PowerCardDeck( typeof(RiversBounty).GetMajors(), randomizer.Next() ),
-			MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), randomizer.Next() )
+			MajorCards = new PowerCardDeck( typeof(RiversBounty).GetMajors(), randomizer.Next(), PowerType.Major ),
+			MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), randomizer.Next(), PowerType.Minor )
 		};
 		gs.Initialize();
 
-		if(drawDirect)
-			_= spirit.DrawMajor(gs,true);
-		else { 
-			_= spirit.Draw(gs);
-			user.SelectsMajorDeck();
-		}
+		if(drawDirect) {
+			spirit.DrawMajor( true ).AwaitUser( spirit, user => {
+				user.SelectMajorPowerCard();
+				user.SelectCardToForget();
+			} ).Wait(10);
 
-		user.SelectMajorPowerCard();
-		user.SelectCardToForget();
+		}  else { 
+			spirit.Draw().AwaitUser( spirit, user => {
+				user.SelectsMajorDeck();
+				user.SelectMajorPowerCard();
+				user.SelectCardToForget();
+			} ).Wait(10);
+		}
 	}
 
 	[Theory]

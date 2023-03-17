@@ -3,8 +3,10 @@
 public class PowerCardDeck {
 
 	readonly Random randomizer;
+	public PowerType PowerType { get; }
 
-	public PowerCardDeck(IList<PowerCard> cards, int seed) {
+	public PowerCardDeck(IList<PowerCard> cards, int seed, PowerType powerType = default) {
+		PowerType = powerType;
  		this.randomizer = new Random(seed);
 			
 		var temp = cards.ToArray();

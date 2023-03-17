@@ -15,18 +15,15 @@ public class BoonOfAncientMemories {
 		}
 
 		// Otherwise: Target Spirit gains a Power Card.
-		var powerType = await DrawFromDeck.SelectPowerCardType( ctx.Self );
-
-		if( powerType == PowerType.Minor )
-			await ctx.OtherCtx.DrawMinor();
-		else {
-			await ctx.OtherCtx.DrawMajor(false, 4);
+		await ctx.Other.Draw( async deck => {
 			// If it's a Major Power, they may pay 2 Energy instead of Forgetting a Power Card.
-			if( 2 <= ctx.Other.Energy && await ctx.Other.UserSelectsFirstText( "Pay for Major Card", "2 energy", "forget a card" ))
+			if(2 <= ctx.Other.Energy && await ctx.Other.UserSelectsFirstText( "Pay for Major Card", "2 energy", "forget a card" )) {
 				ctx.Other.Energy -= 2;
-			else
-				await ctx.Other.ForgetOne();
-		}
+				return false;
+			}
+			return true;
+		} );
+
 	}
 
 }

@@ -20,7 +20,7 @@ public class UnrelentingGrowth {
 			if(blight.Any) await toCtx.RemoveBlight();
 
 			// Target Spirit gains a power card.
-			await ctx.Self.Draw(ctx.GameState);
+			await ctx.Self.Draw();
 		}
 
 	}

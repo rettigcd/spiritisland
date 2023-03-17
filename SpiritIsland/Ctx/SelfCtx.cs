@@ -75,9 +75,9 @@ public class SelfCtx {
 
 	#region Draw Cards
 
-	public Task<DrawCardResult> Draw() => Self.Draw( GameState );
-	public Task<DrawCardResult> DrawMinor() => Self.DrawMinor( GameState );
-	public Task<DrawCardResult> DrawMajor( bool forgetCard, int numberToDraw = 4, int numberToKeep = 1 ) => Self.DrawMajor( GameState, forgetCard, numberToDraw, numberToKeep );
+	public Task<DrawCardResult> Draw() => Self.Draw();
+	public Task<DrawCardResult> DrawMinor() => Self.DrawMinor();
+	public Task<DrawCardResult> DrawMajor( bool forgetCard, int numberToDraw = 4, int numberToKeep = 1 ) => Self.DrawMajor( forgetCard, numberToDraw, numberToKeep );
 
 
 	#endregion
