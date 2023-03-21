@@ -59,6 +59,8 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 				? await PickSpaceBySelectingToken( ctx, spaceOptions )
 				: await ctx.SelectSpace( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), Present.Always );
 
+			if(spaceCtx == null) return; // no matching tokens
+
 			used.Add( spaceCtx.Space );
 
 			await _spaceAction.Execute( spaceCtx );
