@@ -1,23 +1,23 @@
-﻿namespace SpiritIsland.Tests.Core; 
+﻿namespace SpiritIsland.Tests.Core;
 
 public class PowerCardDeck_Tests {
 
 	[Theory]
-	[InlineData(BaseGame,36)]
-	[InlineData(BranchAndClaw,31)]
-	[InlineData(JaggedEarth,33)]
+	[InlineData( AssemblyType.BaseGame,36)]
+	[InlineData( AssemblyType.BranchAndClaw,31)]
+	[InlineData( AssemblyType.JaggedEarth,33)]
 	public void MinorCount(string edition, int expectedCount) {
-		var minorCards = GetEditionType(edition).GetMinors();
+		var minorCards = AssemblyType.GetEditionType(edition).GetMinors();
 		// minorCards.Length.ShouldBe( 36 ); // Basegame
 		minorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 	}
 
 	[Theory]
-	[InlineData(BaseGame,22)]
-	[InlineData(BranchAndClaw,21)]
-	// [InlineData(JaggedEarth,0)]
+	[InlineData( AssemblyType.BaseGame,22)]
+	[InlineData( AssemblyType.BranchAndClaw,21)]
+	[InlineData( AssemblyType.JaggedEarth,23)]
 	public void MajorCount(string edition, int expectedCount) {
-		var majorCards = GetEditionType( edition ).GetMajors();
+		var majorCards = AssemblyType.GetEditionType( edition ).GetMajors();
 		majorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 	}
 
@@ -192,11 +192,12 @@ public class PowerCardDeck_Tests {
 	}
 
 	[Theory]
-	[InlineData(BaseGame)]
-	[InlineData(BranchAndClaw)]
-	[InlineData(JaggedEarth)]
+	[InlineData( AssemblyType.BaseGame )]
+	[InlineData( AssemblyType.BranchAndClaw )]
+	[InlineData( AssemblyType.JaggedEarth )]
+	[InlineData( AssemblyType.FeatherAndFlame )]
 	public void PowerCards_HaveNames(string edition) {
-		Type refObject = GetEditionType( edition );
+		Type refObject = AssemblyType.GetEditionType( edition );
 		List<PowerCard> cards = refObject.GetMajors().ToList();
 		cards.AddRange( refObject.GetMinors() );
 
@@ -205,18 +206,5 @@ public class PowerCardDeck_Tests {
 
 	}
 
-	static Type GetEditionType( string edition ) {
-		return edition switch {
-			BaseGame => typeof( RiverSurges ),
-			BranchAndClaw => typeof( SharpFangs ),
-			JaggedEarth => typeof( ShiftingMemoryOfAges ),
-			_ => throw new ArgumentException( "Edition not found", nameof( edition ) ),
-		};
-	}
-
-	const string BaseGame = "Basegame";
-	const string BranchAndClaw = "Branch and Claw";
-	const string JaggedEarth = "Jagged Earth";
 
 }
-

@@ -16,8 +16,11 @@ public class SpiritPresence : IKnowSpiritLocations {
 	}
 
 	protected void InitEnergyAndCardPlays() {
-		EnergyPerTurn = Revealed.Max( x => x.Energy ?? 0 );
-		CardPlayPerTurn = Revealed.Max( x => x.CardPlay ?? 0 );
+		// !!! in unit tests, Revealed is sometimes empty
+		if(Revealed.Any()) {
+			EnergyPerTurn = Revealed.Max( x => x.Energy ?? 0 );
+			CardPlayPerTurn = Revealed.Max( x => x.CardPlay ?? 0 );
+		}
 	}
 
 	public virtual void SetSpirit( Spirit spirit ) {

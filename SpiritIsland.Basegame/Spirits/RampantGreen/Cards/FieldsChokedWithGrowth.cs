@@ -2,10 +2,8 @@
 
 public class FieldsChokedWithGrowth {
 
-	// push 1 town -OR- push 3 dahan
-	[SpiritCard( "Fields Choked with Growth", 0, Element.Sun, Element.Water, Element.Plant )]
-	[Slow]
-	[FromPresence( 1 )]
+	[SpiritCard( "Fields Choked With Growth", 0, Element.Sun, Element.Water, Element.Plant ),Slow,FromPresence( 1 )]
+	[Instructions("Push 1 Town. -or- Push 3 Dahan" ),Artist(Artists.JorgeRamos)]
 	static public Task ActionAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(

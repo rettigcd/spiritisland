@@ -2,9 +2,8 @@
 
 public class StranglingFirevine {
 
-	[MajorCard( "Strangling Firevine", 4, Element.Fire, Element.Plant )]
-	[Slow]
-	[FromPresenceIn( 1, Terrain.Sand )]
+	[MajorCard( "Strangling Firevine", 4, Element.Fire, Element.Plant ), Slow, FromPresenceIn( 1, Terrain.Sand )]
+	[Instructions( "Destroy all Explorer. Add 1 Wilds. Add 1 Wilds in the originating Sands. 1 Damage per Wilds in / adjacent to target land. -If you have- 2 Fire, 3 Plant: +1 Damage per Wilds in / adjacent to target land." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// destroy all explorers.

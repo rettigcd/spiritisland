@@ -4,6 +4,9 @@ public enum Img {
 
 	None, // Default / null
 
+	OrCurlyBefore,
+	OrCurlyAfter,
+
 	// Growth / Presence
 	Coin,
 	CardPlay,
@@ -90,6 +93,11 @@ public enum Img {
 	Icon_TownCityOrBlight,
 	OpenTheWays,
 
+	Icon_Sand,
+	Icon_Mountain,
+	Icon_Jungle,
+	Icon_Wetland,
+
 	Icon_Blight,
 	Icon_Beast,
 	Icon_Fear,
@@ -105,6 +113,7 @@ public enum Img {
 	Icon_Play,
 	Icon_Checkmark,
 	PlusOneRange,
+	Icon_Spirit,
 
 	Deck_Hand,
 	Deck_Played,

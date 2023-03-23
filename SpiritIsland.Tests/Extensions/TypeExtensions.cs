@@ -13,4 +13,31 @@ static public class TypeExtensions {
 		return assemblyRefType.Assembly.GetTypes().Where( HasMinorMethod ).Select( PowerCard.For ).ToArray();
 	}
 
+	static public Spirit[] GetSpirits( this Type assemblyRefType ) {
+		static bool IsSpirit( Type type ) => type.IsAssignableTo( typeof( Spirit ) );
+		return assemblyRefType.Assembly.GetTypes()
+			.Where( IsSpirit )
+			.Select( t => (Spirit)Activator.CreateInstance(t) )
+			.ToArray();
+	}
+
 }
+
+class AssemblyType {
+	public static Type GetEditionType( string edition ) {
+		return edition switch {
+			BaseGame => typeof( RiverSurges ),
+			BranchAndClaw => typeof( SharpFangs ),
+			JaggedEarth => typeof( ShiftingMemoryOfAges ),
+			FeatherAndFlame => typeof( DownpourDrenchesTheWorld ),
+			_ => throw new ArgumentException( "Edition not found", nameof( edition ) ),
+		};
+	}
+
+	public const string BaseGame = "Basegame";
+	public const string BranchAndClaw = "Branch and Claw";
+	public const string JaggedEarth = "Jagged Earth";
+	public const string FeatherAndFlame = "Feather and Flame";
+
+}
+

@@ -2,9 +2,8 @@
 
 public class ElementalBoon {
 
-	[MinorCard( "Elemental Boon", 1)]
-	[Fast]
-	[AnySpirit]
+	[MinorCard( "Elemental Boon", 1),Fast,AnySpirit]
+	[Instructions( "Target Spirit gains 3 different Elements of their choice. If you target another Spirit, you also gain the chosen Elements." ), Artist( Artists.MoroRogers )]
 	static public async Task Act( TargetSpiritCtx ctx ) {
 
 		// Target Spirit gains 3 _different_ Elements of their choice

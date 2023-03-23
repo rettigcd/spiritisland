@@ -3,6 +3,7 @@
 public class TheFogClosesIn {
 
 	[SpiritCard("The Fog Closes In",0,Element.Moon,Element.Air,Element.Water), Slow, FromPresence(0)]
+	[Instructions( "For each adjacent land with your Presence, 1 Damage to a different Invader. Push 2 Dahan." ), Artist( Artists.EmilyHancock )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// For each adjacent land with your presence, 1 Damage to a different Invader.

@@ -2,9 +2,8 @@
 
 public class RouseTheTreesAndStones {
 
-	[MinorCard("Rouse the Trees and Stones",1,Element.Fire,Element.Earth,Element.Plant)]
-	[Slow]
-	[FromSacredSite(1,Target.NoBlight)]
+	[MinorCard("Rouse the Trees and Stones",1,Element.Fire,Element.Earth,Element.Plant),Slow,FromSacredSite(1,Target.NoBlight)]
+	[Instructions( "2 Damage. Push 1 Explorer." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 2 damage
 		await ctx.DamageInvaders(2);

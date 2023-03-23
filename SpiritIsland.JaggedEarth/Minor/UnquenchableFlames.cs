@@ -1,6 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 public class UnquenchableFlames{ 
 	[MinorCard("Unquenchable Flames",1,Element.Moon,Element.Fire,Element.Earth),Slow,FromSacredSite(2)]
+	[Instructions( "1 Fear. 1 Damage to Town / City. Invaders do not heal Damage at end of turn. -If you have- 2 Fire: Add 1 Badlands." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 		// 1 fear.
 		ctx.AddFear( 1 );

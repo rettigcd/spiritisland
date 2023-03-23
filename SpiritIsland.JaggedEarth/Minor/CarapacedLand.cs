@@ -5,6 +5,7 @@ namespace SpiritIsland.JaggedEarth;
 public class CarapacedLand{ 
 		
 	[MinorCard("Carapaced Land",0,Element.Earth,Element.Plant,Element.Animal),Fast, Range0Or1ForTargetingBeast]
+	[Instructions( "If targeting a land with Beasts, this Power has +1 Range. Defend 3. -If you have- 2 Earth: Defend +3." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 
 		// Defend 3

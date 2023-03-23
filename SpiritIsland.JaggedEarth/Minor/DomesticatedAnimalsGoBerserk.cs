@@ -2,7 +2,8 @@
 
 public class DomesticatedAnimalsGoBerserk{
 
-	[MinorCard("Domesticated Animals Go Berserk",1,Element.Moon,Element.Fire,Element.Animal),Fast,FromPresence(0,Target.TownOrCity)]
+	[MinorCard("Domesticated Animals Go Berserk",1,Element.Moon,Element.Fire,Element.Animal),Fast,FromPresence(0,Target.Town,Target.City)]
+	[Instructions( "1 Fear. Defend 5. -If you have- 3 Moon: Add 1 Beasts." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear.
 		ctx.AddFear(1);

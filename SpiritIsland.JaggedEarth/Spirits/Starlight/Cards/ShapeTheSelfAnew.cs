@@ -4,6 +4,7 @@ public class ShapeTheSelfAnew {
 	public const string Name = "Shape the Self Anew";
 
 	[SpiritCard( ShapeTheSelfAnew.Name, 0, Element.Moon), Slow, Yourself]
+	[Instructions( "Gain a Minor Power. You may Forget this Power Card to gain 3 Energy.  -If you have- 4 Moon: You may gain a Major Power instead of a Minor Power." ), Artist( Artists.EmilyHancock )]
 	public static async Task ActAsync( SelfCtx ctx ) {
 		// Gain a Minor Power.
 		// If you have 4 moon, You may gain a Major Power instead of a Minor Power.

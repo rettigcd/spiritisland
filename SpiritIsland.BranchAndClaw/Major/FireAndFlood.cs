@@ -2,9 +2,8 @@
 
 public class FireAndFlood {
 
-	[MajorCard( "Fire and Flood", 7, Element.Sun, Element.Fire, Element.Water )]
-	[Slow]
-	[FromSacredSite( 1 )]
+	[MajorCard( "Fire and Flood", 7, Element.Sun, Element.Fire, Element.Water ),Slow,FromSacredSite( 1 )]
+	[Instructions( "4 Damage in each target land. (Range must be measured from the same SacredSite.) -If you have- 3 Fire: +4 Damage in either target land. 3 Water: +4 Damage in either target land." ), Artist( Artists.JasonBehnke )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		Space secondTarget = await PickSecondTarget( ctx );

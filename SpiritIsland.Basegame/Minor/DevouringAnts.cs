@@ -3,9 +3,8 @@
 public class DevouringAnts {
 	public const string Name = "Devouring Ants";
 
-	[MinorCard(Name,1,Element.Sun,Element.Earth,Element.Animal)]
-	[Slow]
-	[FromSacredSite(1)]
+	[MinorCard(Name,1,Element.Sun,Element.Earth,Element.Animal),Slow,FromSacredSite(1)]
+	[Instructions( "1 Fear. 1 Damage. Destroy 1 Dahan. If target land is Jungle / Sands, +1 Damage." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		// 1 fear

@@ -5,6 +5,7 @@ namespace SpiritIsland.JaggedEarth;
 public class UnleashATorrentOfTheSelfsOwnEssence {
 
 	[MajorCard("Unleash a Torrent of the Self's Own Essence",2, Element.Sun,Element.Moon,Element.Fire,Element.Water), Fast, Yourself]
+	[Instructions( "Gain 4 energy. You may forget a power card to gain 4 more energy. -or- Pay X energy (min. 1) to deal X damage in a land at 0 Range.  -If you have- 2 Sun, 3 Fire: You may do both." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync(SelfCtx ctx ) {
 
 		await ctx.SelectActionOption(

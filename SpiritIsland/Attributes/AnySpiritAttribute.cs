@@ -12,10 +12,11 @@ public class AnySpiritAttribute : GeneratesContextAttribute {
 
 	public override string RangeText => "-";
 
-	public override string TargetFilter => "Any Spirit";
+	public override string TargetFilter => TargetFilterText;
 
 	public override LandOrSpirit LandOrSpirit => LandOrSpirit.Spirit;
 
+	public const string TargetFilterText = "Any Spirit"; 
 }
 
 [AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
@@ -25,7 +26,8 @@ public class AnotherSpiritAttribute : AnySpiritAttribute {
 			: await ctx.Decision( new Select.ASpirit( powerName, ctx.GameState.Spirits.Where(s=>s!=ctx.Self), Present.AutoSelectSingle ) );
 		return ctx.TargetSpirit( target );
 	}
-	public override string TargetFilter => "Another";
+	public override string TargetFilter => TargetFilterText;
+	public const string TargetFilterText = "Another Spirit";
 
 }
 
@@ -34,6 +36,6 @@ public class YourselfAttribute : AnySpiritAttribute {
 	public override Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
 		return Task.FromResult( (object)ctx );
 	}
-	public override string TargetFilter => "Yourself";
-
+	public override string TargetFilter => TargetFilterText;
+	public const string TargetFilterText = "Yourself";
 }

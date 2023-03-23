@@ -2,9 +2,8 @@
 
 public class DeathFallsGentlyFromOpenBlossoms {
 
-	[MajorCard("Death Falls Gently from Open Blossoms",4, Element.Moon,Element.Air,Element.Plant)]
-	[Slow]
-	[FromPresence(3,Target.Jungle, Target.Sand )]
+	[MajorCard("Death Falls Gently From Open Blossoms",4, Element.Moon,Element.Air,Element.Plant),Slow,FromPresence(3,Target.Jungle, Target.Sand )]
+	[Instructions( "4 Damage. If any Invaders remain, add 1 Disease. -If you have- 3 Air, 3 Plant: 3 Fear. Add 1 Disease to 2 adjacent lands with Invaders." ), Artist( Artists.GrahamStermberg )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 4 damage.
 		await ctx.DamageInvaders(4);

@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace SpiritIsland.FeatherAndFlame;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
 public class PathsTiedByNature {
 
-	[SpiritCard( "Paths Tied By Nature", 0, Element.Sun, Element.Air, Element.Earth, Element.Plant )]
-	[Slow, FromPresence( 1 )]
+	[SpiritCard( "Paths Tied by Nature", 0, Element.Sun, Element.Air, Element.Earth, Element.Plant ),Slow, FromPresence( 1 )]
+	[Instructions( "Move up to 2 Invaders / Dahan / Presence / Beasts to a land within 2 Range that has the same terrain." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// Move up to 2 Invaders / dahan / presence / beast to a land within range - 2 that has the same terrain.

@@ -3,6 +3,7 @@
 public class EntrapTheForcesOfCorruption{ 
 		
 	[MinorCard("Entrap the Forces of Corruption",1,Element.Earth,Element.Plant,Element.Animal),Fast,FromPresence(1)]
+	[Instructions( "Gather up to 1 Blight. Isolate target land. When Blight is added to target land, it doesn't cascade." ), Artist( Artists.ShawnDaley )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 		// Gather up to 1 Blight
 		await ctx.GatherUpTo(1,Token.Blight);

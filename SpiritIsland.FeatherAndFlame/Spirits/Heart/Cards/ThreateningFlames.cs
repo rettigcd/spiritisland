@@ -4,9 +4,8 @@ public class ThreateningFlames {
 
 	public const string BlightAndInvaders = "Blight+Invaders";
 
-	[SpiritCard("Threatening Flames",0,Element.Fire,Element.Plant)]
-	[Fast]
-	[FromPresence(0,BlightAndInvaders)]
+	[SpiritCard("Threatening Flames",0,Element.Fire,Element.Plant),Fast,FromPresence(0,BlightAndInvaders)]
+	[Instructions( "2 Fear. Push 1 Explorer / Town per Terror Level from target land to adjacent lands without your Presence. If there are no such adjacent lands, +2 Fear." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 2 fear

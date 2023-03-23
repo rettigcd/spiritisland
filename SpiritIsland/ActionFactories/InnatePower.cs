@@ -76,9 +76,9 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	public string Text => Name;
 
-	public string TargetFilter => this._targetAttr.TargetFilter;
+	public string TargetFilter => _targetAttr.TargetFilter;
 
-	public string RangeText => this._targetAttr.RangeText;
+	public string RangeText => _targetAttr.RangeText;
 
 	public LandOrSpirit LandOrSpirit => _targetAttr.LandOrSpirit;
 

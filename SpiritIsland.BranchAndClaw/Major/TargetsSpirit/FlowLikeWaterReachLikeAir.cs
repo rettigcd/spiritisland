@@ -3,6 +3,7 @@
 public class FlowLikeWaterReachLikeAir {
 
 	[MajorCard("Flow Like Water, Reach Like Air",2,Element.Air,Element.Water), Fast, AnySpirit]
+	[Instructions( "Target Spirit gets +2 Range with all Powers. Target Spirit may Push 1 of their Presence to an adjacent land, bringing up to 2 Explorer, 2 Town and 2 Dahan along with it. -If you have- 2 Air, 2 Water: The moved Presence may also bring along up to 2 City and up to 2 Blight." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 		await TargetActions( ctx.OtherCtx, await ctx.YouHave( "2 air,2 water" ) );
 	}

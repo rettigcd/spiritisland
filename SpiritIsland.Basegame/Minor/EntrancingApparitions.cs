@@ -2,9 +2,8 @@
 
 public class EntrancingApparitions {
 
-	[MinorCard("Entrancing Apparitions",1,Element.Moon,Element.Air,Element.Water)]
-	[Fast]
-	[FromPresence(1)]
+	[MinorCard("Entrancing Apparitions",1,Element.Moon,Element.Air,Element.Water),Fast,FromPresence(1)]
+	[Instructions( "Defend 2. If no Invaders are present, gather up to 2 Explorer." ), Artist( Artists.MoroRogers )]
 	static public async Task Act(TargetSpaceCtx ctx){
 
 		// defend 2

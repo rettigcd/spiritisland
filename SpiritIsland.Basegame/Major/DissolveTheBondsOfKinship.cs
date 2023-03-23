@@ -3,9 +3,8 @@
 public class DissolveTheBondsOfKinship {
 	public const string Name = "Dissolve the Bonds of Kinship";
 
-	[MajorCard(Name,4,Element.Fire,Element.Earth,Element.Animal)]
-	[Slow]
-	[FromPresence(1)]
+	[MajorCard(Name,4,Element.Fire,Element.Earth,Element.Animal),Slow,FromPresence(1)]
+	[Instructions( "Replace 1 City with 2 Explorer. Replace 1 Town with 1 Explorer. Replace 1 Dahan with 1 Explorer. Push all Explorer from target land to as many different lands as possible. -If you have- 2 Fire, 2 Water, 3 Animal: Before Pushing, Explorer and Town / City do Damage to each other." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		// replace 1 city with 2 exploreres.

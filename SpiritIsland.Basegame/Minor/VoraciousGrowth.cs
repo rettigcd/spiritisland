@@ -2,10 +2,9 @@
 
 public class VoraciousGrowth {
 
-	[MinorCard("Voracious Growth",1,Element.Water,Element.Plant)]
-	[Slow]
-	[FromSacredSite(1,Target.Jungle, Target.Wetland )]
-	static public Task ActAsync(TargetSpaceCtx ctx){
+	[MinorCard("Voracious Growth",1,Element.Water,Element.Plant),Slow,FromSacredSite(1,Target.Jungle, Target.Wetland )]
+	[Instructions( "2 Damage. -or- Remove 1 Blight." ),Artist(Artists.CariCorene )]   
+		static public Task ActAsync(TargetSpaceCtx ctx){
 
 		return ctx.SelectActionOption(
 			new SpaceAction( "2 Damage", ctx => ctx.DamageInvaders( 2 ) ).OnlyExecuteIf( x => x.HasInvaders ),

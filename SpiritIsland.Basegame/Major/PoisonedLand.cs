@@ -2,9 +2,8 @@
 
 public class PoisonedLand {
 
-	[MajorCard("Poisoned Land",3,Element.Earth,Element.Plant,Element.Animal)]
-	[Slow]
-	[FromPresence(1)]
+	[MajorCard("Poisoned Land",3,Element.Earth,Element.Plant,Element.Animal),Slow,FromPresence(1)]
+	[Instructions( "1 Fear. 7 Damage. Add 1 Blight and destroy all Dahan. -If you have- 3 Earth, 2 Plant, 2 Animal: For each Blight then present, +1 Fear and +4 Damage." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		// 1 fear

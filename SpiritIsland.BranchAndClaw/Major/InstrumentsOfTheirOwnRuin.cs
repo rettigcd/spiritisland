@@ -2,9 +2,8 @@
 
 public class InstrumentsOfTheirOwnRuin {
 
-	[MajorCard( "Instruments of Their Own Ruin", 4, Element.Sun, Element.Fire, Element.Air, Element.Animal )]
-	[Fast]
-	[FromSacredSite( 1 )]
+	[MajorCard( "Instruments of Their Own Ruin", 4, Element.Sun, Element.Fire, Element.Air, Element.Animal ),Fast,FromSacredSite( 1 )]
+	[Instructions( "Add 1 Strife. Each Invader with Strife deals Damage to other Invaders in target land. -If you have- 4 Sun, 2 Fire, 2 Animal: Instead, if Invaders Ravage in target land, they damage Invaders in adjacent lands instead of Dahan and the land. Dahan in target land do not fight back." ), Artist( Artists.LucasDurham )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption( 

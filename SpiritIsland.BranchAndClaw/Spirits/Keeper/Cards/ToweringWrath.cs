@@ -2,9 +2,8 @@
 
 public class ToweringWrath {
 
-	[SpiritCard("Towering Wrath",3,Element.Sun,Element.Fire,Element.Plant)]
-	[Slow]
-	[FromSacredSite(1)]
+	[SpiritCard("Towering Wrath",3,Element.Sun,Element.Fire,Element.Plant),Slow,FromSacredSite(1)]
+	[Instructions( "2 Fear. For each of your SacredSite in / adjacent to target land, 2 Damage. Destroy all Dahan." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// 2 fear

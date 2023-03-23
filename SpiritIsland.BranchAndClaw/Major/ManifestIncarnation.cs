@@ -2,9 +2,8 @@
 
 public class ManifestIncarnation {
 
-	[MajorCard( "Manifest Incarnation", 6, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
-	[Slow]
-	[FromPresence( 0, "Cities" )]
+	[MajorCard( "Manifest Incarnation", 6, Element.Sun, Element.Moon, Element.Earth, Element.Animal ),Slow,FromPresence( 0, "Cities" )]
+	[Instructions( "6 Fear. +1 Fear for each Town / City and for each of your Presence in target land. Remove 1 City, 1 Town and 1 Explorer. Then Invaders in target land Ravage. -If you have- 3 Sun, 3 Moon: +3 Fear. Invaders do -6 Damage on their Ravage." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 6 fear

@@ -14,7 +14,7 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 	public TargetSpaceAttribute(TargetingSourceCriteria sourceCriteria, int range, params string[] targetFilter ){
 		_sourceCriteria = sourceCriteria;
 		_range = range;
-		TargetFilter = targetFilter.Length>0 ? string.Join("Or",targetFilter) : "Any";
+		TargetFilter = targetFilter.Length>0 ? string.Join(" Or ",targetFilter) : "Any";
 		_targetFilters = targetFilter;
 	}
 
@@ -53,14 +53,14 @@ public class FromPresenceAttribute : TargetSpaceAttribute {
 public class FromPresenceInAttribute : TargetSpaceAttribute {
 	public FromPresenceInAttribute( int range, Terrain sourceTerrain, string filter = Target.Any )
 		: base( new TargetingSourceCriteria( From.Presence, sourceTerrain), range, filter ) {}
-	public override string RangeText => $"{_range}({_sourceCriteria.Terrain})";
+	public override string RangeText => $"{_range}:{_sourceCriteria.Terrain}";
 }
 
 [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 public class FromSacredSiteAttribute : TargetSpaceAttribute {
 	public FromSacredSiteAttribute( int range, params string[] filters )
 		: base( new TargetingSourceCriteria( From.SacredSite ), range, filters ) { }
-	public override string RangeText => $"ss:{_range}";
+	public override string RangeText => $"{_range}:ss";
 }
 
 [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]

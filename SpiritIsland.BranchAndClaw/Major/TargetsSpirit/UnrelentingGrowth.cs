@@ -4,9 +4,8 @@ namespace SpiritIsland.BranchAndClaw;
 
 public class UnrelentingGrowth {
 
-	[MajorCard( "Unrelenting Growth", 4, Element.Sun, Element.Fire, Element.Water, Element.Plant )]
-	[Slow]
-	[AnySpirit]
+	[MajorCard( "Unrelenting Growth", 4, Element.Sun, Element.Fire, Element.Water, Element.Plant ),Slow,AnySpirit]
+	[Instructions( "Target Spirit adds 2 Presence and 1 Wilds to a land at 1 Range. -If you have- 3 Sun, 3 Plant: In that land, add 1 additional Wilds and remove 1 Blight. Target Spirit gains a Power Card." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		TargetSpaceCtx toCtx = await AddPresenceAndWilds( ctx.OtherCtx );

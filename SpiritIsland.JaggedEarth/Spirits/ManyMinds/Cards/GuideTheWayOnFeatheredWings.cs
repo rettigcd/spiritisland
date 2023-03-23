@@ -6,6 +6,7 @@ public class GuideTheWayOnFeatheredWings {
 
 	[SpiritCard("Guide the Way on Feathered Wings", 0, Element.Sun,Element.Air,Element.Animal), Fast, FromPresence(1,Target.Beast)]
 	[Preselect( "Select Guide", "Beast" )]
+	[Instructions( "Move 1 Beasts up to two lands. As it moves, up to 2 Dahan may move with it, for part or all of the way. (The Beasts / Dahan may move to an adjacent land and then back.)" ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 		// Move 1 beast  up to two lands.
 		return MoveBeastAndFriends( ctx );

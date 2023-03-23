@@ -4,6 +4,7 @@ public class CallToGuard{
 	const string Name = "Call to Guard";
 
 	[MinorCard(Name,0,Element.Sun,Element.Air,Element.Earth), Fast, FromPresence(1)]
+	[Instructions( "Gather up to 1 Dahan. Then, if Dahan are present, either: Defend 1 per Dahan. -or- After Invaders are added or moved to target land, 1 Damage to each added or moved Invader." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 		// Gather up to 1 Dahan.
 		await ctx.GatherUpToNDahan( 1 );

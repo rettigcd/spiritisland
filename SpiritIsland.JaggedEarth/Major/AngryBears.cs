@@ -3,6 +3,7 @@
 public class AngryBears {
 
 	[MajorCard("Angry Bears",3,Element.Sun,Element.Fire,Element.Animal), Slow, FromPresence(0)]
+	[Instructions( "2 Fear. 2 Damage. If no Beasts are present, add 1 Beasts. Otherwise, +2 Damage, and Push up to 1 Beasts.  -If you have- 2 Fire, 3 Animal: 1 Fear and destroy 1 Explorer / Town in an adjacent land with Beasts." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 fear. 2 damage.
 		ctx.AddFear(2);

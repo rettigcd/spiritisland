@@ -5,6 +5,7 @@ namespace SpiritIsland.JaggedEarth;
 class ThePastReturnsAgain {
 
 	[SpiritCard( "The Past Returns Again", 0, Element.Sun, Element.Moon ), Fast, Yourself]
+	[Instructions( "Cost to Use: N Time, and Spirits jointly pay N Energy (where N = # of players). Swap the top card of the Invader Deck with a card in the Invader discard that is within 1 Invader Stage of it. (The discarded card stays face-down. You can't swap cards that don't exist.)" ), Artist( Artists.LucasDurham )]
 	static public async Task ActAsync( SelfCtx ctx ) {
 
 		if(ctx.Self is not FracturedDaysSplitTheSky frac) return;

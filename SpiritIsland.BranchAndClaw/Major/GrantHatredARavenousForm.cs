@@ -2,9 +2,8 @@
 
 public class GrantHatredARavenousForm {
 
-	[MajorCard( "Grant Hatred a Ravenous Form", 4, Element.Moon, Element.Fire )]
-	[Slow]
-	[FromPresence( 1 )]
+	[MajorCard( "Grant Hatred a Ravenous Form", 4, Element.Moon, Element.Fire ),Slow,FromPresence( 1 )]
+	[Instructions( "For each Strife / Blight in target land, 1 Fear and 2 Damage. If this destroys all invaders in target land, add 1 Beasts. -If you have- 4 Moon, 2 Fire: Add 1 Strife in up to 3 adjacent lands." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		bool originallyHadInvaders = ctx.HasInvaders;

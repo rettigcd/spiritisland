@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
@@ -33,6 +32,22 @@ public static class Rectangle_Extensions {
 			lastY = nextY;
 		}
 		return result;
+	}
+
+	static public Rectangle[] SplitVerticallyByHeights( this Rectangle rect, params int[] heights ) {
+		int tooBig = heights.Sum()-rect.Height;
+		if( tooBig != 0) {
+			(string dirStr,int size) = 0<tooBig ? ("BIG",tooBig) : ("SMALL",-tooBig);
+			throw new ArgumentException( $"Individual heights are too {dirStr} by {size}");
+		}
+		Rectangle[] res = new Rectangle[heights.Length];
+		int y=rect.Y;
+		for(int i = 0; i < heights.Length; ++i) {
+			int height = heights[i];
+			res[i] = new Rectangle( rect.X, y, rect.Width, height );
+			y+=height;
+		}
+		return res;
 	}
 
 	#endregion Split Vertically

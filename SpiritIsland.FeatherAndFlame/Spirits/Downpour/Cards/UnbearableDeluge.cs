@@ -4,9 +4,8 @@ internal class UnbearableDeluge {
 
 	const string Name = "Unbearable Deluge";
 
-	[SpiritCard( Name, 0, Element.Air, Element.Water, Element.Earth )]
-	[Fast]
-	[FromPresence(0)]
+	[SpiritCard( Name, 0, Element.Air, Element.Water, Element.Earth ),Fast,FromPresence(0)]
+	[Instructions( "1 fear. Push 2 Dahan. Defend 3. If target land is Wetland, Isolate it." ), Artist( Artists.DamonWestenhofer )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// 1 Fear.
 		ctx.AddFear(1);

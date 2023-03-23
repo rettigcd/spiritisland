@@ -5,6 +5,7 @@ public class DrawTowardsAConsumingVoid {
 	const string Name = "Draw Towards a Consuming Void";
 
 	[MajorCard(Name,8), Slow, FromPresence(0)]
+	[Instructions( "Gather 1 Explorer, Town, City, Dahan, Presence, and Beasts from each adjacent land. 4 Fear. 15 Damage. 5 Damage to Dahan. Destroy 1 Presence from each Spirit. Remove 2 Beasts. -If you have- If you have no other power cards in play: Any number of times: Forget a Minor Power, a Major Power, and a Unique Power to perform the above effects again." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		await PerformEffect( ctx );

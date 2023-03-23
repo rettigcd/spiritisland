@@ -2,8 +2,8 @@
 	
 public class AbsorbEssence {
 
-	[SpiritCard("Absorb Essence",2,Element.Moon, Element.Fire, Element.Water, Element.Earth),Fast]
-	[AnotherSpirit]
+	[SpiritCard("Absorb Essence",2,Element.Moon, Element.Fire, Element.Water, Element.Earth),Fast,AnotherSpirit]
+	[Instructions( "Gain 3 Energy. Move 1 of target Spirit's Presence from the board to your \"Deep Slumber\" track. Absorbed Presence cannot be returned to play. Target Spirit gains 1 Any and 1 Energy." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync(TargetSpiritCtx ctx) {
 		// gain 3 energy.
 		ctx.Self.Energy += 3;

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class GameConfiguration {
 

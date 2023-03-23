@@ -4,9 +4,8 @@ public class SwallowTheLandDwellers {
 
 	public const string Name = "Swallow the Land-Dwellers";
 
-	[SpiritCard(Name,0,Element.Water,Element.Earth)]
-	[Slow]
-	[FromPresence(0,Target.Coastal)]
+	[SpiritCard(Name,0,Element.Water,Element.Earth),Slow,FromPresence(0,Target.Coastal)]
+	[Instructions( "Drown 1 Explorer, 1 Town, and 1 Dahan." ), Artist( Artists.JoshuaWright )]
 	static public async Task Act(TargetSpaceCtx ctx ) {
 
 		// "Drown 1 explorer, 1 town, 1 dahan"

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 
 namespace SpiritIsland.WinForms; 
 
@@ -13,13 +14,14 @@ sealed public class FearCardImageManager {
 		
 		// fear 1
 		var (secRow1,(textArea1,_)) = fearBox1.SplitVerticallyByWeight(0, 4, 5 );
-		var (secRow2, (textArea2, _)) = fearBox2.SplitVerticallyByWeight( 0, 4, 5 );
-		var (secRow3, (textArea3, _)) = fearBox3.SplitVerticallyByWeight( 0, 4, 5 );
+		var (secRow2,(textArea2,_)) = fearBox2.SplitVerticallyByWeight( 0, 4, 5 );
+		var (secRow3,(textArea3,_)) = fearBox3.SplitVerticallyByWeight( 0, 4, 5 );
 
 
 		var img = new Bitmap(bounds.Width,bounds.Height);
 		using Graphics graphics = Graphics.FromImage( img );
-		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
 		// Card background
 		const int cornerRadius = 18;
@@ -64,47 +66,44 @@ sealed public class FearCardImageManager {
 			graphics.DrawImageFitHeight( terrorIcon, rect );
 		}
 
-		// Text
-		float emSize = 13f;
-		int iconSize = 20;
-		int rowHeight = 18;
-
-		var problems = new List<string>(); // !!! temp, debug
-
 		// Text 1..3
 		Rectangle[] textAreas = new[] { textArea1, textArea2, textArea3 };
-		for(int i = 0; i < 3; ++i) {
-			Rectangle outterArea = textAreas[i];
-			Rectangle textBounds = outterArea.InflateBy(-10,0);
-			string description = card.GetDescription(i+1);
-
-			// Try - reduced Width
-			int widthReduction = 100;
-			WrappingLayout layout;
-			Size rowSize;
-
-			// as long as it takes up 3 lines, incrmentally make it wider
-			do {
-
-				// generate
-				rowSize = new Size( textBounds.Width- widthReduction, rowHeight );
-				layout = new WrappingLayout( emSize, rowSize, graphics ) {
-					IconDimension = iconSize,
-					HorizontalAlignment = Align.Center,
-				};
-				layout.CalcWrappingString( description, FontStyle.Regular );
-				layout.FinalizeBounds();
-
-				widthReduction -= 20;
-			} while( 0 < widthReduction && 2 < layout.RowCount );
-
-			layout.Adjust( textBounds.X, textBounds.Y );
-			layout.CenterDrawingSpace( textBounds.Size );
-
-			layout.Paint( graphics );
-		}
+		for(int i = 0; i < 3; ++i)
+			PaintTerrorLevelDetails( graphics, textAreas[i], card.GetDescription( i + 1 ) );
 
 		return img;
 	}
 
+	static void PaintTerrorLevelDetails( Graphics graphics, Rectangle outterArea, string description ) {
+		var config = new ConfigWrappingLayout {
+			EmSize = 13,
+			ElementDimension = 31,
+			IconDimension = 20,
+			HorizontalAlignment = Align.Center
+		};
+
+		int rowHeight = 18;
+		Rectangle textBounds = outterArea.InflateBy( -10, 0 );
+
+		// Try - reduced Width
+		int widthReduction = 100;
+		WrappingLayout layout;
+
+		// as long as it takes up 3 lines, incrmentally make it wider
+		do {
+
+			// generate
+			Size rowSize = new Size( textBounds.Width - widthReduction, rowHeight );
+			layout = new WrappingLayout( config, rowSize, graphics );
+			layout.Append( description, FontStyle.Regular );
+			layout.FinalizeBounds();
+
+			widthReduction -= 20;
+		} while(0 < widthReduction && 2 < layout.LineCount);
+
+		layout.Adjust( textBounds.X, textBounds.Y );
+		layout.CenterDrawingSpace( textBounds.Size );
+
+		layout.Paint( graphics );
+	}
 }

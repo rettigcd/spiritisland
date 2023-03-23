@@ -2,9 +2,8 @@
 
 public class GuardianSerpents {
 
-	[MinorCard( "Guardian Serpents", 1, Element.Sun, Element.Moon, Element.Earth, Element.Animal )]
-	[Fast]
-	[AnySpirit]
+	[MinorCard( "Guardian Serpents", 1, Element.Sun, Element.Moon, Element.Earth, Element.Animal ),Fast,AnySpirit]
+	[Instructions( "Add 1 Beasts in one of target Spirit's lands. If target Spirit has a SacredSite in that land: Defend 4 there." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// Add 1 beast in one of target spirits lands

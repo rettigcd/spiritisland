@@ -5,6 +5,7 @@ class BlurTheArcOfYears {
 	const string Name = "Blur the Arc of Years";
 
 	[SpiritCard( BlurTheArcOfYears.Name, 1, Element.Sun, Element.Moon,Element.Air ), Fast, FromPresence( 1 )]
+	[Instructions( "If no Dahan / Invaders are present: Remove 1 Blight. If invaders are present: they Build, then Ravage. If Dahan are present: Add 1 Dahan. Push up to 2 Dahan. You may repeat this power (once) on the same land by spending 1 Time." ), Artist( Artists.LucasDurham )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		await ActInnerAsync( ctx );

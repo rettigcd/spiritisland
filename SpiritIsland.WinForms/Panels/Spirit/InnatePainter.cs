@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.Utilities.ImageMgmt;
+using System;
 using System.Drawing;
 
 namespace SpiritIsland.WinForms; 
@@ -14,20 +15,16 @@ class InnatePainter : IDisposable {
 
 	#endregion
 
-	public void DrawFromLayout( Graphics graphics,  CachedImageDrawer imageDrawer ) {
+	public void DrawFromLayout( Graphics graphics,  CachedImageDrawer _ ) {
 
-		if(_backgroundCache == null) {
-			this._imageDrawer = imageDrawer;
-			using var boldFont = _layout.UsingBoldFont();
-			_backgroundCache = DrawBackgroundImage( boldFont );
-		}
+		_backgroundCache ??= DrawBackgroundImage();
 
 		// -- Background Layer --
 		graphics.DrawImage( _backgroundCache, _layout.Bounds );
 
 	}
 
-	Bitmap DrawBackgroundImage( Font boldFont ) {
+	Bitmap DrawBackgroundImage() {
 		var bounds = _layout.Bounds;
 		var backgroundCache = new Bitmap( bounds.Width, bounds.Height );
 		using var graphics = Graphics.FromImage( backgroundCache );
@@ -42,17 +39,17 @@ class InnatePainter : IDisposable {
 		// This could be on the bottom layer
 		_layout.GeneralInstructions?.Paint( graphics );
 
-		DrawAttributeTable( graphics, boldFont );
+		DrawAttributeTable( graphics );
 		return backgroundCache;
 	}
 
 	#region private
 
-	void DrawAttributeTable( Graphics graphics, Font boldFont ) {
+	void DrawAttributeTable( Graphics graphics ) {
 		// Attribute Headers
 		using(var titleBg = new SolidBrush( Color.FromArgb( 0xae, 0x98, 0x69 ) )) // ae9869
 			graphics.FillRectangle( titleBg, _layout.AttributeRows[0] );
-		var centerBoth = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+		using var centerBoth = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using(Font titleFont = new Font( "Arial", _layout._textEmSize * 0.8f, FontStyle.Bold, GraphicsUnit.Pixel )) {
 			graphics.DrawString( "SPEED", titleFont, Brushes.White, _layout.AttributeLabelCells[0], centerBoth );
 			graphics.DrawString( "RANGE", titleFont, Brushes.White, _layout.AttributeLabelCells[1], centerBoth );
@@ -60,21 +57,10 @@ class InnatePainter : IDisposable {
 		}
 
 		// Attribute Values
-		graphics.FillRectangle( Brushes.BlanchedAlmond, _layout.AttributeRows[1] );
-		foreach(var valueRect in _layout.AttributeValueCells)
-			graphics.DrawRectangle( Pens.Black, valueRect );
-
-		_imageDrawer.DrawFitHeight(
-			graphics,
-			_power.DisplaySpeed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast,
-			_layout.AttributeValueCells[0].InflateBy( (int)(-_layout.AttributeValueCells[0].Height * .2f) )
-		);
-
-		graphics.DrawString( _power.RangeText, boldFont, Brushes.Black, _layout.AttributeValueCells[1], centerBoth );
-		graphics.DrawString( _power.TargetFilter.ToUpper(), boldFont, Brushes.Black, _layout.AttributeValueCells[2], centerBoth );
+		PowerCardImageManager.AttributeValues( graphics, _layout.AttributeValueCells, _power );
 
 		// Attribute Outter box
-		using var thickPen = new Pen( Brushes.Black, 2f );
+		using Pen thickPen = new Pen( Brushes.Black, 2f );
 		graphics.DrawRectangle( thickPen, _layout.AttributeBounds );
 	}
 
@@ -87,9 +73,6 @@ class InnatePainter : IDisposable {
 
 	readonly InnatePower _power;
 	readonly InnateLayout _layout;
-
-	// single threaded variables...
-	CachedImageDrawer _imageDrawer;
 
 	Bitmap _backgroundCache;
 	readonly Brush backgroundBrush = Brushes.AliceBlue;

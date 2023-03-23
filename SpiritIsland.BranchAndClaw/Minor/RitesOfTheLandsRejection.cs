@@ -4,9 +4,8 @@ public class RitesOfTheLandsRejection {
 
 	public const string Name = "Rites of the Land's Rejection";
 
-	[MinorCard( RitesOfTheLandsRejection.Name, 1, Element.Moon, Element.Fire, Element.Earth )]
-	[Fast]
-	[FromSacredSite( 2, Target.Dahan )]
+	[MinorCard( RitesOfTheLandsRejection.Name, 1, Element.Moon, Element.Fire, Element.Earth ), Fast, FromSacredSite( 2, Target.Dahan )]
+	[Instructions( "Invaders do not Build in target land this turn. 1 Fear per Town / City or 1 Fear per Dahan, whichever is less. -or- Push up to 3 Dahan." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		static void StopBuild_FearForCitiesTownsAndDahan(TargetSpaceCtx ctx) {

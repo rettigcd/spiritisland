@@ -2,9 +2,8 @@
 
 public class SavageMawbeasts {
 
-	[MinorCard("Savage Mawbeasts",0,Element.Fire,Element.Animal)]
-	[Slow]
-	[FromSacredSite(1)]
+	[MinorCard("Savage Mawbeasts",0,Element.Fire,Element.Animal),Slow,FromSacredSite(1)]
+	[Instructions( "If target land is Jungle / Wetland, 1 Fear and 1 Damage. -If you have- 3 Animal: 1 Damage." ), Artist( Artists.CariCorene )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		int damage = 0;
 

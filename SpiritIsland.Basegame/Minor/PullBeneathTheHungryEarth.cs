@@ -4,9 +4,8 @@ public class PullBeneathTheHungryEarth {
 
 	public const string Name = "Pull Beneath the Hungry Earth";
 
-	[MinorCard(PullBeneathTheHungryEarth.Name,1,Element.Moon,Element.Water,Element.Earth)]
-	[Slow]
-	[FromPresence(1,Target.Any)]
+	[MinorCard(PullBeneathTheHungryEarth.Name,1,Element.Moon,Element.Water,Element.Earth),Slow,FromPresence(1,Target.Any)]
+	[Instructions( "If target land has your Presence, 1 Fear and 1 Damage. If target land is Sands / Wetland, 1 Damage." ), Artist( Artists.NolanNasser )]
 	static public Task ActAsync(TargetSpaceCtx ctx){
 
 		int damage = 0;

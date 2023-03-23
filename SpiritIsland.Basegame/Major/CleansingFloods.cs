@@ -1,9 +1,8 @@
 ﻿namespace SpiritIsland.Basegame;
 public class CleansingFloods { 
 
-	[MajorCard("Cleansing Floods",5, Element.Sun, Element.Water)]
-	[Slow]
-	[FromPresenceIn(1,Terrain.Wetland)]
+	[MajorCard("Cleansing Floods",5, Element.Sun, Element.Water),Slow,FromPresenceIn(1,Terrain.Wetland)]
+	[Instructions( "4 Damage. Remove 1 Blight. -If you have- 4 Water: +10 Damage." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		// 4 damage

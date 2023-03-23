@@ -3,6 +3,7 @@
 public class MesmerizedTranquility{ 
 
 	[MinorCard("Mesmerized Tranquility",0,Element.Water,Element.Earth,Element.Animal),Fast,FromPresence(0)]
+	[Instructions( "Isolate target land. Each Invader does -1 Damage." ), Artist( Artists.KatGuevara )]
 	static public Task ActAsync( TargetSpaceCtx ctx ){
 		// Isolate target land.
 		ctx.Isolate();

@@ -5,6 +5,7 @@ public class VengeanceOfTheDead {
 	const string Name = "Vengeance of the Dead";
 
 	[MajorCard(Name,3,Element.Moon,Element.Fire,Element.Animal), Fast, FromPresence(3)]
+	[Instructions( "3 Fear. After each effect that destroys Town / City / Dahan in target land, 1 Damage per Town / City / Dahan destroyed. -If you have- 3 Animal: Damage from this Power may be dealt into adjacent lands." ), Artist( Artists.KatBirmelin )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 3 fear
 		ctx.AddFear(3);

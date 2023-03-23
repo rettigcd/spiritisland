@@ -69,7 +69,7 @@ public class SinglePlayerGame {
 								savedGameStates.Remove(laterRounds);
 						}
 					} catch(Exception ex) when (ex is not GameOverException) {
-						GameState.Log( new Log.Exception( ex ) );
+						GameState.Log( new Log.ExceptionEntry( ex ) );
 						GameState.LoadFrom( savedGameStates[ GameState.RoundNumber ] ); // go back to beginning of round and see if we can debug it.
 					}
 				}
@@ -79,7 +79,7 @@ public class SinglePlayerGame {
 				GameState.Log( gameOver.Status );
 			}
 			catch(Exception ex) {
-				GameState.Log(new Log.Exception( ex ) );
+				GameState.Log(new Log.ExceptionEntry( ex ) );
 			}
 		}
 		_ = LoopAsync();

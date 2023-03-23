@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace SpiritIsland.FeatherAndFlame;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
 public class AidFromTheSpiritSpeakers {
 
-	[SpiritCard( "Aid From The Spirit-Speakers", 2, Element.Sun, Element.Fire, Element.Air )]
-	[Fast, FromPresence( 1 )]
+	[SpiritCard( "Aid From the Spirit-Speakers", 2, Element.Sun, Element.Fire, Element.Air ),Fast, FromPresence( 1 )]
+	[Instructions( "For each Dahan, you may move 1 Invader / Dahan / Presence / Beasts to a land within 2 Range that has Dahan." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// For each dahan, you may move 1 Invader / dahan / presence / beast to a land within range - 2 that has dahan.

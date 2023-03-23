@@ -3,6 +3,7 @@
 public class HauntedByPrimalMemories{ 
 
 	[MinorCard("Haunted by Primal Memories",1,Element.Moon,Element.Air,Element.Earth),Fast, FromSacredSite(2,Target.Invaders)]
+	[Instructions( "1 Fear. Defend 3. If Beasts are present, +2 Fear." ), Artist( Artists.KatGuevara )]
 	static public Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear
 		ctx.AddFear(1);

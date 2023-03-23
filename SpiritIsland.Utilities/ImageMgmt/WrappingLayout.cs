@@ -1,33 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using SpiritIsland;
 using System.Drawing;
-using System.Linq;
 using System.Text.RegularExpressions;
-using SpiritIsland;
 
 namespace SpiritIsland.WinForms;
 
-/// <summary>
-/// Generic wrap-column text layout engine
-/// </summary>
+// !!! Sacred Site icons suck
+// !! \r\n should causes new line( Dahan reclaim fishing grounds )
+
+/// <summary> Generic wrap-column text layout engine </summary>
 public class WrappingLayout {
 
-	// !!! Sacred Site icons suck
-	// !! \r\n should causes new line( Dahan reclaim fishing grounds )
-
-	Font UsingFont( FontStyle style ) => new Font( FontFamily.GenericSansSerif, _textEmSize, style, GraphicsUnit.Pixel );
+	readonly ConfigWrappingLayout _config;
 
 	#region constructor
+
 	public WrappingLayout(
-		float textEmSize,
+		ConfigWrappingLayout config, 
 		Size rowSize,
 		Graphics graphics
 	) {
-		// Font and Icon sizes
-		_textEmSize = textEmSize;
-		int iconDimension = (int)(_textEmSize * 1.8f);
-		int elementDimension = (int)(_textEmSize * 2.4f);
-		_imageSizeCalculator = new ImageSizeCalculator( iconDimension, elementDimension );
-		_maxIconHeight = System.Math.Max( iconDimension, elementDimension );
+		_config = config;
+
+		_imageSizeCalculator = new ImageSizeCalculator( _config.IconDimension, _config.ElementDimension );
+		_maxIconHeight = System.Math.Max( _config.IconDimension, _config.ElementDimension );
 
 		_rowSize = rowSize;
 		_textCenterOffset = (int)(_rowSize.Height * .45f);
@@ -37,33 +32,21 @@ public class WrappingLayout {
 
 		_graphics = graphics;
 	}
+
+
 	#endregion
 
-	public int IconDimension {
-		get => _imageSizeCalculator.IconDimension;
-		set => _imageSizeCalculator.IconDimension = value;
+	public void AppendLine( string description, FontStyle fontStyle ) {
+		Append(description,fontStyle);
+		LineComplete();
 	}
 
-	readonly int _maxIconHeight; // the larger of the icons and the elements
-
-	/// <summary>
-	/// Since the icons may overhang the row-height, this adds height 
-	/// so tokens/icons don't get clipped by bounds
-	/// </summary>
-	public void AddIconRowOverflowHeight() {
-		int verticalTokenBuffer = System.Math.Max( 0, (_maxIconHeight - _rowSize.Height) / 2 + 1 );
-		IncY( verticalTokenBuffer ); // create top buffer for over hanging enlarged tokens
-	}
-
-	Font? _measuringFont;
-	public int Indent { private get; set; } // subsequent lines, not the 1st line
-
-	public void CalcWrappingString( string description, FontStyle fontStyle ) {
+	public void Append( string description, FontStyle fontStyle ) {
 
 		using var font = UsingFont( fontStyle );
 		_measuringFont = font;
 
-		// Add or us existing
+		// Add or use existing
 		List<TextPosition> texts;
 		if(_texts.ContainsKey( fontStyle ))
 			texts = _texts[fontStyle];
@@ -116,6 +99,7 @@ public class WrappingLayout {
 
 	}
 
+	/// <summary> Skips somespace </summary>
 	public void Tab( int numberOfSpaces, FontStyle style ) {
 		using(Font? font = UsingFont( style )) {
 			_measuringFont = font;
@@ -123,6 +107,103 @@ public class WrappingLayout {
 		}
 		_measuringFont = null;
 	}
+
+	#region finalize stuff
+
+	public void FinalizeBounds() {
+		if(NextLineStartingX < _x)
+			LineComplete();
+		_size = new Size( _rowSize.Width, _y );
+	}
+
+	/// <summary>
+	/// Since the icons may overhang the row-height, this adds height 
+	/// so tokens/icons don't get clipped by bounds
+	/// </summary>
+	public void AddIconRowOverflowHeight() {
+		// Align Vertically - Center   !!! move this into .FinalizeBounds
+		int verticalTokenBuffer = System.Math.Max( 0, (_maxIconHeight - _rowSize.Height) / 2 + 1 );
+		IncY( verticalTokenBuffer ); // create top buffer for over hanging enlarged tokens
+	}
+	/// <summary>
+	/// Shifts the Drawing Space by shifting everything inside of it.
+	/// Called AFTER layout has been finalized and final height is known.
+	/// </summary>
+	/// <remarks>This is different from horizontal center alignment inside the drawing space.</remarks>
+	public Point CenterDrawingSpace( Size sizeOfContainer ) {
+		// Align Vertically - Center   !!! move this into .FinalizeBounds  OR Create a method Called .AlignVertically( Align.Center, ToHeight )
+		int adjustX = (sizeOfContainer.Width - Size.Width) / 2;
+		int adjustY = (sizeOfContainer.Height - Size.Height) / 2;
+		Adjust( adjustX, adjustY );
+		return new Point( adjustX, adjustY );
+	}
+	#endregion
+
+	public Size Size => _size ?? throw new System.InvalidOperationException( "Size not finalized." );
+
+	public void Adjust( int deltaX, int deltaY ) {
+		foreach(var t in _tokens) { 
+			t.Bounds.X+= deltaX;
+			t.Bounds.Y+= deltaY;
+		}
+		foreach(var pair in _texts)
+			foreach(TextPosition t in pair.Value) {
+				t.Bounds.X+= deltaX;
+				t.Bounds.Y+= deltaY;
+			}
+	}
+
+	public void Paint( Graphics graphics ) {
+		var layout = this;
+
+		// Draw Tokens
+		using(var imageDrawer = new CachedImageDrawer())
+			foreach(TokenPosition tp in layout._tokens)
+				imageDrawer.Draw( graphics, tp.TokenImg, tp.Bounds );
+
+		// Draw Text
+		using var verticalAlignCenter = new StringFormat { LineAlignment = StringAlignment.Center };
+		foreach(var (fontStyle, texts) in layout._texts.Select( p => (p.Key, p.Value) ))
+			using(Font font = UsingFont( fontStyle ))
+				foreach(TextPosition sp in texts)
+					graphics.DrawString( sp.Text, font, Brushes.Black, sp.Bounds, verticalAlignCenter );
+	}
+
+	public int LineCount { get; private set; } = 0;
+
+	#region private
+
+	readonly List<TokenPosition> _tokens = new();
+	readonly Dictionary<FontStyle, List<TextPosition>> _texts = new();
+
+	// Generic layout
+	readonly Size _rowSize;
+	readonly int _textCenterOffset;
+
+	int Right             => _rowSize.Width;
+	int RemainingWidth    => _rowSize.Width - _x;
+	int NextLineStartingX => _config.Indent;
+
+	// Moves as we add stuff
+	int _x;
+	int _y;
+
+	readonly Graphics _graphics; // determining text size
+	readonly ImageSizeCalculator _imageSizeCalculator;// determining icon size
+
+	readonly List<IMoveHorizontally> _rowItems = new();
+
+	readonly int _maxIconHeight; // the larger of the icons and the elements
+
+	Font? _measuringFont;
+
+	Size? _size;
+
+	void IncY( int deltaY ) { _y += deltaY; }
+
+	interface IMoveHorizontally { void Move( int deltaX ); }
+
+	Font UsingFont( FontStyle style ) => new Font( FontFamily.GenericSansSerif, _config.EmSize, style, GraphicsUnit.Pixel );
 
 	float Measure( string s ) => _graphics.MeasureString( s, _measuringFont ).Width;
 
@@ -141,7 +222,7 @@ public class WrappingLayout {
 		return bestLength;
 	}
 
-	/// <summary> Centers vertically on line </summary>
+	/// Centers vertically on line
 	void AddToken( Img img, Size tokenSize ) {
 
 		// If not 1st item on line, Give tokens a small left margin
@@ -175,108 +256,23 @@ public class WrappingLayout {
 		return b;
 	}
 
-	void LineComplete() {
+	public void LineComplete() {
 		// Capture Row width
-		++RowCount;
+		++LineCount;
 
 		// Horizontal Alignment
-		int offset = HorizontalAlignment switch { WinForms.Align.Center => RemainingWidth / 2, WinForms.Align.Far => RemainingWidth, _ => 0 };
+		int offset = _config.HorizontalAlignment switch { WinForms.Align.Center => RemainingWidth / 2, WinForms.Align.Far => RemainingWidth, _ => 0 };
 		foreach(IMoveHorizontally moveable in _rowItems)
 			moveable.Move( offset );
 		_rowItems.Clear();
-		
+
 		// Go to Next Line
 		_x = NextLineStartingX;
 		_y += _rowSize.Height;
 
 	}
 
-	public void FinalizeBounds() {
-		if(NextLineStartingX < _x)
-			LineComplete();
-
-		_size = new Size( _rowSize.Width, _y );
-		//_bounds = new Rectangle( new Point(0, 0), Size );
-	}
-
-//	public Rectangle Bounds => _bounds ?? throw new System.InvalidOperationException( "Bounds not finalized." );
-//	Rectangle? _bounds;
-
-	public Size Size => _size ?? throw new System.InvalidOperationException( "Size not finalized." );
-	Size? _size;
-
-
-	public void IncY( int deltaY ) { _y += deltaY; }
-
-	public void Adjust( int deltaX, int deltaY ) {
-		foreach(var t in _tokens) { 
-			t.Bounds.X+= deltaX;
-			t.Bounds.Y+= deltaY;
-		}
-		foreach(var pair in _texts)
-			foreach(TextPosition t in pair.Value) {
-				t.Bounds.X+= deltaX;
-				t.Bounds.Y+= deltaY;
-			}
-	}
-
-	/// <summary>
-	/// Shifts the Drawing Space by shifting everything inside of it.
-	/// Called AFTER layout has been finalized and final height is known.
-	/// </summary>
-	/// <remarks>This is different from horizontal center alignment inside the drawing space.</remarks>
-	public void CenterDrawingSpace( Size sizeOfContainer) {
-		// Align Vertically - Center   !!! move this into .FinalizeBounds  OR Create a method Called .AlignVertically( Align.Center, ToHeight )
-		int adjustX = (sizeOfContainer.Width  - Size.Width) / 2;
-		int adjustY = (sizeOfContainer.Height - Size.Height) / 2;
-		Adjust( adjustX, adjustY );
-	}
-
-	public void Paint( Graphics graphics ) {
-		var layout = this;
-
-		// Draw Tokens
-		using(var imageDrawer = new CachedImageDrawer())
-			foreach(TokenPosition tp in layout._tokens)
-				imageDrawer.Draw( graphics, tp.TokenImg, tp.Bounds );
-
-		// Draw Text
-		using var verticalAlignCenter = new StringFormat { LineAlignment = StringAlignment.Center };
-		foreach(var (fontStyle, texts) in layout._texts.Select( p => (p.Key, p.Value) ))
-			using(Font font = UsingFont( fontStyle ))
-				foreach(TextPosition sp in texts)
-					graphics.DrawString( sp.Text, font, Brushes.Black, sp.Bounds, verticalAlignCenter );
-	}
-
-	#region layout things
-
-	// Generic layout
-	readonly Size _rowSize;
-	readonly int _textCenterOffset;
-
-	int Right             => _rowSize.Width;
-	int RemainingWidth    => _rowSize.Width - _x;
-	int NextLineStartingX => Indent;
-
-	// Moves as we add stuff
-	int _x;
-	int _y;
-
-	readonly Graphics _graphics; // determining text size
-	readonly ImageSizeCalculator _imageSizeCalculator;// determining icon size
-
-	public int RowCount { get; private set; } = 0;
-	public readonly float _textEmSize;
-
-	public Align HorizontalAlignment = WinForms.Align.Near; // left
-	public readonly List<TokenPosition> _tokens = new();
-	public readonly Dictionary<FontStyle, List<TextPosition>> _texts = new();
-
-	readonly List<IMoveHorizontally> _rowItems = new();
-
 	#endregion
-
-	interface IMoveHorizontally { void Move( int deltaX ); }
 
 	public class TokenPosition : IMoveHorizontally {
 		public TokenPosition( Img tokenImg, RectangleF rect ) { TokenImg = tokenImg; Bounds = rect; }
@@ -300,8 +296,8 @@ public static class TokenParser {
 		var tokens = new Regex( "sacred site|destroyedpresence|presence|fast|slow"
 			+ "|dahan|blight|fear|city|town|explorer"
 			+ "|sun|moon|air|fire|water|plant|animal|earth"
-			+ "|beast|disease|strife|wilds|badlands"
-			+ "|\\+1range", RegexOptions.IgnoreCase
+			+ "|beasts?|disease|strife|wilds|badlands"
+			+ "|\\+1range|-or-", RegexOptions.IgnoreCase
 		).Matches( s ).Cast<Match>().ToList();
 
 		var results = new List<string>();
@@ -316,7 +312,17 @@ public static class TokenParser {
 			var nextToken = tokens[0];
 			if(nextToken.Index == cur) {
 				// Add this token to the results
-				results.Add( "{" + nextToken.Value.ToLower() + "}" );
+				string tokenText = "{" + nextToken.Value.ToLower() + "}";
+				switch(tokenText) {
+					case "{beasts}": results.Add( "{beast}" ); break;
+                    case "{-or-}":
+						results.Add("{or-curly-before}");
+						results.Add( " or " );
+						results.Add( "{or-curly-after}" );
+						break;
+                    default: results.Add(tokenText); break;
+				}
+				// next
 				cur = nextToken.Index + nextToken.Length;
 				tokens.RemoveAt( 0 );
 			} else {
@@ -330,3 +336,10 @@ public static class TokenParser {
 
 }
 
+public class ConfigWrappingLayout {
+	public float EmSize;
+	public int ElementDimension;
+	public int IconDimension;
+	public Align HorizontalAlignment;
+	public int Indent;
+}

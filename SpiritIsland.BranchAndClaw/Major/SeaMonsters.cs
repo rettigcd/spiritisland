@@ -2,9 +2,8 @@
 
 public class SeaMonsters {
 
-	[MajorCard( "Sea Monsters", 5, Element.Water, Element.Animal )]
-	[Slow]
-	[FromPresence( 1, Target.Coastal, Target.Wetland )]
+	[MajorCard( "Sea Monsters", 5, Element.Water, Element.Animal ),Slow,FromPresence( 1, Target.Coastal, Target.Wetland )]
+	[Instructions( "Add 1 Beasts. If Invaders are present, 2 Fear per Beasts (max. 8 Fear). 3 Damage per Beasts. 1 Damage per Blight. -If you have- 3 Water, 3 Animal: Repeat this power." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		await DoPowerAction( ctx );
 

@@ -4,6 +4,7 @@ public class ADreadfulTideOfScurryingFlesh {
 
 	const string Name = "A Dreadful Tide of Scurrying Flesh";
 	[SpiritCard(Name,0, Element.Moon, Element.Air,Element.Water, Element.Animal), Fast, FromSacredSite(1,Target.TwoBeasts)]
+	[Instructions( "Remove up to half (round down) of Beasts in target land. For each Beasts Removed, 2 Fear and skip one Invader Action." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// Remove up to half (round down) of beast in target land.
 		int removable = ctx.Beasts.Count / 2;

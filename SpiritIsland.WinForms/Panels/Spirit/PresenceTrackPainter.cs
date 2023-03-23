@@ -2,7 +2,6 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace SpiritIsland.WinForms {
 

@@ -2,7 +2,8 @@
 
 public class SpillBitternessIntoTheEarth {
 
-	[MajorCard("Spill Bitterness into the Earth",5,Element.Fire,Element.Water,Element.Earth), Fast, FromPresence(0)]
+	[MajorCard("Spill Bitterness Into the Earth",5,Element.Fire,Element.Water,Element.Earth), Fast, FromPresence(0)]
+	[Instructions( "6 Damage. Add 2 Badlands / Strife and 1 Blight. In up to 3 adjacent lands with Blight, add 1 Badlands / Strife. -If you have- 3 Fire, 3 Water: In up to 3 adjacent lands, 1 Damage to each Invader." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 6 damage.
 		await ctx.DamageInvaders( 6 );

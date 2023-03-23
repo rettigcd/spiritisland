@@ -2,9 +2,10 @@
 
 public class AnimatedWrackroot {
 
-	[MinorCard( "Animated WrackRoot", 0, Element.Moon, Element.Fire, Element.Plant )]
-	[Slow]
-	[FromPresence( 0 )]
+	public const string Name = "Animated Wrackroot";
+
+	[MinorCard( Name, 0, Element.Moon, Element.Fire, Element.Plant ),Slow,FromPresence( 0 )]
+	[Instructions( "1 Fear. Destroy 1 Explorer. -or- Add 1 Wilds." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
 			new SpaceAction( "1 fear, Destroy 1 explorer", FearAndExplorer ),

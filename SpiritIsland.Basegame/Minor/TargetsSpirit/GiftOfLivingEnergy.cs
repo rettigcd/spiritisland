@@ -2,9 +2,8 @@
 
 public class GiftOfLivingEnergy {
 
-	[MinorCard( "Gift of Living Energy", 0, Element.Sun, Element.Fire, Element.Plant )]
-	[Fast]
-	[AnySpirit]
+	[MinorCard( "Gift of Living Energy", 0, Element.Sun, Element.Fire, Element.Plant ),Fast,AnySpirit]
+	[Instructions( "Target Spirit gains 1 Energy, +1 Energy if target Spirit is not yourself. If you have at least 2 SacredSite, target Spirit gains +1 Energy." ), Artist( Artists.NolanNasser )]
 	public static Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// Target Spirit gains 1 energy

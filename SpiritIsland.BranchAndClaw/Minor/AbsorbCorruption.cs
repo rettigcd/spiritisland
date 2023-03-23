@@ -2,9 +2,8 @@
 
 public class AbsorbCorruption {
 
-	[MinorCard( "Absorb Corruption", 1, Element.Sun, Element.Earth, Element.Plant )]
-	[Slow]
-	[FromPresence( 0 )]
+	[MinorCard( "Absorb Corruption", 1, Element.Sun, Element.Earth, Element.Plant ),Slow,FromPresence( 0 )]
+	[Instructions( "Gather 1 Blight. -or- Pay 1 Energy to remove 1 Blight. -If you have- 2 Plant: You may do both." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		static bool CanRemoveBlight(TargetSpaceCtx ctx ) => ctx.Blight.Any && 1 <= ctx.Self.Energy;

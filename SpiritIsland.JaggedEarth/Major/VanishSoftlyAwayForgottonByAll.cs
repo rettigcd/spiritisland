@@ -2,6 +2,7 @@
 public class VanishSoftlyAwayForgottonByAll {
 
 	[MajorCard("Vanish Softly Away, Forgotten by All",3,Element.Moon,Element.Air), Slow, FromPresence(2)]
+	[Instructions( "Remove 1 Invader and 1 Explorer / Town. -or- Remove all Damaged Invaders. Adversary or Scenario rules that prevent or alter Removal do not affect this Power.  -If you have- 3 Moon, 3 Air: In any 2 lands with 4 or more Invaders: Remove 1 Invader." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption(

@@ -4,9 +4,8 @@ public class NaturesResilience {
 
 	public const string Name = "Nature's Resilience";
 
-	[MinorCard(NaturesResilience.Name,1,Element.Earth,Element.Plant,Element.Animal)]
-	[Fast]
-	[FromSacredSite(1)]
+	[MinorCard(NaturesResilience.Name,1,Element.Earth,Element.Plant,Element.Animal),Fast,FromSacredSite(1)]
+	[Instructions( "Defend 6. -If you have- 2 Water: You may instead remove 1 Blight." ), Artist( Artists.JoshuaWright )]
 	static public async Task Act(TargetSpaceCtx ctx){
 
 		await ctx.SelectActionOption(

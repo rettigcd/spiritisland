@@ -4,9 +4,8 @@ public class InfiniteVitality {
 
 	const string Name = "Infinite Vitality";
 
-	[MajorCard( Name, 3, Element.Earth, Element.Plant, Element.Animal )]
-	[Fast]
-	[FromSacredSite( 1 )]
+	[MajorCard( Name, 3, Element.Earth, Element.Plant, Element.Animal ),Fast,FromSacredSite( 1 )]
+	[Instructions( "Dahan have +4 Health while in target land. Whenever Blight would be added to target land, instead leave it on the card. -If you have- 4 Earth: Dahan ignore Damage and Destruction effects. Remove 1 Blight from target or adjacent land." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// Dahan have +4 health while in target land.

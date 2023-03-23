@@ -1,7 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 public class WeepForWhatIsLost{ 
-	[MinorCard("Weep for What Is Lost",0,Element.Fire,Element.Water,Element.Animal),Slow,FromPresence(1,Target.Blight)]
+
+	[MinorCard("Weep for What is Lost",0,Element.Fire,Element.Water,Element.Animal),Slow,FromPresence(1,Target.Blight)]
+	[Instructions( "1 Fear per type of Invader present. Push up to 1 Explorer / Town per Blight." ), Artist( Artists.KatGuevara )]
 	static public Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear per type of Invader present.
 		ctx.AddFear( ctx.Tokens.InvaderTotal() );

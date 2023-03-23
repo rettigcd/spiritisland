@@ -2,6 +2,7 @@
 public class UtterACurseOfDreadAndBone {
 
 	[MajorCard("Utter a Curse of Dread and Bone",4,Element.Moon,Element.Animal), Slow, FromSacredSite(1)]
+	[Instructions( "For each Blight in / adjacent to target land, add 1 Badlands, 1 Disease, or 1 Strife. (Max. +3 of each.) Then: 2 Fear. 1 Damage. -If you have- 3 Moon, 2 Animal: For each type of token you added, add 1 more within 1 Range. 1 Damage in an adjacent land." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// for each blight in or adjcent to target target land

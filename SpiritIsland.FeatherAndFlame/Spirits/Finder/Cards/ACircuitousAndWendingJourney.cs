@@ -2,8 +2,8 @@
 
 public class ACircuitousAndWendingJourney {
 
-	[SpiritCard( "A Circuitous And Wending Journey", 0, Element.Moon, Element.Air )]
-	[Slow,FromPresence( 0 )]
+	[SpiritCard( "A Circuitous and Wending Journey", 0, Element.Moon, Element.Air ),Slow,FromPresence( 0 )]
+	[Instructions( "Push up to half (round up) of Invaders from target land. Do likewise (separately) for Dahan, Presence, and Beasts." ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		var pusher = ctx.Pusher;

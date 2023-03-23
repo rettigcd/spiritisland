@@ -2,9 +2,8 @@
 
 public class TerrifyingChase {
 
-	[SpiritCard( "Terrifying Chase", 1, Element.Sun, Element.Animal )]
-	[Slow]
-	[FromPresence( 0 )]
+	[SpiritCard( "Terrifying Chase", 1, Element.Sun, Element.Animal ),Slow,FromPresence( 0 )]
+	[Instructions( "Push 2 Explorer / Town / Dahan. Push another 2 Explorer / Town / Dahan per Beasts in target land. If you Pushed any Invaders, 2 Fear." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// push 2 exploeres / towns / dahan

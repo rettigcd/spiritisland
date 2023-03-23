@@ -2,9 +2,8 @@
 
 public class BloodwrackPlague {
 
-	[MajorCard("Bloodwrack Plague",4,Element.Water,Element.Earth,Element.Animal)]
-	[Fast]
-	[FromSacredSite(1)]
+	[MajorCard("Bloodwrack Plague",4,Element.Water,Element.Earth,Element.Animal),Fast,FromSacredSite(1)]
+	[Instructions( "Add 2 Disease. For each Disease in target land, Defend 1 in target and all adjacent lands. -If you have- 2 Earth, 4 Animal: 2 Fear. For each Disease in target land do 1 Damage in target or an adjacent land." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// add 2 disease
 		var disease = ctx.Disease;

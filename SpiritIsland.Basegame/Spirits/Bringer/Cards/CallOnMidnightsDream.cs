@@ -5,7 +5,8 @@ public class CallOnMidnightsDream {
 	public const string Name = "Call on Midnight's Dream";
 
 
-	[SpiritCard(CallOnMidnightsDream.Name,0, Element.Moon,Element.Animal), Fast, FromPresence(0,Target.Dahan, Target.Invaders )]
+	[SpiritCard(Name,0, Element.Moon,Element.Animal), Fast, FromPresence(0,Target.Dahan, Target.Invaders )]
+	[Instructions("If target land has Dahan, gain a Major Power. If you Forget this Power, gain Energy equal to Dahan and you may play the Major Power immediately, paying its cost. -or- If Invaders are present, 2 Fear."),Artist( Artists.ShaneTyree)]
 	static public Task ActAsync(TargetSpaceCtx ctx) {
 
 		return ctx.SelectActionOption(

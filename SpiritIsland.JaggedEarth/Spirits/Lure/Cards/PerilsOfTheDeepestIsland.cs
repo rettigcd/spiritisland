@@ -3,6 +3,7 @@
 public class PerilsOfTheDeepestIsland {
 
 	[SpiritCard("Perils of the Deepest Island",1,Element.Moon,Element.Plant,Element.Animal),Slow,FromPresence(0,Target.Inland)]
+	[Instructions( "1 Fear. Add 1 Badlands. Add 1 Beasts within 1 Range. Push up to 2 Dahan." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// 1 fear.

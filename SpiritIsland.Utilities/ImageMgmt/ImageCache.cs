@@ -1,7 +1,5 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
@@ -10,7 +8,7 @@ namespace SpiritIsland.WinForms;
 //	color / hue / etc Adjustment
 //	constructed
 
-class ImageCache {
+public class ImageCache {
 
 	#region constructor
 
@@ -34,7 +32,7 @@ class ImageCache {
 
 	#region private
 
-	static void SaveBmp( Bitmap bmp, string filePathAndName, ImageFormat imageFormat ) {
+	static public void SaveBmp( Bitmap bmp, string filePathAndName, ImageFormat imageFormat ) {
 		var codec = ImageCodecInfo.GetImageDecoders()
 			.FirstOrDefault( codec => codec.FormatID == imageFormat.Guid );
 		const long quality = 80L; // 1..100?

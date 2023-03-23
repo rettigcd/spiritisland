@@ -11,6 +11,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 		_speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
 		_repeatAttr = methodBase.GetCustomAttribute<RepeatAttribute>();
 
+		var instructions = methodBase.GetCustomAttribute<InstructionsAttribute>(false) ?? throw new InvalidOperationException( "Missing Instructions attribute for " + methodBase.DeclaringType.Name );
+		Instructions = instructions.Text;
+
 		if(_targetAttr is TargetSpaceAttribute tsa )
 			tsa.Preselect = methodBase.GetCustomAttribute<PreselectAttribute>();
 	}
@@ -21,6 +24,11 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 	public string Name         => _cardAttr.Name;
 	public Phase DisplaySpeed         => _speedAttr.DisplaySpeed;
 	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
+
+	public string Instructions { get; }
+
+	public string TargetFilter => _targetAttr.TargetFilter;
+	public string RangeText => _targetAttr.RangeText;
 
 	public int Cost            => _cardAttr.Cost;
 	public ElementCounts Elements  => _cardAttr.Elements;
@@ -90,15 +98,14 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 	}
 
 	static public PowerCard For( MethodInfo method ) {
+
 		// check if targets spirit
-		var targetSpiritAttribute = method.GetCustomAttributes<AnySpiritAttribute>().FirstOrDefault();
+		AnySpiritAttribute targetSpiritAttribute = method.GetCustomAttributes<AnySpiritAttribute>().FirstOrDefault();
 		if( targetSpiritAttribute != null )
 			return new PowerCard( method, targetSpiritAttribute );
 
-		//TargetSpaceAttribute targetSpace = (TargetSpaceAttribute)method.GetCustomAttributes<FromPresenceAttribute>().FirstOrDefault()
-		//	?? (TargetSpaceAttribute)method.GetCustomAttributes<FromSacredSiteAttribute>().FirstOrDefault();
+		// Must be target-land
 		TargetSpaceAttribute targetSpace = method.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault();
-
 		return new PowerCard( method, targetSpace );
 	}
 

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
+/// <summary>
+/// Loads images and caches their size, but does not hang on to the image.
+/// </summary>
 public class ImageSizeCalculator {
 
 	public int IconDimension { get; set; }
@@ -14,7 +16,7 @@ public class ImageSizeCalculator {
 	}
 
 	public (Size,Img) GetTokenDetails( string tokenName ) {
-		var img = SimpleWordToIcon( tokenName );
+		Img img = SimpleWordToIcon( tokenName );
 		var size = "sun|moon|air|fire|water|plant|animal|earth".Contains( tokenName )
 			? new Size( ElementDimension, ElementDimension )          // elements get special size
 			: CalcIconSize( img, IconDimension ); // non-elements must fit inside iconDimension
@@ -22,16 +24,16 @@ public class ImageSizeCalculator {
 	}
 
 
-	Size CalcIconSize( Img img, int maxDimension ) {
+	Size CalcIconSize( Img img, int maxHeight ) {
 		if(!iconSizes.ContainsKey( img )) {
 			using Image image = ResourceImages.Singleton.GetImage( img );
 			iconSizes.Add( img, image.Size );
 		}
 		var sz = iconSizes[img];
 
-		return sz.Width < sz.Height
-			? new Size( maxDimension * sz.Width / sz.Height, maxDimension )
-			: new Size( maxDimension, maxDimension * sz.Height / sz.Width );
+		return true // sz.Width < sz.Height
+			? new Size( maxHeight * sz.Width / sz.Height, maxHeight ) 
+			: new Size( maxHeight, maxHeight * sz.Height / sz.Width );
 	}
 
 	static Img SimpleWordToIcon( string token ) {
@@ -52,6 +54,8 @@ public class ImageSizeCalculator {
 			"strife" => Img.Icon_Strife,
 			"badlands" => Img.Icon_Badlands,
 			"destroyedpresence" => Img.Icon_DestroyedPresence,
+			"or-curly-before" => Img.OrCurlyBefore,
+			"or-curly-after" => Img.OrCurlyAfter,
 			_ => ElementCounts.ParseEl( token ).GetIconImg(),
 		};
 	}

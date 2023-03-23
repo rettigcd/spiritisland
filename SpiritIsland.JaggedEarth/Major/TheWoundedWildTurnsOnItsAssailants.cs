@@ -2,9 +2,10 @@
 
 public class TheWoundedWildTurnsOnItsAssailants {
 
-	const string Name = "The Wounded Wild Turns on its Assailants";
+	const string Name = "The Wounded Wild Turns on Its Assailants";
 
 	[MajorCard(Name,4,Element.Fire,Element.Plant,Element.Animal), Slow, FromPresence(1,Target.Blight)]
+	[Instructions( "Add 2 Badlands. Gather up to 2 Beasts. 1 Damage per Blight / Beasts / Wilds. -If you have- 2 Fire, 3 Plant, 2 Animal: 2 Fear per Invader destroyed by the Power (max. 8 Fear)." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// Add 2 badlands
 		await ctx.Badlands.Add( 2 );

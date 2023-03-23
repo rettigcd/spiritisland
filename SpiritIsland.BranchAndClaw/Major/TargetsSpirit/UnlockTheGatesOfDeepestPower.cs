@@ -2,9 +2,8 @@
 
 public class UnlockTheGatesOfDeepestPower {
 
-	[MajorCard( "Unlock the Gates of Deepest Power", 4, Element.Sun,Element.Moon,Element.Fire,Element.Air,Element.Water,Element.Earth,Element.Plant,Element.Animal )]
-	[Fast]
-	[AnySpirit]
+	[MajorCard( "Unlock the Gates of Deepest Power", 4, Element.Sun,Element.Moon,Element.Fire,Element.Air,Element.Water,Element.Earth,Element.Plant,Element.Animal ),Fast,AnySpirit]
+	[Instructions( "Target Spirit gains a Major Power by drawing 2 and keeping 1, without having to Forget another Power Card. -If you have- 2 Sun, 2 Moon, 2 Fire, 2 Air, 2 Water, 2 Earth, 2 Plant, 2 Animal: Target Spirit may now play the Major Power they keep by paying half its cost (round up) OR by Forgetting it at the end of turn. It gains all elemental thresholds." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// target Spirit gains a major power by drawing 2 and keeping 1, without having to forget another power card

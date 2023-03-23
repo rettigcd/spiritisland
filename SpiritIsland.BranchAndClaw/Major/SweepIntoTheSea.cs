@@ -2,9 +2,8 @@
 
 public partial class SweepIntoTheSea {
 
-	[MajorCard( "Sweep into the Sea", 4, Element.Sun, Element.Air, Element.Water )]
-	[Slow]
-	[FromPresence( 2 )]
+	[MajorCard( "Sweep Into the Sea", 4, Element.Sun, Element.Air, Element.Water ), Slow, FromPresence( 2 )]
+	[Instructions( "Push all Explorer and Town one land towards the nearest Ocean. -or- If target land is Coastal, destroy all Explorer and Town. -If you have- 3 Sun, 2 Water: Repeat on an adjacent land." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		await DoPower( ctx );
 		if(await ctx.YouHave("3 sun,2 water"))

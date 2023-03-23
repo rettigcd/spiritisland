@@ -1,7 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 public class StrongAndConstantCurrents{ 
+
 	[MinorCard("Strong and Constant Currents",0,Element.Sun,Element.Water,Element.Earth),Fast,FromPresence(0, Target.Coastal)]
+	[Instructions( "Push 1 Explorer / Town to an adjacent Coastal land. -or- Move up to 2 Dahan between target land and one other Coastal land. -If you have- 2 Water: You may do both." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// If you hvae 2 water: 
 		if(await ctx.YouHave("2 water" )) {

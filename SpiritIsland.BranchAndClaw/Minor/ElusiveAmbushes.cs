@@ -2,9 +2,8 @@
 
 public class ElusiveAmbushes {
 
-	[MinorCard("Elusive Ambushes",1,Element.Sun,Element.Fire,Element.Water)]
-	[Fast]
-	[FromPresence(1,Target.Dahan)]
+	[MinorCard("Elusive Ambushes",1,Element.Sun,Element.Fire,Element.Water),Fast,FromPresence(1,Target.Dahan)]
+	[Instructions( "1 Damage. -or- Defend 4." ), Artist( Artists.NolanNasser )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(

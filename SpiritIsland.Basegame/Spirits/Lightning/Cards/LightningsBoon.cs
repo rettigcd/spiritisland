@@ -3,9 +3,8 @@
 public class LightningsBoon {
 	public const string Name = "Lightning's Boon";
 
-	[SpiritCard(LightningsBoon.Name,1,Element.Fire,Element.Air)]
-	[Fast]
-	[AnySpirit]
+	[SpiritCard(LightningsBoon.Name,1,Element.Fire,Element.Air), Fast, AnySpirit]
+	[Instructions( "Target Spirit may use up to 2 Slow Powers as if they were Fast Powers this turn" ), Artist( Artists.RockyHammer )]
 	static public Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// Target spirit may use up to 2 slow powers as if they were fast powers this turn.

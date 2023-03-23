@@ -4,9 +4,8 @@ public class CallToTrade {
 
 	public const string Name = "Call to Trade";
 
-	[MinorCard( Name, 1, Element.Air, Element.Water, Element.Earth, Element.Plant )]
-	[Fast]
-	[FromPresence( 1, Target.Dahan )]
+	[MinorCard( Name, 1, Element.Air, Element.Water, Element.Earth, Element.Plant ),Fast,FromPresence( 1, Target.Dahan )]
+	[Instructions( "You may Gather 1 Dahan. If the Terror Level is 2 or lower, Gather 1 Town and the first Ravage in target land this turn becomes a Build there instead." ), Artist( Artists.KatBirmelin )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// You may Gather 1 dahan
 		await ctx.GatherUpToNDahan(1);

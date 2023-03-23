@@ -198,7 +198,7 @@ class GrowthPainter : IDisposable{
 	}
 
 	static Img GetImgEnum( string filterEnum ) {
-		const string OR = "Or";
+		const string OR = "Or"; // !!! Coordinate this with PowerCardImageManager DrawTarget
 		Img img = filterEnum switch {
 			Target.Dahan                           => Img.Icon_Dahan,
 			Target.Jungle + OR + Target.Wetland    => Img.Icon_JungleOrWetland,
@@ -209,7 +209,6 @@ class GrowthPainter : IDisposable{
 			Target.Beast + OR + Target.Jungle      => Img.Icon_BeastOrJungle,
 			Target.Ocean                           => Img.Icon_Ocean,
 			Target.Mountain + OR + Target.Presence => Img.Icon_MountainOrPresence,
-			Target.TownOrCity + OR + Target.Blight => Img.Icon_TownCityOrBlight,
 			_                                      => Img.None, // Inland, Any
 		};
 		return img;

@@ -4,6 +4,7 @@ public class EntwinedPower {
 
 
 	[MajorCard( "Entwined Power", 2, Element.Moon, Element.Water, Element.Plant ),Fast,AnotherSpirit]
+	[Instructions( "You and target Spirit may use each other's Presence to target Powers. Target Spirit gains a Power Card. You gain one of the power Cards they did not keep. -If you have- 2 Water, 4 Plant: You and target Spirit each gain 3 Energy and may gift the other 1 Power from hand." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// You and other spirit share presence for targeting

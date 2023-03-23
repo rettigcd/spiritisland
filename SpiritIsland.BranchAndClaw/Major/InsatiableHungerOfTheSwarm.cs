@@ -3,6 +3,7 @@
 public class InsatiableHungerOfTheSwarm {
 
 	[MajorCard( "Insatiable Hunger of the Swarm", 4, Element.Air, Element.Plant, Element.Animal ), Fast, FromSacredSite( 2 )]
+	[Instructions( "Add 1 Blight. Add 2 Beasts. Gather up to 2 Beasts. Each Beasts deal 1 Fear, 2 Damage to Invaders and 2 Damage to Dahan. Destroy 1 Beasts. -If you have- 2 Air, 4 Animal: Repeat this Power on an adjacent land." ), Artist( Artists.LucasDurham )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		static async Task ApplyPowerOnTarget( TargetSpaceCtx ctx ) {

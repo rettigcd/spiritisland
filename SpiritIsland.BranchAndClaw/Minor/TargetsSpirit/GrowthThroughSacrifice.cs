@@ -5,6 +5,7 @@ public class GrowthThroughSacrifice {
 	public const string Name = "Growth Through Sacrifice";
 
 	[MinorCard(GrowthThroughSacrifice.Name,0,Element.Moon,Element.Fire,Element.Water,Element.Plant), Fast, AnySpirit]
+	[Instructions( "Destroy 1 of your Presence. Target Spirit chooses to either: Remove 1 Blight from one of their lands. -or- Add 1 Presence to one of their lands. -If you have- 2 Sun: They may do both, in the same land." ), Artist( Artists.LucasDurham )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// destroy one of your presence

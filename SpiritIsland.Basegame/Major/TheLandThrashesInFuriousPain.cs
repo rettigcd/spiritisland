@@ -2,9 +2,8 @@
 
 public class TheLandThrashesInFuriousPain {
 
-	[MajorCard("The Land Thrashes in Furious Pain",4, Element.Moon, Element.Fire,Element.Earth)]
-	[Slow]
-	[FromPresence(2,Target.Blight)]
+	[MajorCard("The Land Thrashes in Furious Pain",4, Element.Moon, Element.Fire,Element.Earth),Slow,FromPresence(2,Target.Blight)]
+	[Instructions( "2 Damage per Blight in target land. +1 Damage per Blight in adjacent lands. -If you have- 3 Moon, 3 Earth: Repeat on an adjacent land." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		static Task DamageLandFromBlight( TargetSpaceCtx ctx ) {

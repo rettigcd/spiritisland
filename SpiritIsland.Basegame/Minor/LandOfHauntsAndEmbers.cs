@@ -2,9 +2,8 @@
 
 public class LandOfHauntsAndEmbers {
 
-	[MinorCard("Land of Haunts and Embers",0,Element.Moon,Element.Fire,Element.Air)]
-	[Fast]
-	[FromPresence(2)]
+	[MinorCard("Land of Haunts and Embers",0,Element.Moon,Element.Fire,Element.Air),Fast,FromPresence(2)]
+	[Instructions( "2 Fear. Push up to 2 Explorer / Town. If target land has Blight, +2 Fear. Push up to 2 more Explorer / Town. Add 1 Blight." ), Artist( Artists.JorgeRamos )]
 	static public async Task Act(TargetSpaceCtx ctx){
 
 		// 2 fear

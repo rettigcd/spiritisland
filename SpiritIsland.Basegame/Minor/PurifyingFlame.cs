@@ -2,9 +2,8 @@
 
 public class PurifyingFlame {
 
-	[MinorCard("Purifying Flame",1,Element.Sun,Element.Fire,Element.Air,Element.Plant)]
-	[Slow]
-	[FromSacredSite(1)]
+	[MinorCard("Purifying Flame",1,Element.Sun,Element.Fire,Element.Air,Element.Plant),Slow,FromSacredSite(1)]
+	[Instructions( "1 Damage per Blight. If target land is Mountain / Sands, you may instead remove 1 Blight." ), Artist( Artists.JorgeRamos )]
 	static public Task Act(TargetSpaceCtx ctx){
 
 		int blightCount = ctx.BlightOnSpace;

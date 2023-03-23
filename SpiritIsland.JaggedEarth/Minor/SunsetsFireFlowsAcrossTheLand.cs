@@ -3,6 +3,7 @@
 public class SunsetsFireFlowsAcrossTheLand{
 
 	[MinorCard("Sunset's Fire Flows Across the Land",1,Element.Sun,Element.Moon,Element.Fire,Element.Water),Slow,FromSacredSite(1)]
+	[Instructions( "1 Fear. 1 Damage. You may pay 1 Energy to deal 1 Damage in an adjacent land." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear.
 		ctx.AddFear(1);

@@ -3,6 +3,7 @@
 public class GiftOfTheUntamedWild {
 
 	[SpiritCard("Gift of the Untamed Wild",0,Element.Moon,Element.Fire,Element.Air,Element.Plant),Slow,AnySpirit]
+	[Instructions( "Target Spirit chooses to either: add 1 Wilds to one of their lands. -or- Replace 1 of their Presence with 1 Disease." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync(TargetSpiritCtx ctx ) {
 
 		// target spirit chooses to either: 

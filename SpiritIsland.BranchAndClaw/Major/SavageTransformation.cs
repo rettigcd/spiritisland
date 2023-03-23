@@ -2,9 +2,8 @@
 
 public class SavageTransformation {
 
-	[MajorCard( "Savage Transformation", 2, Element.Moon, Element.Animal )]
-	[Slow]
-	[FromPresence( 1 )]
+	[MajorCard( "Savage Transformation", 2, Element.Moon, Element.Animal ),Slow,FromPresence( 1 )]
+	[Instructions( "2 Fear. Replace 1 Explorer with 1 Beasts. -If you have- 2 Moon, 3 Animal: Replace 1 additional Explorer with 1 Beasts in either target or adjacent land." ), Artist( Artists.LoicBelliau )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// 2 fear
 		ctx.AddFear(2);

@@ -4,9 +4,8 @@ public class MistsOfOblivion {
 
 	const string Name = "Mists of Oblivion";
 
-	[MajorCard( Name, 4, Element.Moon, Element.Air, Element.Water )]
-	[Slow]
-	[FromPresence(3)]
+	[MajorCard( Name, 4, Element.Moon, Element.Air, Element.Water ),Slow,FromPresence(3)]
+	[Instructions( "1 Fear per Town / City this Power destroys (to a maximum of 4). 1 Damage to each Invader. -If you have- 2 Moon, 3 Air, 2 Water: 3 Damage." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		var originalScope = ActionScope.Current;

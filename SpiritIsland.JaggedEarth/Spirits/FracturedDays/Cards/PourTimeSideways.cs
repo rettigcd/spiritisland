@@ -4,6 +4,7 @@ class PourTimeSideways {
 	const string Name = "Pour Time Sideways";
 
 	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ), Fast, Yourself]
+	[Instructions( "Cost to Use: 3 Time. Move 1 of your Presence to a different land with your Presence. On the board moved from: During the Invader Phase, Resolve Invader and \"Each board / Each land...\" Actions one fewer time. On the board moved to: During the Invader Phase, Resolve Invader and \"Each board / Each Land...\" Actions one more time." ), Artist( Artists.LucasDurham )]
 	static public async Task ActAsync( SelfCtx ctx ) {
 		if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
 

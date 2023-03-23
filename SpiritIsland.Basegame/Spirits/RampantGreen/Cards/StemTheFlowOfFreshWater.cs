@@ -2,9 +2,8 @@
 
 public class StemTheFlowOfFreshWater {
 
-	[SpiritCard( "Stem the Flow of Fresh Water", 0, Element.Water, Element.Plant )]
-	[Slow]
-	[FromSacredSite( 1 )]
+	[SpiritCard( "Stem the Flow of Fresh Water", 0, Element.Water, Element.Plant ), Slow, FromSacredSite( 1 )]
+	[Instructions("1 Damage to 1 Town / City. If target land is Mountain / Sands, instead, 1 Damage to each Town / City."), Artist( Artists.JorgeRamos )]
 	static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 
 		// If target land is mountain or sand, 

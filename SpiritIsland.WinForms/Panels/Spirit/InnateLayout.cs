@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using SpiritIsland.WinForms;
+﻿using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 

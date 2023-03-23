@@ -3,9 +3,8 @@
 public class SteamVents {
 
 
-	[MinorCard("Steam Vents", 1, "fire,air,water,earth")]
-	[Fast]
-	[FromPresence(0)]
+	[MinorCard("Steam Vents", 1, "fire,air,water,earth"),Fast,FromPresence(0)]
+	[Instructions( "Destroy 1 Explorer. -If you have- 3 Earth: You may instead destroy 1 Town." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption(

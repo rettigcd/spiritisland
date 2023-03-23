@@ -5,6 +5,7 @@ public class BoonOfAncientMemories {
 	public const string Name = "Boon of Ancient Memories";
 
 	[SpiritCard(BoonOfAncientMemories.Name,1,Element.Moon,Element.Water,Element.Earth,Element.Plant), Slow, AnySpirit]
+	[Instructions( "If you target yourself, gain a Minor Power. Otherwise: Target Spirit gains a Power Card. If it's a Major Power, they may pay 2 Energy instead of Forgetting a Power Card." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpiritCtx ctx ) { 
 
 		// if you target yourself

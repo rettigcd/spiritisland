@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-[AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method)]
 public class SpiritCardAttribute : CardAttribute {
 
 	public SpiritCardAttribute(string name, int cost, params Element[] elements)

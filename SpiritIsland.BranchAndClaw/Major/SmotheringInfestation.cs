@@ -2,9 +2,8 @@
 
 public class SmotheringInfestation {
 
-	[MajorCard( "Smothering Infestation", 3, Element.Water, Element.Plant)]
-	[Slow]
-	[FromPresence( 0 )]
+	[MajorCard( "Smothering Infestation", 3, Element.Water, Element.Plant),Slow,FromPresence( 0 )]
+	[Instructions( "Add 1 Disease. If target land is Jungle / Wetland, 2 Fear and 3 Damage. -If you have- 2 Water, 2 Plant: 1 Damage to each Invader." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// add 1 disease
 		await ctx.Disease.Add(1);

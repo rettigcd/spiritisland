@@ -5,6 +5,7 @@ public class PeaceOfTheNighttimeSky {
 	public const string Name = "Peace of the Nighttime Sky";
 
 	[SpiritCard( PeaceOfTheNighttimeSky.Name,1,Element.Moon), Fast, FromSacredSite(1), RepeatForPeace]
+	[Instructions( "If the Terror Level is 1, Invaders do not Ravage in target land this turn. You may Repeat this Power. If you do, Forget this Power Card and Gain 1 Moon." ), Artist( Artists.EmilyHancock )]
 	public static Task ActAsync(TargetSpaceCtx ctx ) {
 		// If the Terror Level is 1
 		if(ctx.GameState.Fear.TerrorLevel == 1)

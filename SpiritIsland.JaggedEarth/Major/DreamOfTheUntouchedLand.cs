@@ -5,6 +5,7 @@ public class DreamOfTheUntouchedLand {
 	const string Name = "Dream of the Untouched Land";
 
 	[MajorCard(Name,6,Element.Moon,Element.Water,Element.Earth,Element.Plant,Element.Animal), Fast, FromSacredSite(1)]
+	[Instructions( "Remove up to 3 Blight and up to 3 Health worth of Invaders.  -If you have- 3 Moon, 2 Water, 3 Earth, 2 Plant: (Max. 1x/game) Add a random new Island Board next to target board. Ignore its Setup icons; add 2 Beasts, 2 Wilds, 2 Badlands and up to 2 Presence (from any Spirits) anywhere on it. From now on, Build cards and \"Each board / Each land\" Adversary Actions skip 1 Board." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// remove up to 3 blight
 		await ctx.RemoveBlight( 3 );

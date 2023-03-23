@@ -5,6 +5,7 @@ public class StubbornSolidity {
 	public const string Name = "Stubborn Solidity";
 
 	[SpiritCard(StubbornSolidity.Name,1,Element.Sun, Element.Earth, Element.Animal), Fast, FromPresence(1)]
+	[Instructions( "Defend 1 per Dahan. Dahan in target land cannot be changed. (When they would be Damaged, Destroyed, Removed, Replaced, or moved, instead don't)" ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 		// Defend 1 per dahan  (protects the land)
 		ctx.Defend( ctx.Dahan.CountAll );

@@ -2,7 +2,8 @@
 
 public class SearAngerIntoTheWildLands{ 
 
-	[MinorCard("Sear Anger into the Wild Lands",0,Element.Sun,Element.Fire,Element.Plant),Slow,FromPresence(1)]
+	[MinorCard("Sear Anger Into the Wild Lands",0,Element.Sun,Element.Fire,Element.Plant),Slow,FromPresence(1)]
+	[Instructions( "Add 1 Badlands. -or- If Wilds and Invaders are present, 1 Fear and 1 Damage." ), Artist( Artists.KatGuevara )]
 	static public Task ActAsync( TargetSpaceCtx ctx ){
 		return ctx.SelectActionOption(
 			Cmd.AddBadlands(1),

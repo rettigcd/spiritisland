@@ -50,9 +50,13 @@
     <None Remove="images\icons\Moveicon.png" />
     <None Remove="images\icons\Movepresence.png" />
     <None Remove="images\icons\Noblight.png" />
+    <None Remove="images\icons\NoSymbol.png" />
+    <None Remove="images\icons\No_Range.png" />
     <None Remove="images\icons\Ocean.png" />
     <None Remove="images\icons\Oneenergyfire.png" />
     <None Remove="images\icons\open-the-ways.png" />
+    <None Remove="images\icons\OR_Curly.png" />
+    <None Remove="images\icons\OR_Curly_180.png" />
     <None Remove="images\icons\Pay2EnergyToGainAPowerCard.png" />
     <None Remove="images\icons\Play.png" />
     <None Remove="images\icons\PlusOneRange.png" />
@@ -66,6 +70,7 @@
     <None Remove="images\icons\Reclaim_Half.png" />
     <None Remove="images\icons\red-x.png" />
     <None Remove="images\icons\Sacredsite.png" />
+    <None Remove="images\icons\Sandsland.png" />
     <None Remove="images\icons\Simple_air.png" />
     <None Remove="images\icons\Simple_animal.png" />
     <None Remove="images\icons\Simple_earth.png" />
@@ -80,24 +85,33 @@
     <None Remove="images\icons\so3.png" />
     <None Remove="images\icons\so4.png" />
     <None Remove="images\icons\Speed_Fast_Black.png" />
+    <None Remove="images\icons\Spiriticon.png" />
     <None Remove="images\icons\Strifeicon.png" />
     <None Remove="images\icons\TerrorLevel1.png" />
     <None Remove="images\icons\TerrorLevel2.png" />
     <None Remove="images\icons\TerrorLevel3.png" />
     <None Remove="images\icons\TownCityOrBlight.png" />
     <None Remove="images\icons\Townicon.png" />
+    <None Remove="images\icons\Wetlandland.png" />
     <None Remove="images\icons\Wildsicon.png" />
     <None Remove="images\icons\wildsorpresence.png" />
     <None Remove="images\inplay.png" />
     <None Remove="images\major_inverted.png" />
+    <None Remove="images\minor_inverted.png" />
     <None Remove="images\presence\greenorangeswirl.png" />
     <None Remove="images\presence\red.png" />
     <None Remove="images\starlight options.psd" />
+    <None Remove="images\textures\cracks.jpg" />
+    <None Remove="images\textures\flowing.jpg" />
+    <None Remove="images\textures\parchment.jpg" />
+    <None Remove="images\textures\smoke.png" />
     <None Remove="images\tokens\badlands.png" />
     <None Remove="images\tokens\beast.png" />
     <None Remove="images\tokens\blight.png" />
     <None Remove="images\tokens\city.png" />
     <None Remove="images\tokens\coin.png" />
+    <None Remove="images\tokens\CostFast.png" />
+    <None Remove="images\tokens\CostSlow.png" />
     <None Remove="images\tokens\dahan.png" />
     <None Remove="images\tokens\defend1orange.png" />
     <None Remove="images\tokens\disease.png" />
@@ -145,14 +159,12 @@
     <EmbeddedResource Include="images\icons\Explorericon.png" />
     <EmbeddedResource Include="images\icons\Fasticon.png" />
     <EmbeddedResource Include="images\icons\Fearicon.png" />
-    <EmbeddedResource Include="images\icons\FearSwoopInverted.png" />
     <EmbeddedResource Include="images\icons\Gain1timex2.png" />
     <EmbeddedResource Include="images\icons\Gain1timex3.png" />
     <EmbeddedResource Include="images\icons\Gain2time.png" />
     <EmbeddedResource Include="images\icons\GainCard.png" />
     <EmbeddedResource Include="images\icons\GainEnergyEqualToCardPlays.png" />
     <EmbeddedResource Include="images\icons\Gathertoocean.png" />
-    <EmbeddedResource Include="images\icons\Growth.png" />
     <EmbeddedResource Include="images\icons\hourglass.png" />
     <EmbeddedResource Include="images\icons\Jungle.png" />
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
@@ -166,9 +178,13 @@
     <EmbeddedResource Include="images\icons\Moveicon.png" />
     <EmbeddedResource Include="images\icons\Movepresence.png" />
     <EmbeddedResource Include="images\icons\Noblight.png" />
+    <EmbeddedResource Include="images\icons\NoSymbol.png" />
+    <EmbeddedResource Include="images\icons\No_Range.png" />
     <EmbeddedResource Include="images\icons\Ocean.png" />
     <EmbeddedResource Include="images\icons\Oneenergyfire.png" />
     <EmbeddedResource Include="images\icons\open-the-ways.png" />
+    <EmbeddedResource Include="images\icons\OR_Curly.png" />
+    <EmbeddedResource Include="images\icons\OR_Curly_180.png" />
     <EmbeddedResource Include="images\icons\Pay2EnergyToGainAPowerCard.png" />
     <EmbeddedResource Include="images\icons\Play.png" />
     <EmbeddedResource Include="images\icons\PlusOneRange.png" />
@@ -182,6 +198,7 @@
     <EmbeddedResource Include="images\icons\Reclaim_Half.png" />
     <EmbeddedResource Include="images\icons\red-x.png" />
     <EmbeddedResource Include="images\icons\Sacredsite.png" />
+    <EmbeddedResource Include="images\icons\Sandsland.png" />
     <EmbeddedResource Include="images\icons\Simple_air.png" />
     <EmbeddedResource Include="images\icons\Simple_animal.png" />
     <EmbeddedResource Include="images\icons\Simple_earth.png" />
@@ -196,25 +213,36 @@
     <EmbeddedResource Include="images\icons\so3.png" />
     <EmbeddedResource Include="images\icons\so4.png" />
     <EmbeddedResource Include="images\icons\Speed_Fast_Black.png" />
+    <EmbeddedResource Include="images\icons\Spiriticon.png" />
     <EmbeddedResource Include="images\icons\Strifeicon.png" />
     <EmbeddedResource Include="images\icons\TerrorLevel1.png" />
     <EmbeddedResource Include="images\icons\TerrorLevel2.png" />
     <EmbeddedResource Include="images\icons\TerrorLevel3.png" />
     <EmbeddedResource Include="images\icons\TownCityOrBlight.png" />
     <EmbeddedResource Include="images\icons\Townicon.png" />
+    <EmbeddedResource Include="images\icons\Wetlandland.png" />
     <EmbeddedResource Include="images\icons\Wildsicon.png" />
     <EmbeddedResource Include="images\icons\wildsorpresence.png" />
     <EmbeddedResource Include="images\inplay.png" />
     <EmbeddedResource Include="images\major_inverted.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\minor_inverted.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="images\presence\greenorangeswirl.png" />
     <EmbeddedResource Include="images\presence\red.png" />
+    <EmbeddedResource Include="images\textures\cracks.jpg" />
+    <EmbeddedResource Include="images\textures\flowing.jpg" />
+    <EmbeddedResource Include="images\textures\parchment.jpg" />
+    <EmbeddedResource Include="images\textures\smoke.png" />
     <EmbeddedResource Include="images\tokens\badlands.png" />
     <EmbeddedResource Include="images\tokens\beast.png" />
     <EmbeddedResource Include="images\tokens\blight.png" />
     <EmbeddedResource Include="images\tokens\city.png" />
     <EmbeddedResource Include="images\tokens\coin.png" />
+    <EmbeddedResource Include="images\tokens\CostFast.png" />
+    <EmbeddedResource Include="images\tokens\CostSlow.png" />
     <EmbeddedResource Include="images\tokens\dahan.png" />
     <EmbeddedResource Include="images\tokens\defend1orange.png" />
     <EmbeddedResource Include="images\tokens\disease.png" />
@@ -248,801 +276,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="images\bac\major\bloodwrack_plague.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\cast_down_into_the_briny_deep.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\death_falls_gently_from_open_blossoms.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\fire_and_flood.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\flow_like_water_reach_like_air.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\grant_hatred_a_ravenous_form.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\insatiable_hunger_of_the_swarm.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\instruments_of_their_own_ruin.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\manifest_incarnation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\pentup_calamity.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\pyroclastic_flow.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\savage_transformation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\sea_monsters.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\smothering_infestation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\strangling_firevine.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\sweep_into_the_sea.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\tigers_hunting.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\twisted_flowers_murmur_ultimatums.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\unlock_the_gates_of_deepest_power.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\unrelenting_growth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\major\volcanic_eruption.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\absorb_corruption.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\animated_wrackroot.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\call_to_ferocity.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\call_to_trade.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\confounding_mists.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\cycles_of_time_and_tide.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\disorienting_landscape.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\elusive_ambushes.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\fire_in_the_sky.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\fleshrot_fever.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\golds_allure.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\growth_through_sacrifice.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\guardian_serpents.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\here_there_be_monsters.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\infested_aquifers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\inflame_the_fires_of_life.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\pact_of_the_joined_hunt.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\poisoned_dew.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\portents_of_disaster.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\promises_of_protection.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\prowling_panthers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\razorsharp_undergrowth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\renewing_rain.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\rites_of_the_lands_rejection.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\scour_the_land.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\sky_stretches_to_shore.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\spur_on_with_words_of_fire.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\swarming_wasps.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\teeming_rivers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\tormenting_rotflies.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\minor\twilight_fog_brings_madness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\boon_of_growing_power.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\prey_on_the_builders.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\regrow_from_roots.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\sacrosanct_wilderness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\teeth_gleam_from_darkness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\terrifying_chase.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\too_near_the_jungle.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\bac\spirit\towering_wrath.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\accelerated_rot.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\blazing_renewal.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\cleansing_floods.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\dissolve_the_bonds_of_kinship.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\entwined_power.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\indomitable_claim.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\infinite_vitality.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\mists_of_oblivion.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\paralyzing_fright.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\pillar_of_living_flame.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\poisoned_land.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\powerstorm.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\talons_of_lightning.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\terrifying_nightmares.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\the_jungle_hungers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\the_land_thrashes_in_furious_pain.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\the_trees_and_stones_speak_of_war.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\tsunami.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\vengeance_of_the_dead.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\vigor_of_the_breaking_dawn.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\winds_of_rust_and_atrophy.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\major\wrap_in_wings_of_sunlight.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\call_of_the_dahan_ways.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\call_to_bloodshed.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\call_to_isolation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\call_to_migrate.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\call_to_tend.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\dark_and_tangled_woods.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\delusions_of_danger.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\devouring_ants.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\drift_down_into_slumber.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\drought.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\elemental_boon.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\encompassing_ward.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\enticing_splendor.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\entrancing_apparitions.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\gift_of_constancy.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\gift_of_living_energy.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\gift_of_power.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\gnawing_rootbiters.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\land_of_haunts_and_embers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\lure_of_the_unknown.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\natures_resilience.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\pull_beneath_the_hungry_earth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\purifying_flame.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\quicken_the_earths_struggles.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\rain_of_blood.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\reaching_grasp.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\rouse_the_trees_and_stones.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\sap_the_strength_of_multitudes.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\savage_mawbeasts.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\shadows_of_the_burning_forest.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\song_of_sanctity.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\steam_vents.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\uncanny_melting.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\veil_the_nights_hunt.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\visions_of_fiery_doom.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\minor\voracious_growth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\a_year_of_perfect_stillness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\boon_of_vigor.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\call_of_the_deeps.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\call_on_midnights_dream.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\concealing_shadows.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\crops_wither_and_fade.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\draw_of_the_fruitful_earth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\dread_apparitions.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\dreams_of_the_dahan.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\favors_called_due.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\fields_choked_with_growth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\flash_floods.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\gift_of_proliferation.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\grasping_tide.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\guard_the_healing_land.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\harbingers_of_the_lightning.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\lightnings_boon.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\manifestation_of_power_and_glory.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\mantle_of_dread.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\overgrow_in_a_night.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\predatory_nightmares.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\raging_storm.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\rituals_of_destruction.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\rivers_bounty.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\shatter_homesteads.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\stem_the_flow_of_fresh_water.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\sudden_ambush.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\swallow_the_landdwellers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\tidal_boon.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\voice_of_thunder.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\wash_away.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\basegame\spirit\words_of_warning.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\absorb_essence.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\aid_from_the_spiritspeakers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\asphyxiating_smoke.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\a_circuitous_and_wending_journey.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\dark_skies_loose_a_stinging_rain.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\elemental_aegis.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\flames_fury.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\flashfires.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\foundations_sink_into_mud.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\gift_of_abundance.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\gift_of_flowing_power.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\gift_of_the_primordial_deeps.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\offer_passage_between_worlds.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\paths_tied_by_nature.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\threatening_flames.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\travelers_boon.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\unbearable_deluge.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\faf\spirit\ways_of_shore_and_heartland.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\angry_bears.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\bargains_of_power_and_protection.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\draw_towards_a_consuming_void.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\dream_of_the_untouched_land.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\focus_the_lands_anguish.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\forests_of_living_obsidian.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\infestation_of_venomous_spiders.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\irresistible_call.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\melt_earth_into_quicksand.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\settle_into_huntinggrounds.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\sleep_and_never_waken.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\spill_bitterness_into_the_earth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\stormswath.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\the_wounded_wild_turns_on_its_assailants.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\thickets_erupt_with_every_touch_of_breeze.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\transform_to_a_murderous_darkness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\trees_radiate_celestial_brilliance.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\unleash_a_torrent_of_the_selfs_own_essence.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\utter_a_curse_of_dread_and_bone.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\vanish_softly_away_forgotten_by_all.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\voice_of_command.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\walls_of_rock_and_thorn.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\major\weave_together_the_fabric_of_place.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\bats_scout_for_raids_by_darkness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\birds_cry_warning.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\blood_draws_predators.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\call_to_guard.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\carapaced_land.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\desiccating_winds.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\dire_metamorphosis.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\domesticated_animals_go_berserk.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\dry_wood_explodes_in_smoldering_splinters.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\entrap_the_forces_of_corruption.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\favor_of_the_sun_and_starlit_dark.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\flow_downriver_blow_downwind.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\gift_of_natures_connection.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\gift_of_twinned_days.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\haunted_by_primal_memories.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\hazards_spread_across_the_island.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\like_calls_to_like.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\mesmerized_tranquility.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\renewing_boon.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\scream_disease_into_the_wind.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\sear_anger_into_the_wild_lands.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\set_them_on_an_evertwisting_trail.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\skies_herald_the_season_of_return.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\strong_and_constant_currents.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\sucking_ooze.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\sunsets_fire_flows_across_the_land.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\territorial_strife.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\terror_turns_to_madness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\the_shore_seethes_with_hatred.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\thriving_chokefungus.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\treacherous_waterways.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\unquenchable_flames.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\minor\weep_for_what_is_lost.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\absolute_stasis.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\a_dreadful_tide_of_scurrying_flesh.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\blur_the_arc_of_years.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\boon_of_ancient_memories.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\boon_of_reimagining.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\boon_of_swarming_bedevilment.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\dissolving_vapors.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\elemental_teachings.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\evermultiplying_swarm.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\exaltation_of_molten_stone.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\fetid_breath_spreads_infection.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\fiery_vengeance.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\flowing_and_silent_forms_dart_by.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\gather_the_scattered_light_of_stars.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\gift_of_the_untamed_wild.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\guide_the_way_on_feathered_wings.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\impersonate_authority.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\incite_the_mob.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\jagged_shards_push_from_the_earth.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\lava_flows.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\overenthusiastic_arson.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\peace_of_the_nighttime_sky.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\perils_of_the_deepest_island.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\plaguebearers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\plows_shatter_on_rocky_ground.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\pour_time_sideways.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\pursue_with_scratches_pecks_and_stings.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\pyroclastic_bombardment.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\rain_of_ash.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\scarred_and_stony_land.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\shape_the_self_anew.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\share_secrets_of_survival.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\softly_beckon_ever_inward.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\strike_low_with_sudden_fevers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\stubborn_solidity.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\study_the_invaders_fears.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\swallowed_by_the_wilderness.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\the_fog_closes_in.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\the_past_returns_again.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\unexpected_tigers.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\je\spirit\unnerving_pall.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="images\jungle.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1050,9 +283,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\minor.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\minor_inverted.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\mountains.jpg">
@@ -1134,6 +364,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Volcano_Looming_High.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\texture1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\wetlands.jpg">

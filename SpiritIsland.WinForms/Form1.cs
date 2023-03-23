@@ -1,5 +1,4 @@
-﻿using SpiritIsland.BranchAndClaw;
-using SpiritIsland.Log;
+﻿using SpiritIsland.Log;
 using SpiritIsland.SinglePlayer;
 using System;
 using System.Collections.Generic;
@@ -16,12 +15,54 @@ public partial class Form1 : Form, IHaveOptions {
 		InitializeComponent();
 		logForm = new LogForm();
 
+
 		_ = Task.Run(InitArtwork);
+		_initTimer = new Timer();
+		_initTimer.Interval = 250;
+		_initTimer.Tick += _initTimer_Tick;
+		_initTimer.Enabled = true;
+		_initTimer.Start();
 	}
 
+	void _initTimer_Tick( object sender, EventArgs e ) {
+		if(_initCurrent == _initTotal) {
+			_initTimer.Enabled = false;
+			_promptLabel.Text = $"Initialization Complete";
+			return;
+		}
+		_promptLabel.Text = $"One-time Artwork Initializing {_initCurrent} of {_initTotal}";
+	}
+
+	int _initCurrent = 0;
+	int _initTotal;
+	Timer _initTimer;
 	void InitArtwork() {
-		foreach(IFearCard fearCard in ConfigureGameDialog.GameBuilder.BuildFearCards())
+		var builder = ConfigureGameDialog.GameBuilder;
+		List<IFearCard> fearCards = builder.BuildFearCards();
+		PowerCard[] majorCards = builder.BuildMajorCards();
+		PowerCard[] minorCards = builder.BuildMinorCards();
+		PowerCard[] spiritCards = builder.BuildSpirits( builder.SpiritNames )
+			.SelectMany(s=>s.Hand)
+			.ToArray();
+		_initTotal = fearCards.Count + majorCards.Length + minorCards.Length + spiritCards.Length;
+
+		foreach(IFearCard fearCard in fearCards) {
+			_initCurrent++;
 			ResourceImages.Singleton.InitFearCard( fearCard );
+		}
+		foreach(PowerCard powerCard in majorCards) {
+			_initCurrent++;
+			using Image img = ResourceImages.Singleton.GetPowerCard(powerCard);
+		}
+		foreach(PowerCard powerCard in minorCards) {
+			_initCurrent++;
+			using Image img = ResourceImages.Singleton.GetPowerCard( powerCard );
+		}
+		foreach(PowerCard powerCard in spiritCards) {
+			_initCurrent++;
+			using Image img = ResourceImages.Singleton.GetPowerCard( powerCard );
+		}
+		_initCurrent = _initTotal;
 	}
 
 	readonly LogForm logForm;

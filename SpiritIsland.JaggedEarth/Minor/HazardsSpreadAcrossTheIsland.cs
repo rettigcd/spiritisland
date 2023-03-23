@@ -3,6 +3,7 @@
 public class HazardsSpreadAcrossTheIsland{ 
 
 	[MinorCard("Hazards Spread Across the Island",0,Element.Fire,Element.Air,Element.Earth,Element.Plant),Fast,FromSacredSite(2)]
+	[Instructions( "Choose a type of token from Badlands / Beasts / Disease / Strife / Wilds that exists in an adjacent land; choosing Disease costs 1 energy. Add 1 of that type of token to target land." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// Choose a type of token from badlands / beast / disease / strife / wilds that exists in an adjacent land;

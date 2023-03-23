@@ -2,9 +2,8 @@
 
 public class TormentingRotFlies {
 
-	[MinorCard( "Tormenting Rotflies", 1, Element.Air, Element.Plant, Element.Animal )]
-	[Slow]
-	[FromPresence( 2, Target.Sand, Target.Wetland )]
+	[MinorCard( "Tormenting Rotflies", 1, Element.Air, Element.Plant, Element.Animal ),Slow,FromPresence( 2, Target.Sand, Target.Wetland )]
+	[Instructions( "Add 1 Disease. -or- If target land has Invaders, 2 Fear. If Disease is present, +1 Fear. If Blight is present, +1 Fear." ), Artist( Artists.KatBirmelin )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(

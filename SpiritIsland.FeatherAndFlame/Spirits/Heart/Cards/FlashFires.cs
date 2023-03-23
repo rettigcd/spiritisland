@@ -2,9 +2,8 @@
 
 public class FlashFires {
 
-	[SpiritCard("Flash-Fires",2,Element.Fire,Element.Air)]
-	[SlowButFastIf("2 air")]
-	[FromPresence(1)] 
+	[SpiritCard("Flash-Fires",2,Element.Fire,Element.Air),SlowButFastIf("2 air"),FromPresence(1)]
+	[Instructions( "1 Fear. 1 Damage. -If you have- 2 Air: This Power is Fast." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 1 fear

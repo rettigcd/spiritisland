@@ -2,9 +2,8 @@
 
 public class Drought {
 
-	[MinorCard( "Drought", 1, Element.Sun, Element.Fire, Element.Earth )]
-	[Slow]
-	[FromPresence(1)]
+	[MinorCard( "Drought", 1, Element.Sun, Element.Fire, Element.Earth ),Slow,FromPresence(1)]
+	[Instructions( "Destroy 3 Town. 1 Damage to each Town / City. Add 1 Blight. -If you have- 3 Sun: Destroy 1 City." ), Artist( Artists.NolanNasser )]
 	static public async Task Act( TargetSpaceCtx ctx ) {
 
 		// Destroy 3 towns.

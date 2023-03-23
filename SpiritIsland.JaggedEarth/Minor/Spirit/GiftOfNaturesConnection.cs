@@ -2,7 +2,8 @@
 
 public class GiftOfNaturesConnection{
 		
-	[MinorCard("Gift of Natures Connection",0),Fast,AnySpirit]
+	[MinorCard("Gift of Nature's Connection",0),Fast,AnySpirit]
+	[Instructions( "Target Spirit gains either 2 Energy or 2 of a single Element (their choice). If you target another Spirit, you gain an Element of your choice." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ){
 
 		// Target Spirit gains either 2 Energy or 2 of a single Element (their choice).

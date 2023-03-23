@@ -2,9 +2,8 @@
 
 public class DriftDownIntoSlumber {
 
-	[MinorCard( "Drift Down into Slumber", 0, Element.Air, Element.Earth, Element.Plant )]
-	[Fast]
-	[FromPresence( 2 )]
+	[MinorCard( "Drift Down Into Slumber", 0, Element.Air, Element.Earth, Element.Plant ),Fast,FromPresence( 2 )]
+	[Instructions( "Defend 1. If target land is Jungle / Sands, instead, Defend 4." ), Artist( Artists.LucasDurham )]
 	public static Task ActAsync( TargetSpaceCtx ctx ) {
 		// defend 1
 		ctx.Defend( 1 );

@@ -2,7 +2,8 @@
 
 public class PursueWithScratchesPecksAndStings {
 
-	[SpiritCard("Pursue with Scratches, PEcks, and Stings",0, Element.Sun, Element.Fire, Element.Air, Element.Animal), Fast, FromPresence(2, Target.Beast)]
+	[SpiritCard("Pursue With Scratches, Pecks, and Stings",0, Element.Sun, Element.Fire, Element.Air, Element.Animal), Fast, FromPresence(2, Target.Beast)]
+	[Instructions( "1 Fear. For each Beasts past the first, Push 1 Explorer / Town." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 fear
 		ctx.AddFear(1);

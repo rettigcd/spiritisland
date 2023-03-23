@@ -2,9 +2,8 @@
 
 public class ReachingGrasp {
 
-	[MinorCard( "Reaching Grasp", 0, Element.Sun, Element.Air, Element.Water )]
-	[Fast]
-	[AnySpirit]
+	[MinorCard( "Reaching Grasp", 0, Element.Sun, Element.Air, Element.Water ),Fast,AnySpirit]
+	[Instructions( "Target Spirit gets +2 Range with all their Powers." ), Artist( Artists.NolanNasser )]
 	static public Task Act( TargetSpiritCtx ctx ) {
 
 		// target spirit gets +2 range with all their Powers

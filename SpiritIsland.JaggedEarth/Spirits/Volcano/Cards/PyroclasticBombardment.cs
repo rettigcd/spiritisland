@@ -3,6 +3,7 @@
 public class PyroclasticBombardment {
 
 	[SpiritCard("Pyroclastic Bombardment", 3, Element.Fire, Element.Air, Element.Earth), Fast, FromSacredSite(2)]
+	[Instructions( "1 Damage to each Town / City / Dahan. 1 Damage. 1 Damage to Dahan." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 Damage to each town / city / dahan.
 		await ctx.DamageEachInvader(1,Human.Town_City);

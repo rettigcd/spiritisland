@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using SpiritIsland.Tests.Core;
+using SpiritIsland.Utilities.ImageMgmt;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -29,9 +32,8 @@ public class ResourceImages {
 
 	void LoadFont(string file) {
 		string resource = "SpiritIsland.Utilities." + file;
-		using Stream fontStream = _assembly.GetManifestResourceStream( resource ) 
-			?? throw new InvalidOperationException("Font is null");
-
+		using Stream fontStream = _assembly.GetManifestResourceStream( resource );               
+		
 		// read the fond data into a buffer
 		byte[] fontdata = new byte[fontStream.Length];
 		fontStream.Read( fontdata, 0, (int)fontStream.Length );
@@ -57,6 +59,7 @@ public class ResourceImages {
 
 	public Bitmap GetPresenceImage( string img )    => GetResourceImage( $"presence.{img}.png" );
 	public Bitmap GetAdversaryFlag( string adv )    => GetResourceImage($"adversaries.{adv}.png" );
+	public Bitmap GetImage( Element el )            => GetImage(el.GetTokenImg() );
 	public Bitmap GetImage( Img img )               => GetResourceImage( ToResource( img ) );
 	public Bitmap Strife()                          => GetResourceImage("tokens.strife.png");
 	public Bitmap Fear()                            => GetResourceImage("tokens.fear.png");
@@ -114,6 +117,15 @@ public class ResourceImages {
 		_cache.Add( key, img );
 	}
 
+	public Image GetPowerCard( PowerCard card ) {
+		ImageCache _cache = new ImageCache();
+		string key = $"PowerCard\\{card.Name}.png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+
+		Bitmap image = (Bitmap)PowerCardImageManager.GetImage( card ); // don't dispose, we are returning it
+		_cache.Add( key, image );
+		return image;
+	}
 
 	public Image GetBlightCard( IBlightCard card ) {
 		string key = "blight\\" + card.Name + ".png";
@@ -125,6 +137,15 @@ public class ResourceImages {
 		_cache.Add( key, bitmap );
 		return bitmap;
 	}
+
+	public async Task<Image> CardCardImage( PowerCard card ) {
+		string key = $"power_card_pic\\{card.Name}.png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+		Bitmap bitmap = await CardDownloader.GetImage( card.Name );
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
 
 	public Image GetHealthBlightCard() {
 		string key = "blight\\healthy.png";
@@ -186,7 +207,7 @@ public class ResourceImages {
 			_ => throw new ArgumentException($"{terrain} not mapped"),
 		};
 
-		HSL? terrainColor = terrain switch {
+		HSL terrainColor = terrain switch {
 			Terrain.Wetland => new HSL( 184, 40, 45 ),
 			Terrain.Jungle => new HSL( 144, 60, 40 ),
 			Terrain.Mountain => new HSL( 45, 10, 33 ),
@@ -219,11 +240,18 @@ public class ResourceImages {
 		}
 		using var tempBitmap = new Bitmap(rowSize.Width, rowSize.Width); // Height is wrong
 		using Graphics graphics = Graphics.FromImage(tempBitmap);
-		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
+		var config = new ConfigWrappingLayout {
+			EmSize = textEmSize,
+			ElementDimension = (int)(textEmSize * 2.4f),
+			IconDimension = (int)(textEmSize * 1.8f),
+			HorizontalAlignment = Align.Near
+		};
 
-		var layout = new WrappingLayout( textEmSize, rowSize, graphics );
-		layout.CalcWrappingString( description, FontStyle.Regular );
+		var layout = new WrappingLayout( config, rowSize, graphics );
+		layout.Append( description, FontStyle.Regular );
 		layout.FinalizeBounds();
 		layout.Paint(graphics);
 
@@ -244,27 +272,30 @@ public class ResourceImages {
 
 		using Bitmap tempBitmap = new Bitmap( rowSize.Width, rowSize.Width*2 ); // Height is wrong
 		using Graphics graphics = Graphics.FromImage( tempBitmap );
-		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-
+		var config = new ConfigWrappingLayout {
+			EmSize = emSize,
+			ElementDimension = (int)(emSize * 2.4f),
+			IconDimension = (int)(emSize * 1.8f),
+			HorizontalAlignment = Align.Near,
+			Indent = rowSize.Height / 2,
+		};
 		// Elements Thresholds
-		var layout = new WrappingLayout(
-			emSize,
-			rowSize: rowSize,
-			graphics
-		) { Indent = rowSize.Height / 2 };  // (3) indent
+		var layout = new WrappingLayout( config, rowSize, graphics );
 
 		// top overhand margin
 		layout.AddIconRowOverflowHeight(); // create top buffer for over hanging enlarged tokens
 
 		// Elements in bold
-		layout.CalcWrappingString( innateOption.ThresholdString, FontStyle.Bold );
+		layout.Append( innateOption.ThresholdString, FontStyle.Bold );
 
 		// Tab
 		layout.Tab( 2, FontStyle.Bold );
 
 		// Text
-		layout.CalcWrappingString( innateOption.Description, FontStyle.Regular );
+		layout.Append( innateOption.Description, FontStyle.Regular );
 
 		layout.AddIconRowOverflowHeight(); // create bottom buffer for over hanging enlarged tokens
 
@@ -337,7 +368,8 @@ public class ResourceImages {
 	static readonly Bitmap Invisible = new Bitmap( 1, 1 );
 	public Bitmap GetResourceImage( string filename ) {
 		if(filename is null) return Invisible;
-		Stream? imgStream = _assembly.GetManifestResourceStream( "SpiritIsland.Utilities.images."+filename );
+		Stream imgStream = _assembly.GetManifestResourceStream( "SpiritIsland.Utilities.images."+filename )
+			?? throw new ArgumentException($"No resource image found for {filename}");
 		return new Bitmap( imgStream );
 	}
 
@@ -439,12 +471,20 @@ public class ResourceImages {
 		Img.Icon_Checkmark          => "icons.Checkmark.png",
 		Img.Icon_Play               => "icons.Play.png",
 
+		Img.Icon_Sand				=> "icons.Sandsland.png",
+		Img.Icon_Mountain			=> "icons.Mountainland.png",
+		Img.Icon_Jungle				=> "icons.Jungle.png",
+		Img.Icon_Wetland			=> "icons.Wetlandland.png",
+		Img.Icon_Spirit             => "icons.Spiriticon.png",
 
 		Img.Deck_Hand               => "hand.png",
 		Img.Deck_Played => "inplay.png",
 		Img.Deck_Discarded => "discard.png",
 		Img.Deck_DaysThatNeverWere_Major => "major_inverted.png",
 		Img.Deck_DaysThatNeverWere_Minor => "minor_inverted.png",
+
+		Img.OrCurlyBefore => "icons.OR_Curly.png",
+		Img.OrCurlyAfter => "icons.OR_Curly_180.png",
 
 		Img.None => null,
 		_ => throw new System.ArgumentOutOfRangeException( nameof( img ), img.ToString() ),

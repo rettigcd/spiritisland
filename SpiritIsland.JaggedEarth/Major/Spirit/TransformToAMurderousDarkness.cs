@@ -3,6 +3,7 @@
 public class TransformToAMurderousDarkness {
 
 	[MajorCard("Transform to a Murderous Darkness",6,Element.Moon,Element.Fire,Element.Air,Element.Water,Element.Plant), Slow, AnySpirit]
+	[Instructions( "Target Spirit may choose one of their Sacred Sites. In that land: Replace all their Presence with Badlands; the replaced Presence leave the game. Push any number of those Badlands. 3 Fear. 3 Damage per Presence replaced. -If you have- 3 Moon, 2 Fire, 2 Air: 1 Damage in an adjacent land. 1 Damage in an adjacent land." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync(TargetSpiritCtx ctx ) {
 		// Target Spirt may choose one of their Sacred Sites.
 		Space space = await ctx.OtherCtx.Self.SelectSacredSite( "Replace presence with badlands" );

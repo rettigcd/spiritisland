@@ -5,6 +5,7 @@ public class GiftOfTwinnedDays{
 	public const string Name = "Gift of Twinned Days";
 
 	[MinorCard(Name,1,Element.Sun,Element.Moon),Fast,AnotherSpirit]
+	[Instructions( "Once this turn, target Spirit may Repeat the lowest-cost Power Card they have in play by paying it's cost again. You may do likewise." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync( TargetSpiritCtx ctx ){
 		// Once this turn, target spirit may repeat the lowest-cost Power Card they have in play by paying its cost again.
 		ctx.Other.AddActionFactory(new RepeatCheapestCardForCost( Name ) );

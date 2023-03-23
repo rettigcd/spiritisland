@@ -2,9 +2,8 @@
 
 public class GiftOfConstancy {
 
-	[MinorCard( "Gift of Constancy", 0, Element.Sun, Element.Earth )]
-	[Fast]
-	[AnySpirit]
+	[MinorCard( "Gift of Constancy", 0, Element.Sun, Element.Earth ),Fast,AnySpirit]
+	[Instructions( "Target Spirit gains 2 Energy. At end of turn, target Spirit may Reclaim 1 Power Card instead of discarding it. If you target another Spirit, you may also Reclaim 1 Power Card instead of discarding it." ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// target spirit gains 2 energy.  

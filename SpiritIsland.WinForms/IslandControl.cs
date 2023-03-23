@@ -153,7 +153,7 @@ public partial class IslandControl : Control {
 		float x = bounds.X + actualMargin;
 		float y = bounds.Y + actualMargin;
 		foreach(var elementOption in elementOptions) {
-			using var img = ResourceImages.Singleton.GetImage( elementOption.Item.GetTokenImg() );
+			using var img = ResourceImages.Singleton.GetImage( elementOption.Item );
 			var rect = new RectangleF( x, y, contentSize, contentSize );
 			graphics.DrawImage( img, rect );
 			_optionRects.Add( elementOption, rect );

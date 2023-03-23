@@ -3,6 +3,7 @@
 public class UnexpectedTigers {
 
 	[SpiritCard("Unexpected Tigers",0,Element.Moon,Element.Fire,Element.Animal), Slow, FromPresence(1) ]
+	[Instructions( "1 Fear if Invaders are present. If you can gather 1 Beasts, do so, then push 1 Explorer. Otherwise, add 1 Beasts." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
 		// 1 fear if invaders are present.
 		if( ctx.HasInvaders )

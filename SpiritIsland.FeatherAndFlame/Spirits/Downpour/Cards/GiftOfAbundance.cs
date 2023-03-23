@@ -4,9 +4,8 @@ internal class GiftOfAbundance {
 
 	const string Name = "Gift of Abundance";
 
-	[SpiritCard( Name, 1, Element.Sun, Element.Air, Element.Water, Element.Plant )]
-	[Fast]
-	[AnotherSpirit]
+	[SpiritCard( Name, 1, Element.Sun, Element.Air, Element.Water, Element.Plant ),Fast,AnotherSpirit]
+	[Instructions( "Target Spirit either gains 2 Energy, or may Repeat one Power Card this turn by paying its cost. Either you or target Spirit may add 1 Destroyed Presence to a Wetland where you have Presence." ), Artist( Artists.DamonWestenhofer )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 		var otherCtx = ctx.OtherCtx;
 		// Target Spirit either gains 2 Energy, or may Repeat one Power Card this turn by paying its cost.

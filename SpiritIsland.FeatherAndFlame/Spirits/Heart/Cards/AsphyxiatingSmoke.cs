@@ -2,9 +2,8 @@
 
 public class AsphyxiatingSmoke {
 
-	[SpiritCard("Asphyxiating Smoke",2,Element.Fire,Element.Air,Element.Plant)]
-	[Slow]
-	[FromSacredSite(2)] 
+	[SpiritCard("Asphyxiating Smoke",2,Element.Fire,Element.Air,Element.Plant),Slow,FromSacredSite(2)]
+	[Instructions( "1 Fear. Destroy 1 Town. Push 1 Dahan." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 1 fear

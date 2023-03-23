@@ -5,6 +5,7 @@ public class TreesRadiateCelestialBrilliance {
 	const string Name = "Trees Radiate Celestial Brilliance";
 
 	[MajorCard( Name,3,Element.Sun,Element.Moon,Element.Plant), Fast, FromPresence(1,Target.Jungle, Target.NoBlight )]
+	[Instructions( "3 Fear. Defend 6. Invaders skip the next build. (In target land this turn.) -If you have- 3 Sun, 2 Moon, 2 Plant: 1 Damage per Sun you have." ), Artist( Artists.ShawnDaley )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 3 fear.
 		ctx.AddFear(3);

@@ -2,12 +2,8 @@
 
 public class PredatoryNightmares {
 		
-	// Predatory Nightmares => 2 => slow,
-	// 1 from sacred site, invaders =>
-	// moon, fire, mountain, animal =>
-	[SpiritCard("Predatory Nightmares",2,Element.Moon,Element.Fire,Element.Earth,Element.Animal)]
-	[Slow]
-	[FromSacredSite(1,Target.Invaders)]
+	[SpiritCard("Predatory Nightmares",2,Element.Moon,Element.Fire,Element.Earth,Element.Animal),Slow,FromSacredSite(1,Target.Invaders)]
+	[Instructions("2 Damage. Push up to 2 Dahan. (When your powers would destroy Invaders, instead they generate Fear and/or Push those Invaders.)"),Artist( Artists.ShaneTyree)] 
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 damange.
 		await ctx.DamageInvaders(2);

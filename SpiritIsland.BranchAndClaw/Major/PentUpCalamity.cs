@@ -2,9 +2,8 @@
 
 public class PentUpCalamity {
 
-	[MajorCard( "Pent-Up Calamity", 3, Element.Moon, Element.Fire, Element.Earth, Element.Plant, Element.Animal )]
-	[Fast]
-	[FromPresence( 2 )]
+	[MajorCard( "Pent-Up Calamity", 3, Element.Moon, Element.Fire, Element.Earth, Element.Plant, Element.Animal ),Fast,FromPresence( 2 )]
+	[Instructions( "Add 1 Disease and 1 Strife. -or- Remove any number of Beasts / Disease / Strife / Wilds. For each token removed, 1 Fear and 3 Damage. -If you have- 2 Moon, 3 Fire: If you have removed tokens, return up to 2 of them. Otherwise, add 2 Strife." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption(

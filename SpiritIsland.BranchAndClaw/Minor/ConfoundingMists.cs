@@ -4,9 +4,8 @@ public class ConfoundingMists {
 
 	public const string Name = "Confounding Mists";
 
-	[MinorCard( Name, 1, Element.Air, Element.Water )]
-	[Fast]
-	[FromPresence( 1 )]
+	[MinorCard( Name, 1, Element.Air, Element.Water ),Fast,FromPresence( 1 )]
+	[Instructions( "Defend 4. -or- Each Invader added to target land this turn may be immediately Pushed to any adjacent land." ), Artist( Artists.LoicBelliau )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
 			new SpaceAction("Defend 4", ctx => ctx.Defend(4) ),

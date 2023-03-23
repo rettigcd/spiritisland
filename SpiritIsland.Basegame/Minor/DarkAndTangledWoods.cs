@@ -2,8 +2,8 @@
 
 public class DarkAndTangledWoods {
 
-	[MinorCard("Dark and Tangled Woods", 1, Element.Moon, Element.Earth, Element.Plant),Fast]
-	[FromPresence(1)]
+	[MinorCard("Dark and Tangled Woods", 1, Element.Moon, Element.Earth, Element.Plant),Fast,FromPresence(1)]
+	[Instructions( "2 Fear. If target land is Mountain / Jungle, Defend 3." ), Artist( Artists.NolanNasser )]
 	static public Task Act(TargetSpaceCtx ctx){
 
 		// 2 fear

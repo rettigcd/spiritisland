@@ -2,9 +2,8 @@
 
 public class SpurOnWithWordsOfFire {
 
-	[MinorCard("Spur on with Words of Fire", 1, Element.Sun, Element.Fire, Element.Air)]
-	[Fast]
-	[AnySpirit]
+	[MinorCard("Spur on With Words of Fire", 1, Element.Sun, Element.Fire, Element.Air),Fast,AnySpirit]
+	[Instructions( "If you target a Spirit other than yourself, they gain +1 Energy. Target Spirit may immediately play another Power Card by paying its cost. (If it is Slow, it does not resolve until later.)" ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync(TargetSpiritCtx ctx) {
 
 		// If you target a spirit other than yourself, they gain +1 energy

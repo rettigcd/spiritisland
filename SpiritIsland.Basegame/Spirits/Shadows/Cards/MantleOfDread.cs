@@ -2,9 +2,8 @@
 
 public class MantleOfDread {
 
-	[SpiritCard("Mantle of Dread",1,Element.Moon,Element.Fire,Element.Air)]
-	[Slow]
-	[AnySpirit]
+	[SpiritCard("Mantle of Dread",1,Element.Moon,Element.Fire,Element.Air),Slow,AnySpirit]
+	[Instructions( "2 Fear. Target Spirit may Push 1 Explorer and 1 Town from a land where it has Presence." ), Artist( Artists.NolanNasser )]
 	static public async Task Act( TargetSpiritCtx ctx ){
 
 		// 2 fear

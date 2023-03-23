@@ -3,6 +3,7 @@
 public class LikeCallsToLike{ 
 
 	[MinorCard("Like Calls to Like",1,Element.Sun,Element.Water,Element.Plant),Slow,FromPresence(1)]
+	[Instructions( "If target land has Explorer, Gather up to 1 Explorer. Do likewise for Town, Dahan, Blight, and Beasts." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// If target land has explorer, Gather up to 1 explorer.
 		await GatherLike( ctx, Human.Explorer );
