@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.WinForms; 
 
-class IconDrawer {
+public class IconDrawer {
 
 	readonly Graphics _graphics;
 	readonly CachedImageDrawer _cachedImageDrawer;
@@ -25,7 +25,8 @@ class IconDrawer {
 			: new RectangleF( bounds.X, bounds.Y, bounds.Width * subImageReduction, bounds.Height * subImageReduction );
 
 		// -- Main - Background
-		if(icon.BackgroundImg != default) 				_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.BackgroundImg ), mainBounds );
+		if(icon.BackgroundImg != default) 
+			_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.BackgroundImg ), mainBounds );
 
 		// -- Main - Content --
 		if(icon.Text != null || icon.ContentImg != default) {

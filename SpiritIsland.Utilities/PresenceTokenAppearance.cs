@@ -20,7 +20,7 @@ public class PresenceTokenAppearance {
 		BaseImage = baseImage;
 	}
 
-	public BitmapAdjustment Adjustment => Hsl is null ? null : new PixelAdjustment( new HslColorAdjuster(Hsl).GetNewColor );
+	public BitmapAdjustment? Adjustment => Hsl is null ? null : new PixelAdjustment( new HslColorAdjuster(Hsl).GetNewColor );
 
 	public HSL Hsl { get; }
 	public readonly string BaseImage;

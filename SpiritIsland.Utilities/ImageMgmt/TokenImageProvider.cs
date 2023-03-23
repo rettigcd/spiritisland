@@ -5,7 +5,7 @@ namespace SpiritIsland.WinForms;
 
 public class TokenImageProvider {
 	public TokenImageProvider( ResourceImages images) {
-		_tokenImages = new Dictionary<ISpaceEntity, Image> {
+		_tokenImages = new Dictionary<ISpaceEntity, Image?> {
 			[Token.Blight] = images.GetImage( Img.Blight ),
 			[Token.Beast] = images.GetImage( Img.Beast ),
 			[Token.Wilds] = images.GetImage( Img.Wilds ),
@@ -23,7 +23,7 @@ public class TokenImageProvider {
 
 	}
 
-	public Dictionary<ISpaceEntity, Image> _tokenImages; // because we need different images for different damaged invaders.
+	public Dictionary<ISpaceEntity, Image?> _tokenImages; // because we need different images for different damaged invaders.
 	public Image _presenceImg;
 	public Image _strife;
 	public Image _fearTokenImage;
@@ -37,8 +37,8 @@ public class TokenImageProvider {
 		_tokenImages[Token.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
 		_tokenImages[Token.Isolate] = ResourceImages.Singleton.GetImage( Img.Isolate );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_presenceImg );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Defend] );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Isolate] );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap?)_tokenImages[Token.Defend] );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap?)_tokenImages[Token.Isolate] );
 	}
 
 	public Image AccessTokenImage( IToken imageToken ) {

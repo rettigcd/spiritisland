@@ -42,7 +42,7 @@ class ImageCache {
 		encoderParameters.Param[0] = new EncoderParameter( Encoder.Quality, quality );
 
 		// Enshure subfolder exists.
-		string directory = System.IO.Path.GetDirectoryName( filePathAndName );
+		string? directory = System.IO.Path.GetDirectoryName( filePathAndName );
 		if(!Directory.Exists(directory))
 			Directory.CreateDirectory(directory);
 

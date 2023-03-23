@@ -55,7 +55,7 @@ public class WrappingLayout {
 		IncY( verticalTokenBuffer ); // create top buffer for over hanging enlarged tokens
 	}
 
-	Font _measuringFont;
+	Font? _measuringFont;
 	public int Indent { private get; set; } // subsequent lines, not the 1st line
 
 	public void CalcWrappingString( string description, FontStyle fontStyle ) {
@@ -117,7 +117,7 @@ public class WrappingLayout {
 	}
 
 	public void Tab( int numberOfSpaces, FontStyle style ) {
-		using(var font = UsingFont( style )) {
+		using(Font? font = UsingFont( style )) {
 			_measuringFont = font;
 			_x += (int)Measure( new string( 'i', numberOfSpaces ) );
 		}

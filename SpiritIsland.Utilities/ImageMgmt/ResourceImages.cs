@@ -1,9 +1,5 @@
-﻿using SpiritIsland.JaggedEarth;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Text;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -14,8 +10,10 @@ public class ResourceImages {
 
 	static public readonly ResourceImages Singleton = new ResourceImages();
 
+	readonly Assembly _assembly;
+
 	ResourceImages() {
-		assembly = System.Reflection.Assembly.GetExecutingAssembly();
+		_assembly = typeof(ResourceImages).Assembly; // System.Reflection.Assembly.GetExecutingAssembly();
 		Fonts = new PrivateFontCollection();
 		LoadFont( "leaguegothic-regular-webfont.ttf" );
 		LoadFont( "playsir-regular.otf" );
@@ -30,9 +28,10 @@ public class ResourceImages {
 	public Font UseInvaderFont( float fontHeight ) => new Font( Fonts.Families[1], fontHeight, GraphicsUnit.Pixel );
 
 	void LoadFont(string file) {
-		string resource = "SpiritIsland.WinForms." + file;
-		using Stream fontStream = assembly.GetManifestResourceStream( resource );               
-		
+		string resource = "SpiritIsland.Utilities." + file;
+		using Stream fontStream = _assembly.GetManifestResourceStream( resource ) 
+			?? throw new InvalidOperationException("Font is null");
+
 		// read the fond data into a buffer
 		byte[] fontdata = new byte[fontStream.Length];
 		fontStream.Read( fontdata, 0, (int)fontStream.Length );
@@ -187,7 +186,7 @@ public class ResourceImages {
 			_ => throw new ArgumentException($"{terrain} not mapped"),
 		};
 
-		HSL terrainColor = terrain switch {
+		HSL? terrainColor = terrain switch {
 			Terrain.Wetland => new HSL( 184, 40, 45 ),
 			Terrain.Jungle => new HSL( 144, 60, 40 ),
 			Terrain.Mountain => new HSL( 45, 10, 33 ),
@@ -316,7 +315,7 @@ public class ResourceImages {
 
 	public Image GetTokenImage( IToken token ) {
 		return token is HumanToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
-			: token is ManyMindsBeast ? GetManyMindsBeast()
+			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast()
 			: GetImage( token.Img );
 	}
 
@@ -335,15 +334,14 @@ public class ResourceImages {
 		return img;
 	}
 
-
 	static readonly Bitmap Invisible = new Bitmap( 1, 1 );
 	public Bitmap GetResourceImage( string filename ) {
 		if(filename is null) return Invisible;
-		Stream imgStream = assembly.GetManifestResourceStream( "SpiritIsland.WinForms.images."+filename );
+		Stream? imgStream = _assembly.GetManifestResourceStream( "SpiritIsland.Utilities.images."+filename );
 		return new Bitmap( imgStream );
 	}
 
-	static string ToResource( Img img ) => img switch {
+	static string? ToResource( Img img ) => img switch {
 		Img.Starlight_AssignElement => "icons.AssignElement.png",
 		Img.CardPlay => "icons.cardplay.png",
 		Img.Reclaim1 => "icons.reclaim 1.png",
@@ -451,8 +449,6 @@ public class ResourceImages {
 		Img.None => null,
 		_ => throw new System.ArgumentOutOfRangeException( nameof( img ), img.ToString() ),
 	};
-
-	readonly Assembly assembly;
 
 	#endregion
 

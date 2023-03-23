@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SpiritIsland.WinForms;
 
-static class DataFolder {
+public static class DataFolder {
 	public static string GetRootPath() {
 		string folder = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ), "SpiritIsland" );
 		if(!Directory.Exists( folder ))
