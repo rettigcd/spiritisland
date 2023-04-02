@@ -117,12 +117,12 @@ public class ResourceImages {
 		_cache.Add( key, img );
 	}
 
-	public Image GetPowerCard( PowerCard card ) {
+	public async Task<Image> GetPowerCard( PowerCard card ) {
 		ImageCache _cache = new ImageCache();
 		string key = $"PowerCard\\{card.Name}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
-		Bitmap image = (Bitmap)PowerCardImageManager.GetImage( card ); // don't dispose, we are returning it
+		Bitmap image = (Bitmap)await PowerCardImageManager.GetImage( card ); // don't dispose, we are returning it
 		_cache.Add( key, image );
 		return image;
 	}

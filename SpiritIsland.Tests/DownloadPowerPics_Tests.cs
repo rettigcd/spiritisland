@@ -42,18 +42,18 @@ public class DownloadPowerPics_Tests {
 	[InlineData( AssemblyType.BranchAndClaw )]
 	[InlineData( AssemblyType.JaggedEarth )]
 	[InlineData( AssemblyType.FeatherAndFlame )]
-	public void GenerateAll( string edition ) {
+	public async Task GenerateAll( string edition ) {
 		Type refObject = AssemblyType.GetEditionType( edition );
 		List<PowerCard> cards = refObject.GetMajors().ToList();
 		cards.AddRange( refObject.GetMinors() );
 		var spirits = refObject.GetSpirits();
 		cards.AddRange( spirits.SelectMany( s => s.Hand ) );
 
-		GenerateCards( cards );
+		await GenerateCards( cards );
 	}
 
 	[Fact]
-	public void DrawCard() {
+	public async Task DrawCard() {
 
 		var cards = new[] {
 			PowerCard.For<LureOfTheUnknown>(),
@@ -78,12 +78,12 @@ public class DownloadPowerPics_Tests {
 			//PowerCard.For<CastDownIntoTheBrinyDeep>(),
 			//PowerCard.For<DreamOfTheUntouchedLand>(),
 		};
-		GenerateCards( cards );
+		await GenerateCards( cards );
 	}
 
-	static void GenerateCards( IEnumerable<PowerCard> cards ) {
+	static async Task GenerateCards( IEnumerable<PowerCard> cards ) {
 		foreach(var card in cards) {
-			using Bitmap image = (Bitmap)PowerCardImageManager.GetImage( card );
+			using Bitmap image = (Bitmap)await PowerCardImageManager.GetImage( card );
 			ImageCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Name}.png", ImageFormat.Png );
 		}
 	}

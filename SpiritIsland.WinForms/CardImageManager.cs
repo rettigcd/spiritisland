@@ -12,7 +12,7 @@ namespace SpiritIsland.WinForms {
 		public Image GetImage( PowerCard card ) {
 
 			if(!images.ContainsKey( card )) {
-				Image image = ResourceImages.Singleton.GetPowerCard( card );
+				Image image = ResourceImages.Singleton.GetPowerCard( card ).Result; // !!!
 				images.Add( card, image );
 			}
 			var x = images[card];

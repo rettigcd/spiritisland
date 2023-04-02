@@ -8,7 +8,7 @@ namespace SpiritIsland.Utilities.ImageMgmt;
 
 public class PowerCardImageManager {
 
-	public static Image GetImage( PowerCard card ) {
+	public static async Task<Image> GetImage( PowerCard card ) {
 		var bounds = new Rectangle( 0, 0, 300, 420 );
 		var innerRect = bounds.InflateBy( -10 ); // 280x400
 		var left = new Rectangle( innerRect.X, innerRect.Y, 50, innerRect.Height ); // 50x400
@@ -45,7 +45,8 @@ public class PowerCardImageManager {
 			graphics.DrawString( card.Name.ToUpper(), titleFont, Brushes.White, title, center );
 
 		// Image
-		using(Image artwork = ResourceImages.Singleton.CardCardImage( card ).Result)
+
+		using(Image artwork = await ResourceImages.Singleton.CardCardImage( card ))
 			graphics.DrawImage( artwork, imgRect );
 
 		// Header
@@ -173,27 +174,30 @@ public class PowerCardImageManager {
 
 		// Every -or- is preceeded by a '.' so this puts -or- on their own line.
 		const string origOr = "-or- ";
-		const string newOr  = "-or-. ";
-		paragraph = paragraph.Replace(origOr,newOr);
+		const string newOr = "-or-. ";
+		paragraph = paragraph.Replace( origOr, newOr );
 
 		var sentences = new List<string>();
 		int start = 0;
-		int end = paragraph.IndexOf('.',start)+1;
-		while(end != 0) {
+		int end;
+		while((end = NextEnd( paragraph, start )) != 0) {
 			// capture
-			if(end < paragraph.Length && paragraph[end] == ' ' )
+			if(end < paragraph.Length && paragraph[end] == ' ')
 				++end;
 
 			string phrase = paragraph[start..end];
 			sentences.Add( phrase == newOr ? origOr : phrase );
 			// next
 			start = end;
-			end = paragraph.IndexOf( '.', start ) + 1;
 		}
 		if(start < paragraph.Length)
-			sentences.Add(paragraph[start..] );
+			sentences.Add( paragraph[start..] );
 
 		return sentences;
+
+		static int NextEnd( string paragraph, int start ) {
+			return paragraph.IndexOf( ". ", start ) + 1;
+		}
 	}
 
 	static public void AttributeValues( Graphics graphics, Rectangle[] cells, IFlexibleSpeedActionFactory power ) {
