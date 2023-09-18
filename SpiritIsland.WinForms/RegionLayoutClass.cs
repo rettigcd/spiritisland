@@ -6,7 +6,7 @@ namespace SpiritIsland.WinForms;
 
 class RegionLayoutClass {
 
-	public static RegionLayoutClass Overlapping(Rectangle rect ) {
+	public static RegionLayoutClass Overlapping( Rectangle rect ) {
 		var x = new RegionLayoutClass( rect );
 
 		const int MARGIN = 10;
@@ -26,16 +26,18 @@ class RegionLayoutClass {
 		return x;
 	}
 
-	public static RegionLayoutClass ForIslandFocused(Rectangle bounds ) {
+	public static RegionLayoutClass ForIslandFocused( Rectangle bounds ) {
 		var x = new RegionLayoutClass( bounds );
 
 		const int MARGIN = 10;
 		const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
+
 		const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
 		const float CARD_HEIGHT = .15f;
+		const float MAIN_HEIGHT = .75f;
 
 		Rectangle mainRect;
-		(x.StatusRect, (mainRect, (x.CardRect,_))) = bounds.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT-CARD_HEIGHT, CARD_HEIGHT ); // 0 margin because items in infoBar get their own margin.
+		(x.StatusRect, (mainRect, (x.CardRect, _))) = bounds.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, MAIN_HEIGHT, CARD_HEIGHT ); // 0 margin because items in infoBar get their own margin.
 
 		Rectangle spiritLimit;
 		(x.IslandRect, (spiritLimit, _)) = mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
@@ -54,12 +56,18 @@ class RegionLayoutClass {
 		const int MARGIN = 10;
 		const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
 		const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
-		const float CARD_HEIGHT = .40f;
+		const float CARD_HEIGHT = .4f;
+		const float MAIN_HEIGHT = .75f;
 
-		Rectangle mainRect;
-		(x.StatusRect, (mainRect, (x.CardRect,_))) = bounds.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT - CARD_HEIGHT, CARD_HEIGHT ); // 0 margin because items in infoBar get their own margin.
+		// Island
+		Rectangle mainRectIsland;
+		(x.StatusRect, (mainRectIsland, (x.CardRect, _))) = bounds.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, MAIN_HEIGHT, .15f ); // 0 margin because items in infoBar get their own margin.
 
-		(x.IslandRect, (x.SpiritRect, _)) = mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
+		// Cards
+		Rectangle fillterRectAboveCards;
+		(x.StatusRect, (fillterRectAboveCards, (x.CardRect, _))) = bounds.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT - CARD_HEIGHT, CARD_HEIGHT ); // 0 margin because items in infoBar get their own margin.
+
+		(x.IslandRect, (x.SpiritRect, _)) = mainRectIsland.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
 
 		(x.OptionRect, _) = x.IslandRect.InflateBy( -MARGIN ).SplitHorizontallyByWeight( 0, .1f, .9f );
 
@@ -77,21 +85,23 @@ class RegionLayoutClass {
 	#endregion
 
 	readonly Rectangle _bounds;
-	public Rectangle SpiritRect        { get; private set; }
-	public Rectangle IslandRect        { get; private set; }
-	public Rectangle StatusRect        { get; private set;}
-	public Rectangle CardRect          { get; private set; }
-	public Rectangle OptionRect        { get; private set; }
+	public Rectangle SpiritRect { get; private set; }
+	public Rectangle IslandRect { get; private set; }
+	public Rectangle StatusRect { get; private set; }
+	public Rectangle CardRect { get; private set; }
+	public Rectangle OptionRect { get; private set; }
 
 	#region pop-ups
 
-	public Rectangle PopupFearRect { get {
-		// Active Fear Layout
-		int fearHeight = (int)(_bounds.Height * .5f);
-		int fearWidth = fearHeight*2/3;
-		return new Rectangle( _bounds.X + (_bounds.Width - fearWidth)/2, _bounds.Y + (_bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
+	public Rectangle PopupFearRect {
+		get {
+			// Active Fear Layout
+			int fearHeight = (int)(_bounds.Height * .5f);
+			int fearWidth = fearHeight * 2 / 3;
+			return new Rectangle( _bounds.X + (_bounds.Width - fearWidth) / 2, _bounds.Y + (_bounds.Height - fearHeight) / 2, fearWidth, fearHeight );
 
-	} }
+		}
+	}
 
 	public Rectangle ElementPopUpBounds( int count ) {
 		// calculate layout based on count
@@ -106,26 +116,28 @@ class RegionLayoutClass {
 		return maxBounds.FitBoth( desiredSize );
 	}
 
-	public Rectangle MinorMajorDeckSelectionPopup{ get {
-		int height = _bounds.Height;
-		int boundsHeight = height / 3; // cards take up 1/3 of window vertically
-		int boundsWidth = boundsHeight * 16 / 10;
-		return new Rectangle( 0 + (_bounds.Width - boundsWidth) / 2, (height - boundsHeight)/2, boundsWidth, boundsHeight );
-	} }
+	public Rectangle MinorMajorDeckSelectionPopup {
+		get {
+			int height = _bounds.Height;
+			int boundsHeight = height / 3; // cards take up 1/3 of window vertically
+			int boundsWidth = boundsHeight * 16 / 10;
+			return new Rectangle( 0 + (_bounds.Width - boundsWidth) / 2, (height - boundsHeight) / 2, boundsWidth, boundsHeight );
+		}
+	}
 
 	#endregion
 
 	public void DrawRects( Graphics graphics ) {
 		var rects = new Dictionary<string, Rectangle>() {
-			["Options"]        = OptionRect,
-			["Island"]         = IslandRect,
-			["Spirit"]         = SpiritRect,
+			["Options"] = OptionRect,
+			["Island"] = IslandRect,
+			["Spirit"] = SpiritRect,
 			// Debug
 			// popups
 			["Element Bounds"] = ElementPopUpBounds( 10 ),
-			["Popup Fear"]     = PopupFearRect,
-			["Cards"]          = CardRect,
-			["Minor/Major"]    = MinorMajorDeckSelectionPopup,
+			["Popup Fear"] = PopupFearRect,
+			["Cards"] = CardRect,
+			["Minor/Major"] = MinorMajorDeckSelectionPopup,
 		};
 
 		var colors = new Color[] { Color.Red, Color.Green, Color.Blue, Color.Orange, Color.Purple, Color.Yellow };

@@ -25,12 +25,12 @@ public partial class IslandControl : Control {
 	public IslandControl() {
 		InitializeComponent();
 
-		SetStyle(ControlStyles.AllPaintingInWmPaint 
-			| ControlStyles.UserPaint 
-			| ControlStyles.OptimizedDoubleBuffer 
+		SetStyle( ControlStyles.AllPaintingInWmPaint
+			| ControlStyles.UserPaint
+			| ControlStyles.OptimizedDoubleBuffer
 			| ControlStyles.ResizeRedraw, true
 		);
-		_ctx = new SharedCtx(this);
+		_ctx = new SharedCtx( this );
 		_islandPanel = new IslandPanel( _ctx );
 	}
 
@@ -61,27 +61,21 @@ public partial class IslandControl : Control {
 	// Window Dependent
 	RegionLayoutClass RegionLayout {
 		get {
-			if( _regionLayout == null) {
+			if(_regionLayout == null) {
 
-				_regionLayout = Overlapped ? RegionLayoutClass.Overlapping( ClientRectangle )
-					: ( FocusPanel == _cardPanel) ? RegionLayoutClass.ForCardFocused( ClientRectangle )
+				_regionLayout = Overlapped
+						? RegionLayoutClass.Overlapping( ClientRectangle )
+					: (FocusPanel == _cardPanel)
+						? RegionLayoutClass.ForCardFocused( ClientRectangle )
 					: RegionLayoutClass.ForIslandFocused( ClientRectangle );
 
 				_islandPanel.Bounds = _regionLayout.IslandRect;
 				_spiritPanel.Bounds = _regionLayout.SpiritRect;
-				_cardPanel.Bounds   = _regionLayout.CardRect;
+				_cardPanel.Bounds = _regionLayout.CardRect;
 				_statusPanel.Bounds = _regionLayout.StatusRect;
 			}
 			return _regionLayout;
 		}
-		//set {
-		//	_regionLayout = value;
-		//	_islandPanel.Bounds = _regionLayout.IslandRect;
-		//	_spiritPanel.Bounds = _regionLayout.SpiritRect;
-		//	_cardPanel.Bounds = _regionLayout.CardRect;
-		//	_statusPanel.Bounds = _regionLayout.StatusRect;
-		//	Invalidate();
-		//}
 	}
 
 	RegionLayoutClass _regionLayout; // depends ONLY on the window/client, NOT on the game
@@ -126,7 +120,7 @@ public partial class IslandControl : Control {
 			GameLayout_Invalidate();
 	}
 
-	void DrawElementsPopUp(Graphics graphics ) {
+	void DrawElementsPopUp( Graphics graphics ) {
 		if(decision_Element is null) return;
 
 		var elementOptions = decision_Element.ElementOptions;
@@ -163,7 +157,7 @@ public partial class IslandControl : Control {
 
 	}
 
-	void DrawDeckPopUp(Graphics graphics ) {
+	void DrawDeckPopUp( Graphics graphics ) {
 		if(decision_DeckToDrawFrom is null) return;
 
 		// calc layout
@@ -238,9 +232,9 @@ public partial class IslandControl : Control {
 
 	Action GetClickableAction( Point clientCoords )
 		=> new[] { _cardPanel, _islandPanel, _spiritPanel, _statusPanel }
-			.Where(x=>x.Bounds.Contains( clientCoords ))
-			.Select(x=>x.GetClickableAction( clientCoords ))
-			.FirstOrDefault(x=>x!=null);
+			.Where( x => x.Bounds.Contains( clientCoords ) )
+			.Select( x => x.GetClickableAction( clientCoords ) )
+			.FirstOrDefault( x => x != null );
 
 	protected override void OnMouseMove( MouseEventArgs e ) {
 		base.OnMouseMove( e );
@@ -252,12 +246,12 @@ public partial class IslandControl : Control {
 
 	}
 
-	IOption FindOptionUnderPoint( Point clientCoords ) => _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains(clientCoords) );
+	IOption FindOptionUnderPoint( Point clientCoords ) => _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains( clientCoords ) );
 
 	#region User Action Events - Notify main form
 
 	public event Action<IOption> OptionSelected;
-	public void SelectOption(IOption option) => OptionSelected?.Invoke( option );
+	public void SelectOption( IOption option ) => OptionSelected?.Invoke( option );
 
 	#endregion
 
@@ -266,10 +260,10 @@ public partial class IslandControl : Control {
 		_islandPanel.ActivateOptions( decision );
 		_cardPanel.ActivateOptions( decision );
 
-		IPanel max = _islandPanel;
-		if( max.OptionCount < _spiritPanel.OptionCount ) max = _spiritPanel;
-		if( max.OptionCount < _cardPanel.OptionCount ) max = _cardPanel;
-		FocusPanel = max;
+		// Find panel that has the max # of options and set as Focus
+		FocusPanel = new IPanel[] { _islandPanel, _spiritPanel, _cardPanel }
+			.OrderByDescending( x => x.OptionCount )
+			.First();
 
 		// !!! Buttonize Pop-ups - need to add dynamically and be able to remove themselves when done/clicked
 		options_FearPopUp = decision.Options.OfType<IFearCard>().FirstOrDefault();
@@ -280,7 +274,7 @@ public partial class IslandControl : Control {
 
 		// Dialog Style Popup where multiple buttons are on a common background, and only draw when active.
 		decision_DeckToDrawFrom = decision as Select.DeckToDrawFrom;
-		decision_Element        = decision as Select.Element;
+		decision_Element = decision as Select.Element;
 
 		Invalidate();
 	}
@@ -290,17 +284,12 @@ public partial class IslandControl : Control {
 		set {
 			if(_focusPanel == value) return; // no change
 			_focusPanel = value;
-			_regionLayout = null;
+			InvaldateLayout();
 			Invalidate();
 		}
 	}
-	IPanel _focusPanel;
 
-	Select.DeckToDrawFrom            decision_DeckToDrawFrom;
-	Select.Element                   decision_Element;
-
-	IFearCard				options_FearPopUp;
-	IBlightCard		        options_BlightPopUp;
+	void InvaldateLayout() => _regionLayout = null; IPanel _focusPanel;
 
 	#region private Misc fields
 
@@ -314,6 +303,12 @@ public partial class IslandControl : Control {
 	IPanel _cardPanel = new NullPanel();
 	IPanel _spiritPanel = new NullPanel();
 	IPanel _statusPanel = new NullPanel();
+
+	Select.DeckToDrawFrom decision_DeckToDrawFrom;
+	Select.Element decision_Element;
+
+	IFearCard options_FearPopUp;
+	IBlightCard options_BlightPopUp;
 
 	#endregion
 
@@ -336,7 +331,7 @@ public class SharedCtx {
 
 	readonly IslandControl _control;
 
-	public SharedCtx(IslandControl control) {
+	public SharedCtx( IslandControl control ) {
 		_control = control;
 		_tip = new TokenImageProvider( ResourceImages.Singleton );
 	}
@@ -344,7 +339,7 @@ public class SharedCtx {
 	public GameState GameState;
 
 	public Spirit _spirit;
-	public void SelectOption(IOption option) => _control.SelectOption(option);
+	public void SelectOption( IOption option ) => _control.SelectOption( option );
 
 	public bool _debug;
 

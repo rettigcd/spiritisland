@@ -176,7 +176,7 @@
     <EmbeddedResource Include="images\icons\Mountainland.png" />
     <EmbeddedResource Include="images\icons\mountainorpresence.png" />
     <EmbeddedResource Include="images\icons\Moveicon.png" />
-    <EmbeddedResource Include="images\icons\Movepresence.png" />
+    <EmbeddedResource Include="images\icons\MovePresence.png" />
     <EmbeddedResource Include="images\icons\Noblight.png" />
     <EmbeddedResource Include="images\icons\NoSymbol.png" />
     <EmbeddedResource Include="images\icons\No_Range.png" />
