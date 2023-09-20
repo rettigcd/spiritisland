@@ -14,9 +14,9 @@ public abstract partial class Spirit : IOption {
 
 		Gateway = new UserGateway();
 
-		decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, PowerCards = Hand });
-		decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, PowerCards = InPlay });
-		decks.Add(new SpiritDeck{ Icon = Img.Deck_Discarded, PowerCards = DiscardPile } );
+		decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, Cards = Hand });
+		decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, Cards = InPlay });
+		decks.Add(new SpiritDeck{ Icon = Img.Deck_Discarded, Cards = DiscardPile } );
 	}
 
 	public void AddCardToHand( PowerCard card ){
@@ -599,7 +599,7 @@ public abstract partial class Spirit : IOption {
 
 public class SpiritDeck {
 	public Img Icon;
-	public List<PowerCard> PowerCards;
+	public List<PowerCard> Cards;
 }
 
 public interface IHaveSecondaryElements {

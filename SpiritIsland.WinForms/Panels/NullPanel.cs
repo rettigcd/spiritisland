@@ -10,4 +10,10 @@ public class NullPanel : IPanel {
 	public void OnGameLayoutChanged() { }
 	public void Paint( Graphics graphics ) { }
 	public int OptionCount => 0;
+	public bool HasFocus { set { } }
+
+	public int ZIndex => 1;
+
+	public void FindBounds( RegionLayoutClass regionLayout ) {}
+	public RegionLayoutClass GetLayout( Rectangle bounds ) { return null; }
 }

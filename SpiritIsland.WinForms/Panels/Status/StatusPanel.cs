@@ -8,6 +8,7 @@ using System.Windows.Forms;
 namespace SpiritIsland.WinForms;
 
 internal class StatusPanel : IPanel {
+
 	readonly SharedCtx _ctx;
 	public StatusPanel( SharedCtx ctx ) {
 		_ctx = ctx;
@@ -25,6 +26,13 @@ internal class StatusPanel : IPanel {
 			};
 		}
 	}
+
+	public int ZIndex => 1;
+
+	public void FindBounds( RegionLayoutClass regionLayout ) {
+		Bounds = regionLayout.StatusRect;
+	}
+	public bool HasFocus { set { } }
 
 	public int OptionCount => 0;
 
@@ -285,6 +293,11 @@ internal class StatusPanel : IPanel {
 
 
 	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
+
+	public RegionLayoutClass GetLayout( Rectangle bounds ) {
+		return RegionLayoutClass.ForIslandFocused( bounds, _ctx._spirit.Decks.Length + 1 ); // everything else
+	}
+
 	static Brush GameTextBrush_Victory => Brushes.DarkGreen;
 	static Brush GameTextBrush_Defeat => Brushes.DarkRed;
 	static Brush GameTextBrush_Default => Brushes.Black;

@@ -23,10 +23,20 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 			.ToArray();
 	}
 
+	public void FindBounds( RegionLayoutClass regionLayout ) {
+		Bounds = regionLayout.SpiritRect;
+	}
+	public RegionLayoutClass GetLayout( Rectangle bounds ) {
+		return RegionLayoutClass.ForIslandFocused( bounds, _ctx._spirit.Decks.Length+1 ); // everything else
+	}
+
+	public bool HasFocus { set { } }
+
+	public int ZIndex => 1;
+
+
 	public Rectangle Bounds {
-		get {
-			return _bounds;
-		}
+		get => _bounds;
 		set {
 			_bounds = value;
 			_spiritLayout = null; // invalidate

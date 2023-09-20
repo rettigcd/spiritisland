@@ -4,83 +4,38 @@ namespace SpiritIsland.WinForms;
 
 class CardLayout {
 
-	public CardLayout(Rectangle bounds) {
+	public CardLayout( Rectangle bounds, int cardCount ) {
 		_bounds = bounds;
-		// Vertical Stack: TopSpacer, Margin, Card-Height, Margin, TabHeight, Margin
-		_topSpacer = (int)(bounds.Height * .0f);
-		_cardBottomMargin = (int)(bounds.Height * .1f) + 2*MARGIN;
-		_cardHeight = bounds.Height - _topSpacer - _cardBottomMargin - MARGIN;
-		_cardWidth = _cardHeight * 350 / 500;
 
-		TabDimmension = _bounds.Height / ROWCOUNT;
-
-		const int ArrowWidth = 50;
-
-		PrevArrow = new Rectangle( _bounds.Left + TabDimmension*2, _bounds.Top, ArrowWidth, bounds.Height );
-		NextArrow = new Rectangle( _bounds.Right-ArrowWidth,_bounds.Top,ArrowWidth,bounds.Height);
-
-		MaxCards = (NextArrow.Left-PrevArrow.Right-2*MARGIN+CARD_SPACER) / (_cardWidth+CARD_SPACER);
-
-//		_tabDimension = (int)(bounds.Height * .1f);
-//		_tabLeft = bounds.X + (bounds.Width - 3 * TAB_SPACER - 4*_tabDimension)/2; // create space for 4 decks/tabs
-	}
-
-	const int ROWCOUNT = 3;
-	readonly int TabDimmension;
-
-
-	public readonly Rectangle PrevArrow;
-	public readonly Rectangle NextArrow;
-	public readonly int MaxCards;
-
-	public Rectangle GetTabBounds( int i ) {
-		//return new Rectangle(
-		//	_tabLeft + i * (_tabDimension+TAB_SPACER),
-		//	_bounds.Bottom - _tabDimension - MARGIN,
-		//	_tabDimension,
-		//	_tabDimension
-		//);
-		return new Rectangle(
-			_bounds.Left + MARGIN + (i/ROWCOUNT) * TabDimmension, 
-			_bounds.Top + MARGIN + (i%ROWCOUNT) * TabDimmension,
-			TabDimmension, TabDimmension
-		);
+		_rowCount = 0;
+		do {
+			++_rowCount;
+			_cardHeight = (bounds.Height - MARGIN) / _rowCount;	// determine card height based on # of rows
+			_cardWidth = _cardHeight * 350 / 500;					// scale width proportionally
+			_colCount = (bounds.Width-MARGIN)/(_cardWidth+MARGIN);	// count # of columns that fit
+		} while( _colCount * _rowCount < cardCount );				// as long as cards don't fit, add a row
+		
 	}
 
 	public Rectangle GetCardActionLabel( int index, int totalCardsInDeck ) {
-		int left = CalcLeft( totalCardsInDeck );
-		// int left = _bounds.X + MARGIN;
-		return new Rectangle(
-			left + index * (_cardWidth + CARD_SPACER) + _cardWidth - _topSpacer,
-			_bounds.Y + _topSpacer / 2,
-			_topSpacer,
-			_topSpacer
-		);
+		int left = _bounds.Left + MARGIN + (index % _colCount) * (MARGIN+_cardWidth);
+		int top = _bounds.Bottom - (index/_colCount) * (MARGIN+_cardHeight);
+		return new Rectangle( left, top, MARGIN*2, MARGIN * 2 );
 	}
 
-	public Rectangle GetCardRect( int index, int _ ) {
-		// int left = CalcLeft( totalCardsInDeck );
-		int left = PrevArrow.Right + MARGIN;
-		return new Rectangle(
-			left + index * (_cardWidth + CARD_SPACER), 
-			_bounds.Y + _topSpacer + MARGIN,
-			_cardWidth, 
-			_cardHeight
-		);
+	public Rectangle GetCardRect( int index ) {
+		int left = _bounds.Left + MARGIN + (index % _colCount) * (MARGIN + _cardWidth);
+		int top = _bounds.Bottom - (index / _colCount + 1) * (MARGIN + _cardHeight);
+		return new Rectangle( left, top, _cardWidth, _cardHeight );
 	}
-	int CalcLeft( int totalCardsInDeck ) => _bounds.X + (_bounds.Width - (_cardWidth + CARD_SPACER) * totalCardsInDeck + MARGIN) / 2;
 
-
-	readonly int _topSpacer;
-//	readonly int _tabDimension;
 	readonly int _cardHeight;
 	readonly int _cardWidth;
 	readonly Rectangle _bounds;
-//	readonly int _tabLeft;
-	readonly int _cardBottomMargin;
+	readonly int _rowCount;
+	readonly int _colCount;
 
 	const int MARGIN = 10;
-//	const int TAB_SPACER = 30;
 	const int CARD_SPACER = 30;
 
 }

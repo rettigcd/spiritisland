@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
@@ -32,6 +32,7 @@ public partial class IslandControl : Control {
 		);
 		_ctx = new SharedCtx( this );
 		_islandPanel = new IslandPanel( _ctx );
+		_focusPanel = _islandPanel;
 	}
 
 	readonly bool Overlapped = false;
@@ -46,9 +47,15 @@ public partial class IslandControl : Control {
 		_ctx._spirit = gameState.Spirits.Single();
 		_ctx._adversary = adversary;
 
-		_cardPanel = new CardPanel( _ctx, this );
 		_spiritPanel = new SpiritPanel( _ctx );
 		_statusPanel = new StatusPanel( _ctx );
+
+		// Cards
+		_playerDeckPanels = new IPanel[_ctx._spirit.Decks.Length];
+		for(int i = 0; i< _ctx._spirit.Decks.Length;++i)
+			_playerDeckPanels[i] = new CardDeckPanel(_ctx,this,i);
+		_drawCardPanel = new OtherCardsPanel( _ctx, this );
+		_allPanels = _playerDeckPanels.Union( new IPanel[] { _islandPanel, _spiritPanel, _statusPanel , _drawCardPanel } ).ToArray();
 
 		GameLayout_Invalidate();
 		_regionLayout = null; // trigger setting bounds in newly created panels
@@ -58,24 +65,18 @@ public partial class IslandControl : Control {
 
 	#region Calc Layout
 
+	IPanel[] _allPanels;
+
 	// Window Dependent
-	RegionLayoutClass RegionLayout {
-		get {
-			if(_regionLayout == null) {
+	RegionLayoutClass RegionLayout => _regionLayout ??= CalcLayoutFromFocusPanel();
 
-				_regionLayout = Overlapped
-						? RegionLayoutClass.Overlapping( ClientRectangle )
-					: (FocusPanel == _cardPanel)
-						? RegionLayoutClass.ForCardFocused( ClientRectangle )
-					: RegionLayoutClass.ForIslandFocused( ClientRectangle );
-
-				_islandPanel.Bounds = _regionLayout.IslandRect;
-				_spiritPanel.Bounds = _regionLayout.SpiritRect;
-				_cardPanel.Bounds = _regionLayout.CardRect;
-				_statusPanel.Bounds = _regionLayout.StatusRect;
-			}
-			return _regionLayout;
-		}
+	RegionLayoutClass CalcLayoutFromFocusPanel() {
+		var regionLayout = Overlapped 
+			? RegionLayoutClass.Overlapping( ClientRectangle ) 
+			: FocusPanel.GetLayout( ClientRectangle );
+		foreach(IPanel panel in _allPanels)
+			panel.FindBounds( regionLayout );
+		return regionLayout;
 	}
 
 	RegionLayoutClass _regionLayout; // depends ONLY on the window/client, NOT on the game
@@ -93,10 +94,8 @@ public partial class IslandControl : Control {
 		_ = RegionLayout; // lazy-set bounds
 
 		// =====  Panels =====
-		_statusPanel.Paint( pe.Graphics );
-		_islandPanel.Paint( pe.Graphics );
-		_spiritPanel.Paint( pe.Graphics );
-		_cardPanel.Paint( pe.Graphics );
+		foreach(IPanel panel in _allPanels.OrderBy(x=>x.ZIndex))
+			panel.Paint( pe.Graphics );
 
 		// Pop-ups - draw last, because they are pop-ups and should be on top.
 		DrawDeckPopUp( pe.Graphics );
@@ -201,29 +200,32 @@ public partial class IslandControl : Control {
 	/// Invalidtes pieces that are Game-Dependent, then triggers Game/Window layout invalidation
 	/// </summary>
 	void GameLayout_Invalidate() {
-		_islandPanel.OnGameLayoutChanged();
-		_spiritPanel.OnGameLayoutChanged();
-		_cardPanel.OnGameLayoutChanged();
-		_statusPanel.OnGameLayoutChanged();
+		foreach(var panel in _allPanels)
+			panel.OnGameLayoutChanged();
 		Invalidate();
 	}
 
 	protected override void OnClick( EventArgs e ) {
 		var clientCoords = PointToClient( Control.MousePosition );
 
+		// Options not inside Panels
+		IOption FindOptionUnderPoint( Point clientCoords ) => _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains( clientCoords ) );
 		IOption option = FindOptionUnderPoint( clientCoords );
 		if(option != null) {
 			OptionSelected?.Invoke( option );
 			return;
 		}
 
+		// Options Inside panels or other generic actions
 		Action action = GetClickableAction( clientCoords );
 		if(action != null) {
 			action();
 			return;
 		}
 
-		var panel = new[] { _cardPanel, _islandPanel, _spiritPanel, _statusPanel }
+		// Switch Panels
+		IPanel panel = _allPanels
+			.OrderByDescending(x=>x.ZIndex)
 			.Where( x => x.Bounds.Contains( clientCoords ) )
 			.FirstOrDefault();
 		if(panel != null)
@@ -231,8 +233,9 @@ public partial class IslandControl : Control {
 	}
 
 	Action GetClickableAction( Point clientCoords )
-		=> new[] { _cardPanel, _islandPanel, _spiritPanel, _statusPanel }
-			.Where( x => x.Bounds.Contains( clientCoords ) )
+		=> _allPanels
+			?.Where( x => x.Bounds.Contains( clientCoords ) )
+			.OrderByDescending( x=>x.ZIndex )
 			.Select( x => x.GetClickableAction( clientCoords ) )
 			.FirstOrDefault( x => x != null );
 
@@ -246,8 +249,6 @@ public partial class IslandControl : Control {
 
 	}
 
-	IOption FindOptionUnderPoint( Point clientCoords ) => _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains( clientCoords ) );
-
 	#region User Action Events - Notify main form
 
 	public event Action<IOption> OptionSelected;
@@ -256,12 +257,11 @@ public partial class IslandControl : Control {
 	#endregion
 
 	public void OptionProvider_OptionsChanged( IDecision decision ) {
-		_spiritPanel.ActivateOptions( decision );
-		_islandPanel.ActivateOptions( decision );
-		_cardPanel.ActivateOptions( decision );
+		foreach(var panel in _allPanels)
+			panel.ActivateOptions( decision );
 
 		// Find panel that has the max # of options and set as Focus
-		FocusPanel = new IPanel[] { _islandPanel, _spiritPanel, _cardPanel }
+		FocusPanel = _allPanels
 			.OrderByDescending( x => x.OptionCount )
 			.First();
 
@@ -284,6 +284,7 @@ public partial class IslandControl : Control {
 		set {
 			if(_focusPanel == value) return; // no change
 			_focusPanel = value;
+			foreach(IPanel p in _allPanels) p.HasFocus = p == _focusPanel;
 			InvaldateLayout();
 			Invalidate();
 		}
@@ -300,7 +301,14 @@ public partial class IslandControl : Control {
 
 	readonly SharedCtx _ctx;
 	readonly IslandPanel _islandPanel;
-	IPanel _cardPanel = new NullPanel();
+
+	IPanel[] _playerDeckPanels;
+//	IPanel _spiritHandPanel = new NullPanel();
+//	IPanel _spiritPlayedPanel = new NullPanel();
+//	IPanel _spiritDiscardedPanel = new NullPanel();
+	IPanel _drawCardPanel = new NullPanel();
+
+	// IPanel _cardPanel = new NullPanel();
 	IPanel _spiritPanel = new NullPanel();
 	IPanel _statusPanel = new NullPanel();
 

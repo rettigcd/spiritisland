@@ -21,6 +21,10 @@ class IslandPanel : IPanel {
 	}
 	#endregion
 
+	public void FindBounds( RegionLayoutClass regionLayout ) {
+		Bounds = regionLayout.IslandRect;
+	}
+
 	public Rectangle Bounds {
 		get {
 			return _availableScreenRect;
@@ -30,6 +34,8 @@ class IslandPanel : IPanel {
 			ScreenBoundsChanged?.Invoke();
 		}
 	}
+
+	public bool HasFocus { set { } }
 
 	public int OptionCount { get; private set; }
 
@@ -72,6 +78,12 @@ class IslandPanel : IPanel {
 		IOption option = _buttonContainer.FindEnabledOption( clientCoords );
 		return option == null ? null : ()=>_ctx.SelectOption( option );
 	}
+
+	public RegionLayoutClass GetLayout( Rectangle bounds ) {
+		return RegionLayoutClass.ForIslandFocused( bounds, _ctx._spirit.Decks.Length + 1 ); // everything else
+	}
+
+	public int ZIndex => 0;
 
 	#region private methods
 
