@@ -15,6 +15,8 @@ public class InnateLayout {
 	#region constructor
 
 	public InnateLayout( InnatePower power, int x, int y, int width, float textHeightMultiplier, VisibleButtonContainer buttonContainer ) {
+		if(width<0)
+			throw new System.Exception("width<0");
 
 		_textEmSize = width * textHeightMultiplier;
 
@@ -55,6 +57,7 @@ public class InnateLayout {
 		}
 
 		Bounds = new Rectangle( x, y, width, optionY - y );
+
 		((InnateButton)buttonContainer[power]).Bounds= Bounds;
 	}
 

@@ -3,56 +3,60 @@ using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
+/// <summary>
+/// Binds Buttons to Options and manages their visibility.
+/// </summary>
 public class VisibleButtonContainer {
 
-	public void Add( IOption option, IButton btn ) {
-		_disabled.Add( option, btn );
+	/// <summary> Binds a button to a static Option </summary>
+	/// <remarks>When button is clicked, bound option will be selected.</remarks>
+	/// <param name="boundStaticOption"></param>
+	/// <param name="btn"></param>
+	public void Add( IOption boundStaticOption, IButton btn ) {
+		_staticLookupButtonByOption.Add( boundStaticOption, btn );
 	}
 
+	/// <summary> Binds a button to a transient option, enabling the button. </summary>
 	public void AddTransientEnabled( IOption option, IButton btn ) {
 		_enabled.Add( option, btn );
 		_transient.Add( option );
 	}
 
-	public IButton this[IOption option] {
-		get {
-			return _disabled.ContainsKey( option )
-				? _disabled[option]
-				: _enabled[option];
-		}
-	}
+	public IButton this[IOption option] => _staticLookupButtonByOption.ContainsKey( option )
+		? _staticLookupButtonByOption[option]	// all static
+		: _enabled[option];						// enabled (static + transient)
 
 	public int ActivatedOptions => _enabled.Count;
 
 	public void ClearTransient() {
 		foreach(IOption x in _transient) {
 			_enabled.Remove( x );
-			_disabled.Remove( x );
+			_staticLookupButtonByOption.Remove( x );
 		}
 		_transient.Clear();
 	}
 
 	public void Clear() {
-		_disabled.Clear();
+		_staticLookupButtonByOption.Clear();
 		_enabled.Clear();
 	}
 
 	public void DisableAll() {
 		foreach(var pair in _enabled)
-			_disabled.Add( pair.Key, pair.Value );
+			_staticLookupButtonByOption.Add( pair.Key, pair.Value );
 		_enabled.Clear();
 	}
 
 	public void EnableOptions( IDecision decision ) {
 		DisableAll();
 		foreach(IOption option in decision.Options)
-			if(_disabled.ContainsKey( option ))
+			if(_staticLookupButtonByOption.ContainsKey( option ))
 				EnableSingle( option, decision );
 	}
 
 	void EnableSingle( IOption option, IDecision decision ) {
-		var button = _disabled[option]; // grab old
-		_disabled.Remove( option );
+		var button = _staticLookupButtonByOption[option]; // grab old
+		_staticLookupButtonByOption.Remove( option );
 
 		_enabled.Add( option, button ); // add to new
 		button.SyncDataToDecision( decision );
@@ -69,12 +73,12 @@ public class VisibleButtonContainer {
 			foreach(IButton btn in dict.Values)
 				btn.Paint( graphics, enabled );
 		}
-		PaintButtonDict( graphics, _disabled, false );
+		PaintButtonDict( graphics, _staticLookupButtonByOption, false );
 		PaintButtonDict( graphics, _enabled, true );
 	}
 
 	readonly Dictionary<IOption, IButton> _enabled = new Dictionary<IOption, IButton>();
-	readonly Dictionary<IOption, IButton> _disabled = new Dictionary<IOption, IButton>();
+	readonly Dictionary<IOption, IButton> _staticLookupButtonByOption = new Dictionary<IOption, IButton>();
 	readonly List<IOption> _transient = new List<IOption>();
 
 }

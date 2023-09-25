@@ -21,7 +21,7 @@ class IslandPanel : IPanel {
 	}
 	#endregion
 
-	public void FindBounds( RegionLayoutClass regionLayout ) {
+	public void AssignBounds( RegionLayoutClass regionLayout ) {
 		Bounds = regionLayout.IslandRect;
 	}
 

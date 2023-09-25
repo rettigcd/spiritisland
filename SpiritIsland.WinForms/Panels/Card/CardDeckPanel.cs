@@ -19,7 +19,7 @@ class CardDeckPanel : IPanel {
 		: HasFocus ? 2
 		: 1;
 
-	public void FindBounds( RegionLayoutClass regionLayout ) {
+	public void AssignBounds( RegionLayoutClass regionLayout ) {
 		Bounds = regionLayout.DeckRects[ _deckIndex ];
 	}
 

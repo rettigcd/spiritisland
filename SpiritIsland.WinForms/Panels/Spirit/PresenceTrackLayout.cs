@@ -7,7 +7,8 @@ namespace SpiritIsland.WinForms {
 
 	public class PresenceTrackLayout {
 
-		public PresenceTrackLayout(Rectangle bounds, Spirit spirit, int margin, VisibleButtonContainer buttonContainer ) {
+		public PresenceTrackLayout( Spirit spirit, VisibleButtonContainer buttonContainer, Rectangle bounds ) {
+			const int margin = 10;
 			this.Bounds = bounds;
 
 			var energySlots = spirit.Presence.Energy.Slots;

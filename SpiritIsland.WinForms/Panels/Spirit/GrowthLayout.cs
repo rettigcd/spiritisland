@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SpiritIsland.Select;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using SpiritIsland.WinForms;
 
 namespace SpiritIsland.WinForms {
 
@@ -10,10 +10,21 @@ namespace SpiritIsland.WinForms {
 	/// </summary>
 	public class GrowthLayout {
 
-		public Rectangle Bounds { get; }
+		public Rectangle Bounds { get; set; }
 
-		public GrowthLayout(GrowthOption[] growthOptions, Rectangle bounds, VisibleButtonContainer buttonContainer){
-			this.Bounds = bounds;
+		public RectangleF this[GrowthOption opt] => optionRects[opt];
+		public RectangleF this[GrowthActionFactory act] => actionRects[act];
+
+		public bool HasAction( GrowthActionFactory act ) => actionRects.ContainsKey( act );
+		public bool HasOption( GrowthOption opt ) => optionRects.ContainsKey( opt );
+
+		#region constructor
+
+		public GrowthLayout( Spirit spirit, VisibleButtonContainer buttonContainer, Rectangle bounds){
+
+			var growthOptions = spirit.GrowthTrack.Options;
+
+			Bounds = bounds;
 
 			int actionCount = growthOptions.Sum(op=>op.GrowthActions.Length);
 
@@ -44,31 +55,14 @@ namespace SpiritIsland.WinForms {
 			ScaleToFit(bounds.Width,bounds.Height);
 			Translate(bounds.X,bounds.Y);
 
-
-
-			foreach(var action in growthOptions.SelectMany( optionGroup=>optionGroup.GrowthActions )) {
-				// HACK - to catch when starlight adds growth options (because we don't have any event to track that)
-				// try { _ = buttonContainer[action]; } catch( System.Exception) { buttonContainer.Add(action, new GrowthButton() ); }
-
+			foreach(var action in growthOptions.SelectMany( optionGroup=>optionGroup.GrowthActions ))
 				((GrowthButton)buttonContainer[action]).Bounds = actionRects[action].ToInts();
-			}
+
 		}
 
-		void ScaleToFit(float width,float height) {
-			if(size.Height*width < size.Width*height)
-				ScaleInternal( width / size.Width ); // scale to width
-			else
-				ScaleInternal( height / size.Height ); // scale to height
-		}
+		#endregion
 
-
-		void ScaleInternal( float scale ) {
-			foreach(var opt in GrowthOptions) optionRects[opt] = optionRects[opt].Scale( scale );
-			foreach(var act in Actions) actionRects[act] = actionRects[act].Scale( scale );
-			size = size.Scale( scale );
-		}
-
-		public void Translate(float x, float y ) {
+		public void Translate( float x, float y ) {
 			foreach(var opt in GrowthOptions) 
 				optionRects[opt] = optionRects[opt].Translate( x, y );
 			foreach(var act in Actions) 
@@ -85,11 +79,21 @@ namespace SpiritIsland.WinForms {
 				yield return (act,actionRects[act]);
 		}
 
-		public RectangleF this[GrowthOption opt] => optionRects[opt];
-		public RectangleF this[GrowthActionFactory act] => actionRects[act];
+		#region private
 
-		public bool HasAction(GrowthActionFactory act) => actionRects.ContainsKey(act);
-		public bool HasOption(GrowthOption opt) => optionRects.ContainsKey(opt);
+		void ScaleToFit( float width, float height ) {
+			if(size.Height * width < size.Width * height)
+				ScaleInternal( width / size.Width ); // scale to width
+			else
+				ScaleInternal( height / size.Height ); // scale to height
+		}
+
+		void ScaleInternal( float scale ) {
+			foreach(var opt in GrowthOptions) optionRects[opt] = optionRects[opt].Scale( scale );
+			foreach(var act in Actions) actionRects[act] = actionRects[act].Scale( scale );
+			size = size.Scale( scale );
+		}
+
 
 		readonly GrowthOption[] GrowthOptions;
 		readonly GrowthActionFactory[] Actions;
@@ -97,6 +101,8 @@ namespace SpiritIsland.WinForms {
 		SizeF size;
 		readonly Dictionary<GrowthOption,RectangleF> optionRects;
 		readonly Dictionary<GrowthActionFactory,RectangleF> actionRects;
+
+		#endregion
 
 	}
 

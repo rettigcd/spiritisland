@@ -18,7 +18,7 @@ class OtherCardsPanel : IPanel {
 
 	public bool HasFocus { set; private get; }
 
-	public void FindBounds( RegionLayoutClass regionLayout ) {
+	public void AssignBounds( RegionLayoutClass regionLayout ) {
 		Bounds = regionLayout.DeckRects.Last();
 	}
 

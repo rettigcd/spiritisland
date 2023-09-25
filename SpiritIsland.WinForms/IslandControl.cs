@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
@@ -35,8 +34,6 @@ public partial class IslandControl : Control {
 		_focusPanel = _islandPanel;
 	}
 
-	readonly bool Overlapped = false;
-
 	public void Init( GameState gameState, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
 
 		// Dispose old spirit tokens
@@ -48,6 +45,7 @@ public partial class IslandControl : Control {
 		_ctx._adversary = adversary;
 
 		_spiritPanel = new SpiritPanel( _ctx );
+		_growthPanel = new GrowthPanel( _ctx );
 		_statusPanel = new StatusPanel( _ctx );
 
 		// Cards
@@ -55,7 +53,7 @@ public partial class IslandControl : Control {
 		for(int i = 0; i< _ctx._spirit.Decks.Length;++i)
 			_playerDeckPanels[i] = new CardDeckPanel(_ctx,this,i);
 		_drawCardPanel = new OtherCardsPanel( _ctx, this );
-		_allPanels = _playerDeckPanels.Union( new IPanel[] { _islandPanel, _spiritPanel, _statusPanel , _drawCardPanel } ).ToArray();
+		_allPanels = _playerDeckPanels.Union( new IPanel[] { _islandPanel, _spiritPanel, _growthPanel, _statusPanel , _drawCardPanel } ).ToArray();
 
 		GameLayout_Invalidate();
 		_regionLayout = null; // trigger setting bounds in newly created panels
@@ -67,15 +65,13 @@ public partial class IslandControl : Control {
 
 	IPanel[] _allPanels;
 
-	// Window Dependent
+	// Essentially Calculated at beginning of each Paint
 	RegionLayoutClass RegionLayout => _regionLayout ??= CalcLayoutFromFocusPanel();
 
 	RegionLayoutClass CalcLayoutFromFocusPanel() {
-		var regionLayout = Overlapped 
-			? RegionLayoutClass.Overlapping( ClientRectangle ) 
-			: FocusPanel.GetLayout( ClientRectangle );
+		var regionLayout = FocusPanel.GetLayout( ClientRectangle );
 		foreach(IPanel panel in _allPanels)
-			panel.FindBounds( regionLayout );
+			panel.AssignBounds( regionLayout );
 		return regionLayout;
 	}
 
@@ -91,24 +87,24 @@ public partial class IslandControl : Control {
 
 		if(_ctx.GameState is null) return;
 
-		_ = RegionLayout; // lazy-set bounds
+		var regionLayout = RegionLayout; // lazy-set bounds
 
 		// =====  Panels =====
 		foreach(IPanel panel in _allPanels.OrderBy(x=>x.ZIndex))
 			panel.Paint( pe.Graphics );
 
 		// Pop-ups - draw last, because they are pop-ups and should be on top.
-		DrawDeckPopUp( pe.Graphics );
-		DrawElementsPopUp( pe.Graphics );
-		DrawFearPopUp( pe.Graphics );
+		DrawDeckPopUp( pe.Graphics, regionLayout );
+		DrawElementsPopUp( pe.Graphics, regionLayout );
+		DrawFearPopUp( pe.Graphics, regionLayout );
 
 		if(_ctx._debug)
-			RegionLayout.DrawRects( pe.Graphics );
+			regionLayout.DrawRects( pe.Graphics );
 
 		if(options_FearPopUp is not null)
-			_optionRects.Add( options_FearPopUp, RegionLayout.PopupFearRect );
+			_optionRects.Add( options_FearPopUp, regionLayout.PopupFearRect );
 		else if(options_BlightPopUp is not null)
-			_optionRects.Add( options_BlightPopUp, RegionLayout.PopupFearRect );
+			_optionRects.Add( options_BlightPopUp, regionLayout.PopupFearRect );
 	}
 
 	public void GameState_NewLogEntry( ILogEntry obj ) {
@@ -119,13 +115,13 @@ public partial class IslandControl : Control {
 			GameLayout_Invalidate();
 	}
 
-	void DrawElementsPopUp( Graphics graphics ) {
+	void DrawElementsPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
 		if(decision_Element is null) return;
 
 		var elementOptions = decision_Element.ElementOptions;
 		int count = elementOptions.Length;
 
-		RectangleF bounds = RegionLayout.ElementPopUpBounds( count );
+		RectangleF bounds = regionLayout.ElementPopUpBounds( count );
 
 		// recalculate this incase bounds got squished
 		float actualMargin = 1 < count ? (count * bounds.Height - bounds.Width) / (count - 1) : bounds.Height * .05f;
@@ -156,11 +152,11 @@ public partial class IslandControl : Control {
 
 	}
 
-	void DrawDeckPopUp( Graphics graphics ) {
+	void DrawDeckPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
 		if(decision_DeckToDrawFrom is null) return;
 
 		// calc layout
-		Rectangle bounds = RegionLayout.MinorMajorDeckSelectionPopup;
+		Rectangle bounds = regionLayout.MinorMajorDeckSelectionPopup;
 		Rectangle innerDeckBounds = bounds.InflateBy( -bounds.Height / 20 );
 
 		var cardWidth = innerDeckBounds.Height * 3 / 4;
@@ -179,14 +175,14 @@ public partial class IslandControl : Control {
 		graphics.DrawImage( majorImage, majorRect );
 	}
 
-	void DrawFearPopUp( Graphics graphics ) {
+	void DrawFearPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
 		if(options_FearPopUp is not null) {
 			using Image img = FearCardImageManager.GetImage( options_FearPopUp );
-			graphics.DrawImage( img, RegionLayout.PopupFearRect );
+			graphics.DrawImage( img, regionLayout.PopupFearRect );
 		}
 		if(options_BlightPopUp is not null) {
 			using Image img = ResourceImages.Singleton.GetBlightCard( options_BlightPopUp );
-			graphics.DrawImage( img, RegionLayout.PopupFearRect );
+			graphics.DrawImage( img, regionLayout.PopupFearRect );
 		}
 	}
 
@@ -263,6 +259,7 @@ public partial class IslandControl : Control {
 		// Find panel that has the max # of options and set as Focus
 		FocusPanel = _allPanels
 			.OrderByDescending( x => x.OptionCount )
+			.ThenBy( x=>x.ZIndex )  // If no option, use background
 			.First();
 
 		// !!! Buttonize Pop-ups - need to add dynamically and be able to remove themselves when done/clicked
@@ -310,6 +307,7 @@ public partial class IslandControl : Control {
 
 	// IPanel _cardPanel = new NullPanel();
 	IPanel _spiritPanel = new NullPanel();
+	IPanel _growthPanel = new NullPanel();
 	IPanel _statusPanel = new NullPanel();
 
 	Select.DeckToDrawFrom decision_DeckToDrawFrom;

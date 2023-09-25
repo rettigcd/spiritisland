@@ -6,26 +6,6 @@ namespace SpiritIsland.WinForms;
 
 public class RegionLayoutClass {
 
-	public static RegionLayoutClass Overlapping( Rectangle rect ) {
-		var x = new RegionLayoutClass( rect );
-
-		const int MARGIN = 10;
-		const float SPIRIT_WIDTH = .35f; // % of screen width to use for spirit
-		const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
-
-		Rectangle mainRect;
-		(x.StatusRect, (mainRect, _)) = rect.SplitVerticallyByWeight( 0, STATUSBAR_HEIGHT, 1f - STATUSBAR_HEIGHT ); // 0 margin because items in infoBar get their own margin.
-		(x.IslandRect, (x.SpiritRect, _)) = mainRect.SplitHorizontallyByWeight( MARGIN, 1 - SPIRIT_WIDTH, SPIRIT_WIDTH );
-
-
-		(x.OptionRect, _) = x.IslandRect.InflateBy( -MARGIN ).SplitHorizontallyByWeight( 0, .1f, .9f );
-		(_, (x.CardRect, _)) = mainRect.SplitVerticallyByWeight( 0, .5f, .5f );
-
-		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
-		x.SpiritRect = x.SpiritRect.FitBoth( new Size( x.SpiritRect.Width, (int)(x.SpiritRect.Width * 1.1) ), Align.Far, Align.Near );
-		return x;
-	}
-
 	const float STATUSBAR_HEIGHT = .1f; // % of height to use for info-bar
 
 	public static RegionLayoutClass ForIslandFocused( Rectangle bounds, int deckSlots ) {
@@ -46,6 +26,19 @@ public class RegionLayoutClass {
 
 		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
 		x.SpiritRect = spiritLimit.FitBoth( new Size( spiritLimit.Width, (int)(spiritLimit.Width * 1.1) ), Align.Far, Align.Near );
+
+		// Spirit Panel Parts
+		Rectangle growthRow;
+		(growthRow, (x.PresenceTractRect, (x.InnateRect, (x.ElementRect, _)))) = x.SpiritRect
+		.InflateBy( -MARGIN )
+			.SplitVerticallyByWeight( MARGIN,
+				200f, // Growth
+				300f, // Presence Tracks
+				480f, // Innates
+				60f   // elements
+			);
+		int imageWidth = growthRow.Height * 3 / 2;
+		(x.SpiritImageBounds, (x.GrowthRect, _)) = growthRow.SplitHorizontallyByWeight( MARGIN, imageWidth, growthRow.Width - imageWidth - MARGIN );
 
 		// Cards
 		float deckWidthWeight = 1f/deckSlots;
@@ -70,6 +63,22 @@ public class RegionLayoutClass {
 		return layout;
 	}
 
+	public static RegionLayoutClass ForGrowthFocused( Rectangle bounds, int deckSlots ) {
+
+		const float BIG_CARD_HEIGHT = .4f;
+		const float BOTTOM_CARD_SPACER = .07f;
+
+		var layout = ForIslandFocused( bounds, deckSlots );
+
+		// Focus Cards
+		Rectangle bigCardRow;
+		(_, (bigCardRow, _)) = bounds.SplitVerticallyByWeight( 0, 1f - BIG_CARD_HEIGHT - BOTTOM_CARD_SPACER, BIG_CARD_HEIGHT, BOTTOM_CARD_SPACER );
+		(_, (layout.GrowthRect, _)) = bigCardRow.SplitHorizontallyByWeight( 0, .1f, .8f, .1f );
+
+		return layout;
+	}
+
+
 	#region Constructor
 
 	RegionLayoutClass( Rectangle bounds ) { _bounds = bounds; DeckRects = new Rectangle[4]; }
@@ -83,6 +92,15 @@ public class RegionLayoutClass {
 	public Rectangle OptionRect { get; private set; }
 	public Rectangle CardRect { get; private set; }
 	public Rectangle[] DeckRects { get; private set; }
+
+
+	// Spirit Parts
+	public Rectangle SpiritImageBounds;
+	public Rectangle GrowthRect;
+	public Rectangle PresenceTractRect;
+	public Rectangle InnateRect;
+	public Rectangle ElementRect;
+
 
 	#region pop-ups
 

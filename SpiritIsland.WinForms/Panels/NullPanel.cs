@@ -14,6 +14,6 @@ public class NullPanel : IPanel {
 
 	public int ZIndex => 1;
 
-	public void FindBounds( RegionLayoutClass regionLayout ) {}
+	public void AssignBounds( RegionLayoutClass regionLayout ) {}
 	public RegionLayoutClass GetLayout( Rectangle bounds ) { return null; }
 }

@@ -5,49 +5,55 @@ using System.Drawing;
 
 namespace SpiritIsland.WinForms; 
 
-class GrowthPainter : IDisposable{
+public class GrowthPainter : IDisposable{
 
-	readonly GrowthLayout layout;
+	readonly GrowthLayout _layout;
 
-	Graphics graphics; // single-threaded variables
+	Graphics _graphics; // single-threaded variables
 	IconDrawer iconDrawer;
-	Bitmap cachedImageLayer;
+	Bitmap _cachedImageLayer;
 
 	public GrowthPainter( GrowthLayout layout ) {
-		this.layout = layout;
+		this._layout = layout;
 	}
 
-	public void Paint( Graphics graphics ) {
-		this.graphics = graphics;
+	public void Paint( Graphics graphics, bool addBackground ) {
+		// _graphics = graphics;
 
-		using var optionPen = new Pen( Color.Blue, 6f );
-		using var highlightPen = new Pen( Color.Red, 4f );
+		_cachedImageLayer ??= BuildBackgroundImage();
 
-		if(cachedImageLayer == null) {
-
-			cachedImageLayer = new Bitmap( layout.Bounds.Width, layout.Bounds.Height );
-			using var g = Graphics.FromImage( cachedImageLayer );
-			iconDrawer = new IconDrawer( g, new CachedImageDrawer() );
-			g.TranslateTransform( -layout.Bounds.X, -layout.Bounds.Y );
-			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
-			// Growth - Dividers
-			bool first = true;
-			foreach(var (opt, rect) in layout.EachGrowth())
-				if(first)
-					first = false;
-				else
-					g.DrawLine( optionPen, rect.Left, rect.Top, rect.Left, rect.Bottom );
-
-			this.graphics = g;
-
-			// Growth Actions
-			foreach(var (action, rect) in layout.EachAction())
-				DrawAction( action, rect );
-
+		if(addBackground) {
+			graphics.FillRectangle( SpiritPanel.SpiritPanelBackgroundBrush, _layout.Bounds);
+			graphics.DrawRectangle( Pens.Black, _layout.Bounds );
 		}
-		graphics.DrawImage( cachedImageLayer, layout.Bounds );
 
+		graphics.DrawImage( _cachedImageLayer, _layout.Bounds );
+
+	}
+
+	Bitmap BuildBackgroundImage() {
+		using var optionPen = new Pen( Color.Blue, 6f );
+
+		var cachedImageLayer = new Bitmap( _layout.Bounds.Width, _layout.Bounds.Height );
+		using var g = Graphics.FromImage( cachedImageLayer );
+		iconDrawer = new IconDrawer( g, new CachedImageDrawer() );
+		g.TranslateTransform( -_layout.Bounds.X, -_layout.Bounds.Y );
+		g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+		// Growth - Dividers
+		bool first = true;
+		foreach(var (opt, rect) in _layout.EachGrowth())
+			if(first)
+				first = false;
+			else
+				g.DrawLine( optionPen, rect.Left, rect.Top, rect.Left, rect.Bottom );
+
+		this._graphics = g;
+
+		// Growth Actions
+		foreach(var (action, rect) in _layout.EachAction())
+			DrawAction( action, rect );
+		return cachedImageLayer;
 	}
 
 	void DrawAction( GrowthActionFactory action, RectangleF rect ) {
@@ -116,7 +122,7 @@ class GrowthPainter : IDisposable{
 			case "DiscardPowerCards": DrawIconInCenter( rect, Img.Discard2 ); break;
 			case "IgnoreRange": IgnoreRange( rect ); break;
 			default:
-				graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
+				_graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 				break;
 		}
 
@@ -129,12 +135,12 @@ class GrowthPainter : IDisposable{
 		string txt = (count > 0)
 			? ("+" + count.ToString())
 			: ("\u2014" + (-count).ToString());
-		SizeF textSize = graphics.MeasureString( txt, coinFont );
+		SizeF textSize = _graphics.MeasureString( txt, coinFont );
 		PointF textTopLeft = new PointF(
 			bounds.X + (bounds.Width - textSize.Width) * .35f,
 			bounds.Y + (bounds.Height - textSize.Height) * .60f
 		);
-		graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
+		_graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
 
 	}
 
@@ -144,38 +150,38 @@ class GrowthPainter : IDisposable{
 
 		float imgWidth = bounds.Width, imgHeight = img.Height * imgWidth / img.Width; // assuming width limited
 
-		graphics.DrawImageFitBoth( img, bounds );
+		_graphics.DrawImageFitBoth( img, bounds );
 
 		using Font coinFont = UseGameFont( imgHeight * .5f );
 		string txt = delta > 0 
 			? ("+" + delta.ToString())
 			: ("\u2014" + (-delta).ToString());
-		SizeF textSize = graphics.MeasureString( txt, coinFont );
+		SizeF textSize = _graphics.MeasureString( txt, coinFont );
 		PointF textTopLeft = new PointF(
 			bounds.X + (bounds.Width - textSize.Width) * .35f,
 			bounds.Y + (bounds.Height - textSize.Height) * .60f
 		);
-		graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
+		_graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
 
 	}
 
 	void DrawIconInCenter( RectangleF rect, Img img ) {
 		var image = GetImage( img );
 		float imgWidth = rect.Width, imgHeight = image.Height * imgWidth / image.Width;
-		graphics.DrawImage( image, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
+		_graphics.DrawImage( image, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 	}
 
 	void GainElement( Rectangle rect, params Element[] elements ) {
 		var parts = rect.SplitHorizontally(elements.Length);
 		for(int i = 0; i < elements.Length; ++i) {
 			using var img = GetImage( elements[i].GetTokenImg() );
-			graphics.DrawImageFitWidth(img, parts[i]);
+			_graphics.DrawImageFitWidth(img, parts[i]);
 		}
 	}
 
 	void GainTime( RectangleF rect ) {
 		using var img = GetImage( Img.FracturedDays_Gain2Time );
-		graphics.DrawImageFitWidth(img, rect );
+		_graphics.DrawImageFitWidth(img, rect );
 	}
 
 	void Gain1TimeOr2CardPlaysX2( RectangleF rect ) {
@@ -186,10 +192,9 @@ class GrowthPainter : IDisposable{
 		DrawImage(rect, Img.FracturedDays_Gain1Timex3 );
 	}
 
-
 	void DrawImage( RectangleF rect, Img img ) {
 		using var image = GetImage( img );
-		graphics.DrawImageFitBoth(image, rect );
+		_graphics.DrawImageFitBoth(image, rect );
 	}
 
 	static Bitmap GetTargetFilterIcon( string filterEnum ) {
@@ -223,19 +228,19 @@ class GrowthPainter : IDisposable{
 		float iconCenterY = rect.Y + rect.Height *.3f; // top of presence
 		float presenceWidth = rect.Width*.6f;
 		float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
-		graphics.DrawImage(presenceIcon, rect.X + (rect.Width-presenceWidth)/2, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
+		_graphics.DrawImage(presenceIcon, rect.X + (rect.Width-presenceWidth)/2, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
 
 		// range # text
 		float rangeTextTop = rect.Y + rect.Height * .55f;
 		string txt = range.ToString();
-		SizeF rangeTextSize = graphics.MeasureString(txt,font);
-		graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
+		SizeF rangeTextSize = _graphics.MeasureString(txt,font);
+		_graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
 
 		// range arrow
 		float rangeArrowTop = rect.Y + rect.Height * .85f;
 		using var rangeIcon = GetImage( Img.MoveArrow );
 		float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-		graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
+		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 
 	}
 
@@ -263,15 +268,15 @@ class GrowthPainter : IDisposable{
 		float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
 		float presenceX = bounds.X + (bounds.Width-presenceWidth)/2 + bounds.Width*.1f;
 
-		graphics.DrawString( "+", font, Brushes.Black, presenceX - bounds.Width*.3f, iconCenterY-bounds.Height*fontScale*.5f );
-		graphics.DrawImage(presenceIcon, presenceX, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
+		_graphics.DrawString( "+", font, Brushes.Black, presenceX - bounds.Width*.3f, iconCenterY-bounds.Height*fontScale*.5f );
+		_graphics.DrawImage(presenceIcon, presenceX, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
 
 
 		// icon
 		if(image != null) {
 			const float iconPercentage = .4f;
 			SizeF iconSize = GetIconSize( bounds, image.Size );
-			graphics.DrawImage( image,
+			_graphics.DrawImage( image,
 				bounds.X + (bounds.Width - iconSize.Width) / 2,
 				bounds.Y + bounds.Height * iconPercentage,
 				iconSize.Width,
@@ -283,14 +288,14 @@ class GrowthPainter : IDisposable{
 			// range # text
 			float rangeTextTop = bounds.Y + bounds.Height * textTopScale;
 			string txt = range.Value.ToString();
-			SizeF rangeTextSize = graphics.MeasureString(txt,font);
-			graphics.DrawString(txt,font,Brushes.Black, bounds.X+(bounds.Width-rangeTextSize.Width)/2, rangeTextTop);
+			SizeF rangeTextSize = _graphics.MeasureString(txt,font);
+			_graphics.DrawString(txt,font,Brushes.Black, bounds.X+(bounds.Width-rangeTextSize.Width)/2, rangeTextTop);
 
 			// range arrow
 			float rangeArrowTop = bounds.Y + bounds.Height * .85f;
 			using var rangeIcon = GetImage( Img.RangeArrow );
 			float arrowWidth = bounds.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-			graphics.DrawImage( rangeIcon, bounds.X + (bounds.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
+			_graphics.DrawImage( rangeIcon, bounds.X + (bounds.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
 		}
 
 		if( addOnIcon != Img.None )
@@ -322,18 +327,18 @@ class GrowthPainter : IDisposable{
 		float iconHeight = icon.Height * iconWidth / icon.Width;
 		float iconX = rect.X + (rect.Width - iconWidth) / 2; // + rect.Width * .1f;
 
-		graphics.DrawImage( icon, iconX, iconCenterY - iconHeight * .5f, iconWidth, iconHeight );
+		_graphics.DrawImage( icon, iconX, iconCenterY - iconHeight * .5f, iconWidth, iconHeight );
 
 		// range arrow
 		float rangeArrowTop = rect.Y + rect.Height * .85f;
 		using var rangeIcon = GetImage( Img.RangeArrow );
 		float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-		graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
+		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
 
 	}
 
 	public void Dispose() {
-		cachedImageLayer?.Dispose();
+		_cachedImageLayer?.Dispose();
 	}
 
 	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );

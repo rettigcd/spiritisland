@@ -29,7 +29,7 @@ internal class StatusPanel : IPanel {
 
 	public int ZIndex => 1;
 
-	public void FindBounds( RegionLayoutClass regionLayout ) {
+	public void AssignBounds( RegionLayoutClass regionLayout ) {
 		Bounds = regionLayout.StatusRect;
 	}
 	public bool HasFocus { set { } }
