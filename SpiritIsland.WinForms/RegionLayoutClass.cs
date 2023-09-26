@@ -65,15 +65,12 @@ public class RegionLayoutClass {
 
 	public static RegionLayoutClass ForGrowthFocused( Rectangle bounds, int deckSlots ) {
 
-		const float BIG_CARD_HEIGHT = .4f;
-		const float BOTTOM_CARD_SPACER = .07f;
-
 		var layout = ForIslandFocused( bounds, deckSlots );
 
-		// Focus Cards
-		Rectangle bigCardRow;
-		(_, (bigCardRow, _)) = bounds.SplitVerticallyByWeight( 0, 1f - BIG_CARD_HEIGHT - BOTTOM_CARD_SPACER, BIG_CARD_HEIGHT, BOTTOM_CARD_SPACER );
-		(_, (layout.GrowthRect, _)) = bigCardRow.SplitHorizontallyByWeight( 0, .1f, .8f, .1f );
+		// Focus: Growth
+		Rectangle row;
+		(_, (row, _)) = bounds.SplitVerticallyByWeight( 0, .5f, .4f, .1f );
+		(_, (layout.GrowthRect, _)) = row.SplitHorizontallyByWeight( 0, .1f, .8f, .1f );
 
 		return layout;
 	}

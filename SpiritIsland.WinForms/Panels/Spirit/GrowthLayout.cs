@@ -12,95 +12,96 @@ namespace SpiritIsland.WinForms {
 
 		public Rectangle Bounds { get; set; }
 
-		public RectangleF this[GrowthOption opt] => optionRects[opt];
-		public RectangleF this[GrowthActionFactory act] => actionRects[act];
+		public RectangleF this[GrowthOption opt] => _optionRects[opt];
+		public RectangleF this[GrowthActionFactory act] => _actionRects[act];
 
-		public bool HasAction( GrowthActionFactory act ) => actionRects.ContainsKey( act );
-		public bool HasOption( GrowthOption opt ) => optionRects.ContainsKey( opt );
+		public bool HasAction( GrowthActionFactory act ) => _actionRects.ContainsKey( act );
+		public bool HasOption( GrowthOption opt ) => _optionRects.ContainsKey( opt );
 
 		#region constructor
 
 		public GrowthLayout( Spirit spirit, VisibleButtonContainer buttonContainer, Rectangle bounds){
 
-			var growthOptions = spirit.GrowthTrack.Options;
+			_growthOptions = spirit.GrowthTrack.Options;
 
 			Bounds = bounds;
 
-			int actionCount = growthOptions.Sum(op=>op.GrowthActions.Length);
+			int actionCount = _growthOptions.Sum( op=>op.GrowthActions.Length );
 
-			GrowthOptions = growthOptions;
-			optionRects = new Dictionary<GrowthOption, RectangleF>();
+			_actions = new GrowthActionFactory[actionCount];
+			_optionRects = new Dictionary<GrowthOption, RectangleF>();
+			_actionRects = new Dictionary<GrowthActionFactory, RectangleF>();
 
-			Actions = new GrowthActionFactory[actionCount];
-			actionRects = new Dictionary<GrowthActionFactory, RectangleF>();
-
+			// Build Rectangles to fit 1.0f width
 			float actionWidth = 1.0f / actionCount;
-			float actionHeight = 1.5f / actionCount;
+			float actionHeight = actionWidth * 1.5f;
 
-			float x = 0f;
+			float x = 0f;	// current x
 			int actionIndex = 0;
-			foreach(var g in growthOptions) {
+			foreach(var g in _growthOptions) {
 				float gx = x;
 				foreach(var action in g.GrowthActions) {
-					Actions[actionIndex++] = action;
-					actionRects.Add(action,RectangleF.Inflate( new RectangleF(x,0,actionWidth,actionHeight), -.1f* actionWidth, -.1f*actionHeight));
+					_actions[actionIndex++] = action;
+					_actionRects.Add(action,RectangleF.Inflate( new RectangleF(x,0,actionWidth,actionHeight), -.1f* actionWidth, -.1f*actionHeight));
 					x += actionWidth;
 				}
-				optionRects.Add( g, new RectangleF(gx,0,x-gx,actionHeight) );
+				_optionRects.Add( g, new RectangleF(gx,0,x-gx,actionHeight) );
 			}
 
-			size = new SizeF(1f,actionHeight);
-
-			// Fit to Bounds
-			ScaleToFit(bounds.Width,bounds.Height);
+			// Scale to Fit to Bounds
+			_size = new SizeF( 1f, actionHeight );
+			ScaleToFit( bounds.Width,bounds.Height);
 			Translate(bounds.X,bounds.Y);
 
-			foreach(var action in growthOptions.SelectMany( optionGroup=>optionGroup.GrowthActions ))
-				((GrowthButton)buttonContainer[action]).Bounds = actionRects[action].ToInts();
+			
+			foreach(var action in _growthOptions.SelectMany( optionGroup=>optionGroup.GrowthActions ))
+				((GrowthButton)buttonContainer[action]).Bounds = _actionRects[action].ToInts();
 
+			// Update Bounds so we don't use realestate we don't need.
+			Bounds = new Rectangle(Bounds.Location,_size.ToSize()).InflateBy(10);
 		}
 
 		#endregion
 
 		public void Translate( float x, float y ) {
-			foreach(var opt in GrowthOptions) 
-				optionRects[opt] = optionRects[opt].Translate( x, y );
-			foreach(var act in Actions) 
-				actionRects[act] = actionRects[act].Translate( x, y );
+			foreach(var opt in _growthOptions) 
+				_optionRects[opt] = _optionRects[opt].Translate( x, y );
+			foreach(var act in _actions) 
+				_actionRects[act] = _actionRects[act].Translate( x, y );
 		}
 
 		public IEnumerable<(GrowthOption,RectangleF)> EachGrowth() {
-			foreach(var opt in GrowthOptions)
-				yield return (opt,optionRects[opt]);
+			foreach(var opt in _growthOptions)
+				yield return (opt,_optionRects[opt]);
 		}
 
 		public IEnumerable<(GrowthActionFactory, RectangleF)> EachAction() {
-			foreach(var act in Actions)
-				yield return (act,actionRects[act]);
+			foreach(var act in _actions)
+				yield return (act,_actionRects[act]);
 		}
 
 		#region private
 
 		void ScaleToFit( float width, float height ) {
-			if(size.Height * width < size.Width * height)
-				ScaleInternal( width / size.Width ); // scale to width
+			if(_size.Height * width < _size.Width * height)
+				ScaleInternal( width / _size.Width ); // scale to width
 			else
-				ScaleInternal( height / size.Height ); // scale to height
+				ScaleInternal( height / _size.Height ); // scale to height
 		}
 
 		void ScaleInternal( float scale ) {
-			foreach(var opt in GrowthOptions) optionRects[opt] = optionRects[opt].Scale( scale );
-			foreach(var act in Actions) actionRects[act] = actionRects[act].Scale( scale );
-			size = size.Scale( scale );
+			foreach(GrowthOption opt in _growthOptions) _optionRects[opt] = _optionRects[opt].Scale( scale );
+			foreach(GrowthActionFactory act in _actions) _actionRects[act] = _actionRects[act].Scale( scale );
+			_size = _size.Scale( scale );
 		}
 
 
-		readonly GrowthOption[] GrowthOptions;
-		readonly GrowthActionFactory[] Actions;
+		readonly GrowthOption[] _growthOptions;
+		readonly GrowthActionFactory[] _actions;
 
-		SizeF size;
-		readonly Dictionary<GrowthOption,RectangleF> optionRects;
-		readonly Dictionary<GrowthActionFactory,RectangleF> actionRects;
+		SizeF _size;
+		readonly Dictionary<GrowthOption,RectangleF> _optionRects;
+		readonly Dictionary<GrowthActionFactory,RectangleF> _actionRects;
 
 		#endregion
 

@@ -10,11 +10,7 @@ public class GrowthPanel : IPanel , IDisposable {
 		_ctx = ctx; 
 	}
 
-	readonly SharedCtx _ctx;
-	GrowthPainter _growthPainter;
-	public readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();
-
-	public Rectangle Bounds { get; set; }
+	public Rectangle Bounds { get; private set; }
 
 	public int OptionCount => _buttonContainer.ActivatedOptions;
 
@@ -46,7 +42,6 @@ public class GrowthPanel : IPanel , IDisposable {
 	}
 
 	public void Paint( Graphics graphics ) {
-
 		_growthPainter.Paint( graphics, HasFocus );
 		_buttonContainer.Paint( graphics );
 	}
@@ -54,4 +49,9 @@ public class GrowthPanel : IPanel , IDisposable {
 	public void Dispose() {
 		_growthPainter?.Dispose();
 	}
+
+	readonly SharedCtx _ctx;
+	GrowthPainter _growthPainter;
+	readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();
+
 }

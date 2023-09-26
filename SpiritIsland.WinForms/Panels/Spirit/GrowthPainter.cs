@@ -23,7 +23,8 @@ public class GrowthPainter : IDisposable{
 		_cachedImageLayer ??= BuildBackgroundImage();
 
 		if(addBackground) {
-			graphics.FillRectangle( SpiritPanel.SpiritPanelBackgroundBrush, _layout.Bounds);
+			using var bgBrush = new SolidBrush( Color.FromArgb( 220, Color.LightYellow ) );
+			graphics.FillRectangle( bgBrush, _layout.Bounds);
 			graphics.DrawRectangle( Pens.Black, _layout.Bounds );
 		}
 
