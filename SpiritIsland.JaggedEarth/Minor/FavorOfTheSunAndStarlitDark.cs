@@ -9,7 +9,7 @@ public class FavorOfTheSunAndStarlitDark{
 		ctx.Defend(4);
 
 		// Push up to 1 blight.
-		await ctx.PushUpTo(4,Token.Blight);
+		await ctx.PushUpTo(1,Token.Blight);
 
 		// If you have 2 sun: 1 fear
 		if(await ctx.YouHave("2 sun"))
