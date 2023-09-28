@@ -138,6 +138,7 @@
     <None Remove="images\tokens\Simple_water.png" />
     <None Remove="images\tokens\strife.png" />
     <None Remove="images\tokens\town.png" />
+    <None Remove="images\tokens\vitality.png" />
     <None Remove="images\tokens\wilds.png" />
     <None Remove="leaguegothic-regular-webfont.ttf" />
     <None Remove="playsir-regular.otf" />
@@ -276,6 +277,7 @@
     <EmbeddedResource Include="images\tokens\Simple_water.png" />
     <EmbeddedResource Include="images\tokens\strife.png" />
     <EmbeddedResource Include="images\tokens\town.png" />
+    <EmbeddedResource Include="images\tokens\vitality.png" />
     <EmbeddedResource Include="images\tokens\wilds.png" />
     <EmbeddedResource Include="leaguegothic-regular-webfont.ttf" />
     <EmbeddedResource Include="playsir-regular.otf" />

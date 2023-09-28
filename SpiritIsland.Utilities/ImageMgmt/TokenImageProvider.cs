@@ -11,6 +11,7 @@ public class TokenImageProvider {
 			[Token.Wilds] = images.GetImage( Img.Wilds ),
 			// [Token.Disease] = images.GetImage( Img.Disease ),
 			[Token.Badlands] = images.GetImage( Img.Badlands ),
+			[Token.Vitality] = images.GetImage( Img.Vitality ),
 			// assign slot so we can access via key when we need to ?.Dispose() when initializing spirit
 			[Token.Defend] = null,
 			[Token.Isolate] = null,

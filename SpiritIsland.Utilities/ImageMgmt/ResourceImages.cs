@@ -430,6 +430,7 @@ public class ResourceImages {
 		Img.Wilds    => "tokens.wilds.png",
 		Img.Disease  => "tokens.disease.png",
 		Img.Badlands => "tokens.badlands.png",
+		Img.Vitality => "tokens.vitality.png",
 		Img.Defend   => "tokens.defend1orange.png",
 		Img.Isolate  => "tokens.isolateorange.png",
 

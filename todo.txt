@@ -1,11 +1,11 @@
+Aspects
+NI: Spirits / Power Cards / Adversayrs / Fear / Blight
+
+
 =========================
 ====  Clean Up Items  ====
 ==========================
 
-Idea: When multiple, reduce size a little and draw them stacked.
-Idea: Change spirit,island,cards sizes based on what is in in focus.
-Played Cards Icon could be dynamic and show cards played.
-Hand cards could be dynamic.
 Fear cards look fuzzy. Generate larger pics?
 Blight cards can be drawn better.
 
@@ -24,23 +24,6 @@ Cheat Menu -
 	Return Blight to Card
 	Activate Fear Card
 
-5 Ocean adds InPlay token to Ocean when it moves
-
-Infinite Vitality saves dahan from CastDown / non-humans stay where they are - test
-
-5 Buttons - (
-!	Fear/Blight pop-up		=> Many Options that are hidden - SINGLETON
-!	flags, special rules,	=> Normal Buttons
-	Deck / Elements			=> 
-*	SpaceTokens?			=> temporary, Some are virtual, change often
-*	Cards					=> change often
-
-4 UI - Draw Power Cards - OR Download them on the fly
-	Cards - Collapsed "summary" view of card so easier to see Island/board
-	Cards - Zoomed view of card so easier to read text.
-
-4 UI - Draw stop power cards from hiding the board.
-
 4 Multi Player
 	== Option 1 == 
 		when starting action, make copy of the tokens
@@ -56,8 +39,8 @@ Infinite Vitality saves dahan from CastDown / non-humans stay where they are - t
 
 4 Action => Move Finders Hook to Action-start - event
 
-
 ManyMinds - Set out-of-band toggle on beasts, at start of action, make smart choices based on phase, then use user choice sync for powers
+
 ======
 
 3 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.
@@ -75,9 +58,6 @@ Make Spirit.ResolveActions private/protected.
 
 Idea - UI - When cusororing over HotSpot, have selected item glow / highlight
 Idea - All of the Stop Tokens are actually just Pre-Build, Pre-Explore, Pre-Ravage events/configures
-Idea - Make Ravage / Build / Explore consistent in using UnitOfWork
-Instead of reacting to PresenceMoved / Removed / Added events, have the Presence do the actions itself.
-Review if any of the spirits Powers/actions can be refactored into a derived ActionalbeSpaceState
 
 =========================
 ===== Feature Focus =====
@@ -92,6 +72,7 @@ Review if any of the spirits Powers/actions can be refactored into a derived Act
 
 Later: Events
 Later: Scenarios
+Later: Aspects
 
 ===============================
 
@@ -100,40 +81,11 @@ Run on Android
 Multiplayer Network Play
 
 == UI improvement ==
-Flatten Move
 Event driven UI updates
 
 == Verify ==
 Visions of shifting Future - fix once we support events - use Randomizer so it is repeatable.
 The Past Returns again - implement all spirits paying.
-
-==========  AI - Search  =================
-
-- Create a search tree algorythm that can play the game
-- Heuristic to measure end-of-round goodness.
-
-Maximizes: Power Points Played - Ignore State of the board.
-
-Must be aware of:
-	- items that destroy presence or return it to board
-	- items that give energy
-	- card elements
-	- items that give extraw card plays or extra draw-cards.
-
-Categorize cards:
-	- Attack
-	- Defend
-	- Energy
-	- Card Plays
-	- Movement
-	- Fear
-
--- Helpful --
-
-Make Push a 1-step commmand
-	- for custom destinations, add them to Push API
-	- Embed guaranteed next decision in selecting source token
-	- UI selects entire move before sequentially submitting: source token, destination
 
 =====  Steam Updates  =============
 provide insight as to what they have trouble with

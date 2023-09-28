@@ -77,6 +77,7 @@ public enum Img {
 	Wilds,
 	Disease,
 	Badlands,
+	Vitality,
 
 	Icon_Dahan,
 	Icon_City,

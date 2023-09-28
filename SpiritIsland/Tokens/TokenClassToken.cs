@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Token that implements its own ISpaceEntity.Class
+/// Token that implements its own IEntity.Class
 /// </summary>
 public class TokenClassToken : IToken, IEntityClass, IAppearInSpaceAbreviation {
 
