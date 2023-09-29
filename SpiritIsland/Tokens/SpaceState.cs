@@ -107,6 +107,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public TokenBinding Wilds => new ( this, Token.Wilds );
 	public virtual TokenBinding Badlands => new ( this, Token.Badlands );
 	public HealthTokenClassBinding Dahan => new HealthTokenClassBinding( this, Human.Dahan );
+	public TokenBinding Vitality => new( this, Token.Vitality );
 
 	#endregion
 
@@ -129,7 +130,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public void Adjust( ISpaceEntity specific, int delta ) {
 		if(specific is HumanToken human && human.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
-		if(specific is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta);
+		if(specific is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta );
 		_counts[specific] += delta;
 	}
 

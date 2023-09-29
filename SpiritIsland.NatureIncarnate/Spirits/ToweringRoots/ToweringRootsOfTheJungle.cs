@@ -14,10 +14,7 @@ public class ToweringRootsOfTheJungle : Spirit {
 	// 8 empowered incarna
 	// 9 incarna acts as a presence
 	public ToweringRootsOfTheJungle() : base(
-		new SpiritPresence(
-			new PresenceTrack( Track.Energy0, Track.Energy2, Track.EarthEnergy, Track.Energy4, Track.PlantEnergy, Track.Energy6 ),
-			new PresenceTrack( Track.Card1, Track.Card2, Track.SunEnergy, Track.Card3, Track.PlantEnergy, Track.Card4 )
-		)
+		new ToweringRootsPresence()
 		, PowerCard.For<EntwineTheFatesOfAll>()
 		, PowerCard.For<RadiantAndHallowedGrove>()
 		, PowerCard.For<BloomingOfTheRocksAndTrees>()
@@ -35,6 +32,8 @@ public class ToweringRootsOfTheJungle : Spirit {
 			InnatePower.For<ShelterUnderToweringBranches>(),
 			InnatePower.For<RevokeSanctuaryAndCastOut>()
 		};
+
+		PowerRangeCalc = new IncarnaRangeCalculator( this );
 	}
 
 	public override string Text => Name;
@@ -63,62 +62,6 @@ public class ToweringRootsOfTheJungle : Spirit {
 
 	}
 
-	public ToweringRootsIncarna Incarna = new ToweringRootsIncarna();
-}
+	public ToweringRootsIncarna Incarna => ((ToweringRootsPresence)Presence).Incarna;
 
-public class ToweringRootsIncarna : IToken, IEntityClass, IHandleTokenAdded, IHandleTokenRemoved  {
-	public Img Img => Img.TRotJ_Incarna;
-
-	public IEntityClass Class => this;
-
-	public string Text => "#";
-
-	#region IEntityClass properties
-	public string Label => "My incarna???";
-
-	public TokenCategory Category => TokenCategory.Incarna;
-
-	#endregion
-
-	#region tracking location
-	public SpaceState? Space { get; set; }
-
-	public void HandleTokenAdded( ITokenAddedArgs args ) {
-		TrackAdding( args );
-		if( args.Added == Token.Vitality && args.To[Token.Vitality] == 3) {
-			// Do Power-Up here
-		}
-	}
-
-	protected void TrackAdding( ITokenAddedArgs args ) {
-		if(Equals( args.Added )) {
-			if(Space != null) throw new InvalidOperationException( "Must first remove token before adding it to another space." );
-			Space = args.To;
-		}
-	}
-
-	public void HandleTokenRemoved( ITokenRemovedArgs args ) {
-		if(!Equals( args.Removed )) return;
-		if(Space == null) throw new InvalidOperationException( "Can't remove.  Space is already null." );
-		Space = null;
-	}
-	#endregion
-}
-
-public class AddVitalityToIncarna : GrowthActionFactory {
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		if(ctx.Self is ToweringRootsOfTheJungle roots && roots.Incarna.Space is not null)
-			await roots.Incarna.Space.Add(Token.Vitality,1);
-	}
-}
-
-public class ReplacePresenceWithIncarna : GrowthActionFactory {
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		Space space = await ctx.Self.SelectDeployedPresence("Select presence to replace with Incarna.");
-		var incarna = ((ToweringRootsOfTheJungle)ctx.Self).Incarna;
-		if(incarna.Space != null)
-			await incarna.Space.Remove( incarna, 1 );
-
-		await space.Tokens.Add(incarna,1);
-	}
 }

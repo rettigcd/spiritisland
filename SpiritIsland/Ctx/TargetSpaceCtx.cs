@@ -50,6 +50,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public BeastBinding Beasts              => Tokens.Beasts;
 	public TokenBinding Disease             => Tokens.Disease;
 	public TokenBinding Wilds               => Tokens.Wilds;
+	public TokenBinding Vitality            => Tokens.Vitality;
 	public TokenBinding Badlands			=> Tokens.Badlands;
 	public BlightTokenBinding Blight        => Tokens.Blight;
 	public HealthTokenClassBinding Dahan    => Tokens.Dahan;

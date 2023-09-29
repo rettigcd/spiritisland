@@ -298,6 +298,7 @@ public class PowerCardImageManager {
 		Target.Wilds => Img.Icon_Wilds,
 		Target.Beast => Img.Icon_Beast,
 		Target.Presence => Img.Icon_Presence,
+		"Incarna" => Img.Icon_Incarna,
 		_ => Img.None
 	};
 

@@ -22,6 +22,7 @@ public static class Target {
 	public const string Wilds      = "Wilds";
 	public const string Beast      = "Beast";
 	public const string Presence   = "Presence";
+	public const string Incarna    = "Incarna";
 
 	public const string NotWetland = "Not " + Wetland;
 	public const string NotOcean   = "Not " + Ocean;

@@ -26,9 +26,10 @@ static public class SpiritSelectExtensions {
 	static public Task<SpaceToken> SelectDeployedMovable( this Spirit self, string prompt )
 		=> self.Gateway.Decision( new ASpaceToken( prompt, self.Presence.Movable, Present.Always ) );
 
-	static public async Task PickPresenceToDestroy( this Spirit spirit, string prompt ) {
+	static public async Task<SpaceToken> PickPresenceToDestroy( this Spirit spirit, string prompt= "Select Presence to Destroy" ) {
 		var spaceToken = await spirit.Gateway.Decision( new ASpaceToken( prompt, spirit.Presence.Deployed, Present.Always ) );
 		await spaceToken.Destroy();
+		return spaceToken;
 	}
 
 	static public async Task<(Space, Space)> PushUpTo1Presence(this Spirit self) {
@@ -74,14 +75,5 @@ static public class SpiritSelectExtensions {
 		await self.Presence.Place( from, to );
 		return (from, to);
 	}
-
-	static public async Task DestroyOnePresenceFromAnywhere( this Spirit self, Func<SpaceState, bool> filter = null ) {
-		var options = self.Presence.Deployed;
-		if(filter != null)
-			options = options.Where(o=>filter(o.Space));
-		var spaceToken = await self.Gateway.Decision( new Select.ASpaceToken("Select presence to destroy", options, Present.Always));
-		await spaceToken.Destroy();
-	}
-
 
 }

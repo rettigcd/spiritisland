@@ -18,7 +18,6 @@ public class GrowthPainter : IDisposable{
 	}
 
 	public void Paint( Graphics graphics, bool addBackground ) {
-		// _graphics = graphics;
 
 		_cachedImageLayer ??= BuildBackgroundImage();
 
@@ -122,6 +121,19 @@ public class GrowthPainter : IDisposable{
 			case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
 			case "DiscardPowerCards": DrawIconInCenter( rect, Img.Discard2 ); break;
 			case "IgnoreRange": IgnoreRange( rect ); break;
+            // Towering Roots
+			case "AddVitalityToIncarna": 
+				iconDrawer.DrawTheIcon(
+					new IconDescriptor { ContentImg = Img.TRotJ_Incarna_Empowered, ContentImg2 = Img.Vitality, },
+					rect
+				);
+				break;
+			case "ReplacePresenceWithIncarna":
+				iconDrawer.DrawTheIcon(
+					new IconDescriptor { ContentImg = Img.TRotJ_Incarna_Empowered, ContentImg2 = Img.Icon_DestroyedPresence, },
+					rect
+				);
+				break;
 			default:
 				_graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 				break;

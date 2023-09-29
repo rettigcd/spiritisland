@@ -43,6 +43,7 @@ public abstract class Space
 	public abstract int InvaderActionCount { get; }
 
 	public bool DoesExists { get; set; } = true; // absolute Stasis
+	/// <summary> Is not in stasis.</summary>
 	public static bool Exists( Space space ) => space.DoesExists;
 
 	#region Connectivity

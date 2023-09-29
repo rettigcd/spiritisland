@@ -137,7 +137,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token]; // For Predicate in a .Where(...)
 	public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn(Token,board);
-	public bool IsOnIsland => GameState.Current.Tokens.HasTokens( Token );
+	public bool IsOnIsland => GameState.Current.Tokens.IsOnAnyBoard( Token );
 
 	public int CountOn( SpaceState spaceState ) => spaceState[Token]; // For Mapper in a .Select(...)
 

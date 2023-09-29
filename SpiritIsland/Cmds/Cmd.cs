@@ -27,6 +27,7 @@ public static partial class Cmd {
 	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Human.City, count ) );
 	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
+	static public SpaceAction AddVitality( int count ) => new SpaceAction( $"Add {count} Vitality.", ctx => ctx.Vitality.Add( count ) );
 	static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
 	static public SpaceAction AddStrife(int count) => new SpaceAction( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
 	static public SpaceAction AddStrifeTo( int count, params HumanTokenClass[] tokenClasses ) => new SpaceAction( 
@@ -142,11 +143,11 @@ public static partial class Cmd {
 
 
 	// WTH are these doing in here?
-	static public SelfAction DestroyPresence() => new SelfAction( "Destroy 1 presence.", ctx => ctx.Self.DestroyOnePresenceFromAnywhere() );
+	static public SelfAction DestroyPresence() => new SelfAction( "Destroy 1 presence.", ctx => ctx.Self.PickPresenceToDestroy() );
 	static public SelfAction ForgetPowerCard => new SelfAction( "Forget Power card", ctx => ctx.Self.ForgetOne() );
 	static public SelfAction DestroyPresence( int count ) => new SelfAction( 
 		$"Destroy {count} presence", 
-		async ctx => { for(int i = 0; i < count; ++i) await ctx.Self.DestroyOnePresenceFromAnywhere();}
+		async ctx => { for(int i = 0; i < count; ++i) await ctx.Self.PickPresenceToDestroy();}
 	);
 
 }

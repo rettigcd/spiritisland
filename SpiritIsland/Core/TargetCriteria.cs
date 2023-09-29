@@ -66,7 +66,13 @@ public class TargetCriteria {
 		public SpaceState Tokens { get; }
 
 		// Bound Spirit
-		public bool IsPresent => _focusSpirit.Presence.IsOn(Tokens);
+		public bool IsPresent => Tokens.Has(_focusSpirit.Presence.Token);
+		public bool IsIncarnate {
+			get {
+				return _focusSpirit.Presence is IHaveIncarna carny
+					&& carny.Incarna.Space?.Space == Tokens.Space;
+			}
+		}
 		readonly Spirit _focusSpirit;
 
 		// Bound TerrainMapper
@@ -116,6 +122,7 @@ public class TargetCriteria {
 
 		// Presence
 		[Target.Presence          ] = (ctx) => ctx.IsPresent,
+		[Target.Incarna           ] = (ctx) => ctx.IsIncarnate,
 
 		// Special
 		[Target.TwoBeasts         ] = (ctx) => 2<=ctx.Tokens.Beasts.Count,

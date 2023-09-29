@@ -117,6 +117,7 @@ public enum Img {
 	Icon_Spirit,
 
 	// Incarna
+	Icon_Incarna,
 	BoDDYS_Incarna,
 	BoDDYS_Incarna_Empowered,
 	EEB_Incarna,

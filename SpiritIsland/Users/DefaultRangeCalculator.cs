@@ -1,6 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public enum From { None, Presence, SacredSite };
+public enum From { 
+	None, 
+	Presence, 
+	SacredSite, 
+	Incarna,
+};
 
 public interface ICalcPowerTargetingSource {
 	IEnumerable<SpaceState> FindSources( 
@@ -15,6 +20,16 @@ public interface ICalcRange {
 
 }
 
+public interface IIncarnaToken : IToken {
+	public SpaceState? Space { get; set; }
+}
+
+
+public interface IHaveIncarna {
+	public IIncarnaToken Incarna { get; }
+}
+
+
 /// <summary>
 /// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
 /// </summary>
@@ -25,6 +40,7 @@ public class DefaultPowerSourceCalculator : ICalcPowerTargetingSource {
 		var sources = sourceCriteria.From switch {
 			From.Presence => presence.Spaces.Tokens(),
 			From.SacredSite => presence.SacredSites,
+			From.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null ? new SpaceState[]{ incarnaHolder.Incarna.Space } : new SpaceState[0],
 			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
 		};
 		return sourceCriteria.Terrain.HasValue

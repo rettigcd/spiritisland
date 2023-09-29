@@ -45,6 +45,7 @@
     <None Remove="images\icons\Gathertoocean.png" />
     <None Remove="images\icons\Growth.png" />
     <None Remove="images\icons\hourglass.png" />
+    <None Remove="images\icons\Incarna.png" />
     <None Remove="images\icons\Jungle.png" />
     <None Remove="images\icons\JungleOrBeast.png" />
     <None Remove="images\icons\Junglewetland.png" />
@@ -193,6 +194,7 @@
     <EmbeddedResource Include="images\icons\GainEnergyEqualToCardPlays.png" />
     <EmbeddedResource Include="images\icons\Gathertoocean.png" />
     <EmbeddedResource Include="images\icons\hourglass.png" />
+    <EmbeddedResource Include="images\icons\Incarna.png" />
     <EmbeddedResource Include="images\icons\Jungle.png" />
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
     <EmbeddedResource Include="images\icons\Junglewetland.png" />

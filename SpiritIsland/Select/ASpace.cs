@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland.Select;
 
+/// <summary> Decision that selects a space. </summary>
+/// <remarks> Renamed from Select.Space to avoid class name confusion. </remarks>
 public class ASpace : TypedDecision<Space>, IHaveArrows {
 
 	#region Moving (existing) SpaceTokens

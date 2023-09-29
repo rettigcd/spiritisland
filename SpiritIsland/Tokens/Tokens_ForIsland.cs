@@ -73,18 +73,25 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	// This should ONLY be called from SpaceState.Adjust so that tokens SpaceState & this stay in sync.
 	void IIslandTokenApi.Adjust( ITrackMySpaces token, Space space, int delta ) {
+		// Track which boards a token is on (and how many)
 		if(!_boardCounts.ContainsKey(token)) _boardCounts.Add(token,new CountDictionary<Board>());
-		foreach(var board in space.Boards)
+		foreach(Board board in space.Boards)
 			_boardCounts[token][board] += delta;
+		// Track which Spaces a token is on (and how many)
 		if(!_spaceCounts.ContainsKey( token )) _spaceCounts.Add( token, new CountDictionary<Space>() );
 		_spaceCounts[token][space] += delta;
 	}
 
 	public bool IsOn( ITrackMySpaces token, Board board ) => _boardCounts.ContainsKey( token ) && 0 < _boardCounts[token][board];
+
+	/// <returns>non-stasis spaces containing the (ITrackMySpaces) token.</returns>
+	/// <remarks>used for finding presence</remarks>
 	public IEnumerable<Space> Spaces_Existing( ITrackMySpaces token ) => _spaceCounts.ContainsKey( token ) 
 		? _spaceCounts[token].Keys.Where( Space.Exists ) 
 		: Enumerable.Empty<Space>();
-	public bool HasTokens( ITrackMySpaces token ) => _boardCounts.ContainsKey( token ) && _boardCounts[token].Any();
+
+	/// <summary> Determines if the token is on any board. </summary>
+	public bool IsOnAnyBoard( ITrackMySpaces token ) => _boardCounts.ContainsKey( token ) && _boardCounts[token].Any();
 
 	readonly Dictionary<ITrackMySpaces,CountDictionary<Board>> _boardCounts = new Dictionary<ITrackMySpaces, CountDictionary<Board>>();
 	readonly Dictionary<ITrackMySpaces, CountDictionary<Space>> _spaceCounts = new Dictionary<ITrackMySpaces, CountDictionary<Space>>();

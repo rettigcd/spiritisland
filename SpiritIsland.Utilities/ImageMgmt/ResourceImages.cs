@@ -487,6 +487,7 @@ public class ResourceImages {
 		Img.OrCurlyBefore => "icons.OR_Curly.png",
 		Img.OrCurlyAfter => "icons.OR_Curly_180.png",
 
+		Img.Icon_Incarna             => "icons.Incarna.png",
 		Img.BoDDYS_Incarna           => "incarna.BoDDYS.png",
 		Img.BoDDYS_Incarna_Empowered => "incarna.BoDDYS+.png",
 		Img.EEB_Incarna              => "incarna.EEB.png",

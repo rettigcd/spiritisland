@@ -99,7 +99,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 				// Do presence destroy
 				while(preseneceToDestroy-- > 0)
-					await this.DestroyOnePresenceFromAnywhere();
+					await this.PickPresenceToDestroy();
 			} );
 
 		}

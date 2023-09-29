@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.BranchAndClaw;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland.BranchAndClaw;
 
 public class APallUponTheLand : BlightCard {
 
@@ -28,7 +30,9 @@ public class APallUponTheLand : BlightCard {
 			if(spiritOptions.Length == 0) return;
 			var spirit = spiritOptions.Length == 1 ? spiritOptions[0]
 				: await boardCtx.Decision( new Select.ASpirit( "Destroy 1 presence.", spiritOptions ) );
-			await spirit.DestroyOnePresenceFromAnywhere( boardCtx.Board.Spaces.Tokens().Contains  );
+			var spaceToken = await spirit.Gateway.Decision( new ASpaceToken( "Select Presence to Destory"
+				, spirit.Presence.Deployed.WhereIsOn(boardCtx.Board.Spaces.Tokens()), Present.Always ) );
+			await spaceToken.Destroy();
 		} );
 
 }

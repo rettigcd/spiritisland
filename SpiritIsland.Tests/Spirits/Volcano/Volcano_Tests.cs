@@ -85,11 +85,13 @@ public class Volcano_Tests {
 		//  When: they destroying presence via Powercard
 		await spirit.When_ResolvingCard<GrowthThroughSacrifice>( (user) => {
 			user.NextDecision.HasPrompt( "Select presence to destroy" ).HasOptions( "VLH on "+space.Space.Text ).Choose( "VLH on " + space.Space );
+			// Expected prompt 'Select presence to destroy' not found in Select location to Remove Blight OR Add Presence:A5
 
 			//  Then: cause 1 damage 
 			user.NextDecision.HasPrompt( "Damage (1 remaining)" ).HasOptions( "E@1" ).Choose( "E@1" );
 			//   And: wrap up
 			user.NextDecision.HasPrompt( "Select location to Remove Blight OR Add Presence" ).HasOptions( "A5" ).Choose( "A5" );
+
 		} );
 
 		//  Then:

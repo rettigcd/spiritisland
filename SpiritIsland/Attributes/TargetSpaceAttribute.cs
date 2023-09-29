@@ -65,3 +65,9 @@ public class FromSacredSiteAttribute : TargetSpaceAttribute {
 	public override string RangeText => $"{_range}:ss";
 }
 
+[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
+public class FromIncarnaAttribute : TargetSpaceAttribute {
+	public FromIncarnaAttribute()
+		: base( new TargetingSourceCriteria( From.Incarna ), 0 ) { }
+	public override string RangeText => $"S+";
+}

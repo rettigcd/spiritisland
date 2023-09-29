@@ -1,24 +1,24 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-[InnatePower( "Revoke Sanctuary and Cast Out" ), Fast, FromPresence( 1, Target.Invaders )]
+[InnatePower( "Revoke Sanctuary and Cast Out" ), Slow, FromSacredSite( 0, Target.Invaders+"+"+Target.Incarna )]
 public class RevokeSanctuaryAndCastOut {
 
-	[InnateOption( "2 earth", "Defend 2" )]
-	static public Task Option1( TargetSpaceCtx ctx ) {
-		ctx.Defend( 2 );
-		return Task.CompletedTask;
+	[InnateOption( "1 sun,1 moon,2 plant", "1 Fear. Remove 1 Explorer/Town." )]
+	static public async Task Option1( TargetSpaceCtx ctx ) {
+		ctx.AddFear(1);
+		await Cmd.RemoveExplorersOrTowns(1).Execute( ctx );
 	}
 
-	[InnateOption( "1 air,2 earth", "Instead, Defend 3" )]
-	static public Task Option2( TargetSpaceCtx ctx ) {
-		ctx.Defend( 3 );
-		return Task.CompletedTask;
+	[InnateOption( "2 sun,1 moon,3 plant", "1 Fear. Remove 1 Explorer/Town." )]
+	static public async Task Option2( TargetSpaceCtx ctx ) {
+		ctx.AddFear( 1 );
+		await Cmd.RemoveExplorersOrTowns( 1 ).Execute( ctx );
 	}
 
-	[InnateOption( "2 moon,3 air,4 earth", "Instead, Defend 2 per card in the Invader discard pile." )]
-	static public Task Option3( TargetSpaceCtx ctx ) {
-		ctx.Defend( ctx.GameState.InvaderDeck.Discards.Count * 2 );
-		return Task.CompletedTask;
+	[InnateOption( "2 sun,2 moon,4 plant", "1 Fear. Remove 1 Invader." )]
+	static public async Task Option3( TargetSpaceCtx ctx ) {
+		ctx.AddFear( 1 );
+		await Cmd.RemoveInvaders( 1 ).Execute( ctx );
 	}
 
 }

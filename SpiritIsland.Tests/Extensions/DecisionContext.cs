@@ -26,7 +26,7 @@ public class DecisionContext {
 	public DecisionContext HasPrompt( string expectedPrompt ) {
 		AssertIsReady( expectedPrompt );
 		return string.Compare( _current.Prompt, expectedPrompt, true )==0 ? this 
-			: throw new ArgumentException($"Expected prompt '{expectedPrompt}' not found in {Format(_current)}");
+			: throw new ArgumentException($"Expected prompt '{expectedPrompt}' not found in '{Format(_current)}'");
 	}
 	static string Format(IDecision decision ) {
 		return decision.Prompt+":"+decision.Options.Select(o=>o.Text).Join(",");
