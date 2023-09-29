@@ -6,5 +6,6 @@ public enum TokenCategory {
 	Blight,
 	Dahan,
 	Presence,
+	Incarna,
 	Skipper			// invisible behavior modifier
 }

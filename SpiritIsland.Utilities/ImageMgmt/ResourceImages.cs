@@ -373,7 +373,7 @@ public class ResourceImages {
 		return new Bitmap( imgStream );
 	}
 
-	static string? ToResource( Img img ) => img switch {
+	static string? ToResource( Img image ) => image switch {
 		Img.Starlight_AssignElement => "icons.AssignElement.png",
 		Img.CardPlay => "icons.cardplay.png",
 		Img.Reclaim1 => "icons.reclaim 1.png",
@@ -487,8 +487,21 @@ public class ResourceImages {
 		Img.OrCurlyBefore => "icons.OR_Curly.png",
 		Img.OrCurlyAfter => "icons.OR_Curly_180.png",
 
+		Img.BoDDYS_Incarna           => "incarna.BoDDYS.png",
+		Img.BoDDYS_Incarna_Empowered => "incarna.BoDDYS+.png",
+		Img.EEB_Incarna              => "incarna.EEB.png",
+		Img.EEB_Incarna_Empowered    => "incarna.EEB+.png",
+		Img.L_Incarna                => "incarna.L.png",
+		Img.S_Incarna                => "incarna.S.png",
+		Img.S_Incarna_Empowered      => "incarna.S+.png",
+		Img.T_Incarna                => "incarna.T.png",
+		Img.TRotJ_Incarna            => "incarna.TRotJ.png",
+		Img.TRotJ_Incarna_Empowered  => "incarna.TRotJ+.png",
+		Img.WVKD_Incarna             => "incarna.WVKD.png",
+		Img.WVKD_Incarna_Empowered   => "incarna.WVKD+.png",
+
 		Img.None => null,
-		_ => throw new System.ArgumentOutOfRangeException( nameof( img ), img.ToString() ),
+		_ => throw new System.ArgumentOutOfRangeException( nameof( image ), image.ToString() ),
 	};
 
 	#endregion

@@ -91,7 +91,12 @@ public partial class IslandControl : Control {
 
 		// =====  Panels =====
 		foreach(IPanel panel in _allPanels.OrderBy(x=>x.ZIndex))
-			panel.Paint( pe.Graphics );
+			try {
+				panel.Paint( pe.Graphics );
+			}
+			catch(Exception e) {
+				string s = e.ToString();
+			}
 
 		// Pop-ups - draw last, because they are pop-ups and should be on top.
 		DrawDeckPopUp( pe.Graphics, regionLayout );
@@ -220,6 +225,7 @@ public partial class IslandControl : Control {
 		}
 
 		// Switch Panels
+		if(_allPanels == null) return;
 		IPanel panel = _allPanels
 			.OrderByDescending(x=>x.ZIndex)
 			.Where( x => x.Bounds.Contains( clientCoords ) )
@@ -300,9 +306,6 @@ public partial class IslandControl : Control {
 	readonly IslandPanel _islandPanel;
 
 	IPanel[] _playerDeckPanels;
-//	IPanel _spiritHandPanel = new NullPanel();
-//	IPanel _spiritPlayedPanel = new NullPanel();
-//	IPanel _spiritDiscardedPanel = new NullPanel();
 	IPanel _drawCardPanel = new NullPanel();
 
 	// IPanel _cardPanel = new NullPanel();

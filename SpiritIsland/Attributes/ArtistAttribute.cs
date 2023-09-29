@@ -12,6 +12,7 @@ public class ArtistAttribute : Attribute {
 }
 
 public static class Artists {
+	public const string AalaaYassin = "Aalaa Yassin";
 	public const string CariCorene = "Cari Corene";
 	public const string DamonWestenhofer = "Damon Westenhofer";
 	public const string EmilyHancock = "Emily Hancock";

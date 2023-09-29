@@ -116,6 +116,20 @@ public enum Img {
 	PlusOneRange,
 	Icon_Spirit,
 
+	// Incarna
+	BoDDYS_Incarna,
+	BoDDYS_Incarna_Empowered,
+	EEB_Incarna,
+	EEB_Incarna_Empowered,
+	L_Incarna,
+	S_Incarna,
+	S_Incarna_Empowered,
+	T_Incarna,
+	TRotJ_Incarna,
+	TRotJ_Incarna_Empowered,
+	WVKD_Incarna,
+	WVKD_Incarna_Empowered,
+
 	Deck_Hand,
 	Deck_Played,
 	Deck_Discarded,

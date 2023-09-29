@@ -5,6 +5,7 @@ using SpiritIsland.FeatherAndFlame;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using SpiritIsland.NatureIncarnate;
 
 namespace SpiritIsland.WinForms;
 
@@ -16,7 +17,8 @@ public partial class ConfigureGameDialog : Form {
 		new Basegame.GameComponentProvider(),
 		new BranchAndClaw.GameComponentProvider(),
 		new FeatherAndFlame.GameComponentProvider(),
-		new JaggedEarth.GameComponentProvider()
+		new JaggedEarth.GameComponentProvider(),
+		new NatureIncarnate.GameComponentProvider()
 	);
 
 	#endregion
@@ -107,7 +109,7 @@ public partial class ConfigureGameDialog : Form {
 			VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 56, 1.0f, .35f ),
 			GrinningTricksterStirsUpTrouble.Name => new PresenceTokenAppearance( 58, .3f ),
 			ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f, .45f ),
-			LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .33f, .35f ),
+			LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .44f, .35f ),
 			FracturedDaysSplitTheSky.Name        => new PresenceTokenAppearance( 160, .9f, .35f ),
 			ShroudOfSilentMist.Name              => new PresenceTokenAppearance( 196, .3f, .65f ),
 			Ocean.Name                           => new PresenceTokenAppearance( 200, .5f, .4f ),
@@ -121,6 +123,7 @@ public partial class ConfigureGameDialog : Form {
 			SerpentSlumbering.Name               => new PresenceTokenAppearance( 330, .3f ),
 			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, .35f ),
 			Keeper.Name                          => new PresenceTokenAppearance( "greenorangeswirl" ),
+			ToweringRootsOfTheJungle.Name        => new PresenceTokenAppearance( 135, .22f, .35f ),
 			_                                    => new PresenceTokenAppearance( 0, 0 ),
 		};
 	}

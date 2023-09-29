@@ -102,6 +102,18 @@
     <None Remove="images\icons\Wetlandland.png" />
     <None Remove="images\icons\Wildsicon.png" />
     <None Remove="images\icons\wildsorpresence.png" />
+    <None Remove="images\incarna\BoDDYS+.png" />
+    <None Remove="images\incarna\BoDDYS.png" />
+    <None Remove="images\incarna\EEB+.png" />
+    <None Remove="images\incarna\EEB.png" />
+    <None Remove="images\incarna\L.png" />
+    <None Remove="images\incarna\S+.png" />
+    <None Remove="images\incarna\S.png" />
+    <None Remove="images\incarna\T.png" />
+    <None Remove="images\incarna\TRotJ+.png" />
+    <None Remove="images\incarna\TRotJ.png" />
+    <None Remove="images\incarna\WVKD+.png" />
+    <None Remove="images\incarna\WVKD.png" />
     <None Remove="images\inplay.png" />
     <None Remove="images\major_inverted.png" />
     <None Remove="images\minor_inverted.png" />
@@ -238,6 +250,18 @@
     <EmbeddedResource Include="images\icons\Wetlandland.png" />
     <EmbeddedResource Include="images\icons\Wildsicon.png" />
     <EmbeddedResource Include="images\icons\wildsorpresence.png" />
+    <EmbeddedResource Include="images\incarna\BoDDYS+.png" />
+    <EmbeddedResource Include="images\incarna\BoDDYS.png" />
+    <EmbeddedResource Include="images\incarna\EEB+.png" />
+    <EmbeddedResource Include="images\incarna\EEB.png" />
+    <EmbeddedResource Include="images\incarna\L.png" />
+    <EmbeddedResource Include="images\incarna\S+.png" />
+    <EmbeddedResource Include="images\incarna\S.png" />
+    <EmbeddedResource Include="images\incarna\T.png" />
+    <EmbeddedResource Include="images\incarna\TRotJ+.png" />
+    <EmbeddedResource Include="images\incarna\TRotJ.png" />
+    <EmbeddedResource Include="images\incarna\WVKD+.png" />
+    <EmbeddedResource Include="images\incarna\WVKD.png" />
     <EmbeddedResource Include="images\inplay.png" />
     <EmbeddedResource Include="images\major_inverted.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -371,6 +395,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Thunderspeaker.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\spirits\Towering_Roots_of_the_Jungle.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Vengeance_as_a_Burning_Plague.jpg">

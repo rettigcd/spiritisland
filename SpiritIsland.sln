@@ -28,7 +28,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.JaggedEarth", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.FeatherAndFlame", "SpiritIsland.FeatherAndFlame\SpiritIsland.FeatherAndFlame.csproj", "{BAC413CC-62AA-46DE-A3E3-B2FDF0367006}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritIsland.Utilities", "SpiritIsland.Utilities\SpiritIsland.Utilities.csproj", "{35E4A076-A6D6-4C67-B093-6DE9EBA9A9E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Utilities", "SpiritIsland.Utilities\SpiritIsland.Utilities.csproj", "{35E4A076-A6D6-4C67-B093-6DE9EBA9A9E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritIsland.NatureIncarnate", "SpiritIsland.NatureIncarnate\SpiritIsland.NatureIncarnate.csproj", "{21A52BA4-E71F-4252-A2D1-A8A869123BCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,10 @@ Global
 		{35E4A076-A6D6-4C67-B093-6DE9EBA9A9E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35E4A076-A6D6-4C67-B093-6DE9EBA9A9E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35E4A076-A6D6-4C67-B093-6DE9EBA9A9E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21A52BA4-E71F-4252-A2D1-A8A869123BCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21A52BA4-E71F-4252-A2D1-A8A869123BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21A52BA4-E71F-4252-A2D1-A8A869123BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21A52BA4-E71F-4252-A2D1-A8A869123BCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
