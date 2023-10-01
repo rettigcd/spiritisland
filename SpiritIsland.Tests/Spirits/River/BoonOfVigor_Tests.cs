@@ -8,18 +8,18 @@ public class BoonOfVigor_Tests : SpiritCards_Tests {
 	[Fact]
 	public void BoonOfVigor_TargetSelf() {
 
-		Given_GameWithSpirits( spirit );
-		gameState.Phase = Phase.Fast;
+		Given_GameWithSpirits( _spirit );
+		_gameState.Phase = Phase.Fast;
 
 		Given_PurchasedCard( BoonOfVigor.Name );
-		Assert_CardIsReady( card, Phase.Fast );
+		Assert_CardIsReady( _card, Phase.Fast );
 
 		When_PlayingCard();
 
 		User.Assert_Done();
 
 		// Then: received 1 energy
-		Assert.Equal( 1, spirit.Energy );
+		Assert.Equal( 1, _spirit.Energy );
 
 	}
 
@@ -29,16 +29,16 @@ public class BoonOfVigor_Tests : SpiritCards_Tests {
 	[InlineData( 10 )]
 	public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
-		Given_GameWithSpirits(spirit, new LightningsSwiftStrike());
-		gameState.Phase = Phase.Fast;
+		Given_GameWithSpirits(_spirit, new LightningsSwiftStrike());
+		_gameState.Phase = Phase.Fast;
 
 		//  That: purchase N cards
-		var otherSpirit = gameState.Spirits[1];
+		var otherSpirit = _gameState.Spirits[1];
 		Given_PurchasedFakePowercards(otherSpirit, expectedEnergyBonus);
 
 		//   And: Purchased Boon of Vigor
 		Given_PurchasedCard(BoonOfVigor.Name);
-		Assert_CardIsReady(card,Phase.Fast);
+		Assert_CardIsReady(_card,Phase.Fast);
 
 		When_PlayingCard();
 		

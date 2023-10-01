@@ -40,7 +40,7 @@ public class UntendedLandCrumbles : BlightCard {
 		"Jointly destroy 1 presence",
 		async ctx => {
 			var spiritOptions = ctx.GameState.Spirits
-				.Where(s => s.Presence.Token.IsOn(ctx.Board))
+				.Where(s => s.Presence.IsOn(ctx.Board))
 				.ToArray();
 			if(spiritOptions.Length==0) return;
 			var spirit = await ctx.Decision(new Select.ASpirit("Destroy 1 presence",spiritOptions));
@@ -48,7 +48,7 @@ public class UntendedLandCrumbles : BlightCard {
 		}
 	).OnlyExecuteIf( ctx => 
 		ctx.GameState.Spirits
-			.Any( s => s.Presence.Token.IsOn( ctx.Board ) )
+			.Any( s => s.Presence.IsOn( ctx.Board ) )
 			
 	);
 

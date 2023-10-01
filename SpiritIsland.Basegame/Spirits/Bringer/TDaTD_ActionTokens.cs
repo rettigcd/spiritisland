@@ -33,7 +33,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		return countToDestroy;
 	}
 
-	SpiritPresenceToken BringerPresence => _bringerPresence ??= ActionScope.Current.Owner.Token;
+	SpiritPresenceToken BringerPresence => _bringerPresence ??= ActionScope.Current.Owner.Presence.Token;
 	SpiritPresenceToken _bringerPresence;
 
 	async Task Destroy1Invader( HumanToken invaderToken ) {

@@ -38,7 +38,7 @@ public class UnnervingPall {
 		// Select up to 3 to put in the skip-list
 		int remaining = 3;
 		while(remaining-- > 0 && damagedInvaders.Count > 0) {
-			var decision = new Select.TokenFromManySpaces(
+			var decision = new Select.ASpaceToken(
 				"Select invader to not participate in ravage", ctx.Space,
 				damagedInvaders.Distinct().Cast<IToken>(),
 				Present.Done

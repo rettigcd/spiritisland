@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.Select;
+using System;
 
 namespace SpiritIsland.BranchAndClaw;
 
@@ -29,7 +30,10 @@ public class UnrelentingGrowth {
 		// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 		// Select destination
-		var to = await ctx.Self.SelectDestinationWithinRange( new TargetCriteria( 1 ), true );
+		var options = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ), true )
+			.Where( ctx.Self.Presence.CanBePlacedOn )
+			.ToArray();
+		var to = await ctx.Self.Gateway.Decision( new ASpace( "Where would you like to place your presence?", options, Present.Always ) );
 
 		// add wilds
 		var toCtx = ctx.Target( to );
@@ -37,7 +41,7 @@ public class UnrelentingGrowth {
 
 		// Add presence
 		for(int i = 0; i < 2; ++i) {
-			var from = await ctx.Self.SelectMovablePresence();
+			var from = await ctx.Self.SelectMovablePresence2();
 			if(from !=null)
 				await ctx.Self.Presence.Place( from, to );
 		}

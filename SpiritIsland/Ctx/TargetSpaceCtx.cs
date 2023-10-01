@@ -87,7 +87,7 @@ public class TargetSpaceCtx : SelfCtx {
 		while(0 < remaining--) {
 			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>()
 				.Select(t=>new SpaceToken(Space,t,false)).ToArray();
-			var nextToken = await Decision( Select.TokenFromManySpaces.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
+			var nextToken = await Decision( Select.ASpaceToken.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
 			if(nextToken == null ) break;
 			
 			await Move( nextToken.Token, nextToken.Space, destination );
@@ -307,9 +307,9 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public bool IsSelfSacredSite => Self.Presence.IsSacredSite(Tokens);
 
-	public int PresenceCount => Tokens[Self.Token];
+	public int PresenceCount => Self.Presence.CountOn( Tokens );
 
-	public bool IsPresent => Tokens.Has(Self.Token);
+	public bool IsPresent => Self.Presence.IsOn( Tokens );
 
 	public async Task PlacePresenceHere() {
 		var from = await Self.SelectSourcePresence();
@@ -334,7 +334,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
 	public IEntityClass[] AllPresenceTokens => GameState.Spirits
-		.Select( s => s.Token )
+		.SelectMany(s=>s.Presence.TokensDeployedOn( Space ) )
+		.Select(x=>x.Class)
 		.ToArray();
-
 }

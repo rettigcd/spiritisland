@@ -1,11 +1,11 @@
 ﻿namespace SpiritIsland.Select;
 
 // For Selecting Token from multiple spaces
-public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
+public class ASpaceToken : TypedDecision<SpaceToken>, IHaveArrows {
 
 	/// <summary> Adds Adjacent Info for Collecting (moving/gathering) </summary>
-	static public TokenFromManySpaces ToCollect( string prompt, IEnumerable<SpaceToken> tokens, Present present, Space to ) 
-		=> new TokenFromManySpaces( prompt, tokens, present, to );
+	static public ASpaceToken ToCollect( string prompt, IEnumerable<SpaceToken> tokens, Present present, Space to ) 
+		=> new ASpaceToken( prompt, tokens, present, to );
 
 	#region constructor
 
@@ -13,7 +13,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 	/// Constructs SpaceToken options for 1 space
 	/// NO arrows
 	/// </summary>
-	public TokenFromManySpaces( string prompt, Space sourceSpace, IEnumerable<IToken> options, Present present )
+	public ASpaceToken( string prompt, Space sourceSpace, IEnumerable<IToken> options, Present present )
 		: base( prompt, options.Select( t => new SpaceToken( sourceSpace, t, false ) ), present ) 
 	{
 		SpaceTokens = options.Select( t => new SpaceToken( sourceSpace, t, false ) ).ToArray();
@@ -23,7 +23,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 	/// Constructs SpaceToken options for MANY spaces 
 	/// NO arrows
 	/// </summary>
-	public TokenFromManySpaces( string prompt, IEnumerable<SpaceToken>tokens, Present present )
+	public ASpaceToken( string prompt, IEnumerable<SpaceToken>tokens, Present present )
 		: base( prompt, tokens, present ) 
 	{
 		SpaceTokens = tokens.ToArray();
@@ -33,7 +33,7 @@ public class TokenFromManySpaces : TypedDecision<SpaceToken>, IHaveArrows {
 	/// Constructs SpaceToken options for MANY spaces 
 	/// WITH arrows
 	/// </summary>
-	public TokenFromManySpaces( string prompt, IEnumerable<SpaceToken> tokens, Present present, Space destination )
+	public ASpaceToken( string prompt, IEnumerable<SpaceToken> tokens, Present present, Space destination )
 		: base( prompt, tokens, present ) 
 	{
 		SpaceTokens = tokens.ToArray();

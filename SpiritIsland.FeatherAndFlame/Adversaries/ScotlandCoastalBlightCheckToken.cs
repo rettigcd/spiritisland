@@ -48,7 +48,7 @@ class ScotlandCoastalBlightCheckToken
 		blightedOptions.Add( args.From );
 
 		// selection
-		var selectionCriteria = new Select.TokenFromManySpaces( 
+		var selectionCriteria = new Select.ASpaceToken( 
 			$"{Name} Which blight would you like to remove?",
 			blightedOptions.Select( s => new SpaceToken( s.Space, Token.Blight ) ),
 			Present.Always

@@ -143,7 +143,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	static async Task TakeFromTrack( int revealedSpaces, SpiritPresence presence, IPresenceTrack track ) {
 		for(int i = 1; i < revealedSpaces; i++) {
-			var choice = track.RevealOptions.First();
+			Track choice = track.RevealOptions.First();
 			await presence.TakeFrom( choice ); // !! Don't call TakeFrom, call: await presence.RevealTrack( track, GameState );
 		}
 	}

@@ -14,15 +14,15 @@ public class GatherPresenceIntoOcean : GrowthActionFactory {
 		while(0 < gatherSpaces.Count){
 
 			SpaceState currentTarget = gatherSpaces[0];
-			Space source = await ctx.Decision( new Select.ASpace(
+
+			var source = await ctx.Decision( new Select.ASpaceToken(
 				$"Select source of Presence to Gather into {currentTarget.Space}"
-				, currentTarget.Adjacent
-					.Where( adjState => adjState.Has(ctx.Self.Token) )
+				, ctx.Self.Presence.Deployed.Where( d => ctx.Self.Presence.IsOn( d.Space ) )
 				, Present.Always
 			));
 
 			// apply...
-			await ctx.Self.Token.Move( source.Tokens, currentTarget );
+			await source.MoveTo( currentTarget );
 
 			// next
 			gatherSpaces.RemoveAt( 0 );

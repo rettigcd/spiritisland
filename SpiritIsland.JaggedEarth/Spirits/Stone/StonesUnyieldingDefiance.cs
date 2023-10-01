@@ -80,7 +80,7 @@ public StonesUnyieldingDefiance() : base(
 		(adjacentWithBlight ?? adjacentWithSand).Adjust(Presence.Token,1);
 
 		// Bestow the Endurance of Bedrock
-		gameState.AddIslandMod(new BestowTheEnduranceOfBedrock(Token));
+		gameState.AddIslandMod(new BestowTheEnduranceOfBedrock( Presence.Token ));
 	}
 
 }

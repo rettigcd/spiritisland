@@ -12,9 +12,10 @@ public class Thunderspeaker : Spirit {
 	public override string Text => Name;
 
 	public Thunderspeaker():base(
-		new ThunderspeakerPresence(
+		new FollowingPresence(
 			new PresenceTrack( Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 ),
-			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card3, Track.Card4 )
+			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card3, Track.Card4 ),
+			Human.Dahan
 		),
 		PowerCard.For<ManifestationOfPowerAndGlory>(),
 		PowerCard.For<SuddenAmbush>(),
@@ -64,25 +65,15 @@ public class Thunderspeaker : Spirit {
 		string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";
 
 		int numToDestroy = args.Count;
-		SpaceState[] options;
-		SpaceState[] Intersect() => args.From.InOrAdjacentTo // Ravage Only, not dependent on PowerRangeCalculator
-			.Where( Presence.IsOn )
-			.ToArray();
+		var spaces = args.From.InOrAdjacentTo.Select(x=>x.Space).ToHashSet();
+		SpaceToken[] options;
+		SpaceToken[] Intersect() => Presence.Deployed.Where(x=>spaces.Contains(x.Space)).ToArray(); // Ravage Only, not dependent on PowerRangeCalculator
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
-			var space = await this.Gateway.Decision( Select.DeployedPresence.ToDestroy( prompt, Presence.Token, options ) );
-			await args.From.Destroy( Presence.Token, 1 );
+			SpaceToken spaceToken = await this.Gateway.Decision( new Select.ASpaceToken( prompt, options, Present.Always ) );
+			await spaceToken.Destroy();
 		}
 
 	}
 
 }
-
-class ThunderspeakerPresence : SpiritPresence {
-	public ThunderspeakerPresence( IPresenceTrack a, IPresenceTrack b ) : base( a, b ) { }
-	public override void SetSpirit( Spirit spirit ) {
-		base.SetSpirit( spirit );
-		Token = new FollowingPresenceToken( spirit, Human.Dahan ); // replace BEFORE we init the board
-	}
-}
-

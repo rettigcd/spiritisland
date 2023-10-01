@@ -225,7 +225,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void User_Activates_D() {
-		User.Growth_SelectAction( "PlacePresence(3,no blight)" );
+		User.Growth_SelectAction( "PlacePresence(3,No Blight)" );
 		User.PlacesCardPlayPresence( "A7" );
 		User.Growth_DrawsPowerCard();
 		User.SelectsMinorDeck();

@@ -177,7 +177,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	static void CheckIfSpiritIsDestroyed( GameState gs ) {
 		foreach(Spirit spirit in gs.Spirits)
-			if(!gs.Tokens.HasTokens(spirit.Token))
+			if(!spirit.Presence.IsOnIsland)
 				GameOverException.Lost( $"{spirit.Text} is Destroyed" );
 	}
 

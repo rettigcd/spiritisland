@@ -99,7 +99,7 @@ public class France : IAdversary {
 		"Add a strife to a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
-			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Add strife to town", options, Present.Always ) );
+			var st = await boardCtx.Decision( new Select.ASpaceToken( "Add strife to town", options, Present.Always ) );
 			if(st != null)
 				await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() );
 		} );
@@ -109,7 +109,7 @@ public class France : IAdversary {
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town_City );
 			for(int i = 0; i < 2; ++i) {
-				var st = await boardCtx.Decision( new Select.TokenFromManySpaces( $"Add strife ({i+1} of 2)", options, Present.Always ) );
+				var st = await boardCtx.Decision( new Select.ASpaceToken( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
 					await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() );
 			}
@@ -119,7 +119,7 @@ public class France : IAdversary {
 		"Destroy a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
-			var st = await boardCtx.Decision( new Select.TokenFromManySpaces( "Destory a town", options, Present.Always ) );
+			var st = await boardCtx.Decision( new Select.ASpaceToken( "Destory a town", options, Present.Always ) );
 			if(st != null)
 				await st.Space.Tokens.Destroy( st.Token, 1 );
 		} );

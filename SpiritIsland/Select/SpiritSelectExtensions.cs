@@ -1,72 +1,49 @@
-﻿namespace SpiritIsland; 
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland; 
 
 static public class SpiritSelectExtensions {
 
-	static public Task<Space> SelectSacredSite( this Spirit self, string prompt )
-		=> self.Gateway.Decision( Select.DeployedPresence.SacredSites( prompt, self.Presence, Present.Always ) );
-
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
-	static public async Task<IOption> SelectMovablePresence( this Spirit self, string actionPhrase = "move" ) {
+	/// <returns>Track or SpaceToken</returns>
+	static public async Task<IOption> SelectMovablePresence2( this Spirit self, string actionPhrase = "move" ) {
 		string prompt = $"Select Presence to {actionPhrase}";
 		return (IOption)await self.Gateway.Decision( Select.TrackSlot.ToReveal( prompt, self ) )
-			?? await self.Gateway.Decision( Select.DeployedPresence.Movable( prompt, self, Present.Always ) );
+			?? await self.Gateway.Decision( new ASpaceToken(prompt, self.Presence.Movable, Present.Always ) );
 	}
 
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
+	/// <returns>Track or SpaceToken</returns>
 	static public async Task<IOption> SelectSourcePresence( this Spirit self, string actionPhrase = "place" ) {
 		string prompt = $"Select Presence to {actionPhrase}";
 		return (IOption)await self.Gateway.Decision( Select.TrackSlot.ToReveal( prompt, self ) )
-			?? (IOption)await self.Gateway.Decision( Select.DeployedPresence.All( prompt, self.Presence, Present.Always ) );
+			?? (IOption)await self.Gateway.Decision( new ASpaceToken( prompt, self.Presence.Deployed, Present.Always ) );
 	}
 
-	/// <summary>Selects a Space within a range of spirits Presence</summary>
-	/// <param name="targetingPowerType">
-	/// None => standard ranging 
-	/// Innate/PowerCard => power ranging  + Passes to PowerRanging
-	/// </param>
-	static public async Task<Space> SelectDestinationWithinRange( this Spirit self, TargetCriteria targetCriteria, bool forPower ) {
-		var options = self.FindSpacesWithinRange( targetCriteria, forPower )
-			.Where( self.Presence.CanBePlacedOn )
-			.ToArray();
-		return await self.Gateway.Decision( Select.ASpace.ToPlacePresence( options, Present.Always, self.Token ) );
-	}
+	static public async Task<Space> SelectDeployed( this Spirit self, string prompt )
+		=> (await self.Gateway.Decision( new Select.ASpaceToken( prompt, self.Presence.Deployed, Present.Always ) )).Space;
 
-	static public Task<Space> SelectDeployed( this Spirit self, string prompt )
-		=> self.Gateway.Decision( Select.DeployedPresence.All( prompt, self.Presence, Present.Always ) );
-
-	static public Task<Space> SelectDeployedMovable( this Spirit self, string prompt )
-		=> self.Gateway.Decision( Select.DeployedPresence.Movable( prompt, self, Present.Always ) );
-
+	static public Task<SpaceToken> SelectDeployedMovable( this Spirit self, string prompt )
+		=> self.Gateway.Decision( new ASpaceToken( prompt, self.Presence.Movable, Present.Always ) );
 
 	static public async Task PickPresenceToDestroy( this Spirit spirit, string prompt ) {
-		var space = await spirit.Gateway.Decision( Select.DeployedPresence.ToDestroy( prompt, spirit.Presence ) );
-		await space.Tokens.Destroy(spirit.Token,1);
+		var spaceToken = await spirit.Gateway.Decision( new ASpaceToken( prompt, spirit.Presence.Deployed, Present.Always ) );
+		await spaceToken.Destroy();
 	}
 
 	static public async Task<(Space, Space)> PushUpTo1Presence(this Spirit self) {
 		// Select source
-		var source = await self.Gateway.Decision( Select.DeployedPresence.ToPush( self.Presence ) );
+		var source = await self.Gateway.Decision( new ASpaceToken( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
 		if(source == null) return (null, null);
 
 		// Select destination
-		Space destination = await self.Gateway.Decision( Select.ASpace.PushPresence( source, source.Tokens.Adjacent, Present.Always, self.Token ) );
-		await source.Tokens.MoveTo( self.Token, destination );
-		return (source, destination);
+		Space destination = await self.Gateway.Decision( Select.ASpace.PushPresence( source.Space, source.Space.Tokens.Adjacent, Present.Always, source.Token ) );
+		await source.MoveTo( destination.Tokens );
+		return (source.Space, destination);
 	}
 
 	static public Task<TokenMovedArgs> Move( this IToken token, SpaceState from, SpaceState to ) {
 		return from.MoveTo( token, to.Space );
-	}
-
-	static public Task AddTo( this IToken token, SpaceState spaceState ) => spaceState.Add( token, 1 );
-
-	static public Task RemoveFrom( this IToken token, SpaceState spaceState ) => spaceState.Remove( token, 1 );
-
-	static public async Task<(IOption, Space)> PlacePresenceWithin( this Spirit self, TargetCriteria targetCriteria, bool forPower ) {
-		IOption from = await self.SelectSourcePresence();
-		Space to = await self.SelectDestinationWithinRange( targetCriteria, forPower );
-		await self.Presence.Place( from, to );
-		return (from, to);
 	}
 
 	static public async Task ReturnUpToNDestroyedToTrack( this Spirit self, int count ) {
@@ -83,15 +60,27 @@ static public class SpiritSelectExtensions {
 	/// <returns>Place in Ocean, Growth through sacrifice</returns>
 	static public async Task PlacePresenceOn1( this Spirit self, params SpaceState[] destinationOptions ) {
 		IOption from = await self.SelectSourcePresence();
-		Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( destinationOptions, Present.Always, self.Token ) );
+		IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
+		Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( destinationOptions, Present.Always, token ) );
 		await self.Presence.Place( from, to );
 	}
 
+	static public async Task<(IOption, Space)> PlacePresenceWithin( this Spirit self, TargetCriteria targetCriteria, bool forPower ) {
+		IOption from = await self.SelectSourcePresence();
+		IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
+		var toOptions = self.FindSpacesWithinRange( targetCriteria, forPower )
+			.Where( self.Presence.CanBePlacedOn );
+		Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( toOptions, Present.Always, token ) );
+		await self.Presence.Place( from, to );
+		return (from, to);
+	}
+
 	static public async Task DestroyOnePresenceFromAnywhere( this Spirit self, Func<SpaceState, bool> filter = null ) {
-		var space = filter == null
-			? await self.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", self.Presence ) )
-			: await self.Gateway.Decision( Select.DeployedPresence.ToDestroy( "Select presence to destroy", self.Presence, filter ) );
-		await space.Tokens.Destroy( self.Token, 1 );
+		var options = self.Presence.Deployed;
+		if(filter != null)
+			options = options.Where(o=>filter(o.Space));
+		var spaceToken = await self.Gateway.Decision( new Select.ASpaceToken("Select presence to destroy", options, Present.Always));
+		await spaceToken.Destroy();
 	}
 
 

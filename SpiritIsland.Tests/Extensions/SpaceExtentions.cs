@@ -43,8 +43,8 @@ public static class SpaceExtentions {
 		int count = int.Parse( match.Groups[1].Value );
 		tokens.Init( token, count );
 	}
-	static SpiritPresenceToken FindSpiritToken(string abrev ) {
-		var spiritTokens = GameState.Current.Spirits.Select( s => s.Token ).ToArray();
+	static SpiritPresenceToken FindSpiritToken( string abrev ) {
+		var spiritTokens = GameState.Current.Spirits.Select( s => s.Presence.Token ).ToArray();
 		SpiritPresenceToken match = spiritTokens.FirstOrDefault( t => t.SpaceAbreviation == abrev );
 		if(match is not null) return match;
 		string optionsStr = spiritTokens.Select(x=>x.SpaceAbreviation).Join(",");

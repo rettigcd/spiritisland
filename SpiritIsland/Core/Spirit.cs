@@ -301,8 +301,6 @@ public abstract partial class Spirit : IOption {
 
 	#region presence
 
-	public SpiritPresenceToken Token => Presence.Token; // helper shortcut
-
 	/// <summary> # of coins in the bank. </summary>
 	public int Energy { 
 		get => _energy;
@@ -542,15 +540,8 @@ public abstract partial class Spirit : IOption {
 			return null;
 		}
 
-		if(preselect != null && UserGateway.UsePreselect.Value) {
-			var spaceTokenOptions = spaces
-				.SelectMany( ss=>ss.SpaceTokensOfAnyClass(preselect.TokenClasses) )
-				.ToArray();
-
-			SpaceToken st = await ctx.Self.Gateway.Decision( new Select.TokenFromManySpaces( preselect.Prompt, spaceTokenOptions, Present.Always ) );
-			Gateway.Preloaded = st;
-			return st?.Space;
-		}
+		if(preselect != null && UserGateway.UsePreselect.Value)
+			return await preselect.PreSelect( ctx.Self, spaces );
 
 		return await this.Gateway.Decision( new Select.ASpace( prompt, spaces.Downgrade(), Present.Always ));
 	}

@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace SpiritIsland.JaggedEarth;
 
 public class PlacePresenceOrDisease : PlacePresence {
@@ -12,7 +11,9 @@ public class PlacePresenceOrDisease : PlacePresence {
 			return;
 		}
 
-		Space to = await ctx.Self.SelectDestinationWithinRange( new TargetCriteria( 1 ), false );
+		var options = DefaultRangeCalculator.Singleton.GetTargetOptionsFromKnownSource(ctx.Self.Presence.Spaces.Tokens(), new TargetCriteria(1));
+		Space to = await ctx.Self.Gateway.Decision( Select.ASpace.ToPlacePresence( options, Present.Always, Token.Disease ) );
+
 		await ctx.Target(to).Disease.Add(1);
 
 	}

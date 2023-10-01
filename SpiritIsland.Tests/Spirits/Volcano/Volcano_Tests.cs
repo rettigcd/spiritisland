@@ -84,7 +84,7 @@ public class Volcano_Tests {
 
 		//  When: they destroying presence via Powercard
 		await spirit.When_ResolvingCard<GrowthThroughSacrifice>( (user) => {
-			user.NextDecision.HasPrompt( "Select presence to destroy" ).HasOptions( space.Space.Text ).Choose( space.Space );
+			user.NextDecision.HasPrompt( "Select presence to destroy" ).HasOptions( "VLH on "+space.Space.Text ).Choose( "VLH on " + space.Space );
 
 			//  Then: cause 1 damage 
 			user.NextDecision.HasPrompt( "Damage (1 remaining)" ).HasOptions( "E@1" ).Choose( "E@1" );
@@ -137,7 +137,7 @@ public class Volcano_Tests {
 		//  When: they destroying presence via Powercard
 		await spirit.When_ResolvingCard<BargainsOfPowerAndProtection>( (user) => {
 			user.NextDecision.HasPrompt( "Bargains of Power and Protection: Target Space" ).Choose( "A5" );
-			user.NextDecision.HasPrompt( "Select presence to remove from game." ).HasOptions( "A5" ).Choose( "A5" );
+			user.NextDecision.HasPrompt( "Select presence to remove from game." ).HasOptions( "VLH on A5" ).Choose( "VLH on A5" );
 		} );
 
 		//  Then: range-2 item has a defend.
@@ -376,7 +376,7 @@ public class Volcano_Tests {
 				adjBlight.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4 + 4)}E@1" );
 
 				// Then: adj-presence
-				adjPresence[spirit.Token].ShouldBe( 0 );
+				spirit.Presence.IsOn(adjPresence).ShouldBeFalse();
 				adjPresence.Summary.ShouldBe( $"1B,{20 - (4 + 4 + 1)}E@1" );
 			}
 

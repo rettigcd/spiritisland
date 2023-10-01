@@ -68,10 +68,18 @@ class MistsShiftAndFlow {
 			.Where( a => a.AddedTo.Space == gatherDst )
 			.Select( a => a.RemovedFrom )
 			.ToArray();
-		var gatherSource = (await _spirit.Gateway.Decision( Select.DeployedPresence.Gather( $"Flow (gather) presence (to {gatherDst.Label}) from:", gatherDst, souceOptions, _spirit.Token  )))?.Space;
+
+		// ASpaceToken.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IToken)presenceToken)), Present.Done, to )
+		var decision = Select.ASpaceToken.ToCollect( 
+			prompt:$"Flow (gather) presence (to {gatherDst.Label}) from:", 
+			tokens: _ctx.Self.Presence.Movable.WhereIsOn( souceOptions ),
+			Present.Done,
+			to: gatherDst
+		);
+		var gatherSource = await _spirit.Gateway.Decision( decision );
 		if(gatherSource == null) return;
 
-		await _ctx.Self.Token.Move( gatherSource, gatherDst );
+		await gatherSource.MoveTo( gatherDst );
 	}
 
 	List<MistMove> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
@@ -162,7 +170,7 @@ class MistsShiftAndFlow {
 		public SpaceCounts(Spirit spirit) : base() {
 			_spirit = spirit;
 			foreach(var ss in Spaces)
-				Add(ss,ss.Tokens[spirit.Token]);
+				Add(ss,spirit.Presence.CountOn( ss ));
 		}
 
 		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;

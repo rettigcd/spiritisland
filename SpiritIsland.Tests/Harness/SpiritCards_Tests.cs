@@ -3,22 +3,22 @@ namespace SpiritIsland.Tests;
 public class SpiritCards_Tests {
 
 	protected SpiritCards_Tests(Spirit spirit ) {
-		this.spirit = spirit;
+		this._spirit = spirit;
 		this.User = new VirtualUser( spirit );
 	}
 
-	protected GameState gameState;
-	protected PowerCard card;
-	protected Spirit spirit;
+	protected GameState _gameState;
+	protected PowerCard _card;
+	protected Spirit _spirit;
 	protected VirtualUser User { get; }
 
 	protected void Given_PurchasedCard(string cardName) {
-		card = spirit.Hand.Single( c => c.Name == cardName );
+		_card = _spirit.Hand.Single( c => c.Name == cardName );
 		PlayCard();
 	}
 
 	protected void PlayCard() {
-		spirit.PlayCard( card );
+		_spirit.PlayCard( _card );
 	}
 
 	protected void Given_GameWithSpirits(params Spirit[] spirits) {
@@ -26,7 +26,7 @@ public class SpiritCards_Tests {
 		if(0 < spirits.Length)
 			boards.Add( Board.BuildBoardB( Boards.Attach1 ) );
 
-		gameState = new GameState( spirits, boards.ToArray() );
+		_gameState = new GameState( spirits, boards.ToArray() );
 	}
 
 	protected static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
@@ -47,12 +47,10 @@ public class SpiritCards_Tests {
 	}
 
 	protected void Assert_CardIsReady( PowerCard card, Phase speed ) {
-		Assert.Contains(card, spirit.GetAvailableActions(speed).OfType<PowerCard>().ToList());
+		Assert.Contains(card, _spirit.GetAvailableActions(speed).OfType<PowerCard>().ToList());
 	}
 
-	protected void When_PlayingCard() {
-		_ = card.ActivateAsync( spirit.BindMyPowers() );
-	}
+	protected Task When_PlayingCard() => _card.ActivateAsync( _spirit.BindMyPowers() );
 
 }
 

@@ -47,8 +47,7 @@ public class DrawTowardsAConsumingVoid {
 
 		// destroy 1 presence from each Spirit.
 		foreach(var spirit in ctx.GameState.Spirits)
-			if( ctx.Tokens.Has(spirit.Token) )
-				await ctx.Tokens.Destroy( spirit.Token, 1 );
+			await spirit.Presence.DestroyPresenceOn( ctx.Tokens );
 
 		// Remove 2 beast
 		await ctx.Beasts.Remove( 2, RemoveReason.Removed );
@@ -63,13 +62,17 @@ public class DrawTowardsAConsumingVoid {
 			if(tokenToGather != null)
 				await ctx.Move( (IToken)tokenToGather, adjState.Space, ctx.Space );
 		}
-		// move presense
+
+		// Gather 1 presense
+		var presenceOptions = ctx.GameState.Spirits.SelectMany(s=>s.Presence.Movable).WhereIsOn(new SpaceState[] { adjState } ).ToArray();
+
 		var movableSpiritsInSpace = ctx.GameState.Spirits
 			.Where( s => s.Presence.HasMovableTokens( adjState ) )
 			.ToArray();
+
 		if( 0<movableSpiritsInSpace.Length ) {
-			var spiritToGather = await ctx.Decision( new Select.ASpirit( Name, movableSpiritsInSpace, Present.AutoSelectSingle ) );
-			await spiritToGather.Token.Move( adjState, ctx.Tokens );
+			var tokenToGather = await ctx.Decision( new Select.ASpaceToken("Select presence to move.", presenceOptions, Present.Always));
+			await tokenToGather.MoveTo( ctx.Tokens );
 		}
 	}
 }

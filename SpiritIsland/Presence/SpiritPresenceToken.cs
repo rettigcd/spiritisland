@@ -23,7 +23,12 @@ public class SpiritPresenceToken : IToken, IEntityClass
 			.Join("");
 	}
 
-	protected readonly Spirit _spirit;
+	public readonly Spirit _spirit;
+
+
+	public Task AddTo( SpaceState spaceState ) => spaceState.Add( this, 1 );
+
+	public Task RemoveFrom( SpaceState spaceState ) => spaceState.Remove( this, 1 );
 
 
 	#region Token parts

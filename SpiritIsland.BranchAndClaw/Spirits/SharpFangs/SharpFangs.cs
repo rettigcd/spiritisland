@@ -10,9 +10,10 @@ public class SharpFangs : Spirit {
 	public override string Text => Name;
 
 	public SharpFangs():base(
-		new SpiritPresence(
+		new FollowingPresence(
 			new PresenceTrack( Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 ),
-			new PresenceTrack( Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5Reclaim1 )
+			new PresenceTrack( Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5Reclaim1 ),
+			Token.Beast
 		),
 		PowerCard.For<PreyOnTheBuilders>(),
 		PowerCard.For<TeethGleamFromDarkness>(),
@@ -36,13 +37,7 @@ public class SharpFangs : Spirit {
 
 	}
 
-	//protected override Task GrowthOptionsComplete( GameState gameState ) {
-	//	AddActionFactory( new ReplacePresenceWithBeast() );
-	//	return ResolveActions( gameState, Speed.Growth, Present.Always );
-	//}
-
 	protected override void InitializeInternal( Board board, GameState gs ) {
-		Presence.Token = new FollowingPresenceToken( this, SpiritIsland.Token.Beast );
 
 		var highestJungle = board.Spaces.Where(x => x.IsJungle).Last().Tokens;
 		highestJungle.Adjust(Presence.Token,1);

@@ -23,10 +23,10 @@ public class DecisionContext {
 
 	#region public Prompt assertions
 
-	public DecisionContext HasPrompt( string prompt ) {
-		AssertIsReady( prompt );
-		return string.Compare( _current.Prompt, prompt, true )==0 ? this 
-			: throw new ArgumentException($"Invalid prompt '{prompt}' in {Format(_current)}");
+	public DecisionContext HasPrompt( string expectedPrompt ) {
+		AssertIsReady( expectedPrompt );
+		return string.Compare( _current.Prompt, expectedPrompt, true )==0 ? this 
+			: throw new ArgumentException($"Expected prompt '{expectedPrompt}' not found in {Format(_current)}");
 	}
 	static string Format(IDecision decision ) {
 		return decision.Prompt+":"+decision.Options.Select(o=>o.Text).Join(",");
@@ -57,7 +57,7 @@ public class DecisionContext {
 	public DecisionContext IsForSpace( Space space ) => IsForSpace( space.Text );
 
 	public DecisionContext IsForSpace( string space ) {
-		Select.TokenFromManySpaces tfs = _current as Select.TokenFromManySpaces;
+		Select.ASpaceToken tfs = _current as Select.ASpaceToken;
 		tfs.ShouldNotBeNull();
 		((IDecision)tfs).Options.OfType<SpaceToken>().Select(x=>x.Space).Distinct().Single().Text.ShouldBe( space );
 		return this;

@@ -43,7 +43,7 @@ class PayEnergyToTakeFromBox
 		if( args.Token != Token.Blight || 0 == args.Count ) return;
 		
 		var cause = BlightToken.ForThisAction.BlightFromCardTrigger;
-		if( cause.To.Has( _spirit.Token ) // was taken from space with presence
+		if( _spirit.Presence.IsOn( cause.To ) // was taken from space with presence
 		) {
 			bool takeFromBoxInstead = _cost <= _spirit.Energy
 				&& await _spirit.UserSelectsFirstText( $"New Blight on {cause.To.Space.Label}, take from:", $"Bag (for {_cost})", "card" );

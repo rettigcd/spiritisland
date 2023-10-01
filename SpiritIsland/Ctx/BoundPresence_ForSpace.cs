@@ -12,9 +12,9 @@ public class BoundPresence_ForSpace {
 
 	public bool IsSelfSacredSite => _self.Presence.IsSacredSite(ctx.Tokens);
 
-	public bool IsHere       => ctx.Tokens.Has(_self.Token);
+	public bool IsHere       => _self.Presence.IsOn( ctx.Tokens );
 
-	public int Count => ctx.Tokens[_self.Token];
+	public int Count => _self.Presence.CountOn( ctx.Tokens );
 
 	public async Task PlaceDestroyedHere( int count = 1 ) {
 		count = Math.Min(count, _self.Presence.Destroyed);
@@ -23,7 +23,7 @@ public class BoundPresence_ForSpace {
 	} 
 
 	public async Task PlaceHere() {
-		var from = await _self.SelectMovablePresence();
+		var from = await _self.SelectMovablePresence2();
 		await ctx.Self.Presence.Place( from, ctx.Space );
 	}
 
@@ -32,9 +32,9 @@ public class BoundPresence_ForSpace {
 
 		while(count > 0) {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable
-			var from = await ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
-			if( ctx.Self.Presence.HasMovableTokens( from.Tokens ))
-				await _self.Token.Move( from, ctx.Tokens );
+			var src = await ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
+			if( ctx.Self.Presence.HasMovableTokens( src.Space.Tokens ))
+				await src.Token.Move( src.Space, ctx.Tokens );
 			count--;
 		}
 	}

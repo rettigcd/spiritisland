@@ -20,7 +20,9 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ){
 
-		var space = await ctx.Self.TargetsSpace( ctx, powerName+": Target Space", Preselect,
+		var space = await ctx.Self.TargetsSpace( ctx, 
+			powerName+": Target Space", 
+			Preselect,
 			_sourceCriteria,
 			await GetCriteria( ctx )
 		);
@@ -61,34 +63,5 @@ public class FromSacredSiteAttribute : TargetSpaceAttribute {
 	public FromSacredSiteAttribute( int range, params string[] filters )
 		: base( new TargetingSourceCriteria( From.SacredSite ), range, filters ) { }
 	public override string RangeText => $"{_range}:ss";
-}
-
-[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
-public class PreselectAttribute : Attribute, IPreselect {
-	public PreselectAttribute( string prompt, string classString ) {
-		Prompt = prompt;
-		TokenClasses = classString.Split( ',' )
-			.Select( x => x switch {
-				"Explorer" => (IEntityClass)Human.Explorer,
-				"Town" => (IEntityClass)Human.Town,
-				"City" => (IEntityClass)Human.City,
-				"Beast" => (IEntityClass)Token.Beast,
-				"Disease" => (IEntityClass)Token.Disease,
-				"Wilds" => (IEntityClass)Token.Wilds,
-				"Dahan" => (IEntityClass)Human.Dahan,
-				_ => throw new Exception( $"{x} not known" )
-			} ).ToArray();
-	}
-
-	public string Prompt { get; }
-
-	public IEntityClass[] TokenClasses { get; }
-
-}
-
-/// <summary> Provides token/prompt info to enable selecing token and space at the same time (when appropriate). </summary>
-public interface IPreselect {
-	string Prompt { get; }
-	IEntityClass[] TokenClasses { get; }
 }
 

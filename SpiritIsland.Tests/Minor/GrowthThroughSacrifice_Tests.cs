@@ -18,7 +18,7 @@ public class GrowthThroughSacrifice_Tests {
 
 		//  When: Card played
 		_ = GrowthThroughSacrifice.ActAsync( fixture.TargetSelf );
-		fixture.Choose( space ); // select presence to destroy
+		fixture.Choose( "CS on " + space ); // select presence to destroy
 		fixture.Choose( space ); // select location to add presence / remove blight
 		fixture.Choose( "Add 1 presence to one of your lands" );
 		fixture.Choose( elementTrack ); // take presence from cardplay track
@@ -40,7 +40,7 @@ public class GrowthThroughSacrifice_Tests {
 
 		//  When: Card played
 		_ = GrowthThroughSacrifice.ActAsync( setup.TargetSelf );
-		setup.Choose( space.Space ); // select presence to destroy
+		setup.Choose( "CS on " + space.Space ); // select presence to destroy
 		setup.Choose( space.Space ); // select location to add presence / remove blight
 		setup.Choose( "Remove 1 blight from one of your lands" );
 
@@ -84,7 +84,7 @@ public class GrowthThroughSacrifice_Tests {
 
 		//  When: Card played
 		var task = GrowthThroughSacrifice.ActAsync( setup.TargetSelf );
-		setup.Choose( space.Space ); // select presence to destroy
+		setup.Choose( spirit.Presence.Token.SpaceAbreviation + " on " + space.Space ); // select presence to destroy
 		setup.Choose( space.Space ); // select location to add presence / remove blight
 
 		// Then: there should be nothing to do because spirit can't add stuff there.

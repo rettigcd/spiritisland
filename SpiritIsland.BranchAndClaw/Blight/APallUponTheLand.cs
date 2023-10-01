@@ -21,7 +21,7 @@ public class APallUponTheLand : BlightCard {
 			// for now, just have the 1st spirit pick (House Rules advantage)
 			var gs = GameState.Current;
 
-			bool IsOnBoard(Spirit spirit) => gs.Tokens.IsOn( spirit.Token, boardCtx.Board );
+			bool IsOnBoard(Spirit spirit) => spirit.Presence.IsOn( boardCtx.Board );
 			var spiritOptions = gs.Spirits
 				.Where( IsOnBoard )
 				.ToArray();

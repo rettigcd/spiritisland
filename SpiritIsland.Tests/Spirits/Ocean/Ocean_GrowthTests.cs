@@ -26,14 +26,15 @@ public class Ocean_GrowthTests : GrowthTests {
 		var moveBySrc = select.Split(',')
 			.Where(x=>!string.IsNullOrEmpty(x))
 			.Select(s=>s.Split('>'))
-			.ToDictionary(a=>a[0],a=>a[1]);
+			.ToDictionary(a=>"OHG on "+a[0],a=>a[1]);
 
 		GatherPresenceIntoOcean gather = _spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
 
 		if(gather != null){
 			_ = gather.ActivateAsync( _spirit.BindSelf() );
 			while(!_spirit.Gateway.IsResolved){
-				var source = _spirit.Gateway.Next.Options.Single(x=>moveBySrc.ContainsKey(x.Text));
+				var options = _spirit.Gateway.Next.Options.Where( x => moveBySrc.ContainsKey( x.Text ) ).ToArray();
+				var source = options.First();
 				_spirit.Gateway.Choose( _spirit.Gateway.Next, source );
 			}
 		}

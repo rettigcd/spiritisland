@@ -38,7 +38,7 @@ public class FireStorm {
 			.SelectMany( ss => ss.InvaderTokens().Select(t=>new SpaceToken(ss.Space,t)));
 
 		while(fireDamage > 0 && invaderTokens.Any()) {
-			SpaceToken token = await ctx.Decision( new Select.TokenFromManySpaces($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
+			SpaceToken token = await ctx.Decision( new Select.ASpaceToken($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
 			await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,token.Token.AsHuman());
 			--fireDamage;
 		}

@@ -18,7 +18,7 @@ public class Plaguebearers {
 				var to = result.To.Space;
 				// 1 disease may move with each Pushed piece.
 				var options = ctx.Tokens.OfClass(Token.Disease).OfType<IToken>().Select(t=> new SpaceToken(from, t)).ToArray();
-				var diseaseToken = await ctx.Decision( Select.TokenFromManySpaces.ToCollect( "Move up to 1 Disease", options, Present.Done, to ) );
+				var diseaseToken = await ctx.Decision( Select.ASpaceToken.ToCollect( "Move up to 1 Disease", options, Present.Done, to ) );
 				if( diseaseToken != null )
 					await ctx.Move(diseaseToken.Token, diseaseToken.Space,to);
 			} )

@@ -17,7 +17,7 @@ public class LingeringPestilence_Tests {
 
 		// When: a spirit power destroys presence
 		await self.When_ResolvingCard<GrowthThroughSacrifice>( (user) => {
-			user.NextDecision.HasPrompt( "Select presence to destroy" ).HasOptions( "A5" ).Choose( "A5" );
+			user.NextDecision.HasPrompt( "Select presence to destroy" ).HasOptions( "VaaBP on A5" ).Choose( "VaaBP on A5" );
 			// (!! this is kind of a crappy sequence for Growth-thru-sacrifice.  Can we clean up the wording / choice order?)
 			user.NextDecision.HasPrompt( "Select location to Remove Blight OR Add Presence" ).HasOptions( "A5" ).Choose( "A5" );
 			user.NextDecision.HasPrompt( "Select Power Option" ).HasOptions( "Remove 1 blight from one of your lands,Add 1 presence to one of your lands" ).Choose( "Remove 1 blight from one of your lands" );
@@ -47,7 +47,7 @@ public class LingeringPestilence_Tests {
 		await space.Space.When_Ravaging();
 
 		// Then: presence is destroyed
-		space[self.Token].ShouldBe(1);
+		self.Presence.CountOn( space ).ShouldBe(1);
 
 		//  And: Disease was added
 		space.Disease.Count.ShouldBe(1);

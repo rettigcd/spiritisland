@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.Select;
+using System;
 
 namespace SpiritIsland.JaggedEarth;
 public class BargainsOfPowerAndProtection {
@@ -12,8 +13,8 @@ public class BargainsOfPowerAndProtection {
 			var presenceToRemove = await ctx.Self.SelectSourcePresence("remove from game"); // Come from track or board
 			await ctx.Self.Presence.TakeFrom( presenceToRemove );
 		} else {
-			var presenceToRemove = await ctx.Decision( Select.DeployedPresence.All("Select presence to remove from game.", ctx.Self.Presence, Present.Always));
-			await ctx.Self.Token.RemoveFrom( presenceToRemove );
+			SpaceToken presenceToRemove = await ctx.Decision( new ASpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
+			await presenceToRemove.Remove();
 		}
 
 		// From now on: Each dahan within range of 1 of your presence provides

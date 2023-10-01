@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class TransformToAMurderousDarkness {
 
@@ -6,8 +8,9 @@ public class TransformToAMurderousDarkness {
 	[Instructions( "Target Spirit may choose one of their Sacred Sites. In that land: Replace all their Presence with Badlands; the replaced Presence leave the game. Push any number of those Badlands. 3 Fear. 3 Damage per Presence replaced. -If you have- 3 Moon, 2 Fire, 2 Air: 1 Damage in an adjacent land. 1 Damage in an adjacent land." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync(TargetSpiritCtx ctx ) {
 		// Target Spirt may choose one of their Sacred Sites.
-		Space space = await ctx.OtherCtx.Self.SelectSacredSite( "Replace presence with badlands" );
-
+		Space space = await ctx.Other.Gateway.Decision(
+			new ASpace( "Replace presence with badlands", ctx.Other.Presence.SacredSites, Present.Always )
+		);
 
 		await TargetSpiritActions( ctx.OtherCtx.Target( space ) );
 
@@ -30,20 +33,27 @@ public class TransformToAMurderousDarkness {
 
 
 	static async Task TargetSpiritActions( TargetSpaceCtx otherCtx ) {
+
+		// !!! needs to handle incarna too
+
 		// In that land: Replace each of their presence with badlands;  The replaced presence leaves the game.
-		int count = otherCtx.Self.Presence.CountOn( otherCtx.Tokens );
-		for(int i = 0; i < count; ++i)
-			await otherCtx.Self.Token.RemoveFrom( otherCtx.Space );
-		await otherCtx.Badlands.Add( count, AddReason.AsReplacement );
+		int total = 0;
+
+		foreach(var token in otherCtx.Self.Presence.TokensDeployedOn( otherCtx.Tokens ).ToArray()) {
+			int count = otherCtx.Tokens[token];
+			await otherCtx.Tokens.Remove(token, count );
+			total += count;
+		}
+		await otherCtx.Badlands.Add( total, AddReason.AsReplacement );
 
 		// Push any number of those Badlands.
-		await otherCtx.PushUpTo( count, Token.Badlands );
+		await otherCtx.PushUpTo( total, Token.Badlands );
 
 		// 3 fear.
 		otherCtx.AddFear( 3 );
 
 		// 3 damage per presence replaced
-		await otherCtx.DamageInvaders( count * 3 );
+		await otherCtx.DamageInvaders( total * 3 );
 	}
 
 }

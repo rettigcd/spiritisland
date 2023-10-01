@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.FeatherAndFlame;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
 class OpenTheWays : IActionFactory {
 
@@ -27,7 +25,7 @@ class OpenTheWays : IActionFactory {
 		finder.GatewayToken?.RemoveSelf();
 
 		// Add new
-		finder.GatewayToken = new GatewayToken( finder.Token, end0, end1 );
+		finder.GatewayToken = new GatewayToken( finder.Presence.Token, end0, end1 );
 	}
 
 	#endregion

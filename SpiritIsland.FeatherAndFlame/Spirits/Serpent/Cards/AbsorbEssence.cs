@@ -16,7 +16,7 @@ public class AbsorbEssence {
 		// move 1 of target spirit's presence from the board to your 'Deep Slumber' track.
 		// Absorbed presence cannot be returned to play.
 		var space = await ctx.OtherCtx.Self.SelectDeployed("Select presence to be absorbed");
-		await ctx.Other.Token.RemoveFrom(space);
+		await ctx.Other.Presence.Token.RemoveFrom(space); // !!! maybe should allow Incarna here too.
 		serpentPresence.AbsorbedPresences.Add(ctx.Other);
 
 		// Target spirit gains 1 ANY and 1 energy

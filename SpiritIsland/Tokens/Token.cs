@@ -11,7 +11,7 @@ public static class Token {
 	// Branch and Claw
 	static readonly public TokenClassToken Beast   = new TokenClassToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
 	static readonly public TokenClassToken Wilds   = new WildsToken( "Wilds", 'W', Img.Wilds );
-	static readonly public IEntityClass Disease  = new DiseaseToken();
+	static readonly public DiseaseToken Disease  = new DiseaseToken();
 
 	// Jagged Earth
 	static readonly public TokenClassToken Badlands = new TokenClassToken ( "Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 

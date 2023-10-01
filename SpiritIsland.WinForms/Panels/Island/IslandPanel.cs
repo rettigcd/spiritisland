@@ -50,7 +50,7 @@ class IslandPanel : IPanel {
 		DrawBackground( graphics );
 
 		_buttonContainer.ClearTransient();
-		if(_decision is Select.TokenFromManySpaces spaceTokenDecision)
+		if(_decision is Select.ASpaceToken spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
 		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)
@@ -66,7 +66,7 @@ class IslandPanel : IPanel {
 		_decision = decision;
 
 		_outstandingSpaceTokenOptions.Clear();
-		if(_decision is Select.TokenFromManySpaces spaceTokenDecision)
+		if(_decision is Select.ASpaceToken spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
 		_buttonContainer.EnableOptions( decision );
@@ -185,7 +185,7 @@ class IslandPanel : IPanel {
 			Token.Wilds, Token.Badlands, Token.Isolate
 		}.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
 			.Union( spaceState.OfClass( Token.Beast ) )
-			.Union( spaceState.OfAnyClass( _ctx._spirit.Token, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
+			.Union( spaceState.OfAnyClass( _ctx._spirit.Presence.Token, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
 			.Cast<IToken>()
 			.ToArray();
 

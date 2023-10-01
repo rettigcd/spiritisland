@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland;
-using Elem = SpiritIsland.Element;
+
 
 public class Track : IOption {
 
@@ -45,15 +45,15 @@ public class Track : IOption {
 	public static Track Energy7     => MkEnergy( 7 );
 	public static Track Energy8     => MkEnergy( 8 );
 	public static Track Energy9     => MkEnergy( 9 );
-	public static Track FireEnergy  => MkEnergy( Elem.Fire );
-	public static Track PlantEnergy => MkEnergy( Elem.Plant );
-	public static Track MoonEnergy  => MkEnergy( Elem.Moon );
-	public static Track SunEnergy   => MkEnergy( Elem.Sun );
-	public static Track AirEnergy   => MkEnergy( Elem.Air );
-	public static Track AnyEnergy   => MkEnergy( Elem.Any );
-	public static Track AnimalEnergy=> MkEnergy( Elem.Animal );
-	public static Track EarthEnergy => MkEnergy( Elem.Earth );
-	public static Track WaterEnergy => MkEnergy( Elem.Water );
+	public static Track FireEnergy  => MkEnergy( Element.Fire );
+	public static Track PlantEnergy => MkEnergy( Element.Plant );
+	public static Track MoonEnergy  => MkEnergy( Element.Moon );
+	public static Track SunEnergy   => MkEnergy( Element.Sun );
+	public static Track AirEnergy   => MkEnergy( Element.Air );
+	public static Track AnyEnergy   => MkEnergy( Element.Any );
+	public static Track AnimalEnergy=> MkEnergy( Element.Animal );
+	public static Track EarthEnergy => MkEnergy( Element.Earth );
+	public static Track WaterEnergy => MkEnergy( Element.Water );
 
 	public static Track Card1 => MkCard(1);
 	public static Track Card2 => MkCard(2);

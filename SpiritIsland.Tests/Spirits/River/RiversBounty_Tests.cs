@@ -8,23 +8,23 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		ActionScope.Initialize();
 
 		// A5 is the 'Y' land in the middle
-		Given_GameWithSpirits( spirit );
+		Given_GameWithSpirits( _spirit );
 
 		//   And: a game on Board-A
 		board = Board.BuildBoardA();
-		gameState.Island = new Island( board );
-		gameState.Phase = Phase.Slow;
+		_gameState.Island = new Island( board );
+		_gameState.Phase = Phase.Slow;
 
 		//   And: Presence on A4
-		spirit.Given_HasPresenceOn( board[4] );
+		_spirit.Given_HasPresenceOn( board[4] );
 
 		//   And: Purchased WashAway
-		card = spirit.Hand.Single( c => c.Name == RiversBounty.Name );
-		spirit.Energy = card.Cost;
+		_card = _spirit.Hand.Single( c => c.Name == RiversBounty.Name );
+		_spirit.Energy = _card.Cost;
 		PlayCard();
 
 		// Jump to slow
-		Assert_CardIsReady( card, Phase.Slow );
+		Assert_CardIsReady( _card, Phase.Slow );
 
 	}
 
@@ -34,7 +34,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		Assert_CardStatus( card, 0, Phase.Slow, "sun water animal" );
 	}
 
-	Space Given_SpiritHas1Presence() => gameState.Spaces.Where( spirit.Presence.IsOn ).Single().Space;
+	Space Given_SpiritHas1Presence() => _gameState.Spaces.Where( _spirit.Presence.IsOn ).Single().Space;
 
 	// 1 target, 0 dahan, 1 to gather       => resolved, dahan gathered, no child
 	// 1 target, 1 dahan, 1 to gather        => resolved, dahan gathered, child!
@@ -77,11 +77,11 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 			User.GathersOptionalToken( token );
 
 		Assert_DahanCount( target, endingCount );
-		spirit.Energy.ShouldBe( endingEnergy );
+		_spirit.Energy.ShouldBe( endingEnergy );
 	}
 
 	void Assert_DahanCount( Space target, int endingCount ) {
-		gameState.Tokens[target].Dahan.CountAll.ShouldBe( endingCount ); // same as original
+		_gameState.Tokens[target].Dahan.CountAll.ShouldBe( endingCount ); // same as original
 	}
 
 	[Fact]
@@ -113,7 +113,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 
 		//   And: neighbors have 1 damaged dahan each 
 		const int dahanToGather = 2;
-		var ctx = spirit.BindMyPowers().Target( target );
+		var ctx = _spirit.BindMyPowers().Target( target );
 		SpaceState[] neighbors = ctx.Adjacent.ToArray();
 		for(int neighborIndex = 0; neighborIndex<dahanToGather; ++neighborIndex)
 			neighbors[neighborIndex].Init( StdTokens.Dahan1, 1 );
@@ -133,8 +133,8 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
-		spirit.Given_HasPresenceOn(board[8]);
-		SpaceState[] targetOptions = spirit.Presence.Spaces.Tokens().ToArray();
+		_spirit.Given_HasPresenceOn(board[8]);
+		SpaceState[] targetOptions = _spirit.Presence.Spaces.Tokens().ToArray();
 		Assert.Equal(2,targetOptions.Length);
 
 		//   And: 2 dahan in A5 (touches both)
@@ -155,7 +155,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void TwoDahanOnPresenceSpace(){
 		// Given: spirit has presence on A4
-		var targetOptions = spirit.Presence.Spaces.Tokens().ToArray();
+		var targetOptions = _spirit.Presence.Spaces.Tokens().ToArray();
 		Assert.Single( targetOptions );
 
 		//   And: 2 dahan in A5 (touches both)
@@ -173,8 +173,8 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public void DahanCountIncludesDamaged() {
 		// This is a nice test, but it is too close to the implementation.  Refactoring might not use ctx.DahanCount
-		var space = gameState.Island.Boards[0][4];
-		var tokens = gameState.Tokens[space];
+		var space = _gameState.Island.Boards[0][4];
+		var tokens = _gameState.Tokens[space];
 		var dahan = tokens.Dahan;
 		tokens.Init( StdTokens.Dahan1, 5 );
 		dahan.Init(7);

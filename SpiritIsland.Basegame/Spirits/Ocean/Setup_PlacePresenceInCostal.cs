@@ -6,7 +6,7 @@ public class Setup_PlacePresenceInCostal : GrowthActionFactory {
 	public override async Task ActivateAsync( SelfCtx ctx ) {
 		var options = ctx.Self.Presence.Spaces.First().Adjacent_Existing.Tokens();
 		var space = await ctx.Decision( new Select.ASpace( "Add presence to", options, Present.Always ) );
-		await ctx.Self.Token.AddTo( space );
+		await ctx.Self.Presence.Token.AddTo( space );
 	}
 	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
 

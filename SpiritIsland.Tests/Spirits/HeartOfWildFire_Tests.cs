@@ -14,7 +14,7 @@ public class HeartOfWildFire_Tests {
 		var tokens = space.Tokens;
 
 		// Given: presence on B8
-		tokens.Init(spirit.Token,1);
+		tokens.Init(spirit.Presence.Token,1);
 
 		// When: adding blight to space via spirit powers
 		//await using var scope = await ActionScope.Start(ActionCategory.Spirit_Power);
@@ -24,7 +24,7 @@ public class HeartOfWildFire_Tests {
 		} );
 
 		// Then: presence should still be there
-		tokens[spirit.Token].ShouldBe(1);
+		tokens[spirit.Presence.Token].ShouldBe(1);
 		// and make sure we added blight
 		tokens.Blight.Count.ShouldBe(1);
 	}
@@ -41,7 +41,7 @@ public class HeartOfWildFire_Tests {
 		var tokens = space.Tokens;
 
 		// Given: presence on B8
-		tokens.Init( spirit.Token, 1 );
+		tokens.Init( spirit.Presence.Token, 1 );
 		// And: a town
 		tokens.InitDefault(Human.Town, 1);
 
@@ -49,7 +49,7 @@ public class HeartOfWildFire_Tests {
 		await tokens.Space.When_Ravaging();
 
 		// Then: presence should still be gone
-		tokens.Has(spirit.Token).ShouldBeFalse();
+		spirit.Presence.IsOn(tokens).ShouldBeFalse();
 		// and make sure we added blight
 		tokens.Blight.Count.ShouldBe( 1 );
 	}

@@ -9,7 +9,7 @@ class Setup_PlacePresenceOnMountain : GrowthActionFactory { // Similar to SharpF
 		// Put 1 presence on your starting board in a mountain of your choice.
 		var options = ctx.GameState.Spaces.Downgrade().Where( space=>space.IsMountain );
 		var space = await ctx.Decision(new Select.ASpace("Add presence to",options, Present.Always));
-		await ctx.Self.Token.AddTo(space);
+		await ctx.Self.Presence.Token.AddTo(space);
 		space.Tokens.Adjust( Token.Badlands, 1);
 
 		// Push all dahan from that land.

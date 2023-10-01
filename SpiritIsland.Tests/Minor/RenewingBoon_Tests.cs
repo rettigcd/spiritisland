@@ -32,7 +32,7 @@ public class RenewingBoon_Tests {
 
 		//  But: Presence already on Space (via Indomitable Claim)
 		SpiritExtensions.Given_Adjust( spirit.Presence, space, 1 );
-		int presenceCount = space[spirit.Token];
+		int presenceCount = spirit.Presence.CountOn( space );
 
 		//  And: has destroyed presence
 		spirit.Presence.Destroyed = 1;
@@ -49,7 +49,7 @@ public class RenewingBoon_Tests {
 		space.Blight.Count.ShouldBe( 0 );
 
 		//  But: no presence should be added.
-		space[spirit.Token].ShouldBe( presenceCount );
+		spirit.Presence.CountOn(space).ShouldBe( presenceCount );
 	}
 
 	//  Blazing Renewal			Range 2

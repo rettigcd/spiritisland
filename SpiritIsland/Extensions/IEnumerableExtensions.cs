@@ -72,6 +72,11 @@ static public class IEnumerableExtensions {
 	public static IEnumerable<SpaceState> Tokens(this IEnumerable<Space> spaces) => spaces.Select( ActionScope.Current.AccessTokens );
 	public static IEnumerable<Space> IsInPlay( this IEnumerable<Space> spaces ) => spaces.Where( TerrainMapper.Current.IsInPlay );
 
+	public static IEnumerable<SpaceToken> WhereIsOn( this IEnumerable<SpaceToken> spaceTokens, IEnumerable<SpaceState> spaceStates ) {
+		var validSpaces = spaceStates.Select(x=>x.Space).ToHashSet();
+		return spaceTokens.Where(t=>validSpaces.Contains(t.Space));
+	}
+
 	public static IEnumerable<SpaceState> IsInPlay( this IEnumerable<SpaceState> spaces ) 
 		=> spaces.Where( x=>TerrainMapper.Current.IsInPlay(x.Space) );
 

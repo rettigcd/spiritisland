@@ -22,8 +22,8 @@ public class BlightToken : TokenClassToken
 		// Destory presence
 		if(config.DestroyPresence)
 			foreach(Spirit spirit in gs.Spirits)
-				if(args.To.Has( spirit.Token ))
-					await args.To.Destroy( spirit.Token, 1 );
+				if( spirit.Presence.IsOn( args.To ) )
+					await args.To.Destroy( spirit.Presence.TokensDeployedOn(args.To.Space).First(), 1 ); // !!! Not correct for Incarna
 
 		// Cascade blight
 		if( args.To.Blight.Count != 1 && config.ShouldCascade ) {

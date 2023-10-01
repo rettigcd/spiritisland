@@ -11,7 +11,7 @@ public class BlazingRenewal {
 		if(ctx.Other.Presence.Destroyed == 0) return;
 		SelfCtx otherCtx = ctx.OtherCtx;
 
-		Space space = await SelectTarget( ctx, otherCtx );
+		Space space = await SelectTargetForRestoringDestoryedPresence( ctx, otherCtx );
 
 		if(space != null)
 			await OtherSpiritsAction(
@@ -22,14 +22,14 @@ public class BlazingRenewal {
 
 	}
 
-	private static async Task<Space> SelectTarget( TargetSpiritCtx ctx, SelfCtx otherCtx ) {
+	private static async Task<Space> SelectTargetForRestoringDestoryedPresence( TargetSpiritCtx ctx, SelfCtx otherCtx ) {
 		// A Range extender effects the "Spirit's Actions".  (so Originating spirit's range determines which spaces)
 		var targetOptions = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 2 ), true )
 			.Where( otherCtx.Self.Presence.CanBePlacedOn )  // filter by the OTHER spirits placeable options
 			.ToArray();
 		// Jonah says Originating Spirit's decision.  However, Querki says: Target Spirit makes the decision.
 		Space space = (targetOptions.Length == 0) ? null
-			: await ctx.OtherCtx.Decision( Select.ASpace.ToPlacePresence( targetOptions, Present.Always, ctx.Other.Token ) );
+			: await ctx.OtherCtx.Decision( Select.ASpace.ToPlacePresence( targetOptions, Present.Always, ctx.Other.Presence.Token ) );
 		return space;
 	}
 

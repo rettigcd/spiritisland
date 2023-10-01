@@ -16,7 +16,7 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 		if(targetCriteria is not InnateTargetCriteria) {
 			// Add towers +3 range
 			SpaceState[] towers = source
-				.Where( s => 3 <= s[_self.Token] )
+				.Where( s => 3 <= _self.Presence.CountOn(s) )
 				.ToArray();
 			if(towers.Length > 0)
 				spaces.AddRange( base.GetTargetOptionsFromKnownSource( towers, targetCriteria.ExtendRange(1) ) );

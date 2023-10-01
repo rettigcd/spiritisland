@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public class SelfCtx {
 
@@ -49,7 +51,8 @@ public class SelfCtx {
 
 	// Visually, selects the [presence] icon
 	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
-		var space = await Decision( Select.DeployedPresence.All( prompt, Self.Presence, Present.Always ) );
+		var space = (await Decision( new ASpaceToken( prompt, Self.Presence.Deployed, Present.Always ) )).Space;
+
 		return Target( space );
 	}
 

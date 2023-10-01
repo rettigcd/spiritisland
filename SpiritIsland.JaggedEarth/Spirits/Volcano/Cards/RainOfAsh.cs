@@ -13,7 +13,7 @@ public class RainOfAsh {
 		return ctx.Pusher
 			.AddGroup( 2, Human.Explorer_Town )
 			.AddGroup( 2, Human.Dahan )
-			.FilterDestinations( s => !s.Has(ctx.Self.Token) )
+			.FilterDestinations( s => !ctx.Self.Presence.IsOn(s) )
 			.MoveN();
 	}
 

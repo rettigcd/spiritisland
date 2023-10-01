@@ -192,7 +192,8 @@ public class VirtualUser {
 
 	public void OptionallyPushesInvaderTo( string invaders, string destinations, int countToPush=1 ) {
 		var (invaderOptions,invaderChoice) = SplitOptionsAndChoice( invaders );
-		AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );
+//		AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );
+		AssertDecision( $"Push up to 3", invaderOptions + ",Done", invaderChoice );
 		AssertDecisionInfo( "Push "+invaderChoice+" to", destinations );
 	}
 
@@ -249,9 +250,9 @@ public class VirtualUser {
 
 	#region protected
 
-	public void AssertDecisionInfo( string prompt, string optionInfo ) {
+	public void AssertDecisionInfo( string prompt, string optionsWithChoice ) {
 
-		var (options, choice) = SplitOptionsAndChoice( optionInfo );
+		var (options, choice) = SplitOptionsAndChoice( optionsWithChoice );
 		NextDecision
 			.HasPrompt( prompt )
 			.HasOptions( options )

@@ -11,7 +11,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			[Human.Town]     = new HumanToken( Human.Town, PenaltyHolder, 2 ),
 			[Human.Explorer] = new HumanToken( Human.Explorer, PenaltyHolder, 1 ),
 			[Human.Dahan]    = new HumanToken( Human.Dahan, PenaltyHolder, 2 ),
-			[Token.Disease]  = (TokenClassToken)Token.Disease,
+			[Token.Disease]  = Token.Disease,
 		};
 
 		_islandMods = new CountDictionary<ISpaceEntity>();

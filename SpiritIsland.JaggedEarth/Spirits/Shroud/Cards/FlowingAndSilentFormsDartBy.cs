@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class FlowingAndSilentFormsDartBy {
 
@@ -30,8 +32,7 @@ public class FlowingAndSilentFormsDartBy {
 				|| !spt.CanMove
 			) return;
 
-			GameState gs = GameState.Current;
-			Spirit spirit = gs.Spirits.First( s => s.Token == args.Token );
+			Spirit spirit = spt._spirit;
 
 			if( !spirit.Presence.HasMovableTokens( args.From ) ) return;
 			
@@ -51,19 +52,21 @@ public class FlowingAndSilentFormsDartBy {
 			: await ctx.Decision( new Select.ASpirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
 		var options = adj.Where(other.Presence.HasMovableTokens);
-		var source = (await ctx.Decision( Select.DeployedPresence.Gather("Gather presence", ctx.Space, options, other.Token ) ))?.Space;
+
+		var source = await ctx.Decision( ASpaceToken.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.Space ) );//
+
 		if(source == null) return;
 		// # to move
-		int numToMove = (1 < source.Tokens[other.Token] && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
+		int numToMove = (1 < other.Presence.CountOn(source.Space) && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
 			? 2
 			: 1;
 		// Get permission
-		if(other != ctx.Self && await ctx.Self.UserSelectsFirstText($"Allow Shroud to Gather {numToMove} of your presence {source.Label} => {ctx.Space.Label} ?", "No, I don't want to move", "Yes, please"))
+		if(other != ctx.Self && !await ctx.Self.UserSelectsFirstText($"Allow Shroud to Gather {numToMove} of your presence {source.Space.Label} => {ctx.Space.Label} ?", "Yes, please", "No, I don't want to move" ))
 			return; // cancel
 
 		// move
 		while(numToMove-->0)
-			await other.Token.Move(source,ctx.Tokens);
+			await source.MoveTo(ctx.Tokens);
 	}
 
 }

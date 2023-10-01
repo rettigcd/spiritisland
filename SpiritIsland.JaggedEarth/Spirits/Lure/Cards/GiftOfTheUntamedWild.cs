@@ -22,7 +22,7 @@ public class GiftOfTheUntamedWild {
 
 	static async Task Replace1PresenceWith1Disease( SelfCtx ctx ) {
 		var space = await ctx.Self.SelectDeployed("Replace Presence with 1 disease");
-		await ctx.Self.Token.RemoveFrom( space );
+		await ctx.Self.Presence.Token.RemoveFrom( space ); // !!! upgrade to handle Incarna presence
 		await ctx.Target(space).Disease.Add(1);
 	}
 

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public class SpiritPresence : IKnowSpiritLocations {
 
@@ -72,6 +74,11 @@ public class SpiritPresence : IKnowSpiritLocations {
 	// ----  Reveal / Return  -------
 	// ------------------------------
 
+	public async Task DestroyPresenceOn( SpaceState spaceState ) {
+		if(spaceState.Has( Token ))
+			await spaceState.Destroy( Token, 1 );
+	}
+
 	protected virtual async Task RevealTrack( Track track ) {
 		if(track == Track.Destroyed && 0 < Destroyed)
 			--Destroyed;
@@ -104,9 +111,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	#endregion
 
-	// ------------------------
-	// ----  Destroyed  -------
-	// ------------------------
+	#region Destroyed
 
 	public int Destroyed {
 		get => Token.Destroyed;
@@ -119,6 +124,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 		Destroyed -= count;
 	}
 
+	#endregion
+
 	#region nice Predicate methods 
 
 	/// <summary>
@@ -129,22 +136,35 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
 
 	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token]; // For Predicate in a .Where(...)
+	public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn(Token,board);
+	public bool IsOnIsland => GameState.Current.Tokens.HasTokens( Token );
+
 	public int CountOn( SpaceState spaceState ) => spaceState[Token]; // For Mapper in a .Select(...)
+
+	public IEnumerable<IToken> TokensDeployedOn( SpaceState space ) { if(IsOn( space )) yield return Token; }
 
 	#endregion
 
 	#region Game-Play things you can do with presence
 
+	/// <param name="from">Track, Space, or SpaceToken</param>
 	public async Task Place( IOption from, Space to ) {
-		await TakeFrom( from );
-		await to.Tokens.Add( Token, 1 );
+		var token = await TakeFrom( from );
+		await to.Tokens.Add( token, 1 );
 	}
 
-	public async Task TakeFrom( IOption from ) {
+	/// <param name="from">Track, Space, or SpaceState</param>
+	/// <returns>Token that is being 'taken'.</returns>
+	public async Task<IToken> TakeFrom( IOption from ) {
 		if(from is Track track)
 			await RevealTrack( track );
 		else if(from is Space space)
 			await TakeFromSpace( space );
+		else if(from is SpaceToken spaceToken) {
+			await TakeFromSpace( spaceToken.Space );
+			return spaceToken.Token;
+		}
+		return Token;
 	}
 
 	async Task TakeFromSpace( Space space ) {
@@ -182,6 +202,9 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
 	public IEnumerable<Space> Spaces => GameState.Current.Tokens.Spaces_Existing( Token );
 
+	public IEnumerable<SpaceToken> Deployed => Spaces.Select( (Func<Space, SpaceToken>)(s=>new SpaceToken( s, (IToken)this.Token)));
+	public IEnumerable<SpaceToken> Movable => CanMove ? Deployed : Enumerable.Empty<SpaceToken>();
+
 	/// <summary> Unfiltered </summary>
 	public int TotalOnIsland() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
 
@@ -189,6 +212,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new();
 
+	/// <summary> The normal spirit presence. </summary>
 	public SpiritPresenceToken Token { 	get; set; }
 
 	#region Memento

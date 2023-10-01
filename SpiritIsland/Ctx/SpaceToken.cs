@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public class SpaceToken : IOption {
 	SpaceToken() { } // Null SpaceToken
@@ -18,6 +20,11 @@ public class SpaceToken : IOption {
 		space = Space;
 		token = Token;
 	}
+
+	public Task<TokenMovedArgs> MoveTo(SpaceState destination) { return Token.Move( Space, destination ); }
+	public Task Destroy() => Space.Tokens.Destroy( Token, 1 );
+	public Task Remove() => Space.Tokens.Remove( Token, 1 );
+
 
 	public override int GetHashCode() => Space.GetHashCode()-Token.GetHashCode();
 	public override bool Equals(object obj) => obj is SpaceToken st && st.Token == Token && st.Space == Space;

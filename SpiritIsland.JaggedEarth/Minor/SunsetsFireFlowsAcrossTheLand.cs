@@ -17,7 +17,7 @@ public class SunsetsFireFlowsAcrossTheLand{
 			var adjInvaders = ctx.Adjacent.SelectMany( adjState => adjState.InvaderTokens()
 				.Select(t=>new SpaceToken(adjState.Space,t) ) )
 				.ToArray();
-			var adjInvader = await ctx.Decision( new Select.TokenFromManySpaces("Select invader for 1 damage", adjInvaders, Present.Always ));
+			var adjInvader = await ctx.Decision( new Select.ASpaceToken("Select invader for 1 damage", adjInvaders, Present.Always ));
 			await ctx.Target(adjInvader.Space).Invaders.ApplyDamageTo1(1, adjInvader.Token.AsHuman());
 		}
 	}

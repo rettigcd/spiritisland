@@ -117,27 +117,33 @@ public class GiftOfStrength_Tests {
 
 	[SpiritCard("Slow-0",0),Slow]
 	[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
+	[Instructions("")]
 	static Task Slow0(TargetSpaceCtx _) => Task.CompletedTask;
 
 	[SpiritCard("Slow-1",1),Slow]
 	[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
+	[Instructions( "" )] 
 	static Task Slow1(TargetSpaceCtx _) => Task.CompletedTask;
 
 	[SpiritCard("Slow-2",2),Slow]
 	[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
+	[Instructions( "" )] 
 	static Task Slow2(TargetSpaceCtx _) => Task.CompletedTask;
 
 
 	[SpiritCard("Fast-0",0),Fast]
 	[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
+	[Instructions( "" )] 
 	static Task Fast0(TargetSpaceCtx _) => Task.CompletedTask;
 
 	[SpiritCard("Fast-1",1),Fast]
 	[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
+	[Instructions( "" )]
 	static Task Fast1(TargetSpaceCtx _) => Task.CompletedTask;
 
 	[SpiritCard("Fast-2",2),Fast]
 	[FromPresenceIn(0,Terrain.Ocean)] // will skip the Target-Space step
+	[Instructions( "" )]
 	static Task Fast2(TargetSpaceCtx _) => Task.CompletedTask;
 
 }
