@@ -44,7 +44,7 @@ public class UntendedLandCrumbles : BlightCard {
 				.ToArray();
 			if(spiritOptions.Length==0) return;
 			var spirit = await ctx.Decision(new Select.ASpirit("Destroy 1 presence",spiritOptions));
-			await spirit.PickPresenceToDestroy();
+			await Cmd.DestroyPresence().Execute( spirit.BindSelf() );
 		}
 	).OnlyExecuteIf( ctx => 
 		ctx.GameState.Spirits

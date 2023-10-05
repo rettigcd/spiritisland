@@ -90,8 +90,10 @@ public static class SpiritExtensions {
 	internal static async Task ShouldComplete( this Task task, string taskDescription = "[Task]", int ms = defaultWaitMs ) {
 		TimeSpan waitTime = TimeSpan.FromMilliseconds( ms );
 		await task.WaitAsync( waitTime );
-		if(!task.IsCompletedSuccessfully)
-			throw new Exception( $"{taskDescription} did not complete in {waitTime}" );
+		if(task.IsCompletedSuccessfully) return;
+		if(task.Exception != null)
+			throw new Exception("Task through exception.", task.Exception);
+		throw new Exception( $"{taskDescription} did not complete in {waitTime}" );
 	}
 
 	internal static Action HandleDecisions(this Spirit spirit, Action<VirtualUser> userActions ) 

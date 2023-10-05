@@ -102,8 +102,8 @@ public class SettleIntoHuntingGrounds_Tests {
 		await spirit.When_ResolvingCard<UnrelentingGrowth>( u => {
 			u.NextDecision.HasPrompt( "Where would you like to place your presence?" ).Choose("A5");
 			// Then: no option to "Take Presence from Board" is available
-			u.NextDecision.HasPrompt( "Select Presence to move" ).HasOptions( "2 energy,2 cardplay" ).Choose( "2 energy" );
-			u.NextDecision.HasPrompt( "Select Presence to move" ).HasOptions( "2 energy,2 cardplay" ).Choose( "2 energy" ); 
+			u.NextDecision.HasPrompt( "Select Presence to place" ).HasOptions( "2 energy,2 cardplay" ).Choose( "2 energy" );
+			u.NextDecision.HasPrompt( "Select Presence to place" ).HasOptions( "2 energy,2 cardplay" ).Choose( "2 energy" ); 
 		} );
 
 	}

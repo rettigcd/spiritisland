@@ -5,7 +5,9 @@ public class ToweringRootsIncarna : IIncarnaToken, IEntityClass, IHandleTokenAdd
 
 	public IEntityClass Class => this;
 
-	public string Text => "#";
+	public string Text => "TRotJ+";
+
+	public string SpaceAbreviation => "TRotJ+";
 
 	#region IEntityClass properties
 	public string Label => "My incarna???";

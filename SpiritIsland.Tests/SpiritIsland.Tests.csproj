@@ -22,6 +22,7 @@
     <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
     <ProjectReference Include="..\SpiritIsland.FeatherAndFlame\SpiritIsland.FeatherAndFlame.csproj" />
     <ProjectReference Include="..\SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj" />
+    <ProjectReference Include="..\SpiritIsland.NatureIncarnate\SpiritIsland.NatureIncarnate.csproj" />
     <ProjectReference Include="..\SpiritIsland.Utilities\SpiritIsland.Utilities.csproj" />
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>

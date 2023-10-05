@@ -93,13 +93,13 @@ public class FinderOfPathsUnseen : Spirit {
 			// After
 			scope.AtEndOfThisAction( async action => {
 				// Destroy 1 of your Presnce and lose 1 Energy.
-				int preseneceToDestroy = 1;
+				int presenceToDestroy = 1;
 				// If you have no Energy to lose, Destroy another Presence.
-				if(0 < Energy) --Energy; else ++preseneceToDestroy;
+				if(0 < Energy) --Energy; else ++presenceToDestroy;
 
 				// Do presence destroy
-				while(preseneceToDestroy-- > 0)
-					await this.PickPresenceToDestroy();
+				while(0 < presenceToDestroy--)
+					await Cmd.DestroyPresence().Execute(new SelfCtx(this));
 			} );
 
 		}

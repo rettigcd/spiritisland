@@ -8,7 +8,7 @@ public class OvergrowInANight {
 
 		return ctx.SelectActionOption(
 			new SpaceAction("Add 1 presence", async ctx => {
-				var from = await ctx.Self.SelectMovablePresence2();
+				var from = await ctx.Self.SelectSourcePresence();
 				await ctx.Self.Presence.Place( from, ctx.Space );
 			} ),
 			new SpaceAction( "3 fear", ctx => ctx.AddFear(3) )

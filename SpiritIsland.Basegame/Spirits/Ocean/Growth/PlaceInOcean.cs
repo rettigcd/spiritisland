@@ -7,7 +7,7 @@ public class PlaceInOcean : GrowthActionFactory {
 			.Select( b=>b.Spaces_Existing.Single(s=>s.IsOcean ) )
 			.Tokens()
 			.ToArray();
-		return ctx.Self.PlacePresenceOn1( oceanSpaces );
+		return Cmd.PlacePresenceOn( oceanSpaces ).Execute( ctx );
 	}
 
 }

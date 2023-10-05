@@ -67,7 +67,7 @@ public class VirtualUser {
 		string[] parts = placeOptions.Split('>');
 		Track source = parts[0].ToLower() switch {
 			"energy" => _spirit.Presence.Energy.RevealOptions.Single(),
-			"cardplay" => _spirit.Presence.CardPlays.RevealOptions.Single(),
+			"cardplay" or // => _spirit.Presence.CardPlays.RevealOptions.Single(),
 			"cardplays" => _spirit.Presence.CardPlays.RevealOptions.Single(),
 			_ => throw new ArgumentOutOfRangeException(nameof(placeOptions)),
 		};
@@ -88,6 +88,9 @@ public class VirtualUser {
 	}
 
 	public void PlacePresenceLocations( Track source, string placeOptions ) {
+		// !!! placeOptions Is not validating against Actual Options
+
+
 		// Source
 		PullsPresenceFromTrack( source );
 

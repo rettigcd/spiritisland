@@ -25,14 +25,13 @@ public class SerpentWakesInPower {
 		await Option1Async( ctx );
 
 		// Add 1 presence, range-1.
-		await ctx.Self.PlacePresenceWithin( new TargetCriteria( 1 ), true);
+		await Cmd.PlacePresenceWithin(new TargetCriteria(1), true).Execute(ctx);
 
 		// Other spirits with 2 or more Absorbed Presence may do likewise.
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>2<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await spirit.PlacePresenceWithin( new TargetCriteria( 1 ), true);
-
+			await Cmd.PlacePresenceWithin( new TargetCriteria( 1 ), true).Execute(spirit.BindMyPowers());
 	}
 
 	[InnateOption("3 fire,3 water,3 earth,3 plant", "Gain a Major Power without Forgetting.  Other Spirits with 3 or more Absorbed Presence may do likewise." )]

@@ -23,7 +23,7 @@ public class BoundPresence_ForSpace {
 	} 
 
 	public async Task PlaceHere() {
-		var from = await _self.SelectMovablePresence2();
+		var from = await _self.SelectSourcePresence();
 		await ctx.Self.Presence.Place( from, ctx.Space );
 	}
 
@@ -34,7 +34,7 @@ public class BoundPresence_ForSpace {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable
 			var src = await ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
 			if( ctx.Self.Presence.HasMovableTokens( src.Space.Tokens ))
-				await src.Token.Move( src.Space, ctx.Tokens );
+				await src.MoveTo( ctx.Tokens );
 			count--;
 		}
 	}

@@ -18,10 +18,7 @@ public class UnnaturalProliferation : BlightCard {
 			) )
 		);
 
-	static SelfAction AddPresenceToOwnLand => new SelfAction(
-		"Add 1 presence to a land with own presence.", 
-		ctx=> ctx.Self.PlacePresenceOn1( ctx.Self.Presence.Spaces.Tokens().ToArray() )
-	);
+	static SelfAction AddPresenceToOwnLand => Cmd.PlacePresenceWithin(new TargetCriteria(0),true);
 
 	static IExecuteOn<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
 		.To().OneLandPerBoard().Which( Has.Dahan );

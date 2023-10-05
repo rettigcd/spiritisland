@@ -55,7 +55,8 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, SpaceState tokens ) {
 		if(tokens.Blight.Any)
-			await spirit.PickPresenceToDestroy( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" );
+			await Cmd.DestroyPresence( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" )
+				.Execute(spirit.BindSelf());
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit ) {

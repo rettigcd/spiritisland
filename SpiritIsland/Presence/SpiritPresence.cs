@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class SpiritPresence : IKnowSpiritLocations {
 
@@ -108,7 +106,6 @@ public class SpiritPresence : IKnowSpiritLocations {
 			: throw new ArgumentException( "Unable to find location to restore presence" );
 	}
 
-
 	#endregion
 
 	#region Destroyed
@@ -133,15 +130,15 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// </summary>
 	public virtual bool CanBePlacedOn( SpaceState spaceState ) => ActionScope.Current.TerrainMapper.IsInPlay( spaceState.Space );
 
-	public virtual bool IsSacredSite( SpaceState space ) => 2 <= space[Token];
+	public virtual bool IsSacredSite( SpaceState space ) => 2 <= CountOn(space);
 
-	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token]; // For Predicate in a .Where(...)
-	public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn(Token,board);
-	public bool IsOnIsland => GameState.Current.Tokens.IsOnAnyBoard( Token );
+	virtual public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token]; // For Predicate in a .Where(...)
+	virtual public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn(Token,board);
+	virtual public bool IsOnIsland => GameState.Current.Tokens.IsOnAnyBoard( Token );
 
-	public int CountOn( SpaceState spaceState ) => spaceState[Token]; // For Mapper in a .Select(...)
+	virtual public int CountOn( SpaceState spaceState ) => spaceState[Token]; // For Mapper in a .Select(...)
 
-	public IEnumerable<IToken> TokensDeployedOn( SpaceState space ) { if(IsOn( space )) yield return Token; }
+	virtual public IEnumerable<IToken> TokensDeployedOn( SpaceState space ) { if(IsOn( space )) yield return Token; }
 
 	#endregion
 
@@ -159,20 +156,20 @@ public class SpiritPresence : IKnowSpiritLocations {
 		if(from is Track track)
 			await RevealTrack( track );
 		else if(from is Space space)
-			await TakeFromSpace( space );
+			await TakeFromSpace( new SpaceToken(space,Token) );
 		else if(from is SpaceToken spaceToken) {
-			await TakeFromSpace( spaceToken.Space );
+			await TakeFromSpace( spaceToken );
 			return spaceToken.Token;
 		}
 		return Token;
 	}
 
-	async Task TakeFromSpace( Space space ) {
-		SpaceState fromSpace = space.Tokens;
-		if(fromSpace.Has(Token))
-			await fromSpace.Remove( Token, 1, RemoveReason.Removed ); // This is not a .MovedFrom because that needs done from .Move
+	async Task TakeFromSpace( SpaceToken st ) {
+		SpaceState fromSpace = st.Space.Tokens;
+		if(0<fromSpace[st.Token])
+			await fromSpace.Remove( st.Token, 1, RemoveReason.Removed ); // This is not a .MovedFrom because that needs done from .Move
 		else
-			throw new ArgumentException( "Can't pull from island space:" + space.ToString() );
+			throw new ArgumentException( "Can't pull from island space:" + st.ToString() );
 	}
 
 	public Task ReturnDestroyedToTrack( Track dst ) {
@@ -200,9 +197,11 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
-	public IEnumerable<Space> Spaces => GameState.Current.Tokens.Spaces_Existing( Token );
+	virtual public IEnumerable<Space> Spaces => GameState.Current.Tokens.Spaces_Existing( Token );
 
-	public IEnumerable<SpaceToken> Deployed => Spaces.Select( (Func<Space, SpaceToken>)(s=>new SpaceToken( s, (IToken)this.Token)));
+	virtual public IEnumerable<SpaceToken> Deployed 
+		=> GameState.Current.Tokens.Spaces_Existing( Token ) // don't use .Spaces because it gets overriden to include non-token spaces
+		.Select( s=>new SpaceToken( s, Token) );
 	public IEnumerable<SpaceToken> Movable => CanMove ? Deployed : Enumerable.Empty<SpaceToken>();
 
 	/// <summary> Unfiltered </summary>

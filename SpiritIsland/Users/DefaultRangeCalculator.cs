@@ -20,7 +20,7 @@ public interface ICalcRange {
 
 }
 
-public interface IIncarnaToken : IToken {
+public interface IIncarnaToken : IToken, IAppearInSpaceAbreviation {
 	public SpaceState? Space { get; set; }
 }
 

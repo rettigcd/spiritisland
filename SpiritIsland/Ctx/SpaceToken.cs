@@ -21,7 +21,9 @@ public class SpaceToken : IOption {
 		token = Token;
 	}
 
-	public Task<TokenMovedArgs> MoveTo(SpaceState destination) { return Token.Move( Space, destination ); }
+	public Task<TokenMovedArgs> MoveTo(SpaceState destination) 
+		=> Space.Tokens.MoveTo( Token, destination );
+
 	public Task Destroy() => Space.Tokens.Destroy( Token, 1 );
 	public Task Remove() => Space.Tokens.Remove( Token, 1 );
 

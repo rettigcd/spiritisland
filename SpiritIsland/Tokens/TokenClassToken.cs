@@ -3,6 +3,7 @@
 /// <summary>
 /// Token that implements its own IEntity.Class
 /// </summary>
+/// <example>blight, defend, isolate, beast</example>
 public class TokenClassToken : IToken, IEntityClass, IAppearInSpaceAbreviation {
 
 	public TokenClassToken(string label, char initial, Img img, TokenCategory cat = TokenCategory.None) {

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace SpiritIsland.Tests.Spirits.Volcano;
+﻿namespace SpiritIsland.Tests.Spirits.Volcano;
 
 public class Volcano_Tests {
 

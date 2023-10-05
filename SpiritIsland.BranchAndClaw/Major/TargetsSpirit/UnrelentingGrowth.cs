@@ -41,7 +41,7 @@ public class UnrelentingGrowth {
 
 		// Add presence
 		for(int i = 0; i < 2; ++i) {
-			var from = await ctx.Self.SelectMovablePresence2();
+			var from = await ctx.Self.SelectSourcePresence();
 			if(from !=null)
 				await ctx.Self.Presence.Place( from, to );
 		}

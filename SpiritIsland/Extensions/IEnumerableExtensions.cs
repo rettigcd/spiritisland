@@ -40,10 +40,6 @@ static public class IEnumerableExtensions {
 		}
 	}
 
-	// shorter syntax:
-	// space.Terrain.IsIn(Terrain.Wetland,Terrain.Sand)
-	// vs.
-	// new Terraion[]{Terrain.Wetland,Terrain.Sand}.Contains(space.Terrain);
 	static public bool IsOneOf<T>( this T needle, params T[] haystack ) where T : Enum
 		=> haystack.Contains( needle );
 
@@ -55,6 +51,11 @@ static public class IEnumerableExtensions {
 	static public void SetItems<T>(this List<T> list, params T[] items ) { list.Clear(); list.AddRange(items);}
 
 	static public void SetItems<T>(this HashSet<T> hashSet, params T[] items ) { hashSet.Clear(); foreach(var item in items) hashSet.Add(item);}
+
+	static public IEnumerable<T> Include<T>(this IEnumerable<T> orig, T addition ) {
+		foreach(var item in orig) yield return item;
+		yield return addition;
+	}
 
 	/// <summary>
 	/// [0] => top of stack, [^1] => bottom of stack

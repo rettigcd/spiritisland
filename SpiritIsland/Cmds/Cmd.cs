@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public static partial class Cmd {
 
@@ -141,13 +143,78 @@ public static partial class Cmd {
 		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
-
-	// WTH are these doing in here?
-	static public SelfAction DestroyPresence() => new SelfAction( "Destroy 1 presence.", ctx => ctx.Self.PickPresenceToDestroy() );
 	static public SelfAction ForgetPowerCard => new SelfAction( "Forget Power card", ctx => ctx.Self.ForgetOne() );
+
+	// ========
+	// Presence
+	// ========
+
+	static public SelfAction PushUpTo1Presence( Func<Space, Space, Task> callback = null ) 
+		=> new SelfAction( "Push up to 1 Presence", async ctx => {
+
+			// Select source
+			var source = await ctx.Self.Gateway.Decision( new ASpaceToken( "Select Presence to push.", ctx.Self.Presence.Movable, Present.Done ) );
+			if(source == null) return;
+
+			// Select destination
+			Space destination = await ctx.Self.Gateway.Decision( Select.ASpace.PushPresence( source.Space, source.Space.Tokens.Adjacent, Present.Always, source.Token ) );
+			await source.MoveTo( destination.Tokens );
+			if(callback != null)
+				await callback( source.Space, destination );
+		});
+
+	static public SelfAction DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SelfAction( "Destroy 1 presence.", async ctx => {
+		var spaceToken = await ctx.Self.Gateway.Decision( new ASpaceToken( prompt, ctx.Self.Presence.Deployed, Present.Always ) );
+		await spaceToken.Destroy();
+	} );
+
 	static public SelfAction DestroyPresence( int count ) => new SelfAction( 
 		$"Destroy {count} presence", 
-		async ctx => { for(int i = 0; i < count; ++i) await ctx.Self.PickPresenceToDestroy();}
+		async ctx => { 
+			var destroyOne = Cmd.DestroyPresence();
+			for(int i = 0; i < count; ++i) 
+				await destroyOne.Execute(ctx);
+		}
 	);
+
+	static public SelfAction ReturnUpToNDestroyedToTrack( int count) => new SelfAction("Return up to N Destroyed Presence to Track", async ctx => {
+		var self = ctx.Self;
+		count = Math.Max( count, self.Presence.Destroyed );
+		while(count > 0) {
+			var dst = await self.Gateway.Decision( Select.TrackSlot.ToCover( self ) );
+			if(dst == null) break;
+			await self.Presence.ReturnDestroyedToTrack( dst );
+			--count;
+		}
+	});
+
+	static public SelfAction PlacePresenceWithin( TargetCriteria targetCriteria, bool forPower ) => new SelfAction(
+		"Place Presence",
+		async ctx => {
+			var self = ctx.Self;
+			IOption from = await self.SelectSourcePresence();
+			IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
+			var toOptions = self.FindSpacesWithinRange( targetCriteria, forPower )
+				.Where( self.Presence.CanBePlacedOn )
+				.ToArray();
+			if(toOptions.Length==0)
+				throw new InvalidOperationException("There no places to place presence.");
+			Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( toOptions, Present.Always, token ) );
+			await self.Presence.Place( from, to );
+
+			if(forPower && from is Track track && track.Action != null)
+				await track.Action.ActivateAsync( ctx );
+		}
+	);
+
+	static public SelfAction PlacePresenceOn( params SpaceState[] destinationOptions ) => new SelfAction(
+		"Place Presence",
+		async ctx => {
+			var self = ctx.Self;
+			IOption from = await self.SelectSourcePresence();
+			IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
+			Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( destinationOptions, Present.Always, token ) );
+			await self.Presence.Place( from, to );
+		} );
 
 }
