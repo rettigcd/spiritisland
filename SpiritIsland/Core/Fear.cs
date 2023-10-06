@@ -57,6 +57,7 @@ public class Fear {
 	}
 
 	public void AddDirect( FearArgs args ) {
+		if(args.Count==0) return;
 		EarnedFear += args.Count;
 		while(PoolMax <= EarnedFear && Deck.Any() ) {
 			EarnedFear -= PoolMax;

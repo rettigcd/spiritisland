@@ -16,6 +16,7 @@ public class InvaderBinding {
 
 	/// <summary> Not Badland-aware </summary>
 	public async Task ApplyDamageToEach( int individualDamage, params IEntityClass[] generic ) {
+		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
 
 		var invaders = Tokens.InvaderTokens()
 			.OrderBy(x=>x.RemainingHealth) // do damaged first to clear them out
@@ -34,6 +35,7 @@ public class InvaderBinding {
 	/// <summary> Not Badland-aware </summary>
 	/// <returns>(damage inflicted,damagedInvader)</returns>
 	public async Task<(int,HumanToken)> ApplyDamageTo1( int availableDamage, HumanToken originalInvader ) {
+		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return (0,originalInvader);
 
 		var damagedInvader = GetNewDamagedToken( originalInvader, availableDamage );
 
@@ -54,18 +56,21 @@ public class InvaderBinding {
 	protected virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) 
 		=> Tokens.GetNewDamagedToken( invaderToken, availableDamage );
 
-
 	#endregion
 
 	#region Destroy
 
 	public virtual async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
+		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
+
 		var tokensToDestroy = Tokens.OfAnyHumanClass( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
 			await token.DestroyAll( Tokens );
 	}
 
 	public async Task DestroyNOfAnyClass( int count, params HumanTokenClass[] generics ) {
+		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
+
 		HumanToken[] invadersToDestroy;
 		while(
 			0 < count 
@@ -84,6 +89,8 @@ public class InvaderBinding {
 
 	// destroy CLASS
 	public async Task<int> DestroyNOfClass( int countToDestroy, HumanTokenClass invaderClass ) {
+		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return 0;
+
 		countToDestroy = Math.Min( countToDestroy, Tokens.Sum( invaderClass ) );
 		int remaining = countToDestroy; // capture
 
@@ -100,8 +107,9 @@ public class InvaderBinding {
 	}
 
 	// destroy TOKEN
-	public virtual Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
-		return Tokens.DestroyNInvaders( invaderToDestroy, countToDestroy );
+	public virtual async Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
+		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return 0;
+		return await Tokens.DestroyNInvaders( invaderToDestroy, countToDestroy );
 	}
 
 	#endregion Destroy

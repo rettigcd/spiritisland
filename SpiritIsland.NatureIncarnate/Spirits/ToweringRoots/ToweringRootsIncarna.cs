@@ -1,13 +1,19 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class ToweringRootsIncarna : IIncarnaToken, IEntityClass, IHandleTokenAdded, IHandleTokenRemoved  {
-	public Img Img => Img.TRotJ_Incarna;
+public class ToweringRootsIncarna : IIncarnaToken, IEntityClass
+	, IHandleTokenAdded	// Track current space of Incarna
+	, IStopInvaderDamage, IStopDahanDamage, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
+	, ISkipBuilds
+	, ITrackMySpaces
+{
+	public Img Img => Empowered ? Img.TRotJ_Incarna_Empowered : Img.TRotJ_Incarna;
+	public bool Empowered { get; set; }
 
 	public IEntityClass Class => this;
 
-	public string Text => "TRotJ+";
+	public string Text => SpaceAbreviation;
 
-	public string SpaceAbreviation => "TRotJ+";
+	public string SpaceAbreviation => "TRotJ" + (Empowered ? "+" : "-");
 
 	#region IEntityClass properties
 	public string Label => "My incarna???";
@@ -17,26 +23,27 @@ public class ToweringRootsIncarna : IIncarnaToken, IEntityClass, IHandleTokenAdd
 	#endregion
 
 	#region tracking location
-	public SpaceState? Space { get; set; }
+	public SpaceState? Space => GameState.Current.Tokens.Spaces_Existing(this).FirstOrDefault();
 
 	public void HandleTokenAdded( ITokenAddedArgs args ) {
-		TrackAdding( args );
-		if( args.Added == Token.Vitality && args.To[Token.Vitality] == 3) {
-			// Do Power-Up here
-		}
+		if( !Empowered && args.Added == Token.Vitality && args.To[Token.Vitality] == 3)
+			Empowered = true;
 	}
 
-	protected void TrackAdding( ITokenAddedArgs args ) {
-		if(Equals( args.Added )) {
-			if(Space != null) throw new InvalidOperationException( "Must first remove token before adding it to another space." );
-			Space = args.To;
-		}
-	}
-
-	public void HandleTokenRemoved( ITokenRemovedArgs args ) {
-		if(!Equals( args.Removed )) return;
-		if(Space == null) throw new InvalidOperationException( "Can't remove.  Space is already null." );
-		Space = null;
-	}
 	#endregion
+
+	#region Don't damage Beasts
+
+	public void ModifyRemoving( RemovingTokenArgs args ) {
+		if(args.Token == Token.Beast)
+			args.Count = 0;
+	}
+
+	#endregion
+
+	#region ISkipBuilds
+	public UsageCost Cost => UsageCost.Free;
+	public Task<bool> Skip( SpaceState space ) => Task.FromResult( Empowered );
+	#endregion
+
 }

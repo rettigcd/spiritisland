@@ -53,7 +53,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public TokenBinding Vitality            => Tokens.Vitality;
 	public TokenBinding Badlands			=> Tokens.Badlands;
 	public BlightTokenBinding Blight        => Tokens.Blight;
-	public HealthTokenClassBinding Dahan    => Tokens.Dahan;
+	public DahanBinding Dahan    => Tokens.Dahan;
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
 	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )

@@ -227,7 +227,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 			destroyed = src.Destroyed;
 			energyPerTurn = src.EnergyPerTurn;
 		}
-		public void Restore( SpiritPresence src ) {
+		virtual public void Restore( SpiritPresence src ) {
 			src.Energy.LoadFrom( energy );
 			src.CardPlays.LoadFrom( cardPlays );
 			src.Destroyed = destroyed;
@@ -237,6 +237,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		readonly IMemento<IPresenceTrack> cardPlays;
 		readonly int destroyed;
 		readonly int energyPerTurn;
+		public bool EmpoweredIncarna;
 	}
 
 	#endregion

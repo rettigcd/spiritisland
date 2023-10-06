@@ -9,7 +9,7 @@ public class CyclesOfTimeAndTide {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		if(ctx.Dahan.Any)
-			await ctx.Dahan.Add(1);
+			await ctx.Dahan.AddDefault(1);
 		else
 			await ctx.RemoveBlight();
 

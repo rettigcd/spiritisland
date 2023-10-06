@@ -121,11 +121,11 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		// Dahan
 		var damagableDahan = defenders.Keys
 			.Cast<HumanToken>()
-			.Where( k => k.Class == Human.Dahan )  // Normal only, filters out frozen/sleeping
+			.Where( k => k.Class == Human.Dahan ) // Normal only, filters out frozen/sleeping
 			.OrderBy( t => t.RemainingHealth ) // kill damaged dahan first
 			.ToArray();
 
-		var dahan = new HealthTokenClassBinding( data.Tokens, Human.Dahan );
+		var dahan = new DahanBinding( data.Tokens );
 
 		foreach(var dahanToken in damagableDahan) {
 
@@ -136,7 +136,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			);
 			if(0 < tokensToDestroy) {
 
-				var removed = await dahan.DestroyToken( dahanToken, tokensToDestroy );
+				int removed = await dahan.Destroy( tokensToDestroy, dahanToken );
 
 				// use up damage
 				damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
@@ -149,11 +149,14 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
 			if(0 < defenders[dahanToken] && 0 < damageToApply) {
 
-				await dahan.ApplyDamage_Efficiently( damageToApply, dahanToken ); // this will never destroy token
+				int remainingDamage = await dahan.ApplyDamage_Efficiently( damageToApply, dahanToken ); // this will never destroy token
 
 				// update our defenders count
-				++defenders[dahanToken.AddDamage( damageToApply )];
-				--defenders[dahanToken];
+				if(remainingDamage < damageInflictedFromAttackers) { // if we actually did damage
+					// !!! not sure this is 100% correct - if dahan can't be damaged, shouldn't do this update below
+					++defenders[dahanToken.AddDamage( damageToApply )];
+					--defenders[dahanToken];
+				}
 				damageToApply = 0;
 			}
 

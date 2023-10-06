@@ -136,9 +136,9 @@ public static class ExtendDictionary {
 
 		return abbrevTokens.Length == 0 ? "[none]"
 			: abbrevTokens
-				.Select(t=> new {t,desc=FriendlyName(t)} )
+				.Select(t=> new { num=dict[t], desc=FriendlyName(t)} )
 				.OrderBy( x => x.desc )
-				.Select( x => x.t + x.desc )
+				.Select( x => x.num + x.desc )
 				.Join( "," );
 		}
 

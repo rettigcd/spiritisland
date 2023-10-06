@@ -58,7 +58,6 @@ public class ToweringRootsOfTheJungle : Spirit {
 			.Init( Presence.Token, 1 );
 		// Incarna goes in the jungle with presence
 		jungle.Init(Incarna,1); 
-		Incarna.Space = jungle.Space;
 
 	}
 

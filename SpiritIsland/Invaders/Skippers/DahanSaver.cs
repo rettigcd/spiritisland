@@ -26,7 +26,7 @@ public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToke
 		if(shouldReduce) {
 			// If we haven't saved our allotment
 			int previous = byAction[ActionScope.Current];
-			if(previous < maxPerAction) {  // // remaining adjustments for this action
+			if(previous < maxPerAction) {  // remaining adjustments for this action
 										   // save some dahan
 				int adjustment = Math.Min( maxPerAction - previous, args.Count );
 				args.Count -= adjustment;

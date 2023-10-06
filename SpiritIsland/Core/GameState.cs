@@ -105,7 +105,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		.Distinct() // MultiSpaces
 		.Tokens();
 
-
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }
 	public InvaderDeck InvaderDeck { 

@@ -22,12 +22,12 @@ class HabsburgDurableToken
 		}
 		return count;
 	}
-	protected override HumanToken NewHealthToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0, int nightmareDamage = 0 )
+	protected override HumanToken NewMutatedToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0, int nightmareDamage = 0 )
 		=> new HabsburgDurableToken( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage );
 	public HumanToken GetRestoreToken() => new HumanToken( Class, _healthPenaltyHolder, FullHealth - 2, Damage, StrifeCount );
 
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
-	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
 		// If adding first blight
 		if(args.Added == Token.Blight && args.To.Blight.Count == 1) {
 			// switch back to normal

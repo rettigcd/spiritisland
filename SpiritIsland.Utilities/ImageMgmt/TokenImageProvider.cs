@@ -26,6 +26,7 @@ public class TokenImageProvider {
 
 	public Dictionary<ISpaceEntity, Image?> _tokenImages; // because we need different images for different damaged invaders.
 	public Image _presenceImg;
+	public Img _incarnaImg;
 	public Image _strife;
 	public Image _fearTokenImage;
 	public Image _grayFear;
@@ -45,6 +46,15 @@ public class TokenImageProvider {
 	public Image AccessTokenImage( IToken imageToken ) {
 		if( imageToken is SpiritPresenceToken )
 			return _presenceImg;
+
+		// Invalidate Incarna Image when the .Img switches
+		if( imageToken is IIncarnaToken it && it.Img != _incarnaImg ) {
+			_incarnaImg = it.Img;
+			if(_tokenImages.ContainsKey( imageToken )) {
+				_tokenImages[imageToken].Dispose();
+				_tokenImages.Remove(imageToken);
+			}
+		}
 
 		if(!_tokenImages.ContainsKey( imageToken ))
 			_tokenImages[imageToken] = ResourceImages.Singleton.GetTokenImage( imageToken );

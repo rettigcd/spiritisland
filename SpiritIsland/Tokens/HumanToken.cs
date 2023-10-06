@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// Base token for both Dahan and Invaders
+/// </summary>
 public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
 
 	public HumanToken( 
@@ -33,6 +36,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	readonly int _rawFullHealth; // the value adjusted by modifications, may be less than 1.
 
 	public int Damage { get; }
+
 	public int DreamDamage { get; }
 	
 	public int FullDamage => Damage + DreamDamage;
@@ -41,33 +45,24 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	public bool IsDestroyed => FullHealth <= FullDamage;
 
+	/// <returns># of items destroyed</returns>
 	public virtual async Task<int> Destroy( SpaceState tokens, int count ) {
 		count = Math.Min(count, tokens[this]);
 		var result = await tokens.Remove( this, count, RemoveReason.Destroyed );
-		if(result is null) return 0; // maybe SpaceState prevented their removal.
-		GameState.Current.Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
+		GameState.Current.Fear.AddDirect( new FearArgs( Class.FearGeneratedWhenDestroyed * result.Count ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
 			space = tokens.Space
 		} );
+
 		return result.Count;
 	}
 
-	public virtual async Task<int> DestroyAll( SpaceState tokens ) {
-		int count = tokens[this];
-		var result = await tokens.Remove( this, count, RemoveReason.Destroyed );
-		if(result is null) return 0; // maybe SpaceState prevented their removal.
-		GameState.Current.Fear.AddDirect( new FearArgs( this.Class.FearGeneratedWhenDestroyed * count ) {
-			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
-			space = tokens.Space
-		} );
-		return result.Count;
-	}
-
+	public Task<int> DestroyAll( SpaceState tokens ) => Destroy( tokens, tokens[this] );
 
 	#region Token mutation generators
 
-	// so we can override it in derived types and not switch back to HealthToken base
-	protected virtual HumanToken NewHealthToken(
+	/// <summary> Used by mutation generators to create a new token of the same class. </summary>
+	protected virtual HumanToken NewMutatedToken(
 		HumanTokenClass tokenClass,
 		IHaveHealthPenaltyPerStrife penaltyHolder,
 		int rawFullHealth,
@@ -79,7 +74,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	public HumanToken HavingStrife(int strifeCount) {
 		return strifeCount < 0 ? throw new System.ArgumentOutOfRangeException(nameof(strifeCount),$"strife Count = {strifeCount}")
 			: strifeCount == StrifeCount ? this
-			: NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount );
+			: NewMutatedToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount );
 	}
 
 	/// <returns>a new token with the adjusted strife</returns>
@@ -89,20 +84,20 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		int newDamage = Math.Min( Damage + damage, _rawFullHealth ); // Give regular damage priority
 		// only allow nightmare damage to take up whatever remaining health is available
 		int newNightmareDamage = Math.Min( nightmareDamage + DreamDamage, _rawFullHealth-newDamage );
-		return NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, newDamage, StrifeCount,	newNightmareDamage );
+		return NewMutatedToken( Class, _healthPenaltyHolder, _rawFullHealth, newDamage, StrifeCount,	newNightmareDamage );
 	}
 
 	// For Dream a 1000 Deaths, make token not in the Invader TokenCategory
 	public HumanToken SwitchClass( HumanTokenClass newClass )
-		=> NewHealthToken( newClass, _healthPenaltyHolder, _rawFullHealth, Damage, StrifeCount, DreamDamage );
+		=> NewMutatedToken( newClass, _healthPenaltyHolder, _rawFullHealth, Damage, StrifeCount, DreamDamage );
 
 	public HumanToken Healthy 
-		=> NewHealthToken( Class, _healthPenaltyHolder, _rawFullHealth, 0, StrifeCount );
+		=> NewMutatedToken( Class, _healthPenaltyHolder, _rawFullHealth, 0, StrifeCount );
 
 	public HumanToken AddHealth( int delta ) {
 		int newHealth = Math.Max(1, _rawFullHealth + delta );
 		return newHealth == _rawFullHealth ? this
-			: NewHealthToken( Class, _healthPenaltyHolder, newHealth, Damage, StrifeCount );
+			: NewMutatedToken( Class, _healthPenaltyHolder, newHealth, Damage, StrifeCount );
 	}
 
 	#endregion

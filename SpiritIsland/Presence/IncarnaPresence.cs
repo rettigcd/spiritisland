@@ -9,7 +9,7 @@ public class IncarnaPresence<IncarnaTokenType> : SpiritPresence, IHaveIncarna wh
 
 	public IncarnaTokenType Incarna { get; }
 	IIncarnaToken IHaveIncarna.Incarna => Incarna;
-
+	
 	public override int CountOn( SpaceState spaceState ) => base.CountOn( spaceState ) + spaceState[Incarna];
 
 	public override IEnumerable<SpaceToken> Deployed => Incarna.Space == null 
@@ -29,5 +29,17 @@ public class IncarnaPresence<IncarnaTokenType> : SpiritPresence, IHaveIncarna wh
 		if(0 < space[Token]) yield return Token;
 		if(0 < space[Incarna]) yield return Incarna;
 	}
+
+	public override void LoadFrom( IMemento<SpiritPresence> memento ) {
+		base.LoadFrom( memento );
+		Incarna.Empowered = ((Memento)memento).EmpoweredIncarna;
+	}
+
+	public override IMemento<SpiritPresence> SaveToMemento() {
+		var memento = (Memento)base.SaveToMemento();
+		memento.EmpoweredIncarna = Incarna.Empowered;
+		return memento;
+	}
+
 
 }

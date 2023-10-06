@@ -1,5 +1,4 @@
 ﻿using SpiritIsland.NatureIncarnate;
-using SpiritIsland.Select;
 
 namespace SpiritIsland.Tests.Core; 
 
@@ -182,20 +181,12 @@ public class IncarnaPresence_Tests {
 
 		_board[4].Tokens.Summary.ShouldBe( "1TRotJ+" );
 		_gs.Tokens.ToVerboseString();
-	
-
-		//	// Then: Can select incarna space + adjacents because Towering Roots +1 range for range 0
-		//	u.NextDecision.HasPrompt( "Sap the Strength of Multitudes: Target Space" )
-		//		.HasOptions( "A1,A2,A3,A4" )
-		//		.Choose( "A2" );
-		//} );
-
 
 	}
 
 
 	void Given_InvarnaOn( Space space ) {
-		space.Tokens.Init( _presence.Incarna, 1 ); _presence.Incarna.Space = space;
+		space.Tokens.Init( _presence.Incarna, 1 );
 	}
 
 

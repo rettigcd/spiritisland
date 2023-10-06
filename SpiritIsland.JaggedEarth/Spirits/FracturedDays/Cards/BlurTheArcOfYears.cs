@@ -38,7 +38,7 @@ class BlurTheArcOfYears {
 
 		// If dahan are present: Add 1 dahan. Push up to 2 dahan.
 		if(hasDahan) {
-			await ctx.Dahan.Add( 1 );
+			await ctx.Dahan.AddDefault( 1 );
 			await ctx.PushUpToNDahan( 2 );
 		}
 	}

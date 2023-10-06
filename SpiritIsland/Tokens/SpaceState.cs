@@ -106,7 +106,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public TokenBinding Disease => new ( this, _api.GetDefault( Token.Disease ) );
 	public TokenBinding Wilds => new ( this, Token.Wilds );
 	public virtual TokenBinding Badlands => new ( this, Token.Badlands );
-	public HealthTokenClassBinding Dahan => new HealthTokenClassBinding( this, Human.Dahan );
+	public DahanBinding Dahan => new DahanBinding( this );
 	public TokenBinding Vitality => new( this, Token.Vitality );
 
 	#endregion
@@ -343,12 +343,11 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		// grab event handlers BEFORE the token is removed, so token can self-handle its own removal
 		var removedHandler = RemovedHandlerSnapshop;
 
-		var e = await Remove_Silent( token, count, reason );
-		if(e == null) return null;
+		var removed = await Remove_Silent( token, count, reason );
+		if(0<removed.Count)
+			await removedHandler.Handle(removed);
 
-		await removedHandler.Handle(e);
-
-		return e;
+		return removed;
 	}
 
 	/// <summary> returns null if no token removed. Does Not publish event.</summary>
@@ -360,7 +359,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		await ModifyRemoving( removingArgs );
 
 		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
-		if(removingArgs.Count == 0) return null;
+		if(removingArgs.Count == 0) return new TokenRemovedArgs( removingArgs.Token, reason, this, 0 );
 
 		// Do Remove
 		Adjust( removingArgs.Token, -removingArgs.Count );

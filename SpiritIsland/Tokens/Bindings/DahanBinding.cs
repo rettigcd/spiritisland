@@ -1,46 +1,35 @@
 ﻿namespace SpiritIsland;
 
-public class HealthTokenClassBinding {
+public sealed class DahanBinding {
 
-	readonly protected SpaceState _tokens;
-	readonly protected HumanTokenClass _tokenClass;
+	readonly SpaceState _tokens;
 
-	public HealthTokenClassBinding( SpaceState tokens, HumanTokenClass tokenClass ) {
+	public DahanBinding( SpaceState tokens ) {
 		_tokens = tokens;
-		_tokenClass = tokenClass;
-	}
-
-	public HealthTokenClassBinding( HealthTokenClassBinding src ) {
-		_tokens = src._tokens;
-		_tokenClass = Human.Dahan;
 	}
 
 	#region All TokenCategory.Dahan, including Frozen/Stasis
-	public bool Any => _tokens.Has( TokenCategory.Dahan );	// This method canNOT be repurposed for Invaders because multiple share the .Invader category
+
+	/// <summary> Includes Frozen and dream dahan. </summary>
+	public bool Any => _tokens.Has( TokenCategory.Dahan );
 	public int CountAll => _tokens.Sum( TokenCategory.Dahan );
+
 	#endregion
 
-	/// <summary> All of the Normal Tokens (not frozen, dream) </summary>
-	public HumanToken[] NormalKeys => _tokens.OfHumanClass( _tokenClass );
+	/// <summary> The non-frozes,non-dreaming Tokens of various health and damage.</summary>
+	public HumanToken[] NormalKeys => _tokens.OfHumanClass( Human.Dahan );
 
 	public void Init( int count ) => _tokens.InitDefault( Human.Dahan, count );
 
 	public void Adjust( ISpaceEntity token, int delta ) => _tokens.Adjust( token, delta );
 
-	public void Init( ISpaceEntity token, int count ) => _tokens.Init( token, count );
-
 	/// <summary> Adds a Token from the bag, or out of thin air. </summary>
-	public Task Add( int count, AddReason reason = AddReason.Added ) {
-		return _tokens.AddDefault( Human.Dahan, count, reason );
-	}
+	public Task AddDefault( int count, AddReason reason = AddReason.Added )
+		=> _tokens.AddDefault( Human.Dahan, count, reason );
 
 	// Called from .Move() and .Dissolve the Bonds
-	public async Task<ISpaceEntity> Remove1( IToken toRemove, RemoveReason reason ) {
-		if(toRemove==null || _tokens[toRemove] == 0)
-			return null; // unable to remove desired token
-
-		await _tokens.Remove( toRemove, 1, reason );
-		return toRemove;
+	public async Task<TokenRemovedArgs> Remove1( IToken toRemove, RemoveReason reason ) {
+		return await _tokens.Remove( toRemove, 1, reason );
 	}
 
 	#region Damage
@@ -61,7 +50,7 @@ public class HealthTokenClassBinding {
 				_tokens.Adjust( newToken, origCount );
 			} else
 				// or destory
-				await DestroyToken( token, origCount );
+				await Destroy( origCount, token );
 		}
 
 	}
@@ -87,7 +76,7 @@ public class HealthTokenClassBinding {
 
 			HumanToken damagedToken = mostHealthy.AddDamage( 1 );
 			if(damagedToken.IsDestroyed) {
-				await DestroyToken( mostHealthy, countToApply1DamageTo );
+				await Destroy( countToApply1DamageTo, mostHealthy );
 			} else {
 				_tokens.Adjust( mostHealthy, -countToApply1DamageTo );
 				_tokens.Adjust( damagedToken, countToApply1DamageTo );
@@ -105,7 +94,7 @@ public class HealthTokenClassBinding {
 		// Destroy what can be destroyed
 		if(token.RemainingHealth <= remainingDamageToDahan) {
 			int countDestroyed = remainingDamageToDahan / token.RemainingHealth;
-			await DestroyToken( token, countDestroyed );
+			await Destroy( countDestroyed, token );
 			remainingDamageToDahan -= countDestroyed * token.RemainingHealth;
 		}
 		// if there is still partial damage we can apply
@@ -131,17 +120,20 @@ public class HealthTokenClassBinding {
 			.ToArray(); // least health first.
 		foreach(var token in before) {
 			// Destroy what can be destroyed
-			int destroyed = Math.Min( countToDestroy, _tokens[token] );
-			await DestroyToken( token, destroyed );
-			countToDestroy -= destroyed;
+			int destroyCountToApplyToThisToken = Math.Min( countToDestroy, _tokens[token] );
+			countToDestroy -= destroyCountToApplyToThisToken; // doesn't matter how many were actually destroyed.
+			await Destroy(destroyCountToApplyToThisToken, token);
 		}
 	}
 
-	public virtual async Task<int> DestroyToken( HumanToken token, int count ) {
+	/// <returns># of tokens destroyed</returns>
+	public async Task<int> Destroy( int count, HumanToken token ) {
+		// ! Running this through the Dahan.Destroy is unnessary since it is never overriden.
+		// However, this matches the Invader pattern which IS necessary due to Habsburg Durable tokens.
 		return await token.Destroy( _tokens, count );
 	}
 
-	public virtual async Task DestroyAll() {
+	public async Task DestroyAll() {
 		foreach(HumanToken token in NormalKeys.ToArray())
 			await token.DestroyAll( _tokens );
 	}

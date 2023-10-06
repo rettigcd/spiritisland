@@ -17,7 +17,7 @@ public class DissolveTheBondsOfKinship {
 		var toRemove = (await ctx.Tokens.RemovableOfAnyClass(RemoveReason.Replaced, Human.Dahan))
 			.Cast<HumanToken>()
 			.OrderBy( x => x.RemainingHealth ).FirstOrDefault();
-		if( await ctx.Dahan.Remove1( toRemove, RemoveReason.Replaced) != null )
+		if( (await ctx.Dahan.Remove1( toRemove, RemoveReason.Replaced)).Count == 1 )
 			await ctx.AddDefault( Human.Explorer, 1, AddReason.AsReplacement );
 
 		// if you have 2 fire 2 water 3 animal

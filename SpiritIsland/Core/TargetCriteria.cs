@@ -45,7 +45,7 @@ public class TargetCriteria {
 	public virtual TargetCriteria ExtendRange( int extension ) => new TargetCriteria( Range + extension, _self, _filters );
 
 	#region private
-	readonly string[] _filters;
+	readonly string[] _filters; // Any one of these filters can match.
 	TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
 	TerrainMapper _terrainMapper;
 	readonly Spirit _self;
@@ -87,9 +87,24 @@ public class TargetCriteria {
 	#region static Filter Map
 
 	static bool Matches( string filterEnum, SpaceStateWithPresence state ) {
-		return _lookup.ContainsKey( filterEnum )
-			? _lookup[filterEnum]( state )
-			: throw new ArgumentException( "Unexpected filter:" + filterEnum, nameof( filterEnum ) );
+		if( _lookup.ContainsKey( filterEnum ) )
+			return _lookup[filterEnum]( state );
+
+		if(filterEnum.Contains( '+' )) {
+			var filter = new AllFilters(filterEnum);
+			_lookup[filterEnum] = filter.Matches;
+			return filter.Matches(state);
+		}
+
+		throw new ArgumentException( "Unexpected filter:" + filterEnum, nameof( filterEnum ) );
+	}
+
+	class AllFilters {
+		public AllFilters(string combinedFilter) { 
+			_parts = combinedFilter.Split('+').Select(s=>_lookup[s]).ToArray();
+		}
+		public bool Matches(SpaceStateWithPresence x ) => _parts.All( p => p(x) );
+		readonly Func<SpaceStateWithPresence, bool>[] _parts;
 	}
 
 	static readonly Dictionary<string,Func<SpaceStateWithPresence, bool>> _lookup = new Dictionary<string, Func<SpaceStateWithPresence, bool>> {

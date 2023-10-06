@@ -12,7 +12,7 @@ public class CallOfTheDahanWays {
 		else if(ctx.Tokens.Has(Human.Explorer))
 			// replace 1 explorer with 1 dahan
 			await ctx.RemoveInvader( Human.Explorer, RemoveReason.Replaced );
-		await ctx.Dahan.Add( 1,AddReason.AsReplacement );
+		await ctx.Dahan.AddDefault( 1,AddReason.AsReplacement );
 	}
 
 }
