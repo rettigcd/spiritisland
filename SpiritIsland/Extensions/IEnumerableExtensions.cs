@@ -52,9 +52,15 @@ static public class IEnumerableExtensions {
 
 	static public void SetItems<T>(this HashSet<T> hashSet, params T[] items ) { hashSet.Clear(); foreach(var item in items) hashSet.Add(item);}
 
+	/// <summary> Includes an item on the end IF it is not already there. </summary>
 	static public IEnumerable<T> Include<T>(this IEnumerable<T> orig, T addition ) {
-		foreach(var item in orig) yield return item;
-		yield return addition;
+		bool addIt = true;
+		foreach(var item in orig){
+			if(item.Equals(addition)) addIt = false;
+			yield return item;
+		}
+		if(addIt)
+			yield return addition;
 	}
 
 	/// <summary>

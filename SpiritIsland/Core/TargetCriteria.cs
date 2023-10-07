@@ -115,6 +115,7 @@ public class TargetCriteria {
 		[Target.Mountain          ] = (ctx) => ctx.MatchesTerrain( Terrain.Mountain ),
 		[Target.Sand              ] = (ctx) => ctx.MatchesTerrain( Terrain.Sand ),
 		[Target.Wetland           ] = (ctx) => ctx.MatchesTerrain( Terrain.Wetland ),
+		[Target.Ocean             ] = (ctx) => ctx.Tokens.Space.Is( Terrain.Ocean ),
 		[Target.Coastal           ] = (ctx) => ctx.IsCoastal,
 		[Target.NotWetland        ] = (ctx) => !ctx.MatchesTerrain( Terrain.Wetland ),
 		[Target.NotOcean          ] = (ctx) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
@@ -126,6 +127,7 @@ public class TargetCriteria {
 		// Invaders
 		[Target.Invaders          ] = (ctx) => ctx.Tokens.HasInvaders(),
 		[Target.City              ] = (ctx) => ctx.Tokens.Has(Human.City),
+		[Target.Town              ] = ( ctx ) => ctx.Tokens.Has( Human.Town ),
 		[Target.NoInvader         ] = (ctx) => !ctx.Tokens.HasInvaders(),
 
 		[Target.Disease           ] = (ctx) => ctx.Tokens.Disease.Any,

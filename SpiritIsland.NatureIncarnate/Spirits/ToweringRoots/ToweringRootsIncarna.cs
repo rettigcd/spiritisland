@@ -23,7 +23,9 @@ public class ToweringRootsIncarna : IIncarnaToken, IEntityClass
 	#endregion
 
 	#region tracking location
-	public SpaceState? Space => GameState.Current.Tokens.Spaces_Existing(this).FirstOrDefault();
+	public SpaceState? Space => GameState.Current.Tokens.Spaces_Existing( this )
+		.Select( s => s.Tokens )
+		.FirstOrDefault(); 
 
 	public void HandleTokenAdded( ITokenAddedArgs args ) {
 		if( !Empowered && args.Added == Token.Vitality && args.To[Token.Vitality] == 3)
@@ -35,7 +37,9 @@ public class ToweringRootsIncarna : IIncarnaToken, IEntityClass
 	#region Don't damage Beasts
 
 	public void ModifyRemoving( RemovingTokenArgs args ) {
-		if(args.Token == Token.Beast)
+		if(args.Reason == RemoveReason.Destroyed
+			&& args.Token.Class.IsOneOf( Token.Beast, Human.Dahan, Human.Explorer, Human.Town, Human.City )
+		)
 			args.Count = 0;
 	}
 

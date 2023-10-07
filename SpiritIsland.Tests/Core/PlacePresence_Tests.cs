@@ -47,5 +47,26 @@ public class PlacePresence_Tests : GrowthTests {
 		_spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
 	}
 
+	[Fact]
+	public void AllTargetsHaveFilter() {
+
+		var space = _board[8];
+		foreach(string filter in GetAllPublicConstantValues<string>( typeof( Target ) ) ) {
+			var targetCriteria = new TargetCriteria(0,_spirit,filter);
+			// don't care about results
+			// just shouldn't throw exception about the filter we are using.
+			targetCriteria.Matches(space);
+		}
+
+	}
+
+	static List<T> GetAllPublicConstantValues<T>( Type type ) {
+		return type
+			.GetFields( BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy )
+			.Where( fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof( T ) )
+			.Select( x => (T)x.GetRawConstantValue() )
+			.ToList();
+	}
+
 }
 

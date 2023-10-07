@@ -231,16 +231,18 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		// ! must use current Attackers counts, because some have lost their strife so tokens are different than when they started.
 		var remaningAttackers = ra.CurrentAttackers.Clone();
 
-		while(remainingDamageToApply > 0 && remaningAttackers.Any()) {
+		while(0 < remainingDamageToApply && remaningAttackers.Any()) {
 			HumanToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
 
-			// Apply real damage
-			var (damageInflicted, _) = await ra.InvaderBinding.ApplyDamageTo1( remainingDamageToApply, attackerToDamage );
-			remainingDamageToApply -= damageInflicted;
+			// Calc Damage to apply to 1 invader
+			int damageToApplyToAttacker = Math.Min( remainingDamageToApply, attackerToDamage.RemainingHealth );
+			remainingDamageToApply -= damageToApplyToAttacker; // damage we apply and damage inflicted may be different
+
+			var (actualDamageInflicted, _) = await ra.InvaderBinding.ApplyDamageTo1( damageToApplyToAttacker, attackerToDamage );
 
 			// Apply tracking damage
 			--remaningAttackers[attackerToDamage];
-			var damagedAttacker = attackerToDamage.AddDamage( damageInflicted );
+			var damagedAttacker = attackerToDamage.AddDamage( actualDamageInflicted );
 			if(damagedAttacker.RemainingHealth > 0) ++remaningAttackers[damagedAttacker];
 
 		}

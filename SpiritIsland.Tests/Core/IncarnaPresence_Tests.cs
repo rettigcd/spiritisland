@@ -28,8 +28,8 @@ public class IncarnaPresence_Tests {
 		// When: destroying presence (via Growth thru Sacrifice)
 		await _spirit.When_ResolvingCard<GrowthThroughSacrifice>( u => {
 			u.NextDecision.HasPrompt( "Select Presence to destroy" )
-				.HasOptions("TRotJ on A2,TRotJ+ on A3")
-				.Choose( "TRotJ+ on A3" );
+				.HasOptions("TRotJ on A2,TRotJ- on A3")
+				.Choose( "TRotJ- on A3" );
 
 			// Clean up
 			u.NextDecision.HasPrompt( "Select location to Remove Blight OR Add Presence" )
@@ -60,8 +60,8 @@ public class IncarnaPresence_Tests {
 		// When: moving/pushing presence
 		await _spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( u => {
 			u.NextDecision.HasPrompt( "Select Presence to push." )
-				.HasOptions( "TRotJ on A2,TRotJ+ on A3,Done" )
-				.Choose( "TRotJ+ on A3" );
+				.HasOptions( "TRotJ on A2,TRotJ- on A3,Done" )
+				.Choose( "TRotJ- on A3" );
 
 			// Clean up
 			u.NextDecision.HasPrompt( "Push Presence to" )
@@ -139,7 +139,7 @@ public class IncarnaPresence_Tests {
 			.OrderBy(x=>x)
 			.Join(",");
 
-		tokens.ShouldBe( "TRotJ,TRotJ+" );
+		tokens.ShouldBe( "TRotJ,TRotJ-" );
 	}
 
 	[Fact]
@@ -172,16 +172,25 @@ public class IncarnaPresence_Tests {
 				.HasOptions( "2 energy,2 cardplay,Take Presence from Board" )
 				.Choose( "Take Presence from Board" );
 			user.NextDecision.HasPrompt( "Select Presence to place" )
-				.HasOptions( "TRotJ+ on A2" )
-				.Choose( "TRotJ+ on A2" );
+				.HasOptions( "TRotJ- on A2" )
+				.Choose( "TRotJ- on A2" );
 			user.NextDecision.HasPrompt( "Where would you like to place your presence?" )
 				.HasOptions( "A1,A2,A3,A4" )
 				.Choose( "A4" );
 		} ).ShouldComplete();
 
-		_board[4].Tokens.Summary.ShouldBe( "1TRotJ+" );
+		_board[4].Tokens.Summary.ShouldBe( "1TRotJ-" );
 		_gs.Tokens.ToVerboseString();
 
+	}
+
+	[Fact]
+	public void SpaceDoestRepeat() {
+		// Given: Presence & Incarna on A2
+		_board[2].Tokens.Init( _spirit.Presence.Token, 1 );
+		Given_InvarnaOn( _board[2] );
+
+		_presence.Spaces.Count().ShouldBe(1);
 	}
 
 

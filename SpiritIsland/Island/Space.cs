@@ -63,7 +63,7 @@ public abstract class Space
 	}
 
 	public SpaceState Tokens => ActionScope.Current.AccessTokens(this);
-	public static implicit operator SpaceState( Space space) => space.Tokens;
+	public static implicit operator SpaceState( Space space) => space?.Tokens;
 
 	#region Connect / Disconnect
 

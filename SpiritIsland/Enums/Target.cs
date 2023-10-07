@@ -16,7 +16,7 @@ public static class Target {
 
 	public const string Invaders   = "Invaders";
 	public const string City       = "Cities";
-	public const string Town       = "Town";
+	public const string Town       = "Towns";
 
 	public const string Disease    = "Disease";
 	public const string Wilds      = "Wilds";
