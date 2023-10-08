@@ -101,6 +101,7 @@ public enum Img {
 
 	Icon_Blight,
 	Icon_Beast,
+	Icon_Vitality,
 	Icon_Fear,
 	Icon_Wilds,
 	Icon_Fast,

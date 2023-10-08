@@ -455,6 +455,7 @@ public class ResourceImages {
 		Img.Icon_TownCityOrBlight   => "icons.TownCityOrBlight.png",
 		Img.Icon_Blight             => "icons.Blighticon.png",
 		Img.Icon_Beast              => "icons.Beasticon.png",
+		Img.Icon_Vitality           => "icons.Vitality.png",
 		Img.Icon_Fear               => "icons.Fearicon.png",
 		Img.OpenTheWays             => "icons.open-the-ways.png",
 		Img.Icon_Wilds              => "icons.Wildsicon.png",

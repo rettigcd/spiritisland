@@ -124,13 +124,20 @@ public class GrowthPainter : IDisposable{
             // Towering Roots
 			case "AddVitalityToIncarna": 
 				iconDrawer.DrawTheIcon(
-					new IconDescriptor { ContentImg = Img.TRotJ_Incarna_Empowered, ContentImg2 = Img.Vitality, },
+					//new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor{ ContentImg = Img.Icon_Vitality } },
+					new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } },
 					rect
 				);
 				break;
 			case "ReplacePresenceWithIncarna":
 				iconDrawer.DrawTheIcon(
-					new IconDescriptor { ContentImg = Img.TRotJ_Incarna_Empowered, ContentImg2 = Img.Icon_DestroyedPresence, },
+					new IconDescriptor { 
+						ContentImg = Img.Icon_Incarna, // Img.TRotJ_Incarna_Empowered,
+//						BackgroundImg = Img.Dahan,
+//						ContentImg2 = Img.Damage_2,
+						Sub = new IconDescriptor { ContentImg = Img.Icon_DestroyedPresence },
+					},
+					//new IconDescriptor { ContentImg = Img.TRotJ_Incarna_Empowered, ContentImg2 = Img.Icon_DestroyedPresence, },
 					rect
 				);
 				break;
