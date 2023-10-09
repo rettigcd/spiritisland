@@ -93,24 +93,26 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
 		var decision = decisionMaker.Decision;
 
-		if(decision.Options.Length == 0)
-			// Auto-Select NULL
+		if(decision.Options.Length == 0) {
+			// Block 1: Auto-Select NULL
 			promise.TrySetResult( null );
-		else if(Preloaded != null) {
+		} else if(Preloaded != null) {
+			// Block 2:
 			if( !decision.Options.Contains(Preloaded) )
 				throw new InvalidOperationException( $"Preloaded option {Preloaded.Text} not an option for "+decision.Prompt );
 			IOption preloaded = Preloaded;
-			Preloaded = null;
 			decisionMaker.Select( preloaded );
 		} else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
-			// Auto-Select Single
+			// Block 3: Auto-Select Single
 			decisionMaker.Select( decision.Options[0] );
 			Log( new DecisionLogEntry( decision.Options[0], decision, true ) );
 		} else {
+			// Block 4:
 			_activeDecisionMaker = decisionMaker;
 			signal.Set();
 			NewWaitingDecision?.Invoke(decision);
 		}
+		Preloaded = null; // always needs cleared after a decision - mainly for Blocks 1 & 2 above.
 		return promise.Task;
 	}
 

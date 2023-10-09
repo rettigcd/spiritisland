@@ -166,7 +166,7 @@ public class IncarnaPresence_Tests {
 			user.SelectMinorPowerCard();
 			// --- Place Presence ---
 			user.NextDecision.HasPrompt( "Select Growth to resolve" )
-				.HasOptions( "PlacePresence(1)" )
+				.HasOptions( "PlacePresence(1),AddVitalityToIncarna" )
 				.Choose( "PlacePresence(1)" );
 			user.NextDecision.HasPrompt( "Select Presence to place" )
 				.HasOptions( "2 energy,2 cardplay,Take Presence from Board" )
@@ -177,9 +177,12 @@ public class IncarnaPresence_Tests {
 			user.NextDecision.HasPrompt( "Where would you like to place your presence?" )
 				.HasOptions( "A1,A2,A3,A4" )
 				.Choose( "A4" );
+			user.NextDecision.HasPrompt( "Select Growth to resolve" )
+				.HasOptions( "AddVitalityToIncarna" )
+				.Choose( "AddVitalityToIncarna" );
 		} ).ShouldComplete();
 
-		_board[4].Tokens.Summary.ShouldBe( "1TRotJ-" );
+		_board[4].Tokens.Summary.ShouldBe( "1TRotJ-,1V" );
 		_gs.Tokens.ToVerboseString();
 
 	}
