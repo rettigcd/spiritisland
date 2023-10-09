@@ -130,16 +130,8 @@ public class GrowthPainter : IDisposable{
 				);
 				break;
 			case "ReplacePresenceWithIncarna":
-				iconDrawer.DrawTheIcon(
-					new IconDescriptor { 
-						ContentImg = Img.Icon_Incarna, // Img.TRotJ_Incarna_Empowered,
-//						BackgroundImg = Img.Dahan,
-//						ContentImg2 = Img.Damage_2,
-						Sub = new IconDescriptor { ContentImg = Img.Icon_DestroyedPresence },
-					},
-					//new IconDescriptor { ContentImg = Img.TRotJ_Incarna_Empowered, ContentImg2 = Img.Icon_DestroyedPresence, },
-					rect
-				);
+				iconDrawer.DrawTheIcon( new IconDescriptor {  ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_DestroyedPresence }, }, rect );
+				DrawRangeArrow( rect.Translate( 0, -rect.Height*.2f ) );
 				break;
 			default:
 				_graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
@@ -245,23 +237,27 @@ public class GrowthPainter : IDisposable{
 		using var presenceIcon = GetImage( Img.Icon_Presence );
 
 		// + presence
-		float iconCenterY = rect.Y + rect.Height *.3f; // top of presence
-		float presenceWidth = rect.Width*.6f;
+		float iconCenterY = rect.Y + rect.Height * .3f; // top of presence
+		float presenceWidth = rect.Width * .6f;
 		float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
-		_graphics.DrawImage(presenceIcon, rect.X + (rect.Width-presenceWidth)/2, iconCenterY-presenceHeight*.5f, presenceWidth, presenceHeight );
+		_graphics.DrawImage( presenceIcon, rect.X + (rect.Width - presenceWidth) / 2, iconCenterY - presenceHeight * .5f, presenceWidth, presenceHeight );
 
 		// range # text
 		float rangeTextTop = rect.Y + rect.Height * .55f;
 		string txt = range.ToString();
-		SizeF rangeTextSize = _graphics.MeasureString(txt,font);
-		_graphics.DrawString(txt,font,Brushes.Black,rect.X+(rect.Width-rangeTextSize.Width)/2,rangeTextTop);
+		SizeF rangeTextSize = _graphics.MeasureString( txt, font );
+		_graphics.DrawString( txt, font, Brushes.Black, rect.X + (rect.Width - rangeTextSize.Width) / 2, rangeTextTop );
 
 		// range arrow
+		DrawRangeArrow( rect );
+
+	}
+
+	void DrawRangeArrow( RectangleF rect ) {
 		float rangeArrowTop = rect.Y + rect.Height * .85f;
 		using var rangeIcon = GetImage( Img.MoveArrow );
 		float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width-arrowWidth)/2, rangeArrowTop, arrowWidth, arrowHeight );
-
+		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
 	}
 
 	void PlacePresence( RectangleF bounds, GrowthActionFactory growth ) {

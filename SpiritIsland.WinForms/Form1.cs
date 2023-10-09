@@ -38,7 +38,7 @@ public partial class Form1 : Form, IHaveOptions {
 		}
 
 		_currentDecision = null;
-		this.game.UserPortal.Choose( _currentDecision, option, false ); // If there is no decision to be made, just return
+		this._game.UserPortal.Choose( _currentDecision, option, false ); // If there is no decision to be made, just return
 	
 	}
 
@@ -60,7 +60,7 @@ public partial class Form1 : Form, IHaveOptions {
 	}
 
 	void UpdateRewindMenu() {
-		int rounds = game.GameState.RoundNumber;
+		int rounds = _game.GameState.RoundNumber;
 		var items = rewindMenuItem.DropDownItems;
 		if(items.Count == rounds) return; // no change
 		items.Clear();
@@ -159,42 +159,42 @@ public partial class Form1 : Form, IHaveOptions {
 	#endregion
 
 	readonly List<Button> _optionButtons = new();
-	GameConfigPlusToken gameConfiguration;
-	SinglePlayerGame game;
+	GameConfigPlusToken _gameConfiguration;
+	SinglePlayerGame _game;
 
 	void GameNewStripMenuItem_Click( object sender, EventArgs e ) {
 		var gameConfigDialog = new ConfigureGameDialog();
 		if(gameConfigDialog.ShowDialog() != DialogResult.OK) { return; }
-		this.gameConfiguration = gameConfigDialog.GameConfig;
+		this._gameConfiguration = gameConfigDialog.GameConfig;
 		InitGameFromConfiguration();
 	}
 
 	void InitGameFromConfiguration() {
-		MySerializer.Add( gameConfiguration );
+		MySerializer.Add( _gameConfiguration );
 
 		logForm.Clear();
 
-		var gc = gameConfiguration;
+		var gc = _gameConfiguration;
 
 		logForm.AppendLine($"=== Game: {gc.Spirits[0]} : {gc.Boards[0]} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info ); // !!! show multiple boards/spirits
 
 		GameState gameState = ConfigureGameDialog.GameBuilder.BuildGame( gc );
-		game = new SinglePlayerGame( gameState ) { 
+		_game = new SinglePlayerGame( gameState ) { 
 			LogExceptions = true,
 			EnablePreselects = true,
 		};
 
-		game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
+		_game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
 
 		gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 		gameState.NewLogEntry += _islandControl.GameState_NewLogEntry;
 
-		this._islandControl.Init( game.GameState, gc.Token, gc.Adversary );
+		this._islandControl.Init( _game.GameState, gc.Token, gc.Adversary );
 
 		this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
 
 		// start the game
-		this.game.Start();
+		this._game.Start();
 
 	}
 
@@ -220,11 +220,11 @@ public partial class Form1 : Form, IHaveOptions {
 			return;
 		}
 
-		this.game.UserPortal.GoBackToBeginningOfRound(targetRound);
+		this._game.UserPortal.GoBackToBeginningOfRound(targetRound);
 	}
 
 	void ReplaySameGameToolStripMenuItem_Click( object _, EventArgs _1 ) {
-		if(gameConfiguration!=null)
+		if(_gameConfiguration!=null)
 			InitGameFromConfiguration();
 		else
 			MessageBox.Show("No game configured.");
@@ -244,7 +244,7 @@ public partial class Form1 : Form, IHaveOptions {
 
 	void RecentGame_Clicked( object sender, EventArgs _ ) {
 		var tsmi = (ToolStripMenuItem)sender;
-		this.gameConfiguration = (GameConfigPlusToken)tsmi.Tag;
+		this._gameConfiguration = (GameConfigPlusToken)tsmi.Tag;
 		InitGameFromConfiguration();
 	}
 
@@ -257,6 +257,6 @@ public partial class Form1 : Form, IHaveOptions {
 	}
 
 	void spaceTokensToolStripMenuItem_Click( object sender, EventArgs e ) {
-		MessageBox.Show( this.game.GameState.Tokens.ToVerboseString(), "Space Tokens" );
+		MessageBox.Show( this._game.GameState.Tokens.ToVerboseString(), "Space Tokens" );
 	}
 }

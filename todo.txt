@@ -92,3 +92,21 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
+
+
+=====  Damage Pipeline - Notes  =====
+== Damage Pipeline ==
+
+Dahan Damage
+	=> Binding (watches ISTopDahanDamage token)
+	=> Token.Destroy (unnessary for Dahan)
+	=> TokenDictionary
+
+== Damage Pipeline ==
+
+Invader Damage
+	=> Binding (watches IStopDhanDamage)    
+	=> Token.Destroy()  (not sure everything is going this way)  hook for Habsburg
+	=> TokenDictionary 
+		(overwridden by Dream a Thousand Deaths)
+		Mod-Tokens can stop

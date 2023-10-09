@@ -33,7 +33,7 @@ public static class MySerializer {
 
 		// Now that we have (possibly) swapped out for a pre-existing saved configuration
 		// Now it is safe to set the time stamp on whatever config we are actually going to save.
-		cfg.TimeStamp = DateTime.Now;
+		cfg.TimeStamp = StripPartialSeconds(DateTime.Now); // remove partial seconds because not serializing that.
 
 		// order and crop	
 		var prepped = recentGames
@@ -44,6 +44,11 @@ public static class MySerializer {
 
 		// save
 		File.WriteAllText( GetSettingsFileName(), Json.Serialize( prepped, 1 ) );
+	}
+
+	static DateTime StripPartialSeconds(DateTime dt) {
+		dt.AddTicks( -(dt.Ticks % TimeSpan.TicksPerSecond) );
+		return dt;
 	}
 
 	static public GameConfigPlusToken[] GetRecent() {
