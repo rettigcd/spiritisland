@@ -23,7 +23,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		if(token.Class.Category == TokenCategory.Invader)
 			await DestroyNInvaders( token.AsHuman(), this[token] );
 
-		return null; // nothing removed
+		return new TokenRemovedArgs(token,reason,this, 0); // nothing removed
 	}
 
 	public override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
