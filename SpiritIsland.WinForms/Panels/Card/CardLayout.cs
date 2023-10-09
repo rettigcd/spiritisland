@@ -10,11 +10,19 @@ class CardLayout {
 		_rowCount = 0;
 		do {
 			++_rowCount;
-			_cardHeight = (bounds.Height - MARGIN) / _rowCount;	// determine card height based on # of rows
+			_cardHeight = (bounds.Height - 2 * MARGIN) / _rowCount;	// determine card height based on # of rows
 			_cardWidth = _cardHeight * 350 / 500;					// scale width proportionally
+
 			_colCount = (bounds.Width-MARGIN)/(_cardWidth+MARGIN);	// count # of columns that fit
-		} while( _colCount * _rowCount < cardCount );				// as long as cards don't fit, add a row
-		
+		} while( _colCount * _rowCount < cardCount );               // as long as cards don't fit, add a row
+
+		// If limit is height, not width
+		if(1 < _rowCount && (_cardWidth + MARGIN) * cardCount < bounds.Width - MARGIN) {
+			_cardWidth = (bounds.Width - MARGIN * cardCount - MARGIN) / cardCount;
+			_cardHeight = _cardWidth * 500 / 350;
+			_rowCount = 1;
+		}
+
 	}
 
 	public Rectangle GetCardActionLabel( int index, int totalCardsInDeck ) {

@@ -43,7 +43,7 @@ public class RegionLayoutClass {
 		// Cards
 		float deckWidthWeight = 1f/deckSlots;
 		float[] weights = new float[deckSlots]; for(int i=0;i<deckSlots;++i) weights[i] = deckWidthWeight;
-		x.DeckRects = cardRow.SplitHorizontallyByWeight( 5, weights );
+		x.DeckRects = cardRow.SplitHorizontallyByWeight( 15, weights );
 
 		return x;
 	}

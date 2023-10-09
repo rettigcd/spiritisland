@@ -8,12 +8,15 @@ namespace SpiritIsland.WinForms;
 
 class CardDeckPanel : IPanel {
 
-	public CardDeckPanel( SharedCtx ctx, Control parentControl, int deckIndex ) {
+	public CardDeckPanel( SharedCtx ctx, Control parentControl, int deckIndex, Color bgColor ) {
 		_ctx = ctx;
 		_deckIndex = deckIndex;
 		_currentDeck = _ctx._spirit.Decks[deckIndex];
 		_onAppearanceChanged = parentControl.Invalidate;
+		_bgColor = bgColor;
 	}
+
+	readonly Color _bgColor;
 
 	public int ZIndex => _currentDeck.Cards.Count == 0 ? 0 
 		: HasFocus ? 2
@@ -24,7 +27,9 @@ class CardDeckPanel : IPanel {
 	}
 
 	public RegionLayoutClass GetLayout( Rectangle bounds ) {
-		return RegionLayoutClass.ForCardFocused( bounds, _ctx._spirit.Decks.Length + 1, _deckIndex );
+		return 0 < _currentDeck.Cards.Count 
+			? RegionLayoutClass.ForCardFocused( bounds, _ctx._spirit.Decks.Length + 1, _deckIndex )
+			: RegionLayoutClass.ForIslandFocused( bounds, _ctx._spirit.Decks.Length + 1);
 	}
 
 	public Rectangle Bounds {
@@ -41,14 +46,13 @@ class CardDeckPanel : IPanel {
 	#region Paint
 
 	public void Paint( Graphics graphics ) {
-		if(_bounds.Width == 0 || _bounds.Height == 0) return;
+		if(_bounds.Width == 0 || _bounds.Height == 0 || _currentDeck.Cards.Count == 0) return;
 
-		//if(HasFocus)
-		//	graphics.FillRectangle(Brushes.White, _bounds );
+		if(!HasFocus)
+			using(SolidBrush bgBrush = new SolidBrush( Color.FromArgb( 200, _bgColor ) ))
+				graphics.FillRectangle( bgBrush, _bounds );
 
 		_layout = new CardLayout( _bounds, _currentDeck.Cards.Count );
-
-		// DrawCardBackdrop( graphics );
 		for(int i = 0; i < _currentDeck.Cards.Count; ++i)
 			PaintCard( graphics, _currentDeck.Cards[i], i );
 	}

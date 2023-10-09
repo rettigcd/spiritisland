@@ -50,8 +50,9 @@ public partial class IslandControl : Control {
 
 		// Cards
 		_playerDeckPanels = new IPanel[_ctx._spirit.Decks.Length];
+		Color[] panelColors = new Color[] { Color.DarkSalmon, Color.DarkSeaGreen, Color.DarkGray, Color.SaddleBrown };
 		for(int i = 0; i< _ctx._spirit.Decks.Length;++i)
-			_playerDeckPanels[i] = new CardDeckPanel(_ctx,this,i);
+			_playerDeckPanels[i] = new CardDeckPanel( _ctx, this, i, panelColors[i] );
 		_drawCardPanel = new OtherCardsPanel( _ctx, this );
 		_allPanels = _playerDeckPanels.Union( new IPanel[] { _islandPanel, _spiritPanel, _growthPanel, _statusPanel , _drawCardPanel } ).ToArray();
 
