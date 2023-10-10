@@ -2,17 +2,8 @@
 
 namespace SpiritIsland.Tests.Spirits.ToweringRoots;
 
-public class EntwineTheFatesOfAll_Tests {
-	public EntwineTheFatesOfAll_Tests() {
-		_board = Board.BuildBoardA();
-		_spirit = new ToweringRootsOfTheJungle();
-		_presence = (ToweringRootsPresence)_spirit.Presence;
-		_gs = new GameState( _spirit, _board );
-	}
-	readonly Board _board;
-	readonly ToweringRootsOfTheJungle _spirit;
-	readonly ToweringRootsPresence _presence;
-	readonly GameState _gs;
+public class EntwineTheFatesOfAll_Tests : ToweringRoots_Base {
+	public EntwineTheFatesOfAll_Tests():base() {}
 
 	[Fact]
 	public async Task IncarnaDefends2() {
