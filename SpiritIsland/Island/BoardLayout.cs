@@ -8,32 +8,27 @@ namespace SpiritIsland;
 /// </summary>
 public class BoardLayout {
 
-	public PointF[] perimeter; // counter-clockwise, starting at origin
-	public SpaceLayout[] Spaces;
-
-	// counter-clockwise, starting at origin
+	public PointF[] _perimeter; // counter-clockwise, starting at origin
 	public PointF[] BoardCorners => _boardCorners;
-	readonly PointF[] _boardCorners = new PointF[] {
-		origin, // Side-2 origin (no rotation)
-		bottomRightCorner, // Side-1 origin after -60 rotation
-		topRightCorner, // Side-0 origin (after 180 rotation)
-		topLeftCorner,
-	};
-	
-	public SpaceLayout ForSpace(Space space ) {
+
+	public SpaceLayout ForSpace( Space space ) {
 		int index = space.Text[1] - 48;
-		return Spaces[index];
+		return _spaces[index];
 	}
 
+	/// <summary>
+	/// Transforms the current Layout (does not create a new one)
+	/// </summary>
+	/// <returns>this BoardLayout</returns>
 	public BoardLayout ReMap( Matrix3D transform ) {
 
 		var mapper = new PointMapper( transform );
 
 		// perimeter
-		for(int i=0;i<perimeter.Length;++i)
-			perimeter[i] = mapper.Map( perimeter[i] );
+		for(int i=0;i<_perimeter.Length;++i)
+			_perimeter[i] = mapper.Map( _perimeter[i] );
 
-		foreach(var space in this.Spaces)
+		foreach(var space in this._spaces)
 			space.ReMap(mapper);
 
 		// origin
@@ -50,7 +45,7 @@ public class BoardLayout {
 		float minY = float.MaxValue;
 		float maxX = float.MinValue;
 		float maxY = float.MinValue;
-		foreach(var p in perimeter) {
+		foreach(var p in _perimeter) {
 			if(p.X < minX) minX = p.X;
 			if(p.Y < minY) minY = p.Y;
 			if(p.X > maxX) maxX = p.X;
@@ -58,6 +53,20 @@ public class BoardLayout {
 		}
 		return new RectangleF( minX, minY, maxX - minX, maxY - minY );
 	}
+
+	#region private member
+
+	// counter-clockwise, starting at origin
+	readonly PointF[] _boardCorners = new PointF[] {
+		origin, // Side-2 origin (no rotation)
+		bottomRightCorner, // Side-1 origin after -60 rotation
+		topRightCorner, // Side-0 origin (after 180 rotation)
+		topLeftCorner,
+	};
+
+	SpaceLayout[] _spaces;
+
+	#endregion
 
 	#region private static
 
@@ -125,7 +134,9 @@ public class BoardLayout {
 
 	#endregion
 
-	static public BoardLayout Get(string name )
+	#region Static Builders
+
+	static public BoardLayout Get( string name )
 		=> name switch { 
 			"A" => BoardA(), 
 			"B" => BoardB(),
@@ -167,7 +178,7 @@ public class BoardLayout {
 		var a8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _578, _568, };
 
 		var layout = new BoardLayout {
-			perimeter = new PointF[] {
+			_perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -177,7 +188,7 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			Spaces = new SpaceLayout[] { 
+			_spaces = new SpaceLayout[] { 
 				new SpaceLayout(a0Points), 
 				new SpaceLayout(a1Points), 
 				new SpaceLayout(a2Points), 
@@ -221,7 +232,7 @@ public class BoardLayout {
 		var b8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _678 };
 
 		var layout = new BoardLayout {
-			perimeter = new PointF[] {
+			_perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -231,7 +242,7 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			Spaces = new SpaceLayout[] {
+			_spaces = new SpaceLayout[] {
 				new SpaceLayout(b0Points),
 				new SpaceLayout(b1Points),
 				new SpaceLayout(b2Points),
@@ -276,7 +287,7 @@ public class BoardLayout {
 		var c8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _678 };
 
 		var layout = new BoardLayout {
-			perimeter = new PointF[] {
+			_perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -286,7 +297,7 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			Spaces = new SpaceLayout[] {
+			_spaces = new SpaceLayout[] {
 				new SpaceLayout(c0Points),
 				new SpaceLayout(c1Points),
 				new SpaceLayout(c2Points),
@@ -330,7 +341,7 @@ public class BoardLayout {
 		var d8Points = new PointF[] { top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _178 };
 
 		var layout = new BoardLayout {
-			perimeter = new PointF[] {
+			_perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -340,7 +351,7 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			Spaces = new SpaceLayout[] {
+			_spaces = new SpaceLayout[] {
 				new SpaceLayout(d0Points),
 				new SpaceLayout(d1Points),
 				new SpaceLayout(d2Points),
@@ -352,7 +363,7 @@ public class BoardLayout {
 				new SpaceLayout(d8Points)
 			}
 		};
-		layout.Spaces[1].AdjustCenter( 0f, -.05f );
+		layout._spaces[1].AdjustCenter( 0f, -.05f );
 		return layout;
 	}
 
@@ -386,7 +397,7 @@ public class BoardLayout {
 		var e8Points = new PointF[] { top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], rig[7], rig[8], _67s, _678 };
 
 		var layout = new BoardLayout {
-			perimeter = new PointF[] {
+			_perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -396,7 +407,7 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			Spaces = new SpaceLayout[] {
+			_spaces = new SpaceLayout[] {
 				new SpaceLayout(e0Points),
 				new SpaceLayout(e1Points),
 				new SpaceLayout(e2Points),
@@ -408,7 +419,7 @@ public class BoardLayout {
 				new SpaceLayout(e8Points)
 			}
 		};
-		layout.Spaces[1].AdjustCenter( 0f, -.05f );
+		layout._spaces[1].AdjustCenter( 0f, -.05f );
 		return layout;
 	}
 
@@ -441,7 +452,7 @@ public class BoardLayout {
 		var f8Points = new PointF[] { top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _478, _458, _568 };
 
 		var layout = new BoardLayout {
-			perimeter = new PointF[] {
+			_perimeter = new PointF[] {
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -451,7 +462,7 @@ public class BoardLayout {
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
 			},
-			Spaces = new SpaceLayout[] {
+			_spaces = new SpaceLayout[] {
 				new SpaceLayout(f0Points),
 				new SpaceLayout(f1Points),
 				new SpaceLayout(f2Points),
@@ -463,8 +474,10 @@ public class BoardLayout {
 				new SpaceLayout(f8Points)
 			}
 		};
-		layout.Spaces[1].AdjustCenter( 0f, -.05f );
+		layout._spaces[1].AdjustCenter( 0f, -.05f );
 		return layout;
 	}
+
+	#endregion
 
 }

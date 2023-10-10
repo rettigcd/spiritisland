@@ -540,10 +540,9 @@ public abstract partial class Spirit : IOption {
 			return null;
 		}
 
-		if(preselect != null && UserGateway.UsePreselect.Value)
-			return await preselect.PreSelect( ctx.Self, spaces );
-
-		return await this.Gateway.Decision( new Select.ASpace( prompt, spaces.Downgrade(), Present.Always ));
+		return preselect != null && UserGateway.UsePreselect.Value
+			? await preselect.PreSelect( ctx.Self, spaces )
+			: await this.Gateway.Decision( new Select.ASpace( prompt, spaces.Downgrade(), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS

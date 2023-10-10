@@ -14,10 +14,16 @@ public class IncarnaRangeCalculator : DefaultRangeCalculator {
 		var spaces = base.GetTargetOptionsFromKnownSource( source, targetCriteria )
 			.ToList();
 
-		if(_incarna.Space != null)
-			spaces.AddRange( base.GetTargetOptionsFromKnownSource(new SpaceState[]{ _incarna.Space }, targetCriteria.ExtendRange( 1 ) ) );
+		if(IncarnaInSource( source ))
+			spaces.AddRange(
+				base.GetTargetOptionsFromKnownSource(
+					new SpaceState[] { _incarna.Space },
+					targetCriteria.ExtendRange( 1 )
+				)
+			);
 
 		return spaces.Distinct();
 	}
 
+	bool IncarnaInSource( IEnumerable<SpaceState> source ) => _incarna.Space != null && source.Contains( _incarna.Space );
 }

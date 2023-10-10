@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public partial class Board {
 
@@ -209,9 +207,10 @@ public partial class Board {
 
 	#endregion
 
-	/// <summary>InPlay (and existing) spaces on the board.</summary>
+	/// <summary>Non-stasis spaces that are 'InPlay' for current Terrain/Power.</summary>
 	public IEnumerable<Space> Spaces => Spaces_Existing.IsInPlay();
 
+	/// <summary>Non-stasis spaces </summary>
 	public IEnumerable<Space> Spaces_Existing => _spaces.Where( Space.Exists );
 
 	/// <summary>All spaces, including the ones that are not in play and are in Stasis.</summary>

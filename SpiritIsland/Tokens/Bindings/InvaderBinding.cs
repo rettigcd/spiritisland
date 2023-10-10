@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InvaderBinding {
+public sealed class InvaderBinding {
 
 	#region constructor
 
@@ -53,14 +53,14 @@ public class InvaderBinding {
 			await DestroyNTokens( invaderToken, 1 );
 	}
 
-	protected virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) 
+	HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) 
 		=> Tokens.GetNewDamagedToken( invaderToken, availableDamage );
 
 	#endregion
 
 	#region Destroy
 
-	public virtual async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
+	public async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
 		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
 
 		var tokensToDestroy = Tokens.OfAnyHumanClass( tokenClasses ).ToArray();
@@ -107,9 +107,9 @@ public class InvaderBinding {
 	}
 
 	// destroy TOKEN
-	public virtual async Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
-		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return 0;
-		return await Tokens.DestroyNInvaders( invaderToDestroy, countToDestroy );
+	public async Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
+		return Tokens.ModsOfType<IStopInvaderDamage>().Any() ? 0 
+			: await Tokens.DestroyNInvaders( invaderToDestroy, countToDestroy );
 	}
 
 	#endregion Destroy

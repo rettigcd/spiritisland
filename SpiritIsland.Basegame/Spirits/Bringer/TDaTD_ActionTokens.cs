@@ -11,7 +11,7 @@ public class TDaTD_ActionTokens : SpaceState {
 
 	public override async Task DestroySpace() {
 		// Destroy Invaders
-		await new InvaderBinding( this ).DestroyAll( Human.Invader );
+		await Invaders.DestroyAll( Human.Invader );
 		// Destroy Bringer's presence
 		await Destroy( BringerPresence, this[BringerPresence] );
 	}
@@ -21,7 +21,7 @@ public class TDaTD_ActionTokens : SpaceState {
 			return await base.Remove( token, count, reason );
 
 		if(token.Class.Category == TokenCategory.Invader)
-			await DestroyNInvaders( token.AsHuman(), this[token] );
+			await DestroyNInvaders( token.AsHuman(), count );
 
 		return new TokenRemovedArgs(token,reason,this, 0); // nothing removed
 	}

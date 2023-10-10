@@ -224,6 +224,7 @@ public class PowerCardImageManager {
 
 		int orIndex = text.IndexOf(" Or ");
 		if(orIndex != -1) {
+			// Split into 2 parts and do each
 			Rectangle[] cellParts = cell.SplitHorizontally(2);
 			DrawTarget( graphics, text[..orIndex], cellParts[0], Align.Far );
 			DrawTarget( graphics, text[(orIndex+4)..], cellParts[1], Align.Near );
@@ -298,6 +299,7 @@ public class PowerCardImageManager {
 		Target.Wilds => Img.Icon_Wilds,
 		Target.Beast => Img.Icon_Beast,
 		Target.Presence => Img.Icon_Presence,
+		Target.EndlessDark => Img.Icon_EndlessDark,
 		"Incarna" => Img.Icon_Incarna,
 		_ => Img.None
 	};

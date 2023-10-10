@@ -159,6 +159,8 @@ public static partial class Cmd {
 			// Select destination
 			Space destination = await ctx.Self.Gateway.Decision( Select.ASpace.PushPresence( source.Space, source.Space.Tokens.Adjacent, Present.Always, source.Token ) );
 			await source.MoveTo( destination.Tokens );
+
+			// Calback
 			if(callback != null)
 				await callback( source.Space, destination );
 		});

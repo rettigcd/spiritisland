@@ -2,33 +2,67 @@
 
 static public class ReplaceInvader {
 
-	public static async Task Downgrade( TargetSpaceCtx ctx, Present present, params HumanTokenClass[] groups ) {
+	/// <summary>User selects 1 Invader and downgrades it.</summary>
+	/// <returns>If invader was downgraded</returns>
+	public static async Task Downgrade1( TargetSpaceCtx ctx, Present present, params HumanTokenClass[] groups ) {
+		HumanToken[] options = ctx.Tokens.OfAnyHumanClass( groups );
+		await Downgrade1Token( ctx, present, options );
+	}
 
-		var options = ctx.Tokens.OfAnyHumanClass( groups );
+	public static async Task DowngradeAnyNumber( TargetSpaceCtx ctx, params HumanTokenClass[] groups ) {
+
+		// downgrade any # of invaders
+		var invadersThatCanBeDowngraded = ctx.Tokens.OfAnyHumanClass(Human.Invader)
+			.ToDictionary( t => t, t => ctx.Tokens[t] )
+			.ToCountDict();
+
+		HumanToken[] options = invadersThatCanBeDowngraded.Keys.ToArray();
+		while(0 < options.Length) {
+			var oldInvader = await Downgrade1Token( ctx, Present.Done, options );
+			if(oldInvader == null) break;
+			// this one downgraded, can't use again
+			invadersThatCanBeDowngraded[oldInvader]--;
+			// next
+			options = invadersThatCanBeDowngraded.Keys.ToArray();
+		}
+	}
+
+	/// <summary> Offers Specific tokens, instead of token classes. </summary>
+	/// <returns> Original token (before downgrade).</returns>
+	static async Task<HumanToken> Downgrade1Token( TargetSpaceCtx ctx, Present present, HumanToken[] options ) {
 		var st = await ctx.Self.Gateway.Decision( Select.Invader.ToReplace( "downgrade", ctx.Space, options, present ) );
-		if(st == null) return;
+		if(st == null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
 		// remove old invader
 		ctx.Tokens.Adjust( oldInvader, -1 );
 
 		// Add new
-		var newInvaderClass = oldInvader.Class == Human.City ? Human.Town : Human.Explorer;
-
-		var newTokenWithoutDamage = ctx.Tokens.GetDefault( newInvaderClass ).AsHuman().AddStrife(oldInvader.StrifeCount);
-		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
-
-		if(!newTokenWithDamage.IsDestroyed )
-			ctx.Tokens.Adjust( newTokenWithDamage, 1 );
-		else if( newInvaderClass != Human.Explorer ) {
-			// add the non-damaged token, and destory it.
-			ctx.Tokens.Adjust( newTokenWithoutDamage, 1 );
-			await ctx.Invaders.DestroyNTokens( newTokenWithoutDamage, 1 );
-		}
-
+		var newInvaderClass = oldInvader.Class == Human.City ? Human.Town
+			: oldInvader.Class == Human.Town ? Human.Explorer
+			: null;
+		if(newInvaderClass != null)
+			await AddReplacementOrDestroy( ctx.Tokens, oldInvader, newInvaderClass );
+		return oldInvader;
 	}
 
-	public static async Task SingleInvaderWithExplorers( TargetSpaceCtx ctx, HumanTokenClass oldInvader, int replaceCount ) {
+	static async Task AddReplacementOrDestroy( SpaceState tokens, HumanToken oldInvader, HumanTokenClass newInvaderClass ) {
+		var newTokenWithoutDamage = tokens.GetDefault( newInvaderClass ).AsHuman().AddStrife( oldInvader.StrifeCount );
+		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
+
+		if(!newTokenWithDamage.IsDestroyed)
+			tokens.Adjust( newTokenWithDamage, 1 );
+		else if(newInvaderClass != Human.Explorer) {
+			// add the non-damaged token, and destroys it.
+			tokens.Adjust( newTokenWithoutDamage, 1 );
+			await tokens.Invaders.DestroyNTokens( newTokenWithoutDamage, 1 );
+		}
+	}
+
+	/// <summary>
+	/// Disolves Tows/Cities into explorers.
+	/// </summary>
+	public static async Task DisolveInvaderIntoExplorers( TargetSpaceCtx ctx, HumanTokenClass oldInvader, int replaceCount ) {
 
 		var tokens = ctx.Tokens;
 		var st = await ctx.Self.Gateway.Decision( Select.Invader.ToReplace("disolve", ctx.Space, tokens.OfHumanClass( oldInvader ) ) );

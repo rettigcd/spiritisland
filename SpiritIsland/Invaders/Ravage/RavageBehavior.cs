@@ -52,7 +52,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			}
 
 		var scope = await ActionScope.Start(ActionCategory.Invader);
-		data.InvaderBinding = new InvaderBinding( data.Tokens );
+		data.InvaderBinding = data.Tokens.Invaders;
 
 		try {
 			// Record starting state

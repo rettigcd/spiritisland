@@ -33,6 +33,7 @@
     <None Remove="images\icons\Discard2Cards.png" />
     <None Remove="images\icons\DiscardElementsForCardPlay.png" />
     <None Remove="images\icons\Diseaseicon.png" />
+    <None Remove="images\icons\EndlessDark.png" />
     <None Remove="images\icons\Explorericon.png" />
     <None Remove="images\icons\Fasticon.png" />
     <None Remove="images\icons\Fearicon.png" />
@@ -185,6 +186,7 @@
     <EmbeddedResource Include="images\icons\Discard2Cards.png" />
     <EmbeddedResource Include="images\icons\DiscardElementsForCardPlay.png" />
     <EmbeddedResource Include="images\icons\Diseaseicon.png" />
+    <EmbeddedResource Include="images\icons\EndlessDark.png" />
     <EmbeddedResource Include="images\icons\Explorericon.png" />
     <EmbeddedResource Include="images\icons\Fasticon.png" />
     <EmbeddedResource Include="images\icons\Fearicon.png" />
@@ -332,6 +334,9 @@
     <None Update="images\mountains.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\none.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\ocean.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -339,6 +344,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\A_Spread_of_Rampant_Green.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\spirits\Breath_of_Darkness_Down_Your_Spine.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Bringer_of_Dreams_and_Nightmares.jpg">

@@ -78,6 +78,9 @@ public sealed class ActionScope : IAsyncDisposable {
 	public ActionCategory Category { get; }
 
 	public GameState GameState => _neverCache ? GameState.Current : _gameState ??= GameState.Current;
+	
+	/// <summary> Called from Space.Tokens to get Tokens. </summary>
+	/// <remarks> Provides hook for spirits to modify the SpaceState object used for their actions.</remarks>
 	public SpaceState AccessTokens(Space space) => _upgrader( GameState.Tokens[space] );
 	public Func<SpaceState, SpaceState> Upgrader {
 		set {
@@ -89,7 +92,9 @@ public sealed class ActionScope : IAsyncDisposable {
 	public TerrainMapper TerrainMapper => _terrainMapper 
 		??= (GameState?.GetTerrain( Category ) ?? new TerrainMapper()); // If not GameState / configuration, use default
 
-	// spirit (if any) that owns the action. Null for non-spirit actions
+	/// <summary>
+	/// Spirit (if any) that owns the action. Null for non-spirit actions.
+	/// </summary>
 	public Spirit Owner { 
 		get => _owner;
 		set { if(_neverCache) throw new InvalidOperationException("Can't set owner on default scope"); _owner = value; }

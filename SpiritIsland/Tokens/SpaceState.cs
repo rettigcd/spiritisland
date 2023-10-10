@@ -108,6 +108,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public virtual TokenBinding Badlands => new ( this, Token.Badlands );
 	public DahanBinding Dahan => new DahanBinding( this );
 	public TokenBinding Vitality => new( this, Token.Vitality );
+	public InvaderBinding Invaders => new InvaderBinding( this );
 
 	#endregion
 
@@ -498,7 +499,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public virtual async Task DestroySpace() {
 
 		// Destroy Invaders
-		await new InvaderBinding( this ).DestroyAll( Human.Invader );
+		await Invaders.DestroyAll( Human.Invader );
 
 		// Destroy Dahan
 		await Dahan.DestroyAll();

@@ -9,8 +9,8 @@ class InnatePainter : IDisposable {
 	#region constructor
 
 	public InnatePainter( InnatePower power, InnateLayout layout ) {
-		this._power = power;
-		this._layout = layout;
+		_power = power;
+		_layout = layout;
 	}
 
 	#endregion

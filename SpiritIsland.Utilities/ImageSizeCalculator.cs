@@ -56,6 +56,8 @@ public class ImageSizeCalculator {
 			"destroyedpresence" => Img.Icon_DestroyedPresence,
 			"or-curly-before" => Img.OrCurlyBefore,
 			"or-curly-after" => Img.OrCurlyAfter,
+			"incarna" => Img.Icon_Incarna,
+			"endless-dark" => Img.Icon_EndlessDark,
 			_ => ElementCounts.ParseEl( token ).GetIconImg(),
 		};
 	}

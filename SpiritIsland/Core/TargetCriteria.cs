@@ -140,6 +140,7 @@ public class TargetCriteria {
 		// Presence
 		[Target.Presence          ] = (ctx) => ctx.IsPresent,
 		[Target.Incarna           ] = (ctx) => ctx.IsIncarnate,
+		[Target.EndlessDark       ] = (ctx) => ctx.Tokens.Space.Text == "EndlessDark",
 
 		// Special
 		[Target.TwoBeasts         ] = (ctx) => 2<=ctx.Tokens.Beasts.Count,

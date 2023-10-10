@@ -24,6 +24,7 @@ public class TargetSpaceCtx : SelfCtx {
 	#endregion
 
 
+	// overridden by Trickster to Select-All - !!! Could be put on Spirit to make easier to override, then we could seal this class.
 	public virtual async Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) {
 		IExecuteOn<TargetSpaceCtx>[] applicable = options
 			.Where( opt => opt != null && opt.IsApplicable( this ) )
@@ -172,9 +173,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public void ModifyRavage( Action<RavageBehavior> action ) => action( Tokens.RavageBehavior );
 
 	// The current targets power
-	public InvaderBinding Invaders => _invadersRO ??= GetInvaders();
-
-	protected InvaderBinding GetInvaders() => new InvaderBinding( Tokens );
+	public InvaderBinding Invaders => _invadersRO ??= Tokens.Invaders;
 
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear

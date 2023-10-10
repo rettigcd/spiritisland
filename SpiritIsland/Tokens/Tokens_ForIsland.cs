@@ -42,11 +42,13 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		return Task.CompletedTask;
 	}
 
-	public SpaceState GetTokensFor( Space space ) => this[space];
+	/// <remarks>
+	/// Spirit Actions should not call this directly but rather go through Space.Tokens => ActionScope.AccessTokens()
+	/// UI or Test stuff that is outside of an ActionScope, may use this directly.
+	/// </remarks>
+	public SpaceState this[Space space] => new SpaceState( space, GetTokensCounts( space ), _islandMods.Keys, this );
 
-	public SpaceState this[Space space] => new SpaceState( space, GetTokens( space ), _islandMods.Keys, this );
-
-	CountDictionary<ISpaceEntity> GetTokens( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
+	CountDictionary<ISpaceEntity> GetTokensCounts( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
 
 
 	public int GetDynamicTokensFor( SpaceState space, TokenClassToken token ) 

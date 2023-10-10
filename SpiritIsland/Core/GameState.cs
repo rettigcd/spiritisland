@@ -91,19 +91,25 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public Tokens_ForIsland Tokens { get; }
 
-	/// <summary> InPlay, Not in statis </summary>
+	/// <summary> Non-stasis + InPlay </summary>
 	public IEnumerable<SpaceState> Spaces            => Island.Boards
 		.SelectMany( b => b.Spaces )
 		.Distinct() // MultiSpaces
 		.Tokens();
+
+	/// <summary> All Non-stasis (even not-in-play) </summary>
 	public IEnumerable<SpaceState> Spaces_Existing   => Island.Boards
 		.SelectMany( b => b.Spaces_Existing )
 		.Distinct() // MultiSpaces
 		.Tokens();
+
 	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards
 		.SelectMany( b => b.Spaces_Unfiltered )
 		.Distinct() // MultiSpaces
+		.Union(OtherSpaces)
 		.Tokens();
+
+	public List<Space> OtherSpaces = new List<Space>(); // Currently only used for EndlessDarkness
 
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }

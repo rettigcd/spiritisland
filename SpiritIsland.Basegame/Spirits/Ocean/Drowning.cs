@@ -42,7 +42,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 
 		// Drown them immediately
 		gs.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To.Space}" ) );
-		await new InvaderBinding( args.To.Space.Tokens ).DestroyNTokens( ht, args.Count );
+		await args.To.Space.Tokens.Invaders.DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
 		if(args.Added.Class.Category == TokenCategory.Invader)

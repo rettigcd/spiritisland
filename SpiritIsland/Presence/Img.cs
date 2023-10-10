@@ -94,6 +94,8 @@ public enum Img {
 	Icon_TownCityOrBlight,
 	OpenTheWays,
 
+	Icon_EndlessDark,
+
 	Icon_Sand,
 	Icon_Mountain,
 	Icon_Jungle,

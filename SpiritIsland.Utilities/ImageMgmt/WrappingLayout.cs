@@ -297,7 +297,7 @@ public static class TokenParser {
 			+ "|dahan|blight|fear|city|town|explorer"
 			+ "|sun|moon|air|fire|water|plant|animal|earth"
 			+ "|beasts?|disease|strife|wilds|badlands"
-			+ "|\\+1range|-or-", RegexOptions.IgnoreCase
+			+ "|\\+1range|-or-|incarna|endless-dark", RegexOptions.IgnoreCase
 		).Matches( s ).Cast<Match>().ToList();
 
 		var results = new List<string>();

@@ -118,13 +118,18 @@ public class ResourceImages {
 	}
 
 	public async Task<Image> GetPowerCard( PowerCard card ) {
-		ImageCache _cache = new ImageCache();
-		string key = $"PowerCard\\{card.Name}.png";
-		if(_cache.Contains( key )) return _cache.Get( key );
+		try {
+			ImageCache _cache = new ImageCache();
+			string key = $"PowerCard\\{card.Name}.png";
+			if(_cache.Contains( key )) return _cache.Get( key );
 
-		Bitmap image = (Bitmap)await PowerCardImageManager.GetImage( card ); // don't dispose, we are returning it
-		_cache.Add( key, image );
-		return image;
+			Bitmap image = (Bitmap)await PowerCardImageManager.GetImage( card ); // don't dispose, we are returning it
+			_cache.Add( key, image );
+			return image;
+		} catch(Exception ex) {
+			string s = ex.ToString();
+			throw;
+		}
 	}
 
 	public Image GetBlightCard( IBlightCard card ) {
@@ -188,7 +193,7 @@ public class ResourceImages {
 			: space.IsMountain ? Terrain.Mountain
 			: space.IsSand ? Terrain.Sand
 			: (space.IsOcean || space.IsDestroyed) ? Terrain.Ocean
-			: throw new ArgumentException( $"No terrain found for {space.Text}", nameof( space ) );
+			: Terrain.None; // throw new ArgumentException( $"No terrain found for {space.Text}", nameof( space ) );
 		return UseTerrainBrush( terrain );
 	}
 
@@ -204,10 +209,11 @@ public class ResourceImages {
 			Terrain.Mountain => "mountains",
 			Terrain.Sand => "sand",
 			Terrain.Ocean => "ocean",
+			Terrain.None => "none",
 			_ => throw new ArgumentException($"{terrain} not mapped"),
 		};
 
-		HSL terrainColor = terrain switch {
+		HSL? terrainColor = terrain switch {
 			Terrain.Wetland => new HSL( 184, 40, 45 ),
 			Terrain.Jungle => new HSL( 144, 60, 40 ),
 			Terrain.Mountain => new HSL( 45, 10, 33 ),
@@ -501,6 +507,8 @@ public class ResourceImages {
 		Img.TRotJ_Incarna_Empowered  => "incarna.TRotJ+.png",
 		Img.WVKD_Incarna             => "incarna.WVKD.png",
 		Img.WVKD_Incarna_Empowered   => "incarna.WVKD+.png",
+
+		Img.Icon_EndlessDark => "icons.EndlessDark.png",
 
 		Img.None => null,
 		_ => throw new System.ArgumentOutOfRangeException( nameof( image ), image.ToString() ),

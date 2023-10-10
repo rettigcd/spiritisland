@@ -10,7 +10,7 @@ public class WindsOfRustAndAtrophy {
 		ctx.Defend( 6 );
 
 		// replace 1 city with 1 town OR 1 town with 1 explorer
-		await ReplaceInvader.Downgrade( ctx, Present.Always, Human.Town_City );
+		await ReplaceInvader.Downgrade1( ctx, Present.Always, Human.Town_City );
 	}
 
 }

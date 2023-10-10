@@ -23,6 +23,7 @@ public static class Target {
 	public const string Beast      = "Beast";
 	public const string Presence   = "Presence";
 	public const string Incarna    = "Incarna";
+	public const string EndlessDark = "EndlessDarkness";
 
 	public const string NotWetland = "Not " + Wetland;
 	public const string NotOcean   = "Not " + Ocean;

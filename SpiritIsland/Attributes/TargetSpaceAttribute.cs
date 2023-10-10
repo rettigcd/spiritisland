@@ -52,6 +52,13 @@ public class FromPresenceAttribute : TargetSpaceAttribute {
 }
 
 [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
+public class AnyLandAttribute : TargetSpaceAttribute {
+	public AnyLandAttribute( params string[] filters )
+		: base( new TargetingSourceCriteria( From.Presence ), 100, filters ) { }
+	public override string RangeText => "-";
+}
+
+[AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
 public class FromPresenceInAttribute : TargetSpaceAttribute {
 	public FromPresenceInAttribute( int range, Terrain sourceTerrain, string filter = Target.Any )
 		: base( new TargetingSourceCriteria( From.Presence, sourceTerrain), range, filter ) {}

@@ -1,8 +1,8 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.JaggedEarth;
+using SpiritIsland.NatureIncarnate;
 using System;
 using System.Drawing;
-
 namespace SpiritIsland.WinForms; 
 
 public class GrowthPainter : IDisposable{
@@ -131,7 +131,26 @@ public class GrowthPainter : IDisposable{
 				break;
 			case "ReplacePresenceWithIncarna":
 				iconDrawer.DrawTheIcon( new IconDescriptor {  ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_DestroyedPresence }, }, rect );
-				DrawRangeArrow( rect.Translate( 0, -rect.Height*.2f ) );
+				DrawMoveArrow( rect.Translate( 0, -rect.Height*.2f ) );
+				break;
+
+			case "PiecesEscape":
+			case "PiecesEscape(1)":
+			case "PiecesEscape(2)":
+				iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_EndlessDark, }, rect.Translate( 0, -rect.Height * .20f ) );
+				PiecesEscape escape = (PiecesEscape)action;
+				DrawMoveArrow( rect.Translate( 0, 0 ) );
+				if(escape.NumToEscape != int.MaxValue)
+					DrawRangeText( rect.Translate(0, rect.Height * .05f), escape.NumToEscape );
+				break;
+
+			case "MoveIncarnaAnywhere":
+				iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
+				DrawMoveArrow( rect );
+				break;
+			case "AddOrMoveIncarnaToPresence":
+				iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_Presence }, }, rect );
+				DrawMoveArrow( rect.Translate( 0, -rect.Height * .2f ) );
 				break;
 			default:
 				_graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
@@ -233,7 +252,6 @@ public class GrowthPainter : IDisposable{
 
 	void MovePresence( RectangleF rect, int range ) {
 
-		using Font font = UseGameFont( rect.Height * .25f );
 		using var presenceIcon = GetImage( Img.Icon_Presence );
 
 		// + presence
@@ -243,17 +261,22 @@ public class GrowthPainter : IDisposable{
 		_graphics.DrawImage( presenceIcon, rect.X + (rect.Width - presenceWidth) / 2, iconCenterY - presenceHeight * .5f, presenceWidth, presenceHeight );
 
 		// range # text
-		float rangeTextTop = rect.Y + rect.Height * .55f;
-		string txt = range.ToString();
-		SizeF rangeTextSize = _graphics.MeasureString( txt, font );
-		_graphics.DrawString( txt, font, Brushes.Black, rect.X + (rect.Width - rangeTextSize.Width) / 2, rangeTextTop );
+		DrawRangeText( rect, range );
 
 		// range arrow
-		DrawRangeArrow( rect );
+		DrawMoveArrow( rect );
 
 	}
 
-	void DrawRangeArrow( RectangleF rect ) {
+	void DrawRangeText( RectangleF rect, int range ) {
+		float rangeTextTop = rect.Y + rect.Height * .55f;
+		string txt = range.ToString();
+		using Font font = UseGameFont( rect.Height * .25f );
+		SizeF rangeTextSize = _graphics.MeasureString( txt, font );
+		_graphics.DrawString( txt, font, Brushes.Black, rect.X + (rect.Width - rangeTextSize.Width) / 2, rangeTextTop );
+	}
+
+	void DrawMoveArrow( RectangleF rect ) {
 		float rangeArrowTop = rect.Y + rect.Height * .85f;
 		using var rangeIcon = GetImage( Img.MoveArrow );
 		float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;

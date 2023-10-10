@@ -8,10 +8,10 @@ public class DissolveTheBondsOfKinship {
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		// replace 1 city with 2 exploreres.
-		await ReplaceInvader.SingleInvaderWithExplorers( ctx, Human.City, 2 );
+		await ReplaceInvader.DisolveInvaderIntoExplorers( ctx, Human.City, 2 );
 
 		// replace 1 town with 1 explorer
-		await ReplaceInvader.SingleInvaderWithExplorers( ctx, Human.Town, 1 );
+		await ReplaceInvader.DisolveInvaderIntoExplorers( ctx, Human.Town, 1 );
 
 		// replace 1 dahan with 1 explorer.
 		var toRemove = (await ctx.Tokens.RemovableOfAnyClass(RemoveReason.Replaced, Human.Dahan))

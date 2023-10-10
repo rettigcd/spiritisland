@@ -4,6 +4,7 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	static Dictionary<string, Type> SpiritTypes => new() {
 		[ToweringRootsOfTheJungle.Name] = typeof( ToweringRootsOfTheJungle ),
+		[BreathOfDarknessDownYourSpine.Name] = typeof( BreathOfDarknessDownYourSpine ),
 	};
 	public string[] SpiritNames => SpiritTypes.Keys.ToArray();
 	public Spirit MakeSpirit( string spiritName ) {

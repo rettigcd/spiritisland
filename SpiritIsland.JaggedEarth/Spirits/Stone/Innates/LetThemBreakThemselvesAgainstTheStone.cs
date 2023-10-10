@@ -31,7 +31,7 @@ class BreakThemselvesMod : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePa
 		int damage = 2;
 		if(_shouldAddHalfInvaderDamage) damage += args.To[args.Added] / 2;
 
-		await new InvaderBinding( args.To ).UserSelectedDamage( _spirit, damage );
+		await args.To.Invaders.UserSelectedDamage( _spirit, damage );
 	}
 
 	readonly Spirit _spirit;

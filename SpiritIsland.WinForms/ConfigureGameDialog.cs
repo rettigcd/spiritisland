@@ -122,6 +122,7 @@ public partial class ConfigureGameDialog : Form {
 			ManyMindsMoveAsOne.Name              => new PresenceTokenAppearance( 326, .35f ),
 			SerpentSlumbering.Name               => new PresenceTokenAppearance( 330, .3f ),
 			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, .35f ),
+			BreathOfDarknessDownYourSpine.Name   => new PresenceTokenAppearance( 170, .16f, .21f ),
 			Keeper.Name                          => new PresenceTokenAppearance( "greenorangeswirl" ),
 			ToweringRootsOfTheJungle.Name        => new PresenceTokenAppearance( 135, .22f, .35f ),
 			_                                    => new PresenceTokenAppearance( 0, 0 ),
@@ -134,10 +135,6 @@ public partial class ConfigureGameDialog : Form {
 		return _spiritListView.SelectedItems.Count == 1
 			? _spiritListView.SelectedItems[0].Text
 			: _spiritListView.Items[(int)(DateTime.Now.Ticks % numberOfSpirits)].Text;
-
-		//return _spiritListView.SelectedItems.SelectedIndex == 0
-		//	? (string)spiritListBox.Items[1 + (int)(DateTime.Now.Ticks % numberOfSpirits)]
-		//	: (string)spiritListBox.SelectedItem;
 	}
 
 	string SelectedBoard() {

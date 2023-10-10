@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.NatureIncarnate;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -6,6 +7,7 @@ namespace SpiritIsland.WinForms.Panels.Island;
 
 // world layout of island
 class WorldLayoutOfIsland {
+
 	public WorldLayoutOfIsland( SpiritIsland.Island island ) {
 
 		float left = float.MaxValue;
@@ -32,9 +34,11 @@ class WorldLayoutOfIsland {
 
 		_insidePoints = new Dictionary<Space, ManageInternalPoints>();
 	}
+
 	static BoardLayout LoadLayoutForBoard( Board board ) {
+		Matrix3D transform = board.Orientation.GetTransformMatrix();
 		return BoardLayout.Get( board.Name )
-			.ReMap( board.Orientation.GetTransformMatrix() );
+			.ReMap( transform );
 	}
 
 	public SpaceLayout GetSpaceLayout( Space1 s1 ) {
@@ -46,7 +50,16 @@ class WorldLayoutOfIsland {
 		return _spaceLayouts[s1];
 	}
 
+	SpaceLayout _endlessDarkLayout;
+
 	public SpaceLayout MySpaceLayout( Space space ) {
+		if(space == EndlessDark.Space) {
+			const float x = .1f;
+			const float y = .9f;
+			const float f = .2f;
+			return _endlessDarkLayout ??= new SpaceLayout(new PointF( x+0, y ),new PointF( x+f, y ),new PointF( x+f, y-f ),new PointF( x+0, y-f ));
+		}
+
 		if(space is Space1 s1)
 			return GetSpaceLayout( s1 );
 

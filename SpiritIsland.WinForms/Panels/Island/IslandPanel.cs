@@ -93,8 +93,9 @@ class IslandPanel : IPanel {
 		graphics.TranslateTransform( -_usedBoardScreenRect.X, -_usedBoardScreenRect.Y );
 		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-		foreach(Board board in _ctx.GameState.Island.Boards)
-			DrawBoardSpacesOnly( graphics, board );
+		//foreach(Board board in _ctx.GameState.Island.Boards)
+		//	DrawBoardSpacesOnly( graphics, board.Spaces_Unfiltered );
+		DrawBoardSpacesOnly( graphics, _ctx.GameState.Spaces_Unfiltered.Downgrade() ); //!!! wastefull to promote to SpaceState then downgrade.
 	}
 
 	void MapWorldToScreen() {
@@ -136,18 +137,13 @@ class IslandPanel : IPanel {
 		graphics.DrawImage( _cachedBackground, _usedBoardScreenRect );
 	}
 
-	void DrawBoardSpacesOnly( Graphics graphics, Board board ) {
+	void DrawBoardSpacesOnly( Graphics graphics, IEnumerable<Space> spaces ) {
 		Pen perimeterPen = new Pen( SpacePerimeterColor, 5f );
 
-		foreach(var space in board.Spaces_Unfiltered) {
-			// Space space = board[i];
+		foreach(var space in spaces) {
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
 			SpaceLayout spaceLayout = WorldLayout.MySpaceLayout( space );
 			PointF[] points = spaceLayout.Corners.Select( _mapper.Map ).ToArray();
-
-			// Draw blocky
-			//pe.Graphics.FillPolygon( brush, points );
-			//pe.Graphics.DrawPolygon( perimeterPen, points );
 
 			// Draw smoothy
 			graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
@@ -351,9 +347,6 @@ class IslandPanel : IPanel {
 		var points = WorldLayout.MySpaceLayout( multi ).Corners.Select( _mapper.Map ).ToArray();
 		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
 		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
-		// graphics.FillPolygon( brush, points );
-		// graphics.DrawPolygon( pen, points );
-
 	}
 
 	static LinearGradientBrush UseMultiSpaceBrush( MultiSpace multi ) {

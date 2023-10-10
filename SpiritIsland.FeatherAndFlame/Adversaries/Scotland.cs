@@ -68,7 +68,7 @@ public class Scotland : IAdversary {
 		if(6 <= Level)
 			gameState.InvaderDeck.Ravage.Engine = new ScotlandRavageEngine();
 
-		// Additional Loss Condition - Trade Hub: If the number of Coastal lands with City is ever greater than( 2 x # of boards), the Invaders win.
+		// Additional Loss Condition
 		gameState.AddWinLossCheck( TradeHub );
 
 	}
@@ -99,8 +99,10 @@ public class Scotland : IAdversary {
 		gameState.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
 	}
 
+	// If the number of Coastal lands with City is ever greater than( 2 x # of boards), the Invaders win.
 	void TradeHub( GameState gameState ) {
-		int coastalCityLandCount = gameState.Spaces_Unfiltered.Count( s => s.Has( Human.City ) );
+		int coastalCityLandCount = gameState.Spaces_Unfiltered
+			.Count( s => s.Has( Human.City ) && s.Space.IsCoastal );
 		if( gameState.Island.Boards.Length < coastalCityLandCount )
 			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");
 	}

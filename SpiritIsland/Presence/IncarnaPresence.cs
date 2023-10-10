@@ -21,11 +21,8 @@ public class IncarnaPresence<IncarnaTokenType> : SpiritPresence, IHaveIncarna wh
 		: base.Spaces.Include( Incarna.Space.Space );
 
 	public override bool IsOn( SpaceState spaceState ) {
-		if(base.IsOn( spaceState ))
-			return true;
-		if(spaceState.Space == Incarna.Space)
-			return true;
-		return false;
+		return base.IsOn( spaceState ) 
+			|| spaceState.Space == Incarna.Space;
 	}
 	public override bool IsOn( Board board ) => base.IsOn( board ) 
 		|| Incarna.Space != null && Incarna.Space.Space.Boards.Contains(board);
