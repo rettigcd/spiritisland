@@ -71,8 +71,13 @@ public class Fear {
 		FearAdded?.Invoke( gs, args );
 	}
 
+	/// <summary>
+	/// Flips (resolves) all ActivatedCards
+	/// </summary>
+	/// <returns></returns>
+	/// <exception cref="ArgumentOutOfRangeException"></exception>
 	public async Task Apply() {
-		while(ActivatedCards.Count > 0) {
+		while(0 < ActivatedCards.Count) {
 			IFearCard fearCard = ActivatedCards.Pop();
 
 			// show card to each user

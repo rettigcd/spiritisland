@@ -24,13 +24,24 @@ public class Depopulation : FearCardBase, IFearCard {
 
 	[FearLevel( 3, "On Each Board: Remove 1 Town, or Replace 1 City with 1 Town." )]
 	public Task Level3( GameCtx ctx )
-		=> new SpaceAction( "Remove 1 Town or Replace 1 City with 1 Town", ctx => ctx.SelectActionOption( Cmd.RemoveTowns( 1 ), Replace1CityWith1Town ) )
+		=> DownGradeCityOrRemoveTown // ctx.SelectActionOption( Cmd.RemoveTowns( 1 ), Replace1CityWith1Town ) )
 			.In().OneLandPerBoard()
 			.ByPickingToken( Human.Town_City )
 			.ForEachBoard()
 			.Execute( ctx );
 
 	static SpaceAction Replace1CityWith1Town => new SpaceAction( "Replace 1 City with 1 Town", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.City ) );
+
+	static SpaceAction DownGradeCityOrRemoveTown => new SpaceAction("Remove 1 Town, or Replace 1 City with 1 Town", async ctx => {
+		const string prompt = "Select City to downgrade or Town to remove";
+		var options = ctx.Tokens.OfAnyHumanClass( Human.Town_City );
+		var invader = await ctx.Decision(new Select.ASpaceToken(prompt,ctx.Space,options,Present.Always));
+		if(invader == null) return;
+		if(invader.Token.Class == Human.City)
+			await ReplaceInvader.DowngradeSelectedInvader(ctx,(HumanToken)invader.Token);
+		else // must be town
+			await ctx.Tokens.Remove(invader.Token,1);
+	} );
 
 }
 

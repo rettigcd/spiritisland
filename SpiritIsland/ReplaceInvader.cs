@@ -34,6 +34,11 @@ static public class ReplaceInvader {
 		if(st == null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
+		await DowngradeSelectedInvader( ctx, oldInvader );
+		return oldInvader;
+	}
+
+	public static async Task DowngradeSelectedInvader( TargetSpaceCtx ctx, HumanToken oldInvader ) {
 		// remove old invader
 		ctx.Tokens.Adjust( oldInvader, -1 );
 
@@ -43,7 +48,6 @@ static public class ReplaceInvader {
 			: null;
 		if(newInvaderClass != null)
 			await AddReplacementOrDestroy( ctx.Tokens, oldInvader, newInvaderClass );
-		return oldInvader;
 	}
 
 	static async Task AddReplacementOrDestroy( SpaceState tokens, HumanToken oldInvader, HumanTokenClass newInvaderClass ) {

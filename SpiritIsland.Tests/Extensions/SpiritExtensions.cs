@@ -96,6 +96,7 @@ public static class SpiritExtensions {
 		throw new Exception( $"{taskDescription} did not complete in {waitTime}" );
 	}
 
+	/// <summary> Constructs a VirtualUser and passes it to userActions. </summary>
 	internal static Action HandleDecisions(this Spirit spirit, Action<VirtualUser> userActions ) 
 		=> userActions == null ? ()=>{ } : () => userActions( new VirtualUser( spirit ) );
 
