@@ -17,30 +17,39 @@ public class TerrorStalksTheLand : SpaceState {
 	/// <remarks>Destroys invaders using .DestroyNInvaders()</remarks>
 	public override async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		// not destroying invaders - do normal stuff
-		if(reason != RemoveReason.Destroyed || token.Class.Category != TokenCategory.Invader)
+		if(reason != RemoveReason.Destroyed 
+			|| token.Class.Category != TokenCategory.Invader
+			|| PreviouslyDestroyed
+			|| InvaderCount != 1
+		)
 			return await base.Remove( token, count, reason );
 
-		// Destroying Invaders
-		int destroyed = await DestroyNInvaders( token.AsHuman(), count );
-		return new TokenRemovedArgs( token, reason, this, destroyed );
+		// Destroying Invaders 
+		// Don't call DestroyNInvaders here because that creates a stack-overflow loop.
+		await AbductInvader( token.AsHuman() );
+		return new TokenRemovedArgs( token, RemoveReason.Abducted, this, 1);
 	}
 
-	/// <remarks>Checks # of invaders in land 1st time it is called.</remarks>
+	/// <remarks>
+	/// Checks # of invaders in land 1st time it is called.
+	/// Calls Token.Destroy
+	/// </remarks>
 	/// This => Base.DestroyNInvaders => Token.Destory => Tokens.Remove => This
-	public override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
+	protected override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
 		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
 		if(countToDestroy == 0) throw new InvalidOperationException( "Can't destroy invaders because they aren't here." );
 
-		if(!PreviouslyDestroyed && InvaderCount == 1) {
-			// abduct it
-			await AbductInvader( invaderToDestroy );
-			return 0;
-		} else {
+		if(PreviouslyDestroyed 
+			|| InvaderCount != 1
+		) {
 			// track that we are destroying something
 			ActionScope.Current[destroyedAnInvaderKey] = true;
 			return await base.DestroyNInvaders( invaderToDestroy, countToDestroy );
+		} else {
+			// abduct it
+			await AbductInvader( invaderToDestroy );
+			return 0;
 		}
-
 	}
 
 	async Task AbductInvader( HumanToken invaderToDestroy ) {

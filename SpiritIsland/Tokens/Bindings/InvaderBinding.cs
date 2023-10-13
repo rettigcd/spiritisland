@@ -96,16 +96,18 @@ public sealed class InvaderBinding {
 				.ThenBy( x => x.StrifeCount )
 				.ThenBy( x => x.FullDamage )
 				.First();
-			remaining -= await DestroyNTokens( next, remaining );
+			int countOfTypeToDestroy = Math.Min( remaining, Tokens[next]);
+			await DestroyNTokens( next, countOfTypeToDestroy );
+			remaining -= countOfTypeToDestroy;
 		}
 
 		return countToDestroy;
 	}
 
 	// destroy TOKEN
-	public async Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
-		return Tokens.ModsOfType<IStopInvaderDamage>().Any() ? 0 
-			: await invaderToDestroy.Destroy( Tokens, countToDestroy );
+	public async Task DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
+		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
+		await invaderToDestroy.Destroy( Tokens, countToDestroy );
 	}
 
 	#endregion Destroy

@@ -7,7 +7,8 @@ public enum RemoveReason {
 	Replaced,   // Pulled from Game - To be replaced with another
 	UsedUp,     // Wilds, Disease, Strife
 	MovedFrom,  // Placed on another space.
-	TakingFromCard // Stops BlightToken.HandleRemoved from putting it back on the card.
+	TakingFromCard, // Stops BlightToken.HandleRemoved from putting it back on the card.
+    Abducted	// Unwillingly moved to Endless Dark
 	//	ReturnedToCard,    // Blight - nothing cares that blight is returned to card
 }
 

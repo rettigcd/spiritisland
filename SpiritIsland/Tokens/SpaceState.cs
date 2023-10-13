@@ -470,7 +470,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage )
 		=> invaderToken.AddDamage( availableDamage );
 
-	public virtual Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
+	protected virtual Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
 		return invaderToDestroy.Destroy( this, countToDestroy );
 	}
 

@@ -26,7 +26,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		return new TokenRemovedArgs(token,reason,this, 0); // nothing removed
 	}
 
-	public override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
+	protected override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
 		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
 		for(int i = 0; i < countToDestroy; ++i)
 			await Destroy1Invader( invaderToDestroy );

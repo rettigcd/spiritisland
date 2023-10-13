@@ -6,7 +6,6 @@ NI: Spirits / Power Cards / Adversayrs / Fear / Blight
 ====  Clean Up Items  ====
 ==========================
 
-Fear cards look fuzzy. Generate larger pics?
 Blight cards can be drawn better.
 
 User Setting:
@@ -24,7 +23,7 @@ Cheat Menu -
 	Return Blight to Card
 	Activate Fear Card
 
-4 Multi Player
+For Multi Player
 	== Option 1 == 
 		when starting action, make copy of the tokens
 		- each action get an incremental ID
@@ -37,7 +36,7 @@ Cheat Menu -
 		- visual indication of which spaces are joined so user can wait or not select them
 		- ! need to watch for deadlocks
 
-4 Action => Move Finders Hook to Action-start - event
+For Action => Move Finders Hook to Action-start - event
 
 ManyMinds - Set out-of-band toggle on beasts, at start of action, make smart choices based on phase, then use user choice sync for powers
 
@@ -95,19 +94,16 @@ http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
 
 
 =====  Damage Pipeline - Notes  =====
-== Damage Pipeline ==
 
-Dahan Damage
-	=> Binding (watches ISTopDahanDamage token)
-	=> Token.Destroy (unnessary for Dahan)
-	=> TokenDictionary
+When doing damage and destroying, call must go through Token, and then SpaceState so that each can intercept and modify behavior.
+	Caller => Token.Destory => SpaceState.Remove(or Destroy) => Token-Event-Hooks(Adding/Removing Token & Token Added/Removed).
 
-== Damage Pipeline ==
+When not doing damage, assuming other actions behavior doesn't get modified, can call SpaceState.Remove directly. (just not for Destroying).
 
-Invader Damage
-	=> Binding / Generic (watches IStopDhanDamage)    
-	=> Token.Destroy()  (not sure everything is going this way)  hook for Habsburg
-	=> SpaceState
-		(overwridden by Dream a Thousand Deaths)
-		Mod-Tokens can stop
-    
+Dahan and Invader Bindings 
+	* are sealed and cannot modify behavior
+	* are just Large-Group Management objects and should delegate damage to the Token => SpaceState.Remove/Destroy
+
+TODO:
+	Change tokens that modify the .Destroy() behavior with interface that hooks into the IModifyTokenRemove interface.
+		This would allow us to skip calling Token.Destroy if we wished, making that simply a convenience method.

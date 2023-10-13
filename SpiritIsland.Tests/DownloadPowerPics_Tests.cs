@@ -37,11 +37,12 @@ public class DownloadPowerPics_Tests {
 
 	}
 
-	[Theory]
+	[Theory(Skip = "Takes >8 seconds to run.")]
 	[InlineData( AssemblyType.BaseGame )]
 	[InlineData( AssemblyType.BranchAndClaw )]
 	[InlineData( AssemblyType.JaggedEarth )]
 	[InlineData( AssemblyType.FeatherAndFlame )]
+	[InlineData( AssemblyType.NatureIncarnate )]
 	public async Task GenerateAll( string edition ) {
 		Type refObject = AssemblyType.GetEditionType( edition );
 		List<PowerCard> cards = refObject.GetMajors().ToList();

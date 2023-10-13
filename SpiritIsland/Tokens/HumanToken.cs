@@ -47,7 +47,9 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	/// <returns># of items destroyed</returns>
 	public virtual async Task<int> Destroy( SpaceState tokens, int count ) {
-		count = Math.Min(count, tokens[this]);
+		if(tokens[this] < count)
+			throw new InvalidOperationException($"Cannot remove {count} {this} tokens because there aren't that many.");
+		
 		var result = await tokens.Remove( this, count, RemoveReason.Destroyed );
 		GameState.Current.Fear.AddDirect( new FearArgs( Class.FearGeneratedWhenDestroyed * result.Count ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.

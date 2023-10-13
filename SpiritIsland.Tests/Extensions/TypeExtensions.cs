@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests;
+﻿using SpiritIsland.NatureIncarnate;
+
+namespace SpiritIsland.Tests;
 
 static public class TypeExtensions {
 
@@ -30,6 +32,7 @@ class AssemblyType {
 			BranchAndClaw => typeof( SharpFangs ),
 			JaggedEarth => typeof( ShiftingMemoryOfAges ),
 			FeatherAndFlame => typeof( DownpourDrenchesTheWorld ),
+			NatureIncarnate => typeof( ToweringRootsOfTheJungle ),
 			_ => throw new ArgumentException( "Edition not found", nameof( edition ) ),
 		};
 	}
@@ -38,6 +41,7 @@ class AssemblyType {
 	public const string BranchAndClaw = "Branch and Claw";
 	public const string JaggedEarth = "Jagged Earth";
 	public const string FeatherAndFlame = "Feather and Flame";
+	public const string NatureIncarnate = "Nature Incarnate";
 
 }
 
