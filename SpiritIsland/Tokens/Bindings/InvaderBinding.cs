@@ -37,24 +37,20 @@ public sealed class InvaderBinding {
 	public async Task<(int,HumanToken)> ApplyDamageTo1( int availableDamage, HumanToken originalInvader ) {
 		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return (0,originalInvader);
 
-		var damagedInvader = GetNewDamagedToken( originalInvader, availableDamage );
+		var damagedInvader = Tokens.GetNewDamagedToken( originalInvader, availableDamage );
 
-		await ReplaceOrDestroyOriginalToken( originalInvader, damagedInvader );
+		if(!damagedInvader.IsDestroyed) {
+			Tokens.Adjust( originalInvader, -1 );
+			Tokens.Adjust( damagedInvader, 1 );
+			InvaderDamaged?.Invoke( originalInvader );
+		} else
+			await DestroyNTokens( originalInvader, 1 );
 
 		int damageInflicted = originalInvader.RemainingHealth - damagedInvader.RemainingHealth;
 		return (damageInflicted, damagedInvader);
 	}
-
-	async Task ReplaceOrDestroyOriginalToken( HumanToken invaderToken, HumanToken damagedInvader ) {
-		if(!damagedInvader.IsDestroyed) {
-			Tokens.Adjust( invaderToken, -1 );
-			Tokens.Adjust( damagedInvader, 1 );
-		} else
-			await DestroyNTokens( invaderToken, 1 );
-	}
-
-	HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage ) 
-		=> Tokens.GetNewDamagedToken( invaderToken, availableDamage );
+	// The invader Before it was damaged.
+	public event Action<HumanToken> InvaderDamaged;
 
 	#endregion
 
@@ -109,7 +105,7 @@ public sealed class InvaderBinding {
 	// destroy TOKEN
 	public async Task<int> DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
 		return Tokens.ModsOfType<IStopInvaderDamage>().Any() ? 0 
-			: await Tokens.DestroyNInvaders( invaderToDestroy, countToDestroy );
+			: await invaderToDestroy.Destroy( Tokens, countToDestroy );
 	}
 
 	#endregion Destroy
@@ -162,17 +158,15 @@ public sealed class InvaderBinding {
 	}
 
 	public Task<int> UserSelectedDamage( Spirit damagePicker, int damage, params IEntityClass[] allowedTypes ) {
-		if(allowedTypes == null || allowedTypes.Length == 0)
-			allowedTypes = Human.Invader;
-		return UserSelectedDamage( damage, damagePicker, Present.Always, allowedTypes );
+		return UserSelectedDamage_Internal( damage, damagePicker, Present.Always, allowedTypes );
 	}
 
 	public Task<int> UserSelectedPartialDamage( int damage, Spirit damagePicker, params IEntityClass[] allowedTypes ) {
-		return UserSelectedDamage(damage,damagePicker, Present.Done, allowedTypes );
+		return UserSelectedDamage_Internal(damage,damagePicker, Present.Done, allowedTypes );
 	}
 
 	// This is the standard way of picking - by TokenClass
-	async Task<int> UserSelectedDamage( int damage, Spirit damagePicker, Present present, params IEntityClass[] allowedTypes ) {
+	async Task<int> UserSelectedDamage_Internal( int damage, Spirit damagePicker, Present present, params IEntityClass[] allowedTypes ) {
 		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = Human.Invader;

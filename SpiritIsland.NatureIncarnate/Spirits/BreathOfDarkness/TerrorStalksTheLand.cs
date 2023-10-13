@@ -2,7 +2,7 @@
 
 public class TerrorStalksTheLand : SpaceState {
 
-	static public SpecialRule Rule => new SpecialRule( "Terror Stalks the Land", "You have an Incarna. You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to tThe Endless Dark.  When pieces Escape, Move them to a non-Ocean land with you r Presence/Incarna.  If they have no legal land to move to, you lose.  Whenyour Powers would directly damage or directly destroy the only Invader in a land, instead Abduct it." );
+	static public SpecialRule Rule => new SpecialRule( "Terror Stalks the Land", "You have an Incarna. You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to tThe Endless Dark.  When pieces Escape, Move them to a non-Ocean land with your Presence/Incarna.  If they have no legal land to move to, you lose.  When your Powers would directly damage or directly destroy the only Invader in a land, instead Abduct it." );
 
 	public TerrorStalksTheLand( SpaceState spaceState )
 		: base( spaceState ) {
@@ -26,24 +26,54 @@ public class TerrorStalksTheLand : SpaceState {
 	}
 
 	/// <remarks>Checks # of invaders in land 1st time it is called.</remarks>
+	/// This => Base.DestroyNInvaders => Token.Destory => Tokens.Remove => This
 	public override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
 		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
-		if( countToDestroy == 0 ) throw new InvalidOperationException("Can't destroy invaders because they aren't here.");
+		if(countToDestroy == 0) throw new InvalidOperationException( "Can't destroy invaders because they aren't here." );
 
-		ActionScope scope = ActionScope.Current;
-		const string destroyedAnInvaderKey = "DestroyedAnInvader";
-		bool previouslyDestroyed = scope.SafeGet<bool>( destroyedAnInvaderKey, false );
-
-		if(!previouslyDestroyed && this.SumAny(Human.Invader)==1){
+		if(!PreviouslyDestroyed && InvaderCount == 1) {
 			// abduct it
-			await new SpaceToken(Space,invaderToDestroy).MoveTo(EndlessDark.Space);
+			await AbductInvader( invaderToDestroy );
 			return 0;
 		} else {
 			// track that we are destroying something
-			scope[destroyedAnInvaderKey] = true;
-			return await base.DestroyNInvaders(invaderToDestroy, countToDestroy );
+			ActionScope.Current[destroyedAnInvaderKey] = true;
+			return await base.DestroyNInvaders( invaderToDestroy, countToDestroy );
 		}
 
 	}
 
+	async Task AbductInvader( HumanToken invaderToDestroy ) {
+		var spaceTokenToRemove = new SpaceToken( Space, invaderToDestroy );
+
+		var invaderToAddToEndlessDark = ActionScope.Current.SafeGet<HumanToken>( damagedAnInvaderKey, invaderToDestroy );
+
+		if(invaderToAddToEndlessDark == invaderToDestroy)
+			await spaceTokenToRemove.MoveTo( EndlessDark.Space );
+		else {
+			await spaceTokenToRemove.Remove();
+			await EndlessDark.Space.Tokens.Add( invaderToAddToEndlessDark, 1 );
+		}
+	}
+
+	static bool PreviouslyDestroyed 
+		=> ActionScope.Current.SafeGet<bool>( destroyedAnInvaderKey, false );
+
+	const string destroyedAnInvaderKey = "DestroyedAnInvader";
+	const string damagedAnInvaderKey = "DamagedAnInvader";
+	int InvaderCount => this.SumAny( Human.Invader );
+
+	public override InvaderBinding Invaders {
+		get {
+			var invader = base.Invaders;
+			invader.InvaderDamaged += Invader_InvaderDamaged;
+			return invader;
+		}
+	}
+
+	void Invader_InvaderDamaged( HumanToken orig ) {
+		var scope = ActionScope.Current;
+		if(!PreviouslyDestroyed && InvaderCount == 1 && !scope.ContainsKey(damagedAnInvaderKey))
+			scope[damagedAnInvaderKey] = orig;
+	}
 }

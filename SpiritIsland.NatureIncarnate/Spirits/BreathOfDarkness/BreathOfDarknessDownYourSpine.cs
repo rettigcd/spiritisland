@@ -45,11 +45,12 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		gameState.OtherSpaces.Add(EndlessDark.Space);
 	}
 
-	//public override SelfCtx BindMyPowers( Spirit spirit ) {
-	//	ActionScope.Current.Upgrader = x => new TerrorStalksTheLand( x );
-	//	return new SelfCtx( spirit );
-	//}
-
 	public BreathIncarna Incarna => ((BreathPresence)Presence).Incarna;
+
+	public override SelfCtx BindMyPowers( Spirit spirit ) {
+		ActionScope.Current.Upgrader = x => new TerrorStalksTheLand( x );
+		return new SelfCtx( spirit );
+	}
+
 
 }

@@ -108,7 +108,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public virtual TokenBinding Badlands => new ( this, Token.Badlands );
 	public DahanBinding Dahan => new DahanBinding( this );
 	public TokenBinding Vitality => new( this, Token.Vitality );
-	public InvaderBinding Invaders => new InvaderBinding( this );
+	public virtual InvaderBinding Invaders => new InvaderBinding( this );
 
 	#endregion
 

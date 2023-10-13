@@ -105,8 +105,9 @@ Dahan Damage
 == Damage Pipeline ==
 
 Invader Damage
-	=> Binding (watches IStopDhanDamage)    
+	=> Binding / Generic (watches IStopDhanDamage)    
 	=> Token.Destroy()  (not sure everything is going this way)  hook for Habsburg
-	=> TokenDictionary 
+	=> SpaceState
 		(overwridden by Dream a Thousand Deaths)
 		Mod-Tokens can stop
+    
