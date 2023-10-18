@@ -2,20 +2,15 @@
 
 internal static class StdTokens {
 
-	class X : IHaveHealthPenaltyPerStrife {
-		public int HealthPenaltyPerStrife => 0;
-	}
-
 	static StdTokens() {
-		var _penaltyHolder = new X();
-		City = new HumanToken( Human.City, _penaltyHolder, 3, 0 );
-		City2 = new HumanToken( Human.City, _penaltyHolder, 3, 1 );
-		City1 = new HumanToken( Human.City, _penaltyHolder, 3, 2 );
-		Town = new HumanToken( Human.Town, _penaltyHolder, 2, 0 );
-		Town1 = new HumanToken( Human.Town, _penaltyHolder, 2, 1 );
-		Explorer = new HumanToken( Human.Explorer, _penaltyHolder, 1, 0 );
-		Dahan = new HumanToken( Human.Dahan, _penaltyHolder, 2, 0 );
-		Dahan1 = new HumanToken( Human.Dahan, _penaltyHolder, 2, 1 );
+		City = new HumanToken( Human.City, 3 );
+		City2 = City.AddDamage(1);
+		City1 = City2.AddDamage(1);
+		Town = new HumanToken( Human.Town, 2 );
+		Town1 = Town.AddDamage(1);
+		Explorer = new HumanToken( Human.Explorer, 1 );
+		Dahan = new HumanToken( Human.Dahan, 2 );
+		Dahan1 = Dahan.AddDamage(1);
 		Disease = (TokenClassToken)Token.Disease;
 	}
 

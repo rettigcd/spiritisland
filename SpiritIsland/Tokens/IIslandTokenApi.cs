@@ -6,8 +6,6 @@ public interface IIslandTokenApi {
 
 	IToken GetDefault( IEntityClass tokenClass );
 
-	int InvaderAttack( HumanTokenClass tokenClass );
-
 	void Adjust( ITrackMySpaces token, Space space, int delta );
 
 }

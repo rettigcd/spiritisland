@@ -80,8 +80,8 @@ public class England : IAdversary {
 
 	static void LocalAutonomy( GameState gameState ) {
 		// Level 5 - towns/cities have +1 health
-		gameState.Tokens.TokenDefaults[Human.City] = new HumanToken( Human.City, gameState, 4 );
-		gameState.Tokens.TokenDefaults[Human.Town] = new HumanToken( Human.Town, gameState, 3 );
+		gameState.Tokens.TokenDefaults[Human.City] = new HumanToken( Human.City, 4 );
+		gameState.Tokens.TokenDefaults[Human.Town] = new HumanToken( Human.Town, 3 );
 	}
 
 	static void CriminalsAndMalcontents( GameState gameState ) {

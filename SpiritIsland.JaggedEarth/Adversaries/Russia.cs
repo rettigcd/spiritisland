@@ -53,6 +53,8 @@ public class Russia : IAdversary {
 		gameState.AddWinLossCheck( _token.HuntersSwarmTheIsland );
 
 		// Level 1 - depends on tokens already placed
+		if(1 <= Level)
+			ExplorersDo2Damage( gameState );
 
 		// Level 2
 		if(2 <= Level)
@@ -132,7 +134,6 @@ public class Russia : IAdversary {
 
 	void HuntersBringHomeShellAndHide( GameState gameState ) {
 		AddBeastAndExplorer( gameState );
-		ExplorersDo2Damage( gameState );
 		RavageBlightDestroysBeasts( gameState );
 	}
 
@@ -153,8 +154,7 @@ public class Russia : IAdversary {
 
 	static void ExplorersDo2Damage( GameState gameState ) {
 		// Change explorers damage to 2
-		gameState.Tokens.Attack[Human.Explorer] = 2;
-
+		gameState.Tokens.TokenDefaults[Human.Explorer] = ((HumanToken)gameState.Tokens.TokenDefaults[Human.Explorer]).SetAttack( 2 );
 	}
 
 	void RavageBlightDestroysBeasts( GameState gameState ) {

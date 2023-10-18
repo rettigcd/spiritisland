@@ -4,13 +4,11 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public Tokens_ForIsland( GameState gs ) {
 
-		PenaltyHolder = gs;// new HealthPenaltyPerStrifeHolder();
-
 		TokenDefaults = new Dictionary<IEntityClass, IToken> {
-			[Human.City]     = new HumanToken( Human.City, PenaltyHolder, 3 ),
-			[Human.Town]     = new HumanToken( Human.Town, PenaltyHolder, 2 ),
-			[Human.Explorer] = new HumanToken( Human.Explorer, PenaltyHolder, 1 ),
-			[Human.Dahan]    = new HumanToken( Human.Dahan, PenaltyHolder, 2 ),
+			[Human.City]     = new HumanToken( Human.City,     3 ),
+			[Human.Town]     = new HumanToken( Human.Town,     2 ),
+			[Human.Explorer] = new HumanToken( Human.Explorer, 1 ),
+			[Human.Dahan]    = new HumanToken( Human.Dahan,    2 ),
 			[Token.Disease]  = Token.Disease,
 		};
 
@@ -53,13 +51,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public int GetDynamicTokensFor( SpaceState space, TokenClassToken token ) 
 		=> Dynamic.GetTokensFor( space, token );
-
-	public int InvaderAttack( HumanTokenClass tokenClass ) => Attack[tokenClass];
-	public readonly Dictionary<HumanTokenClass, int> Attack = new Dictionary<HumanTokenClass, int> {
-		[Human.Explorer] = 1,
-		[Human.Town] = 2,
-		[Human.City] = 3,
-	};
 
 	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
 
@@ -154,7 +145,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		.Select( p => p.Key + ":" + p.Value.TokensVerbose() )
 		.Join( "\r\n" );
 
-	readonly public IHaveHealthPenaltyPerStrife PenaltyHolder;
 	readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
 
 }

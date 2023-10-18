@@ -21,9 +21,51 @@ public class VoiceOfCommand {
 		ctx.Defend(2);
 
 		// During Ravage Actions, explorer fight alongside dahan. (Deal/take Damage at the same time, and to/from the same source.)
-		var cfg = ctx.Tokens.RavageBehavior;
-		cfg.IsAttacker = (token) => token.Class.IsOneOf( Human.Town_City );
-		cfg.IsDefender = (token) => token.Class.IsOneOf( Human.Explorer, Human.Dahan);
+//		var cfg = ctx.Tokens.RavageBehavior;
+//		cfg.IsAttacker = (token) => token.Class.IsOneOf( Human.Town_City );
+//		cfg.IsDefender = (token) => token.Class.IsOneOf( Human.Explorer, Human.Dahan);
+		ctx.Tokens.Init(new RavageConfigToken(
+			space => {
+				foreach(HumanToken orig in space.OfHumanClass( Human.Explorer ).ToArray()) {
+					AdjustRavageSide( space, orig, RavageSide.Defender, RavageOrder.DahanTurn );
+				}
+			},
+			space => {
+				foreach(HumanToken orig in space.OfAnyHumanClass( Human.Explorer ).ToArray())
+					AdjustRavageSide( space, orig, RavageSide.Attacker, RavageOrder.InvaderTurn );
+			}
+		),1);
+
 	}
+	static void AdjustRavageSide( SpaceState space, HumanToken orig, RavageSide side, RavageOrder order ) {
+		space.Init( orig.SetRavageSide( side ).SetRavageOrder( order ), space[orig] );
+		space.Init( orig, 0 );
+	}
+
+
+}
+
+public class RavageConfigToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
+
+	public RavageConfigToken(Action<SpaceState> setup, Action<SpaceState> teardown) {
+
+		SetUp = setup;
+		TearDown = teardown;
+	}
+
+	public UsageCost Cost => UsageCost.Free;
+
+	public Task<bool> Skip( SpaceState space ) {
+		// Token Reduces Attack of invaders by 1
+		SetUp( space );
+
+		// At end of Action, invaders are are restored to original.
+		ActionScope.Current.AtEndOfThisAction( _ => TearDown( space ) );
+
+		return Task.FromResult( false ); // don't skip
+	}
+
+	readonly Action<SpaceState> SetUp;
+	readonly Action<SpaceState> TearDown;
 
 }

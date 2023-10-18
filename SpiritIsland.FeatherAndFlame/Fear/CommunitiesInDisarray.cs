@@ -23,14 +23,9 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 	static BaseCmd<GameCtx> ReduceDamageAndDontHeal( int damagePenalty, params HumanTokenClass[] tokenClasses )	=> new BaseCmd<GameCtx>( 
 		string.Join(" / ", tokenClasses.Select(x=>x.Label)) + $" each deal -{damagePenalty} Damage during Ravage. Invaders do not heal Damage at the end of this turn.", 
 		ctx=> {
-			void ReduceDamage( RavageBehavior cfg ) {
-				Func<SpaceState, HumanToken, int> originalDamageFrom1 = cfg.AttackDamageFrom1;
-				cfg.AttackDamageFrom1 = ( ss, ht ) => ht.Class.IsOneOf( tokenClasses ) // if has penalty
-					? Math.Max( 0, originalDamageFrom1( ss, ht ) - damagePenalty ) // apply penalty
-					: originalDamageFrom1( ss, ht ); // else, use original
-			}
+			var penalty = new ReduceInvaderAttackBy1(damagePenalty, tokenClasses );
 			foreach(var space in ctx.GameState.Spaces) {
-				ReduceDamage( space.RavageBehavior );
+				space.Adjust( penalty, 1);
 				ctx.GameState.Healer.Skip( space.Space );
 			}
 

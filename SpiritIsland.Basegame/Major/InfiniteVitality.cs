@@ -16,9 +16,8 @@ public class InfiniteVitality {
 
 		if( await ctx.YouHave( "4 earth" )) {
 			// Dahan ignore damage and destruction effects.
-			ctx.ModifyRavage( behavior => behavior.DamageDefenders = ( _, _1, _2 ) => Task.CompletedTask ); // this stops dahan destruction during RAVAGE.
 
-			ctx.Tokens.Init( new StopDamageAndDestruction(Name), 1 ); // stop damage other times
+			ctx.Tokens.Init( new StopDahanDamageAndDestruction(Name), 1 );
 
 			// Remove 1 blight from target or adjacent
 			await RemoveBlightFromLandOrAdjacent( ctx );
@@ -36,14 +35,14 @@ public class InfiniteVitality {
 
 }
 
-class StopDamageAndDestruction 
+class StopDahanDamageAndDestruction 
 	: IStopDahanDamage
 	, IModifyRemovingTokenAsync 
 	, IEndWhenTimePasses
 {
 
 	readonly string _sourceName;
-	public StopDamageAndDestruction(string sourceName ) {
+	public StopDahanDamageAndDestruction(string sourceName ) {
 		_sourceName = sourceName;
 	}
 

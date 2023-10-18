@@ -47,7 +47,7 @@ public class InstrumentsOfTheirOwnRuin {
 		// Get damage
 		int damageFromCenter = ctx.Tokens.InvaderTokens().OfType<HumanToken>()
 			.Where( x => x.StrifeCount > 0 )
-			.Sum( si => ctx.Tokens.AttackDamageFrom1( si ) * ctx.Tokens[si] );
+			.Sum( si => si.Attack * ctx.Tokens[si] );
 
 		// Calc Total Badlands damage available
 		var availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x.Space,x=>x.Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.

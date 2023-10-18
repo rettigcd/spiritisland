@@ -178,8 +178,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#endregion
 
-	public int AttackDamageFrom1( HumanToken ht ) => ht.Class.Category == TokenCategory.Dahan ? 2
-		: _api.InvaderAttack( ht.Class );
+	public int AttackDamageFrom1( HumanToken ht ) => ht.Attack;
 
 	#region Adjacent Properties
 

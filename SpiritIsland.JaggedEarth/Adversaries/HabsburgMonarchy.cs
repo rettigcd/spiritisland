@@ -68,6 +68,7 @@ public class HabsburgMonarchy : IAdversary {
 			gameState.InvaderDeck.UnrevealedCards[4].CardFlipped += WaveOfImmigration;
 
 		// Level 6 - Far-Flung Herds, +2 Ravage damage if adjacent town
+		// ! see note below
 		if(6 <= Level) {
 			var originalBehavior = RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers;
 			RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers = (behavior, counts, spaceState) => {
@@ -193,6 +194,9 @@ class TooManyBlight : BaseModEntity, IHandleTokenAddedAsync {
 
 }
 
+// Far-Flung Herds
+// !! Can simplify RavageBehavior if we slap a Town-Tracking token on every space Which updates a 'NeighboringTownsToken' that does damage.
+// !! requires that we tag invaders as attackers and dahan as defenders.
 
 
 /*

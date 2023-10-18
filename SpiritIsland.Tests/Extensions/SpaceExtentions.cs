@@ -33,7 +33,7 @@ public static class SpaceExtentions {
 		IToken token = abrev switch {
 			"C" => GetHumanToken( match, Human.City ),
 			"T" => GetHumanToken( match, Human.Town ),
-			"E" => GetHumanToken( match, Human.Explorer ),
+			"E" => GetHumanToken( match, Human.Explorer ).SetAttack( tokens.GetDefault( Human.Explorer ).AsHuman().Attack ), // Russia
 			"D" => GetHumanToken( match, Human.Dahan ),
 			"A" => Token.Beast,
 			"B" => Token.Blight,
@@ -53,19 +53,13 @@ public static class SpaceExtentions {
 
 	static HumanToken GetHumanToken( Match match, HumanTokenClass tokenClass) {
 		int fullHealth = tokenClass.ExpectedHealthHint;
-		var token = new HumanToken(
-			tokenClass,
-			defaultPenalty,
-			fullHealth,
-			fullHealth - int.Parse( match.Groups[4].Value ), // damage
-			match.Groups[5].Value.Length // strife
-		);
+		int presentHealth = int.Parse( match.Groups[4].Value );
+		int damage = fullHealth-presentHealth;
+		int strife = match.Groups[5].Value.Length;
+		var token = new HumanToken(tokenClass,fullHealth)
+			.AddDamage(damage)
+			.AddStrife(strife);
 		return token;
-	}
-
-	static readonly IHaveHealthPenaltyPerStrife defaultPenalty = new NoStrifePenalty();
-	class NoStrifePenalty : IHaveHealthPenaltyPerStrife {
-		public int HealthPenaltyPerStrife => 0;
 	}
 
 }

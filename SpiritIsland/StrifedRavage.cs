@@ -17,7 +17,7 @@ public static class StrifedRavage {
 			var invaderBinding = ctx.Invaders;
 			foreach(var p in strifedCounts)
 				await ctx.StrifedDamageOtherInvaders( 
-					p.Value * invaderBinding.Tokens.AttackDamageFrom1( p.Key ), // total damage from this type.
+					p.Value * p.Key.Attack, // total damage from this type.
 					p.Key, // the source of the damage
 					p.Value==1 // exclude source if there is only 1 - it can't damage itself.
 			);

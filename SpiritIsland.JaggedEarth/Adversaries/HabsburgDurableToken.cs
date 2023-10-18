@@ -7,10 +7,13 @@ class HabsburgDurableToken
 	, IHandleTokenAddedAsync     // check for Blight, switch to normal
 
 {
+	protected HabsburgDurableToken( Props x ):base(x) { }
+
+	static Props Add2Health(Props props ) { props._rawFullHealth+=2; return props; }
+
 	public HabsburgDurableToken( HumanToken orig )
-		: base( orig.Class, orig._healthPenaltyHolder, orig.FullHealth + 2, orig.Damage, orig.StrifeCount ) { }
-	protected HabsburgDurableToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage, int strifeCount, int nightmareDamage )
-		: base( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage ) { }
+		: base( Add2Health(orig.GetProps()) ) { }
+
 	public override async Task<int> Destroy( SpaceState tokens, int count ) {
 		count = Math.Min( count, tokens[this] ); // clip
 		if(0 < count) {
@@ -22,9 +25,10 @@ class HabsburgDurableToken
 		}
 		return count;
 	}
-	protected override HumanToken NewMutatedToken( HumanTokenClass tokenClass, IHaveHealthPenaltyPerStrife penaltyHolder, int rawFullHealth, int damage = 0, int strifeCount = 0, int nightmareDamage = 0 )
-		=> new HabsburgDurableToken( tokenClass, penaltyHolder, rawFullHealth, damage, strifeCount, nightmareDamage );
-	public HumanToken GetRestoreToken() => new HumanToken( Class, _healthPenaltyHolder, FullHealth - 2, Damage, StrifeCount );
+
+	protected override HumanToken MakeNew( Props x ) => new HabsburgDurableToken( x );
+
+	public HumanToken GetRestoreToken() => new HumanToken( Class, FullHealth - 2).AddDamage(Damage).AddStrife(StrifeCount);
 
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
 		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {

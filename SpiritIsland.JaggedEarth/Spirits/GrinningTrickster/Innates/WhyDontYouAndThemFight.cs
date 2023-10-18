@@ -36,7 +36,7 @@ class WhyDontYouAndThemFight {
 	static async Task<(int,HumanToken)> GetDamageFromInvader( InvaderBinding invaderBinding, HumanToken invader ) {
 		return 0 < invader.StrifeCount
 			? (0,await invaderBinding.Tokens.Remove1StrifeFrom( invader, 1 )) 
-			: (invaderBinding.Tokens.AttackDamageFrom1( invader ),invader);
+			: (invader.Attack, invader);
 	}
 
 	[InnateOption("3 animal","If target land has beast, 2 Damage. Otherwise, you may Gather 1 beast.",4)]

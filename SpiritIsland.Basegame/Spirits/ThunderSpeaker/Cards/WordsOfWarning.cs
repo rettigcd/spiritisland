@@ -12,18 +12,35 @@ public class WordsOfWarning {
 		ctx.Defend(3);
 
 		// During Ravage, dahan in target land deal damage simultaneiously with invaders
-		ctx.Tokens.RavageBehavior.RavageSequence = SimultaneousDamage;
+		ctx.Tokens.Init(new SimultaneousDefend(),1);
 
 		return Task.CompletedTask;
 	}
 
-	static async Task SimultaneousDamage( RavageBehavior behavior, RavageData data ) {
-		int damageFromInvaders = await RavageBehavior.GetDamageInflictedByAttackers(behavior,data);
-		int damageFromDahan = RavageBehavior.GetDamageInflictedByDefenders( behavior,data );
+}
 
-		await RavageBehavior.DamageLand( data, damageFromInvaders );
-		await behavior.DamageDefenders( behavior, data, damageFromInvaders );
-		await RavageBehavior.DamageAttackers( data, damageFromDahan );
+public class SimultaneousDefend : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
+	public UsageCost Cost => UsageCost.Free; 
+
+	public Task<bool> Skip( SpaceState space ) {
+
+		// Token Reduces Attack of invaders by 1
+		foreach(HumanToken orig in space.OfAnyHumanClass( Human.Dahan ).ToArray())
+			AdjustRavageOrder( space, orig, RavageOrder.InvaderTurn );
+
+		// At end of Action, invaders are are restored to original attack time.
+		ActionScope.Current.AtEndOfThisAction( scope => {
+			foreach(HumanToken orig in space.OfAnyHumanClass( Human.Dahan ).ToArray())
+				AdjustRavageOrder( space, orig, RavageOrder.DahanTurn );
+		} );
+
+		return Task.FromResult( false ); // don't skip
+
+	}
+
+	static void AdjustRavageOrder( SpaceState space, HumanToken orig, RavageOrder order ) {
+		space.Init( orig.SetRavageOrder( order ), space[orig] );
+		space.Init( orig, 0 );
 	}
 
 }

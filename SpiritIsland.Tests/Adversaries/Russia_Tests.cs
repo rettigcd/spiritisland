@@ -130,6 +130,7 @@ public class Russia_Tests {
 		SpaceState a5 = gameState.Tokens[boardA[5]];
 		// Given: 2 explorers and 10 dahan on a space
 		a5.Given_HasTokens("10D@2,2E@1");
+var xxx = a5.Keys.ToArray();
 		//   And: no explorers on push-destination
 		SpaceState a1 = gameState.Tokens[boardA[1]];
 		a1.Clear();

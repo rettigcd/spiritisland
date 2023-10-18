@@ -9,11 +9,14 @@ public class MesmerizedTranquility{
 		ctx.Isolate();
 
 		// Each Invader does -1 Damage.
-		var cfg = ctx.Tokens.RavageBehavior;
-		var old = cfg.AttackDamageFrom1;
-		cfg.AttackDamageFrom1 = (ss,t) => Math.Max(0, old(ss,t)-1);
+		// RavageBehavior cfg = ctx.Tokens.RavageBehavior;
+		// Func<SpaceState, HumanToken, int> old = cfg.AttackDamageFrom1;
+		// cfg.AttackDamageFrom1 = (ss,t) => Math.Max(0, old(ss,t)-1);
+		ctx.Tokens.Adjust( new ReduceInvaderAttackBy1(1,Human.Invader), 1 );
 
 		return Task.CompletedTask;
 	}
 
 }
+
+

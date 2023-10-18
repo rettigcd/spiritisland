@@ -45,8 +45,8 @@ public class Sweden : IAdversary {
 
 		// Level 3 - Fine Steel for Tools and Guns: (Town deal 3 Damage, City deal 5 Damage)
 		if(3 <= Level) {
-			gameState.Tokens.Attack[Human.Town] = 3;
-			gameState.Tokens.Attack[Human.City] = 5;
+			gameState.Tokens.TokenDefaults[Human.Town] = ((HumanToken)gameState.Tokens.TokenDefaults[Human.Town]).SetAttack(3);
+			gameState.Tokens.TokenDefaults[Human.City] = ((HumanToken)gameState.Tokens.TokenDefaults[Human.City]).SetAttack( 5 );
 			// no logging, Ravage has plenty of it.
 		}
 

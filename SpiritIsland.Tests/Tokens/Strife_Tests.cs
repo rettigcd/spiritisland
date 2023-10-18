@@ -146,7 +146,7 @@ public class Strife_Tests {
 		// Given: dictionary contains a strifed city
 		var counts = new CountDictionary<ISpaceEntity>();
 		var holder = new HealthPenaltyHolder();
-		var token = new HumanToken(Human.City,holder,3,0,1);
+		var token = new HumanToken(Human.City,3).AddStrife(1);
 		counts[token] = 1;
 		// When: adjust health based on strife
 		holder.HealthPenaltyPerStrife = 1;

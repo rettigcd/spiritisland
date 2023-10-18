@@ -89,7 +89,11 @@ public static class SpiritExtensions {
 	const int defaultWaitMs = 3000;
 	internal static async Task ShouldComplete( this Task task, string taskDescription = "[Task]", int ms = defaultWaitMs ) {
 		TimeSpan waitTime = TimeSpan.FromMilliseconds( ms );
-		await task.WaitAsync( waitTime );
+		try {
+			await task.WaitAsync( waitTime );
+		}catch(TimeoutException ex) {
+			throw new Exception($"Operation {taskDescription} did not complete withing {ms}mS.",ex);
+		}
 		if(task.IsCompletedSuccessfully) return;
 		if(task.Exception != null)
 			throw new Exception("Task through exception.", task.Exception);
