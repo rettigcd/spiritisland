@@ -1,23 +1,20 @@
 ﻿namespace SpiritIsland.Basegame;
 
-class EntwinedPresenceSource : ICalcPowerTargetingSource {
+class EntwinedPresenceSource : ITargetingSourceStrategy {
 
-	readonly Spirit[] spirits;
-	readonly ICalcPowerTargetingSource[] origApis;
+	readonly Dictionary<SpiritPresence, ITargetingSourceStrategy> _olds;
 
 	public EntwinedPresenceSource( params Spirit[] spirits ) {
-		this.spirits = spirits;
-		this.origApis = spirits.Select(x=>x.TargetingSourceCalc).ToArray();
-			
-		foreach(var spirit in spirits)
-			spirit.TargetingSourceCalc = this;
+		_olds = spirits.ToDictionary(s=>s.Presence,s=>s.TargetingSourceStrategy);
+
+		foreach(Spirit spirit in spirits)
+			spirit.TargetingSourceStrategy = this;
 	}
 
-	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria ) {
-		List<SpaceState> sources = new();
-		// Find source of original
-		for(int i = 0; i<spirits.Length; ++i)
-			sources.AddRange(origApis[i].FindSources( spirits[i].Presence, sourceCriteria ) );
-		return sources.Distinct();
+	public IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, From from ) {
+		return _olds
+			.SelectMany( p=> p.Value.EvaluateFrom(p.Key, from) )
+			.Distinct();
 	}
+
 }

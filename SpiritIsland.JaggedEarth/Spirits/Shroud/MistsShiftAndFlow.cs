@@ -109,7 +109,7 @@ class MistsShiftAndFlow {
 	}
 
 	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, SpaceState target ) {
-		var targetSource = _spirit.TargetingSourceCalc.FindSources( presence, _sourceCriteria );
+		var targetSource = _sourceCriteria.Filter( _spirit.TargetingSourceStrategy.EvaluateFrom( presence, _sourceCriteria.From ) );
 		var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 		bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 		return hitsTarget;
@@ -130,7 +130,7 @@ class MistsShiftAndFlow {
 	}
 
 	void CalculateSpaceGroups() {
-		var sources = _spirit.TargetingSourceCalc.FindSources( _spirit.Presence, _sourceCriteria );
+		var sources = _sourceCriteria.Filter( _spirit.TargetingSourceStrategy.EvaluateFrom( _spirit.Presence, _sourceCriteria.From ) );
 		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
 		this.flowRange = sources
 			.SelectMany( s => s.Range( 2 ) ).Distinct() // I think this is a gather thing also

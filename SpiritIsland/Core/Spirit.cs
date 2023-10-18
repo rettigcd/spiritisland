@@ -517,7 +517,7 @@ public abstract partial class Spirit : IOption {
 	/// Don't use it for non-power calculations.
 	/// Don't use it for non-targeting Range-only calculations.
 	/// </summary>
-	public ICalcPowerTargetingSource TargetingSourceCalc = new DefaultPowerSourceCalculator();
+	public ITargetingSourceStrategy TargetingSourceStrategy = new DefaultPowerSourceStrategy();
 
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
 	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
@@ -550,8 +550,10 @@ public abstract partial class Spirit : IOption {
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
 		// Converts SourceCriteria to Spaces
-		IEnumerable<SpaceState> sources = TargetingSourceCalc
-			.FindSources( Presence, sourceCriteria )
+		//IEnumerable<SpaceState> sources = TargetingSourceCalc
+		//	.FindSources( Presence, sourceCriteria )
+		//	.ToArray();
+		IEnumerable<SpaceState> sources = sourceCriteria.Filter( TargetingSourceStrategy.EvaluateFrom( Presence, sourceCriteria.From ) )
 			.ToArray();
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.

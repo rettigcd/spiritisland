@@ -7,11 +7,8 @@ public enum From {
 	Incarna,
 };
 
-public interface ICalcPowerTargetingSource {
-	IEnumerable<SpaceState> FindSources( 
-		IKnowSpiritLocations presence, 
-		TargetingSourceCriteria criteria
-	);
+public interface ITargetingSourceStrategy {
+	IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, From from );
 }
 
 public interface ICalcRange {
@@ -34,21 +31,17 @@ public interface IHaveIncarna {
 /// <summary>
 /// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
 /// </summary>
-public class DefaultPowerSourceCalculator : ICalcPowerTargetingSource {
+public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 	// ! Should work for any action because we are now referencing TerrainMapper.Current instead of directly accessing the ForPower one.
 
-	public IEnumerable<SpaceState> FindSources( IKnowSpiritLocations presence, TargetingSourceCriteria sourceCriteria ) {
-		var sources = sourceCriteria.From switch {
+	public IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, From from ) {
+		return from switch {
 			From.Presence => presence.Spaces.Tokens(),
 			From.SacredSite => presence.SacredSites,
-			From.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null ? new SpaceState[]{ incarnaHolder.Incarna.Space } : new SpaceState[0],
-			_ => throw new ArgumentException( "Invalid presence source " + sourceCriteria.From ),
+			From.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null ? new SpaceState[] { incarnaHolder.Incarna.Space } : new SpaceState[0],
+			_ => throw new ArgumentException( "Invalid presence source " + from ),
 		};
-		return sourceCriteria.Terrain.HasValue
-			? sources.Where( space => TerrainMapper.Current.MatchesTerrain( space, sourceCriteria.Terrain.Value ) )
-			: sources;
 	}
-
 }
 
 /// <summary>
