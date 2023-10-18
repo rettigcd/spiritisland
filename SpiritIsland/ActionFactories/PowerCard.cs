@@ -27,7 +27,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 	public string Instructions { get; }
 
-	public string TargetFilter => _targetAttr.TargetFilter;
+	public string TargetFilter => _targetAttr.TargetFilterName;
 	public string RangeText => _targetAttr.RangeText;
 
 	public int Cost            => _cardAttr.Cost;

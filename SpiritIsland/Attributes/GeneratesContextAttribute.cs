@@ -5,7 +5,7 @@ public abstract class GeneratesContextAttribute : Attribute {
 
 	public abstract string RangeText { get; }
 
-	public abstract string TargetFilter { get; }
+	public abstract string TargetFilterName { get; }
 
 	public abstract LandOrSpirit LandOrSpirit { get; }
 
