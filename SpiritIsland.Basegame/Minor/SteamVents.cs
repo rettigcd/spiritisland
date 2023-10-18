@@ -8,11 +8,11 @@ public class SteamVents {
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption(
-			new SpaceAction(
+			new SpaceCmd(
 				"Destroy 1 explorer", 
 				ctx => ctx.Invaders.DestroyNOfClass( 1, Human.Explorer ) 
 			),
-			new SpaceAction(
+			new SpaceCmd(
 				"Destroy 1 town", 
 				ctx => ctx.Invaders.DestroyNOfClass( 1, Human.Town )
 			).OnlyExecuteIf( ctx.Tokens.Has(Human.Town) && await ctx.YouHave("3 earth") )

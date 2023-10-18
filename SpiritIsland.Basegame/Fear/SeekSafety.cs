@@ -13,7 +13,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 
 	[FearLevel( 2, "Each player may Gather 1 Explorer into a land with Town/City, or Gather 1 Town into a land with City." )]
 	public Task Level2( GameCtx ctx )
-		=> new SpaceAction("gather 1 explorer / town into a land with bigger invader", GatherExplorerOrTown)
+		=> new SpaceCmd("gather 1 explorer / town into a land with bigger invader", GatherExplorerOrTown)
 			.In().SpiritPickedLand().Which( Has.TownOrCity )
 			.ForEachSpirit()
 			.Execute( ctx );

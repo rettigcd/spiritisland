@@ -18,7 +18,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 
 	}
 
-	static SelfAction GainEnergy => new SelfAction("Gain 4 energy, Forget a Power Card to gain 4 more", GainEnergyMethod);
+	static SelfCmd GainEnergy => new SelfCmd("Gain 4 energy, Forget a Power Card to gain 4 more", GainEnergyMethod);
 
 	static async Task GainEnergyMethod(SelfCtx ctx ) {
 		// Gain 4 energy.
@@ -30,7 +30,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 			ctx.Self.Energy += 4;
 	}
 
-	static SelfAction ConvertEnergyToDamage => new SelfAction("Pay X Energy (min 1) to deal X Damage in a land at range 0", ConvertEnergyToDamageMethod);
+	static SelfCmd ConvertEnergyToDamage => new SelfCmd("Pay X Energy (min 1) to deal X Damage in a land at range 0", ConvertEnergyToDamageMethod);
 
 	static async Task ConvertEnergyToDamageMethod(SelfCtx ctx ) {
 		// Pay X Energy (min. 1) to deal X Damage

@@ -11,9 +11,9 @@ public class GiftOfThePrimordialDeeps {
 
 		// Target spirit chooses to either:
 		await otherCtx.SelectActionOption( 
-			new SelfAction( "Play it immediately by paying its cost", x => x.Self.PlayCard(powerCard) )
+			new SelfCmd( "Play it immediately by paying its cost", x => x.Self.PlayCard(powerCard) )
 				.OnlyExecuteIf( powerCard.Cost <= otherCtx.Self.Energy ),
-			new SelfAction( "Gains 1 moon and 1 earth", _ => { var els = otherCtx.Self.Elements; els[Element.Moon]++; els[Element.Earth]++; }  )
+			new SelfCmd( "Gains 1 moon and 1 earth", _ => { var els = otherCtx.Self.Elements; els[Element.Moon]++; els[Element.Earth]++; }  )
 		);
 
 	}

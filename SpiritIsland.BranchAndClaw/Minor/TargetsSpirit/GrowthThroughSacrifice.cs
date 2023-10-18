@@ -23,8 +23,8 @@ public class GrowthThroughSacrifice {
 		string joinStr = doBoth ? "AND" : "OR";
 		var spaceCtx = await ctx.TargetLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" );
 
-		var removeBlight = new SpaceAction( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );
-		var addPresence = new SpaceAction( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() )
+		var removeBlight = new SpaceCmd( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );
+		var addPresence = new SpaceCmd( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() )
 			.OnlyExecuteIf( x=>x.Self.Presence.CanBePlacedOn(x.Tokens) );
 
 		if(!doBoth)

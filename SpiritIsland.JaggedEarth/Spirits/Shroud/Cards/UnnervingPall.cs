@@ -9,12 +9,12 @@ public class UnnervingPall {
 		ctx.AddFear(1);
 
 		// up to 3 Damaged Invaders do not participate in Ravage.
-		var doNotParticipate = new SpaceAction(
+		var doNotParticipate = new SpaceCmd(
 			"up to 3 damaged Invaders do not participate in Ravage",
 			SelectUpTo3DamagedInvadersToNotParticipate
 		);
 		// Defend 1 per presence you have in target land (when this Power is used).
-		var defend = new SpaceAction(
+		var defend = new SpaceCmd(
 			"Defend 1 per presence you have in target land", // (when power is used)
 			ctx => ctx.Defend( ctx.Presence.Count )
 		);

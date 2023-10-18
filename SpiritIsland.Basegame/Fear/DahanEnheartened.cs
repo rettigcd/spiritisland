@@ -27,15 +27,15 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.Execute( ctx );
 
-	static DecisionOption<TargetSpaceCtx> PushOrGather1 => Cmd.Pick1( Cmd.PushNDahan( 1 ), Cmd.GatherUpToNDahan( 1 ) );
+	static BaseCmd<TargetSpaceCtx> PushOrGather1 => Cmd.Pick1( Cmd.PushNDahan( 1 ), Cmd.GatherUpToNDahan( 1 ) );
 
-	static DecisionOption<TargetSpaceCtx> Gather2DahanThen1DamageIfDahan => new DecisionOption<TargetSpaceCtx>("Gather up to 2 dahan then 1 damage if dahan present.", async ctx => {
+	static SpaceCmd Gather2DahanThen1DamageIfDahan => new SpaceCmd( "Gather up to 2 dahan then 1 damage if dahan present.", async ctx => {
 		await ctx.GatherUpToNDahan( 2 );
 		if( ctx.Dahan.Any )
 			await ctx.DamageInvaders( 1 );
 	} );
 
-	static DecisionOption<TargetSpaceCtx> Gather2DahanThenDamagePerDahan => new DecisionOption<TargetSpaceCtx>( "Gather up to 2 dahan then 1 damage/dahan.", async ctx => {
+	static SpaceCmd Gather2DahanThenDamagePerDahan => new SpaceCmd( "Gather up to 2 dahan then 1 damage/dahan.", async ctx => {
 		await ctx.GatherUpToNDahan( 2 );
 		await ctx.DamageInvaders( ctx.Dahan.CountAll );
 	} );

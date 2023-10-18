@@ -6,8 +6,8 @@ public class BatsScoutForRaidsByDarkness{
 	[Instructions( "For each Dahan, 1 Damage to Town / City. -or- 1 Fear. Gather up to 2 Dahan." ), Artist( Artists.ShawnDaley )]
 	static public Task ActAsync(TargetSpaceCtx ctx){
 		return ctx.SelectActionOption( 
-			new SpaceAction("For each dahan, 1 Damage to town/city.", EachDahanDamagesTownOrCity ),
-			new SpaceAction("1 Fear. Gather up to 2 Dahan", OneFearAndGatherUpTo2Dahan )
+			new SpaceCmd("For each dahan, 1 Damage to town/city.", EachDahanDamagesTownOrCity ),
+			new SpaceCmd("1 Fear. Gather up to 2 Dahan", OneFearAndGatherUpTo2Dahan )
 		);
 	}
 

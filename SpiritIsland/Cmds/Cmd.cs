@@ -4,42 +4,42 @@ namespace SpiritIsland;
 
 public static partial class Cmd {
 
-	static public DecisionOption<T> Describe<T>( string description, Action<T> action) => new DecisionOption<T>(description, action);
-	static public DecisionOption<T> Describe<T>( string description, Func<T,Task> func ) => new DecisionOption<T>( description, func );
+	static public BaseCmd<T> Describe<T>( string description, Action<T> action) => new BaseCmd<T>(description, action);
+	static public BaseCmd<T> Describe<T>( string description, Func<T,Task> func ) => new BaseCmd<T>( description, func );
 
 	// Misc
-	static public SpaceAction Isolate => new SpaceAction( $"Isolate target land.", ctx => ctx.Isolate() );
+	static public SpaceCmd Isolate => new SpaceCmd( $"Isolate target land.", ctx => ctx.Isolate() );
 
 	// Gather
-	static public SpaceAction GatherUpToNDahan( int count ) => new SpaceAction( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
-	static public SpaceAction GatherUpToNExplorers( int count ) => new SpaceAction( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Human.Explorer));
-	static public SpaceAction GatherUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceAction( $"Gather up to {count} " + classes.Select(c=>c.Label).Join("/"), ctx => ctx.GatherUpTo( count, classes ) );
+	static public SpaceCmd GatherUpToNDahan( int count ) => new SpaceCmd( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
+	static public SpaceCmd GatherUpToNExplorers( int count ) => new SpaceCmd( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Human.Explorer));
+	static public SpaceCmd GatherUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceCmd( $"Gather up to {count} " + classes.Select(c=>c.Label).Join("/"), ctx => ctx.GatherUpTo( count, classes ) );
 
 	// Push
-	static public SpaceAction PushUpToNDahan( int count ) => new SpaceAction( $"Push up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) ).OnlyExecuteIf(ctx=>ctx.Dahan.Any );
-	static public SpaceAction PushNDahan(int count ) => new SpaceAction( $"Push {count} dahan", ctx => ctx.PushDahan( count ) ).OnlyExecuteIf( ctx=>ctx.Dahan.Any );
-	static public SpaceAction PushUpToNExplorers( int count ) => new SpaceAction( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Human.Explorer)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Explorer ) );
-	static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Human.Town)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Town ) );
-	static public SpaceAction PushUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceAction( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Tokens.HasAny( classes ) );
-	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Human.Explorer_Town ) ).OnlyExecuteIf( ctx=>ctx.Tokens.HasAny( Human.Explorer_Town ) );
+	static public SpaceCmd PushUpToNDahan( int count ) => new SpaceCmd( $"Push up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) ).OnlyExecuteIf(ctx=>ctx.Dahan.Any );
+	static public SpaceCmd PushNDahan(int count ) => new SpaceCmd( $"Push {count} dahan", ctx => ctx.PushDahan( count ) ).OnlyExecuteIf( ctx=>ctx.Dahan.Any );
+	static public SpaceCmd PushUpToNExplorers( int count ) => new SpaceCmd( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Human.Explorer)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Explorer ) );
+	static public SpaceCmd PushUpToNTowns( int count ) => new SpaceCmd( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Human.Town)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Town ) );
+	static public SpaceCmd PushUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceCmd( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Tokens.HasAny( classes ) );
+	static public SpaceCmd PushExplorersOrTowns( int count ) => new SpaceCmd( $"Push {count} explorers or towns", ctx => ctx.Push( count, Human.Explorer_Town ) ).OnlyExecuteIf( ctx=>ctx.Tokens.HasAny( Human.Explorer_Town ) );
 
 	// -- Add ---
-	static public SpaceAction AddDahan( int count ) => new SpaceAction( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.AddDefault( Human.Dahan, count ) );
-	static public SpaceAction AddTown( int count ) => new SpaceAction( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.AddDefault(Human.Town, count ) );
-	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Human.City, count ) );
-	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
-	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
-	static public SpaceAction AddVitality( int count ) => new SpaceAction( $"Add {count} Vitality.", ctx => ctx.Vitality.Add( count ) );
-	static public SpaceAction AddBadlands( int badLandCount ) => new SpaceAction( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
-	static public SpaceAction AddStrife(int count) => new SpaceAction( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
-	static public SpaceAction AddStrifeTo( int count, params HumanTokenClass[] tokenClasses ) => new SpaceAction( 
+	static public SpaceCmd AddDahan( int count ) => new SpaceCmd( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.AddDefault( Human.Dahan, count ) );
+	static public SpaceCmd AddTown( int count ) => new SpaceCmd( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.AddDefault(Human.Town, count ) );
+	static public SpaceCmd AddCity( int count ) => new SpaceCmd( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Human.City, count ) );
+	static public SpaceCmd AddBlightedIslandBlight => new SpaceCmd("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
+	static public SpaceCmd AddWilds( int count ) => new SpaceCmd( $"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
+	static public SpaceCmd AddVitality( int count ) => new SpaceCmd( $"Add {count} Vitality.", ctx => ctx.Vitality.Add( count ) );
+	static public SpaceCmd AddBadlands( int badLandCount ) => new SpaceCmd( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
+	static public SpaceCmd AddStrife(int count) => new SpaceCmd( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
+	static public SpaceCmd AddStrifeTo( int count, params HumanTokenClass[] tokenClasses ) => new SpaceCmd( 
 			$"Add {count} Strife to "+String.Join(",",tokenClasses.Select(x=>x.Label)), 
 			async ctx => { for(int i = 0; i < count; ++i) await ctx.AddStrife( tokenClasses ); }
 		); 
-	static public SpaceAction Adjust1Token( string description, ISpaceEntity token ) => new SpaceAction( description, ctx => ctx.Tokens.Adjust(token,1) );
+	static public SpaceCmd Adjust1Token( string description, ISpaceEntity token ) => new SpaceCmd( description, ctx => ctx.Tokens.Adjust(token,1) );
 	// -- Screwy Strife Stuff --
-	static public DecisionOption<GameCtx> StrifePenalizesHealth => new DecisionOption<GameCtx>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
-	static public SpaceAction EachStrifeDamagesInvader => new SpaceAction( "Invaders take 1 damage per strife", async ctx=>{ 
+	static public BaseCmd<GameCtx> StrifePenalizesHealth => new BaseCmd<GameCtx>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
+	static public SpaceCmd EachStrifeDamagesInvader => new SpaceCmd( "Invaders take 1 damage per strife", async ctx=>{ 
 		var tokens = ctx.Tokens.OfAnyHumanClass( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
 		foreach(var token in tokens) {
 			int count = ctx.Tokens[token];
@@ -48,22 +48,22 @@ public static partial class Cmd {
 		}
 	} );
 	// -- Remove --
-	static public SpaceAction RemoveBlight => new SpaceAction("Remove 1 blight", ctx => ctx.Blight.Remove(1));
+	static public SpaceCmd RemoveBlight => new SpaceCmd("Remove 1 blight", ctx => ctx.Blight.Remove(1));
 
-	static public SpaceAction RemoveExplorers(int count) => RemoveUpToNTokens(count,Human.Explorer);
-	static public SpaceAction RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
-	static public SpaceAction RemoveTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
-	static public SpaceAction RemoveCities(int count) => RemoveUpToNTokens(count,Human.City);
-	static public SpaceAction RemoveInvaders(int count) => RemoveUpToNTokens(count,Human.Invader);
+	static public SpaceCmd RemoveExplorers(int count) => RemoveUpToNTokens(count,Human.Explorer);
+	static public SpaceCmd RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
+	static public SpaceCmd RemoveTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
+	static public SpaceCmd RemoveCities(int count) => RemoveUpToNTokens(count,Human.City);
+	static public SpaceCmd RemoveInvaders(int count) => RemoveUpToNTokens(count,Human.Invader);
 
-	static public SpaceAction RemoveUpToNTokens(int count,params IEntityClass[] tokenClasses) {
+	static public SpaceCmd RemoveUpToNTokens(int count,params IEntityClass[] tokenClasses) {
 		Func<IEntityClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
-		return new SpaceAction($"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast(", "," or "),
+		return new SpaceCmd($"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast(", "," or "),
 			ctx => new TokenRemover(ctx).AddGroup(count, tokenClasses).RemoveUpToN()
 		).OnlyExecuteIf( x => x.Tokens.HasAny(tokenClasses));
 	}
 
-	static public SpaceAction RemoveHealthOfInvaders(string description, Func<TargetSpaceCtx,int> calcHealthToRemove) => new SpaceAction(description, async ctx=>{
+	static public SpaceCmd RemoveHealthOfInvaders(string description, Func<TargetSpaceCtx,int> calcHealthToRemove) => new SpaceCmd(description, async ctx=>{
 		int remaining = calcHealthToRemove(ctx);
 		HumanToken pick;
 		while(0 < remaining
@@ -74,34 +74,34 @@ public static partial class Cmd {
 		}
 	} ).OnlyExecuteIf( ctx => ctx.Tokens.HasInvaders() );
 
-	static public SpaceAction RemoveUpToNHealthOfInvaders(int health) => RemoveHealthOfInvaders($"Remove up to {health} worth of invaders.",_=>health);
+	static public SpaceCmd RemoveUpToNHealthOfInvaders(int health) => RemoveHealthOfInvaders($"Remove up to {health} worth of invaders.",_=>health);
 
 
 	// -- Destroy --
-	static public SpaceAction DestroyBeast(int count) => new SpaceAction($"Destroy {count} Beast", ctx=>ctx.Beasts.Destroy(count)).OnlyExecuteIf(x=>x.Beasts.Any);
-	static public SpaceAction Defend1PerDahan => new SpaceAction("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.CountAll));
-	static public SpaceAction Defend(int defend) => new SpaceAction( $"Defend {defend}.", ctx => ctx.Defend( defend ) );
+	static public SpaceCmd DestroyBeast(int count) => new SpaceCmd($"Destroy {count} Beast", ctx=>ctx.Beasts.Destroy(count)).OnlyExecuteIf(x=>x.Beasts.Any);
+	static public SpaceCmd Defend1PerDahan => new SpaceCmd("Defend 1 per Dahan.", ctx => ctx.Defend(ctx.Dahan.CountAll));
+	static public SpaceCmd Defend(int defend) => new SpaceCmd( $"Defend {defend}.", ctx => ctx.Defend( defend ) );
 
 	// -- Damage --
-	static public SpaceAction DamageToTownOrExplorer(int damage) => new SpaceAction($"{damage} damage to Explorer or Town", ctx => ExplorerTownsTakeDamage(ctx,damage) );
+	static public SpaceCmd DamageToTownOrExplorer(int damage) => new SpaceCmd($"{damage} damage to Explorer or Town", ctx => ExplorerTownsTakeDamage(ctx,damage) );
 	static Task ExplorerTownsTakeDamage(TargetSpaceCtx ctx, int damage) => ctx.DamageInvaders(damage,Human.Explorer_Town);
-	static public SpaceAction OneDamagePerDahan => new SpaceAction( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll ) ).OnlyExecuteIf( x => x.Dahan.Any && x.HasInvaders );
+	static public SpaceCmd OneDamagePerDahan => new SpaceCmd( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll ) ).OnlyExecuteIf( x => x.Dahan.Any && x.HasInvaders );
 
 	// -- Destroy --
-	static public SpaceAction DestroyTown( int count ) => new SpaceAction($"Destroy {count} Towns", ctx=>ctx.Invaders.DestroyNOfClass(count,Human.Town)).OnlyExecuteIf(x=>x.Tokens.Has(Human.Town));
+	static public SpaceCmd DestroyTown( int count ) => new SpaceCmd($"Destroy {count} Towns", ctx=>ctx.Invaders.DestroyNOfClass(count,Human.Town)).OnlyExecuteIf(x=>x.Tokens.Has(Human.Town));
 
 	// -- Fear --
-	static public SpaceAction AddFear(int count) => new SpaceAction($"Add {count} Fear.", ctx => ctx.AddFear(count) );
+	static public SpaceCmd AddFear(int count) => new SpaceCmd($"Add {count} Fear.", ctx => ctx.AddFear(count) );
 
 	// AND / OR
-	static public DecisionOption<T> Multiple<T>( string title, params IExecuteOn<T>[] actions ) => new DecisionOption<T>(
+	static public BaseCmd<T> Multiple<T>( string title, params IExecuteOn<T>[] actions ) => new BaseCmd<T>(
 		title,
 		async ctx => {
 			foreach(var action in actions)
 				await action.Execute( ctx );
 		}
 	);
-	static public DecisionOption<T> Multiple<T>( params IExecuteOn<T>[] actions) => new DecisionOption<T>(
+	static public BaseCmd<T> Multiple<T>( params IExecuteOn<T>[] actions) => new BaseCmd<T>(
 		actions.Select(a=>a.Description).Join("  "),
 		async ctx => {
 			foreach( var action in actions )
@@ -109,11 +109,11 @@ public static partial class Cmd {
 		}
 	);
 
-	static public DecisionOption<T> Pick1<T>( params IExecuteOn<T>[] actions ) where T : SelfCtx
+	static public BaseCmd<T> Pick1<T>( params IExecuteOn<T>[] actions ) where T : SelfCtx
 		=> Pick1<T>(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
 
-	static public DecisionOption<T> Pick1<T>( string description, params IExecuteOn<T>[] actions ) where T : SelfCtx
-		=> new DecisionOption<T>(
+	static public BaseCmd<T> Pick1<T>( string description, params IExecuteOn<T>[] actions ) where T : SelfCtx
+		=> new BaseCmd<T>(
 			description,
 			async ctx => {
 
@@ -127,30 +127,30 @@ public static partial class Cmd {
 		);
 
 	// Save Dahan
-	static public SpaceAction NextTimeDestroy2FewerDahan => new SpaceAction( // !! needs tests
+	static public SpaceCmd NextTimeDestroy2FewerDahan => new SpaceCmd( // !! needs tests
 		"The next time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
 		DahanSaver.DestroyFewer( 2, 1 )
 	);
-	static public SpaceAction EachTimeDestroy2FewerDahan => new SpaceAction(
+	static public SpaceCmd EachTimeDestroy2FewerDahan => new SpaceCmd(
 		"Each time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
 		DahanSaver.DestroyFewer( 2, int.MaxValue )
 	);
 
 	static public class Skip {
-		static public SpaceAction Build( string name ) => new SpaceAction( "Stop the next Build", ctx => ctx.Tokens.Skip1Build( name ) );
-		static public SpaceAction Explore( string name ) => new SpaceAction( "Skip the next Explore", ctx => ctx.Tokens.Skip1Explore( name ) );
-		static public SpaceAction AllInvaderActions( string name ) => new SpaceAction( "Skip All Invader Actions", ctx => ctx.Tokens.SkipAllInvaderActions( name ) );
-		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
+		static public SpaceCmd Build( string name ) => new SpaceCmd( "Stop the next Build", ctx => ctx.Tokens.Skip1Build( name ) );
+		static public SpaceCmd Explore( string name ) => new SpaceCmd( "Skip the next Explore", ctx => ctx.Tokens.Skip1Explore( name ) );
+		static public SpaceCmd AllInvaderActions( string name ) => new SpaceCmd( "Skip All Invader Actions", ctx => ctx.Tokens.SkipAllInvaderActions( name ) );
+		static public SpaceCmd AllRavages( string name ) => new SpaceCmd( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
-	static public SelfAction ForgetPowerCard => new SelfAction( "Forget Power card", ctx => ctx.Self.ForgetOne() );
+	static public SelfCmd ForgetPowerCard => new SelfCmd( "Forget Power card", ctx => ctx.Self.ForgetOne() );
 
 	// ========
 	// Presence
 	// ========
 
-	static public SelfAction PushUpTo1Presence( Func<Space, Space, Task> callback = null ) 
-		=> new SelfAction( "Push up to 1 Presence", async ctx => {
+	static public SelfCmd PushUpTo1Presence( Func<Space, Space, Task> callback = null ) 
+		=> new SelfCmd( "Push up to 1 Presence", async ctx => {
 
 			// Select source
 			var source = await ctx.Self.Gateway.Decision( new ASpaceToken( "Select Presence to push.", ctx.Self.Presence.Movable, Present.Done ) );
@@ -165,12 +165,12 @@ public static partial class Cmd {
 				await callback( source.Space, destination );
 		});
 
-	static public SelfAction DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SelfAction( "Destroy 1 presence.", async ctx => {
+	static public SelfCmd DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SelfCmd( "Destroy 1 presence.", async ctx => {
 		var spaceToken = await ctx.Self.Gateway.Decision( new ASpaceToken( prompt, ctx.Self.Presence.Deployed, Present.Always ) );
 		await spaceToken.Destroy();
 	} );
 
-	static public SelfAction DestroyPresence( int count ) => new SelfAction( 
+	static public SelfCmd DestroyPresence( int count ) => new SelfCmd( 
 		$"Destroy {count} presence", 
 		async ctx => { 
 			var destroyOne = Cmd.DestroyPresence();
@@ -179,7 +179,7 @@ public static partial class Cmd {
 		}
 	);
 
-	static public SelfAction ReturnUpToNDestroyedToTrack( int count) => new SelfAction("Return up to N Destroyed Presence to Track", async ctx => {
+	static public SelfCmd ReturnUpToNDestroyedToTrack( int count) => new SelfCmd("Return up to N Destroyed Presence to Track", async ctx => {
 		var self = ctx.Self;
 		count = Math.Max( count, self.Presence.Destroyed );
 		while(count > 0) {
@@ -190,7 +190,7 @@ public static partial class Cmd {
 		}
 	});
 
-	static public SelfAction PlacePresenceWithin( TargetCriteria targetCriteria, bool forPower ) => new SelfAction(
+	static public SelfCmd PlacePresenceWithin( TargetCriteria targetCriteria, bool forPower ) => new SelfCmd(
 		"Place Presence",
 		async ctx => {
 			var self = ctx.Self;
@@ -209,7 +209,7 @@ public static partial class Cmd {
 		}
 	);
 
-	static public SelfAction PlacePresenceOn( params SpaceState[] destinationOptions ) => new SelfAction(
+	static public SelfCmd PlacePresenceOn( params SpaceState[] destinationOptions ) => new SelfCmd(
 		"Place Presence",
 		async ctx => {
 			var self = ctx.Self;

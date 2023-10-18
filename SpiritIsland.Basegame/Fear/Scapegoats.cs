@@ -23,15 +23,15 @@ public class Scapegoats : FearCardBase, IFearCard {
 			.In().EachActiveLand()
 			.Execute( ctx );
 
-	static SpaceAction EachTownDestorys1Explorer => new SpaceAction( "each town destorys 1 explorer", ctx => ctx.Invaders.DestroyNOfClass( ctx.Tokens.Sum( Human.Town ), Human.Explorer ) );
+	static SpaceCmd EachTownDestorys1Explorer => new SpaceCmd( "each town destorys 1 explorer", ctx => ctx.Invaders.DestroyNOfClass( ctx.Tokens.Sum( Human.Town ), Human.Explorer ) );
 
-	static SpaceAction EachTownDestroys1AndCityDestroys2 =>
-		new SpaceAction( "each town destroys 1 explorer and each City destroys 2", async ctx => {
+	static SpaceCmd EachTownDestroys1AndCityDestroys2 =>
+		new SpaceCmd( "each town destroys 1 explorer and each City destroys 2", async ctx => {
 			int numToDestroy = ctx.Tokens.Sum( Human.Town ) + ctx.Tokens.Sum( Human.City ) * 2;
 			await ctx.Invaders.DestroyNOfClass( numToDestroy, Human.Explorer );
 		});
 
-	static SpaceAction DestroyAllExplorersAnd1TowPerCity => new SpaceAction(
+	static SpaceCmd DestroyAllExplorersAnd1TowPerCity => new SpaceCmd(
 		"Destroy all explorers and 1 town per city", async ctx => {
 			await ctx.Invaders.DestroyAll( Human.Explorer );
 			await ctx.Invaders.DestroyNOfClass( ctx.Tokens.Sum( Human.City ), Human.Town );

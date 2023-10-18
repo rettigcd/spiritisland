@@ -37,7 +37,7 @@ public class FranceExplorer : ExploreEngine {
 
 	}
 
-	static DecisionOption<BoardCtx> AddExplorerToLandWithoutAny => new DecisionOption<BoardCtx>(
+	static BaseCmd<BoardCtx> AddExplorerToLandWithoutAny => new BaseCmd<BoardCtx>(
 		"Add Explorer to Land without any",
 		async boardCtx => {
 			var options = boardCtx.Board.Spaces.Where( s => !s.Tokens.HasAny( Human.Explorer ) ).ToArray();
@@ -61,13 +61,13 @@ public class FranceExplorer : ExploreEngine {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
-		static DecisionOption<SelfCtx> SelectSpaceAction( SpaceState s ) {
+		static SelfCmd SelectSpaceAction( SpaceState s ) {
 			return s.HasAny( Human.Town_City )
-				? new DecisionOption<SelfCtx>( "Add 1 Town to " + s.Space.Text, null )
-				: new DecisionOption<SelfCtx>( "", null );
+				? new SelfCmd( "Add 1 Town to " + s.Space.Text, null )
+				: new SelfCmd( "", null );
 		}
 
-		return Cmd.ForEachBoard( new DecisionOption<BoardCtx>(
+		return Cmd.ForEachBoard( new BaseCmd<BoardCtx>(
 			"Place town or blight matching Explore card."
 			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces.Tokens()
 				.Where( card.MatchesCard )

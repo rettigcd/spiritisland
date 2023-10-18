@@ -6,8 +6,8 @@ public class CallToFerocity {
 	[Instructions( "Gather up to 3 Dahan. -or- If target land has Dahan, 1 Fear and Push 1 Explorer and 1 Town." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
-			new SpaceAction( "Gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) ),
-			new SpaceAction( "1 fear and push 1 explorer and 1 town", FearAndPushExplorerAndTown ).OnlyExecuteIf( x=>x.Dahan.Any )
+			new SpaceCmd( "Gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) ),
+			new SpaceCmd( "1 fear and push 1 explorer and 1 town", FearAndPushExplorerAndTown ).OnlyExecuteIf( x=>x.Dahan.Any )
 		);
 	}
 

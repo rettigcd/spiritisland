@@ -20,7 +20,7 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 		=> ReduceDamageAndDontHeal( 2, Human.Town_City )
 		.Execute( ctx );
 
-	static DecisionOption<GameCtx> ReduceDamageAndDontHeal( int damagePenalty, params HumanTokenClass[] tokenClasses )	=> new DecisionOption<GameCtx>( 
+	static BaseCmd<GameCtx> ReduceDamageAndDontHeal( int damagePenalty, params HumanTokenClass[] tokenClasses )	=> new BaseCmd<GameCtx>( 
 		string.Join(" / ", tokenClasses.Select(x=>x.Label)) + $" each deal -{damagePenalty} Damage during Ravage. Invaders do not heal Damage at the end of this turn.", 
 		ctx=> {
 			void ReduceDamage( RavageBehavior cfg ) {

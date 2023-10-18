@@ -11,9 +11,9 @@ public class GiftOfFlowingPower {
 		// Target spirit chooses to either:
 		return ctx.OtherCtx.SelectActionOption(
 			// Play another Power Card by paying its cost
-			new SelfAction("Play another Power Card by paying its cost", _ => { ctx.Other.AddActionFactory( new PlayCardForCost() ); } ),
+			new SelfCmd("Play another Power Card by paying its cost", _ => { ctx.Other.AddActionFactory( new PlayCardForCost() ); } ),
 			// OR Gains 1 fire and 1 water.
-			new SelfAction("Gain 1 fire and 1 water", _ => { var els = ctx.Other.Elements; els[Element.Fire]++; els[Element.Water]++; } )
+			new SelfCmd("Gain 1 fire and 1 water", _ => { var els = ctx.Other.Elements; els[Element.Fire]++; els[Element.Water]++; } )
 		);
 	}
 

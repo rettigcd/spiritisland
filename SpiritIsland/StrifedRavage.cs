@@ -5,7 +5,7 @@ public static class StrifedRavage {
 	// Theological Strife(3) - Each Invader with Strife deals Damage to other Invaders in its land.
 	// Instruments of their own ruin
 	// Discord
-	static public SpaceAction StrifedInvadersDealsDamageToOtherInvaders => new SpaceAction(
+	static public SpaceCmd StrifedInvadersDealsDamageToOtherInvaders => new SpaceCmd(
 		"Strifed invaders deal damage to other invaders.",
 		async ctx => {
 
@@ -44,7 +44,7 @@ public static class StrifedRavage {
 	#region Strife caused Damage to Self
 
 	public static IExecuteOn<BoardCtx> StrifedInvadersTakeDamagePerStrife 
-		=> new DecisionOption<BoardCtx>( "each invader takes 1 damage per strife it has", StrifedInvadersTakeDamagePerStrifeImp );
+		=> new BaseCmd<BoardCtx>( "each invader takes 1 damage per strife it has", StrifedInvadersTakeDamagePerStrifeImp );
 
 	static async Task StrifedInvadersTakeDamagePerStrifeImp( BoardCtx boardCtx ) {
 		foreach(var space in boardCtx.Board.Spaces.Tokens())

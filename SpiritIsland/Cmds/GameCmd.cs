@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 // Commands that act on: GameState
-using GameCtxCmd = DecisionOption<GameCtx>;
+using GameCtxCmd = BaseCmd<GameCtx>;
 
 public static partial class Cmd {
 
@@ -36,7 +36,7 @@ public static partial class Cmd {
 		);
 
 	// For each: Spirit
-	static public DecisionOption<GameCtx> ForEachSpirit( this IExecuteOn<SelfCtx> action )
+	static public BaseCmd<GameCtx> ForEachSpirit( this IExecuteOn<SelfCtx> action )
 		=> new GameCtxCmd(
 			"For each spirit, " + action.Description,
 			async ctx => {
@@ -49,7 +49,7 @@ public static partial class Cmd {
 		);
 
 	// At specific times
-	static public GameCtxCmd AtTheStartOfNextRound( this DecisionOption<GameState> cmd ) => new GameCtxCmd(
+	static public GameCtxCmd AtTheStartOfNextRound( this BaseCmd<GameState> cmd ) => new GameCtxCmd(
 		"At the start of next round, " + cmd.Description,
 		gs => gs.GameState.TimePasses_ThisRound.Push( cmd.Execute ) // There are no actions here, just game reconfig
 	);

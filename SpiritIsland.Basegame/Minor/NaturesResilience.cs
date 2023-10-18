@@ -9,8 +9,8 @@ public class NaturesResilience {
 	static public async Task Act(TargetSpaceCtx ctx){
 
 		await ctx.SelectActionOption(
-			new SpaceAction("Defend 6", ctx=>ctx.Defend(6)),
-			new SpaceAction("Remove 1 blight", ctx=>ctx.RemoveBlight() )
+			new SpaceCmd("Defend 6", ctx=>ctx.Defend(6)),
+			new SpaceCmd("Remove 1 blight", ctx=>ctx.RemoveBlight() )
 				// !! This condition changes state for Shifting Memories, only use inside SelectActionOption
 				// Also, make sure there is actually blight there before asking spirit (Shifting Memory) if they want to commit 2 water
 				.OnlyExecuteIf( ctx.HasBlight && await ctx.YouHave("2 water") )

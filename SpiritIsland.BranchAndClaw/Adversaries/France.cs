@@ -79,7 +79,7 @@ public class France : IAdversary {
 		gameState.StartOfInvaderPhase.Add( async gs => {
 			if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
 
-			DecisionOption<BoardCtx> cmd = (gs.InvaderDeck.InvaderStage < 3)
+			BaseCmd<BoardCtx> cmd = (gs.InvaderDeck.InvaderStage < 3)
 				? AddStrifeToTown
 				: Cmd.Multiple<BoardCtx>(
 					"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
@@ -95,7 +95,7 @@ public class France : IAdversary {
 		} );
 	}
 
-	static DecisionOption<BoardCtx> AddStrifeToTown => new DecisionOption<BoardCtx>(
+	static BaseCmd<BoardCtx> AddStrifeToTown => new BaseCmd<BoardCtx>(
 		"Add a strife to a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
@@ -104,7 +104,7 @@ public class France : IAdversary {
 				await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() );
 		} );
 
-	static DecisionOption<BoardCtx> Add2StrifeToCityOrTown => new DecisionOption<BoardCtx>(
+	static BaseCmd<BoardCtx> Add2StrifeToCityOrTown => new BaseCmd<BoardCtx>(
 		"Add 2 strife to any city/town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town_City );
@@ -115,7 +115,7 @@ public class France : IAdversary {
 			}
 		} );
 
-	static DecisionOption<BoardCtx> DestroyTown => new DecisionOption<BoardCtx>(
+	static BaseCmd<BoardCtx> DestroyTown => new BaseCmd<BoardCtx>(
 		"Destroy a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );

@@ -6,7 +6,7 @@ public class APallUponTheLand : BlightCard {
 
 	public APallUponTheLand():base("A Pall Upon the Land", "Immediately, on each board: destroy 1 presence and remove 1 town.", 3 ) { }
 
-	public override DecisionOption<GameCtx> Immediately => 
+	public override BaseCmd<GameCtx> Immediately => 
 		// On Each Board
 		Cmd.ForEachBoard(
 			Cmd.Multiple(
@@ -17,8 +17,8 @@ public class APallUponTheLand : BlightCard {
 			)
 		);
 
-	static DecisionOption<BoardCtx> Destroy1PresenceOnBoard 
-		=> new DecisionOption<BoardCtx>("Destroy 1 presence.", async boardCtx => {
+	static BaseCmd<BoardCtx> Destroy1PresenceOnBoard 
+		=> new BaseCmd<BoardCtx>("Destroy 1 presence.", async boardCtx => {
 			// !! this could be any spirits presence - Who picks?   When having multiple players, this should be a parallel decision where spirit volunteers
 			// for now, just have the 1st spirit pick (House Rules advantage)
 			var gs = GameState.Current;

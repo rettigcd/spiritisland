@@ -7,7 +7,7 @@ public class AngryMobs : FearCardBase, IFearCard {
 
 	[FearLevel( 1, "Each player may replace 1 Town with 2 Explorer. 1 Fear per player who does." )]
 	public Task Level1( GameCtx ctx )
-		=> new SpaceAction( "may replace 1 Town with 2 Explorer and gain 1 Fear.", Level1_MayReplace1TownWith2ExplorersAndGain1Fear )
+		=> new SpaceCmd( "may replace 1 Town with 2 Explorer and gain 1 Fear.", Level1_MayReplace1TownWith2ExplorersAndGain1Fear )
 			.In().SpiritPickedLand()
 			.ByPickingToken( Human.Town )
 			.ForEachSpirit()
@@ -37,12 +37,12 @@ public class AngryMobs : FearCardBase, IFearCard {
 	}
 
 
-	static public SpaceAction Level2_Each2ExplorersDestroy_ExplorerOrTown => new SpaceAction(
+	static public SpaceCmd Level2_Each2ExplorersDestroy_ExplorerOrTown => new SpaceCmd(
 		$"Destroy 1 Explorer/Towns per 2 Explorers",
 		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Human.Explorer ) / 2, Human.Explorer_Town )
 	).OnlyExecuteIf( Has2OrMoreExplorers );
 
-	static public SpaceAction Level3_Each2ExplorersDestroy_Invader => new SpaceAction(
+	static public SpaceCmd Level3_Each2ExplorersDestroy_Invader => new SpaceCmd(
 		$"Destroy 1 Invader per 2 Explorers",
 		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Human.Explorer ) / 2, Human.Invader )
 	).OnlyExecuteIf( Has2OrMoreExplorers );

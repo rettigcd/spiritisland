@@ -4,7 +4,7 @@ public class UnnaturalProliferation : BlightCard {
 
 	public UnnaturalProliferation():base("Unnatural Proliferation","Immediately: Each Spirit adds 1 presence to a land with their presence.  On Each Board: Add 1 dahan to a land with dahan, and 2 city to the land with fewest town/city (min.1).",3) {}
 
-	public override DecisionOption<GameCtx> Immediately 
+	public override BaseCmd<GameCtx> Immediately 
 		=> Cmd.Multiple<GameCtx>(
 			Cmd.ForEachSpirit(
 				// adds 1 presence to a land with their prescense.
@@ -18,12 +18,12 @@ public class UnnaturalProliferation : BlightCard {
 			) )
 		);
 
-	static SelfAction AddPresenceToOwnLand => Cmd.PlacePresenceWithin(new TargetCriteria(0),true);
+	static SelfCmd AddPresenceToOwnLand => Cmd.PlacePresenceWithin(new TargetCriteria(0),true);
 
 	static IExecuteOn<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
 		.To().OneLandPerBoard().Which( Has.Dahan );
 
-	static DecisionOption<BoardCtx> Add2CitiesToLandWithFewest => new DecisionOption<BoardCtx>(
+	static BaseCmd<BoardCtx> Add2CitiesToLandWithFewest => new BaseCmd<BoardCtx>(
 		"Add 2 cities to the land with fewest town/city.", async ctx => {
 //			var terrainMapper = ctx.GameState.Island.Terrain;
 			var spaceOptions = ctx.Board.Spaces.Tokens()

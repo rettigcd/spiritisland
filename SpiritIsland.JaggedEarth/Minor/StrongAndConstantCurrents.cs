@@ -19,7 +19,7 @@ public class StrongAndConstantCurrents{
 
 	#region Push Explorer / Town Option
 
-	static public SpaceAction PushExporerTownToAdjacenCoastland => new SpaceAction( $"Push explorer/town to an adjacent Coastal land", PushToAdjacenCostalAction );
+	static public SpaceCmd PushExporerTownToAdjacenCoastland => new SpaceCmd( $"Push explorer/town to an adjacent Coastal land", PushToAdjacenCostalAction );
 
 	static Task PushToAdjacenCostalAction( TargetSpaceCtx ctx ) {
 		return ctx.Pusher
@@ -32,7 +32,7 @@ public class StrongAndConstantCurrents{
 
 	#region Move Dahan
 
-	static public SpaceAction MoveUpTo2DahanToAnotherCostal => new SpaceAction("Move up to 2 Dahan between target land and one other Costal land.", MoveDahanAction );
+	static public SpaceCmd MoveUpTo2DahanToAnotherCostal => new SpaceCmd("Move up to 2 Dahan between target land and one other Costal land.", MoveDahanAction );
 
 	// Move up to 2 between target land and one other coastal Land.
 	static async Task MoveDahanAction( TargetSpaceCtx ctx ) {

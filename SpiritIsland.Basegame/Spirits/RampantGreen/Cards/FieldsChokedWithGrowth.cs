@@ -7,8 +7,8 @@ public class FieldsChokedWithGrowth {
 	static public Task ActionAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceAction("Push 1 town", ctx => ctx.Push(1,Human.Town)).OnlyExecuteIf( x => x.Tokens.Has(Human.Town) ),
-			new SpaceAction("Push 3 dahan", ctx => ctx.PushDahan(3)).OnlyExecuteIf( x => x.Dahan.Any )
+			new SpaceCmd("Push 1 town", ctx => ctx.Push(1,Human.Town)).OnlyExecuteIf( x => x.Tokens.Has(Human.Town) ),
+			new SpaceCmd("Push 3 dahan", ctx => ctx.PushDahan(3)).OnlyExecuteIf( x => x.Dahan.Any )
 		);
 
 	}

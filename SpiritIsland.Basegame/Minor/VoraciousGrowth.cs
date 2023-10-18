@@ -7,8 +7,8 @@ public class VoraciousGrowth {
 		static public Task ActAsync(TargetSpaceCtx ctx){
 
 		return ctx.SelectActionOption(
-			new SpaceAction( "2 Damage", ctx => ctx.DamageInvaders( 2 ) ).OnlyExecuteIf( x => x.HasInvaders ),
-			new SpaceAction( "Remove 1 Blight", ctx => ctx.RemoveBlight() ).OnlyExecuteIf( x => x.HasBlight )
+			new SpaceCmd( "2 Damage", ctx => ctx.DamageInvaders( 2 ) ).OnlyExecuteIf( x => x.HasInvaders ),
+			new SpaceCmd( "Remove 1 Blight", ctx => ctx.RemoveBlight() ).OnlyExecuteIf( x => x.HasBlight )
 		);
 
 	}

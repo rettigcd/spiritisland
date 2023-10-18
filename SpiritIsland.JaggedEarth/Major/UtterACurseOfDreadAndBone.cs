@@ -12,9 +12,9 @@ public class UtterACurseOfDreadAndBone {
 		for(int i = 0; i < blightCount; i++)
 			// add 1 badland, 1 disease, or 1 strife. (Max +3 of each)
 			await ctx.SelectActionOption(
-				new SpaceAction("Add Badland", async ctx=>{ await ctx.Badlands.Add(1); ++badland; } ).OnlyExecuteIf(badland<3),
-				new SpaceAction("Add Disease", async ctx=>{ await ctx.Disease.Add(1); ++disease; } ).OnlyExecuteIf(disease<3),
-				new SpaceAction("Add Strife", async ctx=>{ await ctx.AddStrife(); ++strife; } ).OnlyExecuteIf(strife<3)
+				new SpaceCmd("Add Badland", async ctx=>{ await ctx.Badlands.Add(1); ++badland; } ).OnlyExecuteIf(badland<3),
+				new SpaceCmd("Add Disease", async ctx=>{ await ctx.Disease.Add(1); ++disease; } ).OnlyExecuteIf(disease<3),
+				new SpaceCmd("Add Strife", async ctx=>{ await ctx.AddStrife(); ++strife; } ).OnlyExecuteIf(strife<3)
 			);
 
 		// then 2 fear. 1 damage.

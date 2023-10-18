@@ -8,8 +8,8 @@ public class ConfoundingMists {
 	[Instructions( "Defend 4. -or- Each Invader added to target land this turn may be immediately Pushed to any adjacent land." ), Artist( Artists.LoicBelliau )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
-			new SpaceAction("Defend 4", ctx => ctx.Defend(4) ),
-			new SpaceAction(
+			new SpaceCmd("Defend 4", ctx => ctx.Defend(4) ),
+			new SpaceCmd(
 				"Invaders added to target are immediately pushed",
 				ctx => ctx.Tokens.Adjust( new MistPusher( ctx.Self ), 1 )
 			)

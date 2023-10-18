@@ -12,7 +12,7 @@ class Gather1Beast : GrowthActionFactory {
 		//	await ctx.Target(to).GatherUpTo(1,Token.Beast);
 
 		var isInRange = new TargetSpaceCtxFilter("is in range", x => options.Contains( x.Tokens ) );
-		await new DecisionOption<TargetSpaceCtx>("Push a Beast", ctx => ctx.Pusher.AddGroup(1,Token.Beast).MoveUpToN() )
+		await new SpaceCmd("Push a Beast", ctx => ctx.Pusher.AddGroup(1,Token.Beast).MoveUpToN() )
 			.From().SpiritPickedLand().Which( isInRange ).ByPickingToken(Token.Beast)
 			.Execute(ctx);
 	}

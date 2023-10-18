@@ -28,12 +28,12 @@ public class SpillBitternessIntoTheEarth {
 				// in up to 3 adjacent lands,
 				, 3, ctx.Adjacent
 				// 1 damage to each invader.
-				, new SpaceAction("1 damage to each invader", ctx => ctx.DamageEachInvader(1) )
+				, new SpaceCmd("1 damage to each invader", ctx => ctx.DamageEachInvader(1) )
 			);
 
 	}
 
-	static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<SpaceState> spaces, DecisionOption<TargetSpaceCtx> action ) {
+	static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<SpaceState> spaces, BaseCmd<TargetSpaceCtx> action ) {
 		List<Space> options = spaces.Downgrade().ToList();
 		while(adjCount-- > 0 && options.Count > 0) {
 			var space = await ctx.Decision( new Select.ASpace( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );

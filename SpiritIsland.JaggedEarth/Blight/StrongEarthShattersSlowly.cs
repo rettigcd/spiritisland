@@ -7,7 +7,7 @@ public class StrongEarthShattersSlowly : StillHealthyBlightCard {
 
 	public StrongEarthShattersSlowly():base(NAME, DESCRIPTION, 2) {}
 
-	public override DecisionOption<GameCtx> Immediately 
+	public override BaseCmd<GameCtx> Immediately 
 		=> Cmd.AddBlightedIslandBlight
 			.To().SpiritPickedLand().Which( Is.AdjacentToBlight )
 			.ForEachSpirit();

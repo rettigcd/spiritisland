@@ -7,8 +7,8 @@ public class VeilTheNightsHunt {
 	static public Task Act( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceAction( $"Each dahan deals 1 damage to a different invader", ctx => ctx.Apply1DamageToDifferentInvaders( ctx.Dahan.CountAll ) ),
-			new SpaceAction( "push up to 3 dahan", ctx => ctx.PushUpToNDahan( 3 ) )
+			new SpaceCmd( $"Each dahan deals 1 damage to a different invader", ctx => ctx.Apply1DamageToDifferentInvaders( ctx.Dahan.CountAll ) ),
+			new SpaceCmd( "push up to 3 dahan", ctx => ctx.PushUpToNDahan( 3 ) )
 		);
 
 	}

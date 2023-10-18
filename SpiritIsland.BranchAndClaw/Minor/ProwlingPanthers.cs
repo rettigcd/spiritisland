@@ -6,8 +6,8 @@ public class ProwlingPanthers {
 	[Instructions( "1 Fear. Add 1 Beasts. -or- If target land has Beasts, destroy 1 Explorer / Town." ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
-			new SpaceAction( "1 fear, add beast", FearAndBeast ),
-			new SpaceAction( "destroy 1 explorer/town", DestroyExplorerTown ).OnlyExecuteIf( x => x.Beasts.Any )
+			new SpaceCmd( "1 fear, add beast", FearAndBeast ),
+			new SpaceCmd( "destroy 1 explorer/town", DestroyExplorerTown ).OnlyExecuteIf( x => x.Beasts.Any )
 		);
 	}
 

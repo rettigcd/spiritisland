@@ -29,7 +29,7 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.Execute(ctx);
 
-	static DecisionOption<SelfCtx> GainEnergyPerSacredSiteWithInvaders => new DecisionOption<SelfCtx>("gain 1 energy per SS with Invaders", ctx => {
+	static SelfCmd GainEnergyPerSacredSiteWithInvaders => new SelfCmd("gain 1 energy per SS with Invaders", ctx => {
 		ctx.Self.Energy += ctx.Self.Presence.SacredSites
 			.Count( ss => ss.OfAnyClass( Human.Invader ).Any() );
 	} );

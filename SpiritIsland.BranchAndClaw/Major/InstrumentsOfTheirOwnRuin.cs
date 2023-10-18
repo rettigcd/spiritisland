@@ -7,11 +7,11 @@ public class InstrumentsOfTheirOwnRuin {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption( 
-			new SpaceAction(
+			new SpaceCmd(
 				"Add strife. Invaders with strife deal Damage to other Invaders in target land.", 
 				AddStrifeThenStrifedInvadersDamageUnstrifed
 			)
-			, new SpaceAction(
+			, new SpaceCmd(
 				"Instead, if Invaders Ravage in target land, damage invaders in adjacent lands instead of dahan"
 				, DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan
 			).OnlyExecuteIf( await ctx.YouHave("4 sun,2 fire,2 animal" ) )

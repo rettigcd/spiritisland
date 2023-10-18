@@ -24,7 +24,7 @@ public class OverseasTradeSeemsSafer : FearCardBase, IFearCard {
 			.In().EachActiveLand().Which( Is.Coastal )
 			.Execute( ctx );
 
-	static SpaceAction DoNotBuildCity => new SpaceAction( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( $"{Name}(city)", Human.City ) );
-	static SpaceAction DoNotBuild => new SpaceAction( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( Name ) );
+	static SpaceCmd DoNotBuildCity => new SpaceCmd( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( $"{Name}(city)", Human.City ) );
+	static SpaceCmd DoNotBuild => new SpaceCmd( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( Name ) );
 
 }

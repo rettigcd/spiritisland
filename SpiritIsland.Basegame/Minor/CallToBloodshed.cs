@@ -8,8 +8,8 @@ public class CallToBloodshed {
 	[Instructions( "1 Damage per Dahan. -or- Gather up to 3 Dahan." ), Artist( Artists.JorgeRamos )]
 	static public Task Act(TargetSpaceCtx ctx){
 		return ctx.SelectActionOption(
-			new SpaceAction( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll ) ),
-			new SpaceAction( "gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) )
+			new SpaceCmd( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll ) ),
+			new SpaceCmd( "gather up to 3 dahan", ctx => ctx.GatherUpToNDahan( 3 ) )
 		);
 	}
 }

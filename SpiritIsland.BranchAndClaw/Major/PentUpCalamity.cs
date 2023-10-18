@@ -7,8 +7,8 @@ public class PentUpCalamity {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption(
-			new SpaceAction("Add 1 disease and 1 strife", AddDiseaseAndStrife ),
-			new SpaceAction("Remove any # of beast/disease/strife/wilds for 1 fear + 3 damage each", RemoveTokensForFearAndDamage )
+			new SpaceCmd("Add 1 disease and 1 strife", AddDiseaseAndStrife ),
+			new SpaceCmd("Remove any # of beast/disease/strife/wilds for 1 fear + 3 damage each", RemoveTokensForFearAndDamage )
 		);
 
 	}

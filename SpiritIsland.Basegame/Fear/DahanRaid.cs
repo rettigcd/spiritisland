@@ -7,7 +7,7 @@ public class DahanRaid : FearCardBase, IFearCard {
 
 	[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
 	public Task Level1( GameCtx ctx )
-		=> new SpaceAction("1 Damage", ctx=>ctx.DamageInvaders(1,Human.Invader) )
+		=> new SpaceCmd("1 Damage", ctx=>ctx.DamageInvaders(1,Human.Invader) )
 			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
 			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
@@ -15,7 +15,7 @@ public class DahanRaid : FearCardBase, IFearCard {
 
 	[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
 	public Task Level2( GameCtx ctx )
-		=> new SpaceAction( "1 Damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll, Human.Invader ) )
+		=> new SpaceCmd( "1 Damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll, Human.Invader ) )
 			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
 			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
@@ -23,7 +23,7 @@ public class DahanRaid : FearCardBase, IFearCard {
 
 	[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
 	public Task Level3( GameCtx ctx )
-		=> new SpaceAction( "2 Damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll*2, Human.Invader ) )
+		=> new SpaceCmd( "2 Damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll*2, Human.Invader ) )
 			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
 			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
