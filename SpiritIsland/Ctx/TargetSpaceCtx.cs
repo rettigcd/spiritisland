@@ -143,7 +143,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public IEnumerable<SpaceState> Range( int range ) => Range( new TargetCriteria( range ) );
 
-	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
+	/// <summary> Calculate Range using Power Range Calculator/Strategy. </summary>
 	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria ) 
 		=> Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
 			new SpaceState[] { Tokens },

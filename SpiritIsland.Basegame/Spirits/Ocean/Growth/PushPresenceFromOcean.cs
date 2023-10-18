@@ -6,24 +6,22 @@ public class PushPresenceFromOcean : GrowthActionFactory {
 
 		var pushSpaces = ctx.Self.Presence.Spaces
 			.Where( p => p.IsOcean )
-			.Distinct()
-			.ToList();
+			.ToArray();
 
-		while(0 < pushSpaces.Count){
-			var currentSource = pushSpaces[0];
-			var srcTokens = currentSource.Tokens;
-			var token = ctx.Self.Presence.TokensDeployedOn(srcTokens).First();
+		foreach(var space in pushSpaces )
+			await PushPresence( ctx, space );
+	}
 
-			// #pushpresence
-			Space destination = await ctx.Decision( Select.ASpace.PushPresence( currentSource, srcTokens.Adjacent, Present.Always, token ) );
+	static async Task PushPresence( SelfCtx ctx, Space from ) {
+		var srcTokens = from.Tokens;
+		var presenceTokens = ctx.Self.Presence.TokensDeployedOn( srcTokens ).Select( x => new SpaceToken( from, x ) ).ToArray();
+		var token = await ctx.Decision( new Select.ASpaceToken( "Select presence to push", presenceTokens, Present.AutoSelectSingle ) );
 
-			// apply...
-			await token.Move( srcTokens, destination );
+		// #pushpresence
+		Space destination = await ctx.Decision( Select.ASpace.PushPresence( from, srcTokens.Adjacent, Present.Always, token.Token ) );
 
-			// next
-			pushSpaces.RemoveAt( 0 );
-		}
-
+		// apply...
+		await token.MoveTo( destination );
 	}
 
 }

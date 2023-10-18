@@ -9,18 +9,14 @@ public class RavageData {
 
 	public RavageData( SpaceState tokens ) {
 		Tokens = tokens;
-		GameState = GameState.Current;
-		Result = new InvadersRavaged { Space = tokens.Space };
+		Result = new List<RavageExchange>();
 	}
 
 	#endregion
-	public int BadLandsCount => Tokens.Badlands.Count;
 
-	public readonly InvadersRavaged Result; // record status here
-	public readonly GameState GameState;
+	public readonly List<RavageExchange> Result; // record status here
 	public readonly SpaceState Tokens;
 
-	public CountDictionary<HumanToken> CurrentAttackers; // tokens might change if strife is removed
 	public InvaderBinding InvaderBinding;
 
 }

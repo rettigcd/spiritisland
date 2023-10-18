@@ -7,7 +7,7 @@ class GameFixture {
 	public Board board;
 	public GameState gameState;
 	public VirtualUser user;
-	public List<InvadersRavaged> ravages;
+	public List<RavageExchange> exchanges;
 	public List<string> Log;
 	public string LogAsString => string.Join("\r\n",Log);
 
@@ -25,12 +25,12 @@ class GameFixture {
 		gameState.Initialize();
 
 		// Logging
-		ravages = new List<InvadersRavaged>();
+		exchanges = new List<RavageExchange>();
 		Log = new List<string>();
 		gameState.NewLogEntry += (e) => { 
 			Log.Add(e.Msg());
 			if(e is RavageEntry re)
-				ravages.Add( re.Ravaged );
+				exchanges.AddRange( re.Exchange );
 		};
 
 

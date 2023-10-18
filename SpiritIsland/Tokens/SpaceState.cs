@@ -59,7 +59,9 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 				if(0 < args.Count)
 					stopper.ModifyRemoving( args );
 			if(0 < args.Count)
-				await stoppersAsync.Select( x => x.ModifyRemovingAsync( args ) ).WhenAll();
+				foreach(IModifyRemovingTokenAsync x in stoppersAsync) // must NOT be done in parallel because IDecision can't manage it.
+					await x.ModifyRemovingAsync( args );
+				
 			if(0 < args.Count)
 				removable.Add(token);
 		}
@@ -411,46 +413,51 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	//-------------
 	ISpaceEntity[] ModSnapshop => Keys.Union(_islandMods).ToArray();
 
-	Task ModifyRemoving( RemovingTokenArgs args ) {
+	async Task ModifyRemoving( RemovingTokenArgs args ) {
 		var modArray = ModSnapshop;
-		foreach(var mod in modArray.OfType<IModifyRemovingToken>())
+		// Sync
+		foreach(IModifyRemovingToken mod in modArray.OfType<IModifyRemovingToken>())
 			if(0 < args.Count)
 				mod.ModifyRemoving( args );
-		return modArray.OfType<IModifyRemovingTokenAsync>()
-			.Select( x => x.ModifyRemovingAsync( args ) )
-			.WhenAll();
+		// Async - (must NOT do this in Parallel)
+		foreach(IModifyRemovingTokenAsync x in modArray.OfType<IModifyRemovingTokenAsync>())
+			if(0 < args.Count)
+				await x.ModifyRemovingAsync( args );
 	}
 
 	class RemovedHandlers {
 		readonly ISpaceEntity[] _keyArray;
 		public RemovedHandlers( ISpaceEntity[] keyArray ) { _keyArray = keyArray; }
-		public Task Handle( ITokenRemovedArgs args ) {
+		public async Task Handle( ITokenRemovedArgs args ) {
+			// Sync
 			foreach(IHandleTokenRemoved handler in _keyArray.OfType<IHandleTokenRemoved>())
 				handler.HandleTokenRemoved( args );
-			return _keyArray.OfType<IHandleTokenRemovedAsync>()
-				.Select( x => x.HandleTokenRemovedAsync( args ) )
-				.WhenAll();
+			// Async
+			foreach(IHandleTokenRemovedAsync x in _keyArray.OfType<IHandleTokenRemovedAsync>())
+				await x.HandleTokenRemovedAsync( args );
 		}
 	}
 	RemovedHandlers RemovedHandlerSnapshop => new RemovedHandlers( ModSnapshop );
 
-	Task ModifyAdding( AddingTokenArgs args ) {
+	async Task ModifyAdding( AddingTokenArgs args ) {
 		var keyArray = ModSnapshop; 
 		foreach(var mod in keyArray.OfType<IModifyAddingToken>()) 
 			if(0 < args.Count)
 				mod.ModifyAdding( args );
-		return keyArray.OfType<IModifyAddingTokenAsync>()
-			.Select( x => x.ModifyAddingAsync( args ) )
-			.WhenAll();
+		// Sync - series, NOT parallel (IDecision can't manage them)
+		foreach(var mod in keyArray.OfType<IModifyAddingTokenAsync>())
+			if(0 < args.Count)
+				await mod.ModifyAddingAsync( args );
 	}
 
-	Task HandleAdded( ITokenAddedArgs args ) {
+	async Task HandleAdded( ITokenAddedArgs args ) {
 		var keyArray = ModSnapshop;
-		foreach(var handler in keyArray.OfType<IHandleTokenAdded>())
+		// Sync
+		foreach(IHandleTokenAdded handler in keyArray.OfType<IHandleTokenAdded>())
 			handler.HandleTokenAdded( args );
-		return keyArray.OfType<IHandleTokenAddedAsync>()
-			.Select( x => x.HandleTokenAddedAsync( args ) )
-			.WhenAll();
+		// Async  (these must not be run in parallel because IDecision cannot handle it.)
+		foreach(IHandleTokenAddedAsync handler in keyArray.OfType<IHandleTokenAddedAsync>())
+			await handler.HandleTokenAddedAsync( args );
 	}
 
 	public void TimePasses() {

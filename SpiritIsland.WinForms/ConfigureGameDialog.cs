@@ -124,6 +124,7 @@ public partial class ConfigureGameDialog : Form {
 			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, .35f ),
 			BreathOfDarknessDownYourSpine.Name   => new PresenceTokenAppearance( 170, .16f, .21f ),
 			Keeper.Name                          => new PresenceTokenAppearance( "greenorangeswirl" ),
+			HearthVigil.Name                     => new PresenceTokenAppearance( 6,    .4f, .63f ),
 			ToweringRootsOfTheJungle.Name        => new PresenceTokenAppearance( 135, .22f, .35f ),
 			_                                    => new PresenceTokenAppearance( 0, 0 ),
 		};

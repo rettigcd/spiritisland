@@ -7,5 +7,13 @@ public class FromSacredSiteAttribute : TargetSpaceAttribute {
 			new TargetingSourceCriteria( From.SacredSite ), 
 			range, filters 
 		) { }
+
+	public FromSacredSiteAttribute( string restrictSource, int range, params string[] filters )
+		: base(
+			new TargetingSourceCriteria( From.SacredSite ) { Restrict = restrictSource },
+			range, filters
+		) { }
+
+
 	public override string RangeText => $"{_range}:ss";
 }

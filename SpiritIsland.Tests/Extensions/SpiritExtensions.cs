@@ -92,7 +92,7 @@ public static class SpiritExtensions {
 		try {
 			await task.WaitAsync( waitTime );
 		}catch(TimeoutException ex) {
-			throw new Exception($"Operation {taskDescription} did not complete withing {ms}mS.",ex);
+			throw new Exception($"Operation {taskDescription} did not complete within {ms}mS.",ex);
 		}
 		if(task.IsCompletedSuccessfully) return;
 		if(task.Exception != null)

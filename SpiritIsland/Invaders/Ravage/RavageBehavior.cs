@@ -1,4 +1,7 @@
-﻿namespace SpiritIsland;
+﻿using static System.Net.Mime.MediaTypeNames;
+using System;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Configures Dahan and Invader behavior on a per-space bases.
@@ -15,9 +18,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	// Gets the Aggregate damage from attackers. (default action does this by calling AttackDamageFrom1)
 	// !! This can be removed if we slap a Town-Tracking token on every space Which updates a 'NeighboringTownsToken' that does damage.
-	public Func<RavageBehavior, CountDictionary<HumanToken>, SpaceState, int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
-
-	public CountDictionary<ISpaceEntity> NotParticipating { get; set; } = new CountDictionary<ISpaceEntity>();
+	public Func<RavageExchange,int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
 
 	public int AttackersDefend = 0; // reduces the damage inflicted by the defenders onto the attackers.  Not exactly correct, but close
 
@@ -25,7 +26,6 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		return new RavageBehavior {
 			RavageSequence = RavageSequence,
 			GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers,
-			NotParticipating = NotParticipating,
 			AttackersDefend = AttackersDefend
 		};
 	}
@@ -50,13 +50,9 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		data.InvaderBinding = data.Tokens.Invaders;
 
 		try {
-			// Record starting state
-			data.Result.startingAttackers = RavageBehavior.GetAttackers( this, data );
-			data.Result.startingDefenders = RavageBehavior.GetDefenders( this, data );
-
 			await RavageSequence( this, data );
 
-			data.GameState.Log( new Log.RavageEntry( data.Result ) );
+			GameState.Current.Log( new Log.RavageEntry( data.Result.ToArray() ) );
 		}
 		finally {
 			if(scope != null) {
@@ -70,27 +66,28 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 		var ravageRounds = new RavageOrder[] { RavageOrder.Ambush, RavageOrder.InvaderTurn, RavageOrder.DahanTurn };
 		foreach(RavageOrder ravageRound in ravageRounds) {
-			int damageInflictedByAttackers = await GetDamageInflictedByAttackers( behavior, data, ravageRound );
-			int damageFromDefenders = RavageBehavior.GetDamageInflictedByDefenders( behavior, data, ravageRound );
-			await DamageAttackers( data, damageFromDefenders );
-			await DamageDefenders( behavior, data, damageInflictedByAttackers );
-			await DamageLand( data, damageInflictedByAttackers );
-		}
+			var exchange = new RavageExchange(data.Tokens,ravageRound);
+			if(!exchange.HasActiveParticipants) continue;
 
+			GetDamageInflictedByAttackers( exchange, behavior );				// So Hapsburg monarchy can add +2 damage from neighboring towns
+			GetDamageInflictedByDefenders( exchange, behavior.AttackersDefend );
+			await DamageAttackers( exchange );
+			await DamageDefenders( exchange );
+			data.Result.Add( exchange );
+		}
+		await DamageLand( data );
 	}
 
-	static public async Task DamageDefenders( RavageBehavior behavior, RavageData data, int damageInflictedFromAttackers ) {
+	static public async Task DamageDefenders( RavageExchange rex ) {
 
 		// Start with Damage from attackers
-		if(damageInflictedFromAttackers == 0) return;
-
-		data.Result.defenderDamageFromAttackers = damageInflictedFromAttackers; // Defend points already applied.
+		if(rex.damageFromAttackers == 0) return;
 
 		// Add Badlands damage
-		data.Result.defenderDamageFromBadlands = data.BadLandsCount;
-		int damageToApply = damageInflictedFromAttackers + data.BadLandsCount; // to defenders
+		rex.defenderDamageFromBadlands = rex.Tokens.Badlands.Count;
+		int damageToApply = rex.damageFromAttackers + rex.defenderDamageFromBadlands; // to defenders
 
-		var defenders = data.Result.startingDefenders.Clone();
+		var defenders = rex.StartingDefenders.Clone();
 
 		// Damage helping Invaders
 		// When damaging defenders, it is ok to damage the explorers first.
@@ -98,14 +95,14 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		var participatingExplorers = defenders.Keys
 			.Where( k => k.Class.Category == TokenCategory.Invader ) //! all defending invaders, even dreaming/frozen invaders
 			.OfType<HumanToken>()
-			.OrderByDescending( x => x.RemainingHealth )
+			.OrderByDescending( x => x.RemainingHealth ) // kill lowest health first (must be efficient)
 			.ThenBy( x => x.StrifeCount ) // non strifed first
 			.ToArray();
 		if(participatingExplorers.Length > 0) {
 			foreach(var token in participatingExplorers) {
-				int tokensToDestroy = Math.Min( data.Result.startingDefenders[token], damageToApply / token.RemainingHealth );
+				int tokensToDestroy = Math.Min( rex.StartingDefenders[token], damageToApply / token.RemainingHealth );
 				// destroy real tokens
-				await data.InvaderBinding.DestroyNTokens( token, tokensToDestroy );
+				await rex.Tokens.Invaders.DestroyNTokens( token, tokensToDestroy );
 				// update our defenders count
 				defenders[token] -= tokensToDestroy;
 				damageToApply -= tokensToDestroy * token.RemainingHealth;
@@ -114,22 +111,23 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 		// !! if we had cities / towns helping with defend, we would want to apply partial damage to them here.
 
-		if( data.Tokens.ModsOfType<IStopDahanDamage>().Any() ) return;
+		if( rex.Tokens.ModsOfType<IStopDahanDamage>().Any() ) return;
 
 		// Dahan
 		var damagableDahan = defenders.Keys
 			.Cast<HumanToken>()
 			.Where( k => k.Class == Human.Dahan ) // Normal only, filters out frozen/sleeping
 			.OrderBy( t => t.RemainingHealth ) // kill damaged dahan first
+			.ThenBy( x => x.RavageOrder ) // but if 2 have same health, pick the one that has already attacked
 			.ToArray();
 
-		var dahan = new DahanBinding( data.Tokens );
+		var dahan = rex.Tokens.Dahan;
 
 		foreach(var dahanToken in damagableDahan) {
 
 			// 1st - Destroy weekest dahan first
 			int tokensToDestroy = Math.Min(
-				data.Result.startingDefenders[dahanToken],
+				rex.StartingDefenders[dahanToken],
 				damageToApply / dahanToken.RemainingHealth // rounds down
 			);
 			if(0 < tokensToDestroy) {
@@ -139,7 +137,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 				// use up damage
 				damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
 
-				data.Result.dahanDestroyed += removed;
+				rex.dahanDestroyed += removed;
 				defenders[dahanToken] -= removed;
 			}
 			// damage real tokens
@@ -150,7 +148,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 				int remainingDamage = await dahan.ApplyDamage_Efficiently( damageToApply, dahanToken ); // this will never destroy token
 
 				// update our defenders count
-				if(remainingDamage < damageInflictedFromAttackers) { // if we actually did damage
+				if(remainingDamage < rex.damageFromAttackers) { // if we actually did damage
 					// !!! not sure this is 100% correct - if dahan can't be damaged, shouldn't do this update below
 					++defenders[dahanToken.AddDamage( damageToApply )];
 					--defenders[dahanToken];
@@ -160,28 +158,28 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 		}
 
+		rex.EndingDefenders = defenders;
+
 	}
 
-	/// <summary> Defend has already been applied. </summary>
-	static public async Task<int> GetDamageInflictedByAttackers( RavageBehavior behavior, RavageData data, RavageOrder round ) {
 
-		if(round != RavageOrder.InvaderTurn) return 0; // Currently nothing changes invaders RavageRound so this is simplest
+	/// <summary> Defend has already been applied. </summary>
+	static public void GetDamageInflictedByAttackers( RavageExchange rex, RavageBehavior behavior ) {
 
 		// CurrentAttackers
-		int rawDamageFromAttackers = behavior.GetDamageFromParticipatingAttackers( behavior, data.Result.startingAttackers, data.Tokens );
-
-		data.CurrentAttackers = await FromEachStrifed_RemoveOneStrife( data ); // does not change start state, modifies gs.Tokens[...] instead
+		int rawDamageFromAttackers = behavior.GetDamageFromParticipatingAttackers( rex );
 
 		// Defend
-		data.Result.defend = data.Tokens.Defend.Count;
-		int damageInflictedFromAttackers = Math.Max( rawDamageFromAttackers - data.Result.defend, 0 );
+		rex.defend = rex.Tokens.Defend.Count;
+		int damageInflictedFromAttackers = Math.Max( rawDamageFromAttackers - rex.defend, 0 );
 
-		return damageInflictedFromAttackers;
+		rex.damageFromAttackers = damageInflictedFromAttackers; // Defend points already applied.
 	}
 
 	/// <returns>New attacker finvaders</returns>
-	static async Task<CountDictionary<HumanToken>> FromEachStrifed_RemoveOneStrife( RavageData ra ) {
-		CountDictionary<HumanToken> participatingInvaders = ra.Result.startingAttackers;
+	static async Task<CountDictionary<HumanToken>> FromEachStrifed_RemoveOneStrife( RavageExchange rex ) {
+
+		CountDictionary<HumanToken> participatingInvaders = rex.StartingAttackers;
 
 		var newAttackers = participatingInvaders.Clone();
 
@@ -192,53 +190,56 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			.ToArray();
 		foreach(var orig in strifed) {
 			// update tracking counts
-			int count = ra.Tokens[orig];
+			int count = rex.Tokens[orig];
 			newAttackers[orig] -= count;
 			newAttackers[orig.AddStrife( -1 )] += count;
 
 			// update real tokens
-			await ra.Tokens.Remove1StrifeFrom( orig, ra.Tokens[orig] );
+			await rex.Tokens.Remove1StrifeFrom( orig, rex.Tokens[orig] );
 		}
 
 		return newAttackers;
 	}
 
-	static public int GetDamageInflictedByDefenders( RavageBehavior behavior, RavageData data, RavageOrder round ) {
-		CountDictionary<HumanToken> participants = GetDefenders(behavior,data);
-		foreach(var participant in participants.Keys.ToArray())
-			if(participant.RavageOrder != round)
-				participants[participant] = 0;
+	static public void GetDamageInflictedByDefenders( RavageExchange rex, int attackersDefend ) {
+		
+		int damageFromDefenders = rex.ActiveDefenders
+			.Sum( pair => pair.Key.Attack * pair.Value );
 
-		int damageFromDefenders = participants.Sum( pair => pair.Key.Attack * pair.Value );
-		return Math.Max( 0, damageFromDefenders - behavior.AttackersDefend );
+		rex.damageFromDefenders = Math.Max( 0, damageFromDefenders - attackersDefend );
 	}
 
-	static int GetDamageFromParticipatingAttackers_Default( RavageBehavior behavior, CountDictionary<HumanToken> participatingAttacker, SpaceState tokens ) {
-		return participatingAttacker.Keys
+	static int GetDamageFromParticipatingAttackers_Default( RavageExchange rex ) {
+		SpaceState tokens = rex.Tokens;
+		return rex.ActiveAttackers.Keys
 			.OfType<HumanToken>()
 			.Where( x => x.StrifeCount == 0 )
-			.Select( attacker => attacker.Attack * participatingAttacker[attacker] ).Sum();
+			.Select( attacker => attacker.Attack * rex.StartingAttackers[attacker] ).Sum();
 	}
 
 	/// <returns>(city-dead,town-dead,explorer-dead)</returns>
-	static public async Task DamageAttackers( RavageData ra, int damageFromDefenders ) {
-		ra.Result.attackerDamageFromDefenders = damageFromDefenders;
-		if(damageFromDefenders == 0) return;
+	static public async Task DamageAttackers( RavageExchange rex ) {
+		if(rex.damageFromDefenders == 0){
+			rex.EndingAttackers = rex.StartingAttackers;
+			return;
+		}
 
-		ra.Result.attackerDamageFromBadlands = ra.BadLandsCount;
-		int remainingDamageToApply = damageFromDefenders + ra.BadLandsCount;
+		int badlands = rex.Tokens.Badlands.Count;
+		rex.attackerDamageFromBadlands = badlands;
+		int remainingDamageToApply = rex.damageFromDefenders + badlands;
 
 		// ! must use current Attackers counts, because some have lost their strife so tokens are different than when they started.
-		var remaningAttackers = ra.CurrentAttackers.Clone();
+
+		var remaningAttackers = await FromEachStrifed_RemoveOneStrife( rex ); // does not change start state, modifies gs.Tokens[...] instead
 
 		while(0 < remainingDamageToApply && remaningAttackers.Any()) {
-			HumanToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply );
+			HumanToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply, rex.Order );
 
 			// Calc Damage to apply to 1 invader
 			int damageToApplyToAttacker = Math.Min( remainingDamageToApply, attackerToDamage.RemainingHealth );
 			remainingDamageToApply -= damageToApplyToAttacker; // damage we apply and damage inflicted may be different
 
-			var (actualDamageInflicted, _) = await ra.InvaderBinding.ApplyDamageTo1( damageToApplyToAttacker, attackerToDamage );
+			var (actualDamageInflicted, _) = await rex.Tokens.Invaders.ApplyDamageTo1( damageToApplyToAttacker, attackerToDamage );
 
 			// Apply tracking damage
 			--remaningAttackers[attackerToDamage];
@@ -246,32 +247,35 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			if(damagedAttacker.RemainingHealth > 0) ++remaningAttackers[damagedAttacker];
 
 		}
-		ra.Result.endingAttackers = remaningAttackers;
+		rex.EndingAttackers = remaningAttackers;
 	}
 
-	static public async Task DamageLand( RavageData ra, int damageInflictedFromInvaders ) {
-		if(damageInflictedFromInvaders == 0) return;
+	static public async Task DamageLand( RavageData ra ) {
+		int totalLandDamage = ra.Result.Sum( r => r.damageFromAttackers );
+		if(totalLandDamage == 0) return;
 
 		await ra.InvaderBinding.Tokens
-			.Add(LandDamage.Token, damageInflictedFromInvaders );
+			.Add(LandDamage.Token, totalLandDamage );
 	}
 
 	#region Static Smart Damage to Invaders
 
-	public static HumanToken PickSmartInvaderToDamage( CountDictionary<HumanToken> participatingInvaders, int availableDamage ) {
-		return PickItemToKill( participatingInvaders.Keys, availableDamage )
-			?? PickItemToDamage( participatingInvaders.Keys );
+	public static HumanToken PickSmartInvaderToDamage( CountDictionary<HumanToken> participatingInvaders, int availableDamage, RavageOrder order ) {
+
+		return Pick_HighestHealthThatIsKillable( participatingInvaders.Keys, availableDamage, order == RavageOrder.Ambush )
+			?? Pick_ItemClosestToDead( participatingInvaders.Keys );
 	}
 
-	public static HumanToken PickItemToKill( IEnumerable<HumanToken> candidates, int availableDamage ) {
+	static HumanToken Pick_HighestHealthThatIsKillable( IEnumerable<HumanToken> candidates, int availableDamage, bool pickUnstrifedFirst ) {
 		return candidates
 			.Where( specific => specific.RemainingHealth <= availableDamage ) // can be killed
-			.OrderByDescending( k => k.FullHealth ) // pick items with most Full Health
+			.OrderBy( specific => pickUnstrifedFirst && specific.StrifeCount == 0 ? 0 : 1 )
+			.ThenByDescending( k => k.FullHealth ) // pick items with most Full Health
 			.ThenBy( k => k.RemainingHealth ) // and most damaged.
 			.FirstOrDefault();
 	}
 
-	public static HumanToken PickItemToDamage( IEnumerable<HumanToken> candidates ) {
+	static HumanToken Pick_ItemClosestToDead( IEnumerable<HumanToken> candidates ) {
 		return candidates
 			.OrderBy( i => i.RemainingHealth ) // closest to dead
 			.ThenByDescending( i => i.FullHealth ) // biggest impact
@@ -279,18 +283,5 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 	}
 
 	#endregion
-
-	public static CountDictionary<HumanToken> GetAttackers( RavageBehavior behavior, RavageData data ) 
-		=> GetParticipantCounts( behavior, data, RavageSide.Attacker );
-
-	static public CountDictionary<HumanToken> GetDefenders( RavageBehavior behavior, RavageData data ) 
-		=> GetParticipantCounts( behavior, data, RavageSide.Defender );
-
-	static CountDictionary<HumanToken> GetParticipantCounts( RavageBehavior cfg, RavageData ra, RavageSide side ) {
-		var participants = new CountDictionary<HumanToken>();
-		foreach(var token in ra.Tokens.OfTypeHuman().Where( token => token.RavageSide == side ))
-			participants[token] = Math.Max( 0, ra.Tokens[token] - cfg.NotParticipating[token] );
-		return participants;
-	}
 
 }

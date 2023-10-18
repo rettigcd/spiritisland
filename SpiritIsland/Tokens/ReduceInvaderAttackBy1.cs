@@ -2,8 +2,8 @@
 
 public class ReduceInvaderAttackBy1 : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 
-	HumanTokenClass[] _classesToReduce;
-	int _reduce;
+	readonly HumanTokenClass[] _classesToReduce;
+	readonly int _reduce;
 
 	public ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classesToReduce ) {
 		_reduce = reduce;

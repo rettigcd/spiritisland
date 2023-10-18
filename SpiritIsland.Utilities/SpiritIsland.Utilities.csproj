@@ -364,6 +364,9 @@
     <None Update="images\spirits\Grinning_Trickster_Stirs_Up_Trouble.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\spirits\Hearth_Vigil.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\spirits\Heart_of_the_Wildfire.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

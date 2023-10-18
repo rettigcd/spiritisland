@@ -34,10 +34,10 @@ public class UnnervingPall {
 			return;
 
 		// Create a list to hold ones we've selected to exclude
-		var skipInvaders = new List<ISpaceEntity>();
+		var skipInvaders = new CountDictionary<HumanToken>();
 		// Select up to 3 to put in the skip-list
 		int remaining = 3;
-		while(remaining-- > 0 && damagedInvaders.Count > 0) {
+		while(0 < remaining-- && 0 < damagedInvaders.Count) {
 			var decision = new Select.ASpaceToken(
 				"Select invader to not participate in ravage", ctx.Space,
 				damagedInvaders.Distinct().Cast<IToken>(),
@@ -45,17 +45,45 @@ public class UnnervingPall {
 			);
 			var skip = (await ctx.Decision( decision ))?.Token;
 			if(skip == null) break;
-			skipInvaders.Add( skip );
+			skipInvaders[(HumanToken)skip]++;
 			damagedInvaders.Remove( skip );
 		}
 
 		// If we selected any, remove them from the fight
-		if(skipInvaders.Count > 0) {
-			var cfg = ctx.Tokens.RavageBehavior;
-			foreach(var s in skipInvaders)
-				cfg.NotParticipating[s]++;
-		}
+		if(0 < skipInvaders.Count)
+			ctx.Tokens.Adjust(new InvadersDontParticipateInRavage(skipInvaders),1);
 
 	}
 
+	class InvadersDontParticipateInRavage : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
+		public UsageCost Cost => UsageCost.Free;
+		readonly CountDictionary<HumanToken> _sitOuts;
+
+		public InvadersDontParticipateInRavage(CountDictionary<HumanToken> sitOuts) {
+			_sitOuts = sitOuts;
+		}
+
+		public Task<bool> Skip( SpaceState space ) {
+
+			Dictionary<HumanToken,HumanToken> restore = new Dictionary<HumanToken, HumanToken>();
+
+			foreach(var original in _sitOuts.Keys ) {
+				int count = _sitOuts[original];
+				var nonParticipating = original.SetRavageSide( RavageSide.None );
+				restore.Add(nonParticipating,original );
+				space.Adjust( nonParticipating, count );
+				space.Adjust( original, -count );
+			}
+
+			ActionScope.Current.AtEndOfThisAction( scope => {
+				foreach(var sitOut in restore.Keys) {
+					int count = _sitOuts[sitOut];
+					space.Adjust( sitOut, -count );
+					space.Adjust( restore[sitOut], count );
+				}
+			} );
+
+			return Task.FromResult(false);
+		}
+	}
 }

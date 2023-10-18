@@ -28,8 +28,8 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 			var countToNotParticipate = await _spirit.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );
 
-			if(countToNotParticipate > 0)
-				space.RavageBehavior.NotParticipating[explorerTypeToNotParticipate] += countToNotParticipate;
+			if(0 < countToNotParticipate)
+				DontParticipateInRavage( space, explorerTypeToNotParticipate, countToNotParticipate );
 
 			explorerTypes.Remove( explorerTypeToNotParticipate ); // don't let them select the same type twice and over-count the # of non-participants of that type.
 
@@ -39,4 +39,14 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 		return false; // does not stop ravage ever
 	}
 
+	static void DontParticipateInRavage( SpaceState space, HumanToken humanToken, int countToNotParticipate ) {
+		var nonParticipating = humanToken.SetRavageSide( RavageSide.None );
+		space.Adjust( nonParticipating, countToNotParticipate );
+		space.Adjust( humanToken, -countToNotParticipate );
+
+		ActionScope.Current.AtEndOfThisAction( scope => {
+			space.Adjust( nonParticipating, -countToNotParticipate );
+			space.Adjust( humanToken, countToNotParticipate );
+		} );
+	}
 }

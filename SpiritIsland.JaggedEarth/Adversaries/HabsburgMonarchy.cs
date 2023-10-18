@@ -71,10 +71,12 @@ public class HabsburgMonarchy : IAdversary {
 		// ! see note below
 		if(6 <= Level) {
 			var originalBehavior = RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers;
-			RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers = (behavior, counts, spaceState) => {
-				bool hasNeighborTown = spaceState.Adjacent.Any( s => s.Has( Human.Town ) );
+
+			RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers = (rex) => {
+
+				bool hasNeighborTown = rex.Tokens.Adjacent.Any( s => s.Has( Human.Town ) );
 				// Not logging additional damage here because Ravage is already very verbose.
-				return originalBehavior( behavior, counts, spaceState )
+				return originalBehavior( rex )
 					+ (hasNeighborTown ? 2 : 0);
 			};
 		}
