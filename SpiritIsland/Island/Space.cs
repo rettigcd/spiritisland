@@ -105,6 +105,6 @@ public abstract class Space
 	public override bool Equals( object obj ) => Equals( obj as Space );
 	public bool Equals( Space other ) => other is not null && other.Text == Text;
 	static public bool operator==(Space left, Space right) => Object.ReferenceEquals(left,right) || left is not null && left.Equals( right );
-	static public bool operator!=(Space left, Space right) => !left.Equals(right); 
+	static public bool operator!=(Space left, Space right) => !Object.ReferenceEquals( left, right ) && (left is null || !left.Equals( right ));
 	#endregion
 }

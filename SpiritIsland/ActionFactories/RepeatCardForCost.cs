@@ -37,7 +37,7 @@ public class RepeatCardForCost : IActionFactory {
 		int maxCardCost = self.Energy;
 		PowerCard[] options = self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.
 			.Where( card => !exclude.Contains(card.Name) )
-			.Where( card => self.IsActiveDuring( phase, card ) )
+			.Where( card => card.CouldActivateDuring( phase, self ) )
 			.Where( card => card.Cost <= maxCardCost )
 			.ToArray();
 		return options;

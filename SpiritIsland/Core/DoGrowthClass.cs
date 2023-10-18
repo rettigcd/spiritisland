@@ -57,7 +57,7 @@ public abstract partial class Spirit {
 				// selected item was an auto-run
 				// queue up the user runs
 				foreach(GrowthActionFactory action in option.UserRuns)
-					spirit.availableActions.Add( action );
+					spirit._availableActions.Add( action );
 			else {
 				// selected item was a user-run
 				// run it
@@ -65,7 +65,7 @@ public abstract partial class Spirit {
 				// queue up all the others
 				foreach(GrowthActionFactory action in option.UserRuns)
 					if(action != selectedAction)
-						spirit.availableActions.Add( action );
+						spirit._availableActions.Add( action );
 			}
 
 			// resolve actions

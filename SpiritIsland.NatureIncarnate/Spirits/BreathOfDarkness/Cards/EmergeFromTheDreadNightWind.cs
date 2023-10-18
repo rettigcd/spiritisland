@@ -15,10 +15,9 @@ public class EmergeFromTheDreadNightWind {
 		ctx.AddFear(1);
 
 		// If exactly 1 Invader is present,
-		var invaders = ctx.Tokens.SpaceTokensOfAnyClass( Human.Invader ).ToArray();
-		if(invaders.Length == 1)
+		if(ctx.Tokens.SumAny( Human.Invader ) == 1)
 			// Abduct it.
-			await invaders[0].MoveTo(EndlessDark.Space);
+			await ctx.Tokens.SpaceTokensOfAnyClass( Human.Invader ).Single().MoveTo(EndlessDark.Space);
 		else // otherwise
 			// Push up to 2 Explorer / Town to different lands.
 			await ctx.PushUpTo(2,Human.Explorer_Town);

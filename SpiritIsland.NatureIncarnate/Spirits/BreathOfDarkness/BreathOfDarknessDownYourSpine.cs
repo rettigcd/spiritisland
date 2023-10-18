@@ -42,6 +42,8 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		// 1 in highest jungle
 		jungles[1].Init( Presence.Token, 1 );
 
+		gameState.TimePasses_WholeGame += _ => { _usedEmpoweredAbduct = false; return Task.CompletedTask; };
+
 		gameState.OtherSpaces.Add(EndlessDark.Space);
 	}
 
@@ -52,5 +54,22 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		return new SelfCtx( spirit );
 	}
 
+	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
+		foreach(var action in base.GetAvailableActions( speed )) yield return action;
+		if( speed == Phase.Fast && ((BreathPresence)Presence).Incarna.Empowered && !_usedEmpoweredAbduct )
+			yield return _ea;
+	}
+
+	static readonly EmpoweredAbduct _ea = new EmpoweredAbduct();
+	bool _usedEmpoweredAbduct;
+
+	public override void RemoveFromUnresolvedActions( IActionFactory selectedActionFactory ) { 
+		if(selectedActionFactory == _ea)
+			_usedEmpoweredAbduct = true;
+		else 
+			base.RemoveFromUnresolvedActions( selectedActionFactory );
+	}
+
+	// !! Managing the 2nd _empowerAbduct separately from _availableActions is much harder than just stuffing it in _availabeActions would be.
 
 }

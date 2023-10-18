@@ -2,6 +2,11 @@ Aspects
 NI: Spirits / Power Cards / Adversayrs / Fear / Blight
 
 
+
+
+
+
+
 =========================
 ====  Clean Up Items  ====
 ==========================
@@ -107,3 +112,18 @@ Dahan and Invader Bindings
 TODO:
 	Change tokens that modify the .Destroy() behavior with interface that hooks into the IModifyTokenRemove interface.
 		This would allow us to skip calling Token.Destroy if we wished, making that simply a convenience method.
+
+
+--------
+
+[Preselct town/explorer]
+[Incarna]
+Action(TargetSpaceCtx ){
+	Cmd.Abduct(Human.Explorer_Town)
+}
+
+class AbductAtIncarna {
+	Action(){
+		// check
+	}
+}

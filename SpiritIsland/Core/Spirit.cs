@@ -168,16 +168,16 @@ public abstract partial class Spirit : IOption {
 
 	readonly protected List<SpiritDeck> decks = new List<SpiritDeck>();
 
-	readonly List<IActionFactory> availableActions = new List<IActionFactory>();
-	readonly HashSet<IActionFactory> usedActions = new HashSet<IActionFactory>();
-	readonly List<InnatePower>       usedInnates = new List<InnatePower>();
+	readonly List<IActionFactory> _availableActions = new List<IActionFactory>();
+	readonly HashSet<IActionFactory> _usedActions = new HashSet<IActionFactory>();
+	readonly List<InnatePower>       _usedInnates = new List<InnatePower>();
 
 	// so spirits can replay used cards or collect them instead of discard
-	public IEnumerable<IActionFactory> UsedActions => usedActions;
+	public IEnumerable<IActionFactory> UsedActions => _usedActions;
 
 	public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase speed) {
 		foreach(var action in AvailableActions) {
-			if( IsActiveDuring( speed, action ) )
+			if( action.CouldActivateDuring( speed, this ) )
 				yield return action;
 		}
 	}
@@ -186,11 +186,11 @@ public abstract partial class Spirit : IOption {
 	// depends on Fast/Slow phase to only select the actions that are appropriate
 	protected IEnumerable<IActionFactory> AvailableActions { 
 		get {
-			foreach(IActionFactory action in availableActions)
+			foreach(IActionFactory action in _availableActions)
 				yield return action;
 
 			foreach(InnatePower innate in InnatePowers)
-				if( !usedInnates.Contains( innate ) )
+				if( !_usedInnates.Contains( innate ) )
 					yield return innate;
 		}
 	}
@@ -251,27 +251,25 @@ public abstract partial class Spirit : IOption {
 		InPlay.Remove( cardToRemove );
 	}
 
-	public bool IsActiveDuring(Phase phase, IActionFactory actionFactory) => actionFactory.CouldActivateDuring( phase, this );
-
 	/// <summary>
 	/// Removes it from the Unresolved-list
 	/// </summary>
 	public virtual void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory ) {
 		if(selectedActionFactory is InnatePower ip) { // Could reverse this and instead of listing the used, create a not-used list that we remove them from when used
-			usedInnates.Add( ip );
+			_usedInnates.Add( ip );
 			return;
 		}
 
-		int index = availableActions.IndexOf( selectedActionFactory );
+		int index = _availableActions.IndexOf( selectedActionFactory );
 		if(index == -1) 
-			throw new InvalidOperationException( "can't remove factory that isn't there." );
-		usedActions.Add(availableActions[index]);
-		availableActions.RemoveAt( index );
+			throw new InvalidOperationException( $"Unable to remove ActionFactory {selectedActionFactory.Name} from Unresolved Actions because it is not there." );
+		_usedActions.Add(_availableActions[index]);
+		_availableActions.RemoveAt( index );
 
 	}
 
 	public void AddActionFactory( IActionFactory factory ) {
-		availableActions.Add( factory );
+		_availableActions.Add( factory );
 	}
 
 	public virtual async Task TakeAction(IActionFactory factory, Phase phase) {
@@ -346,9 +344,9 @@ public abstract partial class Spirit : IOption {
 		// reset cards / powers
 		DiscardPile.AddRange( InPlay );
 		InPlay.Clear();
-		availableActions.Clear();
-		usedActions.Clear();
-		usedInnates.Clear();
+		_availableActions.Clear();
+		_usedActions.Clear();
+		_usedInnates.Clear();
 
 		// Card plays
 		tempCardPlayBoost = 0;
@@ -460,9 +458,9 @@ public abstract partial class Spirit : IOption {
 			hand      = spirit.Hand.ToArray();
 			purchased = spirit.InPlay.ToArray();
 			discarded = spirit.DiscardPile.ToArray();
-			available = spirit.availableActions.ToArray();
-			usedActions = spirit.usedActions.ToArray();
-			usedInnates = spirit.usedInnates.ToArray();
+			available = spirit._availableActions.ToArray();
+			usedActions = spirit._usedActions.ToArray();
+			usedInnates = spirit._usedInnates.ToArray();
 			energyCollected = spirit.EnergyCollected.SaveToMemento();
 			tag = spirit._customSaveValue;
 		}
@@ -474,9 +472,9 @@ public abstract partial class Spirit : IOption {
 			spirit.Hand.SetItems( hand );
 			spirit.InPlay.SetItems( purchased );
 			spirit.DiscardPile.SetItems( discarded );
-			spirit.availableActions.SetItems( available );
-			spirit.usedActions.SetItems( usedActions );
-			spirit.usedInnates.SetItems( usedInnates );
+			spirit._availableActions.SetItems( available );
+			spirit._usedActions.SetItems( usedActions );
+			spirit._usedInnates.SetItems( usedInnates );
 			spirit.InitElementsFromPresence();
 			spirit.BonusDamage = 0; // assuming beginning of round
 			spirit.EnergyCollected.LoadFrom( energyCollected );

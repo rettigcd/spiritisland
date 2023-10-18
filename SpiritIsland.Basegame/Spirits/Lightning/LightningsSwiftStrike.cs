@@ -59,7 +59,7 @@ public class LightningsSwiftStrike : Spirit {
 			&& Elements[Element.Air] > usedAirForFastCount;
 
 		foreach(var h in AvailableActions)
-			if( IsActiveDuring( speed, h ) || canMakeSlowFast && IsActiveDuring( Phase.Slow, h ) )
+			if( h.CouldActivateDuring( speed, this ) || canMakeSlowFast && h.CouldActivateDuring(Phase.Slow,this) )
 				yield return h;
 
 	}
