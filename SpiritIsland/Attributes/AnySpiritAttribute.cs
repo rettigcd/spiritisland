@@ -27,7 +27,7 @@ public class AnotherSpiritAttribute : AnySpiritAttribute {
 		return ctx.TargetSpirit( target );
 	}
 	public override string TargetFilterName => TargetFilterText;
-	public const string TargetFilterText = "Another Spirit";
+	public new const string TargetFilterText = "Another Spirit";
 
 }
 
@@ -37,5 +37,5 @@ public class YourselfAttribute : AnySpiritAttribute {
 		return Task.FromResult( (object)ctx );
 	}
 	public override string TargetFilterName => TargetFilterText;
-	public const string TargetFilterText = "Yourself";
+	public new const string TargetFilterText = "Yourself";
 }

@@ -32,7 +32,8 @@ public class ResourceImages {
 
 	void LoadFont(string file) {
 		string resource = "SpiritIsland.Utilities." + file;
-		using Stream fontStream = _assembly.GetManifestResourceStream( resource );               
+		using Stream? fontStream = _assembly.GetManifestResourceStream( resource );
+		if(fontStream == null) throw new ArgumentException($"No font stream found for {file}");
 		
 		// read the fond data into a buffer
 		byte[] fontdata = new byte[fontStream.Length];
@@ -372,7 +373,7 @@ public class ResourceImages {
 	}
 
 	static readonly Bitmap Invisible = new Bitmap( 1, 1 );
-	public Bitmap GetResourceImage( string filename ) {
+	public Bitmap GetResourceImage( string? filename ) {
 		if(filename is null) return Invisible;
 		Stream imgStream = _assembly.GetManifestResourceStream( "SpiritIsland.Utilities.images."+filename )
 			?? throw new ArgumentException($"No resource image found for {filename}");

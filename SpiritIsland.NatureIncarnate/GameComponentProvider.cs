@@ -7,9 +7,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		[BreathOfDarknessDownYourSpine.Name] = typeof( BreathOfDarknessDownYourSpine ),
 	};
 	public string[] SpiritNames => SpiritTypes.Keys.ToArray();
-	public Spirit MakeSpirit( string spiritName ) {
+	public Spirit? MakeSpirit( string spiritName ) {
 		return SpiritTypes.ContainsKey( spiritName )
-			? (Spirit)Activator.CreateInstance( SpiritTypes[spiritName] )
+			? (Spirit?)Activator.CreateInstance( SpiritTypes[spiritName] )
 			: null;
 	}
 
@@ -20,8 +20,8 @@ public class GameComponentProvider : IGameComponentProvider {
 	};
 
 	public string[] AdversaryNames => AdversariesTypes.Keys.ToArray();
-	public IAdversary MakeAdversary( string adversaryName ) => adversaryName != null && AdversariesTypes.ContainsKey( adversaryName )
-			? (IAdversary)Activator.CreateInstance( AdversariesTypes[adversaryName] )
+	public IAdversary? MakeAdversary( string adversaryName ) => adversaryName != null && AdversariesTypes.ContainsKey( adversaryName )
+			? (IAdversary?)Activator.CreateInstance( AdversariesTypes[adversaryName] )
 			: null;
 
 	public PowerCard[] MinorCards => new Type[] {

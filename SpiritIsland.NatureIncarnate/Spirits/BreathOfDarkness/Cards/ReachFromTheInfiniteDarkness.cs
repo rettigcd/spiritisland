@@ -15,7 +15,7 @@ public class ReachFromTheInfiniteDarkness {
 
 			// select presence
 			var (presenceToAbduct, other) = await SelectPresenceToAbduct( ctx, remaining );
-			if(presenceToAbduct == null) break;
+			if(presenceToAbduct == null || other == null) break;
 
 			// get consent
 			if(!await SpiritConsentsToAbduction( ctx, presenceToAbduct, other ))
@@ -46,7 +46,7 @@ public class ReachFromTheInfiniteDarkness {
 		=> other == ctx.Self 
 		|| await other.UserSelectsFirstText( $"Allow {presenceToAbduct} to be abducted for +1 Range on powers this turn", "Yes", "No" );
 
-	static async Task<(SpaceToken,Spirit)> SelectPresenceToAbduct( SelfCtx ctx, int remaining ) {
+	static async Task<(SpaceToken?,Spirit?)> SelectPresenceToAbduct( SelfCtx ctx, int remaining ) {
 		var spiritLookup = new Dictionary<SpaceToken, Spirit>(); // !! THis is stupid, there should be a link from the presence/incarna back to the spirit.
 
 		foreach(Spirit spirit in ctx.GameState.Spirits)

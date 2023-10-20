@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace SpiritIsland;
 
@@ -22,7 +21,7 @@ public class PresenceTokenAppearance {
 
 	public BitmapAdjustment? Adjustment => Hsl is null ? null : new PixelAdjustment( new HslColorAdjuster(Hsl).GetNewColor );
 
-	public HSL Hsl { get; }
+	public HSL? Hsl { get; }
 	public readonly string BaseImage;
 
 }

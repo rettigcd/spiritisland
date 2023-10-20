@@ -19,8 +19,8 @@ public sealed class CachedImageDrawer : IDisposable {
 		graphics.DrawImageFitHeight(  GetImage( img ), rect );
 	}
 
-	public Image? GetImage( Img img ) {   // !!! make this private
-		if(_images.TryGetValue( img, out Image? bob )) return bob;
+	public Image GetImage( Img img ) {   // !!! make this private
+		if(_images.TryGetValue( img, out Image? bob )) return bob!;
 		var image = ResourceImages.Singleton.GetImage( img );
 		_images.Add( img, image );
 		return image;

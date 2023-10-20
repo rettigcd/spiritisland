@@ -44,7 +44,6 @@ public class WrappingLayout {
 	public void Append( string description, FontStyle fontStyle ) {
 
 		using var font = UsingFont( fontStyle );
-		_measuringFont = font;
 
 		// Add or use existing
 		List<TextPosition> texts;
@@ -72,11 +71,11 @@ public class WrappingLayout {
 
 					// Calculate how much of the string fits
 					// (breaks on word boundaries)
-					int lengthThatFits = GetCharcterLengthThatFitsInWidth( currentString );
+					int lengthThatFits = GetCharcterLengthThatFitsInWidth( currentString, font );
 
 					if(lengthThatFits == currentString.Length) {
 						// it all fits
-						float fullLength = Measure( currentString );
+						float fullLength = Measure( currentString, font );
 						var fullLengthToken = new TextPosition( currentString, GetFullFitString( fullLength ) );
 						texts.Add( fullLengthToken );
 						_rowItems.Add( fullLengthToken );
@@ -84,7 +83,7 @@ public class WrappingLayout {
 					} else {
 						// only part fits
 						string phraseThatFits = currentString[..lengthThatFits];
-						float partialLength = Measure( phraseThatFits );
+						float partialLength = Measure( phraseThatFits, font );
 						var partialLengthToken = new TextPosition( phraseThatFits, GetPartialFitString( partialLength ) );
 						texts.Add( partialLengthToken );
 						_rowItems.Add( partialLengthToken );
@@ -102,10 +101,8 @@ public class WrappingLayout {
 	/// <summary> Skips somespace </summary>
 	public void Tab( int numberOfSpaces, FontStyle style ) {
 		using(Font? font = UsingFont( style )) {
-			_measuringFont = font;
-			_x += (int)Measure( new string( 'i', numberOfSpaces ) );
+			_x += (int)Measure( new string( 'i', numberOfSpaces ), font );
 		}
-		_measuringFont = null;
 	}
 
 	#region finalize stuff
@@ -195,8 +192,6 @@ public class WrappingLayout {
 
 	readonly int _maxIconHeight; // the larger of the icons and the elements
 
-	Font? _measuringFont;
-
 	Size? _size;
 
 	void IncY( int deltaY ) { _y += deltaY; }
@@ -205,16 +200,16 @@ public class WrappingLayout {
 
 	Font UsingFont( FontStyle style ) => new Font( FontFamily.GenericSansSerif, _config.EmSize, style, GraphicsUnit.Pixel );
 
-	float Measure( string s ) => _graphics.MeasureString( s, _measuringFont ).Width;
+	float Measure( string s, Font measuringFont ) => _graphics.MeasureString( s, measuringFont ).Width;
 
-	int GetCharcterLengthThatFitsInWidth( string text ) {
-		if(Measure( text ) <= RemainingWidth)
+	int GetCharcterLengthThatFitsInWidth( string text, Font measuringFont ) {
+		if(Measure( text, measuringFont ) <= RemainingWidth)
 			return text.Length;
 
 		// Start small and get longer as long as it fits
 		int bestLength = 0;
 		int spaceIndex = text.IndexOf( ' ' );
-		while(spaceIndex != -1 && Measure( text[..spaceIndex] ) <= RemainingWidth) {
+		while(spaceIndex != -1 && Measure( text[..spaceIndex], measuringFont ) <= RemainingWidth) {
 			bestLength = spaceIndex;
 			spaceIndex = text.IndexOf( ' ', spaceIndex + 1 );
 		}

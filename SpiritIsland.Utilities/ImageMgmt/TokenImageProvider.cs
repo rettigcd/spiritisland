@@ -5,16 +5,13 @@ namespace SpiritIsland.WinForms;
 
 public class TokenImageProvider {
 	public TokenImageProvider( ResourceImages images) {
-		_tokenImages = new Dictionary<ISpaceEntity, Image?> {
+		_tokenImages = new Dictionary<ISpaceEntity, Image> {
 			[Token.Blight] = images.GetImage( Img.Blight ),
 			[Token.Beast] = images.GetImage( Img.Beast ),
 			[Token.Wilds] = images.GetImage( Img.Wilds ),
 			// [Token.Disease] = images.GetImage( Img.Disease ),
 			[Token.Badlands] = images.GetImage( Img.Badlands ),
 			[Token.Vitality] = images.GetImage( Img.Vitality ),
-			// assign slot so we can access via key when we need to ?.Dispose() when initializing spirit
-			[Token.Defend] = null,
-			[Token.Isolate] = null,
 		};
 		_strife = images.Strife();
 		_images = images;
@@ -24,8 +21,8 @@ public class TokenImageProvider {
 
 	}
 
-	public Dictionary<ISpaceEntity, Image?> _tokenImages; // because we need different images for different damaged invaders.
-	public Image _presenceImg;
+	public Dictionary<ISpaceEntity, Image> _tokenImages; // because we need different images for different damaged invaders.
+	public Image? _presenceImg;
 	public Img _incarnaImg;
 	public Image _strife;
 	public Image _fearTokenImage;
@@ -39,13 +36,13 @@ public class TokenImageProvider {
 		_tokenImages[Token.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
 		_tokenImages[Token.Isolate] = ResourceImages.Singleton.GetImage( Img.Isolate );
 		presenceAppearance.Adjustment?.Adjust( (Bitmap)_presenceImg );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap?)_tokenImages[Token.Defend] );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap?)_tokenImages[Token.Isolate] );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Defend] );
+		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Isolate] );
 	}
 
 	public Image AccessTokenImage( IToken imageToken ) {
 		if( imageToken is SpiritPresenceToken )
-			return _presenceImg;
+			return _presenceImg is not null ? _presenceImg : throw new Exception("missing presence image");
 
 		// Invalidate Incarna Image when the .Img switches
 		if( imageToken is IIncarnaToken it && it.Img != _incarnaImg ) {
@@ -75,7 +72,9 @@ public class TokenImageProvider {
 
 	void DisposeOldSpirit() {
 		_presenceImg?.Dispose();
-		_tokenImages[Token.Defend]?.Dispose();
-		_tokenImages[Token.Isolate]?.Dispose();
+		if(_tokenImages.ContainsKey( Token.Defend ))
+			_tokenImages[Token.Defend]?.Dispose();
+		if(_tokenImages.ContainsKey( Token.Isolate ))
+			_tokenImages[Token.Isolate]?.Dispose();
 	}
 }

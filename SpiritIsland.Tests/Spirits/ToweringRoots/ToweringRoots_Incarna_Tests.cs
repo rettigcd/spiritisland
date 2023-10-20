@@ -10,7 +10,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	public async Task IncarnaProtectsDahanDuringRavage() {
 		var tokens = _board[8].Tokens;
 		// Given Dahan and town
-		tokens.Dahan.AddDefault(1);
+		await tokens.Dahan.AddDefault(1);
 		tokens.InitDefault(Human.Town,1);
 		// Given Incarna, Vitality
 		Given_IncarnaOn( tokens.Space );

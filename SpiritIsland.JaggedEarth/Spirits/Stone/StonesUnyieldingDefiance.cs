@@ -85,6 +85,9 @@ public StonesUnyieldingDefiance() : base(
 
 }
 
+
+
+// !!! Instead of sticking this everywhere on the island, could just add it to the spirit token.
 class BestowTheEnduranceOfBedrock : BaseModEntity, IModifyAddingToken {
 	readonly SpiritPresenceToken _token;
 	public BestowTheEnduranceOfBedrock( SpiritPresenceToken token ) {

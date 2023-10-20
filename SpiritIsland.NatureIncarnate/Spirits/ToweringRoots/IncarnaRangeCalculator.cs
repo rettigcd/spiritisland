@@ -17,7 +17,7 @@ public class IncarnaRangeCalculator : DefaultRangeCalculator {
 		if(IncarnaInSource( source ))
 			spaces.AddRange(
 				base.GetTargetOptionsFromKnownSource(
-					new SpaceState[] { _incarna.Space },
+					new SpaceState[] { _incarna.Space! },
 					targetCriteria.ExtendRange( 1 )
 				)
 			);

@@ -22,7 +22,9 @@ public class ImageCache {
 
 	public Image Get(string key) {
 		string path = GetPath( key );
-		return File.Exists( path ) ? Image.FromFile( path ) : null;
+		return File.Exists( path ) 
+			? Image.FromFile( path ) 
+			: throw new InvalidOperationException( $"Path does not exist. {path}" );
 	}
 
 	public void Add( string key, Bitmap bitmap ) {
@@ -33,18 +35,24 @@ public class ImageCache {
 	#region private
 
 	static public void SaveBmp( Bitmap bmp, string filePathAndName, ImageFormat imageFormat ) {
-		var codec = ImageCodecInfo.GetImageDecoders()
-			.FirstOrDefault( codec => codec.FormatID == imageFormat.Guid );
+
 		const long quality = 80L; // 1..100?
 		var encoderParameters = new EncoderParameters( 1 );
 		encoderParameters.Param[0] = new EncoderParameter( Encoder.Quality, quality );
 
 		// Enshure subfolder exists.
-		string? directory = System.IO.Path.GetDirectoryName( filePathAndName );
-		if(!Directory.Exists(directory))
-			Directory.CreateDirectory(directory);
+		string directory = System.IO.Path.GetDirectoryName( filePathAndName ) ?? string.Empty;
+		if(!Directory.Exists( directory ))
+			Directory.CreateDirectory( directory );
 
-		bmp.Save( filePathAndName, codec, encoderParameters );
+		bmp.Save( filePathAndName, GetCodec( imageFormat ), encoderParameters );
+	}
+
+	static ImageCodecInfo GetCodec( ImageFormat imageFormat ) {
+		ImageCodecInfo? codec = ImageCodecInfo.GetImageDecoders()
+			.FirstOrDefault( codec => codec.FormatID == imageFormat.Guid );
+		return codec is not null ? codec 
+			: throw new ArgumentException( $"Unable to save image. Codec {imageFormat} not found." );
 	}
 
 	string GetPath( string key ) => Path.Combine( _folder, key );

@@ -18,7 +18,7 @@ public interface ICalcRange {
 }
 
 public interface IIncarnaToken : IToken, IAppearInSpaceAbreviation {
-	SpaceState? Space { get; }
+	SpaceState Space { get; }
 	bool Empowered { get; set; }
 }
 
