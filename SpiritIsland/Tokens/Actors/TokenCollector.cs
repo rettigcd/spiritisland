@@ -4,7 +4,7 @@
 /// Collects/Moves tokens to a single space.
 /// Doesn't specify the source of the spaces.
 /// </summary>
-public abstract class TokenCollector<DerivedType> where DerivedType : TokenCollector<DerivedType> {
+public class TokenCollector<DerivedType> where DerivedType : TokenCollector<DerivedType> {
 
 
 	protected readonly SpaceState _destinationTokens;
@@ -17,8 +17,6 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		_self = self;
 		_destinationTokens = destinatinTokens;
 	}
-
-	protected abstract IEnumerable<SpaceState> PossibleGatherSources { get; }
 
 	public DerivedType AddGroup( int countToGather, params IEntityClass[] classes ) {
 		int countIndex = sharedGroupCounts.Count;
@@ -42,9 +40,12 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 			await source.Token.Move( source.Space.Tokens, _destinationTokens );
 			MarkAsCollected( source );
 			collected.Add( source );
+			Collected?.Invoke(source);
 		}
 		return collected.ToArray();
 	}
+
+	public event Action<SpaceToken> Collected;
 
 	protected IEntityClass[] RemainingTypes => indexLookupByClass
 		.Where( pair => sharedGroupCounts[pair.Value].count > 0 )
@@ -55,7 +56,7 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 	/// <remarks>virtual because BeastGatherer can gather from extended range</remarks>
 	protected virtual async Task<SpaceToken[]> GetSpaceTokenOptions() { 
 		var options = new List<SpaceToken>();
-		foreach(var sourceSpaceState in PossibleGatherSources) {
+		foreach(SpaceState sourceSpaceState in PossibleGatherSources) {
 			options.AddRange(
 				(await sourceSpaceState.RemovableOfAnyClass( RemoveReason.MovedFrom, RemainingTypes ))
 					.Select( tokens => new SpaceToken( sourceSpaceState.Space, tokens ) )
@@ -64,22 +65,34 @@ public abstract class TokenCollector<DerivedType> where DerivedType : TokenColle
 		return options.ToArray();
 	}
 
+
+	protected virtual IEnumerable<SpaceState> PossibleGatherSources
+		=> _filterSource == null ? _destinationTokens.Adjacent
+		: _destinationTokens.Adjacent.Where( _filterSource );
+
+	Func<SpaceState, bool> _filterSource;
+	public DerivedType FilterSource( Func<SpaceState, bool> filterSource ) {
+		_filterSource = filterSource;
+		return (DerivedType)this;
+	}
+
+
 	/// <summary> The remaining quota of each token class </summary>
 	protected IEnumerable<CollectQuota> RemainingQuota => sharedGroupCounts.Where( g => g.count > 0 );
 	protected void MarkAsCollected( SpaceToken source ) {
 		--sharedGroupCounts[indexLookupByClass[source.Token.Class]].count;
 	}
 
-}
+	protected class CollectQuota {
 
-public class CollectQuota {
+		public CollectQuota( int count, params IEntityClass[] classes ) {
+			this.count = count;
+			this.classes = classes;
+		}
 
-	public CollectQuota( int count, params IEntityClass[] classes ) {
-		this.count = count;
-		this.classes = classes;
+		public int count;
+		public IEntityClass[] classes;
+		public override string ToString() => count + " " + classes.Select( c => c.Label ).Join( "/" );
 	}
-
-	public int count;
-	public IEntityClass[] classes;
-	public override string ToString() => count + " " + classes.Select( c => c.Label ).Join( "/" );
 }
+

@@ -9,15 +9,5 @@ public class TokenGatherer : TokenCollector<TokenGatherer> {
 
 	public virtual Task<SpaceToken[]> GatherUpToN() => Collect( "Gather up to ", Present.Done );
 
-	protected override IEnumerable<SpaceState> PossibleGatherSources 
-		=> _filterSource == null ? _destinationTokens.Adjacent
-		: _destinationTokens.Adjacent.Where( _filterSource );
-
-	Func<SpaceState, bool> _filterSource;
-	public TokenGatherer FilterSource( Func<SpaceState,bool> filterSource ) {
-		_filterSource = filterSource;
-		return this;
-	}
-
 }
 
