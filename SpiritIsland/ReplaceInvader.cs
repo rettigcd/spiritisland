@@ -9,7 +9,7 @@ static public class ReplaceInvader {
 		await Downgrade1Token( ctx, present, options );
 	}
 
-	public static async Task DowngradeAnyNumber( TargetSpaceCtx ctx, params HumanTokenClass[] groups ) {
+	public static async Task DowngradeAll( TargetSpaceCtx ctx, params HumanTokenClass[] groups ) {
 
 		// downgrade any # of invaders
 		var invadersThatCanBeDowngraded = ctx.Tokens.OfAnyHumanClass(Human.Invader)
