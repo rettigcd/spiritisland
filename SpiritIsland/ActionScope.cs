@@ -55,6 +55,16 @@ public sealed class ActionScope : IAsyncDisposable {
 		_neverCache = true; // !! Since it is a singleton, make usable across multiple execution contexts
 	}
 
+	/// <summary> Called from ActionScope.Start( ActionCategory ) </summary>
+	ActionScope( ActionCategory actionCategory, ActionScopeContainer container ) {
+		Id = Guid.NewGuid();
+		Category = actionCategory;
+		_container = container;
+
+		_old = _container.Current;
+		_container.Current = this;
+	}
+
 	/// <summary> For Testing only </summary>
 	public static ActionScope Start_NoStartActions( ActionCategory cat ) => new ActionScope( cat, Container );
 
@@ -65,14 +75,6 @@ public sealed class ActionScope : IAsyncDisposable {
 		return scope;
 	}
 
-	ActionScope( ActionCategory actionCategory, ActionScopeContainer container ) {
-		Id = Guid.NewGuid();
-		Category = actionCategory;
-		_container = container;
-
-		_old = _container.Current;
-		_container.Current = this;
-	}
 	#endregion
 
 	public ActionCategory Category { get; }

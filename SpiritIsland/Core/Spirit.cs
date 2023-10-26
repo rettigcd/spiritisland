@@ -332,8 +332,18 @@ public abstract partial class Spirit : IOption {
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
 	#region Bind helpers
+
 	public SelfCtx BindSelf() => BindDefault( this );
+
 	public SelfCtx BindMyPowers() => BindMyPowers( this );
+
+	public bool ActionIsMyPower {
+		get {
+			var scope = ActionScope.Current;
+			return scope.Category == ActionCategory.Spirit_Power && scope.Owner == this;
+		}
+	}
+
 	#endregion Bind helpers
 
 	public virtual SelfCtx BindDefault( Spirit spirit )	=> new SelfCtx( spirit );
