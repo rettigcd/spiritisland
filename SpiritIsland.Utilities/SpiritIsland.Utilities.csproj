@@ -51,6 +51,7 @@
     <None Remove="images\icons\JungleOrBeast.png" />
     <None Remove="images\icons\Junglewetland.png" />
     <None Remove="images\icons\Land_Gather_Beasts.png" />
+    <None Remove="images\icons\Land_Gather_Blight.png" />
     <None Remove="images\icons\Land_Push_Town-City.png" />
     <None Remove="images\icons\major.png" />
     <None Remove="images\icons\minor.png" />
@@ -202,6 +203,7 @@
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
+    <EmbeddedResource Include="images\icons\Land_Gather_Blight.png" />
     <EmbeddedResource Include="images\icons\Land_Push_Town-City.png" />
     <EmbeddedResource Include="images\icons\major.png" />
     <EmbeddedResource Include="images\icons\minor.png" />
@@ -422,6 +424,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Volcano_Looming_High.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\spirits\Wounded_Waters_Bleeding.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\texture1.png">

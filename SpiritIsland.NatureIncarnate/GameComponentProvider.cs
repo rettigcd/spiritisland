@@ -6,7 +6,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		[ToweringRootsOfTheJungle.Name] = typeof( ToweringRootsOfTheJungle ),
 		[BreathOfDarknessDownYourSpine.Name] = typeof( BreathOfDarknessDownYourSpine ),
 		[HearthVigil.Name] = typeof( HearthVigil ),
+		[WoundedWatersBleeding.Name] = typeof( WoundedWatersBleeding ),
 	};
+
 	public string[] SpiritNames => SpiritTypes.Keys.ToArray();
 	public Spirit? MakeSpirit( string spiritName ) {
 		return SpiritTypes.ContainsKey( spiritName )
@@ -43,4 +45,5 @@ public class GameComponentProvider : IGameComponentProvider {
 	};
 
 }
+
 

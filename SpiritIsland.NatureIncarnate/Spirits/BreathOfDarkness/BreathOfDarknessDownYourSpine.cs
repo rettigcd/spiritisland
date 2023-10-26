@@ -24,7 +24,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 			InnatePower.For<LostInTheEndlessDark>()
 		};
 
-		PowerRangeCalc = new ShadowTouchedRealm_RangeCalculator( this );
+		PowerRangeCalc = new ShadowTouchedRealm_RangeCalculator();
 	}
 
 	public override string Text => Name;

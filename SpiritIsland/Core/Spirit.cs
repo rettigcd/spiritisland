@@ -448,7 +448,9 @@ public abstract partial class Spirit : IOption {
 	#endregion
 
 	#region Save/Load Memento
+
 	public IMemento<Spirit> SaveToMemento() => new Memento(this);
+
 	public void LoadFrom( IMemento<Spirit> memento ) => ((Memento)memento).Restore(this);
 
 

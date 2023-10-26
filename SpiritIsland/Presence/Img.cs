@@ -26,6 +26,7 @@ public enum Img {
 	Damage_2,
 	Oneenergyfire,
 	Land_Gather_Beasts,
+	Land_Gather_Blight,
 	GainEnergyEqualToCardPlays,
 	Land_Push_Town_City,
 

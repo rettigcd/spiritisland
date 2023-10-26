@@ -97,7 +97,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 	public List<PowerCard> DtnwMajor { get; private set; }
 
 	public async Task GainTime( int count ) {
-		while(count > 0) {
+		while(0 < count) {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
 			var from = (IOption)await Gateway.Decision( Select.TrackSlot.ToReveal( selectPrompt, this ) )

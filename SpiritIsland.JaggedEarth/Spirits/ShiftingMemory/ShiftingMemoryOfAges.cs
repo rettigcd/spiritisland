@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 

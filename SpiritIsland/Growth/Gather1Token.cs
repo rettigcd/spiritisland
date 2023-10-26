@@ -16,12 +16,9 @@ public class Gather1Token : GrowthActionFactory {
 			.Distinct()
 			.ToHashSet();
 
-		//	var to = await ctx.Decision( new Select.ASpace( "Gather beast to", options.Downgrade(), Present.Always ));
-		//	await ctx.Target(to).GatherUpTo(1,Token.Beast);
-
 		var isInRange = new TargetSpaceCtxFilter( "is in range", x => options.Contains( x.Tokens ) );
-		await new SpaceCmd( "Gather a " + _tokenToGather.Label, ctx => ctx.Pusher.AddGroup( 1, _tokenToGather ).MoveUpToN() )
-			.From().SpiritPickedLand().Which( isInRange ).ByPickingToken( _tokenToGather )
+		await new SpaceCmd( "Gather a " + _tokenToGather.Label, ctx => ctx.Gatherer.AddGroup( 1, _tokenToGather ).GatherUpToN() )
+			.From().SpiritPickedLand().Which( isInRange )
 			.Execute( ctx );
 	}
 

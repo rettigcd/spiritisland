@@ -84,6 +84,8 @@ public sealed class GrowthPainter : IDisposable{
 			// Ocean
 			case "PlaceInOcean":            PlacePresence( rect, action ); break;
 			case "PlacePresenceAndBeast":   PlacePresence( rect, action ); break;
+            // Wounded Waters Bleeding
+			case "PlaceDestroyedPresence(1)": PlacePresence( rect, action ); break;
 
 			case "GatherPresenceIntoOcean": DrawIconInCenter( rect, Img.GatherToOcean ); break;
 			case "PushPresenceFromOcean":   DrawIconInCenter( rect, Img.Pushfromocean ); break;
@@ -117,7 +119,7 @@ public sealed class GrowthPainter : IDisposable{
 				);
 				break; // !!! this is drawn as an OR, layer them and make them an AND
 			// Many Minds
-			case "Gather1Beast": DrawIconInCenter( rect, Img.Land_Gather_Beasts ); break;
+			case "Gather1Token": DrawIconInCenter( rect, Img.Land_Gather_Beasts ); break; // Gather 1 Beast
 			case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
 			case "DiscardPowerCards": DrawIconInCenter( rect, Img.Discard2 ); break;
 			case "IgnoreRange": IgnoreRange( rect ); break;
@@ -284,11 +286,12 @@ public sealed class GrowthPainter : IDisposable{
 	}
 
 	void PlacePresence( RectangleF bounds, GrowthActionFactory growth ) {
-		var (range,filterEnum,addOnIcon) = growth switch {
-			PlaceInOcean { } => ((int?)null, Target.Ocean, Img.None),
-			PlacePresenceAndBeast => ((int?)3, Target.Any, Img.Beast), // add on icon
-			PlacePresenceOrDisease => ((int?)1, Target.Any, Img.Disease),
-			PlacePresence { Range: int r, FilterDescription: string f } => ((int?)r, f, Img.None), // generic, do last
+		var (presence,range,filterEnum,addOnIcon) = growth switch {
+			PlaceInOcean           => (Img.Icon_Presence, null,    Target.Ocean, Img.None),
+			PlacePresenceAndBeast  => (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast), // add an icon
+			PlacePresenceOrDisease => (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease),
+			PlaceDestroyedPresence { Range: int r, FilterDescription: string f } => (Img.Icon_DestroyedPresence, (int?)r, f, Img.None), // generic, do last
+			PlacePresence { Range: int r, FilterDescription: string f } => (Img.Icon_Presence, (int?)r, f, Img.None), // generic, do last
 			_ => throw new ArgumentException("growth action factory not a place-presence",nameof(growth)),
 		};
 
@@ -301,7 +304,7 @@ public sealed class GrowthPainter : IDisposable{
 		using Font font        = UseGameFont( bounds.Height * fontScale );
 
 		// Draw: + presence
-		using var presenceIcon = GetImage( Img.Icon_Presence );
+		using var presenceIcon = GetImage( presence );
 		float iconCenterY = bounds.Y + bounds.Height * presenceYPercent; // top of presence
 		float presenceWidth = bounds.Width*.6f;
 		float presenceHeight = presenceIcon.Height * presenceWidth / presenceIcon.Width;
