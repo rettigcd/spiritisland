@@ -28,6 +28,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 	public string Instructions { get; }
 
 	public string TargetFilter => _targetAttr.TargetFilterName;
+	/// <summary> Used by PowerCardImageManager to draw the range-text on the card. </summary>
 	public string RangeText => _targetAttr.RangeText;
 
 	public int Cost            => _cardAttr.Cost;

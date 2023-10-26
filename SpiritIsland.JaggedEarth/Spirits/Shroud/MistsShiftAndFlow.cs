@@ -141,8 +141,7 @@ class MistsShiftAndFlow {
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Except( sources ); // exclude previously found sources
-		if(_sourceCriteria.Terrain.HasValue)
-			flowedSources = flowedSources.Where( s => s.Space.Is( _sourceCriteria.Terrain.Value ) );
+		flowedSources = _sourceCriteria.Filter( flowedSources );
 		if(_sourceCriteria.From == From.SacredSite)
 			flowedSources = flowedSources.Where( _spirit.Presence.IsOn ); // the only way the new space is a SS, is if already had a presence here.
 

@@ -2,7 +2,7 @@
 
 public class TheJungleHungers {
 
-	[MajorCard("The Jungle Hungers",3,Element.Moon,Element.Plant),Slow,FromPresenceIn(1,Terrain.Jungle)]
+	[MajorCard("The Jungle Hungers",3,Element.Moon,Element.Plant),Slow,FromPresenceIn(Target.Jungle,1)]
 	[Instructions( "Destroy all Explorer and all Town. Destroy all Dahan. -If you have- 2 Moon, 3 Plant: Destroy 1 City. Do not destroy any Dahan." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 

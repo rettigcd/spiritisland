@@ -2,7 +2,7 @@
 
 public class VolcanicEruption {
 
-	[MajorCard("Volcanic Eruption", 8, Element.Fire, Element.Earth),Slow,FromPresenceIn(1,Terrain.Mountain)]
+	[MajorCard("Volcanic Eruption", 8, Element.Fire, Element.Earth),Slow,FromPresenceIn(Target.Mountain,1)]
 	[Instructions( "6 Fear. 20 Damage. Destroy all Dahan and Beasts. Add 1 Blight. -If you have- 4 Fire, 3 Earth: Destroy all Invaders. Add 1 Wilds. In each adjacent land: 10 Damage. Destroy all Dahan and Beasts. If there are no Blight, add 1 Blight." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 6 fear

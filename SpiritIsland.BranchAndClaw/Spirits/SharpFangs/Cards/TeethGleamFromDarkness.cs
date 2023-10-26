@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 public class TeethGleamFromDarkness {
 
-	[SpiritCard("Teeth Gleam From Darkness",1,Element.Moon,Element.Plant,Element.Animal),Slow,FromPresenceIn(1,Terrain.Jungle,Target.NoBlight)]
+	[SpiritCard("Teeth Gleam From Darkness",1,Element.Moon,Element.Plant,Element.Animal),Slow,FromPresenceIn(Target.Jungle,1,Target.NoBlight)]
 	[Instructions( "1 Fear. Add 1 Beasts. -or- If target land has both Beasts and Invaders: 3 Fear." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 

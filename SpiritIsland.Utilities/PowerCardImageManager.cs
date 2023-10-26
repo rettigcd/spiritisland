@@ -333,7 +333,7 @@ public class PowerCardImageManager {
 						graphics.DrawImageFitBoth( ssImg, imgRect/*.InflateBy(-cell.Height/8)*/ );
 				else {
 					var terrainSplit = imgRect.SplitHorizontally( 2 );
-					Img terrain = ParseTerrain( parts[1] );
+					Img terrain = TargetToImg( parts[1] ); //  ParseTerrain( parts[1] );
 					using(Image terrainImg = ResourceImages.Singleton.GetImage(terrain))
 						graphics.DrawImageFitHeight( terrainImg, terrainSplit[0] );
 					imgRect.Offset( 0, cell.Height/4 );
@@ -354,14 +354,4 @@ public class PowerCardImageManager {
 		}
 	}
 
-	static Img ParseTerrain( string text ) {
-		// return (Terrain)Enum.Parse(typeof(Terrain), text);
-		return text switch {
-			"Sand"     => Img.Icon_Sand,
-			"Wetland"  => Img.Icon_Wetland,
-			"Mountain" => Img.Icon_Mountain,
-			"Jungle"   => Img.Icon_Jungle,
-			_          => throw new Exception( $"Unknown terrain:'{text}'" )
-		};
-	}
 }
