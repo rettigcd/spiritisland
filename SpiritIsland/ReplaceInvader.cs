@@ -4,9 +4,12 @@ static public class ReplaceInvader {
 
 	/// <summary>User selects 1 Invader and downgrades it.</summary>
 	/// <returns>If invader was downgraded</returns>
-	public static async Task Downgrade1( TargetSpaceCtx ctx, Present present, params HumanTokenClass[] groups ) {
-		HumanToken[] options = ctx.Tokens.OfAnyHumanClass( groups );
-		await Downgrade1Token( ctx, present, options );
+	public static Task Downgrade1( TargetSpaceCtx ctx, Present present, params HumanTokenClass[] groups )
+		=> Downgrade1(ctx.Self,ctx.Tokens,present,groups);
+
+	public static async Task Downgrade1( Spirit spirit, SpaceState tokens, Present present, params HumanTokenClass[] groups ) {
+		HumanToken[] options = tokens.OfAnyHumanClass( groups );
+		await Downgrade1Token( spirit, tokens, present, options );
 	}
 
 	public static async Task DowngradeAll( TargetSpaceCtx ctx, params HumanTokenClass[] groups ) {
@@ -18,7 +21,7 @@ static public class ReplaceInvader {
 
 		HumanToken[] options = invadersThatCanBeDowngraded.Keys.ToArray();
 		while(0 < options.Length) {
-			var oldInvader = await Downgrade1Token( ctx, Present.Done, options );
+			var oldInvader = await Downgrade1Token( ctx.Self, ctx.Tokens, Present.Done, options );
 			if(oldInvader == null) break;
 			// this one downgraded, can't use again
 			invadersThatCanBeDowngraded[oldInvader]--;
@@ -29,25 +32,25 @@ static public class ReplaceInvader {
 
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
 	/// <returns> Original token (before downgrade).</returns>
-	static async Task<HumanToken> Downgrade1Token( TargetSpaceCtx ctx, Present present, HumanToken[] options ) {
-		var st = await ctx.Self.Gateway.Decision( Select.Invader.ToReplace( "downgrade", ctx.Space, options, present ) );
+	static async Task<HumanToken> Downgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options ) {
+		var st = await spirit.Gateway.Decision( Select.Invader.ToReplace( "downgrade", tokens.Space, options, present ) );
 		if(st == null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
-		await DowngradeSelectedInvader( ctx, oldInvader );
+		await DowngradeSelectedInvader( tokens, oldInvader );
 		return oldInvader;
 	}
 
-	public static async Task DowngradeSelectedInvader( TargetSpaceCtx ctx, HumanToken oldInvader ) {
+	public static async Task DowngradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
 		// remove old invader
-		ctx.Tokens.Adjust( oldInvader, -1 );
+		tokens.Adjust( oldInvader, -1 );
 
 		// Add new
 		var newInvaderClass = oldInvader.Class == Human.City ? Human.Town
 			: oldInvader.Class == Human.Town ? Human.Explorer
 			: null;
 		if(newInvaderClass != null)
-			await AddReplacementOrDestroy( ctx.Tokens, oldInvader, newInvaderClass );
+			await AddReplacementOrDestroy( tokens, oldInvader, newInvaderClass );
 	}
 
 	static async Task AddReplacementOrDestroy( SpaceState tokens, HumanToken oldInvader, HumanTokenClass newInvaderClass ) {

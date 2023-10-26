@@ -38,7 +38,7 @@ public class Depopulation : FearCardBase, IFearCard {
 		var invader = await ctx.Decision(new Select.ASpaceToken(prompt,ctx.Space,options,Present.Always));
 		if(invader == null) return;
 		if(invader.Token.Class == Human.City)
-			await ReplaceInvader.DowngradeSelectedInvader(ctx,(HumanToken)invader.Token);
+			await ReplaceInvader.DowngradeSelectedInvader(ctx.Tokens,(HumanToken)invader.Token);
 		else // must be town
 			await ctx.Tokens.Remove(invader.Token,1);
 	} );
