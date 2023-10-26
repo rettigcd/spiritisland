@@ -10,7 +10,7 @@ public class TravelersBoon {
 		var otherCtx = ctx.OtherCtx;
 		var destinationCtx = await otherCtx.SelectSpace("Move up to 3 of your presence to:", ctx.Self.Presence.Spaces );
 		var movedTokens = await new TokenCollectorFromSpecifiedSources( destinationCtx, otherCtx.Self.Presence.Spaces.Tokens().ToArray() )
-			.AddGroup(3,otherCtx.Self.Presence.Deployed.Select(x=>x.Token.Class).Distinct().ToArray())
+			.AddGroup( 3, otherCtx.Self.Presence.Deployed.Select( x => x.Token.Class ).Distinct().ToArray() )
 			.CollectUpToN();
 
 		// They may move up to 1 Invader, 1 dahan, and 1 beast along with their presence.

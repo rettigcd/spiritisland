@@ -41,7 +41,12 @@ class ArtworkInit {
 
 		foreach(PowerCard powerCard in powerCards) {
 			_initCurrent++;
-			using Image img = await ResourceImages.Singleton.GetPowerCard( powerCard );
+			try {
+				using Image img = await ResourceImages.Singleton.GetPowerCard( powerCard );
+			}
+			catch(Exception ex) {
+				MessageBox.Show( ex.ToString() );
+			}
 		}
 
 		_initCurrent = _initTotal;
@@ -50,7 +55,11 @@ class ArtworkInit {
 	void BuildFearCards( List<IFearCard> fearCards ) {
 		foreach(IFearCard fearCard in fearCards) {
 			_initCurrent++;
-			ResourceImages.Singleton.InitFearCard( fearCard );
+			try {
+				ResourceImages.Singleton.InitFearCard( fearCard );
+			}catch(Exception ex) {
+				MessageBox.Show(ex.ToString());
+			}
 		}
 	}
 

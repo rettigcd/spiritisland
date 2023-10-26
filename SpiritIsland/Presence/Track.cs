@@ -13,10 +13,10 @@ public class Track : IOption {
 
 	public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { 
 		Energy = energy, 
-		Icon = new IconDescriptor{ BackgroundImg = Img.Coin, Text = energy.ToString() }
+		Icon = new IconDescriptor{ BackgroundImg = Img.Coin, Text = energy.ToString() },
 	};
 
-	public static Track MkEnergy(params Element[] els ) {
+	public static Track MkEnergy( params Element[] els ) {
 		var track = new Track( els.Select( x => x.ToString() ).Join( "," ).ToLower() + " energy", els ) {
 			Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = els[0].GetTokenImg() }
 		};

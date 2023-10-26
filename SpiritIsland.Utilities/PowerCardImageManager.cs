@@ -354,14 +354,14 @@ public class PowerCardImageManager {
 		}
 	}
 
-	private static Img ParseTerrain( string text ) {
+	static Img ParseTerrain( string text ) {
 		// return (Terrain)Enum.Parse(typeof(Terrain), text);
 		return text switch {
 			"Sand"     => Img.Icon_Sand,
 			"Wetland"  => Img.Icon_Wetland,
 			"Mountain" => Img.Icon_Mountain,
 			"Jungle"   => Img.Icon_Jungle,
-			_          => throw new Exception( "Unknown terrain:" + text )
+			_          => throw new Exception( $"Unknown terrain:'{text}'" )
 		};
 	}
 }

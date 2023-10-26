@@ -15,13 +15,13 @@ internal class GiftOfAbundance {
 		).Execute( ctx.OtherCtx );
 
 		// Either you or target Spirit may add 1 Destroyed presence to a wetland where you have presence.
-		// Select spirit
 		static bool isWetland(SpaceState space) => TerrainMapper.Current.MatchesTerrain( space, Terrain.Wetland );
 		var spiritsWithPresenceInWetland = new[] { ctx, ctx.OtherCtx }
 			.Distinct() // if solo
 			.Where( ctx => 0<ctx.Self.Presence.Destroyed && ctx.Self.Presence.Spaces.Tokens().Any(isWetland));
 		Spirit presenceTarget = await ctx.OtherCtx.Decision( new Select.ASpirit( Name, spiritsWithPresenceInWetland.Select(x=>x.Self), Present.AutoSelectSingle ) );
 		if(presenceTarget == null ) return;
+
 		SelfCtx restoringSpiritCtx = presenceTarget == ctx.Self ? ctx : ctx.OtherCtx;
 
 		var spaceOptions = restoringSpiritCtx.Self.Presence.Spaces.Tokens().Where(isWetland);
