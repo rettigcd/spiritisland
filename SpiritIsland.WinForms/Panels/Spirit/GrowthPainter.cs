@@ -14,7 +14,7 @@ public class GrowthPainter : IDisposable{
 	Bitmap _cachedImageLayer;
 
 	public GrowthPainter( GrowthLayout layout ) {
-		this._layout = layout;
+		_layout = layout;
 	}
 
 	public void Paint( Graphics graphics, bool addBackground ) {

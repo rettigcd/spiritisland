@@ -69,7 +69,7 @@ public class RegionLayoutClass {
 
 		// Focus: Growth
 		Rectangle row;
-		(_, (row, _)) = bounds.SplitVerticallyByWeight( 0, .5f, .4f, .1f );
+		(_, (row, _)) = bounds.SplitVerticallyByWeight( 0, .05f, .25f, .75f );
 		(_, (layout.GrowthRect, _)) = row.SplitHorizontallyByWeight( 0, .1f, .8f, .1f );
 
 		return layout;
@@ -143,14 +143,21 @@ public class RegionLayoutClass {
 			["Hand"] = DeckRects[0],
 			["Played"] = DeckRects[1],
 			["Discarded"] = DeckRects[2],
-			["Draw"] = DeckRects[3],
 			["Cards"] = CardRect,
+			// Spirit
+			["PresenceTrack"] = PresenceTractRect,
+			["Growth"] = GrowthRect,
+			["Innates"] = InnateRect,
 			// Debug
+
 			// popups
 			["Element Bounds"] = ElementPopUpBounds( 10 ),
 			["Popup Fear"] = PopupFearRect,
 			["Minor/Major"] = MinorMajorDeckSelectionPopup,
 		};
+
+		if(3 < DeckRects.Length)
+			rects["Draw"] = DeckRects[3];
 
 		var colors = new Color[] { Color.Red, Color.Green, Color.Blue, Color.Orange, Color.Purple, Color.Yellow };
 		int i = 0;
