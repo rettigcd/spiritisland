@@ -393,7 +393,7 @@ public abstract partial class Spirit : IOption {
 	#region Play Cards
 
 	// Plays cards from hand for cost
-	public async Task SelectAndPlayCardsFromHand( int? numberToPlay = null ) {
+	public virtual async Task SelectAndPlayCardsFromHand( int? numberToPlay = null ) {
 		int remainingToPlay = numberToPlay ?? NumberOfCardsPlayablePerTurn;
 
 		PowerCard[] getPowerCardOptions() => Hand
