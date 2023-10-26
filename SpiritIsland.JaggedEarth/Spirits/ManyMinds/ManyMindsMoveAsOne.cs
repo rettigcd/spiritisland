@@ -34,7 +34,7 @@ public partial class ManyMindsMoveAsOne : Spirit {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(),new DrawPowerCard()),
 			new GrowthOption(new PlacePresence(1), new PlacePresence(0)),
-			new GrowthOption(new PlacePresenceAndBeast(),new GainEnergy(1), new Gather1Beast())
+			new GrowthOption(new PlacePresenceAndBeast(),new GainEnergy(1), new Gather1Token(2,Token.Beast))
 		);
 
 		// Innates
