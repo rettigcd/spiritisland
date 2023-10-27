@@ -17,8 +17,9 @@ class ArtworkInit {
 
 	public void Init() {
 		_ = Task.Run( InitArtwork );
-		_initTimer = new Timer();
-		_initTimer.Interval = 250;
+		_initTimer = new Timer {
+			Interval = 250
+		};
 		_initTimer.Tick += _initTimer_Tick;
 		_initTimer.Enabled = true;
 		_initTimer.Start();

@@ -15,7 +15,7 @@ static public class ReplaceInvader {
 	public static async Task DowngradeAll( TargetSpaceCtx ctx, params HumanTokenClass[] groups ) {
 
 		// downgrade any # of invaders
-		var invadersThatCanBeDowngraded = ctx.Tokens.OfAnyHumanClass(Human.Invader)
+		var invadersThatCanBeDowngraded = ctx.Tokens.OfAnyHumanClass( groups )
 			.ToDictionary( t => t, t => ctx.Tokens[t] )
 			.ToCountDict();
 
