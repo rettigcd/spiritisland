@@ -22,16 +22,19 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 
 	public void AssignBounds( RegionLayoutClass regionLayout ) {
 		_bounds = regionLayout.SpiritRect;
+		_innateBounds = regionLayout.InnateRect;
+		_presenceTractBounds = regionLayout.PresenceTractRect;
 		_spiritImageBounds = regionLayout.SpiritImageBounds;
 
 		// Update the Painters
 		Dispose();
-		_presencePainter = new PresenceTrackPainter( _spirit, new PresenceTrackLayout( _ctx._spirit, _buttonContainer, regionLayout.PresenceTractRect ), _ctx._tip );
-		var innates = new InnatesLayout( _ctx._spirit, _buttonContainer, regionLayout.InnateRect );
+		var presenceLayout = new PresenceTrackLayout( _spirit, _buttonContainer, _presenceTractBounds );
+		_presencePainter = new PresenceTrackPainter( _spirit, presenceLayout, _ctx._tip );
+		var innatesLayout = new InnatesLayout( _spirit, _buttonContainer, _innateBounds );
 		_innatePainters = _spirit.InnatePowers
-			.Select( power => new InnatePainter( power, innates.FindLayoutByInnate[power] ) )
+			.Select( power => new InnatePainter( power, innatesLayout.FindLayoutByInnate[power] ) )
 			.ToArray();
-		_elementLayout = new ElementLayout( regionLayout.ElementRect);
+		_elementLayout = new ElementLayout( regionLayout.ElementRect );
 
 	}
 
@@ -80,17 +83,29 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 	public void OnGameLayoutChanged() {
 		_buttonContainer.Clear();
 
+		// Innates
 		foreach(InnatePower power in _ctx._spirit.InnatePowers) {
 			_buttonContainer.Add( power, new InnateButton() );
 			foreach(IDrawableInnateOption innatePowerOption in power.DrawableOptions)
 				_buttonContainer.Add( innatePowerOption, new InnateOptionsBtn( _ctx._spirit, innatePowerOption ) );
 		}
+		if(0 < _innateBounds.Width) {
+			var innates = new InnatesLayout( _ctx._spirit, _buttonContainer, _innateBounds );
+			_innatePainters = _spirit.InnatePowers
+				.Select( power => new InnatePainter( power, innates.FindLayoutByInnate[power] ) )
+				.ToArray();
+		}
+
+		// Presence
 		var presenceImg = _ctx._tip._presenceImg;
 		foreach(Track energySlot in _ctx._spirit.Presence.Energy.Slots)
 			_buttonContainer.Add( energySlot, new PresenceSlotButton( _ctx._spirit.Presence.Energy, energySlot, presenceImg ) );
-
 		foreach(Track cardSlot in _ctx._spirit.Presence.CardPlays.Slots)
 			_buttonContainer.Add( cardSlot, new PresenceSlotButton( _ctx._spirit.Presence.CardPlays, cardSlot, presenceImg ) );
+		if(0 < _presenceTractBounds.Width ) {
+			var presenceLayout = new PresenceTrackLayout( _spirit, _buttonContainer, _presenceTractBounds );
+			_presencePainter = new PresenceTrackPainter( _spirit, presenceLayout, _ctx._tip );
+		}
 	}
 
 
@@ -104,6 +119,8 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 	public readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();
 
 	public Rectangle _bounds;
+	Rectangle _innateBounds;
+	Rectangle _presenceTractBounds;
 
 	public void Paint( Graphics graphics ) {
 		if(_bounds == default)
