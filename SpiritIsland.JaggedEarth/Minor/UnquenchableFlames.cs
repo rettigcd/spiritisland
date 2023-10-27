@@ -14,7 +14,7 @@ public class UnquenchableFlames{
 
 		// If you have 2 fire: add 1 badlands
 		if(await ctx.YouHave("2 fire"))
-			await ctx.Badlands.Add(1);
+			await ctx.Badlands.AddAsync(1);
 	}
 
 }

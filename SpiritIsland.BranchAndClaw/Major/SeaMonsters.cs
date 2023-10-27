@@ -15,7 +15,7 @@ public class SeaMonsters {
 	static async Task DoPowerAction( TargetSpaceCtx ctx ) {
 		// add 1 beast.
 		var beasts = ctx.Beasts;
-		await beasts.Add(1);
+		await beasts.AddAsync(1);
 
 		// IF invaders are present,
 		if(ctx.HasInvaders)

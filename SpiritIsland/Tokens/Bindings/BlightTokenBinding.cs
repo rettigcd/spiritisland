@@ -8,7 +8,7 @@ public class BlightTokenBinding : TokenBinding {
 	/// <summary> Allows Power Cards to block blight on this space. </summary>
 	public void Block() => _tokens.Init( new BlockBlightToken(), 1 );
 
-	public override async Task Add( int count, AddReason reason = AddReason.Added ) {
+	public override async Task AddAsync( int count, AddReason reason = AddReason.Added ) {
 		await _tokens.Add( Token.Blight, count, reason );
 	}
 

@@ -14,7 +14,7 @@ public class UnrelentingGrowth {
 		// if you have 3 sun, 3 plant
 		if(await ctx.YouHave( "3 sun,3 plant" )) {
 			// in that land add 1 additional wilds 
-			await toCtx.Wilds.Add(1);
+			await toCtx.Wilds.AddAsync(1);
 			// and remove 1 blight.
 			var blight = toCtx.Blight;
 			if(blight.Any) await toCtx.RemoveBlight();
@@ -37,7 +37,7 @@ public class UnrelentingGrowth {
 
 		// add wilds
 		var toCtx = ctx.Target( to );
-		await toCtx.Wilds.Add(1);
+		await toCtx.Wilds.AddAsync(1);
 
 		// Add presence
 		for(int i = 0; i < 2; ++i) {

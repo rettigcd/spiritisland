@@ -9,8 +9,8 @@ public class TheShoreSeethesWithHatred{
 		ctx.AddFear(1);
 
 		// add 1 badlands and 1 wilds
-		await ctx.Badlands.Add(1);
-		await ctx.Wilds.Add(1);
+		await ctx.Badlands.AddAsync(1);
+		await ctx.Wilds.AddAsync(1);
 	}
 
 }

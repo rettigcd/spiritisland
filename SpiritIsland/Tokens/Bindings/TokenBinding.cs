@@ -24,7 +24,7 @@ public class TokenBinding {
 
 	public void Adjust( int delta ) => _tokens.Adjust( Default, delta );
 
-	public virtual Task Add( int count, AddReason reason = AddReason.Added )
+	public virtual Task AddAsync( int count, AddReason reason = AddReason.Added )
 		=> _tokens.Add( Default, count, reason );
 
 	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
@@ -70,7 +70,7 @@ public class BeastBinding {
 
 	public void Adjust( int delta ) => _spaceState.Adjust( _uniqueToken, delta );
 
-	public Task Add( int count, AddReason reason = AddReason.Added )
+	public Task AddAsync( int count, AddReason reason = AddReason.Added )
 		=> _spaceState.Add( _uniqueToken, count, reason );
 
 	public Task Remove( int count, RemoveReason reason = RemoveReason.Removed )

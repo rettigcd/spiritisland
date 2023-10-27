@@ -23,9 +23,9 @@ public class MeltEarthIntoQuicksand {
 			// +4 damamge,
 			await ctx.DamageInvaders(4);
 			// Add 1 badland.
-			await ctx.Badlands.Add(1);
+			await ctx.Badlands.AddAsync(1);
 			// Add 1 wilds
-			await ctx.Wilds.Add(1);
+			await ctx.Wilds.AddAsync(1);
 
 		}
 

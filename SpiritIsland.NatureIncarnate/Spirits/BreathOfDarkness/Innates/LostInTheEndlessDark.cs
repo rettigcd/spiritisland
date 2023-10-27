@@ -31,7 +31,7 @@ public class LostInTheEndlessDark {
 	[InnateOption( "3 moon, 2 animal", "Add 1 Beast", 2 )]
 	static public async Task Option3( SelfCtx ctx ) {
 		var edCtx = ctx.Target( EndlessDark.Space );
-		await edCtx.Tokens.Beasts.Add(1);
+		await edCtx.Tokens.Beasts.AddAsync(1);
 	}
 
 

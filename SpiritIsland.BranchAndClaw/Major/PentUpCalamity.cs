@@ -14,7 +14,7 @@ public class PentUpCalamity {
 	}
 
 	static async Task AddDiseaseAndStrife( TargetSpaceCtx ctx ) {
-		await ctx.Disease.Add(1);
+		await ctx.Disease.AddAsync(1);
 		await ctx.AddStrife();
 
 		if( await ctx.YouHave( "2 moon,3 fire" ) ) {

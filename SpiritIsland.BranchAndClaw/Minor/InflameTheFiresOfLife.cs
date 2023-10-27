@@ -7,7 +7,7 @@ public class InflameTheFiresOfLife {
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceCmd( "add disease ", ctx => ctx.Disease.Add(1) ),
+			new SpaceCmd( "add disease ", ctx => ctx.Disease.AddAsync(1) ),
 			new SpaceCmd( "1 fear and 1 strife", FearAndStrife )
 		);
 	}

@@ -9,7 +9,7 @@ public class AnimatedWrackroot {
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
 			new SpaceCmd( "1 fear, Destroy 1 explorer", FearAndExplorer ),
-			new SpaceCmd("add 1 wilds", ctx => ctx.Wilds.Add(1) )
+			new SpaceCmd("add 1 wilds", ctx => ctx.Wilds.AddAsync(1) )
 		);
 	}
 

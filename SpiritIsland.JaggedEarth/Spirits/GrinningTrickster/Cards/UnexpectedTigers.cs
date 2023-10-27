@@ -17,7 +17,7 @@ public class UnexpectedTigers {
 			await ctx.Push(1,Human.Explorer);
 		} else {
 			// othersie, add 1 beast
-			await ctx.Beasts.Add(1);
+			await ctx.Beasts.AddAsync(1);
 		}
 
 	}

@@ -11,7 +11,7 @@ public class RazorSharpUndergrowth {
 		// and 1 dahan
 		await ctx.Dahan.Destroy( 1 );
 		// add 1 wilds
-		await ctx.Wilds.Add(1);
+		await ctx.Wilds.AddAsync(1);
 		// defend 2
 		ctx.Defend(2);
 

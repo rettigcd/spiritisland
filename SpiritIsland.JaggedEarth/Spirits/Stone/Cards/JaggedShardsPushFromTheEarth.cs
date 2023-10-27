@@ -5,7 +5,7 @@ public class JaggedShardsPushFromTheEarth {
 	[Instructions( "Add 1 Badlands. Push up to 2 Dahan." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// Add 1 badland.
-		await ctx.Badlands.Add(1);
+		await ctx.Badlands.AddAsync(1);
 		// Push up to 2 dahan.
 		await ctx.PushUpToNDahan(2);
 	}

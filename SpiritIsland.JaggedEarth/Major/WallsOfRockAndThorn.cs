@@ -21,7 +21,7 @@ public class WallsOfRockAndThorn {
 		ctx.Defend(defend);
 
 		// add 1 wilds.
-		await ctx.Wilds.Add(1);
+		await ctx.Wilds.AddAsync(1);
 
 		// isolate target land
 		ctx.Isolate();
@@ -29,7 +29,7 @@ public class WallsOfRockAndThorn {
 		// if you have 2 earth, 2 plant:
 		if( hasBonus )
 			// Add 1 badland.
-			await ctx.Badlands.Add(1);
+			await ctx.Badlands.AddAsync(1);
 
 	}
 

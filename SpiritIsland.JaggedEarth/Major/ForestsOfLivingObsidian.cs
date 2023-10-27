@@ -7,7 +7,7 @@ public class ForestsOfLivingObsidian {
 	[Instructions( "Add 1 Badlands. Push all Dahan. 1 Damage to each Invader. If the origin land is your Sacred Site, +1 Damage to each Invader.  -If you have- 2 Sun, 3 Fire, 3 Earth: Repeat this Power." ), Artist( Artists.LucasDurham )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// add 1 badland.
-		await ctx.Badlands.Add( 1 );
+		await ctx.Badlands.AddAsync( 1 );
 
 		// Push all dahan.
 		await ctx.PushDahan( ctx.Dahan.CountAll );

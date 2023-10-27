@@ -22,7 +22,7 @@ public class VolcanicEruption {
 			// Destroy all invaders.
 			await ctx.Invaders.DestroyAll( Human.Invader );
 			// Add 1 wilds.
-			await ctx.Wilds.Add(1);
+			await ctx.Wilds.AddAsync(1);
 			// In  each adjacent land:
 			foreach(var adj in ctx.Adjacent.Select( ctx.Target ))
 				await EffectAdjacentLand( adj );

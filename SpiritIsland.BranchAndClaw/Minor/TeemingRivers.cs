@@ -10,7 +10,7 @@ public class TeemingRivers {
 
 		// if target land has no blight, add 1 beast
 		if( blightCount == 0 )
-			await ctx.Beasts.Add(1);
+			await ctx.Beasts.AddAsync(1);
 
 		// if target land has exactly 1 blight, remove it
 		if( blightCount == 1 )

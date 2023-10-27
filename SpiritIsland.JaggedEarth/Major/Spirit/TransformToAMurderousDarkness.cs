@@ -44,7 +44,7 @@ public class TransformToAMurderousDarkness {
 			await otherCtx.Tokens.Remove(token, count );
 			total += count;
 		}
-		await otherCtx.Badlands.Add( total, AddReason.AsReplacement );
+		await otherCtx.Badlands.AddAsync( total, AddReason.AsReplacement );
 
 		// Push any number of those Badlands.
 		await otherCtx.PushUpTo( total, Token.Badlands );

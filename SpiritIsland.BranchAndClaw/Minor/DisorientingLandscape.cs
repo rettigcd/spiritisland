@@ -8,7 +8,7 @@ public class DisorientingLandscape {
 		await ctx.Push(1, Human.Explorer);
 
 		if(ctx.Space.IsOneOf(Terrain.Mountain,Terrain.Jungle))
-			await ctx.Wilds.Add(1);
+			await ctx.Wilds.AddAsync(1);
 	}
 
 }

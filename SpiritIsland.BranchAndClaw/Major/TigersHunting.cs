@@ -10,7 +10,7 @@ public class TigersHunting {
 
 		// add 1 beast.
 		var beasts = ctx.Beasts;
-		await beasts.Add(1);
+		await beasts.AddAsync(1);
 
 		// Gather up to 1 beast.
 		await ctx.GatherUpTo(1,Token.Beast);

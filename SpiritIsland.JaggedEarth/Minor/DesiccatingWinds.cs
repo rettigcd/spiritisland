@@ -9,7 +9,7 @@ public class DesiccatingWinds{
 		if(ctx.Badlands.Any)
 			await ctx.DamageInvaders(1);
 		// Add 1 badlands.
-		await ctx.Badlands.Add(1);
+		await ctx.Badlands.AddAsync(1);
 	}
 
 }

@@ -7,7 +7,7 @@ public class BloodwrackPlague {
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// add 2 disease
 		var disease = ctx.Disease;
-		await disease.Add( 2 );
+		await disease.AddAsync( 2 );
 
 		// for each disease in target land, defend 1 in target and all adjacent lands
 		ctx.Defend( disease.Count );

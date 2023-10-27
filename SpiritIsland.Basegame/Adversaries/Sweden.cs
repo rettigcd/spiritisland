@@ -135,7 +135,7 @@ class HeavyMining : BaseModEntity, IHandleTokenAddedAsync {
 			config.DestroyPresence = false;
 			config.ShouldCascade = false;
 
-			await args.To.Blight.Add( 1 );
+			await args.To.Blight.AddAsync( 1 );
 			GameState.Current.LogDebug( "Heavy Mining: additional blight on " + args.To.Space.Text );
 		}
 

@@ -7,7 +7,7 @@ public class SwarmingWasps {
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceCmd( "Add 1 beast", ctx => ctx.Beasts.Add(1) ),
+			new SpaceCmd( "Add 1 beast", ctx => ctx.Beasts.AddAsync(1) ),
 			new SpaceCmd( "Push up to 2 explorers", ctx => ctx.PushUpTo( 2, Human.Explorer ) )
 				.OnlyExecuteIf( x=>x.Beasts.Any )
 		);

@@ -6,7 +6,7 @@ public class EverMultiplyingSwarm {
 	[Instructions( "Add 2 Beasts." ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 		// Add 2 beast
-		return ctx.Beasts.Add( 2 );
+		return ctx.Beasts.AddAsync( 2 );
 	}
 
 }

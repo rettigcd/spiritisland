@@ -50,7 +50,7 @@ class ScreamingDiseaseActionHandlers : IRunAtStartOfAction {
 			&& await _targetSpirit.UserSelectsFirstText( ScreamDiseaseIntoTheWind.Name + " (" + ss.Space.Label + ")", "Yes, add 1 disease", "No thank you" );
 		if( add ) {
 			_used = true;
-			await ss.Disease.Add( 1 );
+			await ss.Disease.AddAsync( 1 );
 		}
 	}
 

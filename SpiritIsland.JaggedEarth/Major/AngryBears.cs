@@ -11,7 +11,7 @@ public class AngryBears {
 
 		// if no beasts are present, add beast.
 		if(!ctx.Beasts.Any)
-			await ctx.Beasts.Add(1);
+			await ctx.Beasts.AddAsync(1);
 		else {
 			// otherwise, +2 Damage,
 			await ctx.DamageInvaders(2);

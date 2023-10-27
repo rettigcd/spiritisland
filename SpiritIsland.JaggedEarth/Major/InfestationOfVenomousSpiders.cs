@@ -8,7 +8,7 @@ public class InfestationOfVenomousSpiders {
 	[Instructions( "Add 1 Beasts. Gather up to 1 Beasts. For each Beasts, 1 Fear (max. 4) and Invaders skip one Action in target land. -If you have- 2 Air, 2 Earth, 3 Animal; After this Power causes Invaders to skip an Action, 4 Damage." ), Artist( Artists.LucasDurham )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// add 1 beast
-		await ctx.Beasts.Add(1);
+		await ctx.Beasts.AddAsync(1);
 
 		// Gather up to 1 beast.
 		await ctx.GatherUpTo(1, Token.Beast);

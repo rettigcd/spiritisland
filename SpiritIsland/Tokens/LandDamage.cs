@@ -21,7 +21,7 @@ public class LandDamage : IToken, IHandleTokenAddedAsync {
 
 		// Add Blight
 		if(GameState.Current.DamageToBlightLand <= args.To[this])
-			await args.To.Blight.Add( 1, AddReason.Ravage );
+			await args.To.Blight.AddAsync( 1, AddReason.Ravage );
 
 	}
 }

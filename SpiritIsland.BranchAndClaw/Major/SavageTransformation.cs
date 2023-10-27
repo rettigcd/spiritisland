@@ -27,7 +27,7 @@ public class SavageTransformation {
 
 		var actionCtx = origCtx.Target( spaceToken2.Space ); // allow
 		await actionCtx.Invaders.Remove( spaceToken2.Token, 1, RemoveReason.Replaced );
-		await actionCtx.Beasts.Add( 1, AddReason.AsReplacement );
+		await actionCtx.Beasts.AddAsync( 1, AddReason.AsReplacement );
 
 	}
 

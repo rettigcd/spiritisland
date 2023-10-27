@@ -10,7 +10,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 
 		// If any invaders remain, add 1 disease
 		if( ctx.Tokens.InvaderTokens().Any())
-			await ctx.Disease.Add(1);
+			await ctx.Disease.AddAsync(1);
 
 		// if 3 air and 3 plant:  
 		if( await ctx.YouHave("3 air,3 plant")) {
@@ -21,7 +21,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 			for(int i = 0; i < 2; ++i) {
 				Space space = await ctx.Self.Gateway.Decision( Select.ASpace.ToPlaceToken( $"Add disease to ({i + 1} of 2)", options, Present.Always, ctx.Tokens.Disease.Default ) );
 				if( space != null )
-					await ctx.Target(space).Disease.Add( 1 );
+					await ctx.Target(space).Disease.AddAsync( 1 );
 			}
 		}
 	}

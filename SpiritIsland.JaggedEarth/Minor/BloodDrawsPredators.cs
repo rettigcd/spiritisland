@@ -15,7 +15,7 @@ public class BloodDrawsPredators{
 			args.From.Adjust(mod,-1); // remove token
 
 			// Add 1 Beast,
-			await ctx.Beasts.Add( 1 );
+			await ctx.Beasts.AddAsync( 1 );
 
 			// Then 1 Damage per Beast (max. 3 Damage)
 			await ctx.DamageInvaders( ctx.Beasts.Count );

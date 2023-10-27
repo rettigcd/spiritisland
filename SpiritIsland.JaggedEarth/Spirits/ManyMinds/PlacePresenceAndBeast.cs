@@ -9,7 +9,7 @@ public class PlacePresenceAndBeast : GrowthActionFactory {
 		Space to = await ctx.Self.Gateway.Decision( Select.ASpace.ToPlacePresence( options, Present.Always, Token.Beast ) );
 
 		await ctx.Self.Presence.Place( from, to );
-		await ctx.Target(to).Beasts.Add(1);
+		await ctx.Target(to).Beasts.AddAsync(1);
 	}
 
 }

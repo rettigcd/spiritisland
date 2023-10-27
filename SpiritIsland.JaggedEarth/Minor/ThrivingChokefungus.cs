@@ -6,10 +6,10 @@ public class ThrivingChokefungus{
 	[Instructions( "Add 1 Disease and 1 Badlands." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// add 1 disease
-		await ctx.Disease.Add(1);
+		await ctx.Disease.AddAsync(1);
 
 		// add 1 badlands
-		await ctx.Badlands.Add(1);
+		await ctx.Badlands.AddAsync(1);
 	}
 
 }

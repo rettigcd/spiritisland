@@ -14,7 +14,7 @@ public class SacrosanctWilderness {
 
 		await ctx.SelectActionOption(
 			new SpaceCmd("2 Damage per wilds", ctx => ctx.DamageInvaders( 2 * ctx.Wilds ) ).OnlyExecuteIf( x=>ctx.Tokens.Wilds.Any ),
-			new SpaceCmd("Add 1 wilds", ctx => ctx.Wilds.Add(1))
+			new SpaceCmd("Add 1 wilds", ctx => ctx.Wilds.AddAsync(1))
 		);
 
 	}

@@ -13,7 +13,7 @@ public class NullBlightCard : IBlightCard {
 	public async Task OnBlightDepleated( GameState gs ) {
 		if(!CardFlipped) {
 			CardFlipped = true;
-			await Tokens( gs ).Add( 4 * gs.Spirits.Length );
+			await Tokens( gs ).AddAsync( 4 * gs.Spirits.Length );
 			gs.blightOnCard_Add( 4 * gs.Spirits.Length );
 		}
 	}

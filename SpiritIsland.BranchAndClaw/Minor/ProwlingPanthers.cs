@@ -13,7 +13,7 @@ public class ProwlingPanthers {
 
 	static async Task FearAndBeast( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 );
-		await ctx.Beasts.Add(1);
+		await ctx.Beasts.AddAsync(1);
 	}
 
 	static Task DestroyExplorerTown( TargetSpaceCtx ctx ) {

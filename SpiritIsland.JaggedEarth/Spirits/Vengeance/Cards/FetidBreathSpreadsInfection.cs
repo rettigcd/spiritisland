@@ -6,7 +6,7 @@ public class FetidBreathSpreadsInfection {
 	[Instructions( "1 Fear. Add 1 Disease." ), Artist( Artists.DamonWestenhofer )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		ctx.AddFear(1);
-		await ctx.Disease.Add(1);
+		await ctx.Disease.AddAsync(1);
 	}
 
 }

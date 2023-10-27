@@ -18,7 +18,7 @@ public class GrantHatredARavenousForm {
 
 		// if this destroys all invaders in target land, add 1 beast.
 		if(originallyHadInvaders && !ctx.HasInvaders)
-			await ctx.Beasts.Add(1);
+			await ctx.Beasts.AddAsync(1);
 
 		// if you have 4 moon, 2 fire
 		if(await ctx.YouHave("4 moon,2 fire")) {

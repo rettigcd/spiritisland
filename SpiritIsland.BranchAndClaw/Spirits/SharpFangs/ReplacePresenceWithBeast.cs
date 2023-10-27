@@ -9,7 +9,7 @@ public class ReplacePresenceWithBeast : GrowthActionFactory {
 		if(spaceToken == null) return;
 
 		await spaceToken.Remove();
-		await spaceToken.Space.Tokens.Beasts.Add(1);
+		await spaceToken.Space.Tokens.Beasts.AddAsync(1);
 
 	}
 

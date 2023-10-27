@@ -14,7 +14,7 @@ public class SpreadingWilds {
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		// if target land has no explorer, add 1 wilds
 		if( !ctx.Tokens.HasAny(Human.Explorer) )
-			await ctx.Wilds.Add(1);
+			await ctx.Wilds.AddAsync(1);
 	}
 
 	[DisplayOnly( "3 plant", "This Power has +1 range" )]

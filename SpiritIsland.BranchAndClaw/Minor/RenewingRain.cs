@@ -10,7 +10,7 @@ public class RenewingRain {
 			await ctx.RemoveBlight();
 
 		if(await ctx.YouHave("3 plant"))
-			await ctx.Wilds.Add(1);
+			await ctx.Wilds.AddAsync(1);
 
 	}
 

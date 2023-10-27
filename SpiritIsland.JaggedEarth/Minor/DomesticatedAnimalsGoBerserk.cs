@@ -13,7 +13,7 @@ public class DomesticatedAnimalsGoBerserk{
 
 		// If you have 3 moon:  Add 1 Beast
 		if(await ctx.YouHave("3 moon"))
-			await ctx.Beasts.Add(1);
+			await ctx.Beasts.AddAsync(1);
 	}
 
 }

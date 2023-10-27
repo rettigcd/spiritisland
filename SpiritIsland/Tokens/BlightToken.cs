@@ -34,7 +34,7 @@ public class BlightToken : TokenClassToken
 				Present.Always,
 				Token.Blight
 			) );
-			await cascadeTo.Tokens.Blight.Add( 1, args.Reason ); // Cascading blight shares original blights reason.
+			await cascadeTo.Tokens.Blight.AddAsync( 1, args.Reason ); // Cascading blight shares original blights reason.
 		}
 
 	}

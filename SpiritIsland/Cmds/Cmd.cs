@@ -28,9 +28,9 @@ public static partial class Cmd {
 	static public SpaceCmd AddTown( int count ) => new SpaceCmd( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.AddDefault(Human.Town, count ) );
 	static public SpaceCmd AddCity( int count ) => new SpaceCmd( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Human.City, count ) );
 	static public SpaceCmd AddBlightedIslandBlight => new SpaceCmd("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
-	static public SpaceCmd AddWilds( int count ) => new SpaceCmd( $"Add {count} Wilds.", ctx => ctx.Wilds.Add(count) );
-	static public SpaceCmd AddVitality( int count ) => new SpaceCmd( $"Add {count} Vitality.", ctx => ctx.Vitality.Add( count ) );
-	static public SpaceCmd AddBadlands( int badLandCount ) => new SpaceCmd( $"Add {badLandCount} badlands", ctx => ctx.Badlands.Add( badLandCount ) );
+	static public SpaceCmd AddWilds( int count ) => new SpaceCmd( $"Add {count} Wilds.", ctx => ctx.Wilds.AddAsync(count) );
+	static public SpaceCmd AddVitality( int count ) => new SpaceCmd( $"Add {count} Vitality.", ctx => ctx.Vitality.AddAsync( count ) );
+	static public SpaceCmd AddBadlands( int badLandCount ) => new SpaceCmd( $"Add {badLandCount} badlands", ctx => ctx.Badlands.AddAsync( badLandCount ) );
 	static public SpaceCmd AddStrife(int count) => new SpaceCmd( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
 	static public SpaceCmd AddStrifeTo( int count, params HumanTokenClass[] tokenClasses ) => new SpaceCmd( 
 			$"Add {count} Strife to "+String.Join(",",tokenClasses.Select(x=>x.Label)), 

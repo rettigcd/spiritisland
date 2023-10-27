@@ -7,7 +7,7 @@ public class TormentingRotFlies {
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceCmd( "Add 1 disease", ctx => ctx.Disease.Add(1) ),
+			new SpaceCmd( "Add 1 disease", ctx => ctx.Disease.AddAsync(1) ),
 			new SpaceCmd( "2 fear, +1(if disease) +1(if blight)", AddFear ).OnlyExecuteIf( x => x.Tokens.HasInvaders() )
 		);
 
