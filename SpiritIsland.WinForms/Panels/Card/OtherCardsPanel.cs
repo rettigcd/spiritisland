@@ -10,10 +10,9 @@ class OtherCardsPanel : IPanel {
 	/// <summary>
 	/// Cards that are not in 1 of the players/spirits decks
 	/// </summary>
-	public OtherCardsPanel( SharedCtx ctx, Control parentControl) {
+	public OtherCardsPanel( SharedCtx ctx, Control _) {
 		_ctx = ctx;
-		_onAppearanceChanged = parentControl.Invalidate;
-
+		// _onAppearanceChanged = parentControl.Invalidate;
 	}
 
 	public bool HasFocus { set; private get; }
@@ -112,10 +111,8 @@ class OtherCardsPanel : IPanel {
 			//	.Where( c => _pickPowerCardDecision.Use( c ) == _use )
 			//	.OrderBy( c => c.Cost ).ThenBy( c => c.DisplaySpeed )
 			//	.ToArray()
-			: new PowerCard[0];
+			: Array.Empty<PowerCard>();
 
-		// Track which Deck/Tabs have options
-		HasOption = _options.Any();
 	}
 
 	public int OptionCount => _options.Length;
@@ -130,12 +127,11 @@ class OtherCardsPanel : IPanel {
 	PowerCard[] _options;
 	Rectangle _bounds;
 	CardLayout _layout;
-	bool HasOption;
 
 
 	// Spirit Settings
 	readonly SharedCtx _ctx;
 	readonly CardImageManager _images = new CardImageManager();
-	readonly Action _onAppearanceChanged;
+	// readonly Action _onAppearanceChanged;
 }
 

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
-public class GrowthPanel : IPanel , IDisposable {
+public sealed class GrowthPanel : IPanel , IDisposable {
 
 	public GrowthPanel( SharedCtx ctx ) {
 		_ctx = ctx; 

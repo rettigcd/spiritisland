@@ -8,5 +8,5 @@ public class FollowingPresence : SpiritPresence {
 		base.SetSpirit( spirit );
 		Token = new FollowingPresenceToken( spirit, _leaderClass ); // replace BEFORE we init the board
 	}
-	IEntityClass _leaderClass;
+	readonly IEntityClass _leaderClass;
 }

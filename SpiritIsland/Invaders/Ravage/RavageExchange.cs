@@ -64,8 +64,9 @@ public class RavageExchange {
 			_ => "Unknown"
 		};
 
-		var parts = new List<string>();
-		parts.Add($"{verb}:");
+		var parts = new List<string> {
+			$"{verb}:"
+		};
 
 		if(0 < ActiveAttackers.Count) {
 			if(defend > 0)

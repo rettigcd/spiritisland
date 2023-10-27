@@ -9,7 +9,7 @@ namespace SpiritIsland.WinForms;
 
 class ArtworkInit {
 
-	Label _promptLabel;
+	readonly Label _promptLabel;
 
 	public ArtworkInit( Label label ) {
 		_promptLabel = label;

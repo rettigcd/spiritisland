@@ -164,7 +164,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		return Token;
 	}
 
-	async Task TakeFromSpace( SpaceToken st ) {
+	static async Task TakeFromSpace( SpaceToken st ) {
 		SpaceState fromSpace = st.Space.Tokens;
 		if(0<fromSpace[st.Token])
 			await fromSpace.Remove( st.Token, 1, RemoveReason.Removed ); // This is not a .MovedFrom because that needs done from .Move

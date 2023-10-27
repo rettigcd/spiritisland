@@ -193,12 +193,12 @@ public class VirtualUser {
 		AssertDecisionInfo( "Push " + tokenToPush + " to", destinations );
 	}
 
-	public void OptionallyPushesInvaderTo( string invaders, string destinations, int countToPush=1 ) {
-		var (invaderOptions,invaderChoice) = SplitOptionsAndChoice( invaders );
-//		AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );
-		AssertDecision( $"Push up to 3", invaderOptions + ",Done", invaderChoice );
-		AssertDecisionInfo( "Push "+invaderChoice+" to", destinations );
-	}
+//	public void OptionallyPushesInvaderTo( string invaders, string destinations ) {
+//		var (invaderOptions,invaderChoice) = SplitOptionsAndChoice( invaders );
+////		AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );
+//		AssertDecision( $"Push up to 3", invaderOptions + ",Done", invaderChoice );
+//		AssertDecisionInfo( "Push "+invaderChoice+" to", destinations );
+//	}
 
 	#region Ocean-Spirit Specific
 

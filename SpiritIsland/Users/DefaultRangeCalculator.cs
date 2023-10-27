@@ -38,7 +38,9 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 		return from switch {
 			From.Presence => presence.Spaces.Tokens(),
 			From.SacredSite => presence.SacredSites,
-			From.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null ? new SpaceState[] { incarnaHolder.Incarna.Space } : new SpaceState[0],
+			From.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null 
+				? new SpaceState[] { incarnaHolder.Incarna.Space } 
+				: Array.Empty<SpaceState>(),
 			_ => throw new ArgumentException( "Invalid presence source " + from ),
 		};
 	}

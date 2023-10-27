@@ -100,9 +100,8 @@ public class WrappingLayout {
 
 	/// <summary> Skips somespace </summary>
 	public void Tab( int numberOfSpaces, FontStyle style ) {
-		using(Font? font = UsingFont( style )) {
-			_x += (int)Measure( new string( 'i', numberOfSpaces ), font );
-		}
+		using Font? font = UsingFont( style );
+		_x += (int)Measure( new string( 'i', numberOfSpaces ), font );
 	}
 
 	#region finalize stuff

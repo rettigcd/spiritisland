@@ -66,7 +66,7 @@ public class HearthToken : SpiritPresenceToken
 
 	const int _deltaHealth = 4;
 
-	bool BonusAppliesToThis(HumanToken token) => token.Class.Category == TokenCategory.Dahan;
+	static bool BonusAppliesToThis(HumanToken token) => token.Class.Category == TokenCategory.Dahan;
 
 	void Fortify_AddedPresence( ITokenAddedArgs args ) {
 		// Adding presence where there wasn't any before.
@@ -82,7 +82,7 @@ public class HearthToken : SpiritPresenceToken
 	}
 
 	/// <summary> Intercepts in-coming dahan and grants them additional health. </summary>
-	void Fortify_AddingDahan( AddingTokenArgs args ) {
+	static void Fortify_AddingDahan( AddingTokenArgs args ) {
 		// !!! Any Dahan added with .Init() will not get this added health bonus.  'Call of the Dahan Ways'????
 		// Adding a Dahan
 		if(args.Token is HumanToken healthToken && BonusAppliesToThis(healthToken))
@@ -90,7 +90,7 @@ public class HearthToken : SpiritPresenceToken
 	}
 
 	/// <summary> Intercepts out-going dahan and returns them to normal health. </summary>
-	async Task Foritfy_RemovingDahanAsync( RemovingTokenArgs args ) {
+	static async Task Foritfy_RemovingDahanAsync( RemovingTokenArgs args ) {
 		if(args.Mode == RemoveMode.Test) return;
 
 		// Removing Dahan
@@ -113,7 +113,7 @@ public class HearthToken : SpiritPresenceToken
 	#region Rooted in Community
 	static public SpecialRule Rooted => new SpecialRule( "Rooted in the Community", "Blight added in your lands does not destroy your presence if Dahan are present. (Ravage destroys dahan before blight destorys presence and cascades.)" );
 
-	void RootedInCommunity_Adding( AddingTokenArgs args ) {
+	static void RootedInCommunity_Adding( AddingTokenArgs args ) {
 		// if Dahan are present.
 		if(args.Token == Token.Blight && 0<args.To.Dahan.CountAll)
 			// Blight added in your lands does not destroy your presence

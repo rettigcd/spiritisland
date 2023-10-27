@@ -17,7 +17,7 @@ public partial class Form1 : Form, IHaveOptions {
 		_init = new ArtworkInit( _promptLabel );
 		_init.Init();
 	}
-	ArtworkInit _init;
+	readonly ArtworkInit _init;
 
 	readonly LogForm logForm;
 

@@ -16,7 +16,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		// If not using pre-selects, will still target a space.
 
 		// When_PlayingCard();
-		var task = _card.ActivateAsync( _spirit.BindMyPowers() );
+		_ = _card.ActivateAsync( _spirit.BindMyPowers() );
 		//task.IsCompleted.ShouldBeTrue();
 
 		User.Assert_Done();
@@ -149,7 +149,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 	// WashAway: multiple invader types
 	[Trait("Feature","Push")]
 	[Fact]
-	public void Push3InvadersToDifferentLands() {
+	public async Task Push3InvadersToDifferentLands() {
 		UserGateway.UsePreselect.Value = true;
 
 		Given_RiverPlayingWashAway();
@@ -171,6 +171,8 @@ public class WashAway_Tests : SpiritCards_Tests {
 		User.AssertDecisionInfo( "Push E@1 to", "A1,A2,[A3],A5" );
 		User.AssertDecision( "Push up to (1)", "E@1,Done", "E@1" );
 		User.AssertDecisionInfo( "Push E@1 to", "A1,A2,A3,[A5]" );
+
+		await t.ShouldComplete();
 
 		// check that explore was moved
 		_gameState.Assert_Invaders( targetSpace,"" );

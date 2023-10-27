@@ -5,7 +5,7 @@ using System;
 using System.Drawing;
 namespace SpiritIsland.WinForms; 
 
-public class GrowthPainter : IDisposable{
+public sealed class GrowthPainter : IDisposable{
 
 	readonly GrowthLayout _layout;
 

@@ -20,9 +20,8 @@ public class PiecesEscape : GrowthActionFactory {
 
 			// select destination
 			// !!! When selectin Destination for presence, need to check where they are allowed to be.  (no ocean inland, or lure on the coast!)
-			var destination = await ctx.Decision(new Select.ASpace("Place escaped piece", ctx.Self.Presence.Spaces.Tokens(), Present.Always, spaceToken.Token));
-			if(destination == null) throw new GameOverException(new GameOver(GameOverResult.Defeat,"Unable to place escaped pieces."));
-
+			var destination = await ctx.Decision(new Select.ASpace("Place escaped piece", ctx.Self.Presence.Spaces.Tokens(), Present.Always, spaceToken.Token)) 
+				?? throw new GameOverException(new GameOver(GameOverResult.Defeat,"Unable to place escaped pieces."));
 			await spaceToken.MoveTo(destination);
 		}
 	}

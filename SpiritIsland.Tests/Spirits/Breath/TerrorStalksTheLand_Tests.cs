@@ -7,7 +7,7 @@ public class TerrorStalksTheLand_Tests {
 	public TerrorStalksTheLand_Tests() {
 		_spirit = new BreathOfDarknessDownYourSpine();
 		_board = Boards.A;
-		_gameState = new GameState( _spirit, _board);
+		_ = new GameState( _spirit, _board);
 	}
 
 	[Fact]
@@ -62,6 +62,5 @@ public class TerrorStalksTheLand_Tests {
 
 	readonly Spirit _spirit;
 	readonly Board _board;
-	readonly GameState _gameState;
 
 }

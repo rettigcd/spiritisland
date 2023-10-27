@@ -25,7 +25,7 @@ class CardLayout {
 
 	}
 
-	public Rectangle GetCardActionLabel( int index, int totalCardsInDeck ) {
+	public Rectangle GetCardActionLabel( int index, int _ ) {
 		int left = _bounds.Left + MARGIN + (index % _colCount) * (MARGIN+_cardWidth);
 		int top = _bounds.Bottom - (index/_colCount) * (MARGIN+_cardHeight);
 		return new Rectangle( left, top, MARGIN*2, MARGIN * 2 );
@@ -44,6 +44,6 @@ class CardLayout {
 	readonly int _colCount;
 
 	const int MARGIN = 10;
-	const int CARD_SPACER = 30;
+	// const int CARD_SPACER = 30;
 
 }

@@ -8,11 +8,11 @@ namespace SpiritIsland.WinForms;
 
 class CardDeckPanel : IPanel {
 
-	public CardDeckPanel( SharedCtx ctx, Control parentControl, int deckIndex, Color bgColor ) {
+	public CardDeckPanel( SharedCtx ctx, Control _, int deckIndex, Color bgColor ) {
 		_ctx = ctx;
 		_deckIndex = deckIndex;
 		_currentDeck = _ctx._spirit.Decks[deckIndex];
-		_onAppearanceChanged = parentControl.Invalidate;
+		// _onAppearanceChanged = parentControl.Invalidate;
 		_bgColor = bgColor;
 	}
 
@@ -126,7 +126,7 @@ class CardDeckPanel : IPanel {
 		OptionCount = _currentDeck.Cards.Intersect( _options ).Count();
 
 		// Track which Deck/Tabs have options
-		HasOption = 0 < OptionCount;
+		// HasOption = 0 < OptionCount;
 	}
 
 	public int OptionCount { get; private set; }
@@ -136,14 +136,13 @@ class CardDeckPanel : IPanel {
 	HashSet<PowerCard> _options;
 	Rectangle _bounds;
 	CardLayout _layout;
-	bool HasOption;
 
 
 	// Spirit Settings
 	readonly SpiritDeck _currentDeck;
 	readonly SharedCtx _ctx;
 	readonly CardImageManager _images = new CardImageManager();
-	readonly Action _onAppearanceChanged;
+	// readonly Action _onAppearanceChanged;
 	readonly int _deckIndex;
 }
 

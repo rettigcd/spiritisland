@@ -6,7 +6,7 @@ public class Depopulation_Tests {
 
 	public Depopulation_Tests() {
 		_spirit = new LightningsSwiftStrike();
-		_user = new VirtualUser( _spirit );
+		// _user = new VirtualUser( _spirit );
 		_board = Board.BuildBoardA();
 		_gameState = new GameState( _spirit, _board );
 		_gameState.DisableInvaderDeck();
@@ -54,7 +54,7 @@ public class Depopulation_Tests {
 
 	readonly GameState _gameState;
 	readonly Spirit _spirit;
-	readonly VirtualUser _user;
+	// readonly VirtualUser _user;
 	readonly Board _board;
 
 }

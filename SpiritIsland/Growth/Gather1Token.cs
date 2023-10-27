@@ -2,8 +2,8 @@
 
 public class Gather1Token : GrowthActionFactory {
 
-	int _range;
-	IEntityClass _tokenToGather;
+	readonly int _range;
+	readonly IEntityClass _tokenToGather;
 
 	public Gather1Token( int range, IEntityClass tokenToGather ) {
 		_range = range;

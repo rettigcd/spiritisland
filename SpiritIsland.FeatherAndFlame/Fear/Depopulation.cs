@@ -30,7 +30,7 @@ public class Depopulation : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.Execute( ctx );
 
-	static SpaceCmd Replace1CityWith1Town => new SpaceCmd( "Replace 1 City with 1 Town", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.City ) );
+	// static SpaceCmd Replace1CityWith1Town => new SpaceCmd( "Replace 1 City with 1 Town", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.City ) );
 
 	static SpaceCmd DownGradeCityOrRemoveTown => new SpaceCmd("Remove 1 Town, or Replace 1 City with 1 Town", async ctx => {
 		const string prompt = "Select City to downgrade or Town to remove";

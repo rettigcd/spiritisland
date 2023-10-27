@@ -32,9 +32,9 @@ public class ResourceImages {
 
 	void LoadFont(string file) {
 		string resource = "SpiritIsland.Utilities." + file;
-		using Stream? fontStream = _assembly.GetManifestResourceStream( resource );
-		if(fontStream == null) throw new ArgumentException($"No font stream found for {file}");
-		
+		using Stream? fontStream = _assembly.GetManifestResourceStream( resource ) 
+			?? throw new ArgumentException($"No font stream found for {file}");
+
 		// read the fond data into a buffer
 		byte[] fontdata = new byte[fontStream.Length];
 		fontStream.Read( fontdata, 0, (int)fontStream.Length );
@@ -128,7 +128,7 @@ public class ResourceImages {
 			_cache.Add( key, image );
 			return image;
 		} catch(Exception ex) {
-			string s = ex.ToString();
+			_ = ex.ToString();
 			throw;
 		}
 	}
@@ -397,6 +397,7 @@ public class ResourceImages {
 		Img.Damage_2 => "icons.Damage_2.png",
 		Img.Oneenergyfire => "icons.Oneenergyfire.png",
 		Img.Land_Gather_Beasts => "icons.Land_Gather_Beasts.png",
+		Img.Land_Gather_Blight => "icons.Land_Gather_Blight.png",
 		Img.Land_Push_Town_City => "icons.Land_Push_Town-City.png",
 		Img.GainEnergyEqualToCardPlays => "icons.GainEnergyEqualToCardPlays.png",
 

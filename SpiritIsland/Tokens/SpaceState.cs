@@ -180,7 +180,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#endregion
 
-	public int AttackDamageFrom1( HumanToken ht ) => ht.Attack;
+	// public int AttackDamageFrom1( HumanToken ht ) => ht.Attack;
 
 	#region Adjacent Properties
 
