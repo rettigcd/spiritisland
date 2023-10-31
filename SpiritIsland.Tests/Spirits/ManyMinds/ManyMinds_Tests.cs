@@ -43,11 +43,11 @@ public class ManyMinds_Tests {
 		await spirit.When_Growing( () => {
 			VirtualUser u = new VirtualUser(spirit);
 			// Then: can gather 1 beast
-			u.NextDecision.HasPrompt( "Select Growth" ).Choose( "Gather1Beast" );
+			u.NextDecision.HasPrompt( "Select Growth" ).Choose( "Gather1Token" );
 
 			// Implemented as a Push
-			u.NextDecision.HasPrompt( "Select token for Push a Beast" ).Choose("Beast on A7");
-			u.NextDecision.HasPrompt( "Push Beast to" ).Choose("A1");
+			u.NextDecision.HasPrompt( "Select space to Gather a Beast" ).Choose( "A1" );
+			u.NextDecision.HasPrompt( "Gather up to 1 Beast" ).Choose( "Beast on A7" );
 
 			// Implemented as a Gather
 			// spirit.NextDecision().HasPrompt("").Choose( "A1" );
