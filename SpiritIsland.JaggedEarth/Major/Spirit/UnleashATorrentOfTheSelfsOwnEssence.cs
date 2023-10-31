@@ -25,7 +25,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 		ctx.Self.Energy += 4;
 
 		// you may forget a Power Card to gain 4 more Energy
-		var card = await ctx.Self.ForgetOne(null,Present.Done);
+		var card = await ctx.Self.ForgetACard(null,Present.Done);
 		if(card != null )
 			ctx.Self.Energy += 4;
 	}

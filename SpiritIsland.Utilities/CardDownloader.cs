@@ -9,15 +9,20 @@ public static class CardDownloader {
 		string cardUrl = $"https://spiritislandwiki.com/index.php?title=File:{preparedPowerName}.png";
 
 		var client = new HttpClient();
-		var html = await client.GetStringAsync(cardUrl);
-		string url = new Regex( @"<img.*?alt=""File:.*src=""([^""]+)""[^>]*>" ).Match( html ).Groups[1].Value;
+		try {
+			var html = await client.GetStringAsync(cardUrl);
+			string url = new Regex( @"<img.*?alt=""File:.*src=""([^""]+)""[^>]*>" ).Match( html ).Groups[1].Value;
 
-		var imgUrl = $"https://spiritislandwiki.com{url}";
+			var imgUrl = $"https://spiritislandwiki.com{url}";
 
-		byte[] byteArrayIn = await client.GetByteArrayAsync(imgUrl);
+			byte[] byteArrayIn = await client.GetByteArrayAsync(imgUrl);
 
-		using var ms = new MemoryStream( byteArrayIn );
-		return (Bitmap)Bitmap.FromStream( ms );
+			using var ms = new MemoryStream( byteArrayIn );
+			return (Bitmap)Bitmap.FromStream( ms );
+		}
+		catch( Exception ex ) {
+			throw new Exception($"Unable to download {powerName}.", ex);
+		}
 	}
 
 }

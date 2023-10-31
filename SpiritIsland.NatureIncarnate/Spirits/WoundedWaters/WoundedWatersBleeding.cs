@@ -61,8 +61,8 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	#region Seeking a Path Towards Healing
 
-	public override async Task SelectAndPlayCardsFromHand( int? numberToPlay = null ) {
-		await base.SelectAndPlayCardsFromHand( numberToPlay );
+	protected override async Task SelectAndPlayCardsFromHand_Inner( int numberToPlay ) {
+		await base.SelectAndPlayCardsFromHand_Inner( numberToPlay );
 		await SeekAPathTowardsHealing();
 	}
 

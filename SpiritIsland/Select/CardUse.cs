@@ -6,7 +6,8 @@ public enum CardUse {
 	Discard, // This is for Events
 	Forget, 
 	Gift, 
-	Play, 
+	Play,
+	Impend,
 	Reclaim, 
 	Repeat, 
 	Other

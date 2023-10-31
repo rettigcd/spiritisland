@@ -9,7 +9,7 @@ static public class SpiritDecisionExtensions {
 
 	static public async Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
 		spirit.DraftDeck.AddRange( options.Except(spirit.Decks.SelectMany(x=>x.Cards)) );
-		PowerCard card = await spirit.Gateway.Decision( new Select.PowerCard( prompt, cardUse, options.ToArray(), present ) );
+		PowerCard card = await spirit.Gateway.Decision( new Select.APowerCard( prompt, cardUse, options.ToArray(), present ) );
 		spirit.DraftDeck.Clear();
 		return card;
 	}

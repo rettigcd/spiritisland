@@ -128,13 +128,17 @@ public static class Rectangle_Extensions {
 	#region InflateBy, Fit
 
 	/// <returns>a new rectangle inflated by # of pixels on each side</returns>
-	static public Rectangle InflateBy( this Rectangle rect, int delta ) {
-		int d2 = delta * 2;
-		return new Rectangle( rect.X - delta, rect.Y - delta, rect.Width + d2, rect.Height + d2 );
-	}
+	static public Rectangle InflateBy( this Rectangle rect, int delta )
+		=> new Rectangle( rect.X - delta, rect.Y - delta, rect.Width + delta * 2, rect.Height + delta * 2 );
+
+	static public RectangleF InflateBy( this RectangleF rect, float delta )
+		=> new RectangleF( rect.X - delta, rect.Y - delta, rect.Width + delta * 2, rect.Height + delta * 2 );
 
 	static public Rectangle InflateBy( this Rectangle rect, int deltaX, int deltaY )
 		=> new Rectangle( rect.X - deltaX, rect.Y - deltaY, rect.Width + deltaX * 2, rect.Height + deltaY * 2 );
+
+	static public RectangleF InflateBy( this RectangleF rect, float deltaX, float deltaY )
+		=> new RectangleF( rect.X - deltaX, rect.Y - deltaY, rect.Width + deltaX * 2, rect.Height + deltaY * 2 );
 
 	/// <param name="bounds">Rectangle we are trying to fit inside</param>
 	/// <param name="size">aspect ratio of final rectangle</param>

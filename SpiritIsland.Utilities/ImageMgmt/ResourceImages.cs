@@ -239,7 +239,8 @@ public class ResourceImages {
 	}
 
 	public Image GetGeneralInstructions( string description, float textEmSize, Size rowSize ) {
-		string key = "innateOptions\\gi_" + description.Replace(' ','_')[..50] +".png";
+		if(50<description.Length) description = description[..50];
+		string key = "innateOptions\\gi_" + description.Replace(' ','_') +".png";
 		if(_cache.Contains(key)){
 			var image = _cache.Get(key);
 			if( rowSize.Width < image.Width) return image;
@@ -379,6 +380,7 @@ public class ResourceImages {
 			?? throw new ArgumentException($"No resource image found for {filename}");
 		return new Bitmap( imgStream );
 	}
+	public Bitmap GetNoSymbol() => GetResourceImage( "icons.NoSymbol.png" );
 
 	static string? ToResource( Img image ) => image switch {
 		Img.Starlight_AssignElement => "icons.AssignElement.png",
@@ -390,6 +392,7 @@ public class ResourceImages {
 		Img.PlusOneRange => "icons.PlusOneRange.png",
 		Img.Push1dahan => "icons.Push1dahan.png",
 		Img.GainCard => "icons.GainCard.png",
+		Img.Icon_Major => "icons.major.png",
 		Img.MovePresence => "icons.MovePresence.png",
 
 		Img.Pushfromocean => "icons.Pushfromocean.png",
@@ -398,6 +401,7 @@ public class ResourceImages {
 		Img.Oneenergyfire => "icons.Oneenergyfire.png",
 		Img.Land_Gather_Beasts => "icons.Land_Gather_Beasts.png",
 		Img.Land_Gather_Blight => "icons.Land_Gather_Blight.png",
+		Img.Land_Gather_Dahan => "icons.Land_Gather_Dahan.png",
 		Img.Land_Push_Town_City => "icons.Land_Push_Town-City.png",
 		Img.GainEnergyEqualToCardPlays => "icons.GainEnergyEqualToCardPlays.png",
 
@@ -439,6 +443,7 @@ public class ResourceImages {
 		Img.Disease  => "tokens.disease.png",
 		Img.Badlands => "tokens.badlands.png",
 		Img.Vitality => "tokens.vitality.png",
+		Img.Quake    => "tokens.quake.png",
 		Img.Defend   => "tokens.defend1orange.png",
 		Img.Isolate  => "tokens.isolateorange.png",
 
@@ -464,6 +469,7 @@ public class ResourceImages {
 		Img.Icon_Blight             => "icons.Blighticon.png",
 		Img.Icon_Beast              => "icons.Beasticon.png",
 		Img.Icon_Vitality           => "icons.Vitality.png",
+		Img.Icon_Quake              => "icons.Quake.png",
 		Img.Icon_Fear               => "icons.Fearicon.png",
 		Img.OpenTheWays             => "icons.open-the-ways.png",
 		Img.Icon_Wilds              => "icons.Wildsicon.png",
@@ -511,6 +517,8 @@ public class ResourceImages {
 		Img.WVKD_Incarna_Empowered   => "incarna.WVKD+.png",
 
 		Img.Icon_EndlessDark => "icons.EndlessDark.png",
+
+		Img.Icon_ImpendingCard => "icons.Impending.png",
 
 		Img.None => null,
 		_ => throw new System.ArgumentOutOfRangeException( nameof( image ), image.ToString() ),

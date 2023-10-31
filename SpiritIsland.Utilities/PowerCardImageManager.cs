@@ -279,29 +279,30 @@ public class PowerCardImageManager {
 		}
 
 		if(isNot)
-			using(Bitmap icon = ResourceImages.Singleton.GetResourceImage( "icons.NoSymbol.png" ))
+			using(Bitmap icon = ResourceImages.Singleton.GetNoSymbol())
 				graphics.DrawImage( icon, imgRect.FitHeight( icon.Size, align ) );
 
 	}
 
 	static Img TargetToImg(string text) => text switch { 
-		"Spirit" => Img.Icon_Spirit,
-		Target.Jungle => Img.Icon_Jungle,
-		Target.Sand => Img.Icon_Sand,
-		Target.Mountain => Img.Icon_Mountain,
-		Target.Wetland => Img.Icon_Wetland,
-		Target.Ocean => Img.Icon_Ocean,
-		Target.Blight => Img.Icon_Blight,
-		Target.Dahan => Img.Icon_Dahan,
-		Target.City => Img.Icon_City,
-		Target.Town => Img.Icon_Town,
-		Target.Disease => Img.Icon_Disease,
-		Target.Wilds => Img.Icon_Wilds,
-		Target.Beast => Img.Icon_Beast,
-		Target.Presence => Img.Icon_Presence,
+		"Spirit"           => Img.Icon_Spirit,
+		Target.Jungle      => Img.Icon_Jungle,
+		Target.Sand        => Img.Icon_Sand,
+		Target.Mountain    => Img.Icon_Mountain,
+		Target.Wetland     => Img.Icon_Wetland,
+		Target.Ocean       => Img.Icon_Ocean,
+		Target.Blight      => Img.Icon_Blight,
+		Target.Dahan       => Img.Icon_Dahan,
+		Target.City        => Img.Icon_City,
+		Target.Town        => Img.Icon_Town,
+		Target.Disease     => Img.Icon_Disease,
+		Target.Wilds       => Img.Icon_Wilds,
+		Target.Beast       => Img.Icon_Beast,
+		Target.Presence    => Img.Icon_Presence,
 		Target.EndlessDark => Img.Icon_EndlessDark,
-		"Incarna" => Img.Icon_Incarna,
-		_ => Img.None
+		Target.Quake       => Img.Icon_Quake,
+		"Incarna"          => Img.Icon_Incarna,
+		_                  => Img.None
 	};
 
 	static void DrawSpeed( Graphics graphics, IFlexibleSpeedActionFactory power, Rectangle cell ) {

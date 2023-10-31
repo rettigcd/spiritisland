@@ -13,7 +13,7 @@ public class ForgetCard {
 	}
 
 	public Task Forget( GameState _ ) {
-		spirit.Forget( card );
+		spirit.ForgetThisCard( card );
 		return Task.CompletedTask;
 	}
 }

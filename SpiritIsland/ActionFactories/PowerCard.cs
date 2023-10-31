@@ -65,9 +65,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 	/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
 	public Task InvokeOn( TargetSpaceCtx ctx ) {
-		return _targetAttr.LandOrSpirit != LandOrSpirit.Land
-			? throw new InvalidOperationException("Cannot invoke spirit-based PowerCard using TargetSpaceCtx")
-			: InvokeOnObjectCtx(ctx);
+		return _targetAttr.LandOrSpirit == LandOrSpirit.Land
+			? InvokeOnObjectCtx( ctx )
+			: throw new InvalidOperationException( "Cannot invoke spirit-based PowerCard using TargetSpaceCtx" );
 	}
 
 	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke( null, new object[] { ctx } );

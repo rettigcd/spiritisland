@@ -5,18 +5,18 @@ using Type = SpiritIsland.PowerCard; // avoid name conflict
 /// <summary>
 /// Selects a PowerCard from a group of PowerCard options.
 /// </summary>
-public class PowerCard : TypedDecision<Type> {
+public class APowerCard : TypedDecision<Type> {
 
 	#region constructors
 
-	public PowerCard(string prompt, CardUse cardUse, Type[] cardOptions, Present present ) 
-		: base( prompt, cardOptions, present
-	) {
+	public APowerCard(string prompt, CardUse cardUse, Type[] cardOptions, Present present ) 
+		: base( prompt, cardOptions, present )
+	{
 		foreach(var option in cardOptions)
 			_cardUses.Add(option,cardUse);
 	}
 
-	public PowerCard(string prompt, IEnumerable<SingleCardUse> cardOptions, Present present ) 
+	public APowerCard(string prompt, IEnumerable<SingleCardUse> cardOptions, Present present ) 
 		: base( prompt, cardOptions.Select(x=>x.Card), present
 	) {
 		foreach(var option in cardOptions)

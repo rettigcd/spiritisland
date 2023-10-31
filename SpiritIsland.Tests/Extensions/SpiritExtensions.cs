@@ -40,7 +40,7 @@ public static class SpiritExtensions {
 	internal static Task When_Growing( this Spirit spirit, int option, Action userActions ) {
 		GameState gs = GameState.Current;
 		gs.Phase = Phase.Growth;
-		return spirit.GrowAndResolve( spirit.GrowthTrack.Options[option], gs )
+		return Testing_GrowAndResolve( spirit, spirit.GrowthTrack.Options[option], gs )
 			.AwaitUser( userActions )
 			.ShouldComplete( $"Growth option {option}" );
 	}
@@ -109,6 +109,26 @@ public static class SpiritExtensions {
 	// internal static Func<T,Task> MakeAsync<T>(this Action<T> method) => (T t) => { method(t); return Task.CompletedTask; };
 
 	#endregion When
+
+	static public async Task Testing_GrowAndResolve( Spirit spirit, GrowthOption option, GameState gameState ) { // public for Testing
+
+		await using var action = await ActionScope.Start( ActionCategory.Spirit_Growth );
+		var ctx = spirit.BindSelf();
+
+		// Auto run the auto-runs.
+		foreach(var autoAction in option.AutoRuns)
+			await autoAction.ActivateAsync( ctx );
+
+		// If Option has only 1 Action, auto trigger it.
+		if(option.UserRuns.Count() == 1) {
+			await option.UserRuns.First().ActivateAsync( ctx );
+		} else {
+			foreach(GrowthActionFactory action2 in option.UserRuns)
+				spirit.AddActionFactory( action2 );
+
+			await spirit.ResolveActions( gameState );
+		}
+	}
 
 }
 

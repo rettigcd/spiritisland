@@ -16,7 +16,7 @@ class DrawPowerCardFromDaysThatNeverWere : GrowthActionFactory  {
 			minor.Remove( card );
 		else {
 			major.Remove( card );
-			await fracturedDays.ForgetOne();
+			await fracturedDays.ForgetACard();
 		}
 
 	}

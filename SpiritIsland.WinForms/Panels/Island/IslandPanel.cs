@@ -178,7 +178,7 @@ class IslandPanel : IPanel {
 
 		var tokenTypes = new List<IToken> {
 			Token.Defend, Token.Blight, // These don't show up in .OfAnyType if they are dynamic
-			Token.Wilds, Token.Badlands, Token.Isolate, Token.Vitality
+			Token.Wilds, Token.Badlands, Token.Isolate, Token.Vitality, Token.Quake
 		}	
 			.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
 			.Union( spaceState.OfCategory( TokenCategory.Incarna ) )

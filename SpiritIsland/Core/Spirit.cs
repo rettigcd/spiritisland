@@ -80,38 +80,15 @@ public abstract partial class Spirit : IOption {
 
 	public async Task DoGrowth(GameState gameState) {
 		await new DoGrowthClass(this,gameState).Execute();
-		await ApplyPresenceTrack();
+		await ApplyRevealedPresenceTrack();
 	}
 
-	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
-		await using var action = await ActionScope.Start(ActionCategory.Spirit_Growth);
-		var ctx = BindSelf();
-
-		// Auto run the auto-runs.
-		foreach(var autoAction in option.AutoRuns)
-			await autoAction.ActivateAsync( ctx );
-
-		// If Option has only 1 Action, auto trigger it.
-		if( option.UserRuns.Count() == 1) {
-			await option.UserRuns.First().ActivateAsync( ctx );
-		} else {
-			QueueUpGrowth( option );
-			await ResolveActions( gameState );
-		}
-	}
-
-	/// <summary> Adds UserRun Growth Actions to the Ready-to-resolve list.</summary>
-	public void QueueUpGrowth( GrowthOption option ) { // Public for Testing
-		foreach(GrowthActionFactory action in option.UserRuns)
-			AddActionFactory( action );
-	}
-
-	async Task ApplyPresenceTrack() {
+	async Task ApplyRevealedPresenceTrack() {
 		await using ActionScope action2 = await ActionScope.Start( ActionCategory.Spirit_PresenceTrackIcon );
-		await ApplyRevealedPresenceTracks( BindSelf() );
+		await ApplyRevealedPresenceTracks_Inner( BindSelf() );
 	}
 
-	protected async Task ApplyRevealedPresenceTracks( SelfCtx ctx ) {
+	protected virtual async Task ApplyRevealedPresenceTracks_Inner( SelfCtx ctx ) {
 
 		// Energy
 		Energy += EnergyPerTurn;
@@ -229,20 +206,22 @@ public abstract partial class Spirit : IOption {
 	}
 
 	/// <summary> Forget USER SELECTED power card. </summary>
-	public virtual async Task<PowerCard> ForgetOne( IEnumerable<PowerCard> restrictedOptions = null, Present present = Present.Always ) {
-		var options = restrictedOptions 
-			?? InPlay					// in play
-				.Union( Hand )          // in Hand
-				.Union( DiscardPile )   // in Discard
-				.ToArray();
+	public virtual async Task<PowerCard> ForgetACard( IEnumerable<PowerCard> options = null, Present present = Present.Always ) {
+
+		options ??= GetForgetableCards();
 
 		PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, present );
 		if( cardToForget != null )
-			Forget( cardToForget );
+			ForgetThisCard( cardToForget );
 		return cardToForget;
 	}
+	protected virtual IEnumerable<PowerCard> GetForgetableCards() 
+		=> InPlay                 // in play
+			.Union( Hand )        // in Hand
+			.Union( DiscardPile ) // in Discard
+			.ToArray();
 
-	public virtual void Forget( PowerCard cardToRemove ) {
+	public virtual void ForgetThisCard( PowerCard cardToRemove ) {
 		// A card can be in one of 3 places
 		// (1) Purchased / Active
 		if(InPlay.Contains( cardToRemove ))
@@ -399,7 +378,7 @@ public abstract partial class Spirit : IOption {
 	protected virtual async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ) {
 		var card = await DrawFromDeck.DrawInner( this, deck, numberToDraw, numberToKeep );
 		if(forgetACard)
-			await this.ForgetOne();
+			await this.ForgetACard();
 		return card;
 	}
 
@@ -411,46 +390,52 @@ public abstract partial class Spirit : IOption {
 	#region Play Cards
 
 	// Plays cards from hand for cost
-	public virtual async Task SelectAndPlayCardsFromHand( int? numberToPlay = null ) {
-		int remainingToPlay = numberToPlay ?? NumberOfCardsPlayablePerTurn;
+	/// <summary>
+	/// Plays card from hand for cost.
+	/// </summary>
+	public async Task SelectAndPlayCardsFromHand( int? numberToPlay = null )
+		=> await SelectAndPlayCardsFromHand_Inner( numberToPlay ?? NumberOfCardsPlayablePerTurn );
 
-		PowerCard[] getPowerCardOptions() => Hand
-			.Where( c => c.Cost <= Energy )
-			.ToArray();
-
-		//  (maybe from Unlock the Gates of Deepest Power)
-		var debug = new HashSet<PowerCard>();
-		foreach(PowerCard d in getPowerCardOptions())
-			if(debug.Contains(d)) throw new Exception($"Card {d.Name} found twice"); else debug.Add(d);
-
+	protected virtual async Task SelectAndPlayCardsFromHand_Inner( int remainingToPlay ) {
 		PowerCard[] powerCardOptions;
 		while(0 < remainingToPlay
-			&& 0 < (powerCardOptions = getPowerCardOptions()).Length
-		) {
-			string prompt = $"Play power card (${Energy} / {remainingToPlay})";
-			var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Play, Present.Done );
-			if(card != null) {
-				PlayCard( card );
-				--remainingToPlay;
-			} else
-				remainingToPlay = 0;
-
-		}
+			&& 0 < (powerCardOptions = GetPowerCardOptions()).Length
+			&& await SelectAndPlay1( powerCardOptions, remainingToPlay )
+		)
+			--remainingToPlay;
 	}
+
+	async Task<bool> SelectAndPlay1( PowerCard[] powerCardOptions, int remainingToPlay ) {
+		string prompt = $"Play power card (${Energy} / {remainingToPlay})";
+		var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Play, Present.Done );
+		if(card == null) return false;
+		PlayCard( card );
+		return true;
+	}
+
+	// Helper for SelectAndPlayCardsFromHand
+	PowerCard[] GetPowerCardOptions() => Hand
+		.Where( c => c.Cost <= Energy )
+		.ToArray();
 
 	public void PlayCard( PowerCard card, int? cost = null ) {
 		if(!cost.HasValue) cost = card.Cost;
 
-		if(!Hand.Contains( card )) throw new CardNotAvailableException();
+		if(!Hand.Contains( card )) 
+			throw new CardNotAvailableException();
 		if(Energy < cost) throw new InsufficientEnergyException();
 
 		Hand.Remove( card );
 		InPlay.Add( card );
 		Energy -= cost.Value;
-		foreach(var el in card.Elements )
-			Elements[el.Key] += el.Value;
+		AddElements( card );
 
 		AddActionFactory( card );
+	}
+
+	protected void AddElements( PowerCard card ) {
+		foreach(var el in card.Elements)
+			Elements[el.Key] += el.Value;
 	}
 
 	#endregion

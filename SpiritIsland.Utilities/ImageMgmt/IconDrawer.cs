@@ -37,12 +37,6 @@ public class IconDrawer {
 				mainBounds.Width,
 				mainBounds.Height * .6f // 60%
 			);
-			// Content - Text
-			if(icon.Text != null) {
-				Font font = ResourceImages.Singleton.UseGameFont( contentBounds.Height );
-				StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				_graphics.DrawString( icon.Text, font, Brushes.Black, contentBounds, center );
-			}
 
 			// Content - Images
 			if(icon.ContentImg != default) {
@@ -55,6 +49,16 @@ public class IconDrawer {
 					_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg2 ), cb2 );
 				} else
 					_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg ), contentBounds );
+			}
+
+			// Content - Text
+			if(icon.Text != null) {
+				Font font = ResourceImages.Singleton.UseGameFont( contentBounds.Height );
+				using StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+				_graphics.DrawString( icon.Text, font, Brushes.Black, 
+					contentBounds.InflateBy( contentBounds.Width, 0f ), // font based on height and centered, don't clip left/right
+					center
+				);
 			}
 
 		}

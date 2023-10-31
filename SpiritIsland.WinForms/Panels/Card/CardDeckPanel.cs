@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritIsland.NatureIncarnate;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -73,19 +74,31 @@ class CardDeckPanel : IPanel {
 		// draw image
 		graphics.DrawImage( _images.GetImage( card ), cardRect );
 
+		// Draw Impending Energy
+		if(_ctx._spirit is DancesUpEarthquakes due && due.Impending.Contains(card)) {
+			int remaining = Math.Max(0,card.Cost - due.ImpendingEnergy[card.Name]);
+			var bot = cardRect.SplitVerticallyAt( .5f )[1];
+			Rectangle numRect = bot.InflateBy( -bot.Width / 4, -bot.Height / 3 );
+			using var bgBrush = new SolidBrush(Color.FromArgb(128,Color.White));
+			graphics.FillRectangle( bgBrush, numRect );
+			using Font font = ResourceImages.Singleton.UseGameFont( numRect.Height );
+			graphics.DrawStringCenter( $"T-{remaining}", font, Brushes.Black, numRect );
+		}
+
 		if(isAnOption) {
 			// Draw Label
 			if(_pickPowerCardDecision != null) {
 				var images = ResourceImages.Singleton;
-				Rectangle labelRect = _layout.GetCardActionLabel( index, totalCardCount );
+				Rectangle labelRect = _layout.GetCardActionLabel( index );
 				using Image icon = _pickPowerCardDecision.Use( card ) switch {
 					CardUse.AddToHand => images.GetImage( Img.GainCard ),
 					CardUse.Discard => images.GetImage( Img.Deck_Discarded ),
-					CardUse.Forget => images.GetImage( Img.Icon_DestroyedPresence ),
+					CardUse.Forget => images.GetNoSymbol(),
+					CardUse.Play => images.GetImage( Img.Icon_Play ),
+					CardUse.Impend => images.GetImage( Img.Icon_ImpendingCard ),
+					CardUse.Reclaim => images.GetImage( Img.Reclaim1 ),
 					CardUse.Gift => null,
 					CardUse.Other => null,
-					CardUse.Play => images.GetImage( Img.Icon_Play ),
-					CardUse.Reclaim => images.GetImage( Img.Reclaim1 ),
 					CardUse.Repeat => null,
 					_ => null,
 				};
@@ -117,7 +130,7 @@ class CardDeckPanel : IPanel {
 
 	virtual public void ActivateOptions( IDecision decision ) {
 
-		_pickPowerCardDecision = decision as Select.PowerCard; // capture so we can display card-action
+		_pickPowerCardDecision = decision as Select.APowerCard; // capture so we can display card-action
 
 		_options = _pickPowerCardDecision != null
 			? new HashSet<PowerCard>( _pickPowerCardDecision.CardOptions )
@@ -131,7 +144,7 @@ class CardDeckPanel : IPanel {
 
 	public int OptionCount { get; private set; }
 
-	Select.PowerCard _pickPowerCardDecision;
+	Select.APowerCard _pickPowerCardDecision;
 	/// <summary> All Power-Card Options, not just the ones contained in this deck. </summary>
 	HashSet<PowerCard> _options;
 	Rectangle _bounds;

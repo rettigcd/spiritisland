@@ -16,6 +16,7 @@ public enum Img {
 	Reclaim1,
 	Push1dahan,
 	GainCard,
+	Icon_Major,
 	MovePresence,
 
 	RangeArrow,
@@ -27,6 +28,7 @@ public enum Img {
 	Oneenergyfire,
 	Land_Gather_Beasts,
 	Land_Gather_Blight,
+	Land_Gather_Dahan,
 	GainEnergyEqualToCardPlays,
 	Land_Push_Town_City,
 
@@ -79,6 +81,7 @@ public enum Img {
 	Disease,
 	Badlands,
 	Vitality,
+	Quake,
 
 	Icon_Dahan,
 	Icon_City,
@@ -96,6 +99,7 @@ public enum Img {
 	OpenTheWays,
 
 	Icon_EndlessDark,
+	Icon_ImpendingCard,
 
 	Icon_Sand,
 	Icon_Mountain,
@@ -104,7 +108,6 @@ public enum Img {
 
 	Icon_Blight,
 	Icon_Beast,
-	Icon_Vitality,
 	Icon_Fear,
 	Icon_Wilds,
 	Icon_Fast,
@@ -112,6 +115,8 @@ public enum Img {
 	Icon_Sacredsite,
 	Icon_Slow,
 	Icon_Disease,
+	Icon_Vitality,
+	Icon_Quake,
 	Icon_Strife,
 	Icon_Badlands,
 	Icon_DestroyedPresence,

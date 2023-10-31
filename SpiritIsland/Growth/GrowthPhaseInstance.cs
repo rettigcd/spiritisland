@@ -14,12 +14,12 @@ class GrowthPhaseInstance : IGrowthPhaseInstance {
 	}
 
 	
-
+	/// <summary> Filter Options that require more energy than we have. </summary>
 	public GrowthOption[] RemainingOptions(int energy)
 		=> remaining
 			.Where( g=>g.HasAdditionalCounts )
 			.SelectMany( g=>g.AvailableOptions )
-			.Where( o => o.GainEnergy + energy >= 0 )
+			.Where( o => 0 <= o.GainEnergy + energy )
 			.ToArray();
 
 	public void MarkAsUsed( GrowthOption option ) {

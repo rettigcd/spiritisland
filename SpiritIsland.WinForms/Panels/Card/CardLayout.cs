@@ -25,10 +25,12 @@ class CardLayout {
 
 	}
 
-	public Rectangle GetCardActionLabel( int index, int _ ) {
+	public Rectangle GetCardActionLabel( int index ) {
+		var cardRect = GetCardRect( index );
 		int left = _bounds.Left + MARGIN + (index % _colCount) * (MARGIN+_cardWidth);
-		int top = _bounds.Bottom - (index/_colCount) * (MARGIN+_cardHeight);
-		return new Rectangle( left, top, MARGIN*2, MARGIN * 2 );
+		int top = _bounds.Top - (index/_colCount) * (MARGIN+_cardHeight);
+		int iconDim = cardRect.Height/6;
+		return new Rectangle( cardRect.Left + iconDim/2, cardRect.Top - iconDim*3/4, iconDim, iconDim );
 	}
 
 	public Rectangle GetCardRect( int index ) {

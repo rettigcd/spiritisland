@@ -20,6 +20,7 @@ public static class Token {
 
 	// Nature Incarnate
 	static readonly public TokenClassToken Vitality = new VitalityToken("Vitality", 'V', Img.Badlands );
+	static readonly public TokenClassToken Quake    = new TokenClassToken( "Quake", 'Q', Img.Quake );
 
 	static public DiseaseToken Disease_Original => (DiseaseToken)Disease; // Don't use this directly.  Use .Disease instead.
 }

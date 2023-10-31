@@ -67,7 +67,7 @@ class OtherCardsPanel : IPanel {
 			// Draw Label
 			if(_pickPowerCardDecision != null) {
 				var images = ResourceImages.Singleton;
-				Rectangle labelRect = _layout.GetCardActionLabel( index, totalCardCount );
+				Rectangle labelRect = _layout.GetCardActionLabel( index );
 				using Image icon = _pickPowerCardDecision.Use( card ) switch {
 					CardUse.AddToHand => images.GetImage( Img.GainCard ),
 					CardUse.Discard => images.GetImage( Img.Deck_Discarded ),
@@ -102,7 +102,7 @@ class OtherCardsPanel : IPanel {
 	}
 
 	virtual public void ActivateOptions( IDecision decision ) {
-		_pickPowerCardDecision = decision as Select.PowerCard; // capture so we can display card-action
+		_pickPowerCardDecision = decision as Select.APowerCard; // capture so we can display card-action
 
 		_options = _pickPowerCardDecision != null
 			? _pickPowerCardDecision.CardOptions.Except( _ctx._spirit.Decks.SelectMany(d=>d.Cards) )
@@ -122,7 +122,7 @@ class OtherCardsPanel : IPanel {
 		: 1;
 
 
-	Select.PowerCard _pickPowerCardDecision;
+	Select.APowerCard _pickPowerCardDecision;
 	/// <summary> All Power-Card Options, not just the ones contained in this deck. </summary>
 	PowerCard[] _options;
 	Rectangle _bounds;

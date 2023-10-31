@@ -290,8 +290,8 @@ public static class TokenParser {
 		var tokens = new Regex( "sacred site|destroyedpresence|presence|fast|slow"
 			+ "|dahan|blight|fear|city|town|explorer"
 			+ "|sun|moon|air|fire|water|plant|animal|earth"
-			+ "|beasts?|disease|strife|wilds|badlands"
-			+ "|\\+1range|-or-|incarna|endless-dark", RegexOptions.IgnoreCase
+			+ "|beasts?|disease|strife|wilds|badlands|vitality|quake"
+			+ "|\\+1range|-or-|incarna|endless-dark|cardplay|impending", RegexOptions.IgnoreCase
 		).Matches( s ).Cast<Match>().ToList();
 
 		var results = new List<string>();

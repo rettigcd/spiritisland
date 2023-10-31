@@ -19,7 +19,7 @@ public class ShapeTheSelfAnew {
 			&& await ctx.Self.UserSelectsFirstText( $"Forget '{Name} for +3 energy.", "Yes, forget it.", "no thanks." )
 		) {
 			// Forget this Power Card
-			ctx.Self.Forget( thisCard );
+			ctx.Self.ForgetThisCard( thisCard );
 
 			// gain 3 energy
 			ctx.Self.Energy += 3;

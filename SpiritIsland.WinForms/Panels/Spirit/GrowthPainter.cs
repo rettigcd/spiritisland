@@ -154,6 +154,27 @@ public sealed class GrowthPainter : IDisposable{
 				iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_Presence }, }, rect );
 				DrawMoveArrow( rect.Translate( 0, -rect.Height * .2f ) );
 				break;
+            case "AddPresenceOrGainMajor": {
+					var rows = rect.ToInts().SplitVerticallyAt(.5f);
+					Rectangle presRect = rows[0].SplitHorizontally( 2 )[0];
+					Rectangle cardRect = rows[1].SplitHorizontally( 2 )[1];
+					int majorOffset = cardRect.Width/2;
+					Rectangle majorRect = new Rectangle( cardRect.X+majorOffset/43, cardRect.Y + majorOffset / 4, majorOffset, majorOffset );
+					PlacePresence( presRect,new PlacePresence(2));
+					DrawIconInCenter( cardRect, Img.GainCard );
+					DrawIconInCenter( majorRect, Img.Icon_Major );
+				}
+				break;
+			case "AccelerateOrDelay":
+				iconDrawer.DrawTheIcon( 
+					new IconDescriptor {
+						BackgroundImg = Img.Coin,
+						Text = "±1",
+						Sub = new IconDescriptor { BackgroundImg = Img.Icon_ImpendingCard },
+						Super = new IconDescriptor { BackgroundImg = Img.Icon_ImpendingCard },
+					}, rect
+				);
+				break;
 			default:
 				_graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 				break;

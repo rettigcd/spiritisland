@@ -51,6 +51,8 @@ public class ImageSizeCalculator {
 			"presence" => Img.Icon_Presence,
 			"slow" => Img.Icon_Slow,
 			"disease" => Img.Icon_Disease,
+			"vitality" => Img.Icon_Vitality,
+			"quake" => Img.Icon_Quake,
 			"strife" => Img.Icon_Strife,
 			"badlands" => Img.Icon_Badlands,
 			"destroyedpresence" => Img.Icon_DestroyedPresence,
@@ -58,6 +60,8 @@ public class ImageSizeCalculator {
 			"or-curly-after" => Img.OrCurlyAfter,
 			"incarna" => Img.Icon_Incarna,
 			"endless-dark" => Img.Icon_EndlessDark,
+			"cardplay" => Img.CardPlay,
+			"impending" => Img.Icon_ImpendingCard,	
 			_ => ElementCounts.ParseEl( token ).GetIconImg(),
 		};
 	}

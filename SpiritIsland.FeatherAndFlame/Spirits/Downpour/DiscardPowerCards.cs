@@ -10,7 +10,7 @@ internal class DiscardPowerCards : GrowthActionFactory {
 		var inPlay = spirit.InPlay;
 		for(int i = 0; i < count; ++i) {
 			IEnumerable<SingleCardUse> options = SingleCardUse.GenerateUses( CardUse.Discard, inPlay.Union( hand ) );
-			var decision = new Select.PowerCard( $"Select card to discard ({i+1}of{count})", options, Present.Always );
+			var decision = new Select.APowerCard( $"Select card to discard ({i+1}of{count})", options, Present.Always );
 			PowerCard card = await ctx.Decision( decision );
 			if(card != null) {
 				// (Source-1) Purchased / Active

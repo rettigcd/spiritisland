@@ -143,7 +143,7 @@ public static partial class Cmd {
 		static public SpaceCmd AllRavages( string name ) => new SpaceCmd( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
-	static public SelfCmd ForgetPowerCard => new SelfCmd( "Forget Power card", ctx => ctx.Self.ForgetOne() );
+	static public SelfCmd ForgetPowerCard => new SelfCmd( "Forget Power card", ctx => ctx.Self.ForgetACard() );
 
 	// ========
 	// Presence

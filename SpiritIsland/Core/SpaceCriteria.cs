@@ -116,9 +116,11 @@ public class SpaceCriteria {
 		[Target.Town] = ( ctx ) => ctx.Tokens.Has( Human.Town ),
 		[Target.NoInvader] = ( ctx ) => !ctx.Tokens.HasInvaders(),
 
+		// Tokens
 		[Target.Disease] = ( ctx ) => ctx.Tokens.Disease.Any,
 		[Target.Beast] = ( ctx ) => ctx.Tokens.Beasts.Any,
 		[Target.Wilds] = ( ctx ) => ctx.Tokens.Wilds.Any,
+		[Target.Quake] = ( ctx ) => ctx.Tokens.Has(Token.Quake),
 
 		[Target.Blight] = ( ctx ) => ctx.Tokens.Blight.Any,
 		[Target.NoBlight] = ( ctx ) => !ctx.Tokens.Blight.Any,

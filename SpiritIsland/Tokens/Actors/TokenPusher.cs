@@ -61,7 +61,7 @@ public class TokenPusher {
 		if(destination == null) return null;
 
 		await MoveSingleToken( token, _tokens, destination );
-
+		_pushed?.Invoke(token,destination);
 		return destination;
 	}
 
@@ -90,6 +90,12 @@ public class TokenPusher {
 		destinationFilters.Add(destinationFilter);
 		return this;
 	}
+
+	public TokenPusher TrackPushed( Action<IToken, Space> pushed) {
+		_pushed = pushed;
+		return this;
+	}
+	Action<IToken, Space> _pushed;
 
 	#region private
 

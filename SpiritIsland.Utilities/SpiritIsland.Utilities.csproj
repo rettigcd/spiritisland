@@ -46,12 +46,14 @@
     <None Remove="images\icons\Gathertoocean.png" />
     <None Remove="images\icons\Growth.png" />
     <None Remove="images\icons\hourglass.png" />
+    <None Remove="images\icons\Impending.png" />
     <None Remove="images\icons\Incarna.png" />
     <None Remove="images\icons\Jungle.png" />
     <None Remove="images\icons\JungleOrBeast.png" />
     <None Remove="images\icons\Junglewetland.png" />
     <None Remove="images\icons\Land_Gather_Beasts.png" />
     <None Remove="images\icons\Land_Gather_Blight.png" />
+    <None Remove="images\icons\Land_Gather_Dahan.png" />
     <None Remove="images\icons\Land_Push_Town-City.png" />
     <None Remove="images\icons\major.png" />
     <None Remove="images\icons\minor.png" />
@@ -74,6 +76,7 @@
     <None Remove="images\icons\Presenceicon.png" />
     <None Remove="images\icons\Push1dahan.png" />
     <None Remove="images\icons\Pushfromocean.png" />
+    <None Remove="images\icons\Quake.png" />
     <None Remove="images\icons\Range.png" />
     <None Remove="images\icons\reclaim 1.png" />
     <None Remove="images\icons\ReclaimAll.png" />
@@ -142,6 +145,7 @@
     <None Remove="images\tokens\fear.png" />
     <None Remove="images\tokens\fearcard.png" />
     <None Remove="images\tokens\isolateorange.png" />
+    <None Remove="images\tokens\quake.png" />
     <None Remove="images\tokens\Simple_air.png" />
     <None Remove="images\tokens\Simple_animal.png" />
     <None Remove="images\tokens\Simple_any.png" />
@@ -198,12 +202,14 @@
     <EmbeddedResource Include="images\icons\GainEnergyEqualToCardPlays.png" />
     <EmbeddedResource Include="images\icons\Gathertoocean.png" />
     <EmbeddedResource Include="images\icons\hourglass.png" />
+    <EmbeddedResource Include="images\icons\Impending.png" />
     <EmbeddedResource Include="images\icons\Incarna.png" />
     <EmbeddedResource Include="images\icons\Jungle.png" />
     <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
     <EmbeddedResource Include="images\icons\Junglewetland.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Blight.png" />
+    <EmbeddedResource Include="images\icons\Land_Gather_Dahan.png" />
     <EmbeddedResource Include="images\icons\Land_Push_Town-City.png" />
     <EmbeddedResource Include="images\icons\major.png" />
     <EmbeddedResource Include="images\icons\minor.png" />
@@ -226,6 +232,7 @@
     <EmbeddedResource Include="images\icons\Presenceicon.png" />
     <EmbeddedResource Include="images\icons\Push1dahan.png" />
     <EmbeddedResource Include="images\icons\Pushfromocean.png" />
+    <EmbeddedResource Include="images\icons\Quake.png" />
     <EmbeddedResource Include="images\icons\Range.png" />
     <EmbeddedResource Include="images\icons\reclaim 1.png" />
     <EmbeddedResource Include="images\icons\ReclaimAll.png" />
@@ -297,6 +304,7 @@
     <EmbeddedResource Include="images\tokens\fear.png" />
     <EmbeddedResource Include="images\tokens\fearcard.png" />
     <EmbeddedResource Include="images\tokens\isolateorange.png" />
+    <EmbeddedResource Include="images\tokens\quake.png" />
     <EmbeddedResource Include="images\tokens\Simple_air.png" />
     <EmbeddedResource Include="images\tokens\Simple_animal.png" />
     <EmbeddedResource Include="images\tokens\Simple_any.png" />
@@ -352,6 +360,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Bringer_of_Dreams_and_Nightmares.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\spirits\Dances_Up_Earthquakes.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Downpour_Drenches_the_World.jpg">

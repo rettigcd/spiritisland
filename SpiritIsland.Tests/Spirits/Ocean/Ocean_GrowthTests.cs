@@ -20,7 +20,8 @@ public class Ocean_GrowthTests : GrowthTests {
 		Given_IslandIsABC();
 		Given_HasPresence( starting );
 
-		_spirit.QueueUpGrowth(_spirit.GrowthTrack.Options[0]);
+		foreach(GrowthActionFactory action in _spirit.GrowthTrack.Options[0].UserRuns)
+			_spirit.AddActionFactory( action );
 
 		// since options are move source, key on that
 		var moveBySrc = select.Split(',')
