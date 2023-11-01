@@ -12,7 +12,7 @@ public static class ResolveOutOfPhaseAction {
 
 		if(factory != null) {
 			TemporarySpeed.Override( factory, resultingSpeed, ctx.GameState );
-			await ctx.Self.TakeAction( factory, resultingSpeed );
+			await ctx.Self.TakeActionAsync( factory, resultingSpeed );
 		}
 	}
 

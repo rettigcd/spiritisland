@@ -64,7 +64,7 @@ public class LightningsSwiftStrike : Spirit {
 
 	}
 
-	public override Task TakeAction( IActionFactory factory, Phase phase ) {
+	public override Task TakeActionAsync( IActionFactory factory, Phase phase ) {
 
 		// we can decrement any time a slow card is used,
 		// even during slow because we no longer care about this
@@ -76,7 +76,7 @@ public class LightningsSwiftStrike : Spirit {
 			TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, GameState.Current );
 		}
 
-		return base.TakeAction(factory,phase);
+		return base.TakeActionAsync(factory,phase);
 	}
 
 

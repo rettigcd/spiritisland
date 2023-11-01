@@ -1,4 +1,8 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+using System;
+using static System.Collections.Specialized.BitVector32;
+
+namespace SpiritIsland;
 
 public abstract partial class Spirit {
 	class DoGrowthClass {
@@ -7,97 +11,77 @@ public abstract partial class Spirit {
 
 		const string PROMPT = "Select Growth";
 
-		readonly Spirit spirit;
-		readonly IGrowthPhaseInstance inst;
+		readonly Spirit _spirit;
+		readonly IGrowthPhaseInstance _inst;
 
-		GrowthOption[] growthOptions;
-		IActionFactory[] actionOptions;
+		GrowthOption[] _growthOptions;
 
-		Func<IActionFactory,Task> execute;
+		// When starting a new growth option, pulls actions from all the actions in the remaining groups
+		// When continuing a growth option, pulls from actions stored in spirit's AvailableOptions
+		IActionFactory[] _actionOptions;
+
+		bool _shouldInitNewGrowthOption;
 		#endregion
 
 		public DoGrowthClass(Spirit spirit,GameState _) {
-			this.spirit = spirit;
-			inst = spirit.GrowthTrack.GetInstance();
-			InitActionsForAllAvailableOptions();
+			_spirit = spirit;
+			_inst = _spirit.GrowthTrack.GetInstance();
 		}
 
 		public async Task Execute() {
+			AllowUserToSelectNewGrowthOptions();
 
 			while(HasActions) {
 				// Select
-				IActionFactory selectedAction = await spirit.Select( PROMPT, actionOptions, Present.Always );
-				// Execute
-				await execute( selectedAction );
-			}
+				IActionFactory selectedAction = await _spirit.Select( PROMPT, _actionOptions, Present.Always );
 
-		}
+				if(_shouldInitNewGrowthOption)
+					await InitSelectedGrowthOption( selectedAction );
 
-		async Task ExecuteRemainingGrowth( IActionFactory selectedAction ) {
-			await using var action = await ActionScope.Start(ActionCategory.Spirit_Growth);
-			spirit.BindSelf();
-			await spirit.TakeAction( selectedAction, Phase.Growth );
-			await InitRemainingActionsFromOption();
-		}
+				// Go
+				await _spirit.TakeActionAsync( selectedAction, Phase.Growth );
 
-		async Task ExecuteFirstGrowth( IActionFactory selectedAction ) {
+				// Next
+				_actionOptions = _spirit.GetAvailableActions( Phase.Growth ).ToArray();
+				if(!HasActions)
+					AllowUserToSelectNewGrowthOptions();
+
+			}// while
+
+			await ApplyPresenceTrack();
+
+		}// execute
+
+		async Task InitSelectedGrowthOption( IActionFactory selectedAction ) {
 			// Find Growth Option
-			GrowthOption option = growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
-			inst.MarkAsUsed( option );
+			GrowthOption option = _growthOptions.Single( o => o.GrowthActions.Contains( selectedAction ) );
+			_inst.MarkAsUsed( option );
 
-			// Resolve Growth Option
-			await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Growth);
-			var ctx = spirit.BindSelf();
+			// Add Action to spirit
+			foreach(GrowthActionFactory action in option.GrowthActions)
+				_spirit._availableActions.Add( action );
 
-			// Auto run the auto-runs.
+			// run auto-runs.
 			foreach(var autoAction in option.AutoRuns)
-				await autoAction.ActivateAsync( ctx );
+				if(autoAction != selectedAction)
+					await _spirit.TakeActionAsync( autoAction, Phase.Growth );
 
-			if(option.AutoRuns.Contains( selectedAction ))
-				// selected item was an auto-run
-				// queue up the user runs
-				foreach(GrowthActionFactory action in option.UserRuns)
-					spirit._availableActions.Add( action );
-			else {
-				// selected item was a user-run
-				// run it
-				await selectedAction.ActivateAsync( ctx );
-				// queue up all the others
-				foreach(GrowthActionFactory action in option.UserRuns)
-					if(action != selectedAction)
-						spirit._availableActions.Add( action );
-			}
-
-			// resolve actions
-			await InitRemainingActionsFromOption();
+			_shouldInitNewGrowthOption = false;
 		}
 
-		bool HasActions => actionOptions.Length > 0;
-
-		async Task InitRemainingActionsFromOption() {
-			// Combine these into a Class that executes
-			actionOptions = spirit.GetAvailableActions( Phase.Growth ).ToArray();
-			execute = ExecuteRemainingGrowth;
-
-			if(!HasActions)
-				await ApplyRevealedPResenceTracks();
+		void AllowUserToSelectNewGrowthOptions() {
+			_growthOptions = _inst.RemainingOptions( _spirit.Energy );
+			_actionOptions = _growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
+			_shouldInitNewGrowthOption = true;
 		}
 
-		void InitActionsForAllAvailableOptions() {
-			growthOptions = inst.RemainingOptions( spirit.Energy );
-
-			// Combine these into a Class that executes
-			actionOptions = growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
-			execute = ExecuteFirstGrowth;
+		// It appears these may run 1st or 2nd, it doesn't matter
+		async Task ApplyPresenceTrack() {
+			await using var action2 = await ActionScope.Start( ActionCategory.Spirit_PresenceTrackIcon );
+			await _spirit.ApplyRevealedPresenceTracks( _spirit.BindSelf() );
 		}
 
-		async Task ApplyRevealedPResenceTracks() {
-			InitActionsForAllAvailableOptions();
-			if(!HasActions) {
-				await using var action = await ActionScope.Start(ActionCategory.Spirit_PresenceTrackIcon);
-				await spirit.ApplyRevealedPresenceTracks( spirit.BindSelf() );
-			}
-		}
+		bool HasActions => 0 < _actionOptions.Length;
 
 	}
 

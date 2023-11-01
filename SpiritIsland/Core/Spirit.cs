@@ -148,7 +148,7 @@ public abstract partial class Spirit : IOption {
 		if(!options.Contains( option ))
 			throw new Exception( "Dude! - You selected something that wasn't an option" );
 
-		await TakeAction( option, phase );
+		await TakeActionAsync( option, phase );
 		return true;
 	}
 
@@ -272,7 +272,7 @@ public abstract partial class Spirit : IOption {
 		_availableActions.Add( factory );
 	}
 
-	public virtual async Task TakeAction(IActionFactory factory, Phase phase) {
+	public virtual async Task TakeActionAsync(IActionFactory factory, Phase phase) {
 		var category = phase switch {
 			Phase.Init or
 			Phase.Growth => ActionCategory.Spirit_Growth,
