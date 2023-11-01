@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Select;
+
+namespace SpiritIsland;
 
 public abstract partial class Spirit : IOption {
 
@@ -78,6 +80,7 @@ public abstract partial class Spirit : IOption {
 
 	public async Task DoGrowth(GameState gameState) {
 		await new DoGrowthClass(this,gameState).Execute();
+		await ApplyPresenceTrack();
 	}
 
 	public async Task GrowAndResolve( GrowthOption option, GameState gameState ) { // public for Testing
@@ -101,6 +104,11 @@ public abstract partial class Spirit : IOption {
 	public void QueueUpGrowth( GrowthOption option ) { // Public for Testing
 		foreach(GrowthActionFactory action in option.UserRuns)
 			AddActionFactory( action );
+	}
+
+	async Task ApplyPresenceTrack() {
+		await using ActionScope action2 = await ActionScope.Start( ActionCategory.Spirit_PresenceTrackIcon );
+		await ApplyRevealedPresenceTracks( BindSelf() );
 	}
 
 	protected async Task ApplyRevealedPresenceTracks( SelfCtx ctx ) {

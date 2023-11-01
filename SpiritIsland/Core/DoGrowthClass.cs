@@ -48,8 +48,6 @@ public abstract partial class Spirit {
 
 			}// while
 
-			await ApplyPresenceTrack();
-
 		}// execute
 
 		async Task InitSelectedGrowthOption( IActionFactory selectedAction ) {
@@ -73,12 +71,6 @@ public abstract partial class Spirit {
 			_growthOptions = _inst.RemainingOptions( _spirit.Energy );
 			_actionOptions = _growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
 			_shouldInitNewGrowthOption = true;
-		}
-
-		// It appears these may run 1st or 2nd, it doesn't matter
-		async Task ApplyPresenceTrack() {
-			await using var action2 = await ActionScope.Start( ActionCategory.Spirit_PresenceTrackIcon );
-			await _spirit.ApplyRevealedPresenceTracks( _spirit.BindSelf() );
 		}
 
 		bool HasActions => 0 < _actionOptions.Length;
