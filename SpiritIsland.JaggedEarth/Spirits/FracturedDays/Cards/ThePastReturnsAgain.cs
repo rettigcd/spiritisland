@@ -11,19 +11,20 @@ class ThePastReturnsAgain {
 		if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
 
 		// Cost to Use: N Time, and Spirits jointly pay N Energy (where N = # of players).
-		int cost = ctx.GameState.Spirits.Length;
+		var gs = GameState.Current;
+		int cost = gs.Spirits.Length;
 
 		if(frac.Time < cost) return;
 
-		int existingEnergy = ctx.GameState.Spirits.Sum( s => s.Energy );
+		int existingEnergy = gs.Spirits.Sum( s => s.Energy );
 		if(existingEnergy < cost) return;
 
-		if(! await GetEnergyFromEachSpirit( ctx, ctx.GameState.Spirits.Length ) ) return;
+		if(! await GetEnergyFromEachSpirit( ctx, gs.Spirits.Length ) ) return;
 
 		await frac.SpendTime( cost );
 
 		// Swap the top card of the Invader Deck with a card in the Invader discard that is within 1 Invader Stage of it.
-		var deck = ctx.GameState.InvaderDeck;
+		var deck = gs.InvaderDeck;
 		var newCard = deck.Explore.Cards.First();
 		int stageOfTopCard = newCard.InvaderStage;
 		var options = deck.Discards.Where( d => System.Math.Abs( d.InvaderStage - stageOfTopCard ) <= 1 ).ToArray();
@@ -48,7 +49,7 @@ class ThePastReturnsAgain {
 		int remaining = total;
 		var pledge = new CountDictionary<Spirit>();
 		do {
-			foreach(var s in ctx.GameState.Spirits) {
+			foreach(var s in GameState.Current.Spirits) {
 				int max = Math.Min( remaining, s.Energy - pledge[s] );
 				if(max == 0) continue;
 				var payOptions = new List<ItemOption<int>>();
@@ -63,7 +64,7 @@ class ThePastReturnsAgain {
 		if(0 < remaining) return false; // we didn't make it
 
 		// Pay pledge
-		foreach(Spirit spirit in ctx.GameState.Spirits)
+		foreach(Spirit spirit in GameState.Current.Spirits)
 			spirit.Energy -= pledge[spirit];
 
 		return true;

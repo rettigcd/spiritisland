@@ -37,7 +37,7 @@ public class ReachFromTheInfiniteDarkness {
 
 	static void GrantRangeBonus( SelfCtx ctx, CountDictionary<Spirit> bonuses ) {
 		foreach(var spirit in bonuses.Keys) {
-			RangeCalcRestorer.Save( spirit, ctx.GameState ); // !!! remove GameState parameter
+			RangeCalcRestorer.Save( spirit );
 			RangeExtender.Extend( spirit, bonuses[spirit] );
 		}
 	}
@@ -49,7 +49,7 @@ public class ReachFromTheInfiniteDarkness {
 	static async Task<(SpaceToken?,Spirit?)> SelectPresenceToAbduct( SelfCtx ctx, int remaining ) {
 		var spiritLookup = new Dictionary<SpaceToken, Spirit>(); // !! THis is stupid, there should be a link from the presence/incarna back to the spirit.
 
-		foreach(Spirit spirit in ctx.GameState.Spirits)
+		foreach(Spirit spirit in GameState.Current.Spirits)
 			foreach(SpaceToken st in spirit.Presence.Deployed)
 				spiritLookup.Add( st, spirit );
 		var presenceToAbduct = await ctx.Decision( new Select.ASpaceToken( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", spiritLookup.Keys, Present.Done ) );

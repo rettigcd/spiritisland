@@ -28,7 +28,7 @@ public class WeaveTogetherTheFabricOfPlace {
 
 	static MultiSpace JoinSpaces( SelfCtx originatorCtx, Space space, Space other ) {
 
-		var gameState = originatorCtx.GameState;
+		var gameState = GameState.Current;
 
 		var multi = new MultiSpace( space, other );
 		MoveItemsOnSpace( other, multi, true );

@@ -41,10 +41,11 @@ internal class RainAndMudSupressConflict {
 	}
 
 	static public void MakeThingsMuddy( SelfCtx ctx ) {
+		var gs = GameState.Current;
 		// Each of your Presence grants Defend 1
-		ctx.GameState.Tokens.Dynamic.ForRound.Register( sp => sp[ctx.Self.Presence.Token], Token.Defend );
+		gs.Tokens.Dynamic.ForRound.Register( sp => sp[ctx.Self.Presence.Token], Token.Defend );
 		// lowers Dahan counterattack damage by 1
-		ctx.GameState.AddIslandMod( new MudToken( ctx.Self, 1 ) );
+		gs.AddIslandMod( new MudToken( ctx.Self, 1 ) );
 		MarkAsUsed();
 	}
 

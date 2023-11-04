@@ -5,7 +5,7 @@
 /// </summary>
 public class TargetSpiritCtx : SelfCtx {
 
-	public TargetSpiritCtx( SelfCtx ctx, Spirit target ) : base( ctx ) {
+	public TargetSpiritCtx( SelfCtx ctx, Spirit target ) : base( ctx.Self ) {
 		Other = target;
 	}
 

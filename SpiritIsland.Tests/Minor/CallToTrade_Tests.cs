@@ -3,7 +3,7 @@
 public class CallToTrade_Tests {
 
 	static IEnumerable<TargetSpaceCtx> AllTargets( SelfCtx ctx ) {
-		return ctx.GameState.Spaces_Unfiltered
+		return GameState.Current.Spaces_Unfiltered
 			.Select( s => ctx.Target(s.Space) );
 	}
 
@@ -139,7 +139,7 @@ public class CallToTrade_Tests {
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle );
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 		}) );
-		var invaderLog = ctx.GameState.LogAsStringList();
+		var invaderLog = GameState.Current.LogAsStringList();
 
 		// Given: advance to 2nd round where we have a ravage
 		user.GrowAndBuyNoCards();
@@ -150,7 +150,7 @@ public class CallToTrade_Tests {
 		var spaceCtx = AllTargets( ctx ).Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add( "Selected target:" + spaceCtx.Space.Label );
 		//   And: there are 2 ravages for that space
-		List<InvaderCard> ravageCards = ctx.GameState.InvaderDeck.Ravage.Cards; ravageCards.Add( ravageCards[0] );
+		List<InvaderCard> ravageCards = GameState.Current.InvaderDeck.Ravage.Cards; ravageCards.Add( ravageCards[0] );
 
 		//  And: it has 3 explorers and 2 dahan (in case dahan attacks during ravage, would still 1 left over
 		spaceCtx.Space.Given_ClearTokens().Given_HasTokens("3E@1,2D@2");
@@ -168,7 +168,7 @@ public class CallToTrade_Tests {
 	#region Given / When
 
 	static void Given_TerrorLevelIs3( SelfCtx ctx ) {
-		var fear = ctx.GameState.Fear;
+		var fear = GameState.Current.Fear;
 		for(int i = 0; i < 7; ++i)
 			fear.Deck.Pop();
 		fear.TerrorLevel.ShouldBe(3);

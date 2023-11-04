@@ -13,18 +13,20 @@ public class DreamOfTheUntouchedLand {
 		// and up to 3 health worth of invaders
 		await Cmd.RemoveUpToNHealthOfInvaders( 3 ).Execute( ctx );
 
+		var gs = GameState.Current;
+
 		// if you have 3 moon, 2 water  3 earth 2 plant
 		if(await ctx.YouHave( "3 moon,2 water,3 earth,2 plant" )
-			&& ctx.GameState.Island.Boards.Length == ctx.GameState.Spirits.Length
+			&& gs.Island.Boards.Length == gs.Spirits.Length
 		) {
 
 			// Add a random new island board next to target board ignore its setup icons.
 			Board newBoard = PickNewRandomBoard( ctx );
 
 			// Reconfigure 1-board island to 2-board island - !! only works if starting with 1 board
-			var existingBoard = ctx.GameState.Island.Boards[0];
+			var existingBoard = gs.Island.Boards[0];
 
-			ctx.GameState.Island.AddBoard( newBoard.Sides[0], existingBoard.Sides[0] );
+			gs.Island.AddBoard( newBoard.Sides[0], existingBoard.Sides[0] );
 
 			// add 2 beast, 2 wilds, 2 badlands
 			foreach(var token in new ISpaceEntity[] { Token.Beast, Token.Wilds, Token.Badlands})
@@ -33,15 +35,15 @@ public class DreamOfTheUntouchedLand {
 			// and up to 2 presence (from any Spirits) anywhere on it.
 			// ??? Can spirits violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
-				var spirit = await ctx.Self.Gateway.Decision(new Select.ASpirit("Spirit to add presence.",ctx.GameState.Spirits));
+				var spirit = await ctx.Self.Gateway.Decision(new Select.ASpirit("Spirit to add presence.", gs.Spirits));
 				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).Tokens().ToArray() ).Execute(spirit.BindMyPowers());
 			}
-					
+
 			// from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.
-			ctx.GameState.AddIslandMod( new InvadersSkip1Board() );
+			gs.AddIslandMod( new InvadersSkip1Board() );
 
 			// Notify board changed.
-			ctx.GameState.Log( new Log.LayoutChanged($"{Name} added Board {newBoard.Name}") );
+			gs.Log( new Log.LayoutChanged($"{Name} added Board {newBoard.Name}") );
 
 		}
 
@@ -50,13 +52,14 @@ public class DreamOfTheUntouchedLand {
 	}
 
 	static Board PickNewRandomBoard( TargetSpaceCtx ctx ) {
-		var rand = new Random( ctx.GameState.ShuffleNumber +56127);
+		GameState gs = GameState.Current; // ??? could we pass this in?
+		var rand = new Random( gs.ShuffleNumber +56127);
 		// pick board
-		var boardsToChooseFrom = Board.AvailableBoards.Except( ctx.GameState.Island.Boards.Select( b => b.Name ) ).ToList();
+		var boardsToChooseFrom = Board.AvailableBoards.Except( gs.Island.Boards.Select( b => b.Name ) ).ToList();
 		string boardName = boardsToChooseFrom[ rand.Next( boardsToChooseFrom.Count) ];
 
 		// pick orentation
-		var orientationOptions = ctx.GameState.Island.AvailableConnections();
+		var orientationOptions = gs.Island.AvailableConnections();
 		BoardOrientation orientation = orientationOptions[rand.Next( orientationOptions.Length)];
 
 		return Board.BuildBoard( boardName, orientation );

@@ -39,7 +39,7 @@ public class Shadows : Spirit {
 	) {
 		var space = await base.TargetsSpace( ctx, prompt, preselect, sourceCriteria, targetCriteria );
 
-		if( 0<Energy && !base.GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria ).Any( s => s.Space == space ) ) 
+		if( 0<Energy && !base.GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).Any( s => s.Space == space ) ) 
 			--Energy;
 	
 		return space;

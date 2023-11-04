@@ -47,8 +47,9 @@ public class FlowingAndSilentFormsDartBy {
 	static async Task GatherSomeonesPresence( TargetSpaceCtx ctx ) {
 		var adj = ctx.Tokens.Adjacent;
 		// Pick Spirit
-		var nearbySpirits = ctx.GameState.Spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
-		Spirit other = ctx.GameState.Spirits.Length == 1 ? ctx.Self
+		Spirit[] spirits = GameState.Current.Spirits;
+		var nearbySpirits = spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
+		Spirit other = spirits.Length == 1 ? ctx.Self
 			: await ctx.Decision( new Select.ASpirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
 		var options = adj.Where(other.Presence.HasMovableTokens);

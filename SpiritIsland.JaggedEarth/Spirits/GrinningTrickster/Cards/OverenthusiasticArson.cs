@@ -12,7 +12,7 @@ public class OverenthusiasticArson {
 		await ctx.Invaders.DestroyNOfClass(1,Human.Town);
 
 		// discard the top card of the minor power deck.
-		var card = ctx.GameState.MinorCards.FlipNext();
+		var card = GameState.Current.MinorCards.FlipNext();
 
 		// Show the card to the user
 		_ = await ctx.Self.SelectPowerCard(OverenthusiasticArson.Name + " turned up:",new PowerCard[] { card }, CardUse.Other, Present.Always );

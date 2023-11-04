@@ -20,7 +20,7 @@ public class TradeSuffers_Tests {
 	public void Level1_CityIsNotDamagedDuringRavage_NoBuild() {
 
 		// Disable destroying presence
-		_ctx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 
 		// Invaders do not Build in lands with City.
 
@@ -52,7 +52,7 @@ public class TradeSuffers_Tests {
 	public void Level1_CityDestroyedDuringRavage_Build() {
 		
 		// Disable destroying presence
-		_ctx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 		ClearBlight();
 
 		// Fill all Invaders spaces with the A7 card
@@ -118,14 +118,14 @@ public class TradeSuffers_Tests {
 		_user.GrowAndBuyNoCards();
 	}
 
-	private void ClearBlight() {
+	void ClearBlight() {
 		// So it doesn't cascade during ravage
-		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)
+		foreach(SpaceState space in GameState.Current.Spaces_Unfiltered)
 			space.Init( Token.Blight, 0 ); // Don't trigger events
 	}
 
 	void ActivateFearCard(IFearCard fearCard) {
-		var fear = _ctx.GameState.Fear;
+		var fear = GameState.Current.Fear;
 		fear.Deck.Pop(); // remove old
 		fear.PushOntoDeck( fearCard );
 		fear.AddDirect( new FearArgs( fear.PoolMax ) );

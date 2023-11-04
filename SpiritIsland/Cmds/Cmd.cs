@@ -220,7 +220,7 @@ public static partial class Cmd {
 		} );
 
 	static public SelfCmd Reclaim1CardInsteadOfDiscarding => new SelfCmd( "Reclaims 1 card instead of discarding it", ctx => {
-		ctx.GameState.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( ctx.Self ).Reclaim );
+		GameState.Current.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( ctx.Self ).Reclaim );
 	} );
 
 }

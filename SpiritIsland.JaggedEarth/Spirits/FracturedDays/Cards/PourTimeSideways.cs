@@ -31,7 +31,7 @@ class PourTimeSideways {
 		foreach(var board in dst.Boards)
 			++board.InvaderActionCount;
 
-		ctx.GameState.TimePasses_ThisRound.Push( gs => {
+		GameState.Current.TimePasses_ThisRound.Push( gs => {
 			foreach(var b in dst.Boards.Union( srcBoards ))
 				b.InvaderActionCount = 1;
 			return Task.CompletedTask;

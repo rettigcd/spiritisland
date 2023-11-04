@@ -9,7 +9,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void NormalInvaderPhases() {
 
 		// Disable destroying presence
-		_ctx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 
 		GrowAndBuyNoCards();
 		_ = _user.NextDecision; // Wait for engine to finish
@@ -39,7 +39,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level1_SkipExploreInLowestNumberedLand() {
 
 		// Disable destroying presence
-		_ctx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 
 
 		// 1: "During the next normal explore, skip the lowest-numbered land matching the invader card on each board.
@@ -79,7 +79,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level2_DelayExplore1Round() {
 
 		// Disable destroying presence
-		_ctx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 
 		// 2: Skip the next normal explore.  During the next invader phase, draw an adidtional explore card.
 
@@ -124,7 +124,7 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	public void Level3_DelayExplore1Round() {
 
 		// Disable destroying presence
-		_ctx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 
 		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
 

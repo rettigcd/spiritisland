@@ -42,7 +42,7 @@ public class LetsSeeWhatHappens {
 
 	static PowerCard DiscardMinorPowersUntilYouTargetLand( TargetSpaceCtx ctx ) {
 		PowerCard card;
-		do { card = ctx.GameState.MinorCards.FlipNext(); } while(card.LandOrSpirit != LandOrSpirit.Land);
+		do { card = GameState.Current.MinorCards.FlipNext(); } while(card.LandOrSpirit != LandOrSpirit.Land);
 		return card;
 	}
 

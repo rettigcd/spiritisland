@@ -12,7 +12,7 @@ internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
 	public async Task Execute( TargetSpaceCtx ctx ) {
 
 		// The first space/time it is called on, init original Beast positions
-		_originalBeastCounts ??= ctx.GameState.Spaces
+		_originalBeastCounts ??= GameState.Current.Spaces
 				.ToDictionary( s => s.Space, s => s.Beasts.Count )
 				.ToCountDict();
 
@@ -69,7 +69,7 @@ class CommandBeastAction : IActionFactory {
 		Used = true;
 
 		await using var actionScope = await ActionScope.Start(ActionCategory.Special); // replace generic scope passed in.
-		GameCtx gameCtx = new GameCtx( ctx.GameState );
+		GameCtx gameCtx = new GameCtx( GameState.Current );
 		await new CommandBeasts().In().EachActiveLand().Execute( gameCtx );
 	}
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;

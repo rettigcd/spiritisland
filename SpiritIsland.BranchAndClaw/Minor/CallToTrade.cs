@@ -11,7 +11,7 @@ public class CallToTrade {
 		await ctx.GatherUpToNDahan(1);
 
 		// If the Terror Level is 2 or lower
-		if( ctx.GameState.Fear.TerrorLevel <= 2 ) {
+		if( GameState.Current.Fear.TerrorLevel <= 2 ) {
 			// Gather 1 town
 			await ctx.Gather( 1, Human.Town );
 

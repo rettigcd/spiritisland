@@ -9,7 +9,7 @@ public class StudyTheInvadersFears {
 		ctx.AddFear(2);
 
 		// Turn the top card of the Fear Deck face-up.
-		await ctx.FlipFearCard( ctx.GameState.Fear.Deck.Peek() );
+		await ctx.FlipFearCard( GameState.Current.Fear.Deck.Peek() );
 	}
 
 }

@@ -8,7 +8,7 @@ public class PeaceOfTheNighttimeSky {
 	[Instructions( "If the Terror Level is 1, Invaders do not Ravage in target land this turn. You may Repeat this Power. If you do, Forget this Power Card and Gain 1 Moon." ), Artist( Artists.EmilyHancock )]
 	public static Task ActAsync(TargetSpaceCtx ctx ) {
 		// If the Terror Level is 1
-		if(ctx.GameState.Fear.TerrorLevel == 1)
+		if(GameState.Current.Fear.TerrorLevel == 1)
 			// Invaders do not Ravage in target land this turn.
 			ctx.Tokens.SkipRavage( Name );
 		return Task.CompletedTask;

@@ -19,7 +19,7 @@ public class TwistedFlowersMurmurUltimatums {
 		}
 
 		// if terror level is 2 or higher, remove 2 invaders
-		if(2 <= ctx.GameState.Fear.TerrorLevel)
+		if(2 <= GameState.Current.Fear.TerrorLevel)
 			for(int i = 0; i < 2; ++i) {
 				var st = await ctx.Decision( Select.Invader.ToRemove( ctx.Space, ctx.Tokens.InvaderTokens() ) );
 				if(st == null) break;

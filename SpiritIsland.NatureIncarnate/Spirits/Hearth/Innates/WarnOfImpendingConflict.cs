@@ -7,25 +7,25 @@ public class WarnOfImpendingConflict {
 
 	[InnateOption( "2 sun,1 earth", "In 1 of your lands, 1 Dahan deals Damage before Invaders. Choose land during ravage." )]
 	static public Task Option1Async( SelfCtx ctx ) {
-		ctx.GameState.Tokens.AddIslandMod( new WarnToken( ctx.Self, 1 ) );
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 1 ) );
 		return Task.CompletedTask;
 	}
 
 	[InnateOption( "3 sun,1 earth", "In that land, another Dahan deals Damage before Invaders." )]
 	static public Task Option2Async( SelfCtx ctx ) {
-		ctx.GameState.Tokens.AddIslandMod( new WarnToken( ctx.Self, 2 ) );
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 2 ) );
 		return Task.CompletedTask;
 	}
 
 	[InnateOption( "4 sun,2 earth", "In that land, all Dahan deal Damage before Invaders." )]
 	static public Task Option3Async( SelfCtx ctx ) {
-		ctx.GameState.Tokens.AddIslandMod( new WarnToken( ctx.Self, 100 ) );
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 100 ) );
 		return Task.CompletedTask;
 	}
 
 	[InnateOption( "5 sun,3 earth", "Instead, in all your lands, all Dahan deal Damage before Invaders." )]
 	static public Task Option4Async( SelfCtx ctx ) {
-		ctx.GameState.Tokens.AddIslandMod( new WarnToken( ctx.Self, 100, true ) );
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 100, true ) );
 		return Task.CompletedTask;
 	}
 

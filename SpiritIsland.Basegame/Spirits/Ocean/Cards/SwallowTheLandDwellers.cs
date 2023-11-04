@@ -11,7 +11,7 @@ public class SwallowTheLandDwellers {
 		// "Drown 1 explorer, 1 town, 1 dahan"
 
 		// find Ocean's Hungry Grasp spirit
-		var ocean = ctx.Self as Ocean ?? ctx.GameState.Spirits.Single(x=>x is Ocean);
+		var ocean = ctx.Self as Ocean ?? GameState.Current.Spirits.Single(x=>x is Ocean);
 
 		// find place to drown then
 		var drowningOcean = ocean.Presence.Spaces.First() // find any space the ocean has presnece

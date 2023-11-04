@@ -31,8 +31,8 @@ class BlurTheArcOfYears {
 
 		// If invaders are present: they Build, then Ravage
 		if(hasInvaders) {
-			var deck = ctx.GameState.InvaderDeck;
-			await deck.Build.Engine.Do1Build( ctx.GameState, ctx.Tokens );
+			var deck = GameState.Current.InvaderDeck;
+			await deck.Build.Engine.Do1Build( GameState.Current, ctx.Tokens );
 			await ctx.Tokens.Ravage();
 		}
 

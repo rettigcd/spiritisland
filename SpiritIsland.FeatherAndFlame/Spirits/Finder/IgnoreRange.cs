@@ -13,7 +13,7 @@ public class ExtendRange : GrowthActionFactory {
 	readonly int _extension;
 
 	public override Task ActivateAsync( SelfCtx ctx ) {
-		RangeCalcRestorer.Save( ctx.Self, ctx.GameState );
+		RangeCalcRestorer.Save( ctx.Self );
 		RangeExtender.Extend( ctx.Self, _extension );
 		return Task.CompletedTask;
 	} 

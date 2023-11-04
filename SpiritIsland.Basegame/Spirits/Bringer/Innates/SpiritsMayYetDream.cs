@@ -12,8 +12,9 @@ public class SpiritsMayYetDream {
 		var fearPosition = new List<TextOption>();
 		var dictionary = new Dictionary<TextOption, IFearCard>();
 
-		NameCards( fearPosition, dictionary, "Active", ctx.GameState.Fear.ActivatedCards );
-		NameCards( fearPosition, dictionary, "Future", ctx.GameState.Fear.Deck );
+		var fear = GameState.Current.Fear;
+		NameCards( fearPosition, dictionary, "Active", fear.ActivatedCards );
+		NameCards( fearPosition, dictionary, "Future", fear.Deck );
 
 		var positionToShow = await ctx.Self.Select( "Select fear to reveal", fearPosition.ToArray(), Present.Always );
 		await ctx.FlipFearCard( dictionary[positionToShow] );

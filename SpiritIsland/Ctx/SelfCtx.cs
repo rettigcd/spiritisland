@@ -5,8 +5,6 @@ namespace SpiritIsland;
 public class SelfCtx {
 
 	public Spirit Self { get; }
-	public GameState GameState => _gameState ??= GameState.Current;
-	GameState _gameState;
 
 	protected TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
 	TerrainMapper _terrainMapper;
@@ -15,10 +13,6 @@ public class SelfCtx {
 
 	public SelfCtx( Spirit self ) {
 		Self = self;
-	}
-
-	protected SelfCtx(SelfCtx src) {
-		Self = src.Self;
 	}
 
 	#endregion constructor
@@ -39,7 +33,7 @@ public class SelfCtx {
 	#endregion
 
 	public virtual void AddFear( int count ) { // overriden by TargetSpaceCtx to add the location
-		GameState.Fear.AddDirect( new FearArgs( count) );
+		GameState.Current.Fear.AddDirect( new FearArgs( count ) );
 	}
 
 	public Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Gateway.Decision( originalDecision );
@@ -48,13 +42,6 @@ public class SelfCtx {
 	public TargetSpaceCtx Target( SpaceState ss ) => Target(ss.Space);
 
 	public TargetSpiritCtx TargetSpirit( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
-
-	// Visually, selects the [presence] icon
-	public async Task<TargetSpaceCtx> TargetDeployedPresence( string prompt ) {
-		var space = (await Decision( new ASpaceToken( prompt, Self.Presence.Deployed, Present.Always ) )).Space;
-
-		return Target( space );
-	}
 
 	// Visually, selects the [space] which has presence.
 	public async Task<TargetSpaceCtx> TargetLandWithPresence( string prompt ) {
@@ -68,10 +55,10 @@ public class SelfCtx {
 		cardToFlip.Flipped = true;
 		await Self.Select( label, new IOption[] { cardToFlip }, Present.Always );
 		if( cardToFlip.ActivatedTerrorLevel.HasValue )
-			GameState.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
+			GameState.Current.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
 		else
 			for(int i=1;i<=3;++i)
-				GameState.Log( new Log.Debug($"{i} => {cardToFlip.GetDescription(i)}") );
+				GameState.Current.Log( new Log.Debug($"{i} => {cardToFlip.GetDescription(i)}") );
 
 
 	}

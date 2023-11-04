@@ -35,6 +35,6 @@ static internal class Extensions {
 	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );
 
 	static public TargetSpaceCtx TargetSpace( this SelfCtx ctx, string spaceLabel )
-		=> ctx.Target( ctx.GameState.Spaces_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
+		=> ctx.Target( GameState.Current.Spaces_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
 
 }

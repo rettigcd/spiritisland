@@ -279,7 +279,7 @@ public abstract partial class Spirit : IOption {
 
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( ctx );
-		ctx.GameState.CheckWinLoss(); // @@@
+		GameState.Current.CheckWinLoss(); // @@@
 	}
 
 	#endregion
@@ -536,7 +536,7 @@ public abstract partial class Spirit : IOption {
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		SpaceState[] spaces = GetPowerTargetOptions( ctx.GameState, sourceCriteria, targetCriteria ).ToArray();
+		SpaceState[] spaces = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).ToArray();
 		
 		if(spaces.Length == 0) {
 			GameState.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.

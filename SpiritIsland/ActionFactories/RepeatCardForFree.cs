@@ -30,7 +30,7 @@ public class RepeatCardForFree : IActionFactory {
 
 		var options = ctx.Self.UsedActions.OfType<PowerCard>() // not using Discard Pile because those cards are from previous rounds
 			.Where(card=>card.Cost <= maxCost)
-			.Where(card=> card.CouldActivateDuring(ctx.GameState.Phase,ctx.Self)) 
+			.Where(card=> card.CouldActivateDuring(GameState.Current.Phase,ctx.Self)) 
 			.ToArray(); 
 
 

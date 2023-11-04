@@ -15,14 +15,15 @@ public class SelectAnyElements : IActionFactory {
 
 	public string Text => Name;
 
-	public async Task ActivateAsync( Spirit self, GameState _ ) {
+	public Task ActivateAsync( SelfCtx ctx ) => ActivateAsync( ctx.Self );
+
+	public async Task ActivateAsync( Spirit self ) {
 
 		var newElements = await self.SelectElementsEx( count, ElementList.AllElements );
 		foreach(var newEl in newElements)
 			++self.Elements[newEl];
 			
 	}
-	public Task ActivateAsync(SelfCtx ctx) => ActivateAsync( ctx.Self, ctx.GameState);
 
 	public bool CouldActivateDuring( Phase _, Spirit _1 ) => true;
 

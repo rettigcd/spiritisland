@@ -3,7 +3,7 @@
 public static class ResolveOutOfPhaseAction {
 
 	public static async Task Execute( SelfCtx ctx ) {
-		var resultingSpeed = ctx.GameState.Phase;
+		var resultingSpeed = GameState.Current.Phase;
 		var originalSpeed = OriginalSpeed( resultingSpeed );
 		var changeableFactories = ctx.Self.GetAvailableActions( originalSpeed ).OfType<IFlexibleSpeedActionFactory>().ToArray();
 		var prompt = Prompt( resultingSpeed );
@@ -11,7 +11,7 @@ public static class ResolveOutOfPhaseAction {
 		IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await ctx.Self.SelectFactory( prompt, changeableFactories, Present.Done );
 
 		if(factory != null) {
-			TemporarySpeed.Override( factory, resultingSpeed, ctx.GameState );
+			TemporarySpeed.Override( factory, resultingSpeed, GameState.Current );
 			await ctx.Self.TakeActionAsync( factory, resultingSpeed );
 		}
 	}

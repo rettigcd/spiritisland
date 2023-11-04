@@ -18,7 +18,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 
 		for(int i = 0; i < _landsPerSpirit; ++i) {
 
-			var spaceOptions = ctx.GameState.Spaces
+			var spaceOptions = GameState.Current.Spaces
 				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
 				.Select( s => ctx.Target( s.Space ) )
 				.Where( _spaceAction.IsApplicable )  // Matches action Criteria

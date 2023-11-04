@@ -8,7 +8,7 @@ public class TerrorOfTheHunted {
 	static async public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// Add 1 Strife per Terror Level.
-		int strifeCount = ctx.GameState.Fear.TerrorLevel;
+		int strifeCount = GameState.Current.Fear.TerrorLevel;
 
 		// If Beast are present, 1 Fear and Add 1 Strife.
 		if(ctx.Beasts.Any) {

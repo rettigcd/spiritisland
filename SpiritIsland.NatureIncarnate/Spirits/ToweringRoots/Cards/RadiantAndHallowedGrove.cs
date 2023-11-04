@@ -13,7 +13,7 @@ public class RadiantAndHallowedGrove {
 			ctx.AddFear(2);
 
 		// In both target and one adjacent land, you may Remove an Invader with Health less than or equal to the Terror Level.
-		var removableClasses = ctx.GameState.Fear.TerrorLevel switch {
+		var removableClasses = GameState.Current.Fear.TerrorLevel switch {
 			1 => new HumanTokenClass[] { Human.Explorer },
 			2 => Human.Explorer_Town,
 			_ => Human.Invader

@@ -32,8 +32,8 @@ public class SourceCalcRestorer {
 
 public class RangeCalcRestorer {
 
-	static public void Save( Spirit spirit, GameState gameState ) {
-		gameState.TimePasses_ThisRound.Push( new RangeCalcRestorer( spirit ).Restore );
+	static public void Save( Spirit spirit ) {
+		GameState.Current.TimePasses_ThisRound.Push( new RangeCalcRestorer( spirit ).Restore );
 	}
 
 	readonly Spirit spirit;

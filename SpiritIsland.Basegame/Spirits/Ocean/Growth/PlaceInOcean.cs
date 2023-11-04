@@ -3,7 +3,7 @@
 public class PlaceInOcean : GrowthActionFactory {
 
 	public override Task ActivateAsync( SelfCtx ctx ) {
-		var oceanSpaces = ctx.GameState.Island.Boards
+		var oceanSpaces = GameState.Current.Island.Boards
 			.Select( b=>b.Spaces_Existing.Single(s=>s.IsOcean ) )
 			.Tokens()
 			.ToArray();

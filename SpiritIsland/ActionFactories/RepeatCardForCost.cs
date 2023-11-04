@@ -22,7 +22,7 @@ public class RepeatCardForCost : IActionFactory {
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
 
-		PowerCard[] options = GetCardOptions( ctx.Self, ctx.GameState.Phase );
+		PowerCard[] options = GetCardOptions( ctx.Self, GameState.Current.Phase );
 		if(options.Length == 0) return;
 
 		PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Always );

@@ -30,20 +30,20 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 
 	public static void ClearAllBlight( this SelfCtx ctx ) {
 		// So it doesn't cascade and require extra interactions...
-		foreach(var space in ctx.GameState.Spaces_Unfiltered)
+		foreach(var space in GameState.Current.Spaces_Unfiltered)
 			space.Blight.Init(0); // don't trigger events
 	}
 
 	public static void ActivateFearCard( this SelfCtx ctx, IFearCard fearCard ) {
-		var fear = ctx.GameState.Fear;
+		var fear = GameState.Current.Fear;
 		fear.Deck.Pop();
 		fear.PushOntoDeck(fearCard);
 		fear.AddDirect( new FearArgs( fear.PoolMax ) );
 	}
 
 	public static void ElevateTerrorLevelTo( this SelfCtx ctx, int desiredFearLevel ) {
-		while(ctx.GameState.Fear.TerrorLevel < desiredFearLevel)
-			ctx.GameState.Fear.Deck.Pop();
+		while(GameState.Current.Fear.TerrorLevel < desiredFearLevel)
+			GameState.Current.Fear.Deck.Pop();
 	}
 
 	#region Log Asserting

@@ -10,7 +10,7 @@ public class SkyStretchesToShore {
 		ctx.Other.AddActionFactory( new ResolveSlowDuringFast_OrViseVersa() );
 
 		// Target Spirit gains +3 range for targeting coastal lands only
-		RangeCalcRestorer.Save(ctx.Other,ctx.GameState);
+		RangeCalcRestorer.Save(ctx.Other);
 		_ = new SkyStretchesToShoreApi( ctx.Other ); // Auto-binds to spirit
 
 		return Task.CompletedTask;

@@ -69,8 +69,8 @@ public static class Is {
 	static public XFilter Inland => new XFilter( "Inland", x => x.IsInland );
 	static public XFilter Coastal => new XFilter( "coastal land", ctx => ctx.IsCoastal );
 	static public XFilter AdjacentToBlight => new XFilter( "land adjacent to blight", spaceCtx => spaceCtx.AdjacentCtxs.Any( adjCtx => adjCtx.Tokens.Blight.Any ) );
-	static public XFilter NotRavageCardMatch => new XFilter( "land that does not match Ravage card", ( TargetSpaceCtx spaceCtx ) => !spaceCtx.GameState.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( spaceCtx.Tokens ) ) );
+	static public XFilter NotRavageCardMatch => new XFilter( "land that does not match Ravage card", ( TargetSpaceCtx spaceCtx ) => !GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( spaceCtx.Tokens ) ) );
 	static public XFilter RavageCardMatch => new XFilter( "matching a Ravage card", MatchingRavageCardImp );
-	static bool MatchingRavageCardImp( TargetSpaceCtx ctx ) => ctx.GameState.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( ctx.Tokens ) );
+	static bool MatchingRavageCardImp( TargetSpaceCtx ctx ) => GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( ctx.Tokens ) );
 
 }

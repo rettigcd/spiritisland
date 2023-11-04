@@ -31,7 +31,7 @@ class PickNewGrowthOption : GrowthActionFactory, IActionFactory {
 
 		GrowthOption option = (GrowthOption)await ctx.Self.Select( "Select New Growth Option", options, Present.Always );
 		ctx.Self.GrowthTrack.PickGroups.Single().Add( option ); // only works with spirits with a single pick-group
-		ctx.GameState.Log( new SpiritIsland.Log.LayoutChanged( $"Starlight adds Growth Option {option}" ) );
+		GameState.Current.Log( new SpiritIsland.Log.LayoutChanged( $"Starlight adds Growth Option {option}" ) );
 
 		used = true;
 	}

@@ -9,7 +9,7 @@ public class DreadApparitions {
 
 		// When powers generate fear in target land, defend 1 per fear.
 		// (Fear from destroying town/cities does not.)
-		ctx.GameState.Fear.FearAdded.ForRound.Add( ( gs, args ) => {
+		GameState.Current.Fear.FearAdded.ForRound.Add( ( gs, args ) => {
 			if(!args.FromDestroyedInvaders && args.space == ctx.Space) {
 				args.space.Tokens.Defend.Add( args.Count );
 				gs.Log(new Log.Debug( $"{args.Count} Fear => +{args.Count} Defend ({Name})" ));

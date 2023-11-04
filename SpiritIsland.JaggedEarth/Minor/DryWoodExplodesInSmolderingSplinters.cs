@@ -8,7 +8,7 @@ public class DryWoodExplodesInSmolderingSplinters {
 	[Instructions( "You may spend 1 Energy to make this Power Fast. 2 Fear. 1 Damage." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 		// You may spend 1 Energy to make this Power Fast.
-		if( ctx.GameState.Phase == Phase.Fast) {
+		if( GameState.Current.Phase == Phase.Fast) {
 			if(ctx.Self.Energy < 1 
 				|| ! await ctx.Self.UserSelectsFirstText($"Make '{DryWoodExplodesInSmolderingSplinters.Name}' fast?", "Yes, Pay 1 energy", "Nevermind, I'll wait" )
 			) {

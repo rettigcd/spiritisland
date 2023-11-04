@@ -46,7 +46,7 @@ public class DrawTowardsAConsumingVoid {
 		await ctx.DamageDahan( 5 );
 
 		// destroy 1 presence from each Spirit.
-		foreach(var spirit in ctx.GameState.Spirits)
+		foreach(var spirit in GameState.Current.Spirits)
 			await spirit.Presence.DestroyPresenceOn( ctx.Tokens );
 
 		// Remove 2 beast
@@ -64,9 +64,11 @@ public class DrawTowardsAConsumingVoid {
 		}
 
 		// Gather 1 presense
-		var presenceOptions = ctx.GameState.Spirits.SelectMany(s=>s.Presence.Movable).WhereIsOn(new SpaceState[] { adjState } ).ToArray();
 
-		var movableSpiritsInSpace = ctx.GameState.Spirits
+		Spirit[] spirits = GameState.Current.Spirits;
+		var presenceOptions = spirits.SelectMany( s => s.Presence.Movable).WhereIsOn(new SpaceState[] { adjState } ).ToArray();
+
+		var movableSpiritsInSpace = spirits
 			.Where( s => s.Presence.HasMovableTokens( adjState ) )
 			.ToArray();
 

@@ -29,7 +29,7 @@ public class AvoidTheDahan_Tests {
 		this._ctx = ctx;
 
 		// Disable destroying presence
-		ctx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 
 	}
 
@@ -252,12 +252,12 @@ public class AvoidTheDahan_Tests {
 #pragma warning restore xUnit1013 // Public method should be marked as test
 
 	void ElevateTerrorLevelTo( int desiredFearLevel ) {
-		while(_ctx.GameState.Fear.TerrorLevel < desiredFearLevel)
-			_ctx.GameState.Fear.Deck.Pop();
+		while(GameState.Current.Fear.TerrorLevel < desiredFearLevel)
+			GameState.Current.Fear.Deck.Pop();
 	}
 
 	void ActivateFearCard(IFearCard fearCard) {
-		var fear = _ctx.GameState.Fear;
+		var fear = GameState.Current.Fear;
 		fear.Deck.Pop();				// discard card we are replacing
 		fear.PushOntoDeck(fearCard);    // push desired card onto the deck
 		fear.AddDirect( new FearArgs( fear.PoolMax ) );

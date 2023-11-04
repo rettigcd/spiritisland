@@ -43,7 +43,7 @@ class TestSpirit : Spirit {
 		var starterCtx = spirit.BindSelf();
 
 		// Disable destroying presence
-		starterCtx.GameState.DisableBlightEffect();
+		GameState.Current.DisableBlightEffect();
 
 		return (user,starterCtx);
 	}

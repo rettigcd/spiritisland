@@ -3,7 +3,7 @@
 class Setup_PlacePresenceOnBeastLand : GrowthActionFactory {
 
 	public override async Task ActivateAsync( SelfCtx ctx ) {
-		var gameState = ctx.GameState;
+		var gameState = GameState.Current;
 		var options = gameState.Spaces_Unfiltered.Where( space=>space.Beasts.Any );
 		var space = await ctx.Decision(new Select.ASpace("Add presence to",options, Present.Always));
 		await ctx.Self.Presence.Token.AddTo(space);

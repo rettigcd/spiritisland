@@ -16,7 +16,7 @@ public class TargetSpaceCtx : SelfCtx {
 	//		from SelfCtx (to target a space)
 	//		for derived types
 	public TargetSpaceCtx( SelfCtx ctx, Space target )
-		:base( ctx )
+		:base( ctx.Self )
 	{
 		Space = target ?? throw new ArgumentNullException(nameof(target));
 	}
@@ -39,8 +39,8 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 
-	public bool MatchesRavageCard => GameState.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Tokens));
-	public bool MatchesBuildCard => GameState.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Tokens));
+	public bool MatchesRavageCard => GameState.Current.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Tokens));
+	public bool MatchesBuildCard => GameState.Current.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Tokens));
 
 	public SpaceState Tokens => _tokens ??= Space.Tokens;
 
@@ -284,8 +284,8 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task RemoveInvader( IEntityClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
 
 	/// <summary> adds Target to Fear context </summary>
-	public override void AddFear( int count ) { 
-		GameState.Fear.AddDirect( new FearArgs( count ) { space = Space } );
+	public override void AddFear( int count ) {
+		GameState.Current.Fear.AddDirect( new FearArgs( count ) { space = Space } );
 	}
 
 	#region Bonus Damage
@@ -333,7 +333,7 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
-	public IEntityClass[] AllPresenceTokens => GameState.Spirits
+	public IEntityClass[] AllPresenceTokens => GameState.Current.Spirits
 		.SelectMany(s=>s.Presence.TokensDeployedOn( Space ) )
 		.Select(x=>x.Class)
 		.ToArray();

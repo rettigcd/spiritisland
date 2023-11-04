@@ -23,7 +23,7 @@ public class UntendedLandCrumbles : BlightCard {
 		async ctx => {
 			int remaining = requiredEnergy;
 			int spiritIndex = 0;
-			var spirits = ctx.GameState.Spirits;
+			var spirits = GameState.Current.Spirits;
 			while(remaining > 0) {
 				var spirit = spirits[(spiritIndex++)%spirits.Length];
 				var contribution = await spirit.SelectNumber("Pay energy towards remaining "+remaining
@@ -34,12 +34,12 @@ public class UntendedLandCrumbles : BlightCard {
 				spirit.Energy -= contribution;
 			}
 		}
-	).OnlyExecuteIf(ctx => requiredEnergy <= ctx.GameState.Spirits.Sum( s=>s.Energy ) );
+	).OnlyExecuteIf(ctx => requiredEnergy <= GameState.Current.Spirits.Sum( s=>s.Energy ) );
 
 	static IExecuteOn<BoardCtx> JointlyDestroyPresenceOnBoard => new BaseCmd<BoardCtx>(
 		"Jointly destroy 1 presence",
 		async ctx => {
-			var spiritOptions = ctx.GameState.Spirits
+			var spiritOptions = GameState.Current.Spirits
 				.Where(s => s.Presence.IsOn(ctx.Board))
 				.ToArray();
 			if(spiritOptions.Length==0) return;
@@ -47,7 +47,7 @@ public class UntendedLandCrumbles : BlightCard {
 			await Cmd.DestroyPresence().Execute( spirit.BindSelf() );
 		}
 	).OnlyExecuteIf( ctx => 
-		ctx.GameState.Spirits
+		GameState.Current.Spirits
 			.Any( s => s.Presence.IsOn( ctx.Board ) )
 			
 	);
