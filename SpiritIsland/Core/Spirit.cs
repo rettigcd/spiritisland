@@ -78,7 +78,8 @@ public abstract partial class Spirit : IOption {
 
 	public GrowthTrack GrowthTrack { get; protected set; }
 
-	public async Task DoGrowth(GameState gameState) {
+	/// <remarks>Virtual so we can init stuff at beginning of turn if we need to.</remarks>
+	public virtual async Task DoGrowth(GameState gameState) {
 		await new DoGrowthClass(this,gameState).Execute();
 		await ApplyRevealedPresenceTrack();
 	}
@@ -100,6 +101,7 @@ public abstract partial class Spirit : IOption {
 			await action.ActivateAsync( ctx );
 
 	}
+
 
 	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
 

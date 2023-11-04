@@ -1,8 +1,4 @@
-﻿using SpiritIsland.Select;
-using System;
-using static System.Collections.Specialized.BitVector32;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public abstract partial class Spirit {
 	class DoGrowthClass {
