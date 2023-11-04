@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Select;
+using System.Xml.Linq;
 
 namespace SpiritIsland;
 
@@ -87,11 +88,28 @@ public static partial class Cmd {
 	static Task ExplorerTownsTakeDamage(TargetSpaceCtx ctx, int damage) => ctx.DamageInvaders(damage,Human.Explorer_Town);
 	static public SpaceCmd OneDamagePerDahan => new SpaceCmd( "1 damage per dahan", ctx => ctx.DamageInvaders( ctx.Dahan.CountAll ) ).OnlyExecuteIf( x => x.Dahan.Any && x.HasInvaders );
 
+	static public SpaceCmd DamageInvaders( int damage, params HumanTokenClass[] tokenClasses ) => new SpaceCmd( 
+		$"{damage} damage to Invaders", 
+		ctx => ctx.DamageInvaders( damage, tokenClasses ?? Human.Invader )
+	);
+
+
 	// -- Destroy --
 	static public SpaceCmd DestroyTown( int count ) => new SpaceCmd($"Destroy {count} Towns", ctx=>ctx.Invaders.DestroyNOfClass(count,Human.Town)).OnlyExecuteIf(x=>x.Tokens.Has(Human.Town));
 
 	// -- Fear --
 	static public SpaceCmd AddFear(int count) => new SpaceCmd($"Add {count} Fear.", ctx => ctx.AddFear(count) );
+
+	// -- Skip Invader Actions ==
+	static public SpaceCmd Skip1Ravage(string causeName) => new SpaceCmd(
+		"Skip 1 Ravage", 
+		ctx=>ctx.Tokens.SkipRavage(causeName,UsageDuration.SkipOneThisTurn)
+	);
+
+	static public SpaceCmd Skip1InvaderAction(string causeName) => new SpaceCmd(
+		"Skip 1 Invader Action",
+		ctx => ctx.Tokens.Adjust( new SkipAnyInvaderAction( causeName, ctx.Self ), 1 )
+	);
 
 	// AND / OR
 	static public BaseCmd<T> Multiple<T>( string title, params IActOn<T>[] actions ) => new BaseCmd<T>(
@@ -104,7 +122,7 @@ public static partial class Cmd {
 	static public BaseCmd<T> Multiple<T>( params IActOn<T>[] actions) => new BaseCmd<T>(
 		actions.Select(a=>a.Description).Join("  "),
 		async ctx => {
-			foreach( var action in actions )
+			foreach(IActOn<T> action in actions )
 				await action.ActAsync(ctx);
 		}
 	);

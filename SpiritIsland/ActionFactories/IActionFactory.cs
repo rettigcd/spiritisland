@@ -9,7 +9,6 @@ public interface IActionFactory : IOption {
 	/// <summary> Should be alias for IOption.Text </summary>
 	string Name { get; }
 
-
 }
 
 public interface IFlexibleSpeedActionFactory : IActionFactory {

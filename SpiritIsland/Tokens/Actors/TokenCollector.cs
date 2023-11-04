@@ -47,6 +47,11 @@ public class TokenCollector<DerivedType> where DerivedType : TokenCollector<Deri
 
 	public event Action<SpaceToken> Collected;
 
+	public DerivedType Track( Action<SpaceToken> action) { 
+		Collected += action;
+		return (DerivedType)this;
+	}
+
 	protected IEntityClass[] RemainingTypes => indexLookupByClass
 		.Where( pair => sharedGroupCounts[pair.Value].count > 0 )
 		.Select( pair => pair.Key )

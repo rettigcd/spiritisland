@@ -51,6 +51,7 @@ public class StrongAndConstantCurrents{
 
 			// From
 			var selected = await ctx.Decision( new Select.ASpaceToken( "Select Dahan to move to/from"+ctx.Space, coastalWithDahan, Present.Done, ctx.Space ));
+			if(selected == null) break;
 
 			// To:
 			var destination = (selected.Space != ctx.Space) ? ctx.Space

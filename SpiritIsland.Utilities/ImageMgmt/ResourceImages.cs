@@ -383,6 +383,7 @@ public class ResourceImages {
 	public Bitmap GetNoSymbol() => GetResourceImage( "icons.NoSymbol.png" );
 
 	static string? ToResource( Img image ) => image switch {
+		Img.RedX => "icons.NoSymbol.png",
 		Img.Starlight_AssignElement => "icons.AssignElement.png",
 		Img.CardPlay => "icons.cardplay.png",
 		Img.Reclaim1 => "icons.reclaim 1.png",

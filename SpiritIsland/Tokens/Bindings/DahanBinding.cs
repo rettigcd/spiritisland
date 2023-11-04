@@ -107,7 +107,7 @@ public sealed class DahanBinding {
 
 	public async Task DamageNTokens( HumanToken originalToken, int tokenCountToReceiveDamage, int damagePerToken ) {
 
-		var notification = new DamagingTokens {  
+		var notification = new DamagingTokens(_tokens) {  
 			Token = originalToken, 
 			TokenCountToReceiveDamage = tokenCountToReceiveDamage, 
 			DamagePerToken = damagePerToken
@@ -175,6 +175,10 @@ public sealed class DahanBinding {
 }
 
 public class DamagingTokens {
+	public DamagingTokens( SpaceState on ) {
+		On = on;
+	}
+	public SpaceState On { get; } 
 	public HumanToken Token { get; set; }
 	public int TokenCountToReceiveDamage { get; set; }
 	public int DamagePerToken { get; set; }

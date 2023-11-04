@@ -14,5 +14,7 @@ public class TokenCollectorFromSpecifiedSources : TokenCollector<TokenCollectorF
 	/// * But displays as 'Move' because that is user vernacular.
 	/// </remarks>
 	public Task<SpaceToken[]> CollectUpToN() => Collect( "Move up to ", Present.Done );
+
+	public Task<SpaceToken[]> CollectN() => Collect("Move ", Present.Always );
 }
 

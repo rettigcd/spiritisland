@@ -4,6 +4,8 @@ public enum Img {
 
 	None, // Default / null
 
+	RedX,
+
 	OrCurlyBefore,
 	OrCurlyAfter,
 

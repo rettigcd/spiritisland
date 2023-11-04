@@ -78,6 +78,7 @@ public class TokenPusher {
 	}
 	Func<TokenMovedArgs, Task> _customAction;
 
+	/// <remarks>Overriden by TokenPusher_FixedDestination</remarks>
 	protected virtual async Task<Space> SelectDestination( IToken token ) {
 		IEnumerable<SpaceState> destinationOptions = _tokens.Adjacent;
 		foreach(var filter in destinationFilters)

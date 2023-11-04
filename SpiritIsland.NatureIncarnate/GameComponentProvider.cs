@@ -8,6 +8,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[HearthVigil.Name] = typeof( HearthVigil ),
 		[WoundedWatersBleeding.Name] = typeof( WoundedWatersBleeding ),
 		[DancesUpEarthquakes.Name] = typeof(DancesUpEarthquakes ),
+		[RelentlessGazeOfTheSun.Name] = typeof(RelentlessGazeOfTheSun ),
 	};
 
 	public string[] SpiritNames => SpiritTypes.Keys.ToArray();

@@ -4,10 +4,11 @@ using SpiritIsland.JaggedEarth;
 using SpiritIsland.NatureIncarnate;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace SpiritIsland.WinForms; 
+namespace SpiritIsland.WinForms;
 
 public sealed class GrowthPainter : IDisposable{
 
@@ -64,179 +65,213 @@ public sealed class GrowthPainter : IDisposable{
 		if(growthAction is not SpiritGrowthAction sga) return;
 		IActOn<SelfCtx> action = sga.Cmd;
 
-		if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory 
+		if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory
 			&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
 		)
 			action = repeatableActionFactory.Inner;
 
-		Rectangle iRect = rect.ToInts();
-
-		if(action is GainEnergy ge)             { GainEnergyRect_Paint( ge.Delta, iRect ); return; }
-		if(action is ReclaimAll)                { ImgRect_Paint( Img.ReclaimAll, iRect ); return; }
-		if(action is ReclaimN)                  { ImgRect_Paint( Img.Reclaim1, iRect ); return; }
-		if(action is ReclaimHalf)               { ImgRect_Paint( Img.ReclaimHalf, iRect ); return; }
-		if(action is GainPowerCard)             { ImgRect_Paint( Img.GainCard, iRect ); return; }
-		if(action is PlacePresence)             { Draw_PlacePresence( rect, action ); return; }
-		if(action is MovePresence mp)           { Draw_MovePresence( mp.Range, iRect ); return; }
-		if(action is PlayExtraCardThisTurn pec) { Draw_AdditionalPlay( rect, pec.Count ); return; }
-		if(action is GainElements gel)          { Draw_GainAllElements( rect, gel.ElementsToGain ); return; }
-		if(action is Gain1Element g1e)          { DrawGain1Element( rect, g1e.ElementOptions ); return; }
-
-		switch(action.Description)              {
-			case "Add a Presence or Disease": Draw_PlacePresence( rect, action ); break;
-			case "PlacePresenceAndBeast":   Draw_PlacePresence( rect, action ); break;
-
-            // Wounded Waters Bleeding
-			case "PlaceDestroyedPresence(1)": Draw_PlacePresence( rect, action ); break;
-
+		var paintable = action switch {
+			ReclaimAll => new ImgRect( Img.ReclaimAll ),
+			ReclaimN => new ImgRect( Img.Reclaim1 ),
+			ReclaimHalf => new ImgRect( Img.ReclaimHalf ),
+			GainPowerCard => new ImgRect( Img.GainCard ),
+			GainEnergy { Delta: int delta } => new GainEnergyRect( delta ),
+			PlacePresence => PlacePresenceRect( action ),
+			MovePresence { Range: int range } => MovePresenceRect( range ),
+			PlayExtraCardThisTurn { Count: int count } => AdditionalPlay( count ),
+			GainElements { ElementsToGain: var els } => GainAllElementsRect( els ),
+			Gain1Element { ElementOptions: var els } => Gain1ElementRect( els ),
+			_ => null,
+		} ?? action.Description switch {
+			"Add a Presence or Disease"               => PlacePresenceRect( action ),
+			"PlacePresenceAndBeast"                   => PlacePresenceRect( action ),
+			// Wounded Waters Bleeding
+			"PlaceDestroyedPresence(1)"               => PlacePresenceRect( action ),
 			// Ocean
-			case "PlaceInOcean": Draw_PlacePresence( rect, action ); break;
-			case "Gather 1 Presence into EACH Ocean": ImgRect_Paint(Img.GatherToOcean, iRect ); break;
-			case "Push Presence from Ocean":          ImgRect_Paint(Img.Pushfromocean, iRect ); break;
-
+			"PlaceInOcean"                            => PlacePresenceRect( action ),
+			"Gather 1 Presence into EACH Ocean"       => new ImgRect( Img.GatherToOcean ),
+			"Push Presence from Ocean"                => new ImgRect( Img.Pushfromocean ),
 			// Heart of the WildFire
-			case "EnergyForFire": ImgRect_Paint(Img.Oneenergyfire, iRect ); break;
-
+			"EnergyForFire"                           => new ImgRect( Img.Oneenergyfire ),
 			// Fractured Dates
-			case "GainTime(2)":		ImgRect_Paint( Img.FracturedDays_Gain2Time, iRect ); break;
-			case "GainTime(1)x2":	ImgRect_Paint( Img.FracturedDays_Gain1Timex2, iRect ); break;
-			case "GainTime(1)x3":	ImgRect_Paint( Img.FracturedDays_Gain1Timex3, iRect ); break;
-			case "DrawPowerCardFromDaysThatNeverWere": 
-									ImgRect_Paint( Img.FracturedDays_DrawDtnw, iRect ); break; 
-
+			"GainTime(2)"                             => new ImgRect( Img.FracturedDays_Gain2Time ),
+			"GainTime(1)x2"                           => new ImgRect( Img.FracturedDays_Gain1Timex2 ),
+			"GainTime(1)x3"                           => new ImgRect( Img.FracturedDays_Gain1Timex3 ),
+			"DrawPowerCardFromDaysThatNeverWere"      => new ImgRect( Img.FracturedDays_DrawDtnw ),
 			// Starlight Seeks Its Form
-			case "MakePowerFast": ImgRect_Paint(Img.Icon_Fast, iRect ); break;
-
+			"MakePowerFast"                           => new ImgRect( Img.Icon_Fast ),
 			// Grinning Trickster
-			case "GainEnergyEqualToCardPlays": ImgRect_Paint(Img.GainEnergyEqualToCardPlays, iRect ); break;
-
+			"GainEnergyEqualToCardPlays"              => new ImgRect( Img.GainEnergyEqualToCardPlays ),
 			// Many Minds
-			case "Gather1Token": ImgRect_Paint(Img.Land_Gather_Beasts, iRect ); break; // Gather 1 Beast
-			case "ApplyDamage": ImgRect_Paint( Img.Damage_2, iRect ); break;
-			case "Discard 2 Power Cards": ImgRect_Paint(Img.Discard2, iRect ); break;
-			case "IgnoreRange": Draw_IgnoreRange( rect ); break;
-
-            // Towering Roots
-			case "AddVitalityToIncarna": 
-				_iconDrawer.DrawTheIcon(
-					//new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor{ ContentImg = Img.Icon_Vitality } },
-					new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } },
-					rect
-				);
-				break;
-			case "ReplacePresenceWithIncarna":
-				_iconDrawer.DrawTheIcon( new IconDescriptor {  ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_DestroyedPresence }, }, rect );
-				DrawMoveArrow( rect.Translate( 0, -rect.Height*.2f ) );
-				break;
-            
+			"Gather1Token"                            => new ImgRect( Img.Land_Gather_Beasts ),
+			"ApplyDamage"                             => new ImgRect( Img.Damage_2 ),
+			"Discard 2 Power Cards"                   => new ImgRect( Img.Discard2 ),
+			// Towering Roots
+			"AddVitalityToIncarna"                    => AddVitalityToIncarna(),
+			"ReplacePresenceWithIncarna"              => ReplacePresenceWithIncarna(),
+			// Finder
+			"IgnoreRange"                             => Draw_IgnoreRange(),
+			// Relentless Gaze of the Sun
+			"Add up to 3 Destroyed Presence together" => Add3DestroyedPresenceTogether(),
+			"Gain Energy an additional time"          => GainEnergyAgain(),
+			"Move up to 3 Presence together"          => MoveUpTo3PresenceTogether(),
+			// Dances up Earthquakes
+			"AddPresenceOrGainMajor"                  => AddPresenceOrGainMajor(),
+			"AccelerateOrDelay"                       => AccelerateOrDelay(),
 			// Breath of Darkness
-			case "All pieces Escape":
-			case "1 pieces Escape":
-			case "2 pieces Escape":
-				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_EndlessDark, }, rect.Translate( 0, -rect.Height * .20f ) );
-				PiecesEscape escape = (PiecesEscape)action;
-				DrawMoveArrow( rect.Translate( 0, 0 ) );
-				if(escape.NumToEscape != int.MaxValue)
-					DrawRangeText( rect.Translate(0, rect.Height * .05f), escape.NumToEscape );
-				break;
-			case "Move Incarna anywhere":
-				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
-				DrawMoveArrow( rect );
-				break;
-			case "AddOrMoveIncarnaToPresence":
-				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_Presence }, }, rect );
-				DrawMoveArrow( rect.Translate( 0, -rect.Height * .2f ) );
-				break;
+			"All pieces Escape"                       => PiecesEscape( int.MaxValue ),
+			"1 pieces Escape"                         => PiecesEscape( 1 ),
+			"2 pieces Escape"                         => PiecesEscape( 2 ),
+			"Move Incarna anywhere"                   => AddOrMoveIncarnaAnywhere(),
+			"AddOrMoveIncarnaToPresence"              => AddOrMoveIncarnaToPresence(),
+			_                                         => null,
+		};
 
-            // Dances up Earthquakes
-            case "AddPresenceOrGainMajor": {
-					Rectangle[] rows = rect.ToInts().SplitVerticallyAt(.5f);
-					Rectangle presRect = rows[0].SplitHorizontally( 2 )[0];
-					Rectangle cardRect = rows[1].SplitHorizontally( 2 )[1];
-					int majorOffset = cardRect.Width/2;
-					Rectangle majorRect = new Rectangle( cardRect.X+majorOffset/43, cardRect.Y + majorOffset / 4, majorOffset, majorOffset );
-					Draw_PlacePresence( presRect,new PlacePresence(2));
-					ImgRect_Paint(Img.GainCard, cardRect);
-					ImgRect_Paint(Img.Icon_Major, majorRect);
-				}
-				break;
-
-			case "AccelerateOrDelay":
-				_iconDrawer.DrawTheIcon( 
-					new IconDescriptor {
-						BackgroundImg = Img.Coin,
-						Text = "±1",
-						Sub = new IconDescriptor { BackgroundImg = Img.Icon_ImpendingCard },
-						Super = new IconDescriptor { BackgroundImg = Img.Icon_ImpendingCard },
-					}, rect
-				);
-				break;
-
-            // Relentless Gaze of the Sun
-            case "Add up to 3 Destroyed Presence together":
-				// !!! stand-in  FIX
-				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
-				DrawMoveArrow( rect );
-				break;
-
-			case "Gain Energy an additional time":
-				// !!! stand-in  FIX
-				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
-				DrawMoveArrow( rect );
-				break;
-            
-			case "Move up to 3 Presence together":
-				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
-				DrawMoveArrow( rect );
-				break;
-
-			default:
-				_graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
-				break;
+		if(paintable is not null) {
+			paintable.Paint( _graphics, rect.ToInts() );
+		} else {
+			Rectangle r2 = rect.ToInts().InflateBy( -5, -5 );
+			_graphics.FillRectangle( Brushes.Goldenrod, r2 );
+			_graphics.DrawString(action.Description,SystemFonts.MessageBoxFont, Brushes.Black, r2 );
 		}
 
 	}
 
-	void Draw_AdditionalPlay( RectangleF bounds, int count ) {
-		ImgRect_Paint(Img.CardPlayPlusN, bounds.ToInts());
+	static VerticalStackRect PiecesEscape( int number ) {
+		return new VerticalStackRect(
+			new NullRect(),
+			new ImgRect( Img.Icon_EndlessDark ),
+			new TextRect( number != int.MaxValue ? number.ToString() : "∞" ),
+			new ImgRect( Img.MoveArrow )
+		).SplitByWeight( .05f, .05f /*null*/, .5f /*presence*/, .3f/*number*/, .1f/*arrow*/, .05f );
+	}
 
-		using Font coinFont = UseGameFont( bounds.Height * .35f );
+	static VerticalStackRect AddOrMoveIncarnaAnywhere() {
+		return new VerticalStackRect(
+			new NullRect(),
+			new ImgRect( Img.Icon_Incarna ),
+			new ImgRect( Img.MoveArrow )
+		).SplitByWeight( .05f, .05f /*null*/, .8f /*incarna*/, .1f/*arrow*/, .05f );
+	}
+
+	static VerticalStackRect AddOrMoveIncarnaToPresence() {
+		return new VerticalStackRect(
+			new NullRect(),
+			new ImgRect( Img.Icon_Incarna ),
+			new ImgRect( Img.Icon_Presence ),
+			new ImgRect( Img.MoveArrow )
+		).SplitByWeight( .05f, .05f /*null*/, .6f /*presence*/, .2f/*filter*/, .1f/*arrow*/, .05f );
+	}
+
+	PoolRect AddPresenceOrGainMajor() {
+		return new PoolRect()
+			.Float( new TextRect( "/" ), .2f, .2f, .6f, .6f )
+			.Float( PlacePresenceRect( new PlacePresence( 2 ) ), 0f, 0f, .5f, .5f )
+			.Float( new ImgRect( Img.GainCard ), .5f, .5f, .5f, .5f )
+			.Float( new ImgRect( Img.Icon_Major ), .55f, .5f, .2f, .2f );
+	}
+
+	static PoolRect AccelerateOrDelay() {
+		return new PoolRect()
+			.Float( new ImgRect( Img.Icon_ImpendingCard ), .1f, .2f, .4f, .5f )
+			.Float( new ImgRect( Img.Icon_ImpendingCard ), .5f, .2f, .4f, .5f )
+			.Float( new ImgRect( Img.Coin ), .0f, .0f, .3f, .3f )
+			.Float( new TextRect( "±1" ), .05f, .1f, .2f, .1f );
+	}
+
+	private static PoolRect ReplacePresenceWithIncarna() {
+		return new PoolRect()
+							.Float( new ImgRect( Img.Icon_Incarna ), .1f, 0f, .8f, .8f )
+							.Float( new ImgRect( Img.Icon_Presence ), .6f, .6f, .4f, .4f )
+							.Float( new ImgRect( Img.RedX ), .6f, .6f, .4f, .4f );
+	}
+
+	IPaintableRect AddVitalityToIncarna() {
+		var des = new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } };
+		return new IconDescriptorRect( _iconDrawer, des );
+	}
+
+	IPaintableRect GainEnergyAgain() {
+		return new PoolRect()
+			.Float( new ImgRect( Img.Coin ), .1f, .1f,.5f, .5f )
+			.Float( new ImgRect( Img.Coin ), .4f, .1f, .5f, .5f )
+			.Float( new TextRect( "x2" ), .0f, .25f, 1f, .25f );
+	}
+
+	IPaintableRect MoveUpTo3PresenceTogether() {
+		return new VerticalStackRect(
+			new NullRect(),
+			new VerticalStackRect(
+				new ImgRect( Img.Icon_Presence ),
+				new HorizontalStackRect(
+					new ImgRect( Img.Icon_Presence ),
+					new ImgRect( Img.Icon_Presence )
+				)
+			),
+			new NullRect(),
+			new TextRect( 3 ),
+			new ImgRect( Img.MoveArrow )
+		).SplitByWeight( .0f, .1f/*spacer*/, .35f, .05f /*spacer*/, .35f /*number*/, .1f/*arrow*/, .1f );
+	}
+
+	IPaintableRect Add3DestroyedPresenceTogether() {
+		return new VerticalStackRect(
+			new NullRect(),
+			new HorizontalStackRect(
+				new TextRect("+"),
+				new VerticalStackRect(
+					new ImgRect( Img.Icon_DestroyedPresence ),
+					new HorizontalStackRect(
+						new ImgRect( Img.Icon_DestroyedPresence ),
+						new ImgRect( Img.Icon_DestroyedPresence )
+					)
+				)
+			).SplitByWeight(0f,.15f,.85f),
+			new NullRect(),
+			new TextRect( 1 ),
+			new ImgRect( Img.RangeArrow )
+		)	.SplitByWeight( .0f, .05f/*spacer*/, .4f, .05f /*spacer*/, .35f /*number*/, .1f/*arrow*/, .1f );
+	}
+
+	IPaintableRect AdditionalPlay( int count ) {
 		string txt = (count > 0)
 			? ("+" + count.ToString())
 			: ("\u2014" + (-count).ToString());
-		SizeF textSize = _graphics.MeasureString( txt, coinFont );
-		PointF textTopLeft = new PointF(
-			bounds.X + (bounds.Width - textSize.Width) * .35f,
-			bounds.Y + (bounds.Height - textSize.Height) * .60f
-		);
-		_graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
-
-	}
-
-	void GainEnergyRect_Paint( int delta, Rectangle bounds ){
-		new GainEnergyRect( delta ).Paint( _graphics, bounds );
+		return new PoolRect()
+			.Float( new ImgRect(Img.CardPlayPlusN), 0f,0f,1f,1f)
+			.Float( new TextRect(txt), .2f,.2f,.6f,.6f);
 	}
 
 	void ImgRect_Paint( Img img, Rectangle rect ) {
 		new ImgRect(img).Paint(_graphics,rect);
 	}
 
-	void DrawGain1Element( RectangleF rect, params Element[] elements ) {
-		var parts = rect.ToInts().SplitHorizontally(elements.Length);
-		for(int i = 0; i < elements.Length; ++i) {
-			using Bitmap img = GetImage( elements[i].GetTokenImg() );
-			_graphics.DrawImageFitWidth(img, parts[i]);
-		}
+	IPaintableRect Gain1ElementRect( params Element[] elements ) {
+		return new HorizontalStackRect(
+			elements.Select(el=>new ImgRect(el.GetIconImg())).ToArray()
+		);
 	}
 
-	void Draw_GainAllElements( RectangleF rect, params Element[] elements ) {
+	IPaintableRect GainAllElementsRect( params Element[] elements ) {
 		var descriptor = new IconDescriptor();
 		if(0 < elements.Length )
 			descriptor.ContentImg = elements[0].GetTokenImg();
 		if(1 < elements.Length)
 			descriptor.ContentImg2 = elements[1].GetTokenImg();
+		return new IconDescriptorRect(_iconDrawer,descriptor);
+	}
 
-		_iconDrawer.DrawTheIcon( descriptor, rect );
+	class IconDescriptorRect : IPaintableRect {
+		readonly IconDrawer _iconDrawer;
+		readonly IconDescriptor _descriptor;
+		public IconDescriptorRect(IconDrawer iconDrawer,IconDescriptor descriptor ) {
+			_iconDrawer = iconDrawer;
+			_descriptor = descriptor;
+		}
+		public Rectangle Paint( Graphics graphics, Rectangle rect ) {
+			_iconDrawer.DrawTheIcon( _descriptor, rect );
+			return rect;
+		}
 	}
 
 	static Bitmap GetTargetFilterIcon( string filterEnum ) {
@@ -261,14 +296,13 @@ public sealed class GrowthPainter : IDisposable{
 		return img;
 	}
 
-	void Draw_MovePresence( int range, Rectangle rect ) {
-		new VerticalStackRect(
+	IPaintableRect MovePresenceRect( int range ) {
+		return new VerticalStackRect(
 			new NullRect(),
 			new ImgRect( Img.Icon_Presence ),
 			new TextRect( range ),
 			new ImgRect( Img.MoveArrow )
-		)	.SplitByWeight(.05f, .1f, .3f, .35f, .15f, .1f)
-			.Paint(_graphics,rect);
+		)	.SplitByWeight(.05f, .1f, .3f, .35f, .15f, .1f);
 	}
 
 	void DrawRangeText( RectangleF rect, int range ) {
@@ -286,83 +320,69 @@ public sealed class GrowthPainter : IDisposable{
 		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
 	}
 
-	void Draw_PlacePresence( RectangleF bounds, IActOn<SelfCtx> growth ) {
-		
-		var (presence,range,filterEnum,addOnIcon) = growth switch {
-			PlaceInOcean			=> (Img.Icon_Presence, null,    Target.Ocean, Img.None),
-			PlacePresenceAndBeast	=> (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast), // add an icon
-			{Description: string n } when n == "Add a Presence or Disease" 
+	IPaintableRect PlacePresenceRect( IActOn<SelfCtx> growth ) {
+
+		var (presence, range, filterEnum, addOnIcon) = growth switch {
+			PlaceInOcean => (Img.Icon_Presence, null, Target.Ocean, Img.None),
+			PlacePresenceAndBeast => (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast), // add an icon
+			{ Description: string n } when n == "Add a Presence or Disease"
 									=> (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease),
-			PlaceDestroyedPresence { Range: int r, FilterDescription: string f } 
+			PlaceDestroyedPresence { Range: int r, FilterDescription: string f }
 									=> (Img.Icon_DestroyedPresence, (int?)r, f, Img.None),
 			// generic, do last
-			PlacePresence{ Range: int r, FilterDescription: string f } 
-									=> (Img.Icon_Presence, (int?)r, f, Img.None),          
-			_ => throw new ArgumentException("growth action factory not a place-presence",nameof(growth)),
+			PlacePresence { Range: int r, FilterDescription: string f }
+									=> (Img.Icon_Presence, (int?)r, f, Img.None),
+			_ => throw new ArgumentException( "growth action factory not a place-presence", nameof( growth ) ),
 		};
 
 		// IPaintableRect placePresenceRect = new ImgRect( Img.Icon_Presence ); // + presence
-		IPaintableRect placePresenceRect = new HorizontalStackRect(
-			new NullRect(),
-			new TextRect( "+" ),
-			new ImgRect( Img.Icon_Presence )
-		).SplitByWeight(0f,.15f,.15f,.5f,.2f);
 
 		Img filterImg = GetImgEnum( filterEnum );
 
-		IPaintableRect paintable = 
+		IPaintableRect paintable =
 			// Ocean
 			range is null ? new VerticalStackRect(
 				new NullRect(),
-				placePresenceRect,
+				PlacePresenceRect(),
 				new ImgRect( filterImg )
 			).SplitByWeight( .05f, .1f, .3f, .5f, .1f )
 			// HeathVigil, : Keeper
 			: filterImg != Img.None ? new VerticalStackRect(
 					new NullRect(),
-					placePresenceRect,
+					PlacePresenceRect(),
 					new ImgRect( filterImg ),
 					new TextRect( range ),
 					new ImgRect( Img.RangeArrow )
-				).SplitByWeight( .05f,.05f /*null*/,.2f /*presence*/,.25f/*filter*/, .25f/*number*/,.1f/*arrow*/,.05f )
-            // default
-            : new VerticalStackRect(
+				).SplitByWeight( .05f, .05f /*null*/, .2f /*presence*/, .25f/*filter*/, .25f/*number*/, .1f/*arrow*/, .05f )
+			// default
+			: new VerticalStackRect(
 				new NullRect(),
-				placePresenceRect,
+				PlacePresenceRect(),
 				new NullRect(),
 				new TextRect( range ),
 				new ImgRect( Img.RangeArrow )
 			).SplitByWeight( .0f, .1f/*spacer*/, .3f, .05f /*spacer*/, .4f /*number*/, .1f/*arrow*/, .1f );
-	
-		paintable.Paint(_graphics,bounds.ToInts());
 
-		if( addOnIcon != Img.None )
-			ImgRect_Paint( addOnIcon, bounds.ToInts().InflateBy( -(int)(bounds.Width * .2f) ) );
-
+		return addOnIcon == Img.None ? paintable
+			: new PoolRect()
+				.Float(paintable,0f,0f,1f,1f)
+				.Float(new ImgRect( addOnIcon ), .2f, .2f, .6f, .6f );
 	}
 
-	void Draw_IgnoreRange( RectangleF rect ) {
-		using var icon = GetImage( Img.Icon_Checkmark );
+	private static HorizontalStackRect PlacePresenceRect() {
+		return new HorizontalStackRect(
+					new NullRect(),
+					new TextRect( "+" ),
+					new ImgRect( Img.Icon_Presence )
+				).SplitByWeight( 0f, .15f, .15f, .5f, .2f );
+	}
 
-		float fontScale        = .25f;
-		float presenceYPercent = .3f;
-
-		using Font font = UseGameFont( rect.Height * fontScale );
-
-		// + presence
-		float iconCenterY = rect.Y + rect.Height * presenceYPercent; // top of presence
-		float iconWidth = rect.Width * .6f;
-		float iconHeight = icon.Height * iconWidth / icon.Width;
-		float iconX = rect.X + (rect.Width - iconWidth) / 2; // + rect.Width * .1f;
-
-		_graphics.DrawImage( icon, iconX, iconCenterY - iconHeight * .5f, iconWidth, iconHeight );
-
-		// range arrow
-		float rangeArrowTop = rect.Y + rect.Height * .85f;
-		using var rangeIcon = GetImage( Img.RangeArrow );
-		float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
-
+	IPaintableRect Draw_IgnoreRange()  {
+		return new VerticalStackRect(
+			new NullRect(),
+			new ImgRect(Img.Icon_Checkmark),
+			new ImgRect(Img.RangeArrow)
+		).SplitByWeight(0.05f,.1f,.8f,.1f,.1f);
 	}
 
 	public void Dispose() {
@@ -372,101 +392,6 @@ public sealed class GrowthPainter : IDisposable{
 	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
 	static Bitmap GetImage( Img img ) => ResourceImages.Singleton.GetImage( img );
 
-}
-
-interface IPaintableRect {
-	Rectangle Paint(Graphics graphics,Rectangle rect);
-}
-
-class VerticalStackRect : IPaintableRect {
-	IPaintableRect[] _children;
-	Func<Rectangle, Rectangle[]> _splitter;
-
-	public VerticalStackRect(params IPaintableRect[] children ) {
-		_children = children;
-		_splitter = SplitEqually;
-	}
-    public VerticalStackRect SplitByWeight( float margin, params float[] weights ) {
-		_splitter = (bounds) => bounds.SplitVerticallyByWeight( margin, weights );
-		return this;
-	}
-	Rectangle[] SplitEqually(Rectangle rect) => rect.SplitVerticallyIntoRows(0,_children.Length);
-	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
-		var rects = _splitter(rect);
-		for(int i=0;i<_children.Length;++i)
-			_children[i].Paint( graphics, rects[i] );
-		return rect;
-	}
-}
-
-class HorizontalStackRect : IPaintableRect {
-	IPaintableRect[] _children;
-	Func<Rectangle, Rectangle[]> _splitter;
-
-	public HorizontalStackRect( params IPaintableRect[] children ) {
-		_children = children;
-		_splitter = SplitEqually;
-	}
-	public HorizontalStackRect SplitByWeight( float margin, params float[] weights ) {
-		_splitter = ( bounds ) => bounds.SplitHorizontallyByWeight( margin, weights );
-		return this;
-	}
-	Rectangle[] SplitEqually( Rectangle rect ) => rect.SplitHorizontallyIntoColumns( 0, _children.Length );
-	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
-		var rects = _splitter( rect );
-		for(int i = 0; i < _children.Length; ++i)
-			_children[i].Paint( graphics, rects[i] );
-		
-		return rect;
-	}
-}
-
-
-class ImgRect : IPaintableRect {
-	public ImgRect(Img img ) { _img=img; }
-	readonly Img _img;
-	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
-		using Bitmap image = ResourceImages.Singleton.GetImage( _img );
-		float imgWidth = rect.Width, imgHeight = image.Height * imgWidth / image.Width;
-		var fitted = rect.FitBoth( image.Size );
-		graphics.DrawImage(image, fitted );
-		return fitted;
-	}
-
-}
-
-class TextRect : IPaintableRect {
-	public TextRect( string text ) { _text = text; }
-	public TextRect( object obj ) { _text = obj.ToString(); }
-	readonly string _text;
-	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
-		Font font = ResourceImages.Singleton.UseGameFont( rect.Height );
-		try {
-			SizeF textSize = graphics.MeasureString(_text,font);
-			Rectangle fitted = rect.FitHeight( textSize.ToSize() );
-
-			if(rect.Width < fitted.Width ) { // too narrow
-				font.Dispose();
-				// Scale down font
-				font = ResourceImages.Singleton.UseGameFont( rect.Height * rect.Width / fitted.Width );
-				textSize = graphics.MeasureString( _text, font );
-				fitted = rect.FitWidth( textSize.ToSize() );
-			}
-
-			using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			graphics.DrawString( _text, font, Brushes.Black, fitted, alignCenter );
-
-			return fitted;
-		}
-		finally {
-			font?.Dispose();
-		}
-	}
-
-}
-
-class NullRect : IPaintableRect {
-	public Rectangle Paint( Graphics graphics, Rectangle rect ){ /* draw nothing */ return rect; }
 }
 
 

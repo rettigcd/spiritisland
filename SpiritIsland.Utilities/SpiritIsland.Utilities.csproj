@@ -398,6 +398,9 @@
     <None Update="images\spirits\Ocean%27s_Hungry_Grasp.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="images\spirits\Relentless_Gaze_of_the_Sun.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\spirits\River_Surges_in_Sunlight.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

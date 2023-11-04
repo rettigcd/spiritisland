@@ -184,6 +184,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#region Adjacent Properties
 
+	/// <summary> Space Adjacent_Existing (including gateway) </summary>
 	public IEnumerable<SpaceState> Adjacent_Existing { 
 		get {
 			foreach(var space in Space.Adjacent_Existing)
