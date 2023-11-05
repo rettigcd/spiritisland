@@ -11,20 +11,20 @@ public class DahanAttack : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().Which( Has.Dahan )
 			.ByPickingToken( Human.Explorer )
 			.ForEachSpirit()
-			.Execute(ctx);
+			.ActAsync(ctx);
 
 	[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.OneDamagePerDahan
 			.In().SpiritPickedLand().AllDifferent()
-			.ForEachSpirit().Execute(ctx);
+			.ForEachSpirit().ActAsync(ctx);
 
 	[FearLevel( 3, "Each player chooses a different land with Town/City. Gather 1 Dahan into that land. Then 2 Damage per Dahan there." )]
 	public Task Level3( GameCtx ctx )
 		=> GatherThen2Damage
 			.In().SpiritPickedLand().AllDifferent().Which( Has.TownOrCity )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static SpaceCmd GatherThen2Damage => new SpaceCmd( "Gather 1 dahan. Then 2 Damage per Dahan there.", async ctx => { 
 		// Gather 1 dahan into that land.

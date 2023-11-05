@@ -14,7 +14,7 @@ public class ShroudOfSilentMist : Spirit {
 	);
 
 	public static Track MovePresence => new Track( "Moveonepresence.png" ){ // Same as Downpour
-		Action=new MovePresence(1),
+		Action = new MovePresence(1),
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
 	};
 
@@ -35,9 +35,9 @@ public class ShroudOfSilentMist : Spirit {
 		,PowerCard.For<TheFogClosesIn>()
 	) {
 		this.GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new DrawPowerCard() ),
+			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
 			new GrowthOption( new PlacePresence(0), new PlacePresence(0) ),
-			new GrowthOption( new DrawPowerCard(), new PlacePresence(3,Target.Mountain, Target.Wetland ) )
+			new GrowthOption( new GainPowerCard(), new PlacePresence(3,Target.Mountain, Target.Wetland ) )
 		);
 
 

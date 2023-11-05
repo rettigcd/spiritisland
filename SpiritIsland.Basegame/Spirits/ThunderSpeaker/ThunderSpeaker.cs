@@ -25,8 +25,8 @@ public class Thunderspeaker : Spirit {
 		GrowthTrack = new(
 			new GrowthOption( 
 				new ReclaimAll(), 
-				new DrawPowerCard(1),
-				new DrawPowerCard(1)
+				new GainPowerCard(),
+				new GainPowerCard()
 			),
 			new GrowthOption( 
 				new PlacePresence(2,Target.Dahan),

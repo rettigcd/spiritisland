@@ -97,8 +97,8 @@ public abstract partial class Spirit : IOption {
 		// ! Elements were added when the round started.
 
 		// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
-		foreach(IActionFactory action in Presence.RevealedActions.Cast<IActionFactory>())
-			await action.ActivateAsync( ctx );
+		foreach(var action in Presence.RevealedActions)
+			await action.ActAsync( ctx );
 
 	}
 

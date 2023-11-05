@@ -10,14 +10,14 @@ public class NervesFray : FearCardBase, IFearCard {
 		=> Cmd.AddStrife( 1 )
 		.To().SpiritPickedLand().Which( Is.NotRavageCardMatch )
 		.ForEachSpirit()
-		.Execute( ctx );
+		.ActAsync( ctx );
 
 	[FearLevel(2, "Each player adds 2 Strife in a single land not matching a Ravage Card." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.AddStrife( 2 )
 		.To().SpiritPickedLand().Which( Is.NotRavageCardMatch )
 		.ForEachSpirit()
-		.Execute( ctx );
+		.ActAsync( ctx );
 
 
 	[FearLevel(3, "Each player adds 2 Strife in a single land not matching a Ravage Card. 1 Fear per player." )]
@@ -26,7 +26,7 @@ public class NervesFray : FearCardBase, IFearCard {
 		await Cmd.AddStrife( 2 )
 			.To().SpiritPickedLand().Which( Is.NotRavageCardMatch )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 		// 1 Fear per player.
 		ctx.GameState.Fear.AddDirect(new FearArgs( ctx.GameState.Spirits.Length ));

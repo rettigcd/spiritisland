@@ -24,7 +24,7 @@ public class DancesUpEarthquakes : Spirit {
 		// Growth
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new AddPresenceOrGainMajor() ), 
-			new GrowthOption( new DrawPowerCard(), new PlacePresence(1) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence(1) ),
 			new GrowthOption( new PlacePresence(3), new AccelerateOrDelay(), new ReclaimN(1) )
 		);
 

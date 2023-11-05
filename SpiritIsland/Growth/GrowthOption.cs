@@ -8,15 +8,15 @@ public class GrowthOption : IOption { // This is an IOption so Startlight can se
 	/// <summary> When negative, prevents growth option unless user has sufficient energy to satisfy </summary>
 	public int GainEnergy = 0;
 
-	public GrowthOption(params GrowthActionFactory[] actions){ 
-		this.GrowthActions = actions; 
+	public GrowthOption( params SpiritAction[] cmds ) {
+		GrowthActions = cmds.Select(cmd=>new SpiritGrowthAction(cmd)).ToArray();
 	}
 
-	public GrowthActionFactory[] GrowthActions { get; }
+	public IHelpGrow[] GrowthActions { get; }
 
-	public IEnumerable<GrowthActionFactory> AutoRuns => GrowthActions.Where(x=>x.AutoRun);
+	public IEnumerable<IHelpGrow> AutoRuns => GrowthActions.Where(x=>x.AutoRun);
 
-	public IEnumerable<GrowthActionFactory> UserRuns => GrowthActions.Where( x => !x.AutoRun );
+	public IEnumerable<IHelpGrow> UserRuns => GrowthActions.Where( x => !x.AutoRun );
 
 	public string Text => ToString();
 

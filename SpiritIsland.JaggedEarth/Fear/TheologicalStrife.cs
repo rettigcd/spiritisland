@@ -8,19 +8,19 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 	[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
 	public Task Level1( GameCtx ctx )
 		=> EachPlayerAddsStrifeInALandWithPresence
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per Sacred Site they have in lands with Invaders." )]
 	public async Task Level2( GameCtx ctx ) { 
 
 		// Each player adds 1 Strife in a land with Presence
-		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
+		await EachPlayerAddsStrifeInALandWithPresence.ActAsync( ctx );
 
 		// Each Spirit gains 1 Energy per SacredSite they have in lands with Invaders.
-		await Cmd.ForEachSpirit( new SelfCmd(
+		await Cmd.ForEachSpirit( new SpiritAction(
 			"Gain 1 Energy per SacredSite Spirit has in lands with Invaders"
 			, spiritCtx => spiritCtx.Self.Energy += spiritCtx.Self.Presence.SacredSites.Count( tokens => tokens.HasInvaders() )
-		)).Execute( ctx );
+		)).ActAsync( ctx );
 
 	}
 
@@ -28,12 +28,12 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 	public async Task Level3( GameCtx ctx ) {
 
 		// Each player adds 1 Strife in a land with Presence
-		await EachPlayerAddsStrifeInALandWithPresence.Execute( ctx );
+		await EachPlayerAddsStrifeInALandWithPresence.ActAsync( ctx );
 
 		// Each Invader with Strife deals Damage to other Invaders in its land.
 		await StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders
 			.In().EachActiveLand().Which( Has.Strife )
-			.Execute( ctx );
+			.ActAsync( ctx );
 	}
 
 	static public BaseCmd<GameCtx> EachPlayerAddsStrifeInALandWithPresence

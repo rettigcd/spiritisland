@@ -1,39 +1,18 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 /// <summary> Starlight's Growth </summary>
-class PickNewGrowthOption : GrowthActionFactory, IActionFactory {
+class PickNewGrowthOption {
 
-	readonly GrowthOption[] options;
-	readonly bool add1Energy;
-	bool used = false;
-	Track trackToReceiveElementAssignment;
+	readonly GrowthOption[] _options;
 
-	public PickNewGrowthOption(bool add1Energy, params GrowthOption[] options ) {
-		this.options = options;
-		this.add1Energy = add1Energy;
+	public PickNewGrowthOption(params GrowthOption[] options ) {
+		_options = options;
 	}
 
-	public Track AssignElementFor(Track track ) {
-		this.trackToReceiveElementAssignment = track;
-		track.Action = this;
-		return track;
-	}
-
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		if(used) 
-			return;
-
-		if(add1Energy)
-			ctx.Self.Energy++;
-
-		if(trackToReceiveElementAssignment != null)
-			await AssignElement.AssignNewElementToTrack(ctx, trackToReceiveElementAssignment );
-
-		GrowthOption option = (GrowthOption)await ctx.Self.Select( "Select New Growth Option", options, Present.Always );
+	public async Task ActivateAsync( SelfCtx ctx ) {
+		GrowthOption option = (GrowthOption)await ctx.Self.Select( "Select New Growth Option", _options, Present.Always );
 		ctx.Self.GrowthTrack.PickGroups.Single().Add( option ); // only works with spirits with a single pick-group
 		GameState.Current.Log( new SpiritIsland.Log.LayoutChanged( $"Starlight adds Growth Option {option}" ) );
-
-		used = true;
 	}
 
 }

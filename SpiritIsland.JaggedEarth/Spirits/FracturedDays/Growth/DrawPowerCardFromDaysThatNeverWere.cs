@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class DrawPowerCardFromDaysThatNeverWere : GrowthActionFactory  {
+class DrawPowerCardFromDaysThatNeverWere : SpiritAction {
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public DrawPowerCardFromDaysThatNeverWere() : base( "DrawPowerCardFromDaysThatNeverWere" ) { }
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 		if( ctx.Self is not FracturedDaysSplitTheSky fracturedDays ) return;
 
 		var minor = fracturedDays.DtnwMinor;

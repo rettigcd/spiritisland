@@ -28,3 +28,26 @@ public class TargetCriteria : SpaceCriteria {
 	public virtual TargetCriteria ExtendRange( int extension ) => new TargetCriteria( Range + extension, _self, _filters );
 
 }
+
+/// <summary>
+/// Late-binds to Spirit so we can define TargetCriteria without the spirit
+/// </summary>
+public class TargetCriteriaFactory {
+	/// <summary> For no-filter criteria </summary>
+	public TargetCriteriaFactory( int range ) : base() {
+		_range = range;
+	}
+
+	/// <summary> For early binding Spirit dependent criteria </summary>
+	public TargetCriteriaFactory( int range, params string[] filters ){
+		_range = range;
+		_filters = filters;
+	}
+
+	public TargetCriteria Bind(Spirit spirit) => _filters is null 
+		? new TargetCriteria(_range) 
+		: new TargetCriteria(_range,spirit,_filters);
+
+	readonly int _range;
+	readonly string[] _filters;
+}

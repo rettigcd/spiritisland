@@ -11,7 +11,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 			.From().OneLandPerBoard().Which( Has.DangerousLands )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachBoard()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel(2, "On Each Board: Remove 1 Explorer/Town from a land with Badlands/Wilds/Dahan." )]
 	public Task Level2( GameCtx ctx )
@@ -19,7 +19,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 			.From().OneLandPerBoard().Which( Has.DangerousLands )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachBoard()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel(3, "On Each Board: Remove 1 Explorer/Town from any land, or Remove 1 City from a land with Badlands/Wilds/Dahan." )]
 	public Task Level3( GameCtx ctx )
@@ -27,7 +27,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 			.On().OneLandPerBoard()
 			.ByPickingToken( ctx => ctx.Tokens.OfAnyClass( TokensClassesFor(ctx) ) )
 			.ForEachBoard()
-			.Execute(ctx);
+			.ActAsync(ctx);
 
 	Task Level3_Remove( TargetSpaceCtx ctx ) => new TokenRemover( ctx ).AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN();
 

@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-public class EnergyForFire : GrowthActionFactory {
+public class EnergyForFire : SpiritAction {
 
-	public override Task ActivateAsync( SelfCtx ctx ) {
+	public EnergyForFire() : base( "EnergyForFire" ) { }
+
+	public override Task ActAsync( SelfCtx ctx ) {
 		ctx.Self.Energy += ctx.Self.Presence.TrackElements[Element.Fire];
 		return Task.CompletedTask;
 	}

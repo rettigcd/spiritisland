@@ -43,20 +43,17 @@ public class DancingPresence : SpiritPresence {
 
 	static Track GatherDahan => new Track( "Gather 1 Dahan" ) {
 		Icon = new IconDescriptor { BackgroundImg = Img.Land_Gather_Dahan },
-		Action = new Gather1Dahan(),
+		Action = Cmd.GatherUpToNDahan( 1 ).To().SpiritPickedLand().Which( Has.YourPresence ),
 	};
 
 	static Track MovePresence => new Track( "Moveonepresence.png" ) {
-		Action = new MovePresence( 1 ),
+		Action = new MovePresence(1),
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
 	};
 
-	class BoostImpendingPlays : IActionFactory {
-		public string Name => "Bost Impending Plays";
-
-		public string Text => Name;
-		public bool CouldActivateDuring( Phase speed, Spirit spirit ) => true; 
-		public Task ActivateAsync( SelfCtx ctx ) {
+	class BoostImpendingPlays : SpiritAction {
+		public BoostImpendingPlays():base( "Boost Impending Plays" ) { }
+		public override Task ActAsync( SelfCtx ctx ) {
 			if(ctx.Self is DancesUpEarthquakes due)
 				++due.BonusImpendingPlays;
 			return Task.CompletedTask;

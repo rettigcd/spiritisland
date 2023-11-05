@@ -1,16 +1,14 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class GainTime : GrowthActionFactory {
+public class GainTime : SpiritAction {
 
-	readonly int delta;
+	readonly int _delta;
 
-	public GainTime(int delta) { this.delta = delta; }
+	public GainTime(int delta):base( $"GainTime({delta})" ) { _delta = delta; }
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( SelfCtx ctx ) {
 		if(ctx.Self is FracturedDaysSplitTheSky fracturedDays)
-			await fracturedDays.GainTime(delta);
+			await fracturedDays.GainTime(_delta);
 	}
-
-	public override string Name => $"GainTime({delta})";
 
 }

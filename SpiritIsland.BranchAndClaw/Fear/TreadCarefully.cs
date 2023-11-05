@@ -9,18 +9,18 @@ class TreadCarefully : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx ) => Cmd.Skip.AllRavages( Name )
 			.In().SpiritPickedLand().Which( Has.DahanOrAdjacentTo( 5 ) ).MakeOptional()
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each player may choose a land with Dahan or adjacent to at least 3 Dahan. Invaders do not Ravage there this turn." )]
 	public Task Level2( GameCtx ctx ) => Cmd.Skip.AllRavages( Name )
 			.In().SpiritPickedLand().Which( Has.DahanOrAdjacentTo( 3 ) ).MakeOptional()
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player may choose a land with Dahan or adjacent to Dahan. Invaders do not Ravage their this turn." )]
 	public Task Level3( GameCtx ctx ) => Cmd.Skip.AllRavages( Name )
 			.In().SpiritPickedLand().Which( Has.DahanOrAdjacentTo( 1 ) ).MakeOptional()
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 }

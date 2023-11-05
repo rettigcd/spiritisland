@@ -21,11 +21,11 @@ public class Bringer : Spirit {
 
 		GrowthTrack = new(
 			// reclaim, +1 power card
-			new GrowthOption(new ReclaimAll(),new DrawPowerCard(1)),
+			new GrowthOption(new ReclaimAll(),new GainPowerCard()),
 			// reclaim 1, add presence range 0
 			new GrowthOption(new ReclaimN(), new PlacePresence(0) ),
 			// +1 power card, +1 pressence range 1
-			new GrowthOption(new DrawPowerCard(1), new PlacePresence(1) ),
+			new GrowthOption(new GainPowerCard(), new PlacePresence(1) ),
 			// add presense range Dahan or Invadors, +2 energy
 			new GrowthOption(new GainEnergy(2), new PlacePresence(4,Target.Dahan, Target.Invaders ) )
 		);

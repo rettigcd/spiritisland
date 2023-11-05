@@ -15,7 +15,7 @@ public class GiftOfConstancy {
 
 		// if you target another spirit you may also reclaim 1 power Card instead of discarding it.
 		if(ctx.Other != ctx.Self)
-			await Cmd.Reclaim1CardInsteadOfDiscarding.Execute( ctx );
+			await Cmd.Reclaim1CardInsteadOfDiscarding.ActAsync( ctx );
 	}
 
 }

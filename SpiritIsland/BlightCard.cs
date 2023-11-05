@@ -39,13 +39,13 @@ public abstract class BlightCard : IBlightCard {
 		var immediately = Immediately;
 		if(immediately != null) {
 			await using ActionScope actionScope = await ActionScope.Start( ActionCategory.Blight );
-			await immediately.Execute( new GameCtx( gs ) );
+			await immediately.ActAsync( new GameCtx( gs ) );
 		}
 	}
 
 	static BlightTokenBinding Tokens(GameState gs) => gs.Tokens[Space].Blight;
 
-	public abstract IExecuteOn<GameCtx> Immediately { get; }
+	public abstract IActOn<GameCtx> Immediately { get; }
 
 	protected virtual void Side2Depleted(GameState gameState) 
 		=> GameOverException.Lost( "Blighted Island-" + Name );

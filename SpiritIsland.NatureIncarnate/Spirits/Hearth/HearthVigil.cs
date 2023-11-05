@@ -24,11 +24,11 @@ public class HearthVigil : Spirit {
 				new PlacePresence( 0 )
 			),
 			new GrowthOption(
-				new DrawPowerCard(1),
+				new GainPowerCard(),
 				new PlacePresence( 3, Target.Dahan )
 			),
 			new GrowthOption(
-				new PlacePresence( 2 ),
+				new PlacePresence(2),
 				new GainEnergy(3)
 			)
 		);

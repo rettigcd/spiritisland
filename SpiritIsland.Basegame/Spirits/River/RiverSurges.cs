@@ -22,7 +22,7 @@ public class RiverSurges : Spirit {
 		GrowthTrack = new(
 			new GrowthOption(
 				new ReclaimAll(),
-				new DrawPowerCard(1),
+				new GainPowerCard(),
 				new GainEnergy(1)
 			),
 			new GrowthOption(
@@ -30,7 +30,7 @@ public class RiverSurges : Spirit {
 				new PlacePresence( 1 )
 			),
 			new GrowthOption( 
-				new DrawPowerCard( 1 ),
+				new GainPowerCard(),
 				new PlacePresence( 2 ) 
 			)
 		);

@@ -11,7 +11,7 @@ public class Isolation : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Has.Only1ExplorerTown )
 			.ByPickingToken(Human.Explorer_Town)
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each player removes 1 Explorer/Town from a land with 2 or fewer Invaders." )]
 	public Task Level2( GameCtx ctx )
@@ -19,7 +19,7 @@ public class Isolation : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Has.TwoOrFewerInvaders )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player removes an Invader from a land with 2 or fewer Invaders." )]
 	public Task Level3( GameCtx ctx )
@@ -27,6 +27,6 @@ public class Isolation : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Has.TwoOrFewerInvaders )
 			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 }

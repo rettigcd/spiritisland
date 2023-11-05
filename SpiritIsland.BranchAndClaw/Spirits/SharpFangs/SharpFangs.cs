@@ -24,9 +24,9 @@ public class SharpFangs : Spirit {
 		var beastOrJungleRange3 = new PlacePresence(3, Target.Beast, Target.Jungle );
 
 		GrowthTrack = new GrowthTrack( 2,
-			new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new DrawPowerCard(1) ){ GainEnergy=-1 },
+			new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new GainPowerCard() ){ GainEnergy=-1 },
 			new GrowthOption( beastOrJungleRange3 ),
-			new GrowthOption( new DrawPowerCard(1), new GainEnergy(1) ){ GainEnergy = 1 },
+			new GrowthOption( new GainPowerCard(), new GainEnergy(1) ){ GainEnergy = 1 },
 			new GrowthOption( new GainEnergy(3) ){ GainEnergy = 3 }
 		);
 
@@ -44,7 +44,7 @@ public class SharpFangs : Spirit {
 		highestJungle.Beasts.Init(1);
 
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
-		this.AddActionFactory(new Setup_PlacePresenceOnBeastLand());
+		this.AddActionFactory(new PlacePresenceOnBeastLand().ToInit());
 	}
 
 }

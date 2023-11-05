@@ -13,7 +13,7 @@ internal class FoundationsSinkIntoMud {
 			// If target land is wetland, you may instead deal 1 Damage to each town / City
 			new SpaceCmd("deal 1 damage to each town/city", x=>x.DamageEachInvader(1,Human.Town_City))
 				.OnlyExecuteIf(x=>x.IsOneOf(Terrain.Wetland))
-		).Execute( ctx );
+		).ActAsync( ctx );
 	}
 
 }

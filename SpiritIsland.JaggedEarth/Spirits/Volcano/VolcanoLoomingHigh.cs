@@ -29,9 +29,9 @@ public class VolcanoLoomingHigh : Spirit {
 		,PowerCard.For<RainOfAsh>()
 	) {
 		GrowthTrack = new GrowthTrack(
-			new GrowthOption(new ReclaimAll(), new DrawPowerCard(), new GainEnergy(3)),
+			new GrowthOption(new ReclaimAll(), new GainPowerCard(), new GainEnergy(3)),
 			new GrowthOption(new PlacePresence(0,Target.Mountain), new PlacePresence(0,Target.Mountain)),
-			new GrowthOption(new DrawPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))
+			new GrowthOption(new GainPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))
 		);
 
 		InnatePowers = new InnatePower[] {
@@ -44,7 +44,7 @@ public class VolcanoLoomingHigh : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
-		this.AddActionFactory(new Setup_PlacePresenceOnMountain());
+		this.AddActionFactory(new PlacePresenceOnMountain().ToInit());
 	}
 
 	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {

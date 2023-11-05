@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class ApplyDamage : GrowthActionFactory {
+class ApplyDamage : SpiritAction {
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public ApplyDamage():base( "ApplyDamage" ) { }
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 		var space = await ctx.Decision(new Select.ASpace("Select land to apply 2 Damage.", ctx.Self.Presence.Spaces, Present.Always));
 		await ctx.Target(space).DamageInvaders(2);
 	}

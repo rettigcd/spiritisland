@@ -17,7 +17,7 @@ public class ThrivingCommunities_Tests {
 		fxt.InitTokens( townSpace, "1T@2" );
 
 		// When: execute blight card
-		await new ThrivingCommunitites().Immediately.Execute( new GameCtx( fxt.GameState ))
+		await new ThrivingCommunitites().Immediately.ActAsync( new GameCtx( fxt.GameState ))
 			.AwaitUserToComplete( "Thriving Communities",()=> {
 				//  And: choose the only 2 spaces
 				fxt.Choose( explorerSpace.Text ); fxt.Choose( "E@1" );

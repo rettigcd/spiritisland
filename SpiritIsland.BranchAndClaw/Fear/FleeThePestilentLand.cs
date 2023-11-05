@@ -11,7 +11,7 @@ class FleeThePestilentLand : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().Which( Has.Disease )
 			.ByPickingToken(Human.Explorer_Town)
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each player removes up to 3 health of Invaders from a land with Disease or 1 Explorer from an inland land." )]
 	public Task Level2( GameCtx ctx ) // !! Flatten by selecting first space, then action is to remove it and optionally 2 more
@@ -19,7 +19,7 @@ class FleeThePestilentLand : FearCardBase, IFearCard {
 			Cmd.RemoveUpToNHealthOfInvaders( 3 ).From().SpiritPickedLand().Which( Has.Disease ),
 			Cmd.RemoveExplorers( 1 ).From().SpiritPickedLand().Which( Is.Inland )
 		).ForEachSpirit()
-		.Execute(ctx);
+		.ActAsync(ctx);
 
 
 	[FearLevel( 3, "Each player removes up to 5 health of Invaders from a land with Disease or 1 Explorer/Town from an inland land." )]
@@ -28,6 +28,6 @@ class FleeThePestilentLand : FearCardBase, IFearCard {
 			Cmd.RemoveUpToNHealthOfInvaders( 5 ).From().SpiritPickedLand().Which( Has.Disease ),
 			Cmd.RemoveExplorersOrTowns( 1 ).From().SpiritPickedLand().Which( Is.Inland )
 		).ForEachSpirit()
-		.Execute(ctx);
+		.ActAsync(ctx);
 
 }

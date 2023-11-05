@@ -3,19 +3,19 @@
 /// <summary>
 /// Action occurs in each Active land.  No picking required.
 /// </summary>
-public class EachActiveLand : IExecuteOn<GameCtx> {
+public class EachActiveLand : IActOn<GameCtx> {
 
-	readonly IExecuteOn<TargetSpaceCtx> _spaceAction;
+	readonly IActOn<TargetSpaceCtx> _spaceAction;
 	readonly string _preposition;
 	TargetSpaceCtxFilter _landCriteria = Is.AnyLand;
 
-	public EachActiveLand( IExecuteOn<TargetSpaceCtx> spaceAction, string preposition ) {
+	public EachActiveLand( IActOn<TargetSpaceCtx> spaceAction, string preposition ) {
 		_preposition = preposition;
 		_spaceAction = spaceAction;
 	}
 	public string Description => $"{_spaceAction.Description} {_preposition} each space {_landCriteria.Description}";
 
-	public async Task Execute( GameCtx ctx ) {
+	public async Task ActAsync( GameCtx ctx ) {
 		var gameState = ctx.GameState;
 		foreach(Board board in gameState.Island.Boards) {
 			Spirit spirit = board.FindSpirit();
@@ -25,7 +25,7 @@ public class EachActiveLand : IExecuteOn<GameCtx> {
 				.Where( _landCriteria.Filter );
 			foreach(TargetSpaceCtx ss in spacesCtxs)
 				for(int i=0;i<board.InvaderActionCount;++i)
-					await _spaceAction.Execute( ss );
+					await _spaceAction.ActAsync( ss );
 		}
 
 	}

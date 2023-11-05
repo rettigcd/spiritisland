@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public interface IExecuteOn<CTX> {
+public interface IActOn<CTX> {
 
 	/// <summary>
 	/// Dual Purpose: 
@@ -15,5 +15,5 @@ public interface IExecuteOn<CTX> {
 	/// <remarks>This is not the Title of a card unless the Title provides a description of the action.</remarks>
 	string Description { get; }
 
-	Task Execute(CTX ctx);
+	Task ActAsync(CTX ctx);
 }

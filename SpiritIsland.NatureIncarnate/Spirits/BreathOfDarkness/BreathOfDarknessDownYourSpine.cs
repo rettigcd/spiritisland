@@ -13,9 +13,9 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 	) {
 		// Growth
 		GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new DrawPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape(int.MaxValue) ),
-			new GrowthOption( new DrawPowerCard(), new PlacePresence(3), new PiecesEscape(2) ),
-			new GrowthOption( new PlacePresence( 1 ), new AddOrMoveIncarnaToPresence(), new PiecesEscape(1), new GainEnergyEqualToCardPlays() )
+			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape(int.MaxValue) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence(3), new PiecesEscape(2) ),
+			new GrowthOption( new PlacePresence(1), new AddOrMoveIncarnaToPresence(), new PiecesEscape(1), new GainEnergyEqualToCardPlays() )
 		);
 
 		// Innates

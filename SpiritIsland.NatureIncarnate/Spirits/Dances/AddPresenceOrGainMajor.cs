@@ -1,14 +1,17 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class AddPresenceOrGainMajor : GrowthActionFactory {
-	public override Task ActivateAsync( SelfCtx ctx ) {
+public class AddPresenceOrGainMajor : SpiritAction {
+
+	public AddPresenceOrGainMajor():base( "AddPresenceOrGainMajor" ) { }
+
+	public override Task ActAsync( SelfCtx ctx ) {
 		return Cmd.Pick1(
-			Cmd.PlacePresenceWithin(new TargetCriteria(2),false),
+			Cmd.PlacePresenceWithin(2),
 			DrawMajorWithoutForgetting
-		).Execute(ctx);
+		).ActAsync(ctx);
 	}
 
-	static SelfCmd DrawMajorWithoutForgetting => new SelfCmd( "Draw Major without Forgetting",
+	static SpiritAction DrawMajorWithoutForgetting => new SpiritAction( "Draw Major without Forgetting",
 		ctx => DrawFromDeck.DrawInner( ctx.Self, GameState.Current.MajorCards, 1, 1 )
 	);
 

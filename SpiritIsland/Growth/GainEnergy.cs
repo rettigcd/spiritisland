@@ -1,21 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public class GainEnergy : GrowthActionFactory {
-
+public class GainEnergy : SpiritAction, ICanAutoRun {
+	public GainEnergy(int delta) 
+		: base($"Gain {delta} Energy",x=>x.Self.Energy += delta)
+	{
+		Delta = delta;
+	}
 	public int Delta { get; }
-
-	public GainEnergy(int delta){
-		this.Delta = delta; 
-	}
-
-	public override string Name => $"GainEnergy({Delta})";
-
-
-	public override Task ActivateAsync( SelfCtx ctx ) {
-		ctx.Self.Energy += Delta;
-		return Task.CompletedTask;
-	}
-
-	public override bool AutoRun => true;
-
 }

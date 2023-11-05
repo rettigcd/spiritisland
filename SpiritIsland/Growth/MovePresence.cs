@@ -2,15 +2,15 @@
 
 namespace SpiritIsland;
 
-public class MovePresence : GrowthActionFactory, IActionFactory {
+public class MovePresence : SpiritAction {
 
 	public int Range { get; }
 
-	public MovePresence(int range) {
+	public MovePresence(int range):base( $"MovePresence({range})" ) {
 		this.Range = range;
 	}
 
-	public override async Task ActivateAsync( SelfCtx ctx) {
+	public override async Task ActAsync( SelfCtx ctx) {
 		// From
 		var src = await ctx.Decision( new ASpaceToken( "Move presence from:", ctx.Self.Presence.Movable, Present.Always ) );
 
@@ -22,5 +22,4 @@ public class MovePresence : GrowthActionFactory, IActionFactory {
 		await src.MoveTo( dst.Tokens );
 	}
 
-	public override string Name => $"MovePresence({Range})";
 }

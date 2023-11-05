@@ -18,7 +18,7 @@ public class VirtualRiverUser : VirtualUser {
 	public void SelectsGrowthC_Draw_Energy( string placePresenceOptions = "cardplay>A1;A2;A3;A4;A5" ) {
 		Growth_SelectAction( "PlacePresence(2)" );
 		Growth_PlacesPresence( placePresenceOptions );
-		Growth_SelectAction( "DrawPowerCard" );
+		Growth_SelectAction( "Gain Power Card" );
 		SelectsMinorDeck();
 		SelectMinorPowerCard();
 	}

@@ -63,7 +63,7 @@ public class VirtualTestUser : VirtualUser {
 
 	/// <summary> Growth for Test Spirit </summary>
 	public void Grows() {
-		Growth_SelectAction( "ReclaimAll" );
+		Growth_SelectAction( "Reclaim All" );
 	}
 
 	public void GrowAndBuyNoCards() {

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class BaseCmd<T> : IExecuteOn<T> {
+public class BaseCmd<T> : IActOn<T> {
 
 	#region constructors
 
@@ -13,6 +13,14 @@ public class BaseCmd<T> : IExecuteOn<T> {
 		Description = description;
 		asyncFunc = ctx => { syncAction(ctx); return Task.CompletedTask; };
 	}
+
+	/// <summary>
+	/// Used for by derieved types that override the Execute command
+	/// </summary>
+	protected BaseCmd( string description ) {
+		Description = description;
+	}
+
 
 	#endregion
 
@@ -41,7 +49,8 @@ public class BaseCmd<T> : IExecuteOn<T> {
 		=> _isApplicable == null  // not specified
 		|| _isApplicable(ctx); // matches
 
-	public Task Execute( T ctx ) => asyncFunc(ctx);
+	/// <remarks>Virtual so that growth actions that inherit from SelfCmd can more easily define the execute</returns>
+	public virtual Task ActAsync( T ctx ) => asyncFunc(ctx);
 
 	readonly Func<T,Task> asyncFunc;
 	Predicate<T> _isApplicable;

@@ -14,8 +14,8 @@ public class AbsorbCorruption {
 
 		var doBoth = new SpaceCmd( "Do Both", 
 			async ctx => { 
-				await gatherBlight.Execute(ctx); 
-				await removeBlight.Execute(ctx);
+				await gatherBlight.ActAsync(ctx); 
+				await removeBlight.ActAsync(ctx);
 			}
 		).OnlyExecuteIf( await ctx.YouHave("2 plant") );
 

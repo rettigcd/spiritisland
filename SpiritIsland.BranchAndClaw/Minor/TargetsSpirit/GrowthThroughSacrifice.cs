@@ -9,7 +9,7 @@ public class GrowthThroughSacrifice {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// destroy one of your presence
-		await Cmd.DestroyPresence().Execute(ctx);
+		await Cmd.DestroyPresence().ActAsync(ctx);
 
 		// If 2 sun, do both in the same land
 		await TargetSpiritAction( ctx.OtherCtx, await ctx.YouHave( "2 sun" ) );
@@ -30,9 +30,9 @@ public class GrowthThroughSacrifice {
 		if(!doBoth)
 			await spaceCtx.SelectActionOption( removeBlight, addPresence );
 		else {
-			await removeBlight.Execute(spaceCtx);
+			await removeBlight.ActAsync(spaceCtx);
 			if(addPresence.IsApplicable(spaceCtx))
-				await addPresence.Execute(spaceCtx);
+				await addPresence.ActAsync(spaceCtx);
 		}
 
 	}

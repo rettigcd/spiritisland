@@ -37,7 +37,7 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 
 	public void OnGameLayoutChanged() {
 		_buttonContainer.Clear();
-		foreach(GrowthActionFactory action in _ctx._spirit.GrowthTrack.Options.SelectMany( optionGroup => optionGroup.GrowthActions ))
+		foreach(IHelpGrow action in _ctx._spirit.GrowthTrack.Options.SelectMany( optionGroup => optionGroup.GrowthActions ))
 			_buttonContainer.Add( action, new GrowthButton() );
 	}
 

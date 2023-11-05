@@ -18,18 +18,18 @@ public class UnlockTheGatesOfDeepestPower {
 			);
 	}
 
-	static SelfCmd PayHalfOfCardsCost_PlayCard( PowerCard card ) {
+	static SpiritAction PayHalfOfCardsCost_PlayCard( PowerCard card ) {
 		int cost = (card.Cost + card.Cost % 2) / 2;
-		return new SelfCmd(
+		return new SpiritAction(
 			$"paying {cost}",
 			ctx => ctx.Self.PlayCard( card, cost )
 		).OnlyExecuteIf( x => cost <= x.Self.Energy );
 	}
 
-	static SelfCmd ForgetCardAtEndOfTurn_PlayCard( PowerCard card ) {
+	static SpiritAction ForgetCardAtEndOfTurn_PlayCard( PowerCard card ) {
 
 		//    * forgetting it at the end of turn.
-		var forgettingCardOption = new SelfCmd(
+		var forgettingCardOption = new SpiritAction(
 			$"forgetting at end of turn",
 			ctx => {
 				ctx.Self.PlayCard( card, 0 );

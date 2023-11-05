@@ -2,8 +2,11 @@
 
 namespace SpiritIsland.NatureIncarnate;
 
-public class ReplacePresenceWithIncarna : GrowthActionFactory {
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+public class ReplacePresenceWithIncarna : SpiritAction {
+
+	public ReplacePresenceWithIncarna():base( "ReplacePresenceWithIncarna" ) { }
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 		// Remove presnece
 		var spaceToken = await ctx.Self.Gateway.Decision( new ASpaceToken( "Select presence to replace with Incarna.", ctx.Self.Presence.Deployed, Present.Done ) );
 		if(spaceToken == null ) return;

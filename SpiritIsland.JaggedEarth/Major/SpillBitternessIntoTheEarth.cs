@@ -10,7 +10,7 @@ public class SpillBitternessIntoTheEarth {
 
 		// Add 2 badlands/strife
 		var addBadlandsOrStrife = Cmd.Pick1( "Add badlands/strife", Cmd.AddBadlands(1), Cmd.AddStrife(1) );
-		await addBadlandsOrStrife.Repeat(2).Execute( ctx );
+		await addBadlandsOrStrife.Repeat(2).ActAsync( ctx );
 
 		// and 1 blight.
 		await ctx.AddBlight(1);
@@ -38,7 +38,7 @@ public class SpillBitternessIntoTheEarth {
 		while(adjCount-- > 0 && options.Count > 0) {
 			var space = await ctx.Decision( new Select.ASpace( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );
 			if(space == null) break;
-			await action.Execute( ctx.Target(space) );
+			await action.ActAsync( ctx.Target(space) );
 			options.Remove( space );
 		}
 	}

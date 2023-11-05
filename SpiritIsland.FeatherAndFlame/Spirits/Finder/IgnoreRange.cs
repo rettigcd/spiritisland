@@ -1,29 +1,29 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-public class ExtendRange : GrowthActionFactory {
+public class ExtendRange : SpiritAction, ICanAutoRun {
 
-	public ExtendRange(int extension) {
+	public ExtendRange( int extension ):base( $"Extend Range {extension}" ) {
 		_extension = extension;
 	}
 
-	public override string Name => $"Extend Range {_extension}";
-
-	public override bool AutoRun => true;
-
-	readonly int _extension;
-
-	public override Task ActivateAsync( SelfCtx ctx ) {
+	public override Task ActAsync( SelfCtx ctx ) {
 		RangeCalcRestorer.Save( ctx.Self );
 		RangeExtender.Extend( ctx.Self, _extension );
 		return Task.CompletedTask;
-	} 
+	}
+
+	readonly int _extension;
 
 }
 
-public class IgnoreRange : ExtendRange {
+public class IgnoreRange : SpiritAction, ICanAutoRun {
 
-	public override string Name => "IgnoreRange";
+	public IgnoreRange() : base( $"IgnoreRange" ) {}
 
-	public IgnoreRange() : base( 256 ) { }
+	public override Task ActAsync( SelfCtx ctx ) {
+		RangeCalcRestorer.Save( ctx.Self );
+		RangeExtender.Extend( ctx.Self, 256 );
+		return Task.CompletedTask;
+	}
 
 }

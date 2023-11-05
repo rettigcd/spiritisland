@@ -29,20 +29,20 @@ public class FinderOfPathsUnseen : Spirit {
 		GrowthTrack = new(
 			new GrowthOption(
 				new ReclaimAll(),
-				new DrawPowerCard( 1 ),
+				new GainPowerCard(),
 				new IgnoreRange()
 			),
 			new GrowthOption(
 				new PlacePresence( 1 ),
-				new PlayExtraCardThisTurn( 1 )
+				new PlayExtraCardThisTurn(1)
 			),
 			new GrowthOption(
-				new DrawPowerCard( 1 ),
+				new GainPowerCard(),
 				new PlacePresence( 2 )
 			),
 			new GrowthOption(
 				new PlacePresence( 100 ),
-				new GainEnergy( 2 )
+				new GainEnergy(2)
 			)
 		);
 
@@ -59,7 +59,7 @@ public class FinderOfPathsUnseen : Spirit {
 		board[3].Tokens.Adjust(Presence.Token, 1);
 
 		// Put 1 presence on any board in land #1.
-		AddActionFactory( new Setup_PlacePresenceOnSpace1() ); // let user pick initial space
+		AddActionFactory( new PlacePresenceOnSpace1().ToInit() ); // let user pick initial space
 
 		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( ResponsibilityToTheDead_Handler ) );
 
@@ -99,7 +99,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 				// Do presence destroy
 				while(0 < presenceToDestroy--)
-					await Cmd.DestroyPresence().Execute(new SelfCtx(this));
+					await Cmd.DestroyPresence().ActAsync(new SelfCtx(this));
 			} );
 
 		}

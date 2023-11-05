@@ -25,8 +25,8 @@ public class TargetSpaceCtx : SelfCtx {
 
 
 	// overridden by Trickster to Select-All - !!! Could be put on Spirit to make easier to override, then we could seal this class.
-	public virtual async Task SelectActionOption( params IExecuteOn<TargetSpaceCtx>[] options ) {
-		IExecuteOn<TargetSpaceCtx>[] applicable = options
+	public virtual async Task SelectActionOption( params IActOn<TargetSpaceCtx>[] options ) {
+		IActOn<TargetSpaceCtx>[] applicable = options
 			.Where( opt => opt != null && opt.IsApplicable( this ) )
 			.ToArray();
 
@@ -34,7 +34,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		if(text != null && text != TextOption.Done.Text) {
 			var selectedOption = applicable.Single( a => a.Description == text );
-			await selectedOption.Execute( this );
+			await selectedOption.ActAsync( this );
 		}
 	}
 

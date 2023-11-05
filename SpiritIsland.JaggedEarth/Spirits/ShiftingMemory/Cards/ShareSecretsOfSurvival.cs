@@ -12,8 +12,8 @@ public class ShareSecretsOfSurvival {
 		// If you have 3 air
 		if(await ctx.YouHave("3 air")) {
 			// you may do both
-			await gatherUpTo2Dahan.Execute(ctx);
-			await destroyFewer.Execute(ctx);
+			await gatherUpTo2Dahan.ActAsync(ctx);
+			await destroyFewer.ActAsync(ctx);
 		} else {
 			// otherwise just pick one
 			await ctx.SelectActionOption( destroyFewer, gatherUpTo2Dahan );

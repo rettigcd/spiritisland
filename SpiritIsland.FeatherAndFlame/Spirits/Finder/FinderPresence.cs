@@ -30,7 +30,7 @@ public class FinderPresence : SpiritPresence {
 	};
 
 	static Track Plus2 => new Track( "+2" ) {
-		Action = new GainEnergy( 2 ),
+		Action = new GainEnergy(2),
 		Icon = new IconDescriptor {
 			Text = "+2",
 			BackgroundImg = Img.Coin,
@@ -38,7 +38,7 @@ public class FinderPresence : SpiritPresence {
 	};
 
 	static Track PlusOneAny => new Track( "+1,Any", Element.Any ) {
-		Action = new GainEnergy( 1 ),
+		Action = new GainEnergy(1),
 		Icon = new IconDescriptor {
 			Text = "+1",
 			BackgroundImg = Img.Coin,
@@ -47,12 +47,12 @@ public class FinderPresence : SpiritPresence {
 	};
 
 	static Track ExtraCardPlay => new Track( "+1 Card PLay" ) {
-		Action = new PlayExtraCardThisTurn( 1 ),
+		Action = new PlayExtraCardThisTurn(1),
 		Icon = new IconDescriptor { BackgroundImg = Img.CardPlayPlusN, Text = "+1" }
 	};
 
 	static Track OneCoinExtendRange => new Track( "+1,+1 range" ) {
-		Action = new CompoundActionFactory( new GainEnergy( 1 ), new ExtendRange( 1 ) ),
+		Action = new CompoundActionFactory(new GainEnergy(1), new ExtendRange(1)),
 		Icon = new IconDescriptor {
 			BackgroundImg = Img.Coin,
 			Text = "+1",

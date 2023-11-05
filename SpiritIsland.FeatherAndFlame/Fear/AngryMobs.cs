@@ -11,19 +11,19 @@ public class AngryMobs : FearCardBase, IFearCard {
 			.In().SpiritPickedLand()
 			.ByPickingToken( Human.Town )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "In each land with 2 or more Explorer, destroy 1 Explorer/Town per 2 Explorer." )] 
 	public Task Level2( GameCtx ctx )
 		=> Level2_Each2ExplorersDestroy_ExplorerOrTown
 			.In().EachActiveLand() // Don't need filter because it is on the Command
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "In each land with 2 or more Explorer, destroy 1 Invader per 2 Explorer." )] 
 	public Task Level3( GameCtx gameCtx )
 		=> Level3_Each2ExplorersDestroy_Invader
 			.In().EachActiveLand() // don't need filter because it is on the command.
-			.Execute( gameCtx );
+			.ActAsync( gameCtx );
 
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
 		var options = ctx.Tokens.OfHumanClass( Human.Town );

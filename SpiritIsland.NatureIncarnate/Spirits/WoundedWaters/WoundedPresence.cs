@@ -33,19 +33,21 @@ public class WoundedPresence : SpiritPresence {
 
 
 	/// <summary> For selecting Water/Animal and Fire/Plant on growth track</summary>
-	class PickElement : IActionFactory {
+	class PickElement : SpiritAction {
+
+
 		readonly Element[] _elementOptions;
-		public PickElement(params Element[] elementOptions ) {
+
+		public PickElement(params Element[] elementOptions )
+			:base("Pick " + string.Join(" OR ", elementOptions))
+		{
 			_elementOptions = elementOptions;
 		}
-		public string Name => "Pick " + string.Join(" OR ", _elementOptions);
 
-		string IOption.Text => Name;
-		async Task IActionFactory.ActivateAsync( SelfCtx ctx ) {
+		public override async Task ActAsync( SelfCtx ctx ) {
 			var elementToGain = await ctx.Self.SelectElementEx("Gain element", _elementOptions );
 			ctx.Self.Elements[elementToGain]++;
 		}
-		bool IActionFactory.CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 	}
 
 	#endregion

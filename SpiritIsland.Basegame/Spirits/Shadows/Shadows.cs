@@ -18,8 +18,8 @@ public class Shadows : Spirit {
 		PowerCard.For<ConcealingShadows>()
 	) {
 		GrowthTrack = new(
-			new GrowthOption( new ReclaimAll(), new DrawPowerCard(1) ),
-			new GrowthOption( new DrawPowerCard(1), new PlacePresence(1) ),
+			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence(1) ),
 			new GrowthOption( new PlacePresence(3), new GainEnergy(3) )
 		);
 		this.InnatePowers = new InnatePower[]{

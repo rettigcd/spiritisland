@@ -27,11 +27,11 @@ public class HeartOfTheWildfire : Spirit {
 		GrowthTrack = new(
 			new GrowthOption(
 				new ReclaimAll(),
-				new DrawPowerCard(1),
+				new GainPowerCard(),
 				new GainEnergy(1)
 			),
 			new GrowthOption(
-				new DrawPowerCard(1),
+				new GainPowerCard(),
 				new PlacePresence(3)
 			),
 			new GrowthOption(

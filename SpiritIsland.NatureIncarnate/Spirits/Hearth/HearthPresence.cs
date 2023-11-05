@@ -7,7 +7,7 @@ public class HearthPresence : SpiritPresence {
 			BackgroundImg = Img.Coin,
 			Text = "0",
 		},
-		Action = new Gather1Dahan()
+		Action = Cmd.GatherUpToNDahan( 1 ).To().SpiritPickedLand().Which( Has.YourPresence )
 	};
 
 	public HearthPresence() : base( 

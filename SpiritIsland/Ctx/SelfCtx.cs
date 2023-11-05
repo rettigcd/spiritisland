@@ -83,18 +83,18 @@ public class SelfCtx {
 
 	// overriden by Grinning Trickster's Lets See What Happens
 
-	public Task SelectActionOption( params IExecuteOn<SelfCtx>[] options ) 
+	public Task SelectActionOption( params IActOn<SelfCtx>[] options ) 
 		=> SelectAction_Inner1( "Select Power Option", options, Present.AutoSelectSingle );
 
-	public Task SelectAction_Optional( string prompt, params IExecuteOn<SelfCtx>[] options )
+	public Task SelectAction_Optional( string prompt, params IActOn<SelfCtx>[] options )
 		=> SelectAction_Inner1( prompt, options, Present.Done );
 
 	protected async Task SelectAction_Inner1(
 		string prompt,
-		IExecuteOn<SelfCtx>[] options,
+		IActOn<SelfCtx>[] options,
 		Present present
 	) {
-		IExecuteOn<SelfCtx>[] applicable = options
+		IActOn<SelfCtx>[] applicable = options
 			.Where( opt => opt != null && opt.IsApplicable( this ) )
 			.ToArray();
 
@@ -102,7 +102,7 @@ public class SelfCtx {
 
 		if(text != null && text != TextOption.Done.Text) {
 			var selectedOption = applicable.Single( a => a.Description == text );
-			await selectedOption.Execute( this );
+			await selectedOption.ActAsync( this );
 		}
 	}
 

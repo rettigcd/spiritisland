@@ -3,8 +3,10 @@
 namespace SpiritIsland.NatureIncarnate;
 
 /// <summary> Move only. Not Add </summary>
-public class MoveIncarnaAnywhere : GrowthActionFactory {
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+public class MoveIncarnaAnywhere : SpiritAction {
+
+	public MoveIncarnaAnywhere():base( "MoveIncarnaAnywhere" ) { }
+	public override async Task ActAsync( SelfCtx ctx ) {
 		Space? space = await ctx.Self.Gateway.Decision( new ASpace( "Select space to place Incarna.", GameState.Current.Spaces, Present.Done ) );
 		if(space == null) return;
 

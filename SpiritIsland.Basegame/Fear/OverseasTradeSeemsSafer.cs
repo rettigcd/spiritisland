@@ -9,20 +9,20 @@ public class OverseasTradeSeemsSafer : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> Cmd.Defend( 3 )
 			.In().EachActiveLand().Which( Is.Coastal )
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 
 	[FearLevel( 2, "Defend 6 in all Coastal lands. Invaders do not Build City in Coastal lands this turn." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.Multiple( Cmd.Defend(6), DoNotBuildCity )
 			.In().EachActiveLand().Which( Is.Coastal )
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Defend 9 in all Coastal lands. Invaders do not Build in Coastal lands this turn." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.Multiple( Cmd.Defend( 9 ), DoNotBuild )
 			.In().EachActiveLand().Which( Is.Coastal )
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static SpaceCmd DoNotBuildCity => new SpaceCmd( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( $"{Name}(city)", Human.City ) );
 	static SpaceCmd DoNotBuild => new SpaceCmd( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( Name ) );

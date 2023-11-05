@@ -11,7 +11,7 @@ public class DahanRaid : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
 			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
 	public Task Level2( GameCtx ctx )
@@ -19,7 +19,7 @@ public class DahanRaid : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
 			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player chooses a different land with Dahan. 2 Damage per Dahan there." )]
 	public Task Level3( GameCtx ctx )
@@ -27,6 +27,6 @@ public class DahanRaid : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().AllDifferent().Which( Has.Dahan )
 			.ByPickingToken( Human.Invader )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 }

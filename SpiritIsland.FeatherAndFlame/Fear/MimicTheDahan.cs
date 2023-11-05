@@ -10,7 +10,7 @@ public class MimicTheDahan : FearCardBase, IFearCard {
 		.In().SpiritPickedLand().Which( Has.TwoOrMoreDahan )
 		.ByPickingToken(Human.Explorer_Town)
 		.ForEachSpirit()
-		.Execute( ctx );
+		.ActAsync( ctx );
 
 
 	[FearLevel( 2, "Each player replaces 1 Explorer/Town with 1 Dahan in a land with 2 or more Dahan." )]
@@ -18,14 +18,14 @@ public class MimicTheDahan : FearCardBase, IFearCard {
 		.In().SpiritPickedLand().Which( Has.TwoOrMoreDahan )
 		.ByPickingToken( Human.Explorer_Town )
 		.ForEachSpirit()
-		.Execute( ctx );
+		.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player replaces 1 Explorer/Town with 1 Dahan in a land with Dahan, or adjacent to 3 or more Dahan." )]
 	public Task Level3( GameCtx ctx ) => ReplaceExplorerOrTownWith1Dahan
 		.In().SpiritPickedLand().Which( Has.DahanOrIsAdjacentTo3 )
 		.ByPickingToken( Human.Explorer_Town )
 		.ForEachSpirit()
-		.Execute( ctx );
+		.ActAsync( ctx );
 
 	static SpaceCmd ReplaceExplorerOrTownWith1Dahan => new SpaceCmd("Replace 1 Explorer/Town with 1 Dahan", async ctx => {
 		await ctx.Invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer_Town );

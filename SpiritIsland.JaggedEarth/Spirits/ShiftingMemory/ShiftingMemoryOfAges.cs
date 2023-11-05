@@ -43,9 +43,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(), new PlacePresence(0)),
-			new GrowthOption(new DrawPowerCard(), new PlacePresence(2)),
+			new GrowthOption(new GainPowerCard(), new PlacePresence(2)),
 			new GrowthOption(new PlacePresence(1),new GainEnergy(2)),
-			new GrowthOption(new GainEnergy( 9 ) )
+			new GrowthOption(new GainEnergy(9))
 		);
 
 		InnatePowers = new InnatePower[] {

@@ -1,7 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
-class Setup_PlacePresenceOnMountain : GrowthActionFactory { // Similar to SharpFang initialization
+class PlacePresenceOnMountain : SpiritAction { // Similar to SharpFang initialization
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public PlacePresenceOnMountain():base( "Place Presence on Mountain" ) { }
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 
 		// Put 1 Presence and 1 Badlands on your starting board in a mountain of your choice.
 		// Push all Dahan from that land.
@@ -17,7 +19,5 @@ class Setup_PlacePresenceOnMountain : GrowthActionFactory { // Similar to SharpF
 		if(targetCtx.Dahan.Any)
 			await targetCtx.PushDahan(targetCtx.Dahan.CountAll);
 	}
-
-	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
 
 }

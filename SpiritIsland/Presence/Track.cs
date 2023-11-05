@@ -93,7 +93,7 @@ public class Track : IOption {
 
 	public static Track Card5Reclaim1 => new Track( "Five reclaim one" ){ 
 		CardPlay=5, 
-		Action=new ReclaimN(),
+		Action = new ReclaimN(),
 		Icon=new IconDescriptor { BackgroundImg = Img.CardPlay, Text="5", Sub = new IconDescriptor{ BackgroundImg = Img.Reclaim1 } },
 	};
 
@@ -109,7 +109,10 @@ public class Track : IOption {
 
 	public int? CardPlay { get; set; }
 
-	public IActionFactory Action { get; set; }
+	/// <summary>
+	/// If not null, this action is executed after Energy is collected.
+	/// </summary>
+	public IActOn<SelfCtx> Action { get; set; }
 
 	public virtual void AddElement( ElementCounts elements ) {
 		foreach(var el in Elements)

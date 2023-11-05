@@ -15,15 +15,26 @@ public class VengeanceAsABurningPlague : Spirit {
 		,PowerCard.For<StrikeLowWithSuddenFevers>()
 	) {
 		GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new DrawPowerCard(), new GainEnergy(1)),
+			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy(1) ),
 			new GrowthOption( new PlacePresence(2,Target.Town, Target.City, Target.Blight ), new PlacePresence(2, Target.Town, Target.City, Target.Blight ) ),
-			new GrowthOption( new DrawPowerCard(), new PlacePresenceOrDisease(), new GainEnergy(1))
+			new GrowthOption( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy(1) )
 		);
 		InnatePowers = new InnatePower[] {
 			InnatePower.For<EpidemicsRunRampant>(),
 			InnatePower.For<SavageRevenge>()
 		};
 	}
+	static SpiritAction AddAPresenceOrDisease => new SpiritAction(
+		"Add a Presence or Disease", 
+		ctx => Cmd.Pick1( AddDiseaseAtRange1, new PlacePresence( 1 ) ).ActAsync( ctx ) 
+	);
+
+	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async ctx => {
+		var options = DefaultRangeCalculator.Singleton.GetTargetOptionsFromKnownSource( ctx.Self.Presence.Spaces.Tokens(), new TargetCriteria( 1 ) );
+		Space to = await ctx.Self.Gateway.Decision( Select.ASpace.ToPlacePresence( options, Present.Always, Token.Disease ) );
+		await ctx.Target( to ).Disease.AddAsync( 1 );
+	} );
+
 
 	public override string Text => Name;
 

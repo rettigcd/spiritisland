@@ -19,7 +19,7 @@ public class SleepAndNeverWaken {
 		ctx.Tokens.Adjust( new TokenRemovedHandler(CountDestroyedExplorers), 1 );
 
 		// remove up to 2 explorer.
-		await Cmd.RemoveExplorers(2).Execute(ctx);
+		await Cmd.RemoveExplorers(2).ActAsync(ctx);
 
 		// if you have 3 moon 2 air 2 animal:  Remove up to 6 explorer from among your lands.
 		if( await ctx.YouHave( "3 moon,2 air,2 animal") )

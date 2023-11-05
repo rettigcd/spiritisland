@@ -20,7 +20,7 @@ public class ObserveTheEverChangingWorld_Tests {
 		fxt.gameState.InvaderDeck.Explore.Cards.Clear();
 
 		//  And: user grows (+9 energy)
-		fxt.user.Growth_SelectAction("GainEnergy(9)");
+		fxt.user.Growth_SelectAction("Gain 9 Energy");
 		fxt.spirit.InitElementsFromPresence();
 		fxt.spirit.GetAvailableActions(Phase.Fast).Count().ShouldBe(1);
 

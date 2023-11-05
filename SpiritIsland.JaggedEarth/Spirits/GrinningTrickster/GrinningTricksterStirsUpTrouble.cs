@@ -26,9 +26,9 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	{
 		// Growth
 		this.GrowthTrack = new GrowthTrack( 2,
-			new GrowthOption(new GainEnergy(-1),new ReclaimAll(), new MovePresence(1) ){ GainEnergy = -1 },
+			new GrowthOption(new GainEnergy(-1), new ReclaimAll(), new MovePresence(1) ){ GainEnergy = -1 },
 			new GrowthOption(new PlacePresence(2)),
-			new GrowthOption(new DrawPowerCard()),
+			new GrowthOption(new GainPowerCard() ),
 			new GrowthOption(new GainEnergyEqualToCardPlays() )
 		);
 
@@ -56,7 +56,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, SpaceState tokens ) {
 		if(tokens.Blight.Any)
 			await Cmd.DestroyPresence( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" )
-				.Execute(spirit.BindSelf());
+				.ActAsync(spirit.BindSelf());
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit ) {

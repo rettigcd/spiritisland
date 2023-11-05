@@ -210,7 +210,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	}
 
 	void User_Activates_A() {
-		User.Growth_SelectAction( "ReclaimAll" );
+		User.Growth_SelectAction( "Reclaim All" );
 	}
 
 	void User_Activates_B() {

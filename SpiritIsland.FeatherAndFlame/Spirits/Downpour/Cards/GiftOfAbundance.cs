@@ -10,9 +10,9 @@ internal class GiftOfAbundance {
 		var otherCtx = ctx.OtherCtx;
 		// Target Spirit either gains 2 Energy, or may Repeat one Power Card this turn by paying its cost.
 		await Cmd.Pick1(
-			new SelfCmd( "Gain 2 Energy", x=>x.Self.Energy+=2 ),
-			new SelfCmd( "Repeat Power card by Paying Cost", x => x.Self.AddActionFactory(new RepeatCardForCost(Name)) )
-		).Execute( ctx.OtherCtx );
+			new SpiritAction( "Gain 2 Energy", x=>x.Self.Energy+=2 ),
+			new SpiritAction( "Repeat Power card by Paying Cost", x => x.Self.AddActionFactory(new RepeatCardForCost(Name)) )
+		).ActAsync( ctx.OtherCtx );
 
 		// Either you or target Spirit may add 1 Destroyed presence to a wetland where you have presence.
 		static bool isWetland(SpaceState space) => TerrainMapper.Current.MatchesTerrain( space, Terrain.Wetland );

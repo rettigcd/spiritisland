@@ -21,7 +21,7 @@ public class ExaltationOfEchoedSteps {
 				.AddGroup( 1, Human.Explorer, Human.Town, Human.Dahan, Token.Beast )
 				.MoveUpToN();
 			} )
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	}
 

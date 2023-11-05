@@ -1,19 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public class PlayExtraCardThisTurn : GrowthActionFactory {
+public class PlayExtraCardThisTurn : SpiritAction, ICanAutoRun {
 
-	readonly int count;
-	public PlayExtraCardThisTurn( int count ) {
-		this.count = count;
-	}
-
-	public override Task ActivateAsync( SelfCtx ctx ) {
-		ctx.Self.tempCardPlayBoost += count;
-		return Task.CompletedTask;
-	}
-
-	public override bool AutoRun => true;
-
-	public override string Name => $"PlayExtraCardThisTurn({count})";
+	public PlayExtraCardThisTurn( int count )
+		:base(
+			$"PlayExtraCardThisTurn({count})",
+			ctx=>ctx.Self.tempCardPlayBoost += count
+		)
+	{}
 
 }

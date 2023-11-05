@@ -52,7 +52,7 @@ public abstract partial class Spirit {
 			_inst.MarkAsUsed( option );
 
 			// Add Action to spirit
-			foreach(GrowthActionFactory action in option.GrowthActions)
+			foreach(IHelpGrow action in option.GrowthActions)
 				_spirit._availableActions.Add( action );
 
 			// run auto-runs.

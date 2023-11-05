@@ -11,7 +11,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Is.Inland )
 			.ByPickingToken( Human.Explorer )
 			.ForEachSpirit()
-			.Execute(ctx);
+			.ActAsync(ctx);
 		
 	[FearLevel( 2, "Each player removes 1 Explorer/Town from an Inland land." )]
 	public Task Level2( GameCtx ctx )
@@ -19,7 +19,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Is.Inland )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player removes 1 Explorer/Town from any land." )]
 	public Task Level3( GameCtx ctx )
@@ -27,5 +27,5 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.From().SpiritPickedLand()
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 }

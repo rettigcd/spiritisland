@@ -21,7 +21,7 @@ public class LureOfTheDeepWilderness : Spirit {
 		).Add(
 			new GrowthPickGroups(
 				new GrowthOption(new Gain1Element(Element.Moon,Element.Air,Element.Plant), new GainEnergy(2)),
-				new GrowthOption(new DrawPowerCard())
+				new GrowthOption(new GainPowerCard())
 			)
 		);
 

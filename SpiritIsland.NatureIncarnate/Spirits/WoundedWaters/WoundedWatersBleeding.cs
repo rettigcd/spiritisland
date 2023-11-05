@@ -28,11 +28,11 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		GrowthTrack = new(
 			new GrowthOption(
 				new ReclaimAll(),
-				new DrawPowerCard( 1 ),
-				new GainEnergy( 1 )
+				new GainPowerCard(),
+				new GainEnergy(1)
 			),
 			new GrowthOption(
-				new DrawPowerCard( 1 ),
+				new GainPowerCard(),
 				new PlacePresence( 2 )
 			)
 		);
@@ -97,8 +97,8 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		card.Claim(this);
 		if(GrowthTrack.Options.Length == 2) {
 			var thirdGrowth = new GrowthOption(
-				new PlacePresence( 3 ),
-				new GainEnergy( 3 ),
+				new PlacePresence(3),
+				new GainEnergy(3),
 				new PlaceDestroyedPresence( 1 )
 			);
 			GrowthTrack = new( GrowthTrack.Options.Append(thirdGrowth).ToArray() );
@@ -111,7 +111,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		await Cmd.Pick1<SelfCtx>(
 			Cmd.DestroyPresence(),
 			Cmd.ForgetPowerCard
-		).Execute(BindSelf());
+		).ActAsync(BindSelf());
 	}
 
 	readonly IHealingCard[] HealingCards = new IHealingCard[] {

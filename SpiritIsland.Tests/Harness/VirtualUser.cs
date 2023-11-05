@@ -43,11 +43,11 @@ public class VirtualUser {
 	}
 
 	public void Growth_DrawsPowerCard() {
-		NextDecision.ChooseFirst( "DrawPowerCard" );
+		NextDecision.ChooseFirst( "Gain Power Card" );
 	}
 
 	public void Growth_ReclaimsAll() {
-		NextDecision.Choose( "ReclaimAll" );
+		NextDecision.Choose( "Reclaim All" );
 	}
 
 	public void Growth_Reclaims1(string cards) {
@@ -207,7 +207,7 @@ public class VirtualUser {
 	}
 
 	public void PushesPresenceFromOcean(string destination) {
-		AssertDecisionInfo( "Select Growth to resolve", "PushPresenceFromOcean" );
+		AssertDecisionInfo( "Select Growth to resolve", "Push Presence from Ocean" );
 		AssertDecisionInfo( "Push Presence to", destination );
 	}
 

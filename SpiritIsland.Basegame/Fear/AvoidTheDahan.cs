@@ -9,7 +9,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> StopExploreInLandsWithAtLeast2Dahan
 			.In().EachActiveLand()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static SpaceCmd StopExploreInLandsWithAtLeast2Dahan => new SpaceCmd( "Stop Explore if 2 dahan",
 		ctx => {
@@ -22,7 +22,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	public Task Level2( GameCtx ctx )
 		=> StopBuildWhereDahanOutnumberTownsCities
 			.In().EachActiveLand()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static SpaceCmd StopBuildWhereDahanOutnumberTownsCities => new SpaceCmd( "Stop Build if dahan outnumber towns/cities.",
 		ctx => {
@@ -36,7 +36,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	public Task Level3( GameCtx ctx )
 		=> DoNotBuildInLandsWithDahan
 			.In().EachActiveLand()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static SpaceCmd DoNotBuildInLandsWithDahan => new SpaceCmd( "Stop Build in lands with Dahan",
 		ctx => {

@@ -1,19 +1,20 @@
 ﻿namespace SpiritIsland;
 
 /// <remarks>Lure of the Deep Wilderness - Air/Plant/Moon, Fractured Days</remarks>
-public class Gain1Element : GrowthActionFactory {
+public class Gain1Element : SpiritAction {
 
-	public Element[] ElementOptions { get; } // public for drawing
-
-	public Gain1Element(params Element[] elementOptions ) {
-		this.ElementOptions = elementOptions;
+	public Gain1Element( params Element[] elementOptions ) 
+		: base( "GainElement(" + elementOptions.Select( x => x.ToString() ).Join( "," ) + ")" )
+	{
+		ElementOptions = elementOptions;
 	}
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( SelfCtx ctx ) {
 		var element = ElementOptions.Length == 1 ? ElementOptions[0]
 			: await ctx.Self.SelectElementEx( "Gain element", ElementOptions );
 		ctx.Self.Elements[element]++;
 	}
 
-	public override string Name => "GainElement("+ElementOptions.Select(x=>x.ToString()).Join(",")+")";
+	public Element[] ElementOptions { get; } // public for drawing
+
 }

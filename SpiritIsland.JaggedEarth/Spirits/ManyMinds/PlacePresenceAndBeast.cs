@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class PlacePresenceAndBeast : GrowthActionFactory {
+public class PlacePresenceAndBeast : SpiritAction {
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public PlacePresenceAndBeast():base( "PlacePresenceAndBeast" ) { }
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 		var from = await ctx.Self.SelectSourcePresence();
 
 		var options = DefaultRangeCalculator.Singleton.GetTargetOptionsFromKnownSource( ctx.Self.Presence.Spaces.Tokens(), new TargetCriteria( 3 ) );

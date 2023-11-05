@@ -1,14 +1,14 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-class Setup_PlacePresenceOnBeastLand : GrowthActionFactory {
+class PlacePresenceOnBeastLand : SpiritAction {
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public PlacePresenceOnBeastLand():base( "Setup_PlacePresenceOnBeastLand" ) { }
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 		var gameState = GameState.Current;
 		var options = gameState.Spaces_Unfiltered.Where( space=>space.Beasts.Any );
 		var space = await ctx.Decision(new Select.ASpace("Add presence to",options, Present.Always));
 		await ctx.Self.Presence.Token.AddTo(space);
 	}
-
-	public override bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Init;
 
 }

@@ -54,9 +54,9 @@ public StonesUnyieldingDefiance() : base(
 	) {
 
 		this.GrowthTrack = new GrowthTrack(
-			new GrowthOption(new ReclaimAll(),new PlacePresence( 3,Target.Mountain, Target.Presence ),new GainElements(Element.Earth,Element.Earth)),
+			new GrowthOption(new ReclaimAll(),new PlacePresence( 3,Target.Mountain, Target.Presence ),new GainElements(Element.Earth,Element.Earth) ),
 			new GrowthOption(new PlacePresence(2), new GainEnergy(3)),
-			new GrowthOption(new DrawPowerCard(), new PlacePresence(1))
+			new GrowthOption(new GainPowerCard(), new PlacePresence(1))
 		);
 		InnatePowers = new InnatePower[] {
 			InnatePower.For<HoldTheIslandFastWithABulwarkOfWill>(),

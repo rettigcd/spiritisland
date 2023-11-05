@@ -10,7 +10,7 @@ public class EmigrationAccelerates : FearCardBase, IFearCard {
 		=> Cmd.RemoveExplorers( 1 )
 			.From().SpiritPickedLand().Which( Is.Coastal )
 			.ByPickingToken(Human.Explorer)
-			.ForEachSpirit().Execute(ctx);
+			.ForEachSpirit().ActAsync(ctx);
 
 	[FearLevel( 2, "Each player removes 1 Explorer/Town from a Coastal land." )]
 	public Task Level2( GameCtx ctx ) 
@@ -18,7 +18,7 @@ public class EmigrationAccelerates : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Is.Coastal )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
-		.Execute( ctx );
+		.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player removes 1 Explorer/Town from any land." )]
 	public Task Level3( GameCtx ctx )
@@ -26,6 +26,6 @@ public class EmigrationAccelerates : FearCardBase, IFearCard {
 			.In().SpiritPickedLand()
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 }

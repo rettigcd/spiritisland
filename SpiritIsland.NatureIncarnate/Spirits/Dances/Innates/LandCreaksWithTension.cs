@@ -20,14 +20,14 @@ public class LandCreaksWithTension {
 		=> AddQuake
 			.OnlyExecuteIf( x=> minImpending <= ImpendingCount(ctx ) )
 			.In().SpiritPickedLand().Which( Has.YourPresence)
-			.Execute( ctx);
+			.ActAsync( ctx);
 
 	static SpaceCmd AddQuake => new SpaceCmd( "Add 1 Quake", ctx => ctx.Tokens.Add( Token.Quake, 1 ) );
 
 	static Task Defend1PerImpending( SelfCtx ctx )
 		=> Cmd.Defend( Math.Min( 3, ImpendingCount( ctx ) ) )
 			.In().SpiritPickedLand().Which( Has.YourPresence )
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static int ImpendingCount(SelfCtx ctx) => ((DancesUpEarthquakes)ctx.Self).Impending.Count;
 }

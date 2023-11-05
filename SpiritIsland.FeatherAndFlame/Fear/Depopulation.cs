@@ -10,7 +10,7 @@ public class Depopulation : FearCardBase, IFearCard {
 			.In().OneLandPerBoard()
 			.ByPickingToken( Human.Town )
 			.ForEachBoard()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static SpaceCmd Replace1TownWith1Explorer => new SpaceCmd("Replace 1 Town with 1 Explorer", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town ) );
 
@@ -20,7 +20,7 @@ public class Depopulation : FearCardBase, IFearCard {
 			.In().OneLandPerBoard()
 			.ByPickingToken( Human.Town )
 			.ForEachBoard()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "On Each Board: Remove 1 Town, or Replace 1 City with 1 Town." )]
 	public Task Level3( GameCtx ctx )
@@ -28,7 +28,7 @@ public class Depopulation : FearCardBase, IFearCard {
 			.In().OneLandPerBoard()
 			.ByPickingToken( Human.Town_City )
 			.ForEachBoard()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	// static SpaceCmd Replace1CityWith1Town => new SpaceCmd( "Replace 1 City with 1 Town", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.City ) );
 

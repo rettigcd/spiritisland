@@ -18,9 +18,9 @@ public class UnnaturalProliferation : BlightCard {
 			) )
 		);
 
-	static SelfCmd AddPresenceToOwnLand => Cmd.PlacePresenceWithin(new TargetCriteria(0),true);
+	static SpiritAction AddPresenceToOwnLand => Cmd.PlacePresenceWithin(0);
 
-	static IExecuteOn<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
+	static IActOn<BoardCtx> AddDahanToDahanLand => Cmd.AddDahan(1)
 		.To().OneLandPerBoard().Which( Has.Dahan );
 
 	static BaseCmd<BoardCtx> Add2CitiesToLandWithFewest => new BaseCmd<BoardCtx>(

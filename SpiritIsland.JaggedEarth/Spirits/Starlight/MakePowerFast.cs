@@ -3,9 +3,11 @@
 /// <summary>
 /// Adds a ResolveSlowAsFast action.
 /// </summary>
-class MakePowerFast : GrowthActionFactory {
+class MakePowerFast : SpiritAction {
 
-	public override Task ActivateAsync( SelfCtx ctx ) {
+	public MakePowerFast():base( "MakePowerFast" ) { }
+
+	public override Task ActAsync( SelfCtx ctx ) {
 		ctx.Self.AddActionFactory( new ResolveSlowDuringFast() );
 		return Task.CompletedTask;
 	}

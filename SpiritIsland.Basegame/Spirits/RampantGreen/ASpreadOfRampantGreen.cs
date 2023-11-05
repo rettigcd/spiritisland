@@ -31,7 +31,7 @@ public class ASpreadOfRampantGreen : Spirit {
 			// reclaim, +1 power card
 			new GrowthOption(
 				new ReclaimAll(), 
-				new DrawPowerCard(1)
+				new GainPowerCard()
 			),
 			// +1 presense range 1, play +1 extra card this turn
 			new GrowthOption(
@@ -41,7 +41,7 @@ public class ASpreadOfRampantGreen : Spirit {
 			// +1 power card, +3 energy
 			new GrowthOption(
 				new GainEnergy(3), 
-				new DrawPowerCard()
+				new GainPowerCard()
 			)
 		));
 

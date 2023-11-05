@@ -60,6 +60,10 @@ public class GiftOfStrength_Tests {
 	[Trait( "something", "repeat card" )]
 	public void Replaying_SlowCards() {
 
+		// Sometimes Growth doesn't happen and I can't explain why.
+		// When we get to the point where we are supposed to be selected power cards to play
+		// we are still on Growth.
+
 		// Given: Earth has enough elements to trigger GOS
 		User.SelectsGrowthA_Reclaim_PP2();
 		spirit.Elements[Element.Sun] = 1;

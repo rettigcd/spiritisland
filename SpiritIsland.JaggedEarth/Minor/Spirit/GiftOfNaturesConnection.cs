@@ -8,8 +8,8 @@ public class GiftOfNaturesConnection{
 
 		// Target Spirit gains either 2 Energy or 2 of a single Element (their choice).
 		await ctx.OtherCtx.SelectActionOption( 
-			new SelfCmd("Gain 2 energy", ctx=>ctx.Self.Energy+=2),
-			new SelfCmd("Gain 2 of a single element", ctx => GainEl(ctx,2))
+			new SpiritAction("Gain 2 energy", ctx=>ctx.Self.Energy+=2),
+			new SpiritAction("Gain 2 of a single element", ctx => GainEl(ctx,2))
 		);
 
 		// if you target another Spirit, you gain an Element of your choice.

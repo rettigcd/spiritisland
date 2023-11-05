@@ -21,7 +21,7 @@ public class GatherTheScatteredLightOfStars {
 			}
 		}
 
-		ctx.Self.AddActionFactory( new ReclaimN( reclaimCount ) );
+		ctx.Self.AddActionFactory( new ReclaimN( reclaimCount ).ToGrowth() );
 
 	}
 

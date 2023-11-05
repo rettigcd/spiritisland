@@ -27,7 +27,7 @@ public class Ocean : Spirit {
 			new GrowthOption(
 				new GatherPresenceIntoOcean(),
 				new ReclaimAll(),
-				new DrawPowerCard(),
+				new GainPowerCard(),
 				new GainEnergy(2)
 			), 
 			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
@@ -39,7 +39,7 @@ public class Ocean : Spirit {
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on coastal land range 1
 			new GrowthOption( 
 				new PushPresenceFromOcean(),
-				new DrawPowerCard(),
+				new GainPowerCard(),
 				new PlacePresence(1, Target.Coastal )
 			)
 		);
@@ -61,7 +61,7 @@ public class Ocean : Spirit {
 		// Place in Ocean
 		board.Ocean.Tokens.Adjust(Presence.Token,1);
 
-		AddActionFactory( new Setup_PlacePresenceInCostal() ); // let user pick initial ocean
+		AddActionFactory( new PlacePresenceInCostal().ToInit() );
 
 		var drownMod = new Drowning(this);
 		foreach(Board b in gameState.Island.Boards)

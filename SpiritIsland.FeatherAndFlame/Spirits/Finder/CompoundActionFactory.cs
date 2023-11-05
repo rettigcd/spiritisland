@@ -1,17 +1,16 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-class CompoundActionFactory : GrowthActionFactory {
+class CompoundActionFactory : SpiritAction {
 
-	readonly GrowthActionFactory[] parts;
+	readonly SpiritAction[] _parts;
 
-	public CompoundActionFactory(params GrowthActionFactory[] parts) {
-		this.parts = parts;
+	public CompoundActionFactory(params SpiritAction[] parts)
+		:base( string.Join( ":", parts.Select( x => x.Description ) ) ) {
+		_parts = parts;
 	}
 
-	public override string Name => string.Join(":",parts.Select(x=>x.Name));
-
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		foreach(var part in parts )
-			await part.ActivateAsync( ctx );
+	public override async Task ActAsync( SelfCtx ctx ) {
+		foreach(var part in _parts )
+			await part.ActAsync( ctx );
 	}
 }

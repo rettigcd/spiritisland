@@ -33,7 +33,7 @@ public class FranceExplorer : ExploreEngine {
 
 	static Task PersistentExplorers( GameCtx gameCtx ) {
 		// After resolving an Explore Card, on each board add 1 Explorer to a land without any. 
-		return Cmd.ForEachBoard( AddExplorerToLandWithoutAny ).Execute( gameCtx );
+		return Cmd.ForEachBoard( AddExplorerToLandWithoutAny ).ActAsync( gameCtx );
 
 	}
 
@@ -61,10 +61,10 @@ public class FranceExplorer : ExploreEngine {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
-		static SelfCmd SelectSpaceAction( SpaceState s ) {
+		static SpiritAction SelectSpaceAction( SpaceState s ) {
 			return s.HasAny( Human.Town_City )
-				? new SelfCmd( "Add 1 Town to " + s.Space.Text, null )
-				: new SelfCmd( "", null );
+				? new SpiritAction( "Add 1 Town to " + s.Space.Text, null )
+				: new SpiritAction( "", null );
 		}
 
 		return Cmd.ForEachBoard( new BaseCmd<BoardCtx>(
@@ -73,8 +73,8 @@ public class FranceExplorer : ExploreEngine {
 				.Where( card.MatchesCard )
 				.Select( SelectSpaceAction )
 				.ToArray()
-			).Execute( boardCtx )
-		) ).Execute( ctx );
+			).ActAsync( boardCtx )
+		) ).ActAsync( ctx );
 
 	}
 

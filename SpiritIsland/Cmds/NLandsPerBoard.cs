@@ -3,11 +3,11 @@
 /// <summary>
 /// Spirit/Player picks 1 land from their home board.
 /// </summary>
-public class NLandsPerBoard : IExecuteOn<BoardCtx> {
+public class NLandsPerBoard : IActOn<BoardCtx> {
 
 	#region constructor
 
-	public NLandsPerBoard( IExecuteOn<TargetSpaceCtx> spaceAction, string preposition, int count ) {
+	public NLandsPerBoard( IActOn<TargetSpaceCtx> spaceAction, string preposition, int count ) {
 		_spaceAction = spaceAction;
 		_preposition = preposition;
 		_count = count;
@@ -38,7 +38,7 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 	public bool IsApplicable( BoardCtx ctx ) => true;
 	#endregion
 
-	public async Task Execute( BoardCtx ctx ) {
+	public async Task ActAsync( BoardCtx ctx ) {
 
 		var used = new List<Space>();
 
@@ -63,7 +63,7 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 
 			used.Add( spaceCtx.Space );
 
-			await _spaceAction.Execute( spaceCtx );
+			await _spaceAction.ActAsync( spaceCtx );
 		}
 	}
 
@@ -91,7 +91,7 @@ public class NLandsPerBoard : IExecuteOn<BoardCtx> {
 	}
 
 
-	readonly IExecuteOn<TargetSpaceCtx> _spaceAction;
+	readonly IActOn<TargetSpaceCtx> _spaceAction;
 	readonly string _preposition;
 	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;
 	TargetSpaceCtxFilter _landCriteria;

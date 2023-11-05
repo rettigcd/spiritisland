@@ -1,8 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class GatherPresenceIntoOcean : GrowthActionFactory {
+public class GatherPresenceIntoOcean : SpiritAction {
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public GatherPresenceIntoOcean():base( "GatherPresenceIntoOcean" ) { }
+	public override async Task ActAsync( SelfCtx ctx ) {
 
 		List<SpaceState> gatherSpaces = ctx.Self.Presence.Spaces
 			.Where( p => p.IsCoastal )

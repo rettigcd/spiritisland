@@ -1,23 +1,25 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class PlaceDestroyedPresence : GrowthActionFactory {
+public class PlaceDestroyedPresence : SpiritAction {
 
 	#region constructors
 
-	public PlaceDestroyedPresence( int range ) {
+	public PlaceDestroyedPresence( int range )
+		:base( $"PlaceDestroyedPresence({range})" )
+	{
 		Range = range;
 		FilterEnums = DefaultFilters;
 		FilterDescription = Target.Any;
-		Name = $"PlaceDestroyedPresence({range})";
 	}
 
 	static readonly string[] DefaultFilters = new string[] { Target.Any };
 
-	public PlaceDestroyedPresence( int range, params string[] filterEnum ) {
+	public PlaceDestroyedPresence( int range, params string[] filterEnums )
+		:base( $"PlaceDestroyedPresence({range},"+string.Join( "Or", filterEnums )+")" )
+	{
 		Range = range;
-		FilterEnums = filterEnum;
+		FilterEnums = filterEnums;
 		FilterDescription = string.Join( "Or", FilterEnums );
-		Name = $"PlaceDestroyedPresence({range},{FilterDescription})";
 	}
 
 	#endregion
@@ -26,9 +28,7 @@ public class PlaceDestroyedPresence : GrowthActionFactory {
 	public string FilterDescription { get; }
 	public string[] FilterEnums { get; }
 
-	public override string Name { get; }
-
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( SelfCtx ctx ) {
 		Spirit self = ctx.Self;
 		if(self.Presence.Destroyed == 0) return;
 		var toOptions = self.FindSpacesWithinRange( new TargetCriteria(Range), false )

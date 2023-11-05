@@ -21,9 +21,9 @@ public partial class Keeper : Spirit {
 
 		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
-			new GrowthOption( new DrawPowerCard(1) ),
-			new GrowthOption( new GainEnergy(1) ,new PlacePresence(3,Target.Presence, Target.Wilds ) ){ GainEnergy = 1 },
-			new GrowthOption( new GainEnergy(-3),new DrawPowerCard(1) ,new PlacePresence(3,Target.NoBlight) ){ GainEnergy = -3 }
+			new GrowthOption( new GainPowerCard() ),
+			new GrowthOption( new GainEnergy(1), new PlacePresence(3,Target.Presence, Target.Wilds ) ){ GainEnergy = 1 },
+			new GrowthOption( new GainEnergy(-3), new GainPowerCard() ,new PlacePresence(3,Target.NoBlight) ){ GainEnergy = -3 }
 		);
 
 		InnatePowers = new InnatePower[] {

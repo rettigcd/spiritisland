@@ -8,8 +8,8 @@ public class StrongAndConstantCurrents{
 		// If you hvae 2 water: 
 		if(await ctx.YouHave("2 water" )) {
 			// You may do both.
-			await PushExporerTownToAdjacenCoastland.Execute(ctx);
-			await MoveUpTo2DahanToAnotherCostal.Execute(ctx);
+			await PushExporerTownToAdjacenCoastland.ActAsync(ctx);
+			await MoveUpTo2DahanToAnotherCostal.ActAsync(ctx);
 		} else
 			await ctx.SelectActionOption( 
 				PushExporerTownToAdjacenCoastland, 

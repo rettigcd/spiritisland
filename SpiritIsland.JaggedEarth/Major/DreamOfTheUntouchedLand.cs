@@ -11,7 +11,7 @@ public class DreamOfTheUntouchedLand {
 		await ctx.RemoveBlight( 3 );
 
 		// and up to 3 health worth of invaders
-		await Cmd.RemoveUpToNHealthOfInvaders( 3 ).Execute( ctx );
+		await Cmd.RemoveUpToNHealthOfInvaders( 3 ).ActAsync( ctx );
 
 		var gs = GameState.Current;
 
@@ -36,7 +36,7 @@ public class DreamOfTheUntouchedLand {
 			// ??? Can spirits violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
 				var spirit = await ctx.Self.Gateway.Decision(new Select.ASpirit("Spirit to add presence.", gs.Spirits));
-				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).Tokens().ToArray() ).Execute(spirit.BindMyPowers());
+				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).Tokens().ToArray() ).ActAsync(spirit.BindMyPowers());
 			}
 
 			// from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.

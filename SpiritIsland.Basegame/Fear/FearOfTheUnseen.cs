@@ -11,7 +11,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Has.MySacredSite )
 			.ByPickingToken(Human.Explorer_Town)
 			.ForEachSpirit()
-			.Execute( fearCtx );
+			.ActAsync( fearCtx );
 	}
 
 	[FearLevel( 2, "Each player removes 1 Explorer/Town from a land with Presence." )]
@@ -20,7 +20,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 			.From().SpiritPickedLand().Which( Has.YourPresence )
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
-			.Execute( fearCtx );
+			.ActAsync( fearCtx );
 	}
 
 	[FearLevel( 3, "Each player removes 1 Explorer/Town from a land with Presence, or 1 City from a land with Sacred Site." )]
@@ -30,7 +30,7 @@ public class FearOfTheUnseen : FearCardBase, IFearCard {
 				Cmd.RemoveCities( 1 ).From().SpiritPickedLand().Which( Has.MySacredSite )
 			)
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 	}
 
 }

@@ -1,13 +1,15 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class PlaceInOcean : GrowthActionFactory {
+public class PlaceInOcean : SpiritAction {
 
-	public override Task ActivateAsync( SelfCtx ctx ) {
+	public PlaceInOcean() : base( "PlaceInOcean" ) { }
+
+	public override Task ActAsync( SelfCtx ctx ) {
 		var oceanSpaces = GameState.Current.Island.Boards
 			.Select( b=>b.Spaces_Existing.Single(s=>s.IsOcean ) )
 			.Tokens()
 			.ToArray();
-		return Cmd.PlacePresenceOn( oceanSpaces ).Execute( ctx );
+		return Cmd.PlacePresenceOn( oceanSpaces ).ActAsync( ctx );
 	}
 
 }

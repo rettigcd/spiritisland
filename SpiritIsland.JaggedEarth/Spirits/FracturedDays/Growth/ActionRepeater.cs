@@ -7,13 +7,13 @@
 public class ActionRepeater {
 
 	public readonly int repeats;
-	readonly List<GrowthActionFactory> factories = new List<GrowthActionFactory>();
+	readonly List<IHelpGrow> factories = new List<IHelpGrow>();
 
 	public int currentRepeats;
 
 	public ActionRepeater(int repeats) { this.repeats = repeats; }
 
-	public void Register( GrowthActionFactory factory) {
+	public void Register( IHelpGrow factory ) {
 		factories.Add(factory);
 	}
 
@@ -45,6 +45,6 @@ public class ActionRepeater {
 				spirit.RemoveFromUnresolvedActions( factory );
 	}
 
-	public GrowthActionFactory BindAction( GrowthActionFactory inner ) => new RepeatableActionFactory( inner, this );
+	public SpiritAction BindSelfCmd( SpiritAction inner ) => new RepeatableSelfCmd( inner, this );
 
 }

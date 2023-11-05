@@ -23,7 +23,7 @@ public class InstrumentsOfTheirOwnRuin {
 		// add 1 strife
 		await ctx.AddStrife();
 		// strifed invaders deal damage to other invaders in target land.
-		await StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders.Execute( ctx );
+		await StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders.ActAsync( ctx );
 	}
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {

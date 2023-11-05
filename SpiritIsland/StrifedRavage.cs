@@ -43,7 +43,7 @@ public static class StrifedRavage {
 
 	#region Strife caused Damage to Self
 
-	public static IExecuteOn<BoardCtx> StrifedInvadersTakeDamagePerStrife 
+	public static IActOn<BoardCtx> StrifedInvadersTakeDamagePerStrife 
 		=> new BaseCmd<BoardCtx>( "each invader takes 1 damage per strife it has", StrifedInvadersTakeDamagePerStrifeImp );
 
 	static async Task StrifedInvadersTakeDamagePerStrifeImp( BoardCtx boardCtx ) {

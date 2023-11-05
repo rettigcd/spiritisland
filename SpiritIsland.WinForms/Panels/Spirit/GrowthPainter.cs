@@ -56,12 +56,14 @@ public sealed class GrowthPainter : IDisposable{
 		return cachedImageLayer;
 	}
 
-	void DrawAction( GrowthActionFactory action, RectangleF rect ) {
+	void DrawAction( IHelpGrow action, RectangleF rect ) {
 
-		if(action is JaggedEarth.RepeatableActionFactory repeatableActionFactory 
-			&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
-		)
-			action = repeatableActionFactory.Inner;
+		// !!! Figureout how to restore this
+		//if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory 
+		//	&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
+		//)
+		//	action = repeatableActionFactory.Inner;
+
 
 		if(action is GainEnergy ge) { GainEnergy( rect, ge.Delta ); return; }
 
@@ -71,9 +73,10 @@ public sealed class GrowthPainter : IDisposable{
 
 		if(action is ReclaimHalf) {  DrawIconInCenter( rect, Img.ReclaimHalf ); return; }
 
-		if(action is DrawPowerCard) { DrawIconInCenter( rect, Img.GainCard ); return; }
+		if(action is GainPowerCard) { DrawIconInCenter( rect, Img.GainCard ); return; }
 
-		if(action is PlacePresence pp ) { PlacePresence( rect, pp ); return; }
+		if(action is SpiritGrowthAction wrapper && wrapper.Cmd is PlacePresence pp ) { PlacePresence( rect, action ); return; }
+		// !!! Can't draw place presence from object, need to draw from text until we have converted everything over to SelfCmds
 
 		if(action is MovePresence mp) { MovePresence( rect, mp.Range ); return; }
 
@@ -88,7 +91,7 @@ public sealed class GrowthPainter : IDisposable{
 			case "PlaceDestroyedPresence(1)": PlacePresence( rect, action ); break;
 
 			case "GatherPresenceIntoOcean": DrawIconInCenter( rect, Img.GatherToOcean ); break;
-			case "PushPresenceFromOcean":   DrawIconInCenter( rect, Img.Pushfromocean ); break;
+			case "Push Presence from Ocean":   DrawIconInCenter( rect, Img.Pushfromocean ); break;
 			// Heart of the WildFire
 			case "EnergyForFire": DrawIconInCenter( rect, Img.Oneenergyfire ); break;
 			// Lure of the Deep Wilderness
@@ -160,7 +163,7 @@ public sealed class GrowthPainter : IDisposable{
 					Rectangle cardRect = rows[1].SplitHorizontally( 2 )[1];
 					int majorOffset = cardRect.Width/2;
 					Rectangle majorRect = new Rectangle( cardRect.X+majorOffset/43, cardRect.Y + majorOffset / 4, majorOffset, majorOffset );
-					PlacePresence( presRect,new PlacePresence(2));
+					PlacePresence( presRect,new PlacePresence(2).ToGrowth());
 					DrawIconInCenter( cardRect, Img.GainCard );
 					DrawIconInCenter( majorRect, Img.Icon_Major );
 				}
@@ -306,13 +309,14 @@ public sealed class GrowthPainter : IDisposable{
 		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
 	}
 
-	void PlacePresence( RectangleF bounds, GrowthActionFactory growth ) {
+	void PlacePresence( RectangleF bounds, IHelpGrow growth ) {
+		
 		var (presence,range,filterEnum,addOnIcon) = growth switch {
 			PlaceInOcean           => (Img.Icon_Presence, null,    Target.Ocean, Img.None),
 			PlacePresenceAndBeast  => (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast), // add an icon
-			PlacePresenceOrDisease => (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease),
+			{Name: string n } when n == "Add a Presence or Disease" => (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease),
 			PlaceDestroyedPresence { Range: int r, FilterDescription: string f } => (Img.Icon_DestroyedPresence, (int?)r, f, Img.None), // generic, do last
-			PlacePresence { Range: int r, FilterDescription: string f } => (Img.Icon_Presence, (int?)r, f, Img.None), // generic, do last
+			SpiritGrowthAction { Cmd:PlacePresence{ Range: int r, FilterDescription: string f } } => (Img.Icon_Presence, (int?)r, f, Img.None), // generic, do last
 			_ => throw new ArgumentException("growth action factory not a place-presence",nameof(growth)),
 		};
 

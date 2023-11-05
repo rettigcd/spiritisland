@@ -12,7 +12,7 @@ public class Lightning_GrowthTests : GrowthTests{
 
 		Given_HalfOfPowercardsPlayed();
 		await _spirit.When_Growing( () => {
-			User.Growth_SelectAction( "DrawPowerCard" );
+			User.Growth_SelectAction( "Gain Power Card" );
 
 			// Select Minor card to draw
 			_gameState.MinorCards.ShouldNotBeNull();

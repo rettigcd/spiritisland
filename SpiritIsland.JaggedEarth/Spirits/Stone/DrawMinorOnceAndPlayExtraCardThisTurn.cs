@@ -1,10 +1,13 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class DrawMinorOnceAndPlayExtraCardThisTurn : GrowthActionFactory, IActionFactory {
+public class DrawMinorOnceAndPlayExtraCardThisTurn : SpiritAction {
+
+	public DrawMinorOnceAndPlayExtraCardThisTurn():base( "DrawMinorOnceAndPlayExtraCardThisTurn" ) { }
+
 
 	bool drewMinor = false;
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( SelfCtx ctx ) {
 
 		if(!drewMinor)
 			await ctx.DrawMinor();

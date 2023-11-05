@@ -123,7 +123,7 @@ public static class SpiritExtensions {
 		if(option.UserRuns.Count() == 1) {
 			await option.UserRuns.First().ActivateAsync( ctx );
 		} else {
-			foreach(GrowthActionFactory action2 in option.UserRuns)
+			foreach(IHelpGrow action2 in option.UserRuns)
 				spirit.AddActionFactory( action2 );
 
 			await spirit.ResolveActions( gameState );

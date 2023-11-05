@@ -165,8 +165,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public void VerifyReclaim1Count( int count ) {
 		ConfigurableTestFixture fix = this;
-		var trackActions = fix.Spirit.Presence.RevealedActions.OfType<ReclaimN>().ToArray();
-		trackActions.Length.ShouldBe( count );
+		fix.Spirit.Presence.RevealedActions.OfType<ReclaimN>().Count().ShouldBe( count );
 	}
 
 	#endregion

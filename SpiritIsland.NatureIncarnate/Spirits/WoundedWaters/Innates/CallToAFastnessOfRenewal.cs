@@ -14,7 +14,7 @@ public class CallToAFastnessOfRenewal {
 		return Cmd.Pick1(
 			new SpaceCmd("Defend 3", x=>x.Defend(3)),
 			new SpaceCmd("Downgrade 1 Invader", ctx=>ReplaceInvader.Downgrade1(ctx,Present.Always,Human.Invader) )
-		).Execute(ctx);
+		).ActAsync(ctx);
 	}
 
 	[InnateOption( "3 water,1 plant", "Add 1 Beast.", 2 )]

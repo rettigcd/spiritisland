@@ -13,9 +13,9 @@ namespace SpiritIsland.WinForms {
 		public Rectangle Bounds { get; set; }
 
 		public RectangleF this[GrowthOption opt] => _optionRects[opt];
-		public RectangleF this[GrowthActionFactory act] => _actionRects[act];
+		public RectangleF this[IHelpGrow act] => _actionRects[act];
 
-		public bool HasAction( GrowthActionFactory act ) => _actionRects.ContainsKey( act );
+		public bool HasAction( IHelpGrow act ) => _actionRects.ContainsKey( act );
 		public bool HasOption( GrowthOption opt ) => _optionRects.ContainsKey( opt );
 
 		#region constructor
@@ -28,9 +28,9 @@ namespace SpiritIsland.WinForms {
 
 			int actionCount = _growthOptions.Sum( op=>op.GrowthActions.Length );
 
-			_actions = new GrowthActionFactory[actionCount];
+			_actions = new IHelpGrow[actionCount];
 			_optionRects = new Dictionary<GrowthOption, RectangleF>();
-			_actionRects = new Dictionary<GrowthActionFactory, RectangleF>();
+			_actionRects = new Dictionary<IHelpGrow, RectangleF>();
 
 			// Build Rectangles to fit 1.0f width
 			float actionWidth = 1.0f / actionCount;
@@ -75,7 +75,7 @@ namespace SpiritIsland.WinForms {
 				yield return (opt,_optionRects[opt]);
 		}
 
-		public IEnumerable<(GrowthActionFactory, RectangleF)> EachAction() {
+		public IEnumerable<(IHelpGrow, RectangleF)> EachAction() {
 			foreach(var act in _actions)
 				yield return (act,_actionRects[act]);
 		}
@@ -91,17 +91,17 @@ namespace SpiritIsland.WinForms {
 
 		void ScaleInternal( float scale ) {
 			foreach(GrowthOption opt in _growthOptions) _optionRects[opt] = _optionRects[opt].Scale( scale );
-			foreach(GrowthActionFactory act in _actions) _actionRects[act] = _actionRects[act].Scale( scale );
+			foreach(IHelpGrow act in _actions) _actionRects[act] = _actionRects[act].Scale( scale );
 			_size = _size.Scale( scale );
 		}
 
 
 		readonly GrowthOption[] _growthOptions;
-		readonly GrowthActionFactory[] _actions;
+		readonly IHelpGrow[] _actions;
 
 		SizeF _size;
 		readonly Dictionary<GrowthOption,RectangleF> _optionRects;
-		readonly Dictionary<GrowthActionFactory,RectangleF> _actionRects;
+		readonly Dictionary<IHelpGrow,RectangleF> _actionRects;
 
 		#endregion
 

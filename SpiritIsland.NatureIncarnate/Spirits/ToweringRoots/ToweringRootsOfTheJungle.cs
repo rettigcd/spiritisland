@@ -23,8 +23,8 @@ public class ToweringRootsOfTheJungle : Spirit {
 		// Growth
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new PlacePresence(0) ),
-			new GrowthOption( new DrawPowerCard(), new PlacePresence(1), new AddVitalityToIncarna() ),
-			new GrowthOption( new DrawPowerCard(), new PlacePresence(3), new ReplacePresenceWithIncarna(), new GainEnergy(1) )
+			new GrowthOption( new GainPowerCard(), new PlacePresence(1), new AddVitalityToIncarna() ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence(3), new ReplacePresenceWithIncarna(), new GainEnergy(1) )
 		);
 
 		// Innates

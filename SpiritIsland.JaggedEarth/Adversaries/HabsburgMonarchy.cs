@@ -158,7 +158,7 @@ public class HabsburgMonarchy : IAdversary {
 
 		// On each board
 		await Cmd.ForEachBoard( new BaseCmd<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
-			.Execute( new GameCtx( gameState ) );
+			.ActAsync( new GameCtx( gameState ) );
 
 	}
 

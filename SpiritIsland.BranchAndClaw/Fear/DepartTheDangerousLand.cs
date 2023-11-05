@@ -10,20 +10,20 @@ class DepartTheDangerousLand : FearCardBase, IFearCard {
 		=> Cmd.RemoveExplorers( 1 )
 			.From().SpiritPickedLand().Which( Has.BeastDiseaseOr2Dahan )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each player removes 1 Explorer/Town from a land with Beast, Disease or at least 2 Dahan." )]
 	public Task Level2( GameCtx ctx )
 		=> Cmd.RemoveExplorersOrTowns(1)
 			.From().SpiritPickedLand().Which( Has.BeastDiseaseOr2Dahan )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player removes up to 4 health worth of Invaders from a land with Beast, Disease or at least 2 Dahan." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.RemoveUpToNHealthOfInvaders( 4 )
 			.From().SpiritPickedLand().Which( Has.BeastDiseaseOr2Dahan )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 }

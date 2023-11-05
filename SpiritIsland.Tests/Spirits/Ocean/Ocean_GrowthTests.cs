@@ -20,7 +20,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		Given_IslandIsABC();
 		Given_HasPresence( starting );
 
-		foreach(GrowthActionFactory action in _spirit.GrowthTrack.Options[0].UserRuns)
+		foreach(IHelpGrow action in _spirit.GrowthTrack.Options[0].UserRuns)
 			_spirit.AddActionFactory( action );
 
 		// since options are move source, key on that
@@ -29,7 +29,10 @@ public class Ocean_GrowthTests : GrowthTests {
 			.Select(s=>s.Split('>'))
 			.ToDictionary(a=>"OHG on "+a[0],a=>a[1]);
 
-		GatherPresenceIntoOcean gather = _spirit.GetAvailableActions(Phase.Growth).OfType<GatherPresenceIntoOcean>().SingleOrDefault();
+		IHelpGrow gather = _spirit.GetAvailableActions(Phase.Growth)
+			.OfType<SpiritGrowthAction>()
+			.Where(x=>x.Cmd is GatherPresenceIntoOcean )
+			.SingleOrDefault();
 
 		if(gather != null){
 			_ = gather.ActivateAsync( _spirit.BindSelf() );

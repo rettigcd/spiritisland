@@ -1,13 +1,15 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class PiecesEscape : GrowthActionFactory {
+public class PiecesEscape : SpiritAction {
 
-	public override string Name => "PiecesEscape" + (NumToEscape switch{ int.MaxValue => "", _ => $"({NumToEscape})" });
-
-	public PiecesEscape(int count = int.MaxValue):base() {
+	public PiecesEscape( int count = int.MaxValue ) 
+		: base( "PiecesEscape" + (count switch { int.MaxValue => "", _ => $"({count})" }) )
+	{
 		NumToEscape = count;
+
 	}
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 
 		int remaining = NumToEscape;
 		var tokens = EndlessDark.Space.Tokens;

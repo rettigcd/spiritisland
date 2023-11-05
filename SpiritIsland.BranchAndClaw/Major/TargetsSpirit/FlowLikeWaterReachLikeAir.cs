@@ -16,7 +16,7 @@ public class FlowLikeWaterReachLikeAir {
 
 		// Target spirit may push 1 of their presence to an adjacent land
 		await Cmd.PushUpTo1Presence( (from,to) => PullPiecesAlong(ctx, bringCityAndBlight, from, to) )
-			.Execute(ctx);
+			.ActAsync(ctx);
 	}
 
 	static async Task PullPiecesAlong( SelfCtx ctx, bool bringCityAndBlight, Space from, Space to ) {

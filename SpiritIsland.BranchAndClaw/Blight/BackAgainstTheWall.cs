@@ -6,7 +6,7 @@ public class BackAgainstTheWall : BlightCard {
 
 	public override BaseCmd<GameCtx> Immediately => Cmd.ForEachSpirit( BoostEnergyAndCardPlayEachSpiritPhase );
 
-	static SelfCmd BoostEnergyAndCardPlayEachSpiritPhase => new SelfCmd(
+	static SpiritAction BoostEnergyAndCardPlayEachSpiritPhase => new SpiritAction(
 		"Each spirit phase, Gain +1 energy and +1 card play", 
 		ctx => ctx.Self.EnergyCollected.Add( BoostEnergyAndCardPlay )
 	);

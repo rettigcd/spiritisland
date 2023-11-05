@@ -1,25 +1,27 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+
 /// <summary>
 /// Created by ActionRepeater
-/// Wraps another class and lets it be treated as a group and repeated.
+/// Wraps another cmd and lets it be treated as a group and repeated.
 /// </summary>
-public class RepeatableActionFactory : GrowthActionFactory {
+public class RepeatableSelfCmd : SpiritAction {
 
-	public GrowthActionFactory Inner { get; }
-	readonly ActionRepeater repeater;
+	public SpiritAction Inner { get; }
+	readonly ActionRepeater _repeater;
 
-	internal RepeatableActionFactory( GrowthActionFactory inner, ActionRepeater repeater ) {
-		this.Inner = inner;
-		this.repeater = repeater;
-		repeater.Register(this);
+	internal RepeatableSelfCmd( SpiritAction inner, ActionRepeater repeater )
+		:base( inner.Description + "x" + repeater.repeats )
+	{
+		Inner = inner;
+		_repeater = repeater;
+		repeater.Register( this.ToGrowth() );
 	}
 
-	public override async Task ActivateAsync( SelfCtx ctx ) {
-		repeater.BeginAction();
-		await Inner.ActivateAsync(ctx);
-		repeater.EndAction( ctx.Self );
+	public override async Task ActAsync( SelfCtx ctx ) {
+		_repeater.BeginAction();
+		await Inner.ActAsync( ctx );
+		_repeater.EndAction( ctx.Self );
 	}
 
-	public override string Name => Inner.Name + "x"+repeater.repeats;
 }

@@ -15,10 +15,10 @@ public class UntendedLandCrumbles : BlightCard {
 			)
 		);
 
-	static IExecuteOn<BoardCtx> AddBlightAdjacentToBligtht =>
+	static IActOn<BoardCtx> AddBlightAdjacentToBligtht =>
 		Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( Is.AdjacentToBlight );
 
-	static IExecuteOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new BaseCmd<BoardCtx>(
+	static IActOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new BaseCmd<BoardCtx>(
 		$"Joinly pay {requiredEnergy} energy",
 		async ctx => {
 			int remaining = requiredEnergy;
@@ -36,7 +36,7 @@ public class UntendedLandCrumbles : BlightCard {
 		}
 	).OnlyExecuteIf(ctx => requiredEnergy <= GameState.Current.Spirits.Sum( s=>s.Energy ) );
 
-	static IExecuteOn<BoardCtx> JointlyDestroyPresenceOnBoard => new BaseCmd<BoardCtx>(
+	static IActOn<BoardCtx> JointlyDestroyPresenceOnBoard => new BaseCmd<BoardCtx>(
 		"Jointly destroy 1 presence",
 		async ctx => {
 			var spiritOptions = GameState.Current.Spirits
@@ -44,7 +44,7 @@ public class UntendedLandCrumbles : BlightCard {
 				.ToArray();
 			if(spiritOptions.Length==0) return;
 			var spirit = await ctx.Decision(new Select.ASpirit("Destroy 1 presence",spiritOptions));
-			await Cmd.DestroyPresence().Execute( spirit.BindSelf() );
+			await Cmd.DestroyPresence().ActAsync( spirit.BindSelf() );
 		}
 	).OnlyExecuteIf( ctx => 
 		GameState.Current.Spirits

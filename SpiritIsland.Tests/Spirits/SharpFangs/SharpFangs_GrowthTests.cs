@@ -163,7 +163,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	void User_GrowthA_ReclaimAll_Energy_DrawCard() {
-		User.Growth_SelectAction( "ReclaimAll" );
+		User.Growth_SelectAction( "Reclaim All" );
 		User.Growth_DrawsPowerCard();
 		User.SelectsMinorDeck();
 		User.SelectMinorPowerCard();
@@ -175,13 +175,14 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	}
 
 	void User_GrowthC_DrawCard_GainEnergy() {
-		User.Growth_SelectAction( "DrawPowerCard" );
+		User.Growth_SelectAction( "Gain Power Card" );
 		User.SelectsMinorDeck();
 		User.SelectMinorPowerCard();
 	}
 
 	void User_GrowthD_GainEnergy() {
-		User.Growth_SelectAction( "GainEnergy(3)" );
+		User.NextDecision.HasPrompt( "Select Growth" )
+			.Choose( "Gain 3 Energy" );
 	}
 
 

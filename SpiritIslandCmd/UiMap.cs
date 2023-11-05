@@ -39,7 +39,7 @@ namespace SpiritIslandCmd {
 				} else if(option is Space space) {
 					key = space.Label.ToLower();
 					description = FormatSpace( space );
-				} else if(option is GrowthActionFactory gaf) {
+				} else if(option is IHelpGrow gaf) {
 					key = (++labelIndex).ToString();
 					description = FormatFactory( gaf, pad );
 				} else if(option is IActionFactory factory) {

@@ -9,7 +9,7 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> Cmd.Adjust1Token("Skip the lowest-numbered land matching the Invader card", new SkipLowestNumberedExplore() )
 			.In().EachActiveLand()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "Skip the next normal Explore. During the next Invader phase, draw an adidtional Explore card." )]
 	public Task Level2( GameCtx ctx ) {

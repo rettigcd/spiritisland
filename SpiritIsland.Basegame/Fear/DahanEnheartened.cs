@@ -10,7 +10,7 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 		await PushOrGather1
 			.In().SpiritPickedLand().Which( Has.Invaders )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 	}
 
 	[FearLevel( 2, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present." )]
@@ -18,14 +18,14 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 		=> Gather2DahanThen1DamageIfDahan
 			.In().SpiritPickedLand().AllDifferent()
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present." )]
 	public Task Level3( GameCtx ctx )
 		=> Gather2DahanThenDamagePerDahan
 			.In().SpiritPickedLand().AllDifferent()
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static BaseCmd<TargetSpaceCtx> PushOrGather1 => Cmd.Pick1( Cmd.PushNDahan( 1 ), Cmd.GatherUpToNDahan( 1 ) );
 

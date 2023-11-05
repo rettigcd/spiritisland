@@ -3,13 +3,13 @@
 /// <summary>
 /// Commands the Beasts (non-events) for 1 space.
 /// </summary>
-internal class CommandBeasts : IExecuteOn<TargetSpaceCtx> {
+internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 
 	public string Description => "For each (original) beast on land, push, do 1 damage, or 1 fear if invaders are present.";
 
 	public bool IsApplicable( TargetSpaceCtx ctx ) => _originalBeastCounts[ctx.Space] > 0;// use original, not current. Incase anything moved.
 
-	public async Task Execute( TargetSpaceCtx ctx ) {
+	public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// The first space/time it is called on, init original Beast positions
 		_originalBeastCounts ??= GameState.Current.Spaces
@@ -70,7 +70,7 @@ class CommandBeastAction : IActionFactory {
 
 		await using var actionScope = await ActionScope.Start(ActionCategory.Special); // replace generic scope passed in.
 		GameCtx gameCtx = new GameCtx( GameState.Current );
-		await new CommandBeasts().In().EachActiveLand().Execute( gameCtx );
+		await new CommandBeasts().In().EachActiveLand().ActAsync( gameCtx );
 	}
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
 	public bool Used { get; private set; }

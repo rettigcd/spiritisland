@@ -60,7 +60,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 
 		await _spirit.When_Growing( () => {
 			User_SelectAlwaysGrowthOption();
-			User.Growth_SelectAction( "DrawPowerCard", 1 ); // there are 2. select the 2nd one (index=1)
+			User.Growth_SelectAction( "Gain Power Card", 1 ); // there are 2. select the 2nd one (index=1)
 			User.SelectsMinorDeck();
 			User.SelectMinorPowerCard();
 		} );

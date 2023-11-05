@@ -94,34 +94,34 @@ public static partial class Cmd {
 	static public SpaceCmd AddFear(int count) => new SpaceCmd($"Add {count} Fear.", ctx => ctx.AddFear(count) );
 
 	// AND / OR
-	static public BaseCmd<T> Multiple<T>( string title, params IExecuteOn<T>[] actions ) => new BaseCmd<T>(
+	static public BaseCmd<T> Multiple<T>( string title, params IActOn<T>[] actions ) => new BaseCmd<T>(
 		title,
 		async ctx => {
 			foreach(var action in actions)
-				await action.Execute( ctx );
+				await action.ActAsync( ctx );
 		}
 	);
-	static public BaseCmd<T> Multiple<T>( params IExecuteOn<T>[] actions) => new BaseCmd<T>(
+	static public BaseCmd<T> Multiple<T>( params IActOn<T>[] actions) => new BaseCmd<T>(
 		actions.Select(a=>a.Description).Join("  "),
 		async ctx => {
 			foreach( var action in actions )
-				await action.Execute(ctx);
+				await action.ActAsync(ctx);
 		}
 	);
 
-	static public BaseCmd<T> Pick1<T>( params IExecuteOn<T>[] actions ) where T : SelfCtx
+	static public BaseCmd<T> Pick1<T>( params IActOn<T>[] actions ) where T : SelfCtx
 		=> Pick1<T>(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
 
-	static public BaseCmd<T> Pick1<T>( string description, params IExecuteOn<T>[] actions ) where T : SelfCtx
+	static public BaseCmd<T> Pick1<T>( string description, params IActOn<T>[] actions ) where T : SelfCtx
 		=> new BaseCmd<T>(
 			description,
 			async ctx => {
 
-				IExecuteOn<T>[] applicable = actions.Where( opt => opt != null && opt.IsApplicable(ctx) ).ToArray();
+				IActOn<T>[] applicable = actions.Where( opt => opt != null && opt.IsApplicable(ctx) ).ToArray();
 				string text = await ctx.Self.SelectText( "Select action", applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
 				if(text != null && text != TextOption.Done.Text) {
 					var selectedOption = applicable.Single( a => a.Description == text );
-					await selectedOption.Execute( ctx );
+					await selectedOption.ActAsync( ctx );
 				}
 			}
 		);
@@ -143,14 +143,14 @@ public static partial class Cmd {
 		static public SpaceCmd AllRavages( string name ) => new SpaceCmd( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
-	static public SelfCmd ForgetPowerCard => new SelfCmd( "Forget Power card", ctx => ctx.Self.ForgetACard() );
+	static public SpiritAction ForgetPowerCard => new SpiritAction( "Forget Power card", ctx => ctx.Self.ForgetACard() );
 
 	// ========
 	// Presence
 	// ========
 
-	static public SelfCmd PushUpTo1Presence( Func<Space, Space, Task> callback = null ) 
-		=> new SelfCmd( "Push up to 1 Presence", async ctx => {
+	static public SpiritAction PushUpTo1Presence( Func<Space, Space, Task> callback = null ) 
+		=> new SpiritAction( "Push up to 1 Presence", async ctx => {
 
 			// Select source
 			var source = await ctx.Self.Gateway.Decision( new ASpaceToken( "Select Presence to push.", ctx.Self.Presence.Movable, Present.Done ) );
@@ -165,21 +165,21 @@ public static partial class Cmd {
 				await callback( source.Space, destination );
 		});
 
-	static public SelfCmd DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SelfCmd( "Destroy 1 presence.", async ctx => {
+	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SpiritAction( "Destroy 1 presence.", async ctx => {
 		var spaceToken = await ctx.Self.Gateway.Decision( new ASpaceToken( prompt, ctx.Self.Presence.Deployed, Present.Always ) );
 		await spaceToken.Destroy();
 	} );
 
-	static public SelfCmd DestroyPresence( int count ) => new SelfCmd( 
+	static public SpiritAction DestroyPresence( int count ) => new SpiritAction( 
 		$"Destroy {count} presence", 
 		async ctx => { 
 			var destroyOne = Cmd.DestroyPresence();
 			for(int i = 0; i < count; ++i) 
-				await destroyOne.Execute(ctx);
+				await destroyOne.ActAsync(ctx);
 		}
 	);
 
-	static public SelfCmd ReturnUpToNDestroyedToTrack( int count) => new SelfCmd("Return up to N Destroyed Presence to Track", async ctx => {
+	static public SpiritAction ReturnUpToNDestroyedToTrack( int count ) => new SpiritAction("Return up to N Destroyed Presence to Track", async ctx => {
 		var self = ctx.Self;
 		count = Math.Max( count, self.Presence.Destroyed );
 		while(count > 0) {
@@ -190,26 +190,9 @@ public static partial class Cmd {
 		}
 	});
 
-	static public SelfCmd PlacePresenceWithin( TargetCriteria targetCriteria, bool forPower ) => new SelfCmd(
-		"Place Presence",
-		async ctx => {
-			var self = ctx.Self;
-			IOption from = await self.SelectSourcePresence();
-			IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
-			var toOptions = self.FindSpacesWithinRange( targetCriteria, forPower )
-				.Where( self.Presence.CanBePlacedOn )
-				.ToArray();
-			if(toOptions.Length==0)
-				throw new InvalidOperationException("There no places to place presence.");
-			Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( toOptions, Present.Always, token ) );
-			await self.Presence.Place( from, to );
+	static public SpiritAction PlacePresenceWithin( int range ) => new PlacePresence(range);
 
-			if(forPower && from is Track track && track.Action != null)
-				await track.Action.ActivateAsync( ctx );
-		}
-	);
-
-	static public SelfCmd PlacePresenceOn( params SpaceState[] destinationOptions ) => new SelfCmd(
+	static public SpiritAction PlacePresenceOn( params SpaceState[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
 		async ctx => {
 			var self = ctx.Self;
@@ -219,7 +202,7 @@ public static partial class Cmd {
 			await self.Presence.Place( from, to );
 		} );
 
-	static public SelfCmd Reclaim1CardInsteadOfDiscarding => new SelfCmd( "Reclaims 1 card instead of discarding it", ctx => {
+	static public SpiritAction Reclaim1CardInsteadOfDiscarding => new SpiritAction( "Reclaims 1 card instead of discarding it", ctx => {
 		GameState.Current.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( ctx.Self ).Reclaim );
 	} );
 

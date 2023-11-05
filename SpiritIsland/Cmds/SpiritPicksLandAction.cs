@@ -3,9 +3,9 @@
 /// <summary>
 /// Spirit/Player can pick from any land.
 /// </summary>
-public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
+public class SpiritPicksLandAction : IActOn<SelfCtx> {
 
-	public SpiritPicksLandAction( IExecuteOn<TargetSpaceCtx> spaceAction, string andInToForPreposition ) { 
+	public SpiritPicksLandAction( IActOn<TargetSpaceCtx> spaceAction, string andInToForPreposition ) { 
 		_spaceAction = spaceAction;
 		_landPreposition = andInToForPreposition;
 	}
@@ -14,7 +14,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 
 	public bool IsApplicable( SelfCtx ctx ) => true;
 
-	public async Task Execute( SelfCtx ctx ) {
+	public async Task ActAsync( SelfCtx ctx ) {
 
 		for(int i = 0; i < _landsPerSpirit; ++i) {
 
@@ -35,7 +35,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 			if(_chooseDifferentLands)
 				_disallowedSpaces.Add( spaceCtx.Space );
 
-			await _spaceAction.Execute( spaceCtx );
+			await _spaceAction.ActAsync( spaceCtx );
 		}
 	}
 
@@ -64,7 +64,7 @@ public class SpiritPicksLandAction : IExecuteOn<SelfCtx> {
 	}
 	string _diffString => _chooseDifferentLands ? "different " : "";
 	TargetSpaceCtxFilter _landCriteria;
-	readonly IExecuteOn<TargetSpaceCtx> _spaceAction;
+	readonly IActOn<TargetSpaceCtx> _spaceAction;
 	readonly HashSet<Space> _disallowedSpaces = new HashSet<Space>();
 
 	// configurable

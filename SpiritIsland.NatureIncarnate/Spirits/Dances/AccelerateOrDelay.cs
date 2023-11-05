@@ -1,7 +1,10 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class AccelerateOrDelay : GrowthActionFactory {
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+public class AccelerateOrDelay : SpiritAction {
+
+	public AccelerateOrDelay():base( "AccelerateOrDelay" ) { }
+
+	public override async Task ActAsync( SelfCtx ctx ) {
 		var spirit = (DancesUpEarthquakes)ctx.Self;
 		var options = spirit.Impending.ToList();
 		for(int i = 0; i < 2; ++i) {

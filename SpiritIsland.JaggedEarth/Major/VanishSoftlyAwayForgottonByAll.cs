@@ -9,8 +9,8 @@ public class VanishSoftlyAwayForgottonByAll {
 			new SpaceCmd(
 				"Remove 1 invader. Remove 1 explorer/town",
 				async ctx => { 
-					await RemoveInvader.Execute(ctx);
-					await RemoveExplorerOrTown.Execute(ctx);
+					await RemoveInvader.ActAsync(ctx);
+					await RemoveExplorerOrTown.ActAsync(ctx);
 				}
 			),
 		// OR
@@ -27,7 +27,7 @@ public class VanishSoftlyAwayForgottonByAll {
 			await Cmd.RemoveInvaders(1)
 				.From().SpiritPickedLand().Which( Has.AtLeastN( 4, Human.Invader ) )
 				.EachSpiritPicks(4).AllDifferent()
-				.Execute(ctx);
+				.ActAsync(ctx);
 
 		}
 	}

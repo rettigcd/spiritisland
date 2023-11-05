@@ -1,7 +1,9 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class AddVitalityToIncarna : GrowthActionFactory {
-	public override async Task ActivateAsync( SelfCtx ctx ) {
+public class AddVitalityToIncarna : SpiritAction {
+
+	public AddVitalityToIncarna():base( "AddVitalityToIncarna" ) { }
+	public override async Task ActAsync( SelfCtx ctx ) {
 		if(ctx.Self is ToweringRootsOfTheJungle roots && roots.Incarna.Space is not null)
 			await roots.Incarna.Space.Add(Token.Vitality,1);
 	}

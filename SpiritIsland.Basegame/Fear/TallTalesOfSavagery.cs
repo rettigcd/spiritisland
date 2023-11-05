@@ -10,7 +10,7 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 		=> Cmd.RemoveExplorers( 1 )
 			.From().SpiritPickedLand().Which( Has.DahanAndExplorers )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 
 	[FearLevel( 2, "Each player removes 2 Explorer or 1 Town from a land with Dahan." )]
@@ -18,14 +18,14 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 		=> Cmd.Pick1( Cmd.RemoveExplorers( 2 ), Cmd.RemoveTowns( 1 ) )
 			.From().SpiritPickedLand().Which( Has.DahanAndExplorerOrTown )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Remove 2 Explorer or 1 Town from each land with Dahan. Then, remove 1 City from each land with at least 2 Dahan." )]
 	public Task Level3( GameCtx ctx )
 		=> Cmd.Multiple(
 			RemoveTownOr2Explorers.On().EachActiveLand().Which( Has.DahanAndExplorerOrTown ),
 			Cmd.RemoveCities( 1 ).On().EachActiveLand().Which( Has.Two2DahanAndCity )
-		).Execute( ctx );
+		).ActAsync( ctx );
 
 	static SpaceCmd RemoveTownOr2Explorers => new SpaceCmd( "Remove 2 Explorer or 1 Town", RemoveTownOr2Explorers_method );
 	static async Task RemoveTownOr2Explorers_method( TargetSpaceCtx ctx ) { // !! maybe we should let the player choose in case town was strifed

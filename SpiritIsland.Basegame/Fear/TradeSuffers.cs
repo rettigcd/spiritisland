@@ -9,21 +9,21 @@ public class TradeSuffers : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> new SpaceCmd("Invaders do not build", StopBuild)
 			.In().EachActiveLand().Which( Has.City )
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
 	public Task Level2( GameCtx ctx )
 		=> new SpaceCmd("replace 1 town with 1 explorer", ctx=> ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town ) )
 			.In().SpiritPickedLand().Which( Is.Coastal )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 	public Task Level3( GameCtx ctx )
 		=> new SpaceCmd( "replace 1 City with 1 Town or replace 1 town with 1 explorer", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town_City ) )
 			.In().SpiritPickedLand().Which( Is.Coastal )
 			.ForEachSpirit()
-			.Execute( ctx );
+			.ActAsync( ctx );
 
 	static void StopBuild( TargetSpaceCtx ctx ) {
 		ctx.Tokens.Adjust( new SkipBuild_Custom( Name, true, ( space ) => space.HasAny( Human.City ) ), 1);

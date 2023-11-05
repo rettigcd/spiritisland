@@ -9,9 +9,9 @@ public class GiftOfTheUntamedWild {
 		// target spirit chooses to either: 
 		return ctx.OtherCtx.SelectActionOption(
 			// Add 1 wilds to one of their lands
-			new SelfCmd("Add 1 wilds to one of your lands", Add1WildsToOneOfYourLands ),
+			new SpiritAction("Add 1 wilds to one of your lands", Add1WildsToOneOfYourLands ),
 			// Replace 1 of their presence with 1 disease.
-			new SelfCmd("Replace 1 of your presence with 1 disease", Replace1PresenceWith1Disease)
+			new SpiritAction("Replace 1 of your presence with 1 disease", Replace1PresenceWith1Disease)
 		);
 	}
 
