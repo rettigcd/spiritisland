@@ -1,13 +1,16 @@
 ﻿namespace SpiritIsland;
 
-/// <remarks>Lure of the Deep Wilderness - Air/Plant/Moon, Fractured Days</remarks>
+/// <remarks>User selects 1 element they want to gain.</remarks>
 public class Gain1Element : SpiritAction {
 
-	public Gain1Element( params Element[] elementOptions ) 
-		: base( "GainElement(" + elementOptions.Select( x => x.ToString() ).Join( "," ) + ")" )
+	public Gain1Element( params Element[] elementOptions ) : base()
 	{
 		ElementOptions = elementOptions;
 	}
+
+	public override string Description => "Gain " + ElementOptions
+		.Select( x => x.ToString() )
+		.Join_WithLast(", ", ", or " );
 
 	public override async Task ActAsync( SelfCtx ctx ) {
 		var element = ElementOptions.Length == 1 ? ElementOptions[0]

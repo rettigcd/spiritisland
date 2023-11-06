@@ -2,11 +2,12 @@
 
 public class PiecesEscape : SpiritAction {
 
+	static string CountToWord(int count) => count switch { int.MaxValue => "All", _ => count.ToString() };
+
 	public PiecesEscape( int count = int.MaxValue ) 
-		: base( "PiecesEscape" + (count switch { int.MaxValue => "", _ => $"({count})" }) )
+		: base( $"{CountToWord(count)} pieces Escape" )
 	{
 		NumToEscape = count;
-
 	}
 
 	public override async Task ActAsync( SelfCtx ctx ) {

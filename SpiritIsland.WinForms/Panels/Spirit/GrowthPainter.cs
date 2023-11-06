@@ -10,7 +10,7 @@ public sealed class GrowthPainter : IDisposable{
 	readonly GrowthLayout _layout;
 
 	Graphics _graphics; // single-threaded variables
-	IconDrawer iconDrawer;
+	IconDrawer _iconDrawer;
 	Bitmap _cachedImageLayer;
 
 	public GrowthPainter( GrowthLayout layout ) {
@@ -36,7 +36,7 @@ public sealed class GrowthPainter : IDisposable{
 
 		var cachedImageLayer = new Bitmap( _layout.Bounds.Width, _layout.Bounds.Height );
 		using var g = Graphics.FromImage( cachedImageLayer );
-		iconDrawer = new IconDrawer( g, new CachedImageDrawer() );
+		_iconDrawer = new IconDrawer( g, new CachedImageDrawer() );
 		g.TranslateTransform( -_layout.Bounds.X, -_layout.Bounds.Y );
 		g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
@@ -66,41 +66,33 @@ public sealed class GrowthPainter : IDisposable{
 			action = repeatableActionFactory.Inner;
 
 
-		if(action is GainEnergy ge) { GainEnergy( rect, ge.Delta ); return; }
+		if(action is GainEnergy ge)             { GainEnergy( rect, ge.Delta ); return; }
+		if(action is ReclaimAll)                { DrawIconInCenter( rect, Img.ReclaimAll ); return; }
+		if(action is ReclaimN)                  { DrawIconInCenter( rect, Img.Reclaim1 ); return; }
+		if(action is ReclaimHalf)               { DrawIconInCenter( rect, Img.ReclaimHalf ); return; }
+		if(action is GainPowerCard)             { DrawIconInCenter( rect, Img.GainCard ); return; }
+		if(action is PlacePresence)             { PlacePresence( rect, action ); return; }
+		if(action is MovePresence mp)           { MovePresence( rect, mp.Range ); return; }
+		if(action is PlayExtraCardThisTurn pec) { AdditionalPlay( rect, pec.Count ); return; }
+		if(action is GainElements gel)          { DrawGainAllElements( rect, gel.ElementsToGain ); return; }
+		if(action is Gain1Element g1e)          { DrawGain1Element( rect, g1e.ElementOptions ); return; }
 
-		if(action is ReclaimAll) { DrawIconInCenter( rect, Img.ReclaimAll ); return; }
-
-		if(action is ReclaimN) { DrawIconInCenter( rect, Img.Reclaim1 ); return; }
-
-		if(action is ReclaimHalf) {  DrawIconInCenter( rect, Img.ReclaimHalf ); return; }
-
-		if(action is GainPowerCard) { DrawIconInCenter( rect, Img.GainCard ); return; }
-
-		if(action is PlacePresence) { PlacePresence( rect, action ); return; }
-
-		if(action is MovePresence mp) { MovePresence( rect, mp.Range ); return; }
-
-		switch(action.Description) {
-
+		switch(action.Description)              {
 			case "Add a Presence or Disease": PlacePresence( rect, action ); break;
-			case "PlayExtraCardThisTurn(2)": AdditionalPlay( rect, 2 ); break;
-			case "PlayExtraCardThisTurn(1)": AdditionalPlay( rect, 1 ); break;
-			// Ocean
-			case "PlaceInOcean":            PlacePresence( rect, action ); break;
 			case "PlacePresenceAndBeast":   PlacePresence( rect, action ); break;
+
             // Wounded Waters Bleeding
 			case "PlaceDestroyedPresence(1)": PlacePresence( rect, action ); break;
 
-			case "GatherPresenceIntoOcean": DrawIconInCenter( rect, Img.GatherToOcean ); break;
+			// Ocean
+			case "PlaceInOcean": PlacePresence( rect, action ); break;
+			case "Gather Presence into Ocean": DrawIconInCenter( rect, Img.GatherToOcean ); break;
 			case "Push Presence from Ocean":   DrawIconInCenter( rect, Img.Pushfromocean ); break;
+
 			// Heart of the WildFire
 			case "EnergyForFire": DrawIconInCenter( rect, Img.Oneenergyfire ); break;
-			// Lure of the Deep Wilderness
-			case "GainElement(Moon,Air,Plant)": GainElement( rect.ToInts(), Element.Moon, Element.Air, Element.Plant ); break;
+
 			// Fractured Dates
-			case "GainElement(Air)": GainElement( rect.ToInts(), Element.Air ); break;
-			case "GainElement(Moon)": GainElement( rect.ToInts(), Element.Moon ); break;
-			case "GainElement(Sun)": GainElement( rect.ToInts(), Element.Sun ); break;
 			case "GainTime(2)":    GainTime( rect ); break;
 			case "GainTime(1)x2":  Gain1TimeOr2CardPlaysX2( rect ); break;
 			case "GainTime(1)x3":  Gain1TimeOr2EnergyX3( rect ); break;
@@ -109,19 +101,7 @@ public sealed class GrowthPainter : IDisposable{
 			case "MakePowerFast": DrawIconInCenter( rect, Img.Icon_Fast ); break;
 			// Grinning Trickster
 			case "GainEnergyEqualToCardPlays": DrawIconInCenter( rect, Img.GainEnergyEqualToCardPlays ); break;
-			// Stones Unyielding Defiance
-			case "GainElements(Earth,Earth)":
-				iconDrawer.DrawTheIcon(
-					new IconDescriptor { ContentImg = Img.Token_Earth, ContentImg2 = Img.Token_Earth, }, 
-					rect
-				);
-				break; // !!! this is drawn as an OR, layer them and make them an AND
-			case "GainElements(Water,Water)":
-				iconDrawer.DrawTheIcon(
-					new IconDescriptor { ContentImg = Img.Token_Water, ContentImg2 = Img.Token_Water, },
-					rect
-				);
-				break; // !!! this is drawn as an OR, layer them and make them an AND
+				break;
 			// Many Minds
 			case "Gather1Token": DrawIconInCenter( rect, Img.Land_Gather_Beasts ); break; // Gather 1 Beast
 			case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
@@ -129,33 +109,33 @@ public sealed class GrowthPainter : IDisposable{
 			case "IgnoreRange": IgnoreRange( rect ); break;
             // Towering Roots
 			case "AddVitalityToIncarna": 
-				iconDrawer.DrawTheIcon(
+				_iconDrawer.DrawTheIcon(
 					//new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor{ ContentImg = Img.Icon_Vitality } },
 					new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } },
 					rect
 				);
 				break;
 			case "ReplacePresenceWithIncarna":
-				iconDrawer.DrawTheIcon( new IconDescriptor {  ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_DestroyedPresence }, }, rect );
+				_iconDrawer.DrawTheIcon( new IconDescriptor {  ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_DestroyedPresence }, }, rect );
 				DrawMoveArrow( rect.Translate( 0, -rect.Height*.2f ) );
 				break;
 
-			case "PiecesEscape":
-			case "PiecesEscape(1)":
-			case "PiecesEscape(2)":
-				iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_EndlessDark, }, rect.Translate( 0, -rect.Height * .20f ) );
+			case "All pieces Escape":
+			case "1 pieces Escape":
+			case "2 pieces Escape":
+				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_EndlessDark, }, rect.Translate( 0, -rect.Height * .20f ) );
 				PiecesEscape escape = (PiecesEscape)action;
 				DrawMoveArrow( rect.Translate( 0, 0 ) );
 				if(escape.NumToEscape != int.MaxValue)
 					DrawRangeText( rect.Translate(0, rect.Height * .05f), escape.NumToEscape );
 				break;
 
-			case "MoveIncarnaAnywhere":
-				iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
+			case "Move Incarna anywhere":
+				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
 				DrawMoveArrow( rect );
 				break;
 			case "AddOrMoveIncarnaToPresence":
-				iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_Presence }, }, rect );
+				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, Sub = new IconDescriptor { ContentImg = Img.Icon_Presence }, }, rect );
 				DrawMoveArrow( rect.Translate( 0, -rect.Height * .2f ) );
 				break;
             case "AddPresenceOrGainMajor": {
@@ -170,7 +150,7 @@ public sealed class GrowthPainter : IDisposable{
 				}
 				break;
 			case "AccelerateOrDelay":
-				iconDrawer.DrawTheIcon( 
+				_iconDrawer.DrawTheIcon( 
 					new IconDescriptor {
 						BackgroundImg = Img.Coin,
 						Text = "±1",
@@ -179,6 +159,24 @@ public sealed class GrowthPainter : IDisposable{
 					}, rect
 				);
 				break;
+
+            case "Add up to 3 Destroyed Presence together":
+				// !!! stand-in  FIX
+				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
+				DrawMoveArrow( rect );
+				break;
+
+			case "Gain Energy an additional time":
+				// !!! stand-in  FIX
+				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
+				DrawMoveArrow( rect );
+				break;
+            
+			case "Move up to 3 Presence together":
+				_iconDrawer.DrawTheIcon( new IconDescriptor { ContentImg = Img.Icon_Incarna, }, rect );
+				DrawMoveArrow( rect );
+				break;
+
 			default:
 				_graphics.FillRectangle( Brushes.Goldenrod, Rectangle.Inflate( rect.ToInts(), -5, -5 ) );
 				break;
@@ -229,13 +227,24 @@ public sealed class GrowthPainter : IDisposable{
 		_graphics.DrawImage( image, rect.X, rect.Y + (rect.Height - imgHeight) / 2, imgWidth, imgHeight );
 	}
 
-	void GainElement( Rectangle rect, params Element[] elements ) {
-		var parts = rect.SplitHorizontally(elements.Length);
+	void DrawGain1Element( RectangleF rect, params Element[] elements ) {
+		var parts = rect.ToInts().SplitHorizontally(elements.Length);
 		for(int i = 0; i < elements.Length; ++i) {
-			using var img = GetImage( elements[i].GetTokenImg() );
+			using Bitmap img = GetImage( elements[i].GetTokenImg() );
 			_graphics.DrawImageFitWidth(img, parts[i]);
 		}
 	}
+
+	void DrawGainAllElements( RectangleF rect, params Element[] elements ) {
+		var descriptor = new IconDescriptor();
+		if(0 < elements.Length )
+			descriptor.ContentImg = elements[0].GetTokenImg();
+		if(1 < elements.Length)
+			descriptor.ContentImg2 = elements[1].GetTokenImg();
+
+		_iconDrawer.DrawTheIcon( descriptor, rect );
+	}
+
 
 	void GainTime( RectangleF rect ) {
 		using var img = GetImage( Img.FracturedDays_Gain2Time );

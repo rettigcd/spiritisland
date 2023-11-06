@@ -4,11 +4,11 @@ static public class IEnumerableExtensions {
 	public static string Join(this IEnumerable<string> items) => string.Join(string.Empty,items);
 	public static string Join(this IEnumerable<string> items, string glue ) => string.Join(glue,items);
 	public static string Join_WithLast(this IEnumerable<string> items, string glue, string lastGlue ) {
-		var itemArray = items.ToArray();
+		string[] itemArray = items.ToArray();
 		int last = itemArray.Length-1;
-		var buf = new StringBuilder();
+		StringBuilder buf = new StringBuilder();
 		for(int i=0;i<itemArray.Length;++i) {
-			if(i > 0)
+			if(0 < i)
 				buf.Append( i==last ? lastGlue : glue);
 			buf.Append( itemArray[i] );
 		}

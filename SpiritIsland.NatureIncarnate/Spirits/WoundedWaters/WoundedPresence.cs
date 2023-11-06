@@ -6,13 +6,13 @@ public class WoundedPresence : SpiritPresence {
 
 	static Track WaterOrAnimal => new Track( "Water/Animal" ) {
 		Icon = new IconDescriptor { ContentImg = Img.Icon_Water, ContentImg2 = Img.Icon_Animal },
-		Action = new PickElement(Element.Water,Element.Animal),
+		Action = new Gain1Element(Element.Water,Element.Animal),
 	};
 	static Track Energy4FirePlant => new Track( 4 + " energy" ) {
 		Energy = 4,
 		Icon = new IconDescriptor { BackgroundImg = Img.Coin, Text = 4.ToString(),
 			Sub = new IconDescriptor{ ContentImg = Img.Icon_Fire, ContentImg2 = Img.Icon_Plant } },
-		Action = new PickElement( Element.Fire, Element.Plant ),
+		Action = new Gain1Element( Element.Fire, Element.Plant ),
 	};
 	static Track Energy5Any => new Track( 5 + " energy" ) {
 		Energy = 5,
@@ -30,25 +30,6 @@ public class WoundedPresence : SpiritPresence {
 		},
 		Action = new Gather1Token(0,SpiritIsland.Token.Blight),
 	};
-
-
-	/// <summary> For selecting Water/Animal and Fire/Plant on growth track</summary>
-	class PickElement : SpiritAction {
-
-
-		readonly Element[] _elementOptions;
-
-		public PickElement(params Element[] elementOptions )
-			:base("Pick " + string.Join(" OR ", elementOptions))
-		{
-			_elementOptions = elementOptions;
-		}
-
-		public override async Task ActAsync( SelfCtx ctx ) {
-			var elementToGain = await ctx.Self.SelectElementEx("Gain element", _elementOptions );
-			ctx.Self.Elements[elementToGain]++;
-		}
-	}
 
 	#endregion
 

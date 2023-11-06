@@ -2,7 +2,7 @@
 
 public class GatherPresenceIntoOcean : SpiritAction {
 
-	public GatherPresenceIntoOcean():base( "GatherPresenceIntoOcean" ) { }
+	public GatherPresenceIntoOcean():base( "Gather Presence into Ocean" ) { }
 	public override async Task ActAsync( SelfCtx ctx ) {
 
 		List<SpaceState> gatherSpaces = ctx.Self.Presence.Spaces
