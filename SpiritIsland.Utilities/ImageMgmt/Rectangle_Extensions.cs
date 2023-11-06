@@ -6,6 +6,25 @@ public static class Rectangle_Extensions {
 
 	#region Split Vertically
 
+	static public Rectangle[] SplitVerticallyIntoRows( this Rectangle rect, int rowMargin, int rows ) {
+		int heightPlusMargin = rect.Height + rowMargin; // since there are 1 more rows than margins, add a stand-in margin
+		int rowAndMarginHeight = heightPlusMargin / rows; // height of 1 row + 1 margin
+		int rowHeight = rowAndMarginHeight-rowMargin;
+		int remainderHeight = heightPlusMargin - rowAndMarginHeight * rows; // leftover/remaining height due to round-off in row height calculation
+
+		var result = new Rectangle[rows];
+		int lastMarginBottom = rect.Y;
+		for(int row = 0; row < rows; ++row) {
+			result[row] = new Rectangle(rect.X, lastMarginBottom, rect.Width, rowHeight);
+			lastMarginBottom += rowAndMarginHeight;
+			// Distribute the remainder height evenly across the margins
+			if(row<remainderHeight)
+				++lastMarginBottom;
+		}
+		return result;
+	}
+
+
 	static public Rectangle[] SplitVerticallyAt( this Rectangle rect, params float[] divisions ) {
 		int lastY = rect.Y;
 		var result = new Rectangle[divisions.Length + 1];
@@ -33,6 +52,22 @@ public static class Rectangle_Extensions {
 		}
 		return result;
 	}
+	static public Rectangle[] SplitVerticallyByWeight( this Rectangle rect, float rowMarginPercentage, params float[] weights ) {
+		int rowMargin = (int)(rect.Height * rowMarginPercentage);
+		float total = weights.Sum();
+		int workingHeight = rect.Height - (weights.Length - 1) * rowMargin;
+		int lastY = rect.Y;
+		var result = new Rectangle[weights.Length];
+		float current = 0.0f;
+		for(int i = 0; i < weights.Length; ++i) {
+			current += weights[i] / total;
+			int nextY = rect.Y + (int)(current * workingHeight);
+			result[i] = new Rectangle( rect.X, lastY + i * rowMargin, rect.Width, nextY - lastY );
+			lastY = nextY;
+		}
+		return result;
+	}
+
 
 	static public Rectangle[] SplitVerticallyByHeights( this Rectangle rect, params int[] heights ) {
 		int tooBig = heights.Sum()-rect.Height;
@@ -54,6 +89,7 @@ public static class Rectangle_Extensions {
 
 	#region Split Horizontally
 
+	// !!! transition uses of this over to use marginPercentage
 	static public Rectangle[] SplitHorizontallyByWeight( this Rectangle rect, int rowMargin, params float[] weights ) {
 		float total = weights.Sum();
 		int workingWidth = rect.Width - (weights.Length - 1) * rowMargin;
@@ -68,6 +104,23 @@ public static class Rectangle_Extensions {
 		}
 		return result;
 	}
+
+	static public Rectangle[] SplitHorizontallyByWeight( this Rectangle rect, float rowMarginPercentage, params float[] weights ) {
+		int rowMargin = (int)(rowMarginPercentage * rect.Width);
+		float total = weights.Sum();
+		int workingWidth = rect.Width - (weights.Length - 1) * rowMargin;
+		int lastX = rect.X;
+		var result = new Rectangle[weights.Length];
+		float current = 0.0f;
+		for(int i = 0; i < weights.Length; ++i) {
+			current += weights[i] / total;
+			int nextX = rect.X + (int)(current * workingWidth);
+			result[i] = new Rectangle( lastX + i * rowMargin, rect.Y, nextX - lastX, rect.Height );
+			lastX = nextX;
+		}
+		return result;
+	}
+
 
 	static public Rectangle[] SplitHorizontallyRelativeToHeight( this Rectangle rect, int spacer, Align align, params float[] widthsPerHeight ) {
 
@@ -97,16 +150,16 @@ public static class Rectangle_Extensions {
 	}
 
 
-	static public Rectangle[] SplitHorizontallyIntoColumns( this Rectangle rect, int rowMargin, int columns ) {
+	static public Rectangle[] SplitHorizontallyIntoColumns( this Rectangle rect, int colMargin, int columns ) {
 		float columnWidth = 1.0f / columns;
-		int workingWidth = rect.Width - (columns - 1) * rowMargin;
+		int workingWidth = rect.Width - (columns - 1) * colMargin;
 		int lastX = rect.X;
 		var result = new Rectangle[columns];
 		float current = 0.0f;
 		for(int i = 0; i < columns; ++i) {
 			current += columnWidth;
 			int nextX = rect.X + (int)(current * workingWidth);
-			result[i] = new Rectangle( lastX + i * rowMargin, rect.Y, nextX - lastX, rect.Height );
+			result[i] = new Rectangle( lastX + i * colMargin, rect.Y, nextX - lastX, rect.Height );
 			lastX = nextX;
 		}
 		return result;
@@ -162,6 +215,14 @@ public static class Rectangle_Extensions {
 		};
 	}
 
+	/// <summary>
+	/// Returns a Rectangle of the given size-ratio that fits inside the starting rect.
+	/// </summary>
+	/// <param name="bounds">Max size</param>
+	/// <param name="size">The ratio of width to height of the resulting rectangle</param>
+	/// <param name="horizontal">horizontal alignment</param>
+	/// <param name="vertical">vertical alignment</param>
+	/// <returns></returns>
 	static public Rectangle FitBoth( this Rectangle bounds, Size size, Align horizontal = default, Align vertical = default ) {
 		return bounds.Height * size.Width < size.Height * bounds.Width
 			? bounds.FitHeight( size, horizontal )

@@ -14,8 +14,8 @@ public class PlacePresence : SpiritAction {
 	public PlacePresence( int range, params string[] filterEnums )
 		: base( $"PlacePresence({range},{string.Join( "Or", filterEnums )})" ) {
 		Range = range;
-		FilterEnums = DefaultFilters;
-		FilterDescription = string.Join( "Or", FilterEnums );
+		FilterEnums = filterEnums;
+		FilterDescription = string.Join( "Or", filterEnums );
 	}
 
 	public override async Task ActAsync( SelfCtx ctx ) {
