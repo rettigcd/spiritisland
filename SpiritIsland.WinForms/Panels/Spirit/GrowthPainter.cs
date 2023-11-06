@@ -56,13 +56,14 @@ public sealed class GrowthPainter : IDisposable{
 		return cachedImageLayer;
 	}
 
-	void DrawAction( IHelpGrow action, RectangleF rect ) {
+	void DrawAction( IHelpGrow growthAction, RectangleF rect ) {
+		if(growthAction is not SpiritGrowthAction sga) return;
+		IActOn<SelfCtx> action = sga.Cmd;
 
-		// !!! Figureout how to restore this
-		//if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory 
-		//	&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
-		//)
-		//	action = repeatableActionFactory.Inner;
+		if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory 
+			&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
+		)
+			action = repeatableActionFactory.Inner;
 
 
 		if(action is GainEnergy ge) { GainEnergy( rect, ge.Delta ); return; }
@@ -75,13 +76,13 @@ public sealed class GrowthPainter : IDisposable{
 
 		if(action is GainPowerCard) { DrawIconInCenter( rect, Img.GainCard ); return; }
 
-		if(action is SpiritGrowthAction wrapper && wrapper.Cmd is PlacePresence pp ) { PlacePresence( rect, action ); return; }
-		// !!! Can't draw place presence from object, need to draw from text until we have converted everything over to SelfCmds
+		if(action is PlacePresence) { PlacePresence( rect, action ); return; }
 
 		if(action is MovePresence mp) { MovePresence( rect, mp.Range ); return; }
 
-		switch(action.Name) {
+		switch(action.Description) {
 
+			case "Add a Presence or Disease": PlacePresence( rect, action ); break;
 			case "PlayExtraCardThisTurn(2)": AdditionalPlay( rect, 2 ); break;
 			case "PlayExtraCardThisTurn(1)": AdditionalPlay( rect, 1 ); break;
 			// Ocean
@@ -124,7 +125,7 @@ public sealed class GrowthPainter : IDisposable{
 			// Many Minds
 			case "Gather1Token": DrawIconInCenter( rect, Img.Land_Gather_Beasts ); break; // Gather 1 Beast
 			case "ApplyDamage": DrawIconInCenter( rect, Img.Damage_2 ); break;
-			case "DiscardPowerCards": DrawIconInCenter( rect, Img.Discard2 ); break;
+			case "Discard 2 Power Cards": DrawIconInCenter( rect, Img.Discard2 ); break;
 			case "IgnoreRange": IgnoreRange( rect ); break;
             // Towering Roots
 			case "AddVitalityToIncarna": 
@@ -163,7 +164,7 @@ public sealed class GrowthPainter : IDisposable{
 					Rectangle cardRect = rows[1].SplitHorizontally( 2 )[1];
 					int majorOffset = cardRect.Width/2;
 					Rectangle majorRect = new Rectangle( cardRect.X+majorOffset/43, cardRect.Y + majorOffset / 4, majorOffset, majorOffset );
-					PlacePresence( presRect,new PlacePresence(2).ToGrowth());
+					PlacePresence( presRect,new PlacePresence(2));
 					DrawIconInCenter( cardRect, Img.GainCard );
 					DrawIconInCenter( majorRect, Img.Icon_Major );
 				}
@@ -309,14 +310,14 @@ public sealed class GrowthPainter : IDisposable{
 		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
 	}
 
-	void PlacePresence( RectangleF bounds, IHelpGrow growth ) {
+	void PlacePresence( RectangleF bounds, IActOn<SelfCtx> growth ) {
 		
 		var (presence,range,filterEnum,addOnIcon) = growth switch {
 			PlaceInOcean           => (Img.Icon_Presence, null,    Target.Ocean, Img.None),
 			PlacePresenceAndBeast  => (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast), // add an icon
-			{Name: string n } when n == "Add a Presence or Disease" => (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease),
+			{Description: string n } when n == "Add a Presence or Disease" => (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease),
 			PlaceDestroyedPresence { Range: int r, FilterDescription: string f } => (Img.Icon_DestroyedPresence, (int?)r, f, Img.None), // generic, do last
-			SpiritGrowthAction { Cmd:PlacePresence{ Range: int r, FilterDescription: string f } } => (Img.Icon_Presence, (int?)r, f, Img.None), // generic, do last
+			PlacePresence{ Range: int r, FilterDescription: string f } => (Img.Icon_Presence, (int?)r, f, Img.None), // generic, do last
 			_ => throw new ArgumentException("growth action factory not a place-presence",nameof(growth)),
 		};
 
