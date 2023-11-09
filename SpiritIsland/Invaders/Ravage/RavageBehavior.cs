@@ -111,7 +111,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 		// !! if we had cities / towns helping with defend, we would want to apply partial damage to them here.
 
-		if( rex.Tokens.ModsOfType<IStopDahanDamage>().Any() ) return;
+//		if( rex.Tokens.ModsOfType<IStopDahanDamage>().Any() ) return;
 
 		// Dahan
 		var damagableDahan = defenders.Keys
@@ -145,7 +145,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
 			if(0 < defenders[dahanToken] && 0 < damageToApply) {
 
-				int remainingDamage = await dahan.ApplyDamage_Efficiently( damageToApply, dahanToken ); // this will never destroy token
+				int remainingDamage = await dahan.ApplyDamageToAll_Efficiently( damageToApply, dahanToken ); // this will never destroy token
 
 				// update our defenders count
 				if(remainingDamage < rex.damageFromAttackers) { // if we actually did damage

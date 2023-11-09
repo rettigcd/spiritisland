@@ -56,7 +56,7 @@ public class ManageInternalPoints {
 
 		// This is called when we are requesting location for a token that is not currently on this space.
 
-		// Find a Randome fresh / unused spot
+		// Find a Random fresh / unused spot
 		bool assigned = token.Class.Category switch {
 			TokenCategory.Dahan or
 			TokenCategory.Presence => _randomInternal.AssignRightSlot( token ),

@@ -2,7 +2,7 @@
 
 public class ToweringRootsIncarna : IIncarnaToken, IEntityClass
 	, IHandleTokenAdded	// Track current space of Incarna
-	, IStopInvaderDamage, IStopDahanDamage, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
+	, IStopInvaderDamage, IModifyDahanDamage, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
 	, ISkipBuilds
 	, ITrackMySpaces
 {
@@ -43,6 +43,10 @@ public class ToweringRootsIncarna : IIncarnaToken, IEntityClass
 			args.Count = 0;
 	}
 
+	#endregion
+
+	#region Don't damage Dahan
+	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 	#endregion
 
 	#region ISkipBuilds

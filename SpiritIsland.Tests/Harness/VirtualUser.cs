@@ -203,7 +203,7 @@ public class VirtualUser {
 	#region Ocean-Spirit Specific
 
 	public void GathersPresenceIntoOcean() {
-		AssertDecisionInfo( "Select Growth to resolve", "Gather Presence into Ocean" );
+		AssertDecisionInfo( "Select Growth to resolve", "Gather 1 Presence into EACH Ocean" );
 	}
 
 	public void PushesPresenceFromOcean(string destination) {

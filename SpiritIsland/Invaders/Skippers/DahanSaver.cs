@@ -6,40 +6,40 @@ public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToke
 		=> ctx => ctx.Tokens.Adjust( new DahanSaver( ctx.Tokens, maxPerAction, maxActionCount ), 1 );
 
 	#region readonly
-	readonly CountDictionary<ActionScope> byAction = new();
-	readonly SpaceState space;
-	readonly int maxActionCount;
-	readonly int maxPerAction;
+	readonly CountDictionary<ActionScope> _byAction = new();
+	readonly SpaceState _space;
+	readonly int _maxActionCount;
+	readonly int _maxPerAction;
 	#endregion
 
 	DahanSaver( SpaceState space, int maxPerAction, int maxActionCount ) :base() {
-		this.space = space;
-		this.maxActionCount = maxActionCount;
-		this.maxPerAction   = maxPerAction;
+		_space = space;
+		_maxActionCount = maxActionCount;
+		_maxPerAction   = maxPerAction;
 	}
 
 	Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		bool shouldReduce = args.Token.Class == Human.Dahan // Dahan
 			&& (args.Reason == RemoveReason.Destroyed) // Destroyed
-			&& (byAction.Count < maxActionCount || byAction.ContainsKey( ActionScope.Current )); // can effect more action OR already added
+			&& (_byAction.Count < _maxActionCount || _byAction.ContainsKey( ActionScope.Current )); // can effect more action OR already added
 
 		if(shouldReduce) {
 			// If we haven't saved our allotment
-			int previous = byAction[ActionScope.Current];
-			if(previous < maxPerAction) {  // remaining adjustments for this action
+			int previous = _byAction[ActionScope.Current];
+			if(previous < _maxPerAction) {  // remaining adjustments for this action
 										   // save some dahan
-				int adjustment = Math.Min( maxPerAction - previous, args.Count );
+				int adjustment = Math.Min( _maxPerAction - previous, args.Count );
 				args.Count -= adjustment;
 				if(args.Mode == RemoveMode.Live) {
-					byAction[ActionScope.Current] += adjustment;
+					_byAction[ActionScope.Current] += adjustment;
 					// restore to full health
-					space.Adjust( args.Token, -adjustment );
-					space.Adjust( args.Token.AsHuman().Healthy, adjustment );
+					_space.Adjust( args.Token, -adjustment );
+					_space.Adjust( args.Token.AsHuman().Healthy, adjustment );
 				}
 			} else {
 				// make sure our already-saved dahan stay saved
-				if(args.Count > space.Dahan.CountAll - maxPerAction)
-					args.Count = space.Dahan.CountAll - maxPerAction;
+				if(args.Count > _space.Dahan.CountAll - _maxPerAction)
+					args.Count = _space.Dahan.CountAll - _maxPerAction;
 			}
 		}
 

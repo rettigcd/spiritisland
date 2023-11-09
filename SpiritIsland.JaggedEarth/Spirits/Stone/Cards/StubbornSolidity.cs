@@ -20,7 +20,7 @@ public class StubbornSolidity {
 }
 
 public class StubbornSolidityBehavior : IModifyRemovingToken
-	, IStopDahanDamage
+	, IModifyDahanDamage
 	, IEndWhenTimePasses
 {
 
@@ -31,5 +31,6 @@ public class StubbornSolidityBehavior : IModifyRemovingToken
 		if( args.Mode == RemoveMode.Live )
 			GameState.Current.Log(new Log.Debug("Stuborn Solidity stopping Dahan from being changed."));
 	}
+	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
 }

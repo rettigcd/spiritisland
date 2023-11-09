@@ -36,7 +36,7 @@ public class InfiniteVitality {
 }
 
 class StopDahanDamageAndDestruction 
-	: IStopDahanDamage
+	: IModifyDahanDamage
 	, IModifyRemovingTokenAsync 
 	, IEndWhenTimePasses
 {
@@ -47,6 +47,8 @@ class StopDahanDamageAndDestruction
 	}
 
 	public IEntityClass Class => ActionModTokenClass.Mod;
+
+	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
 	public Task ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(args.Token.Class == Human.Dahan && args.Reason == RemoveReason.Destroyed) {

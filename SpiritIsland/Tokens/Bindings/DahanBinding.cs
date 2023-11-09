@@ -32,79 +32,109 @@ public sealed class DahanBinding {
 		return await _tokens.Remove( toRemove, 1, reason );
 	}
 
-	#region Damage
+	#region Higher Level of Abstraction
 
-	public async Task Apply1DamageToAll() { // Called By Power (i.e. not invaders)
-		if(_tokens.ModsOfType<IStopDahanDamage>().Any()) return;
-
-		var before = NormalKeys
-			.OrderByDescending( x => x.Damage ) // most damaged to least damaged so they don't cascade
-			.ToArray();
-
-		foreach(var token in before) {
-			int origCount = _tokens[token];
-			var newToken = token.AddDamage( 1 );
-			if(!newToken.IsDestroyed) {
-				// Apply 1 damage to all
-				_tokens.Init( token, 0 );
-				_tokens.Adjust( newToken, origCount );
-			} else
-				// or destory
-				await Destroy( origCount, token );
-		}
-
-	}
-
-	/// <summary>Applies Damage Inefficiently</summary>
+	/// <summary>Automated - Applies Damage Inefficiently, from power</summary>
 	public async Task<int> ApplyDamage_Inefficiently( int remainingDamageToDahan ) {
-		if(_tokens.ModsOfType<IStopDahanDamage>().Any()) return 0;
 
 		// From BAC Rulebook p.16
 		// When Spirit Powers Damage the Dahan,
 		// you may choose how that Damage is allocated, just like when you Damage Invaders.
 
-		int total = 0;
+		int totalDamageUsed = 0;
 
 		HumanToken mostHealthy = null;
 		while(0 < remainingDamageToDahan
+			// find the most healthy dahan we have
 			&& (mostHealthy = NormalKeys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
 		) {
-			// determine # to apply 1 damage 2
+			// determine # to apply 1 damage to
 			int countToApply1DamageTo = Math.Min( remainingDamageToDahan, _tokens[mostHealthy] );
-			remainingDamageToDahan -= countToApply1DamageTo;
-			total += countToApply1DamageTo;
 
-			HumanToken damagedToken = mostHealthy.AddDamage( 1 );
-			if(damagedToken.IsDestroyed) {
-				await Destroy( countToApply1DamageTo, mostHealthy );
-			} else {
-				_tokens.Adjust( mostHealthy, -countToApply1DamageTo );
-				_tokens.Adjust( damagedToken, countToApply1DamageTo );
-			}
+			// Damage 1 to specific token
+			await DamageNTokens( mostHealthy, countToApply1DamageTo, 1 );
+
+			remainingDamageToDahan -= countToApply1DamageTo;
+			totalDamageUsed += countToApply1DamageTo;
 		}
 
-		return total;
+		return totalDamageUsed;
 	}
 
-	/// <summary>Applies Damage Efficiently</summary>
-	/// <returns>Remaining/unused damage</returns>
-	public async Task<int> ApplyDamage_Efficiently( int remainingDamageToDahan, HumanToken token ) {
-		if(_tokens.ModsOfType<IStopDahanDamage>().Any()) return remainingDamageToDahan;
+	public async Task Apply1DamageToAll() { // Called By Power (i.e. not invaders)
 
+		var before = NormalKeys
+			.OrderByDescending( x => x.Damage ) // most damaged to least damaged so they don't cascade
+			.ToArray();
+
+		foreach(var token in before)
+			await DamageNTokens( token, _tokens[token], 1 );
+	}
+
+	/// <summary>Ravage - Applies Damage Efficiently To as many tokens of the given type as there are.</summary>
+	/// <returns>Remaining/unused damage</returns>
+	public async Task<int> ApplyDamageToAll_Efficiently( int remainingDamageToDahan, HumanToken token ) {
 		// Destroy what can be destroyed
 		if(token.RemainingHealth <= remainingDamageToDahan) {
-			int countDestroyed = remainingDamageToDahan / token.RemainingHealth;
-			await Destroy( countDestroyed, token );
+			int countWeCouldDestroy = remainingDamageToDahan / token.RemainingHealth;
+			int countDestroyed = Math.Min( countWeCouldDestroy, _tokens[token] );
+			await DamageNTokens( token, countDestroyed, token.RemainingHealth );
 			remainingDamageToDahan -= countDestroyed * token.RemainingHealth;
 		}
+
 		// if there is still partial damage we can apply
 		if(0 < remainingDamageToDahan && 0 < _tokens[token]) {
-			_tokens.Adjust( token, -1 );
-			_tokens.Adjust( token.AddDamage( remainingDamageToDahan ), 1 );
-			remainingDamageToDahan = 0; // damage should be used up
+
+			// We should change 'Saved' dahan to Saved-Dahan class so that they don't show up in the above 0 < _tokens[token] check
+			// However, we are not currently doing that, so we need could land in here
+			// and still have more damage available than a full token can take
+			if( remainingDamageToDahan < token.RemainingHealth) {
+				// apply the left-over damage to 1 token.
+				await DamageNTokens( token, 1, remainingDamageToDahan );
+				remainingDamageToDahan = 0; // damage should be used up
+			} else {
+				// the remaining dahan are Saved-Dahan, and shan't take anymore damage.
+			}
+
 		}
 
 		return remainingDamageToDahan;
+	}
+
+	#endregion Higher Level of Abstraction
+
+	#region Damage
+
+	public async Task DamageNTokens( HumanToken originalToken, int tokenCountToReceiveDamage, int damagePerToken ) {
+
+		var notification = new DamagingTokens {  
+			Token = originalToken, 
+			TokenCountToReceiveDamage = tokenCountToReceiveDamage, 
+			DamagePerToken = damagePerToken
+		};
+		var damageMods = _tokens.ModsOfType<IModifyDahanDamage>().ToArray();
+		foreach(IModifyDahanDamage mod in damageMods) 
+			mod.Modify( notification );
+		originalToken = notification.Token;
+		tokenCountToReceiveDamage = notification.TokenCountToReceiveDamage;
+        damagePerToken = notification.DamagePerToken;
+		if(tokenCountToReceiveDamage == 0 || damagePerToken == 0) return;
+
+		// Not cleaning up the data because:
+		// we want the caller to know exactly how much damage they are doing before they call this method
+		// so that this method does not have to return any damage-used / damage-remaining results.
+		if(_tokens[originalToken] < tokenCountToReceiveDamage) 
+			throw new InvalidOperationException($"Can't damage {tokenCountToReceiveDamage} because there are only {_tokens[originalToken]} available {originalToken.Class.Label}.");
+		if(originalToken.RemainingHealth < damagePerToken)
+			throw new InvalidOperationException( $"Can't damage apply {damagePerToken} because they only have {originalToken.RemainingHealth}." );
+
+		HumanToken damagedToken = originalToken.AddDamage( damagePerToken );
+		if(damagedToken.IsDestroyed) {
+			await originalToken.Destroy( _tokens, tokenCountToReceiveDamage );
+		} else {
+			_tokens.Adjust( originalToken, -tokenCountToReceiveDamage );
+			_tokens.Adjust( damagedToken, tokenCountToReceiveDamage );
+		}
 	}
 
 	#endregion
@@ -126,6 +156,7 @@ public sealed class DahanBinding {
 		}
 	}
 
+	// Only called externally by Ravage
 	/// <returns># of tokens destroyed</returns>
 	public async Task<int> Destroy( int count, HumanToken token ) {
 		// ! Running this through the Dahan.Destroy is unnessary since it is never overriden.
@@ -141,4 +172,10 @@ public sealed class DahanBinding {
 
 	#endregion
 
+}
+
+public class DamagingTokens {
+	public HumanToken Token { get; set; }
+	public int TokenCountToReceiveDamage { get; set; }
+	public int DamagePerToken { get; set; }
 }
