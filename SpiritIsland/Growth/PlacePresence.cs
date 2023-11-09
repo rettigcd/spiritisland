@@ -20,15 +20,16 @@ public class PlacePresence : SpiritAction {
 
 	public override async Task ActAsync( SelfCtx ctx ) {
 		var self = ctx.Self;
-		var targetCriteriaFactory = new TargetCriteriaFactory( Range, FilterEnums );
+		// From
 		IOption from = await self.SelectSourcePresence();
 		IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
 		bool isForPower = ActionScope.Current.Category == ActionCategory.Spirit_Power;
-		var toOptions = self.FindSpacesWithinRange( targetCriteriaFactory.Bind( ctx.Self ), isForPower )
+
+		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range, FilterEnums ).Bind( ctx.Self ), isForPower )
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
 		if(toOptions.Length == 0)
-			throw new InvalidOperationException( "There no places to place presence." );
+			throw new InvalidOperationException( "There is no places to place presence." );
 		Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( toOptions, Present.Always, token ) );
 		await self.Presence.Place( from, to );
 

@@ -9,11 +9,11 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 
 	public VolcanicPeaksTowerOverTheLandscape(Spirit self) { _self = self; }
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
+	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria ) {
 		var spaces = base.GetTargetOptionsFromKnownSource( source, targetCriteria )
 			.ToList();
 
-		if(targetCriteria is not InnateTargetCriteria) {
+		if(targetCriteria[0] is not InnateTargetCriteria) {
 			// Add towers +3 range
 			SpaceState[] towers = source
 				.Where( s => 3 <= _self.Presence.CountOn(s) )

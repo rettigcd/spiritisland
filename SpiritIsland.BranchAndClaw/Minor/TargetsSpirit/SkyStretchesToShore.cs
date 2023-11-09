@@ -27,7 +27,7 @@ class SkyStretchesToShoreApi : DefaultRangeCalculator {
 
 	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( 
 		IEnumerable<SpaceState> source, 
-		TargetCriteria tc 
+		params TargetCriteria[] tc 
 	) {
 		var normal = _orig.GetTargetOptionsFromKnownSource( source, tc );
 		var shore = _orig.GetTargetOptionsFromKnownSource( source, tc.ExtendRange(3) )

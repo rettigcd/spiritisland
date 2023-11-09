@@ -12,9 +12,7 @@ public interface ITargetingSourceStrategy {
 }
 
 public interface ICalcRange {
-
-	IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, TargetCriteria targetCriteria );
-
+	IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria );
 }
 
 public interface IIncarnaToken : IToken, IAppearInSpaceAbreviation {
@@ -54,14 +52,22 @@ public class DefaultRangeCalculator : ICalcRange {
 
 	public virtual IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
 		IEnumerable<SpaceState> sources,
-		TargetCriteria targetCriteria
+		params TargetCriteria[] targetCriteria
 	) {
 		return sources
-			.SelectMany( x => x.Range( targetCriteria.Range ) ) // !! this will be waistfull when Range is high and lots of starting spots.
+			.SelectMany( source => ApplyTargetCriteriaToSource( source, targetCriteria ) )
 			.Distinct()
-			.Where( targetCriteria.Matches )
 			.ToArray();
 	}
+
+	protected virtual IEnumerable<SpaceState> ApplyTargetCriteriaToSource(SpaceState source, TargetCriteria[] targetCriteria)
+		=> targetCriteria.Length == 1
+			? Apply1Target( source, targetCriteria[0] ) 
+			: targetCriteria.SelectMany( tc => Apply1Target( source, tc ) ).Distinct();
+
+	IEnumerable<SpaceState> Apply1Target(SpaceState source, TargetCriteria tc)
+		=> source.Range(tc.Range).Where( tc.Matches );
+
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();
 }
 

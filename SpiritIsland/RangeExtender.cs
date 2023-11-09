@@ -2,20 +2,31 @@
 
 public class RangeExtender : ICalcRange {
 
-	readonly int extension;
-	readonly ICalcRange originalApi;
+	readonly int _extension;
+	readonly ICalcRange _originalApi;
 
 	static public void Extend( Spirit spirit, int extension ) {
 		spirit.PowerRangeCalc = new RangeExtender( extension, spirit.PowerRangeCalc );
 	}
 
+	#region constructor
 	public RangeExtender( int extension, ICalcRange originalApi ) {
-		this.extension = extension;
-		this.originalApi = originalApi;
+		_extension = extension;
+		_originalApi = originalApi;
 	}
+	#endregion
 
-	public IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, TargetCriteria targetCriteria )
-		=> originalApi.GetTargetOptionsFromKnownSource( source, targetCriteria.ExtendRange( extension ) );
-	
+	public IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria )
+		=> _originalApi.GetTargetOptionsFromKnownSource( source, targetCriteria.ExtendRange(_extension) );
 
+	#region private 
+
+	#endregion
+}
+
+public static class TargetCriteriaExtensions {
+	static public TargetCriteria[] ExtendRange( this TargetCriteria[] targetCriteria, int extension ) 
+		=> targetCriteria
+		.Select( tc => tc.ExtendRange( extension ) )
+		.ToArray();
 }

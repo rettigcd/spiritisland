@@ -564,12 +564,9 @@ public abstract partial class Spirit : IOption {
 			.ToArray();
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
-		var debugResults = targetCriteria
-			.SelectMany(tc => PowerRangeCalc.GetTargetOptionsFromKnownSource( sources, tc ))
-			.Distinct()
+		return PowerRangeCalc.GetTargetOptionsFromKnownSource( sources, targetCriteria )
 			.ToArray();
 
-		return debugResults;
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder

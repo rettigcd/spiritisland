@@ -35,7 +35,7 @@ public class ExaltationOfMoltenStone {
 
 		public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( 
 			IEnumerable<SpaceState> source, 
-			TargetCriteria tc
+			params TargetCriteria[] tc
 		) {
 			// original options
 			var spaces = _originalApi.GetTargetOptionsFromKnownSource( source, tc ).ToList();

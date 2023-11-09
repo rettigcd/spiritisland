@@ -10,7 +10,7 @@ public class IncarnaRangeCalculator : DefaultRangeCalculator {
 		_incarna = ((IHaveIncarna)_self.Presence).Incarna;
 	}
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, TargetCriteria targetCriteria ) {
+	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria ) {
 		var spaces = base.GetTargetOptionsFromKnownSource( source, targetCriteria )
 			.ToList();
 
