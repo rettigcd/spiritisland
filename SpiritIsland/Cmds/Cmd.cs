@@ -65,7 +65,7 @@ public static partial class Cmd {
 		int remaining = calcHealthToRemove(ctx);
 		HumanToken pick;
 		while(0 < remaining
-			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Space, ctx.Tokens.InvaderTokens(), remaining )) )?.Token.AsHuman()) != null
+			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Tokens.InvaderTokens().On(ctx.Space), remaining )) )?.Token.AsHuman()) != null
 		) {
 			await ctx.Remove( pick, 1 );
 			remaining -= pick.RemainingHealth;
@@ -181,10 +181,9 @@ public static partial class Cmd {
 		});
 
 	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SpiritAction( "Destroy 1 presence.", async ctx => {
-		var spaceToken = await ctx.Self.Select( new A.SpaceToken( prompt, ctx.Self.Presence.Deployed, Present.Always ) );
+		var spaceToken = await ctx.Self.Select( A.SpaceToken.OfDeployedPresence( prompt, ctx.Self ) );
 		await spaceToken.Destroy();
 	} );
-
 	static public SpiritAction DestroyPresence( int count ) => new SpiritAction( 
 		$"Destroy {count} presence", 
 		async ctx => { 

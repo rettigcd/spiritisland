@@ -14,8 +14,8 @@ public class SunsetsFireFlowsAcrossTheLand{
 		if( 1 <= ctx.Self.Energy && await ctx.Self.UserSelectsFirstText("Pay 1 energy to deal 1 Damage in an adjacent land?", "Yes, pay 1 energy for 1 damage", "No, thank you" )) {
 			ctx.Self.Energy--;
 
-			var adjInvaders = ctx.Adjacent.SelectMany( adjState => adjState.InvaderTokens()
-				.Select(t=>new SpaceToken(adjState.Space,t) ) )
+			var adjInvaders = ctx.Adjacent
+				.SelectMany( adjState => adjState.InvaderTokens().On( adjState.Space ) )
 				.ToArray();
 			var adjInvader = await ctx.SelectAsync( new A.SpaceToken("Select invader for 1 damage", adjInvaders, Present.Always ));
 			await ctx.Target(adjInvader.Space).Invaders.ApplyDamageTo1(1, adjInvader.Token.AsHuman());

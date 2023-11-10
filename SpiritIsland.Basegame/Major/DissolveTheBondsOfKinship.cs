@@ -39,7 +39,7 @@ public class DissolveTheBondsOfKinship {
 			// select token
 			var tokenOptions = ctx.Tokens.OfHumanClass( Human.Explorer ).ToArray();
 
-			var token = (await ctx.Self.Select( A.SpaceToken.ToMove( ctx.Space, explorerCount, tokenOptions, Present.Always ) ))?.Token;
+			var token = (await ctx.Self.Select( A.SpaceToken.ToMove( explorerCount, tokenOptions.On( ctx.Space ), Present.Always ) ))?.Token;
 			if(token == null) break;
 
 			// Select destination

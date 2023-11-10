@@ -42,7 +42,7 @@ public class TokenPusher {
 		IToken[] tokens;
 		while(0 < (tokens = await GetTokens()).Length) {
 			// Select Token
-			var token = (await _self.Select( A.SpaceToken.ToPush( _tokens.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
+			var token = (await _self.Select( A.SpaceToken.ToPush( sharedGroupCounts.Sum(), tokens.OnOne( _tokens.Space ), present ) ))?.Token;
 			if(token == null) break;
 
 			// Push to Destination

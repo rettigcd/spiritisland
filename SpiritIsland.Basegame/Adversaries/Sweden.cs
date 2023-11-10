@@ -149,7 +149,7 @@ class HeavyMining : BaseModEntity, IHandleTokenAddedAsync {
 
 				var spirit = args.To.Space.Boards[0].FindSpirit();
 
-				var selection = await spirit.Select( A.Space.ToPlaceToken( "Mining Rush: Place Town", noBuildAdjacents, Present.Always, args.To.GetDefault( Human.Town ) ) );
+				Space selection = await spirit.Select( A.Space.ToPlaceToken( "Mining Rush: Place Town", noBuildAdjacents.Downgrade(), Present.Always, args.To.GetDefault( Human.Town ) ) );
 				if(selection != null) {
 					selection.Tokens.AdjustDefault( Human.Town, 1 );
 					GameState.Current.LogDebug( $"Mining Rush: Blight on {args.To.Space.Text} caused +1 Town on {selection.Text}." );

@@ -73,9 +73,9 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	// 2 SpaceToken helper classes
 	public IEnumerable<SpaceToken> SpaceTokensOfClass( IEntityClass tokenClass ) 
-		=> OfClassInternal( tokenClass ).OfType<IToken>().Select(x=>new SpaceToken(Space,x));
+		=> OfClassInternal( tokenClass ).OfType<IToken>().On(Space);
 	public IEnumerable<SpaceToken> SpaceTokensOfAnyClass( params IEntityClass[] tokenClasses )
-		=> OfAnyClassInternal( tokenClasses ).OfType<IToken>().Select( x => new SpaceToken( Space, x ) );
+		=> OfAnyClassInternal( tokenClasses ).OfType<IToken>().On(Space);
 
 	protected IEnumerable<ISpaceEntity> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
 	protected IEnumerable<ISpaceEntity> OfClassInternal( IEntityClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );

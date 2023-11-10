@@ -26,7 +26,7 @@ public class LeaveATrailOfDeathlySilence {
 		var from = ihi.Incarna.Space.Space;
 		var to = EndlessDark.Space;
 
-		await new SpaceToken(from, ihi.Incarna).MoveTo(to);
+		await ihi.Incarna.On(from).MoveTo(to);
 
 		await new TokenPusher_FixedDestination( ctx.Target( from ), to )
 			.AddGroup( 1, Human.Invader )

@@ -50,7 +50,7 @@ class ScotlandCoastalBlightCheckToken
 		// selection
 		var selectionCriteria = new A.SpaceToken( 
 			$"{Name} Which blight would you like to remove?",
-			blightedOptions.Select( s => new SpaceToken( s.Space, Token.Blight ) ),
+			Token.Blight.On( blightedOptions ),
 			Present.Always
 		);
 

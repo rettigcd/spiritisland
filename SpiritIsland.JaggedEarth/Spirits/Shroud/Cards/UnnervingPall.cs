@@ -39,8 +39,8 @@ public class UnnervingPall {
 		int remaining = 3;
 		while(0 < remaining-- && 0 < damagedInvaders.Count) {
 			var decision = new A.SpaceToken(
-				"Select invader to not participate in ravage", ctx.Space,
-				damagedInvaders.Distinct().Cast<IToken>(),
+				"Select invader to not participate in ravage",
+				damagedInvaders.Distinct().Cast<IToken>().On( ctx.Space ),
 				Present.Done
 			);
 			var skip = (await ctx.SelectAsync( decision ))?.Token;

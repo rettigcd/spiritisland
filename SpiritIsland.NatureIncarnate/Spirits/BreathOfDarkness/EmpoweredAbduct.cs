@@ -19,7 +19,7 @@ public class EmpoweredAbduct : IActionFactory {
 		if(incarna.Space == null) return;
 		var tokens = incarna.Space;
 		var options = tokens.OfAnyHumanClass( Human.Explorer_Town );
-		var invaderToAbduct = await ctx.SelectAsync(new A.SpaceToken("Select Invader to Abduct", tokens.Space, options, Present.Done));
+		var invaderToAbduct = await ctx.SelectAsync(new A.SpaceToken("Select Invader to Abduct", options.On(tokens.Space), Present.Done));
 		if(invaderToAbduct == null) return;
 
 		await invaderToAbduct.MoveTo(EndlessDark.Space);

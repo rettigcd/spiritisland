@@ -176,7 +176,7 @@ public sealed class InvaderBinding {
 		IToken[] invaderTokens;
 		int damageInflicted = 0;
 		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).Cast<IToken>().ToArray()).Length > 0) {
-			var st = await damagePicker.Select( An.Invader.ForAggregateDamage( Tokens.Space, invaderTokens, damage, present ) );
+			var st = await damagePicker.Select( An.Invader.ForAggregateDamage( invaderTokens.OnOne( Tokens.Space ), damage, present ) );
 			if(st==null) break;
 			var invaderToDamage = st.Token.AsHuman();
 			await ApplyDamageTo1( 1, invaderToDamage );

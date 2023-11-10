@@ -73,8 +73,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 		// Destroy 1 presence in adjacent land
 		var options = args.To.Adjacent_Existing
 			.SelectMany(
-				adj => adj.OfCategory(TokenCategory.Presence).Cast<IToken>()
-					.Select(t => new SpaceToken(adj.Space,t) )
+				adj => adj.OfCategory(TokenCategory.Presence).Cast<IToken>().On(adj.Space)
 			)
 			.ToArray();
 

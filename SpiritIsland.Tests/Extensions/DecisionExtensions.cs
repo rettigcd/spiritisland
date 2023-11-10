@@ -16,23 +16,23 @@ public static class DecisionExtensions {
 		=> decision.Options.FirstOrDefault( o => o.Text.StartsWith(choicePrefix) )
 		?? throw new ArgumentOutOfRangeException( nameof( choicePrefix ), $"sequence [{decision.FormatOptions()}]does not contain option: {choicePrefix}" );
 
-	static public IOption FindChoice( this IDecision decision, string choiceText ) {
+	static public IOption FindChoice( this IDecision decision, string expectedChoiceText ) {
 		var matchingChoices = decision.Options
-			.Where( o => o.Text == choiceText )
+			.Where( o => o.Text == expectedChoiceText )
 			.ToArray();
 
 		switch(matchingChoices.Length) {
 			case 1: return matchingChoices[0];
 			case 0: {
 					IOption firstMatch = decision.Options
-						.FirstOrDefault( o => o.Text.ToLower().Contains( choiceText.ToLower() ) );
+						.FirstOrDefault( o => o.Text.ToLower().Contains( expectedChoiceText.ToLower() ) );
 					string msg = firstMatch != null
-						? $"Please correct capitalization from '{choiceText}' to '{firstMatch.Text}'"
-						: $"option ({choiceText} not found in {decision.FormatDecision()}";
+						? $"Expected '{expectedChoiceText}' not found. Actual: '{firstMatch.Text}'"
+						: $"option ({expectedChoiceText} not found in {decision.FormatDecision()}";
 					throw new ArgumentException( msg );
 				}
 			default:
-				throw new Exception( $"Multiple option contain '{choiceText}' in: " + decision.FormatDecision() );
+				throw new Exception( $"Multiple option contain '{expectedChoiceText}' in: " + decision.FormatDecision() );
 		}
 	}
 

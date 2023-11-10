@@ -75,12 +75,12 @@ public class TargetSpaceCtx : SelfCtx {
 		// Select 1st Token to move (like Push, no arrows)
 		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>().ToArray(); 
 		int remaining = max;
-		var firstToken = (await SelectAsync( A.SpaceToken.ToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
+		var firstToken = (await SelectAsync( A.SpaceToken.ToMove( remaining, tokenOptions.OnOne( Space ), Present.Done ) ))?.Token;
 		if(firstToken == null) return null;
 
 		// Select 1st Token destination (like Push, Arrows!)
 		var destinationOptions = Range( targetCriteria );
-		Space destination = await SelectAsync( A.Space.ToMoveToken( Space, destinationOptions.Downgrade(), Present.Always, firstToken, remaining ) );
+		Space destination = await SelectAsync( A.Space.ToMoveToken( firstToken.On(Space), destinationOptions.Downgrade(), Present.Always, remaining ) );
 		if( destination == null ) return null;
 		
 		await Move( firstToken, Space, destination );
@@ -88,7 +88,8 @@ public class TargetSpaceCtx : SelfCtx {
 
 		while(0 < remaining--) {
 			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>()
-				.Select(t=>new SpaceToken(Space,t,false)).ToArray();
+				.OnOne(Space)
+				.ToArray();
 			var nextToken = await SelectAsync( A.SpaceToken.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
 			if(nextToken == null ) break;
 			
@@ -224,7 +225,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
+			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
 			if(st == null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
@@ -242,7 +243,7 @@ public class TargetSpaceCtx : SelfCtx {
 		int done = 0;
 
 		while(0 < additionalTotalDamage) {
-			var st = await SelectAsync( An.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
+			var st = await SelectAsync( An.Invader.ForBadlandDamage( additionalTotalDamage, invaders.On( Space ) ) );
 			if(st == null) break;
 			var invader = st.Token.AsHuman();
 			int index = invaders.IndexOf( invader );

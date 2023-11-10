@@ -36,8 +36,9 @@ public class PentUpCalamity {
 		while(options.Length > 0) {
 			// This is kind of special purpose
 			var removeTokenDecision = new A.SpaceToken(
-				$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})"
-				, ctx.Space, options , Present.Done
+				$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})", 
+				options.On(ctx.Space),
+				Present.Done
 			);
 			var tokenToRemove = (await ctx.SelectAsync( removeTokenDecision ))?.Token;
 			if(tokenToRemove == null) break;

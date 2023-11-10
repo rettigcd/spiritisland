@@ -14,7 +14,7 @@ public class IncarnaPresence<IncarnaTokenType> : SpiritPresence, IHaveIncarna wh
 
 	public override IEnumerable<SpaceToken> Deployed => Incarna.Space == null 
 		? base.Deployed
-		: base.Deployed.Include( new SpaceToken( Incarna.Space.Space, Incarna ) );
+		: base.Deployed.Include( Incarna.On(Incarna.Space.Space) );
 
 	public override IEnumerable<Space> Spaces => Incarna.Space == null
 		? base.Spaces

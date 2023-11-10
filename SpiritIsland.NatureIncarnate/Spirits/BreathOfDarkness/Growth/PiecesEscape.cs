@@ -16,8 +16,8 @@ public class PiecesEscape : SpiritAction {
 		var tokens = EndlessDark.Space.Tokens;
 		while(0 < remaining) {
 			// select token
-			var options = tokens.Keys.Cast<IToken>().ToList();
-			SpaceToken? spaceToken = await ctx.SelectAsync(new A.SpaceToken( $"Select ({remaining}) piece(s) to escape Endless Darkness", EndlessDark.Space, options, Present.Always ) );
+			var options = tokens.Keys.Cast<IToken>().On( EndlessDark.Space ).ToList();
+			SpaceToken? spaceToken = await ctx.SelectAsync(new A.SpaceToken( $"Select ({remaining}) piece(s) to escape Endless Darkness", options, Present.Always ) );
 			if(spaceToken == null) return;
 			--remaining;
 

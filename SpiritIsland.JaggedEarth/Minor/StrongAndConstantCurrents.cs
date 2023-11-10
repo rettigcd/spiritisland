@@ -46,7 +46,7 @@ public class StrongAndConstantCurrents{
 		while(0 < count) {
 
 			var coastalWithDahan = coastalCtxs
-				.SelectMany( x => x.Dahan.NormalKeys.Select(k=>new SpaceToken(x.Space,k)))
+				.SelectMany( x => x.Dahan.NormalKeys.On(x.Space) )
 				.ToArray();
 
 			// From

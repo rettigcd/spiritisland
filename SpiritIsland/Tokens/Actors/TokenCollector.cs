@@ -64,7 +64,7 @@ public class TokenCollector<DerivedType> where DerivedType : TokenCollector<Deri
 		foreach(SpaceState sourceSpaceState in PossibleGatherSources) {
 			options.AddRange(
 				(await sourceSpaceState.RemovableOfAnyClass( RemoveReason.MovedFrom, RemainingTypes ))
-					.Select( tokens => new SpaceToken( sourceSpaceState.Space, tokens ) )
+					.On( sourceSpaceState.Space ) // .Select( tokens => new SpaceToken( sourceSpaceState.Space, tokens ) )
 			);
 		}
 		return options.ToArray();

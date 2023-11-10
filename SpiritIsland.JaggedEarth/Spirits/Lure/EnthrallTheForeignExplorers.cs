@@ -23,7 +23,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 		while(removed < removableCount) {
 			// Select type to not participate (strifed / non-strifed)
 			HumanToken explorerTypeToNotParticipate = explorerTypes.Count == 1 ? explorerTypes[0]
-				: ( await _spirit.Select( A.SpaceToken.ToRemove( space.Space, 1, explorerTypes.ToArray(), Present.Done ) ))?.Token.AsHuman();
+				: ( await _spirit.Select( A.SpaceToken.ToRemove( 1, explorerTypes.On( space.Space ), Present.Done ) ))?.Token.AsHuman();
 			if(explorerTypeToNotParticipate == null) break;
 
 			var countToNotParticipate = await _spirit.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );

@@ -11,8 +11,8 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 	static public Space ToPushPresence( Orig_Space source, IEnumerable_Spaces destinationOptions, Present present, IToken presenceToken )
 		=> Space.ForMoving_SpaceToken("Push Presence to", source, destinationOptions, present, presenceToken );
 
-	static public Space ToMoveToken( Orig_Space source, IEnumerable_Spaces destinationOptions, Present present, IToken token, int? count = null )
-		=> Space.ForMoving_SpaceToken( $"Move {TokensStr(count)} to", source, destinationOptions, present, token );
+	static public Space ToMoveToken( SpiritIsland.SpaceToken spaceToken, IEnumerable_Spaces destinationOptions, Present present, int? count = null )
+		=> Space.ForMoving_SpaceToken( $"Move {TokensStr(count)} to", spaceToken.Space, destinationOptions, present, spaceToken.Token );
 	static string TokensStr(int? count) => !count.HasValue ? "token(s)" : count.Value == 1 ? "token" : "tokens";
 
 	static public Space ToPushToken( IToken token, Orig_Space source, IEnumerable_Spaces destinationOptions, Present present )

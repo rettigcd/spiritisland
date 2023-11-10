@@ -25,7 +25,7 @@ public class UnbearableGaze {
 			var tokenOptions = sourceOptions
 				.SelectMany( tokens =>
 					tokens.OfAnyHumanClass( tokenClasses )
-					.Select( t => new SpaceToken( tokens.Space, t ) )
+					.On( tokens.Space )
 				);
 
 			// Select 1 to push

@@ -9,7 +9,7 @@ public class ScorchingConvergence {
 	[InnateOption("2 sun","Move all of your Presence from origin land directly to target land. 1 Damage to Town/City only.")]
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		// Move all of your Presence from origin land directly to target land.
-		var options = FindSacredSitesRange1(ctx).Select(s=>new SpaceToken(s.Space,ctx.Self.Presence.Token));
+		var options = ctx.Self.Presence.Token.On( FindSacredSitesRange1( ctx ) );
 
 		var from = await ctx.Self.Select(A.SpaceToken.ToCollect("Move all presence", options, Present.Always, ctx.Space ));
 		if(from != null && from.Space != ctx.Space )

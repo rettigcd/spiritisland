@@ -7,7 +7,7 @@ public class Push1DahanFromLands : SpiritAction {
 
 	public override async Task ActAsync( SelfCtx ctx ) {
 		var dahanOptions = ctx.Self.Presence.Spaces.Tokens()
-			.SelectMany(space=> space.Dahan.NormalKeys.Select(t=>new SpaceToken(space.Space,t)));
+			.SelectMany(space=> space.Dahan.NormalKeys.On(space.Space));
 		var source = await ctx.SelectAsync(new A.SpaceToken("Select dahan to push from land",dahanOptions,Present.Done));
 		if(source == null) return;
 

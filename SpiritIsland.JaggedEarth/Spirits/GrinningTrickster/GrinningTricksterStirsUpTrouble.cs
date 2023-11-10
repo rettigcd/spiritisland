@@ -76,7 +76,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		if(Energy == 0) return;
 
 		var nearbyInvaders = PowerRangeCalc.GetTargetOptionsFromKnownSource( tokens.Adjacent, new TargetCriteria( 1 ) )
-			.SelectMany( s => s.InvaderTokens().Select( t => new SpaceToken( s.Space, t ) ) )
+			.SelectMany( ss => ss.InvaderTokens().On(ss.Space) )
 			.ToArray();
 		var invader2 = await Select( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;

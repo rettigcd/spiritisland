@@ -34,11 +34,11 @@ public class BreathIncarna : IIncarnaToken, IEntityClass
 
 
 	/// <param name="allowAdd">If is not on board, may be added.</param>
-	public async Task MoveTo( Space space, bool allowAdd ) {
+	public async Task MoveTo( Space destination, bool allowAdd ) {
 		if(Space != null)
-			await new SpaceToken( Space.Space, this ).MoveTo( space );
+			await this.On( Space.Space ).MoveTo( destination );
 		else if( allowAdd )
-			await space.Tokens.Add( this, 1 );
+			await destination.Tokens.Add( this, 1 );
 
 	}
 

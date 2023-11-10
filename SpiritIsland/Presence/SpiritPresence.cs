@@ -156,7 +156,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		if(from is Track track)
 			await RevealTrack( track );
 		else if(from is Space space)
-			await TakeFromSpace( new SpaceToken(space,Token) );
+			await TakeFromSpace( Token.On(space) );
 		else if(from is SpaceToken spaceToken) {
 			await TakeFromSpace( spaceToken );
 			return spaceToken.Token;
@@ -201,7 +201,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	virtual public IEnumerable<SpaceToken> Deployed 
 		=> GameState.Current.Tokens.Spaces_Existing( Token ) // don't use .Spaces because it gets overriden to include non-token spaces
-		.Select( s=>new SpaceToken( s, Token) );
+		.Select( s=> Token.On(s) );
 	public IEnumerable<SpaceToken> Movable => CanMove ? Deployed : Enumerable.Empty<SpaceToken>();
 
 	/// <summary> Unfiltered </summary>

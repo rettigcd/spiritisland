@@ -204,7 +204,7 @@ class IslandPanel : IPanel {
 			);
 
 			// record token location
-			RecordSpaceTokenLocation( new SpaceToken( spaceState.Space, token ), rect );
+			RecordSpaceTokenLocation( token.On( spaceState.Space ), rect );
 
 			if(token is SpiritPresenceToken && _ctx._spirit.Presence.IsSacredSite( spaceState )) {
 				const int inflationSize = 10;
@@ -261,7 +261,7 @@ class IslandPanel : IPanel {
 			Image img = _ctx._tip.AccessTokenImage( imageToken );
 			Rectangle rect = new Rectangle( new Point( (int)x, (int)y ), img.Size.FitWidth( (int)iconWidth ) );
 
-			RecordSpaceTokenLocation( new SpaceToken( ss.Space, token ), rect );
+			RecordSpaceTokenLocation( token.On( ss.Space ), rect );
 
 			// Draw Token
 			graphics.DrawImage( img, rect );

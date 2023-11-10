@@ -13,7 +13,7 @@ class BeastGatherer : TokenGatherer {
 			int range = group == Token.Beast ? 2 : 1;
 			foreach(var space in _destinationTokens.Range( range )) // gather, not Range
 				foreach(var token in space.OfClass(group).OfType<IToken>())
-					items.Add(new SpaceToken(space.Space,token));
+					items.Add( token.On(space.Space) );
 		}
 		return Task.FromResult( items.ToArray() );
 	}

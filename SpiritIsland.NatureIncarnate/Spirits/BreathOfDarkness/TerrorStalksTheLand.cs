@@ -53,7 +53,7 @@ public class TerrorStalksTheLand : SpaceState {
 	}
 
 	async Task AbductInvader( HumanToken invaderToDestroy ) {
-		var spaceTokenToRemove = new SpaceToken( Space, invaderToDestroy );
+		var spaceTokenToRemove = invaderToDestroy.On(Space);
 
 		var invaderToAddToEndlessDark = ActionScope.Current.SafeGet<HumanToken>( damagedAnInvaderKey, invaderToDestroy );
 
