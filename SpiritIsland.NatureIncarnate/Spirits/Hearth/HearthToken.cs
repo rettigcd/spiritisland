@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.NatureIncarnate;
+﻿namespace SpiritIsland.NatureIncarnate;
 
 public class HearthToken : SpiritPresenceToken
 	, IModifyAddingToken
@@ -50,7 +48,7 @@ public class HearthToken : SpiritPresenceToken
 
 		while(_spirit.Presence.IsOn(from)) {
 			// #pushpresence
-			Space destination = await _spirit.Gateway.Decision( Select.ASpace.PushPresence( from.Space, destinationOptions, Present.Done, this ) );
+			Space destination = await _spirit.Gateway.Select( A.Space.ToPushPresence( from.Space, destinationOptions, Present.Done, this ) );
 			if(destination is null) break;
 
 			// apply...

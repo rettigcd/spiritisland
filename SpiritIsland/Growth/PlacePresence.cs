@@ -30,7 +30,7 @@ public class PlacePresence : SpiritAction {
 			.ToArray();
 		if(toOptions.Length == 0)
 			throw new InvalidOperationException( "There is no places to place presence." );
-		Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( toOptions, Present.Always, token ) );
+		Space to = await self.Gateway.Select( A.Space.ToPlacePresence( toOptions, Present.Always, token ) );
 		await self.Presence.Place( from, to );
 
 		if(isForPower && from is Track track && track.Action != null)

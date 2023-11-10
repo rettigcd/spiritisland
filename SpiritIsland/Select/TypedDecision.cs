@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Select;
+﻿namespace SpiritIsland.A;
 
 public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 

@@ -1,13 +1,11 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.NatureIncarnate;
+﻿namespace SpiritIsland.NatureIncarnate;
 
 /// <summary> Move only. Not Add </summary>
 public class MoveIncarnaAnywhere : SpiritAction {
 
 	public MoveIncarnaAnywhere():base( "Move Incarna anywhere" ) { }
 	public override async Task ActAsync( SelfCtx ctx ) {
-		Space? space = await ctx.Self.Gateway.Decision( new ASpace( "Select space to place Incarna.", GameState.Current.Spaces, Present.Done ) );
+		Space? space = await ctx.Self.Gateway.Select( new A.Space( "Select space to place Incarna.", GameState.Current.Spaces, Present.Done ) );
 		if(space == null) return;
 
 		// Move/Place Incarna

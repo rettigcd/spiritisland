@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class SpaceToken : IOption {
 	SpaceToken() { } // Null SpaceToken

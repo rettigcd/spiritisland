@@ -10,7 +10,7 @@ public class AddDestroyedPresenceTogether : SpiritAction {
 
 		// add up to 3 destroyed presence together
 		var options = spirit.FindSpacesWithinRange( new TargetCriteria( 1 ), false );
-		var dst = await spirit.Gateway.Decision(new Select.ASpace($"Add up to {max} Destroyed Presence", options, Present.Always, pres.Token) );
+		var dst = await spirit.Gateway.Select(new A.Space($"Add up to {max} Destroyed Presence", options, Present.Always, pres.Token) );
 		if(dst == null ) return;
 
 		int numToPlace = await spirit.SelectNumber("How many presences would you like to place?", max, 1);

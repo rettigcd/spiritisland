@@ -1,9 +1,10 @@
-﻿namespace SpiritIsland.Select;
+﻿namespace SpiritIsland.A;
+using Orig_Space = SpiritIsland.Space;
 
 public class Arrow {
 	public IToken Token;
-	public Space From;
-	public Space To;
+	public Orig_Space From;
+	public Orig_Space To;
 }
 
 public interface IHaveArrows {

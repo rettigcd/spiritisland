@@ -1,22 +1,22 @@
-﻿namespace SpiritIsland.Select;
+﻿namespace SpiritIsland.A;
 
 using Type = SpiritIsland.PowerCard; // avoid name conflict
 
 /// <summary>
 /// Selects a PowerCard from a group of PowerCard options.
 /// </summary>
-public class APowerCard : TypedDecision<Type> {
+public class PowerCard : TypedDecision<Type> {
 
 	#region constructors
 
-	public APowerCard(string prompt, CardUse cardUse, Type[] cardOptions, Present present ) 
+	public PowerCard(string prompt, CardUse cardUse, Type[] cardOptions, Present present ) 
 		: base( prompt, cardOptions, present )
 	{
 		foreach(var option in cardOptions)
 			_cardUses.Add(option,cardUse);
 	}
 
-	public APowerCard(string prompt, IEnumerable<SingleCardUse> cardOptions, Present present ) 
+	public PowerCard(string prompt, IEnumerable<SingleCardUse> cardOptions, Present present ) 
 		: base( prompt, cardOptions.Select(x=>x.Card), present
 	) {
 		foreach(var option in cardOptions)

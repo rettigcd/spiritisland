@@ -28,7 +28,7 @@ public class InfiniteVitality {
 	static async Task RemoveBlightFromLandOrAdjacent( TargetSpaceCtx ctx ) {
 		// remove 1 blight from target or adjacent land
 		var blightedLands = ctx.Tokens.InOrAdjacentTo.Where( s=>s.Blight.Any ).ToArray();
-		var unblightLand = await ctx.Decision( new Select.ASpace( "Remove 1 blight from", blightedLands, Present.Always ));
+		var unblightLand = await ctx.Decision( new A.Space( "Remove 1 blight from", blightedLands, Present.Always ));
 		if(unblightLand != null)
 			await ctx.Target( unblightLand ).RemoveBlight();
 	}

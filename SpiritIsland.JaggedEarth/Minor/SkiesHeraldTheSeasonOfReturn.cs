@@ -13,7 +13,7 @@ public class SkiesHeraldTheSeasonOfReturn{
 			.Where( spirit => ctx.Space.Boards.Any(spirit.Presence.IsOn) )
 			.ToArray();
 
-		var other = await ctx.Decision(new Select.ASpirit(Name,spiritOptions,Present.AutoSelectSingle) );
+		var other = await ctx.Decision(new A.Spirit(Name,spiritOptions,Present.AutoSelectSingle) );
 		if(other != null)
 			await ctx.TargetSpirit( other ).OtherCtx.Target(ctx.Space).Presence.PlaceDestroyedHere();
 

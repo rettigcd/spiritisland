@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class FracturedDaysSplitTheSky : Spirit {
 
@@ -100,8 +98,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		while(0 < count) {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
-			var from = (IOption)await Gateway.Decision( Select.TrackSlot.ToReveal( selectPrompt, this ) )
-					?? (IOption)await Gateway.Decision( new ASpaceToken( selectPrompt, Presence.Deployed, Present.Done ) ); // Cancel
+			var from = (IOption)await Gateway.Select( A.TrackSlot.ToReveal( selectPrompt, this ) )
+					?? (IOption)await Gateway.Select( new A.SpaceToken( selectPrompt, Presence.Deployed, Present.Done ) ); // Cancel
 
 			await Presence.TakeFrom( from );
 			Time++;
@@ -111,7 +109,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 	}
 
 	public async Task SpendTime( int count ) {
-		var hide = await Gateway.Decision( Select.TrackSlot.ToCover( this ) );
+		var hide = await Gateway.Select( A.TrackSlot.ToCover( this ) );
 
 		Time -= count;
 		if(hide != null)

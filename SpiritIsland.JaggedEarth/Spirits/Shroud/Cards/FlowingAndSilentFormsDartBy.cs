@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class FlowingAndSilentFormsDartBy {
 
@@ -36,7 +34,7 @@ public class FlowingAndSilentFormsDartBy {
 
 			if( !spirit.Presence.HasMovableTokens( args.From ) ) return;
 			
-			var dst = await spirit.Gateway.Decision( new Select.ASpace( "Instead of destroying, push presence to:", args.From.Adjacent.Downgrade(), Present.Done ) );
+			var dst = await spirit.Gateway.Select( new A.Space( "Instead of destroying, push presence to:", args.From.Adjacent.Downgrade(), Present.Done ) );
 			if(dst == null) return;
 
 			while(0 < args.Count--)
@@ -50,11 +48,11 @@ public class FlowingAndSilentFormsDartBy {
 		Spirit[] spirits = GameState.Current.Spirits;
 		var nearbySpirits = spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
 		Spirit other = spirits.Length == 1 ? ctx.Self
-			: await ctx.Decision( new Select.ASpirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
+			: await ctx.Decision( new A.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
 		var options = adj.Where(other.Presence.HasMovableTokens);
 
-		var source = await ctx.Decision( ASpaceToken.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.Space ) );//
+		var source = await ctx.Decision( A.SpaceToken.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.Space ) );//
 
 		if(source == null) return;
 		// # to move

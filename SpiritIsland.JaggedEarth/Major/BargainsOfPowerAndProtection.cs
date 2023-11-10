@@ -1,7 +1,5 @@
-﻿using SpiritIsland.Select;
-using System;
+﻿namespace SpiritIsland.JaggedEarth;
 
-namespace SpiritIsland.JaggedEarth;
 public class BargainsOfPowerAndProtection {
 
 	[MajorCard("Bargains of Power and Protection",2,Element.Sun,Element.Water,Element.Earth,Element.Animal), Fast, FromPresence(0,Target.Dahan)]
@@ -13,7 +11,7 @@ public class BargainsOfPowerAndProtection {
 			var presenceToRemove = await ctx.Self.SelectSourcePresence("remove from game"); // Come from track or board
 			await ctx.Self.Presence.TakeFrom( presenceToRemove );
 		} else {
-			SpaceToken presenceToRemove = await ctx.Decision( new ASpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
+			SpaceToken presenceToRemove = await ctx.Decision( new A.SpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
 			await presenceToRemove.Remove();
 		}
 

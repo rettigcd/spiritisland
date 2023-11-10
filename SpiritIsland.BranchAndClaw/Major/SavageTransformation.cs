@@ -22,7 +22,7 @@ public class SavageTransformation {
 		var options = origCtx.Tokens.Range( range )
 			.SelectMany( ss => ss.SpaceTokensOfClass( Human.Explorer ) );
 
-		SpaceToken spaceToken2 = await origCtx.Self.Gateway.Decision( new Select.ASpaceToken( "Replace additional with Beast", options, Present.Always ) );
+		SpaceToken spaceToken2 = await origCtx.Self.Gateway.Select( new A.SpaceToken( "Replace additional with Beast", options, Present.Always ) );
 		if(spaceToken2 == null) return;
 
 		var actionCtx = origCtx.Target( spaceToken2.Space ); // allow

@@ -7,7 +7,7 @@ class PlacePresenceOnBeastLand : SpiritAction {
 	public override async Task ActAsync( SelfCtx ctx ) {
 		var gameState = GameState.Current;
 		var options = gameState.Spaces_Unfiltered.Where( space=>space.Beasts.Any );
-		var space = await ctx.Decision(new Select.ASpace("Add presence to",options, Present.Always));
+		var space = await ctx.Decision(new A.Space("Add presence to",options, Present.Always));
 		await ctx.Self.Presence.Token.AddTo(space);
 	}
 

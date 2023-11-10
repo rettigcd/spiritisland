@@ -35,7 +35,7 @@ public class StormSwath {
 
 	static async Task<Space> SelectLandAdjacentToBoth( TargetSpaceCtx ctx, Space origin ) {
 
-		return await ctx.Decision( new Select.ASpace(
+		return await ctx.Decision( new A.Space(
 			"Select land for 1 damge to each invader",
 			ctx.Adjacent.Intersect( ctx.Target( origin ).Adjacent ),
 			Present.AutoSelectSingle
@@ -43,7 +43,7 @@ public class StormSwath {
 	}
 
 	static Task<Space> FindOriginLand_SS( TargetSpaceCtx ctx, int range ) {
-		return ctx.Decision( new Select.ASpace(
+		return ctx.Decision( new A.Space(
 			"Select Origin land",
 			ctx.Range(range).Where( s => ctx.Presence.IsSelfSacredSite ),
 			Present.AutoSelectSingle

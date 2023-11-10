@@ -130,7 +130,7 @@ class CardDeckPanel : IPanel {
 
 	virtual public void ActivateOptions( IDecision decision ) {
 
-		_pickPowerCardDecision = decision as Select.APowerCard; // capture so we can display card-action
+		_pickPowerCardDecision = decision as A.PowerCard; // capture so we can display card-action
 
 		_options = _pickPowerCardDecision != null
 			? new HashSet<PowerCard>( _pickPowerCardDecision.CardOptions )
@@ -144,7 +144,7 @@ class CardDeckPanel : IPanel {
 
 	public int OptionCount { get; private set; }
 
-	Select.APowerCard _pickPowerCardDecision;
+	A.PowerCard _pickPowerCardDecision;
 	/// <summary> All Power-Card Options, not just the ones contained in this deck. </summary>
 	HashSet<PowerCard> _options;
 	Rectangle _bounds;

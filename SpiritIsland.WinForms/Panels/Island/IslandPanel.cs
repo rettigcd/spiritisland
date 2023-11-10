@@ -1,5 +1,4 @@
-﻿using SpiritIsland.Select;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -50,7 +49,7 @@ class IslandPanel : IPanel {
 		DrawBackground( graphics );
 
 		_buttonContainer.ClearTransient();
-		if(_decision is Select.ASpaceToken spaceTokenDecision)
+		if(_decision is A.SpaceToken spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
 		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)
@@ -66,7 +65,7 @@ class IslandPanel : IPanel {
 		_decision = decision;
 
 		_outstandingSpaceTokenOptions.Clear();
-		if(_decision is Select.ASpaceToken spaceTokenDecision)
+		if(_decision is A.SpaceToken spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
 		_buttonContainer.EnableOptions( decision );
@@ -276,9 +275,9 @@ class IslandPanel : IPanel {
 	}
 
 	void DrawArrows( Graphics graphics ) {
-		if(_decision is not IHaveArrows quiver) return;
+		if(_decision is not A.IHaveArrows quiver) return;
 		using Pen pushArrowPen = new Pen( ArrowColor, 7 );
-		foreach(Arrow arrow in quiver.Arrows)
+		foreach(A.Arrow arrow in quiver.Arrows)
 			graphics.DrawArrow( pushArrowPen, GetPortPoint( arrow.From, arrow.Token ), GetPortPoint( arrow.To, arrow.Token ) );
 	}
 

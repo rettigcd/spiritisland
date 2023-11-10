@@ -31,7 +31,7 @@ public class PreselectAttribute : Attribute, IPreselect {
 			.SelectMany( ss => ss.SpaceTokensOfAnyClass( _tokenClasses ) )
 			.ToArray();
 
-		SpaceToken st = await spirit.Gateway.Decision( new Select.ASpaceToken( _prompt, spaceTokenOptions, _present ) );
+		SpaceToken st = await spirit.Gateway.Select( new A.SpaceToken( _prompt, spaceTokenOptions, _present ) );
 		spirit.Gateway.Preloaded = st;
 		return st?.Space;
 	}

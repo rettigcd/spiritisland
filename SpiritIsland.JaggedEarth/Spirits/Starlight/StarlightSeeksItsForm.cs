@@ -27,20 +27,20 @@ public class StarlightSeeksItsForm : Spirit {
 		}
 	}
 
-	static Track NewGrowth1 = new Track( "so1" ) {  
+	readonly static Track NewGrowth1 = new Track( "so1" ) {  
 		Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption1 },
 	};
-	static Track NewGrowth2 = new Track( "so2" ) {  
+	readonly static Track NewGrowth2 = new Track( "so2" ) {  
 		Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption2 },
 	};
-	static Track NewGrowth3 = new Track( "so3" ) {
+	readonly static Track NewGrowth3 = new Track( "so3" ) {
 		Icon = new IconDescriptor {
 			ContentImg = Img.Starlight_AssignElement,
 			Super = Plus1Coin,
 			BigSub = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption3 },
 		},
 	};
-	static Track NewGrowth4 = new Track( "so4" ) {  
+	readonly static Track NewGrowth4 = new Track( "so4" ) {  
 		Icon = new IconDescriptor { 
 			BigSub = new IconDescriptor{ BackgroundImg = Img.Starlight_GrowthOption4 },
 			Super = Plus1Coin,

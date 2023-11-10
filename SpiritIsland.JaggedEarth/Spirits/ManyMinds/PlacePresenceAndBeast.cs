@@ -8,7 +8,7 @@ public class PlacePresenceAndBeast : SpiritAction {
 		var from = await ctx.Self.SelectSourcePresence();
 
 		var options = DefaultRangeCalculator.Singleton.GetTargetOptionsFromKnownSource( ctx.Self.Presence.Spaces.Tokens(), new TargetCriteria( 3 ) );
-		Space to = await ctx.Self.Gateway.Decision( Select.ASpace.ToPlacePresence( options, Present.Always, Token.Beast ) );
+		Space to = await ctx.Self.Gateway.Select( A.Space.ToPlacePresence( options, Present.Always, Token.Beast ) );
 
 		await ctx.Self.Presence.Place( from, to );
 		await ctx.Target(to).Beasts.AddAsync(1);

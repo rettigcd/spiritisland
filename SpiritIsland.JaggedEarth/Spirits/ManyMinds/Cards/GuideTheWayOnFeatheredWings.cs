@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class GuideTheWayOnFeatheredWings {
 
@@ -31,8 +29,8 @@ public class GuideTheWayOnFeatheredWings {
 			.CollectUpToN();
 
 		// move beast (2 of 2)
-		var selection = ASpace.ForMoving_SpaceToken( $"Move {tracker.BeastMoved.Text} to", destination1, destination1.Tokens.Adjacent, Present.Done, tracker.BeastMoved );
-		Space destination2 = await ctx.Self.Gateway.Decision( selection );
+		var selection = A.Space.ForMoving_SpaceToken( $"Move {tracker.BeastMoved.Text} to", destination1, destination1.Tokens.Adjacent, Present.Done, tracker.BeastMoved );
+		Space destination2 = await ctx.Self.Gateway.Select( selection );
 		if(destination2 == null) return;
 		await tracker.BeastMoved.Move(destination1,destination2);
 

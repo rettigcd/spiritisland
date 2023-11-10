@@ -3,7 +3,7 @@
 public class DrawFromDeck {
 
 	public static async Task<PowerCardDeck> SelectPowerCardDeck( Spirit spirit ) {
-		PowerType powerType = await spirit.Gateway.Decision( new Select.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
+		PowerType powerType = await spirit.Gateway.Select( new A.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
 		GameState gs = GameState.Current;
 		return powerType == PowerType.Minor ? gs.MinorCards : gs.MajorCards;
 	}

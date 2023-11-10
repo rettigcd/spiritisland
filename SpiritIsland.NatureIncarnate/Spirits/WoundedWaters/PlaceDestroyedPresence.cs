@@ -36,7 +36,7 @@ public class PlaceDestroyedPresence : SpiritAction {
 			.ToArray();
 		if(toOptions.Length == 0)
 			throw new InvalidOperationException( "There no places to place presence." );
-		Space to = await self.Gateway.Decision( Select.ASpace.ToPlacePresence( toOptions, Present.Always, self.Presence.Token ) );
+		Space to = await self.Gateway.Select( A.Space.ToPlacePresence( toOptions, Present.Always, self.Presence.Token ) );
 		await ctx.Target( to ).Presence.PlaceDestroyedHere();
 	}
 }

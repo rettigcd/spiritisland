@@ -277,8 +277,8 @@ public partial class IslandControl : Control {
 		// !!! ADD Adversary Button click - BTN needs to handle its own Click event
 
 		// Dialog Style Popup where multiple buttons are on a common background, and only draw when active.
-		decision_DeckToDrawFrom = decision as Select.DeckToDrawFrom;
-		decision_Element = decision as Select.Element;
+		decision_DeckToDrawFrom = decision as A.DeckToDrawFrom;
+		decision_Element = decision as A.Element;
 
 		Invalidate();
 	}
@@ -314,8 +314,8 @@ public partial class IslandControl : Control {
 	IPanel _growthPanel = new NullPanel();
 	IPanel _statusPanel = new NullPanel();
 
-	Select.DeckToDrawFrom decision_DeckToDrawFrom;
-	Select.Element decision_Element;
+	A.DeckToDrawFrom decision_DeckToDrawFrom;
+	A.Element decision_Element;
 
 	IFearCard options_FearPopUp;
 	IBlightCard options_BlightPopUp;

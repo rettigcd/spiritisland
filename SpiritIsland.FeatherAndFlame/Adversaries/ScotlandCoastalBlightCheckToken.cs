@@ -48,13 +48,13 @@ class ScotlandCoastalBlightCheckToken
 		blightedOptions.Add( args.From );
 
 		// selection
-		var selectionCriteria = new Select.ASpaceToken( 
+		var selectionCriteria = new A.SpaceToken( 
 			$"{Name} Which blight would you like to remove?",
 			blightedOptions.Select( s => new SpaceToken( s.Space, Token.Blight ) ),
 			Present.Always
 		);
 
-		var spaceToken = await spirit.Gateway.Decision( selectionCriteria );
+		var spaceToken = await spirit.Gateway.Select( selectionCriteria );
 		if(spaceToken.Space == args.From.Space) return; // they are going with the original
 
 		// otherwise, they selected the ocean

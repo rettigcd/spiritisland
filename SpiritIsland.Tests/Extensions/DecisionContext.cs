@@ -57,7 +57,7 @@ public class DecisionContext {
 	public DecisionContext IsForSpace( Space space ) => IsForSpace( space.Text );
 
 	public DecisionContext IsForSpace( string space ) {
-		Select.ASpaceToken tfs = _current as Select.ASpaceToken;
+		A.SpaceToken tfs = _current as A.SpaceToken;
 		tfs.ShouldNotBeNull();
 		((IDecision)tfs).Options.OfType<SpaceToken>().Select(x=>x.Space).Distinct().Single().Text.ShouldBe( space );
 		return this;

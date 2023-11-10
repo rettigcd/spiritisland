@@ -43,7 +43,7 @@ public class UntendedLandCrumbles : BlightCard {
 				.Where(s => s.Presence.IsOn(ctx.Board))
 				.ToArray();
 			if(spiritOptions.Length==0) return;
-			var spirit = await ctx.Decision(new Select.ASpirit("Destroy 1 presence",spiritOptions));
+			var spirit = await ctx.Decision(new A.Spirit("Destroy 1 presence",spiritOptions));
 			await Cmd.DestroyPresence().ActAsync( spirit.BindSelf() );
 		}
 	).OnlyExecuteIf( ctx => 

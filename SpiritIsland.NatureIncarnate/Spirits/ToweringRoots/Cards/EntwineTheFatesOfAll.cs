@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland.NatureIncarnate;
+﻿namespace SpiritIsland.NatureIncarnate;
 
 public class EntwineTheFatesOfAll {
 	const string Name = "Entwine the Fates of All";
@@ -8,7 +6,7 @@ public class EntwineTheFatesOfAll {
 	[SpiritCard( Name, 1, Element.Moon, Element.Water, Element.Earth, Element.Plant ), Fast, AnySpirit]
 	[Instructions( "In one of target Spirit's lands, Defend 2 per Presence (from all Spirits)." ), Artist( Artists.AalaaYassin )]
 	static async public Task ActAsync( TargetSpiritCtx ctx ) {
-		var space = await ctx.Self.Gateway.Decision( new ASpace( 
+		var space = await ctx.Self.Gateway.Select( new A.Space( 
 			"Select space to defend 2/presence.", 
 			ctx.Self.Presence.Spaces, Present.Always 
 		) );

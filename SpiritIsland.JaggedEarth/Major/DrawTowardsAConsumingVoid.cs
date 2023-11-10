@@ -73,7 +73,7 @@ public class DrawTowardsAConsumingVoid {
 			.ToArray();
 
 		if( 0<movableSpiritsInSpace.Length ) {
-			var tokenToGather = await ctx.Decision( new Select.ASpaceToken("Select presence to move.", presenceOptions, Present.Always));
+			var tokenToGather = await ctx.Decision( new A.SpaceToken("Select presence to move.", presenceOptions, Present.Always));
 			await tokenToGather.MoveTo( ctx.Tokens );
 		}
 	}

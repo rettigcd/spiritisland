@@ -68,7 +68,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 		// ! Maybe this hould be in Trixter, and not in the Tokens...
 
-		var st = await Gateway.Decision( Select.Invader.ForStrife( tokens, groups ) );
+		var st = await Gateway.Select( An.Invader.ForStrife( tokens, groups ) );
 		if(st == null) return;
 		
 		await tokens.Add1StrifeTo( st.Token.AsHuman() );
@@ -78,7 +78,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		var nearbyInvaders = PowerRangeCalc.GetTargetOptionsFromKnownSource( tokens.Adjacent, new TargetCriteria( 1 ) )
 			.SelectMany( s => s.InvaderTokens().Select( t => new SpaceToken( s.Space, t ) ) )
 			.ToArray();
-		var invader2 = await Gateway.Decision( new Select.ASpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		var invader2 = await Gateway.Select( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 == null) return;
 		--Energy;
 		await invader2.Space.Tokens.Add1StrifeTo( invader2.Token.AsHuman() );

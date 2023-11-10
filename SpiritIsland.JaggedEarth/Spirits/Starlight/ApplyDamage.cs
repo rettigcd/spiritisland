@@ -5,7 +5,7 @@ class ApplyDamage : SpiritAction {
 	public ApplyDamage():base( "ApplyDamage" ) { }
 
 	public override async Task ActAsync( SelfCtx ctx ) {
-		var space = await ctx.Decision(new Select.ASpace("Select land to apply 2 Damage.", ctx.Self.Presence.Spaces, Present.Always));
+		var space = await ctx.Decision(new A.Space("Select land to apply 2 Damage.", ctx.Self.Presence.Spaces, Present.Always));
 		await ctx.Target(space).DamageInvaders(2);
 	}
 

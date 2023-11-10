@@ -102,7 +102,7 @@ class OtherCardsPanel : IPanel {
 	}
 
 	virtual public void ActivateOptions( IDecision decision ) {
-		_pickPowerCardDecision = decision as Select.APowerCard; // capture so we can display card-action
+		_pickPowerCardDecision = decision as A.PowerCard; // capture so we can display card-action
 
 		_options = _pickPowerCardDecision != null
 			? _pickPowerCardDecision.CardOptions.Except( _ctx._spirit.Decks.SelectMany(d=>d.Cards) )
@@ -122,7 +122,7 @@ class OtherCardsPanel : IPanel {
 		: 1;
 
 
-	Select.APowerCard _pickPowerCardDecision;
+	A.PowerCard _pickPowerCardDecision;
 	/// <summary> All Power-Card Options, not just the ones contained in this deck. </summary>
 	PowerCard[] _options;
 	Rectangle _bounds;

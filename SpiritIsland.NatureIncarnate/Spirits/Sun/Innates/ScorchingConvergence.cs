@@ -11,7 +11,7 @@ public class ScorchingConvergence {
 		// Move all of your Presence from origin land directly to target land.
 		var options = FindSacredSitesRange1(ctx).Select(s=>new SpaceToken(s.Space,ctx.Self.Presence.Token));
 
-		var from = await ctx.Self.Gateway.Decision(Select.ASpaceToken.ToCollect("Move all presence", options, Present.Always, ctx.Space ));
+		var from = await ctx.Self.Gateway.Select(A.SpaceToken.ToCollect("Move all presence", options, Present.Always, ctx.Space ));
 		if(from != null && from.Space != ctx.Space )
 			while( from != null && from.Exists )
 				await from.MoveTo(ctx.Tokens);

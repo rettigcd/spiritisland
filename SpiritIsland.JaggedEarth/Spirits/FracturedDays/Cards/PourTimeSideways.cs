@@ -15,10 +15,10 @@ class PourTimeSideways {
 		await frac.SpendTime( 3 );
 
 		// Move 1 of your presence to a different land with your presence.
-		var src = await ctx.Decision( new Select.ASpaceToken("Move presence from:", ctx.Self.Presence.Deployed, Present.Always ) );
+		var src = await ctx.Decision( new A.SpaceToken("Move presence from:", ctx.Self.Presence.Deployed, Present.Always ) );
 		if(!ctx.Self.Presence.HasMovableTokens( src.Space.Tokens )) return; // !!?? is this necessary?
 		var dstOptions = ctx.Self.Presence.Spaces.Tokens().Where( s => s.Space != src.Space );
-		var dst = await ctx.Decision( Select.ASpace.ForMoving_SpaceToken( "Move presence to:", src.Space, dstOptions, Present.Always, src.Token ) );
+		var dst = await ctx.Decision( A.Space.ForMoving_SpaceToken( "Move presence to:", src.Space, dstOptions, Present.Always, src.Token ) );
 		await src.MoveTo(dst);
 		var srcBoards = src.Space.Boards;
 		if(srcBoards.Intersect(dst.Boards).Any()) return;

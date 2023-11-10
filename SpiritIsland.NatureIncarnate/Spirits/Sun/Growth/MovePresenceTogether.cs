@@ -6,7 +6,7 @@ public class MovePresenceTogether : SpiritAction {
 
 	public override async Task ActAsync( SelfCtx ctx ) {
 		var token = ctx.Self.Presence.Token;
-		var from = await ctx.Self.Gateway.Decision(new Select.ASpace(
+		var from = await ctx.Self.Gateway.Select(new A.Space(
 			"Select presence to move up to 3",
 			ctx.Self.Presence.Spaces.Tokens(),
 			Present.Done,
@@ -17,7 +17,7 @@ public class MovePresenceTogether : SpiritAction {
 		// Select 1st Token destination (like Push, Arrows!)
 		var destinationOptions = from.Range(3);
 		int remaining = 3;
-		Space destination = await ctx.Self.Gateway.Decision( Select.ASpace.MoveToken( from, destinationOptions.Tokens(), Present.Always, token, remaining ) );
+		Space destination = await ctx.Self.Gateway.Select( A.Space.ToMoveToken( from, destinationOptions.Tokens(), Present.Always, token, remaining ) );
 		if(destination == null) return;
 
 		var spaceToken = new SpaceToken( from, token );
@@ -28,7 +28,7 @@ public class MovePresenceTogether : SpiritAction {
 
 		while(0 < remaining--) {
 			var options = new SpaceToken[]{ spaceToken };
-			var nextToken = await ctx.Self.Gateway.Decision( Select.ASpaceToken.ToCollect( $"Move up to ({remaining + 1}) to {destination.Text}", options, Present.Done, destination ) );
+			var nextToken = await ctx.Self.Gateway.Select( A.SpaceToken.ToCollect( $"Move up to ({remaining + 1}) to {destination.Text}", options, Present.Done, destination ) );
 			if(nextToken == null) break;
 
 			await nextToken.MoveTo(destination);

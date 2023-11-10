@@ -30,6 +30,6 @@ public interface IUserPortal {
 /// The API that the engine uses to present decisions to the user.
 /// </summary>
 public interface IEnginePortal {
-	Task<T> Decision<T>( Select.TypedDecision<T> originalDecision ) where T : class, IOption;
+	Task<T> Select<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption;
 }
 

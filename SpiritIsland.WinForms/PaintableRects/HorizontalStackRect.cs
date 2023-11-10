@@ -4,7 +4,7 @@ using System.Drawing;
 namespace SpiritIsland.WinForms;
 
 class HorizontalStackRect : IPaintableRect {
-	IPaintableRect[] _children;
+	readonly IPaintableRect[] _children;
 	Func<Rectangle, Rectangle[]> _splitter;
 
 	public HorizontalStackRect( params IPaintableRect[] children ) {

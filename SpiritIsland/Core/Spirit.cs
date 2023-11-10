@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Select;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public abstract partial class Spirit : IOption {
 
@@ -547,7 +545,7 @@ public abstract partial class Spirit : IOption {
 
 		return preselect != null && UserGateway.UsePreselect.Value
 			? await preselect.PreSelect( ctx.Self, spaces )
-			: await this.Gateway.Decision( new Select.ASpace( prompt, spaces.Downgrade(), Present.Always ));
+			: await this.Gateway.Select( new A.Space( prompt, spaces.Downgrade(), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
@@ -583,7 +581,7 @@ public abstract partial class Spirit : IOption {
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
 	public virtual async Task AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
-		var st = await Gateway.Decision( Select.Invader.ForStrife( tokens, groups ) );
+		var st = await Gateway.Select( An.Invader.ForStrife( tokens, groups ) );
 		if(st == null) return;
 		await tokens.Add1StrifeTo( st.Token.AsHuman() );
 	}
