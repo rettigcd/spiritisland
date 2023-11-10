@@ -46,7 +46,7 @@ public class PowerCardImageManager {
 
 		// Image
 
-		using(Image artwork = await ResourceImages.Singleton.CardCardImage( card ))
+		using(Image artwork = await ResourceImages.Singleton.GetCardImage( card ))
 			graphics.DrawImage( artwork, imgRect );
 
 		// Header

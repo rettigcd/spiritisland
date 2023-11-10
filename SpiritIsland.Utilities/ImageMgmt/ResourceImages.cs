@@ -144,7 +144,7 @@ public class ResourceImages {
 		return bitmap;
 	}
 
-	public async Task<Image> CardCardImage( PowerCard card ) {
+	public async Task<Image> GetCardImage( PowerCard card ) {
 		string key = $"power_card_pic\\{card.Name}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 		Bitmap bitmap = await CardDownloader.GetImage( card.Name );

@@ -8,7 +8,7 @@ namespace SpiritIsland.Tests.Core;
 
 public class DownloadPowerPics_Tests {
 
-	[Theory]
+	[Theory(Skip ="Slow")]
 	[InlineData( AssemblyType.BaseGame )]
 	[InlineData( AssemblyType.BranchAndClaw )]
 	[InlineData( AssemblyType.JaggedEarth )]
@@ -26,7 +26,7 @@ public class DownloadPowerPics_Tests {
 
 		foreach(var card in cards) {
 			try {
-				using Image image = await ResourceImages.Singleton.CardCardImage( card );
+				using Image image = await ResourceImages.Singleton.GetCardImage( card );
 			}
 			catch(HttpRequestException) {
 				failed.Add( card.Name );
@@ -53,7 +53,7 @@ public class DownloadPowerPics_Tests {
 		await GenerateCards( cards );
 	}
 
-	[Fact]
+	[Fact(Skip ="slow")]
 	public async Task DrawCard() {
 
 		var cards = new[] {
