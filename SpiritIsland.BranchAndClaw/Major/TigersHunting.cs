@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.BranchAndClaw;
+﻿using SpiritIsland.A;
+
+namespace SpiritIsland.BranchAndClaw;
 
 public class TigersHunting {
 
@@ -25,9 +27,13 @@ public class TigersHunting {
 		if(await ctx.YouHave("2 sun,2 moon,3 animal")) {
 			//   1 damage in adjacent land without blight,
 			//   and +1 damage per beast there
-			var noBlight = await ctx.SelectAdjacentLand( "1 Damage in land w/o blight", ctx=>!ctx.HasBlight);
+			Space noBlight = await ctx.Self.Select( new A.Space( 
+				"1 Damage in land w/o blight", 
+				ctx.Tokens.Adjacent.Where( tokens => !tokens.Blight.Any ), 
+				Present.Always 
+			) );
 			if(noBlight != null)
-				await noBlight.DamageInvaders(1 + noBlight.Beasts.Count );
+				await ctx.Target(noBlight).DamageInvaders(1 + noBlight.Tokens.Beasts.Count );
 		}
 
 	}

@@ -6,7 +6,7 @@ public class EntwineTheFatesOfAll {
 	[SpiritCard( Name, 1, Element.Moon, Element.Water, Element.Earth, Element.Plant ), Fast, AnySpirit]
 	[Instructions( "In one of target Spirit's lands, Defend 2 per Presence (from all Spirits)." ), Artist( Artists.AalaaYassin )]
 	static async public Task ActAsync( TargetSpiritCtx ctx ) {
-		var space = await ctx.Self.Gateway.Select( new A.Space( 
+		var space = await ctx.Self.Select( new A.Space( 
 			"Select space to defend 2/presence.", 
 			ctx.Self.Presence.Spaces, Present.Always 
 		) );

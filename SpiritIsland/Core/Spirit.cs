@@ -12,7 +12,7 @@ public abstract partial class Spirit : IOption {
 		foreach(var card in initialCards)
 			AddCardToHand(card);
 
-		Gateway = new UserGateway();
+		_gateway = new UserGateway();
 
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, Cards = Hand });
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, Cards = InPlay });
@@ -23,7 +23,14 @@ public abstract partial class Spirit : IOption {
 		Hand.Add(card);
 	}
 
-	public UserGateway Gateway { get; }
+	#endregion
+
+	#region Gateway stuff
+
+	public IUserPortal Portal => _gateway;
+	public Task<T> Select<T>( A.TypedDecision<T> decision ) where T : class, IOption => _gateway.Select<T>( decision );
+	public void PreSelect( SpaceToken st ) => _gateway.Preloaded = st;
+	UserGateway _gateway;
 
 	#endregion
 
@@ -312,7 +319,7 @@ public abstract partial class Spirit : IOption {
 
 	public void InitSpirit( Board board, GameState gameState ){
 		gameState.TimePasses_WholeGame += On_TimePassed;
-		Gateway.DecisionMade += (d) => gameState.Log(d);
+		_gateway.DecisionMade += (d) => gameState.Log(d);
 		InitializeInternal(board,gameState);
 	}
 
@@ -545,7 +552,7 @@ public abstract partial class Spirit : IOption {
 
 		return preselect != null && UserGateway.UsePreselect.Value
 			? await preselect.PreSelect( ctx.Self, spaces )
-			: await this.Gateway.Select( new A.Space( prompt, spaces.Downgrade(), Present.Always ));
+			: await Select( new A.Space( prompt, spaces.Downgrade(), Present.Always ));
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
@@ -581,7 +588,7 @@ public abstract partial class Spirit : IOption {
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
 	public virtual async Task AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
-		var st = await Gateway.Select( An.Invader.ForStrife( tokens, groups ) );
+		var st = await Select( An.Invader.ForStrife( tokens, groups ) );
 		if(st == null) return;
 		await tokens.Add1StrifeTo( st.Token.AsHuman() );
 	}

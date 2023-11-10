@@ -43,7 +43,7 @@ public class UnnervingPall {
 				damagedInvaders.Distinct().Cast<IToken>(),
 				Present.Done
 			);
-			var skip = (await ctx.Decision( decision ))?.Token;
+			var skip = (await ctx.SelectAsync( decision ))?.Token;
 			if(skip == null) break;
 			skipInvaders[(HumanToken)skip]++;
 			damagedInvaders.Remove( skip );

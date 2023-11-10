@@ -44,7 +44,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 			.ToArray();
 		if(sourceOptions.Length == 0) return;
 
-		Space source = await ctx.Decision( new A.Space( "Fear: Select land to push explorer from into more towns/cities", sourceOptions, Present.Done ) );
+		Space source = await ctx.SelectAsync( new A.Space( "Fear: Select land to push explorer from into more towns/cities", sourceOptions, Present.Done ) );
 		if(source == null) return; // continue => next spirit, break/return => no more spirits
 
 		// Push

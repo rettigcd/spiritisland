@@ -39,7 +39,7 @@ public class GiftOfProliferation_Tests {
 		var task = GiftOfProliferation.ActionAsync( setup.TargetSelf );
 
 		// Then: we should not be able to pick restricted space
-		var decision = setup.Spirit.Gateway.Next;
+		var decision = setup.Spirit.Portal.Next;
 		decision.FormatOptions().ShouldNotContain(restrictedSpace);
 	}
 

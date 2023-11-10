@@ -47,7 +47,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		//		User.TargetsLand( WashAway.Name, targetSpace.Label );
 		//		User.OptionallyPushesInvaderTo(invader.Token.ToString(),"A1,[A2],A3,A5");
 
-		var invader = _spirit.Gateway.Next.Options[0] as SpaceToken;
+		var invader = _spirit.Portal.Next.Options[0] as SpaceToken;
 		var invaderText = $"{invader.Token.Text} on {invader.Space}";
 
 		User.AssertDecision( PreselectPrompt, invaderText + ",Done", invaderText );

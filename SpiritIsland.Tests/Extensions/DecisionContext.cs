@@ -5,7 +5,7 @@ public class DecisionContext {
 
 	#region private
 
-	readonly IUserPortal _gateway;
+	readonly IUserPortal _portal;
 	readonly IDecision _current;
 
 	#endregion
@@ -14,9 +14,8 @@ public class DecisionContext {
 
 	/// <summary> Binds to the *next* Decsion </summary>
 	public DecisionContext( Spirit spirit ) {
-		_gateway = spirit.Gateway;
-		_current = _gateway.Next; // Waits for a decision, then binds to it
-		// _current = _gateway.Current ?? throw new Exception( "no Decision presented." );
+		_portal = spirit.Portal;
+		_current = _portal.Next; // Waits for a decision, then binds to it
 	}
 
 	#endregion
@@ -81,7 +80,7 @@ public class DecisionContext {
 		=> Choose( _current.Options[index] );
 
 	public void Choose( IOption choice )
-		=> _gateway.Choose( _current, choice );
+		=> _portal.Choose( _current, choice );
 
 	public string Format() => _current.FormatDecision();
 
@@ -90,7 +89,7 @@ public class DecisionContext {
 	void AssertIsReady( string prompt ) {
 		// This line tests that are currently waiting at a decision
 		// It breaks tests that get to a decision then wait for the engine to catch up.
-		_gateway.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
+		_portal.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
 	}
 
 	#endregion

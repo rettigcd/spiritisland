@@ -84,8 +84,8 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 			.ToArray();
 
 		// Select
-		SpaceToken st = await ctx.Self.Gateway.Select( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
-		ctx.Self.Gateway.Preloaded = st; // recording null is fine because when it probably means no space matches criteria and user won't be given an option anyway.
+		SpaceToken st = await ctx.Self.Select( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		ctx.Self.PreSelect(st); // recording null is fine because when it probably means no space matches criteria and user won't be given an option anyway.
 
 		return st == null ? null : ctx.Target( st.Space );
 	}

@@ -87,7 +87,7 @@ class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenA
 				scope[key] = true; // don't save any more
 
 				Spirit spirit = scope.Owner ?? args.From.Space.Boards[0].FindSpirit();
-				Space destination = await spirit.Gateway.Select( A.Space.ToPushToken( (IToken)args.Token, args.From.Space, pushOptions, Present.Always ) );
+				Space destination = await spirit.Select( A.Space.ToPushToken( (IToken)args.Token, args.From.Space, pushOptions.Downgrade(), Present.Always ) );
 				await args.From.MoveTo( (IToken)args.Token, destination );
 			}
 		}

@@ -50,7 +50,7 @@ public class StrongAndConstantCurrents{
 				.ToArray();
 
 			// From
-			var selected = await ctx.Decision( 
+			var selected = await ctx.SelectAsync( 
 				new A.SpaceToken( "Select Dahan to move to/from"+ctx.Space, coastalWithDahan, Present.Done )
 					.PointArrowTo( ctx.Space )
 			);
@@ -58,7 +58,7 @@ public class StrongAndConstantCurrents{
 
 			// To:
 			var destination = (selected.Space != ctx.Space) ? ctx.Space
-				: await ctx.Decision( A.Space.ToPushToken( selected.Token, selected.Space, coastalCtxs, Present.Always ) );
+				: await ctx.SelectAsync( A.Space.ToPushToken( selected.Token, selected.Space, coastalCtxs.Downgrade(), Present.Always ) );
 
 			await ctx.Move( selected.Token, selected.Space, destination );
 

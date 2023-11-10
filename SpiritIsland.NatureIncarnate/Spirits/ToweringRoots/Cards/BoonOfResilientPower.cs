@@ -10,7 +10,7 @@ public class BoonOfResilientPower {
 
 		// Target Spirit may Add 1 DestoryedPresence to one of your lands.
 		IEnumerable<SpaceState> spaceOptions = ctx.Self.Presence.Spaces.Tokens();
-		Space space = await ctx.OtherCtx.Decision( new A.Space( "Restore 1 destroyed presence", spaceOptions, Present.Done ) );
+		Space space = await ctx.OtherCtx.SelectAsync( new A.Space( "Restore 1 destroyed presence", spaceOptions, Present.Done ) );
 		if(space != null)
 			await ctx.OtherCtx.Target( space ).Presence.PlaceDestroyedHere();
 

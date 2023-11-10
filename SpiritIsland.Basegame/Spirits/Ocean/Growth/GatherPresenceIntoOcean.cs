@@ -16,7 +16,7 @@ public class GatherPresenceIntoOcean : SpiritAction {
 
 			SpaceState currentTarget = gatherSpaces[0];
 
-			var source = await ctx.Decision( new A.SpaceToken(
+			var source = await ctx.SelectAsync( new A.SpaceToken(
 				$"Select source of Presence to Gather into {currentTarget.Space}"
 				, ctx.Self.Presence.Deployed.Where( d => ctx.Self.Presence.IsOn( d.Space ) )
 				, Present.Always

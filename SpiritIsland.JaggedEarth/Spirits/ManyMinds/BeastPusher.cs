@@ -16,7 +16,7 @@ class BeastPusher : TokenPusher {
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await _self.Gateway.Select( A.Space.ToPushToken( token, _tokens.Space, destinationOptions, Present.Always ) );
+		return await _self.Select( A.Space.ToPushToken( token, _tokens.Space, destinationOptions.Downgrade(), Present.Always ) );
 	}
 
 }

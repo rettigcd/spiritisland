@@ -39,7 +39,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 
 		//  in a land at range-0
 		var options = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 0 ), true ).Downgrade();
-		var land = await ctx.Decision( new A.Space( $"{damage} Damage", options,Present.Always ) );
+		var land = await ctx.SelectAsync( new A.Space( $"{damage} Damage", options,Present.Always ) );
 
 		ctx.Self.Energy -= damage;
 		await ctx.Target(land).DamageInvaders(damage);

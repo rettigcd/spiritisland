@@ -75,12 +75,12 @@ public class TargetSpaceCtx : SelfCtx {
 		// Select 1st Token to move (like Push, no arrows)
 		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>().ToArray(); 
 		int remaining = max;
-		var firstToken = (await Decision( A.SpaceToken.ToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
+		var firstToken = (await SelectAsync( A.SpaceToken.ToMove( Space, remaining, tokenOptions, Present.Done ) ))?.Token;
 		if(firstToken == null) return null;
 
 		// Select 1st Token destination (like Push, Arrows!)
 		var destinationOptions = Range( targetCriteria );
-		Space destination = await Decision( A.Space.ToMoveToken( Space, destinationOptions, Present.Always, firstToken, remaining ) );
+		Space destination = await SelectAsync( A.Space.ToMoveToken( Space, destinationOptions.Downgrade(), Present.Always, firstToken, remaining ) );
 		if( destination == null ) return null;
 		
 		await Move( firstToken, Space, destination );
@@ -89,7 +89,7 @@ public class TargetSpaceCtx : SelfCtx {
 		while(0 < remaining--) {
 			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>()
 				.Select(t=>new SpaceToken(Space,t,false)).ToArray();
-			var nextToken = await Decision( A.SpaceToken.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
+			var nextToken = await SelectAsync( A.SpaceToken.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
 			if(nextToken == null ) break;
 			
 			await Move( nextToken.Token, nextToken.Space, destination );
@@ -224,7 +224,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var st = await Decision( An.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
+			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, Space, invaders ) );
 			if(st == null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
@@ -242,7 +242,7 @@ public class TargetSpaceCtx : SelfCtx {
 		int done = 0;
 
 		while(0 < additionalTotalDamage) {
-			var st = await Decision( An.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
+			var st = await SelectAsync( An.Invader.ForBadlandDamage( additionalTotalDamage, Space, invaders ) );
 			if(st == null) break;
 			var invader = st.Token.AsHuman();
 			int index = invaders.IndexOf( invader );
@@ -318,16 +318,9 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	/// <param name="tokenToAdd">IF we are adding a token, supply it so UI can better pick target sapce</param>
-	/// <remarks>
-	/// Use 1 - Simply selecting adjacent land
-	/// Use 2 - Select land to place token in.
-	/// </remarks>
-	public async Task<TargetSpaceCtx> SelectAdjacentLand( string prompt, Func<TargetSpaceCtx, bool> filter = null ) {
-		var spaceOptions = Tokens.Adjacent;
-		if(filter != null)
-			spaceOptions = spaceOptions.Where( s => filter( Target( s.Space ) ) );
-		var space = await Decision( new A.Space( prompt, spaceOptions, Present.Always ) );
+	/// <remarks> Simnple Helper - has access to: Spirit, SpaceState/Adjacent, Target() </remarks>
+	public async Task<TargetSpaceCtx> SelectAdjacentLandAsync( string prompt ) {
+		var space = await SelectAsync( new A.Space( prompt, Tokens.Adjacent, Present.Always ) );
 		return space != null ? Target( space )
 			: null;
 	}

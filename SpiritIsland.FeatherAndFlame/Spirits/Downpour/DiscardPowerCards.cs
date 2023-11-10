@@ -13,7 +13,7 @@ internal class DiscardPowerCards : SpiritAction {
 		for(int i = 0; i < _count; ++i) {
 			IEnumerable<SingleCardUse> options = SingleCardUse.GenerateUses( CardUse.Discard, inPlay.Union( hand ) );
 			var decision = new A.PowerCard( $"Select card to discard ({i+1}of{_count})", options, Present.Always );
-			PowerCard card = await ctx.Decision( decision );
+			PowerCard card = await ctx.SelectAsync( decision );
 			if(card != null) {
 				// (Source-1) Purchased / Active
 				if(inPlay.Contains( card )) {

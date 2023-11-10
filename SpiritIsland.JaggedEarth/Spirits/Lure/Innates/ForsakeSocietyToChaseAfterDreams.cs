@@ -26,7 +26,7 @@ public class ForsakeSocietyToChaseAfterDreams {
 
 	static async Task Dissolve(TargetSpaceCtx ctx, params HumanTokenClass[] invaderCats) {
 		var decision = An.Invader.ToReplace("dissolve", ctx.Space, ctx.Tokens.OfAnyHumanClass( invaderCats ) );
-		var invader = (await ctx.Decision(decision))?.Token.AsHuman();
+		var invader = (await ctx.SelectAsync(decision))?.Token.AsHuman();
 		if(invader == null) return;
 
 		// Replace

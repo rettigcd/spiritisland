@@ -184,7 +184,7 @@ public partial class Form1 : Form, IHaveOptions {
 			EnablePreselects = true,
 		};
 
-		_game.Spirit.Gateway.NewWaitingDecision += Action_NewWaitingDecision;
+		_game.Spirit.Portal.NewWaitingDecision += Action_NewWaitingDecision;
 
 		gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 		gameState.NewLogEntry += _islandControl.GameState_NewLogEntry;

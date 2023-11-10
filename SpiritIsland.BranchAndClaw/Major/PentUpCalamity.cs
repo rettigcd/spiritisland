@@ -39,7 +39,7 @@ public class PentUpCalamity {
 				$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})"
 				, ctx.Space, options , Present.Done
 			);
-			var tokenToRemove = (await ctx.Decision( removeTokenDecision ))?.Token;
+			var tokenToRemove = (await ctx.SelectAsync( removeTokenDecision ))?.Token;
 			if(tokenToRemove == null) break;
 
 			// If bonus allowed us to return some

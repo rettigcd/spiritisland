@@ -3,11 +3,11 @@
 public class SpaceToken : IOption {
 	SpaceToken() { } // Null SpaceToken
 
-	/// <param name="showSpace">If all of the tokens are on the same space, don't show it in the text.</param>
-	public SpaceToken( Space space, IToken token, bool showSpace=true ) { 
+	/// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
+	public SpaceToken( Space space, IToken token, bool showSpaceInTextDescription=true ) { 
 		Space = space; 
 		Token = token;
-		Text = showSpace ? $"{Token.Text} on {space.Label}" : $"{Token.Text}";
+		Text = showSpaceInTextDescription ? $"{Token.Text} on {space.Label}" : $"{Token.Text}";
 	}
 
 	public Space Space { get; }

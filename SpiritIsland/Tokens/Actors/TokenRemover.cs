@@ -37,7 +37,7 @@ public class TokenRemover {
 		IToken[] tokens;
 		while(0 < (tokens = GetTokens()).Length) {
 			// Select Token
-			var token = (await _ctx.Self.Gateway.Select( A.SpaceToken.ToRemove( _ctx.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
+			var token = (await _ctx.Self.Select( A.SpaceToken.ToRemove( _ctx.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
 			if(token == null) break;
 
 			// Remove

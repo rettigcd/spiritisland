@@ -31,7 +31,7 @@ public class VengeanceAsABurningPlague : Spirit {
 
 	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async ctx => {
 		var options = DefaultRangeCalculator.Singleton.GetTargetOptionsFromKnownSource( ctx.Self.Presence.Spaces.Tokens(), new TargetCriteria( 1 ) );
-		Space to = await ctx.Self.Gateway.Select( A.Space.ToPlacePresence( options, Present.Always, Token.Disease ) );
+		Space to = await ctx.Self.Select( new A.Space( "Add a Disease", options, Present.Always ).ShowTokenLocation( Token.Disease ) );
 		await ctx.Target( to ).Disease.AddAsync( 1 );
 	} );
 

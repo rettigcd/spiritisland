@@ -17,13 +17,13 @@ public class PiecesEscape : SpiritAction {
 		while(0 < remaining) {
 			// select token
 			var options = tokens.Keys.Cast<IToken>().ToList();
-			SpaceToken? spaceToken = await ctx.Decision(new A.SpaceToken( $"Select ({remaining}) piece(s) to escape Endless Darkness", EndlessDark.Space, options, Present.Always ) );
+			SpaceToken? spaceToken = await ctx.SelectAsync(new A.SpaceToken( $"Select ({remaining}) piece(s) to escape Endless Darkness", EndlessDark.Space, options, Present.Always ) );
 			if(spaceToken == null) return;
 			--remaining;
 
 			// select destination
 			// !!! When selectin Destination for presence, need to check where they are allowed to be.  (no ocean inland, or lure on the coast!)
-			var destination = await ctx.Decision(new A.Space("Place escaped piece", ctx.Self.Presence.Spaces.Tokens(), Present.Always, spaceToken.Token)) 
+			var destination = await ctx.SelectAsync(new A.Space("Place escaped piece", ctx.Self.Presence.Spaces, Present.Always).ShowTokenLocation( spaceToken.Token )) 
 				?? throw new GameOverException(new GameOver(GameOverResult.Defeat,"Unable to place escaped pieces."));
 			await spaceToken.MoveTo(destination);
 		}

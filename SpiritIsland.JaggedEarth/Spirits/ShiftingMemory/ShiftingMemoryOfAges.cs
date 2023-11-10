@@ -60,7 +60,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			.Where(u => restrictedOptions==null || restrictedOptions.Contains(u.Card));
 				
 		var decision = new A.PowerCard( "Select card to forget or discard", options, present );
-		PowerCard cardToForgetOrDiscard = await this.Gateway.Select( decision );
+		PowerCard cardToForgetOrDiscard = await Select( decision );
 		if(cardToForgetOrDiscard != null)
 			ForgetThisCard( cardToForgetOrDiscard );
 		return cardToForgetOrDiscard != null && !DiscardPile.Contains(cardToForgetOrDiscard) 

@@ -6,7 +6,7 @@ public class TransformToAMurderousDarkness {
 	[Instructions( "Target Spirit may choose one of their Sacred Sites. In that land: Replace all their Presence with Badlands; the replaced Presence leave the game. Push any number of those Badlands. 3 Fear. 3 Damage per Presence replaced. -If you have- 3 Moon, 2 Fire, 2 Air: 1 Damage in an adjacent land. 1 Damage in an adjacent land." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync(TargetSpiritCtx ctx ) {
 		// Target Spirt may choose one of their Sacred Sites.
-		Space space = await ctx.Other.Gateway.Select(
+		Space space = await ctx.Other.Select(
 			new A.Space( "Replace presence with badlands", ctx.Other.Presence.SacredSites, Present.Always )
 		);
 
@@ -24,7 +24,7 @@ public class TransformToAMurderousDarkness {
 	}
 
 	static async Task DamageInAdjacentLand( TargetSpaceCtx ctx ) {
-		var adjCtx = await ctx.SelectAdjacentLand("1 damage");
+		var adjCtx = await ctx.SelectAdjacentLandAsync("1 damage");
 		if(adjCtx != null)
 			await adjCtx.DamageInvaders(1);
 	}

@@ -39,7 +39,7 @@ public class ObserveTheEverChangingWorld_Tests {
 		//   And: is done with Fast
 		fxt.user.IsDoneWith(Phase.Fast);
 
-		var dec = fxt.spirit.Gateway.Next;
+		var dec = fxt.spirit.Portal.Next;
 
 		if(dec.Prompt == "Select Slow to resolve") {
 			_ = dec.ToString();

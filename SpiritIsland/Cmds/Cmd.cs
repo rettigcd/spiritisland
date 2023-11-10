@@ -65,7 +65,7 @@ public static partial class Cmd {
 		int remaining = calcHealthToRemove(ctx);
 		HumanToken pick;
 		while(0 < remaining
-			&& (pick = (await ctx.Decision( An.Invader.ToRemoveByHealth( ctx.Space, ctx.Tokens.InvaderTokens(), remaining )) )?.Token.AsHuman()) != null
+			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Space, ctx.Tokens.InvaderTokens(), remaining )) )?.Token.AsHuman()) != null
 		) {
 			await ctx.Remove( pick, 1 );
 			remaining -= pick.RemainingHealth;
@@ -168,11 +168,11 @@ public static partial class Cmd {
 		=> new SpiritAction( "Push up to 1 Presence", async ctx => {
 
 			// Select source
-			var source = await ctx.Self.Gateway.Select( new A.SpaceToken( "Select Presence to push.", ctx.Self.Presence.Movable, Present.Done ) );
+			var source = await ctx.Self.Select( new A.SpaceToken( "Select Presence to push.", ctx.Self.Presence.Movable, Present.Done ) );
 			if(source == null) return;
 
 			// Select destination
-			Space destination = await ctx.Self.Gateway.Select( A.Space.ToPushPresence( source.Space, source.Space.Tokens.Adjacent, Present.Always, source.Token ) );
+			Space destination = await ctx.Self.Select( A.Space.ToPushPresence( source.Space, source.Space.Tokens.Adjacent.Downgrade(), Present.Always, source.Token ) );
 			await source.MoveTo( destination.Tokens );
 
 			// Calback
@@ -181,7 +181,7 @@ public static partial class Cmd {
 		});
 
 	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SpiritAction( "Destroy 1 presence.", async ctx => {
-		var spaceToken = await ctx.Self.Gateway.Select( new A.SpaceToken( prompt, ctx.Self.Presence.Deployed, Present.Always ) );
+		var spaceToken = await ctx.Self.Select( new A.SpaceToken( prompt, ctx.Self.Presence.Deployed, Present.Always ) );
 		await spaceToken.Destroy();
 	} );
 
@@ -198,7 +198,7 @@ public static partial class Cmd {
 		var self = ctx.Self;
 		count = Math.Max( count, self.Presence.Destroyed );
 		while(count > 0) {
-			var dst = await self.Gateway.Select( A.TrackSlot.ToCover( self ) );
+			var dst = await self.Select( A.TrackSlot.ToCover( self ) );
 			if(dst == null) break;
 			await self.Presence.ReturnDestroyedToTrack( dst );
 			--count;
@@ -213,7 +213,7 @@ public static partial class Cmd {
 			var self = ctx.Self;
 			IOption from = await self.SelectSourcePresence();
 			IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
-			Space to = await self.Gateway.Select( A.Space.ToPlacePresence( destinationOptions, Present.Always, token ) );
+			Space to = await self.Select( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, token ) );
 			await self.Presence.Place( from, to );
 		} );
 

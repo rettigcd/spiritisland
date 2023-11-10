@@ -10,7 +10,7 @@ public static class SpiritExtensions {
 
 	internal static void WaitForNext( this Spirit spirit ){
 		const int ms = 10000;
-		if( !spirit.Gateway.WaitForNext(ms) )
+		if( !spirit.Portal.WaitForNext(ms) )
 			throw new Exception($"Engine did not present Decision withing {ms}");
 
 	}

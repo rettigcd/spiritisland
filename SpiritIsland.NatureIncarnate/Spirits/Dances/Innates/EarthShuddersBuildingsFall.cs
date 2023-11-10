@@ -26,7 +26,7 @@ public class EarthShuddersBuildingsFall {
 		// In any # of lands with Quake:
 		var options = GameState.Current.Spaces.Where( x => x.Has( Token.Quake ) && x.HasAny( Human.Invader ) ).Downgrade().ToList();
 		while(0 < options.Count) {
-			Space space = await ctx.Self.Gateway.Select( new A.Space( "Select land to generate 2 damage/quake and remove 1 quake.", options, Present.Done ) );
+			Space space = await ctx.Self.Select( new A.Space( "Select land to generate 2 damage/quake and remove 1 quake.", options, Present.Done ) );
 			if(space == null) break;
 			options.Remove( space );
 

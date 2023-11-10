@@ -171,7 +171,7 @@ public class HabsburgMonarchy : IAdversary {
 			if(addSpaces.Length == 0) break;
 
 			var criteria = new A.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
-			var addSpace = await ctx.Self.Gateway.Select( criteria );
+			var addSpace = await ctx.Self.Select( criteria );
 			await addSpace.Tokens.AddDefault( Human.Town, 1, AddReason.Build );
 		}
 	}

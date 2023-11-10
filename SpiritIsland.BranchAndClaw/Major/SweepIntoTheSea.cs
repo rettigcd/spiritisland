@@ -7,7 +7,7 @@ public partial class SweepIntoTheSea {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		await DoPower( ctx );
 		if(await ctx.YouHave("3 sun,2 water"))
-			await DoPower( await ctx.SelectAdjacentLand("Repeat power") );
+			await DoPower( await ctx.SelectAdjacentLandAsync("Repeat power") );
 	}
 
 	static async Task DoPower( TargetSpaceCtx ctx ) {
@@ -29,8 +29,14 @@ public partial class SweepIntoTheSea {
 			.SetTargets( oceans )
 			.Calculate();
 		int curDistance = distanceFromOceans[ctx.Tokens];
-		var closerSpace = await ctx.SelectAdjacentLand( "Push explorer/town towards ocean", a => distanceFromOceans[a.Tokens] < curDistance );
-		return closerSpace;
+
+		Space space = await ctx.Self.Select( 
+			new A.Space( "Push explorer/town towards ocean", 
+			ctx.Tokens.Adjacent.Where( tokens => distanceFromOceans[tokens] < curDistance ), 
+			Present.Always 
+		) );
+		return space != null ? ctx.Target( space )
+			: null;
 	}
 
 	static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params HumanTokenClass[] groups ) {

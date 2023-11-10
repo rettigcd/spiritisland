@@ -278,7 +278,7 @@ public partial class IslandControl : Control {
 
 		// Dialog Style Popup where multiple buttons are on a common background, and only draw when active.
 		decision_DeckToDrawFrom = decision as A.DeckToDrawFrom;
-		decision_Element = decision as A.Element;
+		decision_Element = decision as An.Element;
 
 		Invalidate();
 	}
@@ -315,7 +315,7 @@ public partial class IslandControl : Control {
 	IPanel _statusPanel = new NullPanel();
 
 	A.DeckToDrawFrom decision_DeckToDrawFrom;
-	A.Element decision_Element;
+	An.Element decision_Element;
 
 	IFearCard options_FearPopUp;
 	IBlightCard options_BlightPopUp;

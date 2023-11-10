@@ -38,7 +38,7 @@ public class ConsiderAHarmoniousNature {
 
 	/// <returns>Selected Spirit</returns>
 	static async Task<Spirit?> AddAnotherSpiritsDestroyedPresenceToYourLand( SelfCtx ctx ) {
-		Spirit other = await ctx.Self.Gateway.Select(new A.TypedDecision<Spirit>(
+		Spirit other = await ctx.Self.Select(new A.TypedDecision<Spirit>(
 			"Choose spirit to Add Destroyed Presence to one of your lands.", 
 			GameState.Current.Spirits.Where(s=>s!=ctx.Self),
 			Present.Done
@@ -50,7 +50,7 @@ public class ConsiderAHarmoniousNature {
 
 	static async Task AddPresenceToLands( Spirit other, IEnumerable<Space> spaces ) {
 		if(other.Presence.Destroyed == 0) return;
-		var space = await other.Gateway.Select(new A.Space("Place destroyed presence", spaces, Present.Done));
+		var space = await other.Select(new A.Space("Place destroyed presence", spaces, Present.Done));
 		if(space == null) return;
 		await space.Tokens.Add(other.Presence.Token, 1);
 		--other.Presence.Destroyed;

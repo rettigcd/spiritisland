@@ -29,7 +29,7 @@ public class UnbearableGaze {
 				);
 
 			// Select 1 to push
-			var toPush = await ctx.Self.Gateway.Select( new A.SpaceToken( "Select Explorer/Town to push", tokenOptions, Present.Always ) );
+			var toPush = await ctx.Self.Select( new A.SpaceToken( "Select Explorer/Town to push", tokenOptions, Present.Always ) );
 			if(toPush == null) break; // nothing to push
 			await PushSpecificToken( ctx.Self, toPush );
 
@@ -49,9 +49,9 @@ public class UnbearableGaze {
 
 	static async Task PushSpecificToken( Spirit spirit, SpaceToken toPush ) {
 		// Push it
-		Space destination = await spirit.Gateway.Select( A.Space.ToPushToken(
+		Space destination = await spirit.Select( A.Space.ToPushToken(
 			toPush.Token, toPush.Space,
-			toPush.Space.Tokens.Adjacent_Existing,
+			toPush.Space.Tokens.Adjacent_Existing.Downgrade(),
 			Present.Always
 		) );
 		if(destination != null)

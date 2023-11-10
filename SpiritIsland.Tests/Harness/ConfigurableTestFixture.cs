@@ -125,7 +125,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	public void Choose( IOption choice ) => NextDecision.Choose( choice.Text );
 	public DecisionContext NextDecision => Spirit.NextDecision();
 
-	public string FormatOptions => Spirit.Gateway.Next.FormatOptions();
+	public string FormatOptions => Spirit.Portal.Next.FormatOptions();
 
 	public void ChoosePush( IToken token, Space destination ) {
 		NextDecision.Choose( token.Text ); // passing Text in case options are actually SpaceTokens

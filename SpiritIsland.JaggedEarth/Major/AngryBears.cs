@@ -27,7 +27,7 @@ public class AngryBears {
 				.Where(x=>x.Beasts.Any)
 				.SelectMany( x=>x.SpaceTokensOfClass(Human.Explorer) )
 				.ToArray();
-			var st = await ctx.Decision(new A.SpaceToken("Destroy Explorer",tokens, Present.Always));
+			var st = await ctx.SelectAsync(new A.SpaceToken("Destroy Explorer",tokens, Present.Always));
 			if(st != null)
 				await ctx.Target(st.Space).Invaders.DestroyNTokens( st.Token.AsHuman(), 1 );
 		}

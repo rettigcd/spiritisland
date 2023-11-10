@@ -42,7 +42,7 @@ public class TokenPusher {
 		IToken[] tokens;
 		while(0 < (tokens = await GetTokens()).Length) {
 			// Select Token
-			var token = (await _self.Gateway.Select( A.SpaceToken.ToPush( _tokens.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
+			var token = (await _self.Select( A.SpaceToken.ToPush( _tokens.Space, sharedGroupCounts.Sum(), tokens, present ) ))?.Token;
 			if(token == null) break;
 
 			// Push to Destination
@@ -84,7 +84,7 @@ public class TokenPusher {
 		foreach(var filter in destinationFilters)
 			destinationOptions = destinationOptions.Where(filter);
 
-		return await _self.Gateway.Select( A.Space.ToPushToken( token, _tokens.Space, destinationOptions, Present.Always ) );
+		return await _self.Select( A.Space.ToPushToken( token, _tokens.Space, destinationOptions.Downgrade(), Present.Always ) );
 	}
 
 	public TokenPusher FilterDestinations(Func<SpaceState,bool> destinationFilter ) {

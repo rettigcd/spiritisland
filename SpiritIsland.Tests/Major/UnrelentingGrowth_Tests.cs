@@ -45,7 +45,7 @@ public class UnrelentingGrowth_Tests {
 
 		// Then: we should not be able to pick restricted space
 		if( !task.IsCompleted) { // ocean has no options - so it completes
-			setup.Spirit.Gateway.Next.FormatOptions().ShouldNotContain( restrictedSpace );
+			setup.Spirit.Portal.Next.FormatOptions().ShouldNotContain( restrictedSpace );
 		}
 	}
 

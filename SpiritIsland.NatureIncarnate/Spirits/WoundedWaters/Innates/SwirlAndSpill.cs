@@ -36,7 +36,7 @@ public class SwirlAndSpill {
 		Space[] destinations = await DoTier2( ctx );
 
 		IEnumerable<SpaceState> options = destinations.Tokens().Where( t => t.HasAny( Human.Town_City ) ).Distinct();
-		Space spaceToDownGrade = await ctx.Self.Gateway.Select( new A.Space( "Select space to downgrade all Towns/Cities.", options, Present.Done ) );
+		Space spaceToDownGrade = await ctx.Self.Select( new A.Space( "Select space to downgrade all Towns/Cities.", options, Present.Done ) );
 		if(spaceToDownGrade == null) return;
 
 		await ReplaceInvader.DowngradeAll( ctx, Human.Town_City );

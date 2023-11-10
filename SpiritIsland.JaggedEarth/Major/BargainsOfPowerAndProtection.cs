@@ -11,7 +11,7 @@ public class BargainsOfPowerAndProtection {
 			var presenceToRemove = await ctx.Self.SelectSourcePresence("remove from game"); // Come from track or board
 			await ctx.Self.Presence.TakeFrom( presenceToRemove );
 		} else {
-			SpaceToken presenceToRemove = await ctx.Decision( new A.SpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
+			SpaceToken presenceToRemove = await ctx.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
 			await presenceToRemove.Remove();
 		}
 

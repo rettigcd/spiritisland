@@ -6,7 +6,7 @@ public class VirtualUser {
 
 	public VirtualUser(Spirit spirit ) { 
 		_spirit = spirit;
-		_userPortal = spirit.Gateway;
+		_userPortal = spirit.Portal;
 	}
 
 	#endregion

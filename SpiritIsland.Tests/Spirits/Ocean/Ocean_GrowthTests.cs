@@ -36,10 +36,10 @@ public class Ocean_GrowthTests : GrowthTests {
 
 		if(gather != null){
 			_ = gather.ActivateAsync( _spirit.BindSelf() );
-			while(!_spirit.Gateway.IsResolved){
-				var options = _spirit.Gateway.Next.Options.Where( x => moveBySrc.ContainsKey( x.Text ) ).ToArray();
+			while(!_spirit.Portal.IsResolved){
+				var options = _spirit.Portal.Next.Options.Where( x => moveBySrc.ContainsKey( x.Text ) ).ToArray();
 				var source = options.First();
-				_spirit.Gateway.Choose( _spirit.Gateway.Next, source );
+				_spirit.Portal.Choose( _spirit.Portal.Next, source );
 			}
 		}
 

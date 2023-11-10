@@ -57,8 +57,8 @@ public class SpiritPicksLandAction : IActOn<SelfCtx> {
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
-		SpaceToken st = await ctx.Self.Gateway.Select( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
-		ctx.Self.Gateway.Preloaded = st;
+		SpaceToken st = await ctx.Self.Select( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		ctx.Self.PreSelect(st);
 
 		return st == null ? null : ctx.Target( st.Space );
 	}

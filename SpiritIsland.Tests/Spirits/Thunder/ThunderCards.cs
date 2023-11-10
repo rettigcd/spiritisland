@@ -14,13 +14,13 @@ public class ThunderCards {
 		// And: Spirit in spot 1
 		spirit.Given_HasPresenceOn( a[1] );
 
-		action = spirit.Gateway;
+//		_gateway = spirit.Gateway;
 	}
 
 	protected readonly Spirit spirit;
 	protected readonly VirtualUser User;
 	protected readonly Board a;
 	protected readonly GameState gs;
-	protected readonly UserGateway action;
+//	protected readonly UserGateway _gateway;
 
 }
