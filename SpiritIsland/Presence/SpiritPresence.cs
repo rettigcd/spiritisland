@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.A;
+
+namespace SpiritIsland;
 
 public class SpiritPresence : IKnowSpiritLocations {
 
@@ -194,6 +196,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 	/// <summary> Existing </summary>
 	/// <remarks> Determining SS requires Tokens so default type for SS is SpaceState. </remarks>
 	public IEnumerable<SpaceState> SacredSites => Spaces.Tokens().Where( IsSacredSite );
+	public IEnumerable<SpaceState> SuperSacredSites => Spaces.Tokens().Where( space => 3 <= CountOn( space ) );
+
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>

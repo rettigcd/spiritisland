@@ -6,4 +6,5 @@ public interface IKnowSpiritLocations {
 	IEnumerable<Space> Spaces { get; }
 
 	IEnumerable<SpaceState> SacredSites { get; } // And Special Rules
+	IEnumerable<SpaceState> SuperSacredSites { get; }
 }

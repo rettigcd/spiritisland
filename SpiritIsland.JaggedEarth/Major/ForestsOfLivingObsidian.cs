@@ -15,11 +15,11 @@ public class ForestsOfLivingObsidian {
 		// 1 damage to each invader.
 
 		// if the original land is your sacredsite, +1 Damage to each invader
-		bool fromSS = ctx.Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(new SpaceState[] {ctx.Tokens }, new TargetCriteria(0) )
-			.Any(ctx.Self.Presence.IsSacredSite); // using range calculator in case they used range extender.
-
-
-		string s = ActionScope.Current.Id.ToString();
+		bool fromSS = ctx.Self.FindTargettingSourcesFor(
+			ctx.Space,
+			new TargetingSourceCriteria( From.SacredSite ),
+			new TargetCriteria( 0 )
+		).Any();
 
 		int damageToEach = fromSS ? 2 : 1; 
 		await ctx.DamageEachInvader( damageToEach );

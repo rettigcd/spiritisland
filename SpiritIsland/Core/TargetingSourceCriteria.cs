@@ -8,4 +8,8 @@ public record TargetingSourceCriteria( From From, string Restrict = null ) {
 		return sources;
 	}
 
+	public IEnumerable<SpaceState> GetSources( Spirit spirit )
+		=> Filter( spirit.TargetingSourceStrategy.EvaluateFrom( spirit.Presence, From ) ).ToArray();
+
+
 }

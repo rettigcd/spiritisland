@@ -31,7 +31,7 @@ public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 	// Null for non-execution groups
 	public int? Group { get; }
 
-	string IOption.Text => Elements.BuildElementString() + " - " + Description; // $$$$$$
+	string IOption.Text => Elements.BuildElementString() + " - " + Description;
 
 	public virtual bool IsActive( ElementCounts activatedElements ) => activatedElements.Contains( Elements );
 

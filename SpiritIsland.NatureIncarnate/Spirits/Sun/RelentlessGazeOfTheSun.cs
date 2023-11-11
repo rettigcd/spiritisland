@@ -54,8 +54,8 @@ public class RelentlessGazeOfTheSun : Spirit {
 		await base.TakeActionAsync( factory, phase );
 		_currentPowerCard = null;
 	}
-	PowerCard? _currentPowerCard; // when playing power cards, grab it so we know what to repeat
 
+	/// <remarks>overriden to capture space played on and queue up repeat</remarks>
 	public override async Task<Space> TargetsSpace(
 		SelfCtx ctx, // this has the new Action for this action.
 		string prompt,
@@ -65,19 +65,25 @@ public class RelentlessGazeOfTheSun : Spirit {
 	) {
 		var targetSpace = await base.TargetsSpace( ctx, prompt, preselect, sourceCriteria, targetCriteria );
 
-		if(_currentPowerCard != null && SpacesFromTrifecta( targetCriteria ).Contains( targetSpace )) {
-			AddActionFactory(new RelentlessRepeater(_currentPowerCard,targetSpace));
+		if(_currentPowerCard != null    // is power card
+			&& TargetsFromSuperSacredSite( targetSpace, sourceCriteria, targetCriteria )
+		) {
+			AddActionFactory( new RelentlessRepeater( _currentPowerCard, targetSpace ) );
 			_currentPowerCard = null; // clear so we don't accidentally add twice
 		}
 
 		return targetSpace;
 	}
 
-	IEnumerable<Space> SpacesFromTrifecta( TargetCriteria[] targetCriteria ) {
-		IEnumerable<SpaceState> trifectas = Presence.SacredSites.Where( ss => 3 <= Presence.CountOn( ss ) );
-		IEnumerable<Space> spacesFromTrifectas = PowerRangeCalc.GetTargetOptionsFromKnownSource( trifectas, targetCriteria ).Select( ss => ss.Space );
-		return spacesFromTrifectas;
+	bool TargetsFromSuperSacredSite( Space targetSpace, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria ) {
+		return FindTargettingSourcesFor(
+			targetSpace,
+			new TargetingSourceCriteria( From.SuperSacredSite, sourceCriteria.Restrict ), // capture restrict but boost
+			targetCriteria
+		).Any();
 	}
+
+	PowerCard? _currentPowerCard; // when playing power cards, grab it so we know what to repeat
 
 	#endregion Relentless Punishment
 

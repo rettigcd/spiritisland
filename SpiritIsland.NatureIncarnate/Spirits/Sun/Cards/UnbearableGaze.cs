@@ -16,7 +16,13 @@ public class UnbearableGaze {
 
 	static async Task PushFromTargetOrOrigin( TargetSpaceCtx ctx, int max, params HumanTokenClass[] tokenClasses ) {
 		// Load all possible Sources into a list
-		HashSet<SpaceState> sourceOptions = FindSacredSitesRange1( ctx );
+		HashSet<SpaceState> sourceOptions = ctx.Self
+			.FindTargettingSourcesFor( 
+				ctx.Space, 
+				new TargetingSourceCriteria( From.SacredSite ), 
+				new TargetCriteria( 1 )
+			)
+			.ToHashSet();
 
 		for(int i = 0; i < max; ++i) {
 			sourceOptions.Add( ctx.Tokens );
@@ -39,12 +45,6 @@ public class UnbearableGaze {
 				sourceOptions.Add( toPush.Space.Tokens );
 			}
 		}
-	}
-
-	static HashSet<SpaceState> FindSacredSitesRange1( TargetSpaceCtx ctx ) {
-		return ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ) )
-					.Where( ctx.Self.Presence.IsOn )
-					.ToHashSet();
 	}
 
 	static async Task PushSpecificToken( Spirit spirit, SpaceToken toPush ) {

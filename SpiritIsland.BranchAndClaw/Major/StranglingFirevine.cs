@@ -13,11 +13,13 @@ public class StranglingFirevine {
 		await ctx.Wilds.AddAsync(1);
 
 		// Add 1 wilds in the originating Sands. 
-		// !! won't find original if this was picked using a range-extender - would need to capture that info during the targetting process
-		var originatingOptions = ctx.Range(1)
-			.Where( a=> ctx.Self.Presence.Spaces.Tokens().Contains(a) && ctx.Target(a).Is(Terrain.Sand) ) // using Smart-terrain in case some spirit rule modifies terrain
-			.ToArray();
-		var originalCtx = await ctx.SelectSpace("Select origination space", originatingOptions.Downgrade(), Present.AutoSelectSingle) 
+		Space[] originatingOptions = ctx.Self.FindTargettingSourcesFor(
+			ctx.Space, 
+			new TargetingSourceCriteria(From.Presence,Target.Sand), 
+			new TargetCriteria(1)
+		).Downgrade().ToArray();
+
+		var originalCtx = await ctx.SelectTargetSpaceAsync("Select origination space", originatingOptions, Present.AutoSelectSingle)
 			?? throw new InvalidOperationException("Could not find required originating Sands with presence.");
 		await originalCtx.Wilds.AddAsync(1);
 

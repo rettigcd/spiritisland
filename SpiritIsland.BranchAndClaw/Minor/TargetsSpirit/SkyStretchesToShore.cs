@@ -25,14 +25,11 @@ class SkyStretchesToShoreApi : DefaultRangeCalculator {
 		self.PowerRangeCalc = this;
 	}
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( 
-		IEnumerable<SpaceState> source, 
-		params TargetCriteria[] tc 
-	) {
-		var normal = _orig.GetTargetOptionsFromKnownSource( source, tc );
-		var shore = _orig.GetTargetOptionsFromKnownSource( source, tc.ExtendRange(3) )
-			.Where(x => x.Space.IsCoastal);
-		return normal.Union(shore);
+	public override IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) {
+		var normal = _orig.GetSpaceOptions( source, tc );
+		var shore = _orig.GetSpaceOptions( source, tc.ExtendRange( 3 ) )
+			.Where( x => x.Space.IsCoastal );
+		return normal.Union( shore );
 	}
 
 	// readonly Spirit _self;

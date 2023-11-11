@@ -159,7 +159,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
-		=> _spirit.PowerRangeCalc.GetTargetOptionsFromKnownSource( sources, tc );
+		=> _spirit.PowerRangeCalc.GetSpaceOptions( sources, tc );
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {
@@ -176,6 +176,7 @@ class MistsShiftAndFlow {
 		public IEnumerable<Space> Spaces => _spirit.Presence.Spaces;
 
 		public IEnumerable<SpaceState> SacredSites => _spirit.Presence.SacredSites;
+		public IEnumerable<SpaceState> SuperSacredSites => _spirit.Presence.SuperSacredSites;
 
 	}
 

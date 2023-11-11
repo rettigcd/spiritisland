@@ -14,8 +14,12 @@ public class CallToVigilance {
 			ctx.AddFear(2);
 
 		// For each Dahan in origin land, Push up to 1 Explorer/Town.
-		int pushCount = ctx.Range(1)
-			.Where(ctx.Self.Presence.IsOn)
+		int pushCount = ctx.Self
+			.FindTargettingSourcesFor(
+				ctx.Space,
+				new TargetingSourceCriteria( From.Presence ),
+				new TargetCriteria( 1 )
+			)
 			.Max(s=>s.Dahan.CountAll);
 		await ctx.PushUpTo(pushCount,Human.Explorer_Town);
 

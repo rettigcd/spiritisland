@@ -4,6 +4,7 @@ public enum From {
 	None, 
 	Presence, 
 	SacredSite, 
+	SuperSacredSite,
 	Incarna,
 };
 
@@ -12,7 +13,8 @@ public interface ITargetingSourceStrategy {
 }
 
 public interface ICalcRange {
-	IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria );
+	IEnumerable<SpaceState> GetSpaceOptions( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria );
+	IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc );
 }
 
 public interface IIncarnaToken : IToken, IAppearInSpaceAbreviation {
@@ -36,6 +38,7 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 		return from switch {
 			From.Presence => presence.Spaces.Tokens(),
 			From.SacredSite => presence.SacredSites,
+			From.SuperSacredSite => presence.SuperSacredSites,
 			From.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null 
 				? new SpaceState[] { incarnaHolder.Incarna.Space } 
 				: Array.Empty<SpaceState>(),
@@ -50,22 +53,22 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 /// </summary>
 public class DefaultRangeCalculator : ICalcRange {
 
-	public virtual IEnumerable<SpaceState> GetTargetOptionsFromKnownSource(
+	public IEnumerable<SpaceState> GetSpaceOptions(
 		IEnumerable<SpaceState> sources,
 		params TargetCriteria[] targetCriteria
 	) {
 		return sources
-			.SelectMany( source => ApplyTargetCriteriaToSource( source, targetCriteria ) )
+			.SelectMany( source => GetSpaceOptionsForCriteria( source, targetCriteria ) )
 			.Distinct()
 			.ToArray();
 	}
 
-	protected virtual IEnumerable<SpaceState> ApplyTargetCriteriaToSource(SpaceState source, TargetCriteria[] targetCriteria)
+	IEnumerable<SpaceState> GetSpaceOptionsForCriteria(SpaceState source, params TargetCriteria[] targetCriteria)
 		=> targetCriteria.Length == 1
-			? Apply1Target( source, targetCriteria[0] ) 
-			: targetCriteria.SelectMany( tc => Apply1Target( source, tc ) ).Distinct();
+			? GetSpaceOptions( source, targetCriteria[0] ) 
+			: targetCriteria.SelectMany( tc => GetSpaceOptions( source, tc ) ).Distinct();
 
-	IEnumerable<SpaceState> Apply1Target(SpaceState source, TargetCriteria tc)
+	public virtual IEnumerable<SpaceState> GetSpaceOptions(SpaceState source, TargetCriteria tc)
 		=> source.Range(tc.Range).Where( tc.Matches );
 
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();

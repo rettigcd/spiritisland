@@ -17,9 +17,9 @@ class OpenTheWays : IActionFactory {
 
 		var options = ctx.Self.Presence.Spaces.Tokens().ToList();
 		// Select 2 space to link
-		var end0 = (await ctx.SelectSpace( "Select 1st space to make adjacent", options.Downgrade() )).Tokens;
+		var end0 = (await ctx.SelectTargetSpaceAsync( "Select 1st space to make adjacent", options.Downgrade() )).Tokens;
 		options.Remove( end0 );
-		var end1 = (await ctx.SelectSpace( "Select 2nd space to make adjacent", options.Downgrade() )).Tokens;
+		var end1 = (await ctx.SelectTargetSpaceAsync( "Select 2nd space to make adjacent", options.Downgrade() )).Tokens;
 
 		// Remove old
 		finder.GatewayToken?.RemoveSelf();

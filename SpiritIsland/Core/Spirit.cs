@@ -556,30 +556,38 @@ public abstract partial class Spirit : IOption {
 			: await Select( new A.Space( prompt, spaces.Downgrade(), Present.Always ));
 	}
 
+	public IEnumerable<SpaceState> FindTargettingSourcesFor( Space target, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {
+		return sourceCriteria.GetSources(this)
+			.Where(source => IsOriginFor(source,target,targetCriteria))
+			.ToArray();
+	}
+
+	/// <summary> Determines if target can be reached from the specified source given any of the TargetCriteria </summary>
+	/// <remarks>Used to find Origin lands</remarks>
+	public bool IsOriginFor( SpaceState source, Space target, params TargetCriteria[] targetCriteria ) {
+		return targetCriteria.Any( tc => 
+			PowerRangeCalc.GetSpaceOptions( source, tc ).Contains( target )
+		);
+	}
+
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
 	protected virtual IEnumerable<SpaceState> GetPowerTargetOptions(
 		GameState gameState,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
-		// Converts SourceCriteria to Spaces
-		//IEnumerable<SpaceState> sources = TargetingSourceCalc
-		//	.FindSources( Presence, sourceCriteria )
-		//	.ToArray();
-		IEnumerable<SpaceState> sources = sourceCriteria.Filter( TargetingSourceStrategy.EvaluateFrom( Presence, sourceCriteria.From ) )
-			.ToArray();
+		IEnumerable<SpaceState> sources = sourceCriteria.GetSources(this);
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
-		return PowerRangeCalc.GetTargetOptionsFromKnownSource( sources, targetCriteria )
+		return PowerRangeCalc.GetSpaceOptions( sources, targetCriteria )
 			.ToArray();
-
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder
 	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria ) {
 		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
 		return rangeCalculator
-			.GetTargetOptionsFromKnownSource( Presence.Spaces.Tokens(), targetCriteria );
+			.GetSpaceOptions( Presence.Spaces.Tokens(), targetCriteria );
 	}
 
 	#endregion

@@ -9,9 +9,15 @@ public class ScorchingConvergence {
 	[InnateOption("2 sun","Move all of your Presence from origin land directly to target land. 1 Damage to Town/City only.")]
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		// Move all of your Presence from origin land directly to target land.
-		var options = ctx.Self.Presence.Token.On( FindSacredSitesRange1( ctx ) );
+		IEnumerable<Space> sourceOptions = ctx.Self
+			.FindTargettingSourcesFor(
+				ctx.Space,
+				new TargetingSourceCriteria( From.SacredSite ),
+				new TargetCriteria( 1 )
+			)
+			.Downgrade();
 
-		var from = await ctx.Self.Select(A.SpaceToken.ToCollect("Move all presence", options, Present.Always, ctx.Space ));
+		var from = await ctx.Self.Select(A.SpaceToken.ToCollect("Move all presence", ctx.Self.Presence.Token.On( sourceOptions ), Present.Always, ctx.Space ));
 		if(from != null && from.Space != ctx.Space )
 			while( from != null && from.Exists )
 				await from.MoveTo(ctx.Tokens);
@@ -60,9 +66,9 @@ public class ScorchingConvergence {
 		await ctx.DamageInvaders( ctx.PresenceCount );
 	}
 
-	static HashSet<SpaceState> FindSacredSitesRange1( TargetSpaceCtx ctx ) {
-		return ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ) )
-			.Where( ctx.Self.Presence.IsSacredSite )
+	static HashSet<SpaceState> FindSacredSitesOrigin( TargetSpaceCtx ctx, TargetCriteria tc ) {
+		return ctx.Self.Presence.SacredSites
+			.Where( ss => ctx.Self.IsOriginFor( ss, ctx.Space, tc ) )
 			.ToHashSet();
 	}
 

@@ -28,7 +28,7 @@ public class SpiritPicksLandAction : IActOn<SelfCtx> {
 
 			TargetSpaceCtx spaceCtx = _firstPickTokenClasses != null
 				? await PickSpaceBySelectingToken( ctx, spaceOptions )
-				: await ctx.SelectSpace( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
+				: await ctx.SelectTargetSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
 
 			if(spaceCtx == null) return;
 

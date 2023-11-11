@@ -6,9 +6,8 @@ public class ShadowTouchedRealm_RangeCalculator : DefaultRangeCalculator {
 
 	public ShadowTouchedRealm_RangeCalculator() {}
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria ) {
-		return base.GetTargetOptionsFromKnownSource( source, targetCriteria )
-			.Append(EndlessDark.Space.Tokens)
-			.ToList();
+	public override IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria targetCriteria ) {
+		return base.GetSpaceOptions( source, targetCriteria )
+			.Append(EndlessDark.Space.Tokens);
 	}
 }

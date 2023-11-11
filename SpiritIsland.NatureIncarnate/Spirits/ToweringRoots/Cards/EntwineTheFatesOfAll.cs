@@ -8,7 +8,8 @@ public class EntwineTheFatesOfAll {
 	static async public Task ActAsync( TargetSpiritCtx ctx ) {
 		var space = await ctx.Self.Select( new A.Space( 
 			"Select space to defend 2/presence.", 
-			ctx.Self.Presence.Spaces, Present.Always 
+			ctx.Other.Presence.Spaces,	// Target-Spirit's lands, not Self's lands
+			Present.Always 
 		) );
 		SpaceState tokens = space.Tokens;
 		int presenceCount = GameState.Current.Spirits.Sum( s => s.Presence.CountOn( tokens ) );

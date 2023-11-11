@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
+/// <summary>
+/// Extend Range+1 if source is Incarna
+/// </summary>
 public class IncarnaRangeCalculator : DefaultRangeCalculator {
 
 	readonly Spirit _self;
@@ -10,20 +13,7 @@ public class IncarnaRangeCalculator : DefaultRangeCalculator {
 		_incarna = ((IHaveIncarna)_self.Presence).Incarna;
 	}
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria ) {
-		var spaces = base.GetTargetOptionsFromKnownSource( source, targetCriteria )
-			.ToList();
+	public override IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) 
+		=> base.GetSpaceOptions( source, source == _incarna.Space ? tc.ExtendRange(1) : tc );
 
-		if(IncarnaInSource( source ))
-			spaces.AddRange(
-				base.GetTargetOptionsFromKnownSource(
-					new SpaceState[] { _incarna.Space! },
-					targetCriteria.ExtendRange( 1 )
-				)
-			);
-
-		return spaces.Distinct();
-	}
-
-	bool IncarnaInSource( IEnumerable<SpaceState> source ) => _incarna.Space != null && source.Contains( _incarna.Space );
 }

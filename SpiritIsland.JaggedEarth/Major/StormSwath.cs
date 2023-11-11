@@ -10,7 +10,7 @@ public class StormSwath {
 		ctx.AddFear(2);
 
 		// in both origin land and target land: 1 damage to each invader.
-		var origin = await FindOriginLand_SS( ctx, 1 );
+		var origin = await FindOriginLand( ctx );
 		await ctx.DamageEachInvader(1);
 		await ctx.Target(origin).DamageEachInvader(1);
 
@@ -42,12 +42,15 @@ public class StormSwath {
 		) );
 	}
 
-	static Task<Space> FindOriginLand_SS( TargetSpaceCtx ctx, int range ) {
-		return ctx.SelectAsync( new A.Space(
-			"Select Origin land",
-			ctx.Range(range).Where( s => ctx.Presence.IsSelfSacredSite ),
-			Present.AutoSelectSingle
-		));
+	static Task<Space> FindOriginLand( TargetSpaceCtx ctx ) {
+
+		var ssOptions = ctx.Self.FindTargettingSourcesFor(
+			ctx.Space,
+			new TargetingSourceCriteria( From.SacredSite ),
+			new TargetCriteria( 1 )
+		);
+
+		return ctx.SelectAsync( new A.Space( "Select Origin land",  ssOptions, Present.AutoSelectSingle ));
 	}
 
 }

@@ -9,20 +9,10 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 
 	public VolcanicPeaksTowerOverTheLandscape(Spirit self) { _self = self; }
 
-	public override IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria ) {
-		var spaces = base.GetTargetOptionsFromKnownSource( source, targetCriteria )
-			.ToList();
-
-		if(targetCriteria[0] is not InnateTargetCriteria) {
-			// Add towers +3 range
-			SpaceState[] towers = source
-				.Where( s => 3 <= _self.Presence.CountOn(s) )
-				.ToArray();
-			if(towers.Length > 0)
-				spaces.AddRange( base.GetTargetOptionsFromKnownSource( towers, targetCriteria.ExtendRange(1) ) );
-		}
-
-		return spaces.Distinct();
+	public override IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) {
+		if(tc is not InnateTargetCriteria && 3 <= _self.Presence.CountOn( source ))
+			tc = tc.ExtendRange( 1 );
+		return base.GetSpaceOptions( source, tc );
 	}
 
 	// This class could be used on All Innates to identify them as innates.

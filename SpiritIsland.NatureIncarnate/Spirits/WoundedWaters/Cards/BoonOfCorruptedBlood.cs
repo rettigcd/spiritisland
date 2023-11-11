@@ -14,7 +14,7 @@ public class BoonOfCorruptedBlood {
 
 		// in one of target Spirit's lands:
 		int damage = isSelf ? 1 : 2;
-		TargetSpaceCtx spaceCtx = await ctx.SelectSpace(
+		TargetSpaceCtx spaceCtx = await ctx.SelectTargetSpaceAsync(
 			$"Name: {damage} Damage" + (isSelf ? "" : ", Destroy Presence, Gather 1 Beast"), 
 			ctx.Self.Presence.Spaces, 
 			Present.Done

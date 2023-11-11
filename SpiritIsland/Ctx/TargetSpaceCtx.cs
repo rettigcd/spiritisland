@@ -146,7 +146,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <summary> Calculate Range using Power Range Calculator/Strategy. </summary>
 	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria ) 
-		=> Self.PowerRangeCalc.GetTargetOptionsFromKnownSource(
+		=> Self.PowerRangeCalc.GetSpaceOptions(
 			new SpaceState[] { Tokens },
 			targetCriteria
 		); // don't need to check .IsInPlay because TargetCriteria does that.

@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 
 namespace SpiritIsland.WinForms;
 
-// $$$
 public class ResourceImages {
 
 	static public readonly ResourceImages Singleton = new ResourceImages();

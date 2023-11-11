@@ -2,9 +2,6 @@
 
 public class RangeExtender : ICalcRange {
 
-	readonly int _extension;
-	readonly ICalcRange _originalApi;
-
 	static public void Extend( Spirit spirit, int extension ) {
 		spirit.PowerRangeCalc = new RangeExtender( extension, spirit.PowerRangeCalc );
 	}
@@ -16,11 +13,14 @@ public class RangeExtender : ICalcRange {
 	}
 	#endregion
 
-	public IEnumerable<SpaceState> GetTargetOptionsFromKnownSource( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria )
-		=> _originalApi.GetTargetOptionsFromKnownSource( source, targetCriteria.ExtendRange(_extension) );
+	public IEnumerable<SpaceState> GetSpaceOptions( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria )
+		=> _originalApi.GetSpaceOptions( source, targetCriteria.ExtendRange(_extension) );
+	public IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) 
+		=> _originalApi.GetSpaceOptions( source, tc.ExtendRange( _extension ) );
 
 	#region private 
-
+	readonly int _extension;
+	readonly ICalcRange _originalApi;
 	#endregion
 }
 

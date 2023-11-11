@@ -34,7 +34,8 @@ public class SelfCtx {
 		GameState.Current.Fear.AddDirect( new FearArgs( count ) );
 	}
 
-	public Task<T> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption => Self.Select( originalDecision );
+	public Task<T> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
+		=> Self.Select( originalDecision );
 
 	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space ); // Trickster
 	public TargetSpaceCtx Target( SpaceState ss ) => Target(ss.Space);
@@ -72,7 +73,7 @@ public class SelfCtx {
 
 	#region Generic Select space / option
 
-	public async Task<TargetSpaceCtx> SelectSpace( string prompt, IEnumerable<Space> options, Present present = Present.Always ) {
+	public async Task<TargetSpaceCtx> SelectTargetSpaceAsync( string prompt, IEnumerable<Space> options, Present present = Present.Always ) {
 		var space = await SelectAsync( new A.Space( prompt, options, present ) );
 		return space != null
 			? Target( space )

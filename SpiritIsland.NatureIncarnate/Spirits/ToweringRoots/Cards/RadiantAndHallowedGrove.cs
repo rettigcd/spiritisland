@@ -20,7 +20,9 @@ public class RadiantAndHallowedGrove {
 		};
 
 		// Present all candidates in target or adjacent
-		var removeableTokens = spaceState.InOrAdjacentTo.SelectMany(s=>s.SpaceTokensOfAnyClass( removableClasses )).ToArray();
+		var removeableTokens = spaceState.InOrAdjacentTo
+			.SelectMany(s=>s.SpaceTokensOfAnyClass( removableClasses ))
+			.ToArray();
 
 		for(int i = 0; i < 2; ++i) {
 			var sp = await ctx.SelectAsync( new A.SpaceToken( "Select invader to remove", removeableTokens, Present.Done ) );
