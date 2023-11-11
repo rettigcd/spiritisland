@@ -334,7 +334,8 @@ public abstract partial class Spirit : IOption {
 	public bool ActionIsMyPower {
 		get {
 			var scope = ActionScope.Current;
-			return scope.Category == ActionCategory.Spirit_Power && scope.Owner == this;
+			return scope.Category == ActionCategory.Spirit_Power 
+				&& scope.Owner == this;
 		}
 	}
 
@@ -575,8 +576,9 @@ public abstract partial class Spirit : IOption {
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder
-	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria, bool forPower ) {
-		return (forPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton)
+	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria ) {
+		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
+		return rangeCalculator
 			.GetTargetOptionsFromKnownSource( Presence.Spaces.Tokens(), targetCriteria );
 	}
 

@@ -61,7 +61,7 @@ public class ScorchingConvergence {
 	}
 
 	static HashSet<SpaceState> FindSacredSitesRange1( TargetSpaceCtx ctx ) {
-		return ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ), true )
+		return ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ) )
 			.Where( ctx.Self.Presence.IsSacredSite )
 			.ToHashSet();
 	}

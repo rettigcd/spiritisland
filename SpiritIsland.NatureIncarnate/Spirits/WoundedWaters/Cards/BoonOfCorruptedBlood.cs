@@ -9,10 +9,16 @@ public class BoonOfCorruptedBlood {
 
 
 	static async Task Spirit( SelfCtx ctx,bool isSelf ) {
+
+		// Get a spirit's land...
+
 		// in one of target Spirit's lands:
 		int damage = isSelf ? 1 : 2;
-		string prompt = $"Name: {damage} Damage" + (isSelf ? "" : ", Destroy Presence, Gather 1 Beast");
-		TargetSpaceCtx spaceCtx = await ctx.SelectSpace( prompt, ctx.Self.Presence.Spaces, Present.Done );
+		TargetSpaceCtx spaceCtx = await ctx.SelectSpace(
+			$"Name: {damage} Damage" + (isSelf ? "" : ", Destroy Presence, Gather 1 Beast"), 
+			ctx.Self.Presence.Spaces, 
+			Present.Done
+		);
 		if(spaceCtx==null) return;
 
 		// 1 Damage 

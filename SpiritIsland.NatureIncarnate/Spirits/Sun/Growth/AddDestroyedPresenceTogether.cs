@@ -1,16 +1,24 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 public class AddDestroyedPresenceTogether : SpiritAction {
+
 	public AddDestroyedPresenceTogether():base("Add up to 3 Destroyed Presence together" ) { }
+
 	public override async Task ActAsync( SelfCtx ctx ) {
 		var spirit = ctx.Self;
 		var pres = spirit.Presence;
-		int max = Math.Min( pres.Destroyed, 3 );
-		if(max == 0) return;
+		if(pres.Destroyed == 0) return;
 
-		// add up to 3 destroyed presence together
-		var options = spirit.FindSpacesWithinRange( new TargetCriteria( 1 ), false );
-		var dst = await spirit.Select(new A.Space($"Add up to {max} Destroyed Presence", options, Present.Always).ShowTokenLocation(pres.Token) );
+		int max = Math.Min( pres.Destroyed, 3 );
+
+		// Place up to 3 (destroyed) presence together
+		Space dst = await spirit.Select( A.Space.ToPlaceDestroyedPresence(
+			new TargetCriteria( 1 ),
+			Present.Always,
+			spirit,
+			max
+		) );
+
 		if(dst == null ) return;
 
 		int numToPlace = await spirit.SelectNumber("How many presences would you like to place?", max, 1);

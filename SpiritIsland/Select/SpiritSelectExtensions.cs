@@ -71,6 +71,7 @@ static public class SpiritSelectExtensions {
 		int cur = max;
 		while(min <= cur) numToMove.Add( (cur--).ToString() );
 		if(numToMove.Count == 0) return 0; // if there are no options, auto-return 0
+		if(numToMove.Count == 1) return int.Parse(numToMove[0]);
 		var x = await spirit.SelectText( prompt, numToMove.ToArray(), Present.Always );
 		return int.Parse( x );
 	}

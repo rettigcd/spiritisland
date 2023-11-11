@@ -7,17 +7,12 @@ namespace SpiritIsland;
 /// </summary>
 public sealed class ActionScope : IAsyncDisposable {
 
-	#region scope container
-
-	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
-	static public void Initialize() {
-		_scopeContainer.Value = new ActionScopeContainer();
-	}
+	#region ScopeContainer class
 
 	class ActionScopeContainer {
 		public ActionScopeContainer() {
 			Id = Guid.NewGuid();
-			Current = new ActionScope(this); // default
+			Current = new ActionScope( this ); // default
 			StartOfActionHandlers = new List<IRunAtStartOfAction>();
 		}
 		readonly Guid Id;
@@ -31,24 +26,41 @@ public sealed class ActionScope : IAsyncDisposable {
 		}
 	}
 
+	#endregion ScopeContainer class
+
+	#region static Container property
+
+	static ActionScopeContainer Container => _scopeContainer.Value ?? throw new InvalidOperationException( "ActionScope not initialized. Call ActionScope.Initialize() from root ExecutionContext." );
+	readonly static AsyncLocal<ActionScopeContainer> _scopeContainer = new AsyncLocal<ActionScopeContainer>(); // value gets shallow-copied into child calls and post-awaited states.
+
+	#endregion static Container property
+
+	#region Static Public
+
+	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
+	static public void Initialize() {
+		_scopeContainer.Value = new ActionScopeContainer();
+	}
+
 	// Good Reading on Execution Context and async/await
 	// https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/
 	// https://stackoverflow.com/questions/39795286/does-async-await-increases-context-switching
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
 	public static ActionScope Current => Container.Current;
+
 	public static List<IRunAtStartOfAction> StartOfActionHandlers => Container.StartOfActionHandlers;
-	static ActionScopeContainer Container => _scopeContainer.Value ?? throw new InvalidOperationException( NotInitializedMessage );
-	readonly static AsyncLocal<ActionScopeContainer> _scopeContainer = new AsyncLocal<ActionScopeContainer>(); // value gets shallow-copied into child calls and post-awaited states.
 
-	const string NotInitializedMessage = "ActionScope not initialized. Call ActionScope.Initialize() from root ExecutionContext.";
-
-	#endregion
+	#endregion Static Public
 
 	#region constructor
 
 	// The default / game-starting scope
 
+	/// <summary>
+	/// Root Scope
+	/// </summary>
+	/// <param name="container"></param>
 	ActionScope( ActionScopeContainer container ) {
 		Id = Guid.NewGuid();
 		_container = container;
@@ -84,6 +96,7 @@ public sealed class ActionScope : IAsyncDisposable {
 	/// <summary> Called from Space.Tokens to get Tokens. </summary>
 	/// <remarks> Provides hook for spirits to modify the SpaceState object used for their actions.</remarks>
 	public SpaceState AccessTokens(Space space) => _upgrader( GameState.Tokens[space] );
+
 	public Func<SpaceState, SpaceState> Upgrader {
 		set {
 			if(_neverCache) throw new InvalidOperationException( "Can't set owner on default scope" );
@@ -103,6 +116,24 @@ public sealed class ActionScope : IAsyncDisposable {
 	}
 
 	public Guid Id { get; }
+
+	public void Log(string label ) {
+		lock(_locker) {
+			_log.Add(this.ToString()+" - " + label);
+		}
+	}
+	public string[] GetLog() {
+		lock(_locker) {
+			return _log.ToArray();
+		}
+	}
+	static object _locker = new object();
+	static List<string> _log = new List<string>();
+
+	public override string ToString() {
+		return $"{Id} : {Category} : "+Owner?.Text??"";
+	}
+
 
 	#region action-scoped data
 	// String / object dictionary to track action things
@@ -146,7 +177,7 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	#region private
 	readonly ActionScopeContainer _container;
-	readonly bool _neverCache = false; // for the root Action...
+	readonly bool _neverCache = false; // true for the root Scope
 	readonly ActionScope _old;
 	Dictionary<string, object> dict;
 	AsyncEvent<ActionScope> _endOfThisAciton;
@@ -155,41 +186,4 @@ public sealed class ActionScope : IAsyncDisposable {
 	Func<SpaceState, SpaceState> _upgrader = ss=>ss;
 	Spirit _owner;
 	#endregion
-}
-
-
-public enum ActionCategory {
-
-	Default, // nothing
-
-	// Spirit
-	Spirit_Growth,
-	Spirit_Power,
-	Spirit_SpecialRule, // which specified After X, do Y
-	Spirit_PresenceTrackIcon,
-	//	GainEnery, // specifiec on preence track
-	//	SpiritualRituals,
-
-	Invader,
-	//	One Ravage, Build, or Explore in one land
-
-	Blight,
-	//	The effects of a Blight Card
-
-	Fear,
-	//	Everything one Fear Card does
-
-	Event,
-	//	Everything a Main Event Does
-	//	Everything a Token Event does
-	//	Everything a dahan event does
-
-	Adversary,
-	//	An adversary's escalation effects (except englind as it invokes a bild)
-	//	Instructions on an adversary to perform some effect.
-	//	Actions written on the scenario panel.
-
-	Special
-    // Command the Beasts
-
 }

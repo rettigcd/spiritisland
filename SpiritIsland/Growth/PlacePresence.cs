@@ -23,9 +23,8 @@ public class PlacePresence : SpiritAction {
 		// From
 		IOption from = await self.SelectSourcePresence();
 		IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
-		bool isForPower = ActionScope.Current.Category == ActionCategory.Spirit_Power;
 
-		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range, FilterEnums ).Bind( ctx.Self ), isForPower )
+		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range, FilterEnums ).Bind( ctx.Self ) )
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
 		if(toOptions.Length == 0)
@@ -33,7 +32,10 @@ public class PlacePresence : SpiritAction {
 		Space to = await self.Select( A.Space.ToPlacePresence( toOptions.Downgrade(), Present.Always, token ) );
 		await self.Presence.Place( from, to );
 
-		if(isForPower && from is Track track && track.Action != null)
+		if( ActionScope.Current.Category == ActionCategory.Spirit_Power 
+			&& from is Track track 
+			&& track.Action != null
+		)
 			await track.Action.ActAsync( ctx );
 	}
 

@@ -5,12 +5,13 @@ public class Volcano_Tests {
 	static (VolcanoLoomingHigh, GameState, Board) Init() {
 		VolcanoLoomingHigh spirit = new VolcanoLoomingHigh();
 		Board board = Board.BuildBoardA();
+
 		GameState gameState = new GameState( spirit, board );
 		return (spirit, gameState, board);
 	}
 
 	public Volcano_Tests() {
-		ActionScope.Initialize();
+//		ActionScope.Initialize();
 	}
 
 	[Trait( "Spirit", "SetupAction" )]
@@ -122,8 +123,9 @@ public class Volcano_Tests {
 
 	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
 	[Trait( "Targeting", "Range" )]
-	[Fact]
+	[Fact(Skip = "Upon further reflection, Volcan should not get the range boost as the defend is a residual effect of the power, not the power itself.")]
 	public async Task PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
+
 		var (spirit, gameState, board) = Init();
 		SpaceState targetSpace = gameState.Tokens[board[5]];
 		SpaceState dahanSpace = gameState.Tokens[board[2]];

@@ -31,12 +31,14 @@ public class PlaceDestroyedPresence : SpiritAction {
 	public override async Task ActAsync( SelfCtx ctx ) {
 		Spirit self = ctx.Self;
 		if(self.Presence.Destroyed == 0) return;
-		var toOptions = self.FindSpacesWithinRange( new TargetCriteria(Range), false )
-			.Where( self.Presence.CanBePlacedOn )
-			.ToArray();
-		if(toOptions.Length == 0)
-			throw new InvalidOperationException( "There no places to place presence." );
-		Space to = await self.Select( A.Space.ToPlacePresence( toOptions.Downgrade(), Present.Always, self.Presence.Token ) );
+
+		// Find a space to place (destroyed) presense
+		Space to = await self.Select( A.Space.ToPlaceDestroyedPresence(
+			new TargetCriteria( Range ),
+			Present.Always,
+			self
+		) );
+
 		await ctx.Target( to ).Presence.PlaceDestroyedHere();
 	}
 }

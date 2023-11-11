@@ -29,7 +29,7 @@ public class UnrelentingGrowth {
 		// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 		// Select destination
-		var options = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ), true )
+		var options = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ) )
 			.Where( ctx.Self.Presence.CanBePlacedOn )
 			.ToArray();
 		var to = await ctx.Self.Select( new A.Space( "Where would you like to place your presence?", options, Present.Always ) );
