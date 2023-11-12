@@ -2,6 +2,7 @@
 
 /// <summary>
 /// Command that executes on a Spirit (SelfCtx)
+/// Adds OnlyExecuteIf to BaseCmd
 /// </summary>
 public class SpiritAction : BaseCmd<SelfCtx> {
 

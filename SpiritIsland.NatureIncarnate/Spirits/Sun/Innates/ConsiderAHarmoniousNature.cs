@@ -44,16 +44,8 @@ public class ConsiderAHarmoniousNature {
 			Present.Done
 		));
 		if(other != null)
-			await AddPresenceToLands(other,ctx.Self.Presence.Spaces);
+			await new AddDestroyedPresence( 0 ).RelativeTo( ctx.Self ).ActAsync( other.BindSelf() );
 		return other;
-	}
-
-	static async Task AddPresenceToLands( Spirit other, IEnumerable<Space> spaces ) {
-		if(other.Presence.Destroyed == 0) return;
-		var space = await other.Select(new A.Space("Place destroyed presence", spaces, Present.Done));
-		if(space == null) return;
-		await space.Tokens.Add(other.Presence.Token, 1);
-		--other.Presence.Destroyed;
 	}
 
 	static async Task GiveUpToNEnergyToSpirit( Spirit from, Spirit to, int max ) {

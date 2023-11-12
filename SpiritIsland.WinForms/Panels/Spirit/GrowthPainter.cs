@@ -77,6 +77,7 @@ public sealed class GrowthPainter : IDisposable{
 			GainPowerCard => new ImgRect( Img.GainCard ),
 			GainEnergy { Delta: int delta } => new GainEnergyRect( delta ),
 			PlacePresence => PlacePresenceRect( action ),
+			AddDestroyedPresence => PlacePresenceRect( action ),
 			MovePresence { Range: int range } => MovePresenceRect( range ),
 			PlayExtraCardThisTurn { Count: int count } => AdditionalPlay( count ),
 			GainElements { ElementsToGain: var els } => GainAllElementsRect( els ),
@@ -86,7 +87,7 @@ public sealed class GrowthPainter : IDisposable{
 			"Add a Presence or Disease"               => PlacePresenceRect( action ),
 			"PlacePresenceAndBeast"                   => PlacePresenceRect( action ),
 			// Wounded Waters Bleeding
-			"PlaceDestroyedPresence(1)"               => PlacePresenceRect( action ),
+			"Add Destroyed Presence - Range 1"        => PlacePresenceRect( action ),
 			// Ocean
 			"PlaceInOcean"                            => PlacePresenceRect( action ),
 			"Gather 1 Presence into EACH Ocean"       => new ImgRect( Img.GatherToOcean ),
@@ -112,7 +113,6 @@ public sealed class GrowthPainter : IDisposable{
 			// Finder
 			"IgnoreRange"                             => Draw_IgnoreRange(),
 			// Relentless Gaze of the Sun
-			"Add up to 3 Destroyed Presence together" => Add3DestroyedPresenceTogether(),
 			"Gain Energy an additional time"          => GainEnergyAgain(),
 			"Move up to 3 Presence together"          => MoveUpTo3PresenceTogether(),
 			// Dances up Earthquakes
@@ -322,20 +322,22 @@ public sealed class GrowthPainter : IDisposable{
 
 	IPaintableRect PlacePresenceRect( IActOn<SelfCtx> growth ) {
 
-		var (presence, range, filterEnum, addOnIcon) = growth switch {
-			PlaceInOcean => (Img.Icon_Presence, null, Target.Ocean, Img.None),
-			PlacePresenceAndBeast => (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast), // add an icon
+
+		var (presImg, range, filterEnum, addOnIcon, num) = growth switch {
+			PlaceInOcean            => (Img.Icon_Presence, null, Target.Ocean, Img.None, 1),
+			PlacePresenceAndBeast   => (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast, 1), // add an icon
 			{ Description: string n } when n == "Add a Presence or Disease"
-									=> (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease),
-			PlaceDestroyedPresence { Range: int r, FilterDescription: string f }
-									=> (Img.Icon_DestroyedPresence, (int?)r, f, Img.None),
+									=> (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease, 1),
+			AddDestroyedPresence { Range: int r, NumToPlace: int ntp }
+									=> (Img.Icon_DestroyedPresence, (int?)r, Target.Any, Img.None, ntp),
 			// generic, do last
 			PlacePresence { Range: int r, FilterDescription: string f }
-									=> (Img.Icon_Presence, (int?)r, f, Img.None),
+									=> (Img.Icon_Presence, (int?)r, f, Img.None, 1),
 			_ => throw new ArgumentException( "growth action factory not a place-presence", nameof( growth ) ),
 		};
 
-		// IPaintableRect placePresenceRect = new ImgRect( Img.Icon_Presence ); // + presence
+		if(presImg == Img.Icon_DestroyedPresence && num == 3) // "Add up to 3 Destroyed Presence - Range 1"
+			return Add3DestroyedPresenceTogether(); //!! merge these methods together
 
 		Img filterImg = GetImgEnum( filterEnum );
 
@@ -343,13 +345,13 @@ public sealed class GrowthPainter : IDisposable{
 			// Ocean
 			range is null ? new VerticalStackRect(
 				new NullRect(),
-				PlacePresenceRect(),
+				PlacePresenceRect( presImg ),
 				new ImgRect( filterImg )
 			).SplitByWeight( .05f, .1f, .3f, .5f, .1f )
 			// HeathVigil, : Keeper
 			: filterImg != Img.None ? new VerticalStackRect(
 					new NullRect(),
-					PlacePresenceRect(),
+					PlacePresenceRect( presImg ),
 					new ImgRect( filterImg ),
 					new TextRect( range ),
 					new ImgRect( Img.RangeArrow )
@@ -357,7 +359,7 @@ public sealed class GrowthPainter : IDisposable{
 			// default
 			: new VerticalStackRect(
 				new NullRect(),
-				PlacePresenceRect(),
+				PlacePresenceRect( presImg ),
 				new NullRect(),
 				new TextRect( range ),
 				new ImgRect( Img.RangeArrow )
@@ -369,11 +371,11 @@ public sealed class GrowthPainter : IDisposable{
 				.Float(new ImgRect( addOnIcon ), .2f, .2f, .6f, .6f );
 	}
 
-	private static HorizontalStackRect PlacePresenceRect() {
+	private static HorizontalStackRect PlacePresenceRect(Img img) {
 		return new HorizontalStackRect(
 					new NullRect(),
 					new TextRect( "+" ),
-					new ImgRect( Img.Icon_Presence )
+					new ImgRect( img )
 				).SplitByWeight( 0f, .15f, .15f, .5f, .2f );
 	}
 

@@ -16,11 +16,8 @@ public class BoundPresence_ForSpace {
 
 	public int Count => _self.Presence.CountOn( ctx.Tokens );
 
-	public async Task PlaceDestroyedHere( int count = 1 ) {
-		count = Math.Min(count, _self.Presence.Destroyed);
-		while(count-- > 0 )
-			await _self.Presence.Place( Track.Destroyed, ctx.Space );
-	} 
+	public Task PlaceDestroyedHere( int count = 1 )
+		=> _self.Presence.PlaceDestroyedAsync(count,ctx.Space);
 
 	public async Task PlaceHere() {
 		var from = await _self.SelectSourcePresence();

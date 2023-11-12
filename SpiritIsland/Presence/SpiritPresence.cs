@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.A;
+using System.Security.Cryptography;
 
 namespace SpiritIsland;
 
@@ -150,6 +151,15 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public async Task Place( IOption from, Space to ) {
 		var token = await TakeFrom( from );
 		await to.Tokens.Add( token, 1 );
+	}
+
+	public async Task PlaceDestroyedAsync( int numToPlace, Space to ) {
+		numToPlace = Math.Min( numToPlace, Destroyed );
+
+		await to.Tokens.Add( Token, numToPlace );
+		Destroyed -= numToPlace;
+
+		// while(0 < numToPlace--) await Place( Track.Destroyed, to );
 	}
 
 	/// <param name="from">Track, Space, or SpaceState</param>

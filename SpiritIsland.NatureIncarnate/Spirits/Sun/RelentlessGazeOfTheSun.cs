@@ -22,7 +22,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 		).Add( new GrowthPickGroups( 1,
 			new GrowthOption(
 				new ReclaimAll(),
-				new AddDestroyedPresenceTogether()
+				new AddDestroyedPresence( 1 ).SetNumToPlace(3,Present.Done)
 			),
 			new GrowthOption(
 				new GainPowerCard()

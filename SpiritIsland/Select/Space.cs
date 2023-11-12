@@ -31,15 +31,8 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 		=> new Space( "Where would you like to place your presence?", options, present )
 			.ShowTokenLocation( tokenToAdd );
 
-	static public Space ToPlaceDestroyedPresence( TargetCriteria tc, Present present, SpiritIsland.Spirit spirit, int? count = null ) {
-		var options = spirit
-				.FindSpacesWithinRange( new TargetCriteria( 1 ) )
-				.Where( spirit.Presence.CanBePlacedOn )
-				.Downgrade();
-		return ToPlaceDestroyedPresence( options, present, spirit, count );
-	}
-
 	static public Space ToPlaceDestroyedPresence( IEnumerable_Spaces options, Present present, SpiritIsland.Spirit spirit, int? count=null )
+		// make sure caller has pre-filtered spaces using:  .Where( spirit.Presence.CanBePlacedOn )
 		=> new Space(
 				!count.HasValue 
 					? $"Place Destroyed Presence" 

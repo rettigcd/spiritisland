@@ -99,7 +99,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 			var thirdGrowth = new GrowthOption(
 				new PlacePresence(3),
 				new GainEnergy(3),
-				new PlaceDestroyedPresence( 1 )
+				new AddDestroyedPresence( 1 )
 			);
 			GrowthTrack = new( GrowthTrack.Options.Append(thirdGrowth).ToArray() );
 			GameState.Current.Log(new Log.LayoutChanged($"Third growth added to {Name}"));
