@@ -64,56 +64,42 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	/// <returns>Destination</returns>
-	public async Task<Space> MoveTokensOut( int max, TargetCriteria targetCriteria, params IEntityClass[] tokenClass ) {
+	public async Task<Space> MoveTokensToSingleLand( int max, TargetCriteria targetCriteria, params IEntityClass[] tokenClass ) {
 
-		if(!Tokens.HasAny( tokenClass )) return null;
-
-		// Gather is:  Space (dst,token-unknown) - SpaceToken (src-tokens)
-		// Push is: SpaceToken (src-token) - Space (dst,token-known) 
-
-
-		// Select 1st Token to move (like Push, no arrows)
-		var tokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>().ToArray(); 
-		int remaining = max;
-		var firstToken = (await SelectAsync( A.SpaceToken.ToMove( remaining, tokenOptions.OnOne( Space ), Present.Done ) ))?.Token;
-		if(firstToken == null) return null;
-
-		// Select 1st Token destination (like Push, Arrows!)
-		var destinationOptions = Range( targetCriteria );
-		Space destination = await SelectAsync( A.Space.ToMoveToken( firstToken.On(Space), destinationOptions.Downgrade(), Present.Always, remaining ) );
-		if( destination == null ) return null;
-		
-		await Move( firstToken, Space, destination );
-		--remaining;
-
-		while(0 < remaining--) {
-			var additionalTokenOptions = Tokens.OfAnyClass( tokenClass ).Cast<IToken>()
-				.OnOne(Space)
-				.ToArray();
-			var nextToken = await SelectAsync( A.SpaceToken.ToCollect($"Move up to ({remaining+1}) to {destination.Text}", additionalTokenOptions, Present.Done, destination) );
-			if(nextToken == null ) break;
-			
-			await Move( nextToken.Token, nextToken.Space, destination );
-		}
-
+		Space destination = null;
+		await new TokenMover(Self,"Move",
+			new SourceSelector(Tokens),
+			new DestinationSelector( Range( targetCriteria ) ) )
+			.AddGroup(max,tokenClass)
+			.Track( moved=> destination = moved.To.Space )
+			.Config( Distribute.ToASingleLand )
+			.DoUpToN();
 		return destination;
-
 	}
 
 	#region Push
 
-	public Task<Space[]> PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, Human.Dahan );
+	public Task PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, Human.Dahan );
 
 	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
 
 	/// <returns>Spaces pushed too.</returns>
-	public Task<Space[]> PushUpTo( int countToPush, params IEntityClass[] groups )
-		=> Pusher.AddGroup( countToPush, groups ).MoveUpToN();
+	public async Task PushUpTo( int countToPush, params IEntityClass[] groups ) {
+		await Pusher
+			.AddGroup( countToPush, groups )
+			.DoUpToN();
+	}
 
-	public Task<Space[]> Push( int countToPush, params IEntityClass[] groups )
-		=> Pusher.AddGroup( countToPush, groups ).MoveN();
+	public async Task<Space[]> Push( int countToPush, params IEntityClass[] groups ) {
+		List<Space> destinations = new List<Space>();
+		await Pusher
+			.AddGroup( countToPush, groups )
+			.Track( x => destinations.Add(x.To.Space))
+			.DoN();
+		return destinations.Distinct().ToArray();
+	}
 
-	public TokenPusher Pusher => Tokens.Pusher( Self );
+	public TokenMover Pusher => Tokens.Pusher( Self );
 
 	#endregion Push
 
@@ -127,12 +113,12 @@ public class TargetSpaceCtx : SelfCtx {
 		=> this.Gather( countToGather, Human.Dahan);
 
 	public Task GatherUpTo( int countToGather, params IEntityClass[] groups )
-		=> Gatherer.AddGroup(countToGather, groups).GatherUpToN();
+		=> Gatherer.AddGroup(countToGather, groups).DoUpToN();
 
 	public Task Gather( int countToGather, params IEntityClass[] groups )
-		=> Gatherer.AddGroup(countToGather,groups).GatherN();
+		=> Gatherer.AddGroup(countToGather,groups).DoN();
 
-	public TokenGatherer Gatherer => Tokens.Gather( Self );
+	public TokenMover Gatherer => Tokens.Gather( Self );
 
 	#endregion Gather
 

@@ -9,14 +9,23 @@ public class HarbingersOfTheLightning {
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
 
 		// Push up to 2 dahan.
-		var destinationSpaces = await ctx.PushUpToNDahan(2);
-
-		// if pushed dahan into town or city
-		bool pushedToBuildingSpace = destinationSpaces
-			.Any( neighbor => ctx.Target(neighbor).Tokens.HasAny(Human.Town_City) );
-
-		if(pushedToBuildingSpace)
-			ctx.AddFear(1);
+		await ctx.Pusher
+			.AddGroup(2,Human.Dahan)
+			.Config( mover => AddFearIfPushedTo(mover,1, Human.Town_City ) )
+			.DoUpToN();
 	}
 
+	static TokenMover AddFearIfPushedTo( TokenMover mover, int fear, IEntityClass[] classes ) {
+		bool addedFear = false;
+		return mover
+			.Track( moved => {
+				if(!addedFear && moved.To.HasAny( Human.Town_City )) {
+					GameState.Current.Fear.AddDirect( new FearArgs( fear ) { space = moved.To.Space } );
+					addedFear = true;
+				}
+			} );
+	}
+
+
 }
+

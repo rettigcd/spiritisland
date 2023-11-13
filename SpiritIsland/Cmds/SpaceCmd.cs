@@ -9,6 +9,9 @@
 public class SpaceCmd : BaseCmd<TargetSpaceCtx> {
 	public SpaceCmd( string description, Func<TargetSpaceCtx, Task> action ) : base( description, action ) { }
 	public SpaceCmd( string description, Action<TargetSpaceCtx> action ) : base( description, action ) { }
+	
+	// Derived types that just override DisplayText and Act...
+	protected SpaceCmd() : base() { }
 
 	// - new -
 

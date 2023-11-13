@@ -28,9 +28,9 @@ public class LeaveATrailOfDeathlySilence {
 
 		await ihi.Incarna.On(from).MoveTo(to);
 
-		await new TokenPusher_FixedDestination( ctx.Target( from ), to )
+		await new TokenMover(ctx.Self,"Bring",from,to)
 			.AddGroup( 1, Human.Invader )
-			.MoveN();
+			.DoN();
 
 	}
 

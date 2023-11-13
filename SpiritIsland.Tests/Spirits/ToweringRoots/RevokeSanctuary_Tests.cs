@@ -24,7 +24,7 @@ public class RevokeSanctuary_Tests : ToweringRoots_Base {
 		// When we resolve Innate
 		await _spirit.When_ResolvingInnate<RevokeSanctuaryAndCastOut>( u => { 
 			u.NextDecision.HasPrompt( "Revoke Sanctuary and Cast Out: Target Space" ).HasOptions("A8").Choose("A8");
-			u.NextDecision.HasPrompt( "Remove up to (1)" ).HasOptions( "T@2,Done" ).Choose( "T@2" );
+			u.NextDecision.HasPrompt( "Remove (1)" ).HasOptions( "T@2" ).Choose( "T@2" );
 		} ).ShouldComplete();
 		
 

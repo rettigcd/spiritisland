@@ -15,7 +15,7 @@ public class SoftlyBeckonEverInward {
 			.AddGroup(2,Token.Beast)
 			// gather up to 2 dahan
 			.AddGroup(2,Human.Dahan)
-			.GatherUpToN();
+			.DoUpToN();
 
 	}
 

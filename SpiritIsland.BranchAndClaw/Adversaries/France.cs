@@ -151,19 +151,13 @@ class FearPushesExplorers : BaseModEntity, IModifyRemovingTokenAsync {
 			&& args.Reason == RemoveReason.Removed
 			&& ActionScope.Current.Category == ActionCategory.Fear
 		) {
-			Spirit spirit = args.From.Space.Boards.First().FindSpirit();
+			Spirit spirit = ActionScope.Current.Owner 
+				?? args.From.Space.Boards.First().FindSpirit();
 
-			SpaceState[] destinationOptions = args.From.Adjacent_ForInvaders.ToArray();
-
-			var pusher = new TokenPusher( spirit, args.From )
-				.FilterDestinations( destinationOptions.Contains );
-
-			int attempts = args.Count; // generally this is 1
-			while(0 < attempts--) {
-				var space = await pusher.PushToken( args.Token ); // ? Can we reuse a pusher?
-				// if push was successful, don't remove
-				if( space != null ) --args.Count;
-			}
+			await args.From.Pusher(spirit,true)
+				.AddGroup(args.Count,Human.Explorer)
+				.Track( _ => --args.Count )
+				.DoN();
 		}
 	}
 }

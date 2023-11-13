@@ -47,7 +47,7 @@ public class ManyMinds_Tests {
 
 			// Implemented as a Push
 			u.NextDecision.HasPrompt( "Select space to Gather a Beast" ).Choose( "A1" );
-			u.NextDecision.HasPrompt( "Gather up to 1 Beast" ).Choose( "Beast on A7" );
+			u.NextDecision.HasPrompt( "Gather up to (1)" ).Choose( "Beast on A7" );
 
 			// Implemented as a Gather
 			// spirit.NextDecision().HasPrompt("").Choose( "A1" );
@@ -114,16 +114,16 @@ public class ManyMinds_Tests {
 		await spirit.When_ResolvingCard<GuideTheWayOnFeatheredWings>( (user) => {
 			user.Choose( "A1" );
 			user.NextDecision.HasPrompt( "Move up to (1)" ).Choose( "SS-Beast" );
-			user.NextDecision.HasPrompt( "Move token to" ).Choose( "A5" );
-			user.NextDecision.HasPrompt( "Move up to 2 Dahan" ).Choose( "D@2 on A1" );
-			user.NextDecision.HasPrompt( "Move up to 1 Dahan" ).Choose( "D@2 on A1" );
+			user.NextDecision.HasPrompt( "Move SS-Beast to" ).Choose( "A5" );
+			user.NextDecision.HasPrompt( "Move up to (2)" ).Choose( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (1)" ).Choose( "D@2" );
 
 			// Then: only original SS-Beast is available for 2nd step. (the other Beast token is not an option)
 			user.NextDecision.HasPrompt( "Move SS-Beast to" ).Choose( "A7" );
 
 			// Cleanup
-			user.NextDecision.HasPrompt( "Move up to 2 Dahan" ).Choose( "D@2 on A5" );
-			user.NextDecision.HasPrompt( "Move up to 1 Dahan" ).Choose( "D@2 on A5" );
+			user.NextDecision.HasPrompt( "Move up to (2)" ).Choose( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (1)" ).Choose( "D@2" );
 		} );
 
 		//  And: Final slot has 2 presence, 2 dahan, and 1 beast

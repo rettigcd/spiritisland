@@ -12,7 +12,7 @@ public class KeepWatchForNewIncursions {
 		return ctx.Gatherer
 			.AddGroup(2,Human.Dahan)
 			.FilterSource(ctx.Self.Presence.IsOn)
-			.GatherUpToN();
+			.DoUpToN();
 	}
 
 	[InnateOption( "1 sun,2 air,3 animal", "Once this turn after Invaders are added or moved into target land, 1 Damage per Dahan in target land, to those added/moved Invaders only.", 1 )]

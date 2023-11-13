@@ -9,16 +9,12 @@ public class RadiatingTremors {
 		// 2 Damage
 		await ctx.DamageInvaders(2);
 
-		// You may Push any number of Quake dividing them as evenly as possible between adjacent lands.
-
-		Dictionary<Space,int> receivedTokensCount = ctx.Tokens.Adjacent.ToDictionary(adj=>adj.Space,_=>0);
-
+		// You may Push any number of Quake
 		await ctx.Pusher
 			.AddGroup( ctx.Tokens[Token.Quake], Token.Quake )
-			.TrackPushed( ( IToken _, Space destination ) => receivedTokensCount[destination]++ )
-			.FilterDestinations( ss => receivedTokensCount[ss.Space] == receivedTokensCount.Values.Min() )
-			.MoveUpToN();
+			// dividing them as evenly as possible between adjacent lands.
+			.Config( Distribute.Evenly )
+			.DoUpToN();
 	}
 
-	
 }

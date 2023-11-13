@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
+#nullable enable
+
 public class UnbearableGaze {
 
 	const string Name = "Unbearable Gaze";
@@ -15,46 +17,25 @@ public class UnbearableGaze {
 	}
 
 	static async Task PushFromTargetOrOrigin( TargetSpaceCtx ctx, int max, params HumanTokenClass[] tokenClasses ) {
-		// Load all possible Sources into a list
-		HashSet<SpaceState> sourceOptions = ctx.Self
-			.FindTargettingSourcesFor( 
-				ctx.Space, 
-				new TargetingSourceCriteria( From.SacredSite ), 
+		// If we want to use SpaceState.Pusher, we need to do them 1 at a time, not together.
+		SpaceState? selectedOrigin = null;
+		await new TokenMover( ctx.Self, "Push"
+			, new SourceSelector( FindOrigins( ctx ).Append( ctx.Tokens ).Distinct() )
+			, DestinationSelector.Adjacent
+		)
+			.AddGroup( 2, Human.Explorer_Town )
+			.Track( move => { if(move.From != ctx.Tokens) selectedOrigin = move.From; } )
+			.FilterDestination( s => s == ctx.Space || selectedOrigin == null || selectedOrigin == s )
+			.DoN();
+
+
+	}
+
+	static IEnumerable<SpaceState> FindOrigins( TargetSpaceCtx ctx )
+		=> ctx.Self
+			.FindTargettingSourcesFor(
+				ctx.Space,
+				new TargetingSourceCriteria( From.SacredSite ),
 				new TargetCriteria( 1 )
-			)
-			.ToHashSet();
-
-		for(int i = 0; i < max; ++i) {
-			sourceOptions.Add( ctx.Tokens );
-
-			// find all explorers/Towns in (sources + target)
-			var tokenOptions = sourceOptions
-				.SelectMany( tokens =>
-					tokens.OfAnyHumanClass( tokenClasses )
-					.On( tokens.Space )
-				);
-
-			// Select 1 to push
-			var toPush = await ctx.Self.Select( new A.SpaceToken( "Select Explorer/Town to push", tokenOptions, Present.Always ) );
-			if(toPush == null) break; // nothing to push
-			await PushSpecificToken( ctx.Self, toPush );
-
-			// if user selected from Origin space, make that only origin space available.
-			if(toPush.Space != ctx.Space) {
-				sourceOptions.Clear();
-				sourceOptions.Add( toPush.Space.Tokens );
-			}
-		}
-	}
-
-	static async Task PushSpecificToken( Spirit spirit, SpaceToken toPush ) {
-		// Push it
-		Space destination = await spirit.Select( A.Space.ToPushToken(
-			toPush.Token, toPush.Space,
-			toPush.Space.Tokens.Adjacent_Existing.Downgrade(),
-			Present.Always
-		) );
-		if(destination != null)
-			await toPush.MoveTo( destination );
-	}
+			);
 }

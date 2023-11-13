@@ -1,7 +1,4 @@
-﻿using SpiritIsland.A;
-using System.Security.Cryptography;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class SpiritPresence : IKnowSpiritLocations {
 

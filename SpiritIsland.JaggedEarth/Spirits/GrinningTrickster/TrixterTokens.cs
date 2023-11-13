@@ -4,23 +4,11 @@
 public class TrixterTokens : SpaceState {
 	public TrixterTokens( SpaceState src, bool runAtMax=false ) : base( src ) { _runAtMax = runAtMax; }
 	public override BlightTokenBinding Blight => new TricksterBlight(this);
-	public override TokenGatherer Gather( Spirit self ) => _runAtMax ? new MaxGatherer(self,this) : base.Gather( self );
-	public override TokenPusher Pusher( Spirit self ) => _runAtMax ? new MaxPusher( self, this ) : base.Pusher( self );
+	public override TokenMover Gather( Spirit self ) => base.Gather( self ).RunAtMax( _runAtMax );
+	public override TokenMover Pusher( Spirit self, bool stoppedByBadlands=false ) 
+		=> base.Pusher( self, stoppedByBadlands ).RunAtMax( _runAtMax );
 
 	readonly bool _runAtMax;
-}
-
-// == Gatherer ==
-/// <summary> Gathers at max, event when instructions say Up To </summary>
-public class MaxGatherer : TokenGatherer {
-	public MaxGatherer( Spirit self, SpaceState tokens ) : base( self, tokens ) { }
-	public override Task<SpaceToken[]> GatherUpToN() => GatherN(); // do max!
-}
-
-// == Pusher ==
-public class MaxPusher : TokenPusher {
-	public MaxPusher( Spirit self, SpaceState tokens ) : base( self, tokens ) { }
-	public override Task<Space[]> MoveUpToN() => MoveN(); // do max!
 }
 
 // Blight

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System.Security.Cryptography;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class StrongAndConstantCurrents{ 
 
@@ -19,14 +21,16 @@ public class StrongAndConstantCurrents{
 
 	#region Push Explorer / Town Option
 
-	static public SpaceCmd PushExporerTownToAdjacenCoastland => new SpaceCmd( $"Push explorer/town to an adjacent Coastal land", PushToAdjacenCostalAction );
+	static public SpaceCmd PushExporerTownToAdjacenCoastland => new SpaceCmd( 
+		$"Push explorer/town to an adjacent Coastal land", 
+		PushToAdjacenCostalAction
+	);
 
-	static Task PushToAdjacenCostalAction( TargetSpaceCtx ctx ) {
-		return ctx.Pusher
-			.FilterDestinations( a=>a.Space.IsCoastal )
+	static Task PushToAdjacenCostalAction( TargetSpaceCtx ctx )
+		=> ctx.Pusher
+			.FilterDestination( a=>a.Space.IsCoastal )
 			.AddGroup(1, Human.Explorer_Town)
-			.MoveUpToN();
-	}
+			.DoN();
 
 	#endregion
 

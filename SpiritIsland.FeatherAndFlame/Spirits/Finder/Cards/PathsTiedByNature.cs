@@ -11,7 +11,7 @@ public class PathsTiedByNature {
 			.Where( t => new TargetCriteria( 0, ctx.Self, t ).Matches(ctx.Tokens) )
 		.ToArray();
 
-		await ctx.MoveTokensOut(2, new TargetCriteria( 2, ctx.Self, currentTerrain )
+		await ctx.MoveTokensToSingleLand(2, new TargetCriteria( 2, ctx.Self, currentTerrain )
 			, Human.Invader.Plus( Human.Dahan, Token.Beast )
 				.Union( ctx.AllPresenceTokens ).ToArray()
 		);

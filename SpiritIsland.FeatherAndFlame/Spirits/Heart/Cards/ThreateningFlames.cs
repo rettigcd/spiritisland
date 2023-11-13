@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.FeatherAndFlame;
+﻿using System.Security.Cryptography;
+
+namespace SpiritIsland.FeatherAndFlame;
 
 public class ThreateningFlames {
 
@@ -16,8 +18,8 @@ public class ThreateningFlames {
 			// Push 1 explorer / town per Terror Level from target land to adjacent lands without your presence
 			await ctx.Pusher
 				.AddGroup(GameState.Current.Fear.TerrorLevel, Human.Explorer_Town)
-				.FilterDestinations( HasNoPresence )
-				.MoveN();
+				.FilterDestination( HasNoPresence )
+				.DoN();
 		else
 			// If there are no such adjacent lands, +2 fear
 			ctx.AddFear(2);

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System.Security.Cryptography;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class RainOfAsh {
 
@@ -12,9 +14,9 @@ public class RainOfAsh {
 		// Push 2 dahan and 2 explorer / town to land(s) without your presence.
 		return ctx.Pusher
 			.AddGroup( 2, Human.Explorer_Town )
-			.AddGroup( 2, Human.Dahan )
-			.FilterDestinations( s => !ctx.Self.Presence.IsOn(s) )
-			.MoveN();
+		.AddGroup( 2, Human.Dahan )
+			.FilterDestination( s => !ctx.Self.Presence.IsOn(s) )
+			.DoN();
 	}
 
 }

@@ -24,7 +24,9 @@ public class ConfoundingMists {
 			if(	args.Added.Class.IsOneOf(Human.Invader) 
 				&& args.Reason.IsOneOf( AddReason.Added, AddReason.MovedTo, AddReason.Explore, AddReason.Build )
 			)
-				await new TokenPusher(_spirit,args.To).PushToken( (IToken)args.Added );
+				await args.To.Pusher(_spirit)
+					.AddGroup(1,args.Added.Class)
+					.DoN();
 		}
 	}
 

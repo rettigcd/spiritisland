@@ -28,11 +28,11 @@ public class WrapInWingsOfSunlight_Tests {
 		await spirit.When_ResolvingCard<WrapInWingsOfSunlight>((user)=> {
 			user.Choose(src.Text);
 			user.NextDecision.HasPrompt( "Move up to (5)" ).HasOptions( "D@2,Done" ).Choose( "D@2" ); // Pick space and 1st token
-			user.NextDecision.HasPrompt( "Move tokens to" ).HasOptions( "A1,A2,A3,A4,A5,A6,A7,A8" ).Choose( dst ); // pick destination
-			user.NextDecision.HasPrompt( "Move up to (4) to A1" ).HasOptions( "D@2,Done" ).Choose( "D@2" ); // pick remaining tokens
-			user.NextDecision.HasPrompt( "Move up to (3) to A1" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
-			user.NextDecision.HasPrompt( "Move up to (2) to A1" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
-			user.NextDecision.HasPrompt( "Move up to (1) to A1" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
+			user.NextDecision.HasPrompt( "Move D@2 to" ).HasOptions( "A1,A2,A3,A4,A5,A6,A7,A8" ).Choose( dst ); // pick destination
+			user.NextDecision.HasPrompt( "Move up to (4)" ).HasOptions( "D@2,Done" ).Choose( "D@2" ); // pick remaining tokens
+			user.NextDecision.HasPrompt( "Move up to (3)" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (2)" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (1)" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
 		} );
 
 		// Then: target 2 of each

@@ -50,7 +50,7 @@ public class AfflictWithBloodThirst {
 		await ctx.Pusher
 			.AddGroup(beastCount,Human.Explorer)
 			.AddGroup(beastCount,Human.Town,Human.Dahan)
-			.MoveN();
+			.DoN();
 	}
 
 }

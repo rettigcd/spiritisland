@@ -6,12 +6,9 @@ public class DrawToTheWatersEdge {
 	[Instructions( "Gather up to 2 Town from a single land." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// "Gather up to 2 Town from a single land."
-		Space? source = null;
-		var gatherer = ctx.Gatherer
+		await ctx.Gatherer
 			.AddGroup(2, Human.Town)
-			.FilterSource(spaceState => source is null || spaceState.Space == source);
-		gatherer.Collected += (st) => source ??= st.Space;
-		await gatherer.GatherUpToN();
+			.Config( MoveFrom.ASingleLand )
+			.DoUpToN();
 	}
-
 }

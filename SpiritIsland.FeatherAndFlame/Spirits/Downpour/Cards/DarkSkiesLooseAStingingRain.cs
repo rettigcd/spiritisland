@@ -14,7 +14,7 @@ public class DarkSkiesLooseAStingingRain {
 		return ctx.Pusher
 			.AddGroup(1,Human.Explorer)
 			.AddGroup(2,Human.Dahan)
-			.MoveUpToN();
+			.DoUpToN();
 	}
 
 

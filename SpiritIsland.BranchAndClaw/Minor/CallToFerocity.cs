@@ -16,6 +16,6 @@ public class CallToFerocity {
 		await ctx.Pusher
 			.AddGroup( 1, Human.Explorer )
 			.AddGroup( 1, Human.Town )
-			.MoveN();
+			.DoN();
 	}
 }

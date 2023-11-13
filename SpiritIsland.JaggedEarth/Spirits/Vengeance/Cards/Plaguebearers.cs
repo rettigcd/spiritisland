@@ -13,7 +13,7 @@ public class Plaguebearers {
 		// For each disease, Push 2 explorer / town / dahan.
 		await ctx.Pusher
 			.AddGroup( ctx.Disease.Count, Human.Explorer_Town.Plus(Human.Dahan) )
-			.OnMove( async ( result ) => {
+			.Track( async ( result ) => {
 				var from = result.From.Space;
 				var to = result.To.Space;
 				// 1 disease may move with each Pushed piece.
@@ -22,7 +22,7 @@ public class Plaguebearers {
 				if( diseaseToken != null )
 					await ctx.Move(diseaseToken.Token, diseaseToken.Space,to);
 			} )
-			.MoveN();
+			.DoN();
 
 	}
 

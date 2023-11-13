@@ -42,6 +42,8 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public IEnumerable<HumanToken> OfTypeHuman() => OfType<HumanToken>();
 	public IEnumerable<T> ModsOfType<T>() => Keys.Union( _islandMods ).OfType<T>();
 
+	public IEntityClass[] ClassesPresent => OfType<IToken>().Select( x => x.Class ).Distinct().ToArray();
+
 	#region Enumeration / Detection(HaS) / Summing
 
 	public ISpaceEntity[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
@@ -481,9 +483,11 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		return invaderToDestroy.Destroy( this, countToDestroy );
 	}
 
-	public virtual TokenGatherer Gather( Spirit self ) => new TokenGatherer( self, this );
+	public virtual TokenMover Gather( Spirit self ) 
+		=> new TokenMover( self, "Gather", Adjacent, this );
 
-	public virtual TokenPusher Pusher( Spirit self ) => new TokenPusher( self, this );
+	public virtual TokenMover Pusher( Spirit self, bool stoppedByBadlands = false ) 
+		=> new TokenMover( self, "Push", new SourceSelector( this ), stoppedByBadlands ? DestinationSelector.Nada : DestinationSelector.Adjacent );
 
 	#region Ravage
 

@@ -14,10 +14,10 @@ public class ACircuitousAndWendingJourney {
 		AddHalf( pusher, ctx.Tokens, ctx.AllPresenceTokens );
 		AddHalf( pusher, ctx.Tokens, Token.Beast );
 
-		return pusher.MoveUpToN();
+		return pusher.DoUpToN();
 	}
 
-	static void AddHalf( TokenPusher pusher, SpaceState tokens, params IEntityClass[] groups ) {
+	static void AddHalf( TokenMover pusher, SpaceState tokens, params IEntityClass[] groups ) {
 		int count = (tokens.SumAny( groups )+1) / 2; // +1 causes rounds up
 		pusher.AddGroup( count, groups );
 	}

@@ -48,6 +48,7 @@ public static partial class Cmd {
 	// -- Remove --
 	static public SpaceCmd RemoveBlight => new SpaceCmd("Remove 1 blight", ctx => ctx.Blight.Remove(1));
 
+	// Remove *UpTo*
 	static public SpaceCmd RemoveExplorers(int count) => RemoveUpToNTokens(count,Human.Explorer);
 	static public SpaceCmd RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
 	static public SpaceCmd RemoveTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
@@ -60,6 +61,13 @@ public static partial class Cmd {
 			ctx => new TokenRemover(ctx).AddGroup(count, tokenClasses).RemoveUpToN()
 		).OnlyExecuteIf( x => x.Tokens.HasAny(tokenClasses));
 	}
+	static public SpaceCmd RemoveNTokens( int count, params IEntityClass[] tokenClasses ) {
+		Func<IEntityClass, string> selector = count == 1 ? t => t.Label : t => t.Label + "s";
+		return new SpaceCmd( $"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast( ", ", " or " ),
+			ctx => new TokenRemover( ctx ).AddGroup( count, tokenClasses ).RemoveN()
+		).OnlyExecuteIf( x => x.Tokens.HasAny( tokenClasses ) );
+	}
+
 
 	static public SpaceCmd RemoveHealthOfInvaders(string description, Func<TargetSpaceCtx,int> calcHealthToRemove) => new SpaceCmd(description, async ctx=>{
 		int remaining = calcHealthToRemove(ctx);

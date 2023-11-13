@@ -20,7 +20,9 @@ public class FlowLikeWaterReachLikeAir {
 	}
 
 	static async Task PullPiecesAlong( SelfCtx ctx, bool bringCityAndBlight, Space from, Space to ) {
-		var mover = new TokenPusher_FixedDestination( ctx.Target( from ), to );
+
+		var mover = new TokenMover( ctx.Self, "Bring", from, to );
+
 		// bringing up to 2 explorers, 2 towns and 2 dahan along with it.
 		mover.AddGroup( 2, Human.Explorer );
 		mover.AddGroup( 2, Human.Town );
@@ -32,6 +34,6 @@ public class FlowLikeWaterReachLikeAir {
 			mover.AddGroup( 2, Token.Blight );
 		}
 
-		await mover.MoveUpToN();
+		await mover.DoUpToN();
 	}
 }

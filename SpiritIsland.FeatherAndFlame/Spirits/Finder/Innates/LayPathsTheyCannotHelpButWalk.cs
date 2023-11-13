@@ -25,10 +25,10 @@ public class LayPathsTheyCannotHelpButWalk {
 		// and beast( each separately ).
 		AddHalf( pusher, ctx.Tokens, Token.Beast );
 
-		await pusher.MoveUpToN();
+		await pusher.DoUpToN();
 	}
 
-	static void AddHalf( TokenPusher pusher, SpaceState tokens, params IEntityClass[] groups ) {
+	static void AddHalf( TokenMover pusher, SpaceState tokens, params IEntityClass[] groups ) {
 		int count = tokens.SumAny(groups) / 2; // half rounded down.
 		pusher.AddGroup(count,groups);
 	}

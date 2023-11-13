@@ -7,18 +7,21 @@ public class TravelersBoon {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// Target Spirit moves up to 3 of their presence to one of your lands.
-		var otherCtx = ctx.OtherCtx;
-		var destinationCtx = await otherCtx.SelectTargetSpaceAsync("Move up to 3 of your presence to:", ctx.Self.Presence.Spaces );
-		var movedTokens = await new TokenCollectorFromSpecifiedSources( destinationCtx, otherCtx.Self.Presence.Spaces.Tokens().ToArray() )
-			.AddGroup( 3, otherCtx.Self.Presence.Deployed.Select( x => x.Token.Class ).Distinct().ToArray() )
-			.CollectUpToN();
+		SelfCtx otherCtx = ctx.OtherCtx;
 
-		// They may move up to 1 Invader, 1 dahan, and 1 beast along with their presence.
-		// ( total, not for each presence).
-		if( 0 < movedTokens.Length)
-		await new TokenCollectorFromSpecifiedSources( destinationCtx, movedTokens.Select( x => x.Space.Tokens ).Distinct().ToArray() )
-			.AddGroup( 1, Human.Invader.Plus( Human.Dahan, Token.Beast ) )
-			.CollectUpToN();
+		// Select destination
+		TargetSpaceCtx destinationCtx = await otherCtx.SelectTargetSpaceAsync("Move up to 3 of your presence to:", ctx.Self.Presence.Spaces );
+		// Select presence to pull in
+		await new TokenMover(ctx.Self,"Move", otherCtx.Self.Presence.Spaces.Tokens(), destinationCtx.Tokens)
+			.AddGroup( 3, otherCtx.Self.Presence.Deployed.Select( x => x.Token.Class ).Distinct().ToArray() )
+			// They may move up to 1 Invader, 1 dahan, and 1 beast along with their presence.
+			// ( total, not for each presence).
+			.Config( x=> Bring.FromAnywhere(x,ctx.Self,new Quota()
+				.AddGroup( 1, Human.Invader )
+				.AddGroup( 1, Human.Dahan )
+				.AddGroup( 1, Token.Beast )
+			) )
+			.DoN(Present.Done);
 
 	}
 

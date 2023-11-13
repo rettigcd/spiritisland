@@ -18,15 +18,15 @@ public class GuideTheWayOnFeatheredWings {
 		ctx.Tokens.Init(tracker,1);
 
 		// move beast (1 of 2)
-		Space destination1 = await ctx.MoveTokensOut(1, new TargetCriteria( 1 ), Token.Beast );
+		Space destination1 = await ctx.MoveTokensToSingleLand(1, new TargetCriteria( 1 ), Token.Beast );
 		if(destination1 == null) return;
 			
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.
 		// the beast / dahan may move to an adjacent land and then back.
 		var destCtx = ctx.Target(destination1);
-		await new TokenCollectorFromSpecifiedSources(destCtx, ctx.Tokens)
+		await TokenMover.SingleDestination(destCtx, ctx.Tokens)
 			.AddGroup(2,Human.Dahan)
-			.CollectUpToN();
+			.DoUpToN();
 
 		// move beast (2 of 2)
 		var selection = A.Space.ForMoving_SpaceToken( $"Move {tracker.BeastMoved.Text} to", destination1, destination1.Tokens.Adjacent.Downgrade(), Present.Done, tracker.BeastMoved );
@@ -35,9 +35,9 @@ public class GuideTheWayOnFeatheredWings {
 		await tracker.BeastMoved.Move(destination1,destination2);
 
 		var destCtx2 = ctx.Target( destination2 );
-		await new TokenCollectorFromSpecifiedSources( destCtx2, destCtx.Tokens )
+		await TokenMover.SingleDestination(destCtx2, destCtx.Tokens)
 			.AddGroup( 2, Human.Dahan )
-			.CollectUpToN();
+			.DoUpToN();
 	}
 
 	class TrackBeastTokenMoved : BaseModEntity, IHandleTokenRemoved {

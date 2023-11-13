@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace SpiritIsland.NatureIncarnate;
+﻿namespace SpiritIsland.NatureIncarnate;
 
 [InnatePower("Scorching Convergence")]
 [Slow,FromSacredSite(1)]
@@ -9,18 +7,20 @@ public class ScorchingConvergence {
 	[InnateOption("2 sun","Move all of your Presence from origin land directly to target land. 1 Damage to Town/City only.")]
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		// Move all of your Presence from origin land directly to target land.
-		IEnumerable<Space> sourceOptions = ctx.Self
+		var originOptions = ctx.Self
 			.FindTargettingSourcesFor(
 				ctx.Space,
 				new TargetingSourceCriteria( From.SacredSite ),
 				new TargetCriteria( 1 )
-			)
-			.Downgrade();
+			);
 
-		var from = await ctx.Self.Select(A.SpaceToken.ToCollect("Move all presence", ctx.Self.Presence.Token.On( sourceOptions ), Present.Always, ctx.Space ));
-		if(from != null && from.Space != ctx.Space )
-			while( from != null && from.Exists )
-				await from.MoveTo(ctx.Tokens);
+		await new TokenMover( ctx.Self, "Move",
+			new SourceSelector( originOptions ),
+			new DestinationSelector( ctx.Tokens )
+		)
+			.AddAll( ctx.Self.Presence.Token )
+			.Config( MoveFrom.ASingleLand )
+			.DoN();
 
 		// record Starting Invaders / Dahan
 		ActionScope.Current[StartingInvaders] = GetSummary( ctx.Tokens, Human.Invader);

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-[InnatePower(WarnOfImpendingConflict.Name),Fast, Yourself]
+[InnatePower(Name),Fast, Yourself]
 public class WarnOfImpendingConflict {
 
 	public const string Name = "Warn of Impending Conflict";
@@ -51,27 +51,11 @@ class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 			&& (_allSpaces || await UserWantsToUseOnThisSpace( space, remainingGoEarlyCount ))
 		) {
 			// Speed Up Dahan
-			while(0 < remainingGoEarlyCount) {
-				var goFastDahan = space.OfCategory( TokenCategory.Dahan ).Cast<HumanToken>()
-					// since Invaders kill Dahan with least health first, make them attack before they are destroyed.
-					.OrderBy( x => x.RemainingHealth )
-					.First();
-				int thisTokenGoEarlyCount = Math.Min( remainingGoEarlyCount, space[goFastDahan] );
-				space.Adjust( goFastDahan.SetRavageOrder( RavageOrder.Ambush ), thisTokenGoEarlyCount );
-				space.Adjust( goFastDahan, -thisTokenGoEarlyCount );
-				remainingGoEarlyCount -= thisTokenGoEarlyCount;
-			}
+			while(0 < remainingGoEarlyCount)
+				MakeDahanGoFast( space, ref remainingGoEarlyCount );
 
 			// Restore
-			ActionScope.Current.AtEndOfThisAction( scope => {
-				var tokensToRestore = space.OfCategory( TokenCategory.Dahan ).Cast<HumanToken>()
-					.Where( h => h.RavageOrder != RavageOrder.DahanTurn )
-					.ToArray();
-				foreach(var token in tokensToRestore) {
-					space.Adjust( token.SetRavageOrder( RavageOrder.DahanTurn ), space[token] );
-					space.Init( token, 0 );
-				}
-			} );
+			RestoreDahanSpeed( space );
 
 			if(!_allSpaces)
 				_dahanToGoEarly = 0; // mark it used
@@ -79,6 +63,29 @@ class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 
 
 		return false;
+	}
+
+	static void MakeDahanGoFast( SpaceState space, ref int remainingGoEarlyCount ) {
+		var goFastDahan = space.OfCategory( TokenCategory.Dahan ).Cast<HumanToken>()
+			// since Invaders kill Dahan with least health first, make them attack before they are destroyed.
+			.OrderBy( x => x.RemainingHealth )
+			.First();
+		int thisTokenGoEarlyCount = Math.Min( remainingGoEarlyCount, space[goFastDahan] );
+		space.Adjust( goFastDahan.SetRavageOrder( RavageOrder.Ambush ), thisTokenGoEarlyCount );
+		space.Adjust( goFastDahan, -thisTokenGoEarlyCount );
+		remainingGoEarlyCount -= thisTokenGoEarlyCount;
+	}
+
+	static void RestoreDahanSpeed( SpaceState space ) {
+		ActionScope.Current.AtEndOfThisAction( scope => {
+			var tokensToRestore = space.OfCategory( TokenCategory.Dahan ).Cast<HumanToken>()
+				.Where( h => h.RavageOrder != RavageOrder.DahanTurn )
+				.ToArray();
+			foreach(var token in tokensToRestore) {
+				space.Adjust( token.SetRavageOrder( RavageOrder.DahanTurn ), space[token] );
+				space.Init( token, 0 );
+			}
+		} );
 	}
 
 	private async Task<bool> UserWantsToUseOnThisSpace( SpaceState space, int goEarlyCount ) => await _spirit.UserSelectsFirstText( $"Have {goEarlyCount} Dahan attack first on {space.Space.Text}?", "Yes, attack early", "No, save for another ravage." );

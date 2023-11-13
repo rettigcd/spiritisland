@@ -30,7 +30,10 @@ internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 		count -= await PartialDamageToInvaders( ctx, count);
 
 		// Push
-		count -= (await ctx.PushUpTo(count, Token.Beast)).Length;
+		await ctx.Pusher
+			.AddGroup(count,Token.Beast)
+			.Track(_=>--count)
+			.DoUpToN();
 
 		// Fear
 		if( startedWithInvaders )

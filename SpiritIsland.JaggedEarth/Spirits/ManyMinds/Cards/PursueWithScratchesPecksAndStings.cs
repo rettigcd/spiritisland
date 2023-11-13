@@ -10,7 +10,7 @@ public class PursueWithScratchesPecksAndStings {
 		// for each beast past the first, Push 1 explorer / town.
 		int pushCount = ctx.Beasts.Count-1;
 		if(pushCount > 0)
-			await ctx.Pusher.AddGroup(pushCount,Human.Explorer_Town).MoveUpToN();
+			await ctx.Pusher.AddGroup(pushCount,Human.Explorer_Town).DoUpToN();
 	}
 
 }

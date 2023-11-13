@@ -17,29 +17,49 @@ public class SwirlAndSpill {
 
 	[InnateOption( "3 water,1 animal", "1 Fear. Push up to 2 Town/Presence/Beast.", 0 )]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
-		await DoTier2( ctx );
+		ctx.AddFear( 1 );
+		await BuildTier2Pusher( ctx )
+			.DoUpToN();
 	}
 
 	// Does tier-2 and returns spaces pushed to
 	static async Task<Space[]> DoTier2( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 );
 
-		var destinations = await ctx.Pusher
-			.AddGroup( 2, Human.Explorer, Human.Dahan, Token.Blight ) // from Tier 1
-			.AddGroup( 2, Human.Town, ctx.Self.Presence.Token, Token.Beast ) // Tier 2
-			.MoveUpToN();
-		return destinations;
+		List<Space> destinations = new List<Space>();
+		await BuildTier2Pusher( ctx )
+			.Track( move => destinations.Add( move.To.Space ) )
+			.DoUpToN();
+		return destinations.ToArray();
 	}
 
 	[InnateOption( "5 water,2 plant,2 animal", "In one land pushed into, Downgrade all Town and all City." )]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
-		Space[] destinations = await DoTier2( ctx );
+		ctx.AddFear( 1 ); // from Tier-2
 
-		IEnumerable<SpaceState> options = destinations.Tokens().Where( t => t.HasAny( Human.Town_City ) ).Distinct();
-		Space spaceToDownGrade = await ctx.Self.Select( new A.Space( "Select space to downgrade all Towns/Cities.", options, Present.Done ) );
-		if(spaceToDownGrade == null) return;
-
-		await ReplaceInvader.DowngradeAll( ctx, Human.Town_City );
+		await BuildTier2Pusher( ctx )
+			.Config( mvr => InOneLandPushedInto_DowngradeAllTownsAndCities(mvr,ctx))
+			.DoUpToN();
 	}
+
+	static void InOneLandPushedInto_DowngradeAllTownsAndCities( TokenMover mover, TargetSpaceCtx ctx ) {
+		bool used = false;
+		mover.Track( async moved => {
+			if(!used 
+				&& moved.To.HasAny( Human.Town_City ) 
+				&& await ctx.Self.UserSelectsFirstText("Downgrade All Towns/Cities on "+moved.To.Space.Text, "Yes, Downgrade those suckers!", "No, let's ruin someone else's day." )
+			) {
+				used = true;
+				await ReplaceInvader.DowngradeAll( ctx, Human.Town_City );
+			}
+		} );
+	}
+
+	static TokenMover BuildTier2Pusher( TargetSpaceCtx ctx ) {
+		return ctx.Pusher
+			.AddGroup( 2, Human.Explorer, Human.Dahan, Token.Blight ) // from Tier 1
+			.AddGroup( 2, Human.Town, ctx.Self.Presence.Token, Token.Beast ); // Tier 2;
+	}
+
 
 }

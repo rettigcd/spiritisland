@@ -9,30 +9,30 @@ public class RadiantAndHallowedGrove {
 
 		// 2 Fear if Invaders are present or adjacent.
 		var spaceState = ctx.Space.Tokens;
-		if(spaceState.InOrAdjacentTo.Any(x=>x.HasInvaders()))
-			ctx.AddFear(2);
+		if(spaceState.InOrAdjacentTo.Any( x => x.HasInvaders() ))
+			ctx.AddFear( 2 );
 
-		// In both target and one adjacent land, you may Remove an Invader with Health less than or equal to the Terror Level.
-		var removableClasses = GameState.Current.Fear.TerrorLevel switch {
+		// In both target and one adjacent land,
+		await new TokenRemover( ctx.Self, InBothTargetAnd1Adjacent( ctx.Tokens ) )
+			// an Invader with Health less than or equal to the Terror Level.
+			.AddGroup( 1 + 1, AnInvaderWithHealthLessThanOrEqualToTerrorLevel() )
+			.RemoveUpToN();
+
+	}
+
+	static SourceSelector InBothTargetAnd1Adjacent( SpaceState target ) {
+		bool removedFromAdjacent = false;
+		return new SourceSelector( target.InOrAdjacentTo )
+			.Track( st => removedFromAdjacent = (st.Space != target) )
+			.FilterSource( ss => !removedFromAdjacent || ss == target.Space );
+	}
+
+	static HumanTokenClass[] AnInvaderWithHealthLessThanOrEqualToTerrorLevel() {
+		return GameState.Current.Fear.TerrorLevel switch {
 			1 => new HumanTokenClass[] { Human.Explorer },
 			2 => Human.Explorer_Town,
 			_ => Human.Invader
 		};
-
-		// Present all candidates in target or adjacent
-		var removeableTokens = spaceState.InOrAdjacentTo
-			.SelectMany(s=>s.SpaceTokensOfAnyClass( removableClasses ))
-			.ToArray();
-
-		for(int i = 0; i < 2; ++i) {
-			var sp = await ctx.SelectAsync( new A.SpaceToken( "Select invader to remove", removeableTokens, Present.Done ) );
-			if(sp==null) break;
-			await sp.Space.Tokens.Remove(sp.Token,1);
-			removeableTokens = (sp.Space == ctx.Space) // if we selected in target
-				? spaceState.Adjacent.SelectMany( s => s.SpaceTokensOfAnyClass( removableClasses ) ).ToArray() // use only adjacents
-				: spaceState.SpaceTokensOfAnyClass( removableClasses ).ToArray(); // use only target
-		}
-
 	}
 
 }

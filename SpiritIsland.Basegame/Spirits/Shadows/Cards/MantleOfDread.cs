@@ -18,7 +18,7 @@ public class MantleOfDread {
 		await pushLand.Pusher
 			.AddGroup(1,Human.Town)
 			.AddGroup(1,Human.Explorer)
-			.MoveUpToN();
+			.DoUpToN();
 			
 	}
 

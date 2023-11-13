@@ -96,14 +96,22 @@ static public class IEnumerableExtensions {
 		return newValue;
 	}
 
+	public static Value Get<Key, Value>( this IDictionary<Key, Value> dict, Key key, Value defaultValue = default ) {
+		if(dict.ContainsKey( key )) return dict[key];
+		Value newValue = defaultValue;
+		dict.Add( key, newValue );
+		return newValue;
+	}
+
+
 }
 
 static public class SpaceTokenExtensions {
 	public static SpaceToken On( this IToken token, Space space, bool displaySpaceInText = true ) => new SpaceToken( space, token, displaySpaceInText );
 
 	/// <summary>Shows the Space in the SpaceToken's description.</summary>
-	public static IEnumerable<SpaceToken> On( this IEnumerable<IToken> tokens, Space space ) 
-		=> tokens.Select( t => t.On( space ) );
+	public static IEnumerable<SpaceToken> On( this IEnumerable<IToken> tokens, Space space, bool showSpace = true ) 
+		=> tokens.Select( t => t.On( space, showSpace ) );
 
 	/// <summary>Hides the Space in the SpaceToken's description.</summary>
 	public static IEnumerable<SpaceToken> OnOne( this IEnumerable<IToken> tokens, Space space ) 

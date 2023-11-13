@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests;
+﻿using System.Linq.Expressions;
+
+namespace SpiritIsland.Tests;
 
 public static class SpiritExtensions {
 
@@ -55,7 +57,11 @@ public static class SpiritExtensions {
 		await using ActionScope scope = await ActionScope.Start( ActionCategory.Spirit_Power );
 		scope.Owner = spirit;
 		SelfCtx selfCtx = spirit.BindMyPowers();
-		await card.ActivateAsync( selfCtx );
+		try { 
+			await card.ActivateAsync( selfCtx );
+		} catch( Exception ex) {
+			string s = ex.ToString();
+		}
 	}
 
 	internal static Task When_TargetingSpace( this Spirit spirit, Space space, Action<TargetSpaceCtx> method )

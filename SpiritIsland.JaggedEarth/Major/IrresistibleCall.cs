@@ -14,7 +14,7 @@ public class IrresistibleCall {
 			.AddGroup(5,Human.Dahan)
 			.AddGroup(5,Token.Beast)
 			.AddGroup(15,Human.Explorer)
-			.GatherN();
+			.DoN();
 
 		// if you have 2 sun, 3 air, 2 plant:
 		if( await ctx.YouHave("2 sun,3 air,2 plant" )) {

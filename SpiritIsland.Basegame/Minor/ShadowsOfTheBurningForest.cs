@@ -14,7 +14,7 @@ public class ShadowsOfTheBurningForest {
 			await ctx.Pusher
 				.AddGroup( 1, Human.Town )
 				.AddGroup( 1, Human.Explorer )
-				.MoveN();
+				.DoN();
 		}
 
 	}

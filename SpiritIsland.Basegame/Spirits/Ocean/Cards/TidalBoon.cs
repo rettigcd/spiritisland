@@ -21,7 +21,7 @@ public class TidalBoon {
 			.Pusher
 			.AddGroup(1,Human.Town)
 			.AddGroup(2,Human.Dahan)
-			.MoveUpToN();
+			.DoUpToN();
 	}
 
 }

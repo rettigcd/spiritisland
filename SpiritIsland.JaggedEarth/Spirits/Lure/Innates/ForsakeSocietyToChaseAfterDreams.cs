@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System.Security.Cryptography;
+
+namespace SpiritIsland.JaggedEarth;
 
 [InnatePower("Forsake Society to Chase After Dreams", "After this Power replaces pieces with explorer: Gather any number of those explorer into your lands.  If target land has any town/city remaining, 1 fear.")]
 [Slow,FromPresence(1,Target.Invaders)]
@@ -39,8 +41,8 @@ public class ForsakeSocietyToChaseAfterDreams {
 		// Push to new land
 		await ctx.Pusher
 			.AddGroup( invader.RemainingHealth, Human.Explorer )
-			.FilterDestinations( ctx.Self.Presence.IsOn )
-			.MoveUpToN();
+			.FilterDestination( ctx.Self.Presence.IsOn )
+			.DoUpToN();
 
 		// If town/city remain, 1 fear.
 		if( ctx.Tokens.HasAny(Human.Town_City) )

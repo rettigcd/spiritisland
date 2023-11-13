@@ -11,6 +11,6 @@ public class RagingHunt {
 	static public Task Damage( TargetSpaceCtx ctx ) => ctx.DamageInvaders( ctx.Beasts.Count );
 
 	[InnateOption("2 animal","You may Push up to 2 beast.", 2)]
-	static public void Noop( TargetSpaceCtx ctx ) => ctx.PushUpTo( 2, Token.Beast );
+	static public Task Noop( TargetSpaceCtx ctx ) => ctx.PushUpTo( 2, Token.Beast );
 
 }

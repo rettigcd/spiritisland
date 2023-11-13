@@ -1,4 +1,5 @@
 ﻿namespace SpiritIsland;
+#nullable enable
 
 public class AddDestroyedPresence : SpiritAction {
 
@@ -81,5 +82,5 @@ public class AddDestroyedPresence : SpiritAction {
 	public int NumToPlace { get; private set; } = 1; // default to placing 1
 	Present _present = Present.Always; // defaults to being required
 	Spirit? _relativeSpirit = null;
-	Func<int,Space,Task> _placedCallback;
+	Func<int,Space,Task>? _placedCallback;
 }

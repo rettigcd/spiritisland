@@ -47,6 +47,8 @@ ManyMinds - Set out-of-band toggle on beasts, at start of action, make smart cho
 
 ======
 
+2 Change Cmd.PushUpTo1Presence Implement SourceSelector as a something-that-acts-on--ManyTokensAction Command, implement RemoveToken as a ManyTokensAction that removes whatever is fed to it.
+
 3 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.
 3 UI - Cleanup Presence-Track image generation
 3 UI - Tokens - Publish token events to the UI so that it can show token changing animation.

@@ -14,6 +14,6 @@ public class Push1TownOrCityFromLands : SpiritAction {
 		var source = await ctx.SelectAsync( new A.SpaceToken( "Select town/city to push from land", dahanOptions, Present.Done ) );
 		if(source == null) return;
 
-		await new TokenPusher( ctx.Self, source.Space.Tokens ).PushToken( source.Token );
+		await source.Space.Tokens.Pusher(ctx.Self).MoveSomewhereAsync( source );
 	}
 }
