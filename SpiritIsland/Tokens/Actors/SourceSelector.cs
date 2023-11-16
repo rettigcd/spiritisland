@@ -1,9 +1,11 @@
-﻿namespace SpiritIsland;
+﻿using System.Reflection.Metadata.Ecma335;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Presents user with ability to select from many *REMOVABLE* tokens on many spaces.
 /// Tracks selected tokens and excludes them from future selections.
-/// </summary> <remarks> To include Non-Removable, call .IncludeNonRemovable() </remarks>
+/// </summary> <remarks> To include Non-Removable, call .NotRemoving() </remarks>
 public class SourceSelector {
 
 	#region constructors
@@ -42,13 +44,18 @@ public class SourceSelector {
 
 	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
 
-	public SourceSelector IncludeNonRemovable(){ _includeNonRemovable = true; return this; }
+	public SourceSelector NotRemoving(){ _removeReason = RemoveReason.None; return this; }
 
 	/// <summary> Dynamically filter sources. - when sources may change over time. </summary>
 	public SourceSelector FilterSource( Func<SpaceState, bool> filterSource ) {
-		_filterSource = filterSource;
+		_filterSpace = filterSource;
 		return this;
 	}
+
+	/// <summary>
+	/// Normally selection based on IEntityClass.  Allows fine-graned selection based on specific IToken
+	/// </summary>
+	public SourceSelector FilterToken( Func<IToken, bool> filterToken ) { _filterToken = filterToken; return this; }
 
 	#endregion public Config
 
@@ -86,15 +93,21 @@ public class SourceSelector {
 	}
 
 	protected async Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) {
-		IToken[] tokens = _includeNonRemovable
-			? sourceSpaceState.OfAnyClass(_quota.RemainingTypes).Cast<IToken>().ToArray()
-			: await sourceSpaceState.RemovableOfAnyClass( RemoveReason.MovedFrom, _quota.RemainingTypes );
+
+		IEnumerable<IToken> tokens = sourceSpaceState.OfAnyClass( _quota.RemainingTypes ).Cast<IToken>();
+
+		if(_filterToken != null)
+			tokens = tokens.Where(_filterToken);
+
+		if(_removeReason != RemoveReason.None)
+			tokens = await sourceSpaceState.WhereRemovable( tokens, _removeReason );
+
 		return tokens.On( sourceSpaceState.Space );
 	}
 
 	protected IEnumerable<SpaceState> SourceSpaces
-		=> _filterSource == null ? _unfilteredSourceSpaces
-		: _unfilteredSourceSpaces.Where( _filterSource );
+		=> _filterSpace == null ? _unfilteredSourceSpaces
+		: _unfilteredSourceSpaces.Where( _filterSpace );
 
 	#endregion
 
@@ -103,10 +116,12 @@ public class SourceSelector {
 	public IEntityClass[] RemainingTypes => _quota.RemainingTypes;
 	Quota _quota = new Quota();
 
-	Func<SpaceState, bool> _filterSource;
+	Func<SpaceState, bool> _filterSpace;
 	readonly public SpaceState[] _unfilteredSourceSpaces;
 
-	bool _includeNonRemovable = false;
+	Func<IToken, bool> _filterToken;
+
+	RemoveReason _removeReason = RemoveReason.MovedFrom;
 
 	#endregion private
 }

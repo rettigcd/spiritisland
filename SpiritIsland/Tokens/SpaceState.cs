@@ -51,11 +51,17 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public ISpaceEntity[] OfAnyClass( params IEntityClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
 	public async Task<IToken[]> RemovableOfAnyClass( RemoveReason reason, params IEntityClass[] classes ) {
 
+		IEnumerable<IToken> tokensToConsider = OfAnyClass( classes ).Cast<IToken>();
+
+		return await WhereRemovable( tokensToConsider, reason );
+	}
+
+	public async Task<IToken[]> WhereRemovable( IEnumerable<IToken> tokensToConsider, RemoveReason reason ) {
 		IModifyRemovingToken[] stoppers = ModsOfType<IModifyRemovingToken>().ToArray();
 		IModifyRemovingTokenAsync[] stoppersAsync = ModsOfType<IModifyRemovingTokenAsync>().ToArray();
 
 		var removable = new List<IToken>();
-		foreach(IToken token in OfAnyClass( classes ).Cast<IToken>()) {
+		foreach(IToken token in tokensToConsider) {
 			var args = new RemovingTokenArgs( this, reason, RemoveMode.Test ) { Count = 1, Token = token };
 			foreach(var stopper in stoppers)
 				if(0 < args.Count)
@@ -63,9 +69,9 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 			if(0 < args.Count)
 				foreach(IModifyRemovingTokenAsync x in stoppersAsync) // must NOT be done in parallel because IDecision can't manage it.
 					await x.ModifyRemovingAsync( args );
-				
+
 			if(0 < args.Count)
-				removable.Add(token);
+				removable.Add( token );
 		}
 		return removable.ToArray();
 	}
