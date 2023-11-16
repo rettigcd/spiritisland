@@ -46,8 +46,8 @@ public class ASpreadOfRampantGreen : Spirit {
 		));
 
 		this.InnatePowers = new InnatePower[] {
-			InnatePower.For<CreepersTearIntoMortar>(),
-			InnatePower.For<AllEnvelopingGreen>(),
+			InnatePower.For(typeof(CreepersTearIntoMortar)),
+			InnatePower.For(typeof(AllEnvelopingGreen)),
 		};
 
 	}

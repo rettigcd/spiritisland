@@ -30,8 +30,8 @@ public class DancesUpEarthquakes : Spirit {
 
 		// Innates
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<LandCreaksWithTension>(),
-			InnatePower.For<EarthShuddersBuildingsFall>()
+			InnatePower.For(typeof(LandCreaksWithTension)),
+			InnatePower.For(typeof(EarthShuddersBuildingsFall))
 		};
 
 		Impending = new List<PowerCard>();

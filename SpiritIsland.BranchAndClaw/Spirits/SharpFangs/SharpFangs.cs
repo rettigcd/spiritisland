@@ -31,8 +31,8 @@ public class SharpFangs : Spirit {
 		);
 
 		this.InnatePowers = new InnatePower[] {
-			InnatePower.For<FrenziedAssult>(),
-			InnatePower.For<RagingHunt>(),
+			InnatePower.For(typeof(FrenziedAssult)),
+			InnatePower.For(typeof(RagingHunt)),
 		};
 
 	}

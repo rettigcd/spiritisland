@@ -34,8 +34,8 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 		// Innates
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<LetsSeeWhatHappens>(),
-			InnatePower.For<WhyDontYouAndThemFight>()
+			InnatePower.For(typeof(LetsSeeWhatHappens)),
+			InnatePower.For(typeof(WhyDontYouAndThemFight))
 		};
 	}
 

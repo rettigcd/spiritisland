@@ -51,7 +51,7 @@ public static class SpiritExtensions {
 		=> spirit.ResolvePower( PowerCard.For<T>() ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );
 
 	internal static Task When_ResolvingInnate<T>( this Spirit spirit, Action<VirtualUser> userActions = null )
-		=> spirit.ResolvePower( InnatePower.For<T>() ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );
+		=> spirit.ResolvePower( InnatePower.For(typeof(T)) ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );
 
 	internal static async Task ResolvePower( this Spirit spirit, IFlexibleSpeedActionFactory card ) {
 		await using ActionScope scope = await ActionScope.Start( ActionCategory.Spirit_Power );

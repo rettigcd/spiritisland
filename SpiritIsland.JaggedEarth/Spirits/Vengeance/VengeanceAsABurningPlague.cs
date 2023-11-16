@@ -20,8 +20,8 @@ public class VengeanceAsABurningPlague : Spirit {
 			new GrowthOption( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy(1) )
 		);
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<EpidemicsRunRampant>(),
-			InnatePower.For<SavageRevenge>()
+			InnatePower.For(typeof(EpidemicsRunRampant)), 
+			InnatePower.For(typeof(SavageRevenge))
 		};
 	}
 	static SpiritAction AddAPresenceOrDisease => new SpiritAction(

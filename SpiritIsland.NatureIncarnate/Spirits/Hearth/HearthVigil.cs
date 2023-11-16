@@ -34,8 +34,8 @@ public class HearthVigil : Spirit {
 		);
 
 		InnatePowers = new InnatePower[]{
-			InnatePower.For<WarnOfImpendingConflict>(),
-			InnatePower.For<KeepWatchForNewIncursions>()
+			InnatePower.For(typeof(WarnOfImpendingConflict)), 
+			InnatePower.For(typeof(KeepWatchForNewIncursions))
 		};
 
 	}

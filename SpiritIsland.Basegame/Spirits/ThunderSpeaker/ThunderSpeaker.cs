@@ -39,8 +39,8 @@ public class Thunderspeaker : Spirit {
 		);
 
 		this.InnatePowers = new InnatePower[]{
-			InnatePower.For<GatherTheWarriors>(),
-			InnatePower.For<LeadTheFuriousAssult>(),
+			InnatePower.For(typeof(GatherTheWarriors)),
+			InnatePower.For(typeof(LeadTheFuriousAssult)),
 		};
 
 	}

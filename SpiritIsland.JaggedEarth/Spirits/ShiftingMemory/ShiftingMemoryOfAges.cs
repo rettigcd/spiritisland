@@ -49,8 +49,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		);
 
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<LearnTheInvadersTactics>(),
-			InnatePower.For<ObserveTheEverChangingWorld>()
+			InnatePower.For(typeof(LearnTheInvadersTactics)), 
+			InnatePower.For(typeof(ObserveTheEverChangingWorld))
 		};
 	}
 

@@ -4,19 +4,18 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	#region Constructors and factories
 
-	static public InnatePower For<T>(){ 
-		Type actionType = typeof(T);
-		var contextAttr = actionType.GetCustomAttributes<GeneratesContextAttribute>().VerboseSingle(actionType.Name+" must have Single Target space or Target spirit attribute");
-		return new InnatePower( actionType, contextAttr );
-	}
+	// don't use <T> because it generates a unique method for each (63+) types.
+	static public InnatePower For(Type actionType) => new InnatePower( actionType );
 
-	protected InnatePower(Type actionType, GeneratesContextAttribute targetAttr){
+	static GeneratesContextAttribute GetContextFromAttribute( Type actionType ) => actionType.GetCustomAttributes<GeneratesContextAttribute>().VerboseSingle( actionType.Name + " must have Single Target space or Target spirit attribute" );
+
+	protected InnatePower(Type actionType){
 
 		_innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
 		_speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
 			?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
-		this._targetAttr = targetAttr;
-		this._repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
+		_targetAttr = GetContextFromAttribute( actionType );
+		_repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
 
 		Name = _innatePowerAttr.Name;
 		GeneralInstructions = _innatePowerAttr.GeneralInstructions;

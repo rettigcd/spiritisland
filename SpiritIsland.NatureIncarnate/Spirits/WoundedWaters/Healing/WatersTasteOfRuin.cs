@@ -9,7 +9,7 @@ class WatersTasteOfRuin : IHealingCard {
 
 	public void Claim( WoundedWatersBleeding spirit ) {
 		// Replace Swirl and Spill with Aflict with Bloodthirst
-		spirit.InnatePowers[0] = InnatePower.For<AfflictWithBloodThirst>();
+		spirit.InnatePowers[0] = InnatePower.For(typeof(AfflictWithBloodThirst));
 		GameState.Current.Log( new Log.LayoutChanged( "Replaced Swirl and Spill with Afflict with Bloodthirst" ) );
 		// Replace Seeking a Path Towards Healing
 		spirit.StopHealing();

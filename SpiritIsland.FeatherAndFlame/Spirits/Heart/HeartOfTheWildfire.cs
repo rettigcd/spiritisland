@@ -19,8 +19,8 @@ public class HeartOfTheWildfire : Spirit {
 		,PowerCard.For<FlamesFury>()
 	) {
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<FireStorm>(),
-			InnatePower.For<TheBurnedLandRegrows>()
+			InnatePower.For(typeof(FireStorm)),
+			InnatePower.For(typeof(TheBurnedLandRegrows))
 		};
 
 

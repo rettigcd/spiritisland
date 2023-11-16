@@ -26,8 +26,8 @@ public class LureOfTheDeepWilderness : Spirit {
 		);
 
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<ForsakeSocietyToChaseAfterDreams>(),
-			InnatePower.For<NeverHeardFromAgain>()
+			InnatePower.For(typeof(ForsakeSocietyToChaseAfterDreams)),
+			InnatePower.For(typeof(NeverHeardFromAgain))
 		};
 	}
 

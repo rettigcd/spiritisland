@@ -34,8 +34,8 @@ public class RelentlessGazeOfTheSun : Spirit {
 		) );
 
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<ScorchingConvergence>(),
-			InnatePower.For<ConsiderAHarmoniousNature>()
+			InnatePower.For(typeof(ScorchingConvergence)), 
+			InnatePower.For(typeof(ConsiderAHarmoniousNature))
 		};
 	}
 

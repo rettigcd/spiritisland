@@ -31,8 +31,8 @@ public class Bringer : Spirit {
 		);
 
 		this.InnatePowers = new InnatePower[]{
-			InnatePower.For<SpiritsMayYetDream>(),
-			InnatePower.For<NightTerrors>()
+			InnatePower.For(typeof(SpiritsMayYetDream)),
+			InnatePower.For(typeof(NightTerrors))
 		};
 
 	}

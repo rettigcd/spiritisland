@@ -45,8 +45,8 @@ public class Ocean : Spirit {
 		);
 
 		InnatePowers = new InnatePower[]{
-			InnatePower.For<OceanBreaksTheShore>(),
-			InnatePower.For<PoundShipsToSplinters>()
+			InnatePower.For(typeof(OceanBreaksTheShore)),
+			InnatePower.For(typeof(PoundShipsToSplinters))
 		};
 
 	}

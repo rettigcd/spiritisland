@@ -32,7 +32,7 @@ public class LightningsSwiftStrike : Spirit {
 		);
 
 		this.InnatePowers = new InnatePower[]{
-			InnatePower.For<ThunderingDestruction>()
+			InnatePower.For(typeof(ThunderingDestruction))
 		};
 
 	}

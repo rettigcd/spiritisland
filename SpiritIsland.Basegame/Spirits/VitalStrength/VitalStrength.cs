@@ -24,7 +24,7 @@ public class VitalStrength : Spirit {
 		);
 
 		this.InnatePowers = new InnatePower[]{ 
-			InnatePower.For<GiftOfStrength>()
+			InnatePower.For(typeof(GiftOfStrength))
 		};
 
 	}

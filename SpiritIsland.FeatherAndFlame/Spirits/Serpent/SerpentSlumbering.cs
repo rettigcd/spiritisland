@@ -10,8 +10,8 @@ public class SerpentSlumbering : Spirit {
 		,PowerCard.For<GiftOfThePrimordialDeeps>()	
 	) {
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<SerpentWakesInPower>(),
-			InnatePower.For<SerpentRousesInAnger>()
+			InnatePower.For(typeof(SerpentWakesInPower)),
+			InnatePower.For(typeof(SerpentRousesInAnger))
 		};
 
 		GrowthTrack = new GrowthTrack( 2,

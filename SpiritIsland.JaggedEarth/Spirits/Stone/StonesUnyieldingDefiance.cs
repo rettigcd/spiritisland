@@ -59,8 +59,8 @@ public StonesUnyieldingDefiance() : base(
 			new GrowthOption(new GainPowerCard(), new PlacePresence(1))
 		);
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<HoldTheIslandFastWithABulwarkOfWill>(),
-			InnatePower.For<LetThemBreakThemselvesAgainstTheStone>()
+			InnatePower.For(typeof(HoldTheIslandFastWithABulwarkOfWill)), 
+			InnatePower.For(typeof(LetThemBreakThemselvesAgainstTheStone))
 		};
 	}
 

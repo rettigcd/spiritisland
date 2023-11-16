@@ -47,8 +47,8 @@ public class FinderOfPathsUnseen : Spirit {
 		);
 
 		InnatePowers = new[] {
-			InnatePower.For<LayPathsTheyCannotHelpButWalk>(),
-			InnatePower.For<CloseTheWays>()
+			InnatePower.For(typeof(LayPathsTheyCannotHelpButWalk)),
+			InnatePower.For(typeof(CloseTheWays))
 		};
 
 	}

@@ -23,7 +23,7 @@ public class Shadows : Spirit {
 			new GrowthOption( new PlacePresence(3), new GainEnergy(3) )
 		);
 		this.InnatePowers = new InnatePower[]{
-			InnatePower.For<DarknessSwallowsTheUnwary>()
+			InnatePower.For(typeof(DarknessSwallowsTheUnwary))
 		};
 	}
 

@@ -92,11 +92,11 @@ public class StarlightSeeksItsForm : Spirit {
 		);
 
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<AirMovesEarthEndures>(),
-			InnatePower.For<FireBurnsWaterSoothes>(),
-			InnatePower.For<SiderealGuidance>(),
-			InnatePower.For<WoodSeeksGrowthHumansSeekFreedom>(),
-			InnatePower.For<StarsBlazeInTheDaytimeSky>(),
+			InnatePower.For(typeof(AirMovesEarthEndures)),
+			InnatePower.For(typeof(FireBurnsWaterSoothes)),
+			InnatePower.For(typeof(SiderealGuidance)),
+			InnatePower.For(typeof(WoodSeeksGrowthHumansSeekFreedom)),
+			InnatePower.For(typeof(StarsBlazeInTheDaytimeSky)),
 		};
 		Presence.Energy.TrackRevealed.Add( EnergyRevealed );
 		Presence.CardPlays.TrackRevealed.Add( CardPlaysRevealed );

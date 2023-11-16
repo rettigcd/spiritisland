@@ -53,8 +53,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		);
 			
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<SlipTheFlowOfTime>(),
-			InnatePower.For<VisionsOfAShiftingFuture>()
+			InnatePower.For(typeof(SlipTheFlowOfTime)),
+			InnatePower.For(typeof(VisionsOfAShiftingFuture))
 		};
 
 		DtnwMinor = new List<PowerCard>();

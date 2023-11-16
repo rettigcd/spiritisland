@@ -38,8 +38,8 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		);
 
 		InnatePowers = new[] {
-			InnatePower.For<SwirlAndSpill>(),
-			InnatePower.For<SanguinaryTaint>()
+			InnatePower.For(typeof(SwirlAndSpill)),
+			InnatePower.For(typeof(SanguinaryTaint))
 		};
 
 	}

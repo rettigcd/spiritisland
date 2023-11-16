@@ -51,8 +51,8 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		);
 
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<RainAndMudSupressConflict>(),
-			InnatePower.For<WaterNourishesLifesGrowth>()
+			InnatePower.For(typeof(RainAndMudSupressConflict)),
+			InnatePower.For(typeof(WaterNourishesLifesGrowth))
 		};
 
 		pourDownPower = new PourDownPower(this);

@@ -29,8 +29,8 @@ public class ToweringRootsOfTheJungle : Spirit {
 
 		// Innates
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<ShelterUnderToweringBranches>(),
-			InnatePower.For<RevokeSanctuaryAndCastOut>()
+			InnatePower.For(typeof(ShelterUnderToweringBranches)), 
+			InnatePower.For(typeof(RevokeSanctuaryAndCastOut))
 		};
 
 		PowerRangeCalc = new IncarnaRangeCalculator( this );

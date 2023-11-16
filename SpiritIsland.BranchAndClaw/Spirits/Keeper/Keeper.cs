@@ -27,8 +27,8 @@ public partial class Keeper : Spirit {
 		);
 
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<PunishThoseWhoTrespass>(),
-			InnatePower.For<SpreadingWilds>(),
+			InnatePower.For(typeof(PunishThoseWhoTrespass)),
+			InnatePower.For(typeof(SpreadingWilds)),
 		};
 	}
 

@@ -39,8 +39,8 @@ public partial class ManyMindsMoveAsOne : Spirit {
 
 		// Innates
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<TheTeemingHostArrives>(),
-			InnatePower.For<BesetAndConfoundTheInvaders>()
+			InnatePower.For(typeof(TheTeemingHostArrives)), 
+			InnatePower.For(typeof(BesetAndConfoundTheInvaders))
 		};
 
 	}

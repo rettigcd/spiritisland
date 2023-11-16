@@ -36,7 +36,7 @@ public class RiverSurges : Spirit {
 		);
 
 		InnatePowers = new InnatePower[]{
-			InnatePower.For<MassiveFlooding>()
+			InnatePower.For(typeof(MassiveFlooding))
 		};
 
 	}

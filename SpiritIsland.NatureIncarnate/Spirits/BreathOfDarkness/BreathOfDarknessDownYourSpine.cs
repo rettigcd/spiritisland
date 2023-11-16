@@ -20,8 +20,8 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 
 		// Innates
 		InnatePowers = new InnatePower[] {
-			InnatePower.For<LeaveATrailOfDeathlySilence>(),
-			InnatePower.For<LostInTheEndlessDark>()
+			InnatePower.For(typeof(LeaveATrailOfDeathlySilence)),
+			InnatePower.For(typeof(LostInTheEndlessDark))
 		};
 
 		PowerRangeCalc = new ShadowTouchedRealm_RangeCalculator();

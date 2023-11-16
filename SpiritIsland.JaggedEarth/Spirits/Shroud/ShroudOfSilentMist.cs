@@ -42,8 +42,8 @@ public class ShroudOfSilentMist : Spirit {
 
 
 		this.InnatePowers = new InnatePower[] {
-			InnatePower.For<SuffocatingShroud>(),
-			InnatePower.For<LostInTheSwirlingHaze>()
+			InnatePower.For(typeof(SuffocatingShroud)), 
+			InnatePower.For(typeof(LostInTheSwirlingHaze))
 		};
 	}
 

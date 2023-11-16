@@ -22,7 +22,7 @@ public class MassiveFlooding_Tests : RiverGame {
 	[Fact]
 	public void InsufficientElements() {
 		var fixture = new ConfigurableTestFixture();
-		var innatePower = InnatePower.For<MassiveFlooding>();
+		var innatePower = MassiveFloodingPower;
 
 		// Given: spirit does not have enough elements to trigger anything
 		//   And: should not be activatable
@@ -51,7 +51,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,5E@1,4T@2" );
 
 		//  When: activate innate
-		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
+		_ = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
 
 		fixture.ChoosePush( StdTokens.Town, destination.Space ); // push 1
@@ -63,6 +63,8 @@ public class MassiveFlooding_Tests : RiverGame {
 		destination.Summary.ShouldBe( "1T@2" );
 
 	}
+
+	static InnatePower MassiveFloodingPower => InnatePower.For(typeof(MassiveFlooding));
 
 	[Trait("Feature","Push")]
 	[Fact]
@@ -81,7 +83,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,4T@2,5E@1");
 
 		//  When: activate innate
-		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
+		_ = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
 		fixture.Choose( StdTokens.Town ); // 1st damage
 		fixture.Choose( StdTokens.Town1 ); // 2nd damage
@@ -112,7 +114,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,4T@2,5E@1" );
 
 		//  When: activate innate
-		_ = InnatePower.For<MassiveFlooding>().ActivateAsync( fixture.SelfCtx );
+		_ = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
 
 		// Then: target has remaining invaders
