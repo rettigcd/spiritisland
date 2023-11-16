@@ -6,15 +6,19 @@
 public class Quota {
 
 	public void MarkTokenUsed( IToken token ) {
-		RemainingQuota.First( q => q.Contains( token.Class ) ).UsedOne();
+		var match = _sharedGroupCounts.First( q => q.Contains( token.Class ) );
+		match.UsedOne();
+		if(!match.HasMore)
+			_sharedGroupCounts.Remove( match );
+
 		_remainingTypes = null; // recalc next time neede
 	}
 
 	public IEntityClass[] RemainingTypes => _remainingTypes ??= CalcRemainingTypes();
 
-	public string RemainingTokenDescriptionOn( SpaceState[] sourceSpaces )
-		=> RemainingQuota.Sum( q => q.CountToShow( sourceSpaces ) ).ToString();
-	//  => RemainingQuota.Select( x => x.VerboseString( sourceSpaces ).ToString() ).Join( ", " );
+	public string RemainingTokenDescriptionOn( SpaceState[] sourceSpaces ) => _beVerbose 
+		? _sharedGroupCounts.Select( x => x.VerboseString( sourceSpaces ).ToString() ).Join( "/" )
+		: _sharedGroupCounts.Sum( q => q.CountToShow( sourceSpaces ) ).ToString();
 
 	#region configure
 
@@ -28,20 +32,21 @@ public class Quota {
 		return this;
 	}
 
+	public Quota BeVerbose() { _beVerbose=true; return this; }
+
 	#endregion
 
 
 	#region private
 
-	IEntityClass[] CalcRemainingTypes() => RemainingQuota
+	IEntityClass[] CalcRemainingTypes() => _sharedGroupCounts
 		.SelectMany( q => q.Classes )
 		.Distinct()
 		.ToArray();
 
-	IEnumerable<QuotaGroup> RemainingQuota => _sharedGroupCounts.Where( g => g.HasMore );
-
 	readonly List<QuotaGroup> _sharedGroupCounts = new(); // the # we push from each group
 	IEntityClass[] _remainingTypes;
+	bool _beVerbose = false;
 
 	class QuotaGroup {
 

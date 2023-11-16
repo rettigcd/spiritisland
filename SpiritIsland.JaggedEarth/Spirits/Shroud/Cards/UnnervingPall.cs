@@ -25,7 +25,7 @@ public class UnnervingPall {
 
 	static async Task SelectUpTo3DamagedInvadersToNotParticipate( TargetSpaceCtx ctx ) {
 
-		// Find Damaged Invaders
+		//// Find Damaged Invaders
 		var damagedInvaders = new List<ISpaceEntity>();
 		foreach(var token in ctx.Tokens.InvaderTokens().Where( t => t.RemainingHealth < t.FullHealth ))
 			for(int i = 0; i < ctx.Tokens[token]; ++i)
@@ -33,26 +33,12 @@ public class UnnervingPall {
 		if(damagedInvaders.Count == 0)
 			return;
 
-		// Create a list to hold ones we've selected to exclude
-		var skipInvaders = new CountDictionary<HumanToken>();
-		// Select up to 3 to put in the skip-list
-		int remaining = 3;
-		while(0 < remaining-- && 0 < damagedInvaders.Count) {
-			var decision = new A.SpaceToken(
-				"Select invader to not participate in ravage",
-				damagedInvaders.Distinct().Cast<IToken>().On( ctx.Space ),
-				Present.Done
-			);
-			var skip = (await ctx.SelectAsync( decision ))?.Token;
-			if(skip == null) break;
-			skipInvaders[(HumanToken)skip]++;
-			damagedInvaders.Remove( skip );
-		}
+		var sourceSelector = new SourceSelector(ctx.Tokens)
+			.NotRemoving()
+			.AddGroup(3,damagedInvaders.Select(x=>x.Class).Distinct().ToArray())
+			.FilterToken(t => 0<((HumanToken)t).Damage ); // is damaged
 
-		// If we selected any, remove them from the fight
-		if(0 < skipInvaders.Count)
-			ctx.Tokens.Adjust(new InvadersDontParticipateInRavage(skipInvaders),1);
-
+		await SitOutRavage.SelectFightersAndSitThemOut(ctx.Self,ctx.Tokens,sourceSelector);
 	}
 
 	class InvadersDontParticipateInRavage : BaseModEntity, ISkipRavages, IEndWhenTimePasses {

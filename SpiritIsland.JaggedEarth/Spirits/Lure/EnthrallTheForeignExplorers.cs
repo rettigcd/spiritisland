@@ -9,44 +9,17 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 	public EnthrallTheForeignExplorers( Spirit self ):base(self) {}
 
-	public UsageCost Cost => UsageCost.Free; // doesn't cost anything to use.
+	public UsageCost Cost => UsageCost.Free;
 
 	public async Task<bool> Skip( SpaceState space ) {
-		int maxRemovable = _spirit.Presence.CountOn( space ) * 2;
 
-		int explorerCount = space.Sum( Human.Explorer );
+		var sourceSelector = new SourceSelector( space )
+			.NotRemoving()
+			.AddGroup( _spirit.Presence.CountOn( space ) * 2, Human.Explorer );
 
-		List<HumanToken> explorerTypes = space.OfHumanClass( Human.Explorer ).ToList();
-
-		int removableCount = System.Math.Min( maxRemovable, explorerCount );
-		int removed = 0;
-		while(removed < removableCount) {
-			// Select type to not participate (strifed / non-strifed)
-			HumanToken explorerTypeToNotParticipate = explorerTypes.Count == 1 ? explorerTypes[0]
-				: ( await _spirit.Select( A.SpaceToken.ToRemove( 1, explorerTypes.On( space.Space ), Present.Done ) ))?.Token.AsHuman();
-			if(explorerTypeToNotParticipate == null) break;
-
-			var countToNotParticipate = await _spirit.SelectNumber( $"{space.Space.Text}: # of {explorerTypeToNotParticipate} to not participate in Ravage.", space[explorerTypeToNotParticipate], 0 );
-
-			if(0 < countToNotParticipate)
-				DontParticipateInRavage( space, explorerTypeToNotParticipate, countToNotParticipate );
-
-			explorerTypes.Remove( explorerTypeToNotParticipate ); // don't let them select the same type twice and over-count the # of non-participants of that type.
-
-			removed += countToNotParticipate;
-		}
+		await SitOutRavage.SelectFightersAndSitThemOut( _spirit, space, sourceSelector );
 
 		return false; // does not stop ravage ever
 	}
 
-	static void DontParticipateInRavage( SpaceState space, HumanToken humanToken, int countToNotParticipate ) {
-		var nonParticipating = humanToken.SetRavageSide( RavageSide.None );
-		space.Adjust( nonParticipating, countToNotParticipate );
-		space.Adjust( humanToken, -countToNotParticipate );
-
-		ActionScope.Current.AtEndOfThisAction( scope => {
-			space.Adjust( nonParticipating, -countToNotParticipate );
-			space.Adjust( humanToken, countToNotParticipate );
-		} );
-	}
 }
