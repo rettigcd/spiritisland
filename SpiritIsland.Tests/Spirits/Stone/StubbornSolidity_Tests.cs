@@ -140,8 +140,8 @@ public class StubbornSolidity_Tests {
 		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
 			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 			//   And: outside dahan are gathered
-			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
-			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasOptions( "D@2 on A7,Done" ).Choose( "D@2 on A7" );
+			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
 		} );
 
 		//  Then: dahan were gathered

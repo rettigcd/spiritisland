@@ -29,7 +29,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		fix.Choose( dahanDestination );
 
 		//  And: May Gather up to 2 dahan (per the card)
-		fix.Choose("D@2 on "+ dahanDestination.Text ); // "Gather up to 2 Dahan"
+		fix.Choose("D@2"); // "Gather up to 2 Dahan"
 
 		//  And: May push 1 blight
 		// no blight to push

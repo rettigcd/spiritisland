@@ -1,17 +1,21 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.A;
+
+namespace SpiritIsland;
 
 public class SpaceToken : IOption {
 
 	/// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
-	public SpaceToken( Space space, IToken token, bool showSpaceInTextDescription=true ) { 
+	public SpaceToken( Space space, IToken token ) { 
 		Space = space; 
 		Token = token;
-		Text = showSpaceInTextDescription ? $"{Token.Text} on {space.Label}" : $"{Token.Text}";
 	}
 
 	public Space Space { get; }
 	public IToken Token { get; }
-	public string Text { get; }
+	public string Text => ShowSpaceInTextDescription ? $"{Token.Text} on {Space.Label}" : $"{Token.Text}";
+
+	/// <summary> Set just before a Decision is made so text-interface only verbose when it needs to be. </summary>
+	public bool ShowSpaceInTextDescription { get; set; }
 
 	public void Deconstruct(out Space space, out IToken token) {
 		space = Space;

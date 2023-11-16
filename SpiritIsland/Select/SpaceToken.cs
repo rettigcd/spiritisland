@@ -35,6 +35,10 @@ public class SpaceToken : TypedDecision<SI_SpaceToken>, IHaveArrows {
 	public SpaceToken( string prompt, IEnumerable<SI_SpaceToken> tokens, Present present )
 		: base( prompt, tokens, present ) {
 		SpaceTokens = tokens.ToArray();
+		int count = SpaceTokens.Select( st => st.Space ).Distinct().Count();
+		bool showSpaces = 1 < count;
+		foreach(SI_SpaceToken st in SpaceTokens) 
+			st.ShowSpaceInTextDescription = showSpaces;
 	}
 
 	#endregion

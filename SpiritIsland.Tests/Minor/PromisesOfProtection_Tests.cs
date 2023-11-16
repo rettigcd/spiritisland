@@ -11,7 +11,7 @@ public class PromisesOfProtection_Tests {
 		var fxt = new ConfigurableTestFixture();
 		var targetSpace = fxt.Board[5];
 		var dahanSource = targetSpace.Adjacent_Existing.First();
-		var selectDahanFromSource = "D@2 on " + dahanSource.Text;
+		var selectDahanFromSource = "D@2";
 		var ctx = fxt.SelfCtx.Target( targetSpace );
 
 		// Test 1

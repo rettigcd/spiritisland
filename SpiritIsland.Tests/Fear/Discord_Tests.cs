@@ -15,8 +15,8 @@ public class Discord_Tests {
 		// When:
 		await new Discord().When_InvokingLevel( 3, () => {
 			fxt.NextDecision.HasPrompt( "Select token for Add 1 Strife." )
-				.HasOptions( "C@3 on A6,T@2 on A6" )
-				.Choose( "C@3 on A6" );
+				.HasOptions( "C@3,T@2" )
+				.Choose( "C@3" );
 			fxt.Choose( "T@2" ); // damage town
 			fxt.Choose( "T@1" ); // damage it again.
 		} );

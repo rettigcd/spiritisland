@@ -48,7 +48,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		//		User.OptionallyPushesInvaderTo(invader.Token.ToString(),"A1,[A2],A3,A5");
 
 		var invader = _spirit.Portal.Next.Options[0] as SpaceToken;
-		var invaderText = $"{invader.Token.Text} on {invader.Space}";
+		var invaderText = $"{invader.Token.Text}";
 
 		User.AssertDecision( PreselectPrompt, invaderText + ",Done", invaderText );
 		User.AssertDecisionInfo( $"Push {invader.Token.Text} to", "A1,[A2],A3,A5" );
@@ -77,7 +77,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		// User.TargetsLand( WashAway.Name, targetSpace.Label );
-		User.AssertDecision( PreselectPrompt, "E@1 on A2,Done", "E@1 on A2" );
+		User.AssertDecision( PreselectPrompt, "E@1,Done", "E@1" );
 		User.AssertDecisionInfo( "Push E@1 to", "A1,[A3],A4" );
 	}
 	const string PreselectPrompt = "Push up to (3)";
@@ -104,7 +104,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		//User.TargetsLand( WashAway.Name, targetSpace.Label );
 		//		User.OptionallyPushesInvaderTo("T@2","A1,A2,[A3],A5");
 		//User.OptionallyPushesInvaderTo("[E@1],T@2","A1,[A2],A3,A5", 2);
-		User.AssertDecision( PreselectPrompt, "E@1 on A4,T@2 on A4,Done", "E@1 on A4" );
+		User.AssertDecision( PreselectPrompt, "E@1,T@2,Done", "E@1" );
 		User.AssertDecisionInfo( "Push E@1 to", "A1,[A2],A3,A5" );
 		User.AssertDecision( "Push up to (1)", "T@2,Done", "T@2" );
 		User.AssertDecisionInfo( "Push T@2 to", "A1,A2,[A3],A5" );
@@ -136,7 +136,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		When_PlayingCard();
 
 		// First Invader is different (contains space) due to pre-select
-		User.AssertDecision( PreselectPrompt, "T@1 on A4,Done", "T@1 on A4" );
+		User.AssertDecision( PreselectPrompt, "T@1,Done", "T@1" );
 		User.AssertDecisionInfo( "Push T@1 to", "A1,[A2],A3,A5" );
 		User.Assert_Done();
 
@@ -164,7 +164,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		Task t = When_PlayingCard();
 
 		// First Invader is different (contains space) due to pre-select
-		User.AssertDecision( PreselectPrompt, "E@1 on A4,Done", "E@1 on A4" );
+		User.AssertDecision( PreselectPrompt, "E@1,Done", "E@1" );
 		User.AssertDecisionInfo( "Push E@1 to", "A1,[A2],A3,A5" );
 		// remaining are normal since space is already selected.
 		User.AssertDecision( "Push up to (2)", "E@1,Done", "E@1" );

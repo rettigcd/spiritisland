@@ -20,7 +20,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		// When: playing Card
 		await spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( (user) => {
 			//  And: Can bring 2 of each
-			user.AssertDecisionInfo( "Select Presence to push.", "[TS on A5],Done" );
+			user.AssertDecisionInfo( "Select Presence to push.", "[TS],Done" );
 			user.AssertDecisionInfo( "Push Presence to", "[A1],A4,A6,A7,A8" );
 			user.AssertDecisionInfo( "Bring up to (6)", "[D@2],E@1,T@2,Done" );
 			user.AssertDecisionInfo( "Bring up to (5)", "[D@2],E@1,T@2,Done" );

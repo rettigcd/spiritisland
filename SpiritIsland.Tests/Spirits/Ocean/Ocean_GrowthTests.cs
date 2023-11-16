@@ -37,7 +37,12 @@ public class Ocean_GrowthTests : GrowthTests {
 		if(gather != null){
 			_ = gather.ActivateAsync( _spirit.BindSelf() );
 			while(!_spirit.Portal.IsResolved){
-				var options = _spirit.Portal.Next.Options.Where( x => moveBySrc.ContainsKey( x.Text ) ).ToArray();
+				var options = _spirit.Portal.Next.Options
+					.Where( option => {
+						if(option is SpaceToken st) st.ShowSpaceInTextDescription = true;
+						return moveBySrc.ContainsKey( option.Text );
+					} )
+					.ToArray();
 				var source = options.First();
 				_spirit.Portal.Choose( _spirit.Portal.Next, source );
 			}

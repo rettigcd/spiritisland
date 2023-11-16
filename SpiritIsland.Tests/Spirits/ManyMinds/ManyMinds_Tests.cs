@@ -23,7 +23,7 @@ public class ManyMinds_Tests {
 			user.Choose( "A1" );
 
 			// Then: can gather beast 2 spaces away
-			user.Choose( "Beast on A7" );
+			user.Choose( "Beast" );
 		} );
 	}
 
@@ -47,7 +47,7 @@ public class ManyMinds_Tests {
 
 			// Implemented as a Push
 			u.NextDecision.HasPrompt( "Select space to Gather a Beast" ).Choose( "A1" );
-			u.NextDecision.HasPrompt( "Gather up to (1)" ).Choose( "Beast on A7" );
+			u.NextDecision.HasPrompt( "Gather up to (1)" ).Choose( "Beast" );
 
 			// Implemented as a Gather
 			// spirit.NextDecision().HasPrompt("").Choose( "A1" );

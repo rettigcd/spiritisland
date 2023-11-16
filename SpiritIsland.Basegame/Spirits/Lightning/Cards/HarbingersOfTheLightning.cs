@@ -19,7 +19,7 @@ public class HarbingersOfTheLightning {
 		bool addedFear = false;
 		return mover
 			.Track( moved => {
-				if(!addedFear && moved.To.HasAny( Human.Town_City )) {
+				if(!addedFear && moved.To.HasAny( classes )) {
 					GameState.Current.Fear.AddDirect( new FearArgs( fear ) { space = moved.To.Space } );
 					addedFear = true;
 				}

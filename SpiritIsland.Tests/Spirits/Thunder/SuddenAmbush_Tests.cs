@@ -29,7 +29,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 
 		await spirit.When_ResolvingCard<SuddenAmbush>( (user) => {
 			user.TargetsLand( SuddenAmbush.Name, "A1,[A2],A4,A5,A6" );
-			user.GathersOptionalToken( "D@2 on A3" );
+			user.GathersOptionalToken( "D@2" );
 		} );
 
 		// Then: 1 explorer left
@@ -46,7 +46,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 
 		await spirit.When_ResolvingCard<SuddenAmbush>( (user) => {
 			user.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
-			user.GathersOptionalToken( "D@2 on A2" );
+			user.GathersOptionalToken( "D@2" );
 		} );
 
 		// Then: 5-2-1 = 2 explorers left
@@ -64,7 +64,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 
 		await spirit.When_ResolvingCard<SuddenAmbush>( (user) => {
 			user.TargetsLand( SuddenAmbush.Name, "[A1],A2,A4,A5,A6" );
-			user.GathersOptionalToken( "D@2 on A2" );
+			user.GathersOptionalToken( "D@2" );
 		} );
 
 		// Then: 5-2-1 = 2 explorers left

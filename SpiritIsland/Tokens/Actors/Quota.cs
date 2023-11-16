@@ -16,6 +16,8 @@ public class Quota {
 		=> RemainingQuota.Sum( q => q.CountToShow( sourceSpaces ) ).ToString();
 	//  => RemainingQuota.Select( x => x.VerboseString( sourceSpaces ).ToString() ).Join( ", " );
 
+	#region configure
+
 	public Quota AddGroup( int count, params IEntityClass[] classes ) {
 		_sharedGroupCounts.Add( new QuotaGroup( count, classes ) );
 		return this;
@@ -25,6 +27,11 @@ public class Quota {
 		_sharedGroupCounts.Add( new QuotaGroup( classes ) );
 		return this;
 	}
+
+	#endregion
+
+
+	#region private
 
 	IEntityClass[] CalcRemainingTypes() => RemainingQuota
 		.SelectMany( q => q.Classes )
@@ -69,5 +76,7 @@ public class Quota {
 		int _count;
 
 	}
+
+	#endregion
 
 }

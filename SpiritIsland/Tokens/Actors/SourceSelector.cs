@@ -77,7 +77,7 @@ public class SourceSelector {
 			await onSelected( selected );
 	}
 
-	List<Func<SpaceToken, Task>> _onSelected = new();
+	readonly List<Func<SpaceToken, Task>> _onSelected = new();
 
 	#endregion
 
@@ -95,7 +95,7 @@ public class SourceSelector {
 
 	protected async Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) {
 		return (await sourceSpaceState.RemovableOfAnyClass( RemoveReason.MovedFrom, _quota.RemainingTypes ))
-			.On( sourceSpaceState.Space, 1 < _unfilteredSourceSpaces.Length );
+			.On( sourceSpaceState.Space );
 	}
 
 	protected IEnumerable<SpaceState> SourceSpaces
