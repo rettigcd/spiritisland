@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Presents user with ability to select from many tokens on many spaces.
+/// Presents user with ability to select from many *REMOVABLE* tokens on many spaces.
 /// Tracks selected tokens and excludes them from future selections.
-/// </summary>
+/// </summary> <remarks> To include Non-Removable, call .IncludeNonRemovable() </remarks>
 public class SourceSelector {
 
 	#region constructors
@@ -18,7 +18,6 @@ public class SourceSelector {
 	/// <param name="actionPromptPrefix">Move, Push, Gather, Bring</param>
 	/// <param name="present">Required or not</param>
 	/// <param name="singleDestination">Draws arrows to destination if there is only one.</param>
-	/// <returns></returns>
 	public async Task<SpaceToken> GetSource( Spirit spirit, string actionPromptPrefix, Present present, Space singleDestination = null ) {
 		SpaceToken[] options = await GetSourceOptions();
 		SpaceState[] sourceSpaces = options.Select( st => st.Space ).Distinct().Tokens().ToArray();
@@ -37,20 +36,13 @@ public class SourceSelector {
 	#region public Config
 
 	/// <summary> Specifies 1 or more tokens that may be selected - must be called at least once for GetSource to present any results.</summary>
-	public SourceSelector AddGroup( int count, params IEntityClass[] classes ) {
-		_quota.AddGroup( count, classes );
-		return this;
-	}
+	public SourceSelector AddGroup( int count, params IEntityClass[] classes ) { _quota.AddGroup( count, classes ); return this; }
 
-	public SourceSelector AddAll( params IEntityClass[] classes ) {
-		_quota.AddAll( classes );
-		return this;
-	}
+	public SourceSelector AddAll( params IEntityClass[] classes ) { _quota.AddAll( classes ); return this; }
 
-	public SourceSelector UseQuota( Quota quota ) {
-		_quota = quota;
-		return this;
-	}
+	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
+
+	public SourceSelector IncludeNonRemovable(){ _includeNonRemovable = true; return this; }
 
 	/// <summary> Dynamically filter sources. - when sources may change over time. </summary>
 	public SourceSelector FilterSource( Func<SpaceState, bool> filterSource ) {
@@ -94,8 +86,10 @@ public class SourceSelector {
 	}
 
 	protected async Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) {
-		return (await sourceSpaceState.RemovableOfAnyClass( RemoveReason.MovedFrom, _quota.RemainingTypes ))
-			.On( sourceSpaceState.Space );
+		IToken[] tokens = _includeNonRemovable
+			? sourceSpaceState.OfAnyClass(_quota.RemainingTypes).Cast<IToken>().ToArray()
+			: await sourceSpaceState.RemovableOfAnyClass( RemoveReason.MovedFrom, _quota.RemainingTypes );
+		return tokens.On( sourceSpaceState.Space );
 	}
 
 	protected IEnumerable<SpaceState> SourceSpaces
@@ -111,6 +105,8 @@ public class SourceSelector {
 
 	Func<SpaceState, bool> _filterSource;
 	readonly public SpaceState[] _unfilteredSourceSpaces;
+
+	bool _includeNonRemovable = false;
 
 	#endregion private
 }
