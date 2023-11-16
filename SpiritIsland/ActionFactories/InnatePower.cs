@@ -73,7 +73,8 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	public string Name {get;}
 
-	public string Text => Name;
+	string IOption.Text => IOption_Text; // non-overridable, hiding IOption.Text so it isn't used for non IOption stuff
+	virtual protected string IOption_Text => Name; // allow Dirived types to add additional info
 
 	public string TargetFilter => _targetAttr.TargetFilterName;
 
@@ -147,15 +148,8 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		}
 		public MethodInfo Method { get; }
 		public InnateOptionAttribute Attr { get; }
-//		public ElementCounts  Elements => Attr.Elements;
-
-		// Execution
-		// Display Words
-		// Elements
 	}
 
 }
 
 public enum LandOrSpirit { None, Land, Spirit }
-
-
