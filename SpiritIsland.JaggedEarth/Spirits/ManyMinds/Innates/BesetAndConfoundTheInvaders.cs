@@ -47,7 +47,7 @@ public class BesetAndConfoundTheInvaders {
 
 }
 
-public class BesetInnateOptionAttribute : InnateOptionAttribute {
+public class BesetInnateOptionAttribute : InnateTierAttribute {
 	readonly int _beastCount;
 	public BesetInnateOptionAttribute( string elementText, int beastCount, string description )
 		: base( elementText, description, 0 ) {

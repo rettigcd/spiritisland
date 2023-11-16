@@ -5,10 +5,10 @@
 /// </summary>
 public class RepeatIfAttribute : RepeatAttribute {
 
-	public override IDrawableInnateOption[] Thresholds { get; }
+	public override IDrawableInnateTier[] Thresholds { get; }
 
 	public RepeatIfAttribute(string elementThreshold, params string[] additionalThresholds) {
-		var repeats = new List<IDrawableInnateOption> {
+		var repeats = new List<IDrawableInnateTier> {
 			new DrawableRepeatOption( elementThreshold, "Repeat this Power." )
 		};
 		if(additionalThresholds != null && additionalThresholds.Length>0)
@@ -20,9 +20,9 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 	class Repeater : IPowerRepeater {
 
-		readonly List<IDrawableInnateOption> thresholds;
+		readonly List<IDrawableInnateTier> thresholds;
 
-		public Repeater( IDrawableInnateOption[] thresholds ) {
+		public Repeater( IDrawableInnateTier[] thresholds ) {
 			this.thresholds = thresholds.ToList();
 		}
 
@@ -39,7 +39,7 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 }
 
-public class DrawableRepeatOption : IDrawableInnateOption {
+public class DrawableRepeatOption : IDrawableInnateTier {
 	public DrawableRepeatOption( string thresholds, string description ) {
 		Elements = ElementCounts.Parse(thresholds);
 		Description = description;

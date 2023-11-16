@@ -36,7 +36,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 		var drawableOptions = elementListByMethod
 			.Select(x=>x.Attr)
-			.Cast<IDrawableInnateOption>()
+			.Cast<IDrawableInnateTier>()
 			.ToList();
 		if(this._repeatAttr!=null)
 			drawableOptions.AddRange( _repeatAttr.Thresholds );
@@ -84,7 +84,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	public string GeneralInstructions { get; }
 
-	public IEnumerable<IDrawableInnateOption> DrawableOptions { get; }
+	public IEnumerable<IDrawableInnateTier> DrawableOptions { get; }
 
 	#endregion
 
@@ -123,7 +123,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		foreach(MethodTuple[] grp in _executionGroups) {
 
 			// Ask spirit which methods they can activate
-			var match = await spiritCtx.Self.SelectInnateToActivate( grp.Select(g=>g.Attr) );
+			var match = await spiritCtx.Self.SelectInnateTierToActivate( grp.Select(g=>g.Attr) );
 
 			// Find matching method and it to execute-list
 			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;
@@ -144,10 +144,10 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 	class MethodTuple {
 		public MethodTuple(MethodInfo m ) {
 			Method = m;
-			Attr = m.GetCustomAttributes<InnateOptionAttribute>().FirstOrDefault();
+			Attr = m.GetCustomAttributes<InnateTierAttribute>().FirstOrDefault();
 		}
 		public MethodInfo Method { get; }
-		public InnateOptionAttribute Attr { get; }
+		public InnateTierAttribute Attr { get; }
 	}
 
 }

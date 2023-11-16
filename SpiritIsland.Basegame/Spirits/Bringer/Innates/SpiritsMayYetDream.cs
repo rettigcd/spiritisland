@@ -5,7 +5,7 @@
 [AnySpirit]
 public class SpiritsMayYetDream {
 
-	[InnateOption( "2 moon,2 air","Turn any face down Fear Card face-up. (It's earned/resolved normally, but players can see what's coming)", 0 )]
+	[InnateTier( "2 moon,2 air","Turn any face down Fear Card face-up. (It's earned/resolved normally, but players can see what's coming)", 0 )]
 	static public async Task Option1( TargetSpiritCtx ctx ) {
 
 		// Turn any face-down fear card face-up
@@ -31,7 +31,7 @@ public class SpiritsMayYetDream {
 		}
 	}
 
-	[InnateOption( "3 moon","Target Spirit gains an element that they have at least 1 of.", 1 )]
+	[InnateTier( "3 moon","Target Spirit gains an element that they have at least 1 of.", 1 )]
 	static public async Task Option2( TargetSpiritCtx ctx ) {
 		// Target spirit gains an element they have at least 1 of
 		var elOptions = ctx.Other.Elements.Keys

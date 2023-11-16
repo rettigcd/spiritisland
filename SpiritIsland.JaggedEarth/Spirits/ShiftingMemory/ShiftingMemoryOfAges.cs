@@ -155,7 +155,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return false;
 	}
 
-	public override async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
+	public override async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {
 
 		var elementOptions = innateOptions.Select(x=>x.Elements);
 
@@ -187,7 +187,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 				options.Insert(0, highestAlreadyMatch);
 			Present present = highestAlreadyMatch != null ? Present.Always : Present.Done;
 
-			IDrawableInnateOption extendedOption = await this.Select<IDrawableInnateOption>(prompt,options.ToArray(), present);
+			IDrawableInnateTier extendedOption = await this.Select<IDrawableInnateTier>(prompt,options.ToArray(), present);
 
 			if(extendedOption != null) {
 				// Apply necessary prepared elements to the action Elements.

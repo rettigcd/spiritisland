@@ -4,14 +4,14 @@
 [FromPresence( 0 )]
 public class PunishThoseWhoTrespass {
 
-	[InnateOption("2 sun,1 fire,2 plant","2 Damage. Destroy 1 dahan.")]
+	[InnateTier("2 sun,1 fire,2 plant","2 Damage. Destroy 1 dahan.")]
 	static public Task Option1(TargetSpaceCtx ctx ) {
 		// 2 damage.
 		int damage = 2;
 		return ActAsync( ctx, damage );
 	}
 
-	[InnateOption( "2 sun,2 fire,3 plant", "+1 Damage per sunplant you have." )]
+	[InnateTier( "2 sun,2 fire,3 plant", "+1 Damage per sunplant you have." )]
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		// +1 damage per sunplant you have
 		int damage = 2 + Math.Min( ctx.Self.Elements[Element.Sun], ctx.Self.Elements[Element.Plant] );

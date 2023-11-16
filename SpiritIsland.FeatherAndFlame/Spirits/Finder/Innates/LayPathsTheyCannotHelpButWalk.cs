@@ -11,7 +11,7 @@
 [RepeatIf("2 moon,4 air,3 water")]
 public class LayPathsTheyCannotHelpButWalk {
 
-	[InnateOption( "2 moon,2 air", "Push up to half (rounded down) of Invaders from target land. Do likewise for dahan, presence, and beast (each separately)." )]
+	[InnateTier( "2 moon,2 air", "Push up to half (rounded down) of Invaders from target land. Do likewise for dahan, presence, and beast (each separately)." )]
 	static async public Task Option1( TargetSpaceCtx ctx ) {
 
 		var pusher = ctx.Pusher;
@@ -34,7 +34,7 @@ public class LayPathsTheyCannotHelpButWalk {
 	}
 
 
-	[InnateOption( "2 sun,2 air", "Push up to 1 Invader/dahan/presence/beast." )]
+	[InnateTier( "2 sun,2 air", "Push up to 1 Invader/dahan/presence/beast." )]
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		return ctx.Push(1, Human.Invader.Concat( ctx.AllPresenceTokens ).Plus( Human.Dahan ) );
 	}

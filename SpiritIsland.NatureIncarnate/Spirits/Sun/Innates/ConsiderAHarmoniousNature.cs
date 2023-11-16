@@ -6,28 +6,28 @@ public class ConsiderAHarmoniousNature {
 
 	public const string Name = "Consider a Harmonious Nature";
 
-	[InnateOption("3 sun,1 moon","When your Powers would add Blight, you may Destory 1 Presence instead.",0)]
+	[InnateTier("3 sun,1 moon","When your Powers would add Blight, you may Destory 1 Presence instead.",0)]
 	static public Task Option1(SelfCtx ctx ) {
 		// When your Powers would add Blight, you may Destory 1 Presence instead.
 		GameState.Current.Tokens.AddIslandMod(new DestroyPresenceInsteadOfAddingBlight(ctx.Self,Name));
 		return Task.CompletedTask;
 	}
 
-	[InnateOption("3 sun,1 water","Your Powers don't damage or destroy Dahan.",1)]
+	[InnateTier("3 sun,1 water","Your Powers don't damage or destroy Dahan.",1)]
 	static public Task Option2( SelfCtx ctx ) {
 		// Your Powers don't damage or destroy Dahan.
 		GameState.Current.Tokens.AddIslandMod(new MyPowersDontDamageDahanThisRound(ctx.Self,Name));
 		return Task.CompletedTask;
 	}
 
-	[InnateOption("3 sun,1 plant","Choose another Spirit. They Add 1 DestroyedPresence to one of your lands.",2)]
+	[InnateTier("3 sun,1 plant","Choose another Spirit. They Add 1 DestroyedPresence to one of your lands.",2)]
 	static public async Task Option3( SelfCtx ctx ) {
 		// Choose another Spirit.
 		// They Add 1 DestroyedPresence to one of your lands.
 		await AddAnotherSpiritsDestroyedPresenceToYourLand( ctx );
 	}
 
-	[InnateOption( "3 sun,1 water,1 plant", "Give up to 3 of your Energy to the chosen Spirit.", 2 )]
+	[InnateTier( "3 sun,1 water,1 plant", "Give up to 3 of your Energy to the chosen Spirit.", 2 )]
 	static public async Task Option4( SelfCtx ctx ) {
 		Spirit? otherSpirit = await AddAnotherSpiritsDestroyedPresenceToYourLand( ctx ); // Override above tier and do here
 		// Give up to 3 of your Energy to the chosen Spirit.

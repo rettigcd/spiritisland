@@ -5,13 +5,13 @@ public class ObserveTheEverChangingWorld {
 
 	public const string Name = "Observe the Ever-Changing World";
 
-	[InnateOption("1 moon","Prepare 1 Element Marker")]
+	[InnateTier("1 moon","Prepare 1 Element Marker")]
 	static public Task Option1(TargetSpaceCtx ctx ) {
 		var smoa = (ShiftingMemoryOfAges)ctx.Self;
 		return smoa.PrepareElement(ObserveTheEverChangingWorld.Name);
 	}
 
-	[InnateOption("2 moon,1 air","Instead, after each of the next three Actions that change which pieces are in atarget land, Prepare 1 Element Marker.")]
+	[InnateTier("2 moon,1 air","Instead, after each of the next three Actions that change which pieces are in atarget land, Prepare 1 Element Marker.")]
 	static public Task Option2(TargetSpaceCtx ctx ) {
 		ctx.Tokens.Init( new ObserveWorldMod( ctx ), 3 );
 		return Task.CompletedTask;

@@ -86,8 +86,8 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 		// Innates
 		foreach(InnatePower power in _ctx._spirit.InnatePowers) {
 			_buttonContainer.Add( power, new InnateButton() );
-			foreach(IDrawableInnateOption innatePowerOption in power.DrawableOptions)
-				_buttonContainer.Add( innatePowerOption, new InnateOptionsBtn( _ctx._spirit, innatePowerOption ) );
+			foreach(IDrawableInnateTier innatePowerOption in power.DrawableOptions)
+				_buttonContainer.Add( innatePowerOption, new InnateTierBtn( _ctx._spirit, innatePowerOption ) );
 		}
 		if(0 < _innateBounds.Width) {
 			var innates = new InnatesLayout( _ctx._spirit, _buttonContainer, _innateBounds );

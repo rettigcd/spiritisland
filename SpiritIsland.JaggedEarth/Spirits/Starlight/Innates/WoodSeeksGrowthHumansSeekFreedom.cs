@@ -3,7 +3,7 @@
 [InnatePower("Wood Seeks Growth, Humans Seek Freedom"), Slow, FromPresence(2)]
 class WoodSeeksGrowthHumansSeekFreedom {
 
-	[InnateOption("3 plant","Choose a Spirit with presence in target land. They gain a Power Card.")]
+	[InnateTier("3 plant","Choose a Spirit with presence in target land. They gain a Power Card.")]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		var spiritOptions = GameState.Current.Spirits.Where( s=> s.Presence.IsOn( ctx.Tokens ) ).ToArray();
 		if(spiritOptions.Length > 0) return;
@@ -12,7 +12,7 @@ class WoodSeeksGrowthHumansSeekFreedom {
 		await ctx.TargetSpirit( spirit ).OtherCtx.Draw();
 	}
 
-	[InnateOption("3 animal","1 Damage per dahan OR Push up to 3 dahan.",1)]
+	[InnateTier("3 animal","1 Damage per dahan OR Push up to 3 dahan.",1)]
 	static public Task Option2(TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption( 
 			DahanDamage, 

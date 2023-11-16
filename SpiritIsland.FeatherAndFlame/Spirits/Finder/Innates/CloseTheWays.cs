@@ -14,13 +14,13 @@ public class CloseTheWays {
 
 	public const string Name = "Close the Ways";
 
-	[InnateOption( "1 air,2 water", "Isolate target land.", 0 )]
+	[InnateTier( "1 air,2 water", "Isolate target land.", 0 )]
 	static public Task Option1( TargetSpaceCtx ctx ) => DoIsolate( ctx );
 
-	[InnateOption( "2 air,2 earth", "Isolate target land.", 1 )]
+	[InnateTier( "2 air,2 earth", "Isolate target land.", 1 )]
 	static public Task Option2( TargetSpaceCtx ctx ) => DoIsolate( ctx );
 
-	[InnateOption( "3 air,2 plant", "Isolate target land.", 2 )]
+	[InnateTier( "3 air,2 plant", "Isolate target land.", 2 )]
 	static public Task Option3( TargetSpaceCtx ctx ) => DoIsolate( ctx );
 
 	static async Task DoIsolate(TargetSpaceCtx ctx) {

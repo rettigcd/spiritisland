@@ -5,7 +5,7 @@
 [InnatePower("Visions of a Shifting Future"), Slow, Yourself]
 class VisionsOfAShiftingFuture {
 
-	[InnateOption("1 sun,2 moon,2 air","Look at the top card of either the Invader Deck or the Event Deck.  Return it, then shuffle that deck's top 2 cards.")]
+	[InnateTier("1 sun,2 moon,2 air","Look at the top card of either the Invader Deck or the Event Deck.  Return it, then shuffle that deck's top 2 cards.")]
 	static public async Task Option1( SelfCtx ctx ) {
 		var deck = GameState.Current.InvaderDeck.UnrevealedCards;
 		InvaderCard topCard = deck[0];
@@ -14,7 +14,7 @@ class VisionsOfAShiftingFuture {
 		InsertIntoTop2( ctx.Self, deck, topCard );
 	}
 
-	[InnateOption("2 sun,3 moon,2 air","Instead of returning-and-shuffling, you may put the card you looked at on the bottom of its deck.  You may not do this for cards specially placed during Setup.")]
+	[InnateTier("2 sun,3 moon,2 air","Instead of returning-and-shuffling, you may put the card you looked at on the bottom of its deck.  You may not do this for cards specially placed during Setup.")]
 	static public async Task Option2( SelfCtx ctx ) {
 		var deck = GameState.Current.InvaderDeck.UnrevealedCards;
 		InvaderCard topCard = deck[0];

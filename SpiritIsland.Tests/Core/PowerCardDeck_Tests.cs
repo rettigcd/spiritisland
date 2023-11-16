@@ -75,7 +75,7 @@ public class PowerCardDeck_Tests {
 		// Since PowerCards and innates use Reflection to map to the Async task, we need to make sure method signature is correct.
 
 		static bool TypeTargetsSpace( Type m ) => m.GetCustomAttributes<TargetSpaceAttribute>().Any();
-		static bool MethodIsOption( MethodBase m ) => m.GetCustomAttributes<InnateOptionAttribute>().Any();
+		static bool MethodIsOption( MethodBase m ) => m.GetCustomAttributes<InnateTierAttribute>().Any();
 		var methods = typeof( PowerCard ).Assembly.GetTypes()
 			.Where( TypeTargetsSpace )
 			.OrderBy( x => x.Namespace )
@@ -111,7 +111,7 @@ public class PowerCardDeck_Tests {
 		// Since PowerCards and innates use Reflection to map to the Async task, we need to make sure method signature is correct.
 
 		static bool TypeTargetsSpace( Type m ) => m.GetCustomAttributes<AnySpiritAttribute>().Any();
-		static bool MethodIsOption( MethodBase m ) => m.GetCustomAttributes<InnateOptionAttribute>().Any();
+		static bool MethodIsOption( MethodBase m ) => m.GetCustomAttributes<InnateTierAttribute>().Any();
 		var methods = typeof( PowerCard ).Assembly.GetTypes()
 			.Where( x=>x!=typeof( GiftOfStrength ) ) // ! this has a different signature - !! review it and see if it is still relavent
 			.Where( TypeTargetsSpace )

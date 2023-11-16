@@ -45,8 +45,8 @@ public class InnateLayout {
 		}
 
 		// Options
-		foreach(IDrawableInnateOption innatePowerOption in power.DrawableOptions ) {
-			var optionBtn = (InnateOptionsBtn)buttonContainer[innatePowerOption];
+		foreach(IDrawableInnateTier innatePowerOption in power.DrawableOptions ) {
+			var optionBtn = (InnateTierBtn)buttonContainer[innatePowerOption];
 
 			// Update Position
 			optionBtn.SetPosition( _textEmSize, rowSize: new Size( workingWidth, _rowHeight ), new Point( AttributeBounds.Left, optionY ) );

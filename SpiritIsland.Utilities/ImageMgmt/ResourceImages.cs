@@ -269,7 +269,7 @@ public class ResourceImages {
 	}
 
 
-	public Image GetInnateOption( IDrawableInnateOption innateOption, float emSize, Size rowSize ) {
+	public Image GetInnateOption( IDrawableInnateTier innateOption, float emSize, Size rowSize ) {
 		string key = "innateOptions\\" + innateOption.Text.Replace( ' ', '_' ).Replace( '/', '_' ).Replace( '.', '_' ) + ".png";
 		if(_cache.Contains( key )) {
 			var image = _cache.Get( key );

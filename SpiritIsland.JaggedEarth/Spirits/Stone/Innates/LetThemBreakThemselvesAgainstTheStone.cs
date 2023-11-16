@@ -4,13 +4,13 @@
 [RepeatIf( "7 earth, 2 sun")]
 class LetThemBreakThemselvesAgainstTheStone {
 
-	[InnateOption("3 earth","After Invaders deal 1 or more Damage to target land, 2 Damage")]
+	[InnateTier("3 earth","After Invaders deal 1 or more Damage to target land, 2 Damage")]
 	static public Task Option0(TargetSpaceCtx ctx ) {
 		ctx.Tokens.Adjust( new BreakThemselvesMod(ctx.Self,false), 1 );
 		return Task.CompletedTask;
 	}
 
-	[InnateOption("5 earth","Also deal half of the Damage Invaders did to the land (rounding down)")]
+	[InnateTier("5 earth","Also deal half of the Damage Invaders did to the land (rounding down)")]
 	static public Task Option1(TargetSpaceCtx ctx ) {
 		ctx.Tokens.Adjust( new BreakThemselvesMod( ctx.Self, true ), 1 );
 		return Task.CompletedTask;

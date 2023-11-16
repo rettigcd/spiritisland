@@ -7,7 +7,7 @@ public class KeepWatchForNewIncursions {
 
 	public const string Name = "Keep Watch for New Incursions";
 
-	[InnateOption( "1 animal", "Gather up to 2 Dahan, from your lands only.", 0 )]
+	[InnateTier( "1 animal", "Gather up to 2 Dahan, from your lands only.", 0 )]
 	static public Task Option1Async( TargetSpaceCtx ctx ) {
 		return ctx.Gatherer
 			.AddGroup(2,Human.Dahan)
@@ -15,7 +15,7 @@ public class KeepWatchForNewIncursions {
 			.DoUpToN();
 	}
 
-	[InnateOption( "1 sun,2 air,3 animal", "Once this turn after Invaders are added or moved into target land, 1 Damage per Dahan in target land, to those added/moved Invaders only.", 1 )]
+	[InnateTier( "1 sun,2 air,3 animal", "Once this turn after Invaders are added or moved into target land, 1 Damage per Dahan in target land, to those added/moved Invaders only.", 1 )]
 	static public Task Option2Async( TargetSpaceCtx ctx ) {
 
 		// Once this turn, after Invaders are added or moved into target land,

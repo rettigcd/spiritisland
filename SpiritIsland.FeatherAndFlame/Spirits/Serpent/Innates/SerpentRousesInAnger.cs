@@ -5,7 +5,7 @@ public class SerpentRousesInAnger {
 
 	public const string Name = "Serpent Rouses in Anger";
 
-	[InnateOption( "1 fire,1 earth","For each fire earth you have, 1 Damage to 1 town / city." )]
+	[InnateTier( "1 fire,1 earth","For each fire earth you have, 1 Damage to 1 town / city." )]
 	static public Task Option1Async( TargetSpaceCtx ctx ) {
 		// For each fire & earth you have
 		int count = Math.Min( ctx.Self.Elements[Element.Fire], ctx.Self.Elements[Element.Earth]);
@@ -13,7 +13,7 @@ public class SerpentRousesInAnger {
 		return ctx.Invaders.UserSelectedDamage( ctx.Self, count, Human.Town_City );
 	}
 
-	[InnateOption( "2 moon 2 earth", "For each 2 moon 2 earth you have, 2 fear and you may Push 1 town from target land." )]
+	[InnateTier( "2 moon 2 earth", "For each 2 moon 2 earth you have, 2 fear and you may Push 1 town from target land." )]
 	static public async Task Option2Async( TargetSpaceCtx ctx ) {
 		await Option1Async( ctx );
 
@@ -25,7 +25,7 @@ public class SerpentRousesInAnger {
 		await ctx.PushUpTo( count, Human.Town );
 	}
 
-	[InnateOption("5 moon,6 fire,6 earth", "-7 Energy.  In every land in the game: X Damage, where X is the number of presence you have in and adjacent to that land." )]
+	[InnateTier("5 moon,6 fire,6 earth", "-7 Energy.  In every land in the game: X Damage, where X is the number of presence you have in and adjacent to that land." )]
 	static public async Task Option3Async( TargetSpaceCtx ctx ) {
 		await Option2Async( ctx );
 

@@ -3,7 +3,7 @@
 [InnatePower( "Leave a Trail of Deathly Silence" ), Fast, Yourself]
 public class LeaveATrailOfDeathlySilence {
 
-	[InnateOption( "2 moon,1 animal", "1 Damage at Incarna. You may Push Incarna.", 0 )]
+	[InnateTier( "2 moon,1 animal", "1 Damage at Incarna. You may Push Incarna.", 0 )]
 	static public async Task Option1( SelfCtx ctx ) {
 		if( ctx.Self.Presence is not IHaveIncarna ihi || ihi.Incarna.Space == null ) return;
 
@@ -13,13 +13,13 @@ public class LeaveATrailOfDeathlySilence {
 		await incarnaCtx.PushUpTo(1,ihi.Incarna.Class);
 	}
 
-	[InnateOption( "3 moon,1 air, 1 animal", "1 Damage at Incarna. You may Push Incarna.", 1 )]
+	[InnateTier( "3 moon,1 air, 1 animal", "1 Damage at Incarna. You may Push Incarna.", 1 )]
 	static public Task Option2( SelfCtx ctx ) => Option1( ctx );
 
-	[InnateOption( "4 moon,3 air, 3 animal", "1 Damage at Incarna. You may Push Incarna.", 2 )]
+	[InnateTier( "4 moon,3 air, 3 animal", "1 Damage at Incarna. You may Push Incarna.", 2 )]
 	static public Task Option3( SelfCtx ctx ) => Option1( ctx );
 
-	[InnateOption( "5 moon,2 air,3 animal", "Move Incarna to Endless-Dark. It Brings 1 Invader (from its land).", 3 )]
+	[InnateTier( "5 moon,2 air,3 animal", "Move Incarna to Endless-Dark. It Brings 1 Invader (from its land).", 3 )]
 	static public async Task Option4( SelfCtx ctx ) {
 		if(ctx.Self.Presence is not IHaveIncarna ihi || ihi.Incarna.Space == null) return;
 

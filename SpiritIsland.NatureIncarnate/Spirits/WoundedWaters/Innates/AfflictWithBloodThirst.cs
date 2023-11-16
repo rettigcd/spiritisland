@@ -6,17 +6,17 @@ public class AfflictWithBloodThirst {
 
 	public const string Name = "Afflict with Bloodthirst";
 
-	[InnateOption( "1 animal", "Gather 1 Beast.", 0 )]
+	[InnateTier( "1 animal", "Gather 1 Beast.", 0 )]
 	static public Task Option1( TargetSpaceCtx ctx ) => ctx.Gather(1, Token.Beast);
 
-	[InnateOption( "1 fire,3 animal", "2 Fear if Invaders are present.", 1 )]
+	[InnateTier( "1 fire,3 animal", "2 Fear if Invaders are present.", 1 )]
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		if(ctx.HasInvaders)
 			ctx.AddFear(2);
 		return Task.CompletedTask;
 	}
 
-	[InnateOption( "1 sun,2 fire,4 animal", "1 Explorer and 1 Town/Dahan do Damage, to other Invaders only.", 2 )]
+	[InnateTier( "1 sun,2 fire,4 animal", "1 Explorer and 1 Town/Dahan do Damage, to other Invaders only.", 2 )]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
 		// Collect Town & explorer that is going to do damage
 		// (and temporarily remove them)
@@ -44,7 +44,7 @@ public class AfflictWithBloodThirst {
 			ctx.Tokens.Adjust(t,1);
 	}
 
-	[InnateOption( "1 sun,2 animal", "For each Beast, Push 1 Explorer and 1 Town/Dahan.", 3 )]
+	[InnateTier( "1 sun,2 animal", "For each Beast, Push 1 Explorer and 1 Town/Dahan.", 3 )]
 	static public async Task Option4( TargetSpaceCtx ctx ) {
 		int beastCount = ctx.Beasts.Count;
 		await ctx.Pusher

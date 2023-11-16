@@ -4,11 +4,11 @@ using System.Windows.Forms;
 namespace SpiritIsland.WinForms;
 
 
-public class InnateOptionsBtn : IButton {
+public class InnateTierBtn : IButton {
 
 	#region constructor
 
-	public InnateOptionsBtn( Spirit spirit, IDrawableInnateOption innateOption ) {
+	public InnateTierBtn( Spirit spirit, IDrawableInnateTier innateOption ) {
 		_spirit = spirit;
 		_innateOption = innateOption;
 	}
@@ -33,7 +33,7 @@ public class InnateOptionsBtn : IButton {
 
 	}
 
-	public InnateOptionsBtn SetPosition( float emSize, Size rowSize, Point topLeft ) {
+	public InnateTierBtn SetPosition( float emSize, Size rowSize, Point topLeft ) {
 		_emSize = emSize;
 		_rowSize = rowSize;
 		using Image img = UsingImage;
@@ -51,7 +51,7 @@ public class InnateOptionsBtn : IButton {
 	Size _rowSize;
 
 	readonly Spirit _spirit;
-	readonly IDrawableInnateOption _innateOption;
+	readonly IDrawableInnateTier _innateOption;
 
 	#endregion
 

@@ -5,13 +5,13 @@
 public class FireStorm {
 
 	// Group 0
-	[InnateOption( "1 plant", "1 Damage per 2 fire you have.", 0 )]
+	[InnateTier( "1 plant", "1 Damage per 2 fire you have.", 0 )]
 	static public Task Option1( TargetSpaceCtx ctx ) {
 		int fireDamage = ctx.Self.Elements[Element.Fire] / 2; // rounding down
 		return DoFireDamage( ctx, fireDamage );
 	}
 
-	[InnateOption( "3 plant", "Instead, 1 Damage per fire you have.", 0 )]
+	[InnateTier( "3 plant", "Instead, 1 Damage per fire you have.", 0 )]
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		int fireDamage = ctx.Self.Elements[Element.Fire];
 		return DoFireDamage( ctx, fireDamage );
@@ -50,7 +50,7 @@ public class FireStorm {
 	const string MultiTargetThreshold = "4 fire,2 air";
 
 	// Group 1
-	[InnateOption( "7 fire", "In a land with blight where you have presence, Push all dahan.  Destroy all Invaders and beast. 1 blight.", 1 )]
+	[InnateTier( "7 fire", "In a land with blight where you have presence, Push all dahan.  Destroy all Invaders and beast. 1 blight.", 1 )]
 	static public async Task Option4( TargetSpaceCtx ctx ) {
 		// In a land with blight and presence  (Select a space, not necessarily the one you targetted with power (I guess...)
 		var spacesWithPresenceAndBlight = ctx.Self.Presence.Spaces.Tokens().Where( s=>s.Blight.Any );

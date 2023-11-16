@@ -6,13 +6,13 @@ class WhyDontYouAndThemFight {
 	[DisplayOnly("3 moon","This Power may be slow.")]
 	static public Task Option1(TargetSpaceCtx _ ) => Task.CompletedTask;
 
-	[InnateOption("3 air","Add 1 strife.",2)]
+	[InnateTier("3 air","Add 1 strife.",2)]
 	static public Task Option2(TargetSpaceCtx ctx ) => ctx.AddStrife();
 
-	[InnateOption("3 sun","OR",3)]
+	[InnateTier("3 sun","OR",3)]
 	static public Task Option3a(TargetSpaceCtx ctx ) => Option3b(ctx);
 
-	[InnateOption("3 fire","1 Invader and 1 dahan deal Damage to each other.",3)]
+	[InnateTier("3 fire","1 Invader and 1 dahan deal Damage to each other.",3)]
 	static public async Task Option3b(TargetSpaceCtx ctx ) {
 		var invaders = ctx.Tokens.InvaderTokens().ToArray();
 		if(invaders.Length == 0 || !ctx.Dahan.Any) return;
@@ -39,7 +39,7 @@ class WhyDontYouAndThemFight {
 			: (invader.Attack, invader);
 	}
 
-	[InnateOption("3 animal","If target land has beast, 2 Damage. Otherwise, you may Gather 1 beast.",4)]
+	[InnateTier("3 animal","If target land has beast, 2 Damage. Otherwise, you may Gather 1 beast.",4)]
 	static public async Task Option4(TargetSpaceCtx ctx ) {
 		// if target land has beasts
 		if(ctx.Beasts.Any)

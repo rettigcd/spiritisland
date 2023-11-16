@@ -9,14 +9,14 @@ public class LeadTheFuriousAssult {
 	static public Task MayBeFastAsync(TargetSpaceCtx _ ) { return null; }
 
 
-	[InnateOption( "2 sun,1 fire", "Destroy 1 town for every 2 dahan in target land." )]
+	[InnateTier( "2 sun,1 fire", "Destroy 1 town for every 2 dahan in target land." )]
 	static public Task Option1Async(TargetSpaceCtx ctx ) {
 		// Destroy 1 town for every 2 dahan
 		return ctx.Invaders
 			.DestroyNOfClass(ctx.Dahan.CountAll/2, Human.Town );
 	}
 
-	[InnateOption( "4 sun,3 fire", "Destroy 1 city for every 3 dahan in target land." )]
+	[InnateTier( "4 sun,3 fire", "Destroy 1 city for every 3 dahan in target land." )]
 	static public async Task Option2Async( TargetSpaceCtx ctx ) {
 		// Destroy 1 city for every 3 dahan
 		await ctx.Invaders

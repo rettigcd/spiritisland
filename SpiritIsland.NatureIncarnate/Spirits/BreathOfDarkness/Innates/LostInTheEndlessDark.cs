@@ -3,7 +3,7 @@
 [InnatePower( "Lost in the Endless Dark" ), Slow, FromPresence(0,Target.EndlessDark)]
 public class LostInTheEndlessDark {
 
-	[InnateOption( "2 moon, 1 air", "1 Fear per Invader (max 4). You may Downgrade 1 Invader.", 0 )]
+	[InnateTier( "2 moon, 1 air", "1 Fear per Invader (max 4). You may Downgrade 1 Invader.", 0 )]
 	static public async Task Option1( SelfCtx ctx ) {
 		var edCtx = ctx.Target( EndlessDark.Space );
 
@@ -16,7 +16,7 @@ public class LostInTheEndlessDark {
 
 	}
 
-	[InnateOption( "4 moon, 3 air", "1 Fear per Invader (max 4). Downgrade any number of Invaders.", 1 )]
+	[InnateTier( "4 moon, 3 air", "1 Fear per Invader (max 4). Downgrade any number of Invaders.", 1 )]
 	static public async Task Option2( SelfCtx ctx ) {
 		var edCtx = ctx.Target( EndlessDark.Space );
 
@@ -28,7 +28,7 @@ public class LostInTheEndlessDark {
 		await ReplaceInvader.DowngradeAll( edCtx );
 	}
 
-	[InnateOption( "3 moon, 2 animal", "Add 1 Beast", 2 )]
+	[InnateTier( "3 moon, 2 animal", "Add 1 Beast", 2 )]
 	static public async Task Option3( SelfCtx ctx ) {
 		var edCtx = ctx.Target( EndlessDark.Space );
 		await edCtx.Tokens.Beasts.AddAsync(1);

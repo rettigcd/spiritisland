@@ -4,9 +4,9 @@
 /// Marks executable Executable options
 /// </summary>
 [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
-public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
+public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 
-	public InnateOptionAttribute( string elementText, string description, int group = 0 ) {
+	public InnateTierAttribute( string elementText, string description, int group = 0 ) {
 		Elements = ElementCounts.Parse( elementText );
 		Description = description;
 		Group = group;
@@ -15,7 +15,7 @@ public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 	/// <summary>
 	/// Non-executable.  Called from dirived class
 	/// </summary>
-	protected InnateOptionAttribute(string elementText, string description ) {
+	protected InnateTierAttribute(string elementText, string description ) {
 		Elements = ElementCounts.Parse( elementText );
 		Description = description;
 		Group = null;
@@ -38,7 +38,7 @@ public class InnateOptionAttribute : Attribute, IDrawableInnateOption {
 }
 
 [AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
-public class DisplayOnlyAttribute : InnateOptionAttribute {
+public class DisplayOnlyAttribute : InnateTierAttribute {
 
 	/// <summary>
 	/// Create a Display-only action because execution group is null.
@@ -49,7 +49,7 @@ public class DisplayOnlyAttribute : InnateOptionAttribute {
 
 }
 
-public interface IDrawableInnateOption : IOption {
+public interface IDrawableInnateTier : IOption {
 
 	/// <summary> The threshold to display to the left of the description </summary>
 	/// <remarks> Not using .Elements directly because some thresholds are not elements.</remarks>

@@ -69,8 +69,12 @@ public abstract partial class Spirit : IOption {
 		return false;
 	}
 
-	public virtual async Task<IDrawableInnateOption> SelectInnateToActivate( IEnumerable<IDrawableInnateOption> innateOptions ) {
-		IDrawableInnateOption match = null;
+	/// <summary>
+	/// Spirit determines which Option they can activate.
+	/// </summary>
+	/// <remarks>overriden by Shiftin Memories and Volcano</remarks>
+	public virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {
+		IDrawableInnateTier match = null;
 		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
 			if(await HasElements( option.Elements ))
 				match = option;

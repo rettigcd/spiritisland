@@ -18,7 +18,7 @@ public class PeaceOfTheNighttimeSky {
 
 public class RepeatForPeace : RepeatAttribute {
 
-	public override IDrawableInnateOption[] Thresholds => Array.Empty<IDrawableInnateOption>();
+	public override IDrawableInnateTier[] Thresholds => Array.Empty<IDrawableInnateTier>();
 
 	public override IPowerRepeater GetRepeater() => new Repeater();
 

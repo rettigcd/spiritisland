@@ -4,7 +4,7 @@
 [Slow,FromSacredSite(1)]
 public class ScorchingConvergence {
 
-	[InnateOption("2 sun","Move all of your Presence from origin land directly to target land. 1 Damage to Town/City only.")]
+	[InnateTier("2 sun","Move all of your Presence from origin land directly to target land. 1 Damage to Town/City only.")]
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		// Move all of your Presence from origin land directly to target land.
 		var originOptions = ctx.Self
@@ -38,7 +38,7 @@ public class ScorchingConvergence {
 		.Select( x => tokens[x]+x.Class.Label )
 		.Join(",");
 
-	[InnateOption("3 sun,1 fire","3 Damage to Invaders. 3 Damage to Dahan. Add 1 Blight without cascading.")]
+	[InnateTier("3 sun,1 fire","3 Damage to Invaders. 3 Damage to Dahan. Add 1 Blight without cascading.")]
 	public static async Task Option2(TargetSpaceCtx ctx ) {
 		// 3 Damage to Invaders.
 		await ctx.DamageInvaders( 3 );
@@ -49,7 +49,7 @@ public class ScorchingConvergence {
 		await ctx.AddBlight(1);
 	}
 
-	[InnateOption("4 sun,2 fire,1 air","3 Fear if this Power destroyed only Invaders.")]
+	[InnateTier("4 sun,2 fire,1 air","3 Fear if this Power destroyed only Invaders.")]
 	public static Task Option3(TargetSpaceCtx ctx ) {
 		var actionScope = ActionScope.Current;
 		// 3 Fear if this Power destroyed only Invaders.
@@ -60,7 +60,7 @@ public class ScorchingConvergence {
 		return Task.CompletedTask;
 	}
 
-	[InnateOption( "5 sun,3 fire,2 air", "1 Damage per remaining Presence of yours in target land." )]
+	[InnateTier( "5 sun,3 fire,2 air", "1 Damage per remaining Presence of yours in target land." )]
 	public static async Task Option4( TargetSpaceCtx ctx ) {
 		// 1 Damage per remaining Presence of yours in target land.
 		await ctx.DamageInvaders( ctx.PresenceCount );

@@ -12,20 +12,20 @@ internal class RainAndMudSupressConflict {
 
 	const string Tier1Elements = "1 air,3 water";
 
-	[InnateOption( Tier1Elements, "Each of your Presence grants Defend 1 and lowers Dahan counterattack damage by 1. (Total, in its land.)", 0 )]
+	[InnateTier( Tier1Elements, "Each of your Presence grants Defend 1 and lowers Dahan counterattack damage by 1. (Total, in its land.)", 0 )]
 	static public Task Option1( SelfCtx ctx ) {
 		MakeThingsMuddy( ctx );
 		return Task.CompletedTask;
 	}
 
 
-	[InnateOption( "5 water,1 earth", "Each of your Presence grants Defend 1 and lowers Dahan counterattack damage by 1.", 1 )]
+	[InnateTier( "5 water,1 earth", "Each of your Presence grants Defend 1 and lowers Dahan counterattack damage by 1.", 1 )]
 	static public async Task Option2( SelfCtx ctx ) {
 		if( await DontWantMoreMud(ctx) ) return;
 		MakeThingsMuddy( ctx );
 	}
 
-	[InnateOption( "3 air,9 water,2 earth", "2 Fear. In your lands, Invaders and Dahan have -1 Health (min 1)", 0 )]
+	[InnateTier( "3 air,9 water,2 earth", "2 Fear. In your lands, Invaders and Dahan have -1 Health (min 1)", 0 )]
 	static public async Task Option3( SelfCtx ctx ) {
 		if( await DontWantMoreMud( ctx ) ) return; 
 

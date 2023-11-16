@@ -43,7 +43,7 @@ public class EarthShuddersBuildingsFall {
 
 }
 
-public class InPlayOptionAttribute : InnateOptionAttribute {
+public class InPlayOptionAttribute : InnateTierAttribute {
 	public InPlayOptionAttribute( string elementText, int cardsInPlay, string description, int group )
 		: base( elementText, description, group ) {
 		CardsInPlay = cardsInPlay;

@@ -3,19 +3,19 @@
 [InnatePower( "Hold the Island Fast with Bulwark of Will" ), Fast, Yourself]
 class HoldTheIslandFastWithABulwarkOfWill {
 
-	[InnateOption("2 earth","When blight is added to one of your lands, you may pay 2 Energy per blight to take it from the box instead of the Blight Card.")]
+	[InnateTier("2 earth","When blight is added to one of your lands, you may pay 2 Energy per blight to take it from the box instead of the Blight Card.")]
 	static public Task Option1( SelfCtx ctx ) {
 		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(ctx,2), 1 );
 		return Task.CompletedTask;
 	}
 
-	[InnateOption("4 earth","The cost is 1 Energy instead of 2")]
+	[InnateTier("4 earth","The cost is 1 Energy instead of 2")]
 	static public Task Option2( SelfCtx ctx ) {
 		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(ctx,1), 1 );
 		return Task.CompletedTask;
 	}
 
-	[InnateOption("6 earth,1 plant","When an Event or Blight card directly destroys presence (yours or others'), you may prevent any number of presence from being destroyed by paying 1 Energy each.",1)]
+	[InnateTier("6 earth,1 plant","When an Event or Blight card directly destroys presence (yours or others'), you may prevent any number of presence from being destroyed by paying 1 Energy each.",1)]
 	static public Task Option3( SelfCtx ctx ) {
 		GameState.Current.AddIslandMod( new StopPresenceDestructionFromBlightOrEvents(ctx.Self)); // needs removed
 		return Task.CompletedTask;

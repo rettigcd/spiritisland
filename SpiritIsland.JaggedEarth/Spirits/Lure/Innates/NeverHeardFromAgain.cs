@@ -14,20 +14,20 @@ public class NeverHeardFromAgain {
 	}
 
 
-	[InnateOption("1 fire,3 air","Add 1 badland",0)]
+	[InnateTier("1 fire,3 air","Add 1 badland",0)]
 	static public async Task Option1(TargetSpaceCtx ctx ) {
 		// add 1 badland
 		await ctx.Badlands.AddAsync(1);
 	}
 
-	[InnateOption("2 plant","Destroy up to 2 explorer per badlands/beast/disease/wilds.",1)]
+	[InnateTier("2 plant","Destroy up to 2 explorer per badlands/beast/disease/wilds.",1)]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		// 2 plant - destroy up to 2 explorer per badland/beast/disease/wilds
 		int destroyCount = await DestroyFromBadlandsBeastDiseaseWilds( ctx );
 		ctx.AddFear( CalcFearFromExplorerDeath( destroyCount ) );
 	}
 
-	[InnateOption("4 plant,1 animal","2 Damage",1)]
+	[InnateTier("4 plant,1 animal","2 Damage",1)]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
 		int preExplorerCount = ctx.Tokens.Sum( Human.Explorer );
 		await DestroyFromBadlandsBeastDiseaseWilds( ctx );

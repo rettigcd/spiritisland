@@ -10,12 +10,12 @@
 [FromPresence( 1 )]
 public class SwirlAndSpill {
 
-	[InnateOption( "2 water", "Push up to 2 Explorer/Dahan/Blight.", 0 )]
+	[InnateTier( "2 water", "Push up to 2 Explorer/Dahan/Blight.", 0 )]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		await ctx.PushUpTo(2,Human.Explorer,Human.Dahan,Token.Blight);
 	}
 
-	[InnateOption( "3 water,1 animal", "1 Fear. Push up to 2 Town/Presence/Beast.", 0 )]
+	[InnateTier( "3 water,1 animal", "1 Fear. Push up to 2 Town/Presence/Beast.", 0 )]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 );
 		await BuildTier2Pusher( ctx )
@@ -33,7 +33,7 @@ public class SwirlAndSpill {
 		return destinations.ToArray();
 	}
 
-	[InnateOption( "5 water,2 plant,2 animal", "In one land pushed into, Downgrade all Town and all City." )]
+	[InnateTier( "5 water,2 plant,2 animal", "In one land pushed into, Downgrade all Town and all City." )]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 ); // from Tier-2
 
