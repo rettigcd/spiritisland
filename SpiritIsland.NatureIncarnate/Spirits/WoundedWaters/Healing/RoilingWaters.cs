@@ -37,7 +37,7 @@ class RoilingWaters : IHealingCard {
 
 			// add or move any number of Dahan into a land
 			const string dahanDamageKey = Name + ":DahanDamage";
-			if(args.Added.Class.Category == TokenCategory.Dahan && !scope.ContainsKey( dahanDamageKey )) {
+			if(args.Added.HasTag(TokenCategory.Dahan) && !scope.ContainsKey( dahanDamageKey )) {
 				// you may do 1 Damage there (max once per Power)
 				await args.To.Invaders.UserSelectedDamage( _spirit, 1, Human.Invader );
 				scope[ dahanDamageKey ] = true;

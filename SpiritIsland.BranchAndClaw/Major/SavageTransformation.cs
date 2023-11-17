@@ -20,7 +20,7 @@ public class SavageTransformation {
 
 	static async Task ReplaceExplorerWithBeast( TargetSpaceCtx origCtx, int range ) {
 		var options = origCtx.Tokens.Range( range )
-			.SelectMany( ss => ss.SpaceTokensOfClass( Human.Explorer ) );
+			.SelectMany( ss => ss.SpaceTokensOfTag( Human.Explorer ) );
 
 		SpaceToken spaceToken2 = await origCtx.Self.Select( new A.SpaceToken( "Replace additional with Beast", options, Present.Always ) );
 		if(spaceToken2 == null) return;

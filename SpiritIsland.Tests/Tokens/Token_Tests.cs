@@ -21,7 +21,7 @@ public class Token_Tests {
 		var conflicts = tokens
 			.GroupBy( t => t.ToString() )
 			.Where( grp => grp.Count() > 1 )
-			.Select( grp => grp.Key + " is used for:" + grp.Select( t => t.Class.Label + ":" + (t is HumanToken ht ? ht.RemainingHealth : 0) ).Join( ", " ) )
+			.Select( grp => grp.Key + " is used for:" + grp.OfType<IToken>().Select( t => t.Class.Label + ":" + (t is HumanToken ht ? ht.RemainingHealth : 0) ).Join( ", " ) )
 			.Join( "\r\n" );
 
 		conflicts.ShouldBe( "" );

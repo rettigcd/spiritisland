@@ -15,8 +15,6 @@ public class BlightTokenBinding : TokenBinding {
 }
 
 class BlockBlightToken : IModifyAddingToken, IEndWhenTimePasses {
-	public IEntityClass Class => ActionModTokenClass.Mod;
-
 	public void ModifyAdding( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight)
 			args.Count = 0;

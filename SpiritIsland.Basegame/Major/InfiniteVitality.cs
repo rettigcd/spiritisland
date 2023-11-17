@@ -46,8 +46,6 @@ class StopDahanDamageAndDestruction
 		_sourceName = sourceName;
 	}
 
-	public IEntityClass Class => ActionModTokenClass.Mod;
-
 	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
 	public Task ModifyRemovingAsync( RemovingTokenArgs args ) {

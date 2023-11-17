@@ -64,7 +64,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	/// <returns>Destination</returns>
-	public async Task<Space> MoveTokensToSingleLand( int max, TargetCriteria targetCriteria, params IEntityClass[] tokenClass ) {
+	public async Task<Space> MoveTokensToSingleLand( int max, TargetCriteria targetCriteria, params ITokenClass[] tokenClass ) {
 
 		Space destination = null;
 		await new TokenMover(Self,"Move",
@@ -84,13 +84,13 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
 
 	/// <returns>Spaces pushed too.</returns>
-	public async Task PushUpTo( int countToPush, params IEntityClass[] groups ) {
+	public async Task PushUpTo( int countToPush, params ITokenClass[] groups ) {
 		await Pusher
 			.AddGroup( countToPush, groups )
 			.DoUpToN();
 	}
 
-	public async Task<Space[]> Push( int countToPush, params IEntityClass[] groups ) {
+	public async Task<Space[]> Push( int countToPush, params ITokenClass[] groups ) {
 		List<Space> destinations = new List<Space>();
 		await Pusher
 			.AddGroup( countToPush, groups )
@@ -112,10 +112,10 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task GatherDahan( int countToGather )
 		=> this.Gather( countToGather, Human.Dahan);
 
-	public Task GatherUpTo( int countToGather, params IEntityClass[] groups )
+	public Task GatherUpTo( int countToGather, params ITokenClass[] groups )
 		=> Gatherer.AddGroup(countToGather, groups).DoUpToN();
 
-	public Task Gather( int countToGather, params IEntityClass[] groups )
+	public Task Gather( int countToGather, params ITokenClass[] groups )
 		=> Gatherer.AddGroup(countToGather,groups).DoN();
 
 	public TokenMover Gatherer => Tokens.Gather( Self );
@@ -164,7 +164,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear
-	public async Task DamageInvaders( int originalDamage, params IEntityClass[] allowedTypes ) {
+	public async Task DamageInvaders( int originalDamage, params ITokenClass[] allowedTypes ) {
 
 		// Calculate Total Damage available
 		var combinedDamage = BonusDamageForAction( originalDamage );
@@ -189,7 +189,7 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 	public Task DamageEachInvader( int individualDamage ) => DamageEachInvader( individualDamage, Human.Invader);
-	public async Task DamageEachInvader( int individualDamage, IEntityClass[] tokenClasses ) {
+	public async Task DamageEachInvader( int individualDamage, ITokenClass[] tokenClasses ) {
 		await Invaders.ApplyDamageToEach( individualDamage, tokenClasses );
 		var bonusDamage = BonusDamageForAction();
 		int damageApplied = await Invaders.UserSelectedDamage( Self, bonusDamage.Available, tokenClasses );
@@ -268,7 +268,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	#endregion
 
-	public Task RemoveInvader( IEntityClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
+	public Task RemoveInvader( ITokenClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
 
 	/// <summary> adds Target to Fear context </summary>
 	public override void AddFear( int count ) {
@@ -314,7 +314,7 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
-	public IEntityClass[] AllPresenceTokens => GameState.Current.Spirits
+	public ITokenClass[] AllPresenceTokens => GameState.Current.Spirits
 		.SelectMany(s=>s.Presence.TokensDeployedOn( Space ) )
 		.Select(x=>x.Class)
 		.ToArray();

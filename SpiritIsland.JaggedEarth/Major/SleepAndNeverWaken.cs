@@ -32,7 +32,7 @@ public class SleepAndNeverWaken {
 	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {
 
 		SpaceToken[] CalcOptions() => fromSpaces
-			.SelectMany( space => space.Tokens.SpaceTokensOfClass(Human.Explorer) )
+			.SelectMany( space => space.Tokens.SpaceTokensOfTag(Human.Explorer) )
 			.ToArray();
 
 		SpaceToken[] options;

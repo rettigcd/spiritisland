@@ -10,25 +10,25 @@ public class PreselectAttribute : Attribute, IPreselect {
 		_prompt = prompt;
 		_tokenClasses = classString.Split( ',' )
 			.Select( x => x switch {
-				"Explorer" => (IEntityClass)Human.Explorer,
-				"Town" => (IEntityClass)Human.Town,
-				"City" => (IEntityClass)Human.City,
-				"Beast" => (IEntityClass)Token.Beast,
-				"Disease" => (IEntityClass)Token.Disease,
-				"Wilds" => (IEntityClass)Token.Wilds,
-				"Dahan" => (IEntityClass)Human.Dahan,
+				"Explorer" => (ITokenClass)Human.Explorer,
+				"Town" => (ITokenClass)Human.Town,
+				"City" => (ITokenClass)Human.City,
+				"Beast" => (ITokenClass)Token.Beast,
+				"Disease" => (ITokenClass)Token.Disease,
+				"Wilds" => (ITokenClass)Token.Wilds,
+				"Dahan" => (ITokenClass)Human.Dahan,
 				_ => throw new Exception( $"{x} not known" )
 			} ).ToArray();
 		_present = present;
 	}
 
 	readonly string _prompt;
-	readonly IEntityClass[] _tokenClasses;
+	readonly ITokenClass[] _tokenClasses;
 	readonly Present _present;
 
 	public async Task<Space> PreSelect( Spirit spirit, SpaceState[] spaces ) {
 		var spaceTokenOptions = spaces
-			.SelectMany( ss => ss.SpaceTokensOfAnyClass( _tokenClasses ) )
+			.SelectMany( ss => ss.SpaceTokensOfAnyTag( _tokenClasses ) )
 			.ToArray();
 
 		SpaceToken st = await spirit.Select( new A.SpaceToken( _prompt, spaceTokenOptions, _present ) );

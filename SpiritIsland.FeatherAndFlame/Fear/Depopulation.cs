@@ -30,14 +30,12 @@ public class Depopulation : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync( ctx );
 
-	// static SpaceCmd Replace1CityWith1Town => new SpaceCmd( "Replace 1 City with 1 Town", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.City ) );
-
 	static SpaceCmd DownGradeCityOrRemoveTown => new SpaceCmd("Remove 1 Town, or Replace 1 City with 1 Town", async ctx => {
 		const string prompt = "Select City to downgrade or Town to remove";
-		var options = ctx.Tokens.OfAnyHumanClass( Human.Town_City );
+		var options = ctx.Tokens.HumanOfAnyTag( Human.Town_City );
 		var invader = await ctx.SelectAsync(new A.SpaceToken(prompt, options.On( ctx.Space ),Present.Always));
 		if(invader == null) return;
-		if(invader.Token.Class == Human.City)
+		if(invader.Token.HasTag(Human.City))
 			await ReplaceInvader.DowngradeSelectedInvader(ctx.Tokens,(HumanToken)invader.Token);
 		else // must be town
 			await ctx.Tokens.Remove(invader.Token,1);

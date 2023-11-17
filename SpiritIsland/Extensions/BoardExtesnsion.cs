@@ -13,9 +13,9 @@ public static class BoardExtesnsion {
 		return gameState.Spirits[0];
 	}
 
-	static public SpaceToken[] FindTokens( this Board board, params IEntityClass[] tokenClasses ) {
+	static public SpaceToken[] FindTokens( this Board board, params ITokenClass[] tokenClasses ) {
 		return board.Spaces
-			.SelectMany( s => s.Tokens.SpaceTokensOfAnyClass( tokenClasses ) )
+			.SelectMany( s => s.Tokens.SpaceTokensOfAnyTag( tokenClasses ) )
 			.ToArray();
 	}
 

@@ -62,18 +62,17 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 		if(args.Added != Token.Blight) return;
 
 		// Destroy all presence in this land.
-		var toDestroy = args.To.OfAnyClass(Token.Beast)
-			.Union( args.To.OfCategory(TokenCategory.Presence) )
-			.Cast<IToken>()
+		var toDestroy = args.To.OfAnyTag(Token.Beast)
+			.Union( args.To.OfTag( TokenCategory.Presence ) )
 			.ToArray();
-		foreach(var t in toDestroy)
+		foreach(IToken t in toDestroy)
 			await args.To.Destroy( t, args.To[t] );
 		GameState.Current.LogDebug( "All Things Weaken - destroyed all Presence/Beast on " + args.To.Space.Text );
 
 		// Destroy 1 presence in adjacent land
 		var options = args.To.Adjacent_Existing
 			.SelectMany(
-				adj => adj.OfCategory(TokenCategory.Presence).Cast<IToken>().On(adj.Space)
+				adj => adj.OfTag(TokenCategory.Presence).On(adj.Space)
 			)
 			.ToArray();
 

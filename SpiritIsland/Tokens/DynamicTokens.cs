@@ -2,9 +2,9 @@
 
 public class DynamicTokens {
 
-	readonly Dictionary<IEntityClass, List<Func<SpaceState, int>>> dict = new Dictionary<IEntityClass, List<Func<SpaceState, int>>>();
+	readonly Dictionary<ITokenClass, List<Func<SpaceState, int>>> dict = new Dictionary<ITokenClass, List<Func<SpaceState, int>>>();
 
-	public void Register( System.Func<SpaceState, int> calcCountOnSpace, IEntityClass targetToken ) {
+	public void Register( System.Func<SpaceState, int> calcCountOnSpace, ITokenClass targetToken ) {
 		if(!dict.ContainsKey( targetToken ))
 			dict.Add( targetToken, new List<Func<SpaceState, int>>() );
 		dict[targetToken].Add( calcCountOnSpace );
@@ -28,7 +28,7 @@ public class DynamicTokens {
 			foreach(var p in dict)
 				src.dict.Add(p.Key,p.Value);
 		}
-		readonly Dictionary<IEntityClass, List<Func<SpaceState, int>>> dict = new Dictionary<IEntityClass, List<Func<SpaceState, int>>>();
+		readonly Dictionary<ITokenClass, List<Func<SpaceState, int>>> dict = new Dictionary<ITokenClass, List<Func<SpaceState, int>>>();
 	}
 
 

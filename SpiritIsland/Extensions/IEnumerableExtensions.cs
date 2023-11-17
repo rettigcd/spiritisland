@@ -43,7 +43,7 @@ static public class IEnumerableExtensions {
 	static public bool IsOneOf<T>( this T needle, params T[] haystack ) where T : Enum
 		=> haystack.Contains( needle );
 
-	static public bool IsOneOf( this IEntityClass needle, params IEntityClass[] haystack )
+	static public bool IsOneOf( this ITokenClass needle, params ITokenClass[] haystack )
 		=> haystack.Contains( needle );
 
 	static public bool IsDestroyingPresence( this RemoveReason reason ) => reason.IsOneOf( RemoveReason.Destroyed, RemoveReason.Replaced, RemoveReason.Removed );

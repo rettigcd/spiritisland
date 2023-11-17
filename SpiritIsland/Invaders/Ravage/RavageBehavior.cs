@@ -1,17 +1,11 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-using System;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Configures Dahan and Invader behavior on a per-space bases.
 /// </summary>
-public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
+public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	public static RavageBehavior DefaultBehavior => GameState.Current.DefaultRavageBehavior;
-
-	public static readonly IEntityClass Class = new ActionModTokenClass("RavageBehavior");
-	IEntityClass ISpaceEntity.Class => Class;
 
 	// Order / Who is damaged
 	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
@@ -93,7 +87,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		// When damaging defenders, it is ok to damage the explorers first.
 		// https://querki.net/u/darker/spirit-island-faq/#!Voice+of+Command 
 		var participatingExplorers = defenders.Keys
-			.Where( k => k.Class.Category == TokenCategory.Invader ) //! all defending invaders, even dreaming/frozen invaders
+			.Where( k => k.HumanClass.HasAny(Human.Invader) )
 			.OfType<HumanToken>()
 			.OrderByDescending( x => x.RemainingHealth ) // kill lowest health first (must be efficient)
 			.ThenBy( x => x.StrifeCount ) // non strifed first
@@ -116,7 +110,7 @@ public class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		// Dahan
 		var damagableDahan = defenders.Keys
 			.Cast<HumanToken>()
-			.Where( k => k.Class == Human.Dahan ) // Normal only, filters out frozen/sleeping
+			.Where( k => k.HumanClass == Human.Dahan ) // Normal only, filters out frozen/sleeping
 			.OrderBy( t => t.RemainingHealth ) // kill damaged dahan first
 			.ThenBy( x => x.RavageOrder ) // but if 2 have same health, pick the one that has already attacked
 			.ToArray();

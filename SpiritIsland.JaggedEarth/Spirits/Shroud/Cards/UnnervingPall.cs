@@ -26,7 +26,7 @@ public class UnnervingPall {
 	static async Task SelectUpTo3DamagedInvadersToNotParticipate( TargetSpaceCtx ctx ) {
 
 		//// Find Damaged Invaders
-		var damagedInvaders = new List<ISpaceEntity>();
+		var damagedInvaders = new List<HumanToken>();
 		foreach(var token in ctx.Tokens.InvaderTokens().Where( t => t.RemainingHealth < t.FullHealth ))
 			for(int i = 0; i < ctx.Tokens[token]; ++i)
 				damagedInvaders.Add( token );

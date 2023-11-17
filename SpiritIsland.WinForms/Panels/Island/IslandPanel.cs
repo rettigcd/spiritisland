@@ -179,10 +179,8 @@ class IslandPanel : IPanel {
 			Token.Defend, Token.Blight, // These don't show up in .OfAnyType if they are dynamic
 			Token.Wilds, Token.Badlands, Token.Isolate, Token.Vitality, Token.Quake
 		}	
-			.Union( spaceState.OfCategory( TokenCategory.Dahan ) )
-			.Union( spaceState.OfCategory( TokenCategory.Incarna ) )
-			.Union( spaceState.OfClass( Token.Beast ) )
-			.Union( spaceState.OfAnyClass( _ctx._spirit.Presence.Token, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
+			.Union( spaceState.OfAnyTag( TokenCategory.Dahan, TokenCategory.Incarna, Token.Beast ) )
+			.Union( spaceState.OfAnyTag( _ctx._spirit.Presence.Token, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
 			.Cast<IToken>()
 			.ToArray();
 
@@ -230,7 +228,7 @@ class IslandPanel : IPanel {
 		int iconWidth = _iconWidth;
 
 		var orderedInvaders = ss.OfTypeHuman()
-			.Where( k => k.Class.Category == TokenCategory.Invader )
+			.Where( k => k.HumanClass.HasTag(TokenCategory.Invader) )
 			// Major ordering: (Type > Strife)
 			.OrderByDescending( i => i.FullHealth )
 			.ThenBy( x => x.StrifeCount )

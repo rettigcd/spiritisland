@@ -33,9 +33,9 @@ public class ScorchingConvergence {
 	const string StartingInvaders = "starting invaders";
 	const string StartingDahan = "starting dahan";
 
-	static string GetSummary(SpaceState tokens, params HumanTokenClass[] classes) => tokens.OfAnyHumanClass(classes)
+	static string GetSummary(SpaceState tokens, params HumanTokenClass[] classes) => tokens.HumanOfAnyTag(classes)
 		.OrderBy(x=>x.FullHealth).ThenBy(x=>x.Damage)
-		.Select( x => tokens[x]+x.Class.Label )
+		.Select( x => tokens[x]+x.HumanClass.Label )
 		.Join(",");
 
 	[InnateTier("3 sun,1 fire","3 Damage to Invaders. 3 Damage to Dahan. Add 1 Blight without cascading.")]

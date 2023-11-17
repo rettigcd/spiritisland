@@ -18,7 +18,7 @@ public class TerrorStalksTheLand : SpaceState {
 	public override async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		// not destroying invaders - do normal stuff
 		if(reason != RemoveReason.Destroyed 
-			|| token.Class.Category != TokenCategory.Invader
+			|| !token.HasTag(TokenCategory.Invader)
 			|| PreviouslyDestroyed
 			|| InvaderCount != 1
 		)

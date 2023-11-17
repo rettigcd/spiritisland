@@ -36,9 +36,9 @@ public class DrawTowardsAConsumingVoid {
 
 	static async Task PerformEffect( TargetSpaceCtx ctx ) {
 		// Gather 1 explorer,town,city,dahan,presence, and beast from each adjacent land.
-		var tokenGroups = Human.Invader.Plus( Human.Dahan, Token.Beast );
+		ITokenClass[] tokenGroups = Human.Invader.Plus( Human.Dahan, Token.Beast );
 		foreach(var adjState in ctx.Adjacent)
-			await MoveTokensFromAdjacentSpace( ctx, tokenGroups, adjState );
+			await MoveTokensFromAdjacentSpace( ctx, adjState, tokenGroups );
 
 		// 4 fear.  15 damage. 5 damage to dahan.
 		ctx.AddFear( 4 );
@@ -53,10 +53,10 @@ public class DrawTowardsAConsumingVoid {
 		await ctx.Beasts.Remove( 2, RemoveReason.Removed );
 	}
 
-	static async Task MoveTokensFromAdjacentSpace( TargetSpaceCtx ctx, IEntityClass[] tokenGroups, SpaceState adjState ) {
+	static async Task MoveTokensFromAdjacentSpace( TargetSpaceCtx ctx, SpaceState adjState, params ITokenClass[] tokenGroups ) {
 		// move tokens
-		foreach(IEntityClass tokenGroup in tokenGroups) {
-			ISpaceEntity tokenToGather = adjState.OfClass( tokenGroup )
+		foreach(ITokenClass tokenGroup in tokenGroups) {
+			ISpaceEntity tokenToGather = adjState.OfTag( tokenGroup )
 				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )
 				.FirstOrDefault();
 			if(tokenToGather != null)

@@ -3,8 +3,8 @@
 
 /// <summary> A presence token that follows other tokens around. (Thunderspeaker & Sharp Fangs) </summary>
 public class FollowingPresenceToken : SpiritPresenceToken {
-	readonly IEntityClass _leaderClass;
-	public FollowingPresenceToken( Spirit spirit, IEntityClass leaderClass ) : base( spirit ) {
+	readonly ITokenClass _leaderClass;
+	public FollowingPresenceToken( Spirit spirit, ITokenClass leaderClass ) : base( spirit ) {
 		_leaderClass = leaderClass;
 		Text = SpaceAbreviation = "Ts";// to not conflict with Towns
 	}

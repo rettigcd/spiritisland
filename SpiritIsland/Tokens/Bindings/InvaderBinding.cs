@@ -15,7 +15,7 @@ public sealed class InvaderBinding {
 	#region Apply Damage To...
 
 	/// <summary> Not Badland-aware </summary>
-	public async Task ApplyDamageToEach( int individualDamage, params IEntityClass[] generic ) {
+	public async Task ApplyDamageToEach( int individualDamage, params ITokenClass[] generic ) {
 		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
 
 		var invaders = Tokens.InvaderTokens()
@@ -24,7 +24,7 @@ public sealed class InvaderBinding {
 
 		// Filter if appropriate
 		if(generic != null && 0<generic.Length)
-			invaders = invaders.Where(t=>generic.Contains(t.Class)).ToArray();
+			invaders = invaders.Where(t=>generic.Contains(t.HumanClass)).ToArray();
 
 		foreach(var invader in invaders)
 			for(int num = Tokens[invader]; num>0; --num) // can't use while this[invader]>0 because BoD doesn't actually destroy them.
@@ -59,7 +59,7 @@ public sealed class InvaderBinding {
 	public async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
 		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
 
-		var tokensToDestroy = Tokens.OfAnyHumanClass( tokenClasses ).ToArray();
+		var tokensToDestroy = Tokens.HumanOfAnyTag( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
 			await token.DestroyAll( Tokens );
 	}
@@ -70,12 +70,12 @@ public sealed class InvaderBinding {
 		HumanToken[] invadersToDestroy;
 		while(
 			0 < count 
-			&& (invadersToDestroy = Tokens.OfAnyHumanClass( generics ).ToArray()).Length > 0
+			&& (invadersToDestroy = Tokens.HumanOfAnyTag( generics ).ToArray()).Length > 0
 		) {
 			var invader = invadersToDestroy
 				.OrderByDescending( x => x.FullHealth )
 				.First();
-			await DestroyNOfClass( 1, invader.Class );
+			await DestroyNOfClass( 1, invader.HumanClass );
 
 			// next
 			--count;
@@ -91,7 +91,7 @@ public sealed class InvaderBinding {
 		int remaining = countToDestroy; // capture
 
 		while(0 < remaining) {
-			var next = Tokens.OfHumanClass( invaderClass )
+			var next = Tokens.HumanOfTag( invaderClass )
 				.OrderByDescending( x => x.FullHealth )
 				.ThenBy( x => x.StrifeCount )
 				.ThenBy( x => x.FullDamage )
@@ -121,10 +121,10 @@ public sealed class InvaderBinding {
 	/// Sticking on InvaderGroup is the only place I can think to put it.
 	/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 	/// </remarks>
-	public async Task RemoveLeastDesirable( RemoveReason reason = RemoveReason.Removed, params IEntityClass[] removables ) {
+	public async Task RemoveLeastDesirable( RemoveReason reason = RemoveReason.Removed, params ITokenClass[] removables ) {
 		if(Tokens.SumAny(removables) == 0) return;
 
-		var invaderToRemove = Tokens.OfAnyClass( removables )
+		var invaderToRemove = Tokens.OfAnyTag( removables )
 			.Cast<HumanToken>()
 			.OrderByDescending( g => g.FullHealth )
 			.ThenBy( k => k.StrifeCount )  // un-strifed first
@@ -159,23 +159,23 @@ public sealed class InvaderBinding {
 		return damageInflicted;
 	}
 
-	public Task<int> UserSelectedDamage( Spirit damagePicker, int damage, params IEntityClass[] allowedTypes ) {
+	public Task<int> UserSelectedDamage( Spirit damagePicker, int damage, params ITokenClass[] allowedTypes ) {
 		return UserSelectedDamage_Internal( damage, damagePicker, Present.Always, allowedTypes );
 	}
 
-	public Task<int> UserSelectedPartialDamage( int damage, Spirit damagePicker, params IEntityClass[] allowedTypes ) {
+	public Task<int> UserSelectedPartialDamage( int damage, Spirit damagePicker, params ITokenClass[] allowedTypes ) {
 		return UserSelectedDamage_Internal(damage,damagePicker, Present.Done, allowedTypes );
 	}
 
 	// This is the standard way of picking - by TokenClass
-	async Task<int> UserSelectedDamage_Internal( int damage, Spirit damagePicker, Present present, params IEntityClass[] allowedTypes ) {
+	async Task<int> UserSelectedDamage_Internal( int damage, Spirit damagePicker, Present present, params ITokenClass[] allowedTypes ) {
 		if(damage == 0) return 0;
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = Human.Invader;
 
 		IToken[] invaderTokens;
 		int damageInflicted = 0;
-		while(damage > 0 && (invaderTokens = Tokens.OfAnyClass( allowedTypes ).Cast<IToken>().ToArray()).Length > 0) {
+		while(damage > 0 && (invaderTokens = Tokens.OfAnyTag( allowedTypes ).ToArray()).Length > 0) {
 			var st = await damagePicker.Select( An.Invader.ForAggregateDamage( invaderTokens.On( Tokens.Space ), damage, present ) );
 			if(st==null) break;
 			var invaderToDamage = st.Token.AsHuman();
@@ -201,7 +201,7 @@ public sealed class InvaderBinding {
 		}
 
 		void HealGroup( HumanTokenClass group ) {
-			foreach(var token in counts.OfHumanClass( group ).ToArray())
+			foreach(var token in counts.HumanOfTag( group ).ToArray())
 				RestoreAllToDefault( token );
 		}
 

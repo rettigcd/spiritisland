@@ -83,7 +83,7 @@ public class ManyMinds_Tests {
 			await dstTokens.Add( spirit.Presence.Token, startingSrcPresence ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
 
 		//  When: moving
-		IToken beast = (IToken)srcTokens.OfClass(Token.Beast).First();
+		IToken beast = srcTokens.OfTag(Token.Beast).First();
 		await srcTokens.MoveTo(beast, dstTokens ).ShouldComplete("move best");
 
 		// Then

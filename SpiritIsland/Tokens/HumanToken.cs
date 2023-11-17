@@ -20,13 +20,13 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	class NoPenalty : IHaveHealthPenaltyPerStrife { public int HealthPenaltyPerStrife => 0; }
 
 	public HumanToken( HumanTokenClass tokenClass, int rawFullHealth ) {
-		Class = tokenClass;
+		HumanClass = tokenClass;
 		_rawFullHealth = rawFullHealth;
 		Damage = 0;
 		DreamDamage = 0;
 		StrifeCount = 0;
 		_healthPenaltyHolder = (IHaveHealthPenaltyPerStrife)GameState.Current ?? new NoPenalty();// penaltyHolder;
-		_summaryString = Class.Initial + "@" + RemainingHealth;
+		_summaryString = HumanClass.Initial + "@" + RemainingHealth;
 		Attack = rawFullHealth;
 
 		bool isDahan = tokenClass == Human.Dahan;
@@ -35,7 +35,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	}
 
 	protected HumanToken( Props x ) {
-		Class = x.Class;
+		HumanClass = x.Class;
 		_rawFullHealth = x._rawFullHealth;
 
 		RavageOrder = x.RavageOrder;
@@ -47,15 +47,17 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 		_healthPenaltyHolder = (IHaveHealthPenaltyPerStrife)GameState.Current ?? new NoPenalty(); // x._helathPenaltyHolder;
 
-		_summaryString = Class.Initial + "@" + RemainingHealth
+		_summaryString = HumanClass.Initial + "@" + RemainingHealth
 			+ (x.DreamDamage == 0 ? "" : new string( '~', DreamDamage ))
 			+ (x.StrifeCount == 0 ? "" : new string( '^', StrifeCount ));
 
 		Attack = x.Attack;
 	}
 
-	public HumanTokenClass Class { get; }
-	IEntityClass ISpaceEntity.Class => this.Class;
+	public HumanTokenClass HumanClass { get; }
+	public ITokenClass Class => HumanClass;
+
+	public bool HasTag(ITag tag) => HumanClass.HasTag( tag );
 
 	/// <summary>The effective FullHealth of a token. Minimum of 1; </summary>
 	public int FullHealth => Math.Max(1, _rawFullHealth - StrifeCount * _healthPenaltyHolder.HealthPenaltyPerStrife );
@@ -83,7 +85,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 			throw new InvalidOperationException($"Cannot remove {count} {this} tokens because there aren't that many.");
 		
 		var result = await tokens.Remove( this, count, RemoveReason.Destroyed );
-		GameState.Current.Fear.AddDirect( new FearArgs( Class.FearGeneratedWhenDestroyed * result.Count ) {
+		GameState.Current.Fear.AddDirect( new FearArgs( HumanClass.FearGeneratedWhenDestroyed * result.Count ) {
 			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
 			space = tokens.Space
 		} );
@@ -149,7 +151,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	public Props GetProps() {
 		return new Props {
-			Class = Class,
+			Class = HumanClass,
 			_rawFullHealth = _rawFullHealth,
 			Damage = Damage,
 			StrifeCount = StrifeCount,
@@ -165,7 +167,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	#region GetHashCode / Equals
 
 	public override int GetHashCode() 
-		=> Class.GetHashCode()
+		=> HumanClass.GetHashCode()
 		// not using 2,3,5 because those are all valid values.
 		+ 7 * _rawFullHealth	// Do NOT use FullHealth because that might change based on HealthPenalty
 		+ 11 * Damage
@@ -179,7 +181,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	public bool Equals( HumanToken other ) {
 		return other != null
-			&& other.Class == Class
+			&& other.HumanClass == HumanClass
 			&& other._rawFullHealth == _rawFullHealth
 			&& other.Damage == Damage	
 			&& other.StrifeCount == StrifeCount
@@ -198,7 +200,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	public string SpaceAbreviation => _summaryString;
 
-	public Img Img => Class.Img;
+	public Img Img => HumanClass.Img;
 
 	readonly string _summaryString;
 

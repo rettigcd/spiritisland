@@ -25,12 +25,12 @@ public class SimultaneousDefend : BaseModEntity, ISkipRavages, IEndWhenTimePasse
 	public Task<bool> Skip( SpaceState space ) {
 
 		// Token Reduces Attack of invaders by 1
-		foreach(HumanToken orig in space.OfAnyHumanClass( Human.Dahan ).ToArray())
+		foreach(HumanToken orig in space.HumanOfAnyTag( Human.Dahan ).ToArray())
 			AdjustRavageOrder( space, orig, RavageOrder.InvaderTurn );
 
 		// At end of Action, invaders are are restored to original attack time.
 		ActionScope.Current.AtEndOfThisAction( scope => {
-			foreach(HumanToken orig in space.OfAnyHumanClass( Human.Dahan ).ToArray())
+			foreach(HumanToken orig in space.HumanOfAnyTag( Human.Dahan ).ToArray())
 				AdjustRavageOrder( space, orig, RavageOrder.DahanTurn );
 		} );
 

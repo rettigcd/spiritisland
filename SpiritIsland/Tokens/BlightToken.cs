@@ -4,7 +4,9 @@ public class BlightToken : TokenClassToken
 	, IHandleTokenAddedAsync
 	, IHandleTokenRemoved
 {
-	public BlightToken( string label, char k, Img img ) : base( label, k, img, TokenCategory.Blight ) {}
+	public BlightToken( string label, char k, Img img ) 
+		: base( label, k, img ) 
+	{}
 
 	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
 

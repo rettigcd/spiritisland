@@ -63,7 +63,7 @@ public class EmberEyedBehemoth : Spirit {
 
 		await base.DoGrowth( gameState );
 
-		// Remoe 4th growth after it has been used
+		// Remove 4th growth after it has been used
 		if(GrowthTrack.Options.Length == 4 && Incarna.Empowered) {
 			GrowthTrack = new( GrowthTrack.Options.Take( 3 ).ToArray() );
 			GameState.Current.Log( new Log.LayoutChanged( $"Fourth growth option removed from {Name}." ) );

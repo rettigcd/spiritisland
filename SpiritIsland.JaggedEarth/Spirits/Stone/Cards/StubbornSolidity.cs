@@ -24,8 +24,6 @@ public class StubbornSolidityBehavior : IModifyRemovingToken
 	, IEndWhenTimePasses
 {
 
-	public IEntityClass Class => ActionModTokenClass.Mod;
-
 	public void ModifyRemoving( RemovingTokenArgs args ) {
 		if(	args.Token.Class == Human.Dahan ) args.Count = 0;
 		if( args.Mode == RemoveMode.Live )

@@ -25,12 +25,12 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 	public Task Level3( GameCtx ctx )
 		=> new SpaceCmd( "Remove 1 Explorer/Town from any land, or Remove 1 City from a land with Badlands/Wilds/Dahan.", Level3_Remove)
 			.On().OneLandPerBoard()
-			.ByPickingToken( ctx => ctx.Tokens.OfAnyClass( TokensClassesFor(ctx) ) )
+			.ByPickingToken( ctx => ctx.Tokens.OfAnyTag( TokensClassesFor(ctx) ) )
 			.ForEachBoard()
 			.ActAsync(ctx);
 
 	Task Level3_Remove( TargetSpaceCtx ctx ) => new TokenRemover( ctx ).AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN();
 
-	static IEntityClass[] TokensClassesFor( TargetSpaceCtx ctx ) => Has.DangerousLands.Filter( ctx ) ? Human.Invader : Human.Explorer_Town;
+	static ITokenClass[] TokensClassesFor( TargetSpaceCtx ctx ) => Has.DangerousLands.Filter( ctx ) ? Human.Invader : Human.Explorer_Town;
 
 }

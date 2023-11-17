@@ -39,9 +39,8 @@ static public class GameState_Extensions {
 		static int Order_CitiesTownsExplorers( HumanToken invader )
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
 		var tokens = gameState.Tokens[space];
-		string dreamerSummary = tokens.OfCategory( TokenCategory.Invader )
-			.Cast<HumanToken>()
-			.Where( x => x.Class.Variant == TokenVariant.Dreaming )
+		string dreamerSummary = tokens.HumanOfTag(TokenCategory.Invader)
+			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
 			.OrderBy( Order_CitiesTownsExplorers )
 			.Select( invader => tokens[invader] + invader.ToString() )
 			.Join( "," );

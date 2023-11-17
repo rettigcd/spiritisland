@@ -44,7 +44,7 @@ public class SpiritPicksLandAction : IActOn<SelfCtx> {
 	public SpiritPicksLandAction Which( TargetSpaceCtxFilter filter ) { _landCriteria = filter; return this; }
 	public SpiritPicksLandAction MakeOptional() { _present = Present.Done; return this; }
 	public SpiritPicksLandAction AllDifferent() {  _chooseDifferentLands = true; return this; }
-	public SpiritPicksLandAction ByPickingToken( params IEntityClass[] tokenClasses ) { _firstPickTokenClasses = tokenClasses; return this; }
+	public SpiritPicksLandAction ByPickingToken( params ITokenClass[] tokenClasses ) { _firstPickTokenClasses = tokenClasses; return this; }
 	public SpiritPicksLandAction EachSpiritPicks( int count ) { _landsPerSpirit = count; return this; }
 
 	#endregion
@@ -53,7 +53,7 @@ public class SpiritPicksLandAction : IActOn<SelfCtx> {
 
 	async Task<TargetSpaceCtx> PickSpaceBySelectingToken( SelfCtx ctx, TargetSpaceCtx[] spaceOptions ) {
 		// Get options
-		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Tokens.SpaceTokensOfAnyClass( _firstPickTokenClasses );
+		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Tokens.SpaceTokensOfAnyTag( _firstPickTokenClasses );
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
@@ -73,7 +73,7 @@ public class SpiritPicksLandAction : IActOn<SelfCtx> {
 	readonly string _landPreposition;
 	Present _present = Present.Always;
 	bool _chooseDifferentLands = false;
-	IEntityClass[] _firstPickTokenClasses;
+	ITokenClass[] _firstPickTokenClasses;
 	int _landsPerSpirit = 1;
 	#endregion
 }

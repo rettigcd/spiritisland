@@ -4,7 +4,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	public Tokens_ForIsland( GameState gs ) {
 
-		TokenDefaults = new Dictionary<IEntityClass, IToken> {
+		TokenDefaults = new Dictionary<ITokenClass, IToken> {
 			[Human.City]     = new HumanToken( Human.City,     3 ),
 			[Human.Town]     = new HumanToken( Human.Town,     2 ),
 			[Human.Explorer] = new HumanToken( Human.Explorer, 1 ),
@@ -21,8 +21,8 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	#region Configuration
 
-	IToken IIslandTokenApi.GetDefault( IEntityClass tokenClass ) => TokenDefaults[tokenClass];
-	public readonly Dictionary<IEntityClass, IToken> TokenDefaults;
+	IToken IIslandTokenApi.GetDefault( ITokenClass tokenClass ) => TokenDefaults[tokenClass];
+	public readonly Dictionary<ITokenClass, IToken> TokenDefaults;
 
 	#endregion
 
@@ -130,7 +130,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		}
 		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
 		readonly Space[] _doesNotExist;
-		readonly Dictionary<IEntityClass, IToken> tokenDefaults = new Dictionary<IEntityClass, IToken>();
+		readonly Dictionary<ITokenClass, IToken> tokenDefaults = new Dictionary<ITokenClass, IToken>();
 		readonly IMemento<DualDynamicTokens> dynamicTokens;
 	}
 

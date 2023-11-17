@@ -20,19 +20,19 @@ public class ReduceInvaderAttackBy1 : BaseModEntity, ISkipRavages, IEndWhenTimeP
 		Dictionary<HumanTokenClass, int> reducedClasses = new Dictionary<HumanTokenClass, int>();
 
 		// Token Reduces Attack of invaders by 1
-		foreach(HumanToken orig in space.OfAnyHumanClass( _classesToReduce ).ToArray()) {
+		foreach(HumanToken orig in space.HumanOfAnyTag( _classesToReduce ).ToArray()) {
 			int reduce = Math.Min( _reduce, orig.Attack );
 			if(reduce == 0) continue;
-			reducedClasses[orig.Class] = reduce;
+			reducedClasses[orig.HumanClass] = reduce;
 			AdjustAttack( space, orig, -reduce );
 		}
 
 		// At end of Action, invaders are are restored to original attack.
 		ActionScope.Current.AtEndOfThisAction( scope => {
 			// Restore original attacks
-			HumanToken[] endingInvaders = space.OfAnyHumanClass( reducedClasses.Keys.ToArray() ).ToArray();
+			HumanToken[] endingInvaders = space.HumanOfAnyTag( reducedClasses.Keys.ToArray() ).ToArray();
 			foreach(HumanToken ending in endingInvaders)
-				AdjustAttack( space, ending, reducedClasses[ending.Class] );
+				AdjustAttack( space, ending, reducedClasses[ending.HumanClass] );
 		} );
 
 		return Task.FromResult( false ); // don't skip

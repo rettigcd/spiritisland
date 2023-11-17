@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Security.Cryptography;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
@@ -38,20 +40,49 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public IEnumerable<ISpaceEntity> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
 
+	// .OfType<> 
 	public IEnumerable<T> OfType<T>() => Keys.OfType<T>();
 	public IEnumerable<HumanToken> OfTypeHuman() => OfType<HumanToken>();
 	public IEnumerable<T> ModsOfType<T>() => Keys.Union( _islandMods ).OfType<T>();
 
-	public IEntityClass[] ClassesPresent => OfType<IToken>().Select( x => x.Class ).Distinct().ToArray();
+	// Misc
+	public ITokenClass[] ClassesPresent => OfType<IToken>().Select( x => x.Class ).Distinct().ToArray();
 
 	#region Enumeration / Detection(HaS) / Summing
+	// ==================
 
-	public ISpaceEntity[] OfCategory( TokenCategory category ) => OfCategoryInternal( category ).ToArray();
-	public ISpaceEntity[] OfClass( IEntityClass tokenClass ) => OfClassInternal( tokenClass ).ToArray();
-	public ISpaceEntity[] OfAnyClass( params IEntityClass[] classes ) => OfAnyClassInternal( classes ).ToArray(); // !! This could *probably* return IVisibleToken
-	public async Task<IToken[]> RemovableOfAnyClass( RemoveReason reason, params IEntityClass[] classes ) {
+	// -- Has --
+	public bool Has( ITag tag )   => OfTagEnumeration( tag ).Any();
+	public bool HasAny( params ITokenClass[] healthyInvaders ) => OfAnyTagEnumeration( healthyInvaders ).Any();
 
-		IEnumerable<IToken> tokensToConsider = OfAnyClass( classes ).Cast<IToken>();
+	// -- Sum --
+	public int Sum( ITag tag ) => OfTagEnumeration( tag ).Sum( k => _counts[k] );
+	public int SumAny( params ITag[] healthyInvaders ) => OfAnyTagEnumeration( healthyInvaders ).Sum( k => _counts[k] );
+
+	// -- IEnumerable<SpaceToken> --
+	public IEnumerable<SpaceToken> SpaceTokensOfTag( ITag tag ) => OfTagEnumeration(tag).On(Space);
+	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).On(Space);
+
+	// -- HumanToken[] --
+	public HumanToken[] HumanOfTag( ITag tag ) => OfTagEnumeration( tag ).Cast<HumanToken>().ToArray();
+	public HumanToken[] HumanOfAnyTag( params ITag[] classes ) => OfAnyTagEnumeration( classes ).Cast<HumanToken>().ToArray();
+
+	// -- IToken[] --
+	public IToken[] OfTag( ITag tag ) => OfTagEnumeration( tag ).ToArray();
+	public IToken[] OfAnyTag( params ITag[] tags ) => OfAnyTagEnumeration( tags ).ToArray();
+
+	// -- IEnumerable<IToken> --
+	protected IEnumerable<IToken> OfTagEnumeration( ITag tag ) => Keys.OfType<IToken>().Where( token => token.HasTag(tag) );
+	protected IEnumerable<IToken> OfAnyTagEnumeration( params ITag[] classes ) => Keys.OfType<IToken>().Where( token => token.HasAny(classes) );
+
+	// ==================
+	#endregion
+
+	#region removable
+
+	public async Task<IToken[]> RemovableOfAnyClass( RemoveReason reason, params ITokenClass[] classes ) {
+
+		IEnumerable<IToken> tokensToConsider = OfAnyTag( classes );
 
 		return await WhereRemovable( tokensToConsider, reason );
 	}
@@ -75,27 +106,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 		return removable.ToArray();
 	}
-
-	public HumanToken[] OfHumanClass( HumanTokenClass tokenClass ) => OfClassInternal( tokenClass ).Cast<HumanToken>().ToArray();
-	public HumanToken[] OfAnyHumanClass( params HumanTokenClass[] classes ) => OfAnyClassInternal( classes ).Cast<HumanToken>().ToArray();
-
-	// 2 SpaceToken helper classes
-	public IEnumerable<SpaceToken> SpaceTokensOfClass( IEntityClass tokenClass ) 
-		=> OfClassInternal( tokenClass ).OfType<IToken>().On(Space);
-	public IEnumerable<SpaceToken> SpaceTokensOfAnyClass( params IEntityClass[] tokenClasses )
-		=> OfAnyClassInternal( tokenClasses ).OfType<IToken>().On(Space);
-
-	protected IEnumerable<ISpaceEntity> OfCategoryInternal( TokenCategory category ) => Keys.Where( k => k.Class.Category == category );
-	protected IEnumerable<ISpaceEntity> OfClassInternal( IEntityClass tokenClass ) => Keys.Where( x => x.Class == tokenClass );
-	protected IEnumerable<ISpaceEntity> OfAnyClassInternal( params IEntityClass[] classes ) => Keys.Where( specific => classes.Contains( specific.Class ) );
-
-	public bool Has( IEntityClass inv ) => OfClassInternal( inv ).Any();
-	public bool Has( TokenCategory cat ) => OfCategoryInternal( cat ).Any();
-	public bool HasAny( params IEntityClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Any();
-
-	public int Sum( IEntityClass tokenClass ) => OfClassInternal( tokenClass ).Sum( k => _counts[k] );
-	public int Sum( TokenCategory category ) => OfCategoryInternal( category ).Sum( k => _counts[k] );
-	public int SumAny( params IEntityClass[] healthyInvaders ) => OfAnyClassInternal( healthyInvaders ).Sum( k => _counts[k] );
 
 	#endregion
 
@@ -156,7 +166,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public IToken GetDefault( IEntityClass tokenClass ) => _api.GetDefault( tokenClass );
+	public IToken GetDefault( ITokenClass tokenClass ) => _api.GetDefault( tokenClass );
 
 	public void ReplaceAllWith( ISpaceEntity original, ISpaceEntity replacement ) {
 		Adjust( replacement, this[original] );
@@ -173,7 +183,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	#region Invader Specific
 
 	/// <summary> Includes dreaming invaders. </summary>
-	public IEnumerable<HumanToken> InvaderTokens() => OfCategory( TokenCategory.Invader ).Cast<HumanToken>();
+	public IEnumerable<HumanToken> InvaderTokens() => HumanOfTag( TokenCategory.Invader ).Cast<HumanToken>();
 
 	public bool HasInvaders() => Has( TokenCategory.Invader );
 
@@ -230,7 +240,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public void Skip1Build( string label ) => Adjust( SkipBuild.Default( label ), 1 );
 
-	public void SkipAllBuilds( string label, params IEntityClass[] stoppedClasses ) => Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
+	public void SkipAllBuilds( string label, params ITokenClass[] stoppedClasses ) => Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
 
 	public void Skip1Explore( string _ ) => Adjust( new SkipExploreTo(), 1 );
 
@@ -260,7 +270,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public async Task AdjustHealthOfAll( int delta, params HumanTokenClass[] tokenClasses ) {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
-			var tokens = OfHumanClass( tokenClass );
+			var tokens = HumanOfTag( tokenClass );
 			var orderedTokens = delta < 0
 				? tokens.OrderBy( x => x.FullHealth ).ToArray()
 				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
@@ -309,7 +319,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		return (newToken, count);
 	}
 
-	public Task AddDefault( IEntityClass tokenClass, int count, AddReason addReason = AddReason.Added )
+	public Task AddDefault( ITokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Add( GetDefault( tokenClass ), count, addReason );
 
 
@@ -502,7 +512,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public RavageBehavior RavageBehavior {
 		get {
-			var mod = (RavageBehavior)OfClass( SpiritIsland.RavageBehavior.Class ).FirstOrDefault();
+			var mod = Keys.OfType<RavageBehavior>().FirstOrDefault();
 			if(mod == null) {
 				mod = RavageBehavior.DefaultBehavior.Clone();
 				Init( mod, 1 );

@@ -16,10 +16,10 @@ public static class Token {
 	// Jagged Earth
 	static readonly public TokenClassToken Badlands = new TokenClassToken ( "Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
 	static readonly public TokenClassToken Element = new TokenClassToken( "Element", 'Y', Img.Token_Any ); // use as unique class for stacked elements
-	static readonly public IEntityClass OpenTheWays = new TokenClassToken( "OpenTheWays", '=', Img.OpenTheWays );
+	static readonly public ITokenClass OpenTheWays = new TokenClassToken( "OpenTheWays", '=', Img.OpenTheWays );
 
 	// Nature Incarnate
-	static readonly public TokenClassToken Vitality = new VitalityToken("Vitality", 'V', Img.Badlands );
+	static readonly public TokenClassToken Vitality = new VitalityToken("Vitality", 'V', Img.Vitality );
 	static readonly public TokenClassToken Quake    = new TokenClassToken( "Quake", 'Q', Img.Quake );
 
 	static public DiseaseToken Disease_Original => (DiseaseToken)Disease; // Don't use this directly.  Use .Disease instead.
@@ -27,7 +27,7 @@ public static class Token {
 
 public static class ModToken {
 	// Fake Tokens that are not visible.
-	static readonly public InvisibleToken DoExplore = new InvisibleToken( "Explore" );
-	static readonly public InvisibleToken DoBuild = new InvisibleToken( "Build" );
-	static readonly public InvisibleToken DoRavage = new InvisibleToken( "Ravage" );
+	static readonly public InvaderActionToken DoExplore = new InvaderActionToken( "Explore" );
+	static readonly public InvaderActionToken DoBuild = new InvaderActionToken( "Build" );
+	static readonly public InvaderActionToken DoRavage = new InvaderActionToken( "Ravage" );
 }

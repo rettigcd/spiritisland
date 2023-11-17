@@ -20,11 +20,11 @@ class WoundedToken : SpiritPresenceToken, IHandleTokenAdded {
 		if(!EnableSerenity) return;
 
 		// move any number of Invaders into your lands
-		if(args.Added.Class.Category == TokenCategory.Invader)
+		if(args.Added.HasTag(TokenCategory.Invader))
 			// you may Downgrade 1 of those invaders (max once per Power)
 			await ReplaceInvader.DowngradeSelectedInvader( args.To, (HumanToken)args.Added );
 		// add or move any number o Dahan into one of your lands, you may Downgrade 1 Invader there (max oncer per power)
-		if(args.Added.Class.Category == TokenCategory.Dahan)
+		if(args.Added.HasTag(TokenCategory.Dahan))
 			// you may Downgrade 1 of those invaders (max once per Power)
 			await ReplaceInvader.Downgrade1( _spirit, args.To, Present.Done, Human.Invader );
 	}

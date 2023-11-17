@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class Incarna : IIncarnaToken, IEntityClass, ITrackMySpaces {
+public class Incarna : IIncarnaToken, ITokenClass, ITrackMySpaces {
 
 	readonly string _abreviation;
 	readonly Img _notEmpowered;
@@ -24,12 +24,12 @@ public class Incarna : IIncarnaToken, IEntityClass, ITrackMySpaces {
 
 	public string SpaceAbreviation => _abreviation + (Empowered ? "+" : "-");
 
-	public IEntityClass Class => this;
+	ITokenClass IToken.Class => this;
 
 	#region IEntityClass properties
 	public string Label => "My incarna???";
 
-	public TokenCategory Category => TokenCategory.Incarna;
+	public bool HasTag(ITag tag) => tag == TokenCategory.Incarna; // Class and entity
 
 	#endregion
 

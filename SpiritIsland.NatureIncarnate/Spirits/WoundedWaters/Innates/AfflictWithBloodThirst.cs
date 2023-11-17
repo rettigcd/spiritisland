@@ -22,8 +22,9 @@ public class AfflictWithBloodThirst {
 		// (and temporarily remove them)
 		int damage = 0;
 		var doingDamage = new List<ISpaceEntity>();
-		var explorer = ctx.Tokens.Keys.FirstOrDefault(x=>x.Class == Human.Explorer);
-		var town = ctx.Tokens.Keys.FirstOrDefault( x => x.Class == Human.Town );
+		var humanTokens = ctx.Tokens.Keys.OfType<HumanToken>().ToArray();
+		var explorer = humanTokens.FirstOrDefault(x=>x.Class == Human.Explorer);
+		var town = humanTokens.FirstOrDefault( x => x.Class == Human.Town );
 		if(explorer is not null) {
 			ctx.Tokens.Adjust(explorer,-1);
 			doingDamage.Add(explorer);

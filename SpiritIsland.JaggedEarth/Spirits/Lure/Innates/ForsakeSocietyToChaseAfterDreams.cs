@@ -27,14 +27,14 @@ public class ForsakeSocietyToChaseAfterDreams {
 	}
 
 	static async Task Dissolve(TargetSpaceCtx ctx, params HumanTokenClass[] invaderCats) {
-		var decision = An.Invader.ToReplace("dissolve", ctx.Tokens.OfAnyHumanClass( invaderCats ).On(ctx.Space) );
+		var decision = An.Invader.ToReplace("dissolve", ctx.Tokens.HumanOfAnyTag( invaderCats ).On(ctx.Space) );
 		var invader = (await ctx.SelectAsync(decision))?.Token.AsHuman();
 		if(invader == null) return;
 
 		// Replace
-		if(invader.Class != Human.Explorer) {
+		if(invader.HumanClass != Human.Explorer) {
 			await ctx.Invaders.Remove(invader,1,RemoveReason.Replaced);
-			int numberOfExplorersToAdd = Math.Max(0,invader.Class.ExpectedHealthHint - invader.Damage);
+			int numberOfExplorersToAdd = Math.Max(0,invader.HumanClass.ExpectedHealthHint - invader.Damage);
 			await ctx.AddDefault( Human.Explorer, numberOfExplorersToAdd, AddReason.AsReplacement );
 		}
 

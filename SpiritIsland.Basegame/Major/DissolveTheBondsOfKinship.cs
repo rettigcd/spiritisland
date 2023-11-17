@@ -28,7 +28,7 @@ public class DissolveTheBondsOfKinship {
 			.DoN();
 
 		static int GetAttackDamageFrom( TargetSpaceCtx ctx, HumanTokenClass cc ) {
-			return ctx.Tokens.OfHumanClass( cc ).Sum( t => ctx.Tokens[t] * t.Attack );
+			return ctx.Tokens.HumanOfTag( cc ).Sum( t => ctx.Tokens[t] * t.Attack );
 		}
 
 		static async Task ExplorersAndCityTownsDamageEachOther( TargetSpaceCtx ctx ) {

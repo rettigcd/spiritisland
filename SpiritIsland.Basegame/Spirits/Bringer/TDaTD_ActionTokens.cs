@@ -20,7 +20,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		if(reason != RemoveReason.Destroyed || token == BringerPresence)
 			return await base.Remove( token, count, reason );
 
-		if(token.Class.Category == TokenCategory.Invader)
+		if(token.HasTag(TokenCategory.Invader))
 			await DestroyNInvaders( token.AsHuman(), count );
 
 		return new TokenRemovedArgs(token,reason,this, 0); // nothing removed
@@ -39,14 +39,14 @@ public class TDaTD_ActionTokens : SpaceState {
 	async Task Destroy1Invader( HumanToken invaderToken ) {
 
 		// for everything BUT normal invaders, we do nothing
-		if(invaderToken.Class.Category != TokenCategory.Invader) return; 
-		if(invaderToken.Class.Variant != TokenVariant.Default) return; 
+		if(!invaderToken.HumanClass.HasTag(TokenCategory.Invader)) return; 
+		if(invaderToken.HumanClass.Variant != TokenVariant.Default) return; 
 		
 		// Normal Invaders - Push
 
 		// Replace destroyed invader with the dreaming (non-dream-damaged) version.
 		var newToken = invaderToken
-			.SwitchClass( ToggleDreaming( invaderToken.Class ) ) // make dreaming
+			.SwitchClass( ToggleDreaming( invaderToken.HumanClass ) ) // make dreaming
 			.AddDamage( 0, -invaderToken.DreamDamage ); // remove nightmare damage
 		Adjust( invaderToken, -1 );
 		Adjust( newToken, 1 );
@@ -58,10 +58,10 @@ public class TDaTD_ActionTokens : SpaceState {
 		TDaTD_ActionTokens.RecordSpaceWithDreamers( this );
 
 		// Add fear
-		gameState.Fear.AddDirect( new FearArgs( newToken.Class.FearGeneratedWhenDestroyed ) { space = Space } );
+		gameState.Fear.AddDirect( new FearArgs( newToken.HumanClass.FearGeneratedWhenDestroyed ) { space = Space } );
 
 		// Push towns and explorers
-		if(newToken.Class != DreamingCity) {
+		if(newToken.HumanClass != DreamingCity) {
 			var options = Adjacent;
 			Space destination = await ActionScope.Current.Owner.Select( A.Space.ToPushToken( newToken, Space, options.Downgrade(), Present.Always ) );
 			await MoveTo( newToken, destination ); // there is no Push(Token), so this will have to do.
@@ -99,9 +99,8 @@ public class TDaTD_ActionTokens : SpaceState {
 	}
 
 	static void WakeUpDreamers( SpaceState spaceState ) {
-		var dreamers = spaceState.OfCategory( TokenCategory.Invader )
-			.Cast<HumanToken>()
-			.Where( x => x.Class.Variant == TokenVariant.Dreaming )
+		var dreamers = spaceState.HumanOfTag( TokenCategory.Invader )
+			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
 			.ToArray();
 		foreach(HumanToken dreamer in dreamers)
 			spaceState.ReplaceAllWith( dreamer, ToggleDreamer( dreamer ) );
@@ -126,10 +125,10 @@ public class TDaTD_ActionTokens : SpaceState {
 	static public readonly HumanTokenClass DreamingTown = new HumanTokenClass( "Town_Dreaming", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
 	static public readonly HumanTokenClass DreamingExplorer = new HumanTokenClass( "Explorer_Dreaming", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
 
-	static public HumanToken ToggleDreamer( HumanToken token ) => token.SwitchClass( ToggleDreaming( token.Class ) );
+	static public HumanToken ToggleDreamer( HumanToken token ) => token.SwitchClass( ToggleDreaming( token.HumanClass ) );
 
 	static public HumanTokenClass ToggleDreaming( HumanTokenClass tokenClass ) {
-		if(tokenClass.Category == TokenCategory.Invader) {
+		if(tokenClass.HasTag(TokenCategory.Invader)) {
 			if(tokenClass == Human.Explorer) return DreamingExplorer;
 			if(tokenClass == Human.Town) return DreamingTown;
 			if(tokenClass == Human.City) return DreamingCity;

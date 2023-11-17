@@ -19,7 +19,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 		var gs = GameState.Current;
 
 		// If we are saving a dahan
-		if(ht.Class.Category == TokenCategory.Dahan && Ocean.ShouldSaveDahan() && args.To.Has( _spirit.Presence.Token )) {
+		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && args.To.Has( _spirit.Presence.Token )) {
 			var moveOptions = gs.Island.Boards
 				.Select( x => x.Ocean )
 				.Tokens()
@@ -45,7 +45,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 		await args.To.Space.Tokens.Invaders.DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
-		if(args.Added.Class.Category == TokenCategory.Invader)
+		if(args.Added.HasTag(TokenCategory.Invader))
 			drownedInvaderHealthAccumulator += (ht.FullHealth * args.Count);
 		CashInDrownedHealthForEnergy( gs );
 

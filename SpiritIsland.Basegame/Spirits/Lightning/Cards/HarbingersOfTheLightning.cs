@@ -15,7 +15,7 @@ public class HarbingersOfTheLightning {
 			.DoUpToN();
 	}
 
-	static TokenMover AddFearIfPushedTo( TokenMover mover, int fear, IEntityClass[] classes ) {
+	static TokenMover AddFearIfPushedTo( TokenMover mover, int fear, ITokenClass[] classes ) {
 		bool addedFear = false;
 		return mover
 			.Track( moved => {

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresenceToken : IToken, IEntityClass
+public class SpiritPresenceToken : IToken, ITokenClass
 	, ITrackMySpaces 
 	, IHandleTokenRemovedAsync
 	, IAppearInSpaceAbreviation
@@ -36,13 +36,14 @@ public class SpiritPresenceToken : IToken, IEntityClass
 	/// <summary> Used when displaying [TokenName on Space] </summary>
 	public string Text { get; protected set; }
 	Img IToken.Img => Img.Icon_Presence;
-	public IEntityClass Class => this;
+	ITokenClass IToken.Class => this;
 
 	#endregion
 
 	#region TokenClass parts
-	string IEntityClass.Label => "Presence";
-	TokenCategory IEntityClass.Category => TokenCategory.Presence;
+	string ITokenClass.Label => "Presence";
+	
+	public bool HasTag( ITag tag ) => tag == this || tag == TokenCategory.Presence; // for both class and for token.
 
 	#endregion
 

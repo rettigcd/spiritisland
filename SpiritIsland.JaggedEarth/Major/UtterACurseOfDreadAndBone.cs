@@ -41,7 +41,7 @@ public class UtterACurseOfDreadAndBone {
 	//	await ctx.Target(space).Tokens.Add( token,1);
 	//}
 
-	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, IEntityClass tokenClass, int range ) {
+	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, ITokenClass tokenClass, int range ) {
 		var space = await ctx.SelectAsync( new A.Space( $"Add {tokenClass.Label}", ctx.Range( range ), Present.Always ) );
 		await ctx.Target(space).Tokens.AddDefault(tokenClass, 1);
 	}

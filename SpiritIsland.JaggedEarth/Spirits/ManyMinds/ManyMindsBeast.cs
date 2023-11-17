@@ -15,7 +15,8 @@ public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemovedAsyn
 
 	public Img Img => Img.Beast;
 
-	public IEntityClass Class => Token.Beast;
+	ITokenClass IToken.Class => Token.Beast;
+	bool IToken.HasTag( ITag tag ) => Token.Beast.HasTag( tag );
 
 	public string Text => "SS-Beast";
 
@@ -44,5 +45,4 @@ public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemovedAsyn
 			throw new InvalidOperationException( "MM SS Beast should never be UsedUp nor .None" );
 
 	}
-
 }

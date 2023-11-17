@@ -65,7 +65,7 @@ class StopPresenceDestructionFromBlightOrEvents : BaseModEntity, IModifyRemoving
 	}
 
 	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
-		if( args.Token.Class.Category == TokenCategory.Presence
+		if( args.Token.HasTag(TokenCategory.Presence)
 			&& 1 <= _spirit.Energy
 			&& await _spirit.UserSelectsFirstText( "Blight Destroying Presence", "Pay 1 energy to save", "Pass" )
 		){

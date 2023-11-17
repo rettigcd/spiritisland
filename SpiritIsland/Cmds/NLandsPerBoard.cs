@@ -18,7 +18,7 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 	#region Configure
 
 	public NLandsPerBoard Which(TargetSpaceCtxFilter spaceFilter ) { _landCriteria = spaceFilter; return this; }
-	public NLandsPerBoard ByPickingToken( params IEntityClass[] tokenClasses ) { 
+	public NLandsPerBoard ByPickingToken( params ITokenClass[] tokenClasses ) { 
 		_tokenFactory = GetTokensMatchingClass;
 		_firstPickTokenClasses = tokenClasses; 
 		return this;
@@ -69,7 +69,7 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 
 	#region private
 
-	IEnumerable<ISpaceEntity> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyClass( _firstPickTokenClasses );
+	IEnumerable<IToken> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyTag( _firstPickTokenClasses );
 
 	async Task<TargetSpaceCtx> PickSpaceBySelectingToken( SelfCtx ctx, TargetSpaceCtx[] spaceOptions ) {
 
@@ -92,7 +92,7 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;
 	TargetSpaceCtxFilter _landCriteria;
 	readonly int _count;
-	IEntityClass[] _firstPickTokenClasses;
+	ITokenClass[] _firstPickTokenClasses;
 	Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> _tokenFactory;
 
 	#endregion

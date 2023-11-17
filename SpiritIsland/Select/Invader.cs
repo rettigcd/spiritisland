@@ -28,9 +28,9 @@ public static class Invader {
 	public static A.SpaceToken ForBadlandDamage(int remainingDamage, IEnumerable_Space invaders )
 		=> new A.SpaceToken( $"Select invader to apply badland damage ({remainingDamage} remaining)", invaders, Present.Done );
 
-	public static A.SpaceToken ForStrife( SpaceState tokens, params IEntityClass[] groups )
+	public static A.SpaceToken ForStrife( SpaceState tokens, params ITokenClass[] groups )
 		=> new A.SpaceToken( "Add Strife", 
-			((groups!=null && 0<groups.Length) ? tokens.OfAnyClass(groups).Cast<IToken>() : tokens.InvaderTokens()).On(tokens.Space),
+			((groups!=null && 0<groups.Length) ? (IEnumerable<IToken>)tokens.OfAnyTag(groups) : tokens.InvaderTokens()).On(tokens.Space),
 			Present.Always 
 		);
 

@@ -41,7 +41,7 @@ public partial class SweepIntoTheSea {
 
 	static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params HumanTokenClass[] groups ) {
 		while(ctx.Tokens.HasAny( groups ))
-			await ctx.Move( ctx.Tokens.OfAnyHumanClass( groups ).First(), ctx.Space, destination.Space );
+			await ctx.Move( ctx.Tokens.HumanOfAnyTag( groups ).First(), ctx.Space, destination.Space );
 	}
 
 	#region DistanceFromOceanCalculator

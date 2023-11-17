@@ -39,8 +39,8 @@ public class HazardsSpreadAcrossTheIsland{
 			: candidates;
 	}
 
-	static readonly IEntityClass[] InterestedTokenTypes = new IEntityClass[] { Token.Badlands, Token.Beast, Token.Disease, Token.Wilds };
-	static bool IsTokenOfInterest( ISpaceEntity token ) {
+	static readonly ITokenClass[] InterestedTokenTypes = new ITokenClass[] { Token.Badlands, Token.Beast, Token.Disease, Token.Wilds };
+	static bool IsTokenOfInterest( IToken token ) {
 		return InterestedTokenTypes.Contains( token.Class )
 			|| token is HumanToken ht && 0<ht.StrifeCount;
 	}

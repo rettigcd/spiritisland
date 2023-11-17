@@ -52,36 +52,47 @@ public class ManageInternalPoints {
 
 	public PointF GetPointFor( IToken token ) {
 
-		if(_dict.ContainsKey(token)) return _dict[token];
+		if(_dict.ContainsKey( token )) return _dict[token];
 
 		// This is called when we are requesting location for a token that is not currently on this space.
 
 		// Find a Random fresh / unused spot
-		bool assigned = token.Class.Category switch {
-			TokenCategory.Dahan or
-			TokenCategory.Presence => _randomInternal.AssignRightSlot( token ),
-			TokenCategory.Blight or
-			TokenCategory.Invader => _randomInternal.AssignLeftSlot( token ),
-			_ => _randomInternal.AssignNextSlot( token ),
-		}
-			|| _border.AssignNextSlot( token );
+		bool assigned = AssignLeftRight( token ) || _border.AssignNextSlot( token );
 
-		return assigned ? _dict[token] : throw new Exception("Unable find open slot.");
+		//bool assigned = token.Class.Category switch {
+		//	TokenCategory.Dahan or
+		//	TokenCategory.Presence => _randomInternal.AssignRightSlot( token ),
+		//	TokenCategory.Blight or
+		//	TokenCategory.Invader => _randomInternal.AssignLeftSlot( token ),
+		//	_ => _randomInternal.AssignNextSlot( token ),
+		//}
+		//	|| _border.AssignNextSlot( token );
+
+		return assigned ? _dict[token] : throw new Exception( "Unable find open slot." );
+	}
+
+	bool AssignLeftRight( IToken token ) {
+		ITag[] rightTags = new ITag[] { TokenCategory.Incarna, TokenCategory.Dahan, TokenCategory.Presence };
+		ITag[] leftTags = new ITag[] { Token.Blight, TokenCategory.Invader };
+		return (token.HasAny( rightTags ) ? _randomInternal.AssignRightSlot( token )
+			: token.HasAny( leftTags ) ? _randomInternal.AssignLeftSlot( token )
+			: _randomInternal.AssignNextSlot( token )
+			);
 	}
 
 	public ManageInternalPoints Init( SpaceState allTokens ) {
 
 		// invader groups
 		var groups = allTokens.OfTypeHuman()
-			.Where(x=>x.Class.Category == TokenCategory.Invader)
-			.GroupBy(x=>x.Class)
+			.Where(x=>x.HumanClass.HasTag(TokenCategory.Invader))
+			.GroupBy(x=>x.HumanClass)
 			.ToArray();
 		foreach(var group in groups)
 			InitInvaderGroup(group.Key,group,allTokens);
 
 		// non-invaders
 		var nonInvaders = allTokens.OfType<IToken>()
-			.Where( x => x.Class.Category != TokenCategory.Invader );
+			.Where( x => !x.HasTag(TokenCategory.Invader) );
 		foreach(IToken nonInvader in nonInvaders )
 			AssignPointFor(nonInvader,allTokens);
 
@@ -95,20 +106,14 @@ public class ManageInternalPoints {
 
 	void AssignPointFor( IToken token, SpaceState spaceState ) {
 
-		if(token.Class.Category == TokenCategory.Invader)
+		if(token.HasTag(TokenCategory.Invader))
 			throw new Exception( "invaders not handled here" );
 
 		// Already assigned
 		if(_dict.ContainsKey( token )) return;
 
 		// -- Internal --
-		bool assigned = token.Class.Category switch {
-			TokenCategory.Dahan or
-			TokenCategory.Presence => _randomInternal.AssignRightSlot(token),
-			TokenCategory.Blight or
-			TokenCategory.Invader => _randomInternal.AssignLeftSlot(token),
-			_ => false, // fall through
-		} || AssignOldSlot( token, spaceState );
+		bool assigned = AssignLeftRight( token ) || AssignOldSlot( token, spaceState );
 
 		if(!assigned)
 			throw new InvalidOperationException( $"Ran out of slots for tokens." );
@@ -123,7 +128,7 @@ public class ManageInternalPoints {
 
 		HumanToken[] GetRegisteredTokens() => _dict.Keys
 			.OfType<HumanToken>()
-			.Where( x => x.Class == tokenClass )
+			.Where( x => x.HumanClass == tokenClass )
 			.ToArray();
 
 		// Order: damaged first

@@ -11,14 +11,14 @@ public static partial class Cmd {
 	// Gather
 	static public SpaceCmd GatherUpToNDahan( int count ) => new SpaceCmd( $"Gather up to {count} Dahan", ctx => ctx.GatherUpToNDahan( count ) );
 	static public SpaceCmd GatherUpToNExplorers( int count ) => new SpaceCmd( $"Gather up to {count} Explorers", ctx => ctx.GatherUpTo(count,Human.Explorer));
-	static public SpaceCmd GatherUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceCmd( $"Gather up to {count} " + classes.Select(c=>c.Label).Join("/"), ctx => ctx.GatherUpTo( count, classes ) );
+	static public SpaceCmd GatherUpToNInvaders( int count, params ITokenClass[] classes ) => new SpaceCmd( $"Gather up to {count} " + classes.Select(c=>c.Label).Join("/"), ctx => ctx.GatherUpTo( count, classes ) );
 
 	// Push
 	static public SpaceCmd PushUpToNDahan( int count ) => new SpaceCmd( $"Push up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) ).OnlyExecuteIf(ctx=>ctx.Dahan.Any );
 	static public SpaceCmd PushNDahan(int count ) => new SpaceCmd( $"Push {count} dahan", ctx => ctx.PushDahan( count ) ).OnlyExecuteIf( ctx=>ctx.Dahan.Any );
 	static public SpaceCmd PushUpToNExplorers( int count ) => new SpaceCmd( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Human.Explorer)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Explorer ) );
 	static public SpaceCmd PushUpToNTowns( int count ) => new SpaceCmd( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Human.Town)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Town ) );
-	static public SpaceCmd PushUpToNInvaders( int count, params IEntityClass[] classes ) => new SpaceCmd( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Tokens.HasAny( classes ) );
+	static public SpaceCmd PushUpToNInvaders( int count, params ITokenClass[] classes ) => new SpaceCmd( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Tokens.HasAny( classes ) );
 	static public SpaceCmd PushExplorersOrTowns( int count ) => new SpaceCmd( $"Push {count} explorers or towns", ctx => ctx.Push( count, Human.Explorer_Town ) ).OnlyExecuteIf( ctx=>ctx.Tokens.HasAny( Human.Explorer_Town ) );
 
 	// -- Add ---
@@ -38,7 +38,7 @@ public static partial class Cmd {
 	// -- Screwy Strife Stuff --
 	static public BaseCmd<GameCtx> StrifePenalizesHealth => new BaseCmd<GameCtx>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
 	static public SpaceCmd EachStrifeDamagesInvader => new SpaceCmd( "Invaders take 1 damage per strife", async ctx=>{ 
-		var tokens = ctx.Tokens.OfAnyHumanClass( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
+		var tokens = ctx.Tokens.HumanOfAnyTag( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
 		foreach(var token in tokens) {
 			int count = ctx.Tokens[token];
 			while(0 < count--)
@@ -55,14 +55,14 @@ public static partial class Cmd {
 	static public SpaceCmd RemoveCities(int count) => RemoveUpToNTokens(count,Human.City);
 	static public SpaceCmd RemoveInvaders(int count) => RemoveUpToNTokens(count,Human.Invader);
 
-	static public SpaceCmd RemoveUpToNTokens(int count,params IEntityClass[] tokenClasses) {
-		Func<IEntityClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
+	static public SpaceCmd RemoveUpToNTokens(int count,params ITokenClass[] tokenClasses) {
+		Func<ITokenClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
 		return new SpaceCmd($"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast(", "," or "),
 			ctx => new TokenRemover(ctx).AddGroup(count, tokenClasses).RemoveUpToN()
 		).OnlyExecuteIf( x => x.Tokens.HasAny(tokenClasses));
 	}
-	static public SpaceCmd RemoveNTokens( int count, params IEntityClass[] tokenClasses ) {
-		Func<IEntityClass, string> selector = count == 1 ? t => t.Label : t => t.Label + "s";
+	static public SpaceCmd RemoveNTokens( int count, params ITokenClass[] tokenClasses ) {
+		Func<ITokenClass, string> selector = count == 1 ? t => t.Label : t => t.Label + "s";
 		return new SpaceCmd( $"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast( ", ", " or " ),
 			ctx => new TokenRemover( ctx ).AddGroup( count, tokenClasses ).RemoveN()
 		).OnlyExecuteIf( x => x.Tokens.HasAny( tokenClasses ) );

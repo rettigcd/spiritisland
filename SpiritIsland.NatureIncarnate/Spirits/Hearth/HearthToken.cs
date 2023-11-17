@@ -64,7 +64,7 @@ public class HearthToken : SpiritPresenceToken
 
 	const int _deltaHealth = 4;
 
-	static bool BonusAppliesToThis(HumanToken token) => token.Class.Category == TokenCategory.Dahan;
+	static bool BonusAppliesToThis(HumanToken token) => token.HumanClass.HasTag(TokenCategory.Dahan);
 
 	void Fortify_AddedPresence( ITokenAddedArgs args ) {
 		// Adding presence where there wasn't any before.
@@ -73,8 +73,8 @@ public class HearthToken : SpiritPresenceToken
 	}
 
 	public static void GrantHealthBoost( SpaceState to ) {
-		foreach(ISpaceEntity token in to.OfCategory( TokenCategory.Dahan ).ToArray()) {
-			to.Adjust( ((HumanToken)token).AddHealth( _deltaHealth ), to[token] );
+		foreach(HumanToken token in to.HumanOfTag(TokenCategory.Dahan).ToArray()) {
+			to.Adjust( token.AddHealth( _deltaHealth ), to[token] );
 			to.Init( token, 0 );
 		}
 	}
@@ -102,8 +102,8 @@ public class HearthToken : SpiritPresenceToken
 	async Task Foritfy_RemovedPresenceAsync( ITokenRemovedArgs args ) {
 		// Removing Last Presence
 		if(args.Removed == this && args.From[this] == 0)
-			foreach(ISpaceEntity token in args.From.OfCategory( TokenCategory.Dahan ).ToArray())
-				await args.From.AdjustHealthOf( (HumanToken)token, -_deltaHealth, args.From[token] );
+			foreach(HumanToken token in args.From.HumanOfTag(TokenCategory.Dahan).ToArray())
+				await args.From.AdjustHealthOf( token, -_deltaHealth, args.From[token] );
 	}
 
 	#endregion Fortify Heart and Hearth

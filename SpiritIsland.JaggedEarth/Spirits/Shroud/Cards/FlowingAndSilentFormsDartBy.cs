@@ -21,7 +21,6 @@ public class FlowingAndSilentFormsDartBy {
 
 
 	class PushInsteadOfDestroy : IModifyRemovingTokenAsync, IEndWhenTimePasses {
-		public IEntityClass Class => ActionModTokenClass.Mod;
 
 		public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
 			if( args.Mode == RemoveMode.Test

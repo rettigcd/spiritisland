@@ -27,7 +27,9 @@ public class ObserveWorldMod : ISpaceEntity
 {
 	string _tokenSummary;
 
-	public IEntityClass Class => Token.Element;
+	ITokenClass IToken.Class => Token.Element;
+
+	public bool HasTag(ITag tag) => Token.Element.HasTag(tag);
 	public string Text => ObserveTheEverChangingWorld.Name;
 
 	public Img Img => Token.Element.Img;

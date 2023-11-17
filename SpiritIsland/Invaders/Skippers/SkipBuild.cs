@@ -3,12 +3,12 @@
 /// <summary> Stops either 1 or ALL builds. </summary>
 public class SkipBuild : BaseModEntity, IEndWhenTimePasses, ISkipBuilds {
 
-	readonly IEntityClass[] _stoppedClasses;
+	readonly ITokenClass[] _stoppedClasses;
 	readonly UsageDuration _duration;
 
 	static public SkipBuild Default( string label ) => new SkipBuild( label, UsageDuration.SkipOneThisTurn );
 	
-	public SkipBuild( string label, UsageDuration duration, params IEntityClass[] stoppedTokenClasses ):base() {
+	public SkipBuild( string label, UsageDuration duration, params ITokenClass[] stoppedTokenClasses ):base() {
 		Text = label;
 		_duration = duration;
 
@@ -21,7 +21,7 @@ public class SkipBuild : BaseModEntity, IEndWhenTimePasses, ISkipBuilds {
 
 	public string Text { get; }
 
-	bool Stops( IEntityClass buildClass ) => _stoppedClasses.Contains( buildClass );
+	bool Stops( ITokenClass buildClass ) => _stoppedClasses.Contains( buildClass );
 
 	public virtual Task<bool> Skip( SpaceState space ) {
 		if( !Stops( BuildEngine.InvaderToAdd.Value ) ) return Task.FromResult(false); // not stopped

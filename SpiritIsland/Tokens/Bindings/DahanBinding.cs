@@ -17,7 +17,7 @@ public sealed class DahanBinding {
 	#endregion
 
 	/// <summary> The non-frozes,non-dreaming Tokens of various health and damage.</summary>
-	public HumanToken[] NormalKeys => _tokens.OfHumanClass( Human.Dahan );
+	public HumanToken[] NormalKeys => _tokens.HumanOfTag( Human.Dahan );
 
 	public void Init( int count ) => _tokens.InitDefault( Human.Dahan, count );
 
@@ -124,7 +124,7 @@ public sealed class DahanBinding {
 		// we want the caller to know exactly how much damage they are doing before they call this method
 		// so that this method does not have to return any damage-used / damage-remaining results.
 		if(_tokens[originalToken] < tokenCountToReceiveDamage) 
-			throw new InvalidOperationException($"Can't damage {tokenCountToReceiveDamage} because there are only {_tokens[originalToken]} available {originalToken.Class.Label}.");
+			throw new InvalidOperationException($"Can't damage {tokenCountToReceiveDamage} because there are only {_tokens[originalToken]} available {originalToken.HumanClass.Label}.");
 		if(originalToken.RemainingHealth < damagePerToken)
 			throw new InvalidOperationException( $"Can't damage apply {damagePerToken} because they only have {originalToken.RemainingHealth}." );
 

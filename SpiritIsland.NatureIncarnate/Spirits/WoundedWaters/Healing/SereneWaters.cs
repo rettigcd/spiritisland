@@ -38,7 +38,7 @@ class SereneWaters : IHealingCard {
 
 			// ...move any number of Invaders into your lands
 			const string invaderDowngradeKey = Name+":Invader downgrade";
-			if(args.Added.Class.Category == TokenCategory.Invader && !scope.ContainsKey( invaderDowngradeKey )) {
+			if(args.Added.HasTag(TokenCategory.Invader) && !scope.ContainsKey( invaderDowngradeKey )) {
 				// you may Downgrade 1 of those invaders (max once per Power)
 				await ReplaceInvader.DowngradeSelectedInvader( args.To, (HumanToken)args.Added );
 				scope[invaderDowngradeKey] = true;
@@ -46,7 +46,7 @@ class SereneWaters : IHealingCard {
 
 			// ...add or move any number o Dahan into one of your lands, you may Downgrade 1 Invader there (max oncer per power)
 			const string dahanDowngradeKey = Name + ":Dahan cause downgrade";
-			if(args.Added.Class.Category == TokenCategory.Dahan && !scope.ContainsKey( dahanDowngradeKey )) {
+			if(args.Added.HasTag(TokenCategory.Dahan) && !scope.ContainsKey( dahanDowngradeKey )) {
 				// you may Downgrade 1 of those invaders (max once per Power)
 				await ReplaceInvader.Downgrade1( _spirit, args.To, Present.Done, Human.Invader );
 				scope[dahanDowngradeKey] = true;

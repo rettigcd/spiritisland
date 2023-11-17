@@ -66,7 +66,7 @@ class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 	}
 
 	static void MakeDahanGoFast( SpaceState space, ref int remainingGoEarlyCount ) {
-		var goFastDahan = space.OfCategory( TokenCategory.Dahan ).Cast<HumanToken>()
+		var goFastDahan = space.HumanOfTag( TokenCategory.Dahan )
 			// since Invaders kill Dahan with least health first, make them attack before they are destroyed.
 			.OrderBy( x => x.RemainingHealth )
 			.First();
@@ -78,7 +78,7 @@ class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 
 	static void RestoreDahanSpeed( SpaceState space ) {
 		ActionScope.Current.AtEndOfThisAction( scope => {
-			var tokensToRestore = space.OfCategory( TokenCategory.Dahan ).Cast<HumanToken>()
+			var tokensToRestore = space.HumanOfTag(TokenCategory.Dahan)
 				.Where( h => h.RavageOrder != RavageOrder.DahanTurn )
 				.ToArray();
 			foreach(var token in tokensToRestore) {

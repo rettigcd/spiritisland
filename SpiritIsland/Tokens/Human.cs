@@ -15,6 +15,6 @@ public static class Human {
 	static public readonly HumanTokenClass Dahan = new HumanTokenClass( "Dahan", TokenCategory.Dahan, 0, Img.Dahan, 2 );
 
 	// Helper
-	static public IEntityClass[] Plus( this IEnumerable<IEntityClass> original, params IEntityClass[] additional )
+	static public ITokenClass[] Plus( this IEnumerable<ITokenClass> original, params ITokenClass[] additional )
 		=> original.Concat( additional ).ToArray();
 }

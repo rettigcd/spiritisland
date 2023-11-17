@@ -130,7 +130,7 @@ public class AbsoluteStasis_Tests {
 		await destination.When_Exploring();
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfHumanClass(Human.Explorer).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].HumanOfTag(Human.Explorer).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -151,7 +151,7 @@ public class AbsoluteStasis_Tests {
 		await destination.When_Exploring();
 
 		//  Then: no explorers in Jungle spaces.
-		cfg.GameState.Tokens[destination].OfHumanClass( Human.Explorer ).Length.ShouldBe( 0 );
+		cfg.GameState.Tokens[destination].HumanOfTag( Human.Explorer ).Length.ShouldBe( 0 );
 	}
 
 	// Invaders Don't Build
@@ -270,8 +270,8 @@ public class AbsoluteStasis_Tests {
 		cfg.Presence.SacredSites.Select( x => x.Space.Text ).Join( "," ).ShouldBe( "A8" );
 	}
 
-	void Assert_SpaceHasCountTokens( Space space, IEntityClass tokenClass, int expectedCount ) {
-		cfg.GameState.Tokens[space].OfClass( tokenClass ).Length.ShouldBe( expectedCount );
+	void Assert_SpaceHasCountTokens( Space space, ITokenClass tokenClass, int expectedCount ) {
+		cfg.GameState.Tokens[space].OfTag( tokenClass ).Length.ShouldBe( expectedCount );
 	}
 
 }

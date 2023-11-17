@@ -28,7 +28,7 @@ public class LayPathsTheyCannotHelpButWalk {
 		await pusher.DoUpToN();
 	}
 
-	static void AddHalf( TokenMover pusher, SpaceState tokens, params IEntityClass[] groups ) {
+	static void AddHalf( TokenMover pusher, SpaceState tokens, params ITokenClass[] groups ) {
 		int count = tokens.SumAny(groups) / 2; // half rounded down.
 		pusher.AddGroup(count,groups);
 	}

@@ -2,6 +2,8 @@
 
 public interface IToken : ISpaceEntity, IOption {
 	Img Img { get; }
+	ITokenClass Class { get; } // Temporary Class to See if we can move off of ISpaceEntity
+	bool HasTag(ITag tag);
 }
 
 public static class ITokenExtensions {

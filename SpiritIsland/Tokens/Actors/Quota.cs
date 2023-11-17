@@ -14,7 +14,7 @@ public class Quota {
 		_remainingTypes = null; // recalc next time neede
 	}
 
-	public IEntityClass[] RemainingTypes => _remainingTypes ??= CalcRemainingTypes();
+	public ITokenClass[] RemainingTypes => _remainingTypes ??= CalcRemainingTypes();
 
 	public string RemainingTokenDescriptionOn( SpaceState[] sourceSpaces ) => _beVerbose 
 		? _sharedGroupCounts.Select( x => x.VerboseString( sourceSpaces ).ToString() ).Join( "/" )
@@ -22,12 +22,12 @@ public class Quota {
 
 	#region configure
 
-	public Quota AddGroup( int count, params IEntityClass[] classes ) {
+	public Quota AddGroup( int count, params ITokenClass[] classes ) {
 		_sharedGroupCounts.Add( new QuotaGroup( count, classes ) );
 		return this;
 	}
 
-	public Quota AddAll( params IEntityClass[] classes ) {
+	public Quota AddAll( params ITokenClass[] classes ) {
 		_sharedGroupCounts.Add( new QuotaGroup( classes ) );
 		return this;
 	}
@@ -39,25 +39,25 @@ public class Quota {
 
 	#region private
 
-	IEntityClass[] CalcRemainingTypes() => _sharedGroupCounts
+	ITokenClass[] CalcRemainingTypes() => _sharedGroupCounts
 		.SelectMany( q => q.Classes )
 		.Distinct()
 		.ToArray();
 
 	readonly List<QuotaGroup> _sharedGroupCounts = new(); // the # we push from each group
-	IEntityClass[] _remainingTypes;
+	ITokenClass[] _remainingTypes;
 	bool _beVerbose = false;
 
 	class QuotaGroup {
 
 		/// <summary> Selects as many tokens of given classes as possible - no max. </summary>
-		public QuotaGroup( params IEntityClass[] classes ) {
+		public QuotaGroup( params ITokenClass[] classes ) {
 			_count = int.MaxValue;
 			Classes = classes;
 		}
 
 		/// <summary> Selects up to specified # of tokens. </summary>
-		public QuotaGroup( int count, params IEntityClass[] classes ) {
+		public QuotaGroup( int count, params ITokenClass[] classes ) {
 			_count = count;
 			Classes = classes;
 		}
@@ -70,9 +70,9 @@ public class Quota {
 		}
 
 		public bool HasMore => 0 < _count;
-		public bool Contains( IEntityClass @class ) => Classes.Contains( @class );
+		public bool Contains( ITokenClass @class ) => Classes.Contains( @class );
 		public void UsedOne() { if(_count != int.MaxValue) --_count; }
-		public IEntityClass[] Classes { get; private set; }
+		public ITokenClass[] Classes { get; private set; }
 
 		public override string ToString() => $"{NumStr} {ClassLabelsStr}";
 		string NumStr => _count == int.MaxValue ? "All" : _count.ToString();

@@ -25,7 +25,7 @@ public class AngryBears {
 			// destroy 1 explorer/town in an adjacent land with beast
 			var tokens = ctx.Adjacent
 				.Where(x=>x.Beasts.Any)
-				.SelectMany( x=>x.SpaceTokensOfClass(Human.Explorer) )
+				.SelectMany( x=>x.SpaceTokensOfTag(Human.Explorer) )
 				.ToArray();
 			var st = await ctx.SelectAsync(new A.SpaceToken("Destroy Explorer",tokens, Present.Always));
 			if(st != null)

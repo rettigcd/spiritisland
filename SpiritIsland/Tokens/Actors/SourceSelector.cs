@@ -38,9 +38,9 @@ public class SourceSelector {
 	#region public Config
 
 	/// <summary> Specifies 1 or more tokens that may be selected - must be called at least once for GetSource to present any results.</summary>
-	public SourceSelector AddGroup( int count, params IEntityClass[] classes ) { _quota.AddGroup( count, classes ); return this; }
+	public SourceSelector AddGroup( int count, params ITokenClass[] classes ) { _quota.AddGroup( count, classes ); return this; }
 
-	public SourceSelector AddAll( params IEntityClass[] classes ) { _quota.AddAll( classes ); return this; }
+	public SourceSelector AddAll( params ITokenClass[] classes ) { _quota.AddAll( classes ); return this; }
 
 	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
 
@@ -104,7 +104,7 @@ public class SourceSelector {
 
 	protected async Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) {
 
-		IEnumerable<IToken> tokens = sourceSpaceState.OfAnyClass( _quota.RemainingTypes ).Cast<IToken>();
+		IEnumerable<IToken> tokens = sourceSpaceState.OfAnyTag( _quota.RemainingTypes );
 
 		// 'Removable' Filter on Tokens
 		if(_removeReason != RemoveReason.None)
@@ -127,7 +127,7 @@ public class SourceSelector {
 
 	#region private 
 
-	public IEntityClass[] RemainingTypes => _quota.RemainingTypes;
+	public ITokenClass[] RemainingTypes => _quota.RemainingTypes;
 	Quota _quota = new Quota();
 
 	Func<SpaceState, bool> _filterSpace;

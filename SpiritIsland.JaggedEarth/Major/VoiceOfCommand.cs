@@ -26,12 +26,12 @@ public class VoiceOfCommand {
 //		cfg.IsDefender = (token) => token.Class.IsOneOf( Human.Explorer, Human.Dahan);
 		ctx.Tokens.Init(new RavageConfigToken(
 			space => {
-				foreach(HumanToken orig in space.OfHumanClass( Human.Explorer ).ToArray()) {
+				foreach(HumanToken orig in space.HumanOfTag( Human.Explorer ).ToArray()) {
 					AdjustRavageSide( space, orig, RavageSide.Defender, RavageOrder.DahanTurn );
 				}
 			},
 			space => {
-				foreach(HumanToken orig in space.OfAnyHumanClass( Human.Explorer ).ToArray())
+				foreach(HumanToken orig in space.HumanOfAnyTag( Human.Explorer ).ToArray())
 					AdjustRavageSide( space, orig, RavageSide.Attacker, RavageOrder.InvaderTurn );
 			}
 		),1);

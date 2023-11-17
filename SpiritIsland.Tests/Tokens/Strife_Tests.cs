@@ -80,7 +80,7 @@ public class Strife_Tests {
 		// Given: 1 town and 1 strifed town
 		counts.Init( StdTokens.Town, 2);
 		await counts.Add1StrifeTo(StdTokens.Town).ShouldComplete("adding strife");
-		var strifedTown = (IToken)counts.OfHumanClass(Human.Town).Single( k => k != StdTokens.Town );
+		var strifedTown = (IToken)counts.HumanOfTag(Human.Town).Single( k => k != StdTokens.Town );
 		//  And: a destination
 		Space destination = space.Adjacent_Existing.First( IsInPlay );
 

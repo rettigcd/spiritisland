@@ -3,14 +3,23 @@
 /// <summary>
 /// Represents Ravage Damage done to Land.
 /// </summary>
-public class LandDamage : IToken, IHandleTokenAddedAsync {
+public class LandDamage 
+	: IToken	// this is only an IToken and not an ISpaceEntity because it needs to Trigger the Token Added events via Add(IToken)
+	, ITokenClass //
+	, IHandleTokenAddedAsync
+{
 
 	public static readonly LandDamage Token = new LandDamage();
 
 	#region Extra Token stuff we don't use
 	public Img Img => Img.None;
-	public IEntityClass Class => ActionModTokenClass.Mod;
+	ITokenClass IToken.Class => this;
+	public bool HasTag( ITag tag ) => tag == this;
+	string ITokenClass.Label => Text;
+
+
 	public string Text => "Land Damage";
+
 	#endregion
 
 	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
@@ -24,4 +33,5 @@ public class LandDamage : IToken, IHandleTokenAddedAsync {
 			await args.To.Blight.AddAsync( 1, AddReason.Ravage );
 
 	}
+
 }

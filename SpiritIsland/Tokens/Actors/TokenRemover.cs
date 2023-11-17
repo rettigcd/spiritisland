@@ -13,7 +13,7 @@ public sealed class TokenRemover {
 	}
 
 
-	public TokenRemover AddGroup(int count,params IEntityClass[] groups ) {
+	public TokenRemover AddGroup(int count,params ITokenClass[] groups ) {
 		_sourceSelector.AddGroup( count, groups );
 		return this;
 	}

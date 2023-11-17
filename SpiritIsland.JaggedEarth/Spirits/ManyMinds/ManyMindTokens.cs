@@ -32,7 +32,7 @@ class BeastSourceSelector : SourceSelector {
 		foreach(var group in RemainingTypes) {
 			int range = group == Token.Beast ? 2 : 1;
 			foreach(var space in _destination.Range( range )) // gather, not Range
-				foreach(var token in space.OfClass( group ).OfType<IToken>())
+				foreach(var token in space.OfTag( group ))
 					items.Add( token.On( space.Space ) );
 		}
 		return Task.FromResult( items.ToArray() );

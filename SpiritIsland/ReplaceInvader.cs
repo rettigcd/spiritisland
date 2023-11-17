@@ -8,14 +8,14 @@ static public class ReplaceInvader {
 		=> Downgrade1(ctx.Self,ctx.Tokens,present,groups);
 
 	public static async Task Downgrade1( Spirit spirit, SpaceState tokens, Present present, params HumanTokenClass[] groups ) {
-		HumanToken[] options = tokens.OfAnyHumanClass( groups );
+		HumanToken[] options = tokens.HumanOfAnyTag( groups );
 		await Downgrade1Token( spirit, tokens, present, options );
 	}
 
 	public static async Task DowngradeAll( TargetSpaceCtx ctx, params HumanTokenClass[] groups ) {
 
 		// downgrade any # of invaders
-		var invadersThatCanBeDowngraded = ctx.Tokens.OfAnyHumanClass( groups )
+		var invadersThatCanBeDowngraded = ctx.Tokens.HumanOfAnyTag( groups )
 			.ToDictionary( t => t, t => ctx.Tokens[t] )
 			.ToCountDict();
 
@@ -46,8 +46,8 @@ static public class ReplaceInvader {
 		tokens.Adjust( oldInvader, -1 );
 
 		// Add new
-		var newInvaderClass = oldInvader.Class == Human.City ? Human.Town
-			: oldInvader.Class == Human.Town ? Human.Explorer
+		var newInvaderClass = oldInvader.HumanClass == Human.City ? Human.Town
+			: oldInvader.HumanClass == Human.Town ? Human.Explorer
 			: null;
 		if(newInvaderClass != null)
 			await AddReplacementOrDestroy( tokens, oldInvader, newInvaderClass );
@@ -72,7 +72,7 @@ static public class ReplaceInvader {
 	public static async Task DisolveInvaderIntoExplorers( TargetSpaceCtx ctx, HumanTokenClass oldInvader, int replaceCount ) {
 
 		var tokens = ctx.Tokens;
-		var st = await ctx.Self.Select( An.Invader.ToReplace("disolve", tokens.OfHumanClass( oldInvader ).On(ctx.Space) ) );
+		var st = await ctx.Self.Select( An.Invader.ToReplace("disolve", tokens.HumanOfTag( oldInvader ).On(ctx.Space) ) );
 		if(st == null) return;
 		var tokenToRemove = st.Token.AsHuman();
 

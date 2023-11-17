@@ -88,8 +88,8 @@ public sealed class TokenMover {
 	public TokenMover RunAtMax(bool runAtMax) { _upToNPresent = runAtMax ? Present.Always : Present.Done; return this; }
 
 	// Config - Quota
-	public TokenMover AddGroup( int count, params IEntityClass[] classes ) { _sourceSelector.AddGroup( count, classes ); return this; }
-	public TokenMover AddAll( params IEntityClass[] classes ) { _sourceSelector.AddAll( classes ); return this; }
+	public TokenMover AddGroup( int count, params ITokenClass[] classes ) { _sourceSelector.AddGroup( count, classes ); return this; }
+	public TokenMover AddAll( params ITokenClass[] classes ) { _sourceSelector.AddAll( classes ); return this; }
 	public TokenMover UseQuota( Quota quota ) { _sourceSelector.UseQuota( quota ); return this; }
 
 	// Config - Source

@@ -3,9 +3,9 @@
 public class Gather1Token : SpiritAction {
 
 	readonly int _range;
-	readonly IEntityClass _tokenToGather;
+	readonly ITokenClass _tokenToGather;
 
-	public Gather1Token( int range, IEntityClass tokenToGather ):base( "Gather1Token") {
+	public Gather1Token( int range, ITokenClass tokenToGather ):base( "Gather1Token") {
 		_range = range;
 		_tokenToGather = tokenToGather;
 	}

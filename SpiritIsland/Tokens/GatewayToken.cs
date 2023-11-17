@@ -19,7 +19,6 @@ public class GatewayToken : ISpaceEntity, IHandleTokenRemoved {
 		_from.Init( this, 0 );
 		_to.Init( this, 0 );
 	}
-	public IEntityClass Class => Token.OpenTheWays;
 
 	public SpaceState GetLinked( SpaceState end ) => end == _from ? _to : end == _to ? _from : null; // doesn't link.
 	public void HandleTokenRemoved( ITokenRemovedArgs args ) {

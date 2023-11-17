@@ -8,7 +8,7 @@ public class Push1TownOrCityFromLands : SpiritAction {
 		var dahanOptions = ctx.Self.Presence.Spaces.Tokens()
 			.SelectMany( spaceState 
 				=> spaceState.InvaderTokens()
-					.Where(t=>t.Class != Human.Explorer)
+					.Where(t=>t.HumanClass != Human.Explorer)
 					.On(spaceState.Space)
 			);
 		var source = await ctx.SelectAsync( new A.SpaceToken( "Select town/city to push from land", dahanOptions, Present.Done ) );
