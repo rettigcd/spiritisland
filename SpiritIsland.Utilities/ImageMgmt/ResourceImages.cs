@@ -113,17 +113,17 @@ public class ResourceImages {
 	public void InitFearCard( IFearCard card ) {
 		string key = FearKey( card );
 		if(_cache.Contains( key )) return;
-		using Bitmap img = (Bitmap)FearCardImageManager.GetImage( card );
+		using Bitmap img = (Bitmap)FearCardImageBuilder.Build( card );
 		_cache.Add( key, img );
 	}
 
 	public async Task<Image> GetPowerCard( PowerCard card ) {
 		try {
-			ImageCache _cache = new ImageCache();
+			ImageDiskCache _cache = new ImageDiskCache();
 			string key = $"PowerCard\\{card.Name}.png";
 			if(_cache.Contains( key )) return _cache.Get( key );
 
-			Bitmap image = (Bitmap)await PowerCardImageManager.GetImage( card ); // don't dispose, we are returning it
+			Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card ); // don't dispose, we are returning it
 			_cache.Add( key, image );
 			return image;
 		} catch(Exception ex) {
@@ -191,7 +191,7 @@ public class ResourceImages {
 			= space.IsWetland ? Terrain.Wetland
 			: space.IsJungle ? Terrain.Jungle
 			: space.IsMountain ? Terrain.Mountain
-			: space.IsSand ? Terrain.Sand
+			: space.IsSand ? Terrain.Sands
 			: (space.IsOcean || space.IsDestroyed) ? Terrain.Ocean
 			: Terrain.None; // throw new ArgumentException( $"No terrain found for {space.Text}", nameof( space ) );
 		return UseTerrainBrush( terrain );
@@ -207,7 +207,7 @@ public class ResourceImages {
 			Terrain.Wetland => "wetlands",
 			Terrain.Jungle => "jungle",
 			Terrain.Mountain => "mountains",
-			Terrain.Sand => "sand",
+			Terrain.Sands => "sand",
 			Terrain.Ocean => "ocean",
 			Terrain.None => "none",
 			_ => throw new ArgumentException($"{terrain} not mapped"),
@@ -217,7 +217,7 @@ public class ResourceImages {
 			Terrain.Wetland => new HSL( 184, 40, 45 ),
 			Terrain.Jungle => new HSL( 144, 60, 40 ),
 			Terrain.Mountain => new HSL( 45, 10, 33 ),
-			Terrain.Sand => new HSL( 38, 50, 40 ),
+			Terrain.Sands => new HSL( 38, 50, 40 ),
 			_ => null
 		};
 
@@ -326,8 +326,8 @@ public class ResourceImages {
 		using Graphics graphics = Graphics.FromImage( bitmap );
 		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
-		using var cachedImageDrawer = new CachedImageDrawer();
-		new IconDrawer( graphics, cachedImageDrawer ).DrawTheIcon( icon, bounds );
+		using var imgCache = new ImgMemoryCache();
+		new IconDrawer( graphics, imgCache ).DrawTheIcon( icon, bounds );
 
 		_cache.Add( key, bitmap );
 		return bitmap;
@@ -347,12 +347,12 @@ public class ResourceImages {
 	}
 
 
-	readonly ImageCache _cache = new ImageCache();
+	readonly ImageDiskCache _cache = new ImageDiskCache();
 
 	#region private
 
 	public Image GetTokenImage( IToken token ) {
-		return token is HumanToken ht ? HealthTokenBuilder.GetHealthTokenImage( ht )
+		return token is HumanToken ht ? HumanTokenBuilder.Build( ht )
 			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast()
 			: GetImage( token.Img );
 	}
@@ -484,15 +484,16 @@ public class ResourceImages {
 		Img.Icon_Checkmark          => "icons.Checkmark.png",
 		Img.Icon_Play               => "icons.Play.png",
 
-		Img.Icon_Sand				=> "icons.Sandsland.png",
+		Img.Icon_Sands				=> "icons.Sandsland.png",
 		Img.Icon_Mountain			=> "icons.Mountainland.png",
 		Img.Icon_Jungle				=> "icons.Jungle.png",
 		Img.Icon_Wetland			=> "icons.Wetlandland.png",
 		Img.Icon_Spirit             => "icons.Spiriticon.png",
+		Img.Icon_Discard            => "icons.Discard1Card.png",
 
 		Img.Deck_Hand               => "hand.png",
-		Img.Deck_Played => "inplay.png",
-		Img.Deck_Discarded => "discard.png",
+		Img.Deck_Played             => "inplay.png",
+		Img.Deck_Discarded          => "discard.png",
 		Img.Deck_DaysThatNeverWere_Major => "major_inverted.png",
 		Img.Deck_DaysThatNeverWere_Minor => "minor_inverted.png",
 

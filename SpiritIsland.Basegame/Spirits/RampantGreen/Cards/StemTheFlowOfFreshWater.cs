@@ -6,8 +6,8 @@ public class StemTheFlowOfFreshWater {
 	[Instructions("1 Damage to 1 Town / City. If target land is Mountain / Sands, instead, 1 Damage to each Town / City."), Artist( Artists.JorgeRamos )]
 	static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 
-		// If target land is mountain or sand, 
-		if( ctx.IsOneOf( Terrain.Mountain, Terrain.Sand ) ) {
+		// If target land is mountain or sands, 
+		if( ctx.IsOneOf( Terrain.Mountain, Terrain.Sands ) ) {
 			// instead 1 damange to EACH town/city
 			await ctx.DamageEachInvader(1, Human.Town_City);
 		} else {

@@ -18,7 +18,7 @@ public class DevouringAnts {
 			await ctx.Dahan.Destroy(1);
 
 		// if target is J / S, +1 damage
-		if( ctx.IsOneOf( Terrain.Jungle, Terrain.Sand ) )
+		if( ctx.IsOneOf( Terrain.Jungle, Terrain.Sands ) )
 			++damage;
 
 		await ctx.DamageInvaders( damage );

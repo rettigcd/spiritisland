@@ -3,7 +3,7 @@
 public class FieryVengeance {
 
 	[SpiritCard("Fiery Vengeance",0,Element.Sun,Element.Fire), Fast, AnySpirit]
-	[Instructions( "Cost to Use: Target Spirit Removes 1 of their Destroyed Presence from the game. 1 Fear and 1 Damage in one of target Spirit's lands. (This is your Power, so Blight counts as Badlands, even if target is another Spirit.)" ), Artist( Artists.DamonWestenhofer )]
+	[Instructions( "Cost to Use: Target Spirit Removes 1 of their DestroyedPresence from the game. 1 Fear and 1 Damage in one of target Spirit's lands. (This is your Power, so Blight counts as Badlands, even if target is another Spirit.)" ), Artist( Artists.DamonWestenhofer )]
 	static public async Task ActAsync(TargetSpiritCtx ctx ) {
 
 		// Cost to User: Target Spirit Removes 1 of their Destroyed presence from the game.

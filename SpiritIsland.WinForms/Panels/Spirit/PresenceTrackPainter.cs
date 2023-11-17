@@ -13,14 +13,14 @@ namespace SpiritIsland.WinForms {
 		public PresenceTrackPainter( 
 			Spirit spirit, 
 			PresenceTrackLayout layout,
-			TokenImageProvider tip
+			SpiritImageMemoryCache tip
 		) {
 			_spirit = spirit;
 			_layout = layout;
 
 			_presenceImg = tip._presenceImg;
 		}
-		public void Paint( Graphics graphics, CachedImageDrawer imageDrawer ) {
+		public void Paint( Graphics graphics, ImgMemoryCache imageDrawer ) {
 			// Set single-thread variables
 
 			// Bottom Layer - cache it

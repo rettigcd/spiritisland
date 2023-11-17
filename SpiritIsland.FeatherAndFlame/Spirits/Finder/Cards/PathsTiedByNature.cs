@@ -7,7 +7,7 @@ public class PathsTiedByNature {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// Move up to 2 Invaders / dahan / presence / beast to a land within range - 2 that has the same terrain.
-		var currentTerrain = new[] { Target.Jungle, Target.Mountain, Target.Sand, Target.Wetland }
+		var currentTerrain = new[] { Target.Jungle, Target.Mountain, Target.Sands, Target.Wetland }
 			.Where( t => new TargetCriteria( 0, ctx.Self, t ).Matches(ctx.Tokens) )
 		.ToArray();
 

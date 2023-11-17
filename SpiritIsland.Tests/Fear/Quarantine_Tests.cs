@@ -12,7 +12,7 @@ public class Quarantine_Tests {
 		var (userLocal,ctxLocal) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs=>{ 
 			gs.NewLogEntry += (s) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
 			gs.InitTestInvaderDeck(
-				InvaderCard.Stage1( Terrain.Sand), // not on coast
+				InvaderCard.Stage1( Terrain.Sands), // not on coast
 				InvaderCard.Stage2Costal(),
 				InvaderCard.Stage1( Terrain.Jungle),
 				InvaderCard.Stage1( Terrain.Wetland ) // one extra so we don't trigger 'Time runs out loss'

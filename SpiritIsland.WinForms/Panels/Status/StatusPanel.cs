@@ -175,7 +175,7 @@ internal class StatusPanel : IPanel {
 			// Draw Card
 			var top = gameState.Fear.ActivatedCards.Peek();
 			if(top.Flipped) {
-				using Image img = FearCardImageManager.GetImage( top );
+				using Image img = FearCardImageBuilder.Build( top );
 				graphics.DrawImage( img, activatedCardRect );
 			} else {
 				graphics.DrawImage( cardImg, activatedCardRect );
@@ -189,7 +189,7 @@ internal class StatusPanel : IPanel {
 		if(0 < future) {
 			var top = gameState.Fear.Deck.Peek();
 			if(top.Flipped) {
-				using Image img = FearCardImageManager.GetImage( top );
+				using Image img = FearCardImageBuilder.Build( top );
 				graphics.DrawImage( img, futureCardRect );
 			} else {
 				// Draw Card

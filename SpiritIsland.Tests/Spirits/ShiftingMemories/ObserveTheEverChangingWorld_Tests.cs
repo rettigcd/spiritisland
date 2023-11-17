@@ -13,7 +13,7 @@ public class ObserveTheEverChangingWorld_Tests {
 		TargetSpaceCtx space = fxt.TargetSpace("A5");
 		space.Tokens.AdjustDefault(Human.Explorer,1);
 		space.Tokens.Dahan.Init(2);
-		var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Space.Is );
+		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Space.Is );
 		fxt.InitRavageCard( terrain);
 		//   But: will not build nor explore
 		fxt.gameState.InvaderDeck.Build.Cards.Clear();

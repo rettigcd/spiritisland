@@ -3,17 +3,15 @@ using System.Drawing.Imaging;
 
 namespace SpiritIsland.WinForms;
 
-// Save because:
-//	Resize
-//	color / hue / etc Adjustment
-//	constructed
-
-public class ImageCache {
+/// <summary>
+/// Caches Images on Disk
+/// </summary>
+public class ImageDiskCache {
 
 	#region constructor
 
-	public ImageCache() {
-		_folder = DataFolder.GetSubFolderPath( "cache" );
+	public ImageDiskCache() {
+		_folder = AppDataFolder.GetSubFolderPath( "cache" );
 	}
 
 	#endregion

@@ -92,7 +92,7 @@ class CardDeckPanel : IPanel {
 				Rectangle labelRect = _layout.GetCardActionLabel( index );
 				using Image icon = _pickPowerCardDecision.Use( card ) switch {
 					CardUse.AddToHand => images.GetImage( Img.GainCard ),
-					CardUse.Discard => images.GetImage( Img.Deck_Discarded ),
+					CardUse.Discard => images.GetImage( Img.Icon_Discard ),
 					CardUse.Forget => images.GetNoSymbol(),
 					CardUse.Play => images.GetImage( Img.Icon_Play ),
 					CardUse.Impend => images.GetImage( Img.Icon_ImpendingCard ),

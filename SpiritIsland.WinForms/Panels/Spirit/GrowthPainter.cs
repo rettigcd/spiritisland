@@ -37,7 +37,7 @@ public sealed class GrowthPainter : IDisposable{
 
 		var cachedImageLayer = new Bitmap( _layout.Bounds.Width, _layout.Bounds.Height );
 		using var g = Graphics.FromImage( cachedImageLayer );
-		_iconDrawer = new IconDrawer( g, new CachedImageDrawer() );
+		_iconDrawer = new IconDrawer( g, new ImgMemoryCache() );
 		g.TranslateTransform( -_layout.Bounds.X, -_layout.Bounds.Y );
 		g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
@@ -140,9 +140,8 @@ public sealed class GrowthPainter : IDisposable{
 
 	static IPaintableRect DiscardCardWithFire() {
 		return new PoolRect()
-			.Float( new ImgRect( Img.CardPlay ), .05f,.05f,.9f,.9f)
-			.Float( new ImgRect( Img.Token_Fire ), .6f,0f,.4f,.4f )
-			.Float( new TextRect( "—" ), .1f, .25f, .8f, .6f );
+			.Float( new ImgRect( Img.Icon_Discard ), .05f,.05f,.9f,.9f)
+			.Float( new ImgRect( Img.Token_Fire ), .6f,0f,.4f,.4f );
 	}
 
 	static IPaintableRect ReclaimAllWithFire() {

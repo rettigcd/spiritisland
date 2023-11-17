@@ -62,6 +62,10 @@ public class ImageSizeCalculator {
 			"endless-dark" => Img.Icon_EndlessDark,
 			"cardplay" => Img.CardPlay,
 			"impending" => Img.Icon_ImpendingCard,	
+			"wetland" => Img.Icon_Wetland,
+			"jungle" => Img.Icon_Jungle,
+			"sands" => Img.Icon_Sands,
+			"mountain" => Img.Icon_Mountain,
 			_ => ElementCounts.ParseEl( token ).GetIconImg(),
 		};
 	}

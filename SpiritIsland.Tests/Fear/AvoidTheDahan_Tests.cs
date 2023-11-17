@@ -243,7 +243,7 @@ public class AvoidTheDahan_Tests {
 
 #pragma warning disable xUnit1013 // Public method should be marked as test
 	static public void InitMountainThenAllSands( GameState gs ) {
-		var sand = InvaderCard.Stage1( Terrain.Sand );
+		var sand = InvaderCard.Stage1( Terrain.Sands );
 		gs.InitTestInvaderDeck(
 			InvaderCard.Stage1( Terrain.Mountain ), // initial explorer in mountains
 			sand, sand, sand, sand, sand

@@ -4,7 +4,7 @@ public enum Terrain {
 	None, 
 	Jungle, 
 	Mountain, 
-	Sand, 
+	Sands, 
 	Wetland, 
 	Ocean, 
 	Destroyed // Cast Down / Destroyed

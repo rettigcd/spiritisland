@@ -14,7 +14,7 @@ public class DownloadPowerPics_Tests {
 	[InlineData( AssemblyType.JaggedEarth )]
 	[InlineData( AssemblyType.FeatherAndFlame )]
 	public async Task CanDownloadCardImages( string edition ) {
-		ImageCache cache = new ImageCache();
+		ImageDiskCache cache = new ImageDiskCache();
 
 		Type refObject = AssemblyType.GetEditionType( edition );
 		List<PowerCard> cards = refObject.GetMajors().ToList();
@@ -84,9 +84,9 @@ public class DownloadPowerPics_Tests {
 
 	static async Task GenerateCards( IEnumerable<PowerCard> cards ) {
 		foreach(var card in cards) {
-			using Bitmap image = (Bitmap)await PowerCardImageManager.GetImage( card );
+			using Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card );
 #pragma warning disable CA1416 // Validate platform compatibility
-			ImageCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Name}.png", ImageFormat.Png );
+			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Name}.png", ImageFormat.Png );
 #pragma warning restore CA1416 // Validate platform compatibility
 		}
 	}

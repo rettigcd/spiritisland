@@ -3,7 +3,7 @@
 public class RenewingBoon{ 
 		
 	[MinorCard("Renewing Boon",0,Element.Sun,Element.Earth,Element.Plant),Slow,AnotherSpirit]
-	[Instructions( "Choose a land where you and target Spirit both have Presence. In that land: Remove 1 Blight, and target Spirit may add 1 of their Destroyed Presence." ), Artist( Artists.JoshuaWright )]
+	[Instructions( "Choose a land where you and target Spirit both have Presence. In that land: Remove 1 Blight, and target Spirit may add 1 of their DestroyedPresence." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ){
 
 		// Choose a land where you and target Spirit both have presence.

@@ -11,7 +11,7 @@ public class UncannyMelting {
 		if(ctx.HasInvaders)
 			ctx.AddFear(1);
 
-		if(ctx.HasBlight && ctx.IsOneOf( Terrain.Sand, Terrain.Wetland))
+		if(ctx.HasBlight && ctx.IsOneOf( Terrain.Sands, Terrain.Wetland))
 			await ctx.RemoveBlight();
 
 	}

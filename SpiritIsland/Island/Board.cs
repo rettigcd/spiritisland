@@ -27,10 +27,10 @@ public partial class Board {
 			, new Space1(Terrain.Mountain,"A1" ) // 
 			, new Space1(Terrain.Wetland, "A2", "CD")  // city, dahan
 			, new Space1(Terrain.Jungle,  "A3", "DD")   // 2 dahan
-			, new Space1(Terrain.Sand,    "A4", "B")     // blight
+			, new Space1(Terrain.Sands,    "A4", "B")     // blight
 			, new Space1(Terrain.Wetland, "A5" )
 			, new Space1(Terrain.Mountain,"A6", "D") // 1 dahan
-			, new Space1(Terrain.Sand,    "A7", "DD")     // 2 dahan
+			, new Space1(Terrain.Sands,    "A7", "DD")     // 2 dahan
 			, new Space1(Terrain.Jungle,  "A8", "T")   // town
 		);
 
@@ -57,9 +57,9 @@ public partial class Board {
 			,new Space1(Terrain.Ocean,   "B0")
 			,new Space1(Terrain.Wetland, "B1","D")  // 1 dahan
 			,new Space1(Terrain.Mountain,"B2","C") // city
-			,new Space1(Terrain.Sand,    "B3","DD")     // 2 dahan
+			,new Space1(Terrain.Sands,    "B3","DD")     // 2 dahan
 			,new Space1(Terrain.Jungle,  "B4","B")   // blight
-			,new Space1(Terrain.Sand,    "B5")
+			,new Space1(Terrain.Sands,    "B5")
 			,new Space1(Terrain.Wetland, "B6","T")  // 1 town
 			,new Space1(Terrain.Mountain,"B7","D") // 1 dahan
 			,new Space1(Terrain.Jungle,  "B8","DD")   // 2 dahan
@@ -87,11 +87,11 @@ public partial class Board {
 			, orientation ?? BoardOrientation.Home
 			,new Space1(Terrain.Ocean,   "C0")
 			,new Space1(Terrain.Jungle,  "C1","D")   // 1 dahan
-			,new Space1(Terrain.Sand,    "C2","C")     // city
+			,new Space1(Terrain.Sands,    "C2","C")     // city
 			,new Space1(Terrain.Mountain,"C3","DD") // 2 dahan
 			,new Space1(Terrain.Jungle,  "C4")   
 			,new Space1(Terrain.Wetland, "C5","DDB")  // 2 dahan, blight
-			,new Space1(Terrain.Sand,    "C6","D")     // 1 dahan
+			,new Space1(Terrain.Sands,    "C6","D")     // 1 dahan
 			,new Space1(Terrain.Mountain,"C7","T") // 1 town
 			,new Space1(Terrain.Wetland, "C8")
 		);
@@ -119,10 +119,10 @@ public partial class Board {
 			,new Space1(Terrain.Wetland, "D1","DD")   // 2 dahan
 			,new Space1(Terrain.Jungle,  "D2","CD")    // city, 1 dahan
 			,new Space1(Terrain.Wetland, "D3")   
-			,new Space1(Terrain.Sand,    "D4")   
+			,new Space1(Terrain.Sands,    "D4")   
 			,new Space1(Terrain.Mountain,"D5","DB")  // 1 dahan, blight
 			,new Space1(Terrain.Jungle,  "D6")    
-			,new Space1(Terrain.Sand,    "D7","TDD")      // 1 town, 2 dahan
+			,new Space1(Terrain.Sands,    "D7","TDD")      // 1 town, 2 dahan
 			,new Space1(Terrain.Mountain,"D8")
 		);
 
@@ -147,12 +147,12 @@ public partial class Board {
 		var board = new Board( "E"
 			, orientation ?? BoardOrientation.Home
 			, new Space1( Terrain.Ocean,    "E0")
-			, new Space1( Terrain.Sand,     "E1", "D" )   // 1 dahan
+			, new Space1( Terrain.Sands,     "E1", "D" )   // 1 dahan
 			, new Space1( Terrain.Mountain, "E2", "C" )    // city
 			, new Space1( Terrain.Jungle,   "E3", "DD" )  // 2 dahan
 			, new Space1( Terrain.Wetland,  "E4", "B" )      // 1 blight
 			, new Space1( Terrain.Mountain, "E5", "D" )  // 1 dahan
-			, new Space1( Terrain.Sand,     "E6" )
+			, new Space1( Terrain.Sands,     "E6" )
 			, new Space1( Terrain.Jungle,   "E7", "T" )      // 1 town
 			, new Space1( Terrain.Wetland,  "E8", "DD" ) // 2 dahan
 		);
@@ -178,14 +178,14 @@ public partial class Board {
 		var board = new Board( "F"
 			, orientation ?? BoardOrientation.Home
 			, new Space1( Terrain.Ocean,    "F0" )
-			, new Space1( Terrain.Sand,     "F1","DD" )
+			, new Space1( Terrain.Sands,     "F1","DD" )
 			, new Space1( Terrain.Jungle,   "F2","C" )
 			, new Space1( Terrain.Wetland,  "F3","D" )
 			, new Space1( Terrain.Mountain, "F4","B" )
 			, new Space1( Terrain.Jungle,   "F5","D" )
 			, new Space1( Terrain.Mountain, "F6","DD" )
 			, new Space1( Terrain.Wetland,  "F7","" )
-			, new Space1( Terrain.Sand,     "F8","T" )
+			, new Space1( Terrain.Sands,     "F8","T" )
 		);
 
 		board.SetNeighbors( 0, 1, 2, 3 );

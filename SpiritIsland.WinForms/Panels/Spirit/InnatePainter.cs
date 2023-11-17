@@ -15,7 +15,7 @@ class InnatePainter : IDisposable {
 
 	#endregion
 
-	public void DrawFromLayout( Graphics graphics,  CachedImageDrawer _ ) {
+	public void DrawFromLayout( Graphics graphics,  ImgMemoryCache _ ) {
 
 		_backgroundCache ??= DrawBackgroundImage();
 
@@ -57,7 +57,7 @@ class InnatePainter : IDisposable {
 		}
 
 		// Attribute Values
-		PowerCardImageManager.AttributeValues( graphics, _layout.AttributeValueCells, _power );
+		PowerHeaderDrawer.DrawAttributeValues( graphics, _layout.AttributeValueCells, _power );
 
 		// Attribute Outter box
 		using Pen thickPen = new Pen( Brushes.Black, 2f );

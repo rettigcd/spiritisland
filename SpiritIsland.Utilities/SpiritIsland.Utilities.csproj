@@ -29,6 +29,7 @@
     <None Remove="images\icons\Damage_2.png" />
     <None Remove="images\icons\Daysthatneverweregrowthicon.png" />
     <None Remove="images\icons\Destroyedpresence.png" />
+    <None Remove="images\icons\Discard1Card.png" />
     <None Remove="images\icons\Discard2Cards.png" />
     <None Remove="images\icons\DiscardElementsForCardPlay.png" />
     <None Remove="images\icons\Diseaseicon.png" />
@@ -181,6 +182,7 @@
     <EmbeddedResource Include="images\icons\Cityicon.png" />
     <EmbeddedResource Include="images\icons\Coastal.png" />
     <EmbeddedResource Include="images\icons\Dahanicon.png" />
+    <EmbeddedResource Include="images\icons\Discard1Card.png" />
     <EmbeddedResource Include="images\icons\Invaders.png" />
     <EmbeddedResource Include="images\icons\Damage_2.png" />
     <EmbeddedResource Include="images\icons\Daysthatneverweregrowthicon.png" />

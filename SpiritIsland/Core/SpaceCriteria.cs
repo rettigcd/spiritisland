@@ -99,7 +99,7 @@ public class SpaceCriteria {
 		// Terrain
 		[Target.Jungle] = ( ctx ) => ctx.MatchesTerrain( Terrain.Jungle ),
 		[Target.Mountain] = ( ctx ) => ctx.MatchesTerrain( Terrain.Mountain ),
-		[Target.Sand] = ( ctx ) => ctx.MatchesTerrain( Terrain.Sand ),
+		[Target.Sands] = ( ctx ) => ctx.MatchesTerrain( Terrain.Sands ),
 		[Target.Wetland] = ( ctx ) => ctx.MatchesTerrain( Terrain.Wetland ),
 		[Target.Ocean] = ( ctx ) => ctx.Tokens.Space.Is( Terrain.Ocean ),
 		[Target.Coastal] = ( ctx ) => ctx.IsCoastal,

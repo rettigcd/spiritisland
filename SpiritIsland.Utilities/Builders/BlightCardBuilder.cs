@@ -2,6 +2,9 @@
 
 namespace SpiritIsland.WinForms;
 
+/// <summary>
+/// Generates Blight Card Images
+/// </summary>
 static class BlightCardBuilder {
 
 	static public Bitmap BuildBlighted( IBlightCard card ) {

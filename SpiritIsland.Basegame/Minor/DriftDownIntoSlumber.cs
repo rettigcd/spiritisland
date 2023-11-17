@@ -9,7 +9,7 @@ public class DriftDownIntoSlumber {
 		ctx.Defend( 1 );
 
 		// if target land is J/S, instead defend 4
-		if( ctx.IsOneOf( Terrain.Jungle, Terrain.Sand ) )
+		if( ctx.IsOneOf( Terrain.Jungle, Terrain.Sands ) )
 			ctx.Defend( 4-1 ); // -1 is from defend already done above
 
 		return Task.CompletedTask;

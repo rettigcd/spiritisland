@@ -61,7 +61,7 @@ public static class MySerializer {
 	}
 
 	static string GetSettingsFileName() 
-		=> Path.Combine( DataFolder.GetRootPath(), "settings.json" );
+		=> Path.Combine( AppDataFolder.GetRootPath(), "settings.json" );
 
 	#endregion File I/O
 

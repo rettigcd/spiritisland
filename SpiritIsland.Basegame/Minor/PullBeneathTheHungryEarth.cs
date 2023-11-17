@@ -17,7 +17,7 @@ public class PullBeneathTheHungryEarth {
 		}
 
 		// If target land is Sand or Water, 1 damage
-		if(ctx.IsOneOf( Terrain.Sand, Terrain.Wetland ))
+		if(ctx.IsOneOf( Terrain.Sands, Terrain.Wetland ))
 			++damage;
 
 		return ctx.DamageInvaders(damage);

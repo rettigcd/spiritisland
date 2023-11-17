@@ -11,7 +11,7 @@ public class PurifyingFlame {
 			new SpaceCmd($"{blightCount} damage", ctx=>ctx.DamageInvaders(blightCount) )
 				.OnlyExecuteIf( x => x.Blight.Any ),
 			new SpaceCmd("Remove 1 blight", ctx=>ctx.RemoveBlight() )
-				.OnlyExecuteIf( x=>x.Blight.Any && x.IsOneOf( Terrain.Mountain, Terrain.Sand ) )
+				.OnlyExecuteIf( x=>x.Blight.Any && x.IsOneOf( Terrain.Mountain, Terrain.Sands ) )
 		);
 
 	}

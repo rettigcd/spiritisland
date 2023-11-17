@@ -6,7 +6,7 @@ public class RenewingRain {
 	[Instructions( "If target land is Jungle / Sands, remove 1 Blight. -If you have- 3 Plant: Add 1 Wilds." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		if(ctx.IsOneOf(Terrain.Jungle,Terrain.Sand)) // ??? should we be using Power Filters here?
+		if(ctx.IsOneOf(Terrain.Jungle,Terrain.Sands)) // ??? should we be using Power Filters here?
 			await ctx.RemoveBlight();
 
 		if(await ctx.YouHave("3 plant"))

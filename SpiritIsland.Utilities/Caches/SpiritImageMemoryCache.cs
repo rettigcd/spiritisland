@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
-public class TokenImageProvider {
-	public TokenImageProvider( ResourceImages images) {
+/// <summary>
+/// Initializes Spirit tokens/markers and caches them in memory.
+/// </summary>
+public class SpiritImageMemoryCache {
+
+	public SpiritImageMemoryCache( ResourceImages images) {
 		_tokenImages = new Dictionary<ISpaceEntity, Image> {
 			[Token.Blight] = images.GetImage( Img.Blight ),
 			[Token.Beast] = images.GetImage( Img.Beast ),
@@ -32,12 +35,11 @@ public class TokenImageProvider {
 	public void InitNewSpirit( PresenceTokenAppearance presenceAppearance ) {
 		DisposeOldSpirit();
 
-		_presenceImg = ResourceImages.Singleton.GetPresenceImage( presenceAppearance.BaseImage );
-		_tokenImages[Token.Defend] = ResourceImages.Singleton.GetImage( Img.Defend );
-		_tokenImages[Token.Isolate] = ResourceImages.Singleton.GetImage( Img.Isolate );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap)_presenceImg );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Defend] );
-		presenceAppearance.Adjustment?.Adjust( (Bitmap)_tokenImages[Token.Isolate] );
+		// Load them
+		_presenceImg = SpiritMarkerBuilder.BuildPresence( presenceAppearance );
+		_tokenImages[Token.Defend] = SpiritMarkerBuilder.BuildMarker( Img.Defend, presenceAppearance.Adjustment );
+		_tokenImages[Token.Isolate] = SpiritMarkerBuilder.BuildMarker( Img.Isolate, presenceAppearance.Adjustment );
+
 	}
 
 	public Image AccessTokenImage( IToken imageToken ) {
@@ -66,9 +68,10 @@ public class TokenImageProvider {
 		return _elementImages[element];
 	}
 
+	#region private
+
 	readonly Dictionary<Element, Image> _elementImages = new();
 	readonly ResourceImages _images;
-
 
 	void DisposeOldSpirit() {
 		_presenceImg?.Dispose();
@@ -77,4 +80,6 @@ public class TokenImageProvider {
 		if(_tokenImages.ContainsKey( Token.Isolate ))
 			_tokenImages[Token.Isolate]?.Dispose();
 	}
+
+	#endregion
 }

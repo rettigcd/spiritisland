@@ -4,7 +4,7 @@ public static class Target {
 	public const string Any        = "Any";
 
 	public const string Jungle     = "Jungle";
-	public const string Sand       = "Sand";
+	public const string Sands      = "Sands";
 	public const string Mountain   = "Mountain";
 	public const string Wetland    = "Wetland";
 	public const string Coastal    = "coastal";

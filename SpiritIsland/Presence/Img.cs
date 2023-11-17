@@ -100,7 +100,7 @@ public enum Img {
 	Icon_EndlessDark,
 	Icon_ImpendingCard,
 
-	Icon_Sand,
+	Icon_Sands,
 	Icon_Mountain,
 	Icon_Jungle,
 	Icon_Wetland,
@@ -141,6 +141,7 @@ public enum Img {
 
 	Deck_Hand,
 	Deck_Played,
+	Icon_Discard,
 	Deck_Discarded,
 	Discard2,
 	Deck_DaysThatNeverWere_Major,

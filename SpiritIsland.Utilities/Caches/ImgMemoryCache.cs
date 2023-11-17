@@ -5,19 +5,12 @@ namespace SpiritIsland.WinForms;
 /// <summary>
 /// Pulls images from ResoueceImages/Files, and Caches them
 /// </summary>
-public sealed class CachedImageDrawer : IDisposable {
+/// <remarks>
+/// Might speed up drawing if used by things that call ResourceImages.Singleton.GetImage()
+/// </remarks>
+public sealed class ImgMemoryCache : IDisposable {
 
-	readonly Dictionary<Img,Image> _images = new Dictionary<Img,Image>();
-
-	public CachedImageDrawer() {}
-
-	public void Draw(Graphics graphics, Img img, RectangleF rect) {
-		graphics.DrawImage( GetImage(img), rect );
-	}
-
-	public void DrawFitHeight( Graphics graphics, Img img, Rectangle rect ) {
-		graphics.DrawImageFitHeight(  GetImage( img ), rect );
-	}
+	public ImgMemoryCache() {}
 
 	public Image GetImage( Img img ) {   // !!! make this private
 		if(_images.TryGetValue( img, out Image? bob )) return bob!;
@@ -31,4 +24,8 @@ public sealed class CachedImageDrawer : IDisposable {
 			img.Dispose();
 		_images.Clear();
 	}
+
+	#region private fields
+	readonly Dictionary<Img, Image> _images = new Dictionary<Img, Image>();
+	#endregion
 }

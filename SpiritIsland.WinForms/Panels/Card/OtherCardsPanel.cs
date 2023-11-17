@@ -70,7 +70,7 @@ class OtherCardsPanel : IPanel {
 				Rectangle labelRect = _layout.GetCardActionLabel( index );
 				using Image icon = _pickPowerCardDecision.Use( card ) switch {
 					CardUse.AddToHand => images.GetImage( Img.GainCard ),
-					CardUse.Discard => images.GetImage( Img.Deck_Discarded ),
+					CardUse.Discard => images.GetImage( Img.Icon_Discard ),
 					CardUse.Forget => images.GetImage( Img.Icon_DestroyedPresence ),
 					CardUse.Gift => null,
 					CardUse.Other => null,

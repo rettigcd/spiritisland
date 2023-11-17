@@ -4,9 +4,9 @@ using System.Drawing.Text;
 
 namespace SpiritIsland.WinForms; 
 
-sealed public class FearCardImageManager {
+sealed public class FearCardImageBuilder {
 
-	public static Image GetImage( IFearCard card ) {
+	public static Image Build( IFearCard card ) {
 		var bounds = new Rectangle(0,0,300,420);
 		var innerBounds = bounds.InflateBy( -14 );
 		var (titleArea,(canvasArea,_)) = innerBounds.SplitVerticallyAt(.11f);
@@ -74,6 +74,8 @@ sealed public class FearCardImageManager {
 		return img;
 	}
 
+	#region private methods
+
 	static void PaintTerrorLevelDetails( Graphics graphics, Rectangle outterArea, string description ) {
 		var config = new ConfigWrappingLayout {
 			EmSize = 13,
@@ -106,4 +108,6 @@ sealed public class FearCardImageManager {
 
 		layout.Paint( graphics );
 	}
+
+	#endregion
 }

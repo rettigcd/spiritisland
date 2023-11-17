@@ -5,6 +5,7 @@ using System.Linq;
 namespace SpiritIsland.WinForms;
 
 class InvaderCardBuilder {
+
 	static public Bitmap BuildInvaderCard( InvaderCard card ) {
 
 		Bitmap bitmap = new Bitmap( 200, 320 );
@@ -129,6 +130,11 @@ class InvaderCardBuilder {
 		return bitmap;
 	}
 
+	#region private methods
+
 	static Brush UseTerrainBrush( Terrain terrain ) => ResourceImages.Singleton.UseTerrainBrush( terrain );
+
 	static Font UseInvaderFont( float fontHeight ) => ResourceImages.Singleton.UseInvaderFont( fontHeight );
+
+	#endregion
 }

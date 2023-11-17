@@ -7,7 +7,7 @@ static internal class Extensions {
 	#region Generating Explorer Action on a space
 
 	static public InvaderCard BuildInvaderCard( this Space space ) {
-		var terrain = new[] { Terrain.Wetland, Terrain.Sand, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
+		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
 		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 	}
 

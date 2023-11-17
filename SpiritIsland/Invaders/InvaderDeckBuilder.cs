@@ -5,25 +5,25 @@ public class InvaderDeckBuilder {
 	public static ImmutableList<InvaderCard> Level1Cards => ImmutableList.Create<InvaderCard>(
 		InvaderCard.Stage1( Terrain.Jungle ),
 		InvaderCard.Stage1( Terrain.Wetland ),
-		InvaderCard.Stage1( Terrain.Sand ),
+		InvaderCard.Stage1( Terrain.Sands ),
 		InvaderCard.Stage1( Terrain.Mountain )
 	);
 
 	public static ImmutableList<InvaderCard> Level2Cards => ImmutableList.Create<InvaderCard>(
 		InvaderCard.Stage2( Terrain.Jungle ),
 		InvaderCard.Stage2( Terrain.Wetland ),
-		InvaderCard.Stage2( Terrain.Sand ),
+		InvaderCard.Stage2( Terrain.Sands ),
 		InvaderCard.Stage2( Terrain.Mountain ),
 		InvaderCard.Stage2Costal()
 	);
 
 	public static ImmutableList<InvaderCard> Level3Cards => ImmutableList.Create<InvaderCard>(
-		InvaderCard.Stage3( Terrain.Jungle, Terrain.Sand ),
+		InvaderCard.Stage3( Terrain.Jungle, Terrain.Sands ),
 		InvaderCard.Stage3( Terrain.Jungle, Terrain.Mountain ),
 		InvaderCard.Stage3( Terrain.Jungle, Terrain.Wetland ),
-		InvaderCard.Stage3( Terrain.Mountain, Terrain.Sand ),
+		InvaderCard.Stage3( Terrain.Mountain, Terrain.Sands ),
 		InvaderCard.Stage3( Terrain.Mountain, Terrain.Wetland ),
-		InvaderCard.Stage3( Terrain.Sand, Terrain.Wetland )
+		InvaderCard.Stage3( Terrain.Sands, Terrain.Wetland )
 	);
 
 	public readonly static InvaderDeckBuilder Default = new InvaderDeckBuilder();

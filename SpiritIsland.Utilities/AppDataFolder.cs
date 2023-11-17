@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
+﻿namespace SpiritIsland.WinForms;
 
-namespace SpiritIsland.WinForms;
-
-public static class DataFolder {
+/// <summary>
+/// Simplifies accessing a Spirit-Island App-Data folder
+/// </summary>
+public static class AppDataFolder {
 	public static string GetRootPath() {
 		string folder = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ), "SpiritIsland" );
 		if(!Directory.Exists( folder ))

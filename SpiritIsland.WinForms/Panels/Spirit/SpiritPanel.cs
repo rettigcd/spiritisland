@@ -50,7 +50,7 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 				ip.Dispose();
 	}
 
-	void Paint_Innates( Graphics graphics, CachedImageDrawer imageDrawer ) {
+	void Paint_Innates( Graphics graphics, ImgMemoryCache imageDrawer ) {
 		foreach(var painter in _innatePainters)
 			painter.DrawFromLayout( graphics, imageDrawer );
 	}
@@ -128,10 +128,10 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 
 		graphics.FillRectangle( SpiritPanelBackgroundBrush, _bounds );
 
-		using CachedImageDrawer imageDrawer = new CachedImageDrawer();
+		using ImgMemoryCache imgCache = new ImgMemoryCache();
 		PaintSpiritImage( graphics );
-		_presencePainter.Paint( graphics, imageDrawer );
-		Paint_Innates( graphics, imageDrawer );
+		_presencePainter.Paint( graphics, imgCache );
+		Paint_Innates( graphics, imgCache );
 		Paint_Elements( graphics );
 
 		// =====  Misc  =====

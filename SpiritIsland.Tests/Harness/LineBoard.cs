@@ -11,10 +11,10 @@ class LineBoard {
 			,new Space1(Terrain.Mountain,"T1")
 			,new Space1(Terrain.Wetland, "T2")
 			,new Space1(Terrain.Jungle,  "T3")
-			,new Space1(Terrain.Sand,    "T4")
+			,new Space1(Terrain.Sands,    "T4")
 			,new Space1(Terrain.Wetland, "T5")
 			,new Space1(Terrain.Mountain,"T6")
-			,new Space1(Terrain.Sand,    "T7")
+			,new Space1(Terrain.Sands,    "T7")
 			,new Space1(Terrain.Jungle,  "T8")
 			,new Space1(Terrain.Jungle,  "T9")
 		);

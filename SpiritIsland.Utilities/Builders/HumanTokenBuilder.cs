@@ -1,10 +1,10 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
-class HealthTokenBuilder {
-	public static Bitmap GetHealthTokenImage( HumanToken ht ) {
+class HumanTokenBuilder {
+
+	public static Bitmap Build( HumanToken ht ) {
 
 		Bitmap orig = ResourceImages.Singleton.GetImage( ht.Class.Img );
 
@@ -51,5 +51,10 @@ class HealthTokenBuilder {
 
 		return orig;
 	}
+
+	#region private methods
+
 	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
+
+	#endregion
 }

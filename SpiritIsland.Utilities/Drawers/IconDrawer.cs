@@ -2,12 +2,12 @@
 
 namespace SpiritIsland.WinForms; 
 
+/// <summary>
+/// Draws IconDescriptors on a Given Graphics object.
+/// </summary>
 public class IconDrawer {
 
-	readonly Graphics _graphics;
-	readonly CachedImageDrawer _cachedImageDrawer;
-
-	public IconDrawer( Graphics graphics, CachedImageDrawer imageDrawer ) {
+	public IconDrawer( Graphics graphics, ImgMemoryCache imageDrawer ) {
 		_graphics = graphics;
 		_cachedImageDrawer = imageDrawer;
 	}
@@ -86,5 +86,12 @@ public class IconDrawer {
 			DrawTheIcon( icon.BigSub, subRect );
 		}
 	}
+
+	#region private fields 
+
+	readonly Graphics _graphics;
+	readonly ImgMemoryCache _cachedImageDrawer;
+
+	#endregion
 
 }

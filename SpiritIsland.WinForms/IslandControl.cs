@@ -183,7 +183,7 @@ public partial class IslandControl : Control {
 
 	void DrawFearPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
 		if(options_FearPopUp is not null) {
-			using Image img = FearCardImageManager.GetImage( options_FearPopUp );
+			using Image img = FearCardImageBuilder.Build( options_FearPopUp );
 			graphics.DrawImage( img, regionLayout.PopupFearRect );
 		}
 		if(options_BlightPopUp is not null) {
@@ -343,7 +343,7 @@ public class SharedCtx {
 
 	public SharedCtx( IslandControl control ) {
 		_control = control;
-		_tip = new TokenImageProvider( ResourceImages.Singleton );
+		_tip = new SpiritImageMemoryCache( ResourceImages.Singleton );
 	}
 
 	public GameState GameState;
@@ -355,5 +355,5 @@ public class SharedCtx {
 
 	public AdversaryConfig _adversary;
 
-	public readonly TokenImageProvider _tip; // because we need different images for different damaged invaders.
+	public readonly SpiritImageMemoryCache _tip; // because we need different images for different damaged invaders.
 }

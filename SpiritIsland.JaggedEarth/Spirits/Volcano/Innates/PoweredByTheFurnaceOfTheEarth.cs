@@ -3,7 +3,7 @@
 [InnatePower("Powered by the Furnace of the Earth"), Slow, FromPresence(0)]
 public class PoweredByTheFurnaceOfTheEarth {
 
-	[InnateTier("3 earth","Add 1 of your destroyed presence.",0)]
+	[InnateTier("3 earth","Add 1 of your DestroyedPresence.",0)]
 	static public async Task Option1(TargetSpaceCtx ctx ) {
 		await ctx.Presence.PlaceDestroyedHere( 1 );
 	}

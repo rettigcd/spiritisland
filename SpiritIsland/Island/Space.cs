@@ -20,7 +20,7 @@ public abstract class Space
 
 	public string Label { get; }
 
-	public bool IsSand => Is( Terrain.Sand );
+	public bool IsSand => Is( Terrain.Sands );
 
 	public bool IsJungle => Is( Terrain.Jungle );
 

@@ -15,7 +15,7 @@ public class VolcanoLoomingHigh : Spirit {
 		VolcanicPeaksTowerOverTheLandscape.Rule
 	};
 	static SpecialRule MountainHome_Rule => new SpecialRule( MountainHome, "Your presence may only be added/moved into Mountain.");
-	static SpecialRule CollapseInABlastOfLAvaAndSteam_Rule => new SpecialRule( CollapseInABlastOfLavaAndSteam,"When your presense is destroyed, in that land, deal 1 Damage per destroyed presence to both Invaders and to dahan.");
+	static SpecialRule CollapseInABlastOfLAvaAndSteam_Rule => new SpecialRule( CollapseInABlastOfLavaAndSteam,"When your presense is destroyed, in that land, deal 1 Damage per DestroyedPresence to both Invaders and to dahan.");
 	#endregion
 
 	public VolcanoLoomingHigh():base(
