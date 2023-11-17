@@ -25,6 +25,5 @@ public class SpiritGrowthAction : IHelpGrow {
 }
 
 static public class SelfCmdExtender {
-	static public SpiritGrowthAction ToGrowth(this SpiritAction cmd ) => new SpiritGrowthAction(cmd);
 	static public SpiritGrowthAction ToInit( this SpiritAction cmd ) => new SpiritGrowthAction( cmd, Phase.Init );
 }

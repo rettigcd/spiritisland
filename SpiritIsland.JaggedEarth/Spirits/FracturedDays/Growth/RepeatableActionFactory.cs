@@ -15,7 +15,7 @@ public class RepeatableSelfCmd : SpiritAction {
 	{
 		Inner = inner;
 		_repeater = repeater;
-		repeater.Register( this.ToGrowth() );
+		repeater.Register( new SpiritGrowthAction( this ) );
 	}
 
 	public override async Task ActAsync( SelfCtx ctx ) {
