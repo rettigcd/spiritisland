@@ -267,30 +267,51 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public void AddActionFactory( IActionFactory factory ) {
+		// if we are manually restoring an innate power - like EEB
+		if(_usedInnates.Contains( factory )) {
+			_usedInnates.Remove((InnatePower)factory);
+			return;
+		}
+
 		_availableActions.Add( factory );
 	}
 
 	public virtual async Task TakeActionAsync(IActionFactory factory, Phase phase) {
-		var category = phase switch {
-			Phase.Init or
-			Phase.Growth => ActionCategory.Spirit_Growth,
-			Phase.Fast or
-			Phase.Slow => ActionCategory.Spirit_Power,
-			_ => throw new InvalidOperationException(),
-		};
-		await using var actionScope = await ActionScope.Start( category );
-		actionScope.Owner = this;
-		SelfCtx ctx = phase switch {
+		await using ActionScope actionScope = await CreateActionScopeForSpiritAction( phase );
+		SelfCtx ctx = Bind( phase );
+		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
+		await factory.ActivateAsync( ctx );
+		GameState.Current.CheckWinLoss(); // @@@
+	}
+
+	#endregion
+
+	#region Spin-Up ActionScope for spirit action
+
+	protected SelfCtx Bind( Phase phase ) {
+		return phase switch {
 			Phase.Init or
 			Phase.Growth => BindSelf(),
 			Phase.Fast or
 			Phase.Slow => BindMyPowers(),
 			_ => throw new InvalidOperationException(),
 		};
+	}
 
-		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
-		await factory.ActivateAsync( ctx );
-		GameState.Current.CheckWinLoss(); // @@@
+	protected async Task<ActionScope> CreateActionScopeForSpiritAction( Phase phase ) {
+		ActionScope actionScope1 = await ActionScope.Start( GetActionCategoryForSpiritAction( phase ) );
+		actionScope1.Owner = this;
+		return actionScope1;
+	}
+
+	static ActionCategory GetActionCategoryForSpiritAction( Phase phase ) {
+		return phase switch {
+			Phase.Init or
+			Phase.Growth => ActionCategory.Spirit_Growth,
+			Phase.Fast or
+			Phase.Slow => ActionCategory.Spirit_Power,
+			_ => throw new InvalidOperationException(),
+		};
 	}
 
 	#endregion

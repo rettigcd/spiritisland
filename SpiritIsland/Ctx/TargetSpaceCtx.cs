@@ -296,6 +296,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public int PresenceCount => Self.Presence.CountOn( Tokens );
 
+	/// <summary> Spirit has presence on this space. </summary>
 	public bool IsPresent => Self.Presence.IsOn( Tokens );
 
 	public async Task PlacePresenceHere() {

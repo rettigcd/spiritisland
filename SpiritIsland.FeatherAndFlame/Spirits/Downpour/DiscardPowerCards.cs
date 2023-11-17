@@ -1,4 +1,5 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
+
 internal class DiscardPowerCards : SpiritAction {
 
 	public DiscardPowerCards(int count ):base($"Discard {count} Power Cards") { 
@@ -32,4 +33,3 @@ internal class DiscardPowerCards : SpiritAction {
 	readonly int _count;
 
 }
-
