@@ -26,7 +26,6 @@
     <None Remove="images\icons\Cityicon.png" />
     <None Remove="images\icons\Coastal.png" />
     <None Remove="images\icons\Dahanicon.png" />
-    <None Remove="images\icons\DahanOrInvaders.png" />
     <None Remove="images\icons\Damage_2.png" />
     <None Remove="images\icons\Daysthatneverweregrowthicon.png" />
     <None Remove="images\icons\Destroyedpresence.png" />
@@ -48,9 +47,8 @@
     <None Remove="images\icons\hourglass.png" />
     <None Remove="images\icons\Impending.png" />
     <None Remove="images\icons\Incarna.png" />
+    <None Remove="images\icons\Invaders.png" />
     <None Remove="images\icons\Jungle.png" />
-    <None Remove="images\icons\JungleOrBeast.png" />
-    <None Remove="images\icons\Junglewetland.png" />
     <None Remove="images\icons\Land_Gather_Beasts.png" />
     <None Remove="images\icons\Land_Gather_Blight.png" />
     <None Remove="images\icons\Land_Gather_Dahan.png" />
@@ -58,7 +56,6 @@
     <None Remove="images\icons\major.png" />
     <None Remove="images\icons\minor.png" />
     <None Remove="images\icons\Mountainland.png" />
-    <None Remove="images\icons\mountainorpresence.png" />
     <None Remove="images\icons\Moveicon.png" />
     <None Remove="images\icons\Movepresence.png" />
     <None Remove="images\icons\Noblight.png" />
@@ -184,7 +181,7 @@
     <EmbeddedResource Include="images\icons\Cityicon.png" />
     <EmbeddedResource Include="images\icons\Coastal.png" />
     <EmbeddedResource Include="images\icons\Dahanicon.png" />
-    <EmbeddedResource Include="images\icons\DahanOrInvaders.png" />
+    <EmbeddedResource Include="images\icons\Invaders.png" />
     <EmbeddedResource Include="images\icons\Damage_2.png" />
     <EmbeddedResource Include="images\icons\Daysthatneverweregrowthicon.png" />
     <EmbeddedResource Include="images\icons\Destroyedpresence.png" />
@@ -205,8 +202,6 @@
     <EmbeddedResource Include="images\icons\Impending.png" />
     <EmbeddedResource Include="images\icons\Incarna.png" />
     <EmbeddedResource Include="images\icons\Jungle.png" />
-    <EmbeddedResource Include="images\icons\JungleOrBeast.png" />
-    <EmbeddedResource Include="images\icons\Junglewetland.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Blight.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Dahan.png" />
@@ -214,7 +209,6 @@
     <EmbeddedResource Include="images\icons\major.png" />
     <EmbeddedResource Include="images\icons\minor.png" />
     <EmbeddedResource Include="images\icons\Mountainland.png" />
-    <EmbeddedResource Include="images\icons\mountainorpresence.png" />
     <EmbeddedResource Include="images\icons\Moveicon.png" />
     <EmbeddedResource Include="images\icons\MovePresence.png" />
     <EmbeddedResource Include="images\icons\Noblight.png" />
@@ -366,6 +360,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Downpour_Drenches_the_World.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\spirits\Ember-Eyed_Behemoth.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Finder_of_Paths_Unseen.jpg">

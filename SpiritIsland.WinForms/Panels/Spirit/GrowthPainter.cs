@@ -1,12 +1,8 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SpiritIsland.Basegame;
+﻿using SpiritIsland.Basegame;
 using SpiritIsland.JaggedEarth;
-using SpiritIsland.NatureIncarnate;
 using System;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritIsland.WinForms;
 
@@ -124,6 +120,11 @@ public sealed class GrowthPainter : IDisposable{
 			"2 pieces Escape"                         => PiecesEscape( 2 ),
 			"Move Incarna anywhere"                   => AddOrMoveIncarnaAnywhere(),
 			"AddOrMoveIncarnaToPresence"              => AddOrMoveIncarnaToPresence(),
+			// Ember Eyed
+			"Discard a Power Card with fire"          => DiscardCardWithFire(),
+			"Reclaim All with Fire"                   => ReclaimAllWithFire(),
+			"EmpowerIncarna"                          => new ImgRect(Img.EEB_Incarna_Empowered), // EEB is the only one in growth
+			"Move Incarna - Range 1"                  => MovePresenceRect(1, Img.Icon_Incarna),
 			_                                         => null,
 		};
 
@@ -136,6 +137,20 @@ public sealed class GrowthPainter : IDisposable{
 		}
 
 	}
+
+	static IPaintableRect DiscardCardWithFire() {
+		return new PoolRect()
+			.Float( new ImgRect( Img.CardPlay ), .05f,.05f,.9f,.9f)
+			.Float( new ImgRect( Img.Token_Fire ), .6f,0f,.4f,.4f )
+			.Float( new TextRect( "—" ), .1f, .25f, .8f, .6f );
+	}
+
+	static IPaintableRect ReclaimAllWithFire() {
+		return new PoolRect()
+			.Float( new ImgRect( Img.ReclaimAll ), .0f, .0f, 1f, 1f )
+			.Float( new ImgRect( Img.Token_Fire ), .6f, 0f, .4f, .4f );
+	}
+
 
 	static VerticalStackRect PiecesEscape( int number ) {
 		return new VerticalStackRect(
@@ -274,32 +289,44 @@ public sealed class GrowthPainter : IDisposable{
 		}
 	}
 
-	static Bitmap GetTargetFilterIcon( string filterEnum ) {
+	static IPaintableRect GetTargetFilterIcon( string filterEnum ) {
+
+		string[] orParts = filterEnum.Split("Or");
+		if(orParts.Length == 2) {
+			return new PoolRect()
+				.Float( GetTargetFilterIcon( orParts[0] ), 0f, 0f, .5f, 1f )
+				.Float( new TextRect( "/" ), .4f, 0f, .2f, 1f )
+				.Float( GetTargetFilterIcon( orParts[1] ), .5f, 0f, .5f, 1f );
+		}
+
 		Img img = GetImgEnum( filterEnum );
-		return img == default ? null : GetImage( img );
+		return img == Img.None 
+			? null 
+			: new ImgRect( img );
 	}
 
 	static Img GetImgEnum( string filterEnum ) {
-		const string OR = "Or"; // !!! Coordinate this with PowerCardImageManager DrawTarget
 		Img img = filterEnum switch {
-			Target.Dahan                           => Img.Icon_Dahan,
-			Target.Jungle + OR + Target.Wetland    => Img.Icon_JungleOrWetland,
-			Target.Dahan + OR + Target.Invaders    => Img.Icon_DahanOrInvaders,
+			Target.Jungle							=> Img.Icon_Jungle,
+			Target.Presence							=> Img.Icon_Presence,
+			Target.Wetland							=> Img.Icon_Wetland,
+			Target.Mountain							=> Img.Icon_Mountain,
+			Target.Wilds							=> Img.Icon_Wilds,
+			Target.Beast							=> Img.Icon_Beast,		
+			Target.Dahan							=> Img.Icon_Dahan,
+			Target.Invaders							=> Img.Icon_Invaders,
 			Target.Coastal                         => Img.Icon_Coastal,
-			Target.Presence + OR + Target.Wilds    => Img.Icon_PresenceOrWilds,
 			Target.NoBlight                        => Img.Icon_NoBlight,
-			Target.Beast + OR + Target.Jungle      => Img.Icon_BeastOrJungle,
 			Target.Ocean                           => Img.Icon_Ocean,
-			Target.Mountain + OR + Target.Presence => Img.Icon_MountainOrPresence,
-			_                                      => Img.None, // Inland, Any
+			_ => Img.None, // Inland, Any
 		};
 		return img;
 	}
 
-	IPaintableRect MovePresenceRect( int range ) {
+	IPaintableRect MovePresenceRect( int range, Img img = Img.Icon_Presence ) {
 		return new VerticalStackRect(
 			new NullRect(),
-			new ImgRect( Img.Icon_Presence ),
+			new ImgRect( img ),
 			new TextRect( range ),
 			new ImgRect( Img.MoveArrow )
 		)	.SplitByWeight(.05f, .1f, .3f, .35f, .15f, .1f);
@@ -339,31 +366,32 @@ public sealed class GrowthPainter : IDisposable{
 		if(presImg == Img.Icon_DestroyedPresence && num == 3) // "Add up to 3 Destroyed Presence - Range 1"
 			return Add3DestroyedPresenceTogether(); //!! merge these methods together
 
-		Img filterImg = GetImgEnum( filterEnum );
+		var filterImgRect = GetTargetFilterIcon( filterEnum );
 
-		IPaintableRect paintable =
+		IPaintableRect paintable = null;
+		if(range is null )
 			// Ocean
-			range is null ? new VerticalStackRect(
+			paintable = new VerticalStackRect(
 				new NullRect(),
 				PlacePresenceRect( presImg ),
-				new ImgRect( filterImg )
-			).SplitByWeight( .05f, .1f, .3f, .5f, .1f )
+				filterImgRect
+			).SplitByWeight( .05f, .1f, .3f, .5f, .1f );
 			// HeathVigil, : Keeper
-			: filterImg != Img.None ? new VerticalStackRect(
-					new NullRect(),
-					PlacePresenceRect( presImg ),
-					new ImgRect( filterImg ),
-					new TextRect( range ),
-					new ImgRect( Img.RangeArrow )
-				).SplitByWeight( .05f, .05f /*null*/, .2f /*presence*/, .25f/*filter*/, .25f/*number*/, .1f/*arrow*/, .05f )
-			// default
-			: new VerticalStackRect(
+        else paintable = filterImgRect != null
+			? new VerticalStackRect(
+				new NullRect(),
+				PlacePresenceRect( presImg ),
+				filterImgRect,
+				new TextRect( range ),
+				new ImgRect( Img.RangeArrow )
+			).SplitByWeight( .05f, .01f /*null*/, .3f /*presence*/, .25f/*filter*/, .25f/*number*/, .1f/*arrow*/, .05f )
+			: (IPaintableRect)new VerticalStackRect(
 				new NullRect(),
 				PlacePresenceRect( presImg ),
 				new NullRect(),
 				new TextRect( range ),
 				new ImgRect( Img.RangeArrow )
-			).SplitByWeight( .0f, .1f/*spacer*/, .3f, .05f /*spacer*/, .4f /*number*/, .1f/*arrow*/, .1f );
+			).SplitByWeight( .0f, .05f/*spacer*/, .35f, .01f /*spacer*/, .4f /*number*/, .1f/*arrow*/, .1f );
 
 		return addOnIcon == Img.None ? paintable
 			: new PoolRect()
@@ -371,7 +399,7 @@ public sealed class GrowthPainter : IDisposable{
 				.Float(new ImgRect( addOnIcon ), .2f, .2f, .6f, .6f );
 	}
 
-	private static HorizontalStackRect PlacePresenceRect(Img img) {
+	static HorizontalStackRect PlacePresenceRect(Img img) {
 		return new HorizontalStackRect(
 					new NullRect(),
 					new TextRect( "+" ),
