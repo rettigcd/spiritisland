@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SpiritIsland;
 
@@ -22,8 +23,7 @@ public class SourceSelector {
 	/// <param name="singleDestination">Draws arrows to destination if there is only one.</param>
 	public async Task<SpaceToken> GetSource( Spirit spirit, string actionPromptPrefix, Present present, Space singleDestination = null ) {
 		SpaceToken[] options = await GetSourceOptions();
-		SpaceState[] sourceSpaces = options.Select( st => st.Space ).Distinct().Tokens().ToArray();
-		string remaining = _quota.RemainingTokenDescriptionOn( sourceSpaces );
+		string remaining = _quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
 		string prompt = $"{actionPromptPrefix} ({remaining})";
 
 		// Select Token
@@ -44,7 +44,17 @@ public class SourceSelector {
 
 	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
 
-	public SourceSelector NotRemoving(){ _removeReason = RemoveReason.None; return this; }
+	public SourceSelector NotRemoving(){
+		// Tokens will still be where they started, so we need to
+		// manually track how many have been used and
+		// not allow selection when used up
+		CountDictionary<SpaceToken> selected = new();
+		Track( st => selected[st]++ );
+		FilterSpaceToken( st => selected[st] < st.Count);
+
+		_removeReason = RemoveReason.None; 
+		return this;
+	}
 
 	/// <summary> Dynamically filter sources. - when sources may change over time. </summary>
 	public SourceSelector FilterSource( Func<SpaceState, bool> filterSource ) {
@@ -55,7 +65,7 @@ public class SourceSelector {
 	/// <summary>
 	/// Normally selection based on IEntityClass.  Allows fine-graned selection based on specific IToken
 	/// </summary>
-	public SourceSelector FilterToken( Func<IToken, bool> filterToken ) { _filterToken = filterToken; return this; }
+	public SourceSelector FilterSpaceToken( Func<SpaceToken, bool> filterToken ) { _filterSpaceToken.Add(filterToken); return this; }
 
 	#endregion public Config
 
@@ -96,13 +106,17 @@ public class SourceSelector {
 
 		IEnumerable<IToken> tokens = sourceSpaceState.OfAnyClass( _quota.RemainingTypes ).Cast<IToken>();
 
-		if(_filterToken != null)
-			tokens = tokens.Where(_filterToken);
-
+		// 'Removable' Filter on Tokens
 		if(_removeReason != RemoveReason.None)
 			tokens = await sourceSpaceState.WhereRemovable( tokens, _removeReason );
 
-		return tokens.On( sourceSpaceState.Space );
+		var spaceTokens = tokens.On( sourceSpaceState.Space );
+
+		// User filter on SpaceTokens
+		foreach(Func<SpaceToken, bool> f in _filterSpaceToken)
+			spaceTokens = spaceTokens.Where(f);
+
+		return spaceTokens;
 	}
 
 	protected IEnumerable<SpaceState> SourceSpaces
@@ -119,7 +133,7 @@ public class SourceSelector {
 	Func<SpaceState, bool> _filterSpace;
 	readonly public SpaceState[] _unfilteredSourceSpaces;
 
-	Func<IToken, bool> _filterToken;
+	readonly List<Func<SpaceToken, bool>> _filterSpaceToken = new();
 
 	RemoveReason _removeReason = RemoveReason.MovedFrom;
 

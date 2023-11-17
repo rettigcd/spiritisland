@@ -36,9 +36,9 @@ public class UnnervingPall {
 		var sourceSelector = new SourceSelector(ctx.Tokens)
 			.NotRemoving()
 			.AddGroup(3,damagedInvaders.Select(x=>x.Class).Distinct().ToArray())
-			.FilterToken(t => 0<((HumanToken)t).Damage ); // is damaged
+			.FilterSpaceToken(st => 0<((HumanToken)st.Token).Damage ); // is damaged
 
-		await SitOutRavage.SelectFightersAndSitThemOut(ctx.Self,ctx.Tokens,sourceSelector);
+		await SitOutRavage.SelectFightersAndSitThemOut(ctx.Self,sourceSelector);
 	}
 
 	class InvadersDontParticipateInRavage : BaseModEntity, ISkipRavages, IEndWhenTimePasses {

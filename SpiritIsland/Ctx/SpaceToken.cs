@@ -25,7 +25,8 @@ public class SpaceToken : IOption {
 	public Task<TokenMovedArgs> MoveTo(SpaceState destination) 
 		=> Space.Tokens.MoveTo( Token, destination );
 
-	public bool Exists => 0 < Space.Tokens[Token];
+	public bool Exists => 0 < Count;
+	public int Count => Space.Tokens[Token];
 
 	public Task Destroy() => Space.Tokens.Destroy( Token, 1 );
 	public Task Remove() => Space.Tokens.Remove( Token, 1 );
