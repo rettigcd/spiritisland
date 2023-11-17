@@ -51,7 +51,7 @@ public class SpaceCriteria {
 		public SpaceState Tokens { get; }
 
 		// Bound Spirit
-		public bool IsPresent => Tokens.Has( FocusSpirit( nameof( IsPresent ) ).Presence.Token );
+		public bool IsPresent => FocusSpirit( nameof( IsPresent ) ).Presence.IsOn( Tokens );
 		public bool HasIncarna {
 			get {
 				return FocusSpirit(nameof(HasIncarna)).Presence is IHaveIncarna carny
