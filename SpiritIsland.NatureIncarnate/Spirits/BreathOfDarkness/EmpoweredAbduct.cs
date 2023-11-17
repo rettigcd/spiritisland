@@ -1,16 +1,13 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 public class EmpoweredAbduct : IActionFactory {
+
 	public string Name => "Abduct Explorer/Town";
 
 	public string Text => Name;
 
-	public bool CouldActivateDuring( Phase speed, Spirit spirit ) {
-		bool a = speed == Phase.Fast;
-		bool b= Incarna( spirit ).Empowered;
-		bool c= a&&b;
-		return c;
-	}//  => speed == Phase.Fast && Incarna(spirit).Empowered;
+	public bool CouldActivateDuring( Phase speed, Spirit spirit )
+		=> speed == Phase.Fast && Incarna(spirit).Empowered;
 
 	static BreathIncarna Incarna(Spirit spirit) => ((BreathPresence)spirit.Presence).Incarna;
 
@@ -24,4 +21,5 @@ public class EmpoweredAbduct : IActionFactory {
 
 		await invaderToAbduct.MoveTo(EndlessDark.Space);
 	}
+
 }
