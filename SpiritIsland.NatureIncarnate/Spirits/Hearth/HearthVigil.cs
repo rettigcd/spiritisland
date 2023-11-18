@@ -11,8 +11,21 @@ public class HearthVigil : Spirit {
 
 	public override string Text => Name;
 
+	static Track Energy0_GatherDahanBonus => new Track( "energy0" ) {
+		Icon = new IconDescriptor {
+			BackgroundImg = Img.Coin,
+			Text = "0",
+		},
+		Action = Cmd.GatherUpToNDahan( 1 ).To().SpiritPickedLand().Which( Has.YourPresence )
+	};
+
+
 	public HearthVigil():base(
-		new HearthPresence(),
+		spirit => new SpiritPresence( spirit,
+			new PresenceTrack( Energy0_GatherDahanBonus, Track.MkEnergy( 1, Element.Sun ), Track.Energy2, Track.MkEnergy( 3, Element.Animal ), Track.Energy4, Track.MkEnergy( 5, Element.Sun ) ),
+			new PresenceTrack( Track.Card1, Track.Card2, Track.AirEnergy, Track.Card3, Track.AnimalEnergy, Track.Card4 ),
+			new HearthToken( spirit )
+		),
 		PowerCard.For<FavorsOfStoryAndSeason>(),
 		PowerCard.For<SurroundedByTheDahan>(),
 		PowerCard.For<CoordinatedRaid>(),

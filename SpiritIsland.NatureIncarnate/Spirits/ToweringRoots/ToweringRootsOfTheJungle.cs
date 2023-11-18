@@ -4,22 +4,14 @@ public class ToweringRootsOfTheJungle : Spirit {
 
 	public const string Name = "Towering Roots of the Jungle";
 
-	// 3 Innates - stub
-	// 4 Cards -stub
-	// 5 Incarna
-		// Range from Incarna
-	// 6 Growth - finish
-	// 6 Innates - finish
-	// 7 Cards - finish
-	// 8 empowered incarna
-	// 9 incarna acts as a presence
 	public ToweringRootsOfTheJungle() : base(
-		new ToweringRootsPresence()
+		spirit => new ToweringRootsPresence( spirit )
 		, PowerCard.For<EntwineTheFatesOfAll>()
 		, PowerCard.For<RadiantAndHallowedGrove>()
 		, PowerCard.For<BloomingOfTheRocksAndTrees>()
 		, PowerCard.For<BoonOfResilientPower>()
 	) {
+
 		// Growth
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new PlacePresence(0) ),
@@ -61,6 +53,6 @@ public class ToweringRootsOfTheJungle : Spirit {
 
 	}
 
-	public ToweringRootsIncarna Incarna => ((ToweringRootsPresence)Presence).Incarna;
+	public Incarna Incarna => ((ToweringRootsPresence)Presence).Incarna;
 
 }

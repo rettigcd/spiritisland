@@ -15,9 +15,9 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 		var sourceSelector = new SourceSelector( space )
 			.NotRemoving()
-			.AddGroup( _spirit.Presence.CountOn( space ) * 2, Human.Explorer );
+			.AddGroup( Self.Presence.CountOn( space ) * 2, Human.Explorer );
 
-		await SitOutRavage.SelectFightersAndSitThemOut( _spirit, sourceSelector );
+		await SitOutRavage.SelectFightersAndSitThemOut( Self, sourceSelector );
 
 		return false; // does not stop ravage ever
 	}

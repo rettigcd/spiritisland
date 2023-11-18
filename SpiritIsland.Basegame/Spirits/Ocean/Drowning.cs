@@ -19,7 +19,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 		var gs = GameState.Current;
 
 		// If we are saving a dahan
-		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && args.To.Has( _spirit.Presence.Token )) {
+		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && args.To.Has( _spirit.Presence )) {
 			var moveOptions = gs.Island.Boards
 				.Select( x => x.Ocean )
 				.Tokens()

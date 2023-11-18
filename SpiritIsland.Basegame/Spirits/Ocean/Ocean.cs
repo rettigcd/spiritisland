@@ -12,7 +12,7 @@ public class Ocean : Spirit {
 	);
 
 	public Ocean():base(
-		new OceanPresence(
+		spirit => new OceanPresence( spirit,
 			new PresenceTrack( Track.Energy0, Track.MoonEnergy, Track.WaterEnergy, Track.Energy1, Track.EarthEnergy, Track.WaterEnergy, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 		),

@@ -36,15 +36,12 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	}
 	PresenceTrack _cardTrack;
 
-	public SpiritPresence Presence => _presence ??= new SpiritPresence(EnergyTrack,CardPlayTrack);
-	SpiritPresence _presence;
+	public SpiritPresence Presence => Spirit.Presence;
 
 	public Spirit Spirit {
-		get => _spirit ??= new ConfigurableSpirit( Presence );
+		get => _spirit ??= new ConfigurableSpirit( s => new SpiritPresence(s,EnergyTrack,CardPlayTrack) );
 		set {
-			if(_presence != null) throw new InvalidOperationException("Cannot set the spirit when the Presence has already been initialized.");
 			Init( ref _spirit, value, nameof(_spirit) );
-			_presence = _spirit.Presence;
 		}
 	} 
 	Spirit _spirit;

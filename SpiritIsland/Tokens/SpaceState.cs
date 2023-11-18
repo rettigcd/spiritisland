@@ -246,13 +246,11 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	#endregion
 
-	#region Ocean Helpers
 
 	void AdjustTrackedToken( ITrackMySpaces token, int delta ) {
-		_api.Adjust(token,Space,delta);
+		token.TrackAdjust(Space,delta);
 	}
 
-	#endregion
 
 	#region GetHashCode and Equals
 

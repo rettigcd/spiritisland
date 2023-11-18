@@ -29,7 +29,7 @@ public class FlowingAndSilentFormsDartBy {
 				|| !spt.CanMove
 			) return;
 
-			Spirit spirit = spt._spirit;
+			Spirit spirit = spt.Self;
 
 			if( !spirit.Presence.HasMovableTokens( args.From ) ) return;
 			

@@ -19,7 +19,7 @@ public class VolcanoLoomingHigh : Spirit {
 	#endregion
 
 	public VolcanoLoomingHigh():base(
-		new VolcanoPresence(
+		spirit => new VolcanoPresence( spirit,
 			new PresenceTrack(Track.Energy1,Track.Energy2,Track.EarthEnergy,Track.Energy3,Track.Energy4,Track.Energy5),
 			new PresenceTrack(Track.Card1,Track.MkCard(Element.Fire),Track.MkCard(Element.Earth),Track.Card2, Track.MkCard( Element.Air ), Track.Card3, Track.MkCard( Element.Fire ), Track.Card4)
 		)

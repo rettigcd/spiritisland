@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public partial class Keeper : Spirit {
+public class Keeper : Spirit {
 
 	public const string Name = "Keeper of the Forbidden Wilds";
 
@@ -11,14 +11,16 @@ public partial class Keeper : Spirit {
 	} ;
 
 	public Keeper():base(
-		new KeeperPresence(),
-		// PowerCard.For<SkyStretchesToShore>(),
+		spirit => new SpiritPresence( spirit,
+			new PresenceTrack( Track.Energy2, Track.SunEnergy, Track.Energy4, Track.Energy5, Track.PlantEnergy, Track.Energy7, Track.Energy8, Track.Energy9 ),
+			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 ),
+			new KeeperToken( spirit )
+		),
 		PowerCard.For<BoonOfGrowingPower>(),
 		PowerCard.For<RegrowFromRoots>(),
 		PowerCard.For<SacrosanctWilderness>(),
 		PowerCard.For<ToweringWrath>()
 	) {
-
 		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
 			new GrowthOption( new GainPowerCard() ),

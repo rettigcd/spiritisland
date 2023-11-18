@@ -6,7 +6,7 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 	readonly ITokenClass _leaderClass;
 	public FollowingPresenceToken( Spirit spirit, ITokenClass leaderClass ) : base( spirit ) {
 		_leaderClass = leaderClass;
-		Text = SpaceAbreviation = "Ts";// to not conflict with Towns
+		SpaceAbreviation = "Ts";// to not conflict with Towns
 	}
 	public override async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		await base.HandleTokenRemovedAsync( args );
@@ -19,7 +19,7 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 	}
 
 	async Task TryToFollow( ITokenMovedArgs args ) {
-		if(!_spirit.Presence.HasMovableTokens( args.From )) return;
+		if(!Self.Presence.HasMovableTokens( args.From )) return;
 		int maxThatCanMove = Math.Min( MaxFollowerCount( args ), args.From[this] );
 		if(maxThatCanMove == 0) return;
 
@@ -27,7 +27,7 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 		// If we used 'Push', user would click on Destination instead of Source
 		string prompt = "Move presence with " + args.Removed.Class.Label + "?";
 		while(0 < maxThatCanMove--) {
-			var source = await _spirit.Select( A.SpaceToken.ToCollect( prompt, new SpaceToken[] { this.On( args.From.Space ) }, Present.Done, args.To.Space ) );
+			var source = await Self.Select( A.SpaceToken.ToCollect( prompt, new SpaceToken[] { this.On( args.From.Space ) }, Present.Done, args.To.Space ) );
 			if(source != null)
 				await this.Move( args.From, args.To );
 		}

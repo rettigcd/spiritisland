@@ -6,6 +6,4 @@ public interface IIslandTokenApi {
 
 	IToken GetDefault( ITokenClass tokenClass );
 
-	void Adjust( ITrackMySpaces token, Space space, int delta );
-
 }

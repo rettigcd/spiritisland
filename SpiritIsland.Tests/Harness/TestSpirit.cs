@@ -4,7 +4,7 @@
 class TestSpirit : Spirit {
 
 	public TestSpirit(PowerCard powerCard):base(
-		new SpiritPresence(
+		x => new SpiritPresence(x,
 			new TestPresenceTrack(Track.Energy5,Track.Energy9),
 			new TestPresenceTrack(Track.Card1,Track.Card2,Track.Card3)
 		)

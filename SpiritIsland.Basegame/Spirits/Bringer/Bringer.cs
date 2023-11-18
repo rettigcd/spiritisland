@@ -9,7 +9,7 @@ public class Bringer : Spirit {
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { TDaTD_ActionTokens.Rule };
 
 	public Bringer():base(
-		new SpiritPresence(
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5 ),
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy )
 		)

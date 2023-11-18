@@ -5,9 +5,12 @@ public class VengeanceAsABurningPlague : Spirit {
 	public const string Name = "Vengeance as a Burning Plague";
 
 	public VengeanceAsABurningPlague() : base(
-		new VengeancePresence(
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(Track.Energy1,Track.Energy2,Track.AnimalEnergy,Track.Energy3,Track.Energy4),
-			new PresenceTrack(Track.Card1, Track.Card2, Track. FireEnergy, Track.Card2, Track.Card3, Track.Card3, Track.Card4)
+			new PresenceTrack(Track.Card1, Track.Card2, Track. FireEnergy, Track.Card2, Track.Card3, Track.Card3, Track.Card4),
+			new LingeringPestilenceToken( spirit ) {
+				Destroyed = 1 // 1 of your presence starts the game already Destroyed.
+			}
 		)
 		,PowerCard.For<FetidBreathSpreadsInfection>()
 		,PowerCard.For<FieryVengeance>()

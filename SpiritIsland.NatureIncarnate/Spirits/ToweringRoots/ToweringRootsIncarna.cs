@@ -7,7 +7,7 @@ public class ToweringRootsIncarna
 	, ISkipBuilds
 	
 {
-	public ToweringRootsIncarna():base("TRotJ", Img.TRotJ_Incarna_Empowered, Img.TRotJ_Incarna ) { }
+	public ToweringRootsIncarna(Spirit spirit):base(spirit, "TRotJ", Img.TRotJ_Incarna_Empowered, Img.TRotJ_Incarna ) { }
 
 	public void HandleTokenAdded( ITokenAddedArgs args ) {
 		if( !Empowered && args.Added == Token.Vitality && args.To[Token.Vitality] == 3)

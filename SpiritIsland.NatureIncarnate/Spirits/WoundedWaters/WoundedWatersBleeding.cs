@@ -19,7 +19,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	#region constructor / initilization
 
 	public WoundedWatersBleeding() : base(
-		new WoundedPresence()
+		spirit => new WoundedPresence(spirit)
 		, PowerCard.For<BoonOfCorruptedBlood>()    // fast
 		, PowerCard.For<DrawToTheWatersEdge>()     // fast
 		, PowerCard.For<BloodWaterAndBloodlust>()  // slow

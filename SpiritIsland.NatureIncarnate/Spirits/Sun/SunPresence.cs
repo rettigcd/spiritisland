@@ -4,8 +4,8 @@ public class SunPresence : SpiritPresence {
 
 	static public readonly SpecialRule PlacementRule = new SpecialRule( "Home of the Island's Heart", "Your presence may only be added/moved to lands that are inland." );
 
-	public SunPresence()
-		:base(
+	public SunPresence(Spirit spirit)
+		:base( spirit,
 			new PresenceTrack( 
 				Track.Energy1, 
 				Track.MkEnergy( 2, Element.Sun ),
@@ -25,10 +25,5 @@ public class SunPresence : SpiritPresence {
 			)
 		)
 	{ }
-
-	public override void SetSpirit( Spirit spirit ) {
-		base.SetSpirit( spirit );
-//		Token = new EnthrallTheForeignExplorers( spirit );
-	}
 
 }

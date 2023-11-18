@@ -131,7 +131,6 @@ public static class ExtendDictionary {
 
 		static string FriendlyName( ISpaceEntity t )
 			=> t is IAppearInSpaceAbreviation vis ? vis.SpaceAbreviation
-			: t is SpiritPresenceToken spirit ? spirit.Text
 			: t.GetType().Name;
 
 		return abbrevTokens.Length == 0 ? "[none]"

@@ -1,20 +1,27 @@
-﻿namespace SpiritIsland.NatureIncarnate;
+﻿namespace SpiritIsland;
 
-public class Incarna : IIncarnaToken, ITokenClass, ITrackMySpaces {
+public class Incarna 
+	: IIncarnaToken
+	, ITokenClass
+	, ITrackMySpaces
+{
 
+	readonly Spirit _spirit;
 	readonly string _abreviation;
 	readonly Img _notEmpowered;
 	readonly Img _empowered;
 
-	public Incarna( string abrev, Img notEmpowered, Img empowered ) {
+	public Incarna( Spirit spirit, string abrev, Img notEmpowered, Img empowered ) {
+		_spirit = spirit;
 		_abreviation = abrev;
 		_notEmpowered = notEmpowered;
 		_empowered = empowered;
 	}
 
-	public SpaceState? Space => GameState.Current.Tokens.Spaces_Existing( this )
-		.Select( s => s.Tokens )
-		.FirstOrDefault();
+	public SpaceState? Space => _spaceCounts.Keys
+		.Where(SpiritIsland.Space.Exists)
+		.Tokens()
+		.SingleOrDefault(); // 0 or 1
 
 	public bool Empowered { get; set; }
 
@@ -41,4 +48,11 @@ public class Incarna : IIncarnaToken, ITokenClass, ITrackMySpaces {
 
 	}
 
+	void ITrackMySpaces.Clear() {
+		_spaceCounts.Clear();
+	}
+	void ITrackMySpaces.TrackAdjust( Space space, int delta ) {
+		_spaceCounts[space] += delta;
+	}
+	CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
 }

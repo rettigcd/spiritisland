@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.FeatherAndFlame;
+﻿using SpiritIsland.A;
+
+namespace SpiritIsland.FeatherAndFlame;
 
 
 public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
@@ -31,7 +33,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		=> new ElementCounts { [Element.Water] = pourDownPower.Remaining };
 
 	public DownpourDrenchesTheWorld():base(
-		new SpiritPresence(
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(1,Track.Energy1, Track.WaterEnergy, Track.PlantEnergy, Track.WaterEnergy, TwoAir, Track.WaterEnergy, Track.EarthEnergy, TwoWater ),
 			new PresenceTrack(1, Track.Card1, MovePresence, Track.WaterEnergy,Track.Card2, MovePresence, Track.Card3 )
 		),

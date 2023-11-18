@@ -4,9 +4,9 @@ public abstract partial class Spirit : IOption {
 
 	#region constructor
 
-	public Spirit( SpiritPresence presence, params PowerCard[] initialCards ){
-		Presence = presence;
-		Presence.SetSpirit( this );
+	public Spirit( Func<Spirit,SpiritPresence> initPresence, params PowerCard[] initialCards ) {
+
+		Presence = initPresence(this);
 		Presence.TrackRevealed.Add( args => Elements.AddRange(args.Track.Elements) );
 
 		foreach(var card in initialCards)
@@ -17,6 +17,12 @@ public abstract partial class Spirit : IOption {
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, Cards = Hand });
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, Cards = InPlay });
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Discarded, Cards = DiscardPile } );
+	}
+
+	public void InitSpirit( Board board, GameState gameState ){
+		gameState.TimePasses_WholeGame += On_TimePassed;
+		_gateway.DecisionMade += (d) => gameState.Log(d);
+		InitializeInternal(board,gameState);
 	}
 
 	public void AddCardToHand( PowerCard card ){
@@ -341,12 +347,6 @@ public abstract partial class Spirit : IOption {
 	abstract public SpecialRule[] SpecialRules { get; }
 
 	public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
-
-	public void InitSpirit( Board board, GameState gameState ){
-		gameState.TimePasses_WholeGame += On_TimePassed;
-		_gateway.DecisionMade += (d) => gameState.Log(d);
-		InitializeInternal(board,gameState);
-	}
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 

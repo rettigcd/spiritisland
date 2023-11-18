@@ -32,7 +32,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public ShiftingMemoryOfAges() 
 		:base(
-			new SpiritPresence(
+			spirit => new SpiritPresence( spirit,
 				new PresenceTrack(Track.Energy0,Track.Energy1,Track.Energy2,Prepare(3),Track.Energy4,Track.Reclaim1Energy,Track.Energy5,Prepare(6)),
 				new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,DiscardElementsForCardPlay,Track.Card3)
 			)

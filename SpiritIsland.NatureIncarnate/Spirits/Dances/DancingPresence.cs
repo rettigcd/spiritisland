@@ -63,8 +63,8 @@ public class DancingPresence : SpiritPresence {
 
 	#endregion Custome Track spaces
 
-	public DancingPresence() 
-		:base(
+	public DancingPresence(Spirit spirit) 
+		:base( spirit,
 			new PresenceTrack( One, MovePresence, Track.Energy2, AdditionalImpending, Track.Energy3, TwoImpendingEnergy, FourAny ),
 			new PresenceTrack( Track.Card2, GatherDahan, MoonFire, AdditionalImpending, Track.EarthEnergy, Track.Card3, Track.Card4 )
 		) {

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Tests;
 
 public class ConfigurableSpirit : Spirit {
-	public ConfigurableSpirit(SpiritPresence presence):base( presence ){}
+	public ConfigurableSpirit(Func<Spirit,SpiritPresence> init):base( init ){}
 	public override string Text => "Configurable Spirit";
 
 	public override SpecialRule[] SpecialRules => throw new NotImplementedException();

@@ -5,7 +5,7 @@ public class DancesUpEarthquakes : Spirit {
 	public const string Name = "Dances Up Earthquakes";
 
 	public DancesUpEarthquakes() : base(
-		new DancingPresence()
+		spirit => new DancingPresence( spirit )
 		// Round 1
 		, PowerCard.For<ResoundingFootfallsSowDismay>() // fast,3 - Impend
 		, PowerCard.For<GiftOfSeismicEnergy>()          // fast,3 - Impend

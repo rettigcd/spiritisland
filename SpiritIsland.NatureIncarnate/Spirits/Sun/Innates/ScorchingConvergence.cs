@@ -18,7 +18,7 @@ public class ScorchingConvergence {
 			new SourceSelector( originOptions ),
 			new DestinationSelector( ctx.Tokens )
 		)
-			.AddAll( ctx.Self.Presence.Token )
+			.AddAll( ctx.Self.Presence )
 			.Config( MoveFrom.ASingleLand )
 			.DoN();
 

@@ -9,7 +9,7 @@ public class EmpoweredAbduct : IActionFactory {
 	public bool CouldActivateDuring( Phase speed, Spirit spirit )
 		=> speed == Phase.Fast && Incarna(spirit).Empowered;
 
-	static BreathIncarna Incarna(Spirit spirit) => ((BreathPresence)spirit.Presence).Incarna;
+	static Incarna Incarna(Spirit spirit) => ((BreathPresence)spirit.Presence).Incarna;
 
 	public async Task ActivateAsync( SelfCtx ctx ) {
 		var incarna = Incarna(ctx.Self);

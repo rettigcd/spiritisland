@@ -12,12 +12,17 @@ public class HeartOfTheWildfire : Spirit {
 		}
 	};
 	public HeartOfTheWildfire() : base( 
-		new BlazingPresence()
+		spirit => new SpiritPresence( spirit,
+			new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FirePlantEnergy, Track.Energy3 ),
+			new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 ),
+			new WildfireToken( spirit )
+		)
 		,PowerCard.For<AsphyxiatingSmoke>()
 		,PowerCard.For<FlashFires>()
 		,PowerCard.For<ThreateningFlames>()
 		,PowerCard.For<FlamesFury>()
 	) {
+
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(FireStorm)),
 			InnatePower.For(typeof(TheBurnedLandRegrows))
@@ -47,7 +52,7 @@ public class HeartOfTheWildfire : Spirit {
 	public override string Text => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {
-		BlazingPresence.Rule,
+		BlazingPresence_Rule,
 		WildfireToken.DestructiveNature_Rule
 	};
 
@@ -61,28 +66,14 @@ public class HeartOfTheWildfire : Spirit {
 		spaceState.Blight.Adjust(2); // Blight comes from the box, not the blight card
 	}
 
-	class BlazingPresence : SpiritPresence {
+	static Track FireCard => Track.MkCard( Element.Fire );
 
-		public static SpecialRule Rule = new SpecialRule(
-			"Blazing Presence",
-			"After you add or move presence after Setup, in the land it goes to: For each fire showing on your presence Tracks, do 1 Damage."
-			+"  If 2 fire or more are showing on your presence Tracks, add 1 blight."
-			+"  Push all beasts and any number of dahan.  Added blight does not destroy your presence."
-		);
-
-		static Track FireCard => Track.MkCard( Element.Fire );
-
-		public BlazingPresence():base(
-				new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FirePlantEnergy, Track.Energy3 ),
-				new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 )
-			) { }
-
-		public override void SetSpirit( Spirit spirit ) { 
-			base.SetSpirit( spirit );
-			Token = new WildfireToken( spirit );
-		}
-
-	}
+	public static SpecialRule BlazingPresence_Rule = new SpecialRule(
+		"Blazing Presence",
+		"After you add or move presence after Setup, in the land it goes to: For each fire showing on your presence Tracks, do 1 Damage."
+		+"  If 2 fire or more are showing on your presence Tracks, add 1 blight."
+		+"  Push all beasts and any number of dahan.  Added blight does not destroy your presence."
+	);
 
 	class WildfireToken : SpiritPresenceToken, IModifyRemovingTokenAsync, IHandleTokenAddedAsync {
 
@@ -112,8 +103,8 @@ public class HeartOfTheWildfire : Spirit {
 			// !! There is a bug here somehow that after placing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
-			int fireCount = _spirit.Presence.TrackElements[Element.Fire];
-			var ctx = _spirit.BindSelf().Target( args.To );
+			int fireCount = Self.Presence.TrackElements[Element.Fire];
+			var ctx = Self.BindSelf().Target( args.To );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight

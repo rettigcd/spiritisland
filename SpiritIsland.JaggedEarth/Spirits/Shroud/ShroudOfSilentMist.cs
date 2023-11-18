@@ -25,7 +25,8 @@ public class ShroudOfSilentMist : Spirit {
 		SlowAndSilentDeathHealer.Rule,
 	};
 
-	public ShroudOfSilentMist():base(new SpiritPresence(
+	public ShroudOfSilentMist():base(
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(1, Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
 			new PresenceTrack(1, Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
 		)

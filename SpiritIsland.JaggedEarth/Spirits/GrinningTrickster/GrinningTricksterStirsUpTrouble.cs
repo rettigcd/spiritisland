@@ -14,7 +14,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	public GrinningTricksterStirsUpTrouble()
 		:base(
-			new SpiritPresence(
+			x => new SpiritPresence( x,
 				new PresenceTrack(Track.Energy1,Track.MoonEnergy,Track.Energy2,Track.AnyEnergy,Track.FireEnergy,Track.Energy3),
 				new PresenceTrack(Track.Card2,Track.Push1Dahan,Track.Card3,Track.Card3,Track.Card4,Track.AirEnergy,Track.Card5)
 			)

@@ -18,7 +18,7 @@ public class FinderOfPathsUnseen : Spirit {
 	#region constructor / initilization
 
 	public FinderOfPathsUnseen() : base(
-		new FinderPresence()
+		spirit => new FinderPresence( spirit )
 		, PowerCard.For<ACircuitousAndWendingJourney>()
 		, PowerCard.For<AidFromTheSpiritSpeakers>()
 		, PowerCard.For<OfferPassageBetweenWorlds>()

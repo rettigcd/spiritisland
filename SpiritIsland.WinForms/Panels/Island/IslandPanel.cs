@@ -180,7 +180,7 @@ class IslandPanel : IPanel {
 			Token.Wilds, Token.Badlands, Token.Isolate, Token.Vitality, Token.Quake
 		}	
 			.Union( spaceState.OfAnyTag( TokenCategory.Dahan, TokenCategory.Incarna, Token.Beast ) )
-			.Union( spaceState.OfAnyTag( _ctx._spirit.Presence.Token, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
+			.Union( spaceState.OfAnyTag( _ctx._spirit.Presence, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
 			.Cast<IToken>()
 			.ToArray();
 

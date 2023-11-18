@@ -33,7 +33,7 @@ public class WoundedPresence : SpiritPresence {
 
 	#endregion
 
-	public WoundedPresence():base(
+	public WoundedPresence(Spirit spirit):base(spirit,
 		new PresenceTrack( 1, Track.Energy0, WaterOrAnimal, Gather1Blight, Track.Energy1, Track.Energy3, Energy4FirePlant,   Energy5Any ),
 		new PresenceTrack( 1, Track.Card1,   Track.Card1,   Track.Card1,   Track.Card2,   Track.Card3,   Track.CardReclaim1, Track.Card4   )
 	) {

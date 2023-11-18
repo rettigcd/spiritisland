@@ -17,7 +17,7 @@ public class ASpreadOfRampantGreen : Spirit {
 	);
 
 	public ASpreadOfRampantGreen():base(
-		new RampantGreenPresence(),
+		spirit => new RampantGreenPresence( spirit ),
 		PowerCard.For<FieldsChokedWithGrowth>(),
 		PowerCard.For<GiftOfProliferation>(),
 		PowerCard.For<OvergrowInANight>(),

@@ -20,9 +20,10 @@ public partial class ManyMindsMoveAsOne : Spirit {
 
 	public ManyMindsMoveAsOne()
 		:base(
-			new ManyMindsPresence(
+			spirit => new SpiritPresence( spirit,
 				new PresenceTrack(Track.Energy0,Track.Energy1,Track.MkEnergy(Element.Air),Track.Energy2,Track.MkEnergy(Element.Animal),Track.Energy3,Track.Energy4),
-				new PresenceTrack(Track.Card1,Track.Card2,CardBoost,Track.Card3,Track.Card3,Track.Card4,Track.Card5)
+				new PresenceTrack(Track.Card1,Track.Card2,CardBoost,Track.Card3,Track.Card3,Track.Card4,Track.Card5),
+				new ManyMindsPresenceToken( spirit )
 			)
 				,PowerCard.For<ADreadfulTideOfScurryingFlesh>()
 				,PowerCard.For<BoonOfSwarmingBedevilment>()

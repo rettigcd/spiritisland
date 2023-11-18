@@ -46,9 +46,9 @@ public class HearthToken : SpiritPresenceToken
 
 	async Task PushUpToAllPresence( SpaceState from, IEnumerable<SpaceState> destinationOptions ) {
 
-		while(_spirit.Presence.IsOn(from)) {
+		while(Self.Presence.IsOn(from)) {
 			// #pushpresence
-			Space destination = await _spirit.Select( A.Space.ToPushPresence( from.Space, destinationOptions.Downgrade(), Present.Done, this ) );
+			Space destination = await Self.Select( A.Space.ToPushPresence( from.Space, destinationOptions.Downgrade(), Present.Done, this ) );
 			if(destination is null) break;
 
 			// apply...

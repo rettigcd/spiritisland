@@ -10,10 +10,10 @@ public class SharpFangs : Spirit {
 	public override string Text => Name;
 
 	public SharpFangs():base(
-		new FollowingPresence(
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 ),
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5Reclaim1 ),
-			Token.Beast
+			new FollowingPresenceToken( spirit, Token.Beast )
 		),
 		PowerCard.For<PreyOnTheBuilders>(),
 		PowerCard.For<TeethGleamFromDarkness>(),

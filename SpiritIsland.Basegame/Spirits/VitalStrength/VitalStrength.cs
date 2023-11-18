@@ -8,7 +8,7 @@ public class VitalStrength : Spirit {
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { EarthsVitality.Rule } ;
 
 	public VitalStrength():base(
-		new SpiritPresence(
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
 		),

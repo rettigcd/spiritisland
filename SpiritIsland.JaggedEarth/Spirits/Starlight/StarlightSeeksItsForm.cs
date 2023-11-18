@@ -67,7 +67,7 @@ public class StarlightSeeksItsForm : Spirit {
 
 
 	public StarlightSeeksItsForm():base(
-		new SpiritPresence(
+		spirit => new SpiritPresence( spirit,
 			new CompoundPresenceTrack(
 				new PresenceTrack( Track.Energy1, Track.Energy2, Track_PickElement, Track.Energy4),
 				new PresenceTrack( 0, NewGrowth1 ),

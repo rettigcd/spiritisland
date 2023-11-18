@@ -18,7 +18,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { FragmentsOfScatteredTime, DaysThatNeverWere };
 
 	public FracturedDaysSplitTheSky():base(
-		new SpiritPresence( 
+		x=> new SpiritPresence( x,
 			new PresenceTrack(Track.Energy1, Track.Energy1 , Track.Energy2, Track.Energy2, Track.Energy2, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3 )
 		)

@@ -2,7 +2,7 @@
 
 public class OceanPresence : SpiritPresence {
 
-	public OceanPresence( PresenceTrack energy, PresenceTrack cardPlays ) : base( energy, cardPlays ) {}
+	public OceanPresence( Spirit spirit, PresenceTrack energy, PresenceTrack cardPlays ) : base( spirit, energy, cardPlays ) {}
 
 	public override bool CanBePlacedOn( SpaceState s ) {
 		var tm = ActionScope.Current.TerrainMapper;

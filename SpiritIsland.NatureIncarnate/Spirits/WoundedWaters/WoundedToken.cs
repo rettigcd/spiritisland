@@ -13,7 +13,7 @@ class WoundedToken : SpiritPresenceToken, IHandleTokenAdded {
 
 	bool IsYourPowers{ get {
 		ActionScope scope = ActionScope.Current;
-		return scope.Category == ActionCategory.Spirit_Power && scope.Owner != _spirit;
+		return scope.Category == ActionCategory.Spirit_Power && scope.Owner != Self;
 	} }
 
 	async Task Serenity( ITokenAddedArgs args ) {
@@ -26,7 +26,7 @@ class WoundedToken : SpiritPresenceToken, IHandleTokenAdded {
 		// add or move any number o Dahan into one of your lands, you may Downgrade 1 Invader there (max oncer per power)
 		if(args.Added.HasTag(TokenCategory.Dahan))
 			// you may Downgrade 1 of those invaders (max once per Power)
-			await ReplaceInvader.Downgrade1( _spirit, args.To, Present.Done, Human.Invader );
+			await ReplaceInvader.Downgrade1( Self, args.To, Present.Done, Human.Invader );
 	}
 
 	public bool EnableSerenity = false;

@@ -58,7 +58,7 @@ public class SwirlAndSpill {
 	static TokenMover BuildTier2Pusher( TargetSpaceCtx ctx ) {
 		return ctx.Pusher
 			.AddGroup( 2, Human.Explorer, Human.Dahan, Token.Blight ) // from Tier 1
-			.AddGroup( 2, Human.Town, ctx.Self.Presence.Token, Token.Beast ); // Tier 2;
+			.AddGroup( 2, Human.Town, ctx.Self.Presence, Token.Beast ); // Tier 2;
 	}
 
 

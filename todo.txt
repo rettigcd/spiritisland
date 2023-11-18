@@ -3,7 +3,16 @@ NI: Spirits / Power Cards / Adversayrs / Fear / Blight
 
 
 
+Thoughts: Freezing
+	- Invaders > make them Dream-Invaders
+	- Dahan > Implement IStopDamage and IStopRemovable
+	- Can we find a way to do away with the Is-Removable test?
 
+Thoughts: Additional Tags For Presence 
+	- ActsAsPresence - when powers interact with "presence"
+	- LooksLikePresence - cylindrical presence token - night never be used
+	- LooksLikeIncarna - Incarna token
+	- Spirit - Presence/Incarna for a particular spirit
 
 
 

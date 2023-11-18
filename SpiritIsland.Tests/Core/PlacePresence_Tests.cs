@@ -6,7 +6,7 @@ public class PlacePresence_Tests : GrowthTests {
 		public override SpecialRule[] SpecialRules => throw new NotImplementedException();
 
 		public TestSpirit():base(
-			new SpiritPresence(
+			spirit => new SpiritPresence( spirit,
 				new PresenceTrack( Track.Energy0, Track.Energy0, Track.Energy0 ),
 				new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 			)

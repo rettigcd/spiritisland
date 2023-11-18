@@ -10,7 +10,7 @@ public class RiverSurges : Spirit {
 	public override string Text => Name;
 
 	public RiverSurges():base(
-		new RiverPresence(
+		spirit => new RiverPresence( spirit,
 			new PresenceTrack( Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5 )
 		),

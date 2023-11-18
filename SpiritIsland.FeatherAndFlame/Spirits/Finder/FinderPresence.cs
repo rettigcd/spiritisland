@@ -63,7 +63,7 @@ public class FinderPresence : SpiritPresence {
 	#endregion
 
 
-	public FinderPresence():base(
+	public FinderPresence(Spirit spirit):base(spirit,
 		new FinderTrack( Track.Energy0, Track.SunEnergy, OneMoon, TwoWater, Move1Air, Plus2, PlusOneAny ),
 		new FinderTrack( Track.Card1, Track.EarthEnergy, ExtraCardPlay, ExtraCardPlay, OneCoinExtendRange, Track.Push1TownCity )
 	) {

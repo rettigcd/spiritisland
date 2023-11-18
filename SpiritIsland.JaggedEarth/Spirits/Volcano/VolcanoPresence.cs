@@ -1,23 +1,22 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 class VolcanoPresence : SpiritPresence {
-	public VolcanoPresence(PresenceTrack t1, PresenceTrack t2 ) : base( t1, t2 ) {}
+
+	public VolcanoPresence(Spirit spirit,PresenceTrack t1, PresenceTrack t2 ) 
+		: base( spirit, t1, t2, new VolcanoToken( spirit ) ) {
+	}
 
 	public override bool CanBePlacedOn( SpaceState s ) => ActionScope.Current.TerrainMapper.MatchesTerrain( s, Terrain.Mountain );
 
-	public override void SetSpirit( Spirit spirit ) {
-		base.SetSpirit( spirit );
-		Token = new VolcanoToken( spirit );
-	}
-
 	static public ActionScopeValue<Space> SafeSpace = new( "Don't Destroy Presence On Space", (Space)default );
 
+	#region Track Presence-Destroyed-This-Action
 	const string DestroyedPresenceCount = "DestroyedPresenceCount";
 	static public int GetPresenceDestroyedThisAction() => ActionScope.Current.SafeGet( DestroyedPresenceCount, 0 );
 	static public void AddPresenceDestroyedThisAction( int value ) {
 		ActionScope.Current[DestroyedPresenceCount] = GetPresenceDestroyedThisAction() + value;
 	}
-
+	#endregion Tracking Presence-Destroyed-This-Action
 }
 
 public class VolcanoToken : SpiritPresenceToken, IModifyRemovingToken {
@@ -37,8 +36,8 @@ public class VolcanoToken : SpiritPresenceToken, IModifyRemovingToken {
 		// Destroying Volcano presence, causes damage to Dahan and invaders
 		// Create a TargetSpaceCtx to include Bandlands damage also.
 		var selfCtx = ActionScope.Current.Category == ActionCategory.Spirit_Power // ??? is this needed => && actionScope.Owner == spirit
-			? _spirit.BindMyPowers()
-			: _spirit.BindSelf();
+			? Self.BindMyPowers()
+			: Self.BindSelf();
 		var ctx = selfCtx.Target( args.From );
 
 		await ctx.DamageInvaders( args.Count );
@@ -49,6 +48,5 @@ public class VolcanoToken : SpiritPresenceToken, IModifyRemovingToken {
 		await ctx.DamageDahan( args.Count );
 
 	}
-
 
 }

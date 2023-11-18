@@ -11,7 +11,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 	};
 
 	public RelentlessGazeOfTheSun():base( 
-		new SunPresence()
+		spirit => new SunPresence(spirit)
 		,PowerCard.For<BlindingGlare>()
 		,PowerCard.For<UnbearableGaze>()
 		,PowerCard.For<WitherBodiesScarStones>()

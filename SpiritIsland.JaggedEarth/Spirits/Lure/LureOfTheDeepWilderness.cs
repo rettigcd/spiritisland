@@ -9,7 +9,7 @@ public class LureOfTheDeepWilderness : Spirit {
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule };
 
 	public LureOfTheDeepWilderness():base( 
-		new LurePresence()
+		x => new LurePresence(x)
 		,PowerCard.For<GiftOfTheUntamedWild>()
 		,PowerCard.For<PerilsOfTheDeepestIsland>()
 		,PowerCard.For<SoftlyBeckonEverInward>()

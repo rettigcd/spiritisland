@@ -5,12 +5,13 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 	public const string Name = "Breath of Darkness Down Your Spine";
 
 	public BreathOfDarknessDownYourSpine() : base(
-		new BreathPresence()
+		spirit => new BreathPresence( spirit )
 		, PowerCard.For<EmergeFromTheDreadNightWind>()
 		, PowerCard.For<ReachFromTheInfiniteDarkness>()
 		, PowerCard.For<SwallowedByTheEndlessDark>()
 		, PowerCard.For<TerrorOfTheHunted>()
 	) {
+
 		// Growth
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape(int.MaxValue) ),
@@ -47,7 +48,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		gameState.OtherSpaces.Add(EndlessDark.Space);
 	}
 
-	public BreathIncarna Incarna => ((BreathPresence)Presence).Incarna;
+	public Incarna Incarna => ((BreathPresence)Presence).Incarna;
 
 	public override SelfCtx BindMyPowers( Spirit spirit ) {
 		ActionScope.Current.Upgrader = x => new TerrorStalksTheLand( x );

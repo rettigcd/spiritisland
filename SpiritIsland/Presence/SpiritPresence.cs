@@ -1,10 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresence : IKnowSpiritLocations {
+public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	#region constructors
 
-	public SpiritPresence( IPresenceTrack energy, IPresenceTrack cardPlays ) {
+	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token = null )	{
+		Self = spirit;
+
 		Energy = energy;
 		CardPlays = cardPlays;
 
@@ -13,7 +15,9 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 		InitEnergyAndCardPlays();
 
+		Token = token ?? new SpiritPresenceToken(spirit);
 	}
+
 
 	protected void InitEnergyAndCardPlays() {
 		// !!! in unit tests, Revealed is sometimes empty
@@ -23,13 +27,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 		}
 	}
 
-	public virtual void SetSpirit( Spirit spirit ) {
-		if(Self != null) throw new InvalidOperationException();
-		Self = spirit;
-		Token = new SpiritPresenceToken(spirit);
-	}
-
-	protected Spirit Self { get; set; }
+	protected Spirit Self { get; }
 
 	#endregion
 
@@ -73,7 +71,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	// ------------------------------
 
 	public async Task DestroyPresenceOn( SpaceState spaceState ) {
-		if(spaceState.Has( Token ))
+		if(spaceState.Has( this ))
 			await spaceState.Destroy( Token, 1 );
 	}
 
@@ -133,8 +131,8 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public virtual bool IsSacredSite( SpaceState space ) => 2 <= CountOn(space);
 
 	virtual public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token]; // For Predicate in a .Where(...)
-	virtual public bool IsOn( Board board ) => GameState.Current.Tokens.IsOn(Token,board);
-	virtual public bool IsOnIsland => GameState.Current.Tokens.IsOnAnyBoard( Token );
+	virtual public bool IsOn( Board board ) => Token.IsOn(board);
+	virtual public bool IsOnIsland => Token.IsOnIsland; // !!?? are we overriding to include Incarna?
 
 	virtual public int CountOn( SpaceState spaceState ) => spaceState[Token]; // For Mapper in a .Select(...)
 
@@ -192,7 +190,7 @@ public class SpiritPresence : IKnowSpiritLocations {
 	}
 
 	/// <remarks>Convenience - checks CanMove and token on space</remarks>
-	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && spaceState.Has(Token);
+	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && spaceState.Has(this);
 
 	public bool CanMove { get; set; } = true; // Spirit effect - Settle Into Hunting Grounds
 
@@ -208,11 +206,10 @@ public class SpiritPresence : IKnowSpiritLocations {
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
-	virtual public IEnumerable<Space> Spaces => GameState.Current.Tokens.Spaces_Existing( Token );
+	virtual public IEnumerable<Space> Spaces => Token.Spaces_Existing;
 
-	virtual public IEnumerable<SpaceToken> Deployed 
-		=> GameState.Current.Tokens.Spaces_Existing( Token ) // don't use .Spaces because it gets overriden to include non-token spaces
-		.Select( s=> Token.On(s) );
+	virtual public IEnumerable<SpaceToken> Deployed => Token.Deployed; // don't use .Spaces because it gets overriden to include non-token spaces
+
 	public IEnumerable<SpaceToken> Movable => CanMove ? Deployed : Enumerable.Empty<SpaceToken>();
 
 	/// <summary> Unfiltered </summary>
@@ -223,13 +220,20 @@ public class SpiritPresence : IKnowSpiritLocations {
 	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new();
 
 	/// <summary> The normal spirit presence. </summary>
-	public SpiritPresenceToken Token { 	get; set; }
+	public SpiritPresenceToken Token { get; }
+
+
+	#region ITokenClass Imp
+	string ITokenClass.Label => "Presence";
+	bool ITokenClass.HasTag( ITag tag ) => tag == this || tag == TokenCategory.Presence; // for both class and for token.
+	#endregion ITokenClass Imp
 
 	#region Memento
 
 	// Revealed Count + Placed.
 	public virtual IMemento<SpiritPresence> SaveToMemento() => new Memento( this );
 	public virtual void LoadFrom( IMemento<SpiritPresence> memento ) => ((Memento)memento).Restore( this );
+
 
 	protected class Memento : IMemento<SpiritPresence> {
 		public Memento( SpiritPresence src ) {

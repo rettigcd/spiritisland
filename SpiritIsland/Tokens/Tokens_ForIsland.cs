@@ -62,35 +62,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		ClearEventHandlers_ForRound();
 	}
 
-	#region ITrackMySpaces
-
-	// This should ONLY be called from SpaceState.Adjust so that tokens SpaceState & this stay in sync.
-	void IIslandTokenApi.Adjust( ITrackMySpaces token, Space space, int delta ) {
-		// Track which boards a token is on (and how many)
-		if(!_boardCounts.ContainsKey(token)) _boardCounts.Add(token,new CountDictionary<Board>());
-		foreach(Board board in space.Boards)
-			_boardCounts[token][board] += delta;
-		// Track which Spaces a token is on (and how many)
-		if(!_spaceCounts.ContainsKey( token )) _spaceCounts.Add( token, new CountDictionary<Space>() );
-		_spaceCounts[token][space] += delta;
-	}
-
-	public bool IsOn( ITrackMySpaces token, Board board ) => _boardCounts.ContainsKey( token ) && 0 < _boardCounts[token][board];
-
-	/// <returns>non-stasis spaces containing the (ITrackMySpaces) token.</returns>
-	/// <remarks>used for finding presence</remarks>
-	public IEnumerable<Space> Spaces_Existing( ITrackMySpaces token ) => _spaceCounts.ContainsKey( token ) 
-		? _spaceCounts[token].Keys.Where( Space.Exists ) 
-		: Enumerable.Empty<Space>();
-
-	/// <summary> Determines if the token is on any board. </summary>
-	public bool IsOnAnyBoard( ITrackMySpaces token ) => _boardCounts.ContainsKey( token ) && _boardCounts[token].Any();
-
-	readonly Dictionary<ITrackMySpaces,CountDictionary<Board>> _boardCounts = new Dictionary<ITrackMySpaces, CountDictionary<Board>>();
-	readonly Dictionary<ITrackMySpaces, CountDictionary<Space>> _spaceCounts = new Dictionary<ITrackMySpaces, CountDictionary<Space>>();
-
-	#endregion
-
 	protected class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
 			// Save TokenCounts
@@ -103,11 +74,15 @@ public class Tokens_ForIsland : IIslandTokenApi {
 			_doesNotExist = src._tokenCounts.Keys.Where(s=>!s.DoesExists).ToArray();
 		}
 		public void Restore( Tokens_ForIsland src ) {
+
+			// Clear out the ITrackMySpaces so that .Adjust below will properly initialize
+			var trackable = src._tokenCounts.Values.SelectMany(x=>x.OfType<ITrackMySpaces>()).Distinct();
+			foreach(ITrackMySpaces t in trackable) t.Clear();
+
 			// Restore TokenCounts
 			src._tokenCounts.Clear();
-			src._boardCounts.Clear();
-			src._spaceCounts.Clear();
-			var tokenApi = (IIslandTokenApi)src;
+//			var tokenApi = (IIslandTokenApi)src;
+
 			foreach(var space in _tokenCounts.Keys) {
 				// stasis
 				space.DoesExists = true; // when false, set below
@@ -117,7 +92,7 @@ public class Tokens_ForIsland : IIslandTokenApi {
 				foreach(var (token,count) in _tokenCounts[space].Select(x=>(x.Key,x.Value))) {
 					tokens.Init(token, count);
 					if(tokens is ITrackMySpaces tms)
-						tokenApi.Adjust(tms,space,count);
+						tms.TrackAdjust(space,count);
 				}
 			}
 			foreach(var space in _doesNotExist) space.DoesExists = false;

@@ -3,7 +3,7 @@
 public class SerpentSlumbering : Spirit {
 
 	public SerpentSlumbering() :base (
-		new SerpentPresence()
+		spirit => new SerpentPresence( spirit )
 		,PowerCard.For<ElementalAegis>()
 		,PowerCard.For<AbsorbEssence>()
 		,PowerCard.For<GiftOfFlowingPower>()

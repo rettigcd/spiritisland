@@ -1,3 +1,5 @@
+Command the Beast allows killing 1 explorer AND moving beast.
+
 =====  Fear Bugs  ====
 Unrest - Reduced City health by 1 but didn't get health icon.
 Seek Safety - Allowed for pushing explorer to space with no town / city.

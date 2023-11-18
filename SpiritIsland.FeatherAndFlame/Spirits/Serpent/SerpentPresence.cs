@@ -7,7 +7,7 @@ public class SerpentPresence : SpiritPresence {
 		Icon = new IconDescriptor { Text = "X" }
 	};
 
-	public SerpentPresence():base(
+	public SerpentPresence(Spirit spirit):base(spirit,
 		new PresenceTrack( Track.Energy1, Track.FireEnergy, Track.AnyEnergy, Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) ),
 		new PresenceTrack( Track.Card1,   Track.MkCard(Element.Moon), Track.Card2, Track.MkCard( Element.Water ), fakeEarth, Track.Card4,   Track.Card5Reclaim1 )
 	){

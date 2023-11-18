@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class BreathPresence : IncarnaPresence<BreathIncarna> {
+public class BreathPresence : IncarnaPresence {
 
 	static Track EmpowerIncarnaTrack => new Track("Empower"){
 		Action = new EmpowerIncarna(),
@@ -20,11 +20,11 @@ public class BreathPresence : IncarnaPresence<BreathIncarna> {
 		}
 	};
 
-	public BreathPresence() 
-		:base(
+	public BreathPresence(Spirit spirit) 
+		:base( spirit,
 			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.Energy3, EmpowerIncarnaTrack, Track.MkEnergy(4,Element.Animal), Track.MkEnergy(5,Element.Air) ),
 			new PresenceTrack( Track.Card2, MovePresence, Track.Card3, Track.MoonEnergy, Track.CardReclaim1, Card4Air ),
-			new BreathIncarna()
+			new Incarna(spirit,"BoDDyS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
 		) {
 		}
 

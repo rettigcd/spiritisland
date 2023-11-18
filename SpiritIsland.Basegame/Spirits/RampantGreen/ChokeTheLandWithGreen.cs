@@ -24,6 +24,7 @@ public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRav
 		return await SkipInvaderAction( space, "ravage" );
 	}
 
+	string ISkipBuilds.Text => SpaceAbreviation;
 	async Task<bool> ISkipBuilds.Skip( SpaceState space )
 		=> await SkipInvaderAction( space, $"build of {BuildEngine.InvaderToAdd.Value.Label}" );
 

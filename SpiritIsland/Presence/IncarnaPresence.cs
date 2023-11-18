@@ -1,13 +1,16 @@
 ﻿namespace SpiritIsland;
 
-public class IncarnaPresence<IncarnaTokenType> : SpiritPresence, IHaveIncarna where IncarnaTokenType : IIncarnaToken {
+public class IncarnaPresence
+	: SpiritPresence
+	, IHaveIncarna
+{
 
-	public IncarnaPresence( IPresenceTrack energyTrack, IPresenceTrack cardTrack, IncarnaTokenType incarna )
-		: base( energyTrack, cardTrack ) {
+	public IncarnaPresence( Spirit spirit, IPresenceTrack energyTrack, IPresenceTrack cardTrack, Incarna incarna )
+		: base( spirit, energyTrack, cardTrack ) {
 		Incarna = incarna;
 	}
 
-	public IncarnaTokenType Incarna { get; }
+	public Incarna Incarna { get; }
 	IIncarnaToken IHaveIncarna.Incarna => Incarna;
 	
 	public override int CountOn( SpaceState spaceState ) => base.CountOn( spaceState ) + spaceState[Incarna];
