@@ -36,7 +36,7 @@ public class Incarna
 	#region IEntityClass properties
 	public string Label => "My incarna???";
 
-	public bool HasTag(ITag tag) => tag == TokenCategory.Incarna; // Class and entity
+	public bool HasTag(ITag tag) => tag == this || tag == _spirit.Presence || tag == TokenCategory.Incarna; // Class and entity
 
 	#endregion
 
