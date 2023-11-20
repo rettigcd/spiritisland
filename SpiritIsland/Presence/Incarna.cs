@@ -19,7 +19,7 @@ public class Incarna
 	}
 
 	public SpaceState? Space => _spaceCounts.Keys
-		.Where(SpiritIsland.Space.Exists)
+		.Where( SpiritIsland.Space.Exists )
 		.Tokens()
 		.SingleOrDefault(); // 0 or 1
 
@@ -53,6 +53,8 @@ public class Incarna
 	}
 	void ITrackMySpaces.TrackAdjust( Space space, int delta ) {
 		_spaceCounts[space] += delta;
+		if(1 < _spaceCounts.Count)
+			throw new Exception("Incarna is in 2 places at the same time!");
 	}
 	CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
 }
