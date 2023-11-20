@@ -180,15 +180,16 @@ public class HabsburgMonarchy : IAdversary {
 
 }
 
-class TooManyBlight : BaseModEntity, IHandleTokenAddedAsync {
+class TooManyBlight : BaseModEntity, IReactToLandDamage {
 	int _badbadBlightCount = 0;
-	public Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
-		bool shouldAddBlight = args.Added == LandDamage.Token && 8 <= args.To[args.Added]
-			&& 8 <= args.To[args.Added];
-		if(shouldAddBlight)
-			_badbadBlightCount += args.Count;
+
+	Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens, int count ) {
+		bool shouldAddBadBadBlight = 8 <= tokens[LandDamage.Token];
+		if(shouldAddBadBadBlight)
+			_badbadBlightCount += count;
 		return Task.CompletedTask;
 	}
+
 	public void IrreparableDamage_LossCheck( GameState gameState ) {
 		if(gameState.Spirits.Length < _badbadBlightCount)
 			GameOverException.Lost( $"Irreparable Damage - {_badbadBlightCount} blight were added from 8+ land damage." );

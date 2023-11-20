@@ -121,23 +121,25 @@ public class Sweden : IAdversary {
 
 //	Level 1 - Heavy Mining: >=6 +1 blight
 //	The additional Blight does not destroy Presence or cause cascades.
-class HeavyMining : BaseModEntity, IHandleTokenAddedAsync {
+class HeavyMining : BaseModEntity, IHandleTokenAddedAsync, IReactToLandDamage {
 
 	public bool MiningRush { get; set; }
 
-	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
-
+	async Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens, int _ ) {
 		//	Level 1 - Heavy Mining: >=6 +1 blight
 		//	The additional Blight does not destroy Presence or cause cascades.
-		if(args.Added == LandDamage.Token && 6 <= args.To[args.Added]) {
+		if(6 <= tokens[LandDamage.Token]) {
 
 			var config = BlightToken.ForThisAction;
 			config.DestroyPresence = false;
 			config.ShouldCascade = false;
 
-			await args.To.Blight.AddAsync( 1 );
-			GameState.Current.LogDebug( "Heavy Mining: additional blight on " + args.To.Space.Text );
+			await tokens.Blight.AddAsync( 1 );
+			GameState.Current.LogDebug( "Heavy Mining: additional blight on " + tokens.Space.Text );
 		}
+	}
+
+	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
 
 		// Level 5 - Mining Rush: blight => +1 town on adjacent land 
 		if(MiningRush)

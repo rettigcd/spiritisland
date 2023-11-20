@@ -7,3 +7,7 @@ public interface IHandleTokenAdded {
 public interface IHandleTokenAddedAsync {
 	Task HandleTokenAddedAsync( ITokenAddedArgs args );
 }
+
+public interface IReactToLandDamage {
+	Task HandleDamageAddedAsync( SpaceState tokens, int damageAdded );
+}
