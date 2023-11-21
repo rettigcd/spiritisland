@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class GrinningTricksterStirsUpTrouble : Spirit {
 
@@ -71,16 +69,11 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		"After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land."
 	);
 
-	public override async Task<SpaceToken> AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
-
-		var st = await Select( An.Invader.ForStrife( tokens, groups ) );
-		if(st == null) return null;
-
+	public override async Task<SpaceToken> ApplyStrife( SpaceToken st ) {
+		var tokens = st.Space.Tokens;
 		HumanToken humanToken = await tokens.Add1StrifeTo( st.Token.AsHuman() );
-
 		if(Energy != 0)
 			await Pay1EnergyToStrifeInRange1Land( tokens );
-
 		return humanToken.On(tokens.Space);
 	}
 

@@ -56,10 +56,6 @@ public partial class ManyMindsMoveAsOne : Spirit {
 	}
 
 	public override SelfCtx BindDefault( Spirit spirit ) {
-		var a = ActionScope.Current;
-
-
-
 		ActionScope.Current.Upgrader = x => new ManyMindTokens( x );
 		return base.BindDefault( spirit );
 	}

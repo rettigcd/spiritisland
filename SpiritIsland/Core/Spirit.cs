@@ -622,11 +622,18 @@ public abstract partial class Spirit : IOption {
 
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public virtual async Task<SpaceToken> AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
-		SpaceToken st = await Select( An.Invader.ForStrife( tokens, groups ) );
-		return st == null ? null : (await tokens.Add1StrifeTo( st.Token.AsHuman() )).On(tokens.Space);
+	public async Task<SpaceToken> AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
+		if( groups.Length == 0) groups = Human.Invader;
+
+		var st = await new SourceSelector( tokens )
+			.AddGroup( 1, groups )
+			.GetSource( this, "Add Strife", Present.Always );
+		//		SpaceToken st = await Select( An.Invader.ForStrife( tokens, groups ) );
+		return st == null ? null : await ApplyStrife( st );
 	}
 
+	public virtual async Task<SpaceToken> ApplyStrife( SpaceToken st ) 
+		=> (await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() )).On( st.Space );
 }
 
 

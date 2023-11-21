@@ -41,14 +41,22 @@ public class Quota {
 	#region configure
 
 	public Quota AddGroup( int count, params ITokenClass[] classes ) {
+		VerifyClasses( classes );
 		_sharedGroupCounts.Add( new QuotaGroup( count, classes ) );
 		return this;
 	}
 
 	public Quota AddAll( params ITokenClass[] classes ) {
+		VerifyClasses( classes );
 		_sharedGroupCounts.Add( new QuotaGroup( classes ) );
 		return this;
 	}
+
+	static void VerifyClasses( ITokenClass[] classes ) {
+		if(classes.Length == 0)
+			throw new ArgumentOutOfRangeException( nameof( classes ), "Quota group musthave at least 1 class" );
+	}
+
 
 	public Quota BeVerbose() { _beVerbose=true; return this; }
 
