@@ -4,15 +4,19 @@ public class InflameTheFiresOfLife {
 
 	[MinorCard( "Inflame the Fires of Life", 1, Element.Moon, Element.Fire, Element.Plant, Element.Animal ),Slow,FromSacredSite( 1 )]
 	[Instructions( "Add 1 Disease. -or'- 1 Fear. Add 1 Strife. -If you have- 3 Animal: You may do both." ), Artist( Artists.KatBirmelin )]
-	static public Task ActAsync( TargetSpaceCtx ctx ) {
-
-		return ctx.SelectActionOption(
-			new SpaceCmd( "add disease ", ctx => ctx.Disease.AddAsync(1) ),
-			new SpaceCmd( "1 fear and 1 strife", FearAndStrife )
-		);
+	static public async Task ActAsync( TargetSpaceCtx ctx ) {
+		if( await ctx.YouHave("3 animal" )) {
+			await AddDisease.ActAsync( ctx );
+			await FearAndStrife.ActAsync( ctx );
+		} else 
+			await ctx.SelectActionOption( AddDisease, FearAndStrife );
 	}
 
-	static Task FearAndStrife( TargetSpaceCtx ctx ) {
+	static SpaceCmd AddDisease => new SpaceCmd( "add disease ", ctx => ctx.Disease.AddAsync(1) );
+
+	static SpaceCmd FearAndStrife => new SpaceCmd( "1 fear and 1 strife", FearAndStrife_Imp );
+
+	static Task FearAndStrife_Imp( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 );
 		return ctx.AddStrife();
 	}
