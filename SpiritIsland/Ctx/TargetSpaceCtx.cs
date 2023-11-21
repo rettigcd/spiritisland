@@ -25,6 +25,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 
 	// overridden by Trickster to Select-All - !!! Could be put on Spirit to make easier to override, then we could seal this class.
+	// !!! Check usages of Cmd.Pick1 and reroute through here for all Spirit Powers - so Trickster can do all.
 	public virtual async Task SelectActionOption( params IActOn<TargetSpaceCtx>[] options ) {
 		IActOn<TargetSpaceCtx>[] applicable = options
 			.Where( opt => opt != null && opt.IsApplicable( this ) )

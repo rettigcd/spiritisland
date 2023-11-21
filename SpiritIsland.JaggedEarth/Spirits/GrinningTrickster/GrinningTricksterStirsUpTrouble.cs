@@ -9,8 +9,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {  ARealFlairForDiscord,  CleaningUpMessesIsADrag };
 
-	static readonly SpecialRule ARealFlairForDiscord = new SpecialRule("A Real Flair for Discord", "After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land.");
-	static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule("Cleaning up Messes is a Drag", "After one of your Powers Removes blight, Destroy 1 of your presence.  Ignore this rule for Let's See What Happens.");
+	static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule(
+		"Cleaning up Messes is a Drag", 
+		"After one of your Powers Removes blight, Destroy 1 of your presence.  Ignore this rule for Let's See What Happens."
+	);
 
 	public GrinningTricksterStirsUpTrouble()
 		:base(
@@ -64,25 +66,33 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		return new SelfCtx( spirit );
 	}
 
-	public override async Task AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
+	static readonly SpecialRule ARealFlairForDiscord = new SpecialRule(
+		"A Real Flair for Discord", 
+		"After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land."
+	);
 
-		// ! Maybe this hould be in Trixter, and not in the Tokens...
+	public override async Task<SpaceToken> AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
 
 		var st = await Select( An.Invader.ForStrife( tokens, groups ) );
-		if(st == null) return;
-		
-		await tokens.Add1StrifeTo( st.Token.AsHuman() );
+		if(st == null) return null;
 
-		if(Energy == 0) return;
+		HumanToken humanToken = await tokens.Add1StrifeTo( st.Token.AsHuman() );
 
-		var nearbyInvaders = PowerRangeCalc.GetSpaceOptions( tokens.Adjacent, new TargetCriteria( 1 ) )
-			.SelectMany( ss => ss.InvaderTokens().On(ss.Space) )
-			.ToArray();
-		var invader2 = await Select( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
-		if(invader2 == null) return;
-		--Energy;
-		await invader2.Space.Tokens.Add1StrifeTo( invader2.Token.AsHuman() );
+		if(Energy != 0)
+			await Pay1EnergyToStrifeInRange1Land( tokens );
 
+		return humanToken.On(tokens.Space);
 	}
 
+	// A Real Flair for Discord
+	async Task Pay1EnergyToStrifeInRange1Land( SpaceState tokens ) {
+		var nearbyInvaders = PowerRangeCalc.GetSpaceOptions( tokens.Adjacent, new TargetCriteria( 1 ) )
+			.SelectMany( ss => ss.InvaderTokens().On( ss.Space ) )
+			.ToArray();
+		var invader2 = await Select( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		if(invader2 != null) {
+			--Energy;
+			await invader2.Space.Tokens.Add1StrifeTo( invader2.Token.AsHuman() );
+		}
+	}
 }

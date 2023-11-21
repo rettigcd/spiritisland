@@ -622,10 +622,9 @@ public abstract partial class Spirit : IOption {
 
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public virtual async Task AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
-		var st = await Select( An.Invader.ForStrife( tokens, groups ) );
-		if(st == null) return;
-		await tokens.Add1StrifeTo( st.Token.AsHuman() );
+	public virtual async Task<SpaceToken> AddStrife( SpaceState tokens, params HumanTokenClass[] groups ) {
+		SpaceToken st = await Select( An.Invader.ForStrife( tokens, groups ) );
+		return st == null ? null : (await tokens.Add1StrifeTo( st.Token.AsHuman() )).On(tokens.Space);
 	}
 
 }
