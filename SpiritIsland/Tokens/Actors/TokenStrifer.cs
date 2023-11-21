@@ -8,9 +8,10 @@ public class TokenStrifer {
 
 	public async Task DoN() {
 		while(true) {
-			var st = await _ss.GetSource( _spirit, "Add Strife", Present.Always );
-			if(st==null) return;
-			var result = (await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() )).On(st.Space);
+			var before = await _ss.GetSource( _spirit, "Add Strife", Present.Always );
+			if(before==null) return;
+			var after = (await before.Space.Tokens.Add1StrifeTo( before.Token.AsHuman() )).On(before.Space);
+			await NotifyAsync(before,after);
 		}
 
 	}
