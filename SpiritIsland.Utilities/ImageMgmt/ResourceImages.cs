@@ -390,7 +390,6 @@ public class ResourceImages {
 		Img.ReclaimHalf => "icons.Reclaim_Half.png",
 		Img.CardPlayPlusN => "icons.Cardplayplus.png",
 		Img.PlusOneRange => "icons.PlusOneRange.png",
-		Img.Push1dahan => "icons.Push1dahan.png",
 		Img.GainCard => "icons.GainCard.png",
 		Img.Icon_Major => "icons.major.png",
 		Img.MovePresence => "icons.MovePresence.png",
@@ -399,12 +398,15 @@ public class ResourceImages {
 		Img.GatherToOcean => "icons.Gathertoocean.png",
 		Img.Damage_2 => "icons.Damage_2.png",
 		Img.Oneenergyfire => "icons.Oneenergyfire.png",
-		Img.Land_Gather_Beasts => "icons.Land_Gather_Beasts.png",
-		Img.Land_Gather_Blight => "icons.Land_Gather_Blight.png",
-		Img.Land_Gather_Dahan => "icons.Land_Gather_Dahan.png",
-		Img.Land_Push_Town_City => "icons.Land_Push_Town-City.png",
-		Img.GainEnergyEqualToCardPlays => "icons.GainEnergyEqualToCardPlays.png",
 
+		Img.Land_Gather_Beasts  => "icons.Land_Gather_Beasts.png",
+		Img.Land_Gather_Blight  => "icons.Land_Gather_Blight.png",
+		Img.Land_Gather_Dahan   => "icons.Land_Gather_Dahan.png",
+		Img.Land_Push_Town_City => "icons.Land_Push_Town-City.png",
+		Img.Land_Push_Incarna   => "icons.Land_Push_Incarna.png",
+		Img.Land_Push_Dahan     => "icons.Land_Push_Dahan.png",
+
+		Img.GainEnergyEqualToCardPlays => "icons.GainEnergyEqualToCardPlays.png",
 		Img.RangeArrow => "icons.Range.png",
 		Img.MoveArrow => "icons.Moveicon.png",
 

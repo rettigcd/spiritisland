@@ -12,6 +12,7 @@ public static class Target {
 	public const string Inland     = "Inland";
 
 	public const string Blight     = "Blight";
+	public const string Strife     = "Strife";
 	public const string Dahan      = "Dahan";
 
 	public const string Invaders   = "Invaders";

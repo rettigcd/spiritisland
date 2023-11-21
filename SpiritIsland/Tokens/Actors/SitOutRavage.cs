@@ -26,7 +26,7 @@ static public class SitOutRavage {
 
 	}
 
-	static void SitOutNextRavage( SpaceState space, CountDictionary<HumanToken> sitOuts ) {
+	static public void SitOutNextRavage( SpaceState space, CountDictionary<HumanToken> sitOuts ) {
 		foreach(var pair in sitOuts)
 			DontParticipateInRavage( space, pair.Key, pair.Value );
 	}

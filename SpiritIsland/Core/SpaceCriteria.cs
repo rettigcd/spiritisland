@@ -123,6 +123,7 @@ public class SpaceCriteria {
 		[Target.Quake] = ( ctx ) => ctx.Tokens.Has(Token.Quake),
 
 		[Target.Blight] = ( ctx ) => ctx.Tokens.Blight.Any,
+		[Target.Strife] = ( ctx ) => ctx.Tokens.HasStrife,
 		[Target.NoBlight] = ( ctx ) => !ctx.Tokens.Blight.Any,
 
 		// Presence

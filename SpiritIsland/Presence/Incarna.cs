@@ -1,18 +1,19 @@
 ﻿namespace SpiritIsland;
 
+#nullable enable
 public class Incarna 
 	: IIncarnaToken
 	, ITokenClass
 	, ITrackMySpaces
 {
 
-	readonly Spirit _spirit;
+	public Spirit Self { get; }
 	readonly string _abreviation;
 	readonly Img _notEmpowered;
 	readonly Img _empowered;
 
 	public Incarna( Spirit spirit, string abrev, Img notEmpowered, Img empowered ) {
-		_spirit = spirit;
+		Self = spirit;
 		_abreviation = abrev;
 		_notEmpowered = notEmpowered;
 		_empowered = empowered;
@@ -36,7 +37,7 @@ public class Incarna
 	#region IEntityClass properties
 	public string Label => "My incarna???";
 
-	public bool HasTag(ITag tag) => tag == this || tag == _spirit.Presence || tag == TokenCategory.Incarna; // Class and entity
+	public bool HasTag(ITag tag) => tag == this || tag == Self.Presence || tag == TokenCategory.Incarna; // Class and entity
 
 	#endregion
 

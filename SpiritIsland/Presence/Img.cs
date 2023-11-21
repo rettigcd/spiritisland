@@ -16,7 +16,7 @@ public enum Img {
 	ReclaimAll,
 	ReclaimHalf,
 	Reclaim1,
-	Push1dahan,
+	Land_Push_Dahan,
 	GainCard,
 	Icon_Major,
 	MovePresence,
@@ -27,12 +27,14 @@ public enum Img {
 	Pushfromocean,
 	GatherToOcean,
 	Damage_2,
+	GainEnergyEqualToCardPlays,
 	Oneenergyfire,
 	Land_Gather_Beasts,
 	Land_Gather_Blight,
 	Land_Gather_Dahan,
-	GainEnergyEqualToCardPlays,
 	Land_Push_Town_City,
+	Land_Push_Incarna,
+
 
 	// Custom Growth
 	ShiftingMemory_PrepareEl,

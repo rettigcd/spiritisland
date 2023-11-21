@@ -172,6 +172,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		// Apply Damage
 		int damageApplied = await Invaders.UserSelectedDamage( Self, combinedDamage.Available, allowedTypes );
+
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 

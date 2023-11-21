@@ -14,6 +14,8 @@ public sealed class TokenMover {
 
 	#endregion
 
+	#region constructors
+
 	/// <summary>
 	/// Convenience constructor for 1 source space moving
 	/// </summary>
@@ -43,9 +45,7 @@ public sealed class TokenMover {
 		_destinationSelector = destinationSelector;
 	}
 
-	readonly Spirit _self;
-	readonly string _actionWord;
-	Present _upToNPresent = Present.Done;
+	#endregion constructors
 
 	public Task DoUpToN() => DoN( _upToNPresent );
 
@@ -78,9 +78,6 @@ public sealed class TokenMover {
 			: await spaceToken.Token.Move( spaceToken.Space.Tokens, destination );
 	}
 
-	readonly SourceSelector _sourceSelector;
-	readonly DestinationSelector _destinationSelector;
-	
 	#region Config
 
 	public TokenMover Config( Action<TokenMover> configuration ) { configuration( this); return this;}
@@ -98,6 +95,8 @@ public sealed class TokenMover {
 	/// Config - Destination
 	public TokenMover FilterDestination( Func<SpaceState, bool> filterDestination ) { _destinationSelector.FilterDestination(filterDestination); return this; }
 	public TokenMover FilterDestinationGroup( Func<IEnumerable<SpaceState>, IEnumerable<SpaceState>> filterGroup ) { _destinationSelector.FilterDestinationGroup( filterGroup ); return this; }
+
+	public TokenMover ConfigDestinationAsOptional() { _destinationSelector.ConfigAsOptional(); return this; }
 
 	#endregion
 
@@ -121,6 +120,12 @@ public sealed class TokenMover {
 	List<Func<TokenMovedArgs, Task>> _onMoved = new();
 
 	#endregion
+
+	readonly Spirit _self;
+	readonly string _actionWord;
+	Present _upToNPresent = Present.Done;
+	readonly SourceSelector _sourceSelector;
+	readonly DestinationSelector _destinationSelector;
 
 }
 

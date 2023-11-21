@@ -64,7 +64,7 @@ public class Track : IOption {
 
 	public static Track Push1Dahan => new Track( "Push1dahan" ){ 
 		Action = new Push1DahanFromLands(),
-		Icon = new IconDescriptor { BackgroundImg = Img.Push1dahan }
+		Icon = new IconDescriptor { BackgroundImg = Img.Land_Push_Dahan }
 	};
 
 	public static Track Push1TownCity => new Track( "Push1towncity" ) {

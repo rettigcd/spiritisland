@@ -119,7 +119,7 @@ public sealed class GrowthPainter : IDisposable{
 			"1 pieces Escape"                         => PiecesEscape( 1 ),
 			"2 pieces Escape"                         => PiecesEscape( 2 ),
 			"Move Incarna anywhere"                   => AddOrMoveIncarnaAnywhere(),
-			"AddOrMoveIncarnaToPresence"              => AddOrMoveIncarnaToPresence(),
+			"Add or Move Incarna to Presence"         => AddOrMoveIncarnaToPresence(),
 			// Ember Eyed
 			"Discard a Power Card with fire"          => DiscardCardWithFire(),
 			"Reclaim All with Fire"                   => ReclaimAllWithFire(),

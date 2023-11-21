@@ -10,7 +10,7 @@ public class TokenStrifer {
 		while(true) {
 			var before = await _ss.GetSource( _spirit, "Add Strife", Present.Always );
 			if(before==null) return;
-			var after = (await before.Space.Tokens.Add1StrifeTo( before.Token.AsHuman() )).On(before.Space);
+			var after = await before.Space.Tokens.Add1StrifeTo( before.Token.AsHuman() );
 			await NotifyAsync(before,after);
 		}
 

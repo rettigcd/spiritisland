@@ -11,13 +11,11 @@ public class TricksterTokens : SpaceState {
 	public override TokenMover Pusher( Spirit self, bool stoppedByBadlands=false ) 
 		=> base.Pusher( self, stoppedByBadlands ).RunAtMax( _runAtMax );
 
-	public override async Task<HumanToken> Add1StrifeTo( HumanToken invader ) {
-
+	public override async Task<SpaceToken> Add1StrifeTo( HumanToken invader ) {
 		HumanToken humanToken = await AddRemoveStrife( invader, 1, 1 );
 		if( _spirit.Energy != 0 )
 			await Pay1EnergyToStrifeInRange1Land();
-		return humanToken;
-
+		return humanToken.On(Space);
 	}
 
 	public static readonly SpecialRule ARealFlairForDiscord_Rule = new SpecialRule(

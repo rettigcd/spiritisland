@@ -53,6 +53,8 @@
     <None Remove="images\icons\Land_Gather_Beasts.png" />
     <None Remove="images\icons\Land_Gather_Blight.png" />
     <None Remove="images\icons\Land_Gather_Dahan.png" />
+    <None Remove="images\icons\Land_Push_dahan.png" />
+    <None Remove="images\icons\Land_Push_Incarna.png" />
     <None Remove="images\icons\Land_Push_Town-City.png" />
     <None Remove="images\icons\major.png" />
     <None Remove="images\icons\minor.png" />
@@ -72,7 +74,6 @@
     <None Remove="images\icons\PlusOneRange.png" />
     <None Remove="images\icons\PrepareElement.png" />
     <None Remove="images\icons\Presenceicon.png" />
-    <None Remove="images\icons\Push1dahan.png" />
     <None Remove="images\icons\Pushfromocean.png" />
     <None Remove="images\icons\Quake.png" />
     <None Remove="images\icons\Range.png" />
@@ -207,6 +208,7 @@
     <EmbeddedResource Include="images\icons\Land_Gather_Beasts.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Blight.png" />
     <EmbeddedResource Include="images\icons\Land_Gather_Dahan.png" />
+    <EmbeddedResource Include="images\icons\Land_Push_Incarna.png" />
     <EmbeddedResource Include="images\icons\Land_Push_Town-City.png" />
     <EmbeddedResource Include="images\icons\major.png" />
     <EmbeddedResource Include="images\icons\minor.png" />
@@ -226,7 +228,7 @@
     <EmbeddedResource Include="images\icons\PlusOneRange.png" />
     <EmbeddedResource Include="images\icons\PrepareElement.png" />
     <EmbeddedResource Include="images\icons\Presenceicon.png" />
-    <EmbeddedResource Include="images\icons\Push1dahan.png" />
+    <EmbeddedResource Include="images\icons\Land_Push_Dahan.png" />
     <EmbeddedResource Include="images\icons\Pushfromocean.png" />
     <EmbeddedResource Include="images\icons\Quake.png" />
     <EmbeddedResource Include="images\icons\Range.png" />
@@ -437,6 +439,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Volcano_Looming_High.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="images\spirits\Wandering_Voice_Keens_Delirium.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\Wounded_Waters_Bleeding.jpg">

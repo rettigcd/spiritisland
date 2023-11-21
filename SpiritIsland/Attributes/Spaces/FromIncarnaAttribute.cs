@@ -7,5 +7,5 @@ public class FromIncarnaAttribute : TargetSpaceAttribute {
 			new TargetingSourceCriteria( From.Incarna ), 
 			0, Target.Incarna 
 		) { }
-	public override string RangeText => $"S+";
+	public override string RangeText => $"-";
 }

@@ -232,6 +232,7 @@ public abstract partial class Spirit : IOption {
 			ForgetThisCard( cardToForget );
 		return cardToForget;
 	}
+
 	protected virtual IEnumerable<PowerCard> GetForgetableCards() 
 		=> InPlay                 // in play
 			.Union( Hand )        // in Hand

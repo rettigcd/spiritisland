@@ -277,7 +277,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
-	public virtual Task<HumanToken> Add1StrifeTo( HumanToken invader ) => AddRemoveStrife( invader, 1, 1 );
+	public virtual async Task<SpaceToken> Add1StrifeTo( HumanToken invader ) => (await AddRemoveStrife( invader, 1, 1 )).On(Space);
 
 	public Task<HumanToken> Remove1StrifeFrom( HumanToken invader, int tokenCount ) => AddRemoveStrife(invader,-1,tokenCount);
 

@@ -157,6 +157,7 @@ public static class PowerHeaderDrawer {
 		Target.EndlessDark => Img.Icon_EndlessDark,
 		Target.Quake => Img.Icon_Quake,
 		Target.Invaders => Img.Icon_Invaders,
+		Target.Strife => Img.Icon_Strife,
 		"Incarna" => Img.Icon_Incarna,
 		_ => Img.None
 	};

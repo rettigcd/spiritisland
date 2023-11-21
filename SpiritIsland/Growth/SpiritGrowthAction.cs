@@ -8,7 +8,7 @@ public interface IHelpGrow : IActionFactory {
 }
 
 // Marker for Commands that can Auto-run as part of a Growth Option
-public interface ICanAutoRun { }
+public interface ICanAutoRun {}
 
 /// <summary>
 /// Wraps a SelfCmd turning it into a GrowthAction

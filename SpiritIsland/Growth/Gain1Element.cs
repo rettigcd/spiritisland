@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <remarks>User selects 1 element they want to gain.</remarks>
-public class Gain1Element : SpiritAction {
+public class Gain1Element : SpiritAction, ICanAutoRun {
 
 	public Gain1Element( params Element[] elementOptions ) : base()
 	{

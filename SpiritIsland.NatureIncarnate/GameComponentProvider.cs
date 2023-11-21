@@ -10,6 +10,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[DancesUpEarthquakes.Name] = typeof(DancesUpEarthquakes ),
 		[RelentlessGazeOfTheSun.Name] = typeof(RelentlessGazeOfTheSun ),
 		[EmberEyedBehemoth.Name] = typeof( EmberEyedBehemoth ),
+		[WanderingVoiceKeensDelirium.Name] = typeof( WanderingVoiceKeensDelirium ),
 	};
 
 	public string[] SpiritNames => SpiritTypes.Keys.ToArray();

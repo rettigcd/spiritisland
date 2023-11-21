@@ -7,6 +7,9 @@ public class DrawFromDeck {
 		return powerType == PowerType.Minor ? GameState.Current.MinorCards : GameState.Current.MajorCards;
 	}
 
+	/// <summary>
+	/// Does the "Gain Power Card" action
+	/// </summary>
 	static public async Task<DrawCardResult> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, int numberToKeep ) {
 		List<PowerCard> candidates = deck.Flip(numberToDraw);
 

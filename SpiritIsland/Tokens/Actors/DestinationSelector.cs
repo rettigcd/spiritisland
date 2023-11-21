@@ -50,6 +50,10 @@ public class DestinationSelector {
 		return this;
 	}
 
+	public DestinationSelector ConfigAsOptional() {
+		_present = Present.Done;
+		return this;
+	}
 
 	#endregion public config
 
@@ -64,7 +68,7 @@ public class DestinationSelector {
 			.Where(ss=>TerrainMapper.Current.IsInPlay(ss.Space));
 
 		return await spirit.Select(
-			new A.Space( $"{actionWord} {sourceSpaceToken.Token.Text} to", inPlay.Downgrade(), Present.AutoSelectSingle )
+			new A.Space( $"{actionWord} {sourceSpaceToken.Token.Text} to", inPlay.Downgrade(), _present )
 				.ComingFrom( sourceSpaceToken.Space )
 				.ShowTokenLocation( sourceSpaceToken.Token )
 			);
@@ -75,5 +79,6 @@ public class DestinationSelector {
 	Func<IEnumerable<SpaceState>, IEnumerable<SpaceState>> _filterDestination = x => x;
 
 	readonly protected Func<SpaceToken, SpaceState[]> _unfiltered;
+	Present _present = Present.AutoSelectSingle;
 
 }

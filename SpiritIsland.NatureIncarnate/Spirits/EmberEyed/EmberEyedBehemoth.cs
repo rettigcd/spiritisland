@@ -6,6 +6,12 @@ public class EmberEyedBehemoth : Spirit {
 
 	public override string Text => Name;
 
+	class DiscardPowerCardWithFireFromHand : DiscardCard {
+		public DiscardPowerCardWithFireFromHand() 
+			: base( "Discard a Power Card with fire", spirit => spirit.Hand.Where( card => 0 < card.Elements[Element.Fire] ) ) 
+		{}
+	}
+
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {
 		new SpecialRule("The Behemoth Rises","You have an Incarna.  Once/turn, during any phase, you may push it or Add/Move it to any of your Sacred Sites."),
 		UnrelentingStrikes_Rule
@@ -36,7 +42,7 @@ public class EmberEyedBehemoth : Spirit {
 				new GainPowerCard(),
 				new PlacePresence( 1 ),
 				new GainEnergy( 3 ),
-				new DiscardPowerCardWithFire()
+				new DiscardPowerCardWithFireFromHand()
 			),
 			new GrowthOption(
 				new ReclaimAllWithFire(),

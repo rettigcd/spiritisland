@@ -5,12 +5,12 @@ namespace SpiritIsland.WinForms;
 public static class TokenParser {
 	public static string[] Tokenize( string s ) {
 
-		var tokens = new Regex( "sacred site|destroyedpresence|presence|fast|slow"
+		var tokens = new Regex( "\\b(sacred site|destroyedpresence|presence|fast|slow"
 			+ "|dahan|blight|fear|city|town|explorer"
 			+ "|sun|moon|air|fire|water|plant|animal|earth"
-			+ "|wetland|jungle|mountain|sands"
+			+ "|wetland|jungle|mountain|sands?"
 			+ "|beasts?|disease|strife|wilds|badlands|vitality|quake"
-			+ "|\\+1range|-or-|incarna|endless-dark|cardplay|impending", RegexOptions.IgnoreCase
+			+ "|\\+1range|-or-|incarna|endless-dark|cardplay|impending)\\b", RegexOptions.IgnoreCase
 		).Matches( s ).Cast<Match>().ToList();
 
 		var results = new List<string>();
