@@ -224,7 +224,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );
 
 	/// <summary> Has no Isolate token. </summary>
-	public bool IsConnected => this[Token.Isolate] == 0;
+	public bool IsConnected => !OfType<IIsolate>().Any(x=>x.IsIsolated);
 
 	#endregion
 
