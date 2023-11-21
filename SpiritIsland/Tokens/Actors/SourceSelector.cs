@@ -1,6 +1,4 @@
-﻿using SpiritIsland.A;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Presents user with ability to select from many *REMOVABLE* tokens on many spaces.
@@ -22,16 +20,30 @@ public class SourceSelector {
 	/// <param name="singleDestination">Draws arrows to destination if there is only one.</param>
 	public async Task<SpaceToken> GetSource( Spirit spirit, string actionPromptPrefix, Present present, Space singleDestination = null ) {
 		SpaceToken[] options = await GetSourceOptions();
-		string remaining = _quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
-		string prompt = $"{actionPromptPrefix} ({remaining})";
+		string prompt = _promptBuilder != null 
+			? _promptBuilder(options) 
+			: BuildPrompt( actionPromptPrefix, options );
 
 		// Select Token
 		SpaceToken source = await spirit.Select( new A.SpaceToken( prompt, options, present ).PointArrowTo( singleDestination ) );
-		if(source != null){
+		if(source != null) {
 			_quota.MarkTokenUsed( source.Token );
 			await NotifyAsync( source );
 		}
 		return source;
+	}
+
+	public SourceSelector ConfigPrompt( Func<SpaceToken[],string> promptBuilder ) {
+		_promptBuilder = promptBuilder;
+		return this;
+	}
+
+	Func<SpaceToken[],string> _promptBuilder;
+
+	string BuildPrompt( string actionPromptPrefix, SpaceToken[] options ) {
+		string remaining = _quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
+		string prompt = $"{actionPromptPrefix} ({remaining})";
+		return prompt;
 	}
 
 	#region public Config

@@ -160,33 +160,30 @@ public sealed class InvaderBinding {
 	}
 
 	public Task<int> UserSelectedDamage( Spirit damagePicker, int damage, params ITokenClass[] allowedTypes ) {
-		return UserSelectedDamage_Internal( damage, damagePicker, Present.Always, allowedTypes );
-	}
-
-	public Task<int> UserSelectedPartialDamage( int damage, Spirit damagePicker, params ITokenClass[] allowedTypes ) {
-		return UserSelectedDamage_Internal(damage,damagePicker, Present.Done, allowedTypes );
+		if(allowedTypes.Length == 0) allowedTypes = Human.Invader;
+		SourceSelector selector = new SourceSelector(Tokens).AddAll(allowedTypes);
+		return UserSelectedDamage( damagePicker, damage, selector, Present.Always );
 	}
 
 	// This is the standard way of picking - by TokenClass
-	async Task<int> UserSelectedDamage_Internal( int damage, Spirit damagePicker, Present present, params ITokenClass[] allowedTypes ) {
+	public async Task<int> UserSelectedDamage( Spirit damagePicker, int damage, SourceSelector selector, Present present ) {
 		if(damage == 0) return 0;
-		if(allowedTypes == null || allowedTypes.Length == 0)
-			allowedTypes = Human.Invader;
 
-		//Quota quota = new Quota();
-		//quota.AddAll(allowedTypes);
-		//quota.RemainingTypes
+		selector
+			.ConfigPrompt(_ => $"Damage ({damage} remaining)")
+			.FilterSpaceToken(_ => 0 < damage);
 
-		IToken[] invaderTokens;
 		int damageInflicted = 0;
-		while(damage > 0 && 0 < (invaderTokens = Tokens.OfAnyTag( allowedTypes ).ToArray()).Length) {
-			var st = await damagePicker.Select( An.Invader.ForAggregateDamage( invaderTokens.On( Tokens.Space ), damage, present ) );
+		while( true) {
+			var st = await selector.GetSource( damagePicker, "", present ); 
 			if(st==null) break;
 			var invaderToDamage = st.Token.AsHuman();
 			await ApplyDamageTo1( 1, invaderToDamage );
 			--damage;
 			++damageInflicted;
+
 		}
+
 		return damageInflicted;
 	}
 

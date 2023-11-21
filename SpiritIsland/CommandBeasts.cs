@@ -51,7 +51,12 @@ internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 		int badlandCount = ctx.Badlands.Count;
 
 		var totalDamage = ctx.BonusDamageForAction( damage );
-		int damageDone = await ctx.Invaders.UserSelectedPartialDamage( damage, ctx.Self );
+
+		int damageDone = await ctx.Invaders.UserSelectedDamage(ctx.Self, damage, 
+			new SourceSelector(ctx.Tokens).AddAll(Human.Invader),
+			Present.Done
+		);
+
 		totalDamage.TrackDamageDone( damageDone );
 
 		return damageDone == 0 
