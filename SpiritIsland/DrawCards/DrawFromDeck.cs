@@ -2,32 +2,38 @@
 
 public class DrawFromDeck {
 
-	public static async Task<PowerCardDeck> SelectPowerCardDeck( Spirit spirit ) {
+	static public async Task<PowerCardDeck> SelectPowerCardDeck( Spirit spirit ) {
 		PowerType powerType = await spirit.Select( new A.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
-		GameState gs = GameState.Current;
-		return powerType == PowerType.Minor ? gs.MinorCards : gs.MajorCards;
+		return powerType == PowerType.Minor ? GameState.Current.MinorCards : GameState.Current.MajorCards;
 	}
 
 	static public async Task<DrawCardResult> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, int numberToKeep ) {
 		List<PowerCard> candidates = deck.Flip(numberToDraw);
 
 		var selectedCards = new List<PowerCard>();
-		while(numberToKeep-- > 0) {
-			var selected = await TakeCard( spirit, candidates );
-			selectedCards.Add( selected );
+		while(0 < numberToKeep--) {
+			PowerCard selectedCard = await	PickOutCard( spirit, candidates );
+			selectedCards.Add( selectedCard );
 		}
 
+		spirit.Hand.AddRange( selectedCards );
 		deck.Discard( candidates );
+
 		return new DrawCardResult( selectedCards[0].PowerType ){
 			SelectedCards = selectedCards.ToArray(),
 			Rejected = candidates
 		};
 	}
 
-	public static async Task<PowerCard> TakeCard( Spirit spirit, List<PowerCard> flipped ) {
+	/// <summary>
+	/// (Helper)
+	/// User selects 1 card from the List, 
+	/// Removes it from the List, AND
+	/// RETURNS it.
+	/// </summary>
+	static public async Task<PowerCard> PickOutCard( Spirit spirit, List<PowerCard> flipped ) {
 		string powerType = flipped.Select(x=>x.PowerType.Text ).Distinct().Join("/");
-		var selectedCard = await spirit.SelectPowerCard( $"Select {powerType} Power Card", flipped, CardUse.AddToHand, Present.Always );
-		spirit.Hand.Add( selectedCard );
+		PowerCard selectedCard = await spirit.SelectPowerCard( $"Select {powerType} Power Card", flipped, CardUse.AddToHand, Present.Always );
 		flipped.Remove( selectedCard );
 		return selectedCard;
 	}

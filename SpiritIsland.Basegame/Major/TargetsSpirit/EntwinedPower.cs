@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame;
+﻿using SpiritIsland.A;
+
+namespace SpiritIsland.Basegame;
 
 public class EntwinedPower {
 
@@ -18,7 +20,9 @@ public class EntwinedPower {
 		// Target spirit gains a power Card.
 		var result = await ctx.OtherCtx.Draw();
 		// You gain one of the power Cards they did not keep.
-		await DrawFromDeck.TakeCard( ctx.Self, result.Rejected.ToList() );
+		ctx.Self.Hand.Add( 
+			await DrawFromDeck.PickOutCard( ctx.Self, result.Rejected.ToList() )
+        );
 
 		// if you have 2 water, 4 plant, 
 		if(await ctx.YouHave("2 water,4 plant")) {
