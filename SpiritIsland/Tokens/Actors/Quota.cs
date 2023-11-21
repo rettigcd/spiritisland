@@ -20,6 +20,24 @@ public class Quota {
 		? _sharedGroupCounts.Select( x => x.VerboseString( sourceSpaces ).ToString() ).Join( "/" )
 		: _sharedGroupCounts.Sum( q => q.CountToShow( sourceSpaces ) ).ToString();
 
+	public async Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( 
+		SpaceState sourceSpaceState, 
+		RemoveReason removeReason
+	) {
+		bool removing = removeReason != RemoveReason.None;
+
+		IEnumerable<IToken> tokens = sourceSpaceState.OfAnyTag( RemainingTypes );
+
+		// 'Removable' Filter on Tokens
+		if(removing)
+			tokens = await sourceSpaceState.WhereRemovable( tokens, removeReason );
+
+		var spaceTokens = tokens.On( sourceSpaceState.Space );
+
+		return spaceTokens;
+	}
+
+
 	#region configure
 
 	public Quota AddGroup( int count, params ITokenClass[] classes ) {

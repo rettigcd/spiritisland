@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+﻿using SpiritIsland.A;
 
 namespace SpiritIsland;
 
@@ -99,25 +98,16 @@ public class SourceSelector {
 				await GetSourceOptionsOn1Space( sourceSpaceState )
 			);
 		}
-		return options.ToArray();
-	}
-
-	protected async Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) {
-
-		IEnumerable<IToken> tokens = sourceSpaceState.OfAnyTag( _quota.RemainingTypes );
-
-		// 'Removable' Filter on Tokens
-		if(_removeReason != RemoveReason.None)
-			tokens = await sourceSpaceState.WhereRemovable( tokens, _removeReason );
-
-		var spaceTokens = tokens.On( sourceSpaceState.Space );
 
 		// User filter on SpaceTokens
 		foreach(Func<SpaceToken, bool> f in _filterSpaceToken)
-			spaceTokens = spaceTokens.Where(f);
+			options = options.Where(f).ToList();
 
-		return spaceTokens;
+		return options.ToArray();
 	}
+
+	protected Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) 
+		=> _quota.GetSourceOptionsOn1Space( sourceSpaceState, _removeReason );
 
 	protected IEnumerable<SpaceState> SourceSpaces
 		=> _filterSpace == null ? _unfilteredSourceSpaces
