@@ -148,7 +148,7 @@ public sealed class InvaderBinding {
 
 		IToken[] options;
 		int damageInflicted = 0;
-		while(0 < damage && (options = Tokens.OfTypeHuman().Intersect( allowedTypes() ).ToArray()).Length > 0) {
+		while(0 < damage && (options = Tokens.Humans().Intersect( allowedTypes() ).ToArray()).Length > 0) {
 			var st = await damagePicker.Select( An.Invader.ForAggregateDamageFromSource( Tokens.Space, source, options, damage, Present.Always ) );
 			if( st == null) break;
 			var invaderToDamage = st.Token.AsHuman();
@@ -173,9 +173,13 @@ public sealed class InvaderBinding {
 		if(allowedTypes == null || allowedTypes.Length == 0)
 			allowedTypes = Human.Invader;
 
+		//Quota quota = new Quota();
+		//quota.AddAll(allowedTypes);
+		//quota.RemainingTypes
+
 		IToken[] invaderTokens;
 		int damageInflicted = 0;
-		while(damage > 0 && (invaderTokens = Tokens.OfAnyTag( allowedTypes ).ToArray()).Length > 0) {
+		while(damage > 0 && 0 < (invaderTokens = Tokens.OfAnyTag( allowedTypes ).ToArray()).Length) {
 			var st = await damagePicker.Select( An.Invader.ForAggregateDamage( invaderTokens.On( Tokens.Space ), damage, present ) );
 			if(st==null) break;
 			var invaderToDamage = st.Token.AsHuman();

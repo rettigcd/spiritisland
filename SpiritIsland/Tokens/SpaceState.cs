@@ -40,11 +40,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public IEnumerable<ISpaceEntity> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
 
-	// .OfType<> 
-	public IEnumerable<T> OfType<T>() => Keys.OfType<T>();
-	public IEnumerable<HumanToken> OfTypeHuman() => OfType<HumanToken>();
-	public IEnumerable<T> ModsOfType<T>() => Keys.Union( _islandMods ).OfType<T>();
-
 	// Misc
 	public ITokenClass[] ClassesPresent => OfType<IToken>().Select( x => x.Class ).Distinct().ToArray();
 
@@ -64,6 +59,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).On(Space);
 
 	// -- HumanToken[] --
+	public IEnumerable<HumanToken> Humans() => OfType<HumanToken>();
 	public HumanToken[] HumanOfTag( ITag tag ) => OfTagEnumeration( tag ).Cast<HumanToken>().ToArray();
 	public HumanToken[] HumanOfAnyTag( params ITag[] classes ) => OfAnyTagEnumeration( classes ).Cast<HumanToken>().ToArray();
 
@@ -72,8 +68,12 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public IToken[] OfAnyTag( params ITag[] tags ) => OfAnyTagEnumeration( tags ).ToArray();
 
 	// -- IEnumerable<IToken> --
-	protected IEnumerable<IToken> OfTagEnumeration( ITag tag ) => Keys.OfType<IToken>().Where( token => token.HasTag(tag) );
-	protected IEnumerable<IToken> OfAnyTagEnumeration( params ITag[] classes ) => Keys.OfType<IToken>().Where( token => token.HasAny(classes) );
+	protected IEnumerable<IToken> OfTagEnumeration( ITag tag ) => OfType<IToken>().Where( token => token.HasTag(tag) );
+	protected IEnumerable<IToken> OfAnyTagEnumeration( params ITag[] classes ) => OfType<IToken>().Where( token => token.HasAny(classes) );
+
+	// .OfType<> 
+	public IEnumerable<T> ModsOfType<T>() => Keys.Union( _islandMods ).OfType<T>();
+	public IEnumerable<T> OfType<T>() => Keys.OfType<T>();
 
 	// ==================
 	#endregion
@@ -187,10 +187,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public bool HasInvaders() => Has( TokenCategory.Invader );
 
-	public bool HasStrife => OfTypeHuman().Any(x=>0<x.StrifeCount);
-	public int StrifeCount => OfTypeHuman().Sum( x => x.StrifeCount );
+	public bool HasStrife => Humans().Any(x=>0<x.StrifeCount);
+	public int StrifeCount => Humans().Sum( x => x.StrifeCount );
 
-	public int CountStrife() => OfTypeHuman().Where(x=>x.StrifeCount>0).Sum( t => _counts[t] );
+	public int CountStrife() => Humans().Where(x=>0<x.StrifeCount).Sum( t => _counts[t] );
 
 	public int TownsAndCitiesCount() => this.SumAny( Human.Town_City );
 
@@ -281,6 +281,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	public Task<HumanToken> Remove1StrifeFrom( HumanToken invader, int tokenCount ) => AddRemoveStrife(invader,-1,tokenCount);
 
+	/// <returns>New invader</returns>
 	async Task<HumanToken> AddRemoveStrife( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
 
 		if(this[originalInvader] < tokenCount)

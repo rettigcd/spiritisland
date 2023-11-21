@@ -42,7 +42,7 @@ public class RavageExchange {
 	public int dahanDestroyed;
 
 	CountDictionary<HumanToken> GetSideParticipants( RavageSide side ) {
-		return Tokens.OfTypeHuman()
+		return Tokens.Humans()
 			.Where( token => token.RavageSide == side )
 			.ToDictionary( x => x, x => Tokens[x] )
 			.ToCountDict();

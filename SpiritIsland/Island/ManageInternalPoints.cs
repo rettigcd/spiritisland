@@ -83,7 +83,7 @@ public class ManageInternalPoints {
 	public ManageInternalPoints Init( SpaceState allTokens ) {
 
 		// invader groups
-		var groups = allTokens.OfTypeHuman()
+		var groups = allTokens.Humans()
 			.Where(x=>x.HumanClass.HasTag(TokenCategory.Invader))
 			.GroupBy(x=>x.HumanClass)
 			.ToArray();
