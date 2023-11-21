@@ -277,12 +277,12 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
-	public Task<HumanToken> Add1StrifeTo( HumanToken invader ) => AddRemoveStrife( invader, 1, 1 );
+	public virtual Task<HumanToken> Add1StrifeTo( HumanToken invader ) => AddRemoveStrife( invader, 1, 1 );
 
 	public Task<HumanToken> Remove1StrifeFrom( HumanToken invader, int tokenCount ) => AddRemoveStrife(invader,-1,tokenCount);
 
 	/// <returns>New invader</returns>
-	async Task<HumanToken> AddRemoveStrife( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
+	protected async Task<HumanToken> AddRemoveStrife( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
 
 		if(this[originalInvader] < tokenCount)
 			throw new ArgumentOutOfRangeException( $"collection does not contain {tokenCount} {originalInvader}" );

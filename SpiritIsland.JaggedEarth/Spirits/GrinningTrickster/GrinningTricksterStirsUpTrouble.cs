@@ -5,7 +5,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	public const string Name = "Grinning Trickster Stirs Up Trouble";
 	public override string Text => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {  ARealFlairForDiscord,  CleaningUpMessesIsADrag };
+	public override SpecialRule[] SpecialRules => new SpecialRule[] {  
+		TricksterTokens.ARealFlairForDiscord_Rule,  
+		CleaningUpMessesIsADrag
+	};
 
 	static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule(
 		"Cleaning up Messes is a Drag", 
@@ -60,32 +63,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit ) {
-		ActionScope.Current.Upgrader = (x) => new TrixterTokens( x );
+		ActionScope.Current.Upgrader = (x) => new TricksterTokens( this, x );
 		return new SelfCtx( spirit );
 	}
 
-	static readonly SpecialRule ARealFlairForDiscord = new SpecialRule(
-		"A Real Flair for Discord", 
-		"After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land."
-	);
 
-	public override async Task<SpaceToken> ApplyStrife( SpaceToken st ) {
-		var tokens = st.Space.Tokens;
-		HumanToken humanToken = await tokens.Add1StrifeTo( st.Token.AsHuman() );
-		if(Energy != 0)
-			await Pay1EnergyToStrifeInRange1Land( tokens );
-		return humanToken.On(tokens.Space);
-	}
-
-	// A Real Flair for Discord
-	async Task Pay1EnergyToStrifeInRange1Land( SpaceState tokens ) {
-		var nearbyInvaders = PowerRangeCalc.GetSpaceOptions( tokens.Adjacent, new TargetCriteria( 1 ) )
-			.SelectMany( ss => ss.InvaderTokens().On( ss.Space ) )
-			.ToArray();
-		var invader2 = await Select( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
-		if(invader2 != null) {
-			--Energy;
-			await invader2.Space.Tokens.Add1StrifeTo( invader2.Token.AsHuman() );
-		}
-	}
 }
+

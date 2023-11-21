@@ -34,7 +34,7 @@ public class LetsSeeWhatHappens {
 		// Use immediately. All 'up to' instructions must be used at max and 'OR's treated as 'AND's "
 		await using var maxScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		maxScope.Owner = ctx.Self;
-		maxScope.Upgrader = (x) => new TrixterTokens(x,runAtMax:true);
+		maxScope.Upgrader = (x) => new TricksterTokens(ctx.Self,x,runAtMax:true);
 
 		await card.InvokeOn( new LetsSeeWhatHappensCtx( ctx ) );
 		return card;
