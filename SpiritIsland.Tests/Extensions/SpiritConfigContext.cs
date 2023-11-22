@@ -8,7 +8,7 @@ internal class SpiritConfigContext {
 	}
 
 	public SpiritConfigContext Elements( string elementString ) {
-		var counts = ElementCounts.Parse( elementString );
+		var counts = ElementStrings.Parse( elementString );
 		foreach(var el in counts.Keys)
 			_spirit.Elements[el] = counts[el];
 		return this;

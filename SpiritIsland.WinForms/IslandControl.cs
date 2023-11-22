@@ -148,8 +148,15 @@ public partial class IslandControl : Control {
 		float x = bounds.X + actualMargin;
 		float y = bounds.Y + actualMargin;
 		foreach(var elementOption in elementOptions) {
-			using var img = ResourceImages.Singleton.GetImage( elementOption.Item );
-			var rect = new RectangleF( x, y, contentSize, contentSize );
+			RectangleF rect = new RectangleF( x, y, contentSize, contentSize );
+
+			if(elementOption.IsFocus) {
+				float lineWidth = contentSize*.05f;
+				using Pen focusPen = new Pen(Color.Red, lineWidth );
+				graphics.DrawLine(focusPen,rect.Left,rect.Bottom,rect.Right,rect.Bottom);
+			}
+
+			using Bitmap img = ResourceImages.Singleton.GetImage( elementOption.Item );
 			graphics.DrawImage( img, rect );
 			_optionRects.Add( elementOption, rect );
 

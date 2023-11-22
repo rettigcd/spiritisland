@@ -52,9 +52,9 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		.Select( x => x.Action )
 		.Where( x => x != null );
 
-	public ElementCounts TrackElements {
+	public CountDictionary<Element> TrackElements {
 		get {
-			var elements = new ElementCounts();
+			var elements = new CountDictionary<Element>();
 			Energy.AddElementsTo( elements );
 			CardPlays.AddElementsTo( elements );
 			return elements;

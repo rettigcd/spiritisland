@@ -32,19 +32,19 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(
-				new Gain1Element(Element.Air),
+				new GainAllElements(Element.Air),
 				new ReclaimAll(),
 				new GainTime(2)
 			),
 			new GrowthOption(
-				new Gain1Element(Element.Moon),
+				new GainAllElements(Element.Moon),
 				new GainPowerCard(), 
 				new PlacePresence(2), 
 				g2Repeater.BindSelfCmd( new GainTime(1) ),
 				g2Repeater.BindSelfCmd( new PlayExtraCardThisTurn(2) )
 			),
 			new GrowthOption(
-				new Gain1Element(Element.Sun),
+				new GainAllElements(Element.Sun),
 				new DrawPowerCardFromDaysThatNeverWere(),
 				new MovePresence(4),
 				g3Repeater.BindSelfCmd( new GainTime(1) ),

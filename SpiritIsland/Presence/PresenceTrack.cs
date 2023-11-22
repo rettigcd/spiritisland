@@ -46,7 +46,7 @@ public class PresenceTrack : IPresenceTrack {
 		return true;
 	}
 
-	public void AddElementsTo( ElementCounts elements ) {
+	public void AddElementsTo( CountDictionary<Element> elements ) {
 		foreach(var r in Revealed)
 			r.AddElement( elements );
 	}

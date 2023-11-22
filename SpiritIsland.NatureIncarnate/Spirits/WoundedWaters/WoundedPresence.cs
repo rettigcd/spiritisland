@@ -4,9 +4,9 @@ public class WoundedPresence : SpiritPresence {
 
 	#region Custom Tracks
 
-	static Track WaterOrAnimal => new Track( "Water/Animal" ) {
+	static Track WaterOrAnimal => new Track( "Water/Animal", MultiElements.Build(Element.Water,Element.Animal) ) {
 		Icon = new IconDescriptor { ContentImg = Img.Icon_Water, ContentImg2 = Img.Icon_Animal },
-		Action = new Gain1Element(Element.Water,Element.Animal),
+//		Action = new Gain1Element(Element.Water,Element.Animal),
 	};
 	static Track Energy4FirePlant => new Track( 4 + " energy" ) {
 		Energy = 4,

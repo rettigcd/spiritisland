@@ -7,7 +7,7 @@
 public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 
 	public InnateTierAttribute( string elementText, string description, int group = 0 ) {
-		Elements = ElementCounts.Parse( elementText );
+		Elements = ElementStrings.Parse( elementText );
 		Description = description;
 		Group = group;
 	}
@@ -16,14 +16,14 @@ public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 	/// Non-executable.  Called from dirived class
 	/// </summary>
 	protected InnateTierAttribute(string elementText, string description ) {
-		Elements = ElementCounts.Parse( elementText );
+		Elements = ElementStrings.Parse( elementText );
 		Description = description;
 		Group = null;
 	}
 
 	public virtual string ThresholdString => Elements.BuildElementString(); // overridden by Volcano
 
-	public ElementCounts Elements { get; }
+	public CountDictionary<Element> Elements { get; }
 
 	public string Description { get; }
 
@@ -33,7 +33,7 @@ public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 
 	string IOption.Text => Elements.BuildElementString() + " - " + Description;
 
-	public virtual bool IsActive( ElementCounts activatedElements ) => activatedElements.Contains( Elements );
+	public virtual bool IsActive( ElementMgr spiritElements ) => spiritElements.Contains( Elements );
 
 }
 
@@ -57,7 +57,7 @@ public interface IDrawableInnateTier : IOption {
 
 	string Description { get; }
 
-	ElementCounts Elements { get; }
+	CountDictionary<Element> Elements { get; }
 
-	bool IsActive( ElementCounts activatedElements );
+	bool IsActive( ElementMgr activatedElements );
 }

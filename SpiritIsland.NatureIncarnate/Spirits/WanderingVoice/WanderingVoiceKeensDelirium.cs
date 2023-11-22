@@ -3,12 +3,9 @@
 public class WanderingVoiceKeensDelirium : Spirit {
 	public const string Name = "Wandering Voice Keens Delirium";
 
-	// Draw growth/icons???
-	// Images in Cache directory
-
-	static Track SunOrMoon =>  new Track( "Sun/Moon" ) {
+	static Track SunOrMoon =>  new Track( "Sun/Moon", MultiElements.Build(Element.Sun,Element.Moon) ) {
 		Icon = new IconDescriptor { ContentImg = Img.Icon_Sun, ContentImg2 = Img.Icon_Moon },
-		Action = new Gain1Element(Element.Sun,Element.Moon),
+//		Action = new Gain1Element(Element.Sun,Element.Moon),
 	};
 
 	static Track PushYourIncarna => new Track("Push Incarna") {
@@ -43,7 +40,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 				new GainPowerCard(),
 				new PlacePresence( 2 ),
 				new GainEnergy( 1 ),
-				new GainElements( Element.Air )
+				new GainAllElements( Element.Air )
 			)
 		);
 

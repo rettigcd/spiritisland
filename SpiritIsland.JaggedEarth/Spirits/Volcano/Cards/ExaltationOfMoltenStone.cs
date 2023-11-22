@@ -4,9 +4,9 @@ public class ExaltationOfMoltenStone {
 
 	[SpiritCard("Exaltation of Molten Stone",1, Element.Moon,Element.Fire,Element.Earth), Fast, AnotherSpirit]
 	[Instructions( "Split 1 Energy per Fire you have between yourself and target Spirit, as evenly as possible. Target Spirit gains +1 Range with their powers that originate from a Mountain." ), Artist( Artists.MoroRogers )]
-	public static Task ActAsync(TargetSpiritCtx ctx ) {
+	public static async Task ActAsync(TargetSpiritCtx ctx ) {
 		// Split 1 Energy per fire you have between yourself and target Spirit, as evenly as possible.
-		int fireCount = ctx.Self.Elements[Element.Fire];
+		int fireCount = await ctx.Self.Elements.GetAsync(Element.Fire);
 		int energyForSelf = fireCount / 2; // will round down
 		int energyForOther = fireCount - energyForSelf;
 		ctx.Self.Energy += energyForSelf;
@@ -14,8 +14,6 @@ public class ExaltationOfMoltenStone {
 
 		// Target Spirit gains +1 range with their Powers that originate from a Mountain
 		ExtendRangeFromMountains( ctx.OtherCtx );
-
-		return Task.CompletedTask;
 	}
 
 	static void ExtendRangeFromMountains( SelfCtx ctx ) {

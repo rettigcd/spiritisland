@@ -76,7 +76,7 @@ public sealed class GrowthPainter : IDisposable{
 			AddDestroyedPresence => PlacePresenceRect( action ),
 			MovePresence { Range: int range } => MovePresenceRect( range ),
 			PlayExtraCardThisTurn { Count: int count } => AdditionalPlay( count ),
-			GainElements { ElementsToGain: var els } => GainAllElementsRect( els ),
+			GainAllElements { ElementsToGain: var els } => GainAllElementsRect( els ),
 			Gain1Element { ElementOptions: var els } => Gain1ElementRect( els ),
 			_ => null,
 		} ?? action.Description switch {

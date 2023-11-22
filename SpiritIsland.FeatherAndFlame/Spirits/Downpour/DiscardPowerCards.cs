@@ -18,7 +18,8 @@ internal class DiscardPowerCards : SpiritAction {
 			if(card != null) {
 				// (Source-1) Purchased / Active
 				if(inPlay.Contains( card )) {
-					foreach(var el in card.Elements) spirit.Elements[el.Key] -= el.Value;// lose elements from forgotten card
+					foreach(var el in card.Elements) 
+						spirit.Elements.Remove( el.Key, el.Value );// lose elements from forgotten card
 					inPlay.Remove( card );
 					spirit.DiscardPile.Add( card );
 				} else if(hand.Contains( card )) {

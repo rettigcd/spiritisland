@@ -55,8 +55,7 @@ public class LightningsSwiftStrike : Spirit {
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 
-		bool canMakeSlowFast = speed == Phase.Fast 
-			&& Elements[Element.Air] > usedAirForFastCount;
+		bool canMakeSlowFast = speed == Phase.Fast && usedAirForFastCount < Elements.Get(Element.Air);
 
 		foreach(var h in AvailableActions)
 			if( h.CouldActivateDuring( speed, this ) || canMakeSlowFast && h.CouldActivateDuring(Phase.Slow,this) )

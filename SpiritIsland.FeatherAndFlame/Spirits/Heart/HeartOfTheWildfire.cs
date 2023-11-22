@@ -4,7 +4,7 @@ public class HeartOfTheWildfire : Spirit {
 
 	public const string Name = "Heart of the Wildfire";
 
-	static Track FirePlantEnergy => new Track( "fire,plant", Element.Fire, Element.Plant ) {
+	static Track FireAndPlantEnergy => new Track( "fire,plant", Element.Fire, Element.Plant ) {
 		Icon = new IconDescriptor {
 				BackgroundImg = Img.Coin,
 				ContentImg = Img.Token_Fire,
@@ -13,7 +13,7 @@ public class HeartOfTheWildfire : Spirit {
 	};
 	public HeartOfTheWildfire() : base( 
 		spirit => new SpiritPresence( spirit,
-			new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FirePlantEnergy, Track.Energy3 ),
+			new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FireAndPlantEnergy, Track.Energy3 ),
 			new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 ),
 			new WildfireToken( spirit )
 		)

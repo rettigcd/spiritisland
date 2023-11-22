@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public class GainElements : SpiritAction, ICanAutoRun {
+public class GainAllElements : SpiritAction, ICanAutoRun {
 
-	public GainElements( params Element[] elementsToGain ) : base() {
+	public GainAllElements( params Element[] elementsToGain ) : base() {
 		ElementsToGain = elementsToGain;
 	}
 
@@ -10,7 +10,7 @@ public class GainElements : SpiritAction, ICanAutoRun {
 		=> "GainElements(" + ElementsToGain.Select( x => x.ToString() ).Join( "," ) + ")";
 
 	protected override void Act( SelfCtx ctx ) 
-		=> ctx.Self.Elements.AddRange( ElementsToGain );
+		=> ctx.Self.Elements.Add( ElementsToGain );
 
 	public Element[] ElementsToGain { get; } // public for drawing
 }

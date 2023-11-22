@@ -114,7 +114,7 @@ public class Track : IOption {
 	/// </summary>
 	public IActOn<SelfCtx> Action { get; set; }
 
-	public virtual void AddElement( ElementCounts elements ) {
+	public virtual void AddElement( CountDictionary<Element> elements ) {
 		foreach(var el in Elements)
 			elements[el]++;
 	}

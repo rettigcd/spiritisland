@@ -11,8 +11,8 @@ public class TheTeemingHostArrives {
 
 	// 3 air 1 water 2 animal - Instead, Gather up to 1 beast per air you have.
 	[InnateTier("3 air,1 water,2 animal","Instead, Gather up to 1 beast per air you have.")]
-	static public Task Option2( TargetSpaceCtx ctx ) {
-		return ctx.GatherUpTo(ctx.Self.Elements[Element.Air],Token.Beast);
+	static public async Task Option2( TargetSpaceCtx ctx ) {
+		await ctx.GatherUpTo(await ctx.Self.Elements.GetAsync(Element.Air),Token.Beast);
 	}
 
 	// 1 fire 4 air 2 animal - push up to 3 beast

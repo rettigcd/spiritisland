@@ -16,8 +16,7 @@ public class ElementalTeachings {
 		var discarded = await smoa.DiscardElements(3,"Target Spirit");
 
 		// Target Spirit gains those Elements. (They can be any combination of elements)
-		foreach(var el in discarded)
-			ctx.Other.Elements[el.Key] += el.Value;
+		ctx.Other.Elements.Add( discarded );
 	}
 
 }

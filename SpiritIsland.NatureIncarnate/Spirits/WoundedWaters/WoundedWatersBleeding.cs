@@ -81,7 +81,15 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	}
 
 	async Task ClaimAHealingMarker() {
-		int water = Elements[Element.Water], animal = Elements[Element.Animal];
+
+		// !!! Instead of Asking separately, ask TOGETHER and let them pick (or not pick), Then just use .Get() without asking.
+		int water = Elements.Get(Element.Water);
+		int animal = Elements.Get(Element.Animal);
+		if(animal == water - 1) // if animal is 1 behind
+			animal = await Elements.GetAsync(Element.Animal); // ask if they want to make it a tie
+		else if( water == animal - 1 )
+			water = await Elements.GetAsync(Element.Water);
+
 		var elementToSelect = water < animal ? Element.Animal
 			: animal < water ? Element.Water
 			: await this.SelectElementEx("Claim Healing Marker", new Element[] { Element.Water, Element.Animal} );
@@ -121,8 +129,8 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		new WatersTasteOfRuin()
 	};
 
-	ElementCounts IHaveSecondaryElements.SecondaryElements => HealingMarkers;
-	public ElementCounts HealingMarkers = new ElementCounts();
+	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements => HealingMarkers;
+	public CountDictionary<Element> HealingMarkers = new CountDictionary<Element>();
 	public bool HealingCardClaimed => HealingCards.Any(c=>c.IsClaimed(this));
 
 	#endregion Seeking a Path Towards Healing

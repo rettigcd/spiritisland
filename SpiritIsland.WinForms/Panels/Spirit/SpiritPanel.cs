@@ -62,21 +62,23 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 
 	void Paint_Elements( Graphics graphics ) {
 		// activated elements
-		DrawActivatedElements( graphics, _spirit.Elements, _elementLayout );
-		int skip = _spirit.Elements.Keys.Count; 
-		if(skip>1) skip++; // add a space
+		var visibleElements = _spirit.Elements.Elements;
+		DrawActivatedElements( graphics, visibleElements, _elementLayout );
+		int skip = visibleElements.Keys.Count; 
+		if(1<skip) skip++; // add a space
 		if(_spirit is IHaveSecondaryElements hasSecondaryElements)
 			DrawActivatedElements( graphics, hasSecondaryElements.SecondaryElements, _elementLayout, skip );
 	}
 
-	void DrawActivatedElements( Graphics graphics, ElementCounts elements, ElementLayout elLayout, int skip=0 ) {
+	void DrawActivatedElements( Graphics graphics, CountDictionary<Element> elements, ElementLayout elLayout, int skip=0 ) {
 
-		var orderedElements = elements.Keys.OrderBy( el => (int)el );
 		int idx = skip;
-		foreach(var element in orderedElements) {
-			var rect = elLayout.Rect(idx++);
+		foreach(var element in ElementList.AllElements) {
+			int count = elements[element];
+			if(count == 0) continue;
+			Rectangle rect = elLayout.Rect(idx++);
 			graphics.DrawImage( GetElementImage( element ), rect );
-			graphics.DrawCountIfHigherThan( rect, elements[element]);
+			graphics.DrawCountIfHigherThan( rect, count);
 		}
 	}
 

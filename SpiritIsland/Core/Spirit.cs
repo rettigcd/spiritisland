@@ -7,8 +7,8 @@ public abstract partial class Spirit : IOption {
 	public Spirit( Func<Spirit,SpiritPresence> initPresence, params PowerCard[] initialCards ) {
 
 		Presence = initPresence(this);
-		Presence.TrackRevealed.Add( args => Elements.AddRange(args.Track.Elements) );
-
+		Presence.TrackRevealed.Add( args => Elements.Add(args.Track.Elements) );
+	
 		foreach(var card in initialCards)
 			AddCardToHand(card);
 
@@ -17,6 +17,8 @@ public abstract partial class Spirit : IOption {
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, Cards = Hand });
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, Cards = InPlay });
 		decks.Add(new SpiritDeck{ Icon = Img.Deck_Discarded, Cards = DiscardPile } );
+
+		Elements = new ElementMgr(this);
 	}
 
 	public void InitSpirit( Board board, GameState gameState ){
@@ -42,38 +44,10 @@ public abstract partial class Spirit : IOption {
 
 	#region Elements
 
-	public readonly ElementCounts Elements = new ElementCounts();
+	public readonly ElementMgr Elements;
 
-	/// <summary>
-	/// Checks all elements that are available to spirit.
-	/// </summary>
-	public virtual bool CouldHaveElements( ElementCounts subset ) {
-		// For normal spirits without Prepared Elements, this is only the normal Elements
-		int wildCount = Elements[Element.Any];
-		return wildCount == 0 ? Elements.Contains(subset)  // no 'wild-card' elements, Elements must contain subset
-			: subset.Except(Elements).Count <= wildCount; // Find missing elements and count if they are less than our 'wild-card' elements
-	}
-
-	/// <summary>
-	/// Checks elements available, and commits them (like the 'Any' element)
-	/// </summary>
-	public virtual async Task<bool> HasElements( ElementCounts subset ) {
-		// For normal spirits without Prepared Elements, this is the same as Could Have Elements
-		if( Elements.Contains(subset) ) return true;
-		int wildCount = Elements[Element.Any];
-		if(wildCount == 0) return false;
-
-		// We have some wild cards
-		var missing = subset.Except( Elements );
-		if(missing.Count > wildCount) return false;
-
-		if( await this.UserSelectsFirstText("Activate: "+subset.BuildElementString()+"?", $"Yes, use {missing.Count} 'Any' elments", "No thanks" )) {
-			foreach(var p in missing) Elements[p.Key] += p.Value;
-			Elements[Element.Any] -= missing.Count;
-			return true;
-		}
-		return false;
-	}
+	public virtual bool CouldHaveElements( CountDictionary<Element> subset ) => Elements.CouldContain(subset);
+	public virtual Task<bool> HasElements( string description, CountDictionary<Element> subset ) => Elements.ContainsAsync(description, subset);
 
 	/// <summary>
 	/// Spirit determines which Option they can activate.
@@ -82,7 +56,7 @@ public abstract partial class Spirit : IOption {
 	public virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {
 		IDrawableInnateTier match = null;
 		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
-			if(await HasElements( option.Elements ))
+			if(await HasElements( "Innate Tier", option.Elements ))
 				match = option;
 		return match;
 	}
@@ -252,7 +226,7 @@ public abstract partial class Spirit : IOption {
 
 	void RemoveCardFromPlay( PowerCard cardToRemove ) {
 		foreach(var el in cardToRemove.Elements)
-			Elements[el.Key] -= el.Value;// lose elements from forgotten card
+			Elements.Remove(el.Key, el.Value);// lose elements from forgotten card
 		InPlay.Remove( cardToRemove );
 	}
 
@@ -389,8 +363,7 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public void InitElementsFromPresence() {
-		Elements.Clear();
-		Elements.Add( Presence.TrackElements );
+		Elements.Init( Presence.TrackElements );
 	}
 
 	// pluggable, draw power card
@@ -469,7 +442,7 @@ public abstract partial class Spirit : IOption {
 
 	protected void AddElements( PowerCard card ) {
 		foreach(var el in card.Elements)
-			Elements[el.Key] += el.Value;
+			Elements.Add(el.Key,el.Value);
 	}
 
 	#endregion
@@ -491,8 +464,7 @@ public abstract partial class Spirit : IOption {
 		public Memento(Spirit spirit) {
 			energy = spirit.Energy;
 			bonusCardPlay = spirit.tempCardPlayBoost;
-			elements = spirit.Elements.ToArray();
-			// preparedElements = spirit.PreparedElements.ToArray();
+			elements = spirit.Elements.Elements.ToArray();
 			presence = spirit.Presence.SaveToMemento();
 			hand      = spirit.Hand.ToArray();
 			purchased = spirit.InPlay.ToArray();
@@ -506,7 +478,7 @@ public abstract partial class Spirit : IOption {
 		public void Restore(Spirit spirit) {
 			spirit.Energy = energy;
 			spirit.tempCardPlayBoost = bonusCardPlay;
-			InitFromArray( spirit.Elements, elements);
+			InitFromArray( spirit.Elements.Elements, elements);
 			spirit.Presence.LoadFrom(presence);
 			spirit.Hand.SetItems( hand );
 			spirit.InPlay.SetItems( purchased );
@@ -532,7 +504,7 @@ public abstract partial class Spirit : IOption {
 		readonly IMemento<AsyncEvent<Spirit>> energyCollected;
 		readonly object tag;
 	}
-	static public void InitFromArray( ElementCounts dict, KeyValuePair<Element, int>[] array ) {
+	static public void InitFromArray( CountDictionary<Element> dict, KeyValuePair<Element, int>[] array ) {
 		dict.Clear();
 		foreach(var p in array) dict[p.Key] = p.Value;
 	}
@@ -630,5 +602,5 @@ public class SpiritDeck {
 }
 
 public interface IHaveSecondaryElements {
-	ElementCounts SecondaryElements { get; }
+	CountDictionary<Element> SecondaryElements { get; }
 }

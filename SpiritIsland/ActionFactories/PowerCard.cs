@@ -32,7 +32,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 	public string RangeText => _targetAttr.RangeText;
 
 	public int Cost            => _cardAttr.Cost;
-	public ElementCounts Elements  => _cardAttr.Elements;
+	public CountDictionary<Element> Elements  => _cardAttr.Elements;
 	public PowerType PowerType => _cardAttr.PowerType;
 	public Type MethodType     => _methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 

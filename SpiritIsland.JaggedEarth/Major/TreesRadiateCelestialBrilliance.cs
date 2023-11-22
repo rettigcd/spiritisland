@@ -18,7 +18,7 @@ public class TreesRadiateCelestialBrilliance {
 		// if you have 3 sun 2 moon 2 plant
 		if(await ctx.YouHave("3 sun,2 moon,2 plant"))
 			// 1 damage per sun you have.
-			await ctx.DamageInvaders( ctx.Self.Elements[Element.Sun] );
+			await ctx.DamageInvaders( await ctx.Self.Elements.GetAsync(Element.Sun) );
 	}
 
 }

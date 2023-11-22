@@ -15,7 +15,7 @@ public class CompoundPresenceTrack : IPresenceTrack {
 
 	public IReadOnlyCollection<Track> Slots => parts.SelectMany(p=>p.Slots).ToArray();
 
-	public void AddElementsTo( ElementCounts elements ) {
+	public void AddElementsTo( CountDictionary<Element> elements ) {
 		foreach(var part in parts)
 			part.AddElementsTo( elements );
 	}

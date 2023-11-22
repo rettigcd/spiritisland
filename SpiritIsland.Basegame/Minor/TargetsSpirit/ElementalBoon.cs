@@ -11,12 +11,12 @@ public class ElementalBoon {
 
 		// if you target another spirit, you also gain the chosen elements
 		if(ctx.Other != ctx.Self)
-			ctx.Self.Elements.AddRange( elements );
+			ctx.Self.Elements.Add( elements );
 	}
 
 	static async Task<Element[]> Gain3DifferentElements( Spirit spirit ) {
 		var selected = await spirit.SelectElementsEx( 3, ElementList.AllElements );
-		spirit.Elements.AddRange( selected );
+		spirit.Elements.Add( selected );
 		return selected;
 	}
 

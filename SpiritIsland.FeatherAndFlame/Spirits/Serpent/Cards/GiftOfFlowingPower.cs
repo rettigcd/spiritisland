@@ -13,7 +13,7 @@ public class GiftOfFlowingPower {
 			// Play another Power Card by paying its cost
 			new SpiritAction("Play another Power Card by paying its cost", _ => { ctx.Other.AddActionFactory( new PlayCardForCost() ); } ),
 			// OR Gains 1 fire and 1 water.
-			new SpiritAction("Gain 1 fire and 1 water", _ => { var els = ctx.Other.Elements; els[Element.Fire]++; els[Element.Water]++; } )
+			new SpiritAction("Gain 1 fire and 1 water", _ => ctx.Other.Elements.Add(Element.Fire,Element.Water) )
 		);
 	}
 

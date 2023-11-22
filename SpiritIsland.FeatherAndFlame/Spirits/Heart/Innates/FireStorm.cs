@@ -6,18 +6,18 @@ public class FireStorm {
 
 	// Group 0
 	[InnateTier( "1 plant", "1 Damage per 2 fire you have.", 0 )]
-	static public Task Option1( TargetSpaceCtx ctx ) {
-		int fireDamage = ctx.Self.Elements[Element.Fire] / 2; // rounding down
-		return DoFireDamage( ctx, fireDamage );
+	static public async Task Option1( TargetSpaceCtx ctx ) {
+		int fireDamage = await ctx.Self.Elements.GetAsync(Element.Fire) / 2; // rounding down
+		await DoFireDamageAsync( ctx, fireDamage );
 	}
 
 	[InnateTier( "3 plant", "Instead, 1 Damage per fire you have.", 0 )]
-	static public Task Option2( TargetSpaceCtx ctx ) {
-		int fireDamage = ctx.Self.Elements[Element.Fire];
-		return DoFireDamage( ctx, fireDamage );
+	static public async Task Option2( TargetSpaceCtx ctx ) {
+		int fireDamage = await ctx.Self.Elements.GetAsync(Element.Fire);
+		await DoFireDamageAsync( ctx, fireDamage );
 	}
 
-	static async Task DoFireDamage( TargetSpaceCtx ctx, int fireDamage ) {
+	static async Task DoFireDamageAsync( TargetSpaceCtx ctx, int fireDamage ) {
 		if( fireDamage == 0) return;
 		if( await CanSplitDamage(ctx) ) 
 			await DoFireDamageToMultipleTargets( ctx, fireDamage );

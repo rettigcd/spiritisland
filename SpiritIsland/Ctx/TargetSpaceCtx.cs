@@ -171,7 +171,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var combinedDamage = BonusDamageForAction( originalDamage );
 
 		// Apply Damage
-		int damageApplied = await Invaders.UserSelectedDamage( Self, combinedDamage.Available, allowedTypes );
+		int damageApplied = await Invaders.UserSelectedDamageAsync( Self, combinedDamage.Available, allowedTypes );
 
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
@@ -194,7 +194,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task DamageEachInvader( int individualDamage, ITokenClass[] tokenClasses ) {
 		await Invaders.ApplyDamageToEach( individualDamage, tokenClasses );
 		var bonusDamage = BonusDamageForAction();
-		int damageApplied = await Invaders.UserSelectedDamage( Self, bonusDamage.Available, tokenClasses );
+		int damageApplied = await Invaders.UserSelectedDamageAsync( Self, bonusDamage.Available, tokenClasses );
 		bonusDamage.TrackDamageDone( damageApplied );
 	}
 

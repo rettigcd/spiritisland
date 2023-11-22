@@ -24,7 +24,7 @@ public class FinderTrack : IPresenceTrack {
 
 	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new AsyncEvent<TrackRevealedArgs>();
 
-	public void AddElementsTo( ElementCounts elements ) {
+	public void AddElementsTo( CountDictionary<Element> elements ) {
 		foreach(var r in Revealed)
 			r.AddElement( elements );
 	}

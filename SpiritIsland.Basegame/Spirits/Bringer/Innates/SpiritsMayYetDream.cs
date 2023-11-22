@@ -34,12 +34,12 @@ public class SpiritsMayYetDream {
 	[InnateTier( "3 moon","Target Spirit gains an element that they have at least 1 of.", 1 )]
 	static public async Task Option2( TargetSpiritCtx ctx ) {
 		// Target spirit gains an element they have at least 1 of
-		var elOptions = ctx.Other.Elements.Keys
-			.OrderBy( ElementCounts.StandardOrder)
+		var elOptions = ElementList.AllElements
+			.Where( el => ctx.Other.Elements.Elements.Contains(el) )
 			.ToArray();
 		Element el = (await ctx.Other.SelectElementsEx(1, elOptions )).FirstOrDefault();
 		if(el != default)
-			++ctx.Other.Elements[el];
+			ctx.Other.Elements.Add(el);
 	}
 
 }

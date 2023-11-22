@@ -19,7 +19,8 @@ public class GiftOfNaturesConnection{
 
 	static async Task GainEl( SelfCtx ctx, int count ) {
 		var el = await ctx.Self.SelectElementEx($"Gain {count} of single element",ElementList.AllElements);
-		ctx.Self.Elements[el]+=count;
+		while(0<count--)
+			ctx.Self.Elements.Add(el);
 	}
 
 }

@@ -29,8 +29,8 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		}
 	};
 
-	ElementCounts IHaveSecondaryElements.SecondaryElements
-		=> new ElementCounts { [Element.Water] = pourDownPower.Remaining };
+	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements
+		=> new CountDictionary<Element> { [Element.Water] = pourDownPower.Remaining };
 
 	public DownpourDrenchesTheWorld():base(
 		spirit => new SpiritPresence( spirit,
@@ -47,7 +47,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			// Reclaim All, Gain Power Card, Move a presence 2 spaces
 			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MovePresence(2) ),
 			// Add a Presence(2), Add a Presence(2), Gain 2 water, Discard 2 Power Cards
-			new GrowthOption( new PlacePresence(2), new PlacePresence( 2 ), new GainElements(Element.Water,Element.Water), new DiscardPowerCards(2) ),
+			new GrowthOption( new PlacePresence(2), new PlacePresence( 2 ), new GainAllElements(Element.Water,Element.Water), new DiscardPowerCards(2) ),
 			// Gain Power Card, Add a presence, Gain 1 Energy
 			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new GainEnergy(1) )
 		);

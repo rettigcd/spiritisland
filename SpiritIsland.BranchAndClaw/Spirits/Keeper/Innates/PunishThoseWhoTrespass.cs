@@ -12,10 +12,11 @@ public class PunishThoseWhoTrespass {
 	}
 
 	[InnateTier( "2 sun,2 fire,3 plant", "+1 Damage per sunplant you have." )]
-	static public Task Option2( TargetSpaceCtx ctx ) {
+	static public async Task Option2( TargetSpaceCtx ctx ) {
 		// +1 damage per sunplant you have
-		int damage = 2 + Math.Min( ctx.Self.Elements[Element.Sun], ctx.Self.Elements[Element.Plant] );
-		return ActAsync( ctx, damage );
+		var els = ctx.Self.Elements;
+		int damage = 2 + Math.Min( await els.GetAsync(Element.Sun), await els.GetAsync(Element.Plant) );
+		await ActAsync( ctx, damage );
 	}
 
 	static async Task ActAsync( TargetSpaceCtx ctx, int damage ) {
@@ -23,7 +24,7 @@ public class PunishThoseWhoTrespass {
 		await ctx.Dahan.Destroy( 1 );
 
 		// 4 plant  split this power's damage however desired between target land and another 1 of your lands
-		int damageToTarget = ctx.Self.Elements[Element.Plant] < 4 && 1<ctx.Self.Presence.Spaces.Count()
+		int damageToTarget = await ctx.Self.Elements.GetAsync(Element.Plant) < 4 && 1<ctx.Self.Presence.Spaces.Count()
 			? damage
 			: await ctx.Self.SelectNumber("Damage to apply to "+ctx.Space.Label, damage );
 

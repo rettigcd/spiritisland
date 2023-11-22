@@ -5,10 +5,9 @@
 public class MindShatteringSong {
 
 	[InnateTier("1 moon, 2 air","1 Fear per moon you have.",0)]
-	public static Task Option1(TargetSpaceCtx ctx ) {
-		int moonCount = ctx.Self.Elements[Element.Moon];
+	public static async Task Option1(TargetSpaceCtx ctx ) {
+		int moonCount = await ctx.Self.Elements.GetAsync(Element.Moon);
 		ctx.AddFear( moonCount );
-		return Task.CompletedTask;
 	}
 
 	[InnateTier("1 sun,2 air","1 Damage per sun you have to Invaders with Strife only.",1)]
@@ -16,12 +15,12 @@ public class MindShatteringSong {
 		var ss = new SourceSelector(ctx.Tokens)
 			.AddAll(Human.Invader)
 			.FilterSpaceToken( st => 0 < st.Token.AsHuman().StrifeCount );
-		await ctx.Tokens.Invaders.UserSelectedDamage( ctx.Self, ctx.Self.Elements[Element.Sun], ss, Present.Always );
+		await ctx.Tokens.Invaders.UserSelectedDamage( ctx.Self, await ctx.Self.Elements.GetAsync(Element.Sun), ss, Present.Always );
 	}
 
 	[InnateTier("1 sun,1 moon,4 air","For each sun moon pair you have, Destroy 1 Invader with Strife.",2)]
 	public static async Task Option3(TargetSpaceCtx ctx ) {
-		int count = Math.Min( ctx.Self.Elements[Element.Sun], ctx.Self.Elements[Element.Moon] );
+		int count = Math.Min( await ctx.Self.Elements.GetAsync(Element.Sun), await ctx.Self.Elements.GetAsync(Element.Moon) );
 
 		SourceSelector ss = new SourceSelector(ctx.Tokens)
 			.FilterSpaceToken( st => 0 < st.Token.AsHuman().StrifeCount )

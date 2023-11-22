@@ -26,7 +26,7 @@ public class DancingPresence : SpiritPresence {
 
 	static Track FourAny => Track.MkEnergy(4,Element.Any);
 
-	static Track MoonFire => new Track("moon/fire",Element.Moon,Element.Fire){
+	static Track MoonAndFire => new Track("moon,fire",Element.Moon,Element.Fire){
 		Icon = new IconDescriptor {
 			ContentImg = Img.Token_Moon,
 			ContentImg2 = Img.Token_Fire,
@@ -66,7 +66,7 @@ public class DancingPresence : SpiritPresence {
 	public DancingPresence(Spirit spirit) 
 		:base( spirit,
 			new PresenceTrack( One, MovePresence, Track.Energy2, AdditionalImpending, Track.Energy3, TwoImpendingEnergy, FourAny ),
-			new PresenceTrack( Track.Card2, GatherDahan, MoonFire, AdditionalImpending, Track.EarthEnergy, Track.Card3, Track.Card4 )
+			new PresenceTrack( Track.Card2, GatherDahan, MoonAndFire, AdditionalImpending, Track.EarthEnergy, Track.Card3, Track.Card4 )
 		) {
 		}
 }

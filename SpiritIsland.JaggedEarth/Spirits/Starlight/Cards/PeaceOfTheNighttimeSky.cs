@@ -36,7 +36,7 @@ public class RepeatForPeace : RepeatAttribute {
 			self.ForgetThisCard( thisCard );
 
 			//  Gain 1 Moon.
-			self.Elements[Element.Moon]++;
+			self.Elements.Add(Element.Moon);
 
 			repeated = true;
 			return true;

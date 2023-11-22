@@ -28,7 +28,7 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 		public async Task<bool> ShouldRepeat( Spirit spirit ) {
 			foreach(var threshold in thresholds) {
-				if( await spirit.HasElements(threshold.Elements ) ) {
+				if( await spirit.HasElements("Repeating", threshold.Elements ) ) {
 					thresholds.Remove(threshold);
 					return true;
 				}
@@ -41,15 +41,15 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 public class DrawableRepeatOption : IDrawableInnateTier {
 	public DrawableRepeatOption( string thresholds, string description ) {
-		Elements = ElementCounts.Parse(thresholds);
+		Elements = ElementStrings.Parse(thresholds);
 		Description = description;
 	}
-	public ElementCounts Elements { get; }
+	public CountDictionary<Element> Elements { get; }
 
 	public string Description { get; }
 
 	string IOption.Text => ThresholdString;
 
 	public string ThresholdString => Elements.BuildElementString();
-	public bool IsActive( ElementCounts activatedElements ) => activatedElements.Contains( Elements );
+	public bool IsActive( ElementMgr activatedElements ) => activatedElements.Contains( Elements );
 }

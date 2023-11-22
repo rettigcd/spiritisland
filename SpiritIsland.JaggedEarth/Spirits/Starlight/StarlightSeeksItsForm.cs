@@ -109,7 +109,7 @@ public class StarlightSeeksItsForm : Spirit {
 		if(args.Track.Text == PickElementName) {
 			var el = await this.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 			args.Track.Elements = new Element[] { el };
-			Elements[el]++;
+			Elements.Add(el);
 			args.Track.Icon.ContentImg = el.GetTokenImg();
 		}
 
@@ -133,7 +133,7 @@ public class StarlightSeeksItsForm : Spirit {
 	static async Task AssignNewElementToTrack( SelfCtx ctx, Track track ) {
 		var el = await ctx.Self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 		track.Elements = new Element[] { el };
-		ctx.Self.Elements[el]++;
+		ctx.Self.Elements.Add(el);
 		track.Icon.ContentImg = el.GetTokenImg();
 	}
 
@@ -144,7 +144,7 @@ public class StarlightSeeksItsForm : Spirit {
 		if(args.Track.Text == PickElementName) {
 			var el = await this.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 			args.Track.Elements = new Element[] { el };
-			Elements[el]++;
+			Elements.Add(el);
 			args.Track.Icon.ContentImg = el.GetTokenImg();
 		}
 

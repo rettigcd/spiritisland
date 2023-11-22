@@ -66,7 +66,7 @@ public class ImageSizeCalculator {
 			"jungle" => Img.Icon_Jungle,
 			"sands" => Img.Icon_Sands,
 			"mountain" => Img.Icon_Mountain,
-			_ => ElementCounts.ParseEl( token ).GetIconImg(),
+			_ => ElementStrings.ParseEl( token ).GetIconImg(),
 		};
 	}
 

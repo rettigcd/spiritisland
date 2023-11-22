@@ -12,7 +12,7 @@ public class GrowthThroughSacrifice_Tests {
 		// Given: Spirit's next cardplay has an element on it
 		fixture.CardPlayTrack = new PresenceTrack( Track.Card1, elementTrack );
 		//   And: has no air elements
-		fixture.Spirit.Elements[elementTrack.Elements[0]].ShouldBe(0);
+		fixture.Spirit.Elements.BuildElementString().ShouldBe("");
 		//   And: 2 presence on board
 		SpiritExtensions.Given_Adjust( fixture.Spirit.Presence, fixture.GameState.Tokens[space], 2 );
 
@@ -24,7 +24,7 @@ public class GrowthThroughSacrifice_Tests {
 		fixture.Choose( elementTrack ); // take presence from cardplay track
 
 		//  Then: Spirit gains element
-		fixture.Spirit.Elements[ elementTrack.Elements[0] ].ShouldBe( 1 );
+		fixture.Spirit.Elements.BuildElementString().ShouldBe( "1 air" );
 	}
 
 	[Fact]

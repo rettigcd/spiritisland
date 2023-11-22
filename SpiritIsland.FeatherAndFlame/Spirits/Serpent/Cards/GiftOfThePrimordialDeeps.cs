@@ -13,7 +13,7 @@ public class GiftOfThePrimordialDeeps {
 		await otherCtx.SelectActionOption( 
 			new SpiritAction( "Play it immediately by paying its cost", x => x.Self.PlayCard(powerCard) )
 				.OnlyExecuteIf( powerCard.Cost <= otherCtx.Self.Energy ),
-			new SpiritAction( "Gains 1 moon and 1 earth", _ => { var els = otherCtx.Self.Elements; els[Element.Moon]++; els[Element.Earth]++; }  )
+			new SpiritAction( "Gains 1 moon and 1 earth", _ => otherCtx.Self.Elements.Add(Element.Moon,Element.Earth) )
 		);
 
 	}

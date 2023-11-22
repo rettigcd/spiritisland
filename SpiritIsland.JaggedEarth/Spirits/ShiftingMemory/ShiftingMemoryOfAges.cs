@@ -28,7 +28,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		Icon = new IconDescriptor { BackgroundImg = Img.ShiftingMemory_Discard2Prep },
 	};
 
-	ElementCounts IHaveSecondaryElements.SecondaryElements => PreparedElements;
+	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements => PreparedElements;
 
 	public ShiftingMemoryOfAges() 
 		:base(
@@ -75,7 +75,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 		// (Source-1) Purchased / Active
 		if(InPlay.Contains( card )) {
-			foreach(var el in card.Elements) Elements[el.Key]-=el.Value;// lose elements from forgotten card
+			foreach(var el in card.Elements) Elements.Remove(el.Key,el.Value);// lose elements from forgotten card
 			InPlay.Remove( card );
 			DiscardPile.Add( card );
 			return;
@@ -117,8 +117,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		PreparedElements[el]++;
 	}
 
-	public async Task<ElementCounts> DiscardElements(int totalNumToRemove, string effect ) {
-		var discarded = new ElementCounts();
+	public async Task<CountDictionary<Element>> DiscardElements(int totalNumToRemove, string effect ) {
+		var discarded = new CountDictionary<Element>();
 
 		int index = 0;
 		while(index++ < totalNumToRemove) {
@@ -132,31 +132,31 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 
 
-	public override bool CouldHaveElements( ElementCounts subset ) {
+	public override bool CouldHaveElements( CountDictionary<Element> subset ) {
 		var els = PreparedElements.Any() 
-			? Elements.Union(PreparedElements) 
-			: Elements;
+			? Elements.Elements.Union(PreparedElements) 
+			: Elements.Elements;
 		return els.Contains(subset);
 	}
 
-	public readonly ElementCounts PreparedElements = new ElementCounts();
+	public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
 
-	public override async Task<bool> HasElements( ElementCounts subset ) {
+	public override async Task<bool> HasElements(string description, CountDictionary<Element> subset ) {
 		if( Elements.Contains( subset ) ) return true;
 
 		// Check if we have prepared element markers to fill the missing elements
 		if(PreparedElements.Any()) {
-			var missing = subset.Except(Elements);
-			if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.BuildElementString(), "Yes, use prepared elements", "No, I'll pass.")) {
+			var missing = subset.Except(Elements.Elements);
+			if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold: "+subset.BuildElementString(), "Yes, use prepared elements", "No, I'll pass.")) {
 
 				foreach(var pair in missing) {
 					PreparedElements[pair.Key] -= pair.Value;
-					Elements[pair.Key] += pair.Value; // assign to this action so next check recognizes them
+					Elements.Add(pair.Key, pair.Value); // assign to this action so next check recognizes them
 				}
 
 				ActionScope.Current.AtEndOfThisAction( _ => {
 					foreach(var pair in missing)
-						Elements[pair.Key] -= pair.Value;
+						Elements.Remove(pair.Key, pair.Value);
 				} );
 
 				return true;

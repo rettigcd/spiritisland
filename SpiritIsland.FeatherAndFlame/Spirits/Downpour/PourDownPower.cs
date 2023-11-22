@@ -56,7 +56,7 @@ class PourDownPower
 
 	public void Reset() { usedWaterActions = 0; }
 
-	public int Remaining => spirit.Elements[Element.Water] / 2 - usedWaterActions;
+	public int Remaining => spirit.Elements.Get(Element.Water) / 2 - usedWaterActions;
 	readonly DownpourDrenchesTheWorld spirit;
 	int usedWaterActions = 0;
 	readonly PourDownPowerGainEnergy gainEnergy = new PourDownPowerGainEnergy();

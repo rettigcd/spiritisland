@@ -159,7 +159,7 @@ public sealed class InvaderBinding {
 		return damageInflicted;
 	}
 
-	public Task<int> UserSelectedDamage( Spirit damagePicker, int damage, params ITokenClass[] allowedTypes ) {
+	public Task<int> UserSelectedDamageAsync( Spirit damagePicker, int damage, params ITokenClass[] allowedTypes ) {
 		if(allowedTypes.Length == 0) allowedTypes = Human.Invader;
 		SourceSelector selector = new SourceSelector(Tokens).AddAll(allowedTypes);
 		return UserSelectedDamage( damagePicker, damage, selector, Present.Always );

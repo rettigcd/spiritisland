@@ -22,7 +22,7 @@ public class AidFromLesserSpirits : BlightCard {
 				// (Just add it and its elements every time.)
 				spirit.EnergyCollected.Add( ( Spirit s ) => {
 					s.AddActionFactory( card );
-					s.Elements.AddRange( card.Elements );
+					s.Elements.Add( card.Elements );
 				});
 
 			}
