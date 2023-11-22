@@ -106,6 +106,11 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		PreparedElements[Element.Earth]++;
 	}
 
+
+
+
+
+
 	public async Task PrepareElement(string context) {
 		// This is only used by Shifting Memories
 		var el = await this.SelectElementEx($"Prepare Element ({context})", ElementList.AllElements);
@@ -125,6 +130,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return discarded;
 	}
 
+
+
 	public override bool CouldHaveElements( ElementCounts subset ) {
 		var els = PreparedElements.Any() 
 			? Elements.Union(PreparedElements) 
@@ -134,74 +141,29 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public readonly ElementCounts PreparedElements = new ElementCounts();
 
-	ElementCounts ActiveElementsForAction() => ActionScope.Current.SafeGet( "ActionElements", ()=> Elements.Clone() );
-
 	public override async Task<bool> HasElements( ElementCounts subset ) {
-		var actionElements = ActiveElementsForAction();
-		if( actionElements.Contains( subset ) ) return true;
+		if( Elements.Contains( subset ) ) return true;
 
 		// Check if we have prepared element markers to fill the missing elements
 		if(PreparedElements.Any()) {
-			var missing = subset.Except(actionElements);
+			var missing = subset.Except(Elements);
 			if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold:"+subset.BuildElementString(), "Yes, use prepared elements", "No, I'll pass.")) {
+
 				foreach(var pair in missing) {
 					PreparedElements[pair.Key] -= pair.Value;
-					actionElements[pair.Key] += pair.Value; // assign to this action so next check recognizes them
+					Elements[pair.Key] += pair.Value; // assign to this action so next check recognizes them
 				}
+
+				ActionScope.Current.AtEndOfThisAction( _ => {
+					foreach(var pair in missing)
+						Elements[pair.Key] -= pair.Value;
+				} );
+
 				return true;
 			}
 		}
 
 		return false;
-	}
-
-	public override async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {
-
-		var elementOptions = innateOptions.Select(x=>x.Elements);
-
-		// Init the elements that are active for this action only.
-		var actionElements = ActiveElementsForAction();
-
-		var highestAlreadyMatch = innateOptions
-			.OrderByDescending(e=>e.Elements.Total)
-			.FirstOrDefault( x => actionElements.Contains(x.Elements) );
-
-		var canMeetWithPrepared = innateOptions // .Elements
-			.Where( x => !actionElements.Contains(x.Elements) && PreparedElements.Contains(x.Elements.Except(actionElements)) )
-			.ToArray();
-
-		// If we can't extend with prepared, just return what we can
-		if(canMeetWithPrepared.Length > 0) {
-
-			// if we CAN meet something with Prepared, return 
-			string prompt = highestAlreadyMatch!=null 
-				? "Extend element threshold? (current: "+highestAlreadyMatch.Elements.BuildElementString()+")"
-				: "Meet element threshold?";
-
-			// Select which Extened we want to meet.
-			var options = canMeetWithPrepared
-				.OrderBy(e=>e.Elements.Total) // smallest first
-				.ToList();
-
-			if(highestAlreadyMatch != null)
-				options.Insert(0, highestAlreadyMatch);
-			Present present = highestAlreadyMatch != null ? Present.Always : Present.Done;
-
-			IDrawableInnateTier extendedOption = await this.Select<IDrawableInnateTier>(prompt,options.ToArray(), present);
-
-			if(extendedOption != null) {
-				// Apply necessary prepared elements to the action Elements.
-				var preparedElementsToConsume = extendedOption.Elements.Except(actionElements);
-				foreach(var consumeEl in preparedElementsToConsume) {
-					PreparedElements[consumeEl.Key] -= consumeEl.Value;
-					actionElements[consumeEl.Key] += consumeEl.Value;
-				}
-				return extendedOption;
-			}
-
-		}
-
-		return highestAlreadyMatch;
 	}
 
 	protected override object _customSaveValue { 
