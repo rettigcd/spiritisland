@@ -17,5 +17,10 @@ public class InvaderPhase {
 		}
 
 		gs.InvaderDeck.Advance();
+
+		// run After-Invader Actions
+		foreach(SpaceState space in gs.Spaces)
+			foreach(IRunAfterInvaderPhase aia in space.OfType<IRunAfterInvaderPhase>().ToArray())
+				await aia.ActAsync(space);
 	}
 }
