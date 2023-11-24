@@ -37,7 +37,7 @@ public class GameComponentProvider : IGameComponentProvider {
 	}.Select( PowerCard.For ).ToArray();
 
 	public PowerCard[] MajorCards => new Type[] {
-//		typeof(AcceleratedRot),
+		typeof(InspireTheReleaseOfStolenLands),
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {

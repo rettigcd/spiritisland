@@ -120,7 +120,7 @@ public class PowerCardImageBuilder {
 
 		if(split.Success) {
 			string topText = instructions[..split.Index];
-			string splitText = split.Groups[1].Value.Replace( ",", "" ).Replace( " ", "" );
+			string splitText = split.Groups[1].Value.Replace( ",", " " );//.Replace( " ", "" );
 			string bottomText = instructions[(split.Index + split.Length)..];
 			Paint2Parts( textArea, graphics, SplitSentences( topText ), splitText, SplitSentences( bottomText ) );
 		} else
