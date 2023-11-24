@@ -23,7 +23,7 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ){
 
-		var space = await ctx.Self.TargetsSpace( ctx, 
+		Space space = await ctx.Self.TargetsSpace( ctx, 
 			powerName+": Target Space", 
 			Preselect,
 			_sourceCriteria,
