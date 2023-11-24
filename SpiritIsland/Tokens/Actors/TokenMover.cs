@@ -81,6 +81,7 @@ public sealed class TokenMover {
 	#region Config
 
 	public TokenMover Config( Action<TokenMover> configuration ) { configuration( this); return this;}
+	public TokenMover ConfigSource( Action<SourceSelector> configuration ) { _sourceSelector.Config(configuration); return this;}
 
 	public TokenMover RunAtMax(bool runAtMax) { _upToNPresent = runAtMax ? Present.Always : Present.Done; return this; }
 
@@ -126,16 +127,5 @@ public sealed class TokenMover {
 	Present _upToNPresent = Present.Done;
 	readonly SourceSelector _sourceSelector;
 	readonly DestinationSelector _destinationSelector;
-
-}
-
-static public class MoveFrom {
-
-	static public void ASingleLand( TokenMover mover ) {
-		Space source = null;
-		mover
-			.Track( theMove => source ??= theMove.From.Space )
-			.FilterSource( spaceState => source is null || spaceState.Space == source );
-	}
 
 }

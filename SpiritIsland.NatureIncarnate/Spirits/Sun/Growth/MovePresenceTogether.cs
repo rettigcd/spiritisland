@@ -11,7 +11,7 @@ public class MovePresenceTogether : SpiritAction {
 			new DestinationSelector( st => st.Space.Range(3).Tokens() )
 		)
 			.AddGroup(3,ctx.Self.Presence)
-			.Config( MoveFrom.ASingleLand )
+			.ConfigSource( SelectFrom.ASingleLand )
 			.Config( Distribute.ToASingleLand )
 			.DoUpToN();
 	}

@@ -48,6 +48,8 @@ public class SourceSelector {
 
 	#region public Config
 
+	public SourceSelector Config( Action<SourceSelector> configuration ) { configuration(this); return this;}
+
 	/// <summary> Specifies 1 or more tokens that may be selected - must be called at least once for GetSource to present any results.</summary>
 	public SourceSelector AddGroup( int count, params ITokenClass[] classes ) { _quota.AddGroup( count, classes ); return this; }
 
@@ -140,4 +142,13 @@ public class SourceSelector {
 	RemoveReason _removeReason = RemoveReason.MovedFrom;
 
 	#endregion private
+}
+
+static public class SelectFrom {
+	static public void ASingleLand( SourceSelector ss ) {
+		Space source = null;
+		ss
+			.Track( spaceToken => source ??= spaceToken.Space )
+			.FilterSource( spaceState => source is null || spaceState.Space == source );
+	}
 }

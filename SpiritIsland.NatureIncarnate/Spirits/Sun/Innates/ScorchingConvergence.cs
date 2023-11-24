@@ -19,7 +19,7 @@ public class ScorchingConvergence {
 			new DestinationSelector( ctx.Tokens )
 		)
 			.AddAll( ctx.Self.Presence )
-			.Config( MoveFrom.ASingleLand )
+			.ConfigSource( SelectFrom.ASingleLand )
 			.DoN();
 
 		// record Starting Invaders / Dahan
