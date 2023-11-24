@@ -1,9 +1,13 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class DahanSitOutRavage : BaseModEntity, ISkipRavages {
+/// <summary>
+/// Causes any dahan in-or-adjacent-to the given Incarna, to not paritcipate in ravage.
+/// Added to entire board for Wandering Voice
+/// </summary>
+public class DahanNearToIncarnaSitOutRavage : BaseModEntity, ISkipRavages {
 
 	readonly IIncarnaToken _incarna;
-	public DahanSitOutRavage( IIncarnaToken incarna ) {
+	public DahanNearToIncarnaSitOutRavage( IIncarnaToken incarna ) {
 		_incarna = incarna;
 	}
 

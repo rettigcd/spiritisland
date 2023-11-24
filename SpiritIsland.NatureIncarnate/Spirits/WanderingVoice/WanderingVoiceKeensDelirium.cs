@@ -78,7 +78,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 		// 1 presence in land #7
 		s7.Init(Presence.Token,1);
 
-		GameState.Current.AddIslandMod( new DahanSitOutRavage( ((IHaveIncarna)Presence).Incarna ) );
+		GameState.Current.AddIslandMod( new DahanNearToIncarnaSitOutRavage( ((IHaveIncarna)Presence).Incarna ) );
 	}
 
 	public override SelfCtx BindMyPowers( Spirit spirit ) {

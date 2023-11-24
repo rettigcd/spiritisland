@@ -32,8 +32,8 @@ public class GameComponentProvider : IGameComponentProvider {
 			: null;
 
 	public PowerCard[] MinorCards => new Type[] {
-		//typeof(VisionsOfFieryDoom),
-		//typeof(VoraciousGrowth),
+		typeof(RoilingBogAndSnaggingThorn),
+		
 	}.Select( PowerCard.For ).ToArray();
 
 	public PowerCard[] MajorCards => new Type[] {
