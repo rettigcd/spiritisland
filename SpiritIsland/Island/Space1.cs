@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// The Standard Space - represents 1 visible marked space.
+/// </summary>
 public class Space1 : Space {
 
 	#region constructor

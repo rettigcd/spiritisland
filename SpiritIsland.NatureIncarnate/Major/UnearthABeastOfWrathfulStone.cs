@@ -134,7 +134,7 @@ public class MarkedBeast : IToken
 			.ConfigSource(src=>src.FilterSpaceToken(st=>st.Token==this))
 			.DoUpToN();
 		// 1 Fear and 2 Damage in its land.
-		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _space.Space });
+		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _space!.Space });
 		await _space.Invaders.UserSelectedDamageAsync(ctx.Self,2);
 	}
 	#endregion
