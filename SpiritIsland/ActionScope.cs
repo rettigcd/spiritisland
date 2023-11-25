@@ -87,6 +87,16 @@ public sealed class ActionScope : IAsyncDisposable {
 		return scope;
 	}
 
+	public static async Task<ActionScope> StartSpiritAction( ActionCategory cat, Spirit spirit ) {
+		ActionScopeContainer container = Container;             // grab from ExecutionContext
+		ActionScope scope = new ActionScope( cat, container ) { // start new (and assign current)
+			Owner = spirit
+		};
+
+		await container.RunStartOfActionHandlers();
+		return scope;
+	}
+
 	#endregion
 
 	public ActionCategory Category { get; }

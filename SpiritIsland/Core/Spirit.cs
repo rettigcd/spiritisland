@@ -258,12 +258,24 @@ public abstract partial class Spirit : IOption {
 	}
 
 	public virtual async Task TakeActionAsync(IActionFactory factory, Phase phase) {
-		await using ActionScope actionScope = await CreateActionScopeForSpiritAction( phase );
+		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );  
+			
 		SelfCtx ctx = Bind( phase );
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( ctx );
 		GameState.Current.CheckWinLoss(); // @@@
 	}
+
+	static ActionCategory GetActionCategoryForSpiritAction( Phase phase ) {
+		return phase switch {
+			Phase.Init or
+			Phase.Growth => ActionCategory.Spirit_Growth,
+			Phase.Fast or
+			Phase.Slow => ActionCategory.Spirit_Power,
+			_ => throw new InvalidOperationException(),
+		};
+	}
+
 
 	#endregion
 
@@ -275,22 +287,6 @@ public abstract partial class Spirit : IOption {
 			Phase.Growth => BindSelf(),
 			Phase.Fast or
 			Phase.Slow => BindMyPowers(),
-			_ => throw new InvalidOperationException(),
-		};
-	}
-
-	protected async Task<ActionScope> CreateActionScopeForSpiritAction( Phase phase ) {
-		ActionScope actionScope1 = await ActionScope.Start( GetActionCategoryForSpiritAction( phase ) );
-		actionScope1.Owner = this;
-		return actionScope1;
-	}
-
-	static ActionCategory GetActionCategoryForSpiritAction( Phase phase ) {
-		return phase switch {
-			Phase.Init or
-			Phase.Growth => ActionCategory.Spirit_Growth,
-			Phase.Fast or
-			Phase.Slow => ActionCategory.Spirit_Power,
 			_ => throw new InvalidOperationException(),
 		};
 	}
@@ -391,15 +387,10 @@ public abstract partial class Spirit : IOption {
 
 	#endregion
 
-	// Used by Flame's Fury to detect new actions
-	// Used by Observe The Ever-Changing World to distinguish between actions
-
 	#region Play Cards
 
-	// Plays cards from hand for cost
-	/// <summary>
-	/// Plays card from hand for cost.
-	/// </summary>
+
+	/// <summary> Plays card from hand for cost. </summary>
 	public async Task SelectAndPlayCardsFromHand( int? numberToPlay = null )
 		=> await SelectAndPlayCardsFromHand_Inner( numberToPlay ?? NumberOfCardsPlayablePerTurn );
 

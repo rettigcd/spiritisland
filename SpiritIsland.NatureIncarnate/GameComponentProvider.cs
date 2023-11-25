@@ -38,6 +38,7 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	public PowerCard[] MajorCards => new Type[] {
 		typeof(InspireTheReleaseOfStolenLands),
+		typeof(UnearthABeastOfWrathfulStone),
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {

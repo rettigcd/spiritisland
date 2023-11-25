@@ -20,6 +20,7 @@ public class AidFromLesserSpirits : BlightCard {
 				// They may be used every turn as if played, but cost no card plays/energy.
 				// (don't put card in hand, because we don't want them discarding or forgetting, or playing normally.)
 				// (Just add it and its elements every time.)
+				// !!! This is not rolled-back if we do a rewind
 				spirit.EnergyCollected.Add( ( Spirit s ) => {
 					s.AddActionFactory( card );
 					s.Elements.Add( card.Elements );

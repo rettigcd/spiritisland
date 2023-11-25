@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.NatureIncarnate; 
+﻿namespace SpiritIsland.NatureIncarnate;
 
 public class InspireTheReleaseOfStolenLands {
 

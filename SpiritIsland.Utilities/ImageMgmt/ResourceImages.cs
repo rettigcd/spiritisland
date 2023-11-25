@@ -353,20 +353,18 @@ public class ResourceImages {
 
 	public Image GetTokenImage( IToken token ) {
 		return token is HumanToken ht ? HumanTokenBuilder.Build( ht )
-			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast()
+			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast("many-minds-beast.png",token.Img,60,40)
+			: token.GetType().Name == "MarkedBeast" ? GetManyMindsBeast("marked-beast.png",token.Img,240,20)
 			: GetImage( token.Img );
 	}
 
-	Image GetManyMindsBeast() {
-		string key = "many-minds-beast.png";
+	Image GetManyMindsBeast(string key,Img baseImg, int hue, int saturation) {
 		if(_cache.Contains(key)) return _cache.Get(key);
 
-		Bitmap img = GetImage(Img.Beast);
+		Bitmap img = GetImage(baseImg);
 		using Graphics graphics = Graphics.FromImage( img );
 
-		const int sacredSiteYellow = 60;
-		new PixelAdjustment(new HslColorAdjuster(new HSL( sacredSiteYellow, 40,50)).GetNewColor).Adjust(img);
-		// graphics.FillEllipse(Brushes.Purple, new Rectangle(0,0,img.Width,img.Height).InflateBy(-img.Width/3 ));
+		new PixelAdjustment(new HslColorAdjuster(new HSL( hue, saturation,50)).GetNewColor).Adjust(img);
 
 		_cache.Add(key,img);
 		return img;
