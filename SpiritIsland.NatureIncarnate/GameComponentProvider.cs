@@ -40,6 +40,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(InspireTheReleaseOfStolenLands),
 		typeof(UnearthABeastOfWrathfulStone),
 		typeof(FragmentsOfYesterYear),
+		typeof(RumblingEarthquakes),
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {
