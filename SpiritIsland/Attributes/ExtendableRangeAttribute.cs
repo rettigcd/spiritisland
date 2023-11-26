@@ -9,8 +9,8 @@ public class ExtendableRangeAttribute : TargetSpaceAttribute {
 	readonly string _triggeringElements;
 	readonly int _extension;
 
-	public ExtendableRangeAttribute( From from, int range, string triggeringElements, int extention, params string[] targetType ) 
-		: base( new TargetingSourceCriteria(from), range, targetType ) 
+	public ExtendableRangeAttribute( TargetFrom from, int range, string triggeringElements, int extention, params string[] targetType ) 
+		: base( from, range, targetType ) 
 	{
 		_triggeringElements = triggeringElements;
 		_extension = extention;

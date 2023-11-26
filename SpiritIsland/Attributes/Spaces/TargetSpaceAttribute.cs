@@ -5,15 +5,23 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 	public static SpaceState TargettedSpace => _targettedSpace.Value;
 	readonly static ActionScopeValue<SpaceState> _targettedSpace = new ActionScopeValue<SpaceState>("Targetted Space");
 
-	readonly protected TargetingSourceCriteria _sourceCriteria;
+	protected TargetingSourceCriteria _sourceCriteria => new TargetingSourceCriteria(_from,_restrictFrom);
+	readonly TargetFrom _from;
+	protected readonly string _restrictFrom; 
 
 	protected readonly string[] _targetFilters;
 	protected readonly int _range;
 	public override string TargetFilterName { get; }
 
-	public TargetSpaceAttribute(TargetingSourceCriteria sourceCriteria, int range, params string[] targetFilter ){
+	public TargetSpaceAttribute(TargetFrom from, int range, params string[] targetFilter )
+		:this(from,null,range,targetFilter)
+	{}
+
+	/// <param name="commaDelimitedRestrictFrom">null or comma-delimited Target</param>
+	public TargetSpaceAttribute(TargetFrom from, string commaDelimitedRestrictFrom, int range, params string[] targetFilter ){
 		// Source
-		_sourceCriteria = sourceCriteria;
+		_from = from;
+		_restrictFrom = commaDelimitedRestrictFrom;
 		// Destination - lazy-evaluate later, because some are spirit-dependent
 		_range = range;
 		_targetFilters = targetFilter;

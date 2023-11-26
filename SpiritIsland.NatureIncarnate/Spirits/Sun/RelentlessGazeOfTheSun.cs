@@ -78,7 +78,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 	bool TargetsFromSuperSacredSite( Space targetSpace, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria ) {
 		return FindTargettingSourcesFor(
 			targetSpace,
-			new TargetingSourceCriteria( From.SuperSacredSite, sourceCriteria.Restrict ), // capture restrict but boost
+			new TargetingSourceCriteria( TargetFrom.SuperSacredSite, sourceCriteria.Restrict ), // capture restrict but boost
 			targetCriteria
 		).Any();
 	}

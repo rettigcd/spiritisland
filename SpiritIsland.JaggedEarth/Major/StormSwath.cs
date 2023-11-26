@@ -3,7 +3,7 @@
 public class StormSwath {
 
 	[MajorCard("Storm-Swath",3,Element.Fire,Element.Air,Element.Water), Slow]
-	[ExtendableRange(From.SacredSite,1,"2 fire,3 air,2 water",1 )]
+	[ExtendableRange(TargetFrom.SacredSite,1,"2 fire,3 air,2 water",1 )]
 	[Instructions( "2 Fear. In both origin land and target land: 1 Damage to each Invader. -If you have- 2 Fire, 3 Air, 2 Water: +1 Fear. This Power has +1 Range. In a land adjacent to both origin and target, 1 Damage to each Invader. In lands where you did Damage, destroy 1 town." ), Artist( Artists.JorgeRamos )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 fear.
@@ -46,7 +46,7 @@ public class StormSwath {
 
 		var ssOptions = ctx.Self.FindTargettingSourcesFor(
 			ctx.Space,
-			new TargetingSourceCriteria( From.SacredSite ),
+			new TargetingSourceCriteria( TargetFrom.SacredSite ),
 			new TargetCriteria( 1 )
 		);
 

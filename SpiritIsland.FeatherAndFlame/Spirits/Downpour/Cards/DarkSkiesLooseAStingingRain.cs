@@ -4,7 +4,7 @@ public class DarkSkiesLooseAStingingRain {
 
 	const string Name = "Dark Skies Loose a Stinging Rain";
 
-	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ),Fast,FromPresenceIn(Target.Wetland, 1)]
+	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ),Fast,FromPresence(Target.Wetland, 1)]
 	[Instructions( "Isolate target land. Push up to 1 Explorer and up to 2 Dahan." ), Artist( Artists.DamonWestenhofer )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		// Isolate target land.

@@ -29,7 +29,7 @@ public class CloseTheWays {
 			// Target a New Space
 			var space = await ctx.Self.TargetsSpace(ctx, "Target Additional Space To Close",
 				preselect: null,
-				new TargetingSourceCriteria(From.Presence),
+				new TargetingSourceCriteria(TargetFrom.Presence),
 				new TargetCriteria( 1 )
 			);
 			ctx = ctx.Target(space);

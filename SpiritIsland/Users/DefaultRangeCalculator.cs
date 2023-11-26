@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public enum From { 
+public enum TargetFrom { 
 	None, 
 	Presence, 
 	SacredSite, 
@@ -9,7 +9,7 @@ public enum From {
 };
 
 public interface ITargetingSourceStrategy {
-	IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, From from );
+	IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from );
 }
 
 public interface ICalcRange {
@@ -34,12 +34,12 @@ public interface IHaveIncarna {
 public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 	// ! Should work for any action because we are now referencing TerrainMapper.Current instead of directly accessing the ForPower one.
 
-	public IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, From from ) {
+	public IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from ) {
 		return from switch {
-			From.Presence => presence.Spaces.Tokens(),
-			From.SacredSite => presence.SacredSites,
-			From.SuperSacredSite => presence.SuperSacredSites,
-			From.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null 
+			TargetFrom.Presence => presence.Spaces.Tokens(),
+			TargetFrom.SacredSite => presence.SacredSites,
+			TargetFrom.SuperSacredSite => presence.SuperSacredSites,
+			TargetFrom.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null 
 				? new SpaceState[] { incarnaHolder.Incarna.Space } 
 				: Array.Empty<SpaceState>(),
 			_ => throw new ArgumentException( "Invalid presence source " + from ),

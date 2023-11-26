@@ -2,7 +2,7 @@
 
 public class StranglingFirevine {
 
-	[MajorCard( "Strangling Firevine", 4, Element.Fire, Element.Plant ), Slow, FromPresenceIn( Target.Sands, 1 )]
+	[MajorCard( "Strangling Firevine", 4, Element.Fire, Element.Plant ), Slow, FromPresence( Target.Sands, 1 )]
 	[Instructions( "Destroy all Explorer. Add 1 Wilds. Add 1 Wilds in the originating Sands. 1 Damage per Wilds in / adjacent to target land. -If you have- 2 Fire, 3 Plant: +1 Damage per Wilds in / adjacent to target land." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
@@ -15,7 +15,7 @@ public class StranglingFirevine {
 		// Add 1 wilds in the originating Sands. 
 		Space[] originatingOptions = ctx.Self.FindTargettingSourcesFor(
 			ctx.Space, 
-			new TargetingSourceCriteria(From.Presence,Target.Sands), 
+			new TargetingSourceCriteria(TargetFrom.Presence,Target.Sands), 
 			new TargetCriteria(1)
 		).Downgrade().ToArray();
 

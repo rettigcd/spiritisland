@@ -17,7 +17,7 @@ public class CallToVigilance {
 		int pushCount = ctx.Self
 			.FindTargettingSourcesFor(
 				ctx.Space,
-				new TargetingSourceCriteria( From.Presence ),
+				new TargetingSourceCriteria( TargetFrom.Presence ),
 				new TargetCriteria( 1 )
 			)
 			.Max(s=>s.Dahan.CountAll);

@@ -35,7 +35,7 @@ public class UnbearableGaze {
 		=> ctx.Self
 			.FindTargettingSourcesFor(
 				ctx.Space,
-				new TargetingSourceCriteria( From.SacredSite ),
+				new TargetingSourceCriteria( TargetFrom.SacredSite ),
 				new TargetCriteria( 1 )
 			);
 }
