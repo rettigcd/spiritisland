@@ -140,7 +140,7 @@ public sealed class GrowthPainter : IDisposable{
 
 	static IPaintableRect DiscardCardWithFire() {
 		return new PoolRect()
-			.Float( new ImgRect( Img.Icon_Discard ), .05f,.05f,.9f,.9f)
+			.Float( new ImgRect( Img.Discard1 ), .05f,.05f,.9f,.9f)
 			.Float( new ImgRect( Img.Token_Fire ), .6f,0f,.4f,.4f );
 	}
 
@@ -177,7 +177,7 @@ public sealed class GrowthPainter : IDisposable{
 		).SplitByWeight( .05f, .05f /*null*/, .6f /*presence*/, .2f/*filter*/, .1f/*arrow*/, .05f );
 	}
 
-	PoolRect AddPresenceOrGainMajor() {
+	static PoolRect AddPresenceOrGainMajor() {
 		return new PoolRect()
 			.Float( new TextRect( "/" ), .2f, .2f, .6f, .6f )
 			.Float( PlacePresenceRect( new PlacePresence( 2 ) ), 0f, 0f, .5f, .5f )
@@ -187,8 +187,8 @@ public sealed class GrowthPainter : IDisposable{
 
 	static PoolRect AccelerateOrDelay() {
 		return new PoolRect()
-			.Float( new ImgRect( Img.Icon_ImpendingCard ), .1f, .2f, .4f, .5f )
-			.Float( new ImgRect( Img.Icon_ImpendingCard ), .5f, .2f, .4f, .5f )
+			.Float( new ImgRect( Img.ImpendingCard ), .1f, .2f, .4f, .5f )
+			.Float( new ImgRect( Img.ImpendingCard ), .5f, .2f, .4f, .5f )
 			.Float( new ImgRect( Img.Coin ), .0f, .0f, .3f, .3f )
 			.Float( new TextRect( "±1" ), .05f, .1f, .2f, .1f );
 	}
@@ -205,14 +205,14 @@ public sealed class GrowthPainter : IDisposable{
 		return new IconDescriptorRect( _iconDrawer, des );
 	}
 
-	IPaintableRect GainEnergyAgain() {
+	static IPaintableRect GainEnergyAgain() {
 		return new PoolRect()
 			.Float( new ImgRect( Img.Coin ), .1f, .1f,.5f, .5f )
 			.Float( new ImgRect( Img.Coin ), .4f, .1f, .5f, .5f )
 			.Float( new TextRect( "x2" ), .0f, .25f, 1f, .25f );
 	}
 
-	IPaintableRect MoveUpTo3PresenceTogether() {
+	static IPaintableRect MoveUpTo3PresenceTogether() {
 		return new VerticalStackRect(
 			new NullRect(),
 			new VerticalStackRect(
@@ -228,7 +228,7 @@ public sealed class GrowthPainter : IDisposable{
 		).SplitByWeight( .0f, .1f/*spacer*/, .35f, .05f /*spacer*/, .35f /*number*/, .1f/*arrow*/, .1f );
 	}
 
-	IPaintableRect Add3DestroyedPresenceTogether() {
+	static IPaintableRect Add3DestroyedPresenceTogether() {
 		return new VerticalStackRect(
 			new NullRect(),
 			new HorizontalStackRect(
@@ -247,7 +247,7 @@ public sealed class GrowthPainter : IDisposable{
 		)	.SplitByWeight( .0f, .05f/*spacer*/, .4f, .05f /*spacer*/, .35f /*number*/, .1f/*arrow*/, .1f );
 	}
 
-	IPaintableRect AdditionalPlay( int count ) {
+	static IPaintableRect AdditionalPlay( int count ) {
 		string txt = (count > 0)
 			? ("+" + count.ToString())
 			: ("\u2014" + (-count).ToString());
@@ -256,11 +256,7 @@ public sealed class GrowthPainter : IDisposable{
 			.Float( new TextRect(txt), .2f,.2f,.6f,.6f);
 	}
 
-	void ImgRect_Paint( Img img, Rectangle rect ) {
-		new ImgRect(img).Paint(_graphics,rect);
-	}
-
-	IPaintableRect Gain1ElementRect( params Element[] elements ) {
+	static IPaintableRect Gain1ElementRect( params Element[] elements ) {
 		return new HorizontalStackRect(
 			elements.Select(el=>new ImgRect(el.GetIconImg())).ToArray()
 		);
@@ -322,7 +318,7 @@ public sealed class GrowthPainter : IDisposable{
 		return img;
 	}
 
-	IPaintableRect MovePresenceRect( int range, Img img = Img.Icon_Presence ) {
+	static IPaintableRect MovePresenceRect( int range, Img img = Img.Icon_Presence ) {
 		return new VerticalStackRect(
 			new NullRect(),
 			new ImgRect( img ),
@@ -331,22 +327,7 @@ public sealed class GrowthPainter : IDisposable{
 		)	.SplitByWeight(.05f, .1f, .3f, .35f, .15f, .1f);
 	}
 
-	void DrawRangeText( RectangleF rect, int range ) {
-		float rangeTextTop = rect.Y + rect.Height * .55f;
-		string txt = range.ToString();
-		using Font font = UseGameFont( rect.Height * .25f );
-		SizeF rangeTextSize = _graphics.MeasureString( txt, font );
-		_graphics.DrawString( txt, font, Brushes.Black, rect.X + (rect.Width - rangeTextSize.Width) / 2, rangeTextTop );
-	}
-
-	void DrawMoveArrow( RectangleF rect ) {
-		float rangeArrowTop = rect.Y + rect.Height * .85f;
-		using var rangeIcon = GetImage( Img.MoveArrow );
-		float arrowWidth = rect.Width * .8f, arrowHeight = arrowWidth * rangeIcon.Height / rangeIcon.Width;
-		_graphics.DrawImage( rangeIcon, rect.X + (rect.Width - arrowWidth) / 2, rangeArrowTop, arrowWidth, arrowHeight );
-	}
-
-	IPaintableRect PlacePresenceRect( IActOn<SelfCtx> growth ) {
+	static IPaintableRect PlacePresenceRect( IActOn<SelfCtx> growth ) {
 
 
 		var (presImg, range, filterEnum, addOnIcon, num) = growth switch {
@@ -367,7 +348,7 @@ public sealed class GrowthPainter : IDisposable{
 
 		var filterImgRect = GetTargetFilterIcon( filterEnum );
 
-		IPaintableRect paintable = null;
+		IPaintableRect paintable;
 		if(range is null )
 			// Ocean
 			paintable = new VerticalStackRect(
@@ -406,7 +387,7 @@ public sealed class GrowthPainter : IDisposable{
 				).SplitByWeight( 0f, .15f, .15f, .5f, .2f );
 	}
 
-	IPaintableRect Draw_IgnoreRange()  {
+	static IPaintableRect Draw_IgnoreRange()  {
 		return new VerticalStackRect(
 			new NullRect(),
 			new ImgRect(Img.Icon_Checkmark),
@@ -417,9 +398,6 @@ public sealed class GrowthPainter : IDisposable{
 	public void Dispose() {
 		_cachedImageLayer?.Dispose();
 	}
-
-	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
-	static Bitmap GetImage( Img img ) => ResourceImages.Singleton.GetImage( img );
 
 }
 

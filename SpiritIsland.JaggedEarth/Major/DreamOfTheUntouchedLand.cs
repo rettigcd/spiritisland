@@ -21,7 +21,7 @@ public class DreamOfTheUntouchedLand {
 		) {
 
 			// Add a random new island board next to target board ignore its setup icons.
-			Board newBoard = PickNewRandomBoard( ctx );
+			Board newBoard = PickNewRandomBoard();
 
 			// Reconfigure 1-board island to 2-board island - !! only works if starting with 1 board
 			var existingBoard = gs.Island.Boards[0];
@@ -51,7 +51,7 @@ public class DreamOfTheUntouchedLand {
 
 	}
 
-	static Board PickNewRandomBoard( TargetSpaceCtx ctx ) {
+	static Board PickNewRandomBoard() {
 		GameState gs = GameState.Current; // ??? could we pass this in?
 		var rand = new Random( gs.ShuffleNumber +56127);
 		// pick board

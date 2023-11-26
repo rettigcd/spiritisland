@@ -32,11 +32,11 @@ public class ReachFromTheInfiniteDarkness {
 		}
 
 		// Each Spirit's presence in () grants them +1 with all their Powers (this turn).
-		GrantRangeBonus( ctx, bonuses );
+		GrantRangeBonus( bonuses );
 	}
 
-	static void GrantRangeBonus( SelfCtx ctx, CountDictionary<Spirit> bonuses ) {
-		foreach(var spirit in bonuses.Keys) {
+	static void GrantRangeBonus( CountDictionary<Spirit> bonuses ) {
+		foreach(Spirit spirit in bonuses.Keys) {
 			RangeCalcRestorer.Save( spirit );
 			RangeExtender.Extend( spirit, bonuses[spirit] );
 		}

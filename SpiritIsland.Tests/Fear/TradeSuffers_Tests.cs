@@ -118,13 +118,13 @@ public class TradeSuffers_Tests {
 		_user.GrowAndBuyNoCards();
 	}
 
-	void ClearBlight() {
+	static void ClearBlight() {
 		// So it doesn't cascade during ravage
 		foreach(SpaceState space in GameState.Current.Spaces_Unfiltered)
 			space.Init( Token.Blight, 0 ); // Don't trigger events
 	}
 
-	void ActivateFearCard(IFearCard fearCard) {
+	static void ActivateFearCard(IFearCard fearCard) {
 		var fear = GameState.Current.Fear;
 		fear.Deck.Pop(); // remove old
 		fear.PushOntoDeck( fearCard );

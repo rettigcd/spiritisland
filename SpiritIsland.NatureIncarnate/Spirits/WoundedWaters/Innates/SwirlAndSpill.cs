@@ -22,17 +22,6 @@ public class SwirlAndSpill {
 			.DoUpToN();
 	}
 
-	// Does tier-2 and returns spaces pushed to
-	static async Task<Space[]> DoTier2( TargetSpaceCtx ctx ) {
-		ctx.AddFear( 1 );
-
-		List<Space> destinations = new List<Space>();
-		await BuildTier2Pusher( ctx )
-			.Track( move => destinations.Add( move.To.Space ) )
-			.DoUpToN();
-		return destinations.ToArray();
-	}
-
 	[InnateTier( "5 water,2 plant,2 animal", "In one land pushed into, Downgrade all Town and all City." )]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 ); // from Tier-2

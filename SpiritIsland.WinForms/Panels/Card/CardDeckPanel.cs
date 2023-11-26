@@ -60,7 +60,6 @@ class CardDeckPanel : IPanel {
 
 	void PaintCard( Graphics graphics, PowerCard card, int index ) {
 
-		int totalCardCount = _currentDeck.Cards.Count;
 		var cardRect = _layout.GetCardRect( index );
 
 		bool isAnOption = _options != null && _options.Contains( card );
@@ -92,10 +91,10 @@ class CardDeckPanel : IPanel {
 				Rectangle labelRect = _layout.GetCardActionLabel( index );
 				using Image icon = _pickPowerCardDecision.Use( card ) switch {
 					CardUse.AddToHand => images.GetImage( Img.GainCard ),
-					CardUse.Discard => images.GetImage( Img.Icon_Discard ),
+					CardUse.Discard => images.GetImage( Img.Discard1 ),
 					CardUse.Forget => images.GetNoSymbol(),
 					CardUse.Play => images.GetImage( Img.Icon_Play ),
-					CardUse.Impend => images.GetImage( Img.Icon_ImpendingCard ),
+					CardUse.Impend => images.GetImage( Img.ImpendingCard ),
 					CardUse.Reclaim => images.GetImage( Img.Reclaim1 ),
 					CardUse.Gift => null,
 					CardUse.Other => null,

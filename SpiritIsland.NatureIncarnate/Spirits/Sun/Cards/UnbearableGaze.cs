@@ -23,7 +23,7 @@ public class UnbearableGaze {
 			, new SourceSelector( FindOrigins( ctx ).Append( ctx.Tokens ).Distinct() )
 			, DestinationSelector.Adjacent
 		)
-			.AddGroup( 2, Human.Explorer_Town )
+			.AddGroup( max, tokenClasses )
 			.Track( move => { if(move.From != ctx.Tokens) selectedOrigin = move.From; } )
 			.FilterDestination( s => s == ctx.Space || selectedOrigin == null || selectedOrigin == s )
 			.DoN();

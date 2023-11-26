@@ -11,9 +11,6 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 		_speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
 		_repeatAttr = methodBase.GetCustomAttribute<RepeatAttribute>();
 
-		var instructions = methodBase.GetCustomAttribute<InstructionsAttribute>(false) ?? throw new InvalidOperationException( "Missing Instructions attribute for " + methodBase.DeclaringType.Name );
-		Instructions = instructions.Text;
-
 		if(_targetAttr is TargetSpaceAttribute tsa )
 			tsa.Preselect = methodBase.GetCustomAttribute<PreselectAttribute>();
 	}
@@ -25,7 +22,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 	public Phase DisplaySpeed         => _speedAttr.DisplaySpeed;
 	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
-	public string Instructions { get; }
+	// These are only used for drawing the cards.
+	public string Instructions => _methodBase.GetCustomAttribute<InstructionsAttribute>(false)?.Text ?? throw new InvalidOperationException( "Missing Instructions attribute for " + _methodBase.DeclaringType.Name );
+	public string Artist => _methodBase.GetCustomAttribute<ArtistAttribute>(false)?.Artist ?? throw new InvalidOperationException( "Missing Artist attribute for " + _methodBase.DeclaringType.Name );
 
 	public string TargetFilter => _targetAttr.TargetFilterName;
 	/// <summary> Used by PowerCardImageManager to draw the range-text on the card. </summary>

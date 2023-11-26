@@ -49,8 +49,7 @@ class OtherCardsPanel : IPanel {
 
 	void PaintCard( Graphics graphics, PowerCard card, int index ) {
 
-		int totalCardCount = _options.Length;
-		var cardRect = _layout.GetCardRect( index );
+		Rectangle cardRect = _layout.GetCardRect( index );
 
 		bool isAnOption = _options != null && _options.Contains( card );
 
@@ -70,7 +69,7 @@ class OtherCardsPanel : IPanel {
 				Rectangle labelRect = _layout.GetCardActionLabel( index );
 				using Image icon = _pickPowerCardDecision.Use( card ) switch {
 					CardUse.AddToHand => images.GetImage( Img.GainCard ),
-					CardUse.Discard => images.GetImage( Img.Icon_Discard ),
+					CardUse.Discard => images.GetImage( Img.Discard1 ),
 					CardUse.Forget => images.GetImage( Img.Icon_DestroyedPresence ),
 					CardUse.Gift => null,
 					CardUse.Other => null,

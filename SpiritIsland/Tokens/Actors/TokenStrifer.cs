@@ -33,7 +33,7 @@ public class TokenStrifer {
 			await onStrifed( before, after );
 	}
 
-	List<Func<SpaceToken, SpaceToken, Task>> _onStrifed = new();
+	readonly List<Func<SpaceToken, SpaceToken, Task>> _onStrifed = new();
 
 	#endregion
 

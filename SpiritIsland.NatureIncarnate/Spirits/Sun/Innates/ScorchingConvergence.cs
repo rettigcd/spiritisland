@@ -66,11 +66,4 @@ public class ScorchingConvergence {
 		await ctx.DamageInvaders( ctx.PresenceCount );
 	}
 
-	static HashSet<SpaceState> FindSacredSitesOrigin( TargetSpaceCtx ctx, TargetCriteria tc ) {
-		return ctx.Self.Presence.SacredSites
-			.Where( ss => ctx.Self.IsOriginFor( ss, ctx.Space, tc ) )
-			.ToHashSet();
-	}
-
-
 }

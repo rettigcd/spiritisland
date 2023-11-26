@@ -22,11 +22,11 @@ public class CastDownIntoTheBrinyDeep {
 			var board = boards.Single(b=>b.Name == name);
 
 			// Destroy it
-			await DestroyBoard( ctx, board );
+			await DestroyBoard( board );
 		}
 	}
 
-	static async Task DestroyBoard( SelfCtx ctx, Board board ) {
+	static async Task DestroyBoard( Board board ) {
 		// destroy the board containing target land and everything on that board.
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
 

@@ -49,7 +49,7 @@ public class ConsiderAHarmoniousNature {
 	}
 
 	static async Task GiveUpToNEnergyToSpirit( Spirit from, Spirit to, int max ) {
-		int delta = await from.SelectNumber($"Give {to.Text} Energy:", Math.Min(3,from.Energy) );
+		int delta = await from.SelectNumber($"Give {to.Text} Energy:", Math.Min(max,from.Energy) );
 		from.Energy -= delta;
 		to.Energy += delta;
 	}

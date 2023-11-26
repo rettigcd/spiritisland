@@ -6,7 +6,7 @@ public class SolidifyEchoesOfMajestyPast {
 
 	[MajorCard(Name,4,"sun,moon,air,earth"),Fast]
 	[AnySpirit]
-	[Instructions( "Choose one of target Spirit's lands.  In that land and each adjacent land, Defend 3. They Add 1 DestroyedPresence to each adjacent land. Skip up to 1 Invader Action at each added DestroyedPresence. -If you have- 2 sun,2 moon,2 earth: Target Spirit either Relaims 1 Power Card or re-gains a Unique Power they previously forgot. They may play it by paying its cost." ), Artist( Artists.EmilyHancock )]
+	[Instructions( "Choose one of target Spirit's lands.  In that land and each adjacent land, Defend 3. They Add 1 DestroyedPresence to each adjacent land. Skip up to 1 Invader Action at each added DestroyedPresence. -If you have- 2 sun,2 moon,2 earth: Target Spirit either Reclaims 1 Power Card or re-gains a Unique Power they previously forgot. They may play it by paying its cost." ), Artist( Artists.EmilyHancock )]
 	static public async Task ActAsync(TargetSpiritCtx ctx){
 
 		// Choose one of target Spirit's lands.
@@ -67,8 +67,10 @@ public class SolidifyEchoesOfMajestyPast {
 		HashSet<string> cardsIHave = spirit.InPlay.Union(spirit.Hand).Union(spirit.DiscardPile)
 			.Select(x=>x.Name)
 			.ToHashSet();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 		Spirit s2 = (Spirit)Activator.CreateInstance(spirit.GetType());
-		return s2.Hand
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+		return s2!.Hand
 			.Where(card=>!cardsIHave.Contains(card.Name))
 			.ToArray();
 

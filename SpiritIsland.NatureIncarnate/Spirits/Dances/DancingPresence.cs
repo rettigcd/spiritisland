@@ -9,7 +9,7 @@ public class DancingPresence : SpiritPresence {
 			BackgroundImg = Img.Coin, 
 			Text = "1",
 			Sub = new IconDescriptor { 
-				BackgroundImg = Img.Icon_ImpendingCard,
+				BackgroundImg = Img.ImpendingCard,
 				ContentImg = Img.Coin,
 				Text = "1"
 			}
@@ -18,7 +18,7 @@ public class DancingPresence : SpiritPresence {
 
 	static ImpendingEnergyTrack TwoImpendingEnergy => new ImpendingEnergyTrack( 0, 2 ) {
 		Icon = new IconDescriptor {
-			BackgroundImg = Img.Icon_ImpendingCard,
+			BackgroundImg = Img.ImpendingCard,
 			ContentImg = Img.Coin,
 			Text = "2",
 		}
@@ -36,7 +36,7 @@ public class DancingPresence : SpiritPresence {
 	static Track AdditionalImpending => new Track("+1 Impending" ) {
 		Icon = new IconDescriptor {
 			Super = new IconDescriptor {  Text = "+1" },
-			Sub = new IconDescriptor{ BackgroundImg = Img.Icon_ImpendingCard },
+			Sub = new IconDescriptor{ BackgroundImg = Img.ImpendingCard },
 		},
 		Action = new BoostImpendingPlays()
 	};

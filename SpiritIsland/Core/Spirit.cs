@@ -38,7 +38,7 @@ public abstract partial class Spirit : IOption {
 	public IUserPortal Portal => _gateway;
 	public Task<T> Select<T>( A.TypedDecision<T> decision ) where T : class, IOption => _gateway.Select<T>( decision );
 	public void PreSelect( SpaceToken st ) => _gateway.Preloaded = st;
-	UserGateway _gateway;
+	readonly UserGateway _gateway;
 
 	#endregion
 

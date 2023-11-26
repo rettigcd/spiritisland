@@ -117,7 +117,7 @@ public class ResourceImages {
 		_cache.Add( key, img );
 	}
 
-	public async Task<Image> GetPowerCard( PowerCard card ) {
+	static public async Task<Image> GetPowerCard( PowerCard card ) {
 		try {
 			ImageDiskCache _cache = new ImageDiskCache();
 			string key = $"PowerCard\\{card.Name}.png";
@@ -382,13 +382,19 @@ public class ResourceImages {
 	static string? ToResource( Img image ) => image switch {
 		Img.RedX => "icons.NoSymbol.png",
 		Img.Starlight_AssignElement => "icons.AssignElement.png",
-		Img.CardPlay => "icons.cardplay.png",
+
+		Img.CardPlay      => "icons.Card_Play.png",
+		Img.CardPlayPlusN => "icons.Card_BonusPlay.png",
+		Img.GainCard      => "icons.Card_Gain1.png",
+		Img.ImpendingCard => "icons.Card_Impending.png",
+		Img.Discard1      => "icons.Card_Discard1.png",
+		Img.Discard2      => "icons.Card_Discard2.png",
+
+
 		Img.Reclaim1 => "icons.reclaim 1.png",
 		Img.ReclaimAll => "icons.ReclaimAll.png",
 		Img.ReclaimHalf => "icons.Reclaim_Half.png",
-		Img.CardPlayPlusN => "icons.Cardplayplus.png",
 		Img.PlusOneRange => "icons.PlusOneRange.png",
-		Img.GainCard => "icons.GainCard.png",
 		Img.Icon_Major => "icons.major.png",
 		Img.MovePresence => "icons.MovePresence.png",
 
@@ -411,7 +417,6 @@ public class ResourceImages {
 		Img.Stone_Minor => "icons.minor.png",
 		Img.ShiftingMemory_PrepareEl => "icons.PrepareElement.png",
 		Img.ShiftingMemory_Discard2Prep => "icons.DiscardElementsForCardPlay.png",
-		Img.Discard2 => "icons.Discard2Cards.png",
 		Img.Starlight_GrowthOption1 => "icons.so1.png",
 		Img.Starlight_GrowthOption2 => "icons.so2.png",
 		Img.Starlight_GrowthOption3 => "icons.so3.png",
@@ -447,21 +452,20 @@ public class ResourceImages {
 		Img.Defend   => "tokens.defend1orange.png",
 		Img.Isolate  => "tokens.isolateorange.png",
 
-		Img.Icon_Sun    => "icons.Simple_sun.png",
-		Img.Icon_Moon   => "icons.Simple_moon.png",
-		Img.Icon_Fire   => "icons.Simple_fire.png",
-		Img.Icon_Air    => "icons.Simple_air.png",
-		Img.Icon_Water  => "icons.Simple_water.png",
-		Img.Icon_Plant  => "icons.Simple_plant.png",
-		Img.Icon_Earth  => "icons.Simple_earth.png",
-		Img.Icon_Animal => "icons.Simple_animal.png",
+		Img.Icon_Sun    => "icons.Elements.sun.png",
+		Img.Icon_Moon   => "icons.Elements.moon.png",
+		Img.Icon_Fire   => "icons.Elements.fire.png",
+		Img.Icon_Air    => "icons.Elements.air.png",
+		Img.Icon_Water  => "icons.Elements.water.png",
+		Img.Icon_Plant  => "icons.Elements.plant.png",
+		Img.Icon_Earth  => "icons.Elements.earth.png",
+		Img.Icon_Animal => "icons.Elements.animal.png",
 
 		Img.Icon_Dahan              => "icons.Dahanicon.png",
 		Img.Icon_Invaders           => "icons.Invaders.png",
 		Img.Icon_Coastal            => "icons.Coastal.png",
 		Img.Icon_PresenceOrWilds    => "icons.wildsorpresence.png",
 		Img.Icon_NoBlight           => "icons.Noblight.png",
-		Img.Icon_Ocean              => "icons.Ocean.png",
 		Img.Icon_TownCityOrBlight   => "icons.TownCityOrBlight.png",
 		Img.Icon_Blight             => "icons.Blighticon.png",
 		Img.Icon_Beast              => "icons.Beasticon.png",
@@ -484,12 +488,13 @@ public class ResourceImages {
 		Img.Icon_Checkmark          => "icons.Checkmark.png",
 		Img.Icon_Play               => "icons.Play.png",
 
-		Img.Icon_Sands				=> "icons.Sandsland.png",
-		Img.Icon_Mountain			=> "icons.Mountainland.png",
-		Img.Icon_Jungle				=> "icons.Jungle.png",
-		Img.Icon_Wetland			=> "icons.Wetlandland.png",
+		Img.Icon_Sands				=> "icons.Terrain.Sands.png",
+		Img.Icon_Mountain			=> "icons.Terrain.Mountain.png",
+		Img.Icon_Jungle				=> "icons.Terrain.Jungle.png",
+		Img.Icon_Wetland			=> "icons.Terrain.Wetlandland.png",
+		Img.Icon_Ocean              => "icons.Terrain.Ocean.png",
+
 		Img.Icon_Spirit             => "icons.Spiriticon.png",
-		Img.Icon_Discard            => "icons.Discard1Card.png",
 
 		Img.Deck_Hand               => "hand.png",
 		Img.Deck_Played             => "inplay.png",
@@ -516,7 +521,6 @@ public class ResourceImages {
 
 		Img.Icon_EndlessDark => "icons.EndlessDark.png",
 
-		Img.Icon_ImpendingCard => "icons.Impending.png",
 
 		Img.None => null,
 		_ => throw new System.ArgumentOutOfRangeException( nameof( image ), image.ToString() ),

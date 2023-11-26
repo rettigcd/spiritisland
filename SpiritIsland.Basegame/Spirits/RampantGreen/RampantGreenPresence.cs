@@ -19,5 +19,5 @@ public class RampantGreenPresence : SpiritPresence {
 
 	bool CanAddFromDestroyed() => 0 < Destroyed	&& HasRequiredEnergy;
 	bool HasRequiredEnergy => 0 < Self.Energy || IslandIsHealthy;
-	bool IslandIsHealthy => !GameState.Current.BlightCard.CardFlipped;
+	static bool IslandIsHealthy => !GameState.Current.BlightCard.CardFlipped;
 }

@@ -68,7 +68,7 @@ public class HeartOfTheWildfire : Spirit {
 
 	static Track FireCard => Track.MkCard( Element.Fire );
 
-	public static SpecialRule BlazingPresence_Rule = new SpecialRule(
+	public static SpecialRule BlazingPresence_Rule => new SpecialRule(
 		"Blazing Presence",
 		"After you add or move presence after Setup, in the land it goes to: For each fire showing on your presence Tracks, do 1 Damage."
 		+"  If 2 fire or more are showing on your presence Tracks, add 1 blight."

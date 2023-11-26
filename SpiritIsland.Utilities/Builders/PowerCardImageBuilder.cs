@@ -53,10 +53,16 @@ public class PowerCardImageBuilder {
 		PowerHeaderDrawer.DrawAttributeValues( graphics, headerRect.SplitHorizontally( 3 ), card );
 
 		// Instructions
-		PaintInstructionArea( card.Instructions, textArea, graphics );
+		PaintInstructionArea( card.Instructions, textArea, graphics, Brushes.Cornsilk );
 
 		// Artist
-		// graphics.DrawRectangle( Pens.White, artistFooter  );
+		using(Bitmap paletteImg = ResourceImages.Singleton.GetResourceImage( "icons.artist-palette.png" )) {
+			Rectangle paletteRect = artistFooter.FitHeight(paletteImg.Size,Align.Near);
+			graphics.DrawImage(paletteImg, paletteRect);
+			artistFooter.Offset(paletteRect.Width+2,0);
+		}
+		using(Font artistFont = new Font( "Arial Narrow", artistFooter.Height, FontStyle.Bold, GraphicsUnit.Pixel ))
+			graphics.DrawString( card.Artist, artistFont, Brushes.Cornsilk, artistFooter );
 
 		// Blue perimeter line
 		using Pen borderPen = new Pen( Color.DeepSkyBlue, 1f );
@@ -108,10 +114,10 @@ public class PowerCardImageBuilder {
 
 	#region private methods
 
-	static void PaintInstructionArea( string instructions, Rectangle textArea, Graphics graphics ) {
+	static void PaintInstructionArea( string instructions, Rectangle textArea, Graphics graphics, Brush normalBackground ) {
 
 		// background
-		graphics.FillRectangle( Brushes.Cornsilk, textArea );
+		graphics.FillRectangle( normalBackground, textArea );
 
 		// give it an upper and lower margin
 		textArea.Inflate( 0, -10 );

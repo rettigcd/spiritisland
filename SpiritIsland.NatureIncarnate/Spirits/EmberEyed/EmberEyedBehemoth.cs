@@ -103,7 +103,7 @@ public class EmberEyedBehemoth : Spirit {
 
 	#region Unrelenting Strides
 
-	SpecialRule UnrelentingStrikes_Rule => new SpecialRule( 
+	static SpecialRule UnrelentingStrikes_Rule => new SpecialRule( 
 		"Unrelenting Strides", 
 		"On any turn that you don't use Innate Powers, you may use The Behemoth Rises an additional time." 
 	);

@@ -71,7 +71,7 @@ public class CallToTrade_Tests {
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
 
 		// Elevate to Terror Level 3
-		Given_TerrorLevelIs3( ctx );
+		Given_TerrorLevelIs3();
 
 		// Given: advance to 2nd round where we have a ravage
 		user.GrowAndBuyNoCards();
@@ -167,7 +167,7 @@ public class CallToTrade_Tests {
 
 	#region Given / When
 
-	static void Given_TerrorLevelIs3( SelfCtx ctx ) {
+	static void Given_TerrorLevelIs3() {
 		var fear = GameState.Current.Fear;
 		for(int i = 0; i < 7; ++i)
 			fear.Deck.Pop();

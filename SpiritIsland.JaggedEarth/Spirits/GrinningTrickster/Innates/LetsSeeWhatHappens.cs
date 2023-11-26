@@ -26,7 +26,7 @@ public class LetsSeeWhatHappens {
 	static async Task<PowerCard> DawCardAndActivateAtMax( TargetSpaceCtx ctx ) {
 
 		// Discard Minor Powers from the deck until you get one that targets a land.
-		PowerCard card = DiscardMinorPowersUntilYouTargetLand( ctx );
+		PowerCard card = DiscardMinorPowersUntilYouTargetLand();
 
 		// Show to the user what card is being triggered
 		await ctx.Self.SelectFactory( "Perform All Action at Max", new IActionFactory[] { card } );
@@ -40,9 +40,11 @@ public class LetsSeeWhatHappens {
 		return card;
 	}
 
-	static PowerCard DiscardMinorPowersUntilYouTargetLand( TargetSpaceCtx ctx ) {
+	static PowerCard DiscardMinorPowersUntilYouTargetLand() {
 		PowerCard card;
-		do { card = GameState.Current.MinorCards.FlipNext(); } while(card.LandOrSpirit != LandOrSpirit.Land);
+		do { 
+			card = GameState.Current.MinorCards.FlipNext(); 
+		} while(card.LandOrSpirit != LandOrSpirit.Land);
 		return card;
 	}
 

@@ -17,13 +17,13 @@ public class StarlightSeeksItsForm : Spirit {
 
 	const string PickElementName = "Pick element";
 	static Track Track_PickElement { 
-		get { 
-			var t = new Track(PickElementName);
-			t.Icon = new IconDescriptor {
-				BackgroundImg = Img.Coin,
-				ContentImg = Img.Starlight_AssignElement
+		get {
+			return new Track( PickElementName ) {
+				Icon = new IconDescriptor {
+					BackgroundImg = Img.Coin,
+					ContentImg = Img.Starlight_AssignElement
+				}
 			};
-			return t;
 		}
 	}
 

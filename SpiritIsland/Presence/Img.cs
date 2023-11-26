@@ -100,7 +100,7 @@ public enum Img {
 	OpenTheWays,
 
 	Icon_EndlessDark,
-	Icon_ImpendingCard,
+	ImpendingCard,
 
 	Icon_Sands,
 	Icon_Mountain,
@@ -143,7 +143,7 @@ public enum Img {
 
 	Deck_Hand,
 	Deck_Played,
-	Icon_Discard,
+	Discard1,
 	Deck_Discarded,
 	Discard2,
 	Deck_DaysThatNeverWere_Major,

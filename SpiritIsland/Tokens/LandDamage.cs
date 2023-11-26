@@ -10,12 +10,6 @@ public class LandDamage
 
 	public static readonly LandDamage Token = new LandDamage();
 
-	#region Extra Token stuff we don't use
-
-	public string Text => "Land Damage";
-
-	#endregion
-
 	public async Task HandleDamageAddedAsync( SpaceState tokens , int _) {
 
 		// Land Damage cleans itself up at end of Action

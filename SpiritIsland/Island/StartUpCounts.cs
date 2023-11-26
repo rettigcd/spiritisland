@@ -3,15 +3,15 @@
 public class StartUpCounts {
 
 	#region Constructor
-	public StartUpCounts(string config){ this.config = config; }
+	public StartUpCounts(string config){ this._config = config; }
 	#endregion
 
-	public bool IsEmpty => string.IsNullOrEmpty( config );
-	public int Cities    => config.Count(c=>c=='C');
-	public int Towns     => config.Count(c=>c=='T');
-	public int Explorers => config.Count(c=>c=='E');
-	public int Dahan     => config.Count(c=>c=='D');
-	public int Blight    => config.Count(c=>c=='B');
+	public bool IsEmpty => string.IsNullOrEmpty( _config );
+	public int Cities    => _config.Count(c=>c=='C');
+	public int Towns     => _config.Count(c=>c=='T');
+	public int Explorers => _config.Count(c=>c=='E');
+	public int Dahan     => _config.Count(c=>c=='D');
+	public int Blight    => _config.Count(c=>c=='B');
 
 	//public void Adjust( char k,int delta ) {
 	//	var dict= new CountDictionary<char>();
@@ -26,6 +26,6 @@ public class StartUpCounts {
 	//}
 
 	#region private fields
-	string config;
+	readonly string _config;
 	#endregion
 }

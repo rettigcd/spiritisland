@@ -61,7 +61,7 @@ public class ImageSizeCalculator {
 			"incarna" => Img.Icon_Incarna,
 			"endless-dark" => Img.Icon_EndlessDark,
 			"cardplay" => Img.CardPlay,
-			"impending" => Img.Icon_ImpendingCard,	
+			"impending" => Img.ImpendingCard,	
 			"wetland" => Img.Icon_Wetland,
 			"jungle" => Img.Icon_Jungle,
 			"sands" => Img.Icon_Sands,

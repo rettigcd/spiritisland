@@ -43,7 +43,7 @@ class ArtworkInit {
 		foreach(PowerCard powerCard in powerCards) {
 			_initCurrent++;
 			try {
-				using Image img = await ResourceImages.Singleton.GetPowerCard( powerCard );
+				using Image img = await ResourceImages.GetPowerCard( powerCard );
 			}
 			catch(Exception ex) {
 				MessageBox.Show( ex.ToString() );

@@ -57,5 +57,5 @@ public class Incarna
 		if(1 < _spaceCounts.Count)
 			throw new Exception("Incarna is in 2 places at the same time!");
 	}
-	CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
+	readonly CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
 }

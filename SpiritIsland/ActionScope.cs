@@ -127,18 +127,22 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	public Guid Id { get; }
 
-	public void Log(string label ) {
-		lock(_locker) {
-			_log.Add(this.ToString()+" - " + label);
-		}
-	}
-	public string[] GetLog() {
-		lock(_locker) {
-			return _log.ToArray();
-		}
-	}
-	static object _locker = new object();
-	static List<string> _log = new List<string>();
+	#region Debugging Action-Scope problems
+
+	//public void Log(string label ) {
+	//	lock(_locker) {
+	//		_log.Add(this.ToString()+" - " + label);
+	//	}
+	//}
+	//static public string[] GetLog() {
+	//	lock(_locker) {
+	//		return _log.ToArray();
+	//	}
+	//}
+	//readonly static object _locker = new object();
+	//readonly static List<string> _log = new List<string>();
+
+	#endregion
 
 	public override string ToString() {
 		return $"{Id} : {Category} : "+Owner?.Text??"";

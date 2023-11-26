@@ -251,12 +251,12 @@ public class AvoidTheDahan_Tests {
 	}
 #pragma warning restore xUnit1013 // Public method should be marked as test
 
-	void ElevateTerrorLevelTo( int desiredFearLevel ) {
+	static void ElevateTerrorLevelTo( int desiredFearLevel ) {
 		while(GameState.Current.Fear.TerrorLevel < desiredFearLevel)
 			GameState.Current.Fear.Deck.Pop();
 	}
 
-	void ActivateFearCard(IFearCard fearCard) {
+	static void ActivateFearCard(IFearCard fearCard) {
 		var fear = GameState.Current.Fear;
 		fear.Deck.Pop();				// discard card we are replacing
 		fear.PushOntoDeck(fearCard);    // push desired card onto the deck
