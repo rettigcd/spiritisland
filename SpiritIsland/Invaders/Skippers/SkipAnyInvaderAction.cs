@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SkipAnyInvaderAction : BaseModEntity
+public class SkipAnyInvaderAction : BaseModEntity // !!! could add this to SpaceState for simplicity
 	, IEndWhenTimePasses
 	, ISkipRavages
 	, ISkipBuilds
