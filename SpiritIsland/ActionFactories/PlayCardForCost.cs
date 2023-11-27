@@ -5,6 +5,10 @@
 /// </summary>
 public class PlayCardForCost : IActionFactory {
 
+	public PlayCardForCost(Present present = Present.Always ) {
+		_present = present;
+	}
+
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 		=> speed == Phase.Fast || speed == Phase.Slow;
 
@@ -20,10 +24,12 @@ public class PlayCardForCost : IActionFactory {
 			.ToArray();
 		if(options.Length == 0) return;
 
-		PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to play", options.Where( x => x.Cost <= maxCardCost ), CardUse.Play, Present.Always );
+		PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to play", options.Where( x => x.Cost <= maxCardCost ), CardUse.Play, _present );
 		if(powerCard != null)
 			ctx.Self.PlayCard( powerCard );
 	}
+
+	readonly Present _present;
 
 }
 
