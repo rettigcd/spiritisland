@@ -193,6 +193,9 @@ public static class Rectangle_Extensions {
 	static public RectangleF InflateBy( this RectangleF rect, float deltaX, float deltaY )
 		=> new RectangleF( rect.X - deltaX, rect.Y - deltaY, rect.Width + deltaX * 2, rect.Height + deltaY * 2 );
 
+	static public Rectangle OffsetBy( this Rectangle rect, int deltaX, int deltaY ) 
+		=> new Rectangle( rect.X + deltaX, rect.Y + deltaY, rect.Width, rect.Height );
+
 	/// <param name="bounds">Rectangle we are trying to fit inside</param>
 	/// <param name="size">aspect ratio of final rectangle</param>
 	/// <returns>a rectangle center on bounds, with the same height as bounds, with a same width/hieght ratio as size</returns>
