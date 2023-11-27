@@ -44,6 +44,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(SolidifyEchoesOfMajestyPast),
 		typeof(BombardWithBouldersAndStingingSeeds),
 		typeof(TransformativeSacrifice),
+		typeof(ExaltationOfTheIncandescentSky),
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {
