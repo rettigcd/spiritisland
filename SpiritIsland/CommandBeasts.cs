@@ -52,7 +52,7 @@ internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 
 		var totalDamage = ctx.BonusDamageForAction( damage );
 
-		int damageDone = await ctx.Invaders.UserSelectedDamage(ctx.Self, damage, 
+		int damageDone = await ctx.Invaders.UserSelectedDamageAsync(ctx.Self, damage, 
 			new SourceSelector(ctx.Tokens).AddAll(Human.Invader),
 			Present.Done
 		);

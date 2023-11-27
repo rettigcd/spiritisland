@@ -162,11 +162,11 @@ public sealed class InvaderBinding {
 	public Task<int> UserSelectedDamageAsync( Spirit damagePicker, int damage, params ITokenClass[] allowedTypes ) {
 		if(allowedTypes.Length == 0) allowedTypes = Human.Invader;
 		SourceSelector selector = new SourceSelector(Tokens).AddAll(allowedTypes);
-		return UserSelectedDamage( damagePicker, damage, selector, Present.Always );
+		return UserSelectedDamageAsync( damagePicker, damage, selector, Present.Always );
 	}
 
 	// This is the standard way of picking - by TokenClass
-	public async Task<int> UserSelectedDamage( Spirit damagePicker, int damage, SourceSelector selector, Present present ) {
+	public async Task<int> UserSelectedDamageAsync( Spirit damagePicker, int damage, SourceSelector selector, Present present ) {
 		if(damage == 0) return 0;
 
 		selector
