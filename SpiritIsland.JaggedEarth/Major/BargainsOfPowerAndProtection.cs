@@ -7,17 +7,11 @@ public class BargainsOfPowerAndProtection {
 	public static async Task ActAsync( TargetSpaceCtx ctx ) {
 		// Remove 1 of your presence on the island from the game, setting it on the Reminder Card.
 		// if you have 3 sun 2 water 2 earth: the presence instead comes from your presence track.
-		if( await ctx.YouHave("3 sun,2 water,2 earth" )) {
-			var presenceToRemove = await ctx.Self.SelectSourcePresence("remove from game"); // Come from track or board
-			await ctx.Self.Presence.TakeFromAsync( presenceToRemove );
-		} else {
-			SpaceToken presenceToRemove = await ctx.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
-			await presenceToRemove.Remove();
-		}
+		await ctx.PayPresenceForBargain( "3 sun,2 water,2 earth" );
 
 		// From now on: Each dahan within range of 1 of your presence provides
 		// Defend 1 in its land,
-		GameState.Current.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1(ctx).DefendOn, Token.Defend );
+		GameState.Current.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1( ctx ).DefendOn, Token.Defend );
 
 		// and you gain 1 less Energy each turn.
 		ctx.Self.EnergyCollected.Add( spirit => --spirit.Energy );

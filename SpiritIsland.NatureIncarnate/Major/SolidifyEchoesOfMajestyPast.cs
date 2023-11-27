@@ -67,9 +67,7 @@ public class SolidifyEchoesOfMajestyPast {
 		HashSet<string> cardsIHave = spirit.InPlay.Union(spirit.Hand).Union(spirit.DiscardPile)
 			.Select(x=>x.Name)
 			.ToHashSet();
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-		Spirit s2 = (Spirit)Activator.CreateInstance(spirit.GetType());
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+		Spirit s2 = (Spirit)(Activator.CreateInstance(spirit.GetType()) ?? throw new InvalidOperationException("Unable to clone spirit"));
 		return s2!.Hand
 			.Where(card=>!cardsIHave.Contains(card.Name))
 			.ToArray();

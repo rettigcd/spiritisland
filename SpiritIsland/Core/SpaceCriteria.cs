@@ -109,6 +109,7 @@ public class SpaceCriteria {
 
 		// Dahan
 		[Target.Dahan] = ( ctx ) => ctx.Tokens.Dahan.Any,
+		[Target.TwoDahan] = ( ctx ) => 0 < ctx.Tokens.Dahan.CountAll,
 
 		// Invaders
 		[Target.Invaders] = ( ctx ) => ctx.Tokens.HasInvaders(),

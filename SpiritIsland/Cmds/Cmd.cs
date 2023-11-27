@@ -229,4 +229,16 @@ public static partial class Cmd {
 		GameState.Current.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( ctx.Self ).Reclaim );
 	} );
 
+
+	// not a command but I can't find anywhere to put it.
+	static public async Task PayPresenceForBargain( this SelfCtx ctx, string takeFromTrackElementThreshold ) {
+		if(await ctx.YouHave( takeFromTrackElementThreshold )) {
+			var presenceToRemove = await ctx.Self.SelectSourcePresence( "remove from game" ); // Come from track or board
+			await ctx.Self.Presence.TakeFromAsync( presenceToRemove );
+		} else {
+			SpaceToken presenceToRemove = await ctx.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
+			await presenceToRemove.Remove();
+		}
+	}
+
 }
