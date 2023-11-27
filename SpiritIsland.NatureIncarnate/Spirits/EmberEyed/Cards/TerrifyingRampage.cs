@@ -32,7 +32,7 @@ public class TerrifyingRampage {
 		public async Task<bool> Skip( SpaceState space ) {
 
 			var sourceSelector = new SourceSelector( space )
-				.NotRemoving()
+				.ConfigOnlySelectEachOnce()
 				.UseQuota( _quota );
 
 			await SitOutRavage.SelectFightersAndSitThemOut( _invaderPicker, sourceSelector );

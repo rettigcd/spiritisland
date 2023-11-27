@@ -34,7 +34,7 @@ public class UnnervingPall {
 			return;
 
 		var sourceSelector = new SourceSelector(ctx.Tokens)
-			.NotRemoving()
+			.ConfigOnlySelectEachOnce()
 			.AddGroup(3,damagedInvaders.Select(x=>x.Class).Distinct().ToArray())
 			.FilterSpaceToken(st => 0<((HumanToken)st.Token).Damage ); // is damaged
 

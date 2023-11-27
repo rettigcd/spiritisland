@@ -37,7 +37,7 @@ public class DahanSitOutRavage : BaseModEntity, ISkipRavages {
 	public UsageCost Cost => UsageCost.Free;
 	public async Task<bool> Skip( SpaceState space ) {
 
-		var ss = new SourceSelector(space).AddGroup(_countToSitOut,Human.Dahan).NotRemoving();
+		var ss = new SourceSelector(space).AddGroup(_countToSitOut,Human.Dahan).ConfigOnlySelectEachOnce();
 
 		CountDictionary<HumanToken> counts =  new();
 		while(true) {

@@ -37,15 +37,16 @@ public class GameComponentProvider : IGameComponentProvider {
 	}.Select( PowerCard.For ).ToArray();
 
 	public PowerCard[] MajorCards => new Type[] {
-		typeof(InspireTheReleaseOfStolenLands),
-		typeof(UnearthABeastOfWrathfulStone),
+		typeof(BargainOfCoursingPaths),
+		typeof(BombardWithBouldersAndStingingSeeds),
+		typeof(ExaltationOfTheIncandescentSky),
+		typeof(FlockingRedTalons),
 		typeof(FragmentsOfYesterYear),
+		typeof(InspireTheReleaseOfStolenLands),
 		typeof(RumblingEarthquakes),
 		typeof(SolidifyEchoesOfMajestyPast),
-		typeof(BombardWithBouldersAndStingingSeeds),
 		typeof(TransformativeSacrifice),
-		typeof(ExaltationOfTheIncandescentSky),
-		typeof(BargainOfCoursingPaths),
+		typeof(UnearthABeastOfWrathfulStone),
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {

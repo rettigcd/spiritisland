@@ -50,14 +50,11 @@ public class SourceSelector {
 
 	public SourceSelector Config( Action<SourceSelector> configuration ) { configuration(this); return this;}
 
-	/// <summary> Specifies 1 or more tokens that may be selected - must be called at least once for GetSource to present any results.</summary>
-	public SourceSelector AddGroup( int count, params ITokenClass[] classes ) { _quota.AddGroup( count, classes ); return this; }
-
-	public SourceSelector AddAll( params ITokenClass[] classes ) { _quota.AddAll( classes ); return this; }
-
-	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
-
-	public SourceSelector NotRemoving(){
+	/// <summary>
+	/// Tracks starting invaders and only allows each to be selected once.
+	/// </summary>
+	/// <remarks>Used primarily for damage or when not removing tokens.</remarks>
+	public SourceSelector ConfigOnlySelectEachOnce(){
 		// Tokens will still be where they started, so we need to
 		// manually track how many have been used and
 		// not allow selection when used up
@@ -68,6 +65,14 @@ public class SourceSelector {
 		_removeReason = RemoveReason.None; 
 		return this;
 	}
+
+
+	/// <summary> Specifies 1 or more tokens that may be selected - must be called at least once for GetSource to present any results.</summary>
+	public SourceSelector AddGroup( int count, params ITokenClass[] classes ) { _quota.AddGroup( count, classes ); return this; }
+
+	public SourceSelector AddAll( params ITokenClass[] classes ) { _quota.AddAll( classes ); return this; }
+
+	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
 
 	/// <summary> Dynamically filter sources. - when sources may change over time. </summary>
 	public SourceSelector FilterSource( Func<SpaceState, bool> filterSource ) {

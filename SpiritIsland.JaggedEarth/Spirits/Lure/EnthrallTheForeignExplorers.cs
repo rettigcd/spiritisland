@@ -14,7 +14,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 	public async Task<bool> Skip( SpaceState space ) {
 
 		var sourceSelector = new SourceSelector( space )
-			.NotRemoving()
+			.ConfigOnlySelectEachOnce()
 			.AddGroup( Self.Presence.CountOn( space ) * 2, Human.Explorer );
 
 		await SitOutRavage.SelectFightersAndSitThemOut( Self, sourceSelector );
