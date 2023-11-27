@@ -21,7 +21,7 @@ public class BoundPresence_ForSpace {
 
 	public async Task PlaceHere() {
 		var from = await _self.SelectSourcePresence();
-		await ctx.Self.Presence.Place( from, ctx.Space );
+		await ctx.Self.Presence.PlaceAsync( from, ctx.Space );
 	}
 
 	public async Task MoveHereFromAnywhere(int count) {

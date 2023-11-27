@@ -70,11 +70,6 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	// ----  Reveal / Return  -------
 	// ------------------------------
 
-	public async Task DestroyPresenceOn( SpaceState spaceState ) {
-		if(spaceState.Has( this ))
-			await spaceState.Destroy( Token, 1 );
-	}
-
 	protected virtual async Task RevealTrack( Track track ) {
 		if(track == Track.Destroyed && 0 < Destroyed)
 			--Destroyed;
@@ -106,6 +101,11 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	#endregion
 
+	public async Task DestroyPresenceOn( SpaceState spaceState ) {
+		if(spaceState.Has( this ))
+			await spaceState.Destroy( Token, 1 );
+	}
+
 	#region Destroyed
 
 	public int Destroyed {
@@ -115,7 +115,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	/// <summary> Removes a Destroyed Presence from the game. </summary>
 	public void RemoveDestroyed( int count ) {
-		if(count > Destroyed) throw new ArgumentOutOfRangeException( nameof( count ) );
+		if(Destroyed < count) throw new ArgumentOutOfRangeException( nameof( count ) );
 		Destroyed -= count;
 	}
 
@@ -143,8 +143,8 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	#region Game-Play things you can do with presence
 
 	/// <param name="from">Track, Space, or SpaceToken</param>
-	public async Task Place( IOption from, Space to ) {
-		var token = await TakeFrom( from );
+	public async Task PlaceAsync( IOption from, Space to ) {
+		var token = await TakeFromAsync( from );
 		await to.Tokens.Add( token, 1 );
 	}
 
@@ -153,25 +153,23 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 		await to.Tokens.Add( Token, numToPlace );
 		Destroyed -= numToPlace;
-
-		// while(0 < numToPlace--) await Place( Track.Destroyed, to );
 	}
 
 	/// <param name="from">Track, Space, or SpaceState</param>
 	/// <returns>Token that is being 'taken'.</returns>
-	public async Task<IToken> TakeFrom( IOption from ) {
+	public async Task<IToken> TakeFromAsync( IOption from ) {
 		if(from is Track track)
 			await RevealTrack( track );
 		else if(from is Space space)
-			await TakeFromSpace( Token.On(space) );
+			await TakeFromSpaceAsync( Token.On(space) );
 		else if(from is SpaceToken spaceToken) {
-			await TakeFromSpace( spaceToken );
+			await TakeFromSpaceAsync( spaceToken );
 			return spaceToken.Token;
 		}
 		return Token;
 	}
 
-	static async Task TakeFromSpace( SpaceToken st ) {
+	static async Task TakeFromSpaceAsync( SpaceToken st ) {
 		SpaceState fromSpace = st.Space.Tokens;
 		if(0<fromSpace[st.Token])
 			await fromSpace.Remove( st.Token, 1, RemoveReason.Removed ); // This is not a .MovedFrom because that needs done from .Move
@@ -179,7 +177,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 			throw new ArgumentException( "Can't pull from island space:" + st.ToString() );
 	}
 
-	public Task ReturnDestroyedToTrack( Track dst ) {
+	public Task ReturnDestroyedToTrackAsync( Track dst ) {
 
 		// src / from
 		if(Destroyed <= 0) throw new InvalidOperationException( "There is no Destroyed presence to return." );

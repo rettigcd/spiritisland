@@ -9,7 +9,7 @@ public class BargainsOfPowerAndProtection {
 		// if you have 3 sun 2 water 2 earth: the presence instead comes from your presence track.
 		if( await ctx.YouHave("3 sun,2 water,2 earth" )) {
 			var presenceToRemove = await ctx.Self.SelectSourcePresence("remove from game"); // Come from track or board
-			await ctx.Self.Presence.TakeFrom( presenceToRemove );
+			await ctx.Self.Presence.TakeFromAsync( presenceToRemove );
 		} else {
 			SpaceToken presenceToRemove = await ctx.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
 			await presenceToRemove.Remove();

@@ -8,14 +8,14 @@ public class DrawFromDeck {
 	}
 
 	/// <summary>
-	/// Does the "Gain Power Card" action
+	/// Does the "Gain Power Card" action - Adds Selected Cards to players hand.
 	/// </summary>
 	static public async Task<DrawCardResult> DrawInner( Spirit spirit, PowerCardDeck deck, int numberToDraw, int numberToKeep ) {
 		List<PowerCard> candidates = deck.Flip(numberToDraw);
 
 		var selectedCards = new List<PowerCard>();
 		while(0 < numberToKeep--) {
-			PowerCard selectedCard = await	PickOutCard( spirit, candidates );
+			PowerCard selectedCard = await PickOutCard( spirit, candidates );
 			selectedCards.Add( selectedCard );
 		}
 

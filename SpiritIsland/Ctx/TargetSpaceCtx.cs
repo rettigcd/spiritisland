@@ -303,7 +303,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	public async Task PlacePresenceHere() {
 		var from = await Self.SelectSourcePresence();
-		await Self.Presence.Place( from, Space );
+		await Self.Presence.PlaceAsync( from, Space );
 	}
 
 	#endregion

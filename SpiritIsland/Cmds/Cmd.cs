@@ -189,9 +189,10 @@ public static partial class Cmd {
 		});
 
 	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SpiritAction( "Destroy 1 presence.", async ctx => {
-		var spaceToken = await ctx.Self.Select( A.SpaceToken.OfDeployedPresence( prompt, ctx.Self ) );
+		SpaceToken spaceToken = await ctx.Self.Select( A.SpaceToken.OfDeployedPresence( prompt, ctx.Self ) );
 		await spaceToken.Destroy();
 	} );
+
 	static public SpiritAction DestroyPresence( int count ) => new SpiritAction( 
 		$"Destroy {count} presence", 
 		async ctx => { 
@@ -207,7 +208,7 @@ public static partial class Cmd {
 		while(count > 0) {
 			var dst = await self.Select( A.TrackSlot.ToCover( self ) );
 			if(dst == null) break;
-			await self.Presence.ReturnDestroyedToTrack( dst );
+			await self.Presence.ReturnDestroyedToTrackAsync( dst );
 			--count;
 		}
 	});
@@ -221,7 +222,7 @@ public static partial class Cmd {
 			IOption from = await self.SelectSourcePresence();
 			IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
 			Space to = await self.Select( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, token ) );
-			await self.Presence.Place( from, to );
+			await self.Presence.PlaceAsync( from, to );
 		} );
 
 	static public SpiritAction Reclaim1CardInsteadOfDiscarding => new SpiritAction( "Reclaims 1 card instead of discarding it", ctx => {

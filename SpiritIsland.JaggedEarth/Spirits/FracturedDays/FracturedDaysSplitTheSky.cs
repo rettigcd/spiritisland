@@ -101,7 +101,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 			var from = (IOption)await Select( A.TrackSlot.ToReveal( selectPrompt, this ) )
 					?? (IOption)await Select( new A.SpaceToken( selectPrompt, Presence.Deployed, Present.Done ) ); // Cancel
 
-			await Presence.TakeFrom( from );
+			await Presence.TakeFromAsync( from );
 			Time++;
 
 			--count;
