@@ -42,6 +42,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(FragmentsOfYesterYear),
 		typeof(RumblingEarthquakes),
 		typeof(SolidifyEchoesOfMajestyPast),
+		typeof(BombardWithBouldersAndStingingSeeds),
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {
