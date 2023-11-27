@@ -98,12 +98,16 @@ public static class PowerHeaderDrawer {
 
 	static void DrawTarget( Graphics graphics, string text, Rectangle cell, Align align = Align.Center ) {
 
+		if(text[0] == '2') {
+			int index = text[1] == ' ' ? 2 : 1;
+			string sub = text[index..];
+			Draw2SideBySide( graphics, cell, sub, sub );
+			return;
+		}
+
 		int orIndex = text.IndexOf( " Or " );
 		if(orIndex != -1) {
-			// Split into 2 parts and do each
-			Rectangle[] cellParts = cell.SplitHorizontally( 2 );
-			DrawTarget( graphics, text[..orIndex], cellParts[0], Align.Far );
-			DrawTarget( graphics, text[(orIndex + 4)..], cellParts[1], Align.Near );
+			Draw2SideBySide( graphics, cell, text[..orIndex], text[(orIndex + 4)..] );
 			return;
 		}
 
@@ -157,6 +161,13 @@ public static class PowerHeaderDrawer {
 			using(Bitmap icon = ResourceImages.Singleton.GetNoSymbol())
 				graphics.DrawImage( icon, imgRect.FitHeight( icon.Size, align ) );
 
+	}
+
+	private static void Draw2SideBySide( Graphics graphics, Rectangle cell, string s1, string s2 ) {
+		// Split into 2 parts and do each
+		Rectangle[] cellParts = cell.SplitHorizontally( 2 );
+		DrawTarget( graphics, s1, cellParts[0], Align.Far );
+		DrawTarget( graphics, s2, cellParts[1], Align.Near );
 	}
 
 	static Img TargetToImg( string text ) => text switch {
