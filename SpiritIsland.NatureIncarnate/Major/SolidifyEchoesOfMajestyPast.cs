@@ -6,11 +6,11 @@ public class SolidifyEchoesOfMajestyPast {
 
 	[MajorCard(Name,4,"sun,moon,air,earth"),Fast]
 	[AnySpirit]
-	[Instructions( "Choose one of target Spirit's lands.  In that land and each adjacent land, Defend 3. They Add 1 DestroyedPresence to each adjacent land. Skip up to 1 Invader Action at each added DestroyedPresence. -If you have- 2 sun,2 moon,2 earth: Target Spirit either Reclaims 1 Power Card or re-gains a Unique Power they previously forgot. They may play it by paying its cost." ), Artist( Artists.EmilyHancock )]
+	[Instructions( "Choose one of target Spirit's lands. In that land and each adjacent land, Defend 3. They Add 1 DestroyedPresence to each adjacent land. Skip up to 1 Invader Action at each added DestroyedPresence. -If you have- 2 sun,2 moon,2 earth: Target Spirit either Reclaims 1 Power Card or re-gains a Unique Power they previously forgot. They may play it by paying its cost." ), Artist( Artists.EmilyHancock )]
 	static public async Task ActAsync(TargetSpiritCtx ctx){
 
 		// Choose one of target Spirit's lands.
-		var center = await ctx.Self.Select(new A.Space("Select Central Hub", ctx.Other.Presence.Spaces,Present.Always));
+		Space center = await ctx.Self.Select(new A.Space("Select Central Hub", ctx.Other.Presence.Spaces,Present.Always));
 		if(center == null) return; // is this possible?
 
 		// In that land and each adjacent, Defend 3.

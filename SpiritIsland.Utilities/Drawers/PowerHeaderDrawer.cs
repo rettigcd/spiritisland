@@ -61,28 +61,24 @@ public static class PowerHeaderDrawer {
 	private static void DrawSourceCriteria( Graphics graphics, Rectangle cell, string sourceCriteria, Rectangle imgRect ) {
 		if(sourceCriteria == "ss") {
 			// Sacred site
-			using(Bitmap ssImg = ResourceImages.Singleton.GetImage( Img.Icon_Sacredsite ))
-				graphics.DrawImageFitBoth( ssImg, imgRect );
+			using Bitmap ssImg = ResourceImages.Singleton.GetImage( Img.Icon_Sacredsite );
+			graphics.DrawImageFitBoth( ssImg, imgRect );
 			return;
 		}
 
 		// Draw Terrain 1st/background
 		DrawSourceTerrain( graphics, sourceCriteria, imgRect.OffsetBy( -cell.Height/4, 0 ) ); // .SplitHorizontally( 2 )[0]
 		// Draw Presence 2nd on top of Terrain
-		using( Image presenceImg = ResourceImages.Singleton.GetImage( Img.Icon_Presence ))
-			graphics.DrawImageFitBoth( presenceImg, imgRect.OffsetBy( 0, cell.Height / 4 ).InflateBy( -cell.Height / 7 ) );
+		using Image presenceImg = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
+		graphics.DrawImageFitBoth( presenceImg, imgRect.OffsetBy( 0, cell.Height / 4 ).InflateBy( -cell.Height / 7 ) );
 	}
 
 	static void DrawSourceTerrain( Graphics graphics, string sourceCriteria, Rectangle terrainRect ) {
 		string[] parts = sourceCriteria.Split( ',' );
 		Rectangle[] rects = terrainRect.SplitHorizontally(parts.Length);
-		for(int i = 0; i < rects.Length; ++i) {
+		for(int i = 0; i < rects.Length; ++i)
 			using(Image terrainImg = ResourceImages.Singleton.GetImage( TargetToImg( parts[i] ) ))
 				graphics.DrawImageFitHeight( terrainImg, rects[i] );
-		}
-		//Img terrain = TargetToImg( sourceCriteria );
-		//using(Image terrainImg = ResourceImages.Singleton.GetImage( terrain ))
-		//	graphics.DrawImageFitHeight( terrainImg, terrainRect );
 	}
 
 	static void DrawRange( Graphics graphics, Rectangle cell, string text, Rectangle rangeRect ) {

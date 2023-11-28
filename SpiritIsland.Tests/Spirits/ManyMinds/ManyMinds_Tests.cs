@@ -155,7 +155,7 @@ public class ManyMinds_Tests {
 
 		await spirit.When_ResolvingInnate<BesetAndConfoundTheInvaders>( (user) => {
 			// Then: only the space with both is targetable
-			user.NextDecision.HasPrompt( "Beset and Confound the Invaders: Target Space" ).HasOptions("A7").Choose("A7");
+			user.NextDecision.HasPrompt( "Beset and Confound the Invaders: Target Space" ).HasOptions("A1,A7").Choose("A7");
 		} );
 
 		// And: should have defend-2

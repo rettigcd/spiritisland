@@ -16,13 +16,17 @@ public class TurmoilsTouch {
 		return Cmd.Pick1(
 			new SpiritAction(
 				"Pay 1 Energy to Take a Minor Power into their discard.", 
-				async ctx => { --ctx.Self.Energy; await TakeMinorIntoDiscard(ctx); }
+				async ctx => {
+					--ctx.Self.Energy; 
+					await TakeMinorIntoDiscard(ctx);
+				}
 			).OnlyExecuteIf(x=>0<x.Self.Energy),
 			new SpiritAction(
 				"Discard a Power Card to Take a Minor Power into their discard.", 
 				async ctx => { 
 					await new DiscardCard("Discard 1 card from hand", s=>s.Hand).ActAsync( ctx ); 
-					await TakeMinorIntoDiscard(ctx); }
+					await TakeMinorIntoDiscard(ctx);
+				}
 			),
 			new SpiritAction("No, thank you.",_=>Task.CompletedTask)
 		).ActAsync( ctx );

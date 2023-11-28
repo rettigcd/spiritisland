@@ -15,7 +15,7 @@ public class FocusTheSunsRays {
 		await TokenMover.SingleDestination( ctx, ctx.Self.Presence.Spaces.Tokens().ToArray() )
 			.AddGroup( 3, ctx.Self.Presence ) // !! this won't gather Incarna if spirit gets incarna
 			// You may Bring 1 Badlands (total) with those Presence
-			.Config(x=>Bring.FromAnywhere(x, ctx.Self, new Quota().AddGroup( 1, Token.Badlands ) ) )
+			.Config(x => Bring.FromAnywhere(x, ctx.Self, new Quota().AddGroup( 1, Token.Badlands ) ) )
 			.DoUpToN();
 	}
 

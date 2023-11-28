@@ -24,7 +24,7 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 
 	[FearLevel( 3, "Each player chooses a different land and removes up to 2 Health worth of Invaders per Presence there." )]
 	public Task Level3( GameCtx ctx )
-		=> Cmd.RemoveHealthOfInvaders( "Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count )
+		=> Cmd.RemoveUpToVariableHealthOfInvaders( "Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count )
 			.From().SpiritPickedLand()
 			.ForEachSpirit()
 			.ActAsync(ctx);

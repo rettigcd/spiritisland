@@ -68,9 +68,12 @@ public static partial class Cmd {
 		).OnlyExecuteIf( x => x.Tokens.HasAny( tokenClasses ) );
 	}
 
+	// Removes "Up To"
+	static public SpaceCmd RemoveUpToNHealthOfInvaders(int health) => RemoveUpToVariableHealthOfInvaders($"Remove up to {health} worth of invaders.",_=>health);
 
-	static public SpaceCmd RemoveHealthOfInvaders(string description, Func<TargetSpaceCtx,int> calcHealthToRemove) => new SpaceCmd(description, async ctx=>{
-		int remaining = calcHealthToRemove(ctx);
+	// Removes "Up To"
+	static public SpaceCmd RemoveUpToVariableHealthOfInvaders(string description, Func<TargetSpaceCtx,int> calcMaxHealthToRemove) => new SpaceCmd(description, async ctx=>{
+		int remaining = calcMaxHealthToRemove(ctx);
 		HumanToken pick;
 		while(0 < remaining
 			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Tokens.InvaderTokens().On(ctx.Space), remaining )) )?.Token.AsHuman()) != null
@@ -79,8 +82,6 @@ public static partial class Cmd {
 			remaining -= pick.RemainingHealth;
 		}
 	} ).OnlyExecuteIf( ctx => ctx.Tokens.HasInvaders() );
-
-	static public SpaceCmd RemoveUpToNHealthOfInvaders(int health) => RemoveHealthOfInvaders($"Remove up to {health} worth of invaders.",_=>health);
 
 
 	// -- Destroy --

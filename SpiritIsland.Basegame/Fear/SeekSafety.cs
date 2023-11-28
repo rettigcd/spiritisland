@@ -20,7 +20,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 
 	[FearLevel( 3, "Each player may remove up to 3 Health worth of Invaders from a land without City." )]
 	public Task Level3( GameCtx ctx )
-		=> Cmd.RemoveHealthOfInvaders("Remove up to 3 Health of Invaders", _=>3 )
+		=> Cmd.RemoveUpToNHealthOfInvaders( 3 )
 			.In().SpiritPickedLand().Which( Has.NoCity )
 			.ForEachSpirit()
 			.ActAsync( ctx );

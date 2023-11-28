@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
+/// <summary>
+/// Changes SpaceState so that if a single Invader were destroyed, instead it gets Abducted.
+/// </summary>
 public class TerrorStalksTheLand : SpaceState {
 
 	static public SpecialRule Rule => new SpecialRule( "Terror Stalks the Land", "You have an Incarna. You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to tThe Endless Dark.  When pieces Escape, Move them to a non-Ocean land with your Presence/Incarna.  If they have no legal land to move to, you lose.  When your Powers would directly damage or directly destroy the only Invader in a land, instead Abduct it." );

@@ -9,7 +9,7 @@ public class SurroundedByTheDahan {
 	[Instructions( "2 Fear if Invaders are present. 1 Fear if Dahan outnumber Town/City. Isolate target land." ), Artist( Artists.AalaaYassin )]
 	static public Task ActionAsync(TargetSpaceCtx ctx) {
 		// 2 Fear if Invaders are present.
-		if(ctx.Tokens.HasAny(Human.Invader))
+		if(ctx.HasInvaders)
 			ctx.AddFear(2);
 		// 1 Fear if Dahan outnumber Town/City.
 		if(ctx.Tokens.SumAny(Human.Town_City) < ctx.Tokens.Sum(Human.Dahan))

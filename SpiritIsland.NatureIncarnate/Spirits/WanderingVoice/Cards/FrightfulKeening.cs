@@ -16,7 +16,8 @@ public class FrightfulKeening {
 		// If this pushes Incarna into a land with Invaders,
 		var dst = ihi.Incarna.Space;
 		if( dst.HasInvaders() )
-			// 2 Fear there (before adding Strife).
+			// 2 Fear there
+			// (before adding Strife). - why does this matter???
 			ctx.Target(dst).AddFear(2);
 	}
 

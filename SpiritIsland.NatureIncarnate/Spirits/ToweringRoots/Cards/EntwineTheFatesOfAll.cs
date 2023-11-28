@@ -12,7 +12,7 @@ public class EntwineTheFatesOfAll {
 			Present.Always 
 		) );
 		SpaceState tokens = space.Tokens;
-		int presenceCount = GameState.Current.Spirits.Sum( s => s.Presence.CountOn( tokens ) );
+		int presenceCount = GameState.Current.Spirits.Sum( s => s.Presence.CountOn( tokens ) ); // !!! 
 		tokens.Defend.Add(2 * presenceCount );
 	}
 }

@@ -8,7 +8,7 @@ public class RadiantAndHallowedGrove {
 	static async public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 2 Fear if Invaders are present or adjacent.
-		var spaceState = ctx.Space.Tokens;
+		var spaceState = ctx.Tokens;
 		if(spaceState.InOrAdjacentTo.Any( x => x.HasInvaders() ))
 			ctx.AddFear( 2 );
 

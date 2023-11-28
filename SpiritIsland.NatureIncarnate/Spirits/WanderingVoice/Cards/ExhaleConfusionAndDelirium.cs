@@ -9,12 +9,12 @@ public class ExhaleConfusionAndDelirium {
 	static public Task ActionAsync( TargetSpaceCtx ctx){
 		ctx.AddFear(2);
 
-		ctx.Tokens.Init(new BlightedDontRavage(),1);
+		ctx.Tokens.Init(new BlightedInvadersSitOutRavage(),1);
 
 		return Task.CompletedTask;
 	}
 
-	class BlightedDontRavage : ISkipRavages, IEndWhenTimePasses {
+	class BlightedInvadersSitOutRavage : ISkipRavages, IEndWhenTimePasses {
 		public UsageCost Cost => UsageCost.Free;
 
 		public Task<bool> Skip( SpaceState space ) {

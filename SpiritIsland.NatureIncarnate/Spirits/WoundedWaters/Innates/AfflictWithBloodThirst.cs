@@ -21,27 +21,32 @@ public class AfflictWithBloodThirst {
 		// Collect Town & explorer that is going to do damage
 		// (and temporarily remove them)
 		int damage = 0;
-		var doingDamage = new List<ISpaceEntity>();
-		var humanTokens = ctx.Tokens.Keys.OfType<HumanToken>().ToArray();
-		var explorer = humanTokens.FirstOrDefault(x=>x.Class == Human.Explorer);
-		var town = humanTokens.FirstOrDefault( x => x.Class == Human.Town );
+		List<HumanToken> doingDamage = new List<HumanToken>();
+
+		// Add Explorer
+		HumanToken? explorer = ctx.Tokens.HumanOfTag(Human.Explorer).FirstOrDefault(); // !!! what if it is strifed?
 		if(explorer is not null) {
 			ctx.Tokens.Adjust(explorer,-1);
 			doingDamage.Add(explorer);
 			damage++;
 		}
-		if(ctx.Dahan.Any) {
+		// Dahan or Town
+		if(ctx.Dahan.Any)
 			damage += 2;
-		} else if(town is not null) {
-			doingDamage.Add(town);
-			damage += 2;
-			ctx.Tokens.Adjust(town,-1);
+			// don't need to add to because DamageInvaders doesn't effect dahan
+		else {
+			var town = ctx.Tokens.HumanOfTag(Human.Town).FirstOrDefault();
+			if(town is not null) {
+				doingDamage.Add(town);
+				damage += 2;
+				ctx.Tokens.Adjust(town,-1);
+			}
 		}
 
 		// Do Damage
 		await ctx.DamageInvaders(damage);
 		// Restore them
-		foreach(var t in doingDamage)
+		foreach(HumanToken t in doingDamage)
 			ctx.Tokens.Adjust(t,1);
 	}
 

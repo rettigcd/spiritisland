@@ -154,7 +154,7 @@ public class ResourceImages {
 	static async Task<Bitmap> GetCardImageInternal( PowerCard card ) {
 		try {
 			return await CardDownloader.GetImage( card.Name );
-		} catch( Exception ex) {
+		} catch {
 			return new Bitmap( 24, 24, System.Drawing.Imaging.PixelFormat.Format32bppPArgb );
 		}
 	}

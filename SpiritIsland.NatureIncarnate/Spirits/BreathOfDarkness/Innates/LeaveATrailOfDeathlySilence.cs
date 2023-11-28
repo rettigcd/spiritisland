@@ -26,7 +26,7 @@ public class LeaveATrailOfDeathlySilence {
 		var from = ihi.Incarna.Space.Space;
 		var to = EndlessDark.Space;
 
-		await ihi.Incarna.On(from).MoveTo(to);
+		await ihi.Incarna.On(from).MoveTo(to); // !!! if Incarna inheritted from SpaceToken, this would be seriously simplified
 
 		await new TokenMover(ctx.Self,"Bring",from,to)
 			.AddGroup( 1, Human.Invader )

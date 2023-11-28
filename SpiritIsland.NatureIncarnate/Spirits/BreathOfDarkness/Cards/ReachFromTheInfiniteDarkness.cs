@@ -52,7 +52,11 @@ public class ReachFromTheInfiniteDarkness {
 		foreach(Spirit spirit in GameState.Current.Spirits)
 			foreach(SpaceToken st in spirit.Presence.Deployed)
 				spiritLookup.Add( st, spirit );
-		var presenceToAbduct = await ctx.SelectAsync( new A.SpaceToken( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", spiritLookup.Keys, Present.Done ) );
+		var presenceToAbduct = await ctx.SelectAsync( 
+			new A.SpaceToken( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", 
+			spiritLookup.Keys, 
+			Present.Done 
+		) );
 		var selectedSpirit = presenceToAbduct != null ? spiritLookup[presenceToAbduct] : null;
 		return (presenceToAbduct, selectedSpirit);
 	}

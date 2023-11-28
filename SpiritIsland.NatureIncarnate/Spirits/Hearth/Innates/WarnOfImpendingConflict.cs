@@ -31,6 +31,9 @@ public class WarnOfImpendingConflict {
 
 }
 
+/// <summary>
+/// Ravage-Config - (some or all) of the Dahan attack before invaders.
+/// </summary>
 class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 
 	int _dahanToGoEarly;

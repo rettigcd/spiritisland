@@ -25,6 +25,10 @@ public class KeepWatchForNewIncursions {
 		return Task.CompletedTask;
 	}
 
+	/// <summary>
+	/// Once this turn, after Invaders are added or moved into target land,
+	/// 1 Damage per Dahan in target land, to those added/moved Invaders only
+	/// </summary>
 	class DamageNewInvadersOnce : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
 		bool _used = false;
 		readonly Spirit _spirit;
@@ -35,7 +39,7 @@ public class KeepWatchForNewIncursions {
 			int damage = Math.Min(args.To.Dahan.CountAll, args.Added.AsHuman().RemainingHealth * args.Count);
 			if(!_used
 				&& 0<damage
-				&& await _spirit.UserSelectsFirstText($"Apply {damage} damage to added invaders ({args.Count} {args.Added.Text})? (Keep Watch)", "Yes, Damage them!", "No, not quite yet" )
+				&& await _spirit.UserSelectsFirstText($"Keep Watch - Apply {damage} damage to added invaders ({args.Count} {args.Added.Text})?", "Yes, Damage them!", "No, not quite yet" )
 			) { 
 				await args.To.Invaders.UserSelectedDamageAsync(_spirit,damage,args.Added.Class); // !! Not 100% correct.
 				_used = true;

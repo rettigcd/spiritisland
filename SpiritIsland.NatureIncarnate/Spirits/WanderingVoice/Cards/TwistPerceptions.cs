@@ -8,6 +8,7 @@ public class TwistPerceptions {
 	[FromPresence(1,Target.Invaders)]
 	[Instructions( "Add 1 Strife. You may Push the Invader you added Strife to." ), Artist( Artists.NolanNasser )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx) {
+
 		// Add 1 Strife.
 		SpaceToken? strifed = null;
 		await new TokenStrifer(ctx.Self,new SourceSelector(ctx.Tokens).AddGroup(1,Human.Invader))

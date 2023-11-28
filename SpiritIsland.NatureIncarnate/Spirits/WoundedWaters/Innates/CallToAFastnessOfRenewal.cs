@@ -12,7 +12,7 @@ public class CallToAFastnessOfRenewal {
 	[InnateTier( "2 water,1 plant", "Defend 3 or Downgrade 1 Invader.", 1 )]
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		return Cmd.Pick1(
-			new SpaceCmd("Defend 3", x=>x.Defend(3)),
+			Cmd.Defend(3),
 			new SpaceCmd("Downgrade 1 Invader", ctx=>ReplaceInvader.Downgrade1(ctx,Present.Always,Human.Invader) )
 		).ActAsync(ctx);
 	}
