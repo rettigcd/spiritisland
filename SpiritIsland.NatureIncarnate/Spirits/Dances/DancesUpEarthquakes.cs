@@ -6,7 +6,14 @@ public class DancesUpEarthquakes : Spirit {
 
 	#region Custome Track spaces
 
-	static ImpendingEnergyTrack One => new ImpendingEnergyTrack( 1, 1 ) {
+	static SpiritAction SetImpendingEnergy(int impendingEnergyPerRound) => new SpiritAction(
+		"Set Impending Energy/Round to "+impendingEnergyPerRound, 
+		ctx=>((DancesUpEarthquakes)ctx.Self).ImpendingEnergyPerRound = impendingEnergyPerRound
+    );
+
+	static Track One => new Track("1/1") {
+		Energy = 1,
+		Action = SetImpendingEnergy(1),
 		Icon = new IconDescriptor { 
 			BackgroundImg = Img.Coin, 
 			Text = "1",
@@ -18,7 +25,8 @@ public class DancesUpEarthquakes : Spirit {
 		}
 	};
 
-	static ImpendingEnergyTrack TwoImpendingEnergy => new ImpendingEnergyTrack( 0, 2 ) {
+	static Track TwoImpendingEnergy => new Track("0/2") {
+		Action = SetImpendingEnergy(2),
 		Icon = new IconDescriptor {
 			BackgroundImg = Img.ImpendingCard,
 			ContentImg = Img.Coin,
@@ -124,18 +132,21 @@ public class DancesUpEarthquakes : Spirit {
 
 	#region Impending Cards
 
+	public int ImpendingEnergyPerRound;
 	public int BonusImpendingPlays;
 
 	public List<PowerCard> Impending = new List<PowerCard>();
+	public CountDictionary<string> ImpendingEnergy = new CountDictionary<string>();
 
 	protected override async Task ApplyRevealedPresenceTracks_Inner( SelfCtx ctx ) {
+		ImpendingEnergyPerRound = 0;
 		BonusImpendingPlays = 0;
+
 		await base.ApplyRevealedPresenceTracks_Inner( ctx );
 
 		// Add energy
-		int impendingEnergy = Presence.Energy.Revealed.OfType<ImpendingEnergyTrack>().Max(x=>x.ImpendingEnergy);
 		foreach(PowerCard card in Impending)  // don't use CountDictionary keys because they will be empty for count=0
-			ImpendingEnergy[card.Name] += impendingEnergy;
+			ImpendingEnergy[card.Name] += ImpendingEnergyPerRound;
 
 		// remove any mature cards
 		var mature = Impending.Where( c => c.Cost <= ImpendingEnergy[c.Name] ).ToArray();
@@ -185,8 +196,6 @@ public class DancesUpEarthquakes : Spirit {
 
 		return true;
 	}
-
-	public CountDictionary<string> ImpendingEnergy = new CountDictionary<string>();
 
 	protected override IEnumerable<PowerCard> GetForgetableCards()
 		=> base.GetForgetableCards().Union( Impending ).ToArray();

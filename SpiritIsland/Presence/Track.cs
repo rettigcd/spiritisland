@@ -1,12 +1,13 @@
 ﻿namespace SpiritIsland;
 
 
-public class Track : IOption {
+public sealed class Track : IOption {
 
 	public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
 		Energy = energy,
 		Icon = new IconDescriptor { 
-			BackgroundImg = Img.Coin, Text = energy.ToString(), 
+			BackgroundImg = Img.Coin, 
+			Text = energy.ToString(), 
 			Sub = new IconDescriptor{ BackgroundImg = el.GetTokenImg() } 
 		}
 	};
