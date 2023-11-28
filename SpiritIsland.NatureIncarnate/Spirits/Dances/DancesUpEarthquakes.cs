@@ -4,8 +4,73 @@ public class DancesUpEarthquakes : Spirit {
 
 	public const string Name = "Dances Up Earthquakes";
 
+	#region Custome Track spaces
+
+	static ImpendingEnergyTrack One => new ImpendingEnergyTrack( 1, 1 ) {
+		Icon = new IconDescriptor { 
+			BackgroundImg = Img.Coin, 
+			Text = "1",
+			Sub = new IconDescriptor { 
+				BackgroundImg = Img.ImpendingCard,
+				ContentImg = Img.Coin,
+				Text = "1"
+			}
+		}
+	};
+
+	static ImpendingEnergyTrack TwoImpendingEnergy => new ImpendingEnergyTrack( 0, 2 ) {
+		Icon = new IconDescriptor {
+			BackgroundImg = Img.ImpendingCard,
+			ContentImg = Img.Coin,
+			Text = "2",
+		}
+	};
+
+	static Track FourAny => Track.MkEnergy(4,Element.Any);
+
+	static Track MoonAndFire => new Track("moon,fire",Element.Moon,Element.Fire){
+		Icon = new IconDescriptor {
+			ContentImg = Img.Token_Moon,
+			ContentImg2 = Img.Token_Fire,
+		}
+	};
+
+	static Track AdditionalImpending => new Track("+1 Impending" ) {
+		Icon = new IconDescriptor {
+			Super = new IconDescriptor {  Text = "+1" },
+			Sub = new IconDescriptor{ BackgroundImg = Img.ImpendingCard },
+		},
+		Action = new BoostImpendingPlays()
+	};
+
+	static Track GatherDahan => new Track( "Gather 1 Dahan" ) {
+		Icon = new IconDescriptor { BackgroundImg = Img.Land_Gather_Dahan },
+		Action = Cmd.GatherUpToNDahan( 1 ).To().SpiritPickedLand().Which( Has.YourPresence ),
+	};
+
+	static Track MovePresence => new Track( "Moveonepresence.png" ) {
+		Action = new MovePresence(1),
+		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
+	};
+
+	class BoostImpendingPlays : SpiritAction {
+		public BoostImpendingPlays():base( "Boost Impending Plays" ) { }
+		public override Task ActAsync( SelfCtx ctx ) {
+			if(ctx.Self is DancesUpEarthquakes due)
+				++due.BonusImpendingPlays;
+			return Task.CompletedTask;
+		}
+
+	}
+
+	#endregion Custome Track spaces
+
+
 	public DancesUpEarthquakes() : base(
-		spirit => new DancingPresence( spirit )
+		spirit => new SpiritPresence( spirit,
+			new PresenceTrack( One, MovePresence, Track.Energy2, AdditionalImpending, Track.Energy3, TwoImpendingEnergy, FourAny ),
+			new PresenceTrack( Track.Card2, GatherDahan, MoonAndFire, AdditionalImpending, Track.EarthEnergy, Track.Card3, Track.Card4 )
+		)
 		// Round 1
 		, PowerCard.For<ResoundingFootfallsSowDismay>() // fast,3 - Impend
 		, PowerCard.For<GiftOfSeismicEnergy>()          // fast,3 - Impend

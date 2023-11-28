@@ -84,7 +84,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	}
 
 	Task OnRevealed( TrackRevealedArgs args ) {
-		EnergyPerTurn = Math.Max( EnergyPerTurn, args.Track.Energy ?? 0 );
+		EnergyPerTurn   = Math.Max( EnergyPerTurn, args.Track.Energy ?? 0 );
 		CardPlayPerTurn = Math.Max( CardPlayPerTurn, args.Track.CardPlay ?? 0 );
 		return TrackRevealed.InvokeAsync( args );
 	}
@@ -220,7 +220,6 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	/// <summary> The normal spirit presence. </summary>
 	public SpiritPresenceToken Token { get; }
 
-
 	#region ITokenClass Imp
 	string ITokenClass.Label => "Presence";
 	bool ITokenClass.HasTag( ITag tag ) => tag == this || tag == TokenCategory.Presence; // for both class and for token.
@@ -239,6 +238,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 			cardPlays = src.CardPlays.SaveToMemento();
 			destroyed = src.Destroyed;
 			energyPerTurn = src.EnergyPerTurn;
+
 		}
 		virtual public void Restore( SpiritPresence src ) {
 			src.Energy.LoadFrom( energy );

@@ -6,7 +6,7 @@ public class EmergeFromTheDreadNightWind {
 	[SpiritCard( Name, 1, Element.Moon, Element.Air ), Slow, AnyLand]
 	[Instructions( "Add/Move Incarna to target land. 1 Fear. If exactly 1 Invader is present, Abduct it. Otherwise, Push up to 2 Explorer/Town to different lands. Push up to 2 Dahan" ), Artist( Artists.DavidMarkiwsky )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
-		if(ctx.Self.Presence is not BreathPresence presence) return;
+		if(ctx.Self.Presence is not IncarnaPresence presence) return;
 
 		// Add / Move Incarna to target land.
 		await presence.Incarna.MoveTo(ctx.Space, true);

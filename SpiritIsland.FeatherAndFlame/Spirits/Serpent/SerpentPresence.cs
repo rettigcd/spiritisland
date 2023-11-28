@@ -16,11 +16,11 @@ public class SerpentPresence : SpiritPresence {
 	public override IEnumerable<Track> RevealOptions() {
 		if(MaxPresenceOnBoard == TotalOnIsland() ) yield break;
 
-		var energyNext = Energy.RevealOptions.FirstOrDefault();
+		Track energyNext = Energy.RevealOptions.FirstOrDefault();
 		if( energyNext != null && (energyNext != Track.EarthEnergy || CardPlays.Revealed.Count() == 4 ) )
 			yield return energyNext;
 
-		var cardNext = CardPlays.RevealOptions.FirstOrDefault();
+		Track cardNext = CardPlays.RevealOptions.FirstOrDefault();
 		if( cardNext != null && cardNext != fakeEarth )  // don't let them select the fake earth
 			yield return cardNext;
 

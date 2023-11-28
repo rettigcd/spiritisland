@@ -4,8 +4,34 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 
 	public const string Name = "Breath of Darkness Down Your Spine";
 
+	#region Custom Presence
+
+	static Track EmpowerIncarnaTrack => new Track("Empower"){
+		Action = new EmpowerIncarna(),
+		Icon = new IconDescriptor {  BackgroundImg = Img.BoDDYS_Incarna_Empowered },
+	};
+
+	static Track MovePresence => new Track( "Moveonepresence.png" ) {
+		Action = new MovePresence( 1 ),
+		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
+	};
+
+	static Track Card4Air => new Track("4 cardplay,air", Element.Air ) {
+		Icon = new IconDescriptor {
+			BackgroundImg = Img.CardPlay,
+			Text = "4",
+			Sub = new IconDescriptor { BackgroundImg = Element.Air.GetTokenImg() }
+		}
+	};
+
+	#endregion Custom Presence
+
 	public BreathOfDarknessDownYourSpine() : base(
-		spirit => new BreathPresence( spirit )
+		spirit => new IncarnaPresence( spirit,
+			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.Energy3, EmpowerIncarnaTrack, Track.MkEnergy(4,Element.Animal), Track.MkEnergy(5,Element.Air) ),
+			new PresenceTrack( Track.Card2, MovePresence, Track.Card3, Track.MoonEnergy, Track.CardReclaim1, Card4Air ),
+			new Incarna(spirit,"BoDDyS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
+		)
 		, PowerCard.For<EmergeFromTheDreadNightWind>()
 		, PowerCard.For<ReachFromTheInfiniteDarkness>()
 		, PowerCard.For<SwallowedByTheEndlessDark>()
@@ -48,7 +74,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		gameState.OtherSpaces.Add(EndlessDark.Space);
 	}
 
-	public Incarna Incarna => ((BreathPresence)Presence).Incarna;
+	public Incarna Incarna => ((IncarnaPresence)Presence).Incarna;
 
 	public override SelfCtx BindMyPowers( Spirit spirit ) {
 		ActionScope.Current.Upgrader = x => new TerrorStalksTheLand( x );
@@ -57,7 +83,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 		foreach(var action in base.GetAvailableActions( speed )) yield return action;
-		if( speed == Phase.Fast && ((BreathPresence)Presence).Incarna.Empowered && !_usedEmpoweredAbduct )
+		if( speed == Phase.Fast && ((IncarnaPresence)Presence).Incarna.Empowered && !_usedEmpoweredAbduct )
 			yield return _ea;
 	}
 

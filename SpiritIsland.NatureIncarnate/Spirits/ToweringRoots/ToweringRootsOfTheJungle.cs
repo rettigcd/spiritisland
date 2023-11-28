@@ -5,7 +5,11 @@ public class ToweringRootsOfTheJungle : Spirit {
 	public const string Name = "Towering Roots of the Jungle";
 
 	public ToweringRootsOfTheJungle() : base(
-		spirit => new ToweringRootsPresence( spirit )
+		spirit => new IncarnaPresence(spirit,
+			new PresenceTrack( Track.Energy0, Track.Energy2, Track.EarthEnergy, Track.Energy4, Track.PlantEnergy, Track.Energy6 ),
+			new PresenceTrack( Track.Card1, Track.Card2, Track.SunEnergy, Track.Card3, Track.PlantEnergy, Track.Card4 ),
+			new ToweringRootsIncarna( spirit )
+		)
 		, PowerCard.For<EntwineTheFatesOfAll>()
 		, PowerCard.For<RadiantAndHallowedGrove>()
 		, PowerCard.For<BloomingOfTheRocksAndTrees>()
@@ -53,6 +57,6 @@ public class ToweringRootsOfTheJungle : Spirit {
 
 	}
 
-	public Incarna Incarna => ((ToweringRootsPresence)Presence).Incarna;
+	public Incarna Incarna => ((IncarnaPresence)Presence).Incarna;
 
 }

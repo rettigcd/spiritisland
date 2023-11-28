@@ -48,7 +48,9 @@ public class WoundedPresence : SpiritPresence {
 	}
 
 	public override IEnumerable<Track> RevealOptions() { 
-		return Energy.Revealed.Count() < 4 ? Energy.RevealOptions : base.RevealOptions();
+		return Energy.Revealed.Count() < 4 
+			? Energy.RevealOptions	// only show Energy track
+			: base.RevealOptions(); // show both tracks
 	}
 
 }

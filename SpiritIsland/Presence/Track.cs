@@ -34,6 +34,8 @@ public class Track : IOption {
 		Icon = new IconDescriptor { ContentImg = el.GetTokenImg() }
 	};
 
+	#region Reusable Values
+
 	// ! Instead of enumerating this here, we could generate them when needed in the spirit
 	public static Track Energy0     => MkEnergy( 0 );
 	public static Track Energy1     => MkEnergy( 1 );
@@ -99,11 +101,20 @@ public class Track : IOption {
 
 	public static readonly Track Destroyed = new Track("destroyed"); // only 1 of these
 
+	#endregion Reusable Values
+
+	#region constructor
+
 	public Track( string text, params Element[] els ){ this.Text = text; Elements = els; }
+
+	#endregion
 
 	public string Text {get;}
 
-	public int? Energy { get; set; }
+	public int? Energy { 
+		get; 
+		set;
+	}
 
 	public Element[] Elements { get; set; }
 
@@ -114,7 +125,7 @@ public class Track : IOption {
 	/// </summary>
 	public IActOn<SelfCtx> Action { get; set; }
 
-	public virtual void AddElement( CountDictionary<Element> elements ) {
+	public void AddElement( CountDictionary<Element> elements ) {
 		foreach(var el in Elements)
 			elements[el]++;
 	}

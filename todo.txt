@@ -3,14 +3,46 @@ Gain 1 Less Energy
 - instead of reducing energy -1 (which pulls from reserve), change icons to indicate less energy, need to save energy in Memento - could save just the highest uncovered energy and use that to calculate the delta)
 - Bargains of ...
 
-Select A.Space - see all the ways this is done and see if we can simplify the call, like creating a SpaceSelector
+Switch EVERY SourceSelector use to a await foreach(...)
+Convert any while(...) that has a Selector at the start to an async-enumerable (Reach From the Infinite Darkness)
+Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
 
-BindXXX() - combine into a single method
-SelfCtx - do we need this for anything? just replace with Spirit
+-- Ravage --
+Add a convenience method = SpaceState.SkipInvaderAction => new SkipAnyInvaderAction(...)
+Create a ConfigureRavage does all of the sit-outs.
+Create an IConfigureRavage that does not stop the ravage and goes after the Skip-Ravage have been evaluated. (TerrifyingRampage)
+Group All Sit-Out ravage-mods together an make generic so we don't need a different token-class foreach one.  (ExhaleConfusionAndDelirium)
+Skip1InvaderAction - use new Token.SkipInvaderAction()
 
 TokenAdded => SpaceToken .After
 TokenRemoved => SpaceToken .Before
 TokenMoved => SpaceToken .After .Before
+Tokens.AddAsync should return the token that was added as a SpaceToken - incase it was modified while adding.
+Rename SpaceState.Add(...) to SpaceState.AddAsync(...)
+
+
+
+TargetSpaceCtx.AddStrife needs to be Async AND take a count.  (Terror Of the Hunted)
+
+* Create an IEnumerable-Async method that selects spaces and allows user to select .Done to stop - (EarthShuddersBuildingsFall)
+
+Warn of Impending Conflict - imp using Ravage-Config, not ISkipRavages
+
+Move Growths out of Spirit folder into common SpiritAction folder.
+
+Maybe pull the .SkipX methods on SpaceState extension methods since they don't need access to use internal state and are just for convenience
+
+When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated. (ScorchingConvergence)
+
+
+
+----------
+----------
+
+Select A.Space - see all the ways this is done and see if we can simplify the call, like creating a SpaceSelector
+
+BindXXX() - combine into a single method
+SelfCtx - do we need this for anything? just replace with Spirit
 
 SpaceToken.Move => Take a Count.  Return the .After part of the TokenMoved result.
 
@@ -27,8 +59,6 @@ SpaceToken <=> Token
 - is there a Token class?  Would it be confusing to rename SpaceToken to Token?
 - would it be confusing if SpaceToken inherited IToken and ISpace? - I think it probably would be confusing.
 - If we renamed IToken to ITokenType, then Token could have { ITokenType Type, Space Space } and Token would mean a 'token in a space' which simplifies SpaceTokenSelector to TokenSelector
-
-Add a convenience method = SpaceState.SkipInvaderAction => new SkipAnyInvaderAction(...)
 
 TokenPusher -> when pushing from Multiple lands, need a way to Implement on SpaceState.Pusher
 
@@ -53,8 +83,6 @@ Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wra
 
 Need Generic Method for spirits to pay for stuff - in Parallel - not 1 spirit choosing for everyone.  (PLagueShipsSailToDistantPorts)
 
-Tokens.AddAsync should return the token that was added as a SpaceToken - incase it was modified while adding.
-
 3 types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
 
 Instead of calling TargetSpaceCtx.Push(...), maybe we should create a Quota and/or SourceSelector and call .Push(UpTo)N() on it. 
@@ -70,26 +98,13 @@ Create a SpaceSelector class that manages selecting spaces. (SolidifyEchoesOfMaj
 
 Destroying presence simplified into a SourceSelector followed by .DoDestroy(N)   (TransformativeSacrifice and probably others)
 
-Create an IConfigureRavage that does not stop the ravage and goes after the Skip-Ravage have been evaluated. (TerrifyingRampage)
-
-Rename SpaceState.Add(...) to SpaceState.AddAsync(...)
-
-??? Are InvadersBinding just a fance SourceSelector that includes all invaders on a space?
+??? Are InvadersBinding just a fancy SourceSelector that includes all invaders on a space?
 	??? Are Dahan Bindings just a fancy SourceSelector that includes all dahan?  
 	??? Tokens?
-
-Group All Sit-Out ravage-mods together an make generic so we don't need a different token-class foreach one.  (ExhaleConfusionAndDelirium)
-
-
-?? ValueTask and ValueTask<T> ???
-
-Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
 
 Make SpiritPresence & Incana derive from SpaceToken
 
 Check calls to xxx_OfAnyTag( tags...) and see how many need converted to SpaceToken and switch over to SpaceToken
-
-Convert any while(...) that has a Selector at the start to an async-enumerable (Reach From the Infinite Darkness)
 
 Incarna and SpiritPresenceTokens should have .Spirit prop pointing back to Spirit (Reach from the infinite Darkness)
 
@@ -106,15 +121,11 @@ Chaining - Create a .ForEachAsync(...) extension that either returns Task or Tas
 			.ForEachAsync( st => st.MoveTo(..) )
 			.ForEachAsync( st => Act2(action) );
 
-TargetSpaceCtx.AddStrife needs to be Async AND take a count.  (Terror Of the Hunted)
-
 Should all SpiritPresence have nullable Incarna token property so we don't have to use: is IHaveIncarna ihi?
 
 If SourceSelector had an enumerator that takes IEnumerable<SpaceToken>, would simplify conversion between that and SourceSelector. - maybe / maybe not - is it necessary?
 
 ReplaceInvader.DowngradeXXX could take a SourceSelector instead of hard coded.
-
-Create a ConfigureRavage does all of the sit-outs.
 
 Create a TokenSelector.Bind(TargetSpaceCtx).IEnumerable ==> Action
 
@@ -126,30 +137,16 @@ Create a TokenSelector.Bind(TargetSpaceCtx).IEnumerable ==> Action
 		.To( spaces )
 		.AllDifferent()
 		.DoAll()
-* Allow Deferred Element Selection for other Track Or-Elements
+
 * Combine Spirit.BindXXX methods into 1
 
-* Create an IEnumerable-Async method that selects spaces and allows user to select .Done to stop - (EarthShuddersBuildingsFall)
-
 is convenience-method SpaceState.HasInvaders() necessary?  Could we just call the OfTag stuff direclty
-
-Warn of Impending Conflict - imp using Ravage-Config, not ISkipRavages
-
-Skip1InvaderAction - user new Token.SkipInvaderAction()
-
-Maybe pull the .SkipX methods on SpaceState extension methods since they don't need access to use internal state and are just for convenience
 
 Test if FocusTheSunsRays will gather Incarna, I think it will.  And we can remove the !! marker.
 
 UnbearableGaze - Pusher does not use SpaceState.Pusher (because it works on multiple spaces.)
 
-When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated.
-
-Move Growths out of Spirit folder into common SpiritAction folder.
-
 Async-Enum Spirit - Select 1 - encapsulate selecting 0 or 1 spirits so that we can forEach them.  (ConsiderAHarmoniousNature)
-
-Include possible sources in TargetSpaceCtx - ScorchingConvergence
 
 Add a Spirit-Presence tag that All Spirit Tokens (& Incarna) match against - so we can count Presence (Entwine the fates of all)
 
@@ -157,11 +154,7 @@ Could switch TokenRemover to combo: SourceSelector.DoRemove()  (Radiant And Hall
 
 Cmd.RemoveNTokens - could use combo: SourceSelector and .DoRemove()
 
-Merge derived classes of IncarnaPresence and SpiritPresence into their base calsses to remove anemic presence class. (ToweringRootsPresence)
-
 TokenStrifer class - use SourceSelector as Async enumerable - see if class simplifies away to nothing.
-
-Switch EVERY SourceSelector use to a await foreach(...)
 
 TargetSpaceCtx.SelectTargetSpaceAsync returns a TargetSpaceCtx.  Remove this - it is confusing.  At least verify that it is being used correclty.
 
