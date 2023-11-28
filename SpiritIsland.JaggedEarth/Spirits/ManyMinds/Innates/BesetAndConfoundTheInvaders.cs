@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-[InnatePower("Beset and Confound the Invaders"), Fast, FromPresence(2, Target.TwoBeastPlusInvaders )]
+[InnatePower("Beset and Confound the Invaders"), Fast, FromPresence(2, Target.Invaders )]
 public class BesetAndConfoundTheInvaders {
 
 	[BesetInnateOption( "1 air,2 animal", 2, "2 fear and Defend 2")]

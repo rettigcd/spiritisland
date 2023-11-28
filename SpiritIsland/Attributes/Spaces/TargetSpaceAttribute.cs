@@ -26,7 +26,7 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 		_range = range;
 		_targetFilters = targetFilter;
 		// display
-		TargetFilterName = 0 < targetFilter.Length ? string.Join( " Or ", targetFilter ) : "Any";
+		TargetFilterName = 0 < targetFilter.Length ? string.Join( "/", targetFilter ) : "Any";
 	}
 
 	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ){

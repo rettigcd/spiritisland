@@ -97,24 +97,23 @@ public class SpaceCriteria {
 		[Target.Any] = ( _ ) => true,
 
 		// Terrain
-		[Target.Jungle] = ( ctx ) => ctx.MatchesTerrain( Terrain.Jungle ),
-		[Target.Mountain] = ( ctx ) => ctx.MatchesTerrain( Terrain.Mountain ),
-		[Target.Sands] = ( ctx ) => ctx.MatchesTerrain( Terrain.Sands ),
-		[Target.Wetland] = ( ctx ) => ctx.MatchesTerrain( Terrain.Wetland ),
-		[Target.Ocean] = ( ctx ) => ctx.Tokens.Space.Is( Terrain.Ocean ),
-		[Target.Coastal] = ( ctx ) => ctx.IsCoastal,
+		[Target.Jungle]     = ( ctx ) => ctx.MatchesTerrain( Terrain.Jungle ),
+		[Target.Mountain]   = ( ctx ) => ctx.MatchesTerrain( Terrain.Mountain ),
+		[Target.Sands]      = ( ctx ) => ctx.MatchesTerrain( Terrain.Sands ),
+		[Target.Wetland]    = ( ctx ) => ctx.MatchesTerrain( Terrain.Wetland ),
+		[Target.Ocean]      = ( ctx ) => ctx.Tokens.Space.Is( Terrain.Ocean ),
+		[Target.Coastal]    = ( ctx ) => ctx.IsCoastal,
 		[Target.NotWetland] = ( ctx ) => !ctx.MatchesTerrain( Terrain.Wetland ),
-		[Target.NotOcean] = ( ctx ) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
-		[Target.Inland] = ( ctx ) => ctx.IsInland,
+		[Target.NotOcean]   = ( ctx ) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
+		[Target.Inland]     = ( ctx ) => ctx.IsInland,
 
 		// Dahan
 		[Target.Dahan] = ( ctx ) => ctx.Tokens.Dahan.Any,
-		[Target.TwoDahan] = ( ctx ) => 0 < ctx.Tokens.Dahan.CountAll,
 
 		// Invaders
-		[Target.Invaders] = ( ctx ) => ctx.Tokens.HasInvaders(),
-		[Target.City] = ( ctx ) => ctx.Tokens.Has( Human.City ),
-		[Target.Town] = ( ctx ) => ctx.Tokens.Has( Human.Town ),
+		[Target.Town]      = ( ctx ) => ctx.Tokens.Has( Human.Town ),
+		[Target.City]      = ( ctx ) => ctx.Tokens.Has( Human.City ),
+		[Target.Invaders]  = ( ctx ) => ctx.Tokens.HasInvaders(),
 		[Target.NoInvader] = ( ctx ) => !ctx.Tokens.HasInvaders(),
 
 		// Tokens
@@ -133,10 +132,9 @@ public class SpaceCriteria {
 		[Target.EndlessDark] = ( ctx ) => ctx.Tokens.Space.Text == "EndlessDark",
 
 		// Special
+		[Target.TwoDahan]  = ( ctx ) => 2 <= ctx.Tokens.Dahan.CountAll,
 		[Target.TwoBeasts] = ( ctx ) => 2 <= ctx.Tokens.Beasts.Count,
-		[Target.BlightAndInvaders] = ( ctx ) => ctx.Tokens.Blight.Any && ctx.Tokens.HasInvaders(),
-		[Target.TwoBeastPlusInvaders] = ( ctx ) => 2 <= ctx.Tokens.Beasts.Count && ctx.Tokens.HasInvaders(),
-
+		[Target.CoastalCity] = (ctx) => ctx.IsCoastal && ctx.Tokens.Has( Human.City ),
 	};
 	#endregion
 

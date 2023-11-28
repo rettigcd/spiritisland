@@ -14,7 +14,6 @@ public static class Target {
 	public const string Blight     = "Blight";
 	public const string Strife     = "Strife";
 	public const string Dahan      = "Dahan";
-	public const string TwoDahan   = "2 Dahan";
 
 	public const string Invaders   = "Invaders";
 	public const string City       = "Cities";
@@ -33,7 +32,7 @@ public static class Target {
 	public const string NoBlight   = "No " + Blight;
 	public const string NoInvader  = "No " + Invaders;
 
-	public const string TwoBeasts        = "2 " + Beast;
-	public const string BlightAndInvaders= Blight + "+" + Invaders;
-	public const string TwoBeastPlusInvaders = TwoBeasts + "+" + Invaders;
+	public const string TwoDahan   = "2 " + Dahan;
+	public const string TwoBeasts  = "2 " + Beast;
+	public const string CoastalCity = Coastal+"+"+City;
 }

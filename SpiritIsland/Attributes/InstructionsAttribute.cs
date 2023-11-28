@@ -9,4 +9,10 @@ public class InstructionsAttribute : Attribute {
 		Text = text;
 	}
 
+	public InstructionsAttribute( string text, string elements, string thresholdText ) {
+		Text = $"{text} -If you have- {elements}: {thresholdText}";
+	}
+
+
+
 }

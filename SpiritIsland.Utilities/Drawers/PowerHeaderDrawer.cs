@@ -105,12 +105,23 @@ public static class PowerHeaderDrawer {
 			return;
 		}
 
-		int orIndex = text.IndexOf( " Or " );
+		int orIndex = text.IndexOf( "/" );
 		if(orIndex != -1) {
-			Draw2SideBySide( graphics, cell, text[..orIndex], text[(orIndex + 4)..] );
+			Draw2SideBySide( graphics, cell, text[..orIndex], text[(orIndex + 1)..] );
 			return;
 		}
 
+		int andIndex = text.IndexOf( "+" );
+		if(andIndex != -1) {
+			Draw2SideBySide( graphics, cell, text[..andIndex], text[(andIndex + 1)..] );
+			return;
+		}
+
+		Draw1TargetImage( graphics, text, cell, align );
+
+	}
+
+	static void Draw1TargetImage( Graphics graphics, string text, Rectangle cell, Align align ) {
 		bool isNot = text.StartsWith( "No" );
 		if(isNot) text = text.Split( ' ' )[1]; // just 2nd word
 
@@ -140,10 +151,6 @@ public static class PowerHeaderDrawer {
 					}
 					break;
 
-				case Target.TwoBeasts:
-				case Target.BlightAndInvaders:
-				case Target.TwoBeastPlusInvaders:
-
 				case Target.Inland:
 				case Target.Coastal:
 				case Target.Any:
@@ -160,7 +167,6 @@ public static class PowerHeaderDrawer {
 		if(isNot)
 			using(Bitmap icon = ResourceImages.Singleton.GetNoSymbol())
 				graphics.DrawImage( icon, imgRect.FitHeight( icon.Size, align ) );
-
 	}
 
 	private static void Draw2SideBySide( Graphics graphics, Rectangle cell, string s1, string s2 ) {
