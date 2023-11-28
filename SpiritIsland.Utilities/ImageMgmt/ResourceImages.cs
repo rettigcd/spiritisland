@@ -146,11 +146,18 @@ public class ResourceImages {
 	public async Task<Image> GetCardImage( PowerCard card ) {
 		string key = $"power_card_pic\\{card.Name}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
-		Bitmap bitmap = await CardDownloader.GetImage( card.Name );
+		Bitmap bitmap = await GetCardImageInternal( card );
 		_cache.Add( key, bitmap );
 		return bitmap;
 	}
 
+	static async Task<Bitmap> GetCardImageInternal( PowerCard card ) {
+		try {
+			return await CardDownloader.GetImage( card.Name );
+		} catch( Exception ex) {
+			return new Bitmap( 24, 24, System.Drawing.Imaging.PixelFormat.Format32bppPArgb );
+		}
+	}
 
 	public Image GetHealthBlightCard() {
 		string key = "blight\\healthy.png";
