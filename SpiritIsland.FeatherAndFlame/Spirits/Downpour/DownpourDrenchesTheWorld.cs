@@ -14,14 +14,8 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		Action = new MovePresence( 1 ),
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
 	};
-	static Track TwoAir => new Track( "2/air", Element.Air ) { 
-		Energy = 2, 
-		Icon = new IconDescriptor{ 
-			BackgroundImg = Img.Coin,
-			Text = "2",
-			Sub = new IconDescriptor{ BackgroundImg = Img.Token_Air }
-		}
-	};
+	static Track TwoAir => Track.MkEnergy(2,Element.Air);
+
 	static Track TwoWater => new Track("W/W", Element.Water, Element.Water ) {
 		Icon = new IconDescriptor {
 			ContentImg = Img.Token_Water,

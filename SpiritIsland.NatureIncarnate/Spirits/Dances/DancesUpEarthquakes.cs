@@ -11,19 +11,20 @@ public class DancesUpEarthquakes : Spirit {
 		ctx=>((DancesUpEarthquakes)ctx.Self).ImpendingEnergyPerRound = impendingEnergyPerRound
     );
 
-	static Track One => new Track("1/1") {
-		Energy = 1,
-		Action = SetImpendingEnergy(1),
-		Icon = new IconDescriptor { 
-			BackgroundImg = Img.Coin, 
-			Text = "1",
-			Sub = new IconDescriptor { 
-				BackgroundImg = Img.ImpendingCard,
-				ContentImg = Img.Coin,
-				Text = "1"
-			}
+	static Track One {
+		get {
+			var t = Track.MkEnergy(1);
+			t.Action = SetImpendingEnergy(1);
+			t.Icon = new IconDescriptor { BackgroundImg = Img.Coin, Text = "1",
+				Sub = new IconDescriptor { 
+					BackgroundImg = Img.ImpendingCard,
+					ContentImg = Img.Coin,
+					Text = "1"
+				}
+			};
+			return t;
 		}
-	};
+	}
 
 	static Track TwoImpendingEnergy => new Track("0/2") {
 		Action = SetImpendingEnergy(2),

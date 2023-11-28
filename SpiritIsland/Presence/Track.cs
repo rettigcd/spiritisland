@@ -3,21 +3,22 @@
 
 public sealed class Track : IOption {
 
-	public static Track MkEnergy( int energy, Element el ) => new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
-		Energy = energy,
-		Icon = new IconDescriptor { 
-			BackgroundImg = Img.Coin, 
-			Text = energy.ToString(), 
-			Sub = new IconDescriptor{ BackgroundImg = el.GetTokenImg() } 
-		}
-	};
-
 	public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { 
 		Energy = energy, 
 		Icon = new IconDescriptor{ BackgroundImg = Img.Coin, Text = energy.ToString() },
 	};
 
-	public static Track MkEnergy( params Element[] els ) {
+	public static Track MkEnergy( int energy, Element el, IconDescriptor sub=null ) 
+		=> new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
+			Energy = energy,
+			Icon = new IconDescriptor { 
+				BackgroundImg = Img.Coin, 
+				Text = energy.ToString(), 
+				Sub = sub ?? new IconDescriptor{ BackgroundImg = el.GetTokenImg() } 
+			}
+		};
+
+	public static Track MkEnergyElements( params Element[] els ) {
 		var track = new Track( els.Select( x => x.ToString() ).Join( "," ).ToLower() + " energy", els ) {
 			Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = els[0].GetTokenImg() }
 		};
@@ -48,15 +49,15 @@ public sealed class Track : IOption {
 	public static Track Energy7     => MkEnergy( 7 );
 	public static Track Energy8     => MkEnergy( 8 );
 	public static Track Energy9     => MkEnergy( 9 );
-	public static Track FireEnergy  => MkEnergy( Element.Fire );
-	public static Track PlantEnergy => MkEnergy( Element.Plant );
-	public static Track MoonEnergy  => MkEnergy( Element.Moon );
-	public static Track SunEnergy   => MkEnergy( Element.Sun );
-	public static Track AirEnergy   => MkEnergy( Element.Air );
-	public static Track AnyEnergy   => MkEnergy( Element.Any );
-	public static Track AnimalEnergy=> MkEnergy( Element.Animal );
-	public static Track EarthEnergy => MkEnergy( Element.Earth );
-	public static Track WaterEnergy => MkEnergy( Element.Water );
+	public static Track FireEnergy  => MkEnergyElements( Element.Fire );
+	public static Track PlantEnergy => MkEnergyElements( Element.Plant );
+	public static Track MoonEnergy  => MkEnergyElements( Element.Moon );
+	public static Track SunEnergy   => MkEnergyElements( Element.Sun );
+	public static Track AirEnergy   => MkEnergyElements( Element.Air );
+	public static Track AnyEnergy   => MkEnergyElements( Element.Any );
+	public static Track AnimalEnergy=> MkEnergyElements( Element.Animal );
+	public static Track EarthEnergy => MkEnergyElements( Element.Earth );
+	public static Track WaterEnergy => MkEnergyElements( Element.Water );
 
 	public static Track Card1 => MkCard(1);
 	public static Track Card2 => MkCard(2);

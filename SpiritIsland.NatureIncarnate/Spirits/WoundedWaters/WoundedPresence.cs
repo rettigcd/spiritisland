@@ -6,23 +6,14 @@ public class WoundedPresence : SpiritPresence {
 
 	static Track WaterOrAnimal => new Track( "Water/Animal", MultiElements.Build(Element.Water,Element.Animal) ) {
 		Icon = new IconDescriptor { ContentImg = Img.Icon_Water, ContentImg2 = Img.Icon_Animal },
-//		Action = new Gain1Element(Element.Water,Element.Animal),
 	};
-	static Track Energy4FirePlant => new Track( 4 + " energy" ) {
-		Energy = 4,
-		Icon = new IconDescriptor { BackgroundImg = Img.Coin, Text = 4.ToString(),
-			Sub = new IconDescriptor{ ContentImg = Img.Icon_Fire, ContentImg2 = Img.Icon_Plant } },
-		Action = new Gain1Element( Element.Fire, Element.Plant ),
-	};
-	static Track Energy5Any => new Track( 5 + " energy" ) {
-		Energy = 5,
-		Elements = new Element[] { Element.Any },
-		Icon = new IconDescriptor {
-			BackgroundImg = Img.Coin,
-			Text = 5.ToString(),
-			Sub = new IconDescriptor { ContentImg = Img.Token_Any }
-		},
-	};
+
+	static Track Energy4FirePlant => Track.MkEnergy(4
+		,MultiElements.Build(Element.Fire,Element.Plant)
+		,new IconDescriptor{ ContentImg = Img.Icon_Fire, ContentImg2 = Img.Icon_Plant }
+	);
+
+	static Track Energy5Any => Track.MkEnergy(5, Element.Any );
 
 	static Track Gather1Blight => new Track( "GatherBlight" ) {
 		Icon = new IconDescriptor {

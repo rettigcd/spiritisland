@@ -12,15 +12,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 	};
 
 	static Track Prepare(int energy){
-		return new Track(energy.ToString()+" energy" ){ 
-			Energy = energy,
-			Action = new PrepareElement( $"{energy} energy" ),
-			Icon = new IconDescriptor {
-				BackgroundImg = Img.Coin,
-				Text = energy.ToString(),
-				Sub = new IconDescriptor { BackgroundImg = Img.ShiftingMemory_PrepareEl }
-			},
-		};
+		Track t = Track.MkEnergy(energy);
+		t.Action = new PrepareElement( $"{energy} energy" );
+		t.Icon.Sub = new IconDescriptor { BackgroundImg = Img.ShiftingMemory_PrepareEl };
+		return t;
 	}
 
 	static Track DiscardElementsForCardPlay => new Track("discard 2 elements for card play" ) { 

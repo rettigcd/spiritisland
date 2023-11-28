@@ -4,22 +4,8 @@ public class FinderPresence : SpiritPresence {
 
 	#region Custom Tracks
 
-	static Track OneMoon => new Track( "1,Moon", Element.Moon ) {
-		Energy = 1,
-		Icon = new IconDescriptor {
-			Text = "1",
-			BackgroundImg = Img.Coin,
-			Sub = new IconDescriptor { BackgroundImg = Img.Token_Moon }
-		}
-	};
-	static Track TwoWater => new Track( "2,Water", Element.Water ) {
-		Energy = 2,
-		Icon = new IconDescriptor {
-			Text = "2",
-			BackgroundImg = Img.Coin,
-			Sub = new IconDescriptor { BackgroundImg = Img.Token_Water }
-		}
-	};
+	static Track OneMoon => Track.MkEnergy(1,Element.Moon);
+	static Track TwoWater => Track.MkEnergy(2,Element.Water);
 
 	static Track Move1Air => new Track( "Moveonepresence.png", Element.Air ) {
 		Action = new MovePresence( 1 ),
