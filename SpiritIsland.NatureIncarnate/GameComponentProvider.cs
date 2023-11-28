@@ -47,6 +47,8 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(SolidifyEchoesOfMajestyPast),
 		typeof(TransformativeSacrifice),
 		typeof(UnearthABeastOfWrathfulStone),
+		typeof(RavagedUndergrowthSlithersBackToLife),
+		typeof(PlagueShipsSailToDistantPorts),
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {

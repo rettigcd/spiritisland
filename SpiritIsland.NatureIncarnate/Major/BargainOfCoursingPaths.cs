@@ -6,7 +6,7 @@ public class BargainOfCoursingPaths {
 
 	[MajorCard(Name,2,"moon,air,water,earth"),Fast]
 	[FromPresence(0,Target.TwoDahan)]
-	[Instructions( "Bargain: 1 presence now and -1 Energy/turn. Now: Mark both target land and another with 2 or more Dahan. Ongoing: After pieces are added or moved into the marked lands: move those pieces directly to any 1 land. -If you have- 3 air,2 water,2 earth: The presence cost comes from your presence tracks." ), Artist( Artists.KatGuevara )]
+	[Instructions( "Bargain: 1 presence now and -1 Energy/turn. Now: Mark both target land and another with 2 or more Dahan. Ongoing: After pieces are added or moved into the marked lands: move those pieces directly to any 1 land. -If you have- 3 air,2 water,2 earth: The presence cost comes from your presence tracks." ), Artist( Artists.AgnieszkaDabrowiecka )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// Bargain: 1 presence now and -1 Energy/turn.
 		// -If you have- 3 air,2 water,2 earth: The presence cost comes from your presence tracks.
