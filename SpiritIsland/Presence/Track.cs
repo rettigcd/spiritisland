@@ -4,13 +4,13 @@
 public sealed class Track : IOption {
 
 	public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { 
-		Energy = energy, 
+		_energy = energy, 
 		Icon = new IconDescriptor{ BackgroundImg = Img.Coin, Text = energy.ToString() },
 	};
 
 	public static Track MkEnergy( int energy, Element el, IconDescriptor sub=null ) 
 		=> new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
-			Energy = energy,
+			_energy = energy,
 			Icon = new IconDescriptor { 
 				BackgroundImg = Img.Coin, 
 				Text = energy.ToString(), 
@@ -114,9 +114,13 @@ public sealed class Track : IOption {
 	public string Text {get;}
 
 	public int? Energy { 
-		get; 
-		set;
+		get => _energy;
+		set { 
+			_energy = value;
+			if(Icon != null) Icon.Text = Math.Max(0,_energy.Value).ToString();
+		}
 	}
+	int? _energy;
 
 	public Element[] Elements { get; set; }
 

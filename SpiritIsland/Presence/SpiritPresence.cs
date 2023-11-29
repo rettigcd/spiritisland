@@ -18,11 +18,10 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		Token = token ?? new SpiritPresenceToken(spirit);
 	}
 
-
 	protected void InitEnergyAndCardPlays() {
 		// !!! in unit tests, Revealed is sometimes empty
 		if(Revealed.Any()) {
-			EnergyPerTurn = Revealed.Max( x => x.Energy ?? 0 );
+			EnergyPerTurn = Revealed.Max( x => x.Energy ?? 0 );    // Revealed includes card-track that has null energy (??0) which keeps us from going negative.
 			CardPlayPerTurn = Revealed.Max( x => x.CardPlay ?? 0 );
 		}
 	}
@@ -220,6 +219,16 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	/// <summary> The normal spirit presence. </summary>
 	public SpiritPresenceToken Token { get; }
 
+	public void AdjustEnergyTrack( int delta ) {
+		// ctx.Self.EnergyCollected.Add( spirit => --spirit.Energy );
+		if(delta == 0) return;
+		foreach(Track t in Energy.Slots)
+			if(t.Energy.HasValue)
+				t.Energy += delta;
+
+		InitEnergyAndCardPlays();
+	}
+
 	#region ITokenClass Imp
 	string ITokenClass.Label => "Presence";
 	bool ITokenClass.HasTag( ITag tag ) => tag == this || tag == TokenCategory.Presence; // for both class and for token.
@@ -234,22 +243,26 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	protected class Memento : IMemento<SpiritPresence> {
 		public Memento( SpiritPresence src ) {
-			energy = src.Energy.SaveToMemento();
-			cardPlays = src.CardPlays.SaveToMemento();
-			destroyed = src.Destroyed;
-			energyPerTurn = src.EnergyPerTurn;
+			_energy = src.Energy.SaveToMemento();
+			_cardPlays = src.CardPlays.SaveToMemento();
+			_destroyed = src.Destroyed;
+			_lowestTrackEnergy = FirstEnergyTrackValue( src );
+		}
 
-		}
 		virtual public void Restore( SpiritPresence src ) {
-			src.Energy.LoadFrom( energy );
-			src.CardPlays.LoadFrom( cardPlays );
-			src.Destroyed = destroyed;
-			src.EnergyPerTurn = energyPerTurn;
+			src.Energy.LoadFrom( _energy );
+			src.CardPlays.LoadFrom( _cardPlays );
+			src.Destroyed = _destroyed;
+
+			src.AdjustEnergyTrack( _lowestTrackEnergy /* what it should be */ - FirstEnergyTrackValue(src) /* what it is */ );
 		}
-		readonly IMemento<IPresenceTrack> energy;
-		readonly IMemento<IPresenceTrack> cardPlays;
-		readonly int destroyed;
-		readonly int energyPerTurn;
+
+		static int FirstEnergyTrackValue( SpiritPresence src ) => src.Energy.Revealed.First().Energy.Value; // The first one should always have an energy value.
+
+		readonly IMemento<IPresenceTrack> _energy;
+		readonly IMemento<IPresenceTrack> _cardPlays;
+		readonly int _destroyed;
+		readonly int _lowestTrackEnergy;
 		public bool EmpoweredIncarna;
 	}
 

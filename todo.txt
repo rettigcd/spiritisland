@@ -1,8 +1,4 @@
 
-Gain 1 Less Energy
-- instead of reducing energy -1 (which pulls from reserve), change icons to indicate less energy, need to save energy in Memento - could save just the highest uncovered energy and use that to calculate the delta)
-- Bargains of ...
-
 Switch EVERY SourceSelector use to a await foreach(...)
 Convert any while(...) that has a Selector at the start to an async-enumerable (Reach From the Infinite Darkness)
 Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
