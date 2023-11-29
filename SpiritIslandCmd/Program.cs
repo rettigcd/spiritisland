@@ -1,7 +1,6 @@
 ﻿using SpiritIsland;
 using SpiritIsland.Basegame;
 using SpiritIsland.SinglePlayer;
-using System;
 
 namespace SpiritIslandCmd {
 
@@ -11,7 +10,8 @@ namespace SpiritIslandCmd {
 
 			var gs = new GameState( new RiverSurges(), Board.BuildBoardA() );
 
-			var game = new SinglePlayerGame(gs).Start();
+			var game = new SinglePlayerGame(gs);
+			game.StartAsync();
 
 			new CmdLinePlayer(game).Play();
 		}

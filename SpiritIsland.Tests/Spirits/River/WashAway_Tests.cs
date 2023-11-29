@@ -84,7 +84,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 	[Trait("Feature","Push")]
 	[Fact]
-	public void One1Target2PushableTypes() {
+	public async Task One1Target2PushableTypes() {
 		UserGateway.UsePreselect.Value = true;
 		Given_RiverPlayingWashAway();
 		_gameState.Phase = Phase.Slow;
@@ -92,25 +92,19 @@ public class WashAway_Tests : SpiritCards_Tests {
 		// 1 explorer + 1 Town on A4
 		var board = _gameState.Island.Boards[0];
 		Space targetSpace = board[4];
-		var grp =_gameState.Tokens[targetSpace];
+		SpaceState grp =_gameState.Tokens[targetSpace];
 		grp.AdjustDefault( Human.Explorer, 1 );
 		grp.AdjustDefault( Human.Town, 1 );
 
-		var explorerDestination = board[2];
-		var townDestination = board[3];
+		Space explorerDestination = board[2];
+		Space townDestination = board[3];
 
-		When_PlayingCard();
-
-		//User.TargetsLand( WashAway.Name, targetSpace.Label );
-		//		User.OptionallyPushesInvaderTo("T@2","A1,A2,[A3],A5");
-		//User.OptionallyPushesInvaderTo("[E@1],T@2","A1,[A2],A3,A5", 2);
-		User.AssertDecision( PreselectPrompt, "E@1,T@2,Done", "E@1" );
-		User.AssertDecisionInfo( "Push E@1 to", "A1,[A2],A3,A5" );
-		User.AssertDecision( "Push up to (1)", "T@2,Done", "T@2" );
-		User.AssertDecisionInfo( "Push T@2 to", "A1,A2,[A3],A5" );
-
-
-		User.Assert_Done();
+		await _spirit.When_ResolvingCard<WashAway>( u => {
+			u.NextDecision.HasPrompt( "Push up to (3)" ).HasOptions( "E@1,T@2,Done" ).Choose( "E@1" );
+			u.NextDecision.HasPrompt("Push E@1 to").HasOptions("A1,A2,A3,A5").Choose("A2");
+			u.NextDecision.HasPrompt( "Push up to (1)" ).HasOptions( "T@2,Done" ).Choose( "T@2" );
+			u.NextDecision.HasPrompt("Push T@2 to").HasOptions("A1,A2,A3,A5").Choose("A3");
+		} ).ShouldComplete();
 
 		// check that explore was moved
 		_gameState.Assert_Invaders(targetSpace,"");

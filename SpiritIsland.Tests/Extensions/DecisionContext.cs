@@ -27,6 +27,10 @@ public class DecisionContext {
 		return string.Compare( _current.Prompt, expectedPrompt, true )==0 ? this 
 			: throw new ArgumentException($"Expected prompt '{expectedPrompt}' not found in '{Format(_current)}'");
 	}
+	public DecisionContext HasTargetSpacePrompt( string cardName ) 
+		=> HasPrompt( cardName+": Target Space" );
+
+
 	static string Format(IDecision decision ) {
 		return decision.Prompt+":"+decision.Options.Select(o=>o.Text).Join(",");
 	}

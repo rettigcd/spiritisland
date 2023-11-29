@@ -19,75 +19,76 @@ public class SinglePlayerGame {
 	#region constructor 
 
 	public SinglePlayerGame(GameState gameState){
-		this.GameState = gameState;
+		GameState = gameState;
 		Spirit = gameState.Spirits.Single(); // this player only handles single-player.
-		this.UserPortal = Spirit.Portal;
+		UserPortal = Spirit.Portal;
 	}
 
 
 	#endregion
 
-	public SinglePlayerGame Start() {
+	public async Task StartAsync() {
 
-		async Task LoopAsync() {
-			ActionScope.Initialize();
-			UserGateway.UsePreselect.Value = EnablePreselects;
-			try {
-				// Handle any unresolved Initialization action - (ocean/beast)
-				GameState.Phase = Phase.Init;
-				await Spirit.ResolveActions( GameState ); 
+		ActionScope.Initialize();
+		UserGateway.UsePreselect.Value = EnablePreselects;
+		try {
+			// Handle any unresolved Initialization action - (ocean/beast)
+			GameState.Phase = Phase.Init;
+			await Spirit.ResolveActions( GameState ); 
 
-				Dictionary<int,IMemento<GameState>> savedGameStates = new Dictionary<int, IMemento<GameState>>();
-				while(true) {
-					savedGameStates[GameState.RoundNumber] = GameState.SaveToMemento();
-					DateTime lastSaveTimeStamp= DateTime.Now;
-					try {
-						LogRound();
-
-						GameState.Phase = Phase.Growth;
-						LogPhase();
-						await Spirit.DoGrowth( GameState ); // !
-						await Spirit.SelectAndPlayCardsFromHand();
-
-						GameState.Phase = Phase.Fast;
-						LogPhase();
-						await Spirit.ResolveActions( GameState );
-
-						GameState.Phase = Phase.Invaders;
-						LogPhase();
-						await InvaderPhase.ActAsync( GameState );
-
-						GameState.Phase = Phase.Slow;
-						LogPhase();
-						await Spirit.ResolveActions( GameState );
-
-						await GameState.TriggerTimePasses();
-					} catch( GameStateCommandException cmdEx ) {
-						if(cmdEx.Cmd is Rewind rewind && savedGameStates.ContainsKey(rewind.TargetRound)) {
-							GameState.LoadFrom( savedGameStates[rewind.TargetRound] );
-							foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
-								savedGameStates.Remove(laterRounds);
-						}
-					} catch(Exception ex) when (ex is not GameOverException) {
-						GameState.Log( new Log.ExceptionEntry( ex ) );
-						GameState.LoadFrom( savedGameStates[ GameState.RoundNumber ] ); // go back to beginning of round and see if we can debug it.
+			Dictionary<int,IMemento<GameState>> savedGameStates = new Dictionary<int, IMemento<GameState>>();
+			while(true) {
+				savedGameStates[GameState.RoundNumber] = GameState.SaveToMemento();
+				DateTime lastSaveTimeStamp= DateTime.Now;
+				try {
+					await Do1Round();
+				}
+				catch( GameStateCommandException cmdEx ) {
+					if(cmdEx.Cmd is Rewind rewind && savedGameStates.ContainsKey(rewind.TargetRound)) {
+						GameState.LoadFrom( savedGameStates[rewind.TargetRound] );
+						foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
+							savedGameStates.Remove(laterRounds);
 					}
+				} catch(Exception ex) when (ex is not GameOverException) {
+					GameState.Log( new Log.ExceptionEntry( ex ) );
+					GameState.LoadFrom( savedGameStates[ GameState.RoundNumber ] ); // go back to beginning of round and see if we can debug it.
 				}
 			}
-			catch(GameOverException gameOver) {
-				this.GameState.Result = gameOver.Status;
-				GameState.Log( gameOver.Status );
-			}
-			catch(Exception ex) {
-				GameState.Log(new Log.ExceptionEntry( ex ) );
-			}
 		}
-		_ = LoopAsync();
+		catch(GameOverException gameOver) {
+			this.GameState.Result = gameOver.Status;
+			GameState.Log( gameOver.Status );
+		}
+		catch(Exception ex) {
+			GameState.Log(new Log.ExceptionEntry( ex ) );
+		}
 
-		return this;
 	}
 
-	void LogPhase() => GameState.Log( new Log.Phase( GameState.Phase ) );
+	async Task Do1Round() {
+		LogRound();
+
+		SetPhase( Phase.Growth );
+		await Spirit.DoGrowth( GameState ); // !
+		await Spirit.SelectAndPlayCardsFromHand();
+		
+		SetPhase( Phase.Fast );
+		await Spirit.ResolveActions( GameState );
+
+		SetPhase( Phase.Invaders );
+		await InvaderPhase.ActAsync( GameState );
+
+		SetPhase( Phase.Slow );
+		await Spirit.ResolveActions( GameState );
+
+		await GameState.TriggerTimePasses();
+	}
+
+	void SetPhase(Phase phase ) {
+		GameState.Phase = phase;
+		GameState.Log( new Log.Phase( GameState.Phase ) );
+	}
+
 	void LogRound() => GameState.Log( new Log.Round( GameState.RoundNumber ) );
  		
 }

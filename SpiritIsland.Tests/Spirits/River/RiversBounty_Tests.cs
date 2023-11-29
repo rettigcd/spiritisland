@@ -45,7 +45,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[InlineData(1,1,3,1)]
 	[InlineData(1,2,4,1)]
 	[InlineData(2,1,4,1)]
-	public void DahanComingSameLand(
+	public async Task DahanComingSameLand(
 		int startingCount, 
 		int dahanToGather, 
 		int endingCount,
@@ -61,20 +61,13 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		Space neighbor = target.Adjacent_Existing.First();
 		Given_AddDahan( dahanToGather, neighbor );
 
-		When_PlayingCard();
-
-		//  Select: A4
-		User.TargetsLand( RiversBounty.Name, "A4" );
-
-		string token = "D@2";
-
-		// Select source 1
-		if(dahanToGather > 0)
-			User.GathersOptionalToken( token );
-
-		// Select source 2
-		if(dahanToGather > 1)
-			User.GathersOptionalToken( token );
+		await _spirit.When_ResolvingCard<RiversBounty>( u => {
+			u.NextDecision.HasTargetSpacePrompt( RiversBounty.Name ).HasOptions( "A4" ).Choose( "A4" );
+			if(0<dahanToGather)
+				u.NextDecision.HasPrompt($"Gather up to ({dahanToGather})").HasOptions("D@2,Done").Choose("D@2");
+			if(1<dahanToGather)
+				u.NextDecision.HasPrompt("Gather up to (1)").HasOptions("D@2,Done").Choose("D@2");
+		} ).ShouldComplete();
 
 		Assert_DahanCount( target, endingCount );
 		_spirit.Energy.ShouldBe( endingEnergy );
@@ -85,7 +78,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	}
 
 	[Fact]
-	public void DahanComingDifferentLands() {
+	public async void DahanComingDifferentLands() {
 		// Given: spirit has 1 presence
 		Space target = Given_SpiritHas1Presence();
 
@@ -95,19 +88,19 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		for(int i=0;i<dahanToGather;++i)
 			Given_AddDahan( 1, neighbors[i] );
 
-		When_PlayingCard();
+		Task t = When_PlayingCard();
 
 		User.TargetsLand( RiversBounty.Name, "A4" );
 		User.GathersOptionalToken("[D@2 on A1],D@2 on A2");
 		User.GathersOptionalToken("D@2");
 
-		User.Assert_Done();
+		await t.ShouldComplete();
 
 		Assert_DahanCount( target, 3 );
 	}
 
 	[Fact]
-	public void DamagedDahanComingDifferentLands() {
+	public async Task DamagedDahanComingDifferentLands() {
 		// Given: spirit has 1 presence
 		Space target = Given_SpiritHas1Presence();
 
@@ -118,20 +111,19 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		for(int neighborIndex = 0; neighborIndex<dahanToGather; ++neighborIndex)
 			neighbors[neighborIndex].Init( StdTokens.Dahan1, 1 );
 
-		When_PlayingCard();
+		await _spirit.When_ResolvingCard<RiversBounty>( u => {
+			u.NextDecision.HasTargetSpacePrompt( RiversBounty.Name ).HasOptions( "A4" ).Choose( "A4" );
+			u.NextDecision.HasPrompt("Gather up to (2)").HasOptions("D@1 on A1,D@1 on A2,Done").Choose("D@1 on A1");
+			u.NextDecision.HasPrompt("Gather up to (1)").HasOptions("D@1,Done").Choose("D@1");
+		} ).ShouldComplete();
 
-		User.TargetsLand( RiversBounty.Name, "A4" );
-		User.GathersOptionalToken("[D@1 on A1],D@1 on A2");
-		User.GathersOptionalToken("D@1");
-
-		User.Assert_Done();
 
 		Assert_DahanCount( target, 3 );
 	}
 
 
 	[Fact]
-	public void TwoPresenceSpaces(){
+	public async Task TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
 		_spirit.Given_HasPresenceOn(board[8]);
 		SpaceState[] targetOptions = _spirit.Presence.Spaces.Tokens().ToArray();
@@ -140,16 +132,13 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		//   And: 2 dahan in A5 (touches both)
 		Given_AddDahan(2,board[5]);
 
-		When_PlayingCard();
-
-		User.TargetsLand( RiversBounty.Name,"[A4],A8");
-		User.GathersOptionalToken( "D@2" );
-		User.GathersOptionalToken( "D@2" );
-
-		User.Assert_Done();
+		await _spirit.When_ResolvingCard<RiversBounty>( u => {
+			u.NextDecision.HasTargetSpacePrompt( RiversBounty.Name ).HasOptions( "A4,A8" ).Choose( "A4" );
+			u.NextDecision.HasPrompt("Gather up to (2)").HasOptions("D@2,Done").Choose("D@2");
+			u.NextDecision.HasPrompt("Gather up to (1)").HasOptions("D@2,Done").Choose("D@2");
+		} ).ShouldComplete();
 
 		Assert_DahanCount( board[4], 3 );
-
 	}
 
 	[Fact]

@@ -8,7 +8,7 @@ public class SpiritCards_Tests {
 	}
 
 	protected GameState _gameState;
-	protected PowerCard _card;
+	protected PowerCard _card;// !!! check if anything other than WhenPlayingCard is using this.
 	protected Spirit _spirit;
 	protected VirtualUser User { get; }
 

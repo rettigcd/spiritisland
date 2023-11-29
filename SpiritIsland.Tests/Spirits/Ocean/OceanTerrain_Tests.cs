@@ -81,7 +81,7 @@ public class OceanTerrain_Tests {
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
 		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power); // required to signal it is a spirit power
 		SelfCtx ctx = primarySpirit.BindMyPowers();
-		_ = PowerCard.For<CallToTend>().ActivateAsync( ctx );
+		Task t = PowerCard.For<CallToTend>().ActivateAsync( ctx );
 		//  And: Targets A2 (that has a dahan on it)
 		Choose( "A2" );
 		//  And: Push a Dahan
@@ -90,18 +90,23 @@ public class OceanTerrain_Tests {
 		// Then: push options should not include ocean
 		NextDecision.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" );
 
+		var log = new List<string>();
+		gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
+
+		if( withOcean)
+			Choose("A0"); // Push into Ocean and let Thunderspeaker ride along
+		else
+			Choose("A1");
+
+		// bring Thunderspeaker along
+		NextDecision.HasPrompt( "Move presence with Dahan?" )
+			.HasOptions( "Ts,Done" )
+			.Choose( "Ts" );
+
+		await t.ShouldComplete();
+
 		if( withOcean) {
-			var log = new List<string>();
-			gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
 
-			// Push into Ocean and let Thunderspeaker ride along
-			Choose("A0");
-
-			// bring Thunderspeaker along
-			NextDecision.HasPrompt( "Move presence with Dahan?" )
-				.HasOptions( "Ts,Done" )
-				.Choose( "Ts" );
-			
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
 			oceanSpace.Summary.ShouldBe("1OHG,1Ts");
@@ -113,6 +118,8 @@ public class OceanTerrain_Tests {
 			// And should NOT adjust energy
 			oceanSpirit.Energy.ShouldBe(oceanStartingEnergy);
 		}
+
+
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
@@ -144,7 +151,7 @@ public class OceanTerrain_Tests {
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
 		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power);
 		SelfCtx ctx = primarySpirit.BindMyPowers();
-		_ = PowerCard.For<LandOfHauntsAndEmbers>().ActivateAsync( ctx );
+		Task t = PowerCard.For<LandOfHauntsAndEmbers>().ActivateAsync( ctx );
 		//  And: Targets A2
 		Choose( a2.Space.Text );
 
@@ -156,6 +163,8 @@ public class OceanTerrain_Tests {
 				.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" )
 				.Choose(withOcean ? "A0" : "A1");
 		}
+
+		await t.ShouldComplete();
 
 		// Then: ocean should have drown energy
 		oceanSpirit.Energy.ShouldBe( oceanStartingEnergy + expectedEnergyGain );
@@ -271,7 +280,7 @@ public class OceanTerrain_Tests {
 	[Trait("SpecialRule","AllyOfTheDahan")]
 	[Theory]
 	[InlineData(true),InlineData (false)]
-	public void TidalBoon_EnergyAndDahan(bool savedByOcean) {
+	public async Task TidalBoon_EnergyAndDahan(bool savedByOcean) {
 
 		// Given thunderspeaker / ocean game
 
@@ -291,21 +300,17 @@ public class OceanTerrain_Tests {
 		gameState.Phase = Phase.Slow;
 		oceanSpirit.AddActionFactory( PowerCard.For<TidalBoon>() );
 		Task task = oceanSpirit.ResolveActions( gameState );
+
 		oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
-
 		//  And: Primary selects A2 space
-		IsActive( task ); Choose( "A2" );
-
+		Choose( "A2" );
 		//  And: Pushes town into ocean
-		IsActive( task ); Choose( "T@2" );
-		IsActive( task ); NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
-
-		// Then: Ocean gets 1 energy (2 health / 2 players = 1 energy)
-		oceanSpirit.Energy.ShouldBe( 1 );
+		Choose( "T@2" );
+		NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
 
 		// When: Pushes 1st Dahan into Ocean
-		IsActive( task ); Choose( "D@2" );
-		IsActive( task ); Choose( "A0" );
+		Choose( "D@2" );
+		Choose( "A0" );
 		// Thunderspeaker goes along
 		Choose( "Ts" );
 
@@ -317,8 +322,8 @@ public class OceanTerrain_Tests {
 		}
 
 		// When: Pushes 2nd dahan into Ocean
-		IsActive( task ); Choose( "D@2" );
-		IsActive( task ); Choose( "A0" );
+		Choose( "D@2" );
+		Choose( "A0" );
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
@@ -329,6 +334,12 @@ public class OceanTerrain_Tests {
 			// End of Action - Thunder speaker exits ocean
 			Choose( "Ts" );
 		}
+
+		await task.ShouldComplete();
+
+		// Then: Ocean gets 1 energy (2 health / 2 players = 1 energy)
+		oceanSpirit.Energy.ShouldBe( 1 );
+
 	}
 
 	#region private helper methods

@@ -35,7 +35,8 @@ public class DownPour_Tests {
 		// Then:
 		fxt.Choose( "Done" ); // don't push
 
-		task.IsCompletedSuccessfully.ShouldBeTrue();
+		await task.ShouldComplete();
+
 
 	}
 

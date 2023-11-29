@@ -14,9 +14,7 @@ public class AvoidTheDahan_Tests {
 
 	#region constructor
 
-	public AvoidTheDahan_Tests() {
-//		ActionScope.Initialize();
-
+	public void Init() {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
@@ -25,8 +23,8 @@ public class AvoidTheDahan_Tests {
 			InitMountainThenAllSands( gs );
 			gs.NewLogEntry += (s) => log.Add(s.Msg());
 		} );
-		this._user = user;
-		this._ctx = ctx;
+		_user = user;
+		_ctx = ctx;
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
@@ -38,6 +36,8 @@ public class AvoidTheDahan_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Fact]
 	public void NullFearCard_NormalExplore() {
+
+		Init();
 
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
@@ -53,25 +53,42 @@ public class AvoidTheDahan_Tests {
 
 	[Trait( "Invaders", "Explore" )]
 	[Fact]
-	public void Level1_NoExplore() {
+	public async Task Level1_NoExplore() {
 
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		// On Board-A,
+		// use A7 (Sands-2 Dahan)
+		// or A4 (Sands-no dahan)
+		Spirit spirit = new TestSpirit( PowerCard.For<RiversBounty>() );
+		GameState gs = new GameState( spirit, Board.BuildBoardA() ) {
+			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
+		};
+		InitMountainThenAllSands( gs );
+		gs.NewLogEntry += ( s ) => log.Add( s.Msg() );
+		gs.Initialize(); // Explore mountains
+		GameState.Current.DisableBlightEffect();
 
-		_user.WaitForNext();
-		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
+		var user = new VirtualTestUser( spirit );
+		var a7 = gs.Island.Boards[0][7].Tokens;
+		a7.Summary.ShouldBe( "2D@2" );
+		ActivateFearCard( new AvoidTheDahan() ); // Invaders do not explore into lands with at least 2 dahan
 
-		ActivateFearCard(new AvoidTheDahan());
+		Task task = InvaderPhase.ActAsync(gs);
+		user.AcknowledgesFearCard( Level1Text ); // explore Sands, Build Mountains
+		await task.ShouldComplete();
 
-		ClearBlightAndDoNothingForARound();
+		a7.InvaderSummary().ShouldBe( "" );
+	}
 
-		_user.AcknowledgesFearCard( Level1Text );
-		spaceCtx.Tokens.InvaderSummary().ShouldBe("");
-
+	static void ClearAllBlight() {
+		foreach(SpaceState space in GameState.Current.Spaces_Unfiltered) 
+			space.Blight.Init( 0 );
 	}
 
 	[Trait( "Invaders", "Explore" )]
 	[Fact]
 	public void Level1_DahanKilledDuringRavage_ShouldExplore() {
+		Init();
+
 
 		var spaceCtx = _ctx.TargetSpace( "A7" );
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
@@ -102,6 +119,8 @@ public class AvoidTheDahan_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Fact]
 	public void Level2_3DahanAtFear_1DahanAtBuild_DoBuild() {
+		Init();
+
 
 		// Fill all Invaders spaces with the A7 card
 		// Round 1
@@ -142,6 +161,8 @@ public class AvoidTheDahan_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Fact]
 	public void Level2_NoBuild() {
+		Init();
+
 		// "Invaders do not Build in lands where Dahan outnumber Town / City."
 
 		// Fill all Invaders spaces with the A7 card
@@ -179,6 +200,8 @@ public class AvoidTheDahan_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Fact]
 	public void Level3_3DahanAtFear_1DahanAtBuild_NoBuild() {
+		Init();
+
 
 		// Fill all Invaders spaces with the A7 card
 		ClearBlightAndDoNothingForARound();
@@ -211,6 +234,7 @@ public class AvoidTheDahan_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Fact]
 	public void Level3_1DahanAtFear_0DahanAtBuild_Build() {
+		Init();
 
 		// Fill all Invaders spaces with the A7 card
 		ClearBlightAndDoNothingForARound();
@@ -269,9 +293,9 @@ public class AvoidTheDahan_Tests {
 		_user.GrowAndBuyNoCards();
 	}
 
-	readonly VirtualTestUser _user;
-	readonly SelfCtx _ctx;
-	readonly List<string> log = new();
+	VirtualTestUser _user;
+	SelfCtx _ctx;
+	List<string> log = new();
 
 	#endregion
 }

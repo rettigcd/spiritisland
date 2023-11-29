@@ -2,18 +2,17 @@
 
 namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 
-public class GiftOfStrength_Tests {
+public sealed class GiftOfStrength_Tests {
 
-	protected SinglePlayerGame game;
-	protected readonly Spirit spirit;
-	protected readonly VirtualEarthUser User;
+	readonly Spirit spirit;
+	readonly VirtualEarthUser User;
 
 	public GiftOfStrength_Tests() {
 		spirit = new VitalStrength();
 		User = new VirtualEarthUser( spirit );
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
-		game = new SinglePlayerGame(gs).Start();
+		_ = new SinglePlayerGame(gs).StartAsync();
 	}
 
 	[Fact]

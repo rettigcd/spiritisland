@@ -5,12 +5,11 @@ namespace SpiritIsland.Tests.Spirits.River;
 public class RiverGame {
 
 	public RiverGame() {
-		spirit = new RiverSurges();
-		User = new VirtualRiverUser( spirit );
+		_spirit = new RiverSurges();
+		User = new VirtualRiverUser( _spirit );
 	}
 
-	protected SinglePlayerGame _game;
-	protected readonly Spirit spirit;
+	protected readonly Spirit _spirit;
 	protected readonly VirtualRiverUser User;
 }
 

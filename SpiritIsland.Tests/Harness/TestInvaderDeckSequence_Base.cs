@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Log;
-
-namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests;
 
 public class TestInvaderDeckSequence_Base {
 

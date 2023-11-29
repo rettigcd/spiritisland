@@ -1,32 +1,52 @@
 ﻿namespace SpiritIsland.Tests.Fear;
 
-public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
+public sealed class ExplorersAreReluctant_Tests {
 
+	void Init() {
+		var powerCard = PowerCard.For<CallToTend>();
+
+		(_user, _ctx) = TestSpirit.StartGame( powerCard );
+
+		_log = GameState.Current.LogInvaderActions();
+		_log.Clear(); // skip over initial Explorer setup
+	}
+
+	VirtualTestUser _user;
+	SelfCtx _ctx;
+	Queue<string> _log;
+
+	void GrowAndBuyNoCards() {
+		_ctx.ClearAllBlight();
+		_user.GrowAndBuyNoCards();
+	}
 
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public void NormalInvaderPhases() {
+	public async Task NormalInvaderPhases() {
+
+		var spirit = new TestSpirit( PowerCard.For<CallToTend>() );
+
+		GameState gs = new GameState( spirit, Board.BuildBoardA() ) {
+			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
+		};
+		gs.Initialize(); 
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
+		_log = GameState.Current.LogInvaderActions();
+		_log.Clear(); // clear out initial Explorer setup
 
-		GrowAndBuyNoCards();
-		_ = _user.NextDecision; // Wait for engine to finish
-
+		await InvaderPhase.ActAsync( gs );
 		_log.Assert_Built( "A3", "A8" );
 		_log.Assert_Explored( "A2", "A5" );
 
-		GrowAndBuyNoCards();
-		_ = _user.NextDecision; // Wait for engine to finish
-
+		await InvaderPhase.ActAsync( gs );
 		_log.Assert_Ravaged( "A3", "A8" );
 		_log.Assert_Built( "A2", "A5" );
 		_log.Assert_Explored( "A4", "A7" );
 
-		GrowAndBuyNoCards();
-		_ = _user.NextDecision; // Wait for engine to finish
-
+		await InvaderPhase.ActAsync( gs );
 		_log.Assert_Ravaged( "A2", "A5" );
 		_log.Assert_Built( "A4", "A7" );
 		_log.Assert_Explored( "A3", "A8" );
@@ -37,6 +57,8 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void Level1_SkipExploreInLowestNumberedLand() {
+
+		Init();
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
@@ -65,18 +87,14 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 		_log.Assert_Explored( "A7" ); // Skipped A4
 
 		GrowAndBuyNoCards();
-
-		// Ravage:Wetland, Build:Sand, Explore: Jungle-2
-		//log.Assert_Ravaged( "A2", "A5" );
-		//log.Assert_Built( "A4", "A7" );
-		//log.Assert_Explored( "A3", "A8" );
-
 	}
 
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void Level2_DelayExplore1Round() {
+
+		Init();
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
@@ -122,6 +140,8 @@ public class ExplorersAreReluctant_Tests : TestInvaderDeckSequence_Base {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void Level3_DelayExplore1Round() {
+
+		Init();
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();

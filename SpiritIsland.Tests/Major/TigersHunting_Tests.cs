@@ -3,7 +3,7 @@
 public class TigersHunting_Tests {
 
 	[Fact]
-	public void SingleAction() {
+	public async Task SingleAction() {
 		var fixture = new ConfigurableTestFixture();
 
 		var tracker = new ActionScopeTracker();
@@ -29,11 +29,10 @@ public class TigersHunting_Tests {
 		fixture.Choose("Beast"); // 'A' is selecting the beast
 		fixture.Choose("A7");
 
+		await task.ShouldComplete();	
+
 		// Then everything was a single action. 
 		tracker.Count.ShouldBe(1);
-
-		//  Then: it is complete and nothing happens.
-		task.IsCompleted.ShouldBeTrue();
 
 	}
 

@@ -4,7 +4,7 @@ public class PromisesOfProtection_Tests {
 
 	[Trait("Token","Health")]
 	[Fact]
-	public void PromisesOfProtection_IsStackable() {
+	public async Task PromisesOfProtection_IsStackable() {
 
 		// Setup
 		ActionScope.Initialize();
@@ -22,9 +22,10 @@ public class PromisesOfProtection_Tests {
 		fxt.InitTokens(dahanSource, "4D@2");
 
 		// When: playing card
-		_ = PromisesOfProtection.ActAsync( ctx );
+		Task play1 = PromisesOfProtection.ActAsync( ctx );
 		fxt.Choose( selectDahanFromSource );
 		fxt.Choose( selectDahanFromSource );
+		await play1.ShouldComplete();
 
 		// Test 2
 
@@ -32,9 +33,10 @@ public class PromisesOfProtection_Tests {
 		ctx.Tokens.Summary.ShouldBe("4D@4");
 
 		// Brought in 2 more dahan
-		_ = PromisesOfProtection.ActAsync( ctx );
+		Task play2 = PromisesOfProtection.ActAsync( ctx );
 		fxt.Choose( selectDahanFromSource );
 		fxt.Choose( selectDahanFromSource );
+		await play2.ShouldComplete();
 
 		// Then: All (6) should have 6 health.
 		ctx.Tokens.Summary.ShouldBe( "6D@6" );
@@ -42,7 +44,7 @@ public class PromisesOfProtection_Tests {
 		// Test 3
 
 		// When round over
-		_ = fxt.GameState.TriggerTimePasses();
+		await fxt.GameState.TriggerTimePasses();
 
 		// Then all (6) should have 2 health
 		ctx.Tokens.Summary.ShouldBe("6D@2");

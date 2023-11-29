@@ -194,7 +194,7 @@ public partial class Form1 : Form, IHaveOptions {
 		this.Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
 
 		// start the game
-		this._game.Start();
+		_game.StartAsync();
 
 	}
 

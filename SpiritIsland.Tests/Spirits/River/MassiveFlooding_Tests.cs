@@ -10,11 +10,11 @@ public class MassiveFlooding_Tests : RiverGame {
 		ActionScope.Initialize();
 
 		// Given: River
-		gs = new GameState( spirit, Board.BuildBoardA() ) {
+		gs = new GameState( _spirit, Board.BuildBoardA() ) {
 			Phase = Phase.Slow
 		};
 
-		_game = new SinglePlayerGame(gs).Start();
+		_ = new SinglePlayerGame(gs).StartAsync();
 
 	}
 
@@ -37,7 +37,7 @@ public class MassiveFlooding_Tests : RiverGame {
 
 	[Trait("Feature","Push")]
 	[Fact]
-	public void Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
+	public async Task Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
 		var fixture = new ConfigurableTestFixture();
 		var space = fixture.Board[5];
 		var spaceState = fixture.GameState.Tokens[space];
@@ -51,10 +51,10 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,5E@1,4T@2" );
 
 		//  When: activate innate
-		_ = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
+		Task t = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
-
 		fixture.ChoosePush( StdTokens.Town, destination.Space ); // push 1
+		await t.ShouldComplete();
 
 		// Then: target has remaining invaders
 		spaceState.Summary.ShouldBe( "1C@3,5E@1,3T@2" );
@@ -68,7 +68,7 @@ public class MassiveFlooding_Tests : RiverGame {
 
 	[Trait("Feature","Push")]
 	[Fact]
-	public void Level2_2DamagePush3TownOrExplorers() { // 2-Sun, 3-Water
+	public async Task Level2_2DamagePush3TownOrExplorers() { // 2-Sun, 3-Water
 
 		var fixture = new ConfigurableTestFixture();
 		var space = fixture.Board[5];
@@ -83,7 +83,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,4T@2,5E@1");
 
 		//  When: activate innate
-		_ = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
+		Task t = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
 		fixture.Choose( space ); // target space
 		fixture.Choose( StdTokens.Town ); // 1st damage
 		fixture.Choose( StdTokens.Town1 ); // 2nd damage
@@ -91,6 +91,8 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.ChoosePush( StdTokens.Town, destination ); // push 1
 		fixture.ChoosePush( StdTokens.Town, destination ); // push 2
 		fixture.ChoosePush( StdTokens.Explorer, destination ); // push 3
+
+		await t.ShouldComplete();
 
 		// Then: target has remaining invaders
 		spaceState.Summary.ShouldBe( "1C@3,4E@1,1T@2" );

@@ -37,7 +37,7 @@ class TestSpirit : Spirit {
 
 		gs.Initialize(); 
 
-		_ = new SinglePlayer.SinglePlayerGame(gs).Start();
+		_ = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
 
 		var user = new VirtualTestUser( spirit );
 		var starterCtx = spirit.BindSelf();

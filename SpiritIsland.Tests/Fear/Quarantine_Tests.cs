@@ -7,14 +7,14 @@ public class Quarantine_Tests {
 	const string FearAck3 = "Quarantine : 3 : Explore does not affect coastal lands.  Invaders do not act in lands with disease.";
 	readonly IFearCard card = new Quarantine();
 
-	public Quarantine_Tests() {
+	void Init() {
 		var powerCard = PowerCard.For<CallToTend>();
-		var (userLocal,ctxLocal) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs=>{ 
-			gs.NewLogEntry += (s) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
+		var (userLocal, ctxLocal) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
+			gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
 			gs.InitTestInvaderDeck(
-				InvaderCard.Stage1( Terrain.Sands), // not on coast
+				InvaderCard.Stage1( Terrain.Sands ), // not on coast
 				InvaderCard.Stage2Costal(),
-				InvaderCard.Stage1( Terrain.Jungle),
+				InvaderCard.Stage1( Terrain.Jungle ),
 				InvaderCard.Stage1( Terrain.Wetland ) // one extra so we don't trigger 'Time runs out loss'
 			);
 		}) );
@@ -29,6 +29,7 @@ public class Quarantine_Tests {
 	[InlineData(false)] // 1st card is configed as coastal
 	[InlineData(true)]  // A1 A2 A3 are coastland and stopped by Fear
 	public void Level1_ExploreDoesNotAffectCoastland( bool activateFearCard ) {
+		Init();
 
 		// Given: Activate fear card
 		if(activateFearCard)
@@ -53,6 +54,7 @@ public class Quarantine_Tests {
 	[InlineData(false)]
 	[InlineData(true)]
 	public void Level2_ExploreDoesNotAffectCoastlandNorComeFromDiseasedSpots( bool activateFearCard ) {
+		Init();
 
 		// Skip over the coastal build
 		GrowAndBuyNoCards();
@@ -93,6 +95,7 @@ public class Quarantine_Tests {
 	[InlineData(false)]
 	[InlineData(true)]
 	public void Level3_NoCoastalExplore_NoActionInDiseasedLands( bool activateFearCard ) {
+		Init();
 
 		// Skip over the coastal build
 		GrowAndBuyNoCards();
@@ -142,26 +145,29 @@ public class Quarantine_Tests {
 	[Theory]
 	[InlineData(false)]
 	[InlineData(true)]
-	public void SkipRavageWorks( bool skipARavage ) {
+	public async Task SkipRavageWorks( bool skipARavage ) {
 		// Not really for quarantine, just a general test without a home
 
-		// Given: on round 2 (Skip over the coastal build)
-		GrowAndBuyNoCards();
-		_user.WaitForNext(); // start of round 2
+		var spirit = new TestSpirit( PowerCard.For<CallToTend>() );
+		Board board = Board.BuildBoardA();
+		GameState gs = new GameState( spirit, board );
+		gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
+		gs.InitTestInvaderDeck(
+			InvaderCard.Stage1( Terrain.Sands ), // not on coast
+			InvaderCard.Stage2Costal(),
+			InvaderCard.Stage1( Terrain.Jungle ),
+			InvaderCard.Stage1( Terrain.Wetland ) // one extra so we don't trigger 'Time runs out loss'
+		);
+		gs.Initialize();  // Explore in Sands
+		GameState.Current.DisableBlightEffect();
 
-		// And: The only thing around A8 (a jungle) is a diseased town
-		_ctx.TargetSpace("A5").Tokens.Init("");
-		_ctx.TargetSpace("A6").Tokens.Init("");
-		_ctx.TargetSpace("A7").Tokens.Init("1T@2,1Z"); // town & diZease
-		_ctx.TargetSpace("A8").Tokens.Init("");
+		await InvaderPhase.ActAsync(gs); // Build in Sands, exploring Coastal
 
 		if(skipARavage)
-			_ctx.TargetSpace( "A4" ).Tokens.SkipRavage("Test");
-		_log.Clear();
+			board[4].Tokens.SkipRavage("Test");
 
-		// When: step through next round
-		GrowAndBuyNoCards();
-		_user.WaitForNext(); // start of round 3
+		_log.Clear();
+		await InvaderPhase.ActAsync(gs); // Ravage in Sands, Build in Coastal, Explore jungle
 
 		// Then:
 		if(skipARavage)
@@ -170,8 +176,7 @@ public class Quarantine_Tests {
 			_log.Assert_Ravaged ( "A4", "A7" );       // Sand
 
 		_log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
-		_log.Assert_Explored( "A3", "A8" );
-
+		_log.Assert_Explored( "A3", "A8" ); // Jungle
 	}
 
 

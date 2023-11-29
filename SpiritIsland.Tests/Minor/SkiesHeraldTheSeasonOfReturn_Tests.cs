@@ -4,7 +4,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 
 	[Trait("SpecialRule","ForbiddenGround")]
 	[Fact]
-	public void ReturningKeeperPresence_PushesDahan() {
+	public async Task ReturningKeeperPresence_PushesDahan() {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
 		var space = fix.Board[5];
 		var spaceState = fix.GameState.Tokens[space];
@@ -34,7 +34,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		//  And: May push 1 blight
 		// no blight to push
 
-		task.IsCompletedSuccessfully.ShouldBeTrue();
+		await task.ShouldComplete();
 	}
 
 }
