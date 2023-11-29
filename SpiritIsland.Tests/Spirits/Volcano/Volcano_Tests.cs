@@ -100,7 +100,7 @@ public class Volcano_Tests {
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
 	[Fact]
-	public void RavageBlight_Causes1Damage() {
+	public async Task RavageBlight_Causes1Damage() {
 		var (spirit, gameState, board) = Init();
 		SpaceState space = gameState.Tokens[board[5]];
 
@@ -116,9 +116,10 @@ public class Volcano_Tests {
 
 		//  Then: destroyed presence causes 1 damage to explorer
 		ApplyDamageToExplorers(spirit,task,1, space );
-		space.Summary.ShouldBe("1B,2E@1,2VLH");
 
-		Assert_IsDone(spirit,task);
+		await task.ShouldComplete();
+
+		space.Summary.ShouldBe("1B,2E@1,2VLH");
 	}
 
 	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
@@ -241,12 +242,11 @@ public class Volcano_Tests {
 			//   And: Destroy 2 presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "4,3,2,1,0" ).Choose( "2" );
 
-			//  Then: damage invaders in target
+			//  And: damage invaders in target
 			ApplyDamageToExplorers( spirit, null, 2, space );
-			int remaining = 8;
-			//   And: damages dahan INEFFICIENTLY
-			space.Summary.ShouldBe( $"2D@1,{remaining}D@2,{remaining}E@1,2VLH" );
 		} );
+		//   Then: damages dahan INEFFICIENTLY
+		space.Summary.ShouldBe( $"2D@1,8D@2,8E@1,2VLH" );
 	}
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
@@ -339,7 +339,6 @@ public class Volcano_Tests {
 			// Then: trigger Level 0
 			if(1 <= presenceDestroyed) {
 				ApplyDamageToExplorers( spirit, null, presenceDestroyed, targetSpace );
-				targetSpace.Summary.ShouldBe( $"{20 - presenceDestroyed}E@1,{remainingP}VLH" );
 			}
 			//  And: Level 1
 			if(2 <= presenceDestroyed) {
@@ -347,20 +346,11 @@ public class Volcano_Tests {
 				ApplyDamageToExplorers( spirit, null, presenceDestroyed, adjBlight );
 			}
 			//  And: Level 2
-			int earnedFear = gameState.Fear.EarnedFear + gameState.Fear.ActivatedCards.Count * 4;
-			earnedFear.ShouldBe( 4 <= presenceDestroyed ? presenceDestroyed : 0 );
 			//  And: Level 3
 			if(6 <= presenceDestroyed) {
 				ApplyDamageToExplorers( spirit, null, 4, targetSpace ); // A8
 				ApplyDamageToExplorers( spirit, null, 4, adjBlight );   // A6
 				ApplyDamageToExplorers( spirit, null, 4, adjPresence ); // A7
-
-				// target
-				targetSpace.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4)}E@1,{remainingP}VLH" );
-				// adj-blight
-				adjBlight.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4)}E@1" );
-				// adj-presence
-				adjPresence.Summary.ShouldBe( $"{20 - 4}E@1,1VLH" );
 			}
 			if(10 <= presenceDestroyed) {
 				// When: applying 4 more damage
@@ -370,19 +360,31 @@ public class Volcano_Tests {
 
 				// When: Adding blight destroys presence and causes 1 more damage
 				ApplyDamageToExplorers( spirit, null, 1, adjPresence ); // A7
-
-				// Then: target
-				targetSpace.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4 + 4)}E@1,{remainingP}VLH" );
-
-				// Then: adj-blight
-				adjBlight.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4 + 4)}E@1" );
-
-				// Then: adj-presence
-				spirit.Presence.IsOn(adjPresence).ShouldBeFalse();
-				adjPresence.Summary.ShouldBe( $"1B,{20 - (4 + 4 + 1)}E@1" );
 			}
 
 		} );
+
+		//  And: Level 2
+		int earnedFear = gameState.Fear.EarnedFear + gameState.Fear.ActivatedCards.Count * 4;
+		earnedFear.ShouldBe( 4 <= presenceDestroyed ? presenceDestroyed : 0 );
+		//  And: Level 3
+		if(6 <= presenceDestroyed && presenceDestroyed < 10) {
+			// target
+			targetSpace.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4)}E@1,{remainingP}VLH" );
+			// adj-blight
+			adjBlight.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4)}E@1" );
+			// adj-presence
+			adjPresence.Summary.ShouldBe( $"{20 - 4}E@1,1VLH" );
+		}
+		if(10 <= presenceDestroyed) {
+			// Then: target
+			targetSpace.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4 + 4)}E@1,{remainingP}VLH" );
+			// Then: adj-blight
+			adjBlight.Summary.ShouldBe( $"1B,{20 - (presenceDestroyed + 4 + 4)}E@1" );
+			// Then: adj-presence
+			spirit.Presence.IsOn(adjPresence).ShouldBeFalse();
+			adjPresence.Summary.ShouldBe( $"1B,{20 - (4 + 4 + 1)}E@1" );
+		}
 
 	}
 

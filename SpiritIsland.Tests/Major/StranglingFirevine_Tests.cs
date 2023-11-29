@@ -3,7 +3,7 @@
 public class StranglingFirevine_Tests {
 
 	[Fact]
-	public void SingleAction() {
+	public async Task SingleAction() {
 		var fxt = new ConfigurableTestFixture();
 
 		// Track actions
@@ -35,14 +35,14 @@ public class StranglingFirevine_Tests {
 		fxt.Choose( "T@2" );
 		fxt.Choose( "T@1" );
 
+		await task.ShouldComplete();
+
 		// Then: invaders destroyed, 1 wilds left behind.
 		fxt.GameState.Tokens[space].Summary.ShouldBe("1W");
 
 		//  And: both destroys were in a single action
 		tracker.Count.ShouldBe( 1 );
 
-		//  Then: it is complete and nothing happens.
-		task.IsCompleted.ShouldBeTrue();
 	}
 
 }

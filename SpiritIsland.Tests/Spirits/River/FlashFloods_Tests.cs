@@ -8,7 +8,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 	public FlashFloods_Tests():base(new RiverSurges() ) { }
 
 	[Fact]
-	public void FlashFloods_Inland() {
+	public async Task FlashFloods_Inland() {
 
 		Given_GameWithSpirits( _spirit );
 		_gameState.Phase = Phase.Fast;
@@ -35,17 +35,17 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		PlayCard();
 		Assert.Contains( _card, _spirit.GetAvailableActions( _card.DisplaySpeed ).OfType<PowerCard>().ToList() ); // is fast
 
-		When_PlayingCard();
+		Task t = When_PlayingCard();
 
 		User.TargetsLand( FlashFloods.Name, "A4" );
 		User.SelectsDamageRecipient( 1, "C@3,T@2,[E@1]" ); // select damage option
 
-		User.Assert_Done();
+		await t.ShouldComplete();
 		_gameState.Assert_Invaders( targetSpace, "1C@3,1T@2" );
 	}
 
 	[Fact]
-	public void FlashFloods_Costal() {
+	public async Task FlashFloods_Costal() {
 		// Given: River
 		//   And: a game on Board-A
 		var board = Board.BuildBoardA();
@@ -69,7 +69,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		PlayCard();
 		Assert.Contains(_card,_spirit.GetAvailableActions(_card.DisplaySpeed).OfType<PowerCard>().ToList()); // is fast
 
-		When_PlayingCard();
+		Task play = When_PlayingCard();
 
 		//  Select: A2
 		User.TargetsLand(FlashFloods.Name,"A2");
@@ -79,7 +79,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		User.SelectsDamageRecipient( 1, "[C@2],T@2,E@1" );
 
 		// And: apply doesn't throw an exception
-		User.Assert_Done();
+		await play.ShouldComplete();
 		_gameState.Assert_Invaders(targetSpace, "1C@1,1T@2,1E@1" );
 	}
 

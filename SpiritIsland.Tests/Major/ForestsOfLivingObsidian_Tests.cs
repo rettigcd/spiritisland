@@ -5,7 +5,7 @@ public class ForestsOfLivingObsidian_Tests {
 	[Trait( "Token", "Badlands" )]
 	[Trait( "Feature", "Repeat" )]
 	[Fact]
-	public void Repeat_BadlandsWorksOnBothTargets() {
+	public async Task Repeat_BadlandsWorksOnBothTargets() {
 		var fix = new ConfigurableTestFixture();
 		var space1 = fix.Board[3];
 		var space2 = fix.Board[8];
@@ -31,13 +31,13 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.Choose( space2 );
 		fix.Choose( "T@1" ); // Damage (1 remaining)
 
-		task.IsCompletedSuccessfully.ShouldBeTrue();
+		await task.ShouldComplete();
 	}
 
 	[Trait( "Token", "Badlands" )]
 	[Trait( "Feature", "Repeat" )]
 	[Fact]
-	public void Repeat_BadlandsWorksOnSameTargetTwice() {
+	public async Task Repeat_BadlandsWorksOnSameTargetTwice() {
 		var fix = new ConfigurableTestFixture();
 		var space1 = fix.Board[3];
 		var spaceState = fix.GameState.Tokens[space1];
@@ -54,13 +54,13 @@ public class ForestsOfLivingObsidian_Tests {
 		//  And: targeting space 1
 		fix.Choose( space1 );
 		fix.Choose( "C@2" ); // 3C@2 - Damage 1 of them (1 of 1)
-		spaceState.Summary.ShouldBe("1C@1,2C@2,1CS,1M");
 
 		//  And: targeting space 1 a 2nd time
 		fix.Choose( space1 );// Should Kill the 1C@1, and reduce the 2C@2 to 2C@1
 		fix.Choose( "C@1" ); // Kill 1st City
 		fix.Choose( "C@1" ); // Kill 2nd City
-		fix.GameState.Tokens[space1].Summary.ShouldBe( "1CS,2M" );
+		await task.ShouldComplete();
+		spaceState.Summary.ShouldBe( "1CS,2M" );
 
 		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
