@@ -6,8 +6,8 @@ class SenslessRoamingTokens : SpaceState {
 		_spirit = spirit;
 	}
 
-	public override async Task<SpaceToken> Add1StrifeTo( HumanToken invader ) {
-		SpaceToken after = (await base.Add1StrifeTo( invader ));
+	public override async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) {
+		SpaceToken after = (await base.Add1StrifeToAsync( invader ));
 		if( after.Token.HasAny(Human.Explorer_Town)) {
 			var moved = await TokenMover
 				.Push(_spirit, Space)

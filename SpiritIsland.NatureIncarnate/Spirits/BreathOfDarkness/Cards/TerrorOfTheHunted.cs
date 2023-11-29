@@ -20,8 +20,7 @@ public class TerrorOfTheHunted {
 		if(ctx.Space == EndlessDark.Space)
 			++strifeCount;
 
-		while(0 < strifeCount--)
-			await ctx.AddStrife( Human.Invader );
+		await ctx.AddStrife(strifeCount);
 
 	}
 

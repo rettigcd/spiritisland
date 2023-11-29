@@ -29,10 +29,10 @@ public static partial class Cmd {
 	static public SpaceCmd AddWilds( int count ) => new SpaceCmd( $"Add {count} Wilds.", ctx => ctx.Wilds.AddAsync(count) );
 	static public SpaceCmd AddVitality( int count ) => new SpaceCmd( $"Add {count} Vitality.", ctx => ctx.Vitality.AddAsync( count ) );
 	static public SpaceCmd AddBadlands( int badLandCount ) => new SpaceCmd( $"Add {badLandCount} badlands", ctx => ctx.Badlands.AddAsync( badLandCount ) );
-	static public SpaceCmd AddStrife(int count) => new SpaceCmd( $"Add {count} Strife.",  async ctx => { for(int i=0;i<count;++i) await ctx.AddStrife(); } );
+	static public SpaceCmd AddStrife(int count) => new SpaceCmd( $"Add {count} Strife.",  ctx => ctx.AddStrife(count) );
 	static public SpaceCmd AddStrifeTo( int count, params HumanTokenClass[] tokenClasses ) => new SpaceCmd( 
 			$"Add {count} Strife to "+String.Join(",",tokenClasses.Select(x=>x.Label)), 
-			async ctx => { for(int i = 0; i < count; ++i) await ctx.AddStrife( tokenClasses ); }
+			ctx => ctx.AddStrife( count, tokenClasses )
 		); 
 	static public SpaceCmd Adjust1Token( string description, ISpaceEntity token ) => new SpaceCmd( description, ctx => ctx.Tokens.Adjust(token,1) );
 	// -- Screwy Strife Stuff --

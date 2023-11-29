@@ -3,10 +3,7 @@ Switch EVERY SourceSelector use to a await foreach(...)
 Convert any while(...) that has a Selector at the start to an async-enumerable (Reach From the Infinite Darkness)
 Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
 
--- Token Events --
-TargetSpaceCtx.AddStrife needs to be Async AND take a count.  (Terror Of the Hunted)
-
-* Create an IEnumerable-Async method that selects spaces and allows user to select .Done to stop - (EarthShuddersBuildingsFall)
+SpaceSelector - Create an IEnumerable-Async method that selects spaces and allows user to select .Done to stop - (EarthShuddersBuildingsFall)
 
 Move Growths out of Spirit folder into common SpiritAction folder.
 

@@ -11,8 +11,8 @@ public class TricksterTokens : SpaceState {
 	public override TokenMover Pusher( Spirit self, bool stoppedByBadlands=false ) 
 		=> base.Pusher( self, stoppedByBadlands ).RunAtMax( _runAtMax );
 
-	public override async Task<SpaceToken> Add1StrifeTo( HumanToken invader ) {
-		HumanToken humanToken = await AddRemoveStrife( invader, 1, 1 );
+	public override async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) {
+		HumanToken humanToken = await AddRemoveStrifeAsync( invader, 1, 1 );
 		if( _spirit.Energy != 0 )
 			await Pay1EnergyToStrifeInRange1Land();
 		return humanToken.On(Space);
@@ -32,7 +32,7 @@ public class TricksterTokens : SpaceState {
 		if(invader2 != null) {
 			--_spirit.Energy;
 			var tokens2 = (TricksterTokens)invader2.Space.Tokens; // need to cast in order to access non-cascading protected member .AddRemoveStrife()
-			await tokens2.AddRemoveStrife( invader2.Token.AsHuman(), 1, 1 );
+			await tokens2.AddRemoveStrifeAsync( invader2.Token.AsHuman(), 1, 1 );
 		}
 	}
 

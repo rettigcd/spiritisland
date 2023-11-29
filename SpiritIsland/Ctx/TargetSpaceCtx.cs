@@ -263,8 +263,10 @@ public class TargetSpaceCtx : SelfCtx {
 		moreDamage.TrackDamageDone( applied );
 	}
 
+	public Task AddStrife( params HumanTokenClass[] groups ) => AddStrife(1,groups);
+
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public async Task AddStrife( params HumanTokenClass[] groups ) {
+	public async Task AddStrife( int count, params HumanTokenClass[] groups ) {
 		if( groups.Length == 0) groups = Human.Invader;
 		await new TokenStrifer( Self, new SourceSelector( Tokens ).AddGroup( 1, groups ) )
 			.DoN();

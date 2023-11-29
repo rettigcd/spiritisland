@@ -35,7 +35,7 @@ class WhyDontYouAndThemFight {
 
 	static async Task<(int,HumanToken)> GetDamageFromInvader( InvaderBinding invaderBinding, HumanToken invader ) {
 		return 0 < invader.StrifeCount
-			? (0,await invaderBinding.Tokens.Remove1StrifeFrom( invader, 1 )) 
+			? (0,await invaderBinding.Tokens.Remove1StrifeFromAsync( invader, 1 )) 
 			: (invader.Attack, invader);
 	}
 

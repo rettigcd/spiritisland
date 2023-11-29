@@ -195,7 +195,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			newAttackers[orig.AddStrife( -1 )] += count;
 
 			// update real tokens
-			await rex.Tokens.Remove1StrifeFrom( orig, rex.Tokens[orig] );
+			await rex.Tokens.Remove1StrifeFromAsync( orig, rex.Tokens[orig] );
 		}
 
 		return newAttackers;

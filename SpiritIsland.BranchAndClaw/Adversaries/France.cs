@@ -101,7 +101,7 @@ public class France : IAdversary {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
 			var st = await boardCtx.SelectAsync( new A.SpaceToken( "Add strife to town", options, Present.Always ) );
 			if(st != null)
-				await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() );
+				await st.Space.Tokens.Add1StrifeToAsync( st.Token.AsHuman() );
 		} );
 
 	static BaseCmd<BoardCtx> Add2StrifeToCityOrTown => new BaseCmd<BoardCtx>(
@@ -111,7 +111,7 @@ public class France : IAdversary {
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.SelectAsync( new A.SpaceToken( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
-					await st.Space.Tokens.Add1StrifeTo( st.Token.AsHuman() );
+					await st.Space.Tokens.Add1StrifeToAsync( st.Token.AsHuman() );
 			}
 		} );
 

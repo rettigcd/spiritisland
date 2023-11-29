@@ -256,12 +256,12 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		}
 	}
 
-	public virtual async Task<SpaceToken> Add1StrifeTo( HumanToken invader ) => (await AddRemoveStrife( invader, 1, 1 )).On(Space);
+	public virtual async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) => (await AddRemoveStrifeAsync( invader, 1, 1 )).On(Space);
 
-	public Task<HumanToken> Remove1StrifeFrom( HumanToken invader, int tokenCount ) => AddRemoveStrife(invader,-1,tokenCount);
+	public Task<HumanToken> Remove1StrifeFromAsync( HumanToken invader, int tokenCount ) => AddRemoveStrifeAsync(invader,-1,tokenCount);
 
 	/// <returns>New invader</returns>
-	protected async Task<HumanToken> AddRemoveStrife( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
+	protected async Task<HumanToken> AddRemoveStrifeAsync( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
 
 		if(this[originalInvader] < tokenCount)
 			throw new ArgumentOutOfRangeException( $"collection does not contain {tokenCount} {originalInvader}" );

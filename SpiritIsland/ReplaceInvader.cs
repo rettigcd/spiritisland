@@ -85,8 +85,7 @@ static public class ReplaceInvader {
 			tokens.AdjustDefault( Human.Explorer, explorersToAdd );
 
 		// distribute pre-existing strife.
-		for(int i=0;i< tokenToRemove.StrifeCount; ++i)
-			await ctx.AddStrife( Human.Explorer );
+		await ctx.AddStrife( tokenToRemove.StrifeCount, Human.Explorer );
 	}
 
 }
