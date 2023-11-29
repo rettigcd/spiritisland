@@ -2,6 +2,9 @@
 
 static public class SitOutRavage {
 
+	/// <summary>
+	/// User Selects which tokens to sit out. And sits them out for *this-action* only.
+	/// </summary>
 	static public async Task SelectFightersAndSitThemOut( Spirit spirit, SourceSelector sourceSelector ) {
 		CountDictionary<HumanToken> sitOuts = new CountDictionary<HumanToken>();
 		HashSet<Space> targetSpaces = new HashSet<Space>();
@@ -18,7 +21,7 @@ static public class SitOutRavage {
 			case 0: 
 				return;
 			case 1:
-				SitOutNextRavage( targetSpaces.Single(), sitOuts );
+				SitOutThisRavageAction( targetSpaces.Single(), sitOuts );
 				return;
 			default: 
 				throw new InvalidOperationException( "SelectFightersAndSitThemOut is only designed to work on 1 space at a time but this is targetting: " + string.Join( ",", targetSpaces ) );
@@ -26,21 +29,29 @@ static public class SitOutRavage {
 
 	}
 
-	static public void SitOutNextRavage( SpaceState space, CountDictionary<HumanToken> sitOuts ) {
+	/// <summary>
+	/// Sits out pre-selected tokens from the Count-Dictionary
+	/// </summary>
+	static public void SitOutThisRavageAction( SpaceState space, CountDictionary<HumanToken> sitOuts ) {
 		foreach(var pair in sitOuts)
-			DontParticipateInRavage( space, pair.Key, pair.Value );
+			DontParticipateInRavageThisAction( space, pair.Key, pair.Value );
 	}
 
-	static void DontParticipateInRavage( SpaceState space, HumanToken humanToken, int countToNotParticipate ) {
+	/// <summary>
+	/// Marks 1 Token Type as not-participating (and queues up restore at end of acction
+	/// </summary>
+	static void DontParticipateInRavageThisAction( SpaceState space, HumanToken humanToken, int countToNotParticipate ) {
 		var nonParticipating = humanToken.SetRavageSide( RavageSide.None );
 		space.Adjust( nonParticipating, countToNotParticipate );
 		space.Adjust( humanToken, -countToNotParticipate );
 
-		Restore( space, humanToken, countToNotParticipate, nonParticipating );
+		QueueUpRestore( space, humanToken, countToNotParticipate, nonParticipating );
 	}
 
-
-	static void Restore( SpaceState space, HumanToken humanToken, int countToNotParticipate, HumanToken nonParticipating ) {
+	/// <summary>
+	/// Adds the restore action to the end of the current Action-Scope
+	/// </summary>
+	static void QueueUpRestore( SpaceState space, HumanToken humanToken, int countToNotParticipate, HumanToken nonParticipating ) {
 		ActionScope.Current.AtEndOfThisAction( scope => {
 			space.Adjust( nonParticipating, -countToNotParticipate );
 			space.Adjust( humanToken, countToNotParticipate );

@@ -23,7 +23,7 @@ public class ExhaleConfusionAndDelirium {
 				.ToDictionary( x => x, x => space[x] )
 				.ToCountDict();
 
-			SitOutRavage.SitOutNextRavage(space, blightedCounts);
+			SitOutRavage.SitOutThisRavageAction(space, blightedCounts);
 		}
 	}
 

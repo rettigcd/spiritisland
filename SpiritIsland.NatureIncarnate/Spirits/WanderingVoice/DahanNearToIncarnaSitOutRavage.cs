@@ -16,7 +16,7 @@ public class DahanNearToIncarnaSitOutRavage : BaseModEntity, IConfigRavages {
 			var dahan = space.HumanOfTag(Human.Dahan)
 				.ToDictionary( x => x, x => space[x] )
 				.ToCountDict();
-			SitOutRavage.SitOutNextRavage(space, dahan);
+			SitOutRavage.SitOutThisRavageAction(space, dahan);
 		}
 	}
 }

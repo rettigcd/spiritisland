@@ -3,10 +3,7 @@ Switch EVERY SourceSelector use to a await foreach(...)
 Convert any while(...) that has a Selector at the start to an async-enumerable (Reach From the Infinite Darkness)
 Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
 
--- Ravage --
-Group All Sit-Out ravage-mods together an make generic so we don't need a different token-class foreach one.  (ExhaleConfusionAndDelirium)
-
-
+-- Token Events --
 TokenAdded => SpaceToken .After
 TokenRemoved => SpaceToken .Before
 TokenMoved => SpaceToken .After .Before
@@ -17,14 +14,9 @@ TargetSpaceCtx.AddStrife needs to be Async AND take a count.  (Terror Of the Hun
 
 * Create an IEnumerable-Async method that selects spaces and allows user to select .Done to stop - (EarthShuddersBuildingsFall)
 
-Warn of Impending Conflict - imp using Ravage-Config, not ISkipRavages
-
 Move Growths out of Spirit folder into common SpiritAction folder.
 
-Maybe pull the .SkipX methods on SpaceState extension methods since they don't need access to use internal state and are just for convenience
-
 When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated. (ScorchingConvergence)
-
 
 
 ----------

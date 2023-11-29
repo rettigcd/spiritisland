@@ -46,7 +46,7 @@ public class DahanSitOutRavage : BaseModEntity, IConfigRavagesAsync {
 		}
 
 		if(0 < counts.Count)
-			SitOutRavage.SitOutNextRavage(space, counts);
+			SitOutRavage.SitOutThisRavageAction(space, counts);
 
 	}
 }

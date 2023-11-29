@@ -25,17 +25,9 @@ public class UnnervingPall {
 
 	static async Task SelectUpTo3DamagedInvadersToNotParticipate( TargetSpaceCtx ctx ) {
 
-		//// Find Damaged Invaders
-		var damagedInvaders = new List<HumanToken>();
-		foreach(var token in ctx.Tokens.InvaderTokens().Where( t => t.RemainingHealth < t.FullHealth ))
-			for(int i = 0; i < ctx.Tokens[token]; ++i)
-				damagedInvaders.Add( token );
-		if(damagedInvaders.Count == 0)
-			return;
-
 		var sourceSelector = new SourceSelector(ctx.Tokens)
 			.ConfigOnlySelectEachOnce()
-			.AddGroup(3,damagedInvaders.Select(x=>x.Class).Distinct().ToArray())
+			.AddGroup(3,Human.Invader)
 			.FilterSpaceToken(st => 0<((HumanToken)st.Token).Damage ); // is damaged
 
 		await SitOutRavage.SelectFightersAndSitThemOut(ctx.Self,sourceSelector);
