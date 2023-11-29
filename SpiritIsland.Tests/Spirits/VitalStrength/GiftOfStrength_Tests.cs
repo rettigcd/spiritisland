@@ -2,6 +2,7 @@
 
 namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 
+[Collection("BaseGame Spirits")]
 public sealed class GiftOfStrength_Tests {
 
 	readonly Spirit spirit;

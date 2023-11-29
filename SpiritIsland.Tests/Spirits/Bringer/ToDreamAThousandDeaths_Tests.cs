@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.BringerNS;
 
+[Collection("BaseGame Spirits")]
 [Trait("SpecialRule","ToDreamAThousandDeaths")]
 public class ToDreamAThousandDeaths_Tests {
 

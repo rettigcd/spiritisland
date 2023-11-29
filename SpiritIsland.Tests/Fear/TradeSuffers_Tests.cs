@@ -2,22 +2,23 @@
 
 public class TradeSuffers_Tests {
 
-	public TradeSuffers_Tests() {
+	void Init() {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<RiversBounty>(), gs => {
 			var fear = gs.Fear;
 			AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
-			gs.NewLogEntry += (s) => _log.Add(s.Msg());
+			gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );
 		} );
-		this._user = user;
-		this._ctx = ctx;
+		_user = user;
+		_ctx = ctx;
 	}
 
 	[Fact]
 	[Trait( "Invaders", "Build" )]
 	public void Level1_CityIsNotDamagedDuringRavage_NoBuild() {
+		Init();
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
@@ -49,50 +50,59 @@ public class TradeSuffers_Tests {
 	private const string FearCard = "Trade Suffers : 1 : Invaders do not Build in lands with City.";
 
 	[Fact]
-	public void Level1_CityDestroyedDuringRavage_Build() {
-		
-		// Disable destroying presence
-		GameState.Current.DisableBlightEffect();
-		ClearBlight();
+	public async Task Level1_CityDestroyedDuringRavage_Build() {
+		// On Board-A,
+		// use A7 (Sands-2 Dahan)
+		// or A4 (Sands-no dahan)
+		TestSpirit spirit = new TestSpirit( PowerCard.For<RiversBounty>() );
+		var user = new VirtualTestUser( spirit );
+		Board board = Board.BuildBoardA();
+		GameState gs = new GameState( spirit, board ) {
+			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
+		};
+		AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
+		gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );
+		gs.Initialize(); 
 
-		// Fill all Invaders spaces with the A7 card
+		var starterCtx = spirit.BindSelf();
+
+		// Disable destroying presence
+		gs.DisableBlightEffect();
+
 		// Round 1
-		_user.Grows();
-		_user.IsDoneBuyingCards();
-		_user.WaitForNext();
+		await InvaderPhase.ActAsync(gs);
+		ClearBlight();
 
         // Round 2
+		await InvaderPhase.ActAsync(gs);
 		ClearBlight();
-		_user.Grows();
-		_user.IsDoneBuyingCards();
-		_user.WaitForNext();
 
 		// Round 3
 		//  And: Fear card is active and ready to flip
 		ActivateFearCard( new TradeSuffers() );
-		ClearBlight();
+
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer
-		TargetSpaceCtx spaceCtx = _ctx.TargetSpace( "A7" );
-		spaceCtx.Tokens.Init( "1C@3,4D@2,2E@1" );
-		_user.Grows();
-		_user.IsDoneBuyingCards();
-		_user.WaitForNext();
+		SpaceState tokens = board[7].Tokens; // _ctx.TargetSpace( "A7" ).Tokens;
+		tokens.Init( "1C@3,4D@2,2E@1" );
 
-		// When: activating fear
-		_user.AcknowledgesFearCard( FearCard );
-
-		_user.WaitForNext();
+		// When: activating Fear & Doing Invader Actions
+		Task t = InvaderPhase.ActAsync(gs);
+		user.AcknowledgesFearCard( FearCard );
+		await t.ShouldComplete();
+		await gs.TriggerTimePasses(); // let them heal
 
 		// Ravage-a: 1 city + 2 explorers do 5 damage killing 2 dahan    1B@1,1C@1,2D@2,2E@1
 		// Ravage-b: 2 dahan do 4 damage killing city and 1 explorer     1B@1,2D@2,1E@1 
 		// Build: no city present => build		1B@1,2D@2,1E@1,1T@2
 		// Explore: +1							1B@1,2D@2,2E@1,1T@2
-		spaceCtx.Tokens.Summary.ShouldBe( "1B,2D@2,2E@1,1T@2" );
+		tokens.Summary.ShouldBe( "1B,2D@2,2E@1,1T@2" );
 
 	}
 
 	[Fact]
 	public async Task Level3_DoesntForceCityReplace() {
+		Init();
+
 		// "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 		var fxt = new ConfigurableTestFixture();
 
@@ -131,9 +141,9 @@ public class TradeSuffers_Tests {
 		fear.AddDirect( new FearArgs( fear.PoolMax ) );
 	}
 
-	readonly VirtualTestUser _user;
-	readonly SelfCtx _ctx;
-	readonly List<string> _log = new();
+	VirtualTestUser _user;
+	SelfCtx _ctx;
+	List<string> _log = new();
 
 }
 

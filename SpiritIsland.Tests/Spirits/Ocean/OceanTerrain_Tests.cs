@@ -2,6 +2,7 @@
 
 namespace SpiritIsland.Tests.Spirits.OceanNS;
 
+[Collection("BaseGame Spirits")]
 public class OceanTerrain_Tests {
 
 	#region private fields

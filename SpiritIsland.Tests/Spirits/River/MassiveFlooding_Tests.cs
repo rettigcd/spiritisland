@@ -2,6 +2,7 @@
 
 namespace SpiritIsland.Tests.Spirits.River;
 
+[Collection("BaseGame Spirits")]
 public class MassiveFlooding_Tests : RiverGame {
 
 	readonly GameState gs;

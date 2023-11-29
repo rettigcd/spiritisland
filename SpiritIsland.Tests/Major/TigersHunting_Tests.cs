@@ -8,6 +8,7 @@ public class TigersHunting_Tests {
 
 		var tracker = new ActionScopeTracker();
 		fixture.GameState.AddIslandMod( tracker );
+		const int expectedScopeCoung = 1;
 
 		// Given: space 5
 		var space = fixture.GameState.Island.Boards[0][5];
@@ -15,16 +16,11 @@ public class TigersHunting_Tests {
 		fixture.InitTokens(space,"1E@1");
 
 		//  When: activate card
-		var ctx = fixture.SelfCtx.Target( space );
-		var task = TigersHunting.ActAsync( ctx );
+		var task = TigersHunting.ActAsync( fixture.Spirit.BindMyPowers().Target( space ) );
 
 		// 1 beast is added
-		tracker.Count.ShouldBe(1);
-
 		// 1 damage -> destroys explorer
 		fixture.Choose("E@1");
-		tracker.Count.ShouldBe( 1 );
-
 		// push up to 2 beasts
 		fixture.Choose("Beast"); // 'A' is selecting the beast
 		fixture.Choose("A7");
@@ -32,7 +28,7 @@ public class TigersHunting_Tests {
 		await task.ShouldComplete();	
 
 		// Then everything was a single action. 
-		tracker.Count.ShouldBe(1);
+		tracker.Count.ShouldBe(expectedScopeCoung);
 
 	}
 

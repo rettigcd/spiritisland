@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.OceanNS;
 
+[Collection("BaseGame Spirits")]
 public class SwallowTheLandDwellers_Tests {
 
 	[Trait( "SpecialRule", "Drowning" )]

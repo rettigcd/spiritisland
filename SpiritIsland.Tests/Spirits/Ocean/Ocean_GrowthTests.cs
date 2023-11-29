@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.OceanNS; 
 
+[Collection("BaseGame Spirits")]
 public class Ocean_GrowthTests : GrowthTests {
 
 	public Ocean_GrowthTests():base( new Ocean() ) {

@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River; 
 
+[Collection("BaseGame Spirits")]
 public class BoonOfVigor_Tests : SpiritCards_Tests {
 
 	public BoonOfVigor_Tests():base( new RiverSurges() ) {

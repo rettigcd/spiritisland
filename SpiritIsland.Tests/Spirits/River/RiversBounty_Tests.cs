@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River;
 
+[Collection("BaseGame Spirits")]
 public class RiversBounty_Tests : SpiritCards_Tests {
 
 	readonly Board board;

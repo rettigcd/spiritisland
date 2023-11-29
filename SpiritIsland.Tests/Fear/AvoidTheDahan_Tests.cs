@@ -14,7 +14,7 @@ public class AvoidTheDahan_Tests {
 
 	#region constructor
 
-	public void Init() {
+	void Init() {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
@@ -77,11 +77,6 @@ public class AvoidTheDahan_Tests {
 		await task.ShouldComplete();
 
 		a7.InvaderSummary().ShouldBe( "" );
-	}
-
-	static void ClearAllBlight() {
-		foreach(SpaceState space in GameState.Current.Spaces_Unfiltered) 
-			space.Blight.Init( 0 );
 	}
 
 	[Trait( "Invaders", "Explore" )]
@@ -295,7 +290,7 @@ public class AvoidTheDahan_Tests {
 
 	VirtualTestUser _user;
 	SelfCtx _ctx;
-	List<string> log = new();
+	readonly List<string> log = new();
 
 	#endregion
 }

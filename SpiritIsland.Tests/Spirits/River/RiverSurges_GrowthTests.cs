@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River;
 
+[Collection("BaseGame Spirits")]
 public class RiverSurges_GrowthTests : GrowthTests {
 
 	protected new VirtualRiverUser User;

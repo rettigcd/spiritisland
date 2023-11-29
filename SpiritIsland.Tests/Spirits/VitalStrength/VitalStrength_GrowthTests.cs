@@ -1,5 +1,10 @@
 ﻿namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 
+// https://xunit.net/docs/running-tests-in-parallel#parallelism-in-test-frameworks
+// By Default all tests in the same class are in a Collection and will not run in parallel
+// Collection("xxx") creates larger collections and therefore fewer of them, so there are fewer running in parallel
+
+[Collection("BaseGame Spirits")]
 public class VitalStrength_GrowthTests : GrowthTests {
 
 	readonly new VirtualEarthUser User;

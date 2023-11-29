@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.Lightning; 
 
+[Collection("BaseGame Spirits")]
 public class Lightning_GrowthTests : GrowthTests{
 
 	public Lightning_GrowthTests()

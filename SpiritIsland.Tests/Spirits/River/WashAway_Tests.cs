@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River;
 
+[Collection("BaseGame Spirits")]
 public class WashAway_Tests : SpiritCards_Tests {
 
 	public WashAway_Tests():base(new RiverSurges() ) { }

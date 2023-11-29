@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.BringerNS;
 
+[Collection("BaseGame Spirits")]
 public class DreadApparitions_Tests {
 
 	public DreadApparitions_Tests() {
