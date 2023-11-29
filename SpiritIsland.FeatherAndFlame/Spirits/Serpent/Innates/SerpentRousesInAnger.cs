@@ -11,7 +11,7 @@ public class SerpentRousesInAnger {
 		var els = ctx.Self.Elements;
 		int count = Math.Min( await els.GetAsync(Element.Fire), await els.GetAsync(Element.Earth));
 		// 1 Damage to 1 town / city.
-		await ctx.Invaders.UserSelectedDamageAsync( ctx.Self, count, Human.Town_City );
+		await ctx.Tokens.DamageInvaders( ctx.Self, count, Human.Town_City );
 	}
 
 	[InnateTier( "2 moon 2 earth", "For each 2 moon 2 earth you have, 2 fear and you may Push 1 town from target land." )]

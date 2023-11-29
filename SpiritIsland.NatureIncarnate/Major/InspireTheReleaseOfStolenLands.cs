@@ -22,12 +22,12 @@ public class InspireTheReleaseOfStolenLands {
 			// Remove 1 Blight from target land,
 			await ctx.RemoveBlight();
 			// then Remove 1 Explorer, 1 Town, and 1 City from a land within Range 1.
-			var ss = new SourceSelector(ctx.Self.PowerRangeCalc.GetSpaceOptions(ctx.Tokens,new TargetCriteria(1)))
+			await new SourceSelector(ctx.Self.PowerRangeCalc.GetSpaceOptions(ctx.Tokens,new TargetCriteria(1)))
 				.AddGroup(1,Human.Explorer)
 				.AddGroup(1,Human.Town)
 				.AddGroup(1,Human.City)
-				.Config( SelectFrom.ASingleLand );
-			await new TokenRemover(ctx.Self,ss).RemoveN();
+				.Config( SelectFrom.ASingleLand )
+				.RemoveN(ctx.Self);
 		}
 		
 	}

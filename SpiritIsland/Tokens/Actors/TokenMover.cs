@@ -24,7 +24,7 @@ public sealed class TokenMover {
 		string actionWord,
 		SpaceState sourceSpace,
 		params SpaceState[] destinationSpaces
-	) : this( self, actionWord, new SourceSelector( sourceSpace ), new DestinationSelector(destinationSpaces )) { }
+	) : this( self, actionWord, sourceSpace.SourceSelector, new DestinationSelector(destinationSpaces )) { }
 
 	public TokenMover( 
 		Spirit self, 
@@ -52,19 +52,20 @@ public sealed class TokenMover {
 	async public Task DoN( Present present = Present.Always ) {
 		string actionPromptPrefix = present == Present.Always ? _actionWord
 			: _actionWord + " up to";
-		while(await Do1(actionPromptPrefix,present));
+
+		IAsyncEnumerable<SpaceToken> sourceTokens = _sourceSelector.GetEnumerator(
+			_self,
+			Prompt.RemainingParts(actionPromptPrefix),
+			present,
+			_destinationSelector.Single
+		);
+		await foreach(SpaceToken sourceToken in sourceTokens)
+			await DoSomethingWithSource( sourceToken );
 	}
 
-	async Task<bool> Do1(string prompt, Present present) {
-		// Select source
-		SpaceToken sourceToken = await _sourceSelector.GetSource( _self, prompt, present, _destinationSelector.Single );
-		if(sourceToken == null) return false;
-
+	async Task DoSomethingWithSource( SpaceToken sourceToken ) {
 		TokenMovedArgs tokenMoved = await MoveSomewhereAsync( sourceToken );
-		if(tokenMoved == null) return false;
-
 		await NotifyAsync( tokenMoved );
-		return true;
 	}
 
 	/// <remarks>
@@ -72,7 +73,6 @@ public sealed class TokenMover {
 	/// such as when token is picked during selection of lands also.
 	/// </remarks>
 	public async Task<TokenMovedArgs> MoveSomewhereAsync( SpaceToken spaceToken ) {
-
 		Space destination = await _destinationSelector.SelectDestination( _self, _actionWord, spaceToken );
 		return destination == null ? null
 			: await spaceToken.Token.Move( spaceToken.Space.Tokens, destination );

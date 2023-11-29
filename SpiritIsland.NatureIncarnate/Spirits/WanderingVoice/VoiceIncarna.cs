@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 public class VoiceIncarna : Incarna, IIsolate, IHandleTokenAddedAsync {
-	public VoiceIncarna(Spirit spirit ) 
+	public VoiceIncarna( Spirit spirit ) 
 		: base(spirit, "WVKD", Img.WVKD_Incarna, Img.WVKD_Incarna_Empowered )
 	{ }
 
@@ -13,7 +13,8 @@ public class VoiceIncarna : Incarna, IIsolate, IHandleTokenAddedAsync {
 		// When your Actions add/move Incarna to a land with Invaders
 		if(args.Added == this && args.To.HasInvaders())
 			// Add 1 Strife in the destination land
-			await new TokenStrifer(Self,new SourceSelector(args.To).AddGroup(1,Human.Invader)).DoN();
-
+			await args.To.SourceSelector
+				.AddGroup(1,Human.Invader)
+				.StrifeAll(Self);
 	}
 }

@@ -481,7 +481,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		=> new TokenMover( self, "Gather", Adjacent, this );
 
 	public virtual TokenMover Pusher( Spirit self, bool stoppedByIsolate = false ) 
-		=> new TokenMover( self, "Push", new SourceSelector( this ), stoppedByIsolate ? DestinationSelector.Nada : DestinationSelector.Adjacent ); // !!! this doesn't detect if there is an isolate to stop the push.
+		=> new TokenMover( self, "Push", SourceSelector, stoppedByIsolate ? DestinationSelector.Nada : DestinationSelector.Adjacent ); // !!! this doesn't detect if there is an isolate to stop the push.
 
 	#region Ravage
 
@@ -523,6 +523,9 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 				part.NativeTerrain = Terrain.Destroyed;
 
 	}
+
+	// Helper
+	public SourceSelector SourceSelector => new SourceSelector(this);
 
 }
 

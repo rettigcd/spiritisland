@@ -5,14 +5,14 @@ static public class SitOutRavage {
 	/// <summary>
 	/// User Selects which tokens to sit out. And sits them out for *this-action* only.
 	/// </summary>
-	static public async Task SelectFightersAndSitThemOut( Spirit spirit, SourceSelector sourceSelector ) {
+	static public async Task SelectFightersAndSitThemOut( this SourceSelector sourceSelector, Spirit spirit ) {
 		CountDictionary<HumanToken> sitOuts = new CountDictionary<HumanToken>();
 		HashSet<Space> targetSpaces = new HashSet<Space>();
 
-		while(true) {
-			var st = await sourceSelector.GetSource( spirit, "For Ravage, Sit Out", Present.Done );
-			if(st == null) break;
-
+		IAsyncEnumerable<SpaceToken> selectedTokens = sourceSelector
+			.ConfigOnlySelectEachOnce()
+			.GetEnumerator( spirit, Prompt.RemainingParts( "For Ravage, Sit Out" ), Present.Done );
+		await foreach(var st in selectedTokens) {
 			targetSpaces.Add(st.Space);
 			++sitOuts[st.Token.AsHuman()];
 		}

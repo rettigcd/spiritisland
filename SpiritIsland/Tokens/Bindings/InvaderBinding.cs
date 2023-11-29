@@ -82,7 +82,6 @@ public sealed class InvaderBinding {
 		}
 	}
 
-
 	// destroy CLASS
 	public async Task<int> DestroyNOfClass( int countToDestroy, HumanTokenClass invaderClass ) {
 		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return 0;
@@ -139,55 +138,6 @@ public sealed class InvaderBinding {
 		=> Tokens.RemoveAsync( token, count, reason );
 
 	#endregion
-
-	#region UserSelected
-
-	// This is needed when strifed invaders ravage OTHER tokens. Need to be able to exclude specific token
-	public async Task<int> UserSelected_ApplyDamageToSpecificToken( int damage, Spirit damagePicker, HumanToken source, Func<HumanToken[]> allowedTypes ) {
-		if(damage == 0) return 0;
-
-		IToken[] options;
-		int damageInflicted = 0;
-		while(0 < damage && (options = Tokens.Humans().Intersect( allowedTypes() ).ToArray()).Length > 0) {
-			var st = await damagePicker.Select( An.Invader.ForAggregateDamageFromSource( Tokens.Space, source, options, damage, Present.Always ) );
-			if( st == null) break;
-			var invaderToDamage = st.Token.AsHuman();
-			await ApplyDamageTo1( 1, invaderToDamage );
-			--damage;
-			++damageInflicted;
-		}
-		return damageInflicted;
-	}
-
-	public Task<int> UserSelectedDamageAsync( Spirit damagePicker, int damage, params ITokenClass[] allowedTypes ) {
-		if(allowedTypes.Length == 0) allowedTypes = Human.Invader;
-		SourceSelector selector = new SourceSelector(Tokens).AddAll(allowedTypes);
-		return UserSelectedDamageAsync( damagePicker, damage, selector, Present.Always );
-	}
-
-	// This is the standard way of picking - by TokenClass
-	public async Task<int> UserSelectedDamageAsync( Spirit damagePicker, int damage, SourceSelector selector, Present present ) {
-		if(damage == 0) return 0;
-
-		selector
-			.ConfigPrompt(_ => $"Damage ({damage} remaining)")
-			.FilterSpaceToken(_ => 0 < damage);
-
-		int damageInflicted = 0;
-		while( true) {
-			var st = await selector.GetSource( damagePicker, "", present ); 
-			if(st==null) break;
-			var invaderToDamage = st.Token.AsHuman();
-			await ApplyDamageTo1( 1, invaderToDamage );
-			--damage;
-			++damageInflicted;
-
-		}
-
-		return damageInflicted;
-	}
-
-	#endregion UserSelected
 
 	/// <summary>
 	/// Restores all of the tokens to their default / healthy state.

@@ -36,7 +36,7 @@ public class UnearthABeastOfWrathfulStone {
 				.Track( async moved => {
 					// 1 Fear and 2 Damage in its land.
 					GameState.Current.Fear.AddDirect( new FearArgs( 1 ) { space = moved.To.Space } );
-					await moved.To.Invaders.UserSelectedDamageAsync( ctxx.Self, 2 );
+					await moved.To.DamageInvaders( ctxx.Self, 2 );
 				} )
 				.DoN();
 		}
@@ -138,7 +138,7 @@ public class MarkedBeast : IToken
 			.DoUpToN();
 		// 1 Fear and 2 Damage in its land.
 		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _space!.Space });
-		await _space.Invaders.UserSelectedDamageAsync(ctx.Self,2);
+		await _space.DamageInvaders(ctx.Self,2);
 	}
 	#endregion
 

@@ -9,7 +9,7 @@ public partial class ManyMindsMoveAsOne {
 			new DestinationSelector( this )
 		);
 		public override TokenMover Pusher( Spirit self , bool stoppedByBadlands = false) => new TokenMover(self,"Push",
-			new SourceSelector(this),
+			SourceSelector,
 			stoppedByBadlands ? new DestinationSelector() : new DestinationSelector(  ExtendBeastBy1 )
 		);
 

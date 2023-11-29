@@ -58,13 +58,13 @@ public static partial class Cmd {
 	static public SpaceCmd RemoveUpToNTokens(int count,params ITokenClass[] tokenClasses) {
 		Func<ITokenClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
 		return new SpaceCmd($"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast(", "," or "),
-			ctx => new TokenRemover(ctx).AddGroup(count, tokenClasses).RemoveUpToN()
+			ctx => ctx.SourceSelector.AddGroup(count, tokenClasses).RemoveUpToN(ctx.Self)
 		).OnlyExecuteIf( x => x.Tokens.HasAny(tokenClasses));
 	}
 	static public SpaceCmd RemoveNTokens( int count, params ITokenClass[] tokenClasses ) {
 		Func<ITokenClass, string> selector = count == 1 ? t => t.Label : t => t.Label + "s";
 		return new SpaceCmd( $"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast( ", ", " or " ),
-			ctx => new TokenRemover( ctx ).AddGroup( count, tokenClasses ).RemoveN()
+			ctx => ctx.SourceSelector.AddGroup( count, tokenClasses ).RemoveN(ctx.Self)
 		).OnlyExecuteIf( x => x.Tokens.HasAny( tokenClasses ) );
 	}
 

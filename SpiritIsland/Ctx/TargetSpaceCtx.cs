@@ -69,7 +69,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 		Space destination = null;
 		await new TokenMover(Self,"Move",
-			new SourceSelector(Tokens),
+			SourceSelector,
 			new DestinationSelector( Range( targetCriteria ) ) )
 			.AddGroup(max,tokenClass)
 			.Track( moved=> destination = moved.To.Space )
@@ -99,6 +99,8 @@ public class TargetSpaceCtx : SelfCtx {
 			.DoN();
 		return destinations.Distinct().ToArray();
 	}
+
+	public SourceSelector SourceSelector => Tokens.SourceSelector;
 
 	public TokenMover Pusher => Tokens.Pusher( Self );
 
@@ -171,7 +173,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var combinedDamage = BonusDamageForAction( originalDamage );
 
 		// Apply Damage
-		int damageApplied = await Invaders.UserSelectedDamageAsync( Self, combinedDamage.Available, allowedTypes );
+		int damageApplied = await Tokens.DamageInvaders( Self, combinedDamage.Available, allowedTypes );
 
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
@@ -186,7 +188,7 @@ public class TargetSpaceCtx : SelfCtx {
 		var combinedDamage = BonusDamageForAction( originalDamage );
 
 		// Apply Damage
-		int damageApplied = await Invaders.UserSelected_ApplyDamageToSpecificToken( combinedDamage.Available, Self, damageSource, invadersToDamage );
+		int damageApplied = await Tokens.UserSelected_ApplyDamageToSpecificToken( Self, combinedDamage.Available, damageSource, invadersToDamage );
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -194,7 +196,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task DamageEachInvader( int individualDamage, ITokenClass[] tokenClasses ) {
 		await Invaders.ApplyDamageToEach( individualDamage, tokenClasses );
 		var bonusDamage = BonusDamageForAction();
-		int damageApplied = await Invaders.UserSelectedDamageAsync( Self, bonusDamage.Available, tokenClasses );
+		int damageApplied = await Tokens.DamageInvaders( Self, bonusDamage.Available, tokenClasses );
 		bonusDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -266,10 +268,9 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task AddStrife( params HumanTokenClass[] groups ) => AddStrife(1,groups);
 
 	/// <param name="groups">Option: if null/empty, no filtering</param>
-	public async Task AddStrife( int count, params HumanTokenClass[] groups ) {
+	public async Task AddStrife( int strifeCount, params HumanTokenClass[] groups ) {
 		if( groups.Length == 0) groups = Human.Invader;
-		await new TokenStrifer( Self, new SourceSelector( Tokens ).AddGroup( 1, groups ) )
-			.DoN();
+		await SourceSelector.AddGroup( strifeCount, groups ).StrifeAll(Self);
 	}
 
 	public Task RemoveInvader( ITokenClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );

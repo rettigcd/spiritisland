@@ -7,43 +7,37 @@
 public class SourceSelector {
 
 	#region constructors
-	public SourceSelector( params SpaceState[] sourceSpaces ) {	_unfilteredSourceSpaces = sourceSpaces;	}
+	/// <summary> Tokens come from 1 space. </summary>
+	public SourceSelector( SpaceState sourceSpace ) {	_unfilteredSourceSpaces = new[]{ sourceSpace };	}
+	/// <summary> Tokens come from 0..many spaces. </summary>
 	public SourceSelector( IEnumerable<SpaceState> sourceSpaces ) { _unfilteredSourceSpaces = sourceSpaces.ToArray(); }
 	#endregion constructors
 
-	/// <summary>
-	/// Select a token from the remaining group candidates.  May be called many times in succession.
-	/// </summary>
-	/// <param name="spirit">spirit making the sele</param>
-	/// <param name="actionPromptPrefix">Move, Push, Gather, Bring</param>
-	/// <param name="present">Required or not</param>
-	/// <param name="singleDestination">Draws arrows to destination if there is only one.</param>
-	public async Task<SpaceToken> GetSource( Spirit spirit, string actionPromptPrefix, Present present, Space singleDestination = null ) {
-		SpaceToken[] options = await GetSourceOptions();
-		string prompt = _promptBuilder != null 
-			? _promptBuilder(options) 
-			: BuildPrompt( actionPromptPrefix, options );
+	public async IAsyncEnumerable<SpaceToken> GetEnumerator(
+		Spirit spirit, 
+		Func<PromptData,string> promptBuilder,
+		Present present, 
+		Space singleDestination=null,
+		int? maxCount = null
+	) {
+		int index = 0;
+		while(maxCount is null || index < maxCount.Value){
+			// SpaceToken x = await GetSource( spirit, prompt, present, destination );
+			SpaceToken[] options = await GetSourceOptions();
 
-		// Select Token
-		SpaceToken source = await spirit.Select( new A.SpaceToken( prompt, options, present ).PointArrowTo( singleDestination ) );
-		if(source != null) {
-			_quota.MarkTokenUsed( source.Token );
-			await NotifyAsync( source );
+			string prompt = promptBuilder(new PromptData(_quota,options,index,maxCount));
+
+			// Select Token
+			SpaceToken source = await spirit.Select( new A.SpaceToken( prompt, options, present ).PointArrowTo( singleDestination ) );
+			if(source != null) {
+				_quota.MarkTokenUsed( source.Token );
+				await NotifyAsync( source );
+			}
+
+			if(source == null) break;
+			yield return source;
+			++index;
 		}
-		return source;
-	}
-
-	public SourceSelector ConfigPrompt( Func<SpaceToken[],string> promptBuilder ) {
-		_promptBuilder = promptBuilder;
-		return this;
-	}
-
-	Func<SpaceToken[],string> _promptBuilder;
-
-	string BuildPrompt( string actionPromptPrefix, SpaceToken[] options ) {
-		string remaining = _quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
-		string prompt = $"{actionPromptPrefix} ({remaining})";
-		return prompt;
 	}
 
 	#region public Config
@@ -134,9 +128,10 @@ public class SourceSelector {
 
 	#endregion
 
+	public ITokenClass[] RemainingTypes => _quota.RemainingTypes;
+
 	#region private 
 
-	public ITokenClass[] RemainingTypes => _quota.RemainingTypes;
 	Quota _quota = new Quota();
 
 	Func<SpaceState, bool> _filterSpace;
@@ -149,6 +144,7 @@ public class SourceSelector {
 	#endregion private
 }
 
+
 static public class SelectFrom {
 	static public void ASingleLand( SourceSelector ss ) {
 		Space source = null;
@@ -157,3 +153,26 @@ static public class SelectFrom {
 			.FilterSource( spaceState => source is null || spaceState.Space == source );
 	}
 }
+
+public class Prompt {
+	static public Func<PromptData,string> RemainingParts(string prefix) => (x) => $"{prefix} ({x.RemainingPartsStr})";
+	static public Func<PromptData,string> RemainingCount(string prefix) => (x) => $"{prefix} ({x.RemainingCount} remaining)";
+	static public Func<PromptData,string> XofY(string prefix) => (x) => $"{prefix} ({x.Index+1} of {x.MaxCount})";
+}
+
+public class PromptData {
+
+	readonly Quota _quota;
+	readonly SpaceToken[] _options;
+	public readonly int Index;
+	public readonly int? MaxCount;
+	public int RemainingCount => MaxCount.Value - Index;
+	public PromptData(Quota quota, SpaceToken[] options, int index, int? maxCount = 0) {
+		_quota = quota;
+		_options = options;
+		Index = index;
+		MaxCount = maxCount;
+	}
+	public string RemainingPartsStr => _quota.RemainingTokenDescriptionOn( _options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
+}
+

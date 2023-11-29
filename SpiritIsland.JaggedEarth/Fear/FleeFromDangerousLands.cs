@@ -29,7 +29,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync(ctx);
 
-	Task Level3_Remove( TargetSpaceCtx ctx ) => new TokenRemover( ctx ).AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN();
+	Task Level3_Remove( TargetSpaceCtx ctx ) => ctx.SourceSelector.AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN(ctx.Self);
 
 	static ITokenClass[] TokensClassesFor( TargetSpaceCtx ctx ) => Has.DangerousLands.Filter( ctx ) ? Human.Invader : Human.Explorer_Town;
 

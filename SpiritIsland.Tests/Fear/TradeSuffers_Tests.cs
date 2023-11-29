@@ -143,7 +143,7 @@ public class TradeSuffers_Tests {
 
 	VirtualTestUser _user;
 	SelfCtx _ctx;
-	List<string> _log = new();
+	readonly List<string> _log = new();
 
 }
 

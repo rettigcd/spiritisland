@@ -14,18 +14,26 @@ public class ReachFromTheInfiniteDarkness {
 		while(0 < remaining) {
 
 			// select presence
-			var (presenceToAbduct, other) = await SelectPresenceToAbduct( ctx, remaining );
-			if(presenceToAbduct == null || other == null) break;
+			var presenceToAbduct = await ctx.SelectAsync( 
+				new A.SpaceToken( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", 
+				GameState.Current.Spirits.SelectMany(s=>s.Presence.Deployed),
+				Present.Done 
+			) );
+
+			if(presenceToAbduct == null) break;
 
 			// get consent
-			if(!await SpiritConsentsToAbduction( ctx, presenceToAbduct, other ))
+			Spirit? otherSpirit = presenceToAbduct.Token is SpiritPresenceToken spt ? spt.Self 
+				: presenceToAbduct.Token is Incarna i ? i.Self
+				: throw new InvalidOperationException("token was not a presence/incarna");
+			if(!await SpiritConsentsToAbduction( ctx, presenceToAbduct, otherSpirit ))
 				continue; // try again
 
 			// move it
 			await presenceToAbduct.MoveTo( EndlessDark.Space );
 
 			// record the bonus
-			bonuses[other]++;
+			bonuses[otherSpirit]++;
 
 			// next
 			--remaining;
@@ -46,18 +54,4 @@ public class ReachFromTheInfiniteDarkness {
 		=> other == ctx.Self 
 		|| await other.UserSelectsFirstText( $"Allow {presenceToAbduct} to be abducted for +1 Range on powers this turn", "Yes", "No" );
 
-	static async Task<(SpaceToken?,Spirit?)> SelectPresenceToAbduct( SelfCtx ctx, int remaining ) {
-		var spiritLookup = new Dictionary<SpaceToken, Spirit>(); // !! THis is stupid, there should be a link from the presence/incarna back to the spirit.
-
-		foreach(Spirit spirit in GameState.Current.Spirits)
-			foreach(SpaceToken st in spirit.Presence.Deployed)
-				spiritLookup.Add( st, spirit );
-		var presenceToAbduct = await ctx.SelectAsync( 
-			new A.SpaceToken( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", 
-			spiritLookup.Keys, 
-			Present.Done 
-		) );
-		var selectedSpirit = presenceToAbduct != null ? spiritLookup[presenceToAbduct] : null;
-		return (presenceToAbduct, selectedSpirit);
-	}
 }

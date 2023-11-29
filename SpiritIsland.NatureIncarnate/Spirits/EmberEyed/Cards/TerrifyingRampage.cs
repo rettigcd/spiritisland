@@ -28,13 +28,9 @@ public class TerrifyingRampage {
 		}
 
 		async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
-
-			var sourceSelector = new SourceSelector( space )
-				.ConfigOnlySelectEachOnce()
-				.UseQuota( _quota );
-
-			await SitOutRavage.SelectFightersAndSitThemOut( _invaderPicker, sourceSelector );
-
+			await space.SourceSelector
+				.UseQuota( _quota )
+				.SelectFightersAndSitThemOut( _invaderPicker );
 		}
 
 	}

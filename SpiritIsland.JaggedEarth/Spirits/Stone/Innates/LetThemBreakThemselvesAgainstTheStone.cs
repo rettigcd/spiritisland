@@ -29,7 +29,7 @@ class BreakThemselvesMod : BaseModEntity, IEndWhenTimePasses, IReactToLandDamage
 		int damage = 2;
 		if(_shouldAddHalfInvaderDamage) damage += tokens[LandDamage.Token] / 2;
 
-		await tokens.Invaders.UserSelectedDamageAsync( _spirit, damage );
+		await tokens.DamageInvaders( _spirit, damage );
 	}
 
 	readonly Spirit _spirit;

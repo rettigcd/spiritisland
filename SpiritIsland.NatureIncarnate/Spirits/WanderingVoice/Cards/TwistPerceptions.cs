@@ -9,17 +9,18 @@ public class TwistPerceptions {
 	[Instructions( "Add 1 Strife. You may Push the Invader you added Strife to." ), Artist( Artists.NolanNasser )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx) {
 
-		// Add 1 Strife.
-		SpaceToken? strifed = null;
-		await new TokenStrifer(ctx.Self,new SourceSelector(ctx.Tokens).AddGroup(1,Human.Invader))
-			.Track((_,after) => strifed = after)
-			.DoN();
-		if(strifed == null) return;
+		IAsyncEnumerable<SpaceToken> invadersToStrife = ctx.SourceSelector
+			.AddGroup(1,Human.Invader)
+			.PromptForStrifingAll(ctx.Self);
 
-		await TokenMover.Push(ctx.Self, strifed.Space)
-			.ConfigDestinationAsOptional()
-			.MoveSomewhereAsync(strifed);
-
+		await foreach(var invader in invadersToStrife) {
+			// Add 1 Strife
+			SpaceToken strifed = await invader.Add1StrifeToAsync();
+			// You may Push the Invader you added Strife to.
+			await TokenMover.Push(ctx.Self, strifed.Space)
+				.ConfigDestinationAsOptional()
+				.MoveSomewhereAsync(strifed);
+		}
 
 	}
 

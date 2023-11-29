@@ -41,7 +41,7 @@ public class KeepWatchForNewIncursions {
 				&& 0<damage
 				&& await _spirit.UserSelectsFirstText($"Keep Watch - Apply {damage} damage to added invaders ({args.Count} {args.Added.Text})?", "Yes, Damage them!", "No, not quite yet" )
 			) { 
-				await args.To.Invaders.UserSelectedDamageAsync(_spirit,damage,args.Added.Class); // !! Not 100% correct.
+				await args.To.DamageInvaders(_spirit,damage,args.Added.Class); // !! Not 100% correct.
 				_used = true;
 			}
 		}

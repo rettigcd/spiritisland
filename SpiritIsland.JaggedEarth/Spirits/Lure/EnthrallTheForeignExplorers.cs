@@ -10,13 +10,9 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, IConfigRavagesAsync {
 	public EnthrallTheForeignExplorers( Spirit self ):base(self) {}
 
 	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
-
-		var sourceSelector = new SourceSelector( space )
-			.ConfigOnlySelectEachOnce()
-			.AddGroup( Self.Presence.CountOn( space ) * 2, Human.Explorer );
-
-		await SitOutRavage.SelectFightersAndSitThemOut( Self, sourceSelector );
-
+		await space.SourceSelector
+			.AddGroup( Self.Presence.CountOn( space ) * 2, Human.Explorer )
+			.SelectFightersAndSitThemOut( Self );
 	}
 
 }

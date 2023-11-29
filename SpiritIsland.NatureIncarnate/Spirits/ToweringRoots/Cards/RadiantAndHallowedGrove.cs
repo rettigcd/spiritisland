@@ -13,11 +13,10 @@ public class RadiantAndHallowedGrove {
 			ctx.AddFear( 2 );
 
 		// In both target and one adjacent land,
-		await new TokenRemover( ctx.Self, InBothTargetAnd1Adjacent( ctx.Tokens ) )
+		await InBothTargetAnd1Adjacent( ctx.Tokens )
 			// an Invader with Health less than or equal to the Terror Level.
 			.AddGroup( 1 + 1, AnInvaderWithHealthLessThanOrEqualToTerrorLevel() )
-			.RemoveUpToN();
-
+			.RemoveUpToN( ctx.Self );
 	}
 
 	static SourceSelector InBothTargetAnd1Adjacent( SpaceState target ) {

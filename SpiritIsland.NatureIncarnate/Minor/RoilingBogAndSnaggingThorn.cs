@@ -36,14 +36,12 @@ public class DahanSitOutRavage : BaseModEntity, IConfigRavagesAsync {
 
 	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 
-		var ss = new SourceSelector(space).AddGroup(_countToSitOut,Human.Dahan).ConfigOnlySelectEachOnce();
+		var ss = space.SourceSelector.AddGroup(_countToSitOut,Human.Dahan).ConfigOnlySelectEachOnce();
 
 		CountDictionary<HumanToken> counts =  new();
-		while(true) {
-			var dahan = await ss.GetSource(_picker,"Sit out Ravage", Present.Always);
-			if(dahan == null) break;
+
+		await foreach(SpaceToken dahan in ss.GetEnumerator(_picker,Prompt.RemainingParts("Sit out Ravage"), Present.Always) )
 			++counts[dahan.Token.AsHuman()];
-		}
 
 		if(0 < counts.Count)
 			SitOutRavage.SitOutThisRavageAction(space, counts);

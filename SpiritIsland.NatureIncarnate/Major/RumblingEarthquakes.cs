@@ -33,15 +33,3 @@ public class RumblingEarthquakes {
 	}
 
 }
-
-public static class DamageInvaderExtensions {
-
-	static public async Task DoDamage( this SourceSelector ss, Spirit spirit, int count ) {
-		while(0<count--) {
-			var spaceToken = await ss.GetSource(spirit,$"Apply Damage ({count+1} remaining)", Present.Done);
-			if( spaceToken == null ) break;
-
-			await spaceToken.Space.Tokens.Invaders.ApplyDamageTo1(1,spaceToken.Token.AsHuman());
-		}
-	}
-}

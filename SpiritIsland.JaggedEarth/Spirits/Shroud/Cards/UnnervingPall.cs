@@ -24,13 +24,10 @@ public class UnnervingPall {
 	}
 
 	static async Task SelectUpTo3DamagedInvadersToNotParticipate( TargetSpaceCtx ctx ) {
-
-		var sourceSelector = new SourceSelector(ctx.Tokens)
-			.ConfigOnlySelectEachOnce()
+		await ctx.SourceSelector
 			.AddGroup(3,Human.Invader)
-			.FilterSpaceToken(st => 0<((HumanToken)st.Token).Damage ); // is damaged
-
-		await SitOutRavage.SelectFightersAndSitThemOut(ctx.Self,sourceSelector);
+			.FilterSpaceToken(st => 0<((HumanToken)st.Token).Damage ) // is damaged
+			.SelectFightersAndSitThemOut(ctx.Self);
 	}
 
 	class InvadersDontParticipateInRavage : BaseModEntity, IConfigRavages, IEndWhenTimePasses {

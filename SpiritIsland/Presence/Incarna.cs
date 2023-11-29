@@ -8,6 +8,7 @@ public class Incarna
 {
 
 	public Spirit Self { get; }
+
 	readonly string _abreviation;
 	readonly Img _notEmpowered;
 	readonly Img _empowered;
