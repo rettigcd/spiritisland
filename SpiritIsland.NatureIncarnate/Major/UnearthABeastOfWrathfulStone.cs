@@ -49,7 +49,7 @@ public class UnearthABeastOfWrathfulStone {
 /// Sits on a space waiting for there to be no Ravage nor build,
 /// Then adds the correct beast token.
 /// </summary>
-class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, ISkipRavages, IRunAfterInvaderPhase {
+class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, IConfigRavages, IRunAfterInvaderPhase {
 	
 	readonly Spirit _spirit;
 	readonly Func<TargetSpaceCtx,Task> _triggeredAction;
@@ -61,9 +61,17 @@ class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, ISkipRavages, IRu
 
 	bool _hadRavageOrBuild;
 
-	public UsageCost Cost => UsageCost.Extreme; // HACK - tries to go last - if called, nothing else stopped the ubild
 
 	public string Text => "Tigger Action following no-build-nor-ravage.";
+
+	#region detect build or ravage
+
+	UsageCost ISkipBuilds.Cost => UsageCost.Extreme; // tries to go last
+	Task<bool> ISkipBuilds.Skip( SpaceState space ) {  _hadRavageOrBuild = true; return Task.FromResult(false);}
+
+	void IConfigRavages.Config( SpaceState space ) { _hadRavageOrBuild = true; }
+
+	#endregion detect build or ravage
 
 	async Task IRunAfterInvaderPhase.ActAsync( SpaceState space ) {
 		if(_hadRavageOrBuild) { _hadRavageOrBuild = false; return; }
@@ -74,11 +82,6 @@ class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, ISkipRavages, IRu
 
 		// Remove
 		space.Adjust( this, -1 ); // !!! what happens if we put 2 of these down?
-	}
-
-	public Task<bool> Skip( SpaceState space ) {
-		_hadRavageOrBuild = true;
-		return Task.FromResult(false);
 	}
 
 }

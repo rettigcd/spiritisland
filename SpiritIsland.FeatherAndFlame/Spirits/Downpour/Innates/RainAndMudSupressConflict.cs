@@ -59,7 +59,7 @@ internal class RainAndMudSupressConflict {
 }
 
 
-class MudToken : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
+class MudToken : BaseModEntity, IEndWhenTimePasses, IConfigRavages {
 	readonly Spirit _self;
 	readonly int _count;
 	public MudToken( Spirit self, int count ):base() { // removes itself
@@ -67,15 +67,7 @@ class MudToken : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
 		_count = count;
 	}
 
-	/// <summary> Used by skips to determine which skip to use. </summary>
-	public UsageCost Cost => UsageCost.Free;
-
-	Task<bool> ISkipRavages.Skip( SpaceState space ) {
-
+	void IConfigRavages.Config( SpaceState space ) {
 		space.RavageBehavior.AttackersDefend += _self.Presence.CountOn( space ) * _count;
-
-		// Doesn't remove self so it is in place for all ravages
-		// removed because it is inserted as a temp token.
-		return Task.FromResult( false );
 	}
 }

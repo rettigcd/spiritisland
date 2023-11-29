@@ -41,6 +41,12 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 				return; 
 			}
 
+		// Config the ravage
+		foreach(IConfigRavagesAsync configurer in data.Tokens.ModsOfType<IConfigRavagesAsync>().ToArray() )
+			await configurer.ConfigAsync( data.Tokens );
+		foreach(IConfigRavages configurer in data.Tokens.ModsOfType<IConfigRavages>().ToArray() )
+			configurer.Config( data.Tokens );
+
 		data.InvaderBinding = data.Tokens.Invaders;
 
 		try {

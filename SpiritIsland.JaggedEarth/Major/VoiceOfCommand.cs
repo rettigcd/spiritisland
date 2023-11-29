@@ -45,7 +45,7 @@ public class VoiceOfCommand {
 
 }
 
-public class RavageConfigToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
+public class RavageConfigToken : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
 
 	public RavageConfigToken(Action<SpaceState> setup, Action<SpaceState> teardown) {
 
@@ -53,16 +53,13 @@ public class RavageConfigToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses
 		TearDown = teardown;
 	}
 
-	public UsageCost Cost => UsageCost.Free;
-
-	public Task<bool> Skip( SpaceState space ) {
+	void IConfigRavages.Config( SpaceState space ) {
 		// Token Reduces Attack of invaders by 1
 		SetUp( space );
 
 		// At end of Action, invaders are are restored to original.
 		ActionScope.Current.AtEndOfThisAction( _ => TearDown( space ) );
 
-		return Task.FromResult( false ); // don't skip
 	}
 
 	readonly Action<SpaceState> SetUp;

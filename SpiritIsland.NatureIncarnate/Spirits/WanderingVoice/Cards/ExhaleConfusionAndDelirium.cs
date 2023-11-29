@@ -14,10 +14,9 @@ public class ExhaleConfusionAndDelirium {
 		return Task.CompletedTask;
 	}
 
-	class BlightedInvadersSitOutRavage : ISkipRavages, IEndWhenTimePasses {
-		public UsageCost Cost => UsageCost.Free;
+	class BlightedInvadersSitOutRavage : IConfigRavages, IEndWhenTimePasses {
 
-		public Task<bool> Skip( SpaceState space ) {
+		void IConfigRavages.Config( SpaceState space ) {
 			
 			var blightedCounts = space.Humans()
 				.Where(x=>0<x.StrifeCount)
@@ -25,8 +24,6 @@ public class ExhaleConfusionAndDelirium {
 				.ToCountDict();
 
 			SitOutRavage.SitOutNextRavage(space, blightedCounts);
-
-			return Task.FromResult(false); // don't skip
 		}
 	}
 

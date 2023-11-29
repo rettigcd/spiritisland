@@ -34,7 +34,7 @@ public class WarnOfImpendingConflict {
 /// <summary>
 /// Ravage-Config - (some or all) of the Dahan attack before invaders.
 /// </summary>
-class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
+class WarnToken : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 
 	int _dahanToGoEarly;
 	readonly Spirit _spirit;
@@ -45,9 +45,8 @@ class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 		_dahanToGoEarly = dahanToGoEarly;
 		_allSpaces = allSpaces;
 	}
-	public UsageCost Cost => UsageCost.Something;
 
-	public async Task<bool> Skip( SpaceState space ) {
+	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 		int remainingGoEarlyCount = Math.Min( _dahanToGoEarly, space.Dahan.CountAll );
 		if(remainingGoEarlyCount != 0
 			&& _spirit.Presence.IsOn( space )
@@ -63,9 +62,6 @@ class WarnToken : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
 			if(!_allSpaces)
 				_dahanToGoEarly = 0; // mark it used
 		}
-
-
-		return false;
 	}
 
 	static void MakeDahanGoFast( SpaceState space, ref int remainingGoEarlyCount ) {

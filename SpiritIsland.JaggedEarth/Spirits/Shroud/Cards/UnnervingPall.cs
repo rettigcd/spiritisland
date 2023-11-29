@@ -41,15 +41,15 @@ public class UnnervingPall {
 		await SitOutRavage.SelectFightersAndSitThemOut(ctx.Self,sourceSelector);
 	}
 
-	class InvadersDontParticipateInRavage : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
-		public UsageCost Cost => UsageCost.Free;
+	class InvadersDontParticipateInRavage : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+
 		readonly CountDictionary<HumanToken> _sitOuts;
 
 		public InvadersDontParticipateInRavage(CountDictionary<HumanToken> sitOuts) {
 			_sitOuts = sitOuts;
 		}
 
-		public Task<bool> Skip( SpaceState space ) {
+		void IConfigRavages.Config( SpaceState space ) {
 
 			Dictionary<HumanToken,HumanToken> restore = new Dictionary<HumanToken, HumanToken>();
 
@@ -69,7 +69,6 @@ public class UnnervingPall {
 				}
 			} );
 
-			return Task.FromResult(false);
 		}
 	}
 }

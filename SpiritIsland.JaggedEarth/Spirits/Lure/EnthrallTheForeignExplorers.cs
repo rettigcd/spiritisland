@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
+class EnthrallTheForeignExplorers : SpiritPresenceToken, IConfigRavagesAsync {
 
 	static public readonly SpecialRule Rule = new SpecialRule( 
 		"Enthrall the Foreign Explorers", 
@@ -9,9 +9,7 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 	public EnthrallTheForeignExplorers( Spirit self ):base(self) {}
 
-	public UsageCost Cost => UsageCost.Free;
-
-	public async Task<bool> Skip( SpaceState space ) {
+	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 
 		var sourceSelector = new SourceSelector( space )
 			.ConfigOnlySelectEachOnce()
@@ -19,7 +17,6 @@ class EnthrallTheForeignExplorers : SpiritPresenceToken, ISkipRavages {
 
 		await SitOutRavage.SelectFightersAndSitThemOut( Self, sourceSelector );
 
-		return false; // does not stop ravage ever
 	}
 
 }

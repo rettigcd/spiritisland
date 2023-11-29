@@ -17,7 +17,7 @@ public class TerrifyingRampage {
 		await ctx.PushDahan(3);
 	}
 
-	class InvadersSitOut : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
+	class InvadersSitOut : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 
 		readonly Spirit _invaderPicker;
 		readonly Quota _quota;
@@ -27,9 +27,7 @@ public class TerrifyingRampage {
 			_quota = quota;
 		}
 
-		public UsageCost Cost => UsageCost.Free;
-
-		public async Task<bool> Skip( SpaceState space ) {
+		async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 
 			var sourceSelector = new SourceSelector( space )
 				.ConfigOnlySelectEachOnce()
@@ -37,7 +35,6 @@ public class TerrifyingRampage {
 
 			await SitOutRavage.SelectFightersAndSitThemOut( _invaderPicker, sourceSelector );
 
-			return false; // does not stop ravage ever
 		}
 
 	}

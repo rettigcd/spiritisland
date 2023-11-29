@@ -25,7 +25,7 @@ public class RoilingBogAndSnaggingThorn {
 
 }
 
-public class DahanSitOutRavage : BaseModEntity, ISkipRavages {
+public class DahanSitOutRavage : BaseModEntity, IConfigRavagesAsync {
 
 	readonly Spirit _picker;
 	readonly int _countToSitOut;
@@ -34,8 +34,7 @@ public class DahanSitOutRavage : BaseModEntity, ISkipRavages {
 		_countToSitOut = countToSitOut;
 	}
 
-	public UsageCost Cost => UsageCost.Free;
-	public async Task<bool> Skip( SpaceState space ) {
+	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 
 		var ss = new SourceSelector(space).AddGroup(_countToSitOut,Human.Dahan).ConfigOnlySelectEachOnce();
 
@@ -49,6 +48,5 @@ public class DahanSitOutRavage : BaseModEntity, ISkipRavages {
 		if(0 < counts.Count)
 			SitOutRavage.SitOutNextRavage(space, counts);
 
-		return false;
 	}
 }

@@ -5,8 +5,7 @@ Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/
 
 -- Ravage --
 Add a convenience method = SpaceState.SkipInvaderAction => new SkipAnyInvaderAction(...)
-Create a ConfigureRavage does all of the sit-outs.
-Create an IConfigureRavage that does not stop the ravage and goes after the Skip-Ravage have been evaluated. (TerrifyingRampage)
+
 Group All Sit-Out ravage-mods together an make generic so we don't need a different token-class foreach one.  (ExhaleConfusionAndDelirium)
 Skip1InvaderAction - use new Token.SkipInvaderAction()
 

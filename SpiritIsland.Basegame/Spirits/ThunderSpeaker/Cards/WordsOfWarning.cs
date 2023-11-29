@@ -19,10 +19,9 @@ public class WordsOfWarning {
 
 }
 
-public class SimultaneousDefend : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
-	public UsageCost Cost => UsageCost.Free; 
+public class SimultaneousDefend : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
 
-	public Task<bool> Skip( SpaceState space ) {
+	void IConfigRavages.Config( SpaceState space ) {
 
 		// Token Reduces Attack of invaders by 1
 		foreach(HumanToken orig in space.HumanOfAnyTag( Human.Dahan ).ToArray())
@@ -33,8 +32,6 @@ public class SimultaneousDefend : BaseModEntity, ISkipRavages, IEndWhenTimePasse
 			foreach(HumanToken orig in space.HumanOfAnyTag( Human.Dahan ).ToArray())
 				AdjustRavageOrder( space, orig, RavageOrder.DahanTurn );
 		} );
-
-		return Task.FromResult( false ); // don't skip
 
 	}
 

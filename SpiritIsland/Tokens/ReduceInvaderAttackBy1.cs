@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class ReduceInvaderAttackBy1 : BaseModEntity, ISkipRavages, IEndWhenTimePasses {
+public class ReduceInvaderAttackBy1 : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
 
 	readonly HumanTokenClass[] _classesToReduce;
 	readonly int _reduce;
@@ -10,9 +10,7 @@ public class ReduceInvaderAttackBy1 : BaseModEntity, ISkipRavages, IEndWhenTimeP
 		_classesToReduce = classesToReduce;
 	}
 
-	public UsageCost Cost => UsageCost.Free;
-
-	public Task<bool> Skip( SpaceState space ) {
+	void IConfigRavages.Config( SpaceState space ) {
 
 		// !!! BUG - any token pushed out during ravage (like an explorer for some adversay) won't get their attack back.
 
@@ -35,7 +33,6 @@ public class ReduceInvaderAttackBy1 : BaseModEntity, ISkipRavages, IEndWhenTimeP
 				AdjustAttack( space, ending, reducedClasses[ending.HumanClass] );
 		} );
 
-		return Task.FromResult( false ); // don't skip
 	}
 
 	static void AdjustAttack( SpaceState space, HumanToken orig, int adjust ) {
