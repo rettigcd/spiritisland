@@ -11,6 +11,7 @@ public class TokenMovedArgs : ITokenMovedArgs, ITokenAddedArgs, ITokenRemovedArg
 
 		Added = to.Added;
 		To    = to.To;
+		After = to.After;
 
 		Count = to.Count;
 	}
@@ -20,6 +21,8 @@ public class TokenMovedArgs : ITokenMovedArgs, ITokenAddedArgs, ITokenRemovedArg
 
 	public IToken Added { get; } // might be different from removed due to Adding mods
 	public SpaceState To { get; }
+
+	public SpaceToken After { get; }
 
 	public int Count { get; }
 

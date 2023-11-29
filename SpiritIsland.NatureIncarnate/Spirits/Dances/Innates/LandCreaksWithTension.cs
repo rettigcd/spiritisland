@@ -22,7 +22,7 @@ public class LandCreaksWithTension {
 			.In().SpiritPickedLand().Which( Has.YourPresence)
 			.ActAsync( ctx);
 
-	static SpaceCmd AddQuake => new SpaceCmd( "Add 1 Quake", ctx => ctx.Tokens.Add( Token.Quake, 1 ) );
+	static SpaceCmd AddQuake => new SpaceCmd( "Add 1 Quake", ctx => ctx.Tokens.AddAsync( Token.Quake, 1 ) );
 
 	static Task Defend1PerImpending( SelfCtx ctx )
 		=> Cmd.Defend( Math.Min( 3, ImpendingCount( ctx ) ) )

@@ -52,7 +52,7 @@ public class France : IAdversary {
 			var slowBlight = FrancePanel.Tokens.Blight;
 			var blightCard = BlightCard.Space.Tokens;
 			if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
-				await blightCard.Add(Token.Blight,1);
+				await blightCard.AddAsync(Token.Blight,1);
 				slowBlight.Init(0);
 			} else {
 				await blightCard.Remove(Token.Blight,1);

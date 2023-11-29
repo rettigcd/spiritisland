@@ -45,7 +45,7 @@ public class Incarna
 		if(Space != null)
 			await this.On( Space.Space ).MoveTo( destination );
 		else if(allowAdd)
-			await destination.Tokens.Add( this, 1 );
+			await destination.Tokens.AddAsync( this, 1 );
 
 	}
 

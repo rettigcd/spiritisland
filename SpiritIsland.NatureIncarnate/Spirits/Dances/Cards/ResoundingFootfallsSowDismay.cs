@@ -7,7 +7,7 @@ public class ResoundingFootfallsSowDismay {
 	[Instructions( "1 Fear. Add 1 Quake. Skip all Ravage Actions." ), Artist( Artists.EmilyHancock )]
 	static async public Task ActAsync( TargetSpaceCtx ctx ) {
 		ctx.AddFear(1);
-		await ctx.Tokens.Add(Token.Quake,1);
+		await ctx.Tokens.AddAsync(Token.Quake,1);
 		ctx.Tokens.SkipRavage(Name,UsageDuration.SkipAllThisTurn);
 	}
 }

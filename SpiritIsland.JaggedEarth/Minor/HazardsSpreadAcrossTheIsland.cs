@@ -20,7 +20,7 @@ public class HazardsSpreadAcrossTheIsland{
 		if( tokenChoice is HumanToken ht && 0 < ht.StrifeCount )
 			await ctx.AddStrife();
 		else
-			await ctx.Tokens.Add( tokenChoice,1);
+			await ctx.Tokens.AddAsync( tokenChoice,1);
 	}
 
 	static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {

@@ -4,11 +4,8 @@ Convert any while(...) that has a Selector at the start to an async-enumerable (
 Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
 
 -- Token Events --
-TokenAdded => SpaceToken .After
 TokenRemoved => SpaceToken .Before
 TokenMoved => SpaceToken .After .Before
-Tokens.AddAsync should return the token that was added as a SpaceToken - incase it was modified while adding.
-Rename SpaceState.Add(...) to SpaceState.AddAsync(...)
 
 TargetSpaceCtx.AddStrife needs to be Async AND take a count.  (Terror Of the Hunted)
 

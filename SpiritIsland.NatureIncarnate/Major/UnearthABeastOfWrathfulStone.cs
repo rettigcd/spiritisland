@@ -27,7 +27,7 @@ public class UnearthABeastOfWrathfulStone {
 			await ctx.DamageInvaders( 12 );
 
 			// Add 1 Beast. (either normal or the marked one)
-			await ctx.Tokens.Add( beastToken, 1 );
+			await ctx.Tokens.AddAsync( beastToken, 1 );
 
 			// You may Push that Beast.
 			await ctx.Pusher

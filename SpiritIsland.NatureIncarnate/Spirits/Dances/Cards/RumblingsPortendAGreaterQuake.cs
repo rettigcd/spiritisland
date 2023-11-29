@@ -11,7 +11,7 @@ public class RumblingsPortendAGreaterQuake {
 			// 1 Fear
 			ctx.AddFear(1);
 			// Add 1 Quake.
-			await ctx.Tokens.Add(Token.Quake,1);
+			await ctx.Tokens.AddAsync(Token.Quake,1);
 		}
 		
 		// Push up to 3 Dahan.

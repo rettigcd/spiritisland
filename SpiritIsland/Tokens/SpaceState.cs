@@ -269,7 +269,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		var newInvader = originalInvader.AddStrife( strifeDelta );
 		// We need to generate events (for Observe the Ever changing World) so we will use the Replace reason
 		await Remove( originalInvader, tokenCount, RemoveReason.Replaced );
-		await Add( newInvader, tokenCount, AddReason.AsReplacement );
+		await AddAsync( newInvader, tokenCount, AddReason.AsReplacement );
 
 		if(newInvader.IsDestroyed) // due to a strife-health penalty
 			await Destroy( newInvader, this[newInvader] );
@@ -298,7 +298,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	public Task AddDefault( ITokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
-		=> Add( GetDefault( tokenClass ), count, addReason );
+		=> AddAsync( GetDefault( tokenClass ), count, addReason );
 
 
 	// Convenience only
@@ -306,7 +306,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		? ht.Destroy( this, count )
 		: Remove( token, count, RemoveReason.Destroyed );
 
-	public async Task<TokenAddedArgs> Add( IToken token, int count, AddReason addReason = AddReason.Added ) {
+	public async Task<TokenAddedArgs> AddAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = await Add_Silent( token, count, addReason );
 		if(addResult == null) return null;
 
@@ -331,7 +331,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		Adjust( addingArgs.Token, addingArgs.Count );
 
 		// Post-Add event
-		return new TokenAddedArgs( this, addingArgs.Token, addReason, addingArgs.Count );
+		return new TokenAddedArgs( this, addingArgs.Token, addingArgs.Count, addReason );
 	}
 
 	/// <summary> returns null if no token removed </summary>

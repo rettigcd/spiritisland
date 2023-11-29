@@ -14,7 +14,7 @@ public class MoveIncarnaAnywhere : SpiritAction {
 		if(space == null) return;
 
 		await incarna.Space.Remove( incarna, 1 );
-		await space.Tokens.Add( incarna, 1 );
+		await space.Tokens.AddAsync( incarna, 1 );
 
 	}
 

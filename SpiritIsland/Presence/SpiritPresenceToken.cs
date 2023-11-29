@@ -14,7 +14,7 @@ public class SpiritPresenceToken
 
 	public Spirit Self { get; }
 
-	public Task AddTo( SpaceState spaceState ) => spaceState.Add( this, 1 );
+	public Task AddTo( SpaceState spaceState ) => spaceState.AddAsync( this, 1 );
 
 	public Task RemoveFrom( SpaceState spaceState ) => spaceState.Remove( this, 1 );
 

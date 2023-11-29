@@ -21,6 +21,6 @@ public class ReplacePresenceWithIncarna : SpiritAction {
 		if(incarna.Space != null)
 			await incarna.Space.Remove( incarna, 1 );
 
-		await space.Tokens.Add( incarna, 1 );
+		await space.Tokens.AddAsync( incarna, 1 );
 	}
 }

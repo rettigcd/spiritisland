@@ -9,7 +9,7 @@ public class BlightTokenBinding : TokenBinding {
 	public void Block() => _tokens.Init( new BlockBlightToken(), 1 );
 
 	public override async Task AddAsync( int count, AddReason reason = AddReason.Added ) {
-		await _tokens.Add( Token.Blight, count, reason );
+		await _tokens.AddAsync( Token.Blight, count, reason );
 	}
 
 }

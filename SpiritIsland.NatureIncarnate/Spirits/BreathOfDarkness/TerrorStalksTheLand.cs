@@ -64,7 +64,7 @@ public class TerrorStalksTheLand : SpaceState {
 			await spaceTokenToRemove.MoveTo( EndlessDark.Space );
 		else {
 			await spaceTokenToRemove.Remove();
-			await EndlessDark.Space.Tokens.Add( invaderToAddToEndlessDark, 1 );
+			await EndlessDark.Space.Tokens.AddAsync( invaderToAddToEndlessDark, 1 );
 		}
 	}
 

@@ -144,13 +144,13 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	/// <param name="from">Track, Space, or SpaceToken</param>
 	public async Task PlaceAsync( IOption from, Space to ) {
 		var token = await TakeFromAsync( from );
-		await to.Tokens.Add( token, 1 );
+		await to.Tokens.AddAsync( token, 1 );
 	}
 
 	public async Task PlaceDestroyedAsync( int numToPlace, Space to ) {
 		numToPlace = Math.Min( numToPlace, Destroyed );
 
-		await to.Tokens.Add( Token, numToPlace );
+		await to.Tokens.AddAsync( Token, numToPlace );
 		Destroyed -= numToPlace;
 	}
 

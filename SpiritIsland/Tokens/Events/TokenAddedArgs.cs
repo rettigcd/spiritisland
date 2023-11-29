@@ -2,17 +2,21 @@
 
 public class TokenAddedArgs : ITokenAddedArgs {
 
-	public TokenAddedArgs(SpaceState space, IToken token, AddReason addReason, int count ) {
+	public TokenAddedArgs(SpaceState space, IToken token, int count, AddReason addReason ) {
 		To = space;
 		Added = token;
-		Reason = addReason;
+		After = new SpaceToken(space.Space,token);
+
 		Count = count;
+		Reason = addReason;
 	}
 
 	public IToken Added { get; }
 	public SpaceState To { get; }
+	public SpaceToken After { get; }
 
 	public int Count { get; }
+
 	public AddReason Reason { get; }
 
 }

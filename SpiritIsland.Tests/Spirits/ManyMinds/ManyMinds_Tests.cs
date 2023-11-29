@@ -76,11 +76,11 @@ public class ManyMinds_Tests {
 		SpaceState dstTokens = board[2].Tokens;
 
 		// Given: presence on A1 (src)
-		await srcTokens.Add(spirit.Presence.Token, startingSrcPresence ).ShouldComplete("add 2 presence"); // use .Add event triggers extra beast
+		await srcTokens.AddAsync(spirit.Presence.Token, startingSrcPresence ).ShouldComplete("add 2 presence"); // use .Add event triggers extra beast
 
 		//   And: maybe presence on A2 (dest)
 		if(0<startingDstPresence)
-			await dstTokens.Add( spirit.Presence.Token, startingSrcPresence ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
+			await dstTokens.AddAsync( spirit.Presence.Token, startingSrcPresence ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
 
 		//  When: moving
 		IToken beast = srcTokens.OfTag(Token.Beast).First();
@@ -104,7 +104,7 @@ public class ManyMinds_Tests {
 
 		// Given: 2 presence and 2 dahan on A1
 		spirit.Given_HasPresenceOn( board[1],2 );
-		await board[1].Tokens.Add( spirit.Presence.Token, 2 ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
+		await board[1].Tokens.AddAsync( spirit.Presence.Token, 2 ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
 
 		board[1].Given_HasTokens("2D@2");
 		//   And: Beast on 5
