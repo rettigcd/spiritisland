@@ -114,7 +114,7 @@ public static partial class Cmd {
 
 	static public SpaceCmd Skip1InvaderAction(string causeName) => new SpaceCmd(
 		"Skip 1 Invader Action",
-		ctx => ctx.Tokens.Adjust( new SkipAnyInvaderAction( causeName, ctx.Self ), 1 )
+		ctx => ctx.Tokens.Skip1InvaderAction( causeName, ctx.Self )
 	);
 
 	// AND / OR

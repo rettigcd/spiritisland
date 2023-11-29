@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
@@ -227,25 +225,6 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public bool IsConnected => !OfType<IIsolate>().Any(x=>x.IsIsolated);
 
 	#endregion
-
-	#region Skip API
-
-	public void SkipAllInvaderActions( string label ) {
-		SkipRavage( label, UsageDuration.SkipAllThisTurn );
-		SkipAllBuilds( label );
-		Adjust( new SkipExploreTo(skipAll:true), 1 );
-	}
-
-	public void SkipRavage( string label, UsageDuration duration = UsageDuration.SkipOneThisTurn ) => Adjust( new SkipRavage(label, duration), 1 );
-
-	public void Skip1Build( string label ) => Adjust( SkipBuild.Default( label ), 1 );
-
-	public void SkipAllBuilds( string label, params ITokenClass[] stoppedClasses ) => Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
-
-	public void Skip1Explore( string _ ) => Adjust( new SkipExploreTo(), 1 );
-
-	#endregion
-
 
 	void AdjustTrackedToken( ITrackMySpaces token, int delta ) {
 		token.TrackAdjust(Space,delta);
@@ -544,5 +523,34 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 				part.NativeTerrain = Terrain.Destroyed;
 
 	}
+
+}
+
+static public class SkipInvaderAction_Extensions {
+
+	/// <summary>
+	/// Skips 1 invader action - which one is picked later.
+	/// </summary>
+	static public void Skip1InvaderAction( this SpaceState ss, string label, Spirit actionPicker, Func<SpaceState,Task> alternateAction = null ) { 
+		ss.Adjust( new SkipAnyInvaderAction(label,actionPicker,alternateAction), 1 );
+	}
+
+	static public void SkipAllInvaderActions( this SpaceState ss, string label ) {
+		ss.SkipRavage( label, UsageDuration.SkipAllThisTurn );
+		ss.SkipAllBuilds( label );
+		ss.Adjust( new SkipExploreTo(skipAll:true), 1 );
+	}
+
+	static public void SkipRavage( this SpaceState ss, string label, UsageDuration duration = UsageDuration.SkipOneThisTurn ) 
+		=> ss.Adjust( new SkipRavage(label, duration), 1 );
+
+	static public void Skip1Build( this SpaceState ss, string label ) 
+		=> ss.Adjust( SkipBuild.Default( label ), 1 );
+
+	static public void SkipAllBuilds( this SpaceState ss, string label, params ITokenClass[] stoppedClasses ) 
+		=> ss.Adjust( new SkipBuild( label, UsageDuration.SkipAllThisTurn, stoppedClasses ), 1 );
+
+	static public void Skip1Explore( this SpaceState ss, string _ ) 
+		=> ss.Adjust( new SkipExploreTo(), 1 );
 
 }

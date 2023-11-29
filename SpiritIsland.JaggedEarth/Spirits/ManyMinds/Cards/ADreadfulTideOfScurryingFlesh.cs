@@ -16,7 +16,7 @@ public class ADreadfulTideOfScurryingFlesh {
 		ctx.AddFear( 2*removed );
 		// and skip one Invader Action
 		while(0<removed--)
-			ctx.Tokens.Adjust( new SkipAnyInvaderAction(Name, ctx.Self), 1 );
+			ctx.Tokens.Skip1InvaderAction( Name, ctx.Self );
 	}
 
 }

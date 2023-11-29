@@ -4,10 +4,8 @@ Convert any while(...) that has a Selector at the start to an async-enumerable (
 Make SourceSelector implement IAsyncEnumerable<T> - https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
 
 -- Ravage --
-Add a convenience method = SpaceState.SkipInvaderAction => new SkipAnyInvaderAction(...)
-
 Group All Sit-Out ravage-mods together an make generic so we don't need a different token-class foreach one.  (ExhaleConfusionAndDelirium)
-Skip1InvaderAction - use new Token.SkipInvaderAction()
+
 
 TokenAdded => SpaceToken .After
 TokenRemoved => SpaceToken .Before

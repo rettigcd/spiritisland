@@ -19,13 +19,12 @@ public class ExaltationOfTheIncandescentSky {
 			// In any 4 lands on the island,
 			var spaceOptions = GameState.Current.Spaces.ToList();
 			int count = 4;
-			SkipAnyInvaderAction skipAction = new SkipAnyInvaderAction(Name,ctx.Self);
 			while(0 < count--) {
 				var space = await ctx.Self.Select(new A.Space($"Skip Invader Action ({count+1} of 4)",spaceOptions,Present.Done));
 				if(space == null) break;
 				spaceOptions.Remove(space);
 				// Skip 1 Invader Action.
-				space.Tokens.Adjust(skipAction, 1);
+				space.Tokens.Skip1InvaderAction(Name,ctx.Self);
 			}
 
 			// 5 fear (total).

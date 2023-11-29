@@ -23,7 +23,7 @@ public class InfestationOfVenomousSpiders {
 		// 1 fear (max 4) and
 		ctx.AddFear( System.Math.Min(4,count) );
 		for(int i = 0; i < count; ++i)
-			ctx.Tokens.Adjust( new SkipAnyInvaderAction( Name, ctx.Self, causeAdditionalDamage ), 1 );
+			ctx.Tokens.Skip1InvaderAction( Name, ctx.Self, causeAdditionalDamage ); // !!! derive a new type instead of this alt-action nonsense
 	}
 
 }

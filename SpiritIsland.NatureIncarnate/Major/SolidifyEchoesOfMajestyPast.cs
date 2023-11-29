@@ -27,7 +27,7 @@ public class SolidifyEchoesOfMajestyPast {
 			spacesOptions.Remove(space);
 
 			// Skip up to 1 Invader Action at each added DestroyedPresence.
-			space.Tokens.Adjust(new SkipAnyInvaderAction(Name,ctx.Self),1);
+			space.Tokens.Skip1InvaderAction(Name,ctx.Self);
 
 		}
 		
