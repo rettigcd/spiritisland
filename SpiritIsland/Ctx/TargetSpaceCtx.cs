@@ -59,7 +59,7 @@ public class TargetSpaceCtx : SelfCtx {
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> Tokens.AddDefault( tokenClass, count, addReason );
 	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.Remove( token, count, reason );
+		=> Tokens.RemoveAsync( token, count, reason );
 
 	#endregion
 

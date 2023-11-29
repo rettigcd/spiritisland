@@ -29,7 +29,7 @@ public class SpaceToken : IOption {
 	public int Count => Space.Tokens[Token];
 
 	public Task Destroy() => Space.Tokens.Destroy( Token, 1 );
-	public Task Remove() => Space.Tokens.Remove( Token, 1 );
+	public Task Remove() => Space.Tokens.RemoveAsync( Token, 1 );
 
 
 	public override int GetHashCode() => Space.GetHashCode()-Token.GetHashCode();

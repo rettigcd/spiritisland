@@ -28,7 +28,7 @@ public class TokenBinding {
 		=> _tokens.AddAsync( Default, count, reason );
 
 	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
-		=> _tokens.Remove( Default, count, reason );
+		=> _tokens.RemoveAsync( Default, count, reason );
 
 	public static implicit operator int( TokenBinding b ) => b.Count;
 
@@ -74,7 +74,7 @@ public class BeastBinding {
 		=> _spaceState.AddAsync( _uniqueToken, count, reason );
 
 	public Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
-		=> _spaceState.Remove( _uniqueToken, count, reason );
+		=> _spaceState.RemoveAsync( _uniqueToken, count, reason );
 
 	public Task Destroy( int count ) => Remove( count, RemoveReason.Destroyed );
 

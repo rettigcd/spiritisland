@@ -29,7 +29,7 @@ public sealed class DahanBinding {
 
 	// Called from .Move() and .Dissolve the Bonds
 	public async Task<TokenRemovedArgs> Remove1( IToken toRemove, RemoveReason reason ) {
-		return await _tokens.Remove( toRemove, 1, reason );
+		return await _tokens.RemoveAsync( toRemove, 1, reason );
 	}
 
 	#region Higher Level of Abstraction

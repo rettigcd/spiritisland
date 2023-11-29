@@ -19,7 +19,7 @@ public class ReplacePresenceWithIncarna : SpiritAction {
 		if( spirit.Presence is not IHaveIncarna ihi) return;
 		var incarna = ihi.Incarna;
 		if(incarna.Space != null)
-			await incarna.Space.Remove( incarna, 1 );
+			await incarna.Space.RemoveAsync( incarna, 1 );
 
 		await space.Tokens.AddAsync( incarna, 1 );
 	}

@@ -16,7 +16,7 @@ public class SpiritPresenceToken
 
 	public Task AddTo( SpaceState spaceState ) => spaceState.AddAsync( this, 1 );
 
-	public Task RemoveFrom( SpaceState spaceState ) => spaceState.Remove( this, 1 );
+	public Task RemoveFrom( SpaceState spaceState ) => spaceState.RemoveAsync( this, 1 );
 
 	public string SpaceAbreviation { get; protected set; }
 

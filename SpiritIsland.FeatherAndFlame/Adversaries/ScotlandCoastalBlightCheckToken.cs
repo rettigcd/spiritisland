@@ -61,7 +61,7 @@ class ScotlandCoastalBlightCheckToken
 		--args.Count;
 
 		// remove the other blight instead.
-		await spaceToken.Space.Tokens.Remove(spaceToken.Token, 1);
+		await spaceToken.Space.Tokens.RemoveAsync(spaceToken.Token, 1);
 
 	}
 }

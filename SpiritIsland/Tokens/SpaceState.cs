@@ -268,7 +268,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 		var newInvader = originalInvader.AddStrife( strifeDelta );
 		// We need to generate events (for Observe the Ever changing World) so we will use the Replace reason
-		await Remove( originalInvader, tokenCount, RemoveReason.Replaced );
+		await RemoveAsync( originalInvader, tokenCount, RemoveReason.Replaced );
 		await AddAsync( newInvader, tokenCount, AddReason.AsReplacement );
 
 		if(newInvader.IsDestroyed) // due to a strife-health penalty
@@ -304,7 +304,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	// Convenience only
 	public Task Destroy( IToken token, int count ) => token is HumanToken ht
 		? ht.Destroy( this, count )
-		: Remove( token, count, RemoveReason.Destroyed );
+		: RemoveAsync( token, count, RemoveReason.Destroyed );
 
 	public async Task<TokenAddedArgs> AddAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		TokenAddedArgs addResult = await Add_Silent( token, count, addReason );
@@ -335,7 +335,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	/// <summary> returns null if no token removed </summary>
-	public virtual async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public virtual async Task<TokenRemovedArgs> RemoveAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if( reason == RemoveReason.MovedFrom )
 			throw new ArgumentException("Moving Tokens must be done from the .Move method for events to work properly",nameof(reason));
 
@@ -358,13 +358,13 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		await ModifyRemoving( removingArgs );
 
 		if(removingArgs.Count < 0) throw new IndexOutOfRangeException( nameof( removingArgs.Count ) );
-		if(removingArgs.Count == 0) return new TokenRemovedArgs( removingArgs.Token, reason, this, 0 );
+		if(removingArgs.Count == 0) return new TokenRemovedArgs( this, removingArgs.Token, 0, reason );
 
 		// Do Remove
 		Adjust( removingArgs.Token, -removingArgs.Count );
 
 		// Post-Remove event
-		return new TokenRemovedArgs( removingArgs.Token, reason, this, removingArgs.Count );
+		return new TokenRemovedArgs( this, removingArgs.Token, removingArgs.Count, reason );
 
 	}
 

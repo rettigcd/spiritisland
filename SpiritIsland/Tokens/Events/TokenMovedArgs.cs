@@ -8,6 +8,7 @@ public class TokenMovedArgs : ITokenMovedArgs, ITokenAddedArgs, ITokenRemovedArg
 
 		Removed = from.Removed;
 		From    = from.From;
+		Before  = from.Before;
 
 		Added = to.Added;
 		To    = to.To;
@@ -22,6 +23,7 @@ public class TokenMovedArgs : ITokenMovedArgs, ITokenAddedArgs, ITokenRemovedArg
 	public IToken Added { get; } // might be different from removed due to Adding mods
 	public SpaceState To { get; }
 
+	public SpaceToken Before { get; }
 	public SpaceToken After { get; }
 
 	public int Count { get; }

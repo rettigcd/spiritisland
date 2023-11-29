@@ -55,7 +55,7 @@ public class France : IAdversary {
 				await blightCard.AddAsync(Token.Blight,1);
 				slowBlight.Init(0);
 			} else {
-				await blightCard.Remove(Token.Blight,1);
+				await blightCard.RemoveAsync(Token.Blight,1);
 				slowBlight.Adjust(1);
 			}
 		}

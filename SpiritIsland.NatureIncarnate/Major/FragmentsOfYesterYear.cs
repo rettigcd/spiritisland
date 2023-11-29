@@ -14,7 +14,7 @@ public class FragmentsOfYesterYear {
 		foreach(IToken token in ctx.Tokens.OfType<IToken>().ToArray() ) {
 			// -If you have- 3 moon: // Don't remove Dahan, any Spirit's Presence, or Spirit Token.
 			if(youHave3Moon && token.HasAny(TokenCategory.Presence,TokenCategory.Dahan,TokenCategory.Incarna) ) continue;
-			await ctx.Tokens.Remove( token, ctx.Tokens[token], RemoveReason.Removed );
+			await ctx.Tokens.RemoveAsync( token, ctx.Tokens[token], RemoveReason.Removed );
 		}
 
 		// then Add the pieces matching target land's Setup symbols.

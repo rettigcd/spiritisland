@@ -39,7 +39,7 @@ public class TransformToAMurderousDarkness {
 
 		foreach(var token in otherCtx.Self.Presence.TokensDeployedOn( otherCtx.Tokens ).ToArray()) {
 			int count = otherCtx.Tokens[token];
-			await otherCtx.Tokens.Remove(token, count );
+			await otherCtx.Tokens.RemoveAsync(token, count );
 			total += count;
 		}
 		await otherCtx.Badlands.AddAsync( total, AddReason.AsReplacement );

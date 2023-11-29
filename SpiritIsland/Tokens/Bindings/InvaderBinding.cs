@@ -132,11 +132,11 @@ public sealed class InvaderBinding {
 			.FirstOrDefault();
 
 		if(invaderToRemove != null)
-			await Tokens.Remove( invaderToRemove, 1, reason );
+			await Tokens.RemoveAsync( invaderToRemove, 1, reason );
 	}
 
 	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.Remove( token, count, reason );
+		=> Tokens.RemoveAsync( token, count, reason );
 
 	#endregion
 

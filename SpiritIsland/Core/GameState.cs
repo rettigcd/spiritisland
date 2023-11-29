@@ -201,7 +201,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		if( count < 0 ) throw new ArgumentOutOfRangeException(nameof(count));
 		var blightCard = Tokens[SpiritIsland.BlightCard.Space];
 
-		await blightCard.Remove(Token.Blight, count, RemoveReason.TakingFromCard ); // stops from putting back on card
+		await blightCard.RemoveAsync(Token.Blight, count, RemoveReason.TakingFromCard ); // stops from putting back on card
 
 		if(BlightCard != null && blightCard[Token.Blight] <= 0) {
 			await Spirits[0].Select( "Island blighted", new IOption[] { BlightCard }, Present.Always );

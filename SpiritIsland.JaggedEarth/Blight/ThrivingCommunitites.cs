@@ -12,7 +12,7 @@ public class ThrivingCommunitites : BlightCard {
 	static SpaceCmd UpgradeExplorerOrTown => new SpaceCmd( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
 		var spaceToken = await ctx.SelectAsync( An.Invader.ToReplace("upgrade",ctx.Tokens.HumanOfAnyTag(Human.Explorer_Town).On(ctx.Space)) );
 
-		var removed = await ctx.Tokens.Remove( spaceToken.Token, 1,RemoveReason.Replaced);
+		var removed = await ctx.Tokens.RemoveAsync( spaceToken.Token, 1,RemoveReason.Replaced);
 
 		var newTokenClass = (removed.Removed.Class == Human.Explorer)
 			? Human.Town

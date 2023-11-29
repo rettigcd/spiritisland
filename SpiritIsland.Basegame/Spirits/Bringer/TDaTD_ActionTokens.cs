@@ -16,14 +16,14 @@ public class TDaTD_ActionTokens : SpaceState {
 		await Destroy( BringerPresence, this[BringerPresence] );
 	}
 
-	public override async Task<TokenRemovedArgs> Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public override async Task<TokenRemovedArgs> RemoveAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(reason != RemoveReason.Destroyed || token == BringerPresence)
-			return await base.Remove( token, count, reason );
+			return await base.RemoveAsync( token, count, reason );
 
 		if(token.HasTag(TokenCategory.Invader))
 			await DestroyNInvaders( token.AsHuman(), count );
 
-		return new TokenRemovedArgs(token,reason,this, 0); // nothing removed
+		return new TokenRemovedArgs(this, token,0,reason); // nothing removed
 	}
 
 	protected override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {

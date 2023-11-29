@@ -13,7 +13,7 @@ public class MoveIncarnaAnywhere : SpiritAction {
 		Space? space = await ctx.Self.Select( new A.Space( "Select space to place Incarna.", GameState.Current.Spaces, Present.Done ) );
 		if(space == null) return;
 
-		await incarna.Space.Remove( incarna, 1 );
+		await incarna.Space.RemoveAsync( incarna, 1 );
 		await space.Tokens.AddAsync( incarna, 1 );
 
 	}
