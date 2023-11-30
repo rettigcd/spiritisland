@@ -200,7 +200,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		_board[2].Tokens.Init( _spirit.Presence.Token, 1 );
 		Given_IncarnaOn( _board[2] );
 
-		_presence.Spaces.Count().ShouldBe( 1 );
+		_presence.Lands.Count().ShouldBe( 1 );
 	}
 
 

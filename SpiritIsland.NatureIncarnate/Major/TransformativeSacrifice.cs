@@ -13,15 +13,16 @@ public class TransformativeSacrifice {
 	}
 
 	static async Task TargetSpiritAction(SelfCtx ctx, bool boostFromElementThreshold ) {
+
 		// Target Spirit may Remove up to 3 Presence.
-		int count = 3;
+		var tokensToDestroy = new SourceSelector(ctx.Self.Presence.Lands.Tokens())
+			.AddGroup(3,ctx.Self.Presence)
+			.GetEnumerator(ctx.Self,Prompt.RemainingCount($"Destroy up to 3 to Take Minor and Play it for free."),Present.Done);
 		int destroyed = 0;
-		while(0 < count--) {
-			SpaceToken spaceToken = await ctx.Self.Select( A.SpaceToken.OfDeployedPresence( $"Destroy up to {count+1} to Take Minor and Play it for free.", ctx.Self, Present.Done ) );
-			if(spaceToken == null) break;
+		await foreach(SpaceToken? spaceToken in tokensToDestroy) {
 			await spaceToken.Destroy();
 			++destroyed;
-		}
+		}		
 
 		if( boostFromElementThreshold ){
 			// Before taking cards,

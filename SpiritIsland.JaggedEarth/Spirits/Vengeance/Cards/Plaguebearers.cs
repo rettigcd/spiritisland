@@ -11,18 +11,10 @@ public class Plaguebearers {
 			ctx.AddFear(1);
 
 		// For each disease, Push 2 explorer / town / dahan.
-		await ctx.Pusher
+		await ctx.SourceSelector
 			.AddGroup( ctx.Disease.Count, Human.Explorer_Town.Plus(Human.Dahan) )
-			.Track( async ( result ) => {
-				var from = result.From.Space;
-				var to = result.To.Space;
-				// 1 disease may move with each Pushed piece.
-				var options = result.From.OfTag(Token.Disease).On(from).ToArray();
-				var diseaseToken = await ctx.SelectAsync( A.SpaceToken.ToCollect( "Move up to 1 Disease", options, Present.Done, to ) );
-				if( diseaseToken != null )
-					await ctx.Move(diseaseToken.Token, diseaseToken.Space,to);
-			} )
-			.DoN();
+			.Bring( Bring.FromAnywhere(ctx.Self,new Quota().AddGroup(1,Token.Disease) ) )
+			.PushN(ctx.Self);
 
 	}
 

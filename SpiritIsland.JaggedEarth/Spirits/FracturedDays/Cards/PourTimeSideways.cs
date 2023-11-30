@@ -17,7 +17,7 @@ class PourTimeSideways {
 		// Move 1 of your presence to a different land with your presence.
 		var src = await ctx.SelectAsync( new A.SpaceToken("Move presence from:", ctx.Self.Presence.Deployed, Present.Always ) );
 		if(!ctx.Self.Presence.HasMovableTokens( src.Space.Tokens )) return; // !!?? is this necessary?
-		var dstOptions = ctx.Self.Presence.Spaces.Tokens().Where( s => s.Space != src.Space );
+		var dstOptions = ctx.Self.Presence.Lands.Tokens().Where( s => s.Space != src.Space );
 		var dst = await ctx.SelectAsync( A.Space.ForMoving_SpaceToken( "Move presence to:", src.Space, dstOptions.Downgrade(), Present.Always, src.Token ) );
 		await src.MoveTo(dst);
 		var srcBoards = src.Space.Boards;

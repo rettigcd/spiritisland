@@ -15,10 +15,10 @@ public class MantleOfDread {
 		var pushLand = await ctx.OtherCtx.TargetLandWithPresence( "Select land to push 1 exploer & 1 town from" );
 
 		// Push Town / Explorer
-		await pushLand.Pusher
+		await pushLand.SourceSelector
 			.AddGroup(1,Human.Town)
 			.AddGroup(1,Human.Explorer)
-			.DoUpToN();
+			.PushUpToN(ctx.Self);
 			
 	}
 

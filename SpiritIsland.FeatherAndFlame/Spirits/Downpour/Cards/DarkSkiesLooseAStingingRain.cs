@@ -11,10 +11,10 @@ public class DarkSkiesLooseAStingingRain {
 		ctx.Isolate();
 
 		// Push up to 1 explorer and up to 2 dahan
-		return ctx.Pusher
+		return ctx.SourceSelector
 			.AddGroup(1,Human.Explorer)
 			.AddGroup(2,Human.Dahan)
-			.DoUpToN();
+			.PushUpToN( ctx.Self );
 	}
 
 

@@ -26,7 +26,7 @@ public class InspireTheReleaseOfStolenLands {
 				.AddGroup(1,Human.Explorer)
 				.AddGroup(1,Human.Town)
 				.AddGroup(1,Human.City)
-				.Config( SelectFrom.ASingleLand )
+				.FromASingleLand()
 				.RemoveN(ctx.Self);
 		}
 		

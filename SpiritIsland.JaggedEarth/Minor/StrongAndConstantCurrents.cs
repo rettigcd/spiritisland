@@ -27,10 +27,10 @@ public class StrongAndConstantCurrents{
 	);
 
 	static Task PushToAdjacenCostalAction( TargetSpaceCtx ctx )
-		=> ctx.Pusher
-			.FilterDestination( a=>a.Space.IsCoastal )
+		=> ctx.SourceSelector
 			.AddGroup(1, Human.Explorer_Town)
-			.DoN();
+			.ConfigDestination( d=>d.FilterDestination( a=>a.Space.IsCoastal ) )
+			.PushN(ctx.Self);
 
 	#endregion
 

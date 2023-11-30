@@ -6,7 +6,7 @@ public class PushPresenceFromOcean : SpiritAction {
 
 	public override async Task ActAsync( SelfCtx ctx ) {
 
-		var pushSpaces = ctx.Self.Presence.Spaces
+		var pushSpaces = ctx.Self.Presence.Lands
 			.Where( p => p.IsOcean )
 			.ToArray();
 

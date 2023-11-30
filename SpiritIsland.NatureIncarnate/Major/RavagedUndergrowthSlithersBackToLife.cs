@@ -30,12 +30,12 @@ public class RavagedUndergrowthSlithersBackToLife {
 			// In each land with Wilds within Range-1, 
 			foreach(var spaceState in ctx.Tokens.Range(1).Where(t=>0<t.Wilds.Count).ToArray())
 				// Push 1 Explorer and 1 Town
-				await spaceState.Pusher(ctx.Self)
+				await spaceState.SourceSelector
 					.AddGroup(1,Human.Explorer)
 					.AddGroup(1,Human.Town)
 					// to lands without Wilds.
-					.FilterDestination(ss=>ss.Wilds.Count==0)
-					.DoN();
+					.ConfigDestination(d=>d.FilterDestination(ss=>ss.Wilds.Count==0))
+					.PushN(ctx.Self);
 		}
 	}
 

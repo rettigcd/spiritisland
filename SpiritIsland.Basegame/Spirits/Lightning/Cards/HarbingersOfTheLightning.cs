@@ -9,21 +9,22 @@ public class HarbingersOfTheLightning {
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
 
 		// Push up to 2 dahan.
-		await ctx.Pusher
+		await ctx.SourceSelector
 			.AddGroup(2,Human.Dahan)
-			.Config( mover => AddFearIfPushedTo(mover,1, Human.Town_City ) )
-			.DoUpToN();
+			.ConfigDestination( AddFearIfPushedTo(1,Human.Town_City) )
+			.PushUpToN(ctx.Self );
 	}
 
-	static TokenMover AddFearIfPushedTo( TokenMover mover, int fear, ITokenClass[] classes ) {
-		bool addedFear = false;
-		return mover
-			.Track( moved => {
-				if(!addedFear && moved.To.HasAny( classes )) {
-					GameState.Current.Fear.AddDirect( new FearArgs( fear ) { space = moved.To.Space } );
+	static Action<DestinationSelector> AddFearIfPushedTo( int fear, ITokenClass[] classes ) {
+		return (d) => {
+			bool addedFear = false;
+			d.Track( to => {
+				if(!addedFear && to.HasAny( classes )) {
+					GameState.Current.Fear.AddDirect( new FearArgs( fear ) { space = to.Space } );
 					addedFear = true;
 				}
 			} );
+		};
 	}
 
 

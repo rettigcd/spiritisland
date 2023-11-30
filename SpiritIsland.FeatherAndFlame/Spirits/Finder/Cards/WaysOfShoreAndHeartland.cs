@@ -9,11 +9,11 @@ public class WaysOfShoreAndHeartland {
 		var tm = ActionScope.Current.TerrainMapper;
 
 		// Push up to 2 Invaders / Dahan / Presence / Beast
-		await ctx.Pusher
+		await ctx.SourceSelector
 			.AddGroup(2, Human.Invader.Plus( Human.Dahan, Token.Beast ).Concat(ctx.AllPresenceTokens).ToArray() )
 			// to a land that is also Coastal / Inland( whichever the target land is)
-			.FilterDestination( ctx.IsCoastal ? tm.IsCoastal : tm.IsInland )
-			.DoUpToN();
+			.ConfigDestination( d=>d.FilterDestination( ctx.IsCoastal ? tm.IsCoastal : tm.IsInland ) )
+			.PushUpToN(ctx.Self);
 	}
 
 }

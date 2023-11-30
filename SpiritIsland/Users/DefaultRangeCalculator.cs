@@ -36,7 +36,7 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 
 	public IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from ) {
 		return from switch {
-			TargetFrom.Presence => presence.Spaces.Tokens(),
+			TargetFrom.Presence => presence.Lands.Tokens(),
 			TargetFrom.SacredSite => presence.SacredSites,
 			TargetFrom.SuperSacredSite => presence.SuperSacredSites,
 			TargetFrom.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null 

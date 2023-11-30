@@ -4,12 +4,12 @@
 /// Configures TokenMover to bring tokens allong
 /// </summary>
 static public class Bring {
-	static public void FromAnywhere( TokenMover mover, Spirit spirit, Quota quota ) {
-		mover
-			.Track( async moved => {
-				await new TokenMover( spirit, "Bring", moved.From, moved.To )
-					.UseQuota( quota )
-					.DoUpToN();
-			} );
+	static public Func<TokenMovedArgs,Task> FromAnywhere( Spirit spirit, Quota quota ) {
+		return async moved => {
+			await new TokenMover( spirit, "Bring", moved.From, moved.To )
+				.UseQuota( quota )
+				.DoUpToN();
+		};
 	}
+
 }

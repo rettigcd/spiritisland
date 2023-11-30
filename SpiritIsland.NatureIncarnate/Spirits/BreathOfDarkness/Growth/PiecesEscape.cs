@@ -11,7 +11,7 @@ public class PiecesEscape : SpiritAction {
 	}
 
 	public override async Task ActAsync( SelfCtx ctx ) {
-		await new TokenMover(ctx.Self,"Escape",EndlessDark.Space,ctx.Self.Presence.Spaces.Tokens().ToArray())
+		await new TokenMover(ctx.Self,"Escape",EndlessDark.Space,ctx.Self.Presence.Lands.Tokens().ToArray())
 			.AddGroup( NumToEscape, EndlessDark.Space.Tokens.ClassesPresent)
 			.DoN();
 	}

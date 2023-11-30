@@ -6,22 +6,21 @@ public class ACircuitousAndWendingJourney {
 	[Instructions( "Push up to half (round up) of Invaders from target land. Do likewise (separately) for Dahan, Presence, and Beasts." ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-		var pusher = ctx.Pusher;
+		var selector = ctx.SourceSelector;
 		// Push up to half( round up ) of Invaders from target land.
-		AddHalf( pusher, ctx.Tokens, Human.Invader );
+		AddHalf( selector, ctx.Tokens, Human.Invader );
 		// Do likewise( separately) for dahan, presence, and beast.
-		AddHalf( pusher, ctx.Tokens, Human.Dahan );
-		AddHalf( pusher, ctx.Tokens, ctx.AllPresenceTokens );
-		AddHalf( pusher, ctx.Tokens, Token.Beast );
+		AddHalf( selector, ctx.Tokens, Human.Dahan );
+		AddHalf( selector, ctx.Tokens, ctx.AllPresenceTokens );
+		AddHalf( selector, ctx.Tokens, Token.Beast );
 
-		return pusher.DoUpToN();
+		return selector.PushUpToN( ctx.Self );
 	}
 
-	static void AddHalf( TokenMover pusher, SpaceState tokens, params ITokenClass[] groups ) {
+	static void AddHalf( SourceSelector source, SpaceState tokens, params ITokenClass[] groups ) {
 		int count = (tokens.SumAny( groups )+1) / 2; // +1 causes rounds up
-		pusher.AddGroup( count, groups );
+		source.AddGroup( count, groups );
 	}
-
 
 }
 

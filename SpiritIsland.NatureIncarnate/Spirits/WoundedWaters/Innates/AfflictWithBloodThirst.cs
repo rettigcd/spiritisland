@@ -53,10 +53,10 @@ public class AfflictWithBloodThirst {
 	[InnateTier( "1 sun,2 animal", "For each Beast, Push 1 Explorer and 1 Town/Dahan.", 3 )]
 	static public async Task Option4( TargetSpaceCtx ctx ) {
 		int beastCount = ctx.Beasts.Count;
-		await ctx.Pusher
+		await ctx.SourceSelector
 			.AddGroup(beastCount,Human.Explorer)
 			.AddGroup(beastCount,Human.Town,Human.Dahan)
-			.DoN();
+			.PushN(ctx.Self);
 	}
 
 }

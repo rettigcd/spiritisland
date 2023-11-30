@@ -11,17 +11,20 @@ public class TidalBoon {
 		// If dahan are pushed to your ocean, you may move them to any coastal land instead of drowning them.
 		Ocean.EnableSavingDahan();
 
+		// Target Spirit...
+		await TargetSpiritAction( ctx.Other );
+	}
+
+	static async Task TargetSpiritAction( Spirit other ) {
 		// target spirit gains 2 energy 
-		ctx.Other.Energy += 2;
+		other.Energy += 2;
 
 		// and may push 1 town and up to 2 dahan from one of their lands.
-		var pushLand = await ctx.OtherCtx.TargetLandWithPresence( "Select land to push town and 2 dahan" );
-
-		await pushLand
-			.Pusher
+		await new SourceSelector( other.Presence.Lands.Tokens() )
+			.FromASingleLand()
 			.AddGroup(1,Human.Town)
 			.AddGroup(2,Human.Dahan)
-			.DoUpToN();
+			.PushUpToN(other);
 	}
 
 }

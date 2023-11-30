@@ -19,9 +19,9 @@ public sealed class IncarnaPresence
 		? base.Deployed
 		: base.Deployed.Include( Incarna.On(Incarna.Space.Space) );
 
-	public override IEnumerable<Space> Spaces => Incarna.Space == null
-		? base.Spaces
-		: base.Spaces.Include( Incarna.Space.Space );
+	public override IEnumerable<Space> Lands => Incarna.Space == null
+		? base.Lands
+		: base.Lands.Include( Incarna.Space.Space );
 
 	public override bool IsOn( SpaceState spaceState ) {
 		return base.IsOn( spaceState ) 

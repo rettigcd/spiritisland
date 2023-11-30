@@ -30,15 +30,15 @@ public class UnearthABeastOfWrathfulStone {
 			await ctx.Tokens.AddAsync( beastToken, 1 );
 
 			// You may Push that Beast.
-			await ctx.Pusher
+			await ctx.SourceSelector
 				.AddGroup( 1, Token.Beast )
-				.ConfigSource( src => src.FilterSpaceToken( st => st.Token == beastToken ) )
-				.Track( async moved => {
+				.FilterSpaceToken( st => st.Token == beastToken )
+				.ConfigDestination(d=>d.Track( async to => {
 					// 1 Fear and 2 Damage in its land.
-					GameState.Current.Fear.AddDirect( new FearArgs( 1 ) { space = moved.To.Space } );
-					await moved.To.DamageInvaders( ctxx.Self, 2 );
-				} )
-				.DoN();
+					GameState.Current.Fear.AddDirect( new FearArgs( 1 ) { space = to.Space } );
+					await to.DamageInvaders( ctxx.Self, 2 );
+				} ))
+				.PushN( ctx.Self );
 		}
 		
 	}
@@ -125,31 +125,31 @@ public class MarkedBeast : IToken
 	#region IActionFactory - push token every slow
 
 	void AddSlowPushToSpirit(Spirit s ) {
-		if(_space != null) // if the beast has been placed on the board.
+		if(_spaceState != null) // if the beast has been placed on the board.
 			s.AddActionFactory( this );
 	}
 
 	string IActionFactory.Name => "Push Marked Beast";
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Slow;
 	public async Task ActivateAsync( SelfCtx ctx ) {
-		await TokenMover.Push(ctx.Self,_space)
+		await _spaceState!.SourceSelector
 			.AddGroup(1,Token.Beast)
-			.ConfigSource(src=>src.FilterSpaceToken(st=>st.Token==this))
-			.DoUpToN();
+			.FilterSpaceToken(st=>st.Token==this)
+			.PushUpToN(ctx.Self);
 		// 1 Fear and 2 Damage in its land.
-		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _space!.Space });
-		await _space.DamageInvaders(ctx.Self,2);
+		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _spaceState!.Space }); // don't cache space-state, it might have moved
+		await _spaceState.DamageInvaders(ctx.Self,2);
 	}
 	#endregion
 
 	#region Track Token Space
 	void IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ) {
-		if(args.Added == this) _space = args.To;
+		if(args.Added == this) _spaceState = args.To;
 	}
 	#endregion
 
 	#region private fields
-	SpaceState? _space;
+	SpaceState? _spaceState;
 	#endregion
 
 }

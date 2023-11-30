@@ -41,7 +41,7 @@ public class ExaltationOfTheIncandescentSky {
 		ctx.Self.AddActionFactory(new ResolveSlowDuringFast());
 
 		// do 3 Damage in one of their lands.
-		Space space = await ctx.Self.Select(new A.Space("Do 3 Damage in land",ctx.Self.Presence.Spaces,Present.Done));
+		Space space = await ctx.Self.Select(new A.Space("Do 3 Damage in land",ctx.Self.Presence.Lands,Present.Done));
 		if(space == null) return;
 		await space.Tokens.DamageInvaders(ctx.Self,3);
 	}

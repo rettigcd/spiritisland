@@ -25,7 +25,7 @@ class HasburgBuilder : BuildEngine {
 				// Gather 1 Town 
 				.AddGroup( 1, Human.Town )
 				// from a land not matching a Build Card.
-				.FilterSource( ss => !cardDependentBuildSpaces.Contains( ss ) )
+				.ConfigSource(s=>s.FilterSource( ss => !cardDependentBuildSpaces.Contains( ss ) ) )
 				.DoN();
 		}
 	}

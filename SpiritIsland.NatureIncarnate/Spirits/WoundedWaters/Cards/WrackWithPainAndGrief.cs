@@ -7,10 +7,10 @@ public class WrackWithPainAndGrief {
 	[Instructions( "2 Fear. Push 1 Explorer and 1 Town." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		ctx.AddFear(2);
-		await ctx.Pusher
+		await ctx.SourceSelector
 			.AddGroup(1,Human.Explorer)
 			.AddGroup(1,Human.Town)
-			.DoN();
+			.PushN(ctx.Self);
 	}
 
 }

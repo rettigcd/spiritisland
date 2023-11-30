@@ -13,9 +13,10 @@ public class BlazingIntimidation {
 
 		// Push 2 Explorer/Town to a land without Incarna.
 		if(ctx.Self.Presence is not IHaveIncarna ihi) return;
-		await ctx.Pusher.AddGroup(2,Human.Explorer_Town)
-			.FilterDestination( x => x[ihi.Incarna]==0 )
-			.DoN();
+		await ctx.SourceSelector
+			.AddGroup(2,Human.Explorer_Town)
+			.ConfigDestination( d=>d.FilterDestination( x => x[ihi.Incarna]==0 ) )
+			.PushN(ctx.Self);
 	}
 
 }

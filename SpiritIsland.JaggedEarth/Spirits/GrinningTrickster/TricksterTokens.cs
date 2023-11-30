@@ -8,8 +8,10 @@ public class TricksterTokens : SpaceState {
 	}
 	public override BlightTokenBinding Blight => new TricksterBlight(this);
 	public override TokenMover Gather( Spirit self ) => base.Gather( self ).RunAtMax( _runAtMax );
-	public override TokenMover Pusher( Spirit self, bool stoppedByBadlands=false ) 
-		=> base.Pusher( self, stoppedByBadlands ).RunAtMax( _runAtMax );
+
+	public override TokenMover Pusher( Spirit self, SourceSelector sourceSelector ) 
+		=> base.Pusher( self, sourceSelector )
+			.RunAtMax( _runAtMax );
 
 	public override async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) {
 		HumanToken humanToken = await AddRemoveStrifeAsync( invader, 1, 1 );

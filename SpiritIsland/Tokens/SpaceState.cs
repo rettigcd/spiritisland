@@ -480,8 +480,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public virtual TokenMover Gather( Spirit self ) 
 		=> new TokenMover( self, "Gather", Adjacent, this );
 
-	public virtual TokenMover Pusher( Spirit self, bool stoppedByIsolate = false ) 
-		=> new TokenMover( self, "Push", SourceSelector, stoppedByIsolate ? DestinationSelector.Nada : DestinationSelector.Adjacent ); // !!! this doesn't detect if there is an isolate to stop the push.
+	public virtual TokenMover Pusher( Spirit self, SourceSelector sourceSelector ) 
+		=> new TokenMover( self, "Push", sourceSelector, PushDestinations );
+
+	public virtual DestinationSelector PushDestinations => DestinationSelector.Adjacent;
 
 	#region Ravage
 

@@ -24,7 +24,7 @@ public class PunishThoseWhoTrespass {
 		await ctx.Dahan.Destroy( 1 );
 
 		// 4 plant  split this power's damage however desired between target land and another 1 of your lands
-		int damageToTarget = await ctx.Self.Elements.GetAsync(Element.Plant) < 4 && 1<ctx.Self.Presence.Spaces.Count()
+		int damageToTarget = await ctx.Self.Elements.GetAsync(Element.Plant) < 4 && 1<ctx.Self.Presence.Lands.Count()
 			? damage
 			: await ctx.Self.SelectNumber("Damage to apply to "+ctx.Space.Label, damage );
 
@@ -34,7 +34,7 @@ public class PunishThoseWhoTrespass {
 		if(remainingDamage > 0) {
 			var secondaryTarget = await ctx.SelectAsync(new A.Space(
 				$"Apply {remainingDamage} reamaining damage"
-				,ctx.Self.Presence.Spaces
+				,ctx.Self.Presence.Lands
 				, Present.Always
 			));
 			await ctx.Target(secondaryTarget).DamageInvaders(remainingDamage);

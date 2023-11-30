@@ -12,25 +12,20 @@ Don't move specific rules into the base (that solves 1 problem).  Move generic r
 Override methods to change behavior.  Hook into events to augment (add to) behavior.
 Instead of deriving a new class for every change.  Break the behavior into behavior objects and mix and match.
 
+Single inheritance ===> Prefer Composition over Inheritance
+
 Text + Action<T> creates SpiritActions and SpaceActions.  Commands that act on a context <T>.
 
 In tests:  Start an async method, make the UI calls, then await the Task to complete before checking stuff.
 
+async in parallel can choke off threads - xUnit - limit # of tests running in parallel using Collections
+
+
+
+
 ==== To Do ====
 
-PUSHER - TokenPusher -> when pushing from Multiple lands, need a way to Implement on SpaceState.Pusher
-PUSHER - Replace TokenPusher (on SpaceState) with .Push( beforeToken )
-PUSHER - UnbearableGaze - Pusher does not use SpaceState.Pusher (because it works on multiple spaces.)
-PUSHER - Instead of calling TargetSpaceCtx.Push(...), maybe we should create a Quota and/or SourceSelector and call .Push(UpTo)N() on it. 
-		- THEN when we call .Push() we could pass an optional Filter instead of having to call .FilterDestination() before the push.
-
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
-
-SOURCE SELECTOR - Change the TokenMove.Filters to .ConfigFilter or .ConfigDestination()
-SOURCE SELECTOR - ReplaceInvader.DowngradeXXX could take a SourceSelector instead of hard coded.
-SOURCE SELECTOR - If we could late-bind TokenMover, then it would act more like a Command.  (See if Token Mover can be decomposed into SS followed by .DoMoveAction())
-SOURCE SELECTOR - Destroying presence simplified into a SourceSelector followed by .DoDestroy(N)   (TransformativeSacrifice and probably others)
-
 
 Move Growths out of Spirit folder into common SpiritAction folder.
 Rebrand things under the Growth folder as SpiritAction.

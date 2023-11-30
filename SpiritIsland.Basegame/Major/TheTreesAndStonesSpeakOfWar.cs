@@ -14,15 +14,10 @@ public class TheTreesAndStonesSpeakOfWar {
 		// if you have 2 sun, 2 earth, 2 plant
 		if( await ctx.YouHave("2 sun, 2 earth, 2 plant")) {
 			// you may push up to 2 dahan
-			var pushedToLands = new HashSet<SpaceState>();
-			await ctx.Pusher
+			await ctx.SourceSelector
 				.AddGroup( 2, Human.Dahan )
-				.Track( moved => pushedToLands.Add( moved.To ) )
-				.DoUpToN();
-
-			// defend pushed
-			foreach(var d in pushedToLands)
-				ctx.Target(d).Defend( 2 );
+				.ConfigDestination( Distribute.OnEachDestinationLand( to => to.Defend.Add(2) ) )
+				.PushUpToN(ctx.Self );
 		}
 
 		// -- defend remaining --

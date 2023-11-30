@@ -15,11 +15,10 @@ public class ScorchingConvergence {
 			);
 
 		await new TokenMover( ctx.Self, "Move",
-			new SourceSelector( originOptions ),
+			new SourceSelector( originOptions ).FromASingleLand(),
 			new DestinationSelector( ctx.Tokens )
 		)
 			.AddAll( ctx.Self.Presence )
-			.ConfigSource( SelectFrom.ASingleLand )
 			.DoN();
 
 		// record Starting Invaders / Dahan

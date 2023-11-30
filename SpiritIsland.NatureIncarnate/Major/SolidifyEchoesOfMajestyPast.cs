@@ -10,7 +10,7 @@ public class SolidifyEchoesOfMajestyPast {
 	static public async Task ActAsync(TargetSpiritCtx ctx){
 
 		// Choose one of target Spirit's lands.
-		Space center = await ctx.Self.Select(new A.Space("Select Central Hub", ctx.Other.Presence.Spaces,Present.Always));
+		Space center = await ctx.Self.Select(new A.Space("Select Central Hub", ctx.Other.Presence.Lands,Present.Always));
 		if(center == null) return; // is this possible?
 
 		// In that land and each adjacent, Defend 3.

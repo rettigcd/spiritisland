@@ -4,7 +4,7 @@
 /// Selects destination for moving tokens.
 /// Has dynamic filter if allowed destinations change.
 /// </summary>
-public class DestinationSelector {
+public sealed class DestinationSelector {
 
 	static public DestinationSelector Adjacent => new DestinationSelector(GetAdjacents);
 	static public DestinationSelector Nada => new DestinationSelector();
@@ -38,6 +38,8 @@ public class DestinationSelector {
 
 	#region public config
 
+	public DestinationSelector Config(Action<DestinationSelector> configurer ) { configurer(this); return this; }
+
 	/// <summary> Filters the spaces 1 at a time. </summary>
 	public DestinationSelector FilterDestination( Func<SpaceState, bool> filterDestination ) {
 		_filterDestination = items => items.Where( filterDestination );
@@ -57,7 +59,7 @@ public class DestinationSelector {
 
 	#endregion public config
 
-	public virtual async Task<Space> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
+	public async Task<Space> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
 
 		var unfiltered = _unfiltered( sourceSpaceToken ).ToArray();
 		var filtered = _filterDestination( unfiltered ).ToArray();
@@ -67,18 +69,43 @@ public class DestinationSelector {
 		IEnumerable<SpaceState> destinationOptions = _filterDestination( _unfiltered( sourceSpaceToken ) )
 			.Where(ss=>TerrainMapper.Current.IsInPlay(ss.Space));
 
-		return await spirit.Select(
+		var destination = await spirit.Select(
 			new A.Space( $"{actionWord} {sourceSpaceToken.Token.Text} to", inPlay.Downgrade(), _present )
 				.ComingFrom( sourceSpaceToken.Space )
 				.ShowTokenLocation( sourceSpaceToken.Token )
 			);
+		if(destination !=null)
+			await NotifyAsync(destination);
+		return destination;
 	}
 
 	public Space Single { get; }
 
+	#region Event / Callback
+
+	public DestinationSelector Track( Action<SpaceState> onDestinationSelected ) {
+		_onMoved.Add( (x)=>{ onDestinationSelected(x); return Task.CompletedTask; } );
+		return this;
+	}
+
+	public DestinationSelector Track( Func<SpaceState,Task> onDestinationSelected ) {
+		_onMoved.Add(onDestinationSelected);
+		return this;
+	}
+
+	async Task NotifyAsync( SpaceState destination ) {
+		foreach(var onMoved in _onMoved)
+			await onMoved( destination );
+	}
+
+	readonly List<Func<SpaceState, Task>> _onMoved = new();
+
+	#endregion
+
+
 	Func<IEnumerable<SpaceState>, IEnumerable<SpaceState>> _filterDestination = x => x;
 
-	readonly protected Func<SpaceToken, SpaceState[]> _unfiltered;
+	readonly Func<SpaceToken, SpaceState[]> _unfiltered;
 	Present _present = Present.AutoSelectSingle;
 
 }

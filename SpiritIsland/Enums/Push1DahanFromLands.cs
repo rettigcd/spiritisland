@@ -6,11 +6,8 @@ public class Push1DahanFromLands : SpiritAction {
 	public Push1DahanFromLands():base("Push 1 Dahan from Lands" ) { }
 
 	public override async Task ActAsync( SelfCtx ctx ) {
-		var dahanOptions = ctx.Self.Presence.Spaces.Tokens()
-			.SelectMany(space=> space.Dahan.NormalKeys.On(space.Space));
-		var source = await ctx.SelectAsync(new A.SpaceToken("Select dahan to push from land",dahanOptions,Present.Done));
-		if(source == null) return;
-
-		await source.Space.Tokens.Pusher(ctx.Self).MoveSomewhereAsync( source );
+		await new SourceSelector( ctx.Self.Presence.Lands.Tokens() )
+			.AddGroup(1,Human.Dahan)
+			.PushN( ctx.Self );
 	}
 }

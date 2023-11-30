@@ -8,7 +8,7 @@ public class EntwineTheFatesOfAll {
 	static async public Task ActAsync( TargetSpiritCtx ctx ) {
 		var space = await ctx.Self.Select( new A.Space( 
 			"Select space to defend 2/presence.", 
-			ctx.Other.Presence.Spaces,	// Target-Spirit's lands, not Self's lands
+			ctx.Other.Presence.Lands,	// Target-Spirit's lands, not Self's lands
 			Present.Always 
 		) );
 		SpaceState tokens = space.Tokens;

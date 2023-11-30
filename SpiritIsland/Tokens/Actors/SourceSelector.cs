@@ -42,6 +42,7 @@ public class SourceSelector {
 
 	#region public Config
 
+//	public SourceSelector Config( Func<SourceSelector,SourceSelector> configuration ) { configuration(this); return this;}
 	public SourceSelector Config( Action<SourceSelector> configuration ) { configuration(this); return this;}
 
 	/// <summary>
@@ -146,11 +147,12 @@ public class SourceSelector {
 
 
 static public class SelectFrom {
-	static public void ASingleLand( SourceSelector ss ) {
+	static public SourceSelector FromASingleLand( this SourceSelector ss ) {
 		Space source = null;
 		ss
 			.Track( spaceToken => source ??= spaceToken.Space )
 			.FilterSource( spaceState => source is null || spaceState.Space == source );
+		return ss;
 	}
 }
 

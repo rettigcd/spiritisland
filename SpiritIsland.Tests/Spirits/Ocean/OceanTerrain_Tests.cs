@@ -303,8 +303,6 @@ public class OceanTerrain_Tests {
 		Task task = oceanSpirit.ResolveActions( gameState );
 
 		oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
-		//  And: Primary selects A2 space
-		Choose( "A2" );
 		//  And: Pushes town into ocean
 		Choose( "T@2" );
 		NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
@@ -359,12 +357,12 @@ public class OceanTerrain_Tests {
 	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
 
 	void Given_PrimaryPresenceOnlyOn( Space space ) {
-		foreach(SpaceState ss in primarySpirit.Presence.Spaces.Tokens().ToArray())
+		foreach(SpaceState ss in primarySpirit.Presence.Lands.Tokens().ToArray())
 			SpiritExtensions.Given_Adjust( primarySpirit.Presence, ss, -1 );
 
 		// Add to
 		SpiritExtensions.Given_Adjust( primarySpirit.Presence, gameState.Tokens[space], 1 );
-		primarySpirit.Presence.Spaces.Tokens().SelectLabels().Join( "," ).ShouldBe( space.Text );
+		primarySpirit.Presence.Lands.Tokens().SelectLabels().Join( "," ).ShouldBe( space.Text );
 	}
 
 	

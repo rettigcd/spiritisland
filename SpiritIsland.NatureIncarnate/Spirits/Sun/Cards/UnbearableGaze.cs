@@ -17,18 +17,11 @@ public class UnbearableGaze {
 	}
 
 	static async Task PushFromTargetOrOrigin( TargetSpaceCtx ctx, int max, params HumanTokenClass[] tokenClasses ) {
-		// If we want to use SpaceState.Pusher, we need to do them 1 at a time, not together.
-		SpaceState? selectedOrigin = null;
-		await new TokenMover( ctx.Self, "Push"
-			, new SourceSelector( FindOrigins( ctx ).Append( ctx.Tokens ).Distinct() )
-			, DestinationSelector.Adjacent
-		)
+
+		await new SourceSelector( FindOrigins( ctx ).Append( ctx.Tokens ).Distinct() )
 			.AddGroup( max, tokenClasses )
-			.Track( move => { if(move.From != ctx.Tokens) selectedOrigin = move.From; } )
-			.FilterDestination( s => s == ctx.Space || selectedOrigin == null || selectedOrigin == s )
-			.DoN();
-
-
+			.Config( FromTargetOrOrigin(ctx.Space) )
+			.PushN( ctx.Self );
 	}
 
 	static IEnumerable<SpaceState> FindOrigins( TargetSpaceCtx ctx )
@@ -38,4 +31,13 @@ public class UnbearableGaze {
 				new TargetingSourceCriteria( TargetFrom.SacredSite ),
 				new TargetCriteria( 1 )
 			);
+
+	static Action<SourceSelector> FromTargetOrOrigin( Space target ) {
+		return (ss) => {
+			Space? selectedOrigin = null;
+			ss.Track( from => { if(from.Space != target) selectedOrigin = from.Space; } );
+			ss.FilterSource( ss => ss == target || selectedOrigin == null || selectedOrigin == ss.Space );
+		};
+	}
+
 }

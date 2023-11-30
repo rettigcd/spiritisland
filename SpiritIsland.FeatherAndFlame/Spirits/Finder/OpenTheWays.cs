@@ -15,7 +15,7 @@ class OpenTheWays : IActionFactory {
 	public async Task ActivateAsync( SelfCtx ctx ) {
 		if(ctx.Self is not FinderOfPathsUnseen finder) return;
 
-		var options = ctx.Self.Presence.Spaces.Tokens().ToList();
+		var options = ctx.Self.Presence.Lands.Tokens().ToList();
 		// Select 2 space to link
 		var end0 = (await ctx.SelectTargetSpaceAsync( "Select 1st space to make adjacent", options.Downgrade() )).Tokens;
 		options.Remove( end0 );

@@ -4,9 +4,6 @@ public sealed class TokenMover {
 
 	#region Static Factories
 
-	/// <summary> Routes to Pusher on the SpaceState (because that is overridable by Spirit powers) </summary>
-	static public TokenMover Push(Spirit self, SpaceState source) => source.Pusher(self);
-
 	/// <summary> Routes to Gatherer on the SpaceState (because that is overridable by Spirit powers) </summary>
 	static public TokenMover Gather( Spirit self, SpaceState destination ) => destination.Gather(self);
 
@@ -64,24 +61,15 @@ public sealed class TokenMover {
 	}
 
 	async Task DoSomethingWithSource( SpaceToken sourceToken ) {
-		TokenMovedArgs tokenMoved = await MoveSomewhereAsync( sourceToken );
+		TokenMovedArgs tokenMoved = await sourceToken.MoveToAsync(_actionWord,_destinationSelector,_self);
 		await NotifyAsync( tokenMoved );
-	}
-
-	/// <remarks>
-	/// The only time this needs called individually is if the token was already selected 
-	/// such as when token is picked during selection of lands also.
-	/// </remarks>
-	public async Task<TokenMovedArgs> MoveSomewhereAsync( SpaceToken spaceToken ) {
-		Space destination = await _destinationSelector.SelectDestination( _self, _actionWord, spaceToken );
-		return destination == null ? null
-			: await spaceToken.Token.Move( spaceToken.Space.Tokens, destination );
 	}
 
 	#region Config
 
-	public TokenMover Config( Action<TokenMover> configuration ) { configuration( this); return this;}
-	public TokenMover ConfigSource( Action<SourceSelector> configuration ) { _sourceSelector.Config(configuration); return this;}
+	/// <summary> Used for Gathering </summary>
+	public TokenMover ConfigSource( Func<SourceSelector,SourceSelector> configuration ) { configuration(_sourceSelector); return this;}
+	public TokenMover ConfigDestination( Action<DestinationSelector> configure ) { configure(_destinationSelector); return this; }
 
 	public TokenMover RunAtMax(bool runAtMax) { _upToNPresent = runAtMax ? Present.Always : Present.Done; return this; }
 
@@ -90,25 +78,11 @@ public sealed class TokenMover {
 	public TokenMover AddAll( params ITokenClass[] classes ) { _sourceSelector.AddAll( classes ); return this; }
 	public TokenMover UseQuota( Quota quota ) { _sourceSelector.UseQuota( quota ); return this; }
 
-	// Config - Source
-	public TokenMover FilterSource( Func<SpaceState, bool> filterSource ) { _sourceSelector.FilterSource(filterSource); return this; }
-
-	/// Config - Destination
-	public TokenMover FilterDestination( Func<SpaceState, bool> filterDestination ) { _destinationSelector.FilterDestination(filterDestination); return this; }
-	public TokenMover FilterDestinationGroup( Func<IEnumerable<SpaceState>, IEnumerable<SpaceState>> filterGroup ) { _destinationSelector.FilterDestinationGroup( filterGroup ); return this; }
-
-	public TokenMover ConfigDestinationAsOptional() { _destinationSelector.ConfigAsOptional(); return this; }
-
 	#endregion
 
 	#region Event / Callback
 
-	public TokenMover Track( Action<TokenMovedArgs> onMoved ) {
-		_onMoved.Add( (x)=>{ onMoved(x); return Task.CompletedTask; } );
-		return this;
-	}
-
-	public TokenMover Track( Func<TokenMovedArgs,Task> onMoved ) {
+	public TokenMover Bring( Func<TokenMovedArgs,Task> onMoved ) {
 		_onMoved.Add(onMoved);
 		return this;
 	}

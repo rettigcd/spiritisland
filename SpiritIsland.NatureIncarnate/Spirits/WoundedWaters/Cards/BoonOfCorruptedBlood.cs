@@ -16,7 +16,7 @@ public class BoonOfCorruptedBlood {
 		int damage = isSelf ? 1 : 2;
 		TargetSpaceCtx spaceCtx = await ctx.SelectTargetSpaceAsync(
 			$"Name: {damage} Damage" + (isSelf ? "" : ", Destroy Presence, Gather 1 Beast"), 
-			ctx.Self.Presence.Spaces, 
+			ctx.Self.Presence.Lands, 
 			Present.Done
 		);
 		if(spaceCtx==null) return;

@@ -10,18 +10,11 @@ public class VigorOfTheBreakingDawn {
 		await ctx.DamageInvaders(2*ctx.Dahan.CountAll);
 
 		if( await ctx.YouHave("3 sun,2 animal") ){
-
 			// you may push up to 2 dahan.
-			var pushedToLands = new HashSet<SpaceState>();
-			await ctx.Pusher
+			await ctx.SourceSelector
 				.AddGroup(2,Human.Dahan)
-				.Track(moved=>pushedToLands.Add(moved.To))
-				.DoUpToN();
-
-			// 2 damage per dahan
-			foreach( var neighbor in pushedToLands )
-				await DahanDeal2DamageEach( ctx.Target( neighbor ) );
-
+				.ConfigDestination( Distribute.OnEachDestinationLand( async to => await DahanDeal2DamageEach( ctx.Target( to ) )) )
+				.PushUpToN(ctx.Self );
 		}
 	}
 

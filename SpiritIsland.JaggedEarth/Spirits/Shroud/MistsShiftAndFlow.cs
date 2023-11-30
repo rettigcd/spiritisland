@@ -137,7 +137,7 @@ class MistsShiftAndFlow {
 			.ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = _spirit.Presence.Spaces.Tokens()
+		var flowedSources = _spirit.Presence.Lands.Tokens()
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Except( sources ); // exclude previously found sources
@@ -168,12 +168,12 @@ class MistsShiftAndFlow {
 
 		public SpaceCounts(Spirit spirit) : base() {
 			_spirit = spirit;
-			foreach(var ss in Spaces)
+			foreach(var ss in Lands)
 				Add(ss,spirit.Presence.CountOn( ss ));
 		}
 
 		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
-		public IEnumerable<Space> Spaces => _spirit.Presence.Spaces;
+		public IEnumerable<Space> Lands => _spirit.Presence.Lands;
 
 		public IEnumerable<SpaceState> SacredSites => _spirit.Presence.SacredSites;
 		public IEnumerable<SpaceState> SuperSacredSites => _spirit.Presence.SuperSacredSites;

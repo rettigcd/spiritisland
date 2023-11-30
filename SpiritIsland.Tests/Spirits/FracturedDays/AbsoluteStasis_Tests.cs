@@ -107,7 +107,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
-		cfg.SelfCtx.Self.Presence.Spaces.Count( x => x.Text == "A8" ).ShouldBe( 0 );
+		cfg.SelfCtx.Self.Presence.Lands.Count( x => x.Text == "A8" ).ShouldBe( 0 );
 		//   And: no SS found
 		cfg.Presence.SacredSites.Downgrade().Count( x => x.Text == "A8" ).ShouldBe( 0 );
 	}

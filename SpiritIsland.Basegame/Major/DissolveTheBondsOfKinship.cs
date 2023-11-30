@@ -22,10 +22,10 @@ public class DissolveTheBondsOfKinship {
 			await ExplorersAndCityTownsDamageEachOther( ctx );
 
 		// Push all explorers from target land to as many different lands as possible
-		await ctx.Pusher
+		await ctx.SourceSelector
 			.AddGroup( int.MaxValue, Human.Explorer )
-			.Config( Distribute.ToAsManyLandsAsPossible )
-			.DoN();
+			.ConfigDestination( Distribute.ToAsManyLandsAsPossible )
+			.PushN(ctx.Self);
 
 		static int GetAttackDamageFrom( TargetSpaceCtx ctx, HumanTokenClass cc ) {
 			return ctx.Tokens.HumanOfTag( cc ).Sum( t => ctx.Tokens[t] * t.Attack );

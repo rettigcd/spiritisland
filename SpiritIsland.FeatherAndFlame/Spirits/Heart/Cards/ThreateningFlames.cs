@@ -16,10 +16,10 @@ public class ThreateningFlames {
 		bool HasNoPresence(SpaceState spaceState) => !ctx.Self.Presence.IsOn(spaceState);
 		if( ctx.Adjacent.Any( HasNoPresence ) )
 			// Push 1 explorer / town per Terror Level from target land to adjacent lands without your presence
-			await ctx.Pusher
+			await ctx.SourceSelector
 				.AddGroup(GameState.Current.Fear.TerrorLevel, Human.Explorer_Town)
-				.FilterDestination( HasNoPresence )
-				.DoN();
+				.ConfigDestination( d=>d.FilterDestination( HasNoPresence ) )
+				.PushN(ctx.Self);
 		else
 			// If there are no such adjacent lands, +2 fear
 			ctx.AddFear(2);

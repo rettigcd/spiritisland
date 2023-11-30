@@ -68,13 +68,15 @@ public class TargetSpaceCtx : SelfCtx {
 	public async Task<Space> MoveTokensToSingleLand( int max, TargetCriteria targetCriteria, params ITokenClass[] tokenClass ) {
 
 		Space destination = null;
+
 		await new TokenMover(Self,"Move",
-			SourceSelector,
-			new DestinationSelector( Range( targetCriteria ) ) )
-			.AddGroup(max,tokenClass)
-			.Track( moved=> destination = moved.To.Space )
-			.Config( Distribute.ToASingleLand )
-			.DoUpToN();
+			SourceSelector
+				.AddGroup(max,tokenClass),
+			new DestinationSelector( Range( targetCriteria ) )
+				.Config( Distribute.ToASingleLand )
+				.Track( to => destination = to.Space )
+		).DoUpToN();
+
 		return destination;
 	}
 
@@ -86,23 +88,21 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <returns>Spaces pushed too.</returns>
 	public async Task PushUpTo( int countToPush, params ITokenClass[] groups ) {
-		await Pusher
+		await SourceSelector
 			.AddGroup( countToPush, groups )
-			.DoUpToN();
+			.PushUpToN(Self);
 	}
 
 	public async Task<Space[]> Push( int countToPush, params ITokenClass[] groups ) {
 		List<Space> destinations = new List<Space>();
-		await Pusher
+		await SourceSelector
 			.AddGroup( countToPush, groups )
-			.Track( x => destinations.Add(x.To.Space))
-			.DoN();
+			.ConfigDestination( d=>d.Track( to => destinations.Add(to.Space) ) )
+			.PushN( Self );
 		return destinations.Distinct().ToArray();
 	}
 
 	public SourceSelector SourceSelector => Tokens.SourceSelector;
-
-	public TokenMover Pusher => Tokens.Pusher( Self );
 
 	#endregion Push
 

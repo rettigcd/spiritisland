@@ -25,7 +25,7 @@ public class LostInTheEndlessDark {
 		edCtx.AddFear( fear );
 
 		// downgrade any # of invaders
-		await ReplaceInvader.DowngradeAll( edCtx );
+		await ReplaceInvader.DowngradeAll( edCtx.Self, edCtx.Tokens );
 	}
 
 	[InnateTier( "3 moon, 2 animal", "Add 1 Beast", 2 )]

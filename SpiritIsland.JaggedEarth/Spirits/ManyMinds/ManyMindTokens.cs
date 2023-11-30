@@ -3,21 +3,21 @@
 public partial class ManyMindsMoveAsOne {
 
 	class ManyMindTokens : SpaceState {
+
 		public ManyMindTokens( SpaceState src ):base( src ) { }
-		public override TokenMover Gather( Spirit self ) => new TokenMover( self, "Gather", 
-			new BeastSourceSelector( this ), 
-			new DestinationSelector( this )
-		);
-		public override TokenMover Pusher( Spirit self , bool stoppedByBadlands = false) => new TokenMover(self,"Push",
-			SourceSelector,
-			stoppedByBadlands ? new DestinationSelector() : new DestinationSelector(  ExtendBeastBy1 )
-		);
+
+		public override TokenMover Gather( Spirit self ) 
+			=> new TokenMover( self, "Gather", 
+				new BeastSourceSelector( this ), 
+				new DestinationSelector( this )
+			);
+
+		public override DestinationSelector PushDestinations => new DestinationSelector(  ExtendBeastBy1 );
 
 		static SpaceState[] ExtendBeastBy1( SpaceToken st ) {
 			int range = st.Token.Class == Token.Beast ? 2 : 1; // Compare Class, not Token so we get all beasts
 			return st.Space.Tokens.Range( range ).ToArray();
 		}
-
 
 	}
 

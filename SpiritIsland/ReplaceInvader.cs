@@ -12,16 +12,16 @@ static public class ReplaceInvader {
 		await Downgrade1Token( spirit, tokens, present, options );
 	}
 
-	public static async Task DowngradeAll( TargetSpaceCtx ctx, params HumanTokenClass[] groups ) {
+	public static async Task DowngradeAll( Spirit self, SpaceState tokens, params HumanTokenClass[] groups ) {
 
 		// downgrade any # of invaders
-		var invadersThatCanBeDowngraded = ctx.Tokens.HumanOfAnyTag( groups )
-			.ToDictionary( t => t, t => ctx.Tokens[t] )
+		var invadersThatCanBeDowngraded = tokens.HumanOfAnyTag( groups )
+			.ToDictionary( t => t, t => tokens[t] )
 			.ToCountDict();
 
 		HumanToken[] options = invadersThatCanBeDowngraded.Keys.ToArray();
 		while(0 < options.Length) {
-			var oldInvader = await Downgrade1Token( ctx.Self, ctx.Tokens, Present.Done, options );
+			var oldInvader = await Downgrade1Token( self, tokens, Present.Done, options );
 			if(oldInvader == null) break;
 			// this one downgraded, can't use again
 			invadersThatCanBeDowngraded[oldInvader]--;

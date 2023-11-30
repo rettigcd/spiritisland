@@ -12,11 +12,11 @@ public class RainOfAsh {
 			ctx.AddFear(2);
 
 		// Push 2 dahan and 2 explorer / town to land(s) without your presence.
-		return ctx.Pusher
+		return ctx.SourceSelector
 			.AddGroup( 2, Human.Explorer_Town )
-		.AddGroup( 2, Human.Dahan )
-			.FilterDestination( s => !ctx.Self.Presence.IsOn(s) )
-			.DoN();
+			.AddGroup( 2, Human.Dahan )
+			.ConfigDestination(d=>d.FilterDestination( s => !ctx.Self.Presence.IsOn(s) ))
+			.PushN(ctx.Self);
 	}
 
 }

@@ -17,9 +17,7 @@ public class TwistPerceptions {
 			// Add 1 Strife
 			SpaceToken strifed = await invader.Add1StrifeToAsync();
 			// You may Push the Invader you added Strife to.
-			await TokenMover.Push(ctx.Self, strifed.Space)
-				.ConfigDestinationAsOptional()
-				.MoveSomewhereAsync(strifed);
+			await strifed.PushAsync(ctx.Self);
 		}
 
 	}

@@ -39,10 +39,10 @@ public class ForsakeSocietyToChaseAfterDreams {
 		}
 
 		// Push to new land
-		await ctx.Pusher
-			.AddGroup( invader.RemainingHealth, Human.Explorer )
-			.FilterDestination( ctx.Self.Presence.IsOn )
-			.DoUpToN();
+		await ctx.SourceSelector
+			.AddGroup(invader.RemainingHealth, Human.Explorer)
+			.ConfigDestination(d=>d.FilterDestination( ctx.Self.Presence.IsOn ))
+			.PushUpToN(ctx.Self);
 
 		// If town/city remain, 1 fear.
 		if( ctx.Tokens.HasAny(Human.Town_City) )

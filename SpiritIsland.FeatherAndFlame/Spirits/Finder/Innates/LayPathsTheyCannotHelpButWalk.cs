@@ -14,23 +14,23 @@ public class LayPathsTheyCannotHelpButWalk {
 	[InnateTier( "2 moon,2 air", "Push up to half (rounded down) of Invaders from target land. Do likewise for dahan, presence, and beast (each separately)." )]
 	static async public Task Option1( TargetSpaceCtx ctx ) {
 
-		var pusher = ctx.Pusher;
+		var source = ctx.SourceSelector;
 
 		// Push up to half( rounded down ) of Invaders from target land.
-		AddHalf(pusher, ctx.Tokens, Human.Invader );
+		AddHalf(source, ctx.Tokens, Human.Invader );
 		// Do likewise for dahan
-		AddHalf(pusher, ctx.Tokens, Human.Dahan);
+		AddHalf(source, ctx.Tokens, Human.Dahan);
 		// Presence
-		AddHalf( pusher, ctx.Tokens, ctx.AllPresenceTokens );
+		AddHalf( source, ctx.Tokens, ctx.AllPresenceTokens );
 		// and beast( each separately ).
-		AddHalf( pusher, ctx.Tokens, Token.Beast );
+		AddHalf( source, ctx.Tokens, Token.Beast );
 
-		await pusher.DoUpToN();
+		await source.PushUpToN( ctx.Self );
 	}
 
-	static void AddHalf( TokenMover pusher, SpaceState tokens, params ITokenClass[] groups ) {
+	static void AddHalf( SourceSelector ss, SpaceState tokens, params ITokenClass[] groups ) {
 		int count = tokens.SumAny(groups) / 2; // half rounded down.
-		pusher.AddGroup(count,groups);
+		ss.AddGroup(count,groups);
 	}
 
 

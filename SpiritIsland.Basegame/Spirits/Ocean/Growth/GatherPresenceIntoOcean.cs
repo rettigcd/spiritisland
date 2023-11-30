@@ -5,7 +5,7 @@ public class GatherPresenceIntoOcean : SpiritAction {
 	public GatherPresenceIntoOcean():base( "Gather 1 Presence into EACH Ocean" ) { }
 	public override async Task ActAsync( SelfCtx ctx ) {
 
-		List<SpaceState> gatherSpaces = ctx.Self.Presence.Spaces
+		List<SpaceState> gatherSpaces = ctx.Self.Presence.Lands
 			.Where( p => p.IsCoastal )
 			.Tokens()
 			.Select( p => p.Adjacent_Existing.Single( o => o.Space.IsOcean ) ) // Ocean is not in Play during Growth

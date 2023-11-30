@@ -20,10 +20,10 @@ public class EmergeFromTheDreadNightWind {
 			await ctx.Tokens.SpaceTokensOfAnyTag( Human.Invader ).Single().MoveTo(EndlessDark.Space);
 		else // otherwise
 			// Push up to 2 Explorer / Town to different lands.
-			await ctx.Pusher
+			await ctx.SourceSelector
 				.AddGroup( 2, Human.Explorer_Town )
-				.Config( Distribute.ToAsManyLandsAsPossible )
-				.DoUpToN();
+				.ConfigDestination( Distribute.ToAsManyLandsAsPossible )
+				.PushUpToN( ctx.Self );
 
 		// Push up to 2 Dahan
 		await ctx.PushUpToNDahan(2);

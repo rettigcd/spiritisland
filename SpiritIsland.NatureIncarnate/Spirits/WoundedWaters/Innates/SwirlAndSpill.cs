@@ -18,34 +18,37 @@ public class SwirlAndSpill {
 	[InnateTier( "3 water,1 animal", "1 Fear. Push up to 2 Town/Presence/Beast.", 0 )]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 );
-		await BuildTier2Pusher( ctx )
-			.DoUpToN();
+		await BuildTier2Source( ctx )
+			.PushUpToN( ctx.Self );
 	}
 
 	[InnateTier( "5 water,2 plant,2 animal", "In one land pushed into, Downgrade all Town and all City." )]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 ); // from Tier-2
 
-		await BuildTier2Pusher( ctx )
-			.Config( mvr => InOneLandPushedInto_DowngradeAllTownsAndCities(mvr,ctx))
-			.DoUpToN();
+		await BuildTier2Source( ctx )
+			.ConfigDestination( InOneLandPushedInto_DowngradeAllTownsAndCities(ctx.Self) )
+			.PushUpToN(ctx.Self);
 	}
 
-	static void InOneLandPushedInto_DowngradeAllTownsAndCities( TokenMover mover, TargetSpaceCtx ctx ) {
-		bool used = false;
-		mover.Track( async moved => {
-			if(!used 
-				&& moved.To.HasAny( Human.Town_City ) 
-				&& await ctx.Self.UserSelectsFirstText("Downgrade All Towns/Cities on "+moved.To.Space.Text, "Yes, Downgrade those suckers!", "No, let's ruin someone else's day." )
-			) {
-				used = true;
-				await ReplaceInvader.DowngradeAll( ctx, Human.Town_City );
-			}
-		} );
+	static Action<DestinationSelector> InOneLandPushedInto_DowngradeAllTownsAndCities( Spirit self ) {
+		return d=>{
+			bool used = false;
+			d.Track( async to => {
+				if(!used 
+					&& to.HasAny( Human.Town_City ) 
+					&& await self.UserSelectsFirstText("Downgrade All Towns/Cities on "+to.Space.Text, "Yes, Downgrade those suckers!", "No, let's ruin someone else's day." )
+				) {
+					used = true;
+					await ReplaceInvader.DowngradeAll( self, to, Human.Town_City );
+				}
+			}); 
+		};
 	}
 
-	static TokenMover BuildTier2Pusher( TargetSpaceCtx ctx ) {
-		return ctx.Pusher
+
+	static SourceSelector BuildTier2Source( TargetSpaceCtx ctx ) {
+		return ctx.SourceSelector
 			.AddGroup( 2, Human.Explorer, Human.Dahan, Token.Blight ) // from Tier 1
 			.AddGroup( 2, Human.Town, ctx.Self.Presence, Token.Beast ); // Tier 2;
 	}

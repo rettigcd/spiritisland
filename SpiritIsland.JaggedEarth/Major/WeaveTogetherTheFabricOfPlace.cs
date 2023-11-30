@@ -89,7 +89,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			.ToArray();
 		await toTokens.Gather( ctx.Self )
 			.AddGroup( int.MaxValue, tokenClasses )
-			.FilterSource( ss => ss.Space == from )
+			.ConfigSource(s=>s.FilterSource( ss => ss.Space == from ))
 			.DoUpToN();
 
 		// Move remaining onto themselves so they look moved.

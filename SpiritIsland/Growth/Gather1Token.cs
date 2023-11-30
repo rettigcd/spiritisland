@@ -12,7 +12,7 @@ public class Gather1Token : SpiritAction {
 
 	public override async Task ActAsync( SelfCtx ctx ) {
 		// !! can we simplify this?
-		var options = ctx.Self.Presence.Spaces.Tokens()
+		var options = ctx.Self.Presence.Lands.Tokens()
 			.SelectMany( p => p.Range( _range ) ) // Growth option so this Range ok
 			.Distinct()
 			.ToHashSet();

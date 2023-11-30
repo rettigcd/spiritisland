@@ -11,7 +11,7 @@ public class KeepWatchForNewIncursions {
 	static public Task Option1Async( TargetSpaceCtx ctx ) {
 		return ctx.Gatherer
 			.AddGroup(2,Human.Dahan)
-			.FilterSource(ctx.Self.Presence.IsOn)
+			.ConfigSource(s=>s.FilterSource(ctx.Self.Presence.IsOn))
 			.DoUpToN();
 	}
 

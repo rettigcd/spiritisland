@@ -6,9 +6,9 @@ public class PushIncarna : SpiritAction {
 	public override async Task ActAsync( SelfCtx ctx ) {
 		if(ctx.Self.Presence is not IncarnaPresence presence || presence.Incarna.Space == null ) return;
 
-		await TokenMover.Push(ctx.Self,presence.Incarna.Space)
+		await presence.Incarna.Space.SourceSelector
 			.AddGroup(1,presence.Incarna)
-			.DoN();
+			.PushN( ctx.Self );
 	}
 
 }

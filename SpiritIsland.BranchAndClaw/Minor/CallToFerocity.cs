@@ -13,9 +13,9 @@ public class CallToFerocity {
 
 	static async Task FearAndPushExplorerAndTown( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 );
-		await ctx.Pusher
+		await ctx.SourceSelector
 			.AddGroup( 1, Human.Explorer )
 			.AddGroup( 1, Human.Town )
-			.DoN();
+			.PushN( ctx.Self );
 	}
 }

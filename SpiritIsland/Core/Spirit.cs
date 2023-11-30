@@ -576,7 +576,7 @@ public abstract partial class Spirit : IOption {
 	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria ) {
 		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
 		return rangeCalculator
-			.GetSpaceOptions( Presence.Spaces.Tokens(), targetCriteria );
+			.GetSpaceOptions( Presence.Lands.Tokens(), targetCriteria );
 	}
 
 	#endregion

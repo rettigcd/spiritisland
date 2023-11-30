@@ -8,7 +8,7 @@ public class DrawToTheWatersEdge {
 		// "Gather up to 2 Town from a single land."
 		await ctx.Gatherer
 			.AddGroup(2, Human.Town)
-			.ConfigSource( SelectFrom.ASingleLand )
+			.ConfigSource( SelectFrom.FromASingleLand )
 			.DoUpToN();
 	}
 }

@@ -197,13 +197,13 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	/// <summary> Existing </summary>
 	/// <remarks> Determining SS requires Tokens so default type for SS is SpaceState. </remarks>
-	public IEnumerable<SpaceState> SacredSites => Spaces.Tokens().Where( IsSacredSite );
-	public IEnumerable<SpaceState> SuperSacredSites => Spaces.Tokens().Where( space => 3 <= CountOn( space ) );
+	public IEnumerable<SpaceState> SacredSites => Lands.Tokens().Where( IsSacredSite );
+	public IEnumerable<SpaceState> SuperSacredSites => Lands.Tokens().Where( space => 3 <= CountOn( space ) );
 
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
-	virtual public IEnumerable<Space> Spaces => Token.Spaces_Existing;
+	virtual public IEnumerable<Space> Lands => Token.Spaces_Existing;
 
 	virtual public IEnumerable<SpaceToken> Deployed => Token.Deployed; // don't use .Spaces because it gets overriden to include non-token spaces
 
