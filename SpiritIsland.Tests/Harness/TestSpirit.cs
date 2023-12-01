@@ -40,7 +40,7 @@ class TestSpirit : Spirit {
 		_ = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
 
 		var user = new VirtualTestUser( spirit );
-		var starterCtx = spirit.BindSelf();
+		var starterCtx = spirit.Bind();
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();

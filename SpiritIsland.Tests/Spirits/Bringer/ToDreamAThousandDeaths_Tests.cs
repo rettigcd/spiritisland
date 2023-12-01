@@ -23,7 +23,7 @@ public class ToDreamAThousandDeaths_Tests {
 
 	TargetSpaceCtx MakeFreshPowerCtx(ActionScope actionScope) {
 		actionScope.Owner = _spirit;
-		var ctx = _spirit.BindMyPowers(); // This is correct usage.
+		var ctx = _spirit.Bind(); // This is correct usage.
 		return ctx.Target( _board[5] );
 	}
 
@@ -46,7 +46,7 @@ public class ToDreamAThousandDeaths_Tests {
 		tokens.AdjustDefault(Human.Explorer, count );
 
 		// When: damaging / destroying each invader
-		await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
+		await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_spirit);
 		Func<TargetSpaceCtx,Task> powerCardActionAsync = (method switch { "damage" => OneDamageToEachAsync, "destroy" => DestroyAllExplorersAndTownsAsync, _ => throw new Exception(nameof(method)) });
 		await powerCardActionAsync( MakeFreshPowerCtx( scope ) )
 			.AwaitUserToComplete(method, () => {
@@ -114,7 +114,7 @@ public class ToDreamAThousandDeaths_Tests {
 	}
 
 	async Task Run_OneDamageToEachAsync() {
-		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
+		await using var actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_spirit);
 		await OneDamageToEachAsync( MakeFreshPowerCtx( actionScope ) );
 	}
 
@@ -149,7 +149,7 @@ public class ToDreamAThousandDeaths_Tests {
 		tokens.Adjust( StdTokens.City1, 1 );
 
 		{
-			await using ActionScope scope = await ActionScope.Start(ActionCategory.Spirit_Power);
+			await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_spirit);
 
 			// When: doing 4 points of damage
 			await FourDamage( MakeFreshPowerCtx( scope ) )

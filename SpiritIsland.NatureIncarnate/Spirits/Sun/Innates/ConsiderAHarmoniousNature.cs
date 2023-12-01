@@ -44,7 +44,7 @@ public class ConsiderAHarmoniousNature {
 			Present.Done
 		));
 		if(other != null)
-			await new AddDestroyedPresence( 0 ).RelativeTo( ctx.Self ).ActAsync( other.BindSelf() );
+			await new AddDestroyedPresence( 0 ).RelativeTo( ctx.Self ).ActAsync( other.Bind() );
 		return other;
 	}
 
@@ -99,7 +99,7 @@ class DestroyPresenceInsteadOfAddingBlight : BaseModEntity, IModifyAddingTokenAs
 			&& await _spirit.UserSelectsFirstText($"Destroy 1 presence instead of adding {args.Count} of blight to {args.To.Space.Text}?", "Yes, destroy my presence instead", "No, bring on the blight!")
 		) {
 			GameState.Current.Log(new Log.Debug($"{_source} stopped blight on {args.To.Space.Text} by destroying presence."));
-			await Cmd.DestroyPresence().ActAsync(_spirit.BindSelf());
+			await Cmd.DestroyPresence().ActAsync(_spirit.Bind());
 			args.Count = 0;
 		}
 	}

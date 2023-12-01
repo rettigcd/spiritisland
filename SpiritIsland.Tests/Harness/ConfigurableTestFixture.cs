@@ -91,7 +91,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	public SelfCtx SelfCtx {
 		get {
-			return _selfCtx ??= Spirit.BindMyPowers();
+			return _selfCtx ??= Spirit.Bind();
 		}
 		set => _selfCtx = value;
 	}

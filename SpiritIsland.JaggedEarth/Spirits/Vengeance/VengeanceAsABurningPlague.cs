@@ -63,9 +63,10 @@ public class VengeanceAsABurningPlague : Spirit {
 			space.ReplaceAllWith(SpiritIsland.Token.Disease_Original,newDisease);
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit ) {
-		ActionScope.Current.Upgrader = (ss) => new VengeanceSpaceState( ss );
-		return new SelfCtx( spirit );
+	public override void InitSpiritAction( ActionScope scope ) {
+		if( scope.Category == ActionCategory.Spirit_Power )
+			scope.Upgrader = (ss) => new VengeanceSpaceState( ss );
 	}
+
 
 }

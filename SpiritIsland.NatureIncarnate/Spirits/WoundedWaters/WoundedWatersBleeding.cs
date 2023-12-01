@@ -119,7 +119,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		await Cmd.Pick1<SelfCtx>(
 			Cmd.DestroyPresence(),
 			Cmd.ForgetPowerCard
-		).ActAsync(BindSelf());
+		).ActAsync(Bind());
 	}
 
 	readonly IHealingCard[] HealingCards = new IHealingCard[] {

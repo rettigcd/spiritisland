@@ -31,9 +31,7 @@ INCARNA - Make SpiritPresence & Incana derive from SpaceToken
 INCARNA - Should all SpiritPresence have nullable Incarna token property so we don't have to use: is IHaveIncarna ihi?
 INCARNA - Add a Spirit-Presence tag that All Spirit Tokens (& Incarna) match against - so we can count Presence (Entwine the fates of all)
 
-BIND - BindXXX() - combine into a single method
 BIND - SelfCtx - do we need this for anything? just replace with Spirit
-BIND - Combine Spirit.BindXXX methods into 1
 
 ----------
 ----------

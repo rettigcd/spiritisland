@@ -102,7 +102,7 @@ public class StarlightSeeksItsForm : Spirit {
 		Presence.CardPlays.TrackRevealed.Add( CardPlaysRevealed );
 
 	}
-	SelfCtx Bind() => ActionIsMyPower ? BindMyPowers() : BindSelf();
+
 	async Task EnergyRevealed( TrackRevealedArgs args ) {
 		if(args.Track == Track_Gain1Energy)
 			Energy++;

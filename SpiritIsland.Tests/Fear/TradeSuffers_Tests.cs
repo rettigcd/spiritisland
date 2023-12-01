@@ -64,7 +64,7 @@ public class TradeSuffers_Tests {
 		gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );
 		gs.Initialize(); 
 
-		var starterCtx = spirit.BindSelf();
+		var starterCtx = spirit.Bind();
 
 		// Disable destroying presence
 		gs.DisableBlightEffect();

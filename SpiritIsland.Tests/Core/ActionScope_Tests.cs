@@ -12,7 +12,7 @@ public class ActionScope_Tests {
 
 		{
 			// And: we create a child actions scope
-			await using var childScope = await ActionScope.Start(ActionCategory.Spirit_Power);
+			await using var childScope = await ActionScope.Start(ActionCategory.Default);
 			childId = childScope.Id;
 
 			// When: we cross the await boundary (causing a TaskLocal copy)

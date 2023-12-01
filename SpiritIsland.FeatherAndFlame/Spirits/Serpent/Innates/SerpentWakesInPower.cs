@@ -31,7 +31,7 @@ public class SerpentWakesInPower {
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>2<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await Cmd.PlacePresenceWithin( 1 ).ActAsync(spirit.BindMyPowers());
+			await Cmd.PlacePresenceWithin( 1 ).ActAsync(spirit.Bind());
 	}
 
 	[InnateTier("3 fire,3 water,3 earth,3 plant", "Gain a Major Power without Forgetting.  Other Spirits with 3 or more Absorbed Presence may do likewise." )]
@@ -45,7 +45,7 @@ public class SerpentWakesInPower {
 		var presence = (SerpentPresence)ctx.Self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>3<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await spirit.BindSelf().DrawMajor( false, 4 );
+			await spirit.Bind().DrawMajor( false, 4 );
 	}
 
 }

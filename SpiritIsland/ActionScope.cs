@@ -80,7 +80,12 @@ public sealed class ActionScope : IAsyncDisposable {
 	/// <summary> For Testing only </summary>
 	public static ActionScope Start_NoStartActions( ActionCategory cat ) => new ActionScope( cat, Container );
 
+	/// <summary>
+	/// Starts a Non-Spirit action
+	/// </summary>
 	public static async Task<ActionScope> Start( ActionCategory cat ) {
+		VerifyActionCategory(cat,false,nameof(Start));
+
 		ActionScopeContainer container = Container;				// grab from ExecutionContext
 		ActionScope scope = new ActionScope( cat, container );  // start new (and assign current)
 		await container.RunStartOfActionHandlers();
@@ -88,13 +93,22 @@ public sealed class ActionScope : IAsyncDisposable {
 	}
 
 	public static async Task<ActionScope> StartSpiritAction( ActionCategory cat, Spirit spirit ) {
+		VerifyActionCategory(cat,true,nameof(StartSpiritAction));
+
 		ActionScopeContainer container = Container;             // grab from ExecutionContext
 		ActionScope scope = new ActionScope( cat, container ) { // start new (and assign current)
-			Owner = spirit
+			Owner = spirit ?? throw new ArgumentNullException(nameof(spirit)),
 		};
+		spirit.InitSpiritAction(scope);
 
 		await container.RunStartOfActionHandlers();
 		return scope;
+	}
+
+	static void VerifyActionCategory( ActionCategory cat, bool expectedIsSpiritActin, string constructorName ) {
+		bool isSpiritAction = cat == ActionCategory.Spirit_Growth || cat == ActionCategory.Spirit_Power;
+		if( isSpiritAction != expectedIsSpiritActin )
+			throw new InvalidOperationException($"{cat} category should not be used with {constructorName}.");
 	}
 
 	#endregion

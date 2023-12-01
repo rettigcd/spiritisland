@@ -11,7 +11,7 @@ public class VoiceOfCommand_Tests {
 		var space = board[7].Tokens;
 
 		// Given: Voice of Command played on space
-		await VoiceOfCommand.ActAsync( spirit.BindMyPowers().Target(space)).ShouldComplete("VoC");
+		await VoiceOfCommand.ActAsync( spirit.Bind().Target(space)).ShouldComplete("VoC");
 
 		//   And: after power is done, land somehow gets 4 explorers & 2 Town
 		space.InitDefault( Human.Explorer, 4 );

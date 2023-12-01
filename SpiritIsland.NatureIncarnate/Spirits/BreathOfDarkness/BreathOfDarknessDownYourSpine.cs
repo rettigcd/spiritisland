@@ -76,9 +76,9 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 
 	public Incarna Incarna => ((IncarnaPresence)Presence).Incarna;
 
-	public override SelfCtx BindMyPowers( Spirit spirit ) {
-		ActionScope.Current.Upgrader = x => new TerrorStalksTheLand( x );
-		return new SelfCtx( spirit );
+	public override void InitSpiritAction( ActionScope scope ) {
+		if( scope.Category == ActionCategory.Spirit_Power )
+			scope.Upgrader = x => new TerrorStalksTheLand( x );
 	}
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {

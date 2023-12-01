@@ -162,8 +162,8 @@ var xxx = a5.Keys.ToArray();
 		SpaceState destination = gameState.Tokens[boardA[4]];
 		destination.Clear();
 		//  When: power destroys
-		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
-		Task t = TheJungleHungers.ActAsync( spirit.BindMyPowers().Target(a3.Space) );
+		await using var actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,spirit);
+		Task t = TheJungleHungers.ActAsync( spirit.Bind().Target(a3.Space) );
 		//  Then: we push 1 explorer to a Land-space (not A0-ocean)
 		t.IsCompleted.ShouldBeFalse();
 		spirit.NextDecision().HasPrompt( "Push E@1 to" ).HasOptions( "A2,A4" ).Choose( destination.Space.Text );

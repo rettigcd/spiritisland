@@ -35,9 +35,7 @@ public class VolcanoToken : SpiritPresenceToken, IModifyRemovingToken {
 
 		// Destroying Volcano presence, causes damage to Dahan and invaders
 		// Create a TargetSpaceCtx to include Bandlands damage also.
-		var selfCtx = ActionScope.Current.Category == ActionCategory.Spirit_Power // ??? is this needed => && actionScope.Owner == spirit
-			? Self.BindMyPowers()
-			: Self.BindSelf();
+		var selfCtx = Self.Bind();
 		var ctx = selfCtx.Target( args.From );
 
 		await ctx.DamageInvaders( args.Count );

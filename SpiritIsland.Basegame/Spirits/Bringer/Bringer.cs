@@ -44,9 +44,9 @@ public class Bringer : Spirit {
 		space.Adjust( Presence.Token, 2 );
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit ) { 
-		ActionScope.Current.Upgrader = x => new TDaTD_ActionTokens(x);
-		return new SelfCtx( spirit );
+	public override void InitSpiritAction( ActionScope scope ) {
+		if( scope.Category == ActionCategory.Spirit_Power )
+			scope.Upgrader = x => new TDaTD_ActionTokens(x);
 	}
 
 }

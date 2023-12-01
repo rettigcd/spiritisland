@@ -43,7 +43,7 @@ public static partial class Cmd {
 				foreach(Spirit spirit in ctx.GameState.Spirits) {
 					// Page 10 of JE says Each Spirit is a new action
 					await using var actionScope = await ActionScope.Start( ctx.Category );
-					await action.ActAsync( spirit.BindSelf() );
+					await action.ActAsync( spirit.Bind() );
 				}
 			}
 		);

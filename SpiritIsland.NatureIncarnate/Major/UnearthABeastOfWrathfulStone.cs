@@ -78,7 +78,7 @@ class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, IConfigRavages, I
 
 		// Do action
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, _spirit );
-		await _triggeredAction( _spirit.BindMyPowers().Target( space ) );
+		await _triggeredAction( _spirit.Bind().Target( space ) );
 
 		// Remove
 		space.Adjust( this, -1 ); // !!! what happens if we put 2 of these down?

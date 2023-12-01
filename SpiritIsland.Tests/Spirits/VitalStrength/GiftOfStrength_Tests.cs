@@ -87,7 +87,7 @@ public sealed class GiftOfStrength_Tests {
 		//spirit.AddActionFactory( MakePowerCard( Slow1 ) ); // played - should appear
 		//spirit.AddActionFactory( MakePowerCard( Slow2 ) ); // played - no - too expensive
 		User.WaitForNext();
-		User.IsDoneBuyingCards();
+		User.IsDoneBuyingCards(); /// !!! This is where the intermittent error happens - FIX ME
 
 		//  And: played GOS on self
 		User_PlaysGiftOfStrengthOnSelf();

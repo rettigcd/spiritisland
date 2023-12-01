@@ -17,7 +17,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		// If not using pre-selects, will still target a space.
 
 		// When_PlayingCard();
-		_ = _card.ActivateAsync( _spirit.BindMyPowers() );
+		_ = _card.ActivateAsync( _spirit.Bind() );
 		//task.IsCompleted.ShouldBeTrue();
 
 		User.Assert_Done();

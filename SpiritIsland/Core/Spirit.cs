@@ -75,7 +75,7 @@ public abstract partial class Spirit : IOption {
 
 	async Task ApplyRevealedPresenceTrack() {
 		await using ActionScope action2 = await ActionScope.Start( ActionCategory.Spirit_PresenceTrackIcon );
-		await ApplyRevealedPresenceTracks_Inner( BindSelf() );
+		await ApplyRevealedPresenceTracks_Inner( Bind() );
 	}
 
 	protected virtual async Task ApplyRevealedPresenceTracks_Inner( SelfCtx ctx ) {
@@ -260,7 +260,7 @@ public abstract partial class Spirit : IOption {
 	public virtual async Task TakeActionAsync(IActionFactory factory, Phase phase) {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );  
 			
-		SelfCtx ctx = Bind( phase );
+		SelfCtx ctx = Bind();
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( ctx );
 		GameState.Current.CheckWinLoss(); // @@@
@@ -276,20 +276,6 @@ public abstract partial class Spirit : IOption {
 		};
 	}
 
-
-	#endregion
-
-	#region Spin-Up ActionScope for spirit action
-
-	protected SelfCtx Bind( Phase phase ) {
-		return phase switch {
-			Phase.Init or
-			Phase.Growth => BindSelf(),
-			Phase.Fast or
-			Phase.Slow => BindMyPowers(),
-			_ => throw new InvalidOperationException(),
-		};
-	}
 
 	#endregion
 
@@ -323,9 +309,10 @@ public abstract partial class Spirit : IOption {
 
 	#region Bind helpers
 
-	public SelfCtx BindSelf() => BindDefault( this );
+	public virtual void InitSpiritAction( ActionScope scope ) { }
 
-	public SelfCtx BindMyPowers() => BindMyPowers( this );
+	/// <summary> Convenience method only. calls new SelfCtx(this) </summary>
+	public SelfCtx Bind() => new SelfCtx( this );
 
 	public bool ActionIsMyPower {
 		get {
@@ -336,10 +323,6 @@ public abstract partial class Spirit : IOption {
 	}
 
 	#endregion Bind helpers
-
-	public virtual SelfCtx BindDefault( Spirit spirit )	=> new SelfCtx( spirit );
-
-	public virtual SelfCtx BindMyPowers( Spirit spirit ) => new SelfCtx( spirit );
 
 	Task On_TimePassed(GameState _ ) {
 		// reset cards / powers

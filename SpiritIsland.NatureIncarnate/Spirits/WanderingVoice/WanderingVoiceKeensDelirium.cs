@@ -5,7 +5,6 @@ public class WanderingVoiceKeensDelirium : Spirit {
 
 	static Track SunOrMoon =>  new Track( "Sun/Moon", MultiElements.Build(Element.Sun,Element.Moon) ) {
 		Icon = new IconDescriptor { ContentImg = Img.Icon_Sun, ContentImg2 = Img.Icon_Moon },
-//		Action = new Gain1Element(Element.Sun,Element.Moon),
 	};
 
 	static Track PushYourIncarna => new Track("Push Incarna") {
@@ -62,10 +61,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 			"When your Actions add/move Incarna to a land with Invaders, Add 1 Strife in the destination land. " +
 			"In lands with or adjacent to Incarna: if Strife is present, Dahan do not participate in Ravage."
 		),
-		new SpecialRule(
-			"Senseless Roaming",
-			"When your Actions add Strife to an Explorer/Invader, you may Push it."
-		),
+		SenselessRoaming_Rule
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -81,14 +77,26 @@ public class WanderingVoiceKeensDelirium : Spirit {
 		GameState.Current.AddIslandMod( new DahanNearToIncarnaSitOutRavage( ((IHaveIncarna)Presence).Incarna ) );
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit ) {
+	#region Sensless Roaming
+
+	SpecialRule SenselessRoaming_Rule => new SpecialRule(
+		"Senseless Roaming",
+		"When your Actions add Strife to an Explorer/Invader, you may Push it."
+	);
+
+	public override void InitSpiritAction( ActionScope scope ) {
 		ActionScope.Current.Upgrader = (x) => new SenslessRoamingTokens( this, x );
-		return new SelfCtx( spirit );
 	}
 
-	public override SelfCtx BindDefault( Spirit spirit ) {
-		ActionScope.Current.Upgrader = (x) => new SenslessRoamingTokens( this, x );
-		return new SelfCtx( spirit );
-	}
+	//public override SelfCtx BindMyPowers() {
+	//	ActionScope.Current.Upgrader = (x) => new SenslessRoamingTokens( this, x );
+	//	return new SelfCtx( this );
+	//}
 
+	//public override SelfCtx BindSelf() {
+	//	ActionScope.Current.Upgrader = (x) => new SenslessRoamingTokens( this, x );
+	//	return base.BindSelf();
+	//}
+
+	#endregion Senseless Roaming
 }

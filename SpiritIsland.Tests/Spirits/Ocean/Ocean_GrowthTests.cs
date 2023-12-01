@@ -36,7 +36,7 @@ public class Ocean_GrowthTests : GrowthTests {
 			.SingleOrDefault();
 
 		if(gather != null){
-			_ = gather.ActivateAsync( _spirit.BindSelf() );
+			_ = gather.ActivateAsync( _spirit.Bind() );
 			while(!_spirit.Portal.IsResolved){
 				var options = _spirit.Portal.Next.Options
 					.Where( option => {

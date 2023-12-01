@@ -11,9 +11,5 @@ public class TargetSpiritCtx : SelfCtx {
 
 	public Spirit Other { get; }
 
-	public SelfCtx OtherCtx => Other==Self 
-		? this 
-		: Self.BindMyPowers( Other ); // This is ONLY used for Powers
-		// Vengeance has special rules when using its powers, need to be able to bind those powers to other spirits.
-
+	public SelfCtx OtherCtx => Other==Self ? this : new SelfCtx( Other );
 }

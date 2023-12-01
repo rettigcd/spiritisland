@@ -33,7 +33,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 				ActionScope.Current.AtEndOfThisAction( async _ => {
 					//don't use original because that may or may not have been for a power.
 					await using ActionScope childAction = await ActionScope.Start(ActionCategory.Default);
-					await _spirit.BindSelf()
+					await _spirit.Bind()
 						.Move( args.Added, args.To.Space, destination );
 				} );
 				return; // the move it, don't drown it

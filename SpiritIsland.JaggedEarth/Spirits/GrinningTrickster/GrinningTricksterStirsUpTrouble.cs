@@ -59,12 +59,12 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, SpaceState tokens ) {
 		if(tokens.Blight.Any)
 			await Cmd.DestroyPresence( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" )
-				.ActAsync(spirit.BindSelf());
+				.ActAsync(spirit.Bind());
 	}
 
-	public override SelfCtx BindMyPowers( Spirit spirit ) {
-		ActionScope.Current.Upgrader = (x) => new TricksterTokens( this, x );
-		return new SelfCtx( spirit );
+	public override void InitSpiritAction( ActionScope scope ) {
+		if( scope.Category == ActionCategory.Spirit_Power )
+			scope.Upgrader = x => new TricksterTokens( this, x );
 	}
 
 

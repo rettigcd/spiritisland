@@ -40,7 +40,7 @@ class GameFixture {
 	}
 
 	public TargetSpaceCtx TargetSpace( string spaceLabel ) { 
-		return spirit.BindSelf()
+		return spirit.Bind()
 			.Target( gameState.Spaces_Unfiltered.Single( x => x.Space.Label == spaceLabel ).Space );
 	}
 

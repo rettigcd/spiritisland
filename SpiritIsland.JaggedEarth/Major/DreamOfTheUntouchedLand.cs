@@ -36,7 +36,7 @@ public class DreamOfTheUntouchedLand {
 			// ??? Can spirits violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
 				var spirit = await ctx.Self.Select(new A.Spirit("Spirit to add presence.", gs.Spirits));
-				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).Tokens().ToArray() ).ActAsync(spirit.BindMyPowers());
+				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).Tokens().ToArray() ).ActAsync(spirit.Bind());
 			}
 
 			// from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.

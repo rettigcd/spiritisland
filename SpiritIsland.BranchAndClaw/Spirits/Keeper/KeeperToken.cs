@@ -11,9 +11,7 @@ public class KeeperToken : SpiritPresenceToken, IHandleTokenAddedAsync {
 		bool createdSacredSite = (tokenCount-args.Count) < 2 && 2<= tokenCount;
 
 		if(createdSacredSite && args.To.Dahan.Any) {
-			var selfCtx = ActionScope.Current.Category == ActionCategory.Spirit_Power
-				? Self.BindMyPowers()
-				: Self.BindSelf();
+			var selfCtx = Self.Bind();
 			await selfCtx.Target( args.To ).PushDahan( int.MaxValue );
 		}
 	}
