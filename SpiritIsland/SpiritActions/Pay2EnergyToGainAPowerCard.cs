@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class Pay2EnergyToGainAPowerCard : SpiritAction {
+public class Pay2EnergyToGainAPowerCard : SpiritAction {
 
 	public Pay2EnergyToGainAPowerCard():base( "Pay2EnergyToGainAPowerCard" ) { }
 

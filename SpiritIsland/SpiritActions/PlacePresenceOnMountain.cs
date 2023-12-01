@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland.JaggedEarth;
-class PlacePresenceOnMountain : SpiritAction { // Similar to SharpFang initialization
+public class PlacePresenceOnMountain : SpiritAction { // Similar to SharpFang initialization
 
 	public PlacePresenceOnMountain():base( "Place Presence on Mountain" ) { }
 

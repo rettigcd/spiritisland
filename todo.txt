@@ -27,12 +27,6 @@ async in parallel can choke off threads - xUnit - limit # of tests running in pa
 
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
 
-Move Growths out of Spirit folder into common SpiritAction folder.
-Rebrand things under the Growth folder as SpiritAction.
-	- No growth action should implement IActionFactory directly, should all come as SpiritActions that get wrapped.
-
-----------
-----------
 INCARNA - Make SpiritPresence & Incana derive from SpaceToken
 INCARNA - Should all SpiritPresence have nullable Incarna token property so we don't have to use: is IHaveIncarna ihi?
 INCARNA - Add a Spirit-Presence tag that All Spirit Tokens (& Incarna) match against - so we can count Presence (Entwine the fates of all)
@@ -41,38 +35,38 @@ BIND - BindXXX() - combine into a single method
 BIND - SelfCtx - do we need this for anything? just replace with Spirit
 BIND - Combine Spirit.BindXXX methods into 1
 
+----------
+----------
+
 DAMAGE - Rename ctx.DamageInvaders(..) to DamageInvadersAsync(...)
 DAMAGE - Make ctx.DamageInvaders(...) a shortcut to ctx.Group(Human.Invaders).DoDamageAsync(...);
 
-When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated. (ScorchingConvergence)
+ORIGIN - When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated. (ScorchingConvergence)
 
-5	SpaceToken.Move => Take a Count.  Return the .After part of the TokenMoved result.
+MOVE -  SpaceToken.Move => Take a Count.  Return the .After part of the TokenMoved result.
 
-4	Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wraps the original Command in a new Command so we don't have to build conditions into SpiritActions. This would allow us to add the encapsulate the condition in PlaugeShipsSaleToDistantPosts
+SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wraps the original Command in a new Command so we don't have to build conditions into SpiritActions. This would allow us to add the encapsulate the condition in PlaugeShipsSaleToDistantPosts
 
-3	Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
+SPACE-SELECTOR - Select A.Space - see all the ways this is done and see if we can simplify the call, like creating a SpaceSelector
+SPACE-SELECTOR - Create a SpaceSelector class that manages selecting spaces. (SolidifyEchoesOfMajestyPast) - that way we don't have to call .Select(A Space) so many times and we can write the while loop once instead of everywhere.)
 
-Finders presence tracks are all dorked up.
-
-Select A.Space - see all the ways this is done and see if we can simplify the call, like creating a SpaceSelector
-
-TotalCount => Invaders.TotalCount, Dahan.CountAll, TokkenBinding.Count should all of the same Property Name since they mean the same thing => Maybe switch to .Sum (to match SpaceState.SumAny) or .Total 
-
-Reanme SourceSelector to SpaceTokenSelector or maybe abreviate to TokenSelector
-
-SpaceToken <=> Token
-- is there a Token class?  Would it be confusing to rename SpaceToken to Token?
-- would it be confusing if SpaceToken inherited IToken and ISpace? - I think it probably would be confusing.
-- If we renamed IToken to ITokenType, then Token could have { ITokenType Type, Space Space } and Token would mean a 'token in a space' which simplifies SpaceTokenSelector to TokenSelector
-
-Rename SpaceState to SpaceTokens
+RENAME - Rename SpaceState to SpaceTokens
+RENAME - TotalCount => Invaders.TotalCount, Dahan.CountAll, TokkenBinding.Count should all of the same Property Name since they mean the same thing => Maybe switch to .Sum (to match SpaceState.SumAny) or .Total 
+REANME - Reanme SourceSelector to SpaceTokenSelector or maybe abreviate to TokenSelector
+REANME - SpaceToken <=> Token
+	- is there a Token class?  Would it be confusing to rename SpaceToken to Token?
+	- would it be confusing if SpaceToken inherited IToken and ISpace? - I think it probably would be confusing.
+	- If we renamed IToken to ITokenType, then Token could have { ITokenType Type, Space Space } and Token would mean a 'token in a space' which simplifies SpaceTokenSelector to TokenSelector
 
 TOKENS-Shortcut - Remove ctx.XX shortcut to Tokens.XX bindings OR make everything that has a TargetSpaceCtx use it.
 TOKENS-Shortcut - TargetSpaceCtx.RemoveBlight() maybe should be .Blight.RemoveAsync()
 
-Need Generic Method for spirits to pay for stuff - in Parallel - not 1 spirit choosing for everyone.  (PLagueShipsSailToDistantPorts)
+RANGE - 3 Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
 
-Create a SpaceSelector class that manages selecting spaces. (SolidifyEchoesOfMajestyPast) - that way we don't have to call .Select(A Space) so many times and we can write the while loop once instead of everywhere.)
+
+Finders presence tracks are all dorked up.
+
+Need Generic Method for spirits to pay for stuff - in Parallel - not 1 spirit choosing for everyone.  (PLagueShipsSailToDistantPorts)
 
 Check calls to xxx_OfAnyTag( tags...) and see how many need converted to SpaceToken and switch over to SpaceToken
 

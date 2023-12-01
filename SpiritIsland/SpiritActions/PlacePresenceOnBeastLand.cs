@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-class PlacePresenceOnBeastLand : SpiritAction {
+public class PlacePresenceOnBeastLand : SpiritAction {
 
 	public PlacePresenceOnBeastLand():base( "Setup_PlacePresenceOnBeastLand" ) { }
 
