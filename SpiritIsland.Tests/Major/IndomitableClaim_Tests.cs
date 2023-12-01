@@ -11,7 +11,7 @@ public class IndomitableClaim_Tests {
 	public void StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<IndomitableClaim>(), (Action<GameState>)((gs)=>{ 
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(IndomitableClaim)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());

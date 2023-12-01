@@ -30,10 +30,10 @@ public class ShroudOfSilentMist : Spirit {
 			new PresenceTrack(1, Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
 			new PresenceTrack(1, Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
 		)
-		,PowerCard.For<FlowingAndSilentFormsDartBy>()
-		,PowerCard.For<UnnervingPall>()
-		,PowerCard.For<DissolvingVapors>()
-		,PowerCard.For<TheFogClosesIn>()
+		,PowerCard.For(typeof(FlowingAndSilentFormsDartBy))
+		,PowerCard.For(typeof(UnnervingPall))
+		,PowerCard.For(typeof(DissolvingVapors))
+		,PowerCard.For(typeof(TheFogClosesIn))
 	) {
 		this.GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),

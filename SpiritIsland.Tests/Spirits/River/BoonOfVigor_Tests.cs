@@ -54,7 +54,7 @@ public class BoonOfVigor_Tests : SpiritCards_Tests {
 
 	[Fact]
 	public void BoonOfVigor_Stats() {
-		Assert_CardStatus( PowerCard.For<BoonOfVigor>(), 0, Phase.Fast, "sun water plant" );
+		Assert_CardStatus( PowerCard.For(typeof(BoonOfVigor)), 0, Phase.Fast, "sun water plant" );
 	}
 
 }

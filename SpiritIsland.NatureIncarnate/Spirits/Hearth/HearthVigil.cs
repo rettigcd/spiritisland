@@ -25,11 +25,11 @@ public class HearthVigil : Spirit {
 			new PresenceTrack( Energy0_GatherDahanBonus, Track.MkEnergy( 1, Element.Sun ), Track.Energy2, Track.MkEnergy( 3, Element.Animal ), Track.Energy4, Track.MkEnergy( 5, Element.Sun ) ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.AirEnergy, Track.Card3, Track.AnimalEnergy, Track.Card4 ),
 			new HearthToken( spirit )
-		),
-		PowerCard.For<FavorsOfStoryAndSeason>(),
-		PowerCard.For<SurroundedByTheDahan>(),
-		PowerCard.For<CoordinatedRaid>(),
-		PowerCard.For<CallToVigilance>()
+		)
+		,PowerCard.For(typeof(FavorsOfStoryAndSeason))
+		,PowerCard.For(typeof(SurroundedByTheDahan))
+		,PowerCard.For(typeof(CoordinatedRaid))
+		,PowerCard.For(typeof(CallToVigilance))
 	){
 		GrowthTrack = new(
 			new GrowthOption(

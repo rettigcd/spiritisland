@@ -31,14 +31,22 @@ Move Growths out of Spirit folder into common SpiritAction folder.
 Rebrand things under the Growth folder as SpiritAction.
 	- No growth action should implement IActionFactory directly, should all come as SpiritActions that get wrapped.
 
+----------
+----------
+INCARNA - Make SpiritPresence & Incana derive from SpaceToken
+INCARNA - Should all SpiritPresence have nullable Incarna token property so we don't have to use: is IHaveIncarna ihi?
+INCARNA - Add a Spirit-Presence tag that All Spirit Tokens (& Incarna) match against - so we can count Presence (Entwine the fates of all)
+
+BIND - BindXXX() - combine into a single method
+BIND - SelfCtx - do we need this for anything? just replace with Spirit
+BIND - Combine Spirit.BindXXX methods into 1
+
+DAMAGE - Rename ctx.DamageInvaders(..) to DamageInvadersAsync(...)
+DAMAGE - Make ctx.DamageInvaders(...) a shortcut to ctx.Group(Human.Invaders).DoDamageAsync(...);
+
 When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated. (ScorchingConvergence)
 
-----------
-----------
-
 5	SpaceToken.Move => Take a Count.  Return the .After part of the TokenMoved result.
-
-Should RemoveUpToNHealthOfInvaders be put in an InvaderCmd space or a RemoveCmd space ???
 
 4	Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wraps the original Command in a new Command so we don't have to build conditions into SpiritActions. This would allow us to add the encapsulate the condition in PlaugeShipsSaleToDistantPosts
 
@@ -47,10 +55,6 @@ Should RemoveUpToNHealthOfInvaders be put in an InvaderCmd space or a RemoveCmd 
 Finders presence tracks are all dorked up.
 
 Select A.Space - see all the ways this is done and see if we can simplify the call, like creating a SpaceSelector
-
-BIND - BindXXX() - combine into a single method
-BIND - SelfCtx - do we need this for anything? just replace with Spirit
-BIND - Combine Spirit.BindXXX methods into 1
 
 TotalCount => Invaders.TotalCount, Dahan.CountAll, TokkenBinding.Count should all of the same Property Name since they mean the same thing => Maybe switch to .Sum (to match SpaceState.SumAny) or .Total 
 
@@ -68,25 +72,15 @@ TOKENS-Shortcut - TargetSpaceCtx.RemoveBlight() maybe should be .Blight.RemoveAs
 
 Need Generic Method for spirits to pay for stuff - in Parallel - not 1 spirit choosing for everyone.  (PLagueShipsSailToDistantPorts)
 
-DAMAGE - Rename ctx.DamageInvaders(..) to DamageInvadersAsync(...)
-DAMAGE - Make ctx.DamageInvaders(...) a shortcut to ctx.Group(Human.Invaders).DoDamageAsync(...);
-
 Create a SpaceSelector class that manages selecting spaces. (SolidifyEchoesOfMajestyPast) - that way we don't have to call .Select(A Space) so many times and we can write the while loop once instead of everywhere.)
 
-
-Make SpiritPresence & Incana derive from SpaceToken
-
 Check calls to xxx_OfAnyTag( tags...) and see how many need converted to SpaceToken and switch over to SpaceToken
-
-INCARNA - Should all SpiritPresence have nullable Incarna token property so we don't have to use: is IHaveIncarna ihi?
 
 is convenience-method SpaceState.HasInvaders() necessary?  Could we just call the OfTag stuff direclty
 
 Test if FocusTheSunsRays will gather Incarna, I think it will.  And we can remove the !! marker.
 
 Async-Enum Spirit - Select 1 - encapsulate selecting 0 or 1 spirits so that we can forEach them.  (ConsiderAHarmoniousNature)
-
-Add a Spirit-Presence tag that All Spirit Tokens (& Incarna) match against - so we can count Presence (Entwine the fates of all)
 
 TargetSpaceCtx.SelectTargetSpaceAsync returns a TargetSpaceCtx.  Remove this - it is confusing.  At least verify that it is being used correclty.
 

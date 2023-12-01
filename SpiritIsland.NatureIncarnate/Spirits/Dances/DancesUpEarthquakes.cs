@@ -81,17 +81,17 @@ public class DancesUpEarthquakes : Spirit {
 			new PresenceTrack( Track.Card2, GatherDahan, MoonAndFire, AdditionalImpending, Track.EarthEnergy, Track.Card3, Track.Card4 )
 		)
 		// Round 1
-		, PowerCard.For<ResoundingFootfallsSowDismay>() // fast,3 - Impend
-		, PowerCard.For<GiftOfSeismicEnergy>()          // fast,3 - Impend
+		, PowerCard.For(typeof(ResoundingFootfallsSowDismay)) // fast,3 - Impend
+		, PowerCard.For(typeof(GiftOfSeismicEnergy))          // fast,3 - Impend
 		// Round 2
-		, PowerCard.For<ExaltationOfEchoedSteps>()      // slow,? - Play 
-		, PowerCard.For<RadiatingTremors>()             // slow,2 - Impend
+		, PowerCard.For(typeof(ExaltationOfEchoedSteps))      // slow,? - Play 
+		, PowerCard.For(typeof(RadiatingTremors))             // slow,2 - Impend
 		// Round 3
-		, PowerCard.For<RumblingsPortendAGreaterQuake>()// fast,? - Play
+		, PowerCard.For(typeof(RumblingsPortendAGreaterQuake))// fast,? - Play
 			// Impend - new major
 			// Impend - a minor
         // Round 4
-		, PowerCard.For<InspireAWindingDance>()			// slow     Play
+		, PowerCard.For(typeof(InspireAWindingDance))		// slow     Play
 			// Play - new major
 			// Impend - remaining card
 	) {

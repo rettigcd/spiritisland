@@ -19,12 +19,12 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public FinderOfPathsUnseen() : base(
 		spirit => new FinderPresence( spirit )
-		, PowerCard.For<ACircuitousAndWendingJourney>()
-		, PowerCard.For<AidFromTheSpiritSpeakers>()
-		, PowerCard.For<OfferPassageBetweenWorlds>()
-		, PowerCard.For<PathsTiedByNature>()
-		, PowerCard.For<TravelersBoon>()
-		, PowerCard.For<WaysOfShoreAndHeartland>()
+		, PowerCard.For(typeof(ACircuitousAndWendingJourney))
+		, PowerCard.For(typeof(AidFromTheSpiritSpeakers))
+		, PowerCard.For(typeof(OfferPassageBetweenWorlds))
+		, PowerCard.For(typeof(PathsTiedByNature))
+		, PowerCard.For(typeof(TravelersBoon))
+		, PowerCard.For(typeof(WaysOfShoreAndHeartland))
 	) {
 		GrowthTrack = new(
 			new GrowthOption(

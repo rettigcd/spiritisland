@@ -17,10 +17,10 @@ public class Thunderspeaker : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card3, Track.Card4 ),
 			new FollowingPresenceToken( spirit, Human.Dahan )
 		),
-		PowerCard.For<ManifestationOfPowerAndGlory>(),
-		PowerCard.For<SuddenAmbush>(),
-		PowerCard.For<VoiceOfThunder>(),
-		PowerCard.For<WordsOfWarning>()
+		PowerCard.For(typeof(ManifestationOfPowerAndGlory)),
+		PowerCard.For(typeof(SuddenAmbush)),
+		PowerCard.For(typeof(VoiceOfThunder)),
+		PowerCard.For(typeof(WordsOfWarning))
 	) {
 		GrowthTrack = new(
 			new GrowthOption( 

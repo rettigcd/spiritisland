@@ -22,7 +22,7 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.InitTokens( space2, "3E@1,1T@2" );
 
 		// When: play card
-		var task = PowerCard.For<ForestsOfLivingObsidian>().ActivateAsync(fix.SelfCtx);
+		var task = PowerCard.For(typeof(ForestsOfLivingObsidian)).ActivateAsync(fix.SelfCtx);
 		//  And: targeting space 1
 		fix.Choose(space1);
 		fix.Choose("T@1"); // Damage (1 remaining)
@@ -50,7 +50,7 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.InitTokens( space1, "3C@3" );
 
 		// When: play card
-		var task = PowerCard.For<ForestsOfLivingObsidian>().ActivateAsync( fix.SelfCtx );
+		var task = PowerCard.For(typeof(ForestsOfLivingObsidian)).ActivateAsync( fix.SelfCtx );
 		//  And: targeting space 1
 		fix.Choose( space1 );
 		fix.Choose( "C@2" ); // 3C@2 - Damage 1 of them (1 of 1)

@@ -22,10 +22,10 @@ public class FracturedDaysSplitTheSky : Spirit {
 			new PresenceTrack(Track.Energy1, Track.Energy1 , Track.Energy2, Track.Energy2, Track.Energy2, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3 )
 		)
-		,PowerCard.For<AbsoluteStasis>()
-		,PowerCard.For<BlurTheArcOfYears>()
-		,PowerCard.For<PourTimeSideways>()
-		,PowerCard.For<ThePastReturnsAgain>()
+		,PowerCard.For(typeof(AbsoluteStasis))
+		,PowerCard.For(typeof(BlurTheArcOfYears))
+		,PowerCard.For(typeof(PourTimeSideways))
+		,PowerCard.For(typeof(ThePastReturnsAgain))
 	) {
 		var g2Repeater = new ActionRepeater(2);
 		var g3Repeater = new ActionRepeater(3);

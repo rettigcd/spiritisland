@@ -57,11 +57,11 @@ public class DownloadPowerPics_Tests {
 	public async Task DrawCard() {
 
 		var cards = new[] {
-			PowerCard.For<LureOfTheUnknown>(),
-			PowerCard.For<ProwlingPanthers>(),
-			PowerCard.For<MeltEarthIntoQuicksand>(),
-			PowerCard.For<WeepForWhatIsLost>(),
-			PowerCard.For<CallToBloodshed>(),
+			PowerCard.For(typeof(LureOfTheUnknown)),
+			PowerCard.For(typeof(ProwlingPanthers)),
+			PowerCard.For(typeof(MeltEarthIntoQuicksand)),
+			PowerCard.For(typeof(WeepForWhatIsLost)),
+			PowerCard.For(typeof(CallToBloodshed)),
 			//PowerCard.For<StranglingFirevine>(),
 			//PowerCard.For<CleansingFloods>(),
 			//PowerCard.For<PyroclasticFlow>(),

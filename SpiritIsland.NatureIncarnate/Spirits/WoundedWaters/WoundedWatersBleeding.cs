@@ -20,10 +20,10 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	public WoundedWatersBleeding() : base(
 		spirit => new WoundedPresence(spirit)
-		, PowerCard.For<BoonOfCorruptedBlood>()    // fast
-		, PowerCard.For<DrawToTheWatersEdge>()     // fast
-		, PowerCard.For<BloodWaterAndBloodlust>()  // slow
-		, PowerCard.For<WrackWithPainAndGrief>()   // slow
+		, PowerCard.For(typeof(BoonOfCorruptedBlood))    // fast
+		, PowerCard.For(typeof(DrawToTheWatersEdge))     // fast
+		, PowerCard.For(typeof(BloodWaterAndBloodlust))  // slow
+		, PowerCard.For(typeof(WrackWithPainAndGrief))   // slow
 	) {
 		GrowthTrack = new(
 			new GrowthOption(

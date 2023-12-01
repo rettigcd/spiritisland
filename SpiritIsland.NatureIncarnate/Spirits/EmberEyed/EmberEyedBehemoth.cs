@@ -23,10 +23,10 @@ public class EmberEyedBehemoth : Spirit {
 			new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,Track.Card3,Track.FireEnergy,Track.Card4),
 			new Incarna(spirit, "EEB", Img.EEB_Incarna, Img.EEB_Incarna_Empowered)
 		)
-		,PowerCard.For<TerrifyingRampage>()
-		,PowerCard.For<BlazingIntimidation>()
-		,PowerCard.For<SurgingLahar>()
-		,PowerCard.For<ExaltationOfGraspingRoots>()
+		,PowerCard.For(typeof(TerrifyingRampage))
+		,PowerCard.For(typeof(BlazingIntimidation))
+		,PowerCard.For(typeof(SurgingLahar))
+		,PowerCard.For(typeof(ExaltationOfGraspingRoots))
 	) {
 
 		GrowthTrack = new GrowthTrack(

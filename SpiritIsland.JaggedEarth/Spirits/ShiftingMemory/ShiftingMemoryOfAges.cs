@@ -31,10 +31,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 				new PresenceTrack(Track.Energy0,Track.Energy1,Track.Energy2,Prepare(3),Track.Energy4,Track.Reclaim1Energy,Track.Energy5,Prepare(6)),
 				new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,DiscardElementsForCardPlay,Track.Card3)
 			)
-			,PowerCard.For<BoonOfAncientMemories>()
-			,PowerCard.For<ElementalTeachings>()
-			,PowerCard.For<ShareSecretsOfSurvival>()
-			,PowerCard.For<StudyTheInvadersFears>()
+			,PowerCard.For(typeof(BoonOfAncientMemories))
+			,PowerCard.For(typeof(ElementalTeachings))
+			,PowerCard.For(typeof(ShareSecretsOfSurvival))
+			,PowerCard.For(typeof(StudyTheInvadersFears))
 		) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(), new PlacePresence(0)),

@@ -12,10 +12,10 @@ public class VengeanceAsABurningPlague : Spirit {
 				Destroyed = 1 // 1 of your presence starts the game already Destroyed.
 			}
 		)
-		,PowerCard.For<FetidBreathSpreadsInfection>()
-		,PowerCard.For<FieryVengeance>()
-		,PowerCard.For<Plaguebearers>()
-		,PowerCard.For<StrikeLowWithSuddenFevers>()
+		,PowerCard.For(typeof(FetidBreathSpreadsInfection))
+		,PowerCard.For(typeof(FieryVengeance))
+		,PowerCard.For(typeof(Plaguebearers))
+		,PowerCard.For(typeof(StrikeLowWithSuddenFevers))
 	) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy(1) ),

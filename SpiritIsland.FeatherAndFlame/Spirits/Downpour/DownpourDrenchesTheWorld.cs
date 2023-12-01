@@ -30,11 +30,11 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(1,Track.Energy1, Track.WaterEnergy, Track.PlantEnergy, Track.WaterEnergy, TwoAir, Track.WaterEnergy, Track.EarthEnergy, TwoWater ),
 			new PresenceTrack(1, Track.Card1, MovePresence, Track.WaterEnergy,Track.Card2, MovePresence, Track.Card3 )
-		),
-		PowerCard.For<DarkSkiesLooseAStingingRain>(),
-		PowerCard.For<FoundationsSinkIntoMud>(),
-		PowerCard.For<GiftOfAbundance>(),
-		PowerCard.For<UnbearableDeluge>()
+		)
+		,PowerCard.For(typeof(DarkSkiesLooseAStingingRain))
+		,PowerCard.For(typeof(FoundationsSinkIntoMud))
+		,PowerCard.For(typeof(GiftOfAbundance))
+		,PowerCard.For(typeof(UnbearableDeluge))
 	) {
 
 		GrowthTrack = new(

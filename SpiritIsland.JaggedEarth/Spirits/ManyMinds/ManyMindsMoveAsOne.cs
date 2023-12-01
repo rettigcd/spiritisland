@@ -25,11 +25,11 @@ public partial class ManyMindsMoveAsOne : Spirit {
 				new PresenceTrack(Track.Card1,Track.Card2,CardBoost,Track.Card3,Track.Card3,Track.Card4,Track.Card5),
 				new ManyMindsPresenceToken( spirit )
 			)
-				,PowerCard.For<ADreadfulTideOfScurryingFlesh>()
-				,PowerCard.For<BoonOfSwarmingBedevilment>()
-				,PowerCard.For<EverMultiplyingSwarm>()
-				,PowerCard.For<GuideTheWayOnFeatheredWings>()
-				,PowerCard.For<PursueWithScratchesPecksAndStings>()
+			, PowerCard.For(typeof(ADreadfulTideOfScurryingFlesh))
+			, PowerCard.For(typeof(BoonOfSwarmingBedevilment))
+			, PowerCard.For(typeof(EverMultiplyingSwarm))
+			, PowerCard.For(typeof(GuideTheWayOnFeatheredWings))
+			, PowerCard.For(typeof(PursueWithScratchesPecksAndStings))
 		) {
 		// Growth
 		GrowthTrack = new GrowthTrack(

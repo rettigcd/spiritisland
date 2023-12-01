@@ -10,10 +10,10 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	public LureOfTheDeepWilderness():base( 
 		x => new LurePresence(x)
-		,PowerCard.For<GiftOfTheUntamedWild>()
-		,PowerCard.For<PerilsOfTheDeepestIsland>()
-		,PowerCard.For<SoftlyBeckonEverInward>()
-		,PowerCard.For<SwallowedByTheWilderness>()
+		,PowerCard.For(typeof(GiftOfTheUntamedWild))
+		,PowerCard.For(typeof(PerilsOfTheDeepestIsland))
+		,PowerCard.For(typeof(SoftlyBeckonEverInward))
+		,PowerCard.For(typeof(SwallowedByTheWilderness))
 	) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(),new GainEnergy(1)),

@@ -10,10 +10,10 @@ public class ToweringRootsOfTheJungle : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.SunEnergy, Track.Card3, Track.PlantEnergy, Track.Card4 ),
 			new ToweringRootsIncarna( spirit )
 		)
-		, PowerCard.For<EntwineTheFatesOfAll>()
-		, PowerCard.For<RadiantAndHallowedGrove>()
-		, PowerCard.For<BloomingOfTheRocksAndTrees>()
-		, PowerCard.For<BoonOfResilientPower>()
+		, PowerCard.For(typeof(EntwineTheFatesOfAll))
+		, PowerCard.For(typeof(RadiantAndHallowedGrove))
+		, PowerCard.For(typeof(BloomingOfTheRocksAndTrees))
+		, PowerCard.For(typeof(BoonOfResilientPower))
 	) {
 
 		// Growth

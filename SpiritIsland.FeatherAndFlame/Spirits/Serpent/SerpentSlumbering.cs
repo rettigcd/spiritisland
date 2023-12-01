@@ -4,10 +4,10 @@ public class SerpentSlumbering : Spirit {
 
 	public SerpentSlumbering() :base (
 		spirit => new SerpentPresence( spirit )
-		,PowerCard.For<ElementalAegis>()
-		,PowerCard.For<AbsorbEssence>()
-		,PowerCard.For<GiftOfFlowingPower>()
-		,PowerCard.For<GiftOfThePrimordialDeeps>()	
+		,PowerCard.For(typeof(ElementalAegis))
+		,PowerCard.For(typeof(AbsorbEssence))
+		,PowerCard.For(typeof(GiftOfFlowingPower))
+		,PowerCard.For(typeof(GiftOfThePrimordialDeeps))	
 	) {
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(SerpentWakesInPower)),

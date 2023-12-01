@@ -18,7 +18,7 @@ public class AvoidTheDahan_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<RiversBounty>(), gs => {
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
 			var fear = gs.Fear;
 			InitMountainThenAllSands( gs );
 			gs.NewLogEntry += (s) => log.Add(s.Msg());
@@ -58,7 +58,7 @@ public class AvoidTheDahan_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		Spirit spirit = new TestSpirit( PowerCard.For<RiversBounty>() );
+		Spirit spirit = new TestSpirit( PowerCard.For(typeof(RiversBounty)) );
 		GameState gs = new GameState( spirit, Board.BuildBoardA() ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
 		};

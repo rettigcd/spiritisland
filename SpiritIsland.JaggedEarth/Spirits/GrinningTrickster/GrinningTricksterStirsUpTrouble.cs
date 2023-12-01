@@ -21,10 +21,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 				new PresenceTrack(Track.Energy1,Track.MoonEnergy,Track.Energy2,Track.AnyEnergy,Track.FireEnergy,Track.Energy3),
 				new PresenceTrack(Track.Card2,Track.Push1Dahan,Track.Card3,Track.Card3,Track.Card4,Track.AirEnergy,Track.Card5)
 			)
-			,PowerCard.For<ImpersonateAuthority>()
-			,PowerCard.For<InciteTheMob>()
-			,PowerCard.For<OverenthusiasticArson>()
-			,PowerCard.For<UnexpectedTigers>()
+			,PowerCard.For(typeof(ImpersonateAuthority))
+			,PowerCard.For(typeof(InciteTheMob))
+			,PowerCard.For(typeof(OverenthusiasticArson))
+			,PowerCard.For(typeof(UnexpectedTigers))
 		)
 	{
 		// Growth

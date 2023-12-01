@@ -32,10 +32,10 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 			new PresenceTrack( Track.Card2, MovePresence, Track.Card3, Track.MoonEnergy, Track.CardReclaim1, Card4Air ),
 			new Incarna(spirit,"BoDDyS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
 		)
-		, PowerCard.For<EmergeFromTheDreadNightWind>()
-		, PowerCard.For<ReachFromTheInfiniteDarkness>()
-		, PowerCard.For<SwallowedByTheEndlessDark>()
-		, PowerCard.For<TerrorOfTheHunted>()
+		, PowerCard.For(typeof(EmergeFromTheDreadNightWind))
+		, PowerCard.For(typeof(ReachFromTheInfiniteDarkness))
+		, PowerCard.For(typeof(SwallowedByTheEndlessDark))
+		, PowerCard.For(typeof(TerrorOfTheHunted))
 	) {
 
 		// Growth

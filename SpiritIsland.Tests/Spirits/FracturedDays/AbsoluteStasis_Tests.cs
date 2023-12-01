@@ -92,7 +92,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis( "A8" );
 
 		//  When: targetting a second card
-		await PowerCard.For<PillarOfLivingFlame>().ActivateAsync( cfg.SelfCtx )
+		await PowerCard.For(typeof(PillarOfLivingFlame)).ActivateAsync( cfg.SelfCtx )
 			//  Then: action completes - no source to target from
 			.ShouldComplete(PillarOfLivingFlame.Name);
 	}

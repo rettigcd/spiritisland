@@ -47,10 +47,10 @@ public StonesUnyieldingDefiance() : base(
 			new PresenceTrack( Track.Energy2, Track.Energy3, AddCardPlay, Track.Energy4, AddCardPlay, Track.Energy6, AddCardPlay ),
 			new PresenceTrack( Track.Card1, Track.MkCard( Element.Earth ), Track.MkCard( Element.Earth ), EarthReclaim, EarthAndAny, Card2Earth )
 		)
-		,PowerCard.For<JaggedShardsPushFromTheEarth>()
-		,PowerCard.For<PlowsShatterOnRockyGround>()
-		,PowerCard.For<ScarredAndStonyLand>()
-		,PowerCard.For<StubbornSolidity>()
+		,PowerCard.For(typeof(JaggedShardsPushFromTheEarth))
+		,PowerCard.For(typeof(PlowsShatterOnRockyGround))
+		,PowerCard.For(typeof(ScarredAndStonyLand))
+		,PowerCard.For(typeof(StubbornSolidity))
 	) {
 
 		this.GrowthTrack = new GrowthTrack(

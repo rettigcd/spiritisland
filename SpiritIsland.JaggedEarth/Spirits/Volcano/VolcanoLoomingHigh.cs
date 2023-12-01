@@ -23,10 +23,10 @@ public class VolcanoLoomingHigh : Spirit {
 			new PresenceTrack(Track.Energy1,Track.Energy2,Track.EarthEnergy,Track.Energy3,Track.Energy4,Track.Energy5),
 			new PresenceTrack(Track.Card1,Track.MkCard(Element.Fire),Track.MkCard(Element.Earth),Track.Card2, Track.MkCard( Element.Air ), Track.Card3, Track.MkCard( Element.Fire ), Track.Card4)
 		)
-		,PowerCard.For<ExaltationOfMoltenStone>()
-		,PowerCard.For<LavaFlows>()
-		,PowerCard.For<PyroclasticBombardment>()
-		,PowerCard.For<RainOfAsh>()
+		,PowerCard.For(typeof(ExaltationOfMoltenStone))
+		,PowerCard.For(typeof(LavaFlows))
+		,PowerCard.For(typeof(PyroclasticBombardment))
+		,PowerCard.For(typeof(RainOfAsh))
 	) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(), new GainPowerCard(), new GainEnergy(3)),

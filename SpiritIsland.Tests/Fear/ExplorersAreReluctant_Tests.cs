@@ -3,7 +3,7 @@
 public sealed class ExplorersAreReluctant_Tests {
 
 	void Init() {
-		var powerCard = PowerCard.For<CallToTend>();
+		var powerCard = PowerCard.For(typeof(CallToTend));
 
 		(_user, _ctx) = TestSpirit.StartGame( powerCard );
 
@@ -25,7 +25,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Fact]
 	public async Task NormalInvaderPhases() {
 
-		var spirit = new TestSpirit( PowerCard.For<CallToTend>() );
+		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
 
 		GameState gs = new GameState( spirit, Board.BuildBoardA() ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time

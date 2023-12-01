@@ -22,7 +22,7 @@ public class SwallowTheLandDwellers_Tests {
 		space.InitDefault( Human.Town, 1 );
 
 		// When: we use Swallow the Land Dwellers
-		fxt.Spirit.AddActionFactory( PowerCard.For<SwallowTheLandDwellers>() );
+		fxt.Spirit.AddActionFactory( PowerCard.For(typeof(SwallowTheLandDwellers)) );
 		fxt.GameState.Phase = Phase.Slow;
 		Task task = fxt.Spirit.ResolveActions( fxt.GameState );
 

@@ -20,7 +20,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		fix.InitTokens(space,"1D@2");
 
 		//  When: play the card
-		var task = PowerCard.For<SkiesHeraldTheSeasonOfReturn>().ActivateAsync( fix.SelfCtx );
+		var task = PowerCard.For(typeof(SkiesHeraldTheSeasonOfReturn)).ActivateAsync( fix.SelfCtx );
 		// target space
 		fix.Choose(space);
 

@@ -86,8 +86,6 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 	#region static
 
-	static public PowerCard For<T>() => For(typeof(T));
-
 	static public PowerCard For( Type type ) => For( FindMethod( type ) );
 
 	static MethodInfo FindMethod( Type type ) {

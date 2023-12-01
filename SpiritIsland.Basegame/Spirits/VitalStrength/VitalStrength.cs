@@ -12,10 +12,10 @@ public class VitalStrength : Spirit {
 			new PresenceTrack( Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
 		),
-		PowerCard.For<GuardTheHealingLand>(),
-		PowerCard.For<AYearOfPerfectStillness>(),
-		PowerCard.For<RitualsOfDestruction>(),
-		PowerCard.For<DrawOfTheFruitfulEarth>()
+		PowerCard.For(typeof(GuardTheHealingLand)),
+		PowerCard.For(typeof(AYearOfPerfectStillness)),
+		PowerCard.For(typeof(RitualsOfDestruction)),
+		PowerCard.For(typeof(DrawOfTheFruitfulEarth))
 	){
 		GrowthTrack = new(
 			new GrowthOption( new ReclaimAll(), new PlacePresence(2) ),

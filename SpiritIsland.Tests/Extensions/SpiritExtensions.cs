@@ -47,7 +47,7 @@ public static class SpiritExtensions {
 	}
 
 	internal static Task When_ResolvingCard<T>( this Spirit spirit, Action<VirtualUser> userActions = null )
-		=> spirit.ResolvePower( PowerCard.For<T>() ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );
+		=> spirit.ResolvePower( PowerCard.For(typeof(T)) ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );
 
 	internal static Task When_ResolvingInnate<T>( this Spirit spirit, Action<VirtualUser> userActions = null )
 		=> spirit.ResolvePower( InnatePower.For(typeof(T)) ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );

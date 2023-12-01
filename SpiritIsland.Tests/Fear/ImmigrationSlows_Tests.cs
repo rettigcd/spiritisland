@@ -11,7 +11,7 @@ public sealed class ImmigrationSlows_Tests {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void Level1_SkipBuildInLowestNumberedLand() {
-		var powerCard = PowerCard.For<CallToTend>();
+		var powerCard = PowerCard.For(typeof(CallToTend));
 		(_user, _ctx) = TestSpirit.StartGame(powerCard);
 		_log = GameState.Current.LogInvaderActions();
 		_log.Clear(); // skip over initial Explorer setup
@@ -51,7 +51,7 @@ public sealed class ImmigrationSlows_Tests {
 		// 2: Skip the next normal build. The build card remains in place instead of shifting left.
 		// (_user, _ctx) = TestSpirit.StartGame(PowerCard.For<CallToTend>());
 
-		var spirit = new TestSpirit( PowerCard.For<CallToTend>() );
+		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
 		var user = new VirtualTestUser( spirit );
 		var gs = new GameState( spirit, Board.BuildBoardA() ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
@@ -108,7 +108,7 @@ public sealed class ImmigrationSlows_Tests {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void Level3_DelayExplore1Round() {
-		var powerCard = PowerCard.For<CallToTend>();
+		var powerCard = PowerCard.For(typeof(CallToTend));
 		(_user, _ctx) = TestSpirit.StartGame(powerCard);
 		_log = GameState.Current.LogInvaderActions();
 		_log.Clear(); // skip over initial Explorer setup

@@ -15,10 +15,10 @@ public class SharpFangs : Spirit {
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5Reclaim1 ),
 			new FollowingPresenceToken( spirit, Token.Beast )
 		),
-		PowerCard.For<PreyOnTheBuilders>(),
-		PowerCard.For<TeethGleamFromDarkness>(),
-		PowerCard.For<TerrifyingChase>(),
-		PowerCard.For<TooNearTheJungle>()
+		PowerCard.For(typeof(PreyOnTheBuilders)),
+		PowerCard.For(typeof(TeethGleamFromDarkness)),
+		PowerCard.For(typeof(TerrifyingChase)),
+		PowerCard.For(typeof(TooNearTheJungle))
 	) {
 		
 		var beastOrJungleRange3 = new PlacePresence(3, Target.Beast, Target.Jungle );

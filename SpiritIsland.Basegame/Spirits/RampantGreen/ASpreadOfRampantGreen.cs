@@ -18,10 +18,10 @@ public class ASpreadOfRampantGreen : Spirit {
 
 	public ASpreadOfRampantGreen():base(
 		spirit => new RampantGreenPresence( spirit ),
-		PowerCard.For<FieldsChokedWithGrowth>(),
-		PowerCard.For<GiftOfProliferation>(),
-		PowerCard.For<OvergrowInANight>(),
-		PowerCard.For<StemTheFlowOfFreshWater>()
+		PowerCard.For(typeof(FieldsChokedWithGrowth)),
+		PowerCard.For(typeof(GiftOfProliferation)),
+		PowerCard.For(typeof(OvergrowInANight)),
+		PowerCard.For(typeof(StemTheFlowOfFreshWater))
 	) {
 		// Special rules: steady regeneration
 

@@ -16,10 +16,10 @@ public class Keeper : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 ),
 			new KeeperToken( spirit )
 		),
-		PowerCard.For<BoonOfGrowingPower>(),
-		PowerCard.For<RegrowFromRoots>(),
-		PowerCard.For<SacrosanctWilderness>(),
-		PowerCard.For<ToweringWrath>()
+		PowerCard.For(typeof(BoonOfGrowingPower)),
+		PowerCard.For(typeof(RegrowFromRoots)),
+		PowerCard.For(typeof(SacrosanctWilderness)),
+		PowerCard.For(typeof(ToweringWrath))
 	) {
 		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },

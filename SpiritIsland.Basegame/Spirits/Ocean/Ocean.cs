@@ -16,10 +16,10 @@ public class Ocean : Spirit {
 			new PresenceTrack( Track.Energy0, Track.MoonEnergy, Track.WaterEnergy, Track.Energy1, Track.EarthEnergy, Track.WaterEnergy, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 		),
-		PowerCard.For<CallOfTheDeeps>(),
-		PowerCard.For<GraspingTide>(),
-		PowerCard.For<SwallowTheLandDwellers>(),
-		PowerCard.For<TidalBoon>()
+		PowerCard.For(typeof(CallOfTheDeeps)),
+		PowerCard.For(typeof(GraspingTide)),
+		PowerCard.For(typeof(SwallowTheLandDwellers)),
+		PowerCard.For(typeof(TidalBoon))
 	) {
 
 		GrowthTrack = new(

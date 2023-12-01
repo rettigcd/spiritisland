@@ -13,10 +13,10 @@ public class Bringer : Spirit {
 			new PresenceTrack( Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5 ),
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy )
 		)
-		,PowerCard.For<CallOnMidnightsDream>()
-		,PowerCard.For<DreadApparitions>()
-		,PowerCard.For<DreamsOfTheDahan>()
-		,PowerCard.For<PredatoryNightmares>()
+		,PowerCard.For(typeof(CallOnMidnightsDream))
+		,PowerCard.For(typeof(DreadApparitions))
+		,PowerCard.For(typeof(DreamsOfTheDahan))
+		,PowerCard.For(typeof(PredatoryNightmares))
 	) {
 
 		GrowthTrack = new(

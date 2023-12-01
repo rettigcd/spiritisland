@@ -8,7 +8,7 @@ public class Quarantine_Tests {
 	readonly IFearCard card = new Quarantine();
 
 	void Init() {
-		var powerCard = PowerCard.For<CallToTend>();
+		var powerCard = PowerCard.For(typeof(CallToTend));
 		var (userLocal, ctxLocal) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
 			gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
 			gs.InitTestInvaderDeck(
@@ -148,7 +148,7 @@ public class Quarantine_Tests {
 	public async Task SkipRavageWorks( bool skipARavage ) {
 		// Not really for quarantine, just a general test without a home
 
-		var spirit = new TestSpirit( PowerCard.For<CallToTend>() );
+		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
 		Board board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board );
 		gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };

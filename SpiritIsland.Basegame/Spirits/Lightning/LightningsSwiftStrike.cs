@@ -11,10 +11,10 @@ public class LightningsSwiftStrike : Spirit {
 			new PresenceTrack( Track.Energy1, Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
 			new PresenceTrack( Track.Card2, Track.Card3, Track.Card4, Track.Card5, Track.Card6 )
 		),
-		PowerCard.For<HarbingersOfTheLightning>(),
-		PowerCard.For<LightningsBoon>(),
-		PowerCard.For<RagingStorm>(),
-		PowerCard.For<ShatterHomesteads>()
+		PowerCard.For(typeof(HarbingersOfTheLightning)),
+		PowerCard.For(typeof(LightningsBoon)),
+		PowerCard.For(typeof(RagingStorm)),
+		PowerCard.For(typeof(ShatterHomesteads))
 	){
 		GrowthTrack = new(
 			new GrowthOption( 

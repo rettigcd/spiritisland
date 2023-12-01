@@ -14,7 +14,7 @@ public class CallToTrade_Tests {
 	[Fact]
 	public void NoRavage_NoBuild() {
 
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)) );
 
 		// Given: a space that is not part of the build nor ravage
 		var spaceCtx = AllTargets( ctx )
@@ -38,7 +38,7 @@ public class CallToTrade_Tests {
 	[Trait( "Feature","Gather" )]
 	[Fact]
 	public void OneRavage_ReplacedWithBuild() {
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)) );
 
 		// Given: advance to 2nd round where we have a ravage
 		user.GrowAndBuyNoCards();
@@ -68,7 +68,7 @@ public class CallToTrade_Tests {
 	[Trait("Feature","Gather")]
 	[Fact]
 	public void TerrorLevel3_RavageRemainsRavage() {
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>() );
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)) );
 
 		// Elevate to Terror Level 3
 		Given_TerrorLevelIs3();
@@ -103,7 +103,7 @@ public class CallToTrade_Tests {
 		List<string> invaderLog = new List<string>();
 
 		// Given: Going to Ravage / Build in Jungle
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>(), (Action<GameState>)((gs)=>{ 
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
@@ -135,7 +135,7 @@ public class CallToTrade_Tests {
 	public void TwoRavages_BecomesBuildAndRavage() {
 
 		// Given: Going to Ravage / Build in Jungle
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For<CallToTrade>(), (Action<GameState>)(( gs ) => {
+		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)), (Action<GameState>)(( gs ) => {
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle );
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 		}) );

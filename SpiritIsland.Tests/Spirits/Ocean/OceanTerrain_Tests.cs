@@ -82,7 +82,7 @@ public class OceanTerrain_Tests {
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
 		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power); // required to signal it is a spirit power
 		SelfCtx ctx = primarySpirit.BindMyPowers();
-		Task t = PowerCard.For<CallToTend>().ActivateAsync( ctx );
+		Task t = PowerCard.For(typeof(CallToTend)).ActivateAsync( ctx );
 		//  And: Targets A2 (that has a dahan on it)
 		Choose( "A2" );
 		//  And: Push a Dahan
@@ -152,7 +152,7 @@ public class OceanTerrain_Tests {
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
 		await using ActionScope action = await ActionScope.Start(ActionCategory.Spirit_Power);
 		SelfCtx ctx = primarySpirit.BindMyPowers();
-		Task t = PowerCard.For<LandOfHauntsAndEmbers>().ActivateAsync( ctx );
+		Task t = PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( ctx );
 		//  And: Targets A2
 		Choose( a2.Space.Text );
 
@@ -234,7 +234,7 @@ public class OceanTerrain_Tests {
 		//  And: spirit can use blazing renewal
 		primarySpirit.Energy = 5;
 		primarySpirit.Presence.Destroyed = 1;
-		primarySpirit.AddActionFactory(PowerCard.For<BlazingRenewal>());
+		primarySpirit.AddActionFactory(PowerCard.For(typeof(BlazingRenewal)));
 		gameState.Phase = Phase.Fast;
 
 		// When: using a Power that places presence
@@ -264,7 +264,7 @@ public class OceanTerrain_Tests {
 		// When: trying to use a card that targets out of a wetland
 		// Cleansing Floods (range 1 from wetland)
 		primarySpirit.Energy = 5;
-		primarySpirit.AddActionFactory(PowerCard.For<CleansingFloods>());
+		primarySpirit.AddActionFactory(PowerCard.For(typeof(CleansingFloods)));
 		gameState.Phase = Phase.Slow;
 		await primarySpirit.ResolveActions( gameState ).AwaitUserToComplete("Cleansing Flood", ()=> {
 			Choose( "Cleansing Floods $5 (Slow)" );
@@ -299,7 +299,7 @@ public class OceanTerrain_Tests {
 
 		// When: Tidal Boon is played (by Ocean)
 		gameState.Phase = Phase.Slow;
-		oceanSpirit.AddActionFactory( PowerCard.For<TidalBoon>() );
+		oceanSpirit.AddActionFactory( PowerCard.For(typeof(TidalBoon)) );
 		Task task = oceanSpirit.ResolveActions( gameState );
 
 		oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );

@@ -17,10 +17,10 @@ public class HeartOfTheWildfire : Spirit {
 			new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 ),
 			new WildfireToken( spirit )
 		)
-		,PowerCard.For<AsphyxiatingSmoke>()
-		,PowerCard.For<FlashFires>()
-		,PowerCard.For<ThreateningFlames>()
-		,PowerCard.For<FlamesFury>()
+		,PowerCard.For(typeof(AsphyxiatingSmoke))
+		,PowerCard.For(typeof(FlashFires))
+		,PowerCard.For(typeof(ThreateningFlames))
+		,PowerCard.For(typeof(FlamesFury))
 	) {
 
 		InnatePowers = new InnatePower[] {

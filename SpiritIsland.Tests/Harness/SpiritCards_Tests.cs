@@ -31,7 +31,7 @@ public class SpiritCards_Tests {
 
 	protected static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
 		for (int i = 0; i < expectedEnergyBonus; ++i) {
-			var otherCard = PowerCard.For<SpiritIsland.Basegame.GiftOfLivingEnergy>();
+			var otherCard = PowerCard.For(typeof(SpiritIsland.Basegame.GiftOfLivingEnergy));
 			otherSpirit.InPlay.Add(otherCard);
 			otherSpirit.AddActionFactory(otherCard);
 		}

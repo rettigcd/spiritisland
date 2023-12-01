@@ -79,10 +79,10 @@ public class StarlightSeeksItsForm : Spirit {
 				new PresenceTrack( 0, Track_Gain1Energy, NewGrowth4 )
 			)
 		)
-		,PowerCard.For<BoonOfReimagining>()
-		,PowerCard.For<GatherTheScatteredLightOfStars>()
-		,PowerCard.For<PeaceOfTheNighttimeSky>()
-		,PowerCard.For<ShapeTheSelfAnew>()
+		,PowerCard.For(typeof(BoonOfReimagining))
+		,PowerCard.For(typeof(GatherTheScatteredLightOfStars))
+		,PowerCard.For(typeof(PeaceOfTheNighttimeSky))
+		,PowerCard.For(typeof(ShapeTheSelfAnew))
 	) {
 		GrowthTrack = new GrowthTrack( 3,
 			new GrowthOption( new ReclaimN() ),

@@ -6,7 +6,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 	[Fact]
 	public async Task CanBring_2TownDahanExplorer() {
 		// Setup
-		TestSpirit spirit = new TestSpirit(PowerCard.For<FlowLikeWaterReachLikeAir>());
+		TestSpirit spirit = new TestSpirit(PowerCard.For(typeof(FlowLikeWaterReachLikeAir)));
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
 
@@ -38,7 +38,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 	[Fact]
 	public async Task ExtendsRange2() {
 		// Setup
-		TestSpirit spirit = new TestSpirit( PowerCard.For<FlowLikeWaterReachLikeAir>() );
+		TestSpirit spirit = new TestSpirit( PowerCard.For(typeof(FlowLikeWaterReachLikeAir)) );
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
 

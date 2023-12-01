@@ -12,10 +12,10 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	public RelentlessGazeOfTheSun():base( 
 		spirit => new SunPresence(spirit)
-		,PowerCard.For<BlindingGlare>()
-		,PowerCard.For<UnbearableGaze>()
-		,PowerCard.For<WitherBodiesScarStones>()
-		,PowerCard.For<FocusTheSunsRays>()
+		,PowerCard.For(typeof(BlindingGlare))
+		,PowerCard.For(typeof(UnbearableGaze))
+		,PowerCard.For(typeof(WitherBodiesScarStones))
+		,PowerCard.For(typeof(FocusTheSunsRays))
 	) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new PlacePresence( 2 ) )

@@ -12,10 +12,10 @@ public class Shadows : Spirit {
 			new PresenceTrack( Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 ), 
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 )
 		),
-		PowerCard.For<MantleOfDread>(),
-		PowerCard.For<FavorsCalledDue>(),
-		PowerCard.For<CropsWitherAndFade>(),
-		PowerCard.For<ConcealingShadows>()
+		PowerCard.For(typeof(MantleOfDread)),
+		PowerCard.For(typeof(FavorsCalledDue)),
+		PowerCard.For(typeof(CropsWitherAndFade)),
+		PowerCard.For(typeof(ConcealingShadows))
 	) {
 		GrowthTrack = new(
 			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),

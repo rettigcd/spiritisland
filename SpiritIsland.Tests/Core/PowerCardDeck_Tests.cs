@@ -24,19 +24,19 @@ public class PowerCardDeck_Tests {
 	[Fact]
 	public void MementoRestoresDeck() {
 		PowerCardDeck deck = new PowerCardDeck(new PowerCard[] {
-			PowerCard.For<Drought>(),
-			PowerCard.For<DevouringAnts>(),
-			PowerCard.For<DriftDownIntoSlumber>(),
-			PowerCard.For<EnticingSplendor>(),
-			PowerCard.For<LureOfTheUnknown>(),
-			PowerCard.For<NaturesResilience>(),
-			PowerCard.For<PullBeneathTheHungryEarth>(),
-			PowerCard.For<QuickenTheEarthsStruggles>(),
-			PowerCard.For<RainOfBlood>(),
-			PowerCard.For<SapTheStrengthOfMultitudes>(),
-			PowerCard.For<SongOfSanctity>(),
-			PowerCard.For<SteamVents>(),
-			PowerCard.For<UncannyMelting>(),
+			PowerCard.For(typeof(Drought)),
+			PowerCard.For(typeof(DevouringAnts)),
+			PowerCard.For(typeof(DriftDownIntoSlumber)),
+			PowerCard.For(typeof(EnticingSplendor)),
+			PowerCard.For(typeof(LureOfTheUnknown)),
+			PowerCard.For(typeof(NaturesResilience)),
+			PowerCard.For(typeof(PullBeneathTheHungryEarth)),
+			PowerCard.For(typeof(QuickenTheEarthsStruggles)),
+			PowerCard.For(typeof(RainOfBlood)),
+			PowerCard.For(typeof(SapTheStrengthOfMultitudes)),
+			PowerCard.For(typeof(SongOfSanctity)),
+			PowerCard.For(typeof(SteamVents)),
+			PowerCard.For(typeof(UncannyMelting)),
 		}, new Random().Next() );
 
 		// Given: saving state
