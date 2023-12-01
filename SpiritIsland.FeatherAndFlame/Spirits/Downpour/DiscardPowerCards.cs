@@ -6,15 +6,14 @@ internal class DiscardPowerCards : SpiritAction {
 		_count = count;
 	}
 
-	public override async Task ActAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( Spirit spirit ) {
 
-		var spirit = ctx.Self;
 		var hand = spirit.Hand;
 		var inPlay = spirit.InPlay;
 		for(int i = 0; i < _count; ++i) {
 			IEnumerable<SingleCardUse> options = SingleCardUse.GenerateUses( CardUse.Discard, inPlay.Union( hand ) );
 			var decision = new A.PowerCard( $"Select card to discard ({i+1}of{_count})", options, Present.Always );
-			PowerCard card = await ctx.SelectAsync( decision );
+			PowerCard card = await spirit.SelectAsync( decision );
 			if(card != null) {
 				// (Source-1) Purchased / Active
 				if(inPlay.Contains( card )) {

@@ -26,22 +26,23 @@ public class RepeatCardForFree : IActionFactory {
 	string Suffix => maxCost == int.MaxValue ? "" : $" (max cost:{maxCost})";
 	public string Text => Name;
 
-	public async Task ActivateAsync(SelfCtx ctx) {
+	public async Task ActivateAsync(Spirit self) {
 
-		var options = ctx.Self.UsedActions.OfType<PowerCard>() // not using Discard Pile because those cards are from previous rounds
+		var options = self.UsedActions.OfType<PowerCard>() // not using Discard Pile because those cards are from previous rounds
 			.Where(card=>card.Cost <= maxCost)
-			.Where(card=> card.CouldActivateDuring(GameState.Current.Phase,ctx.Self)) 
+			.Where(card=> card.CouldActivateDuring(GameState.Current.Phase,self)) 
 			.ToArray(); 
 
 
 		if(options.Length == 0) return;
 
-		PowerCard factory = await ctx.Self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Done );
+		PowerCard factory = await self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Done );
 		if(factory == null) return;
 
-		ctx.Self.AddActionFactory( factory );
+		self.AddActionFactory( factory );
 
 	}
+
 
 	readonly int maxCost;
 }

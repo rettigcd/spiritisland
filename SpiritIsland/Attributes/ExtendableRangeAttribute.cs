@@ -18,8 +18,8 @@ public class ExtendableRangeAttribute : TargetSpaceAttribute {
 
 	public override string RangeText => "+"+_extension;
 
-	protected override async Task<int> CalcRange( SelfCtx ctx ) => _range
-		+ (await ctx.YouHave( _triggeringElements ) ? _extension : 0);
+	protected override async Task<int> CalcRange( Spirit self ) => _range
+		+ (await self.YouHave( _triggeringElements ) ? _extension : 0);
 
 	public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 

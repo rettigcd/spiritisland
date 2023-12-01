@@ -71,13 +71,13 @@ class CommandBeastAction : IActionFactory {
 
 	public string Text => Name;
 
-	public async Task ActivateAsync( SelfCtx ctx ) {
+	public async Task ActivateAsync( Spirit _ ) {
 		Used = true;
-
-		await using var actionScope = await ActionScope.Start(ActionCategory.Special); // replace generic scope passed in.
+		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special); // replace generic scope passed in.
 		GameCtx gameCtx = new GameCtx( GameState.Current );
 		await new CommandBeasts().In().EachActiveLand().ActAsync( gameCtx );
 	}
+
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
 	public bool Used { get; private set; }
 }

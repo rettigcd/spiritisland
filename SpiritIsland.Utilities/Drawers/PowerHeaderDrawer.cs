@@ -147,9 +147,9 @@ public static class PowerHeaderDrawer {
 					}
 					break;
 
-				case Target.Inland:
-				case Target.Coastal:
-				case Target.Any:
+				case Filter.Inland:
+				case Filter.Coastal:
+				case Filter.Any:
 				default: {
 						using StringFormat centerBoth = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 						using Font boldFont = new Font( FontFamily.GenericSansSerif, cell.Height / 2, FontStyle.Bold, GraphicsUnit.Pixel );
@@ -174,23 +174,23 @@ public static class PowerHeaderDrawer {
 
 	static Img TargetToImg( string text ) => text switch {
 		"Spirit" => Img.Icon_Spirit,
-		Target.Jungle      => Img.Icon_Jungle,
-		Target.Sands       => Img.Icon_Sands,
-		Target.Mountain    => Img.Icon_Mountain,
-		Target.Wetland     => Img.Icon_Wetland,
-		Target.Ocean       => Img.Icon_Ocean,
-		Target.Blight      => Img.Icon_Blight,
-		Target.Dahan       => Img.Icon_Dahan,
-		Target.City        => Img.Icon_City,
-		Target.Town        => Img.Icon_Town,
-		Target.Disease     => Img.Icon_Disease,
-		Target.Wilds       => Img.Icon_Wilds,
-		Target.Beast       => Img.Icon_Beast,
-		Target.Presence    => Img.Icon_Presence,
-		Target.EndlessDark => Img.Icon_EndlessDark,
-		Target.Quake       => Img.Icon_Quake,
-		Target.Invaders    => Img.Icon_Invaders,
-		Target.Strife      => Img.Icon_Strife,
+		Filter.Jungle      => Img.Icon_Jungle,
+		Filter.Sands       => Img.Icon_Sands,
+		Filter.Mountain    => Img.Icon_Mountain,
+		Filter.Wetland     => Img.Icon_Wetland,
+		Filter.Ocean       => Img.Icon_Ocean,
+		Filter.Blight      => Img.Icon_Blight,
+		Filter.Dahan       => Img.Icon_Dahan,
+		Filter.City        => Img.Icon_City,
+		Filter.Town        => Img.Icon_Town,
+		Filter.Disease     => Img.Icon_Disease,
+		Filter.Wilds       => Img.Icon_Wilds,
+		Filter.Beast       => Img.Icon_Beast,
+		Filter.Presence    => Img.Icon_Presence,
+		Filter.EndlessDark => Img.Icon_EndlessDark,
+		Filter.Quake       => Img.Icon_Quake,
+		Filter.Invaders    => Img.Icon_Invaders,
+		Filter.Strife      => Img.Icon_Strife,
 		"Incarna"          => Img.Icon_Incarna,
 		_                  => Img.None
 	};

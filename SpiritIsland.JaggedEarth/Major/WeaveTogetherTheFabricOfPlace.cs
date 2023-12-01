@@ -8,7 +8,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		// target land and a land adjacent to it become a single land for this turn.
 		var other = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.Space.Label} to.")).Space;
 
-		MultiSpace multi = JoinSpaces( ctx, ctx.Space, other );
+		MultiSpace multi = JoinSpaces( ctx.Self, ctx.Space, other );
 
 		// if you have 4 air:
 		if(await ctx.YouHave( "4 air" )) {
@@ -26,7 +26,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static MultiSpace JoinSpaces( SelfCtx originatorCtx, Space space, Space other ) {
+	static MultiSpace JoinSpaces( Spirit originalSelf, Space space, Space other ) {
 
 		var gameState = GameState.Current;
 
@@ -56,7 +56,7 @@ public class WeaveTogetherTheFabricOfPlace {
 
 			gameState.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
 
-			await DistributeVisibleTokens( originatorCtx, space, other );
+			await DistributeVisibleTokens( originalSelf, space, other );
 
 			CopyNewModsToBoth( space, other, multi );
 		} );
@@ -77,7 +77,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static async Task DistributeVisibleTokens( SelfCtx ctx, Space from, Space to ) {
+	static async Task DistributeVisibleTokens( Spirit self, Space from, Space to ) {
 		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 
 		var fromTokens = from.Tokens;
@@ -87,7 +87,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		var tokenClasses = fromTokens.OfType<IToken>()
 			.Select( x => x.Class ).Distinct()
 			.ToArray();
-		await toTokens.Gather( ctx.Self )
+		await toTokens.Gather( self )
 			.AddGroup( int.MaxValue, tokenClasses )
 			.ConfigSource(s=>s.FilterSource( ss => ss.Space == from ))
 			.DoUpToN();

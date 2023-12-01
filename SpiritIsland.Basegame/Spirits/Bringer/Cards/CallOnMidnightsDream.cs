@@ -5,7 +5,7 @@ public class CallOnMidnightsDream {
 	public const string Name = "Call on Midnight's Dream";
 
 
-	[SpiritCard(Name,0, Element.Moon,Element.Animal), Fast, FromPresence(0,Target.Dahan, Target.Invaders )]
+	[SpiritCard(Name,0, Element.Moon,Element.Animal), Fast, FromPresence(0,Filter.Dahan, Filter.Invaders )]
 	[Instructions("If target land has Dahan, gain a Major Power. If you Forget this Power, gain Energy equal to Dahan and you may play the Major Power immediately, paying its cost. -or- If Invaders are present, 2 Fear."),Artist( Artists.ShaneTyree)]
 	static public Task ActAsync(TargetSpaceCtx ctx) {
 
@@ -18,7 +18,7 @@ public class CallOnMidnightsDream {
 
 	static async Task DrawMajorOrGetEnergy( TargetSpaceCtx ctx ) {
 		// Gain a major power. (and forget a card)
-		var major = (await ctx.DrawMajor(true)).Selected;
+		var major = (await ctx.Self.DrawMajor(true)).Selected;
 
 		// If you Forget this (Call on Midnights Dream) Power,
 		var callOnMidnightsDreamCard = ctx.Self.InPlay.SingleOrDefault( x => x.Name == Name );

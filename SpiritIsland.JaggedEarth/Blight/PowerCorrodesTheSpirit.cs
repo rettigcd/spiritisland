@@ -8,7 +8,7 @@ public class PowerCorrodesTheSpirit : BlightCard {
 		=> Cmd.AtTheStartOfEachInvaderPhase(
 			Cmd.ForEachSpirit(
 				Cmd.DestroyPresence()
-					.OnlyExecuteIf( ctx => 3 <= ctx.Self.InPlay.Count || ctx.Self.InPlay.Any( c => 4 <= c.Cost ) )
+					.OnlyExecuteIf( self => 3 <= self.InPlay.Count || self.InPlay.Any( c => 4 <= c.Cost ) )
 			) 
 		);
 

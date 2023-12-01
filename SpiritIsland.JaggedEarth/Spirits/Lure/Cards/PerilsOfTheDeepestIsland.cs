@@ -2,7 +2,7 @@
 
 public class PerilsOfTheDeepestIsland {
 
-	[SpiritCard("Perils of the Deepest Island",1,Element.Moon,Element.Plant,Element.Animal),Slow,FromPresence(0,Target.Inland)]
+	[SpiritCard("Perils of the Deepest Island",1,Element.Moon,Element.Plant,Element.Animal),Slow,FromPresence(0,Filter.Inland)]
 	[Instructions( "1 Fear. Add 1 Badlands. Add 1 Beasts within 1 Range. Push up to 2 Dahan." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
@@ -15,9 +15,9 @@ public class PerilsOfTheDeepestIsland {
 		// Add 1 beast within 1 range.
 		var options = ctx.Range(1);
 
-		var spaceCtx = await ctx.SelectTargetSpaceAsync("Add beast", options.Select(x=>x.Space));
+		var space = await ctx.Self.SelectSpaceAsync("Add beast", options.Select(x=>x.Space),Present.Always);
 
-		await spaceCtx.Beasts.AddAsync(1);
+		await space.Tokens.Beasts.AddAsync(1);
 
 		// Push up to 2 dahan.
 		await ctx.PushUpToNDahan(2);

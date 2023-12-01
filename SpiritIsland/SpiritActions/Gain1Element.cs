@@ -12,10 +12,10 @@ public class Gain1Element : SpiritAction, ICanAutoRun {
 		.Select( x => x.ToString() )
 		.Join_WithLast(", ", ", or " );
 
-	public override async Task ActAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( Spirit self ) {
 		var element = ElementOptions.Length == 1 ? ElementOptions[0]
-			: await ctx.Self.SelectElementEx( "Gain element", ElementOptions );
-		ctx.Self.Elements.Add(element);
+			: await self.SelectElementEx( "Gain element", ElementOptions );
+		self.Elements.Add(element);
 	}
 
 	public Element[] ElementOptions { get; } // public for drawing

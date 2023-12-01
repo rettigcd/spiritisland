@@ -2,7 +2,7 @@
 
 public class EnticingSplendor {
 
-	[MinorCard( "Enticing Splendor", 0, Element.Sun, Element.Air, Element.Plant ),Fast,FromPresence( 0, Target.NoBlight )]
+	[MinorCard( "Enticing Splendor", 0, Element.Sun, Element.Air, Element.Plant ),Fast,FromPresence( 0, Filter.NoBlight )]
 	[Instructions( "Gather 1 Explorer / Town. -or- Gather up to 2 Dahan." ), Artist( Artists.JoshuaWright )]
 	public static Task ActAsync( TargetSpaceCtx ctx) {
 

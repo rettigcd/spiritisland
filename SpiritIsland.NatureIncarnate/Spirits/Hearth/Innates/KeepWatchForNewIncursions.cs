@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 [InnatePower( KeepWatchForNewIncursions.Name ), Fast]
-[FromSacredSite( Target.Dahan, 1 )]
+[FromSacredSite( Filter.Dahan, 1 )]
 [RepeatIf( "2 sun,3 air,4 animal" )]
 public class KeepWatchForNewIncursions {
 

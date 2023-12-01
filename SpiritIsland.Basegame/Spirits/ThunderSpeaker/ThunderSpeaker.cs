@@ -29,8 +29,8 @@ public class Thunderspeaker : Spirit {
 				new GainPowerCard()
 			),
 			new GrowthOption( 
-				new PlacePresence(2,Target.Dahan),
-				new PlacePresence(1,Target.Dahan)
+				new PlacePresence(2,Filter.Dahan),
+				new PlacePresence(1,Filter.Dahan)
 			),
 			new GrowthOption( 
 				new PlacePresence(1), 
@@ -70,7 +70,7 @@ public class Thunderspeaker : Spirit {
 		SpaceToken[] Intersect() => Presence.Deployed.Where(x=>spaces.Contains(x.Space)).ToArray(); // Ravage Only, not dependent on PowerRangeCalculator
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
-			SpaceToken spaceToken = await Select( new A.SpaceToken( prompt, options, Present.Always ) );
+			SpaceToken spaceToken = await SelectAsync( new A.SpaceToken( prompt, options, Present.Always ) );
 			await spaceToken.Destroy();
 		}
 

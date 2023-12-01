@@ -9,22 +9,21 @@ public class DiscardCard : SpiritAction {
 		_cardOptionSelector = cardOptionSelector;
 	}
 
-	public override async Task ActAsync( SelfCtx ctx ){
-		Spirit spirit = ctx.Self;
-		PowerCard card = await spirit.Select<PowerCard>( new A.PowerCard(
+	public override async Task ActAsync( Spirit self ){
+		PowerCard card = await self.SelectAsync<PowerCard>( new A.PowerCard(
 			$"Select card to discard",
-			SingleCardUse.GenerateUses( CardUse.Discard, _cardOptionSelector( spirit ) ),
+			SingleCardUse.GenerateUses( CardUse.Discard, _cardOptionSelector( self ) ),
 			Present.Always
 		) );
 		if(card != null) {
 
 			// Remove from inPlay or hand (should only be in hand...)
-			var match = new[] { spirit.InPlay, spirit.Hand }
+			var match = new[] { self.InPlay, self.Hand }
 				.Single( deck => deck.Contains( card ) );
 			match.Remove( card );
 
 			// add to discard
-			spirit.DiscardPile.Add( card );
+			self.DiscardPile.Add( card );
 		}
 	}
 }

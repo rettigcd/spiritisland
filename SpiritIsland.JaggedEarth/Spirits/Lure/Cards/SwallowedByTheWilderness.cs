@@ -2,7 +2,7 @@
 
 public class SwallowedByTheWilderness {
 
-	[SpiritCard("Swallowed by the Wilderness",1,Element.Fire,Element.Air,Element.Plant,Element.Animal),Fast,FromPresence(0,Target.Inland)]
+	[SpiritCard("Swallowed by the Wilderness",1,Element.Fire,Element.Air,Element.Plant,Element.Animal),Fast,FromPresence(0,Filter.Inland)]
 	[Instructions( "2 Fear. 1 Damage per Beasts / Disease / Wilds / Badlands. (Max: 5 tokens)" ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 fear

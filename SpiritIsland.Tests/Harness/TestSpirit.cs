@@ -25,7 +25,7 @@ class TestSpirit : Spirit {
 		this.Given_HasPresenceOn(space,2); 
 	}
 
-	static public (VirtualTestUser, SelfCtx) StartGame( 
+	static public (VirtualTestUser, Spirit) StartGame( 
 		PowerCard powerCard, 
 		Action<GameState> modGameState = null 
 	) {
@@ -40,12 +40,11 @@ class TestSpirit : Spirit {
 		_ = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
 
 		var user = new VirtualTestUser( spirit );
-		var starterCtx = spirit.Bind();
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
 
-		return (user,starterCtx);
+		return (user,spirit);
 	}
 
 }

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public abstract class GeneratesContextAttribute : Attribute {
-	public abstract Task<object> GetTargetCtx( string powerName, SelfCtx ctx );
+	public abstract Task<object> GetTargetCtx( string powerName, Spirit self );
 
 	public abstract string RangeText { get; }
 

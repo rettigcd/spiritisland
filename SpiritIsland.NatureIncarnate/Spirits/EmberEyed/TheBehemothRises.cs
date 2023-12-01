@@ -12,11 +12,11 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 	bool IActionFactory.CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 	# endregion IActionFactory (explicit)
 
-	public async Task ActivateAsync( SelfCtx ctx ){
+	public async Task ActivateAsync( Spirit self ){
 		// Either: Push incarna OR Add or Move Incarna to any SS on island.
 
 		// if on board
-		EmberEyedBehemoth eeb = (EmberEyedBehemoth)ctx.Self;
+		EmberEyedBehemoth eeb = (EmberEyedBehemoth)self;
 		Incarna incarna = eeb.Incarna;
 		SpaceState? from = incarna.Space;
 		if(from is not null)
@@ -28,11 +28,12 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 				.AddAll(incarna)
 				.DoN();
 		else {
-			Space? space = await ctx.Self.Select( new A.Space( "Select space to place Incarna.", eeb.Presence.SacredSites, Present.Done ) );
+			Space? space = await self.SelectAsync( new A.Space( "Select space to place Incarna.", eeb.Presence.SacredSites, Present.Done ) );
 			if(space == null) return;
 			await space.Tokens.AddAsync( incarna, 1 );
 		}
 	}
+
 
 }
 

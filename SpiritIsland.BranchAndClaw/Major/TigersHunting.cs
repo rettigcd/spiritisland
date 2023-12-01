@@ -4,7 +4,7 @@ namespace SpiritIsland.BranchAndClaw;
 
 public class TigersHunting {
 
-	[MajorCard("Tigers Hunting", 2, Element.Sun, Element.Moon, Element.Animal),Fast,FromPresence(Target.Jungle,1,Target.NoBlight)]
+	[MajorCard("Tigers Hunting", 2, Element.Sun, Element.Moon, Element.Animal),Fast,FromPresence(Filter.Jungle,1,Filter.NoBlight)]
 	[Instructions( "2 Fear. Add 1 Beasts. Gather up to 1 Beasts. 1 Damage per Beasts. Push up to 2 Beasts. -If you have- 2 Sun, 2 Moon, 3 Animal: 1 Damage in an adjacent land without Blight, and +1 Damage per Beasts there." ), Artist( Artists.CariCorene )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 2 fear
@@ -27,7 +27,7 @@ public class TigersHunting {
 		if(await ctx.YouHave("2 sun,2 moon,3 animal")) {
 			//   1 damage in adjacent land without blight,
 			//   and +1 damage per beast there
-			Space noBlight = await ctx.Self.Select( new A.Space( 
+			Space noBlight = await ctx.Self.SelectAsync( new A.Space( 
 				"1 Damage in land w/o blight", 
 				ctx.Tokens.Adjacent.Where( tokens => !tokens.Blight.Any ), 
 				Present.Always 

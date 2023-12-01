@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Basegame;
 
 [InnatePower(MassiveFlooding.Name),Slow]
-[FromSacredSite(1,Target.Invaders)]
+[FromSacredSite(1,Filter.Invaders)]
 public class MassiveFlooding {
 
 	public const string Name = "Massive Flooding";

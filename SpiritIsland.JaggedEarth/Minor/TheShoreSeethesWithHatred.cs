@@ -2,7 +2,7 @@
 
 public class TheShoreSeethesWithHatred{ 
 
-	[MinorCard("The Shore Seethes With Hatred",1,Element.Fire,Element.Water,Element.Earth,Element.Plant),Slow,FromPresence(1,Target.Coastal)]
+	[MinorCard("The Shore Seethes With Hatred",1,Element.Fire,Element.Water,Element.Earth,Element.Plant),Slow,FromPresence(1,Filter.Coastal)]
 	[Instructions( "1  Fear. Add 1 Badlands and 1 Wilds." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-[InnatePower( "Revoke Sanctuary and Cast Out" ), Slow, FromSacredSite( 0, Target.Invaders+"+"+Target.Incarna )]
+[InnatePower( "Revoke Sanctuary and Cast Out" ), Slow, FromSacredSite( 0, Filter.Invaders+"+"+Filter.Incarna )]
 public class RevokeSanctuaryAndCastOut {
 
 	[InnateTier( "1 sun,1 moon,2 plant", "1 Fear. Remove 1 Explorer/Town.", 0 )]

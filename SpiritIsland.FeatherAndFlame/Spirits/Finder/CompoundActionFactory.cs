@@ -9,8 +9,8 @@ class CompoundActionFactory : SpiritAction {
 		_parts = parts;
 	}
 
-	public override async Task ActAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( Spirit spirit ) {
 		foreach(var part in _parts )
-			await part.ActAsync( ctx );
+			await part.ActAsync( spirit );
 	}
 }

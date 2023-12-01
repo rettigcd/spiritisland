@@ -55,9 +55,8 @@ public static class SpiritExtensions {
 	internal static async Task ResolvePower( this Spirit spirit, IFlexibleSpeedActionFactory card ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
 		scope.Owner = spirit;
-		SelfCtx selfCtx = spirit.Bind();
 		try { 
-			await card.ActivateAsync( selfCtx );
+			await card.ActivateAsync( spirit );
 		} catch( Exception ex) {
 			string s = ex.ToString();
 		}
@@ -73,7 +72,7 @@ public static class SpiritExtensions {
 
 	internal static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, Space space, AsyncHandler<TargetSpaceCtx> methodAsync ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
-		await methodAsync.Execute( spirit.Bind().Target( space ) );
+		await methodAsync.Execute( spirit.Target( space ) );
 	}
 
 	internal static Task AwaitUserToComplete( this Task task, string taskDescription, Action userActions )
@@ -117,15 +116,14 @@ public static class SpiritExtensions {
 	static public async Task Testing_GrowAndResolve( Spirit spirit, GrowthOption option, GameState gameState ) { // public for Testing
 
 		await using var action = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Growth, spirit );
-		var ctx = spirit.Bind();
 
 		// Auto run the auto-runs.
 		foreach(var autoAction in option.AutoRuns)
-			await autoAction.ActivateAsync( ctx );
+			await autoAction.ActivateAsync( spirit );
 
 		// If Option has only 1 Action, auto trigger it.
 		if(option.UserRuns.Count() == 1) {
-			await option.UserRuns.First().ActivateAsync( ctx );
+			await option.UserRuns.First().ActivateAsync( spirit );
 		} else {
 			foreach(IHelpGrow action2 in option.UserRuns)
 				spirit.AddActionFactory( action2 );

@@ -2,9 +2,9 @@
 
 public class CallToTrade_Tests {
 
-	static IEnumerable<TargetSpaceCtx> AllTargets( SelfCtx ctx ) {
+	static IEnumerable<TargetSpaceCtx> AllTargets( Spirit self ) {
 		return GameState.Current.Spaces_Unfiltered
-			.Select( s => ctx.Target(s.Space) );
+			.Select( s => self.Target(s.Space) );
 	}
 
 	// for Terror Level 2 or lower => "first Ravage in Target land becomes a build"
@@ -14,10 +14,10 @@ public class CallToTrade_Tests {
 	[Fact]
 	public void NoRavage_NoBuild() {
 
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)) );
+		var (user, self) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)) );
 
 		// Given: a space that is not part of the build nor ravage
-		var spaceCtx = AllTargets( ctx )
+		var spaceCtx = AllTargets( self )
 			.Last( s => !s.MatchesBuildCard && !s.MatchesRavageCard ); // last stays away from city and ocean
 
 		Given_HasOnly3Explorers( spaceCtx );

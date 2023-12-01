@@ -4,7 +4,7 @@ public class SwallowedByTheEndlessDark {
 
 	const string Name = "Swallowed by the Endless Dark";
 
-	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ), Fast, FromPresence(0,Target.Invaders)]
+	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ), Fast, FromPresence(0,Filter.Invaders)]
 	[Instructions( "2 Fear. Abduct 1 Explorer." ), Artist( Artists.DavidMarkiwsky )]
 	static async public Task ActAsync( TargetSpaceCtx ctx ) {
 

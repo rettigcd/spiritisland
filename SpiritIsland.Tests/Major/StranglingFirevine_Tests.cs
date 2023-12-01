@@ -21,7 +21,7 @@ public class StranglingFirevine_Tests {
 		SpiritExtensions.Given_Adjust( fxt.Spirit.Presence, fxt.GameState.Tokens[fxt.Board[7]], 1 );
 
 		//  When: activate card
-		var ctx = fxt.SelfCtx.Target( space );
+		var ctx = fxt.Spirit.Target( space );
 		var task = StranglingFirevine.ActAsync( ctx );
 
 		//   And: auto selecting origin land

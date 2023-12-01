@@ -4,11 +4,11 @@ public class MovePresenceTogether : SpiritAction {
 
 	public MovePresenceTogether():base( "Move up to 3 Presence together" ) { }
 
-	public override async Task ActAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( Spirit self ) {
 
-		await new TokenMover(ctx.Self,"Move",
-			new SourceSelector(ctx.Self.Presence.Lands.Tokens())
-				.AddGroup(3,ctx.Self.Presence)
+		await new TokenMover(self,"Move",
+			new SourceSelector(self.Presence.Lands.Tokens())
+				.AddGroup(3,self.Presence)
 				.FromASingleLand(),
 			new DestinationSelector( st => st.Space.Range(3).Tokens() )
 				.Config( Distribute.ToASingleLand )

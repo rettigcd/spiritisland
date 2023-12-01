@@ -19,7 +19,7 @@ public class VengeanceAsABurningPlague : Spirit {
 	) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy(1) ),
-			new GrowthOption( new PlacePresence(2,Target.Town, Target.City, Target.Blight ), new PlacePresence(2, Target.Town, Target.City, Target.Blight ) ),
+			new GrowthOption( new PlacePresence(2,Filter.Town, Filter.City, Filter.Blight ), new PlacePresence(2, Filter.Town, Filter.City, Filter.Blight ) ),
 			new GrowthOption( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy(1) )
 		);
 		InnatePowers = new InnatePower[] {
@@ -29,13 +29,13 @@ public class VengeanceAsABurningPlague : Spirit {
 	}
 	static SpiritAction AddAPresenceOrDisease => new SpiritAction(
 		"Add a Presence or Disease", 
-		ctx => Cmd.Pick1( AddDiseaseAtRange1, new PlacePresence( 1 ) ).ActAsync( ctx ) 
+		self => Cmd.Pick1( AddDiseaseAtRange1, new PlacePresence( 1 ) ).ActAsync( self ) 
 	);
 
-	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async ctx => {
-		var options = DefaultRangeCalculator.Singleton.GetSpaceOptions( ctx.Self.Presence.Lands.Tokens(), new TargetCriteria( 1 ) );
-		Space to = await ctx.Self.Select( new A.Space( "Add a Disease", options, Present.Always ).ShowTokenLocation( Token.Disease ) );
-		await ctx.Target( to ).Disease.AddAsync( 1 );
+	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async self => {
+		var options = DefaultRangeCalculator.Singleton.GetSpaceOptions( self.Presence.Lands.Tokens(), new TargetCriteria( 1 ) );
+		Space to = await self.SelectAsync( new A.Space( "Add a Disease", options, Present.Always ).ShowTokenLocation( Token.Disease ) );
+		await self.Target( to ).Disease.AddAsync( 1 );
 	} );
 
 

@@ -32,7 +32,7 @@ public class HeartOfTheWildfire : Spirit {
 		GrowthTrack = new(
 			new GrowthOption(
 				new ReclaimAll(),
-				new GainPowerCard(),
+				new GainPowerCard(), 
 				new GainEnergy(1)
 			),
 			new GrowthOption(
@@ -104,7 +104,7 @@ public class HeartOfTheWildfire : Spirit {
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
 			int fireCount = Self.Presence.TrackElements[Element.Fire];
-			var ctx = Self.Bind().Target( args.To );
+			var ctx = Self.Target( args.To.Space );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight

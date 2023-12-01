@@ -2,7 +2,7 @@
 
 public class TheTreesAndStonesSpeakOfWar {
 
-	[MajorCard( "The Trees and Stones Speak of War", 2, Element.Sun, Element.Earth, Element.Plant ),Fast,FromPresence(1,Target.Dahan)]
+	[MajorCard( "The Trees and Stones Speak of War", 2, Element.Sun, Element.Earth, Element.Plant ),Fast,FromPresence(1,Filter.Dahan)]
 	[Instructions( "For each Dahan in target land, 1 Damage and Defend 2. -If you have- 2 Sun, 2 Earth, 2 Plant: You may Push up to 2 Dahan, moving each's Defend with them." ), Artist( Artists.GrahamStermberg )]
 	static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 

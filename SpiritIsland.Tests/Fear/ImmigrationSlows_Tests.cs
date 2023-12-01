@@ -12,7 +12,9 @@ public sealed class ImmigrationSlows_Tests {
 	[Fact]
 	public void Level1_SkipBuildInLowestNumberedLand() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
-		(_user, _ctx) = TestSpirit.StartGame(powerCard);
+		var (user, spirit) = TestSpirit.StartGame(powerCard);
+		_user = user; 
+		_spirit = spirit;
 		_log = GameState.Current.LogInvaderActions();
 		_log.Clear(); // skip over initial Explorer setup
 
@@ -26,7 +28,7 @@ public sealed class ImmigrationSlows_Tests {
 		_log.Assert_Explored( "A2", "A5" );
 
 		// Given: Explorers Are Reluctant
-		_ctx.ActivateFearCard( _fearCard );
+		_spirit.ActivateFearCard( _fearCard );
 		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( FearAck1 );
 		_user.WaitForNext(); // start of round 3
@@ -109,7 +111,9 @@ public sealed class ImmigrationSlows_Tests {
 	[Fact]
 	public void Level3_DelayExplore1Round() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
-		(_user, _ctx) = TestSpirit.StartGame(powerCard);
+		var (user, spirit) = TestSpirit.StartGame(powerCard);
+		_user = user;
+		_spirit = spirit;
 		_log = GameState.Current.LogInvaderActions();
 		_log.Clear(); // skip over initial Explorer setup
 
@@ -122,8 +126,8 @@ public sealed class ImmigrationSlows_Tests {
 		_log.Assert_Explored( "A2", "A5" );
 
 		// Given: Explorers Are Reluctant
-		_ctx.ActivateFearCard( _fearCard );
-		_ctx.ElevateTerrorLevelTo( 3 );
+		_spirit.ActivateFearCard( _fearCard );
+		_spirit.ElevateTerrorLevelTo( 3 );
 
 		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( FearAck3 );
@@ -142,11 +146,11 @@ public sealed class ImmigrationSlows_Tests {
 	}
 
 	VirtualTestUser _user;
-	SelfCtx _ctx;
+	Spirit _spirit;
 	Queue<string> _log;
 
 	void GrowAndBuyNoCards() {
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		_user.GrowAndBuyNoCards();
 	}
 

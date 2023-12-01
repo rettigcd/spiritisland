@@ -4,21 +4,20 @@
 class StarsBlazeInTheDaytimeSky{
 
 	[InnateTier("4 sun","3 Fear. Gain 1 Energy. Reclaim up to 1 Power Card from play or your discard pile.")]
-	static public async Task Option1( SelfCtx ctx ) {
+	static public async Task Option1( Spirit self ) {
 
 		// 3 fear
-		ctx.AddFear(3);
+		self.AddFear(3);
 
 		// Gain 1 energy
-		var spirit = ctx.Self;
-		spirit.Energy++;
+		self.Energy++;
 
 		// Reclaim up to 1 power card from play or your discard pile
-		var cards = spirit.InPlay.Union(spirit.DiscardPile).ToArray();
+		var cards = self.InPlay.Union(self.DiscardPile).ToArray();
 		if(cards.Length == 0) return;
-		var card = await spirit.SelectPowerCard("Reclaim card", cards, CardUse.Reclaim,Present.Always);
+		var card = await self.SelectPowerCard("Reclaim card", cards, CardUse.Reclaim,Present.Always);
 
-		spirit.Reclaim(card);	// reclaim it now
+		self.Reclaim(card);	// reclaim it now
 
 	}
 

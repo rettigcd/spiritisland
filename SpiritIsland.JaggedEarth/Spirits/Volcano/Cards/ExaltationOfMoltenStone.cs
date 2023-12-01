@@ -13,12 +13,12 @@ public class ExaltationOfMoltenStone {
 		ctx.Other.Energy += energyForOther;
 
 		// Target Spirit gains +1 range with their Powers that originate from a Mountain
-		ExtendRangeFromMountains( ctx.OtherCtx );
+		ExtendRangeFromMountains( ctx.Other );
 	}
 
-	static void ExtendRangeFromMountains( SelfCtx ctx ) {
-		RangeCalcRestorer.Save(ctx.Self);
-		ctx.Self.PowerRangeCalc = new ExtendRange1FromMountain( ctx.Self.PowerRangeCalc );
+	static void ExtendRangeFromMountains( Spirit self ) {
+		RangeCalcRestorer.Save(self);
+		self.PowerRangeCalc = new ExtendRange1FromMountain( self.PowerRangeCalc );
 	}
 
 	class ExtendRange1FromMountain : DefaultRangeCalculator {

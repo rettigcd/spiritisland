@@ -11,7 +11,7 @@ public class MesmerizedTranquility_Tests {
 		// Given: 1 dahan and 1 explorer
 		fxt.InitTokens(space,"1D@2,1E@1");
 		//   And: mesmerized played on that space
-		await MesmerizedTranquility.ActAsync(fxt.SelfCtx.Target(space)).ShouldComplete("Mesm Tranq");
+		await MesmerizedTranquility.ActAsync(fxt.Spirit.Target(space)).ShouldComplete("Mesm Tranq");
 		//  When: we ravage there
 		await space.When_Ravaging();
 		// Then: dahan is not damaged. + 1 Isolate (and explorer is gone)
@@ -26,8 +26,8 @@ public class MesmerizedTranquility_Tests {
 		// Given: 1 dahan and 1 town
 		fxt.InitTokens( space, "1D@2,1T@2" );
 		//   And: mesmerized played on that space twice (via a repeat card)
-		await MesmerizedTranquility.ActAsync( fxt.SelfCtx.Target( space ) ).ShouldComplete( "Mesm Tranq1" );
-		await MesmerizedTranquility.ActAsync( fxt.SelfCtx.Target( space ) ).ShouldComplete( "Mesm Tranq2" );
+		await MesmerizedTranquility.ActAsync( fxt.Spirit.Target( space ) ).ShouldComplete( "Mesm Tranq1" );
+		await MesmerizedTranquility.ActAsync( fxt.Spirit.Target( space ) ).ShouldComplete( "Mesm Tranq2" );
 		//  When: we ravage there
 		await space.When_Ravaging();
 		// Then: dahan is not damaged. + 1 Isolate (and town is gone)

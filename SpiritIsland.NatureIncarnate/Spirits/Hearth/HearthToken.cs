@@ -48,7 +48,7 @@ public class HearthToken : SpiritPresenceToken
 
 		while(Self.Presence.IsOn(from)) {
 			// #pushpresence
-			Space destination = await Self.Select( A.Space.ToPushPresence( from.Space, destinationOptions.Downgrade(), Present.Done, this ) );
+			Space destination = await Self.SelectAsync( A.Space.ToPushPresence( from.Space, destinationOptions.Downgrade(), Present.Done, this ) );
 			if(destination is null) break;
 
 			// apply...

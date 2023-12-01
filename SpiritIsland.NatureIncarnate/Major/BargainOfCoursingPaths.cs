@@ -5,12 +5,12 @@ public class BargainOfCoursingPaths {
 	public const string Name = "Bargain of Coursing Paths";
 
 	[MajorCard(Name,2,"moon,air,water,earth"),Fast]
-	[FromPresence(0,Target.TwoDahan)]
+	[FromPresence(0,Filter.TwoDahan)]
 	[Instructions( "Bargain: 1 presence now and -1 Energy/turn. Now: Mark both target land and another with 2 or more Dahan. Ongoing: After pieces are added or moved into the marked lands: move those pieces directly to any 1 land. -If you have- 3 air,2 water,2 earth: The presence cost comes from your presence tracks." ), Artist( Artists.AgnieszkaDabrowiecka )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// Bargain: 1 presence now and -1 Energy/turn.
 		// -If you have- 3 air,2 water,2 earth: The presence cost comes from your presence tracks.
-		await ctx.PayPresenceForBargain( "3 air,2 water,2 earth" );
+		await ctx.Self.PayPresenceForBargain( "3 air,2 water,2 earth" );
 
 		// and you gain 1 less Energy each turn.
 		ctx.Self.Presence.AdjustEnergyTrack(-1);
@@ -25,7 +25,7 @@ public class BargainOfCoursingPaths {
 
 	static Task<Space> SelectSecondSite( TargetSpaceCtx ctx ) {
 		SpaceState[] options = GameState.Current.Spaces.Where( s => s != ctx.Tokens && 2 <= s.Dahan.CountAll ).ToArray();
-		Task<Space> other = ctx.Self.Select( new A.Space( "Mark Second Space for Coursing", options, Present.Always ) );
+		Task<Space> other = ctx.Self.SelectAsync( new A.Space( "Mark Second Space for Coursing", options, Present.Always ) );
 		return other;
 	}
 
@@ -61,7 +61,7 @@ public class BargainOfCoursingPaths {
 			if(scope.ContainsKey(key)) return (SpaceState)scope[key];
 
 			// Pick brand new
-			SpaceState destination = await _spirit.Select( new A.Space( $"{Name}: Move {args.Count}{args.Added} from {args.To.Space.Text} to:", GameState.Current.Spaces, Present.Always ) );
+			SpaceState destination = await _spirit.SelectAsync( new A.Space( $"{Name}: Move {args.Count}{args.Added} from {args.To.Space.Text} to:", GameState.Current.Spaces, Present.Always ) );
 			scope[key] = destination;
 			return destination;
 		}

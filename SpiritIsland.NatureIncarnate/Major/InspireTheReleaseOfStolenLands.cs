@@ -6,7 +6,7 @@ public class InspireTheReleaseOfStolenLands {
 	const string Threshold = "3 sun,3 water,2 animal";
 
 	[MajorCard(Name,4,"sun,water,plant,animal"),Slow]
-	[FromPresenceThresholdAlternate(2,Target.NoBlight,Threshold,2,Target.Any)]
+	[FromPresenceThresholdAlternate(2,Filter.NoBlight,Threshold,2,Filter.Any)]
 	[Instructions( "Gather up to 3 Dahan. Remove up to 3 Health worth of Invaders per Dahan. -If you have- 3 Sun,3 Water,2 Animal: This Power can target lands with Blight. If Dahan are present, Remove 1 Blight from target land, then Remove 1 Explorer, 1 Town, and 1 City from a land within Range 1." ), Artist( Artists.AgnieszkaDabrowiecka )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 

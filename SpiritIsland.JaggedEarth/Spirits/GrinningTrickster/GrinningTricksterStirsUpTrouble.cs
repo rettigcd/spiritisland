@@ -59,7 +59,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, SpaceState tokens ) {
 		if(tokens.Blight.Any)
 			await Cmd.DestroyPresence( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" )
-				.ActAsync(spirit.Bind());
+				.ActAsync(spirit);
 	}
 
 	public override void InitSpiritAction( ActionScope scope ) {

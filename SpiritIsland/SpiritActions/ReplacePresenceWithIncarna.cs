@@ -4,15 +4,15 @@ public class ReplacePresenceWithIncarna : SpiritAction {
 
 	public ReplacePresenceWithIncarna():base( "ReplacePresenceWithIncarna" ) { }
 
-	public override async Task ActAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( Spirit self ) {
 		// Remove presnece
-		var spaceToken = await ctx.Self.Select( A.SpaceToken.OfDeployedPresence( "Select presence to replace with Incarna.", ctx.Self, Present.Done ) );
+		var spaceToken = await self.SelectAsync( A.SpaceToken.OfDeployedPresence( "Select presence to replace with Incarna.", self, Present.Done ) );
 		if(spaceToken == null ) return;
 
 		await spaceToken.Destroy();
 
 		// Move/Place Incarna
-		await PlaceIncarnaOn( ctx.Self, spaceToken.Space );
+		await PlaceIncarnaOn( self, spaceToken.Space );
 	}
 
 	static async Task PlaceIncarnaOn( Spirit spirit, Space space ) { // duplicate

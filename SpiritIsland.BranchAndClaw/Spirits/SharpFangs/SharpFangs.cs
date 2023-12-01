@@ -21,7 +21,7 @@ public class SharpFangs : Spirit {
 		PowerCard.For(typeof(TooNearTheJungle))
 	) {
 		
-		var beastOrJungleRange3 = new PlacePresence(3, Target.Beast, Target.Jungle );
+		var beastOrJungleRange3 = new PlacePresence(3, Filter.Beast, Filter.Jungle );
 
 		GrowthTrack = new GrowthTrack( 2,
 			new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new GainPowerCard() ){ GainEnergy=-1 },

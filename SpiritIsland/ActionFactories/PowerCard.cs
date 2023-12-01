@@ -41,22 +41,23 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 		return SpeedBehavior.CouldBeActiveFor(requestSpeed,spirit);
 	}
 
-	public async Task ActivateAsync( SelfCtx ctx ) {
+	public async Task ActivateAsync( Spirit self ) {
 		// Don't check speed here.  Slow card may have been made fast (Lightning's Swift Strike)
 
-		await ActivateInnerAsync( ctx );
+		await ActivateInnerAsync( self );
 		if(_repeatAttr != null) {
 			var repeater = _repeatAttr.GetRepeater();
-			while(await repeater.ShouldRepeat( ctx.Self )) {
-				await using var anotherScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,ctx.Self);
-				await ActivateInnerAsync( ctx );
+			while(await repeater.ShouldRepeat( self )) {
+				await using var anotherScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,self);
+				await ActivateInnerAsync( self );
 			}
 		}
 
 	}
 
-	async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
-		LastTarget = await _targetAttr.GetTargetCtx( Name, spiritCtx );
+
+	async Task ActivateInnerAsync( Spirit self ) {
+		LastTarget = await _targetAttr.GetTargetCtx( Name, self );
 		if(LastTarget != null) // Can't find a tar
 			await InvokeOnObjectCtx( LastTarget );
 	}

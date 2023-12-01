@@ -12,10 +12,10 @@ public class MantleOfDread {
 		// target spirit may push 1 explorer and 1 town from land where it has presence
 
 		// Select Land
-		var pushLand = await ctx.OtherCtx.TargetLandWithPresence( "Select land to push 1 exploer & 1 town from" );
+		var pushLand = await ctx.Other.SelectLandWithPresence( "Select land to push 1 exploer & 1 town from" );
 
 		// Push Town / Explorer
-		await pushLand.SourceSelector
+		await pushLand.Tokens.SourceSelector
 			.AddGroup(1,Human.Town)
 			.AddGroup(1,Human.Explorer)
 			.PushUpToN(ctx.Self);

@@ -3,7 +3,7 @@
 /// <summary>
 /// Spirit/Player can pick from any land.
 /// </summary>
-public class SpiritPicksLandAction : IActOn<SelfCtx> {
+public class SpiritPicksLandAction : IActOn<Spirit> {
 
 	public SpiritPicksLandAction( IActOn<TargetSpaceCtx> spaceAction, string andInToForPreposition ) { 
 		_spaceAction = spaceAction;
@@ -12,30 +12,30 @@ public class SpiritPicksLandAction : IActOn<SelfCtx> {
 
 	public string Description => $"{_spaceAction.Description} {_landPreposition} {_diffString}{LandCriteria.Description}";
 
-	public bool IsApplicable( SelfCtx ctx ) => true;
+	public bool IsApplicable( Spirit spirit ) => true;
 
-	public async Task ActAsync( SelfCtx ctx ) {
+	public async Task ActAsync( Spirit self ) {
 
 		for(int i = 0; i < _landsPerSpirit; ++i) {
 
 			var spaceOptions = GameState.Current.Spaces
 				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
-				.Select( s => ctx.Target( s.Space ) )
+				.Select( s => self.Target( s.Space ) )
 				.Where( _spaceAction.IsApplicable )  // Matches action Criteria
 				.Where( LandCriteria.Filter )
 				.ToArray();
 			if(spaceOptions.Length == 0) return;
 
-			TargetSpaceCtx spaceCtx = _firstPickTokenClasses != null
-				? await PickSpaceBySelectingToken( ctx, spaceOptions )
-				: await ctx.SelectTargetSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
+			Space space = _firstPickTokenClasses != null
+				? await PickSpaceBySelectingToken( self, spaceOptions )
+				: await self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
 
-			if(spaceCtx == null) return;
+			if(space == null) return;
 
 			if(_chooseDifferentLands)
-				_disallowedSpaces.Add( spaceCtx.Space );
+				_disallowedSpaces.Add( space );
 
-			await _spaceAction.ActAsync( spaceCtx );
+			await _spaceAction.ActAsync( self.Target(space) );
 		}
 	}
 
@@ -51,17 +51,18 @@ public class SpiritPicksLandAction : IActOn<SelfCtx> {
 
 	#region private
 
-	async Task<TargetSpaceCtx> PickSpaceBySelectingToken( SelfCtx ctx, TargetSpaceCtx[] spaceOptions ) {
+	async Task<Space> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions ) {
 		// Get options
 		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Tokens.SpaceTokensOfAnyTag( _firstPickTokenClasses );
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
-		SpaceToken st = await ctx.Self.Select( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
-		ctx.Self.PreSelect(st);
+		SpaceToken st = await self.SelectAsync( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		self.PreSelect(st);
 
-		return st == null ? null : ctx.Target( st.Space );
+		return st?.Space;
 	}
+
 	string _diffString => _chooseDifferentLands ? "different " : "";
 	TargetSpaceCtxFilter _landCriteria;
 	readonly IActOn<TargetSpaceCtx> _spaceAction;

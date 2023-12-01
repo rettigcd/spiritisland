@@ -5,7 +5,7 @@ public class TwistPerceptions {
 	public const string Name = "Twist Perceptions";
 
 	[SpiritCard(Name,1,Element.Moon,Element.Air,Element.Animal),Slow]
-	[FromPresence(1,Target.Invaders)]
+	[FromPresence(1,Filter.Invaders)]
 	[Instructions( "Add 1 Strife. You may Push the Invader you added Strife to." ), Artist( Artists.NolanNasser )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx) {
 

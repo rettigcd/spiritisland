@@ -5,7 +5,7 @@ public class ReachFromTheInfiniteDarkness {
 
 	[SpiritCard( Name, 0, Element.Moon, Element.Air, Element.Animal ), Fast, Yourself]
 	[Instructions( "Abduct up to 2 presence (of any Spirits, with permission) from any lands on the island, ignoring land type restrictions on moving presence. Each Spirit's presence in endless-dark grants them +1 with all their Powers (this turn)." ), Artist( Artists.DavidMarkiwsky )]
-	static async public Task ActAsync( SelfCtx ctx ) {
+	static async public Task ActAsync( Spirit self ) {
 
 		CountDictionary<Spirit> bonuses = new CountDictionary<Spirit>();
 
@@ -14,7 +14,7 @@ public class ReachFromTheInfiniteDarkness {
 		while(0 < remaining) {
 
 			// select presence
-			var presenceToAbduct = await ctx.SelectAsync( 
+			var presenceToAbduct = await self.SelectAsync( 
 				new A.SpaceToken( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", 
 				GameState.Current.Spirits.SelectMany(s=>s.Presence.Deployed),
 				Present.Done 
@@ -26,7 +26,7 @@ public class ReachFromTheInfiniteDarkness {
 			Spirit? otherSpirit = presenceToAbduct.Token is SpiritPresenceToken spt ? spt.Self 
 				: presenceToAbduct.Token is Incarna i ? i.Self
 				: throw new InvalidOperationException("token was not a presence/incarna");
-			if(!await SpiritConsentsToAbduction( ctx, presenceToAbduct, otherSpirit ))
+			if(!await SpiritConsentsToAbduction( self, presenceToAbduct, otherSpirit ))
 				continue; // try again
 
 			// move it
@@ -50,8 +50,8 @@ public class ReachFromTheInfiniteDarkness {
 		}
 	}
 
-	static async Task<bool> SpiritConsentsToAbduction( SelfCtx ctx, SpaceToken presenceToAbduct, Spirit other ) 
-		=> other == ctx.Self 
+	static async Task<bool> SpiritConsentsToAbduction( Spirit self, SpaceToken presenceToAbduct, Spirit other ) 
+		=> other == self 
 		|| await other.UserSelectsFirstText( $"Allow {presenceToAbduct} to be abducted for +1 Range on powers this turn", "Yes", "No" );
 
 }

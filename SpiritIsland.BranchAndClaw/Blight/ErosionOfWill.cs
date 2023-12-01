@@ -26,7 +26,7 @@ public class ErosionOfWill : BlightCard {
 	static public SpiritAction LoseEnergy(int delta) 
 		=> new SpiritAction(
 			$"Loose {delta} energy", 
-			ctx => ctx.Self.Energy -= System.Math.Max(delta, ctx.Self.Energy)
+			self => self.Energy -= Math.Max(delta, self.Energy)
 		);
 
 }

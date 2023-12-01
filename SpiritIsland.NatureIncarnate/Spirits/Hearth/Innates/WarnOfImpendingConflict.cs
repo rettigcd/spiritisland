@@ -6,26 +6,26 @@ public class WarnOfImpendingConflict {
 	public const string Name = "Warn of Impending Conflict";
 
 	[InnateTier( "2 sun,1 earth", "In 1 of your lands, 1 Dahan deals Damage before Invaders. Choose land during ravage." )]
-	static public Task Option1Async( SelfCtx ctx ) {
-		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 1 ) );
+	static public Task Option1Async( Spirit self ) {
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( self, 1 ) );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier( "3 sun,1 earth", "In that land, another Dahan deals Damage before Invaders." )]
-	static public Task Option2Async( SelfCtx ctx ) {
-		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 2 ) );
+	static public Task Option2Async( Spirit self ) {
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( self, 2 ) );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier( "4 sun,2 earth", "In that land, all Dahan deal Damage before Invaders." )]
-	static public Task Option3Async( SelfCtx ctx ) {
-		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 100 ) );
+	static public Task Option3Async( Spirit self ) {
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( self, 100 ) );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier( "5 sun,3 earth", "Instead, in all your lands, all Dahan deal Damage before Invaders." )]
-	static public Task Option4Async( SelfCtx ctx ) {
-		GameState.Current.Tokens.AddIslandMod( new WarnToken( ctx.Self, 100, true ) );
+	static public Task Option4Async( Spirit self ) {
+		GameState.Current.Tokens.AddIslandMod( new WarnToken( self, 100, true ) );
 		return Task.CompletedTask;
 	}
 

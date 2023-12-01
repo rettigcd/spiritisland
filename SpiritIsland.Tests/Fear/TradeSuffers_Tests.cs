@@ -6,13 +6,13 @@ public class TradeSuffers_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
+		var (user, spirit) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
 			var fear = gs.Fear;
 			AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
 			gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );
 		} );
 		_user = user;
-		_ctx = ctx;
+		_spirit = spirit;
 	}
 
 	[Fact]
@@ -33,7 +33,7 @@ public class TradeSuffers_Tests {
 		ActivateFearCard( new TradeSuffers() );
 
 		// Given: 1 city and nothing else
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("1C@3");
 
 		// When: activating fear
@@ -63,8 +63,6 @@ public class TradeSuffers_Tests {
 		AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
 		gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );
 		gs.Initialize(); 
-
-		var starterCtx = spirit.Bind();
 
 		// Disable destroying presence
 		gs.DisableBlightEffect();
@@ -142,7 +140,7 @@ public class TradeSuffers_Tests {
 	}
 
 	VirtualTestUser _user;
-	SelfCtx _ctx;
+	Spirit _spirit;
 	readonly List<string> _log = new();
 
 }

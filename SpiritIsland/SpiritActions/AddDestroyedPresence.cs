@@ -49,8 +49,8 @@ public class AddDestroyedPresence : SpiritAction {
 
 	#endregion
 
-	public override async Task ActAsync( SelfCtx ctx ) {
-		Spirit placingSpirit = ctx.Self;
+	public override async Task ActAsync( Spirit self ) {
+		Spirit placingSpirit = self;
 		SpiritPresence presence = placingSpirit.Presence;
 		if(presence.Destroyed == 0) return;
 
@@ -61,7 +61,7 @@ public class AddDestroyedPresence : SpiritAction {
 			.Where( placingSpirit.Presence.CanBePlacedOn )
 			.Downgrade();
 
-		Space dst = await placingSpirit.Select( A.Space.ToPlaceDestroyedPresence(
+		Space dst = await placingSpirit.SelectAsync( A.Space.ToPlaceDestroyedPresence(
 			destinationOptions,
 			_present,
 			placingSpirit,

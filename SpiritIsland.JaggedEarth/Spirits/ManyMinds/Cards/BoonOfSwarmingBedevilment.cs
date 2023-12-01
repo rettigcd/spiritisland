@@ -9,7 +9,7 @@ public class BoonOfSwarmingBedevilment {
 		GameState.Current.Tokens.Dynamic.ForRound.Register( ctx.Self.Presence.CountOn, Token.Defend );
 
 		// Target Spirit may Push up to 1 of their presence.
-		await Cmd.PushUpTo1Presence().ActAsync( ctx.OtherCtx );
+		await Cmd.PushUpTo1Presence().ActAsync( ctx.Other );
 	}
 
 }

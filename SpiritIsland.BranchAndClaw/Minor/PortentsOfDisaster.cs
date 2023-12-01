@@ -4,7 +4,7 @@ public class PortentsOfDisaster {
 
 	const string Name = "Portents of Disaster";
 
-	[MinorCard( Name, 0, Element.Sun, Element.Moon, Element.Air ), Fast, FromSacredSite( 1, Target.Invaders )]
+	[MinorCard( Name, 0, Element.Sun, Element.Moon, Element.Air ), Fast, FromSacredSite( 1, Filter.Invaders )]
 	[Instructions( "2 Fear. The next time an Invader is destroyed in target land this turn, 1 Fear." ), Artist( Artists.NolanNasser )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		// 2 fear

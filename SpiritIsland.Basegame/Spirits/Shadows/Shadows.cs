@@ -31,13 +31,12 @@ public class Shadows : Spirit {
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
 	/// </summary>
 	public override async Task<Space> TargetsSpace( 
-		SelfCtx ctx,  // has the actual ActionScope for this Action
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria 
 	) {
-		var space = await base.TargetsSpace( ctx, prompt, preselect, sourceCriteria, targetCriteria );
+		var space = await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
 		if( 0<Energy && !base.GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).Any( s => s.Space == space ) ) 
 			--Energy;

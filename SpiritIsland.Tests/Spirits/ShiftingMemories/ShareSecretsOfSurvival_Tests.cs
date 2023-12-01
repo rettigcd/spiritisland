@@ -33,7 +33,7 @@ public class ShareSecretsOfSurvival_Tests {
 		//   And: Island won't blight
 		fxt.GameState.IslandWontBlight();
 		//   And: played ShareSecretsOfSurvival
-		var ctx = fxt.SelfCtx.Target( space );
+		var ctx = fxt.Spirit.Target( space );
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
@@ -70,7 +70,7 @@ public class ShareSecretsOfSurvival_Tests {
 		fxt.InitTokens( space, startingTokens );
 		fxt.GameState.IslandWontBlight();
 		//   And: played ShareSecretsOfSurvival
-		var ctx = fxt.SelfCtx.Target( space );
+		var ctx = fxt.Spirit.Target( space );
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage

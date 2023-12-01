@@ -11,7 +11,7 @@ public class ResolveSlowDuringFast_OrViseVersa : IActionFactory {
 
 	public string Text => Name;
 
-	public Task ActivateAsync(SelfCtx ctx) => ResolveOutOfPhaseAction.Execute( ctx );
+	public Task ActivateAsync(Spirit self) => ResolveOutOfPhaseAction.Execute( self );
 
 }
 
@@ -26,7 +26,7 @@ public class ResolveSlowDuringFast : IActionFactory {
 
 	public string Text => Name;
 
-	public Task ActivateAsync( SelfCtx ctx ) => ResolveOutOfPhaseAction.Execute( ctx );
+	public Task ActivateAsync( Spirit self ) => ResolveOutOfPhaseAction.Execute( self );
 
 }
 

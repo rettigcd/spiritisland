@@ -3,7 +3,7 @@
 namespace SpiritIsland.JaggedEarth;
 
 [InnatePower("Forsake Society to Chase After Dreams", "After this Power replaces pieces with explorer: Gather any number of those explorer into your lands.  If target land has any town/city remaining, 1 fear.")]
-[Slow,FromPresence(1,Target.Invaders)]
+[Slow,FromPresence(1,Filter.Invaders)]
 [RepeatIf("4 air")]
 public class ForsakeSocietyToChaseAfterDreams {
 

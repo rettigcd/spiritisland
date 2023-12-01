@@ -2,7 +2,7 @@
 
 public class PredatoryNightmares {
 		
-	[SpiritCard("Predatory Nightmares",2,Element.Moon,Element.Fire,Element.Earth,Element.Animal),Slow,FromSacredSite(1,Target.Invaders)]
+	[SpiritCard("Predatory Nightmares",2,Element.Moon,Element.Fire,Element.Earth,Element.Animal),Slow,FromSacredSite(1,Filter.Invaders)]
 	[Instructions("2 Damage. Push up to 2 Dahan. (When your powers would destroy Invaders, instead they generate Fear and/or Push those Invaders.)"),Artist( Artists.ShaneTyree)] 
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 damange.

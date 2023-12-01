@@ -27,14 +27,13 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 				.Distinct()
 				.ToArray();
 			// And Ocean chooses to save it
-			var destination = await _spirit.Select( A.Space.ToPushToken( args.Added, args.To.Space, moveOptions.Downgrade(), Present.Done ) );
+			var destination = await _spirit.SelectAsync( A.Space.ToPushToken( args.Added, args.To.Space, moveOptions.Downgrade(), Present.Done ) );
 			if(destination != null) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				ActionScope.Current.AtEndOfThisAction( async _ => {
 					//don't use original because that may or may not have been for a power.
 					await using ActionScope childAction = await ActionScope.Start(ActionCategory.Default);
-					await _spirit.Bind()
-						.Move( args.Added, args.To.Space, destination );
+					await args.After.MoveTo(destination);
 				} );
 				return; // the move it, don't drown it
 			}

@@ -2,7 +2,7 @@
 
 public class RainOfBlood {
 
-	[MinorCard("Rain of Blood", 0, "air, water, animal"),Slow,FromSacredSite(1,Target.Invaders)]
+	[MinorCard("Rain of Blood", 0, "air, water, animal"),Slow,FromSacredSite(1,Filter.Invaders)]
 	[Instructions( "2 Fear. If target land has at least 2 Town / City, +1 Fear." ), Artist( Artists.KatBirmelin )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 		// 2 fear

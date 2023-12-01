@@ -18,7 +18,7 @@ public class SerpentSlumbering : Spirit {
 			new GrowthOption( new ReclaimAll(), new MovePresence(1) ),
 			new GrowthOption( new GainPowerCard(), new GainEnergy(1) ),
 			new GrowthOption( new GainEnergy(4) ),
-			new GrowthOption( new PlacePresence(3,Target.NoBlight) )
+			new GrowthOption( new PlacePresence(3,Filter.NoBlight) )
 		);
 
 	}

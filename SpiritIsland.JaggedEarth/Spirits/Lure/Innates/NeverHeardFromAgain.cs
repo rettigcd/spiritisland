@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 [InnatePower("Never Heard from Again","If this Power destroyes any explorer, 1 fear.  If this Power destroys 5 or more explorer, +1 fear.")]
-[Slow,FromPresence(0,Target.Inland)]
+[Slow,FromPresence(0,Filter.Inland)]
 [RepeatIf("6 plant")]
 public class NeverHeardFromAgain {
 

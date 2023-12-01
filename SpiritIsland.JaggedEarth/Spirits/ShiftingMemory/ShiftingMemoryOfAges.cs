@@ -55,7 +55,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			.Where(u => restrictedOptions==null || restrictedOptions.Contains(u.Card));
 				
 		var decision = new A.PowerCard( "Select card to forget or discard", options, present );
-		PowerCard cardToForgetOrDiscard = await Select( decision );
+		PowerCard cardToForgetOrDiscard = await SelectAsync( decision );
 		if(cardToForgetOrDiscard != null)
 			ForgetThisCard( cardToForgetOrDiscard );
 		return cardToForgetOrDiscard != null && !DiscardPile.Contains(cardToForgetOrDiscard) 
@@ -136,7 +136,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
 
-	public override async Task<bool> HasElements(string description, CountDictionary<Element> subset ) {
+	public override async Task<bool> HasElement( CountDictionary<Element> subset, string description ) {
 		if( Elements.Contains( subset ) ) return true;
 
 		// Check if we have prepared element markers to fill the missing elements

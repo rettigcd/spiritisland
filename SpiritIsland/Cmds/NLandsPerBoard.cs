@@ -55,15 +55,15 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 				.ToArray();
 			if(spaceOptions.Length == 0) return;
 
-			TargetSpaceCtx spaceCtx = _tokenFactory != null
-				? await PickSpaceBySelectingToken( ctx, spaceOptions )
-				: await ctx.SelectTargetSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), Present.Always );
+			Space space = _tokenFactory != null
+				? await PickSpaceBySelectingToken( ctx.Self, spaceOptions )
+				: await ctx.Self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), Present.Always );
 
-			if(spaceCtx == null) return; // no matching tokens
+			if(space == null) return; // no matching tokens
 
-			used.Add( spaceCtx.Space );
+			used.Add( space );
 
-			await _spaceAction.ActAsync( spaceCtx );
+			await _spaceAction.ActAsync( ctx.Target(space) );
 		}
 	}
 
@@ -71,7 +71,7 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 
 	IEnumerable<IToken> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyTag( _firstPickTokenClasses );
 
-	async Task<TargetSpaceCtx> PickSpaceBySelectingToken( SelfCtx ctx, TargetSpaceCtx[] spaceOptions ) {
+	async Task<Space> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions ) {
 
 		// Get options
 		Func<TargetSpaceCtx,IEnumerable<ISpaceEntity>> tokenFactory = GetTokensMatchingClass;
@@ -80,10 +80,10 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 			.ToArray();
 
 		// Select
-		SpaceToken st = await ctx.Self.Select( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
-		ctx.Self.PreSelect(st); // recording null is fine because when it probably means no space matches criteria and user won't be given an option anyway.
+		SpaceToken st = await self.SelectAsync( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		self.PreSelect(st); // recording null is fine because when it probably means no space matches criteria and user won't be given an option anyway.
 
-		return st == null ? null : ctx.Target( st.Space );
+		return st?.Space;
 	}
 
 

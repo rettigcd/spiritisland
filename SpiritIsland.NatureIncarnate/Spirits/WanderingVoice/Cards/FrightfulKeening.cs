@@ -11,14 +11,14 @@ public class FrightfulKeening {
 		if( ctx.Self.Presence is not IHaveIncarna ihi || ihi.Incarna.Space == null) return;
 
 		// Push Incarna.
-		await new PushIncarna().ActAsync(ctx);
+		await new PushIncarna().ActAsync(ctx.Self);
 
 		// If this pushes Incarna into a land with Invaders,
 		var dst = ihi.Incarna.Space;
 		if( dst.HasInvaders() )
 			// 2 Fear there
 			// (before adding Strife). - why does this matter???
-			ctx.Target(dst).AddFear(2);
+			ctx.Target(dst.Space).AddFear(2);
 	}
 
 }

@@ -28,7 +28,7 @@ public class SourceSelector {
 			string prompt = promptBuilder(new PromptData(_quota,options,index,maxCount));
 
 			// Select Token
-			SpaceToken source = await spirit.Select( new A.SpaceToken( prompt, options, present ).PointArrowTo( singleDestination ) );
+			SpaceToken source = await spirit.SelectAsync( new A.SpaceToken( prompt, options, present ).PointArrowTo( singleDestination ) );
 			if(source != null) {
 				_quota.MarkTokenUsed( source.Token );
 				await NotifyAsync( source );

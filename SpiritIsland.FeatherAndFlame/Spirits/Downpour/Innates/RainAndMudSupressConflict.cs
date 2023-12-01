@@ -13,39 +13,39 @@ internal class RainAndMudSupressConflict {
 	const string Tier1Elements = "1 air,3 water";
 
 	[InnateTier( Tier1Elements, "Each of your Presence grants Defend 1 and lowers Dahan counterattack damage by 1. (Total, in its land.)", 0 )]
-	static public Task Option1( SelfCtx ctx ) {
-		MakeThingsMuddy( ctx );
+	static public Task Option1( Spirit self ) {
+		MakeThingsMuddy( self );
 		return Task.CompletedTask;
 	}
 
 
 	[InnateTier( "5 water,1 earth", "Each of your Presence grants Defend 1 and lowers Dahan counterattack damage by 1.", 1 )]
-	static public async Task Option2( SelfCtx ctx ) {
-		if( await DontWantMoreMud(ctx) ) return;
-		MakeThingsMuddy( ctx );
+	static public async Task Option2( Spirit self ) {
+		if( await DontWantMoreMud(self) ) return;
+		MakeThingsMuddy( self );
 	}
 
 	[InnateTier( "3 air,9 water,2 earth", "2 Fear. In your lands, Invaders and Dahan have -1 Health (min 1)", 0 )]
-	static public async Task Option3( SelfCtx ctx ) {
-		if( await DontWantMoreMud( ctx ) ) return; 
+	static public async Task Option3( Spirit self ) {
+		if( await DontWantMoreMud( self ) ) return; 
 
 		// 2 fear
-		ctx.AddFear(2);
+		self.AddFear(2);
 
 		// In your lands, Invaders and Dahan have -1 Health( min 1 )
-		foreach(var space in ctx.Self.Presence.Lands.Tokens()) {
-			var targetCtx = ctx.Target( space );
+		foreach(var space in self.Presence.Lands.Tokens()) {
+			var targetCtx = self.Target( space.Space );
 			await targetCtx.AdjustTokensHealthForRound( -1,Human.Dahan );
 			await targetCtx.AdjustTokensHealthForRound( -1, Human.Invader );
 		}
 	}
 
-	static public void MakeThingsMuddy( SelfCtx ctx ) {
+	static public void MakeThingsMuddy( Spirit self ) {
 		var gs = GameState.Current;
 		// Each of your Presence grants Defend 1
-		gs.Tokens.Dynamic.ForRound.Register( sp => sp[ctx.Self.Presence.Token], Token.Defend );
+		gs.Tokens.Dynamic.ForRound.Register( sp => sp[self.Presence.Token], Token.Defend );
 		// lowers Dahan counterattack damage by 1
-		gs.AddIslandMod( new MudToken( ctx.Self, 1 ) );
+		gs.AddIslandMod( new MudToken( self, 1 ) );
 		MarkAsUsed();
 	}
 
@@ -53,8 +53,8 @@ internal class RainAndMudSupressConflict {
 	//	 sets based on presence
 	//   doesn't remove self (so works for multiple ravages)
 
-	static async Task<bool> DontWantMoreMud( SelfCtx ctx ) => WasUsed()
-			&& !await ctx.Self.UserSelectsFirstText( "Apply Additional Tier?", "Yes, we want more mud.", "No, thank you." );
+	static async Task<bool> DontWantMoreMud( Spirit self ) => WasUsed()
+			&& !await self.UserSelectsFirstText( "Apply Additional Tier?", "Yes, we want more mud.", "No, thank you." );
 
 }
 

@@ -2,7 +2,7 @@
 
 public class VoiceOfCommand {
 
-	[MajorCard("Voice of Command",3,Element.Sun,Element.Air), Fast, FromSacredSite(1,Target.Dahan)]
+	[MajorCard("Voice of Command",3,Element.Sun,Element.Air), Fast, FromSacredSite(1,Filter.Dahan)]
 	[Instructions( "1 Damage per Dahan / Explorer, to Town / City only. Defend 2. During Ravage actions, Explorer fight alongside Dahan. (Deal / take damage at the same time, and to / from the same sources.) -If you have- 3 Sun, 2 Air: First, Gather up to 2 Explorer / Town / Dahan" ), Artist( Artists.LucasDurham )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 

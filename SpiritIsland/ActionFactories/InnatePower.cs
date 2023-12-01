@@ -88,22 +88,24 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	#endregion
 
-	public async Task ActivateAsync( SelfCtx ctx ) {
-		await ActivateInnerAsync( ctx );
+	public async Task ActivateAsync( Spirit spirit ) {
+
+		await ActivateInnerAsync( spirit );
 		if( _repeatAttr != null) {
 			var repeater = _repeatAttr.GetRepeater();
-			while( await repeater.ShouldRepeat(ctx.Self) )
-				await ActivateInnerAsync( ctx );
+			while( await repeater.ShouldRepeat( spirit ) )
+				await ActivateInnerAsync( spirit );
 		}
 	}
 
-	protected virtual async Task ActivateInnerAsync( SelfCtx spiritCtx ) {
+
+	protected virtual async Task ActivateInnerAsync( Spirit self ) {
 
 		// Do this 1st so Volcano can destroy its presence before we evaluate our options
-		LastTarget = await _targetAttr.GetTargetCtx( Name, spiritCtx );
+		LastTarget = await _targetAttr.GetTargetCtx( Name, self );
 		if(LastTarget == null) return;
 
-		List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( spiritCtx );
+		List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( self );
 		if( lastMethods.Count == 0 ) {
 			LastTarget = null;
 			return;
@@ -115,7 +117,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	}
 
-	async Task<List<MethodInfo>> GetLastActivatedMethodsOfEachGroup( SelfCtx spiritCtx ) {
+	async Task<List<MethodInfo>> GetLastActivatedMethodsOfEachGroup( Spirit self ) {
 
 		// Not using LINQ because of the AWAIT in the loop.
 
@@ -123,7 +125,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		foreach(MethodTuple[] grp in _executionGroups) {
 
 			// Ask spirit which methods they can activate
-			var match = await spiritCtx.Self.SelectInnateTierToActivate( grp.Select(g=>g.Attr) );
+			var match = await self.SelectInnateTierToActivate( grp.Select(g=>g.Attr) );
 
 			// Find matching method and it to execute-list
 			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;
@@ -132,6 +134,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		}
 		return lastMethods;
 	}
+
 
 	public object LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
 

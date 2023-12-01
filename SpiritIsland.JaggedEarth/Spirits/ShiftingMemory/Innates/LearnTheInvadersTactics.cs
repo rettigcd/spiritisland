@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-[InnatePower("Learn the Invaders' Tactics"), Fast, FromPresence(1,Target.Invaders)]
+[InnatePower("Learn the Invaders' Tactics"), Fast, FromPresence(1,Filter.Invaders)]
 public class LearnTheInvadersTactics {
 
 	[InnateTier("2 earth","Defend 2")]

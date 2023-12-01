@@ -2,7 +2,7 @@
 
 public class Plaguebearers {
 
-	[SpiritCard("Plaguebearers",1,Element.Fire,Element.Water,Element.Animal), Slow, FromPresence(2,Target.Disease)]
+	[SpiritCard("Plaguebearers",1,Element.Fire,Element.Water,Element.Animal), Slow, FromPresence(2,Filter.Disease)]
 	[Instructions( "1 Fear if Invaders are present. For each Disease, Push 2 Explorer / Town / Dahan. 1 Disease may move with each Pushed piece." ), Artist( Artists.DamonWestenhofer )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 

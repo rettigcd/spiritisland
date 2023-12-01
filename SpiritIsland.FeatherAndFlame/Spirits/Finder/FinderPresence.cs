@@ -8,7 +8,7 @@ public class FinderPresence : SpiritPresence {
 	static Track TwoWater => Track.MkEnergy(2,Element.Water);
 
 	static Track Move1Air => new Track( "Moveonepresence.png", Element.Air ) {
-		Action = new MovePresence( 1 ),
+		Action = new MovePresence(1),
 		Icon = new IconDescriptor {
 			BackgroundImg = Img.MovePresence,
 			Sub = new IconDescriptor { BackgroundImg = Img.Token_Air }

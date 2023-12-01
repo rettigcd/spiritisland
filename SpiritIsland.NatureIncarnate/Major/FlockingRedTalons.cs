@@ -5,7 +5,7 @@ public class FlockingRedTalons {
 	public const string Name = "Flocking Red-Talons";
 
 	[MajorCard(Name,3,"air,water,plant,animal"),Fast]
-	[FromPresence(Target.Wetland,3)]
+	[FromPresence(Filter.Wetland,3)]
 	[Instructions( "Add 1 Beast. Move up to 2 Beast within Range-3 to target land. For each Beast present, choose a different Invader, 1 Damage to each of those. Push 1 Explorer/Town per Beast. -If you have- 2 air,2 plant,3 animal: Repeat this Power on a different land within Range-3 of target land." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		await DoIt(ctx);
@@ -13,7 +13,7 @@ public class FlockingRedTalons {
 		// -If you have- 2 air,2 plant,3 beast:
 		if(await ctx.YouHave("2 air,2 plant,3 beast" )) {
 			// Repeat this Power on a different land within Range-3 of target land.
-			Space second = await ctx.Self.Select(new A.Space("Repeat power on:", ctx.Tokens.Range(3).Where(x=>x!=ctx.Tokens),Present.Always));
+			Space second = await ctx.Self.SelectAsync(new A.Space("Repeat power on:", ctx.Tokens.Range(3).Where(x=>x!=ctx.Tokens),Present.Always));
 			if(second != null)
 				await DoIt(ctx.Target(second));
 		}

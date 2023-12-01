@@ -133,10 +133,27 @@ public static partial class Cmd {
 		}
 	);
 
-	static public BaseCmd<T> Pick1<T>( params IActOn<T>[] actions ) where T : SelfCtx
-		=> Pick1<T>(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
+	static public BaseCmd<Spirit> Pick1( params IActOn<Spirit>[] actions )
+		=> Pick1(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
 
-	static public BaseCmd<T> Pick1<T>( string description, params IActOn<T>[] actions ) where T : SelfCtx
+	static public BaseCmd<Spirit> Pick1( string description, params IActOn<Spirit>[] actions )
+		=> new BaseCmd<Spirit>(
+			description,
+			async self => {
+				IActOn<Spirit>[] applicable = actions.Where( opt => opt != null && opt.IsApplicable(self) ).ToArray();
+				string text = await self.SelectText( "Select action", applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
+				if(text != null && text != TextOption.Done.Text) {
+					var selectedOption = applicable.Single( a => a.Description == text );
+					await selectedOption.ActAsync( self );
+				}
+			}
+		);
+
+
+	static public BaseCmd<T> Pick1WithSpirit<T>( params IActOn<T>[] actions ) where T : IHaveSpirit
+		=> Pick1WithSpirit<T>(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
+
+	static public BaseCmd<T> Pick1WithSpirit<T>( string description, params IActOn<T>[] actions ) where T : IHaveSpirit
 		=> new BaseCmd<T>(
 			description,
 			async ctx => {
@@ -167,21 +184,21 @@ public static partial class Cmd {
 		static public SpaceCmd AllRavages( string name ) => new SpaceCmd( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
-	static public SpiritAction ForgetPowerCard => new SpiritAction( "Forget Power card", ctx => ctx.Self.ForgetACard() );
+	static public SpiritAction ForgetPowerCard => new SpiritAction( "Forget Power card", spirit => spirit.ForgetACard() );
 
 	// ========
 	// Presence
 	// ========
 
 	static public SpiritAction PushUpTo1Presence( Func<Space, Space, Task> callback = null ) 
-		=> new SpiritAction( "Push up to 1 Presence", async ctx => {
+		=> new SpiritAction( "Push up to 1 Presence", async self => {
 
 			// Select source
-			var source = await ctx.Self.Select( new A.SpaceToken( "Select Presence to push.", ctx.Self.Presence.Movable, Present.Done ) );
+			var source = await self.SelectAsync( new A.SpaceToken( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
 			if(source == null) return;
 
 			// Select destination
-			Space destination = await ctx.Self.Select( A.Space.ToPushPresence( source.Space, source.Space.Tokens.Adjacent.Downgrade(), Present.Always, source.Token ) );
+			Space destination = await self.SelectAsync( A.Space.ToPushPresence( source.Space, source.Space.Tokens.Adjacent.Downgrade(), Present.Always, source.Token ) );
 			await source.MoveTo( destination.Tokens );
 
 			// Calback
@@ -189,25 +206,26 @@ public static partial class Cmd {
 				await callback( source.Space, destination );
 		});
 
-	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) => new SpiritAction( "Destroy 1 presence.", async ctx => {
-		SpaceToken spaceToken = await ctx.Self.Select( A.SpaceToken.OfDeployedPresence( prompt, ctx.Self ) );
-		await spaceToken.Destroy();
-	} );
+	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) 
+		=> new SpiritAction( "Destroy 1 presence.", async self => {
+				SpaceToken spaceToken = await self.SelectAsync( A.SpaceToken.OfDeployedPresence( prompt, self ) );
+				await spaceToken.Destroy();
+			}
+		);
 
 	static public SpiritAction DestroyPresence( int count ) => new SpiritAction( 
 		$"Destroy {count} presence", 
-		async ctx => { 
+		async self => { 
 			var destroyOne = Cmd.DestroyPresence();
 			for(int i = 0; i < count; ++i) 
-				await destroyOne.ActAsync(ctx);
+				await destroyOne.ActAsync(self);
 		}
 	);
 
-	static public SpiritAction ReturnUpToNDestroyedToTrack( int count ) => new SpiritAction("Return up to N Destroyed Presence to Track", async ctx => {
-		var self = ctx.Self;
+	static public SpiritAction ReturnUpToNDestroyedToTrack( int count ) => new SpiritAction("Return up to N Destroyed Presence to Track", async self => {
 		count = Math.Max( count, self.Presence.Destroyed );
 		while(count > 0) {
-			var dst = await self.Select( A.TrackSlot.ToCover( self ) );
+			var dst = await self.SelectAsync( A.TrackSlot.ToCover( self ) );
 			if(dst == null) break;
 			await self.Presence.ReturnDestroyedToTrackAsync( dst );
 			--count;
@@ -218,26 +236,25 @@ public static partial class Cmd {
 
 	static public SpiritAction PlacePresenceOn( params SpaceState[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
-		async ctx => {
-			var self = ctx.Self;
+		async self => {
 			IOption from = await self.SelectSourcePresence();
 			IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
-			Space to = await self.Select( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, token ) );
+			Space to = await self.SelectAsync( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, token ) );
 			await self.Presence.PlaceAsync( from, to );
 		} );
 
-	static public SpiritAction Reclaim1CardInsteadOfDiscarding => new SpiritAction( "Reclaims 1 card instead of discarding it", ctx => {
-		GameState.Current.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( ctx.Self ).Reclaim );
+	static public SpiritAction Reclaim1CardInsteadOfDiscarding => new SpiritAction( "Reclaims 1 card instead of discarding it", self => {
+		GameState.Current.TimePasses_ThisRound.Push( new Reclaim1InsteadOfDiscard( self ).Reclaim );
 	} );
 
 
 	// not a command but I can't find anywhere to put it.
-	static public async Task PayPresenceForBargain( this SelfCtx ctx, string takeFromTrackElementThreshold ) {
-		if(await ctx.YouHave( takeFromTrackElementThreshold )) {
-			var presenceToRemove = await ctx.Self.SelectSourcePresence( "remove from game" ); // Come from track or board
-			await ctx.Self.Presence.TakeFromAsync( presenceToRemove );
+	static public async Task PayPresenceForBargain( this Spirit self, string takeFromTrackElementThreshold ) {
+		if(await self.YouHave( takeFromTrackElementThreshold )) {
+			var presenceToRemove = await self.SelectSourcePresence( "remove from game" ); // Come from track or board
+			await self.Presence.TakeFromAsync( presenceToRemove );
 		} else {
-			SpaceToken presenceToRemove = await ctx.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", ctx.Self.Presence.Deployed, Present.Always ) );
+			SpaceToken presenceToRemove = await self.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", self.Presence.Deployed, Present.Always ) );
 			await presenceToRemove.Remove();
 		}
 	}

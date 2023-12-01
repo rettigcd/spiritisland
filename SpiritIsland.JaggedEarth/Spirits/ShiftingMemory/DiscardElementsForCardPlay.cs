@@ -7,17 +7,17 @@ public class DiscardElementsForCardPlay : SpiritAction {
 
 	// When revealing Discard-Elements-For-Extra-Card-Plays during non-growth (i.e. Unrelenting Growth), don't activate - it is too late to add card plays.
 
-	readonly int totalNumToRemove;
+	readonly int _totalNumToRemove;
 	public DiscardElementsForCardPlay(int elementDiscardCount )
 		:base( "DiscardElementsForCardPlay" )
 	{
-		this.totalNumToRemove = elementDiscardCount;
+		_totalNumToRemove = elementDiscardCount;
 	}
 
-	public override async Task ActAsync( SelfCtx ctx ) {
-		if( ctx.Self is ShiftingMemoryOfAges smoa
-			&& totalNumToRemove <= smoa.PreparedElements.Total
-			&& (await smoa.DiscardElements(totalNumToRemove,"additional card-play")).Count == totalNumToRemove
+	public override async Task ActAsync( Spirit self ) {
+		if( self is ShiftingMemoryOfAges smoa
+			&& _totalNumToRemove <= smoa.PreparedElements.Total
+			&& (await smoa.DiscardElements(_totalNumToRemove,"additional card-play")).Count == _totalNumToRemove
 		) smoa.tempCardPlayBoost++;
 	}
 

@@ -5,7 +5,7 @@ public class RavagedUndergrowthSlithersBackToLife {
 	public const string Name = "Ravaged Undergrowth Slithers Back to Life";
 
 	[MajorCard(Name,3,"water,plant,animal"),Slow]
-	[FromSacredSite(1,Target.Blight)]
+	[FromSacredSite(1,Filter.Blight)]
 	[Instructions( "Replace 1 Blight with 1 Wilds. 1 Fear. 3 Damage. Push that Wilds. -If you have- 3 water,2 plant: Add 1 Wilds. You may Push it. In each land with Wilds within Range-1, Push 1 Explorer and 1 Town to lands without Wilds." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// Replace 1 Blight with 1 Wilds.

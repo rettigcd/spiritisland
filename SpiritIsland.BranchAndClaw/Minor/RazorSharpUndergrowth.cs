@@ -2,7 +2,7 @@
 
 public class RazorSharpUndergrowth {
 
-	[MinorCard( "Razor-Sharp Undergrowth", 1, Element.Moon, Element.Plant ),Fast,FromPresence( 0, Target.NoBlight )]
+	[MinorCard( "Razor-Sharp Undergrowth", 1, Element.Moon, Element.Plant ),Fast,FromPresence( 0, Filter.NoBlight )]
 	[Instructions( "Destroy 1 Explorer and 1 Dahan. Add 1 Wilds. Defend 2." ), Artist( Artists.CariCorene )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

@@ -8,7 +8,7 @@ public class DancesUpEarthquakes : Spirit {
 
 	static SpiritAction SetImpendingEnergy(int impendingEnergyPerRound) => new SpiritAction(
 		"Set Impending Energy/Round to "+impendingEnergyPerRound, 
-		ctx=>((DancesUpEarthquakes)ctx.Self).ImpendingEnergyPerRound = impendingEnergyPerRound
+		self=>((DancesUpEarthquakes)self).ImpendingEnergyPerRound = impendingEnergyPerRound
     );
 
 	static Track One {
@@ -54,7 +54,7 @@ public class DancesUpEarthquakes : Spirit {
 
 	static Track GatherDahan => new Track( "Gather 1 Dahan" ) {
 		Icon = new IconDescriptor { BackgroundImg = Img.Land_Gather_Dahan },
-		Action = Cmd.GatherUpToNDahan( 1 ).To().SpiritPickedLand().Which( Has.YourPresence ),
+		Action = new Gather1Token(1,Human.Dahan), // !!! ??? implementation is optional, should it be required???
 	};
 
 	static Track MovePresence => new Track( "Moveonepresence.png" ) {
@@ -64,8 +64,8 @@ public class DancesUpEarthquakes : Spirit {
 
 	class BoostImpendingPlays : SpiritAction {
 		public BoostImpendingPlays():base( "Boost Impending Plays" ) { }
-		public override Task ActAsync( SelfCtx ctx ) {
-			if(ctx.Self is DancesUpEarthquakes due)
+		public override Task ActAsync( Spirit self ) {
+			if(self is DancesUpEarthquakes due)
 				++due.BonusImpendingPlays;
 			return Task.CompletedTask;
 		}
@@ -139,11 +139,11 @@ public class DancesUpEarthquakes : Spirit {
 	public List<PowerCard> Impending = new List<PowerCard>();
 	public CountDictionary<string> ImpendingEnergy = new CountDictionary<string>();
 
-	protected override async Task ApplyRevealedPresenceTracks_Inner( SelfCtx ctx ) {
+	protected override async Task ApplyRevealedPresenceTracks_Inner( Spirit self ) {
 		ImpendingEnergyPerRound = 0;
 		BonusImpendingPlays = 0;
 
-		await base.ApplyRevealedPresenceTracks_Inner( ctx );
+		await base.ApplyRevealedPresenceTracks_Inner( self );
 
 		// Add energy
 		foreach(PowerCard card in Impending)  // don't use CountDictionary keys because they will be empty for count=0

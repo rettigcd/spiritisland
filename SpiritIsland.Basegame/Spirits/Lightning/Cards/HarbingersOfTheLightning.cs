@@ -4,7 +4,7 @@ public class HarbingersOfTheLightning {
 
 	public const string Name = "Harbingers of the Lightning";
 
-	[SpiritCard(HarbingersOfTheLightning.Name,0,Element.Fire,Element.Air), Slow,FromPresence(1,Target.Dahan)]
+	[SpiritCard(HarbingersOfTheLightning.Name,0,Element.Fire,Element.Air), Slow,FromPresence(1,Filter.Dahan)]
 	[Instructions( "Push up to 2 Dahan. 1 Fear if you pushed any Dahan into a land with Town / City" ), Artist( Artists.RockyHammer )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
 

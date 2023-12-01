@@ -36,14 +36,14 @@ public static partial class Cmd {
 		);
 
 	// For each: Spirit
-	static public BaseCmd<GameCtx> ForEachSpirit( this IActOn<SelfCtx> action )
+	static public BaseCmd<GameCtx> ForEachSpirit( this IActOn<Spirit> action )
 		=> new GameCtxCmd(
 			"For each spirit, " + action.Description,
 			async ctx => {
 				foreach(Spirit spirit in ctx.GameState.Spirits) {
 					// Page 10 of JE says Each Spirit is a new action
 					await using var actionScope = await ActionScope.Start( ctx.Category );
-					await action.ActAsync( spirit.Bind() );
+					await action.ActAsync( spirit );
 				}
 			}
 		);

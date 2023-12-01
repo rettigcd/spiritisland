@@ -99,7 +99,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 				// Do presence destroy
 				while(0 < presenceToDestroy--)
-					await Cmd.DestroyPresence().ActAsync(new SelfCtx(this));
+					await Cmd.DestroyPresence().ActAsync(this);
 			} );
 
 		}

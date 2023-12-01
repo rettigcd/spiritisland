@@ -4,7 +4,7 @@ public class Tsunami {
 
 	public const string Name = "Tsunami";
 
-	[MajorCard(Tsunami.Name,6,Element.Water,Element.Earth),Slow,FromSacredSite(2,Target.Coastal)]
+	[MajorCard(Tsunami.Name,6,Element.Water,Element.Earth),Slow,FromSacredSite(2,Filter.Coastal)]
 	[Instructions( "2 Fear. 8 Damage. Destroy 2 Dahan. -If you have- 3 Water, 2 Earth: In each otdher Coastal land on the same board: 1 Fear, 4 Damage, and Destroy 1 Dahan." ), Artist( Artists.JasonBehnke )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 2 fear

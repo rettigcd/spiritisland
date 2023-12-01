@@ -31,12 +31,14 @@ public class DreamOfTheUntouchedLand {
 			// add 2 beast, 2 wilds, 2 badlands
 			foreach(var token in new ISpaceEntity[] { Token.Beast, Token.Wilds, Token.Badlands})
 				for(int i = 0; i < 2; ++i)
-					(await ctx.SelectTargetSpaceAsync($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ) )).Tokens.Adjust(token,1);
+					(await ctx.Self.SelectSpaceAsync($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ),Present.Always ))
+						.Tokens.Adjust(token,1);
 			// and up to 2 presence (from any Spirits) anywhere on it.
 			// ??? Can spirits violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
-				var spirit = await ctx.Self.Select(new A.Spirit("Spirit to add presence.", gs.Spirits));
-				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).Tokens().ToArray() ).ActAsync(spirit.Bind());
+				var spirit = await ctx.Self.SelectAsync(new A.Spirit("Spirit to add presence.", gs.Spirits));
+				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).Tokens().ToArray() )
+					.ActAsync(spirit);
 			}
 
 			// from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.

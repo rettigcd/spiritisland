@@ -91,7 +91,7 @@ public sealed class Track : IOption {
 
 
 	public static Track Reclaim1Energy => new Track( "reclaim 1 energy" ){ 
-		Action=new ReclaimN(),
+		Action = new ReclaimN(),
 		Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = Img.Reclaim1 }
 	};
 
@@ -129,8 +129,7 @@ public sealed class Track : IOption {
 	/// <summary>
 	/// If not null, this action is executed after Energy is collected.
 	/// </summary>
-	public IActOn<SelfCtx> Action { get; set; }
-
+	public IActOn<Spirit> Action { get; set; }
 	public void AddElement( CountDictionary<Element> elements ) {
 		foreach(var el in Elements)
 			elements[el]++;

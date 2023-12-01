@@ -38,7 +38,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 			),
 			new GrowthOption(
 				new GainAllElements(Element.Moon),
-				new GainPowerCard(), 
+				new GainPowerCard(),
 				new PlacePresence(2), 
 				g2Repeater.BindSelfCmd( new GainTime(1) ),
 				g2Repeater.BindSelfCmd( new PlayExtraCardThisTurn(2) )
@@ -98,8 +98,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		while(0 < count) {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
-			var from = (IOption)await Select( A.TrackSlot.ToReveal( selectPrompt, this ) )
-					?? (IOption)await Select( new A.SpaceToken( selectPrompt, Presence.Deployed, Present.Done ) ); // Cancel
+			var from = (IOption)await SelectAsync( A.TrackSlot.ToReveal( selectPrompt, this ) )
+					?? (IOption)await SelectAsync( new A.SpaceToken( selectPrompt, Presence.Deployed, Present.Done ) ); // Cancel
 
 			await Presence.TakeFromAsync( from );
 			Time++;
@@ -109,7 +109,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 	}
 
 	public async Task SpendTime( int count ) {
-		var hide = await Select( A.TrackSlot.ToCover( this ) );
+		var hide = await SelectAsync( A.TrackSlot.ToCover( this ) );
 
 		Time -= count;
 		if(hide != null)

@@ -7,8 +7,8 @@ public class PlayExtraCardThisTurn : SpiritAction, ICanAutoRun {
 		Count = count;
 	}
 	public override string Description => $"Play {Count} extra Card(s) this turn.";
-	public override Task ActAsync( SelfCtx ctx ) {
-		ctx.Self.tempCardPlayBoost += Count;
+	public override Task ActAsync( Spirit self ) {
+		self.tempCardPlayBoost += Count;
 		return Task.CompletedTask;
 	}
 	public int Count { get; }

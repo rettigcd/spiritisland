@@ -5,7 +5,7 @@ public class BombardWithBouldersAndStingingSeeds {
 	public const string Name = "Bombard with Boulders and Stinging Seeds";
 
 	[MajorCard(Name,2,"air,earth,plant"),Slow]
-	[FromPresence(Target.Mountain+","+Target.Jungle, 2)]
+	[FromPresence(Filter.Mountain+","+Filter.Jungle, 2)]
 	[Instructions( "1 Fear. 2 Damage. Add 1 Badlands. -If you have- 2 air,2 earth,3 plant: 1 Fear. 2 Damage. Add 1 Wilds." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 Fear.

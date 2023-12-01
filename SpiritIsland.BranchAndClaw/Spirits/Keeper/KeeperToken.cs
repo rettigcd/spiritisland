@@ -10,9 +10,8 @@ public class KeeperToken : SpiritPresenceToken, IHandleTokenAddedAsync {
 		int tokenCount = args.To[this];
 		bool createdSacredSite = (tokenCount-args.Count) < 2 && 2<= tokenCount;
 
-		if(createdSacredSite && args.To.Dahan.Any) {
-			var selfCtx = Self.Bind();
-			await selfCtx.Target( args.To ).PushDahan( int.MaxValue );
-		}
+		if(createdSacredSite && args.To.Dahan.Any)
+			await Self.Target( args.To.Space ).PushDahan( int.MaxValue );
+
 	}
 }

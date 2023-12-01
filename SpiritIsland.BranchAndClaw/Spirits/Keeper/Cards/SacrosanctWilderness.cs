@@ -5,7 +5,7 @@ public class SacrosanctWilderness {
 	// 2 fast, sun, earth, plant, 
 	// range 1, no blight
 
-	[SpiritCard("Sacrosanct Wilderness",2,Element.Sun,Element.Earth,Element.Plant),Fast,FromPresence(1,Target.NoBlight)]
+	[SpiritCard("Sacrosanct Wilderness",2,Element.Sun,Element.Earth,Element.Plant),Fast,FromPresence(1,Filter.NoBlight)]
 	[Instructions( "Push 2 Dahan. 2 Damage per Wilds in target land. -or- Add 1 Wilds." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

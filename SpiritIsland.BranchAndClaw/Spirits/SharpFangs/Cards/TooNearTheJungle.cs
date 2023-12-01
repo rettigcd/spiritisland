@@ -2,7 +2,7 @@
 
 public class TooNearTheJungle {
 
-	[SpiritCard( "Too Near the Jungle", 0, Element.Plant, Element.Animal ),Slow,FromPresence( Target.Jungle, 1 )]
+	[SpiritCard( "Too Near the Jungle", 0, Element.Plant, Element.Animal ),Slow,FromPresence( Filter.Jungle, 1 )]
 	[Instructions( "1 Fear. Destroy 1 Explorer." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

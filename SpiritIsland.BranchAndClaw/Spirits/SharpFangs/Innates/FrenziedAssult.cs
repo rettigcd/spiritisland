@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-[InnatePower( "Frenzied Assult" ), Slow, FromPresence( 1, Target.Beast )]
+[InnatePower( "Frenzied Assult" ), Slow, FromPresence( 1, Filter.Beast )]
 class FrenziedAssult {
 
 	[InnateTier( "1 moon,1 fire,4 animal","1 fear and 2 Damage. Remove 1 beast." )]

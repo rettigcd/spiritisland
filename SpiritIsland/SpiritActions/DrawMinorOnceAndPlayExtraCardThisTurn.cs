@@ -7,13 +7,13 @@ public class DrawMinorOnceAndPlayExtraCardThisTurn : SpiritAction {
 
 	bool drewMinor = false;
 
-	public override async Task ActAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( Spirit self ) {
 
 		if(!drewMinor)
-			await ctx.DrawMinor();
+			await self.DrawMinor();
 		drewMinor = true;
 
-		ctx.Self.tempCardPlayBoost++;
+		self.tempCardPlayBoost++;
 	}
 
 }

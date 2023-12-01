@@ -3,7 +3,7 @@
 public class WrackWithPainAndGrief {
 
 	[SpiritCard( "Wrack with Pain and Grief", 1, Element.Water, Element.Plant, Element.Animal ), Slow]
-	[FromPresence( Target.Blight, 1 )]
+	[FromPresence( Filter.Blight, 1 )]
 	[Instructions( "2 Fear. Push 1 Explorer and 1 Town." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		ctx.AddFear(2);

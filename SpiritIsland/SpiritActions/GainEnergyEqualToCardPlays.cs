@@ -2,8 +2,8 @@
 
 public class GainEnergyEqualToCardPlays : SpiritAction {
 	public GainEnergyEqualToCardPlays() : base( "GainEnergyEqualToCardPlays" ) { }
-	public override Task ActAsync( SelfCtx ctx ) {
-		ctx.Self.Energy += ctx.Self.Presence.CardPlayPerTurn;
+	public override Task ActAsync( Spirit self ) {
+		self.Energy += self.Presence.CardPlayPerTurn;
 		return Task.CompletedTask;
 	}
 }

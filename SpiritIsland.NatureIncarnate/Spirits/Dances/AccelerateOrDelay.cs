@@ -4,8 +4,8 @@ public class AccelerateOrDelay : SpiritAction {
 
 	public AccelerateOrDelay():base( "AccelerateOrDelay" ) { }
 
-	public override async Task ActAsync( SelfCtx ctx ) {
-		var spirit = (DancesUpEarthquakes)ctx.Self;
+	public override async Task ActAsync( Spirit self ) {
+		var spirit = (DancesUpEarthquakes)self;
 		var options = spirit.Impending.ToList();
 		for(int i = 0; i < 2; ++i) {
 			// Select card to bump or delay

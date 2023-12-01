@@ -8,7 +8,7 @@ public class GrowthOption : IOption { // This is an IOption so Startlight can se
 	/// <summary> When negative, prevents growth option unless user has sufficient energy to satisfy </summary>
 	public int GainEnergy = 0;
 
-	public GrowthOption( params IActOn<SelfCtx>[] actions ) {
+	public GrowthOption( params IActOn<Spirit>[] actions ) {
 		GrowthActions = actions.Select( action => new SpiritGrowthAction( action ) ).ToArray();
 	}
 

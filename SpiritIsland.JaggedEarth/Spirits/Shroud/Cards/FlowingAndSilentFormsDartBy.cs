@@ -33,7 +33,7 @@ public class FlowingAndSilentFormsDartBy {
 
 			if( !spirit.Presence.HasMovableTokens( args.From ) ) return;
 			
-			var dst = await spirit.Select( new A.Space( "Instead of destroying, push presence to:", args.From.Adjacent.Downgrade(), Present.Done ) );
+			var dst = await spirit.SelectAsync( new A.Space( "Instead of destroying, push presence to:", args.From.Adjacent.Downgrade(), Present.Done ) );
 			if(dst == null) return;
 
 			while(0 < args.Count--)

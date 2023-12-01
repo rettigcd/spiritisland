@@ -2,7 +2,7 @@
 
 public class GainEnergy : SpiritAction, ICanAutoRun {
 	public GainEnergy(int delta) 
-		: base($"Gain {delta} Energy",x=>x.Self.Energy += delta)
+		: base($"Gain {delta} Energy",self=>self.Energy += delta)
 	{
 		Delta = delta;
 	}

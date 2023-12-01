@@ -69,7 +69,7 @@ public sealed class DestinationSelector {
 		IEnumerable<SpaceState> destinationOptions = _filterDestination( _unfiltered( sourceSpaceToken ) )
 			.Where(ss=>TerrainMapper.Current.IsInPlay(ss.Space));
 
-		var destination = await spirit.Select(
+		var destination = await spirit.SelectAsync(
 			new A.Space( $"{actionWord} {sourceSpaceToken.Token.Text} to", inPlay.Downgrade(), _present )
 				.ComingFrom( sourceSpaceToken.Space )
 				.ShowTokenLocation( sourceSpaceToken.Token )

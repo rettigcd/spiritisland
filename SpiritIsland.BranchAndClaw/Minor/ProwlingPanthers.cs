@@ -2,7 +2,7 @@
 
 public class ProwlingPanthers {
 
-	[MinorCard( "Prowling Panthers", 1, Element.Moon, Element.Fire, Element.Animal ), Slow, FromPresence( 1, Target.Jungle, Target.Mountain )]
+	[MinorCard( "Prowling Panthers", 1, Element.Moon, Element.Fire, Element.Animal ), Slow, FromPresence( 1, Filter.Jungle, Filter.Mountain )]
 	[Instructions( "1 Fear. Add 1 Beasts. -or- If target land has Beasts, destroy 1 Explorer / Town." ), Artist( Artists.MoroRogers )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(

@@ -25,7 +25,7 @@ public class DownPour_Tests {
 		// When: play card
 		var card = PowerCard.For(typeof(DarkSkiesLooseAStingingRain));
 		await using var actionSCope = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Growth );
-		Task task = card.ActivateAsync( fxt.SelfCtx );
+		Task task = card.ActivateAsync( fxt.Spirit );
 		task.IsCompletedSuccessfully.ShouldBeFalse();
 
 		// Then: can target out of 2-presence non wetland

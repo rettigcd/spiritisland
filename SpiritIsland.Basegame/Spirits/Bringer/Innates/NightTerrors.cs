@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Basegame;
 
 [InnatePower( NightTerrors.Name ),Fast]
-[FromPresence( 0, Target.Invaders )]
+[FromPresence( 0, Filter.Invaders )]
 public class NightTerrors {
 
 	public const string Name = "Night Terrors";

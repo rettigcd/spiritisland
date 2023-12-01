@@ -2,7 +2,7 @@
 
 public class DeathFallsGentlyFromOpenBlossoms {
 
-	[MajorCard("Death Falls Gently From Open Blossoms",4, Element.Moon,Element.Air,Element.Plant),Slow,FromPresence(3,Target.Jungle, Target.Sands )]
+	[MajorCard("Death Falls Gently From Open Blossoms",4, Element.Moon,Element.Air,Element.Plant),Slow,FromPresence(3,Filter.Jungle, Filter.Sands )]
 	[Instructions( "4 Damage. If any Invaders remain, add 1 Disease. -If you have- 3 Air, 3 Plant: 3 Fear. Add 1 Disease to 2 adjacent lands with Invaders." ), Artist( Artists.GrahamStermberg )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 4 damage.
@@ -19,7 +19,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 			// Add 1 disease to 2 adjacent lands with invaders.
 			var options = ctx.Tokens.Adjacent.Where( x => x.HasInvaders() );
 			for(int i = 0; i < 2; ++i) {
-				Space space = await ctx.Self.Select( A.Space.ToPlaceToken( $"Add disease to ({i + 1} of 2)", options.Downgrade(), Present.Always, ctx.Tokens.Disease.Default ) );
+				Space space = await ctx.Self.SelectAsync( A.Space.ToPlaceToken( $"Add disease to ({i + 1} of 2)", options.Downgrade(), Present.Always, ctx.Tokens.Disease.Default ) );
 				if( space != null )
 					await ctx.Target(space).Disease.AddAsync( 1 );
 			}

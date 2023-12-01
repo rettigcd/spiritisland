@@ -19,7 +19,7 @@ public class LightningsSwiftStrike : Spirit {
 		GrowthTrack = new(
 			new GrowthOption( 
 				new ReclaimAll(),
-				new GainPowerCard(), 
+				new GainPowerCard(),
 				new GainEnergy(1)
 			),
 			// +1 presence range 2, +1 presence range 0( 

@@ -13,7 +13,7 @@ public class ParalyzingFright_Tests {
 	public void StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(ParalyzingFright)), (Action<GameState>)((gs)=>{ 
+		var (user, self) = TestSpirit.StartGame( PowerCard.For(typeof(ParalyzingFright)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
@@ -27,12 +27,12 @@ public class ParalyzingFright_Tests {
 		// and: there is a space a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
 		user.WaitForNext();
 		var spaceCtx = GameState.Current.Spaces_Unfiltered
-			.Select( x=>ctx.Target(x.Space) )
+			.Select( x=>self.Target(x.Space) )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
 		// And: we have a SS in that land
-		ctx.Self.Given_HasPresenceOn(spaceCtx.Space, 2 );
+		self.Given_HasPresenceOn(spaceCtx.Space, 2 );
 
 		//  And: it has 3 explorers
 		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );

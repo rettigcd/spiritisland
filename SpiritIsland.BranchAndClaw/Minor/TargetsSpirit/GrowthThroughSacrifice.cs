@@ -9,19 +9,20 @@ public class GrowthThroughSacrifice {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// destroy one of your presence
-		await Cmd.DestroyPresence().ActAsync(ctx);
+		await Cmd.DestroyPresence().ActAsync(ctx.Self);
 
 		// If 2 sun, do both in the same land
-		await TargetSpiritAction( ctx.OtherCtx, await ctx.YouHave( "2 sun" ) );
+		await TargetSpiritAction( ctx.Other, await ctx.YouHave( "2 sun" ) );
 
 	}
 
-	static async Task TargetSpiritAction( SelfCtx ctx, bool doBoth ) {
+	static async Task TargetSpiritAction( Spirit other, bool doBoth ) {
 
 		// Note - not strictly following rules - altering to allow presence in any spot that has presence.
 		// Presence placed in an illegal land will allow adding more there, although it technically shouldn't.
 		string joinStr = doBoth ? "AND" : "OR";
-		var spaceCtx = await ctx.TargetLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" );
+		var space = await other.SelectLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" );
+		var spaceCtx = other.Target(space);
 
 		var removeBlight = new SpaceCmd( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );
 		var addPresence = new SpaceCmd( "Add 1 presence to one of your lands", spaceCtx => spaceCtx.Presence.PlaceHere() )

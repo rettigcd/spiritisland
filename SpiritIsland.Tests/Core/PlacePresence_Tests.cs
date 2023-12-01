@@ -11,7 +11,7 @@ public class PlacePresence_Tests : GrowthTests {
 				new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 			)
 		) {
-			GrowthTrack = new GrowthTrack( new GrowthOption( new PlacePresence( 1, Target.Any ) ) );
+			GrowthTrack = new GrowthTrack( new GrowthOption( new PlacePresence( 1, Filter.Any ) ) );
 		}
 
 		public override string Text => "Test Spirit";
@@ -51,7 +51,7 @@ public class PlacePresence_Tests : GrowthTests {
 	public void AllTargetsHaveFilter() {
 
 		var space = _board[8];
-		foreach(string filter in GetAllPublicConstantValues<string>( typeof( Target ) ) ) {
+		foreach(string filter in GetAllPublicConstantValues<string>( typeof( Filter ) ) ) {
 			var targetCriteria = new TargetCriteria(0,_spirit,filter);
 			// don't care about results
 			// just shouldn't throw exception about the filter we are using.

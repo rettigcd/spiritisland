@@ -2,7 +2,7 @@
 
 public class TeemingRivers {
 
-	[MinorCard( "Teeming Rivers", 1, Element.Sun, Element.Water, Element.Plant, Element.Animal ),Slow,FromSacredSite( 2, Target.Mountain, Target.Wetland )]
+	[MinorCard( "Teeming Rivers", 1, Element.Sun, Element.Water, Element.Plant, Element.Animal ),Slow,FromSacredSite( 2, Filter.Mountain, Filter.Wetland )]
 	[Instructions( "If target land has no Blight, add 1 Beasts. If target land has exactly 1 Blight, remove it." ), Artist( Artists.LucasDurham )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

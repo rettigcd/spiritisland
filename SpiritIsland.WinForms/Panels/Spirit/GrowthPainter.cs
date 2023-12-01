@@ -59,12 +59,12 @@ public sealed class GrowthPainter : IDisposable{
 
 	void DrawAction( IHelpGrow growthAction, RectangleF rect ) {
 		if(growthAction is not SpiritGrowthAction sga) return;
-		IActOn<SelfCtx> action = sga.Cmd;
+		IActOn<Spirit> action = sga.Cmd;
 
 		if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory
 			&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
 		)
-			action = repeatableActionFactory.Inner;
+			action = repeatableActionFactory.Inner; // !!! This won't draw until sga.Cmd is an IActOn<Spirit>
 
 		var paintable = action switch {
 			ReclaimAll => new ImgRect( Img.ReclaimAll ),
@@ -302,17 +302,17 @@ public sealed class GrowthPainter : IDisposable{
 
 	static Img GetImgEnum( string filterEnum ) {
 		Img img = filterEnum switch {
-			Target.Jungle							=> Img.Icon_Jungle,
-			Target.Presence							=> Img.Icon_Presence,
-			Target.Wetland							=> Img.Icon_Wetland,
-			Target.Mountain							=> Img.Icon_Mountain,
-			Target.Wilds							=> Img.Icon_Wilds,
-			Target.Beast							=> Img.Icon_Beast,		
-			Target.Dahan							=> Img.Icon_Dahan,
-			Target.Invaders							=> Img.Icon_Invaders,
-			Target.Coastal                         => Img.Icon_Coastal,
-			Target.NoBlight                        => Img.Icon_NoBlight,
-			Target.Ocean                           => Img.Icon_Ocean,
+			Filter.Jungle							=> Img.Icon_Jungle,
+			Filter.Presence							=> Img.Icon_Presence,
+			Filter.Wetland							=> Img.Icon_Wetland,
+			Filter.Mountain							=> Img.Icon_Mountain,
+			Filter.Wilds							=> Img.Icon_Wilds,
+			Filter.Beast							=> Img.Icon_Beast,		
+			Filter.Dahan							=> Img.Icon_Dahan,
+			Filter.Invaders							=> Img.Icon_Invaders,
+			Filter.Coastal                         => Img.Icon_Coastal,
+			Filter.NoBlight                        => Img.Icon_NoBlight,
+			Filter.Ocean                           => Img.Icon_Ocean,
 			_ => Img.None, // Inland, Any
 		};
 		return img;
@@ -327,16 +327,16 @@ public sealed class GrowthPainter : IDisposable{
 		)	.SplitByWeight(.05f, .1f, .3f, .35f, .15f, .1f);
 	}
 
-	static IPaintableRect PlacePresenceRect( IActOn<SelfCtx> growth ) {
+	static IPaintableRect PlacePresenceRect( IActOn<Spirit> growth ) {
 
 
 		var (presImg, range, filterEnum, addOnIcon, num) = growth switch {
-			PlaceInOcean            => (Img.Icon_Presence, null, Target.Ocean, Img.None, 1),
-			PlacePresenceAndBeast   => (Img.Icon_Presence, (int?)3, Target.Any, Img.Beast, 1), // add an icon
+			PlaceInOcean            => (Img.Icon_Presence, null, Filter.Ocean, Img.None, 1),
+			PlacePresenceAndBeast   => (Img.Icon_Presence, (int?)3, Filter.Any, Img.Beast, 1), // add an icon
 			{ Description: string n } when n == "Add a Presence or Disease"
-									=> (Img.Icon_Presence, (int?)1, Target.Any, Img.Disease, 1),
+									=> (Img.Icon_Presence, (int?)1, Filter.Any, Img.Disease, 1),
 			AddDestroyedPresence { Range: int r, NumToPlace: int ntp }
-									=> (Img.Icon_DestroyedPresence, (int?)r, Target.Any, Img.None, ntp),
+									=> (Img.Icon_DestroyedPresence, (int?)r, Filter.Any, Img.None, ntp),
 			// generic, do last
 			PlacePresence { Range: int r, FilterDescription: string f }
 									=> (Img.Icon_Presence, (int?)r, f, Img.None, 1),

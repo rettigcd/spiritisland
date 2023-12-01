@@ -28,20 +28,20 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 		currentTokens.Summary.ShouldBe( expectedInvaderSummary == "" ? "[none]" : expectedInvaderSummary );
 	}
 
-	public static void ClearAllBlight( this SelfCtx _ ) {
+	public static void ClearAllBlight( this Spirit _ ) {
 		// So it doesn't cascade and require extra interactions...
 		foreach(var space in GameState.Current.Spaces_Unfiltered)
 			space.Blight.Init(0); // don't trigger events
 	}
 
-	public static void ActivateFearCard( this SelfCtx _, IFearCard fearCard ) {
+	public static void ActivateFearCard( this Spirit _, IFearCard fearCard ) {
 		var fear = GameState.Current.Fear;
 		fear.Deck.Pop();
 		fear.PushOntoDeck(fearCard);
 		fear.AddDirect( new FearArgs( fear.PoolMax ) );
 	}
 
-	public static void ElevateTerrorLevelTo( this SelfCtx _, int desiredFearLevel ) {
+	public static void ElevateTerrorLevelTo( this Spirit _, int desiredFearLevel ) {
 		while(GameState.Current.Fear.TerrorLevel < desiredFearLevel)
 			GameState.Current.Fear.Deck.Pop();
 	}

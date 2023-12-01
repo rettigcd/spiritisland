@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Basegame;
 
 [InnatePower( PoundShipsToSplinters.Name ),Fast]
-[FromPresence( 0, Target.Coastal )]
+[FromPresence( 0, Filter.Coastal )]
 public class PoundShipsToSplinters {
 
 	public const string Name = "Pound Ships to Splinters";

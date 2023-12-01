@@ -8,36 +8,36 @@ public class TurmoilsTouch {
 	[Slow, AnotherSpirit]
 	[Instructions( "Target Spirit may either pay 1 Enery or dicard a Power Card (from hand) to Take a Minor Power into their discard. You may do likewise." ), Artist( Artists.EmilyHancock )]
 	static public async Task ActionAsync(TargetSpiritCtx ctx) {
-		await PayAndTakeCard( ctx.OtherCtx);
-		await PayAndTakeCard( ctx );
+		await PayAndTakeCard( ctx.Other );
+		await PayAndTakeCard( ctx.Self );
 	}
 
-	static Task PayAndTakeCard( SelfCtx ctx ) {
+	static Task PayAndTakeCard( Spirit self ) {
 		return Cmd.Pick1(
 			new SpiritAction(
 				"Pay 1 Energy to Take a Minor Power into their discard.", 
-				async ctx => {
-					--ctx.Self.Energy; 
-					await TakeMinorIntoDiscard(ctx);
+				async self => {
+					--self.Energy; 
+					await TakeMinorIntoDiscard(self);
 				}
-			).OnlyExecuteIf(x=>0<x.Self.Energy),
+			).OnlyExecuteIf(spirit=>0<spirit.Energy),
 			new SpiritAction(
 				"Discard a Power Card to Take a Minor Power into their discard.", 
 				async ctx => { 
-					await new DiscardCard("Discard 1 card from hand", s=>s.Hand).ActAsync( ctx ); 
+					await new DiscardCard("Discard 1 card from hand", s=>s.Hand).ActAsync( self ); 
 					await TakeMinorIntoDiscard(ctx);
 				}
 			),
-			new SpiritAction("No, thank you.",_=>Task.CompletedTask)
-		).ActAsync( ctx );
+			SpiritAction.NoAction
+		).ActAsync( self );
 	}
 
-	static async Task TakeMinorIntoDiscard( SelfCtx ctx ) {
+	static async Task TakeMinorIntoDiscard( Spirit spirit ) {
 		// Draw into HAND
-		var card = (await DrawFromDeck.DrawInner(ctx.Self,GameState.Current.MinorCards, 1, 1)).Selected;
+		var card = (await DrawFromDeck.DrawInner(spirit,GameState.Current.MinorCards, 1, 1)).Selected;
 		// Move from HAND to Discard
-		ctx.Self.Hand.Remove( card );
-		ctx.Self.DiscardPile.Add( card );
+		spirit.Hand.Remove( card );
+		spirit.DiscardPile.Add( card );
 	}
 
 }

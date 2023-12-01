@@ -15,10 +15,10 @@ public class FromPresenceThresholdAlternate : FromPresenceAttribute {
 		_altTarget = new TargetCriteriaFactory( altRange, altTarget );
 	}
 
-	protected override async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) {
-		return await ctx.Self.HasElements($"Target {_altTarget}",  _threshold)
-			? _altTarget.Bind(ctx.Self)
-			: await base.GetCriteria( ctx );
+	protected override async Task<TargetCriteria> GetCriteria( Spirit self ) {
+		return await self.HasElement( _threshold, $"Target {_altTarget}" )
+			? _altTarget.Bind(self)
+			: await base.GetCriteria( self );
 	}
 
 }

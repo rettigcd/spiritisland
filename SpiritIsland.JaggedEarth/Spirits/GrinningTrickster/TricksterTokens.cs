@@ -30,7 +30,7 @@ public class TricksterTokens : SpaceState {
 		var nearbyInvaders = _spirit.PowerRangeCalc.GetSpaceOptions( Adjacent, new TargetCriteria( 1 ) )
 			.SelectMany( ss => ss.InvaderTokens().On( ss.Space ) )
 			.ToArray();
-		var invader2 = await _spirit.Select( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		var invader2 = await _spirit.SelectAsync( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 != null) {
 			--_spirit.Energy;
 			var tokens2 = (TricksterTokens)invader2.Space.Tokens; // need to cast in order to access non-cascading protected member .AddRemoveStrife()

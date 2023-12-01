@@ -5,20 +5,20 @@ class PourTimeSideways {
 
 	[SpiritCard( Name, 1, Element.Moon, Element.Air, Element.Water ), Fast, Yourself]
 	[Instructions( "Cost to Use: 3 Time. Move 1 of your Presence to a different land with your Presence. On the board moved from: During the Invader Phase, Resolve Invader and \"Each board / Each land...\" Actions one fewer time. On the board moved to: During the Invader Phase, Resolve Invader and \"Each board / Each Land...\" Actions one more time." ), Artist( Artists.LucasDurham )]
-	static public async Task ActAsync( SelfCtx ctx ) {
-		if(ctx.Self is not FracturedDaysSplitTheSky frac) return;
+	static public async Task ActAsync( Spirit self ) {
+		if(self is not FracturedDaysSplitTheSky frac) return;
 
-		if(!ctx.Self.Presence.CanMove) return;
+		if(!self.Presence.CanMove) return;
 
 		// Cost to Use: 3 Time
 		if(frac.Time <3) return;
 		await frac.SpendTime( 3 );
 
 		// Move 1 of your presence to a different land with your presence.
-		var src = await ctx.SelectAsync( new A.SpaceToken("Move presence from:", ctx.Self.Presence.Deployed, Present.Always ) );
-		if(!ctx.Self.Presence.HasMovableTokens( src.Space.Tokens )) return; // !!?? is this necessary?
-		var dstOptions = ctx.Self.Presence.Lands.Tokens().Where( s => s.Space != src.Space );
-		var dst = await ctx.SelectAsync( A.Space.ForMoving_SpaceToken( "Move presence to:", src.Space, dstOptions.Downgrade(), Present.Always, src.Token ) );
+		var src = await self.SelectAsync( new A.SpaceToken("Move presence from:", self.Presence.Deployed, Present.Always ) );
+		if(!self.Presence.HasMovableTokens( src.Space.Tokens )) return; // !!?? is this necessary?
+		var dstOptions = self.Presence.Lands.Tokens().Where( s => s.Space != src.Space );
+		var dst = await self.SelectAsync( A.Space.ForMoving_SpaceToken( "Move presence to:", src.Space, dstOptions.Downgrade(), Present.Always, src.Token ) );
 		await src.MoveTo(dst);
 		var srcBoards = src.Space.Boards;
 		if(srcBoards.Intersect(dst.Boards).Any()) return;

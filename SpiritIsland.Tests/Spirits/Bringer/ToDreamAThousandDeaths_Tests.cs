@@ -23,8 +23,7 @@ public class ToDreamAThousandDeaths_Tests {
 
 	TargetSpaceCtx MakeFreshPowerCtx(ActionScope actionScope) {
 		actionScope.Owner = _spirit;
-		var ctx = _spirit.Bind(); // This is correct usage.
-		return ctx.Target( _board[5] );
+		return _spirit.Target( _board[5] );
 	}
 
 	// 1: Raging Storm - 1 damage to each invader (slow)

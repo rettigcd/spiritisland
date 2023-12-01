@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-[InnatePower("Let's See What Happens"), Fast, FromPresence(1,Target.Invaders)]
+[InnatePower("Let's See What Happens"), Fast, FromPresence(1,Filter.Invaders)]
 public class LetsSeeWhatHappens {
 
 	[InnateTier("1 moon,1 fire,2 air","Discard Minor Powers from the deck until you get one that targets a land. Use immediately. All 'up to' instructions must be used at max and ORs treated as ANDs ")]

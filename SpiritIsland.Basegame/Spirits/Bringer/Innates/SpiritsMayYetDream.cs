@@ -17,7 +17,7 @@ public class SpiritsMayYetDream {
 		NameCards( fearPosition, dictionary, "Future", fear.Deck );
 
 		var positionToShow = await ctx.Self.Select( "Select fear to reveal", fearPosition.ToArray(), Present.Always );
-		await ctx.FlipFearCard( dictionary[positionToShow] );
+		await ctx.Self.FlipFearCard( dictionary[positionToShow] );
 
 	}
 

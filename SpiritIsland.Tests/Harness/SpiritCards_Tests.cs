@@ -50,7 +50,7 @@ public class SpiritCards_Tests {
 		Assert.Contains(card, _spirit.GetAvailableActions(speed).OfType<PowerCard>().ToList());
 	}
 
-	protected Task When_PlayingCard() => _card.ActivateAsync( _spirit.Bind() );
+	protected Task When_PlayingCard() => _card.ActivateAsync( _spirit );
 
 }
 

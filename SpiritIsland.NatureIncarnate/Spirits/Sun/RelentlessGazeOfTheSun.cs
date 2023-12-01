@@ -57,13 +57,12 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	/// <remarks>overriden to capture space played on and queue up repeat</remarks>
 	public override async Task<Space> TargetsSpace(
-		SelfCtx ctx, // this has the new Action for this action.
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		var targetSpace = await base.TargetsSpace( ctx, prompt, preselect, sourceCriteria, targetCriteria );
+		var targetSpace = await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
 		if(_currentPowerCard != null    // is power card
 			&& TargetsFromSuperSacredSite( targetSpace, sourceCriteria, targetCriteria )
@@ -96,11 +95,11 @@ public class RelentlessGazeOfTheSun : Spirit {
 		return base.DoGrowth( gameState );
 	}
 
-	protected override async Task ApplyRevealedPresenceTracks_Inner( SelfCtx ctx ) { 
+	protected override async Task ApplyRevealedPresenceTracks_Inner( Spirit self ) { 
 		if(CollectEnergySecondTime)
 			Energy += EnergyPerTurn;
 
-		await base.ApplyRevealedPresenceTracks_Inner( ctx );
+		await base.ApplyRevealedPresenceTracks_Inner( self );
 	}
 
 	#endregion

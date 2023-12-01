@@ -36,7 +36,7 @@ public abstract partial class Spirit : IOption {
 	#region Gateway stuff
 
 	public IUserPortal Portal => _gateway;
-	public Task<T> Select<T>( A.TypedDecision<T> decision ) where T : class, IOption => _gateway.Select<T>( decision );
+	public Task<T> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption => _gateway.Select<T>( decision );
 	public void PreSelect( SpaceToken st ) => _gateway.Preloaded = st;
 	readonly UserGateway _gateway;
 
@@ -47,7 +47,7 @@ public abstract partial class Spirit : IOption {
 	public readonly ElementMgr Elements;
 
 	public virtual bool CouldHaveElements( CountDictionary<Element> subset ) => Elements.CouldContain(subset);
-	public virtual Task<bool> HasElements( string description, CountDictionary<Element> subset ) => Elements.ContainsAsync(description, subset);
+	public virtual Task<bool> HasElement( CountDictionary<Element> subset, string description ) => Elements.ContainsAsync(subset, description);
 
 	/// <summary>
 	/// Spirit determines which Option they can activate.
@@ -56,7 +56,7 @@ public abstract partial class Spirit : IOption {
 	public virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {
 		IDrawableInnateTier match = null;
 		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
-			if(await HasElements( "Innate Tier", option.Elements ))
+			if(await HasElement( option.Elements, "Innate Tier" ))
 				match = option;
 		return match;
 	}
@@ -75,10 +75,10 @@ public abstract partial class Spirit : IOption {
 
 	async Task ApplyRevealedPresenceTrack() {
 		await using ActionScope action2 = await ActionScope.Start( ActionCategory.Spirit_PresenceTrackIcon );
-		await ApplyRevealedPresenceTracks_Inner( Bind() );
+		await ApplyRevealedPresenceTracks_Inner( this );
 	}
 
-	protected virtual async Task ApplyRevealedPresenceTracks_Inner( SelfCtx ctx ) {
+	protected virtual async Task ApplyRevealedPresenceTracks_Inner( Spirit self ) {
 
 		// Energy
 		Energy += EnergyPerTurn;
@@ -87,7 +87,7 @@ public abstract partial class Spirit : IOption {
 
 		// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
 		foreach(var action in Presence.RevealedActions)
-			await action.ActAsync( ctx );
+			await action.ActAsync( self );
 
 	}
 
@@ -260,9 +260,8 @@ public abstract partial class Spirit : IOption {
 	public virtual async Task TakeActionAsync(IActionFactory factory, Phase phase) {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );  
 			
-		SelfCtx ctx = Bind();
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
-		await factory.ActivateAsync( ctx );
+		await factory.ActivateAsync( this );
 		GameState.Current.CheckWinLoss(); // @@@
 	}
 
@@ -307,12 +306,36 @@ public abstract partial class Spirit : IOption {
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
-	#region Bind helpers
+	#region Bind / Target helpers
 
 	public virtual void InitSpiritAction( ActionScope scope ) { }
 
 	/// <summary> Convenience method only. calls new SelfCtx(this) </summary>
-	public SelfCtx Bind() => new SelfCtx( this );
+	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
+	public TargetSpiritCtx Target( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
+
+	#region Temporary - Fear - until we can find a better home for it.
+
+	public virtual void AddFear( int count ) {
+		GameState.Current.Fear.AddDirect( new FearArgs( count ) );
+	}
+
+	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
+		string label = activating ? "Activating Fear" : "Done";
+
+		GameState gs = GameState.Current;
+
+		cardToFlip.Flipped = true;
+		await this.Select( label, new IOption[] { cardToFlip }, Present.Always );
+		if( cardToFlip.ActivatedTerrorLevel.HasValue )
+			gs.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
+		else
+			for(int i=1;i<=3;++i)
+				gs.Log( new Log.Debug($"{i} => {cardToFlip.GetDescription(i)}") );
+
+	}
+
+	#endregion Temporary - Fear - until we can find a better home for it.
 
 	public bool ActionIsMyPower {
 		get {
@@ -510,7 +533,6 @@ public abstract partial class Spirit : IOption {
 	/// <summary> Used EXCLUSIVELY For Targeting a PowerCard's Space </summary>
 	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
 	public virtual async Task<Space> TargetsSpace( 
-		SelfCtx ctx, // this has the new Action for this action.
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria,
@@ -524,8 +546,8 @@ public abstract partial class Spirit : IOption {
 		}
 
 		return preselect != null && UserGateway.UsePreselect.Value
-			? await preselect.PreSelect( ctx.Self, spaces )
-			: await Select( new A.Space( prompt, spaces.Downgrade(), Present.Always ));
+			? await preselect.PreSelect( this, spaces )
+			: await SelectAsync( new A.Space( prompt, spaces.Downgrade(), Present.Always ));
 	}
 
 	public IEnumerable<SpaceState> FindTargettingSourcesFor( Space target, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {

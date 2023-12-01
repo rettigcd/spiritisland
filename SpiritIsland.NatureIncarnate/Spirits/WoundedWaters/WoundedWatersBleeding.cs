@@ -99,7 +99,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	async Task ClaimAHealingCard() {
 		var options = HealingCards.Where(card=>card.MeetsRequirement(this) && !card.IsClaimed(this)).ToArray();
 		if(options.Length == 0) return;
-		var card = await Select(new A.TypedDecision<IHealingCard>("Claim Healing Card?", options, Present.Done));
+		var card = await SelectAsync(new A.TypedDecision<IHealingCard>("Claim Healing Card?", options, Present.Done));
 		if(card == null) return;
 
 		card.Claim(this);
@@ -116,10 +116,10 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	}
 
 	async Task DestroyPresenceOrForgetCard() {
-		await Cmd.Pick1<SelfCtx>(
+		await Cmd.Pick1(
 			Cmd.DestroyPresence(),
 			Cmd.ForgetPowerCard
-		).ActAsync(Bind());
+		).ActAsync(this);
 	}
 
 	readonly IHealingCard[] HealingCards = new IHealingCard[] {

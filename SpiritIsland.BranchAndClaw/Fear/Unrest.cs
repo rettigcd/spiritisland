@@ -7,8 +7,7 @@ public class Unrest : FearCardBase, IFearCard {
 	[FearLevel( 1, "Each player adds 1 Strife to a Town." )]
 	public Task Level1( GameCtx ctx )
 		=> Cmd.AddStrifeTo(1,Human.Town)
-			.In().SpiritPickedLand()
-			.ByPickingToken(Human.Town)
+			.In().SpiritPickedLand().ByPickingToken(Human.Town)
 			.ForEachSpirit()
 			.ActAsync(ctx);
 

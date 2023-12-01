@@ -23,16 +23,16 @@ public class RelentlessRepeater : IActionFactory {
 
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => _cost <= spirit.Energy && _powerCard.CouldActivateDuring( speed, spirit );
 
-	public async Task ActivateAsync( SelfCtx ctx ) {
+	public async Task ActivateAsync( Spirit self ) {
 		// if we can affort it
-		if( _cost <= ctx.Self.Energy) {
+		if( _cost <= self.Energy) {
 			// Pay and use
-			ctx.Self.Energy -= _cost;
-			await _powerCard.InvokeOn( ctx.Target(_space) );
+			self.Energy -= _cost;
+			await _powerCard.InvokeOn( self.Target(_space) );
 		}
 		// Next
 		++_cost;
-		ctx.Self.AddActionFactory( this );
+		self.AddActionFactory( this );
 	}
 
 }

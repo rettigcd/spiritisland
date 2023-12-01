@@ -4,7 +4,7 @@ public class SleepAndNeverWaken {
 
 	const string Name = "Sleep and Never Waken";
 
-	[MajorCard(Name,3,Element.Moon,Element.Air,Element.Earth,Element.Animal), Fast, FromPresence(Target.Sands, 2)]
+	[MajorCard(Name,3,Element.Moon,Element.Air,Element.Earth,Element.Animal), Fast, FromPresence(Filter.Sands, 2)]
 	[Instructions( "Invaders skip all Actions in target land. 1 Fear per 2 Explorer this Power removes. Remove up to 2 Explorer. -If you have- 3 Moon, 2 Air, 2 Animal: Remove up to 6 Explorer from among your lands." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// invaders skip all actions in target land.

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
 [InnatePower( "Firestorm" ),Fast]
-[FromPresence(0,Target.Blight)]
+[FromPresence(0,Filter.Blight)]
 public class FireStorm {
 
 	// Group 0

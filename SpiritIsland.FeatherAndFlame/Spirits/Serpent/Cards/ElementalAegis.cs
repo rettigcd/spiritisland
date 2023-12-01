@@ -15,7 +15,7 @@ public class ElementalAegis {
 
 		ctx.Defend(defense);
 		foreach(var adj in ctx.Adjacent )
-			ctx.Target(adj).Defend(defense);
+			ctx.Target(adj.Space).Defend(defense);
 
 		return Task.CompletedTask;
 	}

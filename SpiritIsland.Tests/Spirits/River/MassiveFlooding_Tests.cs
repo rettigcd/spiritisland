@@ -30,7 +30,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		innatePower.CouldActivateDuring( Phase.Slow, fixture.Spirit ).ShouldBeFalse();
 
 		//  When: but if we try anyway
-		var task = innatePower.ActivateAsync( fixture.SelfCtx );
+		var task = innatePower.ActivateAsync( fixture.Spirit );
 
 		//  Then: it is complete and nothing happens.
 		task.IsCompleted.ShouldBeTrue();
@@ -52,7 +52,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,5E@1,4T@2" );
 
 		//  When: activate innate
-		Task t = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
+		Task t = MassiveFloodingPower.ActivateAsync( fixture.Spirit );
 		fixture.Choose( space ); // target space
 		fixture.ChoosePush( StdTokens.Town, destination.Space ); // push 1
 		await t.ShouldComplete();
@@ -84,7 +84,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,4T@2,5E@1");
 
 		//  When: activate innate
-		Task t = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
+		Task t = MassiveFloodingPower.ActivateAsync( fixture.Spirit );
 		fixture.Choose( space ); // target space
 		fixture.Choose( StdTokens.Town ); // 1st damage
 		fixture.Choose( StdTokens.Town1 ); // 2nd damage
@@ -117,7 +117,7 @@ public class MassiveFlooding_Tests : RiverGame {
 		fixture.InitTokens( space, "1C@3,4T@2,5E@1" );
 
 		//  When: activate innate
-		_ = MassiveFloodingPower.ActivateAsync( fixture.SelfCtx );
+		_ = MassiveFloodingPower.ActivateAsync( fixture.Spirit );
 		fixture.Choose( space ); // target space
 
 		// Then: target has remaining invaders

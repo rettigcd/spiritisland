@@ -67,7 +67,7 @@ public class Bringer_GrowthTests : GrowthTests {
 		// add presense range 4 Dahan or Invadors, +2 energy
 		await _spirit.When_Growing( () => {
 			// User.Growth_SelectsOption( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
-			User.Growth_SelectAction( $"PlacePresence(4,{Target.Dahan}Or{Target.Invaders})" );
+			User.Growth_SelectAction( $"PlacePresence(4,{Filter.Dahan}Or{Filter.Invaders})" );
 			User.Growth_PlacesEnergyPresence( "T6;T7;T8;T9" );
 		} );
 

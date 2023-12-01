@@ -4,20 +4,20 @@
 class HoldTheIslandFastWithABulwarkOfWill {
 
 	[InnateTier("2 earth","When blight is added to one of your lands, you may pay 2 Energy per blight to take it from the box instead of the Blight Card.")]
-	static public Task Option1( SelfCtx ctx ) {
-		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(ctx,2), 1 );
+	static public Task Option1( Spirit self ) {
+		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(self,2), 1 );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier("4 earth","The cost is 1 Energy instead of 2")]
-	static public Task Option2( SelfCtx ctx ) {
-		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(ctx,1), 1 );
+	static public Task Option2( Spirit self ) {
+		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(self,1), 1 );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier("6 earth,1 plant","When an Event or Blight card directly destroys presence (yours or others'), you may prevent any number of presence from being destroyed by paying 1 Energy each.",1)]
-	static public Task Option3( SelfCtx ctx ) {
-		GameState.Current.AddIslandMod( new StopPresenceDestructionFromBlightOrEvents(ctx.Self)); // needs removed
+	static public Task Option3( Spirit self ) {
+		GameState.Current.AddIslandMod( new StopPresenceDestructionFromBlightOrEvents(self)); // needs removed
 		return Task.CompletedTask;
 	}
 
@@ -34,8 +34,8 @@ class PayEnergyToTakeFromBox
 	readonly Spirit _spirit;
 	readonly int _cost;
 
-	public PayEnergyToTakeFromBox( SelfCtx ctx, int cost ) {
-		_spirit = ctx.Self;
+	public PayEnergyToTakeFromBox( Spirit self, int cost ) {
+		_spirit = self;
 		_cost = cost;
 	}
 

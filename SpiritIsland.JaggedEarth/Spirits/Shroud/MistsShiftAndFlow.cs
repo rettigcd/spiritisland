@@ -8,7 +8,6 @@ class MistsShiftAndFlow {
 	#region private fields
 
 	readonly ShroudOfSilentMist _spirit;
-	readonly SelfCtx _ctx;
 	readonly string _prompt;
 	readonly TargetingSourceCriteria _sourceCriteria;
 
@@ -25,9 +24,8 @@ class MistsShiftAndFlow {
 		"When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements."
 	);
 
-	public MistsShiftAndFlow(SelfCtx ctx, string prompt, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria) {
-		_spirit = (ShroudOfSilentMist)ctx.Self;
-		_ctx = ctx;
+	public MistsShiftAndFlow(Spirit self, string prompt, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria) {
+		_spirit = (ShroudOfSilentMist)self;
 		_prompt = prompt ?? "Target Space.";
 		_sourceCriteria = sourceCriteria;
 		_targetCriteria = targetCriteria;
@@ -56,7 +54,7 @@ class MistsShiftAndFlow {
 		List<MistMove> allowed = FindFlowsThatAllowUsToHitTarget( target );
 
 		// Flow (Gather) - Destination (To)
-		var gatherDst = await _spirit.Select( new A.Space(
+		var gatherDst = await _spirit.SelectAsync( new A.Space(
 			"Flow (gather) presence to:",
 			allowed.Select( a => a.AddedTo.Space ).Distinct(),
 			MustFlowToReach( target ) ? Present.Always : Present.Done
@@ -72,11 +70,11 @@ class MistsShiftAndFlow {
 		// ASpaceToken.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IToken)presenceToken)), Present.Done, to )
 		var decision = A.SpaceToken.ToCollect( 
 			prompt:$"Flow (gather) presence (to {gatherDst.Label}) from:", 
-			tokens: _ctx.Self.Presence.Movable.WhereIsOn( souceOptions ),
+			tokens: _spirit.Presence.Movable.WhereIsOn( souceOptions ),
 			Present.Done,
 			to: gatherDst
 		);
-		var gatherSource = await _spirit.Select( decision );
+		var gatherSource = await _spirit.SelectAsync( decision );
 		if(gatherSource == null) return;
 
 		await gatherSource.MoveTo( gatherDst );
@@ -125,7 +123,7 @@ class MistsShiftAndFlow {
 		// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 		// For small ranges, flow-targets will be larger.
 
-		var target = await _spirit.Select( new A.Space( _prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
+		var target = await _spirit.SelectAsync( new A.Space( _prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
 		return target.Tokens;
 	}
 

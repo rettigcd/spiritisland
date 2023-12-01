@@ -4,7 +4,7 @@ public class AcceleratedRot {
 
 	public const string Name = "Accelerated Rot";
 
-	[MajorCard(AcceleratedRot.Name,4,Element.Sun,Element.Water,Element.Plant),Slow,FromPresence(2,Target.Jungle, Target.Wetland )]
+	[MajorCard(AcceleratedRot.Name,4,Element.Sun,Element.Water,Element.Plant),Slow,FromPresence(2,Filter.Jungle, Filter.Wetland )]
 	[Instructions( "2 Fear. 4 Damage. -If you have- 3 Sun, 2 Water, 3 Plant: +5 Damage. Remove 1 Blight." ), Artist( Artists.GrahamStermberg )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 

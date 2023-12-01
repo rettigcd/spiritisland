@@ -27,7 +27,7 @@ public class Bringer : Spirit {
 			// +1 power card, +1 pressence range 1
 			new GrowthOption(new GainPowerCard(), new PlacePresence(1) ),
 			// add presense range Dahan or Invadors, +2 energy
-			new GrowthOption(new GainEnergy(2), new PlacePresence(4,Target.Dahan, Target.Invaders ) )
+			new GrowthOption(new GainEnergy(2), new PlacePresence(4,Filter.Dahan, Filter.Invaders ) )
 		);
 
 		this.InnatePowers = new InnatePower[]{

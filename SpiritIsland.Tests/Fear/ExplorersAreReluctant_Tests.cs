@@ -5,18 +5,19 @@ public sealed class ExplorersAreReluctant_Tests {
 	void Init() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
 
-		(_user, _ctx) = TestSpirit.StartGame( powerCard );
-
+		var (user, spirit) = TestSpirit.StartGame( powerCard );
+		_user = user;
+		_spirit = spirit;
 		_log = GameState.Current.LogInvaderActions();
 		_log.Clear(); // skip over initial Explorer setup
 	}
 
 	VirtualTestUser _user;
-	SelfCtx _ctx;
+	Spirit _spirit;
 	Queue<string> _log;
 
 	void GrowAndBuyNoCards() {
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		_user.GrowAndBuyNoCards();
 	}
 
@@ -75,7 +76,7 @@ public sealed class ExplorersAreReluctant_Tests {
 		_log.Assert_Explored( "A2", "A5" ); // Water
 
 		// Given: Explorers Are Reluctant
-		_ctx.ActivateFearCard(new ExplorersAreReluctant());
+		_spirit.ActivateFearCard(new ExplorersAreReluctant());
 
 		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard("Explorers are Reluctant : 1 : During the next normal explore, skip the lowest-numbered land matching the invader card on each board.");
@@ -113,9 +114,9 @@ public sealed class ExplorersAreReluctant_Tests {
 		// Card Advance #3 - End of 1st round
 
 		// Given: Explorers Are Reluctant
-		_ctx.ActivateFearCard( new ExplorersAreReluctant() );
+		_spirit.ActivateFearCard( new ExplorersAreReluctant() );
 		//   And: Terror Level 2
-		_ctx.ElevateTerrorLevelTo( 2 );
+		_spirit.ElevateTerrorLevelTo( 2 );
 
 		GrowAndBuyNoCards();
 		_user.AcknowledgesFearCard( "Explorers are Reluctant : 2 : Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
@@ -157,8 +158,8 @@ public sealed class ExplorersAreReluctant_Tests {
 		_log.Assert_Explored( "A2", "A5" );
 
 		// Given: Explorers Are Reluctant
-		_ctx.ActivateFearCard(new ExplorersAreReluctant());
-		_ctx.ElevateTerrorLevelTo( 3 );
+		_spirit.ActivateFearCard(new ExplorersAreReluctant());
+		_spirit.ElevateTerrorLevelTo( 3 );
 
 		// When Round 2 comes and goes
 		GrowAndBuyNoCards();

@@ -2,7 +2,7 @@
 
 public interface IActionFactory : IOption {
 
-	Task ActivateAsync( SelfCtx ctx ); // returns Target if any
+	Task ActivateAsync( Spirit self );
 
 	bool CouldActivateDuring( Phase speed, Spirit spirit );
 

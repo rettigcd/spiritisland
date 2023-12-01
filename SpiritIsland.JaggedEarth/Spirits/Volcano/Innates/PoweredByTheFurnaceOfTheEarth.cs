@@ -14,7 +14,7 @@ public class PoweredByTheFurnaceOfTheEarth {
 			&& await ctx.Self.UserSelectsFirstText("Spend 2 energy to gain a Power Card", "Yes", "No thank you.")
 		) {
 			ctx.Self.Energy -= 2;
-			await ctx.Draw();
+			await ctx.Self.Draw();
 		}
 	}
 
@@ -24,7 +24,7 @@ public class PoweredByTheFurnaceOfTheEarth {
 	}
 
 	[InnateTier("5 fire","Return up to 2 of your destroyed presence to your presence tracks.",3)]
-	static public Task Option4( TargetSpaceCtx ctx ) => Cmd.ReturnUpToNDestroyedToTrack(2).ActAsync(ctx);
+	static public Task Option4( TargetSpaceCtx ctx ) => Cmd.ReturnUpToNDestroyedToTrack(2).ActAsync(ctx.Self);
 
 
 

@@ -7,8 +7,8 @@ class MakePowerFast : SpiritAction {
 
 	public MakePowerFast():base( "MakePowerFast" ) { }
 
-	public override Task ActAsync( SelfCtx ctx ) {
-		ctx.Self.AddActionFactory( new ResolveSlowDuringFast() );
+	public override Task ActAsync( Spirit self ) {
+		self.AddActionFactory( new ResolveSlowDuringFast() );
 		return Task.CompletedTask;
 	}
 

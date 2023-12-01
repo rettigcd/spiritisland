@@ -12,8 +12,8 @@ public class FieryVengeance {
 		ctx.Other.Presence.RemoveDestroyed(1);
 
 		// 1 fear and 1 damage in one of target Spirit's lands.
-		var space = await ctx.Other.Select(new A.Space("1 fear + 1 damage", ctx.OtherCtx.Self.Presence.Lands, Present.Always));
-		var spaceCtx = ctx.OtherCtx.Target(space);
+		var space = await ctx.Other.SelectAsync(new A.Space("1 fear + 1 damage", ctx.Other.Presence.Lands, Present.Always));
+		var spaceCtx = ctx.Other.Target(space);
 		spaceCtx.AddFear(1);
 		await spaceCtx.DamageInvaders(1);
 		//  (This is your Power, so blight counts as badland, even if target is another Spirit.)

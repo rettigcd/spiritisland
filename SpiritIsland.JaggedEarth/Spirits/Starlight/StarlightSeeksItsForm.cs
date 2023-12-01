@@ -117,23 +117,22 @@ public class StarlightSeeksItsForm : Spirit {
 			await new PickNewGrowthOption(
 				new GrowthOption( new ReclaimHalf() ),
 				new GrowthOption( new GainPowerCard(), new MovePresence( 1 ) )
-			).ActivateAsync( Bind() );
+			).ActivateAsync( this );
 		}
 		if(args.Track == NewGrowth3 ) {
-			var ctx = Bind();
 			Energy++;
-			await AssignNewElementToTrack( ctx, NewGrowth3 );
+			await AssignNewElementToTrack( this, NewGrowth3 );
 			await new PickNewGrowthOption(
 				new GrowthOption( new ReclaimAll() ),
 				new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) )
-			).ActivateAsync( ctx );
+			).ActivateAsync( this );
 		}
 	}
 
-	static async Task AssignNewElementToTrack( SelfCtx ctx, Track track ) {
-		var el = await ctx.Self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
+	static async Task AssignNewElementToTrack( Spirit self, Track track ) {
+		var el = await self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 		track.Elements = new Element[] { el };
-		ctx.Self.Elements.Add(el);
+		self.Elements.Add(el);
 		track.Icon.ContentImg = el.GetTokenImg();
 	}
 
@@ -152,14 +151,14 @@ public class StarlightSeeksItsForm : Spirit {
 			await new PickNewGrowthOption(
 				new GrowthOption( new GainEnergy( 3 ) ),
 				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MovePresence( 2 ) )
-			).ActivateAsync( Bind() );
+			).ActivateAsync( this );
 		}
 		if(args.Track == NewGrowth4) {
 			Energy++;
 			await new PickNewGrowthOption(
 				new GrowthOption( new ApplyDamage() ),
 				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MakePowerFast() )
-			).ActivateAsync( Bind() );
+			).ActivateAsync( this );
 		}
 	}
 

@@ -92,7 +92,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis( "A8" );
 
 		//  When: targetting a second card
-		await PowerCard.For(typeof(PillarOfLivingFlame)).ActivateAsync( cfg.SelfCtx )
+		await PowerCard.For(typeof(PillarOfLivingFlame)).ActivateAsync( cfg.Spirit )
 			//  Then: action completes - no source to target from
 			.ShouldComplete(PillarOfLivingFlame.Name);
 	}
@@ -107,7 +107,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
-		cfg.SelfCtx.Self.Presence.Lands.Count( x => x.Text == "A8" ).ShouldBe( 0 );
+		cfg.Spirit.Presence.Lands.Count( x => x.Text == "A8" ).ShouldBe( 0 );
 		//   And: no SS found
 		cfg.Presence.SacredSites.Downgrade().Count( x => x.Text == "A8" ).ShouldBe( 0 );
 	}

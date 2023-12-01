@@ -4,7 +4,7 @@ public class WordsOfWarning {
 
 	public const string Name = "Words of Warning";
 
-	[SpiritCard( WordsOfWarning.Name, 1, Element.Air, Element.Sun, Element.Animal ),Fast,FromPresence(1,Target.Dahan)]
+	[SpiritCard( WordsOfWarning.Name, 1, Element.Air, Element.Sun, Element.Animal ),Fast,FromPresence(1,Filter.Dahan)]
 	[Instructions("Defend 3. During Ravage, Dahan in target land deal damage simultaneously with Invaders."), Artist( Artists.LoicBelliau )]
 	static public Task Act( TargetSpaceCtx ctx ) {
 

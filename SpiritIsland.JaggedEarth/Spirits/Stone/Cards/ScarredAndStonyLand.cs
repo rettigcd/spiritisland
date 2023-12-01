@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 public class ScarredAndStonyLand {
 
-	[SpiritCard("Scarred and Stony Land",2,Element.Moon, Element.Earth), Slow, FromSacredSite(1,Target.Blight)]
+	[SpiritCard("Scarred and Stony Land",2,Element.Moon, Element.Earth), Slow, FromSacredSite(1,Filter.Blight)]
 	[Instructions( "2 Damage. Add 1 Badlands. Remove 1 Blight in target land from the game. (It goes to the box, not the Blight Card.)" ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 

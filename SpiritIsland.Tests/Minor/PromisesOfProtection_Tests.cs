@@ -12,7 +12,7 @@ public class PromisesOfProtection_Tests {
 		var targetSpace = fxt.Board[5];
 		var dahanSource = targetSpace.Adjacent_Existing.First();
 		var selectDahanFromSource = "D@2";
-		var ctx = fxt.SelfCtx.Target( targetSpace );
+		var ctx = fxt.Spirit.Target( targetSpace );
 
 		// Test 1
 

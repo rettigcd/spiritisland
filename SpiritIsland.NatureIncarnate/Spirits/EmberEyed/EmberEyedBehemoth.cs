@@ -35,18 +35,18 @@ public class EmberEyedBehemoth : Spirit {
 				new GainPowerCard()
 			),
 			new GrowthOption( 
-				new PlacePresence( 3, Target.Jungle, Target.Presence ),
+				new PlacePresence( 3, Filter.Jungle, Filter.Presence ),
 				new PlacePresence( 0 )
 			),
 			new GrowthOption( 
 				new GainPowerCard(),
 				new PlacePresence( 1 ),
-				new GainEnergy( 3 ),
+				new GainEnergy(3),
 				new DiscardPowerCardWithFireFromHand()
 			),
 			new GrowthOption(
 				new ReclaimAllWithFire(),
-				new EmpowerIncarna(), 
+				new EmpowerIncarna(),
 				new MoveOnlyIncarna(1)
 			)
 		);

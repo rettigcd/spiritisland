@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public static class Target {
+public static class Filter {
 	public const string Any        = "Any";
 
 	public const string Jungle     = "Jungle";

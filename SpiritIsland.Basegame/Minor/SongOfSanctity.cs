@@ -4,7 +4,7 @@ public class SongOfSanctity {
 
 	public const string Name = "Song of Sanctity";
 
-	[MinorCard(SongOfSanctity.Name, 1, Element.Sun,Element.Water,Element.Plant),Slow,FromPresence(1,Target.Jungle, Target.Mountain )]
+	[MinorCard(SongOfSanctity.Name, 1, Element.Sun,Element.Water,Element.Plant),Slow,FromPresence(1,Filter.Jungle, Filter.Mountain )]
 	[Instructions( "If target land has 1 Explorer, Push all Explorer. Otherwise, remove 1 Blight." ), Artist( Artists.NolanNasser )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
 		int explorerCount = ctx.Tokens.Sum( Human.Explorer );

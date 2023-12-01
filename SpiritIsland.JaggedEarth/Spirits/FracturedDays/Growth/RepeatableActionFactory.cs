@@ -18,10 +18,10 @@ public class RepeatableSelfCmd : SpiritAction {
 		repeater.Register( new SpiritGrowthAction( this ) );
 	}
 
-	public override async Task ActAsync( SelfCtx ctx ) {
+	public override async Task ActAsync( Spirit self ) {
 		_repeater.BeginAction();
-		await Inner.ActAsync( ctx );
-		_repeater.EndAction( ctx.Self );
+		await Inner.ActAsync( self );
+		_repeater.EndAction( self );
 	}
 
 }

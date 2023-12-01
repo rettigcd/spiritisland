@@ -38,8 +38,8 @@ public class WanderingVoiceKeensDelirium : Spirit {
 			new GrowthOption( 
 				new GainPowerCard(),
 				new PlacePresence( 2 ),
-				new GainEnergy( 1 ),
-				new GainAllElements( Element.Air )
+				new GainEnergy(1),
+				new GainAllElements(Element.Air)
 			)
 		);
 
@@ -79,7 +79,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 
 	#region Sensless Roaming
 
-	SpecialRule SenselessRoaming_Rule => new SpecialRule(
+	static SpecialRule SenselessRoaming_Rule => new SpecialRule(
 		"Senseless Roaming",
 		"When your Actions add Strife to an Explorer/Invader, you may Push it."
 	);

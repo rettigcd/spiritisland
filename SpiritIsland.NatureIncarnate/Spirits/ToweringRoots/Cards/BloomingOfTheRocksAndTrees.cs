@@ -23,7 +23,7 @@ public class BloomingOfTheRocksAndTrees {
 
 		// you only have to pick if you have 2 but not enough plants
 		if(cmds.Count == 2 && !await ctx.YouHave("3 plant" ))
-			await Cmd.Pick1<TargetSpaceCtx>( cmds.ToArray() ).ActAsync( ctx );
+			await Cmd.Pick1WithSpirit<TargetSpaceCtx>( cmds.ToArray() ).ActAsync( ctx );
 		else
 			// otherwise, just execute all of them
 			foreach(IActOn<TargetSpaceCtx> cmd in cmds )

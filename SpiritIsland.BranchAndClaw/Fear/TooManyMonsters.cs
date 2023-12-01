@@ -8,8 +8,7 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 	[FearLevel( 1, "Each player removes 1 Explorer/Town from a land with Beast." )]
 	public Task Level1( GameCtx ctx ) 
 		=> Cmd.RemoveExplorersOrTowns(1)
-			.In().SpiritPickedLand().Which( Has.Beast )
-			.ByPickingToken(Human.Explorer_Town)
+			.In().SpiritPickedLand().Which( Has.Beast ).ByPickingToken(Human.Explorer_Town)
 			.ForEachSpirit()
 			.ActAsync(ctx);
 

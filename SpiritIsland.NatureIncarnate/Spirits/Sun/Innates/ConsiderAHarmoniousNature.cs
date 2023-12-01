@@ -7,44 +7,44 @@ public class ConsiderAHarmoniousNature {
 	public const string Name = "Consider a Harmonious Nature";
 
 	[InnateTier("3 sun,1 moon","When your Powers would add Blight, you may Destory 1 Presence instead.",0)]
-	static public Task Option1(SelfCtx ctx ) {
+	static public Task Option1( Spirit self ) {
 		// When your Powers would add Blight, you may Destory 1 Presence instead.
-		GameState.Current.Tokens.AddIslandMod(new DestroyPresenceInsteadOfAddingBlight(ctx.Self,Name));
+		GameState.Current.Tokens.AddIslandMod(new DestroyPresenceInsteadOfAddingBlight(self,Name));
 		return Task.CompletedTask;
 	}
 
 	[InnateTier("3 sun,1 water","Your Powers don't damage or destroy Dahan.",1)]
-	static public Task Option2( SelfCtx ctx ) {
+	static public Task Option2( Spirit self ) {
 		// Your Powers don't damage or destroy Dahan.
-		GameState.Current.Tokens.AddIslandMod(new MyPowersDontDamageDahanThisRound(ctx.Self,Name));
+		GameState.Current.Tokens.AddIslandMod(new MyPowersDontDamageDahanThisRound(self,Name));
 		return Task.CompletedTask;
 	}
 
 	[InnateTier("3 sun,1 plant","Choose another Spirit. They Add 1 DestroyedPresence to one of your lands.",2)]
-	static public async Task Option3( SelfCtx ctx ) {
+	static public async Task Option3( Spirit self ) {
 		// Choose another Spirit.
 		// They Add 1 DestroyedPresence to one of your lands.
-		await AddAnotherSpiritsDestroyedPresenceToYourLand( ctx );
+		await AddAnotherSpiritsDestroyedPresenceToYourLand( self );
 	}
 
 	[InnateTier( "3 sun,1 water,1 plant", "Give up to 3 of your Energy to the chosen Spirit.", 2 )]
-	static public async Task Option4( SelfCtx ctx ) {
-		Spirit? otherSpirit = await AddAnotherSpiritsDestroyedPresenceToYourLand( ctx ); // Override above tier and do here
+	static public async Task Option4( Spirit self ) {
+		Spirit? otherSpirit = await AddAnotherSpiritsDestroyedPresenceToYourLand( self ); // Override above tier and do here
 		// Give up to 3 of your Energy to the chosen Spirit.
 		if(otherSpirit is not null)
-			await GiveUpToNEnergyToSpirit( ctx.Self, otherSpirit, 3);
+			await GiveUpToNEnergyToSpirit( self, otherSpirit, 3);
 
 	}
 
 	/// <returns>Selected Spirit</returns>
-	static async Task<Spirit?> AddAnotherSpiritsDestroyedPresenceToYourLand( SelfCtx ctx ) {
-		Spirit other = await ctx.Self.Select(new A.TypedDecision<Spirit>(
+	static async Task<Spirit?> AddAnotherSpiritsDestroyedPresenceToYourLand( Spirit self ) {
+		Spirit other = await self.SelectAsync(new A.TypedDecision<Spirit>(
 			"Choose spirit to Add Destroyed Presence to one of your lands.", 
-			GameState.Current.Spirits.Where(s=>s!=ctx.Self),
+			GameState.Current.Spirits.Where(s=>s!=self),
 			Present.Done
 		));
 		if(other != null)
-			await new AddDestroyedPresence( 0 ).RelativeTo( ctx.Self ).ActAsync( other.Bind() );
+			await new AddDestroyedPresence( 0 ).RelativeTo( self ).ActAsync( other );
 		return other;
 	}
 
@@ -99,7 +99,7 @@ class DestroyPresenceInsteadOfAddingBlight : BaseModEntity, IModifyAddingTokenAs
 			&& await _spirit.UserSelectsFirstText($"Destroy 1 presence instead of adding {args.Count} of blight to {args.To.Space.Text}?", "Yes, destroy my presence instead", "No, bring on the blight!")
 		) {
 			GameState.Current.Log(new Log.Debug($"{_source} stopped blight on {args.To.Space.Text} by destroying presence."));
-			await Cmd.DestroyPresence().ActAsync(_spirit.Bind());
+			await Cmd.DestroyPresence().ActAsync(_spirit);
 			args.Count = 0;
 		}
 	}

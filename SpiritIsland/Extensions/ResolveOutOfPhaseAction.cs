@@ -2,17 +2,17 @@
 
 public static class ResolveOutOfPhaseAction {
 
-	public static async Task Execute( SelfCtx ctx ) {
+	public static async Task Execute( Spirit spirit ) {
 		var resultingSpeed = GameState.Current.Phase;
 		var originalSpeed = OriginalSpeed( resultingSpeed );
-		var changeableFactories = ctx.Self.GetAvailableActions( originalSpeed ).OfType<IFlexibleSpeedActionFactory>().ToArray();
+		var changeableFactories = spirit.GetAvailableActions( originalSpeed ).OfType<IFlexibleSpeedActionFactory>().ToArray();
 		var prompt = Prompt( resultingSpeed );
 
-		IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await ctx.Self.SelectFactory( prompt, changeableFactories, Present.Done );
+		IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await spirit.SelectFactory( prompt, changeableFactories, Present.Done );
 
 		if(factory != null) {
 			TemporarySpeed.Override( factory, resultingSpeed, GameState.Current );
-			await ctx.Self.TakeActionAsync( factory, resultingSpeed );
+			await spirit.TakeActionAsync( factory, resultingSpeed );
 		}
 	}
 

@@ -94,47 +94,47 @@ public class SpaceCriteria {
 	}
 
 	static readonly Dictionary<string, Func<SpaceStateWithPresence, bool>> _lookup = new Dictionary<string, Func<SpaceStateWithPresence, bool>> {
-		[Target.Any] = ( _ ) => true,
+		[Filter.Any] = ( _ ) => true,
 
 		// Terrain
-		[Target.Jungle]     = ( ctx ) => ctx.MatchesTerrain( Terrain.Jungle ),
-		[Target.Mountain]   = ( ctx ) => ctx.MatchesTerrain( Terrain.Mountain ),
-		[Target.Sands]      = ( ctx ) => ctx.MatchesTerrain( Terrain.Sands ),
-		[Target.Wetland]    = ( ctx ) => ctx.MatchesTerrain( Terrain.Wetland ),
-		[Target.Ocean]      = ( ctx ) => ctx.Tokens.Space.Is( Terrain.Ocean ),
-		[Target.Coastal]    = ( ctx ) => ctx.IsCoastal,
-		[Target.NotWetland] = ( ctx ) => !ctx.MatchesTerrain( Terrain.Wetland ),
-		[Target.NotOcean]   = ( ctx ) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
-		[Target.Inland]     = ( ctx ) => ctx.IsInland,
+		[Filter.Jungle]     = ( ctx ) => ctx.MatchesTerrain( Terrain.Jungle ),
+		[Filter.Mountain]   = ( ctx ) => ctx.MatchesTerrain( Terrain.Mountain ),
+		[Filter.Sands]      = ( ctx ) => ctx.MatchesTerrain( Terrain.Sands ),
+		[Filter.Wetland]    = ( ctx ) => ctx.MatchesTerrain( Terrain.Wetland ),
+		[Filter.Ocean]      = ( ctx ) => ctx.Tokens.Space.Is( Terrain.Ocean ),
+		[Filter.Coastal]    = ( ctx ) => ctx.IsCoastal,
+		[Filter.NotWetland] = ( ctx ) => !ctx.MatchesTerrain( Terrain.Wetland ),
+		[Filter.NotOcean]   = ( ctx ) => !ctx.Tokens.Space.Is( Terrain.Ocean ), // even when ocean is is play, not allowed 
+		[Filter.Inland]     = ( ctx ) => ctx.IsInland,
 
 		// Dahan
-		[Target.Dahan] = ( ctx ) => ctx.Tokens.Dahan.Any,
+		[Filter.Dahan] = ( ctx ) => ctx.Tokens.Dahan.Any,
 
 		// Invaders
-		[Target.Town]      = ( ctx ) => ctx.Tokens.Has( Human.Town ),
-		[Target.City]      = ( ctx ) => ctx.Tokens.Has( Human.City ),
-		[Target.Invaders]  = ( ctx ) => ctx.Tokens.HasInvaders(),
-		[Target.NoInvader] = ( ctx ) => !ctx.Tokens.HasInvaders(),
+		[Filter.Town]      = ( ctx ) => ctx.Tokens.Has( Human.Town ),
+		[Filter.City]      = ( ctx ) => ctx.Tokens.Has( Human.City ),
+		[Filter.Invaders]  = ( ctx ) => ctx.Tokens.HasInvaders(),
+		[Filter.NoInvader] = ( ctx ) => !ctx.Tokens.HasInvaders(),
 
 		// Tokens
-		[Target.Disease] = ( ctx ) => ctx.Tokens.Disease.Any,
-		[Target.Beast] = ( ctx ) => ctx.Tokens.Beasts.Any,
-		[Target.Wilds] = ( ctx ) => ctx.Tokens.Wilds.Any,
-		[Target.Quake] = ( ctx ) => ctx.Tokens.Has(Token.Quake),
+		[Filter.Disease] = ( ctx ) => ctx.Tokens.Disease.Any,
+		[Filter.Beast] = ( ctx ) => ctx.Tokens.Beasts.Any,
+		[Filter.Wilds] = ( ctx ) => ctx.Tokens.Wilds.Any,
+		[Filter.Quake] = ( ctx ) => ctx.Tokens.Has(Token.Quake),
 
-		[Target.Blight] = ( ctx ) => ctx.Tokens.Blight.Any,
-		[Target.Strife] = ( ctx ) => ctx.Tokens.HasStrife,
-		[Target.NoBlight] = ( ctx ) => !ctx.Tokens.Blight.Any,
+		[Filter.Blight] = ( ctx ) => ctx.Tokens.Blight.Any,
+		[Filter.Strife] = ( ctx ) => ctx.Tokens.HasStrife,
+		[Filter.NoBlight] = ( ctx ) => !ctx.Tokens.Blight.Any,
 
 		// Presence
-		[Target.Presence] = ( ctx ) => ctx.IsPresent,
-		[Target.Incarna] = ( ctx ) => ctx.HasIncarna,
-		[Target.EndlessDark] = ( ctx ) => ctx.Tokens.Space.Text == "EndlessDark",
+		[Filter.Presence] = ( ctx ) => ctx.IsPresent,
+		[Filter.Incarna] = ( ctx ) => ctx.HasIncarna,
+		[Filter.EndlessDark] = ( ctx ) => ctx.Tokens.Space.Text == "EndlessDark",
 
 		// Special
-		[Target.TwoDahan]  = ( ctx ) => 2 <= ctx.Tokens.Dahan.CountAll,
-		[Target.TwoBeasts] = ( ctx ) => 2 <= ctx.Tokens.Beasts.Count,
-		[Target.CoastalCity] = (ctx) => ctx.IsCoastal && ctx.Tokens.Has( Human.City ),
+		[Filter.TwoDahan]  = ( ctx ) => 2 <= ctx.Tokens.Dahan.CountAll,
+		[Filter.TwoBeasts] = ( ctx ) => 2 <= ctx.Tokens.Beasts.Count,
+		[Filter.CoastalCity] = (ctx) => ctx.IsCoastal && ctx.Tokens.Has( Human.City ),
 	};
 	#endregion
 

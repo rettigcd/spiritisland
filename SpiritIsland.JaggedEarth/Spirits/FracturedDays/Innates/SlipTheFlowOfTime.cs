@@ -6,7 +6,7 @@ class SlipTheFlowOfTime {
 
 	[InnateTier("3 moon,1 air","Target Spirit may Resolve 1 slow Power now.")]
 	static public Task Option1( TargetSpiritCtx ctx ) {
-		return ResolveOutOfPhaseAction.Execute( ctx.OtherCtx );
+		return ResolveOutOfPhaseAction.Execute( ctx.Other );
 	}
 
 	[InnateTier("2 sun,2 moon","Target Spirit may Reclaim 1 Power Card from their discarded or played cards.",1)]

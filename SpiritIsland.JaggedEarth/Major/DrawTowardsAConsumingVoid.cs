@@ -56,11 +56,11 @@ public class DrawTowardsAConsumingVoid {
 	static async Task MoveTokensFromAdjacentSpace( TargetSpaceCtx ctx, SpaceState adjState, params ITokenClass[] tokenGroups ) {
 		// move tokens
 		foreach(ITokenClass tokenGroup in tokenGroups) {
-			ISpaceEntity tokenToGather = adjState.OfTag( tokenGroup )
+			IToken tokenToGather = adjState.OfTag( tokenGroup )
 				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )
 				.FirstOrDefault();
 			if(tokenToGather != null)
-				await ctx.Move( (IToken)tokenToGather, adjState.Space, ctx.Space );
+				await tokenToGather.On(adjState.Space).MoveTo(ctx.Tokens);
 		}
 
 		// Gather 1 presense

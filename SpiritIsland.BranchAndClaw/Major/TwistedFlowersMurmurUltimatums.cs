@@ -2,7 +2,7 @@
 
 public class TwistedFlowersMurmurUltimatums {
 
-	[MajorCard("Twisted Flowers Murmur Ultimatums", 5, Element.Sun, Element.Moon, Element.Air, Element.Earth, Element.Plant),Slow,FromSacredSite(1,Target.Invaders)]
+	[MajorCard("Twisted Flowers Murmur Ultimatums", 5, Element.Sun, Element.Moon, Element.Air, Element.Earth, Element.Plant),Slow,FromSacredSite(1,Filter.Invaders)]
 	[Instructions( "4 Fear. Add 1 Strife. If the Terror Level is 2 or higher, remove 2 Invaders. -If you have- 3 Moon, 2 Air, 3 Plant: +3 Fear, before the Terror Level check. 3 Damage." ), Artist( Artists.KatBirmelin )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 

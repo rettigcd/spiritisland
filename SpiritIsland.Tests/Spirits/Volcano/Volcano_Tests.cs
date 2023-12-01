@@ -191,7 +191,7 @@ public class Volcano_Tests {
 
 		//  When: Unleash a Torrent
 		await spirit.When_ResolvingCard<UnleashATorrentOfTheSelfsOwnEssence>( (user) => {
-			user.NextDecision.HasPrompt( "Select Power Option" )
+			user.NextDecision.HasPrompt( "Select action" )
 				.HasOptions( "Gain 4 energy, Forget a Power Card to gain 4 more,Pay X Energy (min 1) to deal X Damage in a land at range 0" )
 				.Choose( "Pay X Energy (min 1) to deal X Damage in a land at range 0" );
 			user.NextDecision.HasPrompt( "Pay 1 energy/damage." ).HasOptions( "1,0" ).Choose( "1" );

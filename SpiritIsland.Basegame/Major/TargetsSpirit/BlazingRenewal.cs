@@ -22,7 +22,7 @@ public class BlazingRenewal {
 					await spaceCtx.DamageInvaders( 4 );
 			} )
 			// Target Spirit
-			.ActAsync( ctx.OtherCtx );
+			.ActAsync( ctx.Other );
 	}
 
 }

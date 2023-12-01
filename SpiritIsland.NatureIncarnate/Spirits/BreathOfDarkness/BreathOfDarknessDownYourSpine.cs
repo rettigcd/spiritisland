@@ -12,7 +12,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 	};
 
 	static Track MovePresence => new Track( "Moveonepresence.png" ) {
-		Action = new MovePresence( 1 ),
+		Action = new MovePresence(1),
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
 	};
 

@@ -20,18 +20,19 @@ public class RepeatCardForCost : IActionFactory {
 
 	public string Text => Name;
 
-	public async Task ActivateAsync( SelfCtx ctx ) {
+	public async Task ActivateAsync( Spirit self ) {
 
-		PowerCard[] options = GetCardOptions( ctx.Self, GameState.Current.Phase );
+		PowerCard[] options = GetCardOptions( self, GameState.Current.Phase );
 		if(options.Length == 0) return;
 
-		PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Always );
+		PowerCard powerCard = await self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Always );
 		if(powerCard == null) return;
 
-		ctx.Self.Energy -= powerCard.Cost;
-		ctx.Self.AddActionFactory( powerCard );
+		self.Energy -= powerCard.Cost;
+		self.AddActionFactory( powerCard );
 
 	}
+
 
 	public virtual PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
 		int maxCardCost = self.Energy;

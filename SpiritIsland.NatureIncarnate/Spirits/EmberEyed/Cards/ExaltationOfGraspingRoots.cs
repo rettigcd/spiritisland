@@ -11,12 +11,12 @@ public class ExaltationOfGraspingRoots {
 		var addWilds = AddWildsIn1OfYourLands;
 
 		// Target Spirit may Add 1 Wilds in one of their lands.
-		await addWilds.ActAsync( ctx.OtherCtx );
+		await addWilds.ActAsync( ctx.Other );
 		// You may do likewise.
-		await addWilds.ActAsync( ctx );
+		await addWilds.ActAsync( ctx.Self );
 	}
 
-	static IActOn<SelfCtx> AddWildsIn1OfYourLands => Cmd
+	static IActOn<Spirit> AddWildsIn1OfYourLands => Cmd
 		.AddWilds( 1 )
 		.To().SpiritPickedLand()
 		.Which( Has.YourPresence );

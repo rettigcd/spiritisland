@@ -63,17 +63,18 @@ public class FranceExplorer : ExploreEngine {
 
 		static SpiritAction SelectSpaceAction( SpaceState s ) {
 			return s.HasAny( Human.Town_City )
-				? new SpiritAction( "Add 1 Town to " + s.Space.Text, null )
-				: new SpiritAction( "", null );
+				? new SpiritAction( "Add 1 Town to " + s.Space.Text, null ) // !!! implement
+				: new SpiritAction( "", null ); // !!! implement
 		}
 
 		return Cmd.ForEachBoard( new BaseCmd<BoardCtx>(
 			"Place town or blight matching Explore card."
-			, boardCtx => Cmd.Pick1( boardCtx.Board.Spaces.Tokens()
-				.Where( card.MatchesCard )
-				.Select( SelectSpaceAction )
-				.ToArray()
-			).ActAsync( boardCtx )
+			, boardCtx => Cmd.Pick1( 
+				boardCtx.Board.Spaces.Tokens()
+					.Where( card.MatchesCard )
+					.Select( SelectSpaceAction )
+					.ToArray()
+			).ActAsync( boardCtx.Self )
 		) ).ActAsync( ctx );
 
 	}

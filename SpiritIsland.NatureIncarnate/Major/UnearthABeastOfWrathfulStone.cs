@@ -5,7 +5,7 @@ public class UnearthABeastOfWrathfulStone {
 	public const string Name = "Unearth a Beast of Wrathful Stone";
 
 	[MajorCard(Name,5,"moon,fire,earth,animal"),Fast]
-	[FromSacredSite(1,Target.Invaders)]
+	[FromSacredSite(1,Filter.Invaders)]
 	[Instructions( "After the next Invader Phase with no Ravage/Build Actions in target land: 3 Fear. 12 Damage. Add 1 Beast. You may Push that Beast. 1 Fear and 2 Damage in its land. -If you have- 2 Moon,3 Earth,3 Animal: Mark it. Marked Beast can't leave the island. Each Slow phase: You may Push Marked Beast. 1 Fear and 2 Damage at Marked Beast" ), Artist( Artists.DavidMarkiwsky )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
@@ -78,7 +78,7 @@ class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, IConfigRavages, I
 
 		// Do action
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, _spirit );
-		await _triggeredAction( _spirit.Bind().Target( space ) );
+		await _triggeredAction( _spirit.Target( space.Space ) );
 
 		// Remove
 		space.Adjust( this, -1 ); // !!! what happens if we put 2 of these down?
@@ -131,15 +131,17 @@ public class MarkedBeast : IToken
 
 	string IActionFactory.Name => "Push Marked Beast";
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Slow;
-	public async Task ActivateAsync( SelfCtx ctx ) {
+
+	public async Task ActivateAsync( Spirit self ) {
 		await _spaceState!.SourceSelector
 			.AddGroup(1,Token.Beast)
 			.FilterSpaceToken(st=>st.Token==this)
-			.PushUpToN(ctx.Self);
+			.PushUpToN(self);
 		// 1 Fear and 2 Damage in its land.
 		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _spaceState!.Space }); // don't cache space-state, it might have moved
-		await _spaceState.DamageInvaders(ctx.Self,2);
+		await _spaceState.DamageInvaders(self,2);
 	}
+
 	#endregion
 
 	#region Track Token Space

@@ -8,8 +8,7 @@ public class DahanAttack : FearCardBase, IFearCard {
 	[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
 	public Task Level1( GameCtx ctx ) 
 		=> Cmd.RemoveExplorers( 1 )
-			.In().SpiritPickedLand().Which( Has.Dahan )
-			.ByPickingToken( Human.Explorer )
+			.In().SpiritPickedLand().Which( Has.Dahan ).ByPickingToken( Human.Explorer )
 			.ForEachSpirit()
 			.ActAsync(ctx);
 

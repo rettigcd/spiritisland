@@ -89,16 +89,7 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	/// </summary>
 	public void InitElements(string elementString ) => Spirit.Configure().Elements(elementString);
 
-	public SelfCtx SelfCtx {
-		get {
-			return _selfCtx ??= Spirit.Bind();
-		}
-		set => _selfCtx = value;
-	}
-
-	SelfCtx _selfCtx;
-
-	public TargetSpiritCtx TargetSelf => SelfCtx.TargetSpirit( Spirit );
+	public TargetSpiritCtx TargetSelf => Spirit.Target( Spirit );
 
 	public void InitPresence( Space space, int count ) {
 		var spaceState = GameState.Tokens[space];

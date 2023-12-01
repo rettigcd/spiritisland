@@ -18,13 +18,13 @@ public class AvoidTheDahan_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
+		var (user, spirit) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
 			var fear = gs.Fear;
 			InitMountainThenAllSands( gs );
 			gs.NewLogEntry += (s) => log.Add(s.Msg());
 		} );
 		_user = user;
-		_ctx = ctx;
+		_spirit = spirit;
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
@@ -39,7 +39,7 @@ public class AvoidTheDahan_Tests {
 
 		Init();
 
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
 
 		ActivateFearCard(new NullFearCard());
@@ -85,7 +85,7 @@ public class AvoidTheDahan_Tests {
 		Init();
 
 
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
 
 		ClearBlightAndDoNothingForARound();
@@ -124,7 +124,7 @@ public class AvoidTheDahan_Tests {
 		_user.WaitForNext();
 
 		// Round 2
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		_user.Grows();
 		_user.IsDoneBuyingCards();
 		_user.WaitForNext();
@@ -133,11 +133,11 @@ public class AvoidTheDahan_Tests {
 		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo(2);
 		// Given: Starting out Dahan(3) outnumber town/city(2)
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
 		// When: activating fear
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		_user.Grows();
 		_user.IsDoneBuyingCards();
 		_user.AcknowledgesFearCard( Level2Text );
@@ -166,17 +166,17 @@ public class AvoidTheDahan_Tests {
 		_user.IsDoneBuyingCards();
 
 		// Round 2
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		_user.Grows();
 		_user.IsDoneBuyingCards();
 		_user.WaitForNext();
 
 		// Round 3
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo(2);
 		// Given: Dahan(2) outnumber town/city(0)  + 3 explorer (to enable build)
-		TargetSpaceCtx spaceCtx = _ctx.TargetSpace( "A7" );
+		TargetSpaceCtx spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("2D@2,3E@1");
 
 		// When: activating fear
@@ -208,7 +208,7 @@ public class AvoidTheDahan_Tests {
 
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		_user.WaitForNext();
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init( "3D@2,2T@2" );
 
 		// When: activating fear
@@ -240,7 +240,7 @@ public class AvoidTheDahan_Tests {
 		ElevateTerrorLevelTo(3);
 
 		// Given: Starting out Dahan(3) outnumber town/city(2)
-		var spaceCtx = _ctx.TargetSpace( "A7" );
+		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Init("1D@2,1T@2");
 
 		// When: activating fear
@@ -284,12 +284,12 @@ public class AvoidTheDahan_Tests {
 
 
 	void ClearBlightAndDoNothingForARound() {
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		_user.GrowAndBuyNoCards();
 	}
 
 	VirtualTestUser _user;
-	SelfCtx _ctx;
+	Spirit _spirit;
 	readonly List<string> log = new();
 
 	#endregion

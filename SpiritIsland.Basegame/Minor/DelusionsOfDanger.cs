@@ -2,7 +2,7 @@
 
 public class DelusionsOfDanger {
 
-	[MinorCard("Delusions of Danger",1,Element.Sun,Element.Moon,Element.Air),Fast,FromPresence(1,Target.Any)]
+	[MinorCard("Delusions of Danger",1,Element.Sun,Element.Moon,Element.Air),Fast,FromPresence(1,Filter.Any)]
 	[Instructions( "Push 1 Explorer. -or- 2 Fear" ), Artist( Artists.MoroRogers )]
 	static public Task ActionAsync(TargetSpaceCtx ctx){
 

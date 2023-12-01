@@ -9,13 +9,13 @@ public class SpillBitternessIntoTheEarth {
 		await ctx.DamageInvaders( 6 );
 
 		// Add 2 badlands/strife
-		var addBadlandsOrStrife = Cmd.Pick1( "Add badlands/strife", Cmd.AddBadlands(1), Cmd.AddStrife(1) );
+		var addBadlandsOrStrife = Cmd.Pick1WithSpirit( "Add badlands/strife", Cmd.AddBadlands(1), Cmd.AddStrife(1) );
 		await addBadlandsOrStrife.Repeat(2).ActAsync( ctx );
 
 		// and 1 blight.
 		await ctx.AddBlight(1);
 
-		await TakeActionInUpToNLands( ctx
+		await TakeActionInUpToNLands( ctx.Self
 			// In up to 3 adjacent lands with blight
 			, 3, ctx.Adjacent.Where( s => s.Blight.Any )
 			// add 1 badland/strife.
@@ -24,7 +24,7 @@ public class SpillBitternessIntoTheEarth {
 
 		// if you have 3 fire 3 water:
 		if(await ctx.YouHave( "3 fire,3 water" ))
-			await TakeActionInUpToNLands( ctx
+			await TakeActionInUpToNLands( ctx.Self
 				// in up to 3 adjacent lands,
 				, 3, ctx.Adjacent
 				// 1 damage to each invader.
@@ -33,12 +33,12 @@ public class SpillBitternessIntoTheEarth {
 
 	}
 
-	static async Task TakeActionInUpToNLands( SelfCtx ctx, int adjCount, IEnumerable<SpaceState> spaces, BaseCmd<TargetSpaceCtx> action ) {
+	static async Task TakeActionInUpToNLands( Spirit self, int adjCount, IEnumerable<SpaceState> spaces, BaseCmd<TargetSpaceCtx> action ) {
 		List<Space> options = spaces.Downgrade().ToList();
 		while(adjCount-- > 0 && options.Count > 0) {
-			var space = await ctx.SelectAsync( new A.Space( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );
+			var space = await self.SelectAsync( new A.Space( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );
 			if(space == null) break;
-			await action.ActAsync( ctx.Target(space) );
+			await action.ActAsync( self.Target(space) );
 			options.Remove( space );
 		}
 	}

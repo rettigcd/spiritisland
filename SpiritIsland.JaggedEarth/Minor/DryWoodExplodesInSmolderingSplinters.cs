@@ -4,7 +4,7 @@ public class DryWoodExplodesInSmolderingSplinters {
 
 	public const string Name = "Dry Wood Explodes in Smoldering Splinters";
 
-	[MinorCard(DryWoodExplodesInSmolderingSplinters.Name,1,Element.Fire,Element.Air,Element.Plant),Speed(Phase.FastOrSlow),FromPresence(0,Target.NotWetland)]
+	[MinorCard(DryWoodExplodesInSmolderingSplinters.Name,1,Element.Fire,Element.Air,Element.Plant),Speed(Phase.FastOrSlow),FromPresence(0,Filter.NotWetland)]
 	[Instructions( "You may spend 1 Energy to make this Power Fast. 2 Fear. 1 Damage." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 		// You may spend 1 Energy to make this Power Fast.

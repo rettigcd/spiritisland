@@ -16,7 +16,7 @@ public class TigersHunting_Tests {
 		fixture.InitTokens(space,"1E@1");
 
 		//  When: activate card
-		var task = TigersHunting.ActAsync( fixture.Spirit.Bind().Target( space ) );
+		var task = TigersHunting.ActAsync( fixture.Spirit.Target( space ) );
 
 		// 1 beast is added
 		// 1 damage -> destroys explorer

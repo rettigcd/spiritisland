@@ -3,7 +3,7 @@
 public class DreadApparitions {
 	public const string Name = "Dread Apparitions";
 
-	[SpiritCard(Name,2,Element.Moon,Element.Air), Fast, FromPresence(1,Target.Invaders)]
+	[SpiritCard(Name,2,Element.Moon,Element.Air), Fast, FromPresence(1,Filter.Invaders)]
 	[Instructions("When Powers generate Fear in target land, Defend 1 per Fear. 1 Fear. (Fear from To Dream a Thousand Deaths counts. Fear from destroying Town / City does not.)"),Artist( Artists.ShaneTyree)]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 

@@ -2,7 +2,7 @@
 
 public class InciteTheMob {
 
-	[SpiritCard("Incite the Mob",1, Element.Moon,Element.Fire,Element.Air,Element.Animal ), Slow, FromPresence(1,Target.Invaders)]
+	[SpiritCard("Incite the Mob",1, Element.Moon,Element.Fire,Element.Air,Element.Animal ), Slow, FromPresence(1,Filter.Invaders)]
 	[Instructions( "1 Invader with Strife deals Damage to other Invaders (not to each Invader). 1 Fear per Invader this Power Destroyed." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
 

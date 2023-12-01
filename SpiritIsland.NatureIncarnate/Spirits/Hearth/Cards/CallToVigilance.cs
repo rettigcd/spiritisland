@@ -5,7 +5,7 @@ public class CallToVigilance {
 	public const string Name = "Call to Vigilance";
 
 	[SpiritCard(Name, 2, Element.Sun, Element.Air, Element.Animal)]
-	[Slow, FromPresence(Target.Dahan,1,Target.Any)]
+	[Slow, FromPresence(Filter.Dahan,1,Filter.Any)]
 	[Instructions( "2 Fear if Invaders are present. For each Dahan in origin land, Push up to 1 Explorer/Town." ), Artist( Artists.AalaaYassin )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx){
 

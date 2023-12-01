@@ -4,7 +4,7 @@ public class CastDownIntoTheBrinyDeep {
 	const string Name = "Cast Down Into the Briny Deep";
 	// https://querki.net/raw/darker/spirit-island-faq/Cast+Down+into+the+Briny+Deep
 
-	[MajorCard( Name, 9, Element.Sun, Element.Moon, Element.Water, Element.Earth ),Slow,FromSacredSite( 1, Target.Coastal )]
+	[MajorCard( Name, 9, Element.Sun, Element.Moon, Element.Water, Element.Earth ),Slow,FromSacredSite( 1, Filter.Coastal )]
 	[Instructions( "6 Fear. Destroy all Invaders. -If you have- 2 Sun, 2 Moon, 4 Water, 4 Earth: Destroy the board containing target land and everything on that board. All destroyed Blight is removed from the game instead of being returned to the Blight Card." ), Artist( Artists.JasonBehnke )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// 6 fear

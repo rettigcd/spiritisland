@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
 [InnatePower("Raging Hunt"),Fast]
-[FromPresence(1,Target.NoBlight)]
+[FromPresence(1,Filter.NoBlight)]
 public class RagingHunt {
 
 	[InnateTier("2 animal","You may Gather 1 beast.",0)]

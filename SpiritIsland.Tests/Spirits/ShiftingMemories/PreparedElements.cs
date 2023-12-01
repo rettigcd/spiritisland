@@ -9,7 +9,7 @@ public class PreparedElements {
 		ShiftingMemoryOfAges spirit = new ShiftingMemoryOfAges();
 		Board board = Board.BuildBoardA();
 		_ = new GameState( spirit, board );
-		TargetSpaceCtx ctx = spirit.Bind().Target(board[5]);
+		TargetSpaceCtx ctx = spirit.Target(board[5]);
 
 		var el1 = new ObserveWorldMod(ctx);
 		var el2 = new ObserveWorldMod(ctx);

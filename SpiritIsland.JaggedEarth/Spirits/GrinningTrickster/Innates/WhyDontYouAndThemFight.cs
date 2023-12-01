@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-[InnatePower("Why Don't You and Them Fight"), FastButSlowIf("3 moon"), FromPresence(0,Target.Invaders)]
+[InnatePower("Why Don't You and Them Fight"), FastButSlowIf("3 moon"), FromPresence(0,Filter.Invaders)]
 class WhyDontYouAndThemFight {
 
 	[DisplayOnly("3 moon","This Power may be slow.")]

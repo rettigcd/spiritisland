@@ -9,7 +9,7 @@ public class Quarantine_Tests {
 
 	void Init() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
-		var (userLocal, ctxLocal) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
+		var (userLocal, spirit) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
 			gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
 			gs.InitTestInvaderDeck(
 				InvaderCard.Stage1( Terrain.Sands ), // not on coast
@@ -19,7 +19,7 @@ public class Quarantine_Tests {
 			);
 		}) );
 		_user = userLocal;
-		_ctx = ctxLocal;
+		_spirit = spirit;
 		_log.Clear(); // skip over initial Explorer setup
 	}
 
@@ -33,7 +33,7 @@ public class Quarantine_Tests {
 
 		// Given: Activate fear card
 		if(activateFearCard)
-			_ctx.ActivateFearCard( card );
+			_spirit.ActivateFearCard( card );
 
 		GrowAndBuyNoCards();
 
@@ -62,15 +62,15 @@ public class Quarantine_Tests {
 		_user.WaitForNext(); // start of Round 2
 
 		// The only thing around A8 (a jungle) is a diseased town
-		_ctx.TargetSpace( "A5" ).Tokens.Init( "" );
-		_ctx.TargetSpace( "A6" ).Tokens.Init( "" );
-		_ctx.TargetSpace( "A7" ).Tokens.Init( "1T@2,1Z" ); // town & diZease
-		_ctx.TargetSpace( "A8" ).Tokens.Init( "" );
+		_spirit.TargetSpace( "A5" ).Tokens.Init( "" );
+		_spirit.TargetSpace( "A6" ).Tokens.Init( "" );
+		_spirit.TargetSpace( "A7" ).Tokens.Init( "1T@2,1Z" ); // town & diZease
+		_spirit.TargetSpace( "A8" ).Tokens.Init( "" );
 
 		// Given: Activate fear card
 		if(activateFearCard) {
-			_ctx.ActivateFearCard( card );
-			_ctx.ElevateTerrorLevelTo( 2 );
+			_spirit.ActivateFearCard( card );
+			_spirit.ElevateTerrorLevelTo( 2 );
 		}
 		_log.Clear();
 
@@ -104,20 +104,20 @@ public class Quarantine_Tests {
 
 		// Ravage lands (sand:A4 & A7) have a disease
 		// The only thing around A8 (a jungle) is a diseased town
-		_ctx.TargetSpace("A4").Tokens.Init("1E@1,1Z"); // diZease
-		_ctx.TargetSpace("A7").Tokens.Init("1E@1,1Z"); // diZease
+		_spirit.TargetSpace("A4").Tokens.Init("1E@1,1Z"); // diZease
+		_spirit.TargetSpace("A7").Tokens.Init("1E@1,1Z"); // diZease
 		// Build lands (Costal:A1..3) all have explorers, A1 has a disease too
-		_ctx.TargetSpace("A1").Tokens.Init("1E@1,1Z");
-		_ctx.TargetSpace("A2").Tokens.Init("1E@1");
-		_ctx.TargetSpace("A3").Tokens.Init("1E@1");
+		_spirit.TargetSpace("A1").Tokens.Init("1E@1,1Z");
+		_spirit.TargetSpace("A2").Tokens.Init("1E@1");
+		_spirit.TargetSpace("A3").Tokens.Init("1E@1");
 		// Explore lands (jungle:A3 & A8) have a source (A3 is coastal, A8 is town in A5)
-		_ctx.TargetSpace("A5").Tokens.Init("1T@2");
-		_ctx.TargetSpace("A8").Tokens.Init("1Z");
+		_spirit.TargetSpace("A5").Tokens.Init("1T@2");
+		_spirit.TargetSpace("A8").Tokens.Init("1Z");
 
 		// Given: Activate fear card
 		if(activateFearCard) {
-			_ctx.ActivateFearCard( card );
-			_ctx.ElevateTerrorLevelTo(3);
+			_spirit.ActivateFearCard( card );
+			_spirit.ElevateTerrorLevelTo(3);
 		}
 
 		_log.Clear();
@@ -184,11 +184,11 @@ public class Quarantine_Tests {
 	#region protected / private
 
 	protected VirtualTestUser _user;
-	protected SelfCtx _ctx;
+	protected Spirit _spirit;
 	protected Queue<string> _log = new();
 
 	protected void GrowAndBuyNoCards() {
-		_ctx.ClearAllBlight();
+		_spirit.ClearAllBlight();
 		_user.GrowAndBuyNoCards();
 	}
 

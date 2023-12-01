@@ -6,7 +6,7 @@ public class GiftOfPower {
 	[Instructions( "Gain a Minor Power Card." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync( TargetSpiritCtx ctx ) {
 		// gain a minor power card
-		return ctx.OtherCtx.DrawMinor(); 
+		return ctx.Other.DrawMinor(); 
 	}
 
 }

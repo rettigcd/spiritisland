@@ -19,7 +19,7 @@ public partial class SweepIntoTheSea {
 
 	static async Task PushExplorersAndTownsTowardsOcean( TargetSpaceCtx ctx ) {
 		// push all explorers and town one land toward the nearest ocean
-		var closerSpace = await SelectSpaceCloserToTheOcean( ctx );
+		var closerSpace = (await SelectSpaceCloserToTheOcean( ctx )).Tokens;
 		await PushAllTokensTo( ctx, closerSpace, Human.Explorer_Town );
 	}
 
@@ -30,7 +30,7 @@ public partial class SweepIntoTheSea {
 			.Calculate();
 		int curDistance = distanceFromOceans[ctx.Tokens];
 
-		Space space = await ctx.Self.Select( 
+		Space space = await ctx.Self.SelectAsync( 
 			new A.Space( "Push explorer/town towards ocean", 
 			ctx.Tokens.Adjacent.Where( tokens => distanceFromOceans[tokens] < curDistance ), 
 			Present.Always 
@@ -39,9 +39,10 @@ public partial class SweepIntoTheSea {
 			: null;
 	}
 
-	static async Task PushAllTokensTo( TargetSpaceCtx ctx, TargetSpaceCtx destination, params HumanTokenClass[] groups ) {
+	static async Task PushAllTokensTo( TargetSpaceCtx ctx, SpaceState destination, params HumanTokenClass[] groups ) {
+		// !!! This is supposed to be Push! not a Move - does it make a difference?
 		while(ctx.Tokens.HasAny( groups ))
-			await ctx.Move( ctx.Tokens.HumanOfAnyTag( groups ).First(), ctx.Space, destination.Space );
+			await ctx.Tokens.HumanOfAnyTag( groups ).First().On(ctx.Space).MoveTo(destination);
 	}
 
 	#region DistanceFromOceanCalculator

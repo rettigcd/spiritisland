@@ -40,7 +40,7 @@ public class Ocean : Spirit {
 			new GrowthOption( 
 				new PushPresenceFromOcean(),
 				new GainPowerCard(),
-				new PlacePresence(1, Target.Coastal )
+				new PlacePresence(1, Filter.Coastal )
 			)
 		);
 

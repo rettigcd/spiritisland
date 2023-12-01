@@ -47,7 +47,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	// ------------------------------
 	// ----  Aggregate Track  -------
 	// ------------------------------
-	public IEnumerable<IActOn<SelfCtx>> RevealedActions => Revealed
+	public IEnumerable<IActOn<Spirit>> RevealedActions => Revealed
 		.Select( x => x.Action )
 		.Where( x => x != null );
 

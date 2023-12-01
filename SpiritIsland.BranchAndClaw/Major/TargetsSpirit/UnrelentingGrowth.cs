@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SpiritIsland.BranchAndClaw;
+﻿namespace SpiritIsland.BranchAndClaw;
 
 public class UnrelentingGrowth {
 
@@ -8,7 +6,7 @@ public class UnrelentingGrowth {
 	[Instructions( "Target Spirit adds 2 Presence and 1 Wilds to a land at 1 Range. -If you have- 3 Sun, 3 Plant: In that land, add 1 additional Wilds and remove 1 Blight. Target Spirit gains a Power Card." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
-		TargetSpaceCtx toCtx = await AddPresenceAndWilds( ctx.OtherCtx );
+		TargetSpaceCtx toCtx = await AddPresenceAndWilds( ctx.Other );
 
 		// if you have 3 sun, 3 plant
 		if(await ctx.YouHave( "3 sun,3 plant" )) {
@@ -24,25 +22,25 @@ public class UnrelentingGrowth {
 
 	}
 
-	static async Task<TargetSpaceCtx> AddPresenceAndWilds( SelfCtx ctx ) {
+	static async Task<TargetSpaceCtx> AddPresenceAndWilds( Spirit self ) {
 
 		// target spirit adds 2 presence and 1 wilds to a land at range 1
 
 		// Select destination
-		var options = ctx.Self.FindSpacesWithinRange( new TargetCriteria( 1 ) )
-			.Where( ctx.Self.Presence.CanBePlacedOn )
+		var options = self.FindSpacesWithinRange( new TargetCriteria( 1 ) )
+			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
-		var to = await ctx.Self.Select( new A.Space( "Where would you like to place your presence?", options, Present.Always ) );
+		var to = await self.SelectAsync( new A.Space( "Where would you like to place your presence?", options, Present.Always ) );
 
 		// add wilds
-		var toCtx = ctx.Target( to );
+		var toCtx = self.Target( to );
 		await toCtx.Wilds.AddAsync(1);
 
 		// Add presence
 		for(int i = 0; i < 2; ++i) {
-			var from = await ctx.Self.SelectSourcePresence();
+			var from = await self.SelectSourcePresence();
 			if(from !=null)
-				await ctx.Self.Presence.PlaceAsync( from, to );
+				await self.Presence.PlaceAsync( from, to );
 		}
 
 		return toCtx;

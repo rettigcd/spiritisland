@@ -9,7 +9,7 @@ public class ExplosiveEruption {
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction();
 
-		Space space = await ctx.Self.Select( new A.Space(
+		Space space = await ctx.Self.SelectAsync( new A.Space(
 			$"Apply {destroyedCount} damage to",
 			ctx.Tokens.Range( 1 ),
 			Present.Always
@@ -31,7 +31,7 @@ public class ExplosiveEruption {
 		// In each land within range 1, 4 Damage. 
 		await ctx.DamageInvaders(4);
 		foreach(SpaceState adj in ctx.Adjacent.OrderBy(x=>x.Space.Text)) // ordered to help tests
-			await ctx.Target(adj).DamageInvaders(4);
+			await ctx.Target(adj.Space).DamageInvaders(4);
 
 		// Add 1 blight to target land; doing so does not Destroy your presence.
 		VolcanoPresence.SafeSpace.Value = ctx.Space;
@@ -48,7 +48,7 @@ public class ExplosiveEruption {
 		// In each land adjacent to the target
 		// add 1 blight if it doesn't have any.
 		foreach(var adj in ctx.Adjacent) {
-			var adjCtx = ctx.Target(adj);
+			var adjCtx = ctx.Target(adj.Space);
 			if(!adjCtx.Blight.Any)
 				await adjCtx.AddBlight(1);
 		}
@@ -63,14 +63,14 @@ class ErruptionAttribute : FromPresenceAttribute {
 	/// <summary>
 	/// Override, so we can destroy presence After targeting, prior to Tier-evaluation
 	/// </summary>
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ) {
+	public override async Task<object> GetTargetCtx( string powerName, Spirit self ) {
 
-		var target = (TargetSpaceCtx)await base.GetTargetCtx( powerName, ctx );
+		var target = (TargetSpaceCtx)await base.GetTargetCtx( powerName, self );
 
 		int count = await target.Self.SelectNumber( "# of presence to destroy?", target.Presence.Count, 0 );
 
 		// Destroy them now
-		await target.Tokens.Destroy( ctx.Self.Presence.Token, count );
+		await target.Tokens.Destroy( self.Presence.Token, count );
 
 		return target;
 	}
@@ -78,8 +78,8 @@ class ErruptionAttribute : FromPresenceAttribute {
 	/// <summary>
 	/// Override so we can return a custom criteria that flags this as an Innate Power so Volcano won't extend range.
 	/// </summary>
-	protected override async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) { 
-		return new VolcanicPeaksTowerOverTheLandscape.InnateTargetCriteria( await CalcRange( ctx ), ctx.Self, _targetFilters );
+	protected override async Task<TargetCriteria> GetCriteria( Spirit self ) { 
+		return new VolcanicPeaksTowerOverTheLandscape.InnateTargetCriteria( await CalcRange( self ), self, _targetFilters );
 	}
 }
 

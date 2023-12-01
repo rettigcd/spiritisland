@@ -12,14 +12,14 @@ class OpenTheWays : IActionFactory {
 
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 
-	public async Task ActivateAsync( SelfCtx ctx ) {
-		if(ctx.Self is not FinderOfPathsUnseen finder) return;
+	public async Task ActivateAsync( Spirit self ) {
+		if(self is not FinderOfPathsUnseen finder) return;
 
-		var options = ctx.Self.Presence.Lands.Tokens().ToList();
+		var options = self.Presence.Lands.Tokens().ToList();
 		// Select 2 space to link
-		var end0 = (await ctx.SelectTargetSpaceAsync( "Select 1st space to make adjacent", options.Downgrade() )).Tokens;
+		var end0 = (await self.SelectSpaceAsync( "Select 1st space to make adjacent", options.Downgrade(),Present.Always )).Tokens;
 		options.Remove( end0 );
-		var end1 = (await ctx.SelectTargetSpaceAsync( "Select 2nd space to make adjacent", options.Downgrade() )).Tokens;
+		var end1 = (await self.SelectSpaceAsync( "Select 2nd space to make adjacent", options.Downgrade(),Present.Always )).Tokens;
 
 		// Remove old
 		finder.GatewayToken?.RemoveSelf();
@@ -27,6 +27,7 @@ class OpenTheWays : IActionFactory {
 		// Add new
 		finder.GatewayToken = new GatewayToken( finder.Presence.Token, end0, end1 );
 	}
+
 
 	#endregion
 

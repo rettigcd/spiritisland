@@ -81,8 +81,7 @@ public class OceanTerrain_Tests {
 		// When: Thundersepearker Activates a card that Pushes Dahan
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
 		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit); // required to signal it is a spirit power
-		SelfCtx ctx = primarySpirit.Bind();
-		Task t = PowerCard.For(typeof(CallToTend)).ActivateAsync( ctx );
+		Task t = PowerCard.For(typeof(CallToTend)).ActivateAsync( primarySpirit );
 		//  And: Targets A2 (that has a dahan on it)
 		Choose( "A2" );
 		//  And: Push a Dahan
@@ -151,8 +150,7 @@ public class OceanTerrain_Tests {
 		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
 		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit);
-		SelfCtx ctx = primarySpirit.Bind();
-		Task t = PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( ctx );
+		Task t = PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( primarySpirit );
 		//  And: Targets A2
 		Choose( a2.Space.Text );
 

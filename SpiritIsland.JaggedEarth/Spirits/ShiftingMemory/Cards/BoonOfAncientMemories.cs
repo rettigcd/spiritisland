@@ -11,7 +11,7 @@ public class BoonOfAncientMemories {
 		// if you target yourself
 		if(ctx.Other == ctx.Self) { 
 			// Draw minor
-			await ctx.DrawMinor();
+			await ctx.Self.DrawMinor();
 			return;
 		}
 

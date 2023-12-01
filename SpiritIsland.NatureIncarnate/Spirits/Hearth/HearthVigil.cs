@@ -16,7 +16,7 @@ public class HearthVigil : Spirit {
 			BackgroundImg = Img.Coin,
 			Text = "0",
 		},
-		Action = Cmd.GatherUpToNDahan( 1 ).To().SpiritPickedLand().Which( Has.YourPresence )
+		Action = new Gather1Token(1,Human.Dahan), // !!! ??? implementation is optional, should it be required???
 	};
 
 
@@ -38,7 +38,7 @@ public class HearthVigil : Spirit {
 			),
 			new GrowthOption(
 				new GainPowerCard(),
-				new PlacePresence( 3, Target.Dahan )
+				new PlacePresence( 3, Filter.Dahan )
 			),
 			new GrowthOption(
 				new PlacePresence(2),

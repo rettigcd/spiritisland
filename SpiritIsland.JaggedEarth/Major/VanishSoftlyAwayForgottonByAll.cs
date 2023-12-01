@@ -27,8 +27,7 @@ public class VanishSoftlyAwayForgottonByAll {
 			await Cmd.RemoveInvaders(1)
 				.From().SpiritPickedLand().Which( Has.AtLeastN( 4, Human.Invader ) )
 				.EachSpiritPicks(4).AllDifferent()
-				.ActAsync(ctx);
-
+				.ActAsync(ctx.Self);
 		}
 	}
 

@@ -4,7 +4,7 @@ public class ExhaleConfusionAndDelirium {
 
 	public const string Name = "Exhale Confusion and Delirium";
 
-	[SpiritCard(Name, 0, Element.Sun,Element.Moon,Element.Air,Element.Animal),Fast,FromPresence(1,Target.Strife)]
+	[SpiritCard(Name, 0, Element.Sun,Element.Moon,Element.Air,Element.Animal),Fast,FromPresence(1,Filter.Strife)]
 	[Instructions("2 Fear. Invaders with Strife don't participate in Ravage."), Artist(Artists.EmilyHancock)]
 	static public Task ActionAsync( TargetSpaceCtx ctx){
 		ctx.AddFear(2);

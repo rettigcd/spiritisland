@@ -19,9 +19,8 @@ public class EachActiveLand : IActOn<GameCtx> {
 		var gameState = ctx.GameState;
 		foreach(Board board in gameState.Island.Boards) {
 			Spirit spirit = board.FindSpirit();
-			SelfCtx decisionMaker = spirit.Bind();
-			var spacesCtxs = board.Spaces.Tokens()
-				.Select( decisionMaker.Target )
+			var spacesCtxs = board.Spaces
+				.Select( spirit.Target )
 				.Where( _landCriteria.Filter );
 			foreach(TargetSpaceCtx ss in spacesCtxs)
 				for(int i=0;i<board.InvaderActionCount;++i)

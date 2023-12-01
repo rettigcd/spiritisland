@@ -85,10 +85,11 @@ class PourDownPowerGainEnergy : IActionFactory {
 
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Fast || speed == Phase.Slow;
 
-	public Task ActivateAsync( SelfCtx ctx ) {
-		++ctx.Self.Energy;
+	public Task ActivateAsync( Spirit self ) {
+		++self.Energy;
 		return Task.CompletedTask;
 	}
+
 
 	#endregion
 

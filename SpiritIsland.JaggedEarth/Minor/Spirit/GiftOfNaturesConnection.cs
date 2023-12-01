@@ -7,20 +7,20 @@ public class GiftOfNaturesConnection{
 	static public async Task ActAsync( TargetSpiritCtx ctx ){
 
 		// Target Spirit gains either 2 Energy or 2 of a single Element (their choice).
-		await ctx.OtherCtx.SelectActionOption( 
-			new SpiritAction("Gain 2 energy", ctx=>ctx.Self.Energy+=2),
-			new SpiritAction("Gain 2 of a single element", ctx => GainEl(ctx,2))
-		);
+		await Cmd.Pick1(
+			new SpiritAction("Gain 2 energy", spirit=>spirit.Energy+=2),
+			new SpiritAction("Gain 2 of a single element", spirit => GainEl(spirit,2))
+		).ActAsync(ctx.Other);
 
 		// if you target another Spirit, you gain an Element of your choice.
 		if(ctx.Self != ctx.Other)
-			await GainEl(ctx,1);
+			await GainEl(ctx.Self,1);
 	}
 
-	static async Task GainEl( SelfCtx ctx, int count ) {
-		var el = await ctx.Self.SelectElementEx($"Gain {count} of single element",ElementList.AllElements);
+	static async Task GainEl( Spirit spirit, int count ) {
+		var el = await spirit.SelectElementEx($"Gain {count} of single element",ElementList.AllElements);
 		while(0<count--)
-			ctx.Self.Elements.Add(el);
+			spirit.Elements.Add(el);
 	}
 
 }

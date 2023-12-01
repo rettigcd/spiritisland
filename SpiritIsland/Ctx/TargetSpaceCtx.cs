@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class TargetSpaceCtx : SelfCtx {
+public class TargetSpaceCtx : IHaveSpirit {
 
 	#region private fields
 	InvaderBinding _invadersRO;
@@ -15,13 +15,32 @@ public class TargetSpaceCtx : SelfCtx {
 	// Called:
 	//		from SelfCtx (to target a space)
 	//		for derived types
-	public TargetSpaceCtx( SelfCtx ctx, Space target )
-		:base( ctx.Self )
-	{
+	public TargetSpaceCtx( Spirit self, Space target ){
+		Self = self;
 		Space = target ?? throw new ArgumentNullException(nameof(target));
 	}
 
+	public Spirit Self { get; }
+
 	#endregion
+
+	#region Parts from SelfCtx
+
+	// ========== Parts from SelfCtx ===========
+
+	public Task<bool> YouHave( string elementString ) => Self.YouHave( elementString );
+
+	public Task<T> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
+		=> Self.SelectAsync<T>( originalDecision );
+
+	public TargetSpaceCtx Target( Space space ) => Self.Target( space );
+
+	#endregion
+
+	/// <summary> adds Target to Fear context </summary>
+	public void AddFear( int count ) {
+		GameState.Current.Fear.AddDirect( new FearArgs( count ) { space = Space } );
+	}
 
 
 	// overridden by Trickster to Select-All - !!! Could be put on Spirit to make easier to override, then we could seal this class.
@@ -129,7 +148,7 @@ public class TargetSpaceCtx : SelfCtx {
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent;
-	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(Target);
+	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(adj=>Target(adj.Space)); // !!! ??? should we really spin up TargetSpaceCtx for each of these?
 
 	public IEnumerable<SpaceState> Range( int range ) => Range( new TargetCriteria( range ) );
 
@@ -141,6 +160,9 @@ public class TargetSpaceCtx : SelfCtx {
 		); // don't need to check .IsInPlay because TargetCriteria does that.
 
 	#region Terrain
+
+	TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
+	TerrainMapper _terrainMapper;
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
 	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
@@ -274,11 +296,6 @@ public class TargetSpaceCtx : SelfCtx {
 	}
 
 	public Task RemoveInvader( ITokenClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
-
-	/// <summary> adds Target to Fear context </summary>
-	public override void AddFear( int count ) {
-		GameState.Current.Fear.AddDirect( new FearArgs( count ) { space = Space } );
-	}
 
 	#region Bonus Damage
 

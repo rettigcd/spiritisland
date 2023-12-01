@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 [InnatePower("MindShatteringSong")]
-[Slow,FromSacredSite(1,Target.Strife)]
+[Slow,FromSacredSite(1,Filter.Strife)]
 public class MindShatteringSong {
 
 	[InnateTier("1 moon, 2 air","1 Fear per moon you have.",0)]

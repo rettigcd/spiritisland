@@ -11,7 +11,7 @@ public class IndomitableClaim_Tests {
 	public void StopsAllInvaderActions() {
 		List<string> invaderLog = new List<string>();
 
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(IndomitableClaim)), (Action<GameState>)((gs)=>{ 
+		var (user, self) = TestSpirit.StartGame( PowerCard.For(typeof(IndomitableClaim)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
@@ -25,12 +25,12 @@ public class IndomitableClaim_Tests {
 
 		// and: there is a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
 		TargetSpaceCtx spaceCtx = GameState.Current.Spaces_Unfiltered
-			.Select( x=>ctx.Target(x.Space) )
+			.Select( x=>self.Target(x.Space) )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
 		// And: we have a presence in that land
-		ctx.Self.Given_HasPresenceOn( spaceCtx.Space );
+		self.Given_HasPresenceOn( spaceCtx.Space );
 
 		//  And: it has 3 explorers
 		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );
@@ -45,13 +45,13 @@ public class IndomitableClaim_Tests {
 		user.PlaysCard( IndomitableClaim.Name );
 
 		//  And: has enough elements to trigger the bonus
-		ctx.Self.Elements[Element.Sun] = 2;
-		ctx.Self.Elements[Element.Earth] = 3;
+		self.Elements[Element.Sun] = 2;
+		self.Elements[Element.Earth] = 3;
 
 		//  When: Activates Card
 		user.SelectsFastAction( IndomitableClaim.Name );
 		user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );
-		user.PullsPresenceFromTrack(ctx.Self.Presence.Energy.RevealOptions.Single());
+		user.PullsPresenceFromTrack(self.Presence.Energy.RevealOptions.Single());
 
 		// Then: nothing changed
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );

@@ -38,7 +38,7 @@ public class ShroudOfSilentMist : Spirit {
 		this.GrowthTrack = new GrowthTrack(
 			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
 			new GrowthOption( new PlacePresence(0), new PlacePresence(0) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence(3,Target.Mountain, Target.Wetland ) )
+			new GrowthOption( new GainPowerCard(), new PlacePresence(3,Filter.Mountain, Filter.Wetland ) )
 		);
 
 
@@ -98,16 +98,15 @@ public class ShroudOfSilentMist : Spirit {
 	#endregion
 
 	public override async Task<Space> TargetsSpace( 
-		SelfCtx ctx,
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
 		if(!Presence.CanMove)
-			return await base.TargetsSpace( ctx, prompt, preselect, sourceCriteria, targetCriteria );
+			return await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
-		MistsShiftAndFlow x = new MistsShiftAndFlow(ctx,prompt,sourceCriteria,targetCriteria);
+		MistsShiftAndFlow x = new MistsShiftAndFlow(this,prompt,sourceCriteria,targetCriteria);
 		return (await x.TargetAndFlow()).Space;
 	}
 

@@ -4,10 +4,9 @@ public class ReclaimAll : SpiritAction, ICanAutoRun {
 	public ReclaimAll()
 		:base(
 			"Reclaim All",
-			ctx => {
-				var spirit = ctx.Self;
-				spirit.Hand.AddRange( spirit.DiscardPile );
-				spirit.DiscardPile.Clear();
+			self => {
+				self.Hand.AddRange( self.DiscardPile );
+				self.DiscardPile.Clear();
 			}
 		) { }
 }

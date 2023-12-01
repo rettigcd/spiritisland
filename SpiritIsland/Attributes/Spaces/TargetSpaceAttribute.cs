@@ -29,25 +29,25 @@ public abstract class TargetSpaceAttribute : GeneratesContextAttribute {
 		TargetFilterName = 0 < targetFilter.Length ? string.Join( "/", targetFilter ) : "Any";
 	}
 
-	public override async Task<object> GetTargetCtx( string powerName, SelfCtx ctx ){
+	public override async Task<object> GetTargetCtx( string powerName, Spirit self ){
 
-		Space space = await ctx.Self.TargetsSpace( ctx, 
+		Space space = await self.TargetsSpace( 
 			powerName+": Target Space", 
 			Preselect,
 			_sourceCriteria,
-			await GetCriteria( ctx )
+			await GetCriteria( self )
 		);
 		if(space == null) return null;
-		var target = ctx.Target( space );
+		var target = self.Target( space );
 		_targettedSpace.Value = target.Tokens;
 		return target;
 	}
 
-	protected virtual async Task<TargetCriteria> GetCriteria( SelfCtx ctx ) 
-		=> new TargetCriteria( await CalcRange( ctx ), ctx.Self, _targetFilters );
+	protected virtual async Task<TargetCriteria> GetCriteria( Spirit self ) 
+		=> new TargetCriteria( await CalcRange( self ), self, _targetFilters );
 
 	/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
-	protected virtual Task<int> CalcRange( SelfCtx ctx ) => Task.FromResult( _range );
+	protected virtual Task<int> CalcRange( Spirit self ) => Task.FromResult( _range );
 
 	public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 

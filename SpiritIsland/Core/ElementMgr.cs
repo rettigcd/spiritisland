@@ -78,7 +78,7 @@ public class ElementMgr {
 			while(0 < count--) { 
 				var options = multi.SplitIntoSingles();
 				string multiStr = GetMultiStr( multi );
-				An.ElementOption selection = await _spirit.Select( new An.Element( $"Select element from {multiStr}?", options, Present.Done, single ) );
+				An.ElementOption selection = await _spirit.SelectAsync( new An.Element( $"Select element from {multiStr}?", options, Present.Done, single ) );
 				Element pick = selection is ItemOption<Element> el ? el.Item : Element.None;
 				if(pick == Element.None) break;
 
@@ -101,7 +101,7 @@ public class ElementMgr {
 	/// <summary>
 	/// Checks elements available, and commits them (like the 'Any' element)
 	/// </summary>
-	public virtual async Task<bool> ContainsAsync( string usageDescription, CountDictionary<Element> subset ) {
+	public virtual async Task<bool> ContainsAsync( CountDictionary<Element> subset, string usageDescription ) {
 
 		// For normal spirits without Prepared Elements, this is the same as Could Have Elements
 		CountDictionary<Element> missing = subset.Except( Elements );
@@ -123,7 +123,7 @@ public class ElementMgr {
 		while(0 < count--) { 
 			var options = multi.SplitIntoSingles();
 			string multiStr = GetMultiStr( multi );
-			An.ElementOption selection = await _spirit.Select( new An.Element( $"Select element from {multiStr} for {usageDescription}?", options, Present.Done, single ) );
+			An.ElementOption selection = await _spirit.SelectAsync( new An.Element( $"Select element from {multiStr} for {usageDescription}?", options, Present.Done, single ) );
 			Element pick = selection is ItemOption<Element> el ? el.Item : Element.None;
 			if(pick == Element.None) break;
 

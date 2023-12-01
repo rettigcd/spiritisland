@@ -7,7 +7,7 @@ internal class FoundationsSinkIntoMud {
 	[SpiritCard( Name, 1, Element.Water, Element.Earth ),Slow,FromPresence( 0 )]
 	[Instructions( "2 damage to Town. If target land is Wetland, you may instead deal 1 Damage to each Town / City." ), Artist( Artists.DamonWestenhofer )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
-		return Cmd.Pick1(
+		return Cmd.Pick1WithSpirit(
 			// 2 Damage to Town.
 			new SpaceCmd("2 damage to towns", x=>x.DamageInvaders(2,Human.Town)),
 			// If target land is wetland, you may instead deal 1 Damage to each town / City

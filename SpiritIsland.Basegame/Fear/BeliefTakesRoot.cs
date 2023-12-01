@@ -29,8 +29,8 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync(ctx);
 
-	static SpiritAction GainEnergyPerSacredSiteWithInvaders => new SpiritAction("gain 1 energy per SS with Invaders", ctx => {
-		ctx.Self.Energy += ctx.Self.Presence.SacredSites
+	static SpiritAction GainEnergyPerSacredSiteWithInvaders => new SpiritAction("gain 1 energy per SS with Invaders", self => {
+		self.Energy += self.Presence.SacredSites
 			.Count( ss => ss.OfAnyTag( Human.Invader ).Any() );
 	} );
 

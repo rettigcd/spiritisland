@@ -6,8 +6,8 @@ public class GainTime : SpiritAction {
 
 	public GainTime(int delta):base( $"GainTime({delta})" ) { _delta = delta; }
 
-	public override async Task ActAsync( SelfCtx ctx ) {
-		if(ctx.Self is FracturedDaysSplitTheSky fracturedDays)
+	public override async Task ActAsync( Spirit self ) {
+		if( self is FracturedDaysSplitTheSky fracturedDays )
 			await fracturedDays.GainTime(_delta);
 	}
 

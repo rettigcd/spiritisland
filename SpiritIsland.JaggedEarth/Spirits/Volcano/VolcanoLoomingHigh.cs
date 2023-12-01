@@ -30,8 +30,8 @@ public class VolcanoLoomingHigh : Spirit {
 	) {
 		GrowthTrack = new GrowthTrack(
 			new GrowthOption(new ReclaimAll(), new GainPowerCard(), new GainEnergy(3)),
-			new GrowthOption(new PlacePresence(0,Target.Mountain), new PlacePresence(0,Target.Mountain)),
-			new GrowthOption(new GainPowerCard(), new PlacePresence(4,Target.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))
+			new GrowthOption(new PlacePresence(0,Filter.Mountain), new PlacePresence(0,Filter.Mountain)),
+			new GrowthOption(new GainPowerCard(), new PlacePresence(4,Filter.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))
 		);
 
 		InnatePowers = new InnatePower[] {
@@ -55,11 +55,10 @@ public class VolcanoLoomingHigh : Spirit {
 			if(option is ExplosiveInnateOptionAttribute ex && destroyedThisAction < ex.DestroyedPresenceThreshold)
 				continue;
 
-			if(await HasElements("Innate Tier", option.Elements ))
+			if(await HasElement( option.Elements, "Innate Tier" ))
 				match = option;
 		}
 		return match;
 	}
-
 
 }

@@ -4,12 +4,12 @@ public class PlaceInOcean : SpiritAction {
 
 	public PlaceInOcean() : base( "PlaceInOcean" ) { }
 
-	public override Task ActAsync( SelfCtx ctx ) {
+	public override Task ActAsync( Spirit self ) {
 		var oceanSpaces = GameState.Current.Island.Boards
 			.Select( b=>b.Spaces_Existing.Single(s=>s.IsOcean ) )
 			.Tokens()
 			.ToArray();
-		return Cmd.PlacePresenceOn( oceanSpaces ).ActAsync( ctx );
+		return Cmd.PlacePresenceOn( oceanSpaces ).ActAsync( self );
 	}
 
 }

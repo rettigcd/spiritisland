@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland;
 
+// !!! Make this a SpiritAction, not an IActionFactory
+
 /// <summary>
 /// A card in spirit's Hand, may be Played (triggering its elements to be added)
 /// </summary>
@@ -16,18 +18,19 @@ public class PlayCardForCost : IActionFactory {
 
 	public string Text => Name;
 
-	public async Task ActivateAsync( SelfCtx ctx ) {
+	public async Task ActivateAsync( Spirit self ) {
 
-		int maxCardCost = ctx.Self.Energy;
-		var options = ctx.Self.Hand.OfType<PowerCard>()
+		int maxCardCost = self.Energy;
+		var options = self.Hand.OfType<PowerCard>()
 			.Where(card=>card.Cost<=maxCardCost)
 			.ToArray();
 		if(options.Length == 0) return;
 
-		PowerCard powerCard = await ctx.Self.SelectPowerCard( "Select card to play", options.Where( x => x.Cost <= maxCardCost ), CardUse.Play, _present );
+		PowerCard powerCard = await self.SelectPowerCard( "Select card to play", options.Where( x => x.Cost <= maxCardCost ), CardUse.Play, _present );
 		if(powerCard != null)
-			ctx.Self.PlayCard( powerCard );
+			self.PlayCard( powerCard );
 	}
+
 
 	readonly Present _present;
 

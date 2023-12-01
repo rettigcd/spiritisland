@@ -32,11 +32,11 @@ public class Ocean_GrowthTests : GrowthTests {
 
 		IHelpGrow gather = _spirit.GetAvailableActions(Phase.Growth)
 			.OfType<SpiritGrowthAction>()
-			.Where(x=>x.Cmd is GatherPresenceIntoOcean )
+			.Where(x=>x.Cmd.Description == "Gather 1 Presence into EACH Ocean" ) // is GatherPresenceIntoOcean
 			.SingleOrDefault();
 
 		if(gather != null){
-			_ = gather.ActivateAsync( _spirit.Bind() );
+			_ = gather.ActivateAsync( _spirit );
 			while(!_spirit.Portal.IsResolved){
 				var options = _spirit.Portal.Next.Options
 					.Where( option => {

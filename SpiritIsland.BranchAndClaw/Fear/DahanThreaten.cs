@@ -9,9 +9,7 @@ public class DahanThreaten : FearCardBase, IFearCard {
 	public Task Level1( GameCtx ctx )
 		=> Cmd.AddStrife(1)
 			.In()
-			.SpiritPickedLand()
-			.Which( Has.Dahan )
-			.ByPickingToken( Human.Invader )
+			.SpiritPickedLand().Which( Has.Dahan ).ByPickingToken( Human.Invader )
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
