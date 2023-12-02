@@ -6,7 +6,7 @@ public class VanishSoftlyAwayForgottonByAll {
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption(
-			new SpaceCmd(
+			new SpaceAction(
 				"Remove 1 invader. Remove 1 explorer/town",
 				async ctx => { 
 					await RemoveInvader.ActAsync(ctx);
@@ -34,17 +34,17 @@ public class VanishSoftlyAwayForgottonByAll {
 	static HumanToken[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.InvaderTokens().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
 
 
-	static SpaceCmd RemoveInvader => new SpaceCmd(
+	static SpaceAction RemoveInvader => new SpaceAction(
 		"Remove 1 Invader", 
 		ctx => ctx.Invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Invader )
 	);
 
-	static SpaceCmd RemoveExplorerOrTown => new SpaceCmd( "Remove 1 Explorer/Town", 
+	static SpaceAction RemoveExplorerOrTown => new SpaceAction( "Remove 1 Explorer/Town", 
 		ctx => ctx.Invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer_Town )
 	);
 
 
-	static SpaceCmd RemoveAllDamagedInvaders => new SpaceCmd(
+	static SpaceAction RemoveAllDamagedInvaders => new SpaceAction(
 		"Remove all damaged invaders",
 		async ctx => { 
 			var tokens = ctx.Tokens;

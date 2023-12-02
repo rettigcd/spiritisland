@@ -9,7 +9,7 @@ public class ThrivingCommunitites : BlightCard {
 		.In().NDifferentLands( 4 ) // filter is on Command
 		.ForEachBoard();
 
-	static SpaceCmd UpgradeExplorerOrTown => new SpaceCmd( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
+	static SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
 		var spaceToken = await ctx.SelectAsync( An.Invader.ToReplace("upgrade",ctx.Tokens.HumanOfAnyTag(Human.Explorer_Town).On(ctx.Space)) );
 
 		var removed = await ctx.Tokens.RemoveAsync( spaceToken.Token, 1,RemoveReason.Replaced);

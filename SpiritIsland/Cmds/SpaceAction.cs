@@ -6,12 +6,12 @@
 /// <remarks>
 /// Wraps BaseCmd-TargetSpaceCtx- for ease of use.
 /// </remarks>
-public class SpaceCmd : BaseCmd<TargetSpaceCtx> {
-	public SpaceCmd( string description, Func<TargetSpaceCtx, Task> action ) : base( description, action ) { }
-	public SpaceCmd( string description, Action<TargetSpaceCtx> action ) : base( description, action ) { }
+public class SpaceAction : BaseCmd<TargetSpaceCtx> {
+	public SpaceAction( string description, Func<TargetSpaceCtx, Task> action ) : base( description, action ) { }
+	public SpaceAction( string description, Action<TargetSpaceCtx> action ) : base( description, action ) { }
 	
 	// Derived types that just override DisplayText and Act...
-	protected SpaceCmd() : base() { }
+	protected SpaceAction() : base() { }
 
 	// - new -
 
@@ -20,7 +20,7 @@ public class SpaceCmd : BaseCmd<TargetSpaceCtx> {
 	/// Use this for single-evaluate in Pick1(..) selection criteria.
 	/// </summary>
 	/// <returns>self for chaining</returns>
-	public new SpaceCmd OnlyExecuteIf(bool condition) => (SpaceCmd)base.OnlyExecuteIf( condition );
+	public new SpaceAction OnlyExecuteIf(bool condition) => (SpaceAction)base.OnlyExecuteIf( condition );
 
 	/// <summary>
 	/// If, condition fails to match, command is not executed.
@@ -29,5 +29,5 @@ public class SpaceCmd : BaseCmd<TargetSpaceCtx> {
 	/// Intended to be called from SelectActionOption to know if action is valid for this space or not.
 	/// </remarks>
 	/// <returns>self for chaining</returns>
-	public new SpaceCmd OnlyExecuteIf( Predicate<TargetSpaceCtx> predicate ) => (SpaceCmd)base.OnlyExecuteIf( predicate );
+	public new SpaceAction OnlyExecuteIf( Predicate<TargetSpaceCtx> predicate ) => (SpaceAction)base.OnlyExecuteIf( predicate );
 }

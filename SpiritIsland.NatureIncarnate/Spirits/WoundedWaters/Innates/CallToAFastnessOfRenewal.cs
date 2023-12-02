@@ -13,7 +13,7 @@ public class CallToAFastnessOfRenewal {
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		return Cmd.Pick1(
 			Cmd.Defend(3),
-			new SpaceCmd("Downgrade 1 Invader", ctx=>ReplaceInvader.Downgrade1(ctx,Present.Always,Human.Invader) )
+			new SpaceAction("Downgrade 1 Invader", ctx=>ReplaceInvader.Downgrade1(ctx,Present.Always,Human.Invader) )
 		).ActAsync(ctx);
 	}
 

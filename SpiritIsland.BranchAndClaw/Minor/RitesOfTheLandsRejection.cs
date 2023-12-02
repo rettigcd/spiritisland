@@ -18,7 +18,7 @@ public class RitesOfTheLandsRejection {
 		}
 
 		return ctx.SelectActionOption(
-			new SpaceCmd( "Stop build - 1 fear / (Dahan or T/C)", StopBuild_FearForCitiesTownsAndDahan ),
+			new SpaceAction( "Stop build - 1 fear / (Dahan or T/C)", StopBuild_FearForCitiesTownsAndDahan ),
 			Cmd.PushUpToNDahan(3)
 		);
 	}

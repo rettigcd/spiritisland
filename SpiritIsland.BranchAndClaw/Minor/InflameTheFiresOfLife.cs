@@ -12,9 +12,9 @@ public class InflameTheFiresOfLife {
 			await ctx.SelectActionOption( AddDisease, FearAndStrife );
 	}
 
-	static SpaceCmd AddDisease => new SpaceCmd( "add disease ", ctx => ctx.Disease.AddAsync(1) );
+	static SpaceAction AddDisease => new SpaceAction( "add disease ", ctx => ctx.Disease.AddAsync(1) );
 
-	static SpaceCmd FearAndStrife => new SpaceCmd( "1 fear and 1 strife", FearAndStrife_Imp );
+	static SpaceAction FearAndStrife => new SpaceAction( "1 fear and 1 strife", FearAndStrife_Imp );
 
 	static Task FearAndStrife_Imp( TargetSpaceCtx ctx ) {
 		ctx.AddFear( 1 );

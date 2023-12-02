@@ -7,7 +7,7 @@ public class OfferPassageBetweenWorlds {
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceCmd( "Move up to 4 dahan between target land and one of your lands.",
+			new SpaceAction( "Move up to 4 dahan between target land and one of your lands.",
 				xx => xx.MoveTokensToSingleLand( 4, new TargetCriteria( int.MaxValue, ctx.Self, Filter.Presence ), Human.Dahan )
 			),
 			Cmd.NextTimeDestroy2FewerDahan

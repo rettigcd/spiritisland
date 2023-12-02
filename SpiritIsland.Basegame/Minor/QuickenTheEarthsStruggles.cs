@@ -7,8 +7,8 @@ public class QuickenTheEarthsStruggles {
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceCmd( "1 damage to each town/city", ctx => ctx.DamageEachInvader( 1, Human.Town_City ) ),
-			new SpaceCmd( "defend 10", ctx => ctx.Defend( 10 ) )
+			new SpaceAction( "1 damage to each town/city", ctx => ctx.DamageEachInvader( 1, Human.Town_City ) ),
+			new SpaceAction( "defend 10", ctx => ctx.Defend( 10 ) )
 		);
 
 	}

@@ -23,7 +23,7 @@ public class Gather1Token : SpiritAction {
 
 		// !!! simplify this using SourceSelector
 		var isInRange = new TargetSpaceCtxFilter( "is in range", x => options.Contains( x.Tokens ) );
-		await new SpaceCmd( "Gather a " + _tokenToGather.Label, ctx => ctx.Gatherer.AddGroup( 1, _tokenToGather ).DoN(_present) )
+		await new SpaceAction( "Gather a " + _tokenToGather.Label, ctx => ctx.Gatherer.AddGroup( 1, _tokenToGather ).DoN(_present) )
 			.From().SpiritPickedLand()
 			.Which( isInRange )
 			.ActAsync( self );

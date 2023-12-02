@@ -17,7 +17,7 @@ public class CallToGuard{
 			);
 	}
 
-	static SpaceCmd DamageAddedOrMovedInvaders => new SpaceCmd(
+	static SpaceAction DamageAddedOrMovedInvaders => new SpaceAction(
 		"After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
 		, (ctx) => ctx.Tokens.Adjust( new DamageNewInvaders(), 1 )
 	);

@@ -18,7 +18,7 @@ public class PlagueShipsSailToDistantPorts {
 
 	}
 
-	static SpaceCmd AddDisease => new SpaceCmd("Add Disease", async ctx => {
+	static SpaceAction AddDisease => new SpaceAction("Add Disease", async ctx => {
 		// Add 4 Disease among Coastal lands other than target land.
 		SpaceState[] options = GameState.Current.Spaces.Where(s=>s.Space.IsCoastal && s.Space != ctx.Space).ToArray();
 		for(int i=0;i<4;++i) {
@@ -30,7 +30,7 @@ public class PlagueShipsSailToDistantPorts {
 
 	#region Element Threshold
 
-	static SpaceCmd PayToRemoveFearCard => new SpaceCmd("Spend 3 Energy/Player (aided by Disease) to remove Fear Card", PayToRemoveFearCard_Imp );
+	static SpaceAction PayToRemoveFearCard => new SpaceAction("Spend 3 Energy/Player (aided by Disease) to remove Fear Card", PayToRemoveFearCard_Imp );
 
 	static async Task PayToRemoveFearCard_Imp(TargetSpaceCtx ctx ) {
 		// 3 Damage.

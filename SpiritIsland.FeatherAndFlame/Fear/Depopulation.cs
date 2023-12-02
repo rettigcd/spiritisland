@@ -12,7 +12,7 @@ public class Depopulation : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync( ctx );
 
-	static SpaceCmd Replace1TownWith1Explorer => new SpaceCmd("Replace 1 Town with 1 Explorer", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town ) );
+	static SpaceAction Replace1TownWith1Explorer => new SpaceAction("Replace 1 Town with 1 Explorer", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town ) );
 
 	[FearLevel( 2, "On Each Board: Remove 1 Town." )]
 	public Task Level2( GameCtx ctx )
@@ -30,7 +30,7 @@ public class Depopulation : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync( ctx );
 
-	static SpaceCmd DownGradeCityOrRemoveTown => new SpaceCmd("Remove 1 Town, or Replace 1 City with 1 Town", async ctx => {
+	static SpaceAction DownGradeCityOrRemoveTown => new SpaceAction("Remove 1 Town, or Replace 1 City with 1 Town", async ctx => {
 		const string prompt = "Select City to downgrade or Town to remove";
 		var options = ctx.Tokens.HumanOfAnyTag( Human.Town_City );
 		var invader = await ctx.SelectAsync(new A.SpaceToken(prompt, options.On( ctx.Space ),Present.Always));

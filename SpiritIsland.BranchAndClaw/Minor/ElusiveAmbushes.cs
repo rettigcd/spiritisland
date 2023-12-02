@@ -7,8 +7,8 @@ public class ElusiveAmbushes {
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceCmd("1 damage", ctx => ctx.DamageInvaders(1)),
-			new SpaceCmd("Defend 4", ctx => ctx.Defend(4))
+			new SpaceAction("1 damage", ctx => ctx.DamageInvaders(1)),
+			new SpaceAction("Defend 4", ctx => ctx.Defend(4))
 		);
 
 	}

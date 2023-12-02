@@ -20,6 +20,6 @@ class WoodSeeksGrowthHumansSeekFreedom {
 		);
 	}
 
-	static SpaceCmd DahanDamage => new SpaceCmd("1 damage / dahan", ctx => ctx.DamageInvaders(ctx.Dahan.CountAll) );
+	static SpaceAction DahanDamage => new SpaceAction("1 damage / dahan", ctx => ctx.DamageInvaders(ctx.Dahan.CountAll) );
 
 }

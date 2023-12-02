@@ -9,7 +9,7 @@ public class SearAngerIntoTheWildLands{
 			Cmd.AddBadlands(1),
 
 			// If wilds and Invaders are present, 1 fear and 1 Damage.
-			new SpaceCmd( "1 fear and 1 Damage", async ctx => { ctx.AddFear( 1 ); await ctx.DamageInvaders( 1 ); } )
+			new SpaceAction( "1 fear and 1 Damage", async ctx => { ctx.AddFear( 1 ); await ctx.DamageInvaders( 1 ); } )
 				.OnlyExecuteIf( x => x.Wilds.Any && x.HasInvaders )
 		);
 	}

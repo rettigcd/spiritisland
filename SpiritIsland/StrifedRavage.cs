@@ -5,7 +5,7 @@ public static class StrifedRavage {
 	// Theological Strife(3) - Each Invader with Strife deals Damage to other Invaders in its land.
 	// Instruments of their own ruin
 	// Discord
-	static public SpaceCmd StrifedInvadersDealsDamageToOtherInvaders => new SpaceCmd(
+	static public SpaceAction StrifedInvadersDealsDamageToOtherInvaders => new SpaceAction(
 		"Strifed invaders deal damage to other invaders.",
 		async ctx => {
 

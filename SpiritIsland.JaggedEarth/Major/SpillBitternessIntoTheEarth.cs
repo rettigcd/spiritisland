@@ -28,7 +28,7 @@ public class SpillBitternessIntoTheEarth {
 				// in up to 3 adjacent lands,
 				, 3, ctx.Adjacent
 				// 1 damage to each invader.
-				, new SpaceCmd("1 damage to each invader", ctx => ctx.DamageEachInvader(1) )
+				, new SpaceAction("1 damage to each invader", ctx => ctx.DamageEachInvader(1) )
 			);
 
 	}

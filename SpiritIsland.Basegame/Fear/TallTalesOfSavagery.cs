@@ -27,7 +27,7 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 			Cmd.RemoveCities( 1 ).On().EachActiveLand().Which( Has.Two2DahanAndCity )
 		).ActAsync( ctx );
 
-	static SpaceCmd RemoveTownOr2Explorers => new SpaceCmd( "Remove 2 Explorer or 1 Town", RemoveTownOr2Explorers_method );
+	static SpaceAction RemoveTownOr2Explorers => new SpaceAction( "Remove 2 Explorer or 1 Town", RemoveTownOr2Explorers_method );
 	static async Task RemoveTownOr2Explorers_method( TargetSpaceCtx ctx ) { // !! maybe we should let the player choose in case town was strifed
 		var invaders = ctx.Invaders;
 		if(ctx.Tokens.Has( Human.Town ))

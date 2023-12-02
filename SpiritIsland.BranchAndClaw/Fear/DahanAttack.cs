@@ -25,7 +25,7 @@ public class DahanAttack : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	static SpaceCmd GatherThen2Damage => new SpaceCmd( "Gather 1 dahan. Then 2 Damage per Dahan there.", async ctx => { 
+	static SpaceAction GatherThen2Damage => new SpaceAction( "Gather 1 dahan. Then 2 Damage per Dahan there.", async ctx => { 
 		// Gather 1 dahan into that land.
 		await ctx.GatherDahan( 1 );
 		// Then 2 damage per dahan there

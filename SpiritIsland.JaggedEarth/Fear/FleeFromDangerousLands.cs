@@ -23,7 +23,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 
 	[FearLevel(3, "On Each Board: Remove 1 Explorer/Town from any land, or Remove 1 City from a land with Badlands/Wilds/Dahan." )]
 	public Task Level3( GameCtx ctx )
-		=> new SpaceCmd( "Remove 1 Explorer/Town from any land, or Remove 1 City from a land with Badlands/Wilds/Dahan.", Level3_Remove)
+		=> new SpaceAction( "Remove 1 Explorer/Town from any land, or Remove 1 City from a land with Badlands/Wilds/Dahan.", Level3_Remove)
 			.On().OneLandPerBoard()
 			.ByPickingToken( ctx => ctx.Tokens.OfAnyTag( TokensClassesFor(ctx) ) )
 			.ForEachBoard()

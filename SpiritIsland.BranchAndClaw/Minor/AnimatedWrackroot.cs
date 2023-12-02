@@ -8,8 +8,8 @@ public class AnimatedWrackroot {
 	[Instructions( "1 Fear. Destroy 1 Explorer. -or- Add 1 Wilds." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
-			new SpaceCmd( "1 fear, Destroy 1 explorer", FearAndExplorer ),
-			new SpaceCmd("add 1 wilds", ctx => ctx.Wilds.AddAsync(1) )
+			new SpaceAction( "1 fear, Destroy 1 explorer", FearAndExplorer ),
+			new SpaceAction("add 1 wilds", ctx => ctx.Wilds.AddAsync(1) )
 		);
 	}
 
