@@ -291,6 +291,7 @@ public abstract partial class Spirit
 	int _energy;
 
 	public SpiritPresence Presence {get;}
+	public Incarna Incarna => Presence.Incarna; // convenience shortcut
 
 	/// <summary> Energy gain per turn </summary>
 	public int EnergyPerTurn => Presence.EnergyPerTurn;

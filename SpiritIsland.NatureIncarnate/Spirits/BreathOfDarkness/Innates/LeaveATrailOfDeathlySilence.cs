@@ -5,12 +5,13 @@ public class LeaveATrailOfDeathlySilence {
 
 	[InnateTier( "2 moon,1 animal", "1 Damage at Incarna. You may Push Incarna.", 0 )]
 	static public async Task Option1( Spirit self ) {
-		if( self.Presence is not IHaveIncarna ihi || ihi.Incarna.Space == null ) return;
+		Incarna incarna = self.Incarna;
+		if( !incarna.IsPlaced ) return;
 
-		var incarnaCtx = self.Target(ihi.Incarna.Space.Space );
+		var incarnaCtx = self.Target(incarna.Space.Space );
 		await incarnaCtx.DamageInvaders(1,Human.Invader);
 
-		await incarnaCtx.PushUpTo(1,ihi.Incarna.Class);
+		await incarnaCtx.PushUpTo(1,incarna.Class);
 	}
 
 	[InnateTier( "3 moon,1 air, 1 animal", "1 Damage at Incarna. You may Push Incarna.", 1 )]
@@ -21,14 +22,13 @@ public class LeaveATrailOfDeathlySilence {
 
 	[InnateTier( "5 moon,2 air,3 animal", "Move Incarna to Endless-Dark. It Brings 1 Invader (from its land).", 3 )]
 	static public async Task Option4( Spirit self ) {
-		if(self.Presence is not IHaveIncarna ihi || ihi.Incarna.Space == null) return;
+		Incarna incarna = self.Incarna;
+		if(!incarna.IsPlaced) return;
 
-		var from = ihi.Incarna.Space.Space;
-		var to = EndlessDark.Space;
+		var result = await incarna.AsSpaceToken()
+			.MoveTo(EndlessDark.Space);
 
-		await ihi.Incarna.On(from).MoveTo(to); // !!! if Incarna inheritted from SpaceToken, this would be seriously simplified
-
-		await new TokenMover(self,"Bring",from,to)
+		await new TokenMover(self,"Bring",result.From,result.To)
 			.AddGroup( 1, Human.Invader )
 			.DoN();
 

@@ -18,8 +18,8 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 		// if on board
 		EmberEyedBehemoth eeb = (EmberEyedBehemoth)self;
 		Incarna incarna = eeb.Incarna;
-		SpaceState? from = incarna.Space;
-		if(from is not null)
+		if(incarna.IsPlaced) {
+			SpaceState from = incarna.Space;
 			// Move/Push
 			await new TokenMover(eeb,"Move/Push", from,
 					// to SS or adjacents
@@ -27,7 +27,7 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 				)
 				.AddAll(incarna)
 				.DoN();
-		else {
+		} else {
 			Space? space = await self.SelectAsync( new A.Space( "Select space to place Incarna.", eeb.Presence.SacredSites, Present.Done ) );
 			if(space == null) return;
 			await space.Tokens.AddAsync( incarna, 1 );

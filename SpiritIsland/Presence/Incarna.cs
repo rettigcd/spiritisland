@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland;
 
 #nullable enable
-public class Incarna 
-	: IIncarnaToken
-	, ITokenClass
-	, ITrackMySpaces
-{
+public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMySpaces {
+
+	static readonly FakeSpace NullSpace = new FakeSpace( "Incarna-Null-Space" ); // 1 null space for all Incarna
 
 	public Spirit Self { get; }
 
@@ -20,10 +18,14 @@ public class Incarna
 		_empowered = empowered;
 	}
 
-	public SpaceState? Space => _spaceCounts.Keys
+	public SpaceState Space => _spaceCounts.Keys
 		.Where( SpiritIsland.Space.Exists )
 		.Tokens()
-		.SingleOrDefault(); // 0 or 1
+		.SingleOrDefault() ?? NullSpace;
+
+	public bool IsPlaced => _spaceCounts.Any();
+
+	public SpaceToken AsSpaceToken() => this.On(Space.Space); // Assumes Space is not null.
 
 	public bool Empowered { get; set; }
 
@@ -33,21 +35,24 @@ public class Incarna
 
 	public string SpaceAbreviation => _abreviation + (Empowered ? "+" : "-");
 
-	ITokenClass IToken.Class => this;
+	public ITokenClass Class => this;
 
 	#region IEntityClass properties
-	public string Label => "My incarna???";
+	public string Label => $"{Self.Text} Incarna";
 
-	public bool HasTag(ITag tag) => tag == this || tag == Self.Presence || tag == TokenCategory.Incarna; // Class and entity
+	// Class & Token method
+	public bool HasTag(ITag tag) 
+		=> tag == this || tag == TokenCategory.Incarna // Is: This Incarna token or any Incarna
+		|| ((ITokenClass)Self.Presence).HasTag(tag);   // Acts as Spirit Presence and/or belongs to this spirit.
 
 	#endregion
 
+	// !!! check that SpiritActions that Move/Add Invarna use this.
 	public async Task MoveTo( Space destination, bool allowAdd ) {
-		if(Space != null)
-			await this.On( Space.Space ).MoveTo( destination );
+		if(IsPlaced)
+			await AsSpaceToken().MoveTo( destination );
 		else if(allowAdd)
 			await destination.Tokens.AddAsync( this, 1 );
-
 	}
 
 	void ITrackMySpaces.Clear() {

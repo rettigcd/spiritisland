@@ -6,13 +6,13 @@
 /// </summary>
 public class DahanNearToIncarnaSitOutRavage : BaseModEntity, IConfigRavages {
 
-	readonly IIncarnaToken _incarna;
-	public DahanNearToIncarnaSitOutRavage( IIncarnaToken incarna ) {
+	readonly Incarna _incarna;
+	public DahanNearToIncarnaSitOutRavage( Incarna incarna ) {
 		_incarna = incarna;
 	}
 
 	void IConfigRavages.Config( SpaceState space ) {
-		if( _incarna.Space != null && space.InOrAdjacentTo.Contains(_incarna.Space)) {
+		if( _incarna.IsPlaced && space.InOrAdjacentTo.Contains(_incarna.Space)) {
 			var dahan = space.HumanOfTag(Human.Dahan)
 				.ToDictionary( x => x, x => space[x] )
 				.ToCountDict();

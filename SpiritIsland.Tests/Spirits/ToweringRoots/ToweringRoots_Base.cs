@@ -6,14 +6,14 @@ namespace SpiritIsland.Tests.Spirits.ToweringRoots;
 public class ToweringRoots_Base {
 	public ToweringRoots_Base() {
 		_spirit = new ToweringRootsOfTheJungle();
-		_presence = (IncarnaPresence)_spirit.Presence;
+		_presence = _spirit.Presence;
 		_board = Board.BuildBoardA();
 		_gs = new GameState( _spirit, _board );
 	}
 
 	// Given: spirit with Incarna
 	readonly protected ToweringRootsOfTheJungle _spirit;
-	readonly protected IncarnaPresence _presence;
+	readonly protected SpiritPresence _presence;
 	readonly protected Board _board;
 	readonly protected GameState _gs;
 

@@ -24,6 +24,8 @@ public class BlightToken : TokenClassToken
 		// Destory presence
 		if(config.DestroyPresence)
 			foreach(Spirit spirit in gs.Spirits)
+				// I would like to replace this with:
+				// await new SourceSelector( args.To ).AddGroup( 1, spirit.Presence ).DestroyN( spirit );
 				if( spirit.Presence.IsOn( args.To ) )
 					await args.To.Destroy( spirit.Presence.TokensDeployedOn(args.To.Space).First(), 1 ); // !!! Not correct for Incarna
 

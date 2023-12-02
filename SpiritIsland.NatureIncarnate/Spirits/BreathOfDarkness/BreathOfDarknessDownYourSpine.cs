@@ -27,7 +27,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 	#endregion Custom Presence
 
 	public BreathOfDarknessDownYourSpine() : base(
-		spirit => new IncarnaPresence( spirit,
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.Energy3, EmpowerIncarnaTrack, Track.MkEnergy(4,Element.Animal), Track.MkEnergy(5,Element.Air) ),
 			new PresenceTrack( Track.Card2, MovePresence, Track.Card3, Track.MoonEnergy, Track.CardReclaim1, Card4Air ),
 			new Incarna(spirit,"BoDDyS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
@@ -74,8 +74,6 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		gameState.OtherSpaces.Add(EndlessDark.Space);
 	}
 
-	public Incarna Incarna => ((IncarnaPresence)Presence).Incarna;
-
 	public override void InitSpiritAction( ActionScope scope ) {
 		if( scope.Category == ActionCategory.Spirit_Power )
 			scope.Upgrader = x => new TerrorStalksTheLand( x );
@@ -83,7 +81,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 		foreach(var action in base.GetAvailableActions( speed )) yield return action;
-		if( speed == Phase.Fast && ((IncarnaPresence)Presence).Incarna.Empowered && !_usedEmpoweredAbduct )
+		if( speed == Phase.Fast && Presence.Incarna.Empowered && !_usedEmpoweredAbduct )
 			yield return _ea;
 	}
 

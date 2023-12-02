@@ -48,8 +48,6 @@ public class TerrorStalksTheLand_Tests {
 			u.NextDecision.HasPrompt( "Rouse the Trees and Stones: Target Space" ).HasOptions( "A5,A7,A8,EndlessDark" ).Choose( "A8" );
 			u.NextDecision.HasPrompt( "Damage (2 remaining)" ).HasOptions( "T@2" ).Choose( "T@2" );
 			u.NextDecision.HasPrompt( "Damage (1 remaining)" ).HasOptions( "T@1" ).Choose( "T@1" );
-			// u.NextDecision.HasPrompt( "a" ).HasOptions( "b" ).Choose( "c" );
-			// u.NextDecision.HasPrompt( "a" ).HasOptions( "b" ).Choose( "c" );
 		} ).ShouldComplete( "Rouse the Tree and Stone" );
 
 		// Then: Explorer has been abducted.

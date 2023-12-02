@@ -16,11 +16,10 @@ public class ReplacePresenceWithIncarna : SpiritAction {
 	}
 
 	static async Task PlaceIncarnaOn( Spirit spirit, Space space ) { // duplicate
-		if( spirit.Presence is not IHaveIncarna ihi) return;
-		var incarna = ihi.Incarna;
-		if(incarna.Space != null)
+		var incarna = spirit.Incarna;
+		if(incarna.IsPlaced)
 			await incarna.Space.RemoveAsync( incarna, 1 );
-
+		
 		await space.Tokens.AddAsync( incarna, 1 );
 	}
 }

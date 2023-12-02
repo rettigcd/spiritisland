@@ -17,17 +17,6 @@ public interface ICalcRange {
 	IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc );
 }
 
-public interface IIncarnaToken : IToken, IAppearInSpaceAbreviation {
-	SpaceState Space { get; }
-	bool Empowered { get; set; }
-}
-
-
-public interface IHaveIncarna {
-	public IIncarnaToken Incarna { get; }
-}
-
-
 /// <summary>
 /// Since Spirit.SourceCalculator is modified by Entwined, use only for Powers
 /// </summary>
@@ -39,8 +28,8 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 			TargetFrom.Presence => presence.Lands.Tokens(),
 			TargetFrom.SacredSite => presence.SacredSites,
 			TargetFrom.SuperSacredSite => presence.SuperSacredSites,
-			TargetFrom.Incarna => presence is IHaveIncarna incarnaHolder && incarnaHolder.Incarna.Space is not null 
-				? new SpaceState[] { incarnaHolder.Incarna.Space } 
+			TargetFrom.Incarna => presence is SpiritPresence sp && sp.Incarna.IsPlaced // !! Maybe IKnowSpiritLocations should have an IEnumerable<SpaceState> InvarnaLocations;
+				? new SpaceState[] { sp.Incarna.Space } 
 				: Array.Empty<SpaceState>(),
 			_ => throw new ArgumentException( "Invalid presence source " + from ),
 		};

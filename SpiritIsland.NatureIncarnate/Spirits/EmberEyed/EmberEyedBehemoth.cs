@@ -18,7 +18,7 @@ public class EmberEyedBehemoth : Spirit {
 	};
 
 	public EmberEyedBehemoth():base( 
-		spirit => new IncarnaPresence(spirit,
+		spirit => new SpiritPresence(spirit,
 			new PresenceTrack(Track.Energy0,Track.Energy1,Track.MkEnergy(2,Element.Fire),Track.Energy3,Track.EarthEnergy,Track.MkEnergy(4,Element.Plant), Track.MkEnergy(5,Element.Fire)),
 			new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,Track.Card3,Track.FireEnergy,Track.Card4),
 			new Incarna(spirit, "EEB", Img.EEB_Incarna, Img.EEB_Incarna_Empowered)
@@ -143,6 +143,5 @@ public class EmberEyedBehemoth : Spirit {
 			Incarna.Empowered = options.Length == 3;
 		}
 	}
-	public Incarna Incarna => ((IncarnaPresence)Presence).Incarna;
 
 }

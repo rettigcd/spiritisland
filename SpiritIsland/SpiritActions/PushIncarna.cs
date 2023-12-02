@@ -4,11 +4,10 @@ public class PushIncarna : SpiritAction {
 	public PushIncarna():base( "Push Incarna" ) { }
 
 	public override async Task ActAsync( Spirit self ) {
-		if(self.Presence is not IncarnaPresence presence || presence.Incarna.Space == null ) return;
+		var incarna = self.Incarna;
+		if( !incarna.IsPlaced ) return;
 
-		await presence.Incarna.Space.SourceSelector
-			.AddGroup(1,presence.Incarna)
-			.PushN( self );
+		await incarna.AsSpaceToken().PushAsync(self);
 	}
 
 }

@@ -47,7 +47,7 @@ public class SpiritImageMemoryCache {
 			return _presenceImg is not null ? _presenceImg : throw new Exception("missing presence image");
 
 		// Invalidate Incarna Image when the .Img switches
-		if( imageToken is IIncarnaToken it && it.Img != _incarnaImg ) {
+		if( imageToken is Incarna it && it.Img != _incarnaImg ) {
 			_incarnaImg = it.Img;
 			if(_tokenImages.ContainsKey( imageToken )) {
 				_tokenImages[imageToken].Dispose();

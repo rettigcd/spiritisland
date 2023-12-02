@@ -21,15 +21,9 @@ In tests:  Start an async method, make the UI calls, then await the Task to comp
 async in parallel can choke off threads - xUnit - limit # of tests running in parallel using Collections
 
 
-
-
 ==== To Do ====
 
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
-
-INCARNA - Make SpiritPresence & Incana derive from SpaceToken
-INCARNA - Should all SpiritPresence have nullable Incarna token property so we don't have to use: is IHaveIncarna ihi?
-INCARNA - Add a Spirit-Presence tag that All Spirit Tokens (& Incarna) match against - so we can count Presence (Entwine the fates of all)
 
 ----------
 ----------

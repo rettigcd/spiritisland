@@ -4,7 +4,16 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	#region constructors
 
-	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token = null )	{
+	public SpiritPresence( Spirit spirit,  IPresenceTrack energy, IPresenceTrack cardPlays )
+		:this(spirit,energy,cardPlays,new SpiritPresenceToken(spirit),null){ }
+
+	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token )
+		:this(spirit,energy,cardPlays,token,null){ }
+
+	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, Incarna incarna )
+		:this(spirit,energy,cardPlays,new SpiritPresenceToken(spirit),incarna) { }
+
+	SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token, Incarna incarna ) {
 		Self = spirit;
 
 		Energy = energy;
@@ -15,8 +24,10 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 		InitEnergyAndCardPlays();
 
-		Token = token ?? new SpiritPresenceToken(spirit);
+		Token = token;
+		Incarna = incarna ?? new Incarna(spirit,"[-]",Img.None,Img.None); // a null Incarna
 	}
+
 
 	protected void InitEnergyAndCardPlays() {
 		// !!! in unit tests, Revealed is sometimes empty
@@ -29,6 +40,11 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	protected Spirit Self { get; }
 
 	#endregion
+
+	/// <summary> The normal spirit presence. </summary>
+	public SpiritPresenceToken Token { get; }
+
+	public Incarna Incarna { get; }
 
 	#region Tracks / Board
 
@@ -60,16 +76,27 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		}
 	}
 
-	public virtual IEnumerable<Track> RevealOptions() => Energy.RevealOptions.Union( CardPlays.RevealOptions );
+	virtual public IEnumerable<Track> RevealOptions() => Energy.RevealOptions.Union( CardPlays.RevealOptions );
 	public IEnumerable<Track> CoverOptions => Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
 
 	IEnumerable<Track> Revealed => Energy.Revealed.Union(CardPlays.Revealed );
+	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new();
+
+	public void AdjustEnergyTrack( int delta ) {
+		// ctx.Self.EnergyCollected.Add( spirit => --spirit.Energy );
+		if(delta == 0) return;
+		foreach(Track t in Energy.Slots)
+			if(t.Energy.HasValue)
+				t.Energy += delta;
+
+		InitEnergyAndCardPlays();
+	}
 
 	// ------------------------------
 	// ----  Reveal / Return  -------
 	// ------------------------------
 
-	protected virtual async Task RevealTrack( Track track ) {
+	virtual protected async Task RevealTrack( Track track ) {
 		if(track == Track.Destroyed && 0 < Destroyed)
 			--Destroyed;
 		else {
@@ -100,12 +127,43 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	#endregion
 
+	#region nice Predicate methods 
+
+	/// <summary>
+	/// Specifies if the the given space is valid.
+	/// </summary>
+	virtual public bool CanBePlacedOn( SpaceState spaceState ) => ActionScope.Current.TerrainMapper.IsInPlay( spaceState.Space );
+
+	virtual public bool IsSacredSite( SpaceState space ) => 2 <= CountOn(space);
+
+	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token] || HasIncarna(spaceState);
+
+	// virtual public bool IsOn( Board board ) => Token.IsOn(board);
+	public bool IsOn( Board board ) => Token.IsOn(board) 
+		|| Incarna.IsPlaced && Incarna.Space.Space.Boards.Contains(board);
+
+	public bool IsOnIsland => Token.IsOnIsland || Incarna.IsPlaced;
+
+	public int CountOn( SpaceState spaceState ) => spaceState[Token] // For Mapper in a .Select(...)
+		+ (HasIncarna(spaceState) ? 1 : 0);
+
+	public IEnumerable<IToken> TokensDeployedOn( SpaceState space ) {
+		// !!! TODO Replace calls to this with:     spaceState.OfTag(this);
+		if(0 < space[Token]) yield return Token;
+		if(0 < space[Incarna]) yield return Incarna;
+	}
+
+
+	bool HasIncarna(SpaceState ss) => ss == Incarna.Space;
+
+	#endregion
+
+	#region Moving Presenece between: Tracks <=> Boards <=> Destroyed
+
 	public async Task DestroyPresenceOn( SpaceState spaceState ) {
 		if(spaceState.Has( this ))
 			await spaceState.Destroy( Token, 1 );
 	}
-
-	#region Destroyed
 
 	public int Destroyed {
 		get => Token.Destroyed;
@@ -118,28 +176,6 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		Destroyed -= count;
 	}
 
-	#endregion
-
-	#region nice Predicate methods 
-
-	/// <summary>
-	/// Specifies if the the given space is valid.
-	/// </summary>
-	public virtual bool CanBePlacedOn( SpaceState spaceState ) => ActionScope.Current.TerrainMapper.IsInPlay( spaceState.Space );
-
-	public virtual bool IsSacredSite( SpaceState space ) => 2 <= CountOn(space);
-
-	virtual public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token]; // For Predicate in a .Where(...)
-	virtual public bool IsOn( Board board ) => Token.IsOn(board);
-	virtual public bool IsOnIsland => Token.IsOnIsland; // !!?? are we overriding to include Incarna?
-
-	virtual public int CountOn( SpaceState spaceState ) => spaceState[Token]; // For Mapper in a .Select(...)
-
-	virtual public IEnumerable<IToken> TokensDeployedOn( SpaceState space ) { if(IsOn( space )) yield return Token; }
-
-	#endregion
-
-	#region Game-Play things you can do with presence
 
 	/// <param name="from">Track, Space, or SpaceToken</param>
 	public async Task PlaceAsync( IOption from, Space to ) {
@@ -203,9 +239,14 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
-	virtual public IEnumerable<Space> Lands => Token.Spaces_Existing;
+	public IEnumerable<Space> Lands => Incarna.IsPlaced
+		? Token.Spaces_Existing.Include( Incarna.Space.Space )
+		: Token.Spaces_Existing;
 
-	virtual public IEnumerable<SpaceToken> Deployed => Token.Deployed; // don't use .Spaces because it gets overriden to include non-token spaces
+
+	public IEnumerable<SpaceToken> Deployed => Incarna.IsPlaced 
+		? Token.Deployed.Include( Incarna.AsSpaceToken() )
+		: Token.Deployed;
 
 	public IEnumerable<SpaceToken> Movable => CanMove ? Deployed : Enumerable.Empty<SpaceToken>();
 
@@ -214,24 +255,10 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	#endregion Exposed Data
 
-	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new();
-
-	/// <summary> The normal spirit presence. </summary>
-	public SpiritPresenceToken Token { get; }
-
-	public void AdjustEnergyTrack( int delta ) {
-		// ctx.Self.EnergyCollected.Add( spirit => --spirit.Energy );
-		if(delta == 0) return;
-		foreach(Track t in Energy.Slots)
-			if(t.Energy.HasValue)
-				t.Energy += delta;
-
-		InitEnergyAndCardPlays();
-	}
-
 	#region ITokenClass Imp
 	string ITokenClass.Label => "Presence";
-	bool ITokenClass.HasTag( ITag tag ) => tag == this || tag == TokenCategory.Presence; // for both class and for token.
+	bool ITokenClass.HasTag( ITag tag ) => tag == this // Spirit.Presence acts like the class for the Spirit
+		|| tag == TokenCategory.Presence; // !! Should be on Incarna Also
 	#endregion ITokenClass Imp
 
 	#region Memento
@@ -247,13 +274,16 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 			_cardPlays = src.CardPlays.SaveToMemento();
 			_destroyed = src.Destroyed;
 			_lowestTrackEnergy = FirstEnergyTrackValue( src );
+			_incarnaEmpowered = src.Incarna.Empowered;
+			// don't need to save Space because that gets set via Tokens and ITrackMySpaces
 		}
 
 		virtual public void Restore( SpiritPresence src ) {
 			src.Energy.LoadFrom( _energy );
 			src.CardPlays.LoadFrom( _cardPlays );
 			src.Destroyed = _destroyed;
-
+			src.Incarna.Empowered = _incarnaEmpowered;
+			// don't need to restore Space because that gets set via Tokens and ITrackMySpaces
 			src.AdjustEnergyTrack( _lowestTrackEnergy /* what it should be */ - FirstEnergyTrackValue(src) /* what it is */ );
 		}
 
@@ -263,7 +293,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		readonly IMemento<IPresenceTrack> _cardPlays;
 		readonly int _destroyed;
 		readonly int _lowestTrackEnergy;
-		public bool EmpoweredIncarna;
+		readonly bool _incarnaEmpowered;
 	}
 
 	#endregion

@@ -14,7 +14,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 
 	public WanderingVoiceKeensDelirium()
 		:base(spirit=>
-			new IncarnaPresence( spirit, 
+			new SpiritPresence( spirit, 
 				new PresenceTrack(Track.Energy0,Track.Energy1,SunOrMoon, Track.Energy2, Track.AirEnergy, Track.Energy4, PushYourIncarna), 
 				new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,Track.Card3,Track.CardReclaim1,Track.Card4),
 				new VoiceIncarna(spirit)
@@ -68,13 +68,13 @@ public class WanderingVoiceKeensDelirium : Spirit {
 		SpaceState s6 = board[6].Tokens;
 		SpaceState s7 = board[7].Tokens;
 		// incanra on land #6
-		s6.Init(((IncarnaPresence)Presence).Incarna,1);
+		s6.Init(Presence.Incarna,1);
 		// 1 presence in land #6
 		s6.Init(Presence.Token,1);
 		// 1 presence in land #7
 		s7.Init(Presence.Token,1);
 
-		GameState.Current.AddIslandMod( new DahanNearToIncarnaSitOutRavage( ((IHaveIncarna)Presence).Incarna ) );
+		GameState.Current.AddIslandMod( new DahanNearToIncarnaSitOutRavage( Presence.Incarna ) );
 	}
 
 	#region Sensless Roaming

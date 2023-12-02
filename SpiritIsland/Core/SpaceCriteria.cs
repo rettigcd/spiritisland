@@ -54,8 +54,8 @@ public class SpaceCriteria {
 		public bool IsPresent => FocusSpirit( nameof( IsPresent ) ).Presence.IsOn( Tokens );
 		public bool HasIncarna {
 			get {
-				return FocusSpirit(nameof(HasIncarna)).Presence is IHaveIncarna carny
-					&& carny.Incarna.Space?.Space == Tokens.Space;
+				var incarna = FocusSpirit(nameof(HasIncarna)).Incarna;
+				return Tokens.Space == incarna.Space.Space;
 			}
 		}
 		Spirit FocusSpirit(string opName) => _focusSpirit ?? throw new InvalidOperationException($"Spirit not available for testing {opName}.");

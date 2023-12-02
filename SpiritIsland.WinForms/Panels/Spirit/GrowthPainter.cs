@@ -123,7 +123,7 @@ public sealed class GrowthPainter : IDisposable{
 			// Ember Eyed
 			"Discard a Power Card with fire"          => DiscardCardWithFire(),
 			"Reclaim All with Fire"                   => ReclaimAllWithFire(),
-			"EmpowerIncarna"                          => new ImgRect(Img.EEB_Incarna_Empowered), // EEB is the only one in growth
+			"Empower Incarna"                          => new ImgRect(Img.EEB_Incarna_Empowered), // EEB is the only one in growth
 			"Move Incarna - Range 1"                  => MovePresenceRect(1, Img.Icon_Incarna),
 			_                                         => null,
 		};

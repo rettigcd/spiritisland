@@ -12,17 +12,12 @@ public class MoveOnlyIncarna : SpiritAction {
 	}
 
 	public override async Task ActAsync( Spirit self ) {
-		// Move Incarna
-		if(self.Presence is not IHaveIncarna ihi) return;
+		var incarna = self.Incarna;
+		if(!incarna.IsPlaced) return; // not on board, don't add
 
-		var incarna = ihi.Incarna;
-		if(incarna.Space == null) return; // not on board, don't add
-
-		await new TokenMover(self,"Move"
-				,incarna.Space
-				, incarna.Space.Range(Range).ToArray()
-			)
-			.AddGroup(1,incarna.Class)
+		var space = incarna.Space;
+		await new TokenMover(self,"Move",space,space.Range(Range).ToArray())
+			.AddGroup( 1, incarna )
 			.DoUpToN();
 	}
 

@@ -5,12 +5,10 @@
 /// </summary>
 public class IncarnaRangeCalculator : DefaultRangeCalculator {
 
-	readonly Spirit _self;
-	readonly IIncarnaToken _incarna;
+	readonly Incarna _incarna;
 
 	public IncarnaRangeCalculator( Spirit self ) { 
-		_self = self;
-		_incarna = ((IHaveIncarna)_self.Presence).Incarna;
+		_incarna = self.Incarna;
 	}
 
 	public override IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) 
