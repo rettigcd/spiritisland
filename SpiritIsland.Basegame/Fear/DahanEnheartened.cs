@@ -27,7 +27,7 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	static BaseCmd<TargetSpaceCtx> PushOrGather1 => Cmd.Pick1WithSpirit( Cmd.PushNDahan( 1 ), Cmd.GatherUpToNDahan( 1 ) );
+	static BaseCmd<TargetSpaceCtx> PushOrGather1 => Cmd.Pick1( Cmd.PushNDahan( 1 ), Cmd.GatherUpToNDahan( 1 ) );
 
 	static SpaceCmd Gather2DahanThen1DamageIfDahan => new SpaceCmd( "Gather up to 2 dahan then 1 damage if dahan present.", async ctx => {
 		await ctx.GatherUpToNDahan( 2 );

@@ -9,7 +9,7 @@ public class SpillBitternessIntoTheEarth {
 		await ctx.DamageInvaders( 6 );
 
 		// Add 2 badlands/strife
-		var addBadlandsOrStrife = Cmd.Pick1WithSpirit( "Add badlands/strife", Cmd.AddBadlands(1), Cmd.AddStrife(1) );
+		var addBadlandsOrStrife = Cmd.Pick1( "Add badlands/strife", Cmd.AddBadlands(1), Cmd.AddStrife(1) );
 		await addBadlandsOrStrife.Repeat(2).ActAsync( ctx );
 
 		// and 1 blight.

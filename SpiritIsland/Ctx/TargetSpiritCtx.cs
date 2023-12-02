@@ -3,7 +3,7 @@
 /// <summary>
 /// Only used for Powers.  So binding other spirits, uses starting spirits powers.
 /// </summary>
-public class TargetSpiritCtx : IHaveSpirit {
+public class TargetSpiritCtx : IHaveASpirit {
 
 	public TargetSpiritCtx( Spirit self, Spirit target ) {
 		Self = self;

@@ -15,7 +15,7 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 
 	[FearLevel( 2, "Each player removes 2 Explorer or 1 Town from a land with Dahan." )]
 	public Task Level2( GameCtx ctx )
-		=> Cmd.Pick1WithSpirit( Cmd.RemoveExplorers( 2 ), Cmd.RemoveTowns( 1 ) )
+		=> Cmd.Pick1( Cmd.RemoveExplorers( 2 ), Cmd.RemoveTowns( 1 ) )
 			.From().SpiritPickedLand().Which( Has.DahanAndExplorerOrTown )
 			.ForEachSpirit()
 			.ActAsync( ctx );

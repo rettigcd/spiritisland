@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class TargetSpaceCtx : IHaveSpirit {
+public class TargetSpaceCtx : IHaveASpirit {
 
 	#region private fields
 	InvaderBinding _invadersRO;

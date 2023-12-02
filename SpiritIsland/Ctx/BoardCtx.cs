@@ -4,7 +4,7 @@
 /// Used for events / fear that say "for each board"
 /// Binds a board to its spirit
 /// </summary>
-public class BoardCtx : IHaveSpirit {
+public class BoardCtx : IHaveASpirit {
 
 	// Binds Board to Spirit.
 

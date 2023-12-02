@@ -1,6 +1,9 @@
 ﻿namespace SpiritIsland;
 
-public abstract partial class Spirit : IOption {
+public abstract partial class Spirit 
+	: IOption
+	, IHaveASpirit // so all 'contexts' can you the same Picker and have a spirit to do the decision making.
+{
 
 	#region constructor
 
@@ -588,6 +591,8 @@ public abstract partial class Spirit : IOption {
 
 	// Works like badlands.
 	public int BonusDamage { get; set; } // This is a hack for Flame's Fury
+
+	Spirit IHaveASpirit.Self => this;
 
 }
 

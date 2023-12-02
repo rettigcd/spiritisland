@@ -133,27 +133,10 @@ public static partial class Cmd {
 		}
 	);
 
-	static public BaseCmd<Spirit> Pick1( params IActOn<Spirit>[] actions )
-		=> Pick1(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
+	static public BaseCmd<T> Pick1<T>( params IActOn<T>[] actions ) where T : IHaveASpirit
+		=> Pick1<T>(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
 
-	static public BaseCmd<Spirit> Pick1( string description, params IActOn<Spirit>[] actions )
-		=> new BaseCmd<Spirit>(
-			description,
-			async self => {
-				IActOn<Spirit>[] applicable = actions.Where( opt => opt != null && opt.IsApplicable(self) ).ToArray();
-				string text = await self.SelectText( "Select action", applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
-				if(text != null && text != TextOption.Done.Text) {
-					var selectedOption = applicable.Single( a => a.Description == text );
-					await selectedOption.ActAsync( self );
-				}
-			}
-		);
-
-
-	static public BaseCmd<T> Pick1WithSpirit<T>( params IActOn<T>[] actions ) where T : IHaveSpirit
-		=> Pick1WithSpirit<T>(actions.Select(a=>a.Description).Join_WithLast(", ", " OR "), actions );
-
-	static public BaseCmd<T> Pick1WithSpirit<T>( string description, params IActOn<T>[] actions ) where T : IHaveSpirit
+	static public BaseCmd<T> Pick1<T>( string description, params IActOn<T>[] actions ) where T : IHaveASpirit
 		=> new BaseCmd<T>(
 			description,
 			async ctx => {

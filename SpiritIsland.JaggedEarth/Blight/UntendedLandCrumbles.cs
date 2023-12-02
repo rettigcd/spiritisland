@@ -7,7 +7,7 @@ public class UntendedLandCrumbles : BlightCard {
 	public override BaseCmd<GameCtx> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
 			Cmd.ForEachBoard(
-				Cmd.Pick1WithSpirit(
+				Cmd.Pick1(
 					AddBlightAdjacentToBligtht,		// Add 1 blight to a land adjacent to blight.
 					JointlyPayEnergy( 3 ),			// Spirits may prevent this on each boards by jointly paying 3 energy
 					JointlyDestroyPresenceOnBoard	// or destroying 1 presence from that board.

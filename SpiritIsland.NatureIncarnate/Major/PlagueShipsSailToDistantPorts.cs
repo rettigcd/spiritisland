@@ -11,7 +11,7 @@ public class PlagueShipsSailToDistantPorts {
 		// 1 Fear.
 		ctx.AddFear(1);
 
-		await Cmd.Pick1WithSpirit( 
+		await Cmd.Pick1( 
 			AddDisease, 
 			PayToRemoveFearCard.OnlyExecuteIf(await ctx.YouHave("2 sun,2 water,2 animal") && CanAfford() )
 		).ActAsync(ctx);
