@@ -77,7 +77,7 @@ public abstract partial class Spirit
 	}
 
 	async Task ApplyRevealedPresenceTrack() {
-		await using ActionScope action2 = await ActionScope.Start( ActionCategory.Spirit_PresenceTrackIcon );
+		await using ActionScope action2 = await ActionScope.StartSpiritAction( ActionCategory.Spirit_PresenceTrackIcon, this );
 		await ApplyRevealedPresenceTracks_Inner( this );
 	}
 

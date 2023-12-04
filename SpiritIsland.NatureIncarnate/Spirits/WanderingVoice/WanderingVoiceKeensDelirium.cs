@@ -88,15 +88,5 @@ public class WanderingVoiceKeensDelirium : Spirit {
 		ActionScope.Current.Upgrader = (x) => new SenslessRoamingTokens( this, x );
 	}
 
-	//public override SelfCtx BindMyPowers() {
-	//	ActionScope.Current.Upgrader = (x) => new SenslessRoamingTokens( this, x );
-	//	return new SelfCtx( this );
-	//}
-
-	//public override SelfCtx BindSelf() {
-	//	ActionScope.Current.Upgrader = (x) => new SenslessRoamingTokens( this, x );
-	//	return base.BindSelf();
-	//}
-
 	#endregion Senseless Roaming
 }

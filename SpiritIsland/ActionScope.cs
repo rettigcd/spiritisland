@@ -106,7 +106,11 @@ public sealed class ActionScope : IAsyncDisposable {
 	}
 
 	static void VerifyActionCategory( ActionCategory cat, bool expectedIsSpiritActin, string constructorName ) {
-		bool isSpiritAction = cat == ActionCategory.Spirit_Growth || cat == ActionCategory.Spirit_Power;
+		bool isSpiritAction 
+			 = cat == ActionCategory.Spirit_Growth 
+			|| cat == ActionCategory.Spirit_PresenceTrackIcon
+			|| cat == ActionCategory.Spirit_Power;
+			
 		if( isSpiritAction != expectedIsSpiritActin )
 			throw new InvalidOperationException($"{cat} category should not be used with {constructorName}.");
 	}
@@ -119,14 +123,43 @@ public sealed class ActionScope : IAsyncDisposable {
 	
 	/// <summary> Called from Space.Tokens to get Tokens. </summary>
 	/// <remarks> Provides hook for spirits to modify the SpaceState object used for their actions.</remarks>
-	public SpaceState AccessTokens(Space space) => _upgrader( GameState.Tokens[space] );
+	public SpaceState AccessTokens(Space space) => Upgrader( GameState.Tokens[space] );
+
+	#region Anything that gets Configured by Spirit Actions
 
 	public Func<SpaceState, SpaceState> Upgrader {
+		get { return _upgrader; }
 		set {
-			if(_neverCache) throw new InvalidOperationException( "Can't set owner on default scope" );
+			if(_neverCache) throw new InvalidOperationException( "Can't set Upgrader on default scope" );
 			_upgrader = value;
 		}
 	}
+
+	#endregion
+
+	#region Non-Spirit Initialized Action Scoped data
+
+	// Generic String / object dictionary to track action things
+
+	public bool ContainsKey(string key) => _dict != null && _dict.ContainsKey( key );
+
+	public T SafeGet<T>(string key, T defaultValue=default) => ContainsKey(key) ? (T) this[key] : defaultValue;
+
+	public T SafeGet<T>( string key, Func<T> initFunc ) {  
+		if(ContainsKey( key )) return (T)this[key];
+		T newValue = initFunc();
+		this[key] = newValue;
+		return newValue;
+	}
+
+	public object this[string key]{
+		get => ContainsKey(key) ? _dict[key] : throw new InvalidOperationException($"{key} was not set");
+		set => (_dict??= new())[key] = value;
+	}
+
+	Dictionary<string, object> _dict;
+
+	#endregion Non-Spirit Initialized Action Scoped data
 
 	public TerrainMapper TerrainMapper => _terrainMapper 
 		??= (GameState?.GetTerrain( Category ) ?? new TerrainMapper()); // If not GameState / configuration, use default
@@ -162,26 +195,6 @@ public sealed class ActionScope : IAsyncDisposable {
 		return $"{Id} : {Category} : "+Owner?.Text??"";
 	}
 
-
-	#region action-scoped data
-	// String / object dictionary to track action things
-	public bool ContainsKey(string key) => dict != null && dict.ContainsKey( key );
-
-	public T SafeGet<T>(string key, T defaultValue=default) => ContainsKey(key) ? (T) this[key] : defaultValue;
-
-	public T SafeGet<T>( string key, Func<T> initFunc ) {  
-		if(ContainsKey( key )) return (T)this[key];
-		T newValue = initFunc();
-		this[key] = newValue;
-		return newValue;
-	}
-
-	public object this[string key]{
-		get => ContainsKey(key) ? dict[key] : throw new InvalidOperationException($"{key} was not set");
-		set => (dict??= new())[key] = value;
-	}
-	#endregion
-
 	public async ValueTask DisposeAsync() {
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
@@ -207,7 +220,7 @@ public sealed class ActionScope : IAsyncDisposable {
 	readonly ActionScopeContainer _container;
 	readonly bool _neverCache = false; // true for the root Scope
 	readonly ActionScope _old;
-	Dictionary<string, object> dict;
+
 	AsyncEvent<ActionScope> _endOfThisAciton;
 	TerrainMapper _terrainMapper;
 	GameState _gameState;
