@@ -31,15 +31,25 @@ class ArtworkInit {
 	async Task InitArtwork() {
 		var builder = ConfigureGameDialog.GameBuilder;
 		List<IFearCard> fearCards = builder.BuildFearCards();
-		PowerCard[] powerCards = builder.BuildMajorCards()
-			.Union( builder.BuildMinorCards() )
-			.Union( builder.BuildSpirits( builder.SpiritNames ).SelectMany( s => s.Hand ) )
-			.ToArray();
+		PowerCard[] majors = builder.BuildMajorCards();
+		PowerCard[] minors = builder.BuildMinorCards();
+		PowerCard[] uniques = builder.BuildSpirits( builder.SpiritNames ).SelectMany( s => s.Hand ).ToArray();
+		List<IBlightCard> blightCards = builder.BuildBlightCards();
 
-		_initTotal = fearCards.Count + powerCards.Length;
+		_initTotal = fearCards.Count 
+			+ blightCards.Count
+			+ majors.Length + minors.Length + uniques.Length;
 
 		BuildFearCards( fearCards );
+		BuildBlightCards( blightCards );
+		await BuildPowerCards( majors );
+		await BuildPowerCards( minors );
+		await BuildPowerCards( uniques );
 
+		_initCurrent = _initTotal;
+	}
+
+	async Task BuildPowerCards( PowerCard[] powerCards ) {
 		foreach(PowerCard powerCard in powerCards) {
 			_initCurrent++;
 			try {
@@ -49,9 +59,19 @@ class ArtworkInit {
 				MessageBox.Show( ex.ToString() );
 			}
 		}
-
-		_initCurrent = _initTotal;
 	}
+
+	void BuildBlightCards( List<IBlightCard> blightCards ) {
+		foreach(IBlightCard blightCard in blightCards) {
+			_initCurrent++;
+			try {
+				using Image img = ResourceImages.Singleton.GetBlightCard( blightCard );
+			}catch(Exception ex) {
+				MessageBox.Show(ex.ToString());
+			}
+		}
+	}
+
 
 	void BuildFearCards( List<IFearCard> fearCards ) {
 		foreach(IFearCard fearCard in fearCards) {

@@ -81,7 +81,6 @@ public class PowerCardImageBuilder {
 		return img;
 	}
 
-
 	static List<string> SplitSentences( string paragraph ) {
 
 		// Every -or- is preceeded by a '.' so this puts -or- on their own line.
