@@ -25,11 +25,30 @@ async in parallel can choke off threads - xUnit - limit # of tests running in pa
 
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
 
-
 Instead of custom TokenPushers - break into pieces and customize only  (# pushed) (PushDestinations)
 
+SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wraps the original Command in a new Command so we don't have to build conditions into SpiritActions. This would allow us to add the encapsulate the condition in PlaugeShipsSaleToDistantPosts
+
 ----------
 ----------
+
+*** Blight cards can be drawn better.
+
+*** Spirit Colors
+
+RANGE - 3 Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
+
+*** Cheat Menu - 
+	Reclaim all cards, 
+	Add Card To Hand, 
+	+10 energy, 
+	+5 of each elementt, 
+	Return Blight to Card
+	Activate Fear Card
+
+*** Growth is not clickable when small.
+
+*** layout => reduce spirit size when not focus
 
 DAMAGE - Rename ctx.DamageInvaders(..) to DamageInvadersAsync(...)
 DAMAGE - Make ctx.DamageInvaders(...) a shortcut to ctx.Group(Human.Invaders).DoDamageAsync(...);
@@ -37,8 +56,6 @@ DAMAGE - Make ctx.DamageInvaders(...) a shortcut to ctx.Group(Human.Invaders).Do
 ORIGIN - When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated. (ScorchingConvergence)
 
 MOVE -  SpaceToken.Move => Take a Count.  Return the .After part of the TokenMoved result.
-
-SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wraps the original Command in a new Command so we don't have to build conditions into SpiritActions. This would allow us to add the encapsulate the condition in PlaugeShipsSaleToDistantPosts
 
 SPACE-SELECTOR - Select A.Space - see all the ways this is done and see if we can simplify the call, like creating a SpaceSelector
 SPACE-SELECTOR - Create a SpaceSelector class that manages selecting spaces. (SolidifyEchoesOfMajestyPast) - that way we don't have to call .Select(A Space) so many times and we can write the while loop once instead of everywhere.)
@@ -53,8 +70,6 @@ REANME - SpaceToken <=> Token
 
 TOKENS-Shortcut - Remove ctx.XX shortcut to Tokens.XX bindings OR make everything that has a TargetSpaceCtx use it.
 TOKENS-Shortcut - TargetSpaceCtx.RemoveBlight() maybe should be .Blight.RemoveAsync()
-
-RANGE - 3 Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
 
 Add ActionScope Run-At-Max hook for converting Present.Done to Present.Always for Trickster
 
@@ -75,44 +90,19 @@ TargetSpaceCtx.SelectTargetSpaceAsync returns a TargetSpaceCtx.  Remove this - i
 ====================================
 ====================================
 
-Aspects
-NI: Adversayrs / Fear / Blight
-
-
-
 Thoughts: Freezing
 	- Invaders > make them Dream-Invaders
 	- Dahan > Implement IStopDamage and IStopRemovable
 	- Can we find a way to do away with the Is-Removable test?
 
-Thoughts: Additional Tags For Presence 
-	- ActsAsPresence - when powers interact with "presence"
-	- LooksLikePresence - cylindrical presence token - night never be used
-	- LooksLikeIncarna - Incarna token
-	- Spirit - Presence/Incarna for a particular spirit
-
-
-
 =========================
 ====  Clean Up Items  ====
 ==========================
-
-Blight cards can be drawn better.
 
 User Setting:
 	Preloaded Token or not
 Game Options
 	Cast-down is Ocean or Sunk
-
-When gathering multiple token types with multiple landing locations, just use the general Space location as central destination.
-
-Cheat Menu - 
-	Reclaim all cards, 
-	Add Card To Hand, 
-	+10 energy, 
-	+5 of each elementt, 
-	Return Blight to Card
-	Activate Fear Card
 
 For Multi Player
 	== Option 1 == 
@@ -136,20 +126,11 @@ ManyMinds - Set out-of-band toggle on beasts, at start of action, make smart cho
 2 Change Cmd.PushUpTo1Presence Implement SourceSelector as a something-that-acts-on--ManyTokensAction Command, implement RemoveToken as a ManyTokensAction that removes whatever is fed to it.
 
 3 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.
-3 UI - Cleanup Presence-Track image generation
 3 UI - Tokens - Publish token events to the UI so that it can show token changing animation.
-3 Review items that are PickSpace then Pick Token into a single pick-space-token step.
 
-2 Consilidate GameState API - things that aren't data and have no theoretical state.
-2 Review Presence events. Can they be removed by having Presence do action directly? Consolidate => Single PresenceOnBoardChanged event
-2 UI - Clean up Token drawing and ownership - CachedImageDrawer - make it draw the images
 2 Create a target-space preview, when hovering over cards
 
-TokenCountDictionary.counts -> make private.
-Make Spirit.ResolveActions private/protected.
-
 Idea - UI - When cusororing over HotSpot, have selected item glow / highlight
-Idea - All of the Stop Tokens are actually just Pre-Build, Pre-Explore, Pre-Ravage events/configures
 
 =========================
 ===== Feature Focus =====

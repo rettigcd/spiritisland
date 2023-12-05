@@ -13,8 +13,8 @@ static public class Push_Extensions {
 		public Func<TokenMovedArgs,Task> OnMoved;
 		public MoverFactory Bring(Func<TokenMovedArgs,Task> onMoved ) {	OnMoved = onMoved; return this; }
 
-		public TokenMover Push(Spirit self) {
-			var pusher = Selector.ToPusher(self);
+		public TokenMover Push(Spirit self,DestinationSelector dest=null) {
+			var pusher = Selector.ToPusher(self,dest);
 			if(DestinationConfigurer!=null) pusher.ConfigDestination(DestinationConfigurer);
 			if(OnMoved != null) pusher.Bring(OnMoved);
 			return pusher;
@@ -40,9 +40,9 @@ static public class Push_Extensions {
 
 	static public Task PushN( this SourceSelector ss, Spirit self ) => ss.ToPusher(self).DoN();
 
-	static public TokenMover ToPusher( this SourceSelector ss, Spirit spirit ) {
+	static public TokenMover ToPusher( this SourceSelector ss, Spirit spirit, DestinationSelector dest=null ) {
 		return GameState.Current.Island.Boards[0][0].Tokens	// this part is a HACK
-			.Pusher(spirit,ss);
+			.Pusher(spirit,ss,dest);
 	}
 
 	#endregion Simple Push - no Config / no Bring

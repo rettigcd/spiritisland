@@ -12,6 +12,7 @@ public class HearthVigil : Spirit {
 	public override string Text => Name;
 
 	static Track Energy0_GatherDahanBonus => new Track( "energy0" ) {
+		Energy = 0,
 		Icon = new IconDescriptor {
 			BackgroundImg = Img.Coin,
 			Text = "0",

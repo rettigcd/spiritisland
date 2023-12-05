@@ -38,22 +38,19 @@ public class HearthToken : SpiritPresenceToken
 
 		if(args is not ITokenMovedArgs moved || args.Removed.Class != Human.Dahan) return;
 
-		var destinations = ActionScope.Current.SafeGet("LoyalDestinations",()=>new List<SpaceState>());
+		var destinations = ActionScope.Current.SafeGet("LoyalDestinations",()=>new HashSet<SpaceState>()); // Hash so we don't have to do .Distinct
 		destinations.Add( moved.To );
 		if(!args.From.Dahan.Any)
-			await PushUpToAllPresence(args.From,destinations);
+			await BringUpToAllPresence(args.From,destinations);
 	}
 
-	async Task PushUpToAllPresence( SpaceState from, IEnumerable<SpaceState> destinationOptions ) {
+	async Task BringUpToAllPresence( SpaceState from, IEnumerable<SpaceState> destinationOptions ) {
 
-		while(Self.Presence.IsOn(from)) {
-			// #pushpresence
-			Space destination = await Self.SelectAsync( A.Space.ToPushPresence( from.Space, destinationOptions.Downgrade(), Present.Done, this ) );
-			if(destination is null) break;
+		await new TokenMover( Self, "Bring",
+			from.SourceSelector.AddAll( Self.Presence ),
+			new DestinationSelector( destinationOptions )
+		).DoUpToN();
 
-			// apply...
-			await from.MoveTo( this, destination );
-		}
 	}
 
 	#endregion Loyal Guardian

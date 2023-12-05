@@ -480,8 +480,8 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	public virtual TokenMover Gather( Spirit self ) 
 		=> new TokenMover( self, "Gather", Adjacent, this );
 
-	public virtual TokenMover Pusher( Spirit self, SourceSelector sourceSelector ) 
-		=> new TokenMover( self, "Push", sourceSelector, PushDestinations );
+	public virtual TokenMover Pusher( Spirit self, SourceSelector sourceSelector, DestinationSelector dest = null ) 
+		=> new TokenMover( self, "Push", sourceSelector, dest ?? PushDestinations );
 
 	public virtual DestinationSelector PushDestinations => DestinationSelector.Adjacent;
 
