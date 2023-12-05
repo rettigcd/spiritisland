@@ -61,6 +61,13 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 		Spaces = spaces.OrderBy( x => x.Label ).ToArray();
 	}
 
+	public Space( string prompt, IEnumerable<Orig_Space> spaces, string cancelText )
+		: base( prompt, spaces.OrderBy( x => x.Label ), cancelText ) 
+	{
+		Spaces = spaces.OrderBy( x => x.Label ).ToArray();
+	}
+
+
 	#endregion
 
 	/// <summary>

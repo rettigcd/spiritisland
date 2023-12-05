@@ -6,7 +6,7 @@ static public class SpiritSelectExtensions {
 	/// <returns>Track or SpaceToken</returns>
 	static public async Task<IOption> SelectSourcePresence( this Spirit self, string actionPhrase = "place" ) {
 		string prompt = $"Select Presence to {actionPhrase}";
-		return (IOption)await self.SelectAsync( A.TrackSlot.ToReveal( prompt, self ) )
+		return (IOption)await self.SelectAsync( A.TrackSlot.ToRevealOrTakeFromBoard( prompt, self ) )
 			?? await self.SelectAsync( new A.SpaceToken( prompt, self.Presence.Deployed, Present.Always ) );
 	}
 
@@ -76,8 +76,8 @@ static public class SpiritSelectExtensions {
 		return int.Parse( x );
 	}
 
-	static public Task<Space> SelectLandWithPresence( this Spirit self, string prompt )
-		=> self.SelectAsync( new A.Space(prompt, self.Presence.Lands, Present.Always ) );
+	static public Task<Space> SelectLandWithPresence( this Spirit self, string prompt, string cancelText = null )
+		=> self.SelectAsync( new A.Space(prompt, self.Presence.Lands, cancelText ) );
 
 	static public async Task<Space> SelectSpaceAsync( this Spirit self, string prompt, IEnumerable<Space> options, Present present ) {
 		return await self.SelectAsync( new A.Space( prompt, options, present ) );

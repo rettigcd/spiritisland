@@ -9,6 +9,9 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 	IOption[] IDecision.Options => _allOptions;
 	readonly IOption[] _allOptions;
 
+	/// <summary>
+	/// Presents user we a "Done" option for Present.Done
+	/// </summary>
 	public TypedDecision(
 		string prompt,
 		IEnumerable<T> options,
@@ -25,6 +28,10 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 
 	}
 
+	/// <summary>
+	/// Allows caller to select "Done" text (if desired)
+	/// </summary>
+	/// <param name="cancelPrompt">null => does not allow cancelling.</param>
 	public TypedDecision(
 		string prompt,
 		IEnumerable<T> options,

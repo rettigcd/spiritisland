@@ -98,7 +98,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 		while(0 < count) {
 
 			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
-			var from = (IOption)await SelectAsync( A.TrackSlot.ToReveal( selectPrompt, this ) )
+			var from = (IOption)await SelectAsync( A.TrackSlot.ToRevealOrTakeFromBoard( selectPrompt, this ) )
 					?? (IOption)await SelectAsync( new A.SpaceToken( selectPrompt, Presence.Deployed, Present.Done ) ); // Cancel
 
 			await Presence.TakeFromAsync( from );
