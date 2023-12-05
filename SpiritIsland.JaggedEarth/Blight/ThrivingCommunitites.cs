@@ -6,7 +6,7 @@ public class ThrivingCommunitites : BlightCard {
 
 	public override IActOn<GameState> Immediately 
 		=> UpgradeExplorerOrTown
-		.In().NDifferentLands( 4 ) // filter is on Command
+		.In().NDifferentLandsPerBoard( 4 ) // filter is on Command
 		.ForEachBoard();
 
 	static SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{

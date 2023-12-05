@@ -26,7 +26,7 @@ public partial class DistractedByLocalTroubles : FearCardBase, IFearCard {
 		=> Cmd.Multiple(
 			ReduceInvaderAttackByDamage,
 			Cmd.DamageInvaders(2)
-				.In().NDifferentLands(2).Which( Is.RavageCardMatch )
+				.In().NDifferentLandsPerBoard(2).Which( Is.RavageCardMatch )
 				.ForEachBoard()
 			).ActAsync( gs );
 

@@ -209,6 +209,11 @@ public static partial class Cmd {
 		}
 	);
 
+	//static public IActOn<T> Repeat<T>( this IActOn<T> action, int count ) => new BaseCmd<T>(
+	//	$"{action.Description} x{count}",
+	//	async t => { for(int i=0;i<count;++i) await action.ActAsync(t); }
+	//);
+
 	static public SpiritAction ReturnUpToNDestroyedToTrack( int count ) => new SpiritAction("Return up to N Destroyed Presence to Track", async self => {
 		count = Math.Max( count, self.Presence.Destroyed );
 		while(count > 0) {

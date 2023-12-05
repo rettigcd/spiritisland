@@ -17,7 +17,7 @@ public static partial class Cmd {
 	static public SpiritPicksLandAction SpiritPickedLand( this (IActOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new SpiritPicksLandAction( x.spaceAction, x.preposition );
 	static public EachActiveLand EachActiveLand( this (IActOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new EachActiveLand( x.spaceAction, x.preposition );
 	static public NLandsPerBoard OneLandPerBoard( this (IActOn<TargetSpaceCtx> spaceAction, string preposition) x ) => new NLandsPerBoard( x.spaceAction, x.preposition, 1 );
-	static public NLandsPerBoard NDifferentLands( this (IActOn<TargetSpaceCtx> spaceAction, string preposition) x, int count ) => new NLandsPerBoard( x.spaceAction, x.preposition, count );
+	static public NLandsPerBoard NDifferentLandsPerBoard( this (IActOn<TargetSpaceCtx> spaceAction, string preposition) x, int count ) => new NLandsPerBoard( x.spaceAction, x.preposition, count );
 
 	// For each: Board
 	static public GameStateAction ForEachBoard( this IActOn<BoardCtx> boardAction )
@@ -41,7 +41,7 @@ public static partial class Cmd {
 	static public EachSpirit ForEachSpirit( this IActOn<Spirit> action ) => new EachSpirit(action);
 
 	// At specific times
-	static public GameStateAction AtTheStartOfNextRound( this BaseCmd<GameState> cmd ) => new BaseCmd<GameState>(
+	static public GameStateAction AtTheStartOfNextRound( this GameStateAction cmd ) => new BaseCmd<GameState>(
 		"At the start of next round, " + cmd.Description,
 		gs => gs.TimePasses_ThisRound.Push( cmd.ActAsync ) // There are no actions here, just game reconfig
 	);

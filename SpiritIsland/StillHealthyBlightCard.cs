@@ -1,11 +1,9 @@
 ﻿namespace SpiritIsland;
 
-public class StillHealthyBlightCard : BlightCard {
+public abstract class StillHealthyBlightCard : BlightCard {
 
 	public StillHealthyBlightCard(string title, string description, int additinalBlightWhenFlipped)
 		:base( title, description, additinalBlightWhenFlipped ) { }
-
-	public override IActOn<GameState> Immediately => new BaseCmd<GameState>("Still Healthy", (_)=>{ } );
 
 	protected override void Side2Depleted(  GameState gs ) {
 		// If there is ever NO Blight here, draw a new Blight Card.

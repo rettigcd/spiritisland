@@ -28,7 +28,7 @@ public class SupplyChainsAbandoned : FearCardBase, IFearCard {
 			Cmd.DamageInvaders(1),
 			Cmd.SkipAllBuilds(Name).OnlyExecuteIf(ctx=>ctx.Tokens.HasAny(Human.Town_City))
 		)
-			.In().NDifferentLands(2)
+			.In().NDifferentLandsPerBoard(2)
 			.ForEachBoard()
 			.ActAsync( gs );
 

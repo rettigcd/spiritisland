@@ -64,7 +64,14 @@ public class GameComponentProvider : IGameComponentProvider {
 	};
 
 	public IBlightCard[] BlightCards => new BlightCard[] {
-//		new DownwardSpiral(),
+		new AttenuatedEssence(),
+		new BlightCorrodesTheSpirit(),
+		new BurnBrightestBeforeTheEnd(),
+		new IntensifyingExploitation(),
+		new ShatteredFragmentsOfPower(),
+		new SlowDissolutionOfWill(),
+		new TheBoarderOfLifeAndDeath(),
+		new ThrivingCrops()
 	};
 
 }

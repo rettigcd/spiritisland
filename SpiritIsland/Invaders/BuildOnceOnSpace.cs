@@ -1,6 +1,9 @@
 ﻿namespace SpiritIsland;
 
-/// <summary> Performs 1 builds on 1 space </summary>
+/// <summary> 
+/// If no Build-Stoppers prevent it, 
+/// Performs 1 build on 1 space.
+/// </summary>
 public class BuildOnceOnSpace {
 
 	public BuildOnceOnSpace( GameState gs, SpaceState tokens ) {
@@ -22,11 +25,10 @@ public class BuildOnceOnSpace {
 		BuildEngine.InvaderToAdd.Value = invaderToAdd;
 
 
+		// Check for Stoppers
 		var buildStoppers = _tokens.ModsOfType<ISkipBuilds>()
 			.OrderBy( t => t.Cost ) // cheapest first
 			.ToArray();
-
-		// Check for Stoppers
 		foreach(ISkipBuilds stopper in buildStoppers)
 			if(await stopper.Skip( _tokens ))
 				return "build stopped by " + stopper.Text;
