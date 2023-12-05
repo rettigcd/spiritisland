@@ -6,7 +6,7 @@ public class EmberEyedBehemoth : Spirit {
 
 	public override string Text => Name;
 
-	class DiscardPowerCardWithFireFromHand : DiscardCard {
+	class DiscardPowerCardWithFireFromHand : DiscardCards {
 		public DiscardPowerCardWithFireFromHand() 
 			: base( "Discard a Power Card with fire", spirit => spirit.Hand.Where( card => 0 < card.Elements[Element.Fire] ) ) 
 		{}

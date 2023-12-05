@@ -24,7 +24,7 @@ public class TurmoilsTouch {
 			new SpiritAction(
 				"Discard a Power Card to Take a Minor Power into their discard.", 
 				async ctx => { 
-					await new DiscardCard("Discard 1 card from hand", s=>s.Hand).ActAsync( self ); 
+					await new DiscardCards("Discard 1 card from hand", s=>s.Hand).ActAsync( self ); 
 					await TakeMinorIntoDiscard(ctx);
 				}
 			),

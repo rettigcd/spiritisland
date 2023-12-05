@@ -41,7 +41,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			// Reclaim All, Gain Power Card, Move a presence 2 spaces
 			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MovePresence(2) ),
 			// Add a Presence(2), Add a Presence(2), Gain 2 water, Discard 2 Power Cards
-			new GrowthOption( new PlacePresence(2), new PlacePresence( 2 ), new GainAllElements(Element.Water,Element.Water), new DiscardPowerCards(2) ),
+			new GrowthOption( new PlacePresence(2), new PlacePresence( 2 ), new GainAllElements(Element.Water,Element.Water), new DiscardCards(2) ),
 			// Gain Power Card, Add a presence, Gain 1 Energy
 			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new GainEnergy(1) )
 		);
