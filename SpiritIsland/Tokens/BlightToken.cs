@@ -59,8 +59,8 @@ public class BlightToken : TokenClassToken
 		if(args.Removed == Token.Blight
 			&& !args.Reason.IsOneOf(
 				RemoveReason.MovedFrom, // pushing / gathering blight
-				RemoveReason.Replaced,  // just in case...
 				RemoveReason.TakingFromCard
+				// RemoveReason.Replaced,  // acording to querki Replaced blight goes back to the card.
 			)
 		)	BlightCard.Space.Tokens.Adjust(this,1); // shouldn't be any modifying-add mods on blight card
 	}

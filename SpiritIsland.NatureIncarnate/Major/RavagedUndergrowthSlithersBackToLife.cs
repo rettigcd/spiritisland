@@ -10,6 +10,7 @@ public class RavagedUndergrowthSlithersBackToLife {
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// Replace 1 Blight with 1 Wilds.
 		var result = await ctx.Tokens.RemoveAsync(Token.Blight,1,RemoveReason.Replaced);
+
 		if(result.Count == 1) await ctx.Wilds.AddAsync(1);
 
 		// 1 Fear.
