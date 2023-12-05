@@ -7,7 +7,7 @@ public class PowerCardDeck_Tests {
 	[InlineData( AssemblyType.BranchAndClaw,31)]
 	[InlineData( AssemblyType.JaggedEarth,33)]
 	public void MinorCount(string edition, int expectedCount) {
-		var minorCards = AssemblyType.GetEditionType(edition).GetMinors();
+		var minorCards = AssemblyType.GetEditionType(edition).ScanForMinors();
 		// minorCards.Length.ShouldBe( 36 ); // Basegame
 		minorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 	}
@@ -17,7 +17,7 @@ public class PowerCardDeck_Tests {
 	[InlineData( AssemblyType.BranchAndClaw,21)]
 	[InlineData( AssemblyType.JaggedEarth,23)]
 	public void MajorCount(string edition, int expectedCount) {
-		var majorCards = AssemblyType.GetEditionType( edition ).GetMajors();
+		var majorCards = AssemblyType.GetEditionType( edition ).ScanForMajors();
 		majorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 	}
 
@@ -171,8 +171,8 @@ public class PowerCardDeck_Tests {
 		var user = new VirtualUser(spirit);
 		var randomizer = new Random();
 		var gs = new GameState( spirit, Board.BuildBoardC() ) {
-			MajorCards = new PowerCardDeck( typeof(RiversBounty).GetMajors(), randomizer.Next(), PowerType.Major ),
-			MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), randomizer.Next(), PowerType.Minor )
+			MajorCards = new PowerCardDeck( typeof(RiversBounty).ScanForMajors(), randomizer.Next(), PowerType.Major ),
+			MinorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMinors(), randomizer.Next(), PowerType.Minor )
 		};
 		gs.Initialize();
 
@@ -198,8 +198,8 @@ public class PowerCardDeck_Tests {
 	[InlineData( AssemblyType.FeatherAndFlame )]
 	public void PowerCards_HaveNames(string edition) {
 		Type refObject = AssemblyType.GetEditionType( edition );
-		List<PowerCard> cards = refObject.GetMajors().ToList();
-		cards.AddRange( refObject.GetMinors() );
+		List<PowerCard> cards = refObject.ScanForMajors().ToList();
+		cards.AddRange( refObject.ScanForMinors() );
 
 		foreach(var card in cards)
 			card.Name.ShouldNotBeNullOrEmpty();

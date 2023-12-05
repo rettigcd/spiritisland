@@ -9,7 +9,7 @@ public class EachSpirit : IActOn<GameState> {
 	}
 	#endregion
 
-	public string Description => $"For each {_filter.Description}, {_spiritAction.Description}.";
+	public string Description => $"Each {_filter.Description}: {_spiritAction.Description}.";
 
 	public async Task ActAsync( GameState gameState ) {
 		ActionScope parentScope = ActionScope.Current;

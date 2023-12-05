@@ -2,24 +2,35 @@
 
 namespace SpiritIsland.Tests;
 
-static public class TypeExtensions {
+static public class AssemblyScanner {
 
-	static public PowerCard[] GetMajors( this Type assemblyRefType ) {
+	/// <summary> Scans the Assembly for all Majors </summary>
+	static public PowerCard[] ScanForMajors( this Type assemblyRefType ) {
 		static bool HasMajorAttribute( MethodBase m ) => m.GetCustomAttributes<MajorCardAttribute>().Any();
 		static bool HasMajorMethod( Type type ) => type.GetMethods().Any( HasMajorAttribute );
 		return assemblyRefType.Assembly.GetTypes().Where( HasMajorMethod ).Select( PowerCard.For ).ToArray();
 	}
-	static public PowerCard[] GetMinors( this Type assemblyRefType ) {
+	/// <summary> Scans the Assembly for all Minors </summary>
+	static public PowerCard[] ScanForMinors( this Type assemblyRefType ) {
 		static bool HasMinorAttribute( MethodBase m ) => m.GetCustomAttributes<MinorCardAttribute>().Any();
 		static bool HasMinorMethod( Type type ) => type.GetMethods().Any( HasMinorAttribute );
 		return assemblyRefType.Assembly.GetTypes().Where( HasMinorMethod ).Select( PowerCard.For ).ToArray();
 	}
 
-	static public Spirit[] GetSpirits( this Type assemblyRefType ) {
+	/// <summary> Scans the Assembly for all Spirits </summary>
+	static public Spirit[] ScanForSpirits( this Type assemblyRefType ) {
 		static bool IsSpirit( Type type ) => type.IsAssignableTo( typeof( Spirit ) );
 		return assemblyRefType.Assembly.GetTypes()
 			.Where( IsSpirit )
 			.Select( t => (Spirit)Activator.CreateInstance(t) )
+			.ToArray();
+	}
+
+	static public BlightCard[] ScanForBlight( this Type assemblyRefType ) {
+		static bool IsBlightCard( Type type ) => type.IsAssignableTo( typeof( BlightCard ) );
+		return assemblyRefType.Assembly.GetTypes()
+			.Where( IsBlightCard )
+			.Select( t => (BlightCard)Activator.CreateInstance(t) )
 			.ToArray();
 	}
 

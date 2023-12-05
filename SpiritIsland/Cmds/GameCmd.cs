@@ -22,7 +22,7 @@ public static partial class Cmd {
 	// For each: Board
 	static public GameStateAction ForEachBoard( this IActOn<BoardCtx> boardAction )
 		=> new BaseCmd<GameState>(
-			"On each board, " + boardAction.Description,
+			"On each board: " + boardAction.Description,
 			async gs => {
 
 				var parentScope = ActionScope.Current;

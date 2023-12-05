@@ -2,7 +2,9 @@
 
 public class ErosionOfWill : BlightCard {
 
-	public ErosionOfWill():base("Erosion of Will", "Immediately, 2 fear per player. Each Spirit destroys 1 of their presence and loses 1 Energy.", 3 ) { }
+	public ErosionOfWill():base("Erosion of Will", 
+		"Add 2 fear per player.  Each Spirit: Destroy 1 presence.  Lose 1 energy.", 
+		3 ) { }
 
 	public override BaseCmd<GameState> Immediately => Cmd.Multiple(
 		// 2 fear per player.
@@ -18,14 +20,14 @@ public class ErosionOfWill : BlightCard {
 
 	static public BaseCmd<GameState> AddFearPerPlayer(int count) 
 		=> new BaseCmd<GameState>(
-			$"Add {count} fear per player", 
+			$"Add {count} fear per player.", 
 			ctx => ctx.Fear.AddDirect(new FearArgs( count ) )
 		);
 
 
 	static public SpiritAction LoseEnergy(int delta) 
 		=> new SpiritAction(
-			$"Loose {delta} energy", 
+			$"Lose {delta} energy", 
 			self => self.Energy -= Math.Max(delta, self.Energy)
 		);
 

@@ -34,7 +34,7 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 	#endregion
 
 	#region simple public properties
-	public string Description => _spaceAction.Description + " " + _preposition + " " + LandCriteria.Description;
+	public string Description => $"{_spaceAction.Description} {_preposition} {LandCriteria.Description}.";
 	public bool IsApplicable( BoardCtx ctx ) => true;
 	#endregion
 

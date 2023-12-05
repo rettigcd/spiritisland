@@ -264,8 +264,8 @@ public class AbsoluteStasis_Tests {
 
 	void SpiritIs_FacturedDaysSplitTheSky() {
 		cfg.Spirit = new FracturedDaysSplitTheSky();
-		cfg.GameState.MinorCards = new PowerCardDeck( typeof( RiversBounty ).GetMinors(), 0 );
-		cfg.GameState.MajorCards = new PowerCardDeck( typeof( RiversBounty ).GetMajors(), 0 );
+		cfg.GameState.MinorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMinors(), 0 );
+		cfg.GameState.MajorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMajors(), 0 );
 		cfg.GameState.Initialize();
 		cfg.Presence.SacredSites.Select( x => x.Space.Text ).Join( "," ).ShouldBe( "A8" );
 	}

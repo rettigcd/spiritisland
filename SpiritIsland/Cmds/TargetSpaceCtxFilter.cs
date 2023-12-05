@@ -94,5 +94,5 @@ public static class Is {
 	static bool MatchingRavageCardImp( TargetSpaceCtx ctx ) => GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( ctx.Tokens ) );
 
 	// Spirits 
-	static public SpiritFilter AnySpirit => new SpiritFilter( "spirit", _ => true );
+	static public SpiritFilter AnySpirit => new SpiritFilter( "Spirit", _ => true );
 }
