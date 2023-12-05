@@ -18,9 +18,9 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	public RavageBehavior Clone() {
 		return new RavageBehavior {
-			RavageSequence = RavageSequence,
+			RavageSequence                      = RavageSequence,
 			GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers,
-			AttackersDefend = AttackersDefend
+			AttackersDefend                     = AttackersDefend
 		};
 	}
 

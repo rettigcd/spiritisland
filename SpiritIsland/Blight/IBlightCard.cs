@@ -6,5 +6,5 @@ public interface IBlightCard : IOption {
 	void OnGameStart( GameState gs );
 	Task OnBlightDepleated( GameState gs );
 	bool CardFlipped { get; set; } // set so we can update via Memento
-	IActOn<GameCtx> Immediately { get; }
+	IActOn<GameState> Immediately { get; }
 }

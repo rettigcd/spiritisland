@@ -6,20 +6,20 @@ public class DahanAttack : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
-	public Task Level1( GameCtx ctx ) 
+	public Task Level1( GameState ctx ) 
 		=> Cmd.RemoveExplorers( 1 )
 			.In().SpiritPickedLand().Which( Has.Dahan ).ByPickingToken( Human.Explorer )
 			.ForEachSpirit()
 			.ActAsync(ctx);
 
 	[FearLevel( 2, "Each player chooses a different land with Dahan. 1 Damage per Dahan there." )]
-	public Task Level2( GameCtx ctx )
+	public Task Level2( GameState ctx )
 		=> Cmd.OneDamagePerDahan
 			.In().SpiritPickedLand().AllDifferent()
 			.ForEachSpirit().ActAsync(ctx);
 
 	[FearLevel( 3, "Each player chooses a different land with Town/City. Gather 1 Dahan into that land. Then 2 Damage per Dahan there." )]
-	public Task Level3( GameCtx ctx )
+	public Task Level3( GameState ctx )
 		=> GatherThen2Damage
 			.In().SpiritPickedLand().AllDifferent().Which( Has.TownOrCity )
 			.ForEachSpirit()

@@ -103,7 +103,6 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	public HumanToken HavingStrife( int strifeCount ) {
 		return strifeCount < 0 ? throw new System.ArgumentOutOfRangeException( nameof( strifeCount ), $"strife Count = {strifeCount}" )
 			: strifeCount == StrifeCount ? this
-			// : NewMutatedToken( Class, _healthPenaltyHolder, _rawFullHealth, Damage, strifeCount, 0, Attack );
 			: Mutate( x => x.StrifeCount = strifeCount );
 	}
 
@@ -111,7 +110,6 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		int newDamage = Math.Min( Damage + damage, _rawFullHealth ); // Give regular damage priority
 		// only allow nightmare damage to take up whatever remaining health is available
 		int newNightmareDamage = Math.Min( nightmareDamage + DreamDamage, _rawFullHealth-newDamage );
-		// return NewMutatedToken( Class, _healthPenaltyHolder, _rawFullHealth, newDamage, StrifeCount, newNightmareDamage, Attack );
 		return Mutate( x=>{ x.Damage=newDamage; x.DreamDamage = newNightmareDamage; } );
 	}
 

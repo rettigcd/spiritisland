@@ -30,6 +30,7 @@ public static class Has {
 	static public XFilter NoCity             => new XFilter( "has no City", x => !x.Tokens.Has( Human.City ) );
 	static public XFilter City               => new XFilter( "has city", x => x.Tokens.Has( Human.City ) );
 	static public XFilter Strife             => new XFilter( "has city", x => x.Tokens.HumanOfAnyTag().Any(x=>0<x.StrifeCount) );
+	static public XFilter Blight             => new XFilter( "has blight", x => x.Tokens.Blight.Any );
 	static public TargetSpaceCtxFilter InlandWithNoTownOrCity => new TargetSpaceCtxFilter(	"an inland land with no town/city",	x => x.IsInland && !x.Tokens.HasAny( Human.Town_City ));
 
 
@@ -40,6 +41,7 @@ public static class Has {
 
 	// BAC tokens
 	static public XFilter BeastDiseaseOrDahan                   => new XFilter( "has beast, disease, or dahan", ctx => ctx.Tokens.Dahan.Any || ctx.Tokens.Beasts.Any || ctx.Tokens.Disease.Any );
+	static public XFilter BeastStrifeOrDahan                   => new XFilter( "has beast, strife, or dahan", ctx => ctx.Tokens.Dahan.Any || ctx.Tokens.Beasts.Any || ctx.Tokens.HasStrife );
 	static public XFilter BeastOrIsAdjacentToBeast              => new XFilter( "has beast or is adjacent to beast", ctx => ctx.Range( 1 ).Any( x => x.Beasts.Any ) );
 	static public XFilter Token(ITokenClass tokenClass)          => new XFilter( "has "+tokenClass.Label, ctx => ctx.Tokens.Has(tokenClass) );
 	static public XFilter Beast                                 => Token( SpiritIsland.Token.Beast);
@@ -70,6 +72,7 @@ public static class Is {
 	static public XFilter Coastal => new XFilter( "coastal land", ctx => ctx.IsCoastal );
 	static public XFilter AdjacentToBlight => new XFilter( "land adjacent to blight", spaceCtx => spaceCtx.AdjacentCtxs.Any( adjCtx => adjCtx.Tokens.Blight.Any ) );
 	static public XFilter NotRavageCardMatch => new XFilter( "land that does not match Ravage card", ( TargetSpaceCtx spaceCtx ) => !GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( spaceCtx.Tokens ) ) );
+	static public XFilter NotBuildCardMatch => new XFilter( "land that does not match Build card", ( TargetSpaceCtx spaceCtx ) => !GameState.Current.InvaderDeck.Build.Cards.Any( card => card.MatchesCard( spaceCtx.Tokens ) ) );
 	static public XFilter RavageCardMatch => new XFilter( "matching a Ravage card", MatchingRavageCardImp );
 	static bool MatchingRavageCardImp( TargetSpaceCtx ctx ) => GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( ctx.Tokens ) );
 

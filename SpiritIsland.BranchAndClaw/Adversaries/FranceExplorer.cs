@@ -16,24 +16,23 @@ public class FranceExplorer : ExploreEngine {
 		await DoExplore( gameState, tokenSpacesToExplore, false );
 
 		await using var scope = await ActionScope.Start(ActionCategory.Adversary);
-		GameCtx gameCtx = new GameCtx( gameState );
 
 		if(hasFrontierExploration)
 			await DoFrontierExploration( gameState, tokenSpacesToExplore );
 
 		if(card.HasEscalation) {
-			await DemandForNewCashCrops( gameCtx, card );
+			await DemandForNewCashCrops( gameState, card );
 			card.HasEscalation = false;
 		}
 
 		if(hasPersistentExplorers)
-			await PersistentExplorers( gameCtx );
+			await PersistentExplorers( gameState );
 
 	}
 
-	static Task PersistentExplorers( GameCtx gameCtx ) {
+	static Task PersistentExplorers( GameState GameState ) {
 		// After resolving an Explore Card, on each board add 1 Explorer to a land without any. 
-		return Cmd.ForEachBoard( AddExplorerToLandWithoutAny ).ActAsync( gameCtx );
+		return Cmd.ForEachBoard( AddExplorerToLandWithoutAny ).ActAsync( GameState );
 
 	}
 
@@ -57,7 +56,7 @@ public class FranceExplorer : ExploreEngine {
 			}
 	}
 
-	static Task DemandForNewCashCrops( GameCtx ctx, InvaderCard card ) {
+	static Task DemandForNewCashCrops( GameState gs, InvaderCard card ) {
 		// Demand for New Cash Crops:
 		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
 
@@ -75,7 +74,7 @@ public class FranceExplorer : ExploreEngine {
 					.Select( SelectSpaceAction )
 					.ToArray()
 			).ActAsync( boardCtx.Self )
-		) ).ActAsync( ctx );
+		) ).ActAsync( gs );
 
 	}
 

@@ -6,7 +6,7 @@ public class AngryMobs : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each player may replace 1 Town with 2 Explorer. 1 Fear per player who does." )]
-	public Task Level1( GameCtx ctx )
+	public Task Level1( GameState ctx )
 		=> new SpaceAction( "may replace 1 Town with 2 Explorer and gain 1 Fear.", Level1_MayReplace1TownWith2ExplorersAndGain1Fear )
 			.In().SpiritPickedLand()
 			.ByPickingToken( Human.Town )
@@ -14,16 +14,16 @@ public class AngryMobs : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 
 	[FearLevel( 2, "In each land with 2 or more Explorer, destroy 1 Explorer/Town per 2 Explorer." )] 
-	public Task Level2( GameCtx ctx )
+	public Task Level2( GameState ctx )
 		=> Level2_Each2ExplorersDestroy_ExplorerOrTown
 			.In().EachActiveLand() // Don't need filter because it is on the Command
 			.ActAsync( ctx );
 
 	[FearLevel( 3, "In each land with 2 or more Explorer, destroy 1 Invader per 2 Explorer." )] 
-	public Task Level3( GameCtx gameCtx )
+	public Task Level3( GameState GameState )
 		=> Level3_Each2ExplorersDestroy_Invader
 			.In().EachActiveLand() // don't need filter because it is on the command.
-			.ActAsync( gameCtx );
+			.ActAsync( GameState );
 
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
 		var options = ctx.Tokens.HumanOfTag( Human.Town );

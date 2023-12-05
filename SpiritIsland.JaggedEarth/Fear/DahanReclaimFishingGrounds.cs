@@ -6,7 +6,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Each player chooses a different Coastal land with Dahan. In each: 1 Damage per Dahan." )]
-	public Task Level1( GameCtx ctx ) {
+	public Task Level1( GameState ctx ) {
 
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			spaceCtx => spaceCtx.DamageInvaders( spaceCtx.Dahan.CountAll )
@@ -15,7 +15,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	}
 
 	[FearLevel(2, "Each player chooses a different Coastal land. In each: Gather up to 1 Dahan. 1 Damage per Dahan." )]
-	public Task Level2( GameCtx ctx ) { 
+	public Task Level2( GameState ctx ) { 
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			async spaceCtx => {
 				await spaceCtx.GatherUpToNDahan( 1 );
@@ -25,7 +25,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	}
 
 	[FearLevel(3, "Each player chooses a different Coastal land. In each: Gather up to 1 Dahan. 2 Damage per Dahan." )]
-	public Task Level3( GameCtx ctx ) {
+	public Task Level3( GameState ctx ) {
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			async spaceCtx => {
 				await spaceCtx.GatherUpToNDahan( 1 );
@@ -34,13 +34,13 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 		);
 	}
 
-	static async Task SpiritsActOnDifferentCostalLands( GameCtx ctx, Func<TargetSpaceCtx, Task> act ) {
-		var options = ctx.GameState.Spaces
+	static async Task SpiritsActOnDifferentCostalLands( GameState ctx, Func<TargetSpaceCtx, Task> act ) {
+		var options = ctx.Spaces
 			.Where(TerrainMapper.Current.IsCoastal)
 			.Downgrade()
 			.ToList();
 
-		foreach( var spirit in ctx.GameState.Spirits ) {
+		foreach( var spirit in ctx.Spirits ) {
 			if(options.Count == 0) break;
 			Space space = await spirit.SelectSpaceAsync("1 damage per Dahan", options,Present.Always );
 			if( space != null) {

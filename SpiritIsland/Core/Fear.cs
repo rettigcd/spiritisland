@@ -87,11 +87,10 @@ public class Fear {
 			foreach(Spirit spirit in gs.Spirits)
 				await spirit.FlipFearCard(fearCard,true);
 
-			var ctx = new GameCtx( gs );
 			await (TerrorLevel switch {
-				1 => fearCard.Level1( ctx ),
-				2 => fearCard.Level2( ctx ),
-				3 => fearCard.Level3( ctx ),
+				1 => fearCard.Level1( gs ),
+				2 => fearCard.Level2( gs ),
+				3 => fearCard.Level3( gs ),
 				_ => throw new ArgumentOutOfRangeException(),
 			});
 

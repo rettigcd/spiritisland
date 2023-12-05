@@ -526,6 +526,8 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 	}
 
+	public void Isolate() => Init(Token.Isolate,1);
+
 	// Helper
 	public SourceSelector SourceSelector => new SourceSelector(this);
 

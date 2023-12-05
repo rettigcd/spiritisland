@@ -4,7 +4,7 @@ public class APallUponTheLand : BlightCard {
 
 	public APallUponTheLand():base("A Pall Upon the Land", "Immediately, on each board: destroy 1 presence and remove 1 town.", 3 ) { }
 
-	public override BaseCmd<GameCtx> Immediately => 
+	public override BaseCmd<GameState> Immediately => 
 		// On Each Board
 		Cmd.ForEachBoard(
 			Cmd.Multiple(

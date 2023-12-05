@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 // Commands that act on: GameState
-using GameCtxCmd = BaseCmd<GameCtx>;
+using GameStateCmd = BaseCmd<GameState>;
 
 public static partial class Cmd {
 
@@ -19,16 +19,17 @@ public static partial class Cmd {
 	static public NLandsPerBoard NDifferentLands( this (IActOn<TargetSpaceCtx> spaceAction, string preposition) x, int count ) => new NLandsPerBoard( x.spaceAction, x.preposition, count );
 
 	// For each: Board
-	static public GameCtxCmd ForEachBoard( this IActOn<BoardCtx> boardAction )
-		=> new GameCtxCmd(
+	static public GameStateCmd ForEachBoard( this IActOn<BoardCtx> boardAction )
+		=> new GameStateCmd(
 			"On each board, " + boardAction.Description,
-			async ctx => {
-				var gs = ctx.GameState;
+			async gs => {
+
+				var parentScope = ActionScope.Current;
 				for(int boardIndex = 0; boardIndex < gs.Island.Boards.Length; ++boardIndex) {
 					BoardCtx boardCtx = new BoardCtx( gs.Island.Boards[boardIndex] );
 					for(int i = 0; i < boardCtx.Board.InvaderActionCount; ++i) {
 						// Page 10 of JE says Each Board is a new action
-						await using var actionScope = await ActionScope.Start( ctx.Category );
+						await using ActionScope actionScope = await ActionScope.Start( parentScope.Category );
 						await boardAction.ActAsync( boardCtx );
 					}
 				}
@@ -36,27 +37,28 @@ public static partial class Cmd {
 		);
 
 	// For each: Spirit
-	static public BaseCmd<GameCtx> ForEachSpirit( this IActOn<Spirit> action )
-		=> new GameCtxCmd(
+	static public BaseCmd<GameState> ForEachSpirit( this IActOn<Spirit> action )
+		=> new GameStateCmd(
 			"For each spirit, " + action.Description,
-			async ctx => {
-				foreach(Spirit spirit in ctx.GameState.Spirits) {
+			async gameState => {
+				var parentScope = ActionScope.Current;
+				foreach(Spirit spirit in gameState.Spirits) {
 					// Page 10 of JE says Each Spirit is a new action
-					await using var actionScope = await ActionScope.Start( ctx.Category );
+					await using var actionScope = await ActionScope.Start( parentScope.Category );
 					await action.ActAsync( spirit );
 				}
 			}
 		);
 
 	// At specific times
-	static public GameCtxCmd AtTheStartOfNextRound( this BaseCmd<GameState> cmd ) => new GameCtxCmd(
+	static public GameStateCmd AtTheStartOfNextRound( this BaseCmd<GameState> cmd ) => new GameStateCmd(
 		"At the start of next round, " + cmd.Description,
-		gs => gs.GameState.TimePasses_ThisRound.Push( cmd.ActAsync ) // There are no actions here, just game reconfig
+		gs => gs.TimePasses_ThisRound.Push( cmd.ActAsync ) // There are no actions here, just game reconfig
 	);
 
-	static public GameCtxCmd AtTheStartOfEachInvaderPhase( this GameCtxCmd cmd ) => new GameCtxCmd(
+	static public GameStateCmd AtTheStartOfEachInvaderPhase( this GameStateCmd cmd ) => new GameStateCmd(
 		"At the start of each Invader Phase, " + cmd.Description,
-		ctx => ctx.GameState.StartOfInvaderPhase.Add( ( _ ) => cmd.ActAsync( ctx ) )
+		gs => gs.StartOfInvaderPhase.Add( ( _ ) => cmd.ActAsync( gs ) )
 	);
 
 }

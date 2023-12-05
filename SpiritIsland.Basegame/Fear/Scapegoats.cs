@@ -6,19 +6,19 @@ public class Scapegoats : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each Town destroys 1 Explorer in its land." )]
-	public Task Level1( GameCtx ctx )
+	public Task Level1( GameState ctx )
 		=> EachTownDestorys1Explorer
 			.In().EachActiveLand()
 			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each Town destroys 1 Explorer in its land. Each City destroys 2 Explorer in its land." )]
-	public Task Level2( GameCtx ctx )
+	public Task Level2( GameState ctx )
 		=> EachTownDestroys1AndCityDestroys2
 			.In().EachActiveLand()
 			.ActAsync( ctx );
 
 	[FearLevel( 3, "Destroy all Explorer in lands with Town/City. Each City destroys 1 Town in its land." )]
-	public Task Level3( GameCtx ctx )
+	public Task Level3( GameState ctx )
 		=> DestroyAllExplorersAnd1TowPerCity
 			.In().EachActiveLand()
 			.ActAsync( ctx );

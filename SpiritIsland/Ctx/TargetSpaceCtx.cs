@@ -66,7 +66,7 @@ public class TargetSpaceCtx : IHaveASpirit {
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
-	public void Isolate() => Tokens.Init(Token.Isolate,1);
+	public void Isolate() => Tokens.Isolate();
 
 	public BeastBinding Beasts              => Tokens.Beasts;
 	public TokenBinding Disease             => Tokens.Disease;

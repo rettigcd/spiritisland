@@ -154,11 +154,11 @@ public class HabsburgMonarchy : IAdversary {
 
 	async Task SeekPrimeTerritory_Escalation( GameState gameState ) {
 
-		await using var actionScope = await ActionScope.Start(ActionCategory.Default);
+		await using var actionScope = await ActionScope.Start(ActionCategory.Adversary);
 
 		// On each board
 		await Cmd.ForEachBoard( new BaseCmd<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
-			.ActAsync( new GameCtx( gameState ) );
+			.ActAsync( gameState );
 
 	}
 

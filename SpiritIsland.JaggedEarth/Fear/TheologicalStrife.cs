@@ -6,12 +6,12 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Each player adds 1 Strife in a land with Presence." )]
-	public Task Level1( GameCtx ctx )
+	public Task Level1( GameState ctx )
 		=> EachPlayerAddsStrifeInALandWithPresence
 			.ActAsync( ctx );
 
 	[FearLevel(2, "Each player adds 1 Strife in a land with Presence. Each Spirit gains 1 Energy per Sacred Site they have in lands with Invaders." )]
-	public async Task Level2( GameCtx ctx ) { 
+	public async Task Level2( GameState ctx ) { 
 
 		// Each player adds 1 Strife in a land with Presence
 		await EachPlayerAddsStrifeInALandWithPresence.ActAsync( ctx );
@@ -25,7 +25,7 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 	}
 
 	[FearLevel(3, "Each player adds 1 Strife in a land with Presence. Then, each Invader with Strife deals Damage to other Invaders in its land." )]
-	public async Task Level3( GameCtx ctx ) {
+	public async Task Level3( GameState ctx ) {
 
 		// Each player adds 1 Strife in a land with Presence
 		await EachPlayerAddsStrifeInALandWithPresence.ActAsync( ctx );
@@ -36,7 +36,7 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 	}
 
-	static public BaseCmd<GameCtx> EachPlayerAddsStrifeInALandWithPresence
+	static public BaseCmd<GameState> EachPlayerAddsStrifeInALandWithPresence
 		=> Cmd.AddStrife( 1 )
 			.In().SpiritPickedLand().Which( Has.YourPresence ).ByPickingToken( Human.Invader )
 			.ForEachSpirit();

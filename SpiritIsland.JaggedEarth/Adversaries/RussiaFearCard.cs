@@ -15,7 +15,7 @@ class RussiaFearCard : FearCardBase, IFearCard {
 		gameState.LogDebug($"Entrenched in the Face of Fear: Adding invader card {_invaderCard.Text} to Builds.");
 	}
 
-	public Task Level1( GameCtx ctx ) => _inner.Level1( ctx );
-	public Task Level2( GameCtx ctx ) => _inner.Level2( ctx );
-	public Task Level3( GameCtx ctx ) => _inner.Level3( ctx );
+	public Task Level1( GameState ctx ) => _inner.Level1( ctx );
+	public Task Level2( GameState ctx ) => _inner.Level2( ctx );
+	public Task Level3( GameState ctx ) => _inner.Level3( ctx );
 }

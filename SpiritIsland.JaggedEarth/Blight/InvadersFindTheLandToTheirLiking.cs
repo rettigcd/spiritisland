@@ -4,11 +4,10 @@ public class InvadersFindTheLandToTheirLiking : StillHealthyBlightCard {
 
 	public InvadersFindTheLandToTheirLiking():base("Invaders Find the Land to Their Liking", "For Terror Level 1/2/3, add 1/1.5/2 Fear Markers per player to the Fear Pool", 2) {}
 
-	public override BaseCmd<GameCtx> Immediately
+	public override BaseCmd<GameState> Immediately
 
 		// If the Terror Level is 1/2/3, add 1/1.5/2 Fear Markers per player (round down at TL2)
-		=> new BaseCmd<GameCtx>("For Terror Level 1/2/3, add 1/1.5/2 Fear Markers per player to the Fear Pool.", ctx => {
-			var gs = ctx.GameState;
+		=> new BaseCmd<GameState>("For Terror Level 1/2/3, add 1/1.5/2 Fear Markers per player to the Fear Pool.", gs => {
 			int pc = gs.Spirits.Length;
 			int fearCount = gs.Fear.TerrorLevel switch {
 				1 => pc*1, // 1

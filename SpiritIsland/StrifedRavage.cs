@@ -11,7 +11,7 @@ public static class StrifedRavage {
 
 			// Capture Strifed Counts
 			var strifedCounts = ctx.Tokens.InvaderTokens()
-				.Where( x => x.StrifeCount > 0 )
+				.Where( x => 0 < x.StrifeCount )
 				.ToDictionary( x=>x, x=>ctx.Tokens[x] );
 
 			var invaderBinding = ctx.Invaders;
@@ -20,20 +20,20 @@ public static class StrifedRavage {
 					p.Value * p.Key.Attack, // total damage from this type.
 					p.Key, // the source of the damage
 					p.Value==1 // exclude source if there is only 1 - it can't damage itself.
-			);
+				);
 		}
 	);
 
 	#region Strife reduces Health
 
-	public static async Task InvadersReduceHealthByStrifeCount( GameCtx ctx ) {
+	public static async Task InvadersReduceHealthByStrifeCount( GameState gs ) {
 		// add penalty
-		++ctx.GameState.HealthPenaltyPerStrife;
+		++gs.HealthPenaltyPerStrife;
 		// remove penalty
-		ctx.GameState.TimePasses_ThisRound.Push( x => { --ctx.GameState.HealthPenaltyPerStrife; return Task.CompletedTask; } );
+		gs.TimePasses_ThisRound.Push( x => { --gs.HealthPenaltyPerStrife; return Task.CompletedTask; } );
 
 		// Check if anything is destroyed
-		foreach(var space in ctx.GameState.Spaces)
+		foreach(var space in gs.Spaces)
 			foreach( var token in space.InvaderTokens() )
 				if(token.IsDestroyed)
 					await space.Destroy( token, space[token] );

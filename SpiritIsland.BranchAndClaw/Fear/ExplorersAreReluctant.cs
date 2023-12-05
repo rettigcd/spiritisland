@@ -6,22 +6,22 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "During the next normal Explore, skip the lowest-numbered land matching the Invader card on each board." )]
-	public Task Level1( GameCtx ctx )
+	public Task Level1( GameState ctx )
 		=> Cmd.Adjust1Token("Skip the lowest-numbered land matching the Invader card", new SkipLowestNumberedExplore() )
 			.In().EachActiveLand()
 			.ActAsync( ctx );
 
 	[FearLevel( 2, "Skip the next normal Explore. During the next Invader phase, draw an adidtional Explore card." )]
-	public Task Level2( GameCtx ctx ) {
-		var deck = ctx.GameState.InvaderDeck;
+	public Task Level2( GameState ctx ) {
+		var deck = ctx.InvaderDeck;
 		deck.Explore.SkipNextNormal();
 		deck.Explore.HoldNextBack();
 		return Task.CompletedTask;
 	}
 
 	[FearLevel( 3, "Skip the next normal Explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual." )]
-	public Task Level3( GameCtx ctx ) {
-		ctx.GameState.AddToAllActiveSpaces(new SkipExploreTo());
+	public Task Level3( GameState ctx ) {
+		ctx.AddToAllActiveSpaces(new SkipExploreTo());
 		return Task.CompletedTask;
 	}
 

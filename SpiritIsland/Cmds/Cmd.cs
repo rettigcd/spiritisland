@@ -36,7 +36,7 @@ public static partial class Cmd {
 		); 
 	static public SpaceAction Adjust1Token( string description, ISpaceEntity token ) => new SpaceAction( description, ctx => ctx.Tokens.Adjust(token,1) );
 	// -- Screwy Strife Stuff --
-	static public BaseCmd<GameCtx> StrifePenalizesHealth => new BaseCmd<GameCtx>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
+	static public BaseCmd<GameState> StrifePenalizesHealth => new BaseCmd<GameState>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
 	static public SpaceAction EachStrifeDamagesInvader => new SpaceAction( "Invaders take 1 damage per strife", async ctx=>{ 
 		var tokens = ctx.Tokens.HumanOfAnyTag( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
 		foreach(var token in tokens) {
@@ -111,6 +111,10 @@ public static partial class Cmd {
 		"Skip 1 Ravage", 
 		ctx=>ctx.Tokens.SkipRavage(causeName,UsageDuration.SkipOneThisTurn)
 	);
+
+	static public SpaceAction SkipAllBuilds(string causeName) => new SpaceAction("Skip All Build", ctx=>ctx.Tokens.SkipAllBuilds(causeName) );
+	static public SpaceAction Skip1Build(string causeName) => new SpaceAction("Skip 1 Build", ctx=>ctx.Tokens.Skip1Build(causeName) );
+
 
 	static public SpaceAction Skip1InvaderAction(string causeName) => new SpaceAction(
 		"Skip 1 Invader Action",

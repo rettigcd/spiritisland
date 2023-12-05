@@ -4,8 +4,8 @@ public class UnnaturalProliferation : BlightCard {
 
 	public UnnaturalProliferation():base("Unnatural Proliferation","Immediately: Each Spirit adds 1 presence to a land with their presence.  On Each Board: Add 1 dahan to a land with dahan, and 2 city to the land with fewest town/city (min.1).",3) {}
 
-	public override BaseCmd<GameCtx> Immediately 
-		=> Cmd.Multiple<GameCtx>(
+	public override BaseCmd<GameState> Immediately 
+		=> Cmd.Multiple<GameState>(
 			Cmd.ForEachSpirit(
 				// adds 1 presence to a land with their prescense.
 				AddPresenceToOwnLand

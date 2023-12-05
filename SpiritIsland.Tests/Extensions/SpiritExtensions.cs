@@ -55,11 +55,7 @@ public static class SpiritExtensions {
 	internal static async Task ResolvePower( this Spirit spirit, IFlexibleSpeedActionFactory card ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
 		scope.Owner = spirit;
-		try { 
-			await card.ActivateAsync( spirit );
-		} catch( Exception ex) {
-			string s = ex.ToString();
-		}
+		await card.ActivateAsync( spirit );
 	}
 
 	internal static Task When_TargetingSpace( this Spirit spirit, Space space, Action<TargetSpaceCtx> method )

@@ -7,9 +7,9 @@ public interface IFearCard : IOption {
 
 	void Activate( GameState gameState );
 
-	Task Level1( GameCtx ctx );
-	Task Level2( GameCtx ctx );
-	Task Level3( GameCtx ctx );
+	Task Level1( GameState gameState );
+	Task Level2( GameState gameState );
+	Task Level3( GameState gameState );
 }
 
 public class FearCardBase {

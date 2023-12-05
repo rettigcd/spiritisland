@@ -3,7 +3,7 @@
 /// <summary>
 /// Action occurs in each Active land.  No picking required.
 /// </summary>
-public class EachActiveLand : IActOn<GameCtx> {
+public class EachActiveLand : IActOn<GameState> {
 
 	readonly IActOn<TargetSpaceCtx> _spaceAction;
 	readonly string _preposition;
@@ -15,8 +15,8 @@ public class EachActiveLand : IActOn<GameCtx> {
 	}
 	public string Description => $"{_spaceAction.Description} {_preposition} each space {_landCriteria.Description}";
 
-	public async Task ActAsync( GameCtx ctx ) {
-		var gameState = ctx.GameState;
+	public async Task ActAsync( GameState gameState ) {
+
 		foreach(Board board in gameState.Island.Boards) {
 			Spirit spirit = board.FindSpirit();
 			var spacesCtxs = board.Spaces
@@ -36,5 +36,5 @@ public class EachActiveLand : IActOn<GameCtx> {
 		return this;
 	}
 
-	public bool IsApplicable( GameCtx ctx ) => true;
+	public bool IsApplicable( GameState _ ) => true;
 }
