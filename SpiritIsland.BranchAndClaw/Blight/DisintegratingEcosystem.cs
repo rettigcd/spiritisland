@@ -4,7 +4,7 @@ public class DisintegratingEcosystem : BlightCard {
 
 	public DisintegratingEcosystem():base("Disintegrating Ecosystem", "Immediately, on each board: Destroy 1 beast, then add 1 blight to a land with town/city.", 5 ) { }
 
-	public override BaseCmd<GameState> Immediately => 
+	public override IActOn<GameState> Immediately => 
 		// Immediately, on each board: 
 		Cmd.ForEachBoard(
 			Cmd.Multiple(

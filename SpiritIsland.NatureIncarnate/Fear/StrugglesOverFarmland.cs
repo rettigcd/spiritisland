@@ -29,7 +29,7 @@ public class StrugglesOverFarmland : FearCardBase, IFearCard {
         )
 			.ActAsync( gs );
 
-	SpaceAction StrifedInvaderDamagesOthers => new SpaceAction("1 Invader with Strife does Damage to other Invaders.", 
+	static SpaceAction StrifedInvaderDamagesOthers => new SpaceAction("1 Invader with Strife does Damage to other Invaders.", 
 		async ctx => {
 			var strifedInvader = ctx.Tokens.HumanOfAnyTag(Human.Invader)
 				.Where(h=>0<h.StrifeCount)

@@ -5,14 +5,15 @@
 /// </summary>
 public class EachActiveLand : IActOn<GameState> {
 
-	readonly IActOn<TargetSpaceCtx> _spaceAction;
-	readonly string _preposition;
-	TargetSpaceCtxFilter _landCriteria = Is.AnyLand;
+	#region constructor
 
 	public EachActiveLand( IActOn<TargetSpaceCtx> spaceAction, string preposition ) {
 		_preposition = preposition;
 		_spaceAction = spaceAction;
 	}
+
+	#endregion constructor
+
 	public string Description => $"{_spaceAction.Description} {_preposition} each space {_landCriteria.Description}";
 
 	public async Task ActAsync( GameState gameState ) {
@@ -37,4 +38,13 @@ public class EachActiveLand : IActOn<GameState> {
 	}
 
 	public bool IsApplicable( GameState _ ) => true;
+
+	#region private
+
+	readonly IActOn<TargetSpaceCtx> _spaceAction;
+	readonly string _preposition;
+	TargetSpaceCtxFilter _landCriteria = Is.AnyLand;
+
+	#endregion
+
 }

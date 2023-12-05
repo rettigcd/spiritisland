@@ -1,7 +1,8 @@
 ﻿namespace SpiritIsland;
 
+
 // Commands that act on: GameState
-using GameStateCmd = BaseCmd<GameState>;
+using GameStateAction = IActOn<GameState>;
 
 public static partial class Cmd {
 
@@ -19,8 +20,8 @@ public static partial class Cmd {
 	static public NLandsPerBoard NDifferentLands( this (IActOn<TargetSpaceCtx> spaceAction, string preposition) x, int count ) => new NLandsPerBoard( x.spaceAction, x.preposition, count );
 
 	// For each: Board
-	static public GameStateCmd ForEachBoard( this IActOn<BoardCtx> boardAction )
-		=> new GameStateCmd(
+	static public GameStateAction ForEachBoard( this IActOn<BoardCtx> boardAction )
+		=> new BaseCmd<GameState>(
 			"On each board, " + boardAction.Description,
 			async gs => {
 
@@ -37,26 +38,15 @@ public static partial class Cmd {
 		);
 
 	// For each: Spirit
-	static public BaseCmd<GameState> ForEachSpirit( this IActOn<Spirit> action )
-		=> new GameStateCmd(
-			"For each spirit, " + action.Description,
-			async gameState => {
-				var parentScope = ActionScope.Current;
-				foreach(Spirit spirit in gameState.Spirits) {
-					// Page 10 of JE says Each Spirit is a new action
-					await using var actionScope = await ActionScope.Start( parentScope.Category );
-					await action.ActAsync( spirit );
-				}
-			}
-		);
+	static public EachSpirit ForEachSpirit( this IActOn<Spirit> action ) => new EachSpirit(action);
 
 	// At specific times
-	static public GameStateCmd AtTheStartOfNextRound( this BaseCmd<GameState> cmd ) => new GameStateCmd(
+	static public GameStateAction AtTheStartOfNextRound( this BaseCmd<GameState> cmd ) => new BaseCmd<GameState>(
 		"At the start of next round, " + cmd.Description,
 		gs => gs.TimePasses_ThisRound.Push( cmd.ActAsync ) // There are no actions here, just game reconfig
 	);
 
-	static public GameStateCmd AtTheStartOfEachInvaderPhase( this GameStateCmd cmd ) => new GameStateCmd(
+	static public GameStateAction AtTheStartOfEachInvaderPhase( this GameStateAction cmd ) => new BaseCmd<GameState>(
 		"At the start of each Invader Phase, " + cmd.Description,
 		gs => gs.StartOfInvaderPhase.Add( ( _ ) => cmd.ActAsync( gs ) )
 	);

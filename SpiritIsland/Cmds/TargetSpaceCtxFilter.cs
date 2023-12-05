@@ -14,6 +14,19 @@ public class TargetSpaceCtxFilter {
 
 }
 
+public class SpiritFilter {
+
+	public readonly Func<Spirit, bool> Filter;
+	public readonly string Description;
+
+	public SpiritFilter( string description, Func<Spirit, bool> filter ) {
+		Description = description;
+		Filter = filter;
+	}
+
+}
+
+
 public static class Has {
 
 	// Dahan
@@ -63,11 +76,15 @@ public static class Has {
 
 	static public XFilter DangerousLands => new TargetSpaceCtxFilter( "a land with Badlands/Wilds/Dahan.", ( TargetSpaceCtx ctx ) => ctx.Tokens.Badlands.Any || ctx.Tokens.Wilds.Any || ctx.Tokens.Dahan.Any );
 
+	static public SpiritFilter AtLeastNPresenceOnIsland(int count) => new SpiritFilter(
+		$"spirit who has {count} Presence on the isalnd",
+		spirit => count <= spirit.Presence.TotalOnIsland()
+	);
+
 }
 
 public static class Is {
 	static public XFilter AnyLand => new XFilter( "any land", _ => true );
-
 	static public XFilter Inland => new XFilter( "Inland", x => x.IsInland );
 	static public XFilter Coastal => new XFilter( "coastal land", ctx => ctx.IsCoastal );
 	static public XFilter AdjacentToBlight => new XFilter( "land adjacent to blight", spaceCtx => spaceCtx.AdjacentCtxs.Any( adjCtx => adjCtx.Tokens.Blight.Any ) );
@@ -76,4 +93,6 @@ public static class Is {
 	static public XFilter RavageCardMatch => new XFilter( "matching a Ravage card", MatchingRavageCardImp );
 	static bool MatchingRavageCardImp( TargetSpaceCtx ctx ) => GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( ctx.Tokens ) );
 
+	// Spirits 
+	static public SpiritFilter AnySpirit => new SpiritFilter( "spirit", _ => true );
 }

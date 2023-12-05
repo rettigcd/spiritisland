@@ -36,7 +36,7 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 	}
 
-	static public BaseCmd<GameState> EachPlayerAddsStrifeInALandWithPresence
+	static public IActOn<GameState> EachPlayerAddsStrifeInALandWithPresence
 		=> Cmd.AddStrife( 1 )
 			.In().SpiritPickedLand().Which( Has.YourPresence ).ByPickingToken( Human.Invader )
 			.ForEachSpirit();

@@ -4,7 +4,7 @@ public class UntendedLandCrumbles : BlightCard {
 
 	public UntendedLandCrumbles():base("Untended Land Crumbles", "Each Invader Phase: On Each Board: Add 1 blight to a land adjacent to blight. Spirits may prevent this on any/all boards; each board to be protected requires jointly paying 3 Energy or destroying 1 presence from that board.", 4) {}
 
-	public override BaseCmd<GameState> Immediately 
+	public override IActOn<GameState> Immediately 
 		=> Cmd.AtTheStartOfEachInvaderPhase(
 			Cmd.ForEachBoard(
 				Cmd.Pick1(

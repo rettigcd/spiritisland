@@ -4,7 +4,7 @@ public class ThrivingCommunitites : BlightCard {
 
 	public ThrivingCommunitites():base( "Thriving Communitites", "Immediately, on each board: In 4 different lands with explorer/town, Replace 1 town with 1 city or Replace 1 explorer with 1 town.", 4) {}
 
-	public override BaseCmd<GameState> Immediately 
+	public override IActOn<GameState> Immediately 
 		=> UpgradeExplorerOrTown
 		.In().NDifferentLands( 4 ) // filter is on Command
 		.ForEachBoard();
