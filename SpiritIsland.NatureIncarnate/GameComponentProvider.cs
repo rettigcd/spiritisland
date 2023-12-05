@@ -52,7 +52,15 @@ public class GameComponentProvider : IGameComponentProvider {
 	}.Select( PowerCard.For ).ToArray();
 
 	public IFearCard[] FearCards => new IFearCard[] {
-//		new AvoidTheDahan(),
+		new CivilUnrest(),
+		new DahanGainTheEdge(),
+		new DauntedByTheDahan(),
+		new DistractedByLocalTroubles(),
+		new Restlessness(),
+		new SeekCompany(),
+		new StrugglesOverFarmland(),
+		new SupplyChainsAbandoned(),
+		new Unsettled(),
 	};
 
 	public IBlightCard[] BlightCards => new BlightCard[] {
