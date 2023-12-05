@@ -51,7 +51,7 @@ public static partial class Cmd {
 	// Remove *UpTo*
 	static public SpaceAction RemoveExplorers(int count) => RemoveUpToNTokens(count,Human.Explorer);
 	static public SpaceAction RemoveExplorersOrTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
-	static public SpaceAction RemoveTowns(int count) => RemoveUpToNTokens(count,Human.Explorer_Town);
+	static public SpaceAction RemoveTowns(int count) => RemoveUpToNTokens(count,Human.Town);
 	static public SpaceAction RemoveCities(int count) => RemoveUpToNTokens(count,Human.City);
 	static public SpaceAction RemoveInvaders(int count) => RemoveUpToNTokens(count,Human.Invader);
 
