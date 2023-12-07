@@ -158,17 +158,14 @@ public class GameBuilder {
 	static void CommandTheBeasts_AddCardsToInvaderDeck( GameState gameState ) {
 		// If there are no Event cards, compensate with Command-the-Beasts
 
-		var invaderCards = gameState.InvaderDeck.UnrevealedCards;
-		void InitBeastCommand( int stage ) {
-			var triggerBeasts = new TriggerCommandBeasts();
-			for(int i = 0; i < invaderCards.Count; ++i) {
-				if(invaderCards[i].InvaderStage != stage) continue;
-				invaderCards[i].CardFlipped += triggerBeasts.QueueBeastCommand;
-				break;
-			}
+		void QueueBeastForStartOfStage( int stage ) {
+			gameState.InvaderDeck
+				.UnrevealedCards
+				.First(x=>x.InvaderStage == stage)
+				.CardFlipped += CommandBeastsTrigger.QueueBeastCommand;
 		}
-		InitBeastCommand( 2 );
-		InitBeastCommand( 3 );
+		QueueBeastForStartOfStage( 2 );
+		QueueBeastForStartOfStage( 3 );
 	}
 
 }

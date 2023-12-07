@@ -28,6 +28,8 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 	}
 
 	public Action GetClickableAction( Point clientCoords ) {
+		if(!HasFocus) return null;
+
 		IOption option = _buttonContainer.FindEnabledOption( clientCoords );
 		return option != null ? (() => _ctx.SelectOption( option ))  // if we have option, select it
 			: null;

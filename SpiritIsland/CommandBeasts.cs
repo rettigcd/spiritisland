@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Commands the Beasts (non-events) for 1 space.
+/// Commands-the-Beasts (non-events) for 1 space.
 /// </summary>
 internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 
@@ -73,7 +73,7 @@ class CommandBeastAction : IActionFactory {
 
 	public async Task ActivateAsync( Spirit _ ) {
 		Used = true;
-		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special); // replace generic scope passed in.
+		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special);
 		await new CommandBeasts().In().EachActiveLand().ActAsync( GameState.Current );
 	}
 
@@ -81,20 +81,24 @@ class CommandBeastAction : IActionFactory {
 	public bool Used { get; private set; }
 }
 
-public class TriggerCommandBeasts {
+public static class CommandBeastsTrigger {
 
-	readonly CommandBeastAction cmdAction = new CommandBeastAction();
-
-	public Task QueueBeastCommand( GameState gameState ) {
+	/// <summary>
+	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
+	/// </summary>
+	static public Task QueueBeastCommand( GameState gameState ) {
+		CommandBeastAction cmdAction = new CommandBeastAction();
+		// Adds the cmdAction to 1st spirit Actions until it is used.
 		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
+		Task TimePasses_WholeGame( GameState gameState ) {
+			if(!cmdAction.Used)
+				gameState.Spirits[0].AddActionFactory( cmdAction );
+			return Task.CompletedTask;
+		}
+
 		return Task.CompletedTask;
 	}
 
-	Task TimePasses_WholeGame( GameState gameState ) {
-		if(!cmdAction.Used)
-			gameState.Spirits[0].AddActionFactory( cmdAction );
-		return Task.CompletedTask;
-	}
 }
 
 /*

@@ -47,8 +47,6 @@ Always use the < or <= sign, never the > or >= sign.
 
 Blight cards can be drawn better.
 
-Spirit Colors
-
 Cheat Menu - 
 	Reclaim all cards, 
 	Add Card To Hand, 
@@ -57,12 +55,21 @@ Cheat Menu -
 	Return Blight to Card
 	Activate Fear Card
 
-Growth is not clickable when small.
+Layout => reduce spirit size when not focus
+Layout - Growth and Presence Tracks Panels display big during Growth
 
-layout => reduce spirit size when not focus
+* Growth / Presence Panels cover Spirit, not island.
+* Growth / Presence Panels are opaque.
+* Layout - Card Panel should shift left to not cover Innate Elements
+
+Layout - abreviated Display
+	1) Total Energy
+	2) Destroyed Count
+	3) Energy/turn
+	4) CardPlay/turn
+	5) Accumulated Elements and actions
 
 Adversary
-
 
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
 
@@ -72,6 +79,8 @@ SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding th
 
 ----------
 ----------
+
+Token Appearance - should be changable during the game.  Change Colors, add/remove image.
 
 
 RANGE - 3 Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.

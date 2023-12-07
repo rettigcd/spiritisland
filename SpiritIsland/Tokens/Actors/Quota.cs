@@ -42,7 +42,8 @@ public class Quota {
 
 	public Quota AddGroup( int count, params ITokenClass[] classes ) {
 		VerifyClasses( classes );
-		_sharedGroupCounts.Add( new QuotaGroup( count, classes ) );
+		if(0<count) // Be safe, prevent 0 (command the beasts)
+			_sharedGroupCounts.Add( new QuotaGroup( count, classes ) );
 		return this;
 	}
 
