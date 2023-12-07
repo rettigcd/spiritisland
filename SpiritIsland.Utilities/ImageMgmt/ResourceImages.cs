@@ -51,9 +51,9 @@ public class ResourceImages {
 	#endregion
 
 #pragma warning disable CA1822 // Mark members as static
-	public Image LoadSpiritImage( string spiritText ) {
+	public Bitmap LoadSpiritImage( string spiritText ) {
 		string filename = spiritText.Replace( ' ', '_' );
-		return Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
+		return (Bitmap)Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
 	}
 #pragma warning restore CA1822 // Mark members as static
 

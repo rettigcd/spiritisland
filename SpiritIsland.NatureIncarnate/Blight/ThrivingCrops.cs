@@ -2,10 +2,8 @@
 
 public sealed class ThrivingCrops : StillHealthyBlightCard {
 
-	const string Name = "Thriving Crops";
-
 	public ThrivingCrops():base(
-		Name, 
+		"Thriving Crops", 
 		"Immediately: On Each Board, Build in 3 lands. (Build Actions in lands without Invaders normally build 1 Town.)", 
 		2
 	) {}

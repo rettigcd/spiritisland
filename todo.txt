@@ -21,7 +21,48 @@ In tests:  Start an async method, make the UI calls, then await the Task to comp
 async in parallel can choke off threads - xUnit - limit # of tests running in parallel using Collections
 
 
+==== Gems ====
+* GameState.Current
+* ActionScope
+* Token Event Handlers: IModify[Adding|Removing][|Async], IHandleToken[Added|Removed]
+* SourceSelector
+* IActOn<T> derivative actions
+
+==== Lemons ====
+How Spirits make Selections (too many mismatched options)
+Saving .SpaceState vs .Space
+Game-wide config
+The Invader Deck
+Absolute Stasis
+Powers that Prevent Dahan Damage or Invader Damage
+.Rewind()
+How the Pusher is confluently configured. :(
+
+==== Quirks ====
+Always use the < or <= sign, never the > or >= sign.
+
+
+
 ==== To Do ====
+
+Blight cards can be drawn better.
+
+Spirit Colors
+
+Cheat Menu - 
+	Reclaim all cards, 
+	Add Card To Hand, 
+	+10 energy, 
+	+5 of each elementt, 
+	Return Blight to Card
+	Activate Fear Card
+
+Growth is not clickable when small.
+
+layout => reduce spirit size when not focus
+
+Adversary
+
 
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
 
@@ -32,23 +73,8 @@ SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding th
 ----------
 ----------
 
-*** Blight cards can be drawn better.
-
-*** Spirit Colors
 
 RANGE - 3 Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
-
-*** Cheat Menu - 
-	Reclaim all cards, 
-	Add Card To Hand, 
-	+10 energy, 
-	+5 of each elementt, 
-	Return Blight to Card
-	Activate Fear Card
-
-*** Growth is not clickable when small.
-
-*** layout => reduce spirit size when not focus
 
 DAMAGE - Rename ctx.DamageInvaders(..) to DamageInvadersAsync(...)
 DAMAGE - Make ctx.DamageInvaders(...) a shortcut to ctx.Group(Human.Invaders).DoDamageAsync(...);

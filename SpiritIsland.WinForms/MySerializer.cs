@@ -115,11 +115,18 @@ public static class MySerializer {
 			[HUE]        = item.Hsl?.H ?? default,
 			[SATURATION] = item.Hsl?.S ?? default,
 			[LIGHTNESS]  = item.Hsl?.L ?? default,
-			[IMAGE]      = item.BaseImage
+			[IMAGE]      = item.BaseImage ?? default,
+			[PATTERN]    = item.PatternImage ?? default,
 		};
-	static public PresenceTokenAppearance RestorePresenceTokenAppearance( JsonObject dict ) => dict is null ? null
-		: ((bool)dict[ADJUST]) ? new PresenceTokenAppearance((float)dict[HUE], (float)dict[SATURATION], (float)dict[LIGHTNESS], dict[IMAGE] )
-		: new PresenceTokenAppearance((string)dict[IMAGE]);
+	static public PresenceTokenAppearance RestorePresenceTokenAppearance( JsonObject dict ) {
+		if(dict is null) return null;
+		if((bool)dict[ADJUST]) {
+			var x = new PresenceTokenAppearance((float)dict[HUE], (float)dict[SATURATION], (float)dict[LIGHTNESS] );
+			if(dict.ContainsKey(PATTERN)) x.PatternImage = (string)dict[PATTERN];
+			return x;
+		}
+		return new PresenceTokenAppearance((string)dict[IMAGE]);
+	}
 	#endregion Presence Token Appearance
 
 	#region private Keys
@@ -135,6 +142,7 @@ public static class MySerializer {
 	const string SATURATION    = "saturation";
 	const string LIGHTNESS     = "lightness";
 	const string IMAGE         = "image";
+	const string PATTERN       = "pattern";
 	const string TIMESTAMP     = "timestamp";
 	#endregion
 

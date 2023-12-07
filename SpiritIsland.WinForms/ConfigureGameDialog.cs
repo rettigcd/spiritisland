@@ -85,10 +85,15 @@ public partial class ConfigureGameDialog : Form {
 			: new Random().Next( 0, 999_999_999 );
 	}
 
-	PresenceTokenAppearance SelectAppearance( string spirit ) {
-		return colorCheckBox.Checked
+	PresenceTokenAppearance SelectAppearance( string spiritName ) {
+		var appearance = colorCheckBox.Checked
 			? new PresenceTokenAppearance( HSL.FromRgb( colorDialog.Color ) )
-			: GetColorForSpirit( spirit );
+			: GetColorForSpirit( spiritName );
+
+		appearance.PatternImage = spiritName;
+
+		// 		return new PresenceTokenAppearance( spiritName );
+		return appearance;
 	}
 
 	AdversaryConfig SelectAdversary() {
@@ -98,34 +103,60 @@ public partial class ConfigureGameDialog : Form {
 	}
 
 	static PresenceTokenAppearance GetColorForSpirit( string spiritName ) {
+
+		// 0		Red
+		// 30			Orange
+		// 60		Yellow
+		// 90			Yellowish Green
+		// 120		Green
+		// 150			Bluish Green
+		// 180		Cyan
+		// 210			Sky / steal / cornflower blue
+		// 240		Blue
+		// 270			Violet
+		// 300		Magenta
+		// 330			Rose / Deep Pink
+
 		return spiritName switch {
-			Thunderspeaker.Name                  => new PresenceTokenAppearance( 0, .6f ),
-			SharpFangs.Name                      => new PresenceTokenAppearance( 0, .8f, .35f ),
-			VengeanceAsABurningPlague.Name       => new PresenceTokenAppearance( 15, .6f ),
-			HeartOfTheWildfire.Name              => new PresenceTokenAppearance( 20, .8f ),
-			VitalStrength.Name                   => new PresenceTokenAppearance( 22, .47f, .35f ),
-			StonesUnyieldingDefiance.Name        => new PresenceTokenAppearance( 30, .16f ),
 			LightningsSwiftStrike.Name           => new PresenceTokenAppearance( 55, .64f ),
+			VitalStrength.Name                   => new PresenceTokenAppearance( 22, .47f, .35f ),
+			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, .35f ),
+			RiverSurges.Name                     => new PresenceTokenAppearance( 209, .5f, .4f ),
+			Thunderspeaker.Name                  => new PresenceTokenAppearance( 0, .6f ),
+			ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f, .45f ),
+			Ocean.Name                           => new PresenceTokenAppearance( 200, .5f, .4f ),
+			Bringer.Name                         => new PresenceTokenAppearance( 300, .6f ),
+			//
+			SharpFangs.Name                      => new PresenceTokenAppearance( 0, .8f, .35f ),
+			Keeper.Name                          => new PresenceTokenAppearance( 30, .3f, .5f ),
+			//
+			StonesUnyieldingDefiance.Name        => new PresenceTokenAppearance( 30, .16f ),
+			VengeanceAsABurningPlague.Name       => new PresenceTokenAppearance( 15, .6f ),
 			VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 56, 1.0f, .35f ),
 			GrinningTricksterStirsUpTrouble.Name => new PresenceTokenAppearance( 58, .3f ),
-			ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f, .45f ),
 			LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .44f, .35f ),
 			FracturedDaysSplitTheSky.Name        => new PresenceTokenAppearance( 160, .9f, .35f ),
 			ShroudOfSilentMist.Name              => new PresenceTokenAppearance( 196, .3f, .65f ),
-			Ocean.Name                           => new PresenceTokenAppearance( 200, .5f, .4f ),
-			RiverSurges.Name                     => new PresenceTokenAppearance( 209, .5f, .4f ),
+			ShiftingMemoryOfAges.Name            => new PresenceTokenAppearance( 180/*229*/, .55f, .5f ),
+			StarlightSeeksItsForm.Name           => new PresenceTokenAppearance( 251, .78f ),
+			ManyMindsMoveAsOne.Name              => new PresenceTokenAppearance( 326, .35f ),
+			//
+			SerpentSlumbering.Name               => new PresenceTokenAppearance( 330, .3f ),
+			HeartOfTheWildfire.Name              => new PresenceTokenAppearance( 20, .8f ),
 			DownpourDrenchesTheWorld.Name        => new PresenceTokenAppearance( 210, .7f, .35f ),
 			FinderOfPathsUnseen.Name	         => new PresenceTokenAppearance( 218, .5f, .4f ),
-			ShiftingMemoryOfAges.Name            => new PresenceTokenAppearance( 229, .35f ),
-			StarlightSeeksItsForm.Name           => new PresenceTokenAppearance( 251, .78f ),
-			Bringer.Name                         => new PresenceTokenAppearance( 300, .6f ),
-			ManyMindsMoveAsOne.Name              => new PresenceTokenAppearance( 326, .35f ),
-			SerpentSlumbering.Name               => new PresenceTokenAppearance( 330, .3f ),
-			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, .35f ),
-			BreathOfDarknessDownYourSpine.Name   => new PresenceTokenAppearance( 170, .16f, .21f ),
-			Keeper.Name                          => new PresenceTokenAppearance( "greenorangeswirl" ),
-			HearthVigil.Name                     => new PresenceTokenAppearance( 6,    .4f, .63f ),
+			//
 			ToweringRootsOfTheJungle.Name        => new PresenceTokenAppearance( 135, .22f, .35f ),
+			BreathOfDarknessDownYourSpine.Name   => new PresenceTokenAppearance( 170, .16f, .21f ),
+			HearthVigil.Name                     => new PresenceTokenAppearance( 6,    .4f, .63f ),
+
+			WoundedWatersBleeding.Name           => new PresenceTokenAppearance( 270, .22f ),
+			DancesUpEarthquakes.Name             => new PresenceTokenAppearance( 30, .16f ),
+			RelentlessGazeOfTheSun.Name          => new PresenceTokenAppearance( 60,  .4f ),
+			WanderingVoiceKeensDelirium.Name     => new PresenceTokenAppearance( 300, .22f, .5f ),
+			EmberEyedBehemoth.Name               => new PresenceTokenAppearance( 45,  .4f, .5f ),
+
+			//
 			_                                    => new PresenceTokenAppearance( 0, 0 ),
 		};
 	}
@@ -149,12 +180,12 @@ public partial class ConfigureGameDialog : Form {
 	#region event hanlders
 
 	void OkButton_Click( object sender, EventArgs e ) {
-		string spirit = SelectedSpiritName();
+		string spiritName = SelectedSpiritName();
 		GameConfig = new GameConfigPlusToken {
-			Spirits = new string[]{ spirit },
+			Spirits = new string[]{ spiritName },
 			Boards = new string[]{ SelectedBoard() },
 			ShuffleNumber = SelectShuffleNumber(),
-			Token = SelectAppearance( spirit ),
+			Token = SelectAppearance( spiritName ),
 			Adversary = SelectAdversary(), 
 			CommandTheBeasts = true,
 		};
