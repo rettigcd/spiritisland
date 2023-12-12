@@ -17,8 +17,9 @@ public class SpaceToken : TypedDecision<SI_SpaceToken>, IHaveArrows {
 
 	/// <summary>  Constructs SpaceToken options for MANY spaces  </summary>
 	public SpaceToken( string prompt, IEnumerable<SI_SpaceToken> tokens, Present present )
-		: base( prompt, tokens, present ) {
-		SpaceTokens = tokens.ToArray();
+		: base( prompt, tokens.ToArray() /* get rid of generators, make concrete so we can mod .ShowSpace property */, present )
+	{
+		SpaceTokens = _allOptions.OfType<SI_SpaceToken>().ToArray();
 		int count = SpaceTokens.Select( st => st.Space ).Distinct().Count();
 		bool showSpaces = 1 < count;
 		foreach(SI_SpaceToken st in SpaceTokens) 

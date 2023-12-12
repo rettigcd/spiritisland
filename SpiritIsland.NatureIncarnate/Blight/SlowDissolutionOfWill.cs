@@ -19,7 +19,7 @@ public class SlowDissolutionOfWill : BlightCard {
 
 	async Task DoReplace(Spirit spirit ) {
 		var replacement = _replacements[spirit];
-		Space space = await spirit.SelectDeployed("Replace Presence with with " + replacement.Text );
+		Space space = await spirit.SelectDeployed("Replace Presence with " + replacement.Text );
 		SpaceState tokens = space.Tokens;
 		await spirit.Presence.DestroyPresenceOn(tokens);
 		await tokens.AddAsync(replacement,1);

@@ -7,7 +7,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 	public string Prompt { get; }
 
 	IOption[] IDecision.Options => _allOptions;
-	readonly IOption[] _allOptions;
+	protected readonly IOption[] _allOptions;
 
 	/// <summary>
 	/// Presents user we a "Done" option for Present.Done

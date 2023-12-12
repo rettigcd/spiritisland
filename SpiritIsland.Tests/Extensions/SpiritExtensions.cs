@@ -66,6 +66,9 @@ public static class SpiritExtensions {
 			.AwaitUser( spirit.HandleDecisions( userActions ) )
 			.ShouldComplete( methodAsync.Method.Name );
 
+	/// <summary>
+	/// Like playing a card, but user doesn't have to pick the space because it is passed in.
+	/// </summary>
 	internal static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, Space space, AsyncHandler<TargetSpaceCtx> methodAsync ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
 		await methodAsync.Execute( spirit.Target( space ) );
@@ -74,11 +77,19 @@ public static class SpiritExtensions {
 	internal static Task AwaitUserToComplete( this Task task, string taskDescription, Action userActions )
 		=> task.AwaitUser(userActions).ShouldComplete(taskDescription);
 
+	/// <summary>
+	/// Wait for a VirtualUser to complete a series of action before returning the Task
+	/// Version 1 - Caller supplies the VirtualUser
+	/// </summary>
 	internal static Task AwaitUser( this Task task, Action userActions ) {
 		userActions?.Invoke();
 		return task;
 	}
 
+	/// <summary>
+	/// Wait for a VirtualUser to complete a series of action before returning the Task
+	/// Version 2 - Virtual User is generated from Spirit
+	/// </summary>
 	internal static Task AwaitUser( this Task task, Spirit spirit, Action<VirtualUser> userActions ) {
 		spirit.HandleDecisions(userActions)();
 		return task;
