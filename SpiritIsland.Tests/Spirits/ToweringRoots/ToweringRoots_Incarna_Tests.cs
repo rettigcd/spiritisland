@@ -35,7 +35,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		// When: destroying presence (via Growth thru Sacrifice)
 		await _spirit.When_ResolvingCard<GrowthThroughSacrifice>( u => {
 			u.NextDecision.HasPrompt( "Select Presence to destroy" )
-				.HasOptions( "TRotJ,TRotJ- on A3" )
+				.HasOptions( "TRotJ on A2,TRotJ- on A3" )
 				.Choose( "TRotJ- on A3" );
 
 			// Clean up
@@ -67,7 +67,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		// When: moving/pushing presence
 		await _spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( u => {
 			u.NextDecision.HasPrompt( "Select Presence to push." )
-				.HasOptions( "TRotJ,TRotJ- on A3,Done" )
+				.HasOptions( "TRotJ on A2,TRotJ- on A3,Done" )
 				.Choose( "TRotJ- on A3" );
 
 			// Clean up

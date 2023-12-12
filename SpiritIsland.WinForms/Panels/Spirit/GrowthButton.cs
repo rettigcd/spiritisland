@@ -4,6 +4,7 @@ namespace SpiritIsland.WinForms;
 
 public class GrowthButton : IButton {
 	public Rectangle Bounds { get; set; }
+	bool IButton.Contains( Point clientCoords) => Bounds.Contains( clientCoords );
 
 	public void Paint( Graphics graphics, bool enabled ) {
 		if(enabled) {

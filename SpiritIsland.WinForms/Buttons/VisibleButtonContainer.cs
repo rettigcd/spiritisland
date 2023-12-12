@@ -64,7 +64,7 @@ public class VisibleButtonContainer {
 
 	public IOption FindEnabledOption( Point clientCoords ) {
 		foreach(var pair in _enabled)
-			if(pair.Value.Bounds.Contains( clientCoords )) return pair.Key;
+			if(pair.Value.Contains( clientCoords )) return pair.Key;
 		return null;
 	}
 

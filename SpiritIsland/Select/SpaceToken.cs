@@ -21,9 +21,11 @@ public class SpaceToken : TypedDecision<SI_SpaceToken>, IHaveArrows {
 	{
 		SpaceTokens = _allOptions.OfType<SI_SpaceToken>().ToArray();
 		int count = SpaceTokens.Select( st => st.Space ).Distinct().Count();
-		bool showSpaces = 1 < count;
+		var configText = 1 < count 
+			? SI_SpaceToken.ConfigSpaceTokenText.Both 
+			: SI_SpaceToken.ConfigSpaceTokenText.Token;
 		foreach(SI_SpaceToken st in SpaceTokens) 
-			st.ShowSpaceInTextDescription = showSpaces;
+			st.ConfigText = configText;
 	}
 
 	#endregion

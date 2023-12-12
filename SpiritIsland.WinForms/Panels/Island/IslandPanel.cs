@@ -16,7 +16,7 @@ class IslandPanel : IPanel {
 		WorldLayoutChanged += CacheBackground_Invalidate;
 		ScreenBoundsChanged+= CacheBackground_Invalidate;
 
-		WorldLayoutChanged += InitButtonContainer; // !! instead of Init, switch to invalidate
+		WorldLayoutChanged += InitButtonContainerToSpaceButtons; // !! instead of Init, switch to invalidate
 	}
 	#endregion
 
@@ -42,22 +42,28 @@ class IslandPanel : IPanel {
 	public void OnGameLayoutChanged() { _worldLayout = null; WorldLayoutChanged?.Invoke(); }
 
 	public void Paint( Graphics graphics ) {
+		// Background & Initialization
 		if(_cachedBackground == null) {
 			MapWorldToScreen();
 			InitBackgroundCache();
 		}
 		DrawBackground( graphics );
 
+		// Load all SpaceToken options into the Outstanding-SpaceToken collection.
 		_buttonContainer.ClearTransient();
 		if(_decision is A.SpaceToken spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
+		// As we draw the space, we pull matched SpaceTokens out of the collection and place in buttonContainer
 		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)
 			DecorateSpace( graphics, space );
 
+		// for SpaceToken options with no real SpaceToken, put them in buttonContainer too.
 		AddButtonsForVirtualSpaceTokens();
 
 		DrawArrows( graphics );
+
+		// Draw enabled buttons in the container
 		_buttonContainer.Paint( graphics );
 	}
 
@@ -142,7 +148,7 @@ class IslandPanel : IPanel {
 		foreach(var space in spaces) {
 			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
 			SpaceLayout spaceLayout = WorldLayout.MySpaceLayout( space );
-			PointF[] points = spaceLayout.Corners.Select( _mapper.Map ).ToArray();
+			PointF[] points = spaceLayout.Corners.Select( MapWorldToClient ).ToArray();
 
 			// Draw smoothy
 			graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
@@ -154,6 +160,8 @@ class IslandPanel : IPanel {
 		}
 
 	}
+
+	PointF MapWorldToClient( PointF world) => _mapper.Map(world);
 
 	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
 
@@ -305,12 +313,19 @@ class IslandPanel : IPanel {
 
 	#region Buttons
 
-	void InitButtonContainer() {
+	void InitButtonContainerToSpaceButtons() {
 		_buttonContainer.Clear();
 		foreach(SpaceState spaceState in _ctx.GameState.Spaces_Unfiltered) {
-			// !!! Since GetPortPoint is dynamic, can we PLEASE make _hotspotRadius dynamic also?
-			SpaceButton button = new SpaceButton( GetPortPoint, spaceState.Space, _hotspotRadius );
+			SpaceLayout layout = WorldLayout.MySpaceLayout(spaceState.Space);
+			SpaceButton button = new SpaceButton( layout, MapWorldToClient );
 			_buttonContainer.Add( spaceState.Space, button );
+		}
+	}
+
+	void RecordSpaceTokenLocation( SpaceToken st, Rectangle rect ) {
+		if(_outstandingSpaceTokenOptions.Contains( st )) {
+			_buttonContainer.AddTransientEnabled( st, new SpaceTokenButton( rect ) );
+			_outstandingSpaceTokenOptions.Remove( st );
 		}
 	}
 
@@ -322,13 +337,6 @@ class IslandPanel : IPanel {
 			_buttonContainer.AddTransientEnabled( spaceToken, new SpaceTokenButton( rect ) );
 		}
 		_outstandingSpaceTokenOptions.Clear();
-	}
-
-	void RecordSpaceTokenLocation( SpaceToken st, Rectangle rect ) {
-		if(_outstandingSpaceTokenOptions.Contains( st )) {
-			_buttonContainer.AddTransientEnabled( st, new SpaceTokenButton( rect ) );
-			_outstandingSpaceTokenOptions.Remove( st );
-		}
 	}
 
 	#endregion

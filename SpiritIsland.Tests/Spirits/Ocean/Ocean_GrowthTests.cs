@@ -40,7 +40,7 @@ public class Ocean_GrowthTests : GrowthTests {
 			while(!_spirit.Portal.IsResolved){
 				var options = _spirit.Portal.Next.Options
 					.Where( option => {
-						if(option is SpaceToken st) st.ShowSpaceInTextDescription = true;
+						if(option is SpaceToken st) st.ConfigText = SpaceToken.ConfigSpaceTokenText.Both;
 						return moveBySrc.ContainsKey( option.Text );
 					} )
 					.ToArray();

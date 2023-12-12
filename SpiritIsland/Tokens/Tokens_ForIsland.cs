@@ -76,12 +76,14 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		public void Restore( Tokens_ForIsland src ) {
 
 			// Clear out the ITrackMySpaces so that .Adjust below will properly initialize
-			var trackable = src._tokenCounts.Values.SelectMany(x=>x.OfType<ITrackMySpaces>()).Distinct();
+			var trackable = src._tokenCounts.Values
+				.SelectMany(countDict=>countDict.Keys.OfType<ITrackMySpaces>())
+				.Distinct()
+				.ToArray();
 			foreach(ITrackMySpaces t in trackable) t.Clear();
 
 			// Restore TokenCounts
 			src._tokenCounts.Clear();
-//			var tokenApi = (IIslandTokenApi)src;
 
 			foreach(var space in _tokenCounts.Keys) {
 				// stasis

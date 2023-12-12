@@ -136,7 +136,7 @@ public class GameBuilder {
 		adversary.PostInitialization( gameState );
 
 		if(cfg.CommandTheBeasts)
-			CommandTheBeasts_AddCardsToInvaderDeck( gameState );
+			CommandTheBeasts.AddCardsToInvaderDeck( gameState );
 
 		return gameState;
 	}
@@ -152,20 +152,6 @@ public class GameBuilder {
 
 		public void PostInitialization( GameState _ ) { }
 		public void PreInitialization( GameState _ ) { }
-	}
-
-
-	static void CommandTheBeasts_AddCardsToInvaderDeck( GameState gameState ) {
-		// If there are no Event cards, compensate with Command-the-Beasts
-
-		void QueueBeastForStartOfStage( int stage ) {
-			gameState.InvaderDeck
-				.UnrevealedCards
-				.First(x=>x.InvaderStage == stage)
-				.CardFlipped += CommandBeastsTrigger.QueueBeastCommand;
-		}
-		QueueBeastForStartOfStage( 2 );
-		QueueBeastForStartOfStage( 3 );
 	}
 
 }

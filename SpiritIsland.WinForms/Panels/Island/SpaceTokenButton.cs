@@ -9,6 +9,7 @@ public class SpaceTokenButton : IButton {
 	}
 
 	public Rectangle Bounds { get; private set; }
+	bool IButton.Contains( Point clientCoords) => Bounds.Contains( clientCoords );
 
 	public void Paint( Graphics graphics, bool enabled ) {
 		if(enabled) {

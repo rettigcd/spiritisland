@@ -70,6 +70,10 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 
 	#endregion
 
+	public Orig_Space[] Spaces {  get; }
+
+	#region config: Token circle
+
 	/// <summary>
 	/// When moving a token into a space, causes the space the token will be displayed in as the hot-spot.
 	/// </summary>
@@ -78,20 +82,24 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 		return this;
 	}
 
-	public Space ComingFrom( Orig_Space source ) {
-		_source = source;
-		return this;
-	}
-
-	public Orig_Space[] Spaces {  get; }
-
 	/// <summary> Token to be added to selected space </summary>
 	/// <remarks> 
 	///	Used for:
 	///		pushing/moving/placing: presence, 
 	///		pushing/moving: tokens 
 	///	</remarks>
-	public IToken Token { get; private set; }
+	public IToken Token { 
+		get; 
+		private set;
+	}
+
+	#endregion config: Token circle
+
+	#region config: Arrows
+	public Space ComingFrom( Orig_Space source ) {
+		_source = source;
+		return this;
+	}
 
 	public IEnumerable<Arrow> Arrows => _source == null || Token == null 
 		? Enumerable.Empty<Arrow>()
@@ -99,5 +107,8 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 
 	// Only Set when we want to draw outgoing arrows
 	Orig_Space _source;
+
+	#endregion config: Arrows
+
 
 }

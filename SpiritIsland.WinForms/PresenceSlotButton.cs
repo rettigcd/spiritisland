@@ -17,6 +17,7 @@ public class PresenceSlotButton : PresenceSlotLayout, IButton {
 	readonly IPresenceTrack _presenceTrack;
 
 	public Rectangle Bounds => PresenceRect;
+	bool IButton.Contains( Point clientCoords) => Bounds.Contains( clientCoords );
 
 	public void PaintBackground( Graphics graphics ) {
 		using Image img = ResourceImages.Singleton.GetTrack( _track.Icon );

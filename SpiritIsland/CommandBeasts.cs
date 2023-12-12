@@ -81,7 +81,24 @@ class CommandBeastAction : IActionFactory {
 	public bool Used { get; private set; }
 }
 
-public static class CommandBeastsTrigger {
+public static class CommandTheBeasts {
+
+	static public void AddCardsToInvaderDeck( GameState gameState ) {
+		// If there are no Event cards, compensate with Command-the-Beasts
+
+		gameState.InvaderDeck
+			.UnrevealedCards
+			.First(x=>x.InvaderStage == 2)
+			.CardFlipped += QueueBeastCommand;
+
+		// Find 1st card of last Level-3 group
+		var cards = gameState.InvaderDeck.UnrevealedCards;
+		int i = cards.Count;
+		while(cards[i-1].InvaderStage != 3) --i; // While prev is not level 3, backup - ends on card following level 3 group
+		while(cards[i-1].InvaderStage == 3) --i; // While prev is leverl 3, backup - ends on 1st level 3 card in last group
+		cards[i].CardFlipped += QueueBeastCommand;
+	}
+
 
 	/// <summary>
 	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.

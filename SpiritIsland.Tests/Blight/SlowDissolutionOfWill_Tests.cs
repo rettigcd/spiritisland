@@ -34,7 +34,10 @@ public class SlowDissolutionOfWill_Tests {
 		spirit.Presence.IsOn( board[8] ).ShouldBeFalse();
 		spirit.Presence.CountOn( board[8] ).ShouldBe(0);
 		spirit.Presence.HasMovableTokens( board[8].Tokens ).ShouldBeFalse();
-		spirit.Presence.Deployed.Select(d=>{d.ShowSpaceInTextDescription=true; return d.Text;} ).Join(",").ShouldBe("RSiS on B7");
+		spirit.Presence.Deployed
+			.Select(d=>{d.ConfigText = SpaceToken.ConfigSpaceTokenText.Both; return d.Text;} )
+			.Join(",")
+			.ShouldBe("RSiS on B7");
 
 	}
 

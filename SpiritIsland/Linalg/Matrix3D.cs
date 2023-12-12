@@ -19,6 +19,9 @@ public class Matrix3D {
 
 	#region Multiplication helpers
 
+	/// <summary>
+	/// Helper Vector that is good for taking the dot product.
+	/// </summary>
 	public record struct Vector3( double X, double Y, double Z ) {
 		/// <summary> Dot product </summary>
 		public static double operator *( Vector3 a, Vector3 b ) => a.X * b.X + a.Y * b.Y + a.Z * b.Z;

@@ -37,7 +37,13 @@ public class SpiritPresenceToken
 
 	public bool IsOnIsland => _boardCounts.Any();
 
-	public IEnumerable<Space> Spaces_Existing => _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
+	// public IEnumerable<Space> Spaces_Existing => _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
+	public IEnumerable<Space> Spaces_Existing {  get {
+			return _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
+		} 
+	}
+
+
 	/// <summary> Existing (non-statis) SppaceTokens </summary>
 	public IEnumerable<SpaceToken> Deployed => this.On( Spaces_Existing );
 
