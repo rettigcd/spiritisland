@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.A;
+
+namespace SpiritIsland;
 
 public sealed class TokenMover {
 
@@ -47,22 +49,40 @@ public sealed class TokenMover {
 	public Task DoUpToN() => DoN( _upToNPresent );
 
 	async public Task DoN( Present present = Present.Always ) {
-		string actionPromptPrefix = present == Present.Always ? _actionWord
-			: _actionWord + " up to";
 
-		IAsyncEnumerable<SpaceToken> sourceTokens = _sourceSelector.GetEnumerator(
-			_self,
-			Prompt.RemainingParts(actionPromptPrefix),
-			present,
-			_destinationSelector.Single
-		);
-		await foreach(SpaceToken sourceToken in sourceTokens)
-			await DoSomethingWithSource( sourceToken );
+		// await OldWay( present, actionPromptPrefix );
+		await NewWay( present );
 	}
 
-	async Task DoSomethingWithSource( SpaceToken sourceToken ) {
-		TokenMovedArgs tokenMoved = await sourceToken.MoveToAsync(_actionWord,_destinationSelector,_self);
-		await NotifyAsync( tokenMoved );
+
+	async Task NewWay( Present present ) {
+
+		while(true) {
+
+			var move = await GetMoveDecision(present);
+			if(move == null) break;
+
+			// Do Move
+			TokenMovedArgs tokenMoved = await move.Source.MoveTo( move.Destination );
+
+			// Notify/Update Source
+			await _sourceSelector.NotifyAsync( move.Source );
+			await _destinationSelector.NotifyAsync( move.Destination );
+			await NotifyAsync( tokenMoved );
+		}
+	}
+
+	async Task<Move> GetMoveDecision(Present present) {
+
+		var sourcePromptBuilder = Prompt.RemainingParts( present == Present.Always ? _actionWord : _actionWord + " up to" );
+		A.SpaceToken srcDecision = _sourceSelector.BuildDecision( sourcePromptBuilder, present, _destinationSelector.Single, 0, null );
+
+		// Drag and Drop way
+		Move[] options = _sourceSelector.GetSourceOptions()
+			.SelectMany( s => _destinationSelector.GetDestinationOptions(s).Select(d=>new Move {Source=s,Destination=d } ))
+			.ToArray();
+		return await _self.SelectAsync(new AMove(srcDecision.Prompt,options,present));
+
 	}
 
 	#region Config
@@ -103,3 +123,20 @@ public sealed class TokenMover {
 	readonly DestinationSelector _destinationSelector;
 
 }
+
+
+class MoveSelector {
+	// SourceSelector
+	// Destination
+
+	// Prompt
+
+	// StartOptions
+
+	// DestinationOptinosFor( source );
+}
+
+public class AMove : TypedDecision<Move> {
+	public AMove(string prompt, IEnumerable<Move> options, Present present ) : base( prompt, options, present ) { }
+}
+

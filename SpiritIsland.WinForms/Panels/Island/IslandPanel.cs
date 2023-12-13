@@ -70,10 +70,12 @@ class IslandPanel : IPanel {
 	public void ActivateOptions( IDecision decision ) {
 		_decision = decision;
 
+		// Spaces
 		_outstandingSpaceTokenOptions.Clear();
 		if(_decision is A.SpaceToken spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
+		// Tokens
 		_buttonContainer.EnableOptions( decision );
 
 		this.OptionCount = _buttonContainer.ActivatedOptions + _outstandingSpaceTokenOptions.Count;

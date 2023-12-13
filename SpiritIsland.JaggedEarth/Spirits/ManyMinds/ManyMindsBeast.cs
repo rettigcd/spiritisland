@@ -26,7 +26,7 @@ public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemovedAsyn
 		// If we added it, it came from somewhere and represented 2 presence.
 		if(args.Added == this) {
 			if(args.Reason != AddReason.MovedTo) throw new InvalidOperationException($"adding MM-Beast reason {args.Reason}");
-			args.To.Init( this, 1 ); // limit to max 1
+			args.To.Tokens.Init( this, 1 ); // limit to max 1
 		}
 	}
 
@@ -35,12 +35,11 @@ public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemovedAsyn
 
 		// Page 28 of JE says that 'Removing' presence is treated the same as Destroying, just voluntary
 
-		var tokens = args.From;
 		if(args.Reason.IsDestroyingPresence())
-			await tokens.Destroy( _presenceToken, 2 );
+			await args.From.Tokens.Destroy( _presenceToken, 2 );
 		else if( args is ITokenMovedArgs movedArgs) {
-			await _presenceToken.Move( movedArgs.From, movedArgs.To );
-			await _presenceToken.Move( movedArgs.From, movedArgs.To );
+			await _presenceToken.On( movedArgs.From )
+				.MoveTo( movedArgs.To, 2 );
 		} else
 			throw new InvalidOperationException( "MM SS Beast should never be UsedUp nor .None" );
 

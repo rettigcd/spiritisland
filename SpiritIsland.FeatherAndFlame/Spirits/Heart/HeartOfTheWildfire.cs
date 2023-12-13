@@ -75,7 +75,7 @@ public class HeartOfTheWildfire : Spirit {
 		+"  Push all beasts and any number of dahan.  Added blight does not destroy your presence."
 	);
 
-	class WildfireToken : SpiritPresenceToken, IModifyRemovingTokenAsync, IHandleTokenAddedAsync {
+	class WildfireToken : SpiritPresenceToken, IModifyRemovingToken, IHandleTokenAddedAsync {
 
 		static public readonly SpecialRule DestructiveNature_Rule = new SpecialRule(
 			"Destructive Nature",
@@ -84,15 +84,12 @@ public class HeartOfTheWildfire : Spirit {
 
 		public WildfireToken( Spirit spirit ):base(spirit) {}
 
-		public Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+		void  IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presence. ( This includes cascades.)
 			if( DestroysMyPresence(args) && BlightAddedDueToSpiritEffects() ){
-				if(args.Mode == RemoveMode.Live)
-					GameState.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));
+				GameState.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));
 				args.Count = 0;
-
 			}
-			return Task.CompletedTask;
 		}
 
 		static bool BlightAddedDueToSpiritEffects() => !BlightToken.ForThisAction.BlightFromCardTrigger.Reason
@@ -104,7 +101,7 @@ public class HeartOfTheWildfire : Spirit {
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
 			int fireCount = Self.Presence.TrackElements[Element.Fire];
-			var ctx = Self.Target( args.To.Space );
+			var ctx = Self.Target( args.To );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight

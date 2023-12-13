@@ -100,7 +100,7 @@ public class StubbornSolidity_Tests {
 		// Given: 3 dahan & presence in Target
 		targetSpace.InitDefault( Human.Dahan, 3 );
 		SpiritExtensions.Given_Adjust( spirit.Presence, targetSpace, 3 );
-		//   And: 3 dahan in Adjacent
+		//   And: 2 dahan in Adjacent
 		adjacentSpace.InitDefault( Human.Dahan, 2 );
 
 		//   And: Played StubbornSolidity on target
@@ -108,14 +108,26 @@ public class StubbornSolidity_Tests {
 		//   And: Played StubbornSolidity on adjacent
 		await Play_StubbornSolidity_On( spirit, adjacentSpace );
 
+		// ! We are allowing user to select non-movable pieces because:
+			// Easier to check ambient moveable after user has made choice.
+
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
 		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
 			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
+			// Gather - 3
+			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ); // ! This is showing (2) because there are only 2 there.
+			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
+			// Push
+			user.NextDecision.HasPrompt( "Push up to (3)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
 		} );
 
 		//  Then: Dahan are still there (not replaced)
 		targetSpace.Summary.ShouldBe( "3D@2,3G,3SUD" );
 		adjacentSpace.Summary.ShouldBe( "2D@2,2G" );
+		board[5].Tokens.Summary.ShouldBe("[none]"); // nothing goes to 5
 
 	}
 
@@ -140,8 +152,20 @@ public class StubbornSolidity_Tests {
 		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
 			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.Space );
 			//   And: outside dahan are gathered
-			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
-			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasOptions( "D@2,Done" ).Choose( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
+
+			// Push - 3
+			user.NextDecision.HasPrompt( "Push up to (2)" )
+				.HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
+				.HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+
+			user.NextDecision.HasPrompt( "Push up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
+				.HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+
+			user.NextDecision.HasPrompt( "Push up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
+				.HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+
 		} );
 
 		//  Then: dahan were gathered
@@ -150,7 +174,7 @@ public class StubbornSolidity_Tests {
 		//   But: Dahan became frozen and were not pushed
 		targetSpace.Summary.ShouldBe( "2D@2,1SUD" ); // no defends
 
-		targetSpace.Sum( Human.Dahan ).ShouldBe(2);
+		board[5].Tokens.Summary.ShouldBe("[none]");
 	}
 
 

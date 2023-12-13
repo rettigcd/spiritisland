@@ -21,28 +21,32 @@ public class SourceSelector {
 		int? maxCount = null
 	) {
 		int index = 0;
-		while(maxCount is null || index < maxCount.Value){
-			// SpaceToken x = await GetSource( spirit, prompt, present, destination );
-			SpaceToken[] options = await GetSourceOptions();
-
-			string prompt = promptBuilder(new PromptData(_quota,options,index,maxCount));
+		while(maxCount is null || index < maxCount.Value) {
+			A.SpaceToken decision = BuildDecision( promptBuilder, present, singleDestination, index, maxCount );
 
 			// Select Token
-			SpaceToken source = await spirit.SelectAsync( new A.SpaceToken( prompt, options, present ).PointArrowTo( singleDestination ) );
-			if(source != null) {
-				_quota.MarkTokenUsed( source.Token );
-				await NotifyAsync( source );
-			}
-
+			SpaceToken source = await spirit.SelectAsync( decision );
 			if(source == null) break;
+
+			await NotifyAsync( source );
+
 			yield return source;
 			++index;
 		}
 	}
 
+	public A.SpaceToken BuildDecision( Func<PromptData, string> promptBuilder, Present present, Space singleDestination, 
+		int index, int? maxCount // for the prompt
+	) {
+		SpaceToken[] options = GetSourceOptions();
+		string prompt = promptBuilder( new PromptData( _quota, options, index, maxCount ) );
+		return new A.SpaceToken( prompt, options, present )
+			.PointArrowTo( singleDestination );
+	}
+
 	#region public Config
 
-//	public SourceSelector Config( Func<SourceSelector,SourceSelector> configuration ) { configuration(this); return this;}
+	//	public SourceSelector Config( Func<SourceSelector,SourceSelector> configuration ) { configuration(this); return this;}
 	public SourceSelector Config( Action<SourceSelector> configuration ) { configuration(this); return this;}
 
 	/// <summary>
@@ -57,7 +61,6 @@ public class SourceSelector {
 		Track( st => selected[st]++ );
 		FilterSpaceToken( st => selected[st] < st.Count);
 
-		_removeReason = RemoveReason.None; 
 		return this;
 	}
 
@@ -94,8 +97,10 @@ public class SourceSelector {
 		return this;
 	}
 
-	async Task NotifyAsync( SpaceToken selected ) {
-		foreach(var onSelected in _onSelected)
+	public async Task NotifyAsync( SpaceToken selected ) {
+		_quota.MarkTokenUsed( selected.Token );
+
+		foreach(Func<SpaceToken, Task> onSelected in _onSelected)
 			await onSelected( selected );
 	}
 
@@ -105,23 +110,23 @@ public class SourceSelector {
 
 	#region protected methods
 
-	protected virtual async Task<SpaceToken[]> GetSourceOptions() {
-		var options = new List<SpaceToken>();
-		foreach(SpaceState sourceSpaceState in SourceSpaces) {
-			options.AddRange(
-				await GetSourceOptionsOn1Space( sourceSpaceState )
-			);
-		}
+	public virtual SpaceToken[] GetSourceOptions() {
+		//var options = new List<SpaceToken>();
+		//foreach(SpaceState sourceSpaceState in SourceSpaces)
+		//	options.AddRange( GetSourceOptionsOn1Space( sourceSpaceState ) );
+		var optionz = SourceSpaces
+			.SelectMany( GetSourceOptionsOn1Space )
+			.ToList();
 
 		// User filter on SpaceTokens
 		foreach(Func<SpaceToken, bool> f in _filterSpaceToken)
-			options = options.Where(f).ToList();
+			optionz = optionz.Where(f).ToList();
 
-		return options.ToArray();
+		return optionz.ToArray();
 	}
 
-	protected Task<IEnumerable<SpaceToken>> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) 
-		=> _quota.GetSourceOptionsOn1Space( sourceSpaceState, _removeReason );
+	protected IEnumerable<SpaceToken> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) 
+		=> _quota.GetSourceOptionsOn1Space( sourceSpaceState );
 
 	protected IEnumerable<SpaceState> SourceSpaces
 		=> _filterSpace == null ? _unfilteredSourceSpaces
@@ -139,8 +144,6 @@ public class SourceSelector {
 	readonly public SpaceState[] _unfilteredSourceSpaces;
 
 	readonly List<Func<SpaceToken, bool>> _filterSpaceToken = new();
-
-	RemoveReason _removeReason = RemoveReason.MovedFrom;
 
 	#endregion private
 }

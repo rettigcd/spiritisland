@@ -12,19 +12,20 @@ public class FlowingAndSilentFormsDartBy {
 
 		// When presence in target land would be Destroyed, its owner may, if possible instead Push that presence.
 		// (do it for all spirits, not just the ones currently here)
-		ctx.Tokens.Init(new PushInsteadOfDestroy(),1);
+		ctx.Tokens.Init(new PushPresenceInsteadOfDestroy(),1);
 
 		// You may Gather 1 presence / Sacred site of another Spirit (with their permission).
 		await GatherSomeonesPresence( ctx );
 
 	}
 
+	/// <summary>
+	/// Allows presence to be pushed when it normally would be destroyed.
+	/// </summary>
+	class PushPresenceInsteadOfDestroy : IModifyRemovingTokenAsync, IEndWhenTimePasses {
 
-	class PushInsteadOfDestroy : IModifyRemovingTokenAsync, IEndWhenTimePasses {
-
-		public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
-			if( args.Mode == RemoveMode.Test
-				|| !args.Reason.IsDestroyingPresence()
+		async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
+			if( !args.Reason.IsDestroyingPresence()
 				|| args.Token is not SpiritPresenceToken spt 
 				|| !spt.CanMove
 			) return;
@@ -37,7 +38,7 @@ public class FlowingAndSilentFormsDartBy {
 			if(dst == null) return;
 
 			while(0 < args.Count--)
-				await args.From.MoveTo(args.Token, dst);
+				await args.Token.On(args.From.Space).MoveTo(dst);
 		}
 	}
 

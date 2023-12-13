@@ -2,7 +2,9 @@
 
 public class AddingTokenArgs {
 
-	public AddingTokenArgs(SpaceState to, AddReason addReason ) {
+	public AddingTokenArgs( IToken token, int count, SpaceState to, AddReason addReason ) {
+		Token = token;
+		Count = count;
 		To = to;
 		Reason = addReason;
 	}
@@ -12,5 +14,13 @@ public class AddingTokenArgs {
 
 	// Modifiable
 	public IToken Token { get; set; }
-	public int Count { get; set; }
+	public int Count {
+		get => _count;
+		set {  
+			if(_count != value && Reason == AddReason.MovedTo) 
+				throw new InvalidOperationException($"Changing {nameof(Count)} not allowed for {nameof(AddReason.MovedTo)}.");
+			_count = value;
+		}
+	}
+	int _count;
 }

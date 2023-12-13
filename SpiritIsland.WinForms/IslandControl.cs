@@ -262,18 +262,99 @@ public partial class IslandControl : Control {
 	#region User Action Events - Notify main form
 
 	public event Action<IOption> OptionSelected;
-	public void SelectOption( IOption option ) => OptionSelected?.Invoke( option );
+
+	/// <summary>
+	/// Callback for when an option is Selected
+	/// </summary>
+	public void SelectOption( IOption option ) {
+
+		if( HandleMovePart( ref option ) ) return;
+
+		OptionSelected?.Invoke( option );
+	}
 
 	#endregion
 
+	/// <summary>
+	/// If this is a move, captures it and replaces Decision with Step 1 - Select Source
+	/// </summary>
+	void SetupNewMove( ref IDecision decision ) {
+
+		_moveOptions = null;
+		if(decision is not AMove) return;
+
+		_moveOptions = decision.Options.OfType<Move>().ToArray();
+		_moveIsOptional = decision.Options.Any( x => x == TextOption.Done );
+		_moveSource = null;
+
+		// Swap out Move for Part 1:Select-Source
+		var st = new A.SpaceToken(
+			decision.Prompt,
+			_moveOptions.Select( s => s.Source ).Distinct(),
+			_moveIsOptional ? Present.Done : Present.Always
+		);
+		var destinations = _moveOptions.Select(s=>s.Destination).Distinct().ToArray();
+		if(destinations.Length==1)
+			st.PointArrowTo( destinations[0] );
+		decision = st;
+
+	}
+
+	bool HandleMovePart( ref IOption option ) {
+	
+		if(_moveOptions is null) return false;
+
+		// Is Part 1 => Setup Part 2
+		if(option is SpaceToken source) {
+			// If only 1 destination - Auto-select it now (can't use Present.AutoSelectSingle because that is Engine-Side)
+			Space[] destinationOptions = _moveOptions.Where( s => s.Source == source ).Select( s => s.Destination ).Distinct().ToArray();
+			if(destinationOptions.Length == 1) {
+				option = _moveOptions.Single( s => s.Source == source && s.Destination == destinationOptions[0] );
+				return false;
+			}
+
+			// Setup TO choice
+			_moveSource = source;
+			Move[] saveMoves = _moveOptions; // save
+			OptionProvider_OptionsChanged( 
+				new A.Space( 
+					"Move to", 
+					destinationOptions, 
+					Present.AutoSelectSingle // Is they selected a source, make don't let them cancel.  (this will be different when dragging)
+				)
+				.ComingFrom(source.Space)
+				.ShowTokenLocation(source.Token)
+			);
+			_moveOptions = saveMoves; // restore
+
+			return true;
+		} 
+
+		// Is Part 2 => return Move
+		if(option is Space destination)
+			option = _moveOptions.Single( s => s.Source == _moveSource && s.Destination == destination );
+
+		return false;
+	}
+
+	Move[] _moveOptions;
+	bool _moveIsOptional;
+	SpaceToken _moveSource;
+
+	/// <summary>
+	/// Loads Options when a new Decision os presented
+	/// </summary>
 	public void OptionProvider_OptionsChanged( IDecision decision ) {
+
+		SetupNewMove( ref decision );
+
 		foreach(var panel in _allPanels)
 			panel.ActivateOptions( decision );
 
 		// Find panel that has the max # of options and set as Focus
 		FocusPanel = _allPanels
 			.OrderByDescending( x => x.OptionCount )
-			.ThenBy( x=>x.ZIndex )  // If no option, use background
+			.ThenBy( x => x.ZIndex )  // If no option, use background
 			.First();
 
 		// !!! Buttonize Pop-ups - need to add dynamically and be able to remove themselves when done/clicked

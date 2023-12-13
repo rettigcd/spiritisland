@@ -78,34 +78,29 @@ public class OceanTerrain_Tests {
 		if( withOcean )
 			Given_OceanOnPrimaryBoard();
 
+		var log = new List<string>();
+
 		// When: Thundersepearker Activates a card that Pushes Dahan
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
 		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit); // required to signal it is a spirit power
-		Task t = PowerCard.For(typeof(CallToTend)).ActivateAsync( primarySpirit );
-		//  And: Targets A2 (that has a dahan on it)
-		Choose( "A2" );
-		//  And: Push a Dahan
-		Choose( "D@2" );
+		await PowerCard.For(typeof(CallToTend)).ActivateAsync( primarySpirit ).AwaitUser( primarySpirit, user => { 
 
-		// Then: push options should not include ocean
-		NextDecision.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" );
+			user.NextDecision.Choose("A2");	//  And: Targets A2 (that has a dahan on it)
 
-		var log = new List<string>();
-		gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
+			if(withOcean)
+				user.NextDecision.MoveFrom("D@2").MoveTo("A0","A0,A1,A3,A4");
+			else
+				user.NextDecision.MoveFrom("D@2").MoveTo("A1","A1,A3,A4");
 
-		if( withOcean)
-			Choose("A0"); // Push into Ocean and let Thunderspeaker ride along
-		else
-			Choose("A1");
+			gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
 
-		// bring Thunderspeaker along
-		NextDecision.HasPrompt( "Move presence with Dahan?" )
-			.HasOptions( "Ts,Done" )
-			.Choose( "Ts" );
+			// bring Thunderspeaker along
+ 			user.NextDecision.HasPrompt( "Move presence with Dahan?" ).HasOptions( "Ts,Done" ).Choose( "Ts" );
 
-		await t.ShouldComplete();
+		} ).ShouldComplete();
 
-		if( withOcean) {
+
+		if( withOcean ) {
 
 			// Then: This should destroy the dahan
 			var oceanSpace = gameState.Tokens[boardA[0]];
@@ -150,20 +145,21 @@ public class OceanTerrain_Tests {
 		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
 		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit);
-		Task t = PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( primarySpirit );
-		//  And: Targets A2
-		Choose( a2.Space.Text );
+		await PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( primarySpirit ).AwaitUser( primarySpirit, user => {
+			//  And: Targets A2
+			user.NextDecision.Choose( a2.Space.Text );
 
-		for(int i=0; i < 2; ++i) {
-			// When: Push 1st invadera Town
-			Choose( pushToken );
-			// Then: ocean is/is-not an option
-			NextDecision
-				.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" )
-				.Choose(withOcean ? "A0" : "A1");
-		}
+			for(int i=0; i < 2; ++i) {
+				// When: Push 1st invadere - Town
+				user.NextDecision.MoveFrom( pushToken )
+				// Then: ocean is/is-not an option
+					.MoveTo( 
+						withOcean ? "A0" : "A1",
+						withOcean ? "A0,A1,A3,A4" : "A1,A3,A4"
+					);
+			}
 
-		await t.ShouldComplete();
+		} ).ShouldComplete();
 
 		// Then: ocean should have drown energy
 		oceanSpirit.Energy.ShouldBe( oceanStartingEnergy + expectedEnergyGain );
@@ -302,12 +298,11 @@ public class OceanTerrain_Tests {
 
 		oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
 		//  And: Pushes town into ocean
-		Choose( "T@2" );
-		NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
+		NextDecision.MoveFrom("T@2").MoveTo("A0","A0,A1,A3,A4");// Choose( "T@2" ); NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
 
 		// When: Pushes 1st Dahan into Ocean
-		Choose( "D@2" );
-		Choose( "A0" );
+		NextDecision.MoveFrom("D@2").MoveTo("A0","A0,A1,A3,A4");// Choose( "D@2" ); Choose( "A0" );
+
 		// Thunderspeaker goes along
 		Choose( "Ts" );
 
@@ -319,8 +314,7 @@ public class OceanTerrain_Tests {
 		}
 
 		// When: Pushes 2nd dahan into Ocean
-		Choose( "D@2" );
-		Choose( "A0" );
+		NextDecision.MoveFrom( "D@2" ).MoveTo( "A0" );
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now

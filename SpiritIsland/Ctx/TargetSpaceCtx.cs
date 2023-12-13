@@ -129,10 +129,10 @@ public class TargetSpaceCtx : IHaveASpirit {
 
 	// Binds to Dahan
 	public Task GatherUpToNDahan( int dahanToGather )
-		=> this.GatherUpTo( dahanToGather, Human.Dahan );
+		=> GatherUpTo( dahanToGather, Human.Dahan );
 
 	public Task GatherDahan( int countToGather )
-		=> this.Gather( countToGather, Human.Dahan);
+		=> Gather( countToGather, Human.Dahan);
 
 	public Task GatherUpTo( int countToGather, params ITokenClass[] groups )
 		=> Gatherer.AddGroup(countToGather, groups).DoUpToN();
@@ -143,8 +143,6 @@ public class TargetSpaceCtx : IHaveASpirit {
 	public TokenMover Gatherer => Tokens.Gather( Self );
 
 	#endregion Gather
-
-	public Task MoveTo( IToken token, Space to ) => Tokens.MoveTo( token, to );
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
 	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent;

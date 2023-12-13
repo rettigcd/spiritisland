@@ -19,7 +19,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 		var gs = GameState.Current;
 
 		// If we are saving a dahan
-		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && args.To.Has( _spirit.Presence )) {
+		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && args.To.Tokens.Has( _spirit.Presence )) {
 			var moveOptions = gs.Island.Boards
 				.Select( x => x.Ocean )
 				.Tokens()
@@ -27,7 +27,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 				.Distinct()
 				.ToArray();
 			// And Ocean chooses to save it
-			var destination = await _spirit.SelectAsync( A.Space.ToPushToken( args.Added, args.To.Space, moveOptions.Downgrade(), Present.Done ) );
+			var destination = await _spirit.SelectAsync( A.Space.ToPushToken( args.Added, args.To, moveOptions.Downgrade(), Present.Done ) );
 			if(destination != null) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				ActionScope.Current.AtEndOfThisAction( async _ => {
@@ -40,8 +40,8 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 		}
 
 		// Drown them immediately
-		gs.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To.Space}" ) );
-		await args.To.Space.Tokens.Invaders.DestroyNTokens( ht, args.Count );
+		gs.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To}" ) );
+		await args.To.Tokens.Invaders.DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
 		if(args.Added.HasTag(TokenCategory.Invader))

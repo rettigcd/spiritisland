@@ -6,7 +6,7 @@
 static public class Bring {
 	static public Func<TokenMovedArgs,Task> FromAnywhere( Spirit spirit, Quota quota ) {
 		return async moved => {
-			await new TokenMover( spirit, "Bring", moved.From, moved.To )
+			await new TokenMover( spirit, "Bring", moved.From.Tokens, moved.To )
 				.UseQuota( quota )
 				.DoUpToN();
 		};

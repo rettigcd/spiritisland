@@ -3,7 +3,7 @@
 public interface ITokenRemovedArgs {
 
 	public IToken Removed { get; }
-	public SpaceState From { get; }
+	public Space From { get; }
 
 	/// <summary> The token type and space before it was removed. </summary>
 	public SpaceToken Before { get; }

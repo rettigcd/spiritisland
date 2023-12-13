@@ -32,26 +32,26 @@ class HabsburgDurableToken
 
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
 		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		var toTokens = args.To.Tokens;
 		// If adding first blight
-		if(args.Added == Token.Blight && args.To.Blight.Count == 1) {
+		if(args.Added == Token.Blight && toTokens.Blight.Count == 1) {
 			// switch back to normal
 			HumanToken restored = GetRestoreToken();
 			if(restored.IsDestroyed)
 				await DestroyAll( args.To );
 			else
-				args.To.ReplaceAllWith( this, restored );
+				toTokens.ReplaceAllWith( this, restored );
 		}
 	}
-	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// If removing this (Durable) token from space
 		if(args.Token == this) {
 			// switch it back to normal.
 			HumanToken restored = GetRestoreToken();
 			if(restored.IsDestroyed) {
-				if(args.Mode == RemoveMode.Live)
-					await base.Destroy( args.From, args.Count ); // must call Base to ensure it gets destroyed
+				await base.Destroy( args.From, args.Count ); // must call Base to ensure it gets destroyed
 				args.Count = 0;
-			} else if(args.Mode == RemoveMode.Live) {
+			} else {
 				args.From.ReplaceNWith( args.Count, this, restored );
 				args.Token = restored;
 			}

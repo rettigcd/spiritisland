@@ -13,24 +13,24 @@ public sealed class DestinationSelector {
 	#region constructors
 
 	public DestinationSelector( params SpaceState[] destinationSpaces ) {
-		_unfiltered = _ => destinationSpaces;
+		_findUnfilteredFromSource = _ => destinationSpaces;
 		Single = destinationSpaces.Length == 1 ? destinationSpaces[0].Space : null;
 	}
 
 	public DestinationSelector( IEnumerable<SpaceState> destinationSpaces ):this(_=> destinationSpaces) {
-		_unfiltered = ( _ ) => destinationSpaces.ToArray();
+		_findUnfilteredFromSource = ( _ ) => destinationSpaces.ToArray();
 		var destArr = destinationSpaces.ToArray();
 		Single = destArr.Length == 1 ? destArr[0].Space : null;
 	}
 
 
 	public DestinationSelector( Func<SpaceToken, SpaceState[]> getDestinationsFromSource ) {
-		_unfiltered = getDestinationsFromSource;
+		_findUnfilteredFromSource = getDestinationsFromSource;
 		Single = null;
 	}
 
 	public DestinationSelector( Func<SpaceToken, IEnumerable<SpaceState>> getDestinationsFromSource ) {
-		_unfiltered = (x)=>getDestinationsFromSource(x).ToArray();
+		_findUnfilteredFromSource = (x)=>getDestinationsFromSource(x).ToArray();
 		Single = null;
 	}
 
@@ -60,23 +60,26 @@ public sealed class DestinationSelector {
 	#endregion public config
 
 	public async Task<Space> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
-
-		var unfiltered = _unfiltered( sourceSpaceToken ).ToArray();
-		var filtered = _filterDestination( unfiltered ).ToArray();
-		var inPlay = filtered.Where( ss => TerrainMapper.Current.IsInPlay( ss.Space ) ).ToArray();
-
-
-		IEnumerable<SpaceState> destinationOptions = _filterDestination( _unfiltered( sourceSpaceToken ) )
-			.Where(ss=>TerrainMapper.Current.IsInPlay(ss.Space));
-
-		var destination = await spirit.SelectAsync(
-			new A.Space( $"{actionWord} {sourceSpaceToken.Token.Text} to", inPlay.Downgrade(), _present )
-				.ComingFrom( sourceSpaceToken.Space )
-				.ShowTokenLocation( sourceSpaceToken.Token )
-			);
-		if(destination !=null)
-			await NotifyAsync(destination);
+		A.Space decision = GetDecision( actionWord, sourceSpaceToken );
+		Space destination = await spirit.SelectAsync( decision );
+		if(destination != null)
+			await NotifyAsync( destination );
 		return destination;
+	}
+
+	public A.Space GetDecision( string actionWord, SpaceToken sourceSpaceToken ) {
+		Space[] options = GetDestinationOptions( sourceSpaceToken );
+		A.Space decision = new A.Space( $"{actionWord} {sourceSpaceToken.Token.Text} to", options, _present )
+			.ComingFrom( sourceSpaceToken.Space )
+			.ShowTokenLocation( sourceSpaceToken.Token );
+		return decision;
+	}
+
+	public Space[] GetDestinationOptions( SpaceToken sourceSpaceToken ) {
+		return _filterDestination( _findUnfilteredFromSource( sourceSpaceToken ) )
+			.Where( ss => TerrainMapper.Current.IsInPlay( ss.Space ) )
+			.Downgrade()
+			.ToArray();
 	}
 
 	public Space Single { get; }
@@ -93,7 +96,7 @@ public sealed class DestinationSelector {
 		return this;
 	}
 
-	async Task NotifyAsync( SpaceState destination ) {
+	public async Task NotifyAsync( SpaceState destination ) {
 		foreach(var onMoved in _onMoved)
 			await onMoved( destination );
 	}
@@ -105,7 +108,7 @@ public sealed class DestinationSelector {
 
 	Func<IEnumerable<SpaceState>, IEnumerable<SpaceState>> _filterDestination = x => x;
 
-	readonly Func<SpaceToken, SpaceState[]> _unfiltered;
+	readonly Func<SpaceToken, SpaceState[]> _findUnfilteredFromSource;
 	Present _present = Present.AutoSelectSingle;
 
 }

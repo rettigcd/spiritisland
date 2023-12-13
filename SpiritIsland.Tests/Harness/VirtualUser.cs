@@ -184,6 +184,7 @@ public class VirtualUser {
 
 	public void PushesTokensTo( string invaders, string destinations, int numToPush=1 ) {
 		var (_,tokenToPush) = SplitOptionsAndChoice( invaders );
+//		NextDecision.HasPrompt("Push ("+numToPush+")");
 		AssertDecisionInfo( "Push ("+numToPush+")", invaders );
 		AssertDecisionInfo( "Push "+tokenToPush+" to", destinations );
 	}
@@ -192,13 +193,6 @@ public class VirtualUser {
 		var (_, tokenToPush) = SplitOptionsAndChoice( invaders );
 		AssertDecisionInfo( "Push " + tokenToPush + " to", destinations );
 	}
-
-//	public void OptionallyPushesInvaderTo( string invaders, string destinations ) {
-//		var (invaderOptions,invaderChoice) = SplitOptionsAndChoice( invaders );
-////		AssertDecision( $"Push up to ({countToPush})", invaderOptions+",Done", invaderChoice );
-//		AssertDecision( $"Push up to 3", invaderOptions + ",Done", invaderChoice );
-//		AssertDecisionInfo( "Push "+invaderChoice+" to", destinations );
-//	}
 
 	#region Ocean-Spirit Specific
 
@@ -236,8 +230,8 @@ public class VirtualUser {
 	public void GathersOptionalToken( string token ) {
 		var (options,choice) = SplitOptionsAndChoice( token );
 		NextDecision
-			.HasOptions( options+",Done" )
-			.Choose( choice );
+			.HasSourceOptions( options+",Done" )
+			.MoveFrom( choice );
 	}
 
 	public void SelectsMajorDeck() => AssertDecisionInfo( "Which type do you wish to draw", "minor,[major]");
@@ -253,6 +247,7 @@ public class VirtualUser {
 
 	#region protected
 
+	// !!! Deprecate this
 	public void AssertDecisionInfo( string prompt, string optionsWithChoice ) {
 
 		var (options, choice) = SplitOptionsAndChoice( optionsWithChoice );
@@ -262,6 +257,7 @@ public class VirtualUser {
 			.ChooseFirst( choice );
 	}
 
+	// !!! Deprecate Or rename this
 	public void AssertDecision( string prompt, string optionsString, string select ) {
 		NextDecision
 			.HasPrompt( prompt )

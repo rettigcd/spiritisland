@@ -145,16 +145,21 @@ class HeavyMining : BaseModEntity, IHandleTokenAddedAsync, IReactToLandDamage {
 		if(MiningRush)
 			// When ravage adds at least 1 blight to a land
 			if(args.Reason == AddReason.Ravage && args.Added == Token.Blight) {
-				var noBuildAdjacents = args.To.Adjacent
+				var noBuildAdjacents = args.To.Tokens.Adjacent
 					.Where( adj => !adj.HasAny( Human.Town_City ) )
 					.ToArray();
 
-				var spirit = args.To.Space.Boards[0].FindSpirit();
+				var spirit = args.To.Boards[0].FindSpirit();
 
-				Space selection = await spirit.SelectAsync( A.Space.ToPlaceToken( "Mining Rush: Place Town", noBuildAdjacents.Downgrade(), Present.Always, args.To.GetDefault( Human.Town ) ) );
+				Space selection = await spirit.SelectAsync( A.Space.ToPlaceToken( 
+					"Mining Rush: Place Town", 
+					noBuildAdjacents.Downgrade(), 
+					Present.Always, 
+					args.To.Tokens.GetDefault( Human.Town ) 
+				) );
 				if(selection != null) {
 					selection.Tokens.AdjustDefault( Human.Town, 1 );
-					GameState.Current.LogDebug( $"Mining Rush: Blight on {args.To.Space.Text} caused +1 Town on {selection.Text}." );
+					GameState.Current.LogDebug( $"Mining Rush: Blight on {args.To.Text} caused +1 Town on {selection.Text}." );
 				}
 			}
 

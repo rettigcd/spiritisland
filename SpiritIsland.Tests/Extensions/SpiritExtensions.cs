@@ -74,6 +74,7 @@ public static class SpiritExtensions {
 		await methodAsync.Execute( spirit.Target( space ) );
 	}
 
+	// !!! Deprecate this.  Add the .ShouldComplete to the end of the AwaitUser methods and use them instead.
 	internal static Task AwaitUserToComplete( this Task task, string taskDescription, Action userActions )
 		=> task.AwaitUser(userActions).ShouldComplete(taskDescription);
 

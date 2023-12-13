@@ -20,16 +20,16 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 
 	async Task TryToFollow( ITokenMovedArgs args ) {
 		if(!Self.Presence.HasMovableTokens( args.From )) return;
-		int maxThatCanMove = Math.Min( MaxFollowerCount( args ), args.From[this] );
+		int maxThatCanMove = Math.Min( MaxFollowerCount( args ), args.From.Tokens[this] );
 		if(maxThatCanMove == 0) return;
 
 		// Using 'Gather' here so user can click on existing Presence in Source
 		// If we used 'Push', user would click on Destination instead of Source
 		string prompt = "Move presence with " + args.Removed.Class.Label + "?";
 		while(0 < maxThatCanMove--) {
-			var source = await Self.SelectAsync( A.SpaceToken.ToCollect( prompt, new SpaceToken[] { this.On( args.From.Space ) }, Present.Done, args.To.Space ) );
+			var source = await Self.SelectAsync( A.SpaceToken.ToCollect( prompt, new SpaceToken[] { this.On( args.From ) }, Present.Done, args.To ) );
 			if(source != null)
-				await this.Move( args.From, args.To );
+				await this.On(args.From).MoveTo(args.To);
 		}
 	}
 

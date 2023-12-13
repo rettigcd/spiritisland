@@ -24,7 +24,7 @@ public class ConfoundingMists {
 			if(	args.Added.Class.IsOneOf(Human.Invader) 
 				&& args.Reason.IsOneOf( AddReason.Added, AddReason.MovedTo, AddReason.Explore, AddReason.Build )
 			)
-				await args.To.SourceSelector
+				await args.To.Tokens.SourceSelector
 					.AddGroup(1,args.Added.Class)
 					.PushN( _spirit );
 		}

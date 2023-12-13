@@ -39,14 +39,14 @@ class PayEnergyToTakeFromBox
 		_cost = cost;
 	}
 
-	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token != Token.Blight || 0 == args.Count ) return;
 		
 		var cause = BlightToken.ForThisAction.BlightFromCardTrigger;
 		if( _spirit.Presence.IsOn( cause.To ) // was taken from space with presence
 		) {
 			bool takeFromBoxInstead = _cost <= _spirit.Energy
-				&& await _spirit.UserSelectsFirstText( $"New Blight on {cause.To.Space.Label}, take from:", $"Bag (for {_cost})", "card" );
+				&& await _spirit.UserSelectsFirstText( $"New Blight on {cause.To.Label}, take from:", $"Bag (for {_cost})", "card" );
 			if(takeFromBoxInstead) {
 				_spirit.Energy -= _cost;
 				args.Count = 0;
@@ -64,7 +64,7 @@ class StopPresenceDestructionFromBlightOrEvents : BaseModEntity, IModifyRemoving
 		_spirit = spirit;
 	}
 
-	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token.HasTag(TokenCategory.Presence)
 			&& 1 <= _spirit.Energy
 			&& await _spirit.UserSelectsFirstText( "Blight Destroying Presence", "Pay 1 energy to save", "Pass" )

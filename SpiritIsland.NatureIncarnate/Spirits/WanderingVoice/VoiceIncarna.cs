@@ -11,9 +11,10 @@ public class VoiceIncarna : Incarna, IIsolate, IHandleTokenAddedAsync {
 	// "Spread Tumult and Delusion"
 	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
 		// When your Actions add/move Incarna to a land with Invaders
-		if(args.Added == this && args.To.HasInvaders())
+		var tokens = args.To.Tokens;
+		if(args.Added == this && tokens.HasInvaders())
 			// Add 1 Strife in the destination land
-			await args.To.SourceSelector
+			await tokens.SourceSelector
 				.AddGroup(1,Human.Invader)
 				.StrifeAll(Self);
 	}

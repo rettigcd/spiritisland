@@ -23,7 +23,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		if(token.HasTag(TokenCategory.Invader))
 			await DestroyNInvaders( token.AsHuman(), count );
 
-		return new TokenRemovedArgs(this, token,0,reason); // nothing removed
+		return new TokenRemovedArgs(Space, token,0,reason); // nothing removed
 	}
 
 	protected override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
@@ -64,7 +64,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		if(newToken.HumanClass != DreamingCity) {
 			var options = Adjacent;
 			Space destination = await ActionScope.Current.Owner.SelectAsync( A.Space.ToPushToken( newToken, Space, options.Downgrade(), Present.Always ) );
-			await MoveTo( newToken, destination ); // there is no Push(Token), so this will have to do.
+			await newToken.On(Space).MoveTo(destination); // there is no Push(Token), so this will have to do.
 			RecordSpaceWithDreamers( destination.Tokens );
 		}
 

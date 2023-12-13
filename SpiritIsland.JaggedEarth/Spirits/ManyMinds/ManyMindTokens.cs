@@ -27,12 +27,12 @@ class BeastSourceSelector : SourceSelector {
 	public BeastSourceSelector( SpaceState destination ) : base( destination.Adjacent ) {
 		_destination = destination;
 	}
-	protected override async Task<SpaceToken[]> GetSourceOptions() {
+	public override SpaceToken[] GetSourceOptions() {
 		var items = new List<SpaceToken>();
 		foreach(var group in RemainingTypes) {
 			int range = group == Token.Beast ? 2 : 1;
 			foreach(var space in _destination.Range( range )) // gather, not Range
-				items.AddRange( await GetSourceOptionsOn1Space(space) );
+				items.AddRange( GetSourceOptionsOn1Space(space) );
 		}
 		return items.ToArray();
 	}

@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
-namespace SpiritIsland.FeatherAndFlame;
-
+/// <summary>
+/// Causes Blight added to Coastland adds to Ocean also (without cascading)
+/// And when spirit removes blight from Coastland, can alternatively remove from Ocean space.
+/// </summary>
 class ScotlandCoastalBlightCheckToken 
 	: BaseModEntity
 	, IHandleTokenAddedAsync
@@ -20,13 +22,13 @@ class ScotlandCoastalBlightCheckToken
 		if(args.Added == Token.Blight && args.Reason == AddReason.Ravage) {
 			BlightToken.ForThisAction.ShouldCascade = false;
 			var space = args.To.Adjacent_Existing // Ocean is not in play here
-				.First( adj => adj.Space.IsOcean ); // ignoring rule about ocean being on this board, just using adjacent
-			await space.Blight.AddAsync( 1, AddReason.Ravage );
-			GameState.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {args.To.Space.Text} caused additional blight on {space.Space.Text}"));
+				.First( adj => adj.IsOcean ); // ignoring rule about ocean being on this board, just using adjacent
+			await space.Tokens.Blight.AddAsync( 1, AddReason.Ravage );
+			GameState.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {args.To.Text} caused additional blight on {space.Text}"));
 		}
 	}
 
-	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// Treat the Ocean as a Coastal Wetland for this rule and for Blight removal/movement.
 
 		// Since we can't target a land differently when removing blight, 

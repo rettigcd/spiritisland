@@ -22,19 +22,20 @@ public class BlightToken : TokenClassToken
 		await gs.TakeBlightFromCard( args.Count );
 
 		// Destory presence
+		var toTokens = args.To.Tokens;
 		if(config.DestroyPresence)
 			foreach(Spirit spirit in gs.Spirits)
 				// I would like to replace this with:
 				// await new SourceSelector( args.To ).AddGroup( 1, spirit.Presence ).DestroyN( spirit );
-				if( spirit.Presence.IsOn( args.To ) )
-					await args.To.Destroy( spirit.Presence.TokensDeployedOn(args.To.Space).First(), 1 ); // !!! Not correct for Incarna
+				if( spirit.Presence.IsOn( toTokens ) )
+					await toTokens.Destroy( spirit.Presence.TokensDeployedOn(toTokens).First(), 1 ); // !!! Not correct for Incarna
 
 		// Cascade blight
-		if( args.To.Blight.Count != 1 && config.ShouldCascade ) {
+		if( toTokens.Blight.Count != 1 && config.ShouldCascade ) {
 			Space cascadeTo = await gs.Spirits[0].SelectAsync( A.Space.ForMoving_SpaceToken(
-				$"Cascade blight from {args.To.Space.Label} to",
-				args.To.Space,
-				gs.CascadingBlightOptions( args.To ).Downgrade(),
+				$"Cascade blight from {args.To.Label} to",
+				args.To,
+				gs.CascadingBlightOptions( toTokens ).Downgrade(),
 				Present.Always,
 				Token.Blight
 			) );

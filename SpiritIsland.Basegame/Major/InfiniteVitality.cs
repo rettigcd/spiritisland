@@ -37,7 +37,7 @@ public class InfiniteVitality {
 
 class StopDahanDamageAndDestruction 
 	: IModifyDahanDamage
-	, IModifyRemovingTokenAsync 
+	, IModifyRemovingToken 
 	, IEndWhenTimePasses
 {
 
@@ -48,13 +48,11 @@ class StopDahanDamageAndDestruction
 
 	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
-	public Task ModifyRemovingAsync( RemovingTokenArgs args ) {
+	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		if(args.Token.Class == Human.Dahan && args.Reason == RemoveReason.Destroyed) {
-			if(args.Mode == RemoveMode.Live)
-				GameState.Current.Log( new Log.Debug( $"{_sourceName} stopping {args.Count} Dahan from being destroyed." ) );
+			GameState.Current.Log( new Log.Debug( $"{_sourceName} stopping {args.Count} Dahan from being destroyed." ) );
 			args.Count = 0;
 		}
-		return Task.CompletedTask;
 	}
 
 }

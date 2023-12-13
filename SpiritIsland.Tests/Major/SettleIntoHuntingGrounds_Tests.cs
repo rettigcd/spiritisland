@@ -32,8 +32,7 @@ public class SettleIntoHuntingGrounds_Tests {
 
 		//  When: pushing dahan
 		await spirit.When_TargetingSpace( a1, CallToMigrate.ActAsync, u => {
-			u.NextDecision.HasPrompt( "Push up to (1)" ).Choose( "D@2" );
-			u.NextDecision.HasPrompt( "Push D@2 to" ).Choose( "A2" );
+			u.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom( "D@2" ).MoveTo("A2","A2,A4,A5,A6");
 			//  Then: action completes without Thunderspeaker riding along.
 		} );
 

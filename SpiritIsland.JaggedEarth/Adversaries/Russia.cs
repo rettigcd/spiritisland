@@ -162,7 +162,7 @@ public class Russia : IAdversary {
 		gameState.AddIslandMod( _token );
 	}
 
-	readonly RussiaToken _token = new RussiaToken();
+	readonly RussiaIslandMod _token = new RussiaIslandMod();
 
 	#endregion
 

@@ -30,7 +30,7 @@ public class TerrorStalksTheLand : SpaceState {
 		// Destroying Invaders 
 		// Don't call DestroyNInvaders here because that creates a stack-overflow loop.
 		await AbductInvader( token.AsHuman() );
-		return new TokenRemovedArgs( this, token, 1, RemoveReason.Abducted );
+		return new TokenRemovedArgs( Space, token, 1, RemoveReason.Abducted );
 	}
 
 	/// <remarks>

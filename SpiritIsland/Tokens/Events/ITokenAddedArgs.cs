@@ -21,7 +21,7 @@ public interface ITokenAddedArgs {
 
 	#region Possibly Remove these
 	public IToken Added { get; } // need specific so we can act on it (push/damage/destroy)
-	public SpaceState To { get; }
+	public Space To { get; }
 	#endregion
 
 	/// <summary> The combined type and space of the token AFTER it was added. </summary>

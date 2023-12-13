@@ -87,6 +87,9 @@ static public class IEnumerableExtensions {
 	public static IEnumerable<SpaceState> IsInPlay( this IEnumerable<SpaceState> spaces ) 
 		=> spaces.Where( x=>TerrainMapper.Current.IsInPlay(x.Space) );
 
+	public static IEnumerable<Space> ISInPlay( this IEnumerable<Space> spaces )
+		=> spaces.Where( TerrainMapper.Current.IsInPlay );
+
 	public static IEnumerable<string> SelectLabels(this IEnumerable<SpaceState> spaceStates) => spaceStates.Select(x=>x.Space.Text);
 
 	public static Value Get<Key,Value>(this IDictionary<Key,Value> dict, Key key, Func<Value> newValueGenerator) {

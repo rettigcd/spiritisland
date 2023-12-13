@@ -6,7 +6,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 	public WashAway_Tests():base(new RiverSurges() ) { }
 
 	[Fact]
-	public void Nothing() {
+	public async Task Nothing() {
 		UserGateway.UsePreselect.Value = true;
 
 		Given_RiverPlayingWashAway();
@@ -17,19 +17,26 @@ public class WashAway_Tests : SpiritCards_Tests {
 		// If not using pre-selects, will still target a space.
 
 		// When_PlayingCard();
-		_ = _card.ActivateAsync( _spirit );
-		//task.IsCompleted.ShouldBeTrue();
-
-		User.Assert_Done();
-
+		await _card.ActivateAsync( _spirit )
+			.AwaitUser(_spirit, 
+				u=>u.NextDecision.HasPrompt("Wash Away: Target Space").Choose("A1")
+			)
+			.ShouldComplete();
 	}
 
 	[Trait("Feature","Push")]
 	[Theory]
-	[InlineData(1,0,0,"","1E@1")]
-	[InlineData(0,1,0,"","1T@2")]
-	[InlineData(1,0,1,"1C@3","1E@1")]
-	public void OneTarget1PushableType(int explorerCount, int townCount, int cityCount, string expectedTargetResult, string expectedDestinationResult) {
+	[InlineData(1,0,0, "E@1", "",    "1E@1")]
+	[InlineData(0,1,0, "T@2", "",    "1T@2")]
+	[InlineData(1,0,1, "E@1", "1C@3","1E@1")]
+	public async Task OneTarget1PushableType(
+		int explorerCount, 
+		int townCount, 
+		int cityCount,
+		string tokenToPush,
+		string expectedTargetResult, 
+		string expectedDestinationResult
+	) {
 		UserGateway.UsePreselect.Value = true;
 
 		Given_RiverPlayingWashAway();
@@ -43,16 +50,11 @@ public class WashAway_Tests : SpiritCards_Tests {
 		grp.AdjustDefault( Human.Town, townCount );
 		grp.AdjustDefault( Human.City, cityCount );
 
-		When_PlayingCard();
-
-		//		User.TargetsLand( WashAway.Name, targetSpace.Label );
-		//		User.OptionallyPushesInvaderTo(invader.Token.ToString(),"A1,[A2],A3,A5");
-
-		var invader = _spirit.Portal.Next.Options[0] as SpaceToken;
-		var invaderText = $"{invader.Token.Text}";
-
-		User.AssertDecision( PreselectPrompt, invaderText + ",Done", invaderText );
-		User.AssertDecisionInfo( $"Push {invader.Token.Text} to", "A1,[A2],A3,A5" );
+		await When_PlayingCard().AwaitUser( _spirit, u => {
+			u.NextDecision.HasPrompt("Wash Away: Target Space").Choose(targetSpace.Label);
+			u.NextDecision.HasPrompt("Push up to (1)").MoveFrom(tokenToPush, tokenToPush + ",Done" )
+				.MoveTo("A2","A1,A2,A3,A5");
+		} ).ShouldComplete();
 
 		// check that explore was moved
 		_gameState.Assert_Invaders(targetSpace, expectedTargetResult );
@@ -64,10 +66,9 @@ public class WashAway_Tests : SpiritCards_Tests {
 	// WashAway: into ocean?
 	[Trait("Feature","Push")]
 	[Fact]
-	public void DoesntPushIntoOcean(){
-		UserGateway.UsePreselect.Value = true;
+	public async Task DoesntPushIntoOcean(){
 
-		Given_RiverPlayingWashAway( "A4");
+		Given_RiverPlayingWashAway( "A4" );
 		_gameState.Phase = Phase.Slow;
 
 		// 1 explorer on A2
@@ -75,18 +76,20 @@ public class WashAway_Tests : SpiritCards_Tests {
 		Space targetSpace = board[2];
 		_gameState.Tokens[targetSpace].AdjustDefault(Human.Explorer, 1);
 
-		When_PlayingCard();
+		// When pushing explorer
+		await When_PlayingCard()
+			.AwaitUser( _spirit, user => {
+				user.NextDecision.HasPrompt("Wash Away: Target Space").Choose("A2");
+				// Can't push into ocean
+				user.NextDecision.MoveFrom("E@1","E@1,Done").MoveTo("A3","A1,A3,A4");
+			} );
 
-		// User.TargetsLand( WashAway.Name, targetSpace.Label );
-		User.AssertDecision( PreselectPrompt, "E@1,Done", "E@1" );
-		User.AssertDecisionInfo( "Push E@1 to", "A1,[A3],A4" );
 	}
-	const string PreselectPrompt = "Push up to (3)";
 
 	[Trait("Feature","Push")]
 	[Fact]
 	public async Task One1Target2PushableTypes() {
-		UserGateway.UsePreselect.Value = true;
+	
 		Given_RiverPlayingWashAway();
 		_gameState.Phase = Phase.Slow;
 
@@ -101,10 +104,9 @@ public class WashAway_Tests : SpiritCards_Tests {
 		Space townDestination = board[3];
 
 		await _spirit.When_ResolvingCard<WashAway>( u => {
-			u.NextDecision.HasPrompt( "Push up to (3)" ).HasOptions( "E@1,T@2,Done" ).Choose( "E@1" );
-			u.NextDecision.HasPrompt("Push E@1 to").HasOptions("A1,A2,A3,A5").Choose("A2");
-			u.NextDecision.HasPrompt( "Push up to (1)" ).HasOptions( "T@2,Done" ).Choose( "T@2" );
-			u.NextDecision.HasPrompt("Push T@2 to").HasOptions("A1,A2,A3,A5").Choose("A3");
+			u.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
+			u.NextDecision.HasPrompt( "Push up to (2)" ).MoveFrom("E@1","E@1,T@2,Done" ).MoveTo("A2","A1,A2,A3,A5");
+			u.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom("T@2","T@2,Done" ).MoveTo("A3","A1,A2,A3,A5");
 		} ).ShouldComplete();
 
 		// check that explore was moved
@@ -115,7 +117,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 	[Trait("Feature","Push")]
 	[Fact]
-	public void DamagedTown() {
+	public async Task DamagedTown() {
 		UserGateway.UsePreselect.Value = true;
 
 		Given_RiverPlayingWashAway();
@@ -128,12 +130,10 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 		var invaderDestination = board[2];
 
-		When_PlayingCard();
-
-		// First Invader is different (contains space) due to pre-select
-		User.AssertDecision( PreselectPrompt, "T@1,Done", "T@1" );
-		User.AssertDecisionInfo( "Push T@1 to", "A1,[A2],A3,A5" );
-		User.Assert_Done();
+		await When_PlayingCard().AwaitUser(_spirit,user=>{ 
+			user.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
+			user.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom("T@1","T@1,Done").MoveTo("A2","A1,A2,A3,A5");
+		}).ShouldComplete();
 
 		// check that explore was moved
 		_gameState.Assert_Invaders( targetSpace, "" );
@@ -145,8 +145,6 @@ public class WashAway_Tests : SpiritCards_Tests {
 	[Trait("Feature","Push")]
 	[Fact]
 	public async Task Push3InvadersToDifferentLands() {
-		UserGateway.UsePreselect.Value = true;
-
 		Given_RiverPlayingWashAway();
 		_gameState.Phase = Phase.Slow;
 
@@ -156,18 +154,12 @@ public class WashAway_Tests : SpiritCards_Tests {
 		_gameState.Tokens[ targetSpace ].AdjustDefault( Human.Explorer, 3 );
 
 		//  When: activating card
-		Task t = When_PlayingCard();
-
-		// First Invader is different (contains space) due to pre-select
-		User.AssertDecision( PreselectPrompt, "E@1,Done", "E@1" );
-		User.AssertDecisionInfo( "Push E@1 to", "A1,[A2],A3,A5" );
-		// remaining are normal since space is already selected.
-		User.AssertDecision( "Push up to (2)", "E@1,Done", "E@1" );
-		User.AssertDecisionInfo( "Push E@1 to", "A1,A2,[A3],A5" );
-		User.AssertDecision( "Push up to (1)", "E@1,Done", "E@1" );
-		User.AssertDecisionInfo( "Push E@1 to", "A1,A2,A3,[A5]" );
-
-		await t.ShouldComplete();
+		await When_PlayingCard().AwaitUser( _spirit, user => { 
+			user.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
+			user.NextDecision.HasPrompt("Push up to (3)").MoveFrom("E@1","E@1,Done").MoveTo("A2","A1,A2,A3,A5");
+			user.NextDecision.HasPrompt("Push up to (2)").MoveFrom("E@1","E@1,Done").MoveTo("A3","A1,A2,A3,A5");
+			user.NextDecision.HasPrompt("Push up to (1)").MoveFrom("E@1","E@1,Done").MoveTo("A5","A1,A2,A3,A5");
+		} ).ShouldComplete();
 
 		// check that explore was moved
 		_gameState.Assert_Invaders( targetSpace,"" );

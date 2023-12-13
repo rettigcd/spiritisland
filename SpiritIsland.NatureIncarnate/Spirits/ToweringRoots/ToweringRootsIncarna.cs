@@ -10,13 +10,13 @@ public class ToweringRootsIncarna
 	public ToweringRootsIncarna(Spirit spirit):base(spirit, "TRotJ", Img.TRotJ_Incarna_Empowered, Img.TRotJ_Incarna ) { }
 
 	public void HandleTokenAdded( ITokenAddedArgs args ) {
-		if( !Empowered && args.Added == Token.Vitality && args.To[Token.Vitality] == 3)
+		if( !Empowered && args.Added == Token.Vitality && args.To.Tokens[Token.Vitality] == 3)
 			Empowered = true;
 	}
 
 	#region Don't damage Beasts
 
-	public void ModifyRemoving( RemovingTokenArgs args ) {
+	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		if(args.Reason == RemoveReason.Destroyed
 			&& args.Token.Class.IsOneOf( Token.Beast, Human.Dahan, Human.Explorer, Human.Town, Human.City )
 		)

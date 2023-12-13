@@ -106,6 +106,7 @@ public abstract partial class Spirit
 
 	}
 
+	/// <summary> Resolves 1 Action for the given Phase </summary>
 	public async Task<bool> ResolveAction( Phase phase ) {
 
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;

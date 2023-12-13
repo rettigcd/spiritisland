@@ -22,10 +22,10 @@ public class PromisesOfProtection_Tests {
 		fxt.InitTokens(dahanSource, "4D@2");
 
 		// When: playing card
-		Task play1 = PromisesOfProtection.ActAsync( ctx );
-		fxt.Choose( selectDahanFromSource );
-		fxt.Choose( selectDahanFromSource );
-		await play1.ShouldComplete();
+		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( fxt.Spirit, user => { 
+			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom( selectDahanFromSource );
+			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom( selectDahanFromSource );
+		} ).ShouldComplete();
 
 		// Test 2
 
@@ -33,10 +33,10 @@ public class PromisesOfProtection_Tests {
 		ctx.Tokens.Summary.ShouldBe("4D@4");
 
 		// Brought in 2 more dahan
-		Task play2 = PromisesOfProtection.ActAsync( ctx );
-		fxt.Choose( selectDahanFromSource );
-		fxt.Choose( selectDahanFromSource );
-		await play2.ShouldComplete();
+		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( fxt.Spirit, user => {
+			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom( selectDahanFromSource );
+			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom( selectDahanFromSource );
+		} ).ShouldComplete();
 
 		// Then: All (6) should have 6 health.
 		ctx.Tokens.Summary.ShouldBe( "6D@6" );

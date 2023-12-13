@@ -17,24 +17,18 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		SpiritExtensions.Given_Adjust( fix.Spirit.Presence, spaceState, 1 );
 
 		//   And: Dahan on space
-		fix.InitTokens(space,"1D@2");
+		space.Tokens.Given_HasTokens("1D@2");
 
 		//  When: play the card
-		var task = PowerCard.For(typeof(SkiesHeraldTheSeasonOfReturn)).ActivateAsync( fix.Spirit );
-		// target space
-		fix.Choose(space);
+		await PowerCard.For(typeof(SkiesHeraldTheSeasonOfReturn)).ActivateAsync( fix.Spirit ).AwaitUser( fix.Spirit, u => { 
+			// target space
+			u.NextDecision.Choose(space);
+			// Then: Should Push Dahan (per keeper's Sacred Site)
+			u.NextDecision.HasPrompt("Push (1)").MoveFrom("D@2").MoveTo(dahanDestination.Text);
+			//  And: May Gather up to 2 dahan (per the card)
+			u.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@2");
+		}).ShouldComplete();
 
-		// Then: Should Push Dahan (per keeper's Sacred Site)
-		fix.Choose("D@2");
-		fix.Choose( dahanDestination );
-
-		//  And: May Gather up to 2 dahan (per the card)
-		fix.Choose("D@2"); // "Gather up to 2 Dahan"
-
-		//  And: May push 1 blight
-		// no blight to push
-
-		await task.ShouldComplete();
 	}
 
 }

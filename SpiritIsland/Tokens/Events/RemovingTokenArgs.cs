@@ -2,29 +2,25 @@
 
 public class RemovingTokenArgs {
 
-	public RemovingTokenArgs( SpaceState from, RemoveReason reason, RemoveMode mode ) {
+	public RemovingTokenArgs( SpaceState from, RemoveReason reason ) {
 		From = from;
 		Reason = reason;
-		Mode = mode;
 	}
 
 	// Read-only
 	public SpaceState From { get; }
 	public RemoveReason Reason { get; }
 
-	// Test Remove / Live Remove
-	public RemoveMode Mode { get; }
-
 	// modifiable
 	public IToken Token { get; set; }
 
 	// Should never be negative.
-	public int Count { get; set; }
-}
-
-public enum RemoveMode {
-	/// <summary> Actually performing a remove.</summary>
-	Live, 
-	/// <summary> Premptively Testing if a token can be removed.</summary>
-	Test
+	public int Count {
+		get { return _count; }
+		set { 
+			if( value < 0 ) throw new ArgumentOutOfRangeException(nameof(Count),"Removing Count cannot be < 0");
+			_count = value;
+		}
+	}
+	int _count;
 }

@@ -12,7 +12,7 @@ public class BloodDrawsPredators{
 		TokenRemovedHandlerAsync mod = null; // initialized 1st so method can refer to it.
 		mod = new TokenRemovedHandlerAsync( async ( args ) => {
 			if(args.Reason != RemoveReason.Destroyed || !args.Removed.Class.IsOneOf(Human.Invader)) return;
-			args.From.Adjust(mod,-1); // remove token
+			args.From.Tokens.Adjust(mod,-1); // remove token
 
 			// Add 1 Beast,
 			await ctx.Beasts.AddAsync( 1 );

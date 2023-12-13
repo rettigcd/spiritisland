@@ -5,20 +5,18 @@ namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 [Collection("BaseGame Spirits")]
 public sealed class GiftOfStrength_Tests {
 
-	readonly Spirit spirit;
-	readonly VirtualEarthUser User;
+	Spirit spirit;
+	VirtualEarthUser User;
 
-	public GiftOfStrength_Tests() {
+	[Fact]
+	[Trait("something","repeat card")]
+	public void Replaying_FastCards() {
+
 		spirit = new VitalStrength();
 		User = new VirtualEarthUser( spirit );
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
 		_ = new SinglePlayerGame(gs).StartAsync();
-	}
-
-	[Fact]
-	[Trait("something","repeat card")]
-	public void Replaying_FastCards() {
 
 		// Given: Earth has enough elements to trigger GOS
 		User.SelectsGrowthA_Reclaim_PP2();
@@ -51,66 +49,59 @@ public sealed class GiftOfStrength_Tests {
 			.Choose( "Fast-1 $1 (Fast)" );
 	}
 
-	private void PlayCards( PowerCard[] cards ) {
+	void PlayCards( PowerCard[] cards ) {
 		foreach(var card in cards)
 			spirit.PlayCard( card );
 	}
 
 	[Fact]
 	[Trait( "something", "repeat card" )]
-	public void Replaying_SlowCards() {
+	public async Task Replaying_SlowCards() {
 
-		// Sometimes Growth doesn't happen and I can't explain why.
-		// When we get to the point where we are supposed to be selected power cards to play
-		// we are still on Growth.
+		spirit = new VitalStrength();
+		var gs = new GameState(spirit,Boards.A);
 
-		// Given: Earth has enough elements to trigger GOS
-		User.SelectsGrowthA_Reclaim_PP2();
-		spirit.Elements[Element.Sun] = 1;
-		spirit.Elements[Element.Earth] = 2;
-		spirit.Elements[Element.Plant] = 2;
+		// Given: spirit has enough elements to trigger GoS
+		spirit.Elements.Add(ElementStrings.Parse("1 sun,2 earth,2 plant"));
 		spirit.Energy = 20;
-
 		//  And: Earth has 4 cards
-		var cards = new PowerCard[] {
-			MakePowerCard( Fast0 ), // played - no - its fast!
-			MakePowerCard( Slow0 ), // not played
-			MakePowerCard( Slow1 ), // played - should appear
-			MakePowerCard( Slow2 )  // played - no - too expensive
+		PowerCard[] cards = new PowerCard[] {
+			MakePowerCard( Fast0 ),
+			MakePowerCard( Slow0 ), 
+			MakePowerCard( Slow1 ), 
+			MakePowerCard( Slow2 )  
 		};
 		spirit.tempCardPlayBoost = cards.Length;
 		spirit.Hand.AddRange(cards);
-		PlayCards( cards );
+		PlayCards( cards ); // PLAY, not RESOLVE...
 
-		//spirit.AddActionFactory( MakePowerCard( Fast0 ) ); // played - no - its fast!
-		//spirit.AddActionFactory( MakePowerCard( Slow0 ) ); // not played
-		//spirit.AddActionFactory( MakePowerCard( Slow1 ) ); // played - should appear
-		//spirit.AddActionFactory( MakePowerCard( Slow2 ) ); // played - no - too expensive
-		User.WaitForNext();
-		User.IsDoneBuyingCards(); /// !!! This is where the intermittent error happens - FIX ME
+		//   And: phase is fast
+		gs.Phase = Phase.Fast;
+		//   And: resolves 1 FAST
+		await spirit.TakeActionAsync( cards[0], Phase.Fast );
 
-		//  And: played GOS on self
-		User_PlaysGiftOfStrengthOnSelf();
-		//  And: Played fast card
-		User.SelectsFastAction( "[Fast-0],Replay Card (max cost:1)" );
-		User.IsDoneWith( Phase.Fast );
-
-		// (now in slow...)
-
-		//  And: plays Slow-1
-		User.SelectsSlowAction( "Slow-0,[Slow-1],Slow-2,Replay Card (max cost:1)" );
-
-		// When: Replaying card
-		User.SelectsSlowAction( "Slow-0,Slow-2,[Replay Card (max cost:1)]" );
-		spirit.NextDecision().HasPrompt( "Select card to repeat" ).HasOptions( "Slow-1 $1 (Slow),Done" )
-			.Choose( "Slow-1 $1 (Slow)" );
+		//  When: spirit resolves GoS on self  (during FAST)
+		await spirit.ResolveAction( Phase.Fast ).AwaitUser( spirit, user => {
+			user.NextDecision.Choose("Gift of Strength");
+		} );
+		//   And: phase is slow
+		gs.Phase = Phase.Slow;
+		//   And: resolves SLOW-1 card
+		await spirit.TakeActionAsync( cards[2], Phase.Slow );
+		
+		//  Then: the resolved slow is available to do again.
+		await spirit.ResolveAction( Phase.Slow ).AwaitUser( spirit, user => {
+			user.SelectsSlowAction( "Slow-0,Slow-2,[Replay Card (max cost:1)]" );
+			user.NextDecision.HasPrompt( "Select card to repeat" ).HasOptions( "Slow-1 $1 (Slow),Done" )
+				.Choose( "Slow-1 $1 (Slow)" );
+		} ).ShouldComplete();
+		
 	}
 
 	void User_PlaysGiftOfStrengthOnSelf() {
 		// When: user applies 'Gift of Strength' to self
 		User.SelectsFastAction( "Fast-0,[Gift of Strength]" );
 	}
-
 
 	// Replay-Action works in slow
 	// In Slow, Replacy finds only Played-Slow

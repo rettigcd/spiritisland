@@ -22,8 +22,9 @@ public class TigersHunting_Tests {
 		// 1 damage -> destroys explorer
 		fixture.Choose("E@1");
 		// push up to 2 beasts
-		fixture.Choose("Beast"); // 'A' is selecting the beast
-		fixture.Choose("A7");
+		fixture.NextDecision.HasPrompt("Push up to (1)")
+			.HasSourceOptions("Beast,Done").MoveFrom("Beast")
+			.HasDestinationOptions("A1,A4,A6,A7,A8").MoveTo("A7"); 
 
 		await task.ShouldComplete();	
 

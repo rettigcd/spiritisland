@@ -22,7 +22,7 @@ public class SwallowTheLandDwellers {
 		// drown 1 explorer ( drop 1 explorer in the ocean to drown )
 		var explorerToDrown = ctx.Tokens.HumanOfTag(Human.Explorer).OrderBy(x=>x.StrifeCount).FirstOrDefault();
 		if(explorerToDrown != null)
-			await ctx.MoveTo( explorerToDrown, drowningOcean );
+			await explorerToDrown.On(ctx.Space).MoveTo( drowningOcean );
 
 		// drop town in the ocean to drown
 		var townToDrown = ctx.Tokens.HumanOfTag(Human.Town)
@@ -30,7 +30,7 @@ public class SwallowTheLandDwellers {
 			.ThenBy(x=>x.Damage) // pick least damaged
 			.FirstOrDefault();
 		if( townToDrown != null )
-			await ctx.MoveTo( townToDrown, drowningOcean );
+			await townToDrown.On(ctx.Space).MoveTo( drowningOcean );
 
 		await ctx.Dahan.Destroy(1); // destroying dahan is the same as drowning them
 	}

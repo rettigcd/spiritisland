@@ -6,13 +6,13 @@ class RussiaRavageEngine : RavageEngine {
 
 	public bool ShouldCheckCompetitionAmongHunters { get; set; }
 	public bool CheckForPressureForFastProfit { get; set; }
-	readonly RussiaToken _token;
+	readonly RussiaIslandMod _token;
 
 	#endregion;
 
 	#region constructor
 
-	public RussiaRavageEngine( RussiaToken token ) {
+	public RussiaRavageEngine( RussiaIslandMod token ) {
 		_token = token;
 	}
 

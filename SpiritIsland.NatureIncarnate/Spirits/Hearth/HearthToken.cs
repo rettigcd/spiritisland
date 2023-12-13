@@ -26,22 +26,23 @@ public class HearthToken : SpiritPresenceToken
 	}
 
 	public override async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
+		SpaceState from = args.From.Tokens;
 		await base.HandleTokenRemovedAsync( args );
-		await Foritfy_RemovedPresenceAsync( args );
-		await LoyalGuardian_DahanMoved( args );
+		await Foritfy_RemovedPresenceAsync( args, from );
+		await LoyalGuardian_DahanMoved( args, from );
 	}
 
 	#region Loyal Guardian
 	static public SpecialRule LoyalGuardian => new SpecialRule( "Loyal Guardian", "When all Dahan leave one of your lands, your presence may Move with those Dahan. (Each Dahan can Bring any number of Presence." );
 
-	public async Task LoyalGuardian_DahanMoved( ITokenRemovedArgs args ) {
+	public async Task LoyalGuardian_DahanMoved( ITokenRemovedArgs args, SpaceState from ) {
 
 		if(args is not ITokenMovedArgs moved || args.Removed.Class != Human.Dahan) return;
 
 		var destinations = ActionScope.Current.SafeGet("LoyalDestinations",()=>new HashSet<SpaceState>()); // Hash so we don't have to do .Distinct
 		destinations.Add( moved.To );
-		if(!args.From.Dahan.Any)
-			await BringUpToAllPresence(args.From,destinations);
+		if(!from.Dahan.Any)
+			await BringUpToAllPresence(from,destinations);
 	}
 
 	async Task BringUpToAllPresence( SpaceState from, IEnumerable<SpaceState> destinationOptions ) {
@@ -57,7 +58,10 @@ public class HearthToken : SpiritPresenceToken
 
 	#region Fortify Heart and Hearth
 
-	static public SpecialRule FortifyHeart => new SpecialRule( "Fortify Heart and Hearth", "Dahan have +4 Health (each) while in your lands.  Event and Blight Card Actions don't damage, destroy, or replace dahan in your lands." );
+	static public SpecialRule FortifyHeart => new SpecialRule( 
+		"Fortify Heart and Hearth", 
+		"Dahan have +4 Health (each) while in your lands.  Event and Blight Card Actions don't damage, destroy, or replace dahan in your lands." 
+	);
 
 	const int _deltaHealth = 4;
 
@@ -65,7 +69,7 @@ public class HearthToken : SpiritPresenceToken
 
 	void Fortify_AddedPresence( ITokenAddedArgs args ) {
 		// Adding presence where there wasn't any before.
-		if(args.Added == this && args.To[this] == args.Count)
+		if(args.Added == this && args.To.Tokens[this] == args.Count)
 			GrantHealthBoost( args.To );
 	}
 
@@ -86,7 +90,6 @@ public class HearthToken : SpiritPresenceToken
 
 	/// <summary> Intercepts out-going dahan and returns them to normal health. </summary>
 	static async Task Foritfy_RemovingDahanAsync( RemovingTokenArgs args ) {
-		if(args.Mode == RemoveMode.Test) return;
 
 		// Removing Dahan
 		if(args.Token is HumanToken healthToken && BonusAppliesToThis( healthToken ))
@@ -96,11 +99,11 @@ public class HearthToken : SpiritPresenceToken
 			(args.Token, args.Count) = await args.From.AdjustHealthOf( healthToken, -_deltaHealth, args.Count );
 	}
 
-	async Task Foritfy_RemovedPresenceAsync( ITokenRemovedArgs args ) {
+	async Task Foritfy_RemovedPresenceAsync( ITokenRemovedArgs args, SpaceState from ) {
 		// Removing Last Presence
-		if(args.Removed == this && args.From[this] == 0)
-			foreach(HumanToken token in args.From.HumanOfTag(TokenCategory.Dahan).ToArray())
-				await args.From.AdjustHealthOf( token, -_deltaHealth, args.From[token] );
+		if(args.Removed == this && from[this] == 0)
+			foreach(HumanToken token in from.HumanOfTag(TokenCategory.Dahan).ToArray())
+				await from.AdjustHealthOf( token, -_deltaHealth, from[token] );
 	}
 
 	#endregion Fortify Heart and Hearth

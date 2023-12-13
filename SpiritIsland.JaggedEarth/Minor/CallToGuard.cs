@@ -24,6 +24,6 @@ public class CallToGuard{
 
 	class DamageNewInvaders : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
 		public Task HandleTokenAddedAsync( ITokenAddedArgs args )
-			=> args.To.Invaders.ApplyDamageTo1( 1, args.Added.AsHuman() );
+			=> args.To.Tokens.Invaders.ApplyDamageTo1( 1, args.Added.AsHuman() );
 	}
 }

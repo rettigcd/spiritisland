@@ -48,13 +48,17 @@ static public class Push_Extensions {
 	#endregion Simple Push - no Config / no Bring
 
 	#region Pushing 1 Token
-	// Pushing 1 Token
+	// Pushing 1 Specific Token
 	static public Task<TokenMovedArgs> PushAsync( this SpaceToken spaceToken, Spirit self, Action<DestinationSelector> configDestination=null ) {
 		var destinations = spaceToken.Space.Tokens.PushDestinations;
 		configDestination?.Invoke(destinations);
 		return spaceToken.MoveToAsync("Push",destinations,self);
 	}
 
+	/// <summary>
+	/// After: (1) Select Source, 
+	/// Binds parts: (2) Select Destination and (3) DoMove together
+	/// </summary>
 	static public async Task<TokenMovedArgs> MoveToAsync( 
 		this SpaceToken spaceToken,
 		string actionWord,
@@ -63,7 +67,7 @@ static public class Push_Extensions {
 	) {
 		Space destination = await destinationSelector.SelectDestination( self, actionWord, spaceToken );
 		return destination == null ? null
-			: await spaceToken.Token.Move( spaceToken.Space.Tokens, destination );
+			: await spaceToken.MoveTo( destination );
 	}
 
 	#endregion Pushing 1 Token

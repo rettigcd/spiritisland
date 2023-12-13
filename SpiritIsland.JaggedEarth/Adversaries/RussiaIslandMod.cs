@@ -3,11 +3,11 @@
 /// <summary>
 /// Logs which spaces receive blight during ravage.
 /// </summary>
-class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenAsync {
+class RussiaIslandMod : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenAsync {
 
 	#region construction
 
-	public RussiaToken() {}
+	public RussiaIslandMod() {}
 
 	#endregion
 
@@ -62,12 +62,13 @@ class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenA
 		if(args.Added == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
-			_receivedRavageBlight.UnionWith( args.To.Space.Boards ); // log
+			_receivedRavageBlight.UnionWith( args.To.Boards ); // log
 
-			if( args.To.Beasts.Any ) {
-				await args.To.Beasts.Destroy( 1 );
+			var beasts = args.To.Tokens.Beasts;
+			if( beasts.Any ) {
+				await beasts.Destroy( 1 );
 				_beastsDestroyed++;
-				GameState.Current.LogDebug($"Blight on {args.To.Space.Text} destroys 1 beast.");
+				GameState.Current.LogDebug($"Blight on {args.To.Text} destroys 1 beast.");
 			}
 		}
 	}
@@ -83,13 +84,11 @@ class RussiaToken : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTokenA
 			&& 0 < (pushOptions = args.From.Adjacent_ForInvaders.IsInPlay().ToArray()).Length
 		) {
 			--args.Count; // destroy one fewer
-			if(args.Mode == RemoveMode.Live) {
-				scope[key] = true; // don't save any more
+			scope[key] = true; // don't save any more
 
-				Spirit spirit = scope.Owner ?? args.From.Space.Boards[0].FindSpirit();
-				Space destination = await spirit.SelectAsync( A.Space.ToPushToken( (IToken)args.Token, args.From.Space, pushOptions.Downgrade(), Present.Always ) );
-				await args.From.MoveTo( (IToken)args.Token, destination );
-			}
+			Spirit spirit = scope.Owner ?? args.From.Space.Boards[0].FindSpirit();
+			Space destination = await spirit.SelectAsync( A.Space.ToPushToken( (IToken)args.Token, args.From.Space, pushOptions.Downgrade(), Present.Always ) );
+			await args.Token.On(args.From.Space).MoveTo( destination );
 		}
 	}
 

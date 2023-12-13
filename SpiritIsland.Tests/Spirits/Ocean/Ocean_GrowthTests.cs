@@ -39,10 +39,7 @@ public class Ocean_GrowthTests : GrowthTests {
 			_ = gather.ActivateAsync( _spirit );
 			while(!_spirit.Portal.IsResolved){
 				var options = _spirit.Portal.Next.Options
-					.Where( option => {
-						if(option is SpaceToken st) st.ConfigText = SpaceToken.ConfigSpaceTokenText.Both;
-						return moveBySrc.ContainsKey( option.Text );
-					} )
+					.Where( option => moveBySrc.ContainsKey( option.Text ) )
 					.ToArray();
 				var source = options.First();
 				_spirit.Portal.Choose( _spirit.Portal.Next, source );

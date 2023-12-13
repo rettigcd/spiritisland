@@ -153,7 +153,7 @@ public class ToDreamAThousandDeaths_Tests {
 			// When: doing 4 points of damage
 			await FourDamage( MakeFreshPowerCtx( scope ) )
 				.AwaitUserToComplete("4 damage", ()=> {
-					_user.SelectsDamageRecipient( 4, "C@1" );
+					_user.NextDecision.HasPrompt( "Damage (4 remaining)" ).HasOptions( "C@1" ).Choose( "C@1" );
 				} );
 
 			// Then: 0-fear

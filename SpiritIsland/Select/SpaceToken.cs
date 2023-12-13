@@ -20,12 +20,6 @@ public class SpaceToken : TypedDecision<SI_SpaceToken>, IHaveArrows {
 		: base( prompt, tokens.ToArray() /* get rid of generators, make concrete so we can mod .ShowSpace property */, present )
 	{
 		SpaceTokens = _allOptions.OfType<SI_SpaceToken>().ToArray();
-		int count = SpaceTokens.Select( st => st.Space ).Distinct().Count();
-		var configText = 1 < count 
-			? SI_SpaceToken.ConfigSpaceTokenText.Both 
-			: SI_SpaceToken.ConfigSpaceTokenText.Token;
-		foreach(SI_SpaceToken st in SpaceTokens) 
-			st.ConfigText = configText;
 	}
 
 	#endregion

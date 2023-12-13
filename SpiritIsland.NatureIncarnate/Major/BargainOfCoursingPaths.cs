@@ -48,20 +48,20 @@ public class BargainOfCoursingPaths {
 			SpaceState destination = await GetDestination( args );
 			if(destination == args.To) return;
 
-			GameState.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {args.To.Space.Text} to {destination.Space.Text}" ) );
+			GameState.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {args.To.Text} to {destination.Space.Text}" ) );
 			for(int i = 0; i < args.Count; ++i)
-				await args.To.MoveTo( args.Added, destination );
+				await args.After.MoveTo(destination);
 		}
 
 		async Task<SpaceState> GetDestination( ITokenAddedArgs args ) {
 			ActionScope scope = ActionScope.Current;
 
 			// Check for previously selected
-			string key = $"CoursingPath:Move {args.To.Space.Text} to";
+			string key = $"CoursingPath:Move {args.To.Text} to";
 			if(scope.ContainsKey(key)) return (SpaceState)scope[key];
 
 			// Pick brand new
-			SpaceState destination = await _spirit.SelectAsync( new A.Space( $"{Name}: Move {args.Count}{args.Added} from {args.To.Space.Text} to:", GameState.Current.Spaces, Present.Always ) );
+			SpaceState destination = await _spirit.SelectAsync( new A.Space( $"{Name}: Move {args.Count}{args.Added} from {args.To.Text} to:", GameState.Current.Spaces, Present.Always ) );
 			scope[key] = destination;
 			return destination;
 		}

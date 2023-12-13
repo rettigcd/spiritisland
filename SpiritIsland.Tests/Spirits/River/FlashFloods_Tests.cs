@@ -36,12 +36,13 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		PlayCard();
 		Assert.Contains( _card, _spirit.GetAvailableActions( _card.DisplaySpeed ).OfType<PowerCard>().ToList() ); // is fast
 
-		Task t = When_PlayingCard();
+		// When:
+		await When_PlayingCard().AwaitUser( _spirit, user => {
+			user.TargetsLand( FlashFloods.Name, "A4" );
+			user.NextDecision .HasPrompt( "Damage (1 remaining)" ).HasOptions( "C@3,T@2,E@1" ).Choose( "E@1" );
+		} ).ShouldComplete();
 
-		User.TargetsLand( FlashFloods.Name, "A4" );
-		User.SelectsDamageRecipient( 1, "C@3,T@2,[E@1]" ); // select damage option
-
-		await t.ShouldComplete();
+		// Then:
 		_gameState.Assert_Invaders( targetSpace, "1C@3,1T@2" );
 	}
 
@@ -70,17 +71,16 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		PlayCard();
 		Assert.Contains(_card,_spirit.GetAvailableActions(_card.DisplaySpeed).OfType<PowerCard>().ToList()); // is fast
 
-		Task play = When_PlayingCard();
+		await When_PlayingCard().AwaitUser( _spirit, user => {
+			//  Select: A2
+			user.TargetsLand(FlashFloods.Name,"A2");
 
-		//  Select: A2
-		User.TargetsLand(FlashFloods.Name,"A2");
+			// Then: can apply 2 points of damage
+			user.NextDecision.HasPrompt( "Damage (2 remaining)" ).HasOptions( "C@3,T@2,E@1" ).Choose( "C@3" );
+			user.NextDecision.HasPrompt( "Damage (1 remaining)" ).HasOptions( "C@2,T@2,E@1" ).Choose( "C@2" );
+		} ).ShouldComplete();
 
-		// Then: can apply 2 points of damage
-		User.SelectsDamageRecipient( 2, "[C@3],T@2,E@1" );
-		User.SelectsDamageRecipient( 1, "[C@2],T@2,E@1" );
-
-		// And: apply doesn't throw an exception
-		await play.ShouldComplete();
+		// Then
 		_gameState.Assert_Invaders(targetSpace, "1C@1,1T@2,1E@1" );
 	}
 

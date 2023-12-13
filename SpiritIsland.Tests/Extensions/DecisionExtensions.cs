@@ -16,19 +16,19 @@ public static class DecisionExtensions {
 		=> decision.Options.FirstOrDefault( o => o.Text.StartsWith(choicePrefix) )
 		?? throw new ArgumentOutOfRangeException( nameof( choicePrefix ), $"sequence [{decision.FormatOptions()}]does not contain option: {choicePrefix}" );
 
-	static public IOption FindChoice( this IDecision decision, string expectedChoiceText ) {
-		var matchingChoices = decision.Options
-			.Where( o => o.Text == expectedChoiceText )
-			.ToArray();
-
-		switch(matchingChoices.Length) {
-			case 1: return matchingChoices[0];
+	// For Moves
+	static public SpaceToken FindSourceChoice( this IDecision decision, string expectedChoiceText ) {
+		Move[] moves = decision.Options.OfType<Move>().ToArray();
+		SpaceToken[] spaceTokenSources = moves.Select(m=>m.Source).Distinct().ToArray();
+		bool isSingleLandSource = spaceTokenSources.Select(x=>x.Space).Distinct().Count() == 1;
+		Func<SpaceToken,bool> matcher = isSingleLandSource 
+			? st => st.Text.Contains(expectedChoiceText)
+			: st => st.ToString().Contains(expectedChoiceText); // multiple spaces, ensure it includes space.
+		var matchingSources = spaceTokenSources.Where( matcher ).ToArray();
+		switch(matchingSources.Length) {
+			case 1: return matchingSources[0];
 			case 0: {
-					IOption firstMatch = decision.Options
-						.FirstOrDefault( o => o.Text.ToLower().Contains( expectedChoiceText.ToLower() ) );
-					string msg = firstMatch != null
-						? $"Expected '{expectedChoiceText}' not found. Actual: '{firstMatch.Text}'"
-						: $"option ({expectedChoiceText} not found in {decision.FormatDecision()}";
+					string msg = $"option ({expectedChoiceText} not found in {decision.FormatDecision()}";
 					throw new ArgumentException( msg );
 				}
 			default:
@@ -36,10 +36,46 @@ public static class DecisionExtensions {
 		}
 	}
 
+	static public IOption FindChoice( this IDecision decision, string expectedChoiceText ) {
+		var matchingChoices = decision.Options
+			.Where( o => o.Text == expectedChoiceText ) // not using .Contains because Numbers '1' doesn't work when > 9
+			.ToArray();
+
+		return matchingChoices.Length switch {
+			1 => matchingChoices[0],
+			0 => FindChoiceContains( decision, expectedChoiceText ),
+			_ => throw new Exception( $"Multiple option EQUAL '{expectedChoiceText}' in: " + decision.FormatDecision() )
+		};
+	}
+
+	private static IOption FindChoiceContains( IDecision decision, string expectedChoiceText ) {
+		var matchingChoices = decision.Options
+			.Where( o => o.Text.Contains( expectedChoiceText ) ) // not using .Contains because Numbers '1' doesn't work when > 9
+			.ToArray();
+		return matchingChoices.Length switch {
+			1 => matchingChoices[0],
+			0 => throw new ArgumentException( $"option ({expectedChoiceText} not found in {decision.FormatDecision()}" ),
+			_ => throw new Exception( $"Multiple option CONTAIN '{expectedChoiceText}' in: " + decision.FormatDecision() )
+		};
+	}
+
 	static public string FormatDecision( this IDecision d )
 		=> d.Prompt + ":" + d.Options.Select( x => x.Text ).Join( "," );
 
 	static public string FormatOptions( this IDecision decision )
 		=> decision.Options.Select( x => x.Text ).Join( "," );
+
+	///<summary>For Decisions that have SpaceTokens-options from the same Space, remove the Space.</summary>
+	///<remarks>This is slower, always try straight FormatOptions first</remarks>
+	static public string FromatSpaceTokenOptions( this IDecision decision ) {
+		bool hasOneSpace = decision.Options.OfType<SpaceToken>()
+			.Select(st=>st.Space)
+			.Distinct()
+			.Count() == 1;
+		Func<IOption,string> formatter = hasOneSpace
+			? (o) => o is SpaceToken st ? st.Token.Text : o.Text // Remove Spaces from SpaceTokens
+			: (o) => o.Text; // do normal
+		return decision.Options.Select( formatter ).Join(",");
+	}
 
 }

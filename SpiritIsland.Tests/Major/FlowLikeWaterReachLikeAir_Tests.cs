@@ -20,14 +20,16 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		// When: playing Card
 		await spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( (user) => {
 			//  And: Can bring 2 of each
-			user.AssertDecisionInfo( "Select Presence to push.", "[TS],Done" );
+			// !!! this should be implemented as a Push
+			user.NextDecision .HasPrompt( "Select Presence to push." ).HasOptions( "TS,Done" ).Choose( "TS" );
 			user.AssertDecisionInfo( "Push Presence to", "[A1],A4,A6,A7,A8" );
-			user.AssertDecisionInfo( "Bring up to (6)", "[D@2],E@1,T@2,Done" );
-			user.AssertDecisionInfo( "Bring up to (5)", "[D@2],E@1,T@2,Done" );
-			user.AssertDecisionInfo( "Bring up to (4)", "[E@1],T@2,Done" );
-			user.AssertDecisionInfo( "Bring up to (3)", "[E@1],T@2,Done" );
-			user.AssertDecisionInfo( "Bring up to (2)", "[T@2],Done" );
-			user.AssertDecisionInfo( "Bring up to (1)", "[T@2],Done" );
+
+			user.NextDecision.HasPrompt( "Bring up to (6)" ).MoveFrom("D@2","D@2,E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (5)" ).MoveFrom("D@2","D@2,E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (4)" ).MoveFrom("E@1","E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (3)" ).MoveFrom("E@1","E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (2)" ).MoveFrom("T@2","T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (1)" ).MoveFrom("T@2","T@2,Done");
 		} );
 
 		// Then: target 2 of each
