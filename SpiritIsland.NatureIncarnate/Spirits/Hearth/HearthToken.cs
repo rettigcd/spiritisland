@@ -17,17 +17,16 @@ public class HearthToken : SpiritPresenceToken
 		Fortify_AddingDahan( args );
 	}
 
-	void IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ) {
-		Fortify_AddedPresence( args );
+	void IHandleTokenAdded.HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
+		Fortify_AddedPresence( to, args );
 	}
 
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		await Foritfy_RemovingDahanAsync( args);
 	}
 
-	public override async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
-		SpaceState from = args.From.Tokens;
-		await base.HandleTokenRemovedAsync( args );
+	public override async Task HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) {
+		await base.HandleTokenRemovedAsync( from, args );
 		await Foritfy_RemovedPresenceAsync( args, from );
 		await LoyalGuardian_DahanMoved( args, from );
 	}
@@ -37,10 +36,13 @@ public class HearthToken : SpiritPresenceToken
 
 	public async Task LoyalGuardian_DahanMoved( ITokenRemovedArgs args, SpaceState from ) {
 
-		if(args is not ITokenMovedArgs moved || args.Removed.Class != Human.Dahan) return;
+		if(args is not ITokenMovedArgs moved 
+			|| args.Removed.Class != Human.Dahan
+			|| moved.To is not Space to
+		) return;
 
 		var destinations = ActionScope.Current.SafeGet("LoyalDestinations",()=>new HashSet<SpaceState>()); // Hash so we don't have to do .Distinct
-		destinations.Add( moved.To );
+		destinations.Add( to.Tokens );
 		if(!from.Dahan.Any)
 			await BringUpToAllPresence(from,destinations);
 	}
@@ -67,10 +69,10 @@ public class HearthToken : SpiritPresenceToken
 
 	static bool BonusAppliesToThis(HumanToken token) => token.HumanClass.HasTag(TokenCategory.Dahan);
 
-	void Fortify_AddedPresence( ITokenAddedArgs args ) {
+	void Fortify_AddedPresence( SpaceState to, ITokenAddedArgs args ) {
 		// Adding presence where there wasn't any before.
-		if(args.Added == this && args.To.Tokens[this] == args.Count)
-			GrantHealthBoost( args.To );
+		if(args.Added == this && to[this] == args.Count)
+			GrantHealthBoost( to );
 	}
 
 	public static void GrantHealthBoost( SpaceState to ) {

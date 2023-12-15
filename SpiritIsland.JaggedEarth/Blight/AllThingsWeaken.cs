@@ -58,27 +58,26 @@ public class AllThingsWeaken : BlightCard {
 }
 
 class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
-	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 		if(args.Added != Token.Blight) return;
 
 		// Destroy all presence in this land.
-		var toTokens = args.To.Tokens;
-		var toDestroy = toTokens.OfAnyTag(Token.Beast)
-			.Union( toTokens.OfTag( TokenCategory.Presence ) )
+		var toDestroy = to.OfAnyTag(Token.Beast)
+			.Union( to.OfTag( TokenCategory.Presence ) )
 			.ToArray();
 		foreach(IToken t in toDestroy)
-			await toTokens.Destroy( t, toTokens[t] );
-		GameState.Current.LogDebug( "All Things Weaken - destroyed all Presence/Beast on " + args.To.Text );
+			await to.Destroy( t, to[t] );
+		GameState.Current.LogDebug( "All Things Weaken - destroyed all Presence/Beast on " + ((Space)args.To).Text );
 
 		// Destroy 1 presence in adjacent land
-		var options = toTokens.Adjacent_Existing
+		var options = to.Adjacent_Existing
 			.SelectMany(
 				adj => adj.OfTag(TokenCategory.Presence).On(adj.Space)
 			)
 			.ToArray();
 
 		var decision = new A.SpaceToken( "Presence to destroy", options, Present.Always );
-		var token = await args.To.Boards[0].FindSpirit().SelectAsync(decision);
+		var token = await to.Space.Boards[0].FindSpirit().SelectAsync(decision);
 
 		if(token == null) return;
 		await token.Space.Tokens.Destroy(token.Token, 1);

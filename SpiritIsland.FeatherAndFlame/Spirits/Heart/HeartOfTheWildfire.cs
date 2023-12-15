@@ -95,13 +95,13 @@ public class HeartOfTheWildfire : Spirit {
 		static bool BlightAddedDueToSpiritEffects() => !BlightToken.ForThisAction.BlightFromCardTrigger.Reason
 			.IsOneOf( AddReason.Ravage, AddReason.BlightedIsland, AddReason.None );
 
-		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			if(args.Added != this) return;
 			// !! There is a bug here somehow that after placing the 2nd fire, track, still returned only 1 
 			// !! maybe we need to make Elements smarter so it is easier to calculate, like breaking it into:
 			//	(track elements, prepared elements, card elements)
 			int fireCount = Self.Presence.TrackElements[Element.Fire];
-			var ctx = Self.Target( args.To );
+			var ctx = Self.Target( to.Space );
 			// For each fire showing, do 1 damage
 			await ctx.DamageInvaders( fireCount );
 			// if 2 fire or more are showing, add 1 blight

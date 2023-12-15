@@ -17,20 +17,21 @@ public class TerrorStalksTheLand : SpaceState {
 		await Invaders.DestroyAll( Human.Invader ); // eventually comes back to .Remove(...)
 	}
 
-	/// <remarks>Destroys invaders using .DestroyNInvaders()</remarks>
-	public override async Task<TokenRemovedArgs> RemoveAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
-		// not destroying invaders - do normal stuff
+	public override async Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs, Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(reason != RemoveReason.Destroyed 
 			|| !token.HasTag(TokenCategory.Invader)
 			|| PreviouslyDestroyed
 			|| InvaderCount != 1
-		)
-			return await base.RemoveAsync( token, count, reason );
+		) {
+			return await base.SourceAsync( token, count, reason );
+		}
 
-		// Destroying Invaders 
-		// Don't call DestroyNInvaders here because that creates a stack-overflow loop.
+		RemovingTokenCtx removedHandlers = RemovedHandlerSnapshop;
 		await AbductInvader( token.AsHuman() );
-		return new TokenRemovedArgs( Space, token, 1, RemoveReason.Abducted );
+		return (
+			new TokenRemovedArgs( Space, token, 1, RemoveReason.Abducted ),
+			removedHandlers.NotifyRemoved
+		);
 	}
 
 	/// <remarks>

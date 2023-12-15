@@ -65,8 +65,9 @@ public class Thunderspeaker : Spirit {
 		string prompt = $"{SwarnToVictory.Title}: {args.Count} dahan destroyed. Select presence to destroy.";
 
 		int numToDestroy = args.Count;
-		SpaceState fromTokens = args.From.Tokens;
-		var spaces = args.From.Range(1).IsInPlay().ToHashSet();
+		Space from = (Space)args.From;
+		SpaceState fromTokens = from.Tokens;
+		var spaces = from.Range(1).IsInPlay().ToHashSet();
 		SpaceToken[] options;
 		SpaceToken[] Intersect() => Presence.Deployed.Where(x=>spaces.Contains(x.Space)).ToArray(); // Ravage Only, not dependent on PowerRangeCalculator
 

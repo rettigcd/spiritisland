@@ -42,9 +42,9 @@ public class ObserveWorldMod : ISpaceEntity
 		_tokenSummary = ctx.Tokens.Summary;
 	}
 
-	public void HandleTokenAdded( ITokenAddedArgs args ) => Check( args.To );
+	public void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) => Check( to );
 
-	public void HandleTokenRemoved( ITokenRemovedArgs args ) => Check( args.From );
+	public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) => Check( from );
 
 	void Check( SpaceState space ) {
 		var actionScope = ActionScope.Current;

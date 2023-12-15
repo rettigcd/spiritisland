@@ -90,8 +90,8 @@ public class Ocean_GrowthTests : GrowthTests {
 		_gameState.Island = new Island( BoardA, BoardB );
 
 		await _spirit.When_Growing( 1, () => {
-			User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay,Take Presence from Board", "[A0],B0" );
-			User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,Take Presence from Board", "A0,[B0]" );
+			User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay", "[A0],B0" );
+			User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,OHG", "A0,[B0]" );
 		} );
 
 		Assert_HasEnergy( 1 );

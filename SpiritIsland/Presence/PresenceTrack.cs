@@ -5,8 +5,17 @@ public class PresenceTrack : IPresenceTrack {
 	#region constructor
 
 	public PresenceTrack( int revealedCount, params Track[] slots ) {
-		this.slots = slots;
-		this.revealedCount = revealedCount;
+		_slots = slots;
+		_revealedCount = revealedCount;
+
+		void Slot_Revealed( Track track ) {
+			if(_revealedCount == _slots.Length) throw new InvalidOperationException("all slots revealed");
+			if(_slots[_revealedCount] != track) throw new InvalidOperationException("track/slot is not the next to be revealed");
+			++_revealedCount;
+			TrackRevealed?.Invoke( new TrackRevealedArgs( track ) );
+		}
+		foreach(Track slot in slots)
+			slot.Revealed += Slot_Revealed;
 	}
 
 	public PresenceTrack( params Track[] slots ):this(1,slots) { }
@@ -15,40 +24,40 @@ public class PresenceTrack : IPresenceTrack {
 
 	public virtual IEnumerable<Track> RevealOptions {
 		get {
-			if(revealedCount < slots.Length)
-				yield return slots[revealedCount];
+			if(_revealedCount < _slots.Length)
+				yield return _slots[_revealedCount];
 		}
 	}
 
 	public virtual IEnumerable<Track> ReturnableOptions {
 		get {
-			if(revealedCount > 1)
-				yield return slots[revealedCount - 1];
+			if(_revealedCount > 1)
+				yield return _slots[_revealedCount - 1];
 		}
 	}
 
-	public IReadOnlyCollection<Track> Slots => slots;
+	public IReadOnlyCollection<Track> Slots => _slots;
 
-	public IEnumerable<Track> Revealed => slots.Take( revealedCount );
+	public IEnumerable<Track> Revealed => _slots.Take( _revealedCount );
 
-	public virtual async Task<bool> Reveal( Track track ) {
-		if(revealedCount == slots.Length || slots[revealedCount] != track) return false;
-		++revealedCount;
-		await TrackRevealed.InvokeAsync( new TrackRevealedArgs( track ) );
+	public bool Reveal( Track track ) {
+		if(_revealedCount == _slots.Length || _slots[_revealedCount] != track) return false;
+		++_revealedCount;
+		TrackRevealed?.Invoke( new TrackRevealedArgs( track ) );
 		return true;
 	}
 
-	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new AsyncEvent<TrackRevealedArgs>();
+	public event Action<TrackRevealedArgs> TrackRevealed;
 
 	public virtual bool Return( Track track ) {
-		if(slots[revealedCount - 1] != track) return false;
-		--revealedCount;
+		if(_slots[_revealedCount - 1] != track) return false;
+		--_revealedCount;
 		return true;
 	}
 
 	public void AddElementsTo( CountDictionary<Element> elements ) {
 		foreach(var r in Revealed)
-			r.AddElement( elements );
+			r.AddElementsTo( elements );
 	}
 
 	#region Memento
@@ -58,14 +67,14 @@ public class PresenceTrack : IPresenceTrack {
 	public void LoadFrom( IMemento<IPresenceTrack> memento ) => ((Memento)memento).Restore( this );
 
 	protected class Memento : IMemento<IPresenceTrack> {
-		public Memento( PresenceTrack src ) { revealed = src.revealedCount; }
-		public void Restore( PresenceTrack src ) { src.revealedCount = revealed; }
+		public Memento( PresenceTrack src ) { revealed = src._revealedCount; }
+		public void Restore( PresenceTrack src ) { src._revealedCount = revealed; }
 		readonly int revealed;
 	}
 
 	#endregion
 
-	protected Track[] slots;
-	int revealedCount;
+	protected Track[] _slots;
+	int _revealedCount;
 
 }

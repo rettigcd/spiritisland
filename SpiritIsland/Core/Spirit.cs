@@ -10,7 +10,7 @@ public abstract partial class Spirit
 	public Spirit( Func<Spirit,SpiritPresence> initPresence, params PowerCard[] initialCards ) {
 
 		Presence = initPresence(this);
-		Presence.TrackRevealed.Add( args => Elements.Add(args.Track.Elements) );
+
 	
 		foreach(var card in initialCards)
 			AddCardToHand(card);

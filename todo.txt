@@ -45,6 +45,8 @@ Always use the < or <= sign, never the > or >= sign.
 
 ==== To Do ====
 
+Cache Spirit Presence and Clean up tokens.
+
 Blight cards can be drawn better.
 
 Cheat Menu - 
@@ -71,13 +73,20 @@ Layout - abreviated Display
 
 Adversary
 
+Fear / Blight cards needs a special "Close" section so people know where to click to close them.
+
+Cursor Pointer over Minor/Major deck selection.
+
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
 
 Instead of custom TokenPushers - break into pieces and customize only  (# pushed) (PushDestinations)
 
 SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wraps the original Command in a new Command so we don't have to build conditions into SpiritActions. This would allow us to add the encapsulate the condition in PlaugeShipsSaleToDistantPosts
 
+Present multiple Actions at the same time.  One user starts one of them, the others go on hold.
+
 ----------
+
 ----------
 
 Token Appearance - should be changable during the game.  Change Colors, add/remove image.
@@ -105,6 +114,8 @@ REANME - SpaceToken <=> Token
 
 TOKENS-Shortcut - Remove ctx.XX shortcut to Tokens.XX bindings OR make everything that has a TargetSpaceCtx use it.
 TOKENS-Shortcut - TargetSpaceCtx.RemoveBlight() maybe should be .Blight.RemoveAsync()
+
+Tokens.DamageInvaders - some things may be taking a shortcut and not including Badland Damage.
 
 Add ActionScope Run-At-Max hook for converting Present.Done to Present.Always for Trickster
 

@@ -281,7 +281,7 @@ public partial class IslandControl : Control {
 	void SetupNewMove( ref IDecision decision ) {
 
 		_moveOptions = null;
-		if(decision is not AMove) return;
+		if(decision is not A.Move) return;
 
 		_moveOptions = decision.Options.OfType<Move>().ToArray();
 		_moveIsOptional = decision.Options.Any( x => x == TextOption.Done );

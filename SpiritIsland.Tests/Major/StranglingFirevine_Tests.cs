@@ -51,10 +51,10 @@ public class ActionScopeTracker : BaseModEntity, IHandleTokenAdded, IHandleToken
 	readonly HashSet<ActionScope> _scopes = new();
 	public int Count => _scopes.Count;
 
-	void IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs _ ) 
+	void IHandleTokenAdded.HandleTokenAdded( SpaceState _, ITokenAddedArgs _1 ) 
 		=> _scopes.Add( ActionScope.Current );
 
-	void IHandleTokenRemoved.HandleTokenRemoved(SpiritIsland.ITokenRemovedArgs _) 
+	void IHandleTokenRemoved.HandleTokenRemoved(SpaceState from, SpiritIsland.ITokenRemovedArgs _) 
 		=> _scopes.Add( ActionScope.Current );
 
 }

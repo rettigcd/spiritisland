@@ -58,8 +58,10 @@ namespace SpiritIsland.WinForms {
 			float coinMargin = (slotSize.Width - coinWidth) / 2;
 
 			var presenceTrack = spirit.Presence.Energy;
+			var token = spirit.Presence.Token;
 			foreach(Track energySlot in presenceTrack.Slots) {
-				var button = (PresenceSlotButton)buttonContainer[energySlot];
+
+				var button = (PresenceSlotButton)buttonContainer[new TrackPresence(energySlot,token)];
 
 				button.DebugBounds  = new Rectangle( currentX, bounds.Y, slotSize.Width, slotSize.Height );
 				button.PresenceRect = new Rectangle( currentX + (slotSize.Width - presenceSize.Width) / 2, bounds.Y, presenceSize.Width, presenceSize.Height );
@@ -83,8 +85,9 @@ namespace SpiritIsland.WinForms {
 			float usableWidth = slotSize.Width - 2 * margin;
 			int cardY = (int)(bounds.Bottom - margin - usableWidth);
 
+			var token = spirit.Presence.Token;
 			foreach(Track cardSlot in spirit.Presence.CardPlays.Slots) {
-				var button = (PresenceSlotButton)buttonContainer[cardSlot];
+				var button = (PresenceSlotButton)buttonContainer[new TrackPresence(cardSlot,token)];
 
 				button.DebugBounds = new Rectangle( x, y, slotSize.Width, slotSize.Height );
 				button.PresenceRect = new Rectangle( x + (int)((slotWidth - presenceSize.Width) / 2), y, presenceSize.Width, presenceSize.Height );

@@ -152,7 +152,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		_spirit.Given_HasPresenceOn(space);
 
 		// When: we place a presence on that space
-		await _spirit.Presence.PlaceAsync( _spirit.Presence.Energy.RevealOptions.Single(), space )
+		await _spirit.Presence.Token.MoveAsync( _spirit.Presence.Energy.RevealOptions.Single(), space )
 			.AwaitUser( _spirit, user => {
 				user.NextDecision.HasPrompt("Push (2)").MoveFrom("D@2").MoveTo("A4","A1,A4,A6,A7,A8");
 				user.NextDecision.HasPrompt("Push (1)").MoveFrom("D@2").MoveTo("A7","A1,A4,A6,A7,A8");

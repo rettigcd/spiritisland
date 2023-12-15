@@ -8,7 +8,7 @@ public class BlightToken : TokenClassToken
 		: base( label, k, img ) 
 	{}
 
-	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 
 		if(args.Added != this) return; // token-added event handler for blight only
 		if(!ShouldDoBlightAddedEffects( args.Reason )) return;
@@ -22,20 +22,18 @@ public class BlightToken : TokenClassToken
 		await gs.TakeBlightFromCard( args.Count );
 
 		// Destory presence
-		var toTokens = args.To.Tokens;
 		if(config.DestroyPresence)
 			foreach(Spirit spirit in gs.Spirits)
 				// I would like to replace this with:
-				// await new SourceSelector( args.To ).AddGroup( 1, spirit.Presence ).DestroyN( spirit );
-				if( spirit.Presence.IsOn( toTokens ) )
-					await toTokens.Destroy( spirit.Presence.TokensDeployedOn(toTokens).First(), 1 ); // !!! Not correct for Incarna
+				if( spirit.Presence.IsOn( to ) )
+					await to.Destroy( spirit.Presence.TokensDeployedOn(to).First(), 1 ); // !!! Not correct for Incarna
 
 		// Cascade blight
-		if( toTokens.Blight.Count != 1 && config.ShouldCascade ) {
+		if( to.Blight.Count != 1 && config.ShouldCascade ) {
 			Space cascadeTo = await gs.Spirits[0].SelectAsync( A.Space.ForMoving_SpaceToken(
-				$"Cascade blight from {args.To.Label} to",
-				args.To,
-				gs.CascadingBlightOptions( toTokens ).Downgrade(),
+				$"Cascade blight from {to.Space.Label} to",
+				to.Space,
+				gs.CascadingBlightOptions( to ).Downgrade(),
 				Present.Always,
 				Token.Blight
 			) );
@@ -56,7 +54,7 @@ public class BlightToken : TokenClassToken
 		};
 	}
 
-	public void HandleTokenRemoved( ITokenRemovedArgs args ) {
+	public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
 		if(args.Removed == Token.Blight
 			&& !args.Reason.IsOneOf(
 				RemoveReason.MovedFrom, // pushing / gathering blight

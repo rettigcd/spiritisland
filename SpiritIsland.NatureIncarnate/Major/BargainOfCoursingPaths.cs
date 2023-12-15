@@ -41,27 +41,26 @@ public class BargainOfCoursingPaths {
 			_spirit = spirit;
 		}
 
-		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			// Ongoing: After pieces are added or moved into the marked lands:
 
 			// move those pieces directly to any 1 land.
 			SpaceState destination = await GetDestination( args );
-			if(destination == args.To) return;
+			if(destination == to) return;
 
-			GameState.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {args.To.Text} to {destination.Space.Text}" ) );
-			for(int i = 0; i < args.Count; ++i)
-				await args.After.MoveTo(destination);
+			GameState.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {((Space)args.To).Text} to {destination.Space.Text}" ) );
+			await args.Added.MoveAsync(to,destination,args.Count);
 		}
 
 		async Task<SpaceState> GetDestination( ITokenAddedArgs args ) {
 			ActionScope scope = ActionScope.Current;
 
 			// Check for previously selected
-			string key = $"CoursingPath:Move {args.To.Text} to";
+			string key = $"CoursingPath:Move {((Space)args.To).Text} to";
 			if(scope.ContainsKey(key)) return (SpaceState)scope[key];
 
 			// Pick brand new
-			SpaceState destination = await _spirit.SelectAsync( new A.Space( $"{Name}: Move {args.Count}{args.Added} from {args.To.Text} to:", GameState.Current.Spaces, Present.Always ) );
+			SpaceState destination = await _spirit.SelectAsync( new A.Space( $"{Name}: Move {args.Count}{args.Added} from {((Space)args.To).Text} to:", GameState.Current.Spaces, Present.Always ) );
 			scope[key] = destination;
 			return destination;
 		}

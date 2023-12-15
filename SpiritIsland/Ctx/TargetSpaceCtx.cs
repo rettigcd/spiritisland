@@ -321,7 +321,7 @@ public class TargetSpaceCtx : IHaveASpirit {
 
 	public async Task PlacePresenceHere() {
 		var from = await Self.SelectSourcePresence();
-		await Self.Presence.PlaceAsync( from, Space );
+		await from.MoveToAsync(Tokens);
 	}
 
 	#endregion

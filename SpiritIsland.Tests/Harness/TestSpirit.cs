@@ -51,7 +51,7 @@ class TestSpirit : Spirit {
 
 public class TestPresenceTrack : PresenceTrack {
 	public TestPresenceTrack(params Track[] t ) : base( t ) { }
-	public void OverrideTrack(int index, Track t) { slots[index]=t;}
+	public void OverrideTrack(int index, Track t) { _slots[index]=t;}
 
 }
 

@@ -38,7 +38,7 @@ public class UnrelentingGrowth_Tests {
 		space.Init( Token.Blight, 0 );
 
 		//  And: 2 destroyed presence
-		setup.Spirit.Presence.Destroyed = 2;
+		setup.Spirit.Presence.Destroyed.Count = 2;
 
 		//  When: Card played
 		var task = UnrelentingGrowth.ActAsync( setup.TargetSelf );

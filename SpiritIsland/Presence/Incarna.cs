@@ -50,7 +50,7 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 	// !!! check that SpiritActions that Move/Add Invarna use this.
 	public async Task MoveTo( Space destination, bool allowAdd ) {
 		if(IsPlaced)
-			await AsSpaceToken().MoveTo( destination );
+			await this.MoveAsync(Space,destination);
 		else if(allowAdd)
 			await destination.Tokens.AddAsync( this, 1 );
 	}

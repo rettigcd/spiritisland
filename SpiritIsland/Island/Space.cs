@@ -8,6 +8,7 @@ public abstract class Space
 	: IOption 
 	, ISeeAllNeighbors<Space>
 	, IEquatable<Space>
+	, ILocation // make dragging/moving tokens easier
 {
 
 	readonly List<Space> adjacent = new List<Space>();
@@ -107,4 +108,15 @@ public abstract class Space
 	static public bool operator==(Space left, Space right) => Object.ReferenceEquals(left,right) || left is not null && left.Equals( right );
 	static public bool operator!=(Space left, Space right) => !Object.ReferenceEquals( left, right ) && (left is null || !left.Equals( right ));
 	#endregion
+
+	#region Moving
+
+	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
+	public Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
+		=> Tokens.SourceAsync(token,count,reason);
+	public Task<(ITokenAddedArgs, Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count, AddReason addReason = AddReason.Added ) 
+		=> Tokens.SinkAsync(token, count, addReason);
+
+	#endregion
+
 }

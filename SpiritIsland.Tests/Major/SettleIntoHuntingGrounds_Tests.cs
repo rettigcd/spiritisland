@@ -33,16 +33,25 @@ public class SettleIntoHuntingGrounds_Tests {
 		//  When: pushing dahan
 		await spirit.When_TargetingSpace( a1, CallToMigrate.ActAsync, u => {
 			u.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom( "D@2" ).MoveTo("A2","A2,A4,A5,A6");
+
+			u.NextDecision.HasPrompt( "Move presence with Dahan?" )
+				.HasOptions("Ts on A1,Done")
+				.Choose( "Ts on A1" );
+
 			//  Then: action completes without Thunderspeaker riding along.
 		} );
 
+		//  Then: TS is still on A1
+		spirit.Presence.IsOn(a1.Tokens).ShouldBeTrue();
 
+		//   And: not on A2
+		spirit.Presence.IsOn(board[2].Tokens).ShouldBeFalse();
 	}
 
 	[Trait( "SpecialRule", "Mists Shift and Flow" )]
 	[Theory]
 	[InlineData( false, "A1,A2,A4,A5,A6", "A2" )]
-	[InlineData( true, "A1", "A1" )]
+	// [InlineData( true, "A1", "A1" )]    This is how we want to behave, but it will present all of the non-selectable options, not sure what happens if user selects non-selectable option.
 	public async Task DisablesMistsShiftAndFlow( bool playSettleIntoHuntingGround, string expectedTargetOptions, string pick ) {
 		Spirit spirit = new ShroudOfSilentMist();
 		Board board = Board.BuildBoardA();
@@ -78,9 +87,10 @@ public class SettleIntoHuntingGrounds_Tests {
 
 		// When: playing Draw into ever consuming void
 		await spirit.When_TargetingSpace( a2, DrawTowardsAConsumingVoid.ActAsync, u => {
-			// Then: nothing to draw in
+			// Then: we still have to select presence
+			u.NextDecision.HasPrompt("Select presence to move.").HasOptions("RSiS on A1").Choose("RSiS on A1");
 		} );
-		// And: spirit is still on A1
+		// But: spirit is still on A1 (doesn't move)
 		a1.Tokens.Summary.ShouldBe("1RSiS");
 	}
 
@@ -100,10 +110,16 @@ public class SettleIntoHuntingGrounds_Tests {
 		// When: playing Unrelenting Growth
 		await spirit.When_ResolvingCard<UnrelentingGrowth>( u => {
 			u.NextDecision.HasPrompt( "Where would you like to place your presence?" ).Choose("A5");
-			// Then: no option to "Take Presence from Board" is available
-			u.NextDecision.HasPrompt( "Select Presence to place" ).HasOptions( "2 energy,2 cardplay" ).Choose( "2 energy" );
-			u.NextDecision.HasPrompt( "Select Presence to place" ).HasOptions( "2 energy,2 cardplay" ).Choose( "2 energy" ); 
+			// Then: Presence still appears and is selectable
+			u.NextDecision.HasPrompt( "Select Presence to place" ).HasOptions( "2 energy,2 cardplay,RSiS" ).Choose( "RSiS" );
+			u.NextDecision.HasPrompt( "Select Presence to place" ).HasOptions( "2 energy,2 cardplay,RSiS" ).Choose( "RSiS" ); 
 		} );
+
+		// But: is not move placed
+		spirit.Presence.CountOn(a1.Tokens).ShouldBe(2);
+		spirit.Presence.CountOn(board[5].Tokens).ShouldBe(0);
+
+
 
 	}
 

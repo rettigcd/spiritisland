@@ -20,7 +20,9 @@ public class PresenceTokenAppearance {
 	public BitmapAdjustment? Adjustment => Hsl is null ? null : new PixelAdjustment( new HslColorAdjuster(Hsl).GetNewColor );
 
 	public HSL? Hsl { get; }
+#pragma warning disable CA1822 // Mark members as static
 	public string BaseImage => "red";
+#pragma warning restore CA1822 // Mark members as static
 	public string? PatternImage;
 
 }

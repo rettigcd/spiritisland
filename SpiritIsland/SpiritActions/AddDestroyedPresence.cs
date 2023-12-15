@@ -52,9 +52,9 @@ public class AddDestroyedPresence : SpiritAction {
 	public override async Task ActAsync( Spirit self ) {
 		Spirit placingSpirit = self;
 		SpiritPresence presence = placingSpirit.Presence;
-		if(presence.Destroyed == 0) return;
+		if(presence.Destroyed.Count == 0) return;
 
-		int maxToPlaceOnSpace = Math.Min( presence.Destroyed, NumToPlace );
+		int maxToPlaceOnSpace = Math.Min( presence.Destroyed.Count, NumToPlace );
 
 		var destinationOptions = (_relativeSpirit ?? placingSpirit)
 			.FindSpacesWithinRange( new TargetCriteria( Range ) )
@@ -74,7 +74,8 @@ public class AddDestroyedPresence : SpiritAction {
 			: await placingSpirit.SelectNumber("How many presences would you like to place?", maxToPlaceOnSpace, 1);
 		if(numToPlace == 0 ) return;
 
-		await presence.PlaceDestroyedAsync(maxToPlaceOnSpace, dst);
+		await presence.Destroyed.MoveToAsync(dst);
+		//await presence.PlaceDestroyedAsync(maxToPlaceOnSpace, dst);
 		if( _placedCallback != null )
 			await _placedCallback(maxToPlaceOnSpace,dst);
 	}

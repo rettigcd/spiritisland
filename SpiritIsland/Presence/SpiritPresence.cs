@@ -19,15 +19,15 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		Energy = energy;
 		CardPlays = cardPlays;
 
-		Energy.TrackRevealed.Add( OnRevealed );
-		CardPlays.TrackRevealed.Add( OnRevealed );
+		Energy.TrackRevealed += OnTrackRevealed;
+		CardPlays.TrackRevealed += OnTrackRevealed;
 
 		InitEnergyAndCardPlays();
 
 		Token = token;
 		Incarna = incarna ?? new Incarna(spirit,"[-]",Img.None,Img.None); // a null Incarna
+		Destroyed = new DestroyedPresence(Token);
 	}
-
 
 	protected void InitEnergyAndCardPlays() {
 		// !!! in unit tests, Revealed is sometimes empty
@@ -45,6 +45,8 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	public SpiritPresenceToken Token { get; }
 
 	public Incarna Incarna { get; }
+
+	public DestroyedPresence Destroyed { get; }
 
 	#region Tracks / Board
 
@@ -76,11 +78,14 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		}
 	}
 
-	virtual public IEnumerable<Track> RevealOptions() => Energy.RevealOptions.Union( CardPlays.RevealOptions );
+	virtual public IEnumerable<TokenOn> RevealOptions() 
+		=> Energy.RevealOptions
+			.Union( CardPlays.RevealOptions )
+			.Select(t=>new TrackPresence(t,Token));
+
 	public IEnumerable<Track> CoverOptions => Energy.ReturnableOptions.Union( CardPlays.ReturnableOptions );
 
 	IEnumerable<Track> Revealed => Energy.Revealed.Union(CardPlays.Revealed );
-	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new();
 
 	public void AdjustEnergyTrack( int delta ) {
 		// ctx.Self.EnergyCollected.Add( spirit => --spirit.Energy );
@@ -96,23 +101,13 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	// ----  Reveal / Return  -------
 	// ------------------------------
 
-	virtual protected async Task RevealTrack( Track track ) {
-		if(track == Track.Destroyed && 0 < Destroyed)
-			--Destroyed;
-		else {
-			bool energyRevealed = await Energy.Reveal( track );
-			if(!energyRevealed) {
-				bool cardRevealed = await CardPlays.Reveal( track );
-				if(!cardRevealed)
-					throw new ArgumentException( "Can't pull from track:" + track.ToString() );
-			}
-		}
-	}
-
-	Task OnRevealed( TrackRevealedArgs args ) {
+	/// <summary>
+	/// Adds Element and updates Energy/CardPlays per turn.
+	/// </summary>
+	void OnTrackRevealed( TrackRevealedArgs args ) {
 		EnergyPerTurn   = Math.Max( EnergyPerTurn, args.Track.Energy ?? 0 );
 		CardPlayPerTurn = Math.Max( CardPlayPerTurn, args.Track.CardPlay ?? 0 );
-		return TrackRevealed.InvokeAsync( args );
+		Self.Elements.Add(args.Track.Elements);
 	}
 
 	public Task Return( Track dst ) {
@@ -158,77 +153,6 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	#endregion
 
-	#region Moving Presenece between: Tracks <=> Boards <=> Destroyed
-
-	public async Task DestroyPresenceOn( SpaceState spaceState ) {
-		if(spaceState.Has( this ))
-			await spaceState.Destroy( Token, 1 );
-	}
-
-	public int Destroyed {
-		get => Token.Destroyed;
-		set => Token.Destroyed = value;
-	}
-
-	/// <summary> Removes a Destroyed Presence from the game. </summary>
-	public void RemoveDestroyed( int count ) {
-		if(Destroyed < count) throw new ArgumentOutOfRangeException( nameof( count ) );
-		Destroyed -= count;
-	}
-
-
-	/// <param name="from">Track, Space, or SpaceToken</param>
-	public async Task PlaceAsync( IOption from, Space to ) {
-		var token = await TakeFromAsync( from );
-		await to.Tokens.AddAsync( token, 1 );
-	}
-
-	public async Task PlaceDestroyedAsync( int numToPlace, Space to ) {
-		numToPlace = Math.Min( numToPlace, Destroyed );
-
-		await to.Tokens.AddAsync( Token, numToPlace );
-		Destroyed -= numToPlace;
-	}
-
-	/// <param name="from">Track, Space, or SpaceState</param>
-	/// <returns>Token that is being 'taken'.</returns>
-	public async Task<IToken> TakeFromAsync( IOption from ) {
-		if(from is Track track)
-			await RevealTrack( track );
-		else if(from is Space space)
-			await TakeFromSpaceAsync( Token.On(space) );
-		else if(from is SpaceToken spaceToken) {
-			await TakeFromSpaceAsync( spaceToken );
-			return spaceToken.Token;
-		}
-		return Token;
-	}
-
-	static async Task TakeFromSpaceAsync( SpaceToken st ) {
-		SpaceState fromSpace = st.Space.Tokens;
-		if(0<fromSpace[st.Token])
-			await fromSpace.RemoveAsync( st.Token, 1, RemoveReason.Removed ); // This is not a .MovedFrom because that needs done from .Move
-		else
-			throw new ArgumentException( "Can't pull from island space:" + st.ToString() );
-	}
-
-	public Task ReturnDestroyedToTrackAsync( Track dst ) {
-
-		// src / from
-		if(Destroyed <= 0) throw new InvalidOperationException( "There is no Destroyed presence to return." );
-		--Destroyed;
-
-		// To
-		return Return( dst );
-	}
-
-	/// <remarks>Convenience - checks CanMove and token on space</remarks>
-	public bool HasMovableTokens( SpaceState spaceState ) => CanMove && spaceState.Has(this);
-
-	public bool CanMove { get; set; } = true; // Spirit effect - Settle Into Hunting Grounds
-
-	#endregion
-
 	#region Exposed Data
 
 	/// <summary> Existing </summary>
@@ -248,7 +172,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		? Token.Deployed.Include( Incarna.AsSpaceToken() )
 		: Token.Deployed;
 
-	public IEnumerable<SpaceToken> Movable => CanMove ? Deployed : Enumerable.Empty<SpaceToken>();
+	public IEnumerable<SpaceToken> Movable => Deployed;
 
 	/// <summary> Unfiltered </summary>
 	public int TotalOnIsland() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
@@ -272,7 +196,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		public Memento( SpiritPresence src ) {
 			_energy = src.Energy.SaveToMemento();
 			_cardPlays = src.CardPlays.SaveToMemento();
-			_destroyed = src.Destroyed;
+			_destroyed = src.Destroyed.Count;
 			_lowestTrackEnergy = FirstEnergyTrackValue( src );
 			_incarnaEmpowered = src.Incarna.Empowered;
 			// don't need to save Space because that gets set via Tokens and ITrackMySpaces
@@ -281,7 +205,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		virtual public void Restore( SpiritPresence src ) {
 			src.Energy.LoadFrom( _energy );
 			src.CardPlays.LoadFrom( _cardPlays );
-			src.Destroyed = _destroyed;
+			src.Destroyed.Count = _destroyed;
 			src.Incarna.Empowered = _incarnaEmpowered;
 			// don't need to restore Space because that gets set via Tokens and ITrackMySpaces
 			src.AdjustEnergyTrack( _lowestTrackEnergy /* what it should be */ - FirstEnergyTrackValue(src) /* what it is */ );

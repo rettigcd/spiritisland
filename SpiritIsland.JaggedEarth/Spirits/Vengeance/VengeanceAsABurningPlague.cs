@@ -8,9 +8,7 @@ public class VengeanceAsABurningPlague : Spirit {
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(Track.Energy1,Track.Energy2,Track.AnimalEnergy,Track.Energy3,Track.Energy4),
 			new PresenceTrack(Track.Card1, Track.Card2, Track. FireEnergy, Track.Card2, Track.Card3, Track.Card3, Track.Card4),
-			new LingeringPestilenceToken( spirit ) {
-				Destroyed = 1 // 1 of your presence starts the game already Destroyed.
-			}
+			new LingeringPestilenceToken( spirit )
 		)
 		,PowerCard.For(typeof(FetidBreathSpreadsInfection))
 		,PowerCard.For(typeof(FieryVengeance))
@@ -48,6 +46,8 @@ public class VengeanceAsABurningPlague : Spirit {
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
+		Presence.Destroyed.Count = 1; // 1 of your presence starts the game already Destroyed.
+
 		// Put 2 presence on your starting board:
 		// 1 in a land with blight.
 		SpaceState landWithoutBlight = board.Spaces.Tokens().First( s => s.Blight.Any );

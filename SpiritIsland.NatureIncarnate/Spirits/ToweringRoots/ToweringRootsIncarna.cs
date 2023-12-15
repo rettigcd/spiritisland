@@ -9,8 +9,8 @@ public class ToweringRootsIncarna
 {
 	public ToweringRootsIncarna(Spirit spirit):base(spirit, "TRotJ", Img.TRotJ_Incarna_Empowered, Img.TRotJ_Incarna ) { }
 
-	public void HandleTokenAdded( ITokenAddedArgs args ) {
-		if( !Empowered && args.Added == Token.Vitality && args.To.Tokens[Token.Vitality] == 3)
+	public void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
+		if( !Empowered && args.Added == Token.Vitality && to[Token.Vitality] == 3)
 			Empowered = true;
 	}
 

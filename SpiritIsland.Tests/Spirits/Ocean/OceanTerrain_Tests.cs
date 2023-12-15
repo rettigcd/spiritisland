@@ -227,7 +227,7 @@ public class OceanTerrain_Tests {
 
 		//  And: spirit can use blazing renewal
 		primarySpirit.Energy = 5;
-		primarySpirit.Presence.Destroyed = 1;
+		primarySpirit.Presence.Destroyed.Count = 1;
 		primarySpirit.AddActionFactory(PowerCard.For(typeof(BlazingRenewal)));
 		gameState.Phase = Phase.Fast;
 

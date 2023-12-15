@@ -28,19 +28,18 @@ public class WoundedPresence : SpiritPresence {
 		new PresenceTrack( 1, Track.Energy0, WaterOrAnimal, Gather1Blight, Track.Energy1, Track.Energy3, Energy4FirePlant,   Energy5Any ),
 		new PresenceTrack( 1, Track.Card1,   Track.Card1,   Track.Card1,   Track.Card2,   Track.Card3,   Track.CardReclaim1, Track.Card4   )
 	) {
-		Energy.TrackRevealed.Add( OnRevealed );
+		Energy.TrackRevealed += OnRevealed;
 	}
 
-	Task OnRevealed( TrackRevealedArgs args ) {
+	void OnRevealed( TrackRevealedArgs args ) {
 		int energyRevealed = Energy.Revealed.Count();
 		if( energyRevealed <= 4 && CardPlays.Revealed.Count()<energyRevealed )
 			CardPlays.Reveal(CardPlays.RevealOptions.First());
-		return Task.CompletedTask;
 	}
 
-	public override IEnumerable<Track> RevealOptions() { 
+	public override IEnumerable<TokenOn> RevealOptions() { 
 		return Energy.Revealed.Count() < 4 
-			? Energy.RevealOptions	// only show Energy track
+			? Energy.RevealOptions.Select(t=>new TrackPresence(t,Token)) // only show Energy track
 			: base.RevealOptions(); // show both tracks
 	}
 

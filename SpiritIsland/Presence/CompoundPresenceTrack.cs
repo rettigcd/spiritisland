@@ -20,17 +20,17 @@ public class CompoundPresenceTrack : IPresenceTrack {
 			part.AddElementsTo( elements );
 	}
 
-	public async Task<bool> Reveal( Track track ) {
+	public bool Reveal( Track track ) {
 		foreach(var part in parts) {
-			if(await part.Reveal( track )) {
-				await TrackRevealed.InvokeAsync( new TrackRevealedArgs( track ) );
+			if( part.Reveal( track ) ) {
+				TrackRevealed?.Invoke( new TrackRevealedArgs( track ) );
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new AsyncEvent<TrackRevealedArgs>();
+	public event Action<TrackRevealedArgs> TrackRevealed;
 
 	public bool Return( Track track ) {
 		return parts.Any(part=>part.Return(track));

@@ -103,8 +103,9 @@ public class ShroudOfSilentMist : Spirit {
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
-		if(!Presence.CanMove)
-			return await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
+		// we no-longer have a cood way to do this.
+		//if(!Presence.CanMove)
+		//	return await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
 		MistsShiftAndFlow x = new MistsShiftAndFlow(this,prompt,sourceCriteria,targetCriteria);
 		return (await x.TargetAndFlow()).Space;

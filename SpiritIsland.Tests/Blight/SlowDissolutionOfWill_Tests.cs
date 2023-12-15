@@ -33,7 +33,7 @@ public class SlowDissolutionOfWill_Tests {
 		spirit.Presence.Lands.Select(x=>x.Text).Join(",").ShouldBe("B7");
 		spirit.Presence.IsOn( board[8] ).ShouldBeFalse();
 		spirit.Presence.CountOn( board[8] ).ShouldBe(0);
-		spirit.Presence.HasMovableTokens( board[8].Tokens ).ShouldBeFalse();
+		board[8].Tokens.Has(spirit.Presence).ShouldBeFalse();
 		spirit.Presence.Deployed
 			.Select(d=>d.Text )
 			.Join(",")

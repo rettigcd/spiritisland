@@ -21,7 +21,7 @@ class RoilingWaters : IHealingCard {
 	class Mod : BaseModEntity, IHandleTokenAddedAsync {
 		readonly Spirit _spirit;
 		public Mod(Spirit spirit ) { _spirit = spirit; }
-		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			// When your powers...
 			if(!_spirit.ActionIsMyPower) return;
 
@@ -29,10 +29,10 @@ class RoilingWaters : IHealingCard {
 
 			// ...add or move Beast into a land
 			const string beastDamageKey = Name+":BeastDamage";
-			var tokens = args.To.Tokens;
+
 			if(args.Added == Token.Beast && !scope.ContainsKey( beastDamageKey )) {
 				// you may do 1 Damage there per added or moved Beast.
-				await tokens.DamageInvaders( _spirit, args.Count, Human.Invader );
+				await to.DamageInvaders( _spirit, args.Count, Human.Invader );
 				scope[ beastDamageKey ] = true;
 			}
 
@@ -40,7 +40,7 @@ class RoilingWaters : IHealingCard {
 			const string dahanDamageKey = Name + ":DahanDamage";
 			if(args.Added.HasTag(TokenCategory.Dahan) && !scope.ContainsKey( dahanDamageKey )) {
 				// you may do 1 Damage there (max once per Power)
-				await tokens.DamageInvaders( _spirit, 1, Human.Invader );
+				await to.DamageInvaders( _spirit, 1, Human.Invader );
 				scope[ dahanDamageKey ] = true;
 			}
 		}

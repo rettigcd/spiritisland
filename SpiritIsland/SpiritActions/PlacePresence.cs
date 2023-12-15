@@ -20,19 +20,19 @@ public class PlacePresence : SpiritAction {
 
 	public override async Task ActAsync( Spirit self ) {
 		// From
-		IOption from = await self.SelectSourcePresence();
-		IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
+		TokenOn from = await self.SelectSourcePresence();
+		IToken token = from.Token;
 
 		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range, FilterEnums ).Bind( self ) )
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
 		if(toOptions.Length == 0)
-			throw new InvalidOperationException( "There are no places to place presence." );
-		Space to = await self.SelectAsync( A.Space.ToPlacePresence( toOptions.Downgrade(), Present.Always, token ) );
-		await self.Presence.PlaceAsync( from, to );
+			return; // this can happen if Ocean is dragged way-inland and is no longer near an ocean or coast.
+		Space to = await self.SelectAsync( A.Space.ToPlacePresence( toOptions.Downgrade(), Present.Always, from.Token ) );
+		await from.MoveToAsync(to);
 
 		if( ActionScope.Current.Category == ActionCategory.Spirit_Power 
-			&& from is Track track 
+			&& from.Source is Track track 
 			&& track.Action != null
 		)
 			await track.Action.ActAsync( self );

@@ -40,7 +40,7 @@ public class UnrelentingGrowth {
 		for(int i = 0; i < 2; ++i) {
 			var from = await self.SelectSourcePresence();
 			if(from !=null)
-				await self.Presence.PlaceAsync( from, to );
+				await from.MoveToAsync( to );
 		}
 
 		return toCtx;

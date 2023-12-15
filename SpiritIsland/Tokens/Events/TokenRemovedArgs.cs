@@ -5,16 +5,15 @@
 /// </summary>
 public class TokenRemovedArgs : ITokenRemovedArgs {
 
-	public TokenRemovedArgs(Space from, IToken token, int count, RemoveReason reason ) {
-		Before = new SpaceToken(from,token);
+	public TokenRemovedArgs(ILocation from, IToken token, int count, RemoveReason reason ) {
+		From = from;
+		Removed = token;
 		Count = count;
 		Reason = reason;
 	}
-	public IToken Removed => Before.Token;
-	public Space From => Before.Space;
+	public IToken Removed { get; }
+	public ILocation From { get; }
 
-	public SpaceToken Before { get; }
 	public int Count { get; }
 	public RemoveReason Reason { get; }
 }
-

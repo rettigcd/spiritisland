@@ -28,7 +28,7 @@ public sealed class DahanBinding {
 		=> _tokens.AddDefault( Human.Dahan, count, reason );
 
 	// Called from .Move() and .Dissolve the Bonds
-	public async Task<TokenRemovedArgs> Remove1( IToken toRemove, RemoveReason reason ) {
+	public async Task<ITokenRemovedArgs> Remove1( IToken toRemove, RemoveReason reason ) {
 		return await _tokens.RemoveAsync( toRemove, 1, reason );
 	}
 

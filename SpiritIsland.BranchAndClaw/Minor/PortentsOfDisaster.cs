@@ -12,7 +12,7 @@ public class PortentsOfDisaster {
 
 		// The next time an invader is destroyed in target land this turn, 1 fear
 		bool addFear = true;
-		Task Add1MoreFearForFirstDestroyedInvader( ITokenRemovedArgs args ) {
+		Task Add1MoreFearForFirstDestroyedInvader( SpaceState from, ITokenRemovedArgs args ) {
 			if( addFear 
 				&& args.Reason.IsDestroy()
 				&& args.Removed.HasTag(TokenCategory.Invader)

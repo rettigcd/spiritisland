@@ -97,11 +97,12 @@ public class FracturedDaysSplitTheSky : Spirit {
 	public async Task GainTime( int count ) {
 		while(0 < count) {
 
-			string selectPrompt = $"Select presence to convert to Time ({count} remaining).";
-			var from = (IOption)await SelectAsync( A.TrackSlot.ToRevealOrTakeFromBoard( selectPrompt, this ) )
-					?? (IOption)await SelectAsync( new A.SpaceToken( selectPrompt, Presence.Deployed, Present.Done ) ); // Cancel
+			string selectPrompt = $"convert to Time ({count} remaining).";
 
-			await Presence.TakeFromAsync( from );
+			var from = await this.SelectSourcePresence( Present.Done, selectPrompt ); // Come from track or board
+			if(from == null) break; // !!! is this optional or not ???
+
+			await from.RemoveAsync();
 			Time++;
 
 			--count;

@@ -10,9 +10,9 @@ public interface IPresenceTrack {
 
 	// Modify/Act
 	void AddElementsTo( CountDictionary<Element> elements );
-	Task<bool> Reveal( Track track );
+	bool Reveal( Track track );
 	bool Return( Track track );
-	AsyncEvent<TrackRevealedArgs> TrackRevealed { get; }
+	event Action<TrackRevealedArgs> TrackRevealed;
 
 
 	// Save/Load

@@ -130,10 +130,8 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	#region Canned Tests
 
 	static async Task TakeFromTrack( int revealedSpaces, SpiritPresence presence, IPresenceTrack track ) {
-		for(int i = 1; i < revealedSpaces; i++) {
-			Track choice = track.RevealOptions.First();
-			await presence.TakeFromAsync( choice ); // !! Don't call TakeFrom, call: await presence.RevealTrack( track, GameState );
-		}
+		for(int i = 1; i < revealedSpaces; i++)
+			await track.RevealOptions.First().RemoveAsync( presence.Token );
 	}
 
 	public async Task VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {

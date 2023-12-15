@@ -64,17 +64,6 @@ namespace SpiritIsland.WinForms {
 
 
 		void PaintPresence(Graphics graphics) {
-
-			//foreach(var track in EnergyTrack) {
-			//	var btn = (SlotMetricsButton)_layout.SlotLookup[track];
-			//	btn.Paint( graphics, clickableTrackOptions.Contains( track ) );
-			//}
-
-			//foreach(var track in CardTrack) {
-			//	var btn = (SlotMetricsButton)_layout.SlotLookup[track];
-			//	btn.Paint( graphics, clickableTrackOptions.Contains( track ) );
-			//}
-
 			PaintDestroyed( graphics );
 
 			if(_spirit is FracturedDaysSplitTheSky days)
@@ -83,7 +72,7 @@ namespace SpiritIsland.WinForms {
 
 		void PaintDestroyed( Graphics graphics ) {
 			Rectangle rect = _layout.SlotLookup[Track.Destroyed].PresenceRect;
-			int destroyedCount = _spirit.Presence.Destroyed;
+			int destroyedCount = _spirit.Presence.Destroyed.Count;
 			if(destroyedCount == 0) return;
 
 			// Presence & Red X

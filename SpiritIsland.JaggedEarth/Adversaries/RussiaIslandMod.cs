@@ -58,17 +58,17 @@ class RussiaIslandMod : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTo
 
 	#region mods
 
-	async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( ITokenAddedArgs args ) {
+	async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 		if(args.Added == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
-			_receivedRavageBlight.UnionWith( args.To.Boards ); // log
+			_receivedRavageBlight.UnionWith( to.Space.Boards ); // log
 
-			var beasts = args.To.Tokens.Beasts;
+			var beasts = to.Beasts;
 			if( beasts.Any ) {
 				await beasts.Destroy( 1 );
 				_beastsDestroyed++;
-				GameState.Current.LogDebug($"Blight on {args.To.Text} destroys 1 beast.");
+				GameState.Current.LogDebug($"Blight on {((Space)args.To).Text} destroys 1 beast.");
 			}
 		}
 	}
@@ -88,7 +88,7 @@ class RussiaIslandMod : BaseModEntity, IHandleTokenAddedAsync, IModifyRemovingTo
 
 			Spirit spirit = scope.Owner ?? args.From.Space.Boards[0].FindSpirit();
 			Space destination = await spirit.SelectAsync( A.Space.ToPushToken( (IToken)args.Token, args.From.Space, pushOptions.Downgrade(), Present.Always ) );
-			await args.Token.On(args.From.Space).MoveTo( destination );
+			await args.Token.MoveAsync(args.From.Space,destination);
 		}
 	}
 

@@ -19,7 +19,7 @@ public class FieryVengeance_Tests {
 		space.Given_HasTokens("1T@2,1B");
 
 		//   And: spirit 2 has destroyed presence
-		spirit2.Presence.Destroyed++;
+		spirit2.Presence.Destroyed.Count++;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
 		await vengeance.When_ResolvingCard<FieryVengeance>( (user) => {
@@ -51,7 +51,7 @@ public class FieryVengeance_Tests {
 		space.Given_HasTokens( "1T@2,1B" );
 
 		//   And: spirit 2 has NO destroyed presence
-		spirit2.Presence.Destroyed = 0;
+		spirit2.Presence.Destroyed.Count = 0;
 
 		//  When: Vengencance plays FieryVengence on spirit-2
 		await vengeance.When_ResolvingCard<FieryVengeance>( (user) => {

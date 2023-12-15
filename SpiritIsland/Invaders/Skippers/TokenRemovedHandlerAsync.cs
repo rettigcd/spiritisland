@@ -2,13 +2,13 @@
 
 public class TokenRemovedHandlerAsync : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemovedAsync {
 
-	readonly Func<ITokenRemovedArgs, Task> _func;
+	readonly Func<SpaceState,ITokenRemovedArgs, Task> _func;
 
-	public TokenRemovedHandlerAsync( Func<ITokenRemovedArgs, Task> handler ) : base() {
+	public TokenRemovedHandlerAsync( Func<SpaceState,ITokenRemovedArgs, Task> handler ) : base() {
 		_func = handler;
 	}
 
-	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( ITokenRemovedArgs args ) => _func( args );
+	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) => _func( from, args );
 
 }
 
@@ -20,7 +20,7 @@ public class TokenRemovedHandlerAsync_Persistent : BaseModEntity, IHandleTokenRe
 		_func = handler;
 	}
 
-	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( ITokenRemovedArgs args ) => _func( args );
+	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) => _func( args );
 
 }
 
@@ -33,7 +33,7 @@ public class TokenRemovedHandler : BaseModEntity, IEndWhenTimePasses, IHandleTok
 		_action = handler;
 	}
 
-	void IHandleTokenRemoved.HandleTokenRemoved( ITokenRemovedArgs args ) {
+	void IHandleTokenRemoved.HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
 		_action( args );
 	}
 }

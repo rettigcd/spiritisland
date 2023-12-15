@@ -4,15 +4,14 @@ public class KeeperToken : SpiritPresenceToken, IHandleTokenAddedAsync {
 
 	public KeeperToken(Spirit spirit):base(spirit) {}
 
-	public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 		if(args.Added != this) return;
 
-		var toTokens = args.To.Tokens;
-		int tokenCount = toTokens[this];
+		int tokenCount = to[this];
 		bool createdSacredSite = (tokenCount-args.Count) < 2 && 2<= tokenCount;
 
-		if(createdSacredSite && toTokens.Dahan.Any)
-			await Self.Target( args.To ).PushDahan( int.MaxValue );
+		if(createdSacredSite && to.Dahan.Any)
+			await Self.Target( (Space)args.To ).PushDahan( int.MaxValue );
 
 	}
 }

@@ -29,7 +29,7 @@ public class BoonOfCorruptedBlood {
 		var targetSpiritsLandCtx = spirit.Target(space);
 		await targetSpiritsLandCtx.DamageInvaders( damage );
 		if(!isSelf) {
-			await targetSpiritsLandCtx.Self.Presence.DestroyPresenceOn( space.Tokens );
+			await space.Tokens.Destroy(targetSpiritsLandCtx.Self.Presence.Token,1);
 			await targetSpiritsLandCtx.Gather(1,Token.Beast);
 		}
 

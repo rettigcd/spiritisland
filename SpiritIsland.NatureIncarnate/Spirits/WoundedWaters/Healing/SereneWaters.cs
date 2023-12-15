@@ -27,12 +27,12 @@ class SereneWaters : IHealingCard {
 	class Mod : BaseModEntity, IHandleTokenAddedAsync {
 		readonly Spirit _spirit;
 		public Mod(Spirit spirit ) { _spirit=spirit;}
-		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			// When your powers...
 			if(!_spirit.ActionIsMyPower) return;
 
 			// ...into your lands...
-			if(!_spirit.Presence.IsOn( args.To )) return;
+			if(!_spirit.Presence.IsOn( to )) return;
 
 			var scope = ActionScope.Current;
 
@@ -40,7 +40,7 @@ class SereneWaters : IHealingCard {
 			const string invaderDowngradeKey = Name+":Invader downgrade";
 			if(args.Added.HasTag(TokenCategory.Invader) && !scope.ContainsKey( invaderDowngradeKey )) {
 				// you may Downgrade 1 of those invaders (max once per Power)
-				await ReplaceInvader.DowngradeSelectedInvader( args.To, (HumanToken)args.Added );
+				await ReplaceInvader.DowngradeSelectedInvader( to, (HumanToken)args.Added );
 				scope[invaderDowngradeKey] = true;
 			}
 
@@ -48,7 +48,7 @@ class SereneWaters : IHealingCard {
 			const string dahanDowngradeKey = Name + ":Dahan cause downgrade";
 			if(args.Added.HasTag(TokenCategory.Dahan) && !scope.ContainsKey( dahanDowngradeKey )) {
 				// you may Downgrade 1 of those invaders (max once per Power)
-				await ReplaceInvader.Downgrade1( _spirit, args.To, Present.Done, Human.Invader );
+				await ReplaceInvader.Downgrade1( _spirit, to, Present.Done, Human.Invader );
 				scope[dahanDowngradeKey] = true;
 			}
 

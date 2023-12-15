@@ -17,15 +17,11 @@
 // 'Move' event implements both Add / Remove interfaces
 // if we need a 'Change' event, it can implements both Add / Remove interfaces
 
+// public interface ITokenRemovedArgs where SourceType: ISourceTokens {
 public interface ITokenAddedArgs {
 
-	#region Possibly Remove these
 	public IToken Added { get; } // need specific so we can act on it (push/damage/destroy)
-	public Space To { get; }
-	#endregion
-
-	/// <summary> The combined type and space of the token AFTER it was added. </summary>
-	public SpaceToken After { get; }
+	public ILocation To { get; }
 
 	public int Count { get; }
 	public AddReason Reason { get; }

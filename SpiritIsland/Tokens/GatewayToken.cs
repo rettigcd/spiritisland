@@ -21,8 +21,8 @@ public class GatewayToken : ISpaceEntity, IHandleTokenRemoved {
 	}
 
 	public SpaceState GetLinked( SpaceState end ) => end == _from ? _to : end == _to ? _from : null; // doesn't link.
-	public void HandleTokenRemoved( ITokenRemovedArgs args ) {
-		if(args.Removed == _presence && args.From.Tokens[_presence] < 2)
+	public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
+		if(args.Removed == _presence && from[_presence] < 2)
 			ActionScope.Current.AtEndOfThisAction( _ => RemoveSelf() );
 	}
 

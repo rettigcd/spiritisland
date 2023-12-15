@@ -33,3 +33,4 @@ public class PowerCard : TypedDecision<Type> {
 	readonly Dictionary<Type, CardUse> _cardUses = new Dictionary<Type, CardUse>();
 
 }
+

@@ -9,7 +9,7 @@ public class SkiesHeraldTheSeasonOfReturn{
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 		// A Spirit with presence on target board may add 1 of their Destroyed presence.
 		var spiritOptions = GameState.Current.Spirits
-			.Where( s => 0 < s.Presence.Destroyed )
+			.Where( s => 0 < s.Presence.Destroyed.Count )
 			.Where( spirit => ctx.Space.Boards.Any(spirit.Presence.IsOn) )
 			.ToArray();
 

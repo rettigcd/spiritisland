@@ -2,6 +2,7 @@
 
 public static class DamageInvader_Extensions {
 
+	// !!! Make sure that everything that calls this should NOT be including Badland damage
 	static public Task<int> DamageInvaders( this SpaceState tokens, Spirit damagePicker, int damage, params ITokenClass[] allowedTypes ) {
 		if(allowedTypes.Length == 0) allowedTypes = Human.Invader;
 		return tokens.SourceSelector

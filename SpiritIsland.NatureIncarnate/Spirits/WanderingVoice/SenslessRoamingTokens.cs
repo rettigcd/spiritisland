@@ -11,7 +11,7 @@ class SenslessRoamingTokens : SpaceState {
 		if( strifed.Token.HasAny(Human.Explorer_Town)) {
 			TokenMovedArgs moved = await strifed.PushAsync( _spirit, d=>d.ConfigAsOptional() );
 			if(moved != null)
-				strifed = moved.After;
+				strifed = moved.Added.On((Space)moved.To);
 		}
 		return strifed;
 	}

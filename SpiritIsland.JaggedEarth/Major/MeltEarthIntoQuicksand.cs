@@ -32,9 +32,9 @@ public class MeltEarthIntoQuicksand {
 	}
 
 	class Quicksand : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
-		public async Task HandleTokenAddedAsync( ITokenAddedArgs args ) {
+		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			if(args.Added.HasAny(TokenCategory.Invader,TokenCategory.Dahan))
-				await args.To.Tokens.Destroy( args.Added, args.Count );
+				await to.Destroy( args.Added, args.Count );
 		}
 	}
 }

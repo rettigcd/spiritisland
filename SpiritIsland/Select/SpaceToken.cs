@@ -38,3 +38,12 @@ public class SpaceToken : TypedDecision<SI_SpaceToken>, IHaveArrows {
 		: SpaceTokens.Select( st => new Arrow { Token = st.Token, From = st.Space, To = Destination } );
 
 }
+
+public class MyTokenOn : TypedDecision<TokenOn> {
+	public MyTokenOn(string prompt,IEnumerable<TokenOn> options, Present presenct)
+		: base( prompt, options, presenct ) {
+		TokensOn = options.ToArray();
+	}
+
+	public TokenOn[] TokensOn { get; }
+}

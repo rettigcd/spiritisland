@@ -1,6 +1,4 @@
-﻿using SpiritIsland.A;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public sealed class TokenMover {
 
@@ -81,7 +79,7 @@ public sealed class TokenMover {
 		Move[] options = _sourceSelector.GetSourceOptions()
 			.SelectMany( s => _destinationSelector.GetDestinationOptions(s).Select(d=>new Move {Source=s,Destination=d } ))
 			.ToArray();
-		return await _self.SelectAsync(new AMove(srcDecision.Prompt,options,present));
+		return await _self.SelectAsync(new A.Move(srcDecision.Prompt,options,present));
 
 	}
 
@@ -125,18 +123,61 @@ public sealed class TokenMover {
 }
 
 
-class MoveSelector {
-	// SourceSelector
-	// Destination
+static public class Move_Extension { 
 
-	// Prompt
+	static public async Task<TokenMovedArgs> MoveAsync( this IToken token, ILocation from, ILocation to, int count=1 ) {
+		// Current implementation favors:
+		//		switching token types prior to Add/Remove so events handlers don't switch token type
+		//		perfoming the add/remove action After the Adding/Removing modifications
 
-	// StartOptions
+		// Possible problems to keep in mind:
+		//		The token in the Added event, may be different than token that was attempted to be added.
+		//		The Token in the Removed event, may be a different token than was requested to be removed.
+		//		The token Added may be Different than the token Removed
+		//		Move requires a special Publish because it pertains to 2 spaces - we don't want to publish it twice (once for each space)
 
-	// DestinationOptinosFor( source );
+		// Mitigating Factors
+		//		The AddingToken args prevents changing the Count if it is a MoveTo
+
+		// Remove from source
+		var (removeResult,removedNotifier) = await from.SourceAsync( token, count, RemoveReason.MovedFrom );
+		if( removeResult.Count == 0 ) return null;
+
+		// Add to destination
+		var (addResult,addedNotifier) = await to.SinkAsync( 
+			removeResult.Removed, // possibly modified, NOT original
+			removeResult.Count, // possibly modified
+			AddReason.MovedTo
+		);
+
+		// Publish
+		var tokenMoved = new TokenMovedArgs( removeResult, addResult );
+		await removedNotifier( tokenMoved );
+		await addedNotifier( tokenMoved );
+
+		return tokenMoved;
+	}
+
+	/// <summary>Removes a token from a Location</summary>
+	/// <returns>null if no token removed</returns>
+	static public async Task<ITokenRemovedArgs> RemoveAsync( this ILocation source, IToken token, int count=1, RemoveReason reason = RemoveReason.Removed ) {
+		if( reason == RemoveReason.MovedFrom )
+			throw new ArgumentException("Moving Tokens must be done from the .Move method for events to work properly",nameof(reason));
+
+		var (removed,removedHandler) = await source.SourceAsync( token, count, reason );
+		if( 0<removed.Count )
+			await removedHandler(removed);
+
+		return removed;
+	}
+
+	static public Task<ITokenRemovedArgs> RemoveAsync( this TokenOn tokenOn, int count=1, RemoveReason reason = RemoveReason.Removed )
+		=> tokenOn.Source.RemoveAsync(tokenOn.Token,count,reason);
+	static public Task<TokenMovedArgs> MoveToAsync( this TokenOn tokenOn, ILocation destination, int count=1 )
+		=> tokenOn.Token.MoveAsync(tokenOn.Source,destination,count);
 }
 
-public class AMove : TypedDecision<Move> {
-	public AMove(string prompt, IEnumerable<Move> options, Present present ) : base( prompt, options, present ) { }
+public interface ILocation {
+	Task<(ITokenAddedArgs,Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count=1, AddReason addReason = AddReason.Added );
+	Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed );
 }
-

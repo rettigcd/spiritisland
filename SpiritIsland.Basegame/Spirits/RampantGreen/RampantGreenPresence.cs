@@ -10,14 +10,14 @@ public class RampantGreenPresence : SpiritPresence {
 		) {
 	}
 
-	public override IEnumerable<Track> RevealOptions() {
-		return CanAddFromDestroyed() ? base.RevealOptions().Append(Track.Destroyed)
+	public override IEnumerable<TokenOn> RevealOptions() {
+		return CanAddFromDestroyed() ? base.RevealOptions().Append( Destroyed )
 			: base.RevealOptions();
 	}
 
 	// !!! BUG (I think) - do we --Energy when adding blight when island is blighted?
 
-	bool CanAddFromDestroyed() => 0 < Destroyed	&& HasRequiredEnergy;
+	bool CanAddFromDestroyed() => 0 < Destroyed.Count && HasRequiredEnergy;
 	bool HasRequiredEnergy => 0 < Self.Energy || IslandIsHealthy;
 	static bool IslandIsHealthy => !GameState.Current.BlightCard.CardFlipped;
 }

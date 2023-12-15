@@ -4,9 +4,9 @@ public interface ITokenMovedArgs {
 	int Count { get; }
 
 	IToken Removed { get; }
-	Space From { get; }
+	ILocation From { get; }
 
 	IToken Added { get; }
-	Space To { get; }
+	ILocation To { get; }
 }
 

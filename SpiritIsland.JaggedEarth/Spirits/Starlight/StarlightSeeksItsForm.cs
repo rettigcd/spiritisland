@@ -12,7 +12,11 @@ public class StarlightSeeksItsForm : Spirit {
 	};
 
 	static Track Track_Gain1Energy => new Track( "" ) {
-		Icon = new IconDescriptor { Super = Plus1Coin }
+		Icon = new IconDescriptor { Super = Plus1Coin },
+		OnRevealAsync = (_,spirit) => {
+			spirit.Energy++;
+			return Task.CompletedTask;
+		}
 	};
 
 	const string PickElementName = "Pick element";
@@ -22,6 +26,12 @@ public class StarlightSeeksItsForm : Spirit {
 				Icon = new IconDescriptor {
 					BackgroundImg = Img.Coin,
 					ContentImg = Img.Starlight_AssignElement
+				},
+				OnRevealAsync = async (track,spirit) => {
+					Element el = await spirit.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
+					track.Elements = new Element[] { el };
+					spirit.Elements.Add(el);
+					track.Icon.ContentImg = el.GetTokenImg();
 				}
 			};
 		}
@@ -29,9 +39,21 @@ public class StarlightSeeksItsForm : Spirit {
 
 	readonly static Track NewGrowth1 = new Track( "so1" ) {  
 		Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption1 },
+		OnRevealAsync = async (track,spirit) => {
+			await new PickNewGrowthOption(
+				new GrowthOption( new ReclaimHalf() ),
+				new GrowthOption( new GainPowerCard(), new MovePresence( 1 ) )
+			).ActivateAsync( spirit );
+		}
 	};
 	readonly static Track NewGrowth2 = new Track( "so2" ) {  
 		Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption2 },
+		OnRevealAsync = async (track,spirit) => {
+			await new PickNewGrowthOption(
+				new GrowthOption( new GainEnergy( 3 ) ),
+				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MovePresence( 2 ) )
+			).ActivateAsync( spirit );
+		}
 	};
 	readonly static Track NewGrowth3 = new Track( "so3" ) {
 		Icon = new IconDescriptor {
@@ -39,12 +61,27 @@ public class StarlightSeeksItsForm : Spirit {
 			Super = Plus1Coin,
 			BigSub = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption3 },
 		},
+		OnRevealAsync = async (track,spirit) => {
+			spirit.Energy++;
+			await AssignNewElementToTrack( spirit, track );
+			await new PickNewGrowthOption(
+				new GrowthOption( new ReclaimAll() ),
+				new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) )
+			).ActivateAsync( spirit );
+		}
 	};
 	readonly static Track NewGrowth4 = new Track( "so4" ) {  
 		Icon = new IconDescriptor { 
 			BigSub = new IconDescriptor{ BackgroundImg = Img.Starlight_GrowthOption4 },
 			Super = Plus1Coin,
 		},
+		OnRevealAsync = async (track,spirit) => {
+			spirit.Energy++;
+			await new PickNewGrowthOption(
+				new GrowthOption( new ApplyDamage() ),
+				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MakePowerFast() )
+			).ActivateAsync( spirit );
+		}
 	};
 
 	#endregion
@@ -98,35 +135,7 @@ public class StarlightSeeksItsForm : Spirit {
 			InnatePower.For(typeof(WoodSeeksGrowthHumansSeekFreedom)),
 			InnatePower.For(typeof(StarsBlazeInTheDaytimeSky)),
 		};
-		Presence.Energy.TrackRevealed.Add( EnergyRevealed );
-		Presence.CardPlays.TrackRevealed.Add( CardPlaysRevealed );
 
-	}
-
-	async Task EnergyRevealed( TrackRevealedArgs args ) {
-		if(args.Track == Track_Gain1Energy)
-			Energy++;
-		if(args.Track.Text == PickElementName) {
-			var el = await this.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
-			args.Track.Elements = new Element[] { el };
-			Elements.Add(el);
-			args.Track.Icon.ContentImg = el.GetTokenImg();
-		}
-
-		if(args.Track == NewGrowth1 ) {
-			await new PickNewGrowthOption(
-				new GrowthOption( new ReclaimHalf() ),
-				new GrowthOption( new GainPowerCard(), new MovePresence( 1 ) )
-			).ActivateAsync( this );
-		}
-		if(args.Track == NewGrowth3 ) {
-			Energy++;
-			await AssignNewElementToTrack( this, NewGrowth3 );
-			await new PickNewGrowthOption(
-				new GrowthOption( new ReclaimAll() ),
-				new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) )
-			).ActivateAsync( this );
-		}
 	}
 
 	static async Task AssignNewElementToTrack( Spirit self, Track track ) {
@@ -134,32 +143,6 @@ public class StarlightSeeksItsForm : Spirit {
 		track.Elements = new Element[] { el };
 		self.Elements.Add(el);
 		track.Icon.ContentImg = el.GetTokenImg();
-	}
-
-
-	async Task CardPlaysRevealed( TrackRevealedArgs args) {
-		if(args.Track == Track_Gain1Energy)
-			Energy++;
-		if(args.Track.Text == PickElementName) {
-			var el = await this.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
-			args.Track.Elements = new Element[] { el };
-			Elements.Add(el);
-			args.Track.Icon.ContentImg = el.GetTokenImg();
-		}
-
-		if(args.Track == NewGrowth2) {
-			await new PickNewGrowthOption(
-				new GrowthOption( new GainEnergy( 3 ) ),
-				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MovePresence( 2 ) )
-			).ActivateAsync( this );
-		}
-		if(args.Track == NewGrowth4) {
-			Energy++;
-			await new PickNewGrowthOption(
-				new GrowthOption( new ApplyDamage() ),
-				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MakePowerFast() )
-			).ActivateAsync( this );
-		}
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

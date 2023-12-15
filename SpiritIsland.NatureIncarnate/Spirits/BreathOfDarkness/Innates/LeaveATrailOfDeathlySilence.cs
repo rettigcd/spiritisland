@@ -25,10 +25,9 @@ public class LeaveATrailOfDeathlySilence {
 		Incarna incarna = self.Incarna;
 		if(!incarna.IsPlaced) return;
 
-		var result = await incarna.AsSpaceToken()
-			.MoveTo(EndlessDark.Space);
+		var result = await incarna.AsSpaceToken().MoveTo(EndlessDark.Space);
 
-		await new TokenMover(self,"Bring",result.From.Tokens,result.To)
+		await new TokenMover(self,"Bring", ((Space)result.From).Tokens, EndlessDark.Space)
 			.AddGroup( 1, Human.Invader )
 			.DoN();
 

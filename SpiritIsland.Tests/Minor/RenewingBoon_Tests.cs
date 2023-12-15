@@ -35,7 +35,7 @@ public class RenewingBoon_Tests {
 		int presenceCount = spirit.Presence.CountOn( space );
 
 		//  And: has destroyed presence
-		spirit.Presence.Destroyed = 1;
+		spirit.Presence.Destroyed.Count = 1;
 
 		//  And: blight on space
 		space.Blight.Init( 1 );

@@ -27,18 +27,17 @@ public class FlowingAndSilentFormsDartBy {
 		async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 			if( !args.Reason.IsDestroyingPresence()
 				|| args.Token is not SpiritPresenceToken spt 
-				|| !spt.CanMove
 			) return;
 
 			Spirit spirit = spt.Self;
 
-			if( !spirit.Presence.HasMovableTokens( args.From ) ) return;
+			if( !args.From.Has(spirit.Presence) ) return;
 			
 			var dst = await spirit.SelectAsync( new A.Space( "Instead of destroying, push presence to:", args.From.Adjacent.Downgrade(), Present.Done ) );
 			if(dst == null) return;
 
 			while(0 < args.Count--)
-				await args.Token.On(args.From.Space).MoveTo(dst);
+				await args.Token.MoveAsync(args.From.Space,dst);
 		}
 	}
 
@@ -50,7 +49,7 @@ public class FlowingAndSilentFormsDartBy {
 		Spirit other = spirits.Length == 1 ? ctx.Self
 			: await ctx.SelectAsync( new A.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		// Pick spot
-		var options = adj.Where(other.Presence.HasMovableTokens);
+		var options = adj.Where(adj=>adj.Has(other.Presence));
 
 		var source = await ctx.SelectAsync( A.SpaceToken.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.Space ) );//
 

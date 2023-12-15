@@ -16,15 +16,20 @@ public class TDaTD_ActionTokens : SpaceState {
 		await Destroy( BringerPresence, this[BringerPresence] );
 	}
 
-	public override async Task<TokenRemovedArgs> RemoveAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
+	public override async Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(reason != RemoveReason.Destroyed || token == BringerPresence)
-			return await base.RemoveAsync( token, count, reason );
+			return await base.SourceAsync( token, count, reason );
 
 		if(token.HasTag(TokenCategory.Invader))
 			await DestroyNInvaders( token.AsHuman(), count );
 
-		return new TokenRemovedArgs(Space, token,0,reason); // nothing removed
+		return (
+			new TokenRemovedArgs(Space, token,0,reason), // nothing removed
+			_=>Task.CompletedTask
+        );
 	}
+
 
 	protected override async Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
 		countToDestroy = Math.Min( countToDestroy, this[invaderToDestroy] );
@@ -64,7 +69,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		if(newToken.HumanClass != DreamingCity) {
 			var options = Adjacent;
 			Space destination = await ActionScope.Current.Owner.SelectAsync( A.Space.ToPushToken( newToken, Space, options.Downgrade(), Present.Always ) );
-			await newToken.On(Space).MoveTo(destination); // there is no Push(Token), so this will have to do.
+			await newToken.MoveAsync(Space,destination); // there is no Push(Token), so this will have to do.
 			RecordSpaceWithDreamers( destination.Tokens );
 		}
 

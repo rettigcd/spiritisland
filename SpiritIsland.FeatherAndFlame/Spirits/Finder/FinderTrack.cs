@@ -22,11 +22,11 @@ public class FinderTrack : IPresenceTrack {
 
 	// ============================
 
-	public AsyncEvent<TrackRevealedArgs> TrackRevealed { get; } = new AsyncEvent<TrackRevealedArgs>();
+	public event Action<TrackRevealedArgs> TrackRevealed;
 
 	public void AddElementsTo( CountDictionary<Element> elements ) {
-		foreach(var r in Revealed)
-			r.AddElement( elements );
+		foreach(Track r in Revealed)
+			r.AddElementsTo( elements );
 	}
 
 	// ============================
@@ -37,10 +37,10 @@ public class FinderTrack : IPresenceTrack {
 		return true;
 	}
 
-	public async Task<bool> Reveal( Track track ) {
+	public bool Reveal( Track track ) {
 		if(!_lookup.ContainsKey( track )) return false;
 		_lookup[track].Reveal();
-		await TrackRevealed?.InvokeAsync(new TrackRevealedArgs( track ));
+		TrackRevealed?.Invoke(new TrackRevealedArgs( track ));
 		return true;
 	}
 

@@ -19,11 +19,11 @@ public class SolidifyEchoesOfMajestyPast {
 
 		// They Add 1 DestroyedPresence to each adjacent land.
 		List<Space> spacesOptions = center.Adjacent_Existing.ToList();
-		while(0 < spacesOptions.Count && 0 < ctx.Other.Presence.Destroyed) {
+		while(0 < spacesOptions.Count && 0 < ctx.Other.Presence.Destroyed.Count) {
 			var space = await ctx.Other.SelectAsync(new A.Space("Place Destroyed Presence and Skip up to 1 Invader action", spacesOptions,Present.Always));
 			if(space == null) break;
 
-			await ctx.Other.Presence.PlaceDestroyedAsync(1,space);
+			await ctx.Other.Presence.Destroyed.MoveToAsync(space);
 			spacesOptions.Remove(space);
 
 			// Skip up to 1 Invader Action at each added DestroyedPresence.

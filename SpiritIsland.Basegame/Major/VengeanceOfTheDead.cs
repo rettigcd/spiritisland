@@ -13,7 +13,7 @@ public class VengeanceOfTheDead {
 		var landsWeCanApplyTheDamageTo = new List<SpaceState> { ctx.Tokens };
 
 		// After each effect that destroys...
-		async Task DealVengenceDamage( ITokenRemovedArgs args ) {
+		async Task DealVengenceDamage( SpaceState from, ITokenRemovedArgs args ) {
 			if( !args.Reason.IsDestroy() ) return;
 			//  ...a town / city / dahan in target land
 			if( args.Removed.Class.IsOneOf( Human.Town_City.Plus( Human.Dahan ) ) )

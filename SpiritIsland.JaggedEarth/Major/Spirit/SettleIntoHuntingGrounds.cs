@@ -2,7 +2,9 @@
 
 public class SettleIntoHuntingGrounds {
 
-	[MajorCard("Settle Into Hunting-Grounds",3,Element.Moon,Element.Fire,Element.Plant,Element.Animal), Fast, Yourself]
+	const string Name = "Settle Into Hunting-Grounds";
+
+	[MajorCard(Name,3,Element.Moon,Element.Fire,Element.Plant,Element.Animal), Fast, Yourself]
 	[Instructions( "Your Presence may count as Badlands and Beasts. (Decide per Presence, per action.) Your Presence cannot move. -If you have- 2 Plant, 3 Animal: 2 Fear and 2 Damage in one of your lands." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync( Spirit self ) {
 
@@ -13,11 +15,7 @@ public class SettleIntoHuntingGrounds {
 		// (Decide per presence, per action) ... Not doing this bit exactly, both are always present, but can't be destroyed.
 
 		// your presence cannot move.
-		self.Presence.CanMove = false;
-		gs.TimePasses_ThisRound.Push( _ => {
-			self.Presence.CanMove = true; 
-			return Task.CompletedTask;
-		} );
+		gs.Tokens.AddIslandMod( new FreezePresence( Name, self.Presence) );
 
 		// if you have 2 plant 3 animal:
 		if( await self.YouHave("2 plant,3 animal" )){
@@ -30,4 +28,21 @@ public class SettleIntoHuntingGrounds {
 		}
 	}
 
+}
+
+class FreezePresence : BaseModEntity , IModifyRemovingToken, IEndWhenTimePasses {
+	readonly string _name;
+	readonly SpiritPresence _presence;
+	public FreezePresence( string name, SpiritPresence presence ) { 
+		_name = name;
+		_presence = presence;
+	}
+	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+		if(args.Token.HasTag(_presence) 
+			&& args.Reason.IsOneOf(RemoveReason.MovedFrom,RemoveReason.Abducted)
+        ) {
+			GameState.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Space.Text}"));
+			args.Count = 0;
+		}
+	}
 }

@@ -66,13 +66,9 @@ public class SpiritPresenceToken
 	/// <summary>
 	/// Override this to add behavior that IS NOT destroyed presenced.
 	/// </summary>
-	public virtual async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
-		await TrackDestroyedPresence( args );
-	}
-
-	async Task TrackDestroyedPresence( ITokenRemovedArgs args ) {
+	public virtual async Task HandleTokenRemovedAsync( SpaceState from,  ITokenRemovedArgs args ) {
 		if(args.Removed == this && args.Reason.IsDestroyingPresence()) {
-			Destroyed += args.Count; // not in OnPresenceDestroyed because I don't want overrides to need to call Base.
+			await Self.Presence.Destroyed.Source.SinkAsync(this,args.Count,AddReason.AddedToCard);
 			await OnPresenceDestroyed( args );
 		}
 	}
@@ -85,11 +81,7 @@ public class SpiritPresenceToken
 		return args.Token == this && args.Reason.IsDestroyingPresence();
 	}
 
-	public int Destroyed { get; set; }
-
 	#endregion Track Destroyed Presence
-
-	public bool CanMove => Self.Presence.CanMove;
 
 	#region private static helpers
 

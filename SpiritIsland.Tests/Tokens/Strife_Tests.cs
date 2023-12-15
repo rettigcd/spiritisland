@@ -85,7 +85,7 @@ public class Strife_Tests {
 		Space destination = space.Adjacent_Existing.First( IsInPlay );
 
 		// When: move
-		await strifedTown.On(space).MoveTo( destination ).ShouldComplete("moving token");
+		await strifedTown.MoveAsync( space, destination ).ShouldComplete("moving token");
 
 		// Then:
 		counts.InvaderSummary().ShouldBe( "1T@2" );

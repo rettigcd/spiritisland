@@ -53,6 +53,8 @@ class IslandPanel : IPanel {
 		_buttonContainer.ClearTransient();
 		if(_decision is A.SpaceToken spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
+		if(_decision is A.MyTokenOn tokenOnDecision)
+			_outstandingSpaceTokenOptions.UnionWith( tokenOnDecision.TokensOn.OfType<SpaceToken>() );
 
 		// As we draw the space, we pull matched SpaceTokens out of the collection and place in buttonContainer
 		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)

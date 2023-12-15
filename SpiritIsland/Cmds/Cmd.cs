@@ -215,11 +215,11 @@ public static partial class Cmd {
 	//);
 
 	static public SpiritAction ReturnUpToNDestroyedToTrack( int count ) => new SpiritAction("Return up to N Destroyed Presence to Track", async self => {
-		count = Math.Max( count, self.Presence.Destroyed );
+		count = Math.Max( count, self.Presence.Destroyed.Count );
 		while(count > 0) {
 			var dst = await self.SelectAsync( A.TrackSlot.ToCover( self ) );
 			if(dst == null) break;
-			await self.Presence.ReturnDestroyedToTrackAsync( dst );
+			await self.Presence.Destroyed.MoveToAsync( dst );
 			--count;
 		}
 	});
@@ -229,10 +229,9 @@ public static partial class Cmd {
 	static public SpiritAction PlacePresenceOn( params SpaceState[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
 		async self => {
-			IOption from = await self.SelectSourcePresence();
-			IToken token = from is SpaceToken sp ? sp.Token : self.Presence.Token; // We could expose this as the Default Token
-			Space to = await self.SelectAsync( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, token ) );
-			await self.Presence.PlaceAsync( from, to );
+			TokenOn from = await self.SelectSourcePresence();
+			Space to = await self.SelectAsync( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, from.Token ) );
+			await from.MoveToAsync(to);
 		} );
 
 	static public SpiritAction Reclaim1CardInsteadOfDiscarding => new SpiritAction( "Reclaims 1 card instead of discarding it", self => {
@@ -243,8 +242,8 @@ public static partial class Cmd {
 	// not a command but I can't find anywhere to put it.
 	static public async Task PayPresenceForBargain( this Spirit self, string takeFromTrackElementThreshold ) {
 		if(await self.YouHave( takeFromTrackElementThreshold )) {
-			var presenceToRemove = await self.SelectSourcePresence( "remove from game" ); // Come from track or board
-			await self.Presence.TakeFromAsync( presenceToRemove );
+			var presenceToRemove = await self.SelectSourcePresence( Present.Always, "remove from game" ); // Come from track or board
+			await presenceToRemove.RemoveAsync( 1 ); // await self.Presence.TakeFromAsync( presenceToRemove );
 		} else {
 			SpaceToken presenceToRemove = await self.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", self.Presence.Deployed, Present.Always ) );
 			await presenceToRemove.Remove();

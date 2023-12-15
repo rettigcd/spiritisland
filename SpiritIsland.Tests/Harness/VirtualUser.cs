@@ -90,7 +90,6 @@ public class VirtualUser {
 	public void PlacePresenceLocations( Track source, string placeOptions ) {
 		// !!! placeOptions Is not validating against Actual Options
 
-
 		// Source
 		PullsPresenceFromTrack( source );
 
@@ -104,7 +103,7 @@ public class VirtualUser {
 	}
 
 	public void PullsPresenceFromTrack( Track source ) {
-		NextDecision.Choose( source );
+		NextDecision.Choose( source.Text );
 	}
 
 	public void Reclaims1FromTrackBonus(string cards) {

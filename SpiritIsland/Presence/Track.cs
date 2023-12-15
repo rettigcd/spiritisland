@@ -1,7 +1,12 @@
 ﻿namespace SpiritIsland;
 
 
-public sealed class Track : IOption {
+public sealed class Track 
+	: IOption 
+	, ILocation
+{
+
+	#region static Factories
 
 	public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { 
 		_energy = energy, 
@@ -35,6 +40,8 @@ public sealed class Track : IOption {
 	public static Track MkCard( Element el ) => new Track( el.ToString().ToLower(), el ) {
 		Icon = new IconDescriptor { ContentImg = el.GetTokenImg() }
 	};
+
+	#endregion static Factories
 
 	#region Reusable Values
 
@@ -101,7 +108,7 @@ public sealed class Track : IOption {
 		Icon=new IconDescriptor { BackgroundImg = Img.CardPlay, Text="5", Sub = new IconDescriptor{ BackgroundImg = Img.Reclaim1 } },
 	};
 
-	public static readonly Track Destroyed = new Track("destroyed"); // only 1 of these
+	public static readonly Track Destroyed = new Track("Destroyed");
 
 	#endregion Reusable Values
 
@@ -120,21 +127,54 @@ public sealed class Track : IOption {
 			if(Icon != null) Icon.Text = Math.Max(0,_energy.Value).ToString();
 		}
 	}
-	int? _energy;
 
 	public Element[] Elements { get; set; }
 
 	public int? CardPlay { get; set; }
 
+	public IconDescriptor Icon { get; set; }
+
 	/// <summary>
 	/// If not null, this action is executed after Energy is collected.
 	/// </summary>
 	public IActOn<Spirit> Action { get; set; }
-	public void AddElement( CountDictionary<Element> elements ) {
-		foreach(var el in Elements)
+
+	/// <summary> Adds Track's elements to the dictionary. </summary>
+	public void AddElementsTo( CountDictionary<Element> elements ) {
+		foreach(Element el in Elements)
 			elements[el]++;
 	}
 
-	public IconDescriptor Icon { get; set; }
+	#region Generic Move / ISource/ISink tokens
+
+	public async Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> 
+	SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+		if(token is not SpiritPresenceToken spt) throw new ArgumentException($"Cannot remove {token} from Presence Track.");
+		_spirit = spt.Self; // grab spirit for callback later
+		await Task.Delay(0);
+		return (
+			new TokenRemovedArgs(this,token,1,RemoveReason.Removed),
+			NotifyRemoved
+		);
+	}
+	Spirit _spirit;
+	async Task NotifyRemoved( ITokenRemovedArgs args ) {
+		if( OnRevealAsync is not null)
+			await OnRevealAsync(this,_spirit ?? throw new Exception("Track._spirit is null. How did this happen?"));
+		Revealed?.Invoke(this);
+	}
+
+	Task<(ITokenAddedArgs, Func<ITokenAddedArgs, Task>)> ILocation.SinkAsync( IToken token, int count, AddReason addReason ) 
+		=> throw new NotImplementedException();
+
+	public event Action<Track> Revealed;
+
+	#endregion Generic Move / ISource/ISink tokens
+
+	public Func<Track,Spirit,Task> OnRevealAsync;
+
+	#region private fields
+	int? _energy;
+	#endregion
 
 }

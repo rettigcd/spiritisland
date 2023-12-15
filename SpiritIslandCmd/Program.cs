@@ -6,12 +6,12 @@ namespace SpiritIslandCmd {
 
 	class Program {
 
-		static void Main(string[] _) {
+		static void Main(string[] _1) {
 
 			var gs = new GameState( new RiverSurges(), Board.BuildBoardA() );
 
 			var game = new SinglePlayerGame(gs);
-			game.StartAsync();
+			_ = game.StartAsync();
 
 			new CmdLinePlayer(game).Play();
 		}

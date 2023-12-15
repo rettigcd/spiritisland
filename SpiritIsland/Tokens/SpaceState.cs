@@ -4,7 +4,10 @@
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
 /// Has same Scope as GameState (not bound to an ActionScope
 /// </summary>
-public class SpaceState : ISeeAllNeighbors<SpaceState> {
+public class SpaceState 
+	: ISeeAllNeighbors<SpaceState>
+	, ILocation // !!! we don't SpaceToken or TokenOn using this as a location, maybe we should remove this
+{
 
 	#region constructor
 
@@ -225,7 +228,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 		var newInvader = originalInvader.AddStrife( strifeDelta );
 		// We need to generate events (for Observe the Ever changing World) so we will use the Replace reason
-		await RemoveAsync( originalInvader, tokenCount, RemoveReason.Replaced );
+		await this.RemoveAsync( originalInvader, tokenCount, RemoveReason.Replaced );
 		await AddAsync( newInvader, tokenCount, AddReason.AsReplacement );
 
 		if(newInvader.IsDestroyed) // due to a strife-health penalty
@@ -261,13 +264,13 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	// Convenience only
 	public Task Destroy( IToken token, int count ) => token is HumanToken ht
 		? ht.Destroy( this, count )
-		: RemoveAsync( token, count, RemoveReason.Destroyed );
+		: this.RemoveAsync( token, count, RemoveReason.Destroyed );
 
-	public async Task<TokenAddedArgs> AddAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
-		var (addResult,notifier) = await Add_Silent( token, count, addReason );
+	public async Task<ITokenAddedArgs> AddAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
+		var (addResult,notifier) = await SinkAsync( token, count, addReason );
 		if(addResult == null) return null;
 
-		await notifier.NotifyAdded( addResult );
+		await notifier( addResult );
 
 		return addResult;
 	}
@@ -278,7 +281,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	/// Does not trigger Add-Completed events.
 	/// </summary>
 	/// <returns>The move event, MAY contain Count=0</returns>
-	public async Task<(TokenAddedArgs,INotifyTokenAdded)> Add_Silent( IToken token, int count, AddReason addReason = AddReason.Added ) {
+	public async Task<(ITokenAddedArgs,Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
 
 		// Pre-Add check/adjust
@@ -295,41 +298,24 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 		// Post-Add event
 		return (
-			new TokenAddedArgs( this, addingArgs.Token, addingArgs.Count, addReason ),
-			new TokenAddedCtx(ModSnapshop)
+			new TokenAddedArgs( addingArgs.Token, this.Space, addingArgs.Count, addReason ),
+			NotifyAddedAsync
 		);
 	}
 
-	/// <summary> Provides symetry with TokenRemovedCtx </summary>
-	class TokenAddedCtx : INotifyTokenAdded {
-		readonly ISpaceEntity[] _tokens;
-		public TokenAddedCtx(ISpaceEntity[] items ) { _tokens = items; }
-		public async Task NotifyAdded( ITokenAddedArgs args ) {
-			// Sync
-			foreach(IHandleTokenAdded handler in _tokens.OfType<IHandleTokenAdded>())
-				handler.HandleTokenAdded( args );
-			// Async  (these must not be run in parallel because IDecision cannot handle it.)
-			foreach(IHandleTokenAddedAsync handler in _tokens.OfType<IHandleTokenAddedAsync>())
-				await handler.HandleTokenAddedAsync( args );
-
-		}
-	}
-
-	/// <summary> returns null if no token removed </summary>
-	public virtual async Task<TokenRemovedArgs> RemoveAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
-		if( reason == RemoveReason.MovedFrom )
-			throw new ArgumentException("Moving Tokens must be done from the .Move method for events to work properly",nameof(reason));
-
-
-		var (removed,removedHandler) = await Remove_Silent( token, count, reason );
-		if( 0<removed.Count )
-			await removedHandler.NotifyRemoved(removed);
-
-		return removed;
+	// callback used for ISinkTokens
+	async Task NotifyAddedAsync( ITokenAddedArgs args ) {
+		var tokens = ModSnapshot;
+		// Sync
+		foreach(IHandleTokenAdded handler in tokens.OfType<IHandleTokenAdded>())
+			handler.HandleTokenAdded( this, args );
+		// Async  (these must not be run in parallel because IDecision cannot handle it.)
+		foreach(IHandleTokenAddedAsync handler in tokens.OfType<IHandleTokenAddedAsync>())
+			await handler.HandleTokenAddedAsync( this, args );
 	}
 
 	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
-	public async Task<(TokenRemovedArgs,INotifyTokenRemoved)> Remove_Silent( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public virtual async Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		RemovingTokenCtx removedHandlers = RemovedHandlerSnapshop;
@@ -345,7 +331,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 		// Post-Remove event
 		return (
 			new TokenRemovedArgs( Space, removingArgs.Token, removingArgs.Count, reason ),
-			removedHandlers
+			removedHandlers.NotifyRemoved
 		);
 
 	}
@@ -353,10 +339,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	#region Mods
 	//-------------
 	/// <summary> A snapshot of all tokens + the Island-mods </summary>
-	ISpaceEntity[] ModSnapshop => Keys.Union(_islandMods).ToArray();
+	ISpaceEntity[] ModSnapshot => Keys.Union(_islandMods).ToArray();
 
 	async Task ModifyRemoving( RemovingTokenArgs args ) {
-		var modArray = ModSnapshop;
+		var modArray = ModSnapshot;
 		// Sync
 		foreach(IModifyRemovingToken mod in modArray.OfType<IModifyRemovingToken>())
 			if(0 < args.Count)
@@ -367,10 +353,10 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 				await x.ModifyRemovingAsync( args );
 	}
 
-	RemovingTokenCtx RemovedHandlerSnapshop => new RemovingTokenCtx( ModSnapshop );
+	protected RemovingTokenCtx RemovedHandlerSnapshop => new RemovingTokenCtx( this, ModSnapshot );
 
 	async Task ModifyAdding( AddingTokenArgs args ) {
-		var keyArray = ModSnapshop; 
+		var keyArray = ModSnapshot; 
 		foreach(var mod in keyArray.OfType<IModifyAddingToken>()) 
 			if(0 < args.Count)
 				mod.ModifyAdding( args );
@@ -381,7 +367,7 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 	}
 
 	public void TimePasses() {
-		var keyArray = ModSnapshop;
+		var keyArray = ModSnapshot;
 		foreach(var cleanup in keyArray.OfType<ISpaceEntityWithEndOfRoundCleanup>())
 			cleanup.EndOfRoundCleanup( this );
 
@@ -456,27 +442,22 @@ public class SpaceState : ISeeAllNeighbors<SpaceState> {
 
 }
 
-
-public interface INotifyTokenRemoved {
-	Task NotifyRemoved( ITokenRemovedArgs args );
-}
-
-public interface INotifyTokenAdded {
-	Task NotifyAdded( ITokenAddedArgs args );
-}
-
 /// <summary>
 /// Captures the Mod tokens before they are removed, so their handlers can be invoked post-removal
 /// </summary>
-public class RemovingTokenCtx : INotifyTokenRemoved {
+public class RemovingTokenCtx {
+	readonly SpaceState _from;
 	readonly ISpaceEntity[] _keyArray;
-	public RemovingTokenCtx( ISpaceEntity[] keyArray ) { _keyArray = keyArray; }
+	public RemovingTokenCtx( SpaceState from, ISpaceEntity[] keyArray ) { 
+		_from = from;
+		_keyArray = keyArray; 
+	}
 	public async Task NotifyRemoved( ITokenRemovedArgs args ) {
 		// Sync
 		foreach(IHandleTokenRemoved handler in _keyArray.OfType<IHandleTokenRemoved>())
-			handler.HandleTokenRemoved( args );
+			handler.HandleTokenRemoved( _from, args );
 		// Async
 		foreach(IHandleTokenRemovedAsync x in _keyArray.OfType<IHandleTokenRemovedAsync>())
-			await x.HandleTokenRemovedAsync( args );
+			await x.HandleTokenRemovedAsync( _from, args );
 	}
 }

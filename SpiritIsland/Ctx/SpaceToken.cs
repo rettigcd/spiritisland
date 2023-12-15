@@ -1,9 +1,7 @@
-﻿using SpiritIsland.A;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class SpaceToken 
-	: IOption
+	: TokenOn
 	, IEquatable<SpaceToken>
 {
 	#region constructor / deconstructor
@@ -23,6 +21,7 @@ public class SpaceToken
 
 	public Space Space { get; }
 	public IToken Token { get; }
+	ILocation TokenOn.Source => Space;
 
 	#region IOption.Text config
 
@@ -30,41 +29,8 @@ public class SpaceToken
 
 	#endregion IOption.Text config
 
-	public async Task<TokenMovedArgs> MoveTo( SpaceState destination, int count=1 ) {
-		// Current implementation favors:
-		//		switching token types prior to Add/Remove so events handlers don't switch token type
-		//		perfoming the add/remove action After the Adding/Removing modifications
-
-		// Possible problems to keep in mind:
-		//		The token in the Added event, may be different than token that was attempted to be added.
-		//		The Token in the Removed event, may be a different token than was requested to be removed.
-		//		The token Added may be Different than the token Removed
-		//		Move requires a special Publish because it pertains to 2 spaces - we don't want to publish it twice (once for each space)
-
-		// Mitigating Factors
-		//		The AddingToken args prevents changing the Count if it is a MoveTo
-
-		var source = Space.Tokens;
-		if(source[Token] < count) return null; // unable to (re)move desired token
-
-		// Remove from source
-		var (removeResult,removedNotifier) = await source.Remove_Silent( Token, count, RemoveReason.MovedFrom );
-		if( removeResult.Count == 0 ) return null;
-
-		// Add to destination
-		var (addResult,addedNotifier) = await destination.Add_Silent( 
-			removeResult.Removed, // possibly modified, NOT original
-			removeResult.Count, // possibly modified
-			AddReason.MovedTo
-		);
-
-		// Publish
-		var tokenMoved = new TokenMovedArgs( removeResult, addResult );
-		await removedNotifier.NotifyRemoved( tokenMoved );
-		await addedNotifier.NotifyAdded( tokenMoved );
-
-		return tokenMoved;
-	}
+	public Task<TokenMovedArgs> MoveTo( SpaceState destination, int count=1 )
+		=> this.Token.MoveAsync(Space,destination.Space,count);
 
 	public bool Exists => 0 < Count;
 	public int Count => Space.Tokens[Token];

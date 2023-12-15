@@ -1,11 +1,11 @@
 ﻿namespace SpiritIsland;
 
 public interface IHandleTokenAdded {
-	void HandleTokenAdded( ITokenAddedArgs args );
+	void HandleTokenAdded( SpaceState to, ITokenAddedArgs args );
 }
 
 public interface IHandleTokenAddedAsync {
-	Task HandleTokenAddedAsync( ITokenAddedArgs args );
+	Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args );
 }
 
 public interface IReactToLandDamage {

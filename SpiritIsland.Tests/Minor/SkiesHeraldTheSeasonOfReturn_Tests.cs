@@ -11,7 +11,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		var dahanDestination = space.Adjacent_Existing.First();
 
 		// Given: Keeper has a destroyed presence
-		fix.Spirit.Presence.Destroyed = 1;
+		fix.Spirit.Presence.Destroyed.Count = 1;
 
 		//   And: a presence on target space.
 		SpiritExtensions.Given_Adjust( fix.Spirit.Presence, spaceState, 1 );

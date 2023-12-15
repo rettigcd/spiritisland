@@ -145,8 +145,8 @@ public class MarkedBeast : IToken
 	#endregion
 
 	#region Track Token Space
-	void IHandleTokenAdded.HandleTokenAdded( ITokenAddedArgs args ) {
-		if(args.Added == this) _spaceState = args.To;
+	void IHandleTokenAdded.HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
+		if(args.Added == this) _spaceState = to;
 	}
 	#endregion
 

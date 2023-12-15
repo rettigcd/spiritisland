@@ -100,10 +100,18 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 
 		// Presence
 		var presenceImg = _ctx._tip._presenceImg;
+		var presenceToken = _ctx._spirit.Presence.Token;
+		// For taking presence
+		foreach(Track energySlot in _ctx._spirit.Presence.Energy.Slots)
+			_buttonContainer.Add( new TrackPresence(energySlot,presenceToken), new PresenceSlotButton( _ctx._spirit.Presence.Energy, energySlot, presenceImg ) );
+		foreach(Track cardSlot in _ctx._spirit.Presence.CardPlays.Slots)
+			_buttonContainer.Add( new TrackPresence(cardSlot,presenceToken), new PresenceSlotButton( _ctx._spirit.Presence.CardPlays, cardSlot, presenceImg ) );
+		// For replacing presence on an empty slot
 		foreach(Track energySlot in _ctx._spirit.Presence.Energy.Slots)
 			_buttonContainer.Add( energySlot, new PresenceSlotButton( _ctx._spirit.Presence.Energy, energySlot, presenceImg ) );
 		foreach(Track cardSlot in _ctx._spirit.Presence.CardPlays.Slots)
 			_buttonContainer.Add( cardSlot, new PresenceSlotButton( _ctx._spirit.Presence.CardPlays, cardSlot, presenceImg ) );
+
 		if(0 < _presenceTractBounds.Width ) {
 			var presenceLayout = new PresenceTrackLayout( _spirit, _buttonContainer, _presenceTractBounds );
 			_presencePainter = new PresenceTrackPainter( _spirit, presenceLayout, _ctx._tip );

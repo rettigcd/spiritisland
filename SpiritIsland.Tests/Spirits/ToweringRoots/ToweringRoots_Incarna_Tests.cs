@@ -53,7 +53,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		_gs.Tokens.ToString().ShouldBe( "Island-Mods:[none] A2:1TRotJ A3:[none]" );
 
 		//  And: Destroyed Count is still 0
-		_spirit.Presence.Destroyed.ShouldBe( 0 );
+		_spirit.Presence.Destroyed.Count.ShouldBe( 0 );
 	}
 
 
@@ -176,10 +176,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 				.HasOptions( "PlacePresence(1),AddVitalityToIncarna" )
 				.Choose( "PlacePresence(1)" );
 			user.NextDecision.HasPrompt( "Select Presence to place" )
-				.HasOptions( "2 energy,2 cardplay,Take Presence from Board" )
-				.Choose( "Take Presence from Board" );
-			user.NextDecision.HasPrompt( "Select Presence to place" )
-				.HasOptions( "TRotJ-" )
+				.HasOptions( "2 energy,2 cardplay,TRotJ-" )
 				.Choose( "TRotJ-" );
 			user.NextDecision.HasPrompt( "Where would you like to place your presence?" )
 				.HasOptions( "A1,A2,A3,A4" )

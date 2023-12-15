@@ -95,7 +95,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		// Move remaining onto themselves so they look moved.
 		await fromTokens.OfType<IToken>()
 			.ToArray()
-			.Select( re => re.On(from).MoveTo(fromTokens) )
+			.Select( re => re.MoveAsync(from,from) )
 			.WhenAll();
 	}
 

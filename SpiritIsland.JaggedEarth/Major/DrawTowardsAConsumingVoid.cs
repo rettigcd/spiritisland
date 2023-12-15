@@ -47,7 +47,7 @@ public class DrawTowardsAConsumingVoid {
 
 		// destroy 1 presence from each Spirit.
 		foreach(var spirit in GameState.Current.Spirits)
-			await spirit.Presence.DestroyPresenceOn( ctx.Tokens );
+			await ctx.Tokens.Destroy( spirit.Presence.Token, 1 );
 
 		// Remove 2 beast
 		await ctx.Beasts.Remove( 2, RemoveReason.Removed );
@@ -60,7 +60,7 @@ public class DrawTowardsAConsumingVoid {
 				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )
 				.FirstOrDefault();
 			if(tokenToGather != null)
-				await tokenToGather.On(adjState.Space).MoveTo(ctx.Tokens);
+				await tokenToGather.MoveAsync(adjState.Space,ctx.Space);
 		}
 
 		// Gather 1 presense
@@ -69,7 +69,7 @@ public class DrawTowardsAConsumingVoid {
 		var presenceOptions = spirits.SelectMany( s => s.Presence.Movable).WhereIsOn(new SpaceState[] { adjState } ).ToArray();
 
 		var movableSpiritsInSpace = spirits
-			.Where( s => s.Presence.HasMovableTokens( adjState ) )
+			.Where( s => adjState.Has(s.Presence) )
 			.ToArray();
 
 		if( 0<movableSpiritsInSpace.Length ) {

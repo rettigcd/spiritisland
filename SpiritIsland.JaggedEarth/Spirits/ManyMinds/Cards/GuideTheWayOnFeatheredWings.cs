@@ -32,7 +32,7 @@ public class GuideTheWayOnFeatheredWings {
 		var selection = A.Space.ForMoving_SpaceToken( $"Move {tracker.BeastMoved.Text} to", destination1, destination1.Tokens.Adjacent.Downgrade(), Present.Done, tracker.BeastMoved );
 		Space destination2 = await ctx.Self.SelectAsync( selection );
 		if(destination2 == null) return;
-		await tracker.BeastMoved.On(destination1).MoveTo(destination2);
+		await tracker.BeastMoved.MoveAsync(destination1,destination2);
 
 		var destCtx2 = ctx.Target( destination2 );
 		await TokenMover.SingleDestination(destCtx2, destCtx.Tokens)
@@ -41,10 +41,10 @@ public class GuideTheWayOnFeatheredWings {
 	}
 
 	class TrackBeastTokenMoved : BaseModEntity, IHandleTokenRemoved {
-		public void HandleTokenRemoved( ITokenRemovedArgs args ) {
+		public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
 			if(args.Removed.Class == Token.Beast && args is TokenMovedArgs ){
 				BeastMoved = args.Removed;
-				args.From.Tokens.Init(this,0);
+				from.Init(this,0);
 			}
 		}
 		public IToken BeastMoved { get; private set; }

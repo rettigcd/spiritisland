@@ -1,4 +1,4 @@
-Command the Beast allows killing 1 explorer AND moving beast.
+Command-the-Beast does not activate from Saved Games, only new games
 
 =====  Fear Bugs  ====
 Unrest - Reduced City health by 1 but didn't get health icon.
