@@ -32,14 +32,13 @@ public class SpiritImageMemoryCache {
 	public Image _grayFear;
 
 
-	public void InitNewSpirit( PresenceTokenAppearance presenceAppearance ) {
+	public void InitNewSpirit( Spirit spirit ) {
 		DisposeOldSpirit();
 
 		// Load them
-		_presenceImg = SpiritMarkerBuilder.BuildPresence( presenceAppearance );
-		_tokenImages[Token.Defend] = SpiritMarkerBuilder.BuildMarker( Img.Defend, presenceAppearance.Adjustment );
-		_tokenImages[Token.Isolate] = SpiritMarkerBuilder.BuildMarker( Img.Isolate, presenceAppearance.Adjustment );
-
+		_presenceImg                = ResourceImages.GetSpiritMarker( spirit, Img.Icon_Presence );
+		_tokenImages[Token.Defend]  = ResourceImages.GetSpiritMarker( spirit, Img.Defend );
+		_tokenImages[Token.Isolate] = ResourceImages.GetSpiritMarker( spirit, Img.Isolate );
 	}
 
 	public Image AccessTokenImage( IToken imageToken ) {

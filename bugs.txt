@@ -4,6 +4,9 @@ Command-the-Beast does not activate from Saved Games, only new games
 Unrest - Reduced City health by 1 but didn't get health icon.
 Seek Safety - Allowed for pushing explorer to space with no town / city.
 
+(Sense of Dread OR Activating Fear): LEVEL-2 HAS bug that locks up game.
+
+
 =====  Finder bugs  ====
 Reread this and see if anything is wrong: https://querki.net/raw/darker/spirit-island-faq/Open+the+Ways+%28Finder+of+Paths+Unseen%29
 Adjaceny seems to still work for Invaders, or maybe just coastal

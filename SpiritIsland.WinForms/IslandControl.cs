@@ -34,10 +34,10 @@ public partial class IslandControl : Control {
 		_focusPanel = _islandPanel;
 	}
 
-	public void Init( GameState gameState, PresenceTokenAppearance presenceAppearance, AdversaryConfig adversary ) {
+	public void Init( GameState gameState, AdversaryConfig adversary ) {
 
 		// Dispose old spirit tokens
-		_ctx._tip.InitNewSpirit( presenceAppearance );
+		_ctx._tip.InitNewSpirit( gameState.Spirits.Single() );
 
 		// Setup New
 		_ctx.GameState = gameState;

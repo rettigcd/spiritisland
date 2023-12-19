@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
@@ -189,13 +190,21 @@ public partial class Form1 : Form, IHaveOptions {
 		gameState.NewLogEntry += GameState_NewLogEntry; // !!! this should probably come through the user portal/gateway, not directly off of the gamestate.
 		gameState.NewLogEntry += _islandControl.GameState_NewLogEntry;
 
-		_islandControl.Init( _game.GameState, gc.Token, gc.Adversary );
+		_islandControl.Init( _game.GameState, gc.Adversary );
 
 		Text = $"Spirit Island - Single Player Game #{gc.ShuffleNumber} - {gc.AdversarySummary}";
 
 		// start the game
-		_ = _game.StartAsync();
+		_ = TryStartGame();
 
+	}
+
+	async Task TryStartGame() {
+		try{
+			await _game.StartAsync();
+		} catch(Exception ex){
+			System.IO.File.WriteAllText(System.IO.Path.Combine(AppDataFolder.GetRootPath(),"exception.txt"), ex.ToString() );
+		}
 	}
 
 	void GameState_NewLogEntry( ILogEntry obj ) {

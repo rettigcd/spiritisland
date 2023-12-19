@@ -132,6 +132,22 @@ public class ResourceImages {
 		}
 	}
 
+	static public Image GetSpiritMarker( Spirit spirit, Img img ) {
+		ImageDiskCache _cache = new ImageDiskCache();
+		string key = $"SpiritMarkers\\{spirit.Text}-{img}.png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+		// don't dispose these , we are returning them
+		Bitmap image = img switch{
+			Img.Defend  => (Bitmap)SpiritMarkerBuilder.BuildDefend( spirit ), 
+			Img.Isolate => (Bitmap)SpiritMarkerBuilder.BuildIsolate( spirit ), 
+			Img.Icon_Presence => (Bitmap)SpiritMarkerBuilder.BuildPresence( spirit ),
+			_ => throw new ArgumentException("invalid img value")
+		};
+		_cache.Add( key, image );
+		return image;
+	}
+
+
 	public Image GetBlightCard( IBlightCard card ) {
 		string key = "blight\\" + card.Name + ".png";
 		if(_cache.Contains( key )) return _cache.Get( key );

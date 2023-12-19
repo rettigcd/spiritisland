@@ -49,10 +49,12 @@ public class SinglePlayerGame {
 						foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
 							savedGameStates.Remove(laterRounds);
 					}
-				} catch(Exception ex) when (ex is not GameOverException) {
-					GameState.Log( new Log.ExceptionEntry( ex ) );
-					GameState.LoadFrom( savedGameStates[ GameState.RoundNumber ] ); // go back to beginning of round and see if we can debug it.
 				}
+				//catch(Exception ex) when (ex is not GameOverException) {
+				//	GameState.Log( new Log.ExceptionEntry( ex ) );
+				//	System.IO.File.WriteAllText(AppDataFolder)
+				//	// GameState.LoadFrom( savedGameStates[ GameState.RoundNumber ] ); // go back to beginning of round and see if we can debug it.
+				//}
 			}
 		}
 		catch(GameOverException gameOver) {

@@ -70,14 +70,11 @@ public static class MySerializer {
 	static public Dictionary<string, object> Prepare( GameConfigPlusToken item ) {
 		if(item is null) return null;
 
-		var preparedToken = PrepareToken( item.Token );
-
 		var result = new Dictionary<string, object> {
 			[SPIRIT] = item.Spirits[0], // !!! change format to save >1 spirits/boards
 			[BOARD] = item.Boards[0],
 			[SHUFFLENUMBER] = item.ShuffleNumber,
 			[ADVERSARY] = Prepare( item.Adversary ),
-			[TOKEN] = preparedToken,
 			[TIMESTAMP] = Prepare( item.TimeStamp )
 		};
 		return result;
@@ -89,7 +86,6 @@ public static class MySerializer {
 			Boards = new string[]{ dict[BOARD] }, 
 			ShuffleNumber = (int)dict[SHUFFLENUMBER],
 			Adversary = RestoreAdversaryConfig( dict[ADVERSARY] ), 
-			Token = RestorePresenceTokenAppearance( dict[TOKEN] ),
 			TimeStamp = RestoreDateTime( dict[TIMESTAMP] )
 		};
 	#endregion Game Config
@@ -107,27 +103,6 @@ public static class MySerializer {
 	static public AdversaryConfig RestoreAdversaryConfig( JsonObject dict ) => dict is null ? null 
 		: new AdversaryConfig( (string)dict[NAME], (int)dict[LEVEL] );
 	#endregion Adversary
-
-	#region Presence Token Appearance
-	static public Dictionary<string, object> PrepareToken( PresenceTokenAppearance item ) => item is null ? null
-		: new Dictionary<string, object>() {
-			[ADJUST]     = item.Hsl != null,
-			[HUE]        = item.Hsl?.H ?? default,
-			[SATURATION] = item.Hsl?.S ?? default,
-			[LIGHTNESS]  = item.Hsl?.L ?? default,
-			[IMAGE]      = item.BaseImage ?? default,
-			[PATTERN]    = item.PatternImage ?? default,
-		};
-	static public PresenceTokenAppearance RestorePresenceTokenAppearance( JsonObject dict ) {
-		if(dict is null) return null;
-		if((bool)dict[ADJUST]) {
-			var x = new PresenceTokenAppearance((float)dict[HUE], (float)dict[SATURATION], (float)dict[LIGHTNESS] );
-			if(dict.ContainsKey(PATTERN)) x.PatternImage = (string)dict[PATTERN];
-			return x;
-		}
-		return new PresenceTokenAppearance((string)dict[IMAGE]);
-	}
-	#endregion Presence Token Appearance
 
 	#region private Keys
 	const string SHUFFLENUMBER = "shuffleNumber";
