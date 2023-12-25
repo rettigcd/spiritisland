@@ -64,7 +64,7 @@ public sealed class GrowthPainter : IDisposable{
 		if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory
 			&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
 		)
-			action = repeatableActionFactory.Inner; // !!! This won't draw until sga.Cmd is an IActOn<Spirit>
+			action = repeatableActionFactory.Inner;
 
 		var paintable = action switch {
 			ReclaimAll => new ImgRect( Img.ReclaimAll ),

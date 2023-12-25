@@ -1,50 +1,60 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 /// <summary>
-/// Binds to multiple actions, allowing them be repeated as a group.
+/// Manages a group of Repeatable-Actions:
+///  - Restoring the repeatable actions when repeats remain
+///  - Clearing out all repeatable actions when repeats are used up.
 /// </summary>
 /// <remarks>	Fractured Days Growth Option 2 & 3 </remarks>
 public class ActionRepeater {
 
-	public readonly int repeats;
-	readonly List<IHelpGrow> factories = new List<IHelpGrow>();
+	public readonly int _repeats;
+	public int _remainingRepeats;
 
-	public int currentRepeats;
+	#region constructor
 
-	public ActionRepeater(int repeats) { this.repeats = repeats; }
+	public ActionRepeater(int repeats) { _repeats = repeats; }
+
+	#endregion
 
 	public void Register( IHelpGrow factory ) {
-		factories.Add(factory);
+		_factories.Add(factory);
 	}
 
 	public void BeginAction() {
-		if(currentRepeats == 0) 
-			currentRepeats = repeats;
+		if(_remainingRepeats == 0) 
+			_remainingRepeats = _repeats;
 	}
 
 	public void EndAction( Spirit spirit ) {
-		--currentRepeats;
+		--_remainingRepeats;
 
-		if(currentRepeats > 0)
-			Restore( spirit );
+		if(0 < _remainingRepeats)
+			RestoreActionFactoryToAvailableActions( spirit );
 		else
-			CleanUp( spirit );
+			RemoveUnusedActions( spirit );
 	}
 
-	void Restore(Spirit spirit ) {
+	public SpiritAction BindSelfCmd( SpiritAction inner ) => new RepeatableSelfCmd( inner, this );
+
+	#region private
+
+	void RestoreActionFactoryToAvailableActions(Spirit spirit ) {
 		var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
-		foreach(var factory in factories)
+		foreach(var factory in _factories)
 			if( !remaining.Contains(factory) )
 				spirit.AddActionFactory( factory );
 	}
 
-	void CleanUp(Spirit spirit ) {
+	void RemoveUnusedActions(Spirit spirit ) {
 		var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
-		foreach(var factory in factories)
+		foreach(var factory in _factories)
 			if( remaining.Contains(factory) )
 				spirit.RemoveFromUnresolvedActions( factory );
 	}
 
-	public SpiritAction BindSelfCmd( SpiritAction inner ) => new RepeatableSelfCmd( inner, this );
+	readonly List<IHelpGrow> _factories = new List<IHelpGrow>();
+
+	#endregion
 
 }

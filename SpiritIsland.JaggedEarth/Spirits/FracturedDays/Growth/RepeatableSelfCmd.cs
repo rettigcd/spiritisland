@@ -8,10 +8,9 @@
 public class RepeatableSelfCmd : SpiritAction {
 
 	public SpiritAction Inner { get; }
-	readonly ActionRepeater _repeater;
 
 	internal RepeatableSelfCmd( SpiritAction inner, ActionRepeater repeater )
-		:base( inner.Description + "x" + repeater.repeats )
+		:base( inner.Description + "x" + repeater._repeats )
 	{
 		Inner = inner;
 		_repeater = repeater;
@@ -23,5 +22,8 @@ public class RepeatableSelfCmd : SpiritAction {
 		await Inner.ActAsync( self );
 		_repeater.EndAction( self );
 	}
+
+	readonly ActionRepeater _repeater;
+
 
 }
