@@ -1,35 +1,56 @@
 ﻿using System.Drawing;
+using System.Drawing.Text;
 
 namespace SpiritIsland.WinForms; 
+
+
+public interface IconResources {
+	Bitmap GetImg(Img img);
+	Font UseGameFont( float fontHeight );
+}
 
 /// <summary>
 /// Draws IconDescriptors on a Given Graphics object.
 /// </summary>
 public class IconDrawer {
 
-	public IconDrawer( Graphics graphics, ImgMemoryCache imageDrawer ) {
-		_graphics = graphics;
-		_cachedImageDrawer = imageDrawer;
+	/// <summary>
+	/// Generates the bitmap of the IconDesc.
+	/// </summary>
+	static public Bitmap BuildTrackSlot( IconDescriptor icon, IconResources resources ) {
+		const int dimension = 200;
+		Bitmap bitmap = new Bitmap( dimension, dimension );
+		RectangleF bounds = new RectangleF( 0, 0, dimension, dimension );
+		using Graphics graphics = Graphics.FromImage( bitmap );
+		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+		IconDrawer.DrawTheIcon( graphics, icon, bounds, resources );
+		return bitmap;
 	}
 
-	public void DrawTheIcon( IconDescriptor icon, RectangleF bounds ) {
 
-		if(icon == null) {
-			_graphics.FillRectangle( Brushes.Black, bounds );
+	static public void DrawTheIcon( Graphics graphics, IconDescriptor iconDescriptor, RectangleF bounds, IconResources resources ) {
+
+		if(iconDescriptor == null) {
+			graphics.FillRectangle( Brushes.Black, bounds );
 			return;
+		}
+
+		void DrawImageFitBoth( Img img, RectangleF bounds ) {
+			using var image = resources.GetImg( img );
+			graphics.DrawImage( image, bounds.ToInts().FitBoth( image.Size ) );
 		}
 
 		// if we have a sub-image, reduce the main bounds to accommodate it
 		const float subImageReduction = .8f;
-		RectangleF mainBounds = icon.Sub == null ? bounds
+		RectangleF mainBounds = iconDescriptor.Sub == null ? bounds
 			: new RectangleF( bounds.X, bounds.Y, bounds.Width * subImageReduction, bounds.Height * subImageReduction );
 
 		// -- Main - Background
-		if(icon.BackgroundImg != default) 
-			_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.BackgroundImg ), mainBounds );
+		if(iconDescriptor.BackgroundImg != default)
+			DrawImageFitBoth( iconDescriptor.BackgroundImg, mainBounds );
 
 		// -- Main - Content --
-		if(icon.Text != null || icon.ContentImg != default) {
+		if(iconDescriptor.Text != null || iconDescriptor.ContentImg != default) {
 
 			var contentBounds = new RectangleF(
 				mainBounds.X,
@@ -39,23 +60,21 @@ public class IconDrawer {
 			);
 
 			// Content - Images
-			if(icon.ContentImg != default) {
-				if(icon.ContentImg2 != default) {
+			if(iconDescriptor.ContentImg != default) {
+				if(iconDescriptor.ContentImg2 != default) {
 					const float scale = .75f;
 					float w = contentBounds.Width * scale, h = contentBounds.Height * scale;
-					var cb1 = new RectangleF( contentBounds.X, contentBounds.Y, w, h );
-					var cb2 = new RectangleF( contentBounds.X + contentBounds.Width * (1f - scale), contentBounds.Y + contentBounds.Height * (1f - scale), w, h );
-					_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg ), cb1 );
-					_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg2 ), cb2 );
+					DrawImageFitBoth( iconDescriptor.ContentImg, new RectangleF( contentBounds.X, contentBounds.Y, w, h ) );
+					DrawImageFitBoth( iconDescriptor.ContentImg2, new RectangleF( contentBounds.X + contentBounds.Width * (1f - scale), contentBounds.Y + contentBounds.Height * (1f - scale), w, h ) );
 				} else
-					_graphics.DrawImageFitBoth( _cachedImageDrawer.GetImage( icon.ContentImg ), contentBounds );
+					DrawImageFitBoth( iconDescriptor.ContentImg, contentBounds );
 			}
 
 			// Content - Text
-			if(icon.Text != null) {
-				Font font = ResourceImages.Singleton.UseGameFont( contentBounds.Height );
+			if(iconDescriptor.Text != null) {
+				Font font = resources.UseGameFont( contentBounds.Height );
 				using StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				_graphics.DrawString( icon.Text, font, Brushes.Black, 
+				graphics.DrawString( iconDescriptor.Text, font, Brushes.Black,
 					contentBounds.InflateBy( contentBounds.Width, 0f ), // font based on height and centered, don't clip left/right
 					center
 				);
@@ -64,34 +83,27 @@ public class IconDrawer {
 		}
 
 		// -- Super --
-		if(icon.Super != null) {
+		if(iconDescriptor.Super != null) {
 			float dim = bounds.Width * .4f;
 			// drawing this at the bottom instead of the top because presence is covering top
 			var superRect = new RectangleF( bounds.X, bounds.Bottom - dim, dim, dim );
-			DrawTheIcon( icon.Super, superRect );
+			DrawTheIcon( graphics, iconDescriptor.Super, superRect, resources );
 		}
 
 		// -- Sub - (additional action) --
-		if(icon.Sub != null) {
+		if(iconDescriptor.Sub != null) {
 			// put the subRect in the bottom right corner
 			float subDim = bounds.Width * .5f;
 			var subRect = new RectangleF( bounds.Right - subDim, bounds.Bottom - subDim, subDim, subDim );
-			DrawTheIcon( icon.Sub, subRect );
+			DrawTheIcon( graphics, iconDescriptor.Sub, subRect, resources );
 		}
 		// -- Big Sub --
-		if(icon.BigSub != null) {
+		if(iconDescriptor.BigSub != null) {
 			// put the subRect in the bottom right corner
 			float subDim = bounds.Width;
 			var subRect = new RectangleF( bounds.Right - subDim / 2, bounds.Bottom - subDim * 3 / 4, subDim, subDim );
-			DrawTheIcon( icon.BigSub, subRect );
+			DrawTheIcon( graphics, iconDescriptor.BigSub, subRect, resources );
 		}
 	}
-
-	#region private fields 
-
-	readonly Graphics _graphics;
-	readonly ImgMemoryCache _cachedImageDrawer;
-
-	#endregion
 
 }

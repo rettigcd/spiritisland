@@ -59,8 +59,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 		DtnwMinor = new List<PowerCard>();
 		DtnwMajor = new List<PowerCard>();
-		decks.Add( new SpiritDeck{ Icon = Img.Deck_DaysThatNeverWere_Minor, Cards = DtnwMinor } );
-		decks.Add( new SpiritDeck{ Icon = Img.Deck_DaysThatNeverWere_Major, Cards = DtnwMajor } );
+		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = DtnwMinor } );
+		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Major, Cards = DtnwMajor } );
 
 	}
 

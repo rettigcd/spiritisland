@@ -96,7 +96,7 @@ public partial class IslandControl : Control {
 				panel.Paint( pe.Graphics );
 			}
 			catch(Exception e) {
-				string s = e.ToString();
+				pe.Graphics.DrawString(e.ToString(),SystemFonts.DefaultFont,Brushes.Red,panel.Bounds.Location);
 			}
 
 		// Pop-ups - draw last, because they are pop-ups and should be on top.
@@ -156,7 +156,7 @@ public partial class IslandControl : Control {
 				graphics.DrawLine(focusPen,rect.Left,rect.Bottom,rect.Right,rect.Bottom);
 			}
 
-			using Bitmap img = ResourceImages.Singleton.GetImage( elementOption.Item );
+			using Bitmap img = ResourceImages.Singleton.GetImg( elementOption.Item.GetTokenImg() );
 			graphics.DrawImage( img, rect );
 			_optionRects.Add( elementOption, rect );
 
@@ -190,7 +190,7 @@ public partial class IslandControl : Control {
 
 	void DrawFearPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
 		if(options_FearPopUp is not null) {
-			using Image img = FearCardImageBuilder.Build( options_FearPopUp );
+			using Image img = ResourceImages.Singleton.GetFearCard( options_FearPopUp );
 			graphics.DrawImage( img, regionLayout.PopupFearRect );
 		}
 		if(options_BlightPopUp is not null) {

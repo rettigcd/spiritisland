@@ -6,67 +6,16 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
-public sealed class GrowthPainter : IDisposable{
 
-	readonly GrowthLayout _layout;
+public static class PaintableActionFactory {
 
-	Graphics _graphics; // single-threaded variables
-	IconDrawer _iconDrawer;
-	Bitmap _cachedImageLayer;
-
-	public GrowthPainter( GrowthLayout layout ) {
-		_layout = layout;
-	}
-
-	public void Paint( Graphics graphics, bool addBackground ) {
-
-		_cachedImageLayer ??= BuildBackgroundImage();
-
-		if(addBackground) {
-			using var bgBrush = new SolidBrush( Color.FromArgb( 220, Color.LightYellow ) );
-			graphics.FillRectangle( bgBrush, _layout.Bounds);
-			graphics.DrawRectangle( Pens.Black, _layout.Bounds );
-		}
-
-		graphics.DrawImage( _cachedImageLayer, _layout.Bounds );
-
-	}
-
-	Bitmap BuildBackgroundImage() {
-		using var optionPen = new Pen( Color.Blue, 6f );
-
-		var cachedImageLayer = new Bitmap( _layout.Bounds.Width, _layout.Bounds.Height );
-		using var g = Graphics.FromImage( cachedImageLayer );
-		_iconDrawer = new IconDrawer( g, new ImgMemoryCache() );
-		g.TranslateTransform( -_layout.Bounds.X, -_layout.Bounds.Y );
-		g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
-		// Growth - Dividers
-		bool first = true;
-		foreach(var (opt, rect) in _layout.EachGrowth())
-			if(first)
-				first = false;
-			else
-				g.DrawLine( optionPen, rect.Left, rect.Top, rect.Left, rect.Bottom );
-
-		_graphics = g;
-
-		// Growth Actions
-		foreach(var (action, rect) in _layout.EachAction())
-			DrawAction( action, rect );
-		return cachedImageLayer;
-	}
-
-	void DrawAction( IHelpGrow growthAction, RectangleF rect ) {
-		if(growthAction is not SpiritGrowthAction sga) return;
-		IActOn<Spirit> action = sga.Cmd;
-
+	public static IPaintableRect GetGrowthPaintable( IActOn<Spirit> action ) {
 		if(action is JaggedEarth.RepeatableSelfCmd repeatableActionFactory
-			&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
-		)
+					&& repeatableActionFactory.Inner is not JaggedEarth.GainTime
+				)
 			action = repeatableActionFactory.Inner;
 
-		var paintable = action switch {
+		return action switch {
 			ReclaimAll => new ImgRect( Img.ReclaimAll ),
 			ReclaimN => new ImgRect( Img.Reclaim1 ),
 			ReclaimHalf => new ImgRect( Img.ReclaimHalf ),
@@ -80,62 +29,67 @@ public sealed class GrowthPainter : IDisposable{
 			Gain1Element { ElementOptions: var els } => Gain1ElementRect( els ),
 			_ => null,
 		} ?? action.Description switch {
-			"Add a Presence or Disease"               => PlacePresenceRect( action ),
-			"PlacePresenceAndBeast"                   => PlacePresenceRect( action ),
+			"Add a Presence or Disease" => PlacePresenceRect( action ),
+			"PlacePresenceAndBeast" => PlacePresenceRect( action ),
 			// Wounded Waters Bleeding
-			"Add Destroyed Presence - Range 1"        => PlacePresenceRect( action ),
+			"Add Destroyed Presence - Range 1" => PlacePresenceRect( action ),
 			// Ocean
-			"PlaceInOcean"                            => PlacePresenceRect( action ),
-			"Gather 1 Presence into EACH Ocean"       => new ImgRect( Img.GatherToOcean ),
-			"Push Presence from Ocean"                => new ImgRect( Img.Pushfromocean ),
+			"PlaceInOcean" => PlacePresenceRect( action ),
+			"Gather 1 Presence into EACH Ocean" => new ImgRect( Img.GatherToOcean ),
+			"Push Presence from Ocean" => new ImgRect( Img.Pushfromocean ),
 			// Heart of the WildFire
-			"EnergyForFire"                           => new ImgRect( Img.Oneenergyfire ),
+			"EnergyForFire" => new ImgRect( Img.Oneenergyfire ),
 			// Fractured Dates
-			"GainTime(2)"                             => new ImgRect( Img.FracturedDays_Gain2Time ),
-			"GainTime(1)x2"                           => new ImgRect( Img.FracturedDays_Gain1Timex2 ),
-			"GainTime(1)x3"                           => new ImgRect( Img.FracturedDays_Gain1Timex3 ),
-			"DrawPowerCardFromDaysThatNeverWere"      => new ImgRect( Img.FracturedDays_DrawDtnw ),
+			"GainTime(2)" => new ImgRect( Img.FracturedDays_Gain2Time ),
+			"GainTime(1)x2" => new ImgRect( Img.FracturedDays_Gain1Timex2 ),
+			"GainTime(1)x3" => new ImgRect( Img.FracturedDays_Gain1Timex3 ),
+			"DrawPowerCardFromDaysThatNeverWere" => new ImgRect( Img.FracturedDays_DrawDtnw ),
 			// Starlight Seeks Its Form
-			"MakePowerFast"                           => new ImgRect( Img.Icon_Fast ),
+			"MakePowerFast" => new ImgRect( Img.Icon_Fast ),
 			// Grinning Trickster
-			"GainEnergyEqualToCardPlays"              => new ImgRect( Img.GainEnergyEqualToCardPlays ),
+			"GainEnergyEqualToCardPlays" => new ImgRect( Img.GainEnergyEqualToCardPlays ),
 			// Many Minds
-			"Gather1Token"                            => new ImgRect( Img.Land_Gather_Beasts ),
-			"ApplyDamage"                             => new ImgRect( Img.Damage_2 ),
-			"Discard 2 Power Cards"                   => new ImgRect( Img.Discard2 ),
+			"Gather1Token" => new ImgRect( Img.Land_Gather_Beasts ),
+			"ApplyDamage" => new ImgRect( Img.Damage_2 ),
+			"Discard 2 Power Cards" => new ImgRect( Img.Discard2 ),
 			// Towering Roots
-			"AddVitalityToIncarna"                    => AddVitalityToIncarna(),
-			"ReplacePresenceWithIncarna"              => ReplacePresenceWithIncarna(),
+			"AddVitalityToIncarna" => AddVitalityToIncarna(),
+			"ReplacePresenceWithIncarna" => ReplacePresenceWithIncarna(),
 			// Finder
-			"IgnoreRange"                             => Draw_IgnoreRange(),
+			"IgnoreRange" => Draw_IgnoreRange(),
 			// Relentless Gaze of the Sun
-			"Gain Energy an additional time"          => GainEnergyAgain(),
-			"Move up to 3 Presence together"          => MoveUpTo3PresenceTogether(),
+			"Gain Energy an additional time" => GainEnergyAgain(),
+			"Move up to 3 Presence together" => MoveUpTo3PresenceTogether(),
 			// Dances up Earthquakes
-			"AddPresenceOrGainMajor"                  => AddPresenceOrGainMajor(),
-			"AccelerateOrDelay"                       => AccelerateOrDelay(),
+			"AddPresenceOrGainMajor" => AddPresenceOrGainMajor(),
+			"AccelerateOrDelay" => AccelerateOrDelay(),
 			// Breath of Darkness
-			"All pieces Escape"                       => PiecesEscape( int.MaxValue ),
-			"1 pieces Escape"                         => PiecesEscape( 1 ),
-			"2 pieces Escape"                         => PiecesEscape( 2 ),
-			"Move Incarna anywhere"                   => AddOrMoveIncarnaAnywhere(),
-			"Add or Move Incarna to Presence"         => AddOrMoveIncarnaToPresence(),
+			"All pieces Escape" => PiecesEscape( int.MaxValue ),
+			"1 pieces Escape" => PiecesEscape( 1 ),
+			"2 pieces Escape" => PiecesEscape( 2 ),
+			"Move Incarna anywhere" => AddOrMoveIncarnaAnywhere(),
+			"Add or Move Incarna to Presence" => AddOrMoveIncarnaToPresence(),
 			// Ember Eyed
-			"Discard a Power Card with fire"          => DiscardCardWithFire(),
-			"Reclaim All with Fire"                   => ReclaimAllWithFire(),
-			"Empower Incarna"                          => new ImgRect(Img.EEB_Incarna_Empowered), // EEB is the only one in growth
-			"Move Incarna - Range 1"                  => MovePresenceRect(1, Img.Icon_Incarna),
-			_                                         => null,
+			"Discard a Power Card with fire" => DiscardCardWithFire(),
+			"Reclaim All with Fire" => ReclaimAllWithFire(),
+			"Empower Incarna" => new ImgRect( Img.EEB_Incarna_Empowered ), // EEB is the only one in growth
+			"Move Incarna - Range 1" => MovePresenceRect( 1, Img.Icon_Incarna ),
+			_ => new TextRect( action.Description ),
 		};
+	}
 
-		if(paintable is not null) {
-			paintable.Paint( _graphics, rect.ToInts() );
-		} else {
-			Rectangle r2 = rect.ToInts().InflateBy( -5, -5 );
-			_graphics.FillRectangle( Brushes.Goldenrod, r2 );
-			_graphics.DrawString(action.Description,SystemFonts.MessageBoxFont, Brushes.Black, r2 );
-		}
+	static IPaintableRect AddVitalityToIncarna() {
+		var des = new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } };
+		return new IconDescriptorRect( des );
+	}
 
+	static IPaintableRect GainAllElementsRect( params Element[] elements ) {
+		var descriptor = new IconDescriptor();
+		if(0 < elements.Length)
+			descriptor.ContentImg = elements[0].GetTokenImg();
+		if(1 < elements.Length)
+			descriptor.ContentImg2 = elements[1].GetTokenImg();
+		return new IconDescriptorRect( descriptor );
 	}
 
 	static IPaintableRect DiscardCardWithFire() {
@@ -149,7 +103,6 @@ public sealed class GrowthPainter : IDisposable{
 			.Float( new ImgRect( Img.ReclaimAll ), .0f, .0f, 1f, 1f )
 			.Float( new ImgRect( Img.Token_Fire ), .6f, 0f, .4f, .4f );
 	}
-
 
 	static VerticalStackRect PiecesEscape( int number ) {
 		return new VerticalStackRect(
@@ -193,16 +146,12 @@ public sealed class GrowthPainter : IDisposable{
 			.Float( new TextRect( "±1" ), .05f, .1f, .2f, .1f );
 	}
 
-	private static PoolRect ReplacePresenceWithIncarna() {
+	static PoolRect ReplacePresenceWithIncarna() {
 		return new PoolRect()
 							.Float( new ImgRect( Img.Icon_Incarna ), .1f, 0f, .8f, .8f )
 							.Float( new ImgRect( Img.Icon_Presence ), .6f, .6f, .4f, .4f )
-							.Float( new ImgRect( Img.RedX ), .6f, .6f, .4f, .4f );
-	}
-
-	IPaintableRect AddVitalityToIncarna() {
-		var des = new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } };
-		return new IconDescriptorRect( _iconDrawer, des );
+							.Float( new ImgRect( Img.DestroyedX ), .6f, .7f, .2f, .2f );
+							// .Float( new ImgRect( Img.Icon_DestroyedPresence ), .6f, .6f, .4f, .4f );  // This indicates already-destroyed presence
 	}
 
 	static IPaintableRect GainEnergyAgain() {
@@ -260,28 +209,6 @@ public sealed class GrowthPainter : IDisposable{
 		return new HorizontalStackRect(
 			elements.Select(el=>new ImgRect(el.GetIconImg())).ToArray()
 		);
-	}
-
-	IPaintableRect GainAllElementsRect( params Element[] elements ) {
-		var descriptor = new IconDescriptor();
-		if(0 < elements.Length )
-			descriptor.ContentImg = elements[0].GetTokenImg();
-		if(1 < elements.Length)
-			descriptor.ContentImg2 = elements[1].GetTokenImg();
-		return new IconDescriptorRect(_iconDrawer,descriptor);
-	}
-
-	class IconDescriptorRect : IPaintableRect {
-		readonly IconDrawer _iconDrawer;
-		readonly IconDescriptor _descriptor;
-		public IconDescriptorRect(IconDrawer iconDrawer,IconDescriptor descriptor ) {
-			_iconDrawer = iconDrawer;
-			_descriptor = descriptor;
-		}
-		public Rectangle Paint( Graphics graphics, Rectangle rect ) {
-			_iconDrawer.DrawTheIcon( _descriptor, rect );
-			return rect;
-		}
 	}
 
 	static IPaintableRect GetTargetFilterIcon( string filterEnum ) {
@@ -395,31 +322,26 @@ public sealed class GrowthPainter : IDisposable{
 		).SplitByWeight(0.05f,.1f,.8f,.1f,.1f);
 	}
 
-	public void Dispose() {
-		_cachedImageLayer?.Dispose();
-	}
+	class GainEnergyRect : IPaintableRect {
+		public GainEnergyRect( int delta ) { _delta = delta; }
+		readonly int _delta;
+		public Rectangle Paint( Graphics graphics, Rectangle bounds ) {
+			var fitted = new ImgRect( Img.Coin ).Paint( graphics, bounds );
 
-}
+			// Text
+			using Font coinFont = ResourceImages.Singleton.UseGameFont( fitted.Height * .5f );
+			string txt = 0 < _delta
+				? ("+" + _delta.ToString())
+				: ("\u2014" + (-_delta).ToString());
+			SizeF textSize = graphics.MeasureString( txt, coinFont );
+			PointF textTopLeft = new PointF(
+				bounds.X + (bounds.Width - textSize.Width) * .35f,
+				bounds.Y + (bounds.Height - textSize.Height) * .60f
+			);
+			graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
+			return fitted;
+		}
 
-
-class GainEnergyRect : IPaintableRect {
-	public GainEnergyRect( int delta ) { _delta = delta; }
-	readonly int _delta;
-	public Rectangle Paint(Graphics graphics, Rectangle bounds ){
-		var fitted = new ImgRect(Img.Coin).Paint(graphics,bounds);
-
-		// Text
-		using Font coinFont = ResourceImages.Singleton.UseGameFont( fitted.Height * .5f );
-		string txt = 0 < _delta
-			? ("+" + _delta.ToString())
-			: ("\u2014" + (-_delta).ToString());
-		SizeF textSize = graphics.MeasureString( txt, coinFont );
-		PointF textTopLeft = new PointF(
-			bounds.X + (bounds.Width - textSize.Width) * .35f,
-			bounds.Y + (bounds.Height - textSize.Height) * .60f
-		);
-		graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
-		return fitted;
 	}
 
 }

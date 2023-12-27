@@ -4,8 +4,6 @@ public enum Img {
 
 	None, // Default / null
 
-	RedX,
-
 	OrCurlyBefore,
 	OrCurlyAfter,
 
@@ -50,16 +48,6 @@ public enum Img {
 	FracturedDays_DrawDtnw,
 	Stone_Minor,
 
-	// Elements as tokens
-	Token_Sun,
-	Token_Moon,
-	Token_Fire,
-	Token_Air,
-	Token_Water,
-	Token_Plant,
-	Token_Earth,
-	Token_Animal,
-	Token_Any,
 
 	Icon_Sun,
 	Icon_Moon,
@@ -70,23 +58,6 @@ public enum Img {
 	Icon_Earth,
 	Icon_Animal,
 
-
-	// Tokens
-	City,
-	Town,
-	Explorer,
-	Dahan,
-
-	Defend,
-	Isolate,
-	Blight,
-	Beast,
-	Wilds,
-	Disease,
-	Badlands,
-	Vitality,
-	Quake,
-
 	Icon_Dahan,
 	Icon_City,
 	Icon_Town,
@@ -94,7 +65,7 @@ public enum Img {
 	Icon_Invaders,
 	Icon_Coastal,
 	Icon_PresenceOrWilds,
-	Icon_NoBlight,
+	Icon_NoBlight, // Power Cards handles the "no" prefix, but Growth options don't.
 	Icon_Ocean,
 	Icon_TownCityOrBlight,
 	OpenTheWays,
@@ -126,6 +97,48 @@ public enum Img {
 	PlusOneRange,
 	Icon_Spirit,
 
+	Discard1,
+	Discard2,
+
+	Fear,
+	Hourglass,
+	ArtistPalette,
+	NoRange,
+	NoX,
+
+	// =======================
+	// Tokens
+	// =======================
+	City,
+	Town,
+	Explorer,
+	Dahan,
+
+	Defend,
+	Isolate,
+	Blight,
+	Beast,
+	Wilds,
+	Disease,
+	Strife,
+	Badlands,
+	Vitality,
+	Quake,
+
+	Token_Sun,
+	Token_Moon,
+	Token_Fire,
+	Token_Air,
+	Token_Water,
+	Token_Plant,
+	Token_Earth,
+	Token_Animal,
+	Token_Any,
+
+	// Presence
+	Token_Presence,
+	DestroyedX,
+
 	// Incarna
 	Icon_Incarna,
 	BoDDYS_Incarna,
@@ -141,12 +154,5 @@ public enum Img {
 	WVKD_Incarna,
 	WVKD_Incarna_Empowered,
 
-	Deck_Hand,
-	Deck_Played,
-	Discard1,
-	Deck_Discarded,
-	Discard2,
-	Deck_DaysThatNeverWere_Major,
-	Deck_DaysThatNeverWere_Minor,
 
 }

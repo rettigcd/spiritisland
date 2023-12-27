@@ -4,9 +4,15 @@ using System.Drawing.Text;
 
 namespace SpiritIsland.WinForms; 
 
+public interface FearCardResources {
+	Bitmap CardTexture( string texture );
+	Font UseGameFont( float fontHeight );
+}
+
 sealed public class FearCardImageBuilder {
 
-	public static Image Build( IFearCard card ) {
+	public static Bitmap Build( IFearCard card, FearCardResources resources ) {
+
 		var bounds = new Rectangle(0,0,300,420);
 		var innerBounds = bounds.InflateBy( -14 );
 		var (titleArea,(canvasArea,_)) = innerBounds.SplitVerticallyAt(.11f);
@@ -27,18 +33,18 @@ sealed public class FearCardImageBuilder {
 		const int cornerRadius = 18;
 
 		// Perimeter
-		using(Bitmap cracks = ResourceImages.Singleton.Texture( "cracks.jpg" ))
+		using(Bitmap cracks = resources.CardTexture( "cracks.jpg" ))
 			using(TextureBrush outerBrush = new TextureBrush( cracks ))
 				graphics.FillPath( outerBrush, bounds.RoundCorners( 20 ) );
 
 		// Bottom / Parchment
 		var innerPath = innerBounds.RoundCorners( cornerRadius );
-		using(Bitmap parchment = ResourceImages.Singleton.Texture( "parchment.jpg" ))
+		using(Bitmap parchment = resources.CardTexture( "parchment.jpg" ))
 			using(TextureBrush parchmentBrush = new TextureBrush( parchment ))
 				graphics.FillPath( parchmentBrush, innerPath );
 
 		// Brown top - flowing
-		using(Bitmap parchment = ResourceImages.Singleton.Texture( "flowing.jpg" ))
+		using(Bitmap parchment = resources.CardTexture( "flowing.jpg" ))
 			using(TextureBrush parchmentBrush = new TextureBrush( parchment ))
 				graphics.FillPath( parchmentBrush, titleArea.RoundCorners( cornerRadius, true, true, false, false ) );
 
@@ -46,7 +52,7 @@ sealed public class FearCardImageBuilder {
 			graphics.DrawPath( brownPen, innerPath );
 
 		// Card Title
-		using(var titleFont = ResourceImages.Singleton.UseGameFont( 22f ))
+		using(var titleFont = resources.UseGameFont( 22f ))
 		using(StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
 			graphics.DrawString( card.Text.ToUpper(), titleFont, Brushes.White, titleArea, alignCenter );
 
@@ -57,12 +63,12 @@ sealed public class FearCardImageBuilder {
 			Rectangle rect = secTitleRects[i];
 			var adjuster = new PixelAdjustment( new HslColorAdjuster( colors[i] ).GetNewColor );
 			// Smoke
-			using Bitmap smoke = ResourceImages.Singleton.Texture( "smoke.png" );
-			adjuster.Adjust( (Bitmap)smoke );
+			using Bitmap smoke = resources.CardTexture( "smoke.png" );
+			adjuster.Adjust( smoke );
 			graphics.DrawImage( smoke, rect );
 			// Terror Level icon
 			using Bitmap terrorIcon = ResourceImages.Singleton.TerrorLevel( i + 1 );
-			if(i==0) adjuster.Adjust( (Bitmap)terrorIcon ); // adjust the first icon, it is too light. others are ok.
+			if(i==0) adjuster.Adjust( terrorIcon ); // adjust the first icon, it is too light. others are ok.
 			graphics.DrawImageFitHeight( terrorIcon, rect );
 		}
 

@@ -24,9 +24,10 @@ public class DownloadPowerPics_Tests {
 
 		var failed = new List<string>();
 
+		PowerCardResources x = ResourceImages.Singleton;
 		foreach(var card in cards) {
 			try {
-				using Image image = await ResourceImages.Singleton.GetCardImage( card );
+				using Image image = await x.GetPowerCardImage( card );
 			}
 			catch(HttpRequestException) {
 				failed.Add( card.Name );
@@ -84,7 +85,7 @@ public class DownloadPowerPics_Tests {
 
 	static async Task GenerateCards( IEnumerable<PowerCard> cards ) {
 		foreach(var card in cards) {
-			using Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card );
+			using Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card, ResourceImages.Singleton );
 #pragma warning disable CA1416 // Validate platform compatibility
 			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Name}.png", ImageFormat.Png );
 #pragma warning restore CA1416 // Validate platform compatibility

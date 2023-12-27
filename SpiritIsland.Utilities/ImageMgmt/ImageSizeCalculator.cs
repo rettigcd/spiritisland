@@ -26,7 +26,7 @@ public class ImageSizeCalculator {
 
 	Size CalcIconSize( Img img, int maxHeight ) {
 		if(!iconSizes.ContainsKey( img )) {
-			using Image image = ResourceImages.Singleton.GetImage( img );
+			using Image image = ResourceImages.Singleton.GetImg( img );
 			iconSizes.Add( img, image.Size );
 		}
 		var sz = iconSizes[img];

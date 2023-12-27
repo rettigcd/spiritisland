@@ -8,7 +8,21 @@ using System.Runtime.InteropServices;
 
 namespace SpiritIsland.WinForms;
 
-public class ResourceImages {
+/// <summary>
+/// Used by IPaintableImageRect to get the images it needs to paint.
+/// </summary>
+public interface ImgSource {
+	Bitmap GetImg(Img img);
+}
+
+
+public class ResourceImages 
+	: ImgSource
+	, PowerCardResources
+	, InvaderCardResources
+	, FearCardResources
+	, IconResources 
+{
 
 	static public readonly ResourceImages Singleton = new ResourceImages();
 
@@ -26,8 +40,6 @@ public class ResourceImages {
 	readonly PrivateFontCollection Fonts;
 
 	public Font UseGameFont( float fontHeight ) => new Font( Fonts.Families[0], Math.Max(4,fontHeight), GraphicsUnit.Pixel );
-
-	public Font UseInvaderFont( float fontHeight ) => new Font( Fonts.Families[1], fontHeight, GraphicsUnit.Pixel );
 
 	void LoadFont(string file) {
 		string resource = "SpiritIsland.Utilities." + file;
@@ -50,105 +62,59 @@ public class ResourceImages {
 
 	#endregion
 
-#pragma warning disable CA1822 // Mark members as static
 	public Bitmap LoadSpiritImage( string spiritText ) {
 		string filename = spiritText.Replace( ' ', '_' );
 		return (Bitmap)Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
 	}
-#pragma warning restore CA1822 // Mark members as static
+	public Bitmap AdversaryFlag( string advName ) => GetResourceImage( $"adversaries.{advName}.png" );
+	public Bitmap FearCardBack()                    => GetResourceImage( "tokens.fearcard.png" );
+	public Bitmap TerrorLevel( int terrorLevel )    => GetResourceImage( $"icons.TerrorLevel{terrorLevel}.png" );
 
-	public Bitmap GetPresenceImage( string img )    => GetResourceImage( $"presence.{img}.png" );
-	public Bitmap GetAdversaryFlag( string adv )    => GetResourceImage($"adversaries.{adv}.png" );
-	public Bitmap GetImage( Element el )            => GetImage(el.GetTokenImg() );
-	public Bitmap GetImage( Img img )               => GetResourceImage( ToResource( img ) );
-	public Bitmap Strife()                          => GetResourceImage("tokens.strife.png");
-	public Bitmap Fear()                            => GetResourceImage("tokens.fear.png");
-	public Bitmap FearCardBack()                    => GetResourceImage("tokens.fearcard.png");
-	public Bitmap RedX()                            => GetResourceImage("icons.red-x.png");
-	public Bitmap Hourglass()                       => GetResourceImage("icons.hourglass.png");
-	public Bitmap TerrorLevel( int terrorLevel )    => GetResourceImage($"icons.TerrorLevel{terrorLevel}.png" );
-	public Bitmap GetInvaderCard(string text)       => GetResourceImage($"invaders.{text}");
+	public Bitmap GetImg( Img img ) => GetResourceImage( ToResource( img ) );
 
-	public Bitmap Texture( string texture ) => GetResourceImage( $"textures.{texture}" );
+	/// <summary> Backgrounds for Fear Cards </summary>
+	public Bitmap CardTexture( string texture )		=> GetResourceImage( $"textures.{texture}" );
 
-	public Image GetInvaderCard( InvaderCard card ) {
-		if( !card.Flipped )
-			return GetInvaderCardBack( card.InvaderStage );
+	#region Caching
 
-		string key = $"invaders\\{card.Text}.png";
-		if(_cache.Contains( key )) return _cache.Get( key );
+	public Bitmap GetInvaderCard( InvaderCard card ) {
+		return card.Flipped
+			? Front( card )
+			: Back( card.InvaderStage );
 
-		Bitmap image = InvaderCardBuilder.BuildInvaderCard( card );
-		_cache.Add( key, image );
-		return image;
-	}
+		Bitmap Front( InvaderCard card ) {
+			string key = $"invaders\\{card.Text}.png";
+			if(_cache.Contains( key )) return _cache.Get( key );
 
-	Image GetInvaderCardBack( int stage ) {
-		string key = $"invaders\\back_{stage}.png";
-		if(_cache.Contains( key )) return _cache.Get( key );
-
-		Bitmap image = InvaderCardBuilder.BuildInvaderCardBack( stage );
-		_cache.Add( key, image );
-		return image;
-	}
-
-	readonly static bool saveSpace = false; // for fear card images
-	readonly static bool clipCorners = true;
-	static string FearKey( IFearCard fearCard ) => $"fear\\{fearCard.Text}." + (saveSpace ? "jpg" : "png");
-	public Image GetFearCard( IFearCard card ) {
-		InitFearCard( card );
-		Image img = _cache.Get( FearKey(card) );
-		if(saveSpace && clipCorners) {
-			Bitmap noCornerBitmap = new Bitmap( img.Width, img.Height );
-			using Graphics graphics = Graphics.FromImage( noCornerBitmap );
-			Brush brush = new TextureBrush( img );
-			graphics.FillPath( brush, new Rectangle(new Point(0,0),img.Size).RoundCorners(18));
-			brush.Dispose();
-			img.Dispose();
-			img = noCornerBitmap;
+			Bitmap image = InvaderCardBuilder.BuildInvaderCard( card, this );
+			_cache.Add( key, image );
+			return image;
 		}
+
+		Bitmap Back( int stage ) {
+			string key = $"invaders\\back_{stage}.png";
+			if(_cache.Contains( key )) return _cache.Get( key );
+
+			Bitmap image = InvaderCardBuilder.BuildInvaderCardBack( stage, this );
+			_cache.Add( key, image );
+			return image;
+		}
+
+	}
+
+	public Bitmap GetFearCard( IFearCard card ) {
+
+		const bool saveSpace = false;
+		string key = $"fear\\{card.Text}." + (saveSpace ? "jpg" : "png");
+		if(_cache.Contains( key )) 
+			return _cache.Get( key );
+
+		Bitmap img = FearCardImageBuilder.Build( card, this );
+		_cache.Add( key, img );
 		return img;
 	}
 
-	public void InitFearCard( IFearCard card ) {
-		string key = FearKey( card );
-		if(_cache.Contains( key )) return;
-		using Bitmap img = (Bitmap)FearCardImageBuilder.Build( card );
-		_cache.Add( key, img );
-	}
-
-	static public async Task<Image> GetPowerCard( PowerCard card ) {
-		try {
-			ImageDiskCache _cache = new ImageDiskCache();
-			string key = $"PowerCard\\{card.Name}.png";
-			if(_cache.Contains( key )) return _cache.Get( key );
-
-			Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card ); // don't dispose, we are returning it
-			_cache.Add( key, image );
-			return image;
-		} catch(Exception ex) {
-			_ = ex.ToString();
-			throw;
-		}
-	}
-
-	static public Image GetSpiritMarker( Spirit spirit, Img img ) {
-		ImageDiskCache _cache = new ImageDiskCache();
-		string key = $"SpiritMarkers\\{spirit.Text}-{img}.png";
-		if(_cache.Contains( key )) return _cache.Get( key );
-		// don't dispose these , we are returning them
-		Bitmap image = img switch{
-			Img.Defend  => (Bitmap)SpiritMarkerBuilder.BuildDefend( spirit ), 
-			Img.Isolate => (Bitmap)SpiritMarkerBuilder.BuildIsolate( spirit ), 
-			Img.Icon_Presence => (Bitmap)SpiritMarkerBuilder.BuildPresence( spirit ),
-			_ => throw new ArgumentException("invalid img value")
-		};
-		_cache.Add( key, image );
-		return image;
-	}
-
-
-	public Image GetBlightCard( IBlightCard card ) {
+	public Bitmap GetBlightCard( IBlightCard card ) {
 		string key = "blight\\" + card.Name + ".png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
@@ -159,23 +125,7 @@ public class ResourceImages {
 		return bitmap;
 	}
 
-	public async Task<Image> GetCardImage( PowerCard card ) {
-		string key = $"power_card_pic\\{card.Name}.png";
-		if(_cache.Contains( key )) return _cache.Get( key );
-		Bitmap bitmap = await GetCardImageInternal( card );
-		_cache.Add( key, bitmap );
-		return bitmap;
-	}
-
-	static async Task<Bitmap> GetCardImageInternal( PowerCard card ) {
-		try {
-			return await CardDownloader.GetImage( card.Name );
-		} catch {
-			return new Bitmap( 24, 24, System.Drawing.Imaging.PixelFormat.Format32bppPArgb );
-		}
-	}
-
-	public Image GetHealthBlightCard() {
+	public Bitmap GetHealthBlightCard() {
 		string key = "blight\\healthy.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
@@ -186,31 +136,120 @@ public class ResourceImages {
 		return bitmap;
 	}
 
-	public Image GetGhostImage( Img img ) {
+	public Bitmap GetTrackSlot( IconDescriptor icon ) {
 
-		string key = $"ghosts\\{img}.png";
+		static string GetCacheKey( IconDescriptor icon ) {
+			var items = new List<string>();
+			if(!string.IsNullOrEmpty( icon.Text )) items.Add( icon.Text );
+			if(icon.BackgroundImg != default) items.Add( icon.BackgroundImg.ToString() );
+
+			if(icon.ContentImg != default) items.Add( "1-" + icon.ContentImg.ToString() );
+			if(icon.ContentImg2 != default) items.Add( "2-" + icon.ContentImg2.ToString() );
+			if(icon.Super != default) items.Add( "Sup(" + GetCacheKey( icon.Super ) + ")" );
+			if(icon.Sub != default) items.Add( "Sub(" + GetCacheKey( icon.Sub ) + ")" );
+			if(icon.BigSub != default) items.Add( "(" + GetCacheKey( icon.BigSub ) + ")" );
+			return string.Join( " ", items );
+		}
+
+		string key = "track\\" + GetCacheKey( icon ) + ".png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
-		Bitmap image = GetImage( img );
-		new PixelAdjustment( MakePartiallyTransparent ).Adjust( image );
+		Bitmap bitmap = IconDrawer.BuildTrackSlot( icon, this );
 
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+	public Bitmap GetInnateOption( IDrawableInnateTier innateOption, float emSize, Size rowSize ) {
+		string key = "innateOptions\\" + innateOption.Text.Replace( ' ', '_' ).Replace( '/', '_' ).Replace( '.', '_' ) + ".png";
+		if(_cache.Contains( key )) {
+			var image = _cache.Get( key );
+			// To get max resolution, Image should be as wide as rowSize - caller can scale it down
+			if(rowSize.Width < image.Width) return image;
+			// Image is narrower than ro
+			image.Dispose(); // too small - regenerate
+		}
+
+		Bitmap bitmap = BuildInnateOption( innateOption, emSize, rowSize );
+
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+	public Bitmap GetGeneralInstructions( string description, float textEmSize, Size rowSize ) {
+		// Cropping General Instructions to 50.  why?
+		if(50 < description.Length) description = description[..50];
+		string key = "innateOptions\\gi_" + description.Replace( ' ', '_' ) + ".png";
+		if(_cache.Contains( key )) {
+			var image = _cache.Get( key );
+			if(rowSize.Width < image.Width) return image;
+			image.Dispose(); // cached image is too small - regenerate larger
+		}
+		Bitmap bitmap = BuildGeneralInstructions( description, textEmSize, rowSize );
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+	public async Task<Image> GetPowerCard( PowerCard card ) {
+		try {
+			ImageDiskCache _cache = new ImageDiskCache();
+			string key = $"PowerCard\\{card.Name}.png";
+			if(_cache.Contains( key )) return _cache.Get( key );
+
+			Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card, this ); // don't dispose, we are returning it
+			_cache.Add( key, image );
+			return image;
+		}
+		catch(Exception ex) {
+			_ = ex.ToString();
+			throw;
+		}
+	}
+
+	public Image GetSpiritMarker( Spirit spirit, Img img ) {
+		ImageDiskCache _cache = new ImageDiskCache();
+		string key = $"SpiritMarkers\\{spirit.Text}-{img}.png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+		Bitmap image = SpiritMarkerBuilder.BuildSpiritMarker( spirit, img, this );
 		_cache.Add( key, image );
 		return image;
 	}
 
-	public Image FearGray() { 
-		string key = "fear_gray.png";
+	#endregion Caching
+
+	#region interface PowerCardResources
+
+	async Task<Image> PowerCardResources.GetPowerCardImage( PowerCard card ) {
+		string key = $"power_card_pic\\{card.Name}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
-		Bitmap image = Fear();
-		new PixelAdjustment( LowerContrast ).Adjust( image );
-		_cache.Add( key, image );
-		return image;
+		Bitmap bitmap = await GetPowerCardImage_Internal( card );
+		_cache.Add( key, bitmap );
+		return bitmap;
 	}
-	static Color LowerContrast( Color x ) => Color.FromArgb( x.A, x.R / 4 + 96, x.G / 4 + 96, x.B / 4 + 96 );
-	static Color MakePartiallyTransparent( Color x ) => Color.FromArgb( Math.Min( (byte)92, x.A ), x );
+	static async Task<Bitmap> GetPowerCardImage_Internal( PowerCard card ) {
+		try {
+			return await CardDownloader.GetImage( card.Name );
+		}
+		catch {
+			return new Bitmap( 24, 24, System.Drawing.Imaging.PixelFormat.Format32bppPArgb );
+		}
+	}
+
+	Bitmap PowerCardResources.GetPhaseCost( Phase phase ) => GetResourceImage( $"tokens.Cost{phase}.png" );
+
+	#endregion interface PowerCardResources
+
+	#region interface InvaderCardResources
+
+	/// <summary> Images for drawing Invader cards. </summary>
+	public Bitmap InvaderCardImage( string backOrEscalation ) => GetResourceImage( $"invaders.{backOrEscalation}" );
+
+	public Font UseInvaderFont( float fontHeight ) => new Font( Fonts.Families[1], fontHeight, GraphicsUnit.Pixel );
+
+	#endregion interface InvaderCardResources
 
 	public Brush UseSpaceBrush( Space space ) {
-		Terrain terrain 
+		Terrain terrain
 			= space.IsWetland ? Terrain.Wetland
 			: space.IsJungle ? Terrain.Jungle
 			: space.IsMountain ? Terrain.Mountain
@@ -221,86 +260,55 @@ public class ResourceImages {
 	}
 
 	public Brush UseTerrainBrush( Terrain terrain ) {
-		using Image image = UseTerrainImage( terrain );
+		string terrainName = terrain switch {
+			Terrain.Wetland  => "wetlands",
+			Terrain.Jungle   => "jungle",
+			Terrain.Mountain => "mountains",
+			Terrain.Sands    => "sand",
+			Terrain.Ocean    => "ocean",
+			Terrain.None     => "none",
+			_ => throw new ArgumentException( $"{terrain} not mapped" ),
+		};
+		using Image image = (Bitmap)Image.FromFile( $".\\images\\terrain\\{terrainName}.jpg" );
 		return new TextureBrush( image );
 	}
 
-	public Image UseTerrainImage( Terrain terrain ) {
-		string terrainName = terrain switch {
-			Terrain.Wetland => "wetlands",
-			Terrain.Jungle => "jungle",
-			Terrain.Mountain => "mountains",
-			Terrain.Sands => "sand",
-			Terrain.Ocean => "ocean",
-			Terrain.None => "none",
-			_ => throw new ArgumentException($"{terrain} not mapped"),
-		};
-
-		HSL? terrainColor = terrain switch {
-			Terrain.Wetland => new HSL( 184, 40, 45 ),
-			Terrain.Jungle => new HSL( 144, 60, 40 ),
-			Terrain.Mountain => new HSL( 45, 10, 33 ),
-			Terrain.Sands => new HSL( 38, 50, 40 ),
-			_ => null
-		};
-
-		// No HSL, use original
-		static string SrcPath( string terrainName ) => $".\\images\\{terrainName}.jpg";
-		if( terrainColor == null ) return Image.FromFile( SrcPath(terrainName) );
-
-		// Check Cache
-		string key = $"{terrainName} {terrainColor}.jpg";
-		if(_cache.Contains(key)) return _cache.Get(key);
-
-		// Build it, & cache it
-		Bitmap image = (Bitmap)Image.FromFile( SrcPath( terrainName ) );
-
-		new PixelAdjustment( new HslColorAdjuster( terrainColor ).GetNewColor ).Adjust( (Bitmap)image );
-		_cache.Add(key, image);
-		return image;
+	public Image GetTokenImage( IToken token ) {
+		return token is HumanToken ht ? HumanTokenBuilder.Build( ht )
+			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast( "many-minds-beast.png", token.Img, 60, 40 )
+			: token.GetType().Name == "MarkedBeast" ? GetManyMindsBeast( "marked-beast.png", token.Img, 240, 20 )
+			: GetImg( token.Img );
 	}
 
-	public Image GetGeneralInstructions( string description, float textEmSize, Size rowSize ) {
-		if(50<description.Length) description = description[..50];
-		string key = "innateOptions\\gi_" + description.Replace(' ','_') +".png";
-		if(_cache.Contains(key)){
-			var image = _cache.Get(key);
-			if( rowSize.Width < image.Width) return image;
-			image.Dispose(); // do small - regenerate
+	static Bitmap BuildGeneralInstructions( string description, float textEmSize, Size rowSize ) {
+		Bitmap bitmap;
+		{
+			using var tempBitmap = new Bitmap( rowSize.Width, rowSize.Width ); // Height is wrong
+			using Graphics graphics = Graphics.FromImage( tempBitmap );
+			graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+			graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+			var config = new ConfigWrappingLayout {
+				EmSize = textEmSize,
+				ElementDimension = (int)(textEmSize * 2.4f),
+				IconDimension = (int)(textEmSize * 1.8f),
+				HorizontalAlignment = Align.Near
+			};
+
+			var layout = new WrappingLayout( config, rowSize, graphics );
+			layout.Append( description, FontStyle.Regular );
+			layout.FinalizeBounds();
+			layout.Paint( graphics );
+
+			bitmap = tempBitmap.Clone( new Rectangle( new Point( 0, 0 ), layout.Size ), tempBitmap.PixelFormat );
+
 		}
-		using var tempBitmap = new Bitmap(rowSize.Width, rowSize.Width); // Height is wrong
-		using Graphics graphics = Graphics.FromImage(tempBitmap);
-		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-		var config = new ConfigWrappingLayout {
-			EmSize = textEmSize,
-			ElementDimension = (int)(textEmSize * 2.4f),
-			IconDimension = (int)(textEmSize * 1.8f),
-			HorizontalAlignment = Align.Near
-		};
-
-		var layout = new WrappingLayout( config, rowSize, graphics );
-		layout.Append( description, FontStyle.Regular );
-		layout.FinalizeBounds();
-		layout.Paint(graphics);
-
-		Bitmap bitmap = tempBitmap.Clone( new Rectangle( new Point(0,0), layout.Size ), tempBitmap.PixelFormat );
-
-		_cache.Add( key, bitmap );
 		return bitmap;
 	}
 
-
-	public Image GetInnateOption( IDrawableInnateTier innateOption, float emSize, Size rowSize ) {
-		string key = "innateOptions\\" + innateOption.Text.Replace( ' ', '_' ).Replace( '/', '_' ).Replace( '.', '_' ) + ".png";
-		if(_cache.Contains( key )) {
-			var image = _cache.Get( key );
-			if(rowSize.Width < image.Width) return image;
-			image.Dispose(); // do small - regenerate
-		}
-
-		using Bitmap tempBitmap = new Bitmap( rowSize.Width, rowSize.Width*2 ); // Height is wrong
+	static Bitmap BuildInnateOption( IDrawableInnateTier innateOption, float emSize, Size rowSize ) {
+		using Bitmap tempBitmap = new Bitmap( rowSize.Width, rowSize.Width * 2 ); // Height is wrong
 		using Graphics graphics = Graphics.FromImage( tempBitmap );
 		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -331,60 +339,19 @@ public class ResourceImages {
 
 		layout.FinalizeBounds();
 
-		layout.Paint(graphics);
+		layout.Paint( graphics );
 
-		Bitmap bitmap = tempBitmap.Clone( new Rectangle( new Point(0,0), layout.Size ), tempBitmap.PixelFormat );
+		return tempBitmap.Clone( new Rectangle( new Point( 0, 0 ), layout.Size ), tempBitmap.PixelFormat );
 
-		_cache.Add( key, bitmap );
-		return bitmap;
 	}
 
-	public Image GetTrack( IconDescriptor icon ) {
-		string key = "track\\" + GetKey( icon ) + ".png";
-		if(_cache.Contains(key)) return _cache.Get(key);
-
-		const int dimension = 200;
-		Bitmap bitmap = new Bitmap( dimension, dimension );
-		RectangleF bounds = new RectangleF(0,0,dimension,dimension );
-		using Graphics graphics = Graphics.FromImage( bitmap );
-		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-
-		using var imgCache = new ImgMemoryCache();
-		new IconDrawer( graphics, imgCache ).DrawTheIcon( icon, bounds );
-
-		_cache.Add( key, bitmap );
-		return bitmap;
-	}
-
-	static string GetKey( IconDescriptor icon ) {
-		var items = new List<string>();
-		if(!string.IsNullOrEmpty(icon.Text)) items.Add( icon.Text );
-		if(icon.BackgroundImg != default) items.Add( icon.BackgroundImg.ToString() );
-
-		if(icon.ContentImg != default) items.Add( "1-" + icon.ContentImg.ToString() );
-		if(icon.ContentImg2 != default) items.Add( "2-" + icon.ContentImg2.ToString() );
-		if(icon.Super != default) items.Add( "Sup(" + GetKey( icon.Super ) + ")" );
-		if(icon.Sub != default) items.Add( "Sub(" + GetKey( icon.Sub ) + ")" );
-		if(icon.BigSub != default) items.Add( "(" + GetKey( icon.BigSub ) + ")" );
-		return string.Join( " ", items );
-	}
-
-
-	readonly ImageDiskCache _cache = new ImageDiskCache();
 
 	#region private
 
-	public Image GetTokenImage( IToken token ) {
-		return token is HumanToken ht ? HumanTokenBuilder.Build( ht )
-			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast("many-minds-beast.png",token.Img,60,40)
-			: token.GetType().Name == "MarkedBeast" ? GetManyMindsBeast("marked-beast.png",token.Img,240,20)
-			: GetImage( token.Img );
-	}
-
-	Image GetManyMindsBeast(string key,Img baseImg, int hue, int saturation) {
+	Bitmap GetManyMindsBeast(string key,Img baseImg, int hue, int saturation) {
 		if(_cache.Contains(key)) return _cache.Get(key);
 
-		Bitmap img = GetImage(baseImg);
+		Bitmap img = GetImg(baseImg);
 		using Graphics graphics = Graphics.FromImage( img );
 
 		new PixelAdjustment(new HslColorAdjuster(new HSL( hue, saturation,50)).GetNewColor).Adjust(img);
@@ -393,17 +360,15 @@ public class ResourceImages {
 		return img;
 	}
 
-	static readonly Bitmap Invisible = new Bitmap( 1, 1 );
-	public Bitmap GetResourceImage( string? filename ) {
-		if(filename is null) return Invisible;
-		Stream imgStream = _assembly.GetManifestResourceStream( "SpiritIsland.Utilities.images."+filename )
-			?? throw new ArgumentException($"No resource image found for {filename}");
+	Bitmap GetResourceImage( string? filename ) {
+		if(filename is null) return new Bitmap( 1, 1 );
+		Stream imgStream = _assembly.GetManifestResourceStream( "SpiritIsland.Utilities.images." + filename )
+			?? throw new ArgumentException( $"No resource image found for {filename}" );
 		return new Bitmap( imgStream );
 	}
-	public Bitmap GetNoSymbol() => GetResourceImage( "icons.NoSymbol.png" );
 
 	static string? ToResource( Img image ) => image switch {
-		Img.RedX => "icons.NoSymbol.png",
+
 		Img.Starlight_AssignElement => "icons.AssignElement.png",
 
 		Img.CardPlay      => "icons.Card_Play.png",
@@ -469,11 +434,14 @@ public class ResourceImages {
 		Img.Beast    => "tokens.beast.png",
 		Img.Wilds    => "tokens.wilds.png",
 		Img.Disease  => "tokens.disease.png",
+		Img.Strife   => "tokens.strife.png",
 		Img.Badlands => "tokens.badlands.png",
 		Img.Vitality => "tokens.vitality.png",
 		Img.Quake    => "tokens.quake.png",
 		Img.Defend   => "tokens.defend1orange.png",
 		Img.Isolate  => "tokens.isolateorange.png",
+
+		Img.Token_Presence => "presence.red.png",
 
 		Img.Icon_Sun    => "icons.Elements.sun.png",
 		Img.Icon_Moon   => "icons.Elements.moon.png",
@@ -488,7 +456,7 @@ public class ResourceImages {
 		Img.Icon_Invaders           => "icons.Invaders.png",
 		Img.Icon_Coastal            => "icons.Coastal.png",
 		Img.Icon_PresenceOrWilds    => "icons.wildsorpresence.png",
-		Img.Icon_NoBlight           => "icons.Noblight.png",
+		Img.Icon_NoBlight           => "icons.No_Blight.png",
 		Img.Icon_TownCityOrBlight   => "icons.TownCityOrBlight.png",
 		Img.Icon_Blight             => "icons.Blighticon.png",
 		Img.Icon_Beast              => "icons.Beasticon.png",
@@ -517,13 +485,9 @@ public class ResourceImages {
 		Img.Icon_Wetland			=> "icons.Terrain.Wetlandland.png",
 		Img.Icon_Ocean              => "icons.Terrain.Ocean.png",
 
-		Img.Icon_Spirit             => "icons.Spiriticon.png",
+		Img.DestroyedX              => "icons.DestroyedX.png",
 
-		Img.Deck_Hand               => "hand.png",
-		Img.Deck_Played             => "inplay.png",
-		Img.Deck_Discarded          => "discard.png",
-		Img.Deck_DaysThatNeverWere_Major => "major_inverted.png",
-		Img.Deck_DaysThatNeverWere_Minor => "minor_inverted.png",
+		Img.Icon_Spirit             => "icons.Spiriticon.png",
 
 		Img.OrCurlyBefore => "icons.OR_Curly.png",
 		Img.OrCurlyAfter => "icons.OR_Curly_180.png",
@@ -542,12 +506,21 @@ public class ResourceImages {
 		Img.WVKD_Incarna             => "incarna.WVKD.png",
 		Img.WVKD_Incarna_Empowered   => "incarna.WVKD+.png",
 
-		Img.Icon_EndlessDark => "icons.EndlessDark.png",
+		Img.Fear                     => "tokens.fear.png",
 
+		Img.Hourglass				=> "icons.hourglass.png",
+		Img.ArtistPalette			=> "icons.artist-palette.png",
+		Img.NoRange					=> "icons.No_Range.png",
+		Img.NoX						=> "icons.No_X.png",
+
+
+	Img.Icon_EndlessDark => "icons.EndlessDark.png",
 
 		Img.None => null,
 		_ => throw new System.ArgumentOutOfRangeException( nameof( image ), image.ToString() ),
 	};
+
+	readonly ImageDiskCache _cache = new ImageDiskCache();
 
 	#endregion
 

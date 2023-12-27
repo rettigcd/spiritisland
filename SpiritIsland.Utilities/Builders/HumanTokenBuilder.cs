@@ -6,7 +6,7 @@ class HumanTokenBuilder {
 
 	public static Bitmap Build( HumanToken ht ) {
 
-		Bitmap orig = ResourceImages.Singleton.GetImage( ht.HumanClass.Img );
+		Bitmap orig = ResourceImages.Singleton.GetImg( ht.HumanClass.Img );
 
 		Func<Color, Color> colorConverter = ht.HumanClass.Variant switch {
 			// p => Color.FromArgb( p.A, p.R / 2, p.G / 2, p.B / 2 ); // halfScale

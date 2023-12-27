@@ -19,9 +19,9 @@ internal class StatusPanel : IPanel {
 		if(obj is Log.Phase phaseEvent) {
 			_phaseImage?.Dispose();
 			_phaseImage = phaseEvent.phase switch {
-				Phase.Growth => ResourceImages.Singleton.GetImage( Img.Coin ),
-				Phase.Fast => ResourceImages.Singleton.GetImage( Img.Icon_Fast ),
-				Phase.Slow => ResourceImages.Singleton.GetImage( Img.Icon_Slow ),
+				Phase.Growth => ResourceImages.Singleton.GetImg( Img.Coin ),
+				Phase.Fast => ResourceImages.Singleton.GetImg( Img.Icon_Fast ),
+				Phase.Slow => ResourceImages.Singleton.GetImg( Img.Icon_Slow ),
 				_ => null,
 			};
 		}
@@ -118,7 +118,7 @@ internal class StatusPanel : IPanel {
 
 	void DrawAdversary( Graphics graphics ) {
 		if(_ctx._adversary != null) {
-			using Bitmap flag = ResourceImages.Singleton.GetAdversaryFlag( _ctx._adversary.Name );
+			using Bitmap flag = ResourceImages.Singleton.AdversaryFlag( _ctx._adversary.Name );
 			graphics.DrawImage( flag, _adversaryFlagRect );
 		}
 	}
@@ -175,7 +175,7 @@ internal class StatusPanel : IPanel {
 			// Draw Card
 			var top = gameState.Fear.ActivatedCards.Peek();
 			if(top.Flipped) {
-				using Image img = FearCardImageBuilder.Build( top );
+				using Image img = FearCardImageBuilder.Build( top, ResourceImages.Singleton ); // !!! shouldn't this use the cache?
 				graphics.DrawImage( img, activatedCardRect );
 			} else {
 				graphics.DrawImage( cardImg, activatedCardRect );
@@ -189,7 +189,7 @@ internal class StatusPanel : IPanel {
 		if(0 < future) {
 			var top = gameState.Fear.Deck.Peek();
 			if(top.Flipped) {
-				using Image img = FearCardImageBuilder.Build( top );
+				using Image img = FearCardImageBuilder.Build( top, ResourceImages.Singleton );  // !!! shouldn't this use the cache?
 				graphics.DrawImage( img, futureCardRect );
 			} else {
 				// Draw Card

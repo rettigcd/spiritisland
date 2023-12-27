@@ -25,7 +25,7 @@ public static class PowerHeaderDrawer {
 	}
 
 	static void DrawSpeed( Graphics graphics, IFlexibleSpeedActionFactory power, Rectangle cell ) {
-		using Image speedImg = ResourceImages.Singleton.GetImage( power.DisplaySpeed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast );
+		using Image speedImg = ResourceImages.Singleton.GetImg( power.DisplaySpeed == Phase.Slow ? Img.Icon_Slow : Img.Icon_Fast );
 		graphics.DrawImageFitHeight( speedImg, cell.InflateBy( (int)(-cell.Height * .1f) ) );
 	}
 
@@ -36,7 +36,7 @@ public static class PowerHeaderDrawer {
 
 		if(rangeText == "-") {
 			// draw dash
-			using Bitmap img = ResourceImages.Singleton.GetResourceImage( "icons.No_Range.png" );
+			using Bitmap img = ResourceImages.Singleton.GetImg(Img.NoRange);
 			graphics.DrawImageFitBoth( img, cell.InflateBy( -cell.Width / 4, 0 ) );
 			return;
 		}
@@ -61,7 +61,7 @@ public static class PowerHeaderDrawer {
 	private static void DrawSourceCriteria( Graphics graphics, Rectangle cell, string sourceCriteria, Rectangle imgRect ) {
 		if(sourceCriteria == "ss") {
 			// Sacred site
-			using Bitmap ssImg = ResourceImages.Singleton.GetImage( Img.Icon_Sacredsite );
+			using Bitmap ssImg = ResourceImages.Singleton.GetImg( Img.Icon_Sacredsite );
 			graphics.DrawImageFitBoth( ssImg, imgRect );
 			return;
 		}
@@ -69,7 +69,7 @@ public static class PowerHeaderDrawer {
 		// Draw Terrain 1st/background
 		DrawSourceTerrain( graphics, sourceCriteria, imgRect.OffsetBy( -cell.Height/4, 0 ) ); // .SplitHorizontally( 2 )[0]
 		// Draw Presence 2nd on top of Terrain
-		using Image presenceImg = ResourceImages.Singleton.GetImage( Img.Icon_Presence );
+		using Image presenceImg = ResourceImages.Singleton.GetImg( Img.Icon_Presence );
 		graphics.DrawImageFitBoth( presenceImg, imgRect.OffsetBy( 0, cell.Height / 4 ).InflateBy( -cell.Height / 7 ) );
 	}
 
@@ -77,7 +77,7 @@ public static class PowerHeaderDrawer {
 		string[] parts = sourceCriteria.Split( ',' );
 		Rectangle[] rects = terrainRect.SplitHorizontally(parts.Length);
 		for(int i = 0; i < rects.Length; ++i)
-			using(Image terrainImg = ResourceImages.Singleton.GetImage( TargetToImg( parts[i] ) ))
+			using(Image terrainImg = ResourceImages.Singleton.GetImg( TargetToImg( parts[i] ) ))
 				graphics.DrawImageFitHeight( terrainImg, rects[i] );
 	}
 
@@ -86,7 +86,7 @@ public static class PowerHeaderDrawer {
 		using Font regularFont = new Font( FontFamily.GenericSansSerif, cell.Height * .7f, FontStyle.Regular, GraphicsUnit.Pixel );
 		graphics.DrawStringCenter( text, regularFont, Brushes.Black, rects[0] );
 		rects[1].Offset( 0, -cell.Height / 10 ); // get arrow off of the bottom bounds
-		using Bitmap arrow = ResourceImages.Singleton.GetImage( Img.RangeArrow );
+		using Bitmap arrow = ResourceImages.Singleton.GetImg( Img.RangeArrow );
 		graphics.DrawImageFitBoth( arrow, rects[1] );
 	}
 
@@ -126,7 +126,7 @@ public static class PowerHeaderDrawer {
 		if(simpleIcon != Img.None) {
 
 			// Simple Icon
-			using Bitmap icon = ResourceImages.Singleton.GetImage( simpleIcon );
+			using Bitmap icon = ResourceImages.Singleton.GetImg( simpleIcon );
 			graphics.DrawImage( icon, imgRect.FitBoth( icon.Size, align ) );
 
 		} else {
@@ -161,7 +161,7 @@ public static class PowerHeaderDrawer {
 		}
 
 		if(isNot)
-			using(Bitmap icon = ResourceImages.Singleton.GetNoSymbol())
+			using(Bitmap icon = ResourceImages.Singleton.GetImg(Img.NoX))
 				graphics.DrawImage( icon, imgRect.FitHeight( icon.Size, align ) );
 	}
 

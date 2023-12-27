@@ -68,13 +68,13 @@ class OtherCardsPanel : IPanel {
 				var images = ResourceImages.Singleton;
 				Rectangle labelRect = _layout.GetCardActionLabel( index );
 				using Image icon = _pickPowerCardDecision.Use( card ) switch {
-					CardUse.AddToHand => images.GetImage( Img.GainCard ),
-					CardUse.Discard => images.GetImage( Img.Discard1 ),
-					CardUse.Forget => images.GetImage( Img.Icon_DestroyedPresence ),
+					CardUse.AddToHand => images.GetImg( Img.GainCard ),
+					CardUse.Discard => images.GetImg( Img.Discard1 ),
+					CardUse.Forget => images.GetImg( Img.Icon_DestroyedPresence ),
 					CardUse.Gift => null,
 					CardUse.Other => null,
-					CardUse.Play => images.GetImage( Img.Icon_Play ),
-					CardUse.Reclaim => images.GetImage( Img.Reclaim1 ),
+					CardUse.Play => images.GetImg( Img.Icon_Play ),
+					CardUse.Reclaim => images.GetImg( Img.Reclaim1 ),
 					CardUse.Repeat => null,
 					_ => null,
 				};

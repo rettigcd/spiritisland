@@ -69,8 +69,8 @@ public class RegionLayoutClass {
 
 		// Focus: Growth
 		Rectangle row;
-		(_, (row, _)) = bounds.SplitVerticallyByWeight( 0, .05f, .25f, .75f );
-		(_, (layout.GrowthRect, _)) = row.SplitHorizontallyByWeight( 0, .1f, .8f, .1f );
+		(row, _) = bounds.SplitVerticallyByWeight( 0, .25f, .75f );
+		(_, ( layout.GrowthRect, _)) = row.SplitHorizontallyByWeight(0, .4f, .6f );
 
 		return layout;
 	}

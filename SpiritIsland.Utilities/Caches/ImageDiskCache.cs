@@ -18,10 +18,10 @@ public class ImageDiskCache {
 
 	public bool Contains( string key ) => File.Exists( GetPath( key ) );
 
-	public Image Get(string key) {
+	public Bitmap Get(string key) {
 		string path = GetPath( key );
 		return File.Exists( path ) 
-			? Image.FromFile( path ) 
+			? (Bitmap)Image.FromFile( path ) // all file formats supported by this returns a bitmap.
 			: throw new InvalidOperationException( $"Path does not exist. {path}" );
 	}
 

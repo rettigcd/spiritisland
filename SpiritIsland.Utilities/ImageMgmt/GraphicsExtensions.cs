@@ -50,12 +50,6 @@ static public class GraphicsExtensions {
 		graphics.DrawImage( image, bounds.ToInts().FitBoth( image.Size ) );
 	}
 
-	static public void DrawInvaderCardFront( this Graphics graphics, RectangleF rect, InvaderCard card ) {
-		if(card == null) return;
-		using Image img = ResourceImages.Singleton.GetInvaderCard( card );
-		graphics.DrawImage( img, rect );
-	}
-
 	static public void DrawStringCenter( this Graphics graphics, string text, Font labelFont, Brush brush, RectangleF textBounds ) {
 		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center };
 		graphics.DrawString( text, labelFont, brush, textBounds, alignCenter );

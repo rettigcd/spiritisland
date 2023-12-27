@@ -14,8 +14,6 @@
     <None Remove="images\adversaries\Russia.png" />
     <None Remove="images\adversaries\Scotland.png" />
     <None Remove="images\adversaries\Sweden.png" />
-    <None Remove="images\discard.png" />
-    <None Remove="images\hand.png" />
     <None Remove="images\icons\artist-palette.png" />
     <None Remove="images\icons\AssignElement.png" />
     <None Remove="images\icons\Badlands.png" />
@@ -34,6 +32,7 @@
     <None Remove="images\icons\Damage_2.png" />
     <None Remove="images\icons\Daysthatneverweregrowthicon.png" />
     <None Remove="images\icons\Destroyedpresence.png" />
+    <None Remove="images\icons\DestroyedX.png" />
     <None Remove="images\icons\DiscardElementsForCardPlay.png" />
     <None Remove="images\icons\Diseaseicon.png" />
     <None Remove="images\icons\EndlessDark.png" />
@@ -60,9 +59,9 @@
     <None Remove="images\icons\minor.png" />
     <None Remove="images\icons\Moveicon.png" />
     <None Remove="images\icons\Movepresence.png" />
-    <None Remove="images\icons\Noblight.png" />
-    <None Remove="images\icons\NoSymbol.png" />
+    <None Remove="images\icons\No_Blight.png" />
     <None Remove="images\icons\No_Range.png" />
+    <None Remove="images\icons\No_X.png" />
     <None Remove="images\icons\Oneenergyfire.png" />
     <None Remove="images\icons\open-the-ways.png" />
     <None Remove="images\icons\OR_Curly.png" />
@@ -78,7 +77,6 @@
     <None Remove="images\icons\reclaim 1.png" />
     <None Remove="images\icons\ReclaimAll.png" />
     <None Remove="images\icons\Reclaim_Half.png" />
-    <None Remove="images\icons\red-x.png" />
     <None Remove="images\icons\Sacredsite.png" />
     <None Remove="images\icons\Simple_air.png" />
     <None Remove="images\icons\Simple_animal.png" />
@@ -121,15 +119,14 @@
     <None Remove="images\incarna\TRotJ.png" />
     <None Remove="images\incarna\WVKD+.png" />
     <None Remove="images\incarna\WVKD.png" />
-    <None Remove="images\inplay.png" />
-    <None Remove="images\major_inverted.png" />
-    <None Remove="images\minor_inverted.png" />
-    <None Remove="images\presence\greenorangeswirl.png" />
+    <None Remove="images\invaders\back.jpg" />
+    <None Remove="images\invaders\escalation.png" />
     <None Remove="images\presence\red.png" />
     <None Remove="images\starlight options.psd" />
     <None Remove="images\textures\cracks.jpg" />
     <None Remove="images\textures\flowing.jpg" />
     <None Remove="images\textures\parchment.jpg" />
+    <None Remove="images\textures\power_weave.png" />
     <None Remove="images\textures\smoke.png" />
     <None Remove="images\tokens\badlands.png" />
     <None Remove="images\tokens\beast.png" />
@@ -165,6 +162,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="images\textures\power_weave.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="images\adversaries\Brandenburg-Prussia.png" />
     <EmbeddedResource Include="images\adversaries\England.png" />
     <EmbeddedResource Include="images\adversaries\France.png" />
@@ -172,8 +175,6 @@
     <EmbeddedResource Include="images\adversaries\Russia.png" />
     <EmbeddedResource Include="images\adversaries\Scotland.png" />
     <EmbeddedResource Include="images\adversaries\Sweden.png" />
-    <EmbeddedResource Include="images\discard.png" />
-    <EmbeddedResource Include="images\hand.png" />
     <EmbeddedResource Include="images\icons\artist-palette.png" />
     <EmbeddedResource Include="images\icons\AssignElement.png" />
     <EmbeddedResource Include="images\icons\Badlands.png" />
@@ -217,8 +218,8 @@
     <EmbeddedResource Include="images\icons\Terrain\Mountain.png" />
     <EmbeddedResource Include="images\icons\Moveicon.png" />
     <EmbeddedResource Include="images\icons\MovePresence.png" />
-    <EmbeddedResource Include="images\icons\Noblight.png" />
-    <EmbeddedResource Include="images\icons\NoSymbol.png" />
+    <EmbeddedResource Include="images\icons\No_Blight.png" />
+    <EmbeddedResource Include="images\icons\No_X.png" />
     <EmbeddedResource Include="images\icons\No_Range.png" />
     <EmbeddedResource Include="images\icons\Terrain\Ocean.png" />
     <EmbeddedResource Include="images\icons\Oneenergyfire.png" />
@@ -237,7 +238,7 @@
     <EmbeddedResource Include="images\icons\reclaim 1.png" />
     <EmbeddedResource Include="images\icons\ReclaimAll.png" />
     <EmbeddedResource Include="images\icons\Reclaim_Half.png" />
-    <EmbeddedResource Include="images\icons\red-x.png" />
+    <EmbeddedResource Include="images\icons\DestroyedX.png" />
     <EmbeddedResource Include="images\icons\Sacredsite.png" />
     <EmbeddedResource Include="images\icons\Terrain\Sands.png" />
     <EmbeddedResource Include="images\icons\Elements\air.png" />
@@ -277,14 +278,8 @@
     <EmbeddedResource Include="images\incarna\TRotJ.png" />
     <EmbeddedResource Include="images\incarna\WVKD+.png" />
     <EmbeddedResource Include="images\incarna\WVKD.png" />
-    <EmbeddedResource Include="images\inplay.png" />
-    <EmbeddedResource Include="images\major_inverted.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\minor_inverted.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="images\presence\greenorangeswirl.png" />
+    <EmbeddedResource Include="images\invaders\back.jpg" />
+    <EmbeddedResource Include="images\invaders\escalation.png" />
     <EmbeddedResource Include="images\presence\red.png" />
     <EmbeddedResource Include="images\textures\cracks.jpg" />
     <EmbeddedResource Include="images\textures\flowing.jpg" />
@@ -337,25 +332,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="images\jungle.jpg">
+    <None Update="images\terrain\jungle.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\major.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="images\minor.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="images\terrain\mountains.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\mountains.jpg">
+    <None Update="images\terrain\none.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\none.jpg">
+    <None Update="images\terrain\ocean.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\ocean.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\sand.jpg">
+    <None Update="images\terrain\sand.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="images\spirits\A_Spread_of_Rampant_Green.jpg">
@@ -454,10 +449,7 @@
     <None Update="images\spirits\Wounded_Waters_Bleeding.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="images\texture1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\wetlands.jpg">
+    <None Update="images\terrain\wetlands.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

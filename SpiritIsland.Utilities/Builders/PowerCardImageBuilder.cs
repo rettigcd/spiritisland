@@ -6,9 +6,21 @@ using System.Text.RegularExpressions;
 
 namespace SpiritIsland.Utilities.ImageMgmt;
 
+/// <summary>
+/// The resources necessary to build a power card image.
+/// </summary>
+public interface PowerCardResources {
+	Bitmap GetImg( Img img );
+	Task<Image> GetPowerCardImage( PowerCard card );
+	Bitmap CardTexture( string texture );
+	Font UseGameFont( float fontHeight );
+	Bitmap GetPhaseCost( Phase phase );
+}
+
 public class PowerCardImageBuilder {
 
-	static public async Task<Image> Build( PowerCard card ) {
+	static public async Task<Image> Build( PowerCard card, PowerCardResources resources ) {
+
 		var bounds = new Rectangle( 0, 0, 300, 420 );
 		var innerRect = bounds.InflateBy( -10 ); // 280x400
 		var left = new Rectangle( innerRect.X, innerRect.Y, 50, innerRect.Height ); // 50x400
@@ -26,7 +38,7 @@ public class PowerCardImageBuilder {
 		using SolidBrush borderBrush = new SolidBrush( Color.FromArgb( 69, 42, 21 ) );
 		graphics.FillPath( borderBrush, bounds.RoundCorners( 20 ) );
 		// Texture background
-		using Image background = Image.FromFile( $".\\images\\texture1.png" );
+		using Image background = resources.CardTexture( "power_weave.png" );
 		using TextureBrush backgroundBrush = new TextureBrush( background );
 		graphics.FillPath( backgroundBrush, innerRect.RoundCorners( 20 ) );
 
@@ -34,7 +46,7 @@ public class PowerCardImageBuilder {
 		for(int i = 0; i < ElementList.AllElements.Length; ++i) {
 			Element el = ElementList.AllElements[i];
 			if(0 < card.Elements[el]) {
-				using Bitmap elImage = ResourceImages.Singleton.GetImage( el );
+				using Bitmap elImage = resources.GetImg( el.GetTokenImg() );
 				graphics.DrawImage( elImage, left.X + 6, 68 + 41 * i, 36, 36 );
 			}
 		}
@@ -46,7 +58,7 @@ public class PowerCardImageBuilder {
 
 		// Image
 
-		using(Image artwork = await ResourceImages.Singleton.GetCardImage( card ))
+		using(Image artwork = await resources.GetPowerCardImage( card ))
 			graphics.DrawImage( artwork, imgRect );
 
 		// Header
@@ -56,7 +68,7 @@ public class PowerCardImageBuilder {
 		PaintInstructionArea( card.Instructions, textArea, graphics, Brushes.Cornsilk );
 
 		// Artist
-		using(Bitmap paletteImg = ResourceImages.Singleton.GetResourceImage( "icons.artist-palette.png" )) {
+		using(Bitmap paletteImg = resources.GetImg(Img.ArtistPalette)) {
 			Rectangle paletteRect = artistFooter.FitHeight(paletteImg.Size,Align.Near);
 			graphics.DrawImage(paletteImg, paletteRect);
 			artistFooter.Offset(paletteRect.Width+2,0);
@@ -70,12 +82,13 @@ public class PowerCardImageBuilder {
 
 		// Cost
 		Rectangle costRect = new Rectangle( innerRect.X - 7, innerRect.Y - 7, 60, 60 );
-		string speedStr = card.DisplaySpeed == Phase.Fast ? "Fast" : "Slow";
-		using(Bitmap costImg = ResourceImages.Singleton.GetResourceImage( $"tokens.Cost{speedStr}.png" ))
+
+		using(Bitmap costImg = resources.GetPhaseCost(card.DisplaySpeed))
 			graphics.DrawImage( costImg, costRect );
+
 		costRect.Offset( 0, 3 );
 		using(StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-		using(Font energyFont = ResourceImages.Singleton.UseGameFont( 28f ))
+		using(Font energyFont = resources.UseGameFont( 28f ))
 			graphics.DrawString( card.Cost.ToString(), energyFont, Brushes.White, costRect, center );
 
 		return img;

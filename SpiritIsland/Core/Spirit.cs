@@ -17,9 +17,9 @@ public abstract partial class Spirit
 
 		_gateway = new UserGateway();
 
-		decks.Add(new SpiritDeck{ Icon = Img.Deck_Hand, Cards = Hand });
-		decks.Add(new SpiritDeck{ Icon = Img.Deck_Played, Cards = InPlay });
-		decks.Add(new SpiritDeck{ Icon = Img.Deck_Discarded, Cards = DiscardPile } );
+		decks.Add(new SpiritDeck{ Type = SpiritDeck.DeckType.Hand, Cards = Hand });
+		decks.Add(new SpiritDeck{ Type = SpiritDeck.DeckType.InPlay, Cards = InPlay });
+		decks.Add(new SpiritDeck{ Type = SpiritDeck.DeckType.Discard, Cards = DiscardPile } );
 
 		Elements = new ElementMgr(this);
 	}
@@ -600,8 +600,10 @@ public abstract partial class Spirit
 
 
 public class SpiritDeck {
-	public Img Icon;
+	/// <remarks> Unused at present. anticipated future use.</remarks>
+	public DeckType Type { get; set; }
 	public List<PowerCard> Cards;
+	public enum DeckType { Hand, InPlay, Discard, DaysThatNeverWere_Major, DaysThatNeverWere_Minor, Other  };
 }
 
 public interface IHaveSecondaryElements {

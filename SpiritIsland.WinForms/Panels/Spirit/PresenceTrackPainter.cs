@@ -20,7 +20,7 @@ namespace SpiritIsland.WinForms {
 
 			_presenceImg = tip._presenceImg;
 		}
-		public void Paint( Graphics graphics, ImgMemoryCache imageDrawer ) {
+		public void Paint( Graphics graphics, ImgMemoryCache _ ) {
 			// Set single-thread variables
 
 			// Bottom Layer - cache it
@@ -32,7 +32,7 @@ namespace SpiritIsland.WinForms {
 			PaintPresence( graphics );
 
 			// Draw current energy
-			new IconDrawer(graphics,imageDrawer).DrawTheIcon(new IconDescriptor { Text = _spirit.Energy.ToString() }, _layout.BigCoin ); // !!! simplify
+			IconDrawer.DrawTheIcon(graphics,new IconDescriptor { Text = _spirit.Energy.ToString() }, _layout.BigCoin, ResourceImages.Singleton ); // !!! simplify
 
 		}
 
@@ -45,7 +45,7 @@ namespace SpiritIsland.WinForms {
 
 			PaintLabels(graphics);
 
-			using(var coin = ResourceImages.Singleton.GetTrack( new IconDescriptor { BackgroundImg = Img.Coin } ))
+			using(var coin = ResourceImages.Singleton.GetTrackSlot( new IconDescriptor { BackgroundImg = Img.Coin } ))
 				graphics.DrawImage(coin, _layout.BigCoin );
 
 			foreach(Track track in EnergySlots)
@@ -77,7 +77,7 @@ namespace SpiritIsland.WinForms {
 
 			// Presence & Red X
 			graphics.DrawImage( _presenceImg, rect );
-			using var redX = ResourceImages.Singleton.RedX();
+			using var redX = ResourceImages.Singleton.GetImg(Img.DestroyedX);
 			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
 
 			// count
@@ -94,7 +94,7 @@ namespace SpiritIsland.WinForms {
 
 			// Hour glass
 			var hgRect = new Rectangle( rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
-			using var hourglass = ResourceImages.Singleton.Hourglass();
+			using var hourglass = ResourceImages.Singleton.GetImg(Img.Hourglass);
 			graphics.DrawImageFitBoth( hourglass, hgRect );
 
 			// count

@@ -109,7 +109,7 @@ public class DancesUpEarthquakes : Spirit {
 		};
 
 		Impending = new List<PowerCard>();
-		decks.Add( new SpiritDeck { Icon = Img.Deck_DaysThatNeverWere_Minor, Cards = Impending } );
+		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = Impending } );
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

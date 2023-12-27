@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Drawing;
+
+namespace SpiritIsland;
 
 /// <summary> Describes what a presence token looks like. </summary>
 class PresenceTokenAppearance {
@@ -11,8 +13,12 @@ class PresenceTokenAppearance {
 		Hsl = new HSL(hue, saturation, lightness);
 	}
 
-	public BitmapAdjustment? Adjustment => Hsl is null ? null : new PixelAdjustment( new HslColorAdjuster(Hsl).GetNewColor );
+	public BitmapAdjustment HslAdjustment => new PixelAdjustment( new HslColorAdjuster(Hsl).GetNewColor );
 
-	public HSL? Hsl { get; }
+	public Point PatternOffset = new Point(100,100);
+	public float Contrast = .5f;
+
+
+	public HSL Hsl { get; }
 
 }

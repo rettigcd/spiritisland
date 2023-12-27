@@ -14,7 +14,7 @@ public sealed class ImgMemoryCache : IDisposable {
 
 	public Image GetImage( Img img ) {   // !!! make this private
 		if(_images.TryGetValue( img, out Image? bob )) return bob!;
-		var image = ResourceImages.Singleton.GetImage( img );
+		var image = ResourceImages.Singleton.GetImg( img );
 		_images.Add( img, image );
 		return image;
 	}

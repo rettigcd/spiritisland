@@ -299,8 +299,10 @@ class IslandPanel : IPanel {
 	void Debug_DrawTokenTargets( Graphics graphics, SpaceState spaceState ) {
 		int iconWidth = _iconWidth;
 
+		var ghosts = ModCache.Ghosts(ResourceImages.Singleton);
+
 		foreach(var (token, point) in WorldLayout.InsidePoints( spaceState.Space ).Assignments()) {
-			using Image img = ResourceImages.Singleton.GetGhostImage( token.Img );
+			using Image img = ghosts.GetImage( token.Img );
 			var clientPoint = _mapper.Map( new PointF( point.X, point.Y ) );
 			Rectangle rect = new Rectangle( // !!! verify all 3 instances that use this rect are offsetting point correctly.
 				new Point(

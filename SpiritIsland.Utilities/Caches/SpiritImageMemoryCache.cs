@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using SpiritIsland.A;
+using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
@@ -9,23 +10,24 @@ public class SpiritImageMemoryCache {
 
 	public SpiritImageMemoryCache( ResourceImages images) {
 		_tokenImages = new Dictionary<ISpaceEntity, Image> {
-			[Token.Blight] = images.GetImage( Img.Blight ),
-			[Token.Beast] = images.GetImage( Img.Beast ),
-			[Token.Wilds] = images.GetImage( Img.Wilds ),
+			[Token.Blight] = images.GetImg( Img.Blight ),
+			[Token.Beast] = images.GetImg( Img.Beast ),
+			[Token.Wilds] = images.GetImg( Img.Wilds ),
 			// [Token.Disease] = images.GetImage( Img.Disease ),
-			[Token.Badlands] = images.GetImage( Img.Badlands ),
-			[Token.Vitality] = images.GetImage( Img.Vitality ),
+			[Token.Badlands] = images.GetImg( Img.Badlands ),
+			[Token.Vitality] = images.GetImg( Img.Vitality ),
 		};
-		_strife = images.Strife();
+		_strife = images.GetImg(Img.Strife);
 		_images = images;
 
-		_fearTokenImage = images.Fear();
-		_grayFear = images.FearGray();
+		_fearTokenImage = images.GetImg(Img.Fear);
+		_grayFear = ModCache.Grays(images).GetImage(Img.Fear);
 
 	}
 
 	public Dictionary<ISpaceEntity, Image> _tokenImages; // because we need different images for different damaged invaders.
-	public Image? _presenceImg;
+	public Image? _presenceImg => _spiritToken != null ? _tokenImages[_spiritToken] : null;
+	IToken? _spiritToken;
 	public Img _incarnaImg;
 	public Image _strife;
 	public Image _fearTokenImage;
@@ -35,15 +37,21 @@ public class SpiritImageMemoryCache {
 	public void InitNewSpirit( Spirit spirit ) {
 		DisposeOldSpirit();
 
+		var resourceImages = ResourceImages.Singleton;
+
 		// Load them
-		_presenceImg                = ResourceImages.GetSpiritMarker( spirit, Img.Icon_Presence );
-		_tokenImages[Token.Defend]  = ResourceImages.GetSpiritMarker( spirit, Img.Defend );
-		_tokenImages[Token.Isolate] = ResourceImages.GetSpiritMarker( spirit, Img.Isolate );
+		_spiritToken = spirit.Presence.Token;
+		_tokenImages[_spiritToken] = resourceImages.GetSpiritMarker( spirit, Img.Token_Presence );
+		_tokenImages[Token.Defend]  = resourceImages.GetSpiritMarker( spirit, Img.Defend );
+		_tokenImages[Token.Isolate] = resourceImages.GetSpiritMarker( spirit, Img.Isolate );
 	}
 
 	public Image AccessTokenImage( IToken imageToken ) {
-		if( imageToken is SpiritPresenceToken )
-			return _presenceImg is not null ? _presenceImg : throw new Exception("missing presence image");
+		//if( imageToken is SpiritPresenceToken) {
+		//	var x = _tokenImages[spirit.Presence.Token];
+		//	return _presenceImg is not null ? _presenceImg : throw new Exception( "missing presence image" );
+		//}
+		
 
 		// Invalidate Incarna Image when the .Img switches
 		if( imageToken is Incarna it && it.Img != _incarnaImg ) {
@@ -61,7 +69,7 @@ public class SpiritImageMemoryCache {
 
 	public Image GetElementImage( Element element ) {
 		if(!_elementImages.ContainsKey( element )) {
-			Image image = _images.GetImage( element.GetTokenImg() );
+			Image image = _images.GetImg( element.GetTokenImg() );
 			_elementImages.Add( element, image );
 		}
 		return _elementImages[element];
@@ -73,11 +81,13 @@ public class SpiritImageMemoryCache {
 	readonly ResourceImages _images;
 
 	void DisposeOldSpirit() {
-		_presenceImg?.Dispose();
-		if(_tokenImages.ContainsKey( Token.Defend ))
-			_tokenImages[Token.Defend]?.Dispose();
-		if(_tokenImages.ContainsKey( Token.Isolate ))
-			_tokenImages[Token.Isolate]?.Dispose();
+		DisposeTokenImage( _spiritToken );
+		DisposeTokenImage( Token.Defend );
+		DisposeTokenImage( Token.Isolate );
+	}
+	void DisposeTokenImage( ISpaceEntity? x ) {
+		if( x is not null && _tokenImages.ContainsKey( x ))
+			_tokenImages[x]?.Dispose();
 	}
 
 	#endregion
