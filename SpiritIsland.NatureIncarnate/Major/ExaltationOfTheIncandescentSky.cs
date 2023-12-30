@@ -43,6 +43,6 @@ public class ExaltationOfTheIncandescentSky {
 		// do 3 Damage in one of their lands.
 		Space space = await self.SelectAsync(new A.Space("Do 3 Damage in land",self.Presence.Lands,Present.Done));
 		if(space == null) return;
-		await space.Tokens.DamageInvaders(self,3);
+		await space.Tokens.UserSelected_DamageInvaders(self,3);
 	}
 }

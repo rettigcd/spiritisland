@@ -27,5 +27,3 @@ Growth - After Growth, rewinding to beginning of turn, doesn't reset # of card p
 Growth - Shifting Memories 2-elements for card play - doesn't always work
 
 Rewind - Doesn't Reset Command The Beast
-
-Command-The-Beasts - Doesn't add Badland damage. (but should)

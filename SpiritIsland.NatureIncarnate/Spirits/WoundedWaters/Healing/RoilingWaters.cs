@@ -32,7 +32,7 @@ class RoilingWaters : IHealingCard {
 
 			if(args.Added == Token.Beast && !scope.ContainsKey( beastDamageKey )) {
 				// you may do 1 Damage there per added or moved Beast.
-				await to.DamageInvaders( _spirit, args.Count, Human.Invader );
+				await to.UserSelected_DamageInvaders( _spirit, args.Count, Human.Invader );
 				scope[ beastDamageKey ] = true;
 			}
 
@@ -40,7 +40,7 @@ class RoilingWaters : IHealingCard {
 			const string dahanDamageKey = Name + ":DahanDamage";
 			if(args.Added.HasTag(TokenCategory.Dahan) && !scope.ContainsKey( dahanDamageKey )) {
 				// you may do 1 Damage there (max once per Power)
-				await to.DamageInvaders( _spirit, 1, Human.Invader );
+				await to.UserSelected_DamageInvaders( _spirit, 1, Human.Invader );
 				scope[ dahanDamageKey ] = true;
 			}
 		}

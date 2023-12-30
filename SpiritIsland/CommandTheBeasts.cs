@@ -1,9 +1,62 @@
 ﻿namespace SpiritIsland;
 
+class CommandTheBeasts : IActionFactory {
+
+	#region Static Setup
+
+	static public void Setup( GameState gameState ) {
+		// If there are no Event cards, compensate with Command-the-Beasts
+
+		gameState.InvaderDeck
+			.UnrevealedCards
+			.First( x => x.InvaderStage == 2 )
+			.CardFlipped += QueueBeastCommand;
+
+		// Find 1st card of last Level-3 group
+		var cards = gameState.InvaderDeck.UnrevealedCards;
+		int i = cards.Count;
+		while(cards[i - 1].InvaderStage != 3) --i; // While prev is not level 3, backup - ends on card following level 3 group
+		while(cards[i - 1].InvaderStage == 3) --i; // While prev is leverl 3, backup - ends on 1st level 3 card in last group
+		cards[i].CardFlipped += QueueBeastCommand;
+	}
+
+
+	/// <summary>
+	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
+	/// </summary>
+	static public Task QueueBeastCommand( GameState gameState ) {
+		CommandTheBeasts cmdAction = new CommandTheBeasts();
+		// Adds the cmdAction to 1st spirit Actions until it is used.
+		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
+		Task TimePasses_WholeGame( GameState gameState ) {
+			if(!cmdAction.Used)
+				gameState.Spirits[0].AddActionFactory( cmdAction );
+			return Task.CompletedTask;
+		}
+
+		return Task.CompletedTask;
+	}
+
+	#endregion Static Setup
+
+	public string Name => "Command Beasts";
+
+	public string Text => Name;
+
+	public async Task ActivateAsync( Spirit _ ) {
+		Used = true;
+		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special);
+		await new CommandBeastsOn1Space().In().EachActiveLand().ActAsync( GameState.Current );
+	}
+
+	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
+	public bool Used { get; private set; }
+}
+
 /// <summary>
 /// Commands-the-Beasts (non-events) for 1 space.
 /// </summary>
-internal class CommandBeasts : IActOn<TargetSpaceCtx> {
+internal class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 	public string Description => "For each (original) beast on land, push, do 1 damage, or 1 fear if invaders are present.";
 
@@ -24,19 +77,19 @@ internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 		bool startedWithInvaders = ctx.HasInvaders;
 
 		int count = _originalBeastCounts[ctx.Space];
-		if( count == 0 ) return;
+		if(count == 0) return;
 
 		// Damage
-		count -= await PartialDamageToInvaders( ctx, count);
+		count -= await PartialDamageToInvaders( ctx, count );
 
 		// Push
 		await ctx.SourceSelector
-			.AddGroup(count,Token.Beast)
-			.Track(_=>--count)
-			.PushUpToN(ctx.Self);
+			.AddGroup( count, Token.Beast )
+			.Track( _ => --count )
+			.PushUpToN( ctx.Self );
 
 		// Fear
-		if( startedWithInvaders )
+		if(startedWithInvaders)
 			ctx.AddFear( count );
 
 	}
@@ -50,14 +103,14 @@ internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 
 		int badlandCount = ctx.Badlands.Count;
 
-		var totalDamage = ctx.BonusDamageForAction( damage );
+		CombinedDamage combinedDamage = ctx.CombinedDamageFor_Invaders( damage );
 
-		int damageDone = await ctx.SourceSelector.AddAll(Human.Invader)
-			.DoDamage(ctx.Self, damage, Present.Done );
+		int damageDone = await ctx.SourceSelector.AddAll( Human.Invader )
+			.DoDamage( ctx.Self, combinedDamage.Available, Present.Done );
 
-		totalDamage.TrackDamageDone( damageDone );
+		combinedDamage.TrackDamageDone( damageDone );
 
-		return damageDone == 0 
+		return damageDone == 0
 			? 0 // no damage done
 			: Math.Max( 1, damageDone - badlandCount ); // some damage done, remove badland damage.
 
@@ -66,57 +119,6 @@ internal class CommandBeasts : IActOn<TargetSpaceCtx> {
 	#endregion
 }
 
-class CommandBeastAction : IActionFactory {
-	public string Name => "Command Beasts";
-
-	public string Text => Name;
-
-	public async Task ActivateAsync( Spirit _ ) {
-		Used = true;
-		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special);
-		await new CommandBeasts().In().EachActiveLand().ActAsync( GameState.Current );
-	}
-
-	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
-	public bool Used { get; private set; }
-}
-
-public static class CommandTheBeasts {
-
-	static public void AddCardsToInvaderDeck( GameState gameState ) {
-		// If there are no Event cards, compensate with Command-the-Beasts
-
-		gameState.InvaderDeck
-			.UnrevealedCards
-			.First(x=>x.InvaderStage == 2)
-			.CardFlipped += QueueBeastCommand;
-
-		// Find 1st card of last Level-3 group
-		var cards = gameState.InvaderDeck.UnrevealedCards;
-		int i = cards.Count;
-		while(cards[i-1].InvaderStage != 3) --i; // While prev is not level 3, backup - ends on card following level 3 group
-		while(cards[i-1].InvaderStage == 3) --i; // While prev is leverl 3, backup - ends on 1st level 3 card in last group
-		cards[i].CardFlipped += QueueBeastCommand;
-	}
-
-
-	/// <summary>
-	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
-	/// </summary>
-	static public Task QueueBeastCommand( GameState gameState ) {
-		CommandBeastAction cmdAction = new CommandBeastAction();
-		// Adds the cmdAction to 1st spirit Actions until it is used.
-		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
-		Task TimePasses_WholeGame( GameState gameState ) {
-			if(!cmdAction.Used)
-				gameState.Spirits[0].AddActionFactory( cmdAction );
-			return Task.CompletedTask;
-		}
-
-		return Task.CompletedTask;
-	}
-
-}
 
 /*
 Don’t use a Blight Card where:

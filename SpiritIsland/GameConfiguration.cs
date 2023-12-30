@@ -136,7 +136,7 @@ public class GameBuilder {
 		adversary.PostInitialization( gameState );
 
 		if(cfg.CommandTheBeasts)
-			CommandTheBeasts.AddCardsToInvaderDeck( gameState );
+			CommandTheBeasts.Setup( gameState );
 
 		return gameState;
 	}

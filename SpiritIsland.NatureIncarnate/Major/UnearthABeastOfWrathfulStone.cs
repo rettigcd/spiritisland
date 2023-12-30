@@ -36,7 +36,7 @@ public class UnearthABeastOfWrathfulStone {
 				.ConfigDestination(d=>d.Track( async to => {
 					// 1 Fear and 2 Damage in its land.
 					GameState.Current.Fear.AddDirect( new FearArgs( 1 ) { space = to.Space } );
-					await to.DamageInvaders( ctxx.Self, 2 );
+					await to.UserSelected_DamageInvaders( ctxx.Self, 2 );
 				} ))
 				.PushN( ctx.Self );
 		}
@@ -139,7 +139,7 @@ public class MarkedBeast : IToken
 			.PushUpToN(self);
 		// 1 Fear and 2 Damage in its land.
 		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _spaceState!.Space }); // don't cache space-state, it might have moved
-		await _spaceState.DamageInvaders(self,2);
+		await _spaceState.UserSelected_DamageInvaders(self,2);
 	}
 
 	#endregion
