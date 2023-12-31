@@ -5,9 +5,9 @@ using SpiritIsland.FeatherAndFlame;
 using SpiritIsland.NatureIncarnate;
 using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
-class SpiritMarkerBuilder {
+public class SpiritMarkerBuilder {
 
 	static public Bitmap BuildSpiritMarker( Spirit spirit, Img img, ImgSource src ) {
 		Bitmap image = src.GetImg( img );
@@ -23,12 +23,13 @@ class SpiritMarkerBuilder {
 
 	static Bitmap BuildPresence( Bitmap shape, Spirit spirit ) {
 
-		PresenceTokenAppearance presenceAppearance = GetApearanceForSpirit(spirit);
+		TokenAppearance appearance = GetApearanceForSpirit(spirit);
 
 		// presenceAppearance.HslAdjustment.Adjust( bitmap );
 		using Bitmap pattern = ResourceImages.Singleton.LoadSpiritImage( spirit.Text );
-		SimpleMods.ColorOverlay( shape, pattern, presenceAppearance.PatternOffset );
-		SimpleMods.Contrast( shape, presenceAppearance.Contrast );
+		SimpleMods.ColorOverlay( shape, pattern, appearance.PatternOffset );
+
+		SimpleMods.BrightnessContrast_Photoshop( shape, appearance.Brightness, appearance.Contrast );
 
 		return shape;
 	}
@@ -38,49 +39,48 @@ class SpiritMarkerBuilder {
 		return bitmap;
 	}
 
-	static PresenceTokenAppearance GetApearanceForSpirit( Spirit spirit ) {
+	static TokenAppearance GetApearanceForSpirit( Spirit spirit ) {
 
 		return spirit.Text switch {
-			LightningsSwiftStrike.Name           => new PresenceTokenAppearance( 55, .64f ),
-			VitalStrength.Name                   => new PresenceTokenAppearance( 22, .47f, .35f ) { PatternOffset = new Point( 20, 60 ), Contrast = .8f },
-			Shadows.Name                         => new PresenceTokenAppearance( 337, .3f, .35f ) { PatternOffset = new Point( 80, 10 ), Contrast = .2f },
-			RiverSurges.Name                     => new PresenceTokenAppearance( 209, .5f, .4f ) { PatternOffset = new Point( 60, 54 ) },
-			Thunderspeaker.Name                  => new PresenceTokenAppearance( 0, .6f ),
-			ASpreadOfRampantGreen.Name           => new PresenceTokenAppearance( 114, .65f, .45f ),
-			Ocean.Name                           => new PresenceTokenAppearance( 200, .5f, .4f ),
-			Bringer.Name                         => new PresenceTokenAppearance( 300, .6f ) { PatternOffset = new Point( 180, 10 ), Contrast = .4f },
+			ASpreadOfRampantGreen.Name           => new TokenAppearance( 114, .65f, .45f ),
+			Bringer.Name                         => new TokenAppearance( 300, .6f ).Offset( 180, 10 ).BC(-.5f,.48f),
+			LightningsSwiftStrike.Name           => new TokenAppearance( 55, .64f ),
+			Ocean.Name                           => new TokenAppearance( 200, .5f, .4f ),
+			RiverSurges.Name                     => new TokenAppearance( 209, .5f, .4f ).Offset( 60, 54 ).BC(-.2f,.5f),
+			Shadows.Name                         => new TokenAppearance( 337, .3f, .35f ).Offset( 80, 10 ).BC(-.3f,.72f ),
+			Thunderspeaker.Name                  => new TokenAppearance( 0, .6f ).Offset( 100, 80 ),
+			VitalStrength.Name                   => new TokenAppearance( 22, .47f, .35f ).Offset( 20, 60 ).BC(0,.72f ),
 			//
-			SharpFangs.Name                      => new PresenceTokenAppearance( 0, .8f, .35f ),
-			Keeper.Name                          => new PresenceTokenAppearance( 30, .3f, .5f ) { PatternOffset = new Point( 100, 10 ), Contrast = .9f },
+			SharpFangs.Name                      => new TokenAppearance( 0, .8f, .35f ).BC(-.5f,.6f ),
+			Keeper.Name                          => new TokenAppearance( 30, .3f, .5f ).Offset( 100, 10 ).BC(0,.65f * 1.2f ),
 			//
-			StonesUnyieldingDefiance.Name        => new PresenceTokenAppearance( 30, .16f ),
-			VengeanceAsABurningPlague.Name       => new PresenceTokenAppearance( 15, .6f ),
-			VolcanoLoomingHigh.Name              => new PresenceTokenAppearance( 56, 1.0f, .35f ),
-			GrinningTricksterStirsUpTrouble.Name => new PresenceTokenAppearance( 58, .3f ) { Contrast = .7f },
-			LureOfTheDeepWilderness.Name         => new PresenceTokenAppearance( 125, .44f, .35f ) { PatternOffset = new Point(0,50) },
-			FracturedDaysSplitTheSky.Name        => new PresenceTokenAppearance( 160, .9f, .35f ),
-			ShroudOfSilentMist.Name              => new PresenceTokenAppearance( 196, .3f, .65f ),
-			ShiftingMemoryOfAges.Name            => new PresenceTokenAppearance( 180, .55f, .5f ) { PatternOffset = new Point( 60, 140 ), Contrast = .8f },
-			StarlightSeeksItsForm.Name           => new PresenceTokenAppearance( 251, .78f ),
-			ManyMindsMoveAsOne.Name              => new PresenceTokenAppearance( 326, .35f ),
+			FracturedDaysSplitTheSky.Name        => new TokenAppearance( 160, .9f, .35f ),
+			GrinningTricksterStirsUpTrouble.Name => new TokenAppearance( 58, .3f ).BC( .65f, .8f )/*.Offset(40,10)*/,
+			LureOfTheDeepWilderness.Name         => new TokenAppearance( 125, .44f, .35f ).Offset(0,60).BC(-.3f,.6f),
+			ManyMindsMoveAsOne.Name              => new TokenAppearance( 326, .35f ),
+			ShiftingMemoryOfAges.Name            => new TokenAppearance( 180, .55f, .5f ).Offset( 60, 140 ).BC(0,.72f ),
+			ShroudOfSilentMist.Name              => new TokenAppearance( 196, .3f, .65f ),
+			StonesUnyieldingDefiance.Name        => new TokenAppearance( 30, .16f ),
+			StarlightSeeksItsForm.Name           => new TokenAppearance( 251, .78f ),
+			VengeanceAsABurningPlague.Name       => new TokenAppearance( 15, .6f ),
+			VolcanoLoomingHigh.Name              => new TokenAppearance( 56, 1.0f, .35f ).Offset( 120, 20).BC(.3f,.84f ),
 			//
-			SerpentSlumbering.Name               => new PresenceTokenAppearance( 330, .3f ),
-			HeartOfTheWildfire.Name              => new PresenceTokenAppearance( 20, .8f ),
-			DownpourDrenchesTheWorld.Name        => new PresenceTokenAppearance(210, .7f, .35f) { PatternOffset = new Point(5, 10) },
-			FinderOfPathsUnseen.Name	         => new PresenceTokenAppearance( 218, .5f, .4f ),
+			DownpourDrenchesTheWorld.Name        => new TokenAppearance(210, .7f, .35f).Offset(5, 10),
+			FinderOfPathsUnseen.Name	         => new TokenAppearance( 218, .5f, .4f ).Offset( 80, 40 ).BC(0,.6f ),
+			HeartOfTheWildfire.Name              => new TokenAppearance( 20, .8f ),
+			SerpentSlumbering.Name               => new TokenAppearance( 330, .3f ).Offset(70,160).BC(.2f,.72f ),
 			//
-			BreathOfDarknessDownYourSpine.Name => new PresenceTokenAppearance(170, .16f, .21f) { PatternOffset = new Point(80, 70), Contrast = .25f },
-			ToweringRootsOfTheJungle.Name        => new PresenceTokenAppearance( 135, .22f, .35f ),
-			HearthVigil.Name                     => new PresenceTokenAppearance( 6,    .4f, .63f ),
+			BreathOfDarknessDownYourSpine.Name   => new TokenAppearance(170, .16f, .21f).Offset(80, 70).BC(0,.72f ),
+			DancesUpEarthquakes.Name             => new TokenAppearance( 30, .16f ).Offset( 30, 40 ).BC(.5f,.6f ),
+			EmberEyedBehemoth.Name               => new TokenAppearance( 45,  .4f, .5f ).Offset( 120, 110 ).BC(0,.65f * 1.2f ),
+			HearthVigil.Name                     => new TokenAppearance( 6,   .4f, .63f ).Offset( 40, 40 ).BC(0,.72f ),
+			RelentlessGazeOfTheSun.Name          => new TokenAppearance( 60,  .4f ).Offset( 10, 40 ).BC(-.4f,.6f ),
+			ToweringRootsOfTheJungle.Name        => new TokenAppearance( 135, .22f, .35f ),
+			WoundedWatersBleeding.Name           => new TokenAppearance( 270, .22f ).Offset( 100, 50 ).BC(0,.72f ),
+			WanderingVoiceKeensDelirium.Name     => new TokenAppearance( 300, .22f, .5f ).Offset( 50, 70 ).BC(0,.84f ),
 
-			WoundedWatersBleeding.Name           => new PresenceTokenAppearance( 270, .22f ) { PatternOffset = new Point( 100, 50 ), Contrast = .7f },
-			DancesUpEarthquakes.Name             => new PresenceTokenAppearance( 30, .16f ) { PatternOffset = new Point( 30, 40 ), Contrast = .15f },
-			RelentlessGazeOfTheSun.Name          => new PresenceTokenAppearance( 60,  .4f ),
-			WanderingVoiceKeensDelirium.Name     => new PresenceTokenAppearance( 300, .22f, .5f ) { PatternOffset = new Point( 100, 70 ), Contrast = .9f },
-			EmberEyedBehemoth.Name               => new PresenceTokenAppearance( 45,  .4f, .5f ) { Contrast = .75f },
-
 			//
-			_                                    => new PresenceTokenAppearance( 0, 0 ),
+			_                                    => new TokenAppearance( 0, 0 ),
 		};
 	}
 

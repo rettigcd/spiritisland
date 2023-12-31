@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.WinForms;
+﻿namespace SpiritIsland;
 
 public enum Align {
 	Default,

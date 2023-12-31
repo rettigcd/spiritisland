@@ -1,7 +1,7 @@
 ﻿using SpiritIsland;
 using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 // !!! Sacred Site icons suck
 // !! \r\n should causes new line( Dahan reclaim fishing grounds )
@@ -255,7 +255,7 @@ public class WrappingLayout {
 		++LineCount;
 
 		// Horizontal Alignment
-		int offset = _config.HorizontalAlignment switch { WinForms.Align.Center => RemainingWidth / 2, WinForms.Align.Far => RemainingWidth, _ => 0 };
+		int offset = _config.HorizontalAlignment switch { Align.Center => RemainingWidth / 2, Align.Far => RemainingWidth, _ => 0 };
 		foreach(IMoveHorizontally moveable in _rowItems)
 			moveable.Move( offset );
 		_rowItems.Clear();

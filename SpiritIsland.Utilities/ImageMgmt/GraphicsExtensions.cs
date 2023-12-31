@@ -1,8 +1,7 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 public record RectangleSubscript( Rectangle Rect, string Text);
 

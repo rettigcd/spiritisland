@@ -1,7 +1,6 @@
-﻿using SpiritIsland.WinForms;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace SpiritIsland.Utilities.ImageMgmt;
+namespace SpiritIsland;
 
 /// <summary>
 /// Draws: Speed, Range, Target head attributes on a given Graphics object.

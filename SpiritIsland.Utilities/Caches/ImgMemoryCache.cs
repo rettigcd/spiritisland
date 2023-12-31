@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 /// <summary>
 /// Pulls images from ResoueceImages/Files, and Caches them

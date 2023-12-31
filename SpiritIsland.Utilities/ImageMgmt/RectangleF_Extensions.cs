@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 static public class RectangleFExtensions {
 	static public Rectangle ToInts( this RectangleF r ) => new Rectangle( (int)r.X, (int)r.Y, (int)r.Width, (int)r.Height );

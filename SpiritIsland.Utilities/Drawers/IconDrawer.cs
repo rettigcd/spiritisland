@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Text;
 
-namespace SpiritIsland.WinForms; 
+namespace SpiritIsland; 
 
 
 public interface IconResources {

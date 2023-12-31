@@ -1,10 +1,9 @@
-﻿using SpiritIsland.WinForms;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Text.RegularExpressions;
 
-namespace SpiritIsland.Utilities.ImageMgmt;
+namespace SpiritIsland;
 
 /// <summary>
 /// The resources necessary to build a power card image.
@@ -61,8 +60,8 @@ public class PowerCardImageBuilder {
 		using(Image artwork = await resources.GetPowerCardImage( card ))
 			graphics.DrawImage( artwork, imgRect );
 
-		// Header
-		PowerHeaderDrawer.DrawAttributeValues( graphics, headerRect.SplitHorizontally( 3 ), card );
+        // Header
+        PowerHeaderDrawer.DrawAttributeValues( graphics, headerRect.SplitHorizontally( 3 ), card );
 
 		// Instructions
 		PaintInstructionArea( card.Instructions, textArea, graphics, Brushes.Cornsilk );

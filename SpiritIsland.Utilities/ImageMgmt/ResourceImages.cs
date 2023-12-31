@@ -1,12 +1,11 @@
 ﻿using SpiritIsland.Tests.Core;
-using SpiritIsland.Utilities.ImageMgmt;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 /// <summary>
 /// Used by IPaintableImageRect to get the images it needs to paint.
@@ -21,7 +20,7 @@ public class ResourceImages
 	, PowerCardResources
 	, InvaderCardResources
 	, FearCardResources
-	, IconResources 
+	, IconResources
 {
 
 	static public readonly ResourceImages Singleton = new ResourceImages();

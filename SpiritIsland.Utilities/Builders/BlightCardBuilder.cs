@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 /// <summary>
 /// Generates Blight Card Images

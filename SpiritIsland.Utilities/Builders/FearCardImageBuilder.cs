@@ -2,7 +2,7 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 
-namespace SpiritIsland.WinForms; 
+namespace SpiritIsland;
 
 public interface FearCardResources {
 	Bitmap CardTexture( string texture );

@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.WinForms;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Simplifies accessing a Spirit-Island App-Data folder

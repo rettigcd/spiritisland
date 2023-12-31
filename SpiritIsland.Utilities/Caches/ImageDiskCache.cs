@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 /// <summary>
 /// Caches Images on Disk
@@ -34,6 +34,7 @@ public class ImageDiskCache {
 
 	static public void SaveBmp( Bitmap bmp, string filePathAndName, ImageFormat imageFormat ) {
 
+		// Specify image quality.
 		const long quality = 80L; // 1..100?
 		var encoderParameters = new EncoderParameters( 1 );
 		encoderParameters.Param[0] = new EncoderParameter( Encoder.Quality, quality );
@@ -46,6 +47,7 @@ public class ImageDiskCache {
 		bmp.Save( filePathAndName, GetCodec( imageFormat ), encoderParameters );
 	}
 
+	/// <summary> Finds the ImageCodec the supports the given ImageFormat </summary>
 	static ImageCodecInfo GetCodec( ImageFormat imageFormat ) {
 		ImageCodecInfo? codec = ImageCodecInfo.GetImageDecoders()
 			.FirstOrDefault( codec => codec.FormatID == imageFormat.Guid );

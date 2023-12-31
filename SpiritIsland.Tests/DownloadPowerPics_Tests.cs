@@ -1,6 +1,4 @@
-﻿using SpiritIsland.Utilities.ImageMgmt;
-using SpiritIsland.WinForms;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Net.Http;
 
@@ -91,4 +89,25 @@ public class DownloadPowerPics_Tests {
 #pragma warning restore CA1416 // Validate platform compatibility
 		}
 	}
+
+//	[Theory()]
+	[Theory(Skip ="takes too long to run")]
+	[InlineData( AssemblyType.BaseGame )]
+	[InlineData( AssemblyType.BranchAndClaw )]
+	[InlineData( AssemblyType.JaggedEarth )]
+	[InlineData( AssemblyType.FeatherAndFlame )]
+	[InlineData( AssemblyType.NatureIncarnate )]
+	public void DrawTokenImages( string edition ) {
+		const string folder = "C:\\Users\\rettigcd\\Desktop\\spiritisland misc\\test_generated";
+		Type refObject = AssemblyType.GetEditionType( edition );
+		Spirit[] spirits = refObject.ScanForSpirits();
+		foreach(var spirit in spirits) {
+			using var bitmap = SpiritMarkerBuilder.BuildSpiritMarker( spirit, Img.Token_Presence, ResourceImages.Singleton);
+			ImageDiskCache.SaveBmp(bitmap, $"{folder}\\{spirit.Text}_ps.png", ImageFormat.Png );
+//			ImageDiskCache.SaveBmp( bitmap, $"{folder}\\{spirit.Text}_loch.png", ImageFormat.Png );
+			//ImageDiskCache.SaveBmp( bitmap, $"{folder}\\{spirit.Text}.png", ImageFormat.Png );
+		}
+	}
+
+
 }

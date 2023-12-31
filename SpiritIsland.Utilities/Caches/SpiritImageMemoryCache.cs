@@ -1,7 +1,6 @@
-﻿using SpiritIsland.A;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 /// <summary>
 /// Initializes Spirit tokens/markers and caches them in memory.

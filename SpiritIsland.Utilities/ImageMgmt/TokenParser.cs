@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 public static class TokenParser {
 	public static string[] Tokenize( string s ) {

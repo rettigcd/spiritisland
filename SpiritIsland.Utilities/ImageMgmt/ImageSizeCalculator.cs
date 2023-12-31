@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 /// <summary>
 /// Loads images and caches their size, but does not hang on to the image.

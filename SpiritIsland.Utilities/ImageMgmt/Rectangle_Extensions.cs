@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 public static class Rectangle_Extensions {
 
