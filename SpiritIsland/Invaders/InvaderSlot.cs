@@ -16,9 +16,15 @@ public abstract class InvaderSlot {
 				_skipCount--;
 			else
 				await ActivateCard(card,gs);
+		await ActionComplete.InvokeAsync(gs);
 	}
 
-	public List<InvaderCard> GetCardsToAdvance() {
+	/// <summary>
+	/// All Builds, or all Explores, or all Ravages
+	/// </summary>
+	public readonly AsyncEvent<GameState> ActionComplete = new AsyncEvent<GameState>();
+
+	public virtual List<InvaderCard> GetCardsToAdvance() {
 		var result = new List<InvaderCard>();
 		for(int i=0; i < Cards.Count; ++i)
 			if(0 < _holdBackCount)
@@ -33,5 +39,5 @@ public abstract class InvaderSlot {
 	public abstract Task ActivateCard( InvaderCard card, GameState gameState);
 
 	int _skipCount = 0;
-	int _holdBackCount = 0;
+	protected int _holdBackCount = 0;
 }

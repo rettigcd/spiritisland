@@ -1,55 +1,28 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class BrandenburgPrussia : IAdversary {
+public class BrandenburgPrussia : AdversaryBase, IAdversary {
 
 	public const string Name = "Brandenburg-Prussia";
 
-	public int Level { get; set; }
-
-	public InvaderDeckBuilder InvaderDeckBuilder => new InvaderDeckBuilder( Level switch {
-		2 => new int[] { 1, 1, 1, 3, 2, 2, 2, 2, 3, 3, 3, 3, },
-		3 => new int[] { 1, 1, 3, 2, 2, 2, 2, 3, 3, 3, 3, },
-		4 => new int[] { 1, 1, 3, 2, 2, 2, 3, 3, 3, 3 },
-		5 => new int[] { 1, 3, 2, 2, 2, 3, 3, 3, 3 },
-		6 => new int[] { 3, 2, 2, 2, 3, 3, 3, 3 },
-		_ => null // use default
-	} );
-
-
-	public int[] FearCardsPerLevel => Level switch {
-		1 => new int[] { 3, 3, 3 },
-		2 => new int[] { 3, 3, 3 },
-		3 => new int[] { 3, 4, 3 },
-		4 => new int[] { 4, 4, 3 },
-		5 => new int[] { 4, 4, 3 },
-		6 => new int[] { 4, 4, 4 },
-		_ => null
+	public override AdversaryLevel[] Levels => new AdversaryLevel[] {
+		// Escalation
+		new AdversaryLevel(1 , 3,3,3, "Land Rush", "On each board with Town/City, add 1 Town to a land withouth Towns." ).WithEscalation( LandRush ),
+		// Level 1
+		new AdversaryLevel(2 , 3,3,3, "Fast Start", "During Setup, on each board add 1 town to land #3" ){ 
+			InitFunc = (gs,_) => {
+				foreach(var board in gs.Island.Boards)
+					board[3].Tokens.AdjustDefault( Human.Town, 1 );
+				gs.LogDebug("Adding 1 town to land #3");
+			}
+		},
+		new AdversaryLevel(4 , 3,3,3, "Surge of Colonists",   "111-3-2222-3333" ).WithInvaderDeck(1,1,1, 3, 2,2,2,2, 3,3,3,3),
+		new AdversaryLevel(6 , 3,4,3, "Efficient",            "11-3-2222-3333"  ).WithInvaderDeck(1,1,   3, 2,2,2,2, 3,3,3,3),
+		new AdversaryLevel(7 , 4,4,3, "Agressive Timetable",  "11-3-222-3333"   ).WithInvaderDeck(1,1,   3, 2,2,2,   3,3,3,3),
+		new AdversaryLevel(9 , 4,4,3, "Ruthlessly Efficent",  "1-3-222-3333"    ).WithInvaderDeck(1,     3, 2,2,2,   3,3,3,3),
+		new AdversaryLevel(10, 4,4,4, "Terrifying Efficient", "3-222-3333"      ).WithInvaderDeck(       3, 2,2,2,   3,3,3,3),
 	};
 
-	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {
-		new ScenarioLevel(1 , 3,3,3, "Land Rush", "On each board with Town/City, add 1 Town to a land withouth Towns." ),
-		new ScenarioLevel(2 , 3,3,3, "Fast Start",           "During Setup, on each board add 1 town to land #3" ),
-		new ScenarioLevel(4 , 3,3,3, "Surge of Colonists",   "111-3-2222-3333" ),
-		new ScenarioLevel(6 , 3,4,3, "Efficient",            "11-3-2222-3333" ),
-		new ScenarioLevel(7 , 4,4,3, "Agressive Timetable",  "11-3-222-3333" ),
-		new ScenarioLevel(9 , 4,4,3, "Ruthlessly Efficent",  "1-3-222-3333" ),
-		new ScenarioLevel(10, 4,4,4, "Terrifying Efficient", "3-222-3333" ),
-	};
-
-	public void PreInitialization( GameState gameState ) {
-		gameState.InvaderDeck.Explore.Engine.Escalation = LandRush;
-
-		if(1 <= Level)
-			FastStart( gameState );
-	}
-
-	static void FastStart( GameState gameState ) {
-		foreach(var board in gameState.Island.Boards)
-			board[3].Tokens.AdjustDefault( Human.Town, 1 );
-		gameState.LogDebug("Adding 1 town to land #3");
-	}
-
-	public void PostInitialization( GameState gameState ) {}
+	#region LandRush - Escalation
 
 	static async Task LandRush( GameState gs ) {
 		// Land Rush: On each board with Town / City, add 1 Town to a land without Town
@@ -81,5 +54,7 @@ public class BrandenburgPrussia : IAdversary {
 			.Where( ss => ss.SumAny( Human.Town_City ) == 0 )
 			.OrderBy( ss => ss.Space.Text )
 			.FirstOrDefault(); // (!! simplification) when multiple, select closest to coast.;
+
+	#endregion
 
 }

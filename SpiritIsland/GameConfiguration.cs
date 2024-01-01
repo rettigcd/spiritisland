@@ -125,15 +125,15 @@ public class GameBuilder {
 		gameState.BlightCard = blightCards[0];
 		blightCards.RemoveAt( 0 );
 
-		adversary.PreInitialization( gameState );
+		adversary.Init( gameState );
 
 		// Enable Win / Loss Check
-		gameState.AddStandardWinLossCheck();
+		gameState.AddStandardWinLossChecks();
 
 		gameState.Initialize();
 
 		// After initializing: Starting-Tokens, Explore-Card, Blight Card (and spirits)
-		adversary.PostInitialization( gameState );
+		adversary.AdjustPlacedTokens( gameState );
 
 		if(cfg.CommandTheBeasts)
 			CommandTheBeasts.Setup( gameState );
@@ -142,16 +142,15 @@ public class GameBuilder {
 	}
 
 	class NullAdversary : IAdversary {
-		public int Level { set { } } // ignore
+		public int Level { get => 0; set { } } // ignore
 		public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
 
 		public int[] FearCardsPerLevel => new int[] { 3, 3, 3 };
 
-		public ScenarioLevel[] Adjustments => Array.Empty<ScenarioLevel>();
+		public AdversaryLevel[] Levels => Array.Empty<AdversaryLevel>();
 
-
-		public void PostInitialization( GameState _ ) { }
-		public void PreInitialization( GameState _ ) { }
+		public void AdjustPlacedTokens( GameState _ ) { }
+		public void Init( GameState _ ) { }
 	}
 
 }

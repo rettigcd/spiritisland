@@ -1,99 +1,80 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class England : IAdversary {
+public class England : AdversaryBase, IAdversary {
 
 	public const string Name = "England";
 
-	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {
-		new ScenarioLevel(1 , 3,3,3, "Building Boom", " On each board with Town/City, Build in the land with the most Town/City." ),
+	public override AdversaryLevel[] Levels => _levels;
 
-		//1	(3)	10 (3/4/3)	Indentured Servants Earn Land: 
-		//	Invader Build Cards affect matching lands without Invaders if they are adjacent to at least 2 Towns/Citys.
-		new ScenarioLevel(3 , 3,4,3, "Indentured Servants Earn Land",           "Invader Build Cards affect matching lands without Invaders if they are adjacent to at least 2 Towns/Citys." ),
+	AdversaryLevel[] _levels = new AdversaryLevel[] {
+		// Escalation
+		new AdversaryLevel(1, 3,3,3, "Building Boom", " On each board with Town/City, Build in the land with the most Town/City." )
+			.WithEscalation( BuildingBoom_Escalation )
+			.WithWinLossCondition( ProudAndMightyCapital ),
 
-		//2	(4)	11 (4/4/3)	Criminals and Malcontents: 
-		//	During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
-		new ScenarioLevel(4 , 4,4,3, "Criminals and Malcontents",   "During Setup, on each board add 1 City to land #1 and 1 Town to land #2." ),
+		// Level 1
+		new AdversaryLevel(3, 3,4,3, "Indentured Servants Earn Land",
+			"Invader Build Cards affect matching lands without Invaders if they are adjacent to at least 2 Towns/Cities."
+		){ InitFunc = (gs,_) => {
+			gs.LogDebug("Indentured Servants Earn Land => Builds occur in spaces adjacent to at least 2 Towns/Cities.");
+			gs.InvaderDeck.Build.Engine = new EnglandBuilder(); 
+		} },
 
-		//3	(6)	13 (4/5/4)	High Immigration(I): 
-		//	Put the "High Immigration" tile on the Invader board, to the left of "Ravage".
-		//	The Invaders take this Build action each Invader phase before Ravaging.
-		//	Cards slide left from Ravage to it, and from it to the discard pile.
-		//	Remove the tile when a Stage II card slides onto it, putting that card in the discard.
-		new ScenarioLevel(6 , 4,5,4, "High Immigration(I)", "Perform a build prior to Ravage" ),
+		// Level 2
+		new AdversaryLevel(4, 4,4,3, "Criminals and Malcontents", 
+			"During Setup, on each board add 1 City to land #1 and 1 Town to land #2."
+		){ InitFunc = (gs,_) => {
+			foreach(var board in gs.Island.Boards) {
+				board[1].Tokens.AdjustDefault( Human.City, 1 );
+				board[2].Tokens.AdjustDefault( Human.Town, 1 );
+			}
+			gs.LogDebug("Criminals & Malcontents: Adding additional city to #1 and town to #2");
+		}},
 
-		//4	(7)	14 (4/5/5)	High Immigration(full): 
-		//	The extra Build tile remains out the entire game.
-		new ScenarioLevel(7 , 4,5,5, "High Immigration(full)",  "The extra Build tile remains out the entire game." ),
+		// Level 3
+		new AdversaryLevel(6, 4,5,4, "High Immigration(I)", 
+			"Perform a build prior to Ravage"
+			//	Put the "High Immigration" tile on the Invader board, to the left of "Ravage".
+			//	The Invaders take this Build action each Invader phase before Ravaging.
+			//	Cards slide left from Ravage to it, and from it to the discard pile.
+			//	Remove the tile when a Stage II card slides onto it, putting that card in the discard.
+		){
+			InitFunc = (gameState,adversary) => {
+				var highBuildSlot = new HighImmegrationSlot( adversary.Level );
+				gameState.InvaderDeck.ActiveSlots.Insert( 0, highBuildSlot );
+				// only remove it for level 3, level 4 and up keeps it
+				if(adversary.Level < 4)
+					HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
+			}
+		},
 
-		//5	(9)	14 (4/5/5)	Local Autonomy: 
-		//	Towns/Citys have +1 Health.
-		new ScenarioLevel(9 , 4,5,5, "Local Autonomy",  "Towns/Citys have +1 Health" ),
+		// Level 4
+		new AdversaryLevel(7, 4,5,5, "High Immigration(full)",  
+			"The extra Build tile remains out the entire game."
+		), // no action - done in Level3
 
-		//6	(11)	13 (4/5/4)	Independent Resolve: 
+		// Level 5
+		new AdversaryLevel(9 , 4,5,5, "Local Autonomy",  "Towns/Citys have +1 Health" ) {
+			InitFunc = (gameState,_) => {
+				gameState.Tokens.TokenDefaults[Human.City] = new HumanToken( Human.City, 4 );
+				gameState.Tokens.TokenDefaults[Human.Town] = new HumanToken( Human.Town, 3 );
+			}
+		},
+
+		// Level 6
+		new AdversaryLevel(11, 4,5,4, "Independent Resolve", 
+			"FearPool+=1, NoFear=>Additional build"
 		//	During Setup, add an additional Fear to the Fear Pool per player in the game.
 		//	During any Invader Phase where you resolve no Fear Cards, perform the Build from High Immigration twice.
 		//	(This has no effect if no card is on the extra Build slot.)
-		new ScenarioLevel(11, 4,5,4, "Independent Resolve", "FearPool+=1, NoFear=>Additional build" ),
+		) {
+			InitFunc = (gameState,_) => gameState.Fear.PoolMax += gameState.Spirits.Length,
+		},
 	};
 
-	public int Level { get; set; }
+	#region Escalation - Building Boom
 
-	public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
-
-	public int[] FearCardsPerLevel => Level switch {
-		1 => new int[] { 3, 4, 3 },
-		2 => new int[] { 4, 4, 3 },
-		3 => new int[] { 4, 5, 4 },
-		4 => new int[] { 4, 5, 5 },
-		5 => new int[] { 4, 5, 5 },
-		6 => new int[] { 4, 5, 4 },
-		_ => null,
-	};
-
-	public void PreInitialization( GameState gameState ) {
-		gameState.InvaderDeck.Explore.Engine.Escalation = BuildingBoom;
-
-		if( 1 <= Level )
-			gameState.InvaderDeck.Build.Engine = new EnglandBuilder();
-
-		if( 2 <= Level )
-			CriminalsAndMalcontents( gameState );
-
-		if( 3 <= Level ) {
-			var highBuildSlot = new HighImmegrationSlot( Level );
-			gameState.InvaderDeck.ActiveSlots.Insert( 0, highBuildSlot );
-			if(Level == 3)
-				HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
-		}
-
-		if( 5 <= Level )
-			LocalAutonomy( gameState );
-
-		if( Level == 6)
-			gameState.Fear.PoolMax += gameState.Spirits.Length;
-
-		gameState.AddWinLossCheck( ProudAndMightyCapital );
-
-	}
-	public void PostInitialization( GameState gs ) { }
-
-	static void LocalAutonomy( GameState gameState ) {
-		// Level 5 - towns/cities have +1 health
-		gameState.Tokens.TokenDefaults[Human.City] = new HumanToken( Human.City, 4 );
-		gameState.Tokens.TokenDefaults[Human.Town] = new HumanToken( Human.Town, 3 );
-	}
-
-	static void CriminalsAndMalcontents( GameState gameState ) {
-		// During Setup, on each board add 1 City to land #1 and 1 Town to land #2.
-		foreach(var board in gameState.Island.Boards) {
-			board[1].Tokens.AdjustDefault( Human.City, 1 );
-			board[2].Tokens.AdjustDefault( Human.Town, 1 );
-		}
-		gameState.LogDebug("Criminals & Malcontents: Adding additional city to #1 and town to #2");
-	}
-
-	async Task BuildingBoom( GameState gs ) {
+	static async Task BuildingBoom_Escalation( GameState gs ) {
 		// Escalation Stage II
 		// Building Boom: On each board with Town / City, Build in the land with the most Town / City
 
@@ -121,6 +102,10 @@ public class England : IAdversary {
 			.FirstOrDefault()?.SpaceState;
 	}
 
+	#endregion
+
+	#region Win/Loss Condition - Proud and Mighty Capital
+
 	static void ProudAndMightyCapital( GameState gs ) {
 		const string Name = "Proud & Mighty Capital";
 		// Additional Loss Condition
@@ -131,6 +116,10 @@ public class England : IAdversary {
 			GameOverException.Lost($"{Name} on {capital.Space.Text}");
 	}
 
+	#endregion Win/Loss Condition - Proud and Mighty Capital
+
+	#region Level 3 - High Immegration
+
 	public class HighImmegrationSlot : BuildSlot {
 		public HighImmegrationSlot( int level ):base("High Immigration"){
 			_repeatWhenNoFearResolved = level == 6;
@@ -139,8 +128,11 @@ public class England : IAdversary {
 		readonly bool _repeatWhenNoFearResolved;
 		int lastCountOfFearCardsResolved = 0;
 		public override async Task Execute( GameState gs ) {
+
 			// Do Normal Build
 			await base.Execute( gs );
+
+			// !!! Instead of replacing the entire BuildSlot, just hook into the BuildSlot.Complete event to do the below stuff
 
 			// If no fear cards were Resolved
 			if(_repeatWhenNoFearResolved) {
@@ -164,5 +156,7 @@ public class England : IAdversary {
 		}
 
 	}
+
+	#endregion Level 3 - High Immegration
 
 }

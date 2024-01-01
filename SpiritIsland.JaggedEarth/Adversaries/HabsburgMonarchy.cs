@@ -1,95 +1,122 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class HabsburgMonarchy : IAdversary {
+public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 	public const string Name = "Habsburg Monarchy";
 
-	public int Level { get; set; }
+	public override AdversaryLevel[] Levels => _levels;
 
-	public InvaderDeckBuilder InvaderDeckBuilder => new InvaderDeckBuilder( Level switch {
-		>=3 => new int[] { 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 },
-		_ => null // use default
-	} );
-
-	public int[] FearCardsPerLevel => Level switch {
-		1 => new int[] { 3, 4, 3 },
-		2 => new int[] { 4, 5, 2 },
-		3 => new int[] { 4, 5, 3 },
-		4 => new int[] { 4, 5, 3 },
-		5 => new int[] { 4, 6, 3 },
-		6 => new int[] { 5, 6, 3 },
-		_ => null
-	};
-
-	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {
+	AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
-		new ScenarioLevel(2 , 3,3,3, "Seek Prime Territory", "On each board with 4 or fewer Blight, add 1 Town to a land without Town/Blight. On each board with 2 or fewer Blight, do so again." ),
+		new AdversaryLevel(2 , 3,3,3, "Seek Prime Territory", "On each board with 4 or fewer Blight, add 1 Town to a land without Town/Blight. On each board with 2 or fewer Blight, do so again." ){
+			InitFunc = (gameState,_) => {
+				// Additional loss condition - too many 8+blight
+				var tooManyBlight = new TooManyBlight();
+				gameState.AddIslandMod(tooManyBlight);
+				gameState.AddWinLossCheck(tooManyBlight.IrreparableDamage_LossCheck);
+			}
+		}
+			.WithEscalation( SeekPrimeTerritory_Escalation ),
+
 		// Level 1
-		new ScenarioLevel(3 , 3,4,3, "Migratory Herders", "After the normal Build Step: In each land matching a Build Card, Gather 1 Town from a land not matching a Build Card. (In board/land order.)" ),
+		new AdversaryLevel(3 , 3,4,3, "Migratory Herders", 
+			"After the normal Build Step: In each land matching a Build Card, Gather 1 Town from a land not matching a Build Card. (In board/land order.)" ) {
+			InitFunc = (gameState,_) => gameState.InvaderDeck.Build.Engine = new HabsurgBuilder(),
+		},
+
 		// Level 2
-		new ScenarioLevel(5 , 4,5,2, "More Rural Than Urban", "During Setup, on each board, add 1 Town to land #2 and 1 Town to the highest-numbered land without Setup symbols. During Play, when Invaders would Build 1 City in an Inland land, they instead Build 2 Town." ),
+		new AdversaryLevel(5 , 4,5,2, "More Rural Than Urban", 
+			"During Setup, on each board, add 1 Town to land #2 and 1 Town to the highest-numbered land without Setup symbols. "+
+			"During Play, when Invaders would Build 1 City in an Inland land, they instead Build 2 Town." 
+		) {
+			InitFunc = (gameState,_) => {
+				// on each board,
+				var spaces = gameState.Island.Boards
+					.SelectMany( board => new Space[] {
+					// on land #2 
+					board[2],
+					// and the highest-numbered land without Setup symbols,
+					board.Spaces.Last(x =>((Space1) x).StartUpCounts.IsEmpty)
+					} )
+					.Tokens()
+					.ToArray();
+
+				// add 1 Town
+				foreach(SpaceState space in spaces)
+					space.AdjustDefault( Human.Town, 1 );
+				gameState.LogDebug( $"More Rural than Urban: Added towns to " + spaces.SelectLabels().Order().Join( "," ) );
+
+				((HabsurgBuilder)gameState.InvaderDeck.Build.Engine).ReplaceInlandCityWith2Towns = true; 
+			},
+		},
+
 		// Level 3
-		new ScenarioLevel(6 , 4,5,3, "Fast Spread", "When making the Invader Deck, Remove 1 additional Stage I Card. (New deck order: 11-2222-33333)" ),
+		new AdversaryLevel(6 , 4,5,3, "Fast Spread", 
+			"When making the Invader Deck, Remove 1 additional Stage I Card. (New deck order: 11-2222-33333)" )
+			.WithInvaderDeck(1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3),
+
 		// Level 4
-		new ScenarioLevel(8 , 4,5,3, "Herds Thrive in Verdant Lands",  "Town in lands without Blight are Durable: they have +2 Health, and 'Destroy Town' effects instead deal 2 Damage (to those Town only) per Town they could Destroy. ('Destroy all Town' works normally.)" ),
+		new AdversaryLevel(8 , 4,5,3, "Herds Thrive in Verdant Lands",  
+			"Town in lands without Blight are Durable: they have +2 Health, and 'Destroy Town' effects instead deal 2 Damage (to those Town only) per Town they could Destroy. ('Destroy all Town' works normally.)" ){ 
+			InitFunc = (gameState,_) => gameState.AddIslandMod( new HabsburgMakeTownsDurable() )
+		},
+
 		// Level 5
-		new ScenarioLevel(9 , 4,6,3, "Wave of Immigration",  "Before the initial Explore, put the Habsburg Reminder Card under the top 5 Invader Cards. When Revealed, on each board, add 1 City to a Coastal land without City and 1 Town to the 3 Inland lands with the fewest Blight." ),
+		new AdversaryLevel(9 , 4,6,3, "Wave of Immigration", 
+			"Before the initial Explore, put the Habsburg Reminder Card under the top 5 Invader Cards. When Revealed, on each board, add 1 City to a Coastal land without City and 1 Town to the 3 Inland lands with the fewest Blight." ){ 
+			InitFunc = (gameState,_) => gameState.InvaderDeck.UnrevealedCards[4].CardFlipped += WaveOfImmigration
+		},
+
 		// Level 6
-		new ScenarioLevel(10, 5,6,3, "Far-Flung Herds", "Ravages do +2 Damage (total) if any adjacent lands have Town. (This does not cause lands without Invaders to Ravage.)" ),
+		new AdversaryLevel(10, 5,6,3, "Far-Flung Herds", 
+			"Ravages do +2 Damage (total) if any adjacent lands have Town. (This does not cause lands without Invaders to Ravage.)" ){ 
+			InitFunc = (gameState,_) => {
+				// !! Can simplify RavageBehavior if we slap a Town-Tracking token on every space Which updates a 'NeighboringTownsToken' that does damage.
+				// !! requires that we tag invaders as attackers and dahan as defenders.
+
+				var originalBehavior = RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers;
+
+				RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers = (rex) => {
+
+					bool hasNeighborTown = rex.Tokens.Adjacent.Any( s => s.Has( Human.Town ) );
+					// Not logging additional damage here because Ravage is already very verbose.
+					return originalBehavior( rex )
+						+ (hasNeighborTown ? 2 : 0);
+				};
+			}
+		},
 	};
 
-	public void PreInitialization( GameState gameState ) {
+	#region Escalation
 
-		var hasburgBuilder = new HasburgBuilder();
-		gameState.InvaderDeck.Build.Engine = hasburgBuilder;
+	static async Task SeekPrimeTerritory_Escalation( GameState gameState ) {
 
-		// Escalation - Seek Prime Territory
-		gameState.InvaderDeck.Explore.Engine.Escalation = SeekPrimeTerritory_Escalation;
+		await using var actionScope = await ActionScope.Start( ActionCategory.Adversary );
 
-		// Level 1 - Migratory Herders
-		if( 1 <= Level)
-			hasburgBuilder.HasMigratoryHerders = true;
+		// On each board
+		await Cmd.ForEachBoard( new BaseCmd<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
+			.ActAsync( gameState );
 
-		// Level 2 - More Rural than Urban
-		if( 2 <= Level) {
-			MoreRuralThanUrban_Setup( gameState ); // adds towns
-			hasburgBuilder.ReplaceInlandCityWith2Towns = true;
-		}
-
-		// Level 3 - Invader deck changes
-
-		// Level 4 - Herds Thrive in Verdant Lands (durable towns)
-		if( 4 <= Level)
-			gameState.AddIslandMod( new HabsburgMakeTownsDurable() );
-
-		// Level 5 - Wave of Immigration - Invader Card #5 => +1 Coastal City, +3 non-blight Towns
-		
-		if(5 <= Level)
-			gameState.InvaderDeck.UnrevealedCards[4].CardFlipped += WaveOfImmigration;
-
-		// Level 6 - Far-Flung Herds, +2 Ravage damage if adjacent town
-		// ! see note below
-		if(6 <= Level) {
-			var originalBehavior = RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers;
-
-			RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers = (rex) => {
-
-				bool hasNeighborTown = rex.Tokens.Adjacent.Any( s => s.Has( Human.Town ) );
-				// Not logging additional damage here because Ravage is already very verbose.
-				return originalBehavior( rex )
-					+ (hasNeighborTown ? 2 : 0);
-			};
-		}
-
-		// Additional loss condition - too many 8+blight
-		var tooManyBlight = new TooManyBlight();
-		gameState.AddIslandMod(tooManyBlight);
-		gameState.AddWinLossCheck(tooManyBlight.IrreparableDamage_LossCheck);
 	}
 
-	public void PostInitialization( GameState gamestate ) { }
+	static async Task IfTooHealthyAddBlight( BoardCtx ctx ) {
+		var spaces = ctx.Board.Spaces.Tokens().ToArray();
+		int townsToAdd = spaces.Sum( x => x.Blight.Count ) switch { <= 2 => 2, <= 4 => 1, _ => 0 };
 
-	#region private
+		for(int i = 0; i < townsToAdd; ++i) {
+			var addSpaces = spaces.Where( x => x.SumAny( Token.Blight, Human.Town ) == 0 ).ToArray();
+			if(addSpaces.Length == 0) break;
+
+			var criteria = new A.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
+			var addSpace = await ctx.Self.SelectAsync( criteria );
+			await addSpace.Tokens.AddDefault( Human.Town, 1, AddReason.Build );
+		}
+	}
+
+	#endregion Escalation
+
+
+	#region Level-5
 
 	static async Task WaveOfImmigration( GameState gameState ) {
 		// Level 5
@@ -131,52 +158,7 @@ public class HabsburgMonarchy : IAdversary {
 		gameState.LogDebug("Wave of Immigration: Adding " + logParts.Join(" and "));
 	}
 
-	static void MoreRuralThanUrban_Setup( GameState gameState ) {
-		// Level 2, During Setup...
-		
-		// on each board,
-		var spaces = gameState.Island.Boards
-			.SelectMany( board => new Space[] {
-				// on land #2 
-				board[2],
-				// and the highest-numbered land without Setup symbols,
-				board.Spaces.Last(x =>((Space1) x).StartUpCounts.IsEmpty)
-			} )
-			.Tokens()
-			.ToArray();
-
-		// add 1 Town
-		foreach(SpaceState space in spaces)
-			space.AdjustDefault( Human.Town, 1 );
-
-		gameState.LogDebug($"More Rural than Urban: Added towns to "+spaces.SelectLabels().Order().Join(","));
-	}
-
-	async Task SeekPrimeTerritory_Escalation( GameState gameState ) {
-
-		await using var actionScope = await ActionScope.Start(ActionCategory.Adversary);
-
-		// On each board
-		await Cmd.ForEachBoard( new BaseCmd<BoardCtx>( "Add 1 or 2 blight to land without town/blight.", IfTooHealthyAddBlight ) )
-			.ActAsync( gameState );
-
-	}
-
-	static async Task IfTooHealthyAddBlight(BoardCtx ctx) {
-		var spaces = ctx.Board.Spaces.Tokens().ToArray();
-		int townsToAdd = spaces.Sum( x => x.Blight.Count ) switch { <= 2 => 2, <= 4 => 1, _ => 0 };
-
-		for(int i = 0; i < townsToAdd; ++i) {
-			var addSpaces = spaces.Where( x => x.SumAny( Token.Blight, Human.Town ) == 0 ).ToArray();
-			if(addSpaces.Length == 0) break;
-
-			var criteria = new A.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
-			var addSpace = await ctx.Self.SelectAsync( criteria );
-			await addSpace.Tokens.AddDefault( Human.Town, 1, AddReason.Build );
-		}
-	}
-
-	#endregion
+	#endregion Level-5
 
 }
 
@@ -196,11 +178,6 @@ class TooManyBlight : BaseModEntity, IReactToLandDamage {
 	}
 
 }
-
-// Far-Flung Herds
-// !! Can simplify RavageBehavior if we slap a Town-Tracking token on every space Which updates a 'NeighboringTownsToken' that does damage.
-// !! requires that we tag invaders as attackers and dahan as defenders.
-
 
 /*
 

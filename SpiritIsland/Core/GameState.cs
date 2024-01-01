@@ -140,7 +140,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public void AddIslandMod( BaseModEntity mod ) => Tokens.AddIslandMod( mod );
 
 	public void AddToAllActiveSpaces( BaseModEntity mod ) {
-		foreach(var space in this.Spaces_Existing)
+		foreach(var space in Spaces_Existing)
 			space.Adjust(mod,1);
 	}
 
@@ -151,7 +151,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Used to add the standard TerrorLevelVictory check or custom Adversary checks
 	/// </summary>
-	public void AddStandardWinLossCheck() {
+	public void AddStandardWinLossChecks() {
 		WinLossChecks.Add( CheckTerrorLevelVictory );
 		WinLossChecks.Add( CheckIfSpiritIsDestroyed );
 		WinLossChecks.Add( CheckIfTimeRunsOut );

@@ -1,98 +1,100 @@
 ﻿namespace SpiritIsland.Basegame.Adversaries;
 
-/*
 
-Additional Loss Condition
-Sprawling Plantations: Before Setup, return all but 7 Town per player to the box. Invaders win if you ever cannot place a Town.
+public class France : AdversaryBase, IAdversary {
 
-*/
+	public override AdversaryLevel[] Levels => _levels;
 
-public class France : IAdversary {
+	AdversaryLevel[] _levels = new AdversaryLevel[] {
+		// Level 0 - Escalation
+		new AdversaryLevel(2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ) {
+			InitFunc = (gs,adv) => {
+				gs.InvaderDeck.Build.Engine = new FranceBuilder( 
+					hasSlaveLabor: 2 <= adv.Level, // Level 2 stuff
+					hasTriangeTrade: 4 < adv.Level // Level 4 stuff
+				);
+				gs.InvaderDeck.Explore.Engine = new FranceExplorer( 
+					hasFrontierExploration: 1 <= adv.Level, // Level 1 stuff
+					hasPersistentExplorers: 6 <= adv.Level  // Level 6 stuff
+				);
+			}
+		}.WithWinLossCondition(SprawlingPlantations),
 
-	public int Level { get; set; }
+		// Level 1
+		new AdversaryLevel(3 , 3,3,3, "Frontier Explorers", "Except during Setup: After Invaders successfullly Explore into a land which has not Town/City, add 1 Explorer there." ),
 
-	public void PostInitialization( GameState gs ) {}
+		// Level 2
+		new AdversaryLevel(5 , 3,4,3, "Slave Labor", "During Setup, put the 'Slave Rebellion' event under the top 3 cards of the Event Deck.  After Invaders Buid in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town." ) {
+			InitFunc = (gameState,_) => {
+				gameState.StartOfInvaderPhase.Add( async gs => {
+				if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
 
-	public int[] FearCardsPerLevel => Level switch {
-		1 => new int[] { 3, 3, 3 },
-		2 => new int[] { 3, 4, 3 },
-		3 => new int[] { 4, 4, 3 },
-		4 => new int[] { 4, 4, 4 },
-		5 => new int[] { 4, 5, 4 },
-		6 => new int[] { 4, 5, 5 },
-		_ => null,
+				BaseCmd<BoardCtx> cmd = (gs.InvaderDeck.InvaderStage < 3)
+					? AddStrifeToTown
+					: Cmd.Multiple<BoardCtx>(
+						"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
+						DestroyTown,
+						Add2StrifeToCityOrTown,
+						StrifedRavage.StrifedInvadersTakeDamagePerStrife
+					);
+
+					await using var actionScope = await ActionScope.Start(ActionCategory.Adversary);
+					await cmd.ForEachBoard().ActAsync( gameState );
+				});
+			}
+		},
+
+		// Level 3
+		new AdversaryLevel(7 , 4,4,3, "Early Plantation", 
+			"During Setup, on each board add 1 Town to the highest-numbered land without Town.  Add 1 Town to land #1." ) {
+			InitFunc = (gameState,_) => {
+				// During Setup, on each board
+				foreach(var board in gameState.Island.Boards) {
+					// add 1 Town to the highest-numbered land without Town.
+					var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
+					highLandWithoutTown.Tokens.AdjustDefault( Human.Town, 1 );
+					// Add 1 Town to land #1.
+					board[1].Tokens.AdjustDefault( Human.Town, 1 );
+				}
+			}
+		},
+
+		// Level 4
+		new AdversaryLevel(8 , 4,4,4, "Triangle Trade",  "Whenever Invaders Build a Coastal City, add 1 Town to the adjacent land with the fewest Town." ),
+
+		// Level 5
+		new AdversaryLevel(9 , 4,5,4, "Slow-Healing Ecosystem",  
+			"When you remove Blight fomr the board, put it here instead of onto the Blight Card. As soon as you have 3 Blight per player here, move it all back to the Blight Card." ) {
+			InitFunc = (gameState,_) => {
+				// When you remove Blight from the board, put it here instead of onto the Blight Card.
+				// As soon as you have 3 Blight per player here, move it all back to the Blight Card.
+
+				async Task DoFranceStuff( ITokenRemovedArgs args ) {
+					if(args.Removed != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
+
+					var slowBlight = FrancePanel.Tokens.Blight;
+					var blightCard = BlightCard.Space.Tokens;
+					if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
+						await blightCard.AddAsync(Token.Blight,1);
+						slowBlight.Init(0);
+					} else {
+						await blightCard.RemoveAsync(Token.Blight,1);
+						slowBlight.Adjust(1);
+					}
+				}
+
+				gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent(DoFranceStuff) );
+
+			}
+		},
+
+		// Level 6
+		new AdversaryLevel(10, 4,5,5, "Persistent Explorers", "After resolving an Explore Card, on each board add 1 Explorer to a land without any.  Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer." ) {
+			InitFunc = (gameState,_) => gameState.AddIslandMod( new FranceFearPushesExplorers() )
+		},
 	};
 
-	public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
-
-	public void PreInitialization( GameState gameState ) {
-		gameState.InvaderDeck.Build.Engine = new FranceBuilder( Level );
-		gameState.InvaderDeck.Explore.Engine = new FranceExplorer( Level );
-
-
-		if( 2 <= Level)
-			AddSlaveRebellionEvent( gameState );
-		if( 3 <= Level)
-			EarlyPlantation( gameState );
-		if( 5 <= Level )
-			SlowHealingEcosystem( gameState );
-		if( 6 <= Level )
-			gameState.AddIslandMod( new FearPushesExplorers() );
-	}
-
-	static readonly FakeSpace FrancePanel = new FakeSpace( "FranceAdversaryPanel" ); // stores slow blight
-
-	static void SlowHealingEcosystem( GameState gameState ) {
-		// When you remove Blight from the board, put it here instead of onto the Blight Card.
-		// As soon as you have 3 Blight per player here, move it all back to the Blight Card.
-
-		async Task DoFranceStuff( ITokenRemovedArgs args ) {
-			if(args.Removed != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
-
-			var slowBlight = FrancePanel.Tokens.Blight;
-			var blightCard = BlightCard.Space.Tokens;
-			if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
-				await blightCard.AddAsync(Token.Blight,1);
-				slowBlight.Init(0);
-			} else {
-				await blightCard.RemoveAsync(Token.Blight,1);
-				slowBlight.Adjust(1);
-			}
-		}
-
-		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent(DoFranceStuff) );
-	}
-
-	static void EarlyPlantation( GameState gameState ) {
-		// During Setup, on each board
-		foreach(var board in gameState.Island.Boards) {
-			// add 1 Town to the highest-numbered land without Town.
-			var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
-			highLandWithoutTown.Tokens.AdjustDefault( Human.Town, 1 );
-			// Add 1 Town to land #1.
-			board[1].Tokens.AdjustDefault( Human.Town, 1 );
-		}
-	}
-
-	static void AddSlaveRebellionEvent( GameState gameState ) {
-		
-		gameState.StartOfInvaderPhase.Add( async gs => {
-			if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
-
-			BaseCmd<BoardCtx> cmd = (gs.InvaderDeck.InvaderStage < 3)
-				? AddStrifeToTown
-				: Cmd.Multiple<BoardCtx>(
-					"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
-					DestroyTown,
-					Add2StrifeToCityOrTown,
-					StrifedRavage.StrifedInvadersTakeDamagePerStrife
-				);
-
-			await using var actionScope = await ActionScope.Start(ActionCategory.Adversary);
-			await cmd.ForEachBoard().ActAsync( gameState );
-
-		} );
-	}
+	#region Level 2 - helpers
 
 	static BaseCmd<BoardCtx> AddStrifeToTown => new BaseCmd<BoardCtx>(
 		"Add a strife to a town"
@@ -102,6 +104,7 @@ public class France : IAdversary {
 			if(st != null)
 				await st.Add1StrifeToAsync();
 		} );
+
 
 	static BaseCmd<BoardCtx> Add2StrifeToCityOrTown => new BaseCmd<BoardCtx>(
 		"Add 2 strife to any city/town"
@@ -123,44 +126,14 @@ public class France : IAdversary {
 				await st.Space.Tokens.Destroy( st.Token, 1 );
 		} );
 
-	public ScenarioLevel[] Adjustments => new ScenarioLevel[] {
-		// Level 0 - Escalation
-		new ScenarioLevel(2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ),
-		// Level 1
-		new ScenarioLevel(3 , 3,3,3, "Frontier Explorers", "Except during Setup: After Invaders successfullly Explore into a land which has not Town/City, add 1 Explorer there." ),
-		// Level 2
-		new ScenarioLevel(5 , 3,4,3, "Slave Labor", "During Setup, put the 'Slave Rebellion' event under the top 3 cards of the Event Deck.  After Invaders Buid in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town." ),
-		// Level 3
-		new ScenarioLevel(7 , 4,4,3, "Early Plantation", "During Setup, on each board add 1 Town to the highest-numbered land without Town.  Add 1 Town to land #1." ),
-		// Level 4
-		new ScenarioLevel(8 , 4,4,4, "Triangle Trade",  "Whenever Invaders Build a Coastal City, add 1 Town to the adjacent land with the fewest Town." ),
-		// Level 5
-		new ScenarioLevel(9 , 4,5,4, "Slow-Healing Ecosystem",  "When you remove Blight fomr the board, put it here instead of onto the Blight Card. As soon as you have 3 Blight per player here, move it all back to the Blight Card." ),
-		// Level 6
-		new ScenarioLevel(10, 4,5,5, "Persistent Explorers", "After resolving an Explore Card, on each board add 1 Explorer to a land without any.  Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer." ),
-	};
 
-}
+	#endregion Level 2 - helpers
 
-class FearPushesExplorers : BaseModEntity, IModifyRemovingTokenAsync {
-
-	// Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer.
-	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
-		if(args.Token.Class == Human.Explorer 
-			&& args.Reason == RemoveReason.Removed
-			&& ActionScope.Current.Category == ActionCategory.Fear
-			// Make sure Isolation tokens don't prevent the push,
-			// If isolation tokens prevent explorer from moving, they may be removed
-			&& args.From.IsConnected
-			&& args.From.Adjacent.Any(x=>x.IsConnected)
-		) {
-			Spirit spirit = ActionScope.Current.Owner 
-				?? args.From.Space.Boards.First().FindSpirit();
-
-			await args.From.SourceSelector
-				.AddGroup(args.Count,Human.Explorer)
-				.Track( _ => --args.Count )
-				.PushN(spirit);
-		}
+	static void SprawlingPlantations( GameState gs ) {
+		// !!! Additional Loss Condition
+		// !!! Sprawling Plantations: Before Setup, return all but 7 Town per player to the box. Invaders win if you ever cannot place a Town.
 	}
+
+	static readonly FakeSpace FrancePanel = new FakeSpace( "FranceAdversaryPanel" ); // stores slow blight
+
 }

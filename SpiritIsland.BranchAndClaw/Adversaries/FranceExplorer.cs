@@ -1,12 +1,14 @@
 ﻿namespace SpiritIsland.Basegame.Adversaries;
 
 public class FranceExplorer : ExploreEngine {
-	readonly bool hasFrontierExploration;
-	readonly bool hasPersistentExplorers;
-	public FranceExplorer( int level ) {
-		hasFrontierExploration = 1 <= level;
-		hasPersistentExplorers = 6 <= level;
-	}
+	readonly bool _hasFrontierExploration;
+	readonly bool _hasPersistentExplorers;
+
+
+	public FranceExplorer( bool hasFrontierExploration, bool hasPersistentExplorers ) {
+		_hasFrontierExploration = hasFrontierExploration;
+		_hasPersistentExplorers = hasPersistentExplorers;
+	}	
 
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) { 
 		await base.ActivateCard( card, gameState );
@@ -17,7 +19,7 @@ public class FranceExplorer : ExploreEngine {
 
 		await using var scope = await ActionScope.Start(ActionCategory.Adversary);
 
-		if(hasFrontierExploration)
+		if(_hasFrontierExploration)
 			await DoFrontierExploration( gameState, tokenSpacesToExplore );
 
 		if(card.HasEscalation) {
@@ -25,7 +27,7 @@ public class FranceExplorer : ExploreEngine {
 			card.HasEscalation = false;
 		}
 
-		if(hasPersistentExplorers)
+		if(_hasPersistentExplorers)
 			await PersistentExplorers( gameState );
 
 	}

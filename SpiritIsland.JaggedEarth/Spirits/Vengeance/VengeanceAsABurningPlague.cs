@@ -58,9 +58,9 @@ public class VengeanceAsABurningPlague : Spirit {
 
 		// Swap out old Disease with new.
 		var newDisease = new TerrorOfASlowlyUnfoldingPlague( this );
-		gameState.Tokens.TokenDefaults[SpiritIsland.Token.Disease] = newDisease;
+		gameState.Tokens.TokenDefaults[Token.Disease] = newDisease;
 		foreach(SpaceState space in gameState.Spaces_Unfiltered)
-			space.ReplaceAllWith(SpiritIsland.Token.Disease_Original,newDisease);
+			space.ReplaceAllWith(Token.Disease,newDisease);
 	}
 
 	public override void InitSpiritAction( ActionScope scope ) {

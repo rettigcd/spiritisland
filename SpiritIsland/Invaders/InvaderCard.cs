@@ -6,7 +6,7 @@ public sealed class InvaderCard : IOption {
 
 	public static InvaderCard Stage1( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 1 );
 	public static InvaderCard Stage2( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 2 );
-	public static InvaderCard Stage2Costal() => new InvaderCard( new CoastalFilter(), 2 );
+	public static InvaderCard Stage2Costal()       => new InvaderCard( new CoastalFilter(), 2 );
 	public static InvaderCard Stage3(Terrain t1,Terrain t2) => new InvaderCard( new DoubleTerrainFilter( t1, t2 ), 3);
 
 	#endregion

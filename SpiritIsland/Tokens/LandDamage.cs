@@ -20,7 +20,9 @@ public class LandDamage
 			await tokens.Blight.AddAsync( 1, AddReason.Ravage );
 	}
 
-
+	/// <remarks>
+	/// Land damage is a special case of needing to trigger an event but is not a visible token.
+	/// </remarks>
 	static public async Task Add( SpaceState tokens, int totalLandDamage ) {
 		// await tokens.Add( Token, totalLandDamage );
 		tokens.Adjust(LandDamage.Token,totalLandDamage);

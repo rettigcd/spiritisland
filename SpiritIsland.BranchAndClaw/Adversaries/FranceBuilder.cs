@@ -4,9 +4,9 @@ class FranceBuilder : BuildEngine {
 	readonly bool _hasSlaveLabor;
 	readonly bool _hasTriangleTrade;
 
-	public FranceBuilder( int level ) {
-		_hasSlaveLabor = 2 <= level;
-		_hasTriangleTrade = 4 < level;
+	public FranceBuilder( bool hasSlaveLabor, bool hasTriangeTrade ) {
+		_hasSlaveLabor = hasSlaveLabor;
+		_hasTriangleTrade = hasTriangeTrade;
 	}
 
 	public override async Task Do1Build( GameState gameState, SpaceState spaceState ) {

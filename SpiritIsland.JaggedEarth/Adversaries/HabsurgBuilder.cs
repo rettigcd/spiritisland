@@ -1,16 +1,14 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class HasburgBuilder : BuildEngine {
+class HabsurgBuilder : BuildEngine {
 
 	public bool ReplaceInlandCityWith2Towns { get; set; }
-	public bool HasMigratoryHerders { get; set; }
 
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		await base.ActivateCard( card, gameState );
 		
 		// Migratory Herders ( After the normal Build Step...)
-		if(HasMigratoryHerders)
-			await MigratoryHerders( card, gameState );
+		await MigratoryHerders( card, gameState );
 
 	}
 
@@ -32,8 +30,8 @@ class HasburgBuilder : BuildEngine {
 
 	public override Task Do1Build( GameState gameState, SpaceState spaceState ) 
 		=> ReplaceInlandCityWith2Towns 
-			? new HasburgSpaceBuilder( gameState, spaceState ).Exec()
-			: new BuildOnceOnSpace( gameState, spaceState ).Exec();
+			? new HasburgSpaceBuilder( gameState, spaceState ).ExecAsync()
+			: new BuildOnceOnSpace( gameState, spaceState ).ExecAsync();
 
 	class HasburgSpaceBuilder : BuildOnceOnSpace {
 		public HasburgSpaceBuilder( GameState gs, SpaceState spaceState ) : base( gs, spaceState ) { }

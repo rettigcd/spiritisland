@@ -2,6 +2,9 @@
 
 namespace SpiritIsland;
 
+/// <summary>
+/// Logable Status
+/// </summary>
 public class GameOver : ILogEntry {
 
 	public GameOver( GameOverResult result, string cause ) { 

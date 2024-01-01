@@ -2,26 +2,12 @@
 
 class ScotlandInvaderDeckBuilder : InvaderDeckBuilder {
 
-	const int Coastal = 99;
+	public const int Coastal = 99;
 
-	static int[] GetOrder( int level ) => level switch {
-		2 or
-		3 => new int[] { 1, 1, 2, 2, 1, Coastal, 2, 3, 3, 3, 3, 3 },
-		4 or
-		5 or
-		6 => new int[] { 1, 1, 2, 2, 3, Coastal, 2, 3, 3, 3, 3 },
-		_ => null
-	};
-	readonly int _level2Take;
-
-	public ScotlandInvaderDeckBuilder( int level ):base( GetOrder( level ) ) {
-		_level2Take = level<2 
-			? 5 // all level 2 cards
-			: 4;// skip Coastal
-	}
+	public ScotlandInvaderDeckBuilder( params int[] levelSelection ):base( levelSelection ) {}
 
 	protected override IEnumerable<InvaderCard> SelectLevel2Cards()
-		=> base.SelectLevel2Cards().Take( _level2Take );
+		=> base.SelectLevel2Cards().Where(x=>x.Text != CoastalFilter.Name );
 
 	protected override void SelectCard( List<InvaderCard> dst, Queue<InvaderCard>[] src, int level ) {
 		if( level == Coastal )

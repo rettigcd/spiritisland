@@ -51,12 +51,12 @@ public class ExploreEngine {
 	}
 
 	protected async Task DoExplore( GameState gs, SpaceState[] tokenSpacesToExplore, bool escalation ) {
-		foreach(var exploreTokens in tokenSpacesToExplore) {
-			int exploreCount = exploreTokens[ModToken.DoExplore];
-			exploreTokens.Init( ModToken.DoExplore, 0 );
+		foreach(var exploredSpaceState in tokenSpacesToExplore) {
+			int exploreCount = exploredSpaceState[ModToken.DoExplore];
+			exploredSpaceState.Init( ModToken.DoExplore, 0 );
 			while(0 < exploreCount--) {
 				await using ActionScope actionScope = await ActionScope.Start( ActionCategory.Invader );
-				await ExploreSingleSpace( exploreTokens, gs, escalation );
+				await ExploreSingleSpace( exploredSpaceState, gs, escalation );
 			}
 		}
 	}

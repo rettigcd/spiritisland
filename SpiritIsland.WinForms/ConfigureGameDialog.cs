@@ -138,7 +138,7 @@ public partial class ConfigureGameDialog : Form {
 
 			levelListBox.Enabled = true;
 			string adversary = _adversaryListBox.SelectedItem as string;
-			adjustments = GameBuilder.BuildAdversary( new AdversaryConfig(adversary,0) ).Adjustments;
+			adjustments = GameBuilder.BuildAdversary( new AdversaryConfig(adversary,0) ).Levels;
 
 			foreach(var level in adjustments)
 				levelListBox.Items.Add( level.Title );
@@ -156,7 +156,7 @@ public partial class ConfigureGameDialog : Form {
 
 	#endregion
 
-	ScenarioLevel[] adjustments;
+	AdversaryLevel[] adjustments;
 
 	void spiritLabel_Click( object sender, EventArgs e ) {
 		_spiritListView.View = _spiritListView.View == View.LargeIcon ? View.Tile : View.LargeIcon;

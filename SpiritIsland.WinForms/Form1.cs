@@ -180,6 +180,8 @@ public partial class Form1 : Form, IHaveOptions {
 		logForm.AppendLine($"=== Game: {gc.Spirits[0]} : {gc.Boards[0]} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info ); // !!! show multiple boards/spirits
 
 		GameState gameState = ConfigureGameDialog.GameBuilder.BuildGame( gc );
+		// !!! Logging that occurred during BuildGame will not show up because we don't hook in the .NewLogEntery until below
+
 		_game = new SinglePlayerGame( gameState ) { 
 			LogExceptions = true,
 			EnablePreselects = true,

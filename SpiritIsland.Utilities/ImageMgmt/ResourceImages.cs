@@ -14,7 +14,6 @@ public interface ImgSource {
 	Bitmap GetImg(Img img);
 }
 
-
 public class ResourceImages 
 	: ImgSource
 	, PowerCardResources

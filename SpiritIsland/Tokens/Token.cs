@@ -11,7 +11,7 @@ public static class Token {
 	// Branch and Claw
 	static readonly public TokenClassToken Beast   = new TokenClassToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
 	static readonly public TokenClassToken Wilds   = new WildsToken( "Wilds", 'W', Img.Wilds );
-	static readonly public DiseaseToken Disease    = new DiseaseToken();
+	static readonly public DiseaseToken Disease    = new DiseaseToken(); // !!! Route to gameState.Tokens.TokenDefaults[Token.Disease]
 
 	// Jagged Earth
 	static readonly public TokenClassToken Badlands = new TokenClassToken ( "Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 
@@ -21,8 +21,6 @@ public static class Token {
 	// Nature Incarnate
 	static readonly public TokenClassToken Vitality = new VitalityToken("Vitality", 'V', Img.Vitality );
 	static readonly public TokenClassToken Quake    = new TokenClassToken( "Quake", 'Q', Img.Quake );
-
-	static public DiseaseToken Disease_Original => (DiseaseToken)Disease; // Don't use this directly.  Use .Disease instead.
 }
 
 public static class ModToken {

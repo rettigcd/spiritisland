@@ -21,9 +21,7 @@ public class GameComponentProvider : IGameComponentProvider {
 	}
 
 	static Dictionary<string, Type> AdversariesTypes => new() {
-		//[BrandenburgPrussia.Name] = typeof( BrandenburgPrussia ),
-		//[England.Name] = typeof( England ),
-		//[Sweden.Name] = typeof( Sweden ),
+		[HabsburgMiningExpedition.Name] = typeof( HabsburgMiningExpedition ),
 	};
 
 	public string[] AdversaryNames => AdversariesTypes.Keys.ToArray();

@@ -88,10 +88,20 @@ public static class Is {
 	static public XFilter Inland => new XFilter( "Inland", x => x.IsInland );
 	static public XFilter Coastal => new XFilter( "coastal land", ctx => ctx.IsCoastal );
 	static public XFilter AdjacentToBlight => new XFilter( "land adjacent to blight", spaceCtx => spaceCtx.AdjacentCtxs.Any( adjCtx => adjCtx.Tokens.Blight.Any ) );
-	static public XFilter NotRavageCardMatch => new XFilter( "land that does not match Ravage card", ( TargetSpaceCtx spaceCtx ) => !GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( spaceCtx.Tokens ) ) );
-	static public XFilter NotBuildCardMatch => new XFilter( "land that does not match Build card", ( TargetSpaceCtx spaceCtx ) => !GameState.Current.InvaderDeck.Build.Cards.Any( card => card.MatchesCard( spaceCtx.Tokens ) ) );
-	static public XFilter RavageCardMatch => new XFilter( "matching a Ravage card", MatchingRavageCardImp );
-	static bool MatchingRavageCardImp( TargetSpaceCtx ctx ) => GameState.Current.InvaderDeck.Ravage.Cards.Any( card => card.MatchesCard( ctx.Tokens ) );
+	static public XFilter NotRavageCardMatch => new XFilter( "land that does not match Ravage card", ctx => !MatchingSlotCard( ctx, GameState.Current.InvaderDeck.Ravage ) );
+	static public XFilter NotBuildCardMatch => new XFilter( "land that does not match Build card", x => !MatchingSlotCard( x, GameState.Current.InvaderDeck.Build ) );
+	static public XFilter RavageCardMatch => new XFilter( "matching a Ravage card", ctx => MatchingSlotCard( ctx, GameState.Current.InvaderDeck.Ravage ) );
+
+	static public XFilter NotExploreOrBuildCardMatch => new XFilter( 
+		"land that does not match Explore or Build card", 
+		x => {
+			var deck = GameState.Current.InvaderDeck;
+			return !MatchingSlotCard( x, deck.Build ) && !MatchingSlotCard( x, deck.Explore );
+		}
+	);
+
+	static bool MatchingSlotCard( TargetSpaceCtx ctx, InvaderSlot slot ) 
+		=> slot.Cards.Any( card => card.Flipped && card.MatchesCard( ctx.Tokens ) );
 
 	// Spirits 
 	static public SpiritFilter AnySpirit => new SpiritFilter( "Spirit", _ => true );

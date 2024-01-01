@@ -10,6 +10,7 @@
     <None Remove="images\adversaries\Brandenburg-Prussia.png" />
     <None Remove="images\adversaries\England.png" />
     <None Remove="images\adversaries\France.png" />
+    <None Remove="images\adversaries\Habsburg Mining Expedition.png" />
     <None Remove="images\adversaries\Habsburg Monarchy.png" />
     <None Remove="images\adversaries\Russia.png" />
     <None Remove="images\adversaries\Scotland.png" />
@@ -162,6 +163,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="images\adversaries\Habsburg Mining Expedition.png" />
     <EmbeddedResource Include="images\textures\power_weave.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

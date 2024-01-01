@@ -13,14 +13,14 @@ public class TradeSuffers : FearCardBase, IFearCard {
 
 	[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]
 	public Task Level2( GameState ctx )
-		=> new SpaceAction("replace 1 town with 1 explorer", ctx=> ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town ) )
+		=> new SpaceAction("replace 1 town with 1 explorer", ctx=> ReplaceInvader.Downgrade1( ctx.Self, ctx.Tokens, Present.Done, Human.Town ) )
 			.In().SpiritPickedLand().Which( Is.Coastal )
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player may replace 1 City with 1 Town or 1 Town with 1 Explorer in a Coastal land." )]
 	public Task Level3( GameState ctx )
-		=> new SpaceAction( "replace 1 City with 1 Town or replace 1 town with 1 explorer", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town_City ) )
+		=> new SpaceAction( "replace 1 City with 1 Town or replace 1 town with 1 explorer", ctx => ReplaceInvader.Downgrade1( ctx.Self, ctx.Tokens, Present.Done, Human.Town_City ) )
 			.In().SpiritPickedLand().Which( Is.Coastal )
 			.ForEachSpirit()
 			.ActAsync( ctx );

@@ -11,7 +11,7 @@ public class BuildOnceOnSpace {
 		_tokens = tokens;
 	}
 
-	public async Task Exec() {
+	public async Task ExecAsync() {
 		string buildResult = await GetResult();
 		_gameState.Log( new Log.InvaderActionEntry( _tokens.Space.Label + ": " + buildResult ) );
 	}

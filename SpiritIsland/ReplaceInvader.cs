@@ -2,11 +2,6 @@
 
 static public class ReplaceInvader {
 
-	/// <summary>User selects 1 Invader and downgrades it.</summary>
-	/// <returns>If invader was downgraded</returns>
-	public static Task Downgrade1( TargetSpaceCtx ctx, Present present, params HumanTokenClass[] groups )
-		=> Downgrade1(ctx.Self,ctx.Tokens,present,groups);
-
 	public static async Task Downgrade1( Spirit spirit, SpaceState tokens, Present present, params HumanTokenClass[] groups ) {
 		HumanToken[] options = tokens.HumanOfAnyTag( groups );
 		await Downgrade1Token( spirit, tokens, present, options );
@@ -41,6 +36,18 @@ static public class ReplaceInvader {
 		return oldInvader;
 	}
 
+	/// <summary> Offers Specific tokens, instead of token classes. </summary>
+	/// <returns> Original token (before upgrade).</returns>
+	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options ) {
+		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade", options.On( tokens.Space ), present ) );
+		if(st == null) return null;
+		HumanToken oldInvader = st.Token.AsHuman();
+
+		UpgradeSelectedInvader( tokens, oldInvader );
+		return oldInvader;
+	}
+
+
 	public static async Task DowngradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
 		// remove old invader
 		tokens.Adjust( oldInvader, -1 );
@@ -53,8 +60,28 @@ static public class ReplaceInvader {
 			await AddReplacementOrDestroy( tokens, oldInvader, newInvaderClass );
 	}
 
+	/// <param name="oldInvader">Explorer or Town</param>
+	/// <exception cref="ArgumentOutOfRangeException"></exception>
+	public static void UpgradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
+		// remove old invader
+		tokens.Adjust( oldInvader, -1 );
+
+		// Add new
+		var newInvaderClass = oldInvader.HumanClass == Human.Explorer ? Human.Town
+			: oldInvader.HumanClass == Human.Town ? Human.City
+			: throw new ArgumentOutOfRangeException($"{nameof(oldInvader)} must be Explorer or Town");
+
+		// Upgrade it
+		var newTokenWithoutDamage = tokens.GetDefault( newInvaderClass ).AsHuman()
+			.AddStrife( oldInvader.StrifeCount );
+		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
+		tokens.Adjust( newTokenWithDamage, 1 );
+	}
+
+
 	static async Task AddReplacementOrDestroy( SpaceState tokens, HumanToken oldInvader, HumanTokenClass newInvaderClass ) {
-		var newTokenWithoutDamage = tokens.GetDefault( newInvaderClass ).AsHuman().AddStrife( oldInvader.StrifeCount );
+		var newTokenWithoutDamage = tokens.GetDefault( newInvaderClass ).AsHuman()
+			.AddStrife( oldInvader.StrifeCount );
 		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
 
 		if(!newTokenWithDamage.IsDestroyed)

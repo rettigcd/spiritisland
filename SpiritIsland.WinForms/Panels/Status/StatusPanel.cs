@@ -81,7 +81,7 @@ internal class StatusPanel : IPanel {
 
 	void PopUpAdversaryRules() {
 		var adv = ConfigureGameDialog.GameBuilder.BuildAdversary( _ctx._adversary );
-		var adjustments = adv.Adjustments;
+		var adjustments = adv.Levels;
 		var rows = new List<string> {
 			$"==== {_ctx._adversary.Name} - Level:{_ctx._adversary.Level} - Difficulty:{adjustments[_ctx._adversary.Level].Difficulty} ===="
 		};

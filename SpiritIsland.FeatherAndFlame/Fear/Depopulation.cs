@@ -12,7 +12,7 @@ public class Depopulation : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync( ctx );
 
-	static SpaceAction Replace1TownWith1Explorer => new SpaceAction("Replace 1 Town with 1 Explorer", ctx => ReplaceInvader.Downgrade1( ctx, Present.Done, Human.Town ) );
+	static SpaceAction Replace1TownWith1Explorer => new SpaceAction("Replace 1 Town with 1 Explorer", ctx => ReplaceInvader.Downgrade1( ctx.Self, ctx.Tokens, Present.Done, Human.Town ) );
 
 	[FearLevel( 2, "On Each Board: Remove 1 Town." )]
 	public Task Level2( GameState ctx )

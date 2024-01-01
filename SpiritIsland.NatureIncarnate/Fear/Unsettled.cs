@@ -34,7 +34,7 @@ public class Unsettled : FearCardBase, IFearCard {
 
 	static SpaceAction DowngradeTownOrCity => new SpaceAction(
 		"Downgrade 1 Town/City",
-		ctx => ReplaceInvader.Downgrade1(ctx,Present.Always,Human.Town_City)
+		ctx => ReplaceInvader.Downgrade1(ctx.Self, ctx.Tokens,Present.Always,Human.Town_City)
 	);
 
 }

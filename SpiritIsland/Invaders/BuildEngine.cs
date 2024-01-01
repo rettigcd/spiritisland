@@ -57,7 +57,7 @@ public class BuildEngine {
 	}
 
 	public virtual Task Do1Build( GameState gameState, SpaceState spaceState ) 
-		=> new BuildOnceOnSpace( gameState, spaceState ).Exec();
+		=> new BuildOnceOnSpace( gameState, spaceState ).ExecAsync();
 
 	public virtual bool ShouldBuildOnSpace(SpaceState spaceState ) => spaceState.HasInvaders();
 

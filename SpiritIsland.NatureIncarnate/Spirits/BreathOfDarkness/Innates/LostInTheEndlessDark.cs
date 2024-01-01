@@ -12,7 +12,7 @@ public class LostInTheEndlessDark {
 		edCtx.AddFear(fear);
 
 		// downgrade up to 1 Invader
-		await ReplaceInvader.Downgrade1(edCtx,Present.Done,Human.Invader);
+		await ReplaceInvader.Downgrade1(edCtx.Self, edCtx.Tokens, Present.Done,Human.Invader);
 
 	}
 
