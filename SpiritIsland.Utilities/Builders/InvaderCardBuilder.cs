@@ -88,20 +88,38 @@ class InvaderCardBuilder {
 
 		} else {
 
-			// must be coastal
+			// must be coastal / salt deposits
 			Rectangle topRect = new Rectangle( 30, 30 + 30, 200 - 2 * 30, 160 - 60 );
 			Rectangle botRect = new Rectangle( 30, 160 + 20 + 15, 200 - 2 * 30, 160 - 60 );
 
-			// texture
-			using Brush terrainBrush = resources.UseTerrainBrush( Terrain.Ocean );
-			float tension = .15f;
-			graphics.FillClosedCurve( terrainBrush, perimeter, FillMode.Alternate, tension );
-			graphics.DrawClosedCurve( perimeterPen, perimeter, tension, FillMode.Alternate );
+			if(card.Filter.Text == CoastalFilter.Name ) {
+				// texture
+				using Brush terrainBrush = resources.UseTerrainBrush( Terrain.Ocean );
+				float tension = .15f;
+				graphics.FillClosedCurve( terrainBrush, perimeter, FillMode.Alternate, tension );
+				graphics.DrawClosedCurve( perimeterPen, perimeter, tension, FillMode.Alternate );
 
-			// Abreviation Text in the middle
-			using Font bigFont = resources.UseInvaderFont( 25f );
-			graphics.DrawString( "Coastal", bigFont, backgroundBrush, topRect, alignCenter );
-			graphics.DrawString( "Lands", bigFont, backgroundBrush, botRect, alignCenter );
+				// Abreviation Text in the middle
+				using Font bigFont = resources.UseInvaderFont( 25f );
+				graphics.DrawString( "Coastal", bigFont, backgroundBrush, topRect, alignCenter );
+				graphics.DrawString( "Lands", bigFont, backgroundBrush, botRect, alignCenter );
+			}
+
+			if(card.Filter.Text.Contains("Salt")) {
+				// texture
+				using Image image = ResourceImages.Singleton.AdversaryFlag( "Habsburg Mining Expedition" );
+				using Brush terrainBrush = new TextureBrush( image );
+
+				float tension = .15f;
+				graphics.FillClosedCurve( terrainBrush, perimeter, FillMode.Alternate, tension );
+				graphics.DrawClosedCurve( perimeterPen, perimeter, tension, FillMode.Alternate );
+
+				// Abreviation Text in the middle
+				using Font bigFont = resources.UseInvaderFont( 24f );
+				graphics.DrawString( "Salt", bigFont, backgroundBrush, topRect, alignCenter );
+				graphics.DrawString( "Deposits", bigFont, backgroundBrush, botRect, alignCenter );
+			}
+
 		}
 		Font bottomFont = resources.UseInvaderFont( 20f );
 		graphics.DrawString(
