@@ -163,7 +163,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#region Level 3
 	static AdversaryLevel L3 = new AdversaryLevel( 5, 
 		3, 4, 4, 
-		"Mining Boom(I)", 
+		"Mining Boom (I)", 
 		"After the Build Step, on each board: Choose a land with an Explorer. Upgrade 1 Explorer there."
 	) {
 		InitFunc = ( gs, adversary ) => {
@@ -237,7 +237,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	static AdversaryLevel L5 = new AdversaryLevel( 9, 
 		4, 5, 4, 
-		"Mining Boom(II)", 
+		"Mining Boom (II)", 
 		"Instead of Mining Boom(I), after the Build Step, on each board: Choose a land with Explorer. Build there, then Upgrade 1 Explorer( Build normally in a Mining land.)"
 	) {
 		InitFunc = ( gs, _ ) => {
