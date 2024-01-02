@@ -32,7 +32,7 @@ public class VengeanceAsABurningPlague : Spirit {
 
 	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async self => {
 		var options = DefaultRangeCalculator.Singleton.GetSpaceOptions( self.Presence.Lands.Tokens(), new TargetCriteria( 1 ) );
-		Space to = await self.SelectAsync( new A.Space( "Add a Disease", options, Present.Always ).ShowTokenLocation( Token.Disease ) );
+		Space to = await self.SelectAsync( new A.Space( "Add a Disease", options, Present.Always ) );
 		await self.Target( to ).Disease.AddAsync( 1 );
 	} );
 
@@ -60,7 +60,7 @@ public class VengeanceAsABurningPlague : Spirit {
 		var newDisease = new TerrorOfASlowlyUnfoldingPlague( this );
 		gameState.Tokens.TokenDefaults[Token.Disease] = newDisease;
 		foreach(SpaceState space in gameState.Spaces_Unfiltered)
-			space.ReplaceAllWith(Token.Disease,newDisease);
+			space.ReplaceAllWith((DiseaseToken)Token.Disease,newDisease);
 	}
 
 	public override void InitSpiritAction( ActionScope scope ) {

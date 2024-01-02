@@ -108,7 +108,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	}
 
 	class DiseaseStopsRavageInMiningLands : BaseModEntity, ISkipRavages {
-		public UsageCost Cost => Token.Disease.Cost;
+		public UsageCost Cost => UsageCost.Something;
 
 		public async Task<bool> Skip( SpaceState space ) {
 			if(!IsMiningLand(space)) return false; // Is Mining Land

@@ -39,7 +39,7 @@ public class PlagueShipsSailToDistantPorts {
 		var gs = GameState.Current;
 		int cost = gs.Spirits.Length * 3;
 		while(0 < cost) {
-			IEnumerable<SpaceToken> diseaseTokens = Token.Disease.On(gs.Spaces);
+			IEnumerable<SpaceToken> diseaseTokens = gs.Spaces.SelectMany( ss => ss.SpaceTokensOfTag( Token.Disease ) );
 			IEnumerable<Spirit> spiritsWithEnergy = gs.Spirits.Where(s=>0<s.Energy);
 			// !!! Spirits should decide for themselves if they want pay, not card player
 			IOption option = await ctx.Self.SelectAsync(new A.TypedDecision<IOption>(
