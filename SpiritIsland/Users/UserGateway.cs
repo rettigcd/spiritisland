@@ -93,8 +93,9 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 		// Scenario 1 - No options => Auto-Select NULL
 		if(decision.Options.Length == 0) {
-			if( Preloaded is not null ) throw new InvalidOperationException($"Preloaded {Preloaded} but that is now not an option.");
-			return Task.FromResult<T>( null );
+			return Preloaded is not null
+				? throw new InvalidOperationException($"Preloaded {Preloaded} but that is now not an option.")
+				: Task.FromResult<T>( null );
 		}
 
 		// Scenario 2 - Resolve Promise with preloaded value.

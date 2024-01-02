@@ -124,10 +124,9 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	class RavageInMiningLandsDuringBuild : BuildEngine {
 		public override Task Do1Build( GameState gameState, SpaceState spaceState ) {
-			if(IsMiningLand(spaceState))
-				return spaceState.Ravage();
-			else 
-				return new BuildOnceOnSpace( gameState, spaceState ).ExecAsync();
+			return IsMiningLand(spaceState) 
+				? spaceState.Ravage() 
+				: new BuildOnceOnSpace( gameState, spaceState ).ExecAsync();
 		}
 	}
 	#endregion Level 1

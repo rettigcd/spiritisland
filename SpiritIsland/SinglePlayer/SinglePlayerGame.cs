@@ -32,6 +32,8 @@ public class SinglePlayerGame {
 		ActionScope.Initialize();
 		UserGateway.UsePreselect.Value = EnablePreselects;
 		try {
+			// 
+
 			// Handle any unresolved Initialization action - (ocean/beast)
 			GameState.Phase = Phase.Init;
 			await Spirit.ResolveActions( GameState ); 
@@ -50,11 +52,6 @@ public class SinglePlayerGame {
 							savedGameStates.Remove(laterRounds);
 					}
 				}
-				//catch(Exception ex) when (ex is not GameOverException) {
-				//	GameState.Log( new Log.ExceptionEntry( ex ) );
-				//	System.IO.File.WriteAllText(AppDataFolder)
-				//	// GameState.LoadFrom( savedGameStates[ GameState.RoundNumber ] ); // go back to beginning of round and see if we can debug it.
-				//}
 			}
 		}
 		catch(GameOverException gameOver) {

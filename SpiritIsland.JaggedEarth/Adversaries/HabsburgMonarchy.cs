@@ -44,7 +44,6 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 				// add 1 Town
 				foreach(SpaceState space in spaces)
 					space.AdjustDefault( Human.Town, 1 );
-				gameState.LogDebug( $"More Rural than Urban: Added towns to " + spaces.SelectLabels().Order().Join( "," ) );
 
 				((HabsurgBuilder)gameState.InvaderDeck.Build.Engine).ReplaceInlandCityWith2Towns = true; 
 			},

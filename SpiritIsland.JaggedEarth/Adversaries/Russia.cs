@@ -29,7 +29,6 @@ public class Russia : AdversaryBase, IAdversary {
 					highestLandWithoutTownCity.AdjustDefault(Human.Explorer,1);
 					highestLandWithoutTownCity.Adjust(Token.Beast,1);
 				}
-				gameState.LogDebug($"Hunters Bring Home Shell and Hide - Added Beast & Explorers to: " + highestSpaces.SelectLabels().OrderBy( s=>s).Join(","));
 			},
 
 			InitFunc = (gameState,_) => {

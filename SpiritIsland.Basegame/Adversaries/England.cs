@@ -16,7 +16,6 @@ public class England : AdversaryBase, IAdversary {
 		new AdversaryLevel(3, 3,4,3, "Indentured Servants Earn Land",
 			"Invader Build Cards affect matching lands without Invaders if they are adjacent to at least 2 Towns/Cities."
 		){ InitFunc = (gs,_) => {
-			gs.LogDebug("Indentured Servants Earn Land => Builds occur in spaces adjacent to at least 2 Towns/Cities.");
 			gs.InvaderDeck.Build.Engine = new EnglandBuilder(); 
 		} },
 
@@ -28,7 +27,6 @@ public class England : AdversaryBase, IAdversary {
 				board[1].Tokens.AdjustDefault( Human.City, 1 );
 				board[2].Tokens.AdjustDefault( Human.Town, 1 );
 			}
-			gs.LogDebug("Criminals & Malcontents: Adding additional city to #1 and town to #2");
 		}},
 
 		// Level 3

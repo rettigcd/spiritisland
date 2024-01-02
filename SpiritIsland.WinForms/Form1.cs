@@ -166,7 +166,7 @@ public partial class Form1 : Form, IHaveOptions {
 	void GameNewStripMenuItem_Click( object sender, EventArgs e ) {
 		var gameConfigDialog = new ConfigureGameDialog();
 		if(gameConfigDialog.ShowDialog() != DialogResult.OK) { return; }
-		this._gameConfiguration = gameConfigDialog.GameConfig;
+		_gameConfiguration = gameConfigDialog.GameConfig;
 		InitGameFromConfiguration();
 	}
 
@@ -177,10 +177,15 @@ public partial class Form1 : Form, IHaveOptions {
 
 		var gc = _gameConfiguration;
 
+		// Logging these directly to the Text box because the NewLogEntry event isn't hooked up yet.
 		logForm.AppendLine($"=== Game: {gc.Spirits[0]} : {gc.Boards[0]} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info ); // !!! show multiple boards/spirits
+		IAdversary adversary = ConfigureGameDialog.GameBuilder.BuildAdversary( gc.Adversary );
+		for(int i=0;i<=adversary.Level; ++i) {
+			var advLevel = adversary.Levels[i];
+			logForm.AppendLine(i==0? $"Adversary Escalation ({advLevel.Title}):\r\n\t{advLevel.Description}" : $"Adversary Level {i} ({advLevel.Title}):\r\n\t{advLevel.Description}", LogLevel.Info );
+		}
 
 		GameState gameState = ConfigureGameDialog.GameBuilder.BuildGame( gc );
-		// !!! Logging that occurred during BuildGame will not show up because we don't hook in the .NewLogEntery until below
 
 		_game = new SinglePlayerGame( gameState ) { 
 			LogExceptions = true,

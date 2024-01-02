@@ -41,7 +41,6 @@ public class Sweden : AdversaryBase, IAdversary {
 						space4.Space.Boards.First()[5].Tokens.Blight.Adjust( 1 );
 					}
 				}
-				gameState.LogDebug($"Population Pressure At Home: adding 1 city to "+additionalCitySpaces.SelectLabels().Order().Join(","));
 			}
 		},
 
@@ -71,8 +70,6 @@ public class Sweden : AdversaryBase, IAdversary {
 
 				foreach(var leastInvaderSpace in addTownSpaces)
 					leastInvaderSpace.AdjustDefault( Human.Town, 1 );
-
-				gameState.LogDebug("Royal Backing - added 1 town to "+addTownSpaces.SelectLabels().Order().Join(","));
 			}
 		},
 
@@ -97,7 +94,6 @@ public class Sweden : AdversaryBase, IAdversary {
 					space.AdjustDefault( Human.Town, 1 );
 					space.Blight.Adjust(1);
 				}
-				gameState.LogDebug("Prospecting Outpost: Adding Town/Blight to "+spaces.SelectLabels().Order().Join(","));
 			}
 		},
 	};

@@ -28,7 +28,7 @@ abstract public class AdversaryBase : IAdversary {
 	
 	public virtual InvaderDeckBuilder InvaderDeckBuilder { 
 		get{
-			return LevelMods
+			return ActiveLevels
 				.Select( m=>m.InvaderDeckBuilder )
 				.LastOrDefault(x=>x is not null)
 				?? InvaderDeckBuilder.Default;
@@ -37,7 +37,7 @@ abstract public class AdversaryBase : IAdversary {
 
 	// After Decks are built, before Tokens are placed
 	public virtual void Init( GameState gameState ) {
-		foreach(var mod in LevelMods) {
+		foreach(var mod in ActiveLevels) {
 			gameState.Log( new SetupDescription( $"{mod.Title} - {mod.Description}" ) );
 			mod.Init( gameState, this );
 		}
@@ -52,11 +52,11 @@ abstract public class AdversaryBase : IAdversary {
 
 	// After Tokens have been placed
 	public virtual void AdjustPlacedTokens( GameState gameState ) {
-		foreach(var mod in LevelMods)
+		foreach(var mod in ActiveLevels)
 			mod.Adjust( gameState, this );
 	}
 
-	protected IEnumerable<AdversaryLevel> LevelMods => Levels.Take(Level+1);
+	protected IEnumerable<AdversaryLevel> ActiveLevels => Levels.Take(Level+1);
 }
 
 public class AdversaryLevel {

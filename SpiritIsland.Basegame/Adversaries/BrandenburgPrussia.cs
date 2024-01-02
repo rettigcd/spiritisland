@@ -12,7 +12,6 @@ public class BrandenburgPrussia : AdversaryBase, IAdversary {
 			InitFunc = (gs,_) => {
 				foreach(var board in gs.Island.Boards)
 					board[3].Tokens.AdjustDefault( Human.Town, 1 );
-				gs.LogDebug("Adding 1 town to land #3");
 			}
 		},
 		new AdversaryLevel(4 , 3,3,3, "Surge of Colonists",   "111-3-2222-3333" ).WithInvaderDeck(1,1,1, 3, 2,2,2,2, 3,3,3,3),
