@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-[InnatePower( SerpentRousesInAnger.Name ), Slow, FromPresence(0)]
+[InnatePower( Name ), Slow, FromPresence(0)]
 public class SerpentRousesInAnger {
 
 	public const string Name = "Serpent Rouses in Anger";
@@ -11,7 +11,7 @@ public class SerpentRousesInAnger {
 		var els = ctx.Self.Elements;
 		int count = Math.Min( await els.GetAsync(Element.Fire), await els.GetAsync(Element.Earth));
 		// 1 Damage to 1 town / city.
-		await ctx.Tokens.UserSelected_DamageInvaders( ctx.Self, count, Human.Town_City );
+		await ctx.Tokens.UserSelected_DamageInvadersAsync( ctx.Self, count, Human.Town_City );
 	}
 
 	[InnateTier( "2 moon 2 earth", "For each 2 moon 2 earth you have, 2 fear and you may Push 1 town from target land." )]

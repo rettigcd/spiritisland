@@ -34,7 +34,7 @@ public class FlockingRedTalons {
 		await ctx.SourceSelector
 			.AddAll(Human.Invader)
 			.ConfigOnlySelectEachOnce()
-			.DoDamage(ctx.Self,beastCount,Present.Always);
+			.DoDamageAsync(ctx.Self,beastCount,Present.Always);
 
 		// Push 1 Explorer/Town per Beast.
 		await ctx.Push(beastCount,Human.Explorer_Town);

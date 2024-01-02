@@ -103,10 +103,10 @@ internal class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 		int badlandCount = ctx.Badlands.Count;
 
-		CombinedDamage combinedDamage = ctx.CombinedDamageFor_Invaders( damage );
+		CombinedDamage combinedDamage = ctx.Tokens.CombinedDamageFor_Invaders( damage );
 
 		int damageDone = await ctx.SourceSelector.AddAll( Human.Invader )
-			.DoDamage( ctx.Self, combinedDamage.Available, Present.Done );
+			.DoDamageAsync( ctx.Self, combinedDamage.Available, Present.Done );
 
 		combinedDamage.TrackDamageDone( damageDone );
 

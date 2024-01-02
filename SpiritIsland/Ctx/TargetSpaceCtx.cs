@@ -191,8 +191,8 @@ public class TargetSpaceCtx : IHaveASpirit {
 		if(originalDamage == 0) return;
 
 		// Calculate Total Damage available
-		CombinedDamage combinedDamage = CombinedDamageFor_Invaders( originalDamage );
-		int damageApplied = await Tokens.UserSelected_DamageInvaders( Self, combinedDamage.Available, invaderTypesToDamage );
+		CombinedDamage combinedDamage = Tokens.CombinedDamageFor_Invaders( originalDamage );
+		int damageApplied = await Tokens.UserSelected_DamageInvadersAsync( Self, combinedDamage.Available, invaderTypesToDamage );
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -204,8 +204,8 @@ public class TargetSpaceCtx : IHaveASpirit {
 		HumanToken[] invadersToDamage() => Tokens.InvaderTokens().Where( t => t != damageSourceToExclude ).ToArray();
 
 		// Calculate Total Damage available
-		CombinedDamage combinedDamage = CombinedDamageFor_Invaders( originalDamage );
-		int damageApplied = await Tokens.UserSelected_ApplyDamageToSpecificToken( Self, combinedDamage.Available, damageSource, invadersToDamage );
+		CombinedDamage combinedDamage = Tokens.CombinedDamageFor_Invaders( originalDamage );
+		int damageApplied = await Tokens.UserSelected_ApplyDamageToSpecificTokenAsync( Self, combinedDamage.Available, damageSource, invadersToDamage );
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -213,8 +213,8 @@ public class TargetSpaceCtx : IHaveASpirit {
 	public async Task DamageEachInvader( int individualDamage, ITokenClass[] tokenClasses ) {
 		await Invaders.ApplyDamageToEach( individualDamage, tokenClasses );
 
-		var bonusDamage = CombinedDamageFor_Invaders();
-		int damageApplied = await Tokens.UserSelected_DamageInvaders( Self, bonusDamage.Available, tokenClasses );
+		var bonusDamage = Tokens.CombinedDamageFor_Invaders();
+		int damageApplied = await Tokens.UserSelected_DamageInvadersAsync( Self, bonusDamage.Available, tokenClasses );
 		bonusDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -242,34 +242,15 @@ public class TargetSpaceCtx : IHaveASpirit {
 				damagedInvaders.Add( damaged );
 		}
 
-		var combined = CombinedDamageFor_Invaders();
-		int damageDone = await ApplyDamageToSpecificTokens( damagedInvaders, combined.Available );
+		var combined = Tokens.CombinedDamageFor_Invaders();
+		int damageDone = await Tokens.UserSelected_ApplyDamageToSpecificTokensAsync( Self, damagedInvaders, combined.Available );
 		combined.TrackDamageDone(damageDone); 
 	}
-
-	async Task<int> ApplyDamageToSpecificTokens( List<IToken> invaders, int additionalTotalDamage ) {
-		int done = 0;
-
-		while(0 < additionalTotalDamage) {
-			var st = await SelectAsync( An.Invader.ForBadlandDamage( additionalTotalDamage, invaders.On( Space ) ) );
-			if(st == null) break;
-			var invader = st.Token.AsHuman();
-			int index = invaders.IndexOf( invader );
-			var (_, moreDamagedToken) = await Invaders.ApplyDamageTo1( 1, invader );
-			++done;
-			if( 0 < moreDamagedToken.RemainingHealth )
-				invaders[index] = moreDamagedToken;
-			else
-				invaders.RemoveAt( index );
-		}
-		return done;
-	}
-
 
 	public async Task DamageDahan( int damage ) {
 		if(damage == 0) return;
 
-		var totalDamage = CombinedDamageFor_Dahan( damage );
+		var totalDamage = Tokens.CombinedDamageFor_Dahan( damage );
 		int applied = await Dahan.ApplyDamage_Inefficiently( totalDamage.Available );
 		totalDamage.TrackDamageDone( applied );
 	}
@@ -278,7 +259,7 @@ public class TargetSpaceCtx : IHaveASpirit {
 	public async Task Apply1DamageToEachDahan() {
 
 		await Dahan.Apply1DamageToAll();
-		var moreDamage = CombinedDamageFor_Dahan();
+		var moreDamage = Tokens.CombinedDamageFor_Dahan();
 		int applied = await Dahan.ApplyDamage_Inefficiently( moreDamage.Available );
 		moreDamage.TrackDamageDone( applied );
 	}
@@ -292,19 +273,6 @@ public class TargetSpaceCtx : IHaveASpirit {
 	}
 
 	public Task RemoveInvader( ITokenClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );
-
-	#region Bonus Damage
-
-	public CombinedDamage CombinedDamageFor_Invaders( int originalDamage = 0 ) => new CombinedDamage( originalDamage,
-		DamagePool.BadlandDamage( Tokens, "Invaders" ), // use badland damage 1st since it is localized to a space
-		DamagePool.SpiritsBonusDamage()					// not localized to a space
-	);
-	public CombinedDamage CombinedDamageFor_Dahan( int originalDamage = 0 ) => new CombinedDamage( originalDamage,
-		DamagePool.BadlandDamage( Tokens, "Dahan" )
-	);
-
-	#endregion
-
 
 	#region presence
 

@@ -11,8 +11,13 @@ static public class SimpleMods {
 	}
 
 	static public void Grayify( Bitmap image ) {
-		static Color LowerContrast( Color x ) => Color.FromArgb( x.A, x.R / 4 + 96, x.G / 4 + 96, x.B / 4 + 96 );
-		new PixelAdjustment( LowerContrast ).Adjust( image );
+		const int Gray = 96;
+		static Color MakeMostlyGray( Color x ) => Color.FromArgb( x.A, 
+			x.R / 4 + Gray,
+			x.G / 4 + Gray,
+			x.B / 4 + Gray
+		);
+		new PixelAdjustment( MakeMostlyGray ).Adjust( image );
 	}
 
 	// Modifies the shape bitmap by Overlaying the pattern Color & (muted) Lightness
@@ -142,10 +147,10 @@ static public class SimpleMods {
 	/// Extreme: -1..1  
 	/// Better values: -.5 to .5
 	/// Positive values of K decrease the slope at origin (less contrast, less brightness)
-	/// Negative vlaues of K increate the slpe at the oring (more contrast, more brightness)
+	/// Negative vlaues of K increate the slope at the origin (more contrast, more brightness)
 	/// </param>
 	/// <returns>
-	/// function that  ready to go for adjusting Brightness in Luminosity range (0..1)
+	/// function that is ready to go for adjusting Brightness in Luminosity range (0..1)
 	/// or can be domain/range shift for adjusting Contrast 
 	/// </returns>
 	/// <remarks>  https://dhemery.github.io/DHE-Modules/technical/sigmoid/ </remarks>
@@ -164,7 +169,7 @@ static public class SimpleMods {
 		// - => Sigmoid works backwards from expected
 		// .9 => approximate reduction observed in photoshop and protects users from function blowing up near real 1 and -1
 		var contrastSigmoid = MakeSigmoid( userSelectedStrength * -.9f );
-		return (x) => (contrastSigmoid(x*2-1)+1)*.5f; // change 0..1 input to -1..1 and  change -1..1 output to 0..1
+		return (x) => (contrastSigmoid(x*2-1)+1)*.5f; // shift Domain (input) from 0..1 -1..1 and shift Range (output) from -1..1 to 0..1
 	}
 
 	#endregion private Contrast / Brightness maps

@@ -16,7 +16,7 @@ public class MindShatteringSong {
 			.AddAll(Human.Invader)
 			.FilterSpaceToken( st => 0 < st.Token.AsHuman().StrifeCount );
 		await ss
-			.DoDamage( ctx.Self, await ctx.Self.Elements.GetAsync(Element.Sun), Present.Always );
+			.DoDamageAsync( ctx.Self, await ctx.Self.Elements.GetAsync(Element.Sun), Present.Always );
 	}
 
 	[InnateTier("1 sun,1 moon,4 air","For each sun moon pair you have, Destroy 1 Invader with Strife.",2)]

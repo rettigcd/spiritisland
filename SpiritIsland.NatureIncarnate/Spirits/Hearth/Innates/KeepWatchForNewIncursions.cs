@@ -36,16 +36,24 @@ public class KeepWatchForNewIncursions {
 			_spirit = spirit;
 		}
 		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
-			// !!! Badland Damage????
-
-			int damage = Math.Min(to.Dahan.CountAll, args.Added.AsHuman().RemainingHealth * args.Count);
 			if(!_used
-				&& 0<damage
-				&& await _spirit.UserSelectsFirstText($"Keep Watch - Apply {damage} damage to added invaders ({args.Count} {args.Added.Text})?", "Yes, Damage them!", "No, not quite yet" )
-			) { 
-				await to.UserSelected_DamageInvaders(_spirit,damage,args.Added.Class); // !! Not 100% correct.
-				_used = true;
-			}
+				|| !args.Added.HasTag( TokenCategory.Invader )
+			) return;
+
+			var invader = args.Added.AsHuman();
+			int dahanCount = to.Dahan.CountAll;
+
+			CombinedDamage combinedDamage = to.CombinedDamageFor_Invaders( dahanCount );
+			int availableDamage = Math.Min( combinedDamage.Available, invader.RemainingHealth * args.Count );
+
+			if(!await _spirit.UserSelectsFirstText( $"Keep Watch - Apply {availableDamage} damage to added invaders ({args.Count} {args.Added.Text})?", "Yes, Damage them!", "No, not quite yet" ))
+				return;
+
+			var (damageApplied,_) = await to.Invaders.ApplyDamageTo1( availableDamage, invader );
+			combinedDamage.TrackDamageDone( damageApplied );
+
+			_used = true;
+
 		}
 	}
 
