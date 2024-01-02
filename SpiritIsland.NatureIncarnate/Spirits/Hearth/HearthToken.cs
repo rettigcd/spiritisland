@@ -76,9 +76,10 @@ public class HearthToken : SpiritPresenceToken
 	}
 
 	public static void GrantHealthBoost( SpaceState to ) {
-		foreach(HumanToken token in to.HumanOfTag(TokenCategory.Dahan).ToArray()) {
-			to.Adjust( token.AddHealth( _deltaHealth ), to[token] );
-			to.Init( token, 0 );
+		foreach(HumanToken origDahan in to.HumanOfTag(TokenCategory.Dahan).ToArray()) {
+			var newToken = UpgradeDahanAndLog( origDahan, to[origDahan] );
+			to.Adjust( newToken, to[origDahan] );
+			to.Init( origDahan, 0 );
 		}
 	}
 
@@ -86,8 +87,14 @@ public class HearthToken : SpiritPresenceToken
 	static void Fortify_AddingDahan( AddingTokenArgs args ) {
 		// !!! Any Dahan added with .Init() will not get this added health bonus.  'Call of the Dahan Ways'????
 		// Adding a Dahan
-		if(args.Token is HumanToken healthToken && BonusAppliesToThis(healthToken))
-			args.Token = healthToken.AddHealth( _deltaHealth );
+		if(args.Token is HumanToken healthToken && BonusAppliesToThis( healthToken ))
+			args.Token = UpgradeDahanAndLog( healthToken, args.Count );
+	}
+
+	static HumanToken UpgradeDahanAndLog( HumanToken healthToken, int count ) {
+		var newToken = healthToken.AddHealth( _deltaHealth );
+		GameState.Current.LogDebug( $"Adjusting {count} {healthToken.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
+		return newToken;
 	}
 
 	/// <summary> Intercepts out-going dahan and returns them to normal health. </summary>
