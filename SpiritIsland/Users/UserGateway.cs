@@ -18,13 +18,13 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 	void WaitForSignal(int? milliseconds) {
 		if(milliseconds.HasValue)
-			signal.WaitOne( milliseconds.Value );
+			_signal.WaitOne( milliseconds.Value );
 		else
-			signal.WaitOne(); // normal
+			_signal.WaitOne(); // normal
 	}
 
 	public bool WaitForNextDecision( int milliseconds ) {
-		if(signal.WaitOne( milliseconds )) {
+		if(_signal.WaitOne( milliseconds )) {
 			_userAccessedDecision = _activeDecisionMaker;
 			return true;
 		}
@@ -89,30 +89,35 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		if(_activeDecisionMaker != null) 
 			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{originalDecision.Prompt}], Previous:[{_activeDecisionMaker.Decision.Prompt}] ");
 
-		var promise = new TaskCompletionSource<T>();
-		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
-		var decision = decisionMaker.Decision;
+		IDecisionPlus decision = originalDecision as IDecisionPlus;
 
+		// Scenario 1 - No options => Auto-Select NULL
 		if(decision.Options.Length == 0) {
-			// Block 1: Auto-Select NULL
-			promise.TrySetResult( null );
-		} else if(Preloaded != null) {
-			// Block 2:
+			if( Preloaded is not null ) throw new InvalidOperationException($"Preloaded {Preloaded} but that is now not an option.");
+			return Task.FromResult<T>( null );
+		}
+
+		// Scenario 2 - Resolve Promise with preloaded value.
+		if(Preloaded != null) {
 			if( !decision.Options.Contains(Preloaded) )
 				throw new InvalidOperationException( $"Preloaded option {Preloaded.Text} not an option for "+decision.Prompt );
 			IOption preloaded = Preloaded;
-			decisionMaker.Select( preloaded );
-		} else if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
-			// Block 3: Auto-Select Single
-			decisionMaker.Select( decision.Options[0] );
-			Log( new DecisionLogEntry( decision.Options[0], decision, true ) );
-		} else {
-			// Block 4:
-			_activeDecisionMaker = decisionMaker;
-			signal.Set();
-			NewWaitingDecision?.Invoke(decision);
+			Preloaded = null;
+			return Task.FromResult<T>( (T)preloaded );
 		}
-		Preloaded = null; // always needs cleared after a decision - mainly for Blocks 1 & 2 above.
+
+		// Scenario 3 - Auto-Select Single
+		if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
+			Log( new DecisionLogEntry( decision.Options[0], decision, true ) );
+			return Task.FromResult<T>( (T)decision.Options[0] );
+		}
+
+		// Scenario 4 - Returns unresolved promise.
+		var promise = new TaskCompletionSource<T>();
+		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
+		_activeDecisionMaker = decisionMaker;
+		_signal.Set(); // Signal UI there is a Decision to be made.
+		NewWaitingDecision?.Invoke(decision);
 		return promise.Task;
 	}
 
@@ -126,7 +131,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	public event Action<DecisionLogEntry> DecisionMade;
 	public readonly List<string> selections = new List<string>();
 
-	readonly AutoResetEvent signal = new AutoResetEvent( false );
+	readonly AutoResetEvent _signal = new AutoResetEvent( false );
 	IDecisionMaker _activeDecisionMaker;
 	IDecisionMaker _userAccessedDecision;
 

@@ -100,7 +100,7 @@ public static class Is {
 		}
 	);
 
-	static bool MatchingSlotCard( TargetSpaceCtx ctx, InvaderSlot slot ) 
+	static bool MatchingSlotCard( TargetSpaceCtx ctx, InvaderSlot slot )
 		=> slot.Cards.Any( card => card.Flipped && card.MatchesCard( ctx.Tokens ) );
 
 	// Spirits 
