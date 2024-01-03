@@ -10,36 +10,21 @@ class CommandTheBeasts : IActionFactory {
 		gameState.InvaderDeck
 			.UnrevealedCards
 			.First( x => x.InvaderStage == 2 )
-			.CardFlipped += QueueBeastCommand;
+			.CardFlipped += new CommandTheBeasts("Command the Beasts (I)").QueueMeUp;
 
 		// Find 1st card of last Level-3 group
 		var cards = gameState.InvaderDeck.UnrevealedCards;
 		int i = cards.Count;
 		while(cards[i - 1].InvaderStage != 3) --i; // While prev is not level 3, backup - ends on card following level 3 group
-		while(cards[i - 1].InvaderStage == 3) --i; // While prev is leverl 3, backup - ends on 1st level 3 card in last group
-		cards[i].CardFlipped += QueueBeastCommand;
-	}
-
-
-	/// <summary>
-	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
-	/// </summary>
-	static public Task QueueBeastCommand( GameState gameState ) {
-		CommandTheBeasts cmdAction = new CommandTheBeasts();
-		// Adds the cmdAction to 1st spirit Actions until it is used.
-		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
-		Task TimePasses_WholeGame( GameState gameState ) {
-			if(!cmdAction.Used)
-				gameState.Spirits[0].AddActionFactory( cmdAction );
-			return Task.CompletedTask;
-		}
-
-		return Task.CompletedTask;
+		while(cards[i - 1].InvaderStage == 3) --i; // While prev is level 3, backup - ends on 1st level 3 card in last group
+		cards[i].CardFlipped += new CommandTheBeasts( "Command the Beasts (II)" ).QueueMeUp;
 	}
 
 	#endregion Static Setup
 
-	public string Name => "Command Beasts";
+	public CommandTheBeasts( string name ) { Name = name; }
+
+	public string Name { get; }
 
 	public string Text => Name;
 
@@ -51,6 +36,25 @@ class CommandTheBeasts : IActionFactory {
 
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
 	public bool Used { get; private set; }
+
+	#region private
+
+	/// <summary>
+	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
+	/// </summary>
+	Task QueueMeUp( GameState gameState ) {
+		// Adds the cmdAction to 1st spirit Actions until it is used.
+		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
+		Task TimePasses_WholeGame( GameState gameState ) {
+			if(!Used)
+				gameState.Spirits[0].AddActionFactory( this );
+			return Task.CompletedTask;
+		}
+
+		return Task.CompletedTask;
+	}
+
+	#endregion private
 }
 
 /// <summary>
