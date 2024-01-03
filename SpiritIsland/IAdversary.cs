@@ -13,6 +13,8 @@ public interface IAdversary {
 	void AdjustPlacedTokens( GameState gamestate );
 
 	AdversaryLevel[] Levels { get; }
+
+	IEnumerable<AdversaryLevel> ActiveLevels { get; }
 }
 
 abstract public class AdversaryBase : IAdversary {
@@ -56,12 +58,13 @@ abstract public class AdversaryBase : IAdversary {
 			mod.Adjust( gameState, this );
 	}
 
-	protected IEnumerable<AdversaryLevel> ActiveLevels => Levels.Take(Level+1);
+	public IEnumerable<AdversaryLevel> ActiveLevels => Levels.Take(Level+1);
 }
 
 public class AdversaryLevel {
 
-	public AdversaryLevel( int difficulty, int fear1, int fear2, int fear3, string title, string description ) {
+	public AdversaryLevel( int level, int difficulty, int fear1, int fear2, int fear3, string title, string description = "" ) {
+		_level = level;
 		Difficulty = difficulty;
 		FearCards = new int[] { fear1, fear2, fear3 };
 		Title = title;
@@ -71,10 +74,9 @@ public class AdversaryLevel {
 	public int Difficulty { get; }
 	public int[] FearCards { get; }
 	public string Title { get; }
-	public string Description { get; }
+	public string Description { get; private set; }
 
-	public Action<GameState,IAdversary> InitFunc { get; set; }
-	public Action<GameState, IAdversary> AdjustFunc { get; set; }
+	#region public - called by GameConfig to setup game
 
 	public void Init(GameState gs, IAdversary adversary ) { 
 		if(_escalation is not null)
@@ -83,14 +85,29 @@ public class AdversaryLevel {
 			gs.AddWinLossCheck( _additionalWinLossCondition );
 		InitFunc?.Invoke( gs, adversary );
 	}
+
 	public void Adjust( GameState gs, IAdversary adversary ) => AdjustFunc?.Invoke( gs, adversary );
 
-	public AdversaryLevel WithInvaderDeck(params int[] cardLevels ) {
-		InvaderDeckBuilder = new InvaderDeckBuilder( cardLevels );
+	public InvaderDeckBuilder InvaderDeckBuilder { get; private set; }
+
+	#endregion public - called by GameConfig to setup game
+
+	public Action<GameState, IAdversary> InitFunc { get; set; }
+	public Action<GameState, IAdversary> AdjustFunc { get; set; }
+
+	#region public WithXXX() to setup config
+
+	public AdversaryLevel WithDeckBuilder( InvaderDeckBuilder deckBuilder ) {
+		InvaderDeckBuilder = deckBuilder;
 		return this;
 	}
 
-	public InvaderDeckBuilder InvaderDeckBuilder { get; set; }
+	public AdversaryLevel WithInvaderCardOrder( string levels ) {
+		if(0<Description.Length) Description += " ";
+		Description += $"Invader Deck: {levels}";
+		InvaderDeckBuilder = new InvaderDeckBuilder( levels );
+		return this;
+	}
 
 	public AdversaryLevel WithEscalation( Func<GameState, Task> escalation ) {
 		_escalation = escalation; return this;
@@ -100,6 +117,20 @@ public class AdversaryLevel {
 		_additionalWinLossCondition = winLossCondition; return this;
 	}
 
+	#endregion public WithXXX() to setup config
+
+	/// <summary>
+	/// Just shows the Level/Escalation and the Title.
+	/// </summary>
+	public override string ToString() => _level == 0 
+		? $"Escalation ({Title})" 
+		: $"Level {_level} ({Title})";
+
+	#region private 
+
 	Func<GameState, Task> _escalation;
 	Action<GameState> _additionalWinLossCondition;
+	readonly int _level;
+
+	#endregion
 }

@@ -83,7 +83,7 @@ public partial class ConfigureGameDialog : Form {
 	AdversaryConfig SelectAdversary() {
 		string adversary = _adversaryListBox.SelectedItem.ToString();
 		return adversary == "[None]" ? null
-			: new AdversaryConfig( adversary, levelListBox.SelectedIndex );
+			: new AdversaryConfig( adversary, _levelListBox.SelectedIndex );
 	}
 
 	string SelectedSpiritName() {
@@ -130,32 +130,33 @@ public partial class ConfigureGameDialog : Form {
 	}
 
 	void adversaryListBox_SelectedIndexChanged( object sender, EventArgs e ) {
-		levelListBox.Items.Clear();
+		_levelListBox.Items.Clear();
 		descriptionTextBox.Text = String.Empty;
 		int index = _adversaryListBox.SelectedIndex;
-		if( index != 0) {
+		if( index != 0)
+			InitAdversaryLevels();
+		else
+			_levelListBox.Enabled = false;
+	}
 
-			levelListBox.Enabled = true;
-			string adversary = _adversaryListBox.SelectedItem as string;
-			adjustments = GameBuilder.BuildAdversary( new AdversaryConfig(adversary,0) ).Levels;
+	void InitAdversaryLevels() {
+		_levelListBox.Enabled = true;
+		string adversary = _adversaryListBox.SelectedItem as string;
+		_adjustments = GameBuilder.BuildAdversary( new AdversaryConfig( adversary, 0 ) ).Levels;
 
-			foreach(var level in adjustments)
-				levelListBox.Items.Add( level.Title );
+		foreach(var level in _adjustments)
+			_levelListBox.Items.Add( level );
 
-			levelListBox.SelectedIndex = 0;
-
-		} else {
-			levelListBox.Enabled = false;
-		}
+		_levelListBox.SelectedIndex = 0;
 	}
 
 	void levelListBox_SelectedIndexChanged( object sender, EventArgs e ) {
-		descriptionTextBox.Text = adjustments[levelListBox.SelectedIndex].Description;
+		descriptionTextBox.Text = _adjustments[_levelListBox.SelectedIndex].Description;
 	}
 
 	#endregion
 
-	AdversaryLevel[] adjustments;
+	AdversaryLevel[] _adjustments;
 
 	void spiritLabel_Click( object sender, EventArgs e ) {
 		_spiritListView.View = _spiritListView.View == View.LargeIcon ? View.Tile : View.LargeIcon;

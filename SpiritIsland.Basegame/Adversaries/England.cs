@@ -8,19 +8,19 @@ public class England : AdversaryBase, IAdversary {
 
 	AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Escalation
-		new AdversaryLevel(1, 3,3,3, "Building Boom", " On each board with Town/City, Build in the land with the most Town/City." )
+		new AdversaryLevel(0, 1, 3,3,3, "Building Boom", " On each board with Town/City, Build in the land with the most Town/City." )
 			.WithEscalation( BuildingBoom_Escalation )
 			.WithWinLossCondition( ProudAndMightyCapital ),
 
 		// Level 1
-		new AdversaryLevel(3, 3,4,3, "Indentured Servants Earn Land",
+		new AdversaryLevel(1, 3, 3,4,3, "Indentured Servants Earn Land",
 			"Invader Build Cards affect matching lands without Invaders if they are adjacent to at least 2 Towns/Cities."
 		){ InitFunc = (gs,_) => {
 			gs.InvaderDeck.Build.Engine = new EnglandBuilder(); 
 		} },
 
 		// Level 2
-		new AdversaryLevel(4, 4,4,3, "Criminals and Malcontents", 
+		new AdversaryLevel(2, 4, 4,4,3, "Criminals and Malcontents", 
 			"During Setup, on each board add 1 City to land #1 and 1 Town to land #2."
 		){ InitFunc = (gs,_) => {
 			foreach(var board in gs.Island.Boards) {
@@ -30,7 +30,7 @@ public class England : AdversaryBase, IAdversary {
 		}},
 
 		// Level 3
-		new AdversaryLevel(6, 4,5,4, "High Immigration(I)", 
+		new AdversaryLevel(3, 6, 4,5,4, "High Immigration(I)", 
 			"Perform a build prior to Ravage"
 			//	Put the "High Immigration" tile on the Invader board, to the left of "Ravage".
 			//	The Invaders take this Build action each Invader phase before Ravaging.
@@ -47,12 +47,12 @@ public class England : AdversaryBase, IAdversary {
 		},
 
 		// Level 4
-		new AdversaryLevel(7, 4,5,5, "High Immigration(full)",  
+		new AdversaryLevel(4, 7, 4,5,5, "High Immigration(full)",  
 			"The extra Build tile remains out the entire game."
 		), // no action - done in Level3
 
 		// Level 5
-		new AdversaryLevel(9 , 4,5,5, "Local Autonomy",  "Towns/Citys have +1 Health" ) {
+		new AdversaryLevel(5, 9 , 4,5,5, "Local Autonomy",  "Towns/Citys have +1 Health" ) {
 			InitFunc = (gameState,_) => {
 				gameState.Tokens.TokenDefaults[Human.City] = new HumanToken( Human.City, 4 );
 				gameState.Tokens.TokenDefaults[Human.Town] = new HumanToken( Human.Town, 3 );
@@ -60,7 +60,7 @@ public class England : AdversaryBase, IAdversary {
 		},
 
 		// Level 6
-		new AdversaryLevel(11, 4,5,4, "Independent Resolve", 
+		new AdversaryLevel(6, 11, 4,5,4, "Independent Resolve", 
 			"FearPool+=1, NoFear=>Additional build"
 		//	During Setup, add an additional Fear to the Fear Pool per player in the game.
 		//	During any Invader Phase where you resolve no Fear Cards, perform the Build from High Immigration twice.

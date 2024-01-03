@@ -8,12 +8,12 @@ public class Sweden : AdversaryBase, IAdversary {
 
 	AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Escalation
-		new AdversaryLevel(1 , 3,3,3, "Swayed by the Invaders", "After Invaders Explore into each land this Phase, if that land has at least as many Invaders as Dahan, replace 1 Dahan with 1 Town." ){
+		new AdversaryLevel(0,1 , 3,3,3, "Swayed by the Invaders", "After Invaders Explore into each land this Phase, if that land has at least as many Invaders as Dahan, replace 1 Dahan with 1 Town." ){
 			InitFunc = (gs,_) => gs.InvaderDeck.Explore.Engine = new SwedenExplorer()
 		},
 
 		// Level 1 
-		new AdversaryLevel(2 , 3,4,3, "Heavy Mining", 
+		new AdversaryLevel(1, 2 , 3,4,3, "Heavy Mining", 
 			"If the Invaders do at least 6 Damage to the land during Ravage, add an extra Blight. The additional Blight does not destroy Presence or cause cascades."
 		) {
 			InitFunc = (gs,adv) => {
@@ -23,7 +23,7 @@ public class Sweden : AdversaryBase, IAdversary {
 		},
 
 		// Level 2
-		new AdversaryLevel(3 , 3,4,3, "Population Pressure at Home", 
+		new AdversaryLevel(2, 3 , 3,4,3, "Population Pressure at Home", 
 			"During Setup, on each board add 1 City to land #4. On boards where land #4 starts with Blight, put that Blight in land #5 instead." 
 		) {
 			AdjustFunc = (gameState,_) => {
@@ -45,7 +45,7 @@ public class Sweden : AdversaryBase, IAdversary {
 		},
 
 		// Level 3
-		new AdversaryLevel(5 , 3,4,3, "Fine Steel for Tools and Guns", "Town deal 3 Damage. City deal 5 Damage"
+		new AdversaryLevel(3, 5 , 3,4,3, "Fine Steel for Tools and Guns", "Town deal 3 Damage. City deal 5 Damage"
 		) {
 			InitFunc = (gameState,_) => {
 				gameState.Tokens.TokenDefaults[Human.Town] = ((HumanToken)gameState.Tokens.TokenDefaults[Human.Town]).SetAttack(3);
@@ -54,7 +54,7 @@ public class Sweden : AdversaryBase, IAdversary {
 		},
 
 		// Level 4
-		new AdversaryLevel(6 , 3,4,4, "Royal Backing", 
+		new AdversaryLevel(4, 6 , 3,4,4, "Royal Backing", 
 			"During Setup, after adding all other Invaders, discard the top card of the Invader Deck. On each board, add 1 Town to the land of that terrain with the fewest Invaders."
 		) {
 			InitFunc = (gameState,_) => {
@@ -74,7 +74,7 @@ public class Sweden : AdversaryBase, IAdversary {
 		},
 
 		// Level 5
-		new AdversaryLevel(7 , 4,4,4, "Mining Rush", "When Ravaging adds at least 1 Blight to a land, also add 1 Town to an adjacent land without Town/City. Cascading Blight does not cause this effect."
+		new AdversaryLevel(5, 7 , 4,4,4, "Mining Rush", "When Ravaging adds at least 1 Blight to a land, also add 1 Town to an adjacent land without Town/City. Cascading Blight does not cause this effect."
 		) {
 			InitFunc = ( gameState, _ ) => {
 				gameState.AddIslandMod( new SwedenHeavyMining(){ MiningRush = true } );
@@ -82,7 +82,7 @@ public class Sweden : AdversaryBase, IAdversary {
 		},
 
 		// Level 6
-		new AdversaryLevel(8 , 4,4,5, "Prospecting Outpost", 
+		new AdversaryLevel(6, 8 , 4,4,5, "Prospecting Outpost", 
 			"During setup, on each board add 1 Town and 1 Blight to land #8. The Blight comes from the box, not the Blight Card."
 		) {
 			InitFunc = ( gameState, _) => {

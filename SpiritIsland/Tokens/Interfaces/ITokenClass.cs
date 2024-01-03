@@ -2,9 +2,6 @@
 
 /// <summary> A class-of token, not a token itself. </summary>
 public interface ITokenClass : ITag {
-
-	string Label { get; }
-
 	bool HasTag(ITag tag);
 }
 

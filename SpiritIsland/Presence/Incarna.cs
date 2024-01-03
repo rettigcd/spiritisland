@@ -7,10 +7,6 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 
 	public Spirit Self { get; }
 
-	readonly string _abreviation;
-	readonly Img _notEmpowered;
-	readonly Img _empowered;
-
 	public Incarna( Spirit spirit, string abrev, Img notEmpowered, Img empowered ) {
 		Self = spirit;
 		_abreviation = abrev;
@@ -37,8 +33,9 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 
 	public ITokenClass Class => this;
 
+
 	#region IEntityClass properties
-	public string Label => $"{Self.Text} Incarna";
+	string ITag.Label => $"{Self.Text} Incarna";
 
 	// Class & Token method
 	public bool HasTag(ITag tag) 
@@ -63,5 +60,10 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 		if(1 < _spaceCounts.Count)
 			throw new Exception("Incarna is in 2 places at the same time!");
 	}
+
 	readonly CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
+	readonly string _abreviation;
+	readonly Img _notEmpowered;
+	readonly Img _empowered;
+
 }

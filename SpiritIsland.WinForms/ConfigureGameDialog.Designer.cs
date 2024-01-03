@@ -35,7 +35,7 @@ namespace SpiritIsland.WinForms {
             this._adversaryListBox = new System.Windows.Forms.ListBox();
             this.colorCheckBox = new System.Windows.Forms.CheckBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.levelListBox = new System.Windows.Forms.ListBox();
+            this._levelListBox = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.descriptionTextBox = new System.Windows.Forms.TextBox();
             this._spiritListView = new System.Windows.Forms.ListView();
@@ -152,16 +152,16 @@ namespace SpiritIsland.WinForms {
             // 
             // levelListBox
             // 
-            this.levelListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._levelListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.levelListBox.Enabled = false;
-            this.levelListBox.FormattingEnabled = true;
-            this.levelListBox.ItemHeight = 15;
-            this.levelListBox.Location = new System.Drawing.Point(735, 29);
-            this.levelListBox.Name = "levelListBox";
-            this.levelListBox.Size = new System.Drawing.Size(187, 289);
-            this.levelListBox.TabIndex = 15;
-            this.levelListBox.SelectedIndexChanged += new System.EventHandler(this.levelListBox_SelectedIndexChanged);
+            this._levelListBox.Enabled = false;
+            this._levelListBox.FormattingEnabled = true;
+            this._levelListBox.ItemHeight = 15;
+            this._levelListBox.Location = new System.Drawing.Point(735, 29);
+            this._levelListBox.Name = "levelListBox";
+            this._levelListBox.Size = new System.Drawing.Size(187, 289);
+            this._levelListBox.TabIndex = 15;
+            this._levelListBox.SelectedIndexChanged += new System.EventHandler(this.levelListBox_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -224,7 +224,7 @@ namespace SpiritIsland.WinForms {
             this.Controls.Add(this._spiritListView);
             this.Controls.Add(this.descriptionTextBox);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.levelListBox);
+            this.Controls.Add(this._levelListBox);
             this.Controls.Add(this.colorCheckBox);
             this.Controls.Add(this._adversaryListBox);
             this.Controls.Add(this.label4);
@@ -258,7 +258,7 @@ namespace SpiritIsland.WinForms {
 		private System.Windows.Forms.ListBox _adversaryListBox;
 		private System.Windows.Forms.CheckBox colorCheckBox;
 		private System.Windows.Forms.ColorDialog colorDialog;
-		private System.Windows.Forms.ListBox levelListBox;
+		private System.Windows.Forms.ListBox _levelListBox;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.TextBox descriptionTextBox;
 		private System.Windows.Forms.ListView _spiritListView;

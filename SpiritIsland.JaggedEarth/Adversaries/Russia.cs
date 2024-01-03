@@ -8,11 +8,11 @@ public class Russia : AdversaryBase, IAdversary {
 
 	AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
-		new AdversaryLevel(1 , 3,3,3, "Stalk the Predators", "Add 2 explorers/board to lands with beast." )
+		new AdversaryLevel(0, 1, 3,3,3, "Stalk the Predators", "Add 2 explorers/board to lands with beast." )
 			.WithEscalation( Escalation_StalkThePredators ),
 
 		// Level 1
-		new AdversaryLevel(3 , 3,3,4, "Hunters Bring Home Shell and Hide", 
+		new AdversaryLevel(1, 3, 3,3,4, "Hunters Bring Home Shell and Hide", 
 			"During Setup, on each board, add 1 beast and 1 Explorer to the highest-numbered land without Town/City. "+
 			"During Play, Explorer do +1 Damage. " +
 			"When Ravage adds Blight to a land (including cascades), Destroy 1 beast in that land." ) {
@@ -42,7 +42,7 @@ public class Russia : AdversaryBase, IAdversary {
 		},
 
 		// Level 2
-		new AdversaryLevel(4 , 4,3,4, "A Sense for Impending Disaster", 
+		new AdversaryLevel(2, 4, 4,3,4, "A Sense for Impending Disaster", 
 			"The first time each Action would Destroy Explorer, push it instead (+1 fear)" ) {
 			InitFunc = (gameState,_) => {
 				gameState.AddIslandMod( new Russia_Level2_SenseOfPendingDisasterMod() );
@@ -50,7 +50,7 @@ public class Russia : AdversaryBase, IAdversary {
 		},
 
 		// Level 3
-		new AdversaryLevel(6 , 4,4,3, "Competition Among Hunters", "Ravage Cards also match lands with 3 or more Explorer." ){
+		new AdversaryLevel(3, 6, 4,4,3, "Competition Among Hunters", "Ravage Cards also match lands with 3 or more Explorer." ){
 			InitFunc = (gameState,adv) => {
 				if(adv.Level < 6)
 					gameState.InvaderDeck.Ravage.Engine = new Russia_Level3_CompetitionAmongHuntersRavageEngine();
@@ -58,10 +58,10 @@ public class Russia : AdversaryBase, IAdversary {
 		},
 
 		// Level 4
-		new AdversaryLevel(7 , 4,4,4, "Accelerated Exploitation",  "111-2-3-2-3-2-3-2-33" ).WithInvaderDeck(1,1,1, 2, 3, 2, 3, 2, 3, 2, 3,3),
+		new AdversaryLevel(4, 7, 4,4,4, "Accelerated Exploitation").WithInvaderCardOrder("111-2-3-2-3-2-3-2-33"),
 
 		// Level 5
-		new AdversaryLevel(9 , 4,5,4, "Entrench in the Face of Fear",  
+		new AdversaryLevel(5, 9, 4,5,4, "Entrench in the Face of Fear",  
 			"Add Stage II Invader Card under 3rd Fear Card, and Stage III under 7th Fear Cards." ) {
 			InitFunc = (gameState,_) => {
 				// Modify Fear Card #3 and #7 to add Build Card
@@ -80,7 +80,7 @@ public class Russia : AdversaryBase, IAdversary {
 		},
 
 		// Level 6
-		new AdversaryLevel(11, 5,5,4, "Pressure for Fast Profit", 
+		new AdversaryLevel(6, 11, 5,5,4, "Pressure for Fast Profit", 
 			"After Ravage, on each board where it added no Blight: In the land with the most Explorer (min. 1), add 1 Explorer and 1 Town." ) {
 			InitFunc = (gameState,_) => gameState.InvaderDeck.Ravage.Engine = new Russia_Level6_PressureForFastProfitRavageEngine(gameState)
 		},

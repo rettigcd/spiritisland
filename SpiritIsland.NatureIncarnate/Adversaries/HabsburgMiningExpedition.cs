@@ -10,7 +10,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Escalation / Win-Loss Condition
 
-	static AdversaryLevel Escalation => new AdversaryLevel( 1, 3,3,3, "Mining Tunnels", 
+	static AdversaryLevel Escalation => new AdversaryLevel( level: 0, 1, 3,3,3, "Mining Tunnels", 
 		"After Advancing Invader Cards: On each board, Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required)."
 	){ 
 		InitFunc = (gs,_) => {
@@ -42,7 +42,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Level 1
 
-	static AdversaryLevel L1 => new AdversaryLevel( 3, 3,3,3, "Avarice Rewarded/Ceaseless Mining", 
+	static AdversaryLevel L1 => new AdversaryLevel( level: 1, 3, 3,3,3, "Avarice Rewarded/Ceaseless Mining", 
 		"When Blight added by a Ravage Action would cascade, instead Upgrade 1 Explorer/Town( before dahan counterattack). "+
 		"Lands with 3 or more Invaders are Mining lands.In Mining lands: (1) Disease and modifiers to Disease affect Ravage Actions as though they were Build Actions. (2) During the Build Step, Build Cards cause Ravage Actions (instead of Build Actions)."
 	){       
@@ -132,7 +132,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 1
 
 	#region Level 2
-	static AdversaryLevel L2 = new AdversaryLevel( 4, 
+	static AdversaryLevel L2 = new AdversaryLevel( level: 2, 4, 
 		3, 3, 4, 
 		"Miners Come From Far and Wide", 
 		"Setup: (a) Add 1 Explorer in each land with no Dahan. (b) Add 1 Disease and 1 City in the highest-numbered land with a town symbol."
@@ -160,7 +160,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 2
 
 	#region Level 3
-	static AdversaryLevel L3 = new AdversaryLevel( 5, 
+	static AdversaryLevel L3 = new AdversaryLevel( level: 3, 5, 
 		3, 4, 4, 
 		"Mining Boom (I)", 
 		"After the Build Step, on each board: Choose a land with an Explorer. Upgrade 1 Explorer there."
@@ -184,57 +184,53 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Level 4
 
-	static AdversaryLevel L4 = new AdversaryLevel( 7, 
+	static AdversaryLevel L4 = new AdversaryLevel( level: 4, 7, 
 		4, 4, 4, 
 		"Untapped Salt Deposits", 
 		"111-2S22-33333 (Remove Stage-2 Coastal Lands, Place Salt Deposits in 2nd Stage-2 slot."
-	) {
-		InvaderDeckBuilder = new SaltDepositsInvaderDeckBuilder(1,1,1,2,SaltDepositsInvaderDeckBuilder.SaltDeposits,2,2,3,3,3,3,3),
-		// !! The no-advance is baked in to the Ravage Slot for the moment.
-	};
+	).WithDeckBuilder( new SaltDepositDeckBuilder( "111-2S22-33333" ) );
+	// The no-advance is baked in to the Ravage Slot for the moment.
 
-	/// <summary> Replaces Coastal with Salt Deposits </summary>
-	class SaltDepositsInvaderDeckBuilder : InvaderDeckBuilder {
-
-		public const int SaltDeposits = 99;
-
-		public SaltDepositsInvaderDeckBuilder( params int[] levelSelection ) : base( levelSelection ) { }
-
-		protected override IEnumerable<InvaderCard> SelectLevel2Cards()
-			=> base.SelectLevel2Cards().Where( x => !x.Text.Contains( CoastalFilter.Name ) );
-
-		protected override void SelectCard( List<InvaderCard> dst, Queue<InvaderCard>[] src, int level ) {
-			if(level == SaltDeposits)
-				dst.Add( new InvaderCard(new SaltDepositsFilter(),2) );
-			else
-				base.SelectCard( dst, src, level );
+	class SaltDepositDeckBuilder : InvaderDeckBuilder {
+		public SaltDepositDeckBuilder(string levels):base(levels) { }
+		protected override InvaderCard SelectCard( Queue<InvaderCard>[] src, char level ) {
+			return level switch {
+				'S' => SaltDeposits(),
+				_ => base.SelectCard(src,level)
+			};
+		}
+		protected override string ValidChars => base.ValidChars + "S";
+		static InvaderCard SaltDeposits() => new InvaderCard( new SaltDepositsFilter(), 2 );
+		protected override IEnumerable<InvaderCard> SelectLevel2Cards() {
+			return _levelsString.Contains( 'S' ) ? Level2SansCoastal : base.SelectLevel2Cards();
 		}
 
 	}
-	/// <summary>
-	/// Explore & Build => matches non-Mining lands
-	/// Ravage => matches Mining Lands
-	/// </summary>
 	class SaltDepositsFilter : InvaderCardSpaceFilter {
 		public string Text => "Salt Deposits";
 		public bool Matches( Space space ) {
-			return IsInRavageThisAction() == IsMiningLand(space.Tokens);
+			return IsInRavageThisAction() == IsMiningLand( space.Tokens );
 		}
 		bool IsInRavageThisAction() {
 			var scope = ActionScope.Current;
-			if(scope.ContainsKey(Key)) return scope.SafeGet<bool>( Key );
+			if(scope.ContainsKey( Key )) return scope.SafeGet<bool>( Key );
 			GameState gs = GameState.Current;
-			bool isInRavage = gs.InvaderDeck.Ravage.Cards.Any( c=>c.Text.Contains(Text) );
+			bool isInRavage = gs.InvaderDeck.Ravage.Cards.Any( c => c.Text.Contains( Text ) );
 			scope[Key] = isInRavage;
 			return isInRavage;
 		}
 		const string Key = "Salt Deposits Ravaging";
 	}
+
+	/// <summary>
+	/// Explore & Build => matches non-Mining lands
+	/// Ravage => matches Mining Lands
+	/// </summary>
 	#endregion Level 4
 
 	#region Level 5
 
-	static AdversaryLevel L5 = new AdversaryLevel( 9, 
+	static AdversaryLevel L5 = new AdversaryLevel( level:5, 9, 
 		4, 5, 4, 
 		"Mining Boom (II)", 
 		"Instead of Mining Boom(I), after the Build Step, on each board: Choose a land with Explorer. Build there, then Upgrade 1 Explorer( Build normally in a Mining land.)"
@@ -258,7 +254,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 5
 
 	#region Level 6
-	static AdversaryLevel L6 = new AdversaryLevel( 10, 
+	static AdversaryLevel L6 = new AdversaryLevel( level:6, 10, 
 		4, 5, 4, 
 		"The Empire Ascendant", 
 		"Setup and During the Explore Step: On boards with 3 or fewer Blight: Add +1 Explorer in each land successfully explored.  ( Max. 2 lands per board per Explore Card.)"

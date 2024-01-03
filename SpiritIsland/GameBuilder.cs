@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿
+namespace SpiritIsland;
 
 public class GameBuilder {
 
@@ -130,7 +131,9 @@ public class GameBuilder {
 
 		public int[] FearCardsPerLevel => new int[] { 3, 3, 3 };
 
-		public AdversaryLevel[] Levels => new AdversaryLevel[]{ new AdversaryLevel(0,3,3,3,"No Adversary","No Escalation") };
+		public AdversaryLevel[] Levels => new AdversaryLevel[]{ new AdversaryLevel(0,0,3,3,3,"No Adversary","No Escalation") };
+
+		public IEnumerable<AdversaryLevel> ActiveLevels => Enumerable.Empty<AdversaryLevel>();
 
 		public void AdjustPlacedTokens( GameState _ ) { }
 		public void Init( GameState _ ) { }

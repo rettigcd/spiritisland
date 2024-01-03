@@ -26,30 +26,43 @@ public class InvaderDeckBuilder {
 		InvaderCard.Stage3( Terrain.Sands, Terrain.Wetland )
 	);
 
-	public readonly static InvaderDeckBuilder Default = new InvaderDeckBuilder();
+	public readonly static InvaderDeckBuilder Default = new InvaderDeckBuilder( "111-2222-33333" );
 
-	readonly int[] _levelSelection;
+	protected readonly string _levelsString;
 
-	public InvaderDeckBuilder( int[] levelSelection = default ) {
-		_levelSelection = levelSelection 
-			?? new int[] { 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3 };
+	public InvaderDeckBuilder( string levels ) {
+		_levelsString = levels;
 	}
+
 	public InvaderDeck Build( int seed = default ) {
 		var unrevealedCards = new List<InvaderCard>();
 		Queue<InvaderCard>[] unused = PrepareShuffledStageCards( seed );
-		foreach(var selectionLevel in _levelSelection)
-			SelectCard( unrevealedCards, unused, selectionLevel );
+		foreach(char selectionLevel in _levelsString.Where( ValidChars.Contains ))
+			unrevealedCards.Add( SelectCard( unused, selectionLevel ) );
 
 		return new InvaderDeck( unrevealedCards, unused );
 	}
 
-	protected virtual void SelectCard( List<InvaderCard> dst, Queue<InvaderCard>[] src, int level ) {
-		dst.Add( src[level - 1].Dequeue() );
+	protected virtual string ValidChars => "123C";
+
+	protected virtual InvaderCard SelectCard( Queue<InvaderCard>[] src, char level ) {
+		return level switch {
+			'1' => src[1-1].Dequeue(),
+			'2' => src[2-1].Dequeue(),
+			'3' => src[3-1].Dequeue(),
+			'C' => InvaderCard.Stage2Costal(), 
+			_ => throw new ArgumentOutOfRangeException(),
+		};
 	}
 
 
 	protected virtual IEnumerable<InvaderCard> SelectLevel1Cards() => Level1Cards;
-	protected virtual IEnumerable<InvaderCard> SelectLevel2Cards() => Level2Cards;
+	protected virtual IEnumerable<InvaderCard> SelectLevel2Cards() {
+		return _levelsString.Contains( 'C' ) ? Level2SansCoastal : Level2Cards;
+	}
+
+	protected IEnumerable<InvaderCard> Level2SansCoastal => Level2Cards.Where( x => x.Text != CoastalFilter.Name );
+
 	protected virtual IEnumerable<InvaderCard> SelectLevel3Cards() => Level3Cards;
 
 	Queue<InvaderCard>[] PrepareShuffledStageCards( int seed ) {

@@ -8,7 +8,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 	AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
-		new AdversaryLevel(2 , 3,3,3, "Seek Prime Territory", "On each board with 4 or fewer Blight, add 1 Town to a land without Town/Blight. On each board with 2 or fewer Blight, do so again." ){
+		new AdversaryLevel(0, 2 , 3,3,3, "Seek Prime Territory", "On each board with 4 or fewer Blight, add 1 Town to a land without Town/Blight. On each board with 2 or fewer Blight, do so again." ){
 			InitFunc = (gameState,_) => {
 				// Additional loss condition - too many 8+blight
 				var tooManyBlight = new TooManyBlight();
@@ -19,13 +19,13 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 			.WithEscalation( SeekPrimeTerritory_Escalation ),
 
 		// Level 1
-		new AdversaryLevel(3 , 3,4,3, "Migratory Herders", 
+		new AdversaryLevel(1, 3, 3,4,3, "Migratory Herders", 
 			"After the normal Build Step: In each land matching a Build Card, Gather 1 Town from a land not matching a Build Card. (In board/land order.)" ) {
 			InitFunc = (gameState,_) => gameState.InvaderDeck.Build.Engine = new HabsurgBuilder(),
 		},
 
 		// Level 2
-		new AdversaryLevel(5 , 4,5,2, "More Rural Than Urban", 
+		new AdversaryLevel(2, 5, 4,5,2, "More Rural Than Urban", 
 			"During Setup, on each board, add 1 Town to land #2 and 1 Town to the highest-numbered land without Setup symbols. "+
 			"During Play, when Invaders would Build 1 City in an Inland land, they instead Build 2 Town." 
 		) {
@@ -50,24 +50,24 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 		},
 
 		// Level 3
-		new AdversaryLevel(6 , 4,5,3, "Fast Spread", 
-			"When making the Invader Deck, Remove 1 additional Stage I Card. (New deck order: 11-2222-33333)" )
-			.WithInvaderDeck(1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3),
+		new AdversaryLevel(3, 6, 4,5,3, "Fast Spread", 
+			"When making the Invader Deck, Remove 1 additional Stage I Card." )
+			.WithInvaderCardOrder("11-2222-33333"),
 
 		// Level 4
-		new AdversaryLevel(8 , 4,5,3, "Herds Thrive in Verdant Lands",  
+		new AdversaryLevel(4, 8, 4,5,3, "Herds Thrive in Verdant Lands",  
 			"Town in lands without Blight are Durable: they have +2 Health, and 'Destroy Town' effects instead deal 2 Damage (to those Town only) per Town they could Destroy. ('Destroy all Town' works normally.)" ){ 
 			InitFunc = (gameState,_) => gameState.AddIslandMod( new HabsburgMakeTownsDurable() )
 		},
 
 		// Level 5
-		new AdversaryLevel(9 , 4,6,3, "Wave of Immigration", 
+		new AdversaryLevel(5, 9, 4,6,3, "Wave of Immigration", 
 			"Before the initial Explore, put the Habsburg Reminder Card under the top 5 Invader Cards. When Revealed, on each board, add 1 City to a Coastal land without City and 1 Town to the 3 Inland lands with the fewest Blight." ){ 
 			InitFunc = (gameState,_) => gameState.InvaderDeck.UnrevealedCards[4].CardFlipped += WaveOfImmigration
 		},
 
 		// Level 6
-		new AdversaryLevel(10, 5,6,3, "Far-Flung Herds", 
+		new AdversaryLevel(6, 10, 5,6,3, "Far-Flung Herds", 
 			"Ravages do +2 Damage (total) if any adjacent lands have Town. (This does not cause lands without Invaders to Ravage.)" ){ 
 			InitFunc = (gameState,_) => {
 				// !! Can simplify RavageBehavior if we slap a Town-Tracking token on every space Which updates a 'NeighboringTownsToken' that does damage.

@@ -7,7 +7,7 @@ public class France : AdversaryBase, IAdversary {
 
 	AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
-		new AdversaryLevel(2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ) {
+		new AdversaryLevel(0, 2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ) {
 			InitFunc = (gs,adv) => {
 				gs.InvaderDeck.Build.Engine = new FranceBuilder( 
 					hasSlaveLabor: 2 <= adv.Level, // Level 2 stuff
@@ -21,10 +21,10 @@ public class France : AdversaryBase, IAdversary {
 		}.WithWinLossCondition(SprawlingPlantations),
 
 		// Level 1
-		new AdversaryLevel(3 , 3,3,3, "Frontier Explorers", "Except during Setup: After Invaders successfullly Explore into a land which has not Town/City, add 1 Explorer there." ),
+		new AdversaryLevel(1, 3, 3,3,3, "Frontier Explorers", "Except during Setup: After Invaders successfullly Explore into a land which has not Town/City, add 1 Explorer there." ),
 
 		// Level 2
-		new AdversaryLevel(5 , 3,4,3, "Slave Labor", "During Setup, put the 'Slave Rebellion' event under the top 3 cards of the Event Deck.  After Invaders Buid in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town." ) {
+		new AdversaryLevel(2, 5, 3,4,3, "Slave Labor", "During Setup, put the 'Slave Rebellion' event under the top 3 cards of the Event Deck.  After Invaders Buid in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town." ) {
 			InitFunc = (gameState,_) => {
 				gameState.StartOfInvaderPhase.Add( async gs => {
 				if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
@@ -45,7 +45,7 @@ public class France : AdversaryBase, IAdversary {
 		},
 
 		// Level 3
-		new AdversaryLevel(7 , 4,4,3, "Early Plantation", 
+		new AdversaryLevel(3, 7, 4,4,3, "Early Plantation", 
 			"During Setup, on each board add 1 Town to the highest-numbered land without Town.  Add 1 Town to land #1." ) {
 			InitFunc = (gameState,_) => {
 				// During Setup, on each board
@@ -60,10 +60,10 @@ public class France : AdversaryBase, IAdversary {
 		},
 
 		// Level 4
-		new AdversaryLevel(8 , 4,4,4, "Triangle Trade",  "Whenever Invaders Build a Coastal City, add 1 Town to the adjacent land with the fewest Town." ),
+		new AdversaryLevel(4, 8, 4,4,4, "Triangle Trade",  "Whenever Invaders Build a Coastal City, add 1 Town to the adjacent land with the fewest Town." ),
 
 		// Level 5
-		new AdversaryLevel(9 , 4,5,4, "Slow-Healing Ecosystem",  
+		new AdversaryLevel(5, 9 , 4,5,4, "Slow-Healing Ecosystem",  
 			"When you remove Blight fomr the board, put it here instead of onto the Blight Card. As soon as you have 3 Blight per player here, move it all back to the Blight Card." ) {
 			InitFunc = (gameState,_) => {
 				// When you remove Blight from the board, put it here instead of onto the Blight Card.
@@ -89,7 +89,7 @@ public class France : AdversaryBase, IAdversary {
 		},
 
 		// Level 6
-		new AdversaryLevel(10, 4,5,5, "Persistent Explorers", "After resolving an Explore Card, on each board add 1 Explorer to a land without any.  Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer." ) {
+		new AdversaryLevel(6, 10, 4,5,5, "Persistent Explorers", "After resolving an Explore Card, on each board add 1 Explorer to a land without any.  Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer." ) {
 			InitFunc = (gameState,_) => gameState.AddIslandMod( new FranceFearPushesExplorers() )
 		},
 	};

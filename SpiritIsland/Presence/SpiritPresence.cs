@@ -180,7 +180,8 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 	#endregion Exposed Data
 
 	#region ITokenClass Imp
-	string ITokenClass.Label => "Presence";
+	
+	string ITag.Label => "Presence";
 	bool ITokenClass.HasTag( ITag tag ) => tag == this // Spirit.Presence acts like the class for the Spirit
 		|| tag == TokenCategory.Presence; // !! Should be on Incarna Also
 	#endregion ITokenClass Imp

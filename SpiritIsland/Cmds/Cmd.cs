@@ -23,7 +23,7 @@ public static partial class Cmd {
 
 	// -- Add ---
 	static public SpaceAction AddDahan( int count ) => new SpaceAction( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.AddDefault( Human.Dahan, count ) );
-	static public SpaceAction AddTown( int count ) => new SpaceAction( count == 1 ? "Add 1 Town" : $"Add {count} Towns", ctx => ctx.Tokens.AddDefault(Human.Town, count ) );
+	static public SpaceAction AddTown( int count, string suffixDescription = "" ) => new SpaceAction( (count == 1 ? "Add 1 Town" : $"Add {count} Towns") + suffixDescription, ctx => ctx.Tokens.AddDefault(Human.Town, count ) );
 	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefault(Human.City, count ) );
 	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.AddAsync(count) );
