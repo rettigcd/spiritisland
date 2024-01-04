@@ -1,19 +1,18 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> 
-/// If no Build-Stoppers prevent it, 
-/// Performs 1 build on 1 space.
+/// If no Build-Stoppers prevent it, Performs 1 build on 1 space.
 /// </summary>
-public class BuildOnceOnSpace {
+/// <remarks>
+/// Only call directly from the build engine.
+/// Do NOT use directly.  Instead, go through the build engine when doing builds as this behavior may be overriden by France or Habsburg
+/// </remarks>
+public class BuildOnceOnSpace_Default { 
 
-	public BuildOnceOnSpace( GameState gs, SpaceState tokens ) {
-		_gameState = gs;
+	public async Task ActAsync( GameState gs, SpaceState tokens ) {
 		_tokens = tokens;
-	}
-
-	public async Task ExecAsync() {
 		string buildResult = await GetResult();
-		_gameState.Log( new Log.InvaderActionEntry( _tokens.Space.Label + ": " + buildResult ) );
+		gs.Log( new Log.InvaderActionEntry( _tokens.Space.Label + ": " + buildResult ) );
 	}
 
 	async Task<string> GetResult() {
@@ -23,7 +22,6 @@ public class BuildOnceOnSpace {
 		// Determine type to build
 		var (countToAdd, invaderToAdd) = DetermineWhatToAdd();
 		BuildEngine.InvaderToAdd.Value = invaderToAdd;
-
 
 		// Check for Stoppers
 		var buildStoppers = _tokens.ModsOfType<ISkipBuilds>()
@@ -46,7 +44,6 @@ public class BuildOnceOnSpace {
 		return (countToAdd, invaderToAdd);
 	}
 
-	readonly protected SpaceState _tokens;
-	readonly protected GameState _gameState;
+	protected SpaceState _tokens;
 
 }

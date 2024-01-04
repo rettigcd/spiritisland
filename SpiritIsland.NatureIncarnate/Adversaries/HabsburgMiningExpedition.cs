@@ -126,7 +126,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		public override Task Do1Build( GameState gameState, SpaceState spaceState ) {
 			return IsMiningLand(spaceState) 
 				? spaceState.Ravage() 
-				: new BuildOnceOnSpace( gameState, spaceState ).ExecAsync();
+				: new BuildOnceOnSpace_Default().ActAsync( gameState, spaceState );
 		}
 	}
 	#endregion Level 1
@@ -241,7 +241,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	};
 	static Task BuildThenUpgradeExplorer( GameState gs ) {
 		return new SpaceAction( "Upgrade explorer", async x => {
-			await new BuildOnceOnSpace(gs,x.Tokens).ExecAsync();
+			await new BuildOnceOnSpace_Default().ActAsync( gs, x.Tokens );
 			var token = await x.Self.SelectAsync( new A.SpaceToken( "Select Explorer to Upgrade", x.Tokens.SpaceTokensOfTag( Human.Explorer ), Present.Always ) );
 			if(token != null)
 				ReplaceInvader.UpgradeSelectedInvader( x.Tokens, token.Token.AsHuman() );

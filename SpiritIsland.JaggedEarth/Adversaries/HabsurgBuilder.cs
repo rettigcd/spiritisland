@@ -30,11 +30,11 @@ class HabsurgBuilder : BuildEngine {
 
 	public override Task Do1Build( GameState gameState, SpaceState spaceState ) 
 		=> ReplaceInlandCityWith2Towns 
-			? new HasburgSpaceBuilder( gameState, spaceState ).ExecAsync()
-			: new BuildOnceOnSpace( gameState, spaceState ).ExecAsync();
+			? new HasburgSpaceBuilder().ActAsync( gameState, spaceState )
+			: new BuildOnceOnSpace_Default().ActAsync( gameState, spaceState );
 
-	class HasburgSpaceBuilder : BuildOnceOnSpace {
-		public HasburgSpaceBuilder( GameState gs, SpaceState spaceState ) : base( gs, spaceState ) { }
+	class HasburgSpaceBuilder : BuildOnceOnSpace_Default {
+		public HasburgSpaceBuilder() : base() { }
 		protected override (int, HumanTokenClass) DetermineWhatToAdd() {  
 			var (count,tokenClass) = base.DetermineWhatToAdd();
 			return (tokenClass == Human.City && !_tokens.Space.IsCoastal && !_tokens.Space.IsOcean)
