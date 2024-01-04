@@ -9,7 +9,7 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 	public Task Level1( GameState ctx )
 		=> Cmd.PushExplorersOrTowns( 1 )
 			.From().OneLandPerBoard().Which( Has.DangerousLands )
-			.ByPickingToken( Human.Explorer_Town )
+			// .ByPickingToken( Human.Explorer_Town )  This doesn't work because Push is now a Move, not a SpaceToken
 			.ForEachBoard()
 			.ActAsync( ctx );
 
@@ -31,6 +31,6 @@ public class FleeFromDangerousLands : FearCardBase, IFearCard {
 
 	Task Level3_Remove( TargetSpaceCtx ctx ) => ctx.SourceSelector.AddGroup( 1, TokensClassesFor( ctx ) ).RemoveN(ctx.Self);
 
-	static ITokenClass[] TokensClassesFor( TargetSpaceCtx ctx ) => Has.DangerousLands.Filter( ctx ) ? Human.Invader : Human.Explorer_Town;
+	static ITokenClass[] TokensClassesFor( TargetSpaceCtx ctx ) => Has.DangerousLands.MyFilter( ctx ) ? Human.Invader : Human.Explorer_Town;
 
 }
