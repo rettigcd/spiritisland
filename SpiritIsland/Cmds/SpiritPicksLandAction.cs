@@ -18,12 +18,12 @@ public class SpiritPicksLandAction : IActOn<Spirit> {
 
 		for(int i = 0; i < _landsPerSpirit; ++i) {
 
-			var spaceOptions = GameState.Current.Spaces
+			var preFiltered = GameState.Current.Spaces
 				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
 				.Select( s => self.Target( s.Space ) )
-				.Where( _spaceAction.IsApplicable )  // Matches action Criteria
-				.Where( LandCriteria.Filter )
-				.ToArray();
+				.Where( _spaceAction.IsApplicable );  // Matches action Criteria
+
+			var spaceOptions = LandCriteria.Filter( preFiltered ).ToArray();
 			if(spaceOptions.Length == 0) return;
 
 			Space space = _firstPickTokenClasses != null

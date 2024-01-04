@@ -1,22 +1,46 @@
-﻿namespace SpiritIsland;
+﻿using System.Linq;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Provides a filters to some context (Ctx) along with a description.
 /// </summary>
 public class CtxFilter<Ctx> {
 
-	public CtxFilter( string description, Func<Ctx, bool> filter ) {
+	static public CtxFilter<Ctx> NullFilter => new CtxFilter<Ctx>( "", _ => true );
+
+	/// <summary>
+	/// Build a filter that evaluates 1 context at a time.
+	/// </summary>
+	public CtxFilter( string description, Func<Ctx, bool> singleFilter ) {
 		Description = description;
-		Filter = filter;
+		_groupFilter = x => x.Where( singleFilter );
 	}
-	public readonly Func<Ctx, bool> Filter;
+
+	/// <summary>
+	/// Build a filter that evaluates all contexts as in a group.
+	/// </summary>
+	public CtxFilter( string description, Func<IEnumerable<Ctx>, IEnumerable<Ctx>> filter ) {
+		Description = description;
+		_groupFilter = filter;
+	}
+
 	public readonly string Description;
+
+	public IEnumerable<Ctx> Filter( IEnumerable<Ctx> src ) => _groupFilter(src);
+
+	Func<IEnumerable<Ctx>, IEnumerable<Ctx>> _groupFilter;
+
 }
 
 
 // !! Deprecate this and just use CtxFilter<TargetSpaceCtx>
 public class TargetSpaceCtxFilter : CtxFilter<TargetSpaceCtx> {
-	public TargetSpaceCtxFilter( string description, Func<TargetSpaceCtx, bool> filter ):base( description, filter) {}
+	public TargetSpaceCtxFilter( string description, Func<TargetSpaceCtx, bool> filter ):base( description, filter) {
+		MyFilter = filter;
+	}
+	public readonly Func<TargetSpaceCtx, bool> MyFilter;
+
 }
 
 // !! Deprecate this annd just use CtxFilter<Spirit>

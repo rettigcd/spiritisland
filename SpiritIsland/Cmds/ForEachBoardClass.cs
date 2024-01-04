@@ -15,14 +15,17 @@ public class ForEachBoardClass : BaseCmd<GameState> {
 
 	public override async Task ActAsync( GameState gameState ) {
 		var parentScope = ActionScope.Current;
-		for(int boardIndex = 0; boardIndex < gameState.Island.Boards.Length; ++boardIndex) {
-			BoardCtx boardCtx = new BoardCtx( gameState.Island.Boards[boardIndex] );
-			for(int i = 0; i < boardCtx.Board.InvaderActionCount; ++i) {
-				// Page 10 of JE says Each Board is a new action
-				await using ActionScope actionScope = await ActionScope.Start( parentScope.Category );
-				await _boardAction.ActAsync( boardCtx );
-			}
+
+		var unfiltered = gameState.Island.Boards
+			.Select( board => new BoardCtx( board ) );
+		var applicableBoards = _filter.Filter( unfiltered );
+
+		foreach(BoardCtx boardCtx in applicableBoards) {
+			// Page 10 of JE says Each Board is a new action
+			await using ActionScope actionScope = await ActionScope.Start( parentScope.Category );
+			await _boardAction.ActAsync( boardCtx );
 		}
+
 	}
 
 	public ForEachBoardClass Which( CtxFilter<BoardCtx> filter ) {
@@ -34,7 +37,7 @@ public class ForEachBoardClass : BaseCmd<GameState> {
 
 	string FilterSuffix => _filter is null ? string.Empty : $" which {_filter.Description}";
 
-	CtxFilter<BoardCtx> _filter;
+	CtxFilter<BoardCtx> _filter = CtxFilter<BoardCtx>.NullFilter;
 	readonly IActOn<BoardCtx> _boardAction;
 
 	#endregion

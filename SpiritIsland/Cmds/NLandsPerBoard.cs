@@ -17,7 +17,7 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 
 	#region Configure
 
-	public NLandsPerBoard Which(TargetSpaceCtxFilter spaceFilter ) { _landCriteria = spaceFilter; return this; }
+	public NLandsPerBoard Which( CtxFilter<TargetSpaceCtx> spaceFilter ) { _landCriteria = spaceFilter; return this; }
 	public NLandsPerBoard ByPickingToken( params ITokenClass[] tokenClasses ) { 
 		_tokenFactory = GetTokensMatchingClass;
 		_firstPickTokenClasses = tokenClasses; 
@@ -47,17 +47,17 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 		// In those cases, do NOT use the .Filtering
 		for(int i=0; i<_count; i++ ) {
 
-			var spaceOptions = ctx.Board.Spaces
+			var preFiltered = ctx.Board.Spaces
 				.Except( used )
 				.Select( ctx.Target )
 				.Where( _spaceAction.IsApplicable )  // Matches action criteria  (Can't act on items that aren't there)
-				.Where( LandCriteria.Filter )        // Matches custom space - criteria
 				.ToArray();
-			if(spaceOptions.Length == 0) return;
+			var filtered1 = LandCriteria.Filter( preFiltered ).ToArray();
+			if(preFiltered.Length == 0) return;
 
 			Space space = _tokenFactory != null
-				? await PickSpaceBySelectingToken( ctx.Self, spaceOptions )
-				: await ctx.Self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), Present.Always );
+				? await PickSpaceBySelectingToken( ctx.Self, filtered1 )
+				: await ctx.Self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, filtered1.Select( x => x.Space ), Present.Always );
 
 			if(space == null) return; // no matching tokens
 
@@ -89,8 +89,8 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 
 	readonly IActOn<TargetSpaceCtx> _spaceAction;
 	readonly string _preposition;
-	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;
-	TargetSpaceCtxFilter _landCriteria;
+	CtxFilter<TargetSpaceCtx> LandCriteria => _landCriteria ??= Is.AnyLand;
+	CtxFilter<TargetSpaceCtx> _landCriteria;
 	readonly int _count;
 	ITokenClass[] _firstPickTokenClasses;
 	Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> _tokenFactory;

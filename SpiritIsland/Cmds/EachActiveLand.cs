@@ -20,10 +20,9 @@ public class EachActiveLand : IActOn<GameState> {
 
 		foreach(Board board in gameState.Island.Boards) {
 			Spirit spirit = board.FindSpirit();
-			var spacesCtxs = board.Spaces
-				.Select( spirit.Target )
-				.Where( _landCriteria.Filter );
-			foreach(TargetSpaceCtx ss in spacesCtxs)
+			var unfiltered = board.Spaces.Select( spirit.Target );
+			var filtered = _landCriteria.Filter( unfiltered );
+			foreach(TargetSpaceCtx ss in filtered)
 				for(int i=0;i<board.InvaderActionCount;++i)
 					await _spaceAction.ActAsync( ss );
 		}
@@ -32,7 +31,7 @@ public class EachActiveLand : IActOn<GameState> {
 
 	// OnEach does not have a ByPickingToken option because we don't pick a space, we do it on ALL spaces.
 
-	public EachActiveLand Which( TargetSpaceCtxFilter filter ) {
+	public EachActiveLand Which( CtxFilter<TargetSpaceCtx> filter ) {
 		_landCriteria = filter;
 		return this;
 	}
@@ -43,7 +42,7 @@ public class EachActiveLand : IActOn<GameState> {
 
 	readonly IActOn<TargetSpaceCtx> _spaceAction;
 	readonly string _preposition;
-	TargetSpaceCtxFilter _landCriteria = Is.AnyLand;
+	CtxFilter<TargetSpaceCtx> _landCriteria = CtxFilter<TargetSpaceCtx>.NullFilter;
 
 	#endregion
 
