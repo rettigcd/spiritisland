@@ -20,6 +20,9 @@ In tests:  Start an async method, make the UI calls, then await the Task to comp
 
 async in parallel can choke off threads - xUnit - limit # of tests running in parallel using Collections
 
+==== Notes to Developers ====
+When the game throws an exception, it will appear in the game Log.   Don't click a UI option again or it will lock up and you can't see it.
+
 
 ==== Gems ====
 * GameState.Current
@@ -27,12 +30,14 @@ async in parallel can choke off threads - xUnit - limit # of tests running in pa
 * Token Event Handlers: IModify[Adding|Removing][|Async], IHandleToken[Added|Removed]
 * SourceSelector
 * IActOn<T> derivative actions
+* Adversary Levels
 
 ==== Lemons ====
 How Spirits make Selections (too many mismatched options)
 Saving .SpaceState vs .Space
 Game-wide config
 The Invader Deck
+InvaderBinding and Invader damage
 Absolute Stasis
 Powers that Prevent Dahan Damage or Invader Damage
 .Rewind()
@@ -45,7 +50,7 @@ Always use the < or <= sign, never the > or >= sign.
 
 ==== To Do ====
 
-Cache Spirit Presence and Clean up tokens.
+Show additional Win/Loss Conditions when clicking on flag (and in Log)
 
 Blight cards can be drawn better.
 
@@ -58,9 +63,7 @@ Cheat Menu -
 	Activate Fear Card
 
 Layout => reduce spirit size when not focus
-Layout - Growth and Presence Tracks Panels display big during Growth
 
-* Growth / Presence Panels cover Spirit, not island.
 * Growth / Presence Panels are opaque.
 * Layout - Card Panel should shift left to not cover Innate Elements
 
@@ -70,8 +73,6 @@ Layout - abreviated Display
 	3) Energy/turn
 	4) CardPlay/turn
 	5) Accumulated Elements and actions
-
-Adversary
 
 Fear / Blight cards needs a special "Close" section so people know where to click to close them.
 

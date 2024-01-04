@@ -73,31 +73,22 @@ public class England : AdversaryBase, IAdversary {
 	#region Escalation - Building Boom
 
 	static async Task BuildingBoom_Escalation( GameState gs ) {
-		// Escalation Stage II
 		// Building Boom: On each board with Town / City, Build in the land with the most Town / City
-
-		// Finds the space on each board with the most town/city.
-		SpaceState[] buildSpaces = gs.Island.Boards
-			.Select( FindSpaceWithMostTownsOrCities )
-			.Where( x=>x!=null )
-			.Distinct() // for multi-space
-			.ToArray();
-
-		var buildOnce = gs.InvaderDeck.Build.Engine.Do1Build;
-		foreach(var space in buildSpaces)
-			await buildOnce( gs, space );
-
+		await Build
+			.On().OneLandPerBoard().Which( Has_TheMostTownsAndCities )
+			.ForEachBoard().Which( BoardHas.TownOrCity )
+			.ActAsync( gs );
 	}
 
-	static SpaceState FindSpaceWithMostTownsOrCities( Board board ) {
-		// When multiple town/city have max #,
-		// picks the one closests to the coast (for simplicity)
-		return board.Spaces.Tokens()
-			.Select( ss => new { SpaceState = ss, Count = ss.SumAny( Human.Town_City ) } )
-			.Where( x => 0 < x.Count )
-			.OrderByDescending( x => x.Count )
-			.ThenBy( x => x.SpaceState.Space.Text ) // closest to the coast
-			.FirstOrDefault()?.SpaceState;
+	static SpaceAction Build => new SpaceAction( "Build (Escalation - Building Boom)", 
+		x => { var gs = GameState.Current; gs.InvaderDeck.Build.Engine.Do1Build(gs,x.Tokens); }
+	);
+
+	static CtxFilter<TargetSpaceCtx> Has_TheMostTownsAndCities => new CtxFilter<TargetSpaceCtx>(" has the most Town/City", HasTheMostTownsOrCities_Imp );
+
+	static IEnumerable<TargetSpaceCtx> HasTheMostTownsOrCities_Imp( IEnumerable<TargetSpaceCtx> src ) {
+		int maxCount = src.Max( src => src.Tokens.SumAny(Human.Town_City));
+		return src.Where( s => s.Tokens.SumAny( Human.Town_City ) == maxCount );
 	}
 
 	#endregion
