@@ -52,8 +52,6 @@ Always use the < or <= sign, never the > or >= sign.
 
 Show additional Win/Loss Conditions when clicking on flag (and in Log)
 
-Blight cards can be drawn better.
-
 Cheat Menu - 
 	Reclaim all cards, 
 	Add Card To Hand, 
@@ -64,7 +62,6 @@ Cheat Menu -
 
 Layout => reduce spirit size when not focus
 
-* Growth / Presence Panels are opaque.
 * Layout - Card Panel should shift left to not cover Innate Elements
 
 Layout - abreviated Display
@@ -86,12 +83,8 @@ SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding th
 
 Present multiple Actions at the same time.  One user starts one of them, the others go on hold.
 
-----------
-
-----------
-
-Token Appearance - should be changable during the game.  Change Colors, add/remove image.
-
+==========
+==========
 
 RANGE - 3 Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
 
@@ -145,11 +138,6 @@ Thoughts: Freezing
 =========================
 ====  Clean Up Items  ====
 ==========================
-
-User Setting:
-	Preloaded Token or not
-Game Options
-	Cast-down is Ocean or Sunk
 
 For Multi Player
 	== Option 1 == 
