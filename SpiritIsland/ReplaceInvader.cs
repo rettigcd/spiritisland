@@ -38,8 +38,8 @@ static public class ReplaceInvader {
 
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
 	/// <returns> Original token (before upgrade).</returns>
-	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options ) {
-		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade", options.On( tokens.Space ), present ) );
+	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options, string actionSuffix="" ) {
+		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade"+ actionSuffix, options.On( tokens.Space ), present ) );
 		if(st == null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 

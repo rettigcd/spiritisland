@@ -18,11 +18,11 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			gs.StartOfInvaderPhase.Add( LandStrippedBare_WinLossCheck );
 		}
 	}.WithEscalation(MiningTunnels);
-	static Task MiningTunnels(GameState gs ) {
+	static Task MiningTunnels(GameState gs) {
 		// After Advancing Invader Cards
 		// On each board,
 		// Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required).
-		return new SpaceAction("Explore",ctx=>ctx.Tokens.AddDefault(Human.Explorer,1))
+		return new SpaceAction("Explore - Escalation (Mining Tunnels)",ctx=>ctx.Tokens.AddDefault(Human.Explorer,1))
 			.In().NDifferentLandsPerBoard(2)
 			.Which( Is.NotExploreOrBuildCardMatch ) // Doing this before we advance cars so they are in the Explore/Build slot
 			.ForEachBoard()
@@ -43,8 +43,8 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#region Level 1
 
 	static AdversaryLevel L1 => new AdversaryLevel( level: 1, 3, 3,3,3, "Avarice Rewarded/Ceaseless Mining", 
-		"When Blight added by a Ravage Action would cascade, instead Upgrade 1 Explorer/Town( before dahan counterattack). "+
-		"Lands with 3 or more Invaders are Mining lands.In Mining lands: (1) Disease and modifiers to Disease affect Ravage Actions as though they were Build Actions. (2) During the Build Step, Build Cards cause Ravage Actions (instead of Build Actions)."
+		"Instead of cascading Ravage Blight, Upgrade 1 Explorer/Town ( before dahan counterattack). "+
+		"In Mining lands (>=3 invaders): (1) Disease affect Ravage Actions as though they were Builds. (2) During the Build Step, Replace each Build with a Ravage."
 	){       
 		InitFunc = (gs, _) => {
 			// Avarice Rewarded:
@@ -88,15 +88,18 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			if(args.Added == Token.Blight         // only check ActionScope when adding a blight ravage
 				&& args.Reason == AddReason.Ravage
-				&& ShouldUpgrade
+				&& ShouldUpgrade // (stored in ActionScope)
 			)
 				await ReplaceInvader.Upgrade1Token(
 					to.Space.Boards.First().FindSpirit(),
 					to,
 					Present.Always,
-					to.HumanOfAnyTag( Human.Explorer_Town ).ToArray()
+					to.HumanOfAnyTag( Human.Explorer_Town ).ToArray(),
+					" (Avarice Rewarded - Replaces Cascading Blight)"
 				);
 		}
+
+		#region private
 
 		// Records should-upgrade in the ActionScope since we cannot detect it once we stop the cascade.
 		bool ShouldUpgrade {
@@ -105,6 +108,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		}
 		const string Key = "Avarice Rewarded";
 
+		#endregion
 	}
 
 	class DiseaseStopsRavageInMiningLands : BaseModEntity, ISkipRavages {
@@ -159,7 +163,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	};
 	#endregion Level 2
 
-	#region Level 3
+	#region Level 3 
 	static AdversaryLevel L3 = new AdversaryLevel( level: 3, 5, 
 		3, 4, 4, 
 		"Mining Boom (I)", 
@@ -171,7 +175,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		}
 	};
 	static Task UpgradeExplorerOnEachLandAsync( GameState gs ) {
-		return new SpaceAction("Upgrade explorer", async x=>{
+		return new SpaceAction("Upgrade explorer (Mining Boom (I))", async x=>{
 			var token = await x.Self.SelectAsync(new A.SpaceToken("Select Explorer to Upgrade",x.Tokens.SpaceTokensOfTag(Human.Explorer),Present.Always));
 			if(token != null)
 				ReplaceInvader.UpgradeSelectedInvader(x.Tokens,token.Token.AsHuman()); 
@@ -215,7 +219,9 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			var scope = ActionScope.Current;
 			if(scope.ContainsKey( Key )) return scope.SafeGet<bool>( Key );
 			GameState gs = GameState.Current;
-			bool isInRavage = gs.InvaderDeck.Ravage.Cards.Any( c => c.Text.Contains( Text ) );
+			var cards = gs.InvaderDeck.Ravage.Cards.ToArray();
+			bool isInRavage = cards.Any( c => c.Text.Contains( Text ) );
+			// bool isInRavage = gs.InvaderDeck.Ravage.Cards.Any( c => c.Text.Contains( Text ) );
 			scope[Key] = isInRavage;
 			return isInRavage;
 		}
