@@ -7,7 +7,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 
 	[FearLevel( 1, "Each player may Push 1 Explorer into a land with more Town/City than the land it came from." )]
 	public Task Level1( GameState ctx )
-		=> Cmd.Describe<Spirit>( "Push 1 Explorer into a land with more Town/City than the land it came from", PushExplorerIntoSpaceWithMoreTownsOrCities )
+		=> PushExplorerIntoSpaceWithMoreTownsOrCities
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
@@ -25,7 +25,8 @@ public class SeekSafety : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	static async Task PushExplorerIntoSpaceWithMoreTownsOrCities( Spirit self ) {
+	static SpiritAction PushExplorerIntoSpaceWithMoreTownsOrCities => new SpiritAction("", PushExplorerIntoSpaceWithMoreTownsOrCities_Imp );
+	static async Task PushExplorerIntoSpaceWithMoreTownsOrCities_Imp( Spirit self ) {
 
 		var gs = GameState.Current;
 		Dictionary<Space, int> buildingCounts = gs.Spaces
@@ -48,6 +49,13 @@ public class SeekSafety : FearCardBase, IFearCard {
 		if(source == null) return; // continue => next spirit, break/return => no more spirits
 
 		// Push
+		int sourceCount=0;
+		await source.Tokens.SourceSelector
+			.AddGroup( 1, Human.Explorer )
+			.Track(s=>sourceCount = buildingCounts[s.Space] )
+			.ConfigDestination( ds=>ds.FilterDestination( dst => sourceCount < buildingCounts[dst.Space] ) )
+			.PushUpToN( self );
+
 		await self.Target( source ).PushUpTo( 1, Human.Explorer );
 	}
 
