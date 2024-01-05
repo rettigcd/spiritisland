@@ -168,7 +168,7 @@ public static partial class Cmd {
 		static public SpaceAction Build( string name ) => new SpaceAction( "Stop the next Build", ctx => ctx.Tokens.Skip1Build( name ) );
 		static public SpaceAction Explore( string name ) => new SpaceAction( "Skip the next Explore", ctx => ctx.Tokens.Skip1Explore( name ) );
 		static public SpaceAction AllInvaderActions( string name ) => new SpaceAction( "Skip All Invader Actions", ctx => ctx.Tokens.SkipAllInvaderActions( name ) );
-		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Invaders do not ravage there this turn.", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
+		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Stop Invaders Ravage this Turn", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
 	static public SpiritAction ForgetPowerCard => new SpiritAction( "Forget Power card", spirit => spirit.ForgetACard() );
