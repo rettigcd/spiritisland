@@ -46,94 +46,32 @@ How the Pusher is confluently configured. :(
 ==== Quirks ====
 Always use the < or <= sign, never the > or >= sign.
 
+=====  Damage Pipeline - Notes  =====
 
+When doing damage and destroying, call must go through Token, and then SpaceState so that each can intercept and modify behavior.
+	Caller => Token.Destory => SpaceState.Remove(or Destroy) => Token-Event-Hooks(Adding/Removing Token & Token Added/Removed).
+
+When not doing damage, assuming other actions behavior doesn't get modified, can call SpaceState.Remove directly. (just not for Destroying).
+
+Dahan and Invader Bindings 
+	* are sealed and cannot modify behavior
+	* are just Large-Group Management objects and should delegate damage to the Token => SpaceState.Remove/Destroy
 
 ==== To Do ====
 
-Show additional Win/Loss Conditions when clicking on flag (and in Log)
-
-Cheat Menu - 
-	Reclaim all cards, 
-	Add Card To Hand, 
-	+10 energy, 
-	+5 of each elementt, 
-	Return Blight to Card
-	Activate Fear Card
-
-Layout => reduce spirit size when not focus
-
-* Layout - Card Panel should shift left to not cover Innate Elements
-
-Layout - abreviated Display
-	1) Total Energy
-	2) Destroyed Count
-	3) Energy/turn
-	4) CardPlay/turn
-	5) Accumulated Elements and actions
-
-Fear / Blight cards needs a special "Close" section so people know where to click to close them.
-
-Cursor Pointer over Minor/Major deck selection.
-
 GATHER - Replace TokenGatherer (on SpaceState) with .GatherSource( beforeToken ) which returns a SourceSelector
+PUSH - Instead of custom TokenPushers - break into pieces and customize only  (# pushed) (PushDestinations)
+Add ActionScope Run-At-Max hook for converting Present.Done to Present.Always for Trickster
 
-Instead of custom TokenPushers - break into pieces and customize only  (# pushed) (PushDestinations)
-
-SPIRITACTION - Allow SpiritActions to have multiple Conditions.  Maybe adding the Condition wraps the original Command in a new Command so we don't have to build conditions into SpiritActions. This would allow us to add the encapsulate the condition in PlaugeShipsSaleToDistantPosts
-
-Present multiple Actions at the same time.  One user starts one of them, the others go on hold.
-
-==========
 ==========
 
 RANGE - 3 Types of .Range: (1) Spirit.PowerRange, (2) SpaceState.Range (3) Space.Range - make sure everything is using the correct one and see if we can reduce/rename the methods so it is easier to pick the correct one.
-
-DAMAGE - Rename ctx.DamageInvaders(..) to DamageInvadersAsync(...)
 DAMAGE - Make ctx.DamageInvaders(...) a shortcut to ctx.Group(Human.Invaders).DoDamageAsync(...);
-
-ORIGIN - When Targetting a Space, Capture the Origin spaces and supply those with the TargetSpaceCtx so it doesn't need re-calculated. (ScorchingConvergence)
-
-MOVE -  SpaceToken.Move => Take a Count.  Return the .After part of the TokenMoved result.
-
-SPACE-SELECTOR - Select A.Space - see all the ways this is done and see if we can simplify the call, like creating a SpaceSelector
-SPACE-SELECTOR - Create a SpaceSelector class that manages selecting spaces. (SolidifyEchoesOfMajestyPast) - that way we don't have to call .Select(A Space) so many times and we can write the while loop once instead of everywhere.)
-
-RENAME - Rename SpaceState to SpaceTokens
-RENAME - TotalCount => Invaders.TotalCount, Dahan.CountAll, TokkenBinding.Count should all of the same Property Name since they mean the same thing => Maybe switch to .Sum (to match SpaceState.SumAny) or .Total 
-REANME - Reanme SourceSelector to SpaceTokenSelector or maybe abreviate to TokenSelector
-REANME - SpaceToken <=> Token
-	- is there a Token class?  Would it be confusing to rename SpaceToken to Token?
-	- would it be confusing if SpaceToken inherited IToken and ISpace? - I think it probably would be confusing.
-	- If we renamed IToken to ITokenType, then Token could have { ITokenType Type, Space Space } and Token would mean a 'token in a space' which simplifies SpaceTokenSelector to TokenSelector
-
 TOKENS-Shortcut - Remove ctx.XX shortcut to Tokens.XX bindings OR make everything that has a TargetSpaceCtx use it.
 TOKENS-Shortcut - TargetSpaceCtx.RemoveBlight() maybe should be .Blight.RemoveAsync()
-
-Tokens.DamageInvaders - some things may be taking a shortcut and not including Badland Damage.
-
-Add ActionScope Run-At-Max hook for converting Present.Done to Present.Always for Trickster
-
-Finders presence tracks are all dorked up.
-
-Need Generic Method for spirits to pay for stuff - in Parallel - not 1 spirit choosing for everyone.  (PLagueShipsSailToDistantPorts)
-
 Check calls to xxx_OfAnyTag( tags...) and see how many need converted to SpaceToken and switch over to SpaceToken
-
 is convenience-method SpaceState.HasInvaders() necessary?  Could we just call the OfTag stuff direclty
-
-Test if FocusTheSunsRays will gather Incarna, I think it will.  And we can remove the !! marker.
-
 Async-Enum Spirit - Select 1 - encapsulate selecting 0 or 1 spirits so that we can forEach them.  (ConsiderAHarmoniousNature)
-
-TargetSpaceCtx.SelectTargetSpaceAsync returns a TargetSpaceCtx.  Remove this - it is confusing.  At least verify that it is being used correclty.
-
-====================================
-====================================
-
-Thoughts: Freezing
-	- Invaders > make them Dream-Invaders
-	- Dahan > Implement IStopDamage and IStopRemovable
-	- Can we find a way to do away with the Is-Removable test?
 
 =========================
 ====  Clean Up Items  ====
@@ -156,33 +94,10 @@ For Action => Move Finders Hook to Action-start - event
 
 ManyMinds - Set out-of-band toggle on beasts, at start of action, make smart choices based on phase, then use user choice sync for powers
 
-======
-
-2 Change Cmd.PushUpTo1Presence Implement SourceSelector as a something-that-acts-on--ManyTokensAction Command, implement RemoveToken as a ManyTokensAction that removes whatever is fed to it.
-
-3 Fear Cards - ARE TOO SLOW!  Paint them on a known BG color so we can keep corners.
-3 UI - Tokens - Publish token events to the UI so that it can show token changing animation.
-
-2 Create a target-space preview, when hovering over cards
-
-Idea - UI - When cusororing over HotSpot, have selected item glow / highlight
-
 =========================
 ===== Feature Focus =====
 =========================
 * 2 spirit game (but still 1 player)
-* Mobile
-	- Spirit's 3 controls
-	- Island control with tokens
-	- Invader cards
-	- Power Cards
-	- Fear pool / cards
-
-Later: Events
-Later: Scenarios
-Later: Aspects
-
-===============================
 
 == Architecture ==
 Run on Android
@@ -200,34 +115,3 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
-
-
-=====  Damage Pipeline - Notes  =====
-
-When doing damage and destroying, call must go through Token, and then SpaceState so that each can intercept and modify behavior.
-	Caller => Token.Destory => SpaceState.Remove(or Destroy) => Token-Event-Hooks(Adding/Removing Token & Token Added/Removed).
-
-When not doing damage, assuming other actions behavior doesn't get modified, can call SpaceState.Remove directly. (just not for Destroying).
-
-Dahan and Invader Bindings 
-	* are sealed and cannot modify behavior
-	* are just Large-Group Management objects and should delegate damage to the Token => SpaceState.Remove/Destroy
-
-TODO:
-	Change tokens that modify the .Destroy() behavior with interface that hooks into the IModifyTokenRemove interface.
-		This would allow us to skip calling Token.Destroy if we wished, making that simply a convenience method.
-
-
---------
-
-[Preselct town/explorer]
-[Incarna]
-Action(TargetSpaceCtx ){
-	Cmd.Abduct(Human.Explorer_Town)
-}
-
-class AbductAtIncarna {
-	Action(){
-		// check
-	}
-}
