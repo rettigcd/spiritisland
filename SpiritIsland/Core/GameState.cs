@@ -222,7 +222,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		// Do Custom end-of-round cleanup stuff before round switches over
 		// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)
-        foreach(Func<GameState, Task> actAsync in TimePasses_ThisRound) 
+        foreach(Func<GameState, Task> actAsync in TimePasses_ThisRound)
             await actAsync(this); TimePasses_ThisRound.Clear();
 
 		// Do the standard round-switch-over stuff.
@@ -239,6 +239,14 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public event Func<GameState,Task> TimePasses_WholeGame;                                               // Spirit cleanup
 	public List<Func<GameState, Task>> TimePasses_ThisRound = new List<Func<GameState, Task>>();     // This must be Push / Pop
+
+	public void AddTimePassesAction(IRunWhenTimePasses action ) {
+		TimePasses_ThisRound.Add( async gs => { 
+			var status = await action.TimePasses( gs ); 
+			if(status != RunCount.Once)
+				throw new InvalidOperationException("only doing ONCE right now.");
+		} );
+	}
 
 	#endregion
 
@@ -314,6 +322,31 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#endregion Memento
 
+}
+
+public enum RunCount { Once, All }
+public interface IRunWhenTimePasses : ISpaceEntity {
+	/// <returns>If object should be Removed from the TimePasses</returns>
+	Task<RunCount> TimePasses( GameState gameStTate );
+}
+
+public class TimePassesAction : IRunWhenTimePasses {
+
+	public TimePassesAction(Func<GameState,Task> func, RunCount keepOrRemove ) {
+		_func = func;
+		_runCount = keepOrRemove;
+	}
+	public TimePassesAction( Action<GameState> action, RunCount keepOrRemove ) {
+		_func = (gs) => { action(gs); return Task.CompletedTask; };
+		_runCount = keepOrRemove;
+	}
+
+	async Task<RunCount> IRunWhenTimePasses.TimePasses( GameState gameState ){
+		await _func(gameState);
+		return _runCount;
+	}
+	readonly Func<GameState,Task> _func;
+	readonly RunCount _runCount;
 }
 
 public class Healer {

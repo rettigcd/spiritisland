@@ -23,10 +23,7 @@ public class AbsoluteStasis {
 		// --------
 		// Restore 
 		// --------
-		GameState.Current.TimePasses_ThisRound.Add( ( gs ) => {
-			ctx.Space.DoesExists = true;
-			return Task.CompletedTask;
-		} );
+		GameState.Current.AddTimePassesAction( new TimePassesAction( gs => ctx.Space.DoesExists = true, RunCount.Once ) );
 
 	}
 

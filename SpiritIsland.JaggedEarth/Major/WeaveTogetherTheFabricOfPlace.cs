@@ -47,19 +47,20 @@ public class WeaveTogetherTheFabricOfPlace {
 		gameState.Log( new Log.LayoutChanged($"{space.Text} and {other.Text} were woven together") );
 
 		// When this effect expires
-		gameState.TimePasses_ThisRound.Add( async (gs) => {
+		gameState.AddTimePassesAction( new TimePassesAction( 
+			async (gs) => {
+				MoveItemsOnSpace( multi, space, false );
+				multi.RemoveFromBoard();
+				removeOther.Restore();
+				removeSpace.Restore();
 
-			MoveItemsOnSpace( multi, space, false );
-			multi.RemoveFromBoard();
-			removeOther.Restore();
-			removeSpace.Restore();
+				gameState.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
 
-			gameState.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
+				await DistributeVisibleTokens( originalSelf, space, other );
 
-			await DistributeVisibleTokens( originalSelf, space, other );
-
-			CopyNewModsToBoth( space, other, multi );
-		} );
+				CopyNewModsToBoth( space, other, multi );
+			}, RunCount.Once 
+		) );
 
 		return multi;
 	}

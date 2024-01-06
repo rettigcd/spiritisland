@@ -235,7 +235,7 @@ public static partial class Cmd {
 		} );
 
 	static public SpiritAction Reclaim1CardInsteadOfDiscarding => new SpiritAction( "Reclaims 1 card instead of discarding it", self => {
-		GameState.Current.TimePasses_ThisRound.Add( new Reclaim1InsteadOfDiscard( self ).Reclaim );
+		GameState.Current.AddTimePassesAction( new Reclaim1InsteadOfDiscard( self ) );
 	} );
 
 

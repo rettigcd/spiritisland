@@ -15,7 +15,7 @@
 
 //}
 
-public class SourceCalcRestorer {
+public class SourceCalcRestorer : IRunWhenTimePasses {
 
 	readonly Spirit spirit;
 	readonly ITargetingSourceStrategy original;
@@ -23,17 +23,18 @@ public class SourceCalcRestorer {
 		this.spirit = spirit;
 		this.original = spirit.TargetingSourceStrategy; // capture so we can put it back later
 	}
-	public Task Restore( GameState _ ) {
+	Task<RunCount> IRunWhenTimePasses.TimePasses( GameState _ ) {
 		spirit.TargetingSourceStrategy = original;
-		return Task.CompletedTask;
+		return Task.FromResult(RunCount.Once);
 	}
 
+	public Task TimePasses( GameState gameStTate ) => throw new NotImplementedException();
 }
 
-public class RangeCalcRestorer {
+public class RangeCalcRestorer : IRunWhenTimePasses {
 
 	static public void Save( Spirit spirit ) {
-		GameState.Current.TimePasses_ThisRound.Add( new RangeCalcRestorer( spirit ).Restore );
+		GameState.Current.AddTimePassesAction( new RangeCalcRestorer( spirit ) );
 	}
 
 	readonly Spirit spirit;
@@ -42,9 +43,9 @@ public class RangeCalcRestorer {
 		this.spirit = spirit;
 		this.original = spirit.PowerRangeCalc; // capture so we can put it back later
 	}
-	public Task Restore( GameState _ ) {
+	Task<RunCount> IRunWhenTimePasses.TimePasses( GameState _ ) {
 		spirit.PowerRangeCalc = original;
-		return Task.CompletedTask;
+		return Task.FromResult(RunCount.Once);
 	}
 
 }
