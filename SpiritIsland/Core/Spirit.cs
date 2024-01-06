@@ -3,6 +3,7 @@
 public abstract partial class Spirit 
 	: IOption
 	, IHaveASpirit // so all 'contexts' can you the same Picker and have a spirit to do the decision making.
+	, IRunWhenTimePasses
 {
 
 	#region constructor
@@ -25,7 +26,7 @@ public abstract partial class Spirit
 	}
 
 	public void InitSpirit( Board board, GameState gameState ){
-		gameState.TimePasses_WholeGame += On_TimePassed;
+		gameState.AddTimePassesAction(this);
 		_gateway.DecisionMade += (d) => gameState.Log(d);
 		InitializeInternal(board,gameState);
 	}
@@ -352,7 +353,10 @@ public abstract partial class Spirit
 
 	#endregion Bind helpers
 
-	Task On_TimePassed(GameState _ ) {
+	#region IRunWhenTimePasses imp
+
+	public bool RemoveAfterRun => false;
+	public virtual Task TimePasses( GameState gameState ) {
 		// reset cards / powers
 		DiscardPile.AddRange( InPlay );
 		InPlay.Clear();
@@ -368,6 +372,8 @@ public abstract partial class Spirit
 
 		return Task.CompletedTask;
 	}
+
+	#endregion IRunWhenTimePasses imp
 
 	public void InitElementsFromPresence() {
 		Elements.Init( Presence.TrackElements );

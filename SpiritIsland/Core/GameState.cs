@@ -27,9 +27,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		// Note: don't init invader deck here, let users substitute
 		RoundNumber = 1;
 		Fear = new Fear( this );
-		Tokens = new Tokens_ForIsland( this );
+		Tokens = new Tokens_ForIsland();
 
-		TimePasses_WholeGame += TokenCleanUp;
+		AddTimePassesAction( Tokens );
+		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
 
 		ActionScope.Initialize(); // ! This is here for tests.
 	}
@@ -70,12 +71,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			throw new InvalidOperationException( "# of spirits and islands must match" );
 		for(int i = 0; i < Spirits.Length; ++i)
 			Spirits[i].InitSpirit( Island.Boards[i], this );
-	}
-
-	Task TokenCleanUp( GameState gs ) {
-		Healer.HealAll( gs ); // called at end of round.
-		Tokens.TimePasses();
-		return Task.CompletedTask;
 	}
 
 	#endregion
@@ -242,7 +237,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public AsyncEvent<GameState> StartOfInvaderPhase = new(); // Blight effects
 
 	public event Func<GameState,Task> TimePasses_WholeGame;
-	public List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
+	readonly List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
 
 	public void AddTimePassesAction(IRunWhenTimePasses action ) {
 		_timePassesActions.Add(action);
@@ -327,7 +322,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 public enum RunCount { Once, All }
 public interface IRunWhenTimePasses : ISpaceEntity {
 	/// <returns>If object should be Removed from the TimePasses</returns>
-	Task TimePasses( GameState gameStTate );
+	Task TimePasses( GameState gameState );
 	/// <summary> Indicates if action should be removed after running once. </summary>
 	bool RemoveAfterRun { get; }
 }
@@ -352,12 +347,14 @@ public class TimePassesAction : IRunWhenTimePasses {
 	readonly RunCount _runCount;
 }
 
-public class Healer {
+public class Healer : IRunWhenTimePasses {
 
-	public virtual void HealAll( GameState gs ) {
-		foreach(SpaceState ss in gs.Spaces_Unfiltered )
+	bool IRunWhenTimePasses.RemoveAfterRun => false;
+	public virtual Task TimePasses( GameState gameState ) {
+		foreach(SpaceState ss in gameState.Spaces_Unfiltered)
 			HealSpace( ss );
 		skipHealSpaces.Clear();
+		return Task.CompletedTask;
 	}
 
 	public virtual void HealSpace( SpaceState tokens ) {

@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public class Tokens_ForIsland : IIslandTokenApi {
+public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses {
 
-	public Tokens_ForIsland( GameState gs ) {
+	public Tokens_ForIsland() {
 
 		TokenDefaults = new Dictionary<ITokenClass, IToken> {
 			[Human.City]     = new HumanToken( Human.City,     3 ),
@@ -16,7 +16,6 @@ public class Tokens_ForIsland : IIslandTokenApi {
 		// stick it in here so it is persisted and cleaned up during time passes
 		_tokenCounts.Add( new FakeSpace( "Island-Mods" ), _islandMods );
 
-		gs.TimePasses_WholeGame += (_)=>ClearEventHandlers_ForRound();
 	}
 
 	#region Configuration
@@ -27,18 +26,23 @@ public class Tokens_ForIsland : IIslandTokenApi {
 	#endregion
 
 	readonly CountDictionary<ISpaceEntity> _islandMods;
-	public void TimePasses() {
-		foreach(var pair in _tokenCounts)
-			new SpaceState(pair.Key,pair.Value,_islandMods.Keys,this).TimePasses();
-	}
 
 	public void AddIslandMod( BaseModEntity token ) { ++_islandMods[token]; }
 
+	#region IRunWhenTimePasses imp
 
-	Task ClearEventHandlers_ForRound() {
+	bool IRunWhenTimePasses.RemoveAfterRun => false;
+	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
 		Dynamic.ForRound.Clear();
+
+		foreach(var pair in _tokenCounts)
+			new SpaceState( pair.Key, pair.Value, _islandMods.Keys, this ).TimePasses();
+
 		return Task.CompletedTask;
 	}
+
+	#endregion IRunWhenTimePasses imp
+
 
 	/// <remarks>
 	/// Spirit Actions should not call this directly but rather go through Space.Tokens => ActionScope.AccessTokens()
@@ -56,13 +60,13 @@ public class Tokens_ForIsland : IIslandTokenApi {
 
 	#region Memento
 
-	public virtual IMemento<Tokens_ForIsland> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<Tokens_ForIsland> memento ) { 
+	public IMemento<Tokens_ForIsland> SaveToMemento() => new Memento(this);
+	public void LoadFrom( IMemento<Tokens_ForIsland> memento ) { 
 		((Memento)memento).Restore(this);
-		ClearEventHandlers_ForRound();
+		Dynamic.ForRound.Clear();
 	}
 
-	protected class Memento : IMemento<Tokens_ForIsland> {
+	class Memento : IMemento<Tokens_ForIsland> {
 		public Memento(Tokens_ForIsland src) {
 			// Save TokenCounts
 			foreach(var (space,countsDict) in src._tokenCounts.Select( x => (x.Key, x.Value) ))

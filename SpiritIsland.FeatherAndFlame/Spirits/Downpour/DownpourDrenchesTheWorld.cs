@@ -24,7 +24,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 	};
 
 	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements
-		=> new CountDictionary<Element> { [Element.Water] = pourDownPower.Remaining };
+		=> new CountDictionary<Element> { [Element.Water] = _pourDownPower.Remaining };
 
 	public DownpourDrenchesTheWorld():base(
 		spirit => new SpiritPresence( spirit,
@@ -51,14 +51,14 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			InnatePower.For(typeof(WaterNourishesLifesGrowth))
 		};
 
-		pourDownPower = new PourDownPower(this);
+		_pourDownPower = new PourDownPower(this);
 
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
 		board.Spaces.First(x => x.IsWetland).Tokens.Adjust(Presence.Token, 1);
-		gameState.TimePasses_WholeGame += _ => { pourDownPower.Reset(); return Task.CompletedTask; };
+		gameState.AddTimePassesAction( _pourDownPower );
 
 		gameState.ReplaceTerrain( old => {
 			var drenchTheLandscape = new DrenchTheLandscape( this, old );
@@ -68,20 +68,20 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 		return base.GetAvailableActions( speed )
-			.Union( pourDownPower.GetAvailableActions( speed ) );
+			.Union( _pourDownPower.GetAvailableActions( speed ) );
 	}
 
 	public override void RemoveFromUnresolvedActions( IActionFactory selectedActionFactory ) {
-		if( !pourDownPower.RemoveFromUnresolvedActions( selectedActionFactory ) )
+		if( !_pourDownPower.RemoveFromUnresolvedActions( selectedActionFactory ) )
 			base.RemoveFromUnresolvedActions(selectedActionFactory);
 	}
 
 	protected override object _customSaveValue { 
 		get => base._customSaveValue;
-		set => pourDownPower.Reset();
+		set => _pourDownPower.Reset();
 	}
 
-	readonly PourDownPower pourDownPower;
+	readonly PourDownPower _pourDownPower;
 
 }
 

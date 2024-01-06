@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-class CommandTheBeasts : IActionFactory {
+class CommandTheBeasts : IActionFactory, IRunWhenTimePasses {
 
 	#region Static Setup
 
@@ -43,16 +43,17 @@ class CommandTheBeasts : IActionFactory {
 	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
 	/// </summary>
 	Task QueueMeUp( GameState gameState ) {
-		// Adds the cmdAction to 1st spirit Actions until it is used.
-		gameState.TimePasses_WholeGame += TimePasses_WholeGame;
-		Task TimePasses_WholeGame( GameState gameState ) {
-			if(!Used)
-				gameState.Spirits[0].AddActionFactory( this );
-			return Task.CompletedTask;
-		}
-
+		gameState.AddTimePassesAction( this );
 		return Task.CompletedTask;
 	}
+
+	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+		if(!Used)
+			gameState.Spirits[0].AddActionFactory( this );
+		return Task.CompletedTask;
+	}
+
+	bool IRunWhenTimePasses.RemoveAfterRun => Used;
 
 	#endregion private
 }

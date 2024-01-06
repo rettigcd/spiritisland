@@ -44,18 +44,18 @@ public class LightningsSwiftStrike : Spirit {
 		var space = board.Spaces.Reverse().First(x=>x.IsSand);
 		var tokens = space.Tokens;
 		tokens.Adjust(Presence.Token, 2);
-
-		gs.TimePasses_WholeGame += Gs_TimePassed;
 	}
 
-	Task Gs_TimePassed( GameState obj ) {
-		usedAirForFastCount = 0;
-		return Task.CompletedTask;
+	#region IRunWhenTimePasses
+	public override Task TimePasses( GameState gameState ) {
+		_usedAirForFastCount = 0;
+		return base.TimePasses( gameState );
 	}
+	#endregion IRunWhenTimePasses
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 
-		bool canMakeSlowFast = speed == Phase.Fast && usedAirForFastCount < Elements.Get(Element.Air);
+		bool canMakeSlowFast = speed == Phase.Fast && _usedAirForFastCount < Elements.Get(Element.Air);
 
 		foreach(var h in AvailableActions)
 			if( h.CouldActivateDuring( speed, this ) || canMakeSlowFast && h.CouldActivateDuring(Phase.Slow,this) )
@@ -71,14 +71,13 @@ public class LightningsSwiftStrike : Spirit {
 			&& factory.CouldActivateDuring( Phase.Slow, this )
 			&& factory is IFlexibleSpeedActionFactory flexSpeedFactory
 		) {
-			++usedAirForFastCount;
+			++_usedAirForFastCount;
 			TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, GameState.Current );
 		}
 
 		return base.TakeActionAsync(factory,phase);
 	}
 
-
-	int usedAirForFastCount = 0;
+	int _usedAirForFastCount = 0;
 
 }
