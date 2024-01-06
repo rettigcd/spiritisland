@@ -30,7 +30,7 @@ public static class StrifedRavage {
 		// add penalty
 		++gs.HealthPenaltyPerStrife;
 		// remove penalty
-		gs.TimePasses_ThisRound.Push( x => { --gs.HealthPenaltyPerStrife; return Task.CompletedTask; } );
+		gs.TimePasses_ThisRound.Add( x => { --gs.HealthPenaltyPerStrife; return Task.CompletedTask; } );
 
 		// Check if anything is destroyed
 		foreach(var space in gs.Spaces)

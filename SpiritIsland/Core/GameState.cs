@@ -222,8 +222,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		// Do Custom end-of-round cleanup stuff before round switches over
 		// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)
-		while(TimePasses_ThisRound.Count > 0)
-			await TimePasses_ThisRound.Pop()( this );
+        foreach(Func<GameState, Task> actAsync in TimePasses_ThisRound) 
+            await actAsync(this); TimePasses_ThisRound.Clear();
 
 		// Do the standard round-switch-over stuff.
 		if(TimePasses_WholeGame != null)
@@ -238,7 +238,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public AsyncEvent<GameState> StartOfInvaderPhase = new(); // Blight effects
 
 	public event Func<GameState,Task> TimePasses_WholeGame;                                               // Spirit cleanup
-	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop
+	public List<Func<GameState, Task>> TimePasses_ThisRound = new List<Func<GameState, Task>>();     // This must be Push / Pop
 
 	#endregion
 

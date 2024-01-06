@@ -9,7 +9,7 @@ public class TemporarySpeed : ISpeedBehavior {
 			factory.OverrideSpeedBehavior = null;
 			return Task.CompletedTask;
 		}
-		gameState.TimePasses_ThisRound.Push( Restore );
+		gameState.TimePasses_ThisRound.Add( Restore );
 	}
 
 

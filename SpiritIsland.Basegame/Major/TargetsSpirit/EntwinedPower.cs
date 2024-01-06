@@ -12,8 +12,8 @@ public class EntwinedPower {
 		// You and other spirit share presence for targeting
 		if( ctx.Self != ctx.Other) {
 			var gs = GameState.Current;
-			gs.TimePasses_ThisRound.Push( new SourceCalcRestorer( ctx.Self ).Restore );
-			gs.TimePasses_ThisRound.Push( new SourceCalcRestorer( ctx.Other ).Restore );
+			gs.TimePasses_ThisRound.Add( new SourceCalcRestorer( ctx.Self ).Restore );
+			gs.TimePasses_ThisRound.Add( new SourceCalcRestorer( ctx.Other ).Restore );
 			_ = new EntwinedPresenceSource( ctx.Self, ctx.Other ); // auto-binds to spirits
 		}
 
