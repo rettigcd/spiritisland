@@ -289,6 +289,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			Save( src.MinorCards );
 			Save( src.InvaderDeck );
 			Save( src.Fear );
+			Save( src.Island );
+
+			// Time Passes
+			_timePassesActions = src._timePassesActions.ToArray();
+			foreach(var actionWithState in _timePassesActions.OfType<IHaveMemento>()) Save(actionWithState);
 
 			_roundNumber = src.RoundNumber;
 			_isBlighted = src.BlightCard.CardFlipped;
@@ -296,20 +301,22 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 			tokens       = src.Tokens.SaveToMemento();
 			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
-			island = src.Island.SaveToMemento();
 		}
 		void Save( IHaveMemento holder ) { if(holder is not null) _mementos[holder] = holder.Memento; }
 
 		public void Restore(GameState src ) {
 			foreach(var pair in _mementos) 
 				pair.Key.Memento = pair.Value;
+			// Time Passes
+			src._timePassesActions.Clear();
+			src._timePassesActions.AddRange( _timePassesActions );
 
 			src.RoundNumber = _roundNumber;
 			src.BlightCard.CardFlipped = _isBlighted;
+			src.DamageToBlightLand = _damageToBlightLand;
+
 			src.Tokens.LoadFrom( tokens );
 			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
-			src.Island.LoadFrom( island );
-			src.DamageToBlightLand = _damageToBlightLand;
 		}
 
 		readonly int _roundNumber;
@@ -318,6 +325,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		readonly IMemento<Tokens_ForIsland> tokens;
 		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
 		readonly IMemento<Island> island;
+		readonly IRunWhenTimePasses[] _timePassesActions;
 		readonly Dictionary<IHaveMemento,object> _mementos = new Dictionary<IHaveMemento, object>();
 	}
 

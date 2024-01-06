@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class Island {
+public sealed class Island : IHaveMemento {
 
 	#region constructor
 	public Island(params Board[] boards) {
@@ -92,11 +92,13 @@ public class Island {
 
 	#region Memento
 
-	public virtual IMemento<Island> SaveToMemento() => new Memento( this );
-	public virtual void LoadFrom( IMemento<Island> memento ) => ((Memento)memento).Restore( this );
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<Island> {
-		public Memento( Island src ) {
+	protected class MyMemento : IMemento<Island> {
+		public MyMemento( Island src ) {
 			boards = src.Boards.Select( b => new BoardInfo( b ) ).ToArray();
 			nativeTerrain = src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<Space1>()
 				.ToDictionary(s=>s.Text,s=>s.NativeTerrain);
