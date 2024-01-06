@@ -286,8 +286,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			roundNumber  = src.RoundNumber;
 			isBlighted   = src.BlightCard.CardFlipped;
 			spirits      = src.Spirits.Cast<IHaveMemento>().Select(s=>s.Memento).ToArray();
-			if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
-			if(src.MinorCards != null) minor = src.MinorCards.SaveToMemento();
+			if(src.MajorCards != null) major = src.MajorCards.Memento;
+			if(src.MinorCards != null) minor = src.MinorCards.Memento;
 			invaderDeck  = src.InvaderDeck.Memento;
 			fear         = src.Fear.SaveToMemento();
 			tokens       = src.Tokens.SaveToMemento();
@@ -299,8 +299,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			src.RoundNumber = roundNumber;
 			src.BlightCard.CardFlipped = isBlighted;
 			for(int i=0;i<spirits.Length;++i) ((IHaveMemento)src.Spirits[i]).Memento = spirits[i];
-			src.MajorCards?.RestoreFrom( major );
-			src.MinorCards?.RestoreFrom( minor );
+			if(src.MajorCards is not null) src.MajorCards.Memento = major;
+			if(src.MinorCards is not null) src.MinorCards.Memento = minor;
 			src.InvaderDeck.Memento = invaderDeck;
 			src.Fear.LoadFrom( fear );
 			src.Tokens.LoadFrom( tokens );
@@ -311,8 +311,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		readonly int roundNumber;
 		readonly bool isBlighted;
 		readonly object[] spirits;
-		readonly IMemento<PowerCardDeck> major;
-		readonly IMemento<PowerCardDeck> minor;
+		readonly object major;
+		readonly object minor;
 		readonly object invaderDeck;
 		readonly IMemento<Fear> fear;
 		readonly IMemento<Tokens_ForIsland> tokens;
