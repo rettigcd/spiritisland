@@ -474,7 +474,7 @@ public abstract partial class Spirit
 			energy = spirit.Energy;
 			bonusCardPlay = spirit.tempCardPlayBoost;
 			elements = spirit.Elements.Elements.ToArray();
-			presence = spirit.Presence.SaveToMemento();
+			presence = ((IHaveMemento)spirit.Presence).Memento;
 			hand      = spirit.Hand.ToArray();
 			purchased = spirit.InPlay.ToArray();
 			discarded = spirit.DiscardPile.ToArray();
@@ -488,7 +488,7 @@ public abstract partial class Spirit
 			spirit.Energy = energy;
 			spirit.tempCardPlayBoost = bonusCardPlay;
 			InitFromArray( spirit.Elements.Elements, elements);
-			spirit.Presence.LoadFrom(presence);
+			((IHaveMemento)spirit.Presence).Memento = presence;
 			spirit.Hand.SetItems( hand );
 			spirit.InPlay.SetItems( purchased );
 			spirit.DiscardPile.SetItems( discarded );
@@ -503,7 +503,7 @@ public abstract partial class Spirit
 		readonly int energy;
 		readonly int bonusCardPlay;
 		readonly KeyValuePair<Element,int>[] elements;
-		readonly IMemento<SpiritPresence> presence;
+		readonly object presence;
 		readonly PowerCard[] hand;
 		readonly PowerCard[] purchased;
 		readonly PowerCard[] discarded;
