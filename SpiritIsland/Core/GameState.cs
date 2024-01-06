@@ -288,7 +288,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			spirits      = src.Spirits.Cast<IHaveMemento>().Select(s=>s.Memento).ToArray();
 			if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
 			if(src.MinorCards != null) minor = src.MinorCards.SaveToMemento();
-			invaderDeck  = src.InvaderDeck.SaveToMemento();
+			invaderDeck  = src.InvaderDeck.Memento;
 			fear         = src.Fear.SaveToMemento();
 			tokens       = src.Tokens.SaveToMemento();
 			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
@@ -301,7 +301,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			for(int i=0;i<spirits.Length;++i) ((IHaveMemento)src.Spirits[i]).Memento = spirits[i];
 			src.MajorCards?.RestoreFrom( major );
 			src.MinorCards?.RestoreFrom( minor );
-			src.InvaderDeck.LoadFrom( invaderDeck );
+			src.InvaderDeck.Memento = invaderDeck;
 			src.Fear.LoadFrom( fear );
 			src.Tokens.LoadFrom( tokens );
 			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
@@ -313,7 +313,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		readonly object[] spirits;
 		readonly IMemento<PowerCardDeck> major;
 		readonly IMemento<PowerCardDeck> minor;
-		readonly IMemento<InvaderDeck> invaderDeck;
+		readonly object invaderDeck;
 		readonly IMemento<Fear> fear;
 		readonly IMemento<Tokens_ForIsland> tokens;
 		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;

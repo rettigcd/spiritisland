@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InvaderDeck {
+public class InvaderDeck : IHaveMemento{
 
 	#region constructors
 
@@ -72,11 +72,13 @@ public class InvaderDeck {
 
 	#region Memento
 
-	public virtual IMemento<InvaderDeck> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<InvaderDeck> memento ) => ((Memento)memento).Restore(this);
+	public virtual object Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<InvaderDeck> {
-		public Memento(InvaderDeck src) {
+	protected class MyMemento : IMemento<InvaderDeck> {
+		public MyMemento(InvaderDeck src) {
 			unrevealedCards = src.UnrevealedCards.ToArray();
 			drawCount = src._drawCount.ToArray();
 
