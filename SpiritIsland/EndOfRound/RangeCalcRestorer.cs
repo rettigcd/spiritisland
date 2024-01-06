@@ -23,10 +23,11 @@ public class SourceCalcRestorer : IRunWhenTimePasses {
 		this.spirit = spirit;
 		this.original = spirit.TargetingSourceStrategy; // capture so we can put it back later
 	}
-	Task<RunCount> IRunWhenTimePasses.TimePasses( GameState _ ) {
+	Task IRunWhenTimePasses.TimePasses( GameState _ ) {
 		spirit.TargetingSourceStrategy = original;
-		return Task.FromResult(RunCount.Once);
+		return Task.CompletedTask;
 	}
+	bool IRunWhenTimePasses.RemoveAfterRun => true;
 
 	public Task TimePasses( GameState gameStTate ) => throw new NotImplementedException();
 }
@@ -43,9 +44,11 @@ public class RangeCalcRestorer : IRunWhenTimePasses {
 		this.spirit = spirit;
 		this.original = spirit.PowerRangeCalc; // capture so we can put it back later
 	}
-	Task<RunCount> IRunWhenTimePasses.TimePasses( GameState _ ) {
+	Task IRunWhenTimePasses.TimePasses( GameState _ ) {
 		spirit.PowerRangeCalc = original;
-		return Task.FromResult(RunCount.Once);
+		return Task.CompletedTask;
 	}
+	bool IRunWhenTimePasses.RemoveAfterRun => true;
+
 
 }

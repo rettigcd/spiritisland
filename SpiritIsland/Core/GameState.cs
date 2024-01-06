@@ -224,11 +224,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)
 		for(int i=0; i<_timePassesActions.Count;++i){
 			IRunWhenTimePasses action = _timePassesActions[i];
-			RunCount count = await action.TimePasses(this);
-			if(count == RunCount.Once)
+			await action.TimePasses(this);
+			if( action.RemoveAfterRun )
 				_timePassesActions.RemoveAt(i--);
 		}
-
 
 		// Do the standard round-switch-over stuff.
 		if(TimePasses_WholeGame != null)
@@ -328,7 +327,9 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 public enum RunCount { Once, All }
 public interface IRunWhenTimePasses : ISpaceEntity {
 	/// <returns>If object should be Removed from the TimePasses</returns>
-	Task<RunCount> TimePasses( GameState gameStTate );
+	Task TimePasses( GameState gameStTate );
+	/// <summary> Indicates if action should be removed after running once. </summary>
+	bool RemoveAfterRun { get; }
 }
 
 public class TimePassesAction : IRunWhenTimePasses {
@@ -342,9 +343,10 @@ public class TimePassesAction : IRunWhenTimePasses {
 		_runCount = keepOrRemove;
 	}
 
-	async Task<RunCount> IRunWhenTimePasses.TimePasses( GameState gameState ){
+	bool IRunWhenTimePasses.RemoveAfterRun => _runCount == RunCount.Once;
+
+	async Task IRunWhenTimePasses.TimePasses( GameState gameState ){
 		await _func(gameState);
-		return _runCount;
 	}
 	readonly Func<GameState,Task> _func;
 	readonly RunCount _runCount;

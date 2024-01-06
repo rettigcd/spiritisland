@@ -10,11 +10,11 @@ public class Reclaim1InsteadOfDiscard : IRunWhenTimePasses {
 		this.purchased = spirit.InPlay.ToArray(); // make copy in case spirit is cleaned up before this is called
 	}
 
-	async Task<RunCount> IRunWhenTimePasses.TimePasses( GameState _ ) {
+	async Task IRunWhenTimePasses.TimePasses( GameState _ ) {
 		var reclaimCard = await spirit.SelectPowerCard( "Reclaim 1 played card", purchased, CardUse.Reclaim, Present.Done );
 		if(reclaimCard != null)
 			spirit.Reclaim(reclaimCard);
-		return RunCount.Once;
 	}
+	bool IRunWhenTimePasses.RemoveAfterRun => true;
 
 }
