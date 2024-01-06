@@ -30,8 +30,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Tokens = new Tokens_ForIsland();
 
 		AddTimePassesAction( Tokens );
-		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
-		AddTimePassesAction( Fear );
 
 		ActionScope.Initialize(); // ! This is here for tests.
 	}
@@ -46,6 +44,10 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		InitialExplore();
 		InitSpirits();// ManyMinds requires the beast to be in place, so this goes after tokens are placed.
 		BlightCard.OnGameStart( this );
+
+		// Do these last so spirit init can swap out if necessary.
+		AddTimePassesAction( Fear );
+		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
 	}
 
 	void InitialExplore() {
