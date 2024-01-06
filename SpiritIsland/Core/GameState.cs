@@ -31,6 +31,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		AddTimePassesAction( Tokens );
 		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
+		AddTimePassesAction( Fear );
 
 		ActionScope.Initialize(); // ! This is here for tests.
 	}
@@ -224,9 +225,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 				_timePassesActions.RemoveAt(i--);
 		}
 
-		// Do the standard round-switch-over stuff.
-		if(TimePasses_WholeGame != null)
-			await TimePasses_WholeGame.Invoke( this ); // can't use await and ?.Invoke together, => tries to await a null
 		++RoundNumber;
 	}
 
@@ -236,7 +234,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public event Action<ILogEntry> NewLogEntry;
 	public AsyncEvent<GameState> StartOfInvaderPhase = new(); // Blight effects
 
-	public event Func<GameState,Task> TimePasses_WholeGame;
 	readonly List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
 
 	public void AddTimePassesAction(IRunWhenTimePasses action ) {
