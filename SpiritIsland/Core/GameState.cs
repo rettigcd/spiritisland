@@ -30,6 +30,8 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		Tokens = new Tokens_ForIsland();
 
 		AddTimePassesAction( Tokens );
+		AddTimePassesAction( Fear );
+		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
 
 		ActionScope.Initialize(); // ! This is here for tests.
 	}
@@ -44,10 +46,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		InitialExplore();
 		InitSpirits();// ManyMinds requires the beast to be in place, so this goes after tokens are placed.
 		BlightCard.OnGameStart( this );
-
-		// Do these last so spirit init can swap out if necessary.
-		AddTimePassesAction( Fear );
-		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
 	}
 
 	void InitialExplore() {
@@ -248,7 +246,16 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public readonly RavageBehavior DefaultRavageBehavior = new RavageBehavior();
 
-	public Healer Healer = new Healer(); // replacable Behavior
+	public Healer Healer {
+		get => _healer;
+		set { 
+			if(_healer != null)
+				_timePassesActions.Remove(_healer);
+			_healer = value;
+			_timePassesActions.Add(_healer);
+		}
+	}
+	Healer _healer = new Healer(); // replacable Behavior
 
 	// !! If we decide to split up Config stuff, move this to ActionScope
 	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
