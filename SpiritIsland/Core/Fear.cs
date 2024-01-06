@@ -4,7 +4,7 @@
 /// Not an engine because it contains games state.
 /// So it is ok to hold a GameState instance.
 /// </remarks>
-public class Fear : IRunWhenTimePasses {
+public class Fear : IRunWhenTimePasses, IHaveMemento {
 
 	public Fear(GameState gs ) {
 		_gs = gs;
@@ -110,34 +110,36 @@ public class Fear : IRunWhenTimePasses {
 	public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();                     // Dread Apparations
 	readonly GameState _gs;
 
-	#region Memento
-
-	public virtual IMemento<Fear> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<Fear> memento ) => ((Memento)memento).Restore(this);
-
 	bool IRunWhenTimePasses.RemoveAfterRun => false;
 	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
 		return FearAdded.EndOfRound( gameState ); // Clears - End-of-Round event handlers
 	}
 
-	protected class Memento : IMemento<Fear> {
-		public Memento(Fear src) {
-			pool = src.EarnedFear;
-			deck = src.Deck.ToArray();
-			activatedCards = src.ActivatedCards.ToArray();
-			flipped = deck.Union( activatedCards ).ToDictionary(c=>c,c=>c.Flipped);
+	#region Memento
+
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
+
+	protected class MyMemento : IMemento<Fear> {
+		public MyMemento(Fear src) {
+			_pool = src.EarnedFear;
+			_deck = src.Deck.ToArray();
+			_activatedCards = src.ActivatedCards.ToArray();
+			_flipped = _deck.Union( _activatedCards ).ToDictionary(c=>c,c=>c.Flipped);
 		}
 		public void Restore(Fear src ) {
-			src.EarnedFear = pool;
-			src.Deck.SetItems( deck );
-			src.ActivatedCards.SetItems(activatedCards);
-			foreach(var pair in flipped)
+			src.EarnedFear = _pool;
+			src.Deck.SetItems( _deck );
+			src.ActivatedCards.SetItems(_activatedCards);
+			foreach(var pair in _flipped)
 				pair.Key.Flipped = pair.Value;
 		}
-		readonly int pool;
-		readonly IFearCard[] deck;
-		readonly IFearCard[] activatedCards;
-		readonly Dictionary<IFearCard, bool> flipped;
+		readonly int _pool;
+		readonly IFearCard[] _deck;
+		readonly IFearCard[] _activatedCards;
+		readonly Dictionary<IFearCard, bool> _flipped;
 	}
 
 	#endregion Memento

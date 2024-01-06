@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Log;
+using System.Runtime.CompilerServices;
 
 namespace SpiritIsland;
 
@@ -283,42 +284,41 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	protected class Memento : IMemento<GameState> {
 		public Memento(GameState src) {
-			roundNumber  = src.RoundNumber;
-			isBlighted   = src.BlightCard.CardFlipped;
-			spirits      = src.Spirits.Cast<IHaveMemento>().Select(s=>s.Memento).ToArray();
-			if(src.MajorCards != null) major = src.MajorCards.Memento;
-			if(src.MinorCards != null) minor = src.MinorCards.Memento;
-			invaderDeck  = src.InvaderDeck.Memento;
-			fear         = src.Fear.SaveToMemento();
+			foreach(Spirit spirit in src.Spirits) Save(spirit);
+			Save( src.MajorCards );
+			Save( src.MinorCards );
+			Save( src.InvaderDeck );
+			Save( src.Fear );
+
+			_roundNumber = src.RoundNumber;
+			_isBlighted = src.BlightCard.CardFlipped;
+			_damageToBlightLand = src.DamageToBlightLand;
+
 			tokens       = src.Tokens.SaveToMemento();
 			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
 			island = src.Island.SaveToMemento();
-			damageToBlightLand = src.DamageToBlightLand;
 		}
+		void Save( IHaveMemento holder ) { if(holder is not null) _mementos[holder] = holder.Memento; }
+
 		public void Restore(GameState src ) {
-			src.RoundNumber = roundNumber;
-			src.BlightCard.CardFlipped = isBlighted;
-			for(int i=0;i<spirits.Length;++i) ((IHaveMemento)src.Spirits[i]).Memento = spirits[i];
-			if(src.MajorCards is not null) src.MajorCards.Memento = major;
-			if(src.MinorCards is not null) src.MinorCards.Memento = minor;
-			src.InvaderDeck.Memento = invaderDeck;
-			src.Fear.LoadFrom( fear );
+			foreach(var pair in _mementos) 
+				pair.Key.Memento = pair.Value;
+
+			src.RoundNumber = _roundNumber;
+			src.BlightCard.CardFlipped = _isBlighted;
 			src.Tokens.LoadFrom( tokens );
 			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
 			src.Island.LoadFrom( island );
-			src.DamageToBlightLand = damageToBlightLand;
+			src.DamageToBlightLand = _damageToBlightLand;
 		}
-		readonly int roundNumber;
-		readonly bool isBlighted;
-		readonly object[] spirits;
-		readonly object major;
-		readonly object minor;
-		readonly object invaderDeck;
-		readonly IMemento<Fear> fear;
+
+		readonly int _roundNumber;
+		readonly bool _isBlighted;
+		readonly int _damageToBlightLand;
 		readonly IMemento<Tokens_ForIsland> tokens;
 		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
 		readonly IMemento<Island> island;
-		readonly int damageToBlightLand;
+		readonly Dictionary<IHaveMemento,object> _mementos = new Dictionary<IHaveMemento, object>();
 	}
 
 	#endregion Memento
