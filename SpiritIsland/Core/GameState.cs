@@ -285,7 +285,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		public Memento(GameState src) {
 			roundNumber  = src.RoundNumber;
 			isBlighted   = src.BlightCard.CardFlipped;
-			spirits      = src.Spirits.Select(s=>s.SaveToMemento()).ToArray();
+			spirits      = src.Spirits.Cast<IHaveMemento>().Select(s=>s.Memento).ToArray();
 			if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
 			if(src.MinorCards != null) minor = src.MinorCards.SaveToMemento();
 			invaderDeck  = src.InvaderDeck.SaveToMemento();
@@ -298,7 +298,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		public void Restore(GameState src ) {
 			src.RoundNumber = roundNumber;
 			src.BlightCard.CardFlipped = isBlighted;
-			for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
+			for(int i=0;i<spirits.Length;++i) ((IHaveMemento)src.Spirits[i]).Memento = spirits[i];
 			src.MajorCards?.RestoreFrom( major );
 			src.MinorCards?.RestoreFrom( minor );
 			src.InvaderDeck.LoadFrom( invaderDeck );
@@ -310,7 +310,7 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		}
 		readonly int roundNumber;
 		readonly bool isBlighted;
-		readonly IMemento<Spirit>[] spirits;
+		readonly object[] spirits;
 		readonly IMemento<PowerCardDeck> major;
 		readonly IMemento<PowerCardDeck> minor;
 		readonly IMemento<InvaderDeck> invaderDeck;

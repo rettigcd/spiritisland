@@ -4,6 +4,7 @@ public abstract partial class Spirit
 	: IOption
 	, IHaveASpirit // so all 'contexts' can you the same Picker and have a spirit to do the decision making.
 	, IRunWhenTimePasses
+	, IHaveMemento 
 {
 
 	#region constructor
@@ -457,10 +458,10 @@ public abstract partial class Spirit
 
 	#region Save/Load Memento
 
-	public IMemento<Spirit> SaveToMemento() => new Memento(this);
-
-	public void LoadFrom( IMemento<Spirit> memento ) => ((Memento)memento).Restore(this);
-
+	object IHaveMemento.Memento {
+		get => new Memento(this);
+		set => ((Memento)value).Restore(this);
+	}
 
 	// Whatever this returns, get saved to the memento
 	protected virtual object _customSaveValue {
@@ -468,7 +469,7 @@ public abstract partial class Spirit
 		set { }
 	}
 
-	protected class Memento : IMemento<Spirit> {
+	protected class Memento {
 		public Memento(Spirit spirit) {
 			energy = spirit.Energy;
 			bonusCardPlay = spirit.tempCardPlayBoost;
