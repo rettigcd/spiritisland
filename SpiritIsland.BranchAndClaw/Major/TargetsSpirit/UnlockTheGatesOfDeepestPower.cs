@@ -29,18 +29,15 @@ public class UnlockTheGatesOfDeepestPower {
 
 	static SpiritAction ForgetCardAtEndOfTurn_PlayCard( PowerCard card ) {
 
-		//    * forgetting it at the end of turn.
-		var forgettingCardOption = new SpiritAction(
+		return new SpiritAction(
 			$"forgetting at end of turn",
 			self => {
 				self.PlayCard( card, 0 );
-				GameState.Current.AddTimePassesAction( new TimePassesAction( 
-					gs => self.ForgetThisCard( card ), // this must run before cards are moved to discard, or it will be forgotten for Shifting Memories
-					RunCount.Once 
+				GameState.Current.AddTimePassesAction( new TimePassesOnce( 
+					gs => self.ForgetThisCard( card ) // !!! this must run before cards are moved to discard, or it will be forgotten for Shifting Memories
 				) );
 			}
 		);
-		return forgettingCardOption;
 	}
 
 }

@@ -12,7 +12,7 @@ public class FlamesFury{
 		// Target Spirit does +1 damage for each damage-dealing power
 		++ctx.Other.BonusDamage;
 
-		GameState.Current.AddTimePassesAction( new TimePassesAction(gs => --ctx.Other.BonusDamage, RunCount.Once) );
+		GameState.Current.AddTimePassesAction( new TimePassesOnce(gs => --ctx.Other.BonusDamage) );
 
 		return Task.CompletedTask;
 	}

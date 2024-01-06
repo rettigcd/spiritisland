@@ -29,12 +29,10 @@ class PourTimeSideways {
 		foreach(var board in dst.Boards)
 			++board.InvaderActionCount;
 
-		GameState.Current.AddTimePassesAction( new TimePassesAction( 
-			gs => {
-				foreach(var b in dst.Boards.Union( srcBoards ))
-					b.InvaderActionCount = 1;
-			}, RunCount.Once
-		));
+		GameState.Current.AddTimePassesAction( new TimePassesOnce( gs => {
+			foreach(var b in dst.Boards.Union( srcBoards ))
+				b.InvaderActionCount = 1;
+		}));
 	}
 
 }

@@ -4,7 +4,7 @@ public class TemporarySpeed : ISpeedBehavior {
 
 	static public void Override( IFlexibleSpeedActionFactory factory, Phase phase, GameState gameState ) {
 		factory.OverrideSpeedBehavior = new TemporarySpeed( phase );
-		gameState.AddTimePassesAction( new TimePassesAction(_=> factory.OverrideSpeedBehavior = null, RunCount.Once ) );
+		gameState.AddTimePassesAction( new TimePassesOnce(_=> factory.OverrideSpeedBehavior = null ) );
 	}
 
 	readonly Phase newSpeed;
