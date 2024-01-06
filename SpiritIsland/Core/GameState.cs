@@ -222,8 +222,13 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		// Do Custom end-of-round cleanup stuff before round switches over
 		// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)
-        foreach(Func<GameState, Task> actAsync in TimePasses_ThisRound)
-            await actAsync(this); TimePasses_ThisRound.Clear();
+		for(int i=0; i<_timePassesActions.Count;++i){
+			IRunWhenTimePasses action = _timePassesActions[i];
+			RunCount count = await action.TimePasses(this);
+			if(count == RunCount.Once)
+				_timePassesActions.RemoveAt(i--);
+		}
+
 
 		// Do the standard round-switch-over stuff.
 		if(TimePasses_WholeGame != null)
@@ -237,15 +242,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public event Action<ILogEntry> NewLogEntry;
 	public AsyncEvent<GameState> StartOfInvaderPhase = new(); // Blight effects
 
-	public event Func<GameState,Task> TimePasses_WholeGame;                                               // Spirit cleanup
-	public List<Func<GameState, Task>> TimePasses_ThisRound = new List<Func<GameState, Task>>();     // This must be Push / Pop
+	public event Func<GameState,Task> TimePasses_WholeGame;
+	public List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
 
 	public void AddTimePassesAction(IRunWhenTimePasses action ) {
-		TimePasses_ThisRound.Add( async gs => { 
-			var status = await action.TimePasses( gs ); 
-			if(status != RunCount.Once)
-				throw new InvalidOperationException("only doing ONCE right now.");
-		} );
+		_timePassesActions.Add(action);
 	}
 
 	#endregion
