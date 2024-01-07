@@ -120,7 +120,7 @@ public class GameBuilder {
 		adversary.AdjustPlacedTokens( gameState );
 
 		if(cfg.CommandTheBeasts)
-			CommandTheBeasts.Setup( gameState );
+			CommandBeasts.Setup( gameState );
 
 		return gameState;
 	}
