@@ -39,7 +39,7 @@ public class InvaderDeck : IHaveMemento{
 	/// <summary>
 	/// Triggers Ravage / 
 	/// </summary>
-	public void Advance() {
+	public async Task AdvanceAsync() {
 
 		var destination = Discards;
 		foreach(var slot in ActiveSlots) {
@@ -48,16 +48,17 @@ public class InvaderDeck : IHaveMemento{
 			destination = slot.Cards;
 		}
 
-		InitExploreSlot();
+		await InitExploreSlotAsync();
 	}
 
-	public void InitExploreSlot() {
+	public async Task InitExploreSlotAsync() {
 		if(UnrevealedCards.Count == 0) return; // !!! Should this throw a GameOver(Loss) exception?
 		int count = _drawCount[0]; _drawCount.RemoveAt( 0 );
 		while(0 < count--) {
 			var unrevealedCard = UnrevealedCards[0];
 			UnrevealedCards.RemoveAt( 0 );
 			Explore.Cards.Add( unrevealedCard );
+			await unrevealedCard.OnReveal(GameState.Current);
 		}
 	}
 

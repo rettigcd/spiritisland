@@ -16,7 +16,7 @@ public class InvaderPhase {
 			gs.CheckWinLoss();
 		}
 
-		gs.InvaderDeck.Advance();
+		await gs.InvaderDeck.AdvanceAsync();
 
 		// run After-Invader Actions
 		foreach(SpaceState space in gs.Spaces)

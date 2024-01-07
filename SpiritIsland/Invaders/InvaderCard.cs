@@ -13,14 +13,17 @@ public sealed class InvaderCard : IOption {
 
 	public bool Flipped { get; set; } // setting public so we can Rewind
 
-	public async Task Flip( GameState gameState ) { 
+	public void Flip( GameState gameState ) { 
 		if ( Flipped ) return;
 		Flipped = true;
-		if( CardFlipped != null )
-			await CardFlipped.Invoke( gameState ); // await CardFlipped.InvokeInSeries( gameState );
 	}
 
-	public event Func<GameState,Task> CardFlipped;
+	public async Task OnReveal( GameState gameState ) {
+		if(CardRevealed is not null)
+			await CardRevealed( gameState );
+	}
+
+	public event Func<GameState,Task> CardRevealed;
 
 	public int InvaderStage { get; }
 

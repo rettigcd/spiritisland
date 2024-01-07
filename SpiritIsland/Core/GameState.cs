@@ -49,9 +49,9 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 	}
 
 	void InitialExplore() {
-		InvaderDeck.InitExploreSlot();
+		InvaderDeck.InitExploreSlotAsync().Wait();
 		InvaderDeck.Explore.Execute( this ).Wait();
-		InvaderDeck.Advance();
+		InvaderDeck.AdvanceAsync().Wait();
 	}
 
 	void PlaceStartingTokens() {

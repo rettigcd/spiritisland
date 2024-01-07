@@ -63,7 +63,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 		// Level 5
 		new AdversaryLevel(5, 9, 4,6,3, "Wave of Immigration", 
 			"Before the initial Explore, put the Habsburg Reminder Card under the top 5 Invader Cards. When Revealed, on each board, add 1 City to a Coastal land without City and 1 Town to the 3 Inland lands with the fewest Blight." ){ 
-			InitFunc = (gameState,_) => gameState.InvaderDeck.UnrevealedCards[4].CardFlipped += WaveOfImmigration
+			InitFunc = (gameState,_) => gameState.InvaderDeck.UnrevealedCards[4].CardRevealed += HabsburgReminderCard_Revealed
 		},
 
 		// Level 6
@@ -117,7 +117,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 	#region Level-5
 
-	static async Task WaveOfImmigration( GameState gameState ) {
+	static async Task HabsburgReminderCard_Revealed( GameState gameState ) {
 		// Level 5
 
 		var newTownSpaces = new List<SpaceState>();

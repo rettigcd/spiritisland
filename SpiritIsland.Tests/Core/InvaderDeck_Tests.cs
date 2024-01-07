@@ -26,9 +26,9 @@ public class InvaderDeck_Tests {
 	}
 
 	static void Advance( InvaderDeck sut ) {
-		sut.Advance();
-		sut.Advance();
-		sut.Advance();
+		sut.AdvanceAsync().Wait();
+		sut.AdvanceAsync().Wait();
+		sut.AdvanceAsync().Wait();
 	}
 
 	static string TakeSnapShot( InvaderDeck sut ) {

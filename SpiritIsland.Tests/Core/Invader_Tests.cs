@@ -46,7 +46,7 @@ public class Invader_Tests {
 			int discardCount = sut.Discards.Count;
 
 			// When: advance the cards
-			sut.Advance();
+			sut.AdvanceAsync().Wait();
 
 			// Then cards advance
 			Assert.NotEqual(explore,sut.Explore.Cards);
