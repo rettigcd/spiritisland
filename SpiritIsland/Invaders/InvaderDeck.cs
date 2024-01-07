@@ -52,7 +52,7 @@ public class InvaderDeck : IHaveMemento{
 	}
 
 	public void InitExploreSlot() {
-		if(UnrevealedCards.Count == 0) return; // does this ever happen?
+		if(UnrevealedCards.Count == 0) return; // !!! Should this throw a GameOver(Loss) exception?
 		int count = _drawCount[0]; _drawCount.RemoveAt( 0 );
 		while(0 < count--) {
 			var unrevealedCard = UnrevealedCards[0];

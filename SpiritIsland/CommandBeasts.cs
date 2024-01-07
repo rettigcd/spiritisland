@@ -1,6 +1,11 @@
 ﻿namespace SpiritIsland;
 
-class CommandTheBeasts : IActionFactory, IRunWhenTimePasses {
+/// <summary>
+/// Starts as an event Handler on the Invader cards
+/// Moves to an action that runs when TimePasses
+/// Added to 1st Spirits ActionFactory list until they use it.
+/// </summary>
+class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
 
 	#region Static Setup
 
@@ -10,50 +15,63 @@ class CommandTheBeasts : IActionFactory, IRunWhenTimePasses {
 		gameState.InvaderDeck
 			.UnrevealedCards
 			.First( x => x.InvaderStage == 2 )
-			.CardFlipped += new CommandTheBeasts("Command the Beasts (I)").QueueMeUp;
+			.CardFlipped += new CommandBeasts("Command Beasts (I)").OnCardFlipped;
 
 		// Find 1st card of last Level-3 group
 		var cards = gameState.InvaderDeck.UnrevealedCards;
 		int i = cards.Count;
 		while(cards[i - 1].InvaderStage != 3) --i; // While prev is not level 3, backup - ends on card following level 3 group
 		while(cards[i - 1].InvaderStage == 3) --i; // While prev is level 3, backup - ends on 1st level 3 card in last group
-		cards[i].CardFlipped += new CommandTheBeasts( "Command the Beasts (II)" ).QueueMeUp;
+		cards[i].CardFlipped += new CommandBeasts( "Command Beasts (II)" ).OnCardFlipped;
 	}
 
 	#endregion Static Setup
 
-	public CommandTheBeasts( string name ) { Name = name; }
+	public CommandBeasts( string name ) { Name = name; }
 
 	public string Name { get; }
 
 	public string Text => Name;
 
 	public async Task ActivateAsync( Spirit _ ) {
-		Used = true;
+		_used = true;
 		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special);
 		await new CommandBeastsOn1Space().In().EachActiveLand().ActAsync( GameState.Current );
 	}
 
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
-	public bool Used { get; private set; }
+
+	#region IRunWhenTimePasses
+
+	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+		if(!_used)
+			gameState.Spirits[0].AddActionFactory( this );
+		return Task.CompletedTask;
+	}
+
+	bool IRunWhenTimePasses.RemoveAfterRun => _used;
+
+	#endregion
+
+	#region IHaveMemento
+
+	object IHaveMemento.Memento {
+		get => _used;
+		set => _used = (bool)value;
+	}
+
+	#endregion IHaveMemento
 
 	#region private
 
 	/// <summary>
 	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
 	/// </summary>
-	Task QueueMeUp( GameState gameState ) {
+	Task OnCardFlipped( GameState gameState ) {
 		gameState.AddTimePassesAction( this );
 		return Task.CompletedTask;
 	}
-
-	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
-		if(!Used)
-			gameState.Spirits[0].AddActionFactory( this );
-		return Task.CompletedTask;
-	}
-
-	bool IRunWhenTimePasses.RemoveAfterRun => Used;
+	bool _used;
 
 	#endregion private
 }
