@@ -77,7 +77,7 @@ public class InvaderDeck : IHaveMemento{
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class MyMemento : IMemento<InvaderDeck> {
+	protected class MyMemento {
 		public MyMemento(InvaderDeck src) {
 			unrevealedCards = src.UnrevealedCards.ToArray();
 			drawCount = src._drawCount.ToArray();

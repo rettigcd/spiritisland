@@ -43,7 +43,7 @@ public sealed class PowerCardDeck : IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	class MyMemento : IMemento<PowerCardDeck> {
+	class MyMemento {
 		public MyMemento(PowerCardDeck src) {
 			cards = src._cards.ToArray();
 			discards = src._discards.ToArray();

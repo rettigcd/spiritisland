@@ -122,7 +122,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class MyMemento : IMemento<Fear> {
+	protected class MyMemento {
 		public MyMemento(Fear src) {
 			_pool = src.EarnedFear;
 			_deck = src.Deck.ToArray();

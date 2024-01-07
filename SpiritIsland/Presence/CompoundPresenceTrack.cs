@@ -43,7 +43,7 @@ public class CompoundPresenceTrack : IPresenceTrack {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class MyMemento : IMemento<IPresenceTrack> {
+	protected class MyMemento {
 		public MyMemento( CompoundPresenceTrack src ) { 
 			parts = src.parts.Select(s=>s.Memento).ToArray();
 		}

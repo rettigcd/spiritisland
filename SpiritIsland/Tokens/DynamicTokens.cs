@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class DynamicTokens {
+public sealed class DynamicTokens : IHaveMemento {
 
 	readonly Dictionary<ITokenClass, List<Func<SpaceState, int>>> dict = new Dictionary<ITokenClass, List<Func<SpaceState, int>>>();
 
@@ -14,13 +14,13 @@ public class DynamicTokens {
 		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( space ) ) : 0;
 	public void Clear() => dict.Clear();
 
-	public virtual IMemento<DynamicTokens> SaveToMemento() => new Memento( this );
-	public virtual void LoadFrom( IMemento<DynamicTokens> memento ) {
-		((Memento)memento).Restore( this );
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class Memento : IMemento<DynamicTokens> {
-		public Memento( DynamicTokens src ) {
+	class MyMemento {
+		public MyMemento( DynamicTokens src ) {
 			dict = src.dict.ToDictionary(p=>p.Key,p=>p.Value); // make copy
 		}
 		public void Restore( DynamicTokens src ) {

@@ -1,9 +1,8 @@
 ﻿using SpiritIsland.Log;
-using System.Runtime.CompilerServices;
 
 namespace SpiritIsland;
 
-public class GameState : IHaveHealthPenaltyPerStrife {
+public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 
 	public static GameState Current => _current.Value; // !! We might want to only access from the ActionScope
 	readonly static AsyncLocal<GameState> _current = new AsyncLocal<GameState>(); // value gets shallow-copied into child calls and post-awaited states.
@@ -279,17 +278,21 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Memento
 
-	public virtual IMemento<GameState> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<GameState> memento ) => ((Memento)memento).Restore(this);
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<GameState> {
-		public Memento(GameState src) {
+	class MyMemento {
+		public MyMemento(GameState src) {
 			foreach(Spirit spirit in src.Spirits) Save(spirit);
 			Save( src.MajorCards );
 			Save( src.MinorCards );
 			Save( src.InvaderDeck );
 			Save( src.Fear );
 			Save( src.Island );
+			Save( src.StartOfInvaderPhase );
+			Save( src.Tokens );
 
 			// Time Passes
 			_timePassesActions = src._timePassesActions.ToArray();
@@ -298,9 +301,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			_roundNumber = src.RoundNumber;
 			_isBlighted = src.BlightCard.CardFlipped;
 			_damageToBlightLand = src.DamageToBlightLand;
-
-			tokens       = src.Tokens.SaveToMemento();
-			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
 		}
 		void Save( IHaveMemento holder ) { if(holder is not null) _mementos[holder] = holder.Memento; }
 
@@ -314,17 +314,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			src.RoundNumber = _roundNumber;
 			src.BlightCard.CardFlipped = _isBlighted;
 			src.DamageToBlightLand = _damageToBlightLand;
-
-			src.Tokens.LoadFrom( tokens );
-			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
 		}
 
 		readonly int _roundNumber;
 		readonly bool _isBlighted;
 		readonly int _damageToBlightLand;
-		readonly IMemento<Tokens_ForIsland> tokens;
-		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
-		readonly IMemento<Island> island;
 		readonly IRunWhenTimePasses[] _timePassesActions;
 		readonly Dictionary<IHaveMemento,object> _mementos = new Dictionary<IHaveMemento, object>();
 	}

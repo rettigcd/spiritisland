@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses {
+public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHaveMemento {
 
 	public Tokens_ForIsland() {
 
@@ -60,21 +60,23 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses {
 
 	#region Memento
 
-	public IMemento<Tokens_ForIsland> SaveToMemento() => new Memento(this);
-	public void LoadFrom( IMemento<Tokens_ForIsland> memento ) { 
-		((Memento)memento).Restore(this);
-		Dynamic.ForRound.Clear();
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set {
+			((MyMemento)value).Restore( this );
+			Dynamic.ForRound.Clear();
+		}
 	}
 
-	class Memento : IMemento<Tokens_ForIsland> {
-		public Memento(Tokens_ForIsland src) {
+	class MyMemento {
+		public MyMemento(Tokens_ForIsland src) {
 			// Save TokenCounts
 			foreach(var (space,countsDict) in src._tokenCounts.Select( x => (x.Key, x.Value) ))
 				_tokenCounts[space] = countsDict.Clone();
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
 			// dynamicTokens_ForGame
-			dynamicTokens = src.Dynamic.SaveToMemento();
+			_dynamicTokens = src.Dynamic.Memento;
 			_doesNotExist = src._tokenCounts.Keys.Where(s=>!s.DoesExists).ToArray();
 		}
 		public void Restore( Tokens_ForIsland src ) {
@@ -107,12 +109,12 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses {
 			foreach(var pair in tokenDefaults)
 				src.TokenDefaults.Add(pair.Key,pair.Value);
 			// Restore Dynamic tokens
-			src.Dynamic.LoadFrom( dynamicTokens );
+			src.Dynamic.Memento = _dynamicTokens;
 		}
 		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
 		readonly Space[] _doesNotExist;
 		readonly Dictionary<ITokenClass, IToken> tokenDefaults = new Dictionary<ITokenClass, IToken>();
-		readonly IMemento<DualDynamicTokens> dynamicTokens;
+		readonly object _dynamicTokens;
 	}
 
 	#endregion Memento

@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public class DualDynamicTokens {
+public class DualDynamicTokens : IHaveMemento {
+
 	readonly public DynamicTokens ForGame = new DynamicTokens();
 	readonly public DynamicTokens ForRound = new DynamicTokens();
+
 	public void RegisterDynamic( System.Func<SpaceState, int> calcCountOnSpace, TokenClassToken targetToken, bool entireGame ) {
 		var dTokens = entireGame ? ForGame : ForRound;
 		dTokens.Register( calcCountOnSpace, targetToken );
@@ -11,20 +13,20 @@ public class DualDynamicTokens {
 		=> ForGame.GetDynamicTokenFor( space, token )
 		+ ForRound.GetDynamicTokenFor( space, token );
 
-	public IMemento<DualDynamicTokens> SaveToMemento() => new Memento( this );
-	public void LoadFrom( IMemento<DualDynamicTokens> memento ) {
-		((Memento)memento).Restore( this );
+	public object Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class Memento : IMemento<DualDynamicTokens> {
-		public Memento( DualDynamicTokens src ) {
-			forGame = src.ForGame.SaveToMemento();
+	protected class MyMemento {
+		public MyMemento( DualDynamicTokens src ) {
+			forGame = ((IHaveMemento)src.ForGame).Memento;
 		}
 		public void Restore( DualDynamicTokens src ) {
-			src.ForGame.LoadFrom( forGame );
+			((IHaveMemento)src.ForGame).Memento = forGame;
 			src.ForRound.Clear();
 		}
-		readonly IMemento<DynamicTokens> forGame;
+		readonly object forGame;
 	}
 
 }

@@ -481,7 +481,7 @@ public abstract partial class Spirit
 			available = spirit._availableActions.ToArray();
 			usedActions = spirit._usedActions.ToArray();
 			usedInnates = spirit._usedInnates.ToArray();
-			energyCollected = spirit.EnergyCollected.SaveToMemento();
+			energyCollected = ((IHaveMemento)spirit.EnergyCollected).Memento;
 			tag = spirit._customSaveValue;
 		}
 		public void Restore(Spirit spirit) {
@@ -497,7 +497,7 @@ public abstract partial class Spirit
 			spirit._usedInnates.SetItems( usedInnates );
 			spirit.InitElementsFromPresence();
 			spirit.BonusDamage = 0; // assuming beginning of round
-			spirit.EnergyCollected.LoadFrom( energyCollected );
+			((IHaveMemento)spirit.EnergyCollected).Memento = energyCollected;
 			spirit._customSaveValue = tag;
 		}
 		readonly int energy;
@@ -510,7 +510,7 @@ public abstract partial class Spirit
 		readonly IActionFactory[] available;
 		readonly IActionFactory[] usedActions;
 		readonly InnatePower[] usedInnates;
-		readonly IMemento<AsyncEvent<Spirit>> energyCollected;
+		readonly object energyCollected;
 		readonly object tag;
 	}
 	static public void InitFromArray( CountDictionary<Element> dict, KeyValuePair<Element, int>[] array ) {

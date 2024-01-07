@@ -97,7 +97,7 @@ public sealed class Island : IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class MyMemento : IMemento<Island> {
+	class MyMemento {
 		public MyMemento( Island src ) {
 			boards = src.Boards.Select( b => new BoardInfo( b ) ).ToArray();
 			nativeTerrain = src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<Space1>()
