@@ -11,14 +11,14 @@ public class InvaderDeck_Tests {
 		Advance( sut );
 
 		//   And: we have saved the desired state
-		var memento = sut.SaveToMemento();
+		var memento = sut.Memento;
 		string expected = TakeSnapShot( sut );
 
 		//   And: advanced beyond the saved state
 		Advance( sut );
 
 		//  When: we restore the saved state
-		sut.LoadFrom( memento );
+		sut.Memento = memento;
 
 		// Then: we should get back the expted state
 		TakeSnapShot( sut ).ShouldBe( expected );

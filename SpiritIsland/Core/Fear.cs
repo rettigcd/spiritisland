@@ -4,12 +4,11 @@
 /// Not an engine because it contains games state.
 /// So it is ok to hold a GameState instance.
 /// </remarks>
-public class Fear {
+public class Fear : IRunWhenTimePasses, IHaveMemento {
 
 	public Fear(GameState gs ) {
-		this.gs = gs;
-		this.PoolMax = gs.Spirits.Length * 4;
-		gs.TimePasses_WholeGame += FearAdded.EndOfRound;
+		_gs = gs;
+		PoolMax = gs.Spirits.Length * 4;
 		Init();
 	}
 
@@ -62,13 +61,13 @@ public class Fear {
 		while(PoolMax <= EarnedFear && Deck.Any() ) {
 			EarnedFear -= PoolMax;
 
-			Deck.Peek().Activate( gs );
+			Deck.Peek().Activate( _gs );
 		}
 		// ! Do NOT check for victory here and throw GameOverException(...)
 		// This is called inside PowerCard using Invoke() which converts exception to a TargetInvocationException which we don't want.
 		// Let the post-Action check catch the victory.
 
-		FearAdded?.Invoke( gs, args );
+		FearAdded?.Invoke( _gs, args );
 	}
 
 	/// <summary>
@@ -84,13 +83,13 @@ public class Fear {
 			fearCard.ActivatedTerrorLevel = TerrorLevel;
 
 			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
-			foreach(Spirit spirit in gs.Spirits)
+			foreach(Spirit spirit in _gs.Spirits)
 				await spirit.FlipFearCard(fearCard,true);
 
 			await (TerrorLevel switch {
-				1 => fearCard.Level1( gs ),
-				2 => fearCard.Level2( gs ),
-				3 => fearCard.Level3( gs ),
+				1 => fearCard.Level1( _gs ),
+				2 => fearCard.Level2( _gs ),
+				3 => fearCard.Level3( _gs ),
 				_ => throw new ArgumentOutOfRangeException(),
 			});
 
@@ -103,36 +102,44 @@ public class Fear {
 	// - ints -
 	public int EarnedFear { get; private set; } = 0;
 	public int PoolMax { get; set; }
+
 	// - cards -
 	public readonly Stack<IFearCard> Deck = new Stack<IFearCard>();
 	public readonly Stack<IFearCard> ActivatedCards = new Stack<IFearCard>();
 	// - events -
 	public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();                     // Dread Apparations
-	readonly GameState gs;
+	readonly GameState _gs;
+
+	bool IRunWhenTimePasses.RemoveAfterRun => false;
+	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+		return FearAdded.EndOfRound( gameState ); // Clears - End-of-Round event handlers
+	}
 
 	#region Memento
 
-	public virtual IMemento<Fear> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<Fear> memento ) => ((Memento)memento).Restore(this);
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<Fear> {
-		public Memento(Fear src) {
-			pool = src.EarnedFear;
-			deck = src.Deck.ToArray();
-			activatedCards = src.ActivatedCards.ToArray();
-			flipped = deck.Union( activatedCards ).ToDictionary(c=>c,c=>c.Flipped);
+	protected class MyMemento {
+		public MyMemento(Fear src) {
+			_pool = src.EarnedFear;
+			_deck = src.Deck.ToArray();
+			_activatedCards = src.ActivatedCards.ToArray();
+			_flipped = _deck.Union( _activatedCards ).ToDictionary(c=>c,c=>c.Flipped);
 		}
 		public void Restore(Fear src ) {
-			src.EarnedFear = pool;
-			src.Deck.SetItems( deck );
-			src.ActivatedCards.SetItems(activatedCards);
-			foreach(var pair in flipped)
+			src.EarnedFear = _pool;
+			src.Deck.SetItems( _deck );
+			src.ActivatedCards.SetItems(_activatedCards);
+			foreach(var pair in _flipped)
 				pair.Key.Flipped = pair.Value;
 		}
-		readonly int pool;
-		readonly IFearCard[] deck;
-		readonly IFearCard[] activatedCards;
-		readonly Dictionary<IFearCard, bool> flipped;
+		readonly int _pool;
+		readonly IFearCard[] _deck;
+		readonly IFearCard[] _activatedCards;
+		readonly Dictionary<IFearCard, bool> _flipped;
 	}
 
 	#endregion Memento

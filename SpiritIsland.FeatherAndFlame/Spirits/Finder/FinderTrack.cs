@@ -46,19 +46,18 @@ public class FinderTrack : IPresenceTrack {
 
 	#region Load / Save
 
-	public void LoadFrom( IMemento<IPresenceTrack> memento ) {
-		var src = (MyMemento)memento;
-		foreach(var p in src.TrackStates)
-			_lookup[p.Key].State = p.Value;
+	object IHaveMemento.Memento {
+		get {
+			return new MyMemento { TrackStates = _lookup.ToDictionary( p => p.Key, p => p.Value.State ) };
+		}
+		set {
+			var src = (MyMemento)value;
+			foreach(var p in src.TrackStates)
+				_lookup[p.Key].State = p.Value;
+		}
 	}
 
-	public IMemento<IPresenceTrack> SaveToMemento() {
-		return new MyMemento {
-			TrackStates = _lookup.ToDictionary( p => p.Key, p => p.Value.State )
-		};
-	}
-
-	class MyMemento : IMemento<IPresenceTrack> {
+	class MyMemento {
 		public Dictionary<Track, SlotState> TrackStates;
 	};
 

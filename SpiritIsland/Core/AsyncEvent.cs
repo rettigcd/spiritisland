@@ -3,7 +3,7 @@
 /// <summary>
 /// Allows adding 1 or more Sync or Async
 /// </summary>
-public class AsyncEvent<T> {
+public sealed class AsyncEvent<T> : IHaveMemento {
 
 	public Guid Add( Func<T, Task> action ) {
 		Guid key = Guid.NewGuid();
@@ -28,11 +28,13 @@ public class AsyncEvent<T> {
 
 	#region Memento
 
-	public virtual IMemento<AsyncEvent<T>> SaveToMemento() => new Memento( this );
-	public virtual void LoadFrom( IMemento<AsyncEvent<T>> memento ) => ((Memento)memento).Restore( this );
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<AsyncEvent<T>> {
-		public Memento( AsyncEvent<T> src ) {
+	class MyMemento {
+		public MyMemento( AsyncEvent<T> src ) {
 			handlers = new Dictionary<Guid, Func<T, Task>>(src._handlers);
 		}
 		public void Restore( AsyncEvent<T> src ) {

@@ -26,14 +26,14 @@ public static class StrifedRavage {
 
 	#region Strife reduces Health
 
-	public static async Task InvadersReduceHealthByStrifeCount( GameState gs ) {
+	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState ) {
 		// add penalty
-		++gs.HealthPenaltyPerStrife;
+		++gameState.HealthPenaltyPerStrife;
 		// remove penalty
-		gs.TimePasses_ThisRound.Push( x => { --gs.HealthPenaltyPerStrife; return Task.CompletedTask; } );
+		gameState.AddTimePassesAction( new TimePassesOnce(gs=>--gs.HealthPenaltyPerStrife ) );
 
 		// Check if anything is destroyed
-		foreach(var space in gs.Spaces)
+		foreach(var space in gameState.Spaces)
 			foreach( var token in space.InvaderTokens() )
 				if(token.IsDestroyed)
 					await space.Destroy( token, space[token] );

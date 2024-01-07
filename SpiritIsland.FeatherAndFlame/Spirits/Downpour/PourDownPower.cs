@@ -1,8 +1,6 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-class PourDownPower 
-//	: IActionFactory
-{
+class PourDownPower : IRunWhenTimePasses {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Pour Down Power Across the Island",
@@ -56,7 +54,15 @@ class PourDownPower
 
 	public void Reset() { usedWaterActions = 0; }
 
+	Task IRunWhenTimePasses.TimePasses( GameState gameStTate ){
+		Reset();
+		return Task.CompletedTask;
+	}
+
 	public int Remaining => spirit.Elements.Get(Element.Water) / 2 - usedWaterActions;
+
+	bool IRunWhenTimePasses.RemoveAfterRun => false;
+
 	readonly DownpourDrenchesTheWorld spirit;
 	int usedWaterActions = 0;
 	readonly PourDownPowerGainEnergy gainEnergy = new PourDownPowerGainEnergy();

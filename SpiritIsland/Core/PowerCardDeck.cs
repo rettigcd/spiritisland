@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class PowerCardDeck {
+public sealed class PowerCardDeck : IHaveMemento {
 
 	#region constructor
 
@@ -38,11 +38,13 @@ public class PowerCardDeck {
 
 	#region Save/Restore
 
-	public virtual IMemento<PowerCardDeck> SaveToMemento() => new Memento(this);
-	public virtual void RestoreFrom( IMemento<PowerCardDeck> memento ) => ((Memento)memento).Restore(this);
+	public object Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<PowerCardDeck> {
-		public Memento(PowerCardDeck src) {
+	class MyMemento {
+		public MyMemento(PowerCardDeck src) {
 			cards = src._cards.ToArray();
 			discards = src._discards.ToArray();
 		}

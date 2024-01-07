@@ -69,10 +69,17 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		// 1 in highest jungle
 		jungles[1].Init( Presence.Token, 1 );
 
-		gameState.TimePasses_WholeGame += _ => { _usedEmpoweredAbduct = false; return Task.CompletedTask; };
-
 		gameState.OtherSpaces.Add(EndlessDark.Space);
 	}
+
+	#region interface IRunWhenTimePasses imp
+
+	public override Task TimePasses( GameState gameState ) {
+		_usedEmpoweredAbduct = false;
+		return base.TimePasses( gameState );
+	}
+
+	#endregion interface IRunWhenTimePasses imp
 
 	public override void InitSpiritAction( ActionScope scope ) {
 		if( scope.Category == ActionCategory.Spirit_Power )

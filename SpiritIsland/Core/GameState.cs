@@ -2,7 +2,7 @@
 
 namespace SpiritIsland;
 
-public class GameState : IHaveHealthPenaltyPerStrife {
+public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 
 	public static GameState Current => _current.Value; // !! We might want to only access from the ActionScope
 	readonly static AsyncLocal<GameState> _current = new AsyncLocal<GameState>(); // value gets shallow-copied into child calls and post-awaited states.
@@ -27,9 +27,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 		// Note: don't init invader deck here, let users substitute
 		RoundNumber = 1;
 		Fear = new Fear( this );
-		Tokens = new Tokens_ForIsland( this );
+		Tokens = new Tokens_ForIsland();
 
-		TimePasses_WholeGame += TokenCleanUp;
+		AddTimePassesAction( Tokens );
+		AddTimePassesAction( Fear );
+		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
 
 		ActionScope.Initialize(); // ! This is here for tests.
 	}
@@ -70,12 +72,6 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 			throw new InvalidOperationException( "# of spirits and islands must match" );
 		for(int i = 0; i < Spirits.Length; ++i)
 			Spirits[i].InitSpirit( Island.Boards[i], this );
-	}
-
-	Task TokenCleanUp( GameState gs ) {
-		Healer.HealAll( gs ); // called at end of round.
-		Tokens.TimePasses();
-		return Task.CompletedTask;
 	}
 
 	#endregion
@@ -222,12 +218,13 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 		// Do Custom end-of-round cleanup stuff before round switches over
 		// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)
-		while(TimePasses_ThisRound.Count > 0)
-			await TimePasses_ThisRound.Pop()( this );
+		for(int i=0; i<_timePassesActions.Count;++i){
+			IRunWhenTimePasses action = _timePassesActions[i];
+			await action.TimePasses(this);
+			if( action.RemoveAfterRun )
+				_timePassesActions.RemoveAt(i--);
+		}
 
-		// Do the standard round-switch-over stuff.
-		if(TimePasses_WholeGame != null)
-			await TimePasses_WholeGame.Invoke( this ); // can't use await and ?.Invoke together, => tries to await a null
 		++RoundNumber;
 	}
 
@@ -237,8 +234,11 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 	public event Action<ILogEntry> NewLogEntry;
 	public AsyncEvent<GameState> StartOfInvaderPhase = new(); // Blight effects
 
-	public event Func<GameState,Task> TimePasses_WholeGame;                                               // Spirit cleanup
-	public Stack<Func<GameState, Task>> TimePasses_ThisRound = new Stack<Func<GameState, Task>>();     // This must be Push / Pop
+	readonly List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
+
+	public void AddTimePassesAction(IRunWhenTimePasses action ) {
+		_timePassesActions.Add(action);
+	}
 
 	#endregion
 
@@ -246,7 +246,16 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	public readonly RavageBehavior DefaultRavageBehavior = new RavageBehavior();
 
-	public Healer Healer = new Healer(); // replacable Behavior
+	public Healer Healer {
+		get => _healer;
+		set { 
+			if(_healer != null)
+				_timePassesActions.Remove(_healer);
+			_healer = value;
+			_timePassesActions.Add(_healer);
+		}
+	}
+	Healer _healer = new Healer(); // replacable Behavior
 
 	// !! If we decide to split up Config stuff, move this to ActionScope
 	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
@@ -269,70 +278,51 @@ public class GameState : IHaveHealthPenaltyPerStrife {
 
 	#region Memento
 
-	public virtual IMemento<GameState> SaveToMemento() => new Memento(this);
-	public virtual void LoadFrom( IMemento<GameState> memento ) => ((Memento)memento).Restore(this);
+	object IHaveMemento.Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<GameState> {
-		public Memento(GameState src) {
-			roundNumber  = src.RoundNumber;
-			isBlighted   = src.BlightCard.CardFlipped;
-			spirits      = src.Spirits.Select(s=>s.SaveToMemento()).ToArray();
-			if(src.MajorCards != null) major = src.MajorCards.SaveToMemento();
-			if(src.MinorCards != null) minor = src.MinorCards.SaveToMemento();
-			invaderDeck  = src.InvaderDeck.SaveToMemento();
-			fear         = src.Fear.SaveToMemento();
-			tokens       = src.Tokens.SaveToMemento();
-			startOfInvaderPhase = src.StartOfInvaderPhase.SaveToMemento();
-			island = src.Island.SaveToMemento();
-			damageToBlightLand = src.DamageToBlightLand;
+	class MyMemento {
+		public MyMemento(GameState src) {
+			foreach(Spirit spirit in src.Spirits) Save(spirit);
+			Save( src.MajorCards );
+			Save( src.MinorCards );
+			Save( src.InvaderDeck );
+			Save( src.Fear );
+			Save( src.Island );
+			Save( src.StartOfInvaderPhase );
+			Save( src.Tokens );
+
+			// Time Passes
+			_timePassesActions = src._timePassesActions.ToArray();
+			foreach(var actionWithState in _timePassesActions.OfType<IHaveMemento>()) Save(actionWithState);
+
+			_roundNumber = src.RoundNumber;
+			_isBlighted = src.BlightCard.CardFlipped;
+			_damageToBlightLand = src.DamageToBlightLand;
 		}
+		void Save( IHaveMemento holder ) { if(holder is not null) _mementos[holder] = holder.Memento; }
+
 		public void Restore(GameState src ) {
-			src.RoundNumber = roundNumber;
-			src.BlightCard.CardFlipped = isBlighted;
-			for(int i=0;i<spirits.Length;++i) src.Spirits[i].LoadFrom( spirits[i] );
-			src.MajorCards?.RestoreFrom( major );
-			src.MinorCards?.RestoreFrom( minor );
-			src.InvaderDeck.LoadFrom( invaderDeck );
-			src.Fear.LoadFrom( fear );
-			src.Tokens.LoadFrom( tokens );
-			src.StartOfInvaderPhase.LoadFrom( startOfInvaderPhase );
-			src.Island.LoadFrom( island );
-			src.DamageToBlightLand = damageToBlightLand;
+			foreach(var pair in _mementos) 
+				pair.Key.Memento = pair.Value;
+			// Time Passes
+			src._timePassesActions.Clear();
+			src._timePassesActions.AddRange( _timePassesActions );
+
+			src.RoundNumber = _roundNumber;
+			src.BlightCard.CardFlipped = _isBlighted;
+			src.DamageToBlightLand = _damageToBlightLand;
 		}
-		readonly int roundNumber;
-		readonly bool isBlighted;
-		readonly IMemento<Spirit>[] spirits;
-		readonly IMemento<PowerCardDeck> major;
-		readonly IMemento<PowerCardDeck> minor;
-		readonly IMemento<InvaderDeck> invaderDeck;
-		readonly IMemento<Fear> fear;
-		readonly IMemento<Tokens_ForIsland> tokens;
-		readonly IMemento<AsyncEvent<GameState>> startOfInvaderPhase;
-		readonly IMemento<Island> island;
-		readonly int damageToBlightLand;
+
+		readonly int _roundNumber;
+		readonly bool _isBlighted;
+		readonly int _damageToBlightLand;
+		readonly IRunWhenTimePasses[] _timePassesActions;
+		readonly Dictionary<IHaveMemento,object> _mementos = new Dictionary<IHaveMemento, object>();
 	}
 
 	#endregion Memento
 
 }
-
-public class Healer {
-
-	public virtual void HealAll( GameState gs ) {
-		foreach(SpaceState ss in gs.Spaces_Unfiltered )
-			HealSpace( ss );
-		skipHealSpaces.Clear();
-	}
-
-	public virtual void HealSpace( SpaceState tokens ) {
-		if( !skipHealSpaces.Contains(tokens.Space) )
-			InvaderBinding.HealTokens( tokens );
-	}
-
-	public void Skip( Space space ) => skipHealSpaces.Add( space );
-
-	protected HashSet<Space> skipHealSpaces = new HashSet<Space>();
-
-}
-
-public class LandDamagedArgs { public SpaceState Space; }

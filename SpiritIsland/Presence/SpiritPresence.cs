@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
+public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 	#region constructors
 
@@ -188,15 +188,15 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 	#region Memento
 
-	// Revealed Count + Placed.
-	public virtual IMemento<SpiritPresence> SaveToMemento() => new Memento( this );
-	public virtual void LoadFrom( IMemento<SpiritPresence> memento ) => ((Memento)memento).Restore( this );
+	public object Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-
-	protected class Memento : IMemento<SpiritPresence> {
-		public Memento( SpiritPresence src ) {
-			_energy = src.Energy.SaveToMemento();
-			_cardPlays = src.CardPlays.SaveToMemento();
+	protected class MyMemento {
+		public MyMemento( SpiritPresence src ) {
+			_energy = src.Energy.Memento;
+			_cardPlays = src.CardPlays.Memento;
 			_destroyed = src.Destroyed.Count;
 			_lowestTrackEnergy = FirstEnergyTrackValue( src );
 			_incarnaEmpowered = src.Incarna.Empowered;
@@ -204,8 +204,8 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 		}
 
 		virtual public void Restore( SpiritPresence src ) {
-			src.Energy.LoadFrom( _energy );
-			src.CardPlays.LoadFrom( _cardPlays );
+			src.Energy.Memento = _energy;
+			src.CardPlays.Memento = _cardPlays;
 			src.Destroyed.Count = _destroyed;
 			src.Incarna.Empowered = _incarnaEmpowered;
 			// don't need to restore Space because that gets set via Tokens and ITrackMySpaces
@@ -214,8 +214,8 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass {
 
 		static int FirstEnergyTrackValue( SpiritPresence src ) => src.Energy.Revealed.First().Energy.Value; // The first one should always have an energy value.
 
-		readonly IMemento<IPresenceTrack> _energy;
-		readonly IMemento<IPresenceTrack> _cardPlays;
+		readonly object _energy;
+		readonly object _cardPlays;
 		readonly int _destroyed;
 		readonly int _lowestTrackEnergy;
 		readonly bool _incarnaEmpowered;

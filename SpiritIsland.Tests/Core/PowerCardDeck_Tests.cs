@@ -40,7 +40,7 @@ public class PowerCardDeck_Tests {
 		}, new Random().Next() );
 
 		// Given: saving state
-		var memento = deck.SaveToMemento();
+		var memento = deck.Memento;
 
 		//   And: draw first 4 cards
 		string originalFirstFourCards = deck.Flip(4).Select(c=>c.Name).Join(",");
@@ -48,7 +48,7 @@ public class PowerCardDeck_Tests {
 		deck.Flip(4);
 
 		//  When: restore state using memento
-		deck.RestoreFrom(memento);
+		deck.Memento = memento;
 
 		//  Then: first 4 cards should be the same
 		deck.Flip(4).Select(c=>c.Name).Join(",").ShouldBe(originalFirstFourCards);

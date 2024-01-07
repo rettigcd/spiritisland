@@ -63,10 +63,12 @@ public class PresenceTrack : IPresenceTrack {
 	#region Memento
 
 	// Revealed Count + Placed.
-	public IMemento<IPresenceTrack> SaveToMemento() => new Memento( this );
-	public void LoadFrom( IMemento<IPresenceTrack> memento ) => ((Memento)memento).Restore( this );
+	object IHaveMemento.Memento {
+		get => new Memento( this );
+		set => ((Memento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<IPresenceTrack> {
+	protected class Memento {
 		public Memento( PresenceTrack src ) { revealed = src._revealedCount; }
 		public void Restore( PresenceTrack src ) { src._revealedCount = revealed; }
 		readonly int revealed;

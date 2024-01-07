@@ -38,16 +38,16 @@ public class SinglePlayerGame {
 			GameState.Phase = Phase.Init;
 			await Spirit.ResolveActions( GameState ); 
 
-			Dictionary<int,IMemento<GameState>> savedGameStates = new Dictionary<int, IMemento<GameState>>();
+			Dictionary<int,object> savedGameStates = new Dictionary<int, object>();
 			while(true) {
-				savedGameStates[GameState.RoundNumber] = GameState.SaveToMemento();
+				savedGameStates[GameState.RoundNumber] = ((IHaveMemento)GameState).Memento;
 				DateTime lastSaveTimeStamp= DateTime.Now;
 				try {
 					await Do1Round();
 				}
 				catch( GameStateCommandException cmdEx ) {
 					if(cmdEx.Cmd is Rewind rewind && savedGameStates.ContainsKey(rewind.TargetRound)) {
-						GameState.LoadFrom( savedGameStates[rewind.TargetRound] );
+						((IHaveMemento)GameState).Memento = savedGameStates[rewind.TargetRound];
 						foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
 							savedGameStates.Remove(laterRounds);
 					}

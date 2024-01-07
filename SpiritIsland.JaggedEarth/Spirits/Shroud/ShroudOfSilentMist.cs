@@ -48,7 +48,7 @@ public class ShroudOfSilentMist : Spirit {
 		};
 	}
 
-	bool gainedCoolEnergyThisTurn = false;
+	bool _gainedCoolEnergyThisTurn = false;
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 
@@ -60,25 +60,28 @@ public class ShroudOfSilentMist : Spirit {
 		// (b) highest # wetlands
 		board.Spaces.Where(s => s.IsWetland).Last().Tokens.Adjust(Presence.Token, 1);
 
-		gameState.TimePasses_WholeGame += GameState_TimePasses_WholeGame;
 	}
 
-	Task GameState_TimePasses_WholeGame( GameState gs ) {
-		gainedCoolEnergyThisTurn = false;
+	#region IRunWhenTimePasses
 
-		static bool SpaceHasDamagedInvaders( SpaceState ss ) => ss.InvaderTokens().Any( i=>i.RemainingHealth<i.FullHealth );
+	public override async Task TimePasses( GameState gameState ) {
+		await base.TimePasses( gameState );
+
+		_gainedCoolEnergyThisTurn = false;
+
+		static bool SpaceHasDamagedInvaders( SpaceState ss ) => ss.InvaderTokens().Any( i => i.RemainingHealth < i.FullHealth );
 
 		// During Time Passes:
 		int myLandsWithDamagedInvaders = this.Presence.Lands.Tokens().Count( SpaceHasDamagedInvaders );
 
 		// 1 fear (max 5) per land of yours with Damaged Invaders.
-		gs.Fear.AddDirect(new FearArgs( Math.Min(5,myLandsWithDamagedInvaders) ) );
+		gameState.Fear.AddDirect( new FearArgs( Math.Min( 5, myLandsWithDamagedInvaders ) ) );
 
 		// Gain 1 Energy per 3 lands of yours with Damaged Invaders."
 		Energy += (myLandsWithDamagedInvaders / 3);
 
-		return Task.CompletedTask;
 	}
+	#endregion IRunWhenTimePasses
 
 	#region Draw Cards (Gather from the Cool And Dark)
 
@@ -89,10 +92,10 @@ public class ShroudOfSilentMist : Spirit {
 	}
 
 	void CheckForCoolEnergy(PowerCard card ) {
-		if(gainedCoolEnergyThisTurn) return;
+		if(_gainedCoolEnergyThisTurn) return;
 		if(card.Elements[Element.Fire]>0) return;
 		Energy++;
-		gainedCoolEnergyThisTurn = true;
+		_gainedCoolEnergyThisTurn = true;
 	}
 
 	#endregion

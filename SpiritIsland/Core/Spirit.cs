@@ -3,6 +3,8 @@
 public abstract partial class Spirit 
 	: IOption
 	, IHaveASpirit // so all 'contexts' can you the same Picker and have a spirit to do the decision making.
+	, IRunWhenTimePasses
+	, IHaveMemento 
 {
 
 	#region constructor
@@ -25,7 +27,7 @@ public abstract partial class Spirit
 	}
 
 	public void InitSpirit( Board board, GameState gameState ){
-		gameState.TimePasses_WholeGame += On_TimePassed;
+		gameState.AddTimePassesAction(this);
 		_gateway.DecisionMade += (d) => gameState.Log(d);
 		InitializeInternal(board,gameState);
 	}
@@ -352,7 +354,10 @@ public abstract partial class Spirit
 
 	#endregion Bind helpers
 
-	Task On_TimePassed(GameState _ ) {
+	#region IRunWhenTimePasses imp
+
+	public bool RemoveAfterRun => false;
+	public virtual Task TimePasses( GameState gameState ) {
 		// reset cards / powers
 		DiscardPile.AddRange( InPlay );
 		InPlay.Clear();
@@ -368,6 +373,8 @@ public abstract partial class Spirit
 
 		return Task.CompletedTask;
 	}
+
+	#endregion IRunWhenTimePasses imp
 
 	public void InitElementsFromPresence() {
 		Elements.Init( Presence.TrackElements );
@@ -451,10 +458,10 @@ public abstract partial class Spirit
 
 	#region Save/Load Memento
 
-	public IMemento<Spirit> SaveToMemento() => new Memento(this);
-
-	public void LoadFrom( IMemento<Spirit> memento ) => ((Memento)memento).Restore(this);
-
+	object IHaveMemento.Memento {
+		get => new Memento(this);
+		set => ((Memento)value).Restore(this);
+	}
 
 	// Whatever this returns, get saved to the memento
 	protected virtual object _customSaveValue {
@@ -462,26 +469,26 @@ public abstract partial class Spirit
 		set { }
 	}
 
-	protected class Memento : IMemento<Spirit> {
+	protected class Memento {
 		public Memento(Spirit spirit) {
 			energy = spirit.Energy;
 			bonusCardPlay = spirit.tempCardPlayBoost;
 			elements = spirit.Elements.Elements.ToArray();
-			presence = spirit.Presence.SaveToMemento();
+			presence = ((IHaveMemento)spirit.Presence).Memento;
 			hand      = spirit.Hand.ToArray();
 			purchased = spirit.InPlay.ToArray();
 			discarded = spirit.DiscardPile.ToArray();
 			available = spirit._availableActions.ToArray();
 			usedActions = spirit._usedActions.ToArray();
 			usedInnates = spirit._usedInnates.ToArray();
-			energyCollected = spirit.EnergyCollected.SaveToMemento();
+			energyCollected = ((IHaveMemento)spirit.EnergyCollected).Memento;
 			tag = spirit._customSaveValue;
 		}
 		public void Restore(Spirit spirit) {
 			spirit.Energy = energy;
 			spirit.tempCardPlayBoost = bonusCardPlay;
 			InitFromArray( spirit.Elements.Elements, elements);
-			spirit.Presence.LoadFrom(presence);
+			((IHaveMemento)spirit.Presence).Memento = presence;
 			spirit.Hand.SetItems( hand );
 			spirit.InPlay.SetItems( purchased );
 			spirit.DiscardPile.SetItems( discarded );
@@ -490,20 +497,20 @@ public abstract partial class Spirit
 			spirit._usedInnates.SetItems( usedInnates );
 			spirit.InitElementsFromPresence();
 			spirit.BonusDamage = 0; // assuming beginning of round
-			spirit.EnergyCollected.LoadFrom( energyCollected );
+			((IHaveMemento)spirit.EnergyCollected).Memento = energyCollected;
 			spirit._customSaveValue = tag;
 		}
 		readonly int energy;
 		readonly int bonusCardPlay;
 		readonly KeyValuePair<Element,int>[] elements;
-		readonly IMemento<SpiritPresence> presence;
+		readonly object presence;
 		readonly PowerCard[] hand;
 		readonly PowerCard[] purchased;
 		readonly PowerCard[] discarded;
 		readonly IActionFactory[] available;
 		readonly IActionFactory[] usedActions;
 		readonly InnatePower[] usedInnates;
-		readonly IMemento<AsyncEvent<Spirit>> energyCollected;
+		readonly object energyCollected;
 		readonly object tag;
 	}
 	static public void InitFromArray( CountDictionary<Element> dict, KeyValuePair<Element, int>[] array ) {

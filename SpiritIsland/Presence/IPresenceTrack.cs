@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public interface IPresenceTrack {
+public interface IPresenceTrack: IHaveMemento {
 
 	// Read
 	IEnumerable<Track> RevealOptions { get; }
@@ -14,10 +14,6 @@ public interface IPresenceTrack {
 	bool Return( Track track );
 	event Action<TrackRevealedArgs> TrackRevealed;
 
-
-	// Save/Load
-	void LoadFrom( IMemento<IPresenceTrack> memento );
-	IMemento<IPresenceTrack> SaveToMemento();
 }
 
 public class TrackRevealedArgs {

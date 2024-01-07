@@ -42,7 +42,7 @@ public class England : AdversaryBase, IAdversary {
 				gameState.InvaderDeck.ActiveSlots.Insert( 0, highBuildSlot );
 				// only remove it for level 3, level 4 and up keeps it
 				if(adversary.Level < 4)
-					HighImmegrationSlot.RemoveForLevel2Invaders( gameState, highBuildSlot );
+					gameState.AddTimePassesAction( highBuildSlot ); // removes itself when it gets Stage-II invaders.
 			}
 		},
 
@@ -109,13 +109,14 @@ public class England : AdversaryBase, IAdversary {
 
 	#region Level 3 - High Immegration
 
-	public class HighImmegrationSlot : BuildSlot {
+	public class HighImmegrationSlot : BuildSlot, IRunWhenTimePasses {
 		public HighImmegrationSlot( int level ):base("High Immigration"){
 			_repeatWhenNoFearResolved = level == 6;
 		}
 
 		readonly bool _repeatWhenNoFearResolved;
 		int lastCountOfFearCardsResolved = 0;
+
 		public override async Task Execute( GameState gs ) {
 
 			// Do Normal Build
@@ -132,18 +133,22 @@ public class England : AdversaryBase, IAdversary {
 			}
 		}
 
-		static public void RemoveForLevel2Invaders( GameState gameState, HighImmegrationSlot highBuildSlot ) {
-			gameState.TimePasses_WholeGame += ( GameState gs ) => {
-				if(highBuildSlot != null && highBuildSlot.Cards.Any( c => c.InvaderStage == 2 )) {
-					var deck = gs.InvaderDeck;
-					deck.Discards.AddRange( highBuildSlot.Cards );
-					deck.ActiveSlots.RemoveAt( 0 );
-					highBuildSlot = null;
-				}
-				return Task.CompletedTask;
-			};
-		}
+		#region IRunWhenTimePasses
 
+		/// <summary> Removes itself when after it gets Stage-II invaders </summary>
+		/// <remarks> Don't add this to the RunWhenTimePasses list for higher Adversary level.</remarks>
+		Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+			if(Cards.Any( c => c.InvaderStage == 2 )) {
+				var deck = gameState.InvaderDeck;
+				deck.Discards.AddRange( Cards );
+				deck.ActiveSlots.RemoveAt( 0 );
+				_removeAfterRun = true;
+			}
+			return Task.CompletedTask;
+		}
+		bool IRunWhenTimePasses.RemoveAfterRun => _removeAfterRun;
+		bool _removeAfterRun = false;
+		#endregion IRunWhenTimePasses
 	}
 
 	#endregion Level 3 - High Immegration

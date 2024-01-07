@@ -38,19 +38,21 @@ public class CompoundPresenceTrack : IPresenceTrack {
 
 	#region Memento
 
-	public IMemento<IPresenceTrack> SaveToMemento() => new Memento( this );
-	public void LoadFrom( IMemento<IPresenceTrack> memento ) => ((Memento)memento).Restore( this );
+	public object Memento {
+		get => new MyMemento( this );
+		set => ((MyMemento)value).Restore( this );
+	}
 
-	protected class Memento : IMemento<IPresenceTrack> {
-		public Memento( CompoundPresenceTrack src ) { 
-			parts = src.parts.Select(s=>s.SaveToMemento()).ToArray();
+	protected class MyMemento {
+		public MyMemento( CompoundPresenceTrack src ) { 
+			parts = src.parts.Select(s=>s.Memento).ToArray();
 		}
 		public void Restore( IPresenceTrack src ) {
 			var compound = (CompoundPresenceTrack)src;
 			for(int i=0;i<parts.Length;++i)
-				compound.parts[i].LoadFrom(parts[i]);
+				compound.parts[i].Memento = parts[i];
 		}
-		readonly IMemento<IPresenceTrack>[] parts;
+		readonly object[] parts;
 			
 	}
 
