@@ -8,7 +8,7 @@ public class NullBlightCard : IBlightCard {
 	public string Description => "[null]";
 	string IOption.Text => Name;
 
-	public IActOn<GameState> Immediately => new BaseCmd<GameState>("no action", _ => { });
+	public IActOn<GameState> Immediately => new BaseCmd<GameState>("no action", (Action<GameState>)(_ => { }));
 
 	public async Task OnBlightDepleated( GameState gs ) {
 		if(!CardFlipped) {

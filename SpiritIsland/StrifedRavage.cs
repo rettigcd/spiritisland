@@ -30,7 +30,7 @@ public static class StrifedRavage {
 		// add penalty
 		++gameState.HealthPenaltyPerStrife;
 		// remove penalty
-		gameState.AddTimePassesAction( new TimePassesOnce(gs=>--gs.HealthPenaltyPerStrife ) );
+		gameState.AddTimePassesAction( TimePassesAction.Once( gs=>--gs.HealthPenaltyPerStrife ) );
 
 		// Check if anything is destroyed
 		foreach(var space in gameState.Spaces)

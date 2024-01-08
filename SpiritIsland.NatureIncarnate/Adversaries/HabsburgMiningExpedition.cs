@@ -15,7 +15,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	){ 
 		InitFunc = (gs,_) => {
 			// At the end of the Fast Phase
-			gs.StartOfInvaderPhase.Add( LandStrippedBare_WinLossCheck );
+			gs._preInvaderPhaseActions.Add( new LandStrippedBare_LossChecker() );
 		}
 	}.WithEscalation(MiningTunnels);
 	static Task MiningTunnels(GameState gs) {
@@ -28,13 +28,19 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			.ForEachBoard()
 			.ActAsync( gs );
 	}
-	static void LandStrippedBare_WinLossCheck( GameState gameState ) {
-		var landStrippedBare = gameState.Spaces_Existing.FirstOrDefault( ss => 8 <= ss.SumAny( Human.Invader ));
-		// if any land has at least 8 total Invaders/ Blight( combined ),
-		if(landStrippedBare is not null) {
-			// the Invaders win
-			int count = landStrippedBare.SumAny( Human.Invader );
-			GameOverException.Lost( $"Land Stripped Bare - {count} Invaders on {landStrippedBare.Space.Text}." );
+
+	/// <summary> Runs a Win/Loss check at End-of-Fast/Beginning-Of-Invader </summary>
+	class LandStrippedBare_LossChecker : IRunBeforeInvaderPhase {
+		bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
+		Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState ) {
+			var landStrippedBare = gameState.Spaces_Existing.FirstOrDefault( ss => 8 <= ss.SumAny( Human.Invader ) );
+			// if any land has at least 8 total Invaders/ Blight( combined ),
+			if(landStrippedBare is not null) {
+				// the Invaders win
+				int count = landStrippedBare.SumAny( Human.Invader );
+				GameOverException.Lost( $"Land Stripped Bare - {count} Invaders on {landStrippedBare.Space.Text}." );
+			}
+			return Task.CompletedTask;
 		}
 	}
 

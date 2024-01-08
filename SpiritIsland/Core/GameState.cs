@@ -216,31 +216,13 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 		foreach(var s in Spaces_Unfiltered)
 			s.Defend.Clear();
 
-		// Do Custom end-of-round cleanup stuff before round switches over
-		// (shifting memory need cards it is going to forget to still be in hand when calling .Forget() on it)
-		for(int i=0; i<_timePassesActions.Count;++i){
-			IRunWhenTimePasses action = _timePassesActions[i];
-			await action.TimePasses(this);
-			if( action.RemoveAfterRun )
-				_timePassesActions.RemoveAt(i--);
-		}
+		await RunTimePassesActions();
 
 		++RoundNumber;
 	}
 
-	#region Events
-
 	// - Events -
 	public event Action<ILogEntry> NewLogEntry;
-	public AsyncEvent<GameState> StartOfInvaderPhase = new(); // Blight effects
-
-	readonly List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
-
-	public void AddTimePassesAction(IRunWhenTimePasses action ) {
-		_timePassesActions.Add(action);
-	}
-
-	#endregion
 
 	#region Configuration - Game-Wide overrideable / Behavior
 
@@ -291,38 +273,88 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 			Save( src.InvaderDeck );
 			Save( src.Fear );
 			Save( src.Island );
-			Save( src.StartOfInvaderPhase );
 			Save( src.Tokens );
+
+			// Before Invader phase
+			_beforeInvaderPhase = src._preInvaderPhaseActions.ToArray();
+			Save(_beforeInvaderPhase);
+
+			// After Invader phase
+			_afterInvaderPhase = src._postInvaderPhaseActions.ToArray();
+			Save( _afterInvaderPhase );
 
 			// Time Passes
 			_timePassesActions = src._timePassesActions.ToArray();
-			foreach(var actionWithState in _timePassesActions.OfType<IHaveMemento>()) Save(actionWithState);
+			Save( _timePassesActions );
 
 			_roundNumber = src.RoundNumber;
 			_isBlighted = src.BlightCard.CardFlipped;
 			_damageToBlightLand = src.DamageToBlightLand;
 		}
 		void Save( IHaveMemento holder ) { if(holder is not null) _mementos[holder] = holder.Memento; }
+		void Save( IEnumerable items ) { foreach(var item in items.OfType<IHaveMemento>()) Save( item ); }
 
 		public void Restore(GameState src ) {
 			foreach(var pair in _mementos) 
 				pair.Key.Memento = pair.Value;
-			// Time Passes
-			src._timePassesActions.Clear();
-			src._timePassesActions.AddRange( _timePassesActions );
+
+            Restore( src._preInvaderPhaseActions, _beforeInvaderPhase );
+            Restore( src._postInvaderPhaseActions, _afterInvaderPhase );
+            Restore( src._timePassesActions, _timePassesActions );
 
 			src.RoundNumber = _roundNumber;
 			src.BlightCard.CardFlipped = _isBlighted;
 			src.DamageToBlightLand = _damageToBlightLand;
 		}
+        static void Restore<T>(List<T> list, T[] items ) { list.Clear(); list.AddRange(items); }
 
 		readonly int _roundNumber;
 		readonly bool _isBlighted;
 		readonly int _damageToBlightLand;
 		readonly IRunWhenTimePasses[] _timePassesActions;
+		readonly IRunBeforeInvaderPhase[] _beforeInvaderPhase;
+		readonly IRunAfterInvaderPhase[] _afterInvaderPhase;
 		readonly Dictionary<IHaveMemento,object> _mementos = new Dictionary<IHaveMemento, object>();
 	}
 
-	#endregion Memento
+    #endregion Memento
+
+    #region Hooks
+
+    public async Task RunPreInvaderActions() {
+		var preInvaderActions = _preInvaderPhaseActions;
+		for(int i = 0; i < preInvaderActions.Count; ++i) {
+			IRunBeforeInvaderPhase action = preInvaderActions[i];
+			await action.BeforeInvaderPhase( this );
+			if(action.RemoveAfterRun)
+				preInvaderActions.RemoveAt( i-- );
+		}
+	}
+    public readonly List<IRunBeforeInvaderPhase> _preInvaderPhaseActions = new List<IRunBeforeInvaderPhase>();
+
+
+    public async Task RunPostInvaderActions() {
+		var postInvaderActions = this._postInvaderPhaseActions;
+		for(int i = 0; i < postInvaderActions.Count; ++i) {
+			IRunAfterInvaderPhase action = postInvaderActions[i];
+			await action.AfterInvaderPhase( this );
+			if(action.RemoveAfterRun)
+				postInvaderActions.RemoveAt( i-- );
+		}
+	}
+    public readonly List<IRunAfterInvaderPhase> _postInvaderPhaseActions = new List<IRunAfterInvaderPhase>();
+
+    async Task RunTimePassesActions() {
+        for(int i = 0; i < _timePassesActions.Count; ++i) {
+            IRunWhenTimePasses action = _timePassesActions[i];
+            await action.TimePasses( this );
+            if(action.RemoveAfterRun)
+                _timePassesActions.RemoveAt( i-- );
+        }
+    }
+    readonly List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
+    public void AddTimePassesAction( IRunWhenTimePasses action ) { _timePassesActions.Add( action ); }
+
+    #endregion
 
 }

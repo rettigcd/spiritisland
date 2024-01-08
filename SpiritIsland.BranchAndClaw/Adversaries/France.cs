@@ -25,23 +25,7 @@ public class France : AdversaryBase, IAdversary {
 
 		// Level 2
 		new AdversaryLevel(2, 5, 3,4,3, "Slave Labor", "During Setup, put the 'Slave Rebellion' event under the top 3 cards of the Event Deck.  After Invaders Buid in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town." ) {
-			InitFunc = (gameState,_) => {
-				gameState.StartOfInvaderPhase.Add( async gs => {
-				if( gs.RoundNumber%4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
-
-				BaseCmd<BoardCtx> cmd = (gs.InvaderDeck.InvaderStage < 3)
-					? AddStrifeToTown
-					: Cmd.Multiple<BoardCtx>(
-						"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
-						DestroyTown,
-						Add2StrifeToCityOrTown,
-						StrifedRavage.StrifedInvadersTakeDamagePerStrife
-					);
-
-					await using var actionScope = await ActionScope.Start(ActionCategory.Adversary);
-					await cmd.ForEachBoard().ActAsync( gameState );
-				});
-			}
+			InitFunc = (gameState,_) => gameState._preInvaderPhaseActions.Add( new SlaveRebellion() )
 		},
 
 		// Level 3
@@ -96,6 +80,26 @@ public class France : AdversaryBase, IAdversary {
 
 	#region Level 2 - helpers
 
+	class SlaveRebellion : IRunBeforeInvaderPhase {
+		bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
+		async Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState) {
+
+			if(gameState.RoundNumber % 4 != 0) return;// if we put it under 3 cards, it will be every 4th card.
+
+			BaseCmd<BoardCtx> cmd = (gameState.InvaderDeck.InvaderStage < 3)
+				? AddStrifeToTown
+				: Cmd.Multiple<BoardCtx>(
+					"Destory 1 town, add strife to any 2 Town/City, then invader takes 1 Damage per Strife it has",
+					DestroyTown,
+					Add2StrifeToCityOrTown,
+					StrifedRavage.StrifedInvadersTakeDamagePerStrife
+				);
+
+			await using var actionScope = await ActionScope.Start( ActionCategory.Adversary );
+			await cmd.ForEachBoard().ActAsync( gameState );
+		}
+	}
+
 	static BaseCmd<BoardCtx> AddStrifeToTown => new BaseCmd<BoardCtx>(
 		"Add a strife to a town"
 		, async boardCtx => {
@@ -104,7 +108,6 @@ public class France : AdversaryBase, IAdversary {
 			if(st != null)
 				await st.Add1StrifeToAsync();
 		} );
-
 
 	static BaseCmd<BoardCtx> Add2StrifeToCityOrTown => new BaseCmd<BoardCtx>(
 		"Add 2 strife to any city/town"

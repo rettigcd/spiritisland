@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface IRunAfterInvaderPhase {
+public interface IRunAfterInvaderPhaseOld {
 	Task ActAsync(SpaceState space);
 }

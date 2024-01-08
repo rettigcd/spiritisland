@@ -33,9 +33,9 @@ public class UnlockTheGatesOfDeepestPower {
 			$"forgetting at end of turn",
 			self => {
 				self.PlayCard( card, 0 );
-				GameState.Current.AddTimePassesAction( new TimePassesOnce( 
-					gs => self.ForgetThisCard( card ) // !!! this must run before cards are moved to discard, or it will be forgotten for Shifting Memories
-				) );
+				// BUG !!! this must run before cards are moved to discard, or it will be forgotten for Shifting Memories 
+				// run them backwards so spirits updates go after adhoc
+				GameState.Current.AddTimePassesAction( TimePassesAction.Once( gs => self.ForgetThisCard( card ) ) );
 			}
 		);
 	}

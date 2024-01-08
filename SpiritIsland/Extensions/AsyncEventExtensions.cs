@@ -20,4 +20,8 @@ static public class AsyncEventExtensions {
 	// In Series
 	// static public async Task WhenAll( this IEnumerable<Task> tasks ) { foreach(var task in tasks) await task; }
 
+	public static Func<T, Task> AsAsync<T>( this Action<T> action ) {
+		return ( t ) => { action( t ); return Task.CompletedTask; };
+	}
+
 }

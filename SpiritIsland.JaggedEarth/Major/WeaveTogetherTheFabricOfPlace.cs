@@ -47,7 +47,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		gameState.Log( new Log.LayoutChanged($"{space.Text} and {other.Text} were woven together") );
 
 		// When this effect expires
-		gameState.AddTimePassesAction( new TimePassesOnce( 
+		gameState.AddTimePassesAction( TimePassesAction.Once( 
 			async (gs) => {
 				MoveItemsOnSpace( multi, space, false );
 				multi.RemoveFromBoard();

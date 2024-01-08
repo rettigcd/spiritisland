@@ -30,12 +30,12 @@ public static partial class Cmd {
 	// At specific times
 	static public GameStateAction AtTheStartOfNextRound( this GameStateAction cmd ) => new BaseCmd<GameState>(
 		"At the start of next round, " + cmd.Description,
-		gs => gs.AddTimePassesAction( new TimePassesOnce( cmd.ActAsync ) ) // There are no actions here, just game reconfig
+		gs => gs.AddTimePassesAction( TimePassesAction.Once( cmd.ActAsync ) ) // There are no actions here, just game reconfig
 	);
 
 	static public GameStateAction AtTheStartOfEachInvaderPhase( this GameStateAction cmd ) => new BaseCmd<GameState>(
 		"At the start of each Invader Phase, " + cmd.Description,
-		gs => gs.StartOfInvaderPhase.Add( ( _ ) => cmd.ActAsync( gs ) )
+		gs => gs._preInvaderPhaseActions.Add( BeforeInvaderPhase.Each(_ => cmd.ActAsync( gs ) ) )
 	);
 
 }

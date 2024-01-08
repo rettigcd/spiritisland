@@ -22,12 +22,13 @@ public class SlowDissolutionOfWill_Tests {
 			.Choose("Wilds"));
 
 		//  When: start next invader phase
-		await gs.StartOfInvaderPhase.InvokeAsync( gs )
+		await gs.RunPreInvaderActions()
 		//   and: a presence is removed
-			.AwaitUser(spirit,user=>user.NextDecision
-			.HasPrompt("Replace Presence with Wilds")
-			.HasOptions("RSiS on B7,RSiS on B8")
-			.Choose("RSiS on B8"));
+			.AwaitUser(spirit,user=>{ 
+				user.NextDecision.HasPrompt("Replace Presence with Wilds")
+					.HasOptions("RSiS on B7,RSiS on B8")
+					.Choose("RSiS on B8");
+			});
 
 		//  Then: space does not appear in any BG-tracking properties
 		spirit.Presence.Lands.Select(x=>x.Text).Join(",").ShouldBe("B7");

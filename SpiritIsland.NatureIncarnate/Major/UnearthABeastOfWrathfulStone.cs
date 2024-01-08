@@ -17,7 +17,9 @@ public class UnearthABeastOfWrathfulStone {
 			: Token.Beast;
 
 		// After the next Invader Phase with no Ravage/Build Actions in target land:
-		ctx.Tokens.Adjust(new TriggerAfterNoRavageOrBuild( ctx.Self, TriggeredAction ),1);
+		var noRavageOrBuildTrigger = new TriggerAfterNoRavageOrBuild( ctx.Self, TriggeredAction );
+		ctx.Tokens.Adjust(noRavageOrBuildTrigger,1);
+		GameState.Current._postInvaderPhaseActions.Add( noRavageOrBuildTrigger );
 
 		async Task TriggeredAction(TargetSpaceCtx ctxx ) {
 			// 3 Fear.
@@ -67,23 +69,30 @@ class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, IConfigRavages, I
 	#region detect build or ravage
 
 	UsageCost ISkipBuilds.Cost => UsageCost.Extreme; // tries to go last
+
 	Task<bool> ISkipBuilds.Skip( SpaceState space ) {  _hadRavageOrBuild = true; return Task.FromResult(false);}
 
 	void IConfigRavages.Config( SpaceState space ) { _hadRavageOrBuild = true; }
 
 	#endregion detect build or ravage
 
-	async Task IRunAfterInvaderPhase.ActAsync( SpaceState space ) {
+	#region IRunAfterInvaderPhase imp
+
+	async Task IRunAfterInvaderPhase.AfterInvaderPhase( GameState gameState ) {
 		if(_hadRavageOrBuild) { _hadRavageOrBuild = false; return; }
 
+		SpaceState spaceState = gameState.Spaces.Single( ss => 0 < ss[this] );
 		// Do action
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, _spirit );
-		await _triggeredAction( _spirit.Target( space.Space ) );
+		await _triggeredAction( _spirit.Target( spaceState.Space ) );
 
 		// Remove
-		space.Adjust( this, -1 ); // !!! what happens if we put 2 of these down?
+		_remove = true; // ??? what happens if we put 2 of these down?
+		spaceState.Init(this,0);
 	}
-
+	bool IRunAfterInvaderPhase.RemoveAfterRun => _remove;
+	bool _remove = false;
+	#endregion IRunAfterInvaderPhase imp
 }
 
 /// <summary>
