@@ -9,22 +9,23 @@ public abstract partial class Spirit
 
 	#region constructor
 
-	public Spirit( Func<Spirit,SpiritPresence> initPresence, params PowerCard[] initialCards ) {
+	public Spirit( Func<Spirit, SpiritPresence> initPresence, GrowthTrack growthTrack, params PowerCard[] initialCards ) {
 
-		Presence = initPresence(this);
+		Presence = initPresence( this );
+		GrowthTrack = growthTrack;
 
-	
 		foreach(var card in initialCards)
-			AddCardToHand(card);
+			AddCardToHand( card );
 
 		_gateway = new UserGateway();
 
-		decks.Add(new SpiritDeck{ Type = SpiritDeck.DeckType.Hand, Cards = Hand });
-		decks.Add(new SpiritDeck{ Type = SpiritDeck.DeckType.InPlay, Cards = InPlay });
-		decks.Add(new SpiritDeck{ Type = SpiritDeck.DeckType.Discard, Cards = DiscardPile } );
+		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.Hand, Cards = Hand } );
+		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.InPlay, Cards = InPlay } );
+		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.Discard, Cards = DiscardPile } );
 
-		Elements = new ElementMgr(this);
+		Elements = new ElementMgr( this );
 	}
+
 
 	public void InitSpirit( Board board, GameState gameState ){
 		gameState.AddTimePassesAction(this);
@@ -298,9 +299,9 @@ public abstract partial class Spirit
 
 	/// <summary> Energy gain per turn </summary>
 	public int EnergyPerTurn => Presence.EnergyPerTurn;
-	public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayPerTurn + tempCardPlayBoost;
+	public virtual int NumberOfCardsPlayablePerTurn => Presence.CardPlayPerTurn + TempCardPlayBoost;
 
-	public int tempCardPlayBoost = 0;
+	public int TempCardPlayBoost = 0;
 
 
 	#endregion
@@ -351,7 +352,7 @@ public abstract partial class Spirit
 		_usedInnates.Clear();
 
 		// Card plays
-		tempCardPlayBoost = 0;
+		TempCardPlayBoost = 0;
 
 		// Elements
 		InitElementsFromPresence();
@@ -449,54 +450,82 @@ public abstract partial class Spirit
 	}
 
 	// Whatever this returns, get saved to the memento
-	protected virtual object _customSaveValue {
+	protected virtual object CustomMementoValue {
 		get { return null; }
 		set { }
 	}
 
 	protected class Memento {
 		public Memento(Spirit spirit) {
-			energy = spirit.Energy;
-			bonusCardPlay = spirit.tempCardPlayBoost;
-			elements = spirit.Elements.Elements.ToArray();
-			presence = ((IHaveMemento)spirit.Presence).Memento;
-			hand      = spirit.Hand.ToArray();
-			purchased = spirit.InPlay.ToArray();
-			discarded = spirit.DiscardPile.ToArray();
-			available = spirit._availableActions.ToArray();
-			usedActions = spirit._usedActions.ToArray();
-			usedInnates = spirit._usedInnates.ToArray();
-			energyCollected = ((IHaveMemento)spirit.EnergyCollected).Memento;
-			tag = spirit._customSaveValue;
+			_presence = ((IHaveMemento)spirit.Presence).Memento;
+			_energyCollectedHooks = ((IHaveMemento)spirit.EnergyCollected).Memento;
+
+			_growth = spirit.GrowthTrack;
+			_innates = spirit.InnatePowers;
+			_energy          = spirit.Energy;
+			_tempCardPlayBoost   = spirit.TempCardPlayBoost;
+			_elements        = spirit.Elements.Elements.ToArray();
+
+			_hand            = spirit.Hand.ToArray();
+			_purchased       = spirit.InPlay.ToArray();
+			_discarded       = spirit.DiscardPile.ToArray();
+
+			_targetingSourceStrategy = spirit.TargetingSourceStrategy;
+			_powerRangeCalc = spirit.PowerRangeCalc;
+
+			_available = spirit._availableActions.ToArray();
+			_usedActions     = spirit._usedActions.ToArray();
+			_usedInnates     = spirit._usedInnates.ToArray();
+
+			_tag = spirit.CustomMementoValue;
+			_bonusDamage = spirit.BonusDamage;
 		}
 		public void Restore(Spirit spirit) {
-			spirit.Energy = energy;
-			spirit.tempCardPlayBoost = bonusCardPlay;
-			InitFromArray( spirit.Elements.Elements, elements);
-			((IHaveMemento)spirit.Presence).Memento = presence;
-			spirit.Hand.SetItems( hand );
-			spirit.InPlay.SetItems( purchased );
-			spirit.DiscardPile.SetItems( discarded );
-			spirit._availableActions.SetItems( available );
-			spirit._usedActions.SetItems( usedActions );
-			spirit._usedInnates.SetItems( usedInnates );
-			spirit.InitElementsFromPresence();
-			spirit.BonusDamage = 0; // assuming beginning of round
-			((IHaveMemento)spirit.EnergyCollected).Memento = energyCollected;
-			spirit._customSaveValue = tag;
+			((IHaveMemento)spirit.Presence).Memento = _presence;
+			((IHaveMemento)spirit.EnergyCollected).Memento = _energyCollectedHooks;
+
+			spirit.GrowthTrack = _growth;
+			spirit.InnatePowers = _innates;
+			spirit.Energy = _energy;
+			spirit.TempCardPlayBoost = _tempCardPlayBoost;
+			InitFromArray( spirit.Elements.Elements, _elements); // spirit.InitElementsFromPresence();
+
+			spirit.Hand.SetItems( _hand );
+			spirit.InPlay.SetItems( _purchased );
+			spirit.DiscardPile.SetItems( _discarded );
+
+			spirit.TargetingSourceStrategy = _targetingSourceStrategy;
+			spirit.PowerRangeCalc = _powerRangeCalc;
+
+			spirit._availableActions.SetItems( _available );
+			spirit._usedActions.SetItems( _usedActions );
+			spirit._usedInnates.SetItems( _usedInnates );
+
+			spirit.CustomMementoValue = _tag;
+			spirit.BonusDamage = _bonusDamage;
 		}
-		readonly int energy;
-		readonly int bonusCardPlay;
-		readonly KeyValuePair<Element,int>[] elements;
-		readonly object presence;
-		readonly PowerCard[] hand;
-		readonly PowerCard[] purchased;
-		readonly PowerCard[] discarded;
-		readonly IActionFactory[] available;
-		readonly IActionFactory[] usedActions;
-		readonly InnatePower[] usedInnates;
-		readonly object energyCollected;
-		readonly object tag;
+		readonly GrowthTrack _growth;
+		readonly InnatePower[] _innates;
+
+		readonly int _energy;
+		readonly int _tempCardPlayBoost;
+		readonly KeyValuePair<Element,int>[] _elements;
+		readonly object _presence;
+
+		readonly PowerCard[] _hand;
+		readonly PowerCard[] _purchased;
+		readonly PowerCard[] _discarded;
+
+		readonly ITargetingSourceStrategy _targetingSourceStrategy;
+		readonly ICalcRange _powerRangeCalc;
+
+		readonly IActionFactory[] _available;
+		readonly IActionFactory[] _usedActions;
+		readonly InnatePower[] _usedInnates;
+
+		readonly object _energyCollectedHooks;
+		readonly int _bonusDamage;
+		readonly object _tag;
 	}
 	static public void InitFromArray( CountDictionary<Element> dict, KeyValuePair<Element, int>[] array ) {
 		dict.Clear();

@@ -154,9 +154,4 @@ class InvaderCardBuilder {
 		return bitmap;
 	}
 
-	#region private methods
-
-	static Font UseInvaderFont( float fontHeight ) => ResourceImages.Singleton.UseInvaderFont( fontHeight );
-
-	#endregion
 }

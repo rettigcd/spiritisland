@@ -131,7 +131,7 @@ static public class SimpleMods {
 	/// <example>
 	/// F(-1) => 0,	values go to 0, F(0) => 1, F(+1) => ∞
 	static Func<float, float> ContrastMap_FrancisGLoch( float userSelectedStrength ) {
-		float Calc_FrancisGLochStretchFactor( float x ) => x <= -1 ? 0 : 1 <= x ? 256f : (1 + x) / (1 - x);
+		static float Calc_FrancisGLochStretchFactor( float x ) => x <= -1 ? 0 : 1 <= x ? 256f : (1 + x) / (1 - x);
 		float scale = Calc_FrancisGLochStretchFactor( userSelectedStrength * .5f ); // 
 
 		return ( float l ) => {

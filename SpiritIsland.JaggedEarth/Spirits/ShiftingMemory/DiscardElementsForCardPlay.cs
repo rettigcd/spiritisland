@@ -18,7 +18,7 @@ public class DiscardElementsForCardPlay : SpiritAction {
 		if( self is ShiftingMemoryOfAges smoa
 			&& _totalNumToRemove <= smoa.PreparedElements.Total
 			&& (await smoa.DiscardElements(_totalNumToRemove,"additional card-play")).Count == _totalNumToRemove
-		) smoa.tempCardPlayBoost++;
+		) smoa.TempCardPlayBoost++;
 	}
 
 }

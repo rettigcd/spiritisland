@@ -10,7 +10,6 @@ public class GiftOfConstancy {
 		ctx.Other.Energy += 2;
 
 		// At end of turn, target spirit may reclaim 1 power card instead of discarding it.
-		var purchased = ctx.Other.InPlay;
 		GameState.Current.AddTimePassesAction( new Reclaim1InsteadOfDiscard( ctx.Other ) );
 
 		// if you target another spirit you may also reclaim 1 power Card instead of discarding it.

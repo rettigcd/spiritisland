@@ -23,16 +23,16 @@ public class VolcanoLoomingHigh : Spirit {
 			new PresenceTrack(Track.Energy1,Track.Energy2,Track.EarthEnergy,Track.Energy3,Track.Energy4,Track.Energy5),
 			new PresenceTrack(Track.Card1,Track.MkCard(Element.Fire),Track.MkCard(Element.Earth),Track.Card2, Track.MkCard( Element.Air ), Track.Card3, Track.MkCard( Element.Fire ), Track.Card4)
 		)
-		,PowerCard.For(typeof(ExaltationOfMoltenStone))
+		,new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 3 ) ),
+			new GrowthOption( new PlacePresence( 0, Filter.Mountain ), new PlacePresence( 0, Filter.Mountain ) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 4, Filter.Mountain ), new PlayExtraCardThisTurn( 1 ), new GainEnergy( 2 ) )
+		)
+		, PowerCard.For(typeof(ExaltationOfMoltenStone))
 		,PowerCard.For(typeof(LavaFlows))
 		,PowerCard.For(typeof(PyroclasticBombardment))
 		,PowerCard.For(typeof(RainOfAsh))
 	) {
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption(new ReclaimAll(), new GainPowerCard(), new GainEnergy(3)),
-			new GrowthOption(new PlacePresence(0,Filter.Mountain), new PlacePresence(0,Filter.Mountain)),
-			new GrowthOption(new GainPowerCard(), new PlacePresence(4,Filter.Mountain), new PlayExtraCardThisTurn(1), new GainEnergy(2))
-		);
 
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(ExplosiveEruption)), 

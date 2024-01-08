@@ -47,7 +47,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 
 		// But count drops back down after played
 		_spirit.PlayCard( _spirit.Hand[0] );
-		_spirit.tempCardPlayBoost = 0; // makes test pass, but Rampant Green test is testing wrong thing
+		_spirit.TempCardPlayBoost = 0; // makes test pass, but Rampant Green test is testing wrong thing
 
 		// Back to original
 		Assert.Equal( 1, _spirit.NumberOfCardsPlayablePerTurn ); // ,"Available card count should be back to original");

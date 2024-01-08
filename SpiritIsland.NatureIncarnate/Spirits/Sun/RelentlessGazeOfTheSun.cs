@@ -12,17 +12,12 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	public RelentlessGazeOfTheSun():base( 
 		spirit => new SunPresence(spirit)
-		,PowerCard.For(typeof(BlindingGlare))
-		,PowerCard.For(typeof(UnbearableGaze))
-		,PowerCard.For(typeof(WitherBodiesScarStones))
-		,PowerCard.For(typeof(FocusTheSunsRays))
-	) {
-		GrowthTrack = new GrowthTrack(
+		, new GrowthTrack(
 			new GrowthOption( new PlacePresence( 2 ) )
 		).Add( new GrowthPickGroups( 1,
 			new GrowthOption(
 				new ReclaimAll(),
-				new AddDestroyedPresence( 1 ).SetNumToPlace(3,Present.Done)
+				new AddDestroyedPresence( 1 ).SetNumToPlace( 3, Present.Done )
 			),
 			new GrowthOption(
 				new GainPowerCard()
@@ -31,8 +26,12 @@ public class RelentlessGazeOfTheSun : Spirit {
 				new GainEnergyAnAdditionalTime(),
 				new MovePresenceTogether()
 			)
-		) );
-
+		) )
+		, PowerCard.For(typeof(BlindingGlare))
+		,PowerCard.For(typeof(UnbearableGaze))
+		,PowerCard.For(typeof(WitherBodiesScarStones))
+		,PowerCard.For(typeof(FocusTheSunsRays))
+	) {
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(ScorchingConvergence)), 
 			InnatePower.For(typeof(ConsiderAHarmoniousNature))

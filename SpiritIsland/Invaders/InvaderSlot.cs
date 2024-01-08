@@ -3,7 +3,7 @@
 /// <summary>
 /// The Engine + card management
 /// </summary>
-public abstract class InvaderSlot {
+public abstract class InvaderSlot : IHaveMemento {
 
 	public InvaderSlot(string label ) { Label = label;}
 	public string Label { get; }
@@ -37,6 +37,30 @@ public abstract class InvaderSlot {
 	}
 
 	public abstract Task ActivateCard( InvaderCard card, GameState gameState);
+
+	object IHaveMemento.Memento {
+		get => new MyMemento(this);
+		set => ((MyMemento)value).Restore(this);
+	}
+
+	class MyMemento {
+		public MyMemento(InvaderSlot slot) {
+			_cards = slot.Cards.ToArray();
+			_flipped = _cards.Select(x=>x.Flipped).ToArray();
+			_skipCount = slot._skipCount;
+			_holdBackCount = slot._holdBackCount;
+		}
+		public void Restore(InvaderSlot slot ) {
+			slot.Cards.SetItems( _cards );
+			for(int i=0;i< _cards.Length; ++i) slot.Cards[i].Flipped = _flipped[i];
+			slot._skipCount = _skipCount;
+			slot._holdBackCount = _holdBackCount;
+		}
+		readonly int _skipCount;
+		readonly int _holdBackCount;
+		readonly InvaderCard[] _cards;
+		readonly bool[] _flipped;
+	}
 
 	int _skipCount = 0;
 	protected int _holdBackCount = 0;

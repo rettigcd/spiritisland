@@ -16,17 +16,17 @@ public class Keeper : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5Reclaim1 ),
 			new KeeperToken( spirit )
 		),
+		new GrowthTrack( 2,
+			new GrowthOption( new ReclaimAll(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
+			new GrowthOption( new GainPowerCard() ),
+			new GrowthOption( new GainEnergy( 1 ), new PlacePresence( 3, Filter.Presence, Filter.Wilds ) ) { GainEnergy = 1 },
+			new GrowthOption( new GainEnergy( -3 ), new GainPowerCard(), new PlacePresence( 3, Filter.NoBlight ) ) { GainEnergy = -3 }
+		),
 		PowerCard.For(typeof(BoonOfGrowingPower)),
 		PowerCard.For(typeof(RegrowFromRoots)),
 		PowerCard.For(typeof(SacrosanctWilderness)),
 		PowerCard.For(typeof(ToweringWrath))
 	) {
-		GrowthTrack = new GrowthTrack( 2,
-			new GrowthOption( new ReclaimAll() ,new GainEnergy(1) ){ GainEnergy = 1 },
-			new GrowthOption( new GainPowerCard() ),
-			new GrowthOption( new GainEnergy(1), new PlacePresence(3,Filter.Presence, Filter.Wilds ) ){ GainEnergy = 1 },
-			new GrowthOption( new GainEnergy(-3), new GainPowerCard() ,new PlacePresence(3,Filter.NoBlight) ){ GainEnergy = -3 }
-		);
 
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(PunishThoseWhoTrespass)),

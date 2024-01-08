@@ -80,6 +80,11 @@ public class DancesUpEarthquakes : Spirit {
 			new PresenceTrack( One, MovePresence, Track.Energy2, AdditionalImpending, Track.Energy3, TwoImpendingEnergy, FourAny ),
 			new PresenceTrack( Track.Card2, GatherDahan, MoonAndFire, AdditionalImpending, Track.EarthEnergy, Track.Card3, Track.Card4 )
 		)
+		, new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new AddPresenceOrGainMajor() ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 1 ) ),
+			new GrowthOption( new PlacePresence( 3 ), new AccelerateOrDelay(), new ReclaimN( 1 ) )
+		)
 		// Round 1
 		, PowerCard.For(typeof(ResoundingFootfallsSowDismay)) // fast,3 - Impend
 		, PowerCard.For(typeof(GiftOfSeismicEnergy))          // fast,3 - Impend
@@ -95,12 +100,6 @@ public class DancesUpEarthquakes : Spirit {
 			// Play - new major
 			// Impend - remaining card
 	) {
-		// Growth
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new AddPresenceOrGainMajor() ), 
-			new GrowthOption( new GainPowerCard(), new PlacePresence(1) ),
-			new GrowthOption( new PlacePresence(3), new AccelerateOrDelay(), new ReclaimN(1) )
-		);
 
 		// Innates
 		InnatePowers = new InnatePower[] {
@@ -218,7 +217,7 @@ public class DancesUpEarthquakes : Spirit {
 		readonly CountDictionary<string> _impendingEnergy;
 	}
 
-	protected override object _customSaveValue {
+	protected override object CustomMementoValue {
 		get => new SavedCustomProps( this );
 		set => ((SavedCustomProps)value).Restore( this );
 	}

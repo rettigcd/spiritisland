@@ -30,22 +30,20 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(1,Track.Energy1, Track.WaterEnergy, Track.PlantEnergy, Track.WaterEnergy, TwoAir, Track.WaterEnergy, Track.EarthEnergy, TwoWater ),
 			new PresenceTrack(1, Track.Card1, MovePresence, Track.WaterEnergy,Track.Card2, MovePresence, Track.Card3 )
-		)
-		,PowerCard.For(typeof(DarkSkiesLooseAStingingRain))
+		),
+		new GrowthTrack(
+			// Reclaim All, Gain Power Card, Move a presence 2 spaces
+			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MovePresence( 2 ) ),
+			// Add a Presence(2), Add a Presence(2), Gain 2 water, Discard 2 Power Cards
+			new GrowthOption( new PlacePresence( 2 ), new PlacePresence( 2 ), new GainAllElements( Element.Water, Element.Water ), new DiscardCards( 2 ) ),
+			// Gain Power Card, Add a presence, Gain 1 Energy
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new GainEnergy( 1 ) )
+		),
+		PowerCard.For(typeof(DarkSkiesLooseAStingingRain))
 		,PowerCard.For(typeof(FoundationsSinkIntoMud))
 		,PowerCard.For(typeof(GiftOfAbundance))
 		,PowerCard.For(typeof(UnbearableDeluge))
 	) {
-
-		GrowthTrack = new(
-			// Reclaim All, Gain Power Card, Move a presence 2 spaces
-			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MovePresence(2) ),
-			// Add a Presence(2), Add a Presence(2), Gain 2 water, Discard 2 Power Cards
-			new GrowthOption( new PlacePresence(2), new PlacePresence( 2 ), new GainAllElements(Element.Water,Element.Water), new DiscardCards(2) ),
-			// Gain Power Card, Add a presence, Gain 1 Energy
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new GainEnergy(1) )
-		);
-
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(RainAndMudSupressConflict)),
 			InnatePower.For(typeof(WaterNourishesLifesGrowth))
@@ -76,8 +74,8 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			base.RemoveFromUnresolvedActions(selectedActionFactory);
 	}
 
-	protected override object _customSaveValue { 
-		get => base._customSaveValue;
+	protected override object CustomMementoValue { 
+		get => base.CustomMementoValue;
 		set => _pourDownPower.Reset();
 	}
 

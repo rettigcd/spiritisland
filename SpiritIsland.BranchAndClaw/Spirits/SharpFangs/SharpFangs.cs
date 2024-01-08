@@ -15,22 +15,18 @@ public class SharpFangs : Spirit {
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5Reclaim1 ),
 			new FollowingPresenceToken( spirit, Token.Beast )
 		),
+		new GrowthTrack( 2,
+			new GrowthOption( new ReclaimAll(), new GainEnergy( -1 ), new GainPowerCard() ) { GainEnergy = -1 },
+			new GrowthOption( new PlacePresence( 3, Filter.Beast, Filter.Jungle ) ),
+			new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
+			new GrowthOption( new GainEnergy( 3 ) ) { GainEnergy = 3 }
+		),
 		PowerCard.For(typeof(PreyOnTheBuilders)),
 		PowerCard.For(typeof(TeethGleamFromDarkness)),
 		PowerCard.For(typeof(TerrifyingChase)),
 		PowerCard.For(typeof(TooNearTheJungle))
 	) {
-		
-		var beastOrJungleRange3 = new PlacePresence(3, Filter.Beast, Filter.Jungle );
-
-		GrowthTrack = new GrowthTrack( 2,
-			new GrowthOption( new ReclaimAll(), new GainEnergy(-1), new GainPowerCard() ){ GainEnergy=-1 },
-			new GrowthOption( beastOrJungleRange3 ),
-			new GrowthOption( new GainPowerCard(), new GainEnergy(1) ){ GainEnergy = 1 },
-			new GrowthOption( new GainEnergy(3) ){ GainEnergy = 3 }
-		);
-
-		this.InnatePowers = new InnatePower[] {
+		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(FrenziedAssult)),
 			InnatePower.For(typeof(RagingHunt)),
 		};

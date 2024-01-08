@@ -16,8 +16,24 @@ public class HeartOfTheWildfire : Spirit {
 			new PresenceTrack( Track.Energy0, Track.FireEnergy, Track.Energy1, Track.Energy2, FireAndPlantEnergy, Track.Energy3 ),
 			new PresenceTrack( Track.Card1, FireCard, Track.Card2, Track.Card3, FireCard, Track.Card4 ),
 			new WildfireToken( spirit )
+		),
+		new GrowthTrack(
+			new GrowthOption(
+				new ReclaimAll(),
+				new GainPowerCard(),
+				new GainEnergy( 1 )
+			),
+			new GrowthOption(
+				new GainPowerCard(),
+				new PlacePresence( 3 )
+			),
+			new GrowthOption(
+				new PlacePresence( 1 ),
+				new GainEnergy( 2 ),
+				new EnergyForFire()
+			)
 		)
-		,PowerCard.For(typeof(AsphyxiatingSmoke))
+		, PowerCard.For(typeof(AsphyxiatingSmoke))
 		,PowerCard.For(typeof(FlashFires))
 		,PowerCard.For(typeof(ThreateningFlames))
 		,PowerCard.For(typeof(FlamesFury))
@@ -27,26 +43,6 @@ public class HeartOfTheWildfire : Spirit {
 			InnatePower.For(typeof(FireStorm)),
 			InnatePower.For(typeof(TheBurnedLandRegrows))
 		};
-
-
-		GrowthTrack = new(
-			new GrowthOption(
-				new ReclaimAll(),
-				new GainPowerCard(), 
-				new GainEnergy(1)
-			),
-			new GrowthOption(
-				new GainPowerCard(),
-				new PlacePresence(3)
-			),
-			new GrowthOption(
-				new PlacePresence(1),
-				new GainEnergy(2),
-				new EnergyForFire()
-			)
-		);
-
-
 	}
 
 	public override string Text => Name;

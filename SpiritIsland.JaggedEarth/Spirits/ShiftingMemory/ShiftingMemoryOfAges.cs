@@ -31,17 +31,17 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 				new PresenceTrack(Track.Energy0,Track.Energy1,Track.Energy2,Prepare(3),Track.Energy4,Track.Reclaim1Energy,Track.Energy5,Prepare(6)),
 				new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,DiscardElementsForCardPlay,Track.Card3)
 			)
+			,new GrowthTrack(
+				new GrowthOption( new ReclaimAll(), new PlacePresence( 0 ) ),
+				new GrowthOption( new GainPowerCard(), new PlacePresence( 2 ) ),
+				new GrowthOption( new PlacePresence( 1 ), new GainEnergy( 2 ) ),
+				new GrowthOption( new GainEnergy( 9 ) )
+			)
 			,PowerCard.For(typeof(BoonOfAncientMemories))
 			,PowerCard.For(typeof(ElementalTeachings))
 			,PowerCard.For(typeof(ShareSecretsOfSurvival))
 			,PowerCard.For(typeof(StudyTheInvadersFears))
 		) {
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption(new ReclaimAll(), new PlacePresence(0)),
-			new GrowthOption(new GainPowerCard(), new PlacePresence(2)),
-			new GrowthOption(new PlacePresence(1),new GainEnergy(2)),
-			new GrowthOption(new GainEnergy(9))
-		);
 
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(LearnTheInvadersTactics)), 
@@ -161,7 +161,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return false;
 	}
 
-	protected override object _customSaveValue { 
+	protected override object CustomMementoValue { 
 		get => PreparedElements.ToArray();
 		set => InitFromArray( PreparedElements, (KeyValuePair<Element, int>[])value );
 	}

@@ -15,6 +15,33 @@ public class FracturedDaysSplitTheSky : Spirit {
 		"Your 3rd Growth option lets you gain any one Power Card from a special set you create during Setup.  When you gain a Power Card any other way, you may add one unchosen card to this set."
 	);
 
+	static GrowthTrack BuildGrowthTrack() {
+		var g2Repeater = new ActionRepeater( 2 );
+		var g3Repeater = new ActionRepeater( 3 );
+
+		return new GrowthTrack(
+			new GrowthOption(
+				new GainAllElements( Element.Air ),
+				new ReclaimAll(),
+				new GainTime( 2 )
+			),
+			new GrowthOption(
+				new GainAllElements( Element.Moon ),
+				new GainPowerCard(),
+				new PlacePresence( 2 ),
+				g2Repeater.BindSelfCmd( new GainTime( 1 ) ),
+				g2Repeater.BindSelfCmd( new PlayExtraCardThisTurn( 2 ) )
+			),
+			new GrowthOption(
+				new GainAllElements( Element.Sun ),
+				new DrawPowerCardFromDaysThatNeverWere(),
+				new MovePresence( 4 ),
+				g3Repeater.BindSelfCmd( new GainTime( 1 ) ),
+				g3Repeater.BindSelfCmd( new GainEnergy( 2 ) )
+			)
+		);
+	}
+
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { FragmentsOfScatteredTime, DaysThatNeverWere };
 
 	public FracturedDaysSplitTheSky():base(
@@ -22,36 +49,12 @@ public class FracturedDaysSplitTheSky : Spirit {
 			new PresenceTrack(Track.Energy1, Track.Energy1 , Track.Energy2, Track.Energy2, Track.Energy2, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3 )
 		)
-		,PowerCard.For(typeof(AbsoluteStasis))
+		, BuildGrowthTrack()
+		, PowerCard.For(typeof(AbsoluteStasis))
 		,PowerCard.For(typeof(BlurTheArcOfYears))
 		,PowerCard.For(typeof(PourTimeSideways))
 		,PowerCard.For(typeof(ThePastReturnsAgain))
 	) {
-		var g2Repeater = new ActionRepeater(2);
-		var g3Repeater = new ActionRepeater(3);
-
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption(
-				new GainAllElements(Element.Air),
-				new ReclaimAll(),
-				new GainTime(2)
-			),
-			new GrowthOption(
-				new GainAllElements(Element.Moon),
-				new GainPowerCard(),
-				new PlacePresence(2), 
-				g2Repeater.BindSelfCmd( new GainTime(1) ),
-				g2Repeater.BindSelfCmd( new PlayExtraCardThisTurn(2) )
-			),
-			new GrowthOption(
-				new GainAllElements(Element.Sun),
-				new DrawPowerCardFromDaysThatNeverWere(),
-				new MovePresence(4),
-				g3Repeater.BindSelfCmd( new GainTime(1) ),
-				g3Repeater.BindSelfCmd( new GainEnergy(2) )
-			)
-		);
-			
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(SlipTheFlowOfTime)),
 			InnatePower.For(typeof(VisionsOfAShiftingFuture))

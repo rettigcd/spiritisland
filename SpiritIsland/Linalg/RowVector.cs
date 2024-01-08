@@ -5,7 +5,7 @@
 /// </summary>
 public record struct RowVector( float X, float Y ) {
 
-	public RowVector ToUnitLength() {
+	readonly public RowVector ToUnitLength() {
 		float length = Length();
 		if(length == 0f)
 			throw new InvalidOperationException("Cannot generate Unit Length Vector of 0-length vector.");
@@ -13,8 +13,8 @@ public record struct RowVector( float X, float Y ) {
         return new RowVector( X*scale, Y*scale );
 	}
 
-	public float LengthSquared() => X*X+Y*Y;
-	public float Length() => (float)Math.Sqrt(LengthSquared());
+	readonly public float LengthSquared() => X*X+Y*Y;
+	readonly public float Length() => (float)Math.Sqrt(LengthSquared());
 
 	#region static Matrix Builder
 

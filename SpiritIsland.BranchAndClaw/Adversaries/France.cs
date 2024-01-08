@@ -5,7 +5,7 @@ public class France : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
-	AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
 		new AdversaryLevel(0, 2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ) {
 			InitFunc = (gs,adv) => {

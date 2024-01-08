@@ -27,12 +27,7 @@ public class HearthVigil : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.AirEnergy, Track.Card3, Track.AnimalEnergy, Track.Card4 ),
 			new HearthToken( spirit )
 		)
-		,PowerCard.For(typeof(FavorsOfStoryAndSeason))
-		,PowerCard.For(typeof(SurroundedByTheDahan))
-		,PowerCard.For(typeof(CoordinatedRaid))
-		,PowerCard.For(typeof(CallToVigilance))
-	){
-		GrowthTrack = new(
+		, new GrowthTrack(
 			new GrowthOption(
 				new ReclaimAll(),
 				new PlacePresence( 0 )
@@ -42,11 +37,15 @@ public class HearthVigil : Spirit {
 				new PlacePresence( 3, Filter.Dahan )
 			),
 			new GrowthOption(
-				new PlacePresence(2),
-				new GainEnergy(3)
+				new PlacePresence( 2 ),
+				new GainEnergy( 3 )
 			)
-		);
-
+		)
+		, PowerCard.For(typeof(FavorsOfStoryAndSeason))
+		,PowerCard.For(typeof(SurroundedByTheDahan))
+		,PowerCard.For(typeof(CoordinatedRaid))
+		,PowerCard.For(typeof(CallToVigilance))
+	){
 		InnatePowers = new InnatePower[]{
 			InnatePower.For(typeof(WarnOfImpendingConflict)), 
 			InnatePower.For(typeof(KeepWatchForNewIncursions))

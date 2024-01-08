@@ -13,7 +13,7 @@ public class BackAgainstTheWall : BlightCard {
 
 	static void BoostEnergyAndCardPlay( Spirit spirit ) {
 		spirit.Energy++;
-		spirit.tempCardPlayBoost++;
+		spirit.TempCardPlayBoost++;
 	}
 
 }

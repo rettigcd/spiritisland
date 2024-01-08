@@ -10,19 +10,16 @@ public class ToweringRootsOfTheJungle : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.SunEnergy, Track.Card3, Track.PlantEnergy, Track.Card4 ),
 			new ToweringRootsIncarna( spirit )
 		)
+		, new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new PlacePresence( 0 ) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 1 ), new AddVitalityToIncarna() ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new ReplacePresenceWithIncarna(), new GainEnergy( 1 ) )
+		)
 		, PowerCard.For(typeof(EntwineTheFatesOfAll))
 		, PowerCard.For(typeof(RadiantAndHallowedGrove))
 		, PowerCard.For(typeof(BloomingOfTheRocksAndTrees))
 		, PowerCard.For(typeof(BoonOfResilientPower))
 	) {
-
-		// Growth
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new PlacePresence(0) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence(1), new AddVitalityToIncarna() ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence(3), new ReplacePresenceWithIncarna(), new GainEnergy(1) )
-		);
-
 		// Innates
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(ShelterUnderToweringBranches)), 

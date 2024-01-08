@@ -69,7 +69,7 @@ static public class ReplaceInvader {
 		// Add new
 		var newInvaderClass = oldInvader.HumanClass == Human.Explorer ? Human.Town
 			: oldInvader.HumanClass == Human.Town ? Human.City
-			: throw new ArgumentOutOfRangeException($"{nameof(oldInvader)} must be Explorer or Town");
+			: throw new ArgumentOutOfRangeException( nameof( oldInvader ), $"{nameof(oldInvader)} must be Explorer or Town");
 
 		// Upgrade it
 		var newTokenWithoutDamage = tokens.GetDefault( newInvaderClass ).AsHuman()

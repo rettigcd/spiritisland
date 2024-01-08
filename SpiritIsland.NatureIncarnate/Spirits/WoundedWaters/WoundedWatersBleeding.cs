@@ -20,22 +20,15 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	public WoundedWatersBleeding() : base(
 		spirit => new WoundedPresence(spirit)
+		,new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 1 ) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 2 ) )
+		)
 		, PowerCard.For(typeof(BoonOfCorruptedBlood))    // fast
 		, PowerCard.For(typeof(DrawToTheWatersEdge))     // fast
 		, PowerCard.For(typeof(BloodWaterAndBloodlust))  // slow
 		, PowerCard.For(typeof(WrackWithPainAndGrief))   // slow
 	) {
-		GrowthTrack = new(
-			new GrowthOption(
-				new ReclaimAll(),
-				new GainPowerCard(),
-				new GainEnergy(1)
-			),
-			new GrowthOption(
-				new GainPowerCard(),
-				new PlacePresence( 2 )
-			)
-		);
 
 		InnatePowers = new[] {
 			InnatePower.For(typeof(SwirlAndSpill)),
@@ -156,7 +149,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		readonly SpecialRule[] _rules;
 	}
 
-	protected override object _customSaveValue {
+	protected override object CustomMementoValue {
 		get => new SavedCustomProps(this);
 		set => ((SavedCustomProps)value).Restore(this);
 	}

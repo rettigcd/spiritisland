@@ -31,20 +31,18 @@ public partial class ManyMindsMoveAsOne : Spirit {
 				new PresenceTrack(Track.Card1,Track.Card2,CardBoost,Track.Card3,Track.Card3,Track.Card4,Track.Card5),
 				new ManyMindsPresenceToken( spirit )
 			)
+			, new GrowthTrack(
+				new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
+				new GrowthOption( new PlacePresence( 1 ), new PlacePresence( 0 ) ),
+				new GrowthOption( new PlacePresenceAndBeast(), new GainEnergy( 1 ), new Gather1Token( 2, Token.Beast ) )
+			)
 			, PowerCard.For(typeof(ADreadfulTideOfScurryingFlesh))
 			, PowerCard.For(typeof(BoonOfSwarmingBedevilment))
 			, PowerCard.For(typeof(EverMultiplyingSwarm))
 			, PowerCard.For(typeof(GuideTheWayOnFeatheredWings))
 			, PowerCard.For(typeof(PursueWithScratchesPecksAndStings))
 		) {
-		// Growth
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption(new ReclaimAll(),new GainPowerCard()),
-			new GrowthOption(new PlacePresence(1), new PlacePresence(0)),
-			new GrowthOption( new PlacePresenceAndBeast(), new GainEnergy(1), new Gather1Token(2,Token.Beast) )
-		);
 
-		// Innates
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(TheTeemingHostArrives)), 
 			InnatePower.For(typeof(BesetAndConfoundTheInvaders))

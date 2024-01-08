@@ -17,28 +17,28 @@ public class Thunderspeaker : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card3, Track.Card4 ),
 			new FollowingPresenceToken( spirit, Human.Dahan )
 		),
+		new GrowthTrack(
+			new GrowthOption(
+				new ReclaimAll(),
+				new GainPowerCard(),
+				new GainPowerCard()
+			),
+			new GrowthOption(
+				new PlacePresence( 2, Filter.Dahan ),
+				new PlacePresence( 1, Filter.Dahan )
+			),
+			new GrowthOption(
+				new PlacePresence( 1 ),
+				new GainEnergy( 4 )
+			)
+		),
 		PowerCard.For(typeof(ManifestationOfPowerAndGlory)),
 		PowerCard.For(typeof(SuddenAmbush)),
 		PowerCard.For(typeof(VoiceOfThunder)),
 		PowerCard.For(typeof(WordsOfWarning))
 	) {
-		GrowthTrack = new(
-			new GrowthOption( 
-				new ReclaimAll(), 
-				new GainPowerCard(),
-				new GainPowerCard()
-			),
-			new GrowthOption( 
-				new PlacePresence(2,Filter.Dahan),
-				new PlacePresence(1,Filter.Dahan)
-			),
-			new GrowthOption( 
-				new PlacePresence(1), 
-				new GainEnergy(4)
-			)
-		);
 
-		this.InnatePowers = new InnatePower[]{
+		InnatePowers = new InnatePower[]{
 			InnatePower.For(typeof(GatherTheWarriors)),
 			InnatePower.For(typeof(LeadTheFuriousAssult)),
 		};

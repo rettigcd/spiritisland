@@ -12,17 +12,17 @@ public class Shadows : Spirit {
 			new PresenceTrack( Track.Energy0, Track.Energy1, Track.Energy3, Track.Energy4, Track.Energy5, Track.Energy6 ), 
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 )
 		),
+		new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 1 ) ),
+			new GrowthOption( new PlacePresence( 3 ), new GainEnergy( 3 ) )
+		),
 		PowerCard.For(typeof(MantleOfDread)),
 		PowerCard.For(typeof(FavorsCalledDue)),
 		PowerCard.For(typeof(CropsWitherAndFade)),
 		PowerCard.For(typeof(ConcealingShadows))
 	) {
-		GrowthTrack = new(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence(1) ),
-			new GrowthOption( new PlacePresence(3), new GainEnergy(3) )
-		);
-		this.InnatePowers = new InnatePower[]{
+		InnatePowers = new InnatePower[]{
 			InnatePower.For(typeof(DarknessSwallowsTheUnwary))
 		};
 	}

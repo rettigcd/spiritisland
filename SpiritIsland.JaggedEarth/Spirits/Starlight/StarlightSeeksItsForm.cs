@@ -116,18 +116,17 @@ public class StarlightSeeksItsForm : Spirit {
 				new PresenceTrack( 0, Track_Gain1Energy, NewGrowth4 )
 			)
 		)
+		,new GrowthTrack( 3,
+			new GrowthOption( new ReclaimN() ),
+			new GrowthOption( new PlacePresence( 0 ) ),
+			new GrowthOption( new GainEnergy( 1 ) ),
+			new GrowthOption( new MovePresence( 3 ) )
+		)
 		,PowerCard.For(typeof(BoonOfReimagining))
 		,PowerCard.For(typeof(GatherTheScatteredLightOfStars))
 		,PowerCard.For(typeof(PeaceOfTheNighttimeSky))
 		,PowerCard.For(typeof(ShapeTheSelfAnew))
 	) {
-		GrowthTrack = new GrowthTrack( 3,
-			new GrowthOption( new ReclaimN() ),
-			new GrowthOption( new PlacePresence(0) ),
-			new GrowthOption( new GainEnergy(1) ),
-			new GrowthOption( new MovePresence(3) )
-		);
-
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(AirMovesEarthEndures)),
 			InnatePower.For(typeof(FireBurnsWaterSoothes)),

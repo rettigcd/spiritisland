@@ -16,34 +16,32 @@ public class Ocean : Spirit {
 			new PresenceTrack( Track.Energy0, Track.MoonEnergy, Track.WaterEnergy, Track.Energy1, Track.EarthEnergy, Track.WaterEnergy, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
 		),
-		PowerCard.For(typeof(CallOfTheDeeps)),
-		PowerCard.For(typeof(GraspingTide)),
-		PowerCard.For(typeof(SwallowTheLandDwellers)),
-		PowerCard.For(typeof(TidalBoon))
-	) {
-
-		GrowthTrack = new(
+		new GrowthTrack(
 			// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 			new GrowthOption(
 				new ReclaimAll(),
 				new GainPowerCard(),
 				new GatherPresenceIntoOcean(),
-				new GainEnergy(2)
-			), 
+				new GainEnergy( 2 )
+			),
 			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
 			new GrowthOption(
-				new GainEnergy(1),
+				new GainEnergy( 1 ),
 				new PlaceInOcean(),
 				new PlaceInOcean()
-			), 
+			),
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on coastal land range 1
-			new GrowthOption( 
+			new GrowthOption(
 				new PushPresenceFromOcean(),
 				new GainPowerCard(),
-				new PlacePresence(1, Filter.Coastal )
+				new PlacePresence( 1, Filter.Coastal )
 			)
-		);
-
+		),
+		PowerCard.For(typeof(CallOfTheDeeps)),
+		PowerCard.For(typeof(GraspingTide)),
+		PowerCard.For(typeof(SwallowTheLandDwellers)),
+		PowerCard.For(typeof(TidalBoon))
+	) {
 		InnatePowers = new InnatePower[]{
 			InnatePower.For(typeof(OceanBreaksTheShore)),
 			InnatePower.For(typeof(PoundShipsToSplinters))

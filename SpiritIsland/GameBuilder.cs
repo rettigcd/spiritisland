@@ -92,15 +92,15 @@ public class GameBuilder {
 
 		// (4) Fear Cards
 		if(adversary.FearCardsPerLevel != null)
-			gameState.Fear.cardsPerLevel = adversary.FearCardsPerLevel;
+			gameState.Fear.CardsPerLevel = adversary.FearCardsPerLevel;
 		if(cfg.CommandTheBeasts)
-			gameState.Fear.cardsPerLevel[1]++; // Command the Beasts
+			gameState.Fear.CardsPerLevel[1]++; // Command the Beasts
 
 		// Fear Deck - ! this could be pushed into .Initialize if PreInitialize has access to deck.
 		var fearCards = BuildFearCards();
 		new Random( fearSeed ).Shuffle( fearCards );
 		gameState.Fear.Deck.Clear();
-		for(int i = 0; i < gameState.Fear.cardsPerLevel.Sum(); ++i)
+		for(int i = 0; i < gameState.Fear.CardsPerLevel.Sum(); ++i)
 			gameState.Fear.PushOntoDeck( fearCards[i] );
 
 		// (5) Blight Cards

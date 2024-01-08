@@ -60,10 +60,13 @@ public class ResourceImages
 
 	#endregion
 
+#pragma warning disable CA1822 // Mark members as static
 	public Bitmap LoadSpiritImage( string spiritText ) {
 		string filename = spiritText.Replace( ' ', '_' );
 		return (Bitmap)Image.FromFile( $".\\images\\spirits\\{filename}.jpg" );
 	}
+#pragma warning restore CA1822 // Mark members as static
+
 	public Bitmap AdversaryFlag( string advName ) => GetResourceImage( $"adversaries.{advName}.png" );
 	public Bitmap FearCardBack()                    => GetResourceImage( "tokens.fearcard.png" );
 	public Bitmap TerrorLevel( int terrorLevel )    => GetResourceImage( $"icons.TerrorLevel{terrorLevel}.png" );

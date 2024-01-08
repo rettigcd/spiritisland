@@ -29,7 +29,7 @@ public class CtxFilter<Ctx> {
 
 	public IEnumerable<Ctx> Filter( IEnumerable<Ctx> src ) => _groupFilter(src);
 
-	Func<IEnumerable<Ctx>, IEnumerable<Ctx>> _groupFilter;
+	readonly Func<IEnumerable<Ctx>, IEnumerable<Ctx>> _groupFilter;
 
 }
 

@@ -87,8 +87,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 	IEnumerable<Track> Revealed => Energy.Revealed.Union(CardPlays.Revealed );
 
-	public void AdjustEnergyTrack( int delta ) {
-		// ctx.Self.EnergyCollected.Add( spirit => --spirit.Energy );
+	public void AdjustEnergyTrackDueToBargain( int delta ) {
 		if(delta == 0) return;
 		foreach(Track t in Energy.Slots)
 			if(t.Energy.HasValue)
@@ -195,30 +194,39 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 	protected class MyMemento {
 		public MyMemento( SpiritPresence src ) {
-			_energy = src.Energy.Memento;
-			_cardPlays = src.CardPlays.Memento;
+			_energyTrack = src.Energy.Memento;
+			_cardPlaysTrack = src.CardPlays.Memento;
 			_destroyed = src.Destroyed.Count;
 			_lowestTrackEnergy = FirstEnergyTrackValue( src );
 			_incarnaEmpowered = src.Incarna.Empowered;
+			_tag = src.CustomMementoValue;
 			// don't need to save Space because that gets set via Tokens and ITrackMySpaces
 		}
 
 		virtual public void Restore( SpiritPresence src ) {
-			src.Energy.Memento = _energy;
-			src.CardPlays.Memento = _cardPlays;
+			src.Energy.Memento = _energyTrack;
+			src.CardPlays.Memento = _cardPlaysTrack;
 			src.Destroyed.Count = _destroyed;
 			src.Incarna.Empowered = _incarnaEmpowered;
 			// don't need to restore Space because that gets set via Tokens and ITrackMySpaces
-			src.AdjustEnergyTrack( _lowestTrackEnergy /* what it should be */ - FirstEnergyTrackValue(src) /* what it is */ );
+			src.AdjustEnergyTrackDueToBargain( _lowestTrackEnergy /* what it should be */ - FirstEnergyTrackValue(src) /* what it is */ );
+			src.InitEnergyAndCardPlays(); // force this so Card Plays and energy can re-sync
+			src.CustomMementoValue = _tag;
 		}
 
 		static int FirstEnergyTrackValue( SpiritPresence src ) => src.Energy.Revealed.First().Energy.Value; // The first one should always have an energy value.
 
-		readonly object _energy;
-		readonly object _cardPlays;
+		readonly object _energyTrack;
+		readonly object _cardPlaysTrack;
+		readonly object _tag;
 		readonly int _destroyed;
 		readonly int _lowestTrackEnergy;
 		readonly bool _incarnaEmpowered;
+	}
+
+	protected virtual object CustomMementoValue {
+		get { return null; }
+		set { }
 	}
 
 	#endregion

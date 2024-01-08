@@ -13,7 +13,7 @@ public class BargainOfCoursingPaths {
 		await ctx.Self.PayPresenceForBargain( "3 air,2 water,2 earth" );
 
 		// and you gain 1 less Energy each turn.
-		ctx.Self.Presence.AdjustEnergyTrack(-1);
+		ctx.Self.Presence.AdjustEnergyTrackDueToBargain(-1);
 
 		// Now: Mark both target land and another with 2 or more Dahan.
 		var token = new CoursingPaths(ctx.Self);

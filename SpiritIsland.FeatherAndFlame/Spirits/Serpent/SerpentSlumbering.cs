@@ -4,7 +4,13 @@ public class SerpentSlumbering : Spirit {
 
 	public SerpentSlumbering() :base (
 		spirit => new SerpentPresence( spirit )
-		,PowerCard.For(typeof(ElementalAegis))
+		, new GrowthTrack( 2,
+			new GrowthOption( new ReclaimAll(), new MovePresence( 1 ) ),
+			new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) ),
+			new GrowthOption( new GainEnergy( 4 ) ),
+			new GrowthOption( new PlacePresence( 3, Filter.NoBlight ) )
+		)
+		, PowerCard.For(typeof(ElementalAegis))
 		,PowerCard.For(typeof(AbsorbEssence))
 		,PowerCard.For(typeof(GiftOfFlowingPower))
 		,PowerCard.For(typeof(GiftOfThePrimordialDeeps))	
@@ -13,14 +19,6 @@ public class SerpentSlumbering : Spirit {
 			InnatePower.For(typeof(SerpentWakesInPower)),
 			InnatePower.For(typeof(SerpentRousesInAnger))
 		};
-
-		GrowthTrack = new GrowthTrack( 2,
-			new GrowthOption( new ReclaimAll(), new MovePresence(1) ),
-			new GrowthOption( new GainPowerCard(), new GainEnergy(1) ),
-			new GrowthOption( new GainEnergy(4) ),
-			new GrowthOption( new PlacePresence(3,Filter.NoBlight) )
-		);
-
 	}
 
 	public const string Name = "Serpent Slumbering Beneath the Island";

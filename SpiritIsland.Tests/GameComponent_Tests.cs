@@ -72,6 +72,44 @@ public  class GameComponent_Tests {
 			.ToArray();
 
 	}
+/*
+	[Fact]
+	public void ScanForPrivateFields() {
+
+		//var assembly = typeof( SpiritIsland.Spirit ).Assembly;
+		//var assembly = typeof(SpiritIsland.Basegame.GameComponentProvider).Assembly;
+		//var assembly = typeof(SpiritIsland.BranchAndClaw.GameComponentProvider).Assembly;
+		//var assembly = typeof(SpiritIsland.FeatherAndFlame.GameComponentProvider).Assembly;
+		//var assembly = typeof(SpiritIsland.JaggedEarth.GameComponentProvider).Assembly;
+		var assembly = typeof(SpiritIsland.NatureIncarnate.GameComponentProvider).Assembly;
+
+		var typesToExamine = assembly.GetTypes()
+			.Where(IsMemento)
+			.Where(HasChangeableFields)
+			.ToArray();
+
+		string[] description = new string[typesToExamine.Length];
+
+		int i=0;
+		foreach(var type in typesToExamine) {
+			var fields = ChangableFields( type ).ToArray();
+			description[i++] = type.Name + ": " + fields
+				.Select( x => x.Name )
+				.Join( ", " );
+		}
+
+	}
+
+	static bool IsMemento( Type t ) => typeof( IHaveMemento ).IsAssignableFrom( t );
+
+	static bool HasChangeableFields( Type t ) => ChangableFields( t).Any();
+	static IEnumerable<FieldInfo> ChangableFields(Type type) => type
+		.GetFields( BindingFlags.Public | BindingFlags.NonPublic 
+			| BindingFlags.Instance 
+			| BindingFlags.DeclaredOnly // this/derived class, not in base class - filter out repeats
+		)
+		.Where( f => !f.IsInitOnly );
+*/
 
 }
 

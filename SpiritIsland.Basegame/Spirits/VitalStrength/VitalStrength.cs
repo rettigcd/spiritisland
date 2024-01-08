@@ -12,18 +12,17 @@ public class VitalStrength : Spirit {
 			new PresenceTrack( Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
 		),
+		new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new PlacePresence( 2 ) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 0 ) ),
+			new GrowthOption( new GainEnergy( 2 ), new PlacePresence( 1 ) )
+		),
 		PowerCard.For(typeof(GuardTheHealingLand)),
 		PowerCard.For(typeof(AYearOfPerfectStillness)),
 		PowerCard.For(typeof(RitualsOfDestruction)),
 		PowerCard.For(typeof(DrawOfTheFruitfulEarth))
 	){
-		GrowthTrack = new(
-			new GrowthOption( new ReclaimAll(), new PlacePresence(2) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence(0) ),
-			new GrowthOption( new GainEnergy(2), new PlacePresence(1) )
-		);
-
-		this.InnatePowers = new InnatePower[]{ 
+		InnatePowers = new InnatePower[]{ 
 			InnatePower.For(typeof(GiftOfStrength))
 		};
 

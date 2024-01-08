@@ -6,7 +6,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	
 	public override AdversaryLevel[] Levels => _scenarioMods;
 
-	AdversaryLevel[] _scenarioMods = new AdversaryLevel[] { Escalation, L1, L2, L3, L4, L5, L6 };
+	readonly AdversaryLevel[] _scenarioMods = new AdversaryLevel[] { Escalation, L1, L2, L3, L4, L5, L6 };
 
 	#region Escalation / Win-Loss Condition
 
@@ -108,7 +108,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		#region private
 
 		// Records should-upgrade in the ActionScope since we cannot detect it once we stop the cascade.
-		bool ShouldUpgrade {
+		static bool ShouldUpgrade {
 			get => ActionScope.Current.SafeGet<bool>( Key );
 			set => ActionScope.Current[Key] = value;
 		}
@@ -142,7 +142,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 1
 
 	#region Level 2
-	static AdversaryLevel L2 = new AdversaryLevel( level: 2, 4, 
+	readonly static AdversaryLevel L2 = new AdversaryLevel( level: 2, 4, 
 		3, 3, 4, 
 		"Miners Come From Far and Wide", 
 		"Setup: (a) Add 1 Explorer in each land with no Dahan. (b) Add 1 Disease and 1 City in the highest-numbered land with a town symbol."
@@ -170,7 +170,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 2
 
 	#region Level 3 
-	static AdversaryLevel L3 = new AdversaryLevel( level: 3, 5, 
+	readonly static AdversaryLevel L3 = new AdversaryLevel( level: 3, 5, 
 		3, 4, 4, 
 		"Mining Boom (I)", 
 		"After the Build Step, on each board: Choose a land with an Explorer. Upgrade 1 Explorer there."
@@ -194,7 +194,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Level 4
 
-	static AdversaryLevel L4 = new AdversaryLevel( level: 4, 7, 
+	readonly static AdversaryLevel L4 = new AdversaryLevel( level: 4, 7, 
 		4, 4, 4, 
 		"Untapped Salt Deposits", 
 		"111-2S22-33333 (Remove Stage-2 Coastal Lands, Place Salt Deposits in 2nd Stage-2 slot."
@@ -242,7 +242,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Level 5
 
-	static AdversaryLevel L5 = new AdversaryLevel( level:5, 9, 
+	readonly static AdversaryLevel L5 = new AdversaryLevel( level:5, 9, 
 		4, 5, 4, 
 		"Mining Boom (II)", 
 		"Instead of Mining Boom(I), after the Build Step, on each board: Choose a land with Explorer. Build there, then Upgrade 1 Explorer( Build normally in a Mining land.)"
@@ -266,7 +266,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 5
 
 	#region Level 6
-	static AdversaryLevel L6 = new AdversaryLevel( level:6, 10, 
+	readonly static AdversaryLevel L6 = new AdversaryLevel( level:6, 10, 
 		4, 5, 4, 
 		"The Empire Ascendant", 
 		"Setup and During the Explore Step: On boards with 3 or fewer Blight: Add +1 Explorer in each land successfully explored.  ( Max. 2 lands per board per Explore Card.)"
@@ -277,7 +277,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	};
 
 	class EmpireAscendantExploreEngine : ExploreEngine {
-		CountDictionary<Board> _bonusExplorers = new CountDictionary<Board>();
+		readonly CountDictionary<Board> _bonusExplorers = new CountDictionary<Board>();
 		public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 			InitBonusExplorers( gameState );
 			await base.ActivateCard( card, gameState );

@@ -23,34 +23,32 @@ public class EmberEyedBehemoth : Spirit {
 			new PresenceTrack(Track.Card1,Track.Card2,Track.Card2,Track.Card3,Track.FireEnergy,Track.Card4),
 			new Incarna(spirit, "EEB", Img.EEB_Incarna, Img.EEB_Incarna_Empowered)
 		)
-		,PowerCard.For(typeof(TerrifyingRampage))
-		,PowerCard.For(typeof(BlazingIntimidation))
-		,PowerCard.For(typeof(SurgingLahar))
-		,PowerCard.For(typeof(ExaltationOfGraspingRoots))
-	) {
-
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption( 
+		, new GrowthTrack(
+			new GrowthOption(
 				new ReclaimAll(),
 				new GainPowerCard()
 			),
-			new GrowthOption( 
+			new GrowthOption(
 				new PlacePresence( 3, Filter.Jungle, Filter.Presence ),
 				new PlacePresence( 0 )
 			),
-			new GrowthOption( 
+			new GrowthOption(
 				new GainPowerCard(),
 				new PlacePresence( 1 ),
-				new GainEnergy(3),
+				new GainEnergy( 3 ),
 				new DiscardPowerCardWithFireFromHand()
 			),
 			new GrowthOption(
 				new ReclaimAllWithFire(),
 				new EmpowerIncarna(),
-				new MoveOnlyIncarna(1)
+				new MoveOnlyIncarna( 1 )
 			)
-		);
-
+		)
+		, PowerCard.For(typeof(TerrifyingRampage))
+		,PowerCard.For(typeof(BlazingIntimidation))
+		,PowerCard.For(typeof(SurgingLahar))
+		,PowerCard.For(typeof(ExaltationOfGraspingRoots))
+	) {
 		_smash = new RepeatableInnatePower( typeof( SmashStompAndFlatten ) );
 		InnatePowers = new InnatePower[] { _smash };
 		_behemoth = new TheBehemothRises();
@@ -132,7 +130,7 @@ public class EmberEyedBehemoth : Spirit {
 
 	#endregion
 
-	protected override object _customSaveValue { 
+	protected override object CustomMementoValue { 
 		get => GrowthTrack.Options;
 		set {
 			var options = (GrowthOption[])value;

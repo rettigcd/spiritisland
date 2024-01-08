@@ -47,27 +47,26 @@ public StonesUnyieldingDefiance() : base(
 			new PresenceTrack( Track.Energy2, Track.Energy3, AddCardPlay, Track.Energy4, AddCardPlay, Track.Energy6, AddCardPlay ),
 			new PresenceTrack( Track.Card1, Track.MkCard( Element.Earth ), Track.MkCard( Element.Earth ), EarthReclaim, EarthAndAny, Card2Earth )
 		)
-		,PowerCard.For(typeof(JaggedShardsPushFromTheEarth))
+		, new GrowthTrack(
+			new GrowthOption(
+				new ReclaimAll(),
+				new PlacePresence( 3, Filter.Mountain, Filter.Presence ),
+				new GainAllElements( Element.Earth, Element.Earth )
+			),
+			new GrowthOption(
+				new PlacePresence( 2 ),
+				new GainEnergy( 3 )
+			),
+			new GrowthOption(
+				new GainPowerCard(),
+				new PlacePresence( 1 )
+			)
+		)
+		, PowerCard.For(typeof(JaggedShardsPushFromTheEarth))
 		,PowerCard.For(typeof(PlowsShatterOnRockyGround))
 		,PowerCard.For(typeof(ScarredAndStonyLand))
 		,PowerCard.For(typeof(StubbornSolidity))
 	) {
-
-		this.GrowthTrack = new GrowthTrack(
-			new GrowthOption(
-				new ReclaimAll(),
-				new PlacePresence( 3,Filter.Mountain, Filter.Presence ),
-				new GainAllElements(Element.Earth,Element.Earth)
-			),
-			new GrowthOption(
-				new PlacePresence(2), 
-				new GainEnergy(3)
-			),
-			new GrowthOption(
-				new GainPowerCard(),
-				new PlacePresence(1)
-			)
-		);
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(HoldTheIslandFastWithABulwarkOfWill)), 
 			InnatePower.For(typeof(LetThemBreakThemselvesAgainstTheStone))

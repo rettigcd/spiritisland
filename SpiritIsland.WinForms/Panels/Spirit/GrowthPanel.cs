@@ -8,19 +8,20 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 
 	public GrowthPanel( SharedCtx ctx ) {
 		_ctx = ctx;
-		_growthRow = new PaintableRow( _ctx._spirit.GrowthTrack.Options.Select(BuildPaintable).ToArray() );
-		_growthRow.Padding = 0.05f;
-		_growthRow.Separation = 0.05f;
+		_growthRow = new PaintableRow( _ctx._spirit.GrowthTrack.Options.Select( BuildPaintable ).ToArray() ) {
+			Padding = 0.05f,
+			Separation = 0.05f
+		};
 	}
 
 	PaintableRow BuildPaintable( GrowthOption op ) {
 		var actionRects = op.GrowthActions.Cast<SpiritGrowthAction>().Select( BuildPaintable ).ToArray();
-		var paintable = new PaintableRow( actionRects );
-		paintable.BackgroundColor = Color.FromArgb( 255, 255, 220 );
-		paintable.BorderColor = Color.FromArgb( 230, 230, 198 );
-		paintable.Padding = .05f;
-		paintable.Separation = .05f;
-		return paintable;
+		return new PaintableRow( actionRects ) {
+			BackgroundColor = Color.FromArgb( 255, 255, 220 ),
+			BorderColor = Color.FromArgb( 230, 230, 198 ),
+			Padding = .05f,
+			Separation = .05f
+		};
 	}
 
 	PaintableGrowthAction BuildPaintable( SpiritGrowthAction action ) {

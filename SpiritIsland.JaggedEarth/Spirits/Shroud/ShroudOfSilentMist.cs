@@ -30,19 +30,17 @@ public class ShroudOfSilentMist : Spirit {
 			new PresenceTrack(1, Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
 			new PresenceTrack(1, Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
 		)
-		,PowerCard.For(typeof(FlowingAndSilentFormsDartBy))
+		,new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
+			new GrowthOption( new PlacePresence( 0 ), new PlacePresence( 0 ) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 3, Filter.Mountain, Filter.Wetland ) )
+		)
+		, PowerCard.For(typeof(FlowingAndSilentFormsDartBy))
 		,PowerCard.For(typeof(UnnervingPall))
 		,PowerCard.For(typeof(DissolvingVapors))
 		,PowerCard.For(typeof(TheFogClosesIn))
 	) {
-		this.GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
-			new GrowthOption( new PlacePresence(0), new PlacePresence(0) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence(3,Filter.Mountain, Filter.Wetland ) )
-		);
-
-
-		this.InnatePowers = new InnatePower[] {
+		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(SuffocatingShroud)), 
 			InnatePower.For(typeof(LostInTheSwirlingHaze))
 		};
@@ -112,6 +110,11 @@ public class ShroudOfSilentMist : Spirit {
 
 		MistsShiftAndFlow x = new MistsShiftAndFlow(this,prompt,sourceCriteria,targetCriteria);
 		return (await x.TargetAndFlow()).Space;
+	}
+
+	protected override object CustomMementoValue { 
+		get => _gainedCoolEnergyThisTurn;
+		set => _gainedCoolEnergyThisTurn = (bool)value;
 	}
 
 }

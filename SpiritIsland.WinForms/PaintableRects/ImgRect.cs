@@ -4,7 +4,7 @@ namespace SpiritIsland.WinForms;
 
 public class ImgRect : IPaintableRect {
 
-	static ImgSource _imageSource = ResourceImages.Singleton; // could be replaced with something that caches the images.
+	readonly static ImgSource _imageSource = ResourceImages.Singleton; // could be replaced with something that caches the images.
 
 	public ImgRect(Img img ) { _img=img; }
 	readonly Img _img;

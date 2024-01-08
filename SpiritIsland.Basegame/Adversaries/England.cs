@@ -6,7 +6,7 @@ public class England : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
-	AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Escalation
 		new AdversaryLevel(0, 1, 3,3,3, "Building Boom", " On each board with Town/City, Build in the land with the most Town/City." )
 			.WithEscalation( BuildingBoom_Escalation )
@@ -126,7 +126,7 @@ public class England : AdversaryBase, IAdversary {
 
 			// If no fear cards were Resolved
 			if(_repeatWhenNoFearResolved) {
-				int currentFearCardsResolved = gs.Fear.ResolvedCards;
+				int currentFearCardsResolved = gs.Fear.ResolvedCardCount;
 				if(currentFearCardsResolved == lastCountOfFearCardsResolved)
 					await base.Execute( gs );
 				lastCountOfFearCardsResolved = currentFearCardsResolved;

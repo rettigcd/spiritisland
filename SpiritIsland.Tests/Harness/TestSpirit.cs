@@ -8,12 +8,9 @@ class TestSpirit : Spirit {
 			new TestPresenceTrack(Track.Energy5,Track.Energy9),
 			new TestPresenceTrack(Track.Card1,Track.Card2,Track.Card3)
 		)
-		,powerCard
-	) {
-		GrowthTrack = new(
-			new GrowthOption( new ReclaimAll() ) 
-		);
-	}
+		, new GrowthTrack( new GrowthOption( new ReclaimAll() ) )
+		, powerCard
+	) {}
 
 	public override string Text => "Test Spirit";
 

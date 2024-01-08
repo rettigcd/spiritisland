@@ -6,7 +6,7 @@ public class Russia : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
-	AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
 		new AdversaryLevel(0, 1, 3,3,3, "Stalk the Predators", "Add 2 explorers/board to lands with beast." )
 			.WithEscalation( Escalation_StalkThePredators ),

@@ -9,10 +9,9 @@ public class PlacePresence_Tests : GrowthTests {
 			spirit => new SpiritPresence( spirit,
 				new PresenceTrack( Track.Energy0, Track.Energy0, Track.Energy0 ),
 				new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5 )
-			)
-		) {
-			GrowthTrack = new GrowthTrack( new GrowthOption( new PlacePresence( 1, Filter.Any ) ) );
-		}
+			),
+			new GrowthTrack( new GrowthOption( new PlacePresence( 1, Filter.Any ) ) )
+		) {}
 
 		public override string Text => "Test Spirit";
 

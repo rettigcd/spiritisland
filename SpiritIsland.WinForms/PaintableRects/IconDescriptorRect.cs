@@ -4,7 +4,7 @@ namespace SpiritIsland.WinForms;
 
 class IconDescriptorRect : IPaintableRect {
 
-	static IconResources _resources = ResourceImages.Singleton;
+	readonly static IconResources _resources = ResourceImages.Singleton;
 
 	readonly IconDescriptor _descriptor;
 	public IconDescriptorRect( IconDescriptor descriptor ) {

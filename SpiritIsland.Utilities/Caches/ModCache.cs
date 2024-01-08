@@ -8,15 +8,15 @@ public class ModCache {
 
 	static public ModCache Grays( ImgSource imgSource ) => new ModCache( imgSource, "grays", SimpleMods.Grayify );
 
-	ModCache( ImgSource imgSource, string dir, Action<Bitmap> mod ) {
+	ModCache( ImgSource imgSource, string subDir, Action<Bitmap> mod ) {
 		_imgSource = imgSource;
-		_directory = dir;
+		_subDir = subDir;
 		_mod = mod;
 	}
 
 	public Bitmap GetImage( Img img ) {
 
-		string key = $"ghosts\\{img}.png";
+		string key = $"{_subDir}\\{img}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap image = _imgSource.GetImg( img );
@@ -25,8 +25,7 @@ public class ModCache {
 		return image;
 	}
 
-
-	readonly string _directory;
+	readonly string _subDir;
 	readonly Action<Bitmap> _mod;
 	readonly ImgSource _imgSource;
 	readonly ImageDiskCache _cache = new ImageDiskCache();

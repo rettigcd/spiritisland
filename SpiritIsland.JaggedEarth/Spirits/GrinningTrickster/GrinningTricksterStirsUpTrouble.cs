@@ -20,20 +20,19 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 			x => new SpiritPresence( x,
 				new PresenceTrack(Track.Energy1,Track.MoonEnergy,Track.Energy2,Track.AnyEnergy,Track.FireEnergy,Track.Energy3),
 				new PresenceTrack(Track.Card2,Track.Push1Dahan,Track.Card3,Track.Card3,Track.Card4,Track.AirEnergy,Track.Card5)
+			),
+				new GrowthTrack( 2,
+				new GrowthOption( new GainEnergy( -1 ), new ReclaimAll(), new MovePresence( 1 ) ) { GainEnergy = -1 },
+				new GrowthOption( new PlacePresence( 2 ) ),
+				new GrowthOption( new GainPowerCard() ),
+				new GrowthOption( new GainEnergyEqualToCardPlays() )
 			)
-			,PowerCard.For(typeof(ImpersonateAuthority))
+			, PowerCard.For(typeof(ImpersonateAuthority))
 			,PowerCard.For(typeof(InciteTheMob))
 			,PowerCard.For(typeof(OverenthusiasticArson))
 			,PowerCard.For(typeof(UnexpectedTigers))
 		)
 	{
-		// Growth
-		this.GrowthTrack = new GrowthTrack( 2,
-			new GrowthOption(new GainEnergy(-1), new ReclaimAll(), new MovePresence(1) ){ GainEnergy = -1 },
-			new GrowthOption(new PlacePresence(2)),
-			new GrowthOption(new GainPowerCard() ),
-			new GrowthOption(new GainEnergyEqualToCardPlays() )
-		);
 
 		// Innates
 		InnatePowers = new InnatePower[] {

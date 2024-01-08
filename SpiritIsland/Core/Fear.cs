@@ -6,7 +6,7 @@
 /// </remarks>
 public class Fear : IRunWhenTimePasses, IHaveMemento {
 
-	public Fear(GameState gs ) {
+	public Fear(GameState gs) {
 		_gs = gs;
 		PoolMax = gs.Spirits.Length * 4;
 		Init();
@@ -21,12 +21,12 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 		Deck.Push( fearCard );
 	}
 
-	public int[] cardsPerLevel = new int[] { 3, 3, 3 };
+	public int[] CardsPerLevel = new int[] { 3, 3, 3 }; // only adjusted during Setup - doesn't need saved to memento
 
 	public int TerrorLevel {
 		get {
-			int level3Count = cardsPerLevel[2];
-			int level2Count = cardsPerLevel[1];
+			int level3Count = CardsPerLevel[2];
+			int level2Count = CardsPerLevel[1];
 			int ct = Deck.Count;
 			return (ct > level2Count + level3Count) ? 1
 				: ct > level3Count ? 2
@@ -45,7 +45,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 			int index = 2;
 
 			while( 0 < remaining) {
-				int cardsFrom3 = Math.Min( cardsPerLevel[index], remaining );
+				int cardsFrom3 = Math.Min( CardsPerLevel[index], remaining );
 				cardCounts.Add( cardsFrom3 );
 				remaining -= cardsFrom3;
 				--index;
@@ -83,8 +83,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 			fearCard.ActivatedTerrorLevel = TerrorLevel;
 
 			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
-			foreach(Spirit spirit in _gs.Spirits)
-				await FlipFearCard(fearCard,true);
+			await FlipFearCard( fearCard, true );
 
 			await (TerrorLevel switch {
 				1 => fearCard.Level1( _gs ),
@@ -93,7 +92,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 				_ => throw new ArgumentOutOfRangeException(),
 			});
 
-			++ResolvedCards; // record discard cards (for England-6)
+			++ResolvedCardCount; // record discard cards (for England-6)
 		}
 	}
 
@@ -114,7 +113,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 
 	}
 
-	public int ResolvedCards { get; private set; }
+	public int ResolvedCardCount { get; private set; }
 
 	// - ints -
 	public int EarnedFear { get; private set; } = 0;
@@ -124,7 +123,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 	public readonly Stack<IFearCard> Deck = new Stack<IFearCard>();
 	public readonly Stack<IFearCard> ActivatedCards = new Stack<IFearCard>();
 	// - events -
-	public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();                     // Dread Apparations
+	public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();  // Dread Apparations
 	readonly GameState _gs;
 
 	bool IRunWhenTimePasses.RemoveAfterRun => false;
@@ -141,19 +140,25 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 
 	protected class MyMemento {
 		public MyMemento(Fear src) {
-			_pool = src.EarnedFear;
+			_earnedFear = src.EarnedFear;
+			_poolMax = src.PoolMax;
+			_resolvedCardCount = src.ResolvedCardCount;
 			_deck = src.Deck.ToArray();
 			_activatedCards = src.ActivatedCards.ToArray();
 			_flipped = _deck.Union( _activatedCards ).ToDictionary(c=>c,c=>c.Flipped);
 		}
 		public void Restore(Fear src ) {
-			src.EarnedFear = _pool;
+			src.EarnedFear = _earnedFear;
+			src.PoolMax = _poolMax;
+			src.ResolvedCardCount = _resolvedCardCount;
 			src.Deck.SetItems( _deck );
 			src.ActivatedCards.SetItems(_activatedCards);
 			foreach(var pair in _flipped)
 				pair.Key.Flipped = pair.Value;
 		}
-		readonly int _pool;
+		readonly int _earnedFear;
+		readonly int _poolMax;
+		readonly int _resolvedCardCount;
 		readonly IFearCard[] _deck;
 		readonly IFearCard[] _activatedCards;
 		readonly Dictionary<IFearCard, bool> _flipped;

@@ -32,18 +32,16 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 			new PresenceTrack( Track.Card2, MovePresence, Track.Card3, Track.MoonEnergy, Track.CardReclaim1, Card4Air ),
 			new Incarna(spirit,"BoDDyS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
 		)
+		, new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape( int.MaxValue ) ),
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new PiecesEscape( 2 ) ),
+			new GrowthOption( new PlacePresence( 1 ), new AddOrMoveIncarnaToPresence(), new PiecesEscape( 1 ), new GainEnergyEqualToCardPlays() )
+		)
 		, PowerCard.For(typeof(EmergeFromTheDreadNightWind))
 		, PowerCard.For(typeof(ReachFromTheInfiniteDarkness))
 		, PowerCard.For(typeof(SwallowedByTheEndlessDark))
 		, PowerCard.For(typeof(TerrorOfTheHunted))
 	) {
-
-		// Growth
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape(int.MaxValue) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence(3), new PiecesEscape(2) ),
-			new GrowthOption( new PlacePresence(1), new AddOrMoveIncarnaToPresence(), new PiecesEscape(1), new GainEnergyEqualToCardPlays() )
-		);
 
 		// Innates
 		InnatePowers = new InnatePower[] {

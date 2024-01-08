@@ -51,7 +51,7 @@ public class InvaderDeckBuilder {
 			'2' => src[2-1].Dequeue(),
 			'3' => src[3-1].Dequeue(),
 			'C' => InvaderCard.Stage2Costal(), 
-			_ => throw new ArgumentOutOfRangeException(),
+			_ => throw new ArgumentOutOfRangeException(nameof(level)),
 		};
 	}
 
@@ -61,7 +61,7 @@ public class InvaderDeckBuilder {
 		return _levelsString.Contains( 'C' ) ? Level2SansCoastal : Level2Cards;
 	}
 
-	protected IEnumerable<InvaderCard> Level2SansCoastal => Level2Cards.Where( x => x.Text != CoastalFilter.Name );
+	protected static IEnumerable<InvaderCard> Level2SansCoastal => Level2Cards.Where( x => x.Text != CoastalFilter.Name );
 
 	protected virtual IEnumerable<InvaderCard> SelectLevel3Cards() => Level3Cards;
 

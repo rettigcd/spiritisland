@@ -11,27 +11,27 @@ public class LightningsSwiftStrike : Spirit {
 			new PresenceTrack( Track.Energy1, Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
 			new PresenceTrack( Track.Card2, Track.Card3, Track.Card4, Track.Card5, Track.Card6 )
 		),
+		new GrowthTrack(
+			new GrowthOption(
+				new ReclaimAll(),
+				new GainPowerCard(),
+				new GainEnergy( 1 )
+			),
+			// +1 presence range 2, +1 presence range 0( 
+			new GrowthOption(
+				new PlacePresence( 2 ),
+				new PlacePresence( 0 )
+			),
+			// +1 presense range 1, +3 energy
+			new GrowthOption( new GainEnergy( 3 ), new PlacePresence( 1 ) )
+		),
 		PowerCard.For(typeof(HarbingersOfTheLightning)),
 		PowerCard.For(typeof(LightningsBoon)),
 		PowerCard.For(typeof(RagingStorm)),
 		PowerCard.For(typeof(ShatterHomesteads))
 	){
-		GrowthTrack = new(
-			new GrowthOption( 
-				new ReclaimAll(),
-				new GainPowerCard(),
-				new GainEnergy(1)
-			),
-			// +1 presence range 2, +1 presence range 0( 
-			new GrowthOption(
-				new PlacePresence(2),
-				new PlacePresence(0) 
-			),
-			// +1 presense range 1, +3 energy
-			new GrowthOption( new GainEnergy(3), new PlacePresence(1) )
-		);
 
-		this.InnatePowers = new InnatePower[]{
+		InnatePowers = new InnatePower[]{
 			InnatePower.For(typeof(ThunderingDestruction))
 		};
 
@@ -76,6 +76,11 @@ public class LightningsSwiftStrike : Spirit {
 		}
 
 		return base.TakeActionAsync(factory,phase);
+	}
+
+	protected override object CustomMementoValue {
+		get => _usedAirForFastCount;
+		set => _usedAirForFastCount = (int)value;
 	}
 
 	int _usedAirForFastCount = 0;

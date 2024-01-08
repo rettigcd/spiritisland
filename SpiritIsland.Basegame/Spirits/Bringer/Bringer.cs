@@ -13,24 +13,23 @@ public class Bringer : Spirit {
 			new PresenceTrack( Track.Energy2, Track.AirEnergy, Track.Energy3, Track.MoonEnergy, Track.Energy4, Track.AnyEnergy, Track.Energy5 ),
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card2, Track.Card3, Track.Card3, Track.AnyEnergy )
 		)
-		,PowerCard.For(typeof(CallOnMidnightsDream))
+		, new GrowthTrack(
+			// reclaim, +1 power card
+			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
+			// reclaim 1, add presence range 0
+			new GrowthOption( new ReclaimN(), new PlacePresence( 0 ) ),
+			// +1 power card, +1 pressence range 1
+			new GrowthOption( new GainPowerCard(), new PlacePresence( 1 ) ),
+			// add presense range Dahan or Invadors, +2 energy
+			new GrowthOption( new GainEnergy( 2 ), new PlacePresence( 4, Filter.Dahan, Filter.Invaders ) )
+		)
+		, PowerCard.For(typeof(CallOnMidnightsDream))
 		,PowerCard.For(typeof(DreadApparitions))
 		,PowerCard.For(typeof(DreamsOfTheDahan))
 		,PowerCard.For(typeof(PredatoryNightmares))
 	) {
 
-		GrowthTrack = new(
-			// reclaim, +1 power card
-			new GrowthOption(new ReclaimAll(),new GainPowerCard()),
-			// reclaim 1, add presence range 0
-			new GrowthOption(new ReclaimN(), new PlacePresence(0) ),
-			// +1 power card, +1 pressence range 1
-			new GrowthOption(new GainPowerCard(), new PlacePresence(1) ),
-			// add presense range Dahan or Invadors, +2 energy
-			new GrowthOption(new GainEnergy(2), new PlacePresence(4,Filter.Dahan, Filter.Invaders ) )
-		);
-
-		this.InnatePowers = new InnatePower[]{
+		InnatePowers = new InnatePower[]{
 			InnatePower.For(typeof(SpiritsMayYetDream)),
 			InnatePower.For(typeof(NightTerrors))
 		};

@@ -6,7 +6,7 @@ public class Sweden : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
-	AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Escalation
 		new AdversaryLevel(0,1 , 3,3,3, "Swayed by the Invaders", "After Invaders Explore into each land this Phase, if that land has at least as many Invaders as Dahan, replace 1 Dahan with 1 Town." ){
 			InitFunc = (gs,_) => gs.InvaderDeck.Explore.Engine = new SwedenExplorer()

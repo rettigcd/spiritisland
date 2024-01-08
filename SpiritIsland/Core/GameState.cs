@@ -267,46 +267,42 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 
 	class MyMemento {
 		public MyMemento(GameState src) {
-			foreach(Spirit spirit in src.Spirits) Save(spirit);
-			Save( src.MajorCards );
-			Save( src.MinorCards );
-			Save( src.InvaderDeck );
-			Save( src.Fear );
-			Save( src.Island );
-			Save( src.Tokens );
+			_mementos.Save( src.Spirits );
+			_mementos.Save( src.MajorCards );
+			_mementos.Save( src.MinorCards );
+			_mementos.Save( src.InvaderDeck );
+			_mementos.Save( src.Fear );
+			_mementos.Save( src.Island );
+			_mementos.Save( src.Tokens );
 
 			// Before Invader phase
 			_beforeInvaderPhase = src._preInvaderPhaseActions.ToArray();
-			Save(_beforeInvaderPhase);
+			_mementos.Save(_beforeInvaderPhase);
 
 			// After Invader phase
 			_afterInvaderPhase = src._postInvaderPhaseActions.ToArray();
-			Save( _afterInvaderPhase );
+			_mementos.Save( _afterInvaderPhase );
 
 			// Time Passes
 			_timePassesActions = src._timePassesActions.ToArray();
-			Save( _timePassesActions );
+			_mementos.Save( _timePassesActions );
 
 			_roundNumber = src.RoundNumber;
 			_isBlighted = src.BlightCard.CardFlipped;
 			_damageToBlightLand = src.DamageToBlightLand;
 		}
-		void Save( IHaveMemento holder ) { if(holder is not null) _mementos[holder] = holder.Memento; }
-		void Save( IEnumerable items ) { foreach(var item in items.OfType<IHaveMemento>()) Save( item ); }
 
 		public void Restore(GameState src ) {
-			foreach(var pair in _mementos) 
-				pair.Key.Memento = pair.Value;
+			_mementos.Restore();
 
-            Restore( src._preInvaderPhaseActions, _beforeInvaderPhase );
-            Restore( src._postInvaderPhaseActions, _afterInvaderPhase );
-            Restore( src._timePassesActions, _timePassesActions );
+			src._preInvaderPhaseActions.SetItems(_beforeInvaderPhase);
+			src._postInvaderPhaseActions.SetItems(_afterInvaderPhase);
+            src._timePassesActions.SetItems(_timePassesActions);
 
 			src.RoundNumber = _roundNumber;
 			src.BlightCard.CardFlipped = _isBlighted;
 			src.DamageToBlightLand = _damageToBlightLand;
 		}
-        static void Restore<T>(List<T> list, T[] items ) { list.Clear(); list.AddRange(items); }
 
 		readonly int _roundNumber;
 		readonly bool _isBlighted;

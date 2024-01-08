@@ -10,16 +10,16 @@ public class VengeanceAsABurningPlague : Spirit {
 			new PresenceTrack(Track.Card1, Track.Card2, Track. FireEnergy, Track.Card2, Track.Card3, Track.Card3, Track.Card4),
 			new LingeringPestilenceToken( spirit )
 		)
-		,PowerCard.For(typeof(FetidBreathSpreadsInfection))
+		, new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 1 ) ),
+			new GrowthOption( new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ), new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ) ),
+			new GrowthOption( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy( 1 ) )
+		)
+		, PowerCard.For(typeof(FetidBreathSpreadsInfection))
 		,PowerCard.For(typeof(FieryVengeance))
 		,PowerCard.For(typeof(Plaguebearers))
 		,PowerCard.For(typeof(StrikeLowWithSuddenFevers))
 	) {
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy(1) ),
-			new GrowthOption( new PlacePresence(2,Filter.Town, Filter.City, Filter.Blight ), new PlacePresence(2, Filter.Town, Filter.City, Filter.Blight ) ),
-			new GrowthOption( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy(1) )
-		);
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(EpidemicsRunRampant)), 
 			InnatePower.For(typeof(SavageRevenge))

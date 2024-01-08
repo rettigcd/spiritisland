@@ -13,7 +13,7 @@ public class DrawMinorOnceAndPlayExtraCardThisTurn : SpiritAction {
 			await self.DrawMinor();
 		drewMinor = true;
 
-		self.tempCardPlayBoost++;
+		self.TempCardPlayBoost++;
 	}
 
 }

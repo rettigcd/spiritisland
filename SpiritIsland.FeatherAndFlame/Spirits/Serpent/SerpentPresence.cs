@@ -32,8 +32,14 @@ public class SerpentPresence : SpiritPresence {
 
 	}
 
-	public List<Spirit> AbsorbedPresences = new List<Spirit>(); // don't let it grow pas 6 elements
+	public List<Spirit> AbsorbedPresences = new List<Spirit>(); // don't let it grow past 6
 
 	public int MaxPresenceOnBoard => new int[]{5,7,8,10,11,12,13 }[AbsorbedPresences.Count];
+
+	protected override object CustomMementoValue {
+		get => AbsorbedPresences.ToArray();
+		set { AbsorbedPresences.SetItems( (Spirit[])value ); }
+	}
+
 
 }

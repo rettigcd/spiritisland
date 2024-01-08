@@ -80,33 +80,26 @@ public class InvaderDeck : IHaveMemento{
 
 	protected class MyMemento {
 		public MyMemento(InvaderDeck src) {
-			unrevealedCards = src.UnrevealedCards.ToArray();
-			drawCount = src._drawCount.ToArray();
+			_unrevealedCards = src.UnrevealedCards.ToArray();
+			_drawCount = src._drawCount.ToArray();
+			_discards = src.Discards.ToArray();
+			_slots = src.ActiveSlots.ToArray();
 
-			explore = src.Explore.Cards.ToArray();
-			build = src.Build.Cards.ToArray();
-			ravage = src.Ravage.Cards.ToArray();
-			discards = src.Discards.ToArray();
-			flipped = explore.Union(build).Union(ravage).Union(discards).ToDictionary(c=>c,c=>c.Flipped);
+			_mementos.Save( src._activeSlots );
 		}
 		public void Restore(InvaderDeck src ) {
-			src.UnrevealedCards.SetItems(unrevealedCards);
-			src._drawCount.SetItems(drawCount);
-			src.Explore.Cards.SetItems(explore);
-			src.Build.Cards.SetItems(build);
-			src.Ravage.Cards.SetItems(ravage);
-			src.Discards.SetItems(discards);
-			foreach(var pair in flipped)
-				pair.Key.Flipped = pair.Value;
+			src.UnrevealedCards.SetItems(_unrevealedCards);
+			src._drawCount.SetItems(_drawCount);
+			src.ActiveSlots.SetItems( _slots );
+			src.Discards.SetItems( _discards );
 
+			_mementos.Restore();
 		}
-		readonly InvaderCard[] unrevealedCards;
-		readonly int[] drawCount;
-		readonly InvaderCard[] explore;
-		readonly InvaderCard[] build;
-		readonly InvaderCard[] ravage;
-		readonly InvaderCard[] discards;
-		readonly Dictionary<InvaderCard, bool> flipped;
+		readonly Dictionary<IHaveMemento, object> _mementos = new Dictionary<IHaveMemento, object>();
+		readonly InvaderCard[] _unrevealedCards;
+		readonly InvaderSlot[] _slots;
+		readonly int[] _drawCount;
+		readonly InvaderCard[] _discards;
 
 	}
 

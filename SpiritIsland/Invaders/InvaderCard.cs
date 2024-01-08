@@ -13,7 +13,7 @@ public sealed class InvaderCard : IOption {
 
 	public bool Flipped { get; set; } // setting public so we can Rewind
 
-	public void Flip( GameState gameState ) { 
+	public void Flip() { 
 		if ( Flipped ) return;
 		Flipped = true;
 	}

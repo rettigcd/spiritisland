@@ -32,7 +32,7 @@ public sealed class GiftOfStrength_Tests {
 			MakePowerCard( Fast1 ), // played - should appear
 			MakePowerCard( Fast2 )  // played - no - too expensive
 		};
-		spirit.tempCardPlayBoost = cards.Length;
+		spirit.TempCardPlayBoost = cards.Length;
 		spirit.Hand.AddRange( cards );
 		PlayCards( cards );
 		User.IsDoneBuyingCards();
@@ -71,7 +71,7 @@ public sealed class GiftOfStrength_Tests {
 			MakePowerCard( Slow1 ), 
 			MakePowerCard( Slow2 )  
 		};
-		spirit.tempCardPlayBoost = cards.Length;
+		spirit.TempCardPlayBoost = cards.Length;
 		spirit.Hand.AddRange(cards);
 		PlayCards( cards ); // PLAY, not RESOLVE...
 

@@ -10,23 +10,11 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public GatewayToken GatewayToken;
 
-	protected override object _customSaveValue {
-		get => GatewayToken;
-		set => GatewayToken = (GatewayToken)value;
-	}
-
 	#region constructor / initilization
 
 	public FinderOfPathsUnseen() : base(
 		spirit => new FinderPresence( spirit )
-		, PowerCard.For(typeof(ACircuitousAndWendingJourney))
-		, PowerCard.For(typeof(AidFromTheSpiritSpeakers))
-		, PowerCard.For(typeof(OfferPassageBetweenWorlds))
-		, PowerCard.For(typeof(PathsTiedByNature))
-		, PowerCard.For(typeof(TravelersBoon))
-		, PowerCard.For(typeof(WaysOfShoreAndHeartland))
-	) {
-		GrowthTrack = new(
+		, new GrowthTrack(
 			new GrowthOption(
 				new ReclaimAll(),
 				new GainPowerCard(),
@@ -34,7 +22,7 @@ public class FinderOfPathsUnseen : Spirit {
 			),
 			new GrowthOption(
 				new PlacePresence( 1 ),
-				new PlayExtraCardThisTurn(1)
+				new PlayExtraCardThisTurn( 1 )
 			),
 			new GrowthOption(
 				new GainPowerCard(),
@@ -42,15 +30,21 @@ public class FinderOfPathsUnseen : Spirit {
 			),
 			new GrowthOption(
 				new PlacePresence( 100 ),
-				new GainEnergy(2)
+				new GainEnergy( 2 )
 			)
-		);
-
+		)
+		, PowerCard.For(typeof(ACircuitousAndWendingJourney))
+		, PowerCard.For(typeof(AidFromTheSpiritSpeakers))
+		, PowerCard.For(typeof(OfferPassageBetweenWorlds))
+		, PowerCard.For(typeof(PathsTiedByNature))
+		, PowerCard.For(typeof(TravelersBoon))
+		, PowerCard.For(typeof(WaysOfShoreAndHeartland))
+	) {
 		InnatePowers = new[] {
 			InnatePower.For(typeof(LayPathsTheyCannotHelpButWalk)),
 			InnatePower.For(typeof(CloseTheWays))
 		};
-
+		_openTheWays = new OpenTheWays();
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -62,8 +56,6 @@ public class FinderOfPathsUnseen : Spirit {
 		AddActionFactory( new PlacePresenceOnSpace1().ToInit() ); // let user pick initial space
 
 		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( ResponsibilityToTheDead_Handler ) );
-
-		_openTheWays = new OpenTheWays();
 
 	}
 
@@ -120,6 +112,11 @@ public class FinderOfPathsUnseen : Spirit {
 			base.RemoveFromUnresolvedActions( selectedActionFactory );
 	}
 
-	OpenTheWays _openTheWays;
+	protected override object CustomMementoValue {
+		get => GatewayToken;
+		set => GatewayToken = (GatewayToken)value;
+	}
+
+	readonly OpenTheWays _openTheWays;
 
 }

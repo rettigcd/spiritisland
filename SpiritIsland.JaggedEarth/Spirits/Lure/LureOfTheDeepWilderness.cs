@@ -10,20 +10,20 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	public LureOfTheDeepWilderness():base( 
 		x => new LurePresence(x)
-		,PowerCard.For(typeof(GiftOfTheUntamedWild))
+		, new GrowthTrack(
+			new GrowthOption( new ReclaimAll(), new GainEnergy( 1 ) ),
+			new GrowthOption( new PlacePresence( 4, Filter.Inland ) )
+		).Add(
+			new GrowthPickGroups(
+				new GrowthOption( new Gain1Element( Element.Moon, Element.Air, Element.Plant ), new GainEnergy( 2 ) ),
+				new GrowthOption( new GainPowerCard() )
+			)
+		)
+		, PowerCard.For(typeof(GiftOfTheUntamedWild))
 		,PowerCard.For(typeof(PerilsOfTheDeepestIsland))
 		,PowerCard.For(typeof(SoftlyBeckonEverInward))
 		,PowerCard.For(typeof(SwallowedByTheWilderness))
 	) {
-		GrowthTrack = new GrowthTrack(
-			new GrowthOption(new ReclaimAll(),new GainEnergy(1)),
-			new GrowthOption(new PlacePresence(4,Filter.Inland))
-		).Add(
-			new GrowthPickGroups(
-				new GrowthOption(new Gain1Element(Element.Moon,Element.Air,Element.Plant), new GainEnergy(2)),
-				new GrowthOption(new GainPowerCard())
-			)
-		);
 
 		InnatePowers = new InnatePower[] {
 			InnatePower.For(typeof(ForsakeSocietyToChaseAfterDreams)),
