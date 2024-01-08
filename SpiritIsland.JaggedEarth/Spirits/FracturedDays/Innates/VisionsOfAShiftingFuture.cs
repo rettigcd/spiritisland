@@ -27,7 +27,7 @@ class VisionsOfAShiftingFuture {
 	}
 
 	static void InsertIntoTop2( Spirit spirit, List<InvaderCard> deck, InvaderCard topCard ) {
-		int index = ((FracturedDaysSplitTheSky)spirit).NextRandom(2);
+		int index = ((FracturedDaysSplitTheSky)spirit).OneOrTwo();
 		deck.Insert( index, topCard );
 	}
 

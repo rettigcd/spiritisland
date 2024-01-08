@@ -204,22 +204,30 @@ public class DancesUpEarthquakes : Spirit {
 
 	#region Memento
 
+	protected override object CustomMementoValue {
+		get => new SavedCustomProps( this );
+		set => ((SavedCustomProps)value).Restore( this );
+	}
+
 	class SavedCustomProps {
 		public SavedCustomProps( DancesUpEarthquakes spirit ) {
 			_impending = spirit.Impending.ToArray();
 			_impendingEnergy = spirit.ImpendingEnergy.Clone();
+			_impendingEnergyPerRound = spirit.ImpendingEnergyPerRound;
+			_bonusImpendingPlays = spirit.BonusImpendingPlays;
 		}
 		public void Restore( DancesUpEarthquakes spirit ) {
 			spirit.Impending.Clear(); spirit.Impending.AddRange(_impending);
 			spirit.ImpendingEnergy.Clear(); foreach(var p in _impendingEnergy) spirit.ImpendingEnergy.Add(p.Key,p.Value);
+			spirit.ImpendingEnergyPerRound = _impendingEnergyPerRound;
+			spirit.BonusImpendingPlays = _bonusImpendingPlays;
+
 		}
 		readonly PowerCard[] _impending;
 		readonly CountDictionary<string> _impendingEnergy;
-	}
+		readonly int _impendingEnergyPerRound;
+		readonly int _bonusImpendingPlays;
 
-	protected override object CustomMementoValue {
-		get => new SavedCustomProps( this );
-		set => ((SavedCustomProps)value).Restore( this );
 	}
 
 	#endregion Memento

@@ -130,28 +130,31 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	#region Memento
 
+	protected override object CustomMementoValue {
+		get => new SavedCustomProps( this );
+		set => ((SavedCustomProps)value).Restore( this );
+	}
+
 	class SavedCustomProps {
 		public SavedCustomProps( WoundedWatersBleeding spirit ) {
 			_healingWatersMarkers = spirit.HealingMarkers[Element.Water];
 			_healingAnimalMarkers = spirit.HealingMarkers[Element.Animal];
 			_innates = (InnatePower[])spirit.InnatePowers.Clone(); // don't use original because it gets updated
 			_rules = spirit._specialRules.ToArray();
+			_seekHealing = spirit._seekHealing;
 		}
 		public void Restore( WoundedWatersBleeding spirit ) {
 			spirit.HealingMarkers[Element.Water] = _healingWatersMarkers;
 			spirit.HealingMarkers[Element.Animal] = _healingAnimalMarkers;
 			spirit.InnatePowers = _innates;
 			spirit._specialRules.Clear(); spirit._specialRules.AddRange( _rules );
+			spirit._seekHealing = _seekHealing;
 		}
 		readonly int _healingWatersMarkers;
 		readonly int _healingAnimalMarkers;
 		readonly InnatePower[] _innates;
 		readonly SpecialRule[] _rules;
-	}
-
-	protected override object CustomMementoValue {
-		get => new SavedCustomProps(this);
-		set => ((SavedCustomProps)value).Restore(this);
+		readonly bool _seekHealing;
 	}
 
 	#endregion Memento

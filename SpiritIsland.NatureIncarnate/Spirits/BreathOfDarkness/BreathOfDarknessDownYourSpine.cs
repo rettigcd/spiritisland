@@ -100,6 +100,11 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 			base.RemoveFromUnresolvedActions( selectedActionFactory );
 	}
 
+	protected override object CustomMementoValue { 
+		get => _usedEmpoweredAbduct;
+		set => _usedEmpoweredAbduct=(bool)value;
+	}
+
 	// !! Managing the 2nd _empowerAbduct separately from _availableActions is much harder than just stuffing it in _availabeActions would be.
 
 }

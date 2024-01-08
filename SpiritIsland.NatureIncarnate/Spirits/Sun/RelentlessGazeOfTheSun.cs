@@ -103,4 +103,23 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	#endregion
 
+	#region Memento
+
+	protected override object CustomMementoValue {
+		get => new GazeMemento(this);
+		set => ((GazeMemento)value).Restore(this);
+	}
+	class GazeMemento {
+		public GazeMemento(RelentlessGazeOfTheSun spirit) {
+			_b = spirit.CollectEnergySecondTime;
+			_card = spirit._currentPowerCard;
+		}
+		public void Restore(RelentlessGazeOfTheSun spirit) {
+			spirit.CollectEnergySecondTime = _b;
+			spirit._currentPowerCard = _card;
+		}
+		readonly bool _b;
+		readonly PowerCard _card;
+	}
+	#endregion Memento
 }

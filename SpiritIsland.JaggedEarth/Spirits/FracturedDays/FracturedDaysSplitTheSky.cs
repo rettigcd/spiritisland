@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using System.Runtime.Serialization.Formatters.Binary;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class FracturedDaysSplitTheSky : Spirit {
 
@@ -67,11 +69,11 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	}
 
-	Random _randomizer;
-	public int NextRandom(int n) => _randomizer.Next(n); // access repeatable random # for Visions of Shifting Future
+	OneOrTwoClass _randomizer;
+	public int OneOrTwo() => _randomizer.Next(); // access repeatable random # for Visions of Shifting Future
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
-		_randomizer = new Random( gs.ShuffleNumber + 2837 ); // 2837 so not using same shuffle as others
+		_randomizer = new OneOrTwoClass( gs.ShuffleNumber + 2837 ); // 2837 so not using same shuffle as others
 
 		// 1 in lowest-numbered land with 1 dahan
 		var lowestLandWith1Dahan = gs.Tokens[ board.Spaces.First(s=>s.Tokens.Dahan.CountAll==1) ];
@@ -141,5 +143,54 @@ public class FracturedDaysSplitTheSky : Spirit {
 		else
 			this.DtnwMinor.Add( keep );
 	}
+
+	#region Custom Memento
+
+	protected override object CustomMementoValue { 
+		get => new FracturedDaysMemento(this);
+		set => ((FracturedDaysMemento)value).Restore(this);
+	}
+
+	class FracturedDaysMemento {
+		public FracturedDaysMemento(FracturedDaysSplitTheSky spirit) {
+			_random = spirit._randomizer.Memento;
+			_time = spirit.Time;
+			_minor = spirit.DtnwMinor.ToArray();
+			_major = spirit.DtnwMajor.ToArray();;
+		}
+		public void Restore( FracturedDaysSplitTheSky spirit ) {
+			spirit._randomizer.Memento = _random;
+			spirit.Time = _time;
+			spirit.DtnwMinor.SetItems(_minor);
+			spirit.DtnwMajor.SetItems(_major);
+		}
+		readonly object _random;
+		readonly int _time;
+		readonly PowerCard[] _minor;
+		readonly PowerCard[] _major;
+
+	}
+
+	#endregion Custom Memento
+
+	/// <summary> Randomizer with a state that can be restored. </summary>
+	class OneOrTwoClass : IHaveMemento {
+		public OneOrTwoClass( int seed ) {
+			_randomizer = new Random( seed );
+		}
+		public int Next() {
+			while(_history.Count <= _cur)
+				_history.Add( _randomizer.Next( 2 ) );
+			return _history[_cur++];
+		}
+		public object Memento {
+			get => _cur;
+			set => _cur = (int)value;
+		}
+		List<int> _history = new List<int>();
+		int _cur = 0;
+		readonly Random _randomizer;
+	}
+
 
 }
