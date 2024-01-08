@@ -101,7 +101,7 @@ public class RegionLayoutClass {
 
 	#region pop-ups
 
-	public Rectangle PopupFearRect {
+	public Rectangle AckPopupRect {
 		get {
 			// Active Fear Layout
 			int fearHeight = (int)(_bounds.Height * .5f);
@@ -152,7 +152,7 @@ public class RegionLayoutClass {
 
 			// popups
 			["Element Bounds"] = ElementPopUpBounds( 10 ),
-			["Popup Fear"] = PopupFearRect,
+			["Popup Fear"] = AckPopupRect,
 			["Minor/Major"] = MinorMajorDeckSelectionPopup,
 		};
 

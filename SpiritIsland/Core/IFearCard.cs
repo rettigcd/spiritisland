@@ -39,3 +39,34 @@ static public class IFearOptionsExtension {
 	}
 
 }
+
+/// <summary>
+/// When all Spirits have to coordinate on something. (pay Energy, ACK card turned up, etc)
+/// </summary>
+static class AllSpirits {
+
+	static public async Task Acknowledge( string prompt, string text, object item ) {
+		var options = new Acknowledgement[] { new Acknowledgement( text, item ) };
+		IEnumerable<Task> spiritsAck = GameState.Current.Spirits.Select( async spirit => { 
+			await spirit.Select( prompt, options, Present.Always );
+		} );
+		await Task.WhenAll( spiritsAck );
+	}
+
+}
+
+/// <summary>
+/// Generates the Acknowledgment Pop-Up in the UI
+/// </summary>
+/// <remarks>
+/// This is required because some items implement their own IOption and we do not want them appearing as the ACK-popup.
+/// </remarks>
+public class Acknowledgement : IOption {
+
+	public Acknowledgement(string text, object item ) {
+		Text = text;
+		Item = item;
+	}
+	public string Text { get; }
+	public object Item { get; }
+}

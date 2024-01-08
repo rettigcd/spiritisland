@@ -327,21 +327,6 @@ public abstract partial class Spirit
 		GameState.Current.Fear.AddDirect( new FearArgs( count ) );
 	}
 
-	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
-		string label = activating ? "Activating Fear" : "Done";
-
-		GameState gs = GameState.Current;
-
-		cardToFlip.Flipped = true;
-		await this.Select( label, new IOption[] { cardToFlip }, Present.Always );
-		if( cardToFlip.ActivatedTerrorLevel.HasValue )
-			gs.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
-		else
-			for(int i=1;i<=3;++i)
-				gs.Log( new Log.Debug($"{i} => {cardToFlip.GetDescription(i)}") );
-
-	}
-
 	#endregion Temporary - Fear - until we can find a better home for it.
 
 	public bool ActionIsMyPower {

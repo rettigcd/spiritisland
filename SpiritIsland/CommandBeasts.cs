@@ -5,7 +5,7 @@
 /// Moves to an action that runs when TimePasses
 /// Added to 1st Spirits ActionFactory list until they use it.
 /// </summary>
-class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
+public class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
 
 	#region Static Setup
 
@@ -67,9 +67,9 @@ class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
 	/// <summary>
 	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
 	/// </summary>
-	Task OnCardRevealed( GameState gameState ) {
+	async Task OnCardRevealed( GameState gameState ) {
+		await AllSpirits.Acknowledge( "Invader Deck Card Revealed", Name, this );
 		gameState.AddTimePassesAction( this );
-		return Task.CompletedTask;
 	}
 	bool _used;
 

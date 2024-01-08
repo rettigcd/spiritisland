@@ -9,18 +9,19 @@ public class SpiritsMayYetDream {
 	static public async Task Option1( TargetSpiritCtx ctx ) {
 
 		// Turn any face-down fear card face-up
-		var fearPosition = new List<TextOption>();
-		var dictionary = new Dictionary<TextOption, IFearCard>();
+		var displayOptions = new List<TextOption>();
+		var lookupByText = new Dictionary<TextOption, IFearCard>();
 
 		var fear = GameState.Current.Fear;
-		NameCards( fearPosition, dictionary, "Active", fear.ActivatedCards );
-		NameCards( fearPosition, dictionary, "Future", fear.Deck );
+		NameCards( displayOptions, lookupByText, "Active", fear.ActivatedCards );
+		NameCards( displayOptions, lookupByText, "Future", fear.Deck );
 
-		var positionToShow = await ctx.Self.Select( "Select fear to reveal", fearPosition.ToArray(), Present.Always );
-		await ctx.Self.FlipFearCard( dictionary[positionToShow] );
+		var positionToShow = await ctx.Self.Select( "Select fear to reveal", displayOptions.ToArray(), Present.Always );
+		await fear.FlipFearCard( lookupByText[positionToShow] );
 
 	}
 
+	// Create a name for the Position of the face-down Fear card.
 	static void NameCards( List<TextOption> fearPosition, Dictionary<TextOption, IFearCard> dictionary, string label, Stack<IFearCard> source ) {
 		int i = 0;
 		foreach(var card in source) {

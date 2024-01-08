@@ -123,6 +123,18 @@ public class ResourceImages
 		return bitmap;
 	}
 
+	public Bitmap GetMiscAction( string name ) {
+		string key = "misc_action\\" + name + ".png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+
+		Bitmap bitmap = new Bitmap(200,300); // !!! add a builder here
+
+		// save
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
+
+
 	public Bitmap GetHealthBlightCard() {
 		string key = "blight\\healthy.png";
 		if(_cache.Contains( key )) return _cache.Get( key );

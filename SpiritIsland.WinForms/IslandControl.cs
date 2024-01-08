@@ -102,15 +102,14 @@ public partial class IslandControl : Control {
 		// Pop-ups - draw last, because they are pop-ups and should be on top.
 		DrawDeckPopUp( pe.Graphics, regionLayout );
 		DrawElementsPopUp( pe.Graphics, regionLayout );
-		DrawFearPopUp( pe.Graphics, regionLayout );
+		DrawAckPopUp( pe.Graphics, regionLayout );
 
 		if(_ctx._debug)
 			regionLayout.DrawRects( pe.Graphics );
 
-		if(options_FearPopUp is not null)
-			_optionRects.Add( options_FearPopUp, regionLayout.PopupFearRect );
-		else if(options_BlightPopUp is not null)
-			_optionRects.Add( options_BlightPopUp, regionLayout.PopupFearRect );
+		if(options_Ack is not null)
+			_optionRects.Add( options_Ack, regionLayout.AckPopupRect );
+
 	}
 
 	public void GameState_NewLogEntry( ILogEntry obj ) {
@@ -188,15 +187,21 @@ public partial class IslandControl : Control {
 		graphics.DrawImage( majorImage, majorRect );
 	}
 
-	void DrawFearPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
-		if(options_FearPopUp is not null) {
-			using Image img = ResourceImages.Singleton.GetFearCard( options_FearPopUp );
-			graphics.DrawImage( img, regionLayout.PopupFearRect );
+	void DrawAckPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
+		if(options_Ack is null) return;
+
+		var item = options_Ack.Item;
+		if(item is IFearCard fearCard) {
+			using Image img = ResourceImages.Singleton.GetFearCard( fearCard );
+			graphics.DrawImage( img, regionLayout.AckPopupRect );
+		} else if(item is IBlightCard blightCard) {
+			using Image img = ResourceImages.Singleton.GetBlightCard( blightCard );
+			graphics.DrawImage( img, regionLayout.AckPopupRect );
+		} else if(item is CommandBeasts cmdBeasts) {
+			using Image img = ResourceImages.Singleton.GetMiscAction( "Command Beasts" );
+			graphics.DrawImage( img, regionLayout.AckPopupRect );
 		}
-		if(options_BlightPopUp is not null) {
-			using Image img = ResourceImages.Singleton.GetBlightCard( options_BlightPopUp );
-			graphics.DrawImage( img, regionLayout.PopupFearRect );
-		}
+
 	}
 
 	protected override void OnSizeChanged( EventArgs e ) {
@@ -358,8 +363,7 @@ public partial class IslandControl : Control {
 			.First();
 
 		// !!! Buttonize Pop-ups - need to add dynamically and be able to remove themselves when done/clicked
-		options_FearPopUp = decision.Options.OfType<IFearCard>().FirstOrDefault();
-		options_BlightPopUp = decision.Options.OfType<IBlightCard>().FirstOrDefault();
+		options_Ack = decision.Options.OfType<Acknowledgement>().FirstOrDefault();
 
 		// !!! ADD Special Rules (Spirit) button click - BTN needs to handle its own Click event
 		// !!! ADD Adversary Button click - BTN needs to handle its own Click event
@@ -405,8 +409,7 @@ public partial class IslandControl : Control {
 	A.DeckToDrawFrom decision_DeckToDrawFrom;
 	An.Element decision_Element;
 
-	IFearCard options_FearPopUp;
-	IBlightCard options_BlightPopUp;
+	Acknowledgement options_Ack;
 
 	#endregion
 

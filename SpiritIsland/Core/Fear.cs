@@ -84,7 +84,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 
 			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
 			foreach(Spirit spirit in _gs.Spirits)
-				await spirit.FlipFearCard(fearCard,true);
+				await FlipFearCard(fearCard,true);
 
 			await (TerrorLevel switch {
 				1 => fearCard.Level1( _gs ),
@@ -95,6 +95,23 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 
 			++ResolvedCards; // record discard cards (for England-6)
 		}
+	}
+
+	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
+		string label = activating ? "Activating Fear" : "Done";
+
+		cardToFlip.Flipped = true;
+		await AllSpirits.Acknowledge( label, cardToFlip.Text, cardToFlip );
+
+		// Log
+		if(cardToFlip.ActivatedTerrorLevel.HasValue)
+			// Show description of Activated Level
+			_gs.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
+		else
+			// Show all Levels
+			for(int i = 1; i <= 3; ++i)
+				_gs.Log( new Log.Debug( $"{i} => {cardToFlip.GetDescription( i )}" ) );
+
 	}
 
 	public int ResolvedCards { get; private set; }

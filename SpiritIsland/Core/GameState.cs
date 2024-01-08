@@ -200,7 +200,7 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 		await blightCard.RemoveAsync(Token.Blight, count, RemoveReason.TakingFromCard ); // stops from putting back on card
 
 		if(BlightCard != null && blightCard[Token.Blight] <= 0) {
-			await Spirits[0].Select( "Island blighted", new IOption[] { BlightCard }, Present.Always );
+			await AllSpirits.Acknowledge( "Island blighted", BlightCard.Text, BlightCard );
 			Log( new IslandBlighted( BlightCard ) );
 			await BlightCard.OnBlightDepleated( this );
 		}
