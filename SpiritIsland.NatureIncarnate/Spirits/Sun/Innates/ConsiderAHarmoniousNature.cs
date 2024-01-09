@@ -71,7 +71,7 @@ class MyPowersDontDamageDahanThisRound
 
 	void IModifyDahanDamage.Modify( DamagingTokens args ) {
 		if(_spirit.ActionIsMyPower) {
-			GameState.Current.Log( new Log.Debug( $"{_source} prevented {args.TokenCountToReceiveDamage} Dahan from receiving {args.DamagePerToken} on {args.On.Space.Text}." ) );
+			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.TokenCountToReceiveDamage} Dahan from receiving {args.DamagePerToken} on {args.On.Space.Text}." ) );
 			args.TokenCountToReceiveDamage = 0;
 		}
 	}
@@ -81,7 +81,7 @@ class MyPowersDontDamageDahanThisRound
 			&& args.Reason == RemoveReason.Destroyed 
 			&& _spirit.ActionIsMyPower
 		) {
-			GameState.Current.Log( new Log.Debug( $"{_source} prevented {args.Count} Dahan Destruction on {args.From.Space.Text}." ) );
+			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.Count} Dahan Destruction on {args.From.Space.Text}." ) );
 			args.Count = 0;
 		}
 	}
@@ -98,7 +98,7 @@ class DestroyPresenceInsteadOfAddingBlight : BaseModEntity, IModifyAddingTokenAs
 		if(args.Token == Token.Blight 
 			&& await _spirit.UserSelectsFirstText($"Destroy 1 presence instead of adding {args.Count} of blight to {args.To.Space.Text}?", "Yes, destroy my presence instead", "No, bring on the blight!")
 		) {
-			GameState.Current.Log(new Log.Debug($"{_source} stopped blight on {args.To.Space.Text} by destroying presence."));
+			ActionScope.Current.Log(new Log.Debug($"{_source} stopped blight on {args.To.Space.Text} by destroying presence."));
 			await Cmd.DestroyPresence().ActAsync(_spirit);
 			args.Count = 0;
 		}

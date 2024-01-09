@@ -12,7 +12,7 @@ class Russia_Level3_CompetitionAmongHuntersRavageEngine : RavageEngine {
 
 		bool hasCompetition = 3 <= spaceState.Sum( Human.Explorer );
 		if(hasCompetition)
-			GameState.Current.LogDebug( $"{CompetitionName} causes ravage on {spaceState.Space.Text}" );
+			ActionScope.Current.LogDebug( $"{CompetitionName} causes ravage on {spaceState.Space.Text}" );
 		return hasCompetition;
 	}
 

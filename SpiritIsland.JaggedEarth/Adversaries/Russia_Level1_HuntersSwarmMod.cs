@@ -20,7 +20,7 @@ class Russia_Level1_HuntersSwarmMod : BaseModEntity, IHandleTokenAddedAsync {
 			if(beasts.Any) {
 				await beasts.Destroy( 1 );
 				_beastsDestroyed++;
-				GameState.Current.LogDebug( $"Blight on {((Space)args.To).Text} destroys 1 beast." );
+				ActionScope.Current.LogDebug( $"Blight on {((Space)args.To).Text} destroys 1 beast." );
 			}
 		}
 	}

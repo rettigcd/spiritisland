@@ -38,7 +38,7 @@ public class CastDownIntoTheBrinyDeep {
 		foreach(SpaceState spaceState in existingSpaces)
 			CleanUpInvalidSpace( spaceState );
 
-		GameState.Current.Log( new Log.LayoutChanged( $"{Name} destroyed Board {board.Name}" ) );
+		ActionScope.Current.Log( new Log.LayoutChanged( $"{Name} destroyed Board {board.Name}" ) );
 	}
 
 	static void CleanUpInvalidSpace( SpaceState spaceState ) {

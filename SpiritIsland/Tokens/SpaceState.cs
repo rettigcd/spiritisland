@@ -247,13 +247,13 @@ public class SpaceState
 
 		if(newToken.IsDestroyed) {
 			await Destroy( token, count ); // destroy the old token
-			GameState.Current.LogDebug($"{Space.Text} Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation} => Destroyed!");
+			ActionScope.Current.LogDebug($"{Space.Text} Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation} => Destroyed!");
 			return (token, 0);
 		}
 
 		Adjust( token, -count );
 		Adjust( newToken, count );
-		GameState.Current.LogDebug( $"Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
+		ActionScope.Current.LogDebug( $"Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
 		return (newToken, count);
 	}
 

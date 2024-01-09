@@ -40,7 +40,7 @@ abstract public class AdversaryBase : IAdversary {
 	// After Decks are built, before Tokens are placed
 	public virtual void Init( GameState gameState ) {
 		foreach(var mod in ActiveLevels) {
-			gameState.Log( new SetupDescription( $"{mod.Title} - {mod.Description}" ) );
+			ActionScope.Current.Log( new SetupDescription( $"{mod.Title} - {mod.Description}" ) );
 			mod.Init( gameState, this );
 		}
 	}

@@ -14,10 +14,10 @@ class SwedenExplorer : ExploreEngine {
 	protected override async Task ExploreSingleSpace( SpaceState tokens, GameState gs, bool escalation ) {
 		await base.ExploreSingleSpace( tokens, gs, escalation );
 		if( escalation )
-			SwayedByTheInvaders( tokens, gs );
+			SwayedByTheInvaders( tokens );
 	}
 
-	static void SwayedByTheInvaders( SpaceState tokens, GameState gs ) {
+	static void SwayedByTheInvaders( SpaceState tokens ) {
 		var dahan = tokens.Dahan;
 		if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {
 			var dahanToConvert = dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).First();
@@ -25,7 +25,7 @@ class SwedenExplorer : ExploreEngine {
 
 			dahan.Adjust( dahanToConvert, -1 );
 			tokens.Adjust( townToAdd, 1 );
-			gs.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}" ) );
+			ActionScope.Current.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}" ) );
 		}
 	}
 

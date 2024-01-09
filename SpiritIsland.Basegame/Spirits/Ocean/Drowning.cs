@@ -40,7 +40,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 		}
 
 		// Drown them immediately
-		gs.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To}" ) );
+		ActionScope.Current.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To}" ) );
 		await to.Invaders.DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health
@@ -56,7 +56,7 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 		if(earnedEnergy == 0) return;
 
 		int cashedInHealth = spiritCount * earnedEnergy;
-		gs.Log( new Log.Debug( $"Ocean gained {earnedEnergy} energy from cashing in {cashedInHealth} health of drowned invaders." ) );
+		ActionScope.Current.Log( new Log.Debug( $"Ocean gained {earnedEnergy} energy from cashing in {cashedInHealth} health of drowned invaders." ) );
 
 		// Update Ocean
 		drownedInvaderHealthAccumulator -= cashedInHealth;

@@ -93,7 +93,7 @@ public class HearthToken : SpiritPresenceToken
 
 	static HumanToken UpgradeDahanAndLog( HumanToken healthToken, int count ) {
 		var newToken = healthToken.AddHealth( _deltaHealth );
-		GameState.Current.LogDebug( $"Adjusting {count} {healthToken.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
+		ActionScope.Current.LogDebug( $"Adjusting {count} {healthToken.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
 		return newToken;
 	}
 

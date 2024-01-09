@@ -11,7 +11,7 @@ public abstract class StillHealthyBlightCard : BlightCard {
 		gs.BlightCards.RemoveAt(0);
 		// It comes into play already flipped
 		gs.BlightCard.OnBlightDepleated(gs);
-		gs.Log( new Log.IslandBlighted( gs.BlightCard ) );
+		ActionScope.Current.Log( new Log.IslandBlighted( gs.BlightCard ) );
 	}
 
 }

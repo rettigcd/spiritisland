@@ -36,7 +36,7 @@ public class CallToTrade {
 		public Task<bool> Skip( SpaceState space ) {
 			space.Adjust( this, -1 );
 
-			GameState.Current.Log(new Log.Debug($"{Name} - Stopping Ravage. Adding Build"));
+			ActionScope.Current.Log(new Log.Debug($"{Name} - Stopping Ravage. Adding Build"));
 
 			// Add Build
 			space.Adjust( ModToken.DoBuild, 1 );

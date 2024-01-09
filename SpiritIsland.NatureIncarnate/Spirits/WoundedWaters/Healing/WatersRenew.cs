@@ -10,7 +10,7 @@ class WatersRenew : IHealingCard {
 	public void Claim( WoundedWatersBleeding spirit ) {
 		// Replace Sanguinary Taint with Call to a fastness of renewal
 		spirit.InnatePowers[1] = InnatePower.For(typeof(CallToAFastnessOfRenewal));
-		GameState.Current.Log( new Log.LayoutChanged("Replaced Sanguinary Tain with Call to a Fastness of Renwal"));
+		ActionScope.Current.Log( new Log.LayoutChanged("Replaced Sanguinary Tain with Call to a Fastness of Renwal"));
 		// Replace Seeking a Path Towards Healing
 		spirit.StopHealing();
 	}

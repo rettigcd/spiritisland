@@ -114,11 +114,11 @@ public class Fear : IHaveMemento {
 		// Log
 		if(cardToFlip.ActivatedTerrorLevel.HasValue)
 			// Show description of Activated Level
-			_gs.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
+			ActionScope.Current.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
 		else
 			// Show all Levels
 			for(int i = 1; i <= 3; ++i)
-				_gs.Log( new Log.Debug( $"{i} => {cardToFlip.GetDescription( i )}" ) );
+				ActionScope.Current.Log( new Log.Debug( $"{i} => {cardToFlip.GetDescription( i )}" ) );
 
 	}
 

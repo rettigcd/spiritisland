@@ -13,7 +13,7 @@ class ScotlandCoastalBlightCheckToken
 	const string Name = "Runoff and Bilgewater";
 
 	public ScotlandCoastalBlightCheckToken() {
-		GameState.Current.LogDebug($"{Name} - To trigger blight removal from the ocean, remove a blight on adjacent coast.");
+		ActionScope.Current.LogDebug($"{Name} - To trigger blight removal from the ocean, remove a blight on adjacent coast.");
 	}
 
 	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
@@ -24,7 +24,7 @@ class ScotlandCoastalBlightCheckToken
 			var space = to.Space.Adjacent_Existing // Ocean is not in play here
 				.First( adj => adj.IsOcean ); // ignoring rule about ocean being on this board, just using adjacent
 			await space.Tokens.Blight.AddAsync( 1, AddReason.Ravage );
-			GameState.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {((Space)args.To).Text} caused additional blight on {space.Text}"));
+			ActionScope.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {((Space)args.To).Text} caused additional blight on {space.Text}"));
 		}
 	}
 

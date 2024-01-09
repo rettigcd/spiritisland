@@ -28,10 +28,10 @@ class HabsurgBuilder : BuildEngine {
 		}
 	}
 
-	public override Task Do1Build( GameState gameState, SpaceState spaceState ) 
+	public override Task Do1Build( GameState _, SpaceState spaceState ) 
 		=> ReplaceInlandCityWith2Towns 
-			? new HasburgSpaceBuilder().ActAsync( gameState, spaceState )
-			: new BuildOnceOnSpace_Default().ActAsync( gameState, spaceState );
+			? new HasburgSpaceBuilder().ActAsync( spaceState )
+			: new BuildOnceOnSpace_Default().ActAsync( spaceState );
 
 	class HasburgSpaceBuilder : BuildOnceOnSpace_Default {
 		public HasburgSpaceBuilder() : base() { }

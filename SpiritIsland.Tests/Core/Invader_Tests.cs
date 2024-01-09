@@ -33,7 +33,7 @@ public class Invader_Tests {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void AdvanceCards(){
-		var gs = new GameState(new RiverSurges(),Boards.A);
+		// var gs = new GameState(new RiverSurges(),Boards.A);
 
 		var sut = InvaderDeckBuilder.Default.Build();
 

@@ -154,7 +154,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 			logParts.Add("1 city to "+ newCitySpaces.SelectLabels().Join(","));
 		if(newTownSpaces.Any())
 			logParts.Add( "1 town to " + newTownSpaces.SelectLabels().Join( "," ) );
-		gameState.LogDebug("Wave of Immigration: Adding " + logParts.Join(" and "));
+		ActionScope.Current.LogDebug("Wave of Immigration: Adding " + logParts.Join(" and "));
 	}
 
 	#endregion Level-5

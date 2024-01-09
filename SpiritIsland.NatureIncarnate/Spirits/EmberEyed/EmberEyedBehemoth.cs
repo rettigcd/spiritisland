@@ -71,7 +71,7 @@ public class EmberEyedBehemoth : Spirit {
 		// Remove 4th growth after it has been used
 		if(GrowthTrack.Options.Length == 4 && Incarna.Empowered) {
 			GrowthTrack = new( GrowthTrack.Options.Take( 3 ).ToArray() );
-			GameState.Current.Log( new Log.LayoutChanged( $"Fourth growth option removed from {Name}." ) );
+			ActionScope.Current.Log( new Log.LayoutChanged( $"Fourth growth option removed from {Name}." ) );
 		}
 
 		// Reset Smash last, since it depends on Embpowered Incarna
@@ -136,7 +136,7 @@ public class EmberEyedBehemoth : Spirit {
 			var options = (GrowthOption[])value;
 			if(options.Length != GrowthTrack.Options.Length) {
 				GrowthTrack = new( options );
-				GameState.Current.Log( new Log.LayoutChanged( $"Rewind >> Restoring growth options for {Name}." ) );
+				ActionScope.Current.Log( new Log.LayoutChanged( $"Rewind >> Restoring growth options for {Name}." ) );
 			}
 			Incarna.Empowered = options.Length == 3;
 		}

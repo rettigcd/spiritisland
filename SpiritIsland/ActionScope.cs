@@ -179,6 +179,9 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	public Guid Id { get; }
 
+	public void Log(Log.ILogEntry entry ) => GameState.Log( entry );
+	public void LogDebug( string debugMsg ) => GameState.Log( new Log.Debug( debugMsg ) );
+
 	#region Debugging Action-Scope problems
 
 	//public void Log(string label ) {

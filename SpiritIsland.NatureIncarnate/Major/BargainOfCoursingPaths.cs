@@ -48,7 +48,7 @@ public class BargainOfCoursingPaths {
 			SpaceState destination = await GetDestination( args );
 			if(destination == to) return;
 
-			GameState.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {((Space)args.To).Text} to {destination.Space.Text}" ) );
+			ActionScope.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {((Space)args.To).Text} to {destination.Space.Text}" ) );
 			await args.Added.MoveAsync(to,destination,args.Count);
 		}
 

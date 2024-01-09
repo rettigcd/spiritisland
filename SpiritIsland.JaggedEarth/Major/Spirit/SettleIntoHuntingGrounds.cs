@@ -41,7 +41,7 @@ class FreezePresence : BaseModEntity , IModifyRemovingToken, IEndWhenTimePasses 
 		if(args.Token.HasTag(_presence) 
 			&& args.Reason.IsOneOf(RemoveReason.MovedFrom,RemoveReason.Abducted)
         ) {
-			GameState.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Space.Text}"));
+			ActionScope.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Space.Text}"));
 			args.Count = 0;
 		}
 	}

@@ -3,7 +3,7 @@
 public class BuildEngine {
 
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
-		gameState.Log( new Log.InvaderActionEntry( "Building:" + card.Text ) );
+		ActionScope.Current.Log( new Log.InvaderActionEntry( "Building:" + card.Text ) );
 		AddBuildTokensMatchingCard( card, gameState );
 		await Build( gameState );
 	}
@@ -26,7 +26,7 @@ public class BuildEngine {
 			.ToArray();
 
 		if(0 < noBuildsSpaceNames.Length)
-			gameState.Log( new Log.InvaderActionEntry( "No build due to no invaders on: " + string.Join( ", ", noBuildsSpaceNames ) ) );
+			ActionScope.Current.Log( new Log.InvaderActionEntry( "No build due to no invaders on: " + string.Join( ", ", noBuildsSpaceNames ) ) );
 	}
 
 	async Task Build( GameState gameState ) {
@@ -56,8 +56,8 @@ public class BuildEngine {
 		return buildCounts;
 	}
 
-	public virtual Task Do1Build( GameState gameState, SpaceState spaceState ) 
-		=> new BuildOnceOnSpace_Default().ActAsync( gameState, spaceState );
+	public virtual Task Do1Build( GameState _, SpaceState spaceState ) 
+		=> new BuildOnceOnSpace_Default().ActAsync( spaceState );
 
 	public virtual bool ShouldBuildOnSpace(SpaceState spaceState ) => spaceState.HasInvaders();
 

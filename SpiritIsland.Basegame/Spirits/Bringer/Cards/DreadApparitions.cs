@@ -24,7 +24,7 @@ public class DreadApparitions {
 			if(fearType == FearType.FromInvaderDestruction) return;
 
 			tokens.Defend.Add( fearAdded );
-			GameState.Current.Log( new Log.Debug( $"{fearAdded} Fear => +{fearAdded} Defend ({_powerName})" ) );
+			ActionScope.Current.Log( new Log.Debug( $"{fearAdded} Fear => +{fearAdded} Defend ({_powerName})" ) );
 		}
 		readonly string _powerName;
 	}

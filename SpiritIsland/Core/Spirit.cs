@@ -29,7 +29,7 @@ public abstract partial class Spirit
 
 	public void InitSpirit( Board board, GameState gameState ){
 		gameState.AddTimePassesAction(this);
-		_gateway.DecisionMade += (d) => gameState.Log(d);
+		_gateway.DecisionMade += (d) => ActionScope.Current.Log(d);
 		InitializeInternal(board,gameState);
 	}
 
@@ -567,7 +567,7 @@ public abstract partial class Spirit
 		SpaceState[] spaces = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).ToArray();
 		
 		if(spaces.Length == 0) {
-			GameState.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
+			ActionScope.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
 			return null;
 		}
 

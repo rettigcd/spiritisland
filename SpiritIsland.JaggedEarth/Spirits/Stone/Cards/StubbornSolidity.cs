@@ -26,7 +26,7 @@ public class StubbornSolidityBehavior : IModifyRemovingToken
 
 	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		if(	args.Token.Class == Human.Dahan ) args.Count = 0;
-		GameState.Current.Log(new Log.Debug("Stuborn Solidity stopping Dahan from being changed."));
+		ActionScope.Current.Log(new Log.Debug("Stuborn Solidity stopping Dahan from being changed."));
 	}
 	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 

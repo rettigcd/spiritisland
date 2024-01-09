@@ -83,7 +83,7 @@ public class HeartOfTheWildfire : Spirit {
 		void  IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presence. ( This includes cascades.)
 			if( DestroysMyPresence(args) && BlightAddedDueToSpiritEffects() ){
-				GameState.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));
+				ActionScope.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));
 				args.Count = 0;
 			}
 		}

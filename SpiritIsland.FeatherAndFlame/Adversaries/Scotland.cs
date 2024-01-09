@@ -23,7 +23,7 @@ public class Scotland : AdversaryBase, IAdversary {
 				// Add 1 City to land #2
 				foreach(Board board in gameState.Island.Boards)
 					board[2].Tokens.AdjustDefault( Human.City, 1 );
-				gameState.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
+				ActionScope.Current.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
 			},
 		}.WithInvaderCardOrder("11-22-1-C2-33333"),
 
@@ -70,7 +70,7 @@ public class Scotland : AdversaryBase, IAdversary {
 		await using(var actionScope = await ActionScope.Start(ActionCategory.Adversary))
 			foreach(SpaceState ss in spacesToAddTown)
 				await ss.AddDefault( Human.Town, 1, AddReason.Build );
-		gameState.Log(new SpiritIsland.Log.Debug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.SelectLabels().Join(",")));
+		ActionScope.Current.Log(new SpiritIsland.Log.Debug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.SelectLabels().Join(",")));
 	}
 
 	#endregion Escalation - Ports Sprawl Outward

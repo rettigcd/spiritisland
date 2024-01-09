@@ -44,7 +44,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		// Add Multi
 		multi.AddToBoardsAndSetAdjacent( adjacents.Distinct() );
 
-		gameState.Log( new Log.LayoutChanged($"{space.Text} and {other.Text} were woven together") );
+		ActionScope.Current.Log( new Log.LayoutChanged($"{space.Text} and {other.Text} were woven together") );
 
 		// When this effect expires
 		gameState.AddTimePassesAction( TimePassesAction.Once( 
@@ -54,7 +54,7 @@ public class WeaveTogetherTheFabricOfPlace {
 				removeOther.Restore();
 				removeSpace.Restore();
 
-				gameState.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
+				ActionScope.Current.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
 
 				await DistributeVisibleTokens( originalSelf, space, other );
 

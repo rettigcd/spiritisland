@@ -67,7 +67,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 			.ToArray();
 		foreach(IToken t in toDestroy)
 			await to.Destroy( t, to[t] );
-		GameState.Current.LogDebug( "All Things Weaken - destroyed all Presence/Beast on " + ((Space)args.To).Text );
+		ActionScope.Current.LogDebug( "All Things Weaken - destroyed all Presence/Beast on " + ((Space)args.To).Text );
 
 		// Destroy 1 presence in adjacent land
 		var options = to.Adjacent_Existing
@@ -81,7 +81,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 
 		if(token == null) return;
 		await token.Space.Tokens.Destroy(token.Token, 1);
-		GameState.Current.LogDebug( "All Things Weaken - destroyed neighbor presence " + token );
+		ActionScope.Current.LogDebug( "All Things Weaken - destroyed neighbor presence " + token );
 
 	}
 }

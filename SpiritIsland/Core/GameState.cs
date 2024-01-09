@@ -197,7 +197,7 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 
 		if(BlightCard != null && blightCard[Token.Blight] <= 0) {
 			await AllSpirits.Acknowledge( "Island blighted", BlightCard.Text, BlightCard );
-			Log( new IslandBlighted( BlightCard ) );
+			ActionScope.Current.Log( new IslandBlighted( BlightCard ) );
 			await BlightCard.OnBlightDepleated( this );
 		}
 	}
@@ -205,7 +205,6 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 	#endregion
 
 	public void Log( ILogEntry entry ) => NewLogEntry?.Invoke( entry );
-	public void LogDebug( string debugMsg ) => Log( new Debug(debugMsg) );
 	public async Task TriggerTimePasses() {
 
 		// Clear Defend

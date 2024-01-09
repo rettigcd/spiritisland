@@ -45,7 +45,7 @@ public class DreamOfTheUntouchedLand {
 			gs.AddIslandMod( new InvadersSkip1Board() );
 
 			// Notify board changed.
-			gs.Log( new Log.LayoutChanged($"{Name} added Board {newBoard.Name}") );
+			ActionScope.Current.Log( new Log.LayoutChanged($"{Name} added Board {newBoard.Name}") );
 
 		}
 

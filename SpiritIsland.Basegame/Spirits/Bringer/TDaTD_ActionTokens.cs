@@ -56,8 +56,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		Adjust( invaderToken, -1 );
 		Adjust( newToken, 1 );
 
-		var gameState = GameState.Current;
-		gameState.Log( new SpiritIsland.Log.Debug( "Dream 1000 deaths destroy." ) );
+		ActionScope.Current.Log( new Log.Debug( "Dream 1000 deaths destroy." ) );
 
 		// Record Here
 		TDaTD_ActionTokens.RecordSpaceWithDreamers( this );

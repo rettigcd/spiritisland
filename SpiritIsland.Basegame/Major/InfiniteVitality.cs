@@ -50,7 +50,7 @@ class StopDahanDamageAndDestruction
 
 	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		if(args.Token.Class == Human.Dahan && args.Reason == RemoveReason.Destroyed) {
-			GameState.Current.Log( new Log.Debug( $"{_sourceName} stopping {args.Count} Dahan from being destroyed." ) );
+			ActionScope.Current.Log( new Log.Debug( $"{_sourceName} stopping {args.Count} Dahan from being destroyed." ) );
 			args.Count = 0;
 		}
 	}

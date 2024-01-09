@@ -16,7 +16,7 @@ class SwedenHeavyMining : BaseModEntity, IHandleTokenAddedAsync, IReactToLandDam
 			config.ShouldCascade = false;
 
 			await tokens.Blight.AddAsync( 1 );
-			GameState.Current.LogDebug( "Heavy Mining: additional blight on " + tokens.Space.Text );
+			ActionScope.Current.LogDebug( "Heavy Mining: additional blight on " + tokens.Space.Text );
 		}
 	}
 
@@ -40,7 +40,7 @@ class SwedenHeavyMining : BaseModEntity, IHandleTokenAddedAsync, IReactToLandDam
 				) );
 				if(selection != null) {
 					selection.Tokens.AdjustDefault( Human.Town, 1 );
-					GameState.Current.LogDebug( $"Mining Rush: Blight on {((Space)args.To).Text} caused +1 Town on {selection.Text}." );
+					ActionScope.Current.LogDebug( $"Mining Rush: Blight on {((Space)args.To).Text} caused +1 Town on {selection.Text}." );
 				}
 			}
 

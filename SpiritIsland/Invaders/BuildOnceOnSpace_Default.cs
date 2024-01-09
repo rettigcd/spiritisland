@@ -9,10 +9,10 @@
 /// </remarks>
 public class BuildOnceOnSpace_Default { 
 
-	public async Task ActAsync( GameState gs, SpaceState tokens ) {
+	public async Task ActAsync( SpaceState tokens ) {
 		_tokens = tokens;
 		string buildResult = await GetResult();
-		gs.Log( new Log.InvaderActionEntry( _tokens.Space.Label + ": " + buildResult ) );
+		ActionScope.Current.Log( new Log.InvaderActionEntry( _tokens.Space.Label + ": " + buildResult ) );
 	}
 
 	async Task<string> GetResult() {

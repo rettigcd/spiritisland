@@ -22,7 +22,7 @@ class ScotlandExploreEngine : ExploreEngine {
 			await tokens.AddDefault( Human.Town, 1, AddReason.Explore );
 			foreach(var b in tokens.Space.Boards)
 				++_specialExplore[b];
-			GameState.Current.Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+tokens.Space.Text) );
+			ActionScope.Current.Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+tokens.Space.Text) );
 		}
 
 	}
