@@ -46,16 +46,12 @@ public class UnnervingPall {
 				int count = _sitOuts[original];
 				var nonParticipating = original.SetRavageSide( RavageSide.None );
 				restore.Add(nonParticipating,original );
-				space.Adjust( nonParticipating, count );
-				space.Adjust( original, -count );
+				space.AdjustProps( count, original ).To( nonParticipating );
 			}
 
 			ActionScope.Current.AtEndOfThisAction( scope => {
-				foreach(var sitOut in restore.Keys) {
-					int count = _sitOuts[sitOut];
-					space.Adjust( sitOut, -count );
-					space.Adjust( restore[sitOut], count );
-				}
+				foreach(var sitOut in restore.Keys)
+					space.AdjustPropsForAll(sitOut).To( restore[sitOut] );
 			} );
 
 		}

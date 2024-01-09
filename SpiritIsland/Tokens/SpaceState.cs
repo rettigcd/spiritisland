@@ -27,11 +27,12 @@ public class SpaceState
 	}
 
 	#endregion
+
 	public Space Space { get; }
 
 	public int this[ISpaceEntity specific] {
 		get {
-			ValidateNotDead( specific );
+			// We do temporarily store Destroyed, then immediatly Remove/Destroy them
 			int count = _counts[specific];
 			if( specific is TokenClassToken ut )
 				count += _api.GetDynamicTokensFor(this, ut);
@@ -104,8 +105,8 @@ public class SpaceState
 
 	#region fields
 
-	static void ValidateNotDead( ISpaceEntity specific ) {
-		if(specific is HumanToken ht && ht.RemainingHealth == 0) 
+	static void ValidateNotDestroyed( ISpaceEntity specific ) {
+		if(specific is HumanToken ht && ht.IsDestroyed) 
 			throw new ArgumentException( "We don't store dead counts" );
 	}
 
@@ -113,11 +114,38 @@ public class SpaceState
 	readonly IEnumerable<ISpaceEntity> _islandMods;
 	protected readonly IIslandTokenApi _api;
 
-	#endregion
+    #endregion
 
-	#region Non-event Generationg Token Changes
+    #region Non-event Generationg Token Changes
 
-	/// <summary> Non-event-triggering setup </summary>
+	/// <summary> Add or Remove tokens without generating events. </summary>
+	public void Adjust( IToken specific, int delta ) {
+		// Don't let them add Destroyed tokens.
+		// But it is ok to remove destroyed tokens because we might be undoing a destroyed token
+		if( 0 < delta ) ValidateNotDestroyed( specific );
+
+        if(specific is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta );
+        _counts[specific] += delta;
+    }
+
+	/// <summary>
+	/// For Adjust()ing in the positive direction, HumanTokens that might be Destroyed. 
+	/// Only trigger a Destroyed/Remove event if the added token is already destroyed.
+	/// </summary>
+	/// <remarks> Though counter-intuitive, this significantly simplifies replacing-token logic.</remarks>
+	public async Task AdjustUpHumanAsync( HumanToken token, int delta ) {
+		if(delta < 0) throw new ArgumentOutOfRangeException(nameof(delta), "Add only. For removing tokens, use Adjust(...)" );
+		if(delta == 0) return;
+
+		// Do Adjustment
+		if(token is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta );
+		_counts[token] += delta;
+
+		if(token.IsDestroyed)
+			await this.RemoveAsync(token, delta, RemoveReason.Destroyed);
+	}
+
+	/// <summary> Non-event-triggering changes </summary>
 	public void Adjust( ISpaceEntity specific, int delta ) {
 		if(specific is HumanToken human && human.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
@@ -125,7 +153,8 @@ public class SpaceState
 		_counts[specific] += delta;
 	}
 
-	public void Init( ISpaceEntity specific, int newValue ) {
+	/// <summary> Non-event setup. </summary>
+    public void Init( ISpaceEntity specific, int newValue ) {
 		int old = _counts[specific];
 		Adjust( specific, newValue-old ); // go through Adjust so that we keep ITrackMySpaces in sync
 	}
@@ -138,17 +167,19 @@ public class SpaceState
 
 	public IToken GetDefault( ITokenClass tokenClass ) => _api.GetDefault( tokenClass );
 
-	public void ReplaceAllWith( ISpaceEntity original, ISpaceEntity replacement ) {
-		Adjust( replacement, this[original] );
-		Init( original, 0 );
-	}
-	public void ReplaceNWith( int countToReplace, ISpaceEntity oldToken, ISpaceEntity newToken ) {
-		countToReplace = Math.Min( countToReplace, this[oldToken] );
-		Adjust( oldToken, -countToReplace );
-		Adjust( newToken, countToReplace );
-	}
-
 	#endregion
+
+	#region AdjustProps
+
+	/// <summary>
+	/// Changes properties of existing Tokens. Doesn't (visually/logically) change the tokens themselves.
+	/// </summary>
+	/// <param name="tokenToReplace"></param>
+	/// <returns></returns>
+	public PropertyAdjustment AdjustPropsForAll( IToken tokenToReplace ) => new PropertyAdjustment(this,tokenToReplace);
+	public PropertyAdjustment AdjustProps( int countToReplace, IToken tokenToReplace ) => new PropertyAdjustment( this, countToReplace, tokenToReplace );
+
+	#endregion AdjustProps
 
 	#region Invader Specific
 
@@ -251,20 +282,18 @@ public class SpaceState
 			return (token, 0);
 		}
 
-		Adjust( token, -count );
-		Adjust( newToken, count );
+		AdjustProps( count, token ).To( newToken );
 		ActionScope.Current.LogDebug( $"Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
 		return (newToken, count);
 	}
-
-	public Task AddDefault( ITokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
-		=> AddAsync( GetDefault( tokenClass ), count, addReason );
-
 
 	// Convenience only
 	public Task Destroy( IToken token, int count ) => token is HumanToken ht
 		? ht.Destroy( this, count )
 		: this.RemoveAsync( token, count, RemoveReason.Destroyed );
+
+	public Task<ITokenAddedArgs> AddDefaultAsync( ITokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
+		=> AddAsync( GetDefault(tokenClass), count, addReason);
 
 	public async Task<ITokenAddedArgs> AddAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		var (addResult,notifier) = await SinkAsync( token, count, addReason );
@@ -439,6 +468,8 @@ public class SpaceState
 
 	// Helper
 	public SourceSelector SourceSelector => new SourceSelector(this);
+
+	public bool PreventsInvaderDamage() => ModsOfType<IStopInvaderDamage>().Any();
 
 }
 

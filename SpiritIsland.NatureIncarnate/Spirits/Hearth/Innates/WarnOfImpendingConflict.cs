@@ -70,8 +70,8 @@ class WarnToken : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 			.OrderBy( x => x.RemainingHealth )
 			.First();
 		int thisTokenGoEarlyCount = Math.Min( remainingGoEarlyCount, space[goFastDahan] );
-		space.Adjust( goFastDahan.SetRavageOrder( RavageOrder.Ambush ), thisTokenGoEarlyCount );
-		space.Adjust( goFastDahan, -thisTokenGoEarlyCount );
+		space.AdjustProps( thisTokenGoEarlyCount, goFastDahan ).To( goFastDahan.SetRavageOrder( RavageOrder.Ambush ) );
+
 		remainingGoEarlyCount -= thisTokenGoEarlyCount;
 	}
 
@@ -80,10 +80,8 @@ class WarnToken : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 			var tokensToRestore = space.HumanOfTag(TokenCategory.Dahan)
 				.Where( h => h.RavageOrder != RavageOrder.DahanTurn )
 				.ToArray();
-			foreach(var token in tokensToRestore) {
-				space.Adjust( token.SetRavageOrder( RavageOrder.DahanTurn ), space[token] );
-				space.Init( token, 0 );
-			}
+			foreach(var token in tokensToRestore)
+				space.AdjustPropsForAll( token ).To( token.SetRavageOrder( RavageOrder.DahanTurn ) );
 		} );
 	}
 

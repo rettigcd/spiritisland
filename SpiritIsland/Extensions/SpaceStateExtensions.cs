@@ -28,4 +28,32 @@ static public class SpaceStateExtensions {
 	static public void AddFear( this SpaceState tokens, int count, FearType fearType = FearType.Direct )
 		=> GameState.Current.Fear.AddOnSpace( tokens, count, fearType );
 
+
+	#region SetUp / Adjust
+
+	/// <summary>
+	/// Separate method used during game initialization, not requiring Token Events/animations
+	/// </summary>
+	static public void Setup( this SpaceState tokens, IToken token, int delta ) 
+		=> tokens.Adjust( token, delta );
+
+	static public void Setup( this SpaceState tokens, HumanTokenClass tokenClass, int delta ) 
+		=> tokens.Adjust( tokens.GetDefault( tokenClass ), delta );
+
+	#endregion SetUp / Adjust
+
+	#region Invader
+
+	/// <summary> Gets the invader we most want to be rid of. </summary>
+	static public HumanToken BestInvaderToBeRidOf( this SpaceState ss, ITag[] tags ) {
+		return ss.OfAnyTag( tags )
+			.Cast<HumanToken>()
+			.OrderByDescending( g => g.FullHealth )
+			.ThenBy( k => k.StrifeCount )  // un-strifed first
+			.ThenByDescending( g => g.RemainingHealth )
+			.FirstOrDefault();
+	}
+
+	#endregion
+
 }

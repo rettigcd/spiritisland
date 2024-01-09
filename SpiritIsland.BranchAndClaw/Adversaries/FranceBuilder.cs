@@ -26,7 +26,7 @@ class FranceBuilder : BuildEngine {
 				.OrderBy( t => t.Sum( Human.Town ) )
 				.First();
 			await using var scope = await ActionScope.Start(ActionCategory.Adversary);
-			await buildSpace.AddDefault( Human.Town, 1 );
+			await buildSpace.AddDefaultAsync( Human.Town, 1 );
 		}
 	}
 
@@ -42,9 +42,8 @@ class FranceBuilder : BuildEngine {
 		while(numToReplace > 0) {
 			var explorerToken = tokens.HumanOfTag( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
 			int count = Math.Min( tokens[explorerToken], numToReplace );
-			// Replace
-			tokens.Adjust( explorerToken, -count );
-			tokens.AdjustDefault( Human.Town, count );
+			tokens.AdjustProps( count, explorerToken ).To( Human.Town );
+
 			// next
 			numToReplace -= count;
 		}

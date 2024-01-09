@@ -76,7 +76,7 @@ public class TargetSpaceCtx : IHaveASpirit {
 	public BlightTokenBinding Blight        => Tokens.Blight;
 	public DahanBinding Dahan    => Tokens.Dahan;
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
-		=> Tokens.AddDefault( tokenClass, count, addReason );
+		=> Tokens.AddDefaultAsync( tokenClass, count, addReason );
 	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
 		=> Tokens.RemoveAsync( token, count, reason );
 

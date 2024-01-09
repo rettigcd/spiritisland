@@ -47,7 +47,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		// After Advancing Invader Cards
 		// On each board,
 		// Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required).
-		return new SpaceAction("Explore - Escalation (Mining Tunnels)",ctx=>ctx.Tokens.AddDefault(Human.Explorer,1))
+		return new SpaceAction("Explore - Escalation (Mining Tunnels)",ctx=>ctx.Tokens.AddDefaultAsync(Human.Explorer,1))
 			.In().NDifferentLandsPerBoard(2)
 			.Which( Is.NotExploreOrBuildCardMatch ) // Doing this before we advance cars so they are in the Explore/Build slot
 			.ForEachBoard()
@@ -164,7 +164,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 				.ToArray();
 
 			foreach(var ss in spacesThatGetAnExplorer)
-				ss.AdjustDefault(Human.Explorer,1);
+				ss.Setup(Human.Explorer,1);
 			
 			// Add 1 Disease and 1 City in the highest-numbered land with a town symbol.
 			var highestTowns = gs.Island.Boards
@@ -173,7 +173,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 				.ToArray();
 			foreach(var s in highestTowns) {
 				s.Disease.Adjust(1);
-				s.AdjustDefault(Human.City,1);
+				s.Setup(Human.City,1);
 			}
 		}
 	};
@@ -194,7 +194,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		return new SpaceAction("Upgrade explorer (Mining Boom (I))", async x=>{
 			var token = await x.Self.SelectAsync(new A.SpaceToken("Select Explorer to Upgrade",x.Tokens.SpaceTokensOfTag(Human.Explorer),Present.Always));
 			if(token != null)
-				ReplaceInvader.UpgradeSelectedInvader(x.Tokens,token.Token.AsHuman()); 
+				await ReplaceInvader.UpgradeSelectedInvader(x.Tokens,token.Token.AsHuman()); 
 		} )
 			.In().OneLandPerBoard().Which(Has.Token(Human.Explorer))
 			.ForEachBoard()
@@ -266,7 +266,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			await new BuildOnceOnSpace_Default().ActAsync( x.Tokens );
 			var token = await x.Self.SelectAsync( new A.SpaceToken( "Select Explorer to Upgrade", x.Tokens.SpaceTokensOfTag( Human.Explorer ), Present.Always ) );
 			if(token != null)
-				ReplaceInvader.UpgradeSelectedInvader( x.Tokens, token.Token.AsHuman() );
+				await ReplaceInvader.UpgradeSelectedInvader( x.Tokens, token.Token.AsHuman() );
 		} )
 			.In().OneLandPerBoard().Which( Has.Token( Human.Explorer ) )
 			.ForEachBoard()
@@ -311,7 +311,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 				++count;
 				--_bonusExplorers[board];
 			}
-			await tokens.AddDefault( Human.Explorer, count, AddReason.Explore );
+			await tokens.AddDefaultAsync( Human.Explorer, count, AddReason.Explore );
 		}
 
 	}

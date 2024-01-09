@@ -68,7 +68,11 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	public bool IsDestroyed => FullHealth <= FullDamage;
 
 	/// <returns># of items destroyed</returns>
-	/// <remarks>Overriden by Habsburg Monarchy - Durable Towns that take 2 damage instead of being destroyed.</remarks>
+	/// <remarks>
+	/// Overriden by Habsburg Monarchy - Durable Towns that take 2 damage instead of being destroyed.
+	/// This should ONLY be called in response to a Direct "Destroy" command, 
+	/// NOT in response to receiving destruction damage.
+	/// </remarks>
 	public virtual async Task<int> Destroy( SpaceState tokens, int count ) {
 		if(tokens[this] < count)
 			throw new InvalidOperationException($"Cannot remove {count} {this} tokens because there aren't that many.");

@@ -44,7 +44,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		// put 2 presence and 1 blight in the highest numbered land with a town setup symbol
 		SpaceState town = board.Spaces.Tokens().Last( t => t.HasAny(Human.Town) ); // not exactly correct. Should looks at sumbols, not actual towns
 		town.Init( Presence.Token, 2 );
-		town.Adjust(Token.Blight,1);
+		town.Setup(Token.Blight,1);
 
 		// start with 4 energy
 		Energy = 4;

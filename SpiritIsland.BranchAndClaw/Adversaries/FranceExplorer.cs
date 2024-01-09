@@ -44,7 +44,7 @@ public class FranceExplorer : ExploreEngine {
 			var options = boardCtx.Board.Spaces.Where( s => !s.Tokens.HasAny( Human.Explorer ) ).ToArray();
 			var space = await boardCtx.SelectAsync( new A.Space( "Add explorer", options, Present.Always ) );
 			if(space != null)
-				await space.Tokens.AddDefault( Human.Explorer, 1 );
+				await space.Tokens.AddDefaultAsync( Human.Explorer, 1 );
 		}
 	);
 

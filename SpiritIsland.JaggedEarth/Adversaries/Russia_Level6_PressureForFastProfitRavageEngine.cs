@@ -15,7 +15,7 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		_token.PreRavage();
 		await base.ActivateCard( card, gameState );
-		_token.PressureForFastProfit( gameState );
+		await _token.PressureForFastProfit( gameState );
 	}
 
 	readonly RecordBlightAdded _token;
@@ -39,7 +39,7 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 			}
 		}
 
-		public void PressureForFastProfit( GameState gameState ) {
+		public async Task PressureForFastProfit( GameState gameState ) {
 			// Level 6
 			// After the Ravage Step of turn 2+,
 			// on each board where it added no Blight:
@@ -57,8 +57,8 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 
 			foreach(var land in landsWithMostExplorers) {
 				// add 1 Explorer and 1 Town.
-				land.AdjustDefault( Human.Explorer, 1 );
-				land.AdjustDefault( Human.Town, 1 );
+				await land.AddDefaultAsync( Human.Explorer, 1 );
+				await land.AddDefaultAsync( Human.Town, 1 );
 			}
 			if(landsWithMostExplorers.Any())
 				ActionScope.Current.LogDebug( "Pressure for Fast Profit: Added 1T+1E to "

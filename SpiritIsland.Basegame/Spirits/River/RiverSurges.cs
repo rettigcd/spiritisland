@@ -41,7 +41,7 @@ public class RiverSurges : Spirit {
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
-		board.Spaces.Reverse().First(s => s.IsWetland).Tokens.Adjust(Presence.Token, 1);
+		board.Spaces.Reverse().First(s => s.IsWetland).Tokens.Setup(Presence.Token, 1);
 	}
 
 }

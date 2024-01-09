@@ -25,8 +25,8 @@ public class England : AdversaryBase, IAdversary {
 			"During Setup, on each board add 1 City to land #1 and 1 Town to land #2."
 		){ InitFunc = (gs,_) => {
 			foreach(var board in gs.Island.Boards) {
-				board[1].Tokens.AdjustDefault( Human.City, 1 );
-				board[2].Tokens.AdjustDefault( Human.Town, 1 );
+				board[1].Tokens.Setup( Human.City, 1 );
+				board[2].Tokens.Setup( Human.Town, 1 );
 			}
 		}},
 

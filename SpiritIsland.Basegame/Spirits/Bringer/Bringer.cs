@@ -40,7 +40,7 @@ public class Bringer : Spirit {
 		// Setup: 2 presense in highest numbered sands
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
 		var space = startingIn.Tokens;
-		space.Adjust( Presence.Token, 2 );
+		space.Setup( Presence.Token, 2 );
 	}
 
 	public override void InitSpiritAction( ActionScope scope ) {

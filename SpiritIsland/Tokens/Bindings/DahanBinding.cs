@@ -25,7 +25,7 @@ public sealed class DahanBinding {
 
 	/// <summary> Adds a Token from the bag, or out of thin air. </summary>
 	public Task AddDefault( int count, AddReason reason = AddReason.Added )
-		=> _tokens.AddDefault( Human.Dahan, count, reason );
+		=> _tokens.AddDefaultAsync( Human.Dahan, count, reason );
 
 	// Called from .Move() and .Dissolve the Bonds
 	public async Task<ITokenRemovedArgs> Remove1( IToken toRemove, RemoveReason reason ) {
@@ -129,12 +129,9 @@ public sealed class DahanBinding {
 			throw new InvalidOperationException( $"Can't damage apply {damagePerToken} because they only have {originalToken.RemainingHealth}." );
 
 		HumanToken damagedToken = originalToken.AddDamage( damagePerToken );
-		if(damagedToken.IsDestroyed) {
-			await originalToken.Destroy( _tokens, tokenCountToReceiveDamage );
-		} else {
-			_tokens.Adjust( originalToken, -tokenCountToReceiveDamage );
-			_tokens.Adjust( damagedToken, tokenCountToReceiveDamage );
-		}
+
+		await _tokens.AdjustProps( tokenCountToReceiveDamage, originalToken ).WithHumanAsync( damagedToken );
+
 	}
 
 	#endregion

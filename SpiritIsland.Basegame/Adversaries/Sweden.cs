@@ -32,7 +32,7 @@ public class Sweden : AdversaryBase, IAdversary {
 					.ToArray();
 				foreach(var space4 in additionalCitySpaces) {
 					// Add City to 4
-					space4.AdjustDefault( Human.City, 1 );
+					space4.Setup( Human.City, 1 );
 
 					// If 4 has blight, 
 					if(space4.Blight.Any) {
@@ -69,7 +69,7 @@ public class Sweden : AdversaryBase, IAdversary {
 					).ToArray();
 
 				foreach(var leastInvaderSpace in addTownSpaces)
-					leastInvaderSpace.AdjustDefault( Human.Town, 1 );
+					leastInvaderSpace.Setup( Human.Town, 1 );
 			}
 		},
 
@@ -91,7 +91,7 @@ public class Sweden : AdversaryBase, IAdversary {
 					.ToArray();
 
 				foreach(SpaceState space in spaces ) {
-					space.AdjustDefault( Human.Town, 1 );
+					space.Setup( Human.Town, 1 );
 					space.Blight.Adjust(1);
 				}
 			}

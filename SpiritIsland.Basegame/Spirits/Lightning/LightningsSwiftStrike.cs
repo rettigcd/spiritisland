@@ -43,7 +43,7 @@ public class LightningsSwiftStrike : Spirit {
 		// Setup: put 2 pressence in highest numbered sands
 		var space = board.Spaces.Reverse().First(x=>x.IsSand);
 		var tokens = space.Tokens;
-		tokens.Adjust(Presence.Token, 2);
+		tokens.Setup(Presence.Token, 2);
 	}
 
 	#region IRunWhenTimePasses

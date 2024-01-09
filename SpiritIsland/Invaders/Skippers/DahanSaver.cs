@@ -31,12 +31,15 @@ public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToke
 				args.Count -= adjustment;
 				_byAction[ActionScope.Current] += adjustment;
 				// restore to full health
-				_space.Adjust( args.Token, -adjustment );
-				_space.Adjust( args.Token.AsHuman().Healthy, adjustment );
+				_space.AdjustProps( adjustment, args.Token ).To( args.Token.AsHuman().Healthy );
 			} else {
 				// make sure our already-saved dahan stay saved
-				if(args.Count > _space.Dahan.CountAll - _maxPerAction)
-					args.Count = _space.Dahan.CountAll - _maxPerAction;
+				int maxWeCanDestroy = _space.Dahan.CountAll - _maxPerAction;
+				int countToReSave = args.Count - maxWeCanDestroy;
+				if(0 < countToReSave) {
+					args.Count -= countToReSave;
+					_space.AdjustProps( countToReSave, args.Token ).To( args.Token.AsHuman().Healthy );
+				}
 			}
 		}
 

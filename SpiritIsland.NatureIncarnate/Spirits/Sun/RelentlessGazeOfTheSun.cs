@@ -41,7 +41,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 2 presence and 1 Badlands on your starting board
 		var start = board.Spaces.First(s=>s.IsSand);
-		start.Tokens.Adjust(Presence.Token, 2);
+		start.Tokens.Setup(Presence.Token, 2);
 		start.Tokens.Badlands.Init(1);
 	}
 

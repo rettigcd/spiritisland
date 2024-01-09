@@ -57,15 +57,15 @@ public class HearthVigil : Spirit {
 		// 1 in highest numbered land with dahan
 		SpaceState[] tokens = board.Spaces.Tokens().ToArray();
 		SpaceState highest = tokens.Last( t => t.Dahan.Any );
-		highest.Adjust( Presence.Token, 1 );
+		highest.Setup( Presence.Token, 1 );
 
 		// 2 in the lowest numbered land with at least 2 dahan
 		SpaceState lowest = tokens.First( t => 2 <= t.Dahan.CountAll);
-		lowest.Adjust( Presence.Token, 2 );
+		lowest.Setup( Presence.Token, 2 );
 
 		// Add 1 dahan in each of those lands
-		highest.AdjustDefault( Human.Dahan, 1 );
-		lowest.AdjustDefault( Human.Dahan, 1 );
+		highest.Setup( Human.Dahan, 1 );
+		lowest.Setup( Human.Dahan, 1 );
 
 		HearthToken.GrantHealthBoost( lowest );
 		HearthToken.GrantHealthBoost( highest );

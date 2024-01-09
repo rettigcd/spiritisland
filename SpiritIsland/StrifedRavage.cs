@@ -70,8 +70,7 @@ public static class StrifedRavage {
 		if(newInvader.IsDestroyed)
 			await tokens.Destroy( originalInvader, tokens[originalInvader] );
 		else {
-			tokens.Adjust( newInvader, tokens[originalInvader] );
-			tokens.Init( originalInvader, 0 );
+			tokens.AdjustPropsForAll( originalInvader ).To( newInvader );
 		}
 	}
 

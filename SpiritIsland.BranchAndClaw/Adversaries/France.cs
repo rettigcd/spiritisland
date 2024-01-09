@@ -38,9 +38,9 @@ public class France : AdversaryBase, IAdversary {
 				foreach(var board in gameState.Island.Boards) {
 					// add 1 Town to the highest-numbered land without Town.
 					var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
-					highLandWithoutTown.Tokens.AdjustDefault( Human.Town, 1 );
+					highLandWithoutTown.Tokens.Setup( Human.Town, 1 );
 					// Add 1 Town to land #1.
-					board[1].Tokens.AdjustDefault( Human.Town, 1 );
+					board[1].Tokens.Setup( Human.Town, 1 );
 				}
 			}
 		},

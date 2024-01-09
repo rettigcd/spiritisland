@@ -53,8 +53,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		var newToken = invaderToken
 			.SwitchClass( ToggleDreaming( invaderToken.HumanClass ) ) // make dreaming
 			.AddDamage( 0, -invaderToken.DreamDamage ); // remove nightmare damage
-		Adjust( invaderToken, -1 );
-		Adjust( newToken, 1 );
+		AdjustProps(1, invaderToken).To(newToken);
 
 		ActionScope.Current.Log( new Log.Debug( "Dream 1000 deaths destroy." ) );
 
@@ -107,7 +106,7 @@ public class TDaTD_ActionTokens : SpaceState {
 			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
 			.ToArray();
 		foreach(HumanToken dreamer in dreamers)
-			spaceState.ReplaceAllWith( dreamer, ToggleDreamer( dreamer ) );
+			spaceState.AdjustPropsForAll( dreamer ).To( ToggleDreamer( dreamer ) );
 	}
 
 	static void RemoveDreamDamage( SpaceState spaceState ) {
@@ -115,10 +114,9 @@ public class TDaTD_ActionTokens : SpaceState {
 			.Where( t => t.DreamDamage != 0 )
 			.ToArray();
 		foreach(var damagedInvader in damagedInvaders)
-			spaceState.ReplaceAllWith(
-				damagedInvader,
-				damagedInvader.AddDamage( 0, -damagedInvader.DreamDamage ) // restored
-			);
+			spaceState.AdjustPropsForAll( damagedInvader )
+				.To( damagedInvader.AddDamage( 0, -damagedInvader.DreamDamage ) );// restored
+			
 	}
 
 	#endregion

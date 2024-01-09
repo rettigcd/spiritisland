@@ -27,9 +27,8 @@ public class MimicTheDahan : FearCardBase, IFearCard {
 		.ForEachSpirit()
 		.ActAsync( ctx );
 
-	static SpaceAction ReplaceExplorerOrTownWith1Dahan => new SpaceAction("Replace 1 Explorer/Town with 1 Dahan", async ctx => {
-		await ctx.Invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer_Town );
-		ctx.Tokens.AdjustDefault(Human.Dahan, 1);
+	static SpaceAction ReplaceExplorerOrTownWith1Dahan => new SpaceAction("Replace 1 Explorer/Town with 1 Dahan", ctx => {
+		ReplaceInvader.WithDahan(ctx.Tokens,Human.Explorer_Town);
 	} ).OnlyExecuteIf( x=>x.Tokens.HasAny(Human.Explorer_Town));
 }
 

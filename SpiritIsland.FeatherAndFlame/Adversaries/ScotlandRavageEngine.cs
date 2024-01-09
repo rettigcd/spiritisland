@@ -5,10 +5,10 @@ public class ScotlandRavageEngine : RavageEngine {
 
 		await base.ActivateCard( card, gameState );
 		// After the Ravage step,
-		FuelInwardGrowth( card, gameState );
+		await FuelInwardGrowth( card, gameState );
 	}
 
-	static void FuelInwardGrowth( InvaderCard card, GameState gameState ) {
+	static async Task FuelInwardGrowth( InvaderCard card, GameState gameState ) {
 		var spaces = gameState.Spaces_Unfiltered
 			// to each Inland land
 			.Where( ss => !ss.Space.IsOcean && !ss.Space.IsCoastal )
@@ -20,7 +20,7 @@ public class ScotlandRavageEngine : RavageEngine {
 			.ToArray();
 		// add 1 Town 
 		foreach(var ss in spaces)
-			ss.AdjustDefault( Human.Town, 1 ); // !! if we had access to the Ravage Action, we should .Bind() to that, and call .AddDefault
+			await ss.AddDefaultAsync( Human.Town, 1 );
 	}
 
 }

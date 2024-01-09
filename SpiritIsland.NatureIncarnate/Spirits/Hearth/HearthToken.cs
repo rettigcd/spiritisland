@@ -78,8 +78,7 @@ public class HearthToken : SpiritPresenceToken
 	public static void GrantHealthBoost( SpaceState to ) {
 		foreach(HumanToken origDahan in to.HumanOfTag(TokenCategory.Dahan).ToArray()) {
 			var newToken = UpgradeDahanAndLog( origDahan, to[origDahan] );
-			to.Adjust( newToken, to[origDahan] );
-			to.Init( origDahan, 0 );
+			to.AdjustPropsForAll(origDahan).To(newToken);
 		}
 	}
 

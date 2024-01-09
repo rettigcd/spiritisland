@@ -54,7 +54,7 @@ public partial class ManyMindsMoveAsOne : Spirit {
 		// Put 1 presence and 1 beast on yoru starting borad, in a land with beast.
 		var land = board.Spaces.Tokens().First( x => x.Beasts.Any );
 
-		land.Adjust(Presence.Token, 1);
+		land.Setup(Presence.Token, 1);
 		land.Beasts.Init(1);
 
 	}

@@ -57,7 +57,7 @@ public class Ocean : Spirit {
 		gameState.Terrain_ForBlight = new OceanTerrainForPower( gameState.Terrain_ForBlight, this );
 
 		// Place in Ocean
-		board.Ocean.Tokens.Adjust(Presence.Token,1);
+		board.Ocean.Tokens.Setup(Presence.Token,1);
 
 		AddActionFactory( new PlacePresenceInCostal().ToInit() );
 

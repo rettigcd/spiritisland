@@ -140,7 +140,7 @@ public class ManyMinds_Tests {
 		GameState gs = new GameState(spirit, board);
 
 		// Given: spirit on A5
-		spirit.Presence.Given_Adjust( board[5].Tokens, 1 );
+		spirit.Presence.Given_Setup( board[5].Tokens, 1 );
 		//   And: trigger elements
 		spirit.Configure().Elements("1 air,2 animal");
 

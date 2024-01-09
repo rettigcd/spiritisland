@@ -14,7 +14,7 @@ public class GiftOfProliferation_Tests {
 		var nonPlacableSpace = setup.GameState.Tokens[ setup.Board[8] ];
 
 		// Given: presence on board
-		SpiritExtensions.Given_Adjust( setup.Spirit.Presence, nonPlacableSpace, 2 );
+		SpiritExtensions.Given_Setup( setup.Spirit.Presence, nonPlacableSpace, 2 );
 		nonPlacableSpace.Init( Token.Blight, 0 );
 
 		//  When: Card played
@@ -35,7 +35,7 @@ public class GiftOfProliferation_Tests {
 		var nonPlacableSpace = setup.GameState.Tokens[ setup.Board[1] ];
 
 		// Given: presence on board
-		SpiritExtensions.Given_Adjust( setup.Spirit.Presence, nonPlacableSpace, 2 );
+		SpiritExtensions.Given_Setup( setup.Spirit.Presence, nonPlacableSpace, 2 );
 		nonPlacableSpace.Init( Token.Blight, 0 );
 
 		//  When: Card played
@@ -60,7 +60,7 @@ public class GiftOfProliferation_Tests {
 		var space = setup.GameState.Tokens[setup.Board[5]];
 
 		// Given: presence on board
-		SpiritExtensions.Given_Adjust( setup.Spirit.Presence, space, 2 );
+		SpiritExtensions.Given_Setup( setup.Spirit.Presence, space, 2 );
 		space.Init( Token.Blight, 0 );
 
 		//  When: Card played

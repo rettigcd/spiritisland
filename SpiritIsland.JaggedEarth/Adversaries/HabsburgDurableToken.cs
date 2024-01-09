@@ -21,7 +21,7 @@ class HabsburgDurableToken
 			if(damagedToken.IsDestroyed)
 				await base.Destroy( tokens, count );
 			else
-				tokens.ReplaceNWith( count, this, damagedToken );
+				tokens.AdjustProps( count, this ).To( damagedToken );
 		}
 		return count;
 	}
@@ -39,7 +39,7 @@ class HabsburgDurableToken
 			if(restored.IsDestroyed)
 				await DestroyAll( to );
 			else
-				to.ReplaceAllWith( this, restored );
+				to.AdjustPropsForAll( this ).To( restored );
 		}
 	}
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
@@ -51,7 +51,7 @@ class HabsburgDurableToken
 				await base.Destroy( args.From, args.Count ); // must call Base to ensure it gets destroyed
 				args.Count = 0;
 			} else {
-				args.From.ReplaceNWith( args.Count, this, restored );
+				args.From.AdjustProps( args.Count, this ).To( restored );
 				args.Token = restored;
 			}
 		}

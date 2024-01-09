@@ -122,7 +122,7 @@ public class ToDreamAThousandDeaths_Tests {
 
 		// Given: 1 very-damaged city
 		var tokens = _board[5].Tokens;
-		tokens.Adjust( StdTokens.City1, 1 );
+		tokens.Setup( StdTokens.City1, 1 );
 
 		// When: 3 separate actinos cause 1 damage
 		// EACH power gets a fresh ctx so INVADERS can reset
@@ -145,7 +145,7 @@ public class ToDreamAThousandDeaths_Tests {
 		var tokens = _board[5].Tokens;
 
 		// Given: 1 very-damaged city
-		tokens.Adjust( StdTokens.City1, 1 );
+		tokens.Setup( StdTokens.City1, 1 );
 
 		{
 			await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_spirit);

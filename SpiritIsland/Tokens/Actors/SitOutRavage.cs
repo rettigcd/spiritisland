@@ -42,8 +42,7 @@ static public class SitOutRavage {
 	/// </summary>
 	static void DontParticipateInRavageThisAction( SpaceState space, HumanToken humanToken, int countToNotParticipate ) {
 		var nonParticipating = humanToken.SetRavageSide( RavageSide.None );
-		space.Adjust( nonParticipating, countToNotParticipate );
-		space.Adjust( humanToken, -countToNotParticipate );
+		space.AdjustProps( countToNotParticipate, humanToken ).To( nonParticipating );
 
 		QueueUpRestore( space, humanToken, countToNotParticipate, nonParticipating );
 	}
@@ -53,8 +52,7 @@ static public class SitOutRavage {
 	/// </summary>
 	static void QueueUpRestore( SpaceState space, HumanToken humanToken, int countToNotParticipate, HumanToken nonParticipating ) {
 		ActionScope.Current.AtEndOfThisAction( scope => {
-			space.Adjust( nonParticipating, -countToNotParticipate );
-			space.Adjust( humanToken, countToNotParticipate );
+			space.AdjustProps( countToNotParticipate, nonParticipating ).To( humanToken );
 		} );
 	}
 

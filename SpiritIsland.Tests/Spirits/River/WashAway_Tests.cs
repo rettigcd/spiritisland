@@ -126,7 +126,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		// 1 damaged town on A4
 		var board = _gameState.Island.Boards[0];
 		Space targetSpace = board[4];
-		_gameState.Tokens[targetSpace].Adjust( StdTokens.Town1, 1 );
+		_gameState.Tokens[targetSpace].Setup( StdTokens.Town1, 1 );
 
 		var invaderDestination = board[2];
 

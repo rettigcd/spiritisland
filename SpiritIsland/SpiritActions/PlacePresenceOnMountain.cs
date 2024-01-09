@@ -12,7 +12,7 @@ public class PlacePresenceOnMountain : SpiritAction { // Similar to SharpFang in
 		var options = GameState.Current.Spaces.Downgrade().Where( space=>space.IsMountain );
 		var space = await self.SelectAsync(A.Space.ToPlacePresence(options, Present.Always,self.Presence.Token));
 		await self.Presence.Token.AddTo(space);
-		space.Tokens.Adjust( Token.Badlands, 1);
+		await space.Tokens.AddDefaultAsync( Token.Badlands, 1);
 
 		// Push all dahan from that land.
 		var targetCtx = self.Target(space);

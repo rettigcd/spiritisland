@@ -28,8 +28,8 @@ public class Russia : AdversaryBase, IAdversary {
 						.Last()
 					).ToArray();
 				foreach(var highestLandWithoutTownCity in highestSpaces) {
-					highestLandWithoutTownCity.AdjustDefault(Human.Explorer,1);
-					highestLandWithoutTownCity.Adjust(Token.Beast,1);
+					highestLandWithoutTownCity.Setup(Human.Explorer,1);
+					highestLandWithoutTownCity.Setup(Token.Beast,1);
 				}
 			},
 
@@ -113,7 +113,7 @@ public class Russia : AdversaryBase, IAdversary {
 				await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Adversary);
 				var criteria = new A.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Downgrade(), Present.Always );
 				Space addSpace = await spirit.SelectAsync( criteria );
-				await addSpace.Tokens.AddDefault( Human.Explorer, 1, AddReason.Explore );
+				await addSpace.Tokens.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );
 			}
 		}
 	}

@@ -19,7 +19,7 @@ class ScotlandExploreEngine : ExploreEngine {
 			await base.AddToken( tokens ); // do regular initial
 		else if(tokens.Space.Boards.All(board => _specialExplore[board] < 2) ) { // max of 2
 			// Do special explore
-			await tokens.AddDefault( Human.Town, 1, AddReason.Explore );
+			await tokens.AddDefaultAsync( Human.Town, 1, AddReason.Explore );
 			foreach(var b in tokens.Space.Boards)
 				++_specialExplore[b];
 			ActionScope.Current.Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+tokens.Space.Text) );

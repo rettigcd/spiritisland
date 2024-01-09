@@ -33,8 +33,8 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 3 presence on your starting board: 2 in land #8, and 1 in land #7.
-		board[8].Tokens.Adjust(Presence.Token, 2);
-		board[7].Tokens.Adjust(Presence.Token, 1);
+		board[8].Tokens.Setup(Presence.Token, 2);
+		board[7].Tokens.Setup(Presence.Token, 1);
 
 		// Add 1 beast to land #8
 		board[8].Tokens.Beasts.Init(1);

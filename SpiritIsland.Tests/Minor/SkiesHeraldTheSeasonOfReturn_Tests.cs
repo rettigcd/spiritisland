@@ -14,7 +14,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		fix.Spirit.Presence.Destroyed.Count = 1;
 
 		//   And: a presence on target space.
-		SpiritExtensions.Given_Adjust( fix.Spirit.Presence, spaceState, 1 );
+		SpiritExtensions.Given_Setup( fix.Spirit.Presence, spaceState, 1 );
 
 		//   And: Dahan on space
 		space.Tokens.Given_HasTokens("1D@2");

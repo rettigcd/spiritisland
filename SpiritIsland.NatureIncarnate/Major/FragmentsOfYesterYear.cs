@@ -20,11 +20,11 @@ public class FragmentsOfYesterYear {
 		// then Add the pieces matching target land's Setup symbols.
 		if( ctx.Space is not Space1 s1 ) return;
 		StartUpCounts initialCounts = s1.StartUpCounts;
-		ctx.Tokens.AdjustDefault( Human.Dahan, initialCounts.Dahan );
+		await ctx.Tokens.AddDefaultAsync( Human.Dahan, initialCounts.Dahan );
 		if(!youHave3Moon) { // // -If you have- 3 moon: // Don't add Invaders/Blight.
-			ctx.Tokens.AdjustDefault( Human.City, initialCounts.Cities );
-			ctx.Tokens.AdjustDefault( Human.Town, initialCounts.Towns );
-			ctx.Tokens.AdjustDefault( Human.Explorer, initialCounts.Explorers );
+			await ctx.Tokens.AddDefaultAsync( Human.City, initialCounts.Cities );
+			await ctx.Tokens.AddDefaultAsync( Human.Town, initialCounts.Towns );
+			await ctx.Tokens.AddDefaultAsync( Human.Explorer, initialCounts.Explorers );
 			ctx.Tokens.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 		}
 	}

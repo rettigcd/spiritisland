@@ -50,7 +50,7 @@ public class FinderOfPathsUnseen : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 
 		// Put 1 Presence on your starting board in land #3.
-		board[3].Tokens.Adjust(Presence.Token, 1);
+		board[3].Tokens.Setup(Presence.Token, 1);
 
 		// Put 1 presence on any board in land #1.
 		AddActionFactory( new PlacePresenceOnSpace1().ToInit() ); // let user pick initial space

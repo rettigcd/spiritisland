@@ -72,5 +72,5 @@ public class ExploreEngine {
 	}
 
 	protected virtual async Task AddToken( SpaceState tokens ) 
-		=> await tokens.AddDefault( Human.Explorer, 1, AddReason.Explore );
+		=> await tokens.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );
 }

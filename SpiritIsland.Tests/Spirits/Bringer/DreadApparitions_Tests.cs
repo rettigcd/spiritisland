@@ -82,7 +82,7 @@ public class DreadApparitions_Tests {
 
 		// Given: has 1 city and lots of dahan
 		tokens.Given_HasTokens("1C@3,10D@2");
-		spirit.Presence.Given_Adjust(tokens,1);
+		spirit.Presence.Given_Setup(tokens,1);
 		//   And: used Dread Apparitions
 		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 

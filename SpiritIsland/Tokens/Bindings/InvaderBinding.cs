@@ -40,8 +40,7 @@ public sealed class InvaderBinding {
 		var damagedInvader = Tokens.GetNewDamagedToken( originalInvader, availableDamage );
 
 		if(!damagedInvader.IsDestroyed) {
-			Tokens.Adjust( originalInvader, -1 );
-			Tokens.Adjust( damagedInvader, 1 );
+			Tokens.AdjustProps(1, originalInvader ).To( damagedInvader );
 			InvaderDamaged?.Invoke( originalInvader );
 		} else
 			await DestroyNTokens( originalInvader, 1 );
@@ -105,10 +104,9 @@ public sealed class InvaderBinding {
 
 	// destroy TOKEN
 	public async Task DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
-		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
+		if(Tokens.PreventsInvaderDamage()) return;
 		await invaderToDestroy.Destroy( Tokens, countToDestroy );
 	}
-
 	#endregion Destroy
 
 	#region Remove
@@ -123,12 +121,7 @@ public sealed class InvaderBinding {
 	public async Task RemoveLeastDesirable( RemoveReason reason = RemoveReason.Removed, params ITokenClass[] removables ) {
 		if(Tokens.SumAny(removables) == 0) return;
 
-		var invaderToRemove = Tokens.OfAnyTag( removables )
-			.Cast<HumanToken>()
-			.OrderByDescending( g => g.FullHealth )
-			.ThenBy( k => k.StrifeCount )  // un-strifed first
-			.ThenByDescending( g => g.RemainingHealth )
-			.FirstOrDefault();
+		var invaderToRemove = Tokens.BestInvaderToBeRidOf( removables );
 
 		if(invaderToRemove != null)
 			await Tokens.RemoveAsync( invaderToRemove, 1, reason );

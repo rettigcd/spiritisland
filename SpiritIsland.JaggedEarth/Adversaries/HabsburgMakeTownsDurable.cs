@@ -12,7 +12,7 @@ class HabsburgMakeTownsDurable
 		if(args.Removed == Token.Blight && !from.Blight.Any)
 			// Switch all towns to Durable
 			foreach(HumanToken t in from.HumanOfTag( Human.Town ))
-				from.ReplaceAllWith( t, new HabsburgDurableToken( t ) );
+				from.AdjustPropsForAll( t ).To( new HabsburgDurableToken( t ) );
 	}
 
 	public void ModifyAdding( AddingTokenArgs args ) {

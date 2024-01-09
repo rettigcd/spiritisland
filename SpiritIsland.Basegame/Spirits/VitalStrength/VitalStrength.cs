@@ -44,8 +44,8 @@ public class VitalStrength : Spirit {
 	void InitPresence( Board board ){
 		var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsJungle );
 		var higestMountain = board.Spaces.OrderByDescending(s => s.Label).First(s => s.IsMountain);
-		higestMountain.Tokens.Adjust( Presence.Token, 2 );
-		higestJungle.Tokens.Adjust( Presence.Token, 1 );
+		higestMountain.Tokens.Setup( Presence.Token, 2 );
+		higestJungle.Tokens.Setup( Presence.Token, 1 );
 	}
 
 }

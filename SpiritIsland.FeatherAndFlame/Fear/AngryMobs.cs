@@ -26,12 +26,14 @@ public class AngryMobs : FearCardBase, IFearCard {
 			.ActAsync( GameState );
 
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
-		var options = ctx.Tokens.HumanOfTag( Human.Town );
-		var token = (await ctx.Self.SelectAsync( new A.SpaceToken( "Replace 1 Town with 2 Explorers", options.On(ctx.Space), Present.Done ) ))?.Token;
-		if(token == null) return;
+		var options = ctx.Tokens.HumanOfTag( Human.Town ).On( ctx.Space );
+		var town = (await ctx.Self.SelectAsync( new A.SpaceToken( "Replace 1 Town with 2 Explorers", options, Present.Done ) ))?.Token;
+		if(town == null) return;
 
-		ctx.Tokens.Adjust( token, -1 );
-		ctx.Tokens.AdjustDefault( Human.Explorer, 2 );
+		// !!! if Town has 1 damage, should it only generate 1 explorer?
+		var result = await ctx.Tokens.RemoveAsync(town,1,RemoveReason.Replaced);
+		if(0<result.Count)
+			await ctx.Tokens.AddDefaultAsync(Human.Explorer,2,AddReason.AsReplacement);
 
 		ctx.AddFear( 1 );
 	}

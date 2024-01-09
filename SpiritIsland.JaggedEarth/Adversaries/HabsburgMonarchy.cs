@@ -38,7 +38,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 				// add 1 Town
 				foreach(SpaceState space in spaces)
-					space.AdjustDefault( Human.Town, 1 );
+					space.Setup( Human.Town, 1 );
 
 				((HabsurgBuilder)gameState.InvaderDeck.Build.Engine).ReplaceInlandCityWith2Towns = true; 
 			},
@@ -103,7 +103,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 			var criteria = new A.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
 			var addSpace = await ctx.Self.SelectAsync( criteria );
-			await addSpace.Tokens.AddDefault( Human.Town, 1, AddReason.Build );
+			await addSpace.Tokens.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 		}
 	}
 
@@ -138,10 +138,10 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 		// Take action
 		await using var actionScope = await ActionScope.Start(ActionCategory.Invader); // ??? is this really an action?
 		foreach(var newTownSpace in newTownSpaces)
-			await newTownSpace.AddDefault( Human.Town, 1, AddReason.Build );
+			await newTownSpace.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 
 		foreach(var citySpace in newCitySpaces)
-			await citySpace.AddDefault( Human.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
+			await citySpace.AddDefaultAsync( Human.City, 1, AddReason.Build ); // What AddReason do we use for Escalation???
 
 		// Log it
 		var logParts = new List<string>();

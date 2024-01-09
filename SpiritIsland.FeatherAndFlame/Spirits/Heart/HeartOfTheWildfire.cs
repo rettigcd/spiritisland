@@ -57,7 +57,7 @@ public class HeartOfTheWildfire : Spirit {
 		var space = board.Spaces.Last(x=>x.IsSand);
 		var spaceState = space.Tokens;
 		// Put 3 presence
-		spaceState.Adjust(Presence.Token,3);
+		spaceState.Setup(Presence.Token,3);
 		// and 2 blight
 		spaceState.Blight.Adjust(2); // Blight comes from the box, not the blight card
 	}

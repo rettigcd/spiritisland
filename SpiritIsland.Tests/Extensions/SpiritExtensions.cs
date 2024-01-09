@@ -20,7 +20,7 @@ public static class SpiritExtensions {
 
 	#region Given
 
-	internal static void Given_Adjust( this SpiritPresence presence, SpaceState space, int count ) => space.Adjust( presence.Token, count );
+	internal static void Given_Setup( this SpiritPresence presence, SpaceState space, int count ) => space.Setup( presence.Token, count );
 
 	internal static Spirit Given_HasTokensOn( this Spirit spirit, SpaceState spaceState, int count = 1 ) {
 		spaceState.Init( spirit.Presence.Token, count );

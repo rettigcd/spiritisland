@@ -22,9 +22,7 @@ class SwedenExplorer : ExploreEngine {
 		if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {
 			var dahanToConvert = dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).First();
 			var townToAdd = tokens.GetDefault( Human.Town ).AsHuman().AddDamage( dahanToConvert.Damage );
-
-			dahan.Adjust( dahanToConvert, -1 );
-			tokens.Adjust( townToAdd, 1 );
+			tokens.AdjustProps(1,dahanToConvert).To(townToAdd);
 			ActionScope.Current.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}" ) );
 		}
 	}

@@ -31,7 +31,7 @@ public class UnnaturalProliferation : BlightCard {
 				.First()
 				.ToArray();
 			Space space = await ctx.Self.SelectSpaceAsync("Add 2 cities",spaceOptions.Downgrade(),Present.Always);
-			await space.Tokens.AddDefault(Human.City, 2, AddReason.Added);
+			await space.Tokens.AddDefaultAsync(Human.City, 2, AddReason.Added);
 		}
 	);
 

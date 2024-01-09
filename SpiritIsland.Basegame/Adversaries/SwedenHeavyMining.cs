@@ -39,7 +39,7 @@ class SwedenHeavyMining : BaseModEntity, IHandleTokenAddedAsync, IReactToLandDam
 					to.GetDefault( Human.Town ) 
 				) );
 				if(selection != null) {
-					selection.Tokens.AdjustDefault( Human.Town, 1 );
+					await selection.Tokens.AddDefaultAsync( Human.Town, 1 );
 					ActionScope.Current.LogDebug( $"Mining Rush: Blight on {((Space)args.To).Text} caused +1 Town on {selection.Text}." );
 				}
 			}

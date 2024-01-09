@@ -2,6 +2,8 @@
 
 static public class ReplaceInvader {
 
+	#region Downgrade
+
 	public static async Task Downgrade1( Spirit spirit, SpaceState tokens, Present present, params HumanTokenClass[] groups ) {
 		HumanToken[] options = tokens.HumanOfAnyTag( groups );
 		await Downgrade1Token( spirit, tokens, present, options );
@@ -36,62 +38,65 @@ static public class ReplaceInvader {
 		return oldInvader;
 	}
 
-	/// <summary> Offers Specific tokens, instead of token classes. </summary>
-	/// <returns> Original token (before upgrade).</returns>
-	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options, string actionSuffix="" ) {
-		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade"+ actionSuffix, options.On( tokens.Space ), present ) );
-		if(st == null) return null;
-		HumanToken oldInvader = st.Token.AsHuman();
-
-		UpgradeSelectedInvader( tokens, oldInvader );
-		return oldInvader;
-	}
-
-
 	public static async Task DowngradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
-		// remove old invader
-		tokens.Adjust( oldInvader, -1 );
 
-		// Add new
-		var newInvaderClass = oldInvader.HumanClass == Human.City ? Human.Town
-			: oldInvader.HumanClass == Human.Town ? Human.Explorer
-			: null;
-		if(newInvaderClass != null)
-			await AddReplacementOrDestroy( tokens, oldInvader, newInvaderClass );
+		// Explorers just get removed
+		if(oldInvader.HumanClass == Human.Explorer) {
+			tokens.Adjust( oldInvader, -1 );
+			return;
+		}
+
+		var newToken = tokens.GetDefault( DowngradeType( oldInvader.HumanClass ) ).AsHuman()
+			.AddStrife( oldInvader.StrifeCount )
+			.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
+
+		// if downgrading it, destroys it, then do nothing
+		if(newToken.IsDestroyed && tokens.PreventsInvaderDamage() ) return;
+
+		await tokens.RemoveAsync(oldInvader,1,RemoveReason.Replaced);
+		await tokens.AddAsync(newToken,1,AddReason.AsReplacement);
 	}
+
+	static HumanTokenClass DowngradeType( HumanTokenClass orig ) => orig == Human.City ? Human.Town
+		: orig == Human.Town ? Human.Explorer
+		: throw new ArgumentOutOfRangeException( nameof( orig ), "Must be Town or City." );
+
+	#endregion Downgrade
+
+	#region Upgrade
 
 	/// <param name="oldInvader">Explorer or Town</param>
 	/// <exception cref="ArgumentOutOfRangeException"></exception>
-	public static void UpgradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
-		// remove old invader
-		tokens.Adjust( oldInvader, -1 );
-
-		// Add new
-		var newInvaderClass = oldInvader.HumanClass == Human.Explorer ? Human.Town
-			: oldInvader.HumanClass == Human.Town ? Human.City
-			: throw new ArgumentOutOfRangeException( nameof( oldInvader ), $"{nameof(oldInvader)} must be Explorer or Town");
+	public static async Task UpgradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
 
 		// Upgrade it
-		var newTokenWithoutDamage = tokens.GetDefault( newInvaderClass ).AsHuman()
-			.AddStrife( oldInvader.StrifeCount );
-		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
-		tokens.Adjust( newTokenWithDamage, 1 );
+		var newToken = tokens.GetDefault( UpgradeType( oldInvader.HumanClass ) ).AsHuman()
+			.AddStrife( oldInvader.StrifeCount )
+			.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
+
+		await tokens.RemoveAsync( oldInvader, 1, RemoveReason.Replaced );
+		await tokens.AddAsync( newToken, 1, AddReason.AsReplacement );
 	}
 
+	/// <summary> Offers Specific tokens, instead of token classes. </summary>
+	/// <returns> Original token (before upgrade).</returns>
+	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options, string actionSuffix = "" ) {
+		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade" + actionSuffix, options.On( tokens.Space ), present ) );
+		if(st == null) return null;
+		HumanToken oldInvader = st.Token.AsHuman();
 
-	static async Task AddReplacementOrDestroy( SpaceState tokens, HumanToken oldInvader, HumanTokenClass newInvaderClass ) {
-		var newTokenWithoutDamage = tokens.GetDefault( newInvaderClass ).AsHuman()
-			.AddStrife( oldInvader.StrifeCount );
-		var newTokenWithDamage = newTokenWithoutDamage.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
-
-		if(!newTokenWithDamage.IsDestroyed)
-			tokens.Adjust( newTokenWithDamage, 1 );
-		else if(newInvaderClass != Human.Explorer) {
-			// add the non-damaged token, and destroys it.
-			tokens.Adjust( newTokenWithoutDamage, 1 );
-			await tokens.Invaders.DestroyNTokens( newTokenWithoutDamage, 1 );
-		}
+		await UpgradeSelectedInvader( tokens, oldInvader );
+		return oldInvader;
 	}
+
+	static HumanTokenClass UpgradeType( HumanTokenClass orig ) => orig == Human.Explorer ? Human.Town
+			: orig == Human.Town ? Human.City
+			: throw new ArgumentOutOfRangeException( nameof( orig ), "Must be Explorer or Town." );
+
+
+	#endregion Upgrade
+
+	#region Disolve
 
 	/// <summary>
 	/// Disolves Tows/Cities into explorers.
@@ -103,16 +108,25 @@ static public class ReplaceInvader {
 		if(st == null) return;
 		var tokenToRemove = st.Token.AsHuman();
 
-		// remove
-		tokens.Adjust( tokenToRemove, -1 );
+		int explorersToAdd = replaceCount - tokenToRemove.Damage; // ignore nightmare damage because it can't really destory stuff
 
-		// add
-		int explorersToAdd = replaceCount - tokenToRemove.Damage; // ignore nitemare damage because it can't really destory stuff
-		if( 0 < explorersToAdd )
-			tokens.AdjustDefault( Human.Explorer, explorersToAdd );
+		await tokens.RemoveAsync( tokenToRemove, 1, RemoveReason.Replaced );
+		await tokens.AddDefaultAsync( Human.Explorer, explorersToAdd, AddReason.AsReplacement );
 
-		// distribute pre-existing strife.
+		// ! This is an approximation, to perfectly distribute strife, need to be able to replace with multiple types.
 		await ctx.AddStrife( tokenToRemove.StrifeCount, Human.Explorer );
 	}
+
+	#endregion Disolve
+
+	#region > Dahan
+
+	public static void WithDahan( SpaceState tokens, HumanTokenClass[] invaderTypes ) {
+		var tokenToRemove = tokens.BestInvaderToBeRidOf( invaderTypes );
+		if(tokenToRemove is not null)
+			tokens.AdjustProps(1,tokenToRemove).To( Human.Dahan );
+	}
+
+	#endregion > Dahan
 
 }

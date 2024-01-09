@@ -32,16 +32,9 @@ public class AllThingsWeaken : BlightCard {
 					.Where(x=>x.FullHealth > 1)
 					.OrderBy(x=>x.FullHealth)
 					.ToArray(); // least health first
-				foreach(HumanToken oldToken in humanTokenTypes) {
-					var newToken = oldToken.AddHealth(-1);
-					ss.Init( oldToken, 0 );
-					if(newToken.IsDestroyed) {
-						await ss.Destroy(oldToken, ss[oldToken] );
-					} else {
-						ss.Init( oldToken, 0 );
-						ss.Adjust( newToken, ss[oldToken] );
-					}
-				}
+				foreach(HumanToken oldToken in humanTokenTypes)
+					await ss.AdjustPropsForAll( oldToken )
+						.WithHumanAsync( oldToken.AddHealth( -1 ) );
 			}
 		});
 
