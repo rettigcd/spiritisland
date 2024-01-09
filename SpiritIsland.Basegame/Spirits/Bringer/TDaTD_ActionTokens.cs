@@ -63,7 +63,7 @@ public class TDaTD_ActionTokens : SpaceState {
 		TDaTD_ActionTokens.RecordSpaceWithDreamers( this );
 
 		// Add fear
-		gameState.Fear.AddDirect( new FearArgs( newToken.HumanClass.FearGeneratedWhenDestroyed ) { space = Space } );
+		this.AddFear( newToken.HumanClass.FearGeneratedWhenDestroyed );
 
 		// Push towns and explorers
 		if(newToken.HumanClass != DreamingCity) {

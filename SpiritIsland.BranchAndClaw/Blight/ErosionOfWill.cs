@@ -21,7 +21,7 @@ public class ErosionOfWill : BlightCard {
 	static public BaseCmd<GameState> AddFearPerPlayer(int count) 
 		=> new BaseCmd<GameState>(
 			$"Add {count} fear per player.", 
-			ctx => ctx.Fear.AddDirect(new FearArgs( count ) )
+			ctx => ctx.Fear.Add( count )
 		);
 
 

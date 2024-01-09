@@ -301,7 +301,7 @@ var xxx = a5.Keys.ToArray();
 		GameState gameState = BuildGame( cfg );
 		List<InvaderCard> buildCards = gameState.InvaderDeck.Build.Cards;
 		int startingCount = buildCards.Count;
-		void ActivateCard() => gameState.Fear.AddDirect( new FearArgs( 4 ) );
+		void ActivateCard() => gameState.Fear.Add( 4 );
 		void HasAdditionalBuilds( int additionalBuilds ) => buildCards.Count.ShouldBe( startingCount + additionalBuilds );
 		//  And: Activating 1..2 cards
 		ActivateCard(); // 1

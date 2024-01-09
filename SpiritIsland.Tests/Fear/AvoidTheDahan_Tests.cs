@@ -279,7 +279,7 @@ public class AvoidTheDahan_Tests {
 		var fear = GameState.Current.Fear;
 		fear.Deck.Pop();				// discard card we are replacing
 		fear.PushOntoDeck(fearCard);    // push desired card onto the deck
-		fear.AddDirect( new FearArgs( fear.PoolMax ) );
+		fear.Add( fear.PoolMax );
 	}
 
 

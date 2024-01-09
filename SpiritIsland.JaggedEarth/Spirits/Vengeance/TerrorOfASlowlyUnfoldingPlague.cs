@@ -21,7 +21,7 @@ public class TerrorOfASlowlyUnfoldingPlague : DiseaseToken {
 			&& await _spirit.UserSelectsFirstText( $"Allow pending {buildClass.Label} build on {tokens.Space.Label}?", "Yes, Keep Disease +1 Fear", "No, stop build" );
 
 		if(allowBuild) {
-			GameState.Current.Fear.AddDirect( new FearArgs( 1 ) { space = tokens.Space } );
+			tokens.AddFear(1);
 			return false;
 		}
 

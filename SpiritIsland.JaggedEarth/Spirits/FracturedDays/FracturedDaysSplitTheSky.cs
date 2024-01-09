@@ -187,7 +187,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 			get => _cur;
 			set => _cur = (int)value;
 		}
-		List<int> _history = new List<int>();
+		readonly List<int> _history = new List<int>();
 		int _cur = 0;
 		readonly Random _randomizer;
 	}

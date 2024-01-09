@@ -136,7 +136,7 @@ public class TradeSuffers_Tests {
 		var fear = GameState.Current.Fear;
 		fear.Deck.Pop(); // remove old
 		fear.PushOntoDeck( fearCard );
-		fear.AddDirect( new FearArgs( fear.PoolMax ) );
+		fear.Add( fear.PoolMax );
 	}
 
 	VirtualTestUser _user;

@@ -45,7 +45,7 @@ public class DahanOnTheirGuard_Tests {
 
 		// When: Doing Invader phase (fear+ragage)
 
-		gameState.Fear.AddDirect( new FearArgs( 4 ) );
+		gameState.Fear.Add( 4 );
 		await gameState.Fear.Apply().AwaitUserToComplete( DahanOnTheirGuard.Name, () => {
 			User.AcknowledgesFearCard( "Dahan on their Guard : 1 : In each land, Defend 1 per Dahan." );
 		} );

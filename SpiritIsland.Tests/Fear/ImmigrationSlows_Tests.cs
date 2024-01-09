@@ -97,7 +97,7 @@ public sealed class ImmigrationSlows_Tests {
 		var fear = gs.Fear;
 		fear.Deck.Pop();
 		fear.PushOntoDeck(fearCard);
-		fear.AddDirect( new FearArgs( fear.PoolMax ) );
+		fear.Add( fear.PoolMax );
 	}
 
 	static void ElevateTerrorLevelTo( int desiredFearLevel ) {

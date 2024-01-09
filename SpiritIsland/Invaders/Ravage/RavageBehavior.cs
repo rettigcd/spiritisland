@@ -254,7 +254,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		int totalLandDamage = ra.Result.Sum( r => r.damageFromAttackers );
 		if(totalLandDamage == 0) return;
 
-		await LandDamage.Add( ra.InvaderBinding.Tokens, totalLandDamage );
+		await ra.InvaderBinding.Tokens.DamageLand( totalLandDamage );
 	}
 
 	#region Static Smart Damage to Invaders

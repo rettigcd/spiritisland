@@ -85,7 +85,7 @@ public class BeliefTakesRoot_Tests {
 	}
 
 	async Task When_AddFearApplyFear(Action userActions) {
-		_gameState.Fear.AddDirect( new FearArgs( 4 ) );
+		_gameState.Fear.Add( 4 );
 		await _gameState.Fear.Apply().AwaitUserToComplete( "Fear", userActions );
 	}
 

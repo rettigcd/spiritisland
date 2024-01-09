@@ -85,10 +85,10 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 			throw new InvalidOperationException($"Cannot remove {count} {this} tokens because there aren't that many.");
 		
 		var result = await tokens.RemoveAsync( this, count, RemoveReason.Destroyed );
-		GameState.Current.Fear.AddDirect( new FearArgs( HumanClass.FearGeneratedWhenDestroyed * result.Count ) {
-			FromDestroyedInvaders = true, // this is the destruction that Dread Apparitions ignores.
-			space = tokens.Space
-		} );
+		tokens.AddFear(
+			HumanClass.FearGeneratedWhenDestroyed * result.Count,
+			FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
+		);
 
 		return result.Count;
 	}

@@ -119,7 +119,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 			spirit._currentPowerCard = _card;
 		}
 		readonly bool _b;
-		readonly PowerCard _card;
+		readonly PowerCard? _card;
 	}
 	#endregion Memento
 }

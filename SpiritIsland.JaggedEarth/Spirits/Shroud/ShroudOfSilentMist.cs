@@ -70,13 +70,17 @@ public class ShroudOfSilentMist : Spirit {
 		static bool SpaceHasDamagedInvaders( SpaceState ss ) => ss.InvaderTokens().Any( i => i.RemainingHealth < i.FullHealth );
 
 		// During Time Passes:
-		int myLandsWithDamagedInvaders = this.Presence.Lands.Tokens().Count( SpaceHasDamagedInvaders );
+		SpaceState[] myLandsWithDamagedInvaders = Presence.Lands.Tokens().Where( SpaceHasDamagedInvaders ).ToArray();
 
 		// 1 fear (max 5) per land of yours with Damaged Invaders.
-		gameState.Fear.AddDirect( new FearArgs( Math.Min( 5, myLandsWithDamagedInvaders ) ) );
+		int remaining = 5;
+		foreach(var ss in myLandsWithDamagedInvaders) {
+			ss.AddFear(1);
+			if(--remaining == 0) break;
+		}
 
-		// Gain 1 Energy per 3 lands of yours with Damaged Invaders."
-		Energy += (myLandsWithDamagedInvaders / 3);
+		// Gain 1 Energy per 3 lands of yours with Damaged Invaders.
+		Energy += myLandsWithDamagedInvaders.Length / 3;
 
 	}
 	#endregion IRunWhenTimePasses

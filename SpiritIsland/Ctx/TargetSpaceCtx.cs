@@ -39,7 +39,7 @@ public class TargetSpaceCtx : IHaveASpirit {
 
 	/// <summary> adds Target to Fear context </summary>
 	public void AddFear( int count ) {
-		GameState.Current.Fear.AddDirect( new FearArgs( count ) { space = Space } );
+		Tokens.AddFear( count );
 	}
 
 

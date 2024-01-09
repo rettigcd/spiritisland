@@ -36,7 +36,7 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 			IEnumerable<Board> withDahan = spaces.Where(s=>s.Dahan.Any).SelectMany(s=>s.Space.Boards);
 			IEnumerable<Board> withInvaders = spaces.Where(s=>s.HasInvaders()).SelectMany(s=>s.Space.Boards);
 			int fearCount = withDahan.Intersect(withInvaders).Distinct().Count();
-			gs.Fear.AddDirect(new FearArgs( fearCount ) );
+			gs.Fear.Add( fearCount );
 		}
 	);
 

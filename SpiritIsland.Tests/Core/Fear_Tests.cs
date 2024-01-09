@@ -31,7 +31,7 @@ public class Fear_Tests {
 	}
 
 	void Given_EnoughFearToTriggerCard() {
-		gs.Fear.AddDirect( new FearArgs( 4 ) );
+		gs.Fear.Add( 4 );
 	}
 
 	void Assert_PresentsFearToUser() {

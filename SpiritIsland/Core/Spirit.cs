@@ -325,7 +325,7 @@ public abstract partial class Spirit
 	#region Temporary - Fear - until we can find a better home for it.
 
 	public virtual void AddFear( int count ) {
-		GameState.Current.Fear.AddDirect( new FearArgs( count ) );
+		GameState.Current.Fear.Add( count );
 	}
 
 	#endregion Temporary - Fear - until we can find a better home for it.

@@ -4,7 +4,7 @@
 /// Not an engine because it contains games state.
 /// So it is ok to hold a GameState instance.
 /// </remarks>
-public class Fear : IRunWhenTimePasses, IHaveMemento {
+public class Fear : IHaveMemento {
 
 	public Fear(GameState gs) {
 		_gs = gs;
@@ -55,10 +55,21 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 		}
 	}
 
-	public void AddDirect( FearArgs args ) {
-		if(args.Count==0) return;
-		EarnedFear += args.Count;
-		while(PoolMax <= EarnedFear && Deck.Any() ) {
+	public void AddOnSpace( SpaceState tokens, int count, FearType fearType ) {
+		if(count == 0) return;
+
+		Add( count );
+
+		var mods = tokens.Keys.OfType<IReactToLandFear>().ToArray();
+		foreach(IReactToLandFear mod in mods)
+			mod.HandleFearAdded( tokens, count, fearType );
+	}
+
+	public void Add( int count ) {
+		if(count == 0) return;
+
+		EarnedFear += count;
+		while(PoolMax <= EarnedFear && Deck.Any()) {
 			EarnedFear -= PoolMax;
 
 			Deck.Peek().Activate( _gs );
@@ -66,8 +77,6 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 		// ! Do NOT check for victory here and throw GameOverException(...)
 		// This is called inside PowerCard using Invoke() which converts exception to a TargetInvocationException which we don't want.
 		// Let the post-Action check catch the victory.
-
-		FearAdded?.Invoke( _gs, args );
 	}
 
 	/// <summary>
@@ -123,13 +132,7 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 	public readonly Stack<IFearCard> Deck = new Stack<IFearCard>();
 	public readonly Stack<IFearCard> ActivatedCards = new Stack<IFearCard>();
 	// - events -
-	public SyncEvent<FearArgs> FearAdded = new SyncEvent<FearArgs>();  // Dread Apparations
 	readonly GameState _gs;
-
-	bool IRunWhenTimePasses.RemoveAfterRun => false;
-	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
-		return FearAdded.EndOfRound( gameState ); // Clears - End-of-Round event handlers
-	}
 
 	#region Memento
 
@@ -168,17 +171,5 @@ public class Fear : IRunWhenTimePasses, IHaveMemento {
 
 }
 
-public class FearArgs {
 
-	public FearArgs(int count ) { this.Count = count; }
-
-	public readonly int Count;
-	public Space space;
-
-	// power cards says +N Fear  =>  false
-	// Dream a Thousand Deaths => false   (not actually destroying)
-	// Ravaging => true
-	// Dread Apparations explicely says it does NOT add defence for destroyed towns / cities
-	public bool FromDestroyedInvaders;
-
-}
+public enum FearType { Direct, FromInvaderDestruction }

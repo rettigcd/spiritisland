@@ -111,7 +111,7 @@ public class DreadApparitions_Tests {
 		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: Power causes fear in a different land
-		await spirit.When_TargetingSpace( a5, ctx => GameState.Current.Fear.AddDirect( new FearArgs( 6 ) { space = board[1] } ) );
+		await spirit.When_TargetingSpace( a5, ctx => board[1].Tokens.AddFear(6) );
 
 		// Then: no defend bonus
 		board[5].Tokens.Defend.Count.ShouldBe( 1+0 );// 1=>Dread Apparitions

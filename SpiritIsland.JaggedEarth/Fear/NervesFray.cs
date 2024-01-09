@@ -29,7 +29,7 @@ public class NervesFray : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 
 		// 1 Fear per player.
-		ctx.Fear.AddDirect(new FearArgs( ctx.Spirits.Length ));
+		ctx.Fear.Add( ctx.Spirits.Length );
 	}
 
 }

@@ -37,7 +37,7 @@ public class UnearthABeastOfWrathfulStone {
 				.FilterSpaceToken( st => st.Token == beastToken )
 				.ConfigDestination(d=>d.Track( async to => {
 					// 1 Fear and 2 Damage in its land.
-					GameState.Current.Fear.AddDirect( new FearArgs( 1 ) { space = to.Space } );
+					to.AddFear(1);
 					await to.UserSelected_DamageInvadersAsync( ctxx.Self, 2 );
 				} ))
 				.PushN( ctx.Self );
@@ -147,7 +147,7 @@ public class MarkedBeast : IToken
 			.FilterSpaceToken(st=>st.Token==this)
 			.PushUpToN(self);
 		// 1 Fear and 2 Damage in its land.
-		GameState.Current.Fear.AddDirect(new FearArgs(1) { space = _spaceState!.Space }); // don't cache space-state, it might have moved
+		_spaceState!.AddFear( 1 ); // don't cache space-state, it might have moved
 		await _spaceState.UserSelected_DamageInvadersAsync(self,2);
 	}
 

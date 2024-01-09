@@ -1,6 +1,7 @@
 ﻿namespace SpiritIsland;
 
 static public class AsyncEventExtensions {
+
 	static public async Task InvokeInSeries<Arg>( this Func<Arg, Task> func, Arg arg ) {
 		// if(func == null) return; instead, use ?. notation to invoke:  myEvent?.InvokeInSeries(arg)
 		var handlers = func.GetInvocationList().Cast<Func<Arg, Task>>();

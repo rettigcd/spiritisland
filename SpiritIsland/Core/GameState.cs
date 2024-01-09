@@ -30,7 +30,6 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 		Tokens = new Tokens_ForIsland();
 
 		AddTimePassesAction( Tokens );
-		AddTimePassesAction( Fear );
 		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
 
 		ActionScope.Initialize(); // ! This is here for tests.
