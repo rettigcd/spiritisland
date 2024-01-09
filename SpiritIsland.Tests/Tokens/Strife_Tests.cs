@@ -3,55 +3,57 @@
 [Trait("Token","Strife")]
 public class Strife_Tests {
 
-	readonly HumanToken city;
-	readonly HumanToken strifedCity;
+	// ! Don't call these until AFTER a GameState has been initialzed
+	HumanToken City => _city ??= new HumanToken( Human.City, 3 );
+	HumanToken StrifedCity => _strifedCity ??= City.HavingStrife( 1 );
+
+	HumanToken _city;
+	HumanToken _strifedCity;
 
 	public Strife_Tests() {
-		city = StdTokens.City;
-		strifedCity = StdTokens.City.HavingStrife( 1 );
 	}
 
 	[Fact]
 	public void ReuseStrifeTokens() {
-		city.HavingStrife( 1 ).ShouldBe( city.HavingStrife( 1 ), "Tokens for city with 1 strife should be reused for each instance." );
+		City.HavingStrife( 1 ).ShouldBe( City.HavingStrife( 1 ), "Tokens for city with 1 strife should be reused for each instance." );
 	}
 
 	[Fact]
 	public void WithStrifeOnlyUsesNonStrifedAsBase() {
 
-		var strifed1 = city.HavingStrife( 2 );
-		var strifed2 = strifedCity.HavingStrife( 2 );
+		var strifed1 = City.HavingStrife( 2 );
+		var strifed2 = StrifedCity.HavingStrife( 2 );
 
 		strifed1.ShouldBe( strifed2, "Make sure we don't use the strifed token as the base for generating." );
 	}
 
 	[Fact]
 	public void LevelTokensAreDifferent() {
-		strifedCity.ShouldNotBe( city, "they should be distinct" );
+		StrifedCity.ShouldNotBe( City, "they should be distinct" );
 	}
 
 	[Fact]
 	public void LabelShowsStrife() {
-		strifedCity.ToString().ShouldBe("C@3^");
+		StrifedCity.ToString().ShouldBe("C@3^");
 	}
 
 	[Fact]
 	public void With0StrifeReturnsOriginal() {
-		city.HavingStrife( 0).ShouldBe(city,"original should return original");
-		strifedCity.HavingStrife( 0 ).ShouldBe( city, "strifed should return original" );
+		City.HavingStrife( 0).ShouldBe(City,"original should return original");
+		StrifedCity.HavingStrife( 0 ).ShouldBe( City, "strifed should return original" );
 	}
 
 	[Fact]
 	public void CountStrife() {
-		city.StrifeCount.ShouldBe(0,"orig has no strife");
-		strifedCity.StrifeCount.ShouldBe(1,"strifed should have 1");
-		city.HavingStrife( 2).StrifeCount.ShouldBe( 2, "strifed should have 2" );
+		City.StrifeCount.ShouldBe(0,"orig has no strife");
+		StrifedCity.StrifeCount.ShouldBe(1,"strifed should have 1");
+		City.HavingStrife( 2).StrifeCount.ShouldBe( 2, "strifed should have 2" );
 	}
 
 	[Fact]
 	public void AddingStrife() {
 		int expected = 0;
-		HumanToken inv = city;
+		HumanToken inv = City;
 		void Add(int delta ) {
 			expected+=delta;
 			inv = inv.AddStrife(delta);
@@ -64,7 +66,7 @@ public class Strife_Tests {
 
 	[Fact]
 	public void NegativeThrows() {
-		Should.Throw<Exception>(()=>city.HavingStrife( -1));
+		Should.Throw<Exception>(()=>City.HavingStrife( -1));
 	}
 
 	static bool IsInPlay( Space space ) => !space.IsOcean;

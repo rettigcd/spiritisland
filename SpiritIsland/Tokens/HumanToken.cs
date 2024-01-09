@@ -25,7 +25,8 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		Damage = 0;
 		DreamDamage = 0;
 		StrifeCount = 0;
-		_healthPenaltyHolder = (IHaveHealthPenaltyPerStrife)GameState.Current ?? new NoPenalty();// penaltyHolder;
+		IHaveHealthPenaltyPerStrife penalty = GameState.Current as IHaveHealthPenaltyPerStrife;
+		_healthPenaltyHolder = penalty ?? new NoPenalty();// penaltyHolder;
 		_summaryString = HumanClass.Initial + "@" + RemainingHealth;
 		Attack = rawFullHealth;
 

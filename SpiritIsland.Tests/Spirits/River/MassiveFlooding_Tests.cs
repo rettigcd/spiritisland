@@ -5,9 +5,7 @@ namespace SpiritIsland.Tests.Spirits.River;
 [Collection("BaseGame Spirits")]
 public class MassiveFlooding_Tests {
 
-	public MassiveFlooding_Tests():base(){
-		ActionScope.Initialize();
-	}
+	public MassiveFlooding_Tests():base(){}
 
 	// Not enought elements -> nothing
 	[Fact]

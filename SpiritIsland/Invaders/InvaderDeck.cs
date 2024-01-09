@@ -58,7 +58,7 @@ public class InvaderDeck : IHaveMemento{
 			var unrevealedCard = UnrevealedCards[0];
 			UnrevealedCards.RemoveAt( 0 );
 			Explore.Cards.Add( unrevealedCard );
-			await unrevealedCard.OnReveal(GameState.Current);
+			await unrevealedCard.OnReveal();
 		}
 	}
 

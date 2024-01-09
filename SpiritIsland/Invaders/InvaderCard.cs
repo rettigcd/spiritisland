@@ -18,9 +18,9 @@ public sealed class InvaderCard : IOption {
 		Flipped = true;
 	}
 
-	public async Task OnReveal( GameState gameState ) {
+	public async Task OnReveal() {
 		if(CardRevealed is not null)
-			await CardRevealed( gameState );
+			await CardRevealed( GameState.Current );
 	}
 
 	public event Func<GameState,Task> CardRevealed;

@@ -3,9 +3,7 @@
 [Collection("BaseGame Spirits")]
 public class DreadApparitions_Tests {
 
-	public DreadApparitions_Tests() {
-		ActionScope.Initialize();
-	}
+	public DreadApparitions_Tests() {}
 
 	[Fact]
 	public async Task DirectFear_GeneratesDefend() {

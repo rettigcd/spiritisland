@@ -15,7 +15,6 @@ public class Invader_Tests {
 	}
 
 	public Invader_Tests(){
-		ActionScope.Initialize();
 		board = Board.BuildBoardA();
 	}
 
@@ -34,6 +33,7 @@ public class Invader_Tests {
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public void AdvanceCards(){
+		var gs = new GameState(new RiverSurges(),Boards.A);
 
 		var sut = InvaderDeckBuilder.Default.Build();
 
@@ -73,6 +73,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("W","A2,A5")]
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
+		var gs = new GameState(new RiverSurges(),board); // Init Scope and GameBoard
 		InvaderCard sut = InvaderDeckBuilder.Level1Cards.Single(c=>c.Text==cardText);
 		var targets = board.Spaces.Where(((InvaderCard)sut).MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
@@ -86,6 +87,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("2S","A4,A7")]
 	[InlineDataAttribute("Coastal","A1,A2,A3")]
 	public void Level2CardTargets(string cardText,string expectedTargets){
+		var gs = new GameState( new RiverSurges(), board ); // Init Scope and GameBoard
 		var cards = InvaderDeckBuilder.Level2Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
 		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
@@ -100,6 +102,7 @@ public class Invader_Tests {
 	[InlineDataAttribute("M+W","A1,A2,A5,A6")]
 	[InlineDataAttribute("S+W","A2,A4,A5,A7")]
 	public void Level3CardTargets(string cardText,string expectedTargets){
+		var gs = new GameState( new RiverSurges(), board ); // Init Scope and GameBoard
 		var cards = InvaderDeckBuilder.Level3Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
 		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();

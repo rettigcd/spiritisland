@@ -4,9 +4,7 @@ public class AbsoluteStasis_Tests {
 
 	readonly ConfigurableTestFixture cfg = new ConfigurableTestFixture();
 
-	public AbsoluteStasis_Tests() {
-		ActionScope.Initialize();
-	}
+	public AbsoluteStasis_Tests() {}
 
 	[Trait("SpecialRule","OceanInPlay")]
 	[Fact]

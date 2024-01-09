@@ -5,8 +5,6 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	readonly GameState gsbac;
 
 	public SharpFangs_GrowthTests() : base( new SharpFangs() ) {
-		ActionScope.Initialize();
-
 		gsbac = new GameState( _spirit, _board );
 		_gameState = gsbac;
 		InitMinorDeck();

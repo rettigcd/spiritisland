@@ -29,7 +29,7 @@ public class SinglePlayerGame {
 
 	public async Task StartAsync() {
 
-		ActionScope.Initialize();
+		ActionScope.Initialize( GameState );
 		UserGateway.UsePreselect.Value = EnablePreselects;
 		try {
 			// 

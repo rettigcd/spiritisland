@@ -10,9 +10,9 @@ public sealed class ActionScope : IAsyncDisposable {
 	#region ScopeContainer class
 
 	class ActionScopeContainer {
-		public ActionScopeContainer() {
+		public ActionScopeContainer(GameState gameState) {
 			Id = Guid.NewGuid();
-			Current = new ActionScope( this ); // default
+			Current = new ActionScope( this, gameState ); // default
 			StartOfActionHandlers = new List<IRunAtStartOfAction>();
 		}
 		readonly Guid Id;
@@ -38,8 +38,8 @@ public sealed class ActionScope : IAsyncDisposable {
 	#region Static Public
 
 	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
-	static public void Initialize() {
-		_scopeContainer.Value = new ActionScopeContainer();
+	static public void Initialize(GameState gameState) {
+		_scopeContainer.Value = new ActionScopeContainer( gameState );
 	}
 
 	// Good Reading on Execution Context and async/await
@@ -47,7 +47,8 @@ public sealed class ActionScope : IAsyncDisposable {
 	// https://stackoverflow.com/questions/39795286/does-async-await-increases-context-switching
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
-	public static ActionScope Current => Container.Current;
+	public static ActionScope Current =>_scopeContainer?.Value?.Current; // returns null if no ActionScope
+	// public static ActionScope Current => Container.Current; // throws exception if no ActionScope
 
 	public static List<IRunAtStartOfAction> StartOfActionHandlers => Container.StartOfActionHandlers;
 
@@ -61,10 +62,13 @@ public sealed class ActionScope : IAsyncDisposable {
 	/// Root Scope
 	/// </summary>
 	/// <param name="container"></param>
-	ActionScope( ActionScopeContainer container ) {
+	ActionScope( ActionScopeContainer container, GameState gameState ) {
 		Id = Guid.NewGuid();
 		_container = container;
-		_neverCache = true; // !! Since it is a singleton, make usable across multiple execution contexts
+		Category = ActionCategory.Default;
+
+//		_neverCacheGameState = true; // !! Since it is a singleton, make usable across multiple execution contexts
+		GameState = gameState;
 	}
 
 	/// <summary> Called from ActionScope.Start( ActionCategory ) </summary>
@@ -75,7 +79,11 @@ public sealed class ActionScope : IAsyncDisposable {
 
 		_old = _container.Current;
 		_container.Current = this;
+
+		GameState = _old.GameState;
 	}
+
+	public GameState GameState { get; }
 
 	/// <summary> For Testing only </summary>
 	public static ActionScope Start_NoStartActions( ActionCategory cat ) => new ActionScope( cat, Container );
@@ -119,7 +127,6 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	public ActionCategory Category { get; }
 
-	public GameState GameState => _neverCache ? GameState.Current : _gameState ??= GameState.Current;
 	
 	/// <summary> Called from Space.Tokens to get Tokens. </summary>
 	/// <remarks> Provides hook for spirits to modify the SpaceState object used for their actions.</remarks>
@@ -129,10 +136,7 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	public Func<SpaceState, SpaceState> Upgrader {
 		get { return _upgrader; }
-		set {
-			if(_neverCache) throw new InvalidOperationException( "Can't set Upgrader on default scope" );
-			_upgrader = value;
-		}
+		set { _upgrader = value; }
 	}
 
 	#endregion
@@ -169,7 +173,8 @@ public sealed class ActionScope : IAsyncDisposable {
 	/// </summary>
 	public Spirit Owner { 
 		get => _owner;
-		set { if(_neverCache) throw new InvalidOperationException("Can't set owner on default scope"); _owner = value; }
+		set { 
+		_owner = value; }
 	}
 
 	public Guid Id { get; }
@@ -218,12 +223,10 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	#region private
 	readonly ActionScopeContainer _container;
-	readonly bool _neverCache = false; // true for the root Scope
 	readonly ActionScope _old;
 
 	AsyncEvent<ActionScope> _endOfThisAciton;
 	TerrainMapper _terrainMapper;
-	GameState _gameState;
 	Func<SpaceState, SpaceState> _upgrader = ss=>ss;
 	Spirit _owner;
 	#endregion

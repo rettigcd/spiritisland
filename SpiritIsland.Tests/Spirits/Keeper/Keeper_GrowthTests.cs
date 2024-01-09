@@ -6,7 +6,6 @@ public class Keeper_GrowthTests : GrowthTests {
 
 	public Keeper_GrowthTests() : base( new Keeper() ) {
 		gsbac = new GameState( _spirit, _board );
-		ActionScope.Initialize();
 		_gameState = gsbac;
 		InitMinorDeck();
 	}

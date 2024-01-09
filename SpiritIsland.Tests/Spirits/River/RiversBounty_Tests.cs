@@ -6,7 +6,6 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	readonly Board board;
 
 	public RiversBounty_Tests():base( new RiverSurges() ) {
-		ActionScope.Initialize();
 
 		// A5 is the 'Y' land in the middle
 		Given_GameWithSpirits( _spirit );

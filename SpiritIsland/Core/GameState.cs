@@ -4,8 +4,7 @@ namespace SpiritIsland;
 
 public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 
-	public static GameState Current => _current.Value; // !! We might want to only access from the ActionScope
-	readonly static AsyncLocal<GameState> _current = new AsyncLocal<GameState>(); // value gets shallow-copied into child calls and post-awaited states.
+	public static GameState Current => ActionScope.Current?.GameState;
 
 	#region constructors
 
@@ -18,7 +17,7 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 	public GameState(Spirit[] spirits,Board[] boards, int gameNumber = 0 ){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 
-		_current.Value = this;
+		ActionScope.Initialize( this );
 
 		Island = new Island( boards );
 		Spirits = spirits;
@@ -32,7 +31,6 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 		AddTimePassesAction( Tokens );
 		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
 
-		ActionScope.Initialize(); // ! This is here for tests.
 	}
 	public int ShuffleNumber { get; } // used to generate different shuffle #s
 
@@ -40,7 +38,6 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 	/// Called AFTER everything has been configured. and BEFORE players make first move.
 	/// </summary>
 	public void Initialize() {
-		ActionScope.Initialize();
 		PlaceStartingTokens(); 
 		InitialExplore();
 		InitSpirits();// ManyMinds requires the beast to be in place, so this goes after tokens are placed.

@@ -2,9 +2,7 @@
 
 public class ManyMinds_Tests {
 
-	public ManyMinds_Tests(){
-		ActionScope.Initialize();
-	}
+	public ManyMinds_Tests(){}
 
 	[Fact]
 	[Trait( "Feature", "Gather" )]
