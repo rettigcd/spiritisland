@@ -6,6 +6,8 @@ public class Russia : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
+	public override AdversaryLossCondition LossCondition => Russia_Level1_HuntersBringHomeShelAndHide.HuntersSwarmTheIsland;
+
 	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
 		new AdversaryLevel(0, 1, 3,3,3, "Stalk the Predators", "Add 2 explorers/board to lands with beast." )
@@ -35,9 +37,7 @@ public class Russia : AdversaryBase, IAdversary {
 				// Explorers do +1 damage
 				gameState.Tokens.TokenDefaults[Human.Explorer] = ((HumanToken)gameState.Tokens.TokenDefaults[Human.Explorer]).SetAttack( 2 );
 				// When Ravage adds Blight to a land, destroy 1 beast
-				var mod = new Russia_Level1_HuntersSwarmMod();
-				gameState.AddIslandMod( mod );
-				gameState.AddWinLossCheck( mod.HuntersSwarmTheIsland );
+				gameState.AddIslandMod( new Russia_Level1_HuntersBringHomeShelAndHide() );
 			},
 		},
 

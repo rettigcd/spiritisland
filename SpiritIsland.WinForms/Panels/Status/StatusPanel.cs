@@ -85,6 +85,13 @@ internal class StatusPanel : IPanel {
 		var rows = new List<string> {
 			$"==== {_ctx._adversary.Name} - Level:{_ctx._adversary.Level} - Difficulty:{adjustments[_ctx._adversary.Level].Difficulty} ===="
 		};
+		// Loss
+		var lossCond = adv.LossCondition;
+		if(lossCond is not null){
+			rows.Add( $"\r\n-- Additional Loss Condition --" );
+			rows.Add( lossCond.Description );
+		}
+		// Levels
 		for(int i = 0; i <= _ctx._adversary.Level; ++i) {
 			var a = adjustments[i];
 			string label = i == 0 ? "Escalation: " : "Level:" + i;

@@ -180,6 +180,8 @@ public partial class Form1 : Form, IHaveOptions {
 		// Logging these directly to the Text box because the NewLogEntry event isn't hooked up yet.
 		logForm.AppendLine($"=== Game: {gc.Spirits[0]} : {gc.Boards[0]} : {gc.ShuffleNumber} : {gc.AdversarySummary} ===", LogLevel.Info ); // !!! show multiple boards/spirits
 		IAdversary adversary = ConfigureGameDialog.GameBuilder.BuildAdversary( gc.Adversary );
+		var lossCond = adversary.LossCondition;
+		if(lossCond != null ) logForm.AppendLine("Additional Loss Condition: "+lossCond.Description, LogLevel.Info );
 		foreach(var advLevel in adversary.ActiveLevels)
 			logForm.AppendLine($"Adversary {advLevel}:\r\n\t{advLevel.Description}", LogLevel.Info );
 

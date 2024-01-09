@@ -4,12 +4,13 @@ public class Scotland : AdversaryBase, IAdversary {
 
 	public const string Name = "Scotland";
 
+	public override AdversaryLossCondition LossCondition => TradeHub;
+
 	public override AdversaryLevel[] Levels => new AdversaryLevel[] {
 		// Escalation
 		new AdversaryLevel(0, 1 , 3,3,3, "Ports Sprawl Outward", 
 			"On the single board with the most Coastal Town/City, add 1 Town to the N lands with the fewest Town (N = # of players.)" )
-			.WithEscalation( PortsSprawlOutward_Escalation )
-			.WithWinLossCondition( TradeHub ),
+			.WithEscalation( PortsSprawlOutward_Escalation ),
 
 		// Level 1
 		new AdversaryLevel(1, 3 , 3,4,3, "Trading Port", 
@@ -77,8 +78,12 @@ public class Scotland : AdversaryBase, IAdversary {
 
 	#region Additional Win/Loss condition
 
-	// If the number of Coastal lands with City is ever greater than( 2 x # of boards), the Invaders win.
-	void TradeHub( GameState gameState ) {
+	static AdversaryLossCondition TradeHub => new AdversaryLossCondition(
+		"Trade Hub: If the number of Coastal lands with City is ever greater than (2 x # of boards), the Invaders win.",
+		TradeHubImp
+	);
+
+	static void TradeHubImp( GameState gameState ) {
 		int coastalCityLandCount = gameState.Spaces_Unfiltered
 			.Count( s => s.Has( Human.City ) && s.Space.IsCoastal );
 		if( gameState.Island.Boards.Length < coastalCityLandCount )

@@ -6,31 +6,21 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	
 	public override AdversaryLevel[] Levels => _scenarioMods;
 
+	public override AdversaryLossCondition LossCondition => new LandStrippedBare();
+
 	readonly AdversaryLevel[] _scenarioMods = new AdversaryLevel[] { Escalation, L1, L2, L3, L4, L5, L6 };
 
-	#region Escalation / Win-Loss Condition
-
-	static AdversaryLevel Escalation => new AdversaryLevel( level: 0, 1, 3,3,3, "Mining Tunnels", 
-		"After Advancing Invader Cards: On each board, Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required)."
-	){ 
-		InitFunc = (gs,_) => {
-			// At the end of the Fast Phase
-			gs._preInvaderPhaseActions.Add( new LandStrippedBare_LossChecker() );
-		}
-	}.WithEscalation(MiningTunnels);
-	static Task MiningTunnels(GameState gs) {
-		// After Advancing Invader Cards
-		// On each board,
-		// Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required).
-		return new SpaceAction("Explore - Escalation (Mining Tunnels)",ctx=>ctx.Tokens.AddDefault(Human.Explorer,1))
-			.In().NDifferentLandsPerBoard(2)
-			.Which( Is.NotExploreOrBuildCardMatch ) // Doing this before we advance cars so they are in the Explore/Build slot
-			.ForEachBoard()
-			.ActAsync( gs );
-	}
+	#region Loss Condition
 
 	/// <summary> Runs a Win/Loss check at End-of-Fast/Beginning-Of-Invader </summary>
-	class LandStrippedBare_LossChecker : IRunBeforeInvaderPhase {
+	class LandStrippedBare : AdversaryLossCondition, IRunBeforeInvaderPhase {
+		public LandStrippedBare() : base( "Land Stripped Bare: At the end of the Fasticon.png Phase, the Invaders win if any land has at least 8 total Invaders/Blight (combined).", null ) { }
+
+		public override void Init( GameState gs ) {
+			gs._preInvaderPhaseActions.Add( this );
+		}
+
+		#region IRunBeforeInvaderPhase
 		bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
 		Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState ) {
 			var landStrippedBare = gameState.Spaces_Existing.FirstOrDefault( ss => 8 <= ss.SumAny( Human.Invader ) );
@@ -42,9 +32,29 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			}
 			return Task.CompletedTask;
 		}
+		#endregion IRunBeforeInvaderPhase
 	}
 
-	#endregion Escalation / Win-Loss Condition
+	#endregion Loss Condition
+
+	#region Escalation
+
+	static AdversaryLevel Escalation => new AdversaryLevel( level: 0, 1, 3,3,3, "Mining Tunnels", 
+		"After Advancing Invader Cards: On each board, Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required)."
+	).WithEscalation(MiningTunnels);
+
+	static Task MiningTunnels(GameState gs) {
+		// After Advancing Invader Cards
+		// On each board,
+		// Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required).
+		return new SpaceAction("Explore - Escalation (Mining Tunnels)",ctx=>ctx.Tokens.AddDefault(Human.Explorer,1))
+			.In().NDifferentLandsPerBoard(2)
+			.Which( Is.NotExploreOrBuildCardMatch ) // Doing this before we advance cars so they are in the Explore/Build slot
+			.ForEachBoard()
+			.ActAsync( gs );
+	}
+
+	#endregion Escalation
 
 	#region Level 1
 

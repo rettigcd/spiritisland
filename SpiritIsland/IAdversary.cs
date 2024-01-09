@@ -15,6 +15,8 @@ public interface IAdversary {
 	AdversaryLevel[] Levels { get; }
 
 	IEnumerable<AdversaryLevel> ActiveLevels { get; }
+
+	AdversaryLossCondition LossCondition { get; }
 }
 
 abstract public class AdversaryBase : IAdversary {
@@ -39,6 +41,9 @@ abstract public class AdversaryBase : IAdversary {
 
 	// After Decks are built, before Tokens are placed
 	public virtual void Init( GameState gameState ) {
+
+		LossCondition?.Init( gameState );
+
 		foreach(var mod in ActiveLevels) {
 			ActionScope.Current.Log( new SetupDescription( $"{mod.Title} - {mod.Description}" ) );
 			mod.Init( gameState, this );
@@ -59,6 +64,9 @@ abstract public class AdversaryBase : IAdversary {
 	}
 
 	public IEnumerable<AdversaryLevel> ActiveLevels => Levels.Take(Level+1);
+
+	public virtual AdversaryLossCondition LossCondition => null;
+
 }
 
 public class AdversaryLevel {
@@ -81,8 +89,6 @@ public class AdversaryLevel {
 	public void Init(GameState gs, IAdversary adversary ) { 
 		if(_escalation is not null)
 			gs.InvaderDeck.Explore.Engine.Escalation = _escalation;
-		if(_additionalWinLossCondition is not null)
-			gs.AddWinLossCheck( _additionalWinLossCondition );
 		InitFunc?.Invoke( gs, adversary );
 	}
 
@@ -113,10 +119,6 @@ public class AdversaryLevel {
 		_escalation = escalation; return this;
 	}
 
-	public AdversaryLevel WithWinLossCondition( Action<GameState> winLossCondition ) {
-		_additionalWinLossCondition = winLossCondition; return this;
-	}
-
 	#endregion public WithXXX() to setup config
 
 	/// <summary>
@@ -129,8 +131,20 @@ public class AdversaryLevel {
 	#region private 
 
 	Func<GameState, Task> _escalation;
-	Action<GameState> _additionalWinLossCondition;
+
 	readonly int _level;
 
 	#endregion
+}
+
+public class AdversaryLossCondition {
+	public AdversaryLossCondition(string description, Action<GameState> additionalWinLossCondition ) {
+		Description = description;
+		_additionalWinLossCondition = additionalWinLossCondition;
+	}
+	public virtual void Init(GameState gs ) {
+		gs.AddWinLossCheck( _additionalWinLossCondition );
+	}
+	public string Description { get; }
+	readonly protected Action<GameState> _additionalWinLossCondition;
 }

@@ -5,6 +5,8 @@ public class France : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
+	public override AdversaryLossCondition LossCondition => SprawlingPlantations;
+
 	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
 		new AdversaryLevel(0, 2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ) {
@@ -18,7 +20,7 @@ public class France : AdversaryBase, IAdversary {
 					hasPersistentExplorers: 6 <= adv.Level  // Level 6 stuff
 				);
 			}
-		}.WithWinLossCondition(SprawlingPlantations),
+		},
 
 		// Level 1
 		new AdversaryLevel(1, 3, 3,3,3, "Frontier Explorers", "Except during Setup: After Invaders successfullly Explore into a land which has not Town/City, add 1 Explorer there." ),
@@ -132,7 +134,12 @@ public class France : AdversaryBase, IAdversary {
 
 	#endregion Level 2 - helpers
 
-	static void SprawlingPlantations( GameState gs ) {
+	static AdversaryLossCondition SprawlingPlantations => new AdversaryLossCondition(
+		"Sprawling Plantations: Before Setup, return all but 7 Town per player ot the box. Invaders win if you ever cannot place a Town.",
+		SprawlingPlantations_Imp
+	);
+
+	static void SprawlingPlantations_Imp( GameState gs ) {
 		// !!! Additional Loss Condition
 		// !!! Sprawling Plantations: Before Setup, return all but 7 Town per player to the box. Invaders win if you ever cannot place a Town.
 	}

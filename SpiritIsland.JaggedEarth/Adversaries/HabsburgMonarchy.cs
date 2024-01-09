@@ -6,16 +6,11 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
+	public override AdversaryLossCondition LossCondition => new IrreperableDamage();
+
 	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Level 0 - Escalation
-		new AdversaryLevel(0, 2 , 3,3,3, "Seek Prime Territory", "On each board with 4 or fewer Blight, add 1 Town to a land without Town/Blight. On each board with 2 or fewer Blight, do so again." ){
-			InitFunc = (gameState,_) => {
-				// Additional loss condition - too many 8+blight
-				var tooManyBlight = new TooManyBlight();
-				gameState.AddIslandMod(tooManyBlight);
-				gameState.AddWinLossCheck(tooManyBlight.IrreparableDamage_LossCheck);
-			}
-		}
+		new AdversaryLevel(0, 2 , 3,3,3, "Seek Prime Territory", "On each board with 4 or fewer Blight, add 1 Town to a land without Town/Blight. On each board with 2 or fewer Blight, do so again." )
 			.WithEscalation( SeekPrimeTerritory_Escalation ),
 
 		// Level 1
@@ -161,22 +156,37 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 }
 
-class TooManyBlight : BaseModEntity, IReactToLandDamage {
-	int _badbadBlightCount = 0;
-
-	Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens, int count ) {
-		bool shouldAddBadBadBlight = 8 <= tokens[LandDamage.Token];
-		if(shouldAddBadBadBlight)
-			_badbadBlightCount += count;
-		return Task.CompletedTask;
+class IrreperableDamage : AdversaryLossCondition {
+	public IrreperableDamage():base(
+		"Irreparable Damage: Track how many Blight come off the Blight Card during Ravages that do 8+ Damage to the land. If that number ever exceeds players, the Invaders win.",
+		LossCheckImp
+	) {
 	}
 
-	public void IrreparableDamage_LossCheck( GameState gameState ) {
-		if(gameState.Spirits.Length < _badbadBlightCount)
-			GameOverException.Lost( $"Irreparable Damage - {_badbadBlightCount} blight were added from 8+ land damage." );
+	public override void Init( GameState gs ) {
+		gs.AddWinLossCheck( LossCheckImp );
+		gs.AddIslandMod( new TrackBadRavageBlight() );
 	}
 
+	static public void LossCheckImp( GameState gameState ) {
+		int badBlightCount = _fakeBadBlightSpace.Tokens[Token.Blight];
+		if(gameState.Spirits.Length < badBlightCount)
+			GameOverException.Lost( $"Irreparable Damage - {badBlightCount} blight were added from 8+ land damage." );
+	}
+
+	class TrackBadRavageBlight : BaseModEntity, IReactToLandDamage {
+		Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens, int count ) {
+			bool shouldAddBadBadBlight = 8 <= tokens[LandDamage.Token];
+			if(shouldAddBadBadBlight)
+				_fakeBadBlightSpace.Tokens.Adjust( Token.Blight, 1 );
+			return Task.CompletedTask;
+		}
+	}
+
+	// not a real space, just used for counting blight.   And auto-saves in GameState for rewind.
+	static readonly FakeSpace _fakeBadBlightSpace = new FakeSpace( ">8 Damage Ravge-Blight" );
 }
+
 
 /*
 

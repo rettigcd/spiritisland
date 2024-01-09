@@ -6,11 +6,12 @@ public class England : AdversaryBase, IAdversary {
 
 	public override AdversaryLevel[] Levels => _levels;
 
+	public override AdversaryLossCondition LossCondition => ProudAndMightyCapital;
+
 	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
 		// Escalation
 		new AdversaryLevel(0, 1, 3,3,3, "Building Boom", " On each board with Town/City, Build in the land with the most Town/City." )
-			.WithEscalation( BuildingBoom_Escalation )
-			.WithWinLossCondition( ProudAndMightyCapital ),
+			.WithEscalation( BuildingBoom_Escalation ),
 
 		// Level 1
 		new AdversaryLevel(1, 3, 3,4,3, "Indentured Servants Earn Land",
@@ -93,9 +94,14 @@ public class England : AdversaryBase, IAdversary {
 
 	#endregion
 
-	#region Win/Loss Condition - Proud and Mighty Capital
+	#region Loss Condition - Proud and Mighty Capital
 
-	static void ProudAndMightyCapital( GameState gs ) {
+	static AdversaryLossCondition ProudAndMightyCapital => new AdversaryLossCondition(
+		"Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.",
+		ProudAndMightyCapitalImp
+	);
+
+	static void ProudAndMightyCapitalImp( GameState gs ) {
 		const string Name = "Proud & Mighty Capital";
 		// Additional Loss Condition
 		// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.

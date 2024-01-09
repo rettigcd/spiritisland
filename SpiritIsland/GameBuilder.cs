@@ -135,6 +135,8 @@ public class GameBuilder {
 
 		public IEnumerable<AdversaryLevel> ActiveLevels => Enumerable.Empty<AdversaryLevel>();
 
+		public AdversaryLossCondition LossCondition => null;
+
 		public void AdjustPlacedTokens( GameState _ ) { }
 		public void Init( GameState _ ) { }
 	}
