@@ -49,5 +49,24 @@ public class ObserveTheEverChangingWorld_Tests {
 
 		fxt.gameState.Phase.ShouldBe(Phase.Slow); // !! sometime BG thread doesn't get all the way to slow and errors out on Invaders, need to wait on BG thread.
 	}
-}
 
+	[Fact]
+	public void PrepairedElementsMayHaveMultipleStacksOnASpace() {
+		var tokens = new CountDictionary<ISpaceEntity>();
+
+		ShiftingMemoryOfAges spirit = new ShiftingMemoryOfAges();
+		Board board = Board.BuildBoardA();
+		_ = new GameState( spirit, board );
+		TargetSpaceCtx ctx = spirit.Target( board[5] );
+
+		var el1 = new ObserveWorldMod( ctx );
+		var el2 = new ObserveWorldMod( ctx );
+
+		tokens[el1] = 1;
+		tokens[el2] = 2;
+
+		tokens[el1].ShouldBe( 1 );
+		tokens[el2].ShouldBe( 2 );
+	}
+
+}

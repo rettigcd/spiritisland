@@ -22,7 +22,7 @@ public class UnlockTheGatesOfDeepestPower {
 	static SpiritAction PayHalfOfCardsCost_PlayCard( PowerCard card ) {
 		int cost = (card.Cost + card.Cost % 2) / 2;
 		return new SpiritAction(
-			$"paying {cost}",
+			$"Play [{card.Name}] by paying {cost}",
 			self => self.PlayCard( card, cost )
 		).OnlyExecuteIf( self => cost <= self.Energy );
 	}
@@ -30,7 +30,7 @@ public class UnlockTheGatesOfDeepestPower {
 	static SpiritAction ForgetCardAtEndOfTurn_PlayCard( PowerCard card ) {
 
 		return new SpiritAction(
-			$"forgetting at end of turn",
+			$"Play [{card.Name}] by forgetting it at end of turn",
 			self => {
 				self.PlayCard( card, 0 );
 				// BUG !!! this must run before cards are moved to discard, or it will be forgotten for Shifting Memories 
