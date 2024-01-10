@@ -18,36 +18,27 @@ public class AfflictWithBloodThirst {
 
 	[InnateTier( "1 sun,2 fire,4 animal", "1 Explorer and 1 Town/Dahan do Damage, to other Invaders only.", 2 )]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
-		// Collect Town & explorer that is going to do damage
-		// (and temporarily remove them)
-		int damage = 0;
-		List<HumanToken> doingDamage = new List<HumanToken>();
-
-		// Add Explorer
-		HumanToken? explorer = ctx.Tokens.HumanOfTag(Human.Explorer).FirstOrDefault(); // !!! what if it is strifed?
-		if(explorer is not null) {
-			ctx.Tokens.Adjust(explorer,-1);
-			doingDamage.Add(explorer);
-			damage++;
+		// Init Invaders
+		var invaders = new CountDictionary<HumanToken>();
+		foreach(var human in ctx.Tokens.HumanOfAnyTag( TokenCategory.Invader ))
+			invaders[human] = ctx.Tokens[human];
+		// Init Attackers
+		var attackers = new CountDictionary<HumanToken>();
+		void MakeAttacker(HumanToken? token) {
+			if(token is null) return;
+			attackers[token]++;
+			if(0<invaders[token]) invaders[token]--;
 		}
-		// Dahan or Town
-		if(ctx.Dahan.Any)
-			damage += 2;
-			// don't need to add to because DamageInvaders doesn't effect dahan
-		else {
-			var town = ctx.Tokens.HumanOfTag(Human.Town).FirstOrDefault();
-			if(town is not null) {
-				doingDamage.Add(town);
-				damage += 2;
-				ctx.Tokens.Adjust(town,-1);
-			}
-		}
-
-		// Do Damage
-		await ctx.DamageInvaders(damage);
-		// Restore them
-		foreach(HumanToken t in doingDamage)
-			ctx.Tokens.Adjust(t,1);
+		MakeAttacker( ctx.Tokens.HumanOfTag( Human.Explorer ).FirstOrDefault() );
+		MakeAttacker( ctx.Tokens.HumanOfTag( Human.Dahan ).FirstOrDefault()
+			?? ctx.Tokens.HumanOfTag( Human.Town ).FirstOrDefault()
+		);
+		await new RavageExchange(
+			ctx.Tokens,
+			RavageOrder.DahanTurn, // not sure matters
+			new RavageParticipants( attackers, attackers ),
+			new RavageParticipants( invaders, new CountDictionary<HumanToken>() ) // invaders do not participate
+		).Execute( RavageBehavior.DefaultBehavior );
 	}
 
 	[InnateTier( "1 sun,2 animal", "For each Beast, Push 1 Explorer and 1 Town/Dahan.", 3 )]

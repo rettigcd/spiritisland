@@ -13,6 +13,7 @@ public class LandDamage
 	/// Land damage is a special case of needing to trigger an event but is not a visible token.
 	/// </remarks>
 	static public async Task Add( SpaceState tokens, int totalLandDamage ) {
+		if(totalLandDamage == 0) return;
 
 		tokens.Adjust( LandDamage.Token, totalLandDamage );
 

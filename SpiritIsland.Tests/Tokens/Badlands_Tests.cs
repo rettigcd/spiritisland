@@ -38,9 +38,9 @@ public class Badlands_Tests {
 		tokens.Dahan.CountAll.ShouldBe(1);
 
 		//   And: no damage applied to dahan
-		ravage.damageFromAttackers.ShouldBe(0);
-		ravage.dahanDestroyed.ShouldBe(0);
-		ravage.StartingDefenders.Total.ShouldBe(1);
+		ravage.Attackers.DamageDealtOut.ShouldBe(0);
+		ravage.DahanDestroyed.ShouldBe(0);
+		ravage.Defenders.Starting.Total.ShouldBe(1);
 
 	}
 
@@ -75,11 +75,11 @@ public class Badlands_Tests {
 		var ravage = fxt.exchanges[0];
 
 		//   And: 1 explorer damage
-		ravage.damageFromAttackers.ShouldBe(1);
+		ravage.Attackers.DamageDealtOut.ShouldBe(1);
 
 		//   and: dahan destroyed,  1 explorer + 1 badland damage = 2 damage, destroying 1 dahan
 		tokens.Dahan.CountAll.ShouldBe(0);
-		ravage.dahanDestroyed.ShouldBe(1);
+		ravage.DahanDestroyed.ShouldBe(1);
 
 	}
 

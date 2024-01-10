@@ -105,6 +105,7 @@ public class Fear : IHaveMemento {
 		}
 	}
 
+#pragma warning disable CA1822 // Mark members as static
 	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
 		string label = activating ? "Activating Fear" : "Done";
 
@@ -121,6 +122,7 @@ public class Fear : IHaveMemento {
 				ActionScope.Current.Log( new Log.Debug( $"{i} => {cardToFlip.GetDescription( i )}" ) );
 
 	}
+#pragma warning restore CA1822 // Mark members as static
 
 	public int ResolvedCardCount { get; private set; }
 

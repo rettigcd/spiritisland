@@ -48,7 +48,7 @@ public partial class DistractedByLocalTroubles : FearCardBase, IFearCard {
 	);
 
 	static int ReduceAttackByReceivedDamage( RavageExchange ravageExchange )
-		=> - ravageExchange.ActiveAttackers.Sum(pair => Math.Min(pair.Key.Attack,pair.Key.Damage) * pair.Value );
+		=> - ravageExchange.Attackers.Active.Sum(pair => Math.Min(pair.Key.Attack,pair.Key.Damage) * pair.Value );
 
 
 }

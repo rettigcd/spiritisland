@@ -1,17 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public enum RavageOrder {
-	Ambush=0,
-	InvaderTurn=1,
-	DahanTurn=2,
-}
-
-public enum RavageSide {
-	None, // not participating
-	Attacker, // damages land and defenders
-	Defender, // does not damage land, damages attackers
-}
-
 /// <summary>
 /// Base token for both Dahan and Invaders
 /// </summary>

@@ -6,15 +6,16 @@ public class ShiftingMemory_Tests {
 	public async Task ForgettingCardAtEndOfTurn_DiscardsItInstead() {
 		var spirit = new ShiftingMemoryOfAges();
 		var board = Boards.D;
-		var gs = new GameState(spirit,board);
-		gs.MajorCards = new PowerCardDeck(
-			new List<PowerCard> { 
-				// instead of Majors, using cards I know well...
-				PowerCard.For( typeof(FlashFloods) ),
-				PowerCard.For( typeof(WashAway) ),
-			},
-			1, PowerType.Major
-		);
+		var gs = new GameState( spirit, board ) {
+			MajorCards = new PowerCardDeck(
+				new List<PowerCard> { 
+					// instead of Majors, using cards I know well...
+					PowerCard.For( typeof(FlashFloods) ),
+					PowerCard.For( typeof(WashAway) ),
+				},
+				1, PowerType.Major
+			)
+		};
 		gs.Initialize();
 
 		// Given: Shiftin Memories has ample Energy
