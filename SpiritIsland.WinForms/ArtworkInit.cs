@@ -33,16 +33,20 @@ class ArtworkInit {
 		List<IFearCard> fearCards = builder.BuildFearCards();
 		PowerCard[] majors = builder.BuildMajorCards();
 		PowerCard[] minors = builder.BuildMinorCards();
+
+		PowerCard[] uniques = builder.BuildSpirits( builder.SpiritNames ).SelectMany(s=>s.Hand).ToArray();
 		List<IBlightCard> blightCards = builder.BuildBlightCards();
 
 		_initTotal = fearCards.Count 
 			+ blightCards.Count
-			+ majors.Length + minors.Length;
+			+ majors.Length + minors.Length
+			+ uniques.Length;
 
 		BuildFearCards( fearCards );
 		BuildBlightCards( blightCards );
 		await BuildPowerCards( majors );
 		await BuildPowerCards( minors );
+		await BuildPowerCards( uniques );
 
 		_initCurrent = _initTotal;
 	}

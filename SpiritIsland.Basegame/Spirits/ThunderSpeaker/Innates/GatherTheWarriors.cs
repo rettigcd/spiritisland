@@ -10,14 +10,17 @@ public class GatherTheWarriors {
 	static public Task MayBeFastAsync(TargetSpaceCtx _ ) { return null; }
 
 
-	[InnateTier( "1 animal", "Gather up to 1 dahan per air you have. Push up to 1 dahan per sun you have." )]
+	[InnateTier( "1 animal,1 air", "Gather up to 1 dahan per air you have.", 0 )]
 	static public async Task OptionAsync(TargetSpaceCtx ctx ) {
-		var elements = ctx.Self.Elements.Elements;
-		int gatherCount = elements[Element.Air];
-		int pushCount = elements[Element.Sun];
-
+		int gatherCount = ctx.Self.Elements.Elements[Element.Air];
 		await ctx.GatherUpToNDahan( gatherCount );
+	}
+
+	[InnateTier( "1 animal,1 sun", "Push up to 1 dahan per sun you have.", 1 )]
+	static public async Task AAOptionAsync( TargetSpaceCtx ctx ) {
+		int pushCount = ctx.Self.Elements.Elements[Element.Sun];
 		await ctx.PushUpToNDahan( pushCount );
 	}
+
 
 }
