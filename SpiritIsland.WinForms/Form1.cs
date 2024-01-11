@@ -236,7 +236,7 @@ public partial class Form1 : Form, IHaveOptions {
 			return;
 		}
 
-		this._game.UserPortal.GoBackToBeginningOfRound(targetRound);
+		_game.UserPortal.GoBackToBeginningOfRound(targetRound);
 	}
 
 	void ReplaySameGameToolStripMenuItem_Click( object _, EventArgs _1 ) {
@@ -260,7 +260,8 @@ public partial class Form1 : Form, IHaveOptions {
 
 	void RecentGame_Clicked( object sender, EventArgs _ ) {
 		var tsmi = (ToolStripMenuItem)sender;
-		this._gameConfiguration = (GameConfigPlusToken)tsmi.Tag;
+		_gameConfiguration = (GameConfigPlusToken)tsmi.Tag;
+		_gameConfiguration.SetCommandTheBeasts(true); // !!! Hack - Command the beast is not being saved.  Save it instead of this.
 		InitGameFromConfiguration();
 	}
 
