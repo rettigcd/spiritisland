@@ -14,15 +14,19 @@ class SwedenExplorer : ExploreEngine {
 	protected override async Task ExploreSingleSpace( SpaceState tokens, GameState gs, bool escalation ) {
 		await base.ExploreSingleSpace( tokens, gs, escalation );
 		if( escalation )
-			SwayedByTheInvaders( tokens );
+			await SwayedByTheInvadersAsync( tokens );
 	}
 
-	static void SwayedByTheInvaders( SpaceState tokens ) {
+	static async Task SwayedByTheInvadersAsync( SpaceState tokens ) {
 		var dahan = tokens.Dahan;
 		if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {
-			var dahanToConvert = dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).First();
-			var townToAdd = tokens.GetDefault( Human.Town ).AsHuman().AddDamage( dahanToConvert.Damage );
-			tokens.AdjustProps(1,dahanToConvert).To(townToAdd);
+			HumanToken dahanToConvert = dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).First();
+			HumanToken townToAdd = tokens.GetDefault( Human.Town ).AsHuman().AddDamage( dahanToConvert.Damage );
+
+			var result = await tokens.RemoveAsync(dahanToConvert,1,RemoveReason.Replaced);
+			if(0<result.Count)
+				await tokens.AddAsync(townToAdd,1,AddReason.AsReplacement);
+
 			ActionScope.Current.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}" ) );
 		}
 	}

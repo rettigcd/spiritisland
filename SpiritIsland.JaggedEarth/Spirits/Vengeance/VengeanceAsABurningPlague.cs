@@ -59,8 +59,12 @@ public class VengeanceAsABurningPlague : Spirit {
 		// Swap out old Disease with new.
 		var newDisease = new TerrorOfASlowlyUnfoldingPlague( this );
 		gameState.Tokens.TokenDefaults[Token.Disease] = newDisease;
-		foreach(SpaceState space in gameState.Spaces_Unfiltered)
-			space.AdjustPropsForAll((DiseaseToken)Token.Disease).To(newDisease);
+		foreach(SpaceState space in gameState.Spaces_Unfiltered) {
+			var old = (DiseaseToken)Token.Disease;
+			int count = space[old];
+			space.Setup(old,-count);
+			space.Setup(newDisease,count);
+		}
 	}
 
 	public override void InitSpiritAction( ActionScope scope ) {

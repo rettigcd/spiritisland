@@ -41,19 +41,10 @@ static public class SitOutRavage {
 	/// Marks 1 Token Type as not-participating (and queues up restore at end of acction
 	/// </summary>
 	static void DontParticipateInRavageThisAction( SpaceState space, HumanToken humanToken, int countToNotParticipate ) {
-		var nonParticipating = humanToken.SetRavageSide( RavageSide.None );
-		space.AdjustProps( countToNotParticipate, humanToken ).To( nonParticipating );
-
-		QueueUpRestore( space, humanToken, countToNotParticipate, nonParticipating );
+		var group = space.Humans( countToNotParticipate, humanToken );
+		group.Adjust( SitOut ); // migrates group to new token type
+		ActionScope.Current.AtEndOfThisAction( scope => group.Adjust( _ => humanToken ) );
 	}
-
-	/// <summary>
-	/// Adds the restore action to the end of the current Action-Scope
-	/// </summary>
-	static void QueueUpRestore( SpaceState space, HumanToken humanToken, int countToNotParticipate, HumanToken nonParticipating ) {
-		ActionScope.Current.AtEndOfThisAction( scope => {
-			space.AdjustProps( countToNotParticipate, nonParticipating ).To( humanToken );
-		} );
-	}
+	static HumanToken SitOut(HumanToken humanToken) => humanToken.SetRavageSide( RavageSide.None );
 
 }

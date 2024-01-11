@@ -12,8 +12,9 @@ class HabsburgMakeTownsDurable
 		if(args.Removed == Token.Blight && !from.Blight.Any)
 			// Switch all towns to Durable
 			foreach(HumanToken t in from.HumanOfTag( Human.Town ))
-				from.AdjustPropsForAll( t ).To( new HabsburgDurableToken( t ) );
+				from.AllHumans( t ).Adjust( MakeDurable );
 	}
+	static HumanToken MakeDurable(HumanToken x ) => new HabsburgDurableToken( x );
 
 	public void ModifyAdding( AddingTokenArgs args ) {
 		// Level 4 - Durable / Herds Thrive

@@ -20,12 +20,13 @@ public static class HealthAdjustmentHelper_Extension {
 				? tokens.OrderBy( x => x.FullHealth ).ToArray()
 				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
 			foreach(var token in orderedTokens)
-				await spaceState.AdjustHealthOf( token, delta, spaceState[token] );
+				await spaceState.AllHumans( token ).AdjustHealthAsync( delta );
 		}
 	}
 
 	/// <summary>
-	/// Modifies (specified) Human Tokens to gain health bonus when in a particular land and lose it when they leave or at the end of the round.
+	/// Modifies (specified) Human Tokens to gain health bonus when in a particular land 
+	/// and lose it when they leave or at the end of the round.
 	/// </summary>
 	public class HealthAdjustmentToken : BaseModEntity
 		, IModifyAddingToken
@@ -46,11 +47,15 @@ public static class HealthAdjustmentHelper_Extension {
 
 		// Remove (covers simple-remove AND move-out)
 		public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
-			if(args.Token is HumanToken healthToken && _tokenClasses.Contains( args.Token.Class ))
+			if(args.Token is HumanToken healthToken && _tokenClasses.Contains( args.Token.Class )) {
 				// Downgrade the existing tokens health
 				// AND change what we are removing to be the downgraded token
 				// tokens being destroyed may reduce the count also.
-				(args.Token, args.Count) = await args.From.AdjustHealthOf( healthToken, -_bonusHealth, args.Count );
+				var result = await args.From.Humans( args.Count, healthToken )
+					.AdjustHealthAsync( -_bonusHealth );
+				args.Token = result.NewToken;
+				args.Count = result.Count;
+			}
 		}
 
 		// Cleanup

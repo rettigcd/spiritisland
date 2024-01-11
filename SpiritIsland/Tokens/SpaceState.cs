@@ -61,7 +61,7 @@ public class SpaceState
 	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).On(Space);
 
 	// -- HumanToken[] --
-	public IEnumerable<HumanToken> Humans() => OfType<HumanToken>();
+	public IEnumerable<HumanToken> AllHumanTokens() => OfType<HumanToken>();
 	public HumanToken[] HumanOfTag( ITag tag ) => OfTagEnumeration( tag ).Cast<HumanToken>().ToArray();
 	public HumanToken[] HumanOfAnyTag( params ITag[] classes ) => OfAnyTagEnumeration( classes ).Cast<HumanToken>().ToArray();
 
@@ -133,16 +133,18 @@ public class SpaceState
 	/// Only trigger a Destroyed/Remove event if the added token is already destroyed.
 	/// </summary>
 	/// <remarks> Though counter-intuitive, this significantly simplifies replacing-token logic.</remarks>
-	public async Task AdjustUpHumanAsync( HumanToken token, int delta ) {
-		if(delta < 0) throw new ArgumentOutOfRangeException(nameof(delta), "Add only. For removing tokens, use Adjust(...)" );
-		if(delta == 0) return;
+	public async Task AdjustUpOrDestroyAsync( HumanToken token, int deltaCount ) {
+		if(deltaCount < 0) throw new ArgumentOutOfRangeException(nameof(deltaCount), "Add only. For removing tokens, use Adjust(...)" );
+		if(deltaCount == 0) return;
 
 		// Do Adjustment
-		if(token is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta );
-		_counts[token] += delta;
+		if(token is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, deltaCount );
+		_counts[token] += deltaCount;
 
-		if(token.IsDestroyed)
-			await this.RemoveAsync(token, delta, RemoveReason.Destroyed);
+		if(token.IsDestroyed) {
+			ActionScope.Current.LogDebug( $"{Space.Text} Adjusting-Up {deltaCount} {token.SpaceAbreviation} => Destroyed!" );
+			await this.RemoveAsync(token, deltaCount, RemoveReason.Destroyed);
+		}
 	}
 
 	/// <summary> Non-event-triggering changes </summary>
@@ -171,13 +173,10 @@ public class SpaceState
 
 	#region AdjustProps
 
-	/// <summary>
-	/// Changes properties of existing Tokens. Doesn't (visually/logically) change the tokens themselves.
-	/// </summary>
-	/// <param name="tokenToReplace"></param>
-	/// <returns></returns>
-	public PropertyAdjustment AdjustPropsForAll( IToken tokenToReplace ) => new PropertyAdjustment(this,tokenToReplace);
-	public PropertyAdjustment AdjustProps( int countToReplace, IToken tokenToReplace ) => new PropertyAdjustment( this, countToReplace, tokenToReplace );
+	public HumanAdjustBinding Humans( int count, HumanToken tokenToReplace ) 
+		=> new HumanAdjustBinding( this, count, tokenToReplace );
+
+	public HumanAdjustBinding AllHumans( HumanToken orig ) => Humans( this[orig], orig );
 
 	#endregion AdjustProps
 
@@ -188,10 +187,10 @@ public class SpaceState
 
 	public bool HasInvaders() => Has( TokenCategory.Invader );
 
-	public bool HasStrife => Humans().Any(x=>0<x.StrifeCount);
-	public int StrifeCount => Humans().Sum( x => x.StrifeCount );
+	public bool HasStrife => AllHumanTokens().Any(x=>0<x.StrifeCount);
+	public int StrifeCount => AllHumanTokens().Sum( x => x.StrifeCount );
 
-	public int CountStrife() => Humans().Where(x=>0<x.StrifeCount).Sum( t => _counts[t] );
+	public int CountStrife() => AllHumanTokens().Where(x=>0<x.StrifeCount).Sum( t => _counts[t] );
 
 	public int TownsAndCitiesCount() => this.SumAny( Human.Town_City );
 
@@ -247,6 +246,8 @@ public class SpaceState
 	// It is questionable if this should be here since adjusting shouldn't make any difference
 	// but in this case, it COULD destroy a token.
 
+
+
 	public virtual async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) => (await AddRemoveStrifeAsync( invader, 1, 1 )).On(Space);
 
 	public Task<HumanToken> Remove1StrifeFromAsync( HumanToken invader, int tokenCount ) => AddRemoveStrifeAsync(invader,-1,tokenCount);
@@ -268,24 +269,6 @@ public class SpaceState
 		return newInvader;
 	}
 
-	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
-	/// <returns> The # of remaining Adjusted tokens. </returns>
-	public async Task<(HumanToken, int)> AdjustHealthOf( HumanToken token, int delta, int count ) {
-		count = Math.Min( this[token], count );
-		if(count == 0) return (token, 0);
-
-		var newToken = token.AddHealth( delta ); // throws exception if health < 1
-
-		if(newToken.IsDestroyed) {
-			await Destroy( token, count ); // destroy the old token
-			ActionScope.Current.LogDebug($"{Space.Text} Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation} => Destroyed!");
-			return (token, 0);
-		}
-
-		AdjustProps( count, token ).To( newToken );
-		ActionScope.Current.LogDebug( $"Adjusting {count} {token.SpaceAbreviation} to {newToken.SpaceAbreviation}" );
-		return (newToken, count);
-	}
 
 	// Convenience only
 	public Task Destroy( IToken token, int count ) => token is HumanToken ht

@@ -13,7 +13,7 @@ class FranceBuilder : BuildEngine {
 		int initialCityCount = spaceState.Sum( Human.City );
 		await base.Do1Build( gameState, spaceState );
 		if(_hasSlaveLabor)
-			DoSlaveLabor( spaceState );
+			await DoSlaveLaborAsync( spaceState );
 		if(_hasTriangleTrade)
 			await DoTriangleTrade( spaceState, initialCityCount );
 	}
@@ -30,7 +30,7 @@ class FranceBuilder : BuildEngine {
 		}
 	}
 
-	static void DoSlaveLabor( SpaceState tokens ) {
+	static async Task DoSlaveLaborAsync( SpaceState tokens ) {
 		// After Invaders Build in a land with 2 Explorer or more,
 		// replace all but 1 Explorer there with an equal number of Town.
 
@@ -39,10 +39,13 @@ class FranceBuilder : BuildEngine {
 
 		// remove explorers
 		int numToReplace = explorerCount - 1;
-		while(numToReplace > 0) {
+		while(0 < numToReplace) {
 			var explorerToken = tokens.HumanOfTag( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
 			int count = Math.Min( tokens[explorerToken], numToReplace );
-			tokens.AdjustProps( count, explorerToken ).To( Human.Town );
+
+			var r = await tokens.RemoveAsync( explorerToken, 1, RemoveReason.Replaced );
+			if(0<r.Count)
+				await tokens.AddDefaultAsync( Human.Town, 1, AddReason.AsReplacement );
 
 			// next
 			numToReplace -= count;

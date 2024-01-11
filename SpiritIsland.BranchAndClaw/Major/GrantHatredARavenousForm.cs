@@ -9,7 +9,7 @@ public class GrantHatredARavenousForm {
 		bool originallyHadInvaders = ctx.HasInvaders;
 
 		// for each strife or blight in target land, 
-		int count = ctx.Tokens.Humans().Sum(x=>x.StrifeCount * ctx.Tokens[x])
+		int count = ctx.Tokens.AllHumanTokens().Sum(x=>x.StrifeCount * ctx.Tokens[x])
 			+ ctx.Blight.Count;
 		// 1 fear 
 		ctx.AddFear( count );

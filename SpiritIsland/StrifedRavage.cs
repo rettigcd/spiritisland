@@ -63,15 +63,8 @@ public static class StrifedRavage {
 			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader );
 	}
 
-	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HumanToken originalInvader ) {
-		var newInvader = originalInvader.AddDamage( originalInvader.StrifeCount );
-		if(newInvader == originalInvader) return;
-
-		if(newInvader.IsDestroyed)
-			await tokens.Destroy( originalInvader, tokens[originalInvader] );
-		else {
-			tokens.AdjustPropsForAll( originalInvader ).To( newInvader );
-		}
+	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HumanToken invader ) {
+		await tokens.AllHumans( invader ).AdjustAsync( x=> x.AddDamage( x.StrifeCount ) );
 	}
 
 	#endregion

@@ -28,14 +28,14 @@ public class AllThingsWeaken : BlightCard {
 
 			// replace/update existing tokens
 			foreach(var ss in gs.Spaces) {
-				var humanTokenTypes = ss.Humans()
+				var humanTokenTypes = ss.AllHumanTokens()
 					.Where(x=>x.FullHealth > 1)
 					.OrderBy(x=>x.FullHealth)
 					.ToArray(); // least health first
 				foreach(HumanToken oldToken in humanTokenTypes)
-					await ss.AdjustPropsForAll( oldToken )
-						.WithHumanAsync( oldToken.AddHealth( -1 ) );
+					await ss.AllHumans(oldToken).AdjustAsync( Weaken1 );
 			}
+			static HumanToken Weaken1(HumanToken x) => x.AddHealth(-1);
 		});
 
 	static BaseCmd<GameState> TakeBlightOn1LessDamage => new BaseCmd<GameState>(

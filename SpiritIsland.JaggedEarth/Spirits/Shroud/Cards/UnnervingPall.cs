@@ -42,16 +42,18 @@ public class UnnervingPall {
 
 			Dictionary<HumanToken,HumanToken> restore = new Dictionary<HumanToken, HumanToken>();
 
-			foreach(var original in _sitOuts.Keys ) {
-				int count = _sitOuts[original];
+			HumanToken MakeNonParticipating(HumanToken original) {
 				var nonParticipating = original.SetRavageSide( RavageSide.None );
-				restore.Add(nonParticipating,original );
-				space.AdjustProps( count, original ).To( nonParticipating );
+				restore.Add( nonParticipating, original );
+				return nonParticipating;
 			}
+
+			foreach(var original in _sitOuts.Keys )
+				space.AllHumans( original ).Adjust( MakeNonParticipating );
 
 			ActionScope.Current.AtEndOfThisAction( scope => {
 				foreach(var sitOut in restore.Keys)
-					space.AdjustPropsForAll(sitOut).To( restore[sitOut] );
+					space.AllHumans( sitOut ).Adjust( x => restore[x] );
 			} );
 
 		}

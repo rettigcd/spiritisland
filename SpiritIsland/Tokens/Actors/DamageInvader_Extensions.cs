@@ -32,7 +32,7 @@ public static class DamageInvader_Extensions {
 
 		IToken[] options;
 		int damageInflicted = 0;
-		while(0 < damage && (options = tokens.Humans().Intersect( allowedTypes() ).ToArray()).Length > 0) {
+		while(0 < damage && (options = tokens.AllHumanTokens().Intersect( allowedTypes() ).ToArray()).Length > 0) {
 			var st = await damagePicker.SelectAsync( An.Invader.ForAggregateDamageFromSource( tokens.Space, source, options, damage, Present.Always ) );
 			if( st == null) break;
 			var invaderToDamage = st.Token.AsHuman();

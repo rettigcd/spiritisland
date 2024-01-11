@@ -17,11 +17,11 @@ class HabsburgDurableToken
 	public override async Task<int> Destroy( SpaceState tokens, int count ) {
 		count = Math.Min( count, tokens[this] ); // clip
 		if(0 < count) {
-			HumanToken damagedToken = this.AddDamage( 2 );
-			if(damagedToken.IsDestroyed)
+			// !!! Can we combine this and NOT go through the token.Destroy
+			if(this.AddDamage( 2 ).IsDestroyed )
 				await base.Destroy( tokens, count );
 			else
-				tokens.AdjustProps( count, this ).To( damagedToken );
+				tokens.Humans( count, this ).Adjust( x=>x.AddDamage(2) );
 		}
 		return count;
 	}
@@ -33,25 +33,21 @@ class HabsburgDurableToken
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
 	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 		// If adding first blight
-		if(args.Added == Token.Blight && to.Blight.Count == 1) {
+		if(args.Added == Token.Blight && to.Blight.Count == 1)
 			// switch back to normal
-			HumanToken restored = GetRestoreToken();
-			if(restored.IsDestroyed)
-				await DestroyAll( to );
-			else
-				to.AdjustPropsForAll( this ).To( restored );
-		}
+			await to.AllHumans( this ).AdjustAsync( _ => GetRestoreToken() );
 	}
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// If removing this (Durable) token from space
 		if(args.Token == this) {
 			// switch it back to normal.
+			// !!! can we collapse this and not call token.Destroy
 			HumanToken restored = GetRestoreToken();
 			if(restored.IsDestroyed) {
 				await base.Destroy( args.From, args.Count ); // must call Base to ensure it gets destroyed
 				args.Count = 0;
 			} else {
-				args.From.AdjustProps( args.Count, this ).To( restored );
+				args.From.Humans( args.Count, this ).Adjust( _=>restored );
 				args.Token = restored;
 			}
 		}

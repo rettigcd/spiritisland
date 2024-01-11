@@ -37,10 +37,11 @@ public sealed class InvaderBinding {
 	public async Task<(int,HumanToken)> ApplyDamageTo1( int availableDamage, HumanToken originalInvader ) {
 		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return (0,originalInvader);
 
+		//!!! can we clean this up
 		var damagedInvader = Tokens.GetNewDamagedToken( originalInvader, availableDamage );
 
 		if(!damagedInvader.IsDestroyed) {
-			Tokens.AdjustProps(1, originalInvader ).To( damagedInvader );
+			Tokens.Humans(1, originalInvader).Adjust(_ => damagedInvader);
 			InvaderDamaged?.Invoke( originalInvader );
 		} else
 			await DestroyNTokens( originalInvader, 1 );

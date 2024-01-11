@@ -77,10 +77,12 @@ public class HearthToken : SpiritPresenceToken
 
 	public static void GrantHealthBoost( SpaceState to ) {
 		foreach(HumanToken origDahan in to.HumanOfTag(TokenCategory.Dahan).ToArray()) {
-			var newToken = UpgradeDahanAndLog( origDahan, to[origDahan] );
-			to.AdjustPropsForAll(origDahan).To(newToken);
+			var result = to.AllHumans(origDahan).Adjust(BoostHealth);
+			ActionScope.Current.LogDebug( $"Adjusting {result.Count} {result.OldToken.SpaceAbreviation} to {result.NewToken.SpaceAbreviation}" );
 		}
 	}
+	static HumanToken BoostHealth( HumanToken x ) => x.AddHealth( _deltaHealth );
+
 
 	/// <summary> Intercepts in-coming dahan and grants them additional health. </summary>
 	static void Fortify_AddingDahan( AddingTokenArgs args ) {
@@ -100,18 +102,22 @@ public class HearthToken : SpiritPresenceToken
 	static async Task Foritfy_RemovingDahanAsync( RemovingTokenArgs args ) {
 
 		// Removing Dahan
-		if(args.Token is HumanToken healthToken && BonusAppliesToThis( healthToken ))
+		if(args.Token is HumanToken healthToken && BonusAppliesToThis( healthToken )) {
 			// Downgrade the existing tokens health
 			// AND change what we are removing to be the downgraded token
 			// tokens being destroyed may reduce the count also.
-			(args.Token, args.Count) = await args.From.AdjustHealthOf( healthToken, -_deltaHealth, args.Count );
+			var result = await args.From.Humans( args.Count, healthToken )
+				.AdjustHealthAsync( -_deltaHealth );
+			args.Token = result.NewToken; 
+			args.Count = result.Count;
+		}
 	}
 
 	async Task Foritfy_RemovedPresenceAsync( ITokenRemovedArgs args, SpaceState from ) {
 		// Removing Last Presence
 		if(args.Removed == this && from[this] == 0)
 			foreach(HumanToken token in from.HumanOfTag(TokenCategory.Dahan).ToArray())
-				await from.AdjustHealthOf( token, -_deltaHealth, from[token] );
+				await from.AllHumans( token ).AdjustHealthAsync( -_deltaHealth );
 	}
 
 	#endregion Fortify Heart and Hearth

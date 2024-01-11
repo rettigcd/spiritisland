@@ -27,18 +27,18 @@ public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToke
 			int previous = _byAction[ActionScope.Current];
 			if(previous < _maxPerAction) {  // remaining adjustments for this action
 				// save some dahan
-				int adjustment = Math.Min( _maxPerAction - previous, args.Count );
-				args.Count -= adjustment;
-				_byAction[ActionScope.Current] += adjustment;
+				int adjCount = Math.Min( _maxPerAction - previous, args.Count );
+				args.Count -= adjCount;
+				_byAction[ActionScope.Current] += adjCount;
 				// restore to full health
-				_space.AdjustProps( adjustment, args.Token ).To( args.Token.AsHuman().Healthy );
+				_space.Humans( adjCount, args.Token.AsHuman() ).Heal();
 			} else {
 				// make sure our already-saved dahan stay saved
 				int maxWeCanDestroy = _space.Dahan.CountAll - _maxPerAction;
 				int countToReSave = args.Count - maxWeCanDestroy;
 				if(0 < countToReSave) {
 					args.Count -= countToReSave;
-					_space.AdjustProps( countToReSave, args.Token ).To( args.Token.AsHuman().Healthy );
+					_space.Humans( countToReSave, args.Token.AsHuman() ).Heal();
 				}
 			}
 		}

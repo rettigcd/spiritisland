@@ -239,7 +239,7 @@ class IslandPanel : IPanel {
 	void DrawInvaderRow( Graphics graphics, SpaceState ss ) {
 		int iconWidth = _iconWidth;
 
-		var orderedInvaders = ss.Humans()
+		var orderedInvaders = ss.AllHumanTokens()
 			.Where( k => k.HumanClass.HasTag(TokenCategory.Invader) )
 			// Major ordering: (Type > Strife)
 			.OrderByDescending( i => i.FullHealth )

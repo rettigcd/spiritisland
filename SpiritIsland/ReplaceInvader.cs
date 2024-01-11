@@ -121,10 +121,15 @@ static public class ReplaceInvader {
 
 	#region > Dahan
 
-	public static void WithDahan( SpaceState tokens, HumanTokenClass[] invaderTypes ) {
+	public static async Task WithDahanAsync( SpaceState tokens, HumanTokenClass[] invaderTypes ) {
 		var tokenToRemove = tokens.BestInvaderToBeRidOf( invaderTypes );
-		if(tokenToRemove is not null)
-			tokens.AdjustProps(1,tokenToRemove).To( Human.Dahan );
+		if(tokenToRemove is not null) {
+
+			var result = await tokens.RemoveAsync(tokenToRemove,1, RemoveReason.Replaced);
+			if(0<result.Count)
+				await tokens.AddDefaultAsync( Human.Dahan, 1, AddReason.AsReplacement );
+
+		}
 	}
 
 	#endregion > Dahan

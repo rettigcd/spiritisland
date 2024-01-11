@@ -56,7 +56,7 @@ public class RavageExchange {
 
 	static RavageParticipants GetSideParticipants( SpaceState tokens, RavageSide side, RavageOrder order ) {
 
-		var starting = tokens.Humans()
+		var starting = tokens.AllHumanTokens()
 			.Where( token => token.RavageSide == side )
 			.ToDictionary( x => x, x => tokens[x] )
 			.ToCountDict();

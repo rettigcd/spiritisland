@@ -77,7 +77,7 @@ public class PentUpCalamity {
 
 	static IToken[] GetRemovableTokens( TargetSpaceCtx ctx ) {
 		var options = ctx.Tokens.OfAnyTag( Token.Beast, Token.Disease, Token.Wilds ).ToList();
-		options.AddRange( ctx.Tokens.Humans() );
+		options.AddRange( ctx.Tokens.AllHumanTokens() );
 		return options.Cast<IToken>().ToArray();
 	}
 

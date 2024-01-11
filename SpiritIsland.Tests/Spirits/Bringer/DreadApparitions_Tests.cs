@@ -54,14 +54,16 @@ public class DreadApparitions_Tests {
 		GameState gs = new GameState( spirit, board );
 		gs.DisableBlightEffect();
 
-		// Given
+		// Given: City on A5
 		a5.Given_HasTokens("1C@3");
 		spirit.Given_HasPresenceOn(a5);
-		//  And
+		//  And: Spirit played Dread Apparitions on A5
 		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: destroying city
-		await spirit.When_TargetingSpace(a5, ctx => ctx.Invaders.DestroyNOfClass( 1, Human.City ) );
+		await spirit.When_TargetingSpace(a5, 
+			ctx => ctx.Invaders.DestroyNOfClass( 1, Human.City )
+		);
 
 		// Then: 5 fear should have triggered 2 defend
 		board[5].Tokens.Defend.Count.ShouldBe( 5+1 );// Dread Apparitions has 1 fear

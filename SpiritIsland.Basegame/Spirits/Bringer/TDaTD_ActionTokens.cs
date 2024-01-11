@@ -45,15 +45,13 @@ public class TDaTD_ActionTokens : SpaceState {
 
 		// for everything BUT normal invaders, we do nothing
 		if(!invaderToken.HumanClass.HasTag(TokenCategory.Invader)) return; 
-		if(invaderToken.HumanClass.Variant != TokenVariant.Default) return; 
-		
+		if(invaderToken.HumanClass.Variant != TokenVariant.Default) return;
+
 		// Normal Invaders - Push
 
 		// Replace destroyed invader with the dreaming (non-dream-damaged) version.
-		var newToken = invaderToken
-			.SwitchClass( ToggleDreaming( invaderToken.HumanClass ) ) // make dreaming
-			.AddDamage( 0, -invaderToken.DreamDamage ); // remove nightmare damage
-		AdjustProps(1, invaderToken).To(newToken);
+
+		HumanAdjustment adj = Humans(1, invaderToken).Adjust( MakeDreamer );
 
 		ActionScope.Current.Log( new Log.Debug( "Dream 1000 deaths destroy." ) );
 
@@ -61,9 +59,10 @@ public class TDaTD_ActionTokens : SpaceState {
 		TDaTD_ActionTokens.RecordSpaceWithDreamers( this );
 
 		// Add fear
-		this.AddFear( newToken.HumanClass.FearGeneratedWhenDestroyed );
+		this.AddFear( adj.NewToken.HumanClass.FearGeneratedWhenDestroyed );
 
 		// Push towns and explorers
+		var newToken = adj.NewToken;
 		if(newToken.HumanClass != DreamingCity) {
 			var options = Adjacent;
 			Space destination = await ActionScope.Current.Owner.SelectAsync( A.Space.ToPushToken( newToken, Space, options.Downgrade(), Present.Always ) );
@@ -106,31 +105,28 @@ public class TDaTD_ActionTokens : SpaceState {
 			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
 			.ToArray();
 		foreach(HumanToken dreamer in dreamers)
-			spaceState.AdjustPropsForAll( dreamer ).To( ToggleDreamer( dreamer ) );
+			spaceState.AllHumans( dreamer ).Adjust( ToggleDreamer );
 	}
 
 	static void RemoveDreamDamage( SpaceState spaceState ) {
-		var damagedInvaders = spaceState.Humans()
+		var damagedInvaders = spaceState.AllHumanTokens()
 			.Where( t => t.DreamDamage != 0 )
 			.ToArray();
 		foreach(var damagedInvader in damagedInvaders)
-			spaceState.AdjustPropsForAll( damagedInvader )
-				.To( damagedInvader.AddDamage( 0, -damagedInvader.DreamDamage ) );// restored
-			
+			spaceState.AllHumans( damagedInvader ).Adjust( HealDreamDamage );
 	}
+	static HumanToken HealDreamDamage( HumanToken x ) => x
+		.AddDamage( 0, -x.DreamDamage );
 
-	#endregion
+	static public HumanToken ToggleDreamer( HumanToken x ) => x
+		.SwitchClass( ToggleDreamingClass( x.HumanClass ) );
 
-	#region static DreamTokens
+	static HumanToken MakeDreamer( HumanToken human ) => human
+		.SwitchClass( ToggleDreamingClass( human.HumanClass ) ) // make dreaming
+		.AddDamage( 0, -human.DreamDamage ); // remove nightmare damage
 
-	static public readonly HumanTokenClass DreamingCity = new HumanTokenClass( "City_Dreaming", TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
-	static public readonly HumanTokenClass DreamingTown = new HumanTokenClass( "Town_Dreaming", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
-	static public readonly HumanTokenClass DreamingExplorer = new HumanTokenClass( "Explorer_Dreaming", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
-
-	static public HumanToken ToggleDreamer( HumanToken token ) => token.SwitchClass( ToggleDreaming( token.HumanClass ) );
-
-	static public HumanTokenClass ToggleDreaming( HumanTokenClass tokenClass ) {
-		if(tokenClass.HasTag(TokenCategory.Invader)) {
+	static public HumanTokenClass ToggleDreamingClass( HumanTokenClass tokenClass ) {
+		if(tokenClass.HasTag( TokenCategory.Invader )) {
 			if(tokenClass == Human.Explorer) return DreamingExplorer;
 			if(tokenClass == Human.Town) return DreamingTown;
 			if(tokenClass == Human.City) return DreamingCity;
@@ -140,6 +136,15 @@ public class TDaTD_ActionTokens : SpaceState {
 		}
 		throw new ArgumentException( $"{tokenClass} is not explorer, town, or city." );
 	}
+
+
+	#endregion
+
+	#region static DreamTokens
+
+	static public readonly HumanTokenClass DreamingCity = new HumanTokenClass( "City_Dreaming", TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingTown = new HumanTokenClass( "Town_Dreaming", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingExplorer = new HumanTokenClass( "Explorer_Dreaming", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
 
 	#endregion
 

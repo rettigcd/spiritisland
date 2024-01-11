@@ -18,7 +18,7 @@ public class ExhaleConfusionAndDelirium {
 
 		void IConfigRavages.Config( SpaceState space ) {
 			
-			var blightedCounts = space.Humans()
+			var blightedCounts = space.AllHumanTokens()
 				.Where(x=>0<x.StrifeCount)
 				.ToDictionary( x => x, x => space[x] )
 				.ToCountDict();

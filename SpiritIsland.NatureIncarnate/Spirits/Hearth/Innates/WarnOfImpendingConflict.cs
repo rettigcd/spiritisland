@@ -70,10 +70,12 @@ class WarnToken : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 			.OrderBy( x => x.RemainingHealth )
 			.First();
 		int thisTokenGoEarlyCount = Math.Min( remainingGoEarlyCount, space[goFastDahan] );
-		space.AdjustProps( thisTokenGoEarlyCount, goFastDahan ).To( goFastDahan.SetRavageOrder( RavageOrder.Ambush ) );
+
+		space.Humans( thisTokenGoEarlyCount, goFastDahan ).Adjust( Ambush );
 
 		remainingGoEarlyCount -= thisTokenGoEarlyCount;
 	}
+	static HumanToken Ambush( HumanToken h ) => h.SetRavageOrder( RavageOrder.Ambush );
 
 	static void RestoreDahanSpeed( SpaceState space ) {
 		ActionScope.Current.AtEndOfThisAction( scope => {
@@ -81,9 +83,10 @@ class WarnToken : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 				.Where( h => h.RavageOrder != RavageOrder.DahanTurn )
 				.ToArray();
 			foreach(var token in tokensToRestore)
-				space.AdjustPropsForAll( token ).To( token.SetRavageOrder( RavageOrder.DahanTurn ) );
+				space.AllHumans(token).Adjust(RavageDuringDahanTurn);
 		} );
 	}
+	static HumanToken RavageDuringDahanTurn(HumanToken token) => token.SetRavageOrder( RavageOrder.DahanTurn );
 
 	private async Task<bool> UserWantsToUseOnThisSpace( SpaceState space, int goEarlyCount ) => await _spirit.UserSelectsFirstText( $"Have {goEarlyCount} Dahan attack first on {space.Space.Text}?", "Yes, attack early", "No, save for another ravage." );
 }

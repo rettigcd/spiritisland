@@ -128,10 +128,8 @@ public sealed class DahanBinding {
 		if(originalToken.RemainingHealth < damagePerToken)
 			throw new InvalidOperationException( $"Can't damage apply {damagePerToken} because they only have {originalToken.RemainingHealth}." );
 
-		HumanToken damagedToken = originalToken.AddDamage( damagePerToken );
-
-		await _tokens.AdjustProps( tokenCountToReceiveDamage, originalToken ).WithHumanAsync( damagedToken );
-
+		await _tokens.Humans( tokenCountToReceiveDamage, originalToken )
+			.AdjustAsync( x => x.AddDamage( damagePerToken ) );
 	}
 
 	#endregion
