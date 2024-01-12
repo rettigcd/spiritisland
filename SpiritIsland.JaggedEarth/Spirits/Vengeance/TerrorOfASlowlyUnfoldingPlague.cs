@@ -1,31 +1,37 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class TerrorOfASlowlyUnfoldingPlague : DiseaseToken {
+/// <summary>
+/// Prevents Disease from being removed when on Spirit's lands.
+/// </summary>
+public class TerrorOfASlowlyUnfoldingPlague : BaseModEntity, IModifyRemovingTokenAsync {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"The Terror of a Slowly Unfolding Plague",
 		"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
 	);
 
-
-	readonly Spirit _spirit;
-
-	public TerrorOfASlowlyUnfoldingPlague( Spirit spirit ) : base() {
+	public TerrorOfASlowlyUnfoldingPlague( Spirit spirit ) {
 		_spirit = spirit;
 	}
 
-	public override async Task<bool> Skip( SpaceState tokens ) {
-		ITokenClass buildClass = BuildEngine.InvaderToAdd.Value;
+	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 
-		bool allowBuild = _spirit.Presence.IsOn( tokens )
-			&& await _spirit.UserSelectsFirstText( $"Allow pending {buildClass.Label} build on {tokens.Space.Label}?", "Yes, Keep Disease +1 Fear", "No, stop build" );
+		bool getFear = IsDiseaseStoppingBuild( args )
+			&& _spirit.Presence.IsOn( args.From )
+			&& await _spirit.UserSelectsFirstText(
+				$"Allow pending Build on {args.From.Space.Label}?",
+				"Yes, Keep Disease, Gain +1 Fear", "No! Are you kidding me? Stop build." );
 
-		if(allowBuild) {
-			tokens.AddFear(1);
-			return false;
+		if(getFear) {
+			args.Count = 0; // not removing
+			args.From.AddFear( 1 );
 		}
-
-		return await base.Skip( tokens );
 	}
 
+	static bool IsDiseaseStoppingBuild( RemovingTokenArgs args ) 
+		=> args.Token.HasTag( Token.Disease )
+		&& args.Reason == RemoveReason.UsedUp
+		&& args.Count == 1;
+
+	readonly Spirit _spirit;
 }

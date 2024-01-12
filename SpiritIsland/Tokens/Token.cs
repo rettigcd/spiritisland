@@ -11,14 +11,7 @@ public static class Token {
 	// Branch and Claw
 	static readonly public TokenClassToken Beast   = new TokenClassToken( "Beast", 'A', Img.Beast ); // need to use A for animal since B is already taken for blight
 	static readonly public TokenClassToken Wilds   = new WildsToken( "Wilds", 'W', Img.Wilds );
-
-	/// <summary>
-	/// ONLY Exposing the Class here 
-	/// because Disease can be swapped out for Vengeance,
-	/// and we want Adding Disease tokens to go through the Disease binding, 
-	/// NOT using this as a token (and missing the Vengeance disease)
-	/// </summary>
-	static readonly public ITokenClass Disease    = new DiseaseToken(); // !!! Route to gameState.Tokens.TokenDefaults[Token.Disease]
+	static readonly public DiseaseToken Disease    = new DiseaseToken();
 
 	// Jagged Earth
 	static readonly public TokenClassToken Badlands = new TokenClassToken ( "Badlands",'M', Img.Badlands ); // 'M' looks like the badlands symbol /\/\ 

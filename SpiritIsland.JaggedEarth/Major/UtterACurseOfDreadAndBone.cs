@@ -36,9 +36,9 @@ public class UtterACurseOfDreadAndBone {
 
 	static int BlightInOrAdjacent( TargetSpaceCtx ctx ) => ctx.Range(1).Sum(s=>s.Blight.Count);
 
-	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, ITokenClass tokenClass, int range ) {
-		var space = await ctx.SelectAsync( new A.Space( $"Add {tokenClass.Label}", ctx.Range( range ), Present.Always ) );
-		await ctx.Target(space).Tokens.AddDefaultAsync(tokenClass, 1);
+	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, IToken token, int range ) {
+		var space = await ctx.SelectAsync( new A.Space( $"Add {token.Class.Label}", ctx.Range( range ), Present.Always ) );
+		await ctx.Target(space).Tokens.AddAsync(token, 1);
 	}
 
 

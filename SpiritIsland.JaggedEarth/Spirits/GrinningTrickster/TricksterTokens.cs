@@ -47,9 +47,9 @@ public class TricksterBlight : BlightTokenBinding {
 
 	public TricksterBlight( SpaceState tokens ) : base( tokens ) { }
 
-	public override async Task Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
+	public override async Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
 		var self = ActionScope.Current.Owner ?? throw new InvalidOperationException( "Action Scope has no owner." );
 		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuckADrag( self, _tokens ); // feature envy?
-		await base.Remove( count, reason );
+		return await base.Remove( count, reason );
 	}
 }

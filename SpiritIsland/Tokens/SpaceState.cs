@@ -94,7 +94,7 @@ public class SpaceState
 	public virtual BlightTokenBinding Blight => new BlightTokenBinding( this );
 	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
 	public BeastBinding Beasts => new ( this, Token.Beast );
-	public TokenBinding Disease => new ( this, _api.GetDefault( Token.Disease ) );
+	public TokenBinding Disease => new ( this, Token.Disease );
 	public TokenBinding Wilds => new ( this, Token.Wilds );
 	public virtual TokenBinding Badlands => new ( this, Token.Badlands );
 	public DahanBinding Dahan => new DahanBinding( this );

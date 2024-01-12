@@ -27,7 +27,7 @@ public class TokenBinding {
 	public virtual Task AddAsync( int count, AddReason reason = AddReason.Added )
 		=> _tokens.AddAsync( Default, count, reason );
 
-	public virtual Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
+	public virtual Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason = RemoveReason.Removed )
 		=> _tokens.RemoveAsync( Default, count, reason );
 
 	public static implicit operator int( TokenBinding b ) => b.Count;

@@ -1,13 +1,13 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class LingeringPestilenceToken : SpiritPresenceToken {
+public class LingeringPestilencePresenceToken : SpiritPresenceToken {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Lingering Pestilence",
 		"When your presence is destroyed by anything except a Spirit action, add 1 disease where each destroyed presence was."
 	);
 
-	public LingeringPestilenceToken( Spirit spirit) :base( spirit ) { }
+	public LingeringPestilencePresenceToken( Spirit spirit) :base( spirit ) { }
 
 	protected override async Task OnPresenceDestroyed( ITokenRemovedArgs args ){ 
 		await base.OnPresenceDestroyed( args );

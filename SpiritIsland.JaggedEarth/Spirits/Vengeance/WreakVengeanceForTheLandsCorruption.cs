@@ -23,7 +23,7 @@ class WreakVengeanceForTheLandsCorruption : TokenBinding {
 
 	public override int Count => base.Count + _blight.Count;
 
-	public override Task Remove( int count, RemoveReason reason ) {
+	public override Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason ) {
 		throw new InvalidOperationException("No card/action removes badlands."); // Transform to a Murderous Darkness does move badlands, but not using this method.
 	}
 

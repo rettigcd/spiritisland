@@ -9,7 +9,6 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 			[Human.Town]     = new HumanToken( Human.Town,     2 ),
 			[Human.Explorer] = new HumanToken( Human.Explorer, 1 ),
 			[Human.Dahan]    = new HumanToken( Human.Dahan,    2 ),
-			[Token.Disease]  = (DiseaseToken)Token.Disease,
 		};
 
 		_islandMods = new CountDictionary<ISpaceEntity>();
