@@ -18,6 +18,9 @@ public class TDaTD_ActionTokens : SpaceState {
 
 	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
 	public override async Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+		if(reason == DestroyingFromDamage.TriggerReason)
+			reason = RemoveReason.Destroyed;
+
 		if(reason != RemoveReason.Destroyed || token == BringerPresence)
 			return await base.SourceAsync( token, count, reason );
 

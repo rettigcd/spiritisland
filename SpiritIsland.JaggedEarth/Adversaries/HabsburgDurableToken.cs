@@ -7,24 +7,13 @@ class HabsburgDurableToken
 	, IHandleTokenAddedAsync     // check for Blight, switch to normal
 
 {
+
 	protected HabsburgDurableToken( Props x ):base(x) { }
 
 	static Props Add2Health(Props props ) { props._rawFullHealth+=2; return props; }
 
 	public HabsburgDurableToken( HumanToken orig )
 		: base( Add2Health(orig.GetProps()) ) { }
-
-	public override async Task<int> Destroy( SpaceState tokens, int count ) {
-		count = Math.Min( count, tokens[this] ); // clip
-		if(0 < count) {
-			// !!! Can we combine this and NOT go through the token.Destroy
-			if(this.AddDamage( 2 ).IsDestroyed )
-				await base.Destroy( tokens, count );
-			else
-				tokens.Humans( count, this ).Adjust( x=>x.AddDamage(2) );
-		}
-		return count;
-	}
 
 	protected override HumanToken MakeNew( Props x ) => new HabsburgDurableToken( x );
 
@@ -39,18 +28,37 @@ class HabsburgDurableToken
 	}
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// If removing this (Durable) token from space
-		if(args.Token == this) {
-			// switch it back to normal.
-			// !!! can we collapse this and not call token.Destroy
-			HumanToken restored = GetRestoreToken();
-			if(restored.IsDestroyed) {
-				await base.Destroy( args.From, args.Count ); // must call Base to ensure it gets destroyed
+		if(args.Token != this) return;
+
+		// Destroy command
+		var town = args.Token.AsHuman();
+		if( args.Reason == RemoveReason.Destroyed) {
+
+			// If direct destroy, replace with 2 damage
+			if( args is not DestroyingFromDamage && 2 < town.RemainingHealth ) {
+				// Just do 2 damage
+				args.From.Humans( args.Count, town ).Adjust( x => x.AddDamage( 2 ) );
+				// Don't destroy it
 				args.Count = 0;
-			} else {
-				args.From.Humans( args.Count, this ).Adjust( _=>restored );
-				args.Token = restored;
 			}
+
+			return;
 		}
+
+		// This not a Destroy, it is something else
+		// Restore non-durable health
+		HumanToken restored = GetRestoreToken();
+		if(restored.IsDestroyed) {
+			// Just destroy it
+			await args.From.Destroy( args.Token, args.Count );
+			// Don't, try to remove it.
+			args.Count = 0;
+		} else {
+			// Instead of removing the durable, now removing the regular.
+			args.From.Humans( args.Count, this ).Adjust( _=>restored );
+			args.Token = restored;
+		}
+
 	}
 	#endregion
 }

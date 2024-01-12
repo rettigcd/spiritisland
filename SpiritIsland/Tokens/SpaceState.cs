@@ -269,12 +269,6 @@ public class SpaceState
 		return newInvader;
 	}
 
-
-	// Convenience only
-	public Task Destroy( IToken token, int count ) => token is HumanToken ht
-		? ht.Destroy( this, count )
-		: this.RemoveAsync( token, count, RemoveReason.Destroyed );
-
 	public Task<ITokenAddedArgs> AddDefaultAsync( ITokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
 		=> AddAsync( GetDefault(tokenClass), count, addReason);
 
@@ -326,6 +320,27 @@ public class SpaceState
 			await handler.HandleTokenAddedAsync( this, args );
 	}
 
+	public Task<int> DestroyAll( HumanToken humanToken )
+		=> Destroy( humanToken, this[humanToken] );
+
+	protected virtual Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
+		return this.Destroy( invaderToDestroy, countToDestroy );
+	}
+
+	// Convenience only
+	public async Task<int> Destroy( IToken token, int count ) {
+		if(this[token] < count)
+			throw new InvalidOperationException( $"Cannot remove {count} {this} tokens because there aren't that many." );
+
+		var result = await this.RemoveAsync( token, count, RemoveReason.Destroyed );
+		if(token is HumanToken ht )
+			this.AddFear(
+				ht.HumanClass.FearGeneratedWhenDestroyed * result.Count,
+				FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
+			);
+		return result.Count;
+	}
+
 	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
 	public virtual async Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
@@ -333,7 +348,10 @@ public class SpaceState
 		RemovingTokenCtx removedHandlers = RemovedHandlerSnapshop;
 
 		// Pre-Remove check/adjust (sync)
-		var removingArgs = new RemovingTokenArgs( this, reason ) { Count = count, Token = token };
+		RemovingTokenArgs removingArgs = reason == DestroyingFromDamage.TriggerReason
+			? new DestroyingFromDamage( this ) { Count = count, Token = token }
+			: new RemovingTokenArgs( this, reason ) { Count = count, Token = token };
+
 		await ModifyRemoving( removingArgs );
 
 		// Do Remove
@@ -394,9 +412,6 @@ public class SpaceState
 	public virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage )
 		=> invaderToken.AddDamage( availableDamage );
 
-	protected virtual Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
-		return invaderToDestroy.Destroy( this, countToDestroy );
-	}
 
 	public virtual TokenMover Gather( Spirit self ) 
 		=> new TokenMover( self, "Gather", Adjacent, this );

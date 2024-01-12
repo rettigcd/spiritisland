@@ -157,12 +157,12 @@ public sealed class DahanBinding {
 		// ! Running this through the Dahan.Destroy is unnessary since it is never overriden.
 		// However, this matches the Invader pattern which IS necessary due to Habsburg Durable tokens.
 		int x = Math.Min( count, _tokens[token] );
-		return await token.Destroy( _tokens, x );
+		return await _tokens.Destroy(token, x );
 	}
 
 	public async Task DestroyAll() {
 		foreach(HumanToken token in NormalKeys.ToArray())
-			await token.DestroyAll( _tokens );
+			await _tokens.DestroyAll( token );
 	}
 
 	#endregion

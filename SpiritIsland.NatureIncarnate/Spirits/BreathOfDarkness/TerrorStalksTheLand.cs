@@ -18,6 +18,9 @@ public class TerrorStalksTheLand : SpaceState {
 	}
 
 	public override async Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs, Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+		if(reason == DestroyingFromDamage.TriggerReason)
+			reason = RemoveReason.Destroyed;
+
 		if(reason != RemoveReason.Destroyed 
 			|| !token.HasTag(TokenCategory.Invader)
 			|| PreviouslyDestroyed

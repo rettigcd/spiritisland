@@ -35,6 +35,9 @@ public sealed class InvaderBinding {
 	/// <summary> Not Badland-aware </summary>
 	/// <returns>(damage inflicted,damagedInvader)</returns>
 	public async Task<(int,HumanToken)> ApplyDamageTo1( int availableDamage, HumanToken originalInvader ) {
+		if(Tokens[originalInvader] < 1)
+			throw new InvalidOperationException( $"Cannot remove 1 {originalInvader} tokens because there aren't that many." );
+
 		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return (0,originalInvader);
 
 		//!!! can we clean this up
@@ -43,12 +46,20 @@ public sealed class InvaderBinding {
 		if(!damagedInvader.IsDestroyed) {
 			Tokens.Humans(1, originalInvader).Adjust(_ => damagedInvader);
 			InvaderDamaged?.Invoke( originalInvader );
-		} else
-			await DestroyNTokens( originalInvader, 1 );
+		} else {
+			if(!Tokens.PreventsInvaderDamage()){ 
+				var result = await Tokens.RemoveAsync( originalInvader, 1, DestroyingFromDamage.TriggerReason );
+				Tokens.AddFear(
+					originalInvader.HumanClass.FearGeneratedWhenDestroyed * result.Count,
+					FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
+				);
+			}
+		}
 
 		int damageInflicted = originalInvader.RemainingHealth - damagedInvader.RemainingHealth;
 		return (damageInflicted, damagedInvader);
 	}
+
 	// The invader Before it was damaged.
 	public event Action<HumanToken> InvaderDamaged;
 
@@ -61,7 +72,7 @@ public sealed class InvaderBinding {
 
 		var tokensToDestroy = Tokens.HumanOfAnyTag( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
-			await token.DestroyAll( Tokens );
+			await Tokens.DestroyAll( token );
 	}
 
 	public async Task DestroyNOfAnyClass( int count, params HumanTokenClass[] generics ) {
@@ -106,7 +117,7 @@ public sealed class InvaderBinding {
 	// destroy TOKEN
 	public async Task DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
 		if(Tokens.PreventsInvaderDamage()) return;
-		await invaderToDestroy.Destroy( Tokens, countToDestroy );
+		await Tokens.Destroy(invaderToDestroy, countToDestroy );
 	}
 	#endregion Destroy
 

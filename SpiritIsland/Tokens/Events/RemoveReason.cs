@@ -15,3 +15,21 @@ public enum RemoveReason {
 static public class RemoveReasonExtension {
 	static public bool IsDestroy( this RemoveReason reason ) => reason == RemoveReason.Destroyed;
 }
+
+
+/// <summary>
+/// Token is destroyed by receiving Direct Damage.
+/// </summary>
+/// <remarks>
+/// Hook for Habsburg Monarchy Durable Towns.
+/// Not part of the interface because we don't want it in the Move event
+/// </remarks>
+public class DestroyingFromDamage : RemovingTokenArgs {
+	public DestroyingFromDamage( SpaceState from ) : base( from, RemoveReason.Destroyed ) { }
+
+	/// <summary>
+	/// Special value used to Trigger this Type 
+	/// </summary>
+	static public RemoveReason TriggerReason = (RemoveReason)151;
+}
+
