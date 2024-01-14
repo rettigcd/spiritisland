@@ -167,7 +167,7 @@ public class SpaceState
 	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public IToken GetDefault( ITokenClass tokenClass ) => _api.GetDefault( tokenClass );
+	public HumanToken GetDefault( ITokenClass tokenClass ) => _api.GetDefault( tokenClass );
 
 	#endregion
 
@@ -267,6 +267,45 @@ public class SpaceState
 			await Destroy( newInvader, this[newInvader] );
 
 		return newInvader;
+	}
+
+	/// <summary>
+	/// Replaces 1 Human type/class with another (1 to 1)
+	/// </summary>
+	public async Task ReplaceHumanAsync(HumanToken oldToken, HumanTokenClass newTokenClass) {
+		if(oldToken == null) return;
+
+		var newToken = GetDefault( newTokenClass );
+
+		newToken = newToken.AddDamage( oldToken.Damage, oldToken.DreamDamage );
+		if(newToken.HasTag(TokenCategory.Invader))
+			newToken = newToken.AddStrife(oldToken.StrifeCount);
+
+		// if downgrading it, destroys it, then do nothing
+		if(newToken.IsDestroyed) {
+			if( newToken.HasTag( TokenCategory.Invader ) && PreventsInvaderDamage() ) return;
+		}
+			
+
+		await ReplaceAsync( oldToken, 1, newToken );
+	}
+
+	public async Task ReplaceAsync(IToken oldToken, int newCount, IToken newToken) {
+		if(oldToken == null) return;
+
+		ILocation source = this;
+
+		var (removed, removedHandler) = await source.SourceAsync( oldToken, 1, RemoveReason.Replaced );
+		if(removed.Count == 0) return; // abort.  Token not removed.
+
+		var (added, addedHandler) = await SinkAsync( newToken, newCount, AddReason.AsReplacement);
+
+		var replaced = new TokenReplacedArgs(removed,added);
+
+		await removedHandler( replaced );
+		await addedHandler( replaced );
+
+		ActionScope.Current.Log(replaced);
 	}
 
 	public Task<ITokenAddedArgs> AddDefaultAsync( ITokenClass tokenClass, int count, AddReason addReason = AddReason.Added )

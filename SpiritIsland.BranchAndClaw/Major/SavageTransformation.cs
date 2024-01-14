@@ -25,10 +25,7 @@ public class SavageTransformation {
 		SpaceToken spaceToken2 = await origCtx.Self.SelectAsync( new A.SpaceToken( "Replace additional with Beast", options, Present.Always ) );
 		if(spaceToken2 == null) return;
 
-		var actionCtx = origCtx.Target( spaceToken2.Space ); // allow
-		await actionCtx.Invaders.Remove( spaceToken2.Token, 1, RemoveReason.Replaced );
-		await actionCtx.Beasts.AddAsync( 1, AddReason.AsReplacement );
-
+		await spaceToken2.Space.Tokens.ReplaceAsync( spaceToken2.Token, 1, Token.Beast );
 	}
 
 }

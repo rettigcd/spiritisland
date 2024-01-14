@@ -11,18 +11,15 @@ public class ThrivingCommunitites : BlightCard {
 
 	static SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
 		var spaceToken = await ctx.SelectAsync( An.Invader.ToReplace("upgrade",ctx.Tokens.HumanOfAnyTag(Human.Explorer_Town).On(ctx.Space)) );
+		var oldInvader = spaceToken.Token.AsHuman();
 
-		var removed = await ctx.Tokens.RemoveAsync( spaceToken.Token, 1,RemoveReason.Replaced);
-
-		var newTokenClass = (removed.Removed.Class == Human.Explorer)
+		var newTokenClass = (oldInvader.Class == Human.Explorer)
 			? Human.Town
 			: Human.City;
 
-		// if select invader with strife, we should keep the strife.
-		var newToken = ctx.Tokens.GetDefault( newTokenClass ).AsHuman()
-			.AddStrife( removed.Removed.AsHuman().StrifeCount );
+		await ctx.Tokens.ReplaceHumanAsync( oldInvader, newTokenClass );
 
-		await ctx.AddDefault( newTokenClass, 1, AddReason.AsReplacement );
-	}).OnlyExecuteIf( x => x.Tokens.HasAny( Human.Explorer_Town ) );
+
+	} ).OnlyExecuteIf( x => x.Tokens.HasAny( Human.Explorer_Town ) );
 
 }

@@ -4,6 +4,6 @@ public interface IIslandTokenApi {
 
 	int GetDynamicTokensFor( SpaceState space, TokenClassToken token );
 
-	IToken GetDefault( ITokenClass tokenClass );
+	HumanToken GetDefault( ITokenClass tokenClass );
 
 }

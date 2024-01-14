@@ -46,15 +46,7 @@ static public class ReplaceInvader {
 			return;
 		}
 
-		var newToken = tokens.GetDefault( DowngradeType( oldInvader.HumanClass ) ).AsHuman()
-			.AddStrife( oldInvader.StrifeCount )
-			.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
-
-		// if downgrading it, destroys it, then do nothing
-		if(newToken.IsDestroyed && tokens.PreventsInvaderDamage() ) return;
-
-		await tokens.RemoveAsync(oldInvader,1,RemoveReason.Replaced);
-		await tokens.AddAsync(newToken,1,AddReason.AsReplacement);
+		await tokens.ReplaceHumanAsync( oldInvader, DowngradeType( oldInvader.HumanClass ) );
 	}
 
 	static HumanTokenClass DowngradeType( HumanTokenClass orig ) => orig == Human.City ? Human.Town
@@ -68,14 +60,7 @@ static public class ReplaceInvader {
 	/// <param name="oldInvader">Explorer or Town</param>
 	/// <exception cref="ArgumentOutOfRangeException"></exception>
 	public static async Task UpgradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
-
-		// Upgrade it
-		var newToken = tokens.GetDefault( UpgradeType( oldInvader.HumanClass ) ).AsHuman()
-			.AddStrife( oldInvader.StrifeCount )
-			.AddDamage( oldInvader.Damage, oldInvader.DreamDamage );
-
-		await tokens.RemoveAsync( oldInvader, 1, RemoveReason.Replaced );
-		await tokens.AddAsync( newToken, 1, AddReason.AsReplacement );
+		await tokens.ReplaceHumanAsync( oldInvader, UpgradeType( oldInvader.HumanClass ) );
 	}
 
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
@@ -110,8 +95,7 @@ static public class ReplaceInvader {
 
 		int explorersToAdd = replaceCount - tokenToRemove.Damage; // ignore nightmare damage because it can't really destory stuff
 
-		await tokens.RemoveAsync( tokenToRemove, 1, RemoveReason.Replaced );
-		await tokens.AddDefaultAsync( Human.Explorer, explorersToAdd, AddReason.AsReplacement );
+		await tokens.ReplaceAsync( tokenToRemove, explorersToAdd, tokens.GetDefault(Human.Explorer));
 
 		// ! This is an approximation, to perfectly distribute strife, need to be able to replace with multiple types.
 		await ctx.AddStrife( tokenToRemove.StrifeCount, Human.Explorer );

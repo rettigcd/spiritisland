@@ -21,13 +21,8 @@ class SwedenExplorer : ExploreEngine {
 		var dahan = tokens.Dahan;
 		if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {
 			HumanToken dahanToConvert = dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).First();
-			HumanToken townToAdd = tokens.GetDefault( Human.Town ).AsHuman().AddDamage( dahanToConvert.Damage );
-
-			var result = await tokens.RemoveAsync(dahanToConvert,1,RemoveReason.Replaced);
-			if(0<result.Count)
-				await tokens.AddAsync(townToAdd,1,AddReason.AsReplacement);
-
-			ActionScope.Current.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with {townToAdd}" ) );
+			ActionScope.Current.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with Town" ) );
+			await tokens.ReplaceHumanAsync( dahanToConvert, Human.Town );
 		}
 	}
 

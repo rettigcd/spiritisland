@@ -4,7 +4,7 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 
 	public Tokens_ForIsland() {
 
-		TokenDefaults = new Dictionary<ITokenClass, IToken> {
+		TokenDefaults = new Dictionary<ITokenClass, HumanToken> {
 			[Human.City]     = new HumanToken( Human.City,     3 ),
 			[Human.Town]     = new HumanToken( Human.Town,     2 ),
 			[Human.Explorer] = new HumanToken( Human.Explorer, 1 ),
@@ -19,8 +19,8 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 
 	#region Configuration
 
-	IToken IIslandTokenApi.GetDefault( ITokenClass tokenClass ) => TokenDefaults[tokenClass];
-	public readonly Dictionary<ITokenClass, IToken> TokenDefaults;
+	HumanToken IIslandTokenApi.GetDefault( ITokenClass tokenClass ) => TokenDefaults[tokenClass];
+	public readonly Dictionary<ITokenClass, HumanToken> TokenDefaults;
 
 	#endregion
 
@@ -112,7 +112,7 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 		}
 		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
 		readonly Space[] _doesNotExist;
-		readonly Dictionary<ITokenClass, IToken> tokenDefaults = new Dictionary<ITokenClass, IToken>();
+		readonly Dictionary<ITokenClass, HumanToken> tokenDefaults = new Dictionary<ITokenClass, HumanToken>();
 		readonly object _dynamicTokens;
 	}
 

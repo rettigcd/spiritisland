@@ -26,8 +26,8 @@ public class TokenLocation_Tests {
 
 		SpaceState ss = gs.Tokens[a5];
 		var explorer = ss.GetDefault(Human.Explorer);
-		var town = ss.GetDefault(Human.Town).AsHuman();
-		var city = ss.GetDefault(Human.City).AsHuman();
+		var town = ss.GetDefault(Human.Town);
+		var city = ss.GetDefault(Human.City);
 		ss.Given_HasTokens("1E@1,1T@2,1C@3");
 
 		var ePoint = layout.Init( ss ).GetPointFor( explorer );

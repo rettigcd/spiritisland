@@ -34,8 +34,7 @@ public class ForsakeSocietyToChaseAfterDreams {
 		// Replace
 		if(invader.HumanClass != Human.Explorer) {
 			int numberOfExplorersToAdd = Math.Max(0,invader.HumanClass.ExpectedHealthHint - invader.Damage);
-			await ctx.Invaders.Remove( invader, 1, RemoveReason.Replaced );
-			await ctx.AddDefault( Human.Explorer, numberOfExplorersToAdd, AddReason.AsReplacement );
+			await ctx.Tokens.ReplaceAsync( invader, numberOfExplorersToAdd, ctx.Tokens.GetDefault( Human.Explorer ) );
 		}
 
 		// Push to new land

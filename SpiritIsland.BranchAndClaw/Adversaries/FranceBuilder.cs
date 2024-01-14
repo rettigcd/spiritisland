@@ -40,12 +40,10 @@ class FranceBuilder : BuildEngine {
 		// remove explorers
 		int numToReplace = explorerCount - 1;
 		while(0 < numToReplace) {
-			var explorerToken = tokens.HumanOfTag( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
-			int count = Math.Min( tokens[explorerToken], numToReplace );
+			var oldExplorer = tokens.HumanOfTag( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
+			int count = Math.Min( tokens[oldExplorer], numToReplace );
 
-			var r = await tokens.RemoveAsync( explorerToken, 1, RemoveReason.Replaced );
-			if(0<r.Count)
-				await tokens.AddDefaultAsync( Human.Town, 1, AddReason.AsReplacement );
+			await tokens.ReplaceHumanAsync( oldExplorer, Human.Town );
 
 			// next
 			numToReplace -= count;

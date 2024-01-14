@@ -33,7 +33,7 @@ public static class SpaceExtentions {
 		IToken token = abrev switch {
 			"C" => GetHumanToken( match, Human.City ),
 			"T" => GetHumanToken( match, Human.Town ),
-			"E" => GetHumanToken( match, Human.Explorer ).SetAttack( tokens.GetDefault( Human.Explorer ).AsHuman().Attack ), // Russia
+			"E" => GetHumanToken( match, Human.Explorer ).SetAttack( tokens.GetDefault( Human.Explorer ).Attack ), // Russia
 			"D" => GetHumanToken( match, Human.Dahan ),
 			"A" => Token.Beast,
 			"B" => Token.Blight,

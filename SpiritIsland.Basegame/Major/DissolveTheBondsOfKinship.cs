@@ -40,10 +40,9 @@ public class DissolveTheBondsOfKinship {
 	}
 
 	static async Task ReplaceDahanWithExplorer( TargetSpaceCtx ctx ) {
-		var toRemove = ctx.Tokens.HumanOfTag( Human.Dahan )
+		var oldDahan = ctx.Tokens.HumanOfTag( Human.Dahan )
 			.OrderBy( x => x.RemainingHealth )
 			.FirstOrDefault();
-		if(toRemove is not null && (await ctx.Dahan.Remove1( toRemove, RemoveReason.Replaced )).Count == 1)
-			await ctx.AddDefault( Human.Explorer, 1, AddReason.AsReplacement );
+		await ctx.Tokens.ReplaceHumanAsync( oldDahan, Human.Explorer );
 	}
 }
