@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
-class IconDescriptorRect : IPaintableRect {
+public class IconDescriptorRect : IPaintableRect {
 
 	readonly static IconResources _resources = ResourceImages.Singleton;
 

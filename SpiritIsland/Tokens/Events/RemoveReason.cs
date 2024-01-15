@@ -30,6 +30,6 @@ public class DestroyingFromDamage : RemovingTokenArgs {
 	/// <summary>
 	/// Special value used to Trigger this Type 
 	/// </summary>
-	static public RemoveReason TriggerReason = (RemoveReason)151;
+	static readonly public RemoveReason TriggerReason = (RemoveReason)151;
 }
 

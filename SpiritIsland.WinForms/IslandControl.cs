@@ -197,8 +197,8 @@ public partial class IslandControl : Control {
 		} else if(item is IBlightCard blightCard) {
 			using Image img = ResourceImages.Singleton.GetBlightCard( blightCard );
 			graphics.DrawImage( img, regionLayout.AckPopupRect );
-		} else if(item is CommandBeasts) {
-			using Image img = ResourceImages.Singleton.GetMiscAction( "Command Beasts" );
+		} else if(item is CommandBeasts cb) {
+			using Image img = ResourceImages.Singleton.GetMiscAction( cb.Name );
 			graphics.DrawImage( img, regionLayout.AckPopupRect );
 		}
 

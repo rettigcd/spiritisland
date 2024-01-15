@@ -4,7 +4,7 @@ public class RemovingTokenArgs {
 
 	public RemovingTokenArgs( SpaceState from, RemoveReason reason ) {
 		if(reason == DestroyingFromDamage.TriggerReason)
-			throw new ArgumentException(nameof(reason),"Do not .TriggerReason in event args");
+			throw new ArgumentException("Do not .TriggerReason in event args", nameof( reason ) );
 		From = from;
 		Reason = reason;
 	}

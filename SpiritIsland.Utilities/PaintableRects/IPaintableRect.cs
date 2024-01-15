@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 public interface IPaintableRect {
 	Rectangle Paint(Graphics graphics,Rectangle bounds);

@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
 /// <summary>
 /// "Pool" - Holds "floating" rects
 /// </summary>
-class PoolRect : IPaintableRect {
+public class PoolRect : IPaintableRect {
 	readonly List<IPaintableRect> _paintables = new List<IPaintableRect>();
 	readonly List<RectangleF> _normalizedRects = new List<RectangleF>();
 	

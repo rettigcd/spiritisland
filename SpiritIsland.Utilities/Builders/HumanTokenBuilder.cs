@@ -2,7 +2,7 @@
 
 namespace SpiritIsland;
 
-class HumanTokenBuilder {
+static class HumanTokenBuilder {
 
 	public static Bitmap Build( HumanToken ht ) {
 

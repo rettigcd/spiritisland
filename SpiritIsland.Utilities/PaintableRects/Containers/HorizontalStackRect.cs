@@ -1,9 +1,8 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
-class HorizontalStackRect : IPaintableRect {
+public class HorizontalStackRect : IPaintableRect {
 	readonly IPaintableRect[] _children;
 	Func<Rectangle, Rectangle[]> _splitter;
 

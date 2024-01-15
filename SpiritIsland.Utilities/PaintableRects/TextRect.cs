@@ -1,10 +1,10 @@
 ﻿using System.Drawing;
 
-namespace SpiritIsland.WinForms;
+namespace SpiritIsland;
 
-class TextRect : IPaintableRect {
+public class TextRect : IPaintableRect {
 	public TextRect( string text ) { _text = text; }
-	public TextRect( object obj ) { _text = obj.ToString(); }
+	public TextRect( object obj ) { _text = obj.ToString() ?? string.Empty; }
 	readonly string _text;
 	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
 		Font font = ResourceImages.Singleton.UseGameFont( rect.Height );
