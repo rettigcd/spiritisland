@@ -6,9 +6,9 @@ public class RectRect : IPaintableRect {
 
 	public RectRect() {}
 	/// <summary> Hex Color </summary>
-	public string Fill { get; set; }
+	public string? Fill { get; set; }
 	/// <summary> Hex Color </summary>
-	public string Stroke { get; set; }
+	public string? Stroke { get; set; }
 
 	public Rectangle Paint( Graphics graphics, Rectangle bounds ) {
 

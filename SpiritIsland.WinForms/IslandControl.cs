@@ -190,18 +190,34 @@ public partial class IslandControl : Control {
 	void DrawAckPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
 		if(options_Ack is null) return;
 
-		var item = options_Ack.Item;
-		if(item is IFearCard fearCard) {
-			using Image img = ResourceImages.Singleton.GetFearCard( fearCard );
-			graphics.DrawImage( img, regionLayout.AckPopupRect );
-		} else if(item is IBlightCard blightCard) {
-			using Image img = ResourceImages.Singleton.GetBlightCard( blightCard );
-			graphics.DrawImage( img, regionLayout.AckPopupRect );
-		} else if(item is CommandBeasts cb) {
-			using Image img = ResourceImages.Singleton.GetMiscAction( cb.Name );
-			graphics.DrawImage( img, regionLayout.AckPopupRect );
-		}
+		using Image img = GetAckPopupImage();
+		if(img == null) return;
 
+		// draw img
+		_ackRect = regionLayout.AckPopupRect.FitBoth( img.Size );
+		graphics.DrawImage( img, _ackRect );
+
+		// Draw Ack
+		int AckHeight = (int)(regionLayout.AckPopupRect.Height*.051f);
+		Rectangle labelRect = new Rectangle(_ackRect.X+20,_ackRect.Bottom- AckHeight, _ackRect.Width-40, AckHeight );
+		graphics.FillRectangle(Brushes.White, labelRect);
+		using var font = ResourceImages.Singleton.UseGameFont(24);
+		graphics.DrawStringCenter("Acknowledge", font, Brushes.Black, labelRect);
+
+	}
+	Rectangle _ackRect; // holds the collapsed area
+
+	Image GetAckPopupImage() {
+		if(options_Ack is not null) {
+			var item = options_Ack.Item;
+			if(item is IFearCard fearCard)
+				return ResourceImages.Singleton.GetFearCard( fearCard );
+			else if(item is IBlightCard blightCard)
+				return ResourceImages.Singleton.GetBlightCard( blightCard );
+			else if(item is CommandBeasts cb)
+				return ResourceImages.Singleton.GetMiscAction( cb.Name );
+		}
+		return null;
 	}
 
 	protected override void OnSizeChanged( EventArgs e ) {
@@ -247,12 +263,16 @@ public partial class IslandControl : Control {
 			FocusPanel = panel;
 	}
 
-	Action GetClickableAction( Point clientCoords )
-		=> _allPanels
+	Action GetClickableAction( Point clientCoords ) {
+		var action = _allPanels
 			?.Where( x => x.Bounds.Contains( clientCoords ) )
 			.OrderByDescending( x=>x.ZIndex )
 			.Select( x => x.GetClickableAction( clientCoords ) )
 			.FirstOrDefault( x => x != null );
+		if(action == null && options_Ack is not null && _ackRect.Contains( clientCoords ))
+			action = ()=> SelectOption(options_Ack);
+		return action;
+	}
 
 	protected override void OnMouseMove( MouseEventArgs e ) {
 		base.OnMouseMove( e );
