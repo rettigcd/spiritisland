@@ -132,8 +132,8 @@ public class ResourceImages
 		if(_cache.Contains( key )) return _cache.Get( key );
 
 		Bitmap bitmap = name switch {
-			CommandBeasts.Stage1 => CmdBeastBuilder.ForStage(1),
 			CommandBeasts.Stage2 => CmdBeastBuilder.ForStage(2),
+			CommandBeasts.Stage3 => CmdBeastBuilder.ForStage(3),
 			_ => new Bitmap( 200, 300 )
 		};
 

@@ -7,25 +7,25 @@
 /// </summary>
 public class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
 
-	public const string Stage1 = "Command Beasts (I)";
 	public const string Stage2 = "Command Beasts (II)";
+	public const string Stage3 = "Command Beasts (III)";
 
 	#region Static Setup
 
 	static public void Setup( GameState gameState ) {
 		// If there are no Event cards, compensate with Command-the-Beasts
-
-		gameState.InvaderDeck
-			.UnrevealedCards
-			.First( x => x.InvaderStage == 2 )
-			.CardRevealed += new CommandBeasts(Stage1).OnCardRevealed;
-
-		// Find 1st card of last Level-3 group
 		var cards = gameState.InvaderDeck.UnrevealedCards;
-		int i = cards.Count;
+
+		// Stage 2
+		int i =0; while(cards[i].InvaderStage != 2) ++i;
+		if(0<i && cards[i-1].InvaderStage==3) --i; // Brandenburg Prussia
+		cards[i].CardRevealed += new CommandBeasts(Stage2).OnCardRevealed;
+
+		// Stage 3 - Find 1st card of last Level-3 group
+		i = cards.Count;
 		while(cards[i - 1].InvaderStage != 3) --i; // While prev is not level 3, backup - ends on card following level 3 group
 		while(cards[i - 1].InvaderStage == 3) --i; // While prev is level 3, backup - ends on 1st level 3 card in last group
-		cards[i].CardRevealed += new CommandBeasts( Stage2 ).OnCardRevealed;
+		cards[i].CardRevealed += new CommandBeasts( Stage3 ).OnCardRevealed;
 	}
 
 	#endregion Static Setup
