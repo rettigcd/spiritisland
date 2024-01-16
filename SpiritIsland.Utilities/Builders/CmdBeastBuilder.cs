@@ -31,7 +31,7 @@ internal class CmdBeastBuilder {
 		return stage switch {
 			2 => "STAGE II",
 			3 => "STAGE III",
-			_ => throw new ArgumentException( nameof( stage ) )
+			_ => throw new ArgumentException( "Only stage 2 or 3 is allowd", nameof( stage ) )
 		};
 	}
 }

@@ -211,7 +211,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	).WithDeckBuilder( new SaltDepositDeckBuilder( "111-2S22-33333" ) );
 	// The no-advance is baked in to the Ravage Slot for the moment.
 
-	class SaltDepositDeckBuilder : InvaderDeckBuilder {
+	public class SaltDepositDeckBuilder : InvaderDeckBuilder {
 		public SaltDepositDeckBuilder(string levels):base(levels) { }
 		protected override InvaderCard SelectCard( Queue<InvaderCard>[] src, char level ) {
 			return level switch {
@@ -220,7 +220,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			};
 		}
 		protected override string ValidChars => base.ValidChars + "S";
-		static InvaderCard SaltDeposits() => new InvaderCard( new SaltDepositsFilter(), 2 );
+		static public InvaderCard SaltDeposits() => new InvaderCard( new SaltDepositsFilter(), 2 );
 		protected override IEnumerable<InvaderCard> SelectLevel2Cards() {
 			return _levelsString.Contains( 'S' ) ? Level2SansCoastal : base.SelectLevel2Cards();
 		}

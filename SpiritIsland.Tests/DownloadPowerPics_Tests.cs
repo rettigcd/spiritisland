@@ -97,7 +97,7 @@ public class DownloadPowerPics_Tests {
 	[InlineData( AssemblyType.JaggedEarth )]
 	[InlineData( AssemblyType.FeatherAndFlame )]
 	[InlineData( AssemblyType.NatureIncarnate )]
-	public void DrawTokenImages( string edition ) {
+	public void DrawSpiritTokenImages( string edition ) {
 		const string folder = "C:\\Users\\rettigcd\\Desktop\\spiritisland misc\\test_generated";
 		Type refObject = AssemblyType.GetEditionType( edition );
 		Spirit[] spirits = refObject.ScanForSpirits();
@@ -111,5 +111,11 @@ public class DownloadPowerPics_Tests {
 		}
 	}
 
+	[Fact(Skip ="Don't need to build cards.")]
+	public void Build_SaltDeposits() {
+		var card = NatureIncarnate.HabsburgMiningExpedition.SaltDepositDeckBuilder.SaltDeposits();
+		card.Flipped = true;
+		using var img = ResourceImages.Singleton.GetInvaderCard(card);
+	}
 
 }
