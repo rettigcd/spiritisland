@@ -336,18 +336,20 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
     public readonly List<IRunAfterInvaderPhase> _postInvaderPhaseActions = new List<IRunAfterInvaderPhase>();
 
     async Task RunTimePassesActions() {
-		// evaluate them in reverse order so that:
-		// * the transient (at the end) effects run first and
-		// * the normal ones (at the beginning) run last
-		for(int i = _timePassesActions.Count-1; 0 <= i; --i ) {
+
+		for(int i = 0; i < _timePassesActions.Count; ++i ) {
 			IRunWhenTimePasses action = _timePassesActions[i];
 			await action.TimePasses( this );
 			if(action.RemoveAfterRun)
-				_timePassesActions.RemoveAt( i ); // no ++/-- needed because we are going backwards.
+				_timePassesActions.RemoveAt( i-- );
 		}
 	}
 	readonly List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
-    public void AddTimePassesAction( IRunWhenTimePasses action ) { _timePassesActions.Add( action ); }
+    public void AddTimePassesAction( IRunWhenTimePasses action ) { 
+		int i = _timePassesActions.Count;
+		while(0<i && action.Order < _timePassesActions[i-1].Order) --i;
+		_timePassesActions.Insert(i,action);
+	}
 
     #endregion
 

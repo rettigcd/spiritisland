@@ -141,6 +141,8 @@ public class England : AdversaryBase, IAdversary {
 
 		#region IRunWhenTimePasses
 
+		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+
 		/// <summary> Removes itself when after it gets Stage-II invaders </summary>
 		/// <remarks> Don't add this to the RunWhenTimePasses list for higher Adversary level.</remarks>
 		Task IRunWhenTimePasses.TimePasses( GameState gameState ) {

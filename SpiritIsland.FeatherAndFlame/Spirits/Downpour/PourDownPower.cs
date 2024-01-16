@@ -15,13 +15,15 @@ class PourDownPower : IRunWhenTimePasses {
 
 	#endregion
 
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+
 	#region PowerCard Props
 
-//	public string Name => "Pour Down Power Across the Island";
+	//	public string Name => "Pour Down Power Across the Island";
 
-//	string IOption.Text => $"{Name} ({Remaining})";
+	//	string IOption.Text => $"{Name} ({Remaining})";
 
-//	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Fast || speed == Phase.Slow;
+	//	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Fast || speed == Phase.Slow;
 
 	//public Task ActivateAsync( SelfCtx ctx ) {
 	//	++usedWaterActions;

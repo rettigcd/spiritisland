@@ -16,5 +16,6 @@ public class Reclaim1InsteadOfDiscard : IRunWhenTimePasses {
 			spirit.Reclaim(reclaimCard);
 	}
 	bool IRunWhenTimePasses.RemoveAfterRun => true;
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Early;
 
 }

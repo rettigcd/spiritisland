@@ -54,6 +54,8 @@ public class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
 
 	bool IRunWhenTimePasses.RemoveAfterRun => _used;
 
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Late;
+
 	#endregion
 
 	#region IHaveMemento

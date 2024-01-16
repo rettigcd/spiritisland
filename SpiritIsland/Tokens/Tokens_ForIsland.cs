@@ -51,6 +51,7 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 
 	CountDictionary<ISpaceEntity> GetTokensCounts( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
 
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
 	public int GetDynamicTokensFor( SpaceState space, TokenClassToken token ) 
 		=> Dynamic.GetTokensFor( space, token );

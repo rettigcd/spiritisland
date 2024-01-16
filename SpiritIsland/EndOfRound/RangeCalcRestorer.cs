@@ -28,6 +28,7 @@ public class SourceCalcRestorer : IRunWhenTimePasses {
 		return Task.CompletedTask;
 	}
 	bool IRunWhenTimePasses.RemoveAfterRun => true;
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
 	public Task TimePasses( GameState gameStTate ) => throw new NotImplementedException();
 }
@@ -48,6 +49,7 @@ public class RangeCalcRestorer : IRunWhenTimePasses {
 		spirit.PowerRangeCalc = original;
 		return Task.CompletedTask;
 	}
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 	bool IRunWhenTimePasses.RemoveAfterRun => true;
 
 

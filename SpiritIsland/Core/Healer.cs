@@ -17,6 +17,8 @@ public class Healer : IRunWhenTimePasses {
 
 	public void Skip( Space space ) => skipHealSpaces.Add( space );
 
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+
 	protected HashSet<Space> skipHealSpaces = new HashSet<Space>();
 
 }

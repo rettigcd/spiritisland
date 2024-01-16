@@ -359,6 +359,7 @@ public abstract partial class Spirit
 
 		return Task.CompletedTask;
 	}
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
 	#endregion IRunWhenTimePasses imp
 
