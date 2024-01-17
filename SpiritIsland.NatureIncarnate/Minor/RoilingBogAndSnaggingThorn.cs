@@ -25,7 +25,10 @@ public class RoilingBogAndSnaggingThorn {
 
 }
 
-public class DahanSitOutRavage : BaseModEntity, IConfigRavagesAsync {
+/// <summary>
+/// Set out sum # of Dahan for 1 Ravage this Round.
+/// </summary>
+public class DahanSitOutRavage : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 
 	readonly Spirit _picker;
 	readonly int _countToSitOut;
