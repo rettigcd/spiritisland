@@ -17,8 +17,8 @@ public class TimePassesAction : IRunWhenTimePasses {
 
 	#region static factory methods
 
-	static public TimePassesAction Once( Func<GameState,Task> func ) => new TimePassesAction( func, true, TimePassesOrder.Normal );
-	static public TimePassesAction Once( Action<GameState> action ) => new TimePassesAction( action.AsAsync(), true, TimePassesOrder.Normal );
+	static public TimePassesAction Once( Func<GameState,Task> func, TimePassesOrder order = TimePassesOrder.Normal ) => new TimePassesAction( func, true, order );
+	static public TimePassesAction Once( Action<GameState> action, TimePassesOrder order = TimePassesOrder.Normal ) => new TimePassesAction( action.AsAsync(), true, order );
 
 	#endregion static factory methods
 
