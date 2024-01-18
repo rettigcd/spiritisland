@@ -24,19 +24,19 @@ public class RectRect : IPaintableRect {
 		int radius = (int)(Math.Min(bounds.Width,bounds.Height) * _cornerRadius);
 		var path = bounds.RoundCorners( radius, _tl, _tr, _br, _bl );
 		if(Fill is not null)
-			using(var brush = new SolidBrush( ParseHexColor( Fill ) ))
+			using(var brush = new SolidBrush( ColorString.ParseHexColor( Fill ) ))
 				graphics.FillPath( brush, path );
 		if(Stroke is not null)
-			using(var pen = new Pen( ParseHexColor( Stroke ) ))
+			using(var pen = new Pen( ColorString.ParseHexColor( Stroke ) ))
 				graphics.DrawPath( pen, path );
 	}
 
 	void PaintSquareCorners( Graphics graphics, Rectangle bounds ) {
 		if(Fill is not null)
-			using(var brush = new SolidBrush( ParseHexColor( Fill ) ))
+			using(var brush = new SolidBrush( ColorString.ParseHexColor( Fill ) ))
 				graphics.FillRectangle( brush, bounds );
 		if(Stroke is not null)
-			using(var pen = new Pen( ParseHexColor( Stroke ) ))
+			using(var pen = new Pen( ColorString.ParseHexColor( Stroke ) ))
 				graphics.DrawRectangle( pen, bounds );
 	}
 
@@ -44,8 +44,4 @@ public class RectRect : IPaintableRect {
 	float _cornerRadius = 0f; // % of min dimension
 	public RectRect RoundCorners( float radias ) { _cornerRadius = radias; _tl=_tr=_bl=_br=true; return this; }
 	public RectRect RoundCorners( float radias, bool tl, bool tr, bool br, bool bl ) { _cornerRadius = radias; _tl=tl; _tr=tr; _bl=bl;_br=br; return this; }
-
-	static Color ParseHexColor(string color) => Color.FromArgb( Parse2Hex(color,0), Parse2Hex(color,2), Parse2Hex(color,4) );
-	static int Parse2Hex(string s, int start) => ParseHex(s[start]) * 16 + ParseHex(s[start+1]);
-	static int ParseHex(char k) => 'a'<=k ? (k-'a'+10) : 'A'<=k ? (k-'A'+10) : (k-'0');
 }

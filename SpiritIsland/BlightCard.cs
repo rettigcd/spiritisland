@@ -8,7 +8,7 @@ public abstract class BlightCard : IBlightCard {
 		Name = name;
 		Description = description;
 		_startingBlightPerPlayer = 2;
-		_side2BlightPerPlayer = side2BlightPerPlayer;
+		Side2BlightPerPlayer = side2BlightPerPlayer;
 	}
 
 	public string Name { get; }
@@ -34,7 +34,7 @@ public abstract class BlightCard : IBlightCard {
 	async Task Side1Depleted( GameState gs ) {
 		CardFlipped = true;
 
-		Tokens( gs ).Adjust( _side2BlightPerPlayer * gs.Spirits.Length ); // ! Don't call .Add() here or token events will auto-remove what we just added.
+		Tokens( gs ).Adjust( Side2BlightPerPlayer * gs.Spirits.Length ); // ! Don't call .Add() here or token events will auto-remove what we just added.
 
 		// Execute Immediate command
 		var immediately = Immediately;
@@ -54,7 +54,7 @@ public abstract class BlightCard : IBlightCard {
 	#region private
 
 	readonly int _startingBlightPerPlayer;
-	readonly int _side2BlightPerPlayer;
+	public int Side2BlightPerPlayer {get;}
 
 	#endregion
 }

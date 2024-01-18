@@ -68,7 +68,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new IntensifyingExploitation(),
 		new ShatteredFragmentsOfPower(),
 		new SlowDissolutionOfWill(),
-		new TheBoarderOfLifeAndDeath(),
+		new TheBorderOfLifeAndDeath(),
 		new ThrivingCrops()
 	};
 

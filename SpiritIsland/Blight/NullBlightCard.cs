@@ -10,6 +10,8 @@ public class NullBlightCard : IBlightCard {
 
 	public IActOn<GameState> Immediately => new BaseCmd<GameState>("no action", (Action<GameState>)(_ => { }));
 
+	int IBlightCard.Side2BlightPerPlayer => 1;
+
 	public async Task OnBlightDepleated( GameState gs ) {
 		if(!CardFlipped) {
 			CardFlipped = true;

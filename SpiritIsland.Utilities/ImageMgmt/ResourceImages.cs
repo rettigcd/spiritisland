@@ -116,17 +116,6 @@ public class ResourceImages
 		return img;
 	}
 
-	public Bitmap GetBlightCard( IBlightCard card ) {
-		string key = "blight\\" + card.Name + ".png";
-		if(_cache.Contains( key )) return _cache.Get( key );
-
-		Bitmap bitmap = BlightCardBuilder.BuildBlighted( card );
-
-		// save
-		_cache.Add( key, bitmap );
-		return bitmap;
-	}
-
 	public Bitmap GetMiscAction( string name ) {
 		string key = "misc_action\\" + name + ".png";
 		if(_cache.Contains( key )) return _cache.Get( key );
@@ -142,6 +131,16 @@ public class ResourceImages
 		return bitmap;
 	}
 
+	public Bitmap GetBlightCard( IBlightCard card ) {
+		string key = "blight\\" + card.Name + ".png";
+		if(_cache.Contains( key )) return _cache.Get( key );
+
+		Bitmap bitmap = BlightCardBuilder.BuildBlighted( card );
+
+		// save
+		_cache.Add( key, bitmap );
+		return bitmap;
+	}
 
 	public Bitmap GetHealthBlightCard() {
 		string key = "blight\\healthy.png";

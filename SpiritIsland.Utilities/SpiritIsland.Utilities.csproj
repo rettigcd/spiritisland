@@ -125,6 +125,8 @@
     <None Remove="images\presence\red.png" />
     <None Remove="images\starlight options.psd" />
     <None Remove="images\textures\cracks.jpg" />
+    <None Remove="images\textures\healthy_bg.jpg" />
+    <None Remove="images\textures\blighted_bg.jpg" />
     <None Remove="images\textures\flowing.jpg" />
     <None Remove="images\textures\parchment.jpg" />
     <None Remove="images\textures\power_weave.png" />
@@ -284,6 +286,8 @@
     <EmbeddedResource Include="images\invaders\escalation.png" />
     <EmbeddedResource Include="images\presence\red.png" />
     <EmbeddedResource Include="images\textures\cracks.jpg" />
+    <EmbeddedResource Include="images\textures\healthy_bg.jpg" />
+    <EmbeddedResource Include="images\textures\blighted_bg.jpg" />
     <EmbeddedResource Include="images\textures\flowing.jpg" />
     <EmbeddedResource Include="images\textures\parchment.jpg" />
     <EmbeddedResource Include="images\textures\smoke.png" />

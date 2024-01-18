@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public sealed class TheBoarderOfLifeAndDeath : StillHealthyBlightCard {
+public sealed class TheBorderOfLifeAndDeath : StillHealthyBlightCard {
 
-	public TheBoarderOfLifeAndDeath():base(
-		"The Boarder of Life and Death", 
+	public TheBorderOfLifeAndDeath():base(
+		"The Border of Life and Death", 
 		"Now and Each Invader Phase (until this card is replaced): Each Spirit with at least 2 Presence on the island Destroys 1 Presence and may discard a Power Card to gain 1 Energy", 
 		1
 	) {}
