@@ -19,23 +19,21 @@ public class ObserveTheEverChangingWorld {
 
 }
 
-
+/// <summary>
+/// Reminder Token that sits on a space and generates a Prepared Element for each action (up to 3) that the tokens change in that space.
+/// </summary>
 public class ObserveWorldMod : ISpaceEntity
 	, IToken
 	, IHandleTokenAdded
 	, IHandleTokenRemoved
+	, IEndWhenTimePasses // :sadface: I want this to live between rounds.
 {
-	string _tokenSummary;
-
 	ITokenClass IToken.Class => Token.Element;
 
 	public bool HasTag(ITag tag) => Token.Element.HasTag(tag);
 	public string Text => ObserveTheEverChangingWorld.Name;
 
 	public Img Img => Token.Element.Img;
-
-	readonly ShiftingMemoryOfAges _spirit;
-	readonly HashSet<ActionScope> _appliedToTheseActions = new HashSet<ActionScope>();
 
 	public ObserveWorldMod( TargetSpaceCtx ctx ) {
 		_spirit = (ShiftingMemoryOfAges)ctx.Self;
@@ -66,7 +64,16 @@ public class ObserveWorldMod : ISpaceEntity
 			await _spirit.PrepareElement( space.Space.Label );
 		} );
 
-
 	}
+
+	#region private
+
+	string _tokenSummary;
+
+	readonly ShiftingMemoryOfAges _spirit;
+	readonly HashSet<ActionScope> _appliedToTheseActions = new HashSet<ActionScope>();
+
+	#endregion
+
 
 }
