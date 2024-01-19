@@ -7,7 +7,7 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	[Fact]
 	public async Task ReclaimAnd2PowerCards() {
 		// Growth Option 1 - Reclaim All, +2 Power cards
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await _spirit.When_Growing( () => {
 			User.Growth_DrawsPowerCard();
@@ -19,8 +19,8 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 			User.SelectMinorPowerCard();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 6);
-		Assert_HasEnergy(1);
+		_spirit.Assert_AllCardsAvailableToPlay( 6);
+		_spirit.Assert_HasEnergy(1);
 	}
 
 	[Theory]
@@ -31,7 +31,7 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 	public async Task TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
 		// +1 presense within 2 - contains dahan
 		// +1 presense within 1 - contains dahan
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 		//	 And: dahan on initial spot
 		foreach(string s in initialDahanSquares.Split( ',' ))
 			_board[int.Parse( s )].Tokens.Dahan.Init(1);
@@ -41,14 +41,14 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
 		} );
 
-		Assert_HasEnergy( 0 );
+		_spirit.Assert_HasEnergy( 0 );
 
 	}
 
 	[Fact]
 	public async Task PresenseAndEnergy() {
 		// +1 presense within 1, +4 energy
-		Given_HasPresence( _board[1] );
+		_spirit.Given_HasPresenceOnSpaces( _board[1] );
 
 		await _spirit.When_Growing( () => {
 			User.Growth_SelectAction( "PlacePresence(1)" );
@@ -56,7 +56,7 @@ public class Thunderspeaker_GrowthTests : GrowthTests{
 		});
 
 		Assert.Equal(1,_spirit.EnergyPerTurn);
-		Assert_HasEnergy( 4+1 );
+		_spirit.Assert_HasEnergy( 4+1 );
 
 	}
 

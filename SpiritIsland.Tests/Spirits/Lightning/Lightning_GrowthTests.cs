@@ -11,7 +11,7 @@ public class Lightning_GrowthTests : GrowthTests{
 	public async Task Reclaim_Power_Energy() {
 		// * reclaim, +1 power card, +1 energy
 
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 		await _spirit.When_Growing( () => {
 			User.Growth_SelectAction( "Gain Power Card" );
 
@@ -23,8 +23,8 @@ public class Lightning_GrowthTests : GrowthTests{
 		} );
 
 
-		Assert_AllCardsAvailableToPlay( 5 ); // drew a power card
-		Assert_HasEnergy( 1 + 1 ); // 1 from energy track
+		_spirit.Assert_AllCardsAvailableToPlay( 5 ); // drew a power card
+		_spirit.Assert_HasEnergy( 1 + 1 ); // 1 from energy track
 
 	}
 
@@ -32,7 +32,7 @@ public class Lightning_GrowthTests : GrowthTests{
 	public async Task Presense_Energy() {
 		// +1 presense range 1, +3 energy
 
-		Given_HasPresence( _board[1] );
+		_spirit.Given_HasPresenceOnSpaces( _board[1] );
 
 		await _spirit.When_Growing( () => {
 			User.Growth_SelectAction( "PlacePresence(1)" );
@@ -40,20 +40,20 @@ public class Lightning_GrowthTests : GrowthTests{
 		} );
 
 		Assert.Equal(1,_spirit.EnergyPerTurn);
-		Assert_HasEnergy( 3 + 1 ); // 1 from energy track
+		_spirit.Assert_HasEnergy( 3 + 1 ); // 1 from energy track
 	}
 
 	[Fact]
 	public async Task TwoPresence(){
 		// +1 presense range 2, +1 prsense range 0
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 
 		await _spirit.When_Growing( 1, () => {
 			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
 			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
 		} );
 
-		Assert_HasEnergy( 0 );
+		_spirit.Assert_HasEnergy( 0 );
 
 	}
 

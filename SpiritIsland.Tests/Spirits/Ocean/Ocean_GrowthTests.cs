@@ -17,7 +17,7 @@ public class Ocean_GrowthTests : GrowthTests {
 	[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0:1,A1:1,B0:1,C0:1,C2:1")]    // need to define which presence to move
 	public void ReclaimGather_GatherParts(string starting, string select, string ending) {
 		Given_IslandIsABC();
-		Given_HasPresence( starting );
+		_spirit.Given_HasPresence( starting );
 
 		foreach(IHelpGrow action in _spirit.GrowthTrack.Options[0].UserRuns)
 			_spirit.AddActionFactory( action );
@@ -45,7 +45,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		}
 
 		// Then: nothing to gather
-		Assert_BoardPresenceIs( ending );
+		_spirit.Assert_BoardPresenceIs( ending );
 	}
 
 
@@ -56,7 +56,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		// Given: 3-board island
 		_gameState.Island = new Island(BoardA,BoardB,BoardC);
 
-		Given_HasPresence( starting );
+		_spirit.Given_HasPresence( starting );
 
 		// Changed implementation to not run unresolved things
 	}
@@ -65,7 +65,7 @@ public class Ocean_GrowthTests : GrowthTests {
 	public async Task ReclaimGather_NonGatherParts() {
 		// reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
 
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await _spirit.When_Growing( 0, () => {
 			User.Growth_DrawsPowerCard();
@@ -75,9 +75,9 @@ public class Ocean_GrowthTests : GrowthTests {
 			User.GathersPresenceIntoOcean();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 4 + 1 );
+		_spirit.Assert_AllCardsAvailableToPlay( 4 + 1 );
 		Assert_GainsFirstMinorCard();
-		Assert_HasEnergy( 2 );
+		_spirit.Assert_HasEnergy( 2 );
 	}
 
 	[Fact]
@@ -92,7 +92,7 @@ public class Ocean_GrowthTests : GrowthTests {
 			User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,OHG", "A0,[B0]" );
 		} );
 
-		Assert_HasEnergy( 1 );
+		_spirit.Assert_HasEnergy( 1 );
 	}
 
 	[Theory]
@@ -102,7 +102,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		// push 1 presense from each ocean
 		// add presense on coastal land range 1
 		_gameState.Island = new Island( BoardA, BoardB, BoardC );
-		Given_HasPresence( starting );
+		_spirit.Given_HasPresence( starting );
 
 		await _spirit.When_Growing( 2, () => {
 			User.Growth_PlacesEnergyPresence( placeOptions );
@@ -114,7 +114,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		} );
 
 		Assert_GainsFirstMinorCard();
-		Assert_BoardPresenceIs( ending );
+		_spirit.Assert_BoardPresenceIs( ending );
 	}
 
 	[Trait("Presence","EnergyTrack")]
@@ -160,7 +160,7 @@ public class Ocean_GrowthTests : GrowthTests {
 	}
 
 	void Assert_GainsFirstMinorCard() {
-		Assert_HasCardAvailable( "Drought" );
+		_spirit.Assert_HasCardAvailable( "Drought" );
 	}
 
 	#endregion

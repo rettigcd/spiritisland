@@ -41,10 +41,6 @@ public sealed class Track
 		Icon = new IconDescriptor { ContentImg = el.GetTokenImg() }
 	};
 
-	#endregion static Factories
-
-	#region Reusable Values
-
 	// ! Instead of enumerating this here, we could generate them when needed in the spirit
 	public static Track Energy0     => MkEnergy( 0 );
 	public static Track Energy1     => MkEnergy( 1 );
@@ -96,7 +92,6 @@ public sealed class Track
 		}
 	};
 
-
 	public static Track Reclaim1Energy => new Track( "reclaim 1 energy" ){ 
 		Action = new ReclaimN(),
 		Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = Img.Reclaim1 }
@@ -110,7 +105,7 @@ public sealed class Track
 
 	public static readonly Track Destroyed = new Track("Destroyed");
 
-	#endregion Reusable Values
+	#endregion static Factories
 
 	#region constructor
 
@@ -134,10 +129,11 @@ public sealed class Track
 
 	public IconDescriptor Icon { get; set; }
 
-	/// <summary>
-	/// If not null, this action is executed after Energy is collected.
-	/// </summary>
+	/// <summary> Executed after Energy is collected. (optional) </summary>
 	public IActOn<Spirit> Action { get; set; }
+
+	/// <summary> Executed when track is revealed. (optional) </summary>
+	public Func<Track,Spirit,Task> OnRevealAsync;
 
 	/// <summary> Adds Track's elements to the dictionary. </summary>
 	public void AddElementsTo( CountDictionary<Element> elements ) {
@@ -147,15 +143,14 @@ public sealed class Track
 
 	#region Generic Move / ISource/ISink tokens
 
-	public async Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> 
+	public Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> 
 	SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(token is not SpiritPresenceToken spt) throw new ArgumentException($"Cannot remove {token} from Presence Track.");
 		_spirit = spt.Self; // grab spirit for callback later
-		await Task.Delay(0);
-		return (
+		return Task.FromResult<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> ((
 			new TokenRemovedArgs(this,token,1,RemoveReason.Removed),
 			NotifyRemoved
-		);
+		));
 	}
 	Spirit _spirit;
 	async Task NotifyRemoved( ITokenRemovedArgs args ) {
@@ -170,8 +165,6 @@ public sealed class Track
 	public event Action<Track> Revealed;
 
 	#endregion Generic Move / ISource/ISink tokens
-
-	public Func<Track,Spirit,Task> OnRevealAsync;
 
 	#region private fields
 	int? _energy;

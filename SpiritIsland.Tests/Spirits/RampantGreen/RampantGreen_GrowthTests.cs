@@ -13,8 +13,8 @@ public class RampantGreen_GrowthTests : GrowthTests {
 	public async Task Reclaim_PowerCard_JWPresence() {
 		// +1 presense to jungle or wetland - range 2(Always do this + one of the following)
 		// reclaim, +1 power card
-		Given_HalfOfPowercardsPlayed();
-		Given_HasPresence( _board[2] );
+		_spirit.Given_HalfOfHandDiscarded();
+		_spirit.Given_HasPresenceOnSpaces( _board[2] );
 
 		await _spirit.When_Growing( () => {
 			User_SelectAlwaysGrowthOption();
@@ -23,7 +23,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 			User.SelectMinorPowerCard();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 5);
+		_spirit.Assert_AllCardsAvailableToPlay( 5);
 	}
 
 	[Fact]
@@ -32,7 +32,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		// +1 presense range 1, play +1 extra card this turn
 
 		// Presense Options
-		Given_HasPresence( _board[2] );
+		_spirit.Given_HasPresenceOnSpaces( _board[2] );
 
 		Assert.Equal( 1, _spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
 
@@ -56,7 +56,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 
 	[Fact]
 	public async Task GainEnergy_PowerCard_JWPresence() {
-		Given_HasPresence( _board[2] );
+		_spirit.Given_HasPresenceOnSpaces( _board[2] );
 
 		await _spirit.When_Growing( () => {
 			User_SelectAlwaysGrowthOption();
@@ -68,7 +68,7 @@ public class RampantGreen_GrowthTests : GrowthTests {
 		// Gain 3 energy did not trigger
 
 		Assert.Equal( 1, _spirit.EnergyPerTurn );
-		Assert_HasEnergy( 3 + 1 );
+		_spirit.Assert_HasEnergy( 3 + 1 );
 		_spirit.Hand.Count.ShouldBe( 5 );
 	}
 

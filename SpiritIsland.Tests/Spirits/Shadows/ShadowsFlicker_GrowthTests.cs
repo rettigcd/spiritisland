@@ -9,7 +9,7 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	[Fact]
 	public async Task Reclaim_PowerCard(){
 		// reclaim, gain power Card
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await _spirit.When_Growing( 0, () => {
 			User.SelectsMinorDeck();
@@ -22,7 +22,7 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	[Fact]
 	public async Task PowerAndPresence(){
 		// gain power card, add a presense range 1
-		Given_HasPresence( _board[1] );
+		_spirit.Given_HasPresenceOnSpaces( _board[1] );
 
 		await _spirit.When_Growing( 1, () => {
 			User.Growth_DrawsPowerCard();
@@ -38,7 +38,7 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	[Fact]
 	public async Task PresenceAndEnergy(){
 		// add a presence within 3, +3 energy
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 
 		await _spirit.When_Growing( () => {
 			//		User.Growth_SelectsOption( "PlacePresence(3) / GainEnergy(3)" );
@@ -46,7 +46,7 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );
 		} );
 
-		Assert_HasEnergy(3+1); // 1 from energy track
+		_spirit.Assert_HasEnergy(3+1); // 1 from energy track
 	}
 
 	[Trait("Presence","EnergyTrack")]

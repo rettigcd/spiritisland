@@ -176,8 +176,3 @@ static public class Move_Extension {
 	static public Task<TokenMovedArgs> MoveToAsync( this TokenOn tokenOn, ILocation destination, int count=1 )
 		=> tokenOn.Token.MoveAsync(tokenOn.Source,destination,count);
 }
-
-public interface ILocation {
-	Task<(ITokenAddedArgs,Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count=1, AddReason addReason = AddReason.Added );
-	Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed );
-}

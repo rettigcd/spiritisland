@@ -17,21 +17,21 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	[Fact]
 	public async Task ReclaimAndPresence() {
 		// (A) reclaim, +1 presense range 2
-		Given_HalfOfPowercardsPlayed();
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HalfOfHandDiscarded();
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 
 		await _spirit.When_Growing( () => {
 			User.SelectsGrowthA_Reclaim_PP2();
 		} );
 
-		this.Assert_AllCardsAvailableToPlay();
+		_spirit.Assert_AllCardsAvailableToPlay();
 
 	}
 
 	[Fact]
 	public async Task PowercardAndPresence() {
 		// (B) +1 power card, +1 presense range 0
-		Given_HasPresence( _board[4] );
+		_spirit.Given_HasPresenceOnSpaces( _board[4] );
 
 		await _spirit.When_Growing( () => {
 			User.SelectsGrowthB_DrawCard_PP0();
@@ -43,14 +43,14 @@ public class VitalStrength_GrowthTests : GrowthTests {
 	[Fact]
 	public async Task PresenseAndEnergy() {
 		// (C) +1 presence range 1, +2 energy
-		Given_HasPresence( _board[1] );
+		_spirit.Given_HasPresenceOnSpaces( _board[1] );
 
 		await _spirit.When_Growing(() => { 
 			User.SelectsGrowthC_Energy_PP1(); 
 		});
 
 		Assert.Equal( 3, _spirit.EnergyPerTurn );
-		Assert_HasEnergy( 3 + 2 );
+		_spirit.Assert_HasEnergy( 3 + 2 );
 	}
 
 	[Trait("Presence","EnergyTrack")]

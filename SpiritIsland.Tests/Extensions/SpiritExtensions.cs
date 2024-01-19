@@ -4,6 +4,8 @@ namespace SpiritIsland.Tests;
 
 public static class SpiritExtensions {
 
+	#region Next Decision / Wait For Next
+
 	/// <summary> Binds to the Next Decision </summary>
 	internal static DecisionContext NextDecision( this Spirit spirit ) {
 		spirit.WaitForNext();
@@ -16,17 +18,50 @@ public static class SpiritExtensions {
 
 	}
 
+	#endregion Next Decision / Wait For Next
+
 	internal static SpiritConfigContext Configure( this Spirit spirit ) => new SpiritConfigContext( spirit );
 
-	#region Given
+	#region Given (spirit presence setup)
 
-	internal static void Given_Setup( this SpiritPresence presence, SpaceState space, int count ) => space.Setup( presence.Token, count );
+	internal static void Given_Setup( this SpiritPresence presence, SpaceState space, int count ) 
+		=> space.Setup( presence.Token, count );
 
-	internal static Spirit Given_HasTokensOn( this Spirit spirit, SpaceState spaceState, int count = 1 ) {
+	internal static Spirit Given_HasPresence( this Spirit spirit, string presenceString ) {
+		Dictionary<string,Space> spaceLookup = GameState.Current.Island.Boards
+			.SelectMany(b=>b.Spaces_Existing)
+			.ToDictionary(s=>s.Label,s=>s);
+		var spaces = new Space[presenceString.Length/2];
+		for(int i=0;i*2<presenceString.Length;i++)
+			spaces[i] = spaceLookup[presenceString.Substring(i*2,2)];
+		return spirit.Given_HasPresenceOnSpaces(spaces);
+	}
+
+	internal static Spirit Given_HasPresenceOnSpaces( this Spirit spirit, params Space[] spaces ){
+		foreach(var space in spaces)
+			spirit.Given_HasPresenceOn(space);
+		return spirit;
+	}
+
+	internal static Spirit Given_HasPresenceOn( this Spirit spirit, Space space, int count = 1 ) 
+		=> spirit.Given_HasPresenceOn( space.Tokens, count );
+
+	internal static Spirit Given_HasPresenceOn( this Spirit spirit, SpaceState spaceState, int count = 1 ) {
 		spaceState.Init( spirit.Presence.Token, count );
 		return spirit;
 	}
-	internal static Spirit Given_HasPresenceOn( this Spirit spirit, Space space, int count = 1 ) => spirit.Given_HasTokensOn( space.Tokens, count );
+
+	#endregion Given (spirit presence setup)
+
+	#region Given
+
+	internal static void Given_HalfOfHandDiscarded( this Spirit spirit ) {
+		for(int i=0;i<2;++i){
+			int idx = spirit.Hand.Count-1;
+			spirit.DiscardPile.Add( spirit.Hand[idx] );
+			spirit.Hand.RemoveAt( idx );
+		}
+	}
 
 	#endregion Given
 
@@ -58,8 +93,14 @@ public static class SpiritExtensions {
 		await card.ActivateAsync( spirit );
 	}
 
+	internal static void When_PlayingCards( this Spirit spirit, params PowerCard[] cards ){
+		foreach(var card in cards)
+			spirit.PlayCard( card );
+	}
+
 	internal static Task When_TargetingSpace( this Spirit spirit, Space space, Action<TargetSpaceCtx> method )
-		=> spirit.ResolvePowerOnSpaceAsync(space, method ).ShouldComplete( method.Method.Name );
+		=> spirit.ResolvePowerOnSpaceAsync(space, method.AsAsync() )
+			.ShouldComplete( method.Method.Name );
 
 	internal static Task When_TargetingSpace( this Spirit spirit, Space space, Func<TargetSpaceCtx,Task> methodAsync, Action<VirtualUser> userActions = null )
 		=> spirit.ResolvePowerOnSpaceAsync( space, methodAsync )
@@ -69,10 +110,14 @@ public static class SpiritExtensions {
 	/// <summary>
 	/// Like playing a card, but user doesn't have to pick the space because it is passed in.
 	/// </summary>
-	internal static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, Space space, AsyncHandler<TargetSpaceCtx> methodAsync ) {
+	internal static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, Space space, Func<TargetSpaceCtx, Task> func ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
-		await methodAsync.Execute( spirit.Target( space ) );
+		await func( spirit.Target( space ) );
 	}
+
+	#endregion When
+
+	#region Await ...
 
 	// !!! Deprecate this.  Add the .ShouldComplete to the end of the AwaitUser methods and use them instead.
 	internal static Task AwaitUserToComplete( this Task task, string taskDescription, Action userActions )
@@ -96,6 +141,34 @@ public static class SpiritExtensions {
 		return task;
 	}
 
+	#endregion Await ...
+
+	#region Assert
+
+	static public void Assert_HasCardAvailable( this Spirit spirit, string name ){
+		bool nameMatches( PowerCard card ) => string.Compare(name,card.Name,true) == 0;
+		Assert.True(spirit.Hand.Any( nameMatches ), $"Hand does not contain {name}.  Hand has "+spirit.Hand.Select(x=>x.Text).Join(",") );
+	}
+
+	static public void Assert_AllCardsAvailableToPlay(this Spirit spirit, int expectedAvailableCount = 4) {
+		// Then: all cards reclaimed (including unplayed)
+		Assert.Empty( spirit.DiscardPile ); // , "Should not be any cards in 'played' pile" );
+		spirit.Hand.Count.ShouldBe( expectedAvailableCount );
+	}
+
+	static public void Assert_HasEnergy( this Spirit spirit, int expectedChange ) {
+		spirit.Energy.ShouldBe( expectedChange );
+	}
+
+	static public void Assert_BoardPresenceIs( this Spirit spirit, string expected ) {
+		var actual = GameState.Current.Spaces_Existing
+			.Where( spirit.Presence.IsOn )
+			.Select(s=>s.Space.Label+":"+s[spirit.Presence.Token])
+			.Order()
+			.Join(",");
+		Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
+	}
+
 
 	const int defaultWaitMs = 3000;
 	internal static async Task ShouldComplete( this Task task, string taskDescription = "[Task]", int ms = defaultWaitMs ) {
@@ -111,6 +184,8 @@ public static class SpiritExtensions {
 		throw new Exception( $"{taskDescription} did not complete in {waitTime}" );
 	}
 
+	#endregion Assert
+
 	/// <summary> Constructs a VirtualUser and passes it to userActions. </summary>
 	internal static Action HandleDecisions(this Spirit spirit, Action<VirtualUser> userActions ) 
 		=> userActions == null ? ()=>{ } : () => userActions( new VirtualUser( spirit ) );
@@ -118,8 +193,6 @@ public static class SpiritExtensions {
 	// !! Anything that needs to do this should use AsyncHandler<T>
 	// UNLESS it is a method group, then we need to supply both versions OR explicitly Cast it to its delegat
 	// internal static Func<T,Task> MakeAsync<T>(this Action<T> method) => (T t) => { method(t); return Task.CompletedTask; };
-
-	#endregion When
 
 	static public async Task Testing_GrowAndResolve( Spirit spirit, GrowthOption option, GameState gameState ) { // public for Testing
 
@@ -139,19 +212,5 @@ public static class SpiritExtensions {
 			await spirit.ResolveActions( gameState );
 		}
 	}
-
-}
-
-class AsyncHandler<T> {
-
-	public AsyncHandler(Action<T> action) { _action=action; }
-	public static implicit operator AsyncHandler<T>( Action<T> action ) => new AsyncHandler<T>( action );
-
-	public AsyncHandler( Func<T,Task> task ) { _task=task; }
-	public static implicit operator AsyncHandler<T>( Func<T,Task> task ) => new AsyncHandler<T>( task );
-
-	public Task Execute( T t ) { if(_task != null) return _task( t ); _action( t ); return Task.CompletedTask; }
-	readonly Action<T> _action;
-	readonly Func<T, Task> _task;
 
 }

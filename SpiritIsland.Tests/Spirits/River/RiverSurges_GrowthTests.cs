@@ -27,9 +27,9 @@ public class RiverSurges_GrowthTests : GrowthTests {
 			User.SelectsGrowthA_Reclaim();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 5 );
-		Assert_HasCardAvailable( "Drought" ); // gains 1st card drawn
-		Assert_HasEnergy( 1 + 1 ); // 1 Growth energy + 1 from energy track
+		_spirit.Assert_AllCardsAvailableToPlay( 5 );
+		_spirit.Assert_HasCardAvailable( "Drought" ); // gains 1st card drawn
+		_spirit.Assert_HasEnergy( 1 + 1 ); // 1 Growth energy + 1 from energy track
 
 	}
 
@@ -39,7 +39,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		// +1 presense within 1, +1 presense range 1
 		// +1 power card, +1 presense range 2
 
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 
 		await _spirit.When_Growing( () => {
@@ -47,7 +47,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		} );
 
 		Assert.Equal(2,_spirit.EnergyPerTurn);
-		Assert_HasEnergy( 2 ); // 2 from energy track
+		_spirit.Assert_HasEnergy( 2 ); // 2 from energy track
 		_spirit.Presence.Energy.Revealed.Count().ShouldBe(3); // # of spaces revealed, not energy per turn
 	}
 
@@ -57,14 +57,14 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		// +1 presense range 2
 
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 
 		await _spirit.When_Growing( () => {
 			User.SelectsGrowthC_Draw_Energy();
 		} );
 
-		Assert_HasCardAvailable( "Drought" );
-		Assert_HasEnergy( 1 ); // didn't increase energy track.
+		_spirit.Assert_HasCardAvailable( "Drought" );
+		_spirit.Assert_HasEnergy( 1 ); // didn't increase energy track.
 		_spirit.Presence.Energy.Revealed.Count().ShouldBe(1);
 		_spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
 	}
@@ -122,7 +122,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		_spirit.Energy = card.Cost;
 
 		// When:
-		PlayCard( card );
+		_spirit.When_PlayingCards( card );
 
 		// Then: card is in Active/play list
 		Assert.Contains( _spirit.InPlay, c => c == card );
@@ -157,7 +157,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		_spirit.Energy = card.Cost - 1;
 
 		// When:
-		void Purchase() => PlayCard( card );
+		void Purchase() => _spirit.When_PlayingCards( card );
 
 		Assert.Throws<InsufficientEnergyException>( Purchase );
 	}
@@ -169,7 +169,7 @@ public class RiverSurges_GrowthTests : GrowthTests {
 		Discard(card);
 
 		// When
-		void Purchase() => PlayCard( card );
+		void Purchase() => _spirit.When_PlayingCards( card );
 
 		Assert.Throws<CardNotAvailableException>( Purchase );
 	}

@@ -9,7 +9,7 @@ public class Bringer_GrowthTests : GrowthTests {
 	public async Task ReclaimAll_PowerCard() { // Growth Option 1
 
 		// reclaim, +1 power card
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await _spirit.When_Growing( 0, () => {
 			User.SelectsMinorDeck();
@@ -17,16 +17,16 @@ public class Bringer_GrowthTests : GrowthTests {
 		} );
 
 		// Then:
-		Assert_AllCardsAvailableToPlay( 4 + 1 );
-		Assert_HasCardAvailable( "Drought" );
+		_spirit.Assert_AllCardsAvailableToPlay( 4 + 1 );
+		_spirit.Assert_HasCardAvailable( "Drought" );
 
 	}
 
 	[Fact] 
 	public async Task Reclaim1_Presence() { // Growth Option 2
 		// reclaim 1, add presense range 0
-		Given_HalfOfPowercardsPlayed();
-		Given_HasPresence( _board[4] );
+		_spirit.Given_HalfOfHandDiscarded();
+		_spirit.Given_HasPresenceOnSpaces( _board[4] );
 
 		await _spirit.When_Growing( 1, ()=> {
 			User.Growth_Reclaims1( "Predatory Nightmares $2 (Slow),[Dreams of the Dahan $0 (Fast)]" );
@@ -39,7 +39,7 @@ public class Bringer_GrowthTests : GrowthTests {
 	[Fact] 
 	public async Task PowerCard_Presence() { // Growth Option 3
 		// +1 power card, +1 pressence range 1
-		Given_HasPresence( _board[1] );
+		_spirit.Given_HasPresenceOnSpaces( _board[1] );
 
 		await _spirit.When_Growing( 2, ()=> {
 			User.Growth_DrawsPowerCard();
@@ -49,7 +49,7 @@ public class Bringer_GrowthTests : GrowthTests {
 		} );
 
 		Assert_GainsFirstMinorCard();
-		Assert_BoardPresenceIs( "A1:2" );
+		_spirit.Assert_BoardPresenceIs( "A1:2" );
 	}
 
 	[Fact] 
@@ -58,7 +58,7 @@ public class Bringer_GrowthTests : GrowthTests {
 		_board = LineBoard.MakeBoard();
 		_gameState = new GameState( _spirit, _board );
 
-		Given_HasPresence(_board[5]);
+		_spirit.Given_HasPresenceOnSpaces(_board[5]);
 		_board[6].Tokens.Dahan.Init(1);
 		_board[7].Tokens.AdjustDefault( Human.Explorer, 1 );
 		_board[8].Tokens.AdjustDefault( Human.Town, 1 );
@@ -72,8 +72,8 @@ public class Bringer_GrowthTests : GrowthTests {
 		} );
 
 		Assert.Equal(2,_spirit.EnergyPerTurn);
-		Assert_HasEnergy(2+2);
-		Assert_BoardPresenceIs("T5:1,T6:1");
+		_spirit.Assert_HasEnergy(2+2);
+		_spirit.Assert_BoardPresenceIs("T5:1,T6:1");
 	}
 
 	[Trait("Presence","EnergyTrack")]
@@ -104,7 +104,7 @@ public class Bringer_GrowthTests : GrowthTests {
 	}
 
 	void Assert_GainsFirstMinorCard() {
-		Assert_HasCardAvailable( "Drought" );
+		_spirit.Assert_HasCardAvailable( "Drought" );
 	}
 
 }

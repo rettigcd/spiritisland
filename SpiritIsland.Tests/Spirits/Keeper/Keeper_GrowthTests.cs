@@ -7,7 +7,7 @@ public class Keeper_GrowthTests : GrowthTests {
 	public Keeper_GrowthTests() : base( new Keeper() ) {
 		gsbac = new GameState( _spirit, _board );
 		_gameState = gsbac;
-		InitMinorDeck();
+		_gameState.Given_InitializedMinorDeck();
 	}
 
 	// a) reclaim, +1 energy
@@ -19,15 +19,15 @@ public class Keeper_GrowthTests : GrowthTests {
 	public async Task A_Reclaim_Energy_B_Powercard() {
 		// a) reclaim, +1 energy
 		// b) +1 power card
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await _spirit.When_Growing( () => {
 			User_Activates_A();
 			User_Activates_B();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 1 + 4 );
-		Assert_HasEnergy( 1 + 2 );
+		_spirit.Assert_AllCardsAvailableToPlay( 1 + 4 );
+		_spirit.Assert_HasEnergy( 1 + 2 );
 		// Assert_HasPowerProgressionCard( 0 );
 	}
 
@@ -36,8 +36,8 @@ public class Keeper_GrowthTests : GrowthTests {
 		// a) reclaim, +1 energy
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
-		Given_HasPresence( _board[3] );
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_HalfOfHandDiscarded();
 		Given_HasWilds( _board[8] ); // 3 spaces away
 
 		_gameState.Phase = Phase.Growth;
@@ -47,9 +47,9 @@ public class Keeper_GrowthTests : GrowthTests {
 			User_Activates_C();
 		} );
 
-		Assert_AllCardsAvailableToPlay();      // A
-		Assert_HasEnergy( 2 + 2 );             // A & C
-		Assert_BoardPresenceIs( "A3:2" );      // C
+		_spirit.Assert_AllCardsAvailableToPlay();      // A
+		_spirit.Assert_HasEnergy( 2 + 2 );             // A & C
+		_spirit.Assert_BoardPresenceIs( "A3:2" );      // C
 	}
 
 
@@ -60,8 +60,8 @@ public class Keeper_GrowthTests : GrowthTests {
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
-		Given_HalfOfPowercardsPlayed();
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HalfOfHandDiscarded();
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 		Given_BlightEverywhereExcept7();
 
 		await _spirit.When_Growing( () => {
@@ -69,10 +69,10 @@ public class Keeper_GrowthTests : GrowthTests {
 			User_Activates_D();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 4+1);     // A
-		Assert_HasEnergy( 10 + 2-3+1 );                // A & D
+		_spirit.Assert_AllCardsAvailableToPlay( 4+1);     // A
+		_spirit.Assert_HasEnergy( 10 + 2-3+1 );                // A & D
 		// Assert_HasPowerProgressionCard(0); // D
-		Assert_BoardPresenceIs( "A3:1,A7:1" );        // D
+		_spirit.Assert_BoardPresenceIs( "A3:1,A7:1" );        // D
 
 	}
 
@@ -82,7 +82,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
 		// Given: presence at A3  (default island is Board A)
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 		// Given: 1 wilds, 3 away
 		Given_HasWilds( _board[8] );
 
@@ -92,8 +92,8 @@ public class Keeper_GrowthTests : GrowthTests {
 		} );
 
 		// Assert_HasPowerProgressionCard( 0); // B
-		Assert_HasEnergy( 1 + 2 );             // C
-		Assert_BoardPresenceIs( "A3:2" );     // C
+		_spirit.Assert_HasEnergy( 1 + 2 );             // C
+		_spirit.Assert_BoardPresenceIs( "A3:2" );     // C
 	}
 
 	[Fact]
@@ -102,7 +102,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 		Given_BlightEverywhereExcept7();
 		_spirit.Energy = 10; // so we can do this option
 
@@ -114,9 +114,9 @@ public class Keeper_GrowthTests : GrowthTests {
 
 		// Assert_HasPowerProgressionCard( 0); // B
 		// Assert_HasPowerProgressionCard( 1 ); // B
-		Assert_HasCardAvailable( CallToBloodshed.Name ); // D
-		Assert_BoardPresenceIs( "A3:1,A7:1" );     // D
-		Assert_HasEnergy( 10 + 2 - 3 );
+		_spirit.Assert_HasCardAvailable( CallToBloodshed.Name ); // D
+		_spirit.Assert_BoardPresenceIs( "A3:1,A7:1" );     // D
+		_spirit.Assert_HasEnergy( 10 + 2 - 3 );
 	}
 
 	[Fact]
@@ -127,7 +127,7 @@ public class Keeper_GrowthTests : GrowthTests {
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
-		Given_HasPresence( _board[3] );
+		_spirit.Given_HasPresenceOnSpaces( _board[3] );
 		Given_HasWilds( _board[8] );
 		Given_BlightEverywhereExcept7();
 
@@ -136,7 +136,7 @@ public class Keeper_GrowthTests : GrowthTests {
 			User_Activates_D();
 		} );
 
-		Assert_HasEnergy( startingEnergy + _spirit.EnergyPerTurn - 2  );          // C & D
+		_spirit.Assert_HasEnergy( startingEnergy + _spirit.EnergyPerTurn - 2  );          // C & D
 		// Assert_HasPowerProgressionCard(0); // D
 
 	}

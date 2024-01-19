@@ -7,10 +7,10 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	public SharpFangs_GrowthTests() : base( new SharpFangs() ) {
 		gsbac = new GameState( _spirit, _board );
 		_gameState = gsbac;
-		InitMinorDeck();
+		_gameState.Given_InitializedMinorDeck();
 
 		// Setup for growth option B
-		Given_HasPresence( _board[2] ); // wetlands
+		_spirit.Given_HasPresenceOnSpaces( _board[2] ); // wetlands
 		_gameState.Tokens[ _board[7] ].Beasts.Init(1); // add beast to sand (not jungle)
 
 	}
@@ -25,7 +25,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		_spirit.Energy = 10; 
 		// a) cost -1, reclaim cards, gain +1 power card
 		// b) add a presense to jungle or a land with beasts ( range 3)
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await When_SharpFangsGrow( () => {
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
@@ -33,11 +33,11 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		} );
 
 
-		Assert_AllCardsAvailableToPlay( 4+1);  // A
-		Assert_HasEnergy( 10 -1 + 1 );         // A
+		_spirit.Assert_AllCardsAvailableToPlay( 4+1);  // A
+		_spirit.Assert_HasEnergy( 10 -1 + 1 );         // A
 		// Assert_HasPowerProgressionCard( 0 );   // A
 
-		Assert_BoardPresenceIs( "A2:1,A3:1" );    // B
+		_spirit.Assert_BoardPresenceIs( "A2:1,A3:1" );    // B
 	}
 
 	[Fact]
@@ -45,15 +45,15 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		// a) cost -1, reclaim cards, gain +1 power card
 		// c) gain power card, gain +1 energy
 
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await When_SharpFangsGrow( () => {
 			User_GrowthC_DrawCard_GainEnergy(); // gain 1 energy before we spend it
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 5 + 1 );  // A
-		Assert_HasEnergy( 0 + 1 );            // A & C
+		_spirit.Assert_AllCardsAvailableToPlay( 5 + 1 );  // A
+		_spirit.Assert_HasEnergy( 0 + 1 );            // A & C
 		// Assert_HasPowerProgressionCard( 0 );  // A
 		// Assert_HasPowerProgressionCard( 1 );  // C
 	}
@@ -63,16 +63,16 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		// d) 3 energy
 		// a) -1 energy, reclaim cards, gain +1 power card
 
-		Given_HalfOfPowercardsPlayed();
+		_spirit.Given_HalfOfHandDiscarded();
 
 		await When_SharpFangsGrow( () => {
 			User_GrowthD_GainEnergy();
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 		} );
 
-		Assert_AllCardsAvailableToPlay( 5);      // A
+		_spirit.Assert_AllCardsAvailableToPlay( 5);      // A
 		// Assert_HasPowerProgressionCard( 0 );    // A
-		Assert_HasEnergy( 3-1+1 );      // A & D
+		_spirit.Assert_HasEnergy( 3-1+1 );      // A & D
 
 	}
 
@@ -88,8 +88,8 @@ public class SharpFangs_GrowthTests : GrowthTests {
 
 		// User.SkipsPresenceReplacementWithBeasts();
 
-		Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
-		Assert_HasEnergy( 1 + 1 );         // C
+		_spirit.Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
+		_spirit.Assert_HasEnergy( 1 + 1 );         // C
 		// Assert_HasPowerProgressionCard( 0 );    // A
 	}
 
@@ -103,8 +103,8 @@ public class SharpFangs_GrowthTests : GrowthTests {
 			User_GrowthD_GainEnergy();
 		} );
 
-		Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
-		Assert_HasEnergy( 3 + 1 );         // D
+		_spirit.Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
+		_spirit.Assert_HasEnergy( 3 + 1 );         // D
 	}
 
 	[Fact]
@@ -118,7 +118,7 @@ public class SharpFangs_GrowthTests : GrowthTests {
 		} );
 
 		// Assert_HasPowerProgressionCard( 0 );    // C
-		Assert_HasEnergy( 1 + 3 + 1 );     // C + D
+		_spirit.Assert_HasEnergy( 1 + 3 + 1 );     // C + D
 	}
 
 	[Theory]

@@ -47,6 +47,20 @@ static public class GameState_Extensions {
 		dreamerSummary.ShouldBe( expectedString );
 	}
 
+	static internal GameState Given_InitializedMinorDeck( this GameState gameState ) {
+		gameState.MinorCards = new PowerCardDeck( new List<PowerCard>() {
+			// 4 random cards good for 1 draw.
+			PowerCard.For(typeof(RainOfBlood)),
+			PowerCard.For(typeof(Drought)),			// 1st after Shuffle
+			PowerCard.For(typeof(LureOfTheUnknown)),
+			PowerCard.For(typeof(SteamVents)),
+			PowerCard.For(typeof(CallOfTheDahanWays)),
+			PowerCard.For(typeof(CallToBloodshed)),	// 2nd after Shuffle
+			PowerCard.For(typeof(CallToIsolation)),
+			PowerCard.For(typeof(CallToMigrate))
+		}, 1 );
+		return gameState;
+	}
 
 	class StopBlightEffects : BaseModEntity, IModifyAddingToken {
 		public void ModifyAdding( AddingTokenArgs args ) {
