@@ -57,9 +57,9 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,4)]
 	[InlineDataAttribute(5,5)]
 	[InlineDataAttribute(6,6)]
-	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
+	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
 		var fix = new ConfigurableTestFixture { Spirit = new Shadows() };
-		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -70,9 +70,9 @@ public class ShadowsFlicker_GrowthTests : GrowthTests {
 	[InlineDataAttribute(4,3)]
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,5)]
-	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
+	public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
 		var fix = new ConfigurableTestFixture { Spirit = new Shadows() };
-		await fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
+		fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
 	}
 
 }

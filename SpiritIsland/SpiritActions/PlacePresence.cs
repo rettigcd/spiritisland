@@ -30,12 +30,6 @@ public class PlacePresence : SpiritAction {
 			return; // this can happen if Ocean is dragged way-inland and is no longer near an ocean or coast.
 		Space to = await self.SelectAsync( A.Space.ToPlacePresence( toOptions.Downgrade(), Present.Always, from.Token ) );
 		await from.MoveToAsync(to);
-
-		if( ActionScope.Current.Category == ActionCategory.Spirit_Power 
-			&& from.Source is Track track 
-			&& track.Action != null
-		)
-			await track.Action.ActAsync( self );
 	}
 
 	static readonly string[] DefaultFilters = new string[] { Filter.Any };

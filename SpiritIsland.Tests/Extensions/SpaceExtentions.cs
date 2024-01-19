@@ -62,4 +62,28 @@ public static class SpaceExtentions {
 		return token;
 	}
 
+	#region Generating Explorer Action on a space
+
+	static public InvaderCard BuildInvaderCard( this Space space ) {
+		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
+		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
+	}
+
+	static public Task When_Ravaging( this Space space ) => space.BuildInvaderCard().When_Ravaging();
+
+	static public Task When_Building( this Space space ) => space.BuildInvaderCard().When_Building();
+
+	static public Task When_Exploring( this Space space ) => space.BuildInvaderCard().When_Exploring();
+
+	#endregion
+
+	static public string InvaderSummary( this SpaceState dict ) {
+		static int Order_CitiesTownsExplorers( HumanToken invader )
+			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
+		return dict.InvaderTokens()
+			.OrderBy( Order_CitiesTownsExplorers )
+			.Select( invader => dict[invader] + invader.ToString() )
+			.Join( "," );
+	}
+
 }

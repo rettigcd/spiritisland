@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests;
+﻿using Microsoft.CodeAnalysis;
+
+namespace SpiritIsland.Tests;
 
 //Setup:
 //	Spirit / Presence / Cards / Prepared Elements / Energy
@@ -130,13 +132,8 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 
 	#region Canned Tests
 
-	static async Task TakeFromTrack( int revealedSpaces, SpiritPresence presence, IPresenceTrack track ) {
-		for(int i = 1; i < revealedSpaces; i++)
-			await track.RevealOptions.First().RemoveAsync( presence.Token );
-	}
-
-	public async Task VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-		await TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.Energy ).ShouldComplete( "Taking from Energy Track");
+	public void VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		Spirit.Presence.Energy.Given_SlotsRevealed( revealedSpaces );
 		Spirit.EnergyPerTurn.ShouldBe( expectedEnergyGrowth );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}
@@ -144,8 +141,8 @@ public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
 	/// <summary>
 	/// Operates strictly with the Presence tracks.
 	/// </summary>
-	public async Task VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
-		await TakeFromTrack( revealedSpaces, Spirit.Presence, Spirit.Presence.CardPlays ).ShouldComplete( "Taking from Card Track" );
+	public void VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
+		Spirit.Presence.CardPlays.Given_SlotsRevealed( revealedSpaces );
 		Spirit.NumberOfCardsPlayablePerTurn.ShouldBe( expectedCardPlayCount );
 		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
 	}

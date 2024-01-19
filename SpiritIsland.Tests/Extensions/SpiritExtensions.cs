@@ -186,6 +186,16 @@ public static class SpiritExtensions {
 
 	#endregion Assert
 
+	internal static void Given_SlotsRevealed( this IPresenceTrack track, int revealedSpaces ) {
+		for(int i = 1; i < revealedSpaces; i++){
+			Track location = track.RevealOptions.First(); 
+			track.Reveal(location);
+		}
+	}
+
+	static public TargetSpaceCtx TargetSpace( this Spirit self, string spaceLabel )
+		=> self.Target( GameState.Current.Spaces_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
+
 	/// <summary> Constructs a VirtualUser and passes it to userActions. </summary>
 	internal static Action HandleDecisions(this Spirit spirit, Action<VirtualUser> userActions ) 
 		=> userActions == null ? ()=>{ } : () => userActions( new VirtualUser( spirit ) );

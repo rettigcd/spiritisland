@@ -82,9 +82,9 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,4)]
 	[InlineDataAttribute(7,5)]
-	public async Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ) {
+	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ) {
 		var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
-		await fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -96,9 +96,9 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	[InlineDataAttribute(5,3,true)]
 	[InlineDataAttribute(6,4,true)]
 	[InlineDataAttribute(7,5,true)]
-	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ) {
+	public void CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ) {
 		var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
-		await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		fix.VerifyReclaim1Count( canReclaim1? 1 : 0 );
 	}
 

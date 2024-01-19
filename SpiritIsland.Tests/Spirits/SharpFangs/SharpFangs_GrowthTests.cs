@@ -129,9 +129,9 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 5, 2, "plant 2 animal" )]
 	[InlineDataAttribute( 6, 3, "plant 2 animal" )]
 	[InlineDataAttribute( 7, 4, "plant 2 animal" )]
-	public async Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		await fix.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+		fix.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Theory]
@@ -141,9 +141,9 @@ public class SharpFangs_GrowthTests : GrowthTests {
 	[InlineDataAttribute( 4, 3, 1 )]
 	[InlineDataAttribute( 5, 4, 1 )]
 	[InlineDataAttribute( 6, 5, 2 )]
-	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
+	public void CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		await fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 		fix.VerifyReclaim1Count(reclaimCount);
 	}
 

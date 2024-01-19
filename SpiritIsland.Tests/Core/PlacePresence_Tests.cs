@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Core; 
+﻿using Xunit.Sdk;
+
+namespace SpiritIsland.Tests.Core; 
 public class PlacePresence_Tests {
 
 	#region helper classes
@@ -10,7 +12,7 @@ public class PlacePresence_Tests {
 		public readonly Board Board;
 
 		public TestGameCtx(Spirit spirit){
-			Spirit = new TestSpirit();
+			Spirit = spirit;
 			User = new VirtualUser(Spirit);
 			Board = Board.BuildBoardA();
 			GameState = new GameState(Spirit, Board );
@@ -86,6 +88,62 @@ public class PlacePresence_Tests {
 			// just shouldn't throw exception about the filter we are using.
 			targetCriteria.Matches(space);
 		}
+
+	}
+
+	[Theory]
+	[InlineData(true)]
+	[InlineData(false)]	
+	public async Task RevealingTrack_DoesNotRunAction( bool duringGrowth ){
+		// AFTER tracks have been revealed, Actions are called independently by Spirit Growth Phase
+
+		var ctx = new TestGameCtx(new RiverSurges());
+		ctx.GameState.Initialize();
+
+		// Given: spirit track is emptied up to an action Track (reclaim 1)
+		ctx.Spirit.Presence.CardPlays.Given_SlotsRevealed(4);
+		//   And: the action would have an effect
+		ctx.Spirit.Given_HalfOfHandDiscarded();
+
+		// Given: Spirit_Power or Spirit_Growth
+		(ActionCategory category,Phase phase) = duringGrowth
+			? (ActionCategory.Spirit_Growth,Phase.Growth)
+			: (ActionCategory.Spirit_Power,Phase.Fast);
+		await using ActionScope scope = await ActionScope.StartSpiritAction(category,ctx.Spirit);
+		ctx.GameState.Phase = phase;
+
+		// When: user places presence from that space
+		await new PlacePresence(2).ActAsync(ctx.Spirit).AwaitUser(ctx.Spirit,u=>{
+			u.NextDecision.HasPrompt("Select Presence to place").HasOptions("2 energy,reclaim 1,RSiS on A5").Choose("reclaim 1");
+			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
+			// Then: Reclaim does not trigger.
+			// No user prompt presented.
+		}).ShouldComplete();
+
+		
+	}
+
+	[Fact]
+	public async Task RevealElementDuringPower_AddsIt(){
+
+		var ctx = new TestGameCtx(new Thunderspeaker());
+		ctx.GameState.Initialize();
+
+		// Given: Spirit Power (Fast) Phase
+		await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,ctx.Spirit);
+		ctx.GameState.Phase = Phase.Fast;
+
+		//   And: no activated elements
+		ctx.Spirit.Elements.Elements.BuildElementString(false).ShouldBe("");
+
+		// When: user places presence from that space
+		await new PlacePresence(2).ActAsync(ctx.Spirit).AwaitUser(ctx.Spirit,u=>{
+			u.NextDecision.HasPrompt("Select Presence to place").HasOptions("air energy,2 cardplay,Ts on A3,Ts on A7").Choose("air energy");
+			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
+		}).ShouldComplete();
+
+		// Then: Air is activated
+		ctx.Spirit.Elements.Elements.BuildElementString(false).ShouldBe("air");
 
 	}
 

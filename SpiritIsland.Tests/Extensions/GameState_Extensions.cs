@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests;
 
 static public class GameState_Extensions {
 
@@ -29,6 +31,12 @@ static public class GameState_Extensions {
 		var nullCard = InvaderCard.Stage1( Terrain.None );
 		gs.InitTestInvaderDeck( new byte[12].Select( _ => nullCard ).ToArray() );
 	}
+
+	static public void InitTestInvaderDeck(this GameState gameState, params InvaderCard[] cards ) {
+		gameState.InvaderDeck = new InvaderDeck( cards.ToList(), null );// Don't try to inspect unused!
+	}
+
+	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );
 
 	static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
 		gameState.Tokens[space].InvaderSummary().ShouldBe( expectedString );
