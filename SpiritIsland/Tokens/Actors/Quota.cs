@@ -6,7 +6,9 @@
 public class Quota {
 
 	public void MarkTokenUsed( IToken token ) {
-		var match = _sharedGroupCounts.First( q => q.Contains( token.Class ) );
+
+		var match = _sharedGroupCounts.First( group => group.Matches( token ) );
+
 		match.UsedOne();
 		if(!match.HasMore)
 			_sharedGroupCounts.Remove( match );
@@ -87,7 +89,7 @@ public class Quota {
 		}
 
 		public bool HasMore => 0 < _count;
-		public bool Contains( ITokenClass @class ) => Classes.Contains( @class );
+		public bool Matches( IToken token ) => token.HasAny( Classes );
 		public void UsedOne() { if(_count != int.MaxValue) --_count; }
 		public ITokenClass[] Classes { get; private set; }
 

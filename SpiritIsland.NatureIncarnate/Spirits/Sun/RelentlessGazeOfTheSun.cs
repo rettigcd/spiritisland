@@ -109,6 +109,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 		get => new GazeMemento(this);
 		set => ((GazeMemento)value).Restore(this);
 	}
+	
 	class GazeMemento {
 		public GazeMemento(RelentlessGazeOfTheSun spirit) {
 			_b = spirit.CollectEnergySecondTime;
