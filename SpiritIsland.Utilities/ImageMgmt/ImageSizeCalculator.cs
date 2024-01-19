@@ -66,8 +66,17 @@ public class ImageSizeCalculator {
 			"jungle" => Img.Icon_Jungle,
 			"sands" => Img.Icon_Sands,
 			"mountain" => Img.Icon_Mountain,
-			_ => ElementStrings.ParseEl( token ).GetIconImg(),
+			_ => Other( token ),
 		};
+	}
+
+	static Img Other(string token){
+		try{
+			return ElementStrings.ParseEl( token ).GetIconImg();
+		} catch( Exception ex){
+			string s = ex.ToString();
+			return Img.None;
+		}
 	}
 
 	readonly Dictionary<Img, Size> iconSizes = new Dictionary<Img, Size>();

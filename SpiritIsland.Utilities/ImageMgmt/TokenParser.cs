@@ -5,12 +5,14 @@ namespace SpiritIsland;
 public static class TokenParser {
 	public static string[] Tokenize( string s ) {
 
+		s = s.Replace("-or-","dash-or-dash"); // can't leave it -or- because '-' doesn't match word boundary.
+
 		var tokens = new Regex( "\\b(sacred site|destroyedpresence|presence|fast|slow"
 			+ "|dahan|blight|fear|city|town|explorer"
 			+ "|sun|moon|air|fire|water|plant|animal|earth"
 			+ "|wetland|jungle|mountain|sands?"
 			+ "|beasts?|disease|strife|wilds|badlands|vitality|quake"
-			+ "|\\+1range|-or-|incarna|endless-dark|cardplay|impending)\\b", RegexOptions.IgnoreCase
+			+ "|\\+1range|incarna|dash-or-dash|endless-dark|cardplay|impending)\\b", RegexOptions.IgnoreCase
 		).Matches( s ).Cast<Match>().ToList();
 
 		var results = new List<string>();
@@ -26,9 +28,10 @@ public static class TokenParser {
 			if(nextToken.Index == cur) {
 				// Add this token to the results
 				string tokenText = "{" + nextToken.Value.ToLower() + "}";
+
 				switch(tokenText) {
 					case "{beasts}": results.Add( "{beast}" ); break;
-                    case "{-or-}":
+                    case "{dash-or-dash}":
 						results.Add("{or-curly-before}");
 						results.Add( " or " );
 						results.Add( "{or-curly-after}" );

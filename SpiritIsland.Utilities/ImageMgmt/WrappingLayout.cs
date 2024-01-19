@@ -54,7 +54,7 @@ public class WrappingLayout {
 		}
 
 
-		var descriptionParts = TokenParser.Tokenize( description );
+        string[] descriptionParts = TokenParser.Tokenize( description );
 
 		foreach(var part in descriptionParts) {
 			if(part[0] == '{' && part[^1] == '}') {
