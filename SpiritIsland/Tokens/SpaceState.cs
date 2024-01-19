@@ -258,22 +258,17 @@ public class SpaceState
 		if(this[originalInvader] < tokenCount)
 			throw new ArgumentOutOfRangeException( $"collection does not contain {tokenCount} {originalInvader}" );
 
-		var newInvader = originalInvader.AddStrife( strifeDelta );
-		// We need to generate events (for Observe the Ever changing World) so we will use the Replace reason
-		await this.RemoveAsync( originalInvader, tokenCount, RemoveReason.Replaced );
-		await AddAsync( newInvader, tokenCount, AddReason.AsReplacement );
+		var replacement = await ReplaceAsync( originalInvader, tokenCount, originalInvader.AddStrife(strifeDelta) );
 
-		if(newInvader.IsDestroyed) // due to a strife-health penalty
-			await Destroy( newInvader, this[newInvader] );
-
-		return newInvader;
+		return replacement.Added.AsHuman();
 	}
 
 	/// <summary>
 	/// Replaces 1 Human type/class with another (1 to 1)
 	/// </summary>
-	public async Task ReplaceHumanAsync(HumanToken oldToken, HumanTokenClass newTokenClass) {
-		if(oldToken == null) return;
+	/// <returns>null IF oldToken is null.</returns>
+	public async Task<TokenReplacedArgs> ReplaceHumanAsync(HumanToken oldToken, HumanTokenClass newTokenClass) {
+		if(oldToken == null) return null;
 
 		var newToken = GetDefault( newTokenClass );
 
@@ -283,20 +278,22 @@ public class SpaceState
 
 		// if downgrading it, destroys it, then do nothing
 		if(newToken.IsDestroyed) {
-			if( newToken.HasTag( TokenCategory.Invader ) && PreventsInvaderDamage() ) return;
+			// Invaders
+			if( newToken.HasTag( TokenCategory.Invader ) && PreventsInvaderDamage() ) return TokenReplacedArgs.Null(this,oldToken,newToken);
+			// Dahan
 		}
-			
 
-		await ReplaceAsync( oldToken, 1, newToken );
+		return await ReplaceAsync( oldToken, 1, newToken );
 	}
 
-	public async Task ReplaceAsync(IToken oldToken, int newCount, IToken newToken) {
-		if(oldToken == null) return;
+	/// <returns>null if null oldToken passed in.</returns>
+	public async Task<TokenReplacedArgs> ReplaceAsync(IToken oldToken, int newCount, IToken newToken) {
+		if(oldToken == null) return null;
 
 		ILocation source = this;
 
 		var (removed, removedHandler) = await source.SourceAsync( oldToken, 1, RemoveReason.Replaced );
-		if(removed.Count == 0) return; // abort.  Token not removed.
+		if(removed.Count == 0) return TokenReplacedArgs.Null(this,oldToken,newToken);
 
 		var (added, addedHandler) = await SinkAsync( newToken, newCount, AddReason.AsReplacement);
 
@@ -306,6 +303,7 @@ public class SpaceState
 		await addedHandler( replaced );
 
 		ActionScope.Current.Log(replaced);
+		return replaced;
 	}
 
 	public Task<ITokenAddedArgs> AddDefaultAsync( ITokenClass tokenClass, int count, AddReason addReason = AddReason.Added )

@@ -42,6 +42,10 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 		InitialExplore();
 		InitSpirits();// ManyMinds requires the beast to be in place, so this goes after tokens are placed.
 		BlightCard.OnGameStart( this );
+
+		// ++HealthPenaltyPerStrife;
+		// var tokens = Island.Boards[0][2].Tokens;
+		// tokens.Add1StrifeToAsync(tokens.HumanOfTag(Human.City).First()).Wait();
 	}
 
 	void InitialExplore() {

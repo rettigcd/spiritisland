@@ -7,6 +7,19 @@ public class TokenReplacedArgs
 	, ITokenRemovedArgs
 	,ILogEntry
 {
+	static public TokenReplacedArgs Null( ILocation location, IToken oldToken, IToken newToken ) 
+		=> new TokenReplacedArgs( location, oldToken, newToken );
+
+	/// <summary>
+	/// Generates a 0-replacement Event
+	/// </summary>
+	TokenReplacedArgs( ILocation location, IToken oldToken, IToken newToken ) {
+		Location = location;
+		RemovedCount = 0;
+		Removed = newToken ?? throw new ArgumentNullException(nameof(newToken));
+		AddedCount = 0;
+		Added = newToken ?? throw new ArgumentNullException(nameof(oldToken));
+	}
 
 	public TokenReplacedArgs( ITokenRemovedArgs removed, ITokenAddedArgs added ) {
 		if(removed.From != added.To)

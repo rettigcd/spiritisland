@@ -173,6 +173,7 @@ static public class Move_Extension {
 
 	static public Task<ITokenRemovedArgs> RemoveAsync( this TokenOn tokenOn, int count=1, RemoveReason reason = RemoveReason.Removed )
 		=> tokenOn.Source.RemoveAsync(tokenOn.Token,count,reason);
+		
 	static public Task<TokenMovedArgs> MoveToAsync( this TokenOn tokenOn, ILocation destination, int count=1 )
 		=> tokenOn.Token.MoveAsync(tokenOn.Source,destination,count);
 }
