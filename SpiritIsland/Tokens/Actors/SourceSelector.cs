@@ -52,14 +52,21 @@ public class SourceSelector {
 	/// <summary>
 	/// Tracks starting invaders and only allows each to be selected once.
 	/// </summary>
-	/// <remarks>Used primarily for damage or when not removing tokens.</remarks>
+	/// <remarks>
+	/// Used primarily for damage or when not removing tokens.
+	/// </remarks>
 	public SourceSelector ConfigOnlySelectEachOnce(){
 		// Tokens will still be where they started, so we need to
 		// manually track how many have been used and
 		// not allow selection when used up
-		CountDictionary<SpaceToken> selected = new();
-		Track( st => selected[st]++ );
-		FilterSpaceToken( st => selected[st] < st.Count);
+		Dictionary<SpaceToken,int> unused = new();
+		Track( st => {
+			// first time - init total
+			if(!unused.ContainsKey(st)) unused.Add(st,st.Count);
+			// remove
+			--unused[st];
+	 	} );
+		FilterSpaceToken( st => !unused.ContainsKey(st) || unused[st] != 0);
 
 		return this;
 	}
@@ -160,8 +167,11 @@ static public class SelectFrom {
 }
 
 public class Prompt {
+	/// <summary> Does not require MaxCount  </summary>
 	static public Func<PromptData,string> RemainingParts(string prefix) => (x) => $"{prefix} ({x.RemainingPartsStr})";
+	/// <summary> Requires non-null MaxCount  </summary>
 	static public Func<PromptData,string> RemainingCount(string prefix) => (x) => $"{prefix} ({x.RemainingCount} remaining)";
+	/// <summary> Requires non-null MaxCount  </summary>
 	static public Func<PromptData,string> XofY(string prefix) => (x) => $"{prefix} ({x.Index+1} of {x.MaxCount})";
 }
 

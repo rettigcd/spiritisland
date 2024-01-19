@@ -20,5 +20,4 @@ static class InvaderCard_Extensions {
 		}).AwaitUserToComplete( $"{card.GetType().Name}-{level}", userActions );
 	}
 
-
 }
