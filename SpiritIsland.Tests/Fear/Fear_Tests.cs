@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Core;
+﻿namespace SpiritIsland.Tests.Fear;
 
 public class Fear_Tests {
 

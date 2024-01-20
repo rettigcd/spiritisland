@@ -2,7 +2,7 @@
 using System.Drawing.Imaging;
 using System.Net.Http;
 
-namespace SpiritIsland.Tests.Core;
+namespace SpiritIsland.Tests.Art;
 
 public class DownloadPowerPics_Tests {
 

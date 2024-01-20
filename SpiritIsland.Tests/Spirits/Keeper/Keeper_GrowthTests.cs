@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.KeeperNS;
 
-public class Keeper_GrowthTests : GrowthTests {
+public class Keeper_GrowthTests : BoardAGame {
 
 	readonly GameState gsbac;
 

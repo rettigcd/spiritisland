@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.Thunder;
 
-public class Thunderspeaker_GrowthTests : GrowthTests{
+public class Thunderspeaker_GrowthTests : BoardAGame{
 
 	public Thunderspeaker_GrowthTests():base( new Thunderspeaker() ) {}
 

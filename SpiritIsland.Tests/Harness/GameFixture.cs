@@ -1,6 +1,7 @@
 ﻿using SpiritIsland.Log;
 
 namespace SpiritIsland.Tests;
+
 class GameFixture {
 
 	public Spirit spirit;
@@ -12,7 +13,7 @@ class GameFixture {
 	public string LogAsString => string.Join("\r\n",Log);
 
 
-	public GameFixture WithSpirit(Spirit spirit ) {
+	public GameFixture WithSpirit( Spirit spirit ) {
 		this.spirit = spirit;
 		return this;
 	}

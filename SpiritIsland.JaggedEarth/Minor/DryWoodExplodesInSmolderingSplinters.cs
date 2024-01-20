@@ -30,7 +30,7 @@ public class DryWoodExplodesInSmolderingSplinters {
 	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
 	public class FastFor1EnergyAttribute : SpeedAttribute, ISpeedBehavior {
 		public FastFor1EnergyAttribute():base(Phase.Slow) {}
-		public Phase DisplaySpeed { get; }
+//		public Phase DisplaySpeed { get; }
 
 		public override bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit ) {
 			return DisplaySpeed.IsOneOf( requestSpeed, Phase.FastOrSlow )

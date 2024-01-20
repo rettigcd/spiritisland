@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Tests.Spirits.Lightning; 
 
 [Collection("BaseGame Spirits")]
-public class Lightning_GrowthTests : GrowthTests{
+public class Lightning_GrowthTests : BoardAGame{
 
 	public Lightning_GrowthTests()
 		:base(new LightningsSwiftStrike())

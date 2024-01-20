@@ -226,15 +226,16 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		}
 
 	}
+	
 	class SaltDepositsFilter : InvaderCardSpaceFilter {
 		public string Text => "Salt Deposits";
 		public bool Matches( Space space ) {
-			return IsInRavageThisAction() == IsMiningLand( space.Tokens );
+			return IsInRavageStackThisAction() == IsMiningLand( space.Tokens );
 		}
-		bool IsInRavageThisAction() {
+		bool IsInRavageStackThisAction() {
 			var scope = ActionScope.Current;
 			if(scope.ContainsKey( Key )) return scope.SafeGet<bool>( Key );
-			GameState gs = GameState.Current;
+			GameState gs = scope.GameState;
 			var cards = gs.InvaderDeck.Ravage.Cards.ToArray();
 			bool isInRavage = cards.Any( c => c.Text.Contains( Text ) );
 			// bool isInRavage = gs.InvaderDeck.Ravage.Cards.Any( c => c.Text.Contains( Text ) );

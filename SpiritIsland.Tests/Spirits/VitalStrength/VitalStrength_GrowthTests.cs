@@ -5,7 +5,7 @@
 // Collection("xxx") creates larger collections and therefore fewer of them, so there are fewer running in parallel
 
 [Collection("BaseGame Spirits")]
-public class VitalStrength_GrowthTests : GrowthTests {
+public class VitalStrength_GrowthTests : BoardAGame {
 
 	readonly new VirtualEarthUser User;
 

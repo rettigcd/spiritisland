@@ -1,9 +1,15 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River;
 
 [Collection("BaseGame Spirits")]
-public class WashAway_Tests : SpiritCards_Tests {
+public class WashAway_Tests {
 
-	public WashAway_Tests():base(new RiverSurges() ) { }
+	readonly Spirit _spirit;
+	GameState _gameState;
+	PowerCard _card;
+
+	public WashAway_Tests():base( ) {
+		_spirit = new RiverSurges();
+	}
 
 	[Fact]
 	public async Task Nothing() {
@@ -50,7 +56,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		grp.AdjustDefault( Human.Town, townCount );
 		grp.AdjustDefault( Human.City, cityCount );
 
-		await When_PlayingCard().AwaitUser( _spirit, u => {
+		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, u => {
 			u.NextDecision.HasPrompt("Wash Away: Target Space").Choose(targetSpace.Label);
 			u.NextDecision.HasPrompt("Push up to (1)").MoveFrom(tokenToPush, tokenToPush + ",Done" )
 				.MoveTo("A2","A1,A2,A3,A5");
@@ -77,7 +83,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		_gameState.Tokens[targetSpace].AdjustDefault(Human.Explorer, 1);
 
 		// When pushing explorer
-		await When_PlayingCard()
+		await _card.ActivateAsync( _spirit )
 			.AwaitUser( _spirit, user => {
 				user.NextDecision.HasPrompt("Wash Away: Target Space").Choose("A2");
 				// Can't push into ocean
@@ -130,7 +136,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 		var invaderDestination = board[2];
 
-		await When_PlayingCard().AwaitUser(_spirit,user=>{ 
+		await _card.ActivateAsync( _spirit ).AwaitUser(_spirit,user=>{ 
 			user.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
 			user.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom("T@1","T@1,Done").MoveTo("A2","A1,A2,A3,A5");
 		}).ShouldComplete();
@@ -154,7 +160,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 		_gameState.Tokens[ targetSpace ].AdjustDefault( Human.Explorer, 3 );
 
 		//  When: activating card
-		await When_PlayingCard().AwaitUser( _spirit, user => { 
+		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, user => { 
 			user.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
 			user.NextDecision.HasPrompt("Push up to (3)").MoveFrom("E@1","E@1,Done").MoveTo("A2","A1,A2,A3,A5");
 			user.NextDecision.HasPrompt("Push up to (2)").MoveFrom("E@1","E@1,Done").MoveTo("A3","A1,A2,A3,A5");
@@ -170,7 +176,7 @@ public class WashAway_Tests : SpiritCards_Tests {
 
 	void Given_RiverPlayingWashAway(string startingPresence="A5") {
 		// A5 is the 'Y' land in the middle
-		Given_GameWithSpirits(_spirit);
+		_gameState = new GameState(_spirit,Boards.A);
 
 		//   And: a game on Board-A
 		Board board = Board.BuildBoardA();
@@ -183,10 +189,10 @@ public class WashAway_Tests : SpiritCards_Tests {
 		//   And: Purchased WashAway
 		_card = _spirit.Hand.Single(c => c.Name == WashAway.Name);
 		_spirit.Energy = _card.Cost;
-		PlayCard();
+		_spirit.PlayCard( _card );
 
 		// Jump to slow
-		Assert_CardIsReady(_card,Phase.Slow);
+		_spirit.Assert_CardIsReady(_card,Phase.Slow);
 
 	}
 

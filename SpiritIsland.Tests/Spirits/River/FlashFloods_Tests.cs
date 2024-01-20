@@ -1,17 +1,23 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River;
 
 [Collection("BaseGame Spirits")]
-public class FlashFloods_Tests : SpiritCards_Tests {
+public class FlashFloods_Tests {
+
+	GameState _gameState;
+	PowerCard _card;
 
 	// immutable
 	readonly PowerCard flashFloodsCard = PowerCard.For(typeof(FlashFloods));
+	readonly Spirit _spirit;
 
-	public FlashFloods_Tests():base(new RiverSurges() ) { }
+	public FlashFloods_Tests():base() {
+		_spirit = new RiverSurges();
+	}
 
 	[Fact]
 	public async Task FlashFloods_Inland() {
 
-		Given_GameWithSpirits( _spirit );
+		_gameState = new GameState( _spirit, Board.BuildBoardA() );
 		_gameState.Phase = Phase.Fast;
 
 
@@ -33,11 +39,11 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		//   And: Purchased FlashFloods
 		_card = _spirit.Hand.Single( c => c.Name == FlashFloods.Name );
 		_spirit.Energy = _card.Cost;
-		PlayCard();
+		_spirit.PlayCard( _card );
 		Assert.Contains( _card, _spirit.GetAvailableActions( _card.DisplaySpeed ).OfType<PowerCard>().ToList() ); // is fast
 
 		// When:
-		await When_PlayingCard().AwaitUser( _spirit, user => {
+		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, user => {
 			user.TargetsLand( FlashFloods.Name, "A4" );
 			user.NextDecision .HasPrompt( "Damage (1 remaining)" ).HasOptions( "C@3,T@2,E@1" ).Choose( "E@1" );
 		} ).ShouldComplete();
@@ -68,10 +74,10 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 		//   And: Purchased FlashFloods
 		_card = _spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
 		_spirit.Energy = _card.Cost;
-		PlayCard();
+		_spirit.PlayCard( _card );
 		Assert.Contains(_card,_spirit.GetAvailableActions(_card.DisplaySpeed).OfType<PowerCard>().ToList()); // is fast
 
-		await When_PlayingCard().AwaitUser( _spirit, user => {
+		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, user => {
 			//  Select: A2
 			user.TargetsLand(FlashFloods.Name,"A2");
 
@@ -86,7 +92,7 @@ public class FlashFloods_Tests : SpiritCards_Tests {
 
 	[Fact]
 	public void FlashFloods_Stats() {
-		Assert_CardStatus( flashFloodsCard, 2, Phase.Fast, "sun water" );
+		flashFloodsCard.Assert_CardStatus( 2, Phase.Fast, "sun water" );
 	}
 
 }

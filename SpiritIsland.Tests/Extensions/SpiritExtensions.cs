@@ -63,6 +63,13 @@ public static class SpiritExtensions {
 		}
 	}
 
+	internal static PowerCard Given_PurchasedCard( this Spirit spirit, string cardName) {
+		var card = spirit.Hand.Single( c => c.Name == cardName );
+		spirit.PlayCard( card );
+		return card;
+	}
+
+
 	#endregion Given
 
 	#region When
@@ -167,6 +174,10 @@ public static class SpiritExtensions {
 			.Order()
 			.Join(",");
 		Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
+	}
+
+	static public void Assert_CardIsReady( this Spirit spirit, PowerCard card, Phase speed ) {
+		Assert.Contains(card, spirit.GetAvailableActions(speed).OfType<PowerCard>().ToList());
 	}
 
 

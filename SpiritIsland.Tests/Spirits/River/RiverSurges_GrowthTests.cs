@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River;
 
 [Collection("BaseGame Spirits")]
-public class RiverSurges_GrowthTests : GrowthTests {
+public class RiverSurges_GrowthTests : BoardAGame {
 
 	protected new VirtualRiverUser User;
 
@@ -193,10 +193,10 @@ public class RiverSurges_GrowthTests : GrowthTests {
 	public void StartsOnHighestNumberedWetlands(string expectedStartingSpaces){
 		var river = new RiverSurges();
 		var board = expectedStartingSpaces[..1] switch {
-			"A" => BoardA,
-			"B" => BoardB,
-			"C" => BoardC,
-			"D" => BoardD,
+			"A" => Board.BuildBoardA( GameBuilder.FourBoardLayout[0] ),
+			"B" => Board.BuildBoardB( GameBuilder.FourBoardLayout[1] ),
+			"C" => Board.BuildBoardC( GameBuilder.FourBoardLayout[2] ),
+			"D" => Board.BuildBoardD( GameBuilder.FourBoardLayout[3] ),
 			_ => null,
 		};
 		_gameState = new GameState( river, board );

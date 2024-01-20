@@ -1,6 +1,6 @@
-﻿namespace SpiritIsland.Tests.Core;
+﻿namespace SpiritIsland.Tests.Invaders;
 
-public class Invader_Tests {
+public class InvaderDeck_Tests {
 
 	static ISpaceEntity Parse(string s ) {
 		return s switch {
@@ -14,7 +14,7 @@ public class Invader_Tests {
 		};
 	}
 
-	public Invader_Tests(){
+	public InvaderDeck_Tests(){
 		board = Board.BuildBoardA();
 	}
 
@@ -220,6 +220,40 @@ public class Invader_Tests {
 		Assert_SpaceHasInvaders( board[5], origSummary );
 		Assert_SpaceHasInvaders( board[6], origSummary );
 		Assert_SpaceHasInvaders( board[8], origSummary );
+	}
+
+	[Trait( "Invaders", "Deck" )]
+	[Fact]
+	public async Task Memento_RoundTrip() {
+
+		// Given: a deck in some advanced state
+		var sut = InvaderDeckBuilder.Default.Build();
+		await AdvanceAsync( sut );
+
+		//   And: we have saved the desired state
+		var memento = sut.Memento;
+		string expected = TakeSnapShot( sut );
+
+		//   And: advanced beyond the saved state
+		await AdvanceAsync( sut );
+
+		//  When: we restore the saved state
+		sut.Memento = memento;
+
+		// Then: we should get back the expted state
+		TakeSnapShot( sut ).ShouldBe( expected );
+
+	}
+
+	static async Task AdvanceAsync( InvaderDeck sut ) {
+		await sut.AdvanceAsync();
+		await sut.AdvanceAsync();
+		await sut.AdvanceAsync();
+	}
+
+	static string TakeSnapShot( InvaderDeck sut ) {
+		//   And: record cards
+		return sut.Ravage.Cards[0].Text + " : " + sut.Build.Cards[0].Text + " : " + sut.Explore.Cards[0].Text;
 	}
 
 	void Assert_SpaceHasInvaders( Space space, string origSummary ) {

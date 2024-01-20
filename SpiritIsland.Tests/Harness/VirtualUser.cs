@@ -240,7 +240,7 @@ public class VirtualUser {
 	public void SelectCardToForget()   => NextDecision.HasPrompt( "Select power card to forget" ).ChooseFirst();
 	public void ActivateFear()         => NextDecision.HasPrompt( "Activating Fear" ).ChooseFirst();
 
-	public void Assert_Done() {
+	public void Assert_Done() { // !! deprecate this.  Replace with checking Task is completed.
 		_userPortal.IsResolved.ShouldBeTrue();
 	}
 

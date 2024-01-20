@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.SharpFangsNS;
 
-public class SharpFangs_GrowthTests : GrowthTests {
+public class SharpFangs_GrowthTests : BoardAGame {
 
 	readonly GameState gsbac;
 

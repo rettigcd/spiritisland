@@ -1,37 +1,44 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River;
 
 [Collection("BaseGame Spirits")]
-public class RiversBounty_Tests : SpiritCards_Tests {
+public class RiversBounty_Tests {
 
-	readonly Board board;
+	GameState _gameState;
+	PowerCard _card;
+	readonly Spirit _spirit;
+	readonly VirtualUser _user;
+	readonly Board _board;
 
-	public RiversBounty_Tests():base( new RiverSurges() ) {
+
+	public RiversBounty_Tests() {
+		_spirit = new RiverSurges();
+		_user = new VirtualUser( _spirit );
 
 		// A5 is the 'Y' land in the middle
-		Given_GameWithSpirits( _spirit );
+		_gameState = new GameState( _spirit, Board.BuildBoardA() );
 
 		//   And: a game on Board-A
-		board = Board.BuildBoardA();
-		_gameState.Island = new Island( board );
+		_board = Board.BuildBoardA();
+		_gameState.Island = new Island( _board );
 		_gameState.Phase = Phase.Slow;
 
 		//   And: Presence on A4
-		_spirit.Given_HasPresenceOn( board[4] );
+		_spirit.Given_HasPresenceOn( _board[4] );
 
 		//   And: Purchased WashAway
 		_card = _spirit.Hand.Single( c => c.Name == RiversBounty.Name );
 		_spirit.Energy = _card.Cost;
-		PlayCard();
+		_spirit.PlayCard( _card );
 
 		// Jump to slow
-		Assert_CardIsReady( _card, Phase.Slow );
+		_spirit.Assert_CardIsReady( _card, Phase.Slow );
 
 	}
 
 	[Fact]
 	public void Stats() {
 		var card = PowerCard.For(typeof(RiversBounty));
-		Assert_CardStatus( card, 0, Phase.Slow, "sun water animal" );
+		card.Assert_CardStatus( 0, Phase.Slow, "sun water animal" );
 	}
 
 	Space Given_SpiritHas1Presence() => _gameState.Spaces.Where( _spirit.Presence.IsOn ).Single().Space;
@@ -90,7 +97,7 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 		for(int i=0;i<dahanToGather;++i)
 			Given_AddDahan( 1, neighbors[i] );
 
-		await When_PlayingCard().AwaitUser( _spirit, user => {
+		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, user => {
 			user.TargetsLand( RiversBounty.Name, "A4" );
 			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom("D@2 on A1","D@2 on A1,D@2 on A2,Done");
 			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@2","D@2,Done");
@@ -125,12 +132,12 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 	[Fact]
 	public async Task TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
-		_spirit.Given_HasPresenceOn(board[8]);
+		_spirit.Given_HasPresenceOn(_board[8]);
 		SpaceState[] targetOptions = _spirit.Presence.Lands.Tokens().ToArray();
 		Assert.Equal(2,targetOptions.Length);
 
 		//   And: 2 dahan in A5 (touches both)
-		Given_AddDahan(2,board[5]);
+		Given_AddDahan(2,_board[5]);
 
 		await _spirit.When_ResolvingCard<RiversBounty>( u => {
 			u.NextDecision.HasTargetSpacePrompt( RiversBounty.Name ).HasOptions( "A4,A8" ).Choose( "A4" );
@@ -138,24 +145,25 @@ public class RiversBounty_Tests : SpiritCards_Tests {
 			u.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@2","D@2,Done");
 		} ).ShouldComplete();
 
-		Assert_DahanCount( board[4], 3 );
+		Assert_DahanCount( _board[4], 3 );
 	}
 
 	[Fact]
-	public void TwoDahanOnPresenceSpace(){
+	public async Task TwoDahanOnPresenceSpace(){
 		// Given: spirit has presence on A4
 		var targetOptions = _spirit.Presence.Lands.Tokens().ToArray();
 		Assert.Single( targetOptions );
 
 		//   And: 2 dahan in A5 (touches both)
-		Given_AddDahan(2,board[4]);
+		Given_AddDahan(2,_board[4]);
 
-		When_PlayingCard();
+		Task t = _card.ActivateAsync( _spirit );
 
 		// Select 1st land
-		User.TargetsLand( RiversBounty.Name,"A4" );
+		_user.TargetsLand( RiversBounty.Name,"A4" );
 
-		User.Assert_Done();
+		await t.ShouldComplete();
+		_user.Assert_Done();
 
 	}
 

@@ -1,26 +1,33 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River; 
 
 [Collection("BaseGame Spirits")]
-public class BoonOfVigor_Tests : SpiritCards_Tests {
+public class BoonOfVigor_Tests {
 
-	public BoonOfVigor_Tests():base( new RiverSurges() ) {
+	GameState GameState;
+	PowerCard Card;
+	readonly Spirit Spirit;
+	readonly VirtualUser User;
+
+	public BoonOfVigor_Tests() {
+		Spirit = new RiverSurges();
+		User = new VirtualUser( Spirit );
 	}
 
 	[Fact]
-	public void BoonOfVigor_TargetSelf() {
+	public async Task BoonOfVigor_TargetSelf() {
 
-		Given_GameWithSpirits( _spirit );
-		_gameState.Phase = Phase.Fast;
+		GameState = new GameState( Spirit, Board.BuildBoardA() );
+		GameState.Phase = Phase.Fast;
 
-		Given_PurchasedCard( BoonOfVigor.Name );
-		Assert_CardIsReady( _card, Phase.Fast );
+		Card = Spirit.Given_PurchasedCard( BoonOfVigor.Name );
+		Spirit.Assert_CardIsReady( Card, Phase.Fast );
 
-		When_PlayingCard();
+		await Card.ActivateAsync( Spirit ).ShouldComplete();
 
 		User.Assert_Done();
 
 		// Then: received 1 energy
-		Assert.Equal( 1, _spirit.Energy );
+		Assert.Equal( 1, Spirit.Energy );
 
 	}
 
@@ -28,33 +35,52 @@ public class BoonOfVigor_Tests : SpiritCards_Tests {
 	[InlineData( 0 )]
 	[InlineData( 3 )]
 	[InlineData( 10 )]
-	public void BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
+	public async Task BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
-		Given_GameWithSpirits(_spirit, new LightningsSwiftStrike());
-		_gameState.Phase = Phase.Fast;
+		GameState = new GameState(
+			new Spirit[]{ Spirit, new LightningsSwiftStrike() },
+			new Board[] { 
+				Board.BuildBoardA(),
+				Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] )
+			}
+		);
+
+		GameState.Phase = Phase.Fast;
 
 		//  That: purchase N cards
-		var otherSpirit = _gameState.Spirits[1];
+		var otherSpirit = GameState.Spirits[1];
 		Given_PurchasedFakePowercards(otherSpirit, expectedEnergyBonus);
 
 		//   And: Purchased Boon of Vigor
-		Given_PurchasedCard(BoonOfVigor.Name);
-		Assert_CardIsReady(_card,Phase.Fast);
+		Card = Spirit.Given_PurchasedCard(BoonOfVigor.Name);
+		Spirit.Assert_CardIsReady(Card,Phase.Fast);
 
-		When_PlayingCard();
+		Task t = Card.ActivateAsync( Spirit );
+
 		
 		User.TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,[Lightning's Swift Strike]");
 
 		User.Assert_Done();
+
+		await t.ShouldComplete();
 
 		// Then: received 1 energy
 		Assert.Equal(expectedEnergyBonus, otherSpirit.Energy);
 
 	}
 
+	static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
+		for (int i = 0; i < expectedEnergyBonus; ++i) {
+			var otherCard = PowerCard.For(typeof(SpiritIsland.Basegame.GiftOfLivingEnergy));
+			otherSpirit.InPlay.Add(otherCard);
+			otherSpirit.AddActionFactory(otherCard);
+		}
+	}
+
+
 	[Fact]
 	public void BoonOfVigor_Stats() {
-		Assert_CardStatus( PowerCard.For(typeof(BoonOfVigor)), 0, Phase.Fast, "sun water plant" );
+		PowerCard.For(typeof(BoonOfVigor)).Assert_CardStatus( 0, Phase.Fast, "sun water plant" );
 	}
 
 }

@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Core;
+﻿namespace SpiritIsland.Tests.Blight;
 
 public class Blight_Tests {
 

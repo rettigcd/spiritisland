@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.RampantGreen;
 
-public class RampantGreen_GrowthTests : GrowthTests {
+public class RampantGreen_GrowthTests : BoardAGame {
 
 	public RampantGreen_GrowthTests():base( new ASpreadOfRampantGreen() ){}
 

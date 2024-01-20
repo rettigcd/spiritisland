@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Tests.Spirits.BringerNS;
 
 [Collection("BaseGame Spirits")]
-public class Bringer_GrowthTests : GrowthTests {
+public class Bringer_GrowthTests : BoardAGame {
 
 	public Bringer_GrowthTests():base( new Bringer() ) {}
 

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Tests.Spirits.OceanNS; 
 
 [Collection("BaseGame Spirits")]
-public class Ocean_GrowthTests : GrowthTests {
+public class Ocean_GrowthTests : BoardAGame {
 
 	public Ocean_GrowthTests():base( new Ocean() ) {}
 
@@ -54,7 +54,7 @@ public class Ocean_GrowthTests : GrowthTests {
 	public void ReclaimGather_GatherParts_Unresolved(string starting){
 
 		// Given: 3-board island
-		_gameState.Island = new Island(BoardA,BoardB,BoardC);
+		Given_IslandIsABC();
 
 		_spirit.Given_HasPresence( starting );
 
@@ -85,7 +85,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		// +1 presence range any ocean, +1 presense in any ociean, +1 energy
 
 		// Given: island has 2 boards, hence 2 oceans
-		_gameState.Island = new Island( BoardA, BoardB );
+		Given_IslandAB();
 
 		await _spirit.When_Growing( 1, () => {
 			User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay", "[A0],B0" );
@@ -101,7 +101,7 @@ public class Ocean_GrowthTests : GrowthTests {
 		// gain power card
 		// push 1 presense from each ocean
 		// add presense on coastal land range 1
-		_gameState.Island = new Island( BoardA, BoardB, BoardC );
+		Given_IslandIsABC();
 		_spirit.Given_HasPresence( starting );
 
 		await _spirit.When_Growing( 2, () => {
@@ -156,7 +156,18 @@ public class Ocean_GrowthTests : GrowthTests {
 
 	void Given_IslandIsABC() {
 		// Given: 3-board island
-		_gameState.Island = new Island( BoardA, BoardB, BoardC );
+		_gameState.Island = new Island( 
+			Board.BuildBoardA( GameBuilder.FourBoardLayout[0] ), 
+			Board.BuildBoardB( GameBuilder.FourBoardLayout[1] ), 
+			Board.BuildBoardC( GameBuilder.FourBoardLayout[2] )
+		);
+	}
+
+	void Given_IslandAB() {
+		_gameState.Island = new Island( 
+			Board.BuildBoardA( GameBuilder.FourBoardLayout[0] ), 
+			Board.BuildBoardB( GameBuilder.FourBoardLayout[1] )
+		);
 	}
 
 	void Assert_GainsFirstMinorCard() {

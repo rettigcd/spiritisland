@@ -27,4 +27,8 @@
     <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Art\" />
+  </ItemGroup>
+
 </Project>

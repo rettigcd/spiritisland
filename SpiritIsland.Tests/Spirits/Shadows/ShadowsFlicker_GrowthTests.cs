@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Tests.Spirits.ShadowsNS;
 
 [Collection("BaseGame Spirits")]
-public class ShadowsFlicker_GrowthTests : GrowthTests {
+public class ShadowsFlicker_GrowthTests : BoardAGame {
 
 	public ShadowsFlicker_GrowthTests():base( new Shadows() ){
 	}
