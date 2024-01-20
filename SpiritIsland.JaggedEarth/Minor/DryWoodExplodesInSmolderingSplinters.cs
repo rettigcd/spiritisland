@@ -4,7 +4,7 @@ public class DryWoodExplodesInSmolderingSplinters {
 
 	public const string Name = "Dry Wood Explodes in Smoldering Splinters";
 
-	[MinorCard(DryWoodExplodesInSmolderingSplinters.Name,1,Element.Fire,Element.Air,Element.Plant),Speed(Phase.FastOrSlow),FromPresence(0,Filter.NotWetland)]
+	[MinorCard(DryWoodExplodesInSmolderingSplinters.Name,1,Element.Fire,Element.Air,Element.Plant),FastFor1Energy,FromPresence(0,Filter.NotWetland)]
 	[Instructions( "You may spend 1 Energy to make this Power Fast. 2 Fear. 1 Damage." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ){
 		// You may spend 1 Energy to make this Power Fast.
@@ -26,5 +26,18 @@ public class DryWoodExplodesInSmolderingSplinters {
 		// 1 Damage
 		await ctx.DamageInvaders(1);
 	}
+
+	[AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
+	public class FastFor1EnergyAttribute : SpeedAttribute, ISpeedBehavior {
+		public FastFor1EnergyAttribute():base(Phase.Slow) {}
+		public Phase DisplaySpeed { get; }
+
+		public override bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit ) {
+			return DisplaySpeed.IsOneOf( requestSpeed, Phase.FastOrSlow )
+				|| 0 < spirit.Energy && requestSpeed == Phase.Fast;
+		}
+
+	}
+
 
 }
