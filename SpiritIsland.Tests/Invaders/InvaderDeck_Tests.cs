@@ -15,11 +15,11 @@ public class InvaderDeck_Tests {
 	}
 
 	public InvaderDeck_Tests(){
-		board = Board.BuildBoardA();
+		_board = Board.BuildBoardA();
 	}
 
-	readonly Board board;
-	GameState gameState;
+	readonly Board _board;
+	GameState _gameState;
 
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
@@ -32,8 +32,7 @@ public class InvaderDeck_Tests {
 
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public void AdvanceCards(){
-		// var gs = new GameState(new RiverSurges(),Boards.A);
+	public async Task CanAdvanceCards(){
 
 		var sut = InvaderDeckBuilder.Default.Build();
 
@@ -46,7 +45,7 @@ public class InvaderDeck_Tests {
 			int discardCount = sut.Discards.Count;
 
 			// When: advance the cards
-			sut.AdvanceAsync().Wait();
+			await sut.AdvanceAsync();
 
 			// Then cards advance
 			Assert.NotEqual(explore,sut.Explore.Cards);
@@ -73,9 +72,9 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("W","A2,A5")]
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
-		var gs = new GameState(new RiverSurges(),board); // Init Scope and GameBoard
+		var gs = new GameState(new RiverSurges(),_board);
 		InvaderCard sut = InvaderDeckBuilder.Level1Cards.Single(c=>c.Text==cardText);
-		var targets = board.Spaces.Where(((InvaderCard)sut).MatchesCard).Select(x=>x.Label).ToArray();
+		string[] targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 
@@ -87,10 +86,10 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("2S","A4,A7")]
 	[InlineDataAttribute("Coastal","A1,A2,A3")]
 	public void Level2CardTargets(string cardText,string expectedTargets){
-		var gs = new GameState( new RiverSurges(), board ); // Init Scope and GameBoard
+		var gs = new GameState( new RiverSurges(), _board ); // Init Scope and GameBoard
 		var cards = InvaderDeckBuilder.Level2Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
-		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
+		var targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 
@@ -102,10 +101,10 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("M+W","A1,A2,A5,A6")]
 	[InlineDataAttribute("S+W","A2,A4,A5,A7")]
 	public void Level3CardTargets(string cardText,string expectedTargets){
-		var gs = new GameState( new RiverSurges(), board ); // Init Scope and GameBoard
+		var gs = new GameState( new RiverSurges(), _board ); // Init Scope and GameBoard
 		var cards = InvaderDeckBuilder.Level3Cards.Where(c=>c.Text==cardText);
 		var sut = Assert.Single(cards);
-		var targets = board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
+		var targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
 
@@ -199,27 +198,27 @@ public class InvaderDeck_Tests {
 	[InlineData("C@1","1C@1,1T@2")]
 	public async Task BuildInSpaceWithAnyInvader(string preInvaders,string endingInvaderCount) {
 		// Given: game on Board A
-		gameState = new GameState( new RiverSurges(), board );
+		_gameState = new GameState( new RiverSurges(), _board );
 		//   And: invader on every space
 		var startingInvader = Parse(preInvaders);
-		foreach(var space in board.Spaces)
-			gameState.Tokens[space].Adjust( startingInvader, 1 );
+		foreach(var space in _board.Spaces)
+			_gameState.Tokens[space].Adjust( startingInvader, 1 );
 
 		// When: build in Sand
-		await new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "S" ), gameState)
+		await new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "S" ), _gameState)
 			.ShouldComplete( "Build Phase");
 
 		// Then: 2 Sand spaces should have ending Invader Count
-		gameState.Assert_Invaders( board[4], endingInvaderCount );
-		gameState.Assert_Invaders( board[7], endingInvaderCount );
+		_board[4].Assert_HasInvaders( endingInvaderCount );
+		_board[7].Assert_HasInvaders( endingInvaderCount );
 		//  And: the other spaces have what they started with
 		string origSummary = "1" + preInvaders;
-		Assert_SpaceHasInvaders( board[1], origSummary );
-		Assert_SpaceHasInvaders( board[2], origSummary );
-		Assert_SpaceHasInvaders( board[3], origSummary );
-		Assert_SpaceHasInvaders( board[5], origSummary );
-		Assert_SpaceHasInvaders( board[6], origSummary );
-		Assert_SpaceHasInvaders( board[8], origSummary );
+		_board[1].Assert_HasInvaders( origSummary );
+		_board[2].Assert_HasInvaders( origSummary );
+		_board[3].Assert_HasInvaders( origSummary );
+		_board[5].Assert_HasInvaders( origSummary );
+		_board[6].Assert_HasInvaders( origSummary );
+		_board[8].Assert_HasInvaders( origSummary );
 	}
 
 	[Trait( "Invaders", "Deck" )]
@@ -245,21 +244,6 @@ public class InvaderDeck_Tests {
 
 	}
 
-	static async Task AdvanceAsync( InvaderDeck sut ) {
-		await sut.AdvanceAsync();
-		await sut.AdvanceAsync();
-		await sut.AdvanceAsync();
-	}
-
-	static string TakeSnapShot( InvaderDeck sut ) {
-		//   And: record cards
-		return sut.Ravage.Cards[0].Text + " : " + sut.Build.Cards[0].Text + " : " + sut.Explore.Cards[0].Text;
-	}
-
-	void Assert_SpaceHasInvaders( Space space, string origSummary ) {
-		gameState.Assert_Invaders(space,origSummary);
-	}
-
 	// Ravage
 	// 1E@1 => 1E@1
 	// 1D@2, 1E@1 => 1D@1       Dahan kills explorer
@@ -277,26 +261,37 @@ public class InvaderDeck_Tests {
 	//// 3D@1, 1D@2 1C@3  => 1C@1,1T@2
 	[Trait( "Invaders", "Ravage" )]
 	[Theory]
-	[InlineData("3D@2,1T@2,1E@1","1D@2,1D@1")]
+	[InlineData("3D@2,1E@1,1T@2","1B,1D@1,1D@2")]
 	public async Task Ravage(string startingUnits,string endingUnits) {
-		gameState = new GameState( new RiverSurges(), board );
-		gameState.IslandWontBlight();
+		_gameState = new GameState( new RiverSurges(), _board );
+		_gameState.IslandWontBlight();
 		// Disable destroying presence
-		gameState.DisableBlightEffect();
+		_gameState.DisableBlightEffect();
 
 		// Given: Invaders on a Mountain space
-		var space = board[1];
+		var space = _board[1];
 		Assert.True(space.IsMountain);
-		Given_InitUnits( startingUnits, space );
-		Assert_UnitsAre( startingUnits, space );
+		space.Given_HasTokens(startingUnits);
+		space.Tokens.Summary.ShouldBe( startingUnits );
 
 		// When: Ravaging in Mountains
 		await InvaderCard.Stage1( Terrain.Mountain ).When_Ravaging();
 		// await new RavageEngine().ActivateCard( InvaderCard.Stage1( Terrain.Mountain ), gameState );
 
-		Assert_UnitsAre( endingUnits, space );
+		space.Tokens.Summary.ShouldBe( endingUnits );
 	}
 
+	static async Task AdvanceAsync( InvaderDeck sut ) {
+		await sut.AdvanceAsync();
+		await sut.AdvanceAsync();
+		await sut.AdvanceAsync();
+	}
+
+	static string TakeSnapShot( InvaderDeck sut ) {
+		//   And: record cards
+		return sut.Ravage.Cards[0].Text + " : " + sut.Build.Cards[0].Text + " : " + sut.Explore.Cards[0].Text;
+	}
+	
 	static InvaderCard[] NewDeckCards(int seed) {
 		return InvaderDeckBuilder.Default.Build( seed ).UnrevealedCards.ToArray();
 	}
@@ -306,34 +301,6 @@ public class InvaderDeck_Tests {
 		for(int i = 0; i < count; ++i) {
 			Assert.Contains( deck[0].Text, expectedTitles ); // because new cards are generated each time.
 			deck.RemoveAt(0);
-		}
-	}
-
-	void Assert_UnitsAre( string startingUnits, Space space ) {
-		List<string> items = new();
-
-		var tokens = gameState.Tokens[space];
-
-		foreach(var token in tokens.Dahan.NormalKeys.OrderByDescending( x => x.RemainingHealth ))
-			items.Add( $"{tokens[token]}D@{token.RemainingHealth}" );
-
-		string actualInvaders = tokens.InvaderSummary();
-		if(actualInvaders.Length>0)
-			items.Add(actualInvaders);
-
-		items.Join( "," ).ShouldBe( startingUnits );
-	}
-
-	void Given_InitUnits( string startingUnits, Space space ) {
-		foreach(var unit in startingUnits.Split( ',' )) {
-			int count = unit[0] - '0';
-			string itemSummary = unit[1..];
-			if(itemSummary=="D@2"){
-				space.Tokens.Dahan.Init(count);
-			} else {
-				var invader = Parse(itemSummary);
-				gameState.Tokens[space].Adjust(invader,count);
-			}
 		}
 	}
 

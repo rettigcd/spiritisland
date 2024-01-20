@@ -2,32 +2,6 @@
 
 internal static class TargetSpaceCtx_ExtensionsForTesting {
 
-	public static void Init( this SpaceState currentTokens, string expectedInvaderSummary ) {
-
-		CountDictionary<ISpaceEntity> desiredTokens = new();
-		if(!string.IsNullOrEmpty( expectedInvaderSummary )) { 
-			foreach(var part in expectedInvaderSummary.Split( ',' )) {
-				ISpaceEntity token = part[1..] switch {
-					"E@1" => StdTokens.Explorer,
-					"T@2" => StdTokens.Town,
-					"C@3" => StdTokens.City,
-					"D@2" => StdTokens.Dahan,
-					"Z"   => StdTokens.Disease,
-					_ => throw new ArgumentException("invalide tokentype found in "+expectedInvaderSummary)
-				};
-				desiredTokens.Add(token, int.Parse(part[..1] ) );
-			}
-		}
-
-		var tokensToRemove = currentTokens.Keys.Except(desiredTokens.Keys).ToArray();
-		foreach(var old in tokensToRemove)
-			currentTokens.Init(old,0);
-		foreach(var p in desiredTokens)
-			currentTokens.Init(p.Key,p.Value);
-
-		currentTokens.Summary.ShouldBe( expectedInvaderSummary == "" ? "[none]" : expectedInvaderSummary );
-	}
-
 	public static void ClearAllBlight( this Spirit _ ) {
 		// So it doesn't cascade and require extra interactions...
 		foreach(var space in GameState.Current.Spaces_Unfiltered)

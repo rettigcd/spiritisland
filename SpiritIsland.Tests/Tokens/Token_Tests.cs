@@ -63,7 +63,7 @@ public class Token_Tests {
 		await space.Space.When_Building();
 
 		//  Then: still no towns (just original explorer)
-		gs.Assert_Invaders(space.Space, "1E@1" ); // "should be no town on "+space.Label
+		space.Assert_HasInvaders( "1E@1" ); // "should be no town on "+space.Label
 		//   And: no disease here
 		space.Disease.Any.ShouldBeFalse( "disease should be used up" );
 

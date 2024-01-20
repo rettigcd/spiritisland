@@ -208,42 +208,40 @@ public class RiverSurges_GrowthTests : BoardAGame {
 
 }
 
-public class RiverSurges_GrowthTests2 : RiverGame {
-
-	public RiverSurges_GrowthTests2(){
-		var gs = new GameState( _spirit, Board.BuildBoardA() );
-		gs.Initialize();
-		_ = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
-	}
+public class RiverSurges_GrowthTests2 {
 
  	[Fact]
 	public void Reclaim1_TriggersImmediately(){
+
+		var spirit = new RiverSurges();
+		var user = new VirtualRiverUser( spirit );
+
+		var gs = new GameState( spirit, Board.BuildBoardA() );
+		gs.Initialize();
+		_ = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
+
 		// pull card track 2 * 2 = triggers reclaim 
 
-		// I think there is an await missing between SelectsGrowthOptions(1) and the 1st place-precense
-		// which causes the thread to return before the engine has queued up the PlacePresence decision
-		// Problem only appears in things that use RiverGame base class.
+		user.SelectsGrowthB_2PP( "cardplays>A5", "cardplays>A5" );
 
-		User.SelectsGrowthB_2PP( "cardplays>A5", "cardplays>A5" );
+		user.PlaysCard( WashAway.Name );
+		user.PlaysCard( RiversBounty.Name );
 
-		User.PlaysCard( WashAway.Name );
-		User.PlaysCard( RiversBounty.Name );
+		spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
+		user.IsDoneWith(Phase.Slow);
 
-		_spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
-		User.IsDoneWith(Phase.Slow);
-
-		User.SelectsGrowthB_2PP("cardplays>A5","cardplays>A5");
+		user.SelectsGrowthB_2PP("cardplays>A5","cardplays>A5");
 
 		// Can reclaim River's Bounty
-		User.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),[River's Bounty $0 (Slow)]" );
+		user.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),[River's Bounty $0 (Slow)]" );
 
 		// Can buy all 3 of River's cards including Bounty
-		_spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
+		spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
 
-		User.PlaysCard( RiversBounty.Name ); // 0
-		User.PlaysCard( BoonOfVigor.Name );  // 0
-		User.PlaysCard( FlashFloods.Name );  // 2
-		User.IsDoneWith( Phase.Fast );
+		user.PlaysCard( RiversBounty.Name ); // 0
+		user.PlaysCard( BoonOfVigor.Name );  // 0
+		user.PlaysCard( FlashFloods.Name );  // 2
+		user.IsDoneWith( Phase.Fast );
 
 	}
 

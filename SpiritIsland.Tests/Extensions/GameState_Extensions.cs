@@ -4,6 +4,13 @@ namespace SpiritIsland.Tests;
 
 static public class GameState_Extensions {
 
+	/// <summary>Wipes all invaders off of the island. </summary>
+	internal static GameState Given_InvadersDisappear( this GameState gs ){
+		foreach(SpaceState spaceState in gs.Spaces_Unfiltered)
+			spaceState.Given_ClearInvaders();
+			return gs;
+	}
+
 	internal static List<string> LogAsStringList( this GameState gameState ) {
 		var items = new List<string>();
 		gameState.NewLogEntry += x => items.Add( x.Msg() );
@@ -37,23 +44,6 @@ static public class GameState_Extensions {
 	}
 
 	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );
-
-	static public void Assert_Invaders( this GameState gameState, Space space, string expectedString ) {
-		gameState.Tokens[space].InvaderSummary().ShouldBe( expectedString );
-	}
-
-	static public void Assert_DreamingInvaders( this GameState gameState, Space space, string expectedString ) {
-
-		static int Order_CitiesTownsExplorers( HumanToken invader )
-			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
-		var tokens = gameState.Tokens[space];
-		string dreamerSummary = tokens.HumanOfTag(TokenCategory.Invader)
-			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
-			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => tokens[invader] + invader.ToString() )
-			.Join( "," );
-		dreamerSummary.ShouldBe( expectedString );
-	}
 
 	static internal GameState Given_InitializedMinorDeck( this GameState gameState ) {
 		gameState.MinorCards = new PowerCardDeck( new List<PowerCard>() {

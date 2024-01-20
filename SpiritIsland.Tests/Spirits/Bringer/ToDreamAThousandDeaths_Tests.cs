@@ -59,9 +59,9 @@ public class ToDreamAThousandDeaths_Tests {
 
 		//  and: explorer on destination
 		var gs = GameState.Current;
-		gs.Assert_DreamingInvaders( _board[7], $"{count}E@1" );
+		_board[7].Assert_DreamingInvaders( $"{count}E@1" );
 		//  and: not at origin
-		gs.Assert_Invaders( _board[5], $"" );
+		_board[5].Assert_HasInvaders("");
 	}
 
 	[Fact]
@@ -87,7 +87,7 @@ public class ToDreamAThousandDeaths_Tests {
 		// And: town on destination
 		_board[8].Tokens.Summary.ShouldBe( $"{count}T@2" );
 		// And: not at origin
-		_gameState.Assert_Invaders( _board[5], "" );
+		_board[5].Assert_HasInvaders("");
 
 	}
 

@@ -56,7 +56,7 @@ public class DahanOnTheirGuard_Tests {
 		ravageSpace.Tokens.Dahan.CountAll.ShouldBe( 2 );
 
 		//   And: 2 towns
-		gameState.Assert_Invaders(ravageSpace, "2T@2" );
+		ravageSpace.Assert_HasInvaders( "2T@2" );
 		gameState.Tokens[ ravageSpace ].Blight.Any.ShouldBe( true );
 
 	}

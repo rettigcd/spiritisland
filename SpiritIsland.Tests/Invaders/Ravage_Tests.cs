@@ -2,12 +2,6 @@
 
 public class Ravage_Tests {
 
-	readonly Spirit _spirit;
-	readonly Board _board;
-	readonly SpaceState _tokens;
-	readonly GameState _gs;
-	readonly List<RavageExchange> _exchanges = new List<RavageExchange>();
-
 	public Ravage_Tests() {
 		_spirit = new RiverSurges();
 		_board = Board.BuildBoardA();
@@ -15,11 +9,6 @@ public class Ravage_Tests {
 		_gs.NewLogEntry += _gs_NewLogEntry;
 		// Do this after GameState has been initialized so that ActionScopes are initialized.
 		_tokens = _board[1].Tokens;
-	}
-
-	void _gs_NewLogEntry( Log.ILogEntry e ) {
-		if( e is Log.RavageEntry re)
-			_exchanges.AddRange( re.Exchange );
 	}
 
 	[Fact]
@@ -71,5 +60,19 @@ public class Ravage_Tests {
 		_exchanges[2].ToString().ShouldBe( "defend: (1D@2) deal 2 damage, leaving [none]." );
 	}
 
+	void _gs_NewLogEntry( Log.ILogEntry e ) {
+		if( e is Log.RavageEntry re)
+			_exchanges.AddRange( re.Exchange );
+	}
+
+	#region private readonly
+
+	readonly Spirit _spirit;
+	readonly Board _board;
+	readonly SpaceState _tokens;
+	readonly GameState _gs;
+	readonly List<RavageExchange> _exchanges = new List<RavageExchange>();
+
+	#endregion private readonly 
 
 }

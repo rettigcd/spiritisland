@@ -134,7 +134,7 @@ public class AvoidTheDahan_Tests {
 		ElevateTerrorLevelTo(2);
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Init( "3D@2,2T@2" );
+		spaceCtx.Tokens.Given_InitSummary( "3D@2,2T@2" );
 
 		// When: activating fear
 		_spirit.ClearAllBlight();
@@ -177,7 +177,7 @@ public class AvoidTheDahan_Tests {
 		ElevateTerrorLevelTo(2);
 		// Given: Dahan(2) outnumber town/city(0)  + 3 explorer (to enable build)
 		TargetSpaceCtx spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Init("2D@2,3E@1");
+		spaceCtx.Tokens.Given_InitSummary("2D@2,3E@1");
 
 		// When: activating fear
 		_user.Grows();
@@ -209,7 +209,7 @@ public class AvoidTheDahan_Tests {
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		_user.WaitForNext();
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Init( "3D@2,2T@2" );
+		spaceCtx.Tokens.Given_InitSummary( "3D@2,2T@2" );
 
 		// When: activating fear
 		ClearBlightAndDoNothingForARound();
@@ -241,7 +241,7 @@ public class AvoidTheDahan_Tests {
 
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Init("1D@2,1T@2");
+		spaceCtx.Tokens.Given_InitSummary("1D@2,1T@2");
 
 		// When: activating fear
 		ClearBlightAndDoNothingForARound();

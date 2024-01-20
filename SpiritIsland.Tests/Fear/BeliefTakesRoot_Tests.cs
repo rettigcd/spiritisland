@@ -51,7 +51,7 @@ public class BeliefTakesRoot_Tests {
 		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
 
 		//   And: 0 towns
-		_gameState.Assert_Invaders(_ravageSpace,"");
+		_ravageSpace.Assert_HasInvaders("");
 		Assert.False( _gameState.Tokens[ _ravageSpace ].Blight.Any );
 
 	}
@@ -69,7 +69,7 @@ public class BeliefTakesRoot_Tests {
 		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
 
 		//   And: 0 towns
-		_gameState.Assert_Invaders(_ravageSpace, "1T@2" );
+		_ravageSpace.Assert_HasInvaders( "1T@2" );
 		Assert.True( _gameState.Tokens[ _ravageSpace ].Blight.Any );
 	}
 

@@ -63,8 +63,8 @@ public class WashAway_Tests {
 		} ).ShouldComplete();
 
 		// check that explore was moved
-		_gameState.Assert_Invaders(targetSpace, expectedTargetResult );
-		_gameState.Assert_Invaders( board[2], expectedDestinationResult );
+		targetSpace.Assert_HasInvaders( expectedTargetResult );
+		board[2].Assert_HasInvaders( expectedDestinationResult );
 	}
 
 	// WashAway: Multiple target lands
@@ -116,9 +116,9 @@ public class WashAway_Tests {
 		} ).ShouldComplete();
 
 		// check that explore was moved
-		_gameState.Assert_Invaders(targetSpace,"");
-		_gameState.Assert_Invaders(explorerDestination, "1E@1" );
-		_gameState.Assert_Invaders(townDestination, "1T@2" );
+		targetSpace.Assert_HasInvaders("");
+		explorerDestination.Assert_HasInvaders( "1E@1" );
+		townDestination.Assert_HasInvaders( "1T@2" );
 	}
 
 	[Trait("Feature","Push")]
@@ -142,8 +142,8 @@ public class WashAway_Tests {
 		}).ShouldComplete();
 
 		// check that explore was moved
-		_gameState.Assert_Invaders( targetSpace, "" );
-		_gameState.Assert_Invaders( invaderDestination, "1T@1" );
+		targetSpace.Assert_HasInvaders("");
+		invaderDestination.Assert_HasInvaders( "1T@1" );
 	}
 
 	// WashAway: push 3 different invaders to 3 different lands
@@ -168,10 +168,10 @@ public class WashAway_Tests {
 		} ).ShouldComplete();
 
 		// check that explore was moved
-		_gameState.Assert_Invaders( targetSpace,"" );
-		_gameState.Assert_Invaders( board[2], "1E@1" );
-		_gameState.Assert_Invaders( board[3], "1E@1" );
-		_gameState.Assert_Invaders( board[5], "1E@1" );
+		targetSpace.Assert_HasInvaders("");
+		board[2].Assert_HasInvaders( "1E@1" );
+		board[3].Assert_HasInvaders( "1E@1" );
+		board[5].Assert_HasInvaders( "1E@1" );
 	}
 
 	void Given_RiverPlayingWashAway(string startingPresence="A5") {

@@ -34,7 +34,7 @@ public class TradeSuffers_Tests {
 
 		// Given: 1 city and nothing else
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Init("1C@3");
+		spaceCtx.Tokens.Given_InitSummary("1C@3");
 
 		// When: activating fear
 		ClearBlight_GrowAndBuyNoCards();
@@ -81,7 +81,7 @@ public class TradeSuffers_Tests {
 
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer
 		SpaceState tokens = board[7].Tokens; // _ctx.TargetSpace( "A7" ).Tokens;
-		tokens.Init( "1C@3,4D@2,2E@1" );
+		tokens.Given_InitSummary( "1C@3,4D@2,2E@1" );
 
 		// When: activating Fear & Doing Invader Actions
 		Task t = InvaderPhase.ActAsync(gs);

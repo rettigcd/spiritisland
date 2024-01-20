@@ -34,7 +34,7 @@ public class FlashFloods_Tests {
 		counts.AdjustDefault( Human.City, 1 );
 		counts.AdjustDefault( Human.Town, 1 );
 		counts.AdjustDefault( Human.Explorer, 1 );
-		_gameState.Assert_Invaders( targetSpace, "1C@3,1T@2,1E@1" );
+		targetSpace.Assert_HasInvaders( "1C@3,1T@2,1E@1" );
 
 		//   And: Purchased FlashFloods
 		_card = _spirit.Hand.Single( c => c.Name == FlashFloods.Name );
@@ -49,7 +49,7 @@ public class FlashFloods_Tests {
 		} ).ShouldComplete();
 
 		// Then:
-		_gameState.Assert_Invaders( targetSpace, "1C@3,1T@2" );
+		targetSpace.Assert_HasInvaders( "1C@3,1T@2" );
 	}
 
 	[Fact]
@@ -69,7 +69,7 @@ public class FlashFloods_Tests {
 		grp.AdjustDefault( Human.City, 1 );
 		grp.AdjustDefault( Human.Town, 1 );
 		grp.AdjustDefault( Human.Explorer, 1);
-		_gameState.Assert_Invaders(targetSpace, "1C@3,1T@2,1E@1" );
+		targetSpace.Assert_HasInvaders( "1C@3,1T@2,1E@1" );
 
 		//   And: Purchased FlashFloods
 		_card = _spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
@@ -87,7 +87,7 @@ public class FlashFloods_Tests {
 		} ).ShouldComplete();
 
 		// Then
-		_gameState.Assert_Invaders(targetSpace, "1C@1,1T@2,1E@1" );
+		targetSpace.Assert_HasInvaders( "1C@1,1T@2,1E@1" );
 	}
 
 	[Fact]

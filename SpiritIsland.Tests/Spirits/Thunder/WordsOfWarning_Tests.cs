@@ -33,7 +33,7 @@ public class WordsOfWarning_Tests : ThunderCards  {
 		// Then: 1 explorer left
 		// Words of Warning defend 3 cancelling out City attack leaving only 4 damage from explorers
 		// 2 Dahan attack simultaneously doing 4 points of damage, killing City and 1 explorer leaving 3 explorers
-		gs.Assert_Invaders(a[2], "3E@1" );
+		a[2].Assert_HasInvaders( "3E@1" );
 	}
 
 }

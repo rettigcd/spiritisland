@@ -33,7 +33,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		} );
 
 		// Then: 1 explorer left
-		gs.Assert_Invaders( a[2], "1E@1" );
+		a[2].Assert_HasInvaders( "1E@1" );
 	}
 
 	[Fact]
@@ -50,7 +50,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		} );
 
 		// Then: 5-2-1 = 2 explorers left
-		gs.Assert_Invaders( a[1], "2E@1" );
+		a[1].Assert_HasInvaders( "2E@1" );
 	}
 
 	[Trait("Feature","Gather")]
@@ -68,7 +68,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 		} );
 
 		// Then: 5-2-1 = 2 explorers left
-		gs.Assert_Invaders(a[1], "1T@2" );
+		a[1].Assert_HasInvaders( "1T@2" );
 	}
 
 }

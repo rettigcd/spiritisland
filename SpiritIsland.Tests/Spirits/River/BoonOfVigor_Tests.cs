@@ -57,7 +57,6 @@ public class BoonOfVigor_Tests {
 
 		Task t = Card.ActivateAsync( Spirit );
 
-		
 		User.TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,[Lightning's Swift Strike]");
 
 		User.Assert_Done();

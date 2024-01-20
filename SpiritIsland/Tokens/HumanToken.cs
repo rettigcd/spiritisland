@@ -5,6 +5,11 @@
 /// </summary>
 public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
 
+	/// <summary>
+	/// Constructs a Human Token with the expected Health from the HumanTokenClass.
+	/// </summary>
+	public HumanToken( HumanTokenClass tokenClass ):this(tokenClass,tokenClass.ExpectedHealthHint) {}
+
 	public HumanToken( HumanTokenClass tokenClass, int rawFullHealth ) {
 		HumanClass = tokenClass;
 		_rawFullHealth = rawFullHealth;

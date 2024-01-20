@@ -82,7 +82,7 @@ public class GameBuilder {
 		var adversary = BuildAdversary( cfg.Adversary );
 
 		// (1) Invader Deck
-		gameState.InvaderDeck = adversary.InvaderDeckBuilder.Build( invaderSeed );
+		gameState.InvaderDeck = adversary.InvaderDeckBuilder.Build( invaderSeed ); // !!! Change this to (pre-Init) .ConfigBuilder(builder) so builder doesn't know what it is doing.
 
 		// (2) Major Power Cards
 		gameState.MajorCards = new PowerCardDeck( BuildMajorCards(), majorSeed, PowerType.Major );

@@ -133,7 +133,7 @@ public class Russia_Tests {
 var xxx = a5.Keys.ToArray();
 		//   And: no explorers on push-destination
 		SpaceState a1 = gameState.Tokens[boardA[1]];
-		a1.Clear();
+		a1.Given_ClearAll();
 
 		//  When: ravage
 		//  Then: we push 1
@@ -160,7 +160,7 @@ var xxx = a5.Keys.ToArray();
 		a3.Given_HasTokens( "10E@1" );
 		//   And: no explorers on push-destination
 		SpaceState destination = gameState.Tokens[boardA[4]];
-		destination.Clear();
+		destination.Given_ClearAll();
 		//  When: power destroys
 		await using var actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,spirit);
 		Task t = TheJungleHungers.ActAsync( spirit.Target(a3.Space) );
@@ -256,7 +256,7 @@ var xxx = a5.Keys.ToArray();
 		card.MatchesCard( a5 ).ShouldBeFalse();
 
 		//   And: 3 explorers and 1 dahan on space
-		a5.Clear().Given_HasTokens("1D@2,3E@1");
+		a5.Given_ClearAll().Given_HasTokens("1D@2,3E@1");
 
 		//  When: card ravages (Can't do card.When_Ravaging because we are testing Russias replacement of the Engine)
 		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState ).Wait();
@@ -282,7 +282,7 @@ var xxx = a5.Keys.ToArray();
 
 		//   And: 3 explorers and 1 dahan on space
 		const string orig = "1D@2,3E@1";
-		a5.Clear().Given_HasTokens( orig );
+		a5.Given_ClearAll().Given_HasTokens( orig );
 
 		//  When: card builds & explore
 		await card.When_Building();

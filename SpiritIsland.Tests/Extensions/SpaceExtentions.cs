@@ -4,65 +4,108 @@ namespace SpiritIsland.Tests;
 
 public static class SpaceExtentions {
 
+	public static void Given_InitSummary( this Space space, string desiredSummary ) => space.Tokens.Given_InitSummary(desiredSummary);
+	/// <summary> Inits all tokens listed so the summary will match. </summary>
+	public static void Given_InitSummary( this SpaceState spaceState, string desiredSummary ) {
+		CountDictionary<IToken> desiredTokens = ParseTokens( desiredSummary );
+
+		// Remove Undesired
+		var tokensToRemove = spaceState.Keys.Except( desiredTokens.Keys ).ToArray();
+		foreach(var old in tokensToRemove)
+			spaceState.Init( old, 0 );
+
+		// Set Desired
+		foreach(var p in desiredTokens)
+			spaceState.Init( p.Key, p.Value );
+
+		spaceState.Summary.ShouldBe( desiredSummary == "" ? "[none]" : desiredSummary );
+	}
 
 	/// <summary> Inits these tokens but leaves the non-listed alone. </summary>
 	static public SpaceState Given_HasTokens( this Space space, string tokenString ) => space.Tokens.Given_HasTokens( tokenString );
+
+	/// <summary> Inits these tokens but leaves the non-listed alone. </summary>
 	static public SpaceState Given_HasTokens( this SpaceState tokens, string tokenString ) {
-		foreach(string part in tokenString.Split( ',' ))
-			InitToken( tokens, part );
+		foreach(string part in tokenString.Split( ',' )){
+			(int count,IToken token) = ParseTokenCount( part );
+			tokens.Init( token, count );
+		}
 		return tokens;
 	}
 
-	static public SpaceState Given_ClearTokens( this Space space ) => space.Tokens.Given_ClearTokens();
-	static public SpaceState Given_ClearTokens( this SpaceState space ) {
-		foreach(IToken token in space.OfType<IToken>().ToArray())
-			space.Init(token, 0);
-		return space;
+	static public SpaceState Given_ClearTokens( this Space space ) 
+		=> space.Tokens.Given_ClearTokens();
+
+	static public SpaceState Given_ClearTokens( this SpaceState spaceState ) {
+		foreach(IToken token in spaceState.OfType<IToken>().ToArray())
+			spaceState.Init(token, 0);
+		return spaceState;
 	}
 
-	static public SpaceState Clear( this SpaceState tokens ) {
-		foreach(ISpaceEntity t in tokens.Keys.ToArray()) tokens.Init( t, 0 );
-		return tokens;
+	static public SpaceState Given_ClearInvaders( this SpaceState spaceState ){
+		foreach(IToken token in spaceState.HumanOfTag(TokenCategory.Invader).ToArray())
+			spaceState.Init(token, 0);
+		return spaceState;
+	}
+
+	static public SpaceState Given_ClearAll( this SpaceState spaceState ) {
+		foreach(ISpaceEntity t in spaceState.Keys.ToArray()) 
+			spaceState.Init( t, 0 );
+		return spaceState;
+	}
+
+	#region Token-Init Helpers
+
+	static CountDictionary<IToken> ParseTokens( string expectedInvaderSummary ) {
+		CountDictionary<IToken> desiredTokens = new();
+		if(!string.IsNullOrEmpty( expectedInvaderSummary )) {
+			foreach(string part in expectedInvaderSummary.Split( ',' )) {
+				(int count,IToken token) = ParseTokenCount(part);
+				desiredTokens.Add( token, count );
+			}
+		}
+
+		return desiredTokens;
 	}
 
 	static readonly Regex tokenParser = new Regex( @"(\d+)(\w+)(@(\d+)(\^*))?" );
-	static void InitToken( SpaceState tokens, string part ) {
+
+	static (int,IToken) ParseTokenCount( string part ) {
 		var match = tokenParser.Match( part );
 		if(!match.Success) throw new FormatException( $"Unrecognized token [{part}] Example: 1T@2." );
+
 		string abrev = match.Groups[2].Value;
 		IToken token = abrev switch {
-			"C" => GetHumanToken( match, Human.City ),
-			"T" => GetHumanToken( match, Human.Town ),
-			"E" => GetHumanToken( match, Human.Explorer ).SetAttack( tokens.GetDefault( Human.Explorer ).Attack ), // Russia
-			"D" => GetHumanToken( match, Human.Dahan ),
+			"C" => GetHumanToken( Human.City     ),
+			"T" => GetHumanToken( Human.Town     ),
+			"E" => GetHumanToken( Human.Explorer ).SetAttack( GameState.Current.Tokens.GetDefault( Human.Explorer ).Attack ), // Russia
+			"D" => GetHumanToken( Human.Dahan    ),
 			"A" => Token.Beast,
 			"B" => Token.Blight,
 			"Z" => (DiseaseToken)Token.Disease,
-			_ => FindSpiritToken(abrev),
+			_ => FindSpiritToken(),
 		};
 		int count = int.Parse( match.Groups[1].Value );
-		tokens.Init( token, count );
-	}
-	static SpiritPresenceToken FindSpiritToken( string abrev ) {
-		var spiritTokens = GameState.Current.Spirits.Select( s => s.Presence.Token ).ToArray();
-		SpiritPresenceToken match = spiritTokens.FirstOrDefault( t => t.SpaceAbreviation == abrev );
-		if(match is not null) return match;
-		string optionsStr = spiritTokens.Select(x=>x.SpaceAbreviation).Join(",");
-		throw new Exception( $"[{abrev}] not found in [{optionsStr}]" );
+		return (count,token);
+
+		HumanToken GetHumanToken( HumanTokenClass tokenClass )
+			=> new HumanToken(tokenClass)
+				.AddDamage( tokenClass.ExpectedHealthHint-int.Parse( match.Groups[4].Value ) )
+				.AddStrife( match.Groups[5].Value.Length );
+
+		 SpiritPresenceToken FindSpiritToken() {
+			var spiritTokens = GameState.Current.Spirits.Select( s => s.Presence.Token ).ToArray();
+			SpiritPresenceToken match = spiritTokens.FirstOrDefault( t => t.SpaceAbreviation == abrev );
+			if(match is not null) return match;
+			string optionsStr = spiritTokens.Select(x=>x.SpaceAbreviation).Join(",");
+			throw new Exception( $"[{abrev}] not found in [{optionsStr}]" );
+		}
+
 	}
 
-	static HumanToken GetHumanToken( Match match, HumanTokenClass tokenClass) {
-		int fullHealth = tokenClass.ExpectedHealthHint;
-		int presentHealth = int.Parse( match.Groups[4].Value );
-		int damage = fullHealth-presentHealth;
-		int strife = match.Groups[5].Value.Length;
-		var token = new HumanToken(tokenClass,fullHealth)
-			.AddDamage(damage)
-			.AddStrife(strife);
-		return token;
-	}
+	#endregion Token-Init Helpers
 
-	#region Generating Explorer Action on a space
+	#region When Invader Explore/Build/Ravage
 
 	static public InvaderCard BuildInvaderCard( this Space space ) {
 		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
@@ -75,14 +118,34 @@ public static class SpaceExtentions {
 
 	static public Task When_Exploring( this Space space ) => space.BuildInvaderCard().When_Exploring();
 
-	#endregion
+	#endregion When Invader Explore/Build/Ravage
 
-	static public string InvaderSummary( this SpaceState dict ) {
+	static public void Assert_HasInvaders( this Space space, string expectedInvaderSummary )
+		=> space.Tokens.Assert_HasInvaders(expectedInvaderSummary);
+
+	static public void Assert_HasInvaders( this SpaceState spaceState, string expectedInvaderSummary )
+		=> spaceState.InvaderSummary().ShouldBe( expectedInvaderSummary );
+
+	static public void Assert_DreamingInvaders( this Space space, string expectedString )
+		=> space.Tokens.Assert_DreamingInvaders( expectedString );
+
+	static public void Assert_DreamingInvaders( this SpaceState tokens, string expectedString ) {
 		static int Order_CitiesTownsExplorers( HumanToken invader )
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
-		return dict.InvaderTokens()
+		string dreamerSummary = tokens.HumanOfTag(TokenCategory.Invader)
+			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
 			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => dict[invader] + invader.ToString() )
+			.Select( invader => tokens[invader] + invader.ToString() )
+			.Join( "," );
+		dreamerSummary.ShouldBe( expectedString );
+	}
+
+	static public string InvaderSummary( this SpaceState spaceState ) {
+		static int Order_CitiesTownsExplorers( HumanToken invader )
+			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
+		return spaceState.InvaderTokens()
+			.OrderBy( Order_CitiesTownsExplorers )
+			.Select( invader => spaceState[invader] + invader.ToString() )
 			.Join( "," );
 	}
 

@@ -19,7 +19,7 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 
 	#region Configuration
 
-	HumanToken IIslandTokenApi.GetDefault( ITokenClass tokenClass ) => TokenDefaults[tokenClass];
+	public HumanToken GetDefault( ITokenClass tokenClass ) => TokenDefaults[tokenClass];
 	public readonly Dictionary<ITokenClass, HumanToken> TokenDefaults;
 
 	#endregion
