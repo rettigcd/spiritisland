@@ -2,7 +2,7 @@
 
 namespace SpiritIsland;
 
-public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
+public sealed class GameState : IHaveMemento {
 
 	public static GameState Current => ActionScope.Current?.GameState;
 
@@ -42,10 +42,6 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 		InitialExplore();
 		InitSpirits();// ManyMinds requires the beast to be in place, so this goes after tokens are placed.
 		BlightCard.OnGameStart( this );
-
-		// ++HealthPenaltyPerStrife;
-		// var tokens = Island.Boards[0][2].Tokens;
-		// tokens.Add1StrifeToAsync(tokens.HumanOfTag(Human.City).First()).Wait();
 	}
 
 	void InitialExplore() {
@@ -121,7 +117,6 @@ public sealed class GameState : IHaveHealthPenaltyPerStrife, IHaveMemento {
 	public IBlightCard BlightCard = new NullBlightCard();
 	public List<IBlightCard> BlightCards = new List<IBlightCard>();
 	public GameOver Result = null;
-	public int HealthPenaltyPerStrife { get; set; } = 0;
 
 	#region Blight
 

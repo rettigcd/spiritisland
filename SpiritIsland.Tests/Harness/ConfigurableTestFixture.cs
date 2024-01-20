@@ -22,7 +22,7 @@ namespace SpiritIsland.Tests;
 /// <summary>
 /// Lazy inits all parts, allowing use to pre-configure parts they care about, before they are lazy-inited.
 /// </summary>
-public class ConfigurableTestFixture : IHaveHealthPenaltyPerStrife {
+public class ConfigurableTestFixture {
 
 	#region Configurable Parts
 

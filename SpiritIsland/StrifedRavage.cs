@@ -24,23 +24,6 @@ public static class StrifedRavage {
 		}
 	);
 
-	#region Strife reduces Health
-
-	public static async Task InvadersReduceHealthByStrifeCount( GameState gameState ) {
-		// add penalty
-		++gameState.HealthPenaltyPerStrife;
-		// remove penalty
-		gameState.AddTimePassesAction( TimePassesAction.Once( gs=>--gs.HealthPenaltyPerStrife ) );
-
-		// Check if anything is destroyed
-		foreach(var space in gameState.Spaces)
-			foreach( var token in space.InvaderTokens() )
-				if(token.IsDestroyed)
-					await space.Destroy( token, space[token] );
-	}
-
-	#endregion
-
 	#region Strife caused Damage to Self
 
 	public static IActOn<BoardCtx> StrifedInvadersTakeDamagePerStrife 

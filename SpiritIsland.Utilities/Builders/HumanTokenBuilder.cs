@@ -24,7 +24,8 @@ static class HumanTokenBuilder {
 		if(ht.FullHealth != ht.HumanClass.ExpectedHealthHint) {
 			using var font = UseGameFont( orig.Height / 2 );
 			StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-			g.DrawString( ht.FullHealth.ToString(), font, Brushes.White, new RectangleF( 0, 0, orig.Width, orig.Height ), center );
+			var brush = ht.HasTag(Human.Dahan) ? Brushes.White : Brushes.DarkGray;
+			g.DrawString( ht.FullHealth.ToString(), font, brush, new RectangleF( 0, 0, orig.Width, orig.Height ), center );
 		}
 
 		// Draw Damage slashes

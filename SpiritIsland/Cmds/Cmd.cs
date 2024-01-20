@@ -36,7 +36,7 @@ public static partial class Cmd {
 		); 
 	static public SpaceAction Adjust1Token( string description, ISpaceEntity token ) => new SpaceAction( description, ctx => ctx.Tokens.Adjust(token,1) );
 	// -- Screwy Strife Stuff --
-	static public BaseCmd<GameState> StrifePenalizesHealth => new BaseCmd<GameState>( "Invaders reduce Health per strife", StrifedRavage.InvadersReduceHealthByStrifeCount );
+	static public BaseCmd<GameState> StrifePenalizesHealth => new BaseCmd<GameState>( "Invaders reduce Health per strife", ReduceHealthByStrife.Init );
 	static public SpaceAction EachStrifeDamagesInvader => new SpaceAction( "Invaders take 1 damage per strife", async ctx=>{ 
 		var tokens = ctx.Tokens.HumanOfAnyTag( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
 		foreach(var token in tokens) {

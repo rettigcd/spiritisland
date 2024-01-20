@@ -139,23 +139,6 @@ public class Strife_Tests {
 
 	}
 
-	class HealthPenaltyHolder : IHaveHealthPenaltyPerStrife {
-		public int HealthPenaltyPerStrife { get; set; }
-	}
-
-	[Fact]
-	public void StrifedCityStillFoundAfterStrifeBasedHealthChange() {
-		// Given: dictionary contains a strifed city
-		var counts = new CountDictionary<ISpaceEntity>();
-		var holder = new HealthPenaltyHolder();
-		var token = new HumanToken(Human.City,3).AddStrife(1);
-		counts[token] = 1;
-		// When: adjust health based on strife
-		holder.HealthPenaltyPerStrife = 1;
-		// Then: can still find token in dictionary
-		counts.ContainsKey(token).ShouldBeTrue();
-	}
-
 	[Fact]
 	public async Task Strife_Stops_Ravage() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );

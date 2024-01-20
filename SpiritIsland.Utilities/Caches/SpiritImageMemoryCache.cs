@@ -46,11 +46,6 @@ public class SpiritImageMemoryCache {
 	}
 
 	public Image AccessTokenImage( IToken imageToken ) {
-		//if( imageToken is SpiritPresenceToken) {
-		//	var x = _tokenImages[spirit.Presence.Token];
-		//	return _presenceImg is not null ? _presenceImg : throw new Exception( "missing presence image" );
-		//}
-		
 
 		// Invalidate Incarna Image when the .Img switches
 		if( imageToken is Incarna it && it.Img != _incarnaImg ) {

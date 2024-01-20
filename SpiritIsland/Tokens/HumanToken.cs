@@ -5,16 +5,12 @@
 /// </summary>
 public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
 
-	class NoPenalty : IHaveHealthPenaltyPerStrife { public int HealthPenaltyPerStrife => 0; }
-
 	public HumanToken( HumanTokenClass tokenClass, int rawFullHealth ) {
 		HumanClass = tokenClass;
 		_rawFullHealth = rawFullHealth;
 		Damage = 0;
 		DreamDamage = 0;
 		StrifeCount = 0;
-		IHaveHealthPenaltyPerStrife penalty = GameState.Current as IHaveHealthPenaltyPerStrife;
-		_healthPenaltyHolder = penalty ?? new NoPenalty();// penaltyHolder;
 		_summaryString = HumanClass.Initial + "@" + RemainingHealth;
 		Attack = rawFullHealth;
 
@@ -34,8 +30,6 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		DreamDamage = x.DreamDamage;
 		StrifeCount = x.StrifeCount;
 
-		_healthPenaltyHolder = (IHaveHealthPenaltyPerStrife)GameState.Current ?? new NoPenalty(); // x._helathPenaltyHolder;
-
 		_summaryString = HumanClass.Initial + "@" + RemainingHealth
 			+ (x.DreamDamage == 0 ? "" : new string( '~', DreamDamage ))
 			+ (x.StrifeCount == 0 ? "" : new string( '^', StrifeCount ));
@@ -49,7 +43,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	public bool HasTag(ITag tag) => HumanClass.HasTag( tag );
 
 	/// <summary>The effective FullHealth of a token. Minimum of 1; </summary>
-	public int FullHealth => Math.Max(1, _rawFullHealth - StrifeCount * _healthPenaltyHolder.HealthPenaltyPerStrife );
+	public int FullHealth => Math.Max(1, _rawFullHealth );
 	readonly int _rawFullHealth; // the value adjusted by modifications, may be less than 1.
 
 	public int Damage { get; }
@@ -174,5 +168,4 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	readonly string _summaryString;
 
-	readonly public IHaveHealthPenaltyPerStrife _healthPenaltyHolder;
 }
