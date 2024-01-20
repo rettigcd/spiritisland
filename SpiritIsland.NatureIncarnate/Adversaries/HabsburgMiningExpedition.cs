@@ -232,16 +232,10 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		public bool Matches( Space space ) {
 			return IsInRavageStackThisAction() == IsMiningLand( space.Tokens );
 		}
-		bool IsInRavageStackThisAction() {
-			var scope = ActionScope.Current;
-			if(scope.ContainsKey( Key )) return scope.SafeGet<bool>( Key );
-			GameState gs = scope.GameState;
-			var cards = gs.InvaderDeck.Ravage.Cards.ToArray();
-			bool isInRavage = cards.Any( c => c.Text.Contains( Text ) );
-			// bool isInRavage = gs.InvaderDeck.Ravage.Cards.Any( c => c.Text.Contains( Text ) );
-			scope[Key] = isInRavage;
-			return isInRavage;
-		}
+		/// <remarks> Can't cache this in ActionScope because matching space is pre-Action. </remarks>
+		bool IsInRavageStackThisAction() => GameState.Current.InvaderDeck.Ravage.Cards
+				.Any( c => c.Text.Contains( Text ) );
+	
 		const string Key = "Salt Deposits Ravaging";
 	}
 
