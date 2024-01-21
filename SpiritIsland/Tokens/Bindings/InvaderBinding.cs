@@ -144,26 +144,4 @@ public sealed class InvaderBinding {
 
 	#endregion
 
-	/// <summary>
-	/// Restores all of the tokens to their default / healthy state.
-	/// </summary>
-	static public void HealTokens( SpaceState counts ) {
-
-		void RestoreAllToDefault( ISpaceEntity token ) {
-			if(token is not HumanToken ht || ht.FullDamage == 0) return;
-			int num = counts[token];
-			counts.Adjust( ht.Healthy, num );
-			counts.Adjust( token, -num );
-		}
-
-		void HealGroup( HumanTokenClass group ) {
-			foreach(var token in counts.HumanOfTag( group ).ToArray())
-				RestoreAllToDefault( token );
-		}
-
-		HealGroup( Human.City );
-		HealGroup( Human.Town );
-		HealGroup( Human.Dahan );
-	}
-
 }

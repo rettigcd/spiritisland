@@ -10,7 +10,7 @@ public class UnquenchableFlames{
 		await ctx.DamageInvaders(1,Human.Town_City);
 
 		// Invaders do not heal Damage at end of turn.
-		GameState.Current.Healer.Skip( ctx.Space );
+		GameState.Current.Healer.SkipInvadersOn( ctx.Space );
 
 		// If you have 2 fire: add 1 badlands
 		if(await ctx.YouHave("2 fire"))

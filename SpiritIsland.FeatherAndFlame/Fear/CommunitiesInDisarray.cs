@@ -26,7 +26,7 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 			var penalty = new ReduceInvaderAttackBy1(damagePenalty, tokenClasses );
 			foreach(var space in ctx.Spaces) {
 				space.Adjust( penalty, 1);
-				ctx.Healer.Skip( space.Space );
+				ctx.Healer.SkipInvadersOn( space.Space );
 			}
 
 		}
