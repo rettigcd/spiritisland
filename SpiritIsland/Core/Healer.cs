@@ -1,16 +1,17 @@
 ﻿namespace SpiritIsland;
 
-public class Healer : IRunWhenTimePasses {
+public sealed class Healer : IRunWhenTimePasses {
 
 	bool IRunWhenTimePasses.RemoveAfterRun => false;
-	public virtual Task TimePasses( GameState gameState ) {
+	public Task TimePasses( GameState gameState ) {
 		foreach(SpaceState ss in gameState.Spaces_Unfiltered)
 			HealSpace( ss );
 		_skipInvadersOn.Clear();
+		_skipDahanOn.Clear();
 		return Task.CompletedTask;
 	}
 
-	public virtual void HealSpace( SpaceState tokens ) {
+	public void HealSpace( SpaceState tokens ) {
 		// Invaders
 		if( !_skipInvadersOn.Contains(tokens.Space) ){
 			HealGroup( Human.Town );
@@ -18,7 +19,8 @@ public class Healer : IRunWhenTimePasses {
 		}
 
 		// Dahan
-		HealGroup( Human.Dahan );
+		if( !_skipDahanOn.Contains(tokens.Space) )
+			HealGroup( Human.Dahan );
 
 		void HealGroup( HumanTokenClass group ) {
 			foreach(HumanToken humanToken in tokens.HumanOfTag( group ).ToArray())
@@ -29,9 +31,11 @@ public class Healer : IRunWhenTimePasses {
 	}
 
 	public void SkipInvadersOn( Space space ) => _skipInvadersOn.Add( space );
+	public void SkipDahanOn( Space space ) => _skipDahanOn.Add( space );
 
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
-	protected HashSet<Space> _skipInvadersOn = new HashSet<Space>();
+	HashSet<Space> _skipInvadersOn = new HashSet<Space>();
+	HashSet<Space> _skipDahanOn = new HashSet<Space>();
 
 }

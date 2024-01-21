@@ -22,7 +22,7 @@ public class ShroudOfSilentMist : Spirit {
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{ 
 		GatherPowerFromTheCoolAndDark, 
 		MistsShiftAndFlow.Rule, 
-		SlowAndSilentDeathHealer.Rule,
+		SlowAndSilentDeath.Rule,
 	};
 
 	public ShroudOfSilentMist():base(
@@ -50,7 +50,7 @@ public class ShroudOfSilentMist : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 
-		gameState.Healer = new SlowAndSilentDeathHealer(this);
+		gameState.AddTimePassesAction(new SlowAndSilentDeath(this));
 
 		// Place presence in:
 		// (a) Highest # mountains,
@@ -64,24 +64,7 @@ public class ShroudOfSilentMist : Spirit {
 
 	public override async Task TimePasses( GameState gameState ) {
 		await base.TimePasses( gameState );
-
 		_gainedCoolEnergyThisTurn = false;
-
-		static bool SpaceHasDamagedInvaders( SpaceState ss ) => ss.InvaderTokens().Any( i => i.RemainingHealth < i.FullHealth );
-
-		// During Time Passes:
-		SpaceState[] myLandsWithDamagedInvaders = Presence.Lands.Tokens().Where( SpaceHasDamagedInvaders ).ToArray();
-
-		// 1 fear (max 5) per land of yours with Damaged Invaders.
-		int remaining = 5;
-		foreach(var ss in myLandsWithDamagedInvaders) {
-			ss.AddFear(1);
-			if(--remaining == 0) break;
-		}
-
-		// Gain 1 Energy per 3 lands of yours with Damaged Invaders.
-		Energy += myLandsWithDamagedInvaders.Length / 3;
-
 	}
 	#endregion IRunWhenTimePasses
 
@@ -119,30 +102,6 @@ public class ShroudOfSilentMist : Spirit {
 	protected override object CustomMementoValue { 
 		get => _gainedCoolEnergyThisTurn;
 		set => _gainedCoolEnergyThisTurn = (bool)value;
-	}
-
-}
-
-class SlowAndSilentDeathHealer : Healer {
-
-	readonly ShroudOfSilentMist spirit;
-
-	public SlowAndSilentDeathHealer(ShroudOfSilentMist spirit ) { this.spirit = spirit; }
-
-	public static readonly SpecialRule Rule = new SpecialRule(
-		"Slow and Silent Death",
-		"Invaders and dahan in your lands don't heal Damage.  During Time PAsses: 1 fear (max 5) per land of yours with Damaged Invaders.  Gain 1 Energy per 3 lands of yours with Damaged Invaders."
-	);
-
-	//public override void HealAll( GameState gs ) {
-	//	// Invaders and dahan in your lands don't heal Damage.
-	//	skipHealSpaces.UnionWith( spirit.Presence.Spaces );
-	//	base.HealAll( gs );
-	//}
-
-	public override void HealSpace( SpaceState tokens ) {
-		if( !spirit.Presence.IsOn( tokens ) )
-			base.HealSpace( tokens );
 	}
 
 }
