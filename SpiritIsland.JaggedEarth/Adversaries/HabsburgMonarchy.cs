@@ -145,9 +145,9 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 		// Log it
 		var logParts = new List<string>();
-		if(newCitySpaces.Any())
+		if(newCitySpaces.Count != 0)
 			logParts.Add("1 city to "+ newCitySpaces.SelectLabels().Join(","));
-		if(newTownSpaces.Any())
+		if(newTownSpaces.Count != 0)
 			logParts.Add( "1 town to " + newTownSpaces.SelectLabels().Join( "," ) );
 		ActionScope.Current.LogDebug("Wave of Immigration: Adding " + logParts.Join(" and "));
 	}

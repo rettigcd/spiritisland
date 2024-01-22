@@ -49,8 +49,8 @@ namespace SpiritIslandCmd {
 
 		bool Generic(string cmd){
 
-			if( !commandMap.ContainsKey(cmd) ) return false;
-			commandMap[cmd]();
+			if( !commandMap.TryGetValue( cmd, out Action value )) return false;
+			value();
 			return true;
 		}
 

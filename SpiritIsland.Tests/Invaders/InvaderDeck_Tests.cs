@@ -2,7 +2,7 @@
 
 public class InvaderDeck_Tests {
 
-	static ISpaceEntity Parse(string s ) {
+	static HumanToken Parse(string s ) {
 		return s switch {
 			"C@3" => StdTokens.City,
 			"C@2" => StdTokens.City2,

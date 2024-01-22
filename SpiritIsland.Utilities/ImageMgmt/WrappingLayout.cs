@@ -46,8 +46,8 @@ public class WrappingLayout {
 
 		// Add or use existing
 		List<TextPosition> texts;
-		if(_texts.ContainsKey( fontStyle ))
-			texts = _texts[fontStyle];
+		if(_texts.TryGetValue( fontStyle, out List<TextPosition>? value ))
+			texts = value;
 		else {
 			texts = new List<TextPosition>();
 			_texts.Add( fontStyle, texts );

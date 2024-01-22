@@ -52,7 +52,7 @@ public class ManageInternalPoints {
 
 	public PointF GetPointFor( IToken token ) {
 
-		if(_dict.ContainsKey( token )) return _dict[token];
+		if(_dict.TryGetValue( token, out PointF storedPoint )) return storedPoint;
 
 		// This is called when we are requesting location for a token that is not currently on this space.
 

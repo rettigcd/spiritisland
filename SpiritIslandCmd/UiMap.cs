@@ -62,7 +62,7 @@ namespace SpiritIslandCmd {
 		}
 
 		public IOption GetOption(string cmd){
-			return dict.ContainsKey(cmd) ? dict[cmd] : null;
+			return dict.TryGetValue( cmd, out IOption value ) ? value : null;
 		}
 		public string ToPrompt() => Prompt + descList.Select( d => "\r\n\t" + d ).Join( "" );
 

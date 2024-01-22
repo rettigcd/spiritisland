@@ -15,8 +15,8 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	public string[] SpiritNames => SpiritTypes.Keys.ToArray();
 	public Spirit? MakeSpirit( string spiritName ) {
-		return SpiritTypes.ContainsKey( spiritName )
-			? (Spirit?)Activator.CreateInstance( SpiritTypes[spiritName] )
+		return SpiritTypes.TryGetValue( spiritName, out Type? spiritType ) 
+			? (Spirit?)Activator.CreateInstance( spiritType )
 			: null;
 	}
 
@@ -25,8 +25,9 @@ public class GameComponentProvider : IGameComponentProvider {
 	};
 
 	public string[] AdversaryNames => AdversariesTypes.Keys.ToArray();
-	public IAdversary? MakeAdversary( string adversaryName ) => adversaryName != null && AdversariesTypes.ContainsKey( adversaryName )
-			? (IAdversary?)Activator.CreateInstance( AdversariesTypes[adversaryName] )
+	public IAdversary? MakeAdversary( string adversaryName ) => adversaryName != null 
+		&& AdversariesTypes.TryGetValue( adversaryName, out Type? adversaryType ) 
+		? (IAdversary?)Activator.CreateInstance( adversaryType )
 			: null;
 
 	public PowerCard[] MinorCards => new Type[] {

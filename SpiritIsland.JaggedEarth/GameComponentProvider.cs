@@ -27,8 +27,8 @@ public class GameComponentProvider : IGameComponentProvider {
 	};
 	public string[] SpiritNames => Spirits.Keys.ToArray();
 	public Spirit MakeSpirit( string spiritName ) {
-		return Spirits.ContainsKey( spiritName )
-			? (Spirit)Activator.CreateInstance( Spirits[spiritName] )
+		return Spirits.TryGetValue( spiritName, out Type spiritType ) 
+			? (Spirit)Activator.CreateInstance( spiritType )
 			:null;
 	}
 

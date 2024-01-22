@@ -12,12 +12,11 @@ sealed public class CardImageManager : IDisposable {
 
 	public Image GetImage( PowerCard card ) {
 
-		if(!images.ContainsKey( card )) {
-			Image image = ResourceImages.Singleton.GetPowerCard( card ).Result; // !!!
+		if(!images.TryGetValue( card, out Image image )) {
+			image = ResourceImages.Singleton.GetPowerCard( card ).Result; // !!!
 			images.Add( card, image );
 		}
-		var x = images[card];
-		return x;
+		return image;
 	}
 
 	public void Dispose() {

@@ -179,13 +179,12 @@ public abstract partial class Spirit
 	}
 
 	public void Reclaim( PowerCard reclaimCard ) {
-		if(reclaimCard == null ) throw new ArgumentNullException(nameof(reclaimCard));
-		if( DiscardPile.Contains( reclaimCard ) ) {
-			DiscardPile.Remove( reclaimCard );
-		} else if( InPlay.Contains( reclaimCard ) ) {
-			RemoveCardFromPlay( reclaimCard );
-		} else
-			throw new InvalidOperationException("Can't find the card to reclaim. Not in dicard nor in play");
+		ArgumentNullException.ThrowIfNull( reclaimCard );
+		if(!DiscardPile.Remove( reclaimCard )) 
+			if(InPlay.Contains( reclaimCard )) {
+				RemoveCardFromPlay( reclaimCard );
+			} else
+				throw new InvalidOperationException( "Can't find the card to reclaim. Not in dicard nor in play" );
 		Hand.Add( reclaimCard );
 	}
 

@@ -25,15 +25,15 @@ public class ImageSizeCalculator {
 
 
 	Size CalcIconSize( Img img, int maxHeight ) {
-		if(!iconSizes.ContainsKey( img )) {
+		if(!iconSizes.TryGetValue( img, out Size size )) {
 			using Image image = ResourceImages.Singleton.GetImg( img );
-			iconSizes.Add( img, image.Size );
+			size = image.Size;
+			iconSizes.Add( img, size );
 		}
-		var sz = iconSizes[img];
 
 		return true // sz.Width < sz.Height
-			? new Size( maxHeight * sz.Width / sz.Height, maxHeight ) 
-			: new Size( maxHeight, maxHeight * sz.Height / sz.Width );
+			? new Size( maxHeight * size.Width / size.Height, maxHeight ) 
+			: new Size( maxHeight, maxHeight * size.Height / size.Width );
 	}
 
 	static Img SimpleWordToIcon( string token ) {

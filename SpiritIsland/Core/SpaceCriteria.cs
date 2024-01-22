@@ -73,8 +73,8 @@ public class SpaceCriteria {
 	#region static Filter Map
 
 	static bool Matches( string filterEnum, SpaceStateWithPresence state ) {
-		if(_lookup.ContainsKey( filterEnum ))
-			return _lookup[filterEnum]( state );
+		if(_lookup.TryGetValue( filterEnum, out Func<SpaceStateWithPresence, bool> value ))
+			return value( state );
 
 		if(filterEnum.Contains( '+' )) {
 			var filter = new AllFilters( filterEnum );

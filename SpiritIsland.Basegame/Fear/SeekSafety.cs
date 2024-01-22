@@ -36,7 +36,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 			);
 
 		Space[] GetNeighborWithMoreBuildings( SpaceState s ) => s.Adjacent.Downgrade().Where( n => buildingCounts[n] > buildingCounts[s.Space] ).ToArray();
-		bool HasNeighborWithMoreBuildings( SpaceState s ) => GetNeighborWithMoreBuildings( s ).Any();
+		bool HasNeighborWithMoreBuildings( SpaceState s ) => GetNeighborWithMoreBuildings( s ).Length != 0;
 
 		// Select Source
 		var sourceOptions = gs.Spaces

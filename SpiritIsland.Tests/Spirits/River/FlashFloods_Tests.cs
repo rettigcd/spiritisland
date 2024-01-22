@@ -8,7 +8,7 @@ public class FlashFloods_Tests {
 
 	// immutable
 	readonly PowerCard flashFloodsCard = PowerCard.For(typeof(FlashFloods));
-	readonly Spirit _spirit;
+	readonly RiverSurges _spirit;
 
 	public FlashFloods_Tests():base() {
 		_spirit = new RiverSurges();

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace SpiritIsland.Tests.Core;
 
-public static class CardDownloader {
+public static partial class CardDownloader {
 	static public async Task<Bitmap> GetImage( string powerName ) {
 		string preparedPowerName = powerName.Replace(" ","_");
 		string cardUrl = $"https://spiritislandwiki.com/index.php?title=File:{preparedPowerName}.png";
@@ -11,7 +11,7 @@ public static class CardDownloader {
 		var client = new HttpClient();
 		try {
 			var html = await client.GetStringAsync(cardUrl);
-			string url = new Regex( @"<img.*?alt=""File:.*src=""([^""]+)""[^>]*>" ).Match( html ).Groups[1].Value;
+			string url = ImgTagRegex().Match( html ).Groups[1].Value;
 
 			var imgUrl = $"https://spiritislandwiki.com{url}";
 
@@ -25,4 +25,6 @@ public static class CardDownloader {
 		}
 	}
 
+	[GeneratedRegex( @"<img.*?alt=""File:.*src=""([^""]+)""[^>]*>" )]
+	static private partial Regex ImgTagRegex();
 }

@@ -17,7 +17,7 @@ public class HumanAdjustBinding {
 
 	/// <summary> Replaces N tokens of given type</summary>
 	public HumanAdjustBinding( SpaceState ss, int countToReplace, HumanToken tokenToReplace ) {
-		if(countToReplace<0) throw new ArgumentOutOfRangeException(nameof(countToReplace));
+		ArgumentOutOfRangeException.ThrowIfNegative( countToReplace );
 		_ss = ss;
 		_count = countToReplace;
 		_token = tokenToReplace;

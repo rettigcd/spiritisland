@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Tests;
 
-public static class SpaceExtentions {
+public static partial class SpaceExtentions {
 
 	public static void Given_InitSummary( this Space space, string desiredSummary ) => space.Tokens.Given_InitSummary(desiredSummary);
 	/// <summary> Inits all tokens listed so the summary will match. </summary>
@@ -68,7 +68,7 @@ public static class SpaceExtentions {
 		return desiredTokens;
 	}
 
-	static readonly Regex tokenParser = new Regex( @"(\d+)(\w+)(@(\d+)(\^*))?" );
+	static readonly Regex tokenParser = TokenParserRegex();
 
 	static (int,IToken) ParseTokenCount( string part ) {
 		var match = tokenParser.Match( part );
@@ -149,4 +149,6 @@ public static class SpaceExtentions {
 			.Join( "," );
 	}
 
+	[GeneratedRegex( @"(\d+)(\w+)(@(\d+)(\^*))?" )]
+	private static partial Regex TokenParserRegex();
 }

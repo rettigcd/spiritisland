@@ -4,12 +4,14 @@
 
 [InnatePower("Visions of a Shifting Future"), Slow, Yourself]
 class VisionsOfAShiftingFuture {
+	internal static readonly string[] textOptions = new string[] {"Shuffle with next top card."};
+	internal static readonly string[] options = new string[] {"Shuffle with next top card.", "Move to bottom of deck." };
 
 	[InnateTier("1 sun,2 moon,2 air","Look at the top card of either the Invader Deck or the Event Deck.  Return it, then shuffle that deck's top 2 cards.")]
 	static public async Task Option1( Spirit self ) {
 		var deck = GameState.Current.InvaderDeck.UnrevealedCards;
 		InvaderCard topCard = deck[0];
-		await self.SelectText(topCard.Text,new string[] {"Shuffle with next top card." },Present.Always);
+		await self.SelectText(topCard.Text,textOptions,Present.Always);
 		deck.RemoveAt(0);
 		InsertIntoTop2( self, deck, topCard );
 	}
@@ -20,7 +22,7 @@ class VisionsOfAShiftingFuture {
 		InvaderCard topCard = deck[0];
 		deck.RemoveAt(0);
 
-		if( await self.UserSelectsFirstText(topCard.Text,new string[] {"Shuffle with next top card.", "Move to bottom of deck." }) )
+		if( await self.UserSelectsFirstText(topCard.Text,options) )
 			InsertIntoTop2( self, deck, topCard );
 		else
 			deck.Add(topCard);

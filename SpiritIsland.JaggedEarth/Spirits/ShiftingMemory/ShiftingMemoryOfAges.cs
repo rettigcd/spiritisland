@@ -76,8 +76,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			return;
 		} 
 
-		if(Hand.Contains( card )) {
-			Hand.Remove( card );
+		if(Hand.Remove( card )) {
 			DiscardPile.Add( card );
 			return;
 		}
@@ -128,7 +127,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 
 	public override bool CouldHaveElements( CountDictionary<Element> subset ) {
-		var els = PreparedElements.Any() 
+		var els = PreparedElements.Count != 0
 			? Elements.Elements.Union(PreparedElements) 
 			: Elements.Elements;
 		return els.Contains(subset);
@@ -140,7 +139,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		if( Elements.Contains( subset ) ) return true;
 
 		// Check if we have prepared element markers to fill the missing elements
-		if(PreparedElements.Any()) {
+		if(PreparedElements.Count != 0) {
 			var missing = subset.Except(Elements.Elements);
 			if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold: "+subset.BuildElementString(), "Yes, use prepared elements", "No, I'll pass.")) {
 

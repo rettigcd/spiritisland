@@ -62,11 +62,12 @@ public class SpiritImageMemoryCache {
 	}
 
 	public Image GetElementImage( Element element ) {
-		if(!_elementImages.ContainsKey( element )) {
+		if(!_elementImages.TryGetValue( element, out Image? value )) {
 			Image image = _images.GetImg( element.GetTokenImg() );
-			_elementImages.Add( element, image );
+			value = image;
+			_elementImages.Add( element, value );
 		}
-		return _elementImages[element];
+		return value;
 	}
 
 	#region private
@@ -80,8 +81,8 @@ public class SpiritImageMemoryCache {
 		DisposeTokenImage( Token.Isolate );
 	}
 	void DisposeTokenImage( ISpaceEntity? x ) {
-		if( x is not null && _tokenImages.ContainsKey( x ))
-			_tokenImages[x]?.Dispose();
+		if( x is not null && _tokenImages.TryGetValue( x, out Image? value ))
+			value?.Dispose();
 	}
 
 	#endregion

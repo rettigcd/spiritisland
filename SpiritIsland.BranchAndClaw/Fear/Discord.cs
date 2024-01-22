@@ -24,7 +24,7 @@ public class Discord : FearCardBase, IFearCard {
 				StrifedRavage.StrifedInvadersDealsDamageToOtherInvaders.In().EachActiveLand()
 			).ActAsync( ctx );
 
-	static IActOn<GameState> EachPlayerAdd1StrifeInADifferentLand 
+	static EachSpirit EachPlayerAdd1StrifeInADifferentLand 
 		=> Cmd.AddStrife( 1 )
 			.In().SpiritPickedLand().AllDifferent().Which( Has.AtLeastN(2,Human.Invader) ).ByPickingToken(Human.Invader)
 			.ForEachSpirit();

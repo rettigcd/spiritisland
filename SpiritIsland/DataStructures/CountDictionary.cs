@@ -29,11 +29,11 @@ public class CountDictionary<K> : IDictionary<K,int> {
 	#endregion
 
 	public int this[K key] {
-		get { return _inner.ContainsKey( key ) ? _inner[key] : 0; }
+		get { return _inner.TryGetValue( key, out int value ) ? value : 0; }
 		set {
 			if(value != 0)
 				_inner[key] = value;
-			else if(_inner.ContainsKey( key ))
+			else 
 				_inner.Remove( key );
 		}
 	}

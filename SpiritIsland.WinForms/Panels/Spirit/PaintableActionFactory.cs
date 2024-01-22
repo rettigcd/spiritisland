@@ -78,12 +78,12 @@ public static class PaintableActionFactory {
 		};
 	}
 
-	static IPaintableRect AddVitalityToIncarna() {
+	static IconDescriptorRect AddVitalityToIncarna() {
 		var des = new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } };
 		return new IconDescriptorRect( des );
 	}
 
-	static IPaintableRect GainAllElementsRect( params Element[] elements ) {
+	static IconDescriptorRect GainAllElementsRect( params Element[] elements ) {
 		var descriptor = new IconDescriptor();
 		if(0 < elements.Length)
 			descriptor.ContentImg = elements[0].GetTokenImg();
@@ -92,13 +92,13 @@ public static class PaintableActionFactory {
 		return new IconDescriptorRect( descriptor );
 	}
 
-	static IPaintableRect DiscardCardWithFire() {
+	static PoolRect DiscardCardWithFire() {
 		return new PoolRect()
 			.Float( new ImgRect( Img.Discard1 ), .05f,.05f,.9f,.9f)
 			.Float( new ImgRect( Img.Token_Fire ), .6f,0f,.4f,.4f );
 	}
 
-	static IPaintableRect ReclaimAllWithFire() {
+	static PoolRect ReclaimAllWithFire() {
 		return new PoolRect()
 			.Float( new ImgRect( Img.ReclaimAll ), .0f, .0f, 1f, 1f )
 			.Float( new ImgRect( Img.Token_Fire ), .6f, 0f, .4f, .4f );
@@ -148,20 +148,20 @@ public static class PaintableActionFactory {
 
 	static PoolRect ReplacePresenceWithIncarna() {
 		return new PoolRect()
-							.Float( new ImgRect( Img.Icon_Incarna ), .1f, 0f, .8f, .8f )
-							.Float( new ImgRect( Img.Icon_Presence ), .6f, .6f, .4f, .4f )
-							.Float( new ImgRect( Img.DestroyedX ), .6f, .7f, .2f, .2f );
-							// .Float( new ImgRect( Img.Icon_DestroyedPresence ), .6f, .6f, .4f, .4f );  // This indicates already-destroyed presence
+			.Float( new ImgRect( Img.Icon_Incarna ), .1f, 0f, .8f, .8f )
+			.Float( new ImgRect( Img.Icon_Presence ), .6f, .6f, .4f, .4f )
+			.Float( new ImgRect( Img.DestroyedX ), .6f, .7f, .2f, .2f );
+			// .Float( new ImgRect( Img.Icon_DestroyedPresence ), .6f, .6f, .4f, .4f );  // This indicates already-destroyed presence
 	}
 
-	static IPaintableRect GainEnergyAgain() {
+	static PoolRect GainEnergyAgain() {
 		return new PoolRect()
 			.Float( new ImgRect( Img.Coin ), .1f, .1f,.5f, .5f )
 			.Float( new ImgRect( Img.Coin ), .4f, .1f, .5f, .5f )
 			.Float( new TextRect( "x2" ), .0f, .25f, 1f, .25f );
 	}
 
-	static IPaintableRect MoveUpTo3PresenceTogether() {
+	static VerticalStackRect MoveUpTo3PresenceTogether() {
 		return new VerticalStackRect(
 			new NullRect(),
 			new VerticalStackRect(
@@ -177,7 +177,7 @@ public static class PaintableActionFactory {
 		).SplitByWeight( .0f, .1f/*spacer*/, .35f, .05f /*spacer*/, .35f /*number*/, .1f/*arrow*/, .1f );
 	}
 
-	static IPaintableRect Add3DestroyedPresenceTogether() {
+	static VerticalStackRect Add3DestroyedPresenceTogether() {
 		return new VerticalStackRect(
 			new NullRect(),
 			new HorizontalStackRect(
@@ -196,7 +196,7 @@ public static class PaintableActionFactory {
 		)	.SplitByWeight( .0f, .05f/*spacer*/, .4f, .05f /*spacer*/, .35f /*number*/, .1f/*arrow*/, .1f );
 	}
 
-	static IPaintableRect AdditionalPlay( int count ) {
+	static PoolRect AdditionalPlay( int count ) {
 		string txt = (count > 0)
 			? ("+" + count.ToString())
 			: ("\u2014" + (-count).ToString());
@@ -205,7 +205,7 @@ public static class PaintableActionFactory {
 			.Float( new TextRect(txt), .2f,.2f,.6f,.6f);
 	}
 
-	static IPaintableRect Gain1ElementRect( params Element[] elements ) {
+	static HorizontalStackRect Gain1ElementRect( params Element[] elements ) {
 		return new HorizontalStackRect(
 			elements.Select(el=>new ImgRect(el.GetIconImg())).ToArray()
 		);
@@ -245,7 +245,7 @@ public static class PaintableActionFactory {
 		return img;
 	}
 
-	static IPaintableRect MovePresenceRect( int range, Img img = Img.Icon_Presence ) {
+	static VerticalStackRect MovePresenceRect( int range, Img img = Img.Icon_Presence ) {
 		return new VerticalStackRect(
 			new NullRect(),
 			new ImgRect( img ),
@@ -314,7 +314,7 @@ public static class PaintableActionFactory {
 				).SplitByWeight( 0f, .15f, .15f, .5f, .2f );
 	}
 
-	static IPaintableRect Draw_IgnoreRange()  {
+	static VerticalStackRect Draw_IgnoreRange()  {
 		return new VerticalStackRect(
 			new NullRect(),
 			new ImgRect(Img.Icon_Checkmark),

@@ -290,7 +290,9 @@ public class SpaceState
 	public async Task<TokenReplacedArgs> ReplaceAsync(IToken oldToken, int newCount, IToken newToken) {
 		if(oldToken == null) return null;
 
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
 		ILocation source = this;
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
 
 		var (removed, removedHandler) = await source.SourceAsync( oldToken, 1, RemoveReason.Replaced );
 		if(removed.Count == 0) return TokenReplacedArgs.Null(this,oldToken,newToken);
@@ -325,7 +327,7 @@ public class SpaceState
 	/// </summary>
 	/// <returns>The move event, MAY contain Count=0</returns>
 	public async Task<(ITokenAddedArgs,Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
-		if(count < 0) throw new ArgumentOutOfRangeException( nameof( count ) );
+		ArgumentOutOfRangeException.ThrowIfNegative( count );
 
 		// Pre-Add check/adjust
 		var addingArgs = new AddingTokenArgs( token, count, this, addReason );

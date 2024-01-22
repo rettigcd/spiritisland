@@ -24,7 +24,7 @@ public static class Has {
 
 
 	// Presence
-	static public XFilter AnySpiritPresence => new XFilter( "has spirit presence", ctx => ctx.Tokens.OfTag(TokenCategory.Presence).Any() );
+	static public XFilter AnySpiritPresence => new XFilter( "has spirit presence", ctx => ctx.Tokens.OfTag(TokenCategory.Presence).Length != 0 );
 	static public XFilter YourPresence => new XFilter( "with presence", x => x.Presence.IsHere );
 	static public XFilter MySacredSite => new XFilter( "with sacred site", x => x.Presence.IsSelfSacredSite );
 

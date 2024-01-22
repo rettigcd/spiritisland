@@ -67,7 +67,7 @@ public sealed class Island : IHaveMemento {
 		boardList.Insert(0, null);
 
 		return openSides
-			.SelectMany(side => new int[] {0,1,2 }.Select(i=>BoardOrientation.ToMatchSide(i,side) ))
+			.SelectMany(side => boardSideIndex.Select(i=>BoardOrientation.ToMatchSide(i,side) ))
 			.Where(newOrient=> {
 				boardList[0] = newOrient;
 				return !HasOverlap(boardList) && !HidesAnOcean(boardList);
@@ -96,6 +96,8 @@ public sealed class Island : IHaveMemento {
 		get => new MyMemento( this );
 		set => ((MyMemento)value).Restore( this );
 	}
+
+	static readonly int[] boardSideIndex = new int[] {0,1,2};
 
 	class MyMemento {
 		public MyMemento( Island src ) {

@@ -60,7 +60,7 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 				await land.AddDefaultAsync( Human.Explorer, 1 );
 				await land.AddDefaultAsync( Human.Town, 1 );
 			}
-			if(landsWithMostExplorers.Any())
+			if(landsWithMostExplorers.Length != 0)
 				ActionScope.Current.LogDebug( "Pressure for Fast Profit: Added 1T+1E to "
 					+ landsWithMostExplorers.SelectLabels().Order().Join( "," )
 				);

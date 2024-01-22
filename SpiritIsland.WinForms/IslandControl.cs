@@ -207,7 +207,7 @@ public partial class IslandControl : Control {
 	}
 	Rectangle _ackRect; // holds the collapsed area
 
-	Image GetAckPopupImage() {
+	Bitmap GetAckPopupImage() {
 		if(options_Ack is not null) {
 			var item = options_Ack.Item;
 			if(item is IFearCard fearCard)

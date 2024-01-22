@@ -16,7 +16,7 @@ public interface PowerCardResources {
 	Bitmap GetPhaseCost( Phase phase );
 }
 
-public class PowerCardImageBuilder {
+public partial class PowerCardImageBuilder {
 
 	static public async Task<Image> Build( PowerCard card, PowerCardResources resources ) {
 
@@ -133,7 +133,7 @@ public class PowerCardImageBuilder {
 		// give it an upper and lower margin
 		textArea.Inflate( 0, -10 );
 
-		Match split = new Regex( @"-If you have- ([^:]+):" ).Match( instructions );
+		Match split = IfYouHaveRegex().Match( instructions );
 
 		if(split.Success) {
 			string topText = instructions[..split.Index];
@@ -223,6 +223,9 @@ public class PowerCardImageBuilder {
 		layout.FinalizeBounds();
 		return layout;
 	}
+
+	[GeneratedRegex( @"-If you have- ([^:]+):" )]
+	static private partial Regex IfYouHaveRegex();
 
 	#endregion
 

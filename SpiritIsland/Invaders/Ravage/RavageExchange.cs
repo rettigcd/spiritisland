@@ -144,7 +144,7 @@ public class RavageExchange {
 
 		var remaningAttackers = await FromEachStrifed_RemoveOneStrife( this ); // does not change start state, modifies gs.Tokens[...] instead
 
-		while(0 < remainingDamageToApply && remaningAttackers.Any()) {
+		while(0 < remainingDamageToApply && remaningAttackers.Count != 0) {
 			HumanToken attackerToDamage = PickSmartInvaderToDamage( remaningAttackers, remainingDamageToApply, Order );
 
 			// Calc Damage to apply to 1 invader

@@ -100,13 +100,13 @@ public static class PowerHeaderDrawer {
 			return;
 		}
 
-		int orIndex = text.IndexOf( "/" );
+		int orIndex = text.IndexOf( '/' );
 		if(orIndex != -1) {
 			Draw2SideBySide( graphics, cell, text[..orIndex], text[(orIndex + 1)..] );
 			return;
 		}
 
-		int andIndex = text.IndexOf( "+" );
+		int andIndex = text.IndexOf( '+' );
 		if(andIndex != -1) {
 			Draw2SideBySide( graphics, cell, text[..andIndex], text[(andIndex + 1)..] );
 			return;

@@ -104,7 +104,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 		var normalActions = base.GetAvailableActions( speed ).ToList();
-		if(normalActions.Any())
+		if(normalActions.Count != 0)
 			normalActions.Add( _openTheWays );
 		return normalActions;
 	}

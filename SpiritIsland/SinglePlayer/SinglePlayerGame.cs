@@ -46,8 +46,8 @@ public class SinglePlayerGame {
 					await Do1Round();
 				}
 				catch( GameStateCommandException cmdEx ) {
-					if(cmdEx.Cmd is Rewind rewind && savedGameStates.ContainsKey(rewind.TargetRound)) {
-						((IHaveMemento)GameState).Memento = savedGameStates[rewind.TargetRound];
+					if(cmdEx.Cmd is Rewind rewind && savedGameStates.TryGetValue( rewind.TargetRound, out object memento )) {
+						((IHaveMemento)GameState).Memento = memento;
 						foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
 							savedGameStates.Remove(laterRounds);
 					}

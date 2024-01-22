@@ -14,9 +14,7 @@ class DrawPowerCardFromDaysThatNeverWere : SpiritAction {
 		if(card == null) return; // in case both hands are empty.
 
 		fracturedDays.AddCardToHand( card );
-		if( minor.Contains( card ))
-			minor.Remove( card );
-		else {
+		if(!minor.Remove( card )) {
 			major.Remove( card );
 			await fracturedDays.ForgetACard();
 		}

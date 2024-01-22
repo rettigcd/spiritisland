@@ -19,7 +19,7 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 		.Tokens()
 		.SingleOrDefault() ?? NullSpace;
 
-	public bool IsPlaced => _spaceCounts.Any();
+	public bool IsPlaced => _spaceCounts.Count != 0;
 
 	public SpaceToken AsSpaceToken() => this.On(Space.Space); // Assumes Space is not null.
 

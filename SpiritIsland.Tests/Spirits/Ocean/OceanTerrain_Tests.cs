@@ -9,7 +9,7 @@ public class OceanTerrain_Tests {
 
 	readonly Ocean oceanSpirit = new Ocean();
 	readonly Board boardA = Board.BuildBoardA();
-	readonly Spirit primarySpirit = new Thunderspeaker();
+	readonly Thunderspeaker primarySpirit = new Thunderspeaker();
 	readonly GameState gameState;
 	DecisionContext NextDecision => primarySpirit.NextDecision();
 

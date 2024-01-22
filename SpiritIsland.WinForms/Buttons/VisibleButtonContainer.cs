@@ -22,8 +22,7 @@ public class VisibleButtonContainer {
 		_transient.Add( option );
 	}
 
-	public IButton this[IOption option] => _staticLookupButtonByOption.ContainsKey( option )
-		? _staticLookupButtonByOption[option]	// all static
+	public IButton this[IOption option] => _staticLookupButtonByOption.TryGetValue( option, out IButton button ) ? button 
 		: _enabled[option];						// enabled (static + transient)
 
 	public int ActivatedOptions => _enabled.Count;

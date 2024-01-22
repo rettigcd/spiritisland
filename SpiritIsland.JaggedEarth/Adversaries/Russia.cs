@@ -99,7 +99,7 @@ public class Russia : AdversaryBase, IAdversary {
 			.ToDictionary( x=>x.board, x=>x.spaces );
 
 		// If no beasts anywhere, can't add explorers.
-		if(!beastsSpacesForBoard.Any()) return;
+		if(beastsSpacesForBoard.Count == 0) return;
 
 		for(int boardIndex = 0; boardIndex < gameState.Island.Boards.Length; ++boardIndex) {
 			Board board = gameState.Island.Boards[boardIndex];

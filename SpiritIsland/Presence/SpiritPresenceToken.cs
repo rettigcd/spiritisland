@@ -35,7 +35,7 @@ public class SpiritPresenceToken
 	readonly CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
 	readonly CountDictionary<Board> _boardCounts = new CountDictionary<Board>(); // ? Is this necessary?  How many things use this?
 
-	public bool IsOnIsland => _boardCounts.Any();
+	public bool IsOnIsland => _boardCounts.Count != 0;
 
 	// public IEnumerable<Space> Spaces_Existing => _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
 	public IEnumerable<Space> Spaces_Existing {  get {
@@ -90,7 +90,7 @@ public class SpiritPresenceToken
 		return words.Split(' ','-')
 			.Select(word => {
 				char k = word[0];
-				if( lowercaseWords.Contains( word.ToLower() ) ) k = char.ToLower(k);
+				if( lowercaseWords.Contains( word, StringComparison.CurrentCultureIgnoreCase )) k = char.ToLower(k);
 				return k.ToString();
 			} )
 			.Join("");

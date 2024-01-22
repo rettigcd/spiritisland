@@ -37,14 +37,14 @@ public partial class FinderTrack : IPresenceTrack {
 	// ============================
 
 	public bool Return( Track track ) {
-		if(!_lookup.ContainsKey(track)) return false;
-		_lookup[track].Hide();
-		return true;
+		bool found = _lookup.TryGetValue( track, out LinkedSlot linkedSlot );
+		if(found) linkedSlot.Hide();
+		return found;
 	}
 
 	public async Task<bool> RevealAsync( Track track ) {
-		if(!_lookup.ContainsKey( track )) return false;
-		await _lookup[track].RevealAsync();
+		if(!_lookup.TryGetValue( track, out LinkedSlot value )) return false;
+		await value.RevealAsync();
 		if(TrackRevealedAsync is not null)
 			await TrackRevealedAsync(new TrackRevealedArgs( track ));
 		return true;

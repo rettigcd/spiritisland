@@ -69,7 +69,7 @@ public class Fear : IHaveMemento {
 		if(count == 0) return;
 
 		EarnedFear += count;
-		while(PoolMax <= EarnedFear && Deck.Any()) {
+		while(PoolMax <= EarnedFear && Deck.Count != 0) {
 			EarnedFear -= PoolMax;
 
 			Deck.Peek().Activate( _gs );

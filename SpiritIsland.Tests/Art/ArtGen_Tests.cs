@@ -14,6 +14,6 @@ public class ArtGen_Tests {
 		using( ResourceImages.Singleton.GetBlightCard( new TheBorderOfLifeAndDeath() ) );
 		using( ResourceImages.Singleton.GetBlightCard( new UntendedLandCrumbles() ) );
 #pragma warning restore CS0642 // Possible mistaken empty statement
-    }
+	}
 
 }

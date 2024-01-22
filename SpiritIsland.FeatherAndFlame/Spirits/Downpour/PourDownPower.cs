@@ -43,7 +43,7 @@ class PourDownPower : IRunWhenTimePasses {
 
 		if((speed == Phase.Fast || speed == Phase.Slow) && Remaining > 0) {
 			yield return gainEnergy;
-			if(repeatCard.GetCardOptions(this.spirit,speed).Any())
+			if(repeatCard.GetCardOptions(this.spirit,speed).Length != 0)
 				yield return repeatCard;
 		}
 	}

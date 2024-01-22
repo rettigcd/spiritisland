@@ -68,8 +68,9 @@ public partial class SweepIntoTheSea {
 				// add neighbors to dictionary and evaluated its neighbors
 				int neighborDist = shortestDistances[cur] + 1;
 				foreach(var a in cur.Adjacent) {
-					if(!shortestDistances.ContainsKey( a ) || neighborDist < shortestDistances[a]) {
-						shortestDistances[a] = neighborDist;
+					if(!shortestDistances.TryGetValue( a, out int shortedDistance ) || neighborDist < shortedDistance) {
+						shortedDistance = neighborDist;
+						shortestDistances[a] = shortedDistance;
 						spacesLessThanLimit.Enqueue( a );
 					}
 				}

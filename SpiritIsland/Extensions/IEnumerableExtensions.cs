@@ -75,14 +75,14 @@ static public class IEnumerableExtensions {
 	static public IEnumerable<T> Order<T>(this IEnumerable<T> src) => src.OrderBy(x => x);
 
 	public static Value Get<Key,Value>(this IDictionary<Key,Value> dict, Key key, Func<Value> newValueGenerator) {
-		if(dict.ContainsKey(key)) return dict[key];
+		if(dict.TryGetValue( key, out Value value )) return value;
 		Value newValue = newValueGenerator();
 		dict.Add(key,newValue);
 		return newValue;
 	}
 
 	public static Value Get<Key, Value>( this IDictionary<Key, Value> dict, Key key, Value defaultValue = default ) {
-		if(dict.ContainsKey( key )) return dict[key];
+		if(dict.TryGetValue( key, out Value value )) return value;
 		Value newValue = defaultValue;
 		dict.Add( key, newValue );
 		return newValue;

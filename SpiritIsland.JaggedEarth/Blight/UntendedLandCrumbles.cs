@@ -18,7 +18,7 @@ public class UntendedLandCrumbles : BlightCard {
 	static IActOn<BoardCtx> AddBlightAdjacentToBligtht =>
 		Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( Is.AdjacentToBlight );
 
-	static IActOn<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new BaseCmd<BoardCtx>(
+	static BaseCmd<BoardCtx> JointlyPayEnergy( int requiredEnergy ) => new BaseCmd<BoardCtx>(
 		$"Joinly pay {requiredEnergy} energy",
 		async ctx => {
 			int remaining = requiredEnergy;

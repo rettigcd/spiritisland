@@ -2,18 +2,12 @@
 
 namespace SpiritIsland;
 
-public static class TokenParser {
+public static partial class TokenParser {
 	public static string[] Tokenize( string s ) {
 
 		s = s.Replace("-or-","dash-or-dash"); // can't leave it -or- because '-' doesn't match word boundary.
 
-		var tokens = new Regex( "\\b(sacred site|destroyedpresence|presence|fast|slow"
-			+ "|dahan|blight|fear|city|town|explorer"
-			+ "|sun|moon|air|fire|water|plant|animal|earth"
-			+ "|wetland|jungle|mountain|sands?"
-			+ "|beasts?|disease|strife|wilds|badlands|vitality|quake"
-			+ "|\\+1range|incarna|dash-or-dash|endless-dark|cardplay|impending)\\b", RegexOptions.IgnoreCase
-		).Matches( s ).Cast<Match>().ToList();
+		var tokens = InlineImageTagsRegex().Matches( s ).Cast<Match>().ToList();
 
 		var results = new List<string>();
 
@@ -50,4 +44,6 @@ public static class TokenParser {
 		return results.ToArray();
 	}
 
+	[GeneratedRegex( @"\b(sacred site|destroyedpresence|presence|fast|slow|dahan|blight|fear|city|town|explorer|sun|moon|air|fire|water|plant|animal|earth|wetland|jungle|mountain|sands?|beasts?|disease|strife|wilds|badlands|vitality|quake|\+1range|incarna|dash-or-dash|endless-dark|cardplay|impending)\b", RegexOptions.IgnoreCase, "en-US" )]
+	static private partial Regex InlineImageTagsRegex();
 }

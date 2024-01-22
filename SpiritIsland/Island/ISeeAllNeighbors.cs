@@ -17,12 +17,12 @@ public static class HasNeighborsExtensions {
 		if(0 < maxDistanceToFind)
 			spacesLessThanLimit.Enqueue( starter );
 
-		while(spacesLessThanLimit.Any()) {
+		while(spacesLessThanLimit.Count != 0) {
 			var cur = spacesLessThanLimit.Dequeue();
 			int neighborDist = shortestDistances[cur] + 1;
 			bool neighborIsLessThanLimit = neighborDist < maxDistanceToFind;
 			foreach(var a in cur.Adjacent_Existing) {
-				if(shortestDistances.ContainsKey( a ) && shortestDistances[a] <= neighborDist)
+				if(shortestDistances.TryGetValue( a, out int shortestDistance ) && shortestDistance <= neighborDist)
 					continue;
 				shortestDistances[a] = neighborDist;
 				if(neighborIsLessThanLimit)

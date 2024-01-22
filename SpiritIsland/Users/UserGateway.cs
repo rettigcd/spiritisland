@@ -84,7 +84,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 	/// </summary>
 	public Task<T> Select<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption {
-		if(originalDecision == null) throw new ArgumentNullException( nameof( originalDecision ) );
+		ArgumentNullException.ThrowIfNull( originalDecision );
 
 		if(_activeDecisionMaker != null) 
 			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{originalDecision.Prompt}], Previous:[{_activeDecisionMaker.Decision.Prompt}] ");
