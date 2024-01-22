@@ -28,13 +28,13 @@ public class WoundedPresence : SpiritPresence {
 		new PresenceTrack( 1, Track.Energy0, WaterOrAnimal, Gather1Blight, Track.Energy1, Track.Energy3, Energy4FirePlant,   Energy5Any ),
 		new PresenceTrack( 1, Track.Card1,   Track.Card1,   Track.Card1,   Track.Card2,   Track.Card3,   Track.CardReclaim1, Track.Card4   )
 	) {
-		Energy.TrackRevealed += OnRevealed;
+		Energy.TrackRevealedAsync += OnEnergyRevealedAsync;
 	}
 
-	void OnRevealed( TrackRevealedArgs args ) {
+	async Task OnEnergyRevealedAsync( TrackRevealedArgs args ) {
 		int energyRevealed = Energy.Revealed.Count();
 		if( energyRevealed <= 4 && CardPlays.Revealed.Count()<energyRevealed )
-			CardPlays.Reveal(CardPlays.RevealOptions.First());
+			await CardPlays.RevealAsync(CardPlays.RevealOptions.First());
 	}
 
 	public override IEnumerable<TokenOn> RevealOptions() { 

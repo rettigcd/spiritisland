@@ -1,10 +1,15 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-public class FinderTrack : IPresenceTrack {
+public partial class FinderTrack : IPresenceTrack {
 
 	public FinderTrack( params Track[] orderedSlots ) {
 		Slots = Array.AsReadOnly( orderedSlots ); // Ordered
-		_lookup = orderedSlots.ToDictionary(s=>s,s=> new LinkedSlot{ State = SlotState.Hidden_Not_Revealable } );
+		_lookup = orderedSlots.ToDictionary(
+			s=>s,
+			s=> new LinkedSlot{ State = SlotState.Hidden_Not_Revealable } 
+		);
+		foreach(Track slot in Slots)
+			slot.SourcedTokenAsync += (track) => RevealAsync(track);
 	}
 
 	public IReadOnlyCollection<Track> Slots { get; }
@@ -22,7 +27,7 @@ public class FinderTrack : IPresenceTrack {
 
 	// ============================
 
-	public event Action<TrackRevealedArgs> TrackRevealed;
+	public event Func<TrackRevealedArgs,Task> TrackRevealedAsync;
 
 	public void AddElementsTo( CountDictionary<Element> elements ) {
 		foreach(Track r in Revealed)
@@ -37,10 +42,11 @@ public class FinderTrack : IPresenceTrack {
 		return true;
 	}
 
-	public bool Reveal( Track track ) {
+	public async Task<bool> RevealAsync( Track track ) {
 		if(!_lookup.ContainsKey( track )) return false;
-		_lookup[track].Reveal();
-		TrackRevealed?.Invoke(new TrackRevealedArgs( track ));
+		await _lookup[track].RevealAsync();
+		if(TrackRevealedAsync is not null)
+			await TrackRevealedAsync(new TrackRevealedArgs( track ));
 		return true;
 	}
 
@@ -61,92 +67,7 @@ public class FinderTrack : IPresenceTrack {
 		public Dictionary<Track, SlotState> TrackStates;
 	};
 
-	#endregion
-
-	public class LinkedSlot {
-		public SlotState State { get; set; }
-
-		public void Hide() {
-			// Assert: is hidable
-			State = SlotState.Hidden_But_Revealable;
-			TellNextToRecheckForPreviousRevealed();
-			TellPreviousTheyHaveANextHidden();
-		}
-
-		public void Reveal() {
-			// Assert: is revealable (except for setup)
-			State = SlotState.Revealed_But_Hidable;
-			TellPreviousToRecheckForNextHidden();
-			TellNextTheyHaveAPreviousRevealed();
-		}
-
-		#region tell prev/next that you changed
-
-		void TellNextToRecheckForPreviousRevealed() {
-			foreach(LinkedSlot item in Next)
-				item.RecheckForPreviousRevealed(); // it was hidden!
-		}
-
-		void TellPreviousToRecheckForNextHidden() {
-			foreach(LinkedSlot item in Previous)
-				item.RecheckForNextHiddenSlot(); // it was revealed!
-		}
-		void TellNextTheyHaveAPreviousRevealed() {
-			foreach(LinkedSlot next in Next)
-				next.HasRevealedPreviousSlot();
-		}
-
-		void TellPreviousTheyHaveANextHidden() {
-			foreach(LinkedSlot prev in Previous)
-				prev.HasHiddenNextSlot();
-		}
-
-		#endregion
-
-		#region change self state
-
-		void RecheckForPreviousRevealed() {
-			if( State == SlotState.Hidden_But_Revealable	// was Revealable
-				&& !Previous.Any( s => s.State == SlotState.Revealed_But_Hidable ) // but no longer has an upstream revealed slot
-			) 
-				State = SlotState.Hidden_Not_Revealable;
-		}
-
-		void RecheckForNextHiddenSlot() {
-			
-			if( State == SlotState.Revealed_But_Hidable    // was Hideable
-				&& !Next.Any( s => s.State == SlotState.Hidden_But_Revealable )  // no no longer  has any downstream hidden slot
-			)
-				State = SlotState.Revealed_Not_Hideable;
-		}
-
-		void HasHiddenNextSlot() {
-			if(State == SlotState.Revealed_Not_Hideable)
-				State = SlotState.Revealed_But_Hidable;
-		}
-
-		void HasRevealedPreviousSlot() {
-			if(State == SlotState.Hidden_Not_Revealable)
-				State = SlotState.Hidden_But_Revealable;
-		}
-
-		#endregion
-
-		public void TwoWay(params LinkedSlot[] others ) {
-			foreach(var other in others) {
-				this.FlowsTo( other );
-				other.FlowsTo( this );
-			}
-		}
-
-		public void FlowsTo( LinkedSlot next ) {
-			Next.AddLast( next );
-			next.Previous.AddLast( this );
-		}
-
-		public LinkedList<LinkedSlot> Next { get; set; } = new LinkedList<LinkedSlot>();
-		public LinkedList<LinkedSlot> Previous { get; set; } = new LinkedList<LinkedSlot>();
-	}
+#endregion
 
 	public enum SlotState {
 		Hidden_Not_Revealable,

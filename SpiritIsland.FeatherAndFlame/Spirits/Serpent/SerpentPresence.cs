@@ -11,12 +11,12 @@ public class SerpentPresence : SpiritPresence {
 		new PresenceTrack( Track.Energy1, Track.FireEnergy, Track.AnyEnergy, Track.Reclaim1Energy, Track.EarthEnergy, Track.Energy6, Track.AnyEnergy, Track.MkEnergy(12) ),
 		new PresenceTrack( Track.Card1,   Track.MkCard(Element.Moon), Track.Card2, Track.MkCard( Element.Water ), fakeEarth, Track.Card4,   Track.Card5Reclaim1 )
 	){
-		Energy.TrackRevealed += Energy_TrackRevealed;
+		Energy.TrackRevealedAsync += Energy_TrackRevealed;
 	}
 
-	void Energy_TrackRevealed( TrackRevealedArgs obj ) {
+	async Task Energy_TrackRevealed( TrackRevealedArgs obj ) {
 		if( obj.Track == Track.EarthEnergy )
-			CardPlays.Reveal(fakeEarth);
+			await CardPlays.RevealAsync(fakeEarth);
 	}
 
 	public override IEnumerable<TokenOn> RevealOptions() {

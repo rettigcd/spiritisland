@@ -19,8 +19,8 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 		Energy = energy;
 		CardPlays = cardPlays;
 
-		Energy.TrackRevealed += OnTrackRevealed;
-		CardPlays.TrackRevealed += OnTrackRevealed;
+		Energy.TrackRevealedAsync += OnTrackRevealedAsync;
+		CardPlays.TrackRevealedAsync += OnTrackRevealedAsync;
 
 		InitEnergyAndCardPlays();
 
@@ -103,10 +103,13 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	/// <summary>
 	/// Adds Element and updates Energy/CardPlays per turn.
 	/// </summary>
-	void OnTrackRevealed( TrackRevealedArgs args ) {
-		EnergyPerTurn   = Math.Max( EnergyPerTurn, args.Track.Energy ?? 0 );
-		CardPlayPerTurn = Math.Max( CardPlayPerTurn, args.Track.CardPlay ?? 0 );
-		Self.Elements.Add(args.Track.Elements);
+	async Task OnTrackRevealedAsync( TrackRevealedArgs args ) {
+		var track = args.Track;		
+		EnergyPerTurn   = Math.Max( EnergyPerTurn, track.Energy ?? 0 );
+		CardPlayPerTurn = Math.Max( CardPlayPerTurn, track.CardPlay ?? 0 );
+		Self.Elements.Add(track.Elements);
+		if( track.OnRevealAsync is not null)
+			await track.OnRevealAsync(track,Self);
 	}
 
 	public Task Return( Track dst ) {

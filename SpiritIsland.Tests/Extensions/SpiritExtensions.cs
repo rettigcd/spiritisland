@@ -204,7 +204,7 @@ public static class SpiritExtensions {
 	internal static void Given_SlotsRevealed( this IPresenceTrack track, int revealedSpaces ) {
 		for(int i = 1; i < revealedSpaces; i++){
 			Track location = track.RevealOptions.First(); 
-			track.Reveal(location);
+			track.RevealAsync(location).Wait(); // $$$$
 		}
 	}
 

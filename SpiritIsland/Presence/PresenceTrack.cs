@@ -8,14 +8,14 @@ public class PresenceTrack : IPresenceTrack {
 		_slots = slots;
 		_revealedCount = revealedCount;
 
-		void Slot_Revealed( Track track ) {
+		foreach(Track slot in slots)
+			slot.SourcedTokenAsync += Slot_SourcedTokenAsync;
+
+		async Task Slot_SourcedTokenAsync( Track track ) {
 			if(_revealedCount == _slots.Length) throw new InvalidOperationException("all slots revealed");
 			if(_slots[_revealedCount] != track) throw new InvalidOperationException("track/slot is not the next to be revealed");
-			++_revealedCount;
-			TrackRevealed?.Invoke( new TrackRevealedArgs( track ) );
+			await RevealAsync( track );
 		}
-		foreach(Track slot in slots)
-			slot.Revealed += Slot_Revealed;
 	}
 
 	public PresenceTrack( params Track[] slots ):this(1,slots) { }
@@ -40,14 +40,19 @@ public class PresenceTrack : IPresenceTrack {
 
 	public IEnumerable<Track> Revealed => _slots.Take( _revealedCount );
 
-	public bool Reveal( Track track ) {
+	public async Task<bool> RevealAsync( Track track ) {
 		if(_revealedCount == _slots.Length || _slots[_revealedCount] != track) return false;
 		++_revealedCount;
-		TrackRevealed?.Invoke( new TrackRevealedArgs( track ) );
+		await OnTrackRevealedAsync( track );
 		return true;
 	}
 
-	public event Action<TrackRevealedArgs> TrackRevealed;
+	async Task OnTrackRevealedAsync( Track track ){
+		if(TrackRevealedAsync is not null)
+			await TrackRevealedAsync( new TrackRevealedArgs( track ));
+	}
+
+	public event Func<TrackRevealedArgs,Task> TrackRevealedAsync;
 
 	public virtual bool Return( Track track ) {
 		if(_slots[_revealedCount - 1] != track) return false;

@@ -146,23 +146,21 @@ public sealed class Track
 	public Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> 
 	SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(token is not SpiritPresenceToken spt) throw new ArgumentException($"Cannot remove {token} from Presence Track.");
-		_spirit = spt.Self; // grab spirit for callback later
 		return Task.FromResult<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> ((
 			new TokenRemovedArgs(this,token,1,RemoveReason.Removed),
 			NotifyRemoved
 		));
 	}
-	Spirit _spirit;
+
 	async Task NotifyRemoved( ITokenRemovedArgs args ) {
-		if( OnRevealAsync is not null)
-			await OnRevealAsync(this,_spirit ?? throw new Exception("Track._spirit is null. How did this happen?"));
-		Revealed?.Invoke(this);
+		if(SourcedTokenAsync is not null)
+			await SourcedTokenAsync(this);
 	}
 
 	Task<(ITokenAddedArgs, Func<ITokenAddedArgs, Task>)> ILocation.SinkAsync( IToken token, int count, AddReason addReason ) 
 		=> throw new NotImplementedException();
 
-	public event Action<Track> Revealed;
+	public event Func<Track,Task> SourcedTokenAsync;
 
 	#endregion Generic Move / ISource/ISink tokens
 

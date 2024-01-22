@@ -6,11 +6,9 @@ namespace SpiritIsland.Tests.Spirits.Finder;
 public class Finder_Tests : BoardAGame {
     public Finder_Tests():base(new FinderOfPathsUnseen()){
         _gameState.Initialize();
-        // Given: 1 Presence on A1
-//        _spirit.Presence.Given_Setup(_board[1],1);
     }
 
-    [Fact(Skip="temp")]
+    [Fact]
     public async Task PlacePresence(){
 
         // When: Finder places presence
@@ -26,7 +24,7 @@ public class Finder_Tests : BoardAGame {
         _spirit.Elements.Summary(true).ShouldBe("1 sun");
     }
 
-    [Fact(Skip="temp")]
+    [Fact]
     public async Task Revealing2WaterSlot_Generates2Energy(){
 
         // When: Finder Grows: G2,G2 (taking from: Sun then 2-water)

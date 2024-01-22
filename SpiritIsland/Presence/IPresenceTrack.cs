@@ -10,9 +10,9 @@ public interface IPresenceTrack: IHaveMemento {
 
 	// Modify/Act
 	void AddElementsTo( CountDictionary<Element> elements );
-	bool Reveal( Track track );
+	Task<bool> RevealAsync( Track track );
 	bool Return( Track track );
-	event Action<TrackRevealedArgs> TrackRevealed;
+	event Func<TrackRevealedArgs,Task> TrackRevealedAsync;
 
 }
 

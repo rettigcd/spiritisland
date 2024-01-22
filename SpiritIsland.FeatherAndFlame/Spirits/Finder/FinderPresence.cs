@@ -53,7 +53,8 @@ public class FinderPresence : SpiritPresence {
 		new FinderTrack( Track.Energy0, Track.SunEnergy, OneMoon, TwoWater, Move1Air, Plus2, PlusOneAny ),
 		new FinderTrack( Track.Card1, Track.EarthEnergy, ExtraCardPlay, ExtraCardPlay, OneCoinExtendRange, Track.Push1TownCity )
 	) {
-		var energy = ((FinderTrack)Energy).LinkedSlots;
+		var energyTrack = (FinderTrack)Energy;
+		var energy = energyTrack.LinkedSlots;
 		FinderTrack.LinkedSlot energy0    = energy[0];
 		FinderTrack.LinkedSlot sunEnergy  = energy[1];
 		FinderTrack.LinkedSlot oneMoon    = energy[2];
@@ -62,7 +63,8 @@ public class FinderPresence : SpiritPresence {
 		FinderTrack.LinkedSlot plus2      = energy[5];
 		FinderTrack.LinkedSlot plusOneAny = energy[6];
 
-		var card = ((FinderTrack)CardPlays).LinkedSlots;
+		var cardTrack = (FinderTrack)CardPlays;
+		var card = cardTrack.LinkedSlots;
 		FinderTrack.LinkedSlot card1              = card[0];
 		FinderTrack.LinkedSlot earthEnergy        = card[1];
 		FinderTrack.LinkedSlot extraCardPlay1     = card[2];
@@ -81,8 +83,8 @@ public class FinderPresence : SpiritPresence {
 		move1Air.TwoWay( plus2, extraCardPlay2 );
 		oneCoinExtendRange.TwoWay( plus2, plusOneAny, extraCardPlay2, push1TownCity );
 
-		energy0.Reveal();
-		card1.Reveal();
+		energy0.RevealAsync().Wait();
+		card1.RevealAsync().Wait();
 
 		base.InitEnergyAndCardPlays(); // need to rescan because spaces weren't revealed yet.
 	}
