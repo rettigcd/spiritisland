@@ -18,20 +18,15 @@ class LetThemBreakThemselvesAgainstTheStone {
 
 }
 
-class BreakThemselvesMod : BaseModEntity, IEndWhenTimePasses, IReactToLandDamage {
-
-	public BreakThemselvesMod( Spirit spirit, bool shouldAddHalfInvaderDamage ) {
-		_spirit = spirit;
-		_shouldAddHalfInvaderDamage = shouldAddHalfInvaderDamage;
-	}
-
+class BreakThemselvesMod( Spirit _spirit, bool _shouldAddHalfInvaderDamage ) 
+	: BaseModEntity
+	, IEndWhenTimePasses
+	, IReactToLandDamage
+{
 	async Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens,int added ) {
 		int damage = 2;
 		if(_shouldAddHalfInvaderDamage) damage += tokens[LandDamage.Token] / 2;
 
 		await tokens.UserSelected_DamageInvadersAsync( _spirit, damage );
 	}
-
-	readonly Spirit _spirit;
-	readonly bool _shouldAddHalfInvaderDamage;
 }

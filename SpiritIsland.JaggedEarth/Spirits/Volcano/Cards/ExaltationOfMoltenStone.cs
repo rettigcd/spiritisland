@@ -21,15 +21,8 @@ public class ExaltationOfMoltenStone {
 		self.PowerRangeCalc = new ExtendRange1FromMountain( self.PowerRangeCalc );
 	}
 
-	class ExtendRange1FromMountain : DefaultRangeCalculator {
-
-		readonly ICalcRange _originalApi;
-		readonly TerrainMapper _powerTerrainMapper;
-
-		public ExtendRange1FromMountain( ICalcRange originalApi ) {
-			_originalApi = originalApi;
-			_powerTerrainMapper = ActionScope.Current.TerrainMapper;
-		}
+	class ExtendRange1FromMountain( ICalcRange _originalApi ) : DefaultRangeCalculator {
+		readonly TerrainMapper _powerTerrainMapper = ActionScope.Current.TerrainMapper;
 
 		public override IEnumerable<SpaceState> GetSpaceOptions( 
 			SpaceState source, 

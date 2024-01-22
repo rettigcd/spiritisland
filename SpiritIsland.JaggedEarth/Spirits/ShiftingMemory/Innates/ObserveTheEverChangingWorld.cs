@@ -22,7 +22,8 @@ public class ObserveTheEverChangingWorld {
 /// <summary>
 /// Reminder Token that sits on a space and generates a Prepared Element for each action (up to 3) that the tokens change in that space.
 /// </summary>
-public class ObserveWorldMod : ISpaceEntity
+public class ObserveWorldMod( TargetSpaceCtx ctx ) 
+	: ISpaceEntity
 	, IToken
 	, IHandleTokenAdded
 	, IHandleTokenRemoved
@@ -34,11 +35,6 @@ public class ObserveWorldMod : ISpaceEntity
 	public string Text => ObserveTheEverChangingWorld.Name;
 
 	public Img Img => Token.Element.Img;
-
-	public ObserveWorldMod( TargetSpaceCtx ctx ) {
-		_spirit = (ShiftingMemoryOfAges)ctx.Self;
-		_tokenSummary = ctx.Tokens.Summary;
-	}
 
 	public void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) => Check( to );
 
@@ -68,9 +64,9 @@ public class ObserveWorldMod : ISpaceEntity
 
 	#region private
 
-	string _tokenSummary;
+	string _tokenSummary = ctx.Tokens.Summary;
 
-	readonly ShiftingMemoryOfAges _spirit;
+	readonly ShiftingMemoryOfAges _spirit = (ShiftingMemoryOfAges)ctx.Self;
 	readonly HashSet<ActionScope> _appliedToTheseActions = [];
 
 	#endregion

@@ -3,13 +3,11 @@
 /// <summary>
 /// Allows already-placed Incarna to be moved
 /// </summary>
-public class MoveOnlyIncarna : SpiritAction {
+public class MoveOnlyIncarna( int range ) 
+	: SpiritAction( "Move Incarna - Range "+range )
+{
 
-	public int Range { get; }
-
-	public MoveOnlyIncarna( int range) : base( "Move Incarna - Range "+range ) {
-		Range = range;
-	}
+	public int Range { get; } = range;
 
 	public override async Task ActAsync( Spirit self ) {
 		var incarna = self.Incarna;

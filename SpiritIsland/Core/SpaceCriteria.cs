@@ -38,17 +38,9 @@ public class SpaceCriteria {
 
 	#region Bind all state together into a single object
 
-	class SpaceStateWithPresence {
+	class SpaceStateWithPresence( SpaceState spaceState, Spirit focusSpirit, TerrainMapper tm ) {
 
-		#region constructor
-		public SpaceStateWithPresence( SpaceState spaceState, Spirit focusSpirit, TerrainMapper tm ) {
-			Tokens = spaceState;
-			_focusSpirit = focusSpirit;
-			_terrainMapper = tm;
-		}
-		#endregion
-
-		public SpaceState Tokens { get; }
+		public SpaceState Tokens { get; } = spaceState;
 
 		// Bound Spirit
 		public bool IsPresent => FocusSpirit( nameof( IsPresent ) ).Presence.IsOn( Tokens );
@@ -58,15 +50,12 @@ public class SpaceCriteria {
 				return Tokens.Space == incarna.Space.Space;
 			}
 		}
-		Spirit FocusSpirit(string opName) => _focusSpirit ?? throw new InvalidOperationException($"Spirit not available for testing {opName}.");
-		readonly Spirit _focusSpirit;
+		Spirit FocusSpirit(string opName) => focusSpirit ?? throw new InvalidOperationException($"Spirit not available for testing {opName}.");
 
 		// Bound TerrainMapper
-		public bool MatchesTerrain( Terrain terrain ) => _terrainMapper.MatchesTerrain( Tokens, terrain );
-		public bool IsCoastal => _terrainMapper.IsCoastal( Tokens );
-		public bool IsInland => _terrainMapper.IsInland( Tokens );
-		readonly TerrainMapper _terrainMapper;
-
+		public bool MatchesTerrain( Terrain terrain ) => tm.MatchesTerrain( Tokens, terrain );
+		public bool IsCoastal => tm.IsCoastal( Tokens );
+		public bool IsInland => tm.IsInland( Tokens );
 	}
 	#endregion
 
@@ -85,12 +74,9 @@ public class SpaceCriteria {
 		throw new ArgumentException( "Unexpected filter:" + filterEnum, nameof( filterEnum ) );
 	}
 
-	class AllFilters {
-		public AllFilters( string combinedFilter ) {
-			_parts = combinedFilter.Split( '+' ).Select( s => _lookup[s] ).ToArray();
-		}
+	class AllFilters( string combinedFilter ) {
 		public bool Matches( SpaceStateWithPresence x ) => _parts.All( p => p( x ) );
-		readonly Func<SpaceStateWithPresence, bool>[] _parts;
+		readonly Func<SpaceStateWithPresence, bool>[] _parts = combinedFilter.Split( '+' ).Select( s => _lookup[s] ).ToArray();
 	}
 
 	static readonly Dictionary<string, Func<SpaceStateWithPresence, bool>> _lookup = new Dictionary<string, Func<SpaceStateWithPresence, bool>> {

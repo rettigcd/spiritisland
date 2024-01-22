@@ -1,16 +1,14 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class LurePresence : SpiritPresence {
+public class LurePresence( Spirit spirit ) 
+	: SpiritPresence( spirit,
+		new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.MkEnergy( 3, Element.Plant ), Track.MkEnergy( 4, Element.Air ), Track.Energy5Reclaim1 ),
+		new PresenceTrack( Track.Card1, Track.Card2, Track.AnimalEnergy, Track.Card3, Track.Card4, Track.Card5Reclaim1 ),
+		new EnthrallTheForeignExplorers( spirit )
+	)
+{
 
 	static public readonly SpecialRule PlacementRule = new SpecialRule( "Home of the Island's Heart", "Your presence may only be added/moved to lands that are inland." );
-
-	public LurePresence(Spirit spirit)
-		:base( spirit,
-			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.MkEnergy( 3, Element.Plant ), Track.MkEnergy( 4, Element.Air ), Track.Energy5Reclaim1 ),
-			new PresenceTrack( Track.Card1, Track.Card2, Track.AnimalEnergy, Track.Card3, Track.Card4, Track.Card5Reclaim1 ),
-			new EnthrallTheForeignExplorers( spirit )
-		)
-	{}
 
 	// !! ?? this is interesting - if all ITokens implemented CanBePlacedOn,
 	// could we do away with .IsInPlay?

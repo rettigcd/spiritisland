@@ -7,13 +7,9 @@ using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
 
-class ArtworkInit {
+class ArtworkInit( Label label ) {
 
-	readonly Label _promptLabel;
-
-	public ArtworkInit( Label label ) {
-		_promptLabel = label;
-	}
+	readonly Label _promptLabel = label;
 
 	public void Init() {
 		_ = Task.Run( InitArtwork );

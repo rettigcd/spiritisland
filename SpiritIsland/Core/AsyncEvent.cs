@@ -33,16 +33,13 @@ public sealed class AsyncEvent<T> : IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	class MyMemento {
-		public MyMemento( AsyncEvent<T> src ) {
-			handlers = new Dictionary<Guid, Func<T, Task>>(src._handlers);
-		}
+	class MyMemento( AsyncEvent<T> _src ) {
 		public void Restore( AsyncEvent<T> src ) {
 			src._handlers.Clear();
 			foreach(var pair in handlers)
 				src._handlers.Add(pair.Key,pair.Value);
 		}
-		readonly Dictionary<Guid, Func<T, Task>> handlers = [];
+		readonly Dictionary<Guid, Func<T, Task>> handlers = new Dictionary<Guid, Func<T, Task>>( _src._handlers );
 	}
 
 	#endregion

@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
 [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method )]
-public class AnyLandAttribute : TargetSpaceAttribute {
-	public AnyLandAttribute( params string[] filters )
-		: base( TargetFrom.Presence, 100, filters ) { }
+public class AnyLandAttribute( params string[] filters ) 
+	: TargetSpaceAttribute( TargetFrom.Presence, 100, filters )
+{
 	public override string RangeText => "-";
 }

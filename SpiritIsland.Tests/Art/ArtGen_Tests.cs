@@ -1,6 +1,3 @@
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Net.Http;
 using SpiritIsland.NatureIncarnate;
 
 namespace SpiritIsland.Tests.Art;

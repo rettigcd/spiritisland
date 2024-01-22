@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InvaderDeckBuilder {
+public class InvaderDeckBuilder( string _levels ) {
 
 	public static ImmutableList<InvaderCard> Level1Cards => ImmutableList.Create<InvaderCard>(
 		InvaderCard.Stage1( Terrain.Jungle ),
@@ -28,11 +28,7 @@ public class InvaderDeckBuilder {
 
 	public readonly static InvaderDeckBuilder Default = new InvaderDeckBuilder( "111-2222-33333" );
 
-	protected readonly string _levelsString;
-
-	public InvaderDeckBuilder( string levels ) {
-		_levelsString = levels;
-	}
+	protected readonly string _levelsString = _levels;
 
 	public InvaderDeck Build( int seed = default ) {
 		var unrevealedCards = new List<InvaderCard>();

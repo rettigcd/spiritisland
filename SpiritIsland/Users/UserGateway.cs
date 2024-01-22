@@ -149,30 +149,21 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	/// <summary>
 	/// Assigns one of the generic available options to the typed pending promise.
 	/// </summary>
-	class ActionHelper<T> : IDecisionMaker where T : class, IOption {
-
-		public ActionHelper( IDecisionPlus decision, TaskCompletionSource<T> promise ) {
-			Decision = decision;
-			_pendingPromise = promise;
-		}
-
-		public IDecisionPlus Decision { get; }
+	class ActionHelper<T>( IDecisionPlus decision, TaskCompletionSource<T> promise ) : IDecisionMaker where T : class, IOption {
+		public IDecisionPlus Decision { get; } = decision;
 
 		public void Select( IOption selection ) {
 			if( TextOption.Done.Matches( selection ) || selection is not T tt )
-				_pendingPromise.TrySetResult( null );
+				promise.TrySetResult( null );
 			else if(Decision.Options.Contains( selection ))
-				_pendingPromise.TrySetResult( tt );
+				promise.TrySetResult( tt );
 			else
-				_pendingPromise.TrySetException( new System.Exception( $"{selection.Text} not found in options" ) );
+				promise.TrySetException( new System.Exception( $"{selection.Text} not found in options" ) );
 		}
 
 		public void IssueCommand( IGameStateCommand cmd ) {
-			_pendingPromise.TrySetException( new GameStateCommandException(cmd) );
+			promise.TrySetException( new GameStateCommandException(cmd) );
 		}
-
-		readonly TaskCompletionSource<T> _pendingPromise;
-
 	}
 
 	#endregion

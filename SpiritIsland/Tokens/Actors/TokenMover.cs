@@ -1,6 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public sealed class TokenMover {
+public sealed class TokenMover(
+	Spirit self,
+	string actionWord,
+	SourceSelector sourceSelector,
+	DestinationSelector destinationSelector
+	) {
 
 	#region Static Factories
 
@@ -30,18 +35,6 @@ public sealed class TokenMover {
 		params SpaceState[] destinationSpaces
 	):this(self,actionWord,new SourceSelector( sourceSpaces ), new DestinationSelector(destinationSpaces)) {}
 
-	public TokenMover(
-		Spirit self,
-		string actionWord,
-		SourceSelector sourceSelector,
-		DestinationSelector destinationSelector
-	) {
-		_self = self;
-		_actionWord = actionWord;
-		_sourceSelector = sourceSelector;
-		_destinationSelector = destinationSelector;
-	}
-
 	#endregion constructors
 
 	public Task DoUpToN() => DoN( _upToNPresent );
@@ -64,37 +57,37 @@ public sealed class TokenMover {
 			TokenMovedArgs tokenMoved = await move.Source.MoveTo( move.Destination );
 
 			// Notify/Update Source
-			await _sourceSelector.NotifyAsync( move.Source );
-			await _destinationSelector.NotifyAsync( move.Destination );
+			await sourceSelector.NotifyAsync( move.Source );
+			await destinationSelector.NotifyAsync( move.Destination );
 			await NotifyAsync( tokenMoved );
 		}
 	}
 
 	async Task<Move> GetMoveDecision(Present present) {
 
-		var sourcePromptBuilder = Prompt.RemainingParts( present == Present.Always ? _actionWord : _actionWord + " up to" );
-		A.SpaceToken srcDecision = _sourceSelector.BuildDecision( sourcePromptBuilder, present, _destinationSelector.Single, 0, null );
+		var sourcePromptBuilder = Prompt.RemainingParts( present == Present.Always ? actionWord : actionWord + " up to" );
+		A.SpaceToken srcDecision = sourceSelector.BuildDecision( sourcePromptBuilder, present, destinationSelector.Single, 0, null );
 
 		// Drag and Drop way
-		Move[] options = _sourceSelector.GetSourceOptions()
-			.SelectMany( s => _destinationSelector.GetDestinationOptions(s).Select(d=>new Move {Source=s,Destination=d } ))
+		Move[] options = sourceSelector.GetSourceOptions()
+			.SelectMany( s => destinationSelector.GetDestinationOptions(s).Select(d=>new Move {Source=s,Destination=d } ))
 			.ToArray();
-		return await _self.SelectAsync(new A.Move(srcDecision.Prompt,options,present));
+		return await self.SelectAsync(new A.Move(srcDecision.Prompt,options,present));
 
 	}
 
 	#region Config
 
 	/// <summary> Used for Gathering </summary>
-	public TokenMover ConfigSource( Func<SourceSelector,SourceSelector> configuration ) { configuration(_sourceSelector); return this;}
-	public TokenMover ConfigDestination( Action<DestinationSelector> configure ) { configure(_destinationSelector); return this; }
+	public TokenMover ConfigSource( Func<SourceSelector,SourceSelector> configuration ) { configuration(sourceSelector); return this;}
+	public TokenMover ConfigDestination( Action<DestinationSelector> configure ) { configure(destinationSelector); return this; }
 
 	public TokenMover RunAtMax(bool runAtMax) { _upToNPresent = runAtMax ? Present.Always : Present.Done; return this; }
 
 	// Config - Quota
-	public TokenMover AddGroup( int count, params ITokenClass[] classes ) { _sourceSelector.AddGroup( count, classes ); return this; }
-	public TokenMover AddAll( params ITokenClass[] classes ) { _sourceSelector.AddAll( classes ); return this; }
-	public TokenMover UseQuota( Quota quota ) { _sourceSelector.UseQuota( quota ); return this; }
+	public TokenMover AddGroup( int count, params ITokenClass[] classes ) { sourceSelector.AddGroup( count, classes ); return this; }
+	public TokenMover AddAll( params ITokenClass[] classes ) { sourceSelector.AddAll( classes ); return this; }
+	public TokenMover UseQuota( Quota quota ) { sourceSelector.UseQuota( quota ); return this; }
 
 	#endregion
 
@@ -113,13 +106,7 @@ public sealed class TokenMover {
 	readonly List<Func<TokenMovedArgs, Task>> _onMoved = [];
 
 	#endregion
-
-	readonly Spirit _self;
-	readonly string _actionWord;
 	Present _upToNPresent = Present.Done;
-	readonly SourceSelector _sourceSelector;
-	readonly DestinationSelector _destinationSelector;
-
 }
 
 

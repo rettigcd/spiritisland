@@ -26,19 +26,11 @@ class HoldTheIslandFastWithABulwarkOfWill {
 /// <summary>
 /// Add this to Blight Card to stop blight from coming off of it.
 /// </summary>
-class PayEnergyToTakeFromBox 
+class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 	: BaseModEntity
 	, IModifyRemovingTokenAsync
 	, IEndWhenTimePasses
 {
-	readonly Spirit _spirit;
-	readonly int _cost;
-
-	public PayEnergyToTakeFromBox( Spirit self, int cost ) {
-		_spirit = self;
-		_cost = cost;
-	}
-
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token != Token.Blight || 0 == args.Count ) return;
 		
@@ -57,13 +49,11 @@ class PayEnergyToTakeFromBox
 
 }
 
-class StopPresenceDestructionFromBlightOrEvents : BaseModEntity, IModifyRemovingTokenAsync, IEndWhenTimePasses {
-	readonly Spirit _spirit;
-
-	public StopPresenceDestructionFromBlightOrEvents( Spirit spirit ) {
-		_spirit = spirit;
-	}
-
+class StopPresenceDestructionFromBlightOrEvents( Spirit _spirit ) 
+	: BaseModEntity
+	, IModifyRemovingTokenAsync
+	, IEndWhenTimePasses
+{
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token.HasTag(TokenCategory.Presence)
 			&& 1 <= _spirit.Energy

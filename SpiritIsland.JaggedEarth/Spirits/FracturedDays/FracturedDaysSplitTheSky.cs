@@ -151,33 +151,23 @@ public class FracturedDaysSplitTheSky : Spirit {
 		set => ((FracturedDaysMemento)value).Restore(this);
 	}
 
-	class FracturedDaysMemento {
-		public FracturedDaysMemento(FracturedDaysSplitTheSky spirit) {
-			_random = spirit._randomizer.Memento;
-			_time = spirit.Time;
-			_minor = [.. spirit.DtnwMinor];
-			_major = [.. spirit.DtnwMajor];
-		}
+	class FracturedDaysMemento( FracturedDaysSplitTheSky _spirit ) {
 		public void Restore( FracturedDaysSplitTheSky spirit ) {
 			spirit._randomizer.Memento = _random;
 			spirit.Time = _time;
 			spirit.DtnwMinor.SetItems(_minor);
 			spirit.DtnwMajor.SetItems(_major);
 		}
-		readonly object _random;
-		readonly int _time;
-		readonly PowerCard[] _minor;
-		readonly PowerCard[] _major;
-
+		readonly object _random = _spirit._randomizer.Memento;
+		readonly int _time = _spirit.Time;
+		readonly PowerCard[] _minor = [.._spirit.DtnwMinor];
+		readonly PowerCard[] _major = [.._spirit.DtnwMajor];
 	}
 
 	#endregion Custom Memento
 
 	/// <summary> Randomizer with a state that can be restored. </summary>
-	class OneOrTwoClass : IHaveMemento {
-		public OneOrTwoClass( int seed ) {
-			_randomizer = new Random( seed );
-		}
+	class OneOrTwoClass( int seed ) : IHaveMemento {
 		public int Next() {
 			while(_history.Count <= _cur)
 				_history.Add( _randomizer.Next( 2 ) );
@@ -189,7 +179,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 		}
 		readonly List<int> _history = [];
 		int _cur = 0;
-		readonly Random _randomizer;
+		readonly Random _randomizer = new Random( seed );
 	}
 
 

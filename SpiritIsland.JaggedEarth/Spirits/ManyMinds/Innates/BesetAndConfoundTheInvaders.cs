@@ -47,11 +47,6 @@ public class BesetAndConfoundTheInvaders {
 
 }
 
-public class BesetInnateOptionAttribute : InnateTierAttribute {
-	readonly int _beastCount;
-	public BesetInnateOptionAttribute( string elementText, int beastCount, string description )
-		: base( elementText, description, 0 ) {
-		_beastCount = beastCount;
-	}
+public class BesetInnateOptionAttribute( string elementText, int _beastCount, string description ) : InnateTierAttribute( elementText, description, 0 ) {
 	public override string ThresholdString => base.ThresholdString + $" {_beastCount} beast";
 }

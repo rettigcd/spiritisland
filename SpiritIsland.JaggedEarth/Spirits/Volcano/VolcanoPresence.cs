@@ -1,11 +1,8 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class VolcanoPresence : SpiritPresence {
-
-	public VolcanoPresence(Spirit spirit,PresenceTrack t1, PresenceTrack t2 ) 
-		: base( spirit, t1, t2, new VolcanoToken( spirit ) ) {
-	}
-
+class VolcanoPresence( Spirit spirit, PresenceTrack t1, PresenceTrack t2 ) 
+	: SpiritPresence( spirit, t1, t2, new VolcanoToken( spirit ) ) 
+{
 	public override bool CanBePlacedOn( SpaceState s ) => ActionScope.Current.TerrainMapper.MatchesTerrain( s, Terrain.Mountain );
 
 	static public ActionScopeValue<Space> SafeSpace = new( "Don't Destroy Presence On Space", (Space)default );
@@ -19,9 +16,7 @@ class VolcanoPresence : SpiritPresence {
 	#endregion Tracking Presence-Destroyed-This-Action
 }
 
-public class VolcanoToken : SpiritPresenceToken, IModifyRemovingToken {
-
-	public VolcanoToken(Spirit spirit ):base(spirit) {}
+public class VolcanoToken( Spirit spirit ) : SpiritPresenceToken(spirit), IModifyRemovingToken {
 
 	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		if( DestroysMyPresence( args ) && VolcanoPresence.SafeSpace.Value == args.From.Space )

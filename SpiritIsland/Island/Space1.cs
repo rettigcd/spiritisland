@@ -3,16 +3,9 @@
 /// <summary>
 /// The Standard Space - represents 1 visible marked space.
 /// </summary>
-public class Space1 : Space {
+public class Space1( Terrain terrain, string label, string startingItems = "" ) : Space(label) {
 
 	#region constructor
-
-	public Space1(Terrain terrain, string label, string startingItems="" )
-		:base(label)
-	{
-		NativeTerrain = terrain;
-		StartUpCounts = new StartUpCounts(startingItems);
-	}
 
 	#endregion
 
@@ -32,7 +25,7 @@ public class Space1 : Space {
 
 	public override bool Is( Terrain terrain ) => NativeTerrain == terrain;
 
-	public StartUpCounts StartUpCounts { get; }
+	public StartUpCounts StartUpCounts { get; } = new StartUpCounts( startingItems );
 
 	public void InitTokens( SpaceState tokens ) {
 		// ! Using 'Adjust' so they don't sqush stuff setup by Adversaries
@@ -44,6 +37,6 @@ public class Space1 : Space {
 		tokens.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}
 
-	public Terrain NativeTerrain {get; set; }
+	public Terrain NativeTerrain { get; set; } = terrain;
 
 }

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.A;
 
-public class Move : TypedDecision<SpiritIsland.Move> {
-	public Move(string prompt, IEnumerable<SpiritIsland.Move> options, Present present ) : base( prompt, options, present ) { }
-}
+public class Move( string prompt, IEnumerable<SpiritIsland.Move> options, Present present ) 
+	: TypedDecision<SpiritIsland.Move>( prompt, options, present ) 
+{}
 

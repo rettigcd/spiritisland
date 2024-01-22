@@ -1,9 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-public class KeeperToken : SpiritPresenceToken, IHandleTokenAddedAsync {
-
-	public KeeperToken(Spirit spirit):base(spirit) {}
-
+public class KeeperToken( Spirit _spirit ) : SpiritPresenceToken(_spirit), IHandleTokenAddedAsync {
 	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 		if(args.Added != this) return;
 

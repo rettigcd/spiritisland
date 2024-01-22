@@ -30,13 +30,10 @@ public class SettleIntoHuntingGrounds {
 
 }
 
-class FreezePresence : BaseModEntity , IModifyRemovingToken, IEndWhenTimePasses {
-	readonly string _name;
-	readonly SpiritPresence _presence;
-	public FreezePresence( string name, SpiritPresence presence ) { 
-		_name = name;
-		_presence = presence;
-	}
+class FreezePresence( string name, SpiritPresence presence ) : BaseModEntity , IModifyRemovingToken, IEndWhenTimePasses {
+	readonly string _name = name;
+	readonly SpiritPresence _presence = presence;
+
 	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 		if(args.Token.HasTag(_presence) 
 			&& args.Reason.IsOneOf(RemoveReason.MovedFrom,RemoveReason.Abducted)

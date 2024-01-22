@@ -7,16 +7,11 @@ namespace SpiritIsland.WinForms;
 /// Wraps other paintables, giving them a fixed height to width ratio.
 /// Also, provides event to update action screen locatoins.
 /// </summary>
-public class PaintableGrowthAction : IPaintableRowMember {
+public class PaintableGrowthAction( SpiritGrowthAction action ) : IPaintableRowMember {
 
 	public float WidthRatio => .6f;
 
-	public PaintableGrowthAction( SpiritGrowthAction action ) {
-		Action = action;
-		_inner = PaintableActionFactory.GetGrowthPaintable( action.Cmd );
-	}
-
-	public SpiritGrowthAction Action { get; }
+	public SpiritGrowthAction Action { get; } = action;
 	public Rectangle Bounds { get; private set; }
 	public event Action<PaintableGrowthAction> BoundsChanged;
 
@@ -28,5 +23,5 @@ public class PaintableGrowthAction : IPaintableRowMember {
 		return _inner.Paint(graphics, bounds );
 	}
 
-	readonly IPaintableRect _inner;
+	readonly IPaintableRect _inner = PaintableActionFactory.GetGrowthPaintable( action.Cmd );
 }

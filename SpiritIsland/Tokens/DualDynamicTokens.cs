@@ -18,15 +18,12 @@ public class DualDynamicTokens : IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class MyMemento {
-		public MyMemento( DualDynamicTokens src ) {
-			forGame = ((IHaveMemento)src.ForGame).Memento;
-		}
+	protected class MyMemento( DualDynamicTokens _src ) {
 		public void Restore( DualDynamicTokens src ) {
 			((IHaveMemento)src.ForGame).Memento = forGame;
 			src.ForRound.Clear();
 		}
-		readonly object forGame;
+		readonly object forGame = ((IHaveMemento)_src.ForGame).Memento;
 	}
 
 }

@@ -19,11 +19,9 @@ public class BargainsOfPowerAndProtection {
 		// (this effect stacks if used multiple times.)
 	}
 
-	class Range1DahanDefend1 {
-		readonly Spirit _self;
-		public Range1DahanDefend1(Spirit self) { 
-			_self = self;
-		}
+	class Range1DahanDefend1( Spirit self ) {
+		readonly Spirit _self = self;
+
 		public int DefendOn( SpaceState space ) {
 
 			// !! This is kind of slow to do for every space.

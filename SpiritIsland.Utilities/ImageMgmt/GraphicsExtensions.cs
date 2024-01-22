@@ -115,10 +115,10 @@ static public class GraphicsExtensions {
 }
 
 // For Deconstructing an Array into parts
-public readonly struct SubArray<T> {
-	readonly int _start;
-	readonly T[] _array;
-	public SubArray( T[] array, int start=0 ) {  _array = array; _start = start; }
+public readonly struct SubArray<T>( T[] array, int start = 0 ) {
+	readonly T[] _array = array;
+	readonly int _start = start;
+
 	public void Deconstruct( out T t, out SubArray<T> rest ) {
 		if( _start == _array.Length ) throw new ArgumentOutOfRangeException($"Cannot extract element[{_start}] of .Length={_start} array.");
 		t = _array[_start];

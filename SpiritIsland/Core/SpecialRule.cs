@@ -1,14 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public class SpecialRule {
+public class SpecialRule( string title, string description ) {
 
-	public string Title { get; }
-	public string Description { get; }
+	public string Title { get; } = title;
+	public string Description { get; } = description;
 
-	public SpecialRule(string title, string description) {
-		this.Title = title;
-		this.Description = description;
-	}
 	public override string ToString() => Title + " - " + Description;
 
 }

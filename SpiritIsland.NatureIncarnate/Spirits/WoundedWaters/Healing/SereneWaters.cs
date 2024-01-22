@@ -24,9 +24,9 @@ class SereneWaters : IHealingCard {
 
 	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.SpecialRules.Any( r => r.Title == Name );
 
-	class Mod : BaseModEntity, IHandleTokenAddedAsync {
-		readonly Spirit _spirit;
-		public Mod(Spirit spirit ) { _spirit=spirit;}
+	class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAddedAsync {
+		readonly Spirit _spirit = spirit;
+
 		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			// When your powers...
 			if(!_spirit.ActionIsMyPower) return;

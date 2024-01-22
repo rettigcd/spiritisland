@@ -28,14 +28,10 @@ public class RoilingBogAndSnaggingThorn {
 /// <summary>
 /// Set out sum # of Dahan for 1 Ravage this Round.
 /// </summary>
-public class DahanSitOutRavage : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
+public class DahanSitOutRavage( Spirit picker, int countToSitOut ) : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 
-	readonly Spirit _picker;
-	readonly int _countToSitOut;
-	public DahanSitOutRavage( Spirit picker, int countToSitOut ) {
-		_picker = picker;
-		_countToSitOut = countToSitOut;
-	}
+	readonly Spirit _picker = picker;
+	readonly int _countToSitOut = countToSitOut;
 
 	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 

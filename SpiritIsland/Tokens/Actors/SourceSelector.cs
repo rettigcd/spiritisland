@@ -175,19 +175,12 @@ public class Prompt {
 	static public Func<PromptData,string> XofY(string prefix) => (x) => $"{prefix} ({x.Index+1} of {x.MaxCount})";
 }
 
-public class PromptData {
+public class PromptData( Quota quota, SpaceToken[] options, int index, int? maxCount = 0 ) {
 
-	readonly Quota _quota;
-	readonly SpaceToken[] _options;
-	public readonly int Index;
-	public readonly int? MaxCount;
+	public readonly int Index = index;
+	public readonly int? MaxCount = maxCount;
 	public int RemainingCount => MaxCount.Value - Index;
-	public PromptData(Quota quota, SpaceToken[] options, int index, int? maxCount = 0) {
-		_quota = quota;
-		_options = options;
-		Index = index;
-		MaxCount = maxCount;
-	}
-	public string RemainingPartsStr => _quota.RemainingTokenDescriptionOn( _options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
+
+	public string RemainingPartsStr => quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
 }
 

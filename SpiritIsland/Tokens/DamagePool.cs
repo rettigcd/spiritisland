@@ -3,7 +3,7 @@
 /// <summary>
 /// Holds 1 set of bonus damage available for the action.
 /// </summary>
-public class DamagePool {
+public class DamagePool( int _remaining ) {
 
 	#region static factories
 	static public DamagePool BadlandDamage( SpaceState ss, string groupName ) {
@@ -25,9 +25,8 @@ public class DamagePool {
 		actionScope[key] = pool;
 		return pool;
 	}
-	#endregion
 
-	public DamagePool( int init ) { _remaining = init; }
+	#endregion
 
 	public int ReducePoolDamage( int poolDamageToAccountFor ) {
 		int damageFromBadlandPool = Math.Min( _remaining, poolDamageToAccountFor );
@@ -38,7 +37,6 @@ public class DamagePool {
 	public int Remaining => _remaining;
 
 	#region private
-	int _remaining;
 	#endregion
 
 }

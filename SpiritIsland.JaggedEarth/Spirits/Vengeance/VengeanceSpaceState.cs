@@ -1,6 +1,5 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class VengeanceSpaceState : SpaceState {
-	public VengeanceSpaceState( SpaceState src ) : base( src ) { }
+public class VengeanceSpaceState( SpaceState src ) : SpaceState( src ) {
 	public override TokenBinding Badlands => new WreakVengeanceForTheLandsCorruption( this );
 }

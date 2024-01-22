@@ -195,17 +195,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class MyMemento {
-		public MyMemento( SpiritPresence src ) {
-			_energyTrack = src.Energy.Memento;
-			_cardPlaysTrack = src.CardPlays.Memento;
-			_destroyed = src.Destroyed.Count;
-			_lowestTrackEnergy = FirstEnergyTrackValue( src );
-			_incarnaEmpowered = src.Incarna.Empowered;
-			_tag = src.CustomMementoValue;
-			// don't need to save Space because that gets set via Tokens and ITrackMySpaces
-		}
-
+	protected class MyMemento( SpiritPresence _src ) {
 		virtual public void Restore( SpiritPresence src ) {
 			src.Energy.Memento = _energyTrack;
 			src.CardPlays.Memento = _cardPlaysTrack;
@@ -219,12 +209,12 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 		static int FirstEnergyTrackValue( SpiritPresence src ) => src.Energy.Revealed.First().Energy.Value; // The first one should always have an energy value.
 
-		readonly object _energyTrack;
-		readonly object _cardPlaysTrack;
-		readonly object _tag;
-		readonly int _destroyed;
-		readonly int _lowestTrackEnergy;
-		readonly bool _incarnaEmpowered;
+		readonly object _energyTrack = _src.Energy.Memento;
+		readonly object _cardPlaysTrack = _src.CardPlays.Memento;
+		readonly object _tag = _src.CustomMementoValue;
+		readonly int _destroyed = _src.Destroyed.Count;
+		readonly int _lowestTrackEnergy = FirstEnergyTrackValue( _src );
+		readonly bool _incarnaEmpowered = _src.Incarna.Empowered;
 	}
 
 	protected virtual object CustomMementoValue {

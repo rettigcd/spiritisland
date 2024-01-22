@@ -39,7 +39,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Escalation
 
-	static AdversaryLevel Escalation => new AdversaryLevel( level: 0, 1, 3,3,3, "Mining Tunnels", 
+	static AdversaryLevel Escalation => new AdversaryLevel( _level: 0, 1, 3,3,3, "Mining Tunnels", 
 		"After Advancing Invader Cards: On each board, Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required)."
 	).WithEscalation(MiningTunnels);
 
@@ -58,7 +58,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Level 1
 
-	static AdversaryLevel L1 => new AdversaryLevel( level: 1, 3, 3,3,3, "Avarice Rewarded/Ceaseless Mining", 
+	static AdversaryLevel L1 => new AdversaryLevel( _level: 1, 3, 3,3,3, "Avarice Rewarded/Ceaseless Mining", 
 		"Instead of cascading Ravage Blight, Upgrade 1 Explorer/Town ( before dahan counterattack). "+
 		"In Mining lands (>=3 invaders): (1) Disease affect Ravage Actions as though they were Builds. (2) During the Build Step, Replace each Build with a Ravage."
 	){       
@@ -152,7 +152,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 1
 
 	#region Level 2
-	readonly static AdversaryLevel L2 = new AdversaryLevel( level: 2, 4, 
+	readonly static AdversaryLevel L2 = new AdversaryLevel( _level: 2, 4, 
 		3, 3, 4, 
 		"Miners Come From Far and Wide", 
 		"Setup: (a) Add 1 Explorer in each land with no Dahan. (b) Add 1 Disease and 1 City in the highest-numbered land with a town symbol."
@@ -180,7 +180,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 2
 
 	#region Level 3 
-	readonly static AdversaryLevel L3 = new AdversaryLevel( level: 3, 5, 
+	readonly static AdversaryLevel L3 = new AdversaryLevel( _level: 3, 5, 
 		3, 4, 4, 
 		"Mining Boom (I)", 
 		"After the Build Step, on each board: Choose a land with an Explorer. Upgrade 1 Explorer there."
@@ -204,15 +204,14 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Level 4
 
-	readonly static AdversaryLevel L4 = new AdversaryLevel( level: 4, 7, 
+	readonly static AdversaryLevel L4 = new AdversaryLevel( _level: 4, 7, 
 		4, 4, 4, 
 		"Untapped Salt Deposits", 
 		"111-2S22-33333 (Remove Stage-2 Coastal Lands, Place Salt Deposits in 2nd Stage-2 slot."
 	).WithDeckBuilder( new SaltDepositDeckBuilder( "111-2S22-33333" ) );
 	// The no-advance is baked in to the Ravage Slot for the moment.
 
-	public class SaltDepositDeckBuilder : InvaderDeckBuilder {
-		public SaltDepositDeckBuilder(string levels):base(levels) { }
+	public class SaltDepositDeckBuilder( string levels ) : InvaderDeckBuilder(levels) {
 		protected override InvaderCard SelectCard( Queue<InvaderCard>[] src, char level ) {
 			return level switch {
 				'S' => SaltDeposits(),
@@ -246,7 +245,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	#region Level 5
 
-	readonly static AdversaryLevel L5 = new AdversaryLevel( level:5, 9, 
+	readonly static AdversaryLevel L5 = new AdversaryLevel( _level:5, 9, 
 		4, 5, 4, 
 		"Mining Boom (II)", 
 		"Instead of Mining Boom(I), after the Build Step, on each board: Choose a land with Explorer. Build there, then Upgrade 1 Explorer( Build normally in a Mining land.)"
@@ -270,7 +269,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 5
 
 	#region Level 6
-	readonly static AdversaryLevel L6 = new AdversaryLevel( level:6, 10, 
+	readonly static AdversaryLevel L6 = new AdversaryLevel( _level:6, 10, 
 		4, 5, 4, 
 		"The Empire Ascendant", 
 		"Setup and During the Explore Step: On boards with 3 or fewer Blight: Add +1 Explorer in each land successfully explored.  ( Max. 2 lands per board per Explore Card.)"

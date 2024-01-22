@@ -17,15 +17,10 @@ public class TerrifyingRampage {
 		await ctx.PushDahan(3);
 	}
 
-	class InvadersSitOut : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
+	class InvadersSitOut( Spirit invaderPicker, Quota quota ) : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
 
-		readonly Spirit _invaderPicker;
-		readonly Quota _quota;
-
-		public InvadersSitOut(Spirit invaderPicker,Quota quota) {
-			_invaderPicker = invaderPicker;
-			_quota = quota;
-		}
+		readonly Spirit _invaderPicker = invaderPicker;
+		readonly Quota _quota = quota;
 
 		async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 			await space.SourceSelector

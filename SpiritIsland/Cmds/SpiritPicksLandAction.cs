@@ -3,14 +3,8 @@
 /// <summary>
 /// Spirit/Player can pick from any land.
 /// </summary>
-public class SpiritPicksLandAction : IActOn<Spirit> {
-
-	public SpiritPicksLandAction( IActOn<TargetSpaceCtx> spaceAction, string andInToForPreposition ) { 
-		_spaceAction = spaceAction;
-		_landPreposition = andInToForPreposition;
-	}
-
-	public string Description => $"{_spaceAction.Description} {_landPreposition} {_diffString}{LandCriteria.Description}";
+public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string _andInToForPreposition ) : IActOn<Spirit> {
+	public string Description => $"{_spaceAction.Description} {_andInToForPreposition} {_diffString}{LandCriteria.Description}";
 
 	public bool IsApplicable( Spirit spirit ) => true;
 
@@ -65,13 +59,11 @@ public class SpiritPicksLandAction : IActOn<Spirit> {
 
 	string _diffString => _chooseDifferentLands ? "different " : "";
 	TargetSpaceCtxFilter _landCriteria;
-	readonly IActOn<TargetSpaceCtx> _spaceAction;
 	readonly HashSet<Space> _disallowedSpaces = [];
 
 	// configurable
 	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;
 
-	readonly string _landPreposition;
 	Present _present = Present.Always;
 	bool _chooseDifferentLands = false;
 	ITokenClass[] _firstPickTokenClasses;

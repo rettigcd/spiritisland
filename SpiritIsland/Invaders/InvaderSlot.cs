@@ -3,11 +3,9 @@
 /// <summary>
 /// The Engine + card management
 /// </summary>
-public abstract class InvaderSlot : IHaveMemento {
+public abstract class InvaderSlot( string label ) : IHaveMemento {
 
-	public InvaderSlot(string label ) { Label = label;}
-	public string Label { get; }
-	public List<InvaderCard> Cards { get; } = [];
+	public string Label { get; } = label; public List<InvaderCard> Cards { get; } = [];
 	public void HoldNextBack() { _holdBackCount++; }
 	public void SkipNextNormal() { _skipCount++; }
 	public virtual async Task Execute( GameState gs ) {

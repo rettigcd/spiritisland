@@ -1,13 +1,10 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class TDaTD_ActionTokens : SpaceState {
+public class TDaTD_ActionTokens( SpaceState spaceState ) 
+	: SpaceState( spaceState )
+{
 
 	readonly static public SpecialRule Rule = new( "TO DREAM A THOUSAND DEATHS", "Your Powers never cause Damage, nor can they Destroy anything other than your own Presence. When your Powers would Destroy Invaders, instead generate 0/2/5 Fear and Pushes Invaders" );
-
-	public TDaTD_ActionTokens( SpaceState spaceState )
-		: base( spaceState ) 
-	{
-	}
 
 	public override async Task DestroySpace() {
 		// Destroy Invaders

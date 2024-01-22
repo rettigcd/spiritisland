@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class TargetSpaceCtx : IHaveASpirit {
+public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 
 	#region private fields
 	InvaderBinding _invadersRO;
@@ -8,19 +8,11 @@ public class TargetSpaceCtx : IHaveASpirit {
 	SpaceState _tokens;
 	#endregion
 
-	public Space Space { get; }
+	public Space Space { get; } = target ?? throw new ArgumentNullException( nameof( target ) );
 
 	#region constructors
 
-	// Called:
-	//		from SelfCtx (to target a space)
-	//		for derived types
-	public TargetSpaceCtx( Spirit self, Space target ){
-		Self = self;
-		Space = target ?? throw new ArgumentNullException(nameof(target));
-	}
-
-	public Spirit Self { get; }
+	public Spirit Self { get; } = self;
 
 	#endregion
 

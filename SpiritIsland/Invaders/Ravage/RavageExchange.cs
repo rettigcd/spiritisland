@@ -1,20 +1,15 @@
 ﻿namespace SpiritIsland;
 
-public class RavageParticipants {
-
-	public RavageParticipants(
-		CountDictionary<HumanToken> starting,
-		CountDictionary<HumanToken> active
-	) {
-		Starting = starting;
-		Active = active;
-	}
+public class RavageParticipants(
+	CountDictionary<HumanToken> starting,
+	CountDictionary<HumanToken> active
+) {
 
 	/// <summary> Anyone that can receive damage. </summary>
-	readonly public CountDictionary<HumanToken> Starting;
+	readonly public CountDictionary<HumanToken> Starting = starting;
 
 	/// <summary> The participants that deal damage. </summary>
-	readonly public CountDictionary<HumanToken> Active;
+	readonly public CountDictionary<HumanToken> Active = active;
 
 	/// <summary> Damage dealt out to the other side. (less any Defend) </summary>
 	public int DamageDealtOut;
@@ -25,7 +20,8 @@ public class RavageParticipants {
 
 }
 
-public class RavageExchange {
+/// <summary> Creates a Custom Ravage Exchange. </summary>
+public class RavageExchange( SpaceState tokens, RavageOrder order, RavageParticipants attackers, RavageParticipants defenders ) {
 
 	/// <summary> Creates a standard Ravage Exchange. </summary>
 	public RavageExchange( SpaceState tokens, RavageOrder order ):this(
@@ -35,18 +31,10 @@ public class RavageExchange {
 		GetSideParticipants( tokens, RavageSide.Defender, order ) 
 	) { }
 
-	/// <summary> Creates a Custom Ravage Exchange. </summary>
-	public RavageExchange( SpaceState tokens, RavageOrder order, RavageParticipants attackers, RavageParticipants defenders ) {
-		Tokens = tokens;
-		Order = order;
-		Attackers = attackers;
-		Defenders = defenders;
-	}
-
-	readonly public SpaceState Tokens;
-	readonly public RavageOrder Order;
-	readonly public RavageParticipants Attackers;
-	readonly public RavageParticipants Defenders;
+	readonly public SpaceState Tokens = tokens;
+	readonly public RavageOrder Order = order;
+	readonly public RavageParticipants Attackers = attackers;
+	readonly public RavageParticipants Defenders = defenders;
 
 	public Space Space => Tokens.Space;
 	public bool HasActiveParticipants => 0 < (Attackers.Active.Count + Defenders.Active.Count);

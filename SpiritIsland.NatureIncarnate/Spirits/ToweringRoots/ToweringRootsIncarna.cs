@@ -1,14 +1,12 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class ToweringRootsIncarna 
-	: Incarna
+public class ToweringRootsIncarna( Spirit spirit )
+	: Incarna(spirit, "TRotJ", Img.TRotJ_Incarna_Empowered, Img.TRotJ_Incarna )
 	, IHandleTokenAdded	// Empowers if it meets 3 vitality
 	, IStopInvaderDamage, IModifyDahanDamage, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
 	, ISkipBuilds
 	
 {
-	public ToweringRootsIncarna(Spirit spirit):base(spirit, "TRotJ", Img.TRotJ_Incarna_Empowered, Img.TRotJ_Incarna ) { }
-
 	public void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
 		if( !Empowered && args.Added == Token.Vitality && to[Token.Vitality] == 3)
 			Empowered = true;

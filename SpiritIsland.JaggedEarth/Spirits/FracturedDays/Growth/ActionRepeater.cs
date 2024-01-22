@@ -6,14 +6,12 @@
 ///  - Clearing out all repeatable actions when repeats are used up.
 /// </summary>
 /// <remarks>	Fractured Days Growth Option 2 & 3 </remarks>
-public class ActionRepeater {
+public class ActionRepeater( int repeats ) {
 
-	public readonly int _repeats;
+	public readonly int _repeats = repeats;
 	public int _remainingRepeats;
 
 	#region constructor
-
-	public ActionRepeater(int repeats) { _repeats = repeats; }
 
 	#endregion
 

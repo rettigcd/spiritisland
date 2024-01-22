@@ -125,13 +125,9 @@ public partial class Form1 : Form, IHaveOptions {
 		return btn;
 	}
 
-	class FontSizeCalculator : IDisposable {
-		Graphics graphics;
-		readonly Font font;
-		public FontSizeCalculator( Control control ) {
-			this.graphics = control.CreateGraphics();
-			this.font = control.Font;
-		}
+	class FontSizeCalculator( Control control ) : IDisposable {
+		Graphics graphics = control.CreateGraphics();
+		readonly Font font = control.Font;
 
 		public SizeF CalcSize( string s ) => graphics.MeasureString( s, font );
 

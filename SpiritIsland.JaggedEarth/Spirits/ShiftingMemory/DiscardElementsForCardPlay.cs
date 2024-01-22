@@ -3,16 +3,13 @@
 /// <summary>
 /// Shifting Memories Track-Action
 /// </summary>
-public class DiscardElementsForCardPlay : SpiritAction {
+public class DiscardElementsForCardPlay( int elementDiscardCount ) 
+	: SpiritAction( "DiscardElementsForCardPlay" ) 
+{
 
 	// When revealing Discard-Elements-For-Extra-Card-Plays during non-growth (i.e. Unrelenting Growth), don't activate - it is too late to add card plays.
 
-	readonly int _totalNumToRemove;
-	public DiscardElementsForCardPlay(int elementDiscardCount )
-		:base( "DiscardElementsForCardPlay" )
-	{
-		_totalNumToRemove = elementDiscardCount;
-	}
+	readonly int _totalNumToRemove = elementDiscardCount;
 
 	public override async Task ActAsync( Spirit self ) {
 		if( self is ShiftingMemoryOfAges smoa

@@ -1,20 +1,13 @@
 ﻿namespace SpiritIsland.Basegame.Adversaries;
 
-class FranceBuilder : BuildEngine {
-	readonly bool _hasSlaveLabor;
-	readonly bool _hasTriangleTrade;
-
-	public FranceBuilder( bool hasSlaveLabor, bool hasTriangeTrade ) {
-		_hasSlaveLabor = hasSlaveLabor;
-		_hasTriangleTrade = hasTriangeTrade;
-	}
+class FranceBuilder( bool _hasSlaveLabor, bool _hasTriangeTrade ) : BuildEngine {
 
 	public override async Task Do1Build( GameState gameState, SpaceState spaceState ) {
 		int initialCityCount = spaceState.Sum( Human.City );
 		await base.Do1Build( gameState, spaceState );
 		if(_hasSlaveLabor)
 			await DoSlaveLaborAsync( spaceState );
-		if(_hasTriangleTrade)
+		if(_hasTriangeTrade)
 			await DoTriangleTrade( spaceState, initialCityCount );
 	}
 

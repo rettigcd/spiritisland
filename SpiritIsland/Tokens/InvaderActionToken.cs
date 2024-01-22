@@ -1,11 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InvaderActionToken : ISpaceEntity {
-
-	public InvaderActionToken( string label ) {
-		Label = label;
-	}
-
-	public string Label { get; }
+public class InvaderActionToken( string label ) : ISpaceEntity {
+	public string Label { get; } = label;
 
 }

@@ -13,7 +13,7 @@ public interface IRunWhenTimePasses : ISpaceEntity {
 }
 public enum TimePassesOrder { Early, Normal, Late }
 
-public class TimePassesAction : IRunWhenTimePasses {
+public class TimePassesAction( Func<GameState, Task> _func, bool _remove, TimePassesOrder _order ) : IRunWhenTimePasses {
 
 	#region static factory methods
 
@@ -22,21 +22,12 @@ public class TimePassesAction : IRunWhenTimePasses {
 
 	#endregion static factory methods
 
-	public TimePassesAction( Func<GameState, Task> func, bool remove, TimePassesOrder order ) { 
-		_func = func; 
-		_remove = remove;
-		_order = order;
-	}
-
 	#region IRunWhenTimePasses Imp
 	bool IRunWhenTimePasses.RemoveAfterRun => _remove;
 	async Task IRunWhenTimePasses.TimePasses( GameState gameState ) { await _func( gameState ); }
 	TimePassesOrder IRunWhenTimePasses.Order => _order;
-	#endregion IRunWhenTimePasses Imp
 
+	#endregion IRunWhenTimePasses Imp
 	#region readonly private fields
-	readonly Func<GameState, Task> _func;
-	readonly bool _remove;
-	readonly TimePassesOrder _order;
 	#endregion readonly private fields
 }

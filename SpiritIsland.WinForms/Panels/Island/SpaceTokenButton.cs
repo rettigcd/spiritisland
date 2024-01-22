@@ -2,13 +2,8 @@
 
 namespace SpiritIsland.WinForms;
 
-public class SpaceTokenButton : IButton {
-
-	public SpaceTokenButton( Rectangle bounds ) {
-		Bounds = bounds;
-	}
-
-	public Rectangle Bounds { get; private set; }
+public class SpaceTokenButton( Rectangle bounds ) : IButton {
+	public Rectangle Bounds { get; private set; } = bounds;
 	bool IButton.Contains( Point clientCoords) => Bounds.Contains( clientCoords );
 
 	public void Paint( Graphics graphics, bool enabled ) {

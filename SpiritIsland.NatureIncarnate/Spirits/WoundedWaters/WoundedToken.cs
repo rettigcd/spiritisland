@@ -1,9 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-class WoundedToken : SpiritPresenceToken, IHandleTokenAdded {
-
-	public WoundedToken( Spirit spirit ) : base( spirit ) {}
-
+class WoundedToken( Spirit spirit ) : SpiritPresenceToken( spirit ), IHandleTokenAdded {
 	public async void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
 		// When your powers ...
 		if(!IsYourPowers) return;

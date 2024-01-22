@@ -3,14 +3,9 @@
 /// <summary>
 /// Action occurs in each Active land.  No picking required.
 /// </summary>
-public class EachActiveLand : IActOn<GameState> {
+public class EachActiveLand( IActOn<TargetSpaceCtx> _spaceAction, string _preposition ) : IActOn<GameState> {
 
 	#region constructor
-
-	public EachActiveLand( IActOn<TargetSpaceCtx> spaceAction, string preposition ) {
-		_preposition = preposition;
-		_spaceAction = spaceAction;
-	}
 
 	#endregion constructor
 
@@ -39,9 +34,6 @@ public class EachActiveLand : IActOn<GameState> {
 	public bool IsApplicable( GameState _ ) => true;
 
 	#region private
-
-	readonly IActOn<TargetSpaceCtx> _spaceAction;
-	readonly string _preposition;
 	CtxFilter<TargetSpaceCtx> _landCriteria = CtxFilter<TargetSpaceCtx>.NullFilter;
 
 	#endregion

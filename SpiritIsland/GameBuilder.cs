@@ -1,13 +1,7 @@
 ﻿
 namespace SpiritIsland;
 
-public class GameBuilder {
-
-	readonly IGameComponentProvider[] _providers;
-
-	public GameBuilder( params IGameComponentProvider[] providers ) {
-		_providers = providers;
-	}
+public class GameBuilder( params IGameComponentProvider[] _providers ) {
 
 	public string[] SpiritNames => _providers.SelectMany(p => p.SpiritNames ).Order().ToArray();
 	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames).Order().ToArray();

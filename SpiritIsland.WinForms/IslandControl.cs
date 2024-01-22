@@ -53,7 +53,7 @@ public partial class IslandControl : Control {
 		Color[] panelColors = [Color.DarkSalmon, Color.DarkSeaGreen, Color.DarkGray, Color.SaddleBrown, Color.Bisque];
 		for(int i = 0; i< _ctx._spirit.Decks.Length;++i)
 			_playerDeckPanels[i] = new CardDeckPanel( _ctx, this, i, panelColors[i] );
-		_drawCardPanel = new OtherCardsPanel( _ctx, this );
+		_drawCardPanel = new OtherCardsPanel( _ctx );
 		_allPanels = _playerDeckPanels.Union( new IPanel[] { _islandPanel, _spiritPanel, _growthPanel, _statusPanel , _drawCardPanel } ).ToArray();
 
 		GameLayout_Invalidate();
@@ -448,15 +448,9 @@ public partial class IslandControl : Control {
 
 }
 
-public class SharedCtx {
+public class SharedCtx( IslandControl control ) {
 
-	readonly IslandControl _control;
-
-	public SharedCtx( IslandControl control ) {
-		_control = control;
-		_tip = new SpiritImageMemoryCache( ResourceImages.Singleton );
-	}
-
+	readonly IslandControl _control = control;
 	public GameState GameState;
 
 	public Spirit _spirit;
@@ -466,5 +460,5 @@ public class SharedCtx {
 
 	public AdversaryConfig _adversary;
 
-	public readonly SpiritImageMemoryCache _tip; // because we need different images for different damaged invaders.
+	public readonly SpiritImageMemoryCache _tip = new SpiritImageMemoryCache( ResourceImages.Singleton ); // because we need different images for different damaged invaders.
 }

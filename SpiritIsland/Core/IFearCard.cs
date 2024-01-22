@@ -61,12 +61,7 @@ static class AllSpirits {
 /// <remarks>
 /// This is required because some items implement their own IOption and we do not want them appearing as the ACK-popup.
 /// </remarks>
-public class Acknowledgement : IOption {
-
-	public Acknowledgement(string text, object item ) {
-		Text = text;
-		Item = item;
-	}
-	public string Text { get; }
-	public object Item { get; }
+public class Acknowledgement( string text, object item ) : IOption {
+	public string Text { get; } = text;
+	public object Item { get; } = item;
 }

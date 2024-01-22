@@ -8,10 +8,9 @@
 /// <summary>
 /// A card already in Play, may be Activated an additional time. (no new elements)
 /// </summary>
-public class RepeatCardForCost : IActionFactory {
+public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
 
-	readonly protected string[] exclude;
-	public RepeatCardForCost(params string[] exclude ) { this.exclude = exclude; }
+	readonly protected string[] exclude = exclude;
 
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 		=> speed == Phase.Fast || speed == Phase.Slow;
@@ -45,8 +44,7 @@ public class RepeatCardForCost : IActionFactory {
 	}
 }
 
-public class RepeatCheapestCardForCost : RepeatCardForCost {
-	public RepeatCheapestCardForCost(params string[] exclude ):base(exclude) {}
+public class RepeatCheapestCardForCost( params string[] exclude ) : RepeatCardForCost(exclude) {
 	public override PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
 		return [
 			.. base.GetCardOptions(self,phase)

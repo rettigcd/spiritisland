@@ -115,12 +115,12 @@ public class England : AdversaryBase, IAdversary {
 
 	#region Level 3 - High Immegration
 
-	public class HighImmegrationSlot : BuildSlot, IRunWhenTimePasses {
-		public HighImmegrationSlot( int level ):base("High Immigration"){
-			_repeatWhenNoFearResolved = level == 6;
-		}
-
-		readonly bool _repeatWhenNoFearResolved;
+	public class HighImmegrationSlot( int level ) 
+		: BuildSlot("High Immigration")
+		, IRunWhenTimePasses
+	{
+		
+		readonly bool _repeatWhenNoFearResolved = level == 6;
 		int lastCountOfFearCardsResolved = 0;
 
 		public override async Task Execute( GameState gs ) {

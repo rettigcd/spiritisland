@@ -1,12 +1,10 @@
 ﻿namespace SpiritIsland;
 
 /// <remarks>User selects 1 element they want to gain.</remarks>
-public class Gain1Element : SpiritAction, ICanAutoRun {
-
-	public Gain1Element( params Element[] elementOptions ) : base()
-	{
-		ElementOptions = elementOptions;
-	}
+public class Gain1Element( params Element[] elementOptions ) 
+	: SpiritAction()
+	, ICanAutoRun
+{
 
 	public override string Description => "Gain " + ElementOptions
 		.Select( x => x.ToString() )
@@ -18,6 +16,6 @@ public class Gain1Element : SpiritAction, ICanAutoRun {
 		self.Elements.Add(element);
 	}
 
-	public Element[] ElementOptions { get; } // public for drawing
+	public Element[] ElementOptions { get; } = elementOptions;
 
 }

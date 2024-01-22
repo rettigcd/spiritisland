@@ -34,17 +34,13 @@ public class WarnOfImpendingConflict {
 /// <summary>
 /// Ravage-Config - (some or all) of the Dahan attack before invaders.
 /// </summary>
-class WarnToken : BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses {
+class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false ) 
+	: BaseModEntity, IConfigRavagesAsync, IEndWhenTimePasses
+{
 
-	int _dahanToGoEarly;
-	readonly Spirit _spirit;
-	readonly bool _allSpaces;
-
-	public WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false ) {
-		_spirit = spirit;
-		_dahanToGoEarly = dahanToGoEarly;
-		_allSpaces = allSpaces;
-	}
+	int _dahanToGoEarly = dahanToGoEarly;
+	readonly Spirit _spirit = spirit;
+	readonly bool _allSpaces = allSpaces;
 
 	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
 		int remainingGoEarlyCount = Math.Min( _dahanToGoEarly, space.Dahan.CountAll );

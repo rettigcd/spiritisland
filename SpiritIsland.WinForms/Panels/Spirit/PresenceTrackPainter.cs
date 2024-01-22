@@ -8,18 +8,11 @@ namespace SpiritIsland.WinForms {
 	/// <summary>
 	/// Binds together for a single painting: Graphics, Spirit(info), Layout, Clickable-Options
 	/// </summary>
-	class PresenceTrackPainter : IDisposable {
-
-		public PresenceTrackPainter( 
-			Spirit spirit, 
-			PresenceTrackLayout layout,
-			SpiritImageMemoryCache tip
-		) {
-			_spirit = spirit;
-			_layout = layout;
-
-			_presenceImg = tip._presenceImg;
-		}
+	class PresenceTrackPainter(
+		Spirit spirit,
+		PresenceTrackLayout layout,
+		SpiritImageMemoryCache tip
+		) : IDisposable {
 		public void Paint( Graphics graphics, ImgMemoryCache _ ) {
 			// Set single-thread variables
 
@@ -112,9 +105,9 @@ namespace SpiritIsland.WinForms {
 
 		Track[] CardPlaySlots => _spirit.Presence.CardPlays.Slots.ToArray();
 
-		readonly Spirit _spirit;
-		readonly PresenceTrackLayout _layout;
-		readonly Image _presenceImg;
+		readonly Spirit _spirit = spirit;
+		readonly PresenceTrackLayout _layout = layout;
+		readonly Image _presenceImg = tip._presenceImg;
 
 		Bitmap _cachedBackgroundImage;
 

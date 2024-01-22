@@ -1,20 +1,13 @@
 ﻿namespace SpiritIsland;
 #nullable enable
 
-public class AddDestroyedPresence : SpiritAction {
-
-	// The alternate way to place destroyed presence
-	// is through BoundPresence.PlaceDestroyedHere()
+public class AddDestroyedPresence( int range ) : SpiritAction() {
 
 	#region constructors
 
-	public AddDestroyedPresence( int range ):base(){
-		Range = range;
-	}
-
 	#endregion
 
-	public int Range { get; }
+	public int Range { get; } = range;
 
 	public override string Description
 		=> $"Add{CountStr} Destroyed Presence{RangeStr}";

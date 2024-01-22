@@ -32,14 +32,14 @@ public class BargainOfCoursingPaths {
 	/// <summary>
 	/// For each Action, Moves tokens added to its space to a single other space.
 	/// </summary>
-	class CoursingPaths : TokenClassToken, IHandleTokenAddedAsync {
+	class CoursingPaths( Spirit spirit ) 
+		: TokenClassToken(Name,'>', Img.Land_Push_Dahan)
+		, IHandleTokenAddedAsync
+	{
 
 		const string Name = "Coursing Paths";
 
-		readonly Spirit _spirit;
-		public CoursingPaths(Spirit spirit ):base(Name,'>', Img.Land_Push_Dahan) {
-			_spirit = spirit;
-		}
+		readonly Spirit _spirit = spirit;
 
 		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			// Ongoing: After pieces are added or moved into the marked lands:

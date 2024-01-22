@@ -83,12 +83,10 @@ class ErruptionAttribute : FromPresenceAttribute {
 	}
 }
 
-public class ExplosiveInnateOptionAttribute : InnateTierAttribute {
-	public ExplosiveInnateOptionAttribute( string elementText, int destroyedPresence, string description, int group )
-		: base( elementText, description, group ) {
-		DestroyedPresenceThreshold = destroyedPresence;
-	}
-	public int DestroyedPresenceThreshold { get; }
+public class ExplosiveInnateOptionAttribute( string elementText, int destroyedPresence, string description, int group ) 
+	: InnateTierAttribute( elementText, description, group )
+{
+	public int DestroyedPresenceThreshold { get; } = destroyedPresence;
 
 	public override string ThresholdString => base.ThresholdString + $" {DestroyedPresenceThreshold} destroyedpresence";
 }

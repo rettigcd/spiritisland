@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-class Drowning : BaseModEntity, IHandleTokenAddedAsync {
+class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAddedAsync {
 
 	public static SpecialRule Rule => new SpecialRule(
 		"Drowning",
@@ -8,10 +8,8 @@ class Drowning : BaseModEntity, IHandleTokenAddedAsync {
 	);
 
 
-	readonly Spirit _spirit;
+	readonly Spirit _spirit = ocean;
 	int drownedInvaderHealthAccumulator = 0;
-
-	public Drowning( Ocean ocean ) { _spirit = ocean; }
 
 	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 

@@ -1,16 +1,14 @@
 ﻿namespace SpiritIsland;
 
-public class FastButSlowIfAttribute : SpeedAttribute {
+public class FastButSlowIfAttribute( string triggerElements ) 
+	: SpeedAttribute( Phase.Fast ) 
+{
 
-	readonly CountDictionary<Element> _triggerElements;
-	public FastButSlowIfAttribute(string triggerElements) : base( Phase.Fast ) { 
-		_triggerElements = ElementStrings.Parse(triggerElements);
-	}
+	readonly CountDictionary<Element> _triggerElements = ElementStrings.Parse( triggerElements );
 
 	public override bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit ) {
 		return base.CouldBeActiveFor( requestSpeed, spirit )
 			|| requestSpeed == Phase.Slow && spirit.CouldHaveElements(_triggerElements);
 	}
-
 
 }

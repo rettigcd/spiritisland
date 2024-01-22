@@ -1,12 +1,9 @@
 ﻿namespace SpiritIsland;
 
 // Commands that act on: GameState
-public class EachSpirit : IActOn<GameState> {
+public class EachSpirit( IActOn<Spirit> _spiritAction ) : IActOn<GameState> {
 
 	#region constructor
-	public EachSpirit( IActOn<Spirit> spiritAction ) {
-		_spiritAction = spiritAction;
-	}
 	#endregion
 
 	public string Description => $"Each {_filter.Description}: {_spiritAction.Description}.";
@@ -29,7 +26,6 @@ public class EachSpirit : IActOn<GameState> {
 	public bool IsApplicable( GameState ctx ) => true;
 
 	#region private
-	readonly IActOn<Spirit> _spiritAction;
 	SpiritFilter _filter = Is.AnySpirit; // alt: Each, All
 	#endregion
 

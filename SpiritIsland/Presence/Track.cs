@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 
-public sealed class Track 
+public sealed class Track( string text, params Element[] els )
 	: IOption 
 	, ILocation
 {
@@ -107,14 +107,7 @@ public sealed class Track
 
 	#endregion static Factories
 
-	#region constructor
-
-	public Track( string text, params Element[] els ){ this.Text = text; Elements = els; }
-
-	#endregion
-
-	public string Text {get;}
-
+	public string Text { get; } = text;
 	public int? Energy { 
 		get => _energy;
 		set { 
@@ -123,8 +116,7 @@ public sealed class Track
 		}
 	}
 
-	public Element[] Elements { get; set; }
-
+	public Element[] Elements { get; set; } = els;
 	public int? CardPlay { get; set; }
 
 	public IconDescriptor Icon { get; set; }

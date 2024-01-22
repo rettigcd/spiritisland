@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
 
-class OtherCardsPanel : IPanel {
-
-	/// <summary>
-	/// Cards that are not in 1 of the players/spirits decks
-	/// </summary>
-	public OtherCardsPanel( SharedCtx ctx, Control _) {
-		_ctx = ctx;
-		// _onAppearanceChanged = parentControl.Invalidate;
-	}
-
+/// <summary>
+/// Cards that are not in 1 of the players/spirits decks
+/// </summary>
+class OtherCardsPanel( SharedCtx ctx ) : IPanel {
 	public bool HasFocus { set; private get; }
 
 	public void AssignBounds( RegionLayoutClass regionLayout ) {
@@ -129,7 +122,7 @@ class OtherCardsPanel : IPanel {
 
 
 	// Spirit Settings
-	readonly SharedCtx _ctx;
+	readonly SharedCtx _ctx = ctx;
 	readonly CardImageManager _images = new CardImageManager();
 	// readonly Action _onAppearanceChanged;
 }

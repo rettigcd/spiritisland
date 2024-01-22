@@ -3,16 +3,12 @@
 /// <summary>
 /// Prevents Disease from being removed when on Spirit's lands.
 /// </summary>
-public class TerrorOfASlowlyUnfoldingPlague : BaseModEntity, IModifyRemovingTokenAsync {
+public class TerrorOfASlowlyUnfoldingPlague( Spirit _spirit ) : BaseModEntity, IModifyRemovingTokenAsync {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"The Terror of a Slowly Unfolding Plague",
 		"When disease would prevent a Build on a board with your presence, you may let the Build happen (removing no disease).  If you do, 1 fear."
 	);
-
-	public TerrorOfASlowlyUnfoldingPlague( Spirit spirit ) {
-		_spirit = spirit;
-	}
 
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 
@@ -32,6 +28,4 @@ public class TerrorOfASlowlyUnfoldingPlague : BaseModEntity, IModifyRemovingToke
 		=> args.Token.HasTag( Token.Disease )
 		&& args.Reason == RemoveReason.UsedUp
 		&& args.Count == 1;
-
-	readonly Spirit _spirit;
 }

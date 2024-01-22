@@ -2,18 +2,9 @@
 
 // end of round action
 // used by: Unlock the Gates of Deepest power
-public class ForgetCard {
-
-	readonly Spirit spirit;
-	readonly PowerCard card;
-
-	public ForgetCard(Spirit spirit, PowerCard card ) {
-		this.spirit = spirit;
-		this.card = card;
-	}
-
+public class ForgetCard( Spirit _spirit, PowerCard _card ) {
 	public Task Forget( GameState _ ) {
-		spirit.ForgetThisCard( card );
+		_spirit.ForgetThisCard( _card );
 		return Task.CompletedTask;
 	}
 }

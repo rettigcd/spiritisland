@@ -144,13 +144,9 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 	readonly RepeatAttribute _repeatAttr;
 	readonly MethodTuple[][] _executionGroups;
 
-	class MethodTuple {
-		public MethodTuple(MethodInfo m ) {
-			Method = m;
-			Attr = m.GetCustomAttributes<InnateTierAttribute>().FirstOrDefault();
-		}
-		public MethodInfo Method { get; }
-		public InnateTierAttribute Attr { get; }
+	class MethodTuple( MethodInfo _m ) {
+		public MethodInfo Method { get; } = _m;
+		public InnateTierAttribute Attr { get; } = _m.GetCustomAttributes<InnateTierAttribute>().FirstOrDefault();
 	}
 
 }

@@ -3,13 +3,11 @@
 /// <summary>
 /// Configures Invaders(attackers) to do -6 damage
 /// </summary>
-class AdjustDamageFromAttackers : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+class AdjustDamageFromAttackers( Func<RavageExchange, int> damageAdjustment ) 
+	: BaseModEntity, IConfigRavages, IEndWhenTimePasses
+{
 
-	readonly Func<RavageExchange,int> _damageAdjustment;
-
-	public AdjustDamageFromAttackers( Func<RavageExchange,int> damageAdjustment ) {
-		_damageAdjustment = damageAdjustment;
-	}
+	readonly Func<RavageExchange,int> _damageAdjustment = damageAdjustment;
 
 	public void Config( SpaceState st ) {
 		// ??? Could the ConfigureRavage handlers just mod the RavageBehavior?

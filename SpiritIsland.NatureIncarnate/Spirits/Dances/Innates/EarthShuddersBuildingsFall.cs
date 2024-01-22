@@ -43,12 +43,8 @@ public class EarthShuddersBuildingsFall {
 
 }
 
-public class InPlayOptionAttribute : InnateTierAttribute {
-	public InPlayOptionAttribute( string elementText, int cardsInPlay, string description, int group )
-		: base( elementText, description, group ) {
-		CardsInPlay = cardsInPlay;
-	}
-	public int CardsInPlay { get; }
+public class InPlayOptionAttribute( string elementText, int cardsInPlay, string description, int group ) : InnateTierAttribute( elementText, description, group ) {
+	public int CardsInPlay { get; } = cardsInPlay;
 
 	public override string ThresholdString => base.ThresholdString + $" {CardsInPlay} cardplay";
 }

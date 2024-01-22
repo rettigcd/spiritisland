@@ -12,12 +12,12 @@ public class France : AdversaryBase, IAdversary {
 		new AdversaryLevel(0, 2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ) {
 			InitFunc = (gs,adv) => {
 				gs.InvaderDeck.Build.Engine = new FranceBuilder( 
-					hasSlaveLabor: 2 <= adv.Level, // Level 2 stuff
-					hasTriangeTrade: 4 < adv.Level // Level 4 stuff
+					_hasSlaveLabor: 2 <= adv.Level, // Level 2 stuff
+					_hasTriangeTrade: 4 < adv.Level // Level 4 stuff
 				);
 				gs.InvaderDeck.Explore.Engine = new FranceExplorer( 
-					hasFrontierExploration: 1 <= adv.Level, // Level 1 stuff
-					hasPersistentExplorers: 6 <= adv.Level  // Level 6 stuff
+					_hasFrontierExploration: 1 <= adv.Level, // Level 1 stuff
+					_hasPersistentExplorers: 6 <= adv.Level  // Level 6 stuff
 				);
 			}
 		},

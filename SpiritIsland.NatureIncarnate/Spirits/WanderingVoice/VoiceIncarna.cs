@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class VoiceIncarna : Incarna, IIsolate, IHandleTokenAddedAsync {
-	public VoiceIncarna( Spirit spirit ) 
-		: base(spirit, "WVKD", Img.WVKD_Incarna, Img.WVKD_Incarna_Empowered )
-	{ }
+public class VoiceIncarna( Spirit spirit ) 
+	: Incarna(spirit, "WVKD", Img.WVKD_Incarna, Img.WVKD_Incarna_Empowered )
+	, IIsolate, IHandleTokenAddedAsync
+{
 
 	// "A Clarion Voice Given Form"
 	public bool IsIsolated => Empowered;

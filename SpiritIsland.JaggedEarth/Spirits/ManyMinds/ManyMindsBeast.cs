@@ -5,13 +5,11 @@
 ///  - it simplifies selecting Beasts vs Presence-Beasts
 ///  - simplifies Moving the Presence with the Presence-Beasts into the AddedTo space.
 /// </remarks>
-public class ManyMindsBeast : IToken, IHandleTokenAdded, IHandleTokenRemovedAsync, IAppearInSpaceAbreviation {
+public class ManyMindsBeast( ManyMindsPresenceToken presenceToken ) 
+	: IToken, IHandleTokenAdded, IHandleTokenRemovedAsync, IAppearInSpaceAbreviation 
+{
 
-	readonly ManyMindsPresenceToken _presenceToken;
-
-	public ManyMindsBeast(ManyMindsPresenceToken presenceToken ) {
-		_presenceToken= presenceToken;
-	}
+	readonly ManyMindsPresenceToken _presenceToken = presenceToken;
 
 	public Img Img => Img.Beast;
 

@@ -37,16 +37,11 @@ public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 
 }
 
+/// <summary>
+/// Create a Display-only action because execution group is null.
+/// </summary>
 [AttributeUsage(AttributeTargets.Class|AttributeTargets.Method)]
-public class DisplayOnlyAttribute : InnateTierAttribute {
-
-	/// <summary>
-	/// Create a Display-only action because execution group is null.
-	/// </summary>
-	public DisplayOnlyAttribute( string elementText, string description )
-		// Call the display-only base constructor
-		:base(elementText,description) { }
-
+public class DisplayOnlyAttribute( string elementText, string description ) : InnateTierAttribute(elementText,description) {
 }
 
 public interface IDrawableInnateTier : IOption {

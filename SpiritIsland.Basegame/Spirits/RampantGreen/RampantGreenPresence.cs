@@ -1,14 +1,12 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class RampantGreenPresence : SpiritPresence {
-
-	public RampantGreenPresence(Spirit spirit) 
-		: base( spirit,
-			new PresenceTrack( Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 ),
-			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 ),
-			new ChokeTheLandWithGreen((ASpreadOfRampantGreen)spirit)
-		) {
-	}
+public class RampantGreenPresence( Spirit spirit ) 
+	: SpiritPresence( spirit,
+		new PresenceTrack( Track.Energy0, Track.Energy1, Track.PlantEnergy, Track.Energy2, Track.Energy2, Track.PlantEnergy, Track.Energy3 ),
+		new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 ),
+		new ChokeTheLandWithGreen((ASpreadOfRampantGreen)spirit)
+	)
+{
 
 	public override IEnumerable<TokenOn> RevealOptions() {
 		return CanAddFromDestroyed() ? base.RevealOptions().Append( Destroyed )

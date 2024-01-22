@@ -25,15 +25,10 @@ public static class Json {
 	static public string SerializeNumber( object number ) => JsonSerializer.SerializeNumber( number );
 }
 
-internal class JsonSerializer {
+/// <param name="tabMax">Causes the top [tabMax] objects to appear on new lines</param>
+internal class JsonSerializer( int? tabMax ) {
 
 	#region constructor
-
-	/// <param name="tabMax">Causes the top [tabMax] objects to appear on new lines</param>
-	public JsonSerializer( int? tabMax ) {
-		_useBreakers = tabMax.HasValue;
-		_tabMax = tabMax ?? 0;
-	}
 
 	#endregion
 
@@ -168,8 +163,8 @@ internal class JsonSerializer {
 
 	#region private fields
 	int _tabIndex = 0;
-	readonly int _tabMax;
-	readonly bool _useBreakers;
+	readonly int _tabMax = tabMax ?? 0;
+	readonly bool _useBreakers = tabMax.HasValue;
 	#endregion
 
 }
@@ -179,14 +174,11 @@ internal class JsonSerializer {
 ///        objects,enumerables,nulls,numbers, etc to JavaScript Object Notation
 /// Use through JsonSerializer.
 /// </summary>
-internal class JsonDeserializer {
+internal class JsonDeserializer( string json ) {
 
 	#region constructor
-	public JsonDeserializer( string json ) {
-		_json = json;
-	}
 	#endregion
-	
+
 	#region public Dynamic Types
 
 	public dynamic Deserialize() {
@@ -380,7 +372,7 @@ internal class JsonDeserializer {
 		return true;
 	}
 
-	readonly string _json;
+	readonly string _json = json;
 	int _index = 0;
 
 	#endregion

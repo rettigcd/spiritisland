@@ -184,13 +184,7 @@ public class ManageInternalPoints {
 
 	#endregion
 
-	class TokenPointArray {
-
-		public TokenPointArray( Dictionary<IToken, PointF> dict, PointF[] points ) { 
-			_dict = dict;
-			_points = points;
-			_tokens = new IToken[points.Length];
-		}
+	class TokenPointArray( Dictionary<IToken, PointF> _dict, PointF[] _points ) {
 
 		public bool AssignLeftSlot( IToken visibleToken ) {
 			int? index = FindLeftSlot();
@@ -269,10 +263,7 @@ public class ManageInternalPoints {
 		}
 
 		readonly object _locker = new object();
-		readonly IToken[] _tokens;
-		readonly PointF[] _points;
-		readonly Dictionary<IToken, PointF> _dict;
-
+		readonly IToken[] _tokens = new IToken[_points.Length];
 	}
 
 	#region private token location fields

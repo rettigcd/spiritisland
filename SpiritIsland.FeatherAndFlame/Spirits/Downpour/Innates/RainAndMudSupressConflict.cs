@@ -59,14 +59,8 @@ internal class RainAndMudSupressConflict {
 }
 
 
-class MudToken : BaseModEntity, IEndWhenTimePasses, IConfigRavages {
-	readonly Spirit _self;
-	readonly int _count;
-	public MudToken( Spirit self, int count ):base() { // removes itself
-		_self = self;
-		_count = count;
-	}
-
+class MudToken( Spirit _self, int _count ) 
+	: BaseModEntity(), IEndWhenTimePasses, IConfigRavages {
 	void IConfigRavages.Config( SpaceState space ) {
 		space.RavageBehavior.AttackersDefend += _self.Presence.CountOn( space ) * _count;
 	}

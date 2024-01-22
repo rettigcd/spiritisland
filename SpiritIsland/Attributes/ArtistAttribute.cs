@@ -1,14 +1,8 @@
 ﻿namespace SpiritIsland;
 
 [AttributeUsage( AttributeTargets.Method )]
-public class ArtistAttribute : Attribute {
-
-	public string Artist { get; }
-
-	public ArtistAttribute( string artist ) {
-		Artist = artist;
-	}
-
+public class ArtistAttribute( string _artist ) : Attribute {
+	public string Artist { get; } = _artist;
 }
 
 public static class Artists {

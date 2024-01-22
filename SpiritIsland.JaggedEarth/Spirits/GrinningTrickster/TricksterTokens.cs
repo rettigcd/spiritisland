@@ -1,11 +1,10 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 // == Tokens ==
-public class TricksterTokens : SpaceState {
-	public TricksterTokens( Spirit spirit, SpaceState src, bool runAtMax=false ) : base( src ) { 
-		_spirit = spirit;
-		_runAtMax = runAtMax;
-	}
+public class TricksterTokens( Spirit spirit, SpaceState src, bool runAtMax = false ) 
+	: SpaceState( src )
+{
+
 	public override BlightTokenBinding Blight => new TricksterBlight(this);
 	public override TokenMover Gather( Spirit self ) => base.Gather( self ).RunAtMax( _runAtMax );
 
@@ -38,15 +37,12 @@ public class TricksterTokens : SpaceState {
 		}
 	}
 
-	readonly Spirit _spirit;
-	readonly bool _runAtMax;
+	readonly Spirit _spirit = spirit;
+	readonly bool _runAtMax = runAtMax;
 }
 
 // Blight
-public class TricksterBlight : BlightTokenBinding {
-
-	public TricksterBlight( SpaceState tokens ) : base( tokens ) { }
-
+public class TricksterBlight( SpaceState tokens ) : BlightTokenBinding( tokens ) {
 	public override async Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
 		var self = ActionScope.Current.Owner ?? throw new InvalidOperationException( "Action Scope has no owner." );
 		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuckADrag( self, _tokens ); // feature envy?

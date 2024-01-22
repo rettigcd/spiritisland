@@ -5,16 +5,10 @@ namespace SpiritIsland;
 /// <summary>
 /// Logable Status
 /// </summary>
-public class GameOver : ILogEntry {
+public class GameOver( GameOverResult result, string cause ) : ILogEntry {
+	public GameOverResult Result { get; } = result;
 
-	public GameOver( GameOverResult result, string cause ) { 
-		Result = result;
-		Cause = cause;
-	}
-
-	public GameOverResult Result { get; }
-
-	public string Cause { get; }
+	public string Cause { get; } = cause;
 
 	public string Msg( LogLevel _ ) => $"{Result}!: {Cause}";
 

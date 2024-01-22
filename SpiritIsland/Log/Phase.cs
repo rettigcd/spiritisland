@@ -1,11 +1,8 @@
 ﻿namespace SpiritIsland.Log;
 
-public class Phase : ILogEntry {
-	public SpiritIsland.Phase phase;
-	public Phase( SpiritIsland.Phase phase ) {
-		this.phase = phase;
-		Level = LogLevel.Info;
-	}
-	public LogLevel Level { get; }
+public class Phase( SpiritIsland.Phase phase ) : ILogEntry {
+	public SpiritIsland.Phase phase = phase;
+
+	public LogLevel Level { get; } = LogLevel.Info;
 	public string Msg( LogLevel _ ) => $"-- {phase} --";
 }

@@ -1,39 +1,27 @@
 ﻿namespace SpiritIsland;
 
-public class TokenRemovedHandlerAsync : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemovedAsync {
+public class TokenRemovedHandlerAsync( Func<SpaceState, ITokenRemovedArgs, Task> handler ) 
+	: BaseModEntity()
+	, IEndWhenTimePasses
+	, IHandleTokenRemovedAsync 
+{
+	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( SpaceState _from, ITokenRemovedArgs _args ) => handler( _from, _args );
+}
 
-	readonly Func<SpaceState,ITokenRemovedArgs, Task> _func;
-
-	public TokenRemovedHandlerAsync( Func<SpaceState,ITokenRemovedArgs, Task> handler ) : base() {
-		_func = handler;
-	}
-
-	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) => _func( from, args );
+public class TokenRemovedHandlerAsync_Persistent( Func<ITokenRemovedArgs, Task> _handler ) 
+	: BaseModEntity
+	, IHandleTokenRemovedAsync
+{
+	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) => _handler( args );
 
 }
 
-public class TokenRemovedHandlerAsync_Persistent : BaseModEntity, IHandleTokenRemovedAsync {
-
-	readonly Func<ITokenRemovedArgs, Task> _func;
-
-	public TokenRemovedHandlerAsync_Persistent( Func<ITokenRemovedArgs, Task> handler ) {
-		_func = handler;
-	}
-
-	Task IHandleTokenRemovedAsync.HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) => _func( args );
-
-}
-
-
-public class TokenRemovedHandler : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved {
-
-	readonly Action<ITokenRemovedArgs> _action;
-
-	public TokenRemovedHandler( Action<ITokenRemovedArgs> handler ) : base() {
-		_action = handler;
-	}
-
+public class TokenRemovedHandler( Action<ITokenRemovedArgs> _handler ) 
+	: BaseModEntity()
+	, IEndWhenTimePasses
+	, IHandleTokenRemoved
+{
 	void IHandleTokenRemoved.HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
-		_action( args );
+		_handler( args );
 	}
 }

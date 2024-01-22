@@ -3,18 +3,16 @@
 /// <summary>
 /// Token used by Rampant Green that stops builds and ravages
 /// </summary>
-public class ChokeTheLandWithGreen : SpiritPresenceToken , ISkipBuilds, ISkipRavages  {
+public class ChokeTheLandWithGreen( ASpreadOfRampantGreen _self ) 
+	: SpiritPresenceToken(_self) 
+	, ISkipBuilds
+	, ISkipRavages
+{
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Choke the land with green",
 		"Whenever invaders would ravage or build in a land with your sacred site, you may prevent it by destroying one of your presense in that land."
 	);
-
-	readonly ASpreadOfRampantGreen _self;
-
-	public ChokeTheLandWithGreen( ASpreadOfRampantGreen self ):base(self) {
-		_self = self;
-	}
 
 	public UsageCost Cost => UsageCost.Extreme; // we lose presence!
 

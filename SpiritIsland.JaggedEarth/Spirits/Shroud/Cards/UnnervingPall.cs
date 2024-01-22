@@ -30,13 +30,9 @@ public class UnnervingPall {
 			.SelectFightersAndSitThemOut(ctx.Self);
 	}
 
-	class InvadersDontParticipateInRavage : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+	class InvadersDontParticipateInRavage( CountDictionary<HumanToken> sitOuts ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
 
-		readonly CountDictionary<HumanToken> _sitOuts;
-
-		public InvadersDontParticipateInRavage(CountDictionary<HumanToken> sitOuts) {
-			_sitOuts = sitOuts;
-		}
+		readonly CountDictionary<HumanToken> _sitOuts = sitOuts;
 
 		void IConfigRavages.Config( SpaceState space ) {
 

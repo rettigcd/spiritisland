@@ -97,11 +97,10 @@ public StonesUnyieldingDefiance() : base(
 
 
 // !!! Instead of sticking this everywhere on the island, could just add it to the spirit token.
-class BestowTheEnduranceOfBedrock : BaseModEntity, IModifyAddingToken {
-	readonly SpiritPresenceToken _token;
-	public BestowTheEnduranceOfBedrock( SpiritPresenceToken token ) {
-		_token = token;
-	}
+class BestowTheEnduranceOfBedrock( SpiritPresenceToken _token ) 
+	: BaseModEntity
+	, IModifyAddingToken
+{
 	public void ModifyAdding( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight && args.To.Blight.Count <= args.To[_token]) {
 			// it does not cascade or destroy presence (yours or others').

@@ -73,10 +73,9 @@ public class PresenceTrack : IPresenceTrack {
 		set => ((Memento)value).Restore( this );
 	}
 
-	protected class Memento {
-		public Memento( PresenceTrack src ) { revealed = src._revealedCount; }
+	protected class Memento( PresenceTrack _src ) {
 		public void Restore( PresenceTrack src ) { src._revealedCount = revealed; }
-		readonly int revealed;
+		readonly int revealed = _src._revealedCount;
 	}
 
 	#endregion

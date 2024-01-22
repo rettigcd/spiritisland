@@ -2,26 +2,15 @@
 
 namespace SpiritIsland;
 
-public class DecisionLogEntry : ILogEntry {
-
-	readonly IOption selection;
-	readonly IDecision decision;
-	readonly bool auto;
-
-	public DecisionLogEntry(IOption selection, IDecision decision, bool auto ) {
-		this.selection = selection;
-		this.decision = decision;
-		this.auto = auto;
-	}
-
+public class DecisionLogEntry( IOption _selection, IDecision _decision, bool _auto ) : ILogEntry {
 	public string Msg( LogLevel level ) {
 		// Fatal/Error/Warn/Info
 		if( level <= LogLevel.Info)
-			return decision.Prompt + ": " + selection.Text;
+			return _decision.Prompt + ": " + _selection.Text;
 
 		// Debug/All
-		string msg = decision.Prompt + "(" + decision.Options.Select( o => o.Text ).Join( "," ) + "):" + selection.Text;
-		if(auto) msg += " AUTO";
+		string msg = _decision.Prompt + "(" + _decision.Options.Select( o => o.Text ).Join( "," ) + "):" + _selection.Text;
+		if(_auto) msg += " AUTO";
 		return msg;
 	}
 

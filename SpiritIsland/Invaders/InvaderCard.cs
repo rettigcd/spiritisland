@@ -54,25 +54,16 @@ public sealed class InvaderCard : IOption {
 	#endregion
 }
 
-public class SingleTerrainFilter : InvaderCardSpaceFilter {
-	public SingleTerrainFilter( Terrain terrain ) {
-		this.Terrain = terrain;
-		this.Text = terrain.ToString()[..1];
-	}
+public class SingleTerrainFilter( Terrain terrain ) : InvaderCardSpaceFilter {
 	public bool Matches( Space space ) => space.Is( Terrain );
-	public string Text { get; }
-	readonly public Terrain Terrain; // public so UI can detect what to draw
+	public string Text { get; } = terrain.ToString()[..1];
+	readonly public Terrain Terrain = terrain; // public so UI can detect what to draw
 }
 
-public class DoubleTerrainFilter : InvaderCardSpaceFilter {
-	public DoubleTerrainFilter( Terrain t1, Terrain t2 ) {
-		Terrain1 = t1;
-		Terrain2 = t2;
-		Text = t1.ToString()[..1] + "+" + t2.ToString()[..1];
-	}
+public class DoubleTerrainFilter( Terrain t1, Terrain t2 ) : InvaderCardSpaceFilter {
 	public bool Matches( Space space ) => space.IsOneOf( Terrain1, Terrain2 );
-	public string Text { get; }
-	readonly public Terrain Terrain1, Terrain2;
+	public string Text { get; } = t1.ToString()[..1] + "+" + t2.ToString()[..1];
+	readonly public Terrain Terrain1 = t1, Terrain2 = t2;
 }
 
 

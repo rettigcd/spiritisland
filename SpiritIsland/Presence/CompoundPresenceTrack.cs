@@ -1,27 +1,24 @@
 ﻿namespace SpiritIsland;
-public class CompoundPresenceTrack : IPresenceTrack {
+public class CompoundPresenceTrack( params IPresenceTrack[] parts ) 
+	: IPresenceTrack
+{
+	readonly IPresenceTrack[] _parts = parts;
 
-	public CompoundPresenceTrack(params IPresenceTrack[] parts ) {
-		this.parts = parts;
-	}
+	public IEnumerable<Track> RevealOptions => _parts.SelectMany(p=>p.RevealOptions);
 
-	readonly IPresenceTrack[] parts;
+	public IEnumerable<Track> ReturnableOptions => _parts.SelectMany(p=>p.ReturnableOptions);
 
-	public IEnumerable<Track> RevealOptions => parts.SelectMany(p=>p.RevealOptions);
+	public IEnumerable<Track> Revealed => _parts.SelectMany(p=>p.Revealed);
 
-	public IEnumerable<Track> ReturnableOptions => parts.SelectMany(p=>p.ReturnableOptions);
-
-	public IEnumerable<Track> Revealed => parts.SelectMany(p=>p.Revealed);
-
-	public IReadOnlyCollection<Track> Slots => parts.SelectMany(p=>p.Slots).ToArray();
+	public IReadOnlyCollection<Track> Slots => _parts.SelectMany(p=>p.Slots).ToArray();
 
 	public void AddElementsTo( CountDictionary<Element> elements ) {
-		foreach(var part in parts)
+		foreach(var part in _parts)
 			part.AddElementsTo( elements );
 	}
 
 	public async Task<bool> RevealAsync( Track track ){
-		foreach(var part in parts) {
+		foreach(var part in _parts) {
 			if( await part.RevealAsync( track ) ) {
 				await OnTrackRevealed(track);
 				return true;
@@ -38,7 +35,7 @@ public class CompoundPresenceTrack : IPresenceTrack {
 	public event Func<TrackRevealedArgs,Task> TrackRevealedAsync;
 
 	public bool Return( Track track ) {
-		return parts.Any(part=>part.Return(track));
+		return _parts.Any(part=>part.Return(track));
 	}
 
 	#region Memento
@@ -48,16 +45,13 @@ public class CompoundPresenceTrack : IPresenceTrack {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	protected class MyMemento {
-		public MyMemento( CompoundPresenceTrack src ) { 
-			parts = src.parts.Select(s=>s.Memento).ToArray();
-		}
+	protected class MyMemento( CompoundPresenceTrack src ) {
 		public void Restore( IPresenceTrack src ) {
 			var compound = (CompoundPresenceTrack)src;
 			for(int i=0;i<parts.Length;++i)
-				compound.parts[i].Memento = parts[i];
+				compound._parts[i].Memento = parts[i];
 		}
-		readonly object[] parts;
+		readonly object[] parts = src._parts.Select( s => s.Memento ).ToArray();
 			
 	}
 

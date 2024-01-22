@@ -3,9 +3,7 @@
 /// <summary>
 /// Allows the innate to be run twice.
 /// </summary>
-public class RepeatableInnatePower : InnatePower, IHaveDynamicUseCounts {
-	public RepeatableInnatePower(Type actionType ) : base( actionType ) { }
-
+public class RepeatableInnatePower( Type actionType ) : InnatePower( actionType ), IHaveDynamicUseCounts {
 	public int Used { get; set; } = 0;
 	public int MaxUses { get; set; } = 1;
 

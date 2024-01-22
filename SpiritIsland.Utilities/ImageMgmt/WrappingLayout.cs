@@ -268,17 +268,15 @@ public class WrappingLayout {
 
 	#endregion
 
-	public class TokenPosition : IMoveHorizontally {
-		public TokenPosition( Img tokenImg, RectangleF rect ) { TokenImg = tokenImg; Bounds = rect; }
-		public Img TokenImg;
-		public RectangleF Bounds;
+	public class TokenPosition( Img tokenImg, RectangleF rect ) : IMoveHorizontally {
+		public Img TokenImg = tokenImg;
+		public RectangleF Bounds = rect;
 		public void Move( int deltaX ) => Bounds.X += deltaX;
 	}
 
-	public class TextPosition : IMoveHorizontally {
-		public TextPosition( string text, RectangleF bounds ) { Text = text; Bounds = bounds; }
-		public readonly string Text;
-		public RectangleF Bounds;
+	public class TextPosition( string text, RectangleF bounds ) : IMoveHorizontally {
+		public readonly string Text = text;
+		public RectangleF Bounds = bounds;
 		public void Move( int deltaX ) => Bounds.X += (float)deltaX;
 	}
 

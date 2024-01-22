@@ -6,12 +6,7 @@ using System.Windows.Forms;
 namespace SpiritIsland.WinForms;
 
 // new spirit Painter each time layout / size changes
-public sealed class SpiritPanel : IPanel, IDisposable {
-
-	public SpiritPanel( SharedCtx ctx ) {
-		_ctx = ctx;
-	}
-
+public sealed class SpiritPanel( SharedCtx ctx ) : IPanel, IDisposable {
 	public RegionLayoutClass GetLayout( Rectangle bounds ) {
 		return RegionLayoutClass.ForIslandFocused( bounds, _ctx._spirit.Decks.Length+1 ); // everything else
 	}
@@ -122,7 +117,7 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 	Image GetElementImage( Element element ) => _ctx._tip.GetElementImage( element );
 	Spirit _spirit => _ctx._spirit;
 
-	readonly SharedCtx _ctx;
+	readonly SharedCtx _ctx = ctx;
 	Image _spiritImage;
 	InnatePainter[] _innatePainters;
 	PresenceTrackPainter _presencePainter;

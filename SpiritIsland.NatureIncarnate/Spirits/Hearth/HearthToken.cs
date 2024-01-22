@@ -1,17 +1,12 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class HearthToken : SpiritPresenceToken
+public class HearthToken( Spirit spirit ) 
+	: SpiritPresenceToken(spirit)
 	, IModifyAddingToken
 	, IHandleTokenAdded
 	, IModifyRemovingTokenAsync
 	, IHandleTokenRemovedAsync
 {
-
-	public HearthToken(Spirit spirit)
-		:base(spirit)
-	{
-	}
-
 	void IModifyAddingToken.ModifyAdding( AddingTokenArgs args ) {
 		RootedInCommunity_Adding( args );
 		Fortify_AddingDahan( args );

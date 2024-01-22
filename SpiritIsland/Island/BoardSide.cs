@@ -5,14 +5,9 @@ namespace SpiritIsland;
 /// <summary>
 /// Knows about Connected spaces but not about layout coordinates
 /// </summary>
-public class BoardSide {
-	public Board Board { get; }
+public class BoardSide( Board _board, params Space[] _orderedSpacesOnThisSide ) {
+	public Board Board { get; } = _board;
 	public bool Joined { get; private set; }
-
-	public BoardSide( Board board, params Space[] orderedSpacesOnThisSide ) {
-		Board = board;
-		_spacesOnThisSide = orderedSpacesOnThisSide;
-	}
 
 	public void BreakAt( params int[] breakPoints ) {
 		if(breakPoints.Length != _spacesOnThisSide.Length - 1)
@@ -52,6 +47,6 @@ public class BoardSide {
 		existingBoard.Joined = true;
 	}
 
-	readonly Space[] _spacesOnThisSide;
+	readonly Space[] _spacesOnThisSide = _orderedSpacesOnThisSide;
 	List<int> _breakPoints;
 }

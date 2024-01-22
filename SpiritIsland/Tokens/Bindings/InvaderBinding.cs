@@ -1,16 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public sealed class InvaderBinding {
+public sealed class InvaderBinding( SpaceState tokens ) {
 
 	#region constructor
 
-	public InvaderBinding( SpaceState tokens ) {
-		Tokens = tokens;
-	}
-
 	#endregion
 
-	public readonly SpaceState Tokens;
+	public readonly SpaceState Tokens = tokens;
 
 	#region Apply Damage To...
 

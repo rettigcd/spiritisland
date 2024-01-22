@@ -2,19 +2,12 @@
 
 namespace SpiritIsland.WinForms;
 
-public class GeneralInstructions {
+public class GeneralInstructions( string description, float textEmSize, Size rowSize, Point topLeft ) {
 
-	public GeneralInstructions( string description, float textEmSize, Size rowSize, Point topLeft ) {
-		_description = description;
-		_textEmSize = textEmSize;
-		_rowSize = rowSize;
-		_topLeft = topLeft;
-	}
-
-	readonly float _textEmSize;
-	readonly Size _rowSize;
-	readonly string _description;
-	readonly Point _topLeft;
+	readonly float _textEmSize = textEmSize;
+	readonly Size _rowSize = rowSize;
+	readonly string _description = description;
+	readonly Point _topLeft = topLeft;
 
 	public Rectangle Bounds => _bounds ??= CalcBounds();
 	Rectangle? _bounds;

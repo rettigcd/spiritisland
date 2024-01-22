@@ -1,11 +1,7 @@
 ﻿namespace SpiritIsland.Tests;
 
-internal class SpiritConfigContext {
-	readonly Spirit _spirit;
-
-	public SpiritConfigContext(Spirit spirit) {
-		_spirit = spirit;
-	}
+internal class SpiritConfigContext( Spirit spirit ) {
+	readonly Spirit _spirit = spirit;
 
 	public SpiritConfigContext Elements( string elementString ) {
 		var counts = ElementStrings.Parse( elementString );

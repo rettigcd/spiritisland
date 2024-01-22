@@ -1,16 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public class RangeExtender : ICalcRange {
+public class RangeExtender( int extension, ICalcRange originalApi ) : ICalcRange {
 
 	static public void Extend( Spirit spirit, int extension ) {
 		spirit.PowerRangeCalc = new RangeExtender( extension, spirit.PowerRangeCalc );
 	}
 
 	#region constructor
-	public RangeExtender( int extension, ICalcRange originalApi ) {
-		_extension = extension;
-		_originalApi = originalApi;
-	}
 	#endregion
 
 	public IEnumerable<SpaceState> GetSpaceOptions( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria )
@@ -19,8 +15,8 @@ public class RangeExtender : ICalcRange {
 		=> _originalApi.GetSpaceOptions( source, tc.ExtendRange( _extension ) );
 
 	#region private 
-	readonly int _extension;
-	readonly ICalcRange _originalApi;
+	readonly int _extension = extension;
+	readonly ICalcRange _originalApi = originalApi;
 	#endregion
 }
 

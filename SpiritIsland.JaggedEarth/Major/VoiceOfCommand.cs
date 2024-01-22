@@ -45,24 +45,17 @@ public class VoiceOfCommand {
 
 }
 
-public class RavageConfigToken : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
-
-	public RavageConfigToken(Action<SpaceState> setup, Action<SpaceState> teardown) {
-
-		SetUp = setup;
-		TearDown = teardown;
-	}
-
+public class RavageConfigToken( Action<SpaceState> _setup, Action<SpaceState> _teardown ) 
+	: BaseModEntity, 
+	IConfigRavages, 
+	IEndWhenTimePasses
+{
 	void IConfigRavages.Config( SpaceState space ) {
 		// Token Reduces Attack of invaders by 1
-		SetUp( space );
+		_setup( space );
 
 		// At end of Action, invaders are are restored to original.
-		ActionScope.Current.AtEndOfThisAction( _ => TearDown( space ) );
+		ActionScope.Current.AtEndOfThisAction( _ => _teardown( space ) );
 
 	}
-
-	readonly Action<SpaceState> SetUp;
-	readonly Action<SpaceState> TearDown;
-
 }

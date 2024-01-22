@@ -1,12 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public sealed class DahanBinding {
-
-	readonly SpaceState _tokens;
-
-	public DahanBinding( SpaceState tokens ) {
-		_tokens = tokens;
-	}
+public sealed class DahanBinding( SpaceState _tokens ) {
 
 	#region All TokenCategory.Dahan, including Frozen/Stasis
 
@@ -164,11 +158,8 @@ public sealed class DahanBinding {
 
 }
 
-public class DamagingTokens {
-	public DamagingTokens( SpaceState on ) {
-		On = on;
-	}
-	public SpaceState On { get; } 
+public class DamagingTokens( SpaceState on ) {
+	public SpaceState On { get; } = on;
 	public HumanToken Token { get; set; }
 	public int TokenCountToReceiveDamage { get; set; }
 	public int DamagePerToken { get; set; }

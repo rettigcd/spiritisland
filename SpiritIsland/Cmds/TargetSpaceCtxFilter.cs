@@ -35,15 +35,14 @@ public class CtxFilter<Ctx> {
 
 
 // !! Deprecate this and just use CtxFilter<TargetSpaceCtx>
-public class TargetSpaceCtxFilter : CtxFilter<TargetSpaceCtx> {
-	public TargetSpaceCtxFilter( string description, Func<TargetSpaceCtx, bool> filter ):base( description, filter) {
-		MyFilter = filter;
-	}
-	public readonly Func<TargetSpaceCtx, bool> MyFilter;
+public class TargetSpaceCtxFilter( string description, Func<TargetSpaceCtx, bool> filter ) 
+	: CtxFilter<TargetSpaceCtx>( description, filter)
+{
+	public readonly Func<TargetSpaceCtx, bool> MyFilter = filter;
 
 }
 
 // !! Deprecate this annd just use CtxFilter<Spirit>
-public class SpiritFilter : CtxFilter<Spirit> {
-	public SpiritFilter( string description, Func<Spirit, bool> filter ):base( description, filter ) {}
-}
+public class SpiritFilter( string description, Func<Spirit, bool> filter ) 
+	: CtxFilter<Spirit>( description, filter )
+{}

@@ -1,14 +1,9 @@
 ﻿namespace SpiritIsland;
 
-public class ReduceInvaderAttackBy1 : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
-
-	readonly HumanTokenClass[] _classesToReduce;
-	readonly int _reduce;
-
-	public ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classesToReduce ) {
-		_reduce = reduce;
-		_classesToReduce = classesToReduce;
-	}
+public class ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classesToReduce ) 
+	: BaseModEntity, IConfigRavages, IEndWhenTimePasses
+{
+	readonly int _reduce = reduce;
 
 	void IConfigRavages.Config( SpaceState space ) {
 
@@ -18,7 +13,7 @@ public class ReduceInvaderAttackBy1 : BaseModEntity, IConfigRavages, IEndWhenTim
 		Dictionary<HumanTokenClass, int> reducedClasses = [];
 
 		// Token Reduces Attack of invaders by 1
-		foreach(HumanToken orig in space.HumanOfAnyTag( _classesToReduce ).ToArray()) {
+		foreach(HumanToken orig in space.HumanOfAnyTag( classesToReduce ).ToArray()) {
 			int reduce = Math.Min( _reduce, orig.Attack );
 			if(reduce == 0) continue;
 			reducedClasses[orig.HumanClass] = reduce;

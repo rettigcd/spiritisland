@@ -4,16 +4,7 @@ using System.Windows.Forms;
 namespace SpiritIsland.WinForms;
 
 
-public class InnateTierBtn : IButton {
-
-	#region constructor
-
-	public InnateTierBtn( Spirit spirit, IDrawableInnateTier innateOption ) {
-		_spirit = spirit;
-		_innateOption = innateOption;
-	}
-
-	#endregion
+public class InnateTierBtn( Spirit spirit, IDrawableInnateTier innateOption ) : IButton {
 
 	public Rectangle Bounds { get; private set; }
 	bool IButton.Contains( Point clientCoords) => Bounds.Contains( clientCoords );
@@ -51,8 +42,8 @@ public class InnateTierBtn : IButton {
 	float _emSize;
 	Size _rowSize;
 
-	readonly Spirit _spirit;
-	readonly IDrawableInnateTier _innateOption;
+	readonly Spirit _spirit = spirit;
+	readonly IDrawableInnateTier _innateOption = innateOption;
 
 	#endregion
 

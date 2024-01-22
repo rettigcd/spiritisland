@@ -3,14 +3,7 @@
 /// <summary>
 /// Manages current elements assigned to a Spirit
 /// </summary>
-public class ElementMgr {
-
-	readonly Spirit _spirit;
-
-	public ElementMgr(Spirit spirit ) {
-		_spirit = spirit;
-	}
-
+public class ElementMgr( Spirit _spirit ) {
 	public CountDictionary<Element> Elements { get; set; } = [];
 
 	public int this[Element el] {

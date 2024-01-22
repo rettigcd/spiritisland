@@ -1,9 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public class IsolateToken : TokenClassToken, IEndWhenTimePasses, IIsolate {
-	public IsolateToken( string label, char initial, Img img ) 
-		: base( label, initial, img ) {}
-
+public class IsolateToken( string label, char initial, Img img ) 
+	: TokenClassToken( label, initial, img )
+	, IEndWhenTimePasses
+	, IIsolate
+{
 	public bool IsIsolated => true;
 }
 

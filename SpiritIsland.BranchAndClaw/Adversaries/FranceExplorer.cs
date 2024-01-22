@@ -1,15 +1,8 @@
 ﻿namespace SpiritIsland.Basegame.Adversaries;
 
-public class FranceExplorer : ExploreEngine {
-	readonly bool _hasFrontierExploration;
-	readonly bool _hasPersistentExplorers;
-
-
-	public FranceExplorer( bool hasFrontierExploration, bool hasPersistentExplorers ) {
-		_hasFrontierExploration = hasFrontierExploration;
-		_hasPersistentExplorers = hasPersistentExplorers;
-	}	
-
+public class FranceExplorer( bool _hasFrontierExploration, bool _hasPersistentExplorers ) 
+	: ExploreEngine 
+{
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) { 
 		await base.ActivateCard( card, gameState );
 

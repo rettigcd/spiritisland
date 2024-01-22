@@ -5,12 +5,7 @@ using System.Threading.Tasks;
 /// <summary>
 /// Exectued a Board Action on each Board
 /// </summary>
-public class ForEachBoardClass : BaseCmd<GameState> {
-
-	public ForEachBoardClass( IActOn<BoardCtx> boardAction ) : base() {
-		_boardAction = boardAction;
-	}
-
+public class ForEachBoardClass( IActOn<BoardCtx> _boardAction ) : BaseCmd<GameState>() {
 	public override string Description => $"On each board{FilterSuffix}: {_boardAction.Description}";
 
 	public override async Task ActAsync( GameState gameState ) {
@@ -38,7 +33,6 @@ public class ForEachBoardClass : BaseCmd<GameState> {
 	string FilterSuffix => _filter is null ? string.Empty : $" which {_filter.Description}";
 
 	CtxFilter<BoardCtx> _filter = CtxFilter<BoardCtx>.NullFilter;
-	readonly IActOn<BoardCtx> _boardAction;
 
 	#endregion
 }

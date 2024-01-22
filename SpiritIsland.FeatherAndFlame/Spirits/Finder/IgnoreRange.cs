@@ -1,18 +1,16 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-public class ExtendRange : SpiritAction, ICanAutoRun {
-
-	public ExtendRange( int extension ):base( $"Extend Range {extension}" ) {
-		_extension = extension;
-	}
-
+public class ExtendRange( int extension ) 
+	: SpiritAction( $"Extend Range {extension}" )
+	, ICanAutoRun
+{
 	public override Task ActAsync( Spirit self ) {
 		RangeCalcRestorer.Save( self );
 		RangeExtender.Extend( self, _extension );
 		return Task.CompletedTask;
 	}
 
-	readonly int _extension;
+	readonly int _extension = extension;
 
 }
 

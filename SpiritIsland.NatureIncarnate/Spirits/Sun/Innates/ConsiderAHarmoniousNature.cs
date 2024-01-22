@@ -56,18 +56,14 @@ public class ConsiderAHarmoniousNature {
 
 }
 
-class MyPowersDontDamageDahanThisRound 
+class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 	: BaseModEntity
 	, IModifyRemovingToken
 	, IModifyDahanDamage
 	, IEndWhenTimePasses
 {
-	readonly Spirit _spirit;
-	readonly string _source;
-	public MyPowersDontDamageDahanThisRound( Spirit spirit, string source ){
-		_spirit = spirit;
-		_source = source;
-	}
+	readonly Spirit _spirit = spirit;
+	readonly string _source = source;
 
 	void IModifyDahanDamage.Modify( DamagingTokens args ) {
 		if(_spirit.ActionIsMyPower) {
@@ -87,13 +83,12 @@ class MyPowersDontDamageDahanThisRound
 	}
 }
 
-class DestroyPresenceInsteadOfAddingBlight : BaseModEntity, IModifyAddingTokenAsync, IEndWhenTimePasses {
-	readonly Spirit _spirit;
-	readonly string _source;
-	public DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source ) {
-		_spirit = spirit;
-		_source = source;
-	}
+class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source ) 
+	: BaseModEntity, IModifyAddingTokenAsync, IEndWhenTimePasses
+{
+	readonly Spirit _spirit = spirit;
+	readonly string _source = source;
+
 	public async Task ModifyAddingAsync( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight 
 			&& await _spirit.UserSelectsFirstText($"Destroy 1 presence instead of adding {args.Count} of blight to {args.To.Space.Text}?", "Yes, destroy my presence instead", "No, bring on the blight!")

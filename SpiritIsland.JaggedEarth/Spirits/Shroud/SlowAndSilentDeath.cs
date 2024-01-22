@@ -1,10 +1,8 @@
 namespace SpiritIsland.JaggedEarth;
 
-class SlowAndSilentDeath : IRunWhenTimePasses {
+class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses {
 
-	readonly ShroudOfSilentMist _spirit;
-
-	public SlowAndSilentDeath(ShroudOfSilentMist spirit ) { _spirit = spirit; }
+	readonly ShroudOfSilentMist _spirit = spirit;
 
 	public static readonly SpecialRule Rule = new SpecialRule(
 		"Slow and Silent Death",

@@ -135,14 +135,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		set => ((SavedCustomProps)value).Restore( this );
 	}
 
-	class SavedCustomProps {
-		public SavedCustomProps( WoundedWatersBleeding spirit ) {
-			_healingWatersMarkers = spirit.HealingMarkers[Element.Water];
-			_healingAnimalMarkers = spirit.HealingMarkers[Element.Animal];
-			_innates = (InnatePower[])spirit.InnatePowers.Clone(); // don't use original because it gets updated
-			_rules = [.. spirit._specialRules];
-			_seekHealing = spirit._seekHealing;
-		}
+	class SavedCustomProps( WoundedWatersBleeding spirit ) {
 		public void Restore( WoundedWatersBleeding spirit ) {
 			spirit.HealingMarkers[Element.Water] = _healingWatersMarkers;
 			spirit.HealingMarkers[Element.Animal] = _healingAnimalMarkers;
@@ -150,11 +143,11 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 			spirit._specialRules.Clear(); spirit._specialRules.AddRange( _rules );
 			spirit._seekHealing = _seekHealing;
 		}
-		readonly int _healingWatersMarkers;
-		readonly int _healingAnimalMarkers;
-		readonly InnatePower[] _innates;
-		readonly SpecialRule[] _rules;
-		readonly bool _seekHealing;
+		readonly int _healingWatersMarkers = spirit.HealingMarkers[Element.Water];
+		readonly int _healingAnimalMarkers = spirit.HealingMarkers[Element.Animal];
+		readonly InnatePower[] _innates = (InnatePower[])spirit.InnatePowers.Clone();
+		readonly SpecialRule[] _rules = [.. spirit._specialRules];
+		readonly bool _seekHealing = spirit._seekHealing;
 	}
 
 	#endregion Memento

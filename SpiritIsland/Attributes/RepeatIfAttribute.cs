@@ -18,13 +18,9 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 	public override IPowerRepeater GetRepeater() => new Repeater( Thresholds );
 
-	class Repeater : IPowerRepeater {
+	class Repeater( IDrawableInnateTier[] thresholds ) : IPowerRepeater {
 
-		readonly List<IDrawableInnateTier> _thresholds;
-
-		public Repeater( IDrawableInnateTier[] thresholds ) {
-			_thresholds = [.. thresholds];
-		}
+		readonly List<IDrawableInnateTier> _thresholds = [.. thresholds];
 
 		public async Task<bool> ShouldRepeat( Spirit spirit ) {
 			foreach(var threshold in _thresholds) {
@@ -39,14 +35,10 @@ public class RepeatIfAttribute : RepeatAttribute {
 
 }
 
-public class DrawableRepeatOption : IDrawableInnateTier {
-	public DrawableRepeatOption( string thresholds, string description ) {
-		Elements = ElementStrings.Parse(thresholds);
-		Description = description;
-	}
-	public CountDictionary<Element> Elements { get; }
+public class DrawableRepeatOption( string thresholds, string description ) : IDrawableInnateTier {
+	public CountDictionary<Element> Elements { get; } = ElementStrings.Parse( thresholds );
 
-	public string Description { get; }
+	public string Description { get; } = description;
 
 	string IOption.Text => ThresholdString;
 

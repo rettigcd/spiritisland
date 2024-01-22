@@ -1,13 +1,10 @@
 ﻿namespace SpiritIsland;
 
-public class BlightToken : TokenClassToken
+public class BlightToken( string label, char k, Img img ) 
+	: TokenClassToken( label, k, img )
 	, IHandleTokenAddedAsync
 	, IHandleTokenRemoved
 {
-	public BlightToken( string label, char k, Img img ) 
-		: base( label, k, img ) 
-	{}
-
 	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 
 		if(args.Added != this) return; // token-added event handler for blight only

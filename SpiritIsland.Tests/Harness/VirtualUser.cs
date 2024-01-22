@@ -1,15 +1,7 @@
 ﻿namespace SpiritIsland.Tests;
 
-public class VirtualUser {
+public class VirtualUser( Spirit spirit ) {
 
-	#region constructor
-
-	public VirtualUser(Spirit spirit ) { 
-		_spirit = spirit;
-		_userPortal = spirit.Portal;
-	}
-
-	#endregion
 
 	#region Growth
 
@@ -281,8 +273,8 @@ public class VirtualUser {
 
 	#endregion
 
-	readonly protected Spirit _spirit;
-	readonly protected IUserPortal _userPortal;
+	readonly protected Spirit _spirit = spirit;
+	readonly protected IUserPortal _userPortal = spirit.Portal;
 
 }
 

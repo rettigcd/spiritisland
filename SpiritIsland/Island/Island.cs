@@ -99,26 +99,21 @@ public sealed class Island : IHaveMemento {
 
 	static readonly int[] boardSideIndex = [0,1,2];
 
-	class MyMemento {
-		public MyMemento( Island src ) {
-			boards = src.Boards.Select( b => new BoardInfo( b ) ).ToArray();
-			nativeTerrain = src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<Space1>()
-				.ToDictionary(s=>s.Text,s=>s.NativeTerrain);
-		}
+	class MyMemento( Island _src ) {
 		public void Restore( Island src ) {
 			src.Boards = boards.Select( b => b.Restore() ).ToArray();
 			foreach(Space1 space in src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<Space1>())
 				space.NativeTerrain = nativeTerrain[space.Text];
 		}
-		readonly BoardInfo[] boards;
-		readonly Dictionary<string,Terrain> nativeTerrain;
+		readonly BoardInfo[] boards = _src.Boards.Select( b => new BoardInfo( b ) ).ToArray();
+		readonly Dictionary<string,Terrain> nativeTerrain = _src.Boards.SelectMany( b => b.Spaces_Unfiltered ).OfType<Space1>()
+				.ToDictionary( s => s.Text, s => s.NativeTerrain );
 	}
 
-	class BoardInfo {
-		public BoardInfo( Board b ) { _name = b.Name; _orientation = b.Orientation; _invaderActionCount=b.InvaderActionCount; }
-		readonly string _name;
-		readonly BoardOrientation _orientation;
-		readonly int _invaderActionCount;
+	class BoardInfo( Board _board ) {
+		readonly string _name = _board.Name;
+		readonly BoardOrientation _orientation = _board.Orientation;
+		readonly int _invaderActionCount = _board.InvaderActionCount;
 		public Board Restore() {
 			var board = Board.BuildBoard( _name, _orientation ); // supplies spaces
 			board.InvaderActionCount = _invaderActionCount;

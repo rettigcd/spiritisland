@@ -35,17 +35,11 @@ public class InfiniteVitality {
 
 }
 
-class StopDahanDamageAndDestruction 
+class StopDahanDamageAndDestruction( string _sourceName )
 	: IModifyDahanDamage
 	, IModifyRemovingToken 
 	, IEndWhenTimePasses
 {
-
-	readonly string _sourceName;
-	public StopDahanDamageAndDestruction(string sourceName ) {
-		_sourceName = sourceName;
-	}
-
 	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
 	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {

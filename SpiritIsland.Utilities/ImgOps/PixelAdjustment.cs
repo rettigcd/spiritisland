@@ -6,11 +6,9 @@ namespace SpiritIsland;
 /// Applies a location-independed Modification. 
 /// Mod is based only on the starting color of the source pixel.
 /// </summary>
-public class PixelAdjustment : BitmapAdjustment {
-	readonly Func<Color,Color> _adjust;
-	public PixelAdjustment( Func<Color, Color> adjust ) {
-		_adjust = adjust;
-	}
+public class PixelAdjustment( Func<Color, Color> adjust ) : BitmapAdjustment {
+
+	readonly Func<Color,Color> _adjust = adjust;
 
 	public void Adjust( Bitmap bitmap ) {
 		for(int x = 0; x < bitmap.Width; ++x)

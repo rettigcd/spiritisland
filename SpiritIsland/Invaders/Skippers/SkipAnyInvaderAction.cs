@@ -1,27 +1,20 @@
 ﻿namespace SpiritIsland;
 
-public class SkipAnyInvaderAction : BaseModEntity // !!! could add this to SpaceState for simplicity
+public class SkipAnyInvaderAction( string label, Spirit spirit, Func<SpaceState, Task> alternativeAction = null ) 
+	: BaseModEntity() // !!! could add this to SpaceState for simplicity
 	, IEndWhenTimePasses
 	, ISkipRavages
 	, ISkipBuilds
 	, ISkipExploreTo
 {
 
-	readonly Func<SpaceState, Task> _alternativeAction;
-	readonly Spirit _spirit;
-
-	public SkipAnyInvaderAction( string label, Spirit spirit, Func<SpaceState, Task> alternativeAction = null )
-		:base() // rated this high because it can stop builds and ravages also, maybe it should be lower
-	{
-		Text = label;
-		_spirit = spirit;
-		_alternativeAction = alternativeAction;
-	}
+	readonly Func<SpaceState, Task> _alternativeAction = alternativeAction;
+	readonly Spirit _spirit = spirit;
 
 	/// <summary> Used by skips to determine which skip to use. </summary>
 	public UsageCost Cost => UsageCost.Heavy;
 
-	public string Text {get;}
+	public string Text { get; } = label;
 
 	Task<bool> ISkipRavages.Skip( SpaceState space ) => MakeDecision( space, "Ravage" );
 

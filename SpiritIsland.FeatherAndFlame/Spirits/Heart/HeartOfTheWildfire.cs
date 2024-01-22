@@ -71,16 +71,17 @@ public class HeartOfTheWildfire : Spirit {
 		+"  Push all beasts and any number of dahan.  Added blight does not destroy your presence."
 	);
 
-	class WildfireToken : SpiritPresenceToken, IModifyRemovingToken, IHandleTokenAddedAsync {
+	class WildfireToken( Spirit spirit ) : SpiritPresenceToken(spirit)
+		, IModifyRemovingToken
+		, IHandleTokenAddedAsync
+	{
 
 		static public readonly SpecialRule DestructiveNature_Rule = new SpecialRule(
 			"Destructive Nature",
 			"Blight added due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your presence. (including cascades)"
 		);
 
-		public WildfireToken( Spirit spirit ):base(spirit) {}
-
-		void  IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+		void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
 			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presence. ( This includes cascades.)
 			if( DestroysMyPresence(args) && BlightAddedDueToSpiritEffects() ){
 				ActionScope.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));

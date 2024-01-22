@@ -4,20 +4,9 @@
 /// Used for events / fear that say "for each board"
 /// Binds a board to its spirit
 /// </summary>
-public class BoardCtx : IHaveASpirit {
+public class BoardCtx( Board _board ) : IHaveASpirit {
 
-	// Binds Board to Spirit.
-
-	#region constructors
-
-	public BoardCtx( Board board ) {
-		Board = board;
-		Self = board.FindSpirit();
-	}
-
-	public Spirit Self { get; }
-
-	#endregion
+	public Spirit Self { get; } = _board.FindSpirit();
 
 	#region Parts from SelfCtx
 
@@ -31,6 +20,6 @@ public class BoardCtx : IHaveASpirit {
 	#endregion
 
 
-	public Board Board { get; }
+	public Board Board { get; } = _board;
 
 }

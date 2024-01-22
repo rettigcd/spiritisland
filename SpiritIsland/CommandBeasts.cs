@@ -5,7 +5,11 @@
 /// Moves to an action that runs when TimePasses
 /// Added to 1st Spirits ActionFactory list until they use it.
 /// </summary>
-public class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
+public class CommandBeasts( string name ) 
+	: IActionFactory
+	, IRunWhenTimePasses
+	, IHaveMemento
+{
 
 	public const string Stage2 = "Command Beasts (II)";
 	public const string Stage3 = "Command Beasts (III)";
@@ -30,10 +34,7 @@ public class CommandBeasts : IActionFactory, IRunWhenTimePasses, IHaveMemento {
 
 	#endregion Static Setup
 
-	public CommandBeasts( string name ) { Name = name; }
-
-	public string Name { get; }
-
+	public string Name { get; } = name;
 	public string Text => Name;
 
 	public async Task ActivateAsync( Spirit _ ) {

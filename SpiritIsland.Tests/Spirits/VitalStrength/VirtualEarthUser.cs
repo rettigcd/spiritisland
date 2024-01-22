@@ -1,8 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 
-public class VirtualEarthUser : VirtualUser {
-
-	public VirtualEarthUser(Spirit spirit ) : base( spirit ) { }
+public class VirtualEarthUser( Spirit spirit ) : VirtualUser( spirit ) {
 
 	public void SelectsGrowthA_Reclaim_PP2() {
 		Growth_SelectAction( "PlacePresence(2)" );

@@ -1,8 +1,6 @@
 ﻿namespace SpiritIsland.Tests.Spirits.River; 
 
-public class VirtualRiverUser : VirtualUser {
-
-	public VirtualRiverUser(Spirit spirit ) : base( spirit ) { }
+public class VirtualRiverUser( Spirit spirit ) : VirtualUser( spirit ) {
 
 	public void SelectsGrowthA_Reclaim() {
 		Growth_DrawsPowerCard();

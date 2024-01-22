@@ -6,17 +6,10 @@
 /// <remarks>
 /// Matches SpaceToken to make selecting presence generic/uniform.
 /// </remarks>
-public class TrackPresence : TokenOn {
+public class TrackPresence( Track track, SpiritPresenceToken token ) : TokenOn {
 
-	#region constructor
-	public TrackPresence(Track track,SpiritPresenceToken token ) {
-		Track = track;
-		Token = token;
-	}
-	#endregion constructor
-
-	public IToken Token {get;}
-	public Track Track {get;}
+	public IToken Token { get; } = token;
+	public Track Track { get; } = track;
 
 	#region GetHashCode/Equal
 	public override int GetHashCode() => Track.GetHashCode();

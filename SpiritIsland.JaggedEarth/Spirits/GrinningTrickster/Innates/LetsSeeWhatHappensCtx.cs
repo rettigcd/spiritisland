@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class LetsSeeWhatHappensCtx : TargetSpaceCtx {
-
-	public LetsSeeWhatHappensCtx(TargetSpaceCtx ctx ) : base( ctx.Self, ctx.Space ) {}
+class LetsSeeWhatHappensCtx( TargetSpaceCtx ctx ) 
+	: TargetSpaceCtx( ctx.Self, ctx.Space ) 
+{
 
 	/// <summary> ExecutesAll Options, not just 1 </summary>
 	// Does this work on things that operate on Commands???

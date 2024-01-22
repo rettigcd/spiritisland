@@ -5,15 +5,10 @@ namespace SpiritIsland;
 /// <summary>
 /// Loads images and caches their size, but does not hang on to the image.
 /// </summary>
-public class ImageSizeCalculator {
+public class ImageSizeCalculator( int iconDimension, int elementDimension ) {
 
-	public int IconDimension { get; set; }
-	public int ElementDimension { get; set; }
-
-	public ImageSizeCalculator(int iconDimension, int elementDimension ) {
-		IconDimension = iconDimension;
-		ElementDimension = elementDimension;
-	}
+	public int IconDimension { get; set; } = iconDimension;
+	public int ElementDimension { get; set; } = elementDimension;
 
 	public (Size,Img) GetTokenDetails( string tokenName ) {
 		Img img = SimpleWordToIcon( tokenName );

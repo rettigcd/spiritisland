@@ -2,14 +2,12 @@
 
 namespace SpiritIsland;
 
-public class IconDescriptorRect : IPaintableRect {
+public class IconDescriptorRect( IconDescriptor descriptor ) : IPaintableRect {
 
 	readonly static IconResources _resources = ResourceImages.Singleton;
 
-	readonly IconDescriptor _descriptor;
-	public IconDescriptorRect( IconDescriptor descriptor ) {
-		_descriptor = descriptor;
-	}
+	readonly IconDescriptor _descriptor = descriptor;
+
 	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
 		// !!! Instead of drawing this directly, use TrackSlot to cache the image.
 		IconDrawer.DrawTheIcon( graphics, _descriptor, rect, _resources );

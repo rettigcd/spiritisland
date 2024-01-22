@@ -15,14 +15,13 @@ class RepeatWithTimeAttribute : RepeatAttribute {
 
 	public override IPowerRepeater GetRepeater() => new Repeater(UpTo);
 
-	class Repeater : IPowerRepeater {
-		readonly int max;
+	class Repeater( int _max ) : IPowerRepeater {
 		int previousUse = 1; // assume when we repeat, we've already used it once.
-		public Repeater(int max ) { this.max = max; }
+
 		public async Task<bool> ShouldRepeat( Spirit spirit ) {
 
 			if( spirit is FracturedDaysSplitTheSky fracturedDays
-				&& previousUse <= max
+				&& previousUse <= _max
 				&& previousUse <= fracturedDays.Time
 				&& await spirit.UserSelectsFirstText($"Pay {previousUse} Time to repeat power?", "Yes, repeat", "No, thank you.")
 			) {

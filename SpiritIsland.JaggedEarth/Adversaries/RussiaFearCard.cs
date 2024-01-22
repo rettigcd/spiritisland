@@ -1,12 +1,12 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class RussiaFearCard : FearCardBase, IFearCard {
-	readonly IFearCard _inner;
-	readonly InvaderCard _invaderCard;
-	public RussiaFearCard( IFearCard inner, InvaderCard invaderCard ) { 
-		_inner = inner;
-		_invaderCard = invaderCard;
-	}
+class RussiaFearCard( IFearCard inner, InvaderCard invaderCard ) 
+	: FearCardBase
+	, IFearCard
+{
+	readonly IFearCard _inner = inner;
+	readonly InvaderCard _invaderCard = invaderCard;
+
 	public string Text => _inner.Text;
 
 	public override void Activate( GameState gameState ) {

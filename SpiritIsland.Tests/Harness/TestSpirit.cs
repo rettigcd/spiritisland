@@ -1,17 +1,15 @@
 ﻿namespace SpiritIsland.Tests; 
 // Test spirit that has lots of energy and you can select the card they start with
 
-class TestSpirit : Spirit {
-
-	public TestSpirit(PowerCard powerCard):base(
-		x => new SpiritPresence(x,
+class TestSpirit( PowerCard powerCard ) 
+	: Spirit( x => new SpiritPresence(x,
 			new TestPresenceTrack(Track.Energy5,Track.Energy9),
 			new TestPresenceTrack(Track.Card1,Track.Card2,Track.Card3)
 		)
 		, new GrowthTrack( new GrowthOption( new ReclaimAll() ) )
 		, powerCard
-	) {}
-
+	)
+{
 	public override string Text => "Test Spirit";
 
 	public override SpecialRule[] SpecialRules => throw new NotImplementedException();
@@ -46,16 +44,13 @@ class TestSpirit : Spirit {
 
 }
 
-public class TestPresenceTrack : PresenceTrack {
-	public TestPresenceTrack(params Track[] t ) : base( t ) { }
+public class TestPresenceTrack( params Track[] t ) : PresenceTrack( t ) {
 	public void OverrideTrack(int index, Track t) { _slots[index]=t;}
 
 }
 
 
-public class VirtualTestUser : VirtualUser {
-
-	public VirtualTestUser( Spirit spirit ) : base( spirit ) { }
+public class VirtualTestUser( Spirit spirit ) : VirtualUser( spirit ) {
 
 	/// <summary> Growth for Test Spirit </summary>
 	public void Grows() {

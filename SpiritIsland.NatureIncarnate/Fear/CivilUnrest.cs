@@ -5,7 +5,7 @@ public class CivilUnrest : FearCardBase, IFearCard {
 	public const string Name = "Civil Unrest";
 	public string Text => Name;
 
-	[FearLevel(1, "On Each Board: Add 1 Strife to a Town/City in a land not matching a Ravage Card." )]
+	[FearLevel( 1,"On Each Board: Add 1 Strife to a Town/City in a land not matching a Ravage Card." )]
 	public Task Level1( GameState ctx )
 		=> Cmd.AddStrifeTo(1,Human.Town_City)
 			.To().OneLandPerBoard().Which( Is.NotRavageCardMatch ).ByPickingToken( Human.Town_City )

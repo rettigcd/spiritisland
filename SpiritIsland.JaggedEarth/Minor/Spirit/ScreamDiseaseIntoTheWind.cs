@@ -21,16 +21,7 @@ public class ScreamDiseaseIntoTheWind{
 
 }
 
-class ScreamingDiseaseActionHandlers : IRunAtStartOfAction {
-
-	#region constructor
-
-	public ScreamingDiseaseActionHandlers(Spirit targetSpirit) {
-		_round = GameState.Current.RoundNumber;
-		_targetSpirit = targetSpirit;
-	}
-
-	#endregion
+class ScreamingDiseaseActionHandlers( Spirit _targetSpirit ) : IRunAtStartOfAction {
 
 	public Task Start( ActionScope startingScope ) {
 		// Add to the end of EVERY Action this round.
@@ -55,9 +46,7 @@ class ScreamingDiseaseActionHandlers : IRunAtStartOfAction {
 	}
 
 	#region private 
-	readonly int _round;
-	readonly Spirit _targetSpirit;
-
+	readonly int _round = GameState.Current.RoundNumber;
 	bool _used = false;
 	#endregion
 

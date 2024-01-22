@@ -1,13 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
+public class VolcanicPeaksTowerOverTheLandscape( Spirit _self ) : DefaultRangeCalculator {
 
 	public const string Name = "Volcanic Peaks Tower Over the Landscape";
 	static public SpecialRule Rule => new SpecialRule( Name, "Your Power Cards gain +1 range if you have 3 or more presence in the origin land." );
-
-	readonly Spirit _self;
-
-	public VolcanicPeaksTowerOverTheLandscape(Spirit self) { _self = self; }
 
 	public override IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) {
 		if(tc is not InnateTargetCriteria && 3 <= _self.Presence.CountOn( source ))
@@ -16,9 +12,8 @@ public class VolcanicPeaksTowerOverTheLandscape : DefaultRangeCalculator {
 	}
 
 	// This class could be used on All Innates to identify them as innates.
-	public class InnateTargetCriteria : TargetCriteria {
-		public InnateTargetCriteria( int range, Spirit spirit, params string[] filters ) 
-			:base( range, spirit, filters ) { }
-	}
+	public class InnateTargetCriteria( int range, Spirit spirit, params string[] filters ) 
+		: TargetCriteria( range, spirit, filters ) 
+	{}
 
 }

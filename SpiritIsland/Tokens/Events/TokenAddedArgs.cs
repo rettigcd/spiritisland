@@ -1,19 +1,13 @@
 ﻿namespace SpiritIsland;
 
-public class TokenAddedArgs : ITokenAddedArgs {
+public class TokenAddedArgs( IToken token, ILocation to, int count, AddReason addReason ) 
+	: ITokenAddedArgs
+{
+	public IToken Added { get; } = token;
+	public ILocation To { get; } = to;
 
-	public TokenAddedArgs(IToken token, ILocation to, int count, AddReason addReason ) {
-		Added = token;
-		To = to;
-		Count = count;
-		Reason = addReason;
-	}
+	public int Count { get; } = count;
 
-	public IToken Added { get; }
-	public ILocation To { get; }
-
-	public int Count { get; }
-
-	public AddReason Reason { get; }
+	public AddReason Reason { get; } = addReason;
 
 }

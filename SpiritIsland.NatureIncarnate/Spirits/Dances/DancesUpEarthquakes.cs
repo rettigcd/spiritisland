@@ -209,13 +209,7 @@ public class DancesUpEarthquakes : Spirit {
 		set => ((SavedCustomProps)value).Restore( this );
 	}
 
-	class SavedCustomProps {
-		public SavedCustomProps( DancesUpEarthquakes spirit ) {
-			_impending = [.. spirit.Impending];
-			_impendingEnergy = spirit.ImpendingEnergy.Clone();
-			_impendingEnergyPerRound = spirit.ImpendingEnergyPerRound;
-			_bonusImpendingPlays = spirit.BonusImpendingPlays;
-		}
+	class SavedCustomProps( DancesUpEarthquakes spirit ) {
 		public void Restore( DancesUpEarthquakes spirit ) {
 			spirit.Impending.Clear(); spirit.Impending.AddRange(_impending);
 			spirit.ImpendingEnergy.Clear(); foreach(var p in _impendingEnergy) spirit.ImpendingEnergy.Add(p.Key,p.Value);
@@ -223,10 +217,10 @@ public class DancesUpEarthquakes : Spirit {
 			spirit.BonusImpendingPlays = _bonusImpendingPlays;
 
 		}
-		readonly PowerCard[] _impending;
-		readonly CountDictionary<string> _impendingEnergy;
-		readonly int _impendingEnergyPerRound;
-		readonly int _bonusImpendingPlays;
+		readonly PowerCard[] _impending = [.. spirit.Impending];
+		readonly CountDictionary<string> _impendingEnergy = spirit.ImpendingEnergy.Clone();
+		readonly int _impendingEnergyPerRound = spirit.ImpendingEnergyPerRound;
+		readonly int _bonusImpendingPlays = spirit.BonusImpendingPlays;
 
 	}
 

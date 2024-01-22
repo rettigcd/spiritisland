@@ -455,31 +455,7 @@ public abstract partial class Spirit
 		set { }
 	}
 
-	protected class Memento {
-		public Memento(Spirit spirit) {
-			_presence = ((IHaveMemento)spirit.Presence).Memento;
-			_energyCollectedHooks = ((IHaveMemento)spirit.EnergyCollected).Memento;
-
-			_growth = spirit.GrowthTrack;
-			_innates = spirit.InnatePowers;
-			_energy          = spirit.Energy;
-			_tempCardPlayBoost   = spirit.TempCardPlayBoost;
-			_elements        = [.. spirit.Elements.Elements];
-
-			_hand            = [..spirit.Hand];
-			_purchased       = [..spirit.InPlay];
-			_discarded       = [..spirit.DiscardPile];
-
-			_targetingSourceStrategy = spirit.TargetingSourceStrategy;
-			_powerRangeCalc = spirit.PowerRangeCalc;
-
-			_available       = [..spirit._availableActions];
-			_usedActions     = [..spirit._usedActions];
-			_usedInnates     = [..spirit._usedInnates];
-
-			_tag = spirit.CustomMementoValue;
-			_bonusDamage = spirit.BonusDamage;
-		}
+	protected class Memento( Spirit _spirit ) {
 		public void Restore(Spirit spirit) {
 			((IHaveMemento)spirit.Presence).Memento = _presence;
 			((IHaveMemento)spirit.EnergyCollected).Memento = _energyCollectedHooks;
@@ -504,28 +480,28 @@ public abstract partial class Spirit
 			spirit.CustomMementoValue = _tag;
 			spirit.BonusDamage = _bonusDamage;
 		}
-		readonly GrowthTrack _growth;
-		readonly InnatePower[] _innates;
+		readonly GrowthTrack _growth = _spirit.GrowthTrack;
+		readonly InnatePower[] _innates = _spirit.InnatePowers;
 
-		readonly int _energy;
-		readonly int _tempCardPlayBoost;
-		readonly KeyValuePair<Element,int>[] _elements;
-		readonly object _presence;
+		readonly int _energy = _spirit.Energy;
+		readonly int _tempCardPlayBoost = _spirit.TempCardPlayBoost;
+		readonly KeyValuePair<Element,int>[] _elements = [.. _spirit.Elements.Elements];
+		readonly object _presence = ((IHaveMemento)_spirit.Presence).Memento;
 
-		readonly PowerCard[] _hand;
-		readonly PowerCard[] _purchased;
-		readonly PowerCard[] _discarded;
+		readonly PowerCard[] _hand = [.. _spirit.Hand];
+		readonly PowerCard[] _purchased = [.. _spirit.InPlay];
+		readonly PowerCard[] _discarded = [.. _spirit.DiscardPile];
 
-		readonly ITargetingSourceStrategy _targetingSourceStrategy;
-		readonly ICalcRange _powerRangeCalc;
+		readonly ITargetingSourceStrategy _targetingSourceStrategy = _spirit.TargetingSourceStrategy;
+		readonly ICalcRange _powerRangeCalc = _spirit.PowerRangeCalc;
 
-		readonly IActionFactory[] _available;
-		readonly IActionFactory[] _usedActions;
-		readonly InnatePower[] _usedInnates;
+		readonly IActionFactory[] _available = [.. _spirit._availableActions];
+		readonly IActionFactory[] _usedActions = [.. _spirit._usedActions];
+		readonly InnatePower[] _usedInnates = [.. _spirit._usedInnates];
 
-		readonly object _energyCollectedHooks;
-		readonly int _bonusDamage;
-		readonly object _tag;
+		readonly object _energyCollectedHooks = ((IHaveMemento)_spirit.EnergyCollected).Memento;
+		readonly int _bonusDamage = _spirit.BonusDamage;
+		readonly object _tag = _spirit.CustomMementoValue;
 	}
 	static public void InitFromArray( CountDictionary<Element> dict, KeyValuePair<Element, int>[] array ) {
 		dict.Clear();

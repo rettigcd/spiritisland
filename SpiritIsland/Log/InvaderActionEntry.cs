@@ -1,11 +1,6 @@
 ﻿namespace SpiritIsland.Log;
 
-public class InvaderActionEntry : ILogEntry {
-	public string msg;
-	public InvaderActionEntry( string msg, LogLevel level = LogLevel.Info ) {
-		this.msg = msg;
-		Level = level;
-	}
-	public LogLevel Level { get; }
-	public string Msg( LogLevel _ ) => msg;
+public class InvaderActionEntry( string _msg, LogLevel _level = LogLevel.Info ) : ILogEntry {
+	public LogLevel Level { get; } = _level;
+	public string Msg( LogLevel _ ) => _msg;
 }

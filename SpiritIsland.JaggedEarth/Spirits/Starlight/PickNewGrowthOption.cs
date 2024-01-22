@@ -1,13 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 /// <summary> Starlight's Growth </summary>
-class PickNewGrowthOption {
+class PickNewGrowthOption( params GrowthOption[] options ) {
 
-	readonly GrowthOption[] _options;
-
-	public PickNewGrowthOption(params GrowthOption[] options ) {
-		_options = options;
-	}
+	readonly GrowthOption[] _options = options;
 
 	public async Task ActivateAsync( Spirit self ) {
 		GrowthOption option = (GrowthOption)await self.Select( "Select New Growth Option", _options, Present.Always );

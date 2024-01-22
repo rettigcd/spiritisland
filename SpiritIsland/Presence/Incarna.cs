@@ -1,18 +1,16 @@
 ﻿namespace SpiritIsland;
 
 #nullable enable
-public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMySpaces {
+public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _empowered ) 
+	: IToken
+	, IAppearInSpaceAbreviation
+	, ITokenClass
+	, ITrackMySpaces
+{
 
 	static readonly FakeSpace NullSpace = new FakeSpace( "Incarna-Null-Space" ); // 1 null space for all Incarna
 
-	public Spirit Self { get; }
-
-	public Incarna( Spirit spirit, string abrev, Img notEmpowered, Img empowered ) {
-		Self = spirit;
-		_abreviation = abrev;
-		_notEmpowered = notEmpowered;
-		_empowered = empowered;
-	}
+	public Spirit Self { get; } = _spirit;
 
 	public SpaceState Space => _spaceCounts.Keys
 		.Where( SpiritIsland.Space.Exists )
@@ -29,7 +27,7 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 
 	public string Text => SpaceAbreviation;
 
-	public string SpaceAbreviation => _abreviation + (Empowered ? "+" : "-");
+	public string SpaceAbreviation => _abrev + (Empowered ? "+" : "-");
 
 	public ITokenClass Class => this;
 
@@ -62,8 +60,4 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 	}
 
 	readonly CountDictionary<Space> _spaceCounts = [];
-	readonly string _abreviation;
-	readonly Img _notEmpowered;
-	readonly Img _empowered;
-
 }

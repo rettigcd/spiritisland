@@ -3,14 +3,9 @@ using System.Drawing;
 
 namespace SpiritIsland.WinForms; 
 
-class InnatePainter : IDisposable {
+class InnatePainter( InnatePower power, InnateLayout layout ) : IDisposable {
 
 	#region constructor
-
-	public InnatePainter( InnatePower power, InnateLayout layout ) {
-		_power = power;
-		_layout = layout;
-	}
 
 	#endregion
 
@@ -70,8 +65,8 @@ class InnatePainter : IDisposable {
 		}
 	}
 
-	readonly InnatePower _power;
-	readonly InnateLayout _layout;
+	readonly InnatePower _power = power;
+	readonly InnateLayout _layout = layout;
 
 	Bitmap _backgroundCache;
 	readonly Brush backgroundBrush = Brushes.AliceBlue;

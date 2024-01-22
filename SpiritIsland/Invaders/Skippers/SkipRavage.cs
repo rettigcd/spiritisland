@@ -1,15 +1,11 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops 1 Ravage. </summary>
-public class SkipRavage : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
-
-	public SkipRavage( string label, UsageDuration duration = UsageDuration.SkipOneThisTurn ) : base() {
-		SourceLabel = label;
-		_duration = duration;
-	}
+public class SkipRavage( string label, UsageDuration duration = UsageDuration.SkipOneThisTurn ) 
+	: BaseModEntity(), IEndWhenTimePasses, ISkipRavages {
 
 	/// <summary> So we can log what it was that stopped the ravage. </summary>
-	public string SourceLabel { get; }
+	public string SourceLabel { get; } = label;
 
 	/// <summary> Used by skips to determine which skip to use. </summary>
 	public UsageCost Cost => UsageCost.Free;
@@ -22,7 +18,7 @@ public class SkipRavage : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
 
 	#region private
 
-	readonly UsageDuration _duration;
+	readonly UsageDuration _duration = duration;
 
 	#endregion
 

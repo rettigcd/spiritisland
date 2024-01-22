@@ -29,12 +29,10 @@ public class KeepWatchForNewIncursions {
 	/// Once this turn, after Invaders are added or moved into target land,
 	/// 1 Damage per Dahan in target land, to those added/moved Invaders only
 	/// </summary>
-	class DamageNewInvadersOnce : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
+	class DamageNewInvadersOnce( Spirit spirit ) : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
 		bool _used = false;
-		readonly Spirit _spirit;
-		public DamageNewInvadersOnce( Spirit spirit ) {
-			_spirit = spirit;
-		}
+		readonly Spirit _spirit = spirit;
+
 		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
 			if(!_used
 				|| !args.Added.HasTag( TokenCategory.Invader )

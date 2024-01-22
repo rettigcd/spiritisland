@@ -31,10 +31,10 @@ public class VitalStrength : Spirit {
 		gs.Tokens.Dynamic.ForGame.Register( new EarthsVitality(this).DefendOnSpace, SpiritIsland.Token.Defend );
 	}
 
-	class EarthsVitality {
+	class EarthsVitality( Spirit spirit ) {
 		static public SpecialRule Rule => new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.");
-		readonly SpiritPresence presence;
-		public EarthsVitality( Spirit spirit ) { presence = spirit.Presence; }
+		readonly SpiritPresence presence = spirit.Presence;
+
 		public int DefendOnSpace( SpaceState space ) 
 			=> presence.IsSacredSite(space) ? 3 : 0;
 	}

@@ -17,8 +17,7 @@ public class DreadApparitions {
 
 
 	// When powers generate fear in target land, defend 1 per fear.
-	class ConvertFearToDefense : IReactToLandFear, IEndWhenTimePasses {
-		public ConvertFearToDefense(string powerName ) { _powerName = powerName; }
+	class ConvertFearToDefense( string powerName ) : IReactToLandFear, IEndWhenTimePasses {
 		void IReactToLandFear.HandleFearAdded( SpaceState tokens, int fearAdded, FearType fearType ) {
 			// (Fear from destroying town/cities does not.)
 			if(fearType == FearType.FromInvaderDestruction) return;
@@ -26,7 +25,7 @@ public class DreadApparitions {
 			tokens.Defend.Add( fearAdded );
 			ActionScope.Current.Log( new Log.Debug( $"{fearAdded} Fear => +{fearAdded} Defend ({_powerName})" ) );
 		}
-		readonly string _powerName;
+		readonly string _powerName = powerName;
 	}
 
 }

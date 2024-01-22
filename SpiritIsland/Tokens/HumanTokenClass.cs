@@ -1,34 +1,31 @@
 ﻿namespace SpiritIsland;
 
-public class HumanTokenClass : ITokenClass, ITag {
+public class HumanTokenClass(
+	string _label, 
+	TokenCategory _categoryTag, 
+	int _fearGeneratedWhenDestroyed, 
+	Img _img, 
+	int _expectedHealth, 
+	TokenVariant _variant = default
+) 
+	: ITokenClass
+	, ITag
+{
+	public char Initial { get; } = _label[0];
 
-	public HumanTokenClass( string label, TokenCategory categoryTag, int fearGeneratedWhenDestroyed, Img img, int expectedHealth, TokenVariant variant=default ) {
-		Label = label;
-		_catTag = categoryTag;
-		FearGeneratedWhenDestroyed = fearGeneratedWhenDestroyed;
-		Img = img;
-		ExpectedHealthHint = expectedHealth;
-		Variant = variant;
+	public string Label { get; } = _label;
 
-		Initial = label[0];
-	}
+	public int FearGeneratedWhenDestroyed { get; } = _fearGeneratedWhenDestroyed;
 
-	public char Initial { get; }
+	public Img Img { get; } = _img;
 
-	public string Label { get; }
-
-	public int FearGeneratedWhenDestroyed { get; }
-
-	public Img Img { get; }
-
-	public TokenVariant Variant { get; }
+	public TokenVariant Variant { get; } = _variant;
 
 	/// <summary> 3 for cities, 2 for towns/dahan, 1 for explorers. </summary>
 	/// <remarks> Helps UI display the health when different than expected </remarks>
-	public int ExpectedHealthHint { get; }
+	public int ExpectedHealthHint { get; } = _expectedHealth;
 
-	public bool HasTag( ITag tag ) => tag == this || tag == _catTag;
-	readonly TokenCategory _catTag;
+	public bool HasTag( ITag tag ) => tag == this || tag == _categoryTag;
 }
 
 public enum TokenVariant {

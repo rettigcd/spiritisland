@@ -4,17 +4,10 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
-public class PresenceSlotButton : PresenceSlotLayout, IButton {
-
-	public PresenceSlotButton( IPresenceTrack presenceTrack, Track track, Image presenceImage ) {
-		_presenceTrack = presenceTrack;
-		_track = track;
-		_presenceImage = presenceImage ?? throw new ArgumentNullException(nameof(presenceImage));
-	}
-
-	readonly Track _track;
-	readonly Image _presenceImage;
-	readonly IPresenceTrack _presenceTrack;
+public class PresenceSlotButton( IPresenceTrack presenceTrack, Track track, Image presenceImage ) : PresenceSlotLayout, IButton {
+	readonly Track _track = track;
+	readonly Image _presenceImage = presenceImage ?? throw new ArgumentNullException( nameof( presenceImage ) );
+	readonly IPresenceTrack _presenceTrack = presenceTrack;
 
 	public Rectangle Bounds => PresenceRect;
 	bool IButton.Contains( Point clientCoords) => Bounds.Contains( clientCoords );

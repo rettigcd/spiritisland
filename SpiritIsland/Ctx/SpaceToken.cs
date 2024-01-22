@@ -1,16 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public class SpaceToken 
+/// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
+public class SpaceToken( Space space, IToken token )
 	: TokenOn
 	, IEquatable<SpaceToken>
 {
-	#region constructor / deconstructor
 
-	/// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
-	public SpaceToken( Space space, IToken token ) { 
-		Space = space; 
-		Token = token;
-	}
+	#region constructor / deconstructor
 
 	public void Deconstruct(out Space space, out IToken token) {
 		space = Space;
@@ -19,8 +15,8 @@ public class SpaceToken
 
 	#endregion constructor / deconstructor
 
-	public Space Space { get; }
-	public IToken Token { get; }
+	public Space Space { get; } = space;
+	public IToken Token { get; } = token;
 	ILocation TokenOn.Source => Space;
 
 	#region IOption.Text config

@@ -322,9 +322,8 @@ public static class PaintableActionFactory {
 		).SplitByWeight(0.05f,.1f,.8f,.1f,.1f);
 	}
 
-	class GainEnergyRect : IPaintableRect {
-		public GainEnergyRect( int delta ) { _delta = delta; }
-		readonly int _delta;
+	class GainEnergyRect( int delta ) : IPaintableRect {
+		readonly int _delta = delta;
 		public Rectangle Paint( Graphics graphics, Rectangle bounds ) {
 			var fitted = new ImgRect( Img.Coin ).Paint( graphics, bounds );
 

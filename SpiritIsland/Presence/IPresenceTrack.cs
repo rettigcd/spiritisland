@@ -16,8 +16,6 @@ public interface IPresenceTrack: IHaveMemento {
 
 }
 
-public class TrackRevealedArgs {
-	public TrackRevealedArgs( Track track ) { Track = track; }
-	public Track Track { get; }
-
+public class TrackRevealedArgs( Track track ) {
+	public Track Track { get; } = track;
 }

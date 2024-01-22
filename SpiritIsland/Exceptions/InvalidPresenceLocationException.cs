@@ -1,9 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InvalidPresenceLocationException : Exception {
-
-	public InvalidPresenceLocationException(string invalidSpace,string[] allowed)
-		:base($"Invalid:{invalidSpace} allowed:"+allowed.Join(","))
-	{}
-		
+public class InvalidPresenceLocationException( string invalidSpace, string[] allowed ) 
+	: Exception($"Invalid:{invalidSpace} allowed:"+allowed.Join(","))
+{
 }

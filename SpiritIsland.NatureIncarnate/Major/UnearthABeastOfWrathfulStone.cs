@@ -51,16 +51,10 @@ public class UnearthABeastOfWrathfulStone {
 /// Sits on a space waiting for there to be no Ravage nor build,
 /// Then adds the correct beast token.
 /// </summary>
-class TriggerAfterNoRavageOrBuild : ISpaceEntity, ISkipBuilds, IConfigRavages, IRunAfterInvaderPhase {
+class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> triggeredAction ) : ISpaceEntity, ISkipBuilds, IConfigRavages, IRunAfterInvaderPhase {
 	
-	readonly Spirit _spirit;
-	readonly Func<TargetSpaceCtx,Task> _triggeredAction;
-
-	public TriggerAfterNoRavageOrBuild(Spirit spirit, Func<TargetSpaceCtx,Task> triggeredAction) {
-		_spirit = spirit;
-		_triggeredAction = triggeredAction;
-	}
-
+	readonly Spirit _spirit = spirit;
+	readonly Func<TargetSpaceCtx,Task> _triggeredAction = triggeredAction;
 	bool _hadRavageOrBuild;
 
 

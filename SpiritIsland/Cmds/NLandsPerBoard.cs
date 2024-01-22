@@ -3,15 +3,11 @@
 /// <summary>
 /// Spirit/Player picks 1 land from their home board.
 /// </summary>
-public class NLandsPerBoard : IActOn<BoardCtx> {
+public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _preposition, int _count ) 
+	: IActOn<BoardCtx>
+{
 
 	#region constructor
-
-	public NLandsPerBoard( IActOn<TargetSpaceCtx> spaceAction, string preposition, int count ) {
-		_spaceAction = spaceAction;
-		_preposition = preposition;
-		_count = count;
-	}
 
 	#endregion
 
@@ -86,12 +82,8 @@ public class NLandsPerBoard : IActOn<BoardCtx> {
 		return st?.Space;
 	}
 
-
-	readonly IActOn<TargetSpaceCtx> _spaceAction;
-	readonly string _preposition;
 	CtxFilter<TargetSpaceCtx> LandCriteria => _landCriteria ??= Is.AnyLand;
 	CtxFilter<TargetSpaceCtx> _landCriteria;
-	readonly int _count;
 	ITokenClass[] _firstPickTokenClasses;
 	Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> _tokenFactory;
 

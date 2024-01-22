@@ -3,16 +3,9 @@
 /// <summary>
 /// Gathers a token into 1 of your lands.
 /// </summary>
-public class Gather1Token : SpiritAction {
-
-	readonly int _range;
-	readonly ITokenClass _tokenToGather;
-
-	public Gather1Token( int range, ITokenClass tokenToGather, Present present = Present.Done ):base( "Gather1Token") {
-		_range = range;
-		_tokenToGather = tokenToGather;
-		_present = present;
-	}
+public class Gather1Token( int _range, ITokenClass _tokenToGather, Present _present = Present.Done ) 
+	: SpiritAction( "Gather1Token")
+{
 
 	public override async Task ActAsync( Spirit self ) {
 		// !! can we simplify this?
@@ -28,7 +21,4 @@ public class Gather1Token : SpiritAction {
 			.Which( isInRange )
 			.ActAsync( self );
 	}
-
-	readonly Present _present;
-
 }

@@ -3,17 +3,10 @@
 /// <summary>
 /// Published (always has GameState)
 /// </summary>
-public class TokenRemovedArgs : ITokenRemovedArgs {
+public class TokenRemovedArgs( ILocation from, IToken token, int count, RemoveReason reason ) : ITokenRemovedArgs {
+	public IToken Removed { get; } = token;
+	public ILocation From { get; } = from;
 
-	public TokenRemovedArgs(ILocation from, IToken token, int count, RemoveReason reason ) {
-		From = from;
-		Removed = token;
-		Count = count;
-		Reason = reason;
-	}
-	public IToken Removed { get; }
-	public ILocation From { get; }
-
-	public int Count { get; }
-	public RemoveReason Reason { get; }
+	public int Count { get; } = count;
+	public RemoveReason Reason { get; } = reason;
 }

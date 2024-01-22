@@ -1,12 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public class MovePresence : SpiritAction {
+public class MovePresence( int _range ) : SpiritAction( $"MovePresence({_range})" ) {
 
-	public int Range { get; }
-
-	public MovePresence(int range):base( $"MovePresence({range})" ) {
-		this.Range = range;
-	}
+	public int Range { get; } = _range;
 
 	public override async Task ActAsync( Spirit self ) {
 		// From

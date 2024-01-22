@@ -19,16 +19,13 @@ public sealed class DynamicTokens : IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	class MyMemento {
-		public MyMemento( DynamicTokens src ) {
-			dict = src.dict.ToDictionary(p=>p.Key,p=>p.Value); // make copy
-		}
+	class MyMemento( DynamicTokens _src ) {
 		public void Restore( DynamicTokens src ) {
 			src.dict.Clear();
 			foreach(var p in dict)
 				src.dict.Add(p.Key,p.Value);
 		}
-		readonly Dictionary<ITokenClass, List<Func<SpaceState, int>>> dict = [];
+		readonly Dictionary<ITokenClass, List<Func<SpaceState, int>>> dict = _src.dict.ToDictionary( p => p.Key, p => p.Value );
 	}
 
 

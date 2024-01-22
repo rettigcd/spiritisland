@@ -1,9 +1,7 @@
 ﻿namespace SpiritIsland.Log;
 
-public class LayoutChanged : ILogEntry {
-	public LayoutChanged( string text ) { this.text = text; }
-	readonly string text;
+public class LayoutChanged( string _text ) : ILogEntry {
 	public LogLevel Level => LogLevel.Debug;
 
-	public string Msg( LogLevel _ ) => text;
+	public string Msg( LogLevel _ ) => _text;
 }

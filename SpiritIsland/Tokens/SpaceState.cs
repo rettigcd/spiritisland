@@ -513,19 +513,13 @@ public class SpaceState
 /// <summary>
 /// Captures the Mod tokens before they are removed, so their handlers can be invoked post-removal
 /// </summary>
-public class RemovingTokenCtx {
-	readonly SpaceState _from;
-	readonly ISpaceEntity[] _keyArray;
-	public RemovingTokenCtx( SpaceState from, ISpaceEntity[] keyArray ) { 
-		_from = from;
-		_keyArray = keyArray; 
-	}
+public class RemovingTokenCtx( SpaceState from, ISpaceEntity[] keyArray ) {
 	public async Task NotifyRemoved( ITokenRemovedArgs args ) {
 		// Sync
-		foreach(IHandleTokenRemoved handler in _keyArray.OfType<IHandleTokenRemoved>())
-			handler.HandleTokenRemoved( _from, args );
+		foreach(IHandleTokenRemoved handler in keyArray.OfType<IHandleTokenRemoved>())
+			handler.HandleTokenRemoved( from, args );
 		// Async
-		foreach(IHandleTokenRemovedAsync x in _keyArray.OfType<IHandleTokenRemovedAsync>())
-			await x.HandleTokenRemovedAsync( _from, args );
+		foreach(IHandleTokenRemovedAsync x in keyArray.OfType<IHandleTokenRemovedAsync>())
+			await x.HandleTokenRemovedAsync( from, args );
 	}
 }

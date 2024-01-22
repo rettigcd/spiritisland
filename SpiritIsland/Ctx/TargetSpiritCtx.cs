@@ -3,15 +3,9 @@
 /// <summary>
 /// Only used for Powers.  So binding other spirits, uses starting spirits powers.
 /// </summary>
-public class TargetSpiritCtx : IHaveASpirit {
-
-	public TargetSpiritCtx( Spirit self, Spirit target ) {
-		Self = self;
-		Other = target;
-	}
-
-	public Spirit Self { get; }
-	public Spirit Other { get; }
+public class TargetSpiritCtx( Spirit self, Spirit target ) : IHaveASpirit {
+	public Spirit Self { get; } = self;
+	public Spirit Other { get; } = target;
 
 	#region Parts from SelfCtx
 
