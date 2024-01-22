@@ -33,12 +33,12 @@ public class FinderOfPathsUnseen : Spirit {
 				new GainEnergy( 2 )
 			)
 		)
-		, PowerCard.For(typeof(ACircuitousAndWendingJourney))
-		, PowerCard.For(typeof(AidFromTheSpiritSpeakers))
-		, PowerCard.For(typeof(OfferPassageBetweenWorlds))
-		, PowerCard.For(typeof(PathsTiedByNature))
-		, PowerCard.For(typeof(TravelersBoon))
-		, PowerCard.For(typeof(WaysOfShoreAndHeartland))
+		, PowerCard.For(typeof(AidFromTheSpiritSpeakers)) // fast - 2
+		, PowerCard.For(typeof(OfferPassageBetweenWorlds)) // fast - 1
+		, PowerCard.For(typeof(TravelersBoon)) // fast - 0
+		, PowerCard.For(typeof(WaysOfShoreAndHeartland)) // slow - 1
+		, PowerCard.For(typeof(ACircuitousAndWendingJourney)) // slow - 0
+		, PowerCard.For(typeof(PathsTiedByNature)) // slow - 0
 	) {
 		InnatePowers = new[] {
 			InnatePower.For(typeof(LayPathsTheyCannotHelpButWalk)),
@@ -53,10 +53,12 @@ public class FinderOfPathsUnseen : Spirit {
 		board[3].Tokens.Setup(Presence.Token, 1);
 
 		// Put 1 presence on any board in land #1.
-		AddActionFactory( new PlacePresenceOnSpace1().ToInit() ); // let user pick initial space
+		if(gameState.Island.Boards.Length == 1)
+			board[1].Tokens.Setup(Presence.Token, 1);
+		else 
+			AddActionFactory( new PlacePresenceOnSpace1().ToInit() ); // let user pick initial space
 
 		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( ResponsibilityToTheDead_Handler ) );
-
 	}
 
 	#endregion

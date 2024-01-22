@@ -19,15 +19,21 @@ public class ElementMgr {
 
 	#region Set (Init,Add,Remove)
 
+	/// <remarks> Used during </remarks>
 	public void Init( CountDictionary<Element> elements ) {
 		Elements.Clear();
 		foreach(KeyValuePair<Element, int> pair in elements)
 			Elements[pair.Key] += pair.Value;
 	}
 
-	public void Add(Element el, int count ) { Elements[el] += count; }
-	public void Add(params Element[] els ) { Elements.AddRange(els); }
-	public void Add(CountDictionary<Element> counts ) { Elements.AddRange(counts); }
+	/// <remarks>Adding elements from played power cards.</remarks>
+	public void Add( Element el, int count ) { Elements[el] += count; }
+
+	/// <remarks>From Growth Option or when Track-Slot is revealed.</remarks>
+	public void Add( params Element[] els ) { Elements.AddRange(els); }
+
+	/// <remarks> Prepared Elements </remarks>
+	public void Add( CountDictionary<Element> counts ) { Elements.AddRange(counts); }
 
 	public void Remove(Element el, int count) { Elements[el] -= count; }
 
@@ -140,6 +146,6 @@ public class ElementMgr {
 
 	#endregion ContainsAsync Helpers
 
-	public string BuildElementString(bool showOneCount=true) => Elements.BuildElementString(showOneCount);
+	public string Summary(bool showOneCount=true) => Elements.BuildElementString(showOneCount);
 
 }

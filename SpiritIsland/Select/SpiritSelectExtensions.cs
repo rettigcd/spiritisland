@@ -7,9 +7,6 @@ static public class SpiritSelectExtensions {
 	static public async Task<TokenOn> SelectSourcePresence( this Spirit self, Present present = Present.Always, string actionPhrase = "place" ) {
 		string prompt = $"Select Presence to {actionPhrase}";
 
-		//return (IOption)await self.SelectAsync( A.TrackSlot.ToRevealOrTakeFromBoard( prompt, self ) )
-		//	?? await self.SelectAsync( new A.SpaceToken( prompt, self.Presence.Deployed, Present.Always ) );
-
 		var options = self.Presence.RevealOptions().ToList();
 		options.AddRange( self.Presence.Deployed );
 		return await self.SelectAsync( new A.MyTokenOn(prompt,options,present) );

@@ -27,7 +27,7 @@ public class ObserveTheEverChangingWorld_Tests {
 		//   And: enough elements to trigger level-2 innate  (2 moon,1 air)
 		fxt.spirit.Elements[Element.Moon] = 2;
 		fxt.spirit.Elements[Element.Air] = 1;
-		fxt.spirit.Elements.BuildElementString().ShouldBe("2 moon 1 air");
+		fxt.spirit.Elements.Summary().ShouldBe("2 moon 1 air");
 
 		// Buy slow card (so we don't wrap to next turn)
 		fxt.user.PlaysCard(BoonOfAncientMemories.Name);

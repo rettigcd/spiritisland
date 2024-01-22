@@ -24,6 +24,10 @@ public static class SpiritExtensions {
 
 	#region Given (spirit presence setup)
 
+	internal static void Given_Setup( this SpiritPresence presence, Space space, int count  ) 
+		=> space.Tokens.Setup( presence.Token, count );
+
+
 	internal static void Given_Setup( this SpiritPresence presence, SpaceState space, int count ) 
 		=> space.Setup( presence.Token, count );
 

@@ -144,10 +144,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			var missing = subset.Except(Elements.Elements);
 			if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold: "+subset.BuildElementString(), "Yes, use prepared elements", "No, I'll pass.")) {
 
-				foreach(var pair in missing) {
+				Elements.Add(missing); // assign to this action so next check recognizes them
+				foreach(var pair in missing)
 					PreparedElements[pair.Key] -= pair.Value;
-					Elements.Add(pair.Key, pair.Value); // assign to this action so next check recognizes them
-				}
 
 				ActionScope.Current.AtEndOfThisAction( _ => {
 					foreach(var pair in missing)

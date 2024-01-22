@@ -135,7 +135,7 @@ public class ConfigurableTestFixture {
 	public void VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		Spirit.Presence.Energy.Given_SlotsRevealed( revealedSpaces );
 		Spirit.EnergyPerTurn.ShouldBe( expectedEnergyGrowth );
-		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
+		Spirit.Elements.Summary(false).ShouldBe( elements );
 	}
 
 	/// <summary>
@@ -144,7 +144,7 @@ public class ConfigurableTestFixture {
 	public void VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
 		Spirit.Presence.CardPlays.Given_SlotsRevealed( revealedSpaces );
 		Spirit.NumberOfCardsPlayablePerTurn.ShouldBe( expectedCardPlayCount );
-		Spirit.Elements.BuildElementString(false).ShouldBe( elements );
+		Spirit.Elements.Summary(false).ShouldBe( elements );
 	}
 
 	public void VerifyReclaim1Count( int count ) {
