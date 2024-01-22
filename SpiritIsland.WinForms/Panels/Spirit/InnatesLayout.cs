@@ -18,7 +18,7 @@ public class InnatesLayout {
 		}
 	}
 
-	public Dictionary<InnatePower, InnateLayout> FindLayoutByInnate = new Dictionary<InnatePower, InnateLayout>();
+	public Dictionary<InnatePower, InnateLayout> FindLayoutByInnate = [];
 
 	int Calc_Innates( Spirit spirit, Rectangle bounds, int margin, VisibleButtonContainer buttonContainer ) {
 

@@ -110,7 +110,7 @@ public sealed class TokenMover {
 			await onMoved( moveResult );
 	}
 
-	readonly List<Func<TokenMovedArgs, Task>> _onMoved = new();
+	readonly List<Func<TokenMovedArgs, Task>> _onMoved = [];
 
 	#endregion
 

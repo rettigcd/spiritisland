@@ -7,7 +7,7 @@ public abstract class InvaderSlot : IHaveMemento {
 
 	public InvaderSlot(string label ) { Label = label;}
 	public string Label { get; }
-	public List<InvaderCard> Cards { get; } = new List<InvaderCard>();
+	public List<InvaderCard> Cards { get; } = [];
 	public void HoldNextBack() { _holdBackCount++; }
 	public void SkipNextNormal() { _skipCount++; }
 	public virtual async Task Execute( GameState gs ) {
@@ -45,8 +45,8 @@ public abstract class InvaderSlot : IHaveMemento {
 
 	class MyMemento {
 		public MyMemento(InvaderSlot slot) {
-			_cards = slot.Cards.ToArray();
-			_flipped = _cards.Select(x=>x.Flipped).ToArray();
+			_cards = [..slot.Cards];
+			_flipped = [.._cards.Select(x=>x.Flipped)];
 			_skipCount = slot._skipCount;
 			_holdBackCount = slot._holdBackCount;
 		}

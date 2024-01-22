@@ -7,7 +7,7 @@ public class SpaceCriteria {
 
 	/// <summary> Create a space-criteria that accepts everything. </summary>
 	public SpaceCriteria() {
-		_filters = Array.Empty<string>();
+		_filters = [];
 		_self = null; // Don't need to bind spirit since no filters test for spirit.
 	}
 	public SpaceCriteria(Spirit self, params string[] filters) {

@@ -23,7 +23,7 @@ public static class DrawFromDeck {
 		deck.Discard( candidates );
 
 		return new DrawCardResult( selectedCards[0].PowerType ){
-			SelectedCards = selectedCards.ToArray(),
+			SelectedCards = [..selectedCards],
 			Rejected = candidates
 		};
 	}

@@ -15,7 +15,7 @@ public class DownloadPowerPics_Tests {
 		ImageDiskCache cache = new ImageDiskCache();
 
 		Type refObject = AssemblyType.GetEditionType( edition );
-		List<PowerCard> cards = refObject.ScanForMajors().ToList();
+		List<PowerCard> cards = [.. refObject.ScanForMajors()];
 		cards.AddRange( refObject.ScanForMinors() );
 		var spirits = refObject.ScanForSpirits();
 		cards.AddRange( spirits.SelectMany( s => s.Hand ) );
@@ -44,7 +44,7 @@ public class DownloadPowerPics_Tests {
 	[InlineData( AssemblyType.NatureIncarnate )]
 	public async Task GenerateAll( string edition ) {
 		Type refObject = AssemblyType.GetEditionType( edition );
-		List<PowerCard> cards = refObject.ScanForMajors().ToList();
+		List<PowerCard> cards = [.. refObject.ScanForMajors()];
 		cards.AddRange( refObject.ScanForMinors() );
 		var spirits = refObject.ScanForSpirits();
 		cards.AddRange( spirits.SelectMany( s => s.Hand ) );

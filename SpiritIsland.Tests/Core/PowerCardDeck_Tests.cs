@@ -198,7 +198,7 @@ public class PowerCardDeck_Tests {
 	[InlineData( AssemblyType.FeatherAndFlame )]
 	public void PowerCards_HaveNames(string edition) {
 		Type refObject = AssemblyType.GetEditionType( edition );
-		List<PowerCard> cards = refObject.ScanForMajors().ToList();
+		List<PowerCard> cards = [.. refObject.ScanForMajors()];
 		cards.AddRange( refObject.ScanForMinors() );
 
 		foreach(var card in cards)

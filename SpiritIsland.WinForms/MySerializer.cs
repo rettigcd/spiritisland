@@ -57,7 +57,7 @@ public static class MySerializer {
 			? Json.DeserializeArray( File.ReadAllText( settingsFile ) )
 				.Select( x=> RestoreGameConfigPlusToken((JsonObject)x) )
 				.ToArray()
-            : Array.Empty<GameConfigPlusToken>();
+			: [];
 	}
 
 	static string GetSettingsFileName() 
@@ -82,8 +82,8 @@ public static class MySerializer {
 
 	static public GameConfigPlusToken RestoreGameConfigPlusToken( JsonObject dict ) => dict is null ? null
 		: new GameConfigPlusToken { 
-			Spirits = new string[]{ dict[SPIRIT] },
-			Boards = new string[]{ dict[BOARD] }, 
+			Spirits = [ dict[SPIRIT] ],
+			Boards = [ dict[BOARD] ],
 			ShuffleNumber = (int)dict[SHUFFLENUMBER],
 			Adversary = RestoreAdversaryConfig( dict[ADVERSARY] ), 
 			TimeStamp = RestoreDateTime( dict[TIMESTAMP] )

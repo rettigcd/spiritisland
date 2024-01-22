@@ -26,7 +26,7 @@ public class SpaceLayout {
 
 	// sorted farthest from boarder to closest to boarder
 	public PointF[] GetInternalGridPoints( float stepSize ) {
-		Dictionary<PointF, float> distancesFromBoarder = new Dictionary<PointF, float>();
+		Dictionary<PointF, float> distancesFromBoarder = [];
 
 		for(float x = Bounds.Left; x <= Bounds.Right; x += stepSize)
 			for(float y = Bounds.Top; y <= Bounds.Bottom; y += stepSize)

@@ -73,7 +73,7 @@ sealed public class FearCardImageBuilder {
 		}
 
 		// Text 1..3
-		Rectangle[] textAreas = new[] { textArea1, textArea2, textArea3 };
+		Rectangle[] textAreas = [textArea1, textArea2, textArea3];
 		for(int i = 0; i < 3; ++i)
 			PaintTerrorLevelDetails( graphics, textAreas[i], card.GetDescription( i + 1 ) );
 

@@ -32,8 +32,8 @@ public class SpiritPresenceToken
 		foreach(var board in space.Boards)
 			_boardCounts[board] += delta;
 	}
-	readonly CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
-	readonly CountDictionary<Board> _boardCounts = new CountDictionary<Board>(); // ? Is this necessary?  How many things use this?
+	readonly CountDictionary<Space> _spaceCounts = [];
+	readonly CountDictionary<Board> _boardCounts = []; // ? Is this necessary?  How many things use this?
 
 	public bool IsOnIsland => _boardCounts.Count != 0;
 

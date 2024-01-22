@@ -2,7 +2,7 @@
 
 public class FakeSpace : Space {
 	public FakeSpace( string name ) : base( name ) {
-		Boards = Array.Empty<Board>();
+		Boards = [];
 	}
 
 	public override int InvaderActionCount => 0;

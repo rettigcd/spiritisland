@@ -46,7 +46,7 @@ class GrowthPhaseInstance : IGrowthPhaseInstance {
 
 		public void MarkUsed( GrowthOption option ) => used.Add( option );
 
-		readonly List<GrowthOption> used = new List<GrowthOption>();
+		readonly List<GrowthOption> used = [];
 		readonly GrowthPickGroups grp;
 	}
 

@@ -43,10 +43,10 @@ public partial class ManyMindsMoveAsOne : Spirit {
 			, PowerCard.For(typeof(PursueWithScratchesPecksAndStings))
 		) {
 
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(TheTeemingHostArrives)), 
 			InnatePower.For(typeof(BesetAndConfoundTheInvaders))
-		};
+		];
 
 	}
 

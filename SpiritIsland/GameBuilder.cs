@@ -46,7 +46,7 @@ public class GameBuilder {
 		BoardOrientation tl = BoardOrientation.ToMatchSide( 0, bl.SideCoord(2));
 		BoardOrientation tr = BoardOrientation.ToMatchSide( 1, tl.SideCoord(1));
 		BoardOrientation br = BoardOrientation.ToMatchSide( 1, bl.SideCoord(1));
-		return new[] { bl,tl,tr,br };
+		return [ bl,tl,tr,br ];
 	}}
 #pragma warning restore CA1822 // Mark members as static
 

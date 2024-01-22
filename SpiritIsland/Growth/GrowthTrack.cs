@@ -27,7 +27,7 @@ public class GrowthTrack {
 
 	#region private
 
-	readonly List<GrowthPickGroups> groups = new List<GrowthPickGroups>();
+	readonly List<GrowthPickGroups> groups = [];
 
 	#endregion
 

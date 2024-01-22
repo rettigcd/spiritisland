@@ -30,7 +30,7 @@ public class PowerCard : TypedDecision<Type> {
 
 	public Type[] CardOptions => _cardUses.Keys.ToArray();
 
-	readonly Dictionary<Type, CardUse> _cardUses = new Dictionary<Type, CardUse>();
+	readonly Dictionary<Type, CardUse> _cardUses = [];
 
 }
 

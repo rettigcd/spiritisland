@@ -28,10 +28,10 @@ public class Keeper : Spirit {
 		PowerCard.For(typeof(ToweringWrath))
 	) {
 
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(PunishThoseWhoTrespass)),
 			InnatePower.For(typeof(SpreadingWilds)),
-		};
+		];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ){

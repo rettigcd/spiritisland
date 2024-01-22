@@ -10,7 +10,7 @@ public class CountDictionary<K> : IDictionary<K,int> {
 	#region constructor
 
 	public CountDictionary(){
-		_inner = new Dictionary<K, int>();
+		_inner = [];
 	}
 
 	public CountDictionary(IEnumerable<K> items) {

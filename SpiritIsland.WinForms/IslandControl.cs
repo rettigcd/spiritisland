@@ -50,7 +50,7 @@ public partial class IslandControl : Control {
 
 		// Cards
 		_playerDeckPanels = new IPanel[_ctx._spirit.Decks.Length];
-		Color[] panelColors = new Color[] { Color.DarkSalmon, Color.DarkSeaGreen, Color.DarkGray, Color.SaddleBrown, Color.Bisque };
+		Color[] panelColors = [Color.DarkSalmon, Color.DarkSeaGreen, Color.DarkGray, Color.SaddleBrown, Color.Bisque];
 		for(int i = 0; i< _ctx._spirit.Decks.Length;++i)
 			_playerDeckPanels[i] = new CardDeckPanel( _ctx, this, i, panelColors[i] );
 		_drawCardPanel = new OtherCardsPanel( _ctx, this );
@@ -413,7 +413,7 @@ public partial class IslandControl : Control {
 	// Stores the locations of ALL SpaceTokens (invaders, dahan, presence, wilds, disease, beast, etx)
 	// When we are presented with a decision, the location of each option is pulled from here
 	// and added to the HotSpots.
-	readonly Dictionary<IOption, RectangleF> _optionRects = new();
+	readonly Dictionary<IOption, RectangleF> _optionRects = [];
 
 	readonly SharedCtx _ctx;
 	readonly IslandPanel _islandPanel;

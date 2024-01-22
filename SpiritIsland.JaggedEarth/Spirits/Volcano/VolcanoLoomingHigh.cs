@@ -34,10 +34,10 @@ public class VolcanoLoomingHigh : Spirit {
 		,PowerCard.For(typeof(RainOfAsh))
 	) {
 
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(ExplosiveEruption)), 
 			InnatePower.For(typeof(PoweredByTheFurnaceOfTheEarth))
-		};
+		];
 
 		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape(this);
 	}

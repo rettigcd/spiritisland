@@ -140,20 +140,20 @@ public abstract partial class Spirit
 
 	#region Cards
 
-	public List<PowerCard> Hand = new List<PowerCard>();	    // in hand
-	public List<PowerCard> InPlay = new List<PowerCard>();		// paid for / played
-	public List<PowerCard> DiscardPile = new List<PowerCard>(); // Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
+	public List<PowerCard> Hand = [];	    // in hand
+	public List<PowerCard> InPlay = [];		// paid for / played
+	public List<PowerCard> DiscardPile = []; // Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
 
 	public SpiritDeck[] Decks => decks.ToArray();
 
 	// This is not part of Decks because these cards are transient and don't actually belong to the spirit.
-	public List<PowerCard> DraftDeck = new List<PowerCard>();   // The virtual deck the cards are in while they are being drawn/drafted
+	public List<PowerCard> DraftDeck = [];   // The virtual deck the cards are in while they are being drawn/drafted
 
-	readonly protected List<SpiritDeck> decks = new List<SpiritDeck>();
+	readonly protected List<SpiritDeck> decks = [];
 
-	readonly List<IActionFactory> _availableActions = new List<IActionFactory>();
-	readonly HashSet<IActionFactory> _usedActions = new HashSet<IActionFactory>();
-	readonly List<InnatePower>       _usedInnates = new List<InnatePower>();
+	readonly List<IActionFactory> _availableActions = [];
+	readonly HashSet<IActionFactory> _usedActions = [];
+	readonly List<InnatePower>       _usedInnates = [];
 
 	// so spirits can replay used cards or collect them instead of discard
 	public IEnumerable<IActionFactory> UsedActions => _usedActions;
@@ -309,7 +309,7 @@ public abstract partial class Spirit
 
 	abstract public SpecialRule[] SpecialRules { get; }
 
-	public virtual InnatePower[] InnatePowers { get; set; } = Array.Empty<InnatePower>();
+	public virtual InnatePower[] InnatePowers { get; set; } = [];
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
@@ -466,16 +466,16 @@ public abstract partial class Spirit
 			_tempCardPlayBoost   = spirit.TempCardPlayBoost;
 			_elements        = [.. spirit.Elements.Elements];
 
-			_hand            = spirit.Hand.ToArray();
-			_purchased       = spirit.InPlay.ToArray();
-			_discarded       = spirit.DiscardPile.ToArray();
+			_hand            = [..spirit.Hand];
+			_purchased       = [..spirit.InPlay];
+			_discarded       = [..spirit.DiscardPile];
 
 			_targetingSourceStrategy = spirit.TargetingSourceStrategy;
 			_powerRangeCalc = spirit.PowerRangeCalc;
 
-			_available = spirit._availableActions.ToArray();
-			_usedActions     = spirit._usedActions.ToArray();
-			_usedInnates     = spirit._usedInnates.ToArray();
+			_available       = [..spirit._availableActions];
+			_usedActions     = [..spirit._usedActions];
+			_usedInnates     = [..spirit._usedInnates];
 
 			_tag = spirit.CustomMementoValue;
 			_bonusDamage = spirit.BonusDamage;

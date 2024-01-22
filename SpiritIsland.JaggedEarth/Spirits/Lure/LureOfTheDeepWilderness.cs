@@ -25,10 +25,10 @@ public class LureOfTheDeepWilderness : Spirit {
 		,PowerCard.For(typeof(SwallowedByTheWilderness))
 	) {
 
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(ForsakeSocietyToChaseAfterDreams)),
 			InnatePower.For(typeof(NeverHeardFromAgain))
-		};
+		];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

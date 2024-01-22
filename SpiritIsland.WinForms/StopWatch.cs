@@ -12,7 +12,7 @@ class StopWatch : IDisposable {
 		var duration = new RecordedDuration(label,(int)dur.TotalMilliseconds);
 		timeLog.Add( duration );
 	}
-	static public List<RecordedDuration> timeLog = new List<RecordedDuration>();
+	static public List<RecordedDuration> timeLog = [];
 }
 
 class RecordedDuration {

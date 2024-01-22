@@ -29,9 +29,7 @@ public class GrowthPickGroups {
 	public GrowthOption[] Options { get; private set; }
 
 	public void Add( GrowthOption option ) { // hook for Starlight
-		var options = Options.ToList();
-		options.Add(option);
-		Options = options.ToArray();
+		Options = [..Options, option];
 	}
 
 }

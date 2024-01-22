@@ -17,7 +17,7 @@ public class BoardSide {
 	public void BreakAt( params int[] breakPoints ) {
 		if(breakPoints.Length != _spacesOnThisSide.Length - 1)
 			throw new InvalidOperationException( "there must be 1 fewer break point than spaces" );
-		_breakPoints = breakPoints.ToList();
+		_breakPoints = [..breakPoints];
 		_breakPoints.Insert( 0, 0 );
 		_breakPoints.Add( 13 );
 	}

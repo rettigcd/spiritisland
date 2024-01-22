@@ -42,10 +42,10 @@ public class Ocean : Spirit {
 		PowerCard.For(typeof(SwallowTheLandDwellers)),
 		PowerCard.For(typeof(TidalBoon))
 	) {
-		InnatePowers = new InnatePower[]{
+		InnatePowers = [
 			InnatePower.For(typeof(OceanBreaksTheShore)),
 			InnatePower.For(typeof(PoundShipsToSplinters))
-		};
+		];
 
 	}
 

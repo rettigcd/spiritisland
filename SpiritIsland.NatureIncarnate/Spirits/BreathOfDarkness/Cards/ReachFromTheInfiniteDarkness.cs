@@ -7,7 +7,7 @@ public class ReachFromTheInfiniteDarkness {
 	[Instructions( "Abduct up to 2 presence (of any Spirits, with permission) from any lands on the island, ignoring land type restrictions on moving presence. Each Spirit's presence in endless-dark grants them +1 with all their Powers (this turn)." ), Artist( Artists.DavidMarkiwsky )]
 	static async public Task ActAsync( Spirit self ) {
 
-		CountDictionary<Spirit> bonuses = new CountDictionary<Spirit>();
+		CountDictionary<Spirit> bonuses = [];
 
 		// Abduct up to 2 presence( of any Spirits, w/ permission ) from any lands on the island, ignoring land type restrictions on moving presence.
 		int remaining = 2;

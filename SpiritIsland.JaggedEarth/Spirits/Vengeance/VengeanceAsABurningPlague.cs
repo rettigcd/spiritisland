@@ -20,10 +20,10 @@ public class VengeanceAsABurningPlague : Spirit {
 		,PowerCard.For(typeof(Plaguebearers))
 		,PowerCard.For(typeof(StrikeLowWithSuddenFevers))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(EpidemicsRunRampant)), 
 			InnatePower.For(typeof(SavageRevenge))
-		};
+		];
 	}
 	static SpiritAction AddAPresenceOrDisease => new SpiritAction(
 		"Add a Presence or Disease", 

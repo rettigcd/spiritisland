@@ -21,7 +21,7 @@ public class EntwinedPower {
 		var result = await ctx.Other.Draw();
 		// You gain one of the power Cards they did not keep.
 		ctx.Self.Hand.Add( 
-			await DrawFromDeck.PickOutCard( ctx.Self, result.Rejected.ToList() )
+			await DrawFromDeck.PickOutCard( ctx.Self, [.. result.Rejected] )
         );
 
 		// if you have 2 water, 4 plant, 

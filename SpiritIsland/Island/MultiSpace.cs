@@ -18,7 +18,7 @@ public class MultiSpace : Space {
 				parts.Add( one );
 			else if(space is MultiSpace many)
 				parts.AddRange( many.OrigSpaces );
-		return parts.OrderBy(p=>p.Text).ToArray();
+		return [..parts.OrderBy(p=>p.Text)];
 	}
 
 	public override bool Is( Terrain terrain ) => OrigSpaces.Any(part => part.Is(terrain));

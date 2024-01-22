@@ -61,7 +61,7 @@ public class Incarna : IToken, IAppearInSpaceAbreviation, ITokenClass, ITrackMyS
 			throw new Exception("Incarna is in 2 places at the same time!");
 	}
 
-	readonly CountDictionary<Space> _spaceCounts = new CountDictionary<Space>();
+	readonly CountDictionary<Space> _spaceCounts = [];
 	readonly string _abreviation;
 	readonly Img _notEmpowered;
 	readonly Img _empowered;

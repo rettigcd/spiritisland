@@ -31,9 +31,7 @@ public class LightningsSwiftStrike : Spirit {
 		PowerCard.For(typeof(ShatterHomesteads))
 	){
 
-		InnatePowers = new InnatePower[]{
-			InnatePower.For(typeof(ThunderingDestruction))
-		};
+		InnatePowers = [ InnatePower.For(typeof(ThunderingDestruction)) ];
 
 	}
 

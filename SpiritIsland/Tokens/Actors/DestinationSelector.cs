@@ -101,7 +101,7 @@ public sealed class DestinationSelector {
 			await onMoved( destination );
 	}
 
-	readonly List<Func<SpaceState, Task>> _onMoved = new();
+	readonly List<Func<SpaceState, Task>> _onMoved = [];
 
 	#endregion
 

@@ -337,8 +337,8 @@ public class OceanTerrain_Tests {
 
 	GameState Given_TwoSpiritGame() {
 		GameState gameState = new GameState( 
-			new Spirit[]{ primarySpirit, oceanSpirit },
-			new Board[] { boardA, Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] ) } 
+			[primarySpirit, oceanSpirit],
+			[boardA, Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] )] 
 		);
 		gameState.Initialize();
 		return gameState;

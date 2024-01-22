@@ -8,7 +8,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	public override AdversaryLossCondition LossCondition => new LandStrippedBare();
 
-	readonly AdversaryLevel[] _scenarioMods = new AdversaryLevel[] { Escalation, L1, L2, L3, L4, L5, L6 };
+	readonly AdversaryLevel[] _scenarioMods = [ Escalation, L1, L2, L3, L4, L5, L6 ];
 
 	#region Loss Condition
 
@@ -110,7 +110,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 					to.Space.Boards.First().FindSpirit(),
 					to,
 					Present.Always,
-					to.HumanOfAnyTag( Human.Explorer_Town ).ToArray(),
+					[.. to.HumanOfAnyTag( Human.Explorer_Town )],
 					" (Avarice Rewarded - Replaces Cascading Blight)"
 				);
 		}
@@ -281,7 +281,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	};
 
 	class EmpireAscendantExploreEngine : ExploreEngine {
-		readonly CountDictionary<Board> _bonusExplorers = new CountDictionary<Board>();
+		readonly CountDictionary<Board> _bonusExplorers = [];
 		public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 			InitBonusExplorers( gameState );
 			await base.ActivateCard( card, gameState );

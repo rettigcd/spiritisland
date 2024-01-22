@@ -100,7 +100,7 @@ public class CallToTrade_Tests {
 	[Fact]
 	public void BuildAndRavage_BecomesTwoBuilds() {
 
-		List<string> invaderLog = new List<string>();
+		List<string> invaderLog = [];
 
 		// Given: Going to Ravage / Build in Jungle
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(CallToTrade)), (Action<GameState>)((gs)=>{ 

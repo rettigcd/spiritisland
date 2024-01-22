@@ -11,7 +11,7 @@ public abstract class Space
 	, ILocation // make dragging/moving tokens easier
 {
 
-	readonly List<Space> adjacent = new List<Space>();
+	readonly List<Space> adjacent = [];
 
 	protected Space(string label) {
 		this.Label = label;

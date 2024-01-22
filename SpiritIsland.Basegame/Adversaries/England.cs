@@ -8,7 +8,7 @@ public class England : AdversaryBase, IAdversary {
 
 	public override AdversaryLossCondition LossCondition => ProudAndMightyCapital;
 
-	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = [
 		// Escalation
 		new AdversaryLevel(0, 1, 3,3,3, "Building Boom", " On each board with Town/City, Build in the land with the most Town/City." )
 			.WithEscalation( BuildingBoom_Escalation ),
@@ -68,8 +68,8 @@ public class England : AdversaryBase, IAdversary {
 		//	(This has no effect if no card is on the extra Build slot.)
 		) {
 			InitFunc = (gameState,_) => gameState.Fear.PoolMax += gameState.Spirits.Length,
-		},
-	};
+		}
+	];
 
 	#region Escalation - Building Boom
 

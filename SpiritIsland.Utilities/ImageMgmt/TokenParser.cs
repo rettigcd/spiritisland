@@ -41,7 +41,7 @@ public static partial class TokenParser {
 				cur = nextToken.Index;
 			}
 		}
-		return results.ToArray();
+		return [.. results];
 	}
 
 	[GeneratedRegex( @"\b(sacred site|destroyedpresence|presence|fast|slow|dahan|blight|fear|city|town|explorer|sun|moon|air|fire|water|plant|animal|earth|wetland|jungle|mountain|sands?|beasts?|disease|strife|wilds|badlands|vitality|quake|\+1range|incarna|dash-or-dash|endless-dark|cardplay|impending)\b", RegexOptions.IgnoreCase, "en-US" )]

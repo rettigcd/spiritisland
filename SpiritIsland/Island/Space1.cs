@@ -22,7 +22,7 @@ public class Space1 : Space {
 			if(_board != null) 
 				throw new InvalidOperationException( "cannot set board twice" );
 			_board = value;
-			Boards = new Board[] { value };
+			Boards = [ value ];
 		}
 	}
 	Board _board;

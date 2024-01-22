@@ -28,7 +28,7 @@ public class ManageInternalPoints {
 			.GetInternalHexPoints( stepSize )
 			.ToArray();
 
-		_dict = new Dictionary<IToken, PointF>();
+		_dict = [];
 
 		// internal - prefered
 		var internalPoints = layout
@@ -72,8 +72,8 @@ public class ManageInternalPoints {
 	}
 
 	bool AssignLeftRight( IToken token ) {
-		ITag[] rightTags = new ITag[] { TokenCategory.Incarna, TokenCategory.Dahan, TokenCategory.Presence };
-		ITag[] leftTags = new ITag[] { Token.Blight, TokenCategory.Invader };
+		ITag[] rightTags = [ TokenCategory.Incarna, TokenCategory.Dahan, TokenCategory.Presence ];
+		ITag[] leftTags = [ Token.Blight, TokenCategory.Invader ];
 		return (token.HasAny( rightTags ) ? _randomInternal.AssignRightSlot( token )
 			: token.HasAny( leftTags ) ? _randomInternal.AssignLeftSlot( token )
 			: _randomInternal.AssignNextSlot( token )

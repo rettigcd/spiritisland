@@ -11,7 +11,7 @@ public class FieryVengeance_Tests {
 		Spirit spirit2 = new RiverSurges();
 		Board board1 = Board.BuildBoardA();
 		Board board2 = Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] );
-		GameState gameState = new GameState( new Spirit[] { vengeance, spirit2 }, new Board[] { board1, board2 } );
+		GameState gameState = new GameState( [ vengeance, spirit2 ], [ board1, board2 ] );
 
 		//   And: spirit 2 presence, blight & town on a space
 		SpaceState space = gameState.Tokens[board1[5]];
@@ -43,7 +43,7 @@ public class FieryVengeance_Tests {
 		Spirit spirit2 = new RiverSurges();
 		Board board1 = Board.BuildBoardA();
 		Board board2 = Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] );
-		GameState gameState = new GameState( new Spirit[] { vengeance, spirit2 }, new Board[] { board1, board2 } );
+		GameState gameState = new GameState( [ vengeance, spirit2 ], [ board1, board2 ] );
 
 		//   And: spirit 2 presence, blight & town on a space
 		SpaceState space = gameState.Tokens[board1[5]];

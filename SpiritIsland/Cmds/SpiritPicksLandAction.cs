@@ -66,7 +66,7 @@ public class SpiritPicksLandAction : IActOn<Spirit> {
 	string _diffString => _chooseDifferentLands ? "different " : "";
 	TargetSpaceCtxFilter _landCriteria;
 	readonly IActOn<TargetSpaceCtx> _spaceAction;
-	readonly HashSet<Space> _disallowedSpaces = new HashSet<Space>();
+	readonly HashSet<Space> _disallowedSpaces = [];
 
 	// configurable
 	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;

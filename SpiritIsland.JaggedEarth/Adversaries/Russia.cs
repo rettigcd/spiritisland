@@ -8,7 +8,7 @@ public class Russia : AdversaryBase, IAdversary {
 
 	public override AdversaryLossCondition LossCondition => Russia_Level1_HuntersBringHomeShelAndHide.HuntersSwarmTheIsland;
 
-	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = [
 		// Level 0 - Escalation
 		new AdversaryLevel(0, 1, 3,3,3, "Stalk the Predators", "Add 2 explorers/board to lands with beast." )
 			.WithEscalation( Escalation_StalkThePredators ),
@@ -83,8 +83,8 @@ public class Russia : AdversaryBase, IAdversary {
 		new AdversaryLevel(6, 11, 5,5,4, "Pressure for Fast Profit", 
 			"After Ravage, on each board where it added no Blight: In the land with the most Explorer (min. 1), add 1 Explorer and 1 Town." ) {
 			InitFunc = (gameState,_) => gameState.InvaderDeck.Ravage.Engine = new Russia_Level6_PressureForFastProfitRavageEngine(gameState)
-		},
-	};
+		}
+	];
 
 	#region Escalation
 

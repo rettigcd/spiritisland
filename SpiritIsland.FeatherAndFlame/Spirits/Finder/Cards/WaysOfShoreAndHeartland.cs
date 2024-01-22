@@ -10,7 +10,7 @@ public class WaysOfShoreAndHeartland {
 
 		// Push up to 2 Invaders / Dahan / Presence / Beast
 		await ctx.SourceSelector
-			.AddGroup(2, Human.Invader.Plus( Human.Dahan, Token.Beast ).Concat(ctx.AllPresenceTokens).ToArray() )
+			.AddGroup(2, [.. Human.Invader.Plus( Human.Dahan, Token.Beast ), .. ctx.AllPresenceTokens] )
 			// to a land that is also Coastal / Inland( whichever the target land is)
 			.ConfigDestination( d=>d.FilterDestination( ctx.IsCoastal ? tm.IsCoastal : tm.IsInland ) )
 			.PushUpToN(ctx.Self);

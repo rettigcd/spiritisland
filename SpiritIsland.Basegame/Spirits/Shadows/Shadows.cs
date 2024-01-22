@@ -22,9 +22,7 @@ public class Shadows : Spirit {
 		PowerCard.For(typeof(CropsWitherAndFade)),
 		PowerCard.For(typeof(ConcealingShadows))
 	) {
-		InnatePowers = new InnatePower[]{
-			InnatePower.For(typeof(DarknessSwallowsTheUnwary))
-		};
+		InnatePowers = [ InnatePower.For(typeof(DarknessSwallowsTheUnwary)) ];
 	}
 
 	/// <summary>

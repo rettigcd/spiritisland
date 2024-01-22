@@ -21,7 +21,7 @@ public class Fear : IHaveMemento {
 		Deck.Push( fearCard );
 	}
 
-	public int[] CardsPerLevel = new int[] { 3, 3, 3 }; // only adjusted during Setup - doesn't need saved to memento
+	public int[] CardsPerLevel = [3, 3, 3]; // only adjusted during Setup - doesn't need saved to memento
 
 	public int TerrorLevel {
 		get {
@@ -51,7 +51,7 @@ public class Fear : IHaveMemento {
 				--index;
 			}
 			cardCounts.Reverse();
-			return cardCounts.ToArray();
+			return [..cardCounts];
 		}
 	}
 
@@ -148,8 +148,8 @@ public class Fear : IHaveMemento {
 			_earnedFear = src.EarnedFear;
 			_poolMax = src.PoolMax;
 			_resolvedCardCount = src.ResolvedCardCount;
-			_deck = src.Deck.ToArray();
-			_activatedCards = src.ActivatedCards.ToArray();
+			_deck = [..src.Deck];
+			_activatedCards = [..src.ActivatedCards];
 			_flipped = _deck.Union( _activatedCards ).ToDictionary(c=>c,c=>c.Flipped);
 		}
 		public void Restore(Fear src ) {

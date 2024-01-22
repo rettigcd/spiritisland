@@ -73,7 +73,7 @@ static public class Polygons {
 		// find a corner that is not common
 		int i = 0;
 		while(i < region0.Length && region1.Contains( region0[i] )) ++i;
-		if(i == region0.Length) return Array.Empty<T>(); // all corners are in common 1 space suround the other
+		if(i == region0.Length) return []; // all corners are in common 1 space suround the other
 
 		// advance to corner in common, aka find start0 and start1
 		int endOfCommonPointsOnPoly2;

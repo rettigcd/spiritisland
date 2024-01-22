@@ -43,10 +43,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			,PowerCard.For(typeof(StudyTheInvadersFears))
 		) {
 
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(LearnTheInvadersTactics)), 
 			InnatePower.For(typeof(ObserveTheEverChangingWorld))
-		};
+		];
 	}
 
 	public override async Task<PowerCard> ForgetACard( IEnumerable<PowerCard> restrictedOptions = null, Present present = Present.Always ) {
@@ -133,7 +133,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return els.Contains(subset);
 	}
 
-	public readonly CountDictionary<Element> PreparedElements = new CountDictionary<Element>();
+	public readonly CountDictionary<Element> PreparedElements = [];
 
 	public override async Task<bool> HasElement( CountDictionary<Element> subset, string description ) {
 		if( Elements.Contains( subset ) ) return true;

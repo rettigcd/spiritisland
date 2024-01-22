@@ -53,7 +53,7 @@ public class ActionRepeater {
 				spirit.RemoveFromUnresolvedActions( factory );
 	}
 
-	readonly List<IHelpGrow> _factories = new List<IHelpGrow>();
+	readonly List<IHelpGrow> _factories = [];
 
 	#endregion
 

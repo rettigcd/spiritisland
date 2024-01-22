@@ -26,6 +26,6 @@ public sealed class ImgMemoryCache : IDisposable {
 	}
 
 	#region private fields
-	readonly Dictionary<Img, Image> _images = new Dictionary<Img, Image>();
+	readonly Dictionary<Img, Image> _images = [];
 	#endregion
 }

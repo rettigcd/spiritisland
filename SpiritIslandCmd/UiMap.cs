@@ -26,7 +26,7 @@ namespace SpiritIslandCmd {
 				if(o is IActionFactory factory) pad = Math.Max(pad,factory.Name.Length);
 			}
 
-			dict = new Dictionary<string, IOption>();
+			dict = [];
 			var tempList = new List<string[]>();
 
 			int labelIndex=0;
@@ -50,7 +50,7 @@ namespace SpiritIslandCmd {
 					description = option.Text;
 				}
 				dict.Add(key,option);
-				tempList.Add(new string[]{key,description});
+				tempList.Add([key,description]);
 			}
 
 			int keyWidth = tempList.Select(x=>x[0].Length).Max();

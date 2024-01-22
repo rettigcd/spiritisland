@@ -15,7 +15,7 @@ public class ReduceInvaderAttackBy1 : BaseModEntity, IConfigRavages, IEndWhenTim
 		// !!! BUG - any token pushed out during ravage (like an explorer for some adversay) won't get their attack back.
 
 		// Token Records attacks for each Invaders type  (Assumes all invaders have the same attack!!!)
-		Dictionary<HumanTokenClass, int> reducedClasses = new Dictionary<HumanTokenClass, int>();
+		Dictionary<HumanTokenClass, int> reducedClasses = [];
 
 		// Token Reduces Attack of invaders by 1
 		foreach(HumanToken orig in space.HumanOfAnyTag( _classesToReduce ).ToArray()) {
@@ -28,7 +28,7 @@ public class ReduceInvaderAttackBy1 : BaseModEntity, IConfigRavages, IEndWhenTim
 		// At end of Action, invaders are are restored to original attack.
 		ActionScope.Current.AtEndOfThisAction( scope => {
 			// Restore original attacks
-			HumanToken[] endingInvaders = space.HumanOfAnyTag( reducedClasses.Keys.ToArray() ).ToArray();
+			HumanToken[] endingInvaders = [..space.HumanOfAnyTag( reducedClasses.Keys.ToArray() )];
 			foreach(HumanToken ending in endingInvaders)
 				AdjustAttack( space, ending, reducedClasses[ending.HumanClass] );
 		} );

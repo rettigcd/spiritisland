@@ -293,7 +293,7 @@ public class InvaderDeck_Tests {
 	}
 	
 	static InvaderCard[] NewDeckCards(int seed) {
-		return InvaderDeckBuilder.Default.Build( seed ).UnrevealedCards.ToArray();
+		return [.. InvaderDeckBuilder.Default.Build( seed ).UnrevealedCards];
 	}
 
 	static void Assert_NextNCardsFromDeck( List<InvaderCard> deck, ImmutableList<InvaderCard> expected, int count ) {

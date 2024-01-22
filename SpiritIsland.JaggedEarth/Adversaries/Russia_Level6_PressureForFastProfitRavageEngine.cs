@@ -29,7 +29,7 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 		/// <summary>
 		/// Tracks which boards received blight during Ravage - this turn only
 		/// </summary>
-		readonly HashSet<Board> _receivedRavageBlight = new HashSet<Board>();
+		readonly HashSet<Board> _receivedRavageBlight = [];
 
 		void IHandleTokenAdded.HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
 			if(args.Added == Token.Blight

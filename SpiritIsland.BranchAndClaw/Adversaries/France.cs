@@ -7,7 +7,7 @@ public class France : AdversaryBase, IAdversary {
 
 	public override AdversaryLossCondition LossCondition => SprawlingPlantations;
 
-	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = [
 		// Level 0 - Escalation
 		new AdversaryLevel(0, 2 , 3,3,3, "Demand for New Cash Crops", "After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town." ) {
 			InitFunc = (gs,adv) => {
@@ -78,7 +78,7 @@ public class France : AdversaryBase, IAdversary {
 		new AdversaryLevel(6, 10, 4,5,5, "Persistent Explorers", "After resolving an Explore Card, on each board add 1 Explorer to a land without any.  Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer." ) {
 			InitFunc = (gameState,_) => gameState.AddIslandMod( new FranceFearPushesExplorers() )
 		},
-	};
+	];
 
 	#region Level 2 - helpers
 

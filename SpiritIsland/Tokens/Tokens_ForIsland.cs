@@ -11,7 +11,7 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 			[Human.Dahan]    = new HumanToken( Human.Dahan,    2 ),
 		};
 
-		_islandMods = new CountDictionary<ISpaceEntity>();
+		_islandMods = [];
 		// stick it in here so it is persisted and cleaned up during time passes
 		_tokenCounts.Add( new FakeSpace( "Island-Mods" ), _islandMods );
 
@@ -111,9 +111,9 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 			// Restore Dynamic tokens
 			src.Dynamic.Memento = _dynamicTokens;
 		}
-		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
+		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = [];
 		readonly Space[] _doesNotExist;
-		readonly Dictionary<ITokenClass, HumanToken> tokenDefaults = new Dictionary<ITokenClass, HumanToken>();
+		readonly Dictionary<ITokenClass, HumanToken> tokenDefaults = [];
 		readonly object _dynamicTokens;
 	}
 
@@ -128,6 +128,6 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 		.Select( p => p.Key + ":" + p.Value.TokensVerbose() )
 		.Join( "\r\n" );
 
-	readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = new Dictionary<Space, CountDictionary<ISpaceEntity>>();
+	readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = [];
 
 }

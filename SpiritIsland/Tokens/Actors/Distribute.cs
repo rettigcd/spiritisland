@@ -6,7 +6,7 @@
 static public class Distribute {
 
 	static public void Evenly( DestinationSelector d ) {
-		CountDictionary<Space> placed = new CountDictionary<Space>();
+		CountDictionary<Space> placed = [];
 		d.Track( to => placed[to.Space]++ );
 		d.FilterDestinationGroup( sss => {
 			int min = sss.Sum( ss => placed[ss.Space] );
@@ -16,7 +16,7 @@ static public class Distribute {
 
 	static public void ToAsManyLandsAsPossible( DestinationSelector d ) {
 
-		HashSet<SpaceState> used = new();
+		HashSet<SpaceState> used = [];
 		d.Track( to => used.Add( to ) );
 		d.FilterDestinationGroup( sss => {
 			SpaceState[] unused = sss.Except( used ).ToArray();

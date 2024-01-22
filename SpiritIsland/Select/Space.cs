@@ -58,13 +58,13 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 	public Space( string prompt, IEnumerable<Orig_Space> spaces, Present present )
 		: base( prompt, spaces.OrderBy( x => x.Label ), present ) 
 	{
-		Spaces = spaces.OrderBy( x => x.Label ).ToArray();
+		Spaces = [..spaces.OrderBy( x => x.Label )];
 	}
 
 	public Space( string prompt, IEnumerable<Orig_Space> spaces, string cancelText )
 		: base( prompt, spaces.OrderBy( x => x.Label ), cancelText ) 
 	{
-		Spaces = spaces.OrderBy( x => x.Label ).ToArray();
+		Spaces = [..spaces.OrderBy( x => x.Label )];
 	}
 
 

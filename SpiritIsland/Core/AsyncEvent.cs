@@ -24,7 +24,7 @@ public sealed class AsyncEvent<T> : IHaveMemento {
 
 	public void Clear() => _handlers.Clear();
 
-	readonly Dictionary<Guid, Func<T, Task>> _handlers = new Dictionary<Guid, Func<T, Task>>();
+	readonly Dictionary<Guid, Func<T, Task>> _handlers = [];
 
 	#region Memento
 
@@ -42,7 +42,7 @@ public sealed class AsyncEvent<T> : IHaveMemento {
 			foreach(var pair in handlers)
 				src._handlers.Add(pair.Key,pair.Value);
 		}
-		readonly Dictionary<Guid, Func<T, Task>> handlers = new Dictionary<Guid, Func<T, Task>>();
+		readonly Dictionary<Guid, Func<T, Task>> handlers = [];
 	}
 
 	#endregion

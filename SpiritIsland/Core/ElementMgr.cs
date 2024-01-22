@@ -11,7 +11,7 @@ public class ElementMgr {
 		_spirit = spirit;
 	}
 
-	public CountDictionary<Element> Elements { get; set; } = new CountDictionary<Element>();
+	public CountDictionary<Element> Elements { get; set; } = [];
 
 	public int this[Element el] {
 		set { Elements[el] = value; }

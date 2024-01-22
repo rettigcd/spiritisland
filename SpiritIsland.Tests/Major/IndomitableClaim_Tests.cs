@@ -9,7 +9,7 @@ public class IndomitableClaim_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Fact]
 	public void StopsAllInvaderActions() {
-		List<string> invaderLog = new List<string>();
+		List<string> invaderLog = [];
 
 		var (user, self) = TestSpirit.StartGame( PowerCard.For(typeof(IndomitableClaim)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);

@@ -37,7 +37,7 @@ public class AfflictWithBloodThirst {
 			ctx.Tokens,
 			RavageOrder.DahanTurn, // not sure matters
 			new RavageParticipants( attackers, attackers ),
-			new RavageParticipants( invaders, new CountDictionary<HumanToken>() ) // invaders do not participate
+			new RavageParticipants( invaders, [] ) // invaders do not participate
 		).Execute( RavageBehavior.DefaultBehavior );
 	}
 

@@ -15,10 +15,10 @@ public class SerpentSlumbering : Spirit {
 		,PowerCard.For(typeof(GiftOfFlowingPower))
 		,PowerCard.For(typeof(GiftOfThePrimordialDeeps))	
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(SerpentWakesInPower)),
 			InnatePower.For(typeof(SerpentRousesInAnger))
-		};
+		];
 	}
 
 	public const string Name = "Serpent Slumbering Beneath the Island";

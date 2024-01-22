@@ -113,7 +113,7 @@ public class TargetSpaceCtx : IHaveASpirit {
 	}
 
 	public async Task<Space[]> Push( int countToPush, params ITokenClass[] groups ) {
-		List<Space> destinations = new List<Space>();
+		List<Space> destinations = [];
 		await SourceSelector
 			.AddGroup( countToPush, groups )
 			.ConfigDestination( d=>d.Track( to => destinations.Add(to.Space) ) )

@@ -23,7 +23,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 			optionList.Add(TextOption.Done);
 
 		Prompt = prompt;
-		_allOptions = optionList.ToArray();
+		_allOptions = [..optionList];
 		AllowAutoSelect = present == Present.AutoSelectSingle;
 
 	}
@@ -43,7 +43,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 			optionList.Add(new TextOption(cancelPrompt));
 
 		Prompt = prompt;
-		_allOptions = optionList.ToArray();
+		_allOptions = [..optionList];
 		AllowAutoSelect = false;
 
 	}

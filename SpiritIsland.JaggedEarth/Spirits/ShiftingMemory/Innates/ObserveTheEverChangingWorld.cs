@@ -71,7 +71,7 @@ public class ObserveWorldMod : ISpaceEntity
 	string _tokenSummary;
 
 	readonly ShiftingMemoryOfAges _spirit;
-	readonly HashSet<ActionScope> _appliedToTheseActions = new HashSet<ActionScope>();
+	readonly HashSet<ActionScope> _appliedToTheseActions = [];
 
 	#endregion
 

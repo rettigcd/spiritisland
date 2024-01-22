@@ -40,7 +40,7 @@ namespace SpiritIsland.WinForms {
 		public Point EnergyTitleLocation;
 		public Point CardPlayTitleLocation;
 
-		public Dictionary<Track,PresenceSlotLayout> SlotLookup = new Dictionary<Track, PresenceSlotLayout>();
+		public Dictionary<Track,PresenceSlotLayout> SlotLookup = [];
 
 		public Rectangle Time;
 		public RectangleF BigCoin; // Why is this float?

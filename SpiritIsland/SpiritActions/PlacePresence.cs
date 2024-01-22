@@ -32,7 +32,7 @@ public class PlacePresence : SpiritAction {
 		await from.MoveToAsync(to);
 	}
 
-	static readonly string[] DefaultFilters = new string[] { Filter.Any };
+	static readonly string[] DefaultFilters = [ Filter.Any ];
 
 	#endregion
 

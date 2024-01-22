@@ -50,7 +50,7 @@ public partial class SweepIntoTheSea {
 	class DistanceFromOceanCalculator {
 
 		readonly Queue<SpaceState> spacesLessThanLimit = new();
-		readonly Dictionary<SpaceState, int> shortestDistances = new();
+		readonly Dictionary<SpaceState, int> shortestDistances = [];
 
 		public DistanceFromOceanCalculator SetTargets( IEnumerable<SpaceState> targets ) {
 			foreach(var target in targets) {

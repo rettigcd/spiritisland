@@ -40,10 +40,10 @@ public class ShroudOfSilentMist : Spirit {
 		,PowerCard.For(typeof(DissolvingVapors))
 		,PowerCard.For(typeof(TheFogClosesIn))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(SuffocatingShroud)), 
 			InnatePower.For(typeof(LostInTheSwirlingHaze))
-		};
+		];
 	}
 
 	bool _gainedCoolEnergyThisTurn = false;

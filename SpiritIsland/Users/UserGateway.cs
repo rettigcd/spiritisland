@@ -130,7 +130,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	}
 
 	public event Action<DecisionLogEntry> DecisionMade;
-	public readonly List<string> selections = new List<string>();
+	public readonly List<string> selections = [];
 
 	readonly AutoResetEvent _signal = new AutoResetEvent( false );
 	IDecisionMaker _activeDecisionMaker;

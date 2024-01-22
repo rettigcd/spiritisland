@@ -6,8 +6,8 @@ namespace SpiritIsland;
 /// "Pool" - Holds "floating" rects
 /// </summary>
 public class PoolRect : IPaintableRect {
-	readonly List<IPaintableRect> _paintables = new List<IPaintableRect>();
-	readonly List<RectangleF> _normalizedRects = new List<RectangleF>();
+	readonly List<IPaintableRect> _paintables = [];
+	readonly List<RectangleF> _normalizedRects = [];
 	
 
 	public PoolRect Float(IPaintableRect paintable, float left, float top, float width, float height ) {

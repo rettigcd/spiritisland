@@ -76,8 +76,8 @@ public class VisibleButtonContainer {
 		PaintButtonDict( graphics, _enabled, true );
 	}
 
-	readonly Dictionary<IOption, IButton> _enabled = new Dictionary<IOption, IButton>();
-	readonly Dictionary<IOption, IButton> _staticLookupButtonByOption = new Dictionary<IOption, IButton>();
-	readonly List<IOption> _transient = new List<IOption>();
+	readonly Dictionary<IOption, IButton> _enabled = [];
+	readonly Dictionary<IOption, IButton> _staticLookupButtonByOption = [];
+	readonly List<IOption> _transient = [];
 
 }

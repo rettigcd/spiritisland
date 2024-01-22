@@ -141,7 +141,7 @@ public partial class PowerCardImageBuilder {
 			string bottomText = instructions[(split.Index + split.Length)..];
 			Paint2Parts( textArea, graphics, SplitSentences( topText ), splitText, SplitSentences( bottomText ) );
 		} else
-			Paint2Parts( textArea, graphics, SplitSentences( instructions ), null, new List<string>() );
+			Paint2Parts( textArea, graphics, SplitSentences( instructions ), null, [] );
 	}
 
 	static void Paint2Parts( Rectangle textBounds, Graphics graphics, List<string> topParts, string? splitText, List<string> botParts ) {
@@ -197,7 +197,7 @@ public partial class PowerCardImageBuilder {
 		Point centeringAdj = layout.CenterDrawingSpace( textBounds.Size );
 
 		if(splitText != null) {
-			int botLineCount = AppendToLayout( textBounds, graphics, null, config, lineHeight, botParts, new List<string>(), widthReduction ).LineCount;
+			int botLineCount = AppendToLayout( textBounds, graphics, null, config, lineHeight, botParts, [], widthReduction ).LineCount;
 			int bottomHeight = (botLineCount + 1) * lineHeight +centeringAdj.Y;
 			Rectangle botRect = new Rectangle( textBounds.X, textBounds.Bottom-bottomHeight, textBounds.Width, bottomHeight );
 			graphics.FillRectangle( Brushes.Bisque, botRect );

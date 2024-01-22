@@ -3,7 +3,7 @@
 public class FearCards {
 
 	public static IFearCard[] GetFearCards() {
-		return new IFearCard[] {
+		return [
 			new AvoidTheDahan(),
 			new BeliefTakesRoot(),
 			new DahanEnheartened(),
@@ -19,7 +19,7 @@ public class FearCards {
 			new TallTalesOfSavagery(),
 			new TradeSuffers(),
 			new WaryOfTheInterior()
-		};
+		];
 	}
 
 }

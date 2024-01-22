@@ -49,7 +49,7 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 	void InitLowest() {
 		GameState gameState = GameState.Current;
 		var card = gameState.InvaderDeck.Explore.Cards.FirstOrDefault();
-		_lowest = card == null ? new Dictionary<Board, SpaceState>()
+		_lowest = card == null ? []
 			: gameState.Island.Boards
 				.ToDictionary( brd => brd, brd => brd.Spaces.Tokens().FirstOrDefault( card.MatchesCard ) );
 	}

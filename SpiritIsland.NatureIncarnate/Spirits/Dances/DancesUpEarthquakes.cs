@@ -107,7 +107,7 @@ public class DancesUpEarthquakes : Spirit {
 			InnatePower.For(typeof(EarthShuddersBuildingsFall))
 		};
 
-		Impending = new List<PowerCard>();
+		Impending = [];
 		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = Impending } );
 	}
 
@@ -135,8 +135,8 @@ public class DancesUpEarthquakes : Spirit {
 	public int ImpendingEnergyPerRound;
 	public int BonusImpendingPlays;
 
-	public List<PowerCard> Impending = new List<PowerCard>();
-	public CountDictionary<string> ImpendingEnergy = new CountDictionary<string>();
+	public List<PowerCard> Impending = [];
+	public CountDictionary<string> ImpendingEnergy = [];
 
 	protected override async Task ApplyRevealedPresenceTracks_Inner( Spirit self ) {
 		ImpendingEnergyPerRound = 0;
@@ -211,7 +211,7 @@ public class DancesUpEarthquakes : Spirit {
 
 	class SavedCustomProps {
 		public SavedCustomProps( DancesUpEarthquakes spirit ) {
-			_impending = spirit.Impending.ToArray();
+			_impending = [.. spirit.Impending];
 			_impendingEnergy = spirit.ImpendingEnergy.Clone();
 			_impendingEnergyPerRound = spirit.ImpendingEnergyPerRound;
 			_bonusImpendingPlays = spirit.BonusImpendingPlays;

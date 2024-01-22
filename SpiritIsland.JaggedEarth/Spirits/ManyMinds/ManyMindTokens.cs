@@ -34,7 +34,7 @@ class BeastSourceSelector : SourceSelector {
 			foreach(var space in _destination.Range( range )) // gather, not Range
 				items.AddRange( GetSourceOptionsOn1Space(space) );
 		}
-		return items.ToArray();
+		return [.. items];
 	}
 	readonly SpaceState _destination;
 }

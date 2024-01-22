@@ -32,7 +32,7 @@ public class SerpentPresence : SpiritPresence {
 
 	}
 
-	public List<Spirit> AbsorbedPresences = new List<Spirit>(); // don't let it grow past 6
+	public List<Spirit> AbsorbedPresences = []; // don't let it grow past 6
 
 	public int MaxPresenceOnBoard => new int[]{5,7,8,10,11,12,13 }[AbsorbedPresences.Count];
 

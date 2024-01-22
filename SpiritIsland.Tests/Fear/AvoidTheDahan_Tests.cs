@@ -290,7 +290,7 @@ public class AvoidTheDahan_Tests {
 
 	VirtualTestUser _user;
 	Spirit _spirit;
-	readonly List<string> log = new();
+	readonly List<string> log = [];
 
 	#endregion
 }

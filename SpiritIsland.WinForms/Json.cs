@@ -57,7 +57,7 @@ internal class JsonSerializer {
 
 	public string SerializeArray( IEnumerable enumerable ) {
 		if(enumerable == null) { return "null"; }
-		List<string> parts = new List<string>();
+		List<string> parts = [];
 		_tabIndex++;
 		foreach(object obj in enumerable)
 			parts.Add( this.Serialize( obj ) );
@@ -68,7 +68,7 @@ internal class JsonSerializer {
 
 	public string SerializeDictionary( IDictionary dict ) {
 		if(dict == null) { return "null"; }
-		List<string> parts = new System.Collections.Generic.List<string>();
+		List<string> parts = [];
 		_tabIndex++;
 		foreach(DictionaryEntry entry in dict) {
 			if(entry.Key is not string key)
@@ -207,7 +207,7 @@ internal class JsonDeserializer {
 	public JsonArray DeserializeArray() {
 		EatWhiteSpace();
 		if(ReadNullIfThere()) return null;
-		JsonArray jsonArray = new JsonArray();
+		JsonArray jsonArray = [];
 
 		ReadSpecificChar( '[' );
 		EatWhiteSpace();
@@ -223,7 +223,7 @@ internal class JsonDeserializer {
 		EatWhiteSpace();
 		if(ReadNullIfThere()) return null;
 
-		JsonObject jsonObject = new JsonObject();
+		JsonObject jsonObject = [];
 
 		ReadSpecificChar( '{' );
 		EatWhiteSpace();

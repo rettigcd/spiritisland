@@ -40,7 +40,7 @@ static public class GameState_Extensions {
 	}
 
 	static public void InitTestInvaderDeck(this GameState gameState, params InvaderCard[] cards ) {
-		gameState.InvaderDeck = new InvaderDeck( cards.ToList(), null );// Don't try to inspect unused!
+		gameState.InvaderDeck = new InvaderDeck( [.. cards], null );// Don't try to inspect unused!
 	}
 
 	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );

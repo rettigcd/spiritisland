@@ -76,10 +76,10 @@ public class InvaderDeckBuilder {
 			random.Shuffle( l3 );
 		}
 
-		return new Queue<InvaderCard>[] {
+		return [
 			new Queue<InvaderCard>( l1 ),
 			new Queue<InvaderCard>( l2 ),
 			new Queue<InvaderCard>( l3 )
-		};
+		];
 	}
 }

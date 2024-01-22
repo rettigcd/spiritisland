@@ -72,7 +72,7 @@ public class SpiritImageMemoryCache {
 
 	#region private
 
-	readonly Dictionary<Element, Image> _elementImages = new();
+	readonly Dictionary<Element, Image> _elementImages = [];
 	readonly ResourceImages _images;
 
 	void DisposeOldSpirit() {

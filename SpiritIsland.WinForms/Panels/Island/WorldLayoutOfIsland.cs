@@ -32,7 +32,7 @@ class WorldLayoutOfIsland {
 			bottom - top + 2 * CUSHION
 		);
 
-		_insidePoints = new Dictionary<Space, ManageInternalPoints>();
+		_insidePoints = [];
 	}
 
 	static BoardLayout LoadLayoutForBoard( Board board ) {
@@ -97,8 +97,8 @@ class WorldLayoutOfIsland {
 
 
 	public readonly RectangleF Bounds;
-	readonly Dictionary<Space, SpaceLayout> _spaceLayouts = new Dictionary<Space, SpaceLayout>();
-	readonly Dictionary<Board, BoardLayout> _boardLayouts = new Dictionary<Board, BoardLayout>();
+	readonly Dictionary<Space, SpaceLayout> _spaceLayouts = [];
+	readonly Dictionary<Board, BoardLayout> _boardLayouts = [];
 	public Dictionary<Space, ManageInternalPoints> _insidePoints;
 
 }

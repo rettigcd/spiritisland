@@ -416,11 +416,11 @@ class IslandPanel : IPanel {
 	Bitmap _cachedBackground;
 
 	// Cleared at beginning of Space-Draw and collects subscripts as we go
-	readonly List<RectangleSubscript> _transientSubscripts = new List<RectangleSubscript>();
+	readonly List<RectangleSubscript> _transientSubscripts = [];
 
 	// Available Options
 	readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();
-	readonly HashSet<SpaceToken> _outstandingSpaceTokenOptions = new HashSet<SpaceToken>();
+	readonly HashSet<SpaceToken> _outstandingSpaceTokenOptions = [];
 
 
 	static Color SpacePerimeterColor => Color.Black;

@@ -18,7 +18,7 @@ public sealed class Island : IHaveMemento {
 	}
 
 	static bool HidesAnOcean(IEnumerable<BoardOrientation> boards) {
-		HashSet<SideCoords> sides = new();
+		HashSet<SideCoords> sides = [];
 		foreach(var board in boards)
 			for(int i = 0; i < 3; ++i)
 				sides.Add( board.SideCoord( i ) );
@@ -85,7 +85,7 @@ public sealed class Island : IHaveMemento {
 		newBoardSide.ConnectTo( existing );
 		var boardList = Boards.ToList();
 		boardList.Add( newBoardSide.Board );
-		Boards = boardList.ToArray();
+		Boards = [..boardList];
 		ValidateNoOverlap();
 		ValidateAccessibleOceans();
 	}
@@ -97,7 +97,7 @@ public sealed class Island : IHaveMemento {
 		set => ((MyMemento)value).Restore( this );
 	}
 
-	static readonly int[] boardSideIndex = new int[] {0,1,2};
+	static readonly int[] boardSideIndex = [0,1,2];
 
 	class MyMemento {
 		public MyMemento( Island src ) {

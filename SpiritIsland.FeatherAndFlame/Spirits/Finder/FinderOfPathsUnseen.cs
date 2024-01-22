@@ -40,10 +40,10 @@ public class FinderOfPathsUnseen : Spirit {
 		, PowerCard.For(typeof(ACircuitousAndWendingJourney)) // slow - 0
 		, PowerCard.For(typeof(PathsTiedByNature)) // slow - 0
 	) {
-		InnatePowers = new[] {
+		InnatePowers = [
 			InnatePower.For(typeof(LayPathsTheyCannotHelpButWalk)),
 			InnatePower.For(typeof(CloseTheWays))
-		};
+		];
 		_openTheWays = new OpenTheWays();
 	}
 

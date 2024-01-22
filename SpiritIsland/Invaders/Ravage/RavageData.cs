@@ -9,7 +9,7 @@ public class RavageData {
 
 	public RavageData( SpaceState tokens ) {
 		Tokens = tokens;
-		Result = new List<RavageExchange>();
+		Result = [];
 	}
 
 	#endregion

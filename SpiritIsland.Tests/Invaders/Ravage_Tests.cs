@@ -71,7 +71,7 @@ public class Ravage_Tests {
 	readonly Board _board;
 	readonly SpaceState _tokens;
 	readonly GameState _gs;
-	readonly List<RavageExchange> _exchanges = new List<RavageExchange>();
+	readonly List<RavageExchange> _exchanges = [];
 
 	#endregion private readonly 
 

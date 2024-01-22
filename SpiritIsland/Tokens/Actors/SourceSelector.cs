@@ -8,7 +8,7 @@ public class SourceSelector {
 
 	#region constructors
 	/// <summary> Tokens come from 1 space. </summary>
-	public SourceSelector( SpaceState sourceSpace ) {	_unfilteredSourceSpaces = new[]{ sourceSpace };	}
+	public SourceSelector( SpaceState sourceSpace ) {	_unfilteredSourceSpaces = [ sourceSpace ];	}
 	/// <summary> Tokens come from 0..many spaces. </summary>
 	public SourceSelector( IEnumerable<SpaceState> sourceSpaces ) { _unfilteredSourceSpaces = sourceSpaces.ToArray(); }
 	#endregion constructors
@@ -59,7 +59,7 @@ public class SourceSelector {
 		// Tokens will still be where they started, so we need to
 		// manually track how many have been used and
 		// not allow selection when used up
-		Dictionary<SpaceToken,int> unused = new();
+		Dictionary<SpaceToken,int> unused = [];
 		Track( st => {
 			// first time - init total
 			if(!unused.ContainsKey(st)) unused.Add(st,st.Count);
@@ -111,7 +111,7 @@ public class SourceSelector {
 			await onSelected( selected );
 	}
 
-	readonly List<Func<SpaceToken, Task>> _onSelected = new();
+	readonly List<Func<SpaceToken, Task>> _onSelected = [];
 
 	#endregion
 
@@ -129,7 +129,7 @@ public class SourceSelector {
 		foreach(Func<SpaceToken, bool> f in _filterSpaceToken)
 			optionz = optionz.Where(f).ToList();
 
-		return optionz.ToArray();
+		return [..optionz];
 	}
 
 	protected IEnumerable<SpaceToken> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) 
@@ -150,7 +150,7 @@ public class SourceSelector {
 	Func<SpaceState, bool> _filterSpace;
 	readonly public SpaceState[] _unfilteredSourceSpaces;
 
-	readonly List<Func<SpaceToken, bool>> _filterSpaceToken = new();
+	readonly List<Func<SpaceToken, bool>> _filterSpaceToken = [];
 
 	#endregion private
 }

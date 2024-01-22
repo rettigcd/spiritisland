@@ -11,7 +11,7 @@ public class ParalyzingFright_Tests {
 
 	[Fact]
 	public void StopsAllInvaderActions() {
-		List<string> invaderLog = new List<string>();
+		List<string> invaderLog = [];
 
 		var (user, self) = TestSpirit.StartGame( PowerCard.For(typeof(ParalyzingFright)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);

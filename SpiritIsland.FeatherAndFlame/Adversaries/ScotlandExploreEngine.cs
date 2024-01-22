@@ -11,7 +11,7 @@ class ScotlandExploreEngine : ExploreEngine {
 
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		await base.ActivateCard( card, gameState );
-		_specialExplore = new CountDictionary<Board>();// done with initial explore. the rest are special
+		_specialExplore = [];// done with initial explore. the rest are special
 	}
 
 	protected override async Task AddToken( SpaceState tokens ) {

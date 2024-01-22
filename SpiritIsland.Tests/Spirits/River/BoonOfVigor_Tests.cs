@@ -39,11 +39,11 @@ public class BoonOfVigor_Tests {
 	public async Task BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
 		GameState = new GameState(
-			new Spirit[] { Spirit, new LightningsSwiftStrike() },
-			new Board[] {
+			[Spirit, new LightningsSwiftStrike()],
+			[
 				Board.BuildBoardA(),
 				Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] )
-			}
+			]
 		) {
 			Phase = Phase.Fast
 		};

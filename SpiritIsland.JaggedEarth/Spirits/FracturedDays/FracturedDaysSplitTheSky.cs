@@ -57,13 +57,13 @@ public class FracturedDaysSplitTheSky : Spirit {
 		,PowerCard.For(typeof(PourTimeSideways))
 		,PowerCard.For(typeof(ThePastReturnsAgain))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(SlipTheFlowOfTime)),
 			InnatePower.For(typeof(VisionsOfAShiftingFuture))
-		};
+		];
 
-		DtnwMinor = new List<PowerCard>();
-		DtnwMajor = new List<PowerCard>();
+		DtnwMinor = [];
+		DtnwMajor = [];
 		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = DtnwMinor } );
 		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Major, Cards = DtnwMajor } );
 
@@ -155,8 +155,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		public FracturedDaysMemento(FracturedDaysSplitTheSky spirit) {
 			_random = spirit._randomizer.Memento;
 			_time = spirit.Time;
-			_minor = spirit.DtnwMinor.ToArray();
-			_major = spirit.DtnwMajor.ToArray();;
+			_minor = [.. spirit.DtnwMinor];
+			_major = [.. spirit.DtnwMajor];
 		}
 		public void Restore( FracturedDaysSplitTheSky spirit ) {
 			spirit._randomizer.Memento = _random;
@@ -187,7 +187,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 			get => _cur;
 			set => _cur = (int)value;
 		}
-		readonly List<int> _history = new List<int>();
+		readonly List<int> _history = [];
 		int _cur = 0;
 		readonly Random _randomizer;
 	}

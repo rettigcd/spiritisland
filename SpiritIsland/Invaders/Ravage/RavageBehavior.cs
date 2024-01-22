@@ -52,7 +52,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		try {
 			await RavageSequence( this, data );
 
-			ActionScope.Current.Log( new Log.RavageEntry( data.Result.ToArray() ) );
+			ActionScope.Current.Log( new Log.RavageEntry( [..data.Result] ) );
 		}
 		finally {
 			if(scope != null) {

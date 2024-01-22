@@ -48,7 +48,7 @@ public class StranglingFirevine_Tests {
 }
 public class ActionScopeTracker : BaseModEntity, IHandleTokenAdded, IHandleTokenRemoved {
 
-	readonly HashSet<ActionScope> _scopes = new();
+	readonly HashSet<ActionScope> _scopes = [];
 	public int Count => _scopes.Count;
 
 	void IHandleTokenAdded.HandleTokenAdded( SpaceState _, ITokenAddedArgs _1 ) 

@@ -15,7 +15,7 @@ public class SlowDissolutionOfWill : BlightCard {
     );
 
 	async Task ChooseToken(Spirit spirit) 
-		=> _replacements[spirit] = await spirit.Select<IToken>(ChooseTokenPrompt,new IToken[]{ Token.Badlands, Token.Beast, Token.Wilds },Present.Always);
+		=> _replacements[spirit] = await spirit.Select<IToken>(ChooseTokenPrompt,[Token.Badlands, Token.Beast, Token.Wilds ],Present.Always);
 
 	async Task DoReplace(Spirit spirit ) {
 		var replacement = _replacements[spirit];
@@ -25,7 +25,7 @@ public class SlowDissolutionOfWill : BlightCard {
 		await tokens.AddAsync(replacement,1);
 	}
 
-	readonly Dictionary<Spirit,IToken> _replacements = new();
+	readonly Dictionary<Spirit,IToken> _replacements = [];
 
 	const string ChooseTokenPrompt = "Choose Badlands, Beast, or Wilds as Spirit-Replacement token";
 	const string ReplacePrompt = "Replaces 1 Presence with their chosen type of Spirit Token.";

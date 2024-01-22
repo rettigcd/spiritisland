@@ -17,7 +17,7 @@ class ScotlandBuildEngine : BuildEngine {
         
 	}
 
-	readonly HashSet<string> _chartedCoastland = new HashSet<string>();
+	readonly HashSet<string> _chartedCoastland = [];
 
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		await base.ActivateCard( card, gameState );

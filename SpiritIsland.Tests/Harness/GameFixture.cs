@@ -26,8 +26,8 @@ class GameFixture {
 		gameState.Initialize();
 
 		// Logging
-		exchanges = new List<RavageExchange>();
-		Log = new List<string>();
+		exchanges = [];
+		Log = [];
 		gameState.NewLogEntry += (e) => { 
 			Log.Add(e.Msg());
 			if(e is RavageEntry re)

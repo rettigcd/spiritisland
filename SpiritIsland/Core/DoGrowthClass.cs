@@ -63,7 +63,7 @@ public abstract partial class Spirit {
 				if(autoAction != selectedAction)
 					await _spirit.TakeActionAsync( autoAction, Phase.Growth );
 
-			_availableNewGrowthOptions = Array.Empty<IActionFactory>();
+			_availableNewGrowthOptions = [];
 			_shouldInitNewGrowthOption = false;
 		}
 

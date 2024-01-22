@@ -32,7 +32,7 @@ public class DiscardCards : SpiritAction {
 	}
 
 	public override async Task ActAsync( Spirit self ) {
-		_discarded = new List<PowerCard>();
+		_discarded = [];
 		for(int i=0;i<_count;++i)
 			if( !await Discard1( self,i ) )
 				break;

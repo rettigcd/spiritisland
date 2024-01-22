@@ -38,10 +38,10 @@ public class Thunderspeaker : Spirit {
 		PowerCard.For(typeof(WordsOfWarning))
 	) {
 
-		InnatePowers = new InnatePower[]{
+		InnatePowers = [
 			InnatePower.For(typeof(GatherTheWarriors)),
 			InnatePower.For(typeof(LeadTheFuriousAssult)),
-		};
+		];
 
 	}
 

@@ -29,7 +29,7 @@ public class LetsSeeWhatHappens {
 		PowerCard card = DiscardMinorPowersUntilYouTargetLand();
 
 		// Show to the user what card is being triggered
-		await ctx.Self.SelectFactory( "Perform All Action at Max", new IActionFactory[] { card } );
+		await ctx.Self.SelectFactory( "Perform All Action at Max", [ card ] );
 
 		// Use immediately. All 'up to' instructions must be used at max and 'OR's treated as 'AND's "
 		await using var maxScope = await ActionScope.Start(ActionCategory.Spirit_Power);

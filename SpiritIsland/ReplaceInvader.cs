@@ -16,14 +16,14 @@ static public class ReplaceInvader {
 			.ToDictionary( t => t, t => tokens[t] )
 			.ToCountDict();
 
-		HumanToken[] options = invadersThatCanBeDowngraded.Keys.ToArray();
+		HumanToken[] options = [..invadersThatCanBeDowngraded.Keys];
 		while(0 < options.Length) {
 			var oldInvader = await Downgrade1Token( self, tokens, Present.Done, options );
 			if(oldInvader == null) break;
 			// this one downgraded, can't use again
 			invadersThatCanBeDowngraded[oldInvader]--;
 			// next
-			options = invadersThatCanBeDowngraded.Keys.ToArray();
+			options = [..invadersThatCanBeDowngraded.Keys];
 		}
 	}
 

@@ -74,7 +74,7 @@ public class AdversaryLevel {
 	public AdversaryLevel( int level, int difficulty, int fear1, int fear2, int fear3, string title, string description = "" ) {
 		_level = level;
 		Difficulty = difficulty;
-		FearCards = new int[] { fear1, fear2, fear3 };
+		FearCards = [ fear1, fear2, fear3 ];
 		Title = title;
 		Description = description;
 	}

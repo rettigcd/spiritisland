@@ -6,13 +6,13 @@ public sealed class PowerCardDeck : IHaveMemento {
 
 	public PowerCardDeck(IList<PowerCard> cards, int seed, PowerType powerType = default) {
 		PowerType = powerType;
- 		this._randomizer = new Random(seed);
+ 		_randomizer = new Random(seed);
 			
 		var temp = cards.ToArray();
 		_randomizer.Shuffle(temp);
 
-		this._cards = new Stack<PowerCard>(temp);
-		_discards = new List<PowerCard>();
+		_cards = new Stack<PowerCard>(temp);
+		_discards = [];
 	}
 
 	#endregion constructor
@@ -45,8 +45,8 @@ public sealed class PowerCardDeck : IHaveMemento {
 
 	class MyMemento {
 		public MyMemento(PowerCardDeck src) {
-			cards = src._cards.ToArray();
-			discards = src._discards.ToArray();
+			cards = [..src._cards];
+			discards = [..src._discards];
 		}
 		public void Restore( PowerCardDeck src ) {
 			src._cards.SetItems( cards );

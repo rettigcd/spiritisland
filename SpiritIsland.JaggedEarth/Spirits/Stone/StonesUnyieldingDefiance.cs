@@ -67,10 +67,10 @@ public StonesUnyieldingDefiance() : base(
 		,PowerCard.For(typeof(ScarredAndStonyLand))
 		,PowerCard.For(typeof(StubbornSolidity))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(HoldTheIslandFastWithABulwarkOfWill)), 
 			InnatePower.For(typeof(LetThemBreakThemselvesAgainstTheStone))
-		};
+		];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

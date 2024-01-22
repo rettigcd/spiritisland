@@ -110,7 +110,7 @@ class OtherCardsPanel : IPanel {
 			//	.Where( c => _pickPowerCardDecision.Use( c ) == _use )
 			//	.OrderBy( c => c.Cost ).ThenBy( c => c.DisplaySpeed )
 			//	.ToArray()
-			: Array.Empty<PowerCard>();
+			: [];
 
 	}
 

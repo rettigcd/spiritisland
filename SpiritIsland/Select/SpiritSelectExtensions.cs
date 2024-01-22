@@ -62,14 +62,14 @@ static public class SpiritSelectExtensions {
 	/// <remarks>Elemental Boon, Spirits May Yet Dream, Select AnyElement</remarks>
 	static public async Task<Element[]> SelectElementsEx( this Spirit spirit, int totalToGain, params Element[] elements ) {
 		var selected = new List<Element>();
-		List<Element> available = elements.ToList();
+		List<Element> available = [..elements];
 
 		while(selected.Count < totalToGain) {
 			var el = await spirit.SelectElementEx( $"Select {selected.Count + 1} of {totalToGain} element to gain", available );
 			selected.Add( el );
 			available.Remove( el );
 		}
-		return selected.ToArray();
+		return [..selected];
 	}
 
 
@@ -80,12 +80,12 @@ static public class SpiritSelectExtensions {
 
 	// wrapper
 	static public async Task<int> SelectNumber( this Spirit spirit, string prompt, int max, int min = 1 ) {
-		List<string> numToMove = new List<string>();
+		List<string> numToMove = [];
 		int cur = max;
 		while(min <= cur) numToMove.Add( (cur--).ToString() );
 		if(numToMove.Count == 0) return 0; // if there are no options, auto-return 0
 		if(numToMove.Count == 1) return int.Parse(numToMove[0]);
-		var x = await spirit.SelectText( prompt, numToMove.ToArray(), Present.Always );
+		var x = await spirit.SelectText( prompt, [..numToMove], Present.Always );
 		return int.Parse( x );
 	}
 

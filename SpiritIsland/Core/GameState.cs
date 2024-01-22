@@ -12,7 +12,7 @@ public sealed class GameState : IHaveMemento {
 	/// Simplified constructor for single-player
 	/// </summary>
 	public GameState( Spirit spirit, Board board, int gameNumber = 0 ) 
-		: this(new Spirit[]{ spirit }, new Board[] {board}, gameNumber ) {}
+		: this([spirit], [board], gameNumber ) {}
 
 	public GameState(Spirit[] spirits,Board[] boards, int gameNumber = 0 ){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
@@ -101,7 +101,7 @@ public sealed class GameState : IHaveMemento {
 		.Union(OtherSpaces)
 		.Tokens();
 
-	public List<Space> OtherSpaces = new List<Space>(); // Currently only used for EndlessDarkness
+	public List<Space> OtherSpaces = []; // Currently only used for EndlessDarkness
 
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }
@@ -115,7 +115,7 @@ public sealed class GameState : IHaveMemento {
 		=> Tokens[SpiritIsland.BlightCard.Space].Adjust( Token.Blight, count );
 
 	public IBlightCard BlightCard = new NullBlightCard();
-	public List<IBlightCard> BlightCards = new List<IBlightCard>();
+	public List<IBlightCard> BlightCards = [];
 	public GameOver Result = null;
 
 	#region Blight
@@ -137,7 +137,7 @@ public sealed class GameState : IHaveMemento {
 
 	#region Win / Loss
 
-	readonly List<Action<GameState>> WinLossChecks = new List<Action<GameState>>();
+	readonly List<Action<GameState>> WinLossChecks = [];
 
 	/// <summary>
 	/// Used to add the standard TerrorLevelVictory check or custom Adversary checks
@@ -236,7 +236,7 @@ public sealed class GameState : IHaveMemento {
 	// !! If we decide to split up Config stuff, move this to ActionScope
 	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
 	readonly TerrainMapper DefaultTerrain = new TerrainMapper(); // Default
-	readonly Dictionary<ActionCategory,TerrainMapper> _terrains = new Dictionary<ActionCategory, TerrainMapper>();
+	readonly Dictionary<ActionCategory,TerrainMapper> _terrains = [];
 	public TerrainMapper Terrain_ForBlight = new TerrainMapper(); // This is ONLY called for blight inside gamestate.
 
 	public TerrainMapper GetTerrain( ActionCategory cat ) => _terrains.TryGetValue( cat, out TerrainMapper value ) ? value : DefaultTerrain;
@@ -270,15 +270,15 @@ public sealed class GameState : IHaveMemento {
 			_mementos.Save( src.Tokens );
 
 			// Before Invader phase
-			_beforeInvaderPhase = src._preInvaderPhaseActions.ToArray();
+			_beforeInvaderPhase = [..src._preInvaderPhaseActions];
 			_mementos.Save(_beforeInvaderPhase);
 
 			// After Invader phase
-			_afterInvaderPhase = src._postInvaderPhaseActions.ToArray();
+			_afterInvaderPhase = [.. src._postInvaderPhaseActions];
 			_mementos.Save( _afterInvaderPhase );
 
 			// Time Passes
-			_timePassesActions = src._timePassesActions.ToArray();
+			_timePassesActions = [..src._timePassesActions];
 			_mementos.Save( _timePassesActions );
 
 			_roundNumber = src.RoundNumber;
@@ -304,7 +304,7 @@ public sealed class GameState : IHaveMemento {
 		readonly IRunWhenTimePasses[] _timePassesActions;
 		readonly IRunBeforeInvaderPhase[] _beforeInvaderPhase;
 		readonly IRunAfterInvaderPhase[] _afterInvaderPhase;
-		readonly Dictionary<IHaveMemento,object> _mementos = new Dictionary<IHaveMemento, object>();
+		readonly Dictionary<IHaveMemento,object> _mementos = [];
 	}
 
     #endregion Memento
@@ -320,7 +320,7 @@ public sealed class GameState : IHaveMemento {
 				preInvaderActions.RemoveAt( i-- );
 		}
 	}
-    public readonly List<IRunBeforeInvaderPhase> _preInvaderPhaseActions = new List<IRunBeforeInvaderPhase>();
+    public readonly List<IRunBeforeInvaderPhase> _preInvaderPhaseActions = [];
 
 
     public async Task RunPostInvaderActions() {
@@ -332,7 +332,7 @@ public sealed class GameState : IHaveMemento {
 				postInvaderActions.RemoveAt( i-- );
 		}
 	}
-    public readonly List<IRunAfterInvaderPhase> _postInvaderPhaseActions = new List<IRunAfterInvaderPhase>();
+    public readonly List<IRunAfterInvaderPhase> _postInvaderPhaseActions = [];
 
     async Task RunTimePassesActions() {
 
@@ -343,7 +343,7 @@ public sealed class GameState : IHaveMemento {
 				_timePassesActions.RemoveAt( i-- );
 		}
 	}
-	readonly List<IRunWhenTimePasses> _timePassesActions = new List<IRunWhenTimePasses>();
+	readonly List<IRunWhenTimePasses> _timePassesActions = [];
     public void AddTimePassesAction( IRunWhenTimePasses action ) { 
 		int i = _timePassesActions.Count;
 		while(0<i && action.Order < _timePassesActions[i-1].Order) --i;

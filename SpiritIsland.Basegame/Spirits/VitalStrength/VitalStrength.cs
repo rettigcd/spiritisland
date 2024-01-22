@@ -22,9 +22,7 @@ public class VitalStrength : Spirit {
 		PowerCard.For(typeof(RitualsOfDestruction)),
 		PowerCard.For(typeof(DrawOfTheFruitfulEarth))
 	){
-		InnatePowers = new InnatePower[]{ 
-			InnatePower.For(typeof(GiftOfStrength))
-		};
+		InnatePowers = [ InnatePower.For(typeof(GiftOfStrength)) ];
 
 	}
 

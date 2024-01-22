@@ -13,23 +13,23 @@ public class RepeatIfAttribute : RepeatAttribute {
 		};
 		if(additionalThresholds != null && additionalThresholds.Length>0)
 			repeats.AddRange( additionalThresholds.Select( t => new DrawableRepeatOption(t,"Repeat this Power again.") ) );
-		this.Thresholds = repeats.ToArray();
+		Thresholds = [.. repeats];
 	}
 
 	public override IPowerRepeater GetRepeater() => new Repeater( Thresholds );
 
 	class Repeater : IPowerRepeater {
 
-		readonly List<IDrawableInnateTier> thresholds;
+		readonly List<IDrawableInnateTier> _thresholds;
 
 		public Repeater( IDrawableInnateTier[] thresholds ) {
-			this.thresholds = thresholds.ToList();
+			_thresholds = [.. thresholds];
 		}
 
 		public async Task<bool> ShouldRepeat( Spirit spirit ) {
-			foreach(var threshold in thresholds) {
+			foreach(var threshold in _thresholds) {
 				if( await spirit.HasElement( threshold.Elements, "Repeating" ) ) {
-					thresholds.Remove(threshold);
+					_thresholds.Remove(threshold);
 					return true;
 				}
 			}

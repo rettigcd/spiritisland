@@ -57,7 +57,7 @@ public static partial class SpaceExtentions {
 	#region Token-Init Helpers
 
 	static CountDictionary<IToken> ParseTokens( string expectedInvaderSummary ) {
-		CountDictionary<IToken> desiredTokens = new();
+		CountDictionary<IToken> desiredTokens = [];
 		if(!string.IsNullOrEmpty( expectedInvaderSummary )) {
 			foreach(string part in expectedInvaderSummary.Split( ',' )) {
 				(int count,IToken token) = ParseTokenCount(part);

@@ -81,7 +81,7 @@ public sealed class InvaderBinding {
 		HumanToken[] invadersToDestroy;
 		while(
 			0 < count 
-			&& (invadersToDestroy = Tokens.HumanOfAnyTag( generics ).ToArray()).Length > 0
+			&& 0 < ( invadersToDestroy = [..Tokens.HumanOfAnyTag( generics )] ).Length
 		) {
 			var invader = invadersToDestroy
 				.OrderByDescending( x => x.FullHealth )

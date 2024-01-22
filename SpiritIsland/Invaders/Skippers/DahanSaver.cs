@@ -46,7 +46,7 @@ public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToke
 	}
 
 	#region readonly
-	readonly CountDictionary<ActionScope> _byAction = new();
+	readonly CountDictionary<ActionScope> _byAction = [];
 	readonly SpaceState _space;
 	readonly int _maxActionCount;
 	readonly int _maxPerAction;

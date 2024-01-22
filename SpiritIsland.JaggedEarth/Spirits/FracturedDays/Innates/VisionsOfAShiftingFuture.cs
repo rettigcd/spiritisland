@@ -4,8 +4,8 @@
 
 [InnatePower("Visions of a Shifting Future"), Slow, Yourself]
 class VisionsOfAShiftingFuture {
-	internal static readonly string[] textOptions = new string[] {"Shuffle with next top card."};
-	internal static readonly string[] options = new string[] {"Shuffle with next top card.", "Move to bottom of deck." };
+	internal static readonly string[] textOptions = ["Shuffle with next top card."];
+	internal static readonly string[] options = ["Shuffle with next top card.", "Move to bottom of deck."];
 
 	[InnateTier("1 sun,2 moon,2 air","Look at the top card of either the Invader Deck or the Event Deck.  Return it, then shuffle that deck's top 2 cards.")]
 	static public async Task Option1( Spirit self ) {

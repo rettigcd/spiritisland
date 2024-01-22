@@ -16,9 +16,9 @@ public static class HealthAdjustmentHelper_Extension {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
 			var tokens = spaceState.HumanOfTag( tokenClass );
-			var orderedTokens = delta < 0
-				? tokens.OrderBy( x => x.FullHealth ).ToArray()
-				: tokens.OrderByDescending( x => x.FullHealth ).ToArray();
+			HumanToken[] orderedTokens = delta < 0
+				? [.. tokens.OrderBy( x => x.FullHealth )]
+				: [.. tokens.OrderByDescending( x => x.FullHealth )];
 			foreach(var token in orderedTokens)
 				await spaceState.AllHumans( token ).AdjustHealthAsync( delta );
 		}

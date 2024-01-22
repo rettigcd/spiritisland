@@ -65,12 +65,12 @@ public sealed class GiftOfStrength_Tests {
 		spirit.Elements.Add(ElementStrings.Parse("1 sun,2 earth,2 plant"));
 		spirit.Energy = 20;
 		//  And: Earth has 4 cards
-		PowerCard[] cards = new PowerCard[] {
+		PowerCard[] cards = [
 			MakePowerCard( Fast0 ),
 			MakePowerCard( Slow0 ), 
 			MakePowerCard( Slow1 ), 
 			MakePowerCard( Slow2 )  
-		};
+		];
 		spirit.TempCardPlayBoost = cards.Length;
 		spirit.Hand.AddRange(cards);
 		PlayCards( cards ); // PLAY, not RESOLVE...

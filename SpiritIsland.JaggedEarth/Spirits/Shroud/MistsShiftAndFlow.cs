@@ -81,7 +81,7 @@ class MistsShiftAndFlow {
 	}
 
 	List<MistMove> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
-		List<MistMove> allowed = new List<MistMove>();
+		List<MistMove> allowed = [];
 
 		var pretendPresence = new SpaceCounts( _spirit );
 

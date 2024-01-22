@@ -6,8 +6,8 @@ static public class SitOutRavage {
 	/// User Selects which tokens to sit out. And sits them out for *this-action* only.
 	/// </summary>
 	static public async Task SelectFightersAndSitThemOut( this SourceSelector sourceSelector, Spirit spirit ) {
-		CountDictionary<HumanToken> sitOuts = new CountDictionary<HumanToken>();
-		HashSet<Space> targetSpaces = new HashSet<Space>();
+		CountDictionary<HumanToken> sitOuts = [];
+		HashSet<Space> targetSpaces = [];
 
 		IAsyncEnumerable<SpaceToken> selectedTokens = sourceSelector
 			.ConfigOnlySelectEachOnce()

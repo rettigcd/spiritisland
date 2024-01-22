@@ -49,7 +49,7 @@ public class WrappingLayout {
 		if(_texts.TryGetValue( fontStyle, out List<TextPosition>? value ))
 			texts = value;
 		else {
-			texts = new List<TextPosition>();
+			texts = [];
 			_texts.Add( fontStyle, texts );
 		}
 
@@ -169,8 +169,8 @@ public class WrappingLayout {
 
 	#region private
 
-	readonly List<TokenPosition> _tokens = new();
-	readonly Dictionary<FontStyle, List<TextPosition>> _texts = new();
+	readonly List<TokenPosition> _tokens = [];
+	readonly Dictionary<FontStyle, List<TextPosition>> _texts = [];
 
 	// Generic layout
 	readonly Size _rowSize;
@@ -187,7 +187,7 @@ public class WrappingLayout {
 	readonly Graphics _graphics; // determining text size
 	readonly ImageSizeCalculator _imageSizeCalculator;// determining icon size
 
-	readonly List<IMoveHorizontally> _rowItems = new();
+	readonly List<IMoveHorizontally> _rowItems = [];
 
 	readonly int _maxIconHeight; // the larger of the icons and the elements
 

@@ -38,7 +38,7 @@ public class SinglePlayerGame {
 			GameState.Phase = Phase.Init;
 			await Spirit.ResolveActions( GameState ); 
 
-			Dictionary<int,object> savedGameStates = new Dictionary<int, object>();
+			Dictionary<int,object> savedGameStates = [];
 			while(true) {
 				savedGameStates[GameState.RoundNumber] = ((IHaveMemento)GameState).Memento;
 				DateTime lastSaveTimeStamp= DateTime.Now;

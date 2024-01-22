@@ -6,7 +6,7 @@ public partial class Board {
 
 	// These cannot be reused because when they get connected to other boards, 
 	// there neighbor state changes.
-	static readonly public string[] AvailableBoards = { "A", "B", "C", "D", "E", "F" };
+	static readonly public string[] AvailableBoards = [ "A", "B", "C", "D", "E", "F" ];
 	static public Board BuildBoard(string boardName, BoardOrientation orientation) {
 		return boardName switch {
 			"A" => BuildBoardA( orientation ),
@@ -277,7 +277,7 @@ public partial class Board {
 		return side;
 	}
 
-	readonly List<BoardSide> _sides = new List<BoardSide>();
+	readonly List<BoardSide> _sides = [];
 	Space[] _spaces;
 
 

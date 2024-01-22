@@ -33,7 +33,7 @@ public class SolidifyEchoesOfMajestyPast {
 		
 		// If you have...
 		if(await ctx.YouHave("2 sun,2 moon,2 earth" )) {
-			PowerCard[] startingHand = ctx.Self.Hand.ToArray();
+			PowerCard[] startingHand = [.. ctx.Self.Hand];
 			PowerCard[] forgottenUniques = UniqueCardsForgotten(ctx.Self);
 			// Target Spirit either
 			await Cmd.Pick1(

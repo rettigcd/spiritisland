@@ -8,6 +8,6 @@ public class SyncEvent<T> {
 			handler( gameState, t );
 	}
 	public Task EndOfRound( GameState _ ) { ForRound.Clear(); return Task.CompletedTask; }
-	public List<Action<GameState, T>> ForRound = new List<Action<GameState, T>>();
-	public List<Action<GameState, T>> ForGame = new List<Action<GameState, T>>();
+	public List<Action<GameState, T>> ForRound = [];
+	public List<Action<GameState, T>> ForGame = [];
 }

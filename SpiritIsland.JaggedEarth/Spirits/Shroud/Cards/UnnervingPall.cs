@@ -40,7 +40,7 @@ public class UnnervingPall {
 
 		void IConfigRavages.Config( SpaceState space ) {
 
-			Dictionary<HumanToken,HumanToken> restore = new Dictionary<HumanToken, HumanToken>();
+			Dictionary<HumanToken,HumanToken> restore = [];
 
 			HumanToken MakeNonParticipating(HumanToken original) {
 				var nonParticipating = original.SetRavageSide( RavageSide.None );

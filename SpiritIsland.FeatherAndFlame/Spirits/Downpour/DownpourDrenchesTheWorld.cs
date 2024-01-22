@@ -44,10 +44,10 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		,PowerCard.For(typeof(GiftOfAbundance))
 		,PowerCard.For(typeof(UnbearableDeluge))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(RainAndMudSupressConflict)),
 			InnatePower.For(typeof(WaterNourishesLifesGrowth))
-		};
+		];
 
 		_pourDownPower = new PourDownPower(this);
 

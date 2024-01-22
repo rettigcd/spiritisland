@@ -26,10 +26,10 @@ public class SharpFangs : Spirit {
 		PowerCard.For(typeof(TerrifyingChase)),
 		PowerCard.For(typeof(TooNearTheJungle))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(FrenziedAssult)),
 			InnatePower.For(typeof(RagingHunt)),
-		};
+		];
 
 	}
 

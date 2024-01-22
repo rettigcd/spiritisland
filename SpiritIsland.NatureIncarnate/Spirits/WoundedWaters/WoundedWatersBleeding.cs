@@ -8,7 +8,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	#region Special Rules
 	public override SpecialRule[] SpecialRules => _specialRules.ToArray();
-	readonly List<SpecialRule> _specialRules = new List<SpecialRule> { SeekingPath_Rule };
+	readonly List<SpecialRule> _specialRules = [ SeekingPath_Rule ];
 
 	static readonly SpecialRule SeekingPath_Rule = new SpecialRule( "Seeking a Path Towards Healing", "After playing cards: (a) Claim a Healing Marker matching whichever water/animal you have more of. (b) Claim a Healing card if you meet requirments, (c) destroy 1 presence or forget a power card." );
 	public void AddSpecialRule(SpecialRule rule ) {
@@ -102,7 +102,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 				new GainEnergy(3),
 				new AddDestroyedPresence( 1 )
 			);
-			GrowthTrack = new( GrowthTrack.Options.Append(thirdGrowth).ToArray() );
+			GrowthTrack = new( [.. GrowthTrack.Options, thirdGrowth] );
 			ActionScope.Current.Log(new Log.LayoutChanged($"Third growth added to {Name}"));
 		}
 
@@ -115,15 +115,15 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		).ActAsync(this);
 	}
 
-	readonly IHealingCard[] HealingCards = new IHealingCard[] {
+	readonly IHealingCard[] HealingCards = [
 		new RoilingWaters(),
 		new SereneWaters(),
 		new WatersRenew(),
 		new WatersTasteOfRuin()
-	};
+	];
 
 	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements => HealingMarkers;
-	public CountDictionary<Element> HealingMarkers = new CountDictionary<Element>();
+	public CountDictionary<Element> HealingMarkers = [];
 	public bool HealingCardClaimed => HealingCards.Any(c=>c.IsClaimed(this));
 
 	#endregion Seeking a Path Towards Healing
@@ -140,7 +140,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 			_healingWatersMarkers = spirit.HealingMarkers[Element.Water];
 			_healingAnimalMarkers = spirit.HealingMarkers[Element.Animal];
 			_innates = (InnatePower[])spirit.InnatePowers.Clone(); // don't use original because it gets updated
-			_rules = spirit._specialRules.ToArray();
+			_rules = [.. spirit._specialRules];
 			_seekHealing = spirit._seekHealing;
 		}
 		public void Restore( WoundedWatersBleeding spirit ) {

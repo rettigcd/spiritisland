@@ -45,7 +45,7 @@ public static class MultiElements {
 
 public static class ElementList {
 
-	public static readonly Element[] AllElements = new Element[] { Element.Sun, Element.Moon, Element.Fire, Element.Air, Element.Water, Element.Earth, Element.Plant, Element.Animal };
+	public static readonly Element[] AllElements = [ Element.Sun, Element.Moon, Element.Fire, Element.Air, Element.Water, Element.Earth, Element.Plant, Element.Animal ];
 
 	static public Img GetTokenImg(this Element element) => element switch {
 		Element.Sun    => Img.Token_Sun,

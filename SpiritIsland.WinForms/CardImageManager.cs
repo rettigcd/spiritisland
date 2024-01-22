@@ -25,5 +25,5 @@ sealed public class CardImageManager : IDisposable {
 		images.Clear();
 	}
 
-	readonly Dictionary<PowerCard, Image> images = new();
+	readonly Dictionary<PowerCard, Image> images = [];
 }

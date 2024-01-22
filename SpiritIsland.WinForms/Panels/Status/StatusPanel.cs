@@ -257,11 +257,11 @@ internal class StatusPanel : IPanel {
 				cardSize.Height,
 				cardSize.Width
 			);
-			Point[] discardDestinationPoints = {
+			Point[] discardDestinationPoints = [
 				new Point((int)discardRect.Left, (int)discardRect.Bottom),    // destination for upper-left point of original
 				new Point((int)discardRect.Left, (int)discardRect.Top), // destination for upper-right point of original
 				new Point((int)discardRect.Right,(int)discardRect.Bottom)      // destination for lower-left point of original
-			};
+			];
 			using Image discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard );
 			graphics.DrawImage( discardImg, discardDestinationPoints );
 			// # of cards in explore pile

@@ -78,7 +78,7 @@ public class ImageSizeCalculator {
 		}
 	}
 
-	readonly Dictionary<Img, Size> iconSizes = new Dictionary<Img, Size>();
+	readonly Dictionary<Img, Size> iconSizes = [];
 
 }
 

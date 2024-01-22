@@ -12,7 +12,7 @@ public record BoardCoord( int x, int d60 ) {
 	public static readonly BoardCoord Origin = new BoardCoord( 0, 0 );
 
 	// the default side goes from origin out to (x=1,y=0)
-	public static readonly BoardCoord[] Angles = new BoardCoord[] {
+	public static readonly BoardCoord[] Angles = [
 		new BoardCoord(1,0),	// 0°  (x=1,y=0)		(no rotation)
 		new BoardCoord(0,1),	// 60° (x=.5, y=.86)	(rotated 1 step)
 		new BoardCoord(-1,1),	// 120° (x=-.5, y=.86)	(rotated 2 steps)
@@ -20,7 +20,7 @@ public record BoardCoord( int x, int d60 ) {
 		new BoardCoord(0,-1),	// 240° (x=-.5,y=-.86)	(rotated 4 steps)
 		new BoardCoord(1,-1),	// 300° (x=.5,y=-.86)   (rotated 5 steps)
 		new BoardCoord(1,0)		// repeat index 0 so have to worry about overflow
-	};
+	];
 	#endregion
 
 	public override string ToString() => $"[{x},{d60}]";

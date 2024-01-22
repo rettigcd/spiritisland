@@ -8,7 +8,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 	public override AdversaryLossCondition LossCondition => new IrreperableDamage();
 
-	readonly AdversaryLevel[] _levels = new AdversaryLevel[] {
+	readonly AdversaryLevel[] _levels = [
 		// Level 0 - Escalation
 		new AdversaryLevel(0, 2 , 3,3,3, "Seek Prime Territory", "On each board with 4 or fewer Blight, add 1 Town to a land without Town/Blight. On each board with 2 or fewer Blight, do so again." )
 			.WithEscalation( SeekPrimeTerritory_Escalation ),
@@ -78,8 +78,8 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 						+ (hasNeighborTown ? 2 : 0);
 				};
 			}
-		},
-	};
+		}
+	];
 
 	#region Escalation
 

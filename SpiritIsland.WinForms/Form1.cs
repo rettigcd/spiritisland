@@ -159,7 +159,7 @@ public partial class Form1 : Form, IHaveOptions {
 
 	#endregion
 
-	readonly List<Button> _optionButtons = new();
+	readonly List<Button> _optionButtons = [];
 	GameConfigPlusToken _gameConfiguration;
 	SinglePlayerGame _game;
 

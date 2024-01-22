@@ -44,10 +44,10 @@ public class ASpreadOfRampantGreen : Spirit {
 	) {
 		// Special rules: steady regeneration
 
-		this.InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(CreepersTearIntoMortar)),
 			InnatePower.For(typeof(AllEnvelopingGreen)),
-		};
+		];
 
 	}
 

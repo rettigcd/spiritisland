@@ -8,7 +8,7 @@ public class InvaderDeck : IHaveMemento{
 		_unrevealedCards = cards;
 		_unused = unused;
 		InitNumberOfCardsToDraw();
-		ActiveSlots = new List<InvaderSlot> { Ravage, Build, Explore };
+		ActiveSlots = [ Ravage, Build, Explore ];
 	}
 
 	void InitNumberOfCardsToDraw() {
@@ -32,7 +32,7 @@ public class InvaderDeck : IHaveMemento{
 		set { _activeSlots = value; }
 	}
 
-	public List<InvaderCard> Discards {get;} = new List<InvaderCard>();
+	public List<InvaderCard> Discards {get;} = [];
 
 	public int InvaderStage => (Explore.Cards.FirstOrDefault() ?? UnrevealedCards.First()).InvaderStage;
 
@@ -66,7 +66,7 @@ public class InvaderDeck : IHaveMemento{
 
 	readonly Queue<InvaderCard>[] _unused;
 	readonly List<InvaderCard> _unrevealedCards;
-	readonly List<int> _drawCount = new List<int>(); // tracks how many cards to draw each turn
+	readonly List<int> _drawCount = []; // tracks how many cards to draw each turn
 	List<InvaderSlot> _activeSlots;
 
 	#endregion
@@ -80,10 +80,10 @@ public class InvaderDeck : IHaveMemento{
 
 	protected class MyMemento {
 		public MyMemento(InvaderDeck src) {
-			_unrevealedCards = src.UnrevealedCards.ToArray();
-			_drawCount = src._drawCount.ToArray();
-			_discards = src.Discards.ToArray();
-			_slots = src.ActiveSlots.ToArray();
+			_unrevealedCards = [..src.UnrevealedCards];
+			_drawCount = [..src._drawCount];
+			_discards = [..src.Discards];
+			_slots = [..src.ActiveSlots];
 
 			_mementos.Save( src._activeSlots );
 		}
@@ -95,7 +95,7 @@ public class InvaderDeck : IHaveMemento{
 
 			_mementos.Restore();
 		}
-		readonly Dictionary<IHaveMemento, object> _mementos = new Dictionary<IHaveMemento, object>();
+		readonly Dictionary<IHaveMemento, object> _mementos = [];
 		readonly InvaderCard[] _unrevealedCards;
 		readonly InvaderSlot[] _slots;
 		readonly int[] _drawCount;

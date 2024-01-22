@@ -141,7 +141,7 @@ public class TradeSuffers_Tests {
 
 	VirtualTestUser _user;
 	Spirit _spirit;
-	readonly List<string> _log = new();
+	readonly List<string> _log = [];
 
 }
 

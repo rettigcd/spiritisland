@@ -29,10 +29,10 @@ public class Bringer : Spirit {
 		,PowerCard.For(typeof(PredatoryNightmares))
 	) {
 
-		InnatePowers = new InnatePower[]{
+		InnatePowers = [
 			InnatePower.For(typeof(SpiritsMayYetDream)),
 			InnatePower.For(typeof(NightTerrors))
-		};
+		];
 
 	}
 

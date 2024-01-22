@@ -57,12 +57,12 @@ public class BoardLayout {
 	#region private member
 
 	// counter-clockwise, starting at origin
-	readonly PointF[] _boardCorners = new PointF[] {
+	readonly PointF[] _boardCorners = [
 		origin, // Side-2 origin (no rotation)
 		bottomRightCorner, // Side-1 origin after -60 rotation
 		topRightCorner, // Side-0 origin (after 180 rotation)
 		topLeftCorner,
-	};
+	];
 
 	SpaceLayout[] _spaces;
 
@@ -150,35 +150,35 @@ public class BoardLayout {
 	static public BoardLayout BoardA() {
 
 		// Edge points with ocean
-		var _01 = new PointF( .4f, .846f );
-		var _03 = new PointF( 0.01f, .15f );
+		PointF _01 = new( .4f, .846f );
+		PointF _03 = new( 0.01f, .15f );
 		// Internal Points
-		var _012 = new PointF( .48f, .756f );
-		var _023 = new PointF( .18f, .22f );
-		var _124 = new PointF( .55f, .4f );
-		var _145 = new PointF( .69f, .45f );
-		var _156 = new PointF( .79f, .57f );
-		var _234 = new PointF( .45f, .2f );
-		var _568 = new PointF( 1f, .67f );
-		var _578 = new PointF( 1.17f, .62f );
+		PointF _012 = new( .48f, .756f );
+		PointF _023 = new( .18f, .22f );
+		PointF _124 = new( .55f, .4f );
+		PointF _145 = new( .69f, .45f );
+		PointF _156 = new( .79f, .57f );
+		PointF _234 = new( .45f, .2f );
+		PointF _568 = new( 1f, .67f );
+		PointF _578 = new( 1.17f, .62f );
 		// style points
-		var _0 = new PointF( .14f, .67f );
-		var _02 = new PointF( .34f, .67f );
-		var _45 = new PointF( .81f, .35f );
-		var _56 = new PointF( .94f, .54f );
+		PointF _0  = new( .14f, .67f );
+		PointF _02 = new( .34f, .67f );
+		PointF _45 = new( .81f, .35f );
+		PointF _56 = new( .94f, .54f );
 
-		var a0Points = new PointF[] { _01, _012, _02, _023, _03, _0 };
-		var a1Points = new PointF[] { _01, topLeftCorner, top[0], top[1], top[2], _156, _145, _124, _012 };
-		var a2Points = new PointF[] { _012, _124, _234, _023, _02 };
-		var a3Points = new PointF[] { _03, _023, _234, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin };
-		var a4Points = new PointF[] { bot[9], bot[8], bot[7], bot[6], bot[5], _234, _124, _145, _45 };
-		var a5Points = new PointF[] { bot[11], bot[10], bot[9], _45, _145, _156, _56, _568, _578, };
-		var a6Points = new PointF[] { top[2], top[3], top[4], top[5], top[6], _568, _56, _156, };
-		var a7Points = new PointF[] { rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], rig[11], bottomRightCorner, bot[11], _578, };
-		var a8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _578, _568, };
+		PointF[] a0Points = [ _01, _012, _02, _023, _03, _0 ];
+		PointF[] a1Points = [ _01, topLeftCorner, top[0], top[1], top[2], _156, _145, _124, _012 ];
+		PointF[] a2Points = [ _012, _124, _234, _023, _02 ];
+		PointF[] a3Points = [ _03, _023, _234, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin ];
+		PointF[] a4Points = [ bot[9], bot[8], bot[7], bot[6], bot[5], _234, _124, _145, _45 ];
+		PointF[] a5Points = [ bot[11], bot[10], bot[9], _45, _145, _156, _56, _568, _578, ];
+		PointF[] a6Points = [ top[2], top[3], top[4], top[5], top[6], _568, _56, _156, ];
+		PointF[] a7Points = [ rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], rig[11], bottomRightCorner, bot[11], _578, ];
+		PointF[] a8Points = [ top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _578, _568, ];
 
 		var layout = new BoardLayout {
-			_perimeter = new PointF[] {
+			_perimeter = [
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -187,8 +187,8 @@ public class BoardLayout {
 				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
-			},
-			_spaces = new SpaceLayout[] { 
+			],
+			_spaces = [
 				new SpaceLayout(a0Points), 
 				new SpaceLayout(a1Points), 
 				new SpaceLayout(a2Points), 
@@ -198,7 +198,7 @@ public class BoardLayout {
 				new SpaceLayout(a6Points), 
 				new SpaceLayout(a7Points), 
 				new SpaceLayout(a8Points)
-			}
+			]
 		};
 		return layout;
 	}
@@ -221,18 +221,18 @@ public class BoardLayout {
 		// style points
 		var _0 = new PointF( .14f, .67f );
 
-		var b0Points = new PointF[] { _01, _012, _023, _03, _0 };
-		var b1Points = new PointF[] { _01, topLeftCorner, top[0], _156, _145, _124, _012 };
-		var b2Points = new PointF[] { _012, _124, _234, _023 };
-		var b3Points = new PointF[] { _03, _023, _234, bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin };
-		var b4Points = new PointF[] { bot[11], bot[10], bot[9], bot[8], bot[7], _234, _124, _145, _457 };
-		var b5Points = new PointF[] { _145, _156, _567, _457 };
-		var b6Points = new PointF[] { top[0], top[1], top[2], top[3], top[4], top[5], top[6], _678, _567, _156, };
-		var b7Points = new PointF[] { rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], rig[11], bottomRightCorner, bot[11], _457, _567, _678 };
-		var b8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _678 };
+		PointF[] b0Points = [ _01, _012, _023, _03, _0 ];
+		PointF[] b1Points = [ _01, topLeftCorner, top[0], _156, _145, _124, _012 ];
+		PointF[] b2Points = [ _012, _124, _234, _023 ];
+		PointF[] b3Points = [ _03, _023, _234, bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin ];
+		PointF[] b4Points = [ bot[11], bot[10], bot[9], bot[8], bot[7], _234, _124, _145, _457 ];
+		PointF[] b5Points = [ _145, _156, _567, _457 ];
+		PointF[] b6Points = [ top[0], top[1], top[2], top[3], top[4], top[5], top[6], _678, _567, _156, ];
+		PointF[] b7Points = [ rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], rig[11], bottomRightCorner, bot[11], _457, _567, _678 ];
+		PointF[] b8Points = [ top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _678 ];
 
 		var layout = new BoardLayout {
-			_perimeter = new PointF[] {
+			_perimeter = [
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -241,8 +241,8 @@ public class BoardLayout {
 				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
-			},
-			_spaces = new SpaceLayout[] {
+			],
+			_spaces = [
 				new SpaceLayout(b0Points),
 				new SpaceLayout(b1Points),
 				new SpaceLayout(b2Points),
@@ -252,7 +252,7 @@ public class BoardLayout {
 				new SpaceLayout(b6Points),
 				new SpaceLayout(b7Points),
 				new SpaceLayout(b8Points)
-			}
+			]
 		};
 		return layout;
 	}
@@ -276,18 +276,18 @@ public class BoardLayout {
 		// style points
 		var _0 = new PointF( .14f, .67f );
 
-		var c0Points = new PointF[] { _01, _012, _023, _03, _0 };
-		var c1Points = new PointF[] { _01, topLeftCorner, top[0], top[1], top[2], _156, _125, _012 };
-		var c2Points = new PointF[] { _012, _125, _245, _234, _023 };
-		var c3Points = new PointF[] { _03, _023, _234, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin };
-		var c4Points = new PointF[] { bottomRightCorner, bot[11], bot[10], bot[9], bot[8], bot[7], bot[6], bot[5], _234, _245, _457, rig[10], rig[11] };
-		var c5Points = new PointF[] {  _567, _457, _245, _125, _156 };
-		var c6Points = new PointF[] { top[2], top[3], top[4], top[5], top[6], _678, _567, _156, };
-		var c7Points = new PointF[] { rig[6], rig[7], rig[8], rig[9], rig[10], _457, _567, _678 };
-		var c8Points = new PointF[] { top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _678 };
+		PointF[] c0Points = [ _01, _012, _023, _03, _0 ];
+		PointF[] c1Points = [ _01, topLeftCorner, top[0], top[1], top[2], _156, _125, _012 ];
+		PointF[] c2Points = [ _012, _125, _245, _234, _023 ];
+		PointF[] c3Points = [ _03, _023, _234, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin ];
+		PointF[] c4Points = [ bottomRightCorner, bot[11], bot[10], bot[9], bot[8], bot[7], bot[6], bot[5], _234, _245, _457, rig[10], rig[11] ];
+		PointF[] c5Points = [  _567, _457, _245, _125, _156 ];
+		PointF[] c6Points = [ top[2], top[3], top[4], top[5], top[6], _678, _567, _156, ];
+		PointF[] c7Points = [ rig[6], rig[7], rig[8], rig[9], rig[10], _457, _567, _678 ];
+		PointF[] c8Points = [ top[6], top[7], top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _678 ];
 
 		var layout = new BoardLayout {
-			_perimeter = new PointF[] {
+			_perimeter = [
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -296,8 +296,8 @@ public class BoardLayout {
 				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
-			},
-			_spaces = new SpaceLayout[] {
+			],
+			_spaces = [
 				new SpaceLayout(c0Points),
 				new SpaceLayout(c1Points),
 				new SpaceLayout(c2Points),
@@ -307,7 +307,7 @@ public class BoardLayout {
 				new SpaceLayout(c6Points),
 				new SpaceLayout(c7Points),
 				new SpaceLayout(c8Points)
-			}
+			]
 		};
 		return layout;
 	}
@@ -330,18 +330,18 @@ public class BoardLayout {
 		// style points
 		var _0 = new PointF( .14f, .67f );
 
-		var d0Points = new PointF[] { _01, _012, _023, _03, _0 };
-		var d1Points = new PointF[] { _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], top[5], top[6], top[7], top[8], top[9], top[10], _178, _157, _125, _012 };
-		var d2Points = new PointF[] { _012, _125, _245, _234, _023 };
-		var d3Points = new PointF[] { _03, _023, _234, bot[3], bot[2], bot[1], bot[0], origin };
-		var d4Points = new PointF[] { bot[9], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], _234, _245, _456 };
-		var d5Points = new PointF[] { _157, _567, _456, _245, _125 };
-		var d6Points = new PointF[] { _456, _567, rig[10], rig[11], bottomRightCorner, bot[11], bot[10], bot[9] };
-		var d7Points = new PointF[] { rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], _567, _157, _178 };
-		var d8Points = new PointF[] { top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _178 };
+		PointF[] d0Points = [ _01, _012, _023, _03, _0 ];
+		PointF[] d1Points = [ _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], top[5], top[6], top[7], top[8], top[9], top[10], _178, _157, _125, _012 ];
+		PointF[] d2Points = [ _012, _125, _245, _234, _023 ];
+		PointF[] d3Points = [ _03, _023, _234, bot[3], bot[2], bot[1], bot[0], origin ];
+		PointF[] d4Points = [ bot[9], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], _234, _245, _456 ];
+		PointF[] d5Points = [ _157, _567, _456, _245, _125 ];
+		PointF[] d6Points = [ _456, _567, rig[10], rig[11], bottomRightCorner, bot[11], bot[10], bot[9] ];
+		PointF[] d7Points = [ rig[4], rig[5], rig[6], rig[7], rig[8], rig[9], rig[10], _567, _157, _178 ];
+		PointF[] d8Points = [ top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], _178 ];
 
 		var layout = new BoardLayout {
-			_perimeter = new PointF[] {
+			_perimeter = [
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -350,8 +350,8 @@ public class BoardLayout {
 				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
-			},
-			_spaces = new SpaceLayout[] {
+			],
+			_spaces = [
 				new SpaceLayout(d0Points),
 				new SpaceLayout(d1Points),
 				new SpaceLayout(d2Points),
@@ -361,7 +361,7 @@ public class BoardLayout {
 				new SpaceLayout(d6Points),
 				new SpaceLayout(d7Points),
 				new SpaceLayout(d8Points)
-			}
+			]
 		};
 		layout._spaces[1].AdjustCenter( 0f, -.05f );
 		return layout;
@@ -386,18 +386,18 @@ public class BoardLayout {
 		var _0 = new PointF( .18f, .67f );
 		var _67s = new PointF( 1.13f, .32f );
 
-		var e0Points = new PointF[] { _01, _012, _023, _03, _0 };
-		var e1Points = new PointF[] { _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _157, _125, _012 };
-		var e2Points = new PointF[] { _012, _125, _235, _023 };
-		var e3Points = new PointF[] { _03, _023, _235, _345, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin };
-		var e4Points = new PointF[] { bot[11], bot[10], bot[9], bot[8], bot[7], bot[6], bot[5], _345, _457, _467 };
-		var e5Points = new PointF[] { _157, _457, _345, _235, _125 };
-		var e6Points = new PointF[] { bottomRightCorner, bot[11], _467, _678, _67s, rig[8], rig[9], rig[10], rig[11] };
-		var e7Points = new PointF[] { top[4], top[5], top[6], top[7], top[8], _678, _467, _457, _157 }; // done
-		var e8Points = new PointF[] { top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], rig[7], rig[8], _67s, _678 };
+		PointF[] e0Points = [ _01, _012, _023, _03, _0 ];
+		PointF[] e1Points = [ _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _157, _125, _012 ];
+		PointF[] e2Points = [ _012, _125, _235, _023 ];
+		PointF[] e3Points = [ _03, _023, _235, _345, bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin ];
+		PointF[] e4Points = [ bot[11], bot[10], bot[9], bot[8], bot[7], bot[6], bot[5], _345, _457, _467 ];
+		PointF[] e5Points = [ _157, _457, _345, _235, _125 ];
+		PointF[] e6Points = [ bottomRightCorner, bot[11], _467, _678, _67s, rig[8], rig[9], rig[10], rig[11] ];
+		PointF[] e7Points = [ top[4], top[5], top[6], top[7], top[8], _678, _467, _457, _157 ];
+		PointF[] e8Points = [ top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], rig[7], rig[8], _67s, _678 ];
 
 		var layout = new BoardLayout {
-			_perimeter = new PointF[] {
+			_perimeter = [
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -406,8 +406,8 @@ public class BoardLayout {
 				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
-			},
-			_spaces = new SpaceLayout[] {
+			],
+			_spaces = [
 				new SpaceLayout(e0Points),
 				new SpaceLayout(e1Points),
 				new SpaceLayout(e2Points),
@@ -417,7 +417,7 @@ public class BoardLayout {
 				new SpaceLayout(e6Points),
 				new SpaceLayout(e7Points),
 				new SpaceLayout(e8Points)
-			}
+			]
 		};
 		layout._spaces[1].AdjustCenter( 0f, -.05f );
 		return layout;
@@ -441,18 +441,19 @@ public class BoardLayout {
 		var _568 = new PointF( 1.05f, .60f );
 		// style points
 		var _0 = new PointF( .18f, .67f );
-		var f0Points = new PointF[] { _01, _012, _023, _03, _0 };
-		var f1Points = new PointF[] { _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _156, _125, _012 };
-		var f2Points = new PointF[] { _012, _125, _245, _234, _023 };
-		var f3Points = new PointF[] { _03, _023, _234, bot[3], bot[2], bot[1], bot[0], origin };
-		var f4Points = new PointF[] { bot[9], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], _234, _245, _458, _478 };
-		var f5Points = new PointF[] { _125, _156, _568, _458, _245 };
-		var f6Points = new PointF[] { top[4], top[5], top[6], top[7], top[8], top[9], top[10], _568, _156 };
-		var f7Points = new PointF[] { bottomRightCorner, bot[11], bot[10], bot[9], _478, rig[6], rig[7], rig[8], rig[9], rig[10], rig[11] };
-		var f8Points = new PointF[] { top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _478, _458, _568 };
+
+		PointF[] f0Points = [ _01, _012, _023, _03, _0 ];
+		PointF[] f1Points = [ _01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _156, _125, _012 ];
+		PointF[] f2Points = [ _012, _125, _245, _234, _023 ];
+		PointF[] f3Points = [ _03, _023, _234, bot[3], bot[2], bot[1], bot[0], origin ];
+		PointF[] f4Points = [ bot[9], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], _234, _245, _458, _478 ];
+		PointF[] f5Points = [ _125, _156, _568, _458, _245 ];
+		PointF[] f6Points = [ top[4], top[5], top[6], top[7], top[8], top[9], top[10], _568, _156 ];
+		PointF[] f7Points = [ bottomRightCorner, bot[11], bot[10], bot[9], _478, rig[6], rig[7], rig[8], rig[9], rig[10], rig[11] ];
+		PointF[] f8Points = [ top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _478, _458, _568 ];
 
 		var layout = new BoardLayout {
-			_perimeter = new PointF[] {
+			_perimeter = [
 				origin,
 				_03,_0,_01,
 				topLeftCorner,
@@ -461,8 +462,8 @@ public class BoardLayout {
 				rig[0],rig[1],rig[2],rig[3],rig[4],rig[5],rig[6],rig[7],rig[8],rig[9],rig[10],rig[11],
 				bottomRightCorner,
 				bot[11], bot[10], bot[ 9 ], bot[8], bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0],
-			},
-			_spaces = new SpaceLayout[] {
+			],
+			_spaces = [
 				new SpaceLayout(f0Points),
 				new SpaceLayout(f1Points),
 				new SpaceLayout(f2Points),
@@ -472,7 +473,7 @@ public class BoardLayout {
 				new SpaceLayout(f6Points),
 				new SpaceLayout(f7Points),
 				new SpaceLayout(f8Points)
-			}
+			]
 		};
 		layout._spaces[1].AdjustCenter( 0f, -.05f );
 		return layout;

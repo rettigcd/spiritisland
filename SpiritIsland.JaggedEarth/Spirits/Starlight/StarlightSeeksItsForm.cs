@@ -29,7 +29,7 @@ public class StarlightSeeksItsForm : Spirit {
 				},
 				OnRevealAsync = async (track,spirit) => {
 					Element el = await spirit.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
-					track.Elements = new Element[] { el };
+					track.Elements = [ el ];
 					spirit.Elements.Add(el);
 					track.Icon.ContentImg = el.GetTokenImg();
 				}
@@ -127,19 +127,19 @@ public class StarlightSeeksItsForm : Spirit {
 		,PowerCard.For(typeof(PeaceOfTheNighttimeSky))
 		,PowerCard.For(typeof(ShapeTheSelfAnew))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(AirMovesEarthEndures)),
 			InnatePower.For(typeof(FireBurnsWaterSoothes)),
 			InnatePower.For(typeof(SiderealGuidance)),
 			InnatePower.For(typeof(WoodSeeksGrowthHumansSeekFreedom)),
-			InnatePower.For(typeof(StarsBlazeInTheDaytimeSky)),
-		};
+			InnatePower.For(typeof(StarsBlazeInTheDaytimeSky))
+		];
 
 	}
 
 	static async Task AssignNewElementToTrack( Spirit self, Track track ) {
 		var el = await self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
-		track.Elements = new Element[] { el };
+		track.Elements = [ el ];
 		self.Elements.Add(el);
 		track.Icon.ContentImg = el.GetTokenImg();
 	}

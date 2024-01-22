@@ -39,10 +39,10 @@ public class HeartOfTheWildfire : Spirit {
 		,PowerCard.For(typeof(FlamesFury))
 	) {
 
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(FireStorm)),
 			InnatePower.For(typeof(TheBurnedLandRegrows))
-		};
+		];
 	}
 
 	public override string Text => Name;

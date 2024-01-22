@@ -81,7 +81,7 @@ static public class SimpleMods {
 				origHist[ HSL.FromRgb( bitmap.GetPixel( x, y ) ).L ]++;
 
 		// Build the Luminosity Map
-		Dictionary<float, float> luminosityMap = new Dictionary<float, float>();
+		Dictionary<float, float> luminosityMap = [];
 		int total = bitmap.Width * bitmap.Height;
 		float totalInv = .5f / total; // .5 is pre multiplying value because we are going to average later
 		int previous = 0; // counts

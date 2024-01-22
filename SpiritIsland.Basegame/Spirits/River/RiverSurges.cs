@@ -34,10 +34,7 @@ public class RiverSurges : Spirit {
 		PowerCard.For(typeof(RiversBounty)),
 		PowerCard.For(typeof(WashAway))
 	){
-		InnatePowers = new InnatePower[]{
-			InnatePower.For(typeof(MassiveFlooding))
-		};
-
+		InnatePowers = [ InnatePower.For(typeof(MassiveFlooding)) ];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
