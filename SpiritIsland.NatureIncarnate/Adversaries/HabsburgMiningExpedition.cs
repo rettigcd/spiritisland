@@ -235,8 +235,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		/// <remarks> Can't cache this in ActionScope because matching space is pre-Action. </remarks>
 		bool IsInRavageStackThisAction() => GameState.Current.InvaderDeck.Ravage.Cards
 				.Any( c => c.Text.Contains( Text ) );
-	
-		const string Key = "Salt Deposits Ravaging";
+
 	}
 
 	/// <summary>

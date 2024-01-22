@@ -17,8 +17,9 @@ public class FlashFloods_Tests {
 	[Fact]
 	public async Task FlashFloods_Inland() {
 
-		_gameState = new GameState( _spirit, Board.BuildBoardA() );
-		_gameState.Phase = Phase.Fast;
+		_gameState = new GameState( _spirit, Board.BuildBoardA() ) {
+			Phase = Phase.Fast
+		};
 
 
 		//   And: a game on Board-A

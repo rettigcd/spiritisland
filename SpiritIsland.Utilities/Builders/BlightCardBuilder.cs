@@ -138,7 +138,7 @@ static class BlightCardBuilder {
 		using StringFormat alignCenter2 = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using(var brush = new SolidBrush( ColorString.ParseHexColor( "c9d889" ) ))
 			graphics.FillPath( brush, healthyRect.RoundCorners( 15, true, true, false, false ) );
-		using(Font headerFont = ResourceImages.Singleton.UseGameFont( healthyRect.Height * .62f ))
-			graphics.DrawString( title, headerFont, Brushes.DarkGreen, healthyRect, alignCenter2 );
+		using Font headerFont = ResourceImages.Singleton.UseGameFont( healthyRect.Height * .62f );
+		graphics.DrawString( title, headerFont, Brushes.DarkGreen, healthyRect, alignCenter2 );
 	}
 }

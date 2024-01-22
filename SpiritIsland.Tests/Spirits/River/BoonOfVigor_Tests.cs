@@ -16,8 +16,9 @@ public class BoonOfVigor_Tests {
 	[Fact]
 	public async Task BoonOfVigor_TargetSelf() {
 
-		GameState = new GameState( Spirit, Board.BuildBoardA() );
-		GameState.Phase = Phase.Fast;
+		GameState = new GameState( Spirit, Board.BuildBoardA() ) {
+			Phase = Phase.Fast
+		};
 
 		Card = Spirit.Given_PurchasedCard( BoonOfVigor.Name );
 		Spirit.Assert_CardIsReady( Card, Phase.Fast );
@@ -38,14 +39,14 @@ public class BoonOfVigor_Tests {
 	public async Task BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
 		GameState = new GameState(
-			new Spirit[]{ Spirit, new LightningsSwiftStrike() },
-			new Board[] { 
+			new Spirit[] { Spirit, new LightningsSwiftStrike() },
+			new Board[] {
 				Board.BuildBoardA(),
 				Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] )
 			}
-		);
-
-		GameState.Phase = Phase.Fast;
+		) {
+			Phase = Phase.Fast
+		};
 
 		//  That: purchase N cards
 		var otherSpirit = GameState.Spirits[1];

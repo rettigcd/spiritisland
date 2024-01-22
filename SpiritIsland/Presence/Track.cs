@@ -145,11 +145,11 @@ public sealed class Track
 
 	public Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> 
 	SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
-		if(token is not SpiritPresenceToken spt) throw new ArgumentException($"Cannot remove {token} from Presence Track.");
-		return Task.FromResult<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> ((
-			new TokenRemovedArgs(this,token,1,RemoveReason.Removed),
-			NotifyRemoved
-		));
+		return token is not SpiritPresenceToken spt ? throw new ArgumentException($"Cannot remove {token} from Presence Track.")
+			: Task.FromResult<(ITokenRemovedArgs, Func<ITokenRemovedArgs,Task>)> ((
+				new TokenRemovedArgs(this,token,1,RemoveReason.Removed),
+				NotifyRemoved
+			));
 	}
 
 	async Task NotifyRemoved( ITokenRemovedArgs args ) {

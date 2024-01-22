@@ -73,8 +73,7 @@ public class ImageSizeCalculator {
 	static Img Other(string token){
 		try{
 			return ElementStrings.ParseEl( token ).GetIconImg();
-		} catch( Exception ex){
-			string s = ex.ToString();
+		} catch( Exception ){
 			return Img.None;
 		}
 	}

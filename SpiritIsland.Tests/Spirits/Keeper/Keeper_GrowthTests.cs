@@ -114,7 +114,7 @@ public class Keeper_GrowthTests : BoardAGame {
 
 		// Assert_HasPowerProgressionCard( 0); // B
 		// Assert_HasPowerProgressionCard( 1 ); // B
-		_spirit.Assert_HasCardAvailable( CallToBloodshed.Name ); // D
+		_spirit.Assert_HasCardAvailable( BoonOfGrowingPower.Name ); // D
 		_spirit.Assert_BoardPresenceIs( "A3:1,A7:1" );     // D
 		_spirit.Assert_HasEnergy( 10 + 2 - 3 );
 	}

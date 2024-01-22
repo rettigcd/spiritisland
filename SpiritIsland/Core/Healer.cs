@@ -35,7 +35,7 @@ public sealed class Healer : IRunWhenTimePasses {
 
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
-	HashSet<Space> _skipInvadersOn = new HashSet<Space>();
-	HashSet<Space> _skipDahanOn = new HashSet<Space>();
+	readonly HashSet<Space> _skipInvadersOn = new HashSet<Space>();
+	readonly HashSet<Space> _skipDahanOn = new HashSet<Space>();
 
 }

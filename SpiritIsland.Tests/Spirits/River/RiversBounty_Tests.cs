@@ -3,8 +3,8 @@
 [Collection("BaseGame Spirits")]
 public class RiversBounty_Tests {
 
-	GameState _gameState;
-	PowerCard _card;
+	readonly GameState _gameState;
+	readonly PowerCard _card;
 	readonly Spirit _spirit;
 	readonly VirtualUser _user;
 	readonly Board _board;

@@ -1,9 +1,7 @@
 ﻿namespace SpiritIsland;
 
 
-public class BlightTokenBinding : TokenBinding {
-
-	public BlightTokenBinding( SpaceState tokens ) : base( tokens, Token.Blight ) { }
+public class BlightTokenBinding( SpaceState tokens ) : TokenBinding( tokens, Token.Blight ) {
 
 	/// <summary> Allows Power Cards to block blight on this space. </summary>
 	public void Block() => _tokens.Init( new BlockBlightToken(), 1 );

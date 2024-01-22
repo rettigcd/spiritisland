@@ -465,7 +465,7 @@ public abstract partial class Spirit
 			_innates = spirit.InnatePowers;
 			_energy          = spirit.Energy;
 			_tempCardPlayBoost   = spirit.TempCardPlayBoost;
-			_elements        = spirit.Elements.Elements.ToArray();
+			_elements        = [.. spirit.Elements.Elements];
 
 			_hand            = spirit.Hand.ToArray();
 			_purchased       = spirit.InPlay.ToArray();

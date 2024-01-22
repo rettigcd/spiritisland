@@ -90,14 +90,12 @@ public class InvaderCardBuilder {
 			graphics.DrawString( "Deposits", bigFont, backgroundBrush, botRect, alignCenter );
 		}
 
-		using(Font descFont = resources.UseGameFont( 26f )) {
-			int shiftDown = 40;
-			topRect.Offset( 0, shiftDown );
-			graphics.DrawString( "Explore/Build:\r\nNon-Mining", descFont, Brushes.Black, topRect, alignCenter );
-			botRect.Offset( 0, shiftDown );
-			graphics.DrawString( "Ravage: Mining", descFont, Brushes.Black, botRect, alignCenter );
-		}
-
+		using Font descFont = resources.UseGameFont( 26f );
+		int shiftDown = 40;
+		topRect.Offset( 0, shiftDown );
+		graphics.DrawString( "Explore/Build:\r\nNon-Mining", descFont, Brushes.Black, topRect, alignCenter );
+		botRect.Offset( 0, shiftDown );
+		graphics.DrawString( "Ravage: Mining", descFont, Brushes.Black, botRect, alignCenter );
 	}
 
 	static void DrawCoastal( InvaderCardResources resources, Graphics graphics, PointF[] perimeter, Brush backgroundBrush, Rectangle topRect, Rectangle botRect ) {

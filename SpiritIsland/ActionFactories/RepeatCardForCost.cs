@@ -48,10 +48,11 @@ public class RepeatCardForCost : IActionFactory {
 public class RepeatCheapestCardForCost : RepeatCardForCost {
 	public RepeatCheapestCardForCost(params string[] exclude ):base(exclude) {}
 	public override PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
-		return base.GetCardOptions(self,phase)
-			.GroupBy( pc => pc.Cost )
-			.OrderBy( grp => grp.Key )
-			.First() // group with lowest cost
-			.ToArray(); // all cards in group
+		return [
+			.. base.GetCardOptions(self,phase)
+				.GroupBy( pc => pc.Cost )  // group with lowest cost
+				.OrderBy( grp => grp.Key )
+				.First()
+		];
 	}
 }

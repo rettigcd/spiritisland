@@ -13,14 +13,14 @@ public sealed class ActionScope : IAsyncDisposable {
 		public ActionScopeContainer(GameState gameState) {
 			Id = Guid.NewGuid();
 			Current = new ActionScope( this, gameState ); // default
-			StartOfActionHandlers = new List<IRunAtStartOfAction>();
+			StartOfActionHandlers = [];
 		}
 		readonly Guid Id;
 		public ActionScope Current; // default
 		public readonly List<IRunAtStartOfAction> StartOfActionHandlers;
 		public override string ToString() => Id.ToString();
 		public Task RunStartOfActionHandlers() {
-			IRunAtStartOfAction[] snapshop = StartOfActionHandlers.ToArray(); // so handlers can modify the List
+			IRunAtStartOfAction[] snapshop = [.. StartOfActionHandlers]; // so handlers can modify the List
 			return Task.WhenAll( snapshop.Select( x => x.Start( Current ) ) );
 
 		}
@@ -158,7 +158,7 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	public object this[string key]{
 		get => ContainsKey(key) ? _dict[key] : throw new InvalidOperationException($"{key} was not set");
-		set => (_dict??= new())[key] = value;
+		set => (_dict??= [])[key] = value;
 	}
 
 	Dictionary<string, object> _dict;

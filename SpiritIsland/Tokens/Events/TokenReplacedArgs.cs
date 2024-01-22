@@ -16,9 +16,9 @@ public class TokenReplacedArgs
 	TokenReplacedArgs( ILocation location, IToken oldToken, IToken newToken ) {
 		Location = location;
 		RemovedCount = 0;
-		Removed = newToken ?? throw new ArgumentNullException(nameof(newToken));
+		Removed = oldToken ?? throw new ArgumentNullException(nameof( oldToken ) );
 		AddedCount = 0;
-		Added = newToken ?? throw new ArgumentNullException(nameof(oldToken));
+		Added = newToken ?? throw new ArgumentNullException(nameof( newToken ) );
 	}
 
 	public TokenReplacedArgs( ITokenRemovedArgs removed, ITokenAddedArgs added ) {

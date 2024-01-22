@@ -189,7 +189,7 @@ public sealed class GameState : IHaveMemento {
 
 	/// <returns># of blight to remove from card</returns>
 	public async Task TakeBlightFromCard( int count ) {
-		if( count < 0 ) throw new ArgumentOutOfRangeException(nameof(count));
+		ArgumentOutOfRangeException.ThrowIfNegative( count );
 		var blightCard = Tokens[SpiritIsland.BlightCard.Space];
 
 		await blightCard.RemoveAsync(Token.Blight, count, RemoveReason.TakingFromCard ); // stops from putting back on card
@@ -239,7 +239,7 @@ public sealed class GameState : IHaveMemento {
 	readonly Dictionary<ActionCategory,TerrainMapper> _terrains = new Dictionary<ActionCategory, TerrainMapper>();
 	public TerrainMapper Terrain_ForBlight = new TerrainMapper(); // This is ONLY called for blight inside gamestate.
 
-	public TerrainMapper GetTerrain( ActionCategory cat ) => _terrains.ContainsKey(cat) ? _terrains[cat] : DefaultTerrain;
+	public TerrainMapper GetTerrain( ActionCategory cat ) => _terrains.TryGetValue( cat, out TerrainMapper value ) ? value : DefaultTerrain;
 
 	public void ReplaceTerrain(Func<TerrainMapper,TerrainMapper> replacer, params ActionCategory[] cats ) {
 		foreach(var cat in cats)

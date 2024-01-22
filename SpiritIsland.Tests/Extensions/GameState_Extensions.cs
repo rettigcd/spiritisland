@@ -49,13 +49,13 @@ static public class GameState_Extensions {
 		gameState.MinorCards = new PowerCardDeck( new List<PowerCard>() {
 			// 4 random cards good for 1 draw.
 			PowerCard.For(typeof(RainOfBlood)),
-			PowerCard.For(typeof(Drought)),			// 1st after Shuffle
 			PowerCard.For(typeof(LureOfTheUnknown)),
 			PowerCard.For(typeof(SteamVents)),
 			PowerCard.For(typeof(CallOfTheDahanWays)),
-			PowerCard.For(typeof(CallToBloodshed)),	// 2nd after Shuffle
-			PowerCard.For(typeof(CallToIsolation)),
-			PowerCard.For(typeof(CallToMigrate))
+			PowerCard.For(typeof(CallToBloodshed)),	
+			PowerCard.For(typeof(CallToIsolation)), // 2nd after Shuffle
+			PowerCard.For(typeof(CallToMigrate)),
+			PowerCard.For(typeof(Drought)),			// 1st after Shuffle
 		}, 1 );
 		return gameState;
 	}
