@@ -26,22 +26,10 @@ public class ConfigurableTestFixture {
 
 	#region Configurable Parts
 
-	public PresenceTrack EnergyTrack {
-		get => _energyTrack ??= new PresenceTrack( Track.Energy1, Track.Energy2, Track.Energy3 );
-		set => Init( ref _energyTrack, value, nameof(_energyTrack));
-	}
-	PresenceTrack _energyTrack;
-
-	public PresenceTrack CardPlayTrack {
-		get => _cardTrack ??= new PresenceTrack( Track.Card1, Track.Card2, Track.Card3 );
-		set => Init( ref _cardTrack, value, nameof(_cardTrack) );
-	}
-	PresenceTrack _cardTrack;
-
 	public SpiritPresence Presence => Spirit.Presence;
 
 	public Spirit Spirit {
-		get => _spirit ??= new ConfigurableSpirit( s => new SpiritPresence(s,EnergyTrack,CardPlayTrack) );
+		get => _spirit ??= new RiverSurges();
 		set {
 			Init( ref _spirit, value, nameof(_spirit) );
 		}
@@ -94,9 +82,7 @@ public class ConfigurableTestFixture {
 	public TargetSpiritCtx TargetSelf => Spirit.Target( Spirit );
 
 	public void InitPresence( Space space, int count ) {
-		var spaceState = GameState.Tokens[space];
-		var dif = count - spaceState[Presence.Token];
-		SpiritExtensions.Given_Setup( Presence, spaceState, dif );
+		Spirit.Given_IsOn( GameState.Tokens[space], count );
 	}
 
 	public void InitTokens( Space space, string tokenString ) {

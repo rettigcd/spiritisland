@@ -26,7 +26,7 @@ public class Bringer_GrowthTests : BoardAGame {
 	public async Task Reclaim1_Presence() { // Growth Option 2
 		// reclaim 1, add presense range 0
 		_spirit.Given_HalfOfHandDiscarded();
-		_spirit.Given_HasPresenceOnSpaces( _board[4] );
+		_spirit.Given_IsOn( _board[4] );
 
 		await _spirit.When_Growing( 1, ()=> {
 			User.Growth_Reclaims1( "Predatory Nightmares $2 (Slow),[Dreams of the Dahan $0 (Fast)]" );
@@ -39,7 +39,7 @@ public class Bringer_GrowthTests : BoardAGame {
 	[Fact] 
 	public async Task PowerCard_Presence() { // Growth Option 3
 		// +1 power card, +1 pressence range 1
-		_spirit.Given_HasPresenceOnSpaces( _board[1] );
+		_spirit.Given_IsOn( _board[1] );
 
 		await _spirit.When_Growing( 2, ()=> {
 			User.Growth_DrawsPowerCard();
@@ -58,7 +58,7 @@ public class Bringer_GrowthTests : BoardAGame {
 		_board = LineBoard.MakeBoard();
 		_gameState = new GameState( _spirit, _board );
 
-		_spirit.Given_HasPresenceOnSpaces(_board[5]);
+		_spirit.Given_IsOn(_board[5]);
 		_board[6].Tokens.Dahan.Init(1);
 		_board[7].Tokens.AdjustDefault( Human.Explorer, 1 );
 		_board[8].Tokens.AdjustDefault( Human.Town, 1 );

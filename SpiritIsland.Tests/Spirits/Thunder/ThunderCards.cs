@@ -12,7 +12,7 @@ public class ThunderCards {
 		gs = new GameState( spirit, a );
 
 		// And: Spirit in spot 1
-		spirit.Given_HasPresenceOn( a[1] );
+		spirit.Given_IsOn( a[1] );
 
 //		_gateway = spirit.Gateway;
 	}

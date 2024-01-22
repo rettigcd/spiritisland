@@ -15,7 +15,7 @@ public class FieryVengeance_Tests {
 
 		//   And: spirit 2 presence, blight & town on a space
 		SpaceState space = gameState.Tokens[board1[5]];
-		spirit2.Presence.Given_Setup( space, 1 );
+		spirit2.Given_IsOn( space );
 		space.Given_HasTokens("1T@2,1B");
 
 		//   And: spirit 2 has destroyed presence
@@ -47,7 +47,7 @@ public class FieryVengeance_Tests {
 
 		//   And: spirit 2 presence, blight & town on a space
 		SpaceState space = gameState.Tokens[board1[5]];
-		spirit2.Presence.Given_Setup( space, 1 );
+		spirit2.Given_IsOn( space );
 		space.Given_HasTokens( "1T@2,1B" );
 
 		//   And: spirit 2 has NO destroyed presence

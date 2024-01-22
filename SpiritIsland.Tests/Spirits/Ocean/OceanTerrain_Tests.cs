@@ -289,7 +289,7 @@ public class OceanTerrain_Tests {
 
 		// Given: ocean in either A0 (saving dahan) or A1 (not saving)
 		Space oceanSpace = savedByOcean ? boardA[0] : boardA[1];
-		SpiritExtensions.Given_Setup( oceanSpirit.Presence, gameState.Tokens[oceanSpace], 1 );
+		oceanSpirit.Given_IsOn( gameState.Tokens[oceanSpace] );
 
 		// When: Tidal Boon is played (by Ocean)
 		gameState.Phase = Phase.Slow;
@@ -344,16 +344,16 @@ public class OceanTerrain_Tests {
 		return gameState;
 	}
 
-	void Given_OceanOnPrimaryBoard() => SpiritExtensions.Given_Setup( oceanSpirit.Presence, gameState.Tokens[boardA[0]], 1 ); // put ocean presence on primary's board, but not in the ocean
+	void Given_OceanOnPrimaryBoard() => oceanSpirit.Given_IsOn( gameState.Tokens[boardA[0]] ); // put ocean presence on primary's board, but not in the ocean
 
 	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
 
 	void Given_PrimaryPresenceOnlyOn( Space space ) {
 		foreach(SpaceState ss in primarySpirit.Presence.Lands.Tokens().ToArray())
-			SpiritExtensions.Given_Setup( primarySpirit.Presence, ss, -1 );
+			primarySpirit.Given_IsOn( ss, 0 );
 
 		// Add to
-		SpiritExtensions.Given_Setup( primarySpirit.Presence, gameState.Tokens[space], 1 );
+		primarySpirit.Given_IsOn( gameState.Tokens[space] );
 		primarySpirit.Presence.Lands.Tokens().SelectLabels().Join( "," ).ShouldBe( space.Text );
 	}
 

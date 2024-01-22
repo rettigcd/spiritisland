@@ -36,7 +36,7 @@ public class Keeper_GrowthTests : BoardAGame {
 		// a) reclaim, +1 energy
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 		_spirit.Given_HalfOfHandDiscarded();
 		Given_HasWilds( _board[8] ); // 3 spaces away
 
@@ -61,7 +61,7 @@ public class Keeper_GrowthTests : BoardAGame {
 
 		// Given: presence on board A  (default island is Board A)
 		_spirit.Given_HalfOfHandDiscarded();
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 		Given_BlightEverywhereExcept7();
 
 		await _spirit.When_Growing( () => {
@@ -82,7 +82,7 @@ public class Keeper_GrowthTests : BoardAGame {
 		// c) add presense range 3 containing (wilds or presense), +1 energy
 
 		// Given: presence at A3  (default island is Board A)
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 		// Given: 1 wilds, 3 away
 		Given_HasWilds( _board[8] );
 
@@ -102,7 +102,7 @@ public class Keeper_GrowthTests : BoardAGame {
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 		Given_BlightEverywhereExcept7();
 		_spirit.Energy = 10; // so we can do this option
 
@@ -127,7 +127,7 @@ public class Keeper_GrowthTests : BoardAGame {
 		// d) -3 energy, +1 power card, add presense to land without blight range 3
 
 		// Given: presence on board A  (default island is Board A)
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 		Given_HasWilds( _board[8] );
 		Given_BlightEverywhereExcept7();
 
@@ -148,7 +148,7 @@ public class Keeper_GrowthTests : BoardAGame {
 		// Given: space with 2 dahan
 		space.Given_HasTokens("2D@2");
 		//   and presence on that space
-		_spirit.Given_HasPresenceOn(space);
+		_spirit.Given_IsOn(space);
 
 		// When: we place a presence on that space
 		await _spirit.Presence.Token.MoveAsync( _spirit.Presence.Energy.RevealOptions.Single(), space )

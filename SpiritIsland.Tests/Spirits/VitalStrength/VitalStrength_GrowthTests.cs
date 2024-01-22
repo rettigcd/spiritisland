@@ -18,7 +18,7 @@ public class VitalStrength_GrowthTests : BoardAGame {
 	public async Task ReclaimAndPresence() {
 		// (A) reclaim, +1 presense range 2
 		_spirit.Given_HalfOfHandDiscarded();
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 
 		await _spirit.When_Growing( () => {
 			User.SelectsGrowthA_Reclaim_PP2();
@@ -31,7 +31,7 @@ public class VitalStrength_GrowthTests : BoardAGame {
 	[Fact]
 	public async Task PowercardAndPresence() {
 		// (B) +1 power card, +1 presense range 0
-		_spirit.Given_HasPresenceOnSpaces( _board[4] );
+		_spirit.Given_IsOn( _board[4] );
 
 		await _spirit.When_Growing( () => {
 			User.SelectsGrowthB_DrawCard_PP0();
@@ -43,7 +43,7 @@ public class VitalStrength_GrowthTests : BoardAGame {
 	[Fact]
 	public async Task PresenseAndEnergy() {
 		// (C) +1 presence range 1, +2 energy
-		_spirit.Given_HasPresenceOnSpaces( _board[1] );
+		_spirit.Given_IsOn( _board[1] );
 
 		await _spirit.When_Growing(() => { 
 			User.SelectsGrowthC_Energy_PP1(); 

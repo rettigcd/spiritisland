@@ -184,7 +184,7 @@ public class WashAway_Tests {
 
 		//   And: Presence on A5 (city/coastal)
 		var presenceSpace = board.Spaces.Single(s=>s.Label==startingPresence);
-		_spirit.Given_HasPresenceOn(presenceSpace);
+		_spirit.Given_IsOn(presenceSpace);
 
 		//   And: Purchased WashAway
 		_card = _spirit.Hand.Single(c => c.Name == WashAway.Name);

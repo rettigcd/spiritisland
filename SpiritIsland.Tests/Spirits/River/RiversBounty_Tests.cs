@@ -23,7 +23,7 @@ public class RiversBounty_Tests {
 		_gameState.Phase = Phase.Slow;
 
 		//   And: Presence on A4
-		_spirit.Given_HasPresenceOn( _board[4] );
+		_spirit.Given_IsOn( _board[4] );
 
 		//   And: Purchased WashAway
 		_card = _spirit.Hand.Single( c => c.Name == RiversBounty.Name );
@@ -132,7 +132,7 @@ public class RiversBounty_Tests {
 	[Fact]
 	public async Task TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
-		_spirit.Given_HasPresenceOn(_board[8]);
+		_spirit.Given_IsOn(_board[8]);
 		SpaceState[] targetOptions = _spirit.Presence.Lands.Tokens().ToArray();
 		Assert.Equal(2,targetOptions.Length);
 

@@ -32,7 +32,7 @@ public class Lightning_GrowthTests : BoardAGame{
 	public async Task Presense_Energy() {
 		// +1 presense range 1, +3 energy
 
-		_spirit.Given_HasPresenceOnSpaces( _board[1] );
+		_spirit.Given_IsOn( _board[1] );
 
 		await _spirit.When_Growing( () => {
 			User.Growth_SelectAction( "PlacePresence(1)" );
@@ -46,7 +46,7 @@ public class Lightning_GrowthTests : BoardAGame{
 	[Fact]
 	public async Task TwoPresence(){
 		// +1 presense range 2, +1 prsense range 0
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 
 		await _spirit.When_Growing( 1, () => {
 			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );

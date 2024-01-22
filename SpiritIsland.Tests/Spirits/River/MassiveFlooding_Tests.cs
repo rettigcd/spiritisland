@@ -40,7 +40,7 @@ public class MassiveFlooding_Tests {
 		SpaceState destination = spaceState.Adjacent.Last();
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		SpiritExtensions.Given_Setup( spirit.Presence, spaceState.Adjacent.First(), 2 );
+		spirit.Given_IsOn( spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-1 of Massive Flooding
 		spirit.Elements.Add( ElementStrings.Parse("1 sun,2 water" ) );
 		//   And: target has 1 city, 4 towns, 5 explorers
@@ -76,7 +76,7 @@ public class MassiveFlooding_Tests {
 		var destination = space.Adjacent_Existing.Last();
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		SpiritExtensions.Given_Setup( spirit.Presence, spaceState.Adjacent.First(), 2 );
+		spirit.Given_IsOn( spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-2 of Massive Flooding
 		spirit.Elements.Add( ElementStrings.Parse("3 water,2 sun") );
 		//   And: target has 1 city, 4 towns, 5 explorers
@@ -117,7 +117,7 @@ public class MassiveFlooding_Tests {
 		var spaceState = fixture.GameState.Tokens[space];
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		SpiritExtensions.Given_Setup( fixture.Spirit.Presence, spaceState.Adjacent.First(), 2 );
+		fixture.Spirit.Given_IsOn( spaceState.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-3 of Massive Flooding
 		fixture.InitElements( "3 sun,4 water,1 earth" );
 		//   And: target has 1 city, 4 towns, 5 explorers

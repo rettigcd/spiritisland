@@ -31,7 +31,7 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 	public async Task TwoPresence( string initialDahanSquares, string expectedPresenseOptions ) {
 		// +1 presense within 2 - contains dahan
 		// +1 presense within 1 - contains dahan
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 		//	 And: dahan on initial spot
 		foreach(string s in initialDahanSquares.Split( ',' ))
 			_board[int.Parse( s )].Tokens.Dahan.Init(1);
@@ -48,7 +48,7 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 	[Fact]
 	public async Task PresenseAndEnergy() {
 		// +1 presense within 1, +4 energy
-		_spirit.Given_HasPresenceOnSpaces( _board[1] );
+		_spirit.Given_IsOn( _board[1] );
 
 		await _spirit.When_Growing( () => {
 			User.Growth_SelectAction( "PlacePresence(1)" );

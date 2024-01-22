@@ -19,7 +19,7 @@ class TestSpirit : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Has sacred site on space 5
 		Space space = board[5];
-		this.Given_HasPresenceOn(space,2); 
+		this.Given_IsOn(space,2); 
 	}
 
 	static public (VirtualTestUser, Spirit) StartGame( 

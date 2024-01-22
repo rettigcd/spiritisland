@@ -10,7 +10,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		_gameState.Given_InitializedMinorDeck();
 
 		// Setup for growth option B
-		_spirit.Given_HasPresenceOnSpaces( _board[2] ); // wetlands
+		_spirit.Given_IsOn( _board[2] ); // wetlands
 		_gameState.Tokens[ _board[7] ].Beasts.Init(1); // add beast to sand (not jungle)
 
 	}

@@ -13,7 +13,7 @@ public class LingeringPestilence_Tests {
 
 		// Given: a space with presence
 		SpaceState space = gameState.Tokens[boardA[5]];
-		SpiritExtensions.Given_Setup( self.Presence, space, 2 );
+		self.Given_IsOn( space, 2 );
 
 		// When: a spirit power destroys presence
 		await self.When_ResolvingCard<GrowthThroughSacrifice>( (user) => {
@@ -37,7 +37,7 @@ public class LingeringPestilence_Tests {
 
 		// Given: a space with presence
 		SpaceState space = gameState.Tokens[boardA[5]];
-		SpiritExtensions.Given_Setup( self.Presence, space, 2 );
+		self.Given_IsOn( space, 2 );
 		//   And: invaders
 		space.Given_HasTokens("1C@3");
 		//   And: island won't bight

@@ -27,7 +27,7 @@ public class FlashFloods_Tests {
 
 		//   And: Presence on A2 (city/coastal)
 		var presenceSpace = board[2];
-		_spirit.Given_HasPresenceOn(presenceSpace);
+		_spirit.Given_IsOn(presenceSpace);
 		//   And: 1 of each type of Invaders in Inland space (A4)
 		Space targetSpace = board[4];
 		var counts = _gameState.Tokens[targetSpace];
@@ -61,8 +61,7 @@ public class FlashFloods_Tests {
 			Phase = Phase.Fast
 		};
 		//   And: Presence on A2 (city/coastal)
-		var presenceSpace = board[2];
-		_spirit.Given_HasPresenceOn(presenceSpace);
+		_spirit.Given_IsOn(board[2]);
 		//   And: 1 of each type of Invaders in Costal space (A2)
 		Space targetSpace = board[2];
 		var grp = _gameState.Tokens[targetSpace];

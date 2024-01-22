@@ -12,7 +12,7 @@ public class ManyMinds_Tests {
 		GameState gs = new GameState(spirit,board);
 
 		// Given: presence on A1
-		spirit.Given_HasPresenceOn( board[1] );
+		spirit.Given_IsOn( board[1] );
 
 		//   And: Beast on 7
 		board[7].Given_HasTokens("1A");
@@ -33,7 +33,7 @@ public class ManyMinds_Tests {
 		GameState gs = new GameState( spirit, board );
 
 		// Given: presence on A3
-		spirit.Given_HasPresenceOn( board[4] );
+		spirit.Given_IsOn( board[4] );
 
 		//   And: Beast on 7
 		board[7].Given_HasTokens( "1A" );
@@ -101,7 +101,7 @@ public class ManyMinds_Tests {
 		GameState gs = new GameState( spirit, board );
 
 		// Given: 2 presence and 2 dahan on A1
-		spirit.Given_HasPresenceOn( board[1],2 );
+		spirit.Given_IsOn( board[1],2 );
 		await board[1].Tokens.AddAsync( spirit.Presence.Token, 2 ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
 
 		board[1].Given_HasTokens("2D@2");
@@ -140,7 +140,7 @@ public class ManyMinds_Tests {
 		GameState gs = new GameState(spirit, board);
 
 		// Given: spirit on A5
-		spirit.Presence.Given_Setup( board[5].Tokens, 1 );
+		spirit.Given_IsOn( board[5].Tokens );
 		//   And: trigger elements
 		spirit.Configure().Elements("1 air,2 animal");
 

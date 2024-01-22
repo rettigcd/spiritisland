@@ -18,7 +18,7 @@ public class StranglingFirevine_Tests {
 		fxt.InitTokens(space,"2T@2,2E@1");
 
 		//   And: neighboring Sands has Presence
-		SpiritExtensions.Given_Setup( fxt.Spirit.Presence, fxt.GameState.Tokens[fxt.Board[7]], 1 );
+		fxt.Spirit.Given_IsOn( fxt.GameState.Tokens[fxt.Board[7]] );
 
 		//  When: activate card
 		var ctx = fxt.Spirit.Target( space );

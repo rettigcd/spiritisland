@@ -17,7 +17,7 @@ public class Ocean_GrowthTests : BoardAGame {
 	[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0:1,A1:1,B0:1,C0:1,C2:1")]    // need to define which presence to move
 	public void ReclaimGather_GatherParts(string starting, string select, string ending) {
 		Given_IslandIsABC();
-		_spirit.Given_HasPresence( starting );
+		_spirit.Given_IsOnMany( starting );
 
 		foreach(IHelpGrow action in _spirit.GrowthTrack.Options[0].UserRuns)
 			_spirit.AddActionFactory( action );
@@ -56,7 +56,7 @@ public class Ocean_GrowthTests : BoardAGame {
 		// Given: 3-board island
 		Given_IslandIsABC();
 
-		_spirit.Given_HasPresence( starting );
+		_spirit.Given_IsOnMany( starting );
 
 		// Changed implementation to not run unresolved things
 	}
@@ -102,7 +102,7 @@ public class Ocean_GrowthTests : BoardAGame {
 		// push 1 presense from each ocean
 		// add presense on coastal land range 1
 		Given_IslandIsABC();
-		_spirit.Given_HasPresence( starting );
+		_spirit.Given_IsOnMany( starting );
 
 		await _spirit.When_Growing( 2, () => {
 			User.Growth_PlacesEnergyPresence( placeOptions );

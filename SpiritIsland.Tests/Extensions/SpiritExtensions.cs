@@ -24,34 +24,28 @@ public static class SpiritExtensions {
 
 	#region Given (spirit presence setup)
 
-	internal static void Given_Setup( this SpiritPresence presence, Space space, int count  ) 
-		=> space.Tokens.Setup( presence.Token, count );
+	internal static Spirit Given_IsOnMany( this Spirit spirit, string presenceString ) {
 
+		Dictionary<string,SpaceState> lookupByLabel = GameState.Current.Spaces_Unfiltered
+			.ToDictionary(ss=>ss.Space.Label,s=>s);
 
-	internal static void Given_Setup( this SpiritPresence presence, SpaceState space, int count ) 
-		=> space.Setup( presence.Token, count );
-
-	internal static Spirit Given_HasPresence( this Spirit spirit, string presenceString ) {
-		Dictionary<string,Space> spaceLookup = GameState.Current.Island.Boards
-			.SelectMany(b=>b.Spaces_Existing)
-			.ToDictionary(s=>s.Label,s=>s);
-		var spaces = new Space[presenceString.Length/2];
+		SpaceState[] spaces = new SpaceState[presenceString.Length/2];
 		for(int i=0;i*2<presenceString.Length;i++)
-			spaces[i] = spaceLookup[presenceString.Substring(i*2,2)];
-		return spirit.Given_HasPresenceOnSpaces(spaces);
-	}
+			spaces[i] = lookupByLabel[presenceString.Substring(i*2,2)];
 
-	internal static Spirit Given_HasPresenceOnSpaces( this Spirit spirit, params Space[] spaces ){
 		foreach(var space in spaces)
-			spirit.Given_HasPresenceOn(space);
+			spirit.Given_IsOn(space);
+
 		return spirit;
 	}
 
-	internal static Spirit Given_HasPresenceOn( this Spirit spirit, Space space, int count = 1 ) 
-		=> spirit.Given_HasPresenceOn( space.Tokens, count );
+	/// <summary> Sets the # of Presence via .Init() </summary>
+	internal static Spirit Given_IsOn( this Spirit spirit, Space space, int count=1 )
+		=> spirit.Given_IsOn( space.Tokens, count );
 
-	internal static Spirit Given_HasPresenceOn( this Spirit spirit, SpaceState spaceState, int count = 1 ) {
-		spaceState.Init( spirit.Presence.Token, count );
+	/// <summary> Sets the # of Presence via .Init() </summary>
+	internal static Spirit Given_IsOn( this Spirit spirit, SpaceState ss, int count=1 ){
+		ss.Init( spirit.Presence.Token, count );
 		return spirit;
 	}
 

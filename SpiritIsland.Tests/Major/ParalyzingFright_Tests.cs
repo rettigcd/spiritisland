@@ -32,7 +32,7 @@ public class ParalyzingFright_Tests {
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
 		// And: we have a SS in that land
-		self.Given_HasPresenceOn(spaceCtx.Space, 2 );
+		self.Given_IsOn(spaceCtx.Tokens, 2 );
 
 		//  And: it has 3 explorers
 		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );

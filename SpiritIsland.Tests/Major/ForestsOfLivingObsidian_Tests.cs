@@ -46,7 +46,7 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.InitElements( "2 sun,3 fire,3 earth" );
 
 		//  And: target land has 1 presence, 2 Cities
-		SpiritExtensions.Given_Setup( fix.Spirit.Presence, spaceState, 1 );
+		fix.Spirit.Given_IsOn( spaceState );
 		fix.InitTokens( space1, "3C@3" );
 
 		// When: play card
@@ -60,7 +60,7 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.Choose( "C@1" ); // Kill 1st City
 		fix.Choose( "C@1" ); // Kill 2nd City
 		await task.ShouldComplete();
-		spaceState.Summary.ShouldBe( "1CS,2M" );
+		spaceState.Summary.ShouldBe( "2M,1RSiS" );
 
 		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}

@@ -30,7 +30,7 @@ public class IndomitableClaim_Tests {
 		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
 
 		// And: we have a presence in that land
-		self.Given_HasPresenceOn( spaceCtx.Space );
+		self.Given_IsOn( spaceCtx.Tokens );
 
 		//  And: it has 3 explorers
 		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );

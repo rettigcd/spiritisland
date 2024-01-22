@@ -81,7 +81,7 @@ public class BeliefTakesRoot_Tests {
 
 		//   And: Presence
 		while(presenceCount-->0)
-			_spirit.Given_HasPresenceOn(_ravageSpace);
+			_spirit.Given_IsOn(_ravageSpace);
 	}
 
 	async Task When_AddFearApplyFear(Action userActions) {

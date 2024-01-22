@@ -35,8 +35,8 @@ public class Volcano_Tests {
 
 		// Given: Only Presence is on A5
 		foreach(SpaceState ss in spirit.Presence.Lands.Tokens().ToArray())
-			spirit.Presence.Given_Setup( ss, -1 );
-		spirit.Presence.Given_Setup( gameState.Tokens[a6], presenceCount );
+			spirit.Given_IsOn( ss, 0 );
+		spirit.Given_IsOn( gameState.Tokens[a6], presenceCount );
 
 		// When: Activating a Range-0 card
 		await spirit.When_ResolvingCard<MesmerizedTranquility>( (user) => {
@@ -58,8 +58,8 @@ public class Volcano_Tests {
 
 		// Given: 3 presence on A6
 		foreach(SpaceState ss in spirit.Presence.Lands.Tokens().ToArray())
-			SpiritExtensions.Given_Setup( spirit.Presence, ss, -1 );
-		SpiritExtensions.Given_Setup( spirit.Presence, gameState.Tokens[a6], 3 );
+			spirit.Given_IsOn( ss, 0 );
+		spirit.Given_IsOn( gameState.Tokens[a6], 3 );
 
 		// When: Activating Growth Range-0 presence
 		_ = spirit.DoGrowth(gameState);
@@ -79,7 +79,7 @@ public class Volcano_Tests {
 
 		// Given: explorers, presence, and dahan
 		space.Given_HasTokens("3E@1,3D@2");
-		spirit.Presence.Given_Setup(space, 3);
+		spirit.Given_IsOn(space, 3);
 
 		//  When: they destroying presence via Powercard
 		await spirit.When_ResolvingCard<GrowthThroughSacrifice>( (user) => {
@@ -106,7 +106,7 @@ public class Volcano_Tests {
 
 		// Given: 3 explorers, 3 presence
 		space.InitDefault( Human.Explorer, 3 );
-		SpiritExtensions.Given_Setup( spirit.Presence, space, 3 );
+		spirit.Given_IsOn( space, 3 );
 
 		//   And: Island Won't blight
 		gameState.IslandWontBlight();
@@ -132,7 +132,7 @@ public class Volcano_Tests {
 		SpaceState dahanSpace = gameState.Tokens[board[2]];
 
 		// Given: Enough Presence to trigger Tower rule
-		spirit.Presence.Given_Setup( targetSpace, 5 );
+		spirit.Given_IsOn( targetSpace, 5 );
 		//   And: dahan in target & dahan space
 		targetSpace.Given_HasTokens("2D@2");
 		dahanSpace.Given_HasTokens("2D@2");
@@ -158,7 +158,7 @@ public class Volcano_Tests {
 		SpaceState targetSpace = gameState.Tokens[board[8]];
 
 		// Given: Enough Presence to trigger Tower rule
-		SpiritExtensions.Given_Setup( spirit.Presence, towerSpace, 5 );
+		spirit.Given_IsOn( towerSpace, 5 );
 		//   And: enough elements to trigger threshold
 		spirit.Configure().Elements("3 moon,2 animal");
 		//   And: 1 blight in target land
@@ -185,7 +185,7 @@ public class Volcano_Tests {
 		SpaceState space = gameState.Tokens[board[8]];
 
 		// Given: presence tower
-		SpiritExtensions.Given_Setup( spirit.Presence, space, presenceInTower );
+		spirit.Given_IsOn( space, presenceInTower );
 		//   And: 1 energy
 		spirit.Energy=1;
 
@@ -211,7 +211,7 @@ public class Volcano_Tests {
 		SpaceState space = gameState.Tokens[board[8]];
 
 		// Given: presence tower
-		spirit.Presence.Given_Setup( space, presenceInTower );
+		spirit.Given_IsOn( space, presenceInTower );
 		//   And: 1 energy
 		spirit.Energy = 1;
 
@@ -232,7 +232,7 @@ public class Volcano_Tests {
 
 		// Given: 10 explorers 10 dahan, 4 presence
 		space.Given_HasTokens("10E@1,10D@2");
-		spirit.Presence.Given_Setup( space, 4 );
+		spirit.Given_IsOn( space, 4 );
 		//   But: not enough elements to trigger Tier-1
 		spirit.Configure().Elements( "0 fire,0 earth" );
 
@@ -265,7 +265,7 @@ public class Volcano_Tests {
 		// Given: 10 explorers 10 dahan, 10 presence, n-badlands
 		space.InitDefault( Human.Explorer, 10 );
 		space.Dahan.Init( 10 );
-		SpiritExtensions.Given_Setup( spirit.Presence, space, 10 );
+		spirit.Given_IsOn( space, 10 );
 		space.Init( Token.Badlands, badlandsCount );
 		//   And: 10 exploreres, 10 dahan in adjacent
 		adjacent.InitDefault( Human.Explorer, 10 );
@@ -316,11 +316,11 @@ public class Volcano_Tests {
 		spirit.Configure().Elements("5 fire,3 air,5 earth");
 
 		//   And: TargetSpace => 12 presence, 20 explorers
-		SpiritExtensions.Given_Setup( spirit.Presence, targetSpace, 12 );
+		spirit.Given_IsOn( targetSpace, 12 );
 		targetSpace.InitDefault( Human.Explorer, 20 );
 
 		//   And: AdjPresence => 1 presence, 20 explorers
-		SpiritExtensions.Given_Setup( spirit.Presence, adjPresence, 1 );
+		spirit.Given_IsOn( adjPresence );
 		adjPresence.InitDefault( Human.Explorer, 20 );
 
 		//   And: AdjBlight => 1 blight, 10 explorers

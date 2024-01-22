@@ -31,7 +31,7 @@ public class RenewingBoon_Tests {
 		SpaceState space = gameState.Spaces.Single( x => x.Space.Text == restrictedSpace );
 
 		//  But: Presence already on Space (via Indomitable Claim)
-		SpiritExtensions.Given_Setup( spirit.Presence, space, 1 );
+		spirit.Given_IsOn( space );
 		int presenceCount = spirit.Presence.CountOn( space );
 
 		//  And: has destroyed presence

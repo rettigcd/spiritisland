@@ -34,7 +34,7 @@ public class BlazingRenewal_Tests {
 		var space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Text == restrictedSpace )];
 
 		// Given: presence on board
-		SpiritExtensions.Given_Setup( setup.Spirit.Presence, space, 2 );
+		setup.Spirit.Given_IsOn( space, 2 );
 		space.Init( Token.Blight, 0 );
 
 		//  And: 2 destroyed presence

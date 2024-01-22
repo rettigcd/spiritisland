@@ -39,7 +39,7 @@ public class RiverSurges_GrowthTests : BoardAGame {
 		// +1 presense within 1, +1 presense range 1
 		// +1 power card, +1 presense range 2
 
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 
 		await _spirit.When_Growing( () => {
@@ -57,7 +57,7 @@ public class RiverSurges_GrowthTests : BoardAGame {
 		// +1 presense range 2
 
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
-		_spirit.Given_HasPresenceOnSpaces( _board[3] );
+		_spirit.Given_IsOn( _board[3] );
 
 		await _spirit.When_Growing( () => {
 			User.SelectsGrowthC_Draw_Energy();

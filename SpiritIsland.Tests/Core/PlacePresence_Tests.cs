@@ -47,7 +47,7 @@ public class PlacePresence_Tests {
 		var ctx = new TestGameCtx(new TestSpirit());
 
 		// Given: spirit has one place presence action
-		ctx.Spirit.Given_HasPresenceOnSpaces(ctx.Board[1]);
+		ctx.Spirit.Given_IsOn(ctx.Board[1]);
 
 		await ctx.Spirit.When_Growing(0, ()=> {
 			ctx.User.PlacePresenceLocations( ctx.Spirit.Presence.Energy.RevealOptions.Single(), "A1;A2" );
@@ -60,7 +60,7 @@ public class PlacePresence_Tests {
 	public async Task PullsFrom_CardTrack(){
 		var ctx = new TestGameCtx(new TestSpirit());
 
-		ctx.Spirit.Given_HasPresenceOnSpaces(ctx.Board[1]);
+		ctx.Spirit.Given_IsOn(ctx.Board[1]);
 
 		await ctx.Spirit.When_Growing( 0, () => {
 			ctx.User.PlacePresenceLocations( ctx.Spirit.Presence.CardPlays.RevealOptions.Single(), "A1;A2" );
@@ -73,7 +73,7 @@ public class PlacePresence_Tests {
 	public void AllStandardFilterStringsHaveMatcher() {
 		var ctx = new TestGameCtx(new TestSpirit());
 
-		ctx.Spirit.Given_HasPresenceOnSpaces(ctx.Board[1]);
+		ctx.Spirit.Given_IsOn(ctx.Board[1]);
 
 		var space = ctx.Board[8];
 		string[] standardFilters = typeof( Filter )

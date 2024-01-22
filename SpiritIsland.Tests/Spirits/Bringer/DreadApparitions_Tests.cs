@@ -56,7 +56,7 @@ public class DreadApparitions_Tests {
 
 		// Given: City on A5
 		a5.Given_HasTokens("1C@3");
-		spirit.Given_HasPresenceOn(a5);
+		spirit.Given_IsOn(a5);
 		//  And: Spirit played Dread Apparitions on A5
 		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
@@ -84,7 +84,7 @@ public class DreadApparitions_Tests {
 
 		// Given: has 1 city and lots of dahan
 		tokens.Given_HasTokens("1C@3,10D@2");
-		spirit.Presence.Given_Setup(tokens,1);
+		spirit.Given_IsOn(tokens);
 		//   And: used Dread Apparitions
 		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
