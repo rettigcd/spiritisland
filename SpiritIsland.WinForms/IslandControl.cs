@@ -54,7 +54,7 @@ public partial class IslandControl : Control {
 		for(int i = 0; i< _ctx._spirit.Decks.Length;++i)
 			_playerDeckPanels[i] = new CardDeckPanel( _ctx, this, i, panelColors[i] );
 		_drawCardPanel = new OtherCardsPanel( _ctx );
-		_allPanels = _playerDeckPanels.Union( new IPanel[] { _islandPanel, _spiritPanel, _growthPanel, _statusPanel , _drawCardPanel } ).ToArray();
+		_allPanels = [.._playerDeckPanels, _islandPanel, _spiritPanel, _growthPanel, _statusPanel, _drawCardPanel ];
 
 		GameLayout_Invalidate();
 		_regionLayout = null; // trigger setting bounds in newly created panels
@@ -271,6 +271,13 @@ public partial class IslandControl : Control {
 			.FirstOrDefault( x => x != null );
 		if(action == null && options_Ack is not null && _ackRect.Contains( clientCoords ))
 			action = ()=> SelectOption(options_Ack);
+
+		if(action == null){
+			IOption option = _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains( clientCoords ) );
+			if(option != null)
+				action = () => SelectOption(option);
+		}
+
 		return action;
 	}
 
