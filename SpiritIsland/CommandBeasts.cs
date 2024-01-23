@@ -74,6 +74,8 @@ public class CommandBeasts( string name )
 	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
 	/// </summary>
 	async Task OnCardRevealed( GameState gameState ) {
+		// Memento only called when in TimePasses collection
+		_used = false; // this is needed but I can't figure out why
 		await AllSpirits.Acknowledge( "Invader Deck Card Revealed", Name, this );
 		gameState.AddTimePassesAction( this );
 	}
