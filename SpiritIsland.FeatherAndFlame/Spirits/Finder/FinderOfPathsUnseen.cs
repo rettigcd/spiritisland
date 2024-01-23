@@ -29,7 +29,7 @@ public class FinderOfPathsUnseen : Spirit {
 				new PlacePresence( 2 )
 			),
 			new GrowthOption(
-				new PlacePresence( 100 ),
+				new PlacePresence(),
 				new GainEnergy( 2 )
 			)
 		)

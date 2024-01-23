@@ -71,10 +71,13 @@ public class IconDrawer {
 			}
 
 			// Content - Text
-			if(iconDescriptor.Text != null) {
-				Font font = resources.UseGameFont( contentBounds.Height );
+			if(!string.IsNullOrWhiteSpace(iconDescriptor.Text)) {
+				string text = iconDescriptor.Text;
+				float fontSizeMultiplier = 1f;
+				while( text[0] == ' ' ){ text = text[1..]; fontSizeMultiplier*=.9f;} // leading space means make font smaller...
+				Font font = resources.UseGameFont( contentBounds.Height * fontSizeMultiplier );
 				using StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-				graphics.DrawString( iconDescriptor.Text, font, Brushes.Black,
+				graphics.DrawString( text, font, Brushes.Black,
 					contentBounds.InflateBy( contentBounds.Width, 0f ), // font based on height and centered, don't clip left/right
 					center
 				);

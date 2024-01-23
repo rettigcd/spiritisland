@@ -4,26 +4,33 @@ public class PlacePresence : SpiritAction {
 
 	#region constructors
 
-	public PlacePresence(int range)
-		:base( $"PlacePresence({range})" ) {
+	public PlacePresence() :base( "PlacePresence" ) {
+		Range = null;
+		FilterEnums = DefaultFilters;
+		FilterDescription = Filter.Any;
+	}
+
+	public PlacePresence(int range):base( $"PlacePresence({range})" ) {
 		Range = range;
 		FilterEnums = DefaultFilters;
 		FilterDescription = Filter.Any;
 	}
 
-	public PlacePresence( int range, params string[] filterEnums )
-		: base( $"PlacePresence({range},{string.Join( "Or", filterEnums )})" ) {
+	public PlacePresence( int range, params string[] filterEnums ) : base( $"PlacePresence({range},{string.Join( "Or", filterEnums )})" ) {
 		Range = range;
 		FilterEnums = filterEnums;
 		FilterDescription = string.Join( "Or", filterEnums );
 	}
+
+	#endregion constructors
+
 
 	public override async Task ActAsync( Spirit self ) {
 		// From
 		TokenOn from = await self.SelectSourcePresence();
 		IToken token = from.Token;
 
-		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range, FilterEnums ).Bind( self ) )
+		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range ?? int.MaxValue, FilterEnums ).Bind( self ) )
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
 		if(toOptions.Length == 0)
@@ -34,9 +41,7 @@ public class PlacePresence : SpiritAction {
 
 	static readonly string[] DefaultFilters = [ Filter.Any ];
 
-	#endregion
-
-	public int Range { get; }
+	public int? Range { get; }
 	public string FilterDescription { get; }
 	public string[] FilterEnums { get; }
 

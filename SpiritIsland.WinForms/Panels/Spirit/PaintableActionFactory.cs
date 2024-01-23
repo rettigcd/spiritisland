@@ -1,6 +1,7 @@
 ﻿using SpiritIsland.Basegame;
 using SpiritIsland.JaggedEarth;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -202,7 +203,7 @@ public static class PaintableActionFactory {
 			: ("\u2014" + (-count).ToString());
 		return new PoolRect()
 			.Float( new ImgRect(Img.CardPlayPlusN), 0f,0f,1f,1f)
-			.Float( new TextRect(txt), .2f,.2f,.6f,.6f);
+			.Float( new TextRect(txt){ ScaleFont = .5f }, .2f,.2f,.6f,.6f);
 	}
 
 	static HorizontalStackRect Gain1ElementRect( params Element[] elements ) {
@@ -267,38 +268,33 @@ public static class PaintableActionFactory {
 			// generic, do last
 			PlacePresence { Range: int r, FilterDescription: string f }
 									=> (Img.Icon_Presence, (int?)r, f, Img.None, 1),
+			PlacePresence { FilterDescription: string f }
+									=> (Img.Icon_Presence, null, f, Img.None, 1),
 			_ => throw new ArgumentException( "growth action factory not a place-presence", nameof( growth ) ),
 		};
 
 		if(presImg == Img.Icon_DestroyedPresence && num == 3) // "Add up to 3 Destroyed Presence - Range 1"
 			return Add3DestroyedPresenceTogether(); //!! merge these methods together
 
-		var filterImgRect = GetTargetFilterIcon( filterEnum );
+		// Filter
+		IPaintableRect filterImgRect = GetTargetFilterIcon( filterEnum );
+		float filterWeight = .25f;
+		if(filterImgRect == null){ filterWeight=.01f; filterImgRect = new NullRect(); }
 
-		IPaintableRect paintable;
-		if(range is null )
-			// Ocean
-			paintable = new VerticalStackRect(
-				new NullRect(),
-				PlacePresenceRect( presImg ),
-				filterImgRect
-			).SplitByWeight( .05f, .1f, .3f, .5f, .1f );
-			// HeathVigil, : Keeper
-        else paintable = filterImgRect != null
-			? new VerticalStackRect(
-				new NullRect(),
-				PlacePresenceRect( presImg ),
-				filterImgRect,
-				new TextRect( range ),
-				new ImgRect( Img.RangeArrow )
-			).SplitByWeight( .05f, .01f /*null*/, .3f /*presence*/, .25f/*filter*/, .25f/*number*/, .1f/*arrow*/, .05f )
-			: (IPaintableRect)new VerticalStackRect(
-				new NullRect(),
-				PlacePresenceRect( presImg ),
-				new NullRect(),
-				new TextRect( range ),
-				new ImgRect( Img.RangeArrow )
-			).SplitByWeight( .0f, .05f/*spacer*/, .35f, .01f /*spacer*/, .4f /*number*/, .1f/*arrow*/, .1f );
+		List<IPaintableRect> rects = [new NullRect(),PlacePresenceRect( presImg ), filterImgRect];
+		List<float> weights = [0f,.35f,filterWeight];
+		
+		// Range
+		if(range.HasValue)
+			rects.Add( new TextRect( range.Value ) ); weights.Add(.3f);
+		rects.Add( new ImgRect( Img.RangeArrow ) ); weights.Add(.1f);
+
+		// Top/Bottom Margins
+		float spacer = Math.Max(.15f, (1f - weights.Sum())*.5f);
+		weights[0] = spacer;
+		rects.Add( new NullRect() ); weights.Add(spacer);		
+
+		IPaintableRect paintable = new VerticalStackRect([..rects]).SplitByWeight(0,[..weights]);
 
 		return addOnIcon == Img.None ? paintable
 			: new PoolRect()
