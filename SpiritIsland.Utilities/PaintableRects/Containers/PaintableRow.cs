@@ -7,7 +7,7 @@ namespace SpiritIsland;
 //		(a) have same height or
 //		(b) have same width (is this even useful???)
 // Hight can be Collapsed Top / Middle / Bottom   OR Expand-Fill
-public class PaintableRow : IPaintableRowMember {
+public class PaintableRow : IPaintableBlockRect {
 
 	public float WidthRatio { get; private set; }
 
@@ -20,7 +20,7 @@ public class PaintableRow : IPaintableRowMember {
 	public float Separation { get; set; }
 	#endregion  Style
 
-	public PaintableRow( params IPaintableRowMember[] children ) {
+	public PaintableRow( params IPaintableBlockRect[] children ) {
 		_children = children;
 		_rects = new Rectangle[_children.Length];
 

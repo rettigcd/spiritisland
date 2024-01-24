@@ -39,19 +39,23 @@ public class Fear : IHaveMemento {
 	// When some missing, does not return that Terror Level
 	public int[] CardsPerLevelRemaining {
 		get {
-			var cardCounts = new List<int>();
+			// int[] slots = [0,0,0];
+
+			// int remaining = Deck.Count;
+			// int index = 2;
+			// while( 0 < remaining) {
+			// 	slots[index] = Math.Min( CardsPerLevel[index], remaining );
+			// 	remaining -= slots[index--];
+			// }
+			// return slots;
 
 			int remaining = Deck.Count;
-			int index = 2;
+			int l3 = Math.Min( CardsPerLevel[2], remaining ); remaining -= l3;
+			int l2 = Math.Min( CardsPerLevel[1], remaining ); remaining -= l2;
+			int l1 = Math.Min( CardsPerLevel[0], remaining );
+			return [l1,l2,l3];
 
-			while( 0 < remaining) {
-				int cardsFrom3 = Math.Min( CardsPerLevel[index], remaining );
-				cardCounts.Add( cardsFrom3 );
-				remaining -= cardsFrom3;
-				--index;
-			}
-			cardCounts.Reverse();
-			return [..cardCounts];
+
 		}
 	}
 

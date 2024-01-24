@@ -37,7 +37,7 @@ public partial class IslandControl : Control {
 	public void Init( GameState gameState, AdversaryConfig adversary ) {
 
 		// Dispose old spirit tokens
-		_ctx._tip.InitNewSpirit( gameState.Spirits.Single() );
+		_ctx._imgCache.InitNewSpirit( gameState.Spirits.Single() );
 
 		// Setup New
 		_ctx.GameState = gameState;
@@ -467,5 +467,5 @@ public class SharedCtx( IslandControl control ) {
 
 	public AdversaryConfig _adversary;
 
-	public readonly SpiritImageMemoryCache _tip = new SpiritImageMemoryCache( ResourceImages.Singleton ); // because we need different images for different damaged invaders.
+	public readonly SpiritImageMemoryCache _imgCache = new SpiritImageMemoryCache( ResourceImages.Singleton ); // because we need different images for different damaged invaders.
 }

@@ -196,9 +196,18 @@ public static class Rectangle_Extensions {
 	static public Rectangle OffsetBy( this Rectangle rect, int deltaX, int deltaY ) 
 		=> new Rectangle( rect.X + deltaX, rect.Y + deltaY, rect.Width, rect.Height );
 
-	/// <param name="bounds">Rectangle we are trying to fit inside</param>
-	/// <param name="size">aspect ratio of final rectangle</param>
-	/// <returns>a rectangle center on bounds, with the same height as bounds, with a same width/hieght ratio as size</returns>
+
+	static public Rectangle FitBoth( this Rectangle bounds, float widthRatio, Align horizontal = default, Align vertical = default ) 
+		=> bounds.Height * widthRatio < bounds.Width
+			? bounds.FitHeight( new Size((int)(bounds.Height*widthRatio),bounds.Height), horizontal )
+			: bounds.FitWidth( new Size(bounds.Width,(int)(bounds.Width/widthRatio)), vertical );
+	static public Rectangle FitBoth( this Rectangle bounds, int width, int height, Align horizontal = default, Align vertical = default ) 
+		=> bounds.FitBoth(new Size(width,height),horizontal,vertical);
+	static public Rectangle FitBoth( this Rectangle bounds, Size size, Align horizontal = default, Align vertical = default )
+		=> bounds.Height * size.Width < size.Height * bounds.Width
+			? bounds.FitHeight( size, horizontal )
+			: bounds.FitWidth( size, vertical );
+
 	static public Rectangle FitHeight( this Rectangle bounds, Size size, Align align = default ) {
 		// Centered Horizontally
 		int width = bounds.Height * size.Width / size.Height;
@@ -216,20 +225,6 @@ public static class Rectangle_Extensions {
 			Align.Far => new Rectangle( bounds.X, bounds.Bottom - height, bounds.Width, height ),
 			_ => new Rectangle( bounds.X, bounds.Y + (bounds.Height - height) / 2, bounds.Width, height ), // center / default
 		};
-	}
-
-	/// <summary>
-	/// Returns a Rectangle of the given size-ratio that fits inside the starting rect.
-	/// </summary>
-	/// <param name="bounds">Max size</param>
-	/// <param name="size">The ratio of width to height of the resulting rectangle</param>
-	/// <param name="horizontal">horizontal alignment</param>
-	/// <param name="vertical">vertical alignment</param>
-	/// <returns></returns>
-	static public Rectangle FitBoth( this Rectangle bounds, Size size, Align horizontal = default, Align vertical = default ) {
-		return bounds.Height * size.Width < size.Height * bounds.Width
-			? bounds.FitHeight( size, horizontal )
-			: bounds.FitWidth( size, vertical );
 	}
 
 	#endregion

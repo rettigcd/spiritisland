@@ -6,6 +6,9 @@ public class TextRect : IPaintableRect {
 	public TextRect( string text ) { _text = text; }
 	public TextRect( object obj ) { _text = obj.ToString() ?? string.Empty; }
 	public float ScaleFont = 1f;
+
+	public Brush Brush { get; set; } = Brushes.Black;
+
 	readonly string _text;
 	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
 		Font font = ResourceImages.Singleton.UseGameFont( rect.Height * ScaleFont );
@@ -18,7 +21,6 @@ public class TextRect : IPaintableRect {
 			};
 
 			SizeF textSize = graphics.MeasureString(_text,font, new PointF(0,0), alignCenter);
-//			Rectangle fitted = rect.FitHeight( textSize.ToSize() );
 
 			if(rect.Width < textSize.Width ) { // too narrow
 				font.Dispose();
@@ -28,8 +30,8 @@ public class TextRect : IPaintableRect {
 				// fitted = rect.FitWidth( textSize.ToSize() );
 
 			}
-	
-			graphics.DrawString( _text, font, Brushes.Black, rect, alignCenter ); // using rect instead of fitted because fitted sometimes crops
+			
+			graphics.DrawString( _text, font, Brush, rect, alignCenter ); // using rect instead of fitted because fitted sometimes crops
 
 			return rect; // fitted;
 		}

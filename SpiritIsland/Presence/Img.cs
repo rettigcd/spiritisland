@@ -7,6 +7,10 @@ public enum Img {
 	OrCurlyBefore,
 	OrCurlyAfter,
 
+	TerrorLevel1,
+	TerrorLevel2,
+	TerrorLevel3,
+
 	// Growth / Presence
 	Coin,
 	CardPlay,
@@ -101,6 +105,7 @@ public enum Img {
 	Discard2,
 
 	Fear,
+	Gray_Fear,
 	Hourglass,
 	ArtistPalette,
 	NoRange,

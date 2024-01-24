@@ -200,7 +200,7 @@ class IslandPanel : IPanel {
 			int count = spaceState[token];
 			if(count == 0) continue;
 
-			Image img = _ctx._tip.AccessTokenImage( token );
+			Image img = _ctx._imgCache.AccessTokenImage( token );
 
 			// calc rect
 			int iconHeight = iconWidth * img.Height / img.Width;
@@ -229,7 +229,7 @@ class IslandPanel : IPanel {
 			graphics.DrawImage( img, rect );
 			// graphics.DrawCountIfHigherThan( rect, count );
 			if(1 < count)
-				_transientSubscripts.Add( new RectangleSubscript( rect, "x" + count ) );
+				_transientSubscripts.Add( new PositionedPaintable( new SubScriptRect("x" + count), rect) );
 
 		}
 
@@ -258,7 +258,7 @@ class IslandPanel : IPanel {
 			IToken imageToken;
 			if(token is HumanToken si && 0 < si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
-				Image strife = _ctx._tip._strife;
+				Image strife = _ctx._imgCache._strife;
 				Rectangle strifeRect = new Rectangle( new Point( (int)x, (int)y ), strife.Size.FitWidth( (int)iconWidth ) );
 				graphics.DrawImage( strife, strifeRect );
 				if(si.StrifeCount > 1)
@@ -268,7 +268,7 @@ class IslandPanel : IPanel {
 			}
 
 			// record token location
-			Image img = _ctx._tip.AccessTokenImage( imageToken );
+			Image img = _ctx._imgCache.AccessTokenImage( imageToken );
 			Rectangle rect = new Rectangle( new Point( (int)x, (int)y ), img.Size.FitWidth( (int)iconWidth ) );
 
 			RecordSpaceTokenLocation( token.On( ss.Space ), rect );
@@ -277,8 +277,7 @@ class IslandPanel : IPanel {
 			graphics.DrawImage( img, rect );
 			// Count
 			if(1 < ss[token])
-				_transientSubscripts.Add( new RectangleSubscript( rect, "x" + ss[token] ) );
-			//graphics.DrawCountIfHigherThan( rect, ss[token] );
+				_transientSubscripts.Add( new PositionedPaintable( new SubScriptRect("x" + ss[token] ) , rect) );
 
 		}
 
@@ -293,7 +292,7 @@ class IslandPanel : IPanel {
 
 	void DrawSubscripts( Graphics graphics ) {
 		foreach(var sub in _transientSubscripts) // Draw these last so they are on top of the tokens AND VISIBLE
-			graphics.DrawSubscript( sub );
+			sub.Paint(graphics);
 	}
 
 	void Debug_DrawTokenTargets( Graphics graphics, SpaceState spaceState ) {
@@ -416,7 +415,7 @@ class IslandPanel : IPanel {
 	Bitmap _cachedBackground;
 
 	// Cleared at beginning of Space-Draw and collects subscripts as we go
-	readonly List<RectangleSubscript> _transientSubscripts = [];
+	readonly List<PositionedPaintable> _transientSubscripts = [];
 
 	// Available Options
 	readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();

@@ -25,7 +25,7 @@ public class RegionLayoutClass {
 		(x.OptionRect, _) = x.IslandRect.InflateBy( -MARGIN ).SplitHorizontallyByWeight( 0, .1f, .9f );
 
 		// Don't let the spirit rect stretch to the bottom of the screen, make it 1.1 times higher than width
-		x.SpiritRect = spiritLimit.FitBoth( new Size( spiritLimit.Width, (int)(spiritLimit.Width * 1.1) ), Align.Far, Align.Near );
+		x.SpiritRect = spiritLimit.FitBoth( spiritLimit.Width, (int)(spiritLimit.Width * 1.1), Align.Far, Align.Near );
 
 		// Spirit Panel Parts
 		Rectangle growthRow;

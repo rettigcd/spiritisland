@@ -1,41 +1,16 @@
 ﻿using System.Drawing;
+using SpiritIsland.FeatherAndFlame;
 
 namespace SpiritIsland.WinForms;
 
-class InvaderCardMetrics {
+class InvaderCardRect(InvaderCard _card) : IPaintableBlockRect {
 
-	public InvaderCardMetrics( InvaderSlot slot, int x, int y, int width, int height, float textHeight ) {
-		this.slot = slot;
+	public float WidthRatio => .6666f;
 
-		// Individual card rects
-		int count = slot.Cards.Count;
-		Rect = new Rectangle[count];
-		if(0 < count) {
-			int buildWidth = (int)(width / count);
-			int buildHeight = (int)(height / count);
-			for(int i = 0; i < Rect.Length; ++i)
-				Rect[i] = new Rectangle( x + i * buildWidth, y + i * buildHeight, buildWidth, buildHeight );
-		}
-
-		// Text location
-		textBounds = new RectangleF( x, y + height + textHeight * .1f, width, textHeight * 1.5f );
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+		using Image img = ResourceImages.Singleton.GetInvaderCard( _card );
+		var fitted = bounds.FitBoth(img.Size);
+		graphics.DrawImage( img, fitted );
+		return fitted;
 	}
-	public readonly InvaderSlot slot;
-	public readonly Rectangle[] Rect;
-	public readonly RectangleF textBounds;
-
-	public void Draw( Graphics graphics, Font labelFont ) {
-		// Draw all of the cards in that slot
-		// !! we could make them overlap and bigger
-		for(int i = 0; i < Rect.Length; ++i) {
-			var card = slot.Cards[i];
-			if(card == null) continue;
-
-			using Image img = ResourceImages.Singleton.GetInvaderCard( card );
-			graphics.DrawImage( img, Rect[i] );
-
-		}
-		graphics.DrawStringCenter( slot.Label, labelFont, Brushes.Black, textBounds );
-	}
-
 }

@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Log;
+﻿using SpiritIsland.FeatherAndFlame;
+using SpiritIsland.Log;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,8 +18,8 @@ internal class StatusPanel : IPanel {
 
 	void GameState_NewLogEntry( ILogEntry obj ) {
 		if(obj is Log.Phase phaseEvent) {
-			_phaseImage?.Dispose();
-			_phaseImage = phaseEvent.phase switch {
+			_phaseImage.Image?.Dispose();
+			_phaseImage.Image = phaseEvent.phase switch {
 				Phase.Growth => ResourceImages.Singleton.GetImg( Img.Coin ),
 				Phase.Fast => ResourceImages.Singleton.GetImg( Img.Icon_Fast ),
 				Phase.Slow => ResourceImages.Singleton.GetImg( Img.Icon_Slow ),
@@ -38,43 +39,46 @@ internal class StatusPanel : IPanel {
 
 	public Rectangle Bounds { 
 		get => _bounds;
-		set {
-			_bounds = value;
-
-			const int MARGIN = 10;
-			const float AdversaryFlagWidths = 1.5f;
-			const float InvaderCards = 4.5f;
-			const float BlightWidths = 3f;
-			const float FearWidths = 6f;
-
-			(_phaseRect, (_adversaryFlagRect, (_invaderCardRect, (_blightRect, (_fearPoolRect, _))))) = _bounds
-			.InflateBy( -MARGIN )
-				.SplitHorizontallyRelativeToHeight( MARGIN, Align.Far, 1.4f, AdversaryFlagWidths, InvaderCards, BlightWidths, FearWidths );
-		}
+		set { _bounds = value; }
 	}
 	Rectangle _bounds;
-	Rectangle _phaseRect;
-	Rectangle _adversaryFlagRect;
-	Rectangle _invaderCardRect;
-	Rectangle _blightRect;
-	Rectangle _fearPoolRect;
+	AdversaryRect _adversaryRect;
 
-	public void Paint( Graphics graphics ) {
-		DrawGameRound( graphics );
-		DrawPhase( graphics );
-		DrawAdversary( graphics );
-		DrawFearPool( graphics );
-		DrawInvaderCards( graphics );
-		DrawBlight( graphics );
-	}
-	public void OnGameLayoutChanged() {
+	public void Paint( Graphics graphics )
+    {
+        var spacer = new SpacerRect { WidthRatio = .4f };
+
+		var statusRow = new BlockRect(
+            GetFearRect(),
+            spacer,
+            GetBlightRect(),
+            spacer,
+            GetInvaderCardsRect(graphics),
+            spacer,
+            GetAdversaryRect(),
+			spacer,
+			_phaseImage
+        );
+		var reduced = _bounds.InflateBy(-_bounds.Height / 18).FitBoth(statusRow.WidthRatio,Align.Far);
+		statusRow.Paint(graphics, reduced);
+
+        DrawGameRound(graphics);
+
+    }
+
+    IPaintableBlockRect GetAdversaryRect() {
+		if( _ctx._adversary == null ) return new NullRect { WidthRatio = 0f };
+        return _adversaryRect = new AdversaryRect(_ctx._adversary);
+    }
+
+    public void OnGameLayoutChanged() {
 	}
 
 	public void ActivateOptions( IDecision decision ) {
 	}
 
 	public Action GetClickableAction( Point clientCoords ) {
-		return _ctx._adversary != null && _adversaryFlagRect.Contains( clientCoords ) 
+		return _ctx._adversary != null && _adversaryRect is not null && _adversaryRect.Bounds.Contains( clientCoords ) 
 			? PopUpAdversaryRules 
 			: null;
 	}
@@ -101,205 +105,192 @@ internal class StatusPanel : IPanel {
 		MessageBox.Show( rows.Join( "\r\n" ) );
 	}
 
-
 	void DrawGameRound( Graphics graphics ) {
 		using Font font = UseGameFont( Bounds.Height*.5f );
 
 		Brush brush = GameTextBrush_Default;
-		string snippet = "Fight!";
+		string prompt = $"Round {_ctx.GameState.RoundNumber}";
 
 		// If game is over, update
 		if(_ctx.GameState.Result != null) {
 
 			brush = _ctx.GameState.Result.Result == GameOverResult.Victory ? GameTextBrush_Victory : GameTextBrush_Defeat;
-			snippet = _ctx.GameState.Result.Msg( LogLevel.Info );
+			prompt += " - " + _ctx.GameState.Result.Msg( LogLevel.Info );
 		}
-		graphics.DrawString( $"Round {_ctx.GameState.RoundNumber} - {snippet}", font, brush, 0, 0 );
+		graphics.DrawString( prompt, font, brush, 0, 0 );
 
 	}
 
-	void DrawPhase( Graphics graphics ) {
-		if(_phaseImage != null)
-			graphics.DrawImage( _phaseImage, _phaseRect.FitBoth( _phaseImage.Size ) );
-	}
+    #region Fear - Parts
 
-	void DrawAdversary( Graphics graphics ) {
-		if(_ctx._adversary != null) {
-			using Bitmap flag = ResourceImages.Singleton.AdversaryFlag( _ctx._adversary.Name );
-			graphics.DrawImage( flag, _adversaryFlagRect );
-		}
-	}
-
-	void DrawFearPool( Graphics graphics ) {
-		var outterBounds = _fearPoolRect;
-
-		int margin = Math.Max( 5, (int)(outterBounds.Height * .05f) );
-		var bounds = outterBounds.InflateBy( -margin );
-
-		using var cardImg = ResourceImages.Singleton.FearCardBack(); // Maybe load this with the control and not dispose of it every time we draw.
-
-		// -1 slot width for #/# and 
-		// -1 slot width for last fear token
-		int slotWidth = bounds.Width / 6;
-
-		var gameState = _ctx.GameState;
-		Image fearTokenImage = _ctx._tip._fearTokenImage;
-
-		bool limitedByHeight = bounds.Height * fearTokenImage.Width < slotWidth * fearTokenImage.Height;
-		var tokenSize = limitedByHeight
-			? new Size( bounds.Height * fearTokenImage.Width / fearTokenImage.Height, bounds.Height )
-			: new Size( slotWidth, slotWidth * fearTokenImage.Height / fearTokenImage.Width ); // assume token is wider than tall.
-
-		// Calc Terror Level bounds - slotWidth reserved but only tokenSize.Width used
-		var terrorLevelBounds = new RectangleF( bounds.X, bounds.Y, tokenSize.Width, tokenSize.Height );
-
-		// Calc Fear Pool bounds - skip 1 slotWidth, 
-		int poolMax = gameState.Fear.PoolMax;
-		float step = (bounds.Width - 4 * slotWidth) / (poolMax - 1);
-		RectangleF CalcBounds( int i ) => new RectangleF( bounds.X + slotWidth + step * i, bounds.Y, tokenSize.Width, tokenSize.Height );
-
-		// Calc Activated Fear Bounds
-		int cardHeight = tokenSize.Height * 7 / 8;
-		var activatedCardRect = new Rectangle( bounds.Right - slotWidth * 2, bounds.Y, tokenSize.Width, cardHeight ).FitHeight( cardImg.Size );
-		var futureCardRect = new Rectangle( bounds.Right - slotWidth, bounds.Y, tokenSize.Width, cardHeight ).FitHeight( cardImg.Size );
-
-
-		// Draw Terror Level
-		using var terror = ResourceImages.Singleton.TerrorLevel( gameState.Fear.TerrorLevel );
-		graphics.DrawImage( terror, terrorLevelBounds );
-
-		// Draw Fear Pool
-		int fearCount = gameState.Fear.EarnedFear;
-		for(int i = fearCount; i < poolMax; ++i)
-			graphics.DrawImage( _ctx._tip._grayFear, CalcBounds( i ) );   // Gray underneath
-																// draw fear tokens
-		for(int i = 0; i < fearCount; ++i)
-			graphics.DrawImage( fearTokenImage, CalcBounds( i ) ); // Tokens
-
-		// Activated Cards
-		int activated = gameState.Fear.ActivatedCards.Count;
-		if(0 < activated) {
-			// Draw Card
-			var top = gameState.Fear.ActivatedCards.Peek();
-			if(top.Flipped) {
-				using Image img = FearCardImageBuilder.Build( top, ResourceImages.Singleton ); // !!! shouldn't this use the cache?
-				graphics.DrawImage( img, activatedCardRect );
-			} else {
-				graphics.DrawImage( cardImg, activatedCardRect );
-			}
-			graphics.DrawCountIfHigherThan( activatedCardRect, activated );
-		} else {
-			graphics.FillRectangle( EmptySlotBrush, activatedCardRect );
-		}
-
-		int future = gameState.Fear.Deck.Count;
-		if(0 < future) {
-			var top = gameState.Fear.Deck.Peek();
-			if(top.Flipped) {
-				using Image img = FearCardImageBuilder.Build( top, ResourceImages.Singleton );  // !!! shouldn't this use the cache?
-				graphics.DrawImage( img, futureCardRect );
-			} else {
-				// Draw Card
-				graphics.DrawImage( cardImg, futureCardRect );
-			}
-			graphics.DrawCountIfHigherThan( futureCardRect, future );
-			futureCardRect.Location = new Point( futureCardRect.X, futureCardRect.Bottom );
-			futureCardRect = futureCardRect.InflateBy( 30, 0 );
-			using var cardCountFont = UseGameFont( margin * 3 );
-			graphics.DrawStringCenter( string.Join( " / ", gameState.Fear.CardsPerLevelRemaining ), cardCountFont, CardLabelBrush, futureCardRect );
-		}
-	}
-
-	void DrawInvaderCards( Graphics graphics ) {
-
-		const int CARD_SEPARATOR = 10;
-		var bounds = _invaderCardRect;
+    IPaintableBlockRect GetFearRect(){
 		var gameState = _ctx.GameState;
 
-		// Calculate Card Size based on # of slots
-		float slots = gameState.InvaderDeck.ActiveSlots.Count + 1.5f;
-		float slotWidth = bounds.Width / slots;
-		float cardHeight = bounds.Height * .8f;
-		int textHeight = (int)(bounds.Height * .2f);
-
-		bool isTooNarrow = slotWidth * 1.5f < cardHeight;
-		Size cardSize = isTooNarrow
-			? new Size( (int)slotWidth, (int)(slotWidth * 1.5f) )     // use narrow width to limit height
-			: new Size( (int)(cardHeight / 1.5f), (int)cardHeight ); // plenty of width, use height to determine size
-
-		// locate each of the cards
-		var cardMetrics = new InvaderCardMetrics[gameState.InvaderDeck.ActiveSlots.Count];
-
-		for(int i = 0; i < cardMetrics.Length; ++i)
-			cardMetrics[i] = new InvaderCardMetrics( gameState.InvaderDeck.ActiveSlots[i],
-				bounds.Left + CARD_SEPARATOR + (int)((i + 1.5f) * (cardSize.Width + CARD_SEPARATOR)), //left+i*xStep, 
-				bounds.Top, // y, 
-				cardSize.Width,
-				cardSize.Height, // width, height, 
-				textHeight
-			);
-
-		// Draw
-		using Font buildRavageFont = UseGameFont( textHeight ); // 
-		foreach(InvaderCardMetrics cardMetric in cardMetrics)
-			cardMetric.Draw( graphics, buildRavageFont );
-
-		// # of cards in explore pile
-		graphics.DrawCountIfHigherThan( cardMetrics.Last().Rect.First(), gameState.InvaderDeck.UnrevealedCards.Count + 1 );
-
-		// Draw Discard
-		var lastDiscard = gameState.InvaderDeck.Discards.LastOrDefault();
-		if(lastDiscard is not null) {
-			// calc discard location
-			var discardRect = new RectangleF(
-				bounds.Left,
-				bounds.Top + (cardSize.Height - cardSize.Width) * .5f,
-				cardSize.Height,
-				cardSize.Width
-			);
-			Point[] discardDestinationPoints = [
-				new Point((int)discardRect.Left, (int)discardRect.Bottom),    // destination for upper-left point of original
-				new Point((int)discardRect.Left, (int)discardRect.Top), // destination for upper-right point of original
-				new Point((int)discardRect.Right,(int)discardRect.Bottom)      // destination for lower-left point of original
-			];
-			using Image discardImg = ResourceImages.Singleton.GetInvaderCard( lastDiscard );
-			graphics.DrawImage( discardImg, discardDestinationPoints );
-			// # of cards in explore pile
-			graphics.DrawCountIfHigherThan( discardRect, gameState.InvaderDeck.Discards.Count );
-		}
+		SpacerRect spacer = new SpacerRect{ WidthRatio = .1f };
+		return new BlockRect(
+			GetTerrorLevelRect( gameState.Fear.TerrorLevel ),
+			GetActivatedFearRect(gameState.Fear.ActivatedCards),
+			spacer,
+			GetFutureFearRect( gameState.Fear.Deck, gameState.Fear.CardsPerLevelRemaining ),
+			TerrorLevelStopLights(gameState.Fear.TerrorLevel),
+			GetPoolRect(gameState.Fear.PoolMax,gameState.Fear.EarnedFear)
+		);
 	}
 
-	void DrawBlight( Graphics graphics ) {
-		var bounds = _blightRect;
+
+	IPaintableBlockRect TerrorLevelStopLights(int tl){
+		(float y,Img img) = tl switch {
+			1 => (.0f, Img.TerrorLevel1),
+			2 => (.33f, Img.TerrorLevel2),
+			_ => (.66f, Img.TerrorLevel3)
+		};
+		return new PoolRowMemberRect(){ WidthRatio = .3f }
+			//.Float(new Perimeter(), 0,0,1,1)
+			.Float(new ImgRect(img),0f,y,1.06f,.36f); // .2 > pushing to the right
+	}
+
+	IPaintableBlockRect GetTerrorLevelRect(int terrorLevel){
+		var img = terrorLevel switch{ 1=>Img.TerrorLevel1, 2=>Img.TerrorLevel2, _ => Img.TerrorLevel3 };
+		return new PoolRowMemberRect{ WidthRatio = .8f }
+			.Float( new ImgRect(img),0,0,1,1);
+	}
+
+	IPaintableBlockRect GetPoolRect(int poolMax, int fearCount){
+		PoolRowMemberRect pool = new PoolRowMemberRect{ WidthRatio=2f };
+
+		const float iconReductionFactor = .75f; // use 1.0f for full icon size
+		float iconWidth = 1/pool.WidthRatio*iconReductionFactor; // this is necessary to make slots apear square
+
+		float step = (1f-iconWidth) // exclude the width of 1 icon which we will show in full 
+			/(poolMax-1); // remove the 1 we are showing in full from the count.
+
+		// Draw un-earned Fear, 1st and descending, so it will be underneath earned and next slot to earn will be on top.
+		for(int i = poolMax-1; fearCount <= i; --i){
+			float x = step*i;
+			pool.Float(new ImgRect(Img.Gray_Fear), x,0,iconWidth,1f);
+		}
+		// Draw Earned Fear, 2nd and ascending, so last-earned fear will be on top.
+		for(int i = 0; i < fearCount; ++i){
+			float x = step*i;
+			pool.Float(new ImgRect(Img.Fear), x,0,iconWidth,1f);
+		}
+
+		return pool;
+	}
+
+	IPaintableBlockRect GetFutureFearRect( Stack<IFearCard> future, int[] remaining ){
+		if(future.Count == 0)
+			return new PoolRowMemberRect(); // empty
+		float cardWidth = 5f/7f;
+		float numWidth = 1f-cardWidth;
+		return new PoolRowMemberRect()
+			.Float( new FearCardRect(future.Peek(),future.Count),numWidth,0f,cardWidth,1f )
+			.Float( new TextRect(remaining[0]), 0f, .03f, numWidth,.3f )
+			.Float( new TextRect(remaining[1]), 0f, .36f, numWidth,.3f )
+			.Float( new TextRect(remaining[2]), 0f, .69f, numWidth,.3f );
+	}
+
+	IPaintableBlockRect GetActivatedFearRect( Stack<IFearCard> activated ){
+		return (0 < activated.Count)
+			? new FearCardRect(activated.Peek(),activated.Count)
+			: new PoolRowMemberRect{WidthRatio = 5f/7f }
+				.Float(new FlatRect(EmptySlotBrush){ WidthRatio = 5f/7f },0,0,1,1)
+				.Float(new TextRect("Activated"){ Brush = EmptySlotTextBrush},0,0.25f,1,.25f)
+				.Float(new TextRect("Fear"){ Brush = EmptySlotTextBrush},0,.55f,1,.25f);
+	}
+
+	#endregion Fear - Parts
+
+	#region Blight - Parts
+
+	IPaintableBlockRect GetBlightRect(){
 		GameState gameState = _ctx.GameState;
-
-		int margin = Math.Max( 5, (int)(bounds.Height * .05f) );
-		int slotWidth = bounds.Height;
-
+		var card = gameState.BlightCard;
 		int count = gameState.Tokens[BlightCard.Space].Blight.Count;
-		int maxSpaces = 6;
+		int maxSpaces = card.CardFlipped 
+			? card.Side2BlightPerPlayer * gameState.Spirits.Length
+			: 2 * gameState.Spirits.Length + 1;
 
-		float step = (bounds.Width - 2 * margin - 2 * slotWidth) / (maxSpaces - 1);
-		// -1 slot width for #/# and 
-		// -1 slot width for last fear token
-		float tokenWidth = (slotWidth - 2 * margin) * 2 / 3;
-		float tokenHeight = tokenWidth; // this should be Blight token, not feartoken!  _fearTokenImage.Height * tokenWidth / _fearTokenImage.Width;
-		RectangleF CalcBounds( int i ) => new RectangleF( bounds.X + slotWidth + margin + step * i, bounds.Y + margin, tokenWidth, tokenHeight );
-
-		// draw fear tokens
-		var img = _ctx._tip.AccessTokenImage( Token.Blight );
-		for(int i = 0; i < count; ++i)
-			graphics.DrawImage( img, CalcBounds( i ) );
-
-		using Image healthy = gameState.BlightCard.CardFlipped
-			? ResourceImages.Singleton.GetBlightCard( gameState.BlightCard )
-			: ResourceImages.Singleton.GetHealthBlightCard();
-		graphics.DrawImageFitHeight( healthy, bounds.FitHeight( healthy.Size, Align.Near ) );
+		return new BlockRect(
+			new BlightCardRect( gameState.BlightCard ),
+			BlightPoolRect( maxSpaces, count )
+		);
 	}
 
+	IPaintableBlockRect BlightPoolRect(int poolMax, int blightCount){
+		PoolRowMemberRect pool = new PoolRowMemberRect{ WidthRatio=1.5f };
 
+		const float iconReductionFactor = .65f; // use 1.0f for full icon size
+		float iconWidth = 1/pool.WidthRatio * iconReductionFactor; // this is necessary to make slots apear square
 
-	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
+		float step = (1f-iconWidth) // exclude the width of 1 icon which we will show in full 
+			/(poolMax-1); // remove the 1 we are showing in full from the count.
+
+		// Draw Earned Fear, 2nd and ascending, so last-earned fear will be on top.
+		for(int i = 0; i < blightCount; ++i){
+			float x = step*i;
+			pool.Float(new ImgRect(Img.Blight), x,0f,iconWidth,1f);
+		}
+
+		return pool;
+	}
+
+	#endregion Blight - Parts
+
+	#region Invader - Parts
+
+	BlockRect GetInvaderCardsRect( Graphics graphics ) {
+
+		var deck = _ctx.GameState.InvaderDeck;
+		var paintables = new List<IPaintableBlockRect>();
+
+		// Slots
+		for(int i = deck.ActiveSlots.Count-1; 0 <= i; --i)
+			paintables.Add( GetInvaderSlotRect( deck.ActiveSlots[i] ) );
+
+		// #-of-unrevealed-cards
+		const int ExplorIndex = 0;
+		paintables[ ExplorIndex ] = AddUnrevealedCount( paintables[ ExplorIndex ], deck.UnrevealedCards.Count );
+
+		// Discard
+		paintables.Add( new DiscardInvaderRect( deck.Discards ){ WidthRatio=.8f } ); // Cards are only drawn .8 high so rotated, needs to be .8 wide
+
+		return new BlockRect( [..paintables] );
+	}
+
+	static IPaintableBlockRect AddUnrevealedCount( IPaintableBlockRect explorerRect, int unrevealedCount ) {
+		if(unrevealedCount==0) return explorerRect; // don't need a count
+		++unrevealedCount; // +1 because one of the cards is in the Explore pile?
+		explorerRect = new PoolRowMemberRect { WidthRatio = explorerRect.WidthRatio }
+			.Float( explorerRect, 0, 0, 1, 1 )
+			.Float( new SubScriptRect( "x" + unrevealedCount ), 0, 0, 1, .8f );
+		return explorerRect;
+	}
+
+	static PoolRowMemberRect GetInvaderSlotRect( InvaderSlot slot ) {
+
+		// Lavel
+		var paintable = new PoolRowMemberRect(){ WidthRatio = .6666f }
+			.Float( new TextRect(slot.Label), 0,.85f,1,.15f);
+
+		int count = slot.Cards.Count;
+		if(count == 0){} // do nothing
+		else if(count == 1)
+			paintable.Float( new InvaderCardRect( slot.Cards[0] ), 0, 0, 1, .8f );
+		else {
+			float xStep = 1/(1f+count); // each step is a half card with;
+			float cardWidth = 2*xStep; // we are dividing half/cards
+			float cardHeight = cardWidth *1.5f; // 45mm x 68mm is aprox 1.5
+			float yStep = cardHeight *.5f;
+			for(int i=0;i<count;++i)
+				paintable.Float( new InvaderCardRect( slot.Cards[i] ), i*xStep, i*yStep, cardWidth, cardHeight );
+		}
+		return paintable;
+	}
+
+	#endregion Invader - Parts
+
+    static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
 
 	public RegionLayoutClass GetLayout( Rectangle bounds ) {
 		return RegionLayoutClass.ForIslandFocused( bounds, _ctx._spirit.Decks.Length + 1 ); // everything else
@@ -309,6 +300,138 @@ internal class StatusPanel : IPanel {
 	static Brush GameTextBrush_Defeat => Brushes.DarkRed;
 	static Brush GameTextBrush_Default => Brushes.Black;
 	static Brush EmptySlotBrush => Brushes.DarkGray;
-	public Image _phaseImage; // updates on Log Events
+	static Brush EmptySlotTextBrush => Brushes.Gray;
+	public readonly ImageRect _phaseImage = new ImageRect(); // updates on Log Events
 	static Brush CardLabelBrush => Brushes.Black;
+}
+
+public class ImageRect : IPaintableBlockRect {
+	public float WidthRatio => 1f;
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+		if(Image is null) return bounds;
+		var fitted = bounds.FitBoth( Image.Size );
+		graphics.DrawImage( Image, fitted );
+		return fitted;
+	}
+	public Image Image {get; set;}
+}
+
+class FlatRect( Brush brush ) : IPaintableBlockRect {
+
+	public float WidthRatio { get; set; } = 1f;
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){ 
+		var fitted = bounds.FitBoth(WidthRatio);
+		graphics.FillRectangle( brush, fitted );
+		return fitted;
+	}
+}
+
+class Perimeter : IPaintableRect {
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){ 
+		graphics.DrawRectangle( Pens.Green, bounds );
+		return bounds;
+	}
+}
+
+class SpacerRect : IPaintableBlockRect {
+	public float WidthRatio {get; set; }
+
+	public Rectangle Paint( Graphics g, Rectangle bounds ){ 
+		// no op
+		// g.FillRectangle(Brushes.BlueViolet,bounds);
+		return bounds;
+	}
+}
+
+
+class FearCardRect( IFearCard _card, int _count ) : IPaintableBlockRect {
+
+	public float WidthRatio => .5f / .7f;
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+		using Image img = _card.Flipped
+			? FearCardImageBuilder.Build( _card, ResourceImages.Singleton )  // !!! shouldn't this use the cache?
+			: ResourceImages.Singleton.FearCardBack();
+		var fitted = bounds.FitBoth(img.Size,Align.Far);
+		graphics.DrawImage( img, fitted );
+		graphics.DrawCountIfHigherThan( bounds, _count );
+		return fitted;
+	}
+}
+
+class BlockRect( params IPaintableBlockRect[] _children ) : IPaintableBlockRect {
+	public float WidthRatio => _children.Sum(c=>c.WidthRatio);
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+		return StackRight( graphics, bounds );
+	}
+	Rectangle StackRight( Graphics graphics, Rectangle bounds ){
+		int right = bounds.Right;
+		foreach(var child in _children){
+			int width = (int)(bounds.Height * child.WidthRatio +.5f);
+			int left = right - width;
+			var rect = new Rectangle(left,bounds.Top,width,bounds.Height);
+			child.Paint(graphics,rect);
+			right = left;
+		}
+		return new Rectangle(right,bounds.Top,bounds.Right-right,bounds.Height);
+	}
+
+}
+
+
+class BlightCardRect(IBlightCard _blightCard) : IPaintableBlockRect {
+
+	public float WidthRatio => 5f/7f;
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+		using Image healthy = _blightCard.CardFlipped
+			? ResourceImages.Singleton.GetBlightCard( _blightCard )
+			: ResourceImages.Singleton.GetHealthBlightCard();
+		var fitted = bounds.FitHeight( healthy.Size );
+		graphics.DrawImageFitHeight( healthy, fitted );
+		return fitted;
+	}
+
+}
+
+class DiscardInvaderRect( List<InvaderCard> cards ) : IPaintableBlockRect {
+	public float WidthRatio {get;set;}
+	public Rectangle Paint(Graphics graphics, Rectangle bounds)
+	{
+		Rectangle fitted = bounds.FitBoth(68,45,Align.Center,Align.Center);
+
+		if(0<cards.Count)
+			DrawRotatedCard( cards[^1], graphics, fitted );
+
+		graphics.DrawCountIfHigherThan( fitted, cards.Count );
+
+		return fitted;
+	}
+
+	static void DrawRotatedCard( InvaderCard card, Graphics graphics, Rectangle fitted ) {
+		Point[] destinationPoints = [
+			new Point(fitted.Left, fitted.Bottom),  // rotate TL => BL
+				new Point(fitted.Left, fitted.Top),     // rotate TR => TL
+				new Point(fitted.Right,fitted.Bottom)   // rotate BL => BR
+		];
+		using Image discardImg = ResourceImages.Singleton.GetInvaderCard( card );
+		graphics.DrawImage( discardImg, destinationPoints );
+	}
+}
+
+class AdversaryRect(AdversaryConfig adversary) : IPaintableBlockRect {
+	public float WidthRatio => 234f / 148f; // actual image dimensions
+
+	/// <summary> Records where it was painted, so we can click on it. </summary>
+	public Rectangle Bounds {get; private set;}
+
+	public Rectangle Paint(Graphics graphics, Rectangle bounds) {
+		using Bitmap flag = ResourceImages.Singleton.AdversaryFlag( adversary.Name );
+		Bounds = bounds.FitBoth(flag.Size);
+		graphics.DrawImage( flag, Bounds );
+		return Bounds;
+	}
 }

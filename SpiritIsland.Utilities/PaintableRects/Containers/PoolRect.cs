@@ -30,3 +30,11 @@ public class PoolRect : IPaintableRect {
 		return rect;
 	}
 }
+
+public class PoolRowMemberRect : PoolRect, IPaintableBlockRect {
+	public float WidthRatio { get; set; } = 1f;
+
+	public new PoolRowMemberRect Float(IPaintableRect paintable, float left, float top, float width, float height )
+		=>  (PoolRowMemberRect)base.Float(paintable,left,top,width,height);
+
+}

@@ -24,7 +24,7 @@ public sealed class SpiritPanel( SharedCtx ctx ) : IPanel, IDisposable {
 		// Update the Painters
 		Dispose();
 		var presenceLayout = new PresenceTrackLayout( _spirit, _buttonContainer, _presenceTractBounds );
-		_presencePainter = new PresenceTrackPainter( _spirit, presenceLayout, _ctx._tip );
+		_presencePainter = new PresenceTrackPainter( _spirit, presenceLayout, _ctx._imgCache );
 		var innatesLayout = new InnatesLayout( _spirit, _buttonContainer, _innateBounds );
 		_innatePainters = _spirit.InnatePowers
 			.Select( power => new InnatePainter( power, innatesLayout.FindLayoutByInnate[power] ) )
@@ -94,7 +94,7 @@ public sealed class SpiritPanel( SharedCtx ctx ) : IPanel, IDisposable {
 		}
 
 		// Presence
-		var presenceImg = _ctx._tip._presenceImg;
+		var presenceImg = _ctx._imgCache._presenceImg;
 		var presenceToken = _ctx._spirit.Presence.Token;
 		// For taking presence
 		foreach(Track energySlot in _ctx._spirit.Presence.Energy.Slots)
@@ -109,12 +109,12 @@ public sealed class SpiritPanel( SharedCtx ctx ) : IPanel, IDisposable {
 
 		if(0 < _presenceTractBounds.Width ) {
 			var presenceLayout = new PresenceTrackLayout( _spirit, _buttonContainer, _presenceTractBounds );
-			_presencePainter = new PresenceTrackPainter( _spirit, presenceLayout, _ctx._tip );
+			_presencePainter = new PresenceTrackPainter( _spirit, presenceLayout, _ctx._imgCache );
 		}
 	}
 
 
-	Image GetElementImage( Element element ) => _ctx._tip.GetElementImage( element );
+	Image GetElementImage( Element element ) => _ctx._imgCache.GetElementImage( element );
 	Spirit _spirit => _ctx._spirit;
 
 	readonly SharedCtx _ctx = ctx;

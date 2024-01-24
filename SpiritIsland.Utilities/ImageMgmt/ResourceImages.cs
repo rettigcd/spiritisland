@@ -72,7 +72,10 @@ public class ResourceImages
 	public Bitmap FearCardBack()                    => GetResourceImage( "tokens.fearcard.png" );
 	public Bitmap TerrorLevel( int terrorLevel )    => GetResourceImage( $"icons.TerrorLevel{terrorLevel}.png" );
 
-	public Bitmap GetImg( Img img ) => GetResourceImage( ToResource( img ) );
+	public Bitmap GetImg( Img img ) => img switch {
+		Img.Gray_Fear => ModCache.Grays(this).GetImage(Img.Fear), 
+		_ => GetResourceImage( ToResource( img ) )
+	};
 
 	/// <summary> Backgrounds for Fear Cards </summary>
 	public Bitmap CardTexture( string texture )		=> GetResourceImage( $"textures.{texture}" );
@@ -468,6 +471,10 @@ public class ResourceImages
 		Img.Icon_Plant  => "icons.Elements.plant.png",
 		Img.Icon_Earth  => "icons.Elements.earth.png",
 		Img.Icon_Animal => "icons.Elements.animal.png",
+
+		Img.TerrorLevel1 => "icons.TerrorLevel1.png",
+		Img.TerrorLevel2 => "icons.TerrorLevel2.png",
+		Img.TerrorLevel3 => "icons.TerrorLevel3.png",
 
 		Img.Icon_Dahan              => "icons.Dahanicon.png",
 		Img.Icon_Invaders           => "icons.Invaders.png",

@@ -2,6 +2,8 @@
 
 namespace SpiritIsland;
 
-public class NullRect : IPaintableRect {
-	public Rectangle Paint( Graphics graphics, Rectangle rect ){ /* draw nothing */ return rect; }
+public class NullRect : IPaintableBlockRect {
+    public float WidthRatio {get;set;} = 1f;
+
+    public Rectangle Paint( Graphics graphics, Rectangle rect ){ /* draw nothing */ return rect; }
 }
