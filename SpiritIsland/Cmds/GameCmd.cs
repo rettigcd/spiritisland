@@ -35,7 +35,7 @@ public static partial class Cmd {
 
 	static public GameStateAction AtTheStartOfEachInvaderPhase( this GameStateAction cmd ) => new BaseCmd<GameState>(
 		"At the start of each Invader Phase, " + cmd.Description,
-		gs => gs._preInvaderPhaseActions.Add( BeforeInvaderPhase.Each(_ => cmd.ActAsync( gs ) ) )
+		gs => gs.AddPreInvaderPhaseAction( BeforeInvaderPhase.Each(_ => cmd.ActAsync( gs ) ) )
 	);
 
 }

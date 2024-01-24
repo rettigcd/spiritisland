@@ -17,7 +17,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		public LandStrippedBare() : base( "Land Stripped Bare: At the end of the Fasticon.png Phase, the Invaders win if any land has at least 8 total Invaders/Blight (combined).", null ) { }
 
 		public override void Init( GameState gs ) {
-			gs._preInvaderPhaseActions.Add( this );
+			gs.AddPreInvaderPhaseAction( this );
 		}
 
 		#region IRunBeforeInvaderPhase

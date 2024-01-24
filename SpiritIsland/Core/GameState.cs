@@ -222,16 +222,7 @@ public sealed class GameState : IHaveMemento {
 
 	public readonly RavageBehavior DefaultRavageBehavior = new RavageBehavior();
 
-	public Healer Healer {
-		get => _healer;
-		set { 
-			if(_healer != null)
-				_timePassesActions.Remove(_healer);
-			_healer = value;
-			_timePassesActions.Add(_healer);
-		}
-	}
-	Healer _healer = new Healer(); // replacable Behavior
+	public readonly Healer Healer = new Healer(); // replacable Behavior
 
 	// !! If we decide to split up Config stuff, move this to ActionScope
 	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
@@ -268,30 +259,17 @@ public sealed class GameState : IHaveMemento {
 			_mementos.Save( src.Fear );
 			_mementos.Save( src.Island );
 			_mementos.Save( src.Tokens );
+			_mementos.Save( src._timePassesActions );
+			_mementos.Save( src._postInvaderPhaseActions );
+			_mementos.Save( src._preInvaderPhaseActions);
 
-			// Before Invader phase
-			_beforeInvaderPhase = [..src._preInvaderPhaseActions];
-			_mementos.Save(_beforeInvaderPhase);
-
-			// After Invader phase
-			_afterInvaderPhase = [.. src._postInvaderPhaseActions];
-			_mementos.Save( _afterInvaderPhase );
-
-			// Time Passes
-			_timePassesActions = [..src._timePassesActions];
-			_mementos.Save( _timePassesActions );
-
-			_roundNumber = src.RoundNumber;
-			_isBlighted = src.BlightCard.CardFlipped;
+			_roundNumber        = src.RoundNumber;
+			_isBlighted         = src.BlightCard.CardFlipped;
 			_damageToBlightLand = src.DamageToBlightLand;
 		}
 
 		public void Restore(GameState src ) {
 			_mementos.Restore();
-
-			src._preInvaderPhaseActions.SetItems(_beforeInvaderPhase);
-			src._postInvaderPhaseActions.SetItems(_afterInvaderPhase);
-            src._timePassesActions.SetItems(_timePassesActions);
 
 			src.RoundNumber = _roundNumber;
 			src.BlightCard.CardFlipped = _isBlighted;
@@ -301,9 +279,6 @@ public sealed class GameState : IHaveMemento {
 		readonly int _roundNumber;
 		readonly bool _isBlighted;
 		readonly int _damageToBlightLand;
-		readonly IRunWhenTimePasses[] _timePassesActions;
-		readonly IRunBeforeInvaderPhase[] _beforeInvaderPhase;
-		readonly IRunAfterInvaderPhase[] _afterInvaderPhase;
 		readonly Dictionary<IHaveMemento,object> _mementos = [];
 	}
 
@@ -311,44 +286,18 @@ public sealed class GameState : IHaveMemento {
 
     #region Hooks
 
-    public async Task RunPreInvaderActions() {
-		var preInvaderActions = _preInvaderPhaseActions;
-		for(int i = 0; i < preInvaderActions.Count; ++i) {
-			IRunBeforeInvaderPhase action = preInvaderActions[i];
-			await action.BeforeInvaderPhase( this );
-			if(action.RemoveAfterRun)
-				preInvaderActions.RemoveAt( i-- );
-		}
-	}
-    public readonly List<IRunBeforeInvaderPhase> _preInvaderPhaseActions = [];
+    public Task RunPreInvaderActions() => _preInvaderPhaseActions.Run(this);
+	public void AddPreInvaderPhaseAction(IRunBeforeInvaderPhase action) => _preInvaderPhaseActions.Add(action);
+    readonly PreInvaderPhaseActionList _preInvaderPhaseActions = new();
+
+    public Task RunPostInvaderActions() => _postInvaderPhaseActions.Run(this);
+	public void AddPostInvaderPhase(IRunAfterInvaderPhase action) => _postInvaderPhaseActions.Add(action);
+    readonly PostInvaderPhaseActionList _postInvaderPhaseActions = new();
 
 
-    public async Task RunPostInvaderActions() {
-		var postInvaderActions = this._postInvaderPhaseActions;
-		for(int i = 0; i < postInvaderActions.Count; ++i) {
-			IRunAfterInvaderPhase action = postInvaderActions[i];
-			await action.AfterInvaderPhase( this );
-			if(action.RemoveAfterRun)
-				postInvaderActions.RemoveAt( i-- );
-		}
-	}
-    public readonly List<IRunAfterInvaderPhase> _postInvaderPhaseActions = [];
-
-    async Task RunTimePassesActions() {
-
-		for(int i = 0; i < _timePassesActions.Count; ++i ) {
-			IRunWhenTimePasses action = _timePassesActions[i];
-			await action.TimePasses( this );
-			if(action.RemoveAfterRun)
-				_timePassesActions.RemoveAt( i-- );
-		}
-	}
-	readonly List<IRunWhenTimePasses> _timePassesActions = [];
-    public void AddTimePassesAction( IRunWhenTimePasses action ) { 
-		int i = _timePassesActions.Count;
-		while(0<i && action.Order < _timePassesActions[i-1].Order) --i;
-		_timePassesActions.Insert(i,action);
-	}
+    public Task RunTimePassesActions() => _timePassesActions.Run(this);
+    public void AddTimePassesAction( IRunWhenTimePasses action ) => _timePassesActions.Add(action);
+	readonly TimePassesActionList _timePassesActions = new();
 
     #endregion
 

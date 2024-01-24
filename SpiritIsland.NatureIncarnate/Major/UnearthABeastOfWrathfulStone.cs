@@ -19,7 +19,7 @@ public class UnearthABeastOfWrathfulStone {
 		// After the next Invader Phase with no Ravage/Build Actions in target land:
 		var noRavageOrBuildTrigger = new TriggerAfterNoRavageOrBuild( ctx.Self, TriggeredAction );
 		ctx.Tokens.Adjust(noRavageOrBuildTrigger,1);
-		GameState.Current._postInvaderPhaseActions.Add( noRavageOrBuildTrigger );
+		GameState.Current.AddPostInvaderPhase( noRavageOrBuildTrigger );
 
 		async Task TriggeredAction(TargetSpaceCtx ctxx ) {
 			// 3 Fear.

@@ -27,7 +27,7 @@ public class France : AdversaryBase, IAdversary {
 
 		// Level 2
 		new AdversaryLevel(2, 5, 3,4,3, "Slave Labor", "During Setup, put the 'Slave Rebellion' event under the top 3 cards of the Event Deck.  After Invaders Buid in a land with 2 Explorer or more, replace all but 1 Explorer there with an equal number of Town." ) {
-			InitFunc = (gameState,_) => gameState._preInvaderPhaseActions.Add( new SlaveRebellion() )
+			InitFunc = (gameState,_) => gameState.AddPreInvaderPhaseAction( new SlaveRebellion() )
 		},
 
 		// Level 3
