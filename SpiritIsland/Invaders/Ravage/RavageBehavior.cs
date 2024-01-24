@@ -5,7 +5,7 @@
 /// </summary>
 public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
-	public static RavageBehavior DefaultBehavior => GameState.Current.DefaultRavageBehavior;
+	public static RavageBehavior DefaultBehavior => RavageBehavior._defaultRavageBehavior;
 
 	// Order / Who is damaged
 	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
@@ -85,7 +85,11 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	static public async Task DamageLand( RavageData ra ) {
 		int totalLandDamage = ra.Result.Sum( r => r.Attackers.DamageDealtOut );
-		await ra.InvaderBinding.Tokens.DamageLand( totalLandDamage );
+		await ra.InvaderBinding.Tokens.DamageLand( totalLandDamage ); // must call even if there is 0 Damage incase a modifier adds some.
 	}
+
+	// This is never modified. It is cloned and the clone is modified.
+	static public RavageBehavior GetDefault() => _defaultRavageBehavior.Clone();
+	static readonly RavageBehavior _defaultRavageBehavior = new RavageBehavior();
 
 }

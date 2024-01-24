@@ -469,7 +469,7 @@ public class SpaceState
 		get {
 			var mod = Keys.OfType<RavageBehavior>().FirstOrDefault();
 			if(mod == null) {
-				mod = RavageBehavior.DefaultBehavior.Clone();
+				mod = RavageBehavior.GetDefault();
 				Init( mod, 1 );
 			}
 			return mod;

@@ -29,7 +29,7 @@ public sealed class GameState : IHaveMemento {
 		Tokens = new Tokens_ForIsland();
 
 		AddTimePassesAction( Tokens );
-		AddTimePassesAction( Healer ); // !!! Shroud needs to be able to replace this.
+		AddTimePassesAction( Healer );
 
 	}
 	public int ShuffleNumber { get; } // used to generate different shuffle #s
@@ -83,6 +83,21 @@ public sealed class GameState : IHaveMemento {
 
 	public Tokens_ForIsland Tokens { get; }
 
+	public List<Space> OtherSpaces = []; // Currently only used for EndlessDarkness
+
+	public PowerCardDeck MajorCards {get; set; }
+	public PowerCardDeck MinorCards { get; set; }
+	public readonly Healer Healer = new Healer();
+
+	public IBlightCard BlightCard = new NullBlightCard(); // Drawn Card
+	public List<IBlightCard> BlightCards = []; // Deck of Blight Cards
+
+	public GameOver Result = null;
+
+	public event Action<ILogEntry> NewLogEntry;	// API
+
+
+
 	/// <summary> Non-stasis + InPlay </summary>
 	public IEnumerable<SpaceState> Spaces            => Island.Boards
 		.SelectMany( b => b.Spaces )
@@ -101,10 +116,6 @@ public sealed class GameState : IHaveMemento {
 		.Union(OtherSpaces)
 		.Tokens();
 
-	public List<Space> OtherSpaces = []; // Currently only used for EndlessDarkness
-
-	public PowerCardDeck MajorCards {get; set; }
-	public PowerCardDeck MinorCards { get; set; }
 	public InvaderDeck InvaderDeck { 
 		get { return _invaderDeck ??= InvaderDeckBuilder.Default.Build(); }
 		set { _invaderDeck = value; }
@@ -114,13 +125,8 @@ public sealed class GameState : IHaveMemento {
 	public void blightOnCard_Add( int count ) 
 		=> Tokens[SpiritIsland.BlightCard.Space].Adjust( Token.Blight, count );
 
-	public IBlightCard BlightCard = new NullBlightCard();
-	public List<IBlightCard> BlightCards = [];
-	public GameOver Result = null;
 
 	#region Blight
-
-	public int DamageToBlightLand = 2;
 
 	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Existing
 		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
@@ -216,13 +222,10 @@ public sealed class GameState : IHaveMemento {
 	}
 
 	// - Events -
-	public event Action<ILogEntry> NewLogEntry;
 
-	#region Configuration - Game-Wide overrideable / Behavior
 
-	public readonly RavageBehavior DefaultRavageBehavior = new RavageBehavior();
+	#region Configuration - TERRAIN
 
-	public readonly Healer Healer = new Healer(); // replacable Behavior
 
 	// !! If we decide to split up Config stuff, move this to ActionScope
 	// because ActionCategory is the Key and this has nothing to do with GameState other than it holds Config info
@@ -237,11 +240,7 @@ public sealed class GameState : IHaveMemento {
 			_terrains[cat] = replacer( GetTerrain(cat) );
 	}
 
-	// User Preference Stuff
-	// CastDown uses Ocean vs Destroyed
-	// Use Pre-select/pre-load
-
-	#endregion overrideable Game-Wide Behavior
+	#endregion Configuration - TERRAIN
 
 	#region Memento
 
@@ -265,7 +264,6 @@ public sealed class GameState : IHaveMemento {
 
 			_roundNumber        = src.RoundNumber;
 			_isBlighted         = src.BlightCard.CardFlipped;
-			_damageToBlightLand = src.DamageToBlightLand;
 		}
 
 		public void Restore(GameState src ) {
@@ -273,7 +271,6 @@ public sealed class GameState : IHaveMemento {
 
 			src.RoundNumber = _roundNumber;
 			src.BlightCard.CardFlipped = _isBlighted;
-			src.DamageToBlightLand = _damageToBlightLand;
 		}
 
 		readonly int _roundNumber;

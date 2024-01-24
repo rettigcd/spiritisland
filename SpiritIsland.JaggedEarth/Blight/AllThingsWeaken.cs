@@ -40,8 +40,13 @@ public class AllThingsWeaken : BlightCard {
 
 	static BaseCmd<GameState> TakeBlightOn1LessDamage => new BaseCmd<GameState>(
 		"The land takes blight on 1 less Damage.", 
-		gs => { gs.DamageToBlightLand = 1; }
+		gs => { gs.AddIslandMod( new LandDamageBoost() ); }
 	);
+	class LandDamageBoost : BaseModEntity, IModifyLandDamage {
+		void IModifyLandDamage.ModifyLandDamage( SpaceState spaceState, ref int damage ){
+			if(damage==1) damage = 2; // "If 1, push it up over the threshold
+		}
+	}
 
 	static BaseCmd<GameState> AddBlightDestroyesPresence => new BaseCmd<GameState>(
 		"When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.", 

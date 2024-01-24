@@ -65,21 +65,18 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 		new AdversaryLevel(6, 10, 5,6,3, "Far-Flung Herds", 
 			"Ravages do +2 Damage (total) if any adjacent lands have Town. (This does not cause lands without Invaders to Ravage.)" ){ 
 			InitFunc = (gameState,_) => {
-				// !! Can simplify RavageBehavior if we slap a Town-Tracking token on every space Which updates a 'NeighboringTownsToken' that does damage.
-				// !! requires that we tag invaders as attackers and dahan as defenders.
-
-				var originalBehavior = RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers;
-
-				RavageBehavior.DefaultBehavior.GetDamageFromParticipatingAttackers = (rex) => {
-
-					bool hasNeighborTown = rex.Tokens.Adjacent.Any( s => s.Has( Human.Town ) );
-					// Not logging additional damage here because Ravage is already very verbose.
-					return originalBehavior( rex )
-						+ (hasNeighborTown ? 2 : 0);
-				};
+				gameState.AddIslandMod(new NeighborTownsCauseBonusLandDamage());
 			}
 		}
 	];
+
+	class NeighborTownsCauseBonusLandDamage : BaseModEntity, IModifyLandDamage {
+		void IModifyLandDamage.ModifyLandDamage( SpaceState spaceState, ref int damage ){
+			bool hasNeighborTown = spaceState.Adjacent.Any( s => s.Has( Human.Town ) );
+			if(hasNeighborTown)
+				damage += 2;
+		}
+	}
 
 	#region Escalation
 

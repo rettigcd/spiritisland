@@ -11,15 +11,24 @@ public class LandDamage
 
 	/// <remarks>
 	/// Land damage is a special case of needing to trigger an event but is not a visible token.
+	/// 
+	/// Note - some mods could increate land damage from 0 +2 (Habsburg Monarchy)
 	/// </remarks>
 	static public async Task Add( SpaceState tokens, int totalLandDamage ) {
-		if(totalLandDamage == 0) return;
 
+		// Mod
+		IModifyLandDamage[] mods = tokens.Keys.OfType<IModifyLandDamage>().ToArray();
+		foreach(IModifyLandDamage mod in mods)
+			mod.ModifyLandDamage(tokens,ref totalLandDamage);
+		if(totalLandDamage <= 0) return;
+
+		// Apply
 		tokens.Adjust( LandDamage.Token, totalLandDamage );
 
-		var mods = tokens.Keys.OfType<IReactToLandDamage>().ToArray();
-		foreach(IReactToLandDamage mod in mods)
-			await mod.HandleDamageAddedAsync( tokens, totalLandDamage );
+		// React
+		var eventHandlers = tokens.Keys.OfType<IReactToLandDamage>().ToArray();
+		foreach(IReactToLandDamage handler in eventHandlers)
+			await handler.HandleDamageAddedAsync( tokens, totalLandDamage );
 	}
 
 	public async Task HandleDamageAddedAsync( SpaceState tokens , int _ ) {
@@ -28,7 +37,7 @@ public class LandDamage
 		ActionScope.Current.AtEndOfThisAction( _ => { tokens.Init(this,0); } );
 
 		// Add Blight - Assumes Invaders only Damage land 1/action.
-		if(GameState.Current.DamageToBlightLand <= tokens[this])
+		if( 2 <= tokens[this] )
 			await tokens.Blight.AddAsync( 1, AddReason.Ravage );
 	}
 
