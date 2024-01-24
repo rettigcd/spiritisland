@@ -305,6 +305,27 @@ internal class StatusPanel : IPanel {
 	static Brush CardLabelBrush => Brushes.Black;
 }
 
+
+class BlockRect( params IPaintableBlockRect[] _children ) : IPaintableBlockRect {
+	public float WidthRatio => _children.Sum(c=>c.WidthRatio);
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+		return StackRight( graphics, bounds );
+	}
+	Rectangle StackRight( Graphics graphics, Rectangle bounds ){
+		int right = bounds.Right;
+		foreach(var child in _children){
+			int width = (int)(bounds.Height * child.WidthRatio +.5f);
+			int left = right - width;
+			var rect = new Rectangle(left,bounds.Top,width,bounds.Height);
+			child.Paint(graphics,rect);
+			right = left;
+		}
+		return new Rectangle(right,bounds.Top,bounds.Right-right,bounds.Height);
+	}
+
+}
+
 public class ImageRect : IPaintableBlockRect {
 	public float WidthRatio => 1f;
 
@@ -345,7 +366,6 @@ class SpacerRect : IPaintableBlockRect {
 	}
 }
 
-
 class FearCardRect( IFearCard _card, int _count ) : IPaintableBlockRect {
 
 	public float WidthRatio => .5f / .7f;
@@ -360,27 +380,6 @@ class FearCardRect( IFearCard _card, int _count ) : IPaintableBlockRect {
 		return fitted;
 	}
 }
-
-class BlockRect( params IPaintableBlockRect[] _children ) : IPaintableBlockRect {
-	public float WidthRatio => _children.Sum(c=>c.WidthRatio);
-
-	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
-		return StackRight( graphics, bounds );
-	}
-	Rectangle StackRight( Graphics graphics, Rectangle bounds ){
-		int right = bounds.Right;
-		foreach(var child in _children){
-			int width = (int)(bounds.Height * child.WidthRatio +.5f);
-			int left = right - width;
-			var rect = new Rectangle(left,bounds.Top,width,bounds.Height);
-			child.Paint(graphics,rect);
-			right = left;
-		}
-		return new Rectangle(right,bounds.Top,bounds.Right-right,bounds.Height);
-	}
-
-}
-
 
 class BlightCardRect(IBlightCard _blightCard) : IPaintableBlockRect {
 
@@ -399,8 +398,7 @@ class BlightCardRect(IBlightCard _blightCard) : IPaintableBlockRect {
 
 class DiscardInvaderRect( List<InvaderCard> cards ) : IPaintableBlockRect {
 	public float WidthRatio {get;set;}
-	public Rectangle Paint(Graphics graphics, Rectangle bounds)
-	{
+	public Rectangle Paint(Graphics graphics, Rectangle bounds)	{
 		Rectangle fitted = bounds.FitBoth(68,45,Align.Center,Align.Center);
 
 		if(0<cards.Count)
