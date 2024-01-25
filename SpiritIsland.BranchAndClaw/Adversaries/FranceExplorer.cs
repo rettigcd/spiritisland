@@ -1,24 +1,28 @@
 ﻿namespace SpiritIsland.Basegame.Adversaries;
 
-public class FranceExplorer( bool _hasFrontierExploration, bool _hasPersistentExplorers ) 
-	: ExploreEngine 
-{
+public class FranceExplorer	: ExploreEngine {
+
+	public FranceExplorer( bool hasFrontierExploration, bool hasPersistentExplorers ){
+		_hasFrontierExploration = hasFrontierExploration;
+		_hasPersistentExplorers = hasPersistentExplorers;
+
+		Escalation = France.DemandForNewCashCrops;
+	}
+	readonly bool _hasFrontierExploration;
+	readonly bool _hasPersistentExplorers;
+
+
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) { 
 		await base.ActivateCard( card, gameState );
 
 		// Original
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
-		await DoExplore( gameState, tokenSpacesToExplore, false );
+		await ExplorePerMarker_ManySpaces_Stoppable( gameState, tokenSpacesToExplore, false );
 
 		await using var scope = await ActionScope.Start(ActionCategory.Adversary);
 
 		if(_hasFrontierExploration)
 			await DoFrontierExploration( gameState, tokenSpacesToExplore );
-
-		if(card.HasEscalation) {
-			await DemandForNewCashCrops( gameState, card );
-			card.HasEscalation = false;
-		}
 
 		if(_hasPersistentExplorers)
 			await PersistentExplorers( gameState );
@@ -43,35 +47,14 @@ public class FranceExplorer( bool _hasFrontierExploration, bool _hasPersistentEx
 
 
 	async Task DoFrontierExploration( GameState gs, SpaceState[] tokenSpacesToExplore ) {
-		// Frontier Explorers: Except during Setup: After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
+		// Frontier Explorers: 
+		// Except during Setup: 
+		// After Invaders successfully Explore into a land which had no Town / City, add 1 Explorer there.
 		foreach(var exploreTokens in tokenSpacesToExplore)
 			if(!exploreTokens.HasAny( Human.Town_City )) {
 				await using var scope = await ActionScope.Start(ActionCategory.Adversary);
-				await ExploreSingleSpace( exploreTokens, gs, false );
+				await Explore_1Space_Stoppable( exploreTokens, gs, false );
 			}
 	}
-
-	static Task DemandForNewCashCrops( GameState gs, InvaderCard card ) {
-		// Demand for New Cash Crops:
-		// After Exploring, on each board, pick a land of the shown terrain.If it has Town / City, add 1 Blight.Otherwise, add 1 Town
-
-		static SpiritAction SelectSpaceAction( SpaceState s ) {
-			return s.HasAny( Human.Town_City )
-				? new SpiritAction( "Add 1 Town to " + s.Space.Text, null ) // !!! implement
-				: new SpiritAction( "", null ); // !!! implement
-		}
-
-		return Cmd.ForEachBoard( new BaseCmd<BoardCtx>(
-			"Place town or blight matching Explore card."
-			, boardCtx => Cmd.Pick1( 
-				boardCtx.Board.Spaces.Tokens()
-					.Where( card.MatchesCard )
-					.Select( SelectSpaceAction )
-					.ToArray()
-			).ActAsync( boardCtx.Self )
-		) ).ActAsync( gs );
-
-	}
-
 
 }

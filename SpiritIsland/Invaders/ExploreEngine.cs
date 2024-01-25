@@ -5,7 +5,7 @@ public class ExploreEngine {
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Exploring:" + card.Text ) );
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
-		await DoExplore( gameState, tokenSpacesToExplore, card.HasEscalation );
+		await ExplorePerMarker_ManySpaces_Stoppable( gameState, tokenSpacesToExplore, card.HasEscalation );
 
 		if( card.HasEscalation && Escalation != null ) {
 			await Escalation(gameState);
@@ -50,18 +50,21 @@ public class ExploreEngine {
 			.ToArray();
 	}
 
-	protected async Task DoExplore( GameState gs, SpaceState[] tokenSpacesToExplore, bool escalation ) {
-		foreach(var exploredSpaceState in tokenSpacesToExplore) {
-			int exploreCount = exploredSpaceState[ModToken.DoExplore];
-			exploredSpaceState.Init( ModToken.DoExplore, 0 );
-			while(0 < exploreCount--) {
-				await using ActionScope actionScope = await ActionScope.Start( ActionCategory.Invader );
-				await ExploreSingleSpace( exploredSpaceState, gs, escalation );
-			}
+	protected async Task ExplorePerMarker_ManySpaces_Stoppable( GameState gs, SpaceState[] tokenSpacesToExplore, bool escalation ) {
+		foreach(var exploredSpaceState in tokenSpacesToExplore)
+			await ExplorePerMarker_1Space_Stoppable( gs, escalation, exploredSpaceState );
+	}
+
+	async Task ExplorePerMarker_1Space_Stoppable( GameState gs, bool escalation, SpaceState exploredSpaceState ) {
+		int markerCount = exploredSpaceState[ModToken.DoExplore];
+		exploredSpaceState.Init( ModToken.DoExplore, 0 );
+		while(0 < markerCount--) {
+			await using ActionScope actionScope = await ActionScope.Start( ActionCategory.Invader );
+			await Explore_1Space_Stoppable( exploredSpaceState, gs, escalation );
 		}
 	}
 
-	protected virtual async Task ExploreSingleSpace( SpaceState tokens, GameState gs, bool escalation ) {
+	protected virtual async Task Explore_1Space_Stoppable( SpaceState tokens, GameState gs, bool escalation ) {
 
 		foreach(ISkipExploreTo stopper in tokens.ModsOfType<ISkipExploreTo>().ToArray())
 			if(await stopper.Skip( tokens ))
@@ -69,7 +72,11 @@ public class ExploreEngine {
 
 		ActionScope.Current.Log( new Log.SpaceExplored( tokens.Space ) );
 		await AddToken( tokens );
+		if(ExploredSpace is not null) 
+			await ExploredSpace( tokens );
 	}
+
+	public event Func<SpaceState,Task> ExploredSpace;
 
 	protected virtual async Task AddToken( SpaceState tokens ) 
 		=> await tokens.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );

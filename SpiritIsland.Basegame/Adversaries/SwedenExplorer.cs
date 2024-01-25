@@ -11,8 +11,8 @@ class SwedenExplorer : ExploreEngine {
 	// !! Note: if .DoExplore(...) returned the results, we could pass the explore results into the standard Escalation method
 	// and do away with this whole class.
 
-	protected override async Task ExploreSingleSpace( SpaceState tokens, GameState gs, bool escalation ) {
-		await base.ExploreSingleSpace( tokens, gs, escalation );
+	protected override async Task Explore_1Space_Stoppable( SpaceState tokens, GameState gs, bool escalation ) {
+		await base.Explore_1Space_Stoppable( tokens, gs, escalation );
 		if( escalation )
 			await SwayedByTheInvadersAsync( tokens );
 	}
