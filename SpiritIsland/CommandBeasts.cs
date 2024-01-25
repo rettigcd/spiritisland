@@ -39,8 +39,10 @@ public class CommandBeasts( string name )
 
 	public async Task ActivateAsync( Spirit _ ) {
 		_used = true;
+		GameState gs = GameState.Current;
 		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Special);
-		await new CommandBeastsOn1Space().In().EachActiveLand().ActAsync( GameState.Current );
+		await new CommandBeastsOn1Space().In().EachActiveLand().ActAsync( gs );
+		gs.ReminderCards.Remove(this);
 	}
 
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) => speed == Phase.Fast;
@@ -77,6 +79,7 @@ public class CommandBeasts( string name )
 		// Memento only called when in TimePasses collection
 		_used = false; // this is needed but I can't figure out why
 		await AllSpirits.Acknowledge( "Invader Deck Card Revealed", Name, this );
+		gameState.ReminderCards.Add(this);
 		gameState.AddTimePassesAction( this );
 	}
 	bool _used;

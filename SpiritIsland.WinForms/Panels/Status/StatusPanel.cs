@@ -44,43 +44,51 @@ internal class StatusPanel : IPanel {
 	Rectangle _bounds;
 	AdversaryRect _adversaryRect;
 
-	public void Paint( Graphics graphics )
-    {
-        var spacer = new SpacerRect { WidthRatio = .4f };
+	public void Paint( Graphics graphics ) {
+		_clickables.Clear();
+
+		var spacer = new SpacerRect { WidthRatio = .4f };
 
 		var statusRow = new BlockRect(
-            GetFearRect(),
-            spacer,
-            GetBlightRect(),
-            spacer,
-            GetInvaderCardsRect(graphics),
-            spacer,
-            GetAdversaryRect(),
+			GetFearRect(),
 			spacer,
-			_phaseImage
-        );
+			GetBlightRect(),
+			spacer,
+			GetInvaderCardsRect(graphics),
+			spacer,
+			GetAdversaryRect(),
+			spacer,
+			_phaseImage,
+			spacer,
+			GetReminderCardsRect()
+		);
 		var reduced = _bounds.InflateBy(-_bounds.Height / 18).FitBoth(statusRow.WidthRatio,Align.Far);
 		statusRow.Paint(graphics, reduced);
 
-        DrawGameRound(graphics);
+		DrawGameRound(graphics);
 
-    }
+	}
 
-    IPaintableBlockRect GetAdversaryRect() {
+	IPaintableBlockRect GetAdversaryRect() {
 		if( _ctx._adversary == null ) return new NullRect { WidthRatio = 0f };
-        return _adversaryRect = new AdversaryRect(_ctx._adversary);
-    }
+		return _adversaryRect = new AdversaryRect(_ctx._adversary);
+	}
 
-    public void OnGameLayoutChanged() {
+	public void OnGameLayoutChanged() {
 	}
 
 	public void ActivateOptions( IDecision decision ) {
 	}
 
 	public Action GetClickableAction( Point clientCoords ) {
-		return _ctx._adversary != null && _adversaryRect is not null && _adversaryRect.Bounds.Contains( clientCoords ) 
-			? PopUpAdversaryRules 
-			: null;
+		if( _ctx._adversary != null && _adversaryRect is not null && _adversaryRect.Bounds.Contains( clientCoords ) )
+			return PopUpAdversaryRules;
+
+		var clickable = _clickables.FirstOrDefault(c=>c.Bounds.Contains(clientCoords));
+		if(clickable != null )
+			return () => { _ctx.SelectOption(clickable.Option); };
+
+		return null;
 	}
 
 	void PopUpAdversaryRules() {
@@ -121,9 +129,9 @@ internal class StatusPanel : IPanel {
 
 	}
 
-    #region Fear - Parts
+	#region Fear - Parts
 
-    IPaintableBlockRect GetFearRect(){
+	IPaintableBlockRect GetFearRect(){
 		var gameState = _ctx.GameState;
 
 		SpacerRect spacer = new SpacerRect{ WidthRatio = .1f };
@@ -136,7 +144,6 @@ internal class StatusPanel : IPanel {
 			GetPoolRect(gameState.Fear.PoolMax,gameState.Fear.EarnedFear)
 		);
 	}
-
 
 	IPaintableBlockRect TerrorLevelStopLights(int tl){
 		(float y,Img img) = tl switch {
@@ -238,6 +245,7 @@ internal class StatusPanel : IPanel {
 	#endregion Blight - Parts
 
 	#region Invader - Parts
+	/// ///////////////////
 
 	BlockRect GetInvaderCardsRect( Graphics graphics ) {
 
@@ -288,9 +296,32 @@ internal class StatusPanel : IPanel {
 		return paintable;
 	}
 
+	/// ///////////////////
 	#endregion Invader - Parts
 
-    static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
+	IPaintableBlockRect GetReminderCardsRect() {
+		var cards = this._ctx.GameState.ReminderCards;
+		var pool = new PoolRowMemberRect { WidthRatio = 1f };
+		float step = 1f / cards.Count;
+		for(int i = 0; i < cards.Count; ++i) {
+			object reminder = cards[i];
+			IPaintableRect rect = reminder switch {
+				CommandBeasts cb => Wrap(new DynamicImageRect( () => ResourceImages.Singleton.GetMiscAction( cb.Name ) ),(IOption)reminder),
+				_ => new ImgRect( Img.Beast )
+			};
+			pool.Float( rect, 0, step * i, 1, step );
+		}
+		return pool;
+	}
+
+	IPaintableBlockRect Wrap( IPaintableBlockRect inner, IOption option ) {
+		var clickable = new ClickableOption(option,inner);
+		_clickables.Add( clickable );
+		return clickable;
+	}
+	List<ClickableOption> _clickables = [];
+
+	static Font UseGameFont( float fontHeight ) => ResourceImages.Singleton.UseGameFont( fontHeight );
 
 	public RegionLayoutClass GetLayout( Rectangle bounds ) {
 		return RegionLayoutClass.ForIslandFocused( bounds, _ctx._spirit.Decks.Length + 1 ); // everything else
@@ -326,6 +357,52 @@ class BlockRect( params IPaintableBlockRect[] _children ) : IPaintableBlockRect 
 
 }
 
+class ClickableOption : IPaintableBlockRect {
+	public ClickableOption(IOption option, IPaintableBlockRect child ) {
+		_child = child;
+		Option = option;
+	}
+	readonly IPaintableBlockRect _child;
+
+	public float WidthRatio => _child.WidthRatio;
+	public Rectangle Bounds { get; private set; }
+	public IOption Option { get; }
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ) {
+		Bounds = bounds;
+		return _child.Paint(graphics,bounds);
+	}
+}
+
+
+/// <summary> Loads the image when needed, and Disposes of it as soon as it is Painted. </summary>
+class DynamicImageRect : IPaintableBlockRect {
+
+	public DynamicImageRect(Func<Image> imageGenerator ){ _imageGenerator = imageGenerator; }
+
+	public float WidthRatio => _widthRatio ??= Image.Width * 1f / Image.Height;
+
+	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+		using(var img = Image ){
+			bounds = bounds.FitBoth(img.Size);
+			graphics.DrawImage(img,bounds);
+		}
+		_img = null;
+		return bounds;
+	}
+
+	#region private
+
+	Image Image => _img ??=_imageGenerator();
+	Image _img;
+
+	float? _widthRatio;
+	readonly Func<Image> _imageGenerator;
+
+	#endregion private
+}
+
+
 public class ImageRect : IPaintableBlockRect {
 	public float WidthRatio => 1f;
 
@@ -349,12 +426,6 @@ class FlatRect( Brush brush ) : IPaintableBlockRect {
 	}
 }
 
-class Perimeter : IPaintableRect {
-	public Rectangle Paint( Graphics graphics, Rectangle bounds ){ 
-		graphics.DrawRectangle( Pens.Green, bounds );
-		return bounds;
-	}
-}
 
 class SpacerRect : IPaintableBlockRect {
 	public float WidthRatio {get; set; }

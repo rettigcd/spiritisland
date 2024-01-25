@@ -84,6 +84,7 @@ public sealed class GameState : IHaveMemento {
 	public Tokens_ForIsland Tokens { get; }
 
 	public List<Space> OtherSpaces = []; // Currently only used for EndlessDarkness
+	public List<object> ReminderCards = []; // !!! Save to Memento
 
 	public PowerCardDeck MajorCards {get; set; }
 	public PowerCardDeck MinorCards { get; set; }
