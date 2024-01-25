@@ -139,21 +139,9 @@ internal class StatusPanel : IPanel {
 			GetTerrorLevelRect( gameState.Fear.TerrorLevel ),
 			GetActivatedFearRect(gameState.Fear.ActivatedCards),
 			spacer,
-			GetFutureFearRect( gameState.Fear.Deck, gameState.Fear.CardsPerLevelRemaining ),
-			TerrorLevelStopLights(gameState.Fear.TerrorLevel),
+			GetFutureFearRect( gameState.Fear ),
 			GetPoolRect(gameState.Fear.PoolMax,gameState.Fear.EarnedFear)
 		);
-	}
-
-	IPaintableBlockRect TerrorLevelStopLights(int tl){
-		(float y,Img img) = tl switch {
-			1 => (.0f, Img.TerrorLevel1),
-			2 => (.33f, Img.TerrorLevel2),
-			_ => (.66f, Img.TerrorLevel3)
-		};
-		return new PoolRowMemberRect(){ WidthRatio = .3f }
-			//.Float(new Perimeter(), 0,0,1,1)
-			.Float(new ImgRect(img),0f,y,1.06f,.36f); // .2 > pushing to the right
 	}
 
 	IPaintableBlockRect GetTerrorLevelRect(int terrorLevel){
@@ -185,16 +173,27 @@ internal class StatusPanel : IPanel {
 		return pool;
 	}
 
-	IPaintableBlockRect GetFutureFearRect( Stack<IFearCard> future, int[] remaining ){
-		if(future.Count == 0)
+	IPaintableBlockRect GetFutureFearRect( Fear fear ){
+		if(fear.Deck.Count == 0)
 			return new PoolRowMemberRect(); // empty
 		float cardWidth = 5f/7f;
 		float numWidth = 1f-cardWidth;
-		return new PoolRowMemberRect()
-			.Float( new FearCardRect(future.Peek(),future.Count),numWidth,0f,cardWidth,1f )
+		var pool = new PoolRowMemberRect();
+
+		(Color color,float y) = fear.TerrorLevel switch {
+			1 => (Color.FromArgb(239,192,24),.00f),
+			2 =>  (Color.FromArgb(239,192,24),.33f),
+			_ =>  (Color.FromArgb(239,192,24),.66f)
+		};
+		pool.Float( new FlatRect(color){ WidthRatio = .7f }, 0f, y, numWidth,.3f);
+
+		 int[] remaining = fear.CardsPerLevelRemaining;
+		pool
+			.Float( new FearCardRect(fear.Deck.Peek(),0),numWidth,0f,cardWidth,1f )
 			.Float( new TextRect(remaining[0]), 0f, .03f, numWidth,.3f )
 			.Float( new TextRect(remaining[1]), 0f, .36f, numWidth,.3f )
 			.Float( new TextRect(remaining[2]), 0f, .69f, numWidth,.3f );
+		return pool;
 	}
 
 	IPaintableBlockRect GetActivatedFearRect( Stack<IFearCard> activated ){
@@ -278,7 +277,7 @@ internal class StatusPanel : IPanel {
 	static PoolRowMemberRect GetInvaderSlotRect( InvaderSlot slot ) {
 
 		// Lavel
-		var paintable = new PoolRowMemberRect(){ WidthRatio = .6666f }
+		var paintable = new PoolRowMemberRect(){ WidthRatio = .55f }
 			.Float( new TextRect(slot.Label), 0,.85f,1,.15f);
 
 		int count = slot.Cards.Count;
@@ -415,13 +414,23 @@ public class ImageRect : IPaintableBlockRect {
 	public Image Image {get; set;}
 }
 
-class FlatRect( Brush brush ) : IPaintableBlockRect {
+class FlatRect : IPaintableBlockRect {
+
+	Brush _brush;
+	Color _color;
+
+	public FlatRect( Brush brush ){ _brush = brush; }
+	public FlatRect( Color color ){ _color = color; }
+	ResourceMgr<Brush> GetBrush() => _brush is not null 
+		? new ResourceMgr<Brush>(_brush,false) 
+		: new ResourceMgr<Brush>( new SolidBrush(_color), true);
 
 	public float WidthRatio { get; set; } = 1f;
 
 	public Rectangle Paint( Graphics graphics, Rectangle bounds ){ 
 		var fitted = bounds.FitBoth(WidthRatio);
-		graphics.FillRectangle( brush, fitted );
+		using var brush = GetBrush();
+		graphics.FillRectangle( brush.Resource, fitted );
 		return fitted;
 	}
 }
