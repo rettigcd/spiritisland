@@ -182,8 +182,8 @@ internal class StatusPanel : IPanel {
 
 		(Color color,float y) = fear.TerrorLevel switch {
 			1 => (Color.FromArgb(239,192,24),.00f),
-			2 =>  (Color.FromArgb(239,192,24),.33f),
-			_ =>  (Color.FromArgb(239,192,24),.66f)
+			2 =>  (Color.FromArgb(198,43,0),.33f),
+			_ =>  (Color.FromArgb(123,0,0),.66f)
 		};
 		pool.Float( new FlatRect(color){ WidthRatio = .7f }, 0f, y, numWidth,.3f);
 
