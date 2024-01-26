@@ -42,7 +42,7 @@ public class ToDreamAThousandDeaths_Tests {
 		var tokens = _board[5].Tokens;
 
 		// Given: 2 explorers
-		tokens.AdjustDefault(Human.Explorer, count );
+		tokens.Given_InitSummary("2E@1");
 
 		// When: damaging / destroying each invader
 		await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_spirit);

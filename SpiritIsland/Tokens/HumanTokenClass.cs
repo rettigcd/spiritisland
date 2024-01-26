@@ -1,7 +1,8 @@
 ﻿namespace SpiritIsland;
 
 public class HumanTokenClass(
-	string _label, 
+	string _singular,
+	string _plural,
 	TokenCategory _categoryTag, 
 	int _fearGeneratedWhenDestroyed, 
 	Img _img, 
@@ -11,9 +12,12 @@ public class HumanTokenClass(
 	: ITokenClass
 	, ITag
 {
-	public char Initial { get; } = _label[0];
+	public char Initial { get; } = _singular[0];
 
-	public string Label { get; } = _label;
+	/// <summary>
+	/// The word describing 1 of these. ('Explorer','Town','City','Dahan')
+	/// </summary>
+	public string Label => _singular;
 
 	public int FearGeneratedWhenDestroyed { get; } = _fearGeneratedWhenDestroyed;
 
@@ -26,6 +30,9 @@ public class HumanTokenClass(
 	public int ExpectedHealthHint { get; } = _expectedHealth;
 
 	public bool HasTag( ITag tag ) => tag == this || tag == _categoryTag;
+
+	public string ToCountString( int count ) => (count == 1 ? $"1 {_singular}" : $"{count} {_plural}");
+
 }
 
 public enum TokenVariant {

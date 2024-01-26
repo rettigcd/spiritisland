@@ -142,9 +142,9 @@ public class TDaTD_ActionTokens( SpaceState spaceState )
 
 	#region static DreamTokens
 
-	static public readonly HumanTokenClass DreamingCity = new HumanTokenClass( "City_Dreaming", TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
-	static public readonly HumanTokenClass DreamingTown = new HumanTokenClass( "Town_Dreaming", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
-	static public readonly HumanTokenClass DreamingExplorer = new HumanTokenClass( "Explorer_Dreaming", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingCity = new HumanTokenClass( "City(Dreaming)", "Cities(Dreaming)", TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingTown = new HumanTokenClass( "Town(Dreaming)", "Towns(Dreaming)", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
+	static public readonly HumanTokenClass DreamingExplorer = new HumanTokenClass( "Explorer(Dreaming)", "Explorers(Dreaming)", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
 
 	#endregion
 

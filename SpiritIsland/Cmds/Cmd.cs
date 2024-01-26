@@ -22,9 +22,8 @@ public static partial class Cmd {
 	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Human.Explorer_Town ) ).OnlyExecuteIf( ctx=>ctx.Tokens.HasAny( Human.Explorer_Town ) );
 
 	// -- Add ---
-	static public SpaceAction AddDahan( int count ) => new SpaceAction( count == 1 ? "Add 1 Dahan" : $"Add {count} Dahan", ctx => ctx.Tokens.AddDefaultAsync( Human.Dahan, count ) );
-	static public SpaceAction AddTown( int count, string suffixDescription = "" ) => new SpaceAction( (count == 1 ? "Add 1 Town" : $"Add {count} Towns") + suffixDescription, ctx => ctx.Tokens.AddDefaultAsync(Human.Town, count ) );
-	static public SpaceAction AddCity( int count ) => new SpaceAction( count == 1 ? "Add 1 City" : $"Add {count} Cities", ctx => ctx.Tokens.AddDefaultAsync(Human.City, count ) );
+	static public SpaceAction AddHuman( int count, HumanTokenClass tokenClass, string suffixDescription = "" )
+		=> new SpaceAction( $"Add {tokenClass.ToCountString(count)}{suffixDescription}", ctx => ctx.Tokens.AddDefaultAsync(tokenClass, count ) );
 	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.AddAsync(count) );
 	static public SpaceAction AddVitality( int count ) => new SpaceAction( $"Add {count} Vitality.", ctx => ctx.Vitality.AddAsync( count ) );

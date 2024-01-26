@@ -42,12 +42,11 @@ abstract public class AdversaryBase : IAdversary {
 	// After Decks are built, before Tokens are placed
 	public virtual void Init( GameState gameState ) {
 
-		LossCondition?.Init( gameState );
-
 		foreach(var mod in ActiveLevels) {
 			ActionScope.Current.Log( new SetupDescription( $"{mod.Title} - {mod.Description}" ) );
 			mod.Init( gameState, this );
 		}
+
 	}
 	class SetupDescription( string msg ) : ILogEntry {
 		public LogLevel Level => LogLevel.Info;
@@ -59,6 +58,9 @@ abstract public class AdversaryBase : IAdversary {
 	public virtual void AdjustPlacedTokens( GameState gameState ) {
 		foreach(var mod in ActiveLevels)
 			mod.Adjust( gameState, this );
+
+		// do this LAST since France needs access to Tokens placed at startup
+		LossCondition?.Init( gameState );
 	}
 
 	public IEnumerable<AdversaryLevel> ActiveLevels => Levels.Take(Level+1);
@@ -126,7 +128,7 @@ public class AdversaryLevel( int _level, int _difficulty, int _fear1, int _fear2
 }
 
 public class AdversaryLossCondition( string description, Action<GameState> additionalWinLossCondition ) {
-	public virtual void Init(GameState gs ) {
+	public virtual void Init( GameState gs ) {
 		gs.AddWinLossCheck( _additionalWinLossCondition );
 	}
 	public string Description { get; } = description;

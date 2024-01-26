@@ -4,19 +4,14 @@
 /// If no Build-Stoppers prevent it, Performs 1 build on 1 space.
 /// </summary>
 /// <remarks>
-/// Only call directly from the build engine.
+/// Only call from the build engine.
 /// Do NOT use directly.  Instead, go through the build engine when doing builds as this behavior may be overriden by France or Habsburg
 /// </remarks>
 public class BuildOnceOnSpace_Default { 
 
-	public async Task ActAsync( SpaceState tokens ) {
+	/// <returns>HumanToken or null.</returns>
+	public async Task<HumanToken> ActAsync( SpaceState tokens ) {
 		_tokens = tokens;
-		string buildResult = await GetResult();
-		ActionScope.Current.Log( new Log.InvaderActionEntry( _tokens.Space.Label + ": " + buildResult ) );
-	}
-
-	async Task<string> GetResult() {
-
 		await using var actionScope = await ActionScope.Start(ActionCategory.Invader);
 
 		// Determine type to build
@@ -28,12 +23,15 @@ public class BuildOnceOnSpace_Default {
 			.OrderBy( t => t.Cost ) // cheapest first
 			.ToArray();
 		foreach(ISkipBuilds stopper in buildStoppers)
-			if(await stopper.Skip( _tokens ))
-				return "build stopped by " + stopper.Text;
+			if(await stopper.Skip( _tokens )){
+				ActionScope.Current.Log( new Log.InvaderActionEntry( $"{_tokens.Space.Label}: build stopped by {stopper.Text}" ) );
+				return null;// "build stopped by " + stopper.Text;
+			}
 
 		// build it
-		await _tokens.AddDefaultAsync( invaderToAdd, countToAdd, AddReason.Build );
-		return invaderToAdd.Label;
+		var added = await _tokens.AddDefaultAsync( invaderToAdd, countToAdd, AddReason.Build );
+		ActionScope.Current.Log( new Log.InvaderActionEntry( $"{_tokens.Space.Label}: {added.Added.Class.Label}" ) );
+		return added.Added.AsHuman();
 	}
 
 	protected virtual (int,HumanTokenClass) DetermineWhatToAdd() {

@@ -56,8 +56,13 @@ public class BuildEngine {
 		return buildCounts;
 	}
 
-	public virtual Task Do1Build( GameState _, SpaceState spaceState ) 
-		=> new BuildOnceOnSpace_Default().ActAsync( spaceState );
+	public virtual async Task Do1Build( GameState _, SpaceState spaceState ){
+		var builtToken = await new BuildOnceOnSpace_Default().ActAsync( spaceState );
+		if(builtToken is not null && BuildComplete is not null)
+			await BuildComplete(spaceState,builtToken);
+	}
+
+	public event Func<SpaceState,HumanToken,Task> BuildComplete;
 
 	public virtual bool ShouldBuildOnSpace(SpaceState spaceState ) => spaceState.HasInvaders();
 

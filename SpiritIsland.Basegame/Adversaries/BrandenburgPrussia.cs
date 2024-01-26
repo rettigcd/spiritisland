@@ -25,7 +25,7 @@ public class BrandenburgPrussia : AdversaryBase, IAdversary {
 
 	static async Task LandRush( GameState gs ) {
 		// Land Rush: On each board with Town / City, add 1 Town to a land without Town
-		await Cmd.AddTown( 1, " (Escalation - Land Rush)" )
+		await Cmd.AddHuman( 1, Human.Town, " (Escalation - Land Rush)" )
 			.On().OneLandPerBoard().Which( Has.No( Human.Town ) )
 			.ForEachBoard().Which( BoardHas.TownOrCity )
 			.ActAsync( gs );
