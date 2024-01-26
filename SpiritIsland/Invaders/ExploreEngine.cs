@@ -2,6 +2,10 @@
 
 public class ExploreEngine {
 
+	public Func<GameState, Task> Escalation;
+	public event Func<GameState,Task> ExplorePhaseComplete;
+	public event Func<SpaceState,Task> ExploredSpace;
+
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Exploring:" + card.Text ) );
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
@@ -11,9 +15,10 @@ public class ExploreEngine {
 			await Escalation(gameState);
 			card.HasEscalation = false;
 		}
-	}
 
-	public Func<GameState, Task> Escalation;
+		if(ExplorePhaseComplete is not null)
+			await ExplorePhaseComplete(gameState);
+	}
 
 	static protected SpaceState[] PreExplore( InvaderCard card, GameState gs ) {
 
@@ -75,8 +80,6 @@ public class ExploreEngine {
 		if(ExploredSpace is not null) 
 			await ExploredSpace( tokens );
 	}
-
-	public event Func<SpaceState,Task> ExploredSpace;
 
 	protected virtual async Task AddToken( SpaceState tokens ) 
 		=> await tokens.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );

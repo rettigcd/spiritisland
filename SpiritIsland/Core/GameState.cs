@@ -276,7 +276,6 @@ public sealed class GameState : IHaveMemento {
 
 		readonly int _roundNumber;
 		readonly bool _isBlighted;
-		readonly int _damageToBlightLand;
 		readonly Dictionary<IHaveMemento,object> _mementos = [];
 	}
 

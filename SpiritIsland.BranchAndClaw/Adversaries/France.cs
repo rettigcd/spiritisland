@@ -71,12 +71,10 @@ public class France : AdversaryBase, IAdversary {
 	static AdversaryLevel L1_FrontierExplorers => new AdversaryLevel(1, 3, 3,3,3, "Frontier Explorers", 
 		"Except during Setup: After Invaders successfullly Explore into a land which has not Town/City, add 1 Explorer there." 
 	){
-		InitFunc = (gs,adv)=>{
-			gs.InvaderDeck.Explore.Engine = new FranceExplorer( 
-				hasFrontierExploration: 1 <= adv.Level, // Level 1 stuff
-				hasPersistentExplorers: 6 <= adv.Level  // Level 6 stuff
-			);
-		},
+		AdjustFunc = (gs,adv) => {
+			// Ajust occurs AFTER the initial Explore. (I think)
+			gs.InvaderDeck.Explore.Engine.ExploredSpace += (ss) => ss.AddDefaultAsync(Human.Explorer,1, AddReason.Explore);
+		}
 	};
 
 	#endregion Level 1 - Frontier Explorers
@@ -206,8 +204,24 @@ public class France : AdversaryBase, IAdversary {
 	static AdversaryLevel L6_PersistentExplorers => new AdversaryLevel(6, 10, 4,5,5, "Persistent Explorers", 
 		"After resolving an Explore Card, on each board add 1 Explorer to a land without any.  Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer." 
 	) {
-		InitFunc = (gameState,_) => gameState.AddIslandMod( new FranceFearPushesExplorers() )
+		InitFunc = (gameState,_) => { 
+
+			// After resolving an Explore Card, on each board add 1 Explorer to a land without any. 
+			gameState.InvaderDeck.Explore.Engine.ExplorePhaseComplete += (gs) => Cmd.ForEachBoard( AddExplorerToLandWithoutAny ).ActAsync( gs );
+
+			gameState.AddIslandMod( new FranceFearPushesExplorers() );
+		}
 	};
+
+	static BaseCmd<BoardCtx> AddExplorerToLandWithoutAny => new BaseCmd<BoardCtx>(
+		"Add Explorer to Land without any",
+		async boardCtx => {
+			var options = boardCtx.Board.Spaces.Where( s => !s.Tokens.HasAny( Human.Explorer ) ).ToArray();
+			var space = await boardCtx.SelectAsync( new A.Space( "Add explorer", options, Present.Always ) );
+			if(space != null)
+				await space.Tokens.AddDefaultAsync( Human.Explorer, 1 );
+		}
+	);
 
 
 	#endregion Level 6 - Persistent Explorers
