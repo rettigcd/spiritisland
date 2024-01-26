@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.BranchAndClaw;
+﻿using SpiritIsland.Basegame.Adversaries;
+
+namespace SpiritIsland.BranchAndClaw;
 
 public class GameComponentProvider : IGameComponentProvider {
 	// Not using reflection because types inside this assembly are static
@@ -16,9 +18,8 @@ public class GameComponentProvider : IGameComponentProvider {
 			: null;
 	}
 
-	public string[] AdversaryNames => Array.Empty<string>();
-	public IAdversary MakeAdversary( string adversaryName ) => null;
-
+	public string[] AdversaryNames => [ France.Name ];
+	public IAdversary MakeAdversary( string adversaryName ) => adversaryName == France.Name ? new France() : null;
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(AbsorbCorruption),

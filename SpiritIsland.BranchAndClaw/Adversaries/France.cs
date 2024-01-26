@@ -5,6 +5,8 @@ namespace SpiritIsland.Basegame.Adversaries;
 
 public class France : AdversaryBase, IAdversary {
 
+	public const string Name = "France";
+
 	public override AdversaryLossCondition LossCondition => new Loss_SprawlingPlantations();
 
 	public override AdversaryLevel[] Levels { get; } = [
