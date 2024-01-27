@@ -79,7 +79,7 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	static async Task DistributeVisibleTokens( Spirit self, Space from, Space to ) {
-		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Spirit_Power);
+		await using ActionScope actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,self);
 
 		var fromTokens = from.Tokens;
 		var toTokens = to.Tokens;
