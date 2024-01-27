@@ -213,9 +213,13 @@ internal class StatusPanel : IPanel {
 		GameState gameState = _ctx.GameState;
 		var card = gameState.BlightCard;
 		int count = gameState.Tokens[BlightCard.Space].Blight.Count;
-		int maxSpaces = card.CardFlipped 
-			? card.Side2BlightPerPlayer * gameState.Spirits.Length
-			: 2 * gameState.Spirits.Length + 1;
+
+		// Determine # of blight / player
+		int approximateMaxBlightPerPlayer = 2 + 1; // Let's say 2 on the card + 1 on the board
+		if(card.CardFlipped) 
+			approximateMaxBlightPerPlayer += card.Side2BlightPerPlayer;
+
+		int maxSpaces = approximateMaxBlightPerPlayer * gameState.Spirits.Length + 1;
 
 		return new BlockRect(
 			new BlightCardRect( gameState.BlightCard ),
@@ -224,6 +228,8 @@ internal class StatusPanel : IPanel {
 	}
 
 	IPaintableBlockRect BlightPoolRect(int poolMax, int blightCount){
+		if(poolMax < blightCount) poolMax = blightCount;
+
 		PoolRowMemberRect pool = new PoolRowMemberRect{ WidthRatio=1.5f };
 
 		const float iconReductionFactor = .65f; // use 1.0f for full icon size
