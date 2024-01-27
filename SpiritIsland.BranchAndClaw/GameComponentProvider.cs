@@ -1,4 +1,4 @@
-﻿using SpiritIsland.Basegame.Adversaries;
+﻿using SpiritIsland.BranchAndClaw.Adversaries;
 
 namespace SpiritIsland.BranchAndClaw;
 

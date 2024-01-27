@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace SpiritIsland.Basegame.Adversaries;
-
+﻿namespace SpiritIsland.BranchAndClaw.Adversaries;
 
 public class France : AdversaryBase, IAdversary {
 
@@ -156,6 +153,7 @@ public class France : AdversaryBase, IAdversary {
 		DestroyTown,
 		Add2StrifeToCityOrTown,
 		StrifedRavage.StrifedInvadersTakeDamagePerStrife
+		// !!! Discard / Stop Slave Rebellion
 	);
 
 	static BaseCmd<BoardCtx> Add2StrifeToCityOrTown => new BaseCmd<BoardCtx>(

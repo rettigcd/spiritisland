@@ -41,28 +41,26 @@ public class StrongAndConstantCurrents{
 	// Move up to 2 between target land and one other coastal Land.
 	static async Task MoveDahanAction( TargetSpaceCtx ctx ) {
 		int count = 2;
-		var coastalCtxs = GameState.Current.Spaces
-			.Select( s=>ctx.Target(s.Space) )
-			.Where( x => x.IsCoastal )
-			.Select( x=> x.Tokens )
+		SpaceState[] coastSpaces = GameState.Current.Spaces
+			.Where( TerrainMapper.Current.IsCoastal )
 			.ToArray();
 
 		while(0 < count) {
 
-			var coastalWithDahan = coastalCtxs
-				.SelectMany( x => x.Dahan.NormalKeys.On(x.Space) )
+			SpaceToken[] coastalWithDahan = coastSpaces
+				.SelectMany( x => x.SpaceTokensOfTag(Human.Dahan) )
 				.ToArray();
 
 			// From
 			var selected = await ctx.SelectAsync( 
-				new A.SpaceToken( "Select Dahan to move to/from"+ctx.Space, coastalWithDahan, Present.Done )
+				new A.SpaceToken( "Select Dahan to move to/from "+ctx.Space.Text, coastalWithDahan, Present.Done )
 					.PointArrowTo( ctx.Space )
 			);
 			if(selected == null) break;
 
 			// To:
 			var destination = (selected.Space != ctx.Space) ? ctx.Space
-				: await ctx.SelectAsync( A.Space.ToPushToken( selected.Token, selected.Space, coastalCtxs.Downgrade(), Present.Always ) );
+				: await ctx.SelectAsync( A.Space.ToPushToken( selected.Token, selected.Space, coastSpaces.Downgrade(), Present.Always ) );
 
 			await selected.MoveTo( destination );
 

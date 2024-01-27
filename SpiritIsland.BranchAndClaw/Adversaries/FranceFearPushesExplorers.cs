@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Basegame.Adversaries;
+﻿namespace SpiritIsland.BranchAndClaw.Adversaries;
 
 class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingTokenAsync {
 
