@@ -130,7 +130,7 @@ public class InvaderCardBuilder {
 		graphics.DrawString( singleTerrain.Terrain.ToString()[..1], bigFont, backgroundBrush, topRect, alignCenter );
 
 		// Escalation
-		if(card.HasEscalation) {
+		if(card.TriggersEscalation) {
 			var ellipseRect = botRect.InflateBy( -45, -20 );
 			graphics.FillEllipse( backgroundBrush, ellipseRect );
 			using Bitmap escalation = resources.InvaderCardImage( "escalation.png" );

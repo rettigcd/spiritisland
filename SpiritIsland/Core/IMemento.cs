@@ -12,7 +12,7 @@ public static class MementoExtenstions {
 	static public void Save( this Dictionary<IHaveMemento, object> mementos, IHaveMemento holder ) { 
 		if(holder is not null) mementos[holder] = holder.Memento;
 	}
-	static public void Save( this Dictionary<IHaveMemento, object> mementos, IEnumerable items ) { 
+	static public void SaveMany( this Dictionary<IHaveMemento, object> mementos, IEnumerable items ) { 
 		foreach(var item in items.OfType<IHaveMemento>())
 			mementos.Save( item );
 	}

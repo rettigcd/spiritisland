@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SpiritIsland;
 
 public sealed class InvaderCard : IOption {
 
@@ -6,7 +8,7 @@ public sealed class InvaderCard : IOption {
 
 	public static InvaderCard Stage1( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 1 );
 	public static InvaderCard Stage2( Terrain t1 ) => new InvaderCard( new SingleTerrainFilter(t1), 2 );
-	public static InvaderCard Stage2Costal()       => new InvaderCard( new CoastalFilter(), 2 );
+	public static InvaderCard Stage2Costal()       => new InvaderCard( new CoastalFilter(), 2, false );
 	public static InvaderCard Stage3(Terrain t1,Terrain t2) => new InvaderCard( new DoubleTerrainFilter( t1, t2 ), 3);
 
 	#endregion
@@ -28,15 +30,15 @@ public sealed class InvaderCard : IOption {
 	public int InvaderStage { get; }
 
 	public string Text { get; }
-	public bool HasEscalation { get; set; }
+	public bool TriggersEscalation { get; }
 
 	#region Constructors
 
-	public InvaderCard( InvaderCardSpaceFilter filter, int invaderStage ) {
+	public InvaderCard( InvaderCardSpaceFilter filter, int invaderStage, bool level2TriggersEscalation = true ) {
 		Filter = filter;
 		InvaderStage = invaderStage;
-		HasEscalation = InvaderStage == 2 && Filter.Text != CoastalFilter.Name;
-		Text = (HasEscalation ? "2" : "") + Filter.Text;
+		TriggersEscalation = InvaderStage == 2 && level2TriggersEscalation;
+		Text = (TriggersEscalation ? "2" : "") + Filter.Text;
 	}
 
 	#endregion

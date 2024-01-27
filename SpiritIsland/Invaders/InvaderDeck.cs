@@ -1,12 +1,17 @@
 ﻿namespace SpiritIsland;
 
-public class InvaderDeck : IHaveMemento{
+public class InvaderDeck : IHaveMemento {
 
 	#region constructors
 
-	public InvaderDeck( List<InvaderCard> cards, Queue<InvaderCard>[] unused ) {
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="cards">Prepared cards for the game.</param>
+	/// <param name="leftOver">Remaining cards that were not part of the game.</param>
+	public InvaderDeck( List<InvaderCard> cards, Queue<InvaderCard>[] leftOver ) {
 		_unrevealedCards = cards;
-		_unused = unused;
+		_leftOverCards = leftOver;
 		InitNumberOfCardsToDraw();
 		ActiveSlots = [ Ravage, Build, Explore ];
 	}
@@ -25,7 +30,7 @@ public class InvaderDeck : IHaveMemento{
 	public BuildSlot Build { get; } = new BuildSlot();
 	public RavageSlot Ravage { get; } = new RavageSlot();
 
-	public InvaderCard TakeNextUnused( int selectionLevel ) => _unused[selectionLevel - 1].Dequeue();
+	public InvaderCard TakeNextUnused( int selectionLevel ) => _leftOverCards[selectionLevel - 1].Dequeue();
 
 	public List<InvaderSlot> ActiveSlots {
 		get {  return _activeSlots; }
@@ -64,10 +69,10 @@ public class InvaderDeck : IHaveMemento{
 
 	#region private fields
 
-	readonly Queue<InvaderCard>[] _unused;
+	List<InvaderSlot> _activeSlots;
 	readonly List<InvaderCard> _unrevealedCards;
 	readonly List<int> _drawCount = []; // tracks how many cards to draw each turn
-	List<InvaderSlot> _activeSlots;
+	readonly Queue<InvaderCard>[] _leftOverCards; // cards not drawn and made part of the deck.  (Russia only)
 
 	#endregion
 
@@ -80,12 +85,14 @@ public class InvaderDeck : IHaveMemento{
 
 	protected class MyMemento {
 		public MyMemento(InvaderDeck src) {
-			_unrevealedCards = [..src.UnrevealedCards];
-			_drawCount = [..src._drawCount];
-			_discards = [..src.Discards];
+			// Explore/Build/Ravage
 			_slots = [..src.ActiveSlots];
+			_mementos.SaveMany( src._activeSlots );
 
-			_mementos.Save( src._activeSlots );
+			// Future / Past cards
+			_unrevealedCards = [..src.UnrevealedCards];
+			_discards = [..src.Discards];
+			_drawCount = [..src._drawCount];
 		}
 		public void Restore(InvaderDeck src ) {
 			src.UnrevealedCards.SetItems(_unrevealedCards);
@@ -96,10 +103,10 @@ public class InvaderDeck : IHaveMemento{
 			_mementos.Restore();
 		}
 		readonly Dictionary<IHaveMemento, object> _mementos = [];
-		readonly InvaderCard[] _unrevealedCards;
 		readonly InvaderSlot[] _slots;
-		readonly int[] _drawCount;
+		readonly InvaderCard[] _unrevealedCards;
 		readonly InvaderCard[] _discards;
+		readonly int[] _drawCount;
 
 	}
 

@@ -19,7 +19,7 @@ public abstract class ActionList<T> : IHaveMemento {
 	public object Memento { 
 		get{
 			var memento = new MyMemento( [.._actions], [] );
-			memento.mementos.Save(_actions);
+			memento.mementos.SaveMany(_actions);
 			return memento;
 		}
 		set {

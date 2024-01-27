@@ -9,12 +9,10 @@ public class ExploreEngine {
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Exploring:" + card.Text ) );
 		SpaceState[] tokenSpacesToExplore = PreExplore( card, gameState );
-		await ExplorePerMarker_ManySpaces_Stoppable( gameState, tokenSpacesToExplore, card.HasEscalation );
+		await ExplorePerMarker_ManySpaces_Stoppable( gameState, tokenSpacesToExplore, card.TriggersEscalation );
 
-		if( card.HasEscalation && Escalation != null ) {
+		if( card.TriggersEscalation && Escalation != null )
 			await Escalation(gameState);
-			card.HasEscalation = false;
-		}
 
 		if(ExplorePhaseComplete is not null)
 			await ExplorePhaseComplete(gameState);

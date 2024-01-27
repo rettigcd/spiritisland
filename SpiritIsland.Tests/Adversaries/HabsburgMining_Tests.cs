@@ -23,7 +23,7 @@ public class HabsburgMining_Tests {
 				gs.Given_InvadersDisappear(); // wiping away all the invaders each time
 			}
 			var sut = gs.InvaderDeck.Explore.Cards[0];
-			sut.Text.ShouldBe("2Salt Deposits");
+			sut.Text.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
 			board[4].Given_HasTokens("2E@1");
@@ -52,7 +52,7 @@ public class HabsburgMining_Tests {
 				gs.Given_InvadersDisappear(); // wiping away all the invaders each time
 			}
 			var sut = gs.InvaderDeck.Build.Cards[0];
-			sut.Text.ShouldBe("2Salt Deposits");
+			sut.Text.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
 			board[4].Given_HasTokens("2T@1");
@@ -81,7 +81,7 @@ public class HabsburgMining_Tests {
 				gs.Given_InvadersDisappear(); // wiping away all the invaders each time
 			}
 			var sut = gs.InvaderDeck.Ravage.Cards[0];
-			sut.Text.ShouldBe("2Salt Deposits");
+			sut.Text.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
 			board[4].Given_HasTokens("2T@1");
@@ -96,6 +96,5 @@ public class HabsburgMining_Tests {
 
 
 	}
-
 
 }

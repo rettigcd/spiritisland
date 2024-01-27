@@ -252,7 +252,7 @@ public sealed class GameState : IHaveMemento {
 
 	class MyMemento {
 		public MyMemento(GameState src) {
-			_mementos.Save( src.Spirits );
+			_mementos.SaveMany( src.Spirits );
 			_mementos.Save( src.MajorCards );
 			_mementos.Save( src.MinorCards );
 			_mementos.Save( src.InvaderDeck );

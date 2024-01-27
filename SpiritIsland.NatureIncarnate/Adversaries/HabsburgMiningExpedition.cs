@@ -219,7 +219,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			};
 		}
 		protected override string ValidChars => base.ValidChars + "S";
-		static public InvaderCard SaltDeposits() => new InvaderCard( new SaltDepositsFilter(), 2 );
+		static public InvaderCard SaltDeposits() => new InvaderCard( new SaltDepositsFilter(), 2, false );
 		protected override IEnumerable<InvaderCard> SelectLevel2Cards() {
 			return _levelsString.Contains( 'S' ) ? Level2SansCoastal : base.SelectLevel2Cards();
 		}
