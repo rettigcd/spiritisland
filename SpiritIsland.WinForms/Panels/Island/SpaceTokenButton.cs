@@ -13,6 +13,4 @@ public class SpaceTokenButton( Rectangle bounds ) : IButton {
 		}
 	}
 
-	void IButton.SyncDataToDecision( IDecision _ ) {}
-
 }

@@ -27,7 +27,6 @@ public class PresenceSlotButton( IPresenceTrack presenceTrack, Track track, Imag
 			graphics.DrawImage( _presenceImage, PresenceRect );
 	}
 
-	void IButton.SyncDataToDecision( IDecision _ ) { }
 }
 
 

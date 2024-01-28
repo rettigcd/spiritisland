@@ -14,6 +14,4 @@ public class InnateButton : IButton {
 		}
 	}
 
-	void IButton.SyncDataToDecision( IDecision _ ) { }
-
 }

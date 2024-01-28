@@ -33,8 +33,6 @@ public class InnateTierBtn( Spirit spirit, IDrawableInnateTier innateOption ) : 
 		return this;
 	}
 
-	void IButton.SyncDataToDecision( IDecision _ ) { }
-
 	#region private
 
 	Image UsingImage => ResourceImages.Singleton.GetInnateOption( _innateOption, _emSize, _rowSize );

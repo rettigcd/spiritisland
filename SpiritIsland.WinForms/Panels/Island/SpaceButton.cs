@@ -60,8 +60,6 @@ public class SpaceButton : IButton {
 		}
 	}
 
-	void IButton.SyncDataToDecision( IDecision d ) {}
-
 	#region private readonly fields
 
 	PointF[] Inner => _inner.Select( _worldToClient ).ToArray();

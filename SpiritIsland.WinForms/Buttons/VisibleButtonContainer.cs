@@ -58,7 +58,6 @@ public class VisibleButtonContainer {
 		_staticLookupButtonByOption.Remove( option );
 
 		_enabled.Add( option, button ); // add to new
-		button.SyncDataToDecision( decision );
 	}
 
 	public IOption FindEnabledOption( Point clientCoords ) {

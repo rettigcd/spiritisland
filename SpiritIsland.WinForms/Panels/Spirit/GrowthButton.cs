@@ -12,6 +12,5 @@ public class GrowthButton : IButton {
 			graphics.DrawRectangle( highlightPen, Bounds.InflateBy( 2 ) );
 		}
 	}
-	void IButton.SyncDataToDecision( IDecision _ ) { }
 
 }

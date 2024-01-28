@@ -2,6 +2,9 @@
 
 namespace SpiritIsland.WinForms;
 
+/// <summary>
+/// Optional Extra text at top of Innate Powers.
+/// </summary>
 public class GeneralInstructions( string description, float textEmSize, Size rowSize, Point topLeft ) {
 
 	readonly float _textEmSize = textEmSize;
