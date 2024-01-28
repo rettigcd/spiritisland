@@ -1,24 +1,24 @@
 ﻿namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 
-public class VirtualEarthUser( Spirit spirit ) : VirtualUser( spirit ) {
+public static class VirtualEarthUser {
 
-	public void SelectsGrowthA_Reclaim_PP2() {
-		Growth_SelectAction( "PlacePresence(2)" );
-		Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
+	static public void SelectsGrowthA_Reclaim_PP2(this VirtualUser user) {
+		user.Growth_SelectAction( "PlacePresence(2)" );
+		user.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
 	}
 
-	public void SelectsGrowthB_DrawCard_PP0() {
-		Growth_DrawsPowerCard();
-		SelectsMinorDeck();
-		SelectMinorPowerCard();
+	static public void SelectsGrowthB_DrawCard_PP0(this VirtualUser user) {
+		user.Growth_DrawsPowerCard();
+		user.SelectsMinorDeck();
+		user.SelectMinorPowerCard();
 
-		Growth_SelectAction( "PlacePresence(0)" );
-		Growth_PlacesEnergyPresence( "A4" );
+		user.Growth_SelectAction( "PlacePresence(0)" );
+		user.Growth_PlacesEnergyPresence( "A4" );
 	}
 
-	public void SelectsGrowthC_Energy_PP1() {
-		Growth_SelectAction( "PlacePresence(1)" );
-		Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+	static public void SelectsGrowthC_Energy_PP1(this VirtualUser user) {
+		user.Growth_SelectAction( "PlacePresence(1)" );
+		user.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 	}
 
 }

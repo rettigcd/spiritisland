@@ -16,11 +16,11 @@ public class RampantGreen_GrowthTests : BoardAGame {
 		_spirit.Given_HalfOfHandDiscarded();
 		_spirit.Given_IsOn( _board[2] );
 
-		await _spirit.When_Growing( () => {
-			User_SelectAlwaysGrowthOption();
-			User.Growth_DrawsPowerCard();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( (user) => {
+			User_SelectAlwaysGrowthOption(user);
+			user.Growth_DrawsPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay( 5);
@@ -36,10 +36,10 @@ public class RampantGreen_GrowthTests : BoardAGame {
 
 		Assert.Equal( 1, _spirit.NumberOfCardsPlayablePerTurn ); // ,"Rampant Green should start with 1 card.");
 
-		await _spirit.When_Growing( () => {
-			User_SelectAlwaysGrowthOption();
-			User.Growth_SelectAction( "PlacePresence(1)" );
-			User.Growth_PlacesEnergyPresence( "A2;A3;A5" );
+		await _spirit.When_Growing( (user) => {
+			User_SelectAlwaysGrowthOption(user);
+			user.Growth_SelectAction( "PlacePresence(1)" );
+			user.Growth_PlacesEnergyPresence( "A2;A3;A5" );
 		} );
 
 		// Player Gains +1 card to play this round
@@ -58,11 +58,11 @@ public class RampantGreen_GrowthTests : BoardAGame {
 	public async Task GainEnergy_PowerCard_JWPresence() {
 		_spirit.Given_IsOn( _board[2] );
 
-		await _spirit.When_Growing( () => {
-			User_SelectAlwaysGrowthOption();
-			User.Growth_SelectAction( "Gain Power Card", 1 ); // there are 2. select the 2nd one (index=1)
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( (user) => {
+			User_SelectAlwaysGrowthOption(user);
+			user.Growth_SelectAction( "Gain Power Card", 1 ); // there are 2. select the 2nd one (index=1)
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 		} );
 
 		// Gain 3 energy did not trigger
@@ -72,9 +72,9 @@ public class RampantGreen_GrowthTests : BoardAGame {
 		_spirit.Hand.Count.ShouldBe( 5 );
 	}
 
-	void User_SelectAlwaysGrowthOption() {
-		User.Growth_SelectAction( $"PlacePresence(2,{Filter.Jungle}Or{Filter.Wetland})" );
-		User.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
+	void User_SelectAlwaysGrowthOption(VirtualUser user) {
+		user.Growth_SelectAction( $"PlacePresence(2,{Filter.Jungle}Or{Filter.Wetland})" );
+		user.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
 	}
 
 	[Trait("Presence","EnergyTrack")]

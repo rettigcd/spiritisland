@@ -12,13 +12,13 @@ public class Lightning_GrowthTests : BoardAGame{
 		// * reclaim, +1 power card, +1 energy
 
 		_spirit.Given_HalfOfHandDiscarded();
-		await _spirit.When_Growing( () => {
-			User.Growth_SelectAction( "Gain Power Card" );
+		await _spirit.When_Growing( (user) => {
+			user.Growth_SelectAction( "Gain Power Card" );
 
 			// Select Minor card to draw
 			_gameState.MinorCards.ShouldNotBeNull();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 
 		} );
 
@@ -34,9 +34,9 @@ public class Lightning_GrowthTests : BoardAGame{
 
 		_spirit.Given_IsOn( _board[1] );
 
-		await _spirit.When_Growing( () => {
-			User.Growth_SelectAction( "PlacePresence(1)" );
-			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+		await _spirit.When_Growing( (user) => {
+			user.Growth_SelectAction( "PlacePresence(1)" );
+			user.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 		} );
 
 		Assert.Equal(1,_spirit.EnergyPerTurn);
@@ -48,9 +48,9 @@ public class Lightning_GrowthTests : BoardAGame{
 		// +1 presense range 2, +1 prsense range 0
 		_spirit.Given_IsOn( _board[3] );
 
-		await _spirit.When_Growing( 1, () => {
-			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
-			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
+		await _spirit.When_Growing( 1, (user) => {
+			user.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
+			user.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5" );
 		} );
 
 		_spirit.Assert_HasEnergy( 0 );

@@ -48,11 +48,11 @@ public class ToDreamAThousandDeaths_Tests {
 		await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_spirit);
 		Func<TargetSpaceCtx,Task> powerCardActionAsync = (method switch { "damage" => OneDamageToEachAsync, "destroy" => DestroyAllExplorersAndTownsAsync, _ => throw new Exception(nameof(method)) });
 		await powerCardActionAsync( MakeFreshPowerCtx( scope ) )
-			.AwaitUserToComplete(method, () => {
+			.AwaitUser( user => {
 				// Then: dream-death allows User pushes them
 				for(int i = 0; i < count; ++i)
-					_user.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
-			} );
+					user.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
+			} ).ShouldComplete(method);
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 );
@@ -152,9 +152,9 @@ public class ToDreamAThousandDeaths_Tests {
 
 			// When: doing 4 points of damage
 			await FourDamage( MakeFreshPowerCtx( scope ) )
-				.AwaitUserToComplete("4 damage", ()=> {
-					_user.NextDecision.HasPrompt( "Damage (4 remaining)" ).HasOptions( "C@1" ).Choose( "C@1" );
-				} );
+				.AwaitUser( user=> {
+					user.NextDecision.HasPrompt( "Damage (4 remaining)" ).HasOptions( "C@1" ).Choose( "C@1" );
+				} ).ShouldComplete("4 damage");
 
 			// Then: 0-fear
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once

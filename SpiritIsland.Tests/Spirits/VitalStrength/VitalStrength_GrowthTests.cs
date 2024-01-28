@@ -7,12 +7,8 @@
 [Collection("BaseGame Spirits")]
 public class VitalStrength_GrowthTests : BoardAGame {
 
-	readonly new VirtualEarthUser User;
-
 	public VitalStrength_GrowthTests()
-		:base( new VitalStrength() ){
-		User = new VirtualEarthUser( _spirit );
-	}
+		:base( new VitalStrength() ){}
 
 	[Fact]
 	public async Task ReclaimAndPresence() {
@@ -20,8 +16,8 @@ public class VitalStrength_GrowthTests : BoardAGame {
 		_spirit.Given_HalfOfHandDiscarded();
 		_spirit.Given_IsOn( _board[3] );
 
-		await _spirit.When_Growing( () => {
-			User.SelectsGrowthA_Reclaim_PP2();
+		await _spirit.When_Growing( (user) => {
+			user.SelectsGrowthA_Reclaim_PP2();
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay();
@@ -33,8 +29,8 @@ public class VitalStrength_GrowthTests : BoardAGame {
 		// (B) +1 power card, +1 presense range 0
 		_spirit.Given_IsOn( _board[4] );
 
-		await _spirit.When_Growing( () => {
-			User.SelectsGrowthB_DrawCard_PP0();
+		await _spirit.When_Growing( (user) => {
+			user.SelectsGrowthB_DrawCard_PP0();
 		} );
 
 		Assert.Equal( 5, _spirit.Hand.Count );
@@ -45,8 +41,8 @@ public class VitalStrength_GrowthTests : BoardAGame {
 		// (C) +1 presence range 1, +2 energy
 		_spirit.Given_IsOn( _board[1] );
 
-		await _spirit.When_Growing(() => { 
-			User.SelectsGrowthC_Energy_PP1(); 
+		await _spirit.When_Growing((user) => { 
+			user.SelectsGrowthC_Energy_PP1(); 
 		});
 
 		Assert.Equal( 3, _spirit.EnergyPerTurn );

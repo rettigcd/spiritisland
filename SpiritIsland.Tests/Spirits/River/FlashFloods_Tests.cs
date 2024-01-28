@@ -44,7 +44,7 @@ public class FlashFloods_Tests {
 		Assert.Contains( _card, _spirit.GetAvailableActions( _card.DisplaySpeed ).OfType<PowerCard>().ToList() ); // is fast
 
 		// When:
-		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, user => {
+		await _card.ActivateAsync( _spirit ).AwaitUser( user => {
 			user.TargetsLand( FlashFloods.Name, "A4" );
 			user.NextDecision .HasPrompt( "Damage (1 remaining)" ).HasOptions( "C@3,T@2,E@1" ).Choose( "E@1" );
 		} ).ShouldComplete();
@@ -77,7 +77,7 @@ public class FlashFloods_Tests {
 		_spirit.PlayCard( _card );
 		Assert.Contains(_card,_spirit.GetAvailableActions(_card.DisplaySpeed).OfType<PowerCard>().ToList()); // is fast
 
-		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, user => {
+		await _card.ActivateAsync( _spirit ).AwaitUser( user => {
 			//  Select: A2
 			user.TargetsLand(FlashFloods.Name,"A2");
 

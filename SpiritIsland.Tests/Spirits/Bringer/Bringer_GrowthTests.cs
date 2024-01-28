@@ -11,9 +11,9 @@ public class Bringer_GrowthTests : BoardAGame {
 		// reclaim, +1 power card
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await _spirit.When_Growing( 0, () => {
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( 0, (user) => {
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 		} );
 
 		// Then:
@@ -28,9 +28,9 @@ public class Bringer_GrowthTests : BoardAGame {
 		_spirit.Given_HalfOfHandDiscarded();
 		_spirit.Given_IsOn( _board[4] );
 
-		await _spirit.When_Growing( 1, ()=> {
-			User.Growth_Reclaims1( "Predatory Nightmares $2 (Slow),[Dreams of the Dahan $0 (Fast)]" );
-			User.Growth_PlacesPresence( "energy>A4" );
+		await _spirit.When_Growing( 1, (user)=> {
+			user.Growth_Reclaims1( "Predatory Nightmares $2 (Slow),[Dreams of the Dahan $0 (Fast)]" );
+			user.Growth_PlacesPresence( "energy>A4" );
 		} );
 
 		_spirit.Hand.Count.ShouldBe( 3 );
@@ -41,11 +41,11 @@ public class Bringer_GrowthTests : BoardAGame {
 		// +1 power card, +1 pressence range 1
 		_spirit.Given_IsOn( _board[1] );
 
-		await _spirit.When_Growing( 2, ()=> {
-			User.Growth_DrawsPowerCard();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
-			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+		await _spirit.When_Growing( 2, (user)=> {
+			user.Growth_DrawsPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
+			user.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 		} );
 
 		Assert_GainsFirstMinorCard();
@@ -65,10 +65,10 @@ public class Bringer_GrowthTests : BoardAGame {
 		_board[0].Tokens.AdjustDefault( Human.City, 1 );
 
 		// add presense range 4 Dahan or Invadors, +2 energy
-		await _spirit.When_Growing( () => {
+		await _spirit.When_Growing( (user) => {
 			// User.Growth_SelectsOption( "GainEnergy(2) / PlacePresence(4,dahan or invaders)" );
-			User.Growth_SelectAction( $"PlacePresence(4,{Filter.Dahan}Or{Filter.Invaders})" );
-			User.Growth_PlacesEnergyPresence( "T6;T7;T8;T9" );
+			user.Growth_SelectAction( $"PlacePresence(4,{Filter.Dahan}Or{Filter.Invaders})" );
+			user.Growth_PlacesEnergyPresence( "T6;T7;T8;T9" );
 		} );
 
 		Assert.Equal(2,_spirit.EnergyPerTurn);

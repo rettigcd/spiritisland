@@ -6,21 +6,20 @@ namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 public sealed class GiftOfStrength_Tests {
 
 	VitalStrength spirit;
-	VirtualEarthUser User;
 
 	[Fact]
 	[Trait("something","repeat card")]
 	public void Replaying_FastCards() {
 
 		spirit = new VitalStrength();
-		User = new VirtualEarthUser( spirit );
+		var user = new VirtualUser( spirit );
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
 		_ = new SinglePlayerGame(gs).StartAsync();
 
 		// Given: Earth has enough elements to trigger GOS
-		User.SelectsGrowthA_Reclaim_PP2();
-		User.WaitForNext();
+		user.SelectsGrowthA_Reclaim_PP2();
+		user.WaitForNext();
 		spirit.Elements[Element.Sun] = 1;
 		spirit.Elements[Element.Earth] = 2;
 		spirit.Elements[Element.Plant] = 2;
@@ -35,16 +34,17 @@ public sealed class GiftOfStrength_Tests {
 		spirit.TempCardPlayBoost = cards.Length;
 		spirit.Hand.AddRange( cards );
 		PlayCards( cards );
-		User.IsDoneBuyingCards();
+		user.IsDoneBuyingCards();
 
 		//  And: already played 2 fast cards (cost 1 & 2)
-		User.SelectsFastAction( "Fast-0,[Fast-1],Fast-2,Gift of Strength" );
-		User.SelectsFastAction( "Fast-0,[Fast-2],Gift of Strength" );
+		user.SelectsFastAction( "Fast-0,[Fast-1],Fast-2,Gift of Strength" );
+		user.SelectsFastAction( "Fast-0,[Fast-2],Gift of Strength" );
 
-		User_PlaysGiftOfStrengthOnSelf();
+		// When: user applies 'Gift of Strength' to self
+		user.SelectsFastAction( "Fast-0,[Gift of Strength]" );
 
 		// Then: user can replay ONLY the played: Fast-1 card.
-		User.SelectsFastAction( "Fast-0,[Replay Card (max cost:1)]" );
+		user.SelectsFastAction( "Fast-0,[Replay Card (max cost:1)]" );
 		spirit.NextDecision().HasPrompt( "Select card to repeat" ).HasOptions( "Fast-1 $1 (Fast),Done" )
 			.Choose( "Fast-1 $1 (Fast)" );
 	}
@@ -81,7 +81,7 @@ public sealed class GiftOfStrength_Tests {
 		await spirit.TakeActionAsync( cards[0], Phase.Fast );
 
 		//  When: spirit resolves GoS on self  (during FAST)
-		await spirit.ResolveAction( Phase.Fast ).AwaitUser( spirit, user => {
+		await spirit.ResolveAction( Phase.Fast ).AwaitUser( user => {
 			user.NextDecision.Choose("Gift of Strength");
 		} );
 		//   And: phase is slow
@@ -90,17 +90,12 @@ public sealed class GiftOfStrength_Tests {
 		await spirit.TakeActionAsync( cards[2], Phase.Slow );
 		
 		//  Then: the resolved slow is available to do again.
-		await spirit.ResolveAction( Phase.Slow ).AwaitUser( spirit, user => {
+		await spirit.ResolveAction( Phase.Slow ).AwaitUser( user => {
 			user.SelectsSlowAction( "Slow-0,Slow-2,[Replay Card (max cost:1)]" );
 			user.NextDecision.HasPrompt( "Select card to repeat" ).HasOptions( "Slow-1 $1 (Slow),Done" )
 				.Choose( "Slow-1 $1 (Slow)" );
 		} ).ShouldComplete();
 		
-	}
-
-	void User_PlaysGiftOfStrengthOnSelf() {
-		// When: user applies 'Gift of Strength' to self
-		User.SelectsFastAction( "Fast-0,[Gift of Strength]" );
 	}
 
 	// Replay-Action works in slow

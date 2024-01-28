@@ -19,11 +19,11 @@ public class ThrivingCommunities_Tests {
 		// When: execute blight card
 		await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Blight); // replace generic scope passed in.
 		await new ThrivingCommunitites().Immediately.ActAsync( fxt.GameState )
-			.AwaitUserToComplete( "Thriving Communities",()=> {
+			.AwaitUser( (user)=> {
 				//  And: choose the only 2 spaces
-				fxt.Choose( explorerSpace.Text ); fxt.Choose( "E@1" );
-				fxt.Choose( townSpace.Text ); fxt.Choose( "T@2" );
-			} );
+				user.Choose( explorerSpace.Text ); fxt.Choose( "E@1" );
+				user.Choose( townSpace.Text ); fxt.Choose( "T@2" );
+			} ).ShouldComplete("Thriving Communities");
 
 		// Then: spaces should have towns
 		fxt.GameState.Tokens[ explorerSpace ].InvaderSummary().ShouldBe( "1T@2" );

@@ -33,7 +33,7 @@ public class Depopulation_Tests {
 
 		// When: Doing Invader phase (fear+ragage)
 		await _gameState.Fear.Apply()
-			.AwaitUser( _spirit, u => { 
+			.AwaitUser( u => { 
 				u.NextDecision.HasPrompt( "Activating Fear" ).HasOptions( "Depopulation" ).Choose( "Depopulation" );
 				u.NextDecision.HasPrompt( "Select token for Remove 1 Town, or Replace 1 City with 1 Town" ).HasOptions( "C@3 on A2,C@3 on A8" ).Choose( "C@3 on A8" );
 			} )

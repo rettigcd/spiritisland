@@ -3,11 +3,8 @@
 [Collection("BaseGame Spirits")]
 public class RiverSurges_GrowthTests : BoardAGame {
 
-	protected new VirtualRiverUser User;
 
-	public RiverSurges_GrowthTests():base( new RiverSurges() ){
-		User = new VirtualRiverUser( _spirit );
-	}
+	public RiverSurges_GrowthTests():base( new RiverSurges() ){}
 
 	#region growth
 
@@ -23,8 +20,8 @@ public class RiverSurges_GrowthTests : BoardAGame {
 		//  And: energy track is at 1
 		Assert.Equal( 1, _spirit.EnergyPerTurn );
 
-		await _spirit.When_Growing( () => {
-			User.SelectsGrowthA_Reclaim();
+		await _spirit.When_Growing( (user) => {
+			user.SelectsGrowthA_Reclaim();
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay( 5 );
@@ -42,8 +39,8 @@ public class RiverSurges_GrowthTests : BoardAGame {
 		_spirit.Given_IsOn( _board[3] );
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 
-		await _spirit.When_Growing( () => {
-			User.SelectsGrowthB_2PP();
+		await _spirit.When_Growing( (user) => {
+			user.SelectsGrowthB_2PP();
 		} );
 
 		Assert.Equal(2,_spirit.EnergyPerTurn);
@@ -59,8 +56,8 @@ public class RiverSurges_GrowthTests : BoardAGame {
 		_spirit.Presence.Energy.Revealed.ShouldHaveSingleItem();
 		_spirit.Given_IsOn( _board[3] );
 
-		await _spirit.When_Growing( () => {
-			User.SelectsGrowthC_Draw_Energy();
+		await _spirit.When_Growing( (user) => {
+			user.SelectsGrowthC_Draw_Energy();
 		} );
 
 		_spirit.Assert_HasCardAvailable( "Drought" );
@@ -214,7 +211,8 @@ public class RiverSurges_GrowthTests2 {
 	public void Reclaim1_TriggersImmediately(){
 
 		var spirit = new RiverSurges();
-		var user = new VirtualRiverUser( spirit );
+		
+		var user = new VirtualUser( spirit );
 
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();

@@ -9,14 +9,14 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 		// Growth Option 1 - Reclaim All, +2 Power cards
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await _spirit.When_Growing( () => {
-			User.Growth_DrawsPowerCard();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( (user) => {
+			user.Growth_DrawsPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 
-			User.Growth_DrawsPowerCard();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+			user.Growth_DrawsPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay( 6);
@@ -36,9 +36,9 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 		foreach(string s in initialDahanSquares.Split( ',' ))
 			_board[int.Parse( s )].Tokens.Dahan.Init(1);
 
-		await _spirit.When_Growing( 1, () => {
-			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
-			User.Growth_PlacesEnergyPresence( expectedPresenseOptions );
+		await _spirit.When_Growing( 1, (user) => {
+			user.Growth_PlacesEnergyPresence( expectedPresenseOptions );
+			user.Growth_PlacesEnergyPresence( expectedPresenseOptions );
 		} );
 
 		_spirit.Assert_HasEnergy( 0 );
@@ -50,9 +50,9 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 		// +1 presense within 1, +4 energy
 		_spirit.Given_IsOn( _board[1] );
 
-		await _spirit.When_Growing( () => {
-			User.Growth_SelectAction( "PlacePresence(1)" );
-			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+		await _spirit.When_Growing( (user) => {
+			user.Growth_SelectAction( "PlacePresence(1)" );
+			user.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 		});
 
 		Assert.Equal(1,_spirit.EnergyPerTurn);

@@ -177,13 +177,13 @@ public class PowerCardDeck_Tests {
 		gs.Initialize();
 
 		if(drawDirect) {
-			spirit.DrawMajor( true ).AwaitUser( spirit, user => {
+			spirit.DrawMajor( true ).AwaitUser( user => {
 				user.SelectMajorPowerCard();
 				user.SelectCardToForget();
 			} ).Wait(10);
 
 		}  else { 
-			spirit.Draw().AwaitUser( spirit, user => {
+			spirit.Draw().AwaitUser( user => {
 				user.SelectsMajorDeck();
 				user.SelectMajorPowerCard();
 				user.SelectCardToForget();

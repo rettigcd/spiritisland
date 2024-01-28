@@ -11,9 +11,9 @@ public class ShadowsFlicker_GrowthTests : BoardAGame {
 		// reclaim, gain power Card
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await _spirit.When_Growing( 0, () => {
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( 0, (user) => {
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 		} );
 
 		Assert.Equal(5,_spirit.Hand.Count); // drew 1 card
@@ -24,12 +24,12 @@ public class ShadowsFlicker_GrowthTests : BoardAGame {
 		// gain power card, add a presense range 1
 		_spirit.Given_IsOn( _board[1] );
 
-		await _spirit.When_Growing( 1, () => {
-			User.Growth_DrawsPowerCard();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( 1, (user) => {
+			user.Growth_DrawsPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 
-			User.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
+			user.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 		} );
 
 		Assert.Equal(5,_spirit.Hand.Count); // drew 1 card
@@ -40,7 +40,7 @@ public class ShadowsFlicker_GrowthTests : BoardAGame {
 		// add a presence within 3, +3 energy
 		_spirit.Given_IsOn( _board[3] );
 
-		await _spirit.When_Growing( () => {
+		await _spirit.When_Growing( (user) => {
 			//		User.Growth_SelectsOption( "PlacePresence(3) / GainEnergy(3)" );
 			User.Growth_SelectAction( "PlacePresence(3)" );
 			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );

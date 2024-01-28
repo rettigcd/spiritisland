@@ -27,7 +27,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		// b) add a presense to jungle or a land with beasts ( range 3)
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( (_) => {
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 			User_GrowthB_PlacePresence();
 		} );
@@ -47,7 +47,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( (_) => {
 			User_GrowthC_DrawCard_GainEnergy(); // gain 1 energy before we spend it
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 		} );
@@ -65,7 +65,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( (_) => {
 			User_GrowthD_GainEnergy();
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 		} );
@@ -81,7 +81,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		// b) add a presense to jungle or a land with beasts ( range 3)
 		// c) gain power card, gain +1 energy
 
-		await When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( (_) => {
 			User_GrowthB_PlacePresence();
 			User_GrowthC_DrawCard_GainEnergy();
 		} );
@@ -98,7 +98,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		// b) add a presense to jungle or a land with beasts ( range 3)
 		// d) +3 energy
 
-		await When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( (_) => {
 			User_GrowthB_PlacePresence();
 			User_GrowthD_GainEnergy();
 		} );
@@ -112,7 +112,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		// c) gain power card, gain +1 energy
 		// d) +3 energy
 
-		await When_SharpFangsGrow( () => {
+		await When_SharpFangsGrow( (_) => {
 			User_GrowthC_DrawCard_GainEnergy();
 			User_GrowthD_GainEnergy();
 		} );
@@ -155,7 +155,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		fxt.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
 	}
 
-	async Task When_SharpFangsGrow(Action userAction) {
+	async Task When_SharpFangsGrow(Action<VirtualUser> userAction) {
 		_gameState.Phase = Phase.Growth;
 		await _spirit.When_Growing(userAction);
 	}

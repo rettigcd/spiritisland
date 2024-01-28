@@ -18,7 +18,7 @@ public class GiftOfProliferation_Tests {
 		nonPlacableSpace.Init( Token.Blight, 0 );
 
 		//  When: Card played
-		await GiftOfProliferation.ActionAsync( setup.TargetSelf ).AwaitUser( setup.Spirit, user => {
+		await GiftOfProliferation.ActionAsync( setup.TargetSelf ).AwaitUser( user => {
 			// From
 			user.NextDecision.HasPrompt("Select Presence to place").HasOptions("moon energy,2 cardplay,OHG").Choose("moon energy");
 			// will not ask where to place because there is no valid place
@@ -39,7 +39,7 @@ public class GiftOfProliferation_Tests {
 		nonPlacableSpace.Init( Token.Blight, 0 );
 
 		//  When: Card played
-		await GiftOfProliferation.ActionAsync( setup.TargetSelf ).AwaitUser( setup.Spirit, user => {
+		await GiftOfProliferation.ActionAsync( setup.TargetSelf ).AwaitUser( user => {
 			// From
 			user.NextDecision.HasPrompt("Select Presence to place")
 				.HasOptions("2 energy,2 cardplay,LotDW")
@@ -64,7 +64,7 @@ public class GiftOfProliferation_Tests {
 		space.Init( Token.Blight, 0 );
 
 		//  When: Card played
-		await GiftOfProliferation.ActionAsync( setup.TargetSelf ).AwaitUser( setup.Spirit, user => {
+		await GiftOfProliferation.ActionAsync( setup.TargetSelf ).AwaitUser( user => {
 			// From
 			user.NextDecision.HasPrompt("Select Presence to place")
 				.HasOptions("2 energy,fire,VLH")

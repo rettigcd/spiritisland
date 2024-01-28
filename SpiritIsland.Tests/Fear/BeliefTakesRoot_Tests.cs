@@ -28,8 +28,8 @@ public class BeliefTakesRoot_Tests {
 
 		Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-		await When_AddFearApplyFear( () => {
-			User.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
+		await When_AddFearApplyFear( (user) => {
+			user.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
 		} );
 		await _invaderCard.When_Ravaging();
 
@@ -42,8 +42,8 @@ public class BeliefTakesRoot_Tests {
 	public async Task Level1_NoBlightDahanLives() {
 		Given_DahanAndTownsInSpaceWithPresence(1, 1);
 
-		await When_AddFearApplyFear( ()=> {
-			User.AcknowledgesFearCard( FearCardAction );
+		await When_AddFearApplyFear( (user)=> {
+			user.AcknowledgesFearCard( FearCardAction );
 		} );
 		await _invaderCard.When_Ravaging();
 
@@ -60,8 +60,8 @@ public class BeliefTakesRoot_Tests {
 	public async Task Level1_DefendNotMoreThan2() { // not more th
 		Given_DahanAndTownsInSpaceWithPresence(2, 5);
 
-		await When_AddFearApplyFear( () => {
-			User.AcknowledgesFearCard( FearCardAction );
+		await When_AddFearApplyFear( (user) => {
+			user.AcknowledgesFearCard( FearCardAction );
 		} );
 		await _invaderCard.When_Ravaging();
 
@@ -84,9 +84,9 @@ public class BeliefTakesRoot_Tests {
 			_spirit.Given_IsOn(_ravageSpace);
 	}
 
-	async Task When_AddFearApplyFear(Action userActions) {
+	async Task When_AddFearApplyFear(Action<VirtualUser> userActions) {
 		_gameState.Fear.Add( 4 );
-		await _gameState.Fear.Apply().AwaitUserToComplete( "Fear", userActions );
+		await _gameState.Fear.Apply().AwaitUser( userActions ).ShouldComplete("Fear");
 	}
 
 	const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";

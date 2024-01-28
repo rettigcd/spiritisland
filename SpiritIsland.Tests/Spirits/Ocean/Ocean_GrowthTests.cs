@@ -67,12 +67,12 @@ public class Ocean_GrowthTests : BoardAGame {
 
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await _spirit.When_Growing( 0, () => {
-			User.Growth_DrawsPowerCard();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( 0, (user) => {
+			user.Growth_DrawsPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 
-			User.GathersPresenceIntoOcean();
+			user.GathersPresenceIntoOcean();
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay( 4 + 1 );
@@ -87,9 +87,9 @@ public class Ocean_GrowthTests : BoardAGame {
 		// Given: island has 2 boards, hence 2 oceans
 		Given_IslandAB();
 
-		await _spirit.When_Growing( 1, () => {
-			User.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay", "[A0],B0" );
-			User.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,OHG", "A0,[B0]" );
+		await _spirit.When_Growing( 1, (user) => {
+			user.PlacesPresenceInOcean( "PlaceInOcean,[PlaceInOcean]", "[moon energy],2 cardplay", "[A0],B0" );
+			user.PlacesPresenceInOcean( "PlaceInOcean", "[water energy],2 cardplay,OHG", "A0,[B0]" );
 		} );
 
 		_spirit.Assert_HasEnergy( 1 );
@@ -104,13 +104,13 @@ public class Ocean_GrowthTests : BoardAGame {
 		Given_IslandIsABC();
 		_spirit.Given_IsOnMany( starting );
 
-		await _spirit.When_Growing( 2, () => {
-			User.Growth_PlacesEnergyPresence( placeOptions );
-			User.Growth_DrawsPowerCard();
-			User.SelectsMinorDeck();
-			User.SelectMinorPowerCard();
+		await _spirit.When_Growing( 2, (user) => {
+			user.Growth_PlacesEnergyPresence( placeOptions );
+			user.Growth_DrawsPowerCard();
+			user.SelectsMinorDeck();
+			user.SelectMinorPowerCard();
 
-			User.PushesPresenceFromOcean( "A1,[A2],A3" );
+			user.PushesPresenceFromOcean( "A1,[A2],A3" );
 		} );
 
 		Assert_GainsFirstMinorCard();

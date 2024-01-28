@@ -27,7 +27,7 @@ public class France_Tests {
 		gs.RoundNumber.ShouldBe(4);
 
 		// When: start Invader phase
-		await InvaderPhase.ActAsync(gs).AwaitUser(gs.Spirits[0],u=>{
+		await InvaderPhase.ActAsync(gs).AwaitUser(u=>{
 			// Then: user should be prompted to add strife to town.
 			u.NextDecision.HasPrompt("Add strife to town").Choose("T@2 on A8");
 		}).ShouldComplete();
@@ -62,7 +62,7 @@ public class France_Tests {
 		await ExploreTriggersEscalation(gs);
 
 	}
-	Task ExploreTriggersEscalation(GameState gs) => InvaderPhase.ActAsync(gs).AwaitUser(gs.Spirits[0],u=>{
+	Task ExploreTriggersEscalation(GameState gs) => InvaderPhase.ActAsync(gs).AwaitUser(u=>{
 		u.NextDecision.HasPrompt("Select space to Add 1 Blight if Town/City. Add Town otherwise.").Choose("A8");
 	});
 

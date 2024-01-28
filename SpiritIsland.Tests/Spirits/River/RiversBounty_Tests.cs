@@ -97,7 +97,7 @@ public class RiversBounty_Tests {
 		for(int i=0;i<dahanToGather;++i)
 			Given_AddDahan( 1, neighbors[i] );
 
-		await _card.ActivateAsync( _spirit ).AwaitUser( _spirit, user => {
+		await _card.ActivateAsync( _spirit ).AwaitUser( user => {
 			user.TargetsLand( RiversBounty.Name, "A4" );
 			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom("D@2 on A1","D@2 on A1,D@2 on A2,Done");
 			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@2","D@2,Done");

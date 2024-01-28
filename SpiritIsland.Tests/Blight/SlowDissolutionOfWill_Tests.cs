@@ -16,7 +16,7 @@ public class SlowDissolutionOfWill_Tests {
 		// Given: Slow Dissolution of will played
 		await new SlowDissolutionOfWill().Immediately.ActAsync(gs)
 			//   And: spirit has chosen replacement token
-			.AwaitUser(spirit,user=>user.NextDecision
+			.AwaitUser(user=>user.NextDecision
 			.HasPrompt("Choose Badlands, Beast, or Wilds as Spirit-Replacement token")
 			.HasOptions("Badlands,Beast,Wilds")
 			.Choose("Wilds"));
@@ -24,7 +24,7 @@ public class SlowDissolutionOfWill_Tests {
 		//  When: start next invader phase
 		await gs.RunPreInvaderActions()
 		//   and: a presence is removed
-			.AwaitUser(spirit,user=>{ 
+			.AwaitUser(user=>{ 
 				user.NextDecision.HasPrompt("Replace Presence with Wilds")
 					.HasOptions("RSiS on B7,RSiS on B8")
 					.Choose("RSiS on B8");

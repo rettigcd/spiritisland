@@ -72,13 +72,13 @@ public static class SpiritExtensions {
 
 	#region When
 
-	internal static Task When_Growing( this Spirit spirit, Action userActions ) {
+	internal static Task When_Growing( this Spirit spirit, Action<VirtualUser> userActions ) {
 		GameState gs = GameState.Current;
 		gs.Phase = Phase.Growth;
 		return spirit.DoGrowth( gs ).AwaitUser( userActions ).ShouldComplete("Growth");
 	}
 
-	internal static Task When_Growing( this Spirit spirit, int option, Action userActions ) {
+	internal static Task When_Growing( this Spirit spirit, int option, Action<VirtualUser> userActions ) {
 		GameState gs = GameState.Current;
 		gs.Phase = Phase.Growth;
 		return Testing_GrowAndResolve( spirit, spirit.GrowthTrack.Options[option], gs )
@@ -87,10 +87,10 @@ public static class SpiritExtensions {
 	}
 
 	internal static Task When_ResolvingCard<T>( this Spirit spirit, Action<VirtualUser> userActions = null )
-		=> spirit.ResolvePower( PowerCard.For(typeof(T)) ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );
+		=> spirit.ResolvePower( PowerCard.For(typeof(T)) ).AwaitUser( userActions ).ShouldComplete( typeof( T ).Name );
 
 	internal static Task When_ResolvingInnate<T>( this Spirit spirit, Action<VirtualUser> userActions = null )
-		=> spirit.ResolvePower( InnatePower.For(typeof(T)) ).AwaitUser( spirit.HandleDecisions( userActions ) ).ShouldComplete( typeof( T ).Name );
+		=> spirit.ResolvePower( InnatePower.For(typeof(T)) ).AwaitUser( userActions ).ShouldComplete( typeof( T ).Name );
 
 	internal static async Task ResolvePower( this Spirit spirit, IFlexibleSpeedActionFactory card ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
@@ -109,7 +109,7 @@ public static class SpiritExtensions {
 
 	internal static Task When_TargetingSpace( this Spirit spirit, Space space, Func<TargetSpaceCtx,Task> methodAsync, Action<VirtualUser> userActions = null )
 		=> spirit.ResolvePowerOnSpaceAsync( space, methodAsync )
-			.AwaitUser( spirit.HandleDecisions( userActions ) )
+			.AwaitUser( userActions )
 			.ShouldComplete( methodAsync.Method.Name );
 
 	/// <summary>
@@ -124,25 +124,12 @@ public static class SpiritExtensions {
 
 	#region Await ...
 
-	// !!! Deprecate this.  Add the .ShouldComplete to the end of the AwaitUser methods and use them instead.
-	internal static Task AwaitUserToComplete( this Task task, string taskDescription, Action userActions )
-		=> task.AwaitUser(userActions).ShouldComplete(taskDescription);
-
-	/// <summary>
-	/// Wait for a VirtualUser to complete a series of action before returning the Task
-	/// Version 1 - Caller supplies the VirtualUser
-	/// </summary>
-	internal static Task AwaitUser( this Task task, Action userActions ) {
-		userActions?.Invoke();
-		return task;
-	}
-
 	/// <summary>
 	/// Wait for a VirtualUser to complete a series of action before returning the Task
 	/// Version 2 - Virtual User is generated from Spirit
 	/// </summary>
-	internal static Task AwaitUser( this Task task, Spirit spirit, Action<VirtualUser> userActions ) {
-		spirit.HandleDecisions(userActions)();
+	internal static Task AwaitUser( this Task task, Action<VirtualUser> userActions ) {
+		GameState.Current.Spirits[0].HandleDecisions(userActions)();
 		return task;
 	}
 

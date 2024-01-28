@@ -21,9 +21,9 @@ public class Keeper_GrowthTests : BoardAGame {
 		// b) +1 power card
 		_spirit.Given_HalfOfHandDiscarded();
 
-		await _spirit.When_Growing( () => {
-			User_Activates_A();
-			User_Activates_B();
+		await _spirit.When_Growing( (user) => {
+			User_Activates_A(user);
+			User_Activates_B(user);
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay( 1 + 4 );
@@ -42,9 +42,9 @@ public class Keeper_GrowthTests : BoardAGame {
 
 		_gameState.Phase = Phase.Growth;
 
-		await _spirit.When_Growing( () => {
-			User_Activates_A();
-			User_Activates_C();
+		await _spirit.When_Growing( (user) => {
+			User_Activates_A(user);
+			User_Activates_C(user);
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay();      // A
@@ -64,9 +64,9 @@ public class Keeper_GrowthTests : BoardAGame {
 		_spirit.Given_IsOn( _board[3] );
 		Given_BlightEverywhereExcept7();
 
-		await _spirit.When_Growing( () => {
-			User_Activates_A();
-			User_Activates_D();
+		await _spirit.When_Growing( (user) => {
+			User_Activates_A(user);
+			User_Activates_D(user);
 		} );
 
 		_spirit.Assert_AllCardsAvailableToPlay( 4+1);     // A
@@ -86,9 +86,9 @@ public class Keeper_GrowthTests : BoardAGame {
 		// Given: 1 wilds, 3 away
 		Given_HasWilds( _board[8] );
 
-		await _spirit.When_Growing( () =>{
-			User_Activates_B();
-			User_Activates_C();
+		await _spirit.When_Growing( (user) =>{
+			User_Activates_B(user);
+			User_Activates_C(user);
 		} );
 
 		// Assert_HasPowerProgressionCard( 0); // B
@@ -107,9 +107,9 @@ public class Keeper_GrowthTests : BoardAGame {
 		_spirit.Energy = 10; // so we can do this option
 
 		_gameState.Phase = Phase.Growth;
-		await _spirit.When_Growing( () => {
-			User_Activates_B();
-			User_Activates_D();
+		await _spirit.When_Growing( (user) => {
+			User_Activates_B(user);
+			User_Activates_D(user);
 		} );
 
 		// Assert_HasPowerProgressionCard( 0); // B
@@ -131,9 +131,9 @@ public class Keeper_GrowthTests : BoardAGame {
 		Given_HasWilds( _board[8] );
 		Given_BlightEverywhereExcept7();
 
-		await _spirit.When_Growing( () => {
-			User_Activates_C();
-			User_Activates_D();
+		await _spirit.When_Growing( (user) => {
+			User_Activates_C(user);
+			User_Activates_D(user);
 		} );
 
 		_spirit.Assert_HasEnergy( startingEnergy + _spirit.EnergyPerTurn - 2  );          // C & D
@@ -152,7 +152,7 @@ public class Keeper_GrowthTests : BoardAGame {
 
 		// When: we place a presence on that space
 		await _spirit.Presence.Token.MoveAsync( _spirit.Presence.Energy.RevealOptions.Single(), space )
-			.AwaitUser( _spirit, user => {
+			.AwaitUser( user => {
 				user.NextDecision.HasPrompt("Push (2)").MoveFrom("D@2").MoveTo("A4","A1,A4,A6,A7,A8");
 				user.NextDecision.HasPrompt("Push (1)").MoveFrom("D@2").MoveTo("A7","A1,A4,A6,A7,A8");
 			} )
@@ -208,27 +208,27 @@ public class Keeper_GrowthTests : BoardAGame {
 		_gameState.Tokens[space].Wilds.Init(1);
 	}
 
-	void User_Activates_A() {
-		User.Growth_SelectAction( "Reclaim All" );
+	void User_Activates_A(VirtualUser user) {
+		user.Growth_SelectAction( "Reclaim All" );
 	}
 
-	void User_Activates_B() {
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
+	void User_Activates_B(VirtualUser user) {
+		user.Growth_DrawsPowerCard();
+		user.SelectsMinorDeck();
+		user.SelectMinorPowerCard();
 	}
 
-	void User_Activates_C() {
-		User.Growth_SelectAction( $"PlacePresence(3,{Filter.Presence}Or{Filter.Wilds})" );
-		User.Growth_PlacesEnergyPresence( "A3;A8" );
+	void User_Activates_C(VirtualUser user) {
+		user.Growth_SelectAction( $"PlacePresence(3,{Filter.Presence}Or{Filter.Wilds})" );
+		user.Growth_PlacesEnergyPresence( "A3;A8" );
 	}
 
-	void User_Activates_D() {
-		User.Growth_SelectAction( "PlacePresence(3,No Blight)" );
-		User.PlacesCardPlayPresence( "A7" );
-		User.Growth_DrawsPowerCard();
-		User.SelectsMinorDeck();
-		User.SelectMinorPowerCard();
+	void User_Activates_D(VirtualUser user) {
+		user.Growth_SelectAction( "PlacePresence(3,No Blight)" );
+		user.PlacesCardPlayPresence( "A7" );
+		user.Growth_DrawsPowerCard();
+		user.SelectsMinorDeck();
+		user.SelectMinorPowerCard();
 	}
 
 }

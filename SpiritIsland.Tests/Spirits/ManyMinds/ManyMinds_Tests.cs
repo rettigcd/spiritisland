@@ -38,23 +38,22 @@ public class ManyMinds_Tests {
 		//   And: Beast on 7
 		board[7].Given_HasTokens( "1A" );
 
-		await spirit.When_Growing( () => {
-			VirtualUser u = new VirtualUser(spirit);
+		await spirit.When_Growing( (user) => {
 			// Then: can gather 1 beast
-			u.NextDecision.HasPrompt( "Select Growth" ).Choose( "Gather1Token" );
+			user.NextDecision.HasPrompt( "Select Growth" ).Choose( "Gather1Token" );
 
 			// Implemented as a Push
-			u.NextDecision.HasPrompt( "Select space to Gather a Beast" ).Choose( "A1" );
-			u.NextDecision.HasPrompt( "Gather up to (1)" ).MoveFrom( "Beast" );
+			user.NextDecision.HasPrompt( "Select space to Gather a Beast" ).Choose( "A1" );
+			user.NextDecision.HasPrompt( "Gather up to (1)" ).MoveFrom( "Beast" );
 
 			// Implemented as a Gather
 			// spirit.NextDecision().HasPrompt("").Choose( "A1" );
 			// spirit.NextDecision().Choose( "Beast on A7" );
 
 			// Cleanup
-			u.NextDecision.Choose( "PlacePresenceAndBeast" );
-			u.NextDecision.HasPrompt( "Select Presence to place" ).Choose( "1 energy" );
-			u.NextDecision.Choose( "A1" );
+			user.NextDecision.Choose( "PlacePresenceAndBeast" );
+			user.NextDecision.HasPrompt( "Select Presence to place" ).Choose( "1 energy" );
+			user.NextDecision.Choose( "A1" );
 		} );
 
 	}

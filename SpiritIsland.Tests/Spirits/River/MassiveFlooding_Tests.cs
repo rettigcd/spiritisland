@@ -47,7 +47,7 @@ public class MassiveFlooding_Tests {
 		space.Tokens.Given_HasTokens( "1C@3,5E@1,4T@2" );
 
 		//  When: activate innate
-		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( spirit, user => { 
+		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => { 
 			user.NextDecision.Choose( space );
 			user.NextDecision.MoveFrom("T@2").MoveTo(destination.Space.Text);
 		} ).ShouldComplete();
@@ -87,7 +87,7 @@ public class MassiveFlooding_Tests {
 		// fixture.InitTokens( space, "1C@3,4T@2,5E@1");
 
 		//  When: activate innate
-		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( spirit, user => {
+		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => {
 			user.NextDecision.HasPrompt("Massive Flooding: Target Space").Choose( space ); // target space
 			user.NextDecision.HasPrompt("Damage (2 remaining)").Choose( "T@2" ); // 1st damage
 			user.NextDecision.HasPrompt("Damage (1 remaining)").Choose( "T@1" ); // 2nd damage

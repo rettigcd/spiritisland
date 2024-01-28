@@ -49,8 +49,8 @@ public class PlacePresence_Tests {
 		// Given: spirit has one place presence action
 		ctx.Spirit.Given_IsOn(ctx.Board[1]);
 
-		await ctx.Spirit.When_Growing(0, ()=> {
-			ctx.User.PlacePresenceLocations( ctx.Spirit.Presence.Energy.RevealOptions.Single(), "A1;A2" );
+		await ctx.Spirit.When_Growing(0, user => {
+			user.PlacePresenceLocations( ctx.Spirit.Presence.Energy.RevealOptions.Single(), "A1;A2" );
 		} );
 
 		ctx.Spirit.Presence.Energy.Revealed.Count().ShouldBe(2);
@@ -62,8 +62,8 @@ public class PlacePresence_Tests {
 
 		ctx.Spirit.Given_IsOn(ctx.Board[1]);
 
-		await ctx.Spirit.When_Growing( 0, () => {
-			ctx.User.PlacePresenceLocations( ctx.Spirit.Presence.CardPlays.RevealOptions.Single(), "A1;A2" );
+		await ctx.Spirit.When_Growing( 0, user => {
+			user.PlacePresenceLocations( ctx.Spirit.Presence.CardPlays.RevealOptions.Single(), "A1;A2" );
 		} );
 
 		ctx.Spirit.Presence.CardPlays.Revealed.Count().ShouldBe(2);
@@ -113,7 +113,7 @@ public class PlacePresence_Tests {
 		ctx.GameState.Phase = phase;
 
 		// When: user places presence from that space
-		await new PlacePresence(2).ActAsync(ctx.Spirit).AwaitUser(ctx.Spirit,u=>{
+		await new PlacePresence(2).ActAsync(ctx.Spirit).AwaitUser(u=>{
 			u.NextDecision.HasPrompt("Select Presence to place").HasOptions("2 energy,reclaim 1,RSiS on A5").Choose("reclaim 1");
 			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
 			// Then: Reclaim does not trigger.
@@ -137,7 +137,7 @@ public class PlacePresence_Tests {
 		ctx.Spirit.Elements.Elements.BuildElementString(false).ShouldBe("");
 
 		// When: user places presence from that space
-		await new PlacePresence(2).ActAsync(ctx.Spirit).AwaitUser(ctx.Spirit,u=>{
+		await new PlacePresence(2).ActAsync(ctx.Spirit).AwaitUser(u=>{
 			u.NextDecision.HasPrompt("Select Presence to place").HasOptions("air energy,2 cardplay,Ts on A3,Ts on A7").Choose("air energy");
 			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
 		}).ShouldComplete();

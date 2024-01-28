@@ -17,10 +17,9 @@ public class Blight_Tests {
 		gs.BlightCard.CardFlipped.ShouldBeFalse();
 
 		// When: Taking Blight from Card
-		await gs.TakeBlightFromCard(3).AwaitUserToComplete("Taking Blight From Card", () => {
-			VirtualUser u = new VirtualUser(spirit);
+		await gs.TakeBlightFromCard(3).AwaitUser( (u) => {
 			u.NextDecision.HasPrompt("Island blighted").Choose( "Invaders Find the Land to Their Liking" );
-		} );
+		} ).ShouldComplete("Taking Blight From Card");
 
 		// Then:
 		gs.BlightCard.CardFlipped.ShouldBeTrue();

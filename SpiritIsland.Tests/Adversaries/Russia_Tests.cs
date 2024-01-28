@@ -139,7 +139,7 @@ var xxx = a5.Keys.ToArray();
 		//  Then: we push 1
 		Spirit spirit = gameState.Spirits[0];
 		await a5.Space.When_Ravaging()
-			.AwaitUser( spirit, u => u.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( a1.Space.Text ) )
+			.AwaitUser( u => u.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( a1.Space.Text ) )
 			.ShouldComplete("Ravage");
 
 		//   And: explorer should be on destination

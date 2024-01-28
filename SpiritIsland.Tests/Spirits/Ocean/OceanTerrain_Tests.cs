@@ -83,7 +83,7 @@ public class OceanTerrain_Tests {
 		// When: Thundersepearker Activates a card that Pushes Dahan
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
 		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit); // required to signal it is a spirit power
-		await PowerCard.For(typeof(CallToTend)).ActivateAsync( primarySpirit ).AwaitUser( primarySpirit, user => { 
+		await PowerCard.For(typeof(CallToTend)).ActivateAsync( primarySpirit ).AwaitUser( user => { 
 
 			user.NextDecision.Choose("A2");	//  And: Targets A2 (that has a dahan on it)
 
@@ -145,7 +145,7 @@ public class OceanTerrain_Tests {
 		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
 		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit);
-		await PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( primarySpirit ).AwaitUser( primarySpirit, user => {
+		await PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( primarySpirit ).AwaitUser( user => {
 			//  And: Targets A2
 			user.NextDecision.Choose( a2.Space.Text );
 
@@ -260,13 +260,13 @@ public class OceanTerrain_Tests {
 		primarySpirit.Energy = 5;
 		primarySpirit.AddActionFactory(PowerCard.For(typeof(CleansingFloods)));
 		gameState.Phase = Phase.Slow;
-		await primarySpirit.ResolveActions( gameState ).AwaitUserToComplete("Cleansing Flood", ()=> {
-			Choose( "Cleansing Floods $5 (Slow)" );
+		await primarySpirit.ResolveActions( gameState ).AwaitUser((user)=> {
+			user.Choose( "Cleansing Floods $5 (Slow)" );
 			if(withOcean) {
 				// Then: can target out of wetland
-				NextDecision.HasOptions( "A0,A1,A2,A3" ).Choose("A1");
+				user.NextDecision.HasOptions( "A0,A1,A2,A3" ).Choose("A1");
 			}
-		} );
+		} ).ShouldComplete("Cleansing Flood");
 
 	}
 

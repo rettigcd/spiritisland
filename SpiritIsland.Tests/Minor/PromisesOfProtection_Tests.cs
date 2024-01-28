@@ -21,7 +21,7 @@ public class PromisesOfProtection_Tests {
 		fxt.InitTokens(dahanSource, "4D@2");
 
 		// When: playing card
-		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( fxt.Spirit, user => { 
+		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( user => { 
 			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom( selectDahanFromSource );
 			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom( selectDahanFromSource );
 		} ).ShouldComplete();
@@ -32,7 +32,7 @@ public class PromisesOfProtection_Tests {
 		ctx.Tokens.Summary.ShouldBe("4D@4");
 
 		// Brought in 2 more dahan
-		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( fxt.Spirit, user => {
+		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( user => {
 			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom( selectDahanFromSource );
 			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom( selectDahanFromSource );
 		} ).ShouldComplete();

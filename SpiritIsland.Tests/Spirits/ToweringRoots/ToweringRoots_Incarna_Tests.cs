@@ -165,8 +165,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		Given_IncarnaOn( _board[2] );
 
 		// When: placing presence
-		await _spirit.When_Growing( 1, () => {
-			var user = new VirtualUser( _spirit );
+		await _spirit.When_Growing( 1, (user) => {
 			// --- Draw Card ---
 			user.Growth_DrawsPowerCard();
 			user.SelectsMinorDeck();

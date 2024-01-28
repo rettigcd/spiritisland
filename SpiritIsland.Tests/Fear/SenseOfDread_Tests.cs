@@ -12,10 +12,10 @@ public class SenseOfDread_Tests {
 		fix.InitTokens(ravageSpace, "2E@1");
 
 		// When: activate fear card
-		await new SenseOfDread().When_InvokingLevel(1, () => {
+		await new SenseOfDread().When_InvokingLevel(1, (user) => {
 			// And remove 1 explorer from ravage space
-			fix.Choose( ravageSpace.Text ); // select ravage space
-			fix.Choose( "E@1" ); // remove an explorer
+			user.Choose( ravageSpace.Text ); // select ravage space
+			user.Choose( "E@1" ); // remove an explorer
 		} );
 
 		// Then: there should be 1 explorer left.
@@ -33,10 +33,10 @@ public class SenseOfDread_Tests {
 		fix.InitTokens(ravageSpace, "1E@1,1T@2");
 
 		// When: activate fear card
-		await new SenseOfDread().When_InvokingLevel(2, () => {
+		await new SenseOfDread().When_InvokingLevel(2, (user) => {
 			// And remove 1 explorer from ravage space
-			fix.Choose( ravageSpace.Text ); // select ravage space
-			fix.Choose( "T@2" ); // remove an explorer
+			user.Choose( ravageSpace.Text ); // select ravage space
+			user.Choose( "T@2" ); // remove an explorer
 		} );
 
 		// Then: there should be 1 explorer left.

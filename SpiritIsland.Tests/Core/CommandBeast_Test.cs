@@ -17,7 +17,7 @@ public class CommandBeast_Test
 		await AdvanceToRound( gs,2 );
 
 		//   And: "Received Command" Beasts card at end of Invader Phase
-		await InvaderPhase.ActAsync(gs).AwaitUser(spirit, Acknowledge).ShouldComplete();
+		await InvaderPhase.ActAsync(gs).AwaitUser(Acknowledge).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -28,7 +28,7 @@ public class CommandBeast_Test
 		var round3Memento = ((IHaveMemento)gs).Memento;
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(spirit,UseCard).ShouldComplete();
+		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -37,7 +37,7 @@ public class CommandBeast_Test
 
 		//  Then: available to use in Round 3 again.
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(spirit,UseCard).ShouldComplete();
+		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 
 	}
 
@@ -57,7 +57,7 @@ public class CommandBeast_Test
 		var round2Memento = ((IHaveMemento)gs).Memento;
 
 		//   And: "Received Command" Beasts card at end of Invader Phase
-		await InvaderPhase.ActAsync( gs ).AwaitUser( spirit, Acknowledge );
+		await InvaderPhase.ActAsync( gs ).AwaitUser( Acknowledge );
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -66,7 +66,7 @@ public class CommandBeast_Test
 
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser( spirit, UseCard ).ShouldComplete();
+		await spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -74,14 +74,14 @@ public class CommandBeast_Test
 		((IHaveMemento)gs).Memento = round2Memento;
 
 		//  Then: "Received Command" Beasts card at end of Invader Phase (AGAIN)
-		await InvaderPhase.ActAsync( gs ).AwaitUser( spirit, Acknowledge );
+		await InvaderPhase.ActAsync( gs ).AwaitUser( Acknowledge );
 		//   And: time passes
 		await gs.TriggerTimePasses();
 		// Given: Round 3
 		gs.RoundNumber.ShouldBe( 3 );
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser( spirit, UseCard ).ShouldComplete();
+		await spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
 
 
 	}
@@ -100,7 +100,7 @@ public class CommandBeast_Test
 		await AdvanceToRound( gs,2 );
 
 		//   And: "Received Command" Beasts card at end of Invader Phase
-		await InvaderPhase.ActAsync(gs).AwaitUser(spirit, Acknowledge).ShouldComplete();
+		await InvaderPhase.ActAsync(gs).AwaitUser(Acknowledge).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -114,7 +114,7 @@ public class CommandBeast_Test
 
 		//   And: Used in Fast
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(spirit,UseCard).ShouldComplete();
+		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -123,7 +123,7 @@ public class CommandBeast_Test
 
 		//  Then: available to use in Round 3 again.
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(spirit,UseCard).ShouldComplete();
+		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 
 	}
 

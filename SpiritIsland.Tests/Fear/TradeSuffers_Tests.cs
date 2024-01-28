@@ -110,11 +110,11 @@ public class TradeSuffers_Tests {
 		fxt.InitTokens( space, "1C@3" );
 
 		// When: fear card
-		await new TradeSuffers().When_InvokingLevel(3, () => {
+		await new TradeSuffers().When_InvokingLevel(3, (user) => {
 			//  And: user selects a1
-			fxt.Choose( space.Text );
+			user.Choose( space.Text );
 			//  And: user choses not to replace (this is what we are testing...)
-			fxt.Choose( "Done" );
+			user.Choose( "Done" );
 		});
 
 		// Then:

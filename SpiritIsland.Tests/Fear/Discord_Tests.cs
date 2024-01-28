@@ -13,12 +13,12 @@ public class Discord_Tests {
 		fxt.InitTokens( space, "1C@3,1T@2" );
 
 		// When:
-		await new Discord().When_InvokingLevel( 3, () => {
-			fxt.NextDecision.HasPrompt( "Select token for Add 1 Strife." )
+		await new Discord().When_InvokingLevel( 3, (user) => {
+			user.NextDecision.HasPrompt( "Select token for Add 1 Strife." )
 				.HasOptions( "C@3,T@2" )
 				.Choose( "C@3" );
-			fxt.Choose( "T@2" ); // damage town
-			fxt.Choose( "T@1" ); // damage it again.
+			user.Choose( "T@2" ); // damage town
+			user.Choose( "T@1" ); // damage it again.
 		} );
 
 		// Then: city destroys 2 explorers, leaving 1
