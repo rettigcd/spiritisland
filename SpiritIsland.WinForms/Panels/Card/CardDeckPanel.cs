@@ -112,16 +112,16 @@ class CardDeckPanel : IPanel {
 
 	#endregion Paint 
 
-	public Action GetClickableAction( Point coords ) {
+	public IClickable GetClickableAction( Point coords ) {
 		if(_layout == null || !HasFocus) return null;
 
 		// Cards
 		for(int i = 0; i < _currentDeck.Cards.Count; ++i)
 			if(_layout.GetCardRect( i ).Contains( coords )) {
 				PowerCard card = _currentDeck.Cards[i];
-				return _options.Contains( card )
-					? (() => _ctx.SelectOption( card ))
-					: null;
+				if( _options.Contains( card ) )
+					return new GenericClickable( () => _ctx.SelectOption( card ) );
+				return null;
 			}
 
 		return null;

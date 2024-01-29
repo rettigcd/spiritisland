@@ -82,13 +82,13 @@ class OtherCardsPanel( SharedCtx ctx ) : IPanel {
 
 	#endregion Paint 
 
-	public Action GetClickableAction( Point coords ) {
+	public IClickable GetClickableAction( Point coords ) {
 		if(_layout == null || !HasFocus) return null;
 
 		// Cards
 		for(int i=0;i< _options.Length; ++i)
 			if(_layout.GetCardRect( i ).Contains( coords ))
-				return () => _ctx.SelectOption( _options[i] );
+				return new GenericClickable( () => _ctx.SelectOption( _options[i] ) );
 
 		return null;
 	}

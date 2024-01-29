@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary> Describes what a presence token looks like. </summary>
 class TokenAppearance {

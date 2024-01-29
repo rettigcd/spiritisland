@@ -8,44 +8,46 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 
 	public GrowthPanel( SharedCtx ctx ) {
 		_ctx = ctx;
-		_growthRow = new PaintableRow( _ctx._spirit.GrowthTrack.Options.Select( BuildPaintable ).ToArray() ) {
+		InitGrowthRow();
+	}
+
+	void InitGrowthRow(){
+		_growthRow = new RowRect_WithPadding( _ctx._spirit.GrowthTrack.Options.Select( BuildPaintable ).ToArray() ) {
 			Padding = 0.05f,
 			Separation = 0.05f
 		};
 	}
 
-	PaintableRow BuildPaintable( GrowthOption op ) {
+	// Growth-Option
+	RowRect_WithPadding BuildPaintable( GrowthOption op ) {
 		var actionRects = op.GrowthActions.Cast<SpiritGrowthAction>().Select( BuildPaintable ).ToArray();
-		return new PaintableRow( actionRects ) {
-			BackgroundColor = Color.FromArgb( 255, 255, 220 ),
-			BorderColor = Color.FromArgb( 230, 230, 198 ),
+		return new RowRect_WithPadding( actionRects ) {
+			Background = Color.FromArgb( 255, 255, 220 ),
+			Border = Color.FromArgb( 230, 230, 198 ),
 			Padding = .05f,
 			Separation = .05f
 		};
 	}
 
+	// Growth-Action
 	PaintableGrowthAction BuildPaintable( SpiritGrowthAction action ) {
-		var paintable = new PaintableGrowthAction( action );
-		paintable.BoundsChanged += Paintable_BoundsChanged;
+		var paintable = new PaintableGrowthAction( action, _ctx );
+		_cc.RegisterOption(action,paintable);
 		return paintable;
 	}
 
-	void Paintable_BoundsChanged( PaintableGrowthAction paintable ) {
-		((GrowthButton)_buttonContainer[paintable.Action]).Bounds = paintable.Bounds;
-	}
-
-	readonly PaintableRow _growthRow;
+	RowRect_WithPadding _growthRow;
 
 	public Rectangle Bounds { get; private set; }
 
-	public int OptionCount => _buttonContainer.ActivatedOptions;
+	public int OptionCount => _cc.OptionCount;
 
 	public bool HasFocus { get; set; }
 
 	public int ZIndex => 2;
 
 	public void ActivateOptions( IDecision decision ) {
-		_buttonContainer.EnableOptions( decision );
+		_cc.ActivateOptions( decision );
 	}
 
 	public void AssignBounds( RegionLayoutClass regionLayout ) {
@@ -53,7 +55,7 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 		_staticBackgroundImage?.Dispose(); _staticBackgroundImage = null;
 
 		Rectangle proposedBounds = regionLayout.GrowthRect;
-		SizeF localSize = new SizeF( _growthRow.WidthRatio, 1f );
+		SizeF localSize = new SizeF( _growthRow.WidthRatio.Value, 1f );
 
 		// Scale to Fit to Bounds
 		float scaler = Math.Min( 
@@ -71,20 +73,17 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 
 	}
 
-	public Action GetClickableAction( Point clientCoords ) {
+	public IClickable GetClickableAction( Point clientCoords ) {
 		if(!HasFocus) return null;
-
-		IOption option = _buttonContainer.FindEnabledOption( clientCoords );
-		return option != null ? (() => _ctx.SelectOption( option ))  // if we have option, select it
-			: null;
+		return _cc.GetClickableAt(clientCoords);
 	}
 
 	public RegionLayoutClass GetLayout( Rectangle bounds ) => RegionLayoutClass.ForGrowthFocused( bounds,_ctx._spirit.Decks.Length);
 
 	public void OnGameLayoutChanged() {
-		_buttonContainer.Clear();
-		foreach(IHelpGrow action in _ctx._spirit.GrowthTrack.Options.SelectMany( optionGroup => optionGroup.GrowthActions ))
-			_buttonContainer.Add( action, new GrowthButton() );
+		InitGrowthRow(); // regenerate in case they got a new growth option
+		// Dispose BG image
+		_staticBackgroundImage?.Dispose(); _staticBackgroundImage = null;
 	}
 
 	public void Paint( Graphics graphics ) {
@@ -99,7 +98,8 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 
 		graphics.DrawImage( _staticBackgroundImage, Bounds );
 
-		_buttonContainer.Paint( graphics );
+		foreach(var above in _cc.PaintAboves )
+			above.PaintAbove( graphics );
 	}
 
 	Bitmap BuildBackgroundImage() {
@@ -119,8 +119,9 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 		_staticBackgroundImage?.Dispose();
 	}
 
-	readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();
 	readonly SharedCtx _ctx;
 	Bitmap _staticBackgroundImage;
+
+	ClickableContainer _cc = new ClickableContainer();
 
 }

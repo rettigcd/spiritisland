@@ -1,16 +1,28 @@
-using System.Drawing;
-
 namespace SpiritIsland;
 
 /// <summary>
 /// Uses the Bounds as a reference only.  
 /// Draws outside of them in bottom right cornern.
 /// </summary>
-public class SubScriptRect(string _text) : IPaintableRect {
+public class SubScriptRect : IPaintableRect {
 
-	public Rectangle Paint( Graphics graphics, Rectangle bounds ){
+	#region constructors
 
-		Size sz = graphics.MeasureString( _text, _font ).ToSize();
+	public SubScriptRect(string text){
+		_text = () => text;
+	}
+	public SubScriptRect(Func<string> text){
+		_text = text;
+	}
+
+	#endregion constructors
+
+	readonly Func<string> _text;
+
+	public void Paint( Graphics graphics, Rectangle bounds ){
+
+		string text = _text();
+		Size sz = graphics.MeasureString( text, _font ).ToSize();
 		var subscriptRect = new Rectangle(
 			bounds.Right - sz.Width - (bounds.Width / 8),
 			bounds.Bottom - sz.Height,
@@ -19,8 +31,9 @@ public class SubScriptRect(string _text) : IPaintableRect {
 		);
 		graphics.FillEllipse( Brushes.White, subscriptRect );
 		graphics.DrawEllipse( Pens.Black, subscriptRect );
-		graphics.DrawString( _text, _font, Brushes.Black, subscriptRect.X + 2, subscriptRect.Y + 1 );
-		return bounds;
+		graphics.DrawString( text, _font, Brushes.Black, subscriptRect.X + 2, subscriptRect.Y + 1 );
 	}
-	readonly static Font _font = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );	
+	readonly static Font _font = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );
+
+	public float? WidthRatio { get; set; }
 }

@@ -36,60 +36,6 @@ public class DownloadPowerPics_Tests {
 
 	}
 
-	[Theory(Skip = "Takes >8 seconds to run.")]
-	[InlineData( AssemblyType.BaseGame )]
-	[InlineData( AssemblyType.BranchAndClaw )]
-	[InlineData( AssemblyType.JaggedEarth )]
-	[InlineData( AssemblyType.FeatherAndFlame )]
-	[InlineData( AssemblyType.NatureIncarnate )]
-	public async Task GenerateAll( string edition ) {
-		Type refObject = AssemblyType.GetEditionType( edition );
-		List<PowerCard> cards = [.. refObject.ScanForMajors()];
-		cards.AddRange( refObject.ScanForMinors() );
-		var spirits = refObject.ScanForSpirits();
-		cards.AddRange( spirits.SelectMany( s => s.Hand ) );
-
-		await GenerateCards( cards );
-	}
-
-	[Fact(Skip ="slow")]
-	public async Task DrawCard() {
-
-		var cards = new[] {
-			PowerCard.For(typeof(LureOfTheUnknown)),
-			PowerCard.For(typeof(ProwlingPanthers)),
-			PowerCard.For(typeof(MeltEarthIntoQuicksand)),
-			PowerCard.For(typeof(WeepForWhatIsLost)),
-			PowerCard.For(typeof(CallToBloodshed)),
-			//PowerCard.For<StranglingFirevine>(),
-			//PowerCard.For<CleansingFloods>(),
-			//PowerCard.For<PyroclasticFlow>(),
-			//PowerCard.For<TheJungleHungers>(),
-			//PowerCard.For<DryWoodExplodesInSmolderingSplinters>(),
-			//PowerCard.For<ThicketsEruptWithEveryTouchOfBreeze>(),
-			//PowerCard.For<FlashFloods>(),
-			//PowerCard.For<RiversBounty>(),
-			//PowerCard.For<BoonOfVigor>(),
-			//PowerCard.For<WashAway>(),
-			//PowerCard.For<UnlockTheGatesOfDeepestPower>(),
-			//PowerCard.For<SoftlyBeckonEverInward>(),
-			//PowerCard.For<SacrosanctWilderness>(),
-			//PowerCard.For<ManifestationOfPowerAndGlory>(),
-			//PowerCard.For<CastDownIntoTheBrinyDeep>(),
-			//PowerCard.For<DreamOfTheUntouchedLand>(),
-		};
-		await GenerateCards( cards );
-	}
-
-	static async Task GenerateCards( IEnumerable<PowerCard> cards ) {
-		foreach(var card in cards) {
-			using Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card, ResourceImages.Singleton );
-#pragma warning disable CA1416 // Validate platform compatibility
-			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Name}.png", ImageFormat.Png );
-#pragma warning restore CA1416 // Validate platform compatibility
-		}
-	}
-
 //	[Theory()]
 	[Theory(Skip ="takes too long to run")]
 	[InlineData( AssemblyType.BaseGame )]

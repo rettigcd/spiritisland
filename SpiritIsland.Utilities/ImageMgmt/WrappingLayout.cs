@@ -1,7 +1,4 @@
-﻿using SpiritIsland;
-using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 // !!! Sacred Site icons suck
 // !! \r\n should causes new line( Dahan reclaim fishing grounds )

@@ -1,6 +1,5 @@
-﻿using System.Drawing;
+﻿namespace SpiritIsland; 
 
-namespace SpiritIsland; 
 static public class SimpleMods {
 
 	#region public custom: Ghostify, Grayify, Color overlay

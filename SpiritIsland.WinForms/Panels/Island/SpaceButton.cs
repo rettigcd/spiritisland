@@ -46,8 +46,9 @@ public class SpaceButton : IButton {
 		// => Bounds.Contains( clientCoords );
 		=> Polygons.IsInside( Inner, clientCoords );
 
-	public void Paint( Graphics graphics, bool enabled ) {
-		if(enabled) {
+	public bool Enabled {private get; set;}
+	public void PaintAbove( Graphics graphics ) {
+		if(Enabled) {
 			// Draw smoothy
 			// using Brush yellowBrush = new SolidBrush(Color.FromArgb(64,Color.Yellow));
 			// graphics.FillClosedCurve( yellowBrush, Inner, FillMode.Alternate, .25f );

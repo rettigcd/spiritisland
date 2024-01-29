@@ -1,43 +1,37 @@
-﻿using System.Drawing;
+﻿namespace SpiritIsland;
 
-namespace SpiritIsland;
-
-public class TextRect : IPaintableRect {
-	public TextRect( string text ) { _text = text; }
-	public TextRect( object obj ) { _text = obj.ToString() ?? string.Empty; }
-	public float ScaleFont = 1f;
+public class TextRect : BasePaintableRect {
 
 	public Brush Brush { get; set; } = Brushes.Black;
+	public FontSpec Font = 1f;
 
-	readonly string _text;
-	public Rectangle Paint( Graphics graphics, Rectangle rect ) {
-		Font font = ResourceImages.Singleton.UseGameFont( rect.Height * ScaleFont );
-		try {
-			using StringFormat alignCenter = new StringFormat { 
-				Alignment = StringAlignment.Center, 
-				LineAlignment = StringAlignment.Center, 
-				Trimming = StringTrimming.None,
-				FormatFlags = StringFormatFlags.NoWrap,
-			};
+	public StringAlignment Vertical = StringAlignment.Center;
+	public StringAlignment Horizontal = StringAlignment.Center;
 
-			SizeF textSize = graphics.MeasureString(_text,font, new PointF(0,0), alignCenter);
+	#region constructors
 
-			if(rect.Width < textSize.Width ) { // too narrow
-				font.Dispose();
-				// Scale down font
-				font = ResourceImages.Singleton.UseGameFont( rect.Height * rect.Width / textSize.Width *.9f );
-				textSize = graphics.MeasureString( _text, font );
-				// fitted = rect.FitWidth( textSize.ToSize() );
+	public TextRect( string text ) { _text = text??string.Empty; }
+	public TextRect( object obj ) { _text = obj?.ToString()??string.Empty; }
+	public TextRect( Func<string> textGenerator ) { _textGenerator = textGenerator; }
 
-			}
-			
-			graphics.DrawString( _text, font, Brush, rect, alignCenter ); // using rect instead of fitted because fitted sometimes crops
+	#endregion constructors
 
-			return rect; // fitted;
-		}
-		finally {
-			font?.Dispose();
-		}
+	protected override void PaintContent( Graphics graphics, Rectangle content ) {
+		using ResourceMgr<Font> fontMgr = Font.GetResourceMgr(content);
+		using StringFormat alignment = UseAlignment;
+		string text = _text ?? _textGenerator!();
+		SizeF textSize = graphics.MeasureString(text,fontMgr.Resource, new PointF(0,0), alignment);
+		
+		graphics.DrawString( text, fontMgr.Resource, Brush, content, alignment );
 	}
 
+	StringFormat UseAlignment => new StringFormat { 
+		Alignment = Horizontal,
+		LineAlignment = Vertical,
+		Trimming = StringTrimming.None,
+		FormatFlags = StringFormatFlags.NoWrap,
+	};
+
+	readonly string? _text;
+	readonly Func<string>? _textGenerator;
 }

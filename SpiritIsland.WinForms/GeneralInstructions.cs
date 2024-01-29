@@ -1,30 +1,45 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
 /// <summary>
 /// Optional Extra text at top of Innate Powers.
 /// </summary>
-public class GeneralInstructions( string description, float textEmSize, Size rowSize, Point topLeft ) {
+public class GeneralInstructions : IPaintableRect {
 
-	readonly float _textEmSize = textEmSize;
-	readonly Size _rowSize = rowSize;
-	readonly string _description = description;
-	readonly Point _topLeft = topLeft;
+	public PaddingSpec Padding = PaddingSpec.None;
 
-	public Rectangle Bounds => _bounds ??= CalcBounds();
-	Rectangle? _bounds;
+	public GeneralInstructions( string description, SizeF relRowSize ){
+		_description = description;
+		_relRowSize = relRowSize;
+	}	
 
-	Rectangle CalcBounds() {
-		using Image img = ResourceImages.Singleton.GetGeneralInstructions( _description, _textEmSize, _rowSize );
-		Size size = img.Size;
-		return new Rectangle(_topLeft.X, _topLeft.Y, size.Width, size.Height);
+	public float? WidthRatio => _widthRatio ??= Size.Width *1f / Size.Height;
+	public Size Size => _size ??= CalcSize();
+	
+	public void Paint( Graphics g, Rectangle bounds ) {
+		var content = Padding.Content(bounds);
+		using Image img = ResourceImages.Singleton.GetGeneralInstructions( _description, _relRowSize, content.Width );
+		_size = Padding.Pad(img.Size); _widthRatio = null; // update to current
+		bounds = bounds.FitBoth(img.Size);
+		g.DrawImage( img, content );
 	}
 
-	public void Paint(Graphics g) {
-		using Image img = ResourceImages.Singleton.GetGeneralInstructions( _description, _textEmSize, _rowSize );
-		g.DrawImage( img, Bounds );
+	Size CalcSize() {
+		using Image img = ResourceImages.Singleton.GetGeneralInstructions( _description, _relRowSize );
+		return Padding.Pad(img.Size);
 	}
 
+	#region private
+
+	// Lazy
+	float? _widthRatio;
+	Size? _size;
+
+	readonly string _description;
+	readonly SizeF _relRowSize;
+
+	#endregion private
 }
 

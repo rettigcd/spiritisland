@@ -83,9 +83,9 @@ class IslandPanel : IPanel {
 		this.OptionCount = _buttonContainer.ActivatedOptions + _outstandingSpaceTokenOptions.Count;
 	}
 
-	public Action GetClickableAction( Point clientCoords ) {
+	public IClickable GetClickableAction( Point clientCoords ) {
 		IOption option = _buttonContainer.FindEnabledOption( clientCoords );
-		return option == null ? null : ()=>_ctx.SelectOption( option );
+		return option == null ? null : new GenericClickable( ()=>_ctx.SelectOption( option ) );
 	}
 
 	public RegionLayoutClass GetLayout( Rectangle bounds ) {

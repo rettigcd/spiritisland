@@ -1,77 +1,81 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
 
-namespace SpiritIsland.WinForms; 
+namespace SpiritIsland.WinForms;
 
-class InnatePainter( InnatePower power, InnateLayout layout ) : IDisposable {
+class InnatePainter {
 
-	#region constructor
-
-	#endregion
-
-	public void DrawFromLayout( Graphics graphics,  ImgMemoryCache _ ) {
-
-		_backgroundCache ??= DrawBackgroundImage();
-
-		// -- Background Layer --
-		graphics.DrawImage( _backgroundCache, _layout.Bounds );
-
+	/// <summary>
+	/// Returns ALL Innates as a 2 or 3 column table.
+	/// </summary>
+	static public IPaintableRect GetAllInnatesClump( SharedCtx ctx, ClickableContainer cc ){ // Ctx, ClickContainer
+		var colCountInfo = new ColumnCountInfo( ctx._spirit.InnatePowers.Length );
+		return ArrangeInnates( [..ctx._spirit.InnatePowers.Select( 
+			innate => GetInnateRect( ctx, innate, colCountInfo, cc )
+		)]);
 	}
 
-	Bitmap DrawBackgroundImage() {
-		var bounds = _layout.Bounds;
-		var backgroundCache = new Bitmap( bounds.Width, bounds.Height );
-		using var graphics = Graphics.FromImage( backgroundCache );
-		graphics.TranslateTransform(-bounds.X,-bounds.Y);
+	/// <summary>
+	/// Places Innate Rects into a table.
+	/// </summary>
+	static IPaintableRect ArrangeInnates( IPaintableRect[] innateRects ){
 
-		graphics.FillRectangle( backgroundBrush, _layout.Bounds );
+		int columnCount = new ColumnCountInfo(innateRects.Length).columnCount;
 
-		// Title
-		using(var titleFont = new Font( "Arial", _layout._textEmSize, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Pixel ))
-			graphics.DrawString( _power.Name.ToUpper(), titleFont, Brushes.Black, _layout.TitleBounds, new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center } );
+		var columns = new List<IPaintableRect>[columnCount];
+		for(int i=0;i<columnCount;++i) columns[i] = [];
+		
+		for(int i=0; i<innateRects.Length; ++i)
+			columns[i%columnCount].Add(innateRects[i]);
 
-		// This could be on the bottom layer
-		_layout.GeneralInstructions?.Paint( graphics );
+		return new HorizontalStackRect( [..columns.Select(Wrap)] );
 
-		DrawAttributeTable( graphics );
-		return backgroundCache;
+		static IPaintableRect Wrap(List<IPaintableRect> children ) => new ColumnRect([..children]).FloatSelf(3,3,94,94);
 	}
 
-	#region private
+	/// <summary>
+	/// Generates the PaintableRect for 1 Innate
+	/// </summary>
+	static public ColumnRect GetInnateRect(SharedCtx ctx, InnatePower power, ColumnCountInfo ccInfo, ClickableContainer cc){
 
-	void DrawAttributeTable( Graphics graphics ) {
-		// Attribute Headers
-		using(var titleBg = new SolidBrush( Color.FromArgb( 0xae, 0x98, 0x69 ) )) // ae9869
-			graphics.FillRectangle( titleBg, _layout.AttributeRows[0] );
-		using var centerBoth = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-		using(Font titleFont = new Font( "Arial", _layout._textEmSize * 0.8f, FontStyle.Bold, GraphicsUnit.Pixel )) {
-			graphics.DrawString( "SPEED", titleFont, Brushes.White, _layout.AttributeLabelCells[0], centerBoth );
-			graphics.DrawString( "RANGE", titleFont, Brushes.White, _layout.AttributeLabelCells[1], centerBoth );
-			graphics.DrawString( _power.LandOrSpirit == LandOrSpirit.Land ? "TARGET LAND" : "TARGET", titleFont, Brushes.White, _layout.AttributeLabelCells[2], centerBoth );
-		}
+		var innateRect = new ClickableColRect([
+			// Title 
+			new TextRect( power.Name.ToUpper() ){ WidthRatio=12f, Padding=.1f, Horizontal=StringAlignment.Near, Font="Arial Narrow;.7;bold|italic" },
+			// Header
+			new ColumnRect( 
+				new RowRect(
+					new TextRect("SPEED"){ Brush=Brushes.White, Font=AttrHeaderFont },
+					new TextRect("RANGE"){ Brush=Brushes.White, Font=AttrHeaderFont },
+					new TextRect( TargetTitle(power) ){ Brush=Brushes.White, Font=AttrHeaderFont }
+				){ Background="#ae9869", WidthRatio=16f }, 
+				PowerHeaderDrawer.AttributeValuesRow( power )
+			){
+				Border="Black;.03",
+				WidthRatio = 7f,
+				Margin = (.0f,.05f)
+			},
+			// General Instructions
+			GIRect(),
+			// Options
+			..power.DrawableOptions.Select(MakeInnateOptionBtn)
+		]){ 
+			Background = Brushes.AliceBlue,
+			Padding = .03f
+		};
+		innateRect.Clicked += () => ctx.SelectOption( power );
+		cc.RegisterOption(power,innateRect);
+		return innateRect;
 
-		// Attribute Values
-		PowerHeaderDrawer.DrawAttributeValues( graphics, _layout.AttributeValueCells, _power );
+		IPaintableRect GIRect() => string.IsNullOrEmpty(power.GeneralInstructions) 
+			? new NullRect{ WidthRatio = 100 }
+			: new GeneralInstructions(power.GeneralInstructions, ccInfo.giRowSize){ Padding = (0,.15f) };
 
-		// Attribute Outter box
-		using Pen thickPen = new Pen( Brushes.Black, 2f );
-		graphics.DrawRectangle( thickPen, _layout.AttributeBounds );
+		InnateTierBtn MakeInnateOptionBtn( IDrawableInnateTier innatePowerOption ) => new InnateTierBtn( ctx._spirit, innatePowerOption, ccInfo.optionRowSize, cc );
+		static string TargetTitle(InnatePower power) => power.LandOrSpirit == LandOrSpirit.Land ? "TARGET LAND" : "TARGET";
 	}
 
-	public void Dispose() {
-		if(_backgroundCache != null) {
-			_backgroundCache.Dispose();
-			_backgroundCache = null;
-		}
-	}
-
-	readonly InnatePower _power = power;
-	readonly InnateLayout _layout = layout;
-
-	Bitmap _backgroundCache;
-	readonly Brush backgroundBrush = Brushes.AliceBlue;
-
-	#endregion
+	static FontSpec AttrHeaderFont = "Arial;0.6;bold";
 
 }
-

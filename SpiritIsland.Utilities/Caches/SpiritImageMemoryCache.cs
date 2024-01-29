@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Initializes Spirit tokens/markers and caches them in memory.
@@ -25,7 +23,7 @@ public class SpiritImageMemoryCache {
 	}
 
 	public Dictionary<ISpaceEntity, Image> _tokenImages; // because we need different images for different damaged invaders.
-	public Image? _presenceImg => _spiritToken != null ? _tokenImages[_spiritToken] : null;
+	public Bitmap? _presenceImg => _spiritToken != null ? (Bitmap)_tokenImages[_spiritToken] : null;
 	IToken? _spiritToken;
 	public Img _incarnaImg;
 	public Image _strife;

@@ -101,7 +101,7 @@ public static class PaintableActionFactory {
 
 	static PoolRect ReclaimAllWithFire() {
 		return new PoolRect()
-			.Float( new ImgRect( Img.ReclaimAll ), .0f, .0f, 1f, 1f )
+			.Float( new ImgRect( Img.ReclaimAll ) )
 			.Float( new ImgRect( Img.Token_Fire ), .6f, 0f, .4f, .4f );
 	}
 
@@ -202,8 +202,8 @@ public static class PaintableActionFactory {
 			? ("+" + count.ToString())
 			: ("\u2014" + (-count).ToString());
 		return new PoolRect()
-			.Float( new ImgRect(Img.CardPlayPlusN), 0f,0f,1f,1f)
-			.Float( new TextRect(txt){ ScaleFont = .5f }, .2f,.2f,.6f,.6f);
+			.Float( new ImgRect(Img.CardPlayPlusN) )
+			.Float( new TextRect(txt){ Font = .5f }, .2f,.2f,.6f,.6f);
 	}
 
 	static HorizontalStackRect Gain1ElementRect( params Element[] elements ) {
@@ -298,7 +298,7 @@ public static class PaintableActionFactory {
 
 		return addOnIcon == Img.None ? paintable
 			: new PoolRect()
-				.Float(paintable,0f,0f,1f,1f)
+				.Float(paintable)
 				.Float(new ImgRect( addOnIcon ), .2f, .2f, .6f, .6f );
 	}
 
@@ -319,9 +319,16 @@ public static class PaintableActionFactory {
 	}
 
 	class GainEnergyRect( int delta ) : IPaintableRect {
+
+		
 		readonly int _delta = delta;
-		public Rectangle Paint( Graphics graphics, Rectangle bounds ) {
-			var fitted = new ImgRect( Img.Coin ).Paint( graphics, bounds );
+
+		public float? WidthRatio {get; set;}
+
+		public void Paint( Graphics graphics, Rectangle bounds ) {
+			var coin = new ImgRect( Img.Coin );
+			var fitted = bounds.FitBoth(coin.WidthRatio.Value);
+			coin.Paint( graphics, fitted );
 
 			// Text
 			using Font coinFont = ResourceImages.Singleton.UseGameFont( fitted.Height * .5f );
@@ -334,7 +341,6 @@ public static class PaintableActionFactory {
 				bounds.Y + (bounds.Height - textSize.Height) * .60f
 			);
 			graphics.DrawString( txt, coinFont, Brushes.Black, textTopLeft );
-			return fitted;
 		}
 
 	}

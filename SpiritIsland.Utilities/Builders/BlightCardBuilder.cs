@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Generates Blight Card Images
@@ -42,7 +40,7 @@ static class BlightCardBuilder {
 		layout.AppendLine( card.Description, FontStyle.Regular );
 		layout.FinalizeBounds();
 		var textRect = new Rectangle(bottomRect.Left, bottomRect.Top, bottomRect.Width, layout.Size.Height+sideMargin);
-		using(var brush = new SolidBrush(ColorString.ParseHexColor("c1b6b3")))
+		using(var brush = new SolidBrush(ColorString.Parse("c1b6b3")))
 			graphics.FillRectangle(brush, textRect);
 		layout.CenterDrawingSpace(textRect.Size);
 		layout.Adjust(sideMargin,bottomRect.Y);
@@ -136,7 +134,7 @@ static class BlightCardBuilder {
 
 	static void HealthyHeader( Graphics graphics, Rectangle healthyRect, string title ) {
 		using StringFormat alignCenter2 = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-		using(var brush = new SolidBrush( ColorString.ParseHexColor( "c9d889" ) ))
+		using(var brush = new SolidBrush( ColorString.Parse( "c9d889" ) ))
 			graphics.FillPath( brush, healthyRect.RoundCorners( 15, true, true, false, false ) );
 		using Font headerFont = ResourceImages.Singleton.UseGameFont( healthyRect.Height * .62f );
 		graphics.DrawString( title, headerFont, Brushes.DarkGreen, healthyRect, alignCenter2 );

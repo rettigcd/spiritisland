@@ -247,9 +247,9 @@ public partial class IslandControl : Control {
 		}
 
 		// Options Inside panels or other generic actions
-		Action action = GetClickableAction( clientCoords );
+		IClickable action = GetClickableAction( clientCoords );
 		if(action != null) {
-			action();
+			action.Click();
 			return;
 		}
 
@@ -263,19 +263,22 @@ public partial class IslandControl : Control {
 			FocusPanel = panel;
 	}
 
-	Action GetClickableAction( Point clientCoords ) {
-		var action = _allPanels
+	IClickable GetClickableAction( Point clientCoords ) {
+		IClickable action = _allPanels
 			?.Where( x => x.Bounds.Contains( clientCoords ) )
 			.OrderByDescending( x=>x.ZIndex )
 			.Select( x => x.GetClickableAction( clientCoords ) )
 			.FirstOrDefault( x => x != null );
+
+
+
 		if(action == null && options_Ack is not null && _ackRect.Contains( clientCoords ))
-			action = ()=> SelectOption(options_Ack);
+			action = new GenericClickable( ()=> SelectOption(options_Ack) );
 
 		if(action == null){
 			IOption option = _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains( clientCoords ) );
 			if(option != null)
-				action = () => SelectOption(option);
+				action = new GenericClickable( () => SelectOption(option) );
 		}
 
 		return action;
