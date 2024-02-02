@@ -31,7 +31,7 @@ public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 	// Null for non-execution groups
 	public int? Group { get; }
 
-	string IOption.Text => Elements.BuildElementString() + " - " + Description;
+	string IDrawableInnateTier.Text => Elements.BuildElementString() + " - " + Description;
 
 	public virtual bool IsActive( ElementMgr spiritElements ) => spiritElements.Contains( Elements );
 
@@ -44,7 +44,11 @@ public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 public class DisplayOnlyAttribute( string elementText, string description ) : InnateTierAttribute(elementText,description) {
 }
 
-public interface IDrawableInnateTier : IOption {
+// !!! I am 90% certain that the Innate Options are never presented as OPTIONS and that IOption can be removed here. 
+// !!! Also, InnateTierBtn, should not register with the ClickContainer, nor be IAmEnableable
+public interface IDrawableInnateTier {
+
+	string Text {get;}
 
 	/// <summary> The threshold to display to the left of the description </summary>
 	/// <remarks> Not using .Elements directly because some thresholds are not elements.</remarks>

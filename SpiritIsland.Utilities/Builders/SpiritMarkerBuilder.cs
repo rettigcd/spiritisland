@@ -3,7 +3,6 @@ using SpiritIsland.BranchAndClaw;
 using SpiritIsland.JaggedEarth;
 using SpiritIsland.FeatherAndFlame;
 using SpiritIsland.NatureIncarnate;
-using System.Drawing;
 
 namespace SpiritIsland;
 

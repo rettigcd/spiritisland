@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Represents color as Hue,Saturation,Lightness

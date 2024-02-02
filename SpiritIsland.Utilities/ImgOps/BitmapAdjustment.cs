@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 // Modifies Bitmaps
 public interface BitmapAdjustment {

@@ -1,10 +1,9 @@
 ﻿using SpiritIsland.Tests.Core;
-using SpiritIsland.Utilities.Builders;
-using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace SpiritIsland;
 
@@ -16,7 +15,7 @@ public interface ImgSource {
 }
 
 
-public class ResourceImages 
+public partial class ResourceImages 
 	: ImgSource
 	, PowerCardResources
 	, InvaderCardResources
@@ -181,34 +180,57 @@ public class ResourceImages
 		return bitmap;
 	}
 
-	public Bitmap GetInnateOption( IDrawableInnateTier innateOption, float emSize, Size rowSize ) {
+	public Bitmap GetInnateOption( IDrawableInnateTier innateOption, SizeF rowSize, int desiredRowSize = 0 ) {
+
 		string key = "innateOptions\\" + innateOption.Text.Replace( ' ', '_' ).Replace( '/', '_' ).Replace( '.', '_' ) + ".png";
 		if(_cache.Contains( key )) {
 			var image = _cache.Get( key );
 			// To get max resolution, Image should be as wide as rowSize - caller can scale it down
-			if(rowSize.Width < image.Width) return image;
+			if(desiredRowSize <= image.Width) return image;
 			// Image is narrower than ro
 			image.Dispose(); // too small - regenerate
 		}
 
-		Bitmap bitmap = BuildInnateOption( innateOption, emSize, rowSize );
+		(float emSize, int width) = (desiredRowSize <= 0)
+			? (18f,(int)(18*rowSize.Width))
+			: (desiredRowSize/rowSize.Width,desiredRowSize);
+
+		Bitmap bitmap = BuildInnateOption( innateOption, emSize, new Size(width,(int)(emSize * rowSize.Height) ));
 
 		_cache.Add( key, bitmap );
 		return bitmap;
 	}
 
-	public Bitmap GetGeneralInstructions( string description, float textEmSize, Size rowSize ) {
-		// Cropping General Instructions to 50.  why?
-		if(50 < description.Length) description = description[..50];
-		string key = "innateOptions\\gi_" + description.Replace( ' ', '_' ) + ".png";
+	public Bitmap GetGeneralInstructions( string description, SizeF relRowSize, int minRowWidth = 0 ) {
+
+		// if we have minRowWidth
+		( float textEmSize, int desiredRowWidth ) = 0 < minRowWidth
+			// use it
+			? (minRowWidth / relRowSize.Width, minRowWidth)
+			// otherwise, use 18 as our default textEm
+			: (18f,(int)(18f*relRowSize.Width));
+
+		string key = Build_GI_Key( description );
 		if(_cache.Contains( key )) {
 			var image = _cache.Get( key );
-			if(rowSize.Width < image.Width) return image;
+			if(desiredRowWidth <= image.Width) return image; // if image is wide enough, use it
 			image.Dispose(); // cached image is too small - regenerate larger
 		}
-		Bitmap bitmap = BuildGeneralInstructions( description, textEmSize, rowSize );
+
+		int desiredRowHeight = (int)(textEmSize * relRowSize.Height);
+		Bitmap bitmap = BuildGeneralInstructions( description, textEmSize, new Size(desiredRowWidth,desiredRowHeight) );
 		_cache.Add( key, bitmap );
 		return bitmap;
+	}
+
+	static string Build_GI_Key( string description ) {
+		string shortened = (description.Length <= 50 ) ? description : description[..50];
+
+		return "innateOptions\\gi_" 
+			// + shortened.Replace( ' ', '_' ) 
+			+ Regex.Replace( shortened, @"[\s:'\.,]+", "_" )
+			+ ".png";
+
 	}
 
 	public async Task<Image> GetPowerCard( PowerCard card ) {
@@ -329,10 +351,13 @@ public class ResourceImages
 	}
 
 	static Bitmap BuildInnateOption( IDrawableInnateTier innateOption, float emSize, Size rowSize ) {
+
+
+
 		using Bitmap tempBitmap = new Bitmap( rowSize.Width, rowSize.Width * 2 ); // Height is wrong
 		using Graphics graphics = Graphics.FromImage( tempBitmap );
 		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic; // $$$$$ add to power cards.
 
 		var config = new ConfigWrappingLayout {
 			EmSize = emSize,
@@ -550,3 +575,11 @@ public class ResourceImages
 	#endregion
 
 }
+
+
+// public class RowInfo {
+// 	public float EmSize;
+// 	public int Width;
+// 	public int Height;
+// 	public Size Size => new Size(Width,Height);
+// }

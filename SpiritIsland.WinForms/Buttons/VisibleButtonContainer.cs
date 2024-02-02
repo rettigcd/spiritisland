@@ -23,7 +23,7 @@ public class VisibleButtonContainer {
 	}
 
 	public IButton this[IOption option] => _staticLookupButtonByOption.TryGetValue( option, out IButton button ) ? button 
-		: _enabled[option];						// enabled (static + transient)
+		: _enabled[option];	// enabled (static + transient)
 
 	public int ActivatedOptions => _enabled.Count;
 
@@ -58,7 +58,6 @@ public class VisibleButtonContainer {
 		_staticLookupButtonByOption.Remove( option );
 
 		_enabled.Add( option, button ); // add to new
-		button.SyncDataToDecision( decision );
 	}
 
 	public IOption FindEnabledOption( Point clientCoords ) {
@@ -68,12 +67,14 @@ public class VisibleButtonContainer {
 	}
 
 	public void Paint( Graphics graphics ) {
-		static void PaintButtonDict( Graphics graphics, Dictionary<IOption, IButton> dict, bool enabled ) {
-			foreach(IButton btn in dict.Values)
-				btn.Paint( graphics, enabled );
+		foreach(var enabled in _enabled.Values){
+			enabled.Enabled=true;
+			enabled.PaintAbove( graphics );
 		}
-		PaintButtonDict( graphics, _staticLookupButtonByOption, false );
-		PaintButtonDict( graphics, _enabled, true );
+		foreach(var disabled in _staticLookupButtonByOption.Values){
+			disabled.Enabled=false;
+			disabled.PaintAbove( graphics );
+		}
 	}
 
 	readonly Dictionary<IOption, IButton> _enabled = [];

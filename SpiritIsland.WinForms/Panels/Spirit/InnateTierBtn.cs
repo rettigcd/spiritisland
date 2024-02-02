@@ -1,50 +1,83 @@
 ﻿using System.Drawing;
-using System.Windows.Forms;
 
 namespace SpiritIsland.WinForms;
 
+public class InnateTierBtn 
+	: IPaintableRect
+	, IPaintAbove
+//	, IAmEnablable , IClickableLocation
+{
 
-public class InnateTierBtn( Spirit spirit, IDrawableInnateTier innateOption ) : IButton {
+	public float? WidthRatio => _widthRatio ??= CalcWidthRatio;
+	public PaddingSpec Padding = (0,.01f);
 
-	public Rectangle Bounds { get; private set; }
-	bool IButton.Contains( Point clientCoords) => Bounds.Contains( clientCoords );
+	public InnateTierBtn( Spirit spirit, IDrawableInnateTier innateOption, SizeF relativeRowSize, ClickableContainer cc ){
+		_spirit = spirit;
+		_innateOption = innateOption;
+		_relativeRowSize = relativeRowSize;
 
-	public void Paint( Graphics graphics, bool enabled ) {
+		cc.PaintAboves.Add(this);
+	}
 
-		if(enabled) {
-			ControlPaint.DrawButton( graphics, Bounds.InflateBy( 3 ), ButtonState.Normal );
-			using Pen highlightPen = new( Color.Red, 2f );
-			graphics.DrawRectangle( highlightPen, Bounds.InflateBy( 1 ) );
-		}
+	public void Paint(Graphics graphics, Rectangle bounds) {
+		_bounds = Padding.Content( bounds );
+	}
+
+	public void PaintAbove( Graphics graphics ) {
+
+		// if(Enabled) {
+		// 	ControlPaint.DrawButton( graphics, Bounds.InflateBy( 3 ), ButtonState.Normal );
+		// 	using Pen highlightPen = new( Color.Red, 2f );
+		// 	graphics.DrawRectangle( highlightPen, Bounds.InflateBy( 1 ) );
+		// }
 
 		if(_innateOption.IsActive( _spirit.Elements ))
-			graphics.FillRectangle( Brushes.PeachPuff, Bounds );
+			graphics.FillRectangle( Brushes.PeachPuff, _bounds );
 
-		using Image img = UsingImage;
-		graphics.DrawImage( img, Bounds );
+		using Image img = UsingImage(_bounds.Width);
+		_size = Padding.Pad(img.Size); _widthRatio=null; // size for actual bounds
+		graphics.DrawImage( img, _bounds );
 
 	}
 
-	public InnateTierBtn SetPosition( float emSize, Size rowSize, Point topLeft ) {
-		_emSize = emSize;
-		_rowSize = rowSize;
-		using Image img = UsingImage;
-		Bounds = new Rectangle( topLeft.X, topLeft.Y, rowSize.Width, rowSize.Width * img.Height / img.Width );
-		return this;
+	float CalcWidthRatio => Size.Width * 1f / Size.Height;
+	Size Size => _size ??= CalcSize();
+	Size CalcSize(){
+		using Image img = UsingImage();
+		return Padding.Pad( img.Size );
 	}
 
-	void IButton.SyncDataToDecision( IDecision _ ) { }
+	Image UsingImage( int minDesiredWidth = 0 ) => ResourceImages.Singleton.GetInnateOption( _innateOption, _relativeRowSize, minDesiredWidth );
 
 	#region private
 
-	Image UsingImage => ResourceImages.Singleton.GetInnateOption( _innateOption, _emSize, _rowSize );
+	Size? _size;
+	float? _widthRatio;
+	Rectangle _bounds;
 
-	float _emSize;
-	Size _rowSize;
+	readonly Spirit _spirit;
+	readonly IDrawableInnateTier _innateOption;
+	readonly SizeF _relativeRowSize;
 
-	readonly Spirit _spirit = spirit;
-	readonly IDrawableInnateTier _innateOption = innateOption;
 
 	#endregion
+
+	// public bool Contains(Point point) => Bounds.Contains(point);
+	// public void Click()	{
+	// 	MessageBox.Show("Click!");
+	// }
+	//	public bool Enabled { private get; set; }
+	// public InnateTierBtn SetPosition( Point topLeft, int width ) {
+
+	// 	// Calc Actual Size
+	// 	SetRowInfo(width);
+
+	// 	using Image img = UsingImage;
+	// 	Bounds = new Rectangle( topLeft.X, topLeft.Y, 
+	// 		_rowInfo.Width, 
+	// 		_rowInfo.Width * img.Height / img.Width
+	// 	);
+	// 	return this;
+	// }
 
 }

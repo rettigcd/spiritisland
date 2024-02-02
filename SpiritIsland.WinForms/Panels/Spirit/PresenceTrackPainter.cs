@@ -1,5 +1,6 @@
 ﻿using SpiritIsland.JaggedEarth;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -8,110 +9,72 @@ namespace SpiritIsland.WinForms {
 	/// <summary>
 	/// Binds together for a single painting: Graphics, Spirit(info), Layout, Clickable-Options
 	/// </summary>
-	class PresenceTrackPainter(
-		Spirit spirit,
-		PresenceTrackLayout layout,
-		SpiritImageMemoryCache tip
-		) : IDisposable {
-		public void Paint( Graphics graphics, ImgMemoryCache _ ) {
-			// Set single-thread variables
+	class PresenceTrackPainter  {
 
-			// Bottom Layer - cache it
-			if(_cachedBackgroundImage == null)
-				CalculateBackgroundImage();
-			graphics.DrawImage(_cachedBackgroundImage,_layout.Bounds);
+		public static IPaintableRect GetPaintablePresenceTracks( ClickableContainer cc, SharedCtx ctx ){
 
-			// Top Layer - Presence
-			PaintPresence( graphics );
+			var presence = ctx._spirit.Presence;
+			
+			return new RowRect(
+				new StackedRowRect( 
+					Label("Energy", BuildSlots(presence.Energy) ),
+					Label("Card Plays", BuildSlots(presence.CardPlays ))
+				), 
+				TheRightStuff( cc, ctx )
+			);
 
-			// Draw current energy
-			IconDrawer.DrawTheIcon(graphics,new IconDescriptor { Text = _spirit.Energy.ToString() }, _layout.BigCoin, ResourceImages.Singleton ); // !!! simplify
+			RowRect BuildSlots(IPresenceTrack track) => new RowRect([..track.Slots.Select(slot=>new SlotRect(slot,track,cc,ctx))]);
 
 		}
 
-		void CalculateBackgroundImage() {
-			_cachedBackgroundImage = new Bitmap( this._layout.Bounds.Width, this._layout.Bounds.Height );
+		static IPaintableRect TheRightStuff( ClickableContainer cc, SharedCtx ctx ){
+			var spirit = ctx._spirit;
+			ImageSpec presence = ctx._imgCache._presenceImg;
 
-			using Graphics graphics = Graphics.FromImage( _cachedBackgroundImage );
-			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-			graphics.TranslateTransform( -_layout.Bounds.X, -_layout.Bounds.Y );
+			var pool = new PoolRect(){ WidthRatio = .8f }
+				.Float(CurrentEnergyRect(cc,spirit),.3f,0, .7f,.7f )
+				.Float( Destroyed( presence, spirit, cc ).ShowIf(()=>0<spirit.Presence.Destroyed.Count ), .60f,.65f,.4f,.3f );
 
-			PaintLabels(graphics);
+			if(spirit is FracturedDaysSplitTheSky days)
+				pool.Float( Time( presence, days.Time), .2f,.65f,.3f,.3f );
 
-			using(var coin = ResourceImages.Singleton.GetTrackSlot( new IconDescriptor { BackgroundImg = Img.Coin } ))
-				graphics.DrawImage(coin, _layout.BigCoin );
-
-			foreach(Track track in EnergySlots)
-				((PresenceSlotButton)_layout.SlotLookup[track]).PaintBackground(graphics);
-
-			foreach(Track track in this.CardPlaySlots)
-				((PresenceSlotButton)_layout.SlotLookup[track]).PaintBackground( graphics );
-
+			return pool;
 		}
 
-		void PaintLabels( Graphics graphics ) {
-			using Font simpleFont = ResourceImages.Singleton.UseGameFont( 20f );
-			graphics.DrawString( "Energy", simpleFont, Brushes.Black, _layout.EnergyTitleLocation );
-			graphics.DrawString( "Cards", simpleFont, Brushes.Black, _layout.CardPlayTitleLocation );
+		static IPaintableRect CurrentEnergyRect(ClickableContainer cc,Spirit spirit){
+			return new PoolRect()
+				.Float(new ImgRect(Img.Coin))
+				.Float(new TextRect(()=>spirit.Energy.ToString()).RiseAbove(cc.PaintAboves),0f,.25f,1f,.6f);
 		}
 
+		static IPaintableRect Destroyed( ImageSpec presence, Spirit spirit, ClickableContainer cc ){
 
-		void PaintPresence(Graphics graphics) {
-			PaintDestroyed( graphics );
+			string MakeSubscript(){
+				int destroyed = spirit.Presence.Destroyed.Count;
+				return (destroyed==0) ? string.Empty
+					: $"x{destroyed}";
+			}
 
-			if(_spirit is FracturedDaysSplitTheSky days)
-				PaintTime( graphics, days.Time );
+			return new PoolRect{WidthRatio=1.2f}
+				.Float(new ImgRect(presence))
+				.Float(new ImgRect(Img.DestroyedX))
+				.Float(new SubScriptRect( MakeSubscript ).ShowIf(()=>1<spirit.Presence.Destroyed.Count));
 		}
 
-		void PaintDestroyed( Graphics graphics ) {
-			Rectangle rect = _layout.SlotLookup[Track.Destroyed].PresenceRect;
-			int destroyedCount = _spirit.Presence.Destroyed.Count;
-			if(destroyedCount == 0) return;
-
-			// Presence & Red X
-			graphics.DrawImage( _presenceImg, rect );
-			using var redX = ResourceImages.Singleton.GetImg(Img.DestroyedX);
-			graphics.DrawImage( redX, rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
-
-			// count
-			graphics.DrawCountIfHigherThan( rect, destroyedCount );
-
+		static IPaintableRect Time( ImageSpec presence, int time ){
+			var pool = new PoolRect()
+				.Float(new ImgRect( presence ))
+				.Float(new ImgRect(Img.Hourglass), 0.5f,0,.5f,.5f);
+			if(1<time)
+				pool.Float(new SubScriptRect(time.ToString()));
+			return pool;
 		}
 
-		void PaintTime(Graphics graphics, int timeCount) {
-			Rectangle rect = _layout.Time;
-			if(timeCount== 0) return;
-
-			// Presence
-			graphics.DrawImage( _presenceImg, rect );
-
-			// Hour glass
-			var hgRect = new Rectangle( rect.X, rect.Y, rect.Width * 2 / 3, rect.Height * 2 / 3 );
-			using var hourglass = ResourceImages.Singleton.GetImg(Img.Hourglass);
-			graphics.DrawImageFitBoth( hourglass, hgRect );
-
-			// count
-			graphics.DrawCountIfHigherThan( rect, timeCount );
+		static IPaintableRect Label( string label, IPaintableRect child ){
+			return new PoolRect(){ WidthRatio = child.WidthRatio }
+				.Float(child)
+				.Float(new TextRect(label){ Horizontal = StringAlignment.Near},0,0,.25f,.25f);
 		}
-
-		public void Dispose() {
-			_cachedBackgroundImage?.Dispose();
-			_cachedBackgroundImage = null;
-		}
-
-		#region private 
-
-		Track[] EnergySlots => _spirit.Presence.Energy.Slots.ToArray();
-
-		Track[] CardPlaySlots => _spirit.Presence.CardPlays.Slots.ToArray();
-
-		readonly Spirit _spirit = spirit;
-		readonly PresenceTrackLayout _layout = layout;
-		readonly Image _presenceImg = tip._presenceImg;
-
-		Bitmap _cachedBackgroundImage;
-
-		#endregion
 
 	}
 

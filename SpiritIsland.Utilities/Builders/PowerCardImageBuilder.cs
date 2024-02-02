@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Text.RegularExpressions;
 
@@ -60,8 +59,8 @@ public partial class PowerCardImageBuilder {
 		using(Image artwork = await resources.GetPowerCardImage( card ))
 			graphics.DrawImage( artwork, imgRect );
 
-        // Header
-        PowerHeaderDrawer.DrawAttributeValues( graphics, headerRect.SplitHorizontally( 3 ), card );
+		// Header
+		PowerHeaderDrawer.AttributeValuesRow( card ).Paint( graphics, headerRect );
 
 		// Instructions
 		PaintInstructionArea( card.Instructions, textArea, graphics, Brushes.Cornsilk );

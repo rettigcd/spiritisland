@@ -35,4 +35,5 @@ public static class Filter {
 	public const string TwoDahan   = "2 " + Dahan;
 	public const string TwoBeasts  = "2 " + Beast;
 	public const string CoastalCity = Coastal+"+"+City;
+	public const string BlightAndInvaders = Blight+"+"+Invaders;
 }

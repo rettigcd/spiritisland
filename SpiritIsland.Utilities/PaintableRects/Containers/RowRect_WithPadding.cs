@@ -1,34 +1,39 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 // Holds 1 or more cells.
 // Cells can be sized to either:
 //		(a) have same height or
 //		(b) have same width (is this even useful???)
 // Hight can be Collapsed Top / Middle / Bottom   OR Expand-Fill
-public class PaintableRow : IPaintableBlockRect {
+public class RowRect_WithPadding : IPaintableRect {
 
-	public float WidthRatio { get; private set; }
+	public float? WidthRatio { get; private set; }
 
 	#region Style
-	public Color? BackgroundColor { get; set; }
-	public Color? BorderColor { get; set; }
-	/// <summary> (% of height) to add around the border (using height because it is constant, width is variable</summary>
+	public BrushSpec? Background { get; set; }
+	public PenSpec? Border { get; set; }
+
+	/// <summary> (% of Min(width,height)) to add around the border</summary>
 	public float Padding { get; set; }
+
 	/// <summary> (% of height) to space between children (using height because it is constant, width is variable</summary>
 	public float Separation { get; set; }
+
 	#endregion  Style
 
-	public PaintableRow( params IPaintableBlockRect[] children ) {
+	#region constructors
+
+	public RowRect_WithPadding( params IPaintableRect[] children ) {
+		foreach(var child in children)
+			ArgumentNullException.ThrowIfNull(child.WidthRatio);
 		_children = children;
-		_rects = new Rectangle[_children.Length];
+		_cachedRects = new Rectangle[_children.Length];
 
 		// calculate static right-weights - using All-Have-Height=1 and Expand-to-fill-Width
 		_rights = new float[children.Length];
 		float cur = 0;
 		for(int i = 0; i < children.Length; ++i) {
-			cur += children[i].WidthRatio;
+			cur += children[i].WidthRatio!.Value;
 			_rights[i] = cur;
 		}
 
@@ -44,39 +49,29 @@ public class PaintableRow : IPaintableBlockRect {
 
 	}
 
-	public Rectangle Paint( Graphics graphics, Rectangle bounds ) {
-		PaintStyles( graphics, bounds );
+	#endregion constructors
+
+	public void Paint( Graphics graphics, Rectangle bounds ) {
+		Background?.Fill(graphics,bounds);
 
 		var rects = CalcChildRects( bounds );
-
 		// Draw Children
 		for(int i = 0; i < _children.Length; ++i)
 			_children[i].Paint( graphics, rects[i] );
 
-		return bounds;
+		Border?.Stroke(graphics,bounds);
 	}
 
-	void PaintStyles( Graphics graphics, Rectangle bounds ) {
-		if(BackgroundColor.HasValue) {
-			using var growthGroupBrush = new SolidBrush( BackgroundColor.Value );
-			graphics.FillRectangle( growthGroupBrush, bounds );
-		}
-		if(BorderColor.HasValue) {
-			using var pen = new Pen( BorderColor.Value );
-			graphics.DrawRectangle( pen, bounds );
-		}
-	}
 
 	/// <remarks>Returning the rectangles isolates caller from knowing if they are cached or calculated on the fly.</remarks>
 	Rectangle[] CalcChildRects( Rectangle bounds ) {
-		if(bounds == _lastBounds) return _rects;
+		if(bounds == _lastBounds) return _cachedRects;
 
 		// Note: If caller uses WidthRatio to properly size this BEFORE this is called,
 		// this will fit perfectly and there will be no left over space that we need to deal with by setting alignment.
 
 		// padding
-		int padding = (int)(bounds.Height * Padding + .5f);
-		Rectangle innerBounds = bounds.InflateBy( -padding );
+		Rectangle innerBounds = bounds.Pad(Padding);
 
 		// child separation
 		int separation = (int)(bounds.Height * Separation + .5f);
@@ -86,17 +81,17 @@ public class PaintableRow : IPaintableBlockRect {
 		int leftRef = innerBounds.Left;
 		for(int i = 0; i < _children.Length; ++i) {
 			int right0 = (int)(usableWidth * _rights[i]);
-			_rects[i] = new Rectangle( leftRef + left0, innerBounds.Top, right0 - left0, innerBounds.Height );
+			_cachedRects[i] = new Rectangle( leftRef + left0, innerBounds.Top, right0 - left0, innerBounds.Height );
 			left0 = right0;
 			leftRef += separation;
 		}
 		_lastBounds = bounds;
-		return _rects;
+		return _cachedRects;
 	}
 
 	#region private fields
 	readonly IPaintableRect[] _children;
-	readonly Rectangle[] _rects;
+	readonly Rectangle[] _cachedRects;
 	readonly float[] _rights;
 
 	Rectangle _lastBounds;

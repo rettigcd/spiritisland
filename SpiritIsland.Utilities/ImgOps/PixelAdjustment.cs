@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Applies a location-independed Modification. 

@@ -1,15 +1,24 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
-public interface IButton {
+public interface IAmEnablable { bool Enabled {set;} }
 
+public interface IButton : IAmEnablable, IPaintAbove {
 	bool Contains( Point clientCoords );
+}
 
-	void Paint( Graphics graphics, bool enabled );
-	
-	/// <summary>
-	/// Enables / Disables the button based on the Options available in the Decision.
-	/// </summary>
-	void SyncDataToDecision( IDecision decision );
+// Eventually merge this into IButton...
+public interface IClickable {
+	void Click();
+}
+
+public interface IClickableLocation : IClickable {
+	bool Contains(Point point);
+}
+
+public class GenericClickable(Action action) : IClickable {
+
+	public void Click() => action();
 }

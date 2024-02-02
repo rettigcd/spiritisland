@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public static class Rectangle_Extensions {
 
@@ -226,6 +224,29 @@ public static class Rectangle_Extensions {
 			_ => new Rectangle( bounds.X, bounds.Y + (bounds.Height - height) / 2, bounds.Width, height ), // center / default
 		};
 	}
+
+	/// <summary>
+	/// Applies the % padding (0..1) to the minimum(width,height)
+	/// </summary>
+	/// <returns>A new Rectangle</returns>
+	public static Rectangle Pad( this Rectangle bounds, float paddingPercent ){
+		if(paddingPercent == 0f) return bounds;
+		int padding = (int)(Math.Min(bounds.Height,bounds.Width) * paddingPercent + .5f);
+		return bounds.InflateBy( -padding );
+	}
+
+	public static Rectangle PadTopBottom( this Rectangle bounds, float paddingPercent ){
+		if(paddingPercent == 0f) return bounds;
+		int padding = (int)(Math.Min(bounds.Height,bounds.Width) * paddingPercent + .5f);
+		return bounds.InflateBy( 0, -padding );
+	}
+
+
+	public static Point TL( this Rectangle rect ) => rect.Location;
+	public static Point BL( this Rectangle rect ) => new Point(rect.Left,rect.Bottom);
+	public static Point BR( this Rectangle rect ) => new Point(rect.Right,rect.Bottom);
+	public static Point TR( this Rectangle rect ) => new Point(rect.Top,rect.Bottom);
+
 
 	#endregion
 

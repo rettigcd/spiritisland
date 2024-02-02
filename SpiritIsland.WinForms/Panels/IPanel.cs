@@ -10,7 +10,12 @@ internal interface IPanel {
 	void Paint( Graphics graphics );
 	void OnGameLayoutChanged();
 	void ActivateOptions( IDecision decision );
-	Action GetClickableAction( Point clientCoords );
+
+	/// <summary>
+	/// Returns ONLY things that can be (logically) clicked on at the moment.
+	/// </summary>
+	IClickable GetClickableAction( Point clientCoords );
+	
 	int OptionCount { get; }
 	RegionLayoutClass GetLayout( Rectangle bounds );
 	bool HasFocus { set; }

@@ -1,47 +1,56 @@
-﻿using System.Drawing;
+﻿using System.Drawing.Drawing2D;
 
 namespace SpiritIsland;
 
+/// <summary>
+/// Draws / Fills a Rectangle
+/// </summary>
 public class RectRect : IPaintableRect {
 
-	public RectRect() {}
-	/// <summary> Hex Color </summary>
-	public string? Fill { get; set; }
-	/// <summary> Hex Color </summary>
-	public string? Stroke { get; set; }
+	#region Style
 
-	public Rectangle Paint( Graphics graphics, Rectangle bounds ) {
+	/// <summary> Hex Color </summary>
+	public BrushSpec? Fill {get; set;}
 
-		// 				graphics.FillPath( outerBrush, bounds.RoundCorners( 20 ) );
+	/// <summary> Hex Color </summary>
+	public PenSpec? Stroke { get; set; }
+
+	#endregion Style
+
+	public float? WidthRatio { get; set; }
+
+	public RectRect RoundCorners( float radias ) { _cornerRadius = radias; _tl=_tr=_bl=_br=true; return this; }
+	public RectRect RoundCorners( float radias, bool tl, bool tr, bool br, bool bl ) { _cornerRadius = radias; _tl=tl; _tr=tr; _bl=bl;_br=br; return this; }
+
+	#region Paint
+
+	public void Paint( Graphics graphics, Rectangle bounds ) {
+
 		if(_cornerRadius == 0f)
 			PaintSquareCorners( graphics, bounds );
 		else
 			PaintRoundedCorners( graphics, bounds );
-		return bounds;
 	}
 
 	void PaintRoundedCorners( Graphics graphics, Rectangle bounds ) {
-		int radius = (int)(Math.Min(bounds.Width,bounds.Height) * _cornerRadius);
-		var path = bounds.RoundCorners( radius, _tl, _tr, _br, _bl );
-		if(Fill is not null)
-			using(var brush = new SolidBrush( ColorString.ParseHexColor( Fill ) ))
-				graphics.FillPath( brush, path );
-		if(Stroke is not null)
-			using(var pen = new Pen( ColorString.ParseHexColor( Stroke ) ))
-				graphics.DrawPath( pen, path );
+		GraphicsPath path = CalcPath(bounds);
+		Fill?.Fill(graphics,path);
+		Stroke?.Stroke(graphics,path,bounds);
 	}
 
 	void PaintSquareCorners( Graphics graphics, Rectangle bounds ) {
-		if(Fill is not null)
-			using(var brush = new SolidBrush( ColorString.ParseHexColor( Fill ) ))
-				graphics.FillRectangle( brush, bounds );
-		if(Stroke is not null)
-			using(var pen = new Pen( ColorString.ParseHexColor( Stroke ) ))
-				graphics.DrawRectangle( pen, bounds );
+		Fill?.Fill(graphics,bounds);
+		Stroke?.Stroke(graphics,bounds);
 	}
 
-	bool _tl,_tr,_bl,_br;
+	#endregion Paint
+
+	#region private
+
+	GraphicsPath CalcPath(Rectangle bounds) => bounds.RoundCorners( CalcRadiusInPixels(bounds), _tl, _tr, _br, _bl );
+	int CalcRadiusInPixels(Rectangle bounds) => (int)(Math.Min(bounds.Width,bounds.Height) * _cornerRadius);
+
+	bool _tl,_tr,_bl,_br; // round corner?
 	float _cornerRadius = 0f; // % of min dimension
-	public RectRect RoundCorners( float radias ) { _cornerRadius = radias; _tl=_tr=_bl=_br=true; return this; }
-	public RectRect RoundCorners( float radias, bool tl, bool tr, bool br, bool bl ) { _cornerRadius = radias; _tl=tl; _tr=tr; _bl=bl;_br=br; return this; }
+	#endregion private
 }

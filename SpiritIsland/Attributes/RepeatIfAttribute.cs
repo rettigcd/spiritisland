@@ -40,7 +40,7 @@ public class DrawableRepeatOption( string thresholds, string description ) : IDr
 
 	public string Description { get; } = description;
 
-	string IOption.Text => ThresholdString;
+	string IDrawableInnateTier.Text => ThresholdString;
 
 	public string ThresholdString => Elements.BuildElementString();
 	public bool IsActive( ElementMgr activatedElements ) => activatedElements.Contains( Elements );
