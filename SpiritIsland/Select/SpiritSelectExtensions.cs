@@ -34,9 +34,9 @@ static public class SpiritSelectExtensions {
 		return spirit.SelectAsync( new A.TypedDecision<T>( prompt, options, present ) );
 	}
 
-	static public async Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
+	static public async Task<PowerCard> SelectPowerCard( this Spirit spirit, string prompt, int num, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
 		spirit.DraftDeck.AddRange( options.Except( spirit.Decks.SelectMany( x => x.Cards ) ) );
-		PowerCard card = await spirit.SelectAsync( new A.PowerCard( prompt, cardUse, options.ToArray(), present ) );
+		PowerCard card = await spirit.SelectAsync( new A.PowerCard( prompt, num, cardUse, options.ToArray(), present ) );
 		spirit.DraftDeck.Clear();
 		return card;
 	}

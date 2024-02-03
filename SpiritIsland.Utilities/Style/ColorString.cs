@@ -6,28 +6,32 @@ public static class ColorString{
 	
 	/// <summary>
 	/// Formats: 
-	/// ### is RGB, 
+	/// #712 is RGB, 
 	/// ###### is RRGGBB, 
 	/// ######## is RRGGBBAA,
 	/// LightBlue (case sensitive)
 	/// </summary>
-	static public Color Parse(string color){
-		int l = color.Length;
+	static public Color Parse(string htmlColor){
+		return ColorTranslator.FromHtml(htmlColor);
+	// 	int l = htmlColor.Length;
 
-		if((l==3||l==6||l==8) && Regex.IsMatch(color,"^[0-9a-fA-F]+$"))
-			throw new Exception(color);
+	// 	if((l==3||l==6||l==8) && Regex.IsMatch(htmlColor,"^[0-9a-fA-F]+$"))
+	// 		throw new Exception(htmlColor);
 
-		if(color[0] == '#')
-			return color.Length switch {
-				9 => Color.FromArgb( Parse2Hex(color,1+6), Parse2Hex(color,1+0), Parse2Hex(color,1+2), Parse2Hex(color,1+4) ),
-				7 => Color.FromArgb( Parse2Hex(color,1+0), Parse2Hex(color,1+2), Parse2Hex(color,1+4) ),
-				4 => Color.FromArgb( ParseHex(color[1+0])*17, ParseHex(color[1+1])*17, ParseHex(color[1+2]) ),
-				_ => throw new ArgumentException(nameof(color),$"Invalid hex color '{color}'")
-			};
-		return Color.FromName(color);
+	// 	if(htmlColor[0] == '#')
+	// 		return htmlColor.Length switch {
+	// 			9 => Color.FromArgb( Parse2Hex(htmlColor,1+6), Parse2Hex(htmlColor,1+0), Parse2Hex(htmlColor,1+2), Parse2Hex(htmlColor,1+4) ),
+	// 			7 => Color.FromArgb( Parse2Hex(htmlColor,1+0), Parse2Hex(htmlColor,1+2), Parse2Hex(htmlColor,1+4) ),
+	// 			4 => Color.FromArgb( ParseHex(htmlColor[1+0])*17, ParseHex(htmlColor[1+1])*17, ParseHex(htmlColor[1+2]) ),
+	// 			_ => throw new ArgumentException(nameof(htmlColor),$"Invalid hex color '{htmlColor}'")
+	// 		};
+	// 	Color color = Color.FromName(htmlColor);
+	// 	if(color.A == 0)
+	// 		throw new FormatException($"Unable to find ColorName '{htmlColor}'" );
+	// 	return color;
 	}
 	
-	static int Parse2Hex(string s, int start) => ParseHex(s[start]) * 16 + ParseHex(s[start+1]);
-	static int ParseHex(char k) => 'a'<=k ? (k-'a'+10) : 'A'<=k ? (k-'A'+10) : (k-'0');
+	// static int Parse2Hex(string s, int start) => ParseHex(s[start]) * 16 + ParseHex(s[start+1]);
+	// static int ParseHex(char k) => 'a'<=k ? (k-'a'+10) : 'A'<=k ? (k-'A'+10) : (k-'0');
 
 }

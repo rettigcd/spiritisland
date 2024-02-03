@@ -4,17 +4,17 @@ using System.Drawing;
 namespace SpiritIsland.WinForms;
 
 /// <summary>
-/// Each Innate is naturally arranged as a Column (aka ColumnRect)
+/// Each Innate is naturally arranged as a Column
 /// This extends that and allows us to click on it as an IOption
 /// </summary>
 class ClickableColRect
-	: ColumnRect
+	: RowRect
 	, IPaintAbove
 	, IClickableLocation
 	, IAmEnablable
 {
 
-	public ClickableColRect( params IPaintableRect[] children ):base(children){}
+	public ClickableColRect( params IPaintableRect[] children ):base( FillFrom.Top, children ){}
 
 	Rectangle _bounds;
 

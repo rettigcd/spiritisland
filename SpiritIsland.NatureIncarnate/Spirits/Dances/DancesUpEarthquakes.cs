@@ -180,7 +180,7 @@ public class DancesUpEarthquakes : Spirit {
 
 	async Task<bool> SelectAndMakeImpending1( IEnumerable<PowerCard> powerCardOptions, int remainingToPlay ) {
 		string prompt = $"Make Impending power card ({remainingToPlay})";
-		var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Impend, Present.Done );
+		var card = await this.SelectPowerCard( prompt, 1, powerCardOptions, CardUse.Impend, Present.Done );
 		if(card == null) return false;
 
 		if(!Hand.Contains( card )) 

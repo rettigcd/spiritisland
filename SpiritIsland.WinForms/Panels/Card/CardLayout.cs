@@ -39,7 +39,7 @@ class CardLayout {
 
 	readonly int _cardHeight;
 	readonly int _cardWidth;
-	readonly Rectangle _bounds;
+	readonly public Rectangle _bounds;
 	readonly int _rowCount;
 	readonly int _colCount;
 

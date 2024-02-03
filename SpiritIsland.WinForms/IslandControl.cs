@@ -465,6 +465,7 @@ public class SharedCtx( IslandControl control ) {
 
 	public Spirit _spirit;
 	public void SelectOption( IOption option ) => _control.SelectOption( option );
+	public void Invalidate() => _control.Invalidate();
 
 	public bool _debug;
 

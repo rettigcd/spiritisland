@@ -2,11 +2,7 @@
 
 namespace SpiritIsland.WinForms;
 
-public class InnateTierBtn 
-	: IPaintableRect
-	, IPaintAbove
-//	, IAmEnablable , IClickableLocation
-{
+public class InnateTierBtn : IPaintableRect, IPaintAbove {
 
 	public float? WidthRatio => _widthRatio ??= CalcWidthRatio;
 	public PaddingSpec Padding = (0,.01f);
@@ -24,12 +20,6 @@ public class InnateTierBtn
 	}
 
 	public void PaintAbove( Graphics graphics ) {
-
-		// if(Enabled) {
-		// 	ControlPaint.DrawButton( graphics, Bounds.InflateBy( 3 ), ButtonState.Normal );
-		// 	using Pen highlightPen = new( Color.Red, 2f );
-		// 	graphics.DrawRectangle( highlightPen, Bounds.InflateBy( 1 ) );
-		// }
 
 		if(_innateOption.IsActive( _spirit.Elements ))
 			graphics.FillRectangle( Brushes.PeachPuff, _bounds );
@@ -61,23 +51,5 @@ public class InnateTierBtn
 
 
 	#endregion
-
-	// public bool Contains(Point point) => Bounds.Contains(point);
-	// public void Click()	{
-	// 	MessageBox.Show("Click!");
-	// }
-	//	public bool Enabled { private get; set; }
-	// public InnateTierBtn SetPosition( Point topLeft, int width ) {
-
-	// 	// Calc Actual Size
-	// 	SetRowInfo(width);
-
-	// 	using Image img = UsingImage;
-	// 	Bounds = new Rectangle( topLeft.X, topLeft.Y, 
-	// 		_rowInfo.Width, 
-	// 		_rowInfo.Width * img.Height / img.Width
-	// 	);
-	// 	return this;
-	// }
 
 }

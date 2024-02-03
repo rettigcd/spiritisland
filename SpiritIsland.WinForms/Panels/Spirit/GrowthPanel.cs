@@ -12,7 +12,9 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 	}
 
 	void InitGrowthRow(){
-		_growthRow = new RowRect_WithPadding( _ctx._spirit.GrowthTrack.Options.Select( BuildPaintable ).ToArray() ) {
+		_growthRow = new RowRect_WithPadding( 
+			[ .._ctx._spirit.GrowthTrack.Options.Select( BuildPaintable ) ]
+		) {
 			Padding = 0.05f,
 			Separation = 0.05f
 		};
@@ -20,8 +22,10 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 
 	// Growth-Option
 	RowRect_WithPadding BuildPaintable( GrowthOption op ) {
-		var actionRects = op.GrowthActions.Cast<SpiritGrowthAction>().Select( BuildPaintable ).ToArray();
-		return new RowRect_WithPadding( actionRects ) {
+		return new RowRect_WithPadding([ 
+			..op.GrowthActions.Cast<SpiritGrowthAction>()
+				.Select( BuildPaintable ) 
+		]) {
 			Background = Color.FromArgb( 255, 255, 220 ),
 			Border = Color.FromArgb( 230, 230, 198 ),
 			Padding = .05f,

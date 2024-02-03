@@ -26,6 +26,7 @@ static public class IPaintableRect_Extensions {
 	/// Handy for stripping the WidthRatio off of an object so RowRect can evently distribute it.
 	/// </summary>
 	static public PoolRect FloatSelf( this IPaintableRect inner) => new PoolRect().Float(inner);
+	static public PoolRect FloatSelf_WithRatio( this IPaintableRect inner) => new PoolRect(){WidthRatio = inner.WidthRatio}.Float(inner);
 
 	// specifies floating position with integer % (0..100)
 	static public PoolRect FloatSelf( this IPaintableRect inner, int x, int y, int w, int h) 

@@ -15,7 +15,7 @@ public class OverenthusiasticArson {
 		var card = GameState.Current.MinorCards.FlipNext();
 
 		// Show the card to the user
-		_ = await ctx.Self.SelectPowerCard(OverenthusiasticArson.Name + " turned up:",new PowerCard[] { card }, CardUse.Other, Present.Always );
+		_ = await ctx.Self.SelectPowerCard(OverenthusiasticArson.Name + " turned up:", 1, new PowerCard[] { card }, CardUse.Accept, Present.Always );
 
 		// IF it provides fire:
 		if(card.Elements.Contains( Element.Fire )) {

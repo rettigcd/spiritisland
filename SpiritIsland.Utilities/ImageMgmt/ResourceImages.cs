@@ -233,7 +233,7 @@ public partial class ResourceImages
 
 	}
 
-	public async Task<Image> GetPowerCard( PowerCard card ) {
+	public async Task<Bitmap> GetPowerCard( PowerCard card ) {
 		try {
 			ImageDiskCache _cache = new ImageDiskCache();
 			string key = $"PowerCard\\{card.Name}.png";

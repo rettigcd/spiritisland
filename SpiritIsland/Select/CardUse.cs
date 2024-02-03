@@ -10,5 +10,5 @@ public enum CardUse {
 	Impend,
 	Reclaim, 
 	Repeat, 
-	Other
+	Accept   // Generic card use. (was "Other")
 };

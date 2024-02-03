@@ -14,7 +14,7 @@ public class GatherTheScatteredLightOfStars {
 			var uniques = self.InPlay.Union( self.Hand ).Union( self.DiscardPile )
 				.Where( x => x.PowerType == PowerType.Spirit )
 				.ToList();
-			var unique = await self.SelectPowerCard( "Forget unique to reclaim 3 more.", uniques, CardUse.Forget, Present.Done );
+			var unique = await self.SelectPowerCard( "Forget unique to reclaim 3 more.", 1, uniques, CardUse.Forget, Present.Done );
 			if(unique != null){
 				self.ForgetThisCard( unique );
 				reclaimCount += 3;

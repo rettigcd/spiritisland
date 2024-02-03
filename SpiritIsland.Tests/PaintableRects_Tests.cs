@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Shouldly;
 
 namespace SpiritIsland.Tests;
 
@@ -58,6 +59,35 @@ public class PaintableRects_Tests {
 		string.Join(' ',children.Select(FormatYH)).ShouldBe(expected);
 		foreach(var child in children)
 			FormatXW(child).ShouldBe("(7,10)");
+	}
+
+
+	[Fact]
+	public void ColorString_ParsesName(){
+		Color color = ColorString.Parse("Red");
+		color.R.ShouldBe((byte)255);
+		color.G.ShouldBe((byte)0);
+		color.B.ShouldBe((byte)0);
+		color.A.ShouldBe((byte)255);
+	}
+
+	[Fact]
+	public void BadColorStrings_ThrowException(){
+		Should.Throw<ArgumentException>(()=>ColorString.Parse("Red:.5"));
+	}
+
+	[Fact]
+	public void PenSpec_Format(){
+		PenSpec spec = "Red;3.5";
+		using var mgr = spec.GetResourceMgr(new Rectangle(0,0,100,100));
+#pragma warning disable CA1416 // Validate platform compatibility
+		Pen pen = mgr.Resource;
+		Color color = pen.Color;
+		color.R.ShouldBe((byte)255);
+		color.G.ShouldBe((byte)0);
+		color.B.ShouldBe((byte)0);
+		color.A.ShouldBe((byte)255);
+#pragma warning restore CA1416 // Validate platform compatibility
 	}
 
 

@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland;
 
+[Obsolete("Use ImgRect")]
 public class IconDescriptorRect( IconDescriptor descriptor ) : IPaintableRect {
 
 	public float? WidthRatio { get; set; }

@@ -189,7 +189,7 @@ public abstract partial class Spirit
 	}
 
 	public async Task Reclaim1FromDiscard() {
-		PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", DiscardPile, CardUse.Reclaim, Present.Always );
+		PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", 1, DiscardPile, CardUse.Reclaim, Present.Always );
 		if( cardToReclaim != null )
 			Reclaim( cardToReclaim );
 	}
@@ -198,7 +198,7 @@ public abstract partial class Spirit
 	/// Called mid-round.  If reclaiming card from hand, looses elements
 	/// </summary>
 	public async Task Reclaim1FromDiscardOrPlayed() {
-		PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", DiscardPile.Union(InPlay), CardUse.Reclaim, Present.Always );
+		PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", 1, DiscardPile.Union(InPlay), CardUse.Reclaim, Present.Always );
 		Reclaim( cardToReclaim );
 	}
 
@@ -207,7 +207,7 @@ public abstract partial class Spirit
 
 		options ??= GetForgetableCards();
 
-		PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", options, CardUse.Forget, present );
+		PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", 1, options, CardUse.Forget, present );
 		if( cardToForget != null )
 			ForgetThisCard( cardToForget );
 		return cardToForget;
@@ -409,7 +409,7 @@ public abstract partial class Spirit
 
 	async Task<bool> SelectAndPlay1( PowerCard[] powerCardOptions, int remainingToPlay ) {
 		string prompt = $"Play power card (${Energy} / {remainingToPlay})";
-		var card = await this.SelectPowerCard( prompt, powerCardOptions, CardUse.Play, Present.Done );
+		var card = await this.SelectPowerCard( prompt, remainingToPlay, powerCardOptions, CardUse.Play, Present.Done );
 		if(card == null) return false;
 		PlayCard( card );
 		return true;

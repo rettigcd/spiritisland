@@ -7,12 +7,13 @@ namespace SpiritIsland.WinForms;
 /// <summary> Caches PowerCard images in memory. </summary>
 sealed public class CardImageManager : IDisposable {
 
-	public CardImageManager() {
+	public ResourceMgr<Bitmap> GetMgr( PowerCard card ){
+		return new ResourceMgr<Bitmap>(GetImage(card),false); // don't dispose
 	}
 
-	public Image GetImage( PowerCard card ) {
+	public Bitmap GetImage( PowerCard card ) {
 
-		if(!images.TryGetValue( card, out Image image )) {
+		if(!images.TryGetValue( card, out Bitmap image )) {
 			image = ResourceImages.Singleton.GetPowerCard( card ).Result; // !!!
 			images.Add( card, image );
 		}
@@ -25,5 +26,5 @@ sealed public class CardImageManager : IDisposable {
 		images.Clear();
 	}
 
-	readonly Dictionary<PowerCard, Image> images = [];
+	readonly Dictionary<PowerCard, Bitmap> images = [];
 }

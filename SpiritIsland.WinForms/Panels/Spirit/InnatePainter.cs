@@ -32,19 +32,19 @@ class InnatePainter {
 
 		return new HorizontalStackRect( [..columns.Select(Wrap)] );
 
-		static IPaintableRect Wrap(List<IPaintableRect> children ) => new ColumnRect([..children]).FloatSelf(3,3,94,94);
+		static IPaintableRect Wrap(List<IPaintableRect> children ) => new RowRect(FillFrom.Top,[..children]).FloatSelf(3,3,94,94);
 	}
 
 	/// <summary>
 	/// Generates the PaintableRect for 1 Innate
 	/// </summary>
-	static public ColumnRect GetInnateRect(SharedCtx ctx, InnatePower power, ColumnCountInfo ccInfo, ClickableContainer cc){
+	static public RowRect GetInnateRect(SharedCtx ctx, InnatePower power, ColumnCountInfo ccInfo, ClickableContainer cc){
 
 		var innateRect = new ClickableColRect([
 			// Title 
 			new TextRect( power.Name.ToUpper() ){ WidthRatio=12f, Padding=.1f, Horizontal=StringAlignment.Near, Font="Arial Narrow;.7;bold|italic" },
 			// Header
-			new ColumnRect( 
+			new RowRect( FillFrom.Top,
 				new RowRect(
 					new TextRect("SPEED"){ Brush=Brushes.White, Font=AttrHeaderFont },
 					new TextRect("RANGE"){ Brush=Brushes.White, Font=AttrHeaderFont },

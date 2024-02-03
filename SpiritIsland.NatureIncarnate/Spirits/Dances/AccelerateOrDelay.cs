@@ -10,7 +10,7 @@ public class AccelerateOrDelay : SpiritAction {
 		for(int i = 0; i < 2; ++i) {
 			// Select card to bump or delay
 			string prompt = $"Select impending card to accelerate or delay. ({i + 1}of 2)";
-			var card = await spirit.SelectPowerCard(prompt,options,CardUse.Other,Present.Done);
+			var card = await spirit.SelectPowerCard(prompt,1,options,CardUse.Accept,Present.Done);
 			if(card == null) break;
 			options.Remove( card );
 

@@ -14,7 +14,7 @@ public class AidFromLesserSpirits : BlightCard {
 
 				// Give 1 to each spirit.
 				// (can't use TakeCard because that adds it to hand.)
-				PowerCard card = await spirit.SelectPowerCard("Pick card to play every turn for free.", cards, CardUse.AddToHand, Present.Always);
+				PowerCard card = await spirit.SelectPowerCard("Pick card to play every turn for free.", 1, cards, CardUse.AddToHand, Present.Always);
 				cards.Remove(card);
 
 				// They may be used every turn as if played, but cost no card plays/energy.

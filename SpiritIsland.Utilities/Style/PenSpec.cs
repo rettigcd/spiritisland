@@ -40,7 +40,7 @@ public abstract class PenSpec {
 			Pen pen = _width.HasValue 
 				? new Pen(_color, Math.Min(bounds.Width,bounds.Height)*_width.Value ) 
 				: new Pen(_color);
-			return new ResourceMgr<Pen>( pen, true);
+			return new ResourceMgr<Pen>( pen, true );
 		}
 		readonly Color _color;
 		readonly float? _width;

@@ -133,7 +133,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	async Task Keep1ForDaysThatNeverWere( DrawCardResult drawResult ) {
 		// select card to keep
-		var keep = await this.SelectPowerCard("Keep 1 card for Days That Never Were", drawResult.Rejected, CardUse.AddToHand, Present.Always);
+		var keep = await this.SelectPowerCard("Keep 1 card for Days That Never Were", 1, drawResult.Rejected, CardUse.AddToHand, Present.Always);
 		// remove it from the rejected group
 		drawResult.Rejected.Remove( keep );
 

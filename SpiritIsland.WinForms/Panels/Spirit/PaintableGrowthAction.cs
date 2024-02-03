@@ -26,6 +26,7 @@ public class PaintableGrowthAction( SpiritGrowthAction action, SharedCtx ctx )
 	}
 
 	public bool Enabled { private get; set; }
+	
 	void IPaintAbove.PaintAbove( Graphics graphics ) {
 		if(Enabled) {
 			using Pen highlightPen = new( Color.Red, 4f );

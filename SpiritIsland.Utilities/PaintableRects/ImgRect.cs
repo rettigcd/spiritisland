@@ -2,6 +2,16 @@
 
 public class ImgRect( ImageSpec img ) : IPaintableRect {
 
+	public PenSpec? Border {get;set;}
+	public BrushSpec? Background {get;set;}
+
+	/// <summary> returns the last Bounds less the Margin. </summary>
+	public Rectangle Bounds {get; private set;}
+
+	/// <summary> (% of Min(width,height)) to add around the border</summary>
+	public PaddingSpec Padding = PaddingSpec.None;
+	public PaddingSpec Margin = PaddingSpec.None;
+
 	public ImageSpec Img {
 		get => _img;
 		set{
@@ -10,14 +20,21 @@ public class ImgRect( ImageSpec img ) : IPaintableRect {
 			_widthRatio = null;
 		}
 	}
-		
+
 	public float? WidthRatio => _widthRatio ??= Mgr.Resource.Width * 1f / Mgr.Resource.Height;
 
 	public void Paint( Graphics graphics, Rectangle bounds ) {
+		Bounds = Margin.Content(bounds);
+		Background?.Fill(graphics,Bounds);
+		PaintContent(graphics,Padding.Content(Bounds));
+		Border?.Stroke(graphics,Bounds); // doing last to clean-up edges
+	}
+
+	void PaintContent( Graphics graphics, Rectangle content ) {
 		using( ResourceMgr<Bitmap> mgr = Mgr ){
 			Bitmap image = mgr.Resource;
-			bounds = bounds.FitBoth( image.Size );
-			graphics.DrawImage(image, bounds );
+			content = content.FitBoth( image.Size );
+			graphics.DrawImage(image, content );
 		}
 		_mgr = null;
 	}

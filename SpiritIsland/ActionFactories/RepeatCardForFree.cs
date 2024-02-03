@@ -36,7 +36,7 @@ public class RepeatCardForFree : IActionFactory {
 
 		if(options.Length == 0) return;
 
-		PowerCard factory = await self.SelectPowerCard( "Select card to repeat", options, CardUse.Repeat, Present.Done );
+		PowerCard factory = await self.SelectPowerCard( "Select card to repeat", 1, options, CardUse.Repeat, Present.Done );
 		if(factory == null) return;
 
 		self.AddActionFactory( factory );

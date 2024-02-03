@@ -58,23 +58,28 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 	void Paint_Elements( Graphics graphics ) {
 		// activated elements
 		var visibleElements = _spirit.Elements.Elements;
-		DrawActivatedElements( graphics, visibleElements, _elementLayout );
+		var mainElements = ActivatedElementsRect( visibleElements );
+		mainElements.Paint(graphics,_elementLayout.Bounds);
+
 		int skip = visibleElements.Keys.Count; 
 		if(1<skip) skip++; // add a space
-		if(_spirit is IHaveSecondaryElements hasSecondaryElements)
-			DrawActivatedElements( graphics, hasSecondaryElements.SecondaryElements, _elementLayout, skip );
+		if(_spirit is IHaveSecondaryElements hasSecondaryElements){
+			Rectangle secondary = _elementLayout.Bounds.OffsetBy( (int)((mainElements.WidthRatio+1)*_elementLayout.Bounds.Height), 0);
+			ActivatedElementsRect( hasSecondaryElements.SecondaryElements ).Paint(graphics, secondary );
+		}
 	}
 
-	void DrawActivatedElements( Graphics graphics, CountDictionary<Element> elements, ElementLayout elLayout, int skip=0 ) {
-
-		int idx = skip;
-		foreach(var element in ElementList.AllElements) {
-			int count = elements[element];
-			if(count == 0) continue;
-			Rectangle rect = elLayout.Rect(idx++);
-			graphics.DrawImage( GetElementImage( element ), rect );
-			graphics.DrawCountIfHigherThan( rect, count);
-		}
+	public static IPaintableRect ActivatedElementsRect( CountDictionary<Element> elements ) {
+		var elementRects = ElementList.AllElements
+			.Where(element => 0<elements[element])
+			.Select(element => {
+				var img = new ImgRect( element.GetTokenImg() );
+				int count = elements[element];
+				return count==1 ? (IPaintableRect)img
+					: (IPaintableRect)img.FloatSelf_WithRatio().Float(new SubScriptRect($"x{count}") );
+			} )
+			.ToArray();
+		return new RowRect(FillFrom.Left, elementRects);
 	}
 
 	public void OnGameLayoutChanged() {

@@ -21,7 +21,7 @@ public class PlayCardForCost( Present present = Present.Always ) : IActionFactor
 			.ToArray();
 		if(options.Length == 0) return;
 
-		PowerCard powerCard = await self.SelectPowerCard( "Select card to play", options.Where( x => x.Cost <= maxCardCost ), CardUse.Play, present );
+		PowerCard powerCard = await self.SelectPowerCard( "Select card to play", 1, options.Where( x => x.Cost <= maxCardCost ), CardUse.Play, present );
 		if(powerCard != null)
 			self.PlayCard( powerCard );
 	}

@@ -65,7 +65,7 @@ class OtherCardsPanel( SharedCtx ctx ) : IPanel {
 					CardUse.Discard => images.GetImg( Img.Discard1 ),
 					CardUse.Forget => images.GetImg( Img.Icon_DestroyedPresence ),
 					CardUse.Gift => null,
-					CardUse.Other => null,
+					CardUse.Accept => null,
 					CardUse.Play => images.GetImg( Img.Icon_Play ),
 					CardUse.Reclaim => images.GetImg( Img.Reclaim1 ),
 					CardUse.Repeat => null,

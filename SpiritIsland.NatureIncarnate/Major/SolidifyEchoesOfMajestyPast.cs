@@ -58,7 +58,7 @@ public class SolidifyEchoesOfMajestyPast {
 	}
 
 	static async Task RegainUnique(Spirit spirit, PowerCard[] forgottenUniques) {
-		var card = await spirit.SelectPowerCard( "Regain Unique",forgottenUniques,CardUse.Reclaim,Present.Always);
+		var card = await spirit.SelectPowerCard( "Regain Unique",1,forgottenUniques,CardUse.Reclaim,Present.Always);
 		if(card != null)
 			spirit.Hand.Add(card);
 	}

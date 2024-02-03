@@ -245,7 +245,7 @@ public static class Rectangle_Extensions {
 	public static Point TL( this Rectangle rect ) => rect.Location;
 	public static Point BL( this Rectangle rect ) => new Point(rect.Left,rect.Bottom);
 	public static Point BR( this Rectangle rect ) => new Point(rect.Right,rect.Bottom);
-	public static Point TR( this Rectangle rect ) => new Point(rect.Top,rect.Bottom);
+	public static Point TR( this Rectangle rect ) => new Point(rect.Right,rect.Top);
 
 
 	#endregion
