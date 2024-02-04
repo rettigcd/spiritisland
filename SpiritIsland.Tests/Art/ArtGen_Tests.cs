@@ -33,8 +33,8 @@ public class ArtGen_Tests {
 		await GenerateCards( cards );
 	}
 
-//	[Theory(Skip = "Takes >8 seconds to run.")]
-	[Theory]
+	[Theory(Skip = "Takes >8 seconds to run.")]
+//	[Theory]
 	[InlineData( "2 icons" )]
 	[InlineData( "no terrain" )]
 	[InlineData( "ss + range" )]

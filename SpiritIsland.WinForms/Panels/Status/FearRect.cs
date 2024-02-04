@@ -9,7 +9,7 @@ public class FearRect {
 	static public IPaintableRect GetFearRect( GameState gameState ){
 
 		NullRect spacer = new NullRect{ WidthRatio = .1f };
-		return new RowRect( Align.Far,
+		return new RowRect( FillFrom.Right,
 			GetTerrorLevelRect( gameState.Fear.TerrorLevel ),
 			GetActivatedFearRect(gameState.Fear.ActivatedCards),
 			spacer,

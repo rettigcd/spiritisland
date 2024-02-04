@@ -16,7 +16,7 @@ public class BlightRect{
 
 		int maxSpaces = approximateMaxBlightPerPlayer * gameState.Spirits.Length + 1;
 
-		return new RowRect( Align.Far,
+		return new RowRect( FillFrom.Right,
 			new BlightCardRect( gameState.BlightCard ),
 			BlightPoolRect( maxSpaces, count )
 		);

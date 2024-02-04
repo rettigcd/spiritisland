@@ -5,23 +5,23 @@ namespace SpiritIsland.Tests;
 public class PaintableRects_Tests {
 
 	[Theory]
-	[InlineData(Align.Near, "","(3,20)")]  // no size
-	[InlineData(Align.Near, "2","(3,20)")] // 1 fills
-	[InlineData(Align.Near, "1","(3,10)")] // 1 left over
-	[InlineData(Align.Near, ",.5","(3,15) (18,5)")] // 1st null, 2nd size
-	[InlineData(Align.Near, ".5,","(3,5) (8,15)")] // 1st size, 2nd null
-	[InlineData(Align.Near, ",1,","(3,5) (8,10) (18,5)")] // center size, outsizes split remainder
-	[InlineData(Align.Near, ",2,","(3,0) (3,20) (23,0)")] // center fills, outsides get 0
-	[InlineData(Align.Near, "1,2,","(3,10) (13,20) (33,0)")] // extends beyond right
-	[InlineData(Align.Far, "","(3,20)")]  // no size
-	[InlineData(Align.Far, "2","(3,20)")] // 1 fills
-	[InlineData(Align.Far, "1","(13,10)")] // 1 left over
-	[InlineData(Align.Far, ",.5","(8,15) (3,5)")] // 1st null, 2nd size
-	[InlineData(Align.Far, ".5,","(18,5) (3,15)")] // 1st size, 2nd null
-	[InlineData(Align.Far, ",1,","(18,5) (8,10) (3,5)")] // center size, outsizes split remainder
-	[InlineData(Align.Far, ",2,","(23,0) (3,20) (3,0)")] // center fills, outsides get 0
-	[InlineData(Align.Far, "1,2,","(13,10) (-7,20) (-7,0)")] // extends beyond right
-	public void RowRect_3_20(Align align, string widths,string expected){
+	[InlineData(FillFrom.Left, "","(3,20)")]  // no size
+	[InlineData(FillFrom.Left, "2","(3,20)")] // 1 fills
+	[InlineData(FillFrom.Left, "1","(3,10)")] // 1 left over
+	[InlineData(FillFrom.Left, ",.5","(3,15) (18,5)")] // 1st null, 2nd size
+	[InlineData(FillFrom.Left, ".5,","(3,5) (8,15)")] // 1st size, 2nd null
+	[InlineData(FillFrom.Left, ",1,","(3,5) (8,10) (18,5)")] // center size, outsizes split remainder
+	[InlineData(FillFrom.Left, ",2,","(3,0) (3,20) (23,0)")] // center fills, outsides get 0
+	[InlineData(FillFrom.Left, "1,2,","(3,10) (13,20) (33,0)")] // extends beyond right
+	[InlineData(FillFrom.Right, "","(3,20)")]  // no size
+	[InlineData(FillFrom.Right, "2","(3,20)")] // 1 fills
+	[InlineData(FillFrom.Right, "1","(13,10)")] // 1 left over
+	[InlineData(FillFrom.Right, ",.5","(8,15) (3,5)")] // 1st null, 2nd size
+	[InlineData(FillFrom.Right, ".5,","(18,5) (3,15)")] // 1st size, 2nd null
+	[InlineData(FillFrom.Right, ",1,","(18,5) (8,10) (3,5)")] // center size, outsizes split remainder
+	[InlineData(FillFrom.Right, ",2,","(23,0) (3,20) (3,0)")] // center fills, outsides get 0
+	[InlineData(FillFrom.Right, "1,2,","(13,10) (-7,20) (-7,0)")] // extends beyond right
+	public void RowRect_3_20(FillFrom align, string widths,string expected){
 		// Given: a child with a WidthRatio
 		Rect[] children = [ ..widths.Split(',').Select(BuildWidth) ];
 		// When:
@@ -33,27 +33,27 @@ public class PaintableRects_Tests {
 	}
 
 	[Theory]
-	[InlineData(Align.Near, "","(3,20)")]  // no size
-	[InlineData(Align.Near, "2","(3,20)")] // 1 fills
-	[InlineData(Align.Near, "1","(3,10)")] // 1 left over
-	[InlineData(Align.Near, ",.5","(3,15) (18,5)")] // 1st null, 2nd size
-	[InlineData(Align.Near, ".5,","(3,5) (8,15)")] // 1st size, 2nd null
-	[InlineData(Align.Near, ",1,","(3,5) (8,10) (18,5)")] // center size, outsizes split remainder
-	[InlineData(Align.Near, ",2,","(3,0) (3,20) (23,0)")] // center fills, outsides get 0
-	[InlineData(Align.Near, "1,2,","(3,10) (13,20) (33,0)")] // extends beyond right
-	[InlineData(Align.Far, "","(3,20)")]  // no size
-	[InlineData(Align.Far, "2","(3,20)")] // 1 fills
-	[InlineData(Align.Far, "1","(13,10)")] // 1 left over
-	[InlineData(Align.Far, ",.5","(8,15) (3,5)")] // 1st null, 2nd size
-	[InlineData(Align.Far, ".5,","(18,5) (3,15)")] // 1st size, 2nd null
-	[InlineData(Align.Far, ",1,","(18,5) (8,10) (3,5)")] // center size, outsizes split remainder
-	[InlineData(Align.Far, ",2,","(23,0) (3,20) (3,0)")] // center fills, outsides get 0
-	[InlineData(Align.Far, "1,2,","(13,10) (-7,20) (-7,0)")] // extends beyond right
-	public void ColumnRect_3_20(Align align, string heights, string expected){
+	[InlineData(FillFrom.Top, "","(3,20)")]  // no size
+	[InlineData(FillFrom.Top, "2","(3,20)")] // 1 fills
+	[InlineData(FillFrom.Top, "1","(3,10)")] // 1 left over
+	[InlineData(FillFrom.Top, ",.5","(3,15) (18,5)")] // 1st null, 2nd size
+	[InlineData(FillFrom.Top, ".5,","(3,5) (8,15)")] // 1st size, 2nd null
+	[InlineData(FillFrom.Top, ",1,","(3,5) (8,10) (18,5)")] // center size, outsizes split remainder
+	[InlineData(FillFrom.Top, ",2,","(3,0) (3,20) (23,0)")] // center fills, outsides get 0
+	[InlineData(FillFrom.Top, "1,2,","(3,10) (13,20) (33,0)")] // extends beyond right
+	[InlineData(FillFrom.Bottom, "","(3,20)")]  // no size
+	[InlineData(FillFrom.Bottom, "2","(3,20)")] // 1 fills
+	[InlineData(FillFrom.Bottom, "1","(13,10)")] // 1 left over
+	[InlineData(FillFrom.Bottom, ",.5","(8,15) (3,5)")] // 1st null, 2nd size
+	[InlineData(FillFrom.Bottom, ".5,","(18,5) (3,15)")] // 1st size, 2nd null
+	[InlineData(FillFrom.Bottom, ",1,","(18,5) (8,10) (3,5)")] // center size, outsizes split remainder
+	[InlineData(FillFrom.Bottom, ",2,","(23,0) (3,20) (3,0)")] // center fills, outsides get 0
+	[InlineData(FillFrom.Bottom, "1,2,","(13,10) (-7,20) (-7,0)")] // extends beyond right
+	public void ColumnRect_3_20(FillFrom align, string heights, string expected){
 		// Given: a child with a WidthRatio
 		Rect[] children = [ ..heights.Split(',').Select(BuildHeight) ];
 		// When:
-		new ColumnRect(align, children ).Paint(null,new Rectangle(7,3,10,20));
+		new RowRect(align, children ).Paint(null,new Rectangle(7,3,10,20));
 		// Then:
 		string.Join(' ',children.Select(FormatYH)).ShouldBe(expected);
 		foreach(var child in children)

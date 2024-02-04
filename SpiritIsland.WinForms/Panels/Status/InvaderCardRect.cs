@@ -21,7 +21,7 @@ class InvaderCardRect(InvaderCard _card) : IPaintableRect {
 		// Discard
 		paintables.Add( new DiscardInvaderRect( deck.Discards ){ WidthRatio=.8f } ); // Cards are only drawn .8 high so rotated, needs to be .8 wide
 
-		return new RowRect( Align.Far, [..paintables] );
+		return new RowRect( FillFrom.Right, [..paintables] );
 	}
 
 	static IPaintableRect AddUnrevealedCount( IPaintableRect explorerRect, int unrevealedCount ) {

@@ -56,7 +56,7 @@ internal class StatusPanel : IPanel {
 
 		var spacer = new NullRect { WidthRatio = .4f };
 
-		return new RowRect( Align.Far,
+		return new RowRect( FillFrom.Right,
 			FearRect.GetFearRect(_ctx.GameState),
 			spacer,
 			BlightRect.GetBlightRect(_ctx.GameState),
