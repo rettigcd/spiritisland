@@ -59,7 +59,7 @@ public class RowRect_WithPadding : IPaintableRect {
 		for(int i = 0; i < _children.Length; ++i)
 			_children[i].Paint( graphics, rects[i] );
 
-		Border?.Stroke(graphics,bounds);
+		Border?.DrawRectangle(graphics,bounds);
 	}
 
 

@@ -16,6 +16,11 @@ public abstract class BrushSpec {
 		graphics.FillRectangle( brush.Resource, rect );
 	}
 
+	public void FillElipse( Graphics graphics, Rectangle rect ) {
+		using var brush = GetResourceMgr();
+		graphics.FillEllipse( brush.Resource, rect );
+	}
+
 	public void Fill( Graphics graphics, GraphicsPath path ){
 		using var brush = GetResourceMgr();
 		graphics.FillPath( brush.Resource, path );

@@ -6,19 +6,19 @@ namespace SpiritIsland;
 /// </summary>
 public class SubScriptRect : IPaintableRect {
 
+	readonly static BrushSpec Background = Brushes.White;
+	readonly static PenSpec Border = Pens.Black;
+	readonly static Brush TextBrush = Brushes.Black;
+	readonly static Font _font = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );
+
+	public float? WidthRatio { get; set; }
+
 	#region constructors
 
-	public SubScriptRect(string text){
-		_text = () => text;
-	}
-	public SubScriptRect(Func<string> text){
-		_text = text;
-	}
+	public SubScriptRect(string text){ _text = () => text; }
+	public SubScriptRect(Func<string> text){ _text = text; }
 
 	#endregion constructors
-
-	readonly Func<string> _text;
-
 	public void Paint( Graphics graphics, Rectangle bounds ){
 
 		string text = _text();
@@ -29,11 +29,11 @@ public class SubScriptRect : IPaintableRect {
 			sz.Width + 3,
 			sz.Height + 2
 		);
-		graphics.FillEllipse( Brushes.White, subscriptRect );
-		graphics.DrawEllipse( Pens.Black, subscriptRect );
-		graphics.DrawString( text, _font, Brushes.Black, subscriptRect.X + 2, subscriptRect.Y + 1 );
+		Background.FillElipse( graphics, subscriptRect );
+		Border.DrawRectangle( graphics, subscriptRect );
+		graphics.DrawString( text, _font, TextBrush, subscriptRect.X + 2, subscriptRect.Y + 1 );
 	}
-	readonly static Font _font = new( "Arial", 8, FontStyle.Bold, GraphicsUnit.Point );
 
-	public float? WidthRatio { get; set; }
+	readonly Func<string> _text;
+
 }

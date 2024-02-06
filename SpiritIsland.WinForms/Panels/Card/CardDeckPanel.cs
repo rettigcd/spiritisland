@@ -94,7 +94,7 @@ class CardDeckPanel : IPanel {
 			bool isSelected = IsSelected(card);
 
 			// Border
-			var cardImg = (ImgRect)cardRect.Child(0);
+			var cardImg = (ImgRect)cardRect.Children[0].Paintable;
 			if( isSelected ) cardImg.Border = "Green;.015";
 			else if( CanSelect(card) ) cardImg.Border = "Red;.015";
 

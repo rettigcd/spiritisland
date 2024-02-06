@@ -17,7 +17,7 @@ public abstract class BasePaintableRect : IPaintableRect {
 		Bounds = Margin.Content(bounds);
 		Background?.Fill(graphics,Bounds);
 		PaintContent(graphics,Padding.Content(Bounds));
-		Border?.Stroke(graphics,Bounds); // doing last to clean-up edges
+		Border?.DrawRectangle(graphics,Bounds); // doing last to clean-up edges
 	}
 	abstract protected void PaintContent(Graphics graphics,Rectangle bounds);
 }

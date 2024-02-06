@@ -5,6 +5,25 @@
 /// </summary>
 public static class PowerHeaderDrawer {
 
+	static readonly FontSpec AttrTitleFont = "Arial;0.6;bold";
+	static readonly BrushSpec AttrTitleBrush = Brushes.White;
+	static readonly BrushSpec AttrTitleBackground = "#ae9869";
+
+	static readonly PenSpec AttrValueSeparator = Pens.SaddleBrown;
+	static readonly BrushSpec AttrValueBackground = Brushes.BlanchedAlmond;
+
+	static public IPaintableRect AttributeTitlesRow( InnatePower power ) {
+		return new RowRect(
+			new TextRect( "SPEED" ) { Brush = AttrTitleBrush, Font = AttrTitleFont },
+			new TextRect( "RANGE" ) { Brush = AttrTitleBrush, Font = AttrTitleFont },
+			new TextRect( TargetTitle( power ) ) { Brush = AttrTitleBrush, Font = AttrTitleFont }
+		) {
+			Background = AttrTitleBackground,
+			WidthRatio = 16f
+		};
+		static string TargetTitle( InnatePower power ) => power.LandOrSpirit == LandOrSpirit.Land ? "TARGET LAND" : "TARGET";
+	}
+
 	static public RowRect AttributeValuesRow( IFlexibleSpeedActionFactory power ) {
 
 		return new RowRect(
@@ -12,9 +31,8 @@ public static class PowerHeaderDrawer {
 			Col2_SourceRange( power ),
 			Col3_Target( power.TargetFilter )
 		){ 
-			Between = Pens.SaddleBrown, 
-			Background = Brushes.BlanchedAlmond,
-//			WidthRatio = 12f
+			Between = AttrValueSeparator,
+			Background = AttrValueBackground,
 		};
 	}
 

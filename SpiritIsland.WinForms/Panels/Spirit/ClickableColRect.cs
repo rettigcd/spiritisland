@@ -30,7 +30,7 @@ class ClickableColRect( params IPaintableRect[] children )
 
 	public void PaintAbove(Graphics graphics) {
 		if(Enabled)
-			((PenSpec)"Red;.02").Stroke(graphics,_bounds);
+			((PenSpec)"Red;.02").DrawRectangle(graphics,_bounds);
 	}
 
 }

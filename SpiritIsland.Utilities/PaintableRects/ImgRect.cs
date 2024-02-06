@@ -27,7 +27,7 @@ public class ImgRect( ImageSpec img ) : IPaintableRect {
 		Bounds = Margin.Content(bounds);
 		Background?.Fill(graphics,Bounds);
 		PaintContent(graphics,Padding.Content(Bounds));
-		Border?.Stroke(graphics,Bounds); // doing last to clean-up edges
+		Border?.DrawRectangle(graphics,Bounds); // doing last to clean-up edges
 	}
 
 	void PaintContent( Graphics graphics, Rectangle content ) {

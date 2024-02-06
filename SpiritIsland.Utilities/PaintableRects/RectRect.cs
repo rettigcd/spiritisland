@@ -35,12 +35,12 @@ public class RectRect : IPaintableRect {
 	void PaintRoundedCorners( Graphics graphics, Rectangle bounds ) {
 		GraphicsPath path = CalcPath(bounds);
 		Fill?.Fill(graphics,path);
-		Stroke?.Stroke(graphics,path,bounds);
+		Stroke?.DrawPath(graphics,path,bounds);
 	}
 
 	void PaintSquareCorners( Graphics graphics, Rectangle bounds ) {
 		Fill?.Fill(graphics,bounds);
-		Stroke?.Stroke(graphics,bounds);
+		Stroke?.DrawRectangle(graphics,bounds);
 	}
 
 	#endregion Paint

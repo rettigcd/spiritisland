@@ -6,7 +6,6 @@ namespace SpiritIsland;
 /// <remarks>
 /// Constructs stacked rows that: ALL Have the same height as the max WidthRato row.
 /// </remarks>
-/// <param name="rows"></param>
 /// <exception cref="ArgumentOutOfRangeException"></exception>
 public class StackedRowRect( params IPaintableRect[] rows ) : IPaintableRect {
 	float? IPaintableRect.WidthRatio => WidthRatio;

@@ -13,12 +13,17 @@ public abstract class PenSpec {
 
 	public abstract ResourceMgr<Pen> GetResourceMgr(Rectangle bounds);
 
-	public void Stroke( Graphics graphics, Rectangle rect ){
+	public void DrawRectangle( Graphics graphics, Rectangle rect ){
 		using var penMgr = GetResourceMgr( rect );
 		graphics.DrawRectangle( penMgr.Resource, rect );
 	}
 
-	public void Stroke( Graphics graphics, GraphicsPath path, Rectangle bounds ){
+	public void DrawElipse( Graphics graphics, Rectangle rect ) {
+		using var penMgr = GetResourceMgr( rect );
+		graphics.DrawEllipse( penMgr.Resource, rect );
+	}
+
+	public void DrawPath( Graphics graphics, GraphicsPath path, Rectangle bounds ){
 		using var penMgr = GetResourceMgr( bounds );
 		graphics.DrawPath( penMgr.Resource, path );
 	}

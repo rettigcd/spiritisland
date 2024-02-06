@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
 class InnatePainter {
+
+	static readonly FontSpec InnateTitle = "Arial Narrow;.7;bold|italic";
+	static readonly PenSpec   AttrBorder = "Black;.03";
+	static readonly BrushSpec InnateBackground = Brushes.AliceBlue;
 
 	/// <summary>
 	/// Returns ALL Innates as a 2 or 3 column table.
@@ -42,40 +45,31 @@ class InnatePainter {
 
 		var innateRect = new ClickableColRect([
 			// Title 
-			new TextRect( power.Name.ToUpper() ){ WidthRatio=12f, Padding=.1f, Horizontal=StringAlignment.Near, Font="Arial Narrow;.7;bold|italic" },
+			new TextRect( power.Name.ToUpper() ){ WidthRatio=12f, Padding=.1f, Horizontal=StringAlignment.Near, Font=InnateTitle },
+
 			// Header
 			new RowRect( FillFrom.Top,
-				new RowRect(
-					new TextRect("SPEED"){ Brush=Brushes.White, Font=AttrHeaderFont },
-					new TextRect("RANGE"){ Brush=Brushes.White, Font=AttrHeaderFont },
-					new TextRect( TargetTitle(power) ){ Brush=Brushes.White, Font=AttrHeaderFont }
-				){ Background="#ae9869", WidthRatio=16f }, 
+				PowerHeaderDrawer.AttributeTitlesRow( power),
 				PowerHeaderDrawer.AttributeValuesRow( power )
-			){
-				Border="Black;.03",
-				WidthRatio = 7f,
-				Margin = (.0f,.05f)
-			},
+			){	Border= AttrBorder, WidthRatio = 7f, Margin = (.0f,.05f) },
+
 			// General Instructions
-			GIRect(),
+			string.IsNullOrEmpty( power.GeneralInstructions )
+				? new NullRect { WidthRatio = 100 }
+				: new GeneralInstructions( power.GeneralInstructions, ccInfo.giRowSize ) { Padding = (0, .15f) },
+
 			// Options
-			..power.DrawableOptions.Select(MakeInnateOptionBtn)
+			..power.DrawableOptions.Select(option => new InnateTierBtn( ctx._spirit, option, ccInfo.optionRowSize, cc ) )
 		]){ 
-			Background = Brushes.AliceBlue,
+			Background = InnateBackground,
 			Padding = .03f
 		};
+
 		innateRect.Clicked += () => ctx.SelectOption( power );
 		cc.RegisterOption(power,innateRect);
+
 		return innateRect;
 
-		IPaintableRect GIRect() => string.IsNullOrEmpty(power.GeneralInstructions) 
-			? new NullRect{ WidthRatio = 100 }
-			: new GeneralInstructions(power.GeneralInstructions, ccInfo.giRowSize){ Padding = (0,.15f) };
-
-		InnateTierBtn MakeInnateOptionBtn( IDrawableInnateTier innatePowerOption ) => new InnateTierBtn( ctx._spirit, innatePowerOption, ccInfo.optionRowSize, cc );
-		static string TargetTitle(InnatePower power) => power.LandOrSpirit == LandOrSpirit.Land ? "TARGET LAND" : "TARGET";
 	}
-
-	readonly static FontSpec AttrHeaderFont = "Arial;0.6;bold";
 
 }

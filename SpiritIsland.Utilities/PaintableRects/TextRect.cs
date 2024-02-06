@@ -2,7 +2,7 @@
 
 public class TextRect : BasePaintableRect {
 
-	public Brush Brush { get; set; } = Brushes.Black;
+	public BrushSpec Brush { get; set; } = Brushes.Black;
 	public FontSpec Font = 1f;
 
 	public StringAlignment Vertical = StringAlignment.Center;
@@ -22,7 +22,8 @@ public class TextRect : BasePaintableRect {
 		string text = _text ?? _textGenerator!();
 		SizeF textSize = graphics.MeasureString(text,fontMgr.Resource, new PointF(0,0), alignment);
 		
-		graphics.DrawString( text, fontMgr.Resource, Brush, content, alignment );
+		using ResourceMgr<Brush> brushMgr = Brush.GetResourceMgr();
+		graphics.DrawString( text, fontMgr.Resource, brushMgr.Resource, content, alignment );
 	}
 
 	StringFormat UseAlignment => new StringFormat { 
