@@ -79,7 +79,7 @@ public static class PowerHeaderDrawer {
 		_ => throw new ArgumentException($"{img} b/w status not specified.")
 	};
 
-	static IPaintableRect Col2_Range( string text ) {
+	static PoolRect Col2_Range( string text ) {
 		return new PoolRect()
 			.Float(new TextRect(text), 0,.1f,1,.8f)
 			.Float(new ImgRect(Img.RangeArrow), 0,.7f,1,.2f);
@@ -151,11 +151,11 @@ public static class PowerHeaderDrawer {
 		}
 
 		int splitIndex = text.IndexOf( '/' );
-//		if(splitIndex == -1 )
-//			splitIndex = text.IndexOf( '+' );
-		if(splitIndex != -1)
-			return [ text[..splitIndex], text[(splitIndex + 1)..] ];
-		return [text];
+		//		if(splitIndex == -1 )
+		//			splitIndex = text.IndexOf( '+' );
+		return splitIndex != -1 
+			? ([ text[..splitIndex], text[(splitIndex + 1)..] ]) 
+			: ([text]);
 	}
 
 	static (Img img,Img overlay) TargetToImg( string text ){

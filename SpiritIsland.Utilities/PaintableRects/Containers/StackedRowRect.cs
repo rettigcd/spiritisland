@@ -3,22 +3,15 @@ namespace SpiritIsland;
 /// <summary>
 /// All Child rows have the same height.
 /// </summary>
-public class StackedRowRect : IPaintableRect {
-
-	/// <summary>
-	/// Constructs stacked rows that: ALL Have the same height as the max WidthRato row.
-	/// </summary>
-	/// <param name="rows"></param>
-	/// <exception cref="ArgumentOutOfRangeException"></exception>
-	public StackedRowRect(params IPaintableRect[] rows) {
-		// At least 1 row must have a known width
-		_rows = rows;
-		WidthRatio = (rows.Max(r=>r.WidthRatio) ?? throw new ArgumentOutOfRangeException(nameof(rows),"at least 1 row must have a WidthRatio")) 
-			/ rows.Length;
-	}
-
+/// <remarks>
+/// Constructs stacked rows that: ALL Have the same height as the max WidthRato row.
+/// </remarks>
+/// <param name="rows"></param>
+/// <exception cref="ArgumentOutOfRangeException"></exception>
+public class StackedRowRect( params IPaintableRect[] rows ) : IPaintableRect {
 	float? IPaintableRect.WidthRatio => WidthRatio;
-	public float WidthRatio {get;}
+	public float WidthRatio { get; } = (rows.Max( r => r.WidthRatio ) ?? throw new ArgumentOutOfRangeException( nameof( rows ), "at least 1 row must have a WidthRatio" ))
+			/ rows.Length;
 
 	public void Paint( Graphics graphics, Rectangle bounds ){
 
@@ -37,6 +30,6 @@ public class StackedRowRect : IPaintableRect {
 
 	}
 
-	readonly IPaintableRect[] _rows;
+	readonly IPaintableRect[] _rows = rows;
 
 }

@@ -143,13 +143,12 @@ class CardDeckPanel : IPanel {
 
 			// Accept 1
 			if( cardRect.Accept is not null && cardRect.Accept.Bounds.Contains(coords) ){
-				if(_selected.Contains(card)){
-					return new GenericClickable( () => {
+				return _selected.Contains(card)
+					? new GenericClickable( () => {
 						_selected.Remove(card);
 						_ctx.SelectOption(card);
-					});
-				}
-				return null;
+					})
+					: (IClickable)null;
 			}
 
 			// Toggle
@@ -168,8 +167,7 @@ class CardDeckPanel : IPanel {
 	}
 
 	void ToggleCard(PowerCard card){
-		if(_selected.Contains(card)){
-			_selected.Remove(card);
+		if(_selected.Remove( card )) {
 			_ctx.Invalidate();
 		} else if(_selected.Count < _maxToSelect) {
 			_selected.Add(card);

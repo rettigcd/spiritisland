@@ -6,14 +6,9 @@ namespace SpiritIsland.WinForms;
 /// <summary>
 /// Optional Extra text at top of Innate Powers.
 /// </summary>
-public class GeneralInstructions : IPaintableRect {
+public class GeneralInstructions( string description, SizeF relRowSize ) : IPaintableRect {
 
 	public PaddingSpec Padding = PaddingSpec.None;
-
-	public GeneralInstructions( string description, SizeF relRowSize ){
-		_description = description;
-		_relRowSize = relRowSize;
-	}	
 
 	public float? WidthRatio => _widthRatio ??= Size.Width *1f / Size.Height;
 	public Size Size => _size ??= CalcSize();
@@ -37,8 +32,8 @@ public class GeneralInstructions : IPaintableRect {
 	float? _widthRatio;
 	Size? _size;
 
-	readonly string _description;
-	readonly SizeF _relRowSize;
+	readonly string _description = description;
+	readonly SizeF _relRowSize = relRowSize;
 
 	#endregion private
 }

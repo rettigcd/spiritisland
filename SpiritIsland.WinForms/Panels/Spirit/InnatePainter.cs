@@ -20,7 +20,7 @@ class InnatePainter {
 	/// <summary>
 	/// Places Innate Rects into a table.
 	/// </summary>
-	static IPaintableRect ArrangeInnates( IPaintableRect[] innateRects ){
+	static HorizontalStackRect ArrangeInnates( IPaintableRect[] innateRects ){
 
 		int columnCount = new ColumnCountInfo(innateRects.Length).columnCount;
 
@@ -76,6 +76,6 @@ class InnatePainter {
 		static string TargetTitle(InnatePower power) => power.LandOrSpirit == LandOrSpirit.Land ? "TARGET LAND" : "TARGET";
 	}
 
-	static FontSpec AttrHeaderFont = "Arial;0.6;bold";
+	readonly static FontSpec AttrHeaderFont = "Arial;0.6;bold";
 
 }

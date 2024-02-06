@@ -7,16 +7,10 @@ namespace SpiritIsland.WinForms;
 /// Wraps a IPaintableBlockRect, tracks location, and options
 /// </summary>
 /// <example> CommandBeasts </example>
-class ClickableLocation : IPaintableRect, IClickableLocation {
-
-	public ClickableLocation( IPaintableRect child, Action action ) {
-		_child = child;
-		_action = action;
-	}
-
+class ClickableLocation( IPaintableRect child, Action action ) : IPaintableRect, IClickableLocation {
 	public float? WidthRatio { get; set; }
 
-	readonly IPaintableRect _child;
+	readonly IPaintableRect _child = child;
 
 	public Rectangle Bounds { get; private set; }
 	public bool Contains( Point point ) => Bounds.Contains(point);
@@ -30,6 +24,6 @@ class ClickableLocation : IPaintableRect, IClickableLocation {
 
 	public void Click() { _action(); }
 
-	Action _action;
+	readonly Action _action = action;
 
 }

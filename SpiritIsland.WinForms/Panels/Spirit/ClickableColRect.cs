@@ -7,15 +7,12 @@ namespace SpiritIsland.WinForms;
 /// Each Innate is naturally arranged as a Column
 /// This extends that and allows us to click on it as an IOption
 /// </summary>
-class ClickableColRect
-	: RowRect
+class ClickableColRect( params IPaintableRect[] children )
+	: RowRect( FillFrom.Top, children )
 	, IPaintAbove
 	, IClickableLocation
 	, IAmEnablable
 {
-
-	public ClickableColRect( params IPaintableRect[] children ):base( FillFrom.Top, children ){}
-
 	Rectangle _bounds;
 
 	public override void Paint(Graphics graphics, Rectangle bounds) {

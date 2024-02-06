@@ -50,10 +50,10 @@ public class VisibleButtonContainer {
 		DisableAll();
 		foreach(IOption option in decision.Options)
 			if(_staticLookupButtonByOption.ContainsKey( option ))
-				EnableSingle( option, decision );
+				EnableSingle( option );
 	}
 
-	void EnableSingle( IOption option, IDecision decision ) {
+	void EnableSingle( IOption option ) {
 		var button = _staticLookupButtonByOption[option]; // grab old
 		_staticLookupButtonByOption.Remove( option );
 

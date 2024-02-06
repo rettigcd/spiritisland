@@ -12,13 +12,13 @@ public abstract class BrushSpec {
 	public abstract ResourceMgr<Brush> GetResourceMgr();
 
 	public void Fill( Graphics graphics, Rectangle rect ){
-		using( var brush = GetResourceMgr() )
-			graphics.FillRectangle(brush.Resource,rect);
+		using var brush = GetResourceMgr();
+		graphics.FillRectangle( brush.Resource, rect );
 	}
 
 	public void Fill( Graphics graphics, GraphicsPath path ){
-		using( var brush = GetResourceMgr() )
-			graphics.FillPath(brush.Resource,path);
+		using var brush = GetResourceMgr();
+		graphics.FillPath( brush.Resource, path );
 	}
 
 	class ColoredBrush(Color color) : BrushSpec{

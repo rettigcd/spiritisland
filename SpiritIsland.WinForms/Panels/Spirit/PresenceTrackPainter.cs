@@ -27,13 +27,13 @@ namespace SpiritIsland.WinForms {
 
 		}
 
-		static IPaintableRect TheRightStuff( ClickableContainer cc, SharedCtx ctx ){
+		static PoolRect TheRightStuff( ClickableContainer cc, SharedCtx ctx ){
 			var spirit = ctx._spirit;
 			ImageSpec presence = ctx._imgCache._presenceImg;
 
 			var pool = new PoolRect(){ WidthRatio = .8f }
 				.Float(CurrentEnergyRect(cc,spirit),.3f,0, .7f,.7f )
-				.Float( Destroyed( presence, spirit, cc ).ShowIf(()=>0<spirit.Presence.Destroyed.Count ), .60f,.65f,.4f,.3f );
+				.Float( Destroyed( presence, spirit ).ShowIf(()=>0<spirit.Presence.Destroyed.Count ), .60f,.65f,.4f,.3f );
 
 			if(spirit is FracturedDaysSplitTheSky days)
 				pool.Float( Time( presence, days.Time), .2f,.65f,.3f,.3f );
@@ -41,13 +41,13 @@ namespace SpiritIsland.WinForms {
 			return pool;
 		}
 
-		static IPaintableRect CurrentEnergyRect(ClickableContainer cc,Spirit spirit){
+		static PoolRect CurrentEnergyRect(ClickableContainer cc,Spirit spirit){
 			return new PoolRect()
 				.Float(new ImgRect(Img.Coin))
 				.Float(new TextRect(()=>spirit.Energy.ToString()).RiseAbove(cc.PaintAboves),0f,.25f,1f,.6f);
 		}
 
-		static IPaintableRect Destroyed( ImageSpec presence, Spirit spirit, ClickableContainer cc ){
+		static PoolRect Destroyed( ImageSpec presence, Spirit spirit ){
 
 			string MakeSubscript(){
 				int destroyed = spirit.Presence.Destroyed.Count;
@@ -61,7 +61,7 @@ namespace SpiritIsland.WinForms {
 				.Float(new SubScriptRect( MakeSubscript ).ShowIf(()=>1<spirit.Presence.Destroyed.Count));
 		}
 
-		static IPaintableRect Time( ImageSpec presence, int time ){
+		static PoolRect Time( ImageSpec presence, int time ){
 			var pool = new PoolRect()
 				.Float(new ImgRect( presence ))
 				.Float(new ImgRect(Img.Hourglass), 0.5f,0,.5f,.5f);
@@ -70,7 +70,7 @@ namespace SpiritIsland.WinForms {
 			return pool;
 		}
 
-		static IPaintableRect Label( string label, IPaintableRect child ){
+		static PoolRect Label( string label, IPaintableRect child ){
 			return new PoolRect(){ WidthRatio = child.WidthRatio }
 				.Float(child)
 				.Float(new TextRect(label){ Horizontal = StringAlignment.Near},0,0,.25f,.25f);

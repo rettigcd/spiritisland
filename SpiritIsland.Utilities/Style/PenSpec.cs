@@ -14,18 +14,18 @@ public abstract class PenSpec {
 	public abstract ResourceMgr<Pen> GetResourceMgr(Rectangle bounds);
 
 	public void Stroke( Graphics graphics, Rectangle rect ){
-		using( var penMgr = GetResourceMgr(rect) )
-			graphics.DrawRectangle(penMgr.Resource,rect);
+		using var penMgr = GetResourceMgr( rect );
+		graphics.DrawRectangle( penMgr.Resource, rect );
 	}
 
 	public void Stroke( Graphics graphics, GraphicsPath path, Rectangle bounds ){
-		using( var penMgr = GetResourceMgr(bounds) )
-			graphics.DrawPath(penMgr.Resource,path);
+		using var penMgr = GetResourceMgr( bounds );
+		graphics.DrawPath( penMgr.Resource, path );
 	}
 
 	public void Stroke( Graphics graphics, Point from, Point to, Rectangle bounds ){
-		using( var penMgr = GetResourceMgr(bounds) )
-			graphics.DrawLine(penMgr.Resource,from,to);
+		using var penMgr = GetResourceMgr( bounds );
+		graphics.DrawLine( penMgr.Resource, from, to );
 	}
 
 	class CustomPen : PenSpec{

@@ -5,18 +5,12 @@ namespace SpiritIsland;
 /// <summary>
 /// Caches the children
 /// </summary>
-public sealed class CachedBitmapRect : IPaintableRect, IDisposable {
-	public CachedBitmapRect( IPaintableRect child, HashSet<IDisposable> all ){
-		_child = child;
-		_all = all;
-	}
-
+public sealed class CachedBitmapRect( IPaintableRect child, HashSet<IDisposable> all ) : IPaintableRect, IDisposable {
 	public float? WidthRatio => _child.WidthRatio;
 
 	public void Paint( Graphics graphics, Rectangle bounds ){
 		if(bounds != _bounds){ Dispose(); _bounds=bounds; }
-		if(_backgroundCache is null)
-			_backgroundCache = CacheBackground(bounds);
+		_backgroundCache ??= CacheBackground(bounds);
 		graphics.DrawImage(_backgroundCache,_bounds);
 	}
 
@@ -39,7 +33,7 @@ public sealed class CachedBitmapRect : IPaintableRect, IDisposable {
 	Bitmap? _backgroundCache;
 	Rectangle _bounds;
 
-	readonly IPaintableRect _child;
-	readonly HashSet<IDisposable> _all;
+	readonly IPaintableRect _child = child;
+	readonly HashSet<IDisposable> _all = all;
 
 }

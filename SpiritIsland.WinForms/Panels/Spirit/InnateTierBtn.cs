@@ -37,7 +37,7 @@ public class InnateTierBtn : IPaintableRect, IPaintAbove {
 		return Padding.Pad( img.Size );
 	}
 
-	Image UsingImage( int minDesiredWidth = 0 ) => ResourceImages.Singleton.GetInnateOption( _innateOption, _relativeRowSize, minDesiredWidth );
+	Bitmap UsingImage( int minDesiredWidth = 0 ) => ResourceImages.Singleton.GetInnateOption( _innateOption, _relativeRowSize, minDesiredWidth );
 
 	#region private
 

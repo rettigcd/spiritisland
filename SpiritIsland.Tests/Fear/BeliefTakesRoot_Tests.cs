@@ -7,7 +7,6 @@ public class BeliefTakesRoot_Tests {
 
 	public BeliefTakesRoot_Tests() {
 		_spirit = new LightningsSwiftStrike();
-		User = new VirtualUser( _spirit );
 		_gameState = new GameState( _spirit, Board.BuildBoardA() );
 		_gameState.DisableInvaderDeck();
 		_gameState.Initialize(); 
@@ -94,6 +93,5 @@ public class BeliefTakesRoot_Tests {
 	readonly InvaderCard _invaderCard;
 	readonly Space _ravageSpace;
 	readonly Spirit _spirit;
-	readonly VirtualUser User;
 
 }

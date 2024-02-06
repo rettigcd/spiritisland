@@ -62,7 +62,7 @@ public class France_Tests {
 		await ExploreTriggersEscalation(gs);
 
 	}
-	Task ExploreTriggersEscalation(GameState gs) => InvaderPhase.ActAsync(gs).AwaitUser(u=>{
+	static Task ExploreTriggersEscalation(GameState gs) => InvaderPhase.ActAsync(gs).AwaitUser(u=>{
 		u.NextDecision.HasPrompt("Select space to Add 1 Blight if Town/City. Add Town otherwise.").Choose("A8");
 	});
 

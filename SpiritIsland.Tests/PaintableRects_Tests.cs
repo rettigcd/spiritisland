@@ -103,9 +103,8 @@ public class PaintableRects_Tests {
 
 
 
-public class Rect : IPaintableRect {
-	public Rect(float? widthRatio=null ){ WidthRatio = widthRatio; }
-	public float? WidthRatio { get; set; }
+public class Rect( float? widthRatio = null ) : IPaintableRect {
+	public float? WidthRatio { get; set; } = widthRatio; 
 	public Rectangle Bounds {get;set;}
 	public void Paint( Graphics _, Rectangle bounds ){
 		Bounds = bounds;

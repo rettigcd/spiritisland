@@ -36,15 +36,11 @@ static public class IPaintableRect_Extensions {
 
 }
 
-public class ConditionalRect : IPaintableRect {
+public class ConditionalRect( IPaintableRect inner, Func<bool> shouldPaint ) : IPaintableRect {
 
- 	readonly IPaintableRect _inner;
-	readonly Func<bool> _shouldPaint;
+ 	readonly IPaintableRect _inner = inner;
+	readonly Func<bool> _shouldPaint = shouldPaint;
 
-	public ConditionalRect( IPaintableRect inner, Func<bool> shouldPaint ){
-		_inner = inner;
-		_shouldPaint = shouldPaint;
-	}
 	public float? WidthRatio => _inner.WidthRatio;
 
 	public void Paint(Graphics graphics, Rectangle bounds) {

@@ -61,8 +61,6 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 		var mainElements = ActivatedElementsRect( visibleElements );
 		mainElements.Paint(graphics,_elementLayout.Bounds);
 
-		int skip = visibleElements.Keys.Count; 
-		if(1<skip) skip++; // add a space
 		if(_spirit is IHaveSecondaryElements hasSecondaryElements){
 			Rectangle secondary = _elementLayout.Bounds.OffsetBy( (int)((mainElements.WidthRatio+1)*_elementLayout.Bounds.Height), 0);
 			ActivatedElementsRect( hasSecondaryElements.SecondaryElements ).Paint(graphics, secondary );
@@ -89,8 +87,6 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 		_innateClump = InnatePainter.GetAllInnatesClump(_ctx,_cc);
 		_presenceRect = null;
 	}
-
-	Image GetElementImage( Element element ) => _ctx._imgCache.GetElementImage( element );
 	Spirit _spirit => _ctx._spirit;
 
 	readonly SharedCtx _ctx;

@@ -22,7 +22,7 @@ public class BlightRect{
 		);
 	}
 
-	static IPaintableRect BlightPoolRect(int poolMax, int blightCount){
+	static PoolRect BlightPoolRect(int poolMax, int blightCount){
 		if(poolMax < blightCount) poolMax = blightCount;
 
 		PoolRect pool = new PoolRect{ WidthRatio=1.5f };

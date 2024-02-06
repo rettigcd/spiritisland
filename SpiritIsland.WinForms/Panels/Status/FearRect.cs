@@ -18,13 +18,13 @@ public class FearRect {
 		);
 	}
 
-	static IPaintableRect GetTerrorLevelRect(int terrorLevel){
+	static PoolRect GetTerrorLevelRect(int terrorLevel){
 		var img = terrorLevel switch{ 1=>Img.TerrorLevel1, 2=>Img.TerrorLevel2, _ => Img.TerrorLevel3 };
 		return new PoolRect{ WidthRatio = .8f }
 			.Float( new ImgRect(img));
 	}
 
-	static IPaintableRect GetPoolRect(int poolMax, int fearCount){
+	static PoolRect GetPoolRect(int poolMax, int fearCount){
 		PoolRect pool = new PoolRect{ WidthRatio=2f };
 
 		const float iconReductionFactor = .75f; // use 1.0f for full icon size
@@ -47,7 +47,7 @@ public class FearRect {
 		return pool;
 	}
 
-	static IPaintableRect GetFutureFearRect( Fear fear ){
+	static PoolRect GetFutureFearRect( Fear fear ){
 		if(fear.Deck.Count == 0)
 			return new PoolRect(); // empty
 		float cardWidth = 5f/7f;

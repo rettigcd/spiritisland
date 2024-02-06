@@ -6,7 +6,6 @@ public class DahanOnTheirGuard_Tests {
 
 	public DahanOnTheirGuard_Tests() {
 		spirit = new LightningsSwiftStrike();
-		User = new VirtualUser( spirit );
 		gameState = new GameState( spirit, Board.BuildBoardA() );
 		gameState.DisableInvaderDeck();
 		gameState.Initialize();
@@ -72,6 +71,5 @@ public class DahanOnTheirGuard_Tests {
 	readonly InvaderCard invaderCard;
 	readonly Space ravageSpace;
 	readonly Spirit spirit;
-	readonly VirtualUser User;
 
 }

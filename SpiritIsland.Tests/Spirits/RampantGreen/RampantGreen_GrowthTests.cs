@@ -72,7 +72,7 @@ public class RampantGreen_GrowthTests : BoardAGame {
 		_spirit.Hand.Count.ShouldBe( 5 );
 	}
 
-	void User_SelectAlwaysGrowthOption(VirtualUser user) {
+	static void User_SelectAlwaysGrowthOption(VirtualUser user) {
 		user.Growth_SelectAction( $"PlacePresence(2,{Filter.Jungle}Or{Filter.Wetland})" );
 		user.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
 	}

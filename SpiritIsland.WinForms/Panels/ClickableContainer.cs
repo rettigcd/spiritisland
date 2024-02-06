@@ -93,9 +93,9 @@ class SlotRect : IPaintableRect, IPaintAbove, IAmEnablable, IClickableLocation {
 	readonly Track _slot;
 	readonly IPresenceTrack _track;
 	readonly SharedCtx _ctx;
-	IOption _revealOption;
-	IOption _coverOption;
-	Bitmap _tokenImg;
+	readonly IOption _revealOption;
+	readonly IOption _coverOption;
+	readonly Bitmap _tokenImg;
 
 	public SlotRect(Track slot, IPresenceTrack track, ClickableContainer clickableContainer, SharedCtx ctx ){
 		_slot = slot;
@@ -140,8 +140,8 @@ class SlotRect : IPaintableRect, IPaintAbove, IAmEnablable, IClickableLocation {
 	}
 	public bool Contains( Point point ) => _presenceBounds.Bounds.Contains(point);
 
-	BoundsCapture _presenceBounds =  new BoundsCapture();
-	PoolRect _background;
+	readonly BoundsCapture _presenceBounds =  new BoundsCapture();
+	readonly PoolRect _background;
 }
 
 class BoundsCapture : IPaintableRect {

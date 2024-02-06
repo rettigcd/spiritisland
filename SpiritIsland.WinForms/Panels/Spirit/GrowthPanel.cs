@@ -78,8 +78,7 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 	}
 
 	public IClickable GetClickableAction( Point clientCoords ) {
-		if(!HasFocus) return null;
-		return _cc.GetClickableAt(clientCoords);
+		return HasFocus ? _cc.GetClickableAt(clientCoords) : null;
 	}
 
 	public RegionLayoutClass GetLayout( Rectangle bounds ) => RegionLayoutClass.ForGrowthFocused( bounds,_ctx._spirit.Decks.Length);
@@ -126,6 +125,6 @@ public sealed class GrowthPanel : IPanel , IDisposable {
 	readonly SharedCtx _ctx;
 	Bitmap _staticBackgroundImage;
 
-	ClickableContainer _cc = new ClickableContainer();
+	readonly ClickableContainer _cc = new ClickableContainer();
 
 }

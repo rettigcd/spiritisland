@@ -32,13 +32,13 @@ public class RowRect : BasePaintableRect {
 			var childBounds = new Rectangle(left,content.Top,width,content.Height);
 
 			child.Paint(graphics,Transform(childBounds,false));
-			PaintInBetweenLine( graphics, child, childBounds, index++ );
+			PaintInBetweenLine( graphics, childBounds, index++ );
 
 			left = right;
 		}
 	}
 
-	void PaintInBetweenLine( Graphics graphics, IPaintableRect child, Rectangle childBounds, int index ){
+	void PaintInBetweenLine( Graphics graphics, Rectangle childBounds, int index ){
 		if(index != 0){
 			Between?.Stroke(graphics, 
 				RestorePoint( childBounds.TL() ), 
@@ -53,8 +53,7 @@ public class RowRect : BasePaintableRect {
 		if(numMissingWidths == 0) return 0;
 		float usedWidthRatio = _children.Sum(x => x.WidthRatio.HasValue ? InvertWidthRatio(x.WidthRatio.Value) : 0);
 		int remainingWidth = content.Width - (int)(content.Height * usedWidthRatio);
-		if(remainingWidth < 0) return 0;
-		return remainingWidth / numMissingWidths;
+		return remainingWidth < 0 ? 0 : remainingWidth / numMissingWidths;
 	}
 
 	protected Rectangle Transform(Rectangle r, bool makeLeftToRight) => _align switch{

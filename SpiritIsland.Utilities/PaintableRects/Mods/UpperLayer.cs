@@ -4,8 +4,7 @@ namespace SpiritIsland;
 
 public interface IPaintAbove { void PaintAbove( Graphics graphics );  }
 
-public class UpperLayer : IPaintAbove, IPaintableRect {
-	public UpperLayer(IPaintableRect above){ _above = above; }
+public class UpperLayer( IPaintableRect above ) : IPaintAbove, IPaintableRect {
 	public float? WidthRatio => _above.WidthRatio;
 
 	public void Paint( Graphics graphics, Rectangle bounds ){ _bounds = bounds; }
@@ -14,5 +13,5 @@ public class UpperLayer : IPaintAbove, IPaintableRect {
 	
 	Rectangle _bounds;
 	
-	readonly IPaintableRect _above;
+	readonly IPaintableRect _above = above;
 }

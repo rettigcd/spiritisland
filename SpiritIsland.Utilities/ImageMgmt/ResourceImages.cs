@@ -228,7 +228,7 @@ public partial class ResourceImages
 
 		return "innateOptions\\gi_" 
 			// + shortened.Replace( ' ', '_' ) 
-			+ Regex.Replace( shortened, @"[\s:'\.,]+", "_" )
+			+ CleanupGI().Replace( shortened, "_" )
 			+ ".png";
 
 	}
@@ -571,6 +571,9 @@ public partial class ResourceImages
 	};
 
 	readonly ImageDiskCache _cache = new ImageDiskCache();
+
+	[GeneratedRegex( @"[\s:'\.,]+" )]
+	private static partial Regex CleanupGI();
 
 	#endregion
 

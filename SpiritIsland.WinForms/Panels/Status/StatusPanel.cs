@@ -4,13 +4,9 @@ using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
-internal class StatusPanel : IPanel {
+internal class StatusPanel( SharedCtx ctx ) : IPanel {
 
-	readonly SharedCtx _ctx;
-
-	public StatusPanel( SharedCtx ctx ) {
-		_ctx = ctx;
-	}
+	readonly SharedCtx _ctx = ctx;
 
 	static Img GetPhaseImg( Phase phase ) {
 		return phase switch {
@@ -114,7 +110,7 @@ internal class StatusPanel : IPanel {
 	}
 
 
-	IPaintableRect GetReminderCardsRect() {
+	PoolRect GetReminderCardsRect() {
 		var cards = _ctx.GameState.ReminderCards;
 		var pool = new PoolRect { WidthRatio = 1f };
 		float step = 1f / cards.Count;
@@ -129,7 +125,7 @@ internal class StatusPanel : IPanel {
 		return pool;
 	}
 
-	IPaintableRect Wrap( IPaintableRect inner, IOption option ) {
+	ClickableLocation Wrap( IPaintableRect inner, IOption option ) {
 		ClickableLocation clickable = new ClickableLocation(inner,()=>_ctx.SelectOption(option));
 		_cc.RegisterOption(option, clickable);
 		return clickable;
@@ -145,5 +141,5 @@ internal class StatusPanel : IPanel {
 	static Brush GameTextBrush_Defeat => Brushes.DarkRed;
 	static Brush GameTextBrush_Default => Brushes.Black;
 
-	ClickableContainer _cc = new ClickableContainer();
+	readonly ClickableContainer _cc = new ClickableContainer();
 }

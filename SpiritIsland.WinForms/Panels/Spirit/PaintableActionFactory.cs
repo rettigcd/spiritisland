@@ -79,18 +79,18 @@ public static class PaintableActionFactory {
 		};
 	}
 
-	static IconDescriptorRect AddVitalityToIncarna() {
-		var des = new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } };
-		return new IconDescriptorRect( des );
+	static ImgRect AddVitalityToIncarna() {
+		IconDescriptor des = new IconDescriptor { ContentImg = Img.Icon_Vitality, Sub = new IconDescriptor { ContentImg = Img.Icon_Incarna } };
+		return new ImgRect(des);
 	}
 
-	static IconDescriptorRect GainAllElementsRect( params Element[] elements ) {
+	static ImgRect GainAllElementsRect( params Element[] elements ) {
 		var descriptor = new IconDescriptor();
 		if(0 < elements.Length)
 			descriptor.ContentImg = elements[0].GetTokenImg();
 		if(1 < elements.Length)
 			descriptor.ContentImg2 = elements[1].GetTokenImg();
-		return new IconDescriptorRect( descriptor );
+		return new ImgRect( descriptor );
 	}
 
 	static PoolRect DiscardCardWithFire() {

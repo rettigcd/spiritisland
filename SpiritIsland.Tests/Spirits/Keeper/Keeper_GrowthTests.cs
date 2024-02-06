@@ -208,22 +208,22 @@ public class Keeper_GrowthTests : BoardAGame {
 		_gameState.Tokens[space].Wilds.Init(1);
 	}
 
-	void User_Activates_A(VirtualUser user) {
+	static void User_Activates_A(VirtualUser user) {
 		user.Growth_SelectAction( "Reclaim All" );
 	}
 
-	void User_Activates_B(VirtualUser user) {
+	static void User_Activates_B(VirtualUser user) {
 		user.Growth_DrawsPowerCard();
 		user.SelectsMinorDeck();
 		user.SelectMinorPowerCard();
 	}
 
-	void User_Activates_C(VirtualUser user) {
+	static void User_Activates_C(VirtualUser user) {
 		user.Growth_SelectAction( $"PlacePresence(3,{Filter.Presence}Or{Filter.Wilds})" );
 		user.Growth_PlacesEnergyPresence( "A3;A8" );
 	}
 
-	void User_Activates_D(VirtualUser user) {
+	static void User_Activates_D(VirtualUser user) {
 		user.Growth_SelectAction( "PlacePresence(3,No Blight)" );
 		user.PlacesCardPlayPresence( "A7" );
 		user.Growth_DrawsPowerCard();
