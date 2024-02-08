@@ -14,9 +14,17 @@ public interface ImgSource {
 	Bitmap GetImg(Img img);
 }
 
+/// <summary> Used by ImageSpec to pull resources </summary>
+/// <remarks> Allows creating a Cache-version </remarks>
+public interface ResourceImageSource : ImgSource {
+	bool CalleeShouldDisposeOfResource { get; }
+	Bitmap GetTrackSlot( IconDescriptor icon );
+	Bitmap GetTokenImage( IToken token );
+	Bitmap GetPowerCard( PowerCard card );
+}
 
 public partial class ResourceImages 
-	: ImgSource
+	: ResourceImageSource
 	, PowerCardResources
 	, InvaderCardResources
 	, FearCardResources
@@ -33,6 +41,8 @@ public partial class ResourceImages
 		LoadFont( "leaguegothic-regular-webfont.ttf" );
 		LoadFont( "playsir-regular.otf" );
 	}
+
+	bool ResourceImageSource.CalleeShouldDisposeOfResource => true;
 
 	#region Fonts
 
@@ -233,7 +243,9 @@ public partial class ResourceImages
 
 	}
 
-	public async Task<Bitmap> GetPowerCard( PowerCard card ) {
+	public Bitmap GetPowerCard( PowerCard card ) => GetPowerCardAsync(card).Result; // !!!
+
+	async Task<Bitmap> GetPowerCardAsync( PowerCard card ) {
 		try {
 			ImageDiskCache _cache = new ImageDiskCache();
 			string key = $"PowerCard\\{card.Name}.png";
@@ -249,7 +261,8 @@ public partial class ResourceImages
 		}
 	}
 
-	public Image GetSpiritMarker( Spirit spirit, Img img ) {
+
+	public Bitmap GetSpiritMarker( Spirit spirit, Img img ) {
 		ImageDiskCache _cache = new ImageDiskCache();
 		string key = $"SpiritMarkers\\{spirit.Text}-{img}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
@@ -316,8 +329,10 @@ public partial class ResourceImages
 		return new TextureBrush( image );
 	}
 
-	public Image GetTokenImage( IToken token ) {
-		return token is HumanToken ht ? HumanTokenBuilder.Build( ht )
+	public Bitmap GetTokenImage( IToken token ) {
+
+		return token is SpiritPresenceToken presenceToken ? GetSpiritMarker( presenceToken.Self, Img.Token_Presence )
+			: token is HumanToken ht ? HumanTokenBuilder.Build( ht )
 			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast( "many-minds-beast.png", token.Img, 60, 40 )
 			: token.GetType().Name == "MarkedBeast" ? GetManyMindsBeast( "marked-beast.png", token.Img, 240, 20 )
 			: GetImg( token.Img );

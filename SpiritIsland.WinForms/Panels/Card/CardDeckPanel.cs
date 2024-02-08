@@ -78,7 +78,7 @@ class CardDeckPanel : IPanel {
 
 		// Card
 		CardRectClass cardRect = new CardRectClass{ WidthRatio=5f/7f, Margin=.03f };
-		cardRect.Float(new ImgRect((Func<ResourceMgr<Bitmap>>)(() => _images.GetMgr( card ))),2,2,96,96);
+		cardRect.Float(new ImgRect( card ),2,2,96,96);
 
 		// Add: Impending Energy
 		if(_ctx._spirit is DancesUpEarthquakes due && due.Impending.Contains(card)) {
@@ -233,7 +233,6 @@ class CardDeckPanel : IPanel {
 	// Spirit Settings
 	readonly SpiritDeck _currentDeck;
 	readonly SharedCtx _ctx;
-	readonly CardImageManager _images = new CardImageManager();
 	readonly Color _bgColor;
 	readonly List<PowerCard> _selected = [];
 	readonly int _deckIndex;

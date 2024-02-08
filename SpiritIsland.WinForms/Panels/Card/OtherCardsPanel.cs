@@ -53,7 +53,8 @@ class OtherCardsPanel( SharedCtx ctx ) : IPanel {
 		}
 
 		// draw image
-		graphics.DrawImage( _images.GetImage( card ), cardRect );
+		using ( var mgr = ((ImageSpec)card).GetResourceMgr() )
+			graphics.DrawImage( mgr.Resource, cardRect );
 
 		if(isAnOption) {
 			// Draw Label
@@ -123,7 +124,7 @@ class OtherCardsPanel( SharedCtx ctx ) : IPanel {
 
 	// Spirit Settings
 	readonly SharedCtx _ctx = ctx;
-	readonly CardImageManager _images = new CardImageManager();
+//	readonly CardImageManager _images = new CardImageManager();
 	// readonly Action _onAppearanceChanged;
 }
 

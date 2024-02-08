@@ -37,7 +37,6 @@ public partial class IslandControl : Control {
 	public void Init( GameState gameState, AdversaryConfig adversary ) {
 
 		// Dispose old spirit tokens
-		_ctx._imgCache.InitNewSpirit( gameState.Spirits.Single() );
 
 		// Setup New
 		_ctx.GameState = gameState;
@@ -110,7 +109,13 @@ public partial class IslandControl : Control {
 		if(options_Ack is not null)
 			_optionRects.Add( options_Ack, regionLayout.AckPopupRect );
 
+		// seems to run about 11 MB
+		if( 20*MB < ImageSpec.ImageCache.MemoryUsage)
+			ImageSpec.ImageCache.Clear();
+
+
 	}
+	const int MB = 1000000;
 
 	public void GameState_NewLogEntry( ILogEntry obj ) {
 		if(obj is Log.Phase)
@@ -471,5 +476,4 @@ public class SharedCtx( IslandControl control ) {
 
 	public AdversaryConfig _adversary;
 
-	public readonly SpiritImageMemoryCache _imgCache = new SpiritImageMemoryCache( ResourceImages.Singleton ); // because we need different images for different damaged invaders.
 }

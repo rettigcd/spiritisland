@@ -95,13 +95,13 @@ class SlotRect : IPaintableRect, IPaintAbove, IAmEnablable, IClickableLocation {
 	readonly SharedCtx _ctx;
 	readonly IOption _revealOption;
 	readonly IOption _coverOption;
-	readonly Bitmap _tokenImg;
+	readonly ImageSpec _tokenImg;
 
 	public SlotRect(Track slot, IPresenceTrack track, ClickableContainer clickableContainer, SharedCtx ctx ){
 		_slot = slot;
 		_track = track;
 		_ctx = ctx;
-		_tokenImg = (Bitmap)ctx._imgCache.AccessTokenImage(ctx._spirit.Presence.Token);
+		_tokenImg = ImageSpec.From( ctx._spirit.Presence.Token );
 		_background = new PoolRect{ WidthRatio = .8f }
 			.Float(_presenceBounds,.1f,0,.8f,.6f)
 			.Float(new ImgRect( slot.Icon ), .1f, .3f, .8f, .7f );

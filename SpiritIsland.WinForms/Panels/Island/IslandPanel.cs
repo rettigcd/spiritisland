@@ -200,7 +200,8 @@ class IslandPanel : IPanel {
 			int count = spaceState[token];
 			if(count == 0) continue;
 
-			Image img = _ctx._imgCache.AccessTokenImage( token );
+			using var imgMgr = ImageSpec.From(token).GetResourceMgr(); //  imgMgr = _ctx._imgCache.GetResource( token );
+			var img = imgMgr.Resource;
 
 			// calc rect
 			int iconHeight = iconWidth * img.Height / img.Width;
@@ -258,7 +259,7 @@ class IslandPanel : IPanel {
 			IToken imageToken;
 			if(token is HumanToken si && 0 < si.StrifeCount) {
 				imageToken = si.HavingStrife( 0 );
-				Image strife = _ctx._imgCache._strife;
+				using Image strife = ResourceImages.Singleton.GetImg( Img.Strife );
 				Rectangle strifeRect = new Rectangle( new Point( (int)x, (int)y ), strife.Size.FitWidth( (int)iconWidth ) );
 				graphics.DrawImage( strife, strifeRect );
 				if(si.StrifeCount > 1)
@@ -268,7 +269,8 @@ class IslandPanel : IPanel {
 			}
 
 			// record token location
-			Image img = _ctx._imgCache.AccessTokenImage( imageToken );
+			using var imgMgr = ImageSpec.From( imageToken ).GetResourceMgr();
+			var img = imgMgr.Resource;
 			Rectangle rect = new Rectangle( new Point( (int)x, (int)y ), img.Size.FitWidth( (int)iconWidth ) );
 
 			RecordSpaceTokenLocation( token.On( ss.Space ), rect );

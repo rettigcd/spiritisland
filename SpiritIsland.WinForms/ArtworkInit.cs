@@ -40,18 +40,19 @@ class ArtworkInit( Label label ) {
 
 		BuildFearCards( fearCards );
 		BuildBlightCards( blightCards );
-		await BuildPowerCards( majors );
-		await BuildPowerCards( minors );
-		await BuildPowerCards( uniques );
+		BuildPowerCards( majors );
+		BuildPowerCards( minors );
+		BuildPowerCards( uniques );
+		await Task.Delay(0); //
 
 		_initCurrent = _initTotal;
 	}
 
-	async Task BuildPowerCards( PowerCard[] powerCards ) {
+	async void BuildPowerCards( PowerCard[] powerCards ) {
 		foreach(PowerCard powerCard in powerCards) {
 			_initCurrent++;
 			try {
-				using Image img = await ResourceImages.Singleton.GetPowerCard( powerCard );
+				using Image img = ResourceImages.Singleton.GetPowerCard( powerCard );
 			}
 			catch(Exception ex) {
 				MessageBox.Show( ex.ToString() );

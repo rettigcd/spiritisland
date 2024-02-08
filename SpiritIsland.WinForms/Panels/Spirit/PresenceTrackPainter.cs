@@ -29,7 +29,7 @@ namespace SpiritIsland.WinForms {
 
 		static PoolRect TheRightStuff( ClickableContainer cc, SharedCtx ctx ){
 			var spirit = ctx._spirit;
-			ImageSpec presence = ctx._imgCache._presenceImg;
+			ImageSpec presence = ImageSpec.From( ctx._spirit.Presence.Token );
 
 			var pool = new PoolRect(){ WidthRatio = .8f }
 				.Float(CurrentEnergyRect(cc,spirit),.3f,0, .7f,.7f )

@@ -1,28 +1,141 @@
 namespace SpiritIsland;
 
-public abstract class ImageSpec {
-	static public implicit operator ImageSpec(Img img) => new ImgImage(img);
-	static public implicit operator ImageSpec(IconDescriptor icon) => new IconImage(icon);
-	static public implicit operator ImageSpec(Bitmap bitmap) => new BitmapImage(bitmap);
-	static public implicit operator ImageSpec(Func<ResourceMgr<Bitmap>> func) => new ResourceMgrImage(func);
-	static public implicit operator ImageSpec(Func<Bitmap> img) => new FuncImage(img); // !!! this seems dangerous since we don't know disposal histroy
+public abstract class ImageSpec( bool shouldDispose ) {
 
-	public abstract ResourceMgr<Bitmap> GetResourceMgr();
+	#region static Implicit converters
 
-	class ImgImage(Img img) : ImageSpec{
-		public override ResourceMgr<Bitmap> GetResourceMgr() => new ResourceMgr<Bitmap>( ResourceImages.Singleton.GetImg(img), true );
-	}
-	class FuncImage(Func<Bitmap> generator) : ImageSpec{
-		public override ResourceMgr<Bitmap> GetResourceMgr() => new ResourceMgr<Bitmap>( generator(), true );
-	}
-	class IconImage(IconDescriptor icon) : ImageSpec {
-		public override ResourceMgr<Bitmap> GetResourceMgr() => new ResourceMgr<Bitmap>( ResourceImages.Singleton.GetTrackSlot( icon ), true);
-	}
-	class BitmapImage(Bitmap bitmap) : ImageSpec {
-		public override ResourceMgr<Bitmap> GetResourceMgr() => new ResourceMgr<Bitmap>( bitmap, false);
-	}
-	class ResourceMgrImage( Func<ResourceMgr<Bitmap>> func ) : ImageSpec {
+	// borrowd
+	static public implicit operator ImageSpec( Bitmap bitmap ) => new BitmapImage( bitmap );
+	// owned
+	static public implicit operator ImageSpec( Img img ) => new ImgImage( ImageCache, img );
+	static public implicit operator ImageSpec(IconDescriptor icon) => new IconImage( ImageCache, icon );
+	static public implicit operator ImageSpec(PowerCard card) => new PowerCardImage( ImageCache, card );
+	static public ImageSpec From( IToken token ) => new TokenImgSource( ImageCache, token );
+	static public implicit operator ImageSpec( Func<Bitmap> img ) => new FuncImage( img ); // !!! this seems dangerous since we don't know disposal histroy
+	// mystery
+	// static public implicit operator ImageSpec(Func<ResourceMgr<Bitmap>> func) => new ResourceMgrImage(func);
+
+	#endregion static Implicit converters
+
+	public virtual ResourceMgr<Bitmap> GetResourceMgr() => new ResourceMgr<Bitmap>( GetBitmap(), _owned );
+	public abstract Bitmap GetBitmap();
+
+	protected bool _owned = shouldDispose;
+
+	// Borrowed - don't dispose, don't cache
+	class BitmapImage( Bitmap bitmap ) : ImageSpec( false ) { public override Bitmap GetBitmap() => bitmap; }
+	// Borrowed - (Cached from ResouceImages) - Dispose, may cache
+	class ImgImage( ResourceImageSource resImages, Img img ) : ImageSpec(resImages.CalleeShouldDisposeOfResource){ public override Bitmap GetBitmap() => resImages.GetImg(img ); }
+	class IconImage( ResourceImageSource resImages, IconDescriptor icon) : ImageSpec( resImages.CalleeShouldDisposeOfResource ) { public override Bitmap GetBitmap() => resImages.GetTrackSlot( icon ); }
+	class TokenImgSource( ResourceImageSource resImages, IToken token ) : ImageSpec( resImages.CalleeShouldDisposeOfResource ) { public override Bitmap GetBitmap() => resImages.GetTokenImage( token ); }
+	class PowerCardImage( ResourceImageSource resImages, PowerCard card ) : ImageSpec( resImages.CalleeShouldDisposeOfResource ) { public override Bitmap GetBitmap() => resImages.GetPowerCard( card ); }
+
+	// Ownded (generic) - Dispose, may cache
+	class FuncImage( Func<Bitmap> generator ) : ImageSpec( true ) { public override Bitmap GetBitmap() => generator(); }
+
+	//  Owned - What the heck is this?
+	class ResourceMgrImage( Func<ResourceMgr<Bitmap>> func ) : ImageSpec( true ) {
 		public override ResourceMgr<Bitmap> GetResourceMgr() => func();
+		public override Bitmap GetBitmap() => _dummy; static Bitmap _dummy = new Bitmap(1,1);
 	}
 
+	#region static Cache
+
+	static public readonly CachedImageSource ImageCache = new CachedImageSource( ResourceImages.Singleton );
+
+	#endregion static Cache
+
+}
+
+public class CachedImageSource( ResourceImageSource _nonCached ) : ResourceImageSource {
+	bool ResourceImageSource.CalleeShouldDisposeOfResource => false;
+
+	#region public GetImg versions
+
+	public Bitmap GetImg( Img img ) {
+		if(GetSaved( img, out Bitmap? bitmap )) return bitmap!;
+		DateTime start = DateTime.Now;
+		bitmap = _nonCached.GetImg( img );
+		TimeSpan loadTime = DateTime.Now - start;
+		Save( img, bitmap, loadTime );
+		return bitmap;
+	}
+
+	public Bitmap GetTokenImage( IToken token ) {
+		if(GetSaved( token, out Bitmap? bitmap )) return bitmap!;
+		DateTime start = DateTime.Now;
+		bitmap = _nonCached.GetTokenImage( token );
+		TimeSpan loadTime = DateTime.Now - start;
+		Save( token, bitmap, loadTime );
+		return bitmap;
+	}
+	public Bitmap GetTrackSlot( IconDescriptor icon ) {
+		if(GetSaved( icon, out Bitmap? bitmap )) return bitmap!;
+		DateTime start = DateTime.Now;
+		bitmap = _nonCached.GetTrackSlot( icon );
+		TimeSpan loadTime = DateTime.Now - start;
+		Save( icon, bitmap, loadTime );
+		return bitmap;
+	}
+
+	public Bitmap GetPowerCard( PowerCard card ) {
+		if(GetSaved( card, out Bitmap? bitmap )) return bitmap!;
+		DateTime start = DateTime.Now;
+		bitmap = _nonCached.GetPowerCard( card );
+		TimeSpan loadTime = DateTime.Now - start;
+		Save( card, bitmap, loadTime );
+		return bitmap;
+	}
+
+	#endregion public GetImg versions
+
+	#region private Save/Load
+
+	bool GetSaved( object key, out Bitmap? bitmap ) {
+		if(_cache.TryGetValue( key, out CacheInfo? info )) {
+			info.RequestCount++;
+			bitmap = info.Bitmap;
+			return true;
+		}
+		bitmap = null;
+		return false;
+	}
+
+	void Save( object key, Bitmap bitmap, TimeSpan loadTime ) {
+		var info = new CacheInfo( bitmap, loadTime );
+		_cache.Add( key, info );
+		TotalLoadTime += loadTime;
+		MemoryUsage += info.MemoryUsage;
+	}
+
+	#endregion private Save/Load
+
+	/// <summary> Not threadsafe, call only from UI thread that doesthe painting. </summary>
+	public void Clear() {
+		foreach(var info in _cache.Values.ToArray())
+			info.Bitmap.Dispose();
+		_cache.Clear();
+		MemoryUsage = 0;
+	}
+	/// <summary> Running total. Doesn't reset </summary>
+	public TimeSpan TotalLoadTime;
+	/// <summary> Current memory usage. Resets with call to Clear() </summary>
+	public int MemoryUsage;
+
+	Dictionary<object, CacheInfo> _cache = [];
+
+	public class CacheInfo {
+		public CacheInfo( Bitmap bitmap, TimeSpan loadTime ) {
+			Bitmap = bitmap;
+			MemoryUsage = bitmap.Width * bitmap.Height * 4;
+			LoadTime = loadTime;
+			RequestCount = 1;
+		}
+		public readonly Bitmap Bitmap;
+		public readonly int MemoryUsage;
+		public readonly TimeSpan LoadTime;
+		public TimeSpan Saved => LoadTime.Multiply( RequestCount - 1 );
+		public int RequestCount;
+		public override string ToString() => $"{Saved} - {RequestCount} / {MemoryUsage}";
+	}
 }
