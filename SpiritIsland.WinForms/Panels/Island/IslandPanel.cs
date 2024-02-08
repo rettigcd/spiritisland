@@ -47,7 +47,7 @@ class IslandPanel : IPanel {
 			MapWorldToScreen();
 			InitBackgroundCache();
 		}
-		DrawBackground( graphics );
+		graphics.DrawImage( _cachedBackground, _usedBoardScreenRect );
 
 		// Load all SpaceToken options into the Outstanding-SpaceToken collection.
 		_buttonContainer.ClearTransient();
@@ -57,8 +57,21 @@ class IslandPanel : IPanel {
 			_outstandingSpaceTokenOptions.UnionWith( tokenOnDecision.TokensOn.OfType<SpaceToken>() );
 
 		// As we draw the space, we pull matched SpaceTokens out of the collection and place in buttonContainer
-		foreach(SpaceState space in _ctx.GameState.Spaces_Unfiltered)
-			DecorateSpace( graphics, space );
+		foreach(SpaceState spaceState in _ctx.GameState.Spaces_Unfiltered) {
+
+			var paintableSpace = WorldLayout.GetPaintable( spaceState.Space );
+			// Init and paint
+			paintableSpace.Tokens = spaceState;
+			paintableSpace.PaintAbove( graphics );
+
+			// record locations
+			foreach(var pair in paintableSpace.Locations)
+				RecordSpaceTokenLocation( pair.Key, pair.Value );
+
+			// debug
+			if(_ctx._debug)
+				paintableSpace.PaintAbove_Debug(graphics);
+		}
 
 		// for SpaceToken options with no real SpaceToken, put them in buttonContainer too.
 		AddButtonsForVirtualSpaceTokens();
@@ -112,21 +125,11 @@ class IslandPanel : IPanel {
 		RectangleF worldBounds = WorldLayout.Bounds;
 		Size islandWorldSize = worldBounds.Scale( 1000 ).ToInts().Size;
 		_usedBoardScreenRect = _availableScreenRect.FitBoth( islandWorldSize, Align.Center, Align.Near );
+
 		// Mapping part 2 set world-to-screen transform
-		_mapper = new PointMapper( CalcWorldToScreenMatrix( worldBounds, _usedBoardScreenRect ) );
+		_mapper = PointMapper.FromWorldToViewport( worldBounds, _usedBoardScreenRect );
+
 		_iconWidth = (int)(_mapper.XScale * .075f);//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
-	}
-
-	static Matrix3D CalcWorldToScreenMatrix( RectangleF worldRect, Rectangle viewportRect ) {
-		// calculate scaling Assuming height limited
-		float scale = viewportRect.Height / worldRect.Height;
-
-		var islandBitmapMatrix
-			= RowVector.Translate( -worldRect.X, -worldRect.Y ) // translate to origin
-			* RowVector.Scale( scale, -scale ) // flip-y and scale
-			* RowVector.Translate( 0, viewportRect.Height ) // because 0,0 is at the bottom,left
-			* RowVector.Translate( viewportRect.X, viewportRect.Y ); // translate to viewport origin
-		return islandBitmapMatrix;
 	}
 
 	void CacheBackground_Invalidate() {
@@ -136,183 +139,31 @@ class IslandPanel : IPanel {
 		}
 	}
 
-	/// <summary> Used for Arrows and Space Buttons </summary>
-	Point GetPortPoint( Space space, IToken visibileTokens ) {
-		PointF worldCoord = WorldLayout.GetCoord( space, visibileTokens );
-		return _mapper.Map( worldCoord ).ToInts();
-	}
-
-	void DrawBackground( Graphics graphics ) {
-		graphics.DrawImage( _cachedBackground, _usedBoardScreenRect );
-	}
-
 	void DrawBoardSpacesOnly( Graphics graphics, IEnumerable<Space> spaces ) {
-		Pen perimeterPen = new Pen( SpacePerimeterColor, 5f );
+		using Pen perimeterPen = new Pen( SpacePerimeterColor, 5f );
 
 		foreach(var space in spaces) {
-			using Brush brush = ResourceImages.Singleton.UseSpaceBrush( space );
-			SpaceLayout spaceLayout = WorldLayout.MySpaceLayout( space );
-			PointF[] points = spaceLayout.Corners.Select( MapWorldToClient ).ToArray();
-
-			// Draw smoothy
-			graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
-			graphics.DrawClosedCurve( perimeterPen, points, .25f, FillMode.Alternate );
-
-			// Draw Label
-			PointF nameLocation = _mapper.Map( WorldLayout.InsidePoints( space ).NameLocation );
-			graphics.DrawString( space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, nameLocation );
+			var paintable = _worldLayout.GetPaintable( space );
+			paintable.Mapper = _mapper;
+			paintable.Paint( graphics );
 		}
 
 	}
 
 	PointF MapWorldToClient( PointF world) => _mapper.Map(world);
 
-	void DecorateSpace( Graphics graphics, SpaceState spaceState ) {
-
-		_transientSubscripts.Clear();
-
-		WorldLayout.InsidePoints( spaceState.Space ).Init( spaceState );
-
-		if(_ctx._debug)
-			Debug_DrawTokenTargets( graphics, spaceState );
-
-		if(spaceState.Space is MultiSpace ms)
-			DrawMultiSpace( graphics, ms );
-
-		DrawInvaderRow( graphics, spaceState );
-		DrawRow( graphics, spaceState );
-		DrawSubscripts( graphics );
-	}
-
-	void DrawRow( Graphics graphics, SpaceState spaceState ) {
-		int iconWidth = _iconWidth;
-
-		var tokenTypes = new List<IToken> {
-			Token.Defend, Token.Blight, // These don't show up in .OfAnyType if they are dynamic
-			Token.Wilds, Token.Badlands, Token.Isolate, Token.Vitality, Token.Quake
-		}	
-			.Union( spaceState.OfAnyTag( TokenCategory.Dahan, TokenCategory.Incarna, Token.Beast ) )
-			.Union( spaceState.OfAnyTag( _ctx._spirit.Presence, Token.Element, Token.OpenTheWays, Token.Beast, Token.Disease ) )
-			.Cast<IToken>()
-			.ToArray();
-
-		foreach(var token in tokenTypes) {
-			int count = spaceState[token];
-			if(count == 0) continue;
-
-			using var imgMgr = ImageSpec.From(token).GetResourceMgr(); //  imgMgr = _ctx._imgCache.GetResource( token );
-			var img = imgMgr.Resource;
-
-			// calc rect
-			int iconHeight = iconWidth * img.Height / img.Width;
-
-			PointF pt = _mapper.Map( WorldLayout.InsidePoints( spaceState.Space ).GetPointFor( token ) );
-			Rectangle rect = new Rectangle( 
-				(int)(pt.X - iconWidth / 2), 
-				(int)(pt.Y - iconHeight / 2), 
-				iconWidth, 
-				iconHeight
-			);
-
-			// record token location
-			RecordSpaceTokenLocation( token.On( spaceState.Space ), rect );
-
-			if(token is SpiritPresenceToken && _ctx._spirit.Presence.IsSacredSite( spaceState )) {
-				const int inflationSize = 10;
-				rect.Inflate( inflationSize, inflationSize );
-
-				using var brush = new SolidBrush( Color.FromArgb( 100, SacredSiteColor ) );
-				graphics.FillEllipse( brush, rect );
-				rect.Inflate( -inflationSize, -inflationSize );
-			}
-
-			// Draw Tokens
-			graphics.DrawImage( img, rect );
-			// graphics.DrawCountIfHigherThan( rect, count );
-			if(1 < count)
-				_transientSubscripts.Add( new PositionedPaintable( new SubScriptRect("x" + count), rect) );
-
-		}
-
-
-	}
-
-	void DrawInvaderRow( Graphics graphics, SpaceState ss ) {
-		int iconWidth = _iconWidth;
-
-		var orderedInvaders = ss.AllHumanTokens()
-			.Where( k => k.HumanClass.HasTag(TokenCategory.Invader) )
-			// Major ordering: (Type > Strife)
-			.OrderByDescending( i => i.FullHealth )
-			.ThenBy( x => x.StrifeCount )
-			// Minor ordering: (remaining health)
-			.ThenBy( i => i.RemainingHealth ); // show damaged first so when we apply damage, the damaged one replaces the old undamaged one.
-
-		foreach(IToken token in orderedInvaders) {
-
-			// New way
-			PointF center = _mapper.Map( WorldLayout.InsidePoints( ss.Space ).GetPointFor( token ) );
-			float x = center.X - iconWidth / 2;
-			float y = center.Y - iconWidth / 2; //!! approximate - need Image to get actual Height to scale
-
-			// Strife
-			IToken imageToken;
-			if(token is HumanToken si && 0 < si.StrifeCount) {
-				imageToken = si.HavingStrife( 0 );
-				using Image strife = ResourceImages.Singleton.GetImg( Img.Strife );
-				Rectangle strifeRect = new Rectangle( new Point( (int)x, (int)y ), strife.Size.FitWidth( (int)iconWidth ) );
-				graphics.DrawImage( strife, strifeRect );
-				if(si.StrifeCount > 1)
-					graphics.DrawSuperscript( strifeRect, "x" + si.StrifeCount );
-			} else {
-				imageToken = token;
-			}
-
-			// record token location
-			using var imgMgr = ImageSpec.From( imageToken ).GetResourceMgr();
-			var img = imgMgr.Resource;
-			Rectangle rect = new Rectangle( new Point( (int)x, (int)y ), img.Size.FitWidth( (int)iconWidth ) );
-
-			RecordSpaceTokenLocation( token.On( ss.Space ), rect );
-
-			// Draw Token
-			graphics.DrawImage( img, rect );
-			// Count
-			if(1 < ss[token])
-				_transientSubscripts.Add( new PositionedPaintable( new SubScriptRect("x" + ss[token] ) , rect) );
-
-		}
-
-	}
-
 	void DrawArrows( Graphics graphics ) {
 		if(_decision is not A.IHaveArrows quiver) return;
 		using Pen pushArrowPen = new Pen( ArrowColor, 7 );
 		foreach(A.Arrow arrow in quiver.Arrows)
-			graphics.DrawArrow( pushArrowPen, GetPortPoint( arrow.From, arrow.Token ), GetPortPoint( arrow.To, arrow.Token ) );
-	}
-
-	void DrawSubscripts( Graphics graphics ) {
-		foreach(var sub in _transientSubscripts) // Draw these last so they are on top of the tokens AND VISIBLE
-			sub.Paint(graphics);
-	}
-
-	void Debug_DrawTokenTargets( Graphics graphics, SpaceState spaceState ) {
-		int iconWidth = _iconWidth;
-
-		var ghosts = ModCache.Ghosts(ResourceImages.Singleton);
-
-		foreach(var (token, point) in WorldLayout.InsidePoints( spaceState.Space ).Assignments()) {
-			using Image img = ghosts.GetImage( token.Img );
-			var clientPoint = _mapper.Map( new PointF( point.X, point.Y ) );
-			Rectangle rect = new Rectangle( // !!! verify all 3 instances that use this rect are offsetting point correctly.
-				new Point(
-					(int)(clientPoint.X - iconWidth / 2),
-					(int)(clientPoint.Y - iconWidth / 2)
-				),
-				img.Size.FitWidth( (int)iconWidth )
+			graphics.DrawArrow( pushArrowPen, 
+				GetPortPoint( arrow.From, arrow.Token ), 
+				GetPortPoint( arrow.To, arrow.Token )
 			);
-			graphics.DrawImage( img, rect );
+
+		Point GetPortPoint( Space space, IToken visibileTokens ) {
+			PointF worldCoord = WorldLayout.InsidePoints( space ).GetPointFor( visibileTokens );
+			return _mapper.Map( worldCoord ).ToInts();
 		}
 	}
 
@@ -323,7 +174,7 @@ class IslandPanel : IPanel {
 	void InitButtonContainerToSpaceButtons() {
 		_buttonContainer.Clear();
 		foreach(SpaceState spaceState in _ctx.GameState.Spaces_Unfiltered) {
-			SpaceLayout layout = WorldLayout.MySpaceLayout(spaceState.Space);
+			SpaceLayout layout = WorldLayout.InsidePoints(spaceState.Space).SpaceLayout;
 			SpaceButton button = new SpaceButton( layout, MapWorldToClient );
 			_buttonContainer.Add( spaceState.Space, button );
 		}
@@ -348,50 +199,6 @@ class IslandPanel : IPanel {
 
 	#endregion
 
-	#region Multi-Space
-
-	void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {
-
-		using var pen = new Pen( MultiSpacePerimeterColor, 3f );
-
-		using var brush = UseMultiSpaceBrush( multi );
-
-		var points = WorldLayout.MySpaceLayout( multi ).Corners.Select( _mapper.Map ).ToArray();
-		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
-		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
-	}
-
-	static LinearGradientBrush UseMultiSpaceBrush( MultiSpace multi ) {
-		var brush = new LinearGradientBrush( new Rectangle( 0, 0, 30, 30 ), Color.Transparent, Color.Transparent, 45F );
-
-		var colors = multi.OrigSpaces
-			.Select( x => Color.FromArgb( 92, SpaceColor( x ) ) )
-			.ToArray();
-
-		var blend = new ColorBlend {
-			Positions = new float[colors.Length * 2],
-			Colors = new Color[colors.Length * 2]
-		};
-		float step = 1.0f / colors.Length;
-		for(int i = 0; i < colors.Length; ++i) {
-			blend.Positions[i * 2] = i * step;
-			blend.Positions[i * 2 + 1] = (i + 1) * step;
-			blend.Colors[i * 2] = blend.Colors[i * 2 + 1] = colors[i];
-		}
-		brush.InterpolationColors = blend;
-		return brush;
-	}
-
-	static Color MultiSpacePerimeterColor => Color.Gold;
-	static Color SpaceColor( Space space )
-		=> space.IsWetland ? Color.LightBlue
-		: space.IsSand ? Color.PaleGoldenrod
-		: space.IsMountain ? Color.Gray
-		: space.IsJungle ? Color.ForestGreen
-		: space.IsOcean ? Color.Blue
-		: Color.Gold;
-	#endregion Multi-Space
-
 	#region private fields
 
 	readonly SharedCtx _ctx;
@@ -402,7 +209,9 @@ class IslandPanel : IPanel {
 	Rectangle _availableScreenRect;
 
 
-	// World Layout - lazy calculated
+	/// <summary>
+	/// Recalculated each time game-layout changed.
+	/// </summary>
 	WorldLayoutOfIsland WorldLayout => _worldLayout ??= new WorldLayoutOfIsland( _ctx.GameState.Island );
 	WorldLayoutOfIsland _worldLayout;
 	event Action WorldLayoutChanged;
@@ -415,9 +224,6 @@ class IslandPanel : IPanel {
 
 	Rectangle _usedBoardScreenRect;
 	Bitmap _cachedBackground;
-
-	// Cleared at beginning of Space-Draw and collects subscripts as we go
-	readonly List<PositionedPaintable> _transientSubscripts = [];
 
 	// Available Options
 	readonly VisibleButtonContainer _buttonContainer = new VisibleButtonContainer();

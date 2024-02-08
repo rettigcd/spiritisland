@@ -30,7 +30,7 @@ public class SubScriptRect : IPaintableRect {
 			sz.Height + 2
 		);
 		Background.FillElipse( graphics, subscriptRect );
-		Border.DrawRectangle( graphics, subscriptRect );
+		Border.DrawElipse( graphics, subscriptRect );
 		graphics.DrawString( text, _font, TextBrush, subscriptRect.X + 2, subscriptRect.Y + 1 );
 	}
 

@@ -48,7 +48,7 @@ class ArtworkInit( Label label ) {
 		_initCurrent = _initTotal;
 	}
 
-	async void BuildPowerCards( PowerCard[] powerCards ) {
+	void BuildPowerCards( PowerCard[] powerCards ) {
 		foreach(PowerCard powerCard in powerCards) {
 			_initCurrent++;
 			try {

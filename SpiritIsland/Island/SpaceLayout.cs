@@ -2,21 +2,23 @@
 
 namespace SpiritIsland;
 
+/// <summary>
+/// Individual space layout based on a bounding BOARD-Rectangle of (0,0,1.5,.866)
+/// </summary>
 public class SpaceLayout {
 
+	public PointF[] Corners { get; }
+	public PointF Center { get; private set; }
+	public RectangleF Bounds { get; private set; }
+
+	#region constructors
 	public SpaceLayout( params PointF[] corners) {
 		Corners = corners;
 		Bounds = CalcBounds( corners );
 		Center = CalcCenterOfSpacePoints(Bounds);
 	}
 
-	public PointF[] Corners { get; } // the corners on each space.
-	public PointF Center { get; private set; } // set is public for manual adjustment
-	public RectangleF Bounds { get; private set; }
-
-	public void AdjustCenter( float deltaX, float deltaY ) {
-		Center = new PointF( Center.X+deltaX, Center.Y +deltaY );
-	}
+	#endregion constructors
 	public void ReMap( PointMapper mapper ) {
 		for(int i = 0; i < Corners.Length; ++i)
 			Corners[i] = mapper.Map( Corners[i] );
@@ -54,7 +56,7 @@ public class SpaceLayout {
 		}
 	}
 
-	public float DistanceFromBorder( PointF point ) => Polygons.DistanceFromPolygon( Corners, point );
+	public float FindDistanceFromBorder( PointF point ) => Polygons.DistanceFromPolygon( Corners, point );
 
 	#region private
 	static PointF CalcCenterOfSpacePoints(RectangleF rect ) 

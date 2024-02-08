@@ -22,7 +22,7 @@ public class TokenLocation_Tests {
 
 		GameState gs = new GameState(new RiverSurges(),board);
 		Space a5 = board[5];
-		var layout = new ManageInternalPoints( a5, BoardLayout.Get( "A" ).ForSpace( a5 ) );
+		var layout = new ManageInternalPoints( BoardLayout.Get( "A" ).ForSpace( a5 ) );
 
 		SpaceState ss = gs.Tokens[a5];
 		var explorer = ss.GetDefault(Human.Explorer);

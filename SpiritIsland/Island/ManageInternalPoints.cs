@@ -5,17 +5,20 @@ namespace SpiritIsland;
 // Tracks unique locations internal to a polygon
 public class ManageInternalPoints {
 
+	public readonly SpaceLayout SpaceLayout;
+
 	public PointF NameLocation { get; }
 
 	#region constructor
 
-	public ManageInternalPoints( Space mySpace, SpaceLayout layout ) {
+	public ManageInternalPoints( SpaceLayout layout ) {
+		SpaceLayout = layout;
 
 		const float stepSize = .06f; // .07
 		const float minDistanceFromBoarder = .012f; //.015
 
 		NameLocation = layout.GetInternalHexPoints( .02f )
-			.Where( p => minDistanceFromBoarder < layout.DistanceFromBorder(p) )
+			.Where( p => minDistanceFromBoarder < layout.FindDistanceFromBorder(p) )
 			.OrderBy( p => { 
 				var bounds = layout.Bounds;
 				float dx = p.X-bounds.X;
@@ -33,14 +36,14 @@ public class ManageInternalPoints {
 		// internal - prefered
 		var internalPoints = layout
 			.GetInternalHexPoints( stepSize )
-			.Where( p => stepSize*.6f < layout.DistanceFromBorder( p ) )
+			.Where( p => stepSize*.6f < layout.FindDistanceFromBorder( p ) )
 			.ToArray();
-		new Random( mySpace.Text.GetHashCode() ) // use the randomizer every time so pieces don't bounce around when we resize
+		new Random( 1 ) // use the same randomizer every time so pieces don't bounce around when we resize
 			.Shuffle( internalPoints );
 
 		// border - backup
 		var borderPoints = points.Except( internalPoints )
-			.OrderByDescending( layout.DistanceFromBorder )
+			.OrderByDescending( layout.FindDistanceFromBorder )
 			.ToArray();
 
 		_randomInternal = new TokenPointArray( _dict, internalPoints );
@@ -51,6 +54,9 @@ public class ManageInternalPoints {
 	#endregion
 
 	public PointF GetPointFor( IToken token ) {
+
+		if(token is null)
+			return SpaceLayout.Center;
 
 		if(_dict.TryGetValue( token, out PointF storedPoint )) return storedPoint;
 
