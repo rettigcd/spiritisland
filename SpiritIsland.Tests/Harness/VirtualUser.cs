@@ -232,10 +232,6 @@ public class VirtualUser( Spirit spirit ) {
 	public void SelectCardToForget()   => NextDecision.HasPrompt( "Select power card to forget" ).ChooseFirst();
 	public void ActivateFear()         => NextDecision.HasPrompt( "Activating Fear" ).ChooseFirst();
 
-	public void Assert_Done() { // !! deprecate this.  Replace with checking Task is completed.
-		_userPortal.IsResolved.ShouldBeTrue();
-	}
-
 	#region protected
 
 	// !!! Deprecate this

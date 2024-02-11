@@ -413,16 +413,16 @@ public class BoardLayout {
 
 	static readonly GenericBoard Singleton = new GenericBoard();
 	// Sides
-	static PointF[] top = Singleton.top;
-	static PointF[] rig = Singleton.rig;
-	static PointF[] bot = Singleton.bot;
+	static readonly PointF[] top = Singleton.top;
+	static readonly PointF[] rig = Singleton.rig;
+	static readonly PointF[] bot = Singleton.bot;
 	// corner
-	static PointF origin = Singleton.origin;
-	static PointF topLeftCorner = Singleton.topLeftCorner;
-	static PointF topRightCorner = Singleton.topRightCorner;
-	static PointF bottomRightCorner = Singleton.bottomRightCorner;
+	static readonly PointF origin = Singleton.origin;
+	static readonly PointF topLeftCorner = Singleton.topLeftCorner;
+	static readonly PointF topRightCorner = Singleton.topRightCorner;
+	static readonly PointF bottomRightCorner = Singleton.bottomRightCorner;
 	// height
-	static public float boardHeight = Singleton.boardHeight;
+	static public readonly float boardHeight = Singleton.boardHeight;
 
 	/// <summary>
 	/// Starting at (0,0) and going CCW around the board. 

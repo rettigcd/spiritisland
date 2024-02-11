@@ -27,13 +27,20 @@ public class SinglePlayerGame {
 
 	#endregion
 
+	/// <summary>
+	/// Starts game engine (asynchronously) and saves the Task to .EngineTask
+	/// </summary>
+	public void Start() {
+		// this MUST be called at least once on the UI thread so that we can query the GameState
+		ActionScope.Initialize( GameState );
+		EngineTask = StartAsync();
+	}
+	public Task EngineTask { get; private set; }
+
 	public async Task StartAsync() {
 
-		ActionScope.Initialize( GameState );
 		UserGateway.UsePreselect.Value = EnablePreselects;
 		try {
-			// 
-
 			// Handle any unresolved Initialization action - (ocean/beast)
 			GameState.Phase = Phase.Init;
 			await Spirit.ResolveActions( GameState ); 
@@ -45,8 +52,8 @@ public class SinglePlayerGame {
 				try {
 					await Do1Round();
 				}
-				catch( GameStateCommandException cmdEx ) {
-					if(cmdEx.Cmd is Rewind rewind && savedGameStates.TryGetValue( rewind.TargetRound, out object memento )) {
+				catch( RewindException rewind ) {
+					if(savedGameStates.TryGetValue( rewind.TargetRound, out object memento )) {
 						((IHaveMemento)GameState).Memento = memento;
 						foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
 							savedGameStates.Remove(laterRounds);

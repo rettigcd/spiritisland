@@ -36,7 +36,7 @@ public abstract class ImageSpec( bool shouldDispose ) {
 	//  Owned - What the heck is this?
 	class ResourceMgrImage( Func<ResourceMgr<Bitmap>> func ) : ImageSpec( true ) {
 		public override ResourceMgr<Bitmap> GetResourceMgr() => func();
-		public override Bitmap GetBitmap() => _dummy; static Bitmap _dummy = new Bitmap(1,1);
+		public override Bitmap GetBitmap() => _dummy; static readonly Bitmap _dummy = new Bitmap(1,1);
 	}
 
 	#region static Cache
@@ -122,20 +122,14 @@ public class CachedImageSource( ResourceImageSource _nonCached ) : ResourceImage
 	/// <summary> Current memory usage. Resets with call to Clear() </summary>
 	public int MemoryUsage;
 
-	Dictionary<object, CacheInfo> _cache = [];
+	readonly Dictionary<object, CacheInfo> _cache = [];
 
-	public class CacheInfo {
-		public CacheInfo( Bitmap bitmap, TimeSpan loadTime ) {
-			Bitmap = bitmap;
-			MemoryUsage = bitmap.Width * bitmap.Height * 4;
-			LoadTime = loadTime;
-			RequestCount = 1;
-		}
-		public readonly Bitmap Bitmap;
-		public readonly int MemoryUsage;
-		public readonly TimeSpan LoadTime;
+	public class CacheInfo( Bitmap bitmap, TimeSpan loadTime ) {
+		public readonly Bitmap Bitmap = bitmap;
+		public readonly int MemoryUsage = bitmap.Width * bitmap.Height * 4;
+		public readonly TimeSpan LoadTime = loadTime;
 		public TimeSpan Saved => LoadTime.Multiply( RequestCount - 1 );
-		public int RequestCount;
+		public int RequestCount = 1;
 		public override string ToString() => $"{Saved} - {RequestCount} / {MemoryUsage}";
 	}
 }

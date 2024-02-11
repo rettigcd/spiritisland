@@ -253,4 +253,3 @@ public static class Rectangle_Extensions {
 	static public Size FitWidth( this Size sz, int width ) => new Size( width, width * sz.Height / sz.Width );
 
 }
-

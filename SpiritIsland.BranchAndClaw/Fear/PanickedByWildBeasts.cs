@@ -11,7 +11,7 @@ public class PanickedByWildBeasts : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
-	[FearLevel( 2, "Each player adds 1 Strife in a land with or adjacent to Beast. Invaders skip their normal Explore and Build in lands ith Beast." )]
+	[FearLevel( 2, "Each player adds 1 Strife in a land with or adjacent to Beast. Invaders skip their normal Explore and Build in lands with Beast." )]
 	public Task Level2( GameState ctx )
 		=> Cmd.Multiple(
 			Cmd.AddStrife(1).In().SpiritPickedLand().Which(Has.BeastOrIsAdjacentToBeast).ForEachSpirit(),

@@ -15,7 +15,7 @@ public sealed class GiftOfStrength_Tests {
 		var user = new VirtualUser( spirit );
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
-		_ = new SinglePlayerGame(gs).StartAsync();
+		new SinglePlayerGame(gs).Start();
 
 		// Given: Earth has enough elements to trigger GOS
 		user.SelectsGrowthA_Reclaim_PP2();

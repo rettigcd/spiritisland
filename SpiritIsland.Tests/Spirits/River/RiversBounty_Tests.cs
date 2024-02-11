@@ -163,7 +163,6 @@ public class RiversBounty_Tests {
 		_user.TargetsLand( RiversBounty.Name,"A4" );
 
 		await t.ShouldComplete();
-		_user.Assert_Done();
 
 	}
 

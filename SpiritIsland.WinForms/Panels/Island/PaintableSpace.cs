@@ -11,7 +11,6 @@ class PaintableSpace {
 	#region Static Resrouces
 
 	static Color SpacePerimeterColor => Color.Black;
-	//	static Color MultiSpacePerimeterColor => Color.Gold;
 	static Brush SpaceLabelBrush => Brushes.White;
 
 	static Color SacredSiteColor => Color.Yellow;

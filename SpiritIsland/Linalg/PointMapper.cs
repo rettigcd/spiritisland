@@ -21,6 +21,7 @@ public class PointMapper {
 		return islandBitmapMatrix;
 	}
 
+	public readonly static PointMapper NullMapper = new PointMapper( new Matrix3D() );
 
 
 	/// <param name="rowVectorMatrix">Matrix must be built for transformations on RowVectors</param>

@@ -4,13 +4,10 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms.Panels.Island;
 
-class PaintableMultiSpace : PaintableSpace {
+class PaintableMultiSpace( MultiSpace ms, SpaceLayout layout ) : PaintableSpace( ms, layout ) {
 
 	static Color MultiSpacePerimeterColor => Color.Gold;
 
-	public PaintableMultiSpace(MultiSpace ms, SpaceLayout layout ) : base( ms, layout ) {
-		_ms = ms;
-	}
 	protected override void DoPaintAbove( Graphics graphics ) {
 		// Drawing this "above" because it is temporary.
 		DrawMultiSpace( graphics, _ms );
@@ -61,5 +58,5 @@ class PaintableMultiSpace : PaintableSpace {
 
 	#endregion Multi-Space drawing
 
-	readonly MultiSpace _ms;
+	readonly MultiSpace _ms = ms;
 }

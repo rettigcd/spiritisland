@@ -2,11 +2,12 @@
 
 namespace SpiritIsland;
 
-public class GameOverException( GameOver status ) : System.Exception( status.Msg( LogLevel.Info ) ) {
+public class GameOverException( GameOverLogEntry status )
+	: Exception( status.ToString() )
+{
+	static public void Win(string cause) => throw new GameOverException( new GameOverLogEntry( GameOverResult.Victory, cause ) );
 
-	static public void Win(string cause) => throw new GameOverException( new GameOver( GameOverResult.Victory, cause ) );
+	static public void Lost(string cause) => throw new GameOverException( new GameOverLogEntry( GameOverResult.Defeat, cause ) );
 
-	static public void Lost(string cause) => throw new GameOverException( new GameOver( GameOverResult.Defeat, cause ) );
-
-	public GameOver Status { get; } = status;
+	public GameOverLogEntry Status { get; } = status;
 }

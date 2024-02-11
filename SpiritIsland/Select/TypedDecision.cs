@@ -6,7 +6,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class,IOption {
 
 	public string Prompt { get; }
 
-	IOption[] IDecision.Options => _allOptions;
+	public IOption[] Options => _allOptions;
 	protected readonly IOption[] _allOptions;
 
 	/// <summary>

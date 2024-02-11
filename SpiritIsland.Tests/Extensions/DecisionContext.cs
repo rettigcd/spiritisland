@@ -1,6 +1,4 @@
-﻿using System.ServiceModel.Channels;
-
-namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests;
 
 /// <summary> Binds to 1 Decision </summary>
 public class DecisionContext {
@@ -25,7 +23,6 @@ public class DecisionContext {
 	#region public Prompt assertions
 
 	public DecisionContext HasPrompt( string expectedPrompt ) {
-		AssertIsReady( expectedPrompt );
 		return string.Compare( _current.Prompt, expectedPrompt, true )==0 ? this 
 			: throw new ArgumentException($"Expected prompt '{expectedPrompt}' not found in '{Format(_current)}'");
 	}
@@ -152,14 +149,5 @@ public class DecisionContext {
 
 	public string Format() => _current.FormatDecision();
 
-	#region private helper methods
-
-	void AssertIsReady( string prompt ) {
-		// This line tests that are currently waiting at a decision
-		// It breaks tests that get to a decision then wait for the engine to catch up.
-		_portal.IsResolved.ShouldBeFalse( $"Prompt [{prompt}] is not there." );
-	}
-
-	#endregion
 }
 

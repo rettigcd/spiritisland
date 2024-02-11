@@ -1,6 +1,5 @@
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.CompilerServices;
 using SpiritIsland.NatureIncarnate;
 
 namespace SpiritIsland.Tests.Art;

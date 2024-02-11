@@ -3,5 +3,6 @@
 public enum GameOverResult { 
 	None, 
 	Victory,  // noun 
-	Defeat  // noun
+	Defeat,  // noun
+	Withdrawal // noun (verb would be quit,abandon,leave)
 }

@@ -6,6 +6,12 @@ public sealed class GameState : IHaveMemento {
 
 	public static GameState Current => ActionScope.Current?.GameState;
 
+	/// <summary>
+	/// Caches the root ActionScope created when GameState constructed,
+	/// Allowing UI thread to access it also.
+	/// </summary>
+	public readonly ActionScope RootScope;
+
 	#region constructors
 
 	/// <summary>
@@ -17,7 +23,7 @@ public sealed class GameState : IHaveMemento {
 	public GameState(Spirit[] spirits,Board[] boards, int gameNumber = 0 ){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 
-		ActionScope.Initialize( this );
+		RootScope = ActionScope.Initialize( this );
 
 		Island = new Island( boards );
 		Spirits = spirits;
@@ -93,7 +99,7 @@ public sealed class GameState : IHaveMemento {
 	public IBlightCard BlightCard = new NullBlightCard(); // Drawn Card
 	public List<IBlightCard> BlightCards = []; // Deck of Blight Cards
 
-	public GameOver Result = null;
+	public GameOverLogEntry Result = null;
 
 	public event Action<ILogEntry> NewLogEntry;	// API
 

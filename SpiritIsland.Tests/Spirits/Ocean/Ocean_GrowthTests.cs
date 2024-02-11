@@ -6,16 +6,16 @@ public class Ocean_GrowthTests : BoardAGame {
 	public Ocean_GrowthTests():base( new Ocean() ) {}
 
 	[Theory]
-	[InlineData("A0","","A0:1")]
-	[InlineData("A0B0","","A0:1,B0:1")]
-	[InlineData("A0B0C0","","A0:1,B0:1,C0:1")]
-	[InlineData("A1","A1>A0","A0:1")]
-	[InlineData("A1B1","A1>A0,B1>B0","A0:1,B0:1")]
-	[InlineData("A1B1C1","A1>A0,B1>B0,C1>C0","A0:1,B0:1,C0:1")]
-	[InlineData("A1A2","A1>A0","A0:1,A2:1")]    // need to define which presence to move
-	[InlineData("A1A2","A2>A0","A0:1,A1:1")]    // need to define which presence to move
-	[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0:1,A1:1,B0:1,C0:1,C2:1")]    // need to define which presence to move
-	public void ReclaimGather_GatherParts(string starting, string select, string ending) {
+	[InlineData("A0","","A0:1",0)]
+	[InlineData("A0B0","","A0:1,B0:1",0)]
+	[InlineData("A0B0C0","","A0:1,B0:1,C0:1",0)]
+	[InlineData("A1","A1>A0","A0:1",1)]
+	[InlineData("A1B1","A1>A0,B1>B0","A0:1,B0:1",2)]
+	[InlineData("A1B1C1","A1>A0,B1>B0,C1>C0","A0:1,B0:1,C0:1",3)]
+	[InlineData("A1A2","A1>A0","A0:1,A2:1",1)]    // need to define which presence to move
+	[InlineData("A1A2","A2>A0","A0:1,A1:1",1)]    // need to define which presence to move
+	[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0:1,A1:1,B0:1,C0:1,C2:1",3)]    // need to define which presence to move
+	public void ReclaimGather_GatherParts(string starting, string select, string ending, int gatherCounts) {
 		Given_IslandIsABC();
 		_spirit.Given_IsOnMany( starting );
 
@@ -35,7 +35,7 @@ public class Ocean_GrowthTests : BoardAGame {
 
 		if(gather != null){
 			_ = gather.ActivateAsync( _spirit );
-			while(!_spirit.Portal.IsResolved){
+			while(0 < gatherCounts--) {
 				var options = _spirit.Portal.Next.Options
 					.Where( option => moveBySrc.ContainsKey( option.Text ) )
 					.ToArray();

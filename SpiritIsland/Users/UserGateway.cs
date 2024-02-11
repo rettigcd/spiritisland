@@ -4,9 +4,19 @@ namespace SpiritIsland;
 
 sealed public class UserGateway : IUserPortal, IEnginePortal {
 
-	#region IUserPortal
+	#region IUserPortal - wait for next decision
 
+	public IDecision Next => CacheNextDecision( null )?.Decision;
+	public IDecision Current => CacheNextDecision( 0 )?.Decision;
 	public event Action<IDecision> NewWaitingDecision;
+	public bool WaitForNext( int ms ) => CacheNextDecision( ms ) != null;
+	public bool WaitForNextDecision( int milliseconds ) { // !!!
+		if(_signal.WaitOne( milliseconds )) {
+			_userAccessedDecision = _activeDecisionMaker;
+			return true;
+		}
+		return false;
+	}
 
 	IDecisionMaker CacheNextDecision( int? waitMs ) {
 		if(_userAccessedDecision == null) {
@@ -15,41 +25,18 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		}
 		return _userAccessedDecision;
 	}
-
-	void WaitForSignal(int? milliseconds) {
+	void WaitForSignal( int? milliseconds ) {
 		if(milliseconds.HasValue)
 			_signal.WaitOne( milliseconds.Value );
 		else
 			_signal.WaitOne(); // normal
 	}
 
-	public bool WaitForNextDecision( int milliseconds ) {
-		if(_signal.WaitOne( milliseconds )) {
-			_userAccessedDecision = _activeDecisionMaker;
-			return true;
-		}
-		return false;
-	}
+	#endregion IUserPortal - wait for next decision
 
+	#region IUserPortal - Choose
 
-	/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
-	public void GoBackToBeginningOfRound( int targetRound ) {
-		var poppedDecisionMaker = CacheNextDecision( null );
-		_activeDecisionMaker = null;
-		_userAccessedDecision = null;
-		poppedDecisionMaker.IssueCommand( new Rewind( targetRound ) );
-	}
-
-	#region Blocking
-
-	public IDecision Next => CacheNextDecision( null )?.Decision;
-	IDecision IUserPortal.Current => CacheNextDecision( 0 )?.Decision;
-
-	public bool WaitForNext(int ms) => CacheNextDecision( ms ) != null;
-
-	public bool IsResolved => _activeDecisionMaker == null;
-
-	public void Choose(IDecision _, IOption selection,bool block=true) {
+	public void Choose( IDecision _, IOption selection, bool block = true ) {
 		var currentDecisionMaker = CacheNextDecision( null );
 		if(currentDecisionMaker == null) return;
 		IDecisionPlus currentDecision = currentDecisionMaker.Decision;
@@ -57,16 +44,30 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		_userAccessedDecision = null;
 
 		if(!currentDecision.Options.Contains( selection ))
-			throw new ArgumentException( selection.Text + " not found in options("+ currentDecision.Options.Select(x=>x.Text).Join(",") + ")" );
+			throw new ArgumentException( selection.Text + " not found in options(" + currentDecision.Options.Select( x => x.Text ).Join( "," ) + ")" );
 
-		Log( new DecisionLogEntry(selection,currentDecision,false)  );
+		Log( new DecisionLogEntry( selection, currentDecision, false ) );
 
 		currentDecisionMaker.Select( selection ); // ####
 	}
 
-	#endregion
+	#endregion IUserPortal - Choose
 
-	#endregion
+	/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
+	public void GoBackToBeginningOfRound( int targetRound ) {
+		var poppedDecisionMaker = CacheNextDecision( null );
+		_activeDecisionMaker = null;
+		_userAccessedDecision = null;
+		poppedDecisionMaker.IssueException( new RewindException( targetRound ) );
+	}
+
+	public void Quit() {
+		var poppedDecisionMaker = CacheNextDecision( null );
+		_activeDecisionMaker = null;
+		_userAccessedDecision = null;
+		poppedDecisionMaker.IssueException( new GameOverException(new GameOverLogEntry(GameOverResult.Withdrawal, "User withdrew from game.")));
+	}
+
 
 	/// <remarks>
 	/// When there is no match, this gets set to null.
@@ -76,9 +77,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	/// </remarks>
 	public SpaceToken Preloaded { get; set; }
 
-
 	readonly public static AsyncLocal<bool> UsePreselect = new AsyncLocal<bool>(); // !! combine with other preferences into a 'preference' object.
-
 
 	/// <summary>
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
@@ -143,7 +142,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	interface IDecisionMaker {
 		public IDecisionPlus Decision { get; }
 		public void Select(IOption option);
-		public void IssueCommand( IGameStateCommand cmd );
+		public void IssueException( Exception exception );
 	}
 
 	/// <summary>
@@ -161,8 +160,8 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 				promise.TrySetException( new System.Exception( $"{selection.Text} not found in options" ) );
 		}
 
-		public void IssueCommand( IGameStateCommand cmd ) {
-			promise.TrySetException( new GameStateCommandException(cmd) );
+		public void IssueException( Exception exception ) {
+			promise.TrySetException( exception );
 		}
 	}
 

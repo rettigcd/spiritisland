@@ -19,7 +19,7 @@ public class France_Tests {
 	[Fact]
 	public async Task Round4_TriggersMinorUprising(){
 		// Given: France
-		var cfg = Given_FranceLevel(2).SetBoards( "A" ).SetSpirits( Keeper.Name );
+		var cfg = Given_FranceLevel(2).ConfigBoards( "A" ).ConfigSpirits( Keeper.Name );
 		var gs = BuildGame(cfg);
 
 		//   And: Round 4
@@ -37,7 +37,7 @@ public class France_Tests {
 	[Fact]
 	public async Task AfterRewind_EscalationStillWorks(){
 		// Given: initialized card deck with France
-		var cfg = Given_FranceLevel(2).SetBoards( "A" ).SetSpirits( Keeper.Name );
+		var cfg = Given_FranceLevel(2).ConfigBoards( "A" ).ConfigSpirits( Keeper.Name );
 		var gs = BuildGame(cfg);
 		gs.Initialize();
 

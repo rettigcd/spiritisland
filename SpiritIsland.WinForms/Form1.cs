@@ -39,7 +39,7 @@ public partial class Form1 : Form, IHaveOptions {
 		}
 
 		_currentDecision = null;
-		this._game.UserPortal.Choose( _currentDecision, option, false ); // If there is no decision to be made, just return
+		_game.UserPortal.Choose( _currentDecision, option, false ); // If there is no decision to be made, just return
 	
 	}
 
@@ -204,6 +204,7 @@ public partial class Form1 : Form, IHaveOptions {
 
 	async Task TryStartGame() {
 		try{
+			ActionScope.Initialize(_game.GameState);
 			await _game.StartAsync();
 		} catch(Exception ex){
 			System.IO.File.WriteAllText(System.IO.Path.Combine(AppDataFolder.GetRootPath(),"exception.txt"), ex.ToString() );
@@ -213,8 +214,8 @@ public partial class Form1 : Form, IHaveOptions {
 	void GameState_NewLogEntry( ILogEntry obj ) {
 		logForm.AppendLine(obj.Msg(LogLevel.Info), obj.Level);
 
-		if(obj is GameOver wle)
-			Action_NewWaitingDecision( new A.TypedDecision<TextOption>(wle.Msg( LogLevel.Info ), Array.Empty<TextOption>() ) ); // clear options
+		if(obj is GameOverLogEntry wle)
+			Action_NewWaitingDecision( new A.TypedDecision<TextOption>(wle.ToString(), Array.Empty<TextOption>() ) ); // clear options
 	}
 
 	void ExitToolStripMenuItem_Click( object sender, EventArgs e ) {
@@ -257,7 +258,7 @@ public partial class Form1 : Form, IHaveOptions {
 	void RecentGame_Clicked( object sender, EventArgs _ ) {
 		var tsmi = (ToolStripMenuItem)sender;
 		_gameConfiguration = (GameConfigPlusToken)tsmi.Tag;
-		_gameConfiguration.SetCommandTheBeasts(true); // !!! Hack - Command the beast is not being saved.  Save it instead of this.
+		_gameConfiguration.ConfigCommandBeasts(true); // !!! Hack - Command the beast is not being saved.  Save it instead of this.
 		InitGameFromConfiguration();
 	}
 
@@ -270,6 +271,6 @@ public partial class Form1 : Form, IHaveOptions {
 	}
 
 	void spaceTokensToolStripMenuItem_Click( object sender, EventArgs e ) {
-		MessageBox.Show( this._game.GameState.Tokens.ToVerboseString(), "Space Tokens" );
+		MessageBox.Show( _game.GameState.Tokens.ToVerboseString(), "Space Tokens" );
 	}
 }

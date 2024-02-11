@@ -12,7 +12,7 @@ public class MassiveFlooding_Tests {
 	public void InsufficientElements() {
 		var spirit = new RiverSurges();
 		var gs = new GameState( spirit, Board.BuildBoardA() ) { Phase = Phase.Slow };
-		_ = new SinglePlayerGame(gs).StartAsync();
+		new SinglePlayerGame(gs).Start();
 
 
 		var fixture = new ConfigurableTestFixture();
@@ -108,7 +108,7 @@ public class MassiveFlooding_Tests {
 	public void Level3_2DamageToEachInvader() { // 3 sun, 4 water, 1 earth
 		var spirit = new RiverSurges();
 		var gs = new GameState( spirit, Board.BuildBoardA() ) { Phase = Phase.Slow };
-		_ = new SinglePlayerGame(gs).StartAsync();
+		new SinglePlayerGame(gs).Start();
 
 
 

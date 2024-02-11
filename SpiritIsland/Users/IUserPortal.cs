@@ -5,24 +5,23 @@
 /// </summary>
 public interface IUserPortal {
 
-	public bool IsResolved { get; }
-	bool WaitForNextDecision( int milliseconds );
-
-
-	/// <summary> Waits for the Next Decision to arrive, then returns it. </summary>
-	IDecision Next { get; }
-
-	/// <summary> Returns current Decision or null if there is none. </summary>
-	IDecision Current { get; }
-
-	void Choose( IDecision decision, IOption option, bool block=true );
+	#region Waiting for Next Decision
 
 	/// <summary> Waits given # of ms for the next decision. Then returns.</summary>
 	bool WaitForNext( int ms );
+	bool WaitForNextDecision( int milliseconds );
+
+	/// <summary> Waits for the Next Decision to arrive, then returns it. </summary>
+	IDecision Next { get; }
+	event Action<IDecision> NewWaitingDecision;
+
+	#endregion Waiting for Next Decision
+
+	/// <summary> Returns current Decision or null if there is none. </summary>
+	void Choose( IDecision decision, IOption option, bool block=true );
 
 	void GoBackToBeginningOfRound( int targetRound );
-
-	event Action<IDecision> NewWaitingDecision;
+	void Quit();
 
 }
 

@@ -25,8 +25,6 @@ public class BoonOfVigor_Tests {
 
 		await Card.ActivateAsync( Spirit ).ShouldComplete();
 
-		User.Assert_Done();
-
 		// Then: received 1 energy
 		Assert.Equal( 1, Spirit.Energy );
 
@@ -59,8 +57,6 @@ public class BoonOfVigor_Tests {
 		Task t = Card.ActivateAsync( Spirit );
 
 		User.TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,[Lightning's Swift Strike]");
-
-		User.Assert_Done();
 
 		await t.ShouldComplete();
 

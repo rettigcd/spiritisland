@@ -32,7 +32,7 @@ class TestSpirit( PowerCard powerCard )
 
 		gs.Initialize(); 
 
-		_ = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
+		new SinglePlayer.SinglePlayerGame(gs).Start();
 
 		var user = new VirtualTestUser( spirit );
 

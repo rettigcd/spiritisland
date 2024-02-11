@@ -103,7 +103,7 @@ internal class StatusPanel( SharedCtx ctx ) : IPanel {
 		if(_ctx.GameState.Result != null) {
 
 			brush = _ctx.GameState.Result.Result == GameOverResult.Victory ? GameTextBrush_Victory : GameTextBrush_Defeat;
-			prompt += " - " + _ctx.GameState.Result.Msg( LogLevel.Info );
+			prompt += " - " + _ctx.GameState.Result.ToString();
 		}
 		graphics.DrawString( prompt, font, brush, 0, 0 );
 

@@ -11,7 +11,7 @@ namespace SpiritIslandCmd {
 			var gs = new GameState( new RiverSurges(), Board.BuildBoardA() );
 
 			var game = new SinglePlayerGame(gs);
-			_ = game.StartAsync();
+			game.Start();
 
 			new CmdLinePlayer(game).Play();
 		}

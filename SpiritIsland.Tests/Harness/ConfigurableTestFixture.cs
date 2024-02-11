@@ -53,7 +53,7 @@ public class ConfigurableTestFixture {
 		if(_board != null) throw new InvalidOperationException( "InitConfiguration must be called before Board is initialized." );
 		if(_gameState != null) throw new InvalidOperationException( "InitConfiguration must be called before GameState is initialized." );
 
-		var gameConfig = new GameConfiguration().SetSpirits( RiverSurges.Name ).SetBoards( "A" );
+		var gameConfig = new GameConfiguration().ConfigSpirits( RiverSurges.Name ).ConfigBoards( "A" );
 		adjustCfg(gameConfig);
 
 		_gameState = GameBuilder.BuildGame( gameConfig );

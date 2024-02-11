@@ -3,9 +3,9 @@
 namespace SpiritIsland;
 
 // !!! replace this with Tuple
-public record PositionedPaintable( IPaintableRect paintable, Rectangle bounds ) {
-	public void Paint( Graphics graphics ) => paintable.Paint( graphics, bounds );
-}
+//public record PositionedPaintable( IPaintableRect paintable, Rectangle bounds ) {
+//	public void Paint( Graphics graphics ) => paintable.Paint( graphics, bounds );
+//}
 
 static public class GraphicsExtensions {
 

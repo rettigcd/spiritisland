@@ -12,7 +12,11 @@ public sealed class ActionScope : IAsyncDisposable {
 	class ActionScopeContainer {
 		public ActionScopeContainer(GameState gameState) {
 			Id = Guid.NewGuid();
-			Current = new ActionScope( this, gameState ); // default
+
+			// Should only be called from
+			//	(a) GameState constructor and
+			//	(b) UI thread or Testing thread-context
+			Current = gameState.RootScope ?? new ActionScope( this, gameState );
 			StartOfActionHandlers = [];
 		}
 		readonly Guid Id;
@@ -38,8 +42,9 @@ public sealed class ActionScope : IAsyncDisposable {
 	#region Static Public
 
 	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
-	static public void Initialize(GameState gameState) {
+	static public ActionScope Initialize(GameState gameState) {
 		_scopeContainer.Value = new ActionScopeContainer( gameState );
+		return _scopeContainer.Value.Current;
 	}
 
 	// Good Reading on Execution Context and async/await

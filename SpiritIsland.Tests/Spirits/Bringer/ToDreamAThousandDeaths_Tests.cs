@@ -7,11 +7,9 @@ public class ToDreamAThousandDeaths_Tests {
 	readonly Board _board;
 	readonly GameState _gameState;
 	readonly Spirit _spirit;
-	readonly VirtualUser _user;
 
 	public ToDreamAThousandDeaths_Tests(){
 		_spirit = new Bringer();
-		_user = new VirtualUser(_spirit);
 		_board = Board.BuildBoardA();
 		_gameState = new GameState( _spirit, _board );
 		_gameState.Initialize();
@@ -106,8 +104,6 @@ public class ToDreamAThousandDeaths_Tests {
 		}
 		await Run3Async().ShouldComplete("run-3");
 
-		_user.Assert_Done();
-
 		// And: 0-fear
 		Assert_GeneratedFear( 0 ); // city never destroyed
 	}
@@ -129,7 +125,6 @@ public class ToDreamAThousandDeaths_Tests {
 		await Run_OneDamageToEachAsync();
 		await Run_OneDamageToEachAsync();
 		await Run_OneDamageToEachAsync();
-		_user.Assert_Done();
 
 		// And: 0-fear
 		Assert_GeneratedFear( 3*5 ); // city never destroyed

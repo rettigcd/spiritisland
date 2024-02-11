@@ -46,7 +46,6 @@ public class InvaderCardBuilder {
 			DrawDoubleTerrain( resources, graphics, perimeter, backgroundBrush, doubleTerrain );
 		else {
 			Draw_Special( card, resources, graphics, perimeter, backgroundBrush );
-
 		}
 		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center };
 		Font bottomFont = resources.UseInvaderFont( 20f );

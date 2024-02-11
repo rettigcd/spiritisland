@@ -216,7 +216,7 @@ public class RiverSurges_GrowthTests2 {
 
 		var gs = new GameState( spirit, Board.BuildBoardA() );
 		gs.Initialize();
-		_ = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
+		new SinglePlayer.SinglePlayerGame(gs).Start();
 
 		// pull card track 2 * 2 = triggers reclaim 
 
