@@ -71,6 +71,38 @@ public class Transform_Tests {
 		final.ShouldBe( -19f, 12f );
 	}
 
+	[Fact]
+	public void ExtendCorner_45() {
+		// 90° - concave corner
+		XY[] points = [new XY( 1, 0 ), new XY( 0, 0 ), new XY( 1, 1 )];
+		XY inside = Polygons.ExtendCornerRight( points[0], points[1], points[2], 1f );
+		inside.ShouldBe( 2.4142137f, 1 );
+	}
+
+	[Fact]
+	public void ExtendCorner_90() {
+		// 90° - concave corner
+		XY[] points = [new XY(10,0),new XY(0,0),new XY(0,5)];
+		XY inside = Polygons.ExtendCornerRight( points[0], points[1], points[2], 1f );
+		inside.ShouldBe( 1,1 );
+	}
+
+	[Fact]
+	public void ExtendCorner_270() {
+		// 270° - Convex corner
+		XY[] points = [new XY( 25, 0 ), new XY( 0, 0 ), new XY( 0, -3 )];
+		XY inside = Polygons.ExtendCornerRight( points[0], points[1], points[2], 1f );
+		inside.ShouldBe( -1, 1 );
+	}
+
+	[Fact]
+	public void ExtendCorner_180() {
+		// 180° - points are co-linear
+		XY[] points = [new XY( 14, 0 ), new XY( 0, 0 ), new XY( -6, 0 )];
+		XY inside = Polygons.ExtendCornerRight( points[0], points[1], points[2], 1f );
+		inside.ShouldBe( 0, 1 );
+	}
+
 }
 
 public static class FVector2Extensions {
@@ -79,11 +111,12 @@ public static class FVector2Extensions {
 		final.X.ShouldBe( x, tollerence );
 		final.Y.ShouldBe( y, tollerence );
 	}
-	public static void ShouldBe( this System.Drawing.PointF final, float x, float y ) {
+	public static void ShouldBe( this XY final, float x, float y ) {
 		const double tollerence = .0001;
 		final.X.ShouldBe( x, tollerence );
 		final.Y.ShouldBe( y, tollerence );
 	}
+
 }
 
 

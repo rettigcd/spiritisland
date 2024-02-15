@@ -127,9 +127,9 @@ class IslandPanel : IPanel {
 		_usedBoardScreenRect = _availableScreenRect.FitBoth( islandWorldSize, Align.Center, Align.Near );
 
 		// Mapping part 2 set world-to-screen transform
-		_mapper = PointMapper.FromWorldToViewport( worldBounds, _usedBoardScreenRect );
+		_mapper = PointMapper.FromWorldToViewport( worldBounds.ToBounds(), _usedBoardScreenRect.ToBounds() );
 
-		_iconWidth = (int)(_mapper.XScale * .075f);//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+		_iconWidth = (int)(_mapper.UnitLength * .075f);//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 	}
 
 	void CacheBackground_Invalidate() {
@@ -150,7 +150,8 @@ class IslandPanel : IPanel {
 
 	}
 
-	PointF MapWorldToClient( PointF world) => _mapper.Map(world);
+	PointF MapWorldToClient( PointF world) => _mapper.Map(world.ToXY()).ToPointF();
+	XY MapWorldToClientXY( XY world ) => _mapper.Map( world );
 
 	void DrawArrows( Graphics graphics ) {
 		if(_decision is not A.IHaveArrows quiver) return;
@@ -162,7 +163,7 @@ class IslandPanel : IPanel {
 			);
 
 		Point GetPortPoint( Space space, IToken visibileTokens ) {
-			PointF worldCoord = WorldLayout.InsidePoints( space ).GetPointFor( visibileTokens );
+			XY worldCoord = WorldLayout.InsidePoints( space ).GetPointFor( visibileTokens );
 			return _mapper.Map( worldCoord ).ToInts();
 		}
 	}
@@ -175,7 +176,7 @@ class IslandPanel : IPanel {
 		_buttonContainer.Clear();
 		foreach(SpaceState spaceState in _ctx.GameState.Spaces_Unfiltered) {
 			SpaceLayout layout = WorldLayout.InsidePoints(spaceState.Space).SpaceLayout;
-			SpaceButton button = new SpaceButton( layout, MapWorldToClient );
+			SpaceButton button = new SpaceButton( layout, MapWorldToClientXY ); // Can't use _mapper.Map directly because it has not been initialized AND it might change.
 			_buttonContainer.Add( spaceState.Space, button );
 		}
 	}

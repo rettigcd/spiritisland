@@ -1,15 +1,13 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class PointMapper {
 
-	static public PointMapper FromWorldToViewport( RectangleF worldBounds, Rectangle viewportRect ) {
+	static public PointMapper FromWorldToViewport( Bounds worldBounds, Bounds viewportRect ) {
 		Matrix3D transform = CalcWorldToScreenMatrix( worldBounds, viewportRect );
 		return new PointMapper( transform );
 	}
 
-	static Matrix3D CalcWorldToScreenMatrix( RectangleF worldRect, Rectangle viewportRect ) {
+	static Matrix3D CalcWorldToScreenMatrix( Bounds worldRect, Bounds viewportRect ) {
 		// calculate scaling Assuming height limited
 		float scale = viewportRect.Height / worldRect.Height;
 
@@ -27,18 +25,17 @@ public class PointMapper {
 	/// <param name="rowVectorMatrix">Matrix must be built for transformations on RowVectors</param>
 	public PointMapper(Matrix3D rowVectorMatrix) { 
 		_matrix = rowVectorMatrix;
-		_scale = (new RowVector( 1, 0 ) * _matrix) - (new RowVector( 0, 0 ) * _matrix);
+		XY p10 = (new RowVector( 1, 0 ) * _matrix).ToXY();
+		XY p00 = (new RowVector( 0, 0 ) * _matrix).ToXY();
+		UnitLength = (p10 - p00).Length();
 	}
 
-	public PointF Map( PointF p ) {
+	public XY Map( XY p ) {
 		RowVector result = new RowVector( p.X, p.Y ) * _matrix;
-		return new PointF( result.X, result.Y );
+		return new XY( result.X, result.Y );
 	}
 
-	public float XScale => _scale.X;
-	public float YScale => _scale.Y;
-
-	readonly RowVector _scale;
+	public float UnitLength { get; private set; }
 	readonly Matrix3D _matrix;
 }
 

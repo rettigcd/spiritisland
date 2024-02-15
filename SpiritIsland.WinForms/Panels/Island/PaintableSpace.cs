@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -17,11 +16,11 @@ class PaintableSpace {
 
 	#endregion
 
-	public RectangleF Bounds => _layout.Bounds;
+	public RectangleF Bounds => _layout.Bounds.ToRectangleF();
 
 	public PointMapper Mapper { 
 		get => _mapper;
-		set { _mapper = value; _iconWidth = (int)(Mapper.XScale * .075f); }
+		set { _mapper = value; _iconWidth = (int)(Mapper.UnitLength * .075f); }
 	}
 
 	/// <summary>
@@ -43,7 +42,7 @@ class PaintableSpace {
 
 	public void Paint( Graphics graphics ) {
 		using Brush brush = ResourceImages.Singleton.UseSpaceBrush( _space );
-		PointF[] points = _layout.Corners.Select( Mapper.Map ).ToArray();
+		PointF[] points = _layout.Corners.Select( Mapper.Map ).Select(XY_Extensions.ToPointF).ToArray();
 
 		// Draw smoothy
 		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
@@ -51,7 +50,7 @@ class PaintableSpace {
 		graphics.DrawClosedCurve( perimeterPen, points, .25f, FillMode.Alternate );
 
 		// Draw Label
-		PointF nameLocation = Mapper.Map( _insidePoints.NameLocation );
+		PointF nameLocation = Mapper.Map( _insidePoints.NameLocation ).ToPointF();
 		graphics.DrawString( _space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, nameLocation );
 	}
 
@@ -79,13 +78,13 @@ class PaintableSpace {
 	}
 
 	public void PaintAbove_Debug( Graphics graphics ) {
-		int iconWidth = (int)(Mapper.XScale * .075f); // !!! make this 
+		int iconWidth = (int)(Mapper.UnitLength * .075f); // !!! make this 
 
 		var ghosts = ModCache.Ghosts( ResourceImages.Singleton );
 
 		foreach(var (token, point) in _insidePoints.Assignments()) {
 			using Image img = ghosts.GetImage( token.Img );
-			var clientPoint = Mapper.Map( new PointF( point.X, point.Y ) );
+			var clientPoint = Mapper.Map( point );
 			Rectangle rect = new Rectangle(
 				new Point(
 					(int)(clientPoint.X - iconWidth / 2),

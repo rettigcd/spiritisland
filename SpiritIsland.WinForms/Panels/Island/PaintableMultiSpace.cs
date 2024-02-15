@@ -22,7 +22,7 @@ class PaintableMultiSpace( MultiSpace ms, SpaceLayout layout ) : PaintableSpace(
 
 		using var brush = UseMultiSpaceBrush( multi );
 
-		var points = _insidePoints.SpaceLayout.Corners.Select( Mapper.Map ).ToArray();
+		var points = _insidePoints.SpaceLayout.Corners.Select( Mapper.Map ).Select(XY_Extensions.ToInts).ToArray();
 		graphics.FillClosedCurve( brush, points, FillMode.Alternate, .25f );
 		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
 	}

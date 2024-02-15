@@ -2,6 +2,11 @@
 
 public static class Rectangle_Extensions {
 
+	#region Rectangle <===> Bounds
+	// Rectangle <===> Bounds
+	static public Bounds ToBounds( this Rectangle rect ) => new Bounds(rect.X,rect.Y,rect.Width,rect.Height);
+	#endregion Rectangle <===> Bounds
+
 	#region Split Vertically
 
 	static public Rectangle[] SplitVerticallyIntoRows( this Rectangle rect, int rowMargin, int rows ) {
@@ -241,12 +246,10 @@ public static class Rectangle_Extensions {
 		return bounds.InflateBy( 0, -padding );
 	}
 
-
 	public static Point TL( this Rectangle rect ) => rect.Location;
 	public static Point BL( this Rectangle rect ) => new Point(rect.Left,rect.Bottom);
 	public static Point BR( this Rectangle rect ) => new Point(rect.Right,rect.Bottom);
 	public static Point TR( this Rectangle rect ) => new Point(rect.Right,rect.Top);
-
 
 	#endregion
 

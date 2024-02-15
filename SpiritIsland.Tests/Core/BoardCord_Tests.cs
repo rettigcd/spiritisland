@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Text;
-
-namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests;
 
 [Trait("Space","BoardCoordinates")]
 public class BoardCord_Tests {
@@ -26,7 +23,7 @@ public class BoardCord_Tests {
 		string.Join("",board.Corners.Select(s=>s.ToString())).ShouldBe( expectedCorners );
 	}
 
-	static PointF[] GetCornerPoints(BoardOrientation orientation )
+	static XY[] GetCornerPoints(BoardOrientation orientation )
 		=> BoardLayout.Get("B").ReMap( orientation.GetTransformMatrix() ).BoardCorners;
 
 	// Layout - when we align boards, the new boards move and have the correct corners.
@@ -35,7 +32,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 2, BoardOrientation.Home.SideCoord( 2 ) );
 		Assert_CornersShouldBe( orien, "[1,2][0,2][0,1][1,1]" );
 
-		PointF[] bCorners = GetCornerPoints(orien);
+		XY[] bCorners = GetCornerPoints(orien);
 		// Then
 		bCorners[3].ShouldBe( 1.5f, BoardLayout.boardHeight );
 		bCorners[2].ShouldBe( 0.5f, BoardLayout.boardHeight );
@@ -49,7 +46,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 2, BoardOrientation.Home.SideCoord( 1 ) );
 		Assert_CornersShouldBe( orien, "[2,-1][2,0][1,1][1,0]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 1, 0 );
 		bCorners[2].ShouldBe( 1.5f, BoardLayout.boardHeight );
@@ -62,7 +59,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 1, BoardOrientation.Home.SideCoord( 2 ) );
 		Assert_CornersShouldBe( orien, "[-1,2][0,1][1,1][0,2]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
 		bCorners[2].ShouldBe( 1.5f, BoardLayout.boardHeight );
@@ -75,7 +72,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 1, BoardOrientation.Home.SideCoord( 1 ) );
 		Assert_CornersShouldBe( orien, "[2,1][1,1][1,0][2,0]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 2, 0 );
 		bCorners[2].ShouldBe( 1, 0 );
@@ -88,7 +85,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 1, BoardOrientation.Home.SideCoord( 0 ) );
 		Assert_CornersShouldBe( orien, "[2,-1][1,0][0,0][1,-1]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 0.5f, -BoardLayout.boardHeight );
 		bCorners[2].ShouldBe( 0, 0 );
@@ -101,7 +98,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 0, BoardOrientation.Home.SideCoord( 1 ) );
 		Assert_CornersShouldBe( orien, "[1,1][1,0][2,-1][2,0]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 2, 0 );
 		bCorners[2].ShouldBe( 1.5f, -BoardLayout.boardHeight );
@@ -115,7 +112,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 0, BoardOrientation.Home.SideCoord( 2 ) );
 		Assert_CornersShouldBe( orien, "[0,1][1,1][1,2][0,2]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 1f, 2 * BoardLayout.boardHeight );
 		bCorners[2].ShouldBe( 2f, 2 * BoardLayout.boardHeight );
@@ -128,7 +125,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 2, BoardOrientation.Home.SideCoord( 0 ) );
 		Assert_CornersShouldBe( orien, "[0,-1][1,-1][1,0][0,0]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 0, 0 );
 		bCorners[2].ShouldBe( 1, 0 );
@@ -143,7 +140,7 @@ public class BoardCord_Tests {
 		var orien = BoardOrientation.ToMatchSide( 0, BoardOrientation.Home.SideCoord( 0 ) );
 		Assert_CornersShouldBe( orien, "[1,0][0,0][0,-1][1,-1]" );
 
-		PointF[] bCorners = GetCornerPoints( orien );
+		XY[] bCorners = GetCornerPoints( orien );
 		// Then
 		bCorners[3].ShouldBe( 0.5f, -BoardLayout.boardHeight );
 		bCorners[2].ShouldBe( -0.5f, -BoardLayout.boardHeight );

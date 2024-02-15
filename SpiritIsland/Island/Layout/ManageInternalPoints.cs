@@ -1,13 +1,11 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 // Tracks unique locations internal to a polygon
 public class ManageInternalPoints {
 
 	public readonly SpaceLayout SpaceLayout;
 
-	public PointF NameLocation { get; }
+	public XY NameLocation { get; }
 
 	#region constructor
 
@@ -53,12 +51,12 @@ public class ManageInternalPoints {
 
 	#endregion
 
-	public PointF GetPointFor( IToken token ) {
+	public XY GetPointFor( IToken token ) {
 
 		if(token is null)
 			return SpaceLayout.Center;
 
-		if(_dict.TryGetValue( token, out PointF storedPoint )) return storedPoint;
+		if(_dict.TryGetValue( token, out XY storedPoint )) return storedPoint;
 
 		// This is called when we are requesting location for a token that is not currently on this space.
 
@@ -105,7 +103,7 @@ public class ManageInternalPoints {
 		return this;
 	}
 
-	public IEnumerable<(IToken Key, PointF Value)> Assignments() 
+	public IEnumerable<(IToken Key, XY Value)> Assignments() 
 		=> _dict.Select( p => (p.Key, p.Value) );
 
 	#region private helper methods
@@ -190,7 +188,7 @@ public class ManageInternalPoints {
 
 	#endregion
 
-	class TokenPointArray( Dictionary<IToken, PointF> _dict, PointF[] _points ) {
+	class TokenPointArray( Dictionary<IToken, XY> _dict, XY[] _points ) {
 
 		public bool AssignLeftSlot( IToken visibleToken ) {
 			int? index = FindLeftSlot();
@@ -274,7 +272,7 @@ public class ManageInternalPoints {
 
 	#region private token location fields
 
-	readonly Dictionary<IToken, PointF> _dict;
+	readonly Dictionary<IToken, XY> _dict;
 	readonly TokenPointArray _border;
 	readonly TokenPointArray _randomInternal;
 

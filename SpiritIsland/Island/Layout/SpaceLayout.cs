@@ -1,18 +1,16 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Individual space layout based on a bounding BOARD-Rectangle of (0,0,1.5,.866)
 /// </summary>
 public class SpaceLayout {
 
-	public PointF[] Corners { get; }
-	public PointF Center { get; private set; }
-	public RectangleF Bounds { get; private set; }
+	public XY[] Corners { get; }
+	public XY Center { get; private set; }
+	public Bounds Bounds { get; private set; }
 
 	#region constructors
-	public SpaceLayout( params PointF[] corners) {
+	public SpaceLayout( params XY[] corners) {
 		Corners = corners;
 		Bounds = CalcBounds( corners );
 		Center = CalcCenterOfSpacePoints(Bounds);
@@ -27,13 +25,13 @@ public class SpaceLayout {
 	}
 
 	// sorted farthest from boarder to closest to boarder
-	public PointF[] GetInternalGridPoints( float stepSize ) {
-		Dictionary<PointF, float> distancesFromBoarder = [];
+	public XY[] GetInternalGridPoints( float stepSize ) {
+		Dictionary<XY, float> distancesFromBoarder = [];
 
 		for(float x = Bounds.Left; x <= Bounds.Right; x += stepSize)
 			for(float y = Bounds.Top; y <= Bounds.Bottom; y += stepSize)
 				if(Polygons.IsInside( Corners, x, y )) {
-					PointF p = new PointF( x, y );
+					XY p = new ( x, y );
 					distancesFromBoarder.Add( p, Polygons.DistanceFromPolygon(Corners,p) );
 				}
 		return distancesFromBoarder
@@ -42,7 +40,7 @@ public class SpaceLayout {
 			.ToArray();
 	}
 
-	public IEnumerable<PointF> GetInternalHexPoints( float xStepSize ) {
+	public IEnumerable<XY> GetInternalHexPoints( float xStepSize ) {
 
 		float yOffset = xStepSize / 2;
 		float yStepSize = xStepSize * 1.2f;
@@ -51,18 +49,18 @@ public class SpaceLayout {
 		for(float x = Bounds.Left; x <= Bounds.Right; x += xStepSize) {
 			for(float y = Bounds.Top - (offset ? yOffset : 0); y <= Bounds.Bottom; y += yStepSize)
 				if(Polygons.IsInside( Corners, x, y ))
-					yield return new PointF( x, y );
+					yield return new XY( x, y );
 			offset = !offset;
 		}
 	}
 
-	public float FindDistanceFromBorder( PointF point ) => Polygons.DistanceFromPolygon( Corners, point );
+	public float FindDistanceFromBorder( XY point ) => Polygons.DistanceFromPolygon( Corners, point );
 
 	#region private
-	static PointF CalcCenterOfSpacePoints(RectangleF rect ) 
-		=> new PointF( rect.X + rect.Width * .5f, rect.Y + rect.Height * .5f );
+	static XY CalcCenterOfSpacePoints(Bounds rect)
+		=> new XY( rect.X + rect.Width * .5f, rect.Y + rect.Height * .5f );
 
-	static RectangleF CalcBounds(PointF[] corners) {
+	static Bounds CalcBounds(XY[] corners) {
 		float maxX = -1000f, maxY = -1000f, minX = 1000f, minY = 1000f;
 		foreach(var p in corners) {
 			if(p.X < minX) minX = p.X;
@@ -70,8 +68,7 @@ public class SpaceLayout {
 			if(p.X > maxX) maxX = p.X;
 			if(p.Y > maxY) maxY = p.Y;
 		}
-		var bounds = new RectangleF( minX, minY, maxX - minX, maxY - minY );
-		return bounds;
+		return new Bounds( minX, minY, maxX - minX, maxY - minY );
 	}
 	#endregion
 }
