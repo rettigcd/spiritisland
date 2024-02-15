@@ -6,18 +6,9 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
-public class SpaceButton : IButton {
+public class SpaceButton( SpaceLayout layout, Func<XY, XY> mapWorldToClient ) : IButton {
 
 	public bool Enabled { private get; set; }
-
-	#region constructor
-
-	public SpaceButton( SpaceLayout layout, Func<XY, XY> mapWorldToClient ) {
-		_innerWorld = Polygons.InnerPoints( layout.Corners, .02f );
-		_worldToClient = mapWorldToClient;
-	}
-
-	#endregion
 
 	bool IButton.Contains( Point clientCoords ) 
 		// => Bounds.Contains( clientCoords );
@@ -29,7 +20,7 @@ public class SpaceButton : IButton {
 			// using Brush yellowBrush = new SolidBrush(Color.FromArgb(64,Color.Yellow));
 			// graphics.FillClosedCurve( yellowBrush, Inner, FillMode.Alternate, .25f );
 
-			using Pen yellowPen = new Pen(Color.FromArgb(128,Color.Yellow),20f);
+			using Pen yellowPen = new Pen(Color.FromArgb(128,Color.Yellow), INSET_PEN_WIDTH );
 			graphics.DrawClosedCurve( yellowPen, ClientPointF, .25f, FillMode.Alternate );
 
 			//using Pen highlightPen = new( Color.Aquamarine, 5 );
@@ -39,18 +30,25 @@ public class SpaceButton : IButton {
 
 	#region private readonly fields
 
-	PointF[] ClientPointF => ClientXY.Select( XY_Extensions.ToPointF ).ToArray(); // don't cache, this is used so infrenquently
+	PointF[] ClientPointF => Polygons.InnerPoints( ClientXY, OFFSET )
+		.Select( XY_Extensions.ToPointF )
+		.ToArray(); // don't cache, this is used so infrenquently
 
 	XY[] ClientXY => !CacheIsStale ? _clientXYCache 
-		: (_clientXYCache = _innerWorld.Select( _worldToClient ).ToArray());
+		: (_clientXYCache = _corners.Select( _worldToClient ).ToArray());
 
 	bool CacheIsStale => _clientXYCache == null
-		|| _worldToClient( _innerWorld[0] ) != _clientXYCache[0]
-		|| _worldToClient( _innerWorld[1] ) != _clientXYCache[1];
+		|| _worldToClient( _corners[0] ) != _clientXYCache[0]
+		|| _worldToClient( _corners[1] ) != _clientXYCache[1];
 
 	XY[] _clientXYCache;			// Client XY - dynamic, changes when mapper changes
-	readonly XY[] _innerWorld;      // World coordinates - Static, don't change
-	readonly Func<XY, XY> _worldToClient;
+	readonly XY[] _corners = layout.Corners;
+	readonly Func<XY, XY> _worldToClient = mapWorldToClient;
+
+	const float INSET_PEN_WIDTH = 30f;
+	
+	// this is negative because Screen's Y-flip caused the polygon to flip CCW <=> CW
+	const float OFFSET = -INSET_PEN_WIDTH / 2;
 
 	#endregion private readonly fields
 
