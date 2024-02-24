@@ -13,9 +13,9 @@ public class Shadows : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card3, Track.Card3, Track.Card4, Track.Card5 )
 		),
 		new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 1 ) ),
-			new GrowthOption( new PlacePresence( 3 ), new GainEnergy( 3 ) )
+			new GrowthGroup( new ReclaimAll(), new GainPowerCard() ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ) ),
+			new GrowthGroup( new PlacePresence( 3 ), new GainEnergy( 3 ) )
 		),
 		PowerCard.For(typeof(MantleOfDread)),
 		PowerCard.For(typeof(FavorsCalledDue)),

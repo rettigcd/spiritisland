@@ -6,7 +6,7 @@ class TestSpirit( PowerCard powerCard )
 			new TestPresenceTrack(Track.Energy5,Track.Energy9),
 			new TestPresenceTrack(Track.Card1,Track.Card2,Track.Card3)
 		)
-		, new GrowthTrack( new GrowthOption( new ReclaimAll() ) )
+		, new GrowthTrack( new GrowthGroup( new ReclaimAll() ) )
 		, powerCard
 	)
 {

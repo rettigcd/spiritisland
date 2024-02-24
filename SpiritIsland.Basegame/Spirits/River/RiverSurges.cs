@@ -15,16 +15,16 @@ public class RiverSurges : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5 )
 		),
 		new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard(),
 				new GainEnergy( 1 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 1 ),
 				new PlacePresence( 1 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainPowerCard(),
 				new PlacePresence( 2 )
 			)

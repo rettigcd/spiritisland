@@ -18,16 +18,16 @@ public class Thunderspeaker : Spirit {
 			new FollowingPresenceToken( spirit, Human.Dahan )
 		),
 		new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard(),
 				new GainPowerCard()
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 2, Filter.Dahan ),
 				new PlacePresence( 1, Filter.Dahan )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 1 ),
 				new GainEnergy( 4 )
 			)

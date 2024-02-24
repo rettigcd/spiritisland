@@ -13,9 +13,9 @@ public class VitalStrength : Spirit {
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
 		),
 		new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new PlacePresence( 2 ) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 0 ) ),
-			new GrowthOption( new GainEnergy( 2 ), new PlacePresence( 1 ) )
+			new GrowthGroup( new ReclaimAll(), new PlacePresence( 2 ) ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 0 ) ),
+			new GrowthGroup( new GainEnergy( 2 ), new PlacePresence( 1 ) )
 		),
 		PowerCard.For(typeof(GuardTheHealingLand)),
 		PowerCard.For(typeof(AYearOfPerfectStillness)),

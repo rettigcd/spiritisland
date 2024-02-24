@@ -18,20 +18,20 @@ public class Ocean : Spirit {
 		),
 		new GrowthTrack(
 			// Option 1 - reclaim, +1 power, gather 1 presense into EACH ocean, +2 energy
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard(),
 				new GatherPresenceIntoOcean(),
 				new GainEnergy( 2 )
 			),
 			// Option 2 - +1 presence range any ocean, +1 presense in any ociean, +1 energy
-			new GrowthOption(
+			new GrowthGroup(
 				new GainEnergy( 1 ),
 				new PlaceInOcean(),
 				new PlaceInOcean()
 			),
 			// Option 3 - gain power card, push 1 presense from each ocean,  add presense on coastal land range 1
-			new GrowthOption(
+			new GrowthGroup(
 				new PushPresenceFromOcean(),
 				new GainPowerCard(),
 				new PlacePresence( 1, Filter.Coastal )

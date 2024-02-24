@@ -13,23 +13,23 @@ public class GrowthPickGroups {
 
 	#region constructor
 	/// <summary> Allows user to select N of the Action Groups// </summary>
-	public GrowthPickGroups( int selectCount, params GrowthOption[] options ) {
+	public GrowthPickGroups( int selectCount, params GrowthGroup[] groups ) {
 		SelectCount = selectCount;
-		Options = options;
+		Groups = groups;
 	}
 	/// <summary> Allows user to select 1 of the Action Groups// </summary>
-	public GrowthPickGroups( params GrowthOption[] options ) {
+	public GrowthPickGroups( params GrowthGroup[] groups ) {
 		SelectCount = 1;
-		Options = options;
+		Groups = groups;
 	}
 	#endregion
 
 	public int SelectCount { get; }
 
-	public GrowthOption[] Options { get; private set; }
+	public GrowthGroup[] Groups { get; private set; }
 
-	public void Add( GrowthOption option ) { // hook for Starlight
-		Options = [..Options, option];
+	public void Add( GrowthGroup group ) { // hook for Starlight
+		Groups = [..Groups, group];
 	}
 
 }

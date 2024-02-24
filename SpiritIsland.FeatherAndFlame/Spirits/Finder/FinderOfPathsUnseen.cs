@@ -15,20 +15,20 @@ public class FinderOfPathsUnseen : Spirit {
 	public FinderOfPathsUnseen() : base(
 		spirit => new FinderPresence( spirit )
 		, new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard(),
 				new IgnoreRange()
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 1 ),
 				new PlayExtraCardThisTurn( 1 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainPowerCard(),
 				new PlacePresence( 2 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence(),
 				new GainEnergy( 2 )
 			)

@@ -12,18 +12,18 @@ public class LightningsSwiftStrike : Spirit {
 			new PresenceTrack( Track.Card2, Track.Card3, Track.Card4, Track.Card5, Track.Card6 )
 		),
 		new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard(),
 				new GainEnergy( 1 )
 			),
 			// +1 presence range 2, +1 presence range 0( 
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 2 ),
 				new PlacePresence( 0 )
 			),
 			// +1 presense range 1, +3 energy
-			new GrowthOption( new GainEnergy( 3 ), new PlacePresence( 1 ) )
+			new GrowthGroup( new GainEnergy( 3 ), new PlacePresence( 1 ) )
 		),
 		PowerCard.For(typeof(HarbingersOfTheLightning)),
 		PowerCard.For(typeof(LightningsBoon)),

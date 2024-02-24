@@ -15,13 +15,13 @@ public class Bringer : Spirit {
 		)
 		, new GrowthTrack(
 			// reclaim, +1 power card
-			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
+			new GrowthGroup( new ReclaimAll(), new GainPowerCard() ),
 			// reclaim 1, add presence range 0
-			new GrowthOption( new ReclaimN(), new PlacePresence( 0 ) ),
+			new GrowthGroup( new ReclaimN(), new PlacePresence( 0 ) ),
 			// +1 power card, +1 pressence range 1
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 1 ) ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ) ),
 			// add presense range Dahan or Invadors, +2 energy
-			new GrowthOption( new GainEnergy( 2 ), new PlacePresence( 4, Filter.Dahan, Filter.Invaders ) )
+			new GrowthGroup( new GainEnergy( 2 ), new PlacePresence( 4, Filter.Dahan, Filter.Invaders ) )
 		)
 		, PowerCard.For(typeof(CallOnMidnightsDream))
 		,PowerCard.For(typeof(DreadApparitions))

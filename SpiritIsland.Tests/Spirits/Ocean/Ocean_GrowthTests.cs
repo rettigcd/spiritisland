@@ -19,7 +19,7 @@ public class Ocean_GrowthTests : BoardAGame {
 		Given_IslandIsABC();
 		_spirit.Given_IsOnMany( starting );
 
-		foreach(IHelpGrow action in _spirit.GrowthTrack.Options[0].UserRuns)
+		foreach(IHelpGrow action in _spirit.GrowthTrack.Groups[0].UserRuns)
 			_spirit.AddActionFactory( action );
 
 		// since options are move source, key on that

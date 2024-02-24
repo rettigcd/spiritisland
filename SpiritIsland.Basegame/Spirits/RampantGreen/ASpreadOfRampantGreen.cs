@@ -19,20 +19,20 @@ public class ASpreadOfRampantGreen : Spirit {
 	public ASpreadOfRampantGreen():base(
 		spirit => new RampantGreenPresence( spirit ),
 		new GrowthTrack(
-			new GrowthOption( new PlacePresence( 2, Filter.Jungle, Filter.Wetland ) )
+			new GrowthGroup( new PlacePresence( 2, Filter.Jungle, Filter.Wetland ) )
 		).Add( new GrowthPickGroups( 1,
 			// reclaim, +1 power card
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard()
 			),
 			// +1 presense range 1, play +1 extra card this turn
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 1 ),
 				new PlayExtraCardThisTurn( 1 )
 			),
 			// +1 power card, +3 energy
-			new GrowthOption(
+			new GrowthGroup(
 				new GainEnergy( 3 ),
 				new GainPowerCard()
 			)

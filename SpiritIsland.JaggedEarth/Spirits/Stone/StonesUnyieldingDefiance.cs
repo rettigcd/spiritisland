@@ -48,16 +48,16 @@ public StonesUnyieldingDefiance() : base(
 			new PresenceTrack( Track.Card1, Track.MkCard( Element.Earth ), Track.MkCard( Element.Earth ), EarthReclaim, EarthAndAny, Card2Earth )
 		)
 		, new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new PlacePresence( 3, Filter.Mountain, Filter.Presence ),
 				new GainAllElements( Element.Earth, Element.Earth )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 2 ),
 				new GainEnergy( 3 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainPowerCard(),
 				new PlacePresence( 1 )
 			)

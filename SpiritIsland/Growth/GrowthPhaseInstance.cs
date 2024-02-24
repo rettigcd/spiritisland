@@ -1,22 +1,22 @@
 ﻿namespace SpiritIsland;
 
 public interface IGrowthPhaseInstance {
-	GrowthOption[] RemainingOptions( int energy );
-	void MarkAsUsed( GrowthOption option );
+	GrowthGroup[] RemainingOptions( int energy );
+	void MarkAsUsed( GrowthGroup option );
 }
 
 class GrowthPhaseInstance( IEnumerable<GrowthPickGroups> _gogs ) : IGrowthPhaseInstance {
 
 
 	/// <summary> Filter Options that require more energy than we have. </summary>
-	public GrowthOption[] RemainingOptions(int energy)
+	public GrowthGroup[] RemainingOptions(int energy)
 		=> remaining
 			.Where( g=>g.HasAdditionalCounts )
 			.SelectMany( g=>g.AvailableOptions )
 			.Where( o => 0 <= o.GainEnergy + energy )
 			.ToArray();
 
-	public void MarkAsUsed( GrowthOption option ) {
+	public void MarkAsUsed( GrowthGroup option ) {
 		var grp = remaining.First(grp=>grp.HasOption(option));
 		grp.MarkUsed( option );
 	}
@@ -31,15 +31,15 @@ class GrowthPhaseInstance( IEnumerable<GrowthPickGroups> _gogs ) : IGrowthPhaseI
 	#endregion
 
 	class GOGRemaining( GrowthPickGroups _grp ) {
-		public bool HasOption( GrowthOption option ) => AvailableOptions.Contains(option);
+		public bool HasOption( GrowthGroup group ) => AvailableOptions.Contains(group);
 
-		public IEnumerable<GrowthOption> AvailableOptions => _grp.Options.Except( used );
+		public IEnumerable<GrowthGroup> AvailableOptions => _grp.Groups.Except( _used );
 
-		public bool HasAdditionalCounts => _grp.SelectCount > used.Count;
+		public bool HasAdditionalCounts => _grp.SelectCount > _used.Count;
 
-		public void MarkUsed( GrowthOption option ) => used.Add( option );
+		public void MarkUsed( GrowthGroup group ) => _used.Add( group );
 
-		readonly List<GrowthOption> used = [];
+		readonly List<GrowthGroup> _used = [];
 	}
 
 }

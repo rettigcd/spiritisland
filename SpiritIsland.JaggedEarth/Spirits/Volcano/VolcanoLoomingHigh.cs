@@ -24,9 +24,9 @@ public class VolcanoLoomingHigh : Spirit {
 			new PresenceTrack(Track.Card1,Track.MkCard(Element.Fire),Track.MkCard(Element.Earth),Track.Card2, Track.MkCard( Element.Air ), Track.Card3, Track.MkCard( Element.Fire ), Track.Card4)
 		)
 		,new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 3 ) ),
-			new GrowthOption( new PlacePresence( 0, Filter.Mountain ), new PlacePresence( 0, Filter.Mountain ) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 4, Filter.Mountain ), new PlayExtraCardThisTurn( 1 ), new GainEnergy( 2 ) )
+			new GrowthGroup( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 3 ) ),
+			new GrowthGroup( new PlacePresence( 0, Filter.Mountain ), new PlacePresence( 0, Filter.Mountain ) ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 4, Filter.Mountain ), new PlayExtraCardThisTurn( 1 ), new GainEnergy( 2 ) )
 		)
 		, PowerCard.For(typeof(ExaltationOfMoltenStone))
 		,PowerCard.For(typeof(LavaFlows))

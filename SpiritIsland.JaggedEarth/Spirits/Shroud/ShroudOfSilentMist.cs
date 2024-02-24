@@ -31,9 +31,9 @@ public class ShroudOfSilentMist : Spirit {
 			new PresenceTrack(1, Track.Card1,Track.Card2,MovePresence,Track.MoonEnergy,Track.Card3,Track.Card4,Track.CardReclaim1,Track.Card5)
 		)
 		,new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
-			new GrowthOption( new PlacePresence( 0 ), new PlacePresence( 0 ) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 3, Filter.Mountain, Filter.Wetland ) )
+			new GrowthGroup( new ReclaimAll(), new GainPowerCard() ),
+			new GrowthGroup( new PlacePresence( 0 ), new PlacePresence( 0 ) ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3, Filter.Mountain, Filter.Wetland ) )
 		)
 		, PowerCard.For(typeof(FlowingAndSilentFormsDartBy))
 		,PowerCard.For(typeof(UnnervingPall))

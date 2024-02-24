@@ -4,12 +4,12 @@ public class GrowthTrack {
 
 	#region constructors
 
-	public GrowthTrack( params GrowthOption[] options ) {
-		groups.Add( new GrowthPickGroups(options));
+	public GrowthTrack( params GrowthGroup[] groups ) {
+		this.groups.Add( new GrowthPickGroups( groups ) );
 	}
 
-	public GrowthTrack( int pick, params GrowthOption[] options ) {
-		groups.Add( new GrowthPickGroups(pick,options));
+	public GrowthTrack( int pick, params GrowthGroup[] groups ) {
+		this.groups.Add( new GrowthPickGroups( pick, groups ) );
 	}
 
 	public GrowthTrack Add( GrowthPickGroups grp ) {
@@ -21,7 +21,7 @@ public class GrowthTrack {
 
 	public ReadOnlyCollection<GrowthPickGroups> PickGroups => groups.AsReadOnly();
 
-	public GrowthOption[] Options => groups.SelectMany(g=>g.Options).ToArray();
+	public GrowthGroup[] Groups => groups.SelectMany(g=>g.Groups).ToArray();
 
 	public virtual IGrowthPhaseInstance GetInstance() => new GrowthPhaseInstance( groups );
 

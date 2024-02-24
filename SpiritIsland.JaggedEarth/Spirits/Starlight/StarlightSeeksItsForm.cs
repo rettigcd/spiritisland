@@ -41,8 +41,8 @@ public class StarlightSeeksItsForm : Spirit {
 		Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption1 },
 		OnRevealAsync = async (track,spirit) => {
 			await new PickNewGrowthOption(
-				new GrowthOption( new ReclaimHalf() ),
-				new GrowthOption( new GainPowerCard(), new MovePresence( 1 ) )
+				new GrowthGroup( new ReclaimHalf() ),
+				new GrowthGroup( new GainPowerCard(), new MovePresence( 1 ) )
 			).ActivateAsync( spirit );
 		}
 	};
@@ -50,8 +50,8 @@ public class StarlightSeeksItsForm : Spirit {
 		Icon = new IconDescriptor { BackgroundImg = Img.Starlight_GrowthOption2 },
 		OnRevealAsync = async (track,spirit) => {
 			await new PickNewGrowthOption(
-				new GrowthOption( new GainEnergy( 3 ) ),
-				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MovePresence( 2 ) )
+				new GrowthGroup( new GainEnergy( 3 ) ),
+				new GrowthGroup( new PlayExtraCardThisTurn( 1 ), new MovePresence( 2 ) )
 			).ActivateAsync( spirit );
 		}
 	};
@@ -65,8 +65,8 @@ public class StarlightSeeksItsForm : Spirit {
 			spirit.Energy++;
 			await AssignNewElementToTrack( spirit, track );
 			await new PickNewGrowthOption(
-				new GrowthOption( new ReclaimAll() ),
-				new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) )
+				new GrowthGroup( new ReclaimAll() ),
+				new GrowthGroup( new GainPowerCard(), new GainEnergy( 1 ) )
 			).ActivateAsync( spirit );
 		}
 	};
@@ -78,8 +78,8 @@ public class StarlightSeeksItsForm : Spirit {
 		OnRevealAsync = async (track,spirit) => {
 			spirit.Energy++;
 			await new PickNewGrowthOption(
-				new GrowthOption( new ApplyDamage() ),
-				new GrowthOption( new PlayExtraCardThisTurn( 1 ), new MakePowerFast() )
+				new GrowthGroup( new ApplyDamage() ),
+				new GrowthGroup( new PlayExtraCardThisTurn( 1 ), new MakePowerFast() )
 			).ActivateAsync( spirit );
 		}
 	};
@@ -117,10 +117,10 @@ public class StarlightSeeksItsForm : Spirit {
 			)
 		)
 		,new GrowthTrack( 3,
-			new GrowthOption( new ReclaimN() ),
-			new GrowthOption( new PlacePresence( 0 ) ),
-			new GrowthOption( new GainEnergy( 1 ) ),
-			new GrowthOption( new MovePresence( 3 ) )
+			new GrowthGroup( new ReclaimN() ),
+			new GrowthGroup( new PlacePresence( 0 ) ),
+			new GrowthGroup( new GainEnergy( 1 ) ),
+			new GrowthGroup( new MovePresence( 3 ) )
 		)
 		,PowerCard.For(typeof(BoonOfReimagining))
 		,PowerCard.For(typeof(GatherTheScatteredLightOfStars))

@@ -28,15 +28,15 @@ public class HearthVigil : Spirit {
 			new HearthToken( spirit )
 		)
 		, new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new PlacePresence( 0 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainPowerCard(),
 				new PlacePresence( 3, Filter.Dahan )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 2 ),
 				new GainEnergy( 3 )
 			)

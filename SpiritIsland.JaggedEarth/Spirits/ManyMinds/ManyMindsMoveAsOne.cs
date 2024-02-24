@@ -32,9 +32,9 @@ public partial class ManyMindsMoveAsOne : Spirit {
 				new ManyMindsPresenceToken( spirit )
 			)
 			, new GrowthTrack(
-				new GrowthOption( new ReclaimAll(), new GainPowerCard() ),
-				new GrowthOption( new PlacePresence( 1 ), new PlacePresence( 0 ) ),
-				new GrowthOption( new PlacePresenceAndBeast(), new GainEnergy( 1 ), new Gather1Token( 2, Token.Beast ) )
+				new GrowthGroup( new ReclaimAll(), new GainPowerCard() ),
+				new GrowthGroup( new PlacePresence( 1 ), new PlacePresence( 0 ) ),
+				new GrowthGroup( new PlacePresenceAndBeast(), new GainEnergy( 1 ), new Gather1Token( 2, Token.Beast ) )
 			)
 			, PowerCard.For(typeof(ADreadfulTideOfScurryingFlesh))
 			, PowerCard.For(typeof(BoonOfSwarmingBedevilment))

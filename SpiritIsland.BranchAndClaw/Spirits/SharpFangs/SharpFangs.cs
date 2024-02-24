@@ -16,10 +16,10 @@ public class SharpFangs : Spirit {
 			new FollowingPresenceToken( spirit, Token.Beast )
 		),
 		new GrowthTrack( 2,
-			new GrowthOption( new ReclaimAll(), new GainEnergy( -1 ), new GainPowerCard() ) { GainEnergy = -1 },
-			new GrowthOption( new PlacePresence( 3, Filter.Beast, Filter.Jungle ) ),
-			new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
-			new GrowthOption( new GainEnergy( 3 ) ) { GainEnergy = 3 }
+			new GrowthGroup( new ReclaimAll(), new GainEnergy( -1 ), new GainPowerCard() ) { GainEnergy = -1 },
+			new GrowthGroup( new PlacePresence( 3, Filter.Beast, Filter.Jungle ) ),
+			new GrowthGroup( new GainPowerCard(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
+			new GrowthGroup( new GainEnergy( 3 ) ) { GainEnergy = 3 }
 		),
 		PowerCard.For(typeof(PreyOnTheBuilders)),
 		PowerCard.For(typeof(TeethGleamFromDarkness)),

@@ -11,9 +11,9 @@ public class VengeanceAsABurningPlague : Spirit {
 			new LingeringPestilencePresenceToken( spirit )
 		)
 		, new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 1 ) ),
-			new GrowthOption( new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ), new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ) ),
-			new GrowthOption( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy( 1 ) )
+			new GrowthGroup( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 1 ) ),
+			new GrowthGroup( new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ), new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ) ),
+			new GrowthGroup( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy( 1 ) )
 		)
 		, PowerCard.For(typeof(FetidBreathSpreadsInfection))
 		,PowerCard.For(typeof(FieryVengeance))

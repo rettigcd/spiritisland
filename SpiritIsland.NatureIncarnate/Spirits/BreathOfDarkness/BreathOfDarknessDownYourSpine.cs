@@ -33,9 +33,9 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 			new Incarna(spirit,"BoDDyS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
 		)
 		, new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape( int.MaxValue ) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new PiecesEscape( 2 ) ),
-			new GrowthOption( new PlacePresence( 1 ), new AddOrMoveIncarnaToPresence(), new PiecesEscape( 1 ), new GainEnergyEqualToCardPlays() )
+			new GrowthGroup( new ReclaimAll(), new GainPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape( int.MaxValue ) ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3 ), new PiecesEscape( 2 ) ),
+			new GrowthGroup( new PlacePresence( 1 ), new AddOrMoveIncarnaToPresence(), new PiecesEscape( 1 ), new GainEnergyEqualToCardPlays() )
 		)
 		, PowerCard.For(typeof(EmergeFromTheDreadNightWind))
 		, PowerCard.For(typeof(ReachFromTheInfiniteDarkness))

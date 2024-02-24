@@ -17,10 +17,10 @@ public class Keeper : Spirit {
 			new KeeperToken( spirit )
 		),
 		new GrowthTrack( 2,
-			new GrowthOption( new ReclaimAll(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
-			new GrowthOption( new GainPowerCard() ),
-			new GrowthOption( new GainEnergy( 1 ), new PlacePresence( 3, Filter.Presence, Filter.Wilds ) ) { GainEnergy = 1 },
-			new GrowthOption( new GainEnergy( -3 ), new GainPowerCard(), new PlacePresence( 3, Filter.NoBlight ) ) { GainEnergy = -3 }
+			new GrowthGroup( new ReclaimAll(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
+			new GrowthGroup( new GainPowerCard() ),
+			new GrowthGroup( new GainEnergy( 1 ), new PlacePresence( 3, Filter.Presence, Filter.Wilds ) ) { GainEnergy = 1 },
+			new GrowthGroup( new GainEnergy( -3 ), new GainPowerCard(), new PlacePresence( 3, Filter.NoBlight ) ) { GainEnergy = -3 }
 		),
 		PowerCard.For(typeof(BoonOfGrowingPower)),
 		PowerCard.For(typeof(RegrowFromRoots)),

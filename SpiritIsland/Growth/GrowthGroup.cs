@@ -3,7 +3,7 @@
 /// <summary>
 /// Indivisible group of actions, all of which must be resolved.
 /// </summary>
-public class GrowthOption( params IActOn<Spirit>[] actions ) 
+public class GrowthGroup( params IActOn<Spirit>[] actions ) 
 	: IOption
 { // This is an IOption so Startlight can select which option to add.
 

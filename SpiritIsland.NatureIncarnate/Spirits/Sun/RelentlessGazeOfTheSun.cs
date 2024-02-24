@@ -13,16 +13,16 @@ public class RelentlessGazeOfTheSun : Spirit {
 	public RelentlessGazeOfTheSun():base( 
 		spirit => new SunPresence(spirit)
 		, new GrowthTrack(
-			new GrowthOption( new PlacePresence( 2 ) )
+			new GrowthGroup( new PlacePresence( 2 ) )
 		).Add( new GrowthPickGroups( 1,
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new AddDestroyedPresence( 1 ).SetNumToPlace( 3, Present.Done )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainPowerCard()
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainEnergyAnAdditionalTime(),
 				new MovePresenceTogether()
 			)

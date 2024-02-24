@@ -18,16 +18,16 @@ public class HeartOfTheWildfire : Spirit {
 			new WildfireToken( spirit )
 		),
 		new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard(),
 				new GainEnergy( 1 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainPowerCard(),
 				new PlacePresence( 3 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 1 ),
 				new GainEnergy( 2 ),
 				new EnergyForFire()

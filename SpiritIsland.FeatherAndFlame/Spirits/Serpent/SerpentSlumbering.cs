@@ -5,10 +5,10 @@ public class SerpentSlumbering : Spirit {
 	public SerpentSlumbering() :base (
 		spirit => new SerpentPresence( spirit )
 		, new GrowthTrack( 2,
-			new GrowthOption( new ReclaimAll(), new MovePresence( 1 ) ),
-			new GrowthOption( new GainPowerCard(), new GainEnergy( 1 ) ),
-			new GrowthOption( new GainEnergy( 4 ) ),
-			new GrowthOption( new PlacePresence( 3, Filter.NoBlight ) )
+			new GrowthGroup( new ReclaimAll(), new MovePresence( 1 ) ),
+			new GrowthGroup( new GainPowerCard(), new GainEnergy( 1 ) ),
+			new GrowthGroup( new GainEnergy( 4 ) ),
+			new GrowthGroup( new PlacePresence( 3, Filter.NoBlight ) )
 		)
 		, PowerCard.For(typeof(ElementalAegis))
 		,PowerCard.For(typeof(AbsorbEssence))

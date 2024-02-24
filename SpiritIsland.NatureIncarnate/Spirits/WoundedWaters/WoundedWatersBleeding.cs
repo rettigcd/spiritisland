@@ -21,8 +21,8 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	public WoundedWatersBleeding() : base(
 		spirit => new WoundedPresence(spirit)
 		,new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 1 ) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 2 ) )
+			new GrowthGroup( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 1 ) ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 2 ) )
 		)
 		, PowerCard.For(typeof(BoonOfCorruptedBlood))    // fast
 		, PowerCard.For(typeof(DrawToTheWatersEdge))     // fast
@@ -96,13 +96,13 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		if(card == null) return;
 
 		card.Claim(this);
-		if(GrowthTrack.Options.Length == 2) {
-			var thirdGrowth = new GrowthOption(
+		if(GrowthTrack.Groups.Length == 2) {
+			var thirdGrowth = new GrowthGroup(
 				new PlacePresence(3),
 				new GainEnergy(3),
 				new AddDestroyedPresence( 1 )
 			);
-			GrowthTrack = new( [.. GrowthTrack.Options, thirdGrowth] );
+			GrowthTrack = new( [.. GrowthTrack.Groups, thirdGrowth] );
 			ActionScope.Current.Log(new Log.LayoutChanged($"Third growth added to {Name}"));
 		}
 

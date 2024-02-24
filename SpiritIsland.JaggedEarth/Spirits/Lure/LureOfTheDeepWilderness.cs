@@ -11,12 +11,12 @@ public class LureOfTheDeepWilderness : Spirit {
 	public LureOfTheDeepWilderness():base( 
 		x => new LurePresence(x)
 		, new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new GainEnergy( 1 ) ),
-			new GrowthOption( new PlacePresence( 4, Filter.Inland ) )
+			new GrowthGroup( new ReclaimAll(), new GainEnergy( 1 ) ),
+			new GrowthGroup( new PlacePresence( 4, Filter.Inland ) )
 		).Add(
 			new GrowthPickGroups(
-				new GrowthOption( new Gain1Element( Element.Moon, Element.Air, Element.Plant ), new GainEnergy( 2 ) ),
-				new GrowthOption( new GainPowerCard() )
+				new GrowthGroup( new Gain1Element( Element.Moon, Element.Air, Element.Plant ), new GainEnergy( 2 ) ),
+				new GrowthGroup( new GainPowerCard() )
 			)
 		)
 		, PowerCard.For(typeof(GiftOfTheUntamedWild))

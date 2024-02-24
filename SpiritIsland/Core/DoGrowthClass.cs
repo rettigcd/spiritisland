@@ -11,7 +11,7 @@ public abstract partial class Spirit {
 		readonly Spirit _spirit;
 		readonly IGrowthPhaseInstance _inst;
 
-		GrowthOption[] _growthOptions;
+		GrowthGroup[] _growthGroups;
 
 		// When starting a new growth option, pulls actions from all the actions in the remaining groups
 		// When continuing a growth option, pulls from actions stored in spirit's AvailableOptions
@@ -49,7 +49,7 @@ public abstract partial class Spirit {
 
 		async Task InitSelectedGrowthOption( IActionFactory selectedAction ) {
 			// Find Growth Option
-			GrowthOption option = _growthOptions.SingleOrDefault( o => o.GrowthActions.Contains( selectedAction ) );
+			GrowthGroup option = _growthGroups.SingleOrDefault( o => o.GrowthActions.Contains( selectedAction ) );
 			if(option == null) return; // not one the Growth Actions, but came from somewhere else - may Behemoth Rise
 
 			_inst.MarkAsUsed( option );
@@ -68,8 +68,8 @@ public abstract partial class Spirit {
 		}
 
 		void AllowUserToSelectNewGrowthOptions() {
-			_growthOptions = _inst.RemainingOptions( _spirit.Energy );
-			_availableNewGrowthOptions = _growthOptions.SelectMany( opt => opt.GrowthActions ).ToArray();
+			_growthGroups = _inst.RemainingOptions( _spirit.Energy );
+			_availableNewGrowthOptions = _growthGroups.SelectMany( opt => opt.GrowthActions ).ToArray();
 
 			_shouldInitNewGrowthOption = true;
 		}

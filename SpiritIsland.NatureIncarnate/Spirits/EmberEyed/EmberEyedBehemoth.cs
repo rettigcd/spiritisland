@@ -24,21 +24,21 @@ public class EmberEyedBehemoth : Spirit {
 			new Incarna(spirit, "EEB", Img.EEB_Incarna, Img.EEB_Incarna_Empowered)
 		)
 		, new GrowthTrack(
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAll(),
 				new GainPowerCard()
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new PlacePresence( 3, Filter.Jungle, Filter.Presence ),
 				new PlacePresence( 0 )
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new GainPowerCard(),
 				new PlacePresence( 1 ),
 				new GainEnergy( 3 ),
 				new DiscardPowerCardWithFireFromHand()
 			),
-			new GrowthOption(
+			new GrowthGroup(
 				new ReclaimAllWithFire(),
 				new EmpowerIncarna(),
 				new MoveOnlyIncarna( 1 )
@@ -69,8 +69,8 @@ public class EmberEyedBehemoth : Spirit {
 		await base.DoGrowth( gameState );
 
 		// Remove 4th growth after it has been used
-		if(GrowthTrack.Options.Length == 4 && Incarna.Empowered) {
-			GrowthTrack = new( GrowthTrack.Options.Take( 3 ).ToArray() );
+		if(GrowthTrack.Groups.Length == 4 && Incarna.Empowered) {
+			GrowthTrack = new( GrowthTrack.Groups.Take( 3 ).ToArray() );
 			ActionScope.Current.Log( new Log.LayoutChanged( $"Fourth growth option removed from {Name}." ) );
 		}
 
@@ -131,10 +131,10 @@ public class EmberEyedBehemoth : Spirit {
 	#endregion
 
 	protected override object CustomMementoValue { 
-		get => GrowthTrack.Options;
+		get => GrowthTrack.Groups;
 		set {
-			var options = (GrowthOption[])value;
-			if(options.Length != GrowthTrack.Options.Length) {
+			var options = (GrowthGroup[])value;
+			if(options.Length != GrowthTrack.Groups.Length) {
 				GrowthTrack = new( options );
 				ActionScope.Current.Log( new Log.LayoutChanged( $"Rewind >> Restoring growth options for {Name}." ) );
 			}

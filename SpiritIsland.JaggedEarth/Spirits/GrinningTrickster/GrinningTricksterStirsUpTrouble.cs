@@ -22,10 +22,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 				new PresenceTrack(Track.Card2,Track.Push1Dahan,Track.Card3,Track.Card3,Track.Card4,Track.AirEnergy,Track.Card5)
 			),
 				new GrowthTrack( 2,
-				new GrowthOption( new GainEnergy( -1 ), new ReclaimAll(), new MovePresence( 1 ) ) { GainEnergy = -1 },
-				new GrowthOption( new PlacePresence( 2 ) ),
-				new GrowthOption( new GainPowerCard() ),
-				new GrowthOption( new GainEnergyEqualToCardPlays() )
+				new GrowthGroup( new GainEnergy( -1 ), new ReclaimAll(), new MovePresence( 1 ) ) { GainEnergy = -1 },
+				new GrowthGroup( new PlacePresence( 2 ) ),
+				new GrowthGroup( new GainPowerCard() ),
+				new GrowthGroup( new GainEnergyEqualToCardPlays() )
 			)
 			, PowerCard.For(typeof(ImpersonateAuthority))
 			,PowerCard.For(typeof(InciteTheMob))

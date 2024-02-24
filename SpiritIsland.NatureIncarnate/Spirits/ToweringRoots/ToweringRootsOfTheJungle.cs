@@ -11,9 +11,9 @@ public class ToweringRootsOfTheJungle : Spirit {
 			new ToweringRootsIncarna( spirit )
 		)
 		, new GrowthTrack(
-			new GrowthOption( new ReclaimAll(), new PlacePresence( 0 ) ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 1 ), new AddVitalityToIncarna() ),
-			new GrowthOption( new GainPowerCard(), new PlacePresence( 3 ), new ReplacePresenceWithIncarna(), new GainEnergy( 1 ) )
+			new GrowthGroup( new ReclaimAll(), new PlacePresence( 0 ) ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ), new AddVitalityToIncarna() ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3 ), new ReplacePresenceWithIncarna(), new GainEnergy( 1 ) )
 		)
 		, PowerCard.For(typeof(EntwineTheFatesOfAll))
 		, PowerCard.For(typeof(RadiantAndHallowedGrove))

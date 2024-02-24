@@ -81,7 +81,7 @@ public static class SpiritExtensions {
 	internal static Task When_Growing( this Spirit spirit, int option, Action<VirtualUser> userActions ) {
 		GameState gs = GameState.Current;
 		gs.Phase = Phase.Growth;
-		return Testing_GrowAndResolve( spirit, spirit.GrowthTrack.Options[option], gs )
+		return Testing_GrowAndResolve( spirit, spirit.GrowthTrack.Groups[option], gs )
 			.AwaitUser( userActions )
 			.ShouldComplete( $"Growth option {option}" );
 	}
@@ -200,7 +200,7 @@ public static class SpiritExtensions {
 	// UNLESS it is a method group, then we need to supply both versions OR explicitly Cast it to its delegat
 	// internal static Func<T,Task> MakeAsync<T>(this Action<T> method) => (T t) => { method(t); return Task.CompletedTask; };
 
-	static public async Task Testing_GrowAndResolve( Spirit spirit, GrowthOption option, GameState gameState ) { // public for Testing
+	static public async Task Testing_GrowAndResolve( Spirit spirit, GrowthGroup option, GameState gameState ) { // public for Testing
 
 		await using var action = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Growth, spirit );
 
