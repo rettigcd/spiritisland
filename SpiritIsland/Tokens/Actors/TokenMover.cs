@@ -158,9 +158,9 @@ static public class Move_Extension {
 		return removed;
 	}
 
-	static public Task<ITokenRemovedArgs> RemoveAsync( this TokenOn tokenOn, int count=1, RemoveReason reason = RemoveReason.Removed )
-		=> tokenOn.Source.RemoveAsync(tokenOn.Token,count,reason);
+	static public Task<ITokenRemovedArgs> RemoveAsync( this TokenLocation tokenOn, int count=1, RemoveReason reason = RemoveReason.Removed )
+		=> tokenOn.Location.RemoveAsync(tokenOn.Token,count,reason);
 		
-	static public Task<TokenMovedArgs> MoveToAsync( this TokenOn tokenOn, ILocation destination, int count=1 )
-		=> tokenOn.Token.MoveAsync(tokenOn.Source,destination,count);
+	static public Task<TokenMovedArgs> MoveToAsync( this TokenLocation tokenOn, ILocation destination, int count=1 )
+		=> tokenOn.Token.MoveAsync(tokenOn.Location,destination,count);
 }

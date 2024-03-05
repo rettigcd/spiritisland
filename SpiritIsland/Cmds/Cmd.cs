@@ -228,7 +228,7 @@ public static partial class Cmd {
 	static public SpiritAction PlacePresenceOn( params SpaceState[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
 		async self => {
-			TokenOn from = await self.SelectSourcePresence();
+			TokenLocation from = await self.SelectSourcePresence();
 			Space to = await self.SelectAsync( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, from.Token ) );
 			await from.MoveToAsync(to);
 		} );

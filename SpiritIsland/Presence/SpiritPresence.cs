@@ -78,7 +78,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 		}
 	}
 
-	virtual public IEnumerable<TokenOn> RevealOptions() 
+	virtual public IEnumerable<TokenLocation> RevealOptions() 
 		=> Energy.RevealOptions
 			.Union( CardPlays.RevealOptions )
 			.Select(t=>new TrackPresence(t,Token));

@@ -6,7 +6,7 @@
 /// <remarks>
 /// Matches SpaceToken to make selecting presence generic/uniform.
 /// </remarks>
-public class TrackPresence( Track track, SpiritPresenceToken token ) : TokenOn {
+public class TrackPresence( Track track, SpiritPresenceToken token ) : TokenLocation {
 
 	public IToken Token { get; } = token;
 	public Track Track { get; } = track;
@@ -17,7 +17,7 @@ public class TrackPresence( Track track, SpiritPresenceToken token ) : TokenOn {
 	#endregion
 
 	#region TokenOn
-	ILocation TokenOn.Source => Track;
+	ILocation TokenLocation.Location => Track;
 	string IOption.Text => Track.Text;
 	#endregion TokenOn
 }

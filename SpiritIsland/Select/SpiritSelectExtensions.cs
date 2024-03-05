@@ -4,7 +4,7 @@ static public class SpiritSelectExtensions {
 
 	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
 	/// <returns>Track or SpaceToken</returns>
-	static public async Task<TokenOn> SelectSourcePresence( this Spirit self, Present present = Present.Always, string actionPhrase = "place" ) {
+	static public async Task<TokenLocation> SelectSourcePresence( this Spirit self, Present present = Present.Always, string actionPhrase = "place" ) {
 		string prompt = $"Select Presence to {actionPhrase}";
 
 		var options = self.Presence.RevealOptions().ToList();
@@ -12,14 +12,14 @@ static public class SpiritSelectExtensions {
 		return await self.SelectAsync( new A.MyTokenOn(prompt,options,present) );
 	}
 
-	static public async Task<TokenOn> SelectTrackPresence( this Spirit self, Present present = Present.Always, string actionPhrase = "place" ) {
+	static public async Task<TokenLocation> SelectTrackPresence( this Spirit self, Present present = Present.Always, string actionPhrase = "place" ) {
 		string prompt = $"Select Presence to {actionPhrase}";
 
 		//return (IOption)await self.SelectAsync( A.TrackSlot.ToRevealOrTakeFromBoard( prompt, self ) )
 		//	?? await self.SelectAsync( new A.SpaceToken( prompt, self.Presence.Deployed, Present.Always ) );
 
 		var options = self.Presence.RevealOptions().ToList();
-		return await self.SelectAsync( new A.TypedDecision<TokenOn>(prompt,options,present) );
+		return await self.SelectAsync( new A.TypedDecision<TokenLocation>(prompt,options,present) );
 	}
 
 

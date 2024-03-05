@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public class DestroyedPresence( SpiritPresenceToken token ) : TokenOn {
+public class DestroyedPresence( SpiritPresenceToken token ) : TokenLocation {
 	public IToken Token { get; } = token;
-	public ILocation Source => DestroyedPresencePile.Singleton;
+	public ILocation Location => DestroyedPresencePile.Singleton;
 
 	public string Text => "Destroyed Presence";
 

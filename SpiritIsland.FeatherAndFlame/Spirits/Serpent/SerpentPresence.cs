@@ -19,7 +19,7 @@ public class SerpentPresence : SpiritPresence {
 			await CardPlays.RevealAsync(fakeEarth);
 	}
 
-	public override IEnumerable<TokenOn> RevealOptions() {
+	public override IEnumerable<TokenLocation> RevealOptions() {
 		if(MaxPresenceOnBoard == TotalOnIsland() ) yield break;
 
 		Track energyNext = Energy.RevealOptions.FirstOrDefault();

@@ -8,7 +8,7 @@ public class RampantGreenPresence( Spirit spirit )
 	)
 {
 
-	public override IEnumerable<TokenOn> RevealOptions() {
+	public override IEnumerable<TokenLocation> RevealOptions() {
 		return CanAddFromDestroyed() ? base.RevealOptions().Append( Destroyed )
 			: base.RevealOptions();
 	}

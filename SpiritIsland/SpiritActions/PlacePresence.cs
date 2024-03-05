@@ -27,7 +27,7 @@ public class PlacePresence : SpiritAction {
 
 	public override async Task ActAsync( Spirit self ) {
 		// From
-		TokenOn from = await self.SelectSourcePresence();
+		TokenLocation from = await self.SelectSourcePresence();
 		IToken token = from.Token;
 
 		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range ?? int.MaxValue, FilterEnums ).Bind( self ) )
