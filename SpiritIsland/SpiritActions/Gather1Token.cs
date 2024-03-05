@@ -4,7 +4,7 @@
 /// Gathers a token into 1 of your lands.
 /// </summary>
 public class Gather1Token( int _range, ITokenClass _tokenToGather, Present _present = Present.Done ) 
-	: SpiritAction( "Gather1Token")
+	: SpiritAction( "Gather 1 Token")
 {
 
 	public override async Task ActAsync( Spirit self ) {

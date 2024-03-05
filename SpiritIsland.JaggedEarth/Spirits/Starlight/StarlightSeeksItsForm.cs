@@ -11,7 +11,7 @@ public class StarlightSeeksItsForm : Spirit {
 		Text = "+1"
 	};
 
-	static Track Track_Gain1Energy => new Track( "" ) {
+	static Track Track_Gain1Energy => new Track( "Gain 1 Energy" ) {
 		Icon = new IconDescriptor { Super = Plus1Coin },
 		OnRevealAsync = (_,spirit) => {
 			spirit.Energy++;

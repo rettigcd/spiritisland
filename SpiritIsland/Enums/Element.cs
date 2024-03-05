@@ -77,12 +77,12 @@ public static class ElementList {
 public static class ElementStrings {
 
 	/// <summary> sort elements into 'Standard' order </summary>
-	public static string BuildElementString(this CountDictionary<Element> elements, bool showOneCount=true) {
+	public static string BuildElementString(this CountDictionary<Element> elements, bool showOneCount=true, string glue=" ") {
 		string ShowLabel( int value ) => (showOneCount || 1 < value) ? value + " " : "";
 		return ElementList.AllElements
 			.Where( el => 0 < elements[el] )
 			.Select(el => ShowLabel( elements[el]) + el.ToString().ToLower() )
-			.Join(" "); // comma or space
+			.Join( glue );
 	}
 
 	/// <summary>

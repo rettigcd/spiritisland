@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland;
 
 /// <remarks>
 /// Not an engine because it contains games state.
@@ -81,6 +83,8 @@ public class Fear : IHaveMemento {
 		// ! Do NOT check for victory here and throw GameOverException(...)
 		// This is called inside PowerCard using Invoke() which converts exception to a TargetInvocationException which we don't want.
 		// Let the post-Action check catch the victory.
+
+		_gs.Log(new FearGenerated(count));
 	}
 
 	/// <summary>
@@ -96,7 +100,7 @@ public class Fear : IHaveMemento {
 			fearCard.ActivatedTerrorLevel = TerrorLevel;
 
 			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
-			await FlipFearCard( fearCard, true );
+			FlipFearCard( fearCard, true );
 
 			await (TerrorLevel switch {
 				1 => fearCard.Level1( _gs ),
@@ -110,22 +114,12 @@ public class Fear : IHaveMemento {
 	}
 
 #pragma warning disable CA1822 // Mark members as static
-	public async Task FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
-		string label = activating ? "Activating Fear" : "Done";
-
+#pragma warning disable IDE0060 // Remove unused parameter
+	public void FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
 		cardToFlip.Flipped = true;
-		await AllSpirits.Acknowledge( label, cardToFlip.Text, cardToFlip );
-
-		// Log
-		if(cardToFlip.ActivatedTerrorLevel.HasValue)
-			// Show description of Activated Level
-			ActionScope.Current.Log( new Log.Debug( $"{cardToFlip.ActivatedTerrorLevel.Value} => {cardToFlip.GetDescription( cardToFlip.ActivatedTerrorLevel.Value )}" ) );
-		else
-			// Show all Levels
-			for(int i = 1; i <= 3; ++i)
-				ActionScope.Current.Log( new Log.Debug( $"{i} => {cardToFlip.GetDescription( i )}" ) );
-
+		ActionScope.Current.Log( new FearCardRevealed( cardToFlip ) );
 	}
+#pragma warning restore IDE0060 // Remove unused parameter
 #pragma warning restore CA1822 // Mark members as static
 
 	public int ResolvedCardCount { get; private set; }

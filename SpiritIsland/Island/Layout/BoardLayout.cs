@@ -348,6 +348,7 @@ public class BoardLayout {
 	/// </summary>
 	public XY[] BoardCorners => _boardCorners;
 	public Bounds Bounds => _bounds ??= CalcBounds();
+	public XY Size => Bounds.Size;
 
 	public SpaceLayout ForSpace( Space space ) {
 		int index = space.Text[1] - 48;

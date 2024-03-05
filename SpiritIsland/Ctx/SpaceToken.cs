@@ -30,6 +30,7 @@ public class SpaceToken( Space space, IToken token )
 
 	public bool Exists => 0 < Count;
 	public int Count => Space.Tokens[Token];
+	public bool IsSacredSite => Token is SpiritPresence sp && sp.IsSacredSite(Space.Tokens);
 
 	public Task Destroy() => Space.Tokens.Destroy( Token, 1 );
 	public Task Remove() => Space.Tokens.RemoveAsync( Token, 1 );

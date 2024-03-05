@@ -158,7 +158,7 @@ public partial class PowerCardImageBuilder {
 		// Combine sentences until it fits
 		while(textBounds.Height < layout.Size.Height && (1 < topParts.Count || 1 < botParts.Count)) {
 			var reduceMe = topParts.Count < botParts.Count ? botParts : topParts;
-			reduceMe[reduceMe.Count-2] += reduceMe[reduceMe.Count - 1];
+			reduceMe[^2] += reduceMe[^1];
 			reduceMe.RemoveAt(reduceMe.Count-1);
 			layout = AppendToLayout( textBounds, graphics, splitText, config, lineHeight, topParts, botParts, widthReduction );
 		}

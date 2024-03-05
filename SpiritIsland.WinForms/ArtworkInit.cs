@@ -16,7 +16,7 @@ class ArtworkInit( Label label ) {
 		_initTimer = new Timer {
 			Interval = 250
 		};
-		_initTimer.Tick += _initTimer_Tick;
+		_initTimer.Tick += InitTimer_Tick;
 		_initTimer.Enabled = true;
 		_initTimer.Start();
 	}
@@ -83,7 +83,7 @@ class ArtworkInit( Label label ) {
 		}
 	}
 
-	void _initTimer_Tick( object sender, EventArgs e ) {
+	void InitTimer_Tick( object sender, EventArgs e ) {
 		if(_initCurrent == _initTotal) {
 			_initTimer.Enabled = false;
 			_promptLabel.Text = $"Initialization Complete";

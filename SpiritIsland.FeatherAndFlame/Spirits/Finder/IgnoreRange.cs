@@ -16,7 +16,7 @@ public class ExtendRange( int extension )
 
 public class IgnoreRange : SpiritAction, ICanAutoRun {
 
-	public IgnoreRange() : base( $"IgnoreRange" ) {}
+	public IgnoreRange() : base( $"Ignore Range" ) {}
 
 	public override Task ActAsync( Spirit self ) {
 		RangeCalcRestorer.Save( self );

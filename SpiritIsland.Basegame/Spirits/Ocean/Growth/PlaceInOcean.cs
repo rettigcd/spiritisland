@@ -2,7 +2,7 @@
 
 public class PlaceInOcean : SpiritAction {
 
-	public PlaceInOcean() : base( "PlaceInOcean" ) { }
+	public PlaceInOcean() : base( "Place in Ocean" ) { }
 
 	public override Task ActAsync( Spirit self ) {
 		var oceanSpaces = GameState.Current.Island.Boards

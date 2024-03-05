@@ -12,42 +12,44 @@ public class ManageInternalPoints {
 	public ManageInternalPoints( SpaceLayout layout ) {
 		SpaceLayout = layout;
 
-		const float stepSize = .06f; // .07
-		const float minDistanceFromBoarder = .012f; //.015
-
-		NameLocation = layout.GetInternalHexPoints( .02f )
-			.Where( p => minDistanceFromBoarder < layout.FindDistanceFromBorder(p) )
-			.OrderBy( p => { 
-				var bounds = layout.Bounds;
-				float dx = p.X-bounds.X;
-				float dy = p.Y-bounds.Bottom;
-				return dx*dx+dy*dy;
-			} )
+		NameLocation = layout.GetInternalHexPoints( .03f )
+			.OrderByDescending( layout.FindDistanceFromBorder )
 			.First();
 
-		var points = layout
-			.GetInternalHexPoints( stepSize )
-			.ToArray();
+		XY[] allPoints = null;
+		XY[] internalPoints = null;
 
-		_dict = [];
+		const float tokenSizeScale = 1.5f;
+		float stepSize = .1f; // .06 is plenty
+		while(true) {
+			allPoints = layout
+				.GetInternalHexPoints( stepSize )
+				.ToArray();
 
-		// internal - prefered
-		var internalPoints = layout
-			.GetInternalHexPoints( stepSize )
-			.Where( p => stepSize*.6f < layout.FindDistanceFromBorder( p ) )
-			.ToArray();
+			// internal - prefered
+			internalPoints = allPoints
+				.Where( p => (stepSize*tokenSizeScale)*.5f < layout.FindDistanceFromBorder( p ) )
+				.ToArray();
+			if(9 <= internalPoints.Length) break;
+			stepSize -= .005f;
+		}
+		TokenSize = stepSize * tokenSizeScale;
+
+		// border - backup
+		XY[] borderPoints = [
+			.. allPoints.Except( internalPoints ).OrderByDescending( layout.FindDistanceFromBorder )
+		];
+
 		new Random( 1 ) // use the same randomizer every time so pieces don't bounce around when we resize
 			.Shuffle( internalPoints );
 
-		// border - backup
-		var borderPoints = points.Except( internalPoints )
-			.OrderByDescending( layout.FindDistanceFromBorder )
-			.ToArray();
-
+		_dict = [];
 		_randomInternal = new TokenPointArray( _dict, internalPoints );
 		_border = new TokenPointArray( _dict, borderPoints );
 
 	}
+
+	public float TokenSize { get; private set; }
 
 	#endregion
 
@@ -268,9 +270,14 @@ public class ManageInternalPoints {
 
 		readonly object _locker = new object();
 		readonly IToken[] _tokens = new IToken[_points.Length];
+
+		public XY[] Points => _points;
 	}
 
 	#region private token location fields
+
+	public XY[] BorderPoints => _border.Points;
+	public XY[] InternalPoints => _randomInternal.Points;
 
 	readonly Dictionary<IToken, XY> _dict;
 	readonly TokenPointArray _border;

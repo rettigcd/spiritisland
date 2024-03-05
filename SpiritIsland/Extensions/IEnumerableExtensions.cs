@@ -1,6 +1,8 @@
 ﻿namespace SpiritIsland;
 
 static public class IEnumerableExtensions {
+
+	// Strings
 	public static string Join(this IEnumerable<string> items) => string.Join(string.Empty,items);
 	public static string Join(this IEnumerable<string> items, string glue ) => string.Join(glue,items);
 	public static string Join_WithLast(this IEnumerable<string> items, string glue, string lastGlue ) {
@@ -12,6 +14,30 @@ static public class IEnumerableExtensions {
 				buf.Append( i==last ? lastGlue : glue);
 			buf.Append( itemArray[i] );
 		}
+		return buf.ToString();
+	}
+
+	/// <summary> For Maui </summary>
+	static public string ToResourceName( this string text, string suffix = "" ) {
+		var buf = new StringBuilder();
+		foreach(char c in text) {
+			if(c == '\'') continue;
+			buf.Append( c switch {
+				char low when char.IsLower( low ) => low,
+				char dig when char.IsDigit( dig ) => dig,
+				char cap when char.IsUpper( cap ) => char.ToLower( cap ),
+				_ => '_',
+			} );
+		}
+		// strip off trainling '_'
+		while(1 < buf.Length && buf[^1] == '_') buf.Length--;
+		// Maui resource must start in a letter
+		if(buf.Length == 0) 
+			throw new InvalidOperationException();
+		if(!char.IsLower( buf[0] )) buf.Insert(0,'z');
+		// Maui resource must end in a letter.
+		if(!char.IsLower( buf[^1] )) buf.Append( 'z' );
+		buf.Append( suffix );
 		return buf.ToString();
 	}
 

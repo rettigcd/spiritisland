@@ -5,7 +5,7 @@
 /// </summary>
 class MakePowerFast : SpiritAction {
 
-	public MakePowerFast():base( "MakePowerFast" ) { }
+	public MakePowerFast():base( "Make Power Fast" ) { }
 
 	public override Task ActAsync( Spirit self ) {
 		self.AddActionFactory( new ResolveSlowDuringFast() );

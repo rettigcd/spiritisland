@@ -3,9 +3,9 @@
 /// <summary>
 /// Non-orthogonal Coordinate system where 2 axis are at 60° to each other instead of 90°
 /// </summary>
-/// <param name="x">board units in the 0° direction</param>
-/// <param name="d60">board units in the 60° direction</param>
-public record BoardCoord( int x, int d60 ) {
+/// <param name="X">board units in the 0° direction</param>
+/// <param name="D60">board units in the 60° direction</param>
+public record BoardCoord( int X, int D60 ) {
 
 	#region static
 	// To keep board on integer BoardCoords, it deforms as it is rotated
@@ -23,8 +23,8 @@ public record BoardCoord( int x, int d60 ) {
 	];
 	#endregion
 
-	public override string ToString() => $"[{x},{d60}]";
-	public static BoardCoord operator +( BoardCoord a, BoardCoord b ) => new BoardCoord( a.x + b.x, a.d60 + b.d60 );
-	public static BoardCoord operator -( BoardCoord a, BoardCoord b ) => new BoardCoord( a.x - b.x, a.d60 - b.d60 );
-	public static BoardCoord operator -( BoardCoord b ) => new BoardCoord( -b.x, -b.d60 );
+	public override string ToString() => $"[{X},{D60}]";
+	public static BoardCoord operator +( BoardCoord a, BoardCoord b ) => new BoardCoord( a.X + b.X, a.D60 + b.D60 );
+	public static BoardCoord operator -( BoardCoord a, BoardCoord b ) => new BoardCoord( a.X - b.X, a.D60 - b.D60 );
+	public static BoardCoord operator -( BoardCoord b ) => new BoardCoord( -b.X, -b.D60 );
 }

@@ -4,19 +4,19 @@ public class PlacePresence : SpiritAction {
 
 	#region constructors
 
-	public PlacePresence() :base( "PlacePresence" ) {
+	public PlacePresence() :base( "Place Presence" ) {
 		Range = null;
 		FilterEnums = DefaultFilters;
 		FilterDescription = Filter.Any;
 	}
 
-	public PlacePresence(int range):base( $"PlacePresence({range})" ) {
+	public PlacePresence(int range):base( $"Place Presence({range})" ) {
 		Range = range;
 		FilterEnums = DefaultFilters;
 		FilterDescription = Filter.Any;
 	}
 
-	public PlacePresence( int range, params string[] filterEnums ) : base( $"PlacePresence({range},{string.Join( "Or", filterEnums )})" ) {
+	public PlacePresence( int range, params string[] filterEnums ) : base( $"Place Presence({range},{string.Join( "Or", filterEnums )})" ) {
 		Range = range;
 		FilterEnums = filterEnums;
 		FilterDescription = string.Join( "Or", filterEnums );

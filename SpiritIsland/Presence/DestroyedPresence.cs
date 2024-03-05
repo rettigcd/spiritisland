@@ -8,5 +8,6 @@ public class DestroyedPresence( SpiritPresenceToken token ) : TokenLocation {
 
 	public int Count { get; set; }
 
+	bool TokenLocation.IsSacredSite => false;
 }
 

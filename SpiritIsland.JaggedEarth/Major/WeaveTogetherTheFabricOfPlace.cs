@@ -38,8 +38,8 @@ public class WeaveTogetherTheFabricOfPlace {
 		var adjacents = space.Adjacent_Existing.Union( other.Adjacent_Existing ).Distinct().Where(s=>s!=space&&s!=other).ToList();
 
 		// Disconnect space
-		Restoreable removeSpace = space.RemoveFromBoard();
-		Restoreable removeOther = other.RemoveFromBoard();
+		IRestoreable removeSpace = space.RemoveFromBoard();
+		IRestoreable removeOther = other.RemoveFromBoard();
 
 		// Add Multi
 		multi.AddToBoardsAndSetAdjacent( adjacents.Distinct() );

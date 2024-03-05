@@ -2,7 +2,7 @@
 
 public class ReplacePresenceWithIncarna : SpiritAction {
 
-	public ReplacePresenceWithIncarna():base( "ReplacePresenceWithIncarna" ) { }
+	public ReplacePresenceWithIncarna():base( "Replace Presence with Incarna" ) { }
 
 	public override async Task ActAsync( Spirit self ) {
 		// Remove presnece

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SpiritIsland.Tests.Geometry;
+﻿namespace SpiritIsland.Tests.Geometry;
 
 public class TokenLocation_Tests {
 

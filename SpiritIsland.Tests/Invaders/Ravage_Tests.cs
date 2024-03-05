@@ -6,7 +6,7 @@ public class Ravage_Tests {
 		_spirit = new RiverSurges();
 		_board = Board.BuildBoardA();
 		_gs = new GameState( _spirit, _board );
-		_gs.NewLogEntry += _gs_NewLogEntry;
+		_gs.NewLogEntry += GameState_NewLogEntry;
 		// Do this after GameState has been initialized so that ActionScopes are initialized.
 		_tokens = _board[1].Tokens;
 	}
@@ -60,7 +60,7 @@ public class Ravage_Tests {
 		_exchanges[2].ToString().ShouldBe( "defend: (1D@2) deal 2 damage, leaving [none]." );
 	}
 
-	void _gs_NewLogEntry( Log.ILogEntry e ) {
+	void GameState_NewLogEntry( Log.ILogEntry e ) {
 		if( e is Log.RavageEntry re)
 			_exchanges.AddRange( re.Exchange );
 	}

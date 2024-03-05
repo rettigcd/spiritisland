@@ -39,5 +39,5 @@ public class PaintableGrowthAction( SpiritGrowthAction action, SharedCtx ctx )
 		ctx.SelectOption(action);
 	}
 
-	readonly IPaintableRect _inner = PaintableActionFactory.GetGrowthPaintable( action.Cmd );
+	readonly IPaintableRect _inner = GrowthActionBuilder.GetGrowthPaintable( action.Cmd );
 }

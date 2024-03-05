@@ -6,10 +6,10 @@
 static class BlightCardBuilder {
 
 	static public Bitmap BuildBlighted( IBlightCard card ) {
-		Bitmap bitmap = new Bitmap( 7*64, 7*89 ); // std dim are 64mm x 89
+		Bitmap bitmap = new( 7*64, 7*89 ); // std dim are 64mm x 89
 		Graphics graphics = Graphics.FromImage( bitmap );
 		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+		using StringFormat alignCenter = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
 		var bounds = new Rectangle( 0, 0, bitmap.Width, bitmap.Height );
 		using(var cracks = ResourceImages.Singleton.CardTexture("cracks.jpg"))
@@ -76,7 +76,7 @@ static class BlightCardBuilder {
 	}
 
 	static void BlightedHeader( Graphics graphics, Rectangle titleRect ) {
-		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+		using StringFormat alignCenter = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using(var parchment = ResourceImages.Singleton.CardTexture( "parchment.jpg" ))
 		using(var brush = new TextureBrush( parchment ))
 			graphics.FillPath( brush, titleRect.RoundCorners( 15, true, true, false, false ) );
@@ -89,10 +89,10 @@ static class BlightCardBuilder {
 	/// Builds the starting-side of the Blight Card.
 	/// </summary>
 	static public Bitmap BuildHealthy() {
-		Bitmap bitmap = new Bitmap( 7 * 64, 7 * 89 ); // std dim are 64mm x 89
+		Bitmap bitmap = new( 7 * 64, 7 * 89 ); // std dim are 64mm x 89
 		Graphics graphics = Graphics.FromImage( bitmap );
 		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-		using StringFormat alignCenter = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+		using StringFormat alignCenter = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
 		var bounds = new Rectangle( 0, 0, bitmap.Width, bitmap.Height );
 		using(var cracks = ResourceImages.Singleton.CardTexture( "cracks.jpg" ))
@@ -133,7 +133,7 @@ static class BlightCardBuilder {
 	}
 
 	static void HealthyHeader( Graphics graphics, Rectangle healthyRect, string title ) {
-		using StringFormat alignCenter2 = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+		using StringFormat alignCenter2 = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 		using(var brush = new SolidBrush( ColorString.Parse( "c9d889" ) ))
 			graphics.FillPath( brush, healthyRect.RoundCorners( 15, true, true, false, false ) );
 		using Font headerFont = ResourceImages.Singleton.UseGameFont( healthyRect.Height * .62f );

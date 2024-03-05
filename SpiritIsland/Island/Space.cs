@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public interface Restoreable {
+public interface IRestoreable {
 	public void Restore();
 }
 
@@ -63,6 +63,7 @@ public abstract class Space
 		}
 	}
 
+	/// <summary> Used the Current ActionScope to get the tokens </summary>
 	public SpaceState Tokens => ActionScope.Current.AccessTokens(this);
 	public static implicit operator SpaceState( Space space) => space?.Tokens;
 
@@ -81,20 +82,20 @@ public abstract class Space
 		adjacent.Clear();
 	}
 
-	class DisconnectSpaceResults : Restoreable {
-		public Space space { get; set; }
+	class DisconnectSpaceResults : IRestoreable {
+		public Space Space { get; set; }
 		public Space[] OldAdjacents { get; set; }
 
 		public void Restore() {
-			foreach(var board in space.Boards) board.AddSpace( space );
-			space.SetAdjacentToSpaces( OldAdjacents );
+			foreach(var board in Space.Boards) board.AddSpace( Space );
+			Space.SetAdjacentToSpaces( OldAdjacents );
 		}
 	}
 
-	public virtual Restoreable RemoveFromBoard() {
+	public virtual IRestoreable RemoveFromBoard() {
 		return new DisconnectSpaceResults {
 			OldAdjacents = Boards.SelectMany(b=>b.Remove(this)).Distinct().ToArray(),
-			space = this,
+			Space = this,
 		};
 	}
 

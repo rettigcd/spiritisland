@@ -2,7 +2,7 @@
 
 public class GainAllElements( params Element[] elementsToGain ) 
 	: SpiritAction(
-		"GainElements(" + elementsToGain.Select( x => x.ToString() ).Join( "," ) + ")",
+		"Gain Elements(" + elementsToGain.Select( x => x.ToString() ).Join( "," ) + ")",
 		self => self.Elements.Add( elementsToGain )
 	)
 	, ICanAutoRun

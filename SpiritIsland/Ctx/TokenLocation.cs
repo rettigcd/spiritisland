@@ -6,4 +6,6 @@
 public interface TokenLocation : IOption {
 	IToken Token { get; }
 	ILocation Location { get; }
+	int Count { get; }
+	bool IsSacredSite { get; }
 }

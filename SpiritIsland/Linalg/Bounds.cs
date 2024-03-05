@@ -9,4 +9,6 @@ public record struct Bounds(float X, float Y, float Width, float Height ) {
 	public readonly float Right => X+Width;
 	public readonly float Top => Y;
 	public readonly float Bottom => Y+Height;
+	public readonly XY Location => new XY(X,Y);
+	public readonly XY Size => new XY(Width,Height);
 }

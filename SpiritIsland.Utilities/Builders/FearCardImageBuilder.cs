@@ -33,7 +33,7 @@ sealed public class FearCardImageBuilder {
 
 		// Perimeter
 		using(Bitmap cracks = resources.CardTexture( "cracks.jpg" ))
-			using(TextureBrush outerBrush = new TextureBrush( cracks ))
+			using(TextureBrush outerBrush = new( cracks ))
 				graphics.FillPath( outerBrush, bounds.RoundCorners( 20 ) );
 
 		// Bottom / Parchment

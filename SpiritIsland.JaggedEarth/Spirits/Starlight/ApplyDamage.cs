@@ -2,7 +2,7 @@
 
 class ApplyDamage : SpiritAction {
 
-	public ApplyDamage():base( "ApplyDamage" ) { }
+	public ApplyDamage():base( "Apply Damage" ) { }
 
 	public override async Task ActAsync( Spirit self ) {
 		var space = await self.SelectAsync(new A.Space("Select land to apply 2 Damage.", self.Presence.Lands, Present.Always));

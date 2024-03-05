@@ -129,11 +129,25 @@ public sealed class GameState : IHaveMemento {
 	}
 	InvaderDeck _invaderDeck;
 
-	public void blightOnCard_Add( int count ) 
-		=> Tokens[SpiritIsland.BlightCard.Space].Adjust( Token.Blight, count );
-
-
 	#region Blight
+
+	/// <returns># of blight to remove from card</returns>
+	public async Task TakeBlightFromCard(int count) {
+		ArgumentOutOfRangeException.ThrowIfNegative(count);
+		var blightCard = Tokens[SpiritIsland.BlightCard.Space];
+
+		await blightCard.RemoveAsync(Token.Blight, count, RemoveReason.TakingFromCard); // stops from putting back on card
+
+		if (BlightCard != null && blightCard[Token.Blight] <= 0) {
+			ActionScope.Current.Log(new IslandBlighted(BlightCard));
+			await BlightCard.OnBlightDepleated(this);
+		}
+
+		Log(new BlightOnCardChanged());
+	}
+
+	public void blightOnCard_Add(int count)
+		=> Tokens[SpiritIsland.BlightCard.Space].Adjust(Token.Blight, count);
 
 	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Existing
 		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
@@ -194,24 +208,6 @@ public sealed class GameState : IHaveMemento {
 		var deck = gs.InvaderDeck;
 		if(deck.Explore.Cards.Count == 0 && deck.UnrevealedCards.Count == 0)
 			GameOverException.Lost( "Time runs out" );
-	}
-
-	#endregion
-
-	#region Default API methods
-
-	/// <returns># of blight to remove from card</returns>
-	public async Task TakeBlightFromCard( int count ) {
-		ArgumentOutOfRangeException.ThrowIfNegative( count );
-		var blightCard = Tokens[SpiritIsland.BlightCard.Space];
-
-		await blightCard.RemoveAsync(Token.Blight, count, RemoveReason.TakingFromCard ); // stops from putting back on card
-
-		if(BlightCard != null && blightCard[Token.Blight] <= 0) {
-			await AllSpirits.Acknowledge( "Island blighted", BlightCard.Text, BlightCard );
-			ActionScope.Current.Log( new IslandBlighted( BlightCard ) );
-			await BlightCard.OnBlightDepleated( this );
-		}
 	}
 
 	#endregion

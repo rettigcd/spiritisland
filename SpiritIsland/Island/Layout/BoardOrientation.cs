@@ -87,8 +87,8 @@ public class BoardOrientation {
 
 	public Matrix3D GetTransformMatrix() {
 		int rotate = RotationSteps * 60;
-		float dx = Offset.x + 0.5f * Offset.d60;
-		float dy = (float)(Offset.d60 * (0.5 * Math.Sqrt( 3 )));
+		float dx = Offset.X + 0.5f * Offset.D60;
+		float dy = (float)(Offset.D60 * (0.5 * Math.Sqrt( 3 )));
 		return RowVector.RotateDegrees( rotate )
 			* RowVector.Translate( dx, dy );
 	}

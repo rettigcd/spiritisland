@@ -28,7 +28,7 @@ public static class PowerHeaderDrawer {
 
 		return new RowRect(
 			Col1_Speed( power ).FloatSelf(), // remove Width so they distribute evenly
-			Col2_SourceRange( power ),
+			Col2_SourceRange( power.RangeText ),
 			Col3_Target( power.TargetFilter )
 		){ 
 			Between = AttrValueSeparator,
@@ -44,8 +44,7 @@ public static class PowerHeaderDrawer {
 
 	#region Range (Center)
 
-	static public IPaintableRect Col2_SourceRange( IFlexibleSpeedActionFactory power ) {
-		string sourceRangeText = power.RangeText;
+	static public IPaintableRect Col2_SourceRange( string sourceRangeText ) {
 
 		if(sourceRangeText == "-")
 			// draw dash

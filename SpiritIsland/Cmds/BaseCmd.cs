@@ -5,6 +5,8 @@
 /// </summary>
 public class BaseCmd<T> : IActOn<T> {
 
+	static public BaseCmd<T> Null => new BaseCmd<T>("No Action", _=>Task.CompletedTask );
+
 	#region constructors
 
 	public BaseCmd( string description, Func<T,Task> func ) {

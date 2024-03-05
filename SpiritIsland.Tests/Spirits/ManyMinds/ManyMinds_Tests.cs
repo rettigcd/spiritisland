@@ -40,7 +40,7 @@ public class ManyMinds_Tests {
 
 		await spirit.When_Growing( (user) => {
 			// Then: can gather 1 beast
-			user.NextDecision.HasPrompt( "Select Growth" ).Choose( "Gather1Token" );
+			user.NextDecision.HasPrompt( "Select Growth" ).Choose( "Gather 1 Token" );
 
 			// Implemented as a Push
 			user.NextDecision.HasPrompt( "Select space to Gather a Beast" ).Choose( "A1" );
@@ -51,7 +51,7 @@ public class ManyMinds_Tests {
 			// spirit.NextDecision().Choose( "Beast on A7" );
 
 			// Cleanup
-			user.NextDecision.Choose( "PlacePresenceAndBeast" );
+			user.NextDecision.Choose( "Place Presence and Beast" );
 			user.NextDecision.HasPrompt( "Select Presence to place" ).Choose( "1 energy" );
 			user.NextDecision.Choose( "A1" );
 		} );

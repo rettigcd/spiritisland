@@ -2,7 +2,7 @@
 
 public class AccelerateOrDelay : SpiritAction {
 
-	public AccelerateOrDelay():base( "AccelerateOrDelay" ) { }
+	public AccelerateOrDelay():base( "Accelerate or Delay" ) { }
 
 	public override async Task ActAsync( Spirit self ) {
 		var spirit = (DancesUpEarthquakes)self;

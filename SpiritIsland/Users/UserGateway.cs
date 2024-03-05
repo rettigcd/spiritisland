@@ -37,8 +37,11 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	#region IUserPortal - Choose
 
 	public void Choose( IDecision _, IOption selection, bool block = true ) {
+
 		var currentDecisionMaker = CacheNextDecision( null );
-		if(currentDecisionMaker == null) return;
+		if(currentDecisionMaker == null) 
+			return;
+
 		IDecisionPlus currentDecision = currentDecisionMaker.Decision;
 		_activeDecisionMaker = null;
 		_userAccessedDecision = null;
@@ -116,8 +119,18 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 		var promise = new TaskCompletionSource<T>();
 		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
 		_activeDecisionMaker = decisionMaker;
+
+		// We are signalling this twice
+
+		// 1st Signal - autosetsignal - AutoResetEvent
+		// non-blocking - GOOD
 		_signal.Set(); // Signal UI there is a Decision to be made.
+
+		// 2nd Signal - callback
+		// was BLOCKING - BAD, caused problems updating the UI thread.
+		// UI threads should wrap this in a Task.Run()...
 		NewWaitingDecision?.Invoke(decision);
+
 		return promise.Task;
 	}
 

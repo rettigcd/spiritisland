@@ -2,7 +2,7 @@
 
 class DrawPowerCardFromDaysThatNeverWere : SpiritAction {
 
-	public DrawPowerCardFromDaysThatNeverWere() : base( "DrawPowerCardFromDaysThatNeverWere" ) { }
+	public DrawPowerCardFromDaysThatNeverWere() : base( "Draw Power Card from Days That Never Were" ) { }
 
 	public override async Task ActAsync( Spirit self ) {
 		if( self is not FracturedDaysSplitTheSky fracturedDays ) return;

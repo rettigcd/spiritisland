@@ -77,6 +77,12 @@ public class CountDictionary<K> : IDictionary<K,int> {
 		return clone;
 	}
 
+	public bool HasSameValues(CountDictionary<K> other ) {
+		foreach(var key in other.Keys) if(this[key] != other[key]) return false;
+		foreach(var key in this.Keys) if(this[key] != other[key]) return false;
+		return true;
+	}
+
 	public int Total => _inner.Values.Sum();
 
 	#region IDictionary<Key,int> implementation

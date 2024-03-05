@@ -1,7 +1,8 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> The action we are taking with this card. </summary>
-public enum CardUse { 
+public enum CardUse {
+	None,
 	AddToHand, 
 	Discard, // This is for Events
 	Forget, 

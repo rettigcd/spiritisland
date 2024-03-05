@@ -2,7 +2,7 @@
 
 public class AddVitalityToIncarna : SpiritAction {
 
-	public AddVitalityToIncarna():base( "AddVitalityToIncarna" ) { }
+	public AddVitalityToIncarna():base( "Add Vitality to Incarna" ) { }
 	public override async Task ActAsync( Spirit self ) {
 		if(self is ToweringRootsOfTheJungle roots && roots.Incarna.IsPlaced)
 			await roots.Incarna.Space.AddAsync(Token.Vitality,1);

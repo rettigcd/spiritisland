@@ -2,7 +2,7 @@
 
 public class PlacePresenceAndBeast : SpiritAction {
 
-	public PlacePresenceAndBeast():base( "PlacePresenceAndBeast" ) { }
+	public PlacePresenceAndBeast():base( "Place Presence and Beast" ) { }
 
 	public override async Task ActAsync( Spirit self ) {
 		TokenLocation from = await self.SelectSourcePresence();

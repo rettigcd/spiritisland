@@ -1,22 +1,87 @@
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
+using System.Runtime.Versioning;
 using SpiritIsland.NatureIncarnate;
 
 namespace SpiritIsland.Tests.Art;
 
+[SupportedOSPlatform( "windows" )]
 public class ArtGen_Tests {
+
+	[Theory( Skip = "Only used to generate images." )]
+	// [Theory]
+	[InlineData( AssemblyType.BaseGame )]
+	[InlineData( AssemblyType.BranchAndClaw )]
+	[InlineData( AssemblyType.JaggedEarth )]
+	[InlineData( AssemblyType.FeatherAndFlame )]
+	[InlineData( AssemblyType.NatureIncarnate )]
+	public void Growth( string edition ) {
+		Type refObject = AssemblyType.GetEditionType( edition );
+		List<Spirit> spirits = [.. refObject.ScanForSpirits()];
+
+		var growthActions = spirits
+			.SelectMany( spirit => spirit.GrowthTrack.Groups )
+			.SelectMany( go => go.GrowthActions )
+			.ToArray();
+
+		foreach(SpiritGrowthAction action in growthActions.Cast<SpiritGrowthAction>()) {
+
+			Rectangle bounds = new Rectangle( 0, 0, 150, 200 );
+			using Bitmap image = new Bitmap( bounds.Width, bounds.Height );
+			using Graphics graphics = Graphics.FromImage( image );
+			graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+			graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+			GrowthActionBuilder.GetGrowthPaintable( action.Cmd )
+				.Paint(graphics, bounds);
+			string filename = action.Cmd.Description.ToResourceName( ".png" );
+			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\growth\\"+filename, ImageFormat.Png );
+		}
+	}
+
+
+	//[Theory( Skip = "Takes >8 seconds to run." )]
+	[Theory]
+	[InlineData(AssemblyType.BaseGame)]
+	[InlineData(AssemblyType.BranchAndClaw)]
+	[InlineData(AssemblyType.JaggedEarth)]
+	[InlineData(AssemblyType.FeatherAndFlame)]
+	[InlineData(AssemblyType.NatureIncarnate)]
+	public void PresenceTrack(string edition) {
+		Type refObject = AssemblyType.GetEditionType(edition);
+		List<Spirit> spirits = [.. refObject.ScanForSpirits()];
+
+		foreach(var spirit in spirits) {
+			var energySlots = spirit.Presence.Energy.Slots.ToArray();
+			foreach (var slot in energySlots)
+				SaveTrackImage(slot);
+			foreach (var slot in spirit.Presence.CardPlays.Slots)
+				SaveTrackImage(slot);
+		}
+
+	}
+
+	static void SaveTrackImage(Track slot) {
+		Rectangle bounds = new Rectangle(0, 0, 60, 80);
+		using var image = new Bitmap(bounds.Width, bounds.Height);
+		using var graphics = Graphics.FromImage(image);
+		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+		new ImgRect(slot.Icon).Paint(graphics, bounds);
+		string filename = slot.Text.ToResourceName(".png");
+		ImageDiskCache.SaveBmp(image, $"C:\\users\\rettigcd\\desktop\\track\\" + filename, ImageFormat.Png);
+	}
 
 	[Fact(Skip="too slow")]
 	public void Blight_Card(){
 		using var Img = ResourceImages.Singleton.GetHealthBlightCard();
-		#pragma warning disable CS0642 // Possible mistaken empty statement
-		using( ResourceImages.Singleton.GetBlightCard( new TheBorderOfLifeAndDeath() ) );
-		using( ResourceImages.Singleton.GetBlightCard( new UntendedLandCrumbles() ) );
-		#pragma warning restore CS0642 // Possible mistaken empty statement
+		using( ResourceImages.Singleton.GetBlightCard( new TheBorderOfLifeAndDeath() )) {}
+		using( ResourceImages.Singleton.GetBlightCard( new UntendedLandCrumbles() ) ) {}
 	}
 
-	[Theory(Skip = "Takes >8 seconds to run.")]
-//	[Theory]
+	[Theory( Skip = "Takes >8 seconds to run." )]
+	//[Theory]
 	[InlineData( AssemblyType.BaseGame )]
 	[InlineData( AssemblyType.BranchAndClaw )]
 	[InlineData( AssemblyType.JaggedEarth )]
@@ -30,6 +95,27 @@ public class ArtGen_Tests {
 		cards.AddRange( spirits.SelectMany( s => s.Hand ) );
 
 		await GenerateCards( cards );
+	}
+
+
+
+	//	[Theory(Skip = "Only needed for generating images for MAUI")]
+	[Theory]
+	[InlineData(AssemblyType.BaseGame)]
+	[InlineData(AssemblyType.BranchAndClaw)]
+	[InlineData(AssemblyType.JaggedEarth)]
+	[InlineData(AssemblyType.FeatherAndFlame)]
+	[InlineData(AssemblyType.NatureIncarnate)]
+	public void PowerCards_Parts(string edition) {
+		Type refObject = AssemblyType.GetEditionType(edition);
+		List<PowerCard> cards = [.. refObject.ScanForMajors()];
+		cards.AddRange(refObject.ScanForMinors());
+		var spirits = refObject.ScanForSpirits();
+		cards.AddRange(spirits.SelectMany(s => s.Hand));
+
+		foreach (var card in cards)
+			GenerateParts(card);
+
 	}
 
 	[Theory(Skip = "Takes >8 seconds to run.")]
@@ -115,13 +201,33 @@ public class ArtGen_Tests {
 		await GenerateCards( cardTypes.Select(type=>PowerCard.For(type)) );
 	}
 
+#pragma warning disable CA1416 // Validate platform compatibility
+
 	static async Task GenerateCards( IEnumerable<PowerCard> cards ) {
 		foreach(var card in cards) {
 			using Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card, ResourceImages.Singleton );
-#pragma warning disable CA1416 // Validate platform compatibility
 			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Name}.png", ImageFormat.Png );
-#pragma warning restore CA1416 // Validate platform compatibility
 		}
 	}
+
+	static void GenerateParts( PowerCard card) {
+//		SaveAttributeToFile(PowerHeaderDrawer.Col2_SourceRange(card.RangeText), card.RangeText );
+		SaveAttributeToFile(PowerHeaderDrawer.Col3_Target(card.TargetFilter), card.TargetFilter);
+	}
+
+	static void SaveAttributeToFile( IPaintableRect rect, string partText) {
+		Rectangle bounds = new Rectangle(0, 0, 75, 25);
+		using var image = new Bitmap(bounds.Width, bounds.Height);
+		using var graphics = Graphics.FromImage(image);
+		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+		rect.Paint(graphics, bounds);
+		string filename = partText.ToResourceName(".png");
+		ImageDiskCache.SaveBmp(image, $"C:\\users\\rettigcd\\desktop\\parts\\attr_" + filename, ImageFormat.Png);
+	}
+
+
+#pragma warning restore CA1416 // Validate platform compatibility
+
 
 }
