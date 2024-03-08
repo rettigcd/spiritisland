@@ -63,7 +63,7 @@ public class Volcano_Tests {
 
 		// When: Activating Growth Range-0 presence
 		_ = spirit.DoGrowth(gameState);
-		spirit.NextDecision().HasPrompt("select growth").ChooseFirst( "PlacePresence(0,Mountain)" );
+		spirit.NextDecision().HasPrompt("select growth").ChooseFirst( "Place Presence(0,Mountain)" );
 		spirit.NextDecision().HasPrompt( "Select Presence to place" ).Choose( "2 energy" );
 
 		// Then only option available is A6 (range-0)

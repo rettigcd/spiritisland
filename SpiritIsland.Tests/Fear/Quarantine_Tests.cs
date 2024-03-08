@@ -2,15 +2,16 @@
 
 public class Quarantine_Tests {
 
-	const string FearAck1 = "Quarantine : 1 : Explore does not affect coastal lands.";
-	const string FearAck2 = "Quarantine : 2 : Explore does not affect coastal lands. Lands with disease are not a source of invaders when exploring.";
-	const string FearAck3 = "Quarantine : 3 : Explore does not affect coastal lands.  Invaders do not act in lands with disease.";
+	const string FearAck1 = "Quarantine : 1 : Explore does not affect Coastal lands.";
+	const string FearAck2 = "Quarantine : 2 : Explore does not affect Coastal lands. Lands with Disease are not a source of Invaders when exploring.";
+	const string FearAck3 = "Quarantine : 3 : Explore does not affect Coastal lands. Invaders do not act in lands with Disease.";
 	readonly IFearCard card = new Quarantine();
 
 	void Init() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
 		var (userLocal, spirit) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
 			gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
+			_fearCardRevealed = gs.WatchForFearCard();
 			gs.InitTestInvaderDeck(
 				InvaderCard.Stage1( Terrain.Sands ), // not on coast
 				InvaderCard.Stage2Costal(),
@@ -28,7 +29,7 @@ public class Quarantine_Tests {
 	[Theory]
 	[InlineData(false)] // 1st card is configed as coastal
 	[InlineData(true)]  // A1 A2 A3 are coastland and stopped by Fear
-	public void Level1_ExploreDoesNotAffectCoastland( bool activateFearCard ) {
+	public async Task Level1_ExploreDoesNotAffectCoastland( bool activateFearCard ) {
 		Init();
 
 		// Given: Activate fear card
@@ -38,7 +39,7 @@ public class Quarantine_Tests {
 		GrowAndBuyNoCards();
 
 		if(activateFearCard)
-			_user.AcknowledgesFearCard( FearAck1 );
+			(await _fearCardRevealed).Msg().ShouldBe(FearAck1);
 
 		_user.WaitForNext();
 		_log.Assert_Built( "A4", "A7" ); // Sand
@@ -53,7 +54,7 @@ public class Quarantine_Tests {
 	[Theory]
 	[InlineData(false)]
 	[InlineData(true)]
-	public void Level2_ExploreDoesNotAffectCoastlandNorComeFromDiseasedSpots( bool activateFearCard ) {
+	public async Task Level2_ExploreDoesNotAffectCoastlandNorComeFromDiseasedSpots( bool activateFearCard ) {
 		Init();
 
 		// Skip over the coastal build
@@ -77,7 +78,7 @@ public class Quarantine_Tests {
 		GrowAndBuyNoCards();
 
 		if(activateFearCard)
-			_user.AcknowledgesFearCard( FearAck2 );
+			(await _fearCardRevealed).Msg().ShouldBe(FearAck2);
 
 		_user.WaitForNext();
 		_log.Assert_Ravaged("A4", "A7"); // Sand
@@ -94,7 +95,7 @@ public class Quarantine_Tests {
 	[Theory]
 	[InlineData(false)]
 	[InlineData(true)]
-	public void Level3_NoCoastalExplore_NoActionInDiseasedLands( bool activateFearCard ) {
+	public async Task Level3_NoCoastalExplore_NoActionInDiseasedLands( bool activateFearCard ) {
 		Init();
 
 		// Skip over the coastal build
@@ -124,7 +125,7 @@ public class Quarantine_Tests {
 		GrowAndBuyNoCards();
 
 		if(activateFearCard)
-			_user.AcknowledgesFearCard( FearAck3 );
+			(await _fearCardRevealed).Msg().ShouldBe( FearAck3 );
 
 		_ = _user.NextDecision; // Wait for invader actions to finish
 		if( activateFearCard) {
@@ -182,6 +183,8 @@ public class Quarantine_Tests {
 
 
 	#region protected / private
+
+	protected Task<Log.FearCardRevealed> _fearCardRevealed;
 
 	protected VirtualTestUser _user;
 	protected Spirit _spirit;

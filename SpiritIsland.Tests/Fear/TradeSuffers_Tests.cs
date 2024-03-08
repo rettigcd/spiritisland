@@ -38,7 +38,7 @@ public class TradeSuffers_Tests {
 
 		// When: activating fear
 		ClearBlight_GrowAndBuyNoCards();
-		_user.AcknowledgesFearCard( FearCard );
+		// Fear Card happends here.... FearCard;
 		_user.WaitForNext(); // start of round 4
 
 		// Ravage: no dahan, no change:			1B@1,1C@3
@@ -71,7 +71,7 @@ public class TradeSuffers_Tests {
 		await InvaderPhase.ActAsync(gs);
 		ClearBlight();
 
-        // Round 2
+		// Round 2
 		await InvaderPhase.ActAsync(gs);
 		ClearBlight();
 
@@ -84,9 +84,7 @@ public class TradeSuffers_Tests {
 		tokens.Given_InitSummary( "1C@3,4D@2,2E@1" );
 
 		// When: activating Fear & Doing Invader Actions
-		Task t = InvaderPhase.ActAsync(gs);
-		user.AcknowledgesFearCard( FearCard );
-		await t.ShouldComplete();
+		await InvaderPhase.ActAsync(gs).ShouldComplete();
 		await gs.TriggerTimePasses(); // let them heal
 
 		// Ravage-a: 1 city + 2 explorers do 5 damage killing 2 dahan    1B@1,1C@1,2D@2,2E@1

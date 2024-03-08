@@ -219,12 +219,12 @@ public class Keeper_GrowthTests : BoardAGame {
 	}
 
 	static void User_Activates_C(VirtualUser user) {
-		user.Growth_SelectAction( $"PlacePresence(3,{Filter.Presence}Or{Filter.Wilds})" );
+		user.Growth_SelectAction( $"Place Presence(3,{Filter.Presence}Or{Filter.Wilds})" );
 		user.Growth_PlacesEnergyPresence( "A3;A8" );
 	}
 
 	static void User_Activates_D(VirtualUser user) {
-		user.Growth_SelectAction( "PlacePresence(3,No Blight)" );
+		user.Growth_SelectAction( "Place Presence(3,No Blight)" );
 		user.PlacesCardPlayPresence( "A7" );
 		user.Growth_DrawsPowerCard();
 		user.SelectsMinorDeck();

@@ -8,6 +8,7 @@ public class DahanOnTheirGuard_Tests {
 		spirit = new LightningsSwiftStrike();
 		gameState = new GameState( spirit, Board.BuildBoardA() );
 		gameState.DisableInvaderDeck();
+		_fearCard = gameState.WatchForFearCard();
 		gameState.Initialize();
 		gameState.Fear.Deck.Pop();
 		gameState.Fear.PushOntoDeck( new DahanOnTheirGuard() );
@@ -45,8 +46,8 @@ public class DahanOnTheirGuard_Tests {
 		// When: Doing Invader phase (fear+ragage)
 
 		gameState.Fear.Add( 4 );
-		await gameState.Fear.Apply().AwaitUser( (user) => {
-			user.AcknowledgesFearCard( "Dahan on their Guard : 1 : In each land, Defend 1 per Dahan." );
+		await gameState.Fear.Apply().AwaitUser( async (user) => {
+			(await _fearCard).Msg().ShouldBe("Dahan on their Guard : 1 : In each land, Defend 1 per Dahan.");
 		} ).ShouldComplete(DahanOnTheirGuard.Name);
 
 		await invaderCard.When_Ravaging();
@@ -67,6 +68,7 @@ public class DahanOnTheirGuard_Tests {
 		gameState.Tokens[ravageSpace].AdjustDefault( Human.Town, desiredTown );
 	}
 
+	readonly Task<Log.FearCardRevealed> _fearCard;
 	readonly GameState gameState;
 	readonly InvaderCard invaderCard;
 	readonly Space ravageSpace;

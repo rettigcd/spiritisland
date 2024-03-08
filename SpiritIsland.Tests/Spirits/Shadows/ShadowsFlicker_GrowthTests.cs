@@ -42,7 +42,7 @@ public class ShadowsFlicker_GrowthTests : BoardAGame {
 
 		await _spirit.When_Growing( (user) => {
 			//		User.Growth_SelectsOption( "PlacePresence(3) / GainEnergy(3)" );
-			User.Growth_SelectAction( "PlacePresence(3)" );
+			User.Growth_SelectAction( "Place Presence(3)" );
 			User.Growth_PlacesEnergyPresence( "A1;A2;A3;A4;A5;A6;A7;A8" );
 		} );
 

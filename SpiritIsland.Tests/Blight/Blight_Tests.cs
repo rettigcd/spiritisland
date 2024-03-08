@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Blight;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Blight;
 
 public class Blight_Tests {
 
@@ -8,6 +10,7 @@ public class Blight_Tests {
 		Spirit spirit = new RiverSurges();
 		Board board = Board.BuildBoardD();
 		GameState gs = new GameState(spirit,board);
+		Task<IslandBlighted> waitForBlightedIsland = gs.WatchForBlightedIsland();
 		gs.Initialize();
 
 		// Given:
@@ -17,8 +20,8 @@ public class Blight_Tests {
 		gs.BlightCard.CardFlipped.ShouldBeFalse();
 
 		// When: Taking Blight from Card
-		await gs.TakeBlightFromCard(3).AwaitUser( (u) => {
-			u.NextDecision.HasPrompt("Island blighted").Choose( "Invaders Find the Land to Their Liking" );
+		await gs.TakeBlightFromCard(3).AwaitUser( async (u) => {
+			(await waitForBlightedIsland).Card.Text.ShouldBe( "Invaders Find the Land to Their Liking" );
 		} ).ShouldComplete("Taking Blight From Card");
 
 		// Then:
@@ -31,6 +34,7 @@ public class Blight_Tests {
 		Spirit spirit = new LureOfTheDeepWilderness(); // any will do
 		Board board = Board.BuildBoardC();
 		GameState gs = new GameState(spirit,board);
+		Task<IslandBlighted> waitForBlightedIsland = gs.WatchForBlightedIsland();
 		gs.Initialize();
 
 		// Given: Blight Card will be "Promising Farmlands" (this card is easy to test...)
@@ -47,10 +51,10 @@ public class Blight_Tests {
 		board[3].Given_InitSummary("");
 
 		//  When: Ravaging causes 2 blights
-		await InvaderPhase.ActAsync(gs).AwaitUser(user=>{
+		await InvaderPhase.ActAsync(gs).AwaitUser(async user=>{
 
 			//  Then: "Promising Farmlands" triggers ONLY ONCE
-			user.NextDecision.HasPrompt("Island blighted").Choose("Promising Farmlands");
+			(await waitForBlightedIsland).Card.Text.ShouldBe("Promising Farmlands");
 			user.NextDecision.HasPrompt("Select space to Add 1 Town  Add 1 City").HasOptions("C4,C5,C6,C8").Choose("C4");
 
 		}).ShouldComplete("Invader Phase");
@@ -59,4 +63,5 @@ public class Blight_Tests {
 		board[1].Tokens.Blight.Count.ShouldBe(1);
 		board[2].Tokens.Blight.Count.ShouldBe(1);
 	}
+
 }

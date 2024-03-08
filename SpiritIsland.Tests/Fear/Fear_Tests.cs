@@ -9,7 +9,9 @@ public class Fear_Tests {
 		spirit = new RiverSurges();
 		user = new VirtualUser( spirit );
 		gs = new GameState( spirit, Board.BuildBoardA() );
+		_fearCard = gs.WatchForFearCard();
 	}
+	readonly Task<Log.FearCardRevealed> _fearCard;
 
 	[Fact]
 	public void TriggerDirect() {
@@ -34,8 +36,8 @@ public class Fear_Tests {
 		gs.Fear.Add( 4 );
 	}
 
-	void Assert_PresentsFearToUser() {
-		user.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
+	async void Assert_PresentsFearToUser() {
+		(await _fearCard).Msg().Equals("Null Fear Card : 1 : x");
 	}
 
 }

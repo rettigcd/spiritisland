@@ -172,8 +172,8 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 			user.SelectMinorPowerCard();
 			// --- Place Presence ---
 			user.NextDecision.HasPrompt( "Select Growth to resolve" )
-				.HasOptions( "PlacePresence(1),AddVitalityToIncarna" )
-				.Choose( "PlacePresence(1)" );
+				.HasOptions( "Place Presence(1),Add Vitality to Incarna" )
+				.Choose( "Place Presence(1)" );
 			user.NextDecision.HasPrompt( "Select Presence to place" )
 				.HasOptions( "2 energy,2 cardplay,TRotJ-" )
 				.Choose( "TRotJ-" );
@@ -181,8 +181,8 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 				.HasOptions( "A1,A2,A3,A4" )
 				.Choose( "A4" );
 			user.NextDecision.HasPrompt( "Select Growth to resolve" )
-				.HasOptions( "AddVitalityToIncarna" )
-				.Choose( "AddVitalityToIncarna" );
+				.HasOptions( "Add Vitality to Incarna" )
+				.Choose( "Add Vitality to Incarna" );
 		} ).ShouldComplete();
 
 		_board[4].Tokens.Summary.ShouldBe( "1TRotJ-,1V" );

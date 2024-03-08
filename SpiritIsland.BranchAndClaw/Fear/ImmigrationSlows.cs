@@ -29,7 +29,7 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
-	[FearLevel( 3, "Skip the next normal build. The build card shifts left as usual." )]
+	[FearLevel( 3, "Skip the next normal Build. The Build card shifts left as usual." )]
 	public Task Level3( GameState ctx ) {
 		// Skip the next normal build.
 		ctx.InvaderDeck.Build.SkipNextNormal();

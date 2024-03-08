@@ -168,7 +168,7 @@ public class SharpFangs_GrowthTests : BoardAGame {
 	}
 
 	void User_GrowthB_PlacePresence() {
-		User.Growth_SelectAction( $"PlacePresence(3,{Filter.Beast}Or{Filter.Jungle})" );
+		User.Growth_SelectAction( $"Place Presence(3,{Filter.Beast}Or{Filter.Jungle})" );
 		User.PlacePresenceLocations( _spirit.Presence.Energy.RevealOptions.Single(), "A3;A7;A8" );
 	}
 

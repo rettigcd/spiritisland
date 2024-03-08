@@ -38,7 +38,7 @@ public class RampantGreen_GrowthTests : BoardAGame {
 
 		await _spirit.When_Growing( (user) => {
 			User_SelectAlwaysGrowthOption(user);
-			user.Growth_SelectAction( "PlacePresence(1)" );
+			user.Growth_SelectAction( "Place Presence(1)" );
 			user.Growth_PlacesEnergyPresence( "A2;A3;A5" );
 		} );
 
@@ -73,7 +73,7 @@ public class RampantGreen_GrowthTests : BoardAGame {
 	}
 
 	static void User_SelectAlwaysGrowthOption(VirtualUser user) {
-		user.Growth_SelectAction( $"PlacePresence(2,{Filter.Jungle}Or{Filter.Wetland})" );
+		user.Growth_SelectAction( $"Place Presence(2,{Filter.Jungle}Or{Filter.Wetland})" );
 		user.Growth_PlacesEnergyPresence( "A2;A3;A5" ); // +1 from energy track
 	}
 

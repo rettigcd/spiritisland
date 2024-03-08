@@ -9,6 +9,7 @@ public class BeliefTakesRoot_Tests {
 		_spirit = new LightningsSwiftStrike();
 		_gameState = new GameState( _spirit, Board.BuildBoardA() );
 		_gameState.DisableInvaderDeck();
+		_fearCard = _gameState.WatchForFearCard();
 		_gameState.Initialize(); 
 		_gameState.Fear.Deck.Pop();
 		_gameState.Fear.PushOntoDeck( new BeliefTakesRoot() );
@@ -16,6 +17,7 @@ public class BeliefTakesRoot_Tests {
 		_invaderCard = InvaderDeckBuilder.Level1Cards[0];
 		_ravageSpace = _gameState.Island.Boards[0].Spaces.Where( ((InvaderCard)_invaderCard).MatchesCard ).First();
 	}
+	Task<Log.FearCardRevealed> _fearCard;
 
 	#endregion
 
@@ -27,9 +29,9 @@ public class BeliefTakesRoot_Tests {
 
 		Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-		await When_AddFearApplyFear( (user) => {
-			user.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
-		} );
+		await When_AddFearApplyFear( async (user) => {
+			(await _fearCard).Msg().ShouldBe("Null Fear Card : 1 : x");
+		});
 		await _invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
@@ -41,9 +43,9 @@ public class BeliefTakesRoot_Tests {
 	public async Task Level1_NoBlightDahanLives() {
 		Given_DahanAndTownsInSpaceWithPresence(1, 1);
 
-		await When_AddFearApplyFear( (user)=> {
-			user.AcknowledgesFearCard( FearCardAction );
-		} );
+		await When_AddFearApplyFear( async (user)=> {
+			(await _fearCard).Msg().ShouldBe(FearCardAction);
+		});
 		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
@@ -59,8 +61,8 @@ public class BeliefTakesRoot_Tests {
 	public async Task Level1_DefendNotMoreThan2() { // not more th
 		Given_DahanAndTownsInSpaceWithPresence(2, 5);
 
-		await When_AddFearApplyFear( (user) => {
-			user.AcknowledgesFearCard( FearCardAction );
+		await When_AddFearApplyFear( async (user) => {
+			(await _fearCard).Msg().ShouldBe(FearCardAction);
 		} );
 		await _invaderCard.When_Ravaging();
 

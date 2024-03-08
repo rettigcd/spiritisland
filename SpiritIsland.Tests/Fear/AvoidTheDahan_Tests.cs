@@ -9,7 +9,7 @@ namespace SpiritIsland.Tests.Fear;
 public class AvoidTheDahan_Tests {
 
 	const string Level1Text = "Avoid the Dahan : 1 : Invaders do not Explore into lands with at least 2 Dahan.";
-	const string Level2Text = "Avoid the Dahan : 2 : Invaders do not Build in lands where Dahan outnumber Town / City.";
+	const string Level2Text = "Avoid the Dahan : 2 : Invaders do not Build in lands where Dahan outnumber Town/City.";
 	const string Level3Text = "Avoid the Dahan : 3 : Invaders do not Build in lands with Dahan.";
 
 	#region constructor
@@ -28,14 +28,16 @@ public class AvoidTheDahan_Tests {
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
+		_waitForFearCard = GameState.Current.WatchForFearCard();
 
 	}
+	Task<FearCardRevealed> _waitForFearCard;
 
 	#endregion
 
 	[Trait( "Invaders", "Explore" )]
 	[Fact]
-	public void NullFearCard_NormalExplore() {
+	public async Task NullFearCard_NormalExplore() {
 
 		Init();
 
@@ -45,7 +47,7 @@ public class AvoidTheDahan_Tests {
 		ActivateFearCard(new NullFearCard());
 
 		ClearBlightAndDoNothingForARound();
-		_user.AcknowledgesFearCard( "Null Fear Card : 1 : x" );
+		await AcknowledgeFearCard( "Null Fear Card : 1 : x" );
 
 		_user.WaitForNext();
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1E@1" );
@@ -65,6 +67,7 @@ public class AvoidTheDahan_Tests {
 		InitMountainThenAllSands( gs );
 		gs.NewLogEntry += ( s ) => log.Add( s.Msg() );
 		gs.Initialize(); // Explore mountains
+		_waitForFearCard = gs.WatchForFearCard();
 		GameState.Current.DisableBlightEffect();
 
 		var user = new VirtualTestUser( spirit );
@@ -73,17 +76,21 @@ public class AvoidTheDahan_Tests {
 		ActivateFearCard( new AvoidTheDahan() ); // Invaders do not explore into lands with at least 2 dahan
 
 		Task task = InvaderPhase.ActAsync(gs);
-		user.AcknowledgesFearCard( Level1Text ); // explore Sands, Build Mountains
+		await AcknowledgeFearCard( Level1Text ); // explore Sands, Build Mountains
 		await task.ShouldComplete();
 
 		a7.InvaderSummary().ShouldBe( "" );
 	}
 
+	async Task AcknowledgeFearCard( string text) {
+		FearCardRevealed fc = await _waitForFearCard;
+		fc.Msg().ShouldBe(text);
+	}
+
 	[Trait( "Invaders", "Explore" )]
 	[Fact]
-	public void Level1_DahanKilledDuringRavage_ShouldExplore() {
+	public async Task Level1_DahanKilledDuringRavage_ShouldExplore() {
 		Init();
-
 
 		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
@@ -100,7 +107,7 @@ public class AvoidTheDahan_Tests {
 		ActivateFearCard( new AvoidTheDahan() );
 
 		ClearBlightAndDoNothingForARound();
-		_user.AcknowledgesFearCard( Level1Text );
+		await AcknowledgeFearCard(Level1Text);
 
 		// Ravage should kill both dahan                   => 2 explorers and 1 town
 		// Build should make a city                        => 2 explorers, 1 town, 1 city
@@ -113,7 +120,7 @@ public class AvoidTheDahan_Tests {
 
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public void Level2_3DahanAtFear_1DahanAtBuild_DoBuild() {
+	public async Task Level2_3DahanAtFear_1DahanAtBuild_DoBuild() {
 		Init();
 
 
@@ -140,7 +147,8 @@ public class AvoidTheDahan_Tests {
 		_spirit.ClearAllBlight();
 		_user.Grows();
 		_user.IsDoneBuyingCards();
-		_user.AcknowledgesFearCard( Level2Text );
+		//_user.AcknowledgesFearCard( Level2Text );
+		await AcknowledgeFearCard(Level2Text);
 
 		// Ravage: 2 towns kill 2 dahan leaving 1, 1 dahan kills 1 town leaving 1:  1B@1,1D@2,1T@2
 
@@ -155,7 +163,7 @@ public class AvoidTheDahan_Tests {
 
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public void Level2_NoBuild() {
+	public async Task Level2_NoBuild() {
 		Init();
 
 		// "Invaders do not Build in lands where Dahan outnumber Town / City."
@@ -182,7 +190,7 @@ public class AvoidTheDahan_Tests {
 		// When: activating fear
 		_user.Grows();
 		_user.IsDoneBuyingCards();
-		_user.AcknowledgesFearCard( Level2Text );
+		await AcknowledgeFearCard(Level2Text);
 
 		// Then: no build
 		// Ravage: 3 explorers kill 1 dahan, 1 dahan kills 2 explorer:  1B@1,1D@2,1E@1
@@ -194,9 +202,8 @@ public class AvoidTheDahan_Tests {
 
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public void Level3_3DahanAtFear_1DahanAtBuild_NoBuild() {
+	public async Task Level3_3DahanAtFear_1DahanAtBuild_NoBuild() {
 		Init();
-
 
 		// Fill all Invaders spaces with the A7 card
 		ClearBlightAndDoNothingForARound();
@@ -213,7 +220,7 @@ public class AvoidTheDahan_Tests {
 
 		// When: activating fear
 		ClearBlightAndDoNothingForARound();
-		_user.AcknowledgesFearCard( Level3Text );
+		await AcknowledgeFearCard( Level3Text );
 
 		// Ravage: 2 towns kill 2 dahan leaving 1, 1 dahan kills 1 town leaving 1:  1B@1,1D@2,1T@2
 
@@ -228,7 +235,7 @@ public class AvoidTheDahan_Tests {
 
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public void Level3_1DahanAtFear_0DahanAtBuild_Build() {
+	public async Task Level3_1DahanAtFear_0DahanAtBuild_Build() {
 		Init();
 
 		// Fill all Invaders spaces with the A7 card
@@ -245,7 +252,7 @@ public class AvoidTheDahan_Tests {
 
 		// When: activating fear
 		ClearBlightAndDoNothingForARound();
-		_user.AcknowledgesFearCard( Level3Text );
+		await AcknowledgeFearCard( Level3Text );
 
 		// Ravage: 1 towns kill 1 dahan leaving 0:  1B@1,1T@2
 

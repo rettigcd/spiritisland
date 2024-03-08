@@ -208,7 +208,7 @@ public class OceanTerrain_Tests {
 
 		// When: placing precense
 		_ = primarySpirit.DoGrowth( gameState );
-		NextDecision.Choose("PlacePresence(1)");
+		NextDecision.Choose("Place Presence(1)");
 
 		//  And: take from card play
 		NextDecision.Choose( "2 cardplay");

@@ -51,7 +51,7 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 		_spirit.Given_IsOn( _board[1] );
 
 		await _spirit.When_Growing( (user) => {
-			user.Growth_SelectAction( "PlacePresence(1)" );
+			user.Growth_SelectAction( "Place Presence(1)" );
 			user.Growth_PlacesEnergyPresence( "A1;A2;A4;A5;A6" );
 		});
 

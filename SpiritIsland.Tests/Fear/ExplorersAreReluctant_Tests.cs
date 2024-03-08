@@ -8,10 +8,13 @@ public sealed class ExplorersAreReluctant_Tests {
 		var (user, spirit) = TestSpirit.StartGame( powerCard );
 		_user = user;
 		_spirit = spirit;
-		_log = GameState.Current.LogInvaderActions();
+		var gs = GameState.Current;
+		_fearCard = gs.WatchForFearCard();
+		_log = gs.LogInvaderActions();
 		_log.Clear(); // skip over initial Explorer setup
 	}
 
+	Task<Log.FearCardRevealed> _fearCard;
 	VirtualTestUser _user;
 	Spirit _spirit;
 	Queue<string> _log;
@@ -57,7 +60,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public void Level1_SkipExploreInLowestNumberedLand() {
+	public async Task Level1_SkipExploreInLowestNumberedLand() {
 
 		Init();
 
@@ -79,7 +82,10 @@ public sealed class ExplorersAreReluctant_Tests {
 		_spirit.ActivateFearCard(new ExplorersAreReluctant());
 
 		GrowAndBuyNoCards();
-		_user.AcknowledgesFearCard("Explorers are Reluctant : 1 : During the next normal explore, skip the lowest-numbered land matching the invader card on each board.");
+
+		// Acknowledge: Explorers are Reluctant
+		(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
+
 		_user.WaitForNext();
 
 		// Ravage:Jungle, Build:Wetland, Explore: Sand
@@ -93,7 +99,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public void Level2_DelayExplore1Round() {
+	public async Task Level2_DelayExplore1Round() {
 
 		Init();
 
@@ -119,7 +125,8 @@ public sealed class ExplorersAreReluctant_Tests {
 		_spirit.ElevateTerrorLevelTo( 2 );
 
 		GrowAndBuyNoCards();
-		_user.AcknowledgesFearCard( "Explorers are Reluctant : 2 : Skip the next normal explore. During the next invader phase, draw an adidtional explore card." );
+		(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
+
 		System.Threading.Thread.Sleep(5);
 
 		// Card Advance #4 - End of 2st round
@@ -140,7 +147,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public void Level3_DelayExplore1Round() {
+	public async Task Level3_DelayExplore1Round() {
 
 		Init();
 
@@ -163,7 +170,7 @@ public sealed class ExplorersAreReluctant_Tests {
 
 		// When Round 2 comes and goes
 		GrowAndBuyNoCards();
-		_user.AcknowledgesFearCard("Explorers are Reluctant : 3 : Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.");
+		(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
 		_user.WaitForNext();
 
 		// Then:

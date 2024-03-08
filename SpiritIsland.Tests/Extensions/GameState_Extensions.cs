@@ -67,4 +67,23 @@ static public class GameState_Extensions {
 			config.DestroyPresence = false;
 		}
 	}
+
+	// usage: (await waitForBlightedIsland).Card.Text.ShouldBe("Promising Farmlands");
+	static public Task<IslandBlighted> WatchForBlightedIsland(this GameState gs) {
+		var blightedSource = new TaskCompletionSource<IslandBlighted>();
+		gs.NewLogEntry += (entry) => { 
+			if (entry is IslandBlighted ib) 
+				blightedSource.TrySetResult(ib); };
+		return blightedSource.Task;
+	}
+
+	static public Task<FearCardRevealed> WatchForFearCard(this GameState gs) {
+		var blightedSource = new TaskCompletionSource<FearCardRevealed>();
+		gs.NewLogEntry += (entry) => {
+			if (entry is FearCardRevealed fcr)
+				blightedSource.TrySetResult(fcr);
+		};
+		return blightedSource.Task;
+	}
+
 }

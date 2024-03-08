@@ -72,7 +72,7 @@ public class VirtualUser( Spirit spirit ) {
 
 		// If Place Presence is the only action in the growth option, it will auto-select and it will skip over this step
 		var current = _userPortal.Next;
-		var op = current.Options.FirstOrDefault( o => o.Text.StartsWith( "PlacePre" ) );
+		var op = current.Options.FirstOrDefault( o => o.Text.StartsWith( "Place Pre" ) );
 		if(op != null)
 			NextDecision.Choose( op );
 
@@ -230,7 +230,6 @@ public class VirtualUser( Spirit spirit ) {
 	public void SelectMinorPowerCard() => NextDecision.HasPrompt( "Select minor Power Card" ).ChooseFirst();
 	public void SelectMajorPowerCard() => NextDecision.HasPrompt( "Select Major Power Card" ).ChooseFirst();
 	public void SelectCardToForget()   => NextDecision.HasPrompt( "Select power card to forget" ).ChooseFirst();
-	public void ActivateFear()         => NextDecision.HasPrompt( "Activating Fear" ).ChooseFirst();
 
 	#region protected
 

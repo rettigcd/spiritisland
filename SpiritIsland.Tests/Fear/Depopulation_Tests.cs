@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Fear;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland.Tests.Fear;
 
 public class Depopulation_Tests {
 
@@ -10,10 +12,13 @@ public class Depopulation_Tests {
 		_board = Board.BuildBoardA();
 		_gameState = new GameState( _spirit, _board );
 		_gameState.DisableInvaderDeck();
+		_fearCard = _gameState.WatchForFearCard();
 		_gameState.Initialize();
 		_gameState.Fear.Deck.Pop();
 		_gameState.Fear.ActivatedCards.Push( new Depopulation() );
 	}
+
+	readonly Task<FearCardRevealed> _fearCard;
 
 	#endregion
 
@@ -33,8 +38,9 @@ public class Depopulation_Tests {
 
 		// When: Doing Invader phase (fear+ragage)
 		await _gameState.Fear.Apply()
-			.AwaitUser( u => { 
-				u.NextDecision.HasPrompt( "Activating Fear" ).HasOptions( "Depopulation" ).Choose( "Depopulation" );
+			.AwaitUser( async u => { 
+				// u.NextDecision.HasPrompt( "Activating Fear" ).HasOptions(  ).Choose( "Depopulation" );
+				(await _fearCard).Card.Text.ShouldBe("Depopulation");
 				u.NextDecision.HasPrompt( "Select token for Remove 1 Town, or Replace 1 City with 1 Town" ).HasOptions( "C@3 on A2,C@3 on A8" ).Choose( "C@3 on A8" );
 			} )
 			.ShouldComplete( "fear" );

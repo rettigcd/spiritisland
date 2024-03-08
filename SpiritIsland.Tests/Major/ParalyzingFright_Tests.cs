@@ -16,7 +16,7 @@ public class ParalyzingFright_Tests {
 		var (user, self) = TestSpirit.StartGame( PowerCard.For(typeof(ParalyzingFright)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
-			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
+			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg() );
 		}) );
 
 		// Given: there is a ravage card
@@ -50,8 +50,7 @@ public class ParalyzingFright_Tests {
 		user.SelectsFastAction( ParalyzingFright.Name );
 		user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );
 
-		//   Accept the fear card:
-		user.ActivateFear();
+		//   Null fear card triggered...
 
 		// Then: nothing changed
 		spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );

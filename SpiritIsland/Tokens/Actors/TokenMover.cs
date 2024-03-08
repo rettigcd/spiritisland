@@ -141,6 +141,7 @@ static public class Move_Extension {
 		var tokenMoved = new TokenMovedArgs( removeResult, addResult );
 		await removedNotifier( tokenMoved );
 		await addedNotifier( tokenMoved );
+		ActionScope.Current.Log( tokenMoved );
 
 		return tokenMoved;
 	}

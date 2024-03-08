@@ -2,20 +2,22 @@
 
 public sealed class ImmigrationSlows_Tests {
 
-	const string FearAck1 = "Immigration Slows : 1 : During the next normal build, skip the lowest-numbered land matching the invader card on each board.";
-	const string FearAck2 = "Immigration Slows : 2 : Skip the next normal build. The build card remains in place instead of shifting left.";
-	const string FearAck3 = "Immigration Slows : 3 : Skip the next normal build.  The build card shifts left as usual.";
+	const string FearAck1 = "Immigration Slows : 1 : During the next normal build, skip the lowest-numbered land matching the Invader card on each board.";
+	const string FearAck2 = "Immigration Slows : 2 : Skip the next normal Build. The Build card remains in place instead of shifting left.";
+	const string FearAck3 = "Immigration Slows : 3 : Skip the next normal Build. The Build card shifts left as usual.";
 	readonly IFearCard _fearCard = new ImmigrationSlows();
 
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public void Level1_SkipBuildInLowestNumberedLand() {
+	public async Task Level1_SkipBuildInLowestNumberedLand() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
 		var (user, spirit) = TestSpirit.StartGame(powerCard);
 		_user = user; 
 		_spirit = spirit;
-		_log = GameState.Current.LogInvaderActions();
+		var gs = GameState.Current;
+		_log = gs.LogInvaderActions();
+		var fearCard = gs.WatchForFearCard();
 		_log.Clear(); // skip over initial Explorer setup
 
 
@@ -30,7 +32,7 @@ public sealed class ImmigrationSlows_Tests {
 		// Given: Explorers Are Reluctant
 		_spirit.ActivateFearCard( _fearCard );
 		GrowAndBuyNoCards();
-		_user.AcknowledgesFearCard( FearAck1 );
+		(await fearCard).Msg().ShouldBe( FearAck1 ); // _user.AcknowledgesFearCard( FearAck1 );
 		_user.WaitForNext(); // start of round 3
 
 		_log.Assert_Ravaged( "A3", "A8" );
@@ -54,10 +56,10 @@ public sealed class ImmigrationSlows_Tests {
 		// (_user, _ctx) = TestSpirit.StartGame(PowerCard.For<CallToTend>());
 
 		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
-		var user = new VirtualTestUser( spirit );
 		var gs = new GameState( spirit, Board.BuildBoardA() ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
 		};
+		var fearCard = gs.WatchForFearCard();
 		gs.Initialize();   // Card #1 => Explore
 		GameState.Current.DisableBlightEffect();
 		_log = GameState.Current.LogInvaderActions();
@@ -75,7 +77,7 @@ public sealed class ImmigrationSlows_Tests {
 
 		// When #1: Do Invader phase
 		Task t = InvaderPhase.ActAsync(gs);
-		user.AcknowledgesFearCard( FearAck2 );
+		(await fearCard).Msg().ShouldBe( FearAck2 );
 		await t.ShouldComplete();
 
 		// Then #1: there was a Ravage & Explore but NO build
@@ -109,12 +111,14 @@ public sealed class ImmigrationSlows_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public void Level3_DelayExplore1Round() {
+	public async void Level3_DelayExplore1Round() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
 		var (user, spirit) = TestSpirit.StartGame(powerCard);
 		_user = user;
 		_spirit = spirit;
-		_log = GameState.Current.LogInvaderActions();
+		var gs = GameState.Current;
+		var fearCard = gs.WatchForFearCard();
+		_log = gs.LogInvaderActions();
 		_log.Clear(); // skip over initial Explorer setup
 
 		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
@@ -130,7 +134,7 @@ public sealed class ImmigrationSlows_Tests {
 		_spirit.ElevateTerrorLevelTo( 3 );
 
 		GrowAndBuyNoCards();
-		_user.AcknowledgesFearCard( FearAck3 );
+		(await fearCard).Msg().ShouldBe( FearAck3 );
 
 		_user.WaitForNext();
 		_log.Assert_Ravaged( "A3", "A8" );
