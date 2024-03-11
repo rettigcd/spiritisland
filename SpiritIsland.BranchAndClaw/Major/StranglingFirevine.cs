@@ -21,7 +21,7 @@ public class StranglingFirevine {
 
 		var original = await ctx.Self.SelectSpaceAsync("Select origination space", originatingOptions, Present.AutoSelectSingle)
 			?? throw new InvalidOperationException("Could not find required originating Sands with presence.");
-		await original.Tokens.Wilds.AddAsync(1);
+		await original.ScopeTokens.Wilds.AddAsync(1);
 
 		// 1 damage per wilds in / adjacent to target land.
 		int wildsDamage = ctx.Tokens.InOrAdjacentTo.Sum(s=>s.Wilds.Count);

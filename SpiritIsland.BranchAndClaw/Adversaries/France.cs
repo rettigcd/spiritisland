@@ -25,19 +25,19 @@ public class France : AdversaryBase, IAdversary {
 		public Loss_SprawlingPlantations():base( Name+": Before Setup, return all but 7 Town per player to the box. Invaders win if you ever cannot place a Town.", null ){}
 
 		public override void Init( GameState gs ) {
-			_maxTownCount = CountTowns( gs ) + 7 * gs.Spirits.Length;
+			_maxTownCount = CountTowns() + 7 * gs.Spirits.Length;
 			gs.AddWinLossCheck( LoseWhenTooManyTowns );
 		}
 
 		void LoseWhenTooManyTowns( GameState gs ){
 			// Before Setup, return all but 7 Town per player to the box.
 			// Invaders win if you ever cannot place a Town.
-			int townCount = CountTowns(gs);
+			int townCount = CountTowns();
 			if( _maxTownCount < townCount )
 				GameOverException.Lost( Name+": {townCount} Towns on the board." );
 		}
 
-		static int CountTowns( GameState gs ) => gs.Spaces_Unfiltered.Sum(s=>s.Sum(Human.Town));
+		static int CountTowns() => ActionScope.Current.Tokens_Unfiltered.Sum(s=>s.Sum(Human.Town));
 
 		int _maxTownCount;
 
@@ -173,7 +173,7 @@ public class France : AdversaryBase, IAdversary {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
 			var st = await boardCtx.SelectAsync( new A.SpaceToken( "Destory a town", options, Present.Always ) );
 			if(st != null)
-				await st.Space.Tokens.Destroy( st.Token, 1 );
+				await st.Space.ScopeTokens.Destroy( st.Token, 1 );
 		} );
 
 
@@ -188,9 +188,9 @@ public class France : AdversaryBase, IAdversary {
 			foreach(var board in gameState.Island.Boards) {
 				// add 1 Town to the highest-numbered land without Town.
 				var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
-				highLandWithoutTown.Tokens.Setup( Human.Town, 1 );
+				highLandWithoutTown.ScopeTokens.Setup( Human.Town, 1 );
 				// Add 1 Town to land #1.
-				board[1].Tokens.Setup( Human.Town, 1 );
+				board[1].ScopeTokens.Setup( Human.Town, 1 );
 			}
 		}
 	};
@@ -233,8 +233,8 @@ public class France : AdversaryBase, IAdversary {
 			async Task DoFranceStuff( ITokenRemovedArgs args ) {
 				if(args.Removed != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
 
-				BlightTokenBinding slowBlight = FrancePanel.Tokens.Blight;
-				SpaceState blightCard = BlightCard.Space.Tokens;
+				BlightTokenBinding slowBlight = FrancePanel.ScopeTokens.Blight;
+				SpaceState blightCard = BlightCard.Space.ScopeTokens;
 				// if adding this == 3 Blight per player
 				if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
 					// transfer slow blight to Blight card

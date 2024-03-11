@@ -57,7 +57,7 @@ class IslandPanel : IPanel {
 			_outstandingSpaceTokenOptions.UnionWith( tokenOnDecision.TokensOn.OfType<SpaceToken>() );
 
 		// As we draw the space, we pull matched SpaceTokens out of the collection and place in buttonContainer
-		foreach(SpaceState spaceState in _ctx.GameState.Spaces_Unfiltered) {
+		foreach(SpaceState spaceState in ActionScope.Current.Tokens_Unfiltered) {  // !!! this is WRONG - just use GameState SpaceStaets.
 
 			var paintableSpace = WorldLayout.GetPaintable( spaceState.Space );
 			// Init and paint
@@ -117,7 +117,7 @@ class IslandPanel : IPanel {
 
 		//foreach(Board board in _ctx.GameState.Island.Boards)
 		//	DrawBoardSpacesOnly( graphics, board.Spaces_Unfiltered );
-		DrawBoardSpacesOnly( graphics, _ctx.GameState.Spaces_Unfiltered.Downgrade() ); //!!! wastefull to promote to SpaceState then downgrade.
+		DrawBoardSpacesOnly( graphics, _ctx.GameState.Spaces_Unfiltered );
 	}
 
 	void MapWorldToScreen() {
@@ -174,7 +174,7 @@ class IslandPanel : IPanel {
 
 	void InitButtonContainerToSpaceButtons() {
 		_buttonContainer.Clear();
-		foreach(SpaceState spaceState in _ctx.GameState.Spaces_Unfiltered) {
+		foreach(SpaceState spaceState in ActionScope.Current.Tokens_Unfiltered) { // !!! Don't use ActionScope here, just use raw GameState.
 			SpaceLayout layout = WorldLayout.InsidePoints(spaceState.Space).SpaceLayout;
 			SpaceButton button = new SpaceButton( layout, MapWorldToClientXY ); // Can't use _mapper.Map directly because it has not been initialized AND it might change.
 			_buttonContainer.Add( spaceState.Space, button );

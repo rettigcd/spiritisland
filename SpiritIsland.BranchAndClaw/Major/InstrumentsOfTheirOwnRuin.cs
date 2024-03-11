@@ -59,7 +59,7 @@ public class InstrumentsOfTheirOwnRuin {
 		while( (spaceOptions = ctx.Adjacent.Where( adj => adj.HasInvaders() && HasDamage( adj.Space ) ).ToArray()).Length > 0 ) {
 			// select target invader
 			var invaderOptions = spaceOptions
-				.SelectMany( ss => ss.InvaderTokens().On(ss.Space) )
+				.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1(ss.Space) )
 				.ToArray();
 			var damagedInvader = await ctx.SelectAsync( new A.SpaceToken($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
 			if(damagedInvader == null) break;
@@ -77,7 +77,7 @@ public class InstrumentsOfTheirOwnRuin {
 
 			// apply 1 damage to selected invader
 			// !Note - using shared UnitOfWork across spaces because it is a ravage on only 1 space
-			await damagedInvader.Space.Tokens.Invaders
+			await damagedInvader.Space.ScopeTokens.Invaders
 				.ApplyDamageTo1( 1, damagedInvader.Token.AsHuman() );
 		}
 

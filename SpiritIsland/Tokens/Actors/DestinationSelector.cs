@@ -8,7 +8,7 @@ public sealed class DestinationSelector {
 
 	static public DestinationSelector Adjacent => new DestinationSelector(GetAdjacents);
 	static public DestinationSelector Nada => new DestinationSelector();
-	static SpaceState[] GetAdjacents(SpaceToken st) => st.Space.Tokens.Adjacent.ToArray();
+	static SpaceState[] GetAdjacents(SpaceToken st) => st.Space.ScopeTokens.Adjacent.ToArray();
 
 	#region constructors
 
@@ -63,7 +63,7 @@ public sealed class DestinationSelector {
 		A.Space decision = GetDecision( actionWord, sourceSpaceToken );
 		Space destination = await spirit.SelectAsync( decision );
 		if(destination != null)
-			await NotifyAsync( destination );
+			await NotifyAsync( destination.ScopeTokens );
 		return destination;
 	}
 

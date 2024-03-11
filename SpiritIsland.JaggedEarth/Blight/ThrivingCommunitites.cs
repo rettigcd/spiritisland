@@ -10,7 +10,7 @@ public class ThrivingCommunitites : BlightCard {
 		.ForEachBoard();
 
 	static SpaceAction UpgradeExplorerOrTown => new SpaceAction( "Replace 1 town with a city or Replace 1 explorer with 1 town", async ctx=>{
-		var spaceToken = await ctx.SelectAsync( An.Invader.ToReplace("upgrade",ctx.Tokens.HumanOfAnyTag(Human.Explorer_Town).On(ctx.Space)) );
+		var spaceToken = await ctx.SelectAsync( An.Invader.ToReplace("upgrade",ctx.Tokens.HumanOfAnyTag(Human.Explorer_Town).OnScopeTokens1(ctx.Space)) );
 		var oldInvader = spaceToken.Token.AsHuman();
 
 		var newTokenClass = (oldInvader.Class == Human.Explorer)

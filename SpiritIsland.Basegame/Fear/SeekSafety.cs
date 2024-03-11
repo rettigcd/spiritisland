@@ -29,7 +29,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 	static async Task PushExplorerIntoSpaceWithMoreTownsOrCities_Imp( Spirit self ) {
 
 		var gs = GameState.Current;
-		Dictionary<Space, int> buildingCounts = gs.Spaces
+		Dictionary<Space, int> buildingCounts = ActionScope.Current.Tokens
 			.ToDictionary(
 				s => s.Space,
 				s => s.TownsAndCitiesCount()
@@ -39,7 +39,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 		bool HasNeighborWithMoreBuildings( SpaceState s ) => GetNeighborWithMoreBuildings( s ).Length != 0;
 
 		// Select Source
-		var sourceOptions = gs.Spaces
+		var sourceOptions = ActionScope.Current.Tokens
 			.Where( s => s.Has( Human.Explorer ) && HasNeighborWithMoreBuildings( s ) )
 			.Downgrade()
 			.ToArray();
@@ -50,7 +50,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 
 		// Push
 		int sourceCount=0;
-		await source.Tokens.SourceSelector
+		await source.ScopeTokens.SourceSelector
 			.AddGroup( 1, Human.Explorer )
 			.Track(s=>sourceCount = buildingCounts[s.Space] )
 			.ConfigDestination( ds=>ds.FilterDestination( dst => sourceCount < buildingCounts[dst.Space] ) )

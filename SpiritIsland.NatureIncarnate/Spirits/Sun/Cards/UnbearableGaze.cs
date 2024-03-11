@@ -33,10 +33,11 @@ public class UnbearableGaze {
 			);
 
 	static Action<SourceSelector> FromTargetOrOrigin( Space target ) {
+		SpaceState targetTokens = target.ScopeTokens;
 		return (ss) => {
 			Space? selectedOrigin = null;
 			ss.Track( from => { if(from.Space != target) selectedOrigin = from.Space; } );
-			ss.FilterSource( ss => ss == target || selectedOrigin == null || selectedOrigin == ss.Space );
+			ss.FilterSource( ss => ss == targetTokens || selectedOrigin == null || selectedOrigin == ss.Space );
 		};
 	}
 

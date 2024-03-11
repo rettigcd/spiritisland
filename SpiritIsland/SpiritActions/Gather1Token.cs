@@ -9,7 +9,7 @@ public class Gather1Token( int _range, ITokenClass _tokenToGather, Present _pres
 
 	public override async Task ActAsync( Spirit self ) {
 		// !! can we simplify this?
-		var options = self.Presence.Lands.Tokens()
+		var options = self.Presence.Lands
 			.SelectMany( p => p.Range( _range ) ) // Growth option so this Range ok
 			.Distinct()
 			.ToHashSet();

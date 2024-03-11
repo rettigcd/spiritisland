@@ -1,14 +1,13 @@
 ﻿namespace SpiritIsland;
 
 static public class SpaceTokenExtensions {
-	public static SpaceToken On( this IToken token, Space space ) => new SpaceToken( space, token );
 
-	/// <summary>Shows the Space in the SpaceToken's description.</summary>
-	public static IEnumerable<SpaceToken> On( this IEnumerable<IToken> tokens, Space space ) 
-		=> tokens.Select( t => t.On( space ) );
+	// Safe to Call from UI thread - does not rely on ActionScope.GameState to find Tokens
+	public static SpaceToken On(this IToken token, SpaceState spaceState) => new SpaceToken(spaceState, token); // GOOD - captures tokens
+	public static IEnumerable<SpaceToken> On( this IToken token, IEnumerable<SpaceState> spaces ) => spaces.Select(token.On);
 
-	/// <summary>Convenience method.  Downgrades space-states to spaces.</summary>
-	public static IEnumerable<SpaceToken> On( this IToken token, IEnumerable<SpaceState> spaces ) => token.On( spaces.Downgrade() );
-	public static IEnumerable<SpaceToken> On( this IToken token, IEnumerable<Space> spaces ) => spaces.Select( space => token.On( space ) );
-
+	/// NOT SAFE to call from UI thread - relies on ActionScope.GameState to find Tokens
+	public static IEnumerable<SpaceToken> OnScopeTokens1( this IEnumerable<IToken> tokens, Space space) => tokens.Select(t => t.OnScopeTokens(space));
+	public static IEnumerable<SpaceToken> OnScopeTokens2( this IToken token, IEnumerable<Space> spaces ) => spaces.Select( token.OnScopeTokens );
+	public static SpaceToken OnScopeTokens(this IToken token, Space space) => new SpaceToken(space.ScopeTokens, token);
 }

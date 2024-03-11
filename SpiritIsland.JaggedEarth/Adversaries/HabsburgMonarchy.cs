@@ -33,7 +33,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 					// and the highest-numbered land without Setup symbols,
 					board.Spaces.Last(x =>((Space1) x).StartUpCounts.IsEmpty)
 					} )
-					.Tokens()
+					.ScopeTokens()
 					.ToArray();
 
 				// add 1 Town
@@ -91,7 +91,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 	}
 
 	static async Task IfTooHealthyAddBlight( BoardCtx ctx ) {
-		var spaces = ctx.Board.Spaces.Tokens().ToArray();
+		var spaces = ctx.Board.Spaces.ScopeTokens().ToArray();
 		int townsToAdd = spaces.Sum( x => x.Blight.Count ) switch { <= 2 => 2, <= 4 => 1, _ => 0 };
 
 		for(int i = 0; i < townsToAdd; ++i) {
@@ -100,7 +100,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 			var criteria = new A.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
 			var addSpace = await ctx.Self.SelectAsync( criteria );
-			await addSpace.Tokens.AddDefaultAsync( Human.Town, 1, AddReason.Build );
+			await addSpace.ScopeTokens.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 		}
 	}
 
@@ -118,7 +118,7 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 		// on each board
 		foreach(Board board in gameState.Island.Boards) {
 
-			var spaces = board.Spaces.Tokens().ToArray();
+			var spaces = board.Spaces.ScopeTokens().ToArray();
 			// add 1 City to a Coastal land without City
 			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Human.City)==0);
 			if( coastWithoutCity != null)
@@ -166,7 +166,7 @@ class IrreperableDamage : AdversaryLossCondition {
 	}
 
 	static public void LossCheckImp( GameState gameState ) {
-		int badBlightCount = _fakeBadBlightSpace.Tokens[Token.Blight];
+		int badBlightCount = _fakeBadBlightSpace.ScopeTokens[Token.Blight];
 		if(gameState.Spirits.Length < badBlightCount)
 			GameOverException.Lost( $"Irreparable Damage - {badBlightCount} blight were added from 8+ land damage." );
 	}
@@ -175,7 +175,7 @@ class IrreperableDamage : AdversaryLossCondition {
 		Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens, int count ) {
 			bool shouldAddBadBadBlight = 8 <= tokens[LandDamage.Token];
 			if(shouldAddBadBadBlight)
-				_fakeBadBlightSpace.Tokens.Adjust( Token.Blight, 1 );
+				_fakeBadBlightSpace.ScopeTokens.Adjust( Token.Blight, 1 );
 			return Task.CompletedTask;
 		}
 	}

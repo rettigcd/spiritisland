@@ -13,7 +13,7 @@ public partial class ManyMindsMoveAsOne {
 
 		static SpaceState[] ExtendBeastBy1( SpaceToken st ) {
 			int range = st.Token.Class == Token.Beast ? 2 : 1; // Compare Class, not Token so we get all beasts
-			return st.Space.Tokens.Range( range ).ToArray();
+			return st.Space.ScopeTokens.Range( range ).ToArray();
 		}
 
 	}

@@ -31,7 +31,7 @@ public class VengeanceAsABurningPlague : Spirit {
 	);
 
 	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async self => {
-		var options = DefaultRangeCalculator.Singleton.GetSpaceOptions( self.Presence.Lands.Tokens(), new TargetCriteria( 1 ) );
+		var options = DefaultRangeCalculator.Singleton.GetSpaceOptions( self.Presence.Lands, new TargetCriteria( 1 ) );
 		Space to = await self.SelectAsync( new A.Space( "Add a Disease", options, Present.Always ) );
 		await self.Target( to ).Disease.AddAsync( 1 );
 	} );
@@ -50,11 +50,11 @@ public class VengeanceAsABurningPlague : Spirit {
 
 		// Put 2 presence on your starting board:
 		// 1 in a land with blight.
-		SpaceState landWithoutBlight = board.Spaces.Tokens().First( s => s.Blight.Any );
+		SpaceState landWithoutBlight = board.Spaces.ScopeTokens().First( s => s.Blight.Any );
 		landWithoutBlight.Setup( Presence.Token, 1 );
 
 		// 1 in a Wetland without dahan
-		SpaceState wetlandsWithoutDahan = board.Spaces.Tokens().First( s => s.Space.IsWetland && !s.Dahan.Any );
+		SpaceState wetlandsWithoutDahan = board.Spaces.ScopeTokens().First( s => s.Space.IsWetland && !s.Dahan.Any );
 		wetlandsWithoutDahan.Setup( Presence.Token, 1 );
 
 		gameState.AddIslandMod( new TerrorOfASlowlyUnfoldingPlague(this) );

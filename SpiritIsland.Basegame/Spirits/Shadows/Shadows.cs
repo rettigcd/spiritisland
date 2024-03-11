@@ -51,7 +51,7 @@ public class Shadows : Spirit {
 		var normalSpaces = base.GetPowerTargetOptions( gameState, sourceCriteria, targetCriteria );
 		return Energy <= 0 
 			? normalSpaces
-			: normalSpaces.Union( gameState.Spaces.Where( s => s.Dahan.Any ) );
+			: normalSpaces.Union(ActionScope.Current.Tokens.Where( s => s.Dahan.Any ) );
 	}
 
 
@@ -59,8 +59,8 @@ public class Shadows : Spirit {
 
 		var higestJungle = board.Spaces.Last( s=>s.IsJungle );
 
-		higestJungle.Tokens.Setup(Presence.Token,2 );
-		board[5].Tokens.Setup(Presence.Token, 1);
+		higestJungle.ScopeTokens.Setup(Presence.Token,2 );
+		board[5].ScopeTokens.Setup(Presence.Token, 1);
 	}
 
 }

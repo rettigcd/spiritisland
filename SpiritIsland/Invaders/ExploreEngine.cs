@@ -18,12 +18,12 @@ public class ExploreEngine {
 			await ExplorePhaseComplete(gameState);
 	}
 
-	static protected SpaceState[] PreExplore( InvaderCard card, GameState gs ) {
+	static protected SpaceState[] PreExplore( InvaderCard card, GameState _ ) {
 
 		// Modify
 		static bool IsExplorerSource( SpaceState space ) => space.Space.IsOcean || space.HasAny( Human.Town_City );
 
-		var sources = gs.Spaces_Existing
+		var sources = ActionScope.Current.Tokens_Existing
 			.Where( IsExplorerSource )
 			.Where( ss => !ss.ModsOfType<ISkipExploreFrom>().Any() )
 			.ToHashSet();
@@ -48,7 +48,7 @@ public class ExploreEngine {
 		foreach(var x in spacesWeExplore)
 			x.Adjust( ModToken.DoExplore, x.Space.InvaderActionCount );
 
-		return gs.Spaces
+		return ActionScope.Current.Tokens
 			.Where( x => x[ModToken.DoExplore] > 0 )
 			.ToArray();
 	}

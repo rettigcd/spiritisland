@@ -64,8 +64,9 @@ public abstract class Space
 	}
 
 	/// <summary> Used the Current ActionScope to get the tokens </summary>
-	public SpaceState Tokens => ActionScope.Current.AccessTokens(this);
-	public static implicit operator SpaceState( Space space) => space?.Tokens;
+	public SpaceState ScopeTokens => ActionScope.Current.AccessTokens(this);
+
+	//  This is not safe for UI:  	public static implicit operator SpaceState( Space space ) => space?.Tokens;
 
 	#region Connect / Disconnect
 
@@ -114,9 +115,9 @@ public abstract class Space
 
 	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
 	public Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.SourceAsync(token,count,reason);
+		=> ScopeTokens.SourceAsync(token,count,reason);
 	public Task<(ITokenAddedArgs, Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count, AddReason addReason = AddReason.Added ) 
-		=> Tokens.SinkAsync(token, count, addReason);
+		=> ScopeTokens.SinkAsync(token, count, addReason);
 
 	#endregion
 

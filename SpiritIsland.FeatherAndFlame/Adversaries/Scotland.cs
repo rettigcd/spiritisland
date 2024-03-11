@@ -23,7 +23,7 @@ public class Scotland : AdversaryBase, IAdversary {
 			InitFunc = (gameState,_) => {
 				// Add 1 City to land #2
 				foreach(Board board in gameState.Island.Boards)
-					board[2].Tokens.Setup( Human.City, 1 );
+					board[2].ScopeTokens.Setup( Human.City, 1 );
 				ActionScope.Current.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
 			},
 		}.WithInvaderCardOrder("11-22-1-C2-33333"),
@@ -42,7 +42,7 @@ public class Scotland : AdversaryBase, IAdversary {
 			InitFunc = (gameState,_) => {
 				// After a Ravage Action adds Blight to a Coastal Land, add 1 Blight to that board's Ocean (without cascading).
 				var token = new ScotlandCoastalBlightCheckToken();
-				foreach(var ss in gameState.Spaces.Where( ss => ss.Space.IsCoastal ))
+				foreach(var ss in ActionScope.Current.Tokens.Where( ss => ss.Space.IsCoastal ))
 					ss.Adjust(token,1);
 
 				// Treat the Ocean as a Coastal Wetland for this rule and for Blight removal/movement.
@@ -60,11 +60,11 @@ public class Scotland : AdversaryBase, IAdversary {
 	static async Task PortsSprawlOutward_Escalation( GameState gameState ) {
 		// On the single board with the most Coastal Town / City,
 		var board = gameState.Island.Boards
-			.OrderByDescending( b => b.Spaces.Where( s => s.IsCoastal ).Tokens()
+			.OrderByDescending( b => b.Spaces.Where( s => s.IsCoastal ).ScopeTokens()
 					.Sum( ss => ss.SumAny( Human.Town_City ) ) )
 			.First();
 		// add 1 Town to the N lands with the fewest Town( N = # of players.)
-		var spacesToAddTown = board.Spaces.Tokens()
+		var spacesToAddTown = board.Spaces.ScopeTokens()
 			.OrderBy( ss => ss.Sum( Human.Town ) )
 			.Take( gameState.Spirits.Length )
 			.ToArray();
@@ -84,7 +84,7 @@ public class Scotland : AdversaryBase, IAdversary {
 	);
 
 	static void TradeHubImp( GameState gameState ) {
-		int coastalCityLandCount = gameState.Spaces_Unfiltered
+		int coastalCityLandCount = ActionScope.Current.Tokens_Unfiltered
 			.Count( s => s.Has( Human.City ) && s.Space.IsCoastal );
 		if( gameState.Island.Boards.Length < coastalCityLandCount )
 			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");

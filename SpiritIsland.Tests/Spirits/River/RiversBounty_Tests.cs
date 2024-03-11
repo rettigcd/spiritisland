@@ -41,7 +41,7 @@ public class RiversBounty_Tests {
 		card.Assert_CardStatus( 0, Phase.Slow, "sun water animal" );
 	}
 
-	Space Given_SpiritHas1Presence() => _gameState.Spaces.Where( _spirit.Presence.IsOn ).Single().Space;
+	Space Given_SpiritHas1Presence() => ActionScope.Current.Tokens.Where( _spirit.Presence.IsOn ).Single().Space;
 
 	// 1 target, 0 dahan, 1 to gather       => resolved, dahan gathered, no child
 	// 1 target, 1 dahan, 1 to gather        => resolved, dahan gathered, child!
@@ -133,7 +133,7 @@ public class RiversBounty_Tests {
 	public async Task TwoPresenceSpaces(){
 		// Given: spirit has presence on A4 && A8
 		_spirit.Given_IsOn(_board[8]);
-		SpaceState[] targetOptions = _spirit.Presence.Lands.Tokens().ToArray();
+		SpaceState[] targetOptions = _spirit.Presence.Lands.ToArray();
 		Assert.Equal(2,targetOptions.Length);
 
 		//   And: 2 dahan in A5 (touches both)
@@ -151,7 +151,7 @@ public class RiversBounty_Tests {
 	[Fact]
 	public async Task TwoDahanOnPresenceSpace(){
 		// Given: spirit has presence on A4
-		var targetOptions = _spirit.Presence.Lands.Tokens().ToArray();
+		var targetOptions = _spirit.Presence.Lands.ToArray();
 		Assert.Single( targetOptions );
 
 		//   And: 2 dahan in A5 (touches both)
@@ -178,7 +178,7 @@ public class RiversBounty_Tests {
 	}
 
 	void Given_AddDahan( int startingCount, Space target ) {
-		target.Tokens.Dahan.Init( startingCount );
+		target.ScopeTokens.Dahan.Init( startingCount );
 		Assert_DahanCount( target, startingCount );
 	}
 

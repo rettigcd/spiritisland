@@ -59,10 +59,10 @@ public class Bringer_GrowthTests : BoardAGame {
 		_gameState = new GameState( _spirit, _board );
 
 		_spirit.Given_IsOn(_board[5]);
-		_board[6].Tokens.Dahan.Init(1);
-		_board[7].Tokens.AdjustDefault( Human.Explorer, 1 );
-		_board[8].Tokens.AdjustDefault( Human.Town, 1 );
-		_board[0].Tokens.AdjustDefault( Human.City, 1 );
+		_board[6].ScopeTokens.Dahan.Init(1);
+		_board[7].ScopeTokens.AdjustDefault( Human.Explorer, 1 );
+		_board[8].ScopeTokens.AdjustDefault( Human.Town, 1 );
+		_board[0].ScopeTokens.AdjustDefault( Human.City, 1 );
 
 		// add presense range 4 Dahan or Invadors, +2 energy
 		await _spirit.When_Growing( (user) => {

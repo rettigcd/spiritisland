@@ -56,7 +56,7 @@ public class EmberEyedBehemoth : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 2 presenct + Incarna in highest # wetlands that is adjacent to ANY Jungle
-		SpaceState start = board.Spaces.Last( s => s.Adjacent_Existing.Any(x=>x.IsJungle ) ).Tokens;
+		SpaceState start = board.Spaces.Last( s => s.Adjacent_Existing.Any(x=>x.IsJungle ) ).ScopeTokens;
 		start.Setup(Presence.Token, 2);
 		start.Setup(Incarna,1);
 	}

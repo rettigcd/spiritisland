@@ -105,7 +105,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
-		cfg.Spirit.Presence.Lands.Count( x => x.Text == "A8" ).ShouldBe( 0 );
+		cfg.Spirit.Presence.Lands.Count( x => x.Space.Text == "A8" ).ShouldBe( 0 );
 		//   And: no SS found
 		cfg.Presence.SacredSites.Downgrade().Count( x => x.Text == "A8" ).ShouldBe( 0 );
 	}
@@ -217,7 +217,7 @@ public class AbsoluteStasis_Tests {
 
 		try{
 			//  When: destroy that extra presence (triggers win/loss check)
-			await destroyPresenceSpace.Tokens.Destroy(cfg.Presence.Token,1).ShouldComplete("destroying presence");
+			await destroyPresenceSpace.ScopeTokens.Destroy(cfg.Presence.Token,1).ShouldComplete("destroying presence");
 			//  When: we check win/loss
 			cfg.GameState.CheckWinLoss();
 		} catch( GameOverException ) {
@@ -237,7 +237,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis( space.Text );
 
 		// Then: space still apears in list of All Spaces
-		cfg.GameState.Spaces_Unfiltered.ShouldContain( cfg.GameState.Tokens[space] );
+		ActionScope.Current.Tokens_Unfiltered.ShouldContain( cfg.GameState.Tokens[space] );
 
 	}
 

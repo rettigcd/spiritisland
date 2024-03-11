@@ -69,8 +69,8 @@ public class ManyMinds_Tests {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
 		Board board = Board.BuildBoardA();
 		_ = new GameState( spirit, board );
-		SpaceState srcTokens = board[1].Tokens;
-		SpaceState dstTokens = board[2].Tokens;
+		SpaceState srcTokens = board[1].ScopeTokens;
+		SpaceState dstTokens = board[2].ScopeTokens;
 
 		// Given: presence on A1 (src)
 		await srcTokens.AddAsync(spirit.Presence.Token, startingSrcPresence ).ShouldComplete("add 2 presence"); // use .Add event triggers extra beast
@@ -101,7 +101,7 @@ public class ManyMinds_Tests {
 
 		// Given: 2 presence and 2 dahan on A1
 		spirit.Given_IsOn( board[1],2 );
-		await board[1].Tokens.AddAsync( spirit.Presence.Token, 2 ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
+		await board[1].ScopeTokens.AddAsync( spirit.Presence.Token, 2 ).ShouldComplete( "add 2 presence" ); // use .Add event triggers extra beast
 
 		board[1].Given_HasTokens("2D@2");
 		//   And: Beast on 5
@@ -124,7 +124,7 @@ public class ManyMinds_Tests {
 		} );
 
 		//  And: Final slot has 2 presence, 2 dahan, and 1 beast
-		board[7].Tokens.Summary.ShouldBe("2D@2,2MMMaO,1SS-Beast");
+		board[7].ScopeTokens.Summary.ShouldBe("2D@2,2MMMaO,1SS-Beast");
 	}
 
 	[Fact]
@@ -139,7 +139,7 @@ public class ManyMinds_Tests {
 		GameState gs = new GameState(spirit, board);
 
 		// Given: spirit on A5
-		spirit.Given_IsOn( board[5].Tokens );
+		spirit.Given_IsOn( board[5].ScopeTokens );
 		//   And: trigger elements
 		spirit.Configure().Elements("1 air,2 animal");
 
@@ -156,6 +156,6 @@ public class ManyMinds_Tests {
 		} );
 
 		// And: should have defend-2
-		board[7].Tokens.Summary.ShouldBe("2A,2E@1,2G");
+		board[7].ScopeTokens.Summary.ShouldBe("2A,2E@1,2G");
 	}
 }

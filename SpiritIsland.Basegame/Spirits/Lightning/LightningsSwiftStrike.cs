@@ -40,7 +40,7 @@ public class LightningsSwiftStrike : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: put 2 pressence in highest numbered sands
 		var space = board.Spaces.Reverse().First(x=>x.IsSand);
-		var tokens = space.Tokens;
+		var tokens = space.ScopeTokens;
 		tokens.Setup(Presence.Token, 2);
 	}
 

@@ -34,13 +34,13 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 		);
 	}
 
-	static async Task SpiritsActOnDifferentCostalLands( GameState ctx, Func<TargetSpaceCtx, Task> act ) {
-		var options = ctx.Spaces
+	static async Task SpiritsActOnDifferentCostalLands( GameState gs, Func<TargetSpaceCtx, Task> act ) {
+		var options = ActionScope.Current.Tokens
 			.Where(TerrainMapper.Current.IsCoastal)
 			.Downgrade()
 			.ToList();
 
-		foreach( var spirit in ctx.Spirits ) {
+		foreach( var spirit in gs.Spirits ) {
 			if(options.Count == 0) break;
 			Space space = await spirit.SelectSpaceAsync("1 damage per Dahan", options,Present.Always );
 			if( space != null) {

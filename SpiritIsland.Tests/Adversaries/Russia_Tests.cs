@@ -184,7 +184,7 @@ var xxx = a5.Keys.ToArray();
 		Space a5 = boardA[5];
 
 		// Given: many explorers on A5
-		a5.Tokens.Given_HasTokens( "5E@1" );
+		a5.ScopeTokens.Given_HasTokens( "5E@1" );
 		//   And: nothing on A6
 		Space a6 = boardA[6];
 		a6.Given_ClearTokens();
@@ -194,7 +194,7 @@ var xxx = a5.Keys.ToArray();
 			// Then: pushes 1
 			user.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( "A6" );
 		} );
-		boardA[6].Tokens.Summary.ShouldBe( "1E@1" );
+		boardA[6].ScopeTokens.Summary.ShouldBe( "1E@1" );
 	}
 
 	[Fact]
@@ -205,12 +205,12 @@ var xxx = a5.Keys.ToArray();
 		Space a5 = boardA[5];
 
 		// Given: many explorers on A5
-		a5.Tokens.Given_HasTokens( "5E@1" );
+		a5.ScopeTokens.Given_HasTokens( "5E@1" );
 		//   And: nothing on A6
 		Space a6 = boardA[6];
 		a6.Given_ClearTokens();
 		//   And: A7 is isolated
-		boardA[7].Tokens.Init( Token.Isolate, 1 );
+		boardA[7].ScopeTokens.Init( Token.Isolate, 1 );
 
 		// When destroying all explorers
 		await gameState.Spirits[0].When_TargetingSpace( a5, TheJungleHungers.ActAsync, ( user ) => {
@@ -227,9 +227,9 @@ var xxx = a5.Keys.ToArray();
 		Space a5 = boardA[5];
 
 		// Given: many explorers on A5
-		a5.Tokens.Given_HasTokens( "5E@1" );
+		a5.ScopeTokens.Given_HasTokens( "5E@1" );
 		//   And: is isolated
-		a5.Tokens.Init( Token.Isolate, 1 );
+		a5.ScopeTokens.Init( Token.Isolate, 1 );
 
 		// When destroying all explorers
 		await gameState.Spirits[0].When_TargetingSpace( a5, TheJungleHungers.ActAsync, ( user ) => {

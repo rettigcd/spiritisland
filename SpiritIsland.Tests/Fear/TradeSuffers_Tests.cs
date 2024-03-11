@@ -80,7 +80,7 @@ public class TradeSuffers_Tests {
 		ActivateFearCard( new TradeSuffers() );
 
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer
-		SpaceState tokens = board[7].Tokens; // _ctx.TargetSpace( "A7" ).Tokens;
+		SpaceState tokens = board[7].ScopeTokens; // _ctx.TargetSpace( "A7" ).Tokens;
 		tokens.Given_InitSummary( "1C@3,4D@2,2E@1" );
 
 		// When: activating Fear & Doing Invader Actions
@@ -126,7 +126,7 @@ public class TradeSuffers_Tests {
 
 	static void ClearBlight() {
 		// So it doesn't cascade during ravage
-		foreach(SpaceState space in GameState.Current.Spaces_Unfiltered)
+		foreach(SpaceState space in ActionScope.Current.Tokens_Unfiltered)
 			space.Init( Token.Blight, 0 ); // Don't trigger events
 	}
 

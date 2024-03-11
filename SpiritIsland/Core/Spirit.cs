@@ -561,8 +561,9 @@ public abstract partial class Spirit
 	/// <summary> Determines if target can be reached from the specified source given any of the TargetCriteria </summary>
 	/// <remarks>Used to find Origin lands</remarks>
 	public bool IsOriginFor( SpaceState source, Space target, params TargetCriteria[] targetCriteria ) {
+		var targetTokens = target.ScopeTokens;
 		return targetCriteria.Any( tc => 
-			PowerRangeCalc.GetSpaceOptions( source, tc ).Contains( target )
+			PowerRangeCalc.GetSpaceOptions( source, tc ).Contains( targetTokens )
 		);
 	}
 
@@ -583,7 +584,7 @@ public abstract partial class Spirit
 	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria ) {
 		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
 		return rangeCalculator
-			.GetSpaceOptions( Presence.Lands.Tokens(), targetCriteria );
+			.GetSpaceOptions( Presence.Lands, targetCriteria );
 	}
 
 	#endregion

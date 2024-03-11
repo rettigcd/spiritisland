@@ -12,7 +12,7 @@ public class RitesOfTheLandsRejection_Tests {
 		var (user,ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
 
 		// Given: find a space with 1 explorer
-		var space = GameState.Current.Spaces_Unfiltered
+		var space = ActionScope.Current.Tokens_Unfiltered
 			.First( s => s.InvaderSummary() == "1E@1" );
 
 		//   And: add Dahan (because card requires it)
@@ -45,7 +45,7 @@ public class RitesOfTheLandsRejection_Tests {
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
 
 		// Given: find a space with 1 explorer
-		SpaceState space = GameState.Current.Spaces_Unfiltered.First( s => s.InvaderSummary() == "1E@1" );
+		SpaceState space = ActionScope.Current.Tokens_Unfiltered.First( s => s.InvaderSummary() == "1E@1" );
 		//   And: add Dahan (because card requires it)
 		space.Given_HasTokens("1D@2");
 		//   And: The build card appears twice

@@ -30,7 +30,7 @@ public class CastDownIntoTheBrinyDeep {
 		// destroy the board containing target land and everything on that board.
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
 
-		var existingSpaces = board.Spaces_Existing.Tokens().ToArray();
+		var existingSpaces = board.Spaces_Existing.ScopeTokens().ToArray();
 		foreach(SpaceState spaceState in existingSpaces )
 			await spaceState.DestroySpace();
 

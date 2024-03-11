@@ -31,6 +31,10 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 		=> new Space( "Where would you like to place your presence?", options, present )
 			.ShowTokenLocation( tokenToAdd );
 
+	static public Space ToPlacePresence(IEnumerable<SpaceState> options, Present present, IToken tokenToAdd)
+		=> new Space("Where would you like to place your presence?", options, present)
+			.ShowTokenLocation(tokenToAdd);
+
 	static public Space ToPlaceDestroyedPresence( IEnumerable_Spaces options, Present present, SpiritIsland.Spirit spirit, int? count=null )
 		// make sure caller has pre-filtered spaces using:  .Where( spirit.Presence.CanBePlacedOn )
 		=> new Space(
@@ -54,6 +58,9 @@ public class Space : TypedDecision<Orig_Space>, IHaveArrows {
 	/// <remarks> Convenience method - downgrades SpaceStates to Spaces</remarks>
 	public Space( string prompt, IEnumerable<SpaceState> spaces, Present present )
 		: this( prompt, spaces.Downgrade(), present ) { }
+
+	public Space(string prompt, IEnumerable<SpaceState> spaces, string cancelText)
+		: this(prompt, spaces.Downgrade(), cancelText) { }
 
 	public Space( string prompt, IEnumerable<Orig_Space> spaces, Present present )
 		: base( prompt, spaces.OrderBy( x => x.Label ), present ) 

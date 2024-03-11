@@ -8,7 +8,7 @@ public class SettleIntoHuntingGrounds_Tests {
 	[Fact]
 	public async Task CanFreezePresence() {
 		var (spirit,board) = Init();
-		SpaceState a5 = board[5];
+		SpaceState a5 = board[5].ScopeTokens;
 
 		// Given: Presence on a5 and a6
 		a5.Given_HasTokens("1RSiS");
@@ -42,10 +42,10 @@ public class SettleIntoHuntingGrounds_Tests {
 		} );
 
 		//  Then: TS is still on A1
-		spirit.Presence.IsOn(a1.Tokens).ShouldBeTrue();
+		spirit.Presence.IsOn(a1.ScopeTokens).ShouldBeTrue();
 
 		//   And: not on A2
-		spirit.Presence.IsOn(board[2].Tokens).ShouldBeFalse();
+		spirit.Presence.IsOn(board[2].ScopeTokens).ShouldBeFalse();
 	}
 
 	[Trait( "SpecialRule", "Mists Shift and Flow" )]
@@ -91,7 +91,7 @@ public class SettleIntoHuntingGrounds_Tests {
 			u.NextDecision.HasPrompt("Select presence to move.").HasOptions("RSiS on A1").Choose("RSiS on A1");
 		} );
 		// But: spirit is still on A1 (doesn't move)
-		a1.Tokens.Summary.ShouldBe("1RSiS");
+		a1.ScopeTokens.Summary.ShouldBe("1RSiS");
 	}
 
 	[Fact]
@@ -116,8 +116,8 @@ public class SettleIntoHuntingGrounds_Tests {
 		} );
 
 		// But: is not move placed
-		spirit.Presence.CountOn(a1.Tokens).ShouldBe(2);
-		spirit.Presence.CountOn(board[5].Tokens).ShouldBe(0);
+		spirit.Presence.CountOn(a1.ScopeTokens).ShouldBe(2);
+		spirit.Presence.CountOn(board[5].ScopeTokens).ShouldBe(0);
 
 
 

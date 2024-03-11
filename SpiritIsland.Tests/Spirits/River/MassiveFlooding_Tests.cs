@@ -44,7 +44,7 @@ public class MassiveFlooding_Tests {
 		//   And: Spirit has enough elements to trigger Level-1 of Massive Flooding
 		spirit.Elements.Add( ElementStrings.Parse("1 sun,2 water" ) );
 		//   And: target has 1 city, 4 towns, 5 explorers
-		space.Tokens.Given_HasTokens( "1C@3,5E@1,4T@2" );
+		space.ScopeTokens.Given_HasTokens( "1C@3,5E@1,4T@2" );
 
 		//  When: activate innate
 		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => { 
@@ -80,7 +80,7 @@ public class MassiveFlooding_Tests {
 		//   And: Spirit has enough elements to trigger Level-2 of Massive Flooding
 		spirit.Elements.Add( ElementStrings.Parse("3 water,2 sun") );
 		//   And: target has 1 city, 4 towns, 5 explorers
-		var tokens = space.Tokens;
+		var tokens = space.ScopeTokens;
 		tokens.InitDefault(Human.City,1);
 		tokens.InitDefault(Human.Town,4);
 		tokens.InitDefault(Human.Explorer,5);

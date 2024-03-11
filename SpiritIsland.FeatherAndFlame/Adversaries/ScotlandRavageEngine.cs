@@ -5,11 +5,11 @@ public class ScotlandRavageEngine : RavageEngine {
 
 		await base.ActivateCard( card, gameState );
 		// After the Ravage step,
-		await FuelInwardGrowth( card, gameState );
+		await FuelInwardGrowth( card );
 	}
 
-	static async Task FuelInwardGrowth( InvaderCard card, GameState gameState ) {
-		var spaces = gameState.Spaces_Unfiltered
+	static async Task FuelInwardGrowth( InvaderCard card ) {
+		var spaces = ActionScope.Current.Tokens_Unfiltered
 			// to each Inland land
 			.Where( ss => !ss.Space.IsOcean && !ss.Space.IsCoastal )
 			// that matches a Ravage card

@@ -14,10 +14,10 @@ class PourTimeSideways {
 
 		// Move 1 of your presence to a different land with your presence.
 		var src = await self.SelectAsync( new A.SpaceToken("Move presence from:", self.Presence.Deployed, Present.Always ) );
-		if(!src.Space.Tokens.Has(self.Presence)) return; // !!?? is this necessary?
-		var dstOptions = self.Presence.Lands.Tokens().Where( s => s.Space != src.Space );
+		if(!src.Space.ScopeTokens.Has(self.Presence)) return; // !!?? is this necessary?
+		var dstOptions = self.Presence.Lands.Where( s => s.Space != src.Space );
 		var dst = await self.SelectAsync( A.Space.ForMoving_SpaceToken( "Move presence to:", src.Space, dstOptions.Downgrade(), Present.Always, src.Token ) );
-		await src.MoveTo(dst);
+		await src.MoveTo(dst.ScopeTokens);
 		var srcBoards = src.Space.Boards;
 		if(srcBoards.Intersect(dst.Boards).Any()) return;
 

@@ -37,7 +37,7 @@ public class ToweringRootsOfTheJungle : Spirit {
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
-		var highestFirst = board.Spaces.Reverse().Tokens().ToArray();
+		var highestFirst = board.Spaces.Reverse().ScopeTokens().ToArray();
 		// 1 in highest-numbered jungle without blight
 		SpaceState jungle = highestFirst.First(x=>x.Space.IsJungle && !x.Blight.Any);
 		jungle.Init(Presence.Token,1);

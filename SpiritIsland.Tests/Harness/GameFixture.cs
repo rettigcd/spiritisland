@@ -41,7 +41,7 @@ class GameFixture {
 	}
 
 	public TargetSpaceCtx TargetSpace( string spaceLabel )
-		=> spirit.Target( gameState.Spaces_Unfiltered.Single( x => x.Space.Label == spaceLabel ).Space );
+		=> spirit.Target(ActionScope.Current.Tokens_Unfiltered.Single( x => x.Space.Label == spaceLabel ).Space );
 
 	public void InitRavageCard( Space space ) => gameState.InvaderDeck.Ravage.Cards.Add( space.BuildInvaderCard() );
 	public void InitRavageCard( Terrain terrain ) => gameState.InvaderDeck.Ravage.Cards.Add( InvaderCard.Stage1( terrain ) );

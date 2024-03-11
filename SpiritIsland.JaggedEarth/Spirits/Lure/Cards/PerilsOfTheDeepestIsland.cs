@@ -17,7 +17,7 @@ public class PerilsOfTheDeepestIsland {
 
 		var space = await ctx.Self.SelectSpaceAsync("Add beast", options.Select(x=>x.Space),Present.Always);
 
-		await space.Tokens.Beasts.AddAsync(1);
+		await space.ScopeTokens.Beasts.AddAsync(1);
 
 		// Push up to 2 dahan.
 		await ctx.PushUpToNDahan(2);

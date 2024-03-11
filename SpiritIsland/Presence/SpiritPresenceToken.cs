@@ -27,22 +27,19 @@ public class SpiritPresenceToken
 		_boardCounts.Clear();
 	}
 
-	void ITrackMySpaces.TrackAdjust( Space space, int delta ) {
+	void ITrackMySpaces.TrackAdjust(SpaceState space, int delta) {
 		_spaceCounts[space] += delta;
-		foreach(var board in space.Boards)
+		foreach (var board in space.Space.Boards)
 			_boardCounts[board] += delta;
 	}
-	readonly CountDictionary<Space> _spaceCounts = [];
+
+	readonly CountDictionary<SpaceState> _spaceCounts = [];
 	readonly CountDictionary<Board> _boardCounts = []; // ? Is this necessary?  How many things use this?
 
 	public bool IsOnIsland => _boardCounts.Count != 0;
 
 	// public IEnumerable<Space> Spaces_Existing => _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
-	public IEnumerable<Space> Spaces_Existing {  get {
-			return _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
-		} 
-	}
-
+	public IEnumerable<SpaceState> Spaces_Existing =>_spaceCounts.Keys.Where(ss => Space.Exists(ss.Space));
 
 	/// <summary> Existing (non-statis) SppaceTokens </summary>
 	public IEnumerable<SpaceToken> Deployed => this.On( Spaces_Existing );

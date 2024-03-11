@@ -9,7 +9,7 @@ static public class BoardHas {
 		"has town/city",
 		b => b.Board.Spaces
 			.Where( TerrainMapper.Current.IsInPlay )
-			.Tokens()
+			.ScopeTokens()
 			.Any( s => s.HasAny( Human.Town_City ) )
 	);
 

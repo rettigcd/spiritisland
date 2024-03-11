@@ -4,7 +4,7 @@ namespace SpiritIsland.Tests;
 
 public static partial class SpaceExtentions {
 
-	public static void Given_InitSummary( this Space space, string desiredSummary ) => space.Tokens.Given_InitSummary(desiredSummary);
+	public static void Given_InitSummary( this Space space, string desiredSummary ) => space.ScopeTokens.Given_InitSummary(desiredSummary);
 	/// <summary> Inits all tokens listed so the summary will match. </summary>
 	public static void Given_InitSummary( this SpaceState spaceState, string desiredSummary ) {
 		CountDictionary<IToken> desiredTokens = ParseTokens( desiredSummary );
@@ -22,7 +22,7 @@ public static partial class SpaceExtentions {
 	}
 
 	/// <summary> Inits these tokens but leaves the non-listed alone. </summary>
-	static public SpaceState Given_HasTokens( this Space space, string tokenString ) => space.Tokens.Given_HasTokens( tokenString );
+	static public SpaceState Given_HasTokens( this Space space, string tokenString ) => space.ScopeTokens.Given_HasTokens( tokenString );
 
 	/// <summary> Inits these tokens but leaves the non-listed alone. </summary>
 	static public SpaceState Given_HasTokens( this SpaceState tokens, string tokenString ) {
@@ -34,7 +34,7 @@ public static partial class SpaceExtentions {
 	}
 
 	static public SpaceState Given_ClearTokens( this Space space ) 
-		=> space.Tokens.Given_ClearTokens();
+		=> space.ScopeTokens.Given_ClearTokens();
 
 	static public SpaceState Given_ClearTokens( this SpaceState spaceState ) {
 		foreach(IToken token in spaceState.OfType<IToken>().ToArray())
@@ -121,13 +121,13 @@ public static partial class SpaceExtentions {
 	#endregion When Invader Explore/Build/Ravage
 
 	static public void Assert_HasInvaders( this Space space, string expectedInvaderSummary )
-		=> space.Tokens.Assert_HasInvaders(expectedInvaderSummary);
+		=> space.ScopeTokens.Assert_HasInvaders(expectedInvaderSummary);
 
 	static public void Assert_HasInvaders( this SpaceState spaceState, string expectedInvaderSummary )
 		=> spaceState.InvaderSummary().ShouldBe( expectedInvaderSummary );
 
 	static public void Assert_DreamingInvaders( this Space space, string expectedString )
-		=> space.Tokens.Assert_DreamingInvaders( expectedString );
+		=> space.ScopeTokens.Assert_DreamingInvaders( expectedString );
 
 	static public void Assert_DreamingInvaders( this SpaceState tokens, string expectedString ) {
 		static int Order_CitiesTownsExplorers( HumanToken invader )

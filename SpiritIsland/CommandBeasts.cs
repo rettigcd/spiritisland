@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Log;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Starts as an event Handler on the Invader cards
@@ -9,7 +11,16 @@ public class CommandBeasts( string name )
 	: IActionFactory
 	, IRunWhenTimePasses
 	, IHaveMemento
+	, ILogEntry
 {
+
+	#region ILogEntry
+	LogLevel ILogEntry.Level => LogLevel.Info;
+	string ILogEntry.Msg(LogLevel _) => $"Card Revealed: {Text} - {Desciption}";
+#pragma warning disable CA1822 // Mark members as static
+	public string Desciption => CommandBeastsOn1Space.InstructionText;
+#pragma warning restore CA1822 // Mark members as static
+	#endregion ILogEntry
 
 	public const string Stage2 = "Command Beasts (II)";
 	public const string Stage3 = "Command Beasts (III)";
@@ -75,12 +86,14 @@ public class CommandBeasts( string name )
 	/// <summary>
 	/// Creates a new Command-the-Beasts Action and adds it to the 1st spirits actions until it is used.
 	/// </summary>
-	async Task OnCardRevealed( GameState gameState ) {
+	Task OnCardRevealed( GameState gameState ) {
 		// Memento only called when in TimePasses collection
 		_used = false; // this is needed but I can't figure out why
-		await AllSpirits.Acknowledge( "Invader Deck Card Revealed", Name, this );
+		gameState.Log( this );
+
 		gameState.ReminderCards.Add(this);
 		gameState.AddTimePassesAction( this );
+		return Task.CompletedTask;
 	}
 	bool _used;
 
@@ -90,16 +103,18 @@ public class CommandBeasts( string name )
 /// <summary>
 /// Commands-the-Beasts (non-events) for 1 space.
 /// </summary>
-internal class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
+public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
-	public string Description => "For each (original) beast on land, push, do 1 damage, or 1 fear if invaders are present.";
+	public const string InstructionText = "For each (original) beast on land, push, do 1 damage, or 1 fear if invaders are present.";
+
+	public string Description => InstructionText;
 
 	public bool IsApplicable( TargetSpaceCtx ctx ) => _originalBeastCounts[ctx.Space] > 0;// use original, not current. Incase anything moved.
 
 	public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// The first space/time it is called on, init original Beast positions
-		_originalBeastCounts ??= GameState.Current.Spaces
+		_originalBeastCounts ??= ActionScope.Current.Tokens
 				.ToDictionary( s => s.Space, s => s.Beasts.Count )
 				.ToCountDict();
 

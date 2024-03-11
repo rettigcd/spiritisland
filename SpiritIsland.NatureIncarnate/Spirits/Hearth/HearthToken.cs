@@ -37,7 +37,7 @@ public class HearthToken( Spirit spirit )
 		) return;
 
 		var destinations = ActionScope.Current.SafeGet("LoyalDestinations",()=>new HashSet<SpaceState>()); // Hash so we don't have to do .Distinct
-		destinations.Add( to.Tokens );
+		destinations.Add( to.ScopeTokens );
 		if(!from.Dahan.Any)
 			await BringUpToAllPresence(from,destinations);
 	}

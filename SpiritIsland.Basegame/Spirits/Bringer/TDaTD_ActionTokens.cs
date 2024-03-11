@@ -67,7 +67,7 @@ public class TDaTD_ActionTokens( SpaceState spaceState )
 			var options = Adjacent;
 			Space destination = await ActionScope.Current.Owner.SelectAsync( A.Space.ToPushToken( newToken, Space, options.Downgrade(), Present.Always ) );
 			await newToken.MoveAsync(Space,destination); // there is no Push(Token), so this will have to do.
-			RecordSpaceWithDreamers( destination.Tokens );
+			RecordSpaceWithDreamers( destination.ScopeTokens );
 		}
 
 	}

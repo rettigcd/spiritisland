@@ -190,7 +190,7 @@ public class OceanTerrain_Tests {
 		a2.Dahan.Init(0);
 
 		//  When: invaders ravage and cause blight
-		_ = boardA[2].Tokens.Ravage();
+		_ = boardA[2].ScopeTokens.Ravage();
 
 		// Then: we can/can't cascade into ocean
 		NextDecision
@@ -349,12 +349,12 @@ public class OceanTerrain_Tests {
 	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
 
 	void Given_PrimaryPresenceOnlyOn( Space space ) {
-		foreach(SpaceState ss in primarySpirit.Presence.Lands.Tokens().ToArray())
+		foreach(SpaceState ss in primarySpirit.Presence.Lands.ToArray())
 			primarySpirit.Given_IsOn( ss, 0 );
 
 		// Add to
 		primarySpirit.Given_IsOn( gameState.Tokens[space] );
-		primarySpirit.Presence.Lands.Tokens().SelectLabels().Join( "," ).ShouldBe( space.Text );
+		primarySpirit.Presence.Lands.SelectLabels().Join( "," ).ShouldBe( space.Text );
 	}
 
 	

@@ -272,13 +272,13 @@ public class InvaderDeck_Tests {
 		var space = _board[1];
 		Assert.True(space.IsMountain);
 		space.Given_HasTokens(startingUnits);
-		space.Tokens.Summary.ShouldBe( startingUnits );
+		space.ScopeTokens.Summary.ShouldBe( startingUnits );
 
 		// When: Ravaging in Mountains
 		await InvaderCard.Stage1( Terrain.Mountain ).When_Ravaging();
 		// await new RavageEngine().ActivateCard( InvaderCard.Stage1( Terrain.Mountain ), gameState );
 
-		space.Tokens.Summary.ShouldBe( endingUnits );
+		space.ScopeTokens.Summary.ShouldBe( endingUnits );
 	}
 
 	static async Task AdvanceAsync( InvaderDeck sut ) {

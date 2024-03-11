@@ -12,7 +12,7 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 
 		for(int i = 0; i < _landsPerSpirit; ++i) {
 
-			var preFiltered = GameState.Current.Spaces
+			var preFiltered = ActionScope.Current.Tokens
 				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
 				.Select( s => self.Target( s.Space ) )
 				.Where( _spaceAction.IsApplicable );  // Matches action Criteria

@@ -15,7 +15,7 @@ public class MantleOfDread {
 		var pushLand = await ctx.Other.SelectLandWithPresence( "Select land to push 1 exploer & 1 town from" );
 
 		// Push Town / Explorer
-		await pushLand.Tokens.SourceSelector
+		await pushLand.ScopeTokens.SourceSelector
 			.AddGroup(1,Human.Town)
 			.AddGroup(1,Human.Explorer)
 			.PushUpToN(ctx.Self);

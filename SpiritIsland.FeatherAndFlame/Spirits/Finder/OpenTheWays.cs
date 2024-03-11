@@ -15,11 +15,11 @@ class OpenTheWays : IActionFactory {
 	public async Task ActivateAsync( Spirit self ) {
 		if(self is not FinderOfPathsUnseen finder) return;
 
-		var options = self.Presence.Lands.Tokens().ToList();
+		var options = self.Presence.Lands.ToList();
 		// Select 2 space to link
-		var end0 = (await self.SelectSpaceAsync( "Select 1st space to make adjacent", options.Downgrade(),Present.Always )).Tokens;
+		var end0 = (await self.SelectSpaceAsync( "Select 1st space to make adjacent", options.Downgrade(),Present.Always )).ScopeTokens;
 		options.Remove( end0 );
-		var end1 = (await self.SelectSpaceAsync( "Select 2nd space to make adjacent", options.Downgrade(),Present.Always )).Tokens;
+		var end1 = (await self.SelectSpaceAsync( "Select 2nd space to make adjacent", options.Downgrade(),Present.Always )).ScopeTokens;
 
 		// Remove old
 		finder.GatewayToken?.RemoveSelf();

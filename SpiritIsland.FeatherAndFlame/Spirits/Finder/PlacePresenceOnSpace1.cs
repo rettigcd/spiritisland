@@ -8,7 +8,7 @@ public class PlacePresenceOnSpace1 : SpiritAction {
 	public override async Task ActAsync( Spirit self ) {
 		var options = GameState.Current.Island.Boards.Select( b => b[1] );
 		var space = await self.SelectAsync( A.Space.ToPlacePresence( options, Present.Always, self.Presence.Token ) );
-		await self.Presence.Token.AddTo( space );
+		await self.Presence.Token.AddTo( space.ScopeTokens );
 	}
 
 }

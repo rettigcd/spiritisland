@@ -159,14 +159,14 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 	/// <summary> Existing </summary>
 	/// <remarks> Determining SS requires Tokens so default type for SS is SpaceState. </remarks>
-	public IEnumerable<SpaceState> SacredSites => Lands.Tokens().Where( IsSacredSite );
-	public IEnumerable<SpaceState> SuperSacredSites => Lands.Tokens().Where( space => 3 <= CountOn( space ) );
+	public IEnumerable<SpaceState> SacredSites      => Lands.Where( IsSacredSite );
+	public IEnumerable<SpaceState> SuperSacredSites => Lands.Where( space => 3 <= CountOn( space ) );
 
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
-	public IEnumerable<Space> Lands => Incarna.IsPlaced
-		? Token.Spaces_Existing.Include( Incarna.Space.Space )
+	public IEnumerable<SpaceState> Lands => Incarna.IsPlaced
+		? Token.Spaces_Existing.Include( Incarna.Space )
 		: Token.Spaces_Existing;
 
 
@@ -177,7 +177,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	public IEnumerable<SpaceToken> Movable => Deployed;
 
 	/// <summary> Unfiltered </summary>
-	public int TotalOnIsland() => GameState.Current.Spaces_Unfiltered.Sum( CountOn );
+	public int TotalOnIsland() => ActionScope.Current.Tokens_Unfiltered.Sum( CountOn );
 
 	#endregion Exposed Data
 

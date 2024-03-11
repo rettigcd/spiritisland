@@ -23,7 +23,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		#region IRunBeforeInvaderPhase
 		bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
 		Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState ) {
-			var landStrippedBare = gameState.Spaces_Existing.FirstOrDefault( ss => 8 <= ss.SumAny( Human.Invader ) );
+			var landStrippedBare = ActionScope.Current.Tokens_Existing.FirstOrDefault( ss => 8 <= ss.SumAny( Human.Invader ) );
 			// if any land has at least 8 total Invaders/ Blight( combined ),
 			if(landStrippedBare is not null) {
 				// the Invaders win
@@ -159,7 +159,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	) {
 		AdjustFunc = ( gs, _ ) => {
 			// Add 1 Explorer in each land with no Dahan.
-			var spacesThatGetAnExplorer = gs.Spaces_Existing
+			var spacesThatGetAnExplorer = ActionScope.Current.Tokens_Existing
 				.Where( s => !s.Space.Is( Terrain.Ocean ) && s.Dahan.CountAll==0 )
 				.ToArray();
 
@@ -169,7 +169,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			// Add 1 Disease and 1 City in the highest-numbered land with a town symbol.
 			var highestTowns = gs.Island.Boards
 				.Select( board => board.Spaces.Where(s => s is Space1 s1 && s1.StartUpCounts.Towns != 0).Last() )
-				.Tokens()
+				.ScopeTokens()
 				.ToArray();
 			foreach(var s in highestTowns) {
 				s.Disease.Adjust(1);
@@ -229,7 +229,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	class SaltDepositsFilter : InvaderCardSpaceFilter {
 		public string Text => "Salt Deposits";
 		public bool Matches( Space space ) {
-			return IsInRavageStackThisAction() == IsMiningLand( space.Tokens );
+			return IsInRavageStackThisAction() == IsMiningLand( space.ScopeTokens );
 		}
 		/// <remarks> Can't cache this in ActionScope because matching space is pre-Action. </remarks>
 		bool IsInRavageStackThisAction() => GameState.Current.InvaderDeck.Ravage.Cards
@@ -291,7 +291,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			// Add +1 Explorer in each land successfully explored.  
 			_bonusExplorers.Clear();
 			foreach(var board in gameState.Island.Boards) {
-				if(board.Spaces.Tokens().Sum( t => t.Blight.Count ) <= 3)
+				if(board.Spaces.ScopeTokens().Sum( t => t.Blight.Count ) <= 3)
 					// Max. 2 lands per board per Explore Card.
 					_bonusExplorers[board] = 2;
 			}

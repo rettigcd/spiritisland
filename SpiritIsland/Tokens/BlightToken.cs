@@ -29,7 +29,7 @@ public class BlightToken( string label, char k, Img img )
 				Present.Always,
 				Token.Blight
 			));
-			await cascadeTo.Tokens.Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
+			await cascadeTo.ScopeTokens.Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}
@@ -61,7 +61,7 @@ public class BlightToken( string label, char k, Img img )
 				RemoveReason.TakingFromCard
 				// RemoveReason.Replaced,  // acording to querki Replaced blight goes back to the card.
 			)
-		)	BlightCard.Space.Tokens.Adjust(this,1); // shouldn't be any modifying-add mods on blight card
+		)	BlightCard.Space.ScopeTokens.Adjust(this,1); // shouldn't be any modifying-add mods on blight card
 	}
 
 	static readonly ActionScopeValue<BlightConfig> Config

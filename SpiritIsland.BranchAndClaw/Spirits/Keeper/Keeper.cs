@@ -36,7 +36,7 @@ public class Keeper : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ){
 		// In the highest-numbered Jungle.
-		var highestNumberedJungle = board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last().Tokens;
+		var highestNumberedJungle = board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last().ScopeTokens;
 		// Put 1 Presence
 		highestNumberedJungle.Setup(Presence.Token, 1);
 		// 1 Wild 

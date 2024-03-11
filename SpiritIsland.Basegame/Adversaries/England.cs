@@ -25,8 +25,8 @@ public class England : AdversaryBase, IAdversary {
 			"During Setup, on each board add 1 City to land #1 and 1 Town to land #2."
 		){ InitFunc = (gs,_) => {
 			foreach(var board in gs.Island.Boards) {
-				board[1].Tokens.Setup( Human.City, 1 );
-				board[2].Tokens.Setup( Human.Town, 1 );
+				board[1].ScopeTokens.Setup( Human.City, 1 );
+				board[2].ScopeTokens.Setup( Human.Town, 1 );
 			}
 		}},
 
@@ -106,7 +106,7 @@ public class England : AdversaryBase, IAdversary {
 		// Additional Loss Condition
 		// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
 		static bool IsCapital(SpaceState s) => 7 <= s.SumAny( Human.Town_City );
-		var capital = gs.Spaces_Unfiltered.FirstOrDefault( IsCapital );
+		var capital = ActionScope.Current.Tokens_Unfiltered.FirstOrDefault( IsCapital );
 		if( capital != null )
 			GameOverException.Lost($"{Name} on {capital.Space.Text}");
 	}

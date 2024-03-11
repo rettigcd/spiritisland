@@ -84,14 +84,14 @@ namespace SpiritIslandCmd {
 				.Join( "," );
 
 			// dahan
-			int dahanCount = space.Tokens.Dahan.CountAll;
+			int dahanCount = space.ScopeTokens.Dahan.CountAll;
 			string dahan = (dahanCount > 0) ? ("D" + dahanCount) :"  ";
 
 			int blightCount = gameState.Tokens[ space ].Blight.Count;
 			string blight = (blightCount > 0) ? ("B" + blightCount) :"  ";
 
 			// presence
-			string pres = _game.GameState.Spaces.Where(_game.Spirit.Presence.IsOn).Select(x=>"P").Join("");
+			string pres = ActionScope.Current.Tokens.Where(_game.Spirit.Presence.IsOn).Select(x=>"P").Join(""); // !!! this is probably wrong - probably don't want ActionScope
 			return $"{space.Label} {threat}\t{dahan}\t{details}\t{blight}\t{pres}";
 		}
 

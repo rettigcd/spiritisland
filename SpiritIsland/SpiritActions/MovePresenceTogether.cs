@@ -7,10 +7,10 @@ public class MovePresenceTogether : SpiritAction {
 	public override async Task ActAsync( Spirit self ) {
 
 		await new TokenMover(self,"Move",
-			new SourceSelector(self.Presence.Lands.Tokens())
+			new SourceSelector(self.Presence.Lands)
 				.AddGroup(3,self.Presence)
 				.FromASingleLand(),
-			new DestinationSelector( st => st.Space.Range(3).Tokens() )
+			new DestinationSelector( st => st.Space.Range(3).ScopeTokens() )
 				.Config( Distribute.ToASingleLand )
 		).DoUpToN();
 	}

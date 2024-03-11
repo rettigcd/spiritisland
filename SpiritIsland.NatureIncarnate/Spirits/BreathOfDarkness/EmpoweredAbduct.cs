@@ -14,10 +14,10 @@ public class EmpoweredAbduct : IActionFactory {
 		if(!incarna.IsPlaced) return;
 		var tokens = incarna.Space;
 		var options = tokens.HumanOfAnyTag( Human.Explorer_Town );
-		var invaderToAbduct = await spirit.SelectAsync(new A.SpaceToken("Select Invader to Abduct", options.On(tokens.Space), Present.Done));
+		var invaderToAbduct = await spirit.SelectAsync(new A.SpaceToken("Select Invader to Abduct", options.OnScopeTokens1(tokens.Space), Present.Done));
 		if(invaderToAbduct == null) return;
 
-		await invaderToAbduct.MoveTo(EndlessDark.Space);
+		await invaderToAbduct.MoveTo(EndlessDark.Space.ScopeTokens);
 	}
 
 }

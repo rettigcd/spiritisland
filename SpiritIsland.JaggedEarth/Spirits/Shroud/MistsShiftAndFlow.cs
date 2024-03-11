@@ -77,7 +77,7 @@ class MistsShiftAndFlow {
 		var gatherSource = await _spirit.SelectAsync( decision );
 		if(gatherSource == null) return;
 
-		await gatherSource.MoveTo( gatherDst );
+		await gatherSource.MoveTo( gatherDst.ScopeTokens );
 	}
 
 	List<MistMove> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
@@ -124,7 +124,7 @@ class MistsShiftAndFlow {
 		// For small ranges, flow-targets will be larger.
 
 		var target = await _spirit.SelectAsync( new A.Space( _prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
-		return target.Tokens;
+		return target.ScopeTokens;
 	}
 
 	void CalculateSpaceGroups() {
@@ -135,7 +135,7 @@ class MistsShiftAndFlow {
 			.ToArray();
 
 		// Calculate new sources we could find
-		var flowedSources = _spirit.Presence.Lands.Tokens()
+		var flowedSources = _spirit.Presence.Lands
 			.SelectMany( p => p.Adjacent )
 			.Distinct()
 			.Except( sources ); // exclude previously found sources
@@ -167,11 +167,11 @@ class MistsShiftAndFlow {
 		public SpaceCounts(Spirit spirit) : base() {
 			_spirit = spirit;
 			foreach(var ss in Lands)
-				Add(ss,spirit.Presence.CountOn( ss ));
+				Add(ss.Space,spirit.Presence.CountOn( ss ));
 		}
 
 		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
-		public IEnumerable<Space> Lands => _spirit.Presence.Lands;
+		public IEnumerable<SpaceState> Lands => _spirit.Presence.Lands;
 
 		public IEnumerable<SpaceState> SacredSites => _spirit.Presence.SacredSites;
 		public IEnumerable<SpaceState> SuperSacredSites => _spirit.Presence.SuperSacredSites;

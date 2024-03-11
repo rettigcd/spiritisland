@@ -56,7 +56,7 @@ public class HearthVigil : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// 1 in highest numbered land with dahan
-		SpaceState[] tokens = board.Spaces.Tokens().ToArray();
+		SpaceState[] tokens = board.Spaces.ScopeTokens().ToArray();
 		SpaceState highest = tokens.Last( t => t.Dahan.Any );
 		highest.Setup( Presence.Token, 1 );
 

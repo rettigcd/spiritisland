@@ -23,7 +23,7 @@ class ScotlandCoastalBlightCheckToken
 			BlightToken.ForThisAction.ShouldCascade = false;
 			var space = to.Space.Adjacent_Existing // Ocean is not in play here
 				.First( adj => adj.IsOcean ); // ignoring rule about ocean being on this board, just using adjacent
-			await space.Tokens.Blight.AddAsync( 1, AddReason.Ravage );
+			await space.ScopeTokens.Blight.AddAsync( 1, AddReason.Ravage );
 			ActionScope.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {((Space)args.To).Text} caused additional blight on {space.Text}"));
 		}
 	}
@@ -63,7 +63,7 @@ class ScotlandCoastalBlightCheckToken
 		--args.Count;
 
 		// remove the other blight instead.
-		await spaceToken.Space.Tokens.RemoveAsync(spaceToken.Token, 1);
+		await spaceToken.Space.ScopeTokens.RemoveAsync(spaceToken.Token, 1);
 
 	}
 }

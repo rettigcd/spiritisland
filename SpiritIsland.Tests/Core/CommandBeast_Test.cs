@@ -134,7 +134,7 @@ public class CommandBeast_Test
 	}
 
 	static void Acknowledge(VirtualUser user){
-		user.NextDecision.HasPrompt("Invader Deck Card Revealed").Choose("Command Beasts (II)");
+//		user.NextDecision.HasPrompt("Invader Deck Card Revealed").Choose("Command Beasts (II)");
 	}
 
 	static void UseCard(VirtualUser user){

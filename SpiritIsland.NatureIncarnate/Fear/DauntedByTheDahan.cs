@@ -32,7 +32,7 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 	static IActOn<GameState> OneFearPerBoardWithInvadersAndDahan => new BaseCmd<GameState>(
 		"1 Fear/board with Invaders & Dahan",
 		gs => {
-			SpaceState[] spaces = gs.Spaces_Existing.ToArray();
+			SpaceState[] spaces = ActionScope.Current.Tokens_Existing.ToArray();
 			IEnumerable<Board> withDahan = spaces.Where(s=>s.Dahan.Any).SelectMany(s=>s.Space.Boards);
 			IEnumerable<Board> withInvaders = spaces.Where(s=>s.HasInvaders()).SelectMany(s=>s.Space.Boards);
 			int fearCount = withDahan.Intersect(withInvaders).Distinct().Count();
@@ -48,7 +48,7 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 	static IActOn<GameState> DahanDefend3 => new BaseCmd<GameState>(
 		"Each land with Dahan, Defend 3",
 		gs => {
-			foreach(SpaceState? ss in gs.Spaces_Existing)
+			foreach(SpaceState? ss in ActionScope.Current.Tokens_Existing)
 				if(ss.Dahan.Any)
 					ss.Defend.Add(3);
 		}
@@ -57,7 +57,7 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 	static IActOn<GameState> DahanIsolate => new BaseCmd<GameState>(
 		"Each land with Dahan, Isolate",
 		gs => {
-			foreach(SpaceState? ss in gs.Spaces_Existing)
+			foreach(SpaceState? ss in ActionScope.Current.Tokens_Existing)
 				if(ss.Dahan.Any)
 					ss.Isolate();
 		}

@@ -26,7 +26,7 @@ public class Quota {
 		SpaceState sourceSpaceState
 	) {
 		return sourceSpaceState.OfAnyTag( RemainingTypes )
-			.On( sourceSpaceState.Space );
+			.OnScopeTokens1( sourceSpaceState.Space );
 	}
 
 

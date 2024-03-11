@@ -127,7 +127,7 @@ public class StubbornSolidity_Tests {
 		//  Then: Dahan are still there (not replaced)
 		targetSpace.Summary.ShouldBe( "3D@2,3G,3SUD" );
 		adjacentSpace.Summary.ShouldBe( "2D@2,2G" );
-		board[5].Tokens.Summary.ShouldBe("[none]"); // nothing goes to 5
+		board[5].ScopeTokens.Summary.ShouldBe("[none]"); // nothing goes to 5
 
 	}
 
@@ -174,7 +174,7 @@ public class StubbornSolidity_Tests {
 		//   But: Dahan became frozen and were not pushed
 		targetSpace.Summary.ShouldBe( "2D@2,1SUD" ); // no defends
 
-		board[5].Tokens.Summary.ShouldBe("[none]");
+		board[5].ScopeTokens.Summary.ShouldBe("[none]");
 	}
 
 

@@ -60,7 +60,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
-		var jungles = board.Spaces.Where(x=>x.IsJungle).Tokens().ToArray();
+		var jungles = board.Spaces.Where(x=>x.IsJungle).ScopeTokens().ToArray();
 		// 1+Incarna in lowest jungle
 		jungles[0].Init(Presence.Token,1);
 		jungles[0].Init( Incarna, 1 );

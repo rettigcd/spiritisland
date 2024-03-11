@@ -53,8 +53,8 @@ public class WanderingVoiceKeensDelirium : Spirit {
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
-		SpaceState s6 = board[6].Tokens;
-		SpaceState s7 = board[7].Tokens;
+		SpaceState s6 = board[6].ScopeTokens;
+		SpaceState s7 = board[7].ScopeTokens;
 		// incanra on land #6
 		s6.Init(Presence.Incarna,1);
 		// 1 presence in land #6

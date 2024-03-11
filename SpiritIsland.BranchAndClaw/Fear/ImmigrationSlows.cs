@@ -12,7 +12,7 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 		if(card == null) return Task.CompletedTask; // !! should this fall over to the next round?
 
 		foreach(var board in gs.Island.Boards) {
-			var lowest = board.Spaces.Tokens().FirstOrDefault(card.MatchesCard);
+			var lowest = board.Spaces.ScopeTokens().FirstOrDefault(card.MatchesCard);
 			lowest?.Skip1Build( Name );
 		}
 		return Task.CompletedTask;

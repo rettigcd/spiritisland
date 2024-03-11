@@ -142,7 +142,7 @@ public class Strife_Tests {
 	[Fact]
 	public async Task Strife_Stops_Ravage() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
-		var tokens = gs.Spaces_Unfiltered
+		var tokens = ActionScope.Current.Tokens_Unfiltered
 			.First( s => IsInPlay(s.Space) && !s.HasInvaders() );
 
 		// Given: 1 strifed city

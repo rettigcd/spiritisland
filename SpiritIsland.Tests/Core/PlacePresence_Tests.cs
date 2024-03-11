@@ -86,7 +86,7 @@ public class PlacePresence_Tests {
 			var targetCriteria = new TargetCriteria(0,ctx.Spirit,filter);
 			// don't care about results
 			// just shouldn't throw exception about the filter we are using.
-			targetCriteria.Matches(space);
+			targetCriteria.Matches(space.ScopeTokens);
 		}
 
 	}

@@ -39,10 +39,10 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// put 2 presence in a land with blight.
-		SpaceState blight = board.Spaces.Tokens().First(t=>t.Blight.Any);
+		SpaceState blight = board.Spaces.ScopeTokens().First(t=>t.Blight.Any);
 		blight.Init(Presence.Token,2);
 		// put 2 presence and 1 blight in the highest numbered land with a town setup symbol
-		SpaceState town = board.Spaces.Tokens().Last( t => t.HasAny(Human.Town) ); // not exactly correct. Should looks at sumbols, not actual towns
+		SpaceState town = board.Spaces.ScopeTokens().Last( t => t.HasAny(Human.Town) ); // not exactly correct. Should looks at sumbols, not actual towns
 		town.Init( Presence.Token, 2 );
 		town.Setup(Token.Blight,1);
 

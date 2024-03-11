@@ -27,7 +27,7 @@ public class AllThingsWeaken : BlightCard {
 			}
 
 			// replace/update existing tokens
-			foreach(var ss in gs.Spaces) {
+			foreach(var ss in ActionScope.Current.Tokens) {
 				var humanTokenTypes = ss.AllHumanTokens()
 					.Where(x=>x.FullHealth > 1)
 					.OrderBy(x=>x.FullHealth)
@@ -70,7 +70,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 		// Destroy 1 presence in adjacent land
 		var options = to.Adjacent_Existing
 			.SelectMany(
-				adj => adj.OfTag(TokenCategory.Presence).On(adj.Space)
+				adj => adj.OfTag(TokenCategory.Presence).OnScopeTokens1(adj.Space)
 			)
 			.ToArray();
 
@@ -78,7 +78,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 		var token = await to.Space.Boards[0].FindSpirit().SelectAsync(decision);
 
 		if(token == null) return;
-		await token.Space.Tokens.Destroy(token.Token, 1);
+		await token.Space.ScopeTokens.Destroy(token.Token, 1);
 		ActionScope.Current.LogDebug( "All Things Weaken - destroyed neighbor presence " + token );
 
 	}

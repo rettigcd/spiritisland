@@ -18,11 +18,11 @@ internal class GiftOfAbundance {
 		static bool isWetland(SpaceState space) => TerrainMapper.Current.MatchesTerrain( space, Terrain.Wetland );
 		var spiritsWithPresenceInWetland = new[] { ctx.Self, ctx.Other }
 			.Distinct() // if solo
-			.Where( spirit => 0<spirit.Presence.Destroyed.Count && spirit.Presence.Lands.Tokens().Any(isWetland));
+			.Where( spirit => 0<spirit.Presence.Destroyed.Count && spirit.Presence.Lands.Any(isWetland));
 		Spirit presenceTarget = await ctx.Other.SelectAsync( new A.Spirit( Name, spiritsWithPresenceInWetland, Present.AutoSelectSingle ) );
 		if(presenceTarget == null ) return;
 
-		var spaceOptions = presenceTarget.Presence.Lands.Tokens().Where(isWetland);
+		var spaceOptions = presenceTarget.Presence.Lands.Where(isWetland);
 		var space = await presenceTarget.SelectAsync( new A.Space("Restore 1 destroyed presence", spaceOptions, Present.Always ) );
 		if( space != null )
 			await presenceTarget.Target(space).Presence.PlaceDestroyedHere();

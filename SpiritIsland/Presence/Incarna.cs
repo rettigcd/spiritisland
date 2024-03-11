@@ -13,13 +13,12 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 	public Spirit Self { get; } = _spirit;
 
 	public SpaceState Space => _spaceCounts.Keys
-		.Where( SpiritIsland.Space.Exists )
-		.Tokens()
-		.SingleOrDefault() ?? NullSpace;
+		.Where( ss => SpiritIsland.Space.Exists(ss.Space) )
+		.SingleOrDefault() ?? NullSpace.ScopeTokens;
 
 	public bool IsPlaced => _spaceCounts.Count != 0;
 
-	public SpaceToken AsSpaceToken() => this.On(Space.Space); // Assumes Space is not null.
+	public SpaceToken AsSpaceToken() => this.On(Space); // Assumes Space is not null.
 
 	public bool Empowered { get; set; }
 
@@ -47,17 +46,22 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 		if(IsPlaced)
 			await this.MoveAsync(Space,destination);
 		else if(allowAdd)
-			await destination.Tokens.AddAsync( this, 1 );
+			await destination.ScopeTokens.AddAsync( this, 1 );
 	}
 
 	void ITrackMySpaces.Clear() {
 		_spaceCounts.Clear();
 	}
-	void ITrackMySpaces.TrackAdjust( Space space, int delta ) {
+	void ITrackMySpaces.TrackAdjust(SpaceState space, int delta) {
 		_spaceCounts[space] += delta;
-		if(1 < _spaceCounts.Count)
+		if (1 < _spaceCounts.Count)
 			throw new Exception("Incarna is in 2 places at the same time!");
 	}
+	//void ITrackMySpaces.TrackAdjust( Space space, int delta ) {
+	//	_spaceCounts[space] += delta;
+	//	if(1 < _spaceCounts.Count)
+	//		throw new Exception("Incarna is in 2 places at the same time!");
+	//}
 
-	readonly CountDictionary<Space> _spaceCounts = [];
+	readonly CountDictionary<SpaceState> _spaceCounts = [];
 }

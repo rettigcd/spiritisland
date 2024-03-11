@@ -29,10 +29,10 @@ public class SleepAndNeverWaken {
 		ctx.AddFear( removed / 2 );
 	}
 
-	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {
+	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params SpaceState[] fromSpaces ) {
 
 		SpaceToken[] CalcOptions() => fromSpaces
-			.SelectMany( space => space.Tokens.SpaceTokensOfTag(Human.Explorer) )
+			.SelectMany( space => space.SpaceTokensOfTag(Human.Explorer) )
 			.ToArray();
 
 		SpaceToken[] options;

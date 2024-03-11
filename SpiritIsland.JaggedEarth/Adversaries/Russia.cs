@@ -23,7 +23,7 @@ public class Russia : AdversaryBase, IAdversary {
 				// add 1 beast and 1 explorer to highest number land without Town/City
 				var highestSpaces = gameState.Island.Boards
 					.Select( board => board.Spaces
-						.Tokens()
+						.ScopeTokens()
 						.Where( x => x.SumAny( Human.Town_City ) == 0 )
 						.Last()
 					).ToArray();
@@ -113,13 +113,13 @@ public class Russia : AdversaryBase, IAdversary {
 				await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Adversary);
 				var criteria = new A.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Downgrade(), Present.Always );
 				Space addSpace = await spirit.SelectAsync( criteria );
-				await addSpace.Tokens.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );
+				await addSpace.ScopeTokens.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );
 			}
 		}
 	}
 
 	static SpaceState[] SpacesWithBeasts( Board board ) 
-		=> board.Spaces.Tokens().Where( s => s.Beasts.Any ).ToArray();
+		=> board.Spaces.ScopeTokens().Where( s => s.Beasts.Any ).ToArray();
 
 	#endregion Escalation
 

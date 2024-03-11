@@ -50,7 +50,9 @@ public class DiscardCards : SpiritAction {
 	async Task<bool> Discard1( Spirit self, int index ) {
 		PowerCard card = await self.SelectAsync<PowerCard>( new A.PowerCard(
 			$"Select card to discard ({index+1}of{_count})",
-			SingleCardUse.GenerateUses( CardUse.Discard, _cardOptionSelector( self ) ),
+			_count-index,
+			CardUse.Discard, _cardOptionSelector(self).ToArray(),
+			// SingleCardUse.GenerateUses( CardUse.Discard, _cardOptionSelector( self ) ),
 			_present
 		) );
 		if(card == null) return false; // stop

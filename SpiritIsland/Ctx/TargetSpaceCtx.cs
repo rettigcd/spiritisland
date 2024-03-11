@@ -54,7 +54,7 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 	public bool MatchesRavageCard => GameState.Current.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Tokens));
 	public bool MatchesBuildCard => GameState.Current.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Tokens));
 
-	public SpaceState Tokens => _tokens ??= Space.Tokens;
+	public SpaceState Tokens => _tokens ??= Space.ScopeTokens;
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Tokens.Defend.Add(defend);
@@ -225,7 +225,7 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
+			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.OnScopeTokens1(Space) ) );
 			if(st == null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
@@ -296,7 +296,7 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
 	public ITokenClass[] AllPresenceTokens => GameState.Current.Spirits
-		.SelectMany(s=>s.Presence.TokensDeployedOn( Space ) )
+		.SelectMany(s=>s.Presence.TokensDeployedOn( Tokens ) )
 		.Select(x=>x.Class)
 		.ToArray();
 }

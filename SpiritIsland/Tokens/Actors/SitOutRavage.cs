@@ -21,7 +21,7 @@ static public class SitOutRavage {
 			case 0: 
 				return;
 			case 1:
-				SitOutThisRavageAction( targetSpaces.Single(), sitOuts );
+				SitOutThisRavageAction( targetSpaces.Single().ScopeTokens, sitOuts );
 				return;
 			default: 
 				throw new InvalidOperationException( "SelectFightersAndSitThemOut is only designed to work on 1 space at a time but this is targetting: " + string.Join( ",", targetSpaces ) );

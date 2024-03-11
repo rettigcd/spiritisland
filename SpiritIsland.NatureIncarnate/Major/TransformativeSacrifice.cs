@@ -15,7 +15,7 @@ public class TransformativeSacrifice {
 	static async Task TargetSpiritAction(Spirit spirit, bool boostFromElementThreshold ) {
 
 		// Target Spirit may Remove up to 3 Presence.
-		var tokensToDestroy = new SourceSelector(spirit.Presence.Lands.Tokens())
+		var tokensToDestroy = new SourceSelector(spirit.Presence.Lands)
 			.AddGroup(3,spirit.Presence)
 			.GetEnumerator(spirit,Prompt.RemainingCount($"Destroy up to 3 to Take Minor and Play it for free."),Present.Done);
 		int destroyed = 0;

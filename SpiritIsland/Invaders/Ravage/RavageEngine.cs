@@ -5,7 +5,7 @@ public class RavageEngine {
 
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Ravaging:" + card.Text ) );
-		var ravageSpacesMatchingCard = gameState.Spaces
+		var ravageSpacesMatchingCard = ActionScope.Current.Tokens
 			.Where( ss => MatchesCardForRavage( card, ss ) )
 			.ToList();
 
@@ -19,7 +19,7 @@ public class RavageEngine {
 			s.Adjust( ModToken.DoRavage, s.Space.InvaderActionCount );
 
 		// get spaces with just-added Ravages + any previously added ravages
-		var spacesWithDoRavage = gameState.Spaces
+		var spacesWithDoRavage = ActionScope.Current.Tokens
 			.Where( ss => ss[ModToken.DoRavage] > 0 )
 			.ToArray();
 

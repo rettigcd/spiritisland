@@ -16,10 +16,10 @@ public class RevokeSanctuary_Tests : ToweringRoots_Base {
 		// Given: Presence and Incarna on A8
 		Space space = _board[8];
 		Given_IncarnaOn(space);
-		space.Tokens.Init(_presence.Token,1);
+		space.ScopeTokens.Init(_presence.Token,1);
 		
 		//   And: 1 town
-		space.Tokens.InitDefault(Human.Town,1);
+		space.ScopeTokens.InitDefault(Human.Town,1);
 
 		// When we resolve Innate
 		await _spirit.When_ResolvingInnate<RevokeSanctuaryAndCastOut>( u => { 

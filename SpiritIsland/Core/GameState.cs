@@ -101,27 +101,17 @@ public sealed class GameState : IHaveMemento {
 
 	public GameOverLogEntry Result = null;
 
-	public event Action<ILogEntry> NewLogEntry;	// API
+	public event Action<ILogEntry> NewLogEntry; // API
 
+	public IEnumerable<SpaceState> SpaceStates_Existing => Spaces_Existing.Select(s => Tokens[s]);
+	public IEnumerable<SpaceState> SpacesStates_Unfiltered => Spaces_Unfiltered.Select(s => Tokens[s]);
 
 
 	/// <summary> Non-stasis + InPlay </summary>
-	public IEnumerable<SpaceState> Spaces            => Island.Boards
-		.SelectMany( b => b.Spaces )
-		.Distinct() // MultiSpaces
-		.Tokens();
-
+	public IEnumerable<Space> Spaces => Island.Boards.SelectMany(b => b.Spaces).Distinct();
 	/// <summary> All Non-stasis (even not-in-play) </summary>
-	public IEnumerable<SpaceState> Spaces_Existing   => Island.Boards
-		.SelectMany( b => b.Spaces_Existing )
-		.Distinct() // MultiSpaces
-		.Tokens();
-
-	public IEnumerable<SpaceState> Spaces_Unfiltered => Island.Boards
-		.SelectMany( b => b.Spaces_Unfiltered )
-		.Distinct() // MultiSpaces
-		.Union(OtherSpaces)
-		.Tokens();
+	public IEnumerable<Space> Spaces_Existing => Island.Boards.SelectMany(b => b.Spaces_Existing).Distinct();
+	public IEnumerable<Space> Spaces_Unfiltered => Island.Boards.SelectMany(b => b.Spaces_Unfiltered).Distinct().Union(OtherSpaces);
 
 	public InvaderDeck InvaderDeck { 
 		get { return _invaderDeck ??= InvaderDeckBuilder.Default.Build(); }
@@ -158,7 +148,7 @@ public sealed class GameState : IHaveMemento {
 	public void AddIslandMod( BaseModEntity mod ) => Tokens.AddIslandMod( mod );
 
 	public void AddToAllActiveSpaces( BaseModEntity mod ) {
-		foreach(var space in Spaces_Existing)
+		foreach(var space in SpaceStates_Existing)
 			space.Adjust(mod,1);
 	}
 
@@ -194,7 +184,7 @@ public sealed class GameState : IHaveMemento {
 			2 => (NoCityOrTown, "no towns or cities"),
 			_ => (NoInvader, "no invaders")
 		};
-		if( gs.Spaces_Unfiltered.All( filter ) )
+		if(ActionScope.Current.Tokens_Unfiltered.All( filter ) )
 			GameOverException.Win($"Terror Level {gs.Fear.TerrorLevel} - {description}");
 	}
 
@@ -216,7 +206,7 @@ public sealed class GameState : IHaveMemento {
 	public async Task TriggerTimePasses() {
 
 		// Clear Defend
-		foreach(var s in Spaces_Unfiltered)
+		foreach(var s in ActionScope.Current.Tokens_Unfiltered )
 			s.Defend.Clear();
 
 		await RunTimePassesActions();

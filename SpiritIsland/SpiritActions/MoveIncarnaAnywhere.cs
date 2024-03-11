@@ -8,10 +8,10 @@ public class MoveIncarnaAnywhere : SpiritAction {
 		var incarna = self.Incarna;
 		if(!incarna.IsPlaced) return; // not on board, don't add
 
-		Space space = await self.SelectAsync( new A.Space( "Select space to place Incarna.", GameState.Current.Spaces, Present.Done ) );
+		Space space = await self.SelectAsync( new A.Space( "Select space to place Incarna.", ActionScope.Current.Tokens, Present.Done ) );
 		if(space == null) return;
 
-		await incarna.AsSpaceToken().MoveTo( space );
+		await incarna.AsSpaceToken().MoveTo( space.ScopeTokens );
 	}
 
 }

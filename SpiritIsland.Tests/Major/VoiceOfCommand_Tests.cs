@@ -8,7 +8,7 @@ public class VoiceOfCommand_Tests {
 		Spirit spirit = new RiverSurges();
 		Board board = Board.BuildBoardA();
 		_ = new GameState(spirit,board);
-		var space = board[7].Tokens;
+		var space = board[7].ScopeTokens;
 
 		// Given: Voice of Command played on space
 		await VoiceOfCommand.ActAsync( spirit.Target(space.Space)).ShouldComplete("VoC");

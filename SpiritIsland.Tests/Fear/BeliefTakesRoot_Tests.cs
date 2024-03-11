@@ -17,7 +17,7 @@ public class BeliefTakesRoot_Tests {
 		_invaderCard = InvaderDeckBuilder.Level1Cards[0];
 		_ravageSpace = _gameState.Island.Boards[0].Spaces.Where( ((InvaderCard)_invaderCard).MatchesCard ).First();
 	}
-	Task<Log.FearCardRevealed> _fearCard;
+	readonly Task<Log.FearCardRevealed> _fearCard;
 
 	#endregion
 
@@ -35,7 +35,7 @@ public class BeliefTakesRoot_Tests {
 		await _invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
-		_ravageSpace.Tokens.Dahan.CountAll.ShouldBe(0);
+		_ravageSpace.ScopeTokens.Dahan.CountAll.ShouldBe(0);
 		_gameState.Tokens[_ravageSpace].Blight.Any.ShouldBe(true);
 	}
 
@@ -49,7 +49,7 @@ public class BeliefTakesRoot_Tests {
 		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
+		Assert.Equal( 1, _ravageSpace.ScopeTokens.Dahan.CountAll );
 
 		//   And: 0 towns
 		_ravageSpace.Assert_HasInvaders("");
@@ -67,7 +67,7 @@ public class BeliefTakesRoot_Tests {
 		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, _ravageSpace.Tokens.Dahan.CountAll );
+		Assert.Equal( 1, _ravageSpace.ScopeTokens.Dahan.CountAll );
 
 		//   And: 0 towns
 		_ravageSpace.Assert_HasInvaders( "1T@2" );
@@ -76,7 +76,7 @@ public class BeliefTakesRoot_Tests {
 
 	void Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
 		// Add: dahan
-		_ravageSpace.Tokens.Dahan.Init( desiredCount );
+		_ravageSpace.ScopeTokens.Dahan.Init( desiredCount );
 		// Add towns
 		_gameState.Tokens[_ravageSpace].AdjustDefault( Human.Town, desiredCount );
 

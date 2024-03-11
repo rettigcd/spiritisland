@@ -17,7 +17,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		fix.Spirit.Given_IsOn( spaceState );
 
 		//   And: Dahan on space
-		space.Tokens.Given_HasTokens("1D@2");
+		space.ScopeTokens.Given_HasTokens("1D@2");
 
 		//  When: play the card
 		await PowerCard.For(typeof(SkiesHeraldTheSeasonOfReturn)).ActivateAsync( fix.Spirit ).AwaitUser( u => { 

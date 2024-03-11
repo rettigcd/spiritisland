@@ -14,7 +14,7 @@ public class SolidifyEchoesOfMajestyPast {
 		if(center == null) return; // is this possible?
 
 		// In that land and each adjacent, Defend 3.
-		foreach(SpaceState? space in center.Range(1).Tokens())
+		foreach(SpaceState? space in center.Range(1).ScopeTokens())
 			space.Defend.Add(3);
 
 		// They Add 1 DestroyedPresence to each adjacent land.
@@ -27,7 +27,7 @@ public class SolidifyEchoesOfMajestyPast {
 			spacesOptions.Remove(space);
 
 			// Skip up to 1 Invader Action at each added DestroyedPresence.
-			space.Tokens.Skip1InvaderAction(Name,ctx.Self);
+			space.ScopeTokens.Skip1InvaderAction(Name,ctx.Self);
 
 		}
 		

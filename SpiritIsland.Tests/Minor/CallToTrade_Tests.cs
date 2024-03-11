@@ -3,7 +3,7 @@
 public class CallToTrade_Tests {
 
 	static IEnumerable<TargetSpaceCtx> AllTargets( Spirit self ) {
-		return GameState.Current.Spaces_Unfiltered
+		return ActionScope.Current.Tokens_Unfiltered
 			.Select( s => self.Target(s.Space) );
 	}
 

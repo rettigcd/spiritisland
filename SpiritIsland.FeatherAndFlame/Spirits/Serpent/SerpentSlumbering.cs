@@ -31,7 +31,7 @@ public class SerpentSlumbering : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Setup: put 1 presence on #5
-		board[5].Tokens.Setup(Presence.Token, 1);
+		board[5].ScopeTokens.Setup(Presence.Token, 1);
 	}
 
 }

@@ -137,6 +137,13 @@ public sealed class ActionScope : IAsyncDisposable {
 	/// <remarks> Provides hook for spirits to modify the SpaceState object used for their actions.</remarks>
 	public SpaceState AccessTokens(Space space) => Upgrader( GameState.Tokens[space] );
 
+	/// <summary> Non-stasis + InPlay </summary>
+	public IEnumerable<SpaceState> Tokens => GameState.Spaces.Select(AccessTokens);
+	/// <summary> All Non-stasis (even not-in-play) </summary>
+	public IEnumerable<SpaceState> Tokens_Existing => GameState.Spaces_Existing.Select(AccessTokens);
+	public IEnumerable<SpaceState> Tokens_Unfiltered => GameState.Spaces_Unfiltered.Select(AccessTokens);
+
+
 	#region Anything that gets Configured by Spirit Actions
 
 	public Func<SpaceState, SpaceState> Upgrader {

@@ -71,7 +71,7 @@ public class AvoidTheDahan_Tests {
 		GameState.Current.DisableBlightEffect();
 
 		var user = new VirtualTestUser( spirit );
-		var a7 = gs.Island.Boards[0][7].Tokens;
+		var a7 = gs.Island.Boards[0][7].ScopeTokens;
 		a7.Summary.ShouldBe( "2D@2" );
 		ActivateFearCard( new AvoidTheDahan() ); // Invaders do not explore into lands with at least 2 dahan
 

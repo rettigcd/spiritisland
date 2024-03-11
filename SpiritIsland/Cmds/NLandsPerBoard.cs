@@ -72,7 +72,7 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 		// Get options
 		Func<TargetSpaceCtx,IEnumerable<ISpaceEntity>> tokenFactory = GetTokensMatchingClass;
 		SpaceToken[] spaceTokenOptions = spaceOptions
-			.SelectMany( x => tokenFactory(x).Cast<IToken>().On(x.Space) )
+			.SelectMany( x => tokenFactory(x).Cast<IToken>().OnScopeTokens1(x.Space) )
 			.ToArray();
 
 		// Select

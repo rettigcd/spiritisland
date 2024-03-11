@@ -19,7 +19,7 @@ public class DreadApparitions_Tests {
 		await spirit.When_TargetingSpace( a5, ctx=> ctx.AddFear(2) );
 
 		// Then: also get 3 defend
-		a5.Tokens.Defend.Count.ShouldBe( 2+1 );// +1 from D.A.
+		a5.ScopeTokens.Defend.Count.ShouldBe( 2+1 );// +1 from D.A.
 	}
 
 	[Fact]
@@ -41,7 +41,7 @@ public class DreadApparitions_Tests {
 		} );
 
 		// Then: 2 fear should have triggered 2 defend
-		a5.Tokens.Defend.Count.ShouldBe( 2+1 );
+		a5.ScopeTokens.Defend.Count.ShouldBe( 2+1 );
 
 	}
 
@@ -66,7 +66,7 @@ public class DreadApparitions_Tests {
 		);
 
 		// Then: 5 fear should have triggered 2 defend
-		board[5].Tokens.Defend.Count.ShouldBe( 5+1 );// Dread Apparitions has 1 fear
+		board[5].ScopeTokens.Defend.Count.ShouldBe( 5+1 );// Dread Apparitions has 1 fear
 
 	}
 
@@ -77,7 +77,7 @@ public class DreadApparitions_Tests {
 		Board board = Board.BuildBoardA();
 		Space a5 = board[5];
 		GameState gs = new GameState( spirit, board );
-		SpaceState tokens = a5.Tokens;
+		SpaceState tokens = a5.ScopeTokens;
 		gs.DisableBlightEffect();
 		gs.IslandWontBlight();
 
@@ -106,15 +106,15 @@ public class DreadApparitions_Tests {
 		_ = new GameState( spirit, board );
 
 		// Given: has 1 city and lots of dahan
-		a5.Tokens.Given_HasTokens("1C@3,10D@2");
+		a5.ScopeTokens.Given_HasTokens("1C@3,10D@2");
 		//   And: triggered DA
 		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
 
 		// When: Power causes fear in a different land
-		await spirit.When_TargetingSpace( a5, ctx => board[1].Tokens.AddFear(6) );
+		await spirit.When_TargetingSpace( a5, ctx => board[1].ScopeTokens.AddFear(6) );
 
 		// Then: no defend bonus
-		board[5].Tokens.Defend.Count.ShouldBe( 1+0 );// 1=>Dread Apparitions
+		board[5].ScopeTokens.Defend.Count.ShouldBe( 1+0 );// 1=>Dread Apparitions
 	}
 
 }

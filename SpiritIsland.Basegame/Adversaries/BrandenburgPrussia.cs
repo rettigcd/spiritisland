@@ -11,7 +11,7 @@ public class BrandenburgPrussia : AdversaryBase, IAdversary {
 		new AdversaryLevel(_level:1, 2 , 3,3,3, "Fast Start", "During Setup, on each board add 1 town to land #3" ){ 
 			InitFunc = (gs,_) => {
 				foreach(var board in gs.Island.Boards)
-					board[3].Tokens.Setup( Human.Town, 1 );
+					board[3].ScopeTokens.Setup( Human.Town, 1 );
 			}
 		},
 		new AdversaryLevel(_level:2, 4 , 3,3,3, "Surge of Colonists"  ).WithInvaderCardOrder("111-3-2222-3333"),

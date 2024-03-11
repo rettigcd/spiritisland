@@ -11,7 +11,7 @@ public class EntwineTheFatesOfAll {
 			ctx.Other.Presence.Lands,	// Target-Spirit's lands, not Self's lands
 			Present.Always 
 		) );
-		SpaceState tokens = space.Tokens;
+		SpaceState tokens = space.ScopeTokens;
 		int presenceCount = GameState.Current.Spirits.Sum( s => s.Presence.CountOn( tokens ) ); // !!! 
 		tokens.Defend.Add(2 * presenceCount );
 	}

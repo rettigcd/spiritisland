@@ -34,7 +34,7 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 		_spirit.Given_IsOn( _board[3] );
 		//	 And: dahan on initial spot
 		foreach(string s in initialDahanSquares.Split( ',' ))
-			_board[int.Parse( s )].Tokens.Dahan.Init(1);
+			_board[int.Parse( s )].ScopeTokens.Dahan.Init(1);
 
 		await _spirit.When_Growing( 1, (user) => {
 			user.Growth_PlacesEnergyPresence( expectedPresenseOptions );

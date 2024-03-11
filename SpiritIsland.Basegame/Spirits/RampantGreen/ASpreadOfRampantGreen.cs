@@ -54,9 +54,9 @@ public class ASpreadOfRampantGreen : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 
 		// Setup: 1 in the highest numbered wetland 
-		board.Spaces.Reverse().First( x => x.IsWetland ).Tokens.Setup( Presence.Token, 1 );
+		board.Spaces.Reverse().First( x => x.IsWetland ).ScopeTokens.Setup( Presence.Token, 1 );
 		// and 1 in the jungle without any dahan
-		board.Spaces.Single( x => x.IsJungle && x.Tokens.Dahan.CountAll == 0 ).Tokens.Setup( Presence.Token, 1 );
+		board.Spaces.Single( x => x.IsJungle && x.ScopeTokens.Dahan.CountAll == 0 ).ScopeTokens.Setup( Presence.Token, 1 );
 
 	}
 

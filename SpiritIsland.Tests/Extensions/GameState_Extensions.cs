@@ -6,7 +6,7 @@ static public class GameState_Extensions {
 
 	/// <summary>Wipes all invaders off of the island. </summary>
 	internal static GameState Given_InvadersDisappear( this GameState gs ){
-		foreach(SpaceState spaceState in gs.Spaces_Unfiltered)
+		foreach(SpaceState spaceState in ActionScope.Current.Tokens_Unfiltered)
 			spaceState.Given_ClearInvaders();
 			return gs;
 	}

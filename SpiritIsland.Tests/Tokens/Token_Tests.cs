@@ -33,7 +33,7 @@ public class Token_Tests {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC());
 
 		// Given: a space with no invaders
-		SpaceState spaceState = gs.Spaces_Unfiltered.First( s=>IsInPlay(s.Space) && !s.HasInvaders() );
+		SpaceState spaceState = ActionScope.Current.Tokens_Unfiltered.First( s=>IsInPlay(s.Space) && !s.HasInvaders() );
 		//   And: 1 neighboring town
 		var neighbor = spaceState.Adjacent.First();
 		neighbor.AdjustDefault( Human.Town, 1 );
@@ -56,7 +56,7 @@ public class Token_Tests {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 
 		// Given: a space with ONLY 1 explorer
-		SpaceState space = gs.Spaces_Unfiltered.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
+		SpaceState space = ActionScope.Current.Tokens_Unfiltered.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
 		space.Given_HasTokens("1E@1,1Z");
 
 		//  When: we build there

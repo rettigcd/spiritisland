@@ -28,7 +28,7 @@ public class Sweden : AdversaryBase, IAdversary {
 		) {
 			AdjustFunc = (gameState,_) => {
 				var additionalCitySpaces = gameState.Island.Boards
-					.Select( board => board[4].Tokens)
+					.Select( board => board[4].ScopeTokens)
 					.ToArray();
 				foreach(var space4 in additionalCitySpaces) {
 					// Add City to 4
@@ -38,7 +38,7 @@ public class Sweden : AdversaryBase, IAdversary {
 					if(space4.Blight.Any) {
 						// bump it to 5
 						space4.Blight.Adjust( -1 );
-						space4.Space.Boards.First()[5].Tokens.Blight.Adjust( 1 );
+						space4.Space.Boards.First()[5].ScopeTokens.Blight.Adjust( 1 );
 					}
 				}
 			}
@@ -61,7 +61,7 @@ public class Sweden : AdversaryBase, IAdversary {
 				var card = gameState.InvaderDeck.UnrevealedCards[0];
 				gameState.InvaderDeck.UnrevealedCards.RemoveAt(0);
 				var addTownSpaces = gameState.Island.Boards
-					.Select(board => board.Spaces.Tokens()
+					.Select(board => board.Spaces.ScopeTokens()
 						.Where( card.MatchesCard )
 						.OrderBy( s => s.InvaderTotal() )
 						// If there are 2 spaces with 'least # of invaders', just auto-picks one of them.
@@ -87,7 +87,7 @@ public class Sweden : AdversaryBase, IAdversary {
 		) {
 			InitFunc = ( gameState, _) => {
 				var spaces = gameState.Island.Boards
-					.Select( board => board[8].Tokens )
+					.Select( board => board[8].ScopeTokens )
 					.ToArray();
 
 				foreach(SpaceState space in spaces ) {

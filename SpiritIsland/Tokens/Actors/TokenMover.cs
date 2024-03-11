@@ -54,11 +54,11 @@ public sealed class TokenMover(
 			if(move == null) break;
 
 			// Do Move
-			TokenMovedArgs tokenMoved = await move.Source.MoveTo( move.Destination );
+			TokenMovedArgs tokenMoved = await move.Source.MoveTo( move.Destination.ScopeTokens );
 
 			// Notify/Update Source
 			await sourceSelector.NotifyAsync( move.Source );
-			await destinationSelector.NotifyAsync( move.Destination );
+			await destinationSelector.NotifyAsync( move.Destination.ScopeTokens );
 			await NotifyAsync( tokenMoved );
 		}
 	}

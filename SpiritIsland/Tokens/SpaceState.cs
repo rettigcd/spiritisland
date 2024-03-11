@@ -57,8 +57,8 @@ public class SpaceState
 	public int SumAny( params ITag[] healthyInvaders ) => OfAnyTagEnumeration( healthyInvaders ).Sum( k => _counts[k] );
 
 	// -- IEnumerable<SpaceToken> --
-	public IEnumerable<SpaceToken> SpaceTokensOfTag( ITag tag ) => OfTagEnumeration(tag).On(Space);
-	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).On(Space);
+	public IEnumerable<SpaceToken> SpaceTokensOfTag( ITag tag ) => OfTagEnumeration(tag).OnScopeTokens1(Space);
+	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).OnScopeTokens1(Space);
 
 	// -- HumanToken[] --
 	public IEnumerable<HumanToken> AllHumanTokens() => OfType<HumanToken>();
@@ -124,9 +124,10 @@ public class SpaceState
 		// But it is ok to remove destroyed tokens because we might be undoing a destroyed token
 		if( 0 < delta ) ValidateNotDestroyed( specific );
 
-        if(specific is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta );
-        _counts[specific] += delta;
-    }
+		if(specific is ITrackMySpaces selfTracker) 
+			AdjustTrackedToken( selfTracker, delta );
+		_counts[specific] += delta;
+	}
 
 	/// <summary>
 	/// For Adjust()ing in the positive direction, HumanTokens that might be Destroyed. 
@@ -138,7 +139,8 @@ public class SpaceState
 		if(deltaCount == 0) return;
 
 		// Do Adjustment
-		if(token is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, deltaCount );
+		if(token is ITrackMySpaces selfTracker) 
+			AdjustTrackedToken( selfTracker, deltaCount );
 		_counts[token] += deltaCount;
 
 		if(token.IsDestroyed) {
@@ -151,7 +153,8 @@ public class SpaceState
 	public void Adjust( ISpaceEntity specific, int delta ) {
 		if(specific is HumanToken human && human.RemainingHealth == 0) 
 			throw new System.ArgumentException( "Don't try to track dead tokens." );
-		if(specific is ITrackMySpaces selfTracker) AdjustTrackedToken( selfTracker, delta );
+		if(specific is ITrackMySpaces selfTracker) 
+			AdjustTrackedToken( selfTracker, delta );
 		_counts[specific] += delta;
 	}
 
@@ -206,7 +209,7 @@ public class SpaceState
 	public IEnumerable<SpaceState> Adjacent_Existing { 
 		get {
 			foreach(var space in Space.Adjacent_Existing)
-				yield return space.Tokens;
+				yield return space.ScopeTokens;
 
 			foreach(var gateway in OfType<GatewayToken>())
 				yield return gateway.GetLinked(this);
@@ -229,7 +232,7 @@ public class SpaceState
 	#endregion
 
 	void AdjustTrackedToken( ITrackMySpaces token, int delta ) {
-		token.TrackAdjust(Space,delta);
+		token.TrackAdjust(this,delta);
 	}
 
 
@@ -248,7 +251,7 @@ public class SpaceState
 
 
 
-	public virtual async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) => (await AddRemoveStrifeAsync( invader, 1, 1 )).On(Space);
+	public virtual async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) => (await AddRemoveStrifeAsync( invader, 1, 1 )).On(this);
 
 	public Task<HumanToken> Remove1StrifeFromAsync( HumanToken invader, int tokenCount ) => AddRemoveStrifeAsync(invader,-1,tokenCount);
 

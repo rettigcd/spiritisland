@@ -55,7 +55,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		if(source == null) return;
 		// # to move
-		int numToMove = (1 < other.Presence.CountOn(source.Space) && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
+		int numToMove = (1 < other.Presence.CountOn(source.Space.ScopeTokens) && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
 			? 2
 			: 1;
 		// Get permission

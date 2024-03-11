@@ -88,21 +88,29 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 				.ToArray();
 			foreach(ITrackMySpaces t in trackable) t.Clear();
 
-			// Restore TokenCounts
-			src._tokenCounts.Clear();
-
-			foreach(var space in _tokenCounts.Keys) {
+			// == Restore TokenCounts ==
+			// update existing
+			foreach (var space in _tokenCounts.Keys) {
 				// stasis
 				space.DoesExists = true; // when false, set below
 
 				// Token counts
 				SpaceState tokens = src[space];
-				foreach(var (token,count) in _tokenCounts[space].Select(x=>(x.Key,x.Value))) {
+				CountDictionary<ISpaceEntity> savedCounts = _tokenCounts[space];
+				// remove old types
+				foreach(var oldKey in tokens.Keys.Except(savedCounts.Keys).ToArray())
+					tokens.Init(oldKey,0);
+				// set current types
+				foreach (var (token,count) in savedCounts.Select(x=>(x.Key,x.Value))) {
 					tokens.Init(token, count);
-					if(tokens is ITrackMySpaces tms)
-						tms.TrackAdjust(space,count);
+					if(token is ITrackMySpaces tms)
+						tms.TrackAdjust(tokens,count);
 				}
 			}
+			// remove old
+			foreach(var remove in src._tokenCounts.Keys.Except(_tokenCounts.Keys).ToArray())
+				src._tokenCounts.Remove(remove);
+
 			foreach(var space in _doesNotExist) space.DoesExists = false;
 			// Restore Defaults
 			src.TokenDefaults.Clear();

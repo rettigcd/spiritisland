@@ -135,7 +135,7 @@ class PaintableSpace {
 		PaintCount( graphics, token, rect );
 
 		// Record Location
-		Locations[token.On( Tokens.Space )] = rect;
+		Locations[token.On( Tokens )] = rect;
 	}
 
 	void PaintCount( Graphics graphics, IToken token, Rectangle rect ) {

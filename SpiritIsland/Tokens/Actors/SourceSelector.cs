@@ -181,6 +181,6 @@ public class PromptData( Quota quota, SpaceToken[] options, int index, int? maxC
 	public readonly int? MaxCount = maxCount;
 	public int RemainingCount => MaxCount.Value - Index;
 
-	public string RemainingPartsStr => quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().Tokens().ToArray() );
+	public string RemainingPartsStr => quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().ScopeTokens().ToArray() );
 }
 

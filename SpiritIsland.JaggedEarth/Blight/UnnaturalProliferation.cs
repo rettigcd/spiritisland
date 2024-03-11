@@ -25,13 +25,13 @@ public class UnnaturalProliferation : BlightCard {
 
 	static BaseCmd<BoardCtx> Add2CitiesToLandWithFewest => new BaseCmd<BoardCtx>(
 		"Add 2 cities to the land with fewest town/city.", async ctx => {
-			var spaceOptions = ctx.Board.Spaces.Tokens()
+			var spaceOptions = ctx.Board.Spaces.ScopeTokens()
 				.GroupBy( ss=>ss.SumAny(Human.Town_City) )
 				.OrderBy( grp => grp.Key )
 				.First()
 				.ToArray();
 			Space space = await ctx.Self.SelectSpaceAsync("Add 2 cities",spaceOptions.Downgrade(),Present.Always);
-			await space.Tokens.AddDefaultAsync(Human.City, 2, AddReason.Added);
+			await space.ScopeTokens.AddDefaultAsync(Human.City, 2, AddReason.Added);
 		}
 	);
 

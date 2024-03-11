@@ -100,4 +100,9 @@ static public class SpiritSelectExtensions {
 		return await self.SelectAsync( new A.Space( prompt, options, present ) );
 	}
 
+	static public async Task<Space> SelectSpaceAsync(this Spirit self, string prompt, IEnumerable<SpaceState> options, Present present) {
+		return await self.SelectAsync(new A.Space(prompt, options, present));
+	}
+
+
 }

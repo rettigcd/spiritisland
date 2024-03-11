@@ -1,12 +1,21 @@
 ﻿namespace SpiritIsland;
 
 /// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
-public class SpaceToken( Space space, IToken token )
-	: TokenLocation
-	, IEquatable<SpaceToken>
-{
+public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
 
 	#region constructor / deconstructor
+
+	/// <summary>
+	/// Captures the SpaceState so we can use it in the UI safely.
+	/// </summary>
+	/// <param name="spaceState"></param>
+	/// <param name="token"></param>
+#pragma warning disable IDE0290 // Use primary constructor
+	public SpaceToken(SpaceState spaceState, IToken token) {
+		SpaceState = spaceState;
+		Token = token;
+	}
+#pragma warning restore IDE0290 // Use primary constructor
 
 	public void Deconstruct(out Space space, out IToken token) {
 		space = Space;
@@ -15,9 +24,11 @@ public class SpaceToken( Space space, IToken token )
 
 	#endregion constructor / deconstructor
 
-	public Space Space { get; } = space;
-	public IToken Token { get; } = token;
-	ILocation TokenLocation.Location => Space;
+	public Space Space => SpaceState.Space;
+	public IToken Token { get; }
+	ILocation TokenLocation.Location => SpaceState.Space;
+
+	public SpaceState SpaceState { get; }
 
 	#region IOption.Text config
 
@@ -29,13 +40,13 @@ public class SpaceToken( Space space, IToken token )
 		=> this.Token.MoveAsync(Space,destination.Space,count);
 
 	public bool Exists => 0 < Count;
-	public int Count => Space.Tokens[Token];
-	public bool IsSacredSite => Token is SpiritPresence sp && sp.IsSacredSite(Space.Tokens);
+	public int Count => SpaceState[Token];
+	public bool IsSacredSite => (Token is SpiritPresenceToken spt) && spt.Self.Presence.IsSacredSite(SpaceState);
 
-	public Task Destroy() => Space.Tokens.Destroy( Token, 1 );
-	public Task Remove() => Space.Tokens.RemoveAsync( Token, 1 );
+	public Task Destroy() => SpaceState.Destroy( Token, 1 );
+	public Task Remove() => SpaceState.RemoveAsync( Token, 1 );
 	public Task<SpaceToken> Add1StrifeToAsync() {
-		return Space.Tokens.Add1StrifeToAsync( Token.AsHuman() );
+		return SpaceState.Add1StrifeToAsync( Token.AsHuman() );
 	}
 
 	#region object overrides: GetHashCode/Equals/ToString

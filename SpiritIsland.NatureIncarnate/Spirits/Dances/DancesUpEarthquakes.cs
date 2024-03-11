@@ -114,7 +114,7 @@ public class DancesUpEarthquakes : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 
 		// 1 in the highest-numbered mountain
-		board.Spaces.Tokens()
+		board.Spaces.ScopeTokens()
 			.Last( tokens => tokens.Dahan.Any )
 			.Init( Presence.Token, 1 );
 

@@ -23,14 +23,14 @@ public static class Invader {
 		=> new A.SpaceToken( $"Damage ({aggregateDamage} remaining)", invaderTokens, present );
 
 	public static A.SpaceToken ForAggregateDamageFromSource( Orig_Space space, HumanToken source, IToken[] invaderTokens, int aggregateDamage, Present present )
-		=> new A.SpaceToken( $"Damage from {source} ({aggregateDamage} remaining)", invaderTokens.On(space), present );
+		=> new A.SpaceToken( $"Damage from {source} ({aggregateDamage} remaining)", invaderTokens.OnScopeTokens1(space), present );
 
 	public static A.SpaceToken ForBadlandDamage(int remainingDamage, IEnumerable_Space invaders )
 		=> new A.SpaceToken( $"Select invader to apply badland damage ({remainingDamage} remaining)", invaders, Present.Done );
 
 	public static A.SpaceToken ForStrife( SpaceState tokens, params ITokenClass[] groups )
 		=> new A.SpaceToken( "Add Strife", 
-			((groups!=null && 0<groups.Length) ? (IEnumerable<IToken>)tokens.OfAnyTag(groups) : tokens.InvaderTokens()).On(tokens.Space),
+			((groups!=null && 0<groups.Length) ? (IEnumerable<IToken>)tokens.OfAnyTag(groups) : tokens.InvaderTokens()).OnScopeTokens1(tokens.Space),
 			Present.Always 
 		);
 

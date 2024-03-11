@@ -66,9 +66,9 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	static void CopyNewModsToBoth( Space space, Space other, MultiSpace multi ) {
-		var a = space.Tokens;
-		var b = other.Tokens;
-		var newMods = multi.Tokens.Keys.Where( k => k is not IToken )
+		var a = space.ScopeTokens;
+		var b = other.ScopeTokens;
+		var newMods = multi.ScopeTokens.Keys.Where( k => k is not IToken )
 			.Except( a.Keys )
 			.Except( b.Keys )
 			.ToArray();
@@ -81,8 +81,8 @@ public class WeaveTogetherTheFabricOfPlace {
 	static async Task DistributeVisibleTokens( Spirit self, Space from, Space to ) {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,self);
 
-		var fromTokens = from.Tokens;
-		var toTokens = to.Tokens;
+		var fromTokens = from.ScopeTokens;
+		var toTokens = to.ScopeTokens;
 
 		// Distribute Tokens (All of them are considered moved.)
 		var tokenClasses = fromTokens.OfType<IToken>()
@@ -101,8 +101,8 @@ public class WeaveTogetherTheFabricOfPlace {
 	}
 
 	static void MoveItemsOnSpace( Space src, Space dst, bool copyInvisible ) {
-		var srcTokens = src.Tokens;
-		var dstTokens = dst.Tokens;
+		var srcTokens = src.ScopeTokens;
+		var dstTokens = dst.ScopeTokens;
 		foreach(var key in srcTokens.Keys.ToArray()) {
 			int count = srcTokens[key];
 			if(key is IToken) {

@@ -30,7 +30,7 @@ public static class StrifedRavage {
 		=> new BaseCmd<BoardCtx>( "each invader takes 1 damage per strife it has", StrifedInvadersTakeDamagePerStrifeImp );
 
 	static async Task StrifedInvadersTakeDamagePerStrifeImp( BoardCtx boardCtx ) {
-		foreach(var space in boardCtx.Board.Spaces.Tokens())
+		foreach(var space in boardCtx.Board.Spaces.ScopeTokens())
 			await EachInvaderTakesDamageByStrifeCount( space );
 	}
 

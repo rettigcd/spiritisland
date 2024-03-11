@@ -7,7 +7,7 @@ public class PlaceInOcean : SpiritAction {
 	public override Task ActAsync( Spirit self ) {
 		var oceanSpaces = GameState.Current.Island.Boards
 			.Select( b=>b.Spaces_Existing.Single(s=>s.IsOcean ) )
-			.Tokens()
+			.ScopeTokens()
 			.ToArray();
 		return Cmd.PlacePresenceOn( oceanSpaces ).ActAsync( self );
 	}

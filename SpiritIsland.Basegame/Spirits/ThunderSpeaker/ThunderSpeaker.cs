@@ -47,9 +47,9 @@ public class Thunderspeaker : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 2 Presence on your starting board: 1 in each of the 2 lands with the most Dahan
-		Space[] mostDahanSpots = board.Spaces.OrderByDescending( s => s.Tokens.Dahan.CountAll ).Take( 2 ).ToArray();
-		mostDahanSpots[0].Tokens.Setup(Presence.Token, 1);
-		mostDahanSpots[1].Tokens.Setup(Presence.Token, 1);
+		Space[] mostDahanSpots = board.Spaces.OrderByDescending( s => s.ScopeTokens.Dahan.CountAll ).Take( 2 ).ToArray();
+		mostDahanSpots[0].ScopeTokens.Setup(Presence.Token, 1);
+		mostDahanSpots[1].ScopeTokens.Setup(Presence.Token, 1);
 
 		// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense within 1
 		gs.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( DestroyNearbyPresence ) );
@@ -66,7 +66,7 @@ public class Thunderspeaker : Spirit {
 
 		int numToDestroy = args.Count;
 		Space from = (Space)args.From;
-		SpaceState fromTokens = from.Tokens;
+		SpaceState fromTokens = from.ScopeTokens;
 		var spaces = from.Range(1).IsInPlay().ToHashSet();
 		SpaceToken[] options;
 		SpaceToken[] Intersect() => Presence.Deployed.Where(x=>spaces.Contains(x.Space)).ToArray(); // Ravage Only, not dependent on PowerRangeCalculator

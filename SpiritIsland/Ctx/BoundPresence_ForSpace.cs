@@ -21,7 +21,7 @@ public class BoundPresence_ForSpace( TargetSpaceCtx _ctx ) {
 		while(count > 0) {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable
 			var src = await _ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
-			if( src.Space.Tokens.Has(_ctx.Self.Presence) )
+			if( src.Space.ScopeTokens.Has(_ctx.Self.Presence) )
 				await src.MoveTo( _ctx.Tokens );
 			count--;
 		}

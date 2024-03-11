@@ -13,7 +13,7 @@ public class FavorsOfStoryAndSeason {
 			.ActAsync(ctx.Other);
 
 		// If they have at least 3 Dahan among their lands,
-		if(3 <= ctx.Other.Presence.Lands.Tokens().Sum( t => t.Dahan.CountAll )) {
+		if(3 <= ctx.Other.Presence.Lands.Sum( t => t.Dahan.CountAll )) {
 			// they gain 1 Energy
 			++ctx.Other.Energy;
 			// and may Reclaim 1 Power Card instead of discarding it at the end of turn.

@@ -19,7 +19,7 @@ public static class DamageInvader_Extensions {
 
 		int damageInflicted = 0;
 		await foreach(SpaceToken st in itemsToDamage) {
-			await st.Space.Tokens.Invaders.ApplyDamageTo1( 1, st.Token.AsHuman() );
+			await st.Space.ScopeTokens.Invaders.ApplyDamageTo1( 1, st.Token.AsHuman() );
 			++damageInflicted;
 		}
 
@@ -47,7 +47,7 @@ public static class DamageInvader_Extensions {
 		int done = 0;
 
 		while(0 < additionalTotalDamage) {
-			var st = await damagePicker.SelectAsync( An.Invader.ForBadlandDamage( additionalTotalDamage, invaders.On( tokens.Space ) ) );
+			var st = await damagePicker.SelectAsync( An.Invader.ForBadlandDamage( additionalTotalDamage, invaders.OnScopeTokens1( tokens.Space ) ) );
 			if(st == null) break;
 			var invader = st.Token.AsHuman();
 			int index = invaders.IndexOf( invader );

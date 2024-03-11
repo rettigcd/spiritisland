@@ -16,7 +16,7 @@ public class TricksterTokens( Spirit spirit, SpaceState src, bool runAtMax = fal
 		HumanToken humanToken = await AddRemoveStrifeAsync( invader, 1, 1 );
 		if( _spirit.Energy != 0 )
 			await Pay1EnergyToStrifeInRange1Land();
-		return humanToken.On(Space);
+		return humanToken.On(this);
 	}
 
 	public static readonly SpecialRule ARealFlairForDiscord_Rule = new SpecialRule(
@@ -27,12 +27,12 @@ public class TricksterTokens( Spirit spirit, SpaceState src, bool runAtMax = fal
 	// A Real Flair for Discord
 	async Task Pay1EnergyToStrifeInRange1Land() {
 		var nearbyInvaders = _spirit.PowerRangeCalc.GetSpaceOptions( Adjacent, new TargetCriteria( 1 ) )
-			.SelectMany( ss => ss.InvaderTokens().On( ss.Space ) )
+			.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1( ss.Space ) )
 			.ToArray();
 		var invader2 = await _spirit.SelectAsync( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 != null) {
 			--_spirit.Energy;
-			var tokens2 = (TricksterTokens)invader2.Space.Tokens; // need to cast in order to access non-cascading protected member .AddRemoveStrife()
+			var tokens2 = (TricksterTokens)invader2.Space.ScopeTokens; // need to cast in order to access non-cascading protected member .AddRemoveStrife()
 			await tokens2.AddRemoveStrifeAsync( invader2.Token.AsHuman(), 1, 1 );
 		}
 	}

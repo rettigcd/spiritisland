@@ -6,9 +6,9 @@ static public class SpaceStateExtensions {
 
 	public static IEnumerable<Space> Downgrade( this IEnumerable<SpaceState> spaceStates ) => spaceStates.Select( x => x.Space );
 
-	public static IEnumerable<SpaceState> Tokens( this IEnumerable<Space> spaces ) => spaces.Select( ActionScope.Current.AccessTokens );
-
 	public static IEnumerable<Space> IsInPlay( this IEnumerable<Space> spaces ) => spaces.Where( TerrainMapper.Current.IsInPlay );
+
+	public static IEnumerable<SpaceState> ScopeTokens(this IEnumerable<Space> spaces) => spaces.Select(ActionScope.Current.AccessTokens);
 
 	public static IEnumerable<SpaceToken> WhereIsOn( this IEnumerable<SpaceToken> spaceTokens, IEnumerable<SpaceState> spaceStates ) {
 		var validSpaces = spaceStates.Select( x => x.Space ).ToHashSet();

@@ -19,12 +19,12 @@ public class BargainOfCoursingPaths {
 		var token = new CoursingPaths(ctx.Self);
 		ctx.Tokens.Init(token,1);
 		Space other = await SelectSecondSite( ctx );
-		other?.Tokens.Init(token,1);
+		other?.ScopeTokens.Init(token,1);
 
 	}
 
 	static Task<Space> SelectSecondSite( TargetSpaceCtx ctx ) {
-		SpaceState[] options = GameState.Current.Spaces.Where( s => s != ctx.Tokens && 2 <= s.Dahan.CountAll ).ToArray();
+		SpaceState[] options = ActionScope.Current.Tokens.Where( s => s != ctx.Tokens && 2 <= s.Dahan.CountAll ).ToArray();
 		Task<Space> other = ctx.Self.SelectAsync( new A.Space( "Mark Second Space for Coursing", options, Present.Always ) );
 		return other;
 	}
@@ -60,7 +60,11 @@ public class BargainOfCoursingPaths {
 			if(scope.ContainsKey(key)) return (SpaceState)scope[key];
 
 			// Pick brand new
-			SpaceState destination = await _spirit.SelectAsync( new A.Space( $"{Name}: Move {args.Count}{args.Added} from {((Space)args.To).Text} to:", GameState.Current.Spaces, Present.Always ) );
+			SpaceState destination = (await _spirit.SelectAsync( new A.Space( 
+				$"{Name}: Move {args.Count}{args.Added} from {((Space)args.To).Text} to:",
+				ActionScope.Current.Tokens,
+				Present.Always 
+			) )).ScopeTokens;
 			scope[key] = destination;
 			return destination;
 		}

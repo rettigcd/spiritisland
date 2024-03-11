@@ -55,7 +55,7 @@ public class HeartOfTheWildfire : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// in the hightest-numbered Sands on your starting board
 		var space = board.Spaces.Last(x=>x.IsSand);
-		var spaceState = space.Tokens;
+		var spaceState = space.ScopeTokens;
 		// Put 3 presence
 		spaceState.Setup(Presence.Token,3);
 		// and 2 blight

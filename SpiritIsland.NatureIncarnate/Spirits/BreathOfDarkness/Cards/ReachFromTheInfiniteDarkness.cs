@@ -30,7 +30,7 @@ public class ReachFromTheInfiniteDarkness {
 				continue; // try again
 
 			// move it
-			await presenceToAbduct.MoveTo( EndlessDark.Space );
+			await presenceToAbduct.MoveTo( EndlessDark.Space.ScopeTokens );
 
 			// record the bonus
 			bonuses[otherSpirit]++;

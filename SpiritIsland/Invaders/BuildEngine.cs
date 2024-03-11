@@ -8,8 +8,8 @@ public class BuildEngine {
 		await Build( gameState );
 	}
 
-	static protected SpaceState[] GetSpacesMatchingCard( InvaderCard card, GameState gameState )
-		=> gameState.Spaces.Where( card.MatchesCard ).ToArray();
+	static protected SpaceState[] GetSpacesMatchingCard( InvaderCard card, GameState _ )
+		=> ActionScope.Current.Tokens.Where( card.MatchesCard ).ToArray();
 
 	void AddBuildTokensMatchingCard( InvaderCard card, GameState gameState ) {
 		var cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
@@ -33,7 +33,7 @@ public class BuildEngine {
 
 		// Scan for all Build Tokens - both Card-Build-Spaces plus any pre-existing DoBuilds
 		// ** May contain more than just Normal Build, due to rule/power that added extra ones.
-		var matchingSpacesWithBuildTokens = gameState.Spaces
+		var matchingSpacesWithBuildTokens = ActionScope.Current.Tokens
 			.Where( tokens => 0 < tokens[ModToken.DoBuild] )
 			.OrderBy( tokens => tokens.Space.Label )
 			.ToArray();

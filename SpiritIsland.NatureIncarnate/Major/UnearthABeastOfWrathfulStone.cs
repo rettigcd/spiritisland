@@ -75,7 +75,7 @@ class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> tri
 	async Task IRunAfterInvaderPhase.AfterInvaderPhase( GameState gameState ) {
 		if(_hadRavageOrBuild) { _hadRavageOrBuild = false; return; }
 
-		SpaceState spaceState = gameState.Spaces.Single( ss => 0 < ss[this] );
+		SpaceState spaceState = ActionScope.Current.Tokens.Single( ss => 0 < ss[this] );
 		// Do action
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, _spirit );
 		await _triggeredAction( _spirit.Target( spaceState.Space ) );

@@ -30,16 +30,16 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(1,Track.Energy1, Track.WaterEnergy, Track.PlantEnergy, Track.WaterEnergy, TwoAir, Track.WaterEnergy, Track.EarthEnergy, TwoWater ),
 			new PresenceTrack(1, Track.Card1, MovePresence, Track.WaterEnergy,Track.Card2, MovePresence, Track.Card3 )
-		),
-		new GrowthTrack(
+		)
+		,new GrowthTrack(
 			// Reclaim All, Gain Power Card, Move a presence 2 spaces
 			new GrowthGroup( new ReclaimAll(), new GainPowerCard(), new MovePresence( 2 ) ),
 			// Add a Presence(2), Add a Presence(2), Gain 2 water, Discard 2 Power Cards
 			new GrowthGroup( new PlacePresence( 2 ), new PlacePresence( 2 ), new GainAllElements( Element.Water, Element.Water ), new DiscardCards( 2 ) ),
 			// Gain Power Card, Add a presence, Gain 1 Energy
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3 ), new GainEnergy( 1 ) )
-		),
-		PowerCard.For(typeof(DarkSkiesLooseAStingingRain))
+		)
+		,PowerCard.For(typeof(DarkSkiesLooseAStingingRain))
 		,PowerCard.For(typeof(FoundationsSinkIntoMud))
 		,PowerCard.For(typeof(GiftOfAbundance))
 		,PowerCard.For(typeof(UnbearableDeluge))
@@ -55,7 +55,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
-		board.Spaces.First(x => x.IsWetland).Tokens.Setup(Presence.Token, 1);
+		board.Spaces.First(x => x.IsWetland).ScopeTokens.Setup(Presence.Token, 1);
 		gameState.AddTimePassesAction( _pourDownPower );
 
 		gameState.ReplaceTerrain( old => {

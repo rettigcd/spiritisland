@@ -1,15 +1,15 @@
 ﻿namespace SpiritIsland.A;
 
-using Type = SpiritIsland.PowerCard; // avoid name conflict
+using SI_PowerCard = SpiritIsland.PowerCard; // avoid name conflict
 
 /// <summary>
 /// Selects a PowerCard from a group of PowerCard options.
 /// </summary>
-public class PowerCard : TypedDecision<Type> {
+public class PowerCard : TypedDecision<SI_PowerCard> {
 
 	#region constructors
 
-	public PowerCard(string prompt, int numberToSelect, CardUse cardUse, Type[] cardOptions, Present present ) 
+	public PowerCard(string prompt, int numberToSelect, CardUse cardUse, SI_PowerCard[] cardOptions, Present present ) 
 		: base( prompt, cardOptions, present )
 	{
 		foreach(var option in cardOptions)
@@ -33,11 +33,11 @@ public class PowerCard : TypedDecision<Type> {
 	public int NumberToSelect {get;}
 
 	/// <summary> If we select the given PowerCard, what are we going to do with it.  What is its use? </summary>
-	public CardUse Use( Type card ) => _cardUses[card];
+	public CardUse Use( SI_PowerCard card ) => _cardUses[card];
 
-	public Type[] CardOptions => _cardUses.Keys.ToArray();
+	public SI_PowerCard[] CardOptions => _cardUses.Keys.ToArray();
 
-	readonly Dictionary<Type, CardUse> _cardUses = [];
+	readonly Dictionary<SI_PowerCard, CardUse> _cardUses = [];
 
 }
 

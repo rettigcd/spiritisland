@@ -8,7 +8,7 @@ public class Ravage_Tests {
 		_gs = new GameState( _spirit, _board );
 		_gs.NewLogEntry += GameState_NewLogEntry;
 		// Do this after GameState has been initialized so that ActionScopes are initialized.
-		_tokens = _board[1].Tokens;
+		_tokens = _board[1].ScopeTokens;
 	}
 
 	[Fact]

@@ -57,13 +57,13 @@ public class Ocean : Spirit {
 		gameState.Terrain_ForBlight = new OceanTerrainForPower( gameState.Terrain_ForBlight, this );
 
 		// Place in Ocean
-		board.Ocean.Tokens.Setup(Presence.Token,1);
+		board.Ocean.ScopeTokens.Setup(Presence.Token,1);
 
 		AddActionFactory( new PlacePresenceInCostal().ToInit() );
 
 		var drownMod = new Drowning(this);
 		foreach(Board b in gameState.Island.Boards)
-			b.Ocean.Tokens.Adjust( drownMod, 1 );
+			b.Ocean.ScopeTokens.Adjust( drownMod, 1 );
 	}
 
 	// ! Hook for Tidal Boon

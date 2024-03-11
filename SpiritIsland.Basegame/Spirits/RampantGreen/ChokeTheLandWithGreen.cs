@@ -37,7 +37,7 @@ public class ChokeTheLandWithGreen( ASpreadOfRampantGreen _self )
 		if(stop == null) return false;
 
 		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_SpecialRule); // Special Rules! - it is the invader actions we are stopping
-		await stop.Tokens.Destroy( this, 1 );
+		await stop.ScopeTokens.Destroy( this, 1 );
 		_self.Energy -= energyCost;
 
 		return true;

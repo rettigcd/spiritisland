@@ -8,7 +8,7 @@ static public class Bring {
 		return async moved => {
 			Space from = (Space)moved.From;
 			Space to = (Space)moved.To;
-			await new TokenMover( spirit, "Bring", from.Tokens, to.Tokens )
+			await new TokenMover( spirit, "Bring", from.ScopeTokens, to.ScopeTokens )
 				.UseQuota( quota )
 				.DoUpToN();
 		};

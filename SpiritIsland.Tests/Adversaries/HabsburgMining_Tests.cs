@@ -32,7 +32,7 @@ public class HabsburgMining_Tests {
 			board[5].Given_HasTokens("3E@1");
 
 			// Then: card should match every space but A5
-			gs.Spaces.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
+			ActionScope.Current.Tokens.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
 		}
 
 		[Fact]
@@ -61,7 +61,7 @@ public class HabsburgMining_Tests {
 			board[5].Given_HasTokens("3E@1");
 
 			// Then: card should match every space but A5
-			gs.Spaces.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
+			ActionScope.Current.Tokens.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
 		}
 
 		[Fact]
@@ -91,7 +91,7 @@ public class HabsburgMining_Tests {
 
 			// Then: A5 should match, but nothing else
 			bool matches = sut.MatchesCard(board[5]);
-			gs.Spaces.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A5");
+			ActionScope.Current.Tokens.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A5");
 		}
 
 

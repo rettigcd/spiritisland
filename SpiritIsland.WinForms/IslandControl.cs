@@ -101,13 +101,13 @@ public partial class IslandControl : Control {
 		// Pop-ups - draw last, because they are pop-ups and should be on top.
 		DrawDeckPopUp( pe.Graphics, regionLayout );
 		DrawElementsPopUp( pe.Graphics, regionLayout );
-		DrawAckPopUp( pe.Graphics, regionLayout );
+//		DrawAckPopUp( pe.Graphics, regionLayout );
 
 		if(_ctx._debug)
 			regionLayout.DrawRects( pe.Graphics );
 
-		if(options_Ack is not null)
-			_optionRects.Add( options_Ack, regionLayout.AckPopupRect );
+		//if(options_Ack is not null)
+		//	_optionRects.Add( options_Ack, regionLayout.AckPopupRect );
 
 		// seems to run about 11 MB
 		if( 20*MB < ImageSpec.ImageCache.MemoryUsage)
@@ -192,38 +192,38 @@ public partial class IslandControl : Control {
 		graphics.DrawImage( majorImage, majorRect );
 	}
 
-	void DrawAckPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
-		if(options_Ack is null) return;
+//	void DrawAckPopUp( Graphics graphics, RegionLayoutClass regionLayout ) {
+//		if(options_Ack is null) return;
 
-		using Image img = GetAckPopupImage();
-		if(img == null) return;
+		//using Image img = GetAckPopupImage();
+		//if(img == null) return;
 
-		// draw img
-		_ackRect = regionLayout.AckPopupRect.FitBoth( img.Size );
-		graphics.DrawImage( img, _ackRect );
+		//// draw img
+		//_ackRect = regionLayout.AckPopupRect.FitBoth( img.Size );
+		//graphics.DrawImage( img, _ackRect );
 
-		// Draw Ack
-		int AckHeight = (int)(regionLayout.AckPopupRect.Height*.051f);
-		Rectangle labelRect = new Rectangle(_ackRect.X+20,_ackRect.Bottom- AckHeight, _ackRect.Width-40, AckHeight );
-		graphics.FillRectangle(Brushes.White, labelRect);
-		using var font = ResourceImages.Singleton.UseGameFont(24);
-		graphics.DrawStringCenter("Acknowledge", font, Brushes.Black, labelRect);
+		//// Draw Ack
+		//int AckHeight = (int)(regionLayout.AckPopupRect.Height*.051f);
+		//Rectangle labelRect = new Rectangle(_ackRect.X+20,_ackRect.Bottom- AckHeight, _ackRect.Width-40, AckHeight );
+		//graphics.FillRectangle(Brushes.White, labelRect);
+		//using var font = ResourceImages.Singleton.UseGameFont(24);
+		//graphics.DrawStringCenter("Acknowledge", font, Brushes.Black, labelRect);
 
-	}
-	Rectangle _ackRect; // holds the collapsed area
+//	}
+//	Rectangle _ackRect; // holds the collapsed area
 
-	Bitmap GetAckPopupImage() {
-		if(options_Ack is not null) {
-			var item = options_Ack.Item;
-			if(item is IFearCard fearCard)
-				return ResourceImages.Singleton.GetFearCard( fearCard );
-			else if(item is IBlightCard blightCard)
-				return ResourceImages.Singleton.GetBlightCard( blightCard );
-			else if(item is CommandBeasts cb)
-				return ResourceImages.Singleton.GetMiscAction( cb.Name );
-		}
-		return null;
-	}
+	//Bitmap GetAckPopupImage() {
+	//	if(options_Ack is not null) {
+	//		var item = options_Ack.Item;
+	//		if(item is IFearCard fearCard)
+	//			return ResourceImages.Singleton.GetFearCard( fearCard );
+	//		else if(item is IBlightCard blightCard)
+	//			return ResourceImages.Singleton.GetBlightCard( blightCard );
+	//		else if(item is CommandBeasts cb)
+	//			return ResourceImages.Singleton.GetMiscAction( cb.Name );
+	//	}
+	//	return null;
+	//}
 
 	protected override void OnSizeChanged( EventArgs e ) {
 		base.OnSizeChanged( e );
@@ -277,8 +277,8 @@ public partial class IslandControl : Control {
 
 
 
-		if(action == null && options_Ack is not null && _ackRect.Contains( clientCoords ))
-			action = new GenericClickable( ()=> SelectOption(options_Ack) );
+		//if(action == null && options_Ack is not null && _ackRect.Contains( clientCoords ))
+		//	action = new GenericClickable( ()=> SelectOption(options_Ack) );
 
 		if(action == null){
 			IOption option = _optionRects.Keys.FirstOrDefault( key => _optionRects[key].Contains( clientCoords ) );
@@ -398,7 +398,7 @@ public partial class IslandControl : Control {
 			.First();
 
 		// !!! Buttonize Pop-ups - need to add dynamically and be able to remove themselves when done/clicked
-		options_Ack = decision.Options.OfType<Acknowledgement>().FirstOrDefault();
+		// options_Ack = decision.Options.OfType<Acknowledgement>().FirstOrDefault();
 
 		// !!! ADD Special Rules (Spirit) button click - BTN needs to handle its own Click event
 		// !!! ADD Adversary Button click - BTN needs to handle its own Click event
@@ -443,8 +443,6 @@ public partial class IslandControl : Control {
 
 	A.DeckToDrawFrom decision_DeckToDrawFrom;
 	An.Element decision_Element;
-
-	Acknowledgement options_Ack;
 
 	#endregion
 

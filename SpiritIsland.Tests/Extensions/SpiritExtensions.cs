@@ -26,7 +26,7 @@ public static class SpiritExtensions {
 
 	internal static Spirit Given_IsOnMany( this Spirit spirit, string presenceString ) {
 
-		Dictionary<string,SpaceState> lookupByLabel = GameState.Current.Spaces_Unfiltered
+		Dictionary<string,SpaceState> lookupByLabel = ActionScope.Current.Tokens_Unfiltered
 			.ToDictionary(ss=>ss.Space.Label,s=>s);
 
 		SpaceState[] spaces = new SpaceState[presenceString.Length/2];
@@ -41,7 +41,7 @@ public static class SpiritExtensions {
 
 	/// <summary> Sets the # of Presence via .Init() </summary>
 	internal static Spirit Given_IsOn( this Spirit spirit, Space space, int count=1 )
-		=> spirit.Given_IsOn( space.Tokens, count );
+		=> spirit.Given_IsOn( space.ScopeTokens, count );
 
 	/// <summary> Sets the # of Presence via .Init() </summary>
 	internal static Spirit Given_IsOn( this Spirit spirit, SpaceState ss, int count=1 ){
@@ -153,7 +153,7 @@ public static class SpiritExtensions {
 	}
 
 	static public void Assert_BoardPresenceIs( this Spirit spirit, string expected ) {
-		var actual = GameState.Current.Spaces_Existing
+		var actual = ActionScope.Current.Tokens_Existing
 			.Where( spirit.Presence.IsOn )
 			.Select(s=>s.Space.Label+":"+s[spirit.Presence.Token])
 			.Order()
@@ -190,7 +190,7 @@ public static class SpiritExtensions {
 	}
 
 	static public TargetSpaceCtx TargetSpace( this Spirit self, string spaceLabel )
-		=> self.Target( GameState.Current.Spaces_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
+		=> self.Target(ActionScope.Current.Tokens_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
 
 	/// <summary> Constructs a VirtualUser and passes it to userActions. </summary>
 	internal static Action HandleDecisions(this Spirit spirit, Action<VirtualUser> userActions ) 

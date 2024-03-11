@@ -9,5 +9,5 @@ public interface ITrackMySpaces {
 	/// clear out tracking because Restorer is about to loop through everything and call TrackAdjust();
 	/// </summary>
 	void Clear();
-	void TrackAdjust( Space space, int delta );
+	void TrackAdjust( SpaceState space, int delta);
 }

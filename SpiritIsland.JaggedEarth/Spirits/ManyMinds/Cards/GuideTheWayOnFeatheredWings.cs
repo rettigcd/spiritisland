@@ -29,7 +29,7 @@ public class GuideTheWayOnFeatheredWings {
 			.DoUpToN();
 
 		// move beast (2 of 2)
-		var selection = A.Space.ForMoving_SpaceToken( $"Move {tracker.BeastMoved.Text} to", destination1, destination1.Tokens.Adjacent.Downgrade(), Present.Done, tracker.BeastMoved );
+		var selection = A.Space.ForMoving_SpaceToken( $"Move {tracker.BeastMoved.Text} to", destination1, destination1.ScopeTokens.Adjacent.Downgrade(), Present.Done, tracker.BeastMoved );
 		Space destination2 = await ctx.Self.SelectAsync( selection );
 		if(destination2 == null) return;
 		await tracker.BeastMoved.MoveAsync(destination1,destination2);

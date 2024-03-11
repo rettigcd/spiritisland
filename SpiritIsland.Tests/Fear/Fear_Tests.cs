@@ -4,10 +4,8 @@ public class Fear_Tests {
 
 	readonly Spirit spirit;
 	readonly GameState gs;
-	readonly VirtualUser user;
 	public Fear_Tests() {
 		spirit = new RiverSurges();
-		user = new VirtualUser( spirit );
 		gs = new GameState( spirit, Board.BuildBoardA() );
 		_fearCard = gs.WatchForFearCard();
 	}

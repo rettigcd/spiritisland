@@ -33,7 +33,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		} );
 
 		// Then: target 2 of each
-		a1.Tokens.Summary.ShouldBe( "2D@2,2E@1,2T@2,1TS" );
+		a1.ScopeTokens.Summary.ShouldBe( "2D@2,2E@1,2T@2,1TS" );
 	}
 
 	[Trait( "Targeting", "Range" )]
@@ -45,7 +45,7 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		GameState gameState = new GameState( spirit, board );
 
 		// Given: Presence on A8 Presence(TS)
-		board[3].Tokens.Given_HasTokens( "1TS" );
+		board[3].ScopeTokens.Given_HasTokens( "1TS" );
 		//   And: played Flow Like Water
 		await spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( u => u.Choose( "Done" ) );
 

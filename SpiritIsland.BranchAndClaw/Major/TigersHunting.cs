@@ -33,7 +33,7 @@ public class TigersHunting {
 				Present.Always 
 			) );
 			if(noBlight != null)
-				await ctx.Target(noBlight).DamageInvaders(1 + noBlight.Tokens.Beasts.Count );
+				await ctx.Target(noBlight).DamageInvaders(1 + noBlight.ScopeTokens.Beasts.Count );
 		}
 
 	}

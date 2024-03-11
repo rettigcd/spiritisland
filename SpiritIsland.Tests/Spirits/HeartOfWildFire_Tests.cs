@@ -11,7 +11,7 @@ public class HeartOfWildFire_Tests {
 		gs.IslandWontBlight();
 
 		var space = boardB[8];
-		var tokens = space.Tokens;
+		var tokens = space.ScopeTokens;
 
 		// Given: presence on B8
 		tokens.Init(spirit.Presence.Token,1);
@@ -38,7 +38,7 @@ public class HeartOfWildFire_Tests {
 		gs.IslandWontBlight();
 
 		var space = boardB[8];
-		var tokens = space.Tokens;
+		var tokens = space.ScopeTokens;
 
 		// Given: presence on B8
 		tokens.Init( spirit.Presence.Token, 1 );

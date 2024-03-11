@@ -35,7 +35,7 @@ public class SharpFangs : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 
-		var highestJungle = board.Spaces.Where(x => x.IsJungle).Last().Tokens;
+		var highestJungle = board.Spaces.Where(x => x.IsJungle).Last().ScopeTokens;
 		highestJungle.Setup(Presence.Token,1);
 		highestJungle.Beasts.Init(1);
 

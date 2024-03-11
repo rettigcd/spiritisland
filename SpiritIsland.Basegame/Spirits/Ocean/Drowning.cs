@@ -20,7 +20,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAddedAsync {
 		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && to.Has( _spirit.Presence )) {
 			var moveOptions = gs.Island.Boards
 				.Select( x => x.Ocean )
-				.Tokens()
+				.ScopeTokens()
 				.SelectMany( x => x.Adjacent )
 				.Distinct()
 				.ToArray();

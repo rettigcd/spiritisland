@@ -41,7 +41,7 @@ public class StrongAndConstantCurrents{
 	// Move up to 2 between target land and one other coastal Land.
 	static async Task MoveDahanAction( TargetSpaceCtx ctx ) {
 		int count = 2;
-		SpaceState[] coastSpaces = GameState.Current.Spaces
+		SpaceState[] coastSpaces = ActionScope.Current.Tokens
 			.Where( TerrainMapper.Current.IsCoastal )
 			.ToArray();
 
@@ -62,7 +62,7 @@ public class StrongAndConstantCurrents{
 			var destination = (selected.Space != ctx.Space) ? ctx.Space
 				: await ctx.SelectAsync( A.Space.ToPushToken( selected.Token, selected.Space, coastSpaces.Downgrade(), Present.Always ) );
 
-			await selected.MoveTo( destination );
+			await selected.MoveTo( destination.ScopeTokens );
 
 			count--;
 		}

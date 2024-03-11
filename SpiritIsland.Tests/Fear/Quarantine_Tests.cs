@@ -165,7 +165,7 @@ public class Quarantine_Tests {
 		await InvaderPhase.ActAsync(gs); // Build in Sands, exploring Coastal
 
 		if(skipARavage)
-			board[4].Tokens.SkipRavage("Test");
+			board[4].ScopeTokens.SkipRavage("Test");
 
 		_log.Clear();
 		await InvaderPhase.ActAsync(gs); // Ravage in Sands, Build in Coastal, Explore jungle

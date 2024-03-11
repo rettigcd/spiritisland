@@ -75,7 +75,7 @@ public static partial class Cmd {
 		int remaining = calcMaxHealthToRemove(ctx);
 		HumanToken pick;
 		while(0 < remaining
-			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Tokens.InvaderTokens().On(ctx.Space), remaining )) )?.Token.AsHuman()) != null
+			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Tokens.InvaderTokens().OnScopeTokens1(ctx.Space), remaining )) )?.Token.AsHuman()) != null
 		) {
 			await ctx.Remove( pick, 1 );
 			remaining -= pick.RemainingHealth;
@@ -184,8 +184,8 @@ public static partial class Cmd {
 			if(source == null) return;
 
 			// Select destination
-			Space destination = await self.SelectAsync( A.Space.ToPushPresence( source.Space, source.Space.Tokens.Adjacent.Downgrade(), Present.Always, source.Token ) );
-			await source.MoveTo( destination.Tokens );
+			Space destination = await self.SelectAsync( A.Space.ToPushPresence( source.Space, source.Space.ScopeTokens.Adjacent.Downgrade(), Present.Always, source.Token ) );
+			await source.MoveTo( destination.ScopeTokens );
 
 			// Calback
 			if(callback != null)

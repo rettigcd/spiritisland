@@ -13,9 +13,9 @@ public class WordsOfWarning_Tests : ThunderCards  {
 
 
 		// Given: 2 dahan on a2
-		a[2].Tokens.Dahan.Init(2);
+		a[2].ScopeTokens.Dahan.Init(2);
 		// and: dahan on a4 so it doesn't auto-select the only target available
-		a[4].Tokens.Dahan.Init(1);
+		a[4].ScopeTokens.Dahan.Init(1);
 
 		//  and: 4 explorers + 1 city
 		var counts = gs.Tokens[ a[2] ];
