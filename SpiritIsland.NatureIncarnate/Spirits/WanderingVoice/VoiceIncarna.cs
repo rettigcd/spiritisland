@@ -9,7 +9,7 @@ public class VoiceIncarna( Spirit spirit )
 	public bool IsIsolated => Empowered;
 
 	// "Spread Tumult and Delusion"
-	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		// When your Actions add/move Incarna to a land with Invaders
 		if(args.Added == this && to.HasInvaders())
 			// Add 1 Strife in the destination land

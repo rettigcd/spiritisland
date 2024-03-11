@@ -9,7 +9,7 @@ class AdjustDamageFromAttackers( Func<RavageExchange, int> damageAdjustment )
 
 	readonly Func<RavageExchange,int> _damageAdjustment = damageAdjustment;
 
-	public void Config( SpaceState st ) {
+	public void Config( Space st ) {
 		// ??? Could the ConfigureRavage handlers just mod the RavageBehavior?
 		RavageBehavior behavior = st.RavageBehavior;
 		Func<RavageExchange, int> old = st.RavageBehavior.GetDamageFromParticipatingAttackers;

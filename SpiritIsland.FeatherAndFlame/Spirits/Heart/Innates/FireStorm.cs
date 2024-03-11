@@ -35,10 +35,10 @@ public class FireStorm {
 
 		// ! don't .ToArray() this because we want it to re-execute each time.
 		var invaderTokens = spacesWithPresenceAndBlight
-			.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1(ss.Space) );
+			.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1(ss.SpaceSpec) );
 
 		while(fireDamage > 0 && invaderTokens.Any()) {
-			SpaceToken token = await ctx.SelectAsync( new A.SpaceToken($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
+			SpaceToken token = await ctx.SelectAsync( new A.SpaceTokenDecision($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
 			await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,token.Token.AsHuman());
 			--fireDamage;
 		}
@@ -54,7 +54,7 @@ public class FireStorm {
 	static public async Task Option4( TargetSpaceCtx ctx ) {
 		// In a land with blight and presence  (Select a space, not necessarily the one you targetted with power (I guess...)
 		var spacesWithPresenceAndBlight = ctx.Self.Presence.Lands.Where( s=>s.Blight.Any );
-		var space = await ctx.SelectAsync( new A.Space($"Push all dahan, destroy invaders and beast, 1 blight",spacesWithPresenceAndBlight,Present.Always));
+		var space = await ctx.SelectAsync( new A.SpaceDecision($"Push all dahan, destroy invaders and beast, 1 blight",spacesWithPresenceAndBlight,Present.Always));
 		var spaceCtx = ctx.Target( space );
 
 		// Push all Dahan

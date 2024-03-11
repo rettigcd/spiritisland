@@ -11,7 +11,7 @@ public class SerpentRousesInAnger {
 		var els = ctx.Self.Elements;
 		int count = Math.Min( await els.GetAsync(Element.Fire), await els.GetAsync(Element.Earth));
 		// 1 Damage to 1 town / city.
-		await ctx.Tokens.UserSelected_DamageInvadersAsync( ctx.Self, count, Human.Town_City );
+		await ctx.Space.UserSelected_DamageInvadersAsync( ctx.Self, count, Human.Town_City );
 	}
 
 	[InnateTier( "2 moon 2 earth", "For each 2 moon 2 earth you have, 2 fear and you may Push 1 town from target land." )]
@@ -35,11 +35,11 @@ public class SerpentRousesInAnger {
 			// -7 Energy.
 			ctx.Self.Energy -= 7;
 			// In every land in the game: X Damage, where X is the number of presence you have in and adjacent to that land.
-			var invaderLands = ActionScope.Current.Tokens
+			var invaderLands = ActionScope.Current.Spaces
 				.Where(space => space.HasInvaders())
 				.ToArray();
 			foreach(var land in invaderLands) {
-				var landsCreatingDamage = new HashSet<Space>(land.InOrAdjacentTo.Downgrade());
+//				HashSet<SpaceSpec> landsCreatingDamage = new HashSet<SpaceSpec>(land.InOrAdjacentTo.Downgrade());
 				int damage = land.InOrAdjacentTo.Sum( ctx.Self.Presence.CountOn );
 				await ctx.DamageInvaders(damage);
 			}

@@ -15,10 +15,10 @@ public class AccelerateOrDelay : SpiritAction {
 			options.Remove( card );
 
 			// Bump or Delay?
-			int dif = card.Cost - spirit.ImpendingEnergy[card.Name]; // -1 because of this round.
-			bool accelerate = await spirit.UserSelectsFirstText( $"{card.Name} is {dif} away from maturity.", "Accelerate 1", "Delay 1" );
+			int dif = card.Cost - spirit.ImpendingEnergy[card.Title]; // -1 because of this round.
+			bool accelerate = await spirit.UserSelectsFirstText( $"{card.Title} is {dif} away from maturity.", "Accelerate 1", "Delay 1" );
 			// Save choice.
-			spirit.ImpendingEnergy[card.Name] += accelerate ? 1 : -1;
+			spirit.ImpendingEnergy[card.Title] += accelerate ? 1 : -1;
 		}
 		await Task.Delay(0);
 	}

@@ -10,7 +10,7 @@ public class SkipRavage( string label, UsageDuration duration = UsageDuration.Sk
 	/// <summary> Used by skips to determine which skip to use. </summary>
 	public UsageCost Cost => UsageCost.Free;
 
-	public virtual Task<bool> Skip( SpaceState space ) {
+	public virtual Task<bool> Skip( Space space ) {
 		if(_duration == UsageDuration.SkipOneThisTurn)
 			space.Adjust( this, -1 ); // remove this token
 		return Task.FromResult( true ); // stopped

@@ -9,9 +9,9 @@ public class RangeExtender( int extension, ICalcRange originalApi ) : ICalcRange
 	#region constructor
 	#endregion
 
-	public IEnumerable<SpaceState> GetSpaceOptions( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria )
+	public IEnumerable<Space> GetSpaceOptions( IEnumerable<Space> source, params TargetCriteria[] targetCriteria )
 		=> _originalApi.GetSpaceOptions( source, targetCriteria.ExtendRange(_extension) );
-	public IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) 
+	public IEnumerable<Space> GetSpaceOptions( Space source, TargetCriteria tc ) 
 		=> _originalApi.GetSpaceOptions( source, tc.ExtendRange( _extension ) );
 
 	#region private 

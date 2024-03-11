@@ -8,10 +8,10 @@ public class VoiceOfCommand_Tests {
 		Spirit spirit = new RiverSurges();
 		Board board = Board.BuildBoardA();
 		_ = new GameState(spirit,board);
-		var space = board[7].ScopeTokens;
+		var space = board[7].ScopeSpace;
 
 		// Given: Voice of Command played on space
-		await VoiceOfCommand.ActAsync( spirit.Target(space.Space)).ShouldComplete("VoC");
+		await VoiceOfCommand.ActAsync( spirit.Target(space.SpaceSpec)).ShouldComplete("VoC");
 
 		//   And: after power is done, land somehow gets 4 explorers & 2 Town
 		space.InitDefault( Human.Explorer, 4 );

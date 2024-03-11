@@ -12,7 +12,7 @@ public class SurroundedByTheDahan {
 		if(ctx.HasInvaders)
 			ctx.AddFear(2);
 		// 1 Fear if Dahan outnumber Town/City.
-		if(ctx.Tokens.SumAny(Human.Town_City) < ctx.Tokens.Sum(Human.Dahan))
+		if(ctx.Space.SumAny(Human.Town_City) < ctx.Space.Sum(Human.Dahan))
 			ctx.AddFear(1);
 		// Isolate target land.
 		ctx.Isolate();

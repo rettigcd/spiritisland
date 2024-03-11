@@ -12,7 +12,7 @@ public class PortentsOfDisaster {
 
 		// The next time an invader is destroyed in target land this turn, 1 fear
 		bool addFear = true;
-		Task Add1MoreFearForFirstDestroyedInvader( SpaceState from, ITokenRemovedArgs args ) {
+		Task Add1MoreFearForFirstDestroyedInvader( Space from, ITokenRemovedArgs args ) {
 			if( addFear 
 				&& args.Reason.IsDestroy()
 				&& args.Removed.HasTag(TokenCategory.Invader)
@@ -22,7 +22,7 @@ public class PortentsOfDisaster {
 			}
 			return Task.CompletedTask;
 		}
-		ctx.Tokens.Adjust( new TokenRemovedHandlerAsync( Add1MoreFearForFirstDestroyedInvader ), 1 );
+		ctx.Space.Adjust( new TokenRemovedHandlerAsync( Add1MoreFearForFirstDestroyedInvader ), 1 );
 
 		return Task.CompletedTask;
 	}

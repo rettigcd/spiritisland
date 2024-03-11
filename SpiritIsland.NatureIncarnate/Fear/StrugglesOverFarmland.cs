@@ -31,7 +31,7 @@ public class StrugglesOverFarmland : FearCardBase, IFearCard {
 
 	static SpaceAction StrifedInvaderDamagesOthers => new SpaceAction("1 Invader with Strife does Damage to other Invaders.", 
 		async ctx => {
-			var strifedInvader = ctx.Tokens.HumanOfAnyTag(Human.Invader)
+			var strifedInvader = ctx.Space.HumanOfAnyTag(Human.Invader)
 				.Where(h=>0<h.StrifeCount)
 				.OrderByDescending(x=>x.Attack)
 				.FirstOrDefault();
@@ -39,7 +39,7 @@ public class StrugglesOverFarmland : FearCardBase, IFearCard {
 				await ctx.StrifedDamageOtherInvaders( 
 					strifedInvader.Attack, // total damage from this type.
 					strifedInvader, // the source of the damage
-					ctx.Tokens[strifedInvader]==1 // exclude source if there is only 1 - it can't damage itself.
+					ctx.Space[strifedInvader]==1 // exclude source if there is only 1 - it can't damage itself.
 				);
 		} );
 

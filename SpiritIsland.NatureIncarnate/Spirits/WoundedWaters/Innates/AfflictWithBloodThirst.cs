@@ -20,8 +20,8 @@ public class AfflictWithBloodThirst {
 	static public async Task Option3( TargetSpaceCtx ctx ) {
 		// Init Invaders
 		var invaders = new CountDictionary<HumanToken>();
-		foreach(var human in ctx.Tokens.HumanOfAnyTag( TokenCategory.Invader ))
-			invaders[human] = ctx.Tokens[human];
+		foreach(var human in ctx.Space.HumanOfAnyTag( TokenCategory.Invader ))
+			invaders[human] = ctx.Space[human];
 		// Init Attackers
 		var attackers = new CountDictionary<HumanToken>();
 		void MakeAttacker(HumanToken? token) {
@@ -29,12 +29,12 @@ public class AfflictWithBloodThirst {
 			attackers[token]++;
 			if(0<invaders[token]) invaders[token]--;
 		}
-		MakeAttacker( ctx.Tokens.HumanOfTag( Human.Explorer ).FirstOrDefault() );
-		MakeAttacker( ctx.Tokens.HumanOfTag( Human.Dahan ).FirstOrDefault()
-			?? ctx.Tokens.HumanOfTag( Human.Town ).FirstOrDefault()
+		MakeAttacker( ctx.Space.HumanOfTag( Human.Explorer ).FirstOrDefault() );
+		MakeAttacker( ctx.Space.HumanOfTag( Human.Dahan ).FirstOrDefault()
+			?? ctx.Space.HumanOfTag( Human.Town ).FirstOrDefault()
 		);
 		await new RavageExchange(
-			ctx.Tokens,
+			ctx.Space,
 			RavageOrder.DahanTurn, // not sure matters
 			new RavageParticipants( attackers, attackers ),
 			new RavageParticipants( invaders, [] ) // invaders do not participate

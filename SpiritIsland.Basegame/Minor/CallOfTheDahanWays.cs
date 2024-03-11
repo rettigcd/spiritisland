@@ -9,12 +9,12 @@ public class CallOfTheDahanWays {
 		HumanToken oldInvader = null;
 
 		// if you have 2 moon, you may instead replace 1 town with 1 dahan
-		if(ctx.Tokens.Has(Human.Town) && await ctx.YouHave("2 moon" ))
-			oldInvader = ctx.Tokens.HumanOfTag( Human.Town ).First();
-		else if(ctx.Tokens.Has( Human.Explorer ))
-			oldInvader = ctx.Tokens.HumanOfTag( Human.Explorer ).First();
+		if(ctx.Space.Has(Human.Town) && await ctx.YouHave("2 moon" ))
+			oldInvader = ctx.Space.HumanOfTag( Human.Town ).First();
+		else if(ctx.Space.Has( Human.Explorer ))
+			oldInvader = ctx.Space.HumanOfTag( Human.Explorer ).First();
 
-		await ctx.Tokens.ReplaceHumanAsync( oldInvader, Human.Dahan );
+		await ctx.Space.ReplaceHumanAsync( oldInvader, Human.Dahan );
 
 	}
 

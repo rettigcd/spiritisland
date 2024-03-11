@@ -59,13 +59,13 @@ public sealed class GameState : IHaveMemento {
 	void PlaceStartingTokens() {
 		foreach(var board in Island.Boards) {
 			Tokens[board[2]].Disease.Init( 1 );
-			var lowest = board.Spaces.Skip( 1 ).OfType<Space1>().First( s => s.StartUpCounts.IsEmpty );
+			var lowest = board.Spaces.Skip( 1 ).OfType<SingleSpaceSpec>().First( s => s.StartUpCounts.IsEmpty );
 			Tokens[lowest].Beasts.Adjust( 1 );
 		}
 
 		foreach(var board in Island.Boards)
 			foreach(var space in board.Spaces)
-				((Space1)space).InitTokens( Tokens[space] );
+				((SingleSpaceSpec)space).InitTokens( Tokens[space] );
 	}
 
 	/// <summary>  Calls each spirit's InitSpirit(board,gameState) method </summary>
@@ -89,7 +89,7 @@ public sealed class GameState : IHaveMemento {
 
 	public Tokens_ForIsland Tokens { get; }
 
-	public List<Space> OtherSpaces = []; // Currently only used for EndlessDarkness
+	public List<SpaceSpec> OtherSpaces = []; // Currently only used for EndlessDarkness
 	public List<object> ReminderCards = []; // !!! Save to Memento
 
 	public PowerCardDeck MajorCards {get; set; }
@@ -103,15 +103,15 @@ public sealed class GameState : IHaveMemento {
 
 	public event Action<ILogEntry> NewLogEntry; // API
 
-	public IEnumerable<SpaceState> SpaceStates_Existing => Spaces_Existing.Select(s => Tokens[s]);
-	public IEnumerable<SpaceState> SpacesStates_Unfiltered => Spaces_Unfiltered.Select(s => Tokens[s]);
-
+	public IEnumerable<Space> Spaces => SpaceSpecs.Select(s => Tokens[s]);
+	public IEnumerable<Space> Spaces_Existing => SpaceSpecs_Existing.Select(s => Tokens[s]);
+	public IEnumerable<Space> Spaces_Unfiltered => SpaceSpecs_Unfiltered.Select(s => Tokens[s]);
 
 	/// <summary> Non-stasis + InPlay </summary>
-	public IEnumerable<Space> Spaces => Island.Boards.SelectMany(b => b.Spaces).Distinct();
+	public IEnumerable<SpaceSpec> SpaceSpecs => Island.Boards.SelectMany(b => b.Spaces).Distinct();
 	/// <summary> All Non-stasis (even not-in-play) </summary>
-	public IEnumerable<Space> Spaces_Existing => Island.Boards.SelectMany(b => b.Spaces_Existing).Distinct();
-	public IEnumerable<Space> Spaces_Unfiltered => Island.Boards.SelectMany(b => b.Spaces_Unfiltered).Distinct().Union(OtherSpaces);
+	public IEnumerable<SpaceSpec> SpaceSpecs_Existing => Island.Boards.SelectMany(b => b.Spaces_Existing).Distinct();
+	public IEnumerable<SpaceSpec> SpaceSpecs_Unfiltered => Island.Boards.SelectMany(b => b.Spaces_Unfiltered).Distinct().Union(OtherSpaces);
 
 	public InvaderDeck InvaderDeck { 
 		get { return _invaderDeck ??= InvaderDeckBuilder.Default.Build(); }
@@ -139,7 +139,7 @@ public sealed class GameState : IHaveMemento {
 	public void blightOnCard_Add(int count)
 		=> Tokens[SpiritIsland.BlightCard.Space].Adjust(Token.Blight, count);
 
-	public IEnumerable<SpaceState> CascadingBlightOptions( SpaceState ss ) => ss.Adjacent_Existing
+	public IEnumerable<Space> CascadingBlightOptions( Space ss ) => ss.Adjacent_Existing
 		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
 			 || Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
 
@@ -148,7 +148,7 @@ public sealed class GameState : IHaveMemento {
 	public void AddIslandMod( BaseModEntity mod ) => Tokens.AddIslandMod( mod );
 
 	public void AddToAllActiveSpaces( BaseModEntity mod ) {
-		foreach(var space in SpaceStates_Existing)
+		foreach(var space in Spaces_Existing)
 			space.Adjust(mod,1);
 	}
 
@@ -175,23 +175,23 @@ public sealed class GameState : IHaveMemento {
 	// Win Loss Predicates
 	static void CheckTerrorLevelVictory( GameState gs ){
 
-		bool NoCity( SpaceState space ) => space.Sum( Human.City ) == 0;
-		bool NoCityOrTown( SpaceState space ) => space.SumAny( Human.Town_City ) == 0;
-		bool NoInvader( SpaceState space ) => !space.HasInvaders();
+		bool NoCity( Space space ) => space.Sum( Human.City ) == 0;
+		bool NoCityOrTown( Space space ) => space.SumAny( Human.Town_City ) == 0;
+		bool NoInvader( Space space ) => !space.HasInvaders();
 		var (filter,description) = gs.Fear.TerrorLevel switch {
 			4 => (_ => true, "Victory"),
-			3 => ((Func<SpaceState,bool>)NoCity, "no cities"),
+			3 => ((Func<Space,bool>)NoCity, "no cities"),
 			2 => (NoCityOrTown, "no towns or cities"),
 			_ => (NoInvader, "no invaders")
 		};
-		if(ActionScope.Current.Tokens_Unfiltered.All( filter ) )
+		if(ActionScope.Current.Spaces_Unfiltered.All( filter ) )
 			GameOverException.Win($"Terror Level {gs.Fear.TerrorLevel} - {description}");
 	}
 
 	static void CheckIfSpiritIsDestroyed( GameState gs ) {
 		foreach(Spirit spirit in gs.Spirits)
 			if(!spirit.Presence.IsOnIsland)
-				GameOverException.Lost( $"{spirit.Text} is Destroyed" );
+				GameOverException.Lost( $"{spirit.SpiritName} is Destroyed" );
 	}
 
 	static void CheckIfTimeRunsOut( GameState gs ) {
@@ -206,7 +206,7 @@ public sealed class GameState : IHaveMemento {
 	public async Task TriggerTimePasses() {
 
 		// Clear Defend
-		foreach(var s in ActionScope.Current.Tokens_Unfiltered )
+		foreach(var s in ActionScope.Current.Spaces_Unfiltered )
 			s.Defend.Clear();
 
 		await RunTimePassesActions();

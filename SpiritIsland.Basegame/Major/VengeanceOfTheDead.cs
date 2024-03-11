@@ -10,17 +10,17 @@ public class VengeanceOfTheDead {
 		// 3 fear
 		ctx.AddFear(3);
 
-		var landsWeCanApplyTheDamageTo = new List<SpaceState> { ctx.Tokens };
+		var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Space };
 
 		// After each effect that destroys...
-		async Task DealVengenceDamage( SpaceState from, ITokenRemovedArgs args ) {
+		async Task DealVengenceDamage( Space from, ITokenRemovedArgs args ) {
 			if( !args.Reason.IsDestroy() ) return;
 			//  ...a town / city / dahan in target land
 			if( args.Removed.Class.IsOneOf( Human.Town_City.Plus( Human.Dahan ) ) )
 				// 1 damage per token destroyed
 				await DistributeDamageToLands( ctx, landsWeCanApplyTheDamageTo, 1 );
 		}
-		ctx.Tokens.Adjust( new TokenRemovedHandlerAsync( DealVengenceDamage ), 1 );
+		ctx.Space.Adjust( new TokenRemovedHandlerAsync( DealVengenceDamage ), 1 );
 
 		// if you have 3 animal
 		if(await ctx.YouHave( "3 animal" ))
@@ -29,9 +29,9 @@ public class VengeanceOfTheDead {
 
 	}
 
-	static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<SpaceState> newDamageLands, int additionalDamage ) {
-		Space[] targetLandOptions  = newDamageLands.Where( s => s.HasInvaders() ).Downgrade().ToArray();
-		var newLand = await ctx.SelectAsync( new A.Space( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions, Present.Always ));
+	static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {
+		Space[] targetLandOptions  = newDamageLands.Where( s => s.HasInvaders() ).ToArray();
+		var newLand = await ctx.SelectAsync( new A.SpaceDecision( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions, Present.Always ));
 		if(newLand != null)
 			await ctx.Target( newLand ).DamageInvaders( 1 );
 	}

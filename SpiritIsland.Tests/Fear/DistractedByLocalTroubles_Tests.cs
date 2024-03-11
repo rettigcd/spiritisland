@@ -9,7 +9,7 @@ public class DistractedByLocalTroubles_Tests {
 	public async Task CanKill2Explorers(){
 
 		var fix = new ConfigurableTestFixture();
-		Space ravageSpace = fix.GameState.Island.Boards[0][5];
+		SpaceSpec ravageSpace = fix.GameState.Island.Boards[0][5];
 		fix.InitRavageCard( ravageSpace.BuildInvaderCard() );
 
 		// Given: ravage space has 2 explorers

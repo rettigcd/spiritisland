@@ -28,7 +28,7 @@ public class RenewingBoon_Tests {
 		var gameState = new GameState( spirit, Board.BuildBoardA() );
 
 		//  And: a space that they can't place presence on
-		SpaceState space = ActionScope.Current.Tokens.Single( x => x.Space.Text == restrictedSpace );
+		Space space = ActionScope.Current.Spaces.Single( x => x.Label == restrictedSpace );
 
 		//  But: Presence already on Space (via Indomitable Claim)
 		spirit.Given_IsOn( space );
@@ -43,7 +43,7 @@ public class RenewingBoon_Tests {
 		Task task = PowerCard.For(typeof(RenewingBoon)).ActivateAsync( spirit );
 
 		// And selecting restricted space
-		spirit.Portal.Choose( spirit.Portal.Next, space.Space );
+		spirit.Portal.Choose( spirit.Portal.Next, space.SpaceSpec );
 
 		// Then: it should remove any blight...
 		space.Blight.Count.ShouldBe( 0 );

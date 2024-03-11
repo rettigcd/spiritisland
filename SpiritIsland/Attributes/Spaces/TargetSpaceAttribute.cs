@@ -3,8 +3,8 @@
 /// <param name="commaDelimitedRestrictFrom">null or comma-delimited Target</param>
 public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimitedRestrictFrom, int range, params string[] targetFilter ) : GeneratesContextAttribute {
 
-	public static SpaceState TargettedSpace => _targettedSpace.Value;
-	readonly static ActionScopeValue<SpaceState> _targettedSpace = new ActionScopeValue<SpaceState>("Targetted Space");
+	public static Space TargettedSpace => _targettedSpace.Value;
+	readonly static ActionScopeValue<Space> _targettedSpace = new ActionScopeValue<Space>("Targetted Space");
 
 	protected TargetingSourceCriteria _sourceCriteria => new TargetingSourceCriteria(from,_restrictFrom);
 
@@ -27,8 +27,8 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 			await GetCriteria( self )
 		);
 		if(space == null) return null;
-		var target = self.Target( space );
-		_targettedSpace.Value = target.Tokens;
+		TargetSpaceCtx target = self.Target( space );
+		_targettedSpace.Value = target.Space;
 		return target;
 	}
 

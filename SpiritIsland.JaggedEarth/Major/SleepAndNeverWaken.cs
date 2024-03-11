@@ -8,7 +8,7 @@ public class SleepAndNeverWaken {
 	[Instructions( "Invaders skip all Actions in target land. 1 Fear per 2 Explorer this Power removes. Remove up to 2 Explorer. -If you have- 3 Moon, 2 Air, 2 Animal: Remove up to 6 Explorer from among your lands." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// invaders skip all actions in target land.
-		ctx.Tokens.SkipAllInvaderActions( Name );
+		ctx.Space.SkipAllInvaderActions( Name );
 
 		// Track # of exlorers removed.
 		int removed = 0;
@@ -16,7 +16,7 @@ public class SleepAndNeverWaken {
 			if(args.Removed.Class == Human.Explorer)
 				removed += args.Count;
 		}
-		ctx.Tokens.Adjust( new TokenRemovedHandler(CountDestroyedExplorers), 1 );
+		ctx.Space.Adjust( new TokenRemovedHandler(CountDestroyedExplorers), 1 );
 
 		// remove up to 2 explorer.
 		await Cmd.RemoveExplorers(2).ActAsync(ctx);
@@ -29,7 +29,7 @@ public class SleepAndNeverWaken {
 		ctx.AddFear( removed / 2 );
 	}
 
-	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params SpaceState[] fromSpaces ) {
+	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {
 
 		SpaceToken[] CalcOptions() => fromSpaces
 			.SelectMany( space => space.SpaceTokensOfTag(Human.Explorer) )
@@ -39,7 +39,7 @@ public class SleepAndNeverWaken {
 		while( count-- > 0 
 			&& (options=CalcOptions()).Length > 0 
 		) {
-			var spaceToken = await ctx.SelectAsync( new A.SpaceToken($"Select Explorer to remove. ({count+1} remaining)", options, Present.Done));
+			var spaceToken = await ctx.SelectAsync( new A.SpaceTokenDecision($"Select Explorer to remove. ({count+1} remaining)", options, Present.Done));
 			if(spaceToken == null ) break;
 			await ctx.Target(spaceToken.Space).Remove(spaceToken.Token,1);
 		}

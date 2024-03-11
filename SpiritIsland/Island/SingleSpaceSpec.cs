@@ -3,7 +3,7 @@
 /// <summary>
 /// The Standard Space - represents 1 visible marked space.
 /// </summary>
-public class Space1( Terrain terrain, string label, string startingItems = "" ) : Space(label) {
+public class SingleSpaceSpec( Terrain terrain, string label, string startingItems = "" ) : SpaceSpec(label) {
 
 	#region constructor
 
@@ -27,14 +27,14 @@ public class Space1( Terrain terrain, string label, string startingItems = "" ) 
 
 	public StartUpCounts StartUpCounts { get; } = new StartUpCounts( startingItems );
 
-	public void InitTokens( SpaceState tokens ) {
+	public void InitTokens( Space space ) {
 		// ! Using 'Adjust' so they don't sqush stuff setup by Adversaries
 		StartUpCounts initialCounts = StartUpCounts;
-		tokens.Setup( Human.City, initialCounts.Cities );
-		tokens.Setup( Human.Town, initialCounts.Towns );
-		tokens.Setup( Human.Explorer, initialCounts.Explorers );
-		tokens.Setup( Human.Dahan, initialCounts.Dahan );
-		tokens.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
+		space.Setup( Human.City, initialCounts.Cities );
+		space.Setup( Human.Town, initialCounts.Towns );
+		space.Setup( Human.Explorer, initialCounts.Explorers );
+		space.Setup( Human.Dahan, initialCounts.Dahan );
+		space.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}
 
 	public Terrain NativeTerrain { get; set; } = terrain;

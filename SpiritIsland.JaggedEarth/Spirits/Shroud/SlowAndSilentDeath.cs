@@ -19,7 +19,7 @@ class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses {
 
 		// Invaders and dahan in your lands don't heal Damage.  
 		var healer = gameState.Healer;
-		foreach(SpaceState myLand in myLands){
+		foreach(Space myLand in myLands){
 			healer.SkipDahanOn(myLand);
 			healer.SkipInvadersOn(myLand);
 		}

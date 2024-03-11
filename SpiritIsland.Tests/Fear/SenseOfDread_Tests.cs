@@ -14,7 +14,7 @@ public class SenseOfDread_Tests {
 		// When: activate fear card
 		await new SenseOfDread().When_InvokingLevel(1, (user) => {
 			// And remove 1 explorer from ravage space
-			user.Choose( ravageSpace.Text ); // select ravage space
+			user.Choose( ravageSpace.Label ); // select ravage space
 			user.Choose( "E@1" ); // remove an explorer
 		} );
 
@@ -35,7 +35,7 @@ public class SenseOfDread_Tests {
 		// When: activate fear card
 		await new SenseOfDread().When_InvokingLevel(2, (user) => {
 			// And remove 1 explorer from ravage space
-			user.Choose( ravageSpace.Text ); // select ravage space
+			user.Choose( ravageSpace.Label ); // select ravage space
 			user.Choose( "T@2" ); // remove an explorer
 		} );
 

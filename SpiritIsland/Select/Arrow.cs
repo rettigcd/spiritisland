@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland.A;
-using Orig_Space = SpiritIsland.Space;
+using Orig_Space = SpiritIsland.SpaceSpec;
 
 public class Arrow {
 	public IToken Token;

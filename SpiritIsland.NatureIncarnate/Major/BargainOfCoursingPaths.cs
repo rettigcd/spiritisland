@@ -17,16 +17,15 @@ public class BargainOfCoursingPaths {
 
 		// Now: Mark both target land and another with 2 or more Dahan.
 		var token = new CoursingPaths(ctx.Self);
-		ctx.Tokens.Init(token,1);
+		ctx.Space.Init(token,1);
 		Space other = await SelectSecondSite( ctx );
-		other?.ScopeTokens.Init(token,1);
+		other?.Init(token,1);
 
 	}
 
 	static Task<Space> SelectSecondSite( TargetSpaceCtx ctx ) {
-		SpaceState[] options = ActionScope.Current.Tokens.Where( s => s != ctx.Tokens && 2 <= s.Dahan.CountAll ).ToArray();
-		Task<Space> other = ctx.Self.SelectAsync( new A.Space( "Mark Second Space for Coursing", options, Present.Always ) );
-		return other;
+		Space[] options = ActionScope.Current.Spaces.Where( s => s != ctx.Space && 2 <= s.Dahan.CountAll ).ToArray();
+		return ctx.Self.SelectAsync( new A.SpaceDecision( "Mark Second Space for Coursing", options, Present.Always ) );
 	}
 
 	/// <summary>
@@ -41,30 +40,30 @@ public class BargainOfCoursingPaths {
 
 		readonly Spirit _spirit = spirit;
 
-		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// Ongoing: After pieces are added or moved into the marked lands:
 
 			// move those pieces directly to any 1 land.
-			SpaceState destination = await GetDestination( args );
+			Space destination = await GetDestination( args );
 			if(destination == to) return;
 
-			ActionScope.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {((Space)args.To).Text} to {destination.Space.Text}" ) );
+			ActionScope.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {args.To.Text} to {destination.Label}" ) );
 			await args.Added.MoveAsync(to,destination,args.Count);
 		}
 
-		async Task<SpaceState> GetDestination( ITokenAddedArgs args ) {
+		async Task<Space> GetDestination( ITokenAddedArgs args ) {
 			ActionScope scope = ActionScope.Current;
 
 			// Check for previously selected
-			string key = $"CoursingPath:Move {((Space)args.To).Text} to";
-			if(scope.ContainsKey(key)) return (SpaceState)scope[key];
+			string key = $"CoursingPath:Move {args.To.Text} to";
+			if(scope.ContainsKey(key)) return (Space)scope[key];
 
 			// Pick brand new
-			SpaceState destination = (await _spirit.SelectAsync( new A.Space( 
-				$"{Name}: Move {args.Count}{args.Added} from {((Space)args.To).Text} to:",
-				ActionScope.Current.Tokens,
+			Space destination = await _spirit.SelectAsync( new A.SpaceDecision( 
+				$"{Name}: Move {args.Count}{args.Added} from {args.To.Text} to:",
+				ActionScope.Current.Spaces,
 				Present.Always 
-			) )).ScopeTokens;
+			) );
 			scope[key] = destination;
 			return destination;
 		}

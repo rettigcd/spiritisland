@@ -29,16 +29,16 @@ public class NeverHeardFromAgain {
 
 	[InnateTier("4 plant,1 animal","2 Damage",1)]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
-		int preExplorerCount = ctx.Tokens.Sum( Human.Explorer );
+		int preExplorerCount = ctx.Space.Sum( Human.Explorer );
 		await DestroyFromBadlandsBeastDiseaseWilds( ctx );
 		await ctx.DamageInvaders(2);
-		int destroyedExplorers = ctx.Tokens.Sum( Human.Explorer ) - preExplorerCount;
+		int destroyedExplorers = ctx.Space.Sum( Human.Explorer ) - preExplorerCount;
 		ctx.AddFear( CalcFearFromExplorerDeath( destroyedExplorers ) );
 	}
 
 	static async Task<int> DestroyFromBadlandsBeastDiseaseWilds( TargetSpaceCtx ctx ) {
 		int srcCount = ctx.Badlands.Count + ctx.Beasts.Count + ctx.Disease.Count + ctx.Wilds.Count;
-		int destroyCount = Math.Min( srcCount * 2, ctx.Tokens.Sum( Human.Explorer ) );
+		int destroyCount = Math.Min( srcCount * 2, ctx.Space.Sum( Human.Explorer ) );
 		await ctx.Invaders.DestroyNOfClass( destroyCount, Human.Explorer );
 		return destroyCount;
 	}

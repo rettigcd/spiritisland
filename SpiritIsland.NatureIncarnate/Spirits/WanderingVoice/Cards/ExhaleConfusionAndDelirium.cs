@@ -9,14 +9,14 @@ public class ExhaleConfusionAndDelirium {
 	static public Task ActionAsync( TargetSpaceCtx ctx){
 		ctx.AddFear(2);
 
-		ctx.Tokens.Init(new BlightedInvadersSitOutRavage(),1);
+		ctx.Space.Init(new BlightedInvadersSitOutRavage(),1);
 
 		return Task.CompletedTask;
 	}
 
 	class BlightedInvadersSitOutRavage : IConfigRavages, IEndWhenTimePasses {
 
-		void IConfigRavages.Config( SpaceState space ) {
+		void IConfigRavages.Config( Space space ) {
 			
 			var blightedCounts = space.AllHumanTokens()
 				.Where(x=>0<x.StrifeCount)

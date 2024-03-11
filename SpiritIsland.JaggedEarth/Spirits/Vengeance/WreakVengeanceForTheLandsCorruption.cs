@@ -4,8 +4,8 @@
 /// <summary> 
 /// Overrides Badlands behavior to include blight
 /// </summary>
-class WreakVengeanceForTheLandsCorruption( SpaceState tokens ) 
-	: TokenBinding( new TokenBinding( tokens, Token.Badlands ) ) 
+class WreakVengeanceForTheLandsCorruption( Space space ) 
+	: TokenBinding( new TokenBinding( space, Token.Badlands ) ) 
 {
 
 	public static SpecialRule Rule => new SpecialRule(
@@ -13,7 +13,7 @@ class WreakVengeanceForTheLandsCorruption( SpaceState tokens )
 		"Your actions treat blight on the island as also being badlands"
 	);
 
-	readonly TokenBinding _blight = new TokenBinding( new TokenBinding( tokens, Token.Blight ) );
+	readonly TokenBinding _blight = new TokenBinding( new TokenBinding( space, Token.Blight ) );
 
 	// Don't need to override Add since base class behavior is correct
 

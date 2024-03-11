@@ -7,7 +7,7 @@ public class TransformToAMurderousDarkness {
 	public static async Task ActAsync(TargetSpiritCtx ctx ) {
 		// Target Spirt may choose one of their Sacred Sites.
 		Space space = await ctx.Other.SelectAsync(
-			new A.Space( "Replace presence with badlands", ctx.Other.Presence.SacredSites, Present.Always )
+			new A.SpaceDecision( "Replace presence with badlands", ctx.Other.Presence.SacredSites, Present.Always )
 		);
 
 		await TargetSpiritActions( ctx.Other.Target( space ) );
@@ -37,9 +37,9 @@ public class TransformToAMurderousDarkness {
 		// In that land: Replace each of their presence with badlands;  The replaced presence leaves the game.
 		int total = 0;
 
-		foreach(var token in otherCtx.Self.Presence.TokensDeployedOn( otherCtx.Tokens ).ToArray()) {
-			int count = otherCtx.Tokens[token];
-			await otherCtx.Tokens.ReplaceAsync(token,1,Token.Badlands);
+		foreach(var token in otherCtx.Self.Presence.TokensDeployedOn( otherCtx.Space ).ToArray()) {
+			int count = otherCtx.Space[token];
+			await otherCtx.Space.ReplaceAsync(token,1,Token.Badlands);
 			total += count;
 		}
 

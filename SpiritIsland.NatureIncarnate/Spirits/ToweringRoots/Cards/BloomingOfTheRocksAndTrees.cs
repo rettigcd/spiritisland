@@ -10,13 +10,13 @@ public class BloomingOfTheRocksAndTrees {
 		var cmds = new List<IActOn<TargetSpaceCtx>>();
 
 		// If no Blight is present, Add 1 Vitality.
-		if(!ctx.Tokens.Blight.Any)
+		if(!ctx.Space.Blight.Any)
 			cmds.Add(Cmd.AddVitality(1));
 
 		// OR
 
 		// If no Invaders are present, Add 1 Wilds.
-		if(!ctx.Tokens.HasInvaders())
+		if(!ctx.Space.HasInvaders())
 			cmds.Add(Cmd.AddWilds(1));
 
 		// -If you have- 3 Plant: You may do both."

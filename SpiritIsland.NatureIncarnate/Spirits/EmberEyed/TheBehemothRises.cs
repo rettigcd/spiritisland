@@ -8,7 +8,7 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 
 	#region IActionFactory (explicit)
 	string IOption.Text => Name + (MaxUses == 1 ? "" : $"({Used+1} of {MaxUses})");
-	string IActionFactory.Name => Name;
+	string IActionFactory.Title => Name;
 	bool IActionFactory.CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 	# endregion IActionFactory (explicit)
 
@@ -19,7 +19,7 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 		EmberEyedBehemoth eeb = (EmberEyedBehemoth)self;
 		Incarna incarna = eeb.Incarna;
 		if(incarna.IsPlaced) {
-			SpaceState from = incarna.Space;
+			Space from = incarna.Space;
 			// Move/Push
 			await new TokenMover(eeb,"Move/Push", from,
 					// to SS or adjacents
@@ -28,9 +28,9 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 				.AddAll(incarna)
 				.DoN();
 		} else {
-			Space? space = await self.SelectAsync( new A.Space( "Select space to place Incarna.", eeb.Presence.SacredSites, Present.Done ) );
+			Space? space = await self.SelectAsync( new A.SpaceDecision( "Select space to place Incarna.", eeb.Presence.SacredSites, Present.Done ) );
 			if(space == null) return;
-			await space.ScopeTokens.AddAsync( incarna, 1 );
+			await space.AddAsync( incarna, 1 );
 		}
 	}
 

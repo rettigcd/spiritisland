@@ -11,12 +11,12 @@ public abstract class BlightCard : IBlightCard {
 		Side2BlightPerPlayer = side2BlightPerPlayer;
 	}
 
+	string IOption.Text => Name;
+
 	public string Name { get; }
 
 	public string Description { get; }
 	public bool CardFlipped { get; set; }
-
-	string IOption.Text => Name;
 
 	public void OnGameStart( GameState gs ) {
 		Tokens(gs).Init( _startingBlightPerPlayer * gs.Spirits.Length + 1 );// +1 from Jan 2021 errata

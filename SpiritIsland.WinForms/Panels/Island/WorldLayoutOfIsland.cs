@@ -17,7 +17,7 @@ class WorldLayoutOfIsland {
 		foreach(var board in island.Boards)
 			foreach(var space in board.Spaces) {
 				var spaceLayout = _islandLayout.GetLayoutFor( space );
-				var paintable = space is MultiSpace ms ? new PaintableMultiSpace(ms,spaceLayout) 
+				var paintable = space is MultiSpaceSpec ms ? new PaintableMultiSpace(ms,spaceLayout) 
 					: new PaintableSpace(space,spaceLayout);
 				_paintables.Add( space, paintable );
 			}
@@ -29,14 +29,14 @@ class WorldLayoutOfIsland {
 	#endregion constructor
 
 	/// <summary> Get's layout for spaces of different types (multi, endless-dark, normal) </summary>
-	public ManageInternalPoints InsidePoints( Space space ) {
+	public ManageInternalPoints InsidePoints( SpaceSpec space ) {
 		return GetPaintable(space)._insidePoints;
 	}
 
-	public PaintableSpace GetPaintable( Space space ) {
+	public PaintableSpace GetPaintable( SpaceSpec space ) {
 		if(!_paintables.TryGetValue( space, out PaintableSpace paintable )) {
 			var spaceLayout = _islandLayout.GetLayoutFor( space );
-			paintable = space is MultiSpace ms ? new PaintableMultiSpace( ms, spaceLayout )
+			paintable = space is MultiSpaceSpec ms ? new PaintableMultiSpace( ms, spaceLayout )
 				: new PaintableSpace( space, spaceLayout );
 			_paintables.Add( space, paintable );
 		}
@@ -60,7 +60,7 @@ class WorldLayoutOfIsland {
 		return new RectangleF( left, top, right - left, bottom - top );
 	}
 
-	readonly Dictionary<Space, PaintableSpace> _paintables = [];
+	readonly Dictionary<SpaceSpec, PaintableSpace> _paintables = [];
 
 	readonly IslandLayout _islandLayout = new IslandLayout();
 

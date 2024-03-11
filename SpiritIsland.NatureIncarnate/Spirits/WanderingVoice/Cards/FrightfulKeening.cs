@@ -19,7 +19,7 @@ public class FrightfulKeening {
 		if( dst.HasInvaders() )
 			// 2 Fear there
 			// (before adding Strife). - why does this matter???
-			ctx.Target(dst.Space).AddFear(2);
+			ctx.Target(dst).AddFear(2);
 	}
 
 }

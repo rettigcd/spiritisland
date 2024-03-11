@@ -14,18 +14,18 @@ public class SwallowTheLandDwellers {
 		var ocean = ctx.Self as Ocean ?? GameState.Current.Spirits.Single(x=>x is Ocean);
 
 		// find place to drown then
-		var drowningOcean = ocean.Presence.Lands.First().Space // find any space the ocean has presnece
-			.Boards[0].Ocean; // find the Ocean space on that board
+		var drowningOcean = ocean.Presence.Lands.First().SpaceSpec // find any space the ocean has presnece
+			.Boards[0].Ocean.ScopeSpace; // find the Ocean space on that board
 
 		// drown 1 explorer, 1 town, and 1 dahan
 
 		// drown 1 explorer ( drop 1 explorer in the ocean to drown )
-		var explorerToDrown = ctx.Tokens.HumanOfTag(Human.Explorer).OrderBy(x=>x.StrifeCount).FirstOrDefault();
+		var explorerToDrown = ctx.Space.HumanOfTag(Human.Explorer).OrderBy(x=>x.StrifeCount).FirstOrDefault();
 		if(explorerToDrown != null)
 			await explorerToDrown.MoveAsync( ctx.Space,drowningOcean );
 
 		// drop town in the ocean to drown
-		var townToDrown = ctx.Tokens.HumanOfTag(Human.Town)
+		var townToDrown = ctx.Space.HumanOfTag(Human.Town)
 			.OrderByDescending(x=>x.FullHealth) // items with most health - usually are all the same
 			.ThenBy(x=>x.Damage) // pick least damaged
 			.FirstOrDefault();

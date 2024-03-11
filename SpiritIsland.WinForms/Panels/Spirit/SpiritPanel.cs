@@ -27,7 +27,7 @@ public sealed class SpiritPanel : IPanel, IDisposable {
 		_innateBounds = regionLayout.InnateRect;
 		_presenceTractBounds = regionLayout.PresenceTractRect;
 
-		Func<Bitmap> getSpiritImage = () => ResourceImages.Singleton.LoadSpiritImage(_spirit.Text);
+		Func<Bitmap> getSpiritImage = () => ResourceImages.Singleton.LoadSpiritImage(_spirit.SpiritName);
 		_spiritImageRect = new ClickableLocation(new ImgRect( getSpiritImage ), ShowSpecialRules );
 
 		_cc.AddStatic(_spiritImageRect);

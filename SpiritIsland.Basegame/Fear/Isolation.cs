@@ -3,7 +3,7 @@
 public class Isolation : FearCardBase, IFearCard {
 
 	public const string Name = "Isolation";
-	public string Text => Name;
+	string IOption.Text => Name;
 
 	[FearLevel( 1, "Each player removes 1 Explorer/Town from a land where it is the only Invader." )]
 	public Task Level1( GameState ctx )

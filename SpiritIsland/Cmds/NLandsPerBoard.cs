@@ -36,7 +36,7 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 
 	public async Task ActAsync( BoardCtx ctx ) {
 
-		var used = new List<Space>();
+		var used = new List<SpaceSpec>();
 
 		// Although filtering by the Action Criteria is helpful most of the time,
 		// There might be instances when players wants to pick the no-op action.
@@ -57,7 +57,7 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 
 			if(space == null) return; // no matching tokens
 
-			used.Add( space );
+			used.Add( space.SpaceSpec );
 
 			await _spaceAction.ActAsync( ctx.Target(space) );
 		}
@@ -65,18 +65,18 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 
 	#region private
 
-	IEnumerable<IToken> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Tokens.OfAnyTag( _firstPickTokenClasses );
+	IEnumerable<IToken> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Space.OfAnyTag( _firstPickTokenClasses );
 
 	async Task<Space> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions ) {
 
 		// Get options
 		Func<TargetSpaceCtx,IEnumerable<ISpaceEntity>> tokenFactory = GetTokensMatchingClass;
 		SpaceToken[] spaceTokenOptions = spaceOptions
-			.SelectMany( x => tokenFactory(x).Cast<IToken>().OnScopeTokens1(x.Space) )
+			.SelectMany( x => tokenFactory(x).Cast<IToken>().OnScopeTokens1(x.SpaceSpec) )
 			.ToArray();
 
 		// Select
-		SpaceToken st = await self.SelectAsync( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		SpaceToken st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
 		self.PreSelect(st); // recording null is fine because when it probably means no space matches criteria and user won't be given an option anyway.
 
 		return st?.Space;

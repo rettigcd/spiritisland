@@ -35,25 +35,25 @@ public class MassiveFlooding_Tests {
 		RiverSurges spirit = new RiverSurges();
 		Board board = Board.BuildBoardA();
 		GameState gs = new GameState( spirit, board ) { Phase = Phase.Slow };
-		Space space = board[5];
-		SpaceState spaceState = gs.Tokens[space];
-		SpaceState destination = spaceState.Adjacent.Last();
+		SpaceSpec spaceSpec = board[5];
+		Space space = gs.Tokens[spaceSpec];
+		Space destination = space.Adjacent.Last();
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		spirit.Given_IsOn( spaceState.Adjacent.First(), 2 );
+		spirit.Given_IsOn( space.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-1 of Massive Flooding
 		spirit.Elements.Add( ElementStrings.Parse("1 sun,2 water" ) );
 		//   And: target has 1 city, 4 towns, 5 explorers
-		space.ScopeTokens.Given_HasTokens( "1C@3,5E@1,4T@2" );
+		spaceSpec.ScopeSpace.Given_HasTokens( "1C@3,5E@1,4T@2" );
 
 		//  When: activate innate
 		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => { 
-			user.NextDecision.Choose( space );
-			user.NextDecision.MoveFrom("T@2").MoveTo(destination.Space.Text);
+			user.NextDecision.Choose( spaceSpec );
+			user.NextDecision.MoveFrom("T@2").MoveTo(destination.Label);
 		} ).ShouldComplete();
 
 		// Then: target has remaining invaders
-		spaceState.Summary.ShouldBe( "1C@3,5E@1,3T@2" );
+		space.Summary.ShouldBe( "1C@3,5E@1,3T@2" );
 
 		//  And: destination had pushed invaders
 		destination.Summary.ShouldBe( "1T@2" );
@@ -71,16 +71,16 @@ public class MassiveFlooding_Tests {
 		var gs = new GameState(spirit,board);
 		
 		// var fixture = new ConfigurableTestFixture();
-		var space = board[5];
-		var spaceState = gs.Tokens[space];
-		var destination = space.Adjacent_Existing.Last();
+		var spaceSpec = board[5];
+		var space = gs.Tokens[spaceSpec];
+		var destination = spaceSpec.Adjacent_Existing.Last();
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		spirit.Given_IsOn( spaceState.Adjacent.First(), 2 );
+		spirit.Given_IsOn( space.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-2 of Massive Flooding
 		spirit.Elements.Add( ElementStrings.Parse("3 water,2 sun") );
 		//   And: target has 1 city, 4 towns, 5 explorers
-		var tokens = space.ScopeTokens;
+		var tokens = spaceSpec.ScopeSpace;
 		tokens.InitDefault(Human.City,1);
 		tokens.InitDefault(Human.Town,4);
 		tokens.InitDefault(Human.Explorer,5);
@@ -88,17 +88,17 @@ public class MassiveFlooding_Tests {
 
 		//  When: activate innate
 		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => {
-			user.NextDecision.HasPrompt("Massive Flooding: Target Space").Choose( space ); // target space
+			user.NextDecision.HasPrompt("Massive Flooding: Target Space").Choose( spaceSpec ); // target space
 			user.NextDecision.HasPrompt("Damage (2 remaining)").Choose( "T@2" ); // 1st damage
 			user.NextDecision.HasPrompt("Damage (1 remaining)").Choose( "T@1" ); // 2nd damage
 
-			user.NextDecision.HasPrompt("Push up to (3)").MoveFrom( "T@2", "T@2,E@1,Done" ).MoveTo( destination.Text );
-			user.NextDecision.HasPrompt("Push up to (2)").MoveFrom( "T@2", "T@2,E@1,Done" ).MoveTo( destination.Text );
-			user.NextDecision.HasPrompt("Push up to (1)").MoveFrom( "E@1", "T@2,E@1,Done" ).MoveTo( destination.Text );
+			user.NextDecision.HasPrompt("Push up to (3)").MoveFrom( "T@2", "T@2,E@1,Done" ).MoveTo( destination.Label );
+			user.NextDecision.HasPrompt("Push up to (2)").MoveFrom( "T@2", "T@2,E@1,Done" ).MoveTo( destination.Label );
+			user.NextDecision.HasPrompt("Push up to (1)").MoveFrom( "E@1", "T@2,E@1,Done" ).MoveTo( destination.Label );
 		} ).ShouldComplete();
 
 		// Then: target has remaining invaders
-		spaceState.Summary.ShouldBe( "1C@3,4E@1,1T@2" );
+		space.Summary.ShouldBe( "1C@3,4E@1,1T@2" );
 
 		//  And: destination had pushed invaders
 		gs.Tokens[destination].Summary.ShouldBe( "1E@1,2T@2" );
@@ -113,22 +113,22 @@ public class MassiveFlooding_Tests {
 
 
 		var fixture = new ConfigurableTestFixture();
-		var space = fixture.Board[5];
-		var spaceState = fixture.GameState.Tokens[space];
+		var spaceSpec = fixture.Board[5];
+		var space = fixture.GameState.Tokens[spaceSpec];
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		fixture.Spirit.Given_IsOn( spaceState.Adjacent.First(), 2 );
+		fixture.Spirit.Given_IsOn( space.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-3 of Massive Flooding
 		fixture.InitElements( "3 sun,4 water,1 earth" );
 		//   And: target has 1 city, 4 towns, 5 explorers
-		fixture.InitTokens( space, "1C@3,4T@2,5E@1" );
+		fixture.InitTokens( spaceSpec, "1C@3,4T@2,5E@1" );
 
 		//  When: activate innate
 		_ = MassiveFloodingPower.ActivateAsync( fixture.Spirit );
-		fixture.Choose( space ); // target space
+		fixture.Choose( spaceSpec ); // target space
 
 		// Then: target has remaining invaders
-		spaceState.Summary.ShouldBe( "1C@1" );
+		space.Summary.ShouldBe( "1C@1" );
 	}
 
 }

@@ -88,7 +88,7 @@ public class StarlightSeeksItsForm : Spirit {
 
 	public const string Name = "Starlight Seeks Its Form";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	static readonly SpecialRule GrowthBegetsGrowth = new SpecialRule(
 		"Growth Begets Growth",

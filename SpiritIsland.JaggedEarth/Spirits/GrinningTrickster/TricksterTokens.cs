@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 // == Tokens ==
-public class TricksterTokens( Spirit spirit, SpaceState src, bool runAtMax = false ) 
-	: SpaceState( src )
+public class TricksterTokens( Spirit spirit, Space src, bool runAtMax = false ) 
+	: Space( src )
 {
 
 	public override BlightTokenBinding Blight => new TricksterBlight(this);
@@ -27,12 +27,12 @@ public class TricksterTokens( Spirit spirit, SpaceState src, bool runAtMax = fal
 	// A Real Flair for Discord
 	async Task Pay1EnergyToStrifeInRange1Land() {
 		var nearbyInvaders = _spirit.PowerRangeCalc.GetSpaceOptions( Adjacent, new TargetCriteria( 1 ) )
-			.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1( ss.Space ) )
+			.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1( ss.SpaceSpec ) )
 			.ToArray();
-		var invader2 = await _spirit.SelectAsync( new A.SpaceToken( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		var invader2 = await _spirit.SelectAsync( new A.SpaceTokenDecision( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 != null) {
 			--_spirit.Energy;
-			var tokens2 = (TricksterTokens)invader2.Space.ScopeTokens; // need to cast in order to access non-cascading protected member .AddRemoveStrife()
+			var tokens2 = (TricksterTokens)invader2.Space; // need to cast in order to access non-cascading protected member .AddRemoveStrife()
 			await tokens2.AddRemoveStrifeAsync( invader2.Token.AsHuman(), 1, 1 );
 		}
 	}
@@ -42,10 +42,10 @@ public class TricksterTokens( Spirit spirit, SpaceState src, bool runAtMax = fal
 }
 
 // Blight
-public class TricksterBlight( SpaceState tokens ) : BlightTokenBinding( tokens ) {
+public class TricksterBlight( Space space ) : BlightTokenBinding( space ) {
 	public override async Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
 		var self = ActionScope.Current.Owner ?? throw new InvalidOperationException( "Action Scope has no owner." );
-		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuckADrag( self, _tokens ); // feature envy?
+		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuckADrag( self, _space ); // feature envy?
 		return await base.Remove( count, reason );
 	}
 }

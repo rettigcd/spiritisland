@@ -7,9 +7,9 @@ public class ResolveSlowDuringFast_OrViseVersa : IActionFactory {
 
 	public bool CouldActivateDuring( Phase phase, Spirit _ ) => phase == Phase.Fast || phase == Phase.Slow;
 
-	public string Name => "Resolve Other Speed Action";
+	string IOption.Text => Title;
 
-	public string Text => Name;
+	public string Title => "Resolve Other Speed Action";
 
 	public Task ActivateAsync(Spirit self) => ResolveOutOfPhaseAction.Execute( self );
 
@@ -22,9 +22,9 @@ public class ResolveSlowDuringFast : IActionFactory {
 
 	public bool CouldActivateDuring( Phase phase, Spirit _ ) => phase == Phase.Fast;
 
-	public string Name => "Resolve Slow Action";
+	string IOption.Text => Title;
 
-	public string Text => Name;
+	public string Title => "Resolve Slow Action";
 
 	public Task ActivateAsync( Spirit self ) => ResolveOutOfPhaseAction.Execute( self );
 

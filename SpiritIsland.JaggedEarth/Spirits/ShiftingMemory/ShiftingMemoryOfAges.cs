@@ -4,7 +4,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public const string Name = "Shifting Memory Of Ages";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{
 		new SpecialRule("Long Ages of Knowledge and Forgetfulness","When you would Forget a Power Card from your hand, you may instead discard it."),
@@ -86,12 +86,12 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			return;
 		}
 
-		throw new System.Exception("Can't find card to forget:"+card.Name);
+		throw new System.Exception("Can't find card to forget:"+card.Title);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Put 2 presence on your starting board in the highest-number land that is Sands or Mountain.
-		var space = board.Spaces.Last( x => x.IsOneOf( Terrain.Sands, Terrain.Mountain ) ).ScopeTokens;
+		var space = board.Spaces.Last( x => x.IsOneOf( Terrain.Sands, Terrain.Mountain ) ).ScopeSpace;
 		space.Setup(Presence.Token, 2);
 
 		// Prepare 1 moon, 1 air, and 1 earth marker. (++ allows us to use SMOA for testing, where =1 overwrites testing values)

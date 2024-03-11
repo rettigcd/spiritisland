@@ -31,10 +31,10 @@ public class Volcano_Tests {
 
 		// Given: Volcano
 		var (spirit, gameState, board) = Init();
-		Space a6 = board[6];
+		SpaceSpec a6 = board[6];
 
 		// Given: Only Presence is on A5
-		foreach(SpaceState ss in spirit.Presence.Lands.ToArray())
+		foreach(Space ss in spirit.Presence.Lands.ToArray())
 			spirit.Given_IsOn( ss, 0 );
 		spirit.Given_IsOn( gameState.Tokens[a6], presenceCount );
 
@@ -54,10 +54,10 @@ public class Volcano_Tests {
 
 		// Given: Volcano
 		var (spirit,gameState,board) = Init();
-		Space a6 = board[6];
+		SpaceSpec a6 = board[6];
 
 		// Given: 3 presence on A6
-		foreach(SpaceState ss in spirit.Presence.Lands.ToArray())
+		foreach(Space ss in spirit.Presence.Lands.ToArray())
 			spirit.Given_IsOn( ss, 0 );
 		spirit.Given_IsOn( gameState.Tokens[a6], 3 );
 
@@ -68,14 +68,14 @@ public class Volcano_Tests {
 
 		// Then only option available is A6 (range-0)
 		spirit.NextDecision().HasPrompt( "Where would you like to place your presence?" )
-			.HasOptions( a6.Text );
+			.HasOptions( a6.Label );
 	}
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]
 	[Fact]
 	public async Task PowerDestroyingPresence_CausesDamage() {
 		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[board[5]];
+		Space space = gameState.Tokens[board[5]];
 
 		// Given: explorers, presence, and dahan
 		space.Given_HasTokens("3E@1,3D@2");
@@ -102,7 +102,7 @@ public class Volcano_Tests {
 	[Fact]
 	public async Task RavageBlight_Causes1Damage() {
 		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[board[5]];
+		Space space = gameState.Tokens[board[5]];
 
 		// Given: 3 explorers, 3 presence
 		space.InitDefault( Human.Explorer, 3 );
@@ -128,8 +128,8 @@ public class Volcano_Tests {
 	public async Task PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
 
 		var (spirit, gameState, board) = Init();
-		SpaceState targetSpace = gameState.Tokens[board[5]];
-		SpaceState dahanSpace = gameState.Tokens[board[2]];
+		Space targetSpace = gameState.Tokens[board[5]];
+		Space dahanSpace = gameState.Tokens[board[2]];
 
 		// Given: Enough Presence to trigger Tower rule
 		spirit.Given_IsOn( targetSpace, 5 );
@@ -154,8 +154,8 @@ public class Volcano_Tests {
 	[InlineData( 8, "A1,A4,A5,A6,A7,A8" )] // Target space is on Tower => range boost
 	public async Task PeeksTower_ExtendsRangeFor_UtterACurseOfDreadAndBone( int towerSpaceNum, string expectedRangeOptions) {
 		var (spirit, gameState, board) = Init();
-		SpaceState towerSpace = gameState.Tokens[board[towerSpaceNum]];
-		SpaceState targetSpace = gameState.Tokens[board[8]];
+		Space towerSpace = gameState.Tokens[board[towerSpaceNum]];
+		Space targetSpace = gameState.Tokens[board[8]];
 
 		// Given: Enough Presence to trigger Tower rule
 		spirit.Given_IsOn( towerSpace, 5 );
@@ -166,7 +166,7 @@ public class Volcano_Tests {
 
 		//  When: Utter a curse
 		await spirit.When_ResolvingCard<UtterACurseOfDreadAndBone>( (user) => {
-			user.Choose( targetSpace.Space );
+			user.Choose( targetSpace.SpaceSpec );
 			user.NextDecision.HasPrompt( "Select Power Option" ).HasOptions( "Add Badland,Add Disease,Add Strife" ).Choose( "Add Disease" );
 
 			//  Then: if the tower==target, then large range, else smaller range
@@ -182,7 +182,7 @@ public class Volcano_Tests {
 	[InlineData( 3, "A5,A6,A7,A8" )] // range-1
 	public async Task PeeksTower_ExtendsRangeFor_UnleashATorrent( int presenceInTower, string expectedRangeOptions ) {
 		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[board[8]];
+		Space space = gameState.Tokens[board[8]];
 
 		// Given: presence tower
 		spirit.Given_IsOn( space, presenceInTower );
@@ -208,7 +208,7 @@ public class Volcano_Tests {
 	[InlineData( 3, "A1,A4,A5,A6,A7,A8" )] // range-2
 	public async Task PeeksTower_ExtendsRangesFor_PerilsOfTheDeepIsland( int presenceInTower, string expectedRangeOptions ) {
 		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[board[8]];
+		Space space = gameState.Tokens[board[8]];
 
 		// Given: presence tower
 		spirit.Given_IsOn( space, presenceInTower );
@@ -217,7 +217,7 @@ public class Volcano_Tests {
 
 		//  When: Perils of the Deepest Island
 		await spirit.When_ResolvingCard<PerilsOfTheDeepestIsland>( (user) => {
-			user.Choose( space.Space );
+			user.Choose( space.SpaceSpec );
 
 			//  Then: range is adjusted for adding beasts
 			user.NextDecision.HasPrompt( "Add beast" ).HasOptions( expectedRangeOptions ).ChooseFirst();
@@ -228,7 +228,7 @@ public class Volcano_Tests {
 	[Fact]
 	public async Task ExplosiveErruption_Level0_CausesDamage() {
 		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[board[5]];
+		Space space = gameState.Tokens[board[5]];
 
 		// Given: 10 explorers 10 dahan, 4 presence
 		space.Given_HasTokens("10E@1,10D@2");
@@ -238,7 +238,7 @@ public class Volcano_Tests {
 
 		//  When: they trigger Explosive Erruption in target
 		await spirit.When_ResolvingInnate<ExplosiveEruption>( (user) => {
-			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
+			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.SpaceSpec );
 			//   And: Destroy 2 presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "4,3,2,1,0" ).Choose( "2" );
 
@@ -259,8 +259,8 @@ public class Volcano_Tests {
 		int remaining = 10 - (2 + badlandsCount);
 
 		var (spirit, gameState, board) = Init();
-		SpaceState space = gameState.Tokens[board[5]];
-		SpaceState adjacent = gameState.Tokens[board[7]];
+		Space space = gameState.Tokens[board[5]];
+		Space adjacent = gameState.Tokens[board[7]];
 
 		// Given: 10 explorers 10 dahan, 10 presence, n-badlands
 		space.InitDefault( Human.Explorer, 10 );
@@ -276,14 +276,14 @@ public class Volcano_Tests {
 
 		//  When: they trigger Explosive Erruption in target
 		await spirit.When_ResolvingInnate<ExplosiveEruption>( (user) => {
-			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.Space );
+			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.SpaceSpec );
 			//   And: Destroy 2 presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "10,9,8,7,6,5,4,3,2,1,0" ).Choose( "2" );
 			//   And: damage invaders in target
 			ApplyDamageToExplorers( spirit, null, 2 + badlandsCount, space );
 
 			//  Then: VolcanicPeaksTowerOverTheLandscape does not extend range to A2 & A3
-			user.NextDecision.HasPrompt( "Apply 2 damage to" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( adjacent.Space );
+			user.NextDecision.HasPrompt( "Apply 2 damage to" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( adjacent.SpaceSpec );
 			//   And: damages invaders in adjacent
 			ApplyDamageToExplorers( spirit, null, 2 + badlandsCount, adjacent );
 		} );
@@ -308,9 +308,9 @@ public class Volcano_Tests {
 		int remainingP = 12 - presenceDestroyed;
 
 		var (spirit, gameState, board) = Init();
-		SpaceState targetSpace = gameState.Tokens[board[8]];
-		SpaceState adjPresence = gameState.Tokens[board[7]];
-		SpaceState adjBlight = gameState.Tokens[board[6]];
+		Space targetSpace = gameState.Tokens[board[8]];
+		Space adjPresence = gameState.Tokens[board[7]];
+		Space adjBlight = gameState.Tokens[board[6]];
 
 		// Given: enough elements to trigger all
 		spirit.Configure().Elements("5 fire,3 air,5 earth");
@@ -332,7 +332,7 @@ public class Volcano_Tests {
 
 		// When: activate Innate
 		await spirit.When_ResolvingInnate<ExplosiveEruption>( (user) => {
-			user.NextDecision.HasOptions( "A7,A8" ).Choose( targetSpace.Space );
+			user.NextDecision.HasOptions( "A7,A8" ).Choose( targetSpace.SpaceSpec );
 			//  And: destroy presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "12,11,10,9,8,7,6,5,4,3,2,1,0" ).Choose( presenceDestroyed.ToString() );
 
@@ -342,7 +342,7 @@ public class Volcano_Tests {
 			}
 			//  And: Level 1
 			if(2 <= presenceDestroyed) {
-				user.NextDecision.HasPrompt( $"Apply {presenceDestroyed} damage to" ).HasOptions( "A5,A6,A7,A8" ).Choose( adjBlight.Space );
+				user.NextDecision.HasPrompt( $"Apply {presenceDestroyed} damage to" ).HasOptions( "A5,A6,A7,A8" ).Choose( adjBlight.SpaceSpec );
 				ApplyDamageToExplorers( spirit, null, presenceDestroyed, adjBlight );
 			}
 			//  And: Level 2
@@ -392,13 +392,13 @@ public class Volcano_Tests {
 
 	#region private helpers
 
-	static void ApplyDamageToExplorers( Spirit spirit, Task task, int expectedDamage, SpaceState onSpace ) {
+	static void ApplyDamageToExplorers( Spirit spirit, Task task, int expectedDamage, Space onSpace ) {
 		while(0 < expectedDamage) {
 			string prompt = $"Damage ({expectedDamage} remaining)";
 			task?.IsCompleted.ShouldBeFalse( nameof(ApplyDamageToExplorers) + "() => " + prompt );
 			spirit.NextDecision()
 				.HasPrompt( prompt )
-				.IsForSpace( onSpace.Space )
+				.IsForSpace( onSpace.SpaceSpec )
 				.HasOptions( "E@1" )
 				.Choose( "E@1" );
 			--expectedDamage;

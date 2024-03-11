@@ -13,9 +13,9 @@ class MistsShiftAndFlow {
 
 	readonly TargetCriteria[] _targetCriteria;
 
-	SpaceState[] nonFlowTargets; // targets we can hit without flowing
-	SpaceState[] flowRange; // where existing Presence can flow to
-	SpaceState[] flowOnlyTargets; // targets that can only be hit by flowing
+	Space[] nonFlowTargets; // targets we can hit without flowing
+	Space[] flowRange; // where existing Presence can flow to
+	Space[] flowOnlyTargets; // targets that can only be hit by flowing
 
 	#endregion
 
@@ -32,7 +32,7 @@ class MistsShiftAndFlow {
 		CalculateSpaceGroups();
 	}
 
-	public async Task<SpaceState> TargetAndFlow() {
+	public async Task<Space> TargetAndFlow() {
 		// When targeting a land with a Power,
 		// You may Gather 1 of your presence into the target or an adjacent land.
 		// This can enable you to meet Range and targeting requirements."
@@ -40,7 +40,7 @@ class MistsShiftAndFlow {
 		// Note! We cannot trust our range parameter for actural range, because spirit may have received a range adjustment modifier.
 		// Instead, we need to test the values that come back from CalcRange and see if they are actually Range(2) or adjacent.
 
-		SpaceState target = await FindTarget();
+		Space target = await FindTarget();
 		if(target == null) return null;
 		if(CantFlowAndStillReach( target )) return target;
 
@@ -50,37 +50,37 @@ class MistsShiftAndFlow {
 
 	}
 
-	async Task FlowPresence( SpaceState target ) {
+	async Task FlowPresence( Space target ) {
 		List<MistMove> allowed = FindFlowsThatAllowUsToHitTarget( target );
 
 		// Flow (Gather) - Destination (To)
-		var gatherDst = await _spirit.SelectAsync( new A.Space(
+		var gatherDst = await _spirit.SelectAsync( new A.SpaceDecision(
 			"Flow (gather) presence to:",
-			allowed.Select( a => a.AddedTo.Space ).Distinct(),
+			allowed.Select( a => a.AddedTo ).Distinct(),
 			MustFlowToReach( target ) ? Present.Always : Present.Done
 		) );
 		if(gatherDst == null) return;
 
 		// Flow (Gather) - Source
 		var souceOptions = allowed
-			.Where( a => a.AddedTo.Space == gatherDst )
+			.Where( a => a.AddedTo == gatherDst )
 			.Select( a => a.RemovedFrom )
 			.ToArray();
 
 		// ASpaceToken.ToCollect( prompt, from.Select(x=>new SpaceToken(x.Space,(IToken)presenceToken)), Present.Done, to )
-		var decision = A.SpaceToken.ToCollect( 
-			prompt:$"Flow (gather) presence (to {gatherDst.Label}) from:", 
+		var decision = A.SpaceTokenDecision.ToCollect( 
+			prompt:$"Flow (gather) presence (to {gatherDst.SpaceSpec.Label}) from:", 
 			tokens: _spirit.Presence.Movable.WhereIsOn( souceOptions ),
 			Present.Done,
-			to: gatherDst
+			to: gatherDst.SpaceSpec
 		);
 		var gatherSource = await _spirit.SelectAsync( decision );
 		if(gatherSource == null) return;
 
-		await gatherSource.MoveTo( gatherDst.ScopeTokens );
+		await gatherSource.MoveTo( gatherDst );
 	}
 
-	List<MistMove> FindFlowsThatAllowUsToHitTarget( SpaceState target ) {
+	List<MistMove> FindFlowsThatAllowUsToHitTarget( Space target ) {
 		List<MistMove> allowed = [];
 
 		var pretendPresence = new SpaceCounts( _spirit );
@@ -88,43 +88,43 @@ class MistsShiftAndFlow {
 		var spacesInRange = target.Range(1) // this is a Gather
 			.ToArray();
 
-		foreach(SpaceState dst in spacesInRange) {
-			pretendPresence[dst.Space]++; // move  presence ON TO destination
+		foreach(Space dst in spacesInRange) {
+			pretendPresence[dst]++; // move  presence ON TO destination
 
-			foreach(SpaceState src in dst.Adjacent.Where( _spirit.Presence.IsOn )) {
-				pretendPresence[src.Space]--; // move presence OFF of source
+			foreach(Space src in dst.Adjacent.Where( _spirit.Presence.IsOn )) {
+				pretendPresence[src]--; // move presence OFF of source
 
 				if( PresenceMeetsTargettingRequirements( pretendPresence, target ) )
 					allowed.Add( new MistMove( src, dst ) ); // Impled that Count=1 and Token=Presence
 
-				pretendPresence[src.Space]++; // resore source
+				pretendPresence[src]++; // resore source
 			}
 
-			pretendPresence[dst.Space]--; // restore destination
+			pretendPresence[dst]--; // restore destination
 		}
 
 		return allowed;
 	}
 
-	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, SpaceState target ) {
+	bool PresenceMeetsTargettingRequirements( IKnowSpiritLocations presence, Space target ) {
 		var targetSource = _sourceCriteria.Filter( _spirit.TargetingSourceStrategy.EvaluateFrom( presence, _sourceCriteria.From ) );
 		var targetOptionsFromTheseSources = GetTargetOptionsFromKnownSources( targetSource );
 		bool hitsTarget = targetOptionsFromTheseSources.Contains( target );
 		return hitsTarget;
 	}
 
-	bool MustFlowToReach( SpaceState target ) => flowOnlyTargets.Contains( target );
+	bool MustFlowToReach( Space target ) => flowOnlyTargets.Contains( target );
 
-	bool CantFlowAndStillReach( SpaceState target ) => nonFlowTargets.Contains( target ) && !flowRange.Contains( target );
+	bool CantFlowAndStillReach( Space target ) => nonFlowTargets.Contains( target ) && !flowRange.Contains( target );
 
-	async Task<SpaceState> FindTarget() {
+	async Task<Space> FindTarget() {
 		// ----------------
 		// -- Targetting --
 		// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 		// For small ranges, flow-targets will be larger.
 
-		var target = await _spirit.SelectAsync( new A.Space( _prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
-		return target.ScopeTokens;
+		var target = await _spirit.SelectAsync( new A.SpaceDecision( _prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
+		return target;
 	}
 
 	void CalculateSpaceGroups() {
@@ -149,14 +149,14 @@ class MistsShiftAndFlow {
 			.ToArray();
 	}
 
-	SpaceState[] GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources ) {
+	Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources ) {
 		return _targetCriteria
 			.SelectMany( tc => GetTargetOptionsFromKnownSources( sources, tc ) )
 			.Distinct()
 			.ToArray();
 	}
 
-	IEnumerable<SpaceState> GetTargetOptionsFromKnownSources( IEnumerable<SpaceState> sources, TargetCriteria tc )
+	IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<Space> sources, TargetCriteria tc )
 		=> _spirit.PowerRangeCalc.GetSpaceOptions( sources, tc );
 
 	// Shroud Helper - for easier testing Targetting
@@ -167,17 +167,17 @@ class MistsShiftAndFlow {
 		public SpaceCounts(Spirit spirit) : base() {
 			_spirit = spirit;
 			foreach(var ss in Lands)
-				Add(ss.Space,spirit.Presence.CountOn( ss ));
+				Add(ss,spirit.Presence.CountOn( ss ));
 		}
 
 		// IEnumerable<Space> IKnowSpiritLocations.Spaces => Keys;
-		public IEnumerable<SpaceState> Lands => _spirit.Presence.Lands;
+		public IEnumerable<Space> Lands => _spirit.Presence.Lands;
 
-		public IEnumerable<SpaceState> SacredSites => _spirit.Presence.SacredSites;
-		public IEnumerable<SpaceState> SuperSacredSites => _spirit.Presence.SuperSacredSites;
+		public IEnumerable<Space> SacredSites => _spirit.Presence.SacredSites;
+		public IEnumerable<Space> SuperSacredSites => _spirit.Presence.SuperSacredSites;
 
 	}
 
-	record MistMove( SpaceState RemovedFrom, SpaceState AddedTo );
+	record MistMove( Space RemovedFrom, Space AddedTo );
 
 }

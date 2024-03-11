@@ -15,7 +15,7 @@ public class ReachFromTheInfiniteDarkness {
 
 			// select presence
 			var presenceToAbduct = await self.SelectAsync( 
-				new A.SpaceToken( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", 
+				new A.SpaceTokenDecision( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", 
 				GameState.Current.Spirits.SelectMany(s=>s.Presence.Deployed),
 				Present.Done 
 			) );
@@ -30,7 +30,7 @@ public class ReachFromTheInfiniteDarkness {
 				continue; // try again
 
 			// move it
-			await presenceToAbduct.MoveTo( EndlessDark.Space.ScopeTokens );
+			await presenceToAbduct.MoveTo( EndlessDark.Space.ScopeSpace );
 
 			// record the bonus
 			bonuses[otherSpirit]++;

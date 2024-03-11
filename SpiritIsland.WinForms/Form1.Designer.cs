@@ -161,7 +161,7 @@ namespace SpiritIsland.WinForms {
             // 
             this.spaceTokensToolStripMenuItem.Name = "spaceTokensToolStripMenuItem";
             this.spaceTokensToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.spaceTokensToolStripMenuItem.Text = "Space Tokens";
+            this.spaceTokensToolStripMenuItem.Text = "Space";
             this.spaceTokensToolStripMenuItem.Click += new System.EventHandler(this.spaceTokensToolStripMenuItem_Click);
             // 
             // Form1

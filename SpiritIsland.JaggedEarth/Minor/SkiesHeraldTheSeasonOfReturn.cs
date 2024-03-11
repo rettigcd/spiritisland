@@ -10,12 +10,12 @@ public class SkiesHeraldTheSeasonOfReturn{
 		// A Spirit with presence on target board may add 1 of their Destroyed presence.
 		var spiritOptions = GameState.Current.Spirits
 			.Where( s => 0 < s.Presence.Destroyed.Count )
-			.Where( spirit => ctx.Space.Boards.Any(spirit.Presence.IsOn) )
+			.Where( spirit => ctx.SpaceSpec.Boards.Any(spirit.Presence.IsOn) )
 			.ToArray();
 
 		var other = await ctx.SelectAsync(new A.Spirit(Name,spiritOptions,Present.AutoSelectSingle) );
 		if(other != null)
-			await ctx.Self.Target( other ).Other.Target(ctx.Space).Presence.PlaceDestroyedHere();
+			await ctx.Self.Target( other ).Other.Target(ctx.SpaceSpec).Presence.PlaceDestroyedHere();
 
 		// Gather up to 2 dahan.
 		await ctx.GatherUpToNDahan(2);

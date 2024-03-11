@@ -49,7 +49,7 @@ public class Ocean : Spirit {
 
 	}
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Swap out Terrain evaluator for power
@@ -57,13 +57,13 @@ public class Ocean : Spirit {
 		gameState.Terrain_ForBlight = new OceanTerrainForPower( gameState.Terrain_ForBlight, this );
 
 		// Place in Ocean
-		board.Ocean.ScopeTokens.Setup(Presence.Token,1);
+		board.Ocean.ScopeSpace.Setup(Presence.Token,1);
 
 		AddActionFactory( new PlacePresenceInCostal().ToInit() );
 
 		var drownMod = new Drowning(this);
 		foreach(Board b in gameState.Island.Boards)
-			b.Ocean.ScopeTokens.Adjust( drownMod, 1 );
+			b.Ocean.ScopeSpace.Adjust( drownMod, 1 );
 	}
 
 	// ! Hook for Tidal Boon

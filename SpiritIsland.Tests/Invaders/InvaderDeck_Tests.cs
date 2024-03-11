@@ -73,7 +73,7 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
 		var gs = new GameState(new RiverSurges(),_board);
-		InvaderCard sut = InvaderDeckBuilder.Level1Cards.Single(c=>c.Text==cardText);
+		InvaderCard sut = InvaderDeckBuilder.Level1Cards.Single(c=>c.Code==cardText);
 		string[] targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
 	}
@@ -87,7 +87,7 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("Coastal","A1,A2,A3")]
 	public void Level2CardTargets(string cardText,string expectedTargets){
 		var gs = new GameState( new RiverSurges(), _board ); // Init Scope and GameBoard
-		var cards = InvaderDeckBuilder.Level2Cards.Where(c=>c.Text==cardText);
+		var cards = InvaderDeckBuilder.Level2Cards.Where(c=>c.Code==cardText);
 		var sut = Assert.Single(cards);
 		var targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
@@ -102,7 +102,7 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("S+W","A2,A4,A5,A7")]
 	public void Level3CardTargets(string cardText,string expectedTargets){
 		var gs = new GameState( new RiverSurges(), _board ); // Init Scope and GameBoard
-		var cards = InvaderDeckBuilder.Level3Cards.Where(c=>c.Text==cardText);
+		var cards = InvaderDeckBuilder.Level3Cards.Where(c=>c.Code==cardText);
 		var sut = Assert.Single(cards);
 		var targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
@@ -139,7 +139,7 @@ public class InvaderDeck_Tests {
 		gameState.Tokens[ board[5] ].AdjustDefault(Human.Explorer,1);
 
 		// When: exploring (wet lands
-		await new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single(c=>c.Text=="W"), gameState )
+		await new ExploreSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single(c=>c.Code=="W"), gameState )
 			.ShouldComplete( "Explore Phase");
 
 		// Then: 1 Explorer on A2 (new explored)
@@ -178,13 +178,13 @@ public class InvaderDeck_Tests {
 		gameState.NewLogEntry += (e) => log.Add(e.Msg(Log.LogLevel.Info));
 
 		// When: exploring (wet lands
-		InvaderCard card = InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "W" );
+		InvaderCard card = InvaderDeckBuilder.Level1Cards.Single( c => c.Code == "W" );
 		await new ExploreSlot().ActivateCard( card, gameState );
 
 		// Then: Explores A2 and other space only
 		foreach(var space in board.Spaces){
 			var invaders = gameState.Tokens[space];
-			invaders[StdTokens.Explorer].ShouldBe( space.IsWetland ? 1 : 0, space.Text );
+			invaders[StdTokens.Explorer].ShouldBe( space.IsWetland ? 1 : 0, space.Label );
 		}
 	}
 
@@ -205,7 +205,7 @@ public class InvaderDeck_Tests {
 			_gameState.Tokens[space].Adjust( startingInvader, 1 );
 
 		// When: build in Sand
-		await new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Text == "S" ), _gameState)
+		await new BuildSlot().ActivateCard( InvaderDeckBuilder.Level1Cards.Single( c => c.Code == "S" ), _gameState)
 			.ShouldComplete( "Build Phase");
 
 		// Then: 2 Sand spaces should have ending Invader Count
@@ -272,13 +272,13 @@ public class InvaderDeck_Tests {
 		var space = _board[1];
 		Assert.True(space.IsMountain);
 		space.Given_HasTokens(startingUnits);
-		space.ScopeTokens.Summary.ShouldBe( startingUnits );
+		space.ScopeSpace.Summary.ShouldBe( startingUnits );
 
 		// When: Ravaging in Mountains
 		await InvaderCard.Stage1( Terrain.Mountain ).When_Ravaging();
 		// await new RavageEngine().ActivateCard( InvaderCard.Stage1( Terrain.Mountain ), gameState );
 
-		space.ScopeTokens.Summary.ShouldBe( endingUnits );
+		space.ScopeSpace.Summary.ShouldBe( endingUnits );
 	}
 
 	static async Task AdvanceAsync( InvaderDeck sut ) {
@@ -289,7 +289,7 @@ public class InvaderDeck_Tests {
 
 	static string TakeSnapShot( InvaderDeck sut ) {
 		//   And: record cards
-		return sut.Ravage.Cards[0].Text + " : " + sut.Build.Cards[0].Text + " : " + sut.Explore.Cards[0].Text;
+		return sut.Ravage.Cards[0].Code + " : " + sut.Build.Cards[0].Code + " : " + sut.Explore.Cards[0].Code;
 	}
 	
 	static InvaderCard[] NewDeckCards(int seed) {
@@ -297,9 +297,9 @@ public class InvaderDeck_Tests {
 	}
 
 	static void Assert_NextNCardsFromDeck( List<InvaderCard> deck, ImmutableList<InvaderCard> expected, int count ) {
-		var expectedTitles = expected.Select( x => x.Text ).ToArray();
+		var expectedTitles = expected.Select( x => x.Code ).ToArray();
 		for(int i = 0; i < count; ++i) {
-			Assert.Contains( deck[0].Text, expectedTitles ); // because new cards are generated each time.
+			Assert.Contains( deck[0].Code, expectedTitles ); // because new cards are generated each time.
 			deck.RemoveAt(0);
 		}
 	}

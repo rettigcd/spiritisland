@@ -13,7 +13,7 @@ class BlurTheArcOfYears {
 		// You may repeat this Power (once) on the same land by spending 1 Time.
 		if(ctx.Self is FracturedDaysSplitTheSky frac
 			&& frac.Time > 0
-			&& await frac.UserSelectsFirstText($"Pay 1 Time to repeat '{BlurTheArcOfYears.Name}' on {ctx.Space.Label}?", "Yes", "No, thank you" )
+			&& await frac.UserSelectsFirstText($"Pay 1 Time to repeat '{BlurTheArcOfYears.Name}' on {ctx.SpaceSpec.Label}?", "Yes", "No, thank you" )
 		) {
 			await frac.SpendTime( 1 );
 			await ActInnerAsync( ctx );
@@ -32,8 +32,8 @@ class BlurTheArcOfYears {
 		// If invaders are present: they Build, then Ravage
 		if(hasInvaders) {
 			var deck = GameState.Current.InvaderDeck;
-			await deck.Build.Engine.Do1Build( GameState.Current, ctx.Tokens );
-			await ctx.Tokens.Ravage();
+			await deck.Build.Engine.Do1Build( GameState.Current, ctx.Space );
+			await ctx.Space.Ravage();
 		}
 
 		// If dahan are present: Add 1 dahan. Push up to 2 dahan.

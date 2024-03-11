@@ -69,7 +69,7 @@ public class ArtGen_Tests {
 		graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 		new ImgRect(slot.Icon).Paint(graphics, bounds);
-		string filename = slot.Text.ToResourceName(".png");
+		string filename = slot.Code.ToResourceName(".png");
 		ImageDiskCache.SaveBmp(image, $"C:\\users\\rettigcd\\desktop\\track\\" + filename, ImageFormat.Png);
 	}
 
@@ -206,7 +206,7 @@ public class ArtGen_Tests {
 	static async Task GenerateCards( IEnumerable<PowerCard> cards ) {
 		foreach(var card in cards) {
 			using Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card, ResourceImages.Singleton );
-			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Name}.png", ImageFormat.Png );
+			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Title}.png", ImageFormat.Png );
 		}
 	}
 

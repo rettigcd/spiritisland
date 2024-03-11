@@ -14,7 +14,7 @@ public class FieryVengeance_Tests {
 		GameState gameState = new GameState( [ vengeance, spirit2 ], [ board1, board2 ] );
 
 		//   And: spirit 2 presence, blight & town on a space
-		SpaceState space = gameState.Tokens[board1[5]];
+		Space space = gameState.Tokens[board1[5]];
 		spirit2.Given_IsOn( space );
 		space.Given_HasTokens("1T@2,1B");
 
@@ -46,7 +46,7 @@ public class FieryVengeance_Tests {
 		GameState gameState = new GameState( [ vengeance, spirit2 ], [ board1, board2 ] );
 
 		//   And: spirit 2 presence, blight & town on a space
-		SpaceState space = gameState.Tokens[board1[5]];
+		Space space = gameState.Tokens[board1[5]];
 		spirit2.Given_IsOn( space );
 		space.Given_HasTokens( "1T@2,1B" );
 

@@ -23,7 +23,7 @@ public class SerpentSlumbering : Spirit {
 
 	public const string Name = "Serpent Slumbering Beneath the Island";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {
 		new SpecialRule("Deep Slumber","You start off limited to 5 presence on the tisland.  Raise this with your 'Absorb Essence' Power Card.  Each use covers the lowest revealed number; your presence limit is the lowest uncovered number.")
@@ -31,7 +31,7 @@ public class SerpentSlumbering : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Setup: put 1 presence on #5
-		board[5].ScopeTokens.Setup(Presence.Token, 1);
+		board[5].ScopeSpace.Setup(Presence.Token, 1);
 	}
 
 }

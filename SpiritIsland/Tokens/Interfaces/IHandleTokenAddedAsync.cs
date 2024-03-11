@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland;
 
 public interface IHandleTokenAdded {
-	void HandleTokenAdded( SpaceState to, ITokenAddedArgs args );
+	void HandleTokenAdded( Space to, ITokenAddedArgs args );
 }
 
 public interface IHandleTokenAddedAsync {
-	Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args );
+	Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args );
 }

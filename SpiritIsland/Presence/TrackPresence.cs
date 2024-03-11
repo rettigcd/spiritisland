@@ -18,7 +18,7 @@ public class TrackPresence( Track track, SpiritPresenceToken token ) : TokenLoca
 
 	#region TokenLocation
 	ILocation TokenLocation.Location => Track;
-	string IOption.Text => Track.Text;
+	string IOption.Text => Track.Code;
 
 	public int Count => (_pres.Energy.Revealed.Contains(Track) || _pres.CardPlays.Revealed.Contains(Track)) ? 0 : 1;
 	bool TokenLocation.IsSacredSite => false;

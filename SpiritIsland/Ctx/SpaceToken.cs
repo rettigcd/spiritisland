@@ -6,52 +6,45 @@ public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
 	#region constructor / deconstructor
 
 	/// <summary>
-	/// Captures the SpaceState so we can use it in the UI safely.
+	/// Captures the Space so we can use it in the UI safely.
 	/// </summary>
-	/// <param name="spaceState"></param>
+	/// <param name="space"></param>
 	/// <param name="token"></param>
 #pragma warning disable IDE0290 // Use primary constructor
-	public SpaceToken(SpaceState spaceState, IToken token) {
-		SpaceState = spaceState;
+	public SpaceToken(Space space, IToken token) {
+		Space = space;
 		Token = token;
 	}
 #pragma warning restore IDE0290 // Use primary constructor
 
-	public void Deconstruct(out Space space, out IToken token) {
-		space = Space;
-		token = Token;
-	}
-
 	#endregion constructor / deconstructor
 
-	public Space Space => SpaceState.Space;
+	public Space Space { get; }
 	public IToken Token { get; }
-	ILocation TokenLocation.Location => SpaceState.Space;
-
-	public SpaceState SpaceState { get; }
+	ILocation TokenLocation.Location => Space;
 
 	#region IOption.Text config
 
-	public string Text => ToString();
+	string IOption.Text => ToString();
 
 	#endregion IOption.Text config
 
-	public Task<TokenMovedArgs> MoveTo( SpaceState destination, int count=1 )
-		=> this.Token.MoveAsync(Space,destination.Space,count);
+	public Task<TokenMovedArgs> MoveTo( Space destination, int count=1 )
+		=> this.Token.MoveAsync(Space,destination,count);
 
 	public bool Exists => 0 < Count;
-	public int Count => SpaceState[Token];
-	public bool IsSacredSite => (Token is SpiritPresenceToken spt) && spt.Self.Presence.IsSacredSite(SpaceState);
+	public int Count => Space[Token];
+	public bool IsSacredSite => (Token is SpiritPresenceToken spt) && spt.Self.Presence.IsSacredSite(Space);
 
-	public Task Destroy() => SpaceState.Destroy( Token, 1 );
-	public Task Remove() => SpaceState.RemoveAsync( Token, 1 );
+	public Task Destroy() => Space.Destroy( Token, 1 );
+	public Task Remove() => Space.RemoveAsync( Token, 1 );
 	public Task<SpaceToken> Add1StrifeToAsync() {
-		return SpaceState.Add1StrifeToAsync( Token.AsHuman() );
+		return Space.Add1StrifeToAsync( Token.AsHuman() );
 	}
 
 	#region object overrides: GetHashCode/Equals/ToString
 
-	public override int GetHashCode() => Space.GetHashCode()-Token.GetHashCode();
+	public override int GetHashCode() => Space.SpaceSpec.GetHashCode()-Token.GetHashCode();
 
 	public override bool Equals(object obj) => Equals(obj as SpaceToken);
 
@@ -62,7 +55,7 @@ public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
 		=> st1 is null ? st2 is null : st1.Equals(st2);
     public static bool operator !=(SpaceToken st1, SpaceToken st2) => !(st1==st2);
 
-	public override string ToString() => $"{Token.Text} on {Space.Label}";
+	public override string ToString() => $"{Token.Text} on {Space.SpaceSpec.Label}";
 
 	#endregion object overrides: GetHashCode/Equals/ToString
 }

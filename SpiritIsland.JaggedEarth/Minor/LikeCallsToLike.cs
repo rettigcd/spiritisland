@@ -15,7 +15,7 @@ public class LikeCallsToLike{
 	}
 
 	static async Task GatherLike( TargetSpaceCtx ctx, ITokenClass tokenTypeOfInterest ) {
-		if(ctx.Tokens.HasAny( tokenTypeOfInterest ))
+		if(ctx.Space.HasAny( tokenTypeOfInterest ))
 			await ctx.GatherUpTo( 1, tokenTypeOfInterest );
 	}
 

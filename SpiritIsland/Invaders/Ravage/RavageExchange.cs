@@ -21,37 +21,36 @@ public class RavageParticipants(
 }
 
 /// <summary> Creates a Custom Ravage Exchange. </summary>
-public class RavageExchange( SpaceState tokens, RavageOrder order, RavageParticipants attackers, RavageParticipants defenders ) {
+public class RavageExchange( Space space, RavageOrder order, RavageParticipants attackers, RavageParticipants defenders ) {
 
 	/// <summary> Creates a standard Ravage Exchange. </summary>
-	public RavageExchange( SpaceState tokens, RavageOrder order ):this(
-		tokens,
+	public RavageExchange( Space space, RavageOrder order ):this(
+		space,
 		order, 
-		GetSideParticipants( tokens, RavageSide.Attacker, order ),
-		GetSideParticipants( tokens, RavageSide.Defender, order ) 
+		GetSideParticipants( space, RavageSide.Attacker, order ),
+		GetSideParticipants( space, RavageSide.Defender, order ) 
 	) { }
 
-	readonly public SpaceState Tokens = tokens;
+	readonly public Space Space = space;
 	readonly public RavageOrder Order = order;
 	readonly public RavageParticipants Attackers = attackers;
 	readonly public RavageParticipants Defenders = defenders;
 
-	public Space Space => Tokens.Space;
 	public bool HasActiveParticipants => 0 < (Attackers.Active.Count + Defenders.Active.Count);
 
 	public int Defend;
 	public int DahanDestroyed;
 
-	static RavageParticipants GetSideParticipants( SpaceState tokens, RavageSide side, RavageOrder order ) {
+	static RavageParticipants GetSideParticipants( Space space, RavageSide side, RavageOrder order ) {
 
-		var starting = tokens.AllHumanTokens()
+		var starting = space.AllHumanTokens()
 			.Where( token => token.RavageSide == side )
-			.ToDictionary( x => x, x => tokens[x] )
+			.ToDictionary( x => x, x => space[x] )
 			.ToCountDict();
 
 		var active = starting.Keys
 			.Where( token => token.RavageOrder == order )
-			.ToDictionary( x => x, x => tokens[x] )
+			.ToDictionary( x => x, x => space[x] )
 			.ToCountDict();
 
 		return new RavageParticipants( starting, active );
@@ -103,7 +102,7 @@ public class RavageExchange( SpaceState tokens, RavageOrder order, RavagePartici
 		int rawDamageFromAttackers = behavior.GetDamageFromParticipatingAttackers( this );
 
 		// Defend
-		Defend = Tokens.Defend.Count;
+		Defend = Space.Defend.Count;
 		int damageInflictedFromAttackers = Math.Max( rawDamageFromAttackers - Defend, 0 );
 
 		Attackers.DamageDealtOut = damageInflictedFromAttackers; // Defend points already applied.
@@ -124,7 +123,7 @@ public class RavageExchange( SpaceState tokens, RavageOrder order, RavagePartici
 			return;
 		}
 
-		int badlands = Tokens.Badlands.Count;
+		int badlands = Space.Badlands.Count;
 		Attackers.DamageReceivedFromBadlands = badlands;
 		int remainingDamageToApply = Defenders.DamageDealtOut + badlands;
 
@@ -139,7 +138,7 @@ public class RavageExchange( SpaceState tokens, RavageOrder order, RavagePartici
 			int damageToApplyToAttacker = Math.Min( remainingDamageToApply, attackerToDamage.RemainingHealth );
 			remainingDamageToApply -= damageToApplyToAttacker; // damage we apply and damage inflicted may be different
 
-			var (actualDamageInflicted, _) = await Tokens.Invaders.ApplyDamageTo1( damageToApplyToAttacker, attackerToDamage );
+			var (actualDamageInflicted, _) = await Space.Invaders.ApplyDamageTo1( damageToApplyToAttacker, attackerToDamage );
 
 			// Apply tracking damage
 			--remaningAttackers[attackerToDamage];
@@ -165,12 +164,12 @@ public class RavageExchange( SpaceState tokens, RavageOrder order, RavagePartici
 			.ToArray();
 		foreach(var orig in strifed) {
 			// update tracking counts
-			int count = rex.Tokens[orig];
+			int count = rex.Space[orig];
 			newAttackers[orig] -= count;
 			newAttackers[orig.AddStrife( -1 )] += count;
 
 			// update real tokens
-			await rex.Tokens.Remove1StrifeFromAsync( orig, rex.Tokens[orig] );
+			await rex.Space.Remove1StrifeFromAsync( orig, rex.Space[orig] );
 		}
 
 		return newAttackers;
@@ -208,7 +207,7 @@ public class RavageExchange( SpaceState tokens, RavageOrder order, RavagePartici
 		if(Attackers.DamageDealtOut == 0) return;
 
 		// Add Badlands damage
-		Defenders.DamageReceivedFromBadlands = Tokens.Badlands.Count;
+		Defenders.DamageReceivedFromBadlands = Space.Badlands.Count;
 		int damageToApply = Attackers.DamageDealtOut + Defenders.DamageReceivedFromBadlands; // to defenders
 
 		var defenders = Defenders.Starting.Clone();
@@ -226,7 +225,7 @@ public class RavageExchange( SpaceState tokens, RavageOrder order, RavagePartici
 			foreach(var token in participatingExplorers) {
 				int tokensToDestroy = Math.Min( Defenders.Starting[token], damageToApply / token.RemainingHealth );
 				// destroy real tokens
-				await Tokens.Invaders.DestroyNTokens( token, tokensToDestroy );
+				await Space.Invaders.DestroyNTokens( token, tokensToDestroy );
 				// update our defenders count
 				defenders[token] -= tokensToDestroy;
 				damageToApply -= tokensToDestroy * token.RemainingHealth;
@@ -245,7 +244,7 @@ public class RavageExchange( SpaceState tokens, RavageOrder order, RavagePartici
 			.ThenBy( x => x.RavageOrder ) // but if 2 have same health, pick the one that has already attacked
 			.ToArray();
 
-		var dahan = Tokens.Dahan;
+		var dahan = Space.Dahan;
 
 		foreach(var dahanToken in damagableDahan) {
 

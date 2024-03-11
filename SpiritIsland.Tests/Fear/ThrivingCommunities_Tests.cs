@@ -11,8 +11,8 @@ public class ThrivingCommunities_Tests {
 
 		var fxt = new ConfigurableTestFixture();
 		// Given: board only has 2 spaces with explorers / towns
-		Space explorerSpace = fxt.Board[4];
-		Space townSpace = fxt.Board[5];
+		SpaceSpec explorerSpace = fxt.Board[4];
+		SpaceSpec townSpace = fxt.Board[5];
 		fxt.InitTokens( explorerSpace, "1E@1" );
 		fxt.InitTokens( townSpace, "1T@2" );
 
@@ -21,8 +21,8 @@ public class ThrivingCommunities_Tests {
 		await new ThrivingCommunitites().Immediately.ActAsync( fxt.GameState )
 			.AwaitUser( (user)=> {
 				//  And: choose the only 2 spaces
-				user.Choose( explorerSpace.Text ); fxt.Choose( "E@1" );
-				user.Choose( townSpace.Text ); fxt.Choose( "T@2" );
+				user.Choose( explorerSpace.Label ); fxt.Choose( "E@1" );
+				user.Choose( townSpace.Label ); fxt.Choose( "T@2" );
 			} ).ShouldComplete("Thriving Communities");
 
 		// Then: spaces should have towns

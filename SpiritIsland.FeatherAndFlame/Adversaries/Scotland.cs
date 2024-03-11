@@ -23,7 +23,7 @@ public class Scotland : AdversaryBase, IAdversary {
 			InitFunc = (gameState,_) => {
 				// Add 1 City to land #2
 				foreach(Board board in gameState.Island.Boards)
-					board[2].ScopeTokens.Setup( Human.City, 1 );
+					board[2].ScopeSpace.Setup( Human.City, 1 );
 				ActionScope.Current.Log(new SpiritIsland.Log.Debug("Seize Opportunity - adding 1 city to space 2 of each board."));
 			},
 		}.WithInvaderCardOrder("11-22-1-C2-33333"),
@@ -42,7 +42,7 @@ public class Scotland : AdversaryBase, IAdversary {
 			InitFunc = (gameState,_) => {
 				// After a Ravage Action adds Blight to a Coastal Land, add 1 Blight to that board's Ocean (without cascading).
 				var token = new ScotlandCoastalBlightCheckToken();
-				foreach(var ss in ActionScope.Current.Tokens.Where( ss => ss.Space.IsCoastal ))
+				foreach(var ss in ActionScope.Current.Spaces.Where( ss => ss.SpaceSpec.IsCoastal ))
 					ss.Adjust(token,1);
 
 				// Treat the Ocean as a Coastal Wetland for this rule and for Blight removal/movement.
@@ -69,7 +69,7 @@ public class Scotland : AdversaryBase, IAdversary {
 			.Take( gameState.Spirits.Length )
 			.ToArray();
 		await using(var actionScope = await ActionScope.Start(ActionCategory.Adversary))
-			foreach(SpaceState ss in spacesToAddTown)
+			foreach(Space ss in spacesToAddTown)
 				await ss.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 		ActionScope.Current.Log(new SpiritIsland.Log.Debug($"Ports Sprawl Outword: Adding 1 town to "+spacesToAddTown.SelectLabels().Join(",")));
 	}
@@ -84,8 +84,8 @@ public class Scotland : AdversaryBase, IAdversary {
 	);
 
 	static void TradeHubImp( GameState gameState ) {
-		int coastalCityLandCount = ActionScope.Current.Tokens_Unfiltered
-			.Count( s => s.Has( Human.City ) && s.Space.IsCoastal );
+		int coastalCityLandCount = ActionScope.Current.Spaces_Unfiltered
+			.Count( s => s.Has( Human.City ) && s.SpaceSpec.IsCoastal );
 		if( gameState.Island.Boards.Length < coastalCityLandCount )
 			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");
 	}

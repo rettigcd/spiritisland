@@ -8,12 +8,12 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 
 	[Fact]
 	public async Task IncarnaProtectsDahanDuringRavage() {
-		var tokens = _board[8].ScopeTokens;
+		var tokens = _board[8].ScopeSpace;
 		// Given Dahan and town
 		await tokens.Dahan.AddDefault(1);
 		tokens.InitDefault(Human.Town,1);
 		// Given Incarna, Vitality
-		Given_IncarnaOn( tokens.Space );
+		Given_IncarnaOn( tokens.SpaceSpec );
 		tokens.Init(Token.Vitality,1);
 
 		// When ravage
@@ -28,7 +28,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	public async Task DestroyingPresence_IncludesIncarnaToken_DoesntIncreaseDestroyedCount() {
 
 		// Given: Presence on A2
-		_board[2].ScopeTokens.Init( _spirit.Presence.Token, 1 );
+		_board[2].ScopeSpace.Init( _spirit.Presence.Token, 1 );
 		//   And: Incarna on A3
 		Given_IncarnaOn( _board[3] );
 
@@ -60,7 +60,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	[Fact]
 	public async Task MovePresence_IncludesIncarnaToken() {
 		// Given: Presence on A2
-		_board[2].ScopeTokens.Init( _spirit.Presence.Token, 1 );
+		_board[2].ScopeSpace.Init( _spirit.Presence.Token, 1 );
 		//   And: Incarna on A3
 		Given_IncarnaOn( _board[3] );
 
@@ -82,7 +82,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	public async Task IncarnaCountAsPresenceForSacredSite() {
 
 		// Given: Presence & Incarna on A2
-		_board[2].ScopeTokens.Init( _spirit.Presence.Token, 1 );
+		_board[2].ScopeSpace.Init( _spirit.Presence.Token, 1 );
 		Given_IncarnaOn( _board[2] );
 
 		// When: targetting from Sacred Site
@@ -120,14 +120,14 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		var space = _board[2];
 
 		// First not on island
-		_presence.IsOn( space.ScopeTokens ).ShouldBeFalse();
+		_presence.IsOn( space.ScopeSpace ).ShouldBeFalse();
 		_presence.IsOn( _board ).ShouldBeFalse();
 		_presence.IsOnIsland.ShouldBeFalse();
 
 		// Then add to island
 		Given_IncarnaOn( space );
 
-		_presence.IsOn( space.ScopeTokens ).ShouldBeTrue();
+		_presence.IsOn( space.ScopeSpace ).ShouldBeTrue();
 		_presence.IsOn( _board ).ShouldBeTrue();
 		_presence.IsOnIsland.ShouldBeTrue();
 
@@ -136,12 +136,12 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	[Fact]
 	public void TokensDeployedOn_IncludesIncarna() {
 		// Given: Presence & Incarna on A2
-		Space space = _board[2];
-		space.ScopeTokens.Init( _spirit.Presence.Token, 1 );
+		SpaceSpec space = _board[2];
+		space.ScopeSpace.Init( _spirit.Presence.Token, 1 );
 		Given_IncarnaOn( space );
 
 		// When: query for what is there
-		var tokens = _presence.TokensDeployedOn( space.ScopeTokens )
+		var tokens = _presence.TokensDeployedOn( space.ScopeSpace )
 			.Select( x => x.Text )
 			.OrderBy( x => x )
 			.Join( "," );
@@ -185,7 +185,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 				.Choose( "Add Vitality to Incarna" );
 		} ).ShouldComplete();
 
-		_board[4].ScopeTokens.Summary.ShouldBe( "1TRotJ-,1V" );
+		_board[4].ScopeSpace.Summary.ShouldBe( "1TRotJ-,1V" );
 		_gs.Tokens.ToVerboseString();
 
 	}
@@ -193,7 +193,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	[Fact]
 	public void SpaceDoestRepeat() {
 		// Given: Presence & Incarna on A2
-		_board[2].ScopeTokens.Init( _spirit.Presence.Token, 1 );
+		_board[2].ScopeSpace.Init( _spirit.Presence.Token, 1 );
 		Given_IncarnaOn( _board[2] );
 
 		_presence.Lands.Count().ShouldBe( 1 );

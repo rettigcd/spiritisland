@@ -7,12 +7,12 @@
 class Russia_Level3_CompetitionAmongHuntersRavageEngine : RavageEngine {
 
 	const string CompetitionName = "Competition Among Hunters";
-	protected override bool MatchesCardForRavage( InvaderCard card, SpaceState spaceState ) {
-		if(base.MatchesCardForRavage( card, spaceState )) return true;
+	protected override bool MatchesCardForRavage( InvaderCard card, Space space ) {
+		if(base.MatchesCardForRavage( card, space )) return true;
 
-		bool hasCompetition = 3 <= spaceState.Sum( Human.Explorer );
+		bool hasCompetition = 3 <= space.Sum( Human.Explorer );
 		if(hasCompetition)
-			ActionScope.Current.LogDebug( $"{CompetitionName} causes ravage on {spaceState.Space.Text}" );
+			ActionScope.Current.LogDebug( $"{CompetitionName} causes ravage on {space.Label}" );
 		return hasCompetition;
 	}
 

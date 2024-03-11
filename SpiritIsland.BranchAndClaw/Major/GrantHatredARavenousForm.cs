@@ -9,7 +9,7 @@ public class GrantHatredARavenousForm {
 		bool originallyHadInvaders = ctx.HasInvaders;
 
 		// for each strife or blight in target land, 
-		int count = ctx.Tokens.AllHumanTokens().Sum(x=>x.StrifeCount * ctx.Tokens[x])
+		int count = ctx.Space.AllHumanTokens().Sum(x=>x.StrifeCount * ctx.Space[x])
 			+ ctx.Blight.Count;
 		// 1 fear 
 		ctx.AddFear( count );
@@ -23,13 +23,12 @@ public class GrantHatredARavenousForm {
 		// if you have 4 moon, 2 fire
 		if(await ctx.YouHave("4 moon,2 fire")) {
 			// add 1 strife in up to 3 adjacent lands.
-			var tokenSpaces = ctx.Adjacent
+			List<Space> tokenSpaces = ctx.Adjacent
 				.Where(s => s.HasInvaders())
-				.Downgrade()
 				.ToList();
 			for(int i = 0; tokenSpaces.Count >0 && i < 3; ++i) {
-				var space = await ctx.SelectAsync(new A.Space("Add Strife", tokenSpaces, Present.Done));
-				await ctx.AddStrife();
+				var space = await ctx.SelectAsync(new A.SpaceDecision("Add Strife", tokenSpaces, Present.Done));
+				await ctx.Target(space).AddStrife();
 				tokenSpaces.Remove(space);
 			}
 

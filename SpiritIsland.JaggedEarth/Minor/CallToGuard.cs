@@ -19,11 +19,11 @@ public class CallToGuard{
 
 	static SpaceAction DamageAddedOrMovedInvaders => new SpaceAction(
 		"After Invaders are added or moved to target land, 1 Damage to each added or moved Invader"
-		, (ctx) => ctx.Tokens.Adjust( new DamageNewInvaders(), 1 )
+		, (ctx) => ctx.Space.Adjust( new DamageNewInvaders(), 1 )
 	);
 
 	class DamageNewInvaders : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
-		public Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args )
+		public Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args )
 			=> to.Invaders.ApplyDamageTo1( 1, args.Added.AsHuman() );
 	}
 }

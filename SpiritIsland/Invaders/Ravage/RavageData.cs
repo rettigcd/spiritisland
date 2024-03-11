@@ -3,14 +3,14 @@
 /// <summary>
 /// One instance is created for each Ravage on each space
 /// </summary>
-public class RavageData( SpaceState tokens ) {
+public class RavageData( Space space ) {
 
 	#region constructor
 
 	#endregion
 
 	public readonly List<RavageExchange> Result = []; // record status here
-	public readonly SpaceState Tokens = tokens;
+	public readonly Space Space = space;
 
 	public InvaderBinding InvaderBinding;
 

@@ -3,7 +3,7 @@
 public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	public const string Name = "Grinning Trickster Stirs Up Trouble";
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {  
 		TricksterTokens.ARealFlairForDiscord_Rule,  
@@ -45,18 +45,18 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		// Place presence on highest numbered land with dahan
 		board.Spaces.ScopeTokens().Where( s => s.Dahan.Any ).Last().Setup(Presence.Token, 1);
 		// and in land #4
-		board[4].ScopeTokens.Setup(Presence.Token, 1);
+		board[4].ScopeSpace.Setup(Presence.Token, 1);
 
 	}
 
 	// Cleanup Up Messes is such a drag
 	public override async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
-		await CleaningUpMessesIsSuckADrag( ctx.Self, ctx.Tokens );
+		await CleaningUpMessesIsSuckADrag( ctx.Self, ctx.Space );
 		await base.RemoveBlight( ctx,count );
 	}
 
-	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, SpaceState tokens ) {
-		if(tokens.Blight.Any)
+	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, Space space ) {
+		if(space.Blight.Any)
 			await Cmd.DestroyPresence( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" )
 				.ActAsync(spirit);
 	}

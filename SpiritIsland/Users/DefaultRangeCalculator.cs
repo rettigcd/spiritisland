@@ -9,12 +9,12 @@ public enum TargetFrom {
 };
 
 public interface ITargetingSourceStrategy {
-	IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from );
+	IEnumerable<Space> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from );
 }
 
 public interface ICalcRange {
-	IEnumerable<SpaceState> GetSpaceOptions( IEnumerable<SpaceState> source, params TargetCriteria[] targetCriteria );
-	IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc );
+	IEnumerable<Space> GetSpaceOptions( IEnumerable<Space> source, params TargetCriteria[] targetCriteria );
+	IEnumerable<Space> GetSpaceOptions( Space source, TargetCriteria tc );
 }
 
 /// <summary>
@@ -23,13 +23,13 @@ public interface ICalcRange {
 public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 	// ! Should work for any action because we are now referencing TerrainMapper.Current instead of directly accessing the ForPower one.
 
-	public IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from ) {
+	public IEnumerable<Space> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from ) {
 		return from switch {
 			TargetFrom.Presence => presence.Lands,
 			TargetFrom.SacredSite => presence.SacredSites,
 			TargetFrom.SuperSacredSite => presence.SuperSacredSites,
-			TargetFrom.Incarna => presence is SpiritPresence sp && sp.Incarna.IsPlaced // !! Maybe IKnowSpiritLocations should have an IEnumerable<SpaceState> InvarnaLocations;
-				? new SpaceState[] { sp.Incarna.Space } 
+			TargetFrom.Incarna => presence is SpiritPresence sp && sp.Incarna.IsPlaced // !! Maybe IKnowSpiritLocations should have an IEnumerable<Space> InvarnaLocations;
+				? new Space[] { sp.Incarna.Space } 
 				: [],
 			_ => throw new ArgumentException( "Invalid presence source " + from ),
 		};
@@ -42,8 +42,8 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 /// </summary>
 public class DefaultRangeCalculator : ICalcRange {
 
-	public IEnumerable<SpaceState> GetSpaceOptions(
-		IEnumerable<SpaceState> sources,
+	public IEnumerable<Space> GetSpaceOptions(
+		IEnumerable<Space> sources,
 		params TargetCriteria[] targetCriteria
 	) {
 		return sources
@@ -52,12 +52,12 @@ public class DefaultRangeCalculator : ICalcRange {
 			.ToArray();
 	}
 
-	IEnumerable<SpaceState> GetSpaceOptionsForCriteria(SpaceState source, params TargetCriteria[] targetCriteria)
+	IEnumerable<Space> GetSpaceOptionsForCriteria(Space source, params TargetCriteria[] targetCriteria)
 		=> targetCriteria.Length == 1
 			? GetSpaceOptions( source, targetCriteria[0] ) 
 			: targetCriteria.SelectMany( tc => GetSpaceOptions( source, tc ) ).Distinct();
 
-	public virtual IEnumerable<SpaceState> GetSpaceOptions(SpaceState source, TargetCriteria tc)
+	public virtual IEnumerable<Space> GetSpaceOptions(Space source, TargetCriteria tc)
 		=> source.Range(tc.Range).Where( tc.Matches );
 
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();

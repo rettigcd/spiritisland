@@ -16,15 +16,15 @@ class ScotlandCoastalBlightCheckToken
 		ActionScope.Current.LogDebug($"{Name} - To trigger blight removal from the ocean, remove a blight on adjacent coast.");
 	}
 
-	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		// After a Ravage Action adds Blight to a Coastal Land,
 		// add 1 Blight to that board's Ocean (without cascading).
 		if(args.Added == Token.Blight && args.Reason == AddReason.Ravage) {
 			BlightToken.ForThisAction.ShouldCascade = false;
-			var space = to.Space.Adjacent_Existing // Ocean is not in play here
+			var space = to.SpaceSpec.Adjacent_Existing // Ocean is not in play here
 				.First( adj => adj.IsOcean ); // ignoring rule about ocean being on this board, just using adjacent
-			await space.ScopeTokens.Blight.AddAsync( 1, AddReason.Ravage );
-			ActionScope.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {((Space)args.To).Text} caused additional blight on {space.Text}"));
+			await space.ScopeSpace.Blight.AddAsync( 1, AddReason.Ravage );
+			ActionScope.Current.Log(new SpiritIsland.Log.Debug( $"{Name} Blight on {((IOption)args.To).Text} caused additional blight on {space.Label}"));
 		}
 	}
 
@@ -39,31 +39,31 @@ class ScotlandCoastalBlightCheckToken
 		if(args.Reason != RemoveReason.Removed) return;
 		if(args.Token != Token.Blight) return;
 		var blightedOptions = args.From.Adjacent_Existing
-			.Where( adj => adj.Space.IsOcean && adj.Blight.Any )
+			.Where( adj => adj.SpaceSpec.IsOcean && adj.Blight.Any )
 			.ToList();
 		if(blightedOptions.Count==0) return;
 
 		// Find spirit
-		Spirit spirit = args.From.Space.Boards[0].FindSpirit();
+		Spirit spirit = args.From.SpaceSpec.Boards[0].FindSpirit();
 
 		// Create list of blight they might want to remove.
 		blightedOptions.Add( args.From );
 
 		// selection
-		var selectionCriteria = new A.SpaceToken( 
+		var selectionCriteria = new A.SpaceTokenDecision( 
 			$"{Name} Which blight would you like to remove?",
 			Token.Blight.On( blightedOptions ),
 			Present.Always
 		);
 
 		var spaceToken = await spirit.SelectAsync( selectionCriteria );
-		if(spaceToken.Space == args.From.Space) return; // they are going with the original
+		if(spaceToken.Space == args.From) return; // they are going with the original
 
 		// otherwise, they selected the ocean
 		--args.Count;
 
 		// remove the other blight instead.
-		await spaceToken.Space.ScopeTokens.RemoveAsync(spaceToken.Token, 1);
+		await spaceToken.Space.RemoveAsync(spaceToken.Token, 1);
 
 	}
 }

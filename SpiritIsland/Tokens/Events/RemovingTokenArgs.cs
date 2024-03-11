@@ -2,7 +2,7 @@
 
 public class RemovingTokenArgs {
 
-	public RemovingTokenArgs( SpaceState from, RemoveReason reason ) {
+	public RemovingTokenArgs( Space from, RemoveReason reason ) {
 		if(reason == DestroyingFromDamage.TriggerReason)
 			throw new ArgumentException("Do not .TriggerReason in event args", nameof( reason ) );
 		From = from;
@@ -10,7 +10,7 @@ public class RemovingTokenArgs {
 	}
 
 	// Read-only
-	public SpaceState From { get; }
+	public Space From { get; }
 	public RemoveReason Reason { get; }
 
 	// modifiable

@@ -4,21 +4,21 @@ public interface IRestoreable {
 	public void Restore();
 }
 
-public abstract class Space 
+public abstract class SpaceSpec 
 	: IOption 
-	, ISeeAllNeighbors<Space>
-	, IEquatable<Space>
-	, ILocation // make dragging/moving tokens easier
+	, ISeeAllNeighbors<SpaceSpec>
+	, IEquatable<SpaceSpec>
 {
 
-	readonly List<Space> adjacent = [];
+	readonly List<SpaceSpec> adjacent = [];
 
-	protected Space(string label) {
-		this.Label = label;
+	protected SpaceSpec(string label) {
+		Label = label;
 	}
 
 	public virtual Board[] Boards { get; protected set; }
 
+	string IOption.Text => Label;
 	public string Label { get; }
 
 	public bool IsSand => Is( Terrain.Sands );
@@ -36,8 +36,6 @@ public abstract class Space
 
 	public override string ToString() => Label;
 
-	public string Text => Label;
-
 	public abstract bool Is( Terrain terrain );
 	public abstract bool IsOneOf( params Terrain[] options );
 
@@ -45,18 +43,18 @@ public abstract class Space
 
 	public bool DoesExists { get; set; } = true; // absolute Stasis
 	/// <summary> Is not in stasis.</summary>
-	public static bool Exists( Space space ) => space.DoesExists;
+	public static bool Exists( SpaceSpec space ) => space.DoesExists;
 
 	#region Connectivity
 	/// <summary> Existing </summary>
-	public IEnumerable<Space> Adjacent_Existing => adjacent.Where(Exists);
+	public IEnumerable<SpaceSpec> Adjacent_Existing => adjacent.Where(Exists);
 
-	public IEnumerable<Space> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
+	public IEnumerable<SpaceSpec> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
 
 	#endregion
 
 	/// <summary> If adjacent to ocean, sets is-coastal </summary>
-	public void SetAdjacentToSpaces( params Space[] spaces ) {
+	public void SetAdjacentToSpaces( params SpaceSpec[] spaces ) {
 		foreach(var land in spaces) {
 			Connect( land );
 			land.Connect( this );
@@ -64,13 +62,13 @@ public abstract class Space
 	}
 
 	/// <summary> Used the Current ActionScope to get the tokens </summary>
-	public SpaceState ScopeTokens => ActionScope.Current.AccessTokens(this);
+	public Space ScopeSpace => ActionScope.Current.AccessTokens(this);
 
-	//  This is not safe for UI:  	public static implicit operator SpaceState( Space space ) => space?.Tokens;
+	//  This is not safe for UI:  	public static implicit operator Space( Space space ) => space?.Tokens;
 
 	#region Connect / Disconnect
 
-	void Connect( Space adjacent ) {
+	void Connect( SpaceSpec adjacent ) {
 		this.adjacent.Add( adjacent );
 		if(adjacent.IsOcean)
 			this.IsCoastal = true;
@@ -84,8 +82,8 @@ public abstract class Space
 	}
 
 	class DisconnectSpaceResults : IRestoreable {
-		public Space Space { get; set; }
-		public Space[] OldAdjacents { get; set; }
+		public SpaceSpec Space { get; set; }
+		public SpaceSpec[] OldAdjacents { get; set; }
 
 		public void Restore() {
 			foreach(var board in Space.Boards) board.AddSpace( Space );
@@ -104,20 +102,20 @@ public abstract class Space
 
 	#region override Equality
 	// Overriding so that when game is rewound and board state is restored, tokens from old spaces appear on new spaces.
-	public override int GetHashCode() => Text.GetHashCode();
-	public override bool Equals( object obj ) => Equals( obj as Space );
-	public bool Equals( Space other ) => other is not null && other.Text == Text;
-	static public bool operator==(Space left, Space right) => Object.ReferenceEquals(left,right) || left is not null && left.Equals( right );
-	static public bool operator!=(Space left, Space right) => !Object.ReferenceEquals( left, right ) && (left is null || !left.Equals( right ));
+	public override int GetHashCode() => Label.GetHashCode();
+	public override bool Equals( object obj ) => Equals( obj as SpaceSpec );
+	public bool Equals( SpaceSpec other ) => other is not null && other.Label == Label;
+	static public bool operator==(SpaceSpec left, SpaceSpec right) => Object.ReferenceEquals(left,right) || left is not null && left.Equals( right );
+	static public bool operator!=(SpaceSpec left, SpaceSpec right) => !Object.ReferenceEquals( left, right ) && (left is null || !left.Equals( right ));
 	#endregion
 
 	#region Moving
 
 	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
 	public Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> ScopeTokens.SourceAsync(token,count,reason);
+		=> ScopeSpace.SourceAsync(token,count,reason);
 	public Task<(ITokenAddedArgs, Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count, AddReason addReason = AddReason.Added ) 
-		=> ScopeTokens.SinkAsync(token, count, addReason);
+		=> ScopeSpace.SinkAsync(token, count, addReason);
 
 	#endregion
 

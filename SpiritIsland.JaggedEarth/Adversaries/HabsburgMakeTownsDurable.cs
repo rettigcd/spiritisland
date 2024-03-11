@@ -6,7 +6,7 @@ class HabsburgMakeTownsDurable
 	, IModifyAddingToken {
 	public HabsburgMakeTownsDurable(){ }
 
-	public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
+	public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) {
 		// Level 4 - Durable / Herds Thrive
 		// If removing last blight from space
 		if(args.Removed == Token.Blight && !from.Blight.Any)

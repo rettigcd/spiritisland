@@ -17,8 +17,8 @@ public class ToweringRoots_Base {
 	readonly protected Board _board;
 	readonly protected GameState _gs;
 
-	protected void Given_IncarnaOn( Space space ) {
-		space.ScopeTokens.Init( _presence.Incarna, 1 );
+	protected void Given_IncarnaOn( SpaceSpec space ) {
+		space.ScopeSpace.Init( _presence.Incarna, 1 );
 	}
 
 }

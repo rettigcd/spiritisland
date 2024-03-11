@@ -35,12 +35,12 @@ public class LightningsSwiftStrike : Spirit {
 
 	}
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: put 2 pressence in highest numbered sands
 		var space = board.Spaces.Reverse().First(x=>x.IsSand);
-		var tokens = space.ScopeTokens;
+		var tokens = space.ScopeSpace;
 		tokens.Setup(Presence.Token, 2);
 	}
 

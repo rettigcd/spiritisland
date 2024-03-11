@@ -27,14 +27,14 @@ public class ForsakeSocietyToChaseAfterDreams {
 	}
 
 	static async Task Dissolve(TargetSpaceCtx ctx, params HumanTokenClass[] invaderCats) {
-		var decision = An.Invader.ToReplace("dissolve", ctx.Tokens.HumanOfAnyTag( invaderCats ).OnScopeTokens1(ctx.Space) );
+		var decision = An.Invader.ToReplace("dissolve", ctx.Space.HumanOfAnyTag( invaderCats ).OnScopeTokens1(ctx.SpaceSpec) );
 		var invader = (await ctx.SelectAsync(decision))?.Token.AsHuman();
 		if(invader == null) return;
 
 		// Replace
 		if(invader.HumanClass != Human.Explorer) {
 			int numberOfExplorersToAdd = Math.Max(0,invader.HumanClass.ExpectedHealthHint - invader.Damage);
-			await ctx.Tokens.ReplaceAsync( invader, numberOfExplorersToAdd, ctx.Tokens.GetDefault( Human.Explorer ) );
+			await ctx.Space.ReplaceAsync( invader, numberOfExplorersToAdd, ctx.Space.GetDefault( Human.Explorer ) );
 		}
 
 		// Push to new land
@@ -44,7 +44,7 @@ public class ForsakeSocietyToChaseAfterDreams {
 			.PushUpToN(ctx.Self);
 
 		// If town/city remain, 1 fear.
-		if( ctx.Tokens.HasAny(Human.Town_City) )
+		if( ctx.Space.HasAny(Human.Town_City) )
 			ctx.AddFear(1);
 	}
 

@@ -17,14 +17,14 @@ public class ExaltationOfTheIncandescentSky {
 		// -If you have- 3 sun,3 fire,4 air,2 water:
 		if(await ctx.YouHave("3 sun,2 fire,4 air,2 water" )) {
 			// In any 4 lands on the island,
-			var spaceOptions = ActionScope.Current.Tokens.ToList();
+			var spaceOptions = ActionScope.Current.Spaces.ToList();
 			int count = 4;
 			while(0 < count--) {
-				var space = await ctx.Self.SelectAsync(new A.Space($"Skip Invader Action ({count+1} of 4)",spaceOptions,Present.Done));
+				var space = await ctx.Self.SelectAsync(new A.SpaceDecision($"Skip Invader Action ({count+1} of 4)",spaceOptions,Present.Done));
 				if(space == null) break;
-				spaceOptions.Remove(space.ScopeTokens);
+				spaceOptions.Remove(space);
 				// Skip 1 Invader Action.
-				space.ScopeTokens.Skip1InvaderAction(Name,ctx.Self);
+				space.Skip1InvaderAction(Name,ctx.Self);
 			}
 
 			// 5 fear (total).
@@ -41,8 +41,8 @@ public class ExaltationOfTheIncandescentSky {
 		self.AddActionFactory(new ResolveSlowDuringFast());
 
 		// do 3 Damage in one of their lands.
-		Space space = await self.SelectAsync(new A.Space("Do 3 Damage in land",self.Presence.Lands,Present.Done));
+		Space space = await self.SelectAsync(new A.SpaceDecision("Do 3 Damage in land",self.Presence.Lands,Present.Done));
 		if(space == null) return;
-		await space.ScopeTokens.UserSelected_DamageInvadersAsync(self,3);
+		await space.UserSelected_DamageInvadersAsync(self,3);
 	}
 }

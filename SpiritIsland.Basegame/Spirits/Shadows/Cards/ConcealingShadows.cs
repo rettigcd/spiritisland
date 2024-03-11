@@ -11,7 +11,7 @@ public class ConcealingShadows {
 		ctx.AddFear(1);
 
 		// dahan take no damage from ravaging invaders this turn
-		ctx.Tokens.Init( new StopDahanDamageAndDestruction( Name ), 1 ); // stop damage other times
+		ctx.Space.Init( new StopDahanDamageAndDestruction( Name ), 1 ); // stop damage other times
 
 		return Task.CompletedTask;
 	}

@@ -20,11 +20,11 @@ public class PlagueShipsSailToDistantPorts {
 
 	static SpaceAction AddDisease => new SpaceAction("Add Disease", async ctx => {
 		// Add 4 Disease among Coastal lands other than target land.
-		SpaceState[] options = ActionScope.Current.Tokens.Where(s=>s.Space.IsCoastal && s.Space != ctx.Space).ToArray();
+		Space[] options = ActionScope.Current.Spaces.Where(s=>s.SpaceSpec.IsCoastal && s.SpaceSpec != ctx.SpaceSpec).ToArray();
 		for(int i=0;i<4;++i) {
-			Space space = await ctx.Self.SelectAsync(new A.Space($"Add Disease ({i+1} of 4)",options,Present.Always));
+			Space space = await ctx.Self.SelectAsync(new A.SpaceDecision($"Add Disease ({i+1} of 4)",options,Present.Always));
 			if(space != null)
-				await space.ScopeTokens.Disease.AddAsync(1);
+				await space.Disease.AddAsync(1);
 		}
 	} );
 
@@ -39,7 +39,7 @@ public class PlagueShipsSailToDistantPorts {
 		var gs = GameState.Current;
 		int cost = gs.Spirits.Length * 3;
 		while(0 < cost) {
-			IEnumerable<SpaceToken> diseaseTokens = ActionScope.Current.Tokens.SelectMany( ss => ss.SpaceTokensOfTag( Token.Disease ) );
+			IEnumerable<SpaceToken> diseaseTokens = ActionScope.Current.Spaces.SelectMany( ss => ss.SpaceTokensOfTag( Token.Disease ) );
 			IEnumerable<Spirit> spiritsWithEnergy = gs.Spirits.Where(s=>0<s.Energy);
 			// !!! Spirits should decide for themselves if they want pay, not card player
 			IOption option = await ctx.Self.SelectAsync(new A.TypedDecision<IOption>(
@@ -64,7 +64,7 @@ public class PlagueShipsSailToDistantPorts {
 
 	static bool CanAfford() {
 		var gs = GameState.Current;
-		return ActionScope.Current.Tokens.Sum(s=>s.Disease.Count)*3 + gs.Spirits.Sum(s=>s.Energy) <= 3 * gs.Spirits.Length;
+		return ActionScope.Current.Spaces.Sum(s=>s.Disease.Count)*3 + gs.Spirits.Sum(s=>s.Energy) <= 3 * gs.Spirits.Length;
 	}
 
 	#endregion

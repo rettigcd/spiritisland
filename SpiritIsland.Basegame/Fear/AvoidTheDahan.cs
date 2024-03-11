@@ -14,7 +14,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	static SpaceAction StopExploreInLandsWithAtLeast2Dahan => new SpaceAction( "Stop Explore if 2 dahan",
 		ctx => {
 			var token = new SkipExploreTo_Custom( true, ( space ) => 2 <= space.Dahan.CountAll );
-			ctx.Tokens.Adjust( token, 1 );
+			ctx.Space.Adjust( token, 1 );
 		}
 	);
 
@@ -27,7 +27,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	static SpaceAction StopBuildWhereDahanOutnumberTownsCities => new SpaceAction( "Stop Build if dahan outnumber towns/cities.",
 		ctx => {
 			var token = new SkipBuild_Custom( Name, true, ( space ) => space.SumAny( Human.Town_City ) < space.Dahan.CountAll );
-			ctx.Tokens.Adjust( token, 1 );
+			ctx.Space.Adjust( token, 1 );
 		}
 	);
 
@@ -41,7 +41,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	static SpaceAction DoNotBuildInLandsWithDahan => new SpaceAction( "Stop Build in lands with Dahan",
 		ctx => {
 			var token = new SkipBuild_Custom( Name, true, ( space ) => space.Dahan.Any );
-			ctx.Tokens.Adjust( token, 1 );
+			ctx.Space.Adjust( token, 1 );
 		}
 	);
 

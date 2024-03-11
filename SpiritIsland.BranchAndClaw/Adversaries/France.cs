@@ -37,7 +37,7 @@ public class France : AdversaryBase, IAdversary {
 				GameOverException.Lost( Name+": {townCount} Towns on the board." );
 		}
 
-		static int CountTowns() => ActionScope.Current.Tokens_Unfiltered.Sum(s=>s.Sum(Human.Town));
+		static int CountTowns() => ActionScope.Current.Spaces_Unfiltered.Sum(s=>s.Sum(Human.Town));
 
 		int _maxTownCount;
 
@@ -67,10 +67,10 @@ public class France : AdversaryBase, IAdversary {
 			.ActAsync(gs);
 
 		static SpaceAction addTownOrBlight() => new SpaceAction("Add 1 Blight if Town/City. Add Town otherwise.", async ctx => {
-			if(ctx.Tokens.HasAny(Human.Town_City))
-				await ctx.Tokens.Blight.AddAsync(1);
+			if(ctx.Space.HasAny(Human.Town_City))
+				await ctx.Space.Blight.AddAsync(1);
 			else
-				await ctx.Tokens.AddDefaultAsync(Human.Town,1);
+				await ctx.Space.AddDefaultAsync(Human.Town,1);
 		} );
 
 	}
@@ -87,7 +87,7 @@ public class France : AdversaryBase, IAdversary {
 			gs.InvaderDeck.Explore.Engine.ExploredSpace +=  ExploreTheFrontier;
 		}
 	};
-	static async Task ExploreTheFrontier( SpaceState ss ){
+	static async Task ExploreTheFrontier( Space ss ){
 		if(!ss.HasAny(Human.Town_City))
 			await ss.AddDefaultAsync(Human.Explorer,1, AddReason.Explore);
 	}
@@ -108,18 +108,18 @@ public class France : AdversaryBase, IAdversary {
 		}
 	};
 
-	static async Task SlaveLaborBuildAsync( SpaceState tokens, HumanToken _ ) {
+	static async Task SlaveLaborBuildAsync( Space space, HumanToken _ ) {
 		// After Invaders Build in a land with 2 Explorer or more,
 		// replace all but 1 Explorer there with an equal number of Town.
 
-		int explorerCount = tokens.Sum( Human.Explorer );
+		int explorerCount = space.Sum( Human.Explorer );
 		if(explorerCount < 2) return;
 
 		// remove explorers
 		int numToReplace = explorerCount - 1;
 		while(0 < numToReplace) {
-			var oldExplorer = tokens.HumanOfTag( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
-			var replacement = await tokens.ReplaceHumanAsync( oldExplorer, Human.Town );
+			var oldExplorer = space.HumanOfTag( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
+			var replacement = await space.ReplaceHumanAsync( oldExplorer, Human.Town );
 
 			// next
 			numToReplace -= replacement.RemovedCount;
@@ -143,7 +143,7 @@ public class France : AdversaryBase, IAdversary {
 		"Add a strife to a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
-			var st = await boardCtx.Self.SelectAsync( new A.SpaceToken( "Add strife to town", options, Present.Always ) );
+			var st = await boardCtx.Self.SelectAsync( new A.SpaceTokenDecision( "Add strife to town", options, Present.Always ) );
 			if(st != null)
 				await st.Add1StrifeToAsync();
 		} );
@@ -161,7 +161,7 @@ public class France : AdversaryBase, IAdversary {
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town_City );
 			for(int i = 0; i < 2; ++i) {
-				var st = await boardCtx.SelectAsync( new A.SpaceToken( $"Add strife ({i+1} of 2)", options, Present.Always ) );
+				var st = await boardCtx.SelectAsync( new A.SpaceTokenDecision( $"Add strife ({i+1} of 2)", options, Present.Always ) );
 				if(st != null)
 					await st.Add1StrifeToAsync();
 			}
@@ -171,9 +171,9 @@ public class France : AdversaryBase, IAdversary {
 		"Destroy a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
-			var st = await boardCtx.SelectAsync( new A.SpaceToken( "Destory a town", options, Present.Always ) );
+			var st = await boardCtx.SelectAsync( new A.SpaceTokenDecision( "Destory a town", options, Present.Always ) );
 			if(st != null)
-				await st.Space.ScopeTokens.Destroy( st.Token, 1 );
+				await st.Space.Destroy( st.Token, 1 );
 		} );
 
 
@@ -187,10 +187,10 @@ public class France : AdversaryBase, IAdversary {
 			// During Setup, on each board
 			foreach(var board in gameState.Island.Boards) {
 				// add 1 Town to the highest-numbered land without Town.
-				var highLandWithoutTown = board.Spaces.Cast<Space1>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
-				highLandWithoutTown.ScopeTokens.Setup( Human.Town, 1 );
+				var highLandWithoutTown = board.Spaces.Cast<SingleSpaceSpec>().Where( s => s.StartUpCounts.Towns == 0 ).Last();
+				highLandWithoutTown.ScopeSpace.Setup( Human.Town, 1 );
 				// Add 1 Town to land #1.
-				board[1].ScopeTokens.Setup( Human.Town, 1 );
+				board[1].ScopeSpace.Setup( Human.Town, 1 );
 			}
 		}
 	};
@@ -207,11 +207,11 @@ public class France : AdversaryBase, IAdversary {
 		}
 	};
 
-	static async Task DoTriangleTrade( SpaceState tokens, HumanToken built ) {
+	static async Task DoTriangleTrade( Space space, HumanToken built ) {
 		// Whenever Invaders Build a Coastal City
 		if( built.HasTag(Human.City) ) {
 			// add 1 Town to the adjacent land with the fewest Town.
-			var buildSpace = tokens.Adjacent
+			var buildSpace = space.Adjacent
 				.OrderBy( t => t.Sum( Human.Town ) )
 				.First();
 			await using var scope = await ActionScope.Start(ActionCategory.Adversary);
@@ -233,8 +233,8 @@ public class France : AdversaryBase, IAdversary {
 			async Task DoFranceStuff( ITokenRemovedArgs args ) {
 				if(args.Removed != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
 
-				BlightTokenBinding slowBlight = FrancePanel.ScopeTokens.Blight;
-				SpaceState blightCard = BlightCard.Space.ScopeTokens;
+				BlightTokenBinding slowBlight = FrancePanel.ScopeSpace.Blight;
+				Space blightCard = BlightCard.Space.ScopeSpace;
 				// if adding this == 3 Blight per player
 				if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
 					// transfer slow blight to Blight card

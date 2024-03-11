@@ -3,7 +3,9 @@
 public class DestroyedPresencePile : ILocation {
 
 	public static readonly DestroyedPresencePile Singleton = new DestroyedPresencePile();
-	
+
+	string IOption.Text => "Destroyed Presence";
+
 	public Task<(ITokenAddedArgs, Func<ITokenAddedArgs, Task>)> 
 	SinkAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		// !!! what about Incarna, can it be destroyed this way?
@@ -13,7 +15,7 @@ public class DestroyedPresencePile : ILocation {
 		return Task.FromResult<(ITokenAddedArgs,Func<ITokenAddedArgs,Task>)>((
 			new TokenAddedArgs(spt,this,count,AddReason.AddedToCard),
 			_ => Task.CompletedTask
-        ));
+		));
 	}
 	
 	public Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs, Task>)> 
@@ -25,7 +27,7 @@ public class DestroyedPresencePile : ILocation {
 		return Task.FromResult<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)>((
 			new TokenRemovedArgs(this,spt,count,RemoveReason.TakingFromCard),
 			_ => Task.CompletedTask
-        ));
+		));
 	}
 
 }

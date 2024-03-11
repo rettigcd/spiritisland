@@ -2,14 +2,14 @@
 
 public class AddingTokenArgs {
 
-	public AddingTokenArgs( IToken token, int count, SpaceState to, AddReason addReason ) {
+	public AddingTokenArgs( IToken token, int count, Space to, AddReason addReason ) {
 		Token = token;
 		Count = count;
 		To = to;
 		Reason = addReason;
 	}
 
-	public SpaceState To { get; }
+	public Space To { get; }
 	public AddReason Reason { get; }
 
 	// Modifiable

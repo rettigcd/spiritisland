@@ -9,7 +9,7 @@ public class RenewingBoon{
 		// Choose a land where you and target Spirit both have presence.
 		var spaceOptions = ctx.Self.Presence.Lands.Intersect( ctx.Other.Presence.Lands )
 			.ToArray();
-		var space = await ctx.Self.SelectAsync(new A.Space("",spaceOptions,Present.Always));
+		var space = await ctx.Self.SelectAsync(new A.SpaceDecision("",spaceOptions,Present.Always));
 		if( space == null) return;
 
 		// In that land: Remove 1 blight
@@ -17,7 +17,7 @@ public class RenewingBoon{
 
 		// and target Spirit may add 1 of their Destroyed presence.
 		var otherCtx = ctx.Other.Target( space );
-		if( otherCtx.Self.Presence.CanBePlacedOn(otherCtx.Tokens) )   // filter by the OTHER spirits placeable options
+		if( otherCtx.Self.Presence.CanBePlacedOn(otherCtx.Space) )   // filter by the OTHER spirits placeable options
 			await otherCtx.Presence.PlaceDestroyedHere(); // ! "May" Add - let them choose
 	}
 

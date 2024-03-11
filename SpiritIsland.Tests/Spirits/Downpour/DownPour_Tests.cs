@@ -30,7 +30,7 @@ public class DownPour_Tests {
 
 		// Then: can target out of 2-presence non wetland
 		target.IsJungle.ShouldBeTrue();
-		fxt.Choose(target.Text);
+		fxt.Choose(target.Label);
 
 		// Then:
 		fxt.Choose( "Done" ); // don't push

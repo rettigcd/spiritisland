@@ -1,13 +1,13 @@
 ﻿namespace SpiritIsland;
 
 
-public class BlightTokenBinding( SpaceState tokens ) : TokenBinding( tokens, Token.Blight ) {
+public class BlightTokenBinding( Space space ) : TokenBinding( space, Token.Blight ) {
 
 	/// <summary> Allows Power Cards to block blight on this space. </summary>
-	public void Block() => _tokens.Init( new BlockBlightToken(), 1 );
+	public void Block() => _space.Init( new BlockBlightToken(), 1 );
 
 	public override async Task AddAsync( int count, AddReason reason = AddReason.Added ) {
-		await _tokens.AddAsync( Token.Blight, count, reason );
+		await _space.AddAsync( Token.Blight, count, reason );
 	}
 
 }

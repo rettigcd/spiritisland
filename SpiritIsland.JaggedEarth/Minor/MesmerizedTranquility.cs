@@ -10,9 +10,9 @@ public class MesmerizedTranquility{
 
 		// Each Invader does -1 Damage.
 		// RavageBehavior cfg = ctx.Tokens.RavageBehavior;
-		// Func<SpaceState, HumanToken, int> old = cfg.AttackDamageFrom1;
+		// Func<Space, HumanToken, int> old = cfg.AttackDamageFrom1;
 		// cfg.AttackDamageFrom1 = (ss,t) => Math.Max(0, old(ss,t)-1);
-		ctx.Tokens.Adjust( new ReduceInvaderAttackBy1(1,Human.Invader), 1 );
+		ctx.Space.Adjust( new ReduceInvaderAttackBy1(1,Human.Invader), 1 );
 
 		return Task.CompletedTask;
 	}

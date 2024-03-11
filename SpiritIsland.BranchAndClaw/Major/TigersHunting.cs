@@ -27,13 +27,13 @@ public class TigersHunting {
 		if(await ctx.YouHave("2 sun,2 moon,3 animal")) {
 			//   1 damage in adjacent land without blight,
 			//   and +1 damage per beast there
-			Space noBlight = await ctx.Self.SelectAsync( new A.Space( 
+			Space noBlight = await ctx.Self.SelectAsync( new A.SpaceDecision( 
 				"1 Damage in land w/o blight", 
-				ctx.Tokens.Adjacent.Where( tokens => !tokens.Blight.Any ), 
+				ctx.Space.Adjacent.Where( tokens => !tokens.Blight.Any ), 
 				Present.Always 
 			) );
 			if(noBlight != null)
-				await ctx.Target(noBlight).DamageInvaders(1 + noBlight.ScopeTokens.Beasts.Count );
+				await ctx.Target(noBlight).DamageInvaders(1 + noBlight.Beasts.Count );
 		}
 
 	}

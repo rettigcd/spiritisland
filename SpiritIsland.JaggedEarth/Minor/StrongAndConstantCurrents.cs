@@ -29,7 +29,7 @@ public class StrongAndConstantCurrents{
 	static Task PushToAdjacenCostalAction( TargetSpaceCtx ctx )
 		=> ctx.SourceSelector
 			.AddGroup(1, Human.Explorer_Town)
-			.ConfigDestination( d=>d.FilterDestination( a=>a.Space.IsCoastal ) )
+			.ConfigDestination( d=>d.FilterDestination( a=>a.SpaceSpec.IsCoastal ) )
 			.PushN(ctx.Self);
 
 	#endregion
@@ -41,7 +41,7 @@ public class StrongAndConstantCurrents{
 	// Move up to 2 between target land and one other coastal Land.
 	static async Task MoveDahanAction( TargetSpaceCtx ctx ) {
 		int count = 2;
-		SpaceState[] coastSpaces = ActionScope.Current.Tokens
+		Space[] coastSpaces = ActionScope.Current.Spaces
 			.Where( TerrainMapper.Current.IsCoastal )
 			.ToArray();
 
@@ -53,16 +53,16 @@ public class StrongAndConstantCurrents{
 
 			// From
 			var selected = await ctx.SelectAsync( 
-				new A.SpaceToken( "Select Dahan to move to/from "+ctx.Space.Text, coastalWithDahan, Present.Done )
-					.PointArrowTo( ctx.Space )
+				new A.SpaceTokenDecision( "Select Dahan to move to/from "+ctx.Space.Label, coastalWithDahan, Present.Done )
+					.PointArrowTo( ctx.SpaceSpec )
 			);
 			if(selected == null) break;
 
 			// To:
-			var destination = (selected.Space != ctx.Space) ? ctx.Space
-				: await ctx.SelectAsync( A.Space.ToPushToken( selected.Token, selected.Space, coastSpaces.Downgrade(), Present.Always ) );
+			Space destination = (selected.Space != ctx.Space) ? ctx.Space
+				: await ctx.SelectAsync( A.SpaceDecision.ToPushToken( selected.Token, selected.Space, coastSpaces, Present.Always ) );
 
-			await selected.MoveTo( destination.ScopeTokens );
+			await selected.MoveTo( destination );
 
 			count--;
 		}

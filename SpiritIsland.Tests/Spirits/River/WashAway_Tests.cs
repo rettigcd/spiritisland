@@ -48,7 +48,7 @@ public class WashAway_Tests {
 
 		// 1 explorer on A4
 		var board = _gameState.Island.Boards[0];
-		Space targetSpace = board[4];
+		SpaceSpec targetSpace = board[4];
 		var grp = _gameState.Tokens[targetSpace];
 		grp.AdjustDefault( Human.Explorer, explorerCount );
 		grp.AdjustDefault( Human.Town, townCount );
@@ -77,7 +77,7 @@ public class WashAway_Tests {
 
 		// 1 explorer on A2
 		var board = _gameState.Island.Boards[0];
-		Space targetSpace = board[2];
+		SpaceSpec targetSpace = board[2];
 		_gameState.Tokens[targetSpace].AdjustDefault(Human.Explorer, 1);
 
 		// When pushing explorer
@@ -99,13 +99,13 @@ public class WashAway_Tests {
 
 		// 1 explorer + 1 Town on A4
 		var board = _gameState.Island.Boards[0];
-		Space targetSpace = board[4];
-		SpaceState grp =_gameState.Tokens[targetSpace];
+		SpaceSpec targetSpace = board[4];
+		Space grp =_gameState.Tokens[targetSpace];
 		grp.AdjustDefault( Human.Explorer, 1 );
 		grp.AdjustDefault( Human.Town, 1 );
 
-		Space explorerDestination = board[2];
-		Space townDestination = board[3];
+		SpaceSpec explorerDestination = board[2];
+		SpaceSpec townDestination = board[3];
 
 		await _spirit.When_ResolvingCard<WashAway>( u => {
 			u.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
@@ -129,7 +129,7 @@ public class WashAway_Tests {
 
 		// 1 damaged town on A4
 		var board = _gameState.Island.Boards[0];
-		Space targetSpace = board[4];
+		SpaceSpec targetSpace = board[4];
 		_gameState.Tokens[targetSpace].Setup( StdTokens.Town1, 1 );
 
 		var invaderDestination = board[2];
@@ -154,7 +154,7 @@ public class WashAway_Tests {
 
 		// 31 explorers on A4
 		var board = _gameState.Island.Boards[0];
-		Space targetSpace = board[4];
+		SpaceSpec targetSpace = board[4];
 		_gameState.Tokens[ targetSpace ].AdjustDefault( Human.Explorer, 3 );
 
 		//  When: activating card
@@ -185,7 +185,7 @@ public class WashAway_Tests {
 		_spirit.Given_IsOn(presenceSpace);
 
 		//   And: Purchased WashAway
-		_card = _spirit.Hand.Single(c => c.Name == WashAway.Name);
+		_card = _spirit.Hand.Single(c => c.Title == WashAway.Name);
 		_spirit.Energy = _card.Cost;
 		_spirit.PlayCard( _card );
 

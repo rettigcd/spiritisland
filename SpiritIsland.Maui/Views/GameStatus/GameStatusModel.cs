@@ -35,7 +35,7 @@ public class GameStatusModel : ObservableModel1 {
 	#endregion Fear - Observable
 
 
-	public GameStatusModel(InvaderDeck deck, Fear fear, SpaceState blightPool) {
+	public GameStatusModel(InvaderDeck deck, Fear fear, Space blightPool) {
 		_deck = deck;
 		_fear = fear;
 		RavageImages = [];
@@ -121,5 +121,5 @@ public class GameStatusModel : ObservableModel1 {
 
 	readonly InvaderDeck _deck;
 	readonly Fear _fear;
-	readonly SpaceState _blightPool;
+	readonly Space _blightPool;
 }

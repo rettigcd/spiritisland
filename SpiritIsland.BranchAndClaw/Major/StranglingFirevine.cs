@@ -14,17 +14,17 @@ public class StranglingFirevine {
 
 		// Add 1 wilds in the originating Sands. 
 		Space[] originatingOptions = ctx.Self.FindTargettingSourcesFor(
-			ctx.Space, 
+			ctx.SpaceSpec, 
 			new TargetingSourceCriteria(TargetFrom.Presence,Filter.Sands), 
 			new TargetCriteria(1)
-		).Downgrade().ToArray();
+		).ToArray();
 
-		var original = await ctx.Self.SelectSpaceAsync("Select origination space", originatingOptions, Present.AutoSelectSingle)
+		Space original = await ctx.Self.SelectSpaceAsync("Select origination space", originatingOptions, Present.AutoSelectSingle)
 			?? throw new InvalidOperationException("Could not find required originating Sands with presence.");
-		await original.ScopeTokens.Wilds.AddAsync(1);
+		await original.Wilds.AddAsync(1);
 
 		// 1 damage per wilds in / adjacent to target land.
-		int wildsDamage = ctx.Tokens.InOrAdjacentTo.Sum(s=>s.Wilds.Count);
+		int wildsDamage = ctx.Space.InOrAdjacentTo.Sum(s=>s.Wilds.Count);
 
 		// if you have 2 fire, 3 plant: // +1 damage per wilds in / adjacent to target land.
 		if(await ctx.YouHave("2 fire,3 plant"))

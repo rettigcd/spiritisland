@@ -65,7 +65,7 @@ class PourDownPower( DownpourDrenchesTheWorld _spirit ) : IRunWhenTimePasses {
 }
 
 public class RepeatLandCardForCost( params string[] exclude ) : RepeatCardForCost( exclude ) {
-	public override string Name => $"Repeat Land Card (PDP)";
+	public override string Title => $"Repeat Land Card (PDP)";
 
 	public override PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
 		return base.GetCardOptions( self,phase )
@@ -78,9 +78,9 @@ class PourDownPowerGainEnergy : IActionFactory {
 
 	#region PowerCard Props
 
-	public string Name => "Gain 1 Energy (PDP)";
+	public string Title => "Gain 1 Energy (PDP)";
 
-	public string Text => Name;
+	public string Text => Title;
 
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Fast || speed == Phase.Slow;
 

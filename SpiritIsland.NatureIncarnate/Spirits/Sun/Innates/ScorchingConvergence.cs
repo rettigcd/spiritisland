@@ -9,21 +9,21 @@ public class ScorchingConvergence {
 		// Move all of your Presence from origin land directly to target land.
 		var originOptions = ctx.Self
 			.FindTargettingSourcesFor(
-				ctx.Space,
+				ctx.SpaceSpec,
 				new TargetingSourceCriteria( TargetFrom.SacredSite ),
 				new TargetCriteria( 1 )
 			);
 
 		await new TokenMover( ctx.Self, "Move",
 			new SourceSelector( originOptions ).FromASingleLand(),
-			new DestinationSelector( ctx.Tokens )
+			new DestinationSelector( ctx.Space )
 		)
 			.AddAll( ctx.Self.Presence )
 			.DoN();
 
 		// record Starting Invaders / Dahan
-		ActionScope.Current[StartingInvaders] = GetSummary( ctx.Tokens, Human.Invader);
-		ActionScope.Current[StartingDahan] = GetSummary( ctx.Tokens, Human.Dahan );
+		ActionScope.Current[StartingInvaders] = GetSummary( ctx.Space, Human.Invader);
+		ActionScope.Current[StartingDahan] = GetSummary( ctx.Space, Human.Dahan );
 
 		// 1 Damage to Town/City only.
 		await ctx.DamageInvaders(1, Human.Town_City);
@@ -32,9 +32,9 @@ public class ScorchingConvergence {
 	const string StartingInvaders = "starting invaders";
 	const string StartingDahan = "starting dahan";
 
-	static string GetSummary(SpaceState tokens, params HumanTokenClass[] classes) => tokens.HumanOfAnyTag(classes)
+	static string GetSummary(Space space, params HumanTokenClass[] classes) => space.HumanOfAnyTag(classes)
 		.OrderBy(x=>x.FullHealth).ThenBy(x=>x.Damage)
-		.Select( x => tokens[x]+x.HumanClass.Label )
+		.Select( x => space[x]+x.HumanClass.Label )
 		.Join(",");
 
 	[InnateTier("3 sun,1 fire","3 Damage to Invaders. 3 Damage to Dahan. Add 1 Blight without cascading.")]
@@ -52,8 +52,8 @@ public class ScorchingConvergence {
 	public static Task Option3(TargetSpaceCtx ctx ) {
 		var actionScope = ActionScope.Current;
 		// 3 Fear if this Power destroyed only Invaders.
-		if(actionScope.SafeGet<string>(StartingInvaders) != GetSummary( ctx.Tokens, Human.Invader )
-			&& actionScope.SafeGet<string>(StartingDahan) == GetSummary( ctx.Tokens, Human.Dahan )
+		if(actionScope.SafeGet<string>(StartingInvaders) != GetSummary( ctx.Space, Human.Invader )
+			&& actionScope.SafeGet<string>(StartingDahan) == GetSummary( ctx.Space, Human.Dahan )
         )
 			ctx.AddFear( 3 );
 		return Task.CompletedTask;

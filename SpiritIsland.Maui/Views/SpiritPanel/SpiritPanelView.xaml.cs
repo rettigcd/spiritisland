@@ -19,6 +19,7 @@ public partial class SpiritPanelView : ContentView {
 		SpiritBackdrop.StrokeThickness = 0;
 	}
 
+#pragma warning disable IDE0051 // Remove unused private members
 	void DropGestureRecognizer_Drop(object _, DropEventArgs e) {
 
 		GrowthActionModel? model = (GrowthActionModel?)e.Data.Properties["GrowthActionModel"];
@@ -27,6 +28,7 @@ public partial class SpiritPanelView : ContentView {
 
 		IsVisible = false;
 	}
+#pragma warning restore IDE0051 // Remove unused private members
 
 
 	#endregion Drag-n-Drop Growth

@@ -144,11 +144,12 @@ public class Keeper_GrowthTests : BoardAGame {
 	[Trait("Feature","Push")]
 	[Fact]
 	public async Task SacredSitesPushDahan() {
-		Space space = _board[5];
+		SpaceSpec spaceSpec = _board[5];
+		var space = spaceSpec.ScopeSpace;
 		// Given: space with 2 dahan
-		space.Given_HasTokens("2D@2");
+		spaceSpec.Given_HasTokens("2D@2");
 		//   and presence on that space
-		_spirit.Given_IsOn(space);
+		_spirit.Given_IsOn(spaceSpec);
 
 		// When: we place a presence on that space
 		await _spirit.Presence.Token.MoveAsync( _spirit.Presence.Energy.RevealOptions.Single(), space )
@@ -158,8 +159,8 @@ public class Keeper_GrowthTests : BoardAGame {
 			} )
 			.ShouldComplete();
 
-		_spirit.Presence.SacredSites.Downgrade().ShouldContain(space);
-		_gameState.Tokens[space].Dahan.CountAll.ShouldBe(0,"SS should push dahan from space");
+		_spirit.Presence.SacredSites.ShouldContain(space);
+		_gameState.Tokens[spaceSpec].Dahan.CountAll.ShouldBe(0,"SS should push dahan from space");
 	}
 
 
@@ -189,7 +190,7 @@ public class Keeper_GrowthTests : BoardAGame {
 		fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 	}
 
-	void AddBlight( Space space ) {
+	void AddBlight( SpaceSpec space ) {
 		_gameState.Tokens[ space ].Blight.Adjust( 1 );
 	}
 
@@ -204,7 +205,7 @@ public class Keeper_GrowthTests : BoardAGame {
 		_gameState.Tokens[ _board[7] ].Blight.Count.ShouldBe( 0 );
 	}
 
-	void Given_HasWilds( Space space ) {
+	void Given_HasWilds( SpaceSpec space ) {
 		_gameState.Tokens[space].Wilds.Init(1);
 	}
 

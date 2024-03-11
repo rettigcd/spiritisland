@@ -8,17 +8,17 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 		_leaderClass = leaderClass;
 		SpaceAbreviation = "Ts";// to not conflict with Towns
 	}
-	public override async Task HandleTokenRemovedAsync(SpaceState from, ITokenRemovedArgs args ) {
+	public override async Task HandleTokenRemovedAsync(Space from, ITokenRemovedArgs args ) {
 		await base.HandleTokenRemovedAsync( from,args );
 		await TrackLeaderToken( from, args );
 	}
 
-	async Task TrackLeaderToken( SpaceState from, ITokenRemovedArgs args ) {
+	async Task TrackLeaderToken( Space from, ITokenRemovedArgs args ) {
 		if(args.Removed.Class == _leaderClass && args is ITokenMovedArgs moved)
 			await TryToFollow( from, moved );
 	}
 
-	async Task TryToFollow( SpaceState from, ITokenMovedArgs args ) {
+	async Task TryToFollow( Space from, ITokenMovedArgs args ) {
 		if(!from.Has(Self.Presence)) return;
 		if(args.To is not Space to) return; // can only follow to spaces, not presence track/destroyed
 		int maxThatCanMove = Math.Min( MaxFollowerCount( args ), from[this] );
@@ -28,9 +28,9 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 		// If we used 'Push', user would click on Destination instead of Source
 		string prompt = "Move presence with " + args.Removed.Class.Label + "?";
 		while(0 < maxThatCanMove--) {
-			var source = await Self.SelectAsync( A.SpaceToken.ToCollect( prompt, new SpaceToken[] { this.On( from ) }, Present.Done, to ) );
+			var source = await Self.SelectAsync( A.SpaceTokenDecision.ToCollect( prompt, new SpaceToken[] { this.On( from ) }, Present.Done, to.SpaceSpec ) );
 			if(source != null)
-				await this.MoveAsync(from.Space,to);
+				await this.MoveAsync(from,to);
 		}
 	}
 

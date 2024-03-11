@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Log;
 
-public class SpaceExplored( Space space ) 
+public class SpaceExplored( SpaceSpec space ) 
 	: InvaderActionEntry( space + ":gains explorer" )
 {
-	public Space Space { get; } = space;
+	public SpaceSpec Space { get; } = space;
 }

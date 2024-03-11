@@ -12,7 +12,7 @@ public class HearthToken( Spirit spirit )
 		Fortify_AddingDahan( args );
 	}
 
-	void IHandleTokenAdded.HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
+	void IHandleTokenAdded.HandleTokenAdded( Space to, ITokenAddedArgs args ) {
 		Fortify_AddedPresence( to, args );
 	}
 
@@ -20,7 +20,7 @@ public class HearthToken( Spirit spirit )
 		await Foritfy_RemovingDahanAsync( args);
 	}
 
-	public override async Task HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) {
+	public override async Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
 		await base.HandleTokenRemovedAsync( from, args );
 		await Foritfy_RemovedPresenceAsync( args, from );
 		await LoyalGuardian_DahanMoved( args, from );
@@ -29,20 +29,20 @@ public class HearthToken( Spirit spirit )
 	#region Loyal Guardian
 	static public SpecialRule LoyalGuardian => new SpecialRule( "Loyal Guardian", "When all Dahan leave one of your lands, your presence may Move with those Dahan. (Each Dahan can Bring any number of Presence." );
 
-	public async Task LoyalGuardian_DahanMoved( ITokenRemovedArgs args, SpaceState from ) {
+	public async Task LoyalGuardian_DahanMoved( ITokenRemovedArgs args, Space from ) {
 
 		if(args is not ITokenMovedArgs moved 
 			|| args.Removed.Class != Human.Dahan
 			|| moved.To is not Space to
 		) return;
 
-		var destinations = ActionScope.Current.SafeGet("LoyalDestinations",()=>new HashSet<SpaceState>()); // Hash so we don't have to do .Distinct
-		destinations.Add( to.ScopeTokens );
+		var destinations = ActionScope.Current.SafeGet("LoyalDestinations",()=>new HashSet<Space>()); // Hash so we don't have to do .Distinct
+		destinations.Add( to );
 		if(!from.Dahan.Any)
 			await BringUpToAllPresence(from,destinations);
 	}
 
-	async Task BringUpToAllPresence( SpaceState from, IEnumerable<SpaceState> destinationOptions ) {
+	async Task BringUpToAllPresence( Space from, IEnumerable<Space> destinationOptions ) {
 
 		await new TokenMover( Self, "Bring",
 			from.SourceSelector.AddAll( Self.Presence ),
@@ -64,13 +64,13 @@ public class HearthToken( Spirit spirit )
 
 	static bool BonusAppliesToThis(HumanToken token) => token.HumanClass.HasTag(TokenCategory.Dahan);
 
-	void Fortify_AddedPresence( SpaceState to, ITokenAddedArgs args ) {
+	void Fortify_AddedPresence( Space to, ITokenAddedArgs args ) {
 		// Adding presence where there wasn't any before.
 		if(args.Added == this && to[this] == args.Count)
 			GrantHealthBoost( to );
 	}
 
-	public static void GrantHealthBoost( SpaceState to ) {
+	public static void GrantHealthBoost( Space to ) {
 		foreach(HumanToken origDahan in to.HumanOfTag(TokenCategory.Dahan).ToArray()) {
 			var result = to.AllHumans(origDahan).Adjust(BoostHealth);
 			ActionScope.Current.LogDebug( $"Adjusting {result.Count} {result.OldToken.SpaceAbreviation} to {result.NewToken.SpaceAbreviation}" );
@@ -108,7 +108,7 @@ public class HearthToken( Spirit spirit )
 		}
 	}
 
-	async Task Foritfy_RemovedPresenceAsync( ITokenRemovedArgs args, SpaceState from ) {
+	async Task Foritfy_RemovedPresenceAsync( ITokenRemovedArgs args, Space from ) {
 		// Removing Last Presence
 		if(args.Removed == this && from[this] == 0)
 			foreach(HumanToken token in from.HumanOfTag(TokenCategory.Dahan).ToArray())

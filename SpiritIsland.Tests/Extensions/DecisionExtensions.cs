@@ -20,10 +20,8 @@ public static class DecisionExtensions {
 	static public SpaceToken FindSourceChoice( this IDecision decision, string expectedChoiceText ) {
 		Move[] moves = decision.Options.OfType<Move>().ToArray();
 		SpaceToken[] spaceTokenSources = moves.Select(m=>m.Source).Distinct().ToArray();
-		bool isSingleLandSource = spaceTokenSources.Select(x=>x.Space).Distinct().Count() == 1;
-		Func<SpaceToken,bool> matcher = isSingleLandSource 
-			? st => st.Text.Contains(expectedChoiceText)
-			: st => st.ToString().Contains(expectedChoiceText); // multiple spaces, ensure it includes space.
+		bool isSingleLandSource = spaceTokenSources.Select(x=>x.Space.SpaceSpec).Distinct().Count() == 1;
+		bool matcher(SpaceToken st) => st.ToString().Contains(expectedChoiceText);
 		var matchingSources = spaceTokenSources.Where( matcher ).ToArray();
 		switch(matchingSources.Length) {
 			case 1: return matchingSources[0];
@@ -69,7 +67,7 @@ public static class DecisionExtensions {
 	///<remarks>This is slower, always try straight FormatOptions first</remarks>
 	static public string FromatSpaceTokenOptions( this IDecision decision ) {
 		bool hasOneSpace = decision.Options.OfType<SpaceToken>()
-			.Select(st=>st.Space)
+			.Select(st=>st.Space.SpaceSpec)
 			.Distinct()
 			.Count() == 1;
 		Func<IOption,string> formatter = hasOneSpace

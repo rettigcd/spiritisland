@@ -27,17 +27,17 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 			InitFunc = (gameState,_) => {
 				// on each board,
 				var spaces = gameState.Island.Boards
-					.SelectMany( board => new Space[] {
+					.SelectMany( board => new SpaceSpec[] {
 					// on land #2 
 					board[2],
 					// and the highest-numbered land without Setup symbols,
-					board.Spaces.Last(x =>((Space1) x).StartUpCounts.IsEmpty)
+					board.Spaces.Last(x =>((SingleSpaceSpec) x).StartUpCounts.IsEmpty)
 					} )
 					.ScopeTokens()
 					.ToArray();
 
 				// add 1 Town
-				foreach(SpaceState space in spaces)
+				foreach(Space space in spaces)
 					space.Setup( Human.Town, 1 );
 
 				((HabsurgBuilder)gameState.InvaderDeck.Build.Engine).ReplaceInlandCityWith2Towns = true; 
@@ -71,8 +71,8 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 	];
 
 	class NeighborTownsCauseBonusLandDamage : BaseModEntity, IModifyLandDamage {
-		void IModifyLandDamage.ModifyLandDamage( SpaceState spaceState, ref int damage ){
-			bool hasNeighborTown = spaceState.Adjacent.Any( s => s.Has( Human.Town ) );
+		void IModifyLandDamage.ModifyLandDamage( Space space, ref int damage ){
+			bool hasNeighborTown = space.Adjacent.Any( s => s.Has( Human.Town ) );
 			if(hasNeighborTown)
 				damage += 2;
 		}
@@ -98,9 +98,9 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 			var addSpaces = spaces.Where( x => x.SumAny( Token.Blight, Human.Town ) == 0 ).ToArray();
 			if(addSpaces.Length == 0) break;
 
-			var criteria = new A.Space( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces.Downgrade(), Present.Always );
+			var criteria = new A.SpaceDecision( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces, Present.Always );
 			var addSpace = await ctx.Self.SelectAsync( criteria );
-			await addSpace.ScopeTokens.AddDefaultAsync( Human.Town, 1, AddReason.Build );
+			await addSpace.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 		}
 	}
 
@@ -112,21 +112,21 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 	static async Task HabsburgReminderCard_Revealed( GameState gameState ) {
 		// Level 5
 
-		var newTownSpaces = new List<SpaceState>();
-		var newCitySpaces = new List<SpaceState>();
+		var newTownSpaces = new List<Space>();
+		var newCitySpaces = new List<Space>();
 
 		// on each board
 		foreach(Board board in gameState.Island.Boards) {
 
 			var spaces = board.Spaces.ScopeTokens().ToArray();
 			// add 1 City to a Coastal land without City
-			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.Space.IsCoastal && s.Sum(Human.City)==0);
+			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.SpaceSpec.IsCoastal && s.Sum(Human.City)==0);
 			if( coastWithoutCity != null)
 				newCitySpaces.Add( coastWithoutCity );
 
 			// and 1 Town to the 3 Inland lands with the fewest Blight
 			newTownSpaces.AddRange( spaces
-				.Where(x=> !x.Space.IsCoastal && !x.Space.IsOcean)
+				.Where(x=> !x.SpaceSpec.IsCoastal && !x.SpaceSpec.IsOcean)
 				.OrderBy( x=>x.Blight.Count )
 				.Take(3)
 			);
@@ -166,16 +166,16 @@ class IrreperableDamage : AdversaryLossCondition {
 	}
 
 	static public void LossCheckImp( GameState gameState ) {
-		int badBlightCount = _fakeBadBlightSpace.ScopeTokens[Token.Blight];
+		int badBlightCount = _fakeBadBlightSpace.ScopeSpace[Token.Blight];
 		if(gameState.Spirits.Length < badBlightCount)
 			GameOverException.Lost( $"Irreparable Damage - {badBlightCount} blight were added from 8+ land damage." );
 	}
 
 	class TrackBadRavageBlight : BaseModEntity, IReactToLandDamage {
-		Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens, int count ) {
-			bool shouldAddBadBadBlight = 8 <= tokens[LandDamage.Token];
+		Task IReactToLandDamage.HandleDamageAddedAsync( Space space, int count ) {
+			bool shouldAddBadBadBlight = 8 <= space[LandDamage.Token];
 			if(shouldAddBadBadBlight)
-				_fakeBadBlightSpace.ScopeTokens.Adjust( Token.Blight, 1 );
+				_fakeBadBlightSpace.ScopeSpace.Adjust( Token.Blight, 1 );
 			return Task.CompletedTask;
 		}
 	}

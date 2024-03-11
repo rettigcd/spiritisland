@@ -15,16 +15,16 @@ public class TerrainMapper {
 	#endregion
 
 	/// <summary> The space is Coastal or Inland.  aka Can-Hold-Tokens, aka NotOcean </summary>
-	public virtual bool IsInPlay( Space space ) => !space.Is( Terrain.Ocean );
+	public virtual bool IsInPlay(Space space) => !space.SpaceSpec.Is(Terrain.Ocean);
 
 	// Terrain
-	public virtual bool MatchesTerrain( SpaceState ss, params Terrain[] options ) => ss.Space.IsOneOf( options );
+	public virtual bool MatchesTerrain( Space ss, params Terrain[] options ) => ss.SpaceSpec.IsOneOf( options );
 
 	// Ocean / Coastal / Inland
-	public virtual bool IsCoastal( SpaceState spaceState ) => spaceState.Space.IsCoastal;
+	public virtual bool IsCoastal( Space space ) => space.SpaceSpec.IsCoastal;
 
 #pragma warning disable CA1822 // Mark members as static
-	public bool IsInland( SpaceState spaceState ) => !spaceState.Space.IsOcean && !spaceState.Space.IsCoastal;
+	public bool IsInland( Space space ) => !space.SpaceSpec.IsOcean && !space.SpaceSpec.IsCoastal;
 #pragma warning restore CA1822 // Mark members as static
 
 }

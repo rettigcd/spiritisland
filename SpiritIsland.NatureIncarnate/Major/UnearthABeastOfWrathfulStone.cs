@@ -18,7 +18,7 @@ public class UnearthABeastOfWrathfulStone {
 
 		// After the next Invader Phase with no Ravage/Build Actions in target land:
 		var noRavageOrBuildTrigger = new TriggerAfterNoRavageOrBuild( ctx.Self, TriggeredAction );
-		ctx.Tokens.Adjust(noRavageOrBuildTrigger,1);
+		ctx.Space.Adjust(noRavageOrBuildTrigger,1);
 		GameState.Current.AddPostInvaderPhase( noRavageOrBuildTrigger );
 
 		async Task TriggeredAction(TargetSpaceCtx ctxx ) {
@@ -29,7 +29,7 @@ public class UnearthABeastOfWrathfulStone {
 			await ctx.DamageInvaders( 12 );
 
 			// Add 1 Beast. (either normal or the marked one)
-			await ctx.Tokens.AddAsync( beastToken, 1 );
+			await ctx.Space.AddAsync( beastToken, 1 );
 
 			// You may Push that Beast.
 			await ctx.SourceSelector
@@ -64,9 +64,9 @@ class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> tri
 
 	UsageCost ISkipBuilds.Cost => UsageCost.Extreme; // tries to go last
 
-	Task<bool> ISkipBuilds.Skip( SpaceState space ) {  _hadRavageOrBuild = true; return Task.FromResult(false);}
+	Task<bool> ISkipBuilds.Skip( Space space ) {  _hadRavageOrBuild = true; return Task.FromResult(false);}
 
-	void IConfigRavages.Config( SpaceState space ) { _hadRavageOrBuild = true; }
+	void IConfigRavages.Config( Space space ) { _hadRavageOrBuild = true; }
 
 	#endregion detect build or ravage
 
@@ -75,14 +75,14 @@ class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> tri
 	async Task IRunAfterInvaderPhase.AfterInvaderPhase( GameState gameState ) {
 		if(_hadRavageOrBuild) { _hadRavageOrBuild = false; return; }
 
-		SpaceState spaceState = ActionScope.Current.Tokens.Single( ss => 0 < ss[this] );
+		Space space = ActionScope.Current.Spaces.Single( ss => 0 < ss[this] );
 		// Do action
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, _spirit );
-		await _triggeredAction( _spirit.Target( spaceState.Space ) );
+		await _triggeredAction( _spirit.Target( space.SpaceSpec ) );
 
 		// Remove
 		_remove = true; // ??? what happens if we put 2 of these down?
-		spaceState.Init(this,0);
+		space.Init(this,0);
 	}
 	bool IRunAfterInvaderPhase.RemoveAfterRun => _remove;
 	bool _remove = false;
@@ -128,33 +128,33 @@ public class MarkedBeast : IToken
 	#region IActionFactory - push token every slow
 
 	void AddSlowPushToSpirit(Spirit s ) {
-		if(_spaceState != null) // if the beast has been placed on the board.
+		if(_space != null) // if the beast has been placed on the board.
 			s.AddActionFactory( this );
 	}
 
-	string IActionFactory.Name => "Push Marked Beast";
+	string IActionFactory.Title => "Push Marked Beast";
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Slow;
 
 	public async Task ActivateAsync( Spirit self ) {
-		await _spaceState!.SourceSelector
+		await _space!.SourceSelector
 			.AddGroup(1,Token.Beast)
 			.FilterSpaceToken(st=>st.Token==this)
 			.PushUpToN(self);
 		// 1 Fear and 2 Damage in its land.
-		_spaceState!.AddFear( 1 ); // don't cache space-state, it might have moved
-		await _spaceState.UserSelected_DamageInvadersAsync(self,2);
+		_space!.AddFear( 1 ); // don't cache space-state, it might have moved
+		await _space.UserSelected_DamageInvadersAsync(self,2);
 	}
 
 	#endregion
 
 	#region Track Token Space
-	void IHandleTokenAdded.HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
-		if(args.Added == this) _spaceState = to;
+	void IHandleTokenAdded.HandleTokenAdded( Space to, ITokenAddedArgs args ) {
+		if(args.Added == this) _space = to;
 	}
 	#endregion
 
 	#region private fields
-	SpaceState? _spaceState;
+	Space? _space;
 	#endregion
 
 }

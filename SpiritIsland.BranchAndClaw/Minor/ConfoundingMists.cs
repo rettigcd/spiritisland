@@ -11,13 +11,13 @@ public class ConfoundingMists {
 			new SpaceAction("Defend 4", ctx => ctx.Defend(4) ),
 			new SpaceAction(
 				"Invaders added to target are immediately pushed",
-				ctx => ctx.Tokens.Adjust( new MistPusher( ctx.Self ), 1 )
+				ctx => ctx.Space.Adjust( new MistPusher( ctx.Self ), 1 )
 			)
 		);
 	}
 
 	class MistPusher( Spirit _spirit ) : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
-		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// each invader added to target land this turn may be immediatley pushed to any adjacent land
 			if(	args.Added.Class.IsOneOf(Human.Invader) 
 				&& args.Reason.IsOneOf( AddReason.Added, AddReason.MovedTo, AddReason.Explore, AddReason.Build )

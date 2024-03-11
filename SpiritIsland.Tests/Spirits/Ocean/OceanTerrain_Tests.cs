@@ -135,7 +135,7 @@ public class OceanTerrain_Tests {
 			Given_OceanOnPrimaryBoard();
 
 		//   And: 2 towns and 2 explorers on space
-		SpaceState a2 = gameState.Tokens[boardA[2]];
+		Space a2 = gameState.Tokens[boardA[2]];
 		a2.InitDefault( Human.Town, 2 );
 		a2.InitDefault( Human.Explorer, 2 );
 
@@ -147,7 +147,7 @@ public class OceanTerrain_Tests {
 		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit);
 		await PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( primarySpirit ).AwaitUser( user => {
 			//  And: Targets A2
-			user.NextDecision.Choose( a2.Space.Text );
+			user.NextDecision.Choose( a2.Label );
 
 			for(int i=0; i < 2; ++i) {
 				// When: Push 1st invadere - Town
@@ -184,13 +184,13 @@ public class OceanTerrain_Tests {
 			Given_OceanOnPrimaryBoard();
 
 		//   And: blight on a2
-		SpaceState a2 = gameState.Tokens[boardA[2]];
+		Space a2 = gameState.Tokens[boardA[2]];
 		a2.Blight.Init(1);
 		//   But: no dahan (don't want to trigger Thunderspeakers presence destruction
 		a2.Dahan.Init(0);
 
 		//  When: invaders ravage and cause blight
-		_ = boardA[2].ScopeTokens.Ravage();
+		_ = boardA[2].ScopeSpace.Ravage();
 
 		// Then: we can/can't cascade into ocean
 		NextDecision
@@ -283,12 +283,12 @@ public class OceanTerrain_Tests {
 		Given_PrimaryPresenceOnA2Only();
 
 		// Given: Dahan and Town on A2
-		SpaceState a2 = gameState.Tokens[boardA[2]];
+		Space a2 = gameState.Tokens[boardA[2]];
 		a2.InitDefault( Human.Dahan, 2 );
 		a2.InitDefault( Human.Town, 1 );
 
 		// Given: ocean in either A0 (saving dahan) or A1 (not saving)
-		Space oceanSpace = savedByOcean ? boardA[0] : boardA[1];
+		SpaceSpec oceanSpace = savedByOcean ? boardA[0] : boardA[1];
 		oceanSpirit.Given_IsOn( gameState.Tokens[oceanSpace] );
 
 		// When: Tidal Boon is played (by Ocean)
@@ -348,13 +348,13 @@ public class OceanTerrain_Tests {
 
 	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
 
-	void Given_PrimaryPresenceOnlyOn( Space space ) {
-		foreach(SpaceState ss in primarySpirit.Presence.Lands.ToArray())
+	void Given_PrimaryPresenceOnlyOn( SpaceSpec space ) {
+		foreach(Space ss in primarySpirit.Presence.Lands.ToArray())
 			primarySpirit.Given_IsOn( ss, 0 );
 
 		// Add to
 		primarySpirit.Given_IsOn( gameState.Tokens[space] );
-		primarySpirit.Presence.Lands.SelectLabels().Join( "," ).ShouldBe( space.Text );
+		primarySpirit.Presence.Lands.SelectLabels().Join( "," ).ShouldBe( space.Label );
 	}
 
 	

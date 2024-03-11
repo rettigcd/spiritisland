@@ -86,7 +86,7 @@ public class ManageInternalPoints {
 			);
 	}
 
-	public ManageInternalPoints Init( SpaceState allTokens ) {
+	public ManageInternalPoints Init( Space allTokens ) {
 
 		// invader groups
 		var groups = allTokens.AllHumanTokens()
@@ -110,7 +110,7 @@ public class ManageInternalPoints {
 
 	#region private helper methods
 
-	void AssignPointFor( IToken token, SpaceState spaceState ) {
+	void AssignPointFor( IToken token, Space space ) {
 
 		if(token.HasTag(TokenCategory.Invader))
 			throw new Exception( "invaders not handled here" );
@@ -119,18 +119,18 @@ public class ManageInternalPoints {
 		if(_dict.ContainsKey( token )) return;
 
 		// -- Internal --
-		bool assigned = AssignLeftRight( token ) || AssignOldSlot( token, spaceState );
+		bool assigned = AssignLeftRight( token ) || AssignOldSlot( token, space );
 
 		if(!assigned)
 			throw new InvalidOperationException( $"Ran out of slots for tokens." );
 
 	}
 
-	bool AssignOldSlot( IToken token, SpaceState spaceState )
-		=> _randomInternal.AssignNextSlot(token, spaceState)
-		|| _border.AssignNextSlot(token, spaceState);
+	bool AssignOldSlot( IToken token, Space space )
+		=> _randomInternal.AssignNextSlot(token, space)
+		|| _border.AssignNextSlot(token, space);
 
-	void InitInvaderGroup( HumanTokenClass tokenClass, IEnumerable<HumanToken> tokenGroup, SpaceState allTokens ) {
+	void InitInvaderGroup( HumanTokenClass tokenClass, IEnumerable<HumanToken> tokenGroup, Space allTokens ) {
 
 		HumanToken[] GetRegisteredTokens() => _dict.Keys
 			.OfType<HumanToken>()
@@ -206,8 +206,8 @@ public class ManageInternalPoints {
 			return true;
 		}
 
-		public bool AssignNextSlot( IToken visibleToken, SpaceState spaceState= null ) {
-			int? index = FindNextSlot(spaceState);
+		public bool AssignNextSlot( IToken visibleToken, Space space= null ) {
+			int? index = FindNextSlot(space);
 			if(!index.HasValue) return false;
 			AssignToken( visibleToken, index.Value );
 			return true;
@@ -217,7 +217,7 @@ public class ManageInternalPoints {
 			int? bestIndex = null;
 			float mostLeft = float.MaxValue;
 			for(int i = 0; i < _points.Length; i++)
-				if(_tokens[i] is null
+				if(_myTokens[i] is null
 					&& _points[i].X < mostLeft
 				) {
 					bestIndex = i;
@@ -230,7 +230,7 @@ public class ManageInternalPoints {
 			int? bestIndex = null;
 			float mostRight = float.MinValue;
 			for(int i = 0; i < _points.Length; i++)
-				if(_tokens[i] is null
+				if(_myTokens[i] is null
 					&& mostRight < _points[i].X
 				) {
 					bestIndex = i;
@@ -239,19 +239,19 @@ public class ManageInternalPoints {
 			return bestIndex;
 		}
 
-		int? FindNextSlot( SpaceState spaceState = null ) {
+		int? FindNextSlot( Space space = null ) {
 
 			// Prefer free slots
-			for(int i = 0; i < _tokens.Length; i++)
-				if(_tokens[i] is null)
+			for(int i = 0; i < _myTokens.Length; i++)
+				if(_myTokens[i] is null)
 					return i;
 
-			if(spaceState != null)
+			if(space != null)
 				// Find old spot that is now available
-				for(int i = 0; i < _tokens.Length; i++) {
-					IToken token = _tokens[i];
-					if(spaceState[token] == 0) {
-						_tokens[i] = null;
+				for(int i = 0; i < _myTokens.Length; i++) {
+					IToken token = _myTokens[i];
+					if(space[token] == 0) {
+						_myTokens[i] = null;
 						return i;
 					}
 				}
@@ -261,15 +261,15 @@ public class ManageInternalPoints {
 
 		void AssignToken( IToken token, int index ) {
 			lock(_locker) {
-				if(_tokens[index] != null)
+				if(_myTokens[index] != null)
 					throw new InvalidOperationException( $"Internal Token Slot {index} already assigned." );
-				_tokens[index] = token;
+				_myTokens[index] = token;
 				_dict[token] = _points[index];
 			}
 		}
 
 		readonly object _locker = new object();
-		readonly IToken[] _tokens = new IToken[_points.Length];
+		readonly IToken[] _myTokens = new IToken[_points.Length];
 
 		public XY[] Points => _points;
 	}

@@ -2,7 +2,7 @@
 
 public interface IIslandTokenApi {
 
-	int GetDynamicTokensFor( SpaceState space, TokenClassToken token );
+	int GetDynamicTokensFor( Space space, TokenClassToken token );
 
 	HumanToken GetDefault( ITokenClass tokenClass );
 

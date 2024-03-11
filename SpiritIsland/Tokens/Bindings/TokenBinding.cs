@@ -5,34 +5,34 @@ public class TokenBinding {
 	public IToken Default { get; }
 
 	#region constructor
-	public TokenBinding( SpaceState tokens, IToken token ) {
-		_tokens = tokens;
+	public TokenBinding( Space space, IToken token ) {
+		_space = space;
 		Default = token;
 	}
 
 	public TokenBinding( TokenBinding src ) {
-		_tokens = src._tokens;
+		_space = src._space;
 		Default = src.Default;
 	}
 	#endregion
 
 	public bool Any => Count > 0;
 
-	public virtual int Count => _tokens[Default];
+	public virtual int Count => _space[Default];
 
-	public void Init( int count ) => _tokens.Init( Default, count );
+	public void Init( int count ) => _space.Init( Default, count );
 
-	public void Adjust( int delta ) => _tokens.Adjust( Default, delta );
+	public void Adjust( int delta ) => _space.Adjust( Default, delta );
 
 	public virtual Task AddAsync( int count, AddReason reason = AddReason.Added )
-		=> _tokens.AddAsync( Default, count, reason );
+		=> _space.AddAsync( Default, count, reason );
 
 	public virtual Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason = RemoveReason.Removed )
-		=> _tokens.RemoveAsync( Default, count, reason );
+		=> _space.RemoveAsync( Default, count, reason );
 
 	public static implicit operator int( TokenBinding b ) => b.Count;
 
-	readonly protected SpaceState _tokens;
+	readonly protected Space _space;
 }
 
 
@@ -42,21 +42,20 @@ public class TokenBinding {
 /// Binds to Unique tokens but uses the CLASS to search for ancillary Tokens like ManyMinds-Beast Token
 /// </summary>
 public class BeastBinding {
-	readonly protected SpaceState _spaceState;
+	readonly protected Space _space;
 	readonly protected TokenClassToken _uniqueToken;
 
 	#region constructor
-	public BeastBinding( SpaceState spaceState, TokenClassToken defaultToken ) {
-		_spaceState = spaceState;
+	public BeastBinding( Space space, TokenClassToken defaultToken ) {
+		_space = space;
 		_uniqueToken = defaultToken;
 	}
 	public BeastBinding( BeastBinding src ) {
-		_spaceState = src._spaceState;
+		_space = src._space;
 		_uniqueToken = src._uniqueToken;
 	}
 	#endregion
 
-//	public bool Any => 0 < Count;
 	public bool Any {  
 		get { 
 			int c= Count;
@@ -64,17 +63,17 @@ public class BeastBinding {
 		}
 	}
 
-	public virtual int Count => _spaceState.Sum( _uniqueToken );
+	public virtual int Count => _space.Sum( _uniqueToken );
 
-	public void Init( int count ) => _spaceState.Init( _uniqueToken, count );
+	public void Init( int count ) => _space.Init( _uniqueToken, count );
 
-	public void Adjust( int delta ) => _spaceState.Adjust( _uniqueToken, delta );
+	public void Adjust( int delta ) => _space.Adjust( _uniqueToken, delta );
 
 	public Task AddAsync( int count, AddReason reason = AddReason.Added )
-		=> _spaceState.AddAsync( _uniqueToken, count, reason );
+		=> _space.AddAsync( _uniqueToken, count, reason );
 
 	public Task Remove( int count, RemoveReason reason = RemoveReason.Removed )
-		=> _spaceState.RemoveAsync( _uniqueToken, count, reason );
+		=> _space.RemoveAsync( _uniqueToken, count, reason );
 
 	public Task Destroy( int count ) => Remove( count, RemoveReason.Destroyed );
 

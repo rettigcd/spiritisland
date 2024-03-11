@@ -12,9 +12,9 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 
 		for(int i = 0; i < _landsPerSpirit; ++i) {
 
-			var preFiltered = ActionScope.Current.Tokens
-				.Where( x => !_disallowedSpaces.Contains( x.Space ) ) // for picking Different spaces
-				.Select( s => self.Target( s.Space ) )
+			var preFiltered = ActionScope.Current.Spaces
+				.Where( x => !_disallowedSpaces.Contains( x.SpaceSpec ) ) // for picking Different spaces
+				.Select( s => self.Target( s.SpaceSpec ) )
 				.Where( _spaceAction.IsApplicable );  // Matches action Criteria
 
 			var spaceOptions = LandCriteria.Filter( preFiltered ).ToArray();
@@ -27,7 +27,7 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 			if(space == null) return;
 
 			if(_chooseDifferentLands)
-				_disallowedSpaces.Add( space );
+				_disallowedSpaces.Add( space.SpaceSpec );
 
 			await _spaceAction.ActAsync( self.Target(space) );
 		}
@@ -47,11 +47,11 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 
 	async Task<Space> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions ) {
 		// Get options
-		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Tokens.SpaceTokensOfAnyTag( _firstPickTokenClasses );
+		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Space.SpaceTokensOfAnyTag( _firstPickTokenClasses );
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
-		SpaceToken st = await self.SelectAsync( new A.SpaceToken( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		SpaceToken st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
 		self.PreSelect(st);
 
 		return st?.Space;
@@ -59,7 +59,7 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 
 	string _diffString => _chooseDifferentLands ? "different " : "";
 	TargetSpaceCtxFilter _landCriteria;
-	readonly HashSet<Space> _disallowedSpaces = [];
+	readonly HashSet<SpaceSpec> _disallowedSpaces = [];
 
 	// configurable
 	TargetSpaceCtxFilter LandCriteria => _landCriteria ??= Is.AnyLand;

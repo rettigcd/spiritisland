@@ -12,7 +12,7 @@ class RussiaFearCard( IFearCard inner, InvaderCard invaderCard )
 	public override void Activate( GameState gameState ) {
 		base.Activate( gameState );
 		gameState.InvaderDeck.Build.Cards.Add( _invaderCard );
-		ActionScope.Current.LogDebug($"Entrenched in the Face of Fear: Adding invader card {_invaderCard.Text} to Builds.");
+		ActionScope.Current.LogDebug($"Entrenched in the Face of Fear: Adding invader card {_invaderCard.Code} to Builds.");
 	}
 
 	public Task Level1( GameState ctx ) => _inner.Level1( ctx );

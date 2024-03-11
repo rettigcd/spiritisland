@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 class WoundedToken( Spirit spirit ) : SpiritPresenceToken( spirit ), IHandleTokenAdded {
-	public async void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
+	public async void HandleTokenAdded( Space to, ITokenAddedArgs args ) {
 		// When your powers ...
 		if(!IsYourPowers) return;
 
@@ -13,7 +13,7 @@ class WoundedToken( Spirit spirit ) : SpiritPresenceToken( spirit ), IHandleToke
 		return scope.Category == ActionCategory.Spirit_Power && scope.Owner != Self;
 	} }
 
-	async Task Serenity(SpaceState to, ITokenAddedArgs args ) {
+	async Task Serenity(Space to, ITokenAddedArgs args ) {
 		if(!EnableSerenity) return;
 
 		// move any number of Invaders into your lands

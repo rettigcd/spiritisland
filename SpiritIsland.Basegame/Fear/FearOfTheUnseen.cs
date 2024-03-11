@@ -3,7 +3,7 @@
 public class FearOfTheUnseen : FearCardBase, IFearCard {
 
 	public const string Name = "Fear of the Unseen";
-	public string Text => Name;
+	string IOption.Text => Name;
 
 	[FearLevel( 1, "Each player removes 1 Explorer/Town from a land with Sacred Site." )]
 	public Task Level1( GameState fearCtx ) {

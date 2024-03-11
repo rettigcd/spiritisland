@@ -13,7 +13,7 @@ public class VoiceOfCommand {
 
 		// 1 damage per dahan/explorer, to towns/cities only
 		await ctx.DamageInvaders( 
-			ctx.Dahan.CountAll + ctx.Tokens.Sum( Human.Explorer ),
+			ctx.Dahan.CountAll + ctx.Space.Sum( Human.Explorer ),
 			Human.Town_City
 		);
 
@@ -24,7 +24,7 @@ public class VoiceOfCommand {
 //		var cfg = ctx.Tokens.RavageBehavior;
 //		cfg.IsAttacker = (token) => token.Class.IsOneOf( Human.Town_City );
 //		cfg.IsDefender = (token) => token.Class.IsOneOf( Human.Explorer, Human.Dahan);
-		ctx.Tokens.Init(new RavageConfigToken(
+		ctx.Space.Init(new RavageConfigToken(
 			space => {
 				foreach(HumanToken orig in space.HumanOfTag( Human.Explorer ).ToArray()) {
 					AdjustRavageSide( space, orig, RavageSide.Defender, RavageOrder.DahanTurn );
@@ -37,7 +37,7 @@ public class VoiceOfCommand {
 		),1);
 
 	}
-	static void AdjustRavageSide( SpaceState space, HumanToken orig, RavageSide side, RavageOrder order ) {
+	static void AdjustRavageSide( Space space, HumanToken orig, RavageSide side, RavageOrder order ) {
 		space.Init( orig.SetRavageSide( side ).SetRavageOrder( order ), space[orig] );
 		space.Init( orig, 0 );
 	}
@@ -45,12 +45,12 @@ public class VoiceOfCommand {
 
 }
 
-public class RavageConfigToken( Action<SpaceState> _setup, Action<SpaceState> _teardown ) 
+public class RavageConfigToken( Action<Space> _setup, Action<Space> _teardown ) 
 	: BaseModEntity, 
 	IConfigRavages, 
 	IEndWhenTimePasses
 {
-	void IConfigRavages.Config( SpaceState space ) {
+	void IConfigRavages.Config( Space space ) {
 		// Token Reduces Attack of invaders by 1
 		_setup( space );
 

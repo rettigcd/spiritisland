@@ -19,7 +19,7 @@ public class IrresistibleCall {
 		// if you have 2 sun, 3 air, 2 plant:
 		if( await ctx.YouHave("2 sun,3 air,2 plant" )) {
 			// invaders skip all actions in target land.
-			ctx.Tokens.SkipAllInvaderActions( Name );
+			ctx.Space.SkipAllInvaderActions( Name );
 			// Isolate target land.
 			ctx.Isolate();
 		}

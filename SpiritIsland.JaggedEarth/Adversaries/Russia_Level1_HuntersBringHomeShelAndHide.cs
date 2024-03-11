@@ -14,25 +14,25 @@ class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdd
 
 	static void HuntersSwarmTheIslandImp( GameState gameState ) {
 
-		int destroyedCardBeasts = AdversaryCard.ScopeTokens.Beasts.Count;
+		int destroyedCardBeasts = AdversaryCard.ScopeSpace.Beasts.Count;
 
 		// Put beast Destroyed by Adversary rules on this panel.If there are ever more beast on this panel than on the island, the Invaders win.
-		int remainingBeasts = ActionScope.Current.Tokens_Unfiltered.Sum( s => s.Beasts.Count );
+		int remainingBeasts = ActionScope.Current.Spaces_Unfiltered.Sum( s => s.Beasts.Count );
 		if(remainingBeasts < destroyedCardBeasts)
 			GameOverException.Lost( $"Russia-Hunters Swarm the Island (beasts remaining:{remainingBeasts} killed:{destroyedCardBeasts})" );
 	}
 
 	#endregion
 
-	async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+	async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if(args.Added == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {
 			var beasts = to.Beasts;
 			if(beasts.Any) {
 				await beasts.Destroy( 1 );
-				AdversaryCard.ScopeTokens.Adjust( args.Added, 1 );
-				ActionScope.Current.LogDebug( $"Blight on {((Space)args.To).Text} destroys 1 beast." );
+				AdversaryCard.ScopeSpace.Adjust( args.Added, 1 );
+				ActionScope.Current.LogDebug( $"Blight on {((IOption)args.To).Text} destroys 1 beast." );
 			}
 		}
 	}

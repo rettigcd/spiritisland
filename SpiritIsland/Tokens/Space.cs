@@ -4,23 +4,24 @@
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
 /// Has same Scope as GameState (not bound to an ActionScope
 /// </summary>
-public class SpaceState 
-	: ISeeAllNeighbors<SpaceState>
+public class Space 
+	: ISeeAllNeighbors<Space>
 	, ILocation // !!! we don't SpaceToken or TokenOn using this as a location, maybe we should remove this
+	, IOption
 {
 
 	#region constructor
 
-	public SpaceState( Space space, CountDictionary<ISpaceEntity> counts, IEnumerable<ISpaceEntity> islandMods, IIslandTokenApi tokenApi ) {
-		Space = space;
+	public Space( SpaceSpec space, CountDictionary<ISpaceEntity> counts, IEnumerable<ISpaceEntity> islandMods, IIslandTokenApi tokenApi ) {
+		SpaceSpec = space;
 		_counts = counts;
 		_islandMods = islandMods;
 		_api = tokenApi;
 	}
 
 	/// <summary> Clone / copy constructor </summary>
-	protected SpaceState( SpaceState src ) {
-		Space = src.Space;
+	protected Space( Space src ) {
+		SpaceSpec = src.SpaceSpec;
 		_counts = src._counts;
 		_islandMods = src._islandMods;
 		_api = src._api;
@@ -28,7 +29,7 @@ public class SpaceState
 
 	#endregion
 
-	public Space Space { get; }
+	public SpaceSpec SpaceSpec { get; }
 
 	public int this[ISpaceEntity specific] {
 		get {
@@ -57,8 +58,8 @@ public class SpaceState
 	public int SumAny( params ITag[] healthyInvaders ) => OfAnyTagEnumeration( healthyInvaders ).Sum( k => _counts[k] );
 
 	// -- IEnumerable<SpaceToken> --
-	public IEnumerable<SpaceToken> SpaceTokensOfTag( ITag tag ) => OfTagEnumeration(tag).OnScopeTokens1(Space);
-	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).OnScopeTokens1(Space);
+	public IEnumerable<SpaceToken> SpaceTokensOfTag( ITag tag ) => OfTagEnumeration(tag).OnScopeTokens1(SpaceSpec);
+	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).OnScopeTokens1(SpaceSpec);
 
 	// -- HumanToken[] --
 	public IEnumerable<HumanToken> AllHumanTokens() => OfType<HumanToken>();
@@ -85,7 +86,7 @@ public class SpaceState
 	/// <summary>Gets all tokens that have a SpaceAbreviation</summary>
 	public string Summary => _counts.TokenSummary();
 
-	public override string ToString() => Space.Label + ":" + Summary;
+	public override string ToString() => SpaceSpec.Label + ":" + Summary;
 
 	#endregion
 
@@ -144,7 +145,7 @@ public class SpaceState
 		_counts[token] += deltaCount;
 
 		if(token.IsDestroyed) {
-			ActionScope.Current.LogDebug( $"{Space.Text} Adjusting-Up {deltaCount} {token.SpaceAbreviation} => Destroyed!" );
+			ActionScope.Current.LogDebug( $"{SpaceSpec.Label} Adjusting-Up {deltaCount} {token.SpaceAbreviation} => Destroyed!" );
 			await this.RemoveAsync(token, deltaCount, RemoveReason.Destroyed);
 		}
 	}
@@ -206,10 +207,10 @@ public class SpaceState
 	#region Adjacent Properties
 
 	/// <summary> Space Adjacent_Existing (including gateway) </summary>
-	public IEnumerable<SpaceState> Adjacent_Existing { 
+	public IEnumerable<Space> Adjacent_Existing { 
 		get {
-			foreach(var space in Space.Adjacent_Existing)
-				yield return space.ScopeTokens;
+			foreach(var space in SpaceSpec.Adjacent_Existing)
+				yield return space.ScopeSpace;
 
 			foreach(var gateway in OfType<GatewayToken>())
 				yield return gateway.GetLinked(this);
@@ -217,14 +218,14 @@ public class SpaceState
 	}
 
 	/// <summary> Existing & IsInPlay </summary>
-	public IEnumerable<SpaceState> Adjacent => Adjacent_Existing.IsInPlay();
+	public IEnumerable<Space> Adjacent => Adjacent_Existing.IsInPlay();
 
-	public IEnumerable<SpaceState> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<SpaceState>();
+	public IEnumerable<Space> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<Space>();
 
-	public IEnumerable<SpaceState> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys.IsInPlay();
+	public IEnumerable<Space> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys.IsInPlay();
 
 	/// <summary> Explicitly named so not to confuse with Powers - Range commands. </summary>
-	public IEnumerable<SpaceState> InOrAdjacentTo => Range( 1 );
+	public IEnumerable<Space> InOrAdjacentTo => Range( 1 );
 
 	/// <summary> Has no Isolate token. </summary>
 	public bool IsConnected => !OfType<IIsolate>().Any(x=>x.IsIsolated);
@@ -239,10 +240,10 @@ public class SpaceState
 	#region GetHashCode and Equals
 
 	// Utter a Curse of Dread and Bone & Bargains of Power require these overrides:
-	public override int GetHashCode() => Space.GetHashCode();
-	public override bool Equals( object obj ) => obj is SpaceState other && other.Space == Space;
-	public static bool operator ==( SpaceState ss1, SpaceState ss2 ) => Object.ReferenceEquals( ss1, ss2) || ss1.Equals(ss2);
-	public static bool operator !=( SpaceState ss1, SpaceState ss2 ) => !(ss1==ss2);
+	public override int GetHashCode() => SpaceSpec.GetHashCode();
+	public override bool Equals( object obj ) => obj is Space other && other.SpaceSpec == SpaceSpec;
+	public static bool operator ==( Space ss1, Space ss2 ) => Object.ReferenceEquals( ss1, ss2) || (ss1 is not null &&  ss1.Equals(ss2));
+	public static bool operator !=( Space ss1, Space ss2 ) => !(ss1==ss2);
 
 	#endregion
 
@@ -346,7 +347,7 @@ public class SpaceState
 
 		// Post-Add event
 		return (
-			new TokenAddedArgs( addingArgs.Token, this.Space, addingArgs.Count, addReason ),
+			new TokenAddedArgs( addingArgs.Token, this, addingArgs.Count, addReason ),
 			NotifyAddedAsync
 		);
 	}
@@ -402,7 +403,7 @@ public class SpaceState
 
 		// Post-Remove event
 		return (
-			new TokenRemovedArgs( Space, removingArgs.Token, removingArgs.Count, reason ),
+			new TokenRemovedArgs( this, removingArgs.Token, removingArgs.Count, reason ),
 			removedHandlers.NotifyRemoved
 		);
 
@@ -496,9 +497,9 @@ public class SpaceState
 		foreach(IToken token in OfType<IToken>().ToArray())
 			await Destroy( token, this[token] );
 
-		if(Space is Space1 s1)
+		if(SpaceSpec is SingleSpaceSpec s1)
 			s1.NativeTerrain = Terrain.Destroyed;
-		else if(Space is MultiSpace ms)
+		else if(SpaceSpec is MultiSpaceSpec ms)
 			foreach(var part in ms.OrigSpaces)
 				part.NativeTerrain = Terrain.Destroyed;
 
@@ -509,6 +510,9 @@ public class SpaceState
 	// Helper
 	public SourceSelector SourceSelector => new SourceSelector(this);
 
+	string IOption.Text => SpaceSpec.Label;
+	public string Label => SpaceSpec.Label;
+
 	public bool PreventsInvaderDamage() => ModsOfType<IStopInvaderDamage>().Any();
 
 }
@@ -516,7 +520,7 @@ public class SpaceState
 /// <summary>
 /// Captures the Mod tokens before they are removed, so their handlers can be invoked post-removal
 /// </summary>
-public class RemovingTokenCtx( SpaceState from, ISpaceEntity[] keyArray ) {
+public class RemovingTokenCtx( Space from, ISpaceEntity[] keyArray ) {
 	public async Task NotifyRemoved( ITokenRemovedArgs args ) {
 		// Sync
 		foreach(IHandleTokenRemoved handler in keyArray.OfType<IHandleTokenRemoved>())

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class TDaTD_ActionTokens( SpaceState spaceState ) 
-	: SpaceState( spaceState )
+public class TDaTD_ActionTokens( Space space ) 
+	: Space( space )
 {
 
 	readonly static public SpecialRule Rule = new( "TO DREAM A THOUSAND DEATHS", "Your Powers never cause Damage, nor can they Destroy anything other than your own Presence. When your Powers would Destroy Invaders, instead generate 0/2/5 Fear and Pushes Invaders" );
@@ -25,7 +25,7 @@ public class TDaTD_ActionTokens( SpaceState spaceState )
 			await DestroyNInvaders( token.AsHuman(), count );
 
 		return (
-			new TokenRemovedArgs(Space, token,0,reason), // nothing removed
+			new TokenRemovedArgs(this, token,0,reason), // nothing removed
 			_=>Task.CompletedTask
         );
 	}
@@ -65,9 +65,9 @@ public class TDaTD_ActionTokens( SpaceState spaceState )
 		var newToken = adj.NewToken;
 		if(newToken.HumanClass != DreamingCity) {
 			var options = Adjacent;
-			Space destination = await ActionScope.Current.Owner.SelectAsync( A.Space.ToPushToken( newToken, Space, options.Downgrade(), Present.Always ) );
-			await newToken.MoveAsync(Space,destination); // there is no Push(Token), so this will have to do.
-			RecordSpaceWithDreamers( destination.ScopeTokens );
+			Space destination = await ActionScope.Current.Owner.SelectAsync( A.SpaceDecision.ToPushToken( newToken, this, options, Present.Always ) );
+			await newToken.MoveAsync(this,destination); // there is no Push(Token), so this will have to do.
+			RecordSpaceWithDreamers( destination );
 		}
 
 	}
@@ -80,7 +80,7 @@ public class TDaTD_ActionTokens( SpaceState spaceState )
 
 	#region static Dreaming
 
-	static public void RecordSpaceWithDreamers( SpaceState spaceState ) {
+	static public void RecordSpaceWithDreamers( Space space ) {
 		var scope = ActionScope.Current;
 
 		// if this is first time we have a space
@@ -88,32 +88,32 @@ public class TDaTD_ActionTokens( SpaceState spaceState )
 		if(isFirstTime)
 			scope.AtEndOfThisAction( CleanupDreamDamage );
 
-		SpacesWithDreamers.Value.Add( spaceState );
+		SpacesWithDreamers.Value.Add( space );
 	}
 
 	#region static - restore invaders
 
 	static public void CleanupDreamDamage( ActionScope actionScope ) { // ! this one is ok
-		foreach(SpaceState spaceState in SpacesWithDreamers.Value) {
-			RemoveDreamDamage( spaceState );
-			WakeUpDreamers( spaceState );
+		foreach(Space space in SpacesWithDreamers.Value) {
+			RemoveDreamDamage( space );
+			WakeUpDreamers( space );
 		}
 	}
 
-	static void WakeUpDreamers( SpaceState spaceState ) {
-		var dreamers = spaceState.HumanOfTag( TokenCategory.Invader )
+	static void WakeUpDreamers( Space space ) {
+		var dreamers = space.HumanOfTag( TokenCategory.Invader )
 			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
 			.ToArray();
 		foreach(HumanToken dreamer in dreamers)
-			spaceState.AllHumans( dreamer ).Adjust( ToggleDreamer );
+			space.AllHumans( dreamer ).Adjust( ToggleDreamer );
 	}
 
-	static void RemoveDreamDamage( SpaceState spaceState ) {
-		var damagedInvaders = spaceState.AllHumanTokens()
+	static void RemoveDreamDamage( Space space ) {
+		var damagedInvaders = space.AllHumanTokens()
 			.Where( t => t.DreamDamage != 0 )
 			.ToArray();
 		foreach(var damagedInvader in damagedInvaders)
-			spaceState.AllHumans( damagedInvader ).Adjust( HealDreamDamage );
+			space.AllHumans( damagedInvader ).Adjust( HealDreamDamage );
 	}
 	static HumanToken HealDreamDamage( HumanToken x ) => x
 		.AddDamage( 0, -x.DreamDamage );
@@ -148,9 +148,9 @@ public class TDaTD_ActionTokens( SpaceState spaceState )
 
 	#endregion
 
-	static readonly ActionScopeValue<HashSet<SpaceState>> SpacesWithDreamers = new( 
+	static readonly ActionScopeValue<HashSet<Space>> SpacesWithDreamers = new( 
 		"SpacesWithDreamers", 
-		() => new HashSet<SpaceState>()
+		() => new HashSet<Space>()
 	);
 
 	#endregion

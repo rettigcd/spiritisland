@@ -25,8 +25,8 @@ public class England : AdversaryBase, IAdversary {
 			"During Setup, on each board add 1 City to land #1 and 1 Town to land #2."
 		){ InitFunc = (gs,_) => {
 			foreach(var board in gs.Island.Boards) {
-				board[1].ScopeTokens.Setup( Human.City, 1 );
-				board[2].ScopeTokens.Setup( Human.Town, 1 );
+				board[1].ScopeSpace.Setup( Human.City, 1 );
+				board[2].ScopeSpace.Setup( Human.Town, 1 );
 			}
 		}},
 
@@ -82,14 +82,14 @@ public class England : AdversaryBase, IAdversary {
 	}
 
 	static SpaceAction Build => new SpaceAction( "Build (Escalation - Building Boom)", 
-		x => { var gs = GameState.Current; return gs.InvaderDeck.Build.Engine.Do1Build(gs,x.Tokens); }
+		x => { var gs = GameState.Current; return gs.InvaderDeck.Build.Engine.Do1Build(gs,x.Space); }
 	);
 
 	static CtxFilter<TargetSpaceCtx> Has_TheMostTownsAndCities => new CtxFilter<TargetSpaceCtx>(" has the most Town/City", HasTheMostTownsOrCities_Imp );
 
 	static IEnumerable<TargetSpaceCtx> HasTheMostTownsOrCities_Imp( IEnumerable<TargetSpaceCtx> src ) {
-		int maxCount = src.Max( src => src.Tokens.SumAny(Human.Town_City));
-		return src.Where( s => s.Tokens.SumAny( Human.Town_City ) == maxCount );
+		int maxCount = src.Max( src => src.Space.SumAny(Human.Town_City));
+		return src.Where( s => s.Space.SumAny( Human.Town_City ) == maxCount );
 	}
 
 	#endregion
@@ -105,10 +105,10 @@ public class England : AdversaryBase, IAdversary {
 		const string Name = "Proud & Mighty Capital";
 		// Additional Loss Condition
 		// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
-		static bool IsCapital(SpaceState s) => 7 <= s.SumAny( Human.Town_City );
-		var capital = ActionScope.Current.Tokens_Unfiltered.FirstOrDefault( IsCapital );
+		static bool IsCapital(Space s) => 7 <= s.SumAny( Human.Town_City );
+		Space capital = ActionScope.Current.Spaces_Unfiltered.FirstOrDefault( IsCapital );
 		if( capital != null )
-			GameOverException.Lost($"{Name} on {capital.Space.Text}");
+			GameOverException.Lost($"{Name} on {capital.Label}");
 	}
 
 	#endregion Win/Loss Condition - Proud and Mighty Capital

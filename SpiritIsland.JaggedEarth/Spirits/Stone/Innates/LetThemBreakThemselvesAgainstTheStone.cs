@@ -6,13 +6,13 @@ class LetThemBreakThemselvesAgainstTheStone {
 
 	[InnateTier("3 earth","After Invaders deal 1 or more Damage to target land, 2 Damage")]
 	static public Task Option0(TargetSpaceCtx ctx ) {
-		ctx.Tokens.Adjust( new BreakThemselvesMod(ctx.Self,false), 1 );
+		ctx.Space.Adjust( new BreakThemselvesMod(ctx.Self,false), 1 );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier("5 earth","Also deal half of the Damage Invaders did to the land (rounding down)")]
 	static public Task Option1(TargetSpaceCtx ctx ) {
-		ctx.Tokens.Adjust( new BreakThemselvesMod( ctx.Self, true ), 1 );
+		ctx.Space.Adjust( new BreakThemselvesMod( ctx.Self, true ), 1 );
 		return Task.CompletedTask;
 	}
 
@@ -23,10 +23,10 @@ class BreakThemselvesMod( Spirit _spirit, bool _shouldAddHalfInvaderDamage )
 	, IEndWhenTimePasses
 	, IReactToLandDamage
 {
-	async Task IReactToLandDamage.HandleDamageAddedAsync( SpaceState tokens,int added ) {
+	async Task IReactToLandDamage.HandleDamageAddedAsync( Space space,int added ) {
 		int damage = 2;
-		if(_shouldAddHalfInvaderDamage) damage += tokens[LandDamage.Token] / 2;
+		if(_shouldAddHalfInvaderDamage) damage += space[LandDamage.Token] / 2;
 
-		await tokens.UserSelected_DamageInvadersAsync( _spirit, damage );
+		await space.UserSelected_DamageInvadersAsync( _spirit, damage );
 	}
 }

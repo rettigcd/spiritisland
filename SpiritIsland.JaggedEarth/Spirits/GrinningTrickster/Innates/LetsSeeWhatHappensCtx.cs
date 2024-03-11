@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 class LetsSeeWhatHappensCtx( TargetSpaceCtx ctx ) 
-	: TargetSpaceCtx( ctx.Self, ctx.Space ) 
+	: TargetSpaceCtx( ctx.Self, ctx.SpaceSpec ) 
 {
 
 	/// <summary> ExecutesAll Options, not just 1 </summary>

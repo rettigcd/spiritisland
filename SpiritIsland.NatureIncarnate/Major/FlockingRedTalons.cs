@@ -13,7 +13,7 @@ public class FlockingRedTalons {
 		// -If you have- 2 air,2 plant,3 beast:
 		if(await ctx.YouHave("2 air,2 plant,3 beast" )) {
 			// Repeat this Power on a different land within Range-3 of target land.
-			Space second = await ctx.Self.SelectAsync(new A.Space("Repeat power on:", ctx.Tokens.Range(3).Where(x=>x!=ctx.Tokens),Present.Always));
+			Space second = await ctx.Self.SelectAsync(new A.SpaceDecision("Repeat power on:", ctx.Space.Range(3).Where(x=>x!=ctx.Space),Present.Always));
 			if(second != null)
 				await DoIt(ctx.Target(second));
 		}
@@ -25,12 +25,12 @@ public class FlockingRedTalons {
 		await ctx.Beasts.AddAsync(1);
 
 		// Move up to 2 Beast within Range-3 to target land.
-		await new TokenMover(ctx.Self,"Move",ctx.Tokens.Range(3),ctx.Tokens)
+		await new TokenMover(ctx.Self,"Move",ctx.Space.Range(3),ctx.Space)
 			.AddGroup(2,Token.Beast)
 			.DoUpToN();
 
 		// For each Beast present, choose a different Invader, 1 Damage to each of those.
-		int beastCount = ctx.Tokens.Beasts.Count;
+		int beastCount = ctx.Space.Beasts.Count;
 		await ctx.SourceSelector
 			.AddAll(Human.Invader)
 			.ConfigOnlySelectEachOnce()

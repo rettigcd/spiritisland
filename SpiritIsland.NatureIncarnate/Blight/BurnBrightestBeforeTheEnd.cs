@@ -31,7 +31,7 @@ public class BurnBrightestBeforeTheEnd : BlightCard {
 				await from.RemoveAsync();
 				++self.Presence.Destroyed.Count;
 			}
-            else
+			else
 				// place
 				await from.MoveToAsync(to);
 		}

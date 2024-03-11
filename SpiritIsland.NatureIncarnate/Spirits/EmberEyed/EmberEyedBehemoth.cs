@@ -4,7 +4,7 @@ public class EmberEyedBehemoth : Spirit {
 
 	public const string Name = "Ember-Eyed Behemoth";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	class DiscardPowerCardWithFireFromHand : DiscardCards {
 		public DiscardPowerCardWithFireFromHand() 
@@ -56,7 +56,7 @@ public class EmberEyedBehemoth : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 2 presenct + Incarna in highest # wetlands that is adjacent to ANY Jungle
-		SpaceState start = board.Spaces.Last( s => s.Adjacent_Existing.Any(x=>x.IsJungle ) ).ScopeTokens;
+		Space start = board.Spaces.Last( s => s.Adjacent_Existing.Any(x=>x.IsJungle ) ).ScopeSpace;
 		start.Setup(Presence.Token, 2);
 		start.Setup(Incarna,1);
 	}

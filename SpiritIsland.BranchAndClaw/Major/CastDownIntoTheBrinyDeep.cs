@@ -16,7 +16,7 @@ public class CastDownIntoTheBrinyDeep {
 		if(await ctx.YouHave("2 sun,2 moon,4 water,4 earth" )) {
 			// Pick board
 			// (from querki, if space has multiple boards, user selects.)
-			var boards = ctx.Space.Boards;
+			var boards = ctx.SpaceSpec.Boards;
 			var options = boards.Select(b=>b.Name).Order().ToArray();
 			string name = await ctx.Self.SelectText("Pick Board To Destroy",options,Present.AutoSelectSingle);
 			var board = boards.Single(b=>b.Name == name);
@@ -31,40 +31,40 @@ public class CastDownIntoTheBrinyDeep {
 		// All destroyed blight is removed from the game instead of being returned to the blight card.
 
 		var existingSpaces = board.Spaces_Existing.ScopeTokens().ToArray();
-		foreach(SpaceState spaceState in existingSpaces )
-			await spaceState.DestroySpace();
+		foreach(Space space in existingSpaces )
+			await space.DestroySpace();
 
 		// Scan for tokens that are in an illegal state
-		foreach(SpaceState spaceState in existingSpaces)
-			CleanUpInvalidSpace( spaceState );
+		foreach(Space space in existingSpaces)
+			CleanUpInvalidSpace( space );
 
 		ActionScope.Current.Log( new Log.LayoutChanged( $"{Name} destroyed Board {board.Name}" ) );
 	}
 
-	static void CleanUpInvalidSpace( SpaceState spaceState ) {
-		if(TerrainMapper.Current.IsInPlay( spaceState.Space )) return;
+	static void CleanUpInvalidSpace( Space space ) {
+		if(TerrainMapper.Current.IsInPlay( space )) return;
 
-		HumanToken[] cleanup = spaceState.AllHumanTokens().ToArray();
+		HumanToken[] cleanup = space.AllHumanTokens().ToArray();
 		if(cleanup.Length == 0) return;
 
-		SpaceState target = FindClosestInPlaySpace( spaceState );
+		Space target = FindClosestInPlaySpace( space );
 		foreach(HumanToken token in cleanup)
-			TransferToken( spaceState, target, token );
+			TransferToken( space, target, token );
 	}
 
-	static void TransferToken( SpaceState spaceState, SpaceState target, HumanToken token ) {
+	static void TransferToken( Space space, Space target, HumanToken token ) {
 		// Place on destination
-		target?.Init( token, spaceState[token] );
+		target?.Init( token, space[token] );
 		// remove from origin
-		spaceState.Init( token, 0 );
+		space.Init( token, 0 );
 	}
 
-	static SpaceState FindClosestInPlaySpace( SpaceState spaceState ) {
+	static Space FindClosestInPlaySpace( Space space ) {
 		int range = 0;
-		SpaceState target;
+		Space target;
 		var mapper = TerrainMapper.Current;
 		do {
-			target = spaceState.Range( ++range ).FirstOrDefault( x => mapper.IsInPlay( x.Space ) );
+			target = space.Range( ++range ).FirstOrDefault( mapper.IsInPlay );
 		}while(target == null && 20 < range);
 		return target;
 	}

@@ -6,14 +6,14 @@ public class WeaveTogetherTheFabricOfPlace {
 	[Instructions( "Target land and a land adjacent to it become a single land for this turn. (It has the terrain and land # of both lands. When this effect expires, divide pieces as you wish; all of them are considered moved.) -If you have- 4 Air: Isolate the joined land. If it has Invaders, 2 Fear, and remove up to 2 Invaders." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// target land and a land adjacent to it become a single land for this turn.
-		var other = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.Space.Label} to.")).Space;
+		var other = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.SpaceSpec.Label} to.")).SpaceSpec;
 
-		MultiSpace multi = JoinSpaces( ctx.Self, ctx.Space, other );
+		MultiSpaceSpec multi = JoinSpaces( ctx.Self, ctx.SpaceSpec, other );
 
 		// if you have 4 air:
 		if(await ctx.YouHave( "4 air" )) {
 			// isolate the joined land.
-			var joinedCtx = ctx.Target( multi );
+			var joinedCtx = ctx.TargetSpec( multi );
 			joinedCtx.Isolate();
 			// If it has invaders,
 			if(joinedCtx.HasInvaders) {
@@ -26,11 +26,11 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static MultiSpace JoinSpaces( Spirit originalSelf, Space space, Space other ) {
+	static MultiSpaceSpec JoinSpaces( Spirit originalSelf, SpaceSpec space, SpaceSpec other ) {
 
 		var gameState = GameState.Current;
 
-		var multi = new MultiSpace( space, other );
+		var multi = new MultiSpaceSpec( space, other );
 		MoveItemsOnSpace( other, multi, true );
 		MoveItemsOnSpace( space, multi, true );
 
@@ -44,7 +44,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		// Add Multi
 		multi.AddToBoardsAndSetAdjacent( adjacents.Distinct() );
 
-		ActionScope.Current.Log( new Log.LayoutChanged($"{space.Text} and {other.Text} were woven together") );
+		ActionScope.Current.Log( new Log.LayoutChanged($"{space.Label} and {other.Label} were woven together") );
 
 		// When this effect expires
 		gameState.AddTimePassesAction( TimePassesAction.Once( 
@@ -54,7 +54,7 @@ public class WeaveTogetherTheFabricOfPlace {
 				removeOther.Restore();
 				removeSpace.Restore();
 
-				ActionScope.Current.Log( new Log.LayoutChanged( $"{space.Text} and {other.Text} were split up." ) );
+				ActionScope.Current.Log( new Log.LayoutChanged( $"{space.Label} and {other.Label} were split up." ) );
 
 				await DistributeVisibleTokens( originalSelf, space, other );
 
@@ -65,10 +65,10 @@ public class WeaveTogetherTheFabricOfPlace {
 		return multi;
 	}
 
-	static void CopyNewModsToBoth( Space space, Space other, MultiSpace multi ) {
-		var a = space.ScopeTokens;
-		var b = other.ScopeTokens;
-		var newMods = multi.ScopeTokens.Keys.Where( k => k is not IToken )
+	static void CopyNewModsToBoth( SpaceSpec space, SpaceSpec other, MultiSpaceSpec multi ) {
+		var a = space.ScopeSpace;
+		var b = other.ScopeSpace;
+		var newMods = multi.ScopeSpace.Keys.Where( k => k is not IToken )
 			.Except( a.Keys )
 			.Except( b.Keys )
 			.ToArray();
@@ -78,31 +78,31 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static async Task DistributeVisibleTokens( Spirit self, Space from, Space to ) {
+	static async Task DistributeVisibleTokens( Spirit self, SpaceSpec from, SpaceSpec to ) {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,self);
 
-		var fromTokens = from.ScopeTokens;
-		var toTokens = to.ScopeTokens;
+		Space fromSpace = from.ScopeSpace;
+		Space toSpace = to.ScopeSpace;
 
 		// Distribute Tokens (All of them are considered moved.)
-		var tokenClasses = fromTokens.OfType<IToken>()
+		ITokenClass[] tokenClasses = fromSpace.OfType<IToken>()
 			.Select( x => x.Class ).Distinct()
 			.ToArray();
-		await toTokens.Gather( self )
+		await toSpace.Gather( self )
 			.AddGroup( int.MaxValue, tokenClasses )
-			.ConfigSource(s=>s.FilterSource( ss => ss.Space == from ))
+			.ConfigSource(s=>s.FilterSource( ss => ss.SpaceSpec == from ))
 			.DoUpToN();
 
 		// Move remaining onto themselves so they look moved.
-		await fromTokens.OfType<IToken>()
+		await fromSpace.OfType<IToken>()
 			.ToArray()
-			.Select( re => re.MoveAsync(from,from) )
+			.Select( re => re.MoveAsync(fromSpace, fromSpace) )
 			.WhenAll();
 	}
 
-	static void MoveItemsOnSpace( Space src, Space dst, bool copyInvisible ) {
-		var srcTokens = src.ScopeTokens;
-		var dstTokens = dst.ScopeTokens;
+	static void MoveItemsOnSpace( SpaceSpec src, SpaceSpec dst, bool copyInvisible ) {
+		var srcTokens = src.ScopeSpace;
+		var dstTokens = dst.ScopeSpace;
 		foreach(var key in srcTokens.Keys.ToArray()) {
 			int count = srcTokens[key];
 			if(key is IToken) {

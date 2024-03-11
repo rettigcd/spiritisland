@@ -10,9 +10,9 @@ public static class StrifedRavage {
 		async ctx => {
 
 			// Capture Strifed Counts
-			var strifedCounts = ctx.Tokens.InvaderTokens()
+			var strifedCounts = ctx.Space.InvaderTokens()
 				.Where( x => 0 < x.StrifeCount )
-				.ToDictionary( x=>x, x=>ctx.Tokens[x] );
+				.ToDictionary( x=>x, x=>ctx.Space[x] );
 
 			var invaderBinding = ctx.Invaders;
 			foreach(var p in strifedCounts)
@@ -34,8 +34,8 @@ public static class StrifedRavage {
 			await EachInvaderTakesDamageByStrifeCount( space );
 	}
 
-	static async Task EachInvaderTakesDamageByStrifeCount( SpaceState tokens ) {
-		var strifedInvaders = tokens.InvaderTokens()
+	static async Task EachInvaderTakesDamageByStrifeCount( Space space ) {
+		var strifedInvaders = space.InvaderTokens()
 			.Where( x => 0 < x.StrifeCount )
 			.OrderBy( x => x.RemainingHealth )
 			.ToArray(); // get the lowest ones first so we can reduce without them cascading
@@ -43,11 +43,11 @@ public static class StrifedRavage {
 		// ! Not doing Badland damage here since I don't want to an a UI/await
 
 		foreach(HumanToken strifedInvader in strifedInvaders)
-			await DamageInvaderHealthByItsOwnStrife( tokens, strifedInvader );
+			await DamageInvaderHealthByItsOwnStrife( space, strifedInvader );
 	}
 
-	static async Task DamageInvaderHealthByItsOwnStrife( SpaceState tokens, HumanToken invader ) {
-		await tokens.AllHumans( invader ).AdjustAsync( x=> x.AddDamage( x.StrifeCount ) );
+	static async Task DamageInvaderHealthByItsOwnStrife( Space space, HumanToken invader ) {
+		await space.AllHumans( invader ).AdjustAsync( x=> x.AddDamage( x.StrifeCount ) );
 	}
 
 	#endregion

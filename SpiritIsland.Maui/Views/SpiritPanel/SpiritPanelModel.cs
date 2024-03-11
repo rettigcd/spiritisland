@@ -2,7 +2,7 @@
 
 public class SpiritPanelModel : ObservableModel {
 
-	public string SpiritName => _spirit.Text;
+	public string SpiritName => _spirit.SpiritName;
 	public SpecialRuleModel[] SpecialRules { get; }
 	public InnateModel[] Innates { get; }
 

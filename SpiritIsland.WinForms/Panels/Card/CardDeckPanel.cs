@@ -82,7 +82,7 @@ class CardDeckPanel : IPanel {
 
 		// Add: Impending Energy
 		if(_ctx._spirit is DancesUpEarthquakes due && due.Impending.Contains(card)) {
-			int remaining = Math.Max(0,card.Cost - due.ImpendingEnergy[card.Name]);
+			int remaining = Math.Max(0,card.Cost - due.ImpendingEnergy[card.Title]);
 			cardRect.Float( 
 				new TextRect($"T-{remaining}" ){ Font=.9f, Background="#FFFFFF80", Padding=(.2f,.3f) }, 
 				5,50,90,45

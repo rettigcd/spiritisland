@@ -19,10 +19,10 @@ public class TokenLocation_Tests {
 		var board = Board.BuildBoardA();
 
 		GameState gs = new GameState(new RiverSurges(),board);
-		Space a5 = board[5];
+		SpaceSpec a5 = board[5];
 		var layout = new ManageInternalPoints( BoardLayout.Get( "A" ).ForSpace( a5 ) );
 
-		SpaceState ss = gs.Tokens[a5];
+		Space ss = gs.Tokens[a5];
 		var explorer = ss.GetDefault(Human.Explorer);
 		var town = ss.GetDefault(Human.Town);
 		var city = ss.GetDefault(Human.City);

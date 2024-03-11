@@ -57,7 +57,7 @@ public class InvaderDeckBuilder( string _levels ) {
 		return _levelsString.Contains( 'C' ) ? Level2SansCoastal : Level2Cards;
 	}
 
-	protected static IEnumerable<InvaderCard> Level2SansCoastal => Level2Cards.Where( x => x.Text != CoastalFilter.Name );
+	protected static IEnumerable<InvaderCard> Level2SansCoastal => Level2Cards.Where( x => x.Code != CoastalFilter.Name );
 
 	protected virtual IEnumerable<InvaderCard> SelectLevel3Cards() => Level3Cards;
 

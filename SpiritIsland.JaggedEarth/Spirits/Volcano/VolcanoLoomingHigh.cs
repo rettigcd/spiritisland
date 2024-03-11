@@ -6,7 +6,7 @@ public class VolcanoLoomingHigh : Spirit {
 	public const string CollapseInABlastOfLavaAndSteam = "Collapse in a Blast of Lava and Steam";
 	public const string MountainHome = "Mountain Home";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	#region SpecialRules
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{

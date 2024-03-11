@@ -40,13 +40,13 @@ public class ForestsOfLivingObsidian_Tests {
 	public async Task Repeat_BadlandsWorksOnSameTargetTwice() {
 		var fix = new ConfigurableTestFixture();
 		var space1 = fix.Board[3];
-		var spaceState = fix.GameState.Tokens[space1];
+		var space = fix.GameState.Tokens[space1];
 
 		// Given: 2 sun, 3 fire, 3 earth
 		fix.InitElements( "2 sun,3 fire,3 earth" );
 
 		//  And: target land has 1 presence, 2 Cities
-		fix.Spirit.Given_IsOn( spaceState );
+		fix.Spirit.Given_IsOn( space );
 		fix.InitTokens( space1, "3C@3" );
 
 		// When: play card
@@ -60,7 +60,7 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.Choose( "C@1" ); // Kill 1st City
 		fix.Choose( "C@1" ); // Kill 2nd City
 		await task.ShouldComplete();
-		spaceState.Summary.ShouldBe( "2M,1RSiS" );
+		space.Summary.ShouldBe( "2M,1RSiS" );
 
 		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}

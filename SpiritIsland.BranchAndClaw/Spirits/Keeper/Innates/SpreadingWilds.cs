@@ -13,7 +13,7 @@ public class SpreadingWilds {
 	[InnateTier( "1 plant", "If target land has no explorer, add 1 wilds.", 1 )]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		// if target land has no explorer, add 1 wilds
-		if( !ctx.Tokens.HasAny(Human.Explorer) )
+		if( !ctx.Space.HasAny(Human.Explorer) )
 			await ctx.Wilds.AddAsync(1);
 	}
 

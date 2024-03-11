@@ -98,7 +98,7 @@ public partial class ResourceImages
 			: Back( card.InvaderStage );
 
 		Bitmap Front( InvaderCard card ) {
-			string key = $"invaders\\{card.Text}.png";
+			string key = $"invaders\\{card.Code}.png";
 			if(_cache.Contains( key )) return _cache.Get( key );
 
 			Bitmap image = InvaderCardBuilder.BuildInvaderCard( card, this );
@@ -248,7 +248,7 @@ public partial class ResourceImages
 	async Task<Bitmap> GetPowerCardAsync( PowerCard card ) {
 		try {
 			ImageDiskCache _cache = new ImageDiskCache();
-			string key = $"PowerCard\\{card.Name}.png";
+			string key = $"PowerCard\\{card.Title}.png";
 			if(_cache.Contains( key )) return _cache.Get( key );
 
 			Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card, this ); // don't dispose, we are returning it
@@ -264,7 +264,7 @@ public partial class ResourceImages
 
 	public Bitmap GetSpiritMarker( Spirit spirit, Img img ) {
 		ImageDiskCache _cache = new ImageDiskCache();
-		string key = $"SpiritMarkers\\{spirit.Text}-{img}.png";
+		string key = $"SpiritMarkers\\{spirit.SpiritName}-{img}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 		Bitmap image = SpiritMarkerBuilder.BuildSpiritMarker( spirit, img, this );
 		_cache.Add( key, image );
@@ -276,7 +276,7 @@ public partial class ResourceImages
 	#region interface PowerCardResources
 
 	async Task<Image> PowerCardResources.GetPowerCardImage( PowerCard card ) {
-		string key = $"power_card_pic\\{card.Name}.png";
+		string key = $"power_card_pic\\{card.Title}.png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 		Bitmap bitmap = await GetPowerCardImage_Internal( card );
 		_cache.Add( key, bitmap );
@@ -284,7 +284,7 @@ public partial class ResourceImages
 	}
 	static async Task<Bitmap> GetPowerCardImage_Internal( PowerCard card ) {
 		try {
-			return await CardDownloader.GetImage( card.Name );
+			return await CardDownloader.GetImage( card.Title );
 		}
 		catch {
 			return new Bitmap( 24, 24, System.Drawing.Imaging.PixelFormat.Format32bppPArgb );
@@ -304,7 +304,7 @@ public partial class ResourceImages
 
 	#endregion interface InvaderCardResources
 
-	public Brush UseSpaceBrush( Space space ) {
+	public Brush UseSpaceBrush( SpaceSpec space ) {
 		Terrain terrain
 			= space.IsWetland ? Terrain.Wetland
 			: space.IsJungle ? Terrain.Jungle

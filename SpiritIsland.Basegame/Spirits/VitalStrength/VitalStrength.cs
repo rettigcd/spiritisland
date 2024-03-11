@@ -3,7 +3,7 @@
 public class VitalStrength : Spirit {
 
 	public const string Name = "Vital Strength of the Earth";
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { EarthsVitality.Rule } ;
 
@@ -35,15 +35,15 @@ public class VitalStrength : Spirit {
 		static public SpecialRule Rule => new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.");
 		readonly SpiritPresence presence = spirit.Presence;
 
-		public int DefendOnSpace( SpaceState space ) 
+		public int DefendOnSpace( Space space ) 
 			=> presence.IsSacredSite(space) ? 3 : 0;
 	}
 
 	void InitPresence( Board board ){
 		var higestJungle = board.Spaces.OrderByDescending( s => s.Label ).First( s => s.IsJungle );
 		var higestMountain = board.Spaces.OrderByDescending(s => s.Label).First(s => s.IsMountain);
-		higestMountain.ScopeTokens.Setup( Presence.Token, 2 );
-		higestJungle.ScopeTokens.Setup( Presence.Token, 1 );
+		higestMountain.ScopeSpace.Setup( Presence.Token, 2 );
+		higestJungle.ScopeSpace.Setup( Presence.Token, 1 );
 	}
 
 }

@@ -52,7 +52,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		PowerRangeCalc = new ShadowTouchedRealm_RangeCalculator();
 	}
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{
 		TerrorStalksTheLand.Rule,

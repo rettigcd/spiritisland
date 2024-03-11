@@ -15,7 +15,7 @@ public class GuideTheWayOnFeatheredWings {
 
 		// track which beast moves
 		var tracker = new TrackBeastTokenMoved();
-		ctx.Tokens.Init(tracker,1);
+		ctx.Space.Init(tracker,1);
 
 		// move beast (1 of 2)
 		Space destination1 = await ctx.MoveTokensToSingleLand(1, new TargetCriteria( 1 ), Token.Beast );
@@ -24,24 +24,24 @@ public class GuideTheWayOnFeatheredWings {
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.
 		// the beast / dahan may move to an adjacent land and then back.
 		var destCtx = ctx.Target(destination1);
-		await TokenMover.SingleDestination(destCtx, ctx.Tokens)
+		await TokenMover.SingleDestination(destCtx, ctx.Space)
 			.AddGroup(2,Human.Dahan)
 			.DoUpToN();
 
 		// move beast (2 of 2)
-		var selection = A.Space.ForMoving_SpaceToken( $"Move {tracker.BeastMoved.Text} to", destination1, destination1.ScopeTokens.Adjacent.Downgrade(), Present.Done, tracker.BeastMoved );
+		A.SpaceDecision selection = A.SpaceDecision.ForMoving( $"Move {tracker.BeastMoved.Text} to", destination1.SpaceSpec, destination1.Adjacent, Present.Done, tracker.BeastMoved );
 		Space destination2 = await ctx.Self.SelectAsync( selection );
 		if(destination2 == null) return;
-		await tracker.BeastMoved.MoveAsync(destination1,destination2);
+		await tracker.BeastMoved.MoveAsync(destCtx.Space, destination2);
 
 		var destCtx2 = ctx.Target( destination2 );
-		await TokenMover.SingleDestination(destCtx2, destCtx.Tokens)
+		await TokenMover.SingleDestination(destCtx2, destCtx.Space)
 			.AddGroup( 2, Human.Dahan )
 			.DoUpToN();
 	}
 
 	class TrackBeastTokenMoved : BaseModEntity, IHandleTokenRemoved {
-		public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
+		public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) {
 			if(args.Removed.Class == Token.Beast && args is TokenMovedArgs ){
 				BeastMoved = args.Removed;
 				from.Init(this,0);

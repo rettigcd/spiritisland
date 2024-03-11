@@ -37,7 +37,7 @@ public class ToDreamAThousandDeaths_Tests {
 	public async Task DreamKilledExplorers_ArePushed(string method) {
 		const int count = 2;
 
-		var tokens = _board[5].ScopeTokens;
+		var tokens = _board[5].ScopeSpace;
 
 		// Given: 2 explorers
 		tokens.Given_InitSummary("2E@1");
@@ -83,7 +83,7 @@ public class ToDreamAThousandDeaths_Tests {
 		// And:4-fear
 		Assert_GeneratedFear( count * 2 );
 		// And: town on destination
-		_board[8].ScopeTokens.Summary.ShouldBe( $"{count}T@2" );
+		_board[8].ScopeSpace.Summary.ShouldBe( $"{count}T@2" );
 		// And: not at origin
 		_board[5].Assert_HasInvaders("");
 
@@ -117,7 +117,7 @@ public class ToDreamAThousandDeaths_Tests {
 	public async Task ConsecutivePowersCanDreamKillMultipletimes() {
 
 		// Given: 1 very-damaged city
-		var tokens = _board[5].ScopeTokens;
+		var tokens = _board[5].ScopeSpace;
 		tokens.Setup( StdTokens.City1, 1 );
 
 		// When: 3 separate actinos cause 1 damage
@@ -137,7 +137,7 @@ public class ToDreamAThousandDeaths_Tests {
 
 		var log = GameState.Current.LogAsStringList();
 
-		var tokens = _board[5].ScopeTokens;
+		var tokens = _board[5].ScopeSpace;
 
 		// Given: 1 very-damaged city
 		tokens.Setup( StdTokens.City1, 1 );

@@ -25,7 +25,7 @@ public class SpiritMarkerBuilder {
 		TokenAppearance appearance = GetApearanceForSpirit(spirit);
 
 		// presenceAppearance.HslAdjustment.Adjust( bitmap );
-		using Bitmap pattern = ResourceImages.Singleton.LoadSpiritImage( spirit.Text );
+		using Bitmap pattern = ResourceImages.Singleton.LoadSpiritImage( spirit.SpiritName );
 		SimpleMods.ColorOverlay( shape, pattern, appearance.PatternOffset );
 
 		SimpleMods.BrightnessContrast_Photoshop( shape, appearance.Brightness, appearance.Contrast );
@@ -40,7 +40,7 @@ public class SpiritMarkerBuilder {
 
 	static TokenAppearance GetApearanceForSpirit( Spirit spirit ) {
 
-		return spirit.Text switch {
+		return spirit.SpiritName switch {
 			ASpreadOfRampantGreen.Name           => new TokenAppearance( 114, .65f, .45f ),
 			Bringer.Name                         => new TokenAppearance( 300, .6f ).Offset( 180, 10 ).BC(-.5f,.48f),
 			LightningsSwiftStrike.Name           => new TokenAppearance( 55, .64f ),

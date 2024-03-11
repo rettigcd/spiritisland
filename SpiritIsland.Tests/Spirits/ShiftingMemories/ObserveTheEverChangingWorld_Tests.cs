@@ -11,9 +11,9 @@ public class ObserveTheEverChangingWorld_Tests {
 
 		// Given: a space that will ravage and lose tokens
 		TargetSpaceCtx space = fxt.TargetSpace("A5");
-		space.Tokens.AdjustDefault(Human.Explorer,1);
-		space.Tokens.Dahan.Init(2);
-		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Space.Is );
+		space.Space.AdjustDefault(Human.Explorer,1);
+		space.Space.Dahan.Init(2);
+		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.SpaceSpec.Is );
 		fxt.InitRavageCard( terrain);
 		//   But: will not build nor explore
 		fxt.gameState.InvaderDeck.Build.Cards.Clear();

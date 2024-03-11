@@ -24,7 +24,7 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 		string.Join(" / ", tokenClasses.Select(x=>x.Label)) + $" each deal -{damagePenalty} Damage during Ravage. Invaders do not heal Damage at the end of this turn.", 
 		ctx=> {
 			var penalty = new ReduceInvaderAttackBy1(damagePenalty, tokenClasses );
-			foreach(var space in ActionScope.Current.Tokens) {
+			foreach(var space in ActionScope.Current.Spaces) {
 				space.Adjust( penalty, 1);
 				ctx.Healer.SkipInvadersOn( space );
 			}

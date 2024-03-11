@@ -5,9 +5,10 @@ public class ToweringRootsIncarna( Spirit spirit )
 	, IHandleTokenAdded	// Empowers if it meets 3 vitality
 	, IStopInvaderDamage, IModifyDahanDamage, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
 	, ISkipBuilds
-	
 {
-	public void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
+	string ISkipBuilds.Text => SpaceAbreviation;
+
+	public void HandleTokenAdded( Space to, ITokenAddedArgs args ) {
 		if( !Empowered && args.Added == Token.Vitality && to[Token.Vitality] == 3)
 			Empowered = true;
 	}
@@ -29,7 +30,7 @@ public class ToweringRootsIncarna( Spirit spirit )
 
 	#region ISkipBuilds
 	public UsageCost Cost => UsageCost.Free;
-	public Task<bool> Skip( SpaceState space ) => Task.FromResult( Empowered );
+	public Task<bool> Skip( Space space ) => Task.FromResult( Empowered );
 	#endregion
 
 }

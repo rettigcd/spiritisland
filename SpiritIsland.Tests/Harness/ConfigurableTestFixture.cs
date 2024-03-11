@@ -81,11 +81,11 @@ public class ConfigurableTestFixture {
 
 	public TargetSpiritCtx TargetSelf => Spirit.Target( Spirit );
 
-	public void InitPresence( Space space, int count ) {
+	public void InitPresence( SpaceSpec space, int count ) {
 		Spirit.Given_IsOn( GameState.Tokens[space], count );
 	}
 
-	public void InitTokens( Space space, string tokenString ) {
+	public void InitTokens( SpaceSpec space, string tokenString ) {
 		GameState.Tokens[space].Given_HasTokens( tokenString );
 	}
 
@@ -104,7 +104,7 @@ public class ConfigurableTestFixture {
 
 	public string FormatOptions => Spirit.Portal.Next.FormatOptions();
 
-	public void ChoosePush( IToken token, Space destination ) {
+	public void ChoosePush( IToken token, SpaceSpec destination ) {
 		NextDecision.Choose( token.Text ); // passing Text in case options are actually SpaceTokens
 		NextDecision.Choose( destination );
 	}

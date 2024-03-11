@@ -26,8 +26,8 @@ public  class GameComponent_Tests {
 	static void ValidateGameComponentProvider( IGameComponentProvider provider ) {
 		Type assemblyType = provider.GetType();
 		FindSpiritNames( assemblyType ).ShouldAllBe( x => provider.SpiritNames.Contains( x ) );
-		FindMinorCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.MinorCards.Select( x => x.Name ).ToArray().Contains( x ) );
-		FindMajorCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.MajorCards.Select( x => x.Name ).ToArray().Contains( x ) );
+		FindMinorCards( assemblyType ).Select( x => x.Title ).ShouldAllBe( x => provider.MinorCards.Select( x => x.Title ).ToArray().Contains( x ) );
+		FindMajorCards( assemblyType ).Select( x => x.Title ).ShouldAllBe( x => provider.MajorCards.Select( x => x.Title ).ToArray().Contains( x ) );
 		FindFearCards( assemblyType ).Select( x => x.Text ).ShouldAllBe( x => provider.FearCards.Select( x => x.Text ).ToArray().Contains( x ) );
 		FindBlightCards( assemblyType ).Select( x => x.Name ).ShouldAllBe( x => provider.BlightCards.Select( x => x.Name ).ToArray().Contains( x ) );
 	}

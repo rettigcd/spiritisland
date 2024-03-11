@@ -9,7 +9,7 @@ public class CropsWitherAndFade {
 		// 2 fear
 		ctx.AddFear( 2 );
 
-		return ReplaceInvader.Downgrade1( ctx.Self, ctx.Tokens, Present.Always, Human.Town_City );
+		return ReplaceInvader.Downgrade1( ctx.Self, ctx.Space, Present.Always, Human.Town_City );
 
 	}
 

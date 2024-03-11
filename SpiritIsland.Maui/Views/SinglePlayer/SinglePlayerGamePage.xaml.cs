@@ -124,7 +124,7 @@ public partial class SinglePlayerGamePage : ContentPage {
 			await DisplayAlert(islandBlighted.Card.Text, islandBlighted.Card.Description, "OK" );
 
 		else if( obj is CommandBeasts cb)
-			await DisplayAlert( "Card Revealed", $"{cb.Text} - {cb.Desciption}", "OK"  );
+			await DisplayAlert( "Card Revealed", $"{cb.Title} - {cb.Desciption}", "OK"  );
 
 		else if( obj is GameOverLogEntry go) {
 			GameOverInfo.Text = go.ToString();

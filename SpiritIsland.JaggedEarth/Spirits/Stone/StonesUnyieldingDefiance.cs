@@ -3,7 +3,7 @@
 public class StonesUnyieldingDefiance : Spirit {
 
 	public const string Name = "Stone's Unyielding Defiance";
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { 
 		new SpecialRule("Bestow the Endurance of BedRock", "When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destroy presence (yours or others')."), 
@@ -83,8 +83,8 @@ public StonesUnyieldingDefiance() : base(
 		ss.Setup(Presence.Token,1);
 
 		// 1 in an adjacent land that has Blight(if possible) or is Sands(if not)
-		SpaceState adjacentWithBlight = ss.Adjacent.FirstOrDefault(s=>s[SpiritIsland.Token.Blight]>0);
-		SpaceState adjacentWithSand = ss.Adjacent.FirstOrDefault( s => s.Space.IsSand );
+		Space adjacentWithBlight = ss.Adjacent.FirstOrDefault(s=>s[SpiritIsland.Token.Blight]>0);
+		Space adjacentWithSand = ss.Adjacent.FirstOrDefault( s => s.SpaceSpec.IsSand );
 
 		(adjacentWithBlight ?? adjacentWithSand).Setup(Presence.Token,1);
 

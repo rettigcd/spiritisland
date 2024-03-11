@@ -37,19 +37,19 @@ public class UtterACurseOfDreadAndBone {
 	static int BlightInOrAdjacent( TargetSpaceCtx ctx ) => ctx.Range(1).Sum(s=>s.Blight.Count);
 
 	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, IToken token, int range ) {
-		var space = await ctx.SelectAsync( new A.Space( $"Add {token.Class.Label}", ctx.Range( range ), Present.Always ) );
-		await ctx.Target(space).Tokens.AddAsync(token, 1);
+		var space = await ctx.SelectAsync( new A.SpaceDecision( $"Add {token.Class.Label}", ctx.Range( range ), Present.Always ) );
+		await ctx.Target(space).Space.AddAsync(token, 1);
 	}
 
 
 	static async Task AddStrifeToLandWithinRange( TargetSpaceCtx ctx, int range ) {
-		var space = await ctx.SelectAsync(new A.Space("Add Strife",ctx.Range(range), Present.Always));
+		var space = await ctx.SelectAsync(new A.SpaceDecision("Add Strife",ctx.Range(range), Present.Always));
 		await ctx.Target(space).AddStrife();
 	}
 
 	static async Task DamageAdjacentLand( TargetSpaceCtx ctx ) {
 		// !! could make this a single SpaceToken step.
-		var space = await ctx.SelectAsync(new A.Space("Select land for 1 Damage", ctx.Adjacent, Present.Always));
+		var space = await ctx.SelectAsync(new A.SpaceDecision("Select land for 1 Damage", ctx.Adjacent, Present.Always));
 		await ctx.Target(space).DamageInvaders(1);
 	}
 

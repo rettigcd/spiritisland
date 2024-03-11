@@ -24,8 +24,8 @@ public class ExaltationOfMoltenStone {
 	class ExtendRange1FromMountain( ICalcRange _originalApi ) : DefaultRangeCalculator {
 		readonly TerrainMapper _powerTerrainMapper = ActionScope.Current.TerrainMapper;
 
-		public override IEnumerable<SpaceState> GetSpaceOptions( 
-			SpaceState source, 
+		public override IEnumerable<Space> GetSpaceOptions( 
+			Space source, 
 			TargetCriteria tc
 		) {
 			if(_powerTerrainMapper.MatchesTerrain( source, Terrain.Mountain ))

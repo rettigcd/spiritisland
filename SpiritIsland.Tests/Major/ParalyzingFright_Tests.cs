@@ -26,19 +26,19 @@ public class ParalyzingFright_Tests {
 
 		// and: there is a space a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
 		user.WaitForNext();
-		var spaceCtx = ActionScope.Current.Tokens_Unfiltered
-			.Select( x=>self.Target(x.Space) )
+		var spaceCtx = ActionScope.Current.Spaces_Unfiltered
+			.Select( x=>self.Target(x.SpaceSpec) )
 			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
-		invaderLog.Add("Selected target:"+spaceCtx.Space.Label );
+		invaderLog.Add("Selected target:"+spaceCtx.SpaceSpec.Label );
 
 		// And: we have a SS in that land
-		self.Given_IsOn(spaceCtx.Tokens, 2 );
+		self.Given_IsOn(spaceCtx.Space, 2 );
 
 		//  And: it has 3 explorers
-		spaceCtx.Tokens.InitDefault( Human.Explorer, 3 );
-		spaceCtx.Tokens.InitDefault( Human.Town    , 0 );
-		spaceCtx.Tokens.InitDefault( Human.City    , 0 ); // if we had to advance cards, might have buit a city
-		spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
+		spaceCtx.Space.InitDefault( Human.Explorer, 3 );
+		spaceCtx.Space.InitDefault( Human.Town    , 0 );
+		spaceCtx.Space.InitDefault( Human.City    , 0 ); // if we had to advance cards, might have buit a city
+		spaceCtx.Space.InvaderSummary().ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
 		//  And 2 dahan
 		spaceCtx.Dahan.Init(2);
 
@@ -48,12 +48,12 @@ public class ParalyzingFright_Tests {
 
 		//  When: Activates Card
 		user.SelectsFastAction( ParalyzingFright.Name );
-		user.TargetsLand_IgnoreOptions( spaceCtx.Space.Label );
+		user.TargetsLand_IgnoreOptions( spaceCtx.SpaceSpec.Label );
 
 		//   Null fear card triggered...
 
 		// Then: nothing changed
-		spaceCtx.Tokens.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );
+		spaceCtx.Space.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );
 
 		// Make sure that we actually executed the Ravage Build / Explore Bit
 		invaderLog.Count(s=>s.Contains("Exploring")).ShouldBeGreaterThan(0);

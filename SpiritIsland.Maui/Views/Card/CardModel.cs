@@ -30,7 +30,7 @@ public class CardModel : ObservableModel1 {
 	public CardModel(PowerCard card) {
 		Card = card;
 
-		Title = card.Name;
+		Title = card.Title;
 		Cost = card.Cost.ToString();
 		Elements = ElementModel.FromDict( card.Elements ).Select(em=>em.Element).ToArray();
 		Instructions = card.Instructions;

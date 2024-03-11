@@ -5,7 +5,7 @@ public class BlightToken( string label, char k, Img img )
 	, IHandleTokenAddedAsync
 	, IHandleTokenRemoved
 {
-	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if (args.Added != this) return; // token-added event handler for blight only
 		if (!ShouldDoBlightAddedEffects(args.Reason)) return;
 
@@ -22,19 +22,19 @@ public class BlightToken( string label, char k, Img img )
 
 		// Cascade blight
 		if (to.Blight.Count != 1 && config.ShouldCascade) {
-			Space cascadeTo = await gs.Spirits[0].SelectAsync(A.Space.ForMoving_SpaceToken(
-				$"Cascade blight from {to.Space.Label} to",
-				to.Space,
-				gs.CascadingBlightOptions(to).Downgrade(),
+			Space cascadeTo = await gs.Spirits[0].SelectAsync(A.SpaceDecision.ForMoving(
+				$"Cascade blight from {to.SpaceSpec.Label} to",
+				to.SpaceSpec,
+				gs.CascadingBlightOptions(to),
 				Present.Always,
 				Token.Blight
 			));
-			await cascadeTo.ScopeTokens.Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
+			await cascadeTo.Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}
 
-	static async Task DestroyPresence(SpaceState to, GameState gs, BlightConfig config) {
+	static async Task DestroyPresence(Space to, GameState gs, BlightConfig config) {
 		if (config.DestroyPresence)
 			foreach (Spirit spirit in gs.Spirits)
 				// I would like to replace this with:
@@ -54,14 +54,14 @@ public class BlightToken( string label, char k, Img img )
 		};
 	}
 
-	public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) {
+	public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) {
 		if(args.Removed == Token.Blight
 			&& !args.Reason.IsOneOf(
 				RemoveReason.MovedFrom, // pushing / gathering blight
 				RemoveReason.TakingFromCard
 				// RemoveReason.Replaced,  // acording to querki Replaced blight goes back to the card.
 			)
-		)	BlightCard.Space.ScopeTokens.Adjust(this,1); // shouldn't be any modifying-add mods on blight card
+		)	BlightCard.Space.ScopeSpace.Adjust(this,1); // shouldn't be any modifying-add mods on blight card
 	}
 
 	static readonly ActionScopeValue<BlightConfig> Config

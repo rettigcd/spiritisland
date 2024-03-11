@@ -12,19 +12,19 @@ public class LayPathsTheyCannotHelpButWalk {
 		var source = ctx.SourceSelector;
 
 		// Push up to half( rounded down ) of Invaders from target land.
-		AddHalf(source, ctx.Tokens, Human.Invader );
+		AddHalf(source, ctx.Space, Human.Invader );
 		// Do likewise for dahan
-		AddHalf(source, ctx.Tokens, Human.Dahan);
+		AddHalf(source, ctx.Space, Human.Dahan);
 		// Presence
-		AddHalf( source, ctx.Tokens, ctx.AllPresenceTokens );
+		AddHalf( source, ctx.Space, ctx.AllPresenceTokens );
 		// and beast( each separately ).
-		AddHalf( source, ctx.Tokens, Token.Beast );
+		AddHalf( source, ctx.Space, Token.Beast );
 
 		await source.PushUpToN( ctx.Self );
 	}
 
-	static void AddHalf( SourceSelector ss, SpaceState tokens, params ITokenClass[] groups ) {
-		int count = tokens.SumAny(groups) / 2; // half rounded down.
+	static void AddHalf( SourceSelector ss, Space space, params ITokenClass[] groups ) {
+		int count = space.SumAny(groups) / 2; // half rounded down.
 		ss.AddGroup(count,groups);
 	}
 

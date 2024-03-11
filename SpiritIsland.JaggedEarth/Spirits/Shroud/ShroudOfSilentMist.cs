@@ -6,7 +6,7 @@ public class ShroudOfSilentMist : Spirit {
 
 	public const string Name = "Shroud of Silent Mist";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	static readonly SpecialRule GatherPowerFromTheCoolAndDark = new SpecialRule(
 		"Gather Power from the Cool and Dark",
@@ -54,9 +54,9 @@ public class ShroudOfSilentMist : Spirit {
 
 		// Place presence in:
 		// (a) Highest # mountains,
-		board.Spaces.Where(s => s.IsMountain).Last().ScopeTokens.Setup(Presence.Token, 1);
+		board.Spaces.Where(s => s.IsMountain).Last().ScopeSpace.Setup(Presence.Token, 1);
 		// (b) highest # wetlands
-		board.Spaces.Where(s => s.IsWetland).Last().ScopeTokens.Setup(Presence.Token, 1);
+		board.Spaces.Where(s => s.IsWetland).Last().ScopeSpace.Setup(Presence.Token, 1);
 
 	}
 
@@ -96,7 +96,7 @@ public class ShroudOfSilentMist : Spirit {
 		//	return await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
 		MistsShiftAndFlow x = new MistsShiftAndFlow(this,prompt,sourceCriteria,targetCriteria);
-		return (await x.TargetAndFlow()).Space;
+		return await x.TargetAndFlow();
 	}
 
 	protected override object CustomMementoValue { 

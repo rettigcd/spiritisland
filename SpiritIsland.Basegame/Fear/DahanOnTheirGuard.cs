@@ -23,8 +23,8 @@ public class DahanOnTheirGuard : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
-	static void DefendIt( Func<SpaceState, int> calcDefense ) {
-		foreach(var space in ActionScope.Current.Tokens.Where( s=>s.Dahan.Any ))
+	static void DefendIt( Func<Space, int> calcDefense ) {
+		foreach(var space in ActionScope.Current.Spaces.Where( s=>s.Dahan.Any ))
 			space.Defend.Add( calcDefense( space ) );
 	}
 

@@ -16,7 +16,7 @@ public class CallToVigilance {
 		// For each Dahan in origin land, Push up to 1 Explorer/Town.
 		int pushCount = ctx.Self
 			.FindTargettingSourcesFor(
-				ctx.Space,
+				ctx.SpaceSpec,
 				new TargetingSourceCriteria( TargetFrom.Presence ),
 				new TargetCriteria( 1 )
 			)

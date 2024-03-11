@@ -14,31 +14,31 @@ public class LandDamage
 	/// 
 	/// Note - some mods could increate land damage from 0 +2 (Habsburg Monarchy)
 	/// </remarks>
-	static public async Task Add( SpaceState tokens, int totalLandDamage ) {
+	static public async Task Add( Space space, int totalLandDamage ) {
 
 		// Mod
-		IModifyLandDamage[] mods = tokens.Keys.OfType<IModifyLandDamage>().ToArray();
+		IModifyLandDamage[] mods = space.Keys.OfType<IModifyLandDamage>().ToArray();
 		foreach(IModifyLandDamage mod in mods)
-			mod.ModifyLandDamage(tokens,ref totalLandDamage);
+			mod.ModifyLandDamage(space,ref totalLandDamage);
 		if(totalLandDamage <= 0) return;
 
 		// Apply
-		tokens.Adjust( LandDamage.Token, totalLandDamage );
+		space.Adjust( LandDamage.Token, totalLandDamage );
 
 		// React
-		var eventHandlers = tokens.Keys.OfType<IReactToLandDamage>().ToArray();
+		var eventHandlers = space.Keys.OfType<IReactToLandDamage>().ToArray();
 		foreach(IReactToLandDamage handler in eventHandlers)
-			await handler.HandleDamageAddedAsync( tokens, totalLandDamage );
+			await handler.HandleDamageAddedAsync( space, totalLandDamage );
 	}
 
-	public async Task HandleDamageAddedAsync( SpaceState tokens , int _ ) {
+	public async Task HandleDamageAddedAsync( Space space , int _ ) {
 
 		// Land Damage cleans itself up at end of Action
-		ActionScope.Current.AtEndOfThisAction( _ => { tokens.Init(this,0); } );
+		ActionScope.Current.AtEndOfThisAction( _ => { space.Init(this,0); } );
 
 		// Add Blight - Assumes Invaders only Damage land 1/action.
-		if( 2 <= tokens[this] )
-			await tokens.Blight.AddAsync( 1, AddReason.Ravage );
+		if( 2 <= space[this] )
+			await space.Blight.AddAsync( 1, AddReason.Ravage );
 	}
 
 }

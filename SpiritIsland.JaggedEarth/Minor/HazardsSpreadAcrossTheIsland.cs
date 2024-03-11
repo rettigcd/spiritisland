@@ -10,7 +10,7 @@ public class HazardsSpreadAcrossTheIsland{
 		var candidates = FindHazardTokenInAdjacentLand( ctx );
 		if(candidates.Length == 0) return;
 
-		var tokenChoice = (await ctx.SelectAsync(new A.SpaceToken("Select hazard to add to "+ctx.Space.Label, candidates, Present.Always))).Token;
+		var tokenChoice = (await ctx.SelectAsync(new A.SpaceTokenDecision("Select hazard to add to "+ctx.SpaceSpec.Label, candidates, Present.Always))).Token;
 
 		// choosing disease costs 1 energy.
 		if( tokenChoice == Token.Disease )
@@ -20,7 +20,7 @@ public class HazardsSpreadAcrossTheIsland{
 		if( tokenChoice is HumanToken ht && 0 < ht.StrifeCount )
 			await ctx.AddStrife();
 		else
-			await ctx.Tokens.AddAsync( tokenChoice,1);
+			await ctx.Space.AddAsync( tokenChoice,1);
 	}
 
 	static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {
@@ -29,7 +29,7 @@ public class HazardsSpreadAcrossTheIsland{
 		var candidates = ctx.Adjacent
 			.SelectMany( adjState => adjState.OfType<IToken>()
 				.Where( IsTokenOfInterest )
-				.OnScopeTokens1( adjState.Space ) //.Select( token => new SpaceToken( adjState.Space, token ) )
+				.OnScopeTokens1( adjState.SpaceSpec ) //.Select( token => new SpaceToken( adjState.Space, token ) )
 			)
 			.GroupBy( s => s.Token )
 			.Select( grp => grp.First() )

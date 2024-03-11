@@ -11,7 +11,7 @@ internal class WaterNourishesLifesGrowth {
 
 		// You may remove 1 Blight by removing one of your Presence (From target land).
 		if(ctx.Blight.Any && await ctx.Self.UserSelectsFirstText("Destory 1 presence to remove 1 blight?","Yes, remove blight and presence", "No, thank you" )) {
-			await ctx.Tokens.Destroy( ctx.Self.Presence.Token, 1 );
+			await ctx.Space.Destroy( ctx.Self.Presence.Token, 1 );
 			await ctx.Blight.Remove(1);
 		}
 	}

@@ -14,7 +14,7 @@ public class ShapeTheSelfAnew {
 			await self.DrawMinor();
 
 		// You may Forget this Power Card to gain 3 Energy.
-		var thisCard = self.InPlay.SingleOrDefault( x => x.Name == ShapeTheSelfAnew.Name );
+		var thisCard = self.InPlay.SingleOrDefault( x => x.Title == ShapeTheSelfAnew.Name );
 		if( thisCard != null // might have already been forgotten when picking a major card.
 			&& await self.UserSelectsFirstText( $"Forget '{Name} for +3 energy.", "Yes, forget it.", "no thanks." )
 		) {

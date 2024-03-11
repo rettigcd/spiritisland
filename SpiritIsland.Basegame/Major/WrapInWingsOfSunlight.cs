@@ -17,7 +17,7 @@ public class WrapInWingsOfSunlight {
 
 		// defend 5 in that land
 		if( destination != null )
-			ctx.Target( destination ).Defend( 5 );
+			ctx.TargetSpec( destination.SpaceSpec ).Defend( 5 );
 
 	}
 

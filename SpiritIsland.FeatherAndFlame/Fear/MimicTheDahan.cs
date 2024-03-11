@@ -28,8 +28,8 @@ public class MimicTheDahan : FearCardBase, IFearCard {
 		.ActAsync( ctx );
 
 	static SpaceAction ReplaceExplorerOrTownWith1Dahan => new SpaceAction("Replace 1 Explorer/Town with 1 Dahan", async ctx => {
-		await ReplaceInvader.WithDahanAsync(ctx.Tokens,Human.Explorer_Town);
-	} ).OnlyExecuteIf( x=>x.Tokens.HasAny(Human.Explorer_Town));
+		await ReplaceInvader.WithDahanAsync(ctx.Space,Human.Explorer_Town);
+	} ).OnlyExecuteIf( x=>x.Space.HasAny(Human.Explorer_Town));
 }
 
 

@@ -35,7 +35,7 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 		Dynamic.ForRound.Clear();
 
 		foreach(var pair in _tokenCounts)
-			new SpaceState( pair.Key, pair.Value, _islandMods.Keys, this ).TimePasses();
+			new Space( pair.Key, pair.Value, _islandMods.Keys, this ).TimePasses();
 
 		return Task.CompletedTask;
 	}
@@ -47,13 +47,13 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 	/// Spirit Actions should not call this directly but rather go through Space.Tokens => ActionScope.AccessTokens()
 	/// UI or Test stuff that is outside of an ActionScope, may use this directly.
 	/// </remarks>
-	public SpaceState this[Space space] => new SpaceState( space, GetTokensCounts( space ), _islandMods.Keys, this );
+	public Space this[SpaceSpec space] => new Space( space, GetTokensCounts( space ), _islandMods.Keys, this );
 
-	CountDictionary<ISpaceEntity> GetTokensCounts( Space key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
+	CountDictionary<ISpaceEntity> GetTokensCounts( SpaceSpec key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
 
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
-	public int GetDynamicTokensFor( SpaceState space, TokenClassToken token ) 
+	public int GetDynamicTokensFor( Space space, TokenClassToken token ) 
 		=> Dynamic.GetTokensFor( space, token );
 
 	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
@@ -90,21 +90,21 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 
 			// == Restore TokenCounts ==
 			// update existing
-			foreach (var space in _tokenCounts.Keys) {
+			foreach (SpaceSpec spaceSpec in _tokenCounts.Keys) {
 				// stasis
-				space.DoesExists = true; // when false, set below
+				spaceSpec.DoesExists = true; // when false, set below
 
 				// Token counts
-				SpaceState tokens = src[space];
-				CountDictionary<ISpaceEntity> savedCounts = _tokenCounts[space];
+				Space space = src[spaceSpec];
+				CountDictionary<ISpaceEntity> savedCounts = _tokenCounts[spaceSpec];
 				// remove old types
-				foreach(var oldKey in tokens.Keys.Except(savedCounts.Keys).ToArray())
-					tokens.Init(oldKey,0);
+				foreach(var oldKey in space.Keys.Except(savedCounts.Keys).ToArray())
+					space.Init(oldKey,0);
 				// set current types
 				foreach (var (token,count) in savedCounts.Select(x=>(x.Key,x.Value))) {
-					tokens.Init(token, count);
+					space.Init(token, count);
 					if(token is ITrackMySpaces tms)
-						tms.TrackAdjust(tokens,count);
+						tms.TrackAdjust(space,count);
 				}
 			}
 			// remove old
@@ -119,8 +119,8 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 			// Restore Dynamic tokens
 			src.Dynamic.Memento = _dynamicTokens;
 		}
-		readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = [];
-		readonly Space[] _doesNotExist;
+		readonly Dictionary<SpaceSpec, CountDictionary<ISpaceEntity>> _tokenCounts = [];
+		readonly SpaceSpec[] _doesNotExist;
 		readonly Dictionary<ITokenClass, HumanToken> tokenDefaults = [];
 		readonly object _dynamicTokens;
 	}
@@ -136,6 +136,6 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 		.Select( p => p.Key + ":" + p.Value.TokensVerbose() )
 		.Join( "\r\n" );
 
-	readonly Dictionary<Space, CountDictionary<ISpaceEntity>> _tokenCounts = [];
+	readonly Dictionary<SpaceSpec, CountDictionary<ISpaceEntity>> _tokenCounts = [];
 
 }

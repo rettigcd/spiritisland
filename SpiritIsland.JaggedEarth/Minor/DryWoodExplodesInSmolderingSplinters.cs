@@ -12,7 +12,7 @@ public class DryWoodExplodesInSmolderingSplinters {
 			if(ctx.Self.Energy < 1 
 				|| ! await ctx.Self.UserSelectsFirstText($"Make '{DryWoodExplodesInSmolderingSplinters.Name}' fast?", "Yes, Pay 1 energy", "Nevermind, I'll wait" )
 			) {
-				var self = ctx.Self.InPlay.Where(x=>x.Name == DryWoodExplodesInSmolderingSplinters.Name).First();
+				var self = ctx.Self.InPlay.Where(x=>x.Title == DryWoodExplodesInSmolderingSplinters.Name).First();
 				ctx.Self.AddActionFactory(self);
 				return;
 			}

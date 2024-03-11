@@ -63,10 +63,10 @@ public class Quarantine_Tests {
 		_user.WaitForNext(); // start of Round 2
 
 		// The only thing around A8 (a jungle) is a diseased town
-		_spirit.TargetSpace( "A5" ).Tokens.Given_InitSummary( "" );
-		_spirit.TargetSpace( "A6" ).Tokens.Given_InitSummary( "" );
-		_spirit.TargetSpace( "A7" ).Tokens.Given_InitSummary( "1T@2,1Z" ); // town & diZease
-		_spirit.TargetSpace( "A8" ).Tokens.Given_InitSummary( "" );
+		_spirit.TargetSpace( "A5" ).Space.Given_InitSummary( "" );
+		_spirit.TargetSpace( "A6" ).Space.Given_InitSummary( "" );
+		_spirit.TargetSpace( "A7" ).Space.Given_InitSummary( "1T@2,1Z" ); // town & diZease
+		_spirit.TargetSpace( "A8" ).Space.Given_InitSummary( "" );
 
 		// Given: Activate fear card
 		if(activateFearCard) {
@@ -105,15 +105,15 @@ public class Quarantine_Tests {
 
 		// Ravage lands (sand:A4 & A7) have a disease
 		// The only thing around A8 (a jungle) is a diseased town
-		_spirit.TargetSpace("A4").Tokens.Given_InitSummary("1E@1,1Z"); // diZease
-		_spirit.TargetSpace("A7").Tokens.Given_InitSummary("1E@1,1Z"); // diZease
+		_spirit.TargetSpace("A4").Space.Given_InitSummary("1E@1,1Z"); // diZease
+		_spirit.TargetSpace("A7").Space.Given_InitSummary("1E@1,1Z"); // diZease
 		// Build lands (Costal:A1..3) all have explorers, A1 has a disease too
-		_spirit.TargetSpace("A1").Tokens.Given_InitSummary("1E@1,1Z");
-		_spirit.TargetSpace("A2").Tokens.Given_InitSummary("1E@1");
-		_spirit.TargetSpace("A3").Tokens.Given_InitSummary("1E@1");
+		_spirit.TargetSpace("A1").Space.Given_InitSummary("1E@1,1Z");
+		_spirit.TargetSpace("A2").Space.Given_InitSummary("1E@1");
+		_spirit.TargetSpace("A3").Space.Given_InitSummary("1E@1");
 		// Explore lands (jungle:A3 & A8) have a source (A3 is coastal, A8 is town in A5)
-		_spirit.TargetSpace("A5").Tokens.Given_InitSummary("1T@2");
-		_spirit.TargetSpace("A8").Tokens.Given_InitSummary("1Z");
+		_spirit.TargetSpace("A5").Space.Given_InitSummary("1T@2");
+		_spirit.TargetSpace("A8").Space.Given_InitSummary("1Z");
 
 		// Given: Activate fear card
 		if(activateFearCard) {
@@ -165,7 +165,7 @@ public class Quarantine_Tests {
 		await InvaderPhase.ActAsync(gs); // Build in Sands, exploring Coastal
 
 		if(skipARavage)
-			board[4].ScopeTokens.SkipRavage("Test");
+			board[4].ScopeSpace.SkipRavage("Test");
 
 		_log.Clear();
 		await InvaderPhase.ActAsync(gs); // Ravage in Sands, Build in Coastal, Explore jungle

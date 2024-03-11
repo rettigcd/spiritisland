@@ -7,7 +7,7 @@ public class CallToTend {
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 
 		return ctx.SelectActionOption(
-			new SpaceAction( "remove 1 blight", ctx => ctx.RemoveBlight() ).OnlyExecuteIf(ctx => ctx.Tokens.Blight.Any), // May not have blight
+			new SpaceAction( "remove 1 blight", ctx => ctx.RemoveBlight() ).OnlyExecuteIf(ctx => ctx.Space.Blight.Any), // May not have blight
 			new SpaceAction( "push up to 3 dahan", ctx => ctx.PushUpToNDahan( 3 ) ) // must have Dahan
 		);
 

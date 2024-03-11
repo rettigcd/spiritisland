@@ -22,7 +22,7 @@ public class BargainsOfPowerAndProtection {
 	class Range1DahanDefend1( Spirit self ) {
 		readonly Spirit _self = self;
 
-		public int DefendOn( SpaceState space ) {
+		public int DefendOn( Space space ) {
 
 			// !! This is kind of slow to do for every space.
 			// ??? Is there some way we can cache this inside the UnitOfWork?

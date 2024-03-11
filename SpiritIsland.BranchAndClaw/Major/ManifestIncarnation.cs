@@ -10,7 +10,7 @@ public class ManifestIncarnation {
 		ctx.AddFear(6);
 
 		// +1 fear for each town/city and for each of your presence in target land.
-		int fearCount = ctx.Tokens.SumAny( Human.Town_City )
+		int fearCount = ctx.Space.SumAny( Human.Town_City )
 			+ ctx.Presence.Count;
 		ctx.AddFear(fearCount);
 
@@ -24,7 +24,7 @@ public class ManifestIncarnation {
 			ctx.Defend( 6 ); // I cannot see any difference between doing -6 damage and defending 6.
 
 		// Then, Invaders in target land ravage.
-		await ctx.Tokens.Ravage();
+		await ctx.Space.Ravage();
 	}
 
 }

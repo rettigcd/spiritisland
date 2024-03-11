@@ -8,28 +8,28 @@ public sealed class DestinationSelector {
 
 	static public DestinationSelector Adjacent => new DestinationSelector(GetAdjacents);
 	static public DestinationSelector Nada => new DestinationSelector();
-	static SpaceState[] GetAdjacents(SpaceToken st) => st.Space.ScopeTokens.Adjacent.ToArray();
+	static Space[] GetAdjacents(SpaceToken st) => st.Space.Adjacent.ToArray();
 
 	#region constructors
 
-	public DestinationSelector( params SpaceState[] destinationSpaces ) {
+	public DestinationSelector( params Space[] destinationSpaces ) {
 		_findUnfilteredFromSource = _ => destinationSpaces;
-		Single = destinationSpaces.Length == 1 ? destinationSpaces[0].Space : null;
+		Single = destinationSpaces.Length == 1 ? destinationSpaces[0].SpaceSpec : null;
 	}
 
-	public DestinationSelector( IEnumerable<SpaceState> destinationSpaces ):this(_=> destinationSpaces) {
+	public DestinationSelector( IEnumerable<Space> destinationSpaces ):this(_=> destinationSpaces) {
 		_findUnfilteredFromSource = ( _ ) => destinationSpaces.ToArray();
 		var destArr = destinationSpaces.ToArray();
-		Single = destArr.Length == 1 ? destArr[0].Space : null;
+		Single = destArr.Length == 1 ? destArr[0].SpaceSpec : null;
 	}
 
 
-	public DestinationSelector( Func<SpaceToken, SpaceState[]> getDestinationsFromSource ) {
+	public DestinationSelector( Func<SpaceToken, Space[]> getDestinationsFromSource ) {
 		_findUnfilteredFromSource = getDestinationsFromSource;
 		Single = null;
 	}
 
-	public DestinationSelector( Func<SpaceToken, IEnumerable<SpaceState>> getDestinationsFromSource ) {
+	public DestinationSelector( Func<SpaceToken, IEnumerable<Space>> getDestinationsFromSource ) {
 		_findUnfilteredFromSource = (x)=>getDestinationsFromSource(x).ToArray();
 		Single = null;
 	}
@@ -41,13 +41,13 @@ public sealed class DestinationSelector {
 	public DestinationSelector Config(Action<DestinationSelector> configurer ) { configurer(this); return this; }
 
 	/// <summary> Filters the spaces 1 at a time. </summary>
-	public DestinationSelector FilterDestination( Func<SpaceState, bool> filterDestination ) {
+	public DestinationSelector FilterDestination( Func<Space, bool> filterDestination ) {
 		_filterDestination = items => items.Where( filterDestination );
 		return this;
 	}
 
 	/// <summary> Filters the spaces as a group. </summary>
-	public DestinationSelector FilterDestinationGroup( Func<IEnumerable<SpaceState>, IEnumerable<SpaceState>> filterDestination ) {
+	public DestinationSelector FilterDestinationGroup( Func<IEnumerable<Space>, IEnumerable<Space>> filterDestination ) {
 		_filterDestination = filterDestination;
 		return this;
 	}
@@ -59,56 +59,55 @@ public sealed class DestinationSelector {
 
 	#endregion public config
 
-	public async Task<Space> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
-		A.Space decision = GetDecision( actionWord, sourceSpaceToken );
+	public async Task<SpaceSpec> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
+		A.SpaceDecision decision = GetDecision( actionWord, sourceSpaceToken );
 		Space destination = await spirit.SelectAsync( decision );
 		if(destination != null)
-			await NotifyAsync( destination.ScopeTokens );
-		return destination;
+			await NotifyAsync( destination );
+		return destination.SpaceSpec;
 	}
 
-	public A.Space GetDecision( string actionWord, SpaceToken sourceSpaceToken ) {
+	public A.SpaceDecision GetDecision( string actionWord, SpaceToken sourceSpaceToken ) {
 		Space[] options = GetDestinationOptions( sourceSpaceToken );
-		A.Space decision = new A.Space( $"{actionWord} {sourceSpaceToken.Token.Text} to", options, _present )
-			.ComingFrom( sourceSpaceToken.Space )
+		A.SpaceDecision decision = new A.SpaceDecision( $"{actionWord} {sourceSpaceToken.Token.Text} to", options, _present )
+			.ComingFrom( sourceSpaceToken.Space.SpaceSpec )
 			.ShowTokenLocation( sourceSpaceToken.Token );
 		return decision;
 	}
 
 	public Space[] GetDestinationOptions( SpaceToken sourceSpaceToken ) {
 		return _filterDestination( _findUnfilteredFromSource( sourceSpaceToken ) )
-			.Where( ss => TerrainMapper.Current.IsInPlay( ss.Space ) )
-			.Downgrade()
+			.Where( TerrainMapper.Current.IsInPlay )
 			.ToArray();
 	}
 
-	public Space Single { get; }
+	public SpaceSpec Single { get; }
 
 	#region Event / Callback
 
-	public DestinationSelector Track( Action<SpaceState> onDestinationSelected ) {
+	public DestinationSelector Track( Action<Space> onDestinationSelected ) {
 		_onMoved.Add( (x)=>{ onDestinationSelected(x); return Task.CompletedTask; } );
 		return this;
 	}
 
-	public DestinationSelector Track( Func<SpaceState,Task> onDestinationSelected ) {
+	public DestinationSelector Track( Func<Space,Task> onDestinationSelected ) {
 		_onMoved.Add(onDestinationSelected);
 		return this;
 	}
 
-	public async Task NotifyAsync( SpaceState destination ) {
+	public async Task NotifyAsync( Space destination ) {
 		foreach(var onMoved in _onMoved)
 			await onMoved( destination );
 	}
 
-	readonly List<Func<SpaceState, Task>> _onMoved = [];
+	readonly List<Func<Space, Task>> _onMoved = [];
 
 	#endregion
 
 
-	Func<IEnumerable<SpaceState>, IEnumerable<SpaceState>> _filterDestination = x => x;
+	Func<IEnumerable<Space>, IEnumerable<Space>> _filterDestination = x => x;
 
-	readonly Func<SpaceToken, SpaceState[]> _findUnfilteredFromSource;
+	readonly Func<SpaceToken, Space[]> _findUnfilteredFromSource;
 	Present _present = Present.AutoSelectSingle;
 
 }

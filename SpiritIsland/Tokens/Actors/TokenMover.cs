@@ -5,14 +5,14 @@ public sealed class TokenMover(
 	string actionWord,
 	SourceSelector sourceSelector,
 	DestinationSelector destinationSelector
-	) {
+) {
 
 	#region Static Factories
 
-	/// <summary> Routes to Gatherer on the SpaceState (because that is overridable by Spirit powers) </summary>
-	static public TokenMover Gather( Spirit self, SpaceState destination ) => destination.Gather(self);
+	/// <summary> Routes to Gatherer on the Space (because that is overridable by Spirit powers) </summary>
+	static public TokenMover Gather( Spirit self, Space destination ) => destination.Gather(self);
 
-	static public TokenMover SingleDestination( TargetSpaceCtx ctx, params SpaceState[] sources ) => new TokenMover( ctx.Self, "Move", sources, ctx.Tokens );
+	static public TokenMover SingleDestination( TargetSpaceCtx ctx, params Space[] sources ) => new TokenMover( ctx.Self, "Move", sources, ctx.Space );
 
 	#endregion
 
@@ -24,15 +24,15 @@ public sealed class TokenMover(
 	public TokenMover(
 		Spirit self,
 		string actionWord,
-		SpaceState sourceSpace,
-		params SpaceState[] destinationSpaces
+		Space sourceSpace,
+		params Space[] destinationSpaces
 	) : this( self, actionWord, sourceSpace.SourceSelector, new DestinationSelector(destinationSpaces )) { }
 
 	public TokenMover( 
 		Spirit self, 
 		string actionWord,
-		IEnumerable<SpaceState> sourceSpaces,
-		params SpaceState[] destinationSpaces
+		IEnumerable<Space> sourceSpaces,
+		params Space[] destinationSpaces
 	):this(self,actionWord,new SourceSelector( sourceSpaces ), new DestinationSelector(destinationSpaces)) {}
 
 	#endregion constructors
@@ -54,11 +54,11 @@ public sealed class TokenMover(
 			if(move == null) break;
 
 			// Do Move
-			TokenMovedArgs tokenMoved = await move.Source.MoveTo( move.Destination.ScopeTokens );
+			TokenMovedArgs tokenMoved = await move.Source.MoveTo( move.Destination );
 
 			// Notify/Update Source
 			await sourceSelector.NotifyAsync( move.Source );
-			await destinationSelector.NotifyAsync( move.Destination.ScopeTokens );
+			await destinationSelector.NotifyAsync( move.Destination );
 			await NotifyAsync( tokenMoved );
 		}
 	}
@@ -66,7 +66,7 @@ public sealed class TokenMover(
 	async Task<Move> GetMoveDecision(Present present) {
 
 		var sourcePromptBuilder = Prompt.RemainingParts( present == Present.Always ? actionWord : actionWord + " up to" );
-		A.SpaceToken srcDecision = sourceSelector.BuildDecision( sourcePromptBuilder, present, destinationSelector.Single, 0, null );
+		A.SpaceTokenDecision srcDecision = sourceSelector.BuildDecision( sourcePromptBuilder, present, destinationSelector.Single, 0, null );
 
 		// Drag and Drop way
 		Move[] options = sourceSelector.GetSourceOptions()

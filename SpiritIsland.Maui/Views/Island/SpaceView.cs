@@ -5,7 +5,7 @@ using Microsoft.Maui.Graphics.Text;
 
 public class SpaceWidget : OptionView {
 
-	public IOption Option => _space;
+	public IOption Option => _spaceSpec;
 
 	Color _glowColor = Colors.Transparent;
 
@@ -25,12 +25,12 @@ public class SpaceWidget : OptionView {
 		}
 	}
 
-	public SpaceState Tokens { get; private set; }
+	public Space Space { get; private set; }
 
 	#region constructors
 
-	public SpaceWidget(SpaceState spaceState, SpaceLayout layout, PointMapper mapper, AbsoluteLayout abs, GraphicsView graphicsView ) {
-		_space = spaceState.Space;
+	public SpaceWidget(Space space, SpaceLayout layout, PointMapper mapper, AbsoluteLayout abs, GraphicsView graphicsView ) {
+		_spaceSpec = space.SpaceSpec;
 		_layout = layout;
 		_insidePoints = new ManageInternalPoints( layout );
 		_terrainColor = GetTerrainColor();
@@ -46,7 +46,7 @@ public class SpaceWidget : OptionView {
 		_abs = abs;
 		_graphicsView = graphicsView;
 
-		Tokens = spaceState;
+		Space = space;
 	}
 
 	#endregion constructors
@@ -63,9 +63,9 @@ public class SpaceWidget : OptionView {
 	public Action<IOption,bool>? SelectOptionCallback { get; set; }
 
 	public TokenLocationView GetSpaceTokenView( SpaceToken st ) {
-		return st.Space != _space ? throw new ArgumentException( "Wrong space" )
+		return st.Space.SpaceSpec != _spaceSpec ? throw new ArgumentException( "Wrong space" )
 			: _visibleTokens.TryGetValue( st.Token, out TokenLocationView? stv ) ? stv
-			: throw new ArgumentException( $"Token {st.Token} not found in {st.Space}" );
+			: throw new ArgumentException( $"Token {st.Token} not found in {st.Space.SpaceSpec}" );
 	}
 
 	#region Floating background
@@ -137,7 +137,7 @@ public class SpaceWidget : OptionView {
 		XY topLeft = new XY( center.X - _iconWidth / 2, center.Y - _iconWidth / 2 );
 		canvas.FontSize = 10f;
 		canvas.FontColor = Colors.White;
-		DrawText( canvas, Tokens.Space.Label, topLeft.X, topLeft.Y, _iconWidth, _iconWidth );
+		DrawText( canvas, Space.SpaceSpec.Label, topLeft.X, topLeft.Y, _iconWidth, _iconWidth );
 	}
 
 	void DrawPoints( ICanvas canvas, XY[] points, Color color ) {
@@ -162,12 +162,12 @@ public class SpaceWidget : OptionView {
 		}
 	}
 
-	public void SyncVisibleTokensToSpaceState(OptionViewManager ovm) {
+	public void SyncVisibleTokensToSpace(OptionViewManager ovm) {
 
-		if(Tokens is null || _abs is null) return;
-		_insidePoints.Init( Tokens );
+		if(Space is null || _abs is null) return;
+		_insidePoints.Init( Space );
 
-		IToken[] orderedTokens = [ ..Tokens.Keys.OfType<IToken>().OrderBy( OrderTokens ) ];
+		IToken[] orderedTokens = [ ..Space.Keys.OfType<IToken>().OrderBy( OrderTokens ) ];
 
 		// Do Remove
 		IToken[] toRemove = _visibleTokens.Keys.Except( orderedTokens ).ToArray();
@@ -228,7 +228,7 @@ public class SpaceWidget : OptionView {
 		XY topLeft = new XY( center.X - _iconWidth / 2, center.Y - _iconWidth / 2 );
 
 		// build token
-		var st = new SpaceToken(Tokens, token);
+		var st = new SpaceToken(Space, token);
 
 		var vm = new TokenLocationModel( st );
 		TokenLocationView view = new TokenLocationView { 
@@ -267,7 +267,7 @@ public class SpaceWidget : OptionView {
 		return (path, bounds);
 	}
 
-	Color GetTerrainColor() => _space is Space1 s1 ? s1.NativeTerrain.GetColor() : Colors.White;
+	Color GetTerrainColor() => _spaceSpec is SingleSpaceSpec s1 ? s1.NativeTerrain.GetColor() : Colors.White;
 
 	void Tap_Tapped( object? sender, TappedEventArgs e ) {
 	}
@@ -289,7 +289,7 @@ public class SpaceWidget : OptionView {
 	readonly Color _terrainColor;
 	readonly SpaceLayout _layout;
 	readonly ManageInternalPoints _insidePoints;
-	readonly Space _space;
+	readonly SpaceSpec _spaceSpec;
 
 	const float GLOW_WIDTH = 10f;
 

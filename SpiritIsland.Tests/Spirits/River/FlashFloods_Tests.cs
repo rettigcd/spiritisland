@@ -30,7 +30,7 @@ public class FlashFloods_Tests {
 		var presenceSpace = board[2];
 		_spirit.Given_IsOn(presenceSpace);
 		//   And: 1 of each type of Invaders in Inland space (A4)
-		Space targetSpace = board[4];
+		SpaceSpec targetSpace = board[4];
 		var counts = _gameState.Tokens[targetSpace];
 		counts.AdjustDefault( Human.City, 1 );
 		counts.AdjustDefault( Human.Town, 1 );
@@ -38,7 +38,7 @@ public class FlashFloods_Tests {
 		targetSpace.Assert_HasInvaders( "1C@3,1T@2,1E@1" );
 
 		//   And: Purchased FlashFloods
-		_card = _spirit.Hand.Single( c => c.Name == FlashFloods.Name );
+		_card = _spirit.Hand.Single( c => c.Title == FlashFloods.Name );
 		_spirit.Energy = _card.Cost;
 		_spirit.PlayCard( _card );
 		Assert.Contains( _card, _spirit.GetAvailableActions( _card.DisplaySpeed ).OfType<PowerCard>().ToList() ); // is fast
@@ -64,7 +64,7 @@ public class FlashFloods_Tests {
 		//   And: Presence on A2 (city/coastal)
 		_spirit.Given_IsOn(board[2]);
 		//   And: 1 of each type of Invaders in Costal space (A2)
-		Space targetSpace = board[2];
+		SpaceSpec targetSpace = board[2];
 		var grp = _gameState.Tokens[targetSpace];
 		grp.AdjustDefault( Human.City, 1 );
 		grp.AdjustDefault( Human.Town, 1 );
@@ -72,7 +72,7 @@ public class FlashFloods_Tests {
 		targetSpace.Assert_HasInvaders( "1C@3,1T@2,1E@1" );
 
 		//   And: Purchased FlashFloods
-		_card = _spirit.Hand.Single(c=>c.Name == FlashFloods.Name);
+		_card = _spirit.Hand.Single(c=>c.Title == FlashFloods.Name);
 		_spirit.Energy = _card.Cost;
 		_spirit.PlayCard( _card );
 		Assert.Contains(_card,_spirit.GetAvailableActions(_card.DisplaySpeed).OfType<PowerCard>().ToList()); // is fast

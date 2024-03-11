@@ -68,9 +68,9 @@ namespace SpiritIslandCmd {
 				.Union( game.Spirit.GetAvailableActions(Phase.Slow) )
 				.Distinct()
 //				.OrderBy( x => x.Speed == Speed.Growth ? 0 : x.Speed == Speed.Fast ? 1 : 2 )
-				.OrderBy( x => x.Name )
+				.OrderBy( x => x.Title )
 				.ToList();
-			int maxNameWidth = cards.Select( c => c.Name.Length ).Max();
+			int maxNameWidth = cards.Select( c => c.Title.Length ).Max();
 			Console.WriteLine( "Cards:" );
 			foreach(var card in cards)
 				Console.WriteLine( "\t" + uiMap.FormatFactory( card, maxNameWidth ) );
@@ -78,7 +78,7 @@ namespace SpiritIslandCmd {
 		}
 
 		void ShowSpirit() {
-			Console.WriteLine( $"Spirit: {game.Spirit.Text}" );
+			Console.WriteLine( $"Spirit: {game.Spirit.SpiritName}" );
 			// Growth Options
 			Console.WriteLine( $"\tEnergy: {game.Spirit.Energy}");
 			Console.WriteLine( $"\tCards:  {game.Spirit.NumberOfCardsPlayablePerTurn}/turn" );
@@ -99,8 +99,8 @@ namespace SpiritIslandCmd {
 			var d = game.GameState.InvaderDeck;
 			Console.WriteLine( "Invaders" );
 			Console.WriteLine( "\tDiscard: " + d.Discards.Count );
-			Console.WriteLine( "\tRavage:  " + d.Ravage.Cards.Select(x=>x.Text).Join(" - " ));
-			Console.WriteLine( "\tBuild:   " + d.Build.Cards.Select(x=>x.Text).Join(" - " ));
+			Console.WriteLine( "\tRavage:  " + d.Ravage.Cards.Select(x=>x.Code).Join(" - " ));
+			Console.WriteLine( "\tBuild:   " + d.Build.Cards.Select(x=>x.Code).Join(" - " ));
 			Console.WriteLine( "\tExplore: " + "???" );
 			//					Console.WriteLine("\tRemaining:"+invaderDeck.);
 			Console.WriteLine();

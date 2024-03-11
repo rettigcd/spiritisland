@@ -8,7 +8,7 @@ public class ReduceHealthByStrife
 {
 	static public async Task Init( GameState gameState ){
 		// adjust current strifed invaders
-		foreach(var space in ActionScope.Current.Tokens)
+		foreach(var space in ActionScope.Current.Spaces)
 			foreach(var invader in space.AllHumanTokens().Where(x=>0<x.StrifeCount).ToArray() )
 				await space.AllHumans(invader).AdjustAsync(x=>x.AddHealth(-x.StrifeCount));
 
@@ -36,7 +36,7 @@ public class ReduceHealthByStrife
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
 	Task IRunWhenTimePasses.TimePasses( GameState gameState ){
-		foreach(var space in ActionScope.Current.Tokens)
+		foreach(var space in ActionScope.Current.Spaces)
 			foreach(var invader in space.AllHumanTokens().Where(x=>0<x.StrifeCount).ToArray() )
 				space.AllHumans(invader).Adjust(x=>x.AddHealth(x.StrifeCount));
 		return Task.CompletedTask;

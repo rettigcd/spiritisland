@@ -31,7 +31,7 @@ public class BlazingRenewal_Tests {
 			Spirit = spirit
 		};
 
-		var space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Text == restrictedSpace )];
+		var space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Label == restrictedSpace )];
 
 		// Given: presence on board
 		setup.Spirit.Given_IsOn( space, 2 );

@@ -7,7 +7,7 @@ public class DisorientingLandscape {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		await ctx.Push(1, Human.Explorer);
 
-		if(ctx.Space.IsOneOf(Terrain.Mountain,Terrain.Jungle))
+		if(ctx.SpaceSpec.IsOneOf(Terrain.Mountain,Terrain.Jungle))
 			await ctx.Wilds.AddAsync(1);
 	}
 

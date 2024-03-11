@@ -18,7 +18,7 @@ public class RoilingBogAndSnaggingThorn {
 		ctx.Defend(2);
 
 		// 1 Dahan does not participate in Ravage.
-		ctx.Tokens.Adjust(new DahanSitOutRavage(ctx.Self,1),1);
+		ctx.Space.Adjust(new DahanSitOutRavage(ctx.Self,1),1);
 
 		return Task.CompletedTask;
 	}
@@ -33,7 +33,7 @@ public class DahanSitOutRavage( Spirit picker, int countToSitOut ) : BaseModEnti
 	readonly Spirit _picker = picker;
 	readonly int _countToSitOut = countToSitOut;
 
-	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
+	async Task IConfigRavagesAsync.ConfigAsync( Space space ) {
 
 		var ss = space.SourceSelector.AddGroup(_countToSitOut,Human.Dahan).ConfigOnlySelectEachOnce();
 

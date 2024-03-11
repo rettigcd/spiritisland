@@ -22,7 +22,7 @@ public class SettleIntoHuntingGrounds {
 			// 2 fear and
 			self.AddFear(2);
 			// 2 damamge in one of your lands.
-			var space = await self.SelectAsync( new A.Space("2 damage", self.Presence.Lands, Present.Always ));
+			var space = await self.SelectAsync( new A.SpaceDecision("2 damage", self.Presence.Lands, Present.Always ));
 			if( space != null )
 				await self.Target(space).DamageInvaders( 2 );
 		}
@@ -38,7 +38,7 @@ class FreezePresence( string name, SpiritPresence presence ) : BaseModEntity , I
 		if(args.Token.HasTag(_presence) 
 			&& args.Reason.IsOneOf(RemoveReason.MovedFrom,RemoveReason.Abducted)
         ) {
-			ActionScope.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Space.Text}"));
+			ActionScope.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Label}"));
 			args.Count = 0;
 		}
 	}

@@ -35,7 +35,7 @@ public class PlacePresence : SpiritAction {
 			.ToArray();
 		if(toOptions.Length == 0)
 			return; // this can happen if Ocean is dragged way-inland and is no longer near an ocean or coast.
-		Space to = await self.SelectAsync( A.Space.ToPlacePresence( toOptions.Downgrade(), Present.Always, from.Token ) );
+		Space to = await self.SelectAsync( A.SpaceDecision.ToPlacePresence( toOptions, Present.Always, from.Token ) );
 		await from.MoveToAsync(to);
 	}
 

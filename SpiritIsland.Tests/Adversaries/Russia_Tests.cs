@@ -13,8 +13,8 @@ public class Russia_Tests {
 		Board board = gameState.Island.Boards[0];
 
 		//  And: no explorers on 2 spaces
-		SpaceState beastSpace1 = gameState.Tokens[ board[1] ];
-		SpaceState beastSpace2 = gameState.Tokens[ board[4] ];
+		Space beastSpace1 = gameState.Tokens[ board[1] ];
+		Space beastSpace2 = gameState.Tokens[ board[4] ];
 		beastSpace1.InitDefault(Human.Explorer,0);
 		beastSpace2.InitDefault( Human.Explorer, 0 );
 
@@ -35,11 +35,11 @@ public class Russia_Tests {
 		t.IsCompleted.ShouldBeFalse();
 		spirit.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (1 of 2)" )
 			.HasOptions("A1,A4")
-			.Choose(beastSpace1.Space.Text);
+			.Choose(beastSpace1.Label);
 		t.IsCompleted.ShouldBeFalse();
 		spirit.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (2 of 2)" )
 			.HasOptions( "A1,A4" )
-			.Choose( beastSpace2.Space.Text );
+			.Choose( beastSpace2.SpaceSpec.Label );
 
 		beastSpace1.Sum(Human.Explorer).ShouldBe(1);
 		beastSpace2.Sum( Human.Explorer ).ShouldBe( 1 );
@@ -58,12 +58,12 @@ public class Russia_Tests {
 		Board board1 = gameState.Island.Boards[1];
 
 		//  And: no beasts on the first board
-		foreach(Space space in board0.Spaces )
+		foreach(SpaceSpec space in board0.Spaces )
 			gameState.Tokens[space].Beasts.Init(0);
 
 		//  And: board 2 has 2 spaces with beasts and no explorers
-		SpaceState beastSpace1 = gameState.Tokens[board1[5]];
-		SpaceState beastSpace2 = gameState.Tokens[board1[8]];
+		Space beastSpace1 = gameState.Tokens[board1[5]];
+		Space beastSpace2 = gameState.Tokens[board1[8]];
 		beastSpace1.InitDefault( Human.Explorer, 0 );
 		beastSpace2.InitDefault( Human.Explorer, 0 );
 		beastSpace1.Beasts.Adjust( 1 );
@@ -79,15 +79,15 @@ public class Russia_Tests {
 		// Then: user can place 2 explorers in either of the 2 beast spaces
 		Spirit spirit0 = gameState.Spirits[0];
 		t.IsCompleted.ShouldBeFalse();
-		spirit0.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (1 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace1.Space.Text );
+		spirit0.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (1 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace1.Label );
 		t.IsCompleted.ShouldBeFalse();
-		spirit0.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (2 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace2.Space.Text );
+		spirit0.NextDecision().HasPrompt( "Escalation - Add Explorer for board A (2 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace2.Label );
 
 		Spirit spirit1 = gameState.Spirits[1];
 		t.IsCompleted.ShouldBeFalse();
-		spirit1.NextDecision().HasPrompt( "Escalation - Add Explorer for board B (1 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace1.Space.Text );
+		spirit1.NextDecision().HasPrompt( "Escalation - Add Explorer for board B (1 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace1.Label );
 		t.IsCompleted.ShouldBeFalse();
-		spirit1.NextDecision().HasPrompt( "Escalation - Add Explorer for board B (2 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace2.Space.Text );
+		spirit1.NextDecision().HasPrompt( "Escalation - Add Explorer for board B (2 of 2)" ).HasOptions( "B5,B8" ).Choose( beastSpace2.Label );
 
 		beastSpace1.Sum( Human.Explorer ).ShouldBe( 2 );
 		beastSpace2.Sum( Human.Explorer ).ShouldBe( 3 ); // +1 normal explore
@@ -108,11 +108,11 @@ public class Russia_Tests {
 		Board board = gameState.Island.Boards[0];
 
 		//  Then: A7 should have get 1 beast and 1 explorer
-		SpaceState a7 = gameState.Tokens[board[7]];
+		Space a7 = gameState.Tokens[board[7]];
 		a7.Summary.ShouldBe( "1A,2D@2,1E@1" ); // 1A is beast
 
 		//  When: Ravage on that space
-		await a7.Space.When_Ravaging();
+		await a7.SpaceSpec.When_Ravaging();
 
 		//  Then: explorer did 2 damage and killed 1 dahan and created 1 blight and removed the Beast
 		a7.Summary.ShouldBe( "1B,1D@2" );
@@ -127,19 +127,19 @@ public class Russia_Tests {
 		var cfg = Given_RussiaLevel( 2 ).ConfigBoards("A").ConfigSpirits(RiverSurges.Name);
 		GameState gameState = BuildGame( cfg );
 		Board boardA = gameState.Island.Boards[0];
-		SpaceState a5 = gameState.Tokens[boardA[5]];
+		Space a5 = gameState.Tokens[boardA[5]];
 		// Given: 2 explorers and 10 dahan on a space
 		a5.Given_HasTokens("10D@2,2E@1");
 var xxx = a5.Keys.ToArray();
 		//   And: no explorers on push-destination
-		SpaceState a1 = gameState.Tokens[boardA[1]];
+		Space a1 = gameState.Tokens[boardA[1]];
 		a1.Given_ClearAll();
 
 		//  When: ravage
 		//  Then: we push 1
 		Spirit spirit = gameState.Spirits[0];
-		await a5.Space.When_Ravaging()
-			.AwaitUser( u => u.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( a1.Space.Text ) )
+		await a5.SpaceSpec.When_Ravaging()
+			.AwaitUser( u => u.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( a1.Label ) )
 			.ShouldComplete("Ravage");
 
 		//   And: explorer should be on destination
@@ -155,18 +155,18 @@ var xxx = a5.Keys.ToArray();
 		GameState gameState = BuildGame( cfg );
 		Spirit spirit = gameState.Spirits[0];
 		Board boardA = gameState.Island.Boards[0];
-		SpaceState a3 = gameState.Tokens[boardA[3]];
+		Space a3 = gameState.Tokens[boardA[3]];
 		// Given: 10 explorers on a space
 		a3.Given_HasTokens( "10E@1" );
 		//   And: no explorers on push-destination
-		SpaceState destination = gameState.Tokens[boardA[4]];
+		Space destination = gameState.Tokens[boardA[4]];
 		destination.Given_ClearAll();
 		//  When: power destroys
 		await using var actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,spirit);
-		Task t = TheJungleHungers.ActAsync( spirit.Target(a3.Space) );
+		Task t = TheJungleHungers.ActAsync( spirit.Target(a3.SpaceSpec) );
 		//  Then: we push 1 explorer to a Land-space (not A0-ocean)
 		t.IsCompleted.ShouldBeFalse();
-		spirit.NextDecision().HasPrompt( "Push E@1 to" ).HasOptions( "A2,A4" ).Choose( destination.Space.Text );
+		spirit.NextDecision().HasPrompt( "Push E@1 to" ).HasOptions( "A2,A4" ).Choose( destination.Label );
 		t.IsCompleted.ShouldBeTrue();
 
 		//   And: explorer should be on destination
@@ -181,12 +181,12 @@ var xxx = a5.Keys.ToArray();
 		var cfg = Given_RussiaLevel( 2 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
 		GameState gameState = BuildGame( cfg );
 		Board boardA = gameState.Island.Boards[0];
-		Space a5 = boardA[5];
+		SpaceSpec a5 = boardA[5];
 
 		// Given: many explorers on A5
-		a5.ScopeTokens.Given_HasTokens( "5E@1" );
+		a5.ScopeSpace.Given_HasTokens( "5E@1" );
 		//   And: nothing on A6
-		Space a6 = boardA[6];
+		SpaceSpec a6 = boardA[6];
 		a6.Given_ClearTokens();
 
 		// When destroying all explorers
@@ -194,7 +194,7 @@ var xxx = a5.Keys.ToArray();
 			// Then: pushes 1
 			user.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( "A6" );
 		} );
-		boardA[6].ScopeTokens.Summary.ShouldBe( "1E@1" );
+		boardA[6].ScopeSpace.Summary.ShouldBe( "1E@1" );
 	}
 
 	[Fact]
@@ -202,15 +202,15 @@ var xxx = a5.Keys.ToArray();
 		var cfg = Given_RussiaLevel( 2 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
 		GameState gameState = BuildGame( cfg );
 		Board boardA = gameState.Island.Boards[0];
-		Space a5 = boardA[5];
+		SpaceSpec a5 = boardA[5];
 
 		// Given: many explorers on A5
-		a5.ScopeTokens.Given_HasTokens( "5E@1" );
+		a5.ScopeSpace.Given_HasTokens( "5E@1" );
 		//   And: nothing on A6
-		Space a6 = boardA[6];
+		SpaceSpec a6 = boardA[6];
 		a6.Given_ClearTokens();
 		//   And: A7 is isolated
-		boardA[7].ScopeTokens.Init( Token.Isolate, 1 );
+		boardA[7].ScopeSpace.Init( Token.Isolate, 1 );
 
 		// When destroying all explorers
 		await gameState.Spirits[0].When_TargetingSpace( a5, TheJungleHungers.ActAsync, ( user ) => {
@@ -224,12 +224,12 @@ var xxx = a5.Keys.ToArray();
 		var cfg = Given_RussiaLevel( 2 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
 		GameState gameState = BuildGame( cfg );
 		Board boardA = gameState.Island.Boards[0];
-		Space a5 = boardA[5];
+		SpaceSpec a5 = boardA[5];
 
 		// Given: many explorers on A5
-		a5.ScopeTokens.Given_HasTokens( "5E@1" );
+		a5.ScopeSpace.Given_HasTokens( "5E@1" );
 		//   And: is isolated
-		a5.ScopeTokens.Init( Token.Isolate, 1 );
+		a5.ScopeSpace.Init( Token.Isolate, 1 );
 
 		// When destroying all explorers
 		await gameState.Spirits[0].When_TargetingSpace( a5, TheJungleHungers.ActAsync, ( user ) => {
@@ -249,10 +249,10 @@ var xxx = a5.Keys.ToArray();
 
 		// Given: an invader card from the current GameState
 		var card = gameState.InvaderDeck.Explore.Cards.First();
-		card.Text.ShouldBe("J"); // jungle
+		card.Code.ShouldBe("J"); // jungle
 
 		//   And: a space that does not match the card
-		SpaceState a5 = gameState.Tokens[boardA[5]];
+		Space a5 = gameState.Tokens[boardA[5]];
 		card.MatchesCard( a5 ).ShouldBeFalse();
 
 		//   And: 3 explorers and 1 dahan on space
@@ -274,10 +274,10 @@ var xxx = a5.Keys.ToArray();
 
 		// Given: an invader card from the current GameState
 		var card = gameState.InvaderDeck.Explore.Cards.First();
-		card.Text.ShouldBe( "J" ); // jungle
+		card.Code.ShouldBe( "J" ); // jungle
 
 		//   And: a space that does not match the card
-		SpaceState a5 = gameState.Tokens[boardA[5]];
+		Space a5 = gameState.Tokens[boardA[5]];
 		card.MatchesCard( a5 ).ShouldBeFalse();
 
 		//   And: 3 explorers and 1 dahan on space

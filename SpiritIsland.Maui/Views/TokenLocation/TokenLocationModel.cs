@@ -72,7 +72,7 @@ public class TokenLocationModel
 	}
 
 	static ImageSource GetSpiritImage(Spirit spirit) {
-		string filename = spirit.Text.ToResourceName(".png");
+		string filename = spirit.SpiritName.ToResourceName(".png");
 		return ImageCache.FromFile(filename);
 	}
 

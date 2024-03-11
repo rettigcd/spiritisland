@@ -5,7 +5,7 @@ class WoodSeeksGrowthHumansSeekFreedom {
 
 	[InnateTier("3 plant","Choose a Spirit with presence in target land. They gain a Power Card.")]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
-		var spiritOptions = GameState.Current.Spirits.Where( s=> s.Presence.IsOn( ctx.Tokens ) ).ToArray();
+		var spiritOptions = GameState.Current.Spirits.Where( s=> s.Presence.IsOn( ctx.Space ) ).ToArray();
 		if(spiritOptions.Length > 0) return;
 		var spirit = await ctx.SelectAsync(new A.Spirit("Select spirit to gain a power card", spiritOptions));
 

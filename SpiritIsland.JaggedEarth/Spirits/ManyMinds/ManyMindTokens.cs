@@ -2,7 +2,7 @@
 
 public partial class ManyMindsMoveAsOne {
 
-	class ManyMindTokens( SpaceState src ) : SpaceState( src ) {
+	class ManyMindTokens( Space src ) : Space( src ) {
 		public override TokenMover Gather( Spirit self ) 
 			=> new TokenMover( self, "Gather", 
 				new BeastSourceSelector( this ), 
@@ -11,16 +11,16 @@ public partial class ManyMindsMoveAsOne {
 
 		public override DestinationSelector PushDestinations => new DestinationSelector(  ExtendBeastBy1 );
 
-		static SpaceState[] ExtendBeastBy1( SpaceToken st ) {
+		static Space[] ExtendBeastBy1( SpaceToken st ) {
 			int range = st.Token.Class == Token.Beast ? 2 : 1; // Compare Class, not Token so we get all beasts
-			return st.Space.ScopeTokens.Range( range ).ToArray();
+			return st.Space.Range( range ).ToArray();
 		}
 
 	}
 
 }
 
-class BeastSourceSelector( SpaceState destination ) 
+class BeastSourceSelector( Space destination ) 
 	: SourceSelector( destination.Adjacent ) 
 {
 	public override SpaceToken[] GetSourceOptions() {
@@ -32,5 +32,5 @@ class BeastSourceSelector( SpaceState destination )
 		}
 		return [.. items];
 	}
-	readonly SpaceState _destination = destination;
+	readonly Space _destination = destination;
 }

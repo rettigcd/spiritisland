@@ -24,7 +24,7 @@ static public class RemoveReasonExtension {
 /// Hook for Habsburg Monarchy Durable Towns.
 /// Not part of the interface because we don't want it in the Move event
 /// </remarks>
-public class DestroyingFromDamage( SpaceState from ) : RemovingTokenArgs( from, RemoveReason.Destroyed ) {
+public class DestroyingFromDamage( Space from ) : RemovingTokenArgs( from, RemoveReason.Destroyed ) {
 
 	/// <summary>
 	/// Special value used to Trigger this Type 

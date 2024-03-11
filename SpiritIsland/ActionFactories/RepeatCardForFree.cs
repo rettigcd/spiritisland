@@ -22,9 +22,10 @@ public class RepeatCardForFree : IActionFactory {
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 		=> speed == Phase.Fast || speed == Phase.Slow;
 
-	public string Name => "Replay Card" + Suffix;
+	string IOption.Text => Title;
+
+	public string Title => "Replay Card" + Suffix;
 	string Suffix => maxCost == int.MaxValue ? "" : $" (max cost:{maxCost})";
-	public string Text => Name;
 
 	public async Task ActivateAsync(Spirit self) {
 

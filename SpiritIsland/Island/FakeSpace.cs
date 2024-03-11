@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class FakeSpace : Space {
+public class FakeSpace : SpaceSpec {
 	public FakeSpace( string name ) : base( name ) {
 		Boards = [];
 	}

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public sealed class InvaderCard : IOption {
 
@@ -29,7 +27,8 @@ public sealed class InvaderCard : IOption {
 
 	public int InvaderStage { get; }
 
-	public string Text { get; }
+	string IOption.Text => Code;
+	public readonly string Code;
 	public bool TriggersEscalation { get; }
 
 	#region Constructors
@@ -38,16 +37,16 @@ public sealed class InvaderCard : IOption {
 		Filter = filter;
 		InvaderStage = invaderStage;
 		TriggersEscalation = InvaderStage == 2 && level2TriggersEscalation;
-		Text = (TriggersEscalation ? "2" : "") + Filter.Text;
+		Code = (TriggersEscalation ? "2" : "") + Filter.Text;
 	}
 
 	#endregion
 
 	#region Matching Terrain
 
-	public bool MatchesCard( Space space ) => Filter.Matches( space ); // used only in tests
+	public bool MatchesCard( SpaceSpec space ) => Filter.Matches( space.ScopeSpace ); // used only in tests
 
-	public bool MatchesCard( SpaceState space ) => Filter.Matches( space.Space );
+	public bool MatchesCard( Space space ) => Filter.Matches( space );
 
 	#endregion
 
@@ -57,13 +56,13 @@ public sealed class InvaderCard : IOption {
 }
 
 public class SingleTerrainFilter( Terrain terrain ) : InvaderCardSpaceFilter {
-	public bool Matches( Space space ) => space.Is( Terrain );
+	public bool Matches( Space space ) => space.SpaceSpec.Is( Terrain );
 	public string Text { get; } = terrain.ToString()[..1];
 	readonly public Terrain Terrain = terrain; // public so UI can detect what to draw
 }
 
 public class DoubleTerrainFilter( Terrain t1, Terrain t2 ) : InvaderCardSpaceFilter {
-	public bool Matches( Space space ) => space.IsOneOf( Terrain1, Terrain2 );
+	public bool Matches( Space space ) => space.SpaceSpec.IsOneOf( Terrain1, Terrain2 );
 	public string Text { get; } = t1.ToString()[..1] + "+" + t2.ToString()[..1];
 	readonly public Terrain Terrain1 = t1, Terrain2 = t2;
 }
@@ -72,5 +71,5 @@ public class DoubleTerrainFilter( Terrain t1, Terrain t2 ) : InvaderCardSpaceFil
 public class CoastalFilter : InvaderCardSpaceFilter {
 	public const string Name = "Coastal";
 	public string Text => Name;
-	public bool Matches( Space space ) => space.IsCoastal;
+	public bool Matches( Space space ) => space.SpaceSpec.IsCoastal;
 }

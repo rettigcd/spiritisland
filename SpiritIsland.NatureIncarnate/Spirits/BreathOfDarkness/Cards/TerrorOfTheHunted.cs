@@ -17,7 +17,7 @@ public class TerrorOfTheHunted {
 		}
 
 		// If target land is (), Add 1 Strife. (Strife only escapes with the Invader it's attached to.)
-		if(ctx.Space == EndlessDark.Space)
+		if(ctx.SpaceSpec == EndlessDark.Space)
 			++strifeCount;
 
 		await ctx.AddStrife(strifeCount);

@@ -17,9 +17,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 	#endregion
 
-	public string Text => $"{Name} ${Cost} ({DisplaySpeed})";
-	public string Name         => _cardAttr.Name;
-	public Phase DisplaySpeed         => _speedAttr.DisplaySpeed;
+	string IOption.Text        => $"{Title} ${Cost} ({DisplaySpeed})";
+	public string Title         => _cardAttr.Name;
+	public Phase DisplaySpeed  => _speedAttr.DisplaySpeed;
 	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
 	// These are only used for drawing the cards.
@@ -57,7 +57,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 
 	async Task ActivateInnerAsync( Spirit self ) {
-		LastTarget = await _targetAttr.GetTargetCtx( Name, self );
+		LastTarget = await _targetAttr.GetTargetCtx( Title, self );
 		if(LastTarget != null) // Can't find a tar
 			await InvokeOnObjectCtx( LastTarget );
 	}

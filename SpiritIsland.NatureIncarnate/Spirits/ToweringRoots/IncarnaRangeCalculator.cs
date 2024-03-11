@@ -7,7 +7,7 @@ public class IncarnaRangeCalculator( Spirit self ) : DefaultRangeCalculator {
 
 	readonly Incarna _incarna = self.Incarna;
 
-	public override IEnumerable<SpaceState> GetSpaceOptions( SpaceState source, TargetCriteria tc ) 
+	public override IEnumerable<Space> GetSpaceOptions( Space source, TargetCriteria tc ) 
 		=> base.GetSpaceOptions( source, source == _incarna.Space ? tc.ExtendRange(1) : tc );
 
 }

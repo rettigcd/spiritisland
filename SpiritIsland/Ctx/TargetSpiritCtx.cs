@@ -15,7 +15,8 @@ public class TargetSpiritCtx( Spirit self, Spirit target ) : IHaveASpirit {
 
 	public Task<bool> YouHave( string elementString ) => Self.YouHave( elementString );
 
-	public TargetSpaceCtx Target( Space space ) => Self.Target( space );
+	public TargetSpaceCtx Target( SpaceSpec space ) => Self.Target( space );
+	public TargetSpaceCtx Target( Space space) => Self.Target(space);
 
 	#endregion
 

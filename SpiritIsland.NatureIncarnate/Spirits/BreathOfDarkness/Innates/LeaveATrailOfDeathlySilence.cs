@@ -8,7 +8,7 @@ public class LeaveATrailOfDeathlySilence {
 		Incarna incarna = self.Incarna;
 		if( !incarna.IsPlaced ) return;
 
-		var incarnaCtx = self.Target(incarna.Space.Space );
+		var incarnaCtx = self.Target(incarna.Space.SpaceSpec );
 		await incarnaCtx.DamageInvaders(1,Human.Invader);
 
 		await incarnaCtx.PushUpTo(1,incarna.Class);
@@ -25,9 +25,9 @@ public class LeaveATrailOfDeathlySilence {
 		Incarna incarna = self.Incarna;
 		if(!incarna.IsPlaced) return;
 
-		var result = await incarna.AsSpaceToken().MoveTo(EndlessDark.Space.ScopeTokens);
+		var result = await incarna.AsSpaceToken().MoveTo(EndlessDark.Space.ScopeSpace);
 
-		await new TokenMover(self,"Bring", ((Space)result.From).ScopeTokens, EndlessDark.Space.ScopeTokens)
+		await new TokenMover(self,"Bring", new SourceSelector( (Space)result.From ), new DestinationSelector( EndlessDark.Space.ScopeSpace ))
 			.AddGroup( 1, Human.Invader )
 			.DoN();
 

@@ -43,7 +43,7 @@ public abstract partial class Spirit
 
 	public IUserPortal Portal => _gateway;
 	public Task<T> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption => _gateway.Select<T>( decision );
-	public void PreSelect( SpaceToken st ) => _gateway.Preloaded = st;
+	public void PreSelect( SpaceToken st ) => _gateway.PreloadedSpaceToken = st;
 	readonly UserGateway _gateway;
 
 	#endregion
@@ -247,7 +247,7 @@ public abstract partial class Spirit
 
 		int index = _availableActions.IndexOf( selectedActionFactory );
 		if(index == -1) 
-			throw new InvalidOperationException( $"Unable to remove ActionFactory {selectedActionFactory.Name} from Unresolved Actions because it is not there." );
+			throw new InvalidOperationException( $"Unable to remove ActionFactory {selectedActionFactory.Title} from Unresolved Actions because it is not there." );
 		_usedActions.Add(_availableActions[index]);
 		_availableActions.RemoveAt( index );
 
@@ -305,7 +305,9 @@ public abstract partial class Spirit
 
 	#endregion
 
-	public abstract string Text { get; }
+	string IOption.Text => SpiritName;
+
+	public abstract string SpiritName { get; }
 
 	abstract public SpecialRule[] SpecialRules { get; }
 
@@ -318,7 +320,8 @@ public abstract partial class Spirit
 	public virtual void InitSpiritAction( ActionScope scope ) { }
 
 	/// <summary> Convenience method only. calls new SelfCtx(this) </summary>
-	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx( this, space );
+	public TargetSpaceCtx Target( SpaceSpec space ) => new TargetSpaceCtx( this, space );
+	public TargetSpaceCtx Target(Space space) => new TargetSpaceCtx(this, space.SpaceSpec);
 	public TargetSpiritCtx Target( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
 
 	#region Temporary - Fear - until we can find a better home for it.
@@ -540,19 +543,21 @@ public abstract partial class Spirit
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		SpaceState[] spaces = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).ToArray();
+		Space[] spaces = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).ToArray();
 		
 		if(spaces.Length == 0) {
 			ActionScope.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
 			return null;
 		}
 
-		return preselect != null && UserGateway.UsePreselect.Value
-			? await preselect.PreSelect( this, spaces )
-			: await SelectAsync( new A.Space( prompt, spaces.Downgrade(), Present.Always ));
+		var mySpace = preselect != null && UserGateway.UsePreselect.Value
+			? await preselect.PreSelect(this, spaces)
+			: await SelectAsync(new A.SpaceDecision(prompt, spaces, Present.Always));
+
+		return mySpace;
 	}
 
-	public IEnumerable<SpaceState> FindTargettingSourcesFor( Space target, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {
+	public IEnumerable<Space> FindTargettingSourcesFor( SpaceSpec target, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {
 		return sourceCriteria.GetSources(this)
 			.Where(source => IsOriginFor(source,target,targetCriteria))
 			.ToArray();
@@ -560,20 +565,20 @@ public abstract partial class Spirit
 
 	/// <summary> Determines if target can be reached from the specified source given any of the TargetCriteria </summary>
 	/// <remarks>Used to find Origin lands</remarks>
-	public bool IsOriginFor( SpaceState source, Space target, params TargetCriteria[] targetCriteria ) {
-		var targetTokens = target.ScopeTokens;
+	public bool IsOriginFor( Space source, SpaceSpec target, params TargetCriteria[] targetCriteria ) {
+		var targetSpace = target.ScopeSpace;
 		return targetCriteria.Any( tc => 
-			PowerRangeCalc.GetSpaceOptions( source, tc ).Contains( targetTokens )
+			PowerRangeCalc.GetSpaceOptions( source, tc ).Contains( targetSpace )
 		);
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
-	protected virtual IEnumerable<SpaceState> GetPowerTargetOptions(
+	protected virtual IEnumerable<Space> GetPowerTargetOptions(
 		GameState gameState,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
-		IEnumerable<SpaceState> sources = sourceCriteria.GetSources(this);
+		IEnumerable<Space> sources = sourceCriteria.GetSources(this);
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
 		return PowerRangeCalc.GetSpaceOptions( sources, targetCriteria )
@@ -581,7 +586,7 @@ public abstract partial class Spirit
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder
-	public IEnumerable<SpaceState> FindSpacesWithinRange( TargetCriteria targetCriteria ) {
+	public IEnumerable<Space> FindSpacesWithinRange( TargetCriteria targetCriteria ) {
 		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
 		return rangeCalculator
 			.GetSpaceOptions( Presence.Lands, targetCriteria );

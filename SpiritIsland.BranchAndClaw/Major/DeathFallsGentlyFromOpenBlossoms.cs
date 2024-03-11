@@ -9,7 +9,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 		await ctx.DamageInvaders(4);
 
 		// If any invaders remain, add 1 disease
-		if( ctx.Tokens.InvaderTokens().Any())
+		if( ctx.Space.InvaderTokens().Any())
 			await ctx.Disease.AddAsync(1);
 
 		// if 3 air and 3 plant:  
@@ -17,9 +17,9 @@ public class DeathFallsGentlyFromOpenBlossoms {
 			// 3 fear.
 			ctx.AddFear(3);
 			// Add 1 disease to 2 adjacent lands with invaders.
-			var options = ctx.Tokens.Adjacent.Where( x => x.HasInvaders() );
+			var options = ctx.Space.Adjacent.Where( x => x.HasInvaders() );
 			for(int i = 0; i < 2; ++i) {
-				Space space = await ctx.Self.SelectAsync( A.Space.ToPlaceToken( $"Add disease to ({i + 1} of 2)", options.Downgrade(), Present.Always, ctx.Tokens.Disease.Default ) );
+				Space space = await ctx.Self.SelectAsync( A.SpaceDecision.ToPlaceToken( $"Add disease to ({i + 1} of 2)", options, Present.Always, ctx.Space.Disease.Default ) );
 				if( space != null )
 					await ctx.Target(space).Disease.AddAsync( 1 );
 			}

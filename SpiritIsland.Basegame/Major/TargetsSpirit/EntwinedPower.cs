@@ -36,7 +36,7 @@ public class EntwinedPower {
 	}
 
 	static async Task GiftCardToSpirit( Spirit src, Spirit dst ) {
-		var myGift = await src.SelectPowerCard( "Select gift for " + dst.Text, 1, src.Hand.ToArray(), CardUse.Gift, Present.Done );
+		var myGift = await src.SelectPowerCard( "Select gift for " + dst.SpiritName, 1, src.Hand.ToArray(), CardUse.Gift, Present.Done );
 		if(myGift != null) {
 			dst.Hand.Add( myGift );
 			src.Hand.Remove( myGift );

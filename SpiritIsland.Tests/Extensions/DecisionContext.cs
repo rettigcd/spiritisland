@@ -87,7 +87,7 @@ public class DecisionContext {
 		if(destinationOptions is not null)
 			HasDestinationOptions(destinationOptions);
 
-		var dst = _moveOptions.Single(m=>m.Destination.Text == optionText);
+		var dst = _moveOptions.Single(m=>((IOption)m.Destination).Text == optionText);
 		Choose( dst );
 	}
 
@@ -96,7 +96,7 @@ public class DecisionContext {
 	// For use with Move
 	public DecisionContext HasSourceOptions( string optionsString ) {
 		var moves = _current.Options.OfType<Move>().ToArray();
-		bool fromSingle = moves.Select(m=>m.Source.Space).Distinct().Count() == 1;
+		bool fromSingle = moves.Select(m=>m.Source.Space.SpaceSpec).Distinct().Count() == 1;
 		string actualOptionsString = _current.Options
 			.Select( x => x is Move move ? (fromSingle ? move.Source.Token.Text : move.Source.ToString()) : x.Text )
 			.Distinct()
@@ -107,7 +107,7 @@ public class DecisionContext {
 	}
 
 	public DecisionContext HasDestinationOptions( string optionsString ) {
-		string actualOptionsString = _moveOptions.Select( move => move.Destination.Text ).OrderBy(x=>x).Join( "," );
+		string actualOptionsString = _moveOptions.Select( move => ((IOption)move.Destination).Text ).OrderBy(x=>x).Join( "," );
 		actualOptionsString
 			.ShouldBe( optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'" );
 		return this;
@@ -117,12 +117,12 @@ public class DecisionContext {
 
 	#region misc assertions
 
-	public DecisionContext IsForSpace( Space space ) => IsForSpace( space.Text );
+	public DecisionContext IsForSpace( SpaceSpec space ) => IsForSpace( space.Label );
 
 	public DecisionContext IsForSpace( string space ) {
-		A.SpaceToken tfs = _current as A.SpaceToken;
+		A.SpaceTokenDecision tfs = _current as A.SpaceTokenDecision;
 		tfs.ShouldNotBeNull();
-		((IDecision)tfs).Options.OfType<SpaceToken>().Select(x=>x.Space).Distinct().Single().Text.ShouldBe( space );
+		((IDecision)tfs).Options.OfType<SpaceToken>().Select(x=>x.Space.SpaceSpec).Distinct().Single().Label.ShouldBe( space );
 		return this;
 	}
 

@@ -1,13 +1,13 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 /// <summary>
-/// Changes SpaceState so that if a single Invader were destroyed, instead it gets Abducted.
+/// Changes Space so that if a single Invader were destroyed, instead it gets Abducted.
 /// </summary>
-public class TerrorStalksTheLand( SpaceState spaceState ) : SpaceState( spaceState ) {
+public class TerrorStalksTheLand( Space space ) : Space( space ) {
 
 	static public SpecialRule Rule => new SpecialRule( "Terror Stalks the Land", "You have an Incarna. You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to tThe Endless Dark.  When pieces Escape, Move them to a non-Ocean land with your Presence/Incarna.  If they have no legal land to move to, you lose.  When your Powers would directly damage or directly destroy the only Invader in a land, instead Abduct it." );
 
-	/// <remarks>Destroys using SpaceState.Remove()</remarks>
+	/// <remarks>Destroys using Space.Remove()</remarks>
 	public override async Task DestroySpace() {
 		// Destroy Invaders
 		await Invaders.DestroyAll( Human.Invader ); // eventually comes back to .Remove(...)
@@ -28,7 +28,7 @@ public class TerrorStalksTheLand( SpaceState spaceState ) : SpaceState( spaceSta
 		RemovingTokenCtx removedHandlers = RemovedHandlerSnapshop;
 		await AbductInvader( token.AsHuman() );
 		return (
-			new TokenRemovedArgs( Space, token, 1, RemoveReason.Abducted ),
+			new TokenRemovedArgs( this, token, 1, RemoveReason.Abducted ),
 			removedHandlers.NotifyRemoved
 		);
 	}
@@ -61,10 +61,10 @@ public class TerrorStalksTheLand( SpaceState spaceState ) : SpaceState( spaceSta
 		var invaderToAddToEndlessDark = ActionScope.Current.SafeGet<HumanToken>( damagedAnInvaderKey, invaderToDestroy );
 
 		if(invaderToAddToEndlessDark == invaderToDestroy)
-			await spaceTokenToRemove.MoveTo( EndlessDark.Space.ScopeTokens );
+			await spaceTokenToRemove.MoveTo( EndlessDark.Space.ScopeSpace );
 		else {
 			await spaceTokenToRemove.Remove();
-			await EndlessDark.Space.ScopeTokens.AddAsync( invaderToAddToEndlessDark, 1 );
+			await EndlessDark.Space.ScopeSpace.AddAsync( invaderToAddToEndlessDark, 1 );
 		}
 	}
 

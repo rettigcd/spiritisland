@@ -14,7 +14,7 @@ public class LetsSeeWhatHappens {
 		PowerCard card = await DawCardAndActivateAtMax( ctx );
 
 		// You MAY Forget a Power Card to gain the just-used Power Card and 1 energy.
-		if(! await ctx.Self.UserSelectsFirstText( "Keep Card by forgetting another card?", "Yes, keep " + card.Name, "No, thank you." )) return;
+		if(! await ctx.Self.UserSelectsFirstText( "Keep Card by forgetting another card?", "Yes, keep " + card.Title, "No, thank you." )) return;
 
 		ctx.Self.AddCardToHand( card );
 		await ctx.Self.ForgetACard();

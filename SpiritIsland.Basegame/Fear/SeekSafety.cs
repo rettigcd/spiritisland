@@ -29,31 +29,30 @@ public class SeekSafety : FearCardBase, IFearCard {
 	static async Task PushExplorerIntoSpaceWithMoreTownsOrCities_Imp( Spirit self ) {
 
 		var gs = GameState.Current;
-		Dictionary<Space, int> buildingCounts = ActionScope.Current.Tokens
+		Dictionary<Space, int> buildingCounts = ActionScope.Current.Spaces
 			.ToDictionary(
-				s => s.Space,
+				s => s,
 				s => s.TownsAndCitiesCount()
 			);
 
-		Space[] GetNeighborWithMoreBuildings( SpaceState s ) => s.Adjacent.Downgrade().Where( n => buildingCounts[n] > buildingCounts[s.Space] ).ToArray();
-		bool HasNeighborWithMoreBuildings( SpaceState s ) => GetNeighborWithMoreBuildings( s ).Length != 0;
+		Space[] GetNeighborWithMoreBuildings( Space s ) => s.Adjacent.Where( n => buildingCounts[n] > buildingCounts[s] ).ToArray();
+		bool HasNeighborWithMoreBuildings( Space s ) => GetNeighborWithMoreBuildings( s ).Length != 0;
 
 		// Select Source
-		var sourceOptions = ActionScope.Current.Tokens
+		Space[] sourceOptions = ActionScope.Current.Spaces
 			.Where( s => s.Has( Human.Explorer ) && HasNeighborWithMoreBuildings( s ) )
-			.Downgrade()
 			.ToArray();
 		if(sourceOptions.Length == 0) return;
 
-		Space source = await self.SelectAsync( new A.Space( "Fear: Select land to push explorer from into more towns/cities", sourceOptions, Present.Done ) );
+		Space source = await self.SelectAsync( new A.SpaceDecision( "Fear: Select land to push explorer from into more towns/cities", sourceOptions, Present.Done ) );
 		if(source == null) return; // continue => next spirit, break/return => no more spirits
 
 		// Push
 		int sourceCount=0;
-		await source.ScopeTokens.SourceSelector
+		await source.SourceSelector
 			.AddGroup( 1, Human.Explorer )
 			.Track(s=>sourceCount = buildingCounts[s.Space] )
-			.ConfigDestination( ds=>ds.FilterDestination( dst => sourceCount < buildingCounts[dst.Space] ) )
+			.ConfigDestination( ds=>ds.FilterDestination( dst => sourceCount < buildingCounts[dst] ) )
 			.PushUpToN( self );
 
 		await self.Target( source ).PushUpTo( 1, Human.Explorer );
@@ -61,8 +60,8 @@ public class SeekSafety : FearCardBase, IFearCard {
 
 	static async Task GatherExplorerOrTown( TargetSpaceCtx destCtx ) {
 		var invadersToGather = new List<ITokenClass>();
-		if(destCtx.Tokens.Has( Human.City )) invadersToGather.Add( Human.Town );
-		if(destCtx.Tokens.Has( Human.Town )) invadersToGather.Add( Human.Explorer );
+		if(destCtx.Space.Has( Human.City )) invadersToGather.Add( Human.Town );
+		if(destCtx.Space.Has( Human.Town )) invadersToGather.Add( Human.Explorer );
 		ITokenClass[] invadersToGatherArray = [.. invadersToGather];
 		await destCtx.GatherUpTo( 1, invadersToGatherArray );
 	}

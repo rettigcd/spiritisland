@@ -26,9 +26,9 @@ public class DarknessSwallowsTheUnwary {
 		await Plus_Destroy2Explorers(ctx);
 
 		// 3 more points of damage (+ 1 fear/kill )
-		int startingCount = ctx.Invaders.Tokens.InvaderTotal();
+		int startingCount = ctx.Invaders.Space.InvaderTotal();
 		await ctx.DamageInvaders( 3 );
-		int endingCount = ctx.Invaders.Tokens.InvaderTotal();
+		int endingCount = ctx.Invaders.Space.InvaderTotal();
 		int killed = startingCount - endingCount;
 		ctx.AddFear( killed );
 	}

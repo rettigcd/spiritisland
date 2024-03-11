@@ -102,12 +102,12 @@ public sealed class Island : IHaveMemento {
 	class MyMemento( Island _src ) {
 		public void Restore( Island src ) {
 			src.Boards = boards.Select( b => b.Restore() ).ToArray();
-			foreach(Space1 space in src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<Space1>())
-				space.NativeTerrain = nativeTerrain[space.Text];
+			foreach(SingleSpaceSpec space in src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<SingleSpaceSpec>())
+				space.NativeTerrain = nativeTerrain[space.Label];
 		}
 		readonly BoardInfo[] boards = _src.Boards.Select( b => new BoardInfo( b ) ).ToArray();
-		readonly Dictionary<string,Terrain> nativeTerrain = _src.Boards.SelectMany( b => b.Spaces_Unfiltered ).OfType<Space1>()
-				.ToDictionary( s => s.Text, s => s.NativeTerrain );
+		readonly Dictionary<string,Terrain> nativeTerrain = _src.Boards.SelectMany( b => b.Spaces_Unfiltered ).OfType<SingleSpaceSpec>()
+				.ToDictionary( s => s.Label, s => s.NativeTerrain );
 	}
 
 	class BoardInfo( Board _board ) {

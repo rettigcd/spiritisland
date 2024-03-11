@@ -69,29 +69,29 @@ public class Strife_Tests {
 		Should.Throw<Exception>(()=>City.HavingStrife( -1));
 	}
 
-	static bool IsInPlay( Space space ) => !space.IsOcean;
+	static bool IsInPlay( SpaceSpec space ) => !space.IsOcean;
 
 	[Fact]
 	public async Task MoveStrife() {
 
 		Board board = Board.BuildBoardB();
 		GameState gs = new GameState( new Shadows(), board );
-		Space space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
-		SpaceState counts = gs.Tokens[space];
+		SpaceSpec spaceSpec = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
+		Space space = gs.Tokens[spaceSpec];
 
 		// Given: 1 town and 1 strifed town
-		counts.Init( StdTokens.Town, 2);
-		await counts.Add1StrifeToAsync(StdTokens.Town).ShouldComplete("adding strife");
-		var strifedTown = (IToken)counts.HumanOfTag(Human.Town).Single( k => k != StdTokens.Town );
+		space.Init( StdTokens.Town, 2);
+		await space.Add1StrifeToAsync(StdTokens.Town).ShouldComplete("adding strife");
+		var strifedTown = (IToken)space.HumanOfTag(Human.Town).Single( k => k != StdTokens.Town );
 		//  And: a destination
-		Space destination = space.Adjacent_Existing.First( IsInPlay );
+		Space destination = gs.Tokens[spaceSpec.Adjacent_Existing.First( IsInPlay )];
 
 		// When: move
-		await strifedTown.MoveAsync( space, destination ).ShouldComplete("moving token");
+		await strifedTown.MoveAsync(space, destination ).ShouldComplete("moving token");
 
 		// Then:
-		counts.InvaderSummary().ShouldBe( "1T@2" );
-		gs.Tokens[destination].InvaderSummary().ShouldBe( "1T@2^" );
+		space.InvaderSummary().ShouldBe( "1T@2" );
+		destination.InvaderSummary().ShouldBe( "1T@2^" );
 
 	}
 
@@ -142,8 +142,8 @@ public class Strife_Tests {
 	[Fact]
 	public async Task Strife_Stops_Ravage() {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
-		var tokens = ActionScope.Current.Tokens_Unfiltered
-			.First( s => IsInPlay(s.Space) && !s.HasInvaders() );
+		var tokens = ActionScope.Current.Spaces_Unfiltered
+			.First( s => IsInPlay(s.SpaceSpec) && !s.HasInvaders() );
 
 		// Given: 1 strifed city
 		var counts = tokens;
@@ -154,7 +154,7 @@ public class Strife_Tests {
 		tokens.Dahan.Init( 1 );
 
 		//  When: we ravage there
-		await tokens.Space.When_Ravaging();
+		await tokens.SpaceSpec.When_Ravaging();
 
 		//  Then: dahan survives
 		tokens.Dahan.CountAll.ShouldBe( 1, "dahan should survive due to strife on town" );

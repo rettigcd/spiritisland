@@ -11,7 +11,8 @@ public class PowerType : IOption {
 	// Innate
 	public static readonly PowerType Innate = new PowerType("innate");
 
-	public string Text { get; }
+	string IOption.Text => Name;
+	public string Name { get; }
 
-	PowerType(string text) { Text = text; }
+	PowerType(string text) { Name = text; }
 }

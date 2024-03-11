@@ -26,13 +26,13 @@ public class AngryMobs : FearCardBase, IFearCard {
 			.ActAsync( GameState );
 
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
-		var options = ctx.Tokens.HumanOfTag( Human.Town ).OnScopeTokens1( ctx.Space );
-		var st = await ctx.Self.SelectAsync( new A.SpaceToken( "Replace 1 Town with 2 Explorers", options, Present.Done ) );
+		var options = ctx.Space.HumanOfTag( Human.Town ).OnScopeTokens1( ctx.SpaceSpec );
+		var st = await ctx.Self.SelectAsync( new A.SpaceTokenDecision( "Replace 1 Town with 2 Explorers", options, Present.Done ) );
 		if(st == null) return;
 		HumanToken town = st.Token.AsHuman();
 
 		int explorersToAdd = Math.Min(town.RemainingHealth,2); // don't let Durable towns create 4
-		await ctx.Tokens.ReplaceAsync( town.AsHuman(), explorersToAdd, ctx.Tokens.GetDefault( Human.Explorer ) );
+		await ctx.Space.ReplaceAsync( town.AsHuman(), explorersToAdd, ctx.Space.GetDefault( Human.Explorer ) );
 
 		ctx.AddFear( 1 );
 	}
@@ -40,14 +40,14 @@ public class AngryMobs : FearCardBase, IFearCard {
 
 	static public SpaceAction Level2_Each2ExplorersDestroy_ExplorerOrTown => new SpaceAction(
 		$"Destroy 1 Explorer/Towns per 2 Explorers",
-		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Human.Explorer ) / 2, Human.Explorer_Town )
+		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Space.Sum( Human.Explorer ) / 2, Human.Explorer_Town )
 	).OnlyExecuteIf( Has2OrMoreExplorers );
 
 	static public SpaceAction Level3_Each2ExplorersDestroy_Invader => new SpaceAction(
 		$"Destroy 1 Invader per 2 Explorers",
-		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Tokens.Sum( Human.Explorer ) / 2, Human.Invader )
+		ctx => ctx.Invaders.DestroyNOfAnyClass( ctx.Space.Sum( Human.Explorer ) / 2, Human.Invader )
 	).OnlyExecuteIf( Has2OrMoreExplorers );
 
-	static bool Has2OrMoreExplorers( TargetSpaceCtx ss ) => 2 <= ss.Tokens.Sum( Human.Explorer );
+	static bool Has2OrMoreExplorers( TargetSpaceCtx ss ) => 2 <= ss.Space.Sum( Human.Explorer );
 
 }

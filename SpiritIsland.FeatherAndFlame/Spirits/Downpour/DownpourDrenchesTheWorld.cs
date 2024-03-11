@@ -6,7 +6,7 @@ namespace SpiritIsland.FeatherAndFlame;
 public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 	public const string Name = "Downpour Drenches The World";
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {DrenchTheLandscape.Rule, PourDownPower.Rule };
 
@@ -55,7 +55,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
-		board.Spaces.First(x => x.IsWetland).ScopeTokens.Setup(Presence.Token, 1);
+		board.Spaces.First(x => x.IsWetland).ScopeSpace.Setup(Presence.Token, 1);
 		gameState.AddTimePassesAction( _pourDownPower );
 
 		gameState.ReplaceTerrain( old => {

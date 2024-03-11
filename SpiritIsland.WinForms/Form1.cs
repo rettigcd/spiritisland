@@ -271,6 +271,6 @@ public partial class Form1 : Form, IHaveOptions {
 	}
 
 	void spaceTokensToolStripMenuItem_Click( object sender, EventArgs e ) {
-		MessageBox.Show( _game.GameState.Tokens.ToVerboseString(), "Space Tokens" );
+		MessageBox.Show( _game.GameState.Tokens.ToVerboseString(), "Space" );
 	}
 }

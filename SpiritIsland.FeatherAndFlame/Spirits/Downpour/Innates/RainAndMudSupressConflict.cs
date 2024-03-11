@@ -34,7 +34,7 @@ internal class RainAndMudSupressConflict {
 
 		// In your lands, Invaders and Dahan have -1 Health( min 1 )
 		foreach(var space in self.Presence.Lands) {
-			var targetCtx = self.Target( space.Space );
+			var targetCtx = self.Target( space.SpaceSpec );
 			await targetCtx.AdjustTokensHealthForRound( -1,Human.Dahan );
 			await targetCtx.AdjustTokensHealthForRound( -1, Human.Invader );
 		}
@@ -61,7 +61,7 @@ internal class RainAndMudSupressConflict {
 
 class MudToken( Spirit _self, int _count ) 
 	: BaseModEntity(), IEndWhenTimePasses, IConfigRavages {
-	void IConfigRavages.Config( SpaceState space ) {
+	void IConfigRavages.Config( Space space ) {
 		space.RavageBehavior.AttackersDefend += _self.Presence.CountOn( space ) * _count;
 	}
 }

@@ -11,18 +11,18 @@ class SwedenExplorer : ExploreEngine {
 	// !! Note: if .DoExplore(...) returned the results, we could pass the explore results into the standard Escalation method
 	// and do away with this whole class.
 
-	protected override async Task Explore_1Space_Stoppable( SpaceState tokens, GameState gs, bool escalation ) {
-		await base.Explore_1Space_Stoppable( tokens, gs, escalation );
+	protected override async Task Explore_1Space_Stoppable( Space space, GameState gs, bool escalation ) {
+		await base.Explore_1Space_Stoppable( space, gs, escalation );
 		if( escalation )
-			await SwayedByTheInvadersAsync( tokens );
+			await SwayedByTheInvadersAsync( space );
 	}
 
-	static async Task SwayedByTheInvadersAsync( SpaceState tokens ) {
-		var dahan = tokens.Dahan;
-		if(0 < dahan.CountAll && dahan.CountAll <= tokens.InvaderTotal()) {
+	static async Task SwayedByTheInvadersAsync( Space space ) {
+		var dahan = space.Dahan;
+		if(0 < dahan.CountAll && dahan.CountAll <= space.InvaderTotal()) {
 			HumanToken dahanToConvert = dahan.NormalKeys.OrderBy( x => x.RemainingHealth ).First();
-			ActionScope.Current.Log( new Log.InvaderActionEntry( $"Escalation: {tokens.Space.Text} replace {dahanToConvert} with Town" ) );
-			await tokens.ReplaceHumanAsync( dahanToConvert, Human.Town );
+			ActionScope.Current.Log( new Log.InvaderActionEntry( $"Escalation: {space.Label} replace {dahanToConvert} with Town" ) );
+			await space.ReplaceHumanAsync( dahanToConvert, Human.Town );
 		}
 	}
 

@@ -4,9 +4,10 @@ public class NullBlightCard : IBlightCard {
 
 	public bool CardFlipped {get; set; }
 
+	string IOption.Text => Name;
+
 	public string Name => "[null]";
 	public string Description => "[null]";
-	string IOption.Text => Name;
 
 	public IActOn<GameState> Immediately => new BaseCmd<GameState>("no action", (Action<GameState>)(_ => { }));
 

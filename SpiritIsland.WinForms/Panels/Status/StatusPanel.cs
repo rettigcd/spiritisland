@@ -117,7 +117,7 @@ internal class StatusPanel( SharedCtx ctx ) : IPanel {
 		for(int i = 0; i < cards.Count; ++i) {
 			object reminder = cards[i];
 			IPaintableRect rect = reminder switch {
-				CommandBeasts cb => Wrap(new ImgRect( (Func<Bitmap>)  (    () => ResourceImages.Singleton.GetMiscAction( cb.Name )  )        ),(IOption)reminder),
+				CommandBeasts cb => Wrap(new ImgRect( (Func<Bitmap>)  (    () => ResourceImages.Singleton.GetMiscAction( cb.Title )  )        ),(IOption)reminder),
 				_ => new ImgRect( Img.Beast )
 			};
 			pool.Float( rect, 0, step * i, 1, step );

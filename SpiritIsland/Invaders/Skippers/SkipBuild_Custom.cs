@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-sealed public class SkipBuild_Custom( string label, bool stopAll, Func<SpaceState, bool> func ) 
+sealed public class SkipBuild_Custom( string label, bool stopAll, Func<Space, bool> func ) 
 	: BaseModEntity(), IEndWhenTimePasses, ISkipBuilds 
 {
 
@@ -9,10 +9,10 @@ sealed public class SkipBuild_Custom( string label, bool stopAll, Func<SpaceStat
 
 	public string Text { get; } = label;
 
-	public Task<bool> Skip( SpaceState space ) {
+	public Task<bool> Skip( Space space ) {
 		if( !stopAll )
 			space.Adjust( this, -1 );
 		return _func( space );
 	}
-	readonly Func<SpaceState, Task<bool>> _func = ( ss ) => Task.FromResult( func( ss ) );
+	readonly Func<Space, Task<bool>> _func = ( ss ) => Task.FromResult( func( ss ) );
 }

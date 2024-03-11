@@ -23,7 +23,7 @@ public class HabsburgMining_Tests {
 				gs.Given_InvadersDisappear(); // wiping away all the invaders each time
 			}
 			var sut = gs.InvaderDeck.Explore.Cards[0];
-			sut.Text.ShouldBe("Salt Deposits");
+			sut.Code.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
 			board[4].Given_HasTokens("2E@1");
@@ -32,7 +32,7 @@ public class HabsburgMining_Tests {
 			board[5].Given_HasTokens("3E@1");
 
 			// Then: card should match every space but A5
-			ActionScope.Current.Tokens.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
+			ActionScope.Current.Spaces.Where( s=>sut.MatchesCard(s)).Select(ss=>ss.Label).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
 		}
 
 		[Fact]
@@ -52,7 +52,7 @@ public class HabsburgMining_Tests {
 				gs.Given_InvadersDisappear(); // wiping away all the invaders each time
 			}
 			var sut = gs.InvaderDeck.Build.Cards[0];
-			sut.Text.ShouldBe("Salt Deposits");
+			sut.Code.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
 			board[4].Given_HasTokens("2T@1");
@@ -61,7 +61,7 @@ public class HabsburgMining_Tests {
 			board[5].Given_HasTokens("3E@1");
 
 			// Then: card should match every space but A5
-			ActionScope.Current.Tokens.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
+			ActionScope.Current.Spaces.Where( s=>sut.MatchesCard(s)).Select(ss=>ss.Label).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
 		}
 
 		[Fact]
@@ -81,7 +81,7 @@ public class HabsburgMining_Tests {
 				gs.Given_InvadersDisappear(); // wiping away all the invaders each time
 			}
 			var sut = gs.InvaderDeck.Ravage.Cards[0];
-			sut.Text.ShouldBe("Salt Deposits");
+			sut.Code.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
 			board[4].Given_HasTokens("2T@1");
@@ -91,7 +91,7 @@ public class HabsburgMining_Tests {
 
 			// Then: A5 should match, but nothing else
 			bool matches = sut.MatchesCard(board[5]);
-			ActionScope.Current.Tokens.Where( s=>sut.MatchesCard(s.Space)).Select(ss=>ss.Space.Text).Join(",").ShouldBe("A5");
+			ActionScope.Current.Spaces.Where( s=>sut.MatchesCard(s)).Select(ss=>ss.Label).Join(",").ShouldBe("A5");
 		}
 
 

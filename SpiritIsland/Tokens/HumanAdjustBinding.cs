@@ -13,10 +13,10 @@ public class HumanAdjustBinding {
 	#region constructors
 
 	/// <summary> Replaces All tokens of given type</summary>
-	public HumanAdjustBinding( SpaceState ss, HumanToken tokenToReplace ) : this( ss, ss[tokenToReplace], tokenToReplace ) { }
+	public HumanAdjustBinding( Space ss, HumanToken tokenToReplace ) : this( ss, ss[tokenToReplace], tokenToReplace ) { }
 
 	/// <summary> Replaces N tokens of given type</summary>
-	public HumanAdjustBinding( SpaceState ss, int countToReplace, HumanToken tokenToReplace ) {
+	public HumanAdjustBinding( Space ss, int countToReplace, HumanToken tokenToReplace ) {
 		ArgumentOutOfRangeException.ThrowIfNegative( countToReplace );
 		_ss = ss;
 		_count = countToReplace;
@@ -70,7 +70,7 @@ public class HumanAdjustBinding {
 
 	#region private
 	HumanAdjustment NoChange => new HumanAdjustment(0,_token,_token);
-	readonly SpaceState _ss;
+	readonly Space _ss;
 	readonly int _count;
 	HumanToken _token;
 	#endregion private

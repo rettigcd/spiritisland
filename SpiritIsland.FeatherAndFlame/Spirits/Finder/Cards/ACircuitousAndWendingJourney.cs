@@ -8,17 +8,17 @@ public class ACircuitousAndWendingJourney {
 
 		var selector = ctx.SourceSelector;
 		// Push up to half( round up ) of Invaders from target land.
-		AddHalf( selector, ctx.Tokens, Human.Invader );
+		AddHalf( selector, ctx.Space, Human.Invader );
 		// Do likewise( separately) for dahan, presence, and beast.
-		AddHalf( selector, ctx.Tokens, Human.Dahan );
-		AddHalf( selector, ctx.Tokens, ctx.AllPresenceTokens );
-		AddHalf( selector, ctx.Tokens, Token.Beast );
+		AddHalf( selector, ctx.Space, Human.Dahan );
+		AddHalf( selector, ctx.Space, ctx.AllPresenceTokens );
+		AddHalf( selector, ctx.Space, Token.Beast );
 
 		return selector.PushUpToN( ctx.Self );
 	}
 
-	static void AddHalf( SourceSelector source, SpaceState tokens, params ITokenClass[] groups ) {
-		int count = (tokens.SumAny( groups )+1) / 2; // +1 causes rounds up
+	static void AddHalf( SourceSelector source, Space space, params ITokenClass[] groups ) {
+		int count = (space.SumAny( groups )+1) / 2; // +1 causes rounds up
 		source.AddGroup( count, groups );
 	}
 

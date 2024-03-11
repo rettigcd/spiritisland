@@ -20,7 +20,7 @@ class HabsburgDurableToken
 	public HumanToken GetRestoreToken() => new HumanToken( HumanClass, FullHealth - 2).AddDamage(Damage).AddStrife(StrifeCount);
 
 	#region Restoring Tokens to normal when (a) Removing from Space or (b) Adding first Blight
-	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		// If adding first blight
 		if(args.Added == Token.Blight && to.Blight.Count == 1)
 			// switch back to normal

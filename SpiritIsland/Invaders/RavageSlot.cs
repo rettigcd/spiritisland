@@ -12,7 +12,7 @@ public class RavageSlot : InvaderSlot {
 		
 			// This is a hack because .Ravage slot is not settable. Habsburg Mining Colony
 			// !! If Invader Cards had a property on them like .ShouldAdvance, then we could override that property.
-			if(Cards[i].Text.Contains("Salt")) continue;
+			if(Cards[i].Code.Contains("Salt")) continue;
 				
 			result.Add( Cards[i] );
 			Cards.RemoveAt( i-- ); // post-decrement is correct

@@ -13,7 +13,7 @@ class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingTokenAsync {
 			&& args.From.Adjacent.Any(x=>x.IsConnected)
 		) {
 			Spirit spirit = ActionScope.Current.Owner 
-				?? args.From.Space.Boards.First().FindSpirit();
+				?? args.From.SpaceSpec.Boards.First().FindSpirit();
 
 			await args.From.SourceSelector
 				.AddGroup(args.Count,Human.Explorer)

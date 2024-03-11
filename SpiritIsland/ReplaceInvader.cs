@@ -4,21 +4,21 @@ static public class ReplaceInvader {
 
 	#region Downgrade
 
-	public static async Task Downgrade1( Spirit spirit, SpaceState tokens, Present present, params HumanTokenClass[] groups ) {
-		HumanToken[] options = tokens.HumanOfAnyTag( groups );
-		await Downgrade1Token( spirit, tokens, present, options );
+	public static async Task Downgrade1( Spirit spirit, Space space, Present present, params HumanTokenClass[] groups ) {
+		HumanToken[] options = space.HumanOfAnyTag( groups );
+		await Downgrade1Token( spirit, space, present, options );
 	}
 
-	public static async Task DowngradeAll( Spirit self, SpaceState tokens, params HumanTokenClass[] groups ) {
+	public static async Task DowngradeAll( Spirit self, Space space, params HumanTokenClass[] groups ) {
 
 		// downgrade any # of invaders
-		var invadersThatCanBeDowngraded = tokens.HumanOfAnyTag( groups )
-			.ToDictionary( t => t, t => tokens[t] )
+		var invadersThatCanBeDowngraded = space.HumanOfAnyTag( groups )
+			.ToDictionary( t => t, t => space[t] )
 			.ToCountDict();
 
 		HumanToken[] options = [..invadersThatCanBeDowngraded.Keys];
 		while(0 < options.Length) {
-			var oldInvader = await Downgrade1Token( self, tokens, Present.Done, options );
+			var oldInvader = await Downgrade1Token( self, space, Present.Done, options );
 			if(oldInvader == null) break;
 			// this one downgraded, can't use again
 			invadersThatCanBeDowngraded[oldInvader]--;
@@ -29,24 +29,24 @@ static public class ReplaceInvader {
 
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
 	/// <returns> Original token (before downgrade).</returns>
-	static async Task<HumanToken> Downgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options ) {
-		var st = await spirit.SelectAsync( An.Invader.ToReplace( "downgrade", options.OnScopeTokens1(tokens.Space), present ) );
+	static async Task<HumanToken> Downgrade1Token( Spirit spirit, Space space, Present present, HumanToken[] options ) {
+		var st = await spirit.SelectAsync( An.Invader.ToReplace( "downgrade", options.OnScopeTokens1(space.SpaceSpec), present ) );
 		if(st == null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
-		await DowngradeSelectedInvader( tokens, oldInvader );
+		await DowngradeSelectedInvader( space, oldInvader );
 		return oldInvader;
 	}
 
-	public static async Task DowngradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
+	public static async Task DowngradeSelectedInvader( Space space, HumanToken oldInvader ) {
 
 		// Explorers just get removed
 		if(oldInvader.HumanClass == Human.Explorer) {
-			tokens.Adjust( oldInvader, -1 );
+			space.Adjust( oldInvader, -1 );
 			return;
 		}
 
-		await tokens.ReplaceHumanAsync( oldInvader, DowngradeType( oldInvader.HumanClass ) );
+		await space.ReplaceHumanAsync( oldInvader, DowngradeType( oldInvader.HumanClass ) );
 	}
 
 	static HumanTokenClass DowngradeType( HumanTokenClass orig ) => orig == Human.City ? Human.Town
@@ -59,18 +59,18 @@ static public class ReplaceInvader {
 
 	/// <param name="oldInvader">Explorer or Town</param>
 	/// <exception cref="ArgumentOutOfRangeException"></exception>
-	public static async Task UpgradeSelectedInvader( SpaceState tokens, HumanToken oldInvader ) {
-		await tokens.ReplaceHumanAsync( oldInvader, UpgradeType( oldInvader.HumanClass ) );
+	public static async Task UpgradeSelectedInvader( Space space, HumanToken oldInvader ) {
+		await space.ReplaceHumanAsync( oldInvader, UpgradeType( oldInvader.HumanClass ) );
 	}
 
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
 	/// <returns> Original token (before upgrade).</returns>
-	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, SpaceState tokens, Present present, HumanToken[] options, string actionSuffix = "" ) {
-		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade" + actionSuffix, options.OnScopeTokens1( tokens.Space ), present ) );
+	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, Space space, Present present, HumanToken[] options, string actionSuffix = "" ) {
+		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade" + actionSuffix, options.OnScopeTokens1( space.SpaceSpec ), present ) );
 		if(st == null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
-		await UpgradeSelectedInvader( tokens, oldInvader );
+		await UpgradeSelectedInvader( space, oldInvader );
 		return oldInvader;
 	}
 
@@ -88,8 +88,8 @@ static public class ReplaceInvader {
 	/// </summary>
 	public static async Task DisolveInvaderIntoExplorers( TargetSpaceCtx ctx, HumanTokenClass oldInvader, int replaceCount ) {
 
-		var tokens = ctx.Tokens;
-		var st = await ctx.Self.SelectAsync( An.Invader.ToReplace("disolve", tokens.HumanOfTag( oldInvader ).OnScopeTokens1(ctx.Space) ) );
+		var tokens = ctx.Space;
+		var st = await ctx.Self.SelectAsync( An.Invader.ToReplace("disolve", tokens.HumanOfTag( oldInvader ).OnScopeTokens1(ctx.SpaceSpec) ) );
 		if(st == null) return;
 		var tokenToRemove = st.Token.AsHuman();
 
@@ -105,13 +105,13 @@ static public class ReplaceInvader {
 
 	#region > Dahan
 
-	public static async Task WithDahanAsync( SpaceState tokens, HumanTokenClass[] invaderTypes ) {
-		var tokenToRemove = tokens.BestInvaderToBeRidOf( invaderTypes );
+	public static async Task WithDahanAsync( Space space, HumanTokenClass[] invaderTypes ) {
+		var tokenToRemove = space.BestInvaderToBeRidOf( invaderTypes );
 		if(tokenToRemove is not null) {
 
-			var result = await tokens.RemoveAsync(tokenToRemove,1, RemoveReason.Replaced);
+			var result = await space.RemoveAsync(tokenToRemove,1, RemoveReason.Replaced);
 			if(0<result.Count)
-				await tokens.AddDefaultAsync( Human.Dahan, 1, AddReason.AsReplacement );
+				await space.AddDefaultAsync( Human.Dahan, 1, AddReason.AsReplacement );
 
 		}
 	}

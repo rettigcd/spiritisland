@@ -8,8 +8,8 @@ static public class BoardHas {
 	static public CtxFilter<BoardCtx> TownOrCity => new CtxFilter<BoardCtx>(
 		"has town/city",
 		b => b.Board.Spaces
-			.Where( TerrainMapper.Current.IsInPlay )
 			.ScopeTokens()
+			.Where( TerrainMapper.Current.IsInPlay )
 			.Any( s => s.HasAny( Human.Town_City ) )
 	);
 

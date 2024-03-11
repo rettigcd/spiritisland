@@ -34,7 +34,7 @@ public class TradeSuffers_Tests {
 
 		// Given: 1 city and nothing else
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Given_InitSummary("1C@3");
+		spaceCtx.Space.Given_InitSummary("1C@3");
 
 		// When: activating fear
 		ClearBlight_GrowAndBuyNoCards();
@@ -44,7 +44,7 @@ public class TradeSuffers_Tests {
 		// Ravage: no dahan, no change:			1B@1,1C@3
 		// Build: City present => no build		1B@1,1C@3
 		// Explore: +1							1B@1,1C@3,1E@1
-		spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1E@1" );
+		spaceCtx.Space.Summary.ShouldBe( "1B,1C@3,1E@1" );
 	}
 
 	private const string FearCard = "Trade Suffers : 1 : Invaders do not Build in lands with City.";
@@ -80,8 +80,8 @@ public class TradeSuffers_Tests {
 		ActivateFearCard( new TradeSuffers() );
 
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer
-		SpaceState tokens = board[7].ScopeTokens; // _ctx.TargetSpace( "A7" ).Tokens;
-		tokens.Given_InitSummary( "1C@3,4D@2,2E@1" );
+		Space space = board[7].ScopeSpace; // _ctx.TargetSpace( "A7" ).Tokens;
+		space.Given_InitSummary( "1C@3,4D@2,2E@1" );
 
 		// When: activating Fear & Doing Invader Actions
 		await InvaderPhase.ActAsync(gs).ShouldComplete();
@@ -91,7 +91,7 @@ public class TradeSuffers_Tests {
 		// Ravage-b: 2 dahan do 4 damage killing city and 1 explorer     1B@1,2D@2,1E@1 
 		// Build: no city present => build		1B@1,2D@2,1E@1,1T@2
 		// Explore: +1							1B@1,2D@2,2E@1,1T@2
-		tokens.Summary.ShouldBe( "1B,2D@2,2E@1,1T@2" );
+		space.Summary.ShouldBe( "1B,2D@2,2E@1,1T@2" );
 
 	}
 
@@ -110,7 +110,7 @@ public class TradeSuffers_Tests {
 		// When: fear card
 		await new TradeSuffers().When_InvokingLevel(3, (user) => {
 			//  And: user selects a1
-			user.Choose( space.Text );
+			user.Choose( space.Label );
 			//  And: user choses not to replace (this is what we are testing...)
 			user.Choose( "Done" );
 		});
@@ -126,7 +126,7 @@ public class TradeSuffers_Tests {
 
 	static void ClearBlight() {
 		// So it doesn't cascade during ravage
-		foreach(SpaceState space in ActionScope.Current.Tokens_Unfiltered)
+		foreach(Space space in ActionScope.Current.Spaces_Unfiltered)
 			space.Init( Token.Blight, 0 ); // Don't trigger events
 	}
 

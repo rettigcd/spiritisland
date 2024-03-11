@@ -20,7 +20,7 @@ public class BloodDrawsPredators{
 			// Then 1 Damage per Beast (max. 3 Damage)
 			await ctx.DamageInvaders( ctx.Beasts.Count );
 		} );
-		ctx.Tokens.Adjust( mod, 1 );
+		ctx.Space.Adjust( mod, 1 );
 
 		return Task.CompletedTask;
 	}

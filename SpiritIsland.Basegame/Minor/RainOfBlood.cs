@@ -9,7 +9,7 @@ public class RainOfBlood {
 		ctx.AddFear(2);
 
 		// if town has at least 2 towns / cities, +1 fear
-		if( 2 <= ctx.Invaders.Tokens.TownsAndCitiesCount() )
+		if( 2 <= ctx.Invaders.Space.TownsAndCitiesCount() )
 			ctx.AddFear( 1 );
 
 		return Task.CompletedTask;

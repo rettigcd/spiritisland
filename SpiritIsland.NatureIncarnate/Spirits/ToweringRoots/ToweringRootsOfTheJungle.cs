@@ -29,7 +29,7 @@ public class ToweringRootsOfTheJungle : Spirit {
 		PowerRangeCalc = new IncarnaRangeCalculator( this );
 	}
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{
 		new SpecialRule("Enduring Vitality", "Some of your Actions Add Vitality Tokens."),
@@ -39,15 +39,15 @@ public class ToweringRootsOfTheJungle : Spirit {
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		var highestFirst = board.Spaces.Reverse().ScopeTokens().ToArray();
 		// 1 in highest-numbered jungle without blight
-		SpaceState jungle = highestFirst.First(x=>x.Space.IsJungle && !x.Blight.Any);
+		Space jungle = highestFirst.First(x=>x.SpaceSpec.IsJungle && !x.Blight.Any);
 		jungle.Init(Presence.Token,1);
 		// 1 in the highest-numbered mountain
 		highestFirst
-			.First( x => x.Space.IsMountain )
+			.First( x => x.SpaceSpec.IsMountain )
 			.Init( Presence.Token, 1 );
 		// 1 in the highetst numbered wetland
 		highestFirst
-			.First( x => x.Space.IsWetland )
+			.First( x => x.SpaceSpec.IsWetland )
 			.Init( Presence.Token, 1 );
 		// Incarna goes in the jungle with presence
 		jungle.Init(Incarna,1); 

@@ -129,43 +129,43 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	/// <summary>
 	/// Specifies if the the given space is valid.
 	/// </summary>
-	virtual public bool CanBePlacedOn( SpaceState spaceState ) => ActionScope.Current.TerrainMapper.IsInPlay( spaceState.Space );
+	virtual public bool CanBePlacedOn( Space space ) => ActionScope.Current.TerrainMapper.IsInPlay( space );
 
-	virtual public bool IsSacredSite( SpaceState space ) => 2 <= CountOn(space);
+	virtual public bool IsSacredSite( Space space ) => 2 <= CountOn(space);
 
-	public bool IsOn( SpaceState spaceState ) => 0 < spaceState[Token] || HasIncarna(spaceState);
+	public bool IsOn( Space space ) => 0 < space[Token] || HasIncarna(space);
 
 	// virtual public bool IsOn( Board board ) => Token.IsOn(board);
 	public bool IsOn( Board board ) => Token.IsOn(board) 
-		|| Incarna.IsPlaced && Incarna.Space.Space.Boards.Contains(board);
+		|| Incarna.IsPlaced && Incarna.Space.SpaceSpec.Boards.Contains(board);
 
 	public bool IsOnIsland => Token.IsOnIsland || Incarna.IsPlaced;
 
-	public int CountOn( SpaceState spaceState ) => spaceState[Token] // For Mapper in a .Select(...)
-		+ (HasIncarna(spaceState) ? 1 : 0);
+	public int CountOn( Space space ) => space[Token] // For Mapper in a .Select(...)
+		+ (HasIncarna(space) ? 1 : 0);
 
-	public IEnumerable<IToken> TokensDeployedOn( SpaceState space ) {
-		// !!! TODO Replace calls to this with:     spaceState.OfTag(this);
+	public IEnumerable<IToken> TokensDeployedOn( Space space ) {
+		// !!! TODO Replace calls to this with:     space.OfTag(this);
 		if(0 < space[Token]) yield return Token;
 		if(0 < space[Incarna]) yield return Incarna;
 	}
 
 
-	bool HasIncarna(SpaceState ss) => ss == Incarna.Space;
+	bool HasIncarna(Space ss) => ss == Incarna.Space;
 
 	#endregion
 
 	#region Exposed Data
 
 	/// <summary> Existing </summary>
-	/// <remarks> Determining SS requires Tokens so default type for SS is SpaceState. </remarks>
-	public IEnumerable<SpaceState> SacredSites      => Lands.Where( IsSacredSite );
-	public IEnumerable<SpaceState> SuperSacredSites => Lands.Where( space => 3 <= CountOn( space ) );
+	/// <remarks> Determining SS requires Tokens so default type for SS is Space. </remarks>
+	public IEnumerable<Space> SacredSites      => Lands.Where( IsSacredSite );
+	public IEnumerable<Space> SuperSacredSites => Lands.Where( space => 3 <= CountOn( space ) );
 
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
-	public IEnumerable<SpaceState> Lands => Incarna.IsPlaced
+	public IEnumerable<Space> Lands => Incarna.IsPlaced
 		? Token.Spaces_Existing.Include( Incarna.Space )
 		: Token.Spaces_Existing;
 
@@ -177,7 +177,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	public IEnumerable<SpaceToken> Movable => Deployed;
 
 	/// <summary> Unfiltered </summary>
-	public int TotalOnIsland() => ActionScope.Current.Tokens_Unfiltered.Sum( CountOn );
+	public int TotalOnIsland() => ActionScope.Current.Spaces_Unfiltered.Sum( CountOn );
 
 	#endregion Exposed Data
 

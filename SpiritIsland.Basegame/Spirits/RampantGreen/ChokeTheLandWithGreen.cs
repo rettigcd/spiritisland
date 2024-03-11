@@ -16,28 +16,28 @@ public class ChokeTheLandWithGreen( ASpreadOfRampantGreen _self )
 
 	public UsageCost Cost => UsageCost.Extreme; // we lose presence!
 
-	bool IsSacredSite( SpaceState space ) => 2 <= space[this]; // !! could make public and promote to base class and have SpiritPresence use it.
+	bool IsSacredSite( Space space ) => 2 <= space[this]; // !! could make public and promote to base class and have SpiritPresence use it.
 
-	async Task<bool> ISkipRavages.Skip( SpaceState space ) {
+	async Task<bool> ISkipRavages.Skip( Space space ) {
 		return await SkipInvaderAction( space, "ravage" );
 	}
 
 	string ISkipBuilds.Text => SpaceAbreviation;
-	async Task<bool> ISkipBuilds.Skip( SpaceState space )
+	async Task<bool> ISkipBuilds.Skip( Space space )
 		=> await SkipInvaderAction( space, $"build of {BuildEngine.InvaderToAdd.Value.Label}" );
 
-	async Task<bool> SkipInvaderAction( SpaceState space, string actionDescription ) {
+	async Task<bool> SkipInvaderAction( Space space, string actionDescription ) {
 		if(!IsSacredSite( space )) return false;
 
 		GameState gs = GameState.Current;
 		int energyCost = gs.BlightCard.CardFlipped ? 1 : 0;
 		if(_self.Energy < energyCost) return false;
 
-		var stop = await _self.SelectAsync( new A.Space( $"Stop {actionDescription} on {space.Space.Text} by destroying 1 presence", new Space[] { space.Space }, Present.Done ) );
+		var stop = await _self.SelectAsync( new A.SpaceDecision( $"Stop {actionDescription} on {space.Label} by destroying 1 presence", new Space[] { space }, Present.Done ) );
 		if(stop == null) return false;
 
 		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_SpecialRule); // Special Rules! - it is the invader actions we are stopping
-		await stop.ScopeTokens.Destroy( this, 1 );
+		await stop.Destroy( this, 1 );
 		_self.Energy -= energyCost;
 
 		return true;

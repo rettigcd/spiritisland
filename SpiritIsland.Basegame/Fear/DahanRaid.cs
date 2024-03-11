@@ -3,7 +3,7 @@
 public class DahanRaid : FearCardBase, IFearCard {
 
 	public const string Name = "Dahan Raid";
-	public string Text => Name;
+	string IOption.Text => Name;
 
 	[FearLevel(1, "Each player chooses a different land with Dahan. 1 Damage there.")]
 	public Task Level1( GameState ctx )

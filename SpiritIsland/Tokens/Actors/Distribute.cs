@@ -6,20 +6,20 @@
 static public class Distribute {
 
 	static public void Evenly( DestinationSelector d ) {
-		CountDictionary<Space> placed = [];
-		d.Track( to => placed[to.Space]++ );
+		CountDictionary<SpaceSpec> placed = [];
+		d.Track( to => placed[to.SpaceSpec]++ );
 		d.FilterDestinationGroup( sss => {
-			int min = sss.Sum( ss => placed[ss.Space] );
-			return sss.Where( ss => placed[ss.Space] == min );
+			int min = sss.Sum( ss => placed[ss.SpaceSpec] );
+			return sss.Where( ss => placed[ss.SpaceSpec] == min );
 		});
 	}
 
 	static public void ToAsManyLandsAsPossible( DestinationSelector d ) {
 
-		HashSet<SpaceState> used = [];
+		HashSet<Space> used = [];
 		d.Track( to => used.Add( to ) );
 		d.FilterDestinationGroup( sss => {
-			SpaceState[] unused = sss.Except( used ).ToArray();
+			Space[] unused = sss.Except( used ).ToArray();
 			return 0 < unused.Length ? unused : sss;
 		});
 	}
@@ -29,17 +29,17 @@ static public class Distribute {
 	/// Not necessary when there is only 1 destination to start with.
 	/// </summary>
 	static public void ToASingleLand( DestinationSelector d ) {
-		Space destination = null;
-		d.Track( to => destination ??= to.Space );
-		d.FilterDestination( spaceState => destination is null || spaceState.Space == destination );
+		SpaceSpec destination = null;
+		d.Track( to => destination ??= to.SpaceSpec );
+		d.FilterDestination( space => destination is null || space.SpaceSpec == destination );
 	}
 
 	/// <summary>
 	/// Performs the action once per destination land.
 	/// </summary>
-	static public Action<DestinationSelector> OnEachDestinationLand( Action<SpaceState> pushedAction ) {
+	static public Action<DestinationSelector> OnEachDestinationLand( Action<Space> pushedAction ) {
 		return (d) => {
-			var pushedToLands = new HashSet<SpaceState>();
+			var pushedToLands = new HashSet<Space>();
 			d.Track(to => {
 				if(pushedToLands.Contains(to)) return;
 				pushedToLands.Add(to);
@@ -48,9 +48,9 @@ static public class Distribute {
 		};
 	}
 
-	static public Action<DestinationSelector> OnEachDestinationLand( Func<SpaceState,Task> pushedActionAsync ) {
+	static public Action<DestinationSelector> OnEachDestinationLand( Func<Space,Task> pushedActionAsync ) {
 		return (d) => {
-			var pushedToLands = new HashSet<SpaceState>();
+			var pushedToLands = new HashSet<Space>();
 			d.Track(async to => {
 				if(pushedToLands.Contains(to)) return;
 				pushedToLands.Add(to);

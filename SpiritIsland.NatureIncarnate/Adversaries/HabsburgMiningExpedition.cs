@@ -23,12 +23,12 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		#region IRunBeforeInvaderPhase
 		bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
 		Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState ) {
-			var landStrippedBare = ActionScope.Current.Tokens_Existing.FirstOrDefault( ss => 8 <= ss.SumAny( Human.Invader ) );
+			var landStrippedBare = ActionScope.Current.Spaces_Existing.FirstOrDefault( ss => 8 <= ss.SumAny( Human.Invader ) );
 			// if any land has at least 8 total Invaders/ Blight( combined ),
 			if(landStrippedBare is not null) {
 				// the Invaders win
 				int count = landStrippedBare.SumAny( Human.Invader );
-				GameOverException.Lost( $"Land Stripped Bare - {count} Invaders on {landStrippedBare.Space.Text}." );
+				GameOverException.Lost( $"Land Stripped Bare - {count} Invaders on {landStrippedBare.Label}." );
 			}
 			return Task.CompletedTask;
 		}
@@ -47,7 +47,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 		// After Advancing Invader Cards
 		// On each board,
 		// Explore in 2 lands whose terrains don't match a Ravage or Build Card (no source required).
-		return new SpaceAction("Explore - Escalation (Mining Tunnels)",ctx=>ctx.Tokens.AddDefaultAsync(Human.Explorer,1))
+		return new SpaceAction("Explore - Escalation (Mining Tunnels)",ctx=>ctx.Space.AddDefaultAsync(Human.Explorer,1))
 			.In().NDifferentLandsPerBoard(2)
 			.Which( Is.NotExploreOrBuildCardMatch ) // Doing this before we advance cars so they are in the Explore/Build slot
 			.ForEachBoard()
@@ -101,13 +101,13 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			}
 		}
 
-		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			if(args.Added == Token.Blight         // only check ActionScope when adding a blight ravage
 				&& args.Reason == AddReason.Ravage
 				&& ShouldUpgrade // (stored in ActionScope)
 			)
 				await ReplaceInvader.Upgrade1Token(
-					to.Space.Boards.First().FindSpirit(),
+					to.SpaceSpec.Boards.First().FindSpirit(),
 					to,
 					Present.Always,
 					[.. to.HumanOfAnyTag( Human.Explorer_Town )],
@@ -130,7 +130,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	class DiseaseStopsRavageInMiningLands : BaseModEntity, ISkipRavages {
 		public UsageCost Cost => UsageCost.Something;
 
-		public async Task<bool> Skip( SpaceState space ) {
+		public async Task<bool> Skip( Space space ) {
 			if(!IsMiningLand(space)) return false; // Is Mining Land
 
 			DiseaseToken[] x = space.OfType<DiseaseToken>().ToArray();
@@ -143,10 +143,10 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	}
 
 	class RavageInMiningLandsDuringBuild : BuildEngine {
-		public override Task Do1Build( GameState gameState, SpaceState spaceState ) {
-			return IsMiningLand(spaceState) 
-				? spaceState.Ravage() 
-				: new BuildOnceOnSpace_Default().ActAsync( spaceState );
+		public override Task Do1Build( GameState gameState, Space space ) {
+			return IsMiningLand(space) 
+				? space.Ravage() 
+				: new BuildOnceOnSpace_Default().ActAsync( space );
 		}
 	}
 	#endregion Level 1
@@ -159,8 +159,8 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	) {
 		AdjustFunc = ( gs, _ ) => {
 			// Add 1 Explorer in each land with no Dahan.
-			var spacesThatGetAnExplorer = ActionScope.Current.Tokens_Existing
-				.Where( s => !s.Space.Is( Terrain.Ocean ) && s.Dahan.CountAll==0 )
+			var spacesThatGetAnExplorer = ActionScope.Current.Spaces_Existing
+				.Where( s => !s.SpaceSpec.Is( Terrain.Ocean ) && s.Dahan.CountAll==0 )
 				.ToArray();
 
 			foreach(var ss in spacesThatGetAnExplorer)
@@ -168,7 +168,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			
 			// Add 1 Disease and 1 City in the highest-numbered land with a town symbol.
 			var highestTowns = gs.Island.Boards
-				.Select( board => board.Spaces.Where(s => s is Space1 s1 && s1.StartUpCounts.Towns != 0).Last() )
+				.Select( board => board.Spaces.Where(s => s is SingleSpaceSpec s1 && s1.StartUpCounts.Towns != 0).Last() )
 				.ScopeTokens()
 				.ToArray();
 			foreach(var s in highestTowns) {
@@ -192,9 +192,9 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	};
 	static Task UpgradeExplorerOnEachLandAsync( GameState gs ) {
 		return new SpaceAction("Upgrade explorer (Mining Boom (I))", async x=>{
-			var token = await x.Self.SelectAsync(new A.SpaceToken("Select Explorer to Upgrade",x.Tokens.SpaceTokensOfTag(Human.Explorer),Present.Always));
+			var token = await x.Self.SelectAsync(new A.SpaceTokenDecision("Select Explorer to Upgrade",x.Space.SpaceTokensOfTag(Human.Explorer),Present.Always));
 			if(token != null)
-				await ReplaceInvader.UpgradeSelectedInvader(x.Tokens,token.Token.AsHuman()); 
+				await ReplaceInvader.UpgradeSelectedInvader(x.Space,token.Token.AsHuman()); 
 		} )
 			.In().OneLandPerBoard().Which(Has.Token(Human.Explorer))
 			.ForEachBoard()
@@ -229,11 +229,11 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	class SaltDepositsFilter : InvaderCardSpaceFilter {
 		public string Text => "Salt Deposits";
 		public bool Matches( Space space ) {
-			return IsInRavageStackThisAction() == IsMiningLand( space.ScopeTokens );
+			return IsInRavageStackThisAction() == IsMiningLand( space );
 		}
 		/// <remarks> Can't cache this in ActionScope because matching space is pre-Action. </remarks>
 		bool IsInRavageStackThisAction() => GameState.Current.InvaderDeck.Ravage.Cards
-				.Any( c => c.Text.Contains( Text ) );
+				.Any( c => c.Code.Contains( Text ) );
 
 	}
 
@@ -256,10 +256,10 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	};
 	static Task BuildThenUpgradeExplorer( GameState gs ) {
 		return new SpaceAction( "Upgrade explorer", async x => {
-			await new BuildOnceOnSpace_Default().ActAsync( x.Tokens );
-			var token = await x.Self.SelectAsync( new A.SpaceToken( "Select Explorer to Upgrade", x.Tokens.SpaceTokensOfTag( Human.Explorer ), Present.Always ) );
+			await new BuildOnceOnSpace_Default().ActAsync( x.Space );
+			var token = await x.Self.SelectAsync( new A.SpaceTokenDecision( "Select Explorer to Upgrade", x.Space.SpaceTokensOfTag( Human.Explorer ), Present.Always ) );
 			if(token != null)
-				await ReplaceInvader.UpgradeSelectedInvader( x.Tokens, token.Token.AsHuman() );
+				await ReplaceInvader.UpgradeSelectedInvader( x.Space, token.Token.AsHuman() );
 		} )
 			.In().OneLandPerBoard().Which( Has.Token( Human.Explorer ) )
 			.ForEachBoard()
@@ -297,14 +297,14 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 			}
 		}
 
-		protected override async Task AddToken( SpaceState tokens ) {
+		protected override async Task AddToken( Space space ) {
 			int count = 1;
-			var board = tokens.Space.Boards.First();
+			var board = space.SpaceSpec.Boards.First();
 			if(0 < _bonusExplorers[board]) {
 				++count;
 				--_bonusExplorers[board];
 			}
-			await tokens.AddDefaultAsync( Human.Explorer, count, AddReason.Explore );
+			await space.AddDefaultAsync( Human.Explorer, count, AddReason.Explore );
 		}
 
 	}
@@ -312,7 +312,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	#endregion Level 6
 
 	// Helper used throught adversary.
-	static public bool IsMiningLand( SpaceState space ) => 3 <= space.SumAny( Human.Invader );
+	static public bool IsMiningLand( Space space ) => 3 <= space.SumAny( Human.Invader );
 
 }
 

@@ -15,7 +15,7 @@ public class TerrorOfASlowlyUnfoldingPlague( Spirit _spirit ) : BaseModEntity, I
 		bool getFear = IsDiseaseStoppingBuild( args )
 			&& _spirit.Presence.IsOn( args.From )
 			&& await _spirit.UserSelectsFirstText(
-				$"Allow pending Build on {args.From.Space.Label}?",
+				$"Allow pending Build on {args.From.SpaceSpec.Label}?",
 				"Yes, Keep Disease, Gain +1 Fear", "No! Are you kidding me? Stop build." );
 
 		if(getFear) {

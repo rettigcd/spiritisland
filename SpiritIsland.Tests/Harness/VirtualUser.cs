@@ -95,7 +95,7 @@ public class VirtualUser( Spirit spirit ) {
 	}
 
 	public void PullsPresenceFromTrack( Track source ) {
-		NextDecision.Choose( source.Text );
+		NextDecision.Choose( source.Code );
 	}
 
 	public void Reclaims1FromTrackBonus(string cards) {
@@ -112,12 +112,12 @@ public class VirtualUser( Spirit spirit ) {
 
 	public void PlaysCard( string cardName ) {
 		_spirit.WaitForNext();
-		var card = this._spirit.Hand.First(c=>c.Name == cardName);
+		var card = this._spirit.Hand.First(c=>c.Title == cardName);
 		BuysPowerCard( card );
 	}
 
 	public void BuysPowerCard( PowerCard card ) {
-		NextDecision.HasPromptPrefix( "Play power card" ).Choose( card.Text );
+		NextDecision.HasPromptPrefix( "Play power card" ).Choose( card.Title );
 	}
 
 	#region Fear 
@@ -152,9 +152,10 @@ public class VirtualUser( Spirit spirit ) {
 		NextDecision.HasPrompt( "Select Fast to resolve" ).HasOptions( options + ",Done" ).ChooseFirst( choice );
 	}
 
-	string PowerNameToText( string choice ) {
-		return this._spirit.InPlay.FirstOrDefault( c => c.Name == choice )?.Text 
-			?? choice; // it is an Innate Power and not in the purchased card list.
+	string PowerNameToText( string powerName ) {
+		PowerCard match = _spirit.InPlay.FirstOrDefault(c => c.Title == powerName);
+		if( match != null ) return ((IOption)match).Text;
+		return powerName; // it is an Innate Power and not in the purchased card list.
 	}
 
 	#endregion

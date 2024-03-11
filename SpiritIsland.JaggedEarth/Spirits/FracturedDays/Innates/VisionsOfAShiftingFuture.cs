@@ -11,7 +11,7 @@ class VisionsOfAShiftingFuture {
 	static public async Task Option1( Spirit self ) {
 		var deck = GameState.Current.InvaderDeck.UnrevealedCards;
 		InvaderCard topCard = deck[0];
-		await self.SelectText(topCard.Text,textOptions,Present.Always);
+		await self.SelectText(topCard.Code,textOptions,Present.Always);
 		deck.RemoveAt(0);
 		InsertIntoTop2( self, deck, topCard );
 	}
@@ -22,7 +22,7 @@ class VisionsOfAShiftingFuture {
 		InvaderCard topCard = deck[0];
 		deck.RemoveAt(0);
 
-		if( await self.UserSelectsFirstText(topCard.Text,options) )
+		if( await self.UserSelectsFirstText(topCard.Code,options) )
 			InsertIntoTop2( self, deck, topCard );
 		else
 			deck.Add(topCard);

@@ -11,7 +11,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAddedAsync {
 	readonly Spirit _spirit = ocean;
 	int drownedInvaderHealthAccumulator = 0;
 
-	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 
 		if(args.Added is not HumanToken ht) return;
 		var gs = GameState.Current;
@@ -25,7 +25,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAddedAsync {
 				.Distinct()
 				.ToArray();
 			// And Ocean chooses to save it
-			var destination = await _spirit.SelectAsync( A.Space.ToPushToken( args.Added, to.Space, moveOptions.Downgrade(), Present.Done ) );
+			Space destination = await _spirit.SelectAsync( A.SpaceDecision.ToPushToken( args.Added, to, moveOptions, Present.Done ) );
 			if(destination != null) {
 				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
 				ActionScope.Current.AtEndOfThisAction( async _ => {
@@ -38,7 +38,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAddedAsync {
 		}
 
 		// Drown them immediately
-		ActionScope.Current.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To}" ) );
+		ActionScope.Current.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To.Text}" ) );
 		await to.Invaders.DestroyNTokens( ht, args.Count );
 
 		// Track drowned invaders' health

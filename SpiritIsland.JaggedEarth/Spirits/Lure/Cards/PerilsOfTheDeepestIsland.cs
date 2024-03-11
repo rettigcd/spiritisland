@@ -13,11 +13,11 @@ public class PerilsOfTheDeepestIsland {
 		await ctx.Badlands.AddAsync(1);
 
 		// Add 1 beast within 1 range.
-		var options = ctx.Range(1);
+		IEnumerable<Space> options = ctx.Range(1);
 
-		var space = await ctx.Self.SelectSpaceAsync("Add beast", options.Select(x=>x.Space),Present.Always);
+		var space = await ctx.Self.SelectSpaceAsync("Add beast", options,Present.Always);
 
-		await space.ScopeTokens.Beasts.AddAsync(1);
+		await space.Beasts.AddAsync(1);
 
 		// Push up to 2 dahan.
 		await ctx.PushUpToNDahan(2);

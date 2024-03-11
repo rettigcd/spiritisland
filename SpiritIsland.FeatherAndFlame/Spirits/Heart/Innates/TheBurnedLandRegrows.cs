@@ -7,7 +7,7 @@ public class TheBurnedLandRegrows {
 	[InnateTier( "4 fire,1 plant", "If target land has 2 blight or more, remove 1 blight." )]
 	static public async Task Option1( TargetSpaceCtx ctx ) { 
 		// if target
-		if(2 <= ctx.Tokens[Token.Blight])
+		if(2 <= ctx.Space[Token.Blight])
 			await ctx.RemoveBlight();
 	}
 

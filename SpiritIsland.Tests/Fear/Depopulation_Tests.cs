@@ -29,9 +29,9 @@ public class Depopulation_Tests {
 		var space = _board[8];
 
 		// Given: space has City Only
-		space.ScopeTokens.InitDefault(Human.City,1);
-		space.ScopeTokens.InitDefault( Human.Town, 0 );
-		space.ScopeTokens.InvaderSummary().ShouldBe( "1C@3" );
+		space.ScopeSpace.InitDefault(Human.City,1);
+		space.ScopeSpace.InitDefault( Human.Town, 0 );
+		space.ScopeSpace.InvaderSummary().ShouldBe( "1C@3" );
 
 		// Given: Terror level is 3
 		Given_FearLevelIs(3);
@@ -46,7 +46,7 @@ public class Depopulation_Tests {
 			.ShouldComplete( "fear" );
 
 		// Then: all dahan killed
-		space.ScopeTokens.InvaderSummary().ShouldBe("1T@2");
+		space.ScopeSpace.InvaderSummary().ShouldBe("1T@2");
 	}
 
 	void Given_FearLevelIs(int desiredFearLevel ) {

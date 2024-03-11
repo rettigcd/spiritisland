@@ -6,9 +6,9 @@ class OpenTheWays : IActionFactory {
 
 	#region IActionFactory
 
-	public string Name => "Open the Ways";
+	public string Title => "Open the Ways";
 
-	public string Text => Name;
+	public string Text => Title;
 
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 
@@ -17,9 +17,9 @@ class OpenTheWays : IActionFactory {
 
 		var options = self.Presence.Lands.ToList();
 		// Select 2 space to link
-		var end0 = (await self.SelectSpaceAsync( "Select 1st space to make adjacent", options.Downgrade(),Present.Always )).ScopeTokens;
+		var end0 = await self.SelectSpaceAsync( "Select 1st space to make adjacent", options,Present.Always );
 		options.Remove( end0 );
-		var end1 = (await self.SelectSpaceAsync( "Select 2nd space to make adjacent", options.Downgrade(),Present.Always )).ScopeTokens;
+		var end1 = await self.SelectSpaceAsync( "Select 2nd space to make adjacent", options,Present.Always );
 
 		// Remove old
 		finder.GatewayToken?.RemoveSelf();

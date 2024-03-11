@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public interface ISpaceEntityWithEndOfRoundCleanup : ISpaceEntity {
-	void EndOfRoundCleanup(SpaceState tokens);
+	void EndOfRoundCleanup(Space space);
 }
 
 public interface IEndWhenTimePasses : ISpaceEntity { }

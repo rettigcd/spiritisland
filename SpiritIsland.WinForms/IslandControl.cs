@@ -328,14 +328,14 @@ public partial class IslandControl : Control {
 		_moveSource = null;
 
 		// Swap out Move for Part 1:Select-Source
-		var st = new A.SpaceToken(
+		var st = new A.SpaceTokenDecision(
 			decision.Prompt,
 			_moveOptions.Select( s => s.Source ).Distinct(),
 			_moveIsOptional ? Present.Done : Present.Always
 		);
 		var destinations = _moveOptions.Select(s=>s.Destination).Distinct().ToArray();
 		if(destinations.Length==1)
-			st.PointArrowTo( destinations[0] );
+			st.PointArrowTo( destinations[0].SpaceSpec );
 		decision = st;
 
 	}
@@ -357,12 +357,12 @@ public partial class IslandControl : Control {
 			_moveSource = source;
 			Move[] saveMoves = _moveOptions; // save
 			OptionProvider_OptionsChanged( 
-				new A.Space( 
+				new A.SpaceDecision( 
 					"Move to", 
 					destinationOptions, 
 					Present.AutoSelectSingle // Is they selected a source, make don't let them cancel.  (this will be different when dragging)
 				)
-				.ComingFrom(source.Space)
+				.ComingFrom(source.Space.SpaceSpec)
 				.ShowTokenLocation(source.Token)
 			);
 			_moveOptions = saveMoves; // restore
@@ -371,8 +371,8 @@ public partial class IslandControl : Control {
 		} 
 
 		// Is Part 2 => return Move
-		if(option is Space destination)
-			option = _moveOptions.Single( s => s.Source == _moveSource && s.Destination == destination );
+		if(option is SpaceSpec destination)
+			option = _moveOptions.Single( s => s.Source == _moveSource && s.Destination.SpaceSpec == destination );
 
 		return false;
 	}

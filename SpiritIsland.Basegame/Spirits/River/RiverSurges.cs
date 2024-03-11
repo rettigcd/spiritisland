@@ -7,7 +7,7 @@ public class RiverSurges : Spirit {
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("Rivers Domain", "Your presense in wetlands count as sacred.") };
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public RiverSurges():base(
 		spirit => new RiverPresence( spirit,
@@ -38,7 +38,7 @@ public class RiverSurges : Spirit {
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
-		board.Spaces.Reverse().First(s => s.IsWetland).ScopeTokens.Setup(Presence.Token, 1);
+		board.Spaces.Reverse().First(s => s.IsWetland).ScopeSpace.Setup(Presence.Token, 1);
 	}
 
 }

@@ -9,10 +9,10 @@ public class OvergrowInANight {
 		return ctx.SelectActionOption(
 			new SpaceAction("Add 1 presence", async ctx => {
 				var from = await ctx.Self.SelectSourcePresence();
-				await from.MoveToAsync(ctx.Tokens);
+				await from.MoveToAsync(ctx.Space);
 			} ),
 			new SpaceAction( "3 fear", ctx => ctx.AddFear(3) )
-				.OnlyExecuteIf( x=>x.Presence.IsHere && x.Tokens.HasInvaders() ) // if presence and invaders
+				.OnlyExecuteIf( x=>x.Presence.IsHere && x.Space.HasInvaders() ) // if presence and invaders
 		);
 
 	}

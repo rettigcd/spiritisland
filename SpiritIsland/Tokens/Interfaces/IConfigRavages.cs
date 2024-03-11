@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland;
 
 public interface IConfigRavages : ISpaceEntity {
-	void Config( SpaceState space );
+	void Config( Space space );
 }
 
 public interface IConfigRavagesAsync : ISpaceEntity {
-	Task ConfigAsync( SpaceState space );
+	Task ConfigAsync( Space space );
 }

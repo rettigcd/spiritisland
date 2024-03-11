@@ -10,13 +10,13 @@ class TestSpirit( PowerCard powerCard )
 		, powerCard
 	)
 {
-	public override string Text => "Test Spirit";
+	public override string SpiritName => "Test Spirit";
 
 	public override SpecialRule[] SpecialRules => throw new NotImplementedException();
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Has sacred site on space 5
-		Space space = board[5];
+		SpaceSpec space = board[5];
 		this.Given_IsOn(space,2); 
 	}
 

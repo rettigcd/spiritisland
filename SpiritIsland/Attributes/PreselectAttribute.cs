@@ -18,12 +18,12 @@ public class PreselectAttribute( string prompt, string classString, Present pres
 			_ => throw new Exception( $"{x} not known" )
 		} ).ToArray();
 
-	public async Task<Space> PreSelect( Spirit spirit, SpaceState[] spaces ) {
+	public async Task<Space> PreSelect( Spirit spirit, Space[] spaces ) {
 		var spaceTokenOptions = spaces
 			.SelectMany( ss => ss.SpaceTokensOfAnyTag( _tokenClasses ) )
 			.ToArray();
 
-		SpaceToken st = await spirit.SelectAsync( new A.SpaceToken( prompt, spaceTokenOptions, present ) );
+		SpaceToken st = await spirit.SelectAsync( new A.SpaceTokenDecision( prompt, spaceTokenOptions, present ) );
 		spirit.PreSelect(st);
 		return st?.Space;
 	}
@@ -32,6 +32,6 @@ public class PreselectAttribute( string prompt, string classString, Present pres
 
 /// <summary> Provides token/prompt info to enable selecing token and space at the same time (when appropriate). </summary>
 public interface IPreselect {
-	Task<Space> PreSelect( Spirit spirit, SpaceState[] spaces );
+	Task<Space> PreSelect( Spirit spirit, Space[] spaces );
 }
 

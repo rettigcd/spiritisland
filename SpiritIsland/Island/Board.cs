@@ -23,15 +23,15 @@ public partial class Board {
 
 		Board board = new Board("A"
 			, orientation ?? BoardOrientation.Home
-			, new Space1(Terrain.Ocean,   "A0")
-			, new Space1(Terrain.Mountain,"A1" ) // 
-			, new Space1(Terrain.Wetland, "A2", "CD")  // city, dahan
-			, new Space1(Terrain.Jungle,  "A3", "DD")   // 2 dahan
-			, new Space1(Terrain.Sands,    "A4", "B")     // blight
-			, new Space1(Terrain.Wetland, "A5" )
-			, new Space1(Terrain.Mountain,"A6", "D") // 1 dahan
-			, new Space1(Terrain.Sands,    "A7", "DD")     // 2 dahan
-			, new Space1(Terrain.Jungle,  "A8", "T")   // town
+			, new SingleSpaceSpec(Terrain.Ocean,   "A0")
+			, new SingleSpaceSpec(Terrain.Mountain,"A1" ) // 
+			, new SingleSpaceSpec(Terrain.Wetland, "A2", "CD")  // city, dahan
+			, new SingleSpaceSpec(Terrain.Jungle,  "A3", "DD")   // 2 dahan
+			, new SingleSpaceSpec(Terrain.Sands,    "A4", "B")     // blight
+			, new SingleSpaceSpec(Terrain.Wetland, "A5" )
+			, new SingleSpaceSpec(Terrain.Mountain,"A6", "D") // 1 dahan
+			, new SingleSpaceSpec(Terrain.Sands,    "A7", "DD")     // 2 dahan
+			, new SingleSpaceSpec(Terrain.Jungle,  "A8", "T")   // town
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -54,15 +54,15 @@ public partial class Board {
 
 		Board board = new Board("B"
 			, orientation ?? BoardOrientation.Home
-			,new Space1(Terrain.Ocean,   "B0")
-			,new Space1(Terrain.Wetland, "B1","D")  // 1 dahan
-			,new Space1(Terrain.Mountain,"B2","C") // city
-			,new Space1(Terrain.Sands,    "B3","DD")     // 2 dahan
-			,new Space1(Terrain.Jungle,  "B4","B")   // blight
-			,new Space1(Terrain.Sands,    "B5")
-			,new Space1(Terrain.Wetland, "B6","T")  // 1 town
-			,new Space1(Terrain.Mountain,"B7","D") // 1 dahan
-			,new Space1(Terrain.Jungle,  "B8","DD")   // 2 dahan
+			,new SingleSpaceSpec(Terrain.Ocean,   "B0")
+			,new SingleSpaceSpec(Terrain.Wetland, "B1","D")  // 1 dahan
+			,new SingleSpaceSpec(Terrain.Mountain,"B2","C") // city
+			,new SingleSpaceSpec(Terrain.Sands,    "B3","DD")     // 2 dahan
+			,new SingleSpaceSpec(Terrain.Jungle,  "B4","B")   // blight
+			,new SingleSpaceSpec(Terrain.Sands,    "B5")
+			,new SingleSpaceSpec(Terrain.Wetland, "B6","T")  // 1 town
+			,new SingleSpaceSpec(Terrain.Mountain,"B7","D") // 1 dahan
+			,new SingleSpaceSpec(Terrain.Jungle,  "B8","DD")   // 2 dahan
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -85,15 +85,15 @@ public partial class Board {
 
 		var board = new Board("C"
 			, orientation ?? BoardOrientation.Home
-			,new Space1(Terrain.Ocean,   "C0")
-			,new Space1(Terrain.Jungle,  "C1","D")   // 1 dahan
-			,new Space1(Terrain.Sands,    "C2","C")     // city
-			,new Space1(Terrain.Mountain,"C3","DD") // 2 dahan
-			,new Space1(Terrain.Jungle,  "C4")   
-			,new Space1(Terrain.Wetland, "C5","DDB")  // 2 dahan, blight
-			,new Space1(Terrain.Sands,    "C6","D")     // 1 dahan
-			,new Space1(Terrain.Mountain,"C7","T") // 1 town
-			,new Space1(Terrain.Wetland, "C8")
+			,new SingleSpaceSpec(Terrain.Ocean,   "C0")
+			,new SingleSpaceSpec(Terrain.Jungle,  "C1","D")   // 1 dahan
+			,new SingleSpaceSpec(Terrain.Sands,    "C2","C")     // city
+			,new SingleSpaceSpec(Terrain.Mountain,"C3","DD") // 2 dahan
+			,new SingleSpaceSpec(Terrain.Jungle,  "C4")   
+			,new SingleSpaceSpec(Terrain.Wetland, "C5","DDB")  // 2 dahan, blight
+			,new SingleSpaceSpec(Terrain.Sands,    "C6","D")     // 1 dahan
+			,new SingleSpaceSpec(Terrain.Mountain,"C7","T") // 1 town
+			,new SingleSpaceSpec(Terrain.Wetland, "C8")
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -115,15 +115,15 @@ public partial class Board {
 	static public Board BuildBoardD( BoardOrientation orientation = null ) {
 		var board = new Board("D"
 			, orientation ?? BoardOrientation.Home
-			,new Space1(Terrain.Ocean,   "D0")
-			,new Space1(Terrain.Wetland, "D1","DD")   // 2 dahan
-			,new Space1(Terrain.Jungle,  "D2","CD")    // city, 1 dahan
-			,new Space1(Terrain.Wetland, "D3")   
-			,new Space1(Terrain.Sands,    "D4")   
-			,new Space1(Terrain.Mountain,"D5","DB")  // 1 dahan, blight
-			,new Space1(Terrain.Jungle,  "D6")    
-			,new Space1(Terrain.Sands,    "D7","TDD")      // 1 town, 2 dahan
-			,new Space1(Terrain.Mountain,"D8")
+			,new SingleSpaceSpec(Terrain.Ocean,   "D0")
+			,new SingleSpaceSpec(Terrain.Wetland, "D1","DD")   // 2 dahan
+			,new SingleSpaceSpec(Terrain.Jungle,  "D2","CD")    // city, 1 dahan
+			,new SingleSpaceSpec(Terrain.Wetland, "D3")   
+			,new SingleSpaceSpec(Terrain.Sands,    "D4")   
+			,new SingleSpaceSpec(Terrain.Mountain,"D5","DB")  // 1 dahan, blight
+			,new SingleSpaceSpec(Terrain.Jungle,  "D6")    
+			,new SingleSpaceSpec(Terrain.Sands,    "D7","TDD")      // 1 town, 2 dahan
+			,new SingleSpaceSpec(Terrain.Mountain,"D8")
 		);
 
 		board.SetNeighbors(0, 1,2,3);
@@ -146,15 +146,15 @@ public partial class Board {
 
 		var board = new Board( "E"
 			, orientation ?? BoardOrientation.Home
-			, new Space1( Terrain.Ocean,    "E0")
-			, new Space1( Terrain.Sands,     "E1", "D" )   // 1 dahan
-			, new Space1( Terrain.Mountain, "E2", "C" )    // city
-			, new Space1( Terrain.Jungle,   "E3", "DD" )  // 2 dahan
-			, new Space1( Terrain.Wetland,  "E4", "B" )      // 1 blight
-			, new Space1( Terrain.Mountain, "E5", "D" )  // 1 dahan
-			, new Space1( Terrain.Sands,     "E6" )
-			, new Space1( Terrain.Jungle,   "E7", "T" )      // 1 town
-			, new Space1( Terrain.Wetland,  "E8", "DD" ) // 2 dahan
+			, new SingleSpaceSpec( Terrain.Ocean,    "E0")
+			, new SingleSpaceSpec( Terrain.Sands,     "E1", "D" )   // 1 dahan
+			, new SingleSpaceSpec( Terrain.Mountain, "E2", "C" )    // city
+			, new SingleSpaceSpec( Terrain.Jungle,   "E3", "DD" )  // 2 dahan
+			, new SingleSpaceSpec( Terrain.Wetland,  "E4", "B" )      // 1 blight
+			, new SingleSpaceSpec( Terrain.Mountain, "E5", "D" )  // 1 dahan
+			, new SingleSpaceSpec( Terrain.Sands,     "E6" )
+			, new SingleSpaceSpec( Terrain.Jungle,   "E7", "T" )      // 1 town
+			, new SingleSpaceSpec( Terrain.Wetland,  "E8", "DD" ) // 2 dahan
 		);
 
 		board.SetNeighbors( 0, 1, 2, 3 );
@@ -177,15 +177,15 @@ public partial class Board {
 
 		var board = new Board( "F"
 			, orientation ?? BoardOrientation.Home
-			, new Space1( Terrain.Ocean,    "F0" )
-			, new Space1( Terrain.Sands,     "F1","DD" )
-			, new Space1( Terrain.Jungle,   "F2","C" )
-			, new Space1( Terrain.Wetland,  "F3","D" )
-			, new Space1( Terrain.Mountain, "F4","B" )
-			, new Space1( Terrain.Jungle,   "F5","D" )
-			, new Space1( Terrain.Mountain, "F6","DD" )
-			, new Space1( Terrain.Wetland,  "F7","" )
-			, new Space1( Terrain.Sands,     "F8","T" )
+			, new SingleSpaceSpec( Terrain.Ocean,    "F0" )
+			, new SingleSpaceSpec( Terrain.Sands,     "F1","DD" )
+			, new SingleSpaceSpec( Terrain.Jungle,   "F2","C" )
+			, new SingleSpaceSpec( Terrain.Wetland,  "F3","D" )
+			, new SingleSpaceSpec( Terrain.Mountain, "F4","B" )
+			, new SingleSpaceSpec( Terrain.Jungle,   "F5","D" )
+			, new SingleSpaceSpec( Terrain.Mountain, "F6","DD" )
+			, new SingleSpaceSpec( Terrain.Wetland,  "F7","" )
+			, new SingleSpaceSpec( Terrain.Sands,     "F8","T" )
 		);
 
 		board.SetNeighbors( 0, 1, 2, 3 );
@@ -208,21 +208,21 @@ public partial class Board {
 	#endregion
 
 	/// <summary>Non-stasis spaces that are 'InPlay' for current Terrain/Power.</summary>
-	public IEnumerable<Space> Spaces => Spaces_Existing.IsInPlay();
+	public IEnumerable<SpaceSpec> Spaces => Spaces_Existing.Where( x=>TerrainMapper.Current.IsInPlay(x.ScopeSpace) );
 
 	/// <summary>Non-stasis spaces </summary>
-	public IEnumerable<Space> Spaces_Existing => _spaces.Where( Space.Exists );
+	public IEnumerable<SpaceSpec> Spaces_Existing => _spaces.Where( SpaceSpec.Exists );
 
 	/// <summary>All spaces, including the ones that are not in play and are in Stasis.</summary>
-	public IEnumerable<Space> Spaces_Unfiltered => _spaces;
+	public IEnumerable<SpaceSpec> Spaces_Unfiltered => _spaces;
 
 	#region Add / Remove spaces from board
-	public void AddSpace( Space space ) {
+	public void AddSpace( SpaceSpec space ) {
 		_spaces = _spaces.Union( new[] {space}).ToArray();
 	} // Weave togehter
 
 	/// <returns>Old adjacents</returns>
-	public Space[] Remove( Space space ) {
+	public SpaceSpec[] Remove( SpaceSpec space ) {
 		var oldAdj = space.Adjacent_Existing.ToArray();
 		space.Disconnect();
 		_spaces = _spaces.Where(s => s != space ).ToArray();
@@ -232,16 +232,16 @@ public partial class Board {
 
 	public int InvaderActionCount { get; set; } = 1;
 
-	public Space Ocean => Spaces_Existing.Single( s => s.IsOcean );
+	public SpaceSpec Ocean => Spaces_Existing.Single( s => s.IsOcean );
 	
-	public Space this[int index]{ get => _spaces[index]; }
+	public SpaceSpec this[int index]{ get => _spaces[index]; }
 
 	#region constructor
 
 	public Board(
 		string name, 
 		BoardOrientation orientation,
-		params Space1[] spaces
+		params SingleSpaceSpec[] spaces
 	){
 		Name = name;
 		Orientation = orientation;
@@ -251,7 +251,7 @@ public partial class Board {
 		// attach spaces
 		_spaces = spaces;
 		for(int i = 0; i < spaces.Length; ++i) {
-			Space1 space = spaces[i];
+			SingleSpaceSpec space = spaces[i];
 			space.Board = this;
 		}
 	}
@@ -278,7 +278,7 @@ public partial class Board {
 	}
 
 	readonly List<BoardSide> _sides = [];
-	Space[] _spaces;
+	SpaceSpec[] _spaces;
 
 
 

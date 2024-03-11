@@ -18,15 +18,15 @@ public class Quota {
 
 	public ITokenClass[] RemainingTypes => _remainingTypes ??= CalcRemainingTypes();
 
-	public string RemainingTokenDescriptionOn( SpaceState[] sourceSpaces ) => _beVerbose 
+	public string RemainingTokenDescriptionOn( Space[] sourceSpaces ) => _beVerbose 
 		? _sharedGroupCounts.Select( x => x.VerboseString( sourceSpaces ).ToString() ).Join( "/" )
 		: _sharedGroupCounts.Sum( q => q.CountToShow( sourceSpaces ) ).ToString();
 
 	public IEnumerable<SpaceToken> GetSourceOptionsOn1Space( 
-		SpaceState sourceSpaceState
+		Space sourceSpace
 	) {
-		return sourceSpaceState.OfAnyTag( RemainingTypes )
-			.OnScopeTokens1( sourceSpaceState.Space );
+		return sourceSpace.OfAnyTag( RemainingTypes )
+			.OnScopeTokens1( sourceSpace.SpaceSpec );
 	}
 
 
@@ -81,10 +81,10 @@ public class Quota {
 			Classes = classes;
 		}
 
-		public int CountToShow( params SpaceState[] sources )
+		public int CountToShow( params Space[] sources )
 			=> Math.Min( _count, sources.Sum( s => s.SumAny( Classes ) ) );
 
-		public string VerboseString( params SpaceState[] sources ) {
+		public string VerboseString( params Space[] sources ) {
 			return CountToShow( sources ) + " " + Classes.Select( c => c.Label ).Join( "/" );
 		}
 

@@ -8,11 +8,11 @@ public class LostInTheEndlessDark {
 		var edCtx = ctx.Self.Target( EndlessDark.Space );
 
 		// 1 fear per invader (max 4)
-		int fear = Math.Min( 4, edCtx.Tokens.SumAny( Human.Invader ) );
+		int fear = Math.Min( 4, edCtx.Space.SumAny( Human.Invader ) );
 		edCtx.AddFear(fear);
 
 		// downgrade up to 1 Invader
-		await ReplaceInvader.Downgrade1(edCtx.Self, edCtx.Tokens, Present.Done,Human.Invader);
+		await ReplaceInvader.Downgrade1(edCtx.Self, edCtx.Space, Present.Done,Human.Invader);
 
 	}
 
@@ -21,17 +21,17 @@ public class LostInTheEndlessDark {
 		var edCtx = ctx.Self.Target( EndlessDark.Space );
 
 		// 1 fear per invader (max 4)
-		int fear = Math.Min( 4, edCtx.Tokens.SumAny( Human.Invader ) );
+		int fear = Math.Min( 4, edCtx.Space.SumAny( Human.Invader ) );
 		edCtx.AddFear( fear );
 
 		// downgrade any # of invaders
-		await ReplaceInvader.DowngradeAll( edCtx.Self, edCtx.Tokens );
+		await ReplaceInvader.DowngradeAll( edCtx.Self, edCtx.Space );
 	}
 
 	[InnateTier( "3 moon, 2 animal", "Add 1 Beast", 2 )]
 	static public async Task Option3( IHaveASpirit ctx ) {
 		var edCtx = ctx.Self.Target( EndlessDark.Space );
-		await edCtx.Tokens.Beasts.AddAsync(1);
+		await edCtx.Space.Beasts.AddAsync(1);
 	}
 
 

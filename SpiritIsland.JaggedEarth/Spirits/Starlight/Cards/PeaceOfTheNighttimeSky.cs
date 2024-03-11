@@ -10,7 +10,7 @@ public class PeaceOfTheNighttimeSky {
 		// If the Terror Level is 1
 		if(GameState.Current.Fear.TerrorLevel == 1)
 			// Invaders do not Ravage in target land this turn.
-			ctx.Tokens.SkipRavage( Name );
+			ctx.Space.SkipRavage( Name );
 		return Task.CompletedTask;
 	}
 
@@ -32,7 +32,7 @@ public class RepeatForPeace : RepeatAttribute {
 			) return false;
 
 			// Forget this Power Card
-			var thisCard = self.InPlay.Single( x => x.Name == PeaceOfTheNighttimeSky.Name );
+			var thisCard = self.InPlay.Single( x => x.Title == PeaceOfTheNighttimeSky.Name );
 			self.ForgetThisCard( thisCard );
 
 			//  Gain 1 Moon.

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 
-public sealed class Track( string text, params Element[] els )
+public sealed class Track( string code, params Element[] els )
 	: IOption 
 	, ILocation
 {
@@ -107,7 +107,9 @@ public sealed class Track( string text, params Element[] els )
 
 	#endregion static Factories
 
-	public string Text { get; } = text;
+	string IOption.Text => Code;
+	public readonly string Code = code;
+
 	public int? Energy { 
 		get => _energy;
 		set { 

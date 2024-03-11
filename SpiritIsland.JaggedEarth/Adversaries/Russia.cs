@@ -93,7 +93,7 @@ public class Russia : AdversaryBase, IAdversary {
 		var ambient = GameState.Current;
 
 		// Add 2 explorers per board to lands with beast.
-		Dictionary<Board, SpaceState[]> beastsSpacesForBoard = gameState.Island.Boards
+		Dictionary<Board, Space[]> beastsSpacesForBoard = gameState.Island.Boards
 			.Select( b => new { board=b, spaces= SpacesWithBeasts(b) } )
 			.Where( x=>0<x.spaces.Length)
 			.ToDictionary( x=>x.board, x=>x.spaces );
@@ -111,14 +111,14 @@ public class Russia : AdversaryBase, IAdversary {
 				: beastsSpacesForBoard.Values.SelectMany( x => x );
 			for(int i = 0; i < 2; ++i) {
 				await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Adversary);
-				var criteria = new A.Space( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces.Downgrade(), Present.Always );
+				var criteria = new A.SpaceDecision( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces, Present.Always );
 				Space addSpace = await spirit.SelectAsync( criteria );
-				await addSpace.ScopeTokens.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );
+				await addSpace.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );
 			}
 		}
 	}
 
-	static SpaceState[] SpacesWithBeasts( Board board ) 
+	static Space[] SpacesWithBeasts( Board board ) 
 		=> board.Spaces.ScopeTokens().Where( s => s.Beasts.Any ).ToArray();
 
 	#endregion Escalation

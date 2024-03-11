@@ -17,7 +17,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		_targetAttr = GetContextFromAttribute( actionType );
 		_repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
 
-		Name = _innatePowerAttr.Name;
+		Title = _innatePowerAttr.Name;
 		GeneralInstructions = _innatePowerAttr.GeneralInstructions;
 
 		// try static method (spirit / major / minor)
@@ -71,10 +71,10 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	#region Drawing Properties
 
-	public string Name {get;}
+	public string Title {get;}
 
 	string IOption.Text => IOption_Text; // non-overridable, hiding IOption.Text so it isn't used for non IOption stuff
-	virtual protected string IOption_Text => Name; // allow Dirived types to add additional info
+	virtual protected string IOption_Text => Title; // allow Dirived types to add additional info
 
 	public string TargetFilter => _targetAttr.TargetFilterName;
 
@@ -102,7 +102,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 	protected virtual async Task ActivateInnerAsync( Spirit self ) {
 
 		// Do this 1st so Volcano can destroy its presence before we evaluate our options
-		LastTarget = await _targetAttr.GetTargetCtx( Name, self );
+		LastTarget = await _targetAttr.GetTargetCtx( Title, self );
 		if(LastTarget == null) return;
 
 		List<MethodInfo> lastMethods = await GetLastActivatedMethodsOfEachGroup( self );

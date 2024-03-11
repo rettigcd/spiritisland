@@ -45,7 +45,7 @@ class InnatePainter {
 
 		var innateRect = new ClickableColRect([
 			// Title 
-			new TextRect( power.Name.ToUpper() ){ WidthRatio=12f, Padding=.1f, Horizontal=StringAlignment.Near, Font=InnateTitle },
+			new TextRect( power.Title.ToUpper() ){ WidthRatio=12f, Padding=.1f, Horizontal=StringAlignment.Near, Font=InnateTitle },
 
 			// Header
 			new RowRect( FillFrom.Top,

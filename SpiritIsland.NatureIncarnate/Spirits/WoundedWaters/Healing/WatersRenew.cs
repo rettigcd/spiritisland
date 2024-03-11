@@ -15,6 +15,6 @@ class WatersRenew : IHealingCard {
 		spirit.StopHealing();
 	}
 
-	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.InnatePowers[1].Name == CallToAFastnessOfRenewal.Name;
+	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.InnatePowers[1].Title == CallToAFastnessOfRenewal.Name;
 
 }

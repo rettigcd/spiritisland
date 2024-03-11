@@ -6,7 +6,7 @@ public class EarthShuddersBuildingsFall {
 	[InPlayOption( "2 fire,3 earth", 3, "2 Damage per Quake, to Town/City only.", 0 )]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		// 2 Damage per Quake, to Town/City only.
-		await ctx.DamageInvaders( 2 * ctx.Tokens[Token.Quake], Human.Town_City );
+		await ctx.DamageInvaders( 2 * ctx.Space[Token.Quake], Human.Town_City );
 	}
 
 	[InPlayOption( "3 fire,4 earth", 5, "1 Fear. In any # of lands with Quake: 2 Damage per Quake, to Town/City only. Remove 1 Quake.", 1 )]
@@ -24,9 +24,9 @@ public class EarthShuddersBuildingsFall {
 		ctx.AddFear( 1 );
 
 		// In any # of lands with Quake:
-		var options = ActionScope.Current.Tokens.Where( x => x.Has( Token.Quake ) && x.HasAny( Human.Invader ) ).Downgrade().ToList();
+		var options = ActionScope.Current.Spaces.Where( x => x.Has( Token.Quake ) && x.HasAny( Human.Invader ) ).ToList();
 		while(0 < options.Count) {
-			Space space = await ctx.Self.SelectAsync( new A.Space( "Select land to generate 2 damage/quake and remove 1 quake.", options, Present.Done ) );
+			Space space = await ctx.Self.SelectAsync( new A.SpaceDecision( "Select land to generate 2 damage/quake and remove 1 quake.", options, Present.Done ) );
 			if(space == null) break;
 			options.Remove( space );
 
@@ -34,9 +34,9 @@ public class EarthShuddersBuildingsFall {
 			if(singleDamageToAll)
 				await spaceCtx.Invaders.ApplyDamageToEach(1);
 			// 2 Damage per Quake, to Town/City only.
-			await spaceCtx.DamageInvaders( spaceCtx.Tokens[Token.Quake] * 2 );
+			await spaceCtx.DamageInvaders( spaceCtx.Space[Token.Quake] * 2 );
 			// Remove 1 Quake.
-			await spaceCtx.Tokens.RemoveAsync( Token.Quake, 1 );
+			await spaceCtx.Space.RemoveAsync( Token.Quake, 1 );
 		}
 	}
 

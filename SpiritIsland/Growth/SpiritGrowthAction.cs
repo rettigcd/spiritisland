@@ -16,7 +16,7 @@ public interface ICanAutoRun {}
 public class SpiritGrowthAction( IActOn<Spirit> cmd, Phase phase = Phase.Growth ) : IHelpGrow {
 	public readonly IActOn<Spirit> Cmd = cmd; // !!! switch to IActOn<Spirit>
 
-	string IActionFactory.Name => Cmd.Description;
+	string IActionFactory.Title => Cmd.Description;
 	string IOption.Text => Cmd.Description;
 	Task IActionFactory.ActivateAsync( Spirit self ) => Cmd.ActAsync( self );
 	bool IActionFactory.CouldActivateDuring( Phase speed, Spirit spirit ) => speed == phase;

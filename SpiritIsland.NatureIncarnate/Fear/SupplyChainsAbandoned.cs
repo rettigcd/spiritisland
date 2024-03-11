@@ -16,7 +16,7 @@ public class SupplyChainsAbandoned : FearCardBase, IFearCard {
 	public Task Level2( GameState gs )
 		=> Cmd.Multiple(
 			Cmd.DamageInvaders(1),
-			Cmd.SkipAllBuilds(Name).OnlyExecuteIf(ctx=>ctx.Tokens.HasAny(Human.Town_City))
+			Cmd.SkipAllBuilds(Name).OnlyExecuteIf(ctx=>ctx.Space.HasAny(Human.Town_City))
 		)
 			.In().OneLandPerBoard()
 			.ForEachBoard()
@@ -26,7 +26,7 @@ public class SupplyChainsAbandoned : FearCardBase, IFearCard {
 	public Task Level3( GameState gs )
 		=> Cmd.Multiple(
 			Cmd.DamageInvaders(1),
-			Cmd.SkipAllBuilds(Name).OnlyExecuteIf(ctx=>ctx.Tokens.HasAny(Human.Town_City))
+			Cmd.SkipAllBuilds(Name).OnlyExecuteIf(ctx=>ctx.Space.HasAny(Human.Town_City))
 		)
 			.In().NDifferentLandsPerBoard(2)
 			.ForEachBoard()

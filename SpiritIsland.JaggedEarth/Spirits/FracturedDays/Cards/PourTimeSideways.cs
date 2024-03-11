@@ -13,24 +13,24 @@ class PourTimeSideways {
 		await frac.SpendTime( 3 );
 
 		// Move 1 of your presence to a different land with your presence.
-		var src = await self.SelectAsync( new A.SpaceToken("Move presence from:", self.Presence.Deployed, Present.Always ) );
-		if(!src.Space.ScopeTokens.Has(self.Presence)) return; // !!?? is this necessary?
-		var dstOptions = self.Presence.Lands.Where( s => s.Space != src.Space );
-		var dst = await self.SelectAsync( A.Space.ForMoving_SpaceToken( "Move presence to:", src.Space, dstOptions.Downgrade(), Present.Always, src.Token ) );
-		await src.MoveTo(dst.ScopeTokens);
-		var srcBoards = src.Space.Boards;
-		if(srcBoards.Intersect(dst.Boards).Any()) return;
+		var src = await self.SelectAsync( new A.SpaceTokenDecision("Move presence from:", self.Presence.Deployed, Present.Always ) );
+		if(!src.Space.Has(self.Presence)) return; // !!?? is this necessary?
+		IEnumerable<Space> dstOptions = self.Presence.Lands.Where( s => s != src.Space );
+		Space dst = await self.SelectAsync( A.SpaceDecision.ForMoving( "Move presence to:", src.Space.SpaceSpec, dstOptions, Present.Always, src.Token ) );
+		await src.MoveTo(dst);
+		var srcBoards = src.Space.SpaceSpec.Boards;
+		if(srcBoards.Intersect(dst.SpaceSpec.Boards).Any()) return;
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
 		foreach(var board in srcBoards)
 			if(0<board.InvaderActionCount) --board.InvaderActionCount;
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.
-		foreach(var board in dst.Boards)
+		foreach(var board in dst.SpaceSpec.Boards)
 			++board.InvaderActionCount;
 
 		GameState.Current.AddTimePassesAction( TimePassesAction.Once( gs => {
-			foreach(var b in dst.Boards.Union( srcBoards ))
+			foreach(var b in dst.SpaceSpec.Boards.Union( srcBoards ))
 				b.InvaderActionCount = 1;
 		}));
 	}

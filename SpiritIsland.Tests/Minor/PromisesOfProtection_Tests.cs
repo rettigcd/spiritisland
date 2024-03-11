@@ -29,7 +29,7 @@ public class PromisesOfProtection_Tests {
 		// Test 2
 
 		// Then all 4 should have 4 health
-		ctx.Tokens.Summary.ShouldBe("4D@4");
+		ctx.Space.Summary.ShouldBe("4D@4");
 
 		// Brought in 2 more dahan
 		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( user => {
@@ -38,7 +38,7 @@ public class PromisesOfProtection_Tests {
 		} ).ShouldComplete();
 
 		// Then: All (6) should have 6 health.
-		ctx.Tokens.Summary.ShouldBe( "6D@6" );
+		ctx.Space.Summary.ShouldBe( "6D@6" );
 
 		// Test 3
 
@@ -46,7 +46,7 @@ public class PromisesOfProtection_Tests {
 		await fxt.GameState.TriggerTimePasses();
 
 		// Then all (6) should have 2 health
-		ctx.Tokens.Summary.ShouldBe("6D@2");
+		ctx.Space.Summary.ShouldBe("6D@2");
 	}
 
 }

@@ -12,7 +12,7 @@ public class StubbornSolidity {
 
 		// Dahan in target land cannot be changed.
 		// ( when they would be damaged, destroyed, removed, replaced, or moved, instead don't)
-		ctx.Tokens.Init(new StubbornSolidityBehavior(),1);
+		ctx.Space.Init(new StubbornSolidityBehavior(),1);
 
 		return Task.CompletedTask;
 	}

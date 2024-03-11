@@ -4,7 +4,7 @@ public partial class ManyMindsMoveAsOne : Spirit {
 
 	public const string Name = "Many Minds Move as One";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{ FlyFastAsThought, AJoiningOfSwarmsAndFlocks };
 

@@ -4,7 +4,7 @@ public class Keeper : Spirit {
 
 	public const string Name = "Keeper of the Forbidden Wilds";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {
 		new SpecialRule("Forbidden Ground","Any time you create a sacred site, push all dahan from that land.  Dahan events never move dahan to you sacred site but powers can do so.")
@@ -36,7 +36,7 @@ public class Keeper : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ){
 		// In the highest-numbered Jungle.
-		var highestNumberedJungle = board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last().ScopeTokens;
+		var highestNumberedJungle = board.Spaces.Where( x => x.IsJungle ).OrderBy( x => x.Label ).Last().ScopeSpace;
 		// Put 1 Presence
 		highestNumberedJungle.Setup(Presence.Token, 1);
 		// 1 Wild 

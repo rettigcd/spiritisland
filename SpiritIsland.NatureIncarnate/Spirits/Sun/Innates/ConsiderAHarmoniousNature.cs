@@ -49,7 +49,7 @@ public class ConsiderAHarmoniousNature {
 	}
 
 	static async Task GiveUpToNEnergyToSpirit( Spirit from, Spirit to, int max ) {
-		int delta = await from.SelectNumber($"Give {to.Text} Energy:", Math.Min(max,from.Energy) );
+		int delta = await from.SelectNumber($"Give {to.SpiritName} Energy:", Math.Min(max,from.Energy) );
 		from.Energy -= delta;
 		to.Energy += delta;
 	}
@@ -67,7 +67,7 @@ class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 
 	void IModifyDahanDamage.Modify( DamagingTokens args ) {
 		if(_spirit.ActionIsMyPower) {
-			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.TokenCountToReceiveDamage} Dahan from receiving {args.DamagePerToken} on {args.On.Space.Text}." ) );
+			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.TokenCountToReceiveDamage} Dahan from receiving {args.DamagePerToken} on {args.On.Label}." ) );
 			args.TokenCountToReceiveDamage = 0;
 		}
 	}
@@ -77,7 +77,7 @@ class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 			&& args.Reason == RemoveReason.Destroyed 
 			&& _spirit.ActionIsMyPower
 		) {
-			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.Count} Dahan Destruction on {args.From.Space.Text}." ) );
+			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.Count} Dahan Destruction on {args.From.Label}." ) );
 			args.Count = 0;
 		}
 	}
@@ -91,9 +91,9 @@ class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source )
 
 	public async Task ModifyAddingAsync( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight 
-			&& await _spirit.UserSelectsFirstText($"Destroy 1 presence instead of adding {args.Count} of blight to {args.To.Space.Text}?", "Yes, destroy my presence instead", "No, bring on the blight!")
+			&& await _spirit.UserSelectsFirstText($"Destroy 1 presence instead of adding {args.Count} of blight to {args.To.Label}?", "Yes, destroy my presence instead", "No, bring on the blight!")
 		) {
-			ActionScope.Current.Log(new Log.Debug($"{_source} stopped blight on {args.To.Space.Text} by destroying presence."));
+			ActionScope.Current.Log(new Log.Debug($"{_source} stopped blight on {args.To.Label} by destroying presence."));
 			await Cmd.DestroyPresence().ActAsync(_spirit);
 			args.Count = 0;
 		}

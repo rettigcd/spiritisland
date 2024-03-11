@@ -10,24 +10,24 @@ public class SolidifyEchoesOfMajestyPast {
 	static public async Task ActAsync(TargetSpiritCtx ctx){
 
 		// Choose one of target Spirit's lands.
-		Space center = await ctx.Self.SelectAsync(new A.Space("Select Central Hub", ctx.Other.Presence.Lands,Present.Always));
+		Space center = await ctx.Self.SelectAsync(new A.SpaceDecision("Select Central Hub", ctx.Other.Presence.Lands,Present.Always));
 		if(center == null) return; // is this possible?
 
 		// In that land and each adjacent, Defend 3.
-		foreach(SpaceState? space in center.Range(1).ScopeTokens())
+		foreach(Space? space in center.Range(1))
 			space.Defend.Add(3);
 
 		// They Add 1 DestroyedPresence to each adjacent land.
 		List<Space> spacesOptions = center.Adjacent_Existing.ToList();
 		while(0 < spacesOptions.Count && 0 < ctx.Other.Presence.Destroyed.Count) {
-			var space = await ctx.Other.SelectAsync(new A.Space("Place Destroyed Presence and Skip up to 1 Invader action", spacesOptions,Present.Always));
+			Space space = await ctx.Other.SelectAsync(new A.SpaceDecision("Place Destroyed Presence and Skip up to 1 Invader action", spacesOptions,Present.Always));
 			if(space == null) break;
 
 			await ctx.Other.Presence.Destroyed.MoveToAsync(space);
 			spacesOptions.Remove(space);
 
 			// Skip up to 1 Invader Action at each added DestroyedPresence.
-			space.ScopeTokens.Skip1InvaderAction(Name,ctx.Self);
+			space.Skip1InvaderAction(Name,ctx.Self);
 
 		}
 		
@@ -49,7 +49,7 @@ public class SolidifyEchoesOfMajestyPast {
 			PowerCard? newCard = ctx.Self.Hand.Except(startingHand).SingleOrDefault();
 			if(newCard != null 
 				&& newCard.Cost <= ctx.Self.Energy
-				&& await ctx.Self.UserSelectsFirstText($"Pay {newCard.Cost} to play {newCard.Name}?", $"Yes, pay {newCard.Cost} now.","No thank you.")
+				&& await ctx.Self.UserSelectsFirstText($"Pay {newCard.Cost} to play {newCard.Title}?", $"Yes, pay {newCard.Cost} now.","No thank you.")
 			) {
 				ctx.Self.PlayCard(newCard);				
 			}
@@ -65,11 +65,11 @@ public class SolidifyEchoesOfMajestyPast {
 
 	static PowerCard[] UniqueCardsForgotten(Spirit spirit ) {
 		HashSet<string> cardsIHave = spirit.InPlay.Union(spirit.Hand).Union(spirit.DiscardPile)
-			.Select(x=>x.Name)
+			.Select(x=>x.Title)
 			.ToHashSet();
 		Spirit s2 = (Spirit)(Activator.CreateInstance(spirit.GetType()) ?? throw new InvalidOperationException("Unable to clone spirit"));
 		return s2!.Hand
-			.Where(card=>!cardsIHave.Contains(card.Name))
+			.Where(card=>!cardsIHave.Contains(card.Title))
 			.ToArray();
 
 	}

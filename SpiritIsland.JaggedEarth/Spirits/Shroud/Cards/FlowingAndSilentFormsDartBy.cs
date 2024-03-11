@@ -12,7 +12,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		// When presence in target land would be Destroyed, its owner may, if possible instead Push that presence.
 		// (do it for all spirits, not just the ones currently here)
-		ctx.Tokens.Init(new PushPresenceInsteadOfDestroy(),1);
+		ctx.Space.Init(new PushPresenceInsteadOfDestroy(),1);
 
 		// You may Gather 1 presence / Sacred site of another Spirit (with their permission).
 		await GatherSomeonesPresence( ctx );
@@ -33,16 +33,16 @@ public class FlowingAndSilentFormsDartBy {
 
 			if( !args.From.Has(spirit.Presence) ) return;
 			
-			var dst = await spirit.SelectAsync( new A.Space( "Instead of destroying, push presence to:", args.From.Adjacent.Downgrade(), Present.Done ) );
+			var dst = await spirit.SelectAsync( new A.SpaceDecision( "Instead of destroying, push presence to:", args.From.Adjacent, Present.Done ) );
 			if(dst == null) return;
 
 			while(0 < args.Count--)
-				await args.Token.MoveAsync(args.From.Space,dst);
+				await args.Token.MoveAsync(args.From,dst);
 		}
 	}
 
 	static async Task GatherSomeonesPresence( TargetSpaceCtx ctx ) {
-		var adj = ctx.Tokens.Adjacent;
+		var adj = ctx.Space.Adjacent;
 		// Pick Spirit
 		Spirit[] spirits = GameState.Current.Spirits;
 		var nearbySpirits = spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
@@ -51,20 +51,20 @@ public class FlowingAndSilentFormsDartBy {
 		// Pick spot
 		var options = adj.Where(adj=>adj.Has(other.Presence));
 
-		var source = await ctx.SelectAsync( A.SpaceToken.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.Space ) );//
+		var source = await ctx.SelectAsync( A.SpaceTokenDecision.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.SpaceSpec ) );//
 
 		if(source == null) return;
 		// # to move
-		int numToMove = (1 < other.Presence.CountOn(source.Space.ScopeTokens) && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
+		int numToMove = (1 < other.Presence.CountOn(source.Space) && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
 			? 2
 			: 1;
 		// Get permission
-		if(other != ctx.Self && !await ctx.Self.UserSelectsFirstText($"Allow Shroud to Gather {numToMove} of your presence {source.Space.Label} => {ctx.Space.Label} ?", "Yes, please", "No, I don't want to move" ))
+		if(other != ctx.Self && !await ctx.Self.UserSelectsFirstText($"Allow Shroud to Gather {numToMove} of your presence {source.Space.SpaceSpec.Label} => {ctx.SpaceSpec.Label} ?", "Yes, please", "No, I don't want to move" ))
 			return; // cancel
 
 		// move
 		while(numToMove-->0)
-			await source.MoveTo(ctx.Tokens);
+			await source.MoveTo(ctx.Space);
 	}
 
 }

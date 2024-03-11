@@ -41,9 +41,9 @@ static public class CombinedDamage_Extenstions {
 	/// <summary>
 	/// Bonus damage to Invaders when damage was caused by Do-X-Damage-To-N invaders. (so no 'used' damage to supply
 	/// </summary>
-	static public CombinedDamage CombinedDamageFor_Invaders( this SpaceState tokens ) {
+	static public CombinedDamage CombinedDamageFor_Invaders( this Space space ) {
 		return new CombinedDamage( 0,
-			DamagePool.BadlandDamage( tokens, "Invaders" ), // use badland damage 1st since it is localized to a space
+			DamagePool.BadlandDamage( space, "Invaders" ), // use badland damage 1st since it is localized to a space
 			DamagePool.SpiritsBonusDamage()                 // not localized to a space
 		);
 	}
@@ -53,18 +53,18 @@ static public class CombinedDamage_Extenstions {
 	/// </summary>
 	/// <param name="originalDamage">This damage will not be removed from bonus damage pools.</param>
 	/// <remarks>If bonus damage doesn't apply, calleris responsible for NOT calling this.</remarks>
-	static public CombinedDamage CombinedDamageFor_Invaders( this SpaceState tokens, int originalDamage ) {
+	static public CombinedDamage CombinedDamageFor_Invaders( this Space space, int originalDamage ) {
 		return originalDamage == 0 
 			? new CombinedDamage(0)
 			: new CombinedDamage( originalDamage,
-				DamagePool.BadlandDamage( tokens, "Invaders" ), // use badland damage 1st since it is localized to a space
+				DamagePool.BadlandDamage( space, "Invaders" ), // use badland damage 1st since it is localized to a space
 				DamagePool.SpiritsBonusDamage()                 // not localized to a space
 			);
 	}
 
-	static public CombinedDamage CombinedDamageFor_Dahan( this SpaceState tokens, int originalDamage = 0 )
+	static public CombinedDamage CombinedDamageFor_Dahan( this Space space, int originalDamage = 0 )
 		=> new CombinedDamage( originalDamage,
-			DamagePool.BadlandDamage( tokens, "Dahan" )
+			DamagePool.BadlandDamage( space, "Dahan" )
 		);
 
 }

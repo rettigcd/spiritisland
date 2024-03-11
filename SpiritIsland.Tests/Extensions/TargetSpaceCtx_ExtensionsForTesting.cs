@@ -4,7 +4,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 
 	public static void ClearAllBlight( this Spirit _ ) {
 		// So it doesn't cascade and require extra interactions...
-		foreach(var space in ActionScope.Current.Tokens_Unfiltered)
+		foreach(var space in ActionScope.Current.Spaces_Unfiltered)
 			space.Blight.Init(0); // don't trigger events
 	}
 

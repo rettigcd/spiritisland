@@ -12,7 +12,7 @@ public class EntrapTheForcesOfCorruption{
 		ctx.Isolate();
 
 		// When blight is added to target land, it doesn't cascade.
-		ctx.Tokens.Init(new StopCascade(),1);
+		ctx.Space.Init(new StopCascade(),1);
 	}
 
 	class StopCascade : BaseModEntity, IEndWhenTimePasses, IModifyAddingToken {

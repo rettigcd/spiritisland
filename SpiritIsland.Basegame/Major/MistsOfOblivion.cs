@@ -22,7 +22,7 @@ public class MistsOfOblivion {
 				--mayDestroyed;
 			}
 		};
-		ctx.Tokens.Adjust( new TokenRemovedHandler( DoMists ), 1 );
+		ctx.Space.Adjust( new TokenRemovedHandler( DoMists ), 1 );
 
 		// 1 damage to each invader
 		await ctx.DamageEachInvader(1);

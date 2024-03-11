@@ -21,7 +21,7 @@ public class FlowLikeWaterReachLikeAir {
 
 	static async Task PullPiecesAlong( Spirit self, bool bringCityAndBlight, Space from, Space to ) {
 
-		var mover = new TokenMover( self, "Bring", from.ScopeTokens, to.ScopeTokens );
+		var mover = new TokenMover( self, "Bring", from, to );
 
 		// bringing up to 2 explorers, 2 towns and 2 dahan along with it.
 		mover.AddGroup( 2, Human.Explorer );

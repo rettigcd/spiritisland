@@ -4,7 +4,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	public const string Name = "Relentless Gaze of the Sun";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] {
 		RelentlessRepeater.Rule
@@ -41,8 +41,8 @@ public class RelentlessGazeOfTheSun : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 2 presence and 1 Badlands on your starting board
 		var start = board.Spaces.First(s=>s.IsSand);
-		start.ScopeTokens.Setup(Presence.Token, 2);
-		start.ScopeTokens.Badlands.Init(1);
+		start.ScopeSpace.Setup(Presence.Token, 2);
+		start.ScopeSpace.Badlands.Init(1);
 	}
 
 	#region Relentless Punishment
@@ -75,7 +75,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	bool TargetsFromSuperSacredSite( Space targetSpace, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria ) {
 		return FindTargettingSourcesFor(
-			targetSpace,
+			targetSpace.SpaceSpec,
 			new TargetingSourceCriteria( TargetFrom.SuperSacredSite, sourceCriteria.Restrict ), // capture restrict but boost
 			targetCriteria
 		).Any();

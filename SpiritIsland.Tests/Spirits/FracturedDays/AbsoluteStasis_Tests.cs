@@ -105,9 +105,9 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis("A8");
 
 		//  Then: no Presence found in A8
-		cfg.Spirit.Presence.Lands.Count( x => x.Space.Text == "A8" ).ShouldBe( 0 );
+		cfg.Spirit.Presence.Lands.Count( x => x.Label == "A8" ).ShouldBe( 0 );
 		//   And: no SS found
-		cfg.Presence.SacredSites.Downgrade().Count( x => x.Text == "A8" ).ShouldBe( 0 );
+		cfg.Presence.SacredSites.Count( x => x.Label == "A8" ).ShouldBe( 0 );
 	}
 
 	// Invaders Don't Explore Into / out of
@@ -122,7 +122,7 @@ public class AbsoluteStasis_Tests {
 		// Given: Town on A8
 		cfg.InitTokens( source, "1T@2");
 		// And: source is in stasis
-		await Given_SpacePutInStasis( source.Text );
+		await Given_SpacePutInStasis( source.Label );
 
 		// When: Invaders Explore - destination
 		await destination.When_Exploring();
@@ -143,7 +143,7 @@ public class AbsoluteStasis_Tests {
 		// Given: Town on A8
 		cfg.InitTokens( source, "1T@2" );
 		// And: Dst is in stasis
-		await Given_SpacePutInStasis( destination.Text );
+		await Given_SpacePutInStasis( destination.Label );
 
 		// When: Invaders Explore - destination
 		await destination.When_Exploring();
@@ -163,7 +163,7 @@ public class AbsoluteStasis_Tests {
 		// Given: Explorer on space
 		cfg.InitTokens( space, "1E@1" );
 		// And: space is in stasis
-		await Given_SpacePutInStasis( space.Text );
+		await Given_SpacePutInStasis( space.Label );
 		Assert_SpaceHasCountTokens(space, Human.Town, 0 );
 
 		// When: Invaders Build
@@ -184,7 +184,7 @@ public class AbsoluteStasis_Tests {
 		// Given: 1 Explorer and 1 Dahan on space
 		cfg.InitTokens( space, "1E@1,1D@2" );
 		// And: space is in stasis
-		await Given_SpacePutInStasis( space.Text );
+		await Given_SpacePutInStasis( space.Label );
 		Assert_SpaceHasCountTokens( space, Human.Town, 0 );
 
 		// When: Invaders Ravage
@@ -211,13 +211,13 @@ public class AbsoluteStasis_Tests {
 		//   And: 1 city (so we don't win with 0 invaders)
 		cfg.InitTokens( space, "1C@3");
 		//   And: space is in stasis
-		await Given_SpacePutInStasis( space.Text );
+		await Given_SpacePutInStasis( space.Label );
 		//   And: should check win/loss
 		cfg.GameState.AddStandardWinLossChecks();
 
 		try{
 			//  When: destroy that extra presence (triggers win/loss check)
-			await destroyPresenceSpace.ScopeTokens.Destroy(cfg.Presence.Token,1).ShouldComplete("destroying presence");
+			await destroyPresenceSpace.ScopeSpace.Destroy(cfg.Presence.Token,1).ShouldComplete("destroying presence");
 			//  When: we check win/loss
 			cfg.GameState.CheckWinLoss();
 		} catch( GameOverException ) {
@@ -234,10 +234,10 @@ public class AbsoluteStasis_Tests {
 		var space = cfg.Board[7];
 
 		// When: space is put in stasis
-		await Given_SpacePutInStasis( space.Text );
+		await Given_SpacePutInStasis( space.Label );
 
 		// Then: space still apears in list of All Spaces
-		ActionScope.Current.Tokens_Unfiltered.ShouldContain( cfg.GameState.Tokens[space] );
+		ActionScope.Current.Spaces_Unfiltered.ShouldContain( cfg.GameState.Tokens[space] );
 
 	}
 
@@ -265,10 +265,10 @@ public class AbsoluteStasis_Tests {
 		cfg.GameState.MinorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMinors(), 0 );
 		cfg.GameState.MajorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMajors(), 0 );
 		cfg.GameState.Initialize();
-		cfg.Presence.SacredSites.Select( x => x.Space.Text ).Join( "," ).ShouldBe( "A8" );
+		cfg.Presence.SacredSites.Select( x => x.Label ).Join( "," ).ShouldBe( "A8" );
 	}
 
-	void Assert_SpaceHasCountTokens( Space space, ITokenClass tokenClass, int expectedCount ) {
+	void Assert_SpaceHasCountTokens( SpaceSpec space, ITokenClass tokenClass, int expectedCount ) {
 		cfg.GameState.Tokens[space].OfTag( tokenClass ).Length.ShouldBe( expectedCount );
 	}
 

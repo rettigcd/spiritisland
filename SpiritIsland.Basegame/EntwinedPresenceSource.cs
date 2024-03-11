@@ -11,7 +11,7 @@ class EntwinedPresenceSource : ITargetingSourceStrategy {
 			spirit.TargetingSourceStrategy = this;
 	}
 
-	public IEnumerable<SpaceState> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from ) {
+	public IEnumerable<Space> EvaluateFrom( IKnowSpiritLocations presence, TargetFrom from ) {
 		return _olds
 			.SelectMany( p=> p.Value.EvaluateFrom(p.Key, from) )
 			.Distinct();

@@ -5,7 +5,7 @@ public class ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classe
 {
 	readonly int _reduce = reduce;
 
-	void IConfigRavages.Config( SpaceState space ) {
+	void IConfigRavages.Config( Space space ) {
 
 		// !!! BUG - any token pushed out during ravage (like an explorer for some adversay) won't get their attack back.
 
@@ -30,7 +30,7 @@ public class ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classe
 
 	}
 
-	static void AdjustAttack( SpaceState space, HumanToken orig, int adjust ) {
+	static void AdjustAttack( Space space, HumanToken orig, int adjust ) {
 		space.Init( orig.SetAttack( orig.Attack + adjust ), space[orig] );
 		space.Init( orig, 0 );
 	}

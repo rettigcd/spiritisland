@@ -11,7 +11,7 @@ public class HeartOfWildFire_Tests {
 		gs.IslandWontBlight();
 
 		var space = boardB[8];
-		var tokens = space.ScopeTokens;
+		var tokens = space.ScopeSpace;
 
 		// Given: presence on B8
 		tokens.Init(spirit.Presence.Token,1);
@@ -38,7 +38,7 @@ public class HeartOfWildFire_Tests {
 		gs.IslandWontBlight();
 
 		var space = boardB[8];
-		var tokens = space.ScopeTokens;
+		var tokens = space.ScopeSpace;
 
 		// Given: presence on B8
 		tokens.Init( spirit.Presence.Token, 1 );
@@ -46,7 +46,7 @@ public class HeartOfWildFire_Tests {
 		tokens.InitDefault(Human.Town, 1);
 
 		// When: adding blight to space from ravage
-		await tokens.Space.When_Ravaging();
+		await tokens.SpaceSpec.When_Ravaging();
 
 		// Then: presence should still be gone
 		spirit.Presence.IsOn(tokens).ShouldBeFalse();

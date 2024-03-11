@@ -32,7 +32,7 @@ public class PlacePresence_Tests {
 			new GrowthTrack( new GrowthGroup( new PlacePresence( 1, Filter.Any ) ) )
 		) {}
 
-		public override string Text => "Test Spirit";
+		public override string SpiritName => "Test Spirit";
 
 		protected override void InitializeInternal( Board _, GameState _1 ){
 			throw new NotImplementedException();
@@ -86,7 +86,7 @@ public class PlacePresence_Tests {
 			var targetCriteria = new TargetCriteria(0,ctx.Spirit,filter);
 			// don't care about results
 			// just shouldn't throw exception about the filter we are using.
-			targetCriteria.Matches(space.ScopeTokens);
+			targetCriteria.Matches(space.ScopeSpace);
 		}
 
 	}

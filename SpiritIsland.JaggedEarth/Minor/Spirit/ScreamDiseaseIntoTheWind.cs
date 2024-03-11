@@ -33,12 +33,12 @@ class ScreamingDiseaseActionHandlers( Spirit _targetSpirit ) : IRunAtStartOfActi
 	}
 
 	async Task EndOfRoundCheck( ActionScope endScope ) {
-		SpaceState ss=null;
+		Space ss=null;
 		bool add = !_used
 			&& endScope.Category == ActionCategory.Spirit_Power
 			&& endScope.Owner == _targetSpirit
 			&& (ss = TargetSpaceAttribute.TargettedSpace) != null
-			&& await _targetSpirit.UserSelectsFirstText( ScreamDiseaseIntoTheWind.Name + " (" + ss.Space.Label + ")", "Yes, add 1 disease", "No thank you" );
+			&& await _targetSpirit.UserSelectsFirstText( ScreamDiseaseIntoTheWind.Name + " (" + ss.SpaceSpec.Label + ")", "Yes, add 1 disease", "No thank you" );
 		if( add ) {
 			_used = true;
 			await ss.Disease.AddAsync( 1 );

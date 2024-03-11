@@ -3,24 +3,24 @@
 public static class HealthAdjustmentHelper_Extension {
 
 	/// <summary>
-	/// Initiates a health bonus in a given SpaceState until the end of the round.
+	/// Initiates a health bonus in a given Space until the end of the round.
 	/// </summary>
 	static public async Task AdjustTokensHealthForRound( this TargetSpaceCtx ctx, int deltaHealth, params HumanTokenClass[] tokenClasses ) {
 		// Doing this on TargetSpaceCtx because adjusting health could destroy a town.
 
-		await ctx.Tokens.AdjustHealthOfAll( deltaHealth, tokenClasses );
-		ctx.Tokens.Adjust( new HealthAdjustmentToken( deltaHealth, tokenClasses ), 1 );
+		await ctx.Space.AdjustHealthOfAll( deltaHealth, tokenClasses );
+		ctx.Space.Adjust( new HealthAdjustmentToken( deltaHealth, tokenClasses ), 1 );
 	}
 
-	static public async Task AdjustHealthOfAll( this SpaceState spaceState, int delta, params HumanTokenClass[] tokenClasses ) {
+	static public async Task AdjustHealthOfAll( this Space space, int delta, params HumanTokenClass[] tokenClasses ) {
 		if(delta == 0) return;
 		foreach(var tokenClass in tokenClasses) {
-			var tokens = spaceState.HumanOfTag( tokenClass );
+			var tokens = space.HumanOfTag( tokenClass );
 			HumanToken[] orderedTokens = delta < 0
 				? [.. tokens.OrderBy( x => x.FullHealth )]
 				: [.. tokens.OrderByDescending( x => x.FullHealth )];
 			foreach(var token in orderedTokens)
-				await spaceState.AllHumans( token ).AdjustHealthAsync( delta );
+				await space.AllHumans( token ).AdjustHealthAsync( delta );
 		}
 	}
 
@@ -55,10 +55,10 @@ public static class HealthAdjustmentHelper_Extension {
 		}
 
 		// Cleanup
-		public void EndOfRoundCleanup( SpaceState tokens ) {
-			GameState.Current.Healer.HealSpace( tokens );
-			tokens.AdjustHealthOfAll( -_deltaHealth, _tokenClasses ).Wait(); // This should be ok because tokens are healed.
-			tokens.Init(this,0);
+		public void EndOfRoundCleanup( Space space ) {
+			GameState.Current.Healer.HealSpace( space );
+			space.AdjustHealthOfAll( -_deltaHealth, _tokenClasses ).Wait(); // This should be ok because tokens are healed.
+			space.Init(this,0);
 		}
 	}
 

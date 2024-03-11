@@ -25,29 +25,29 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 	}
 
 	/// <summary> Executes up to 1 potential Ravage </summary>
-	public async Task Exec( SpaceState tokens ) {
-		RavageData data = new RavageData( tokens );
+	public async Task Exec( Space space ) {
+		RavageData data = new RavageData( space );
 
 		var scope = await ActionScope.Start( ActionCategory.Invader ); // start scope before Stoppers run
 
 		// Check for Stoppers
-		var stoppers = data.Tokens.ModsOfType<ISkipRavages>()
+		var stoppers = data.Space.ModsOfType<ISkipRavages>()
 			.OrderBy( s => s.Cost )
 			.ToArray();
 
 		foreach(ISkipRavages stopper in stoppers)
-			if(await stopper.Skip( data.Tokens )) {
+			if(await stopper.Skip( data.Space )) {
 				// baby steps, don't break tests.  Eventually we want: $"stopped by {stopper.SourceLabel}";
 				return; 
 			}
 
 		// Config the ravage
-		foreach(IConfigRavagesAsync configurer in data.Tokens.ModsOfType<IConfigRavagesAsync>().ToArray() )
-			await configurer.ConfigAsync( data.Tokens );
-		foreach(IConfigRavages configurer in data.Tokens.ModsOfType<IConfigRavages>().ToArray() )
-			configurer.Config( data.Tokens );
+		foreach(IConfigRavagesAsync configurer in data.Space.ModsOfType<IConfigRavagesAsync>().ToArray() )
+			await configurer.ConfigAsync( data.Space );
+		foreach(IConfigRavages configurer in data.Space.ModsOfType<IConfigRavages>().ToArray() )
+			configurer.Config( data.Space );
 
-		data.InvaderBinding = data.Tokens.Invaders;
+		data.InvaderBinding = data.Space.Invaders;
 
 		try {
 			await RavageSequence( this, data );
@@ -66,7 +66,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 		var ravageRounds = new RavageOrder[] { RavageOrder.Ambush, RavageOrder.InvaderTurn, RavageOrder.DahanTurn };
 		foreach(RavageOrder ravageRound in ravageRounds) {
-			var exchange = new RavageExchange( data.Tokens, ravageRound );
+			var exchange = new RavageExchange( data.Space, ravageRound );
 			if(exchange.HasActiveParticipants) {
 				await exchange.Execute( behavior );
 				data.Result.Add( exchange );
@@ -76,7 +76,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 	}
 
 	static int GetDamageFromParticipatingAttackers_Default( RavageExchange rex ) {
-		SpaceState tokens = rex.Tokens;
+		Space space = rex.Space;
 		return rex.Attackers.Active.Keys
 			.OfType<HumanToken>()
 			.Where( x => x.StrifeCount == 0 )
@@ -85,7 +85,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	static public async Task DamageLand( RavageData ra ) {
 		int totalLandDamage = ra.Result.Sum( r => r.Attackers.DamageDealtOut );
-		await ra.InvaderBinding.Tokens.DamageLand( totalLandDamage ); // must call even if there is 0 Damage incase a modifier adds some.
+		await ra.InvaderBinding.Space.DamageLand( totalLandDamage ); // must call even if there is 0 Damage incase a modifier adds some.
 	}
 
 	// This is never modified. It is cloned and the clone is modified.

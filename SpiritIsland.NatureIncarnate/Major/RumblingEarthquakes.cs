@@ -18,14 +18,14 @@ public class RumblingEarthquakes {
 		await ctx.DamageInvaders(6, Human.Town_City);
 
 		// 6 Damage among adjacent lands, to Town/City only.
-		await new SourceSelector(ctx.Tokens.Adjacent)
+		await new SourceSelector(ctx.Space.Adjacent)
 			.AddAll(Human.Town_City)
 			.DoDamageAsync(ctx.Self,6);
 
 		// -If you have- 4 earth:
 		if( await ctx.YouHave("4 earth"))
 			// 6 Damage among target/adjacent lands to Town/City only.
-			await new SourceSelector(ctx.Tokens.Range(1))
+			await new SourceSelector(ctx.Space.Range(1))
 				.AddAll(Human.Town_City)
 				.DoDamageAsync(ctx.Self,6);
 

@@ -35,7 +35,7 @@ public class AddDestroyedPresence( int range ) : SpiritAction() {
 	}
 
 	/// <summary> Adds a callback to be called when/if destroyed presence is placed. </summary>
-	public AddDestroyedPresence WhenPlacedTrigger( Func<int, Space, Task> callback ) {
+	public AddDestroyedPresence WhenPlacedTrigger( Func<int, SpaceSpec, Task> callback ) {
 		_placedCallback = callback;
 		return this;
 	}
@@ -51,10 +51,9 @@ public class AddDestroyedPresence( int range ) : SpiritAction() {
 
 		var destinationOptions = (_relativeSpirit ?? placingSpirit)
 			.FindSpacesWithinRange( new TargetCriteria( Range ) )
-			.Where( placingSpirit.Presence.CanBePlacedOn )
-			.Downgrade();
+			.Where( placingSpirit.Presence.CanBePlacedOn );
 
-		Space dst = await placingSpirit.SelectAsync( A.Space.ToPlaceDestroyedPresence(
+		Space dst = await placingSpirit.SelectAsync( A.SpaceDecision.ToPlaceDestroyedPresence(
 			destinationOptions,
 			_present,
 			placingSpirit,
@@ -70,11 +69,11 @@ public class AddDestroyedPresence( int range ) : SpiritAction() {
 		await presence.Destroyed.MoveToAsync(dst);
 		//await presence.PlaceDestroyedAsync(maxToPlaceOnSpace, dst);
 		if( _placedCallback != null )
-			await _placedCallback(maxToPlaceOnSpace,dst);
+			await _placedCallback(maxToPlaceOnSpace,dst.SpaceSpec);
 	}
 
 	public int NumToPlace { get; private set; } = 1; // default to placing 1
 	Present _present = Present.Always; // defaults to being required
 	Spirit? _relativeSpirit = null;
-	Func<int,Space,Task>? _placedCallback;
+	Func<int,SpaceSpec,Task>? _placedCallback;
 }

@@ -4,7 +4,7 @@ public class Bringer : Spirit {
 
 	public const string Name = "Bringer of Dreams and Nightmares";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { TDaTD_ActionTokens.Rule };
 
@@ -39,7 +39,7 @@ public class Bringer : Spirit {
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: 2 presense in highest numbered sands
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
-		var space = startingIn.ScopeTokens;
+		var space = startingIn.ScopeSpace;
 		space.Setup( Presence.Token, 2 );
 	}
 

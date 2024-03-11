@@ -10,7 +10,7 @@ public class MovePresenceTogether : SpiritAction {
 			new SourceSelector(self.Presence.Lands)
 				.AddGroup(3,self.Presence)
 				.FromASingleLand(),
-			new DestinationSelector( st => st.Space.Range(3).ScopeTokens() )
+			new DestinationSelector( st => st.Space.Range(3) )
 				.Config( Distribute.ToASingleLand )
 		).DoUpToN();
 	}

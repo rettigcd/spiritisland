@@ -24,8 +24,8 @@ public class VolcanicEruption {
 			// Add 1 wilds.
 			await ctx.Wilds.AddAsync(1);
 			// In  each adjacent land:
-			foreach(SpaceState adj in ctx.Adjacent)
-				await EffectAdjacentLand( ctx.Target(adj.Space) );
+			foreach(Space adj in ctx.Adjacent)
+				await EffectAdjacentLand( ctx.Target(adj) );
 		}
 
 	}

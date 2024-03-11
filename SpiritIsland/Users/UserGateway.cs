@@ -78,46 +78,42 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	/// Whatever criteria prevented them from having a match, will also prevent having any matches 
 	/// and this will not be referenced/used.
 	/// </remarks>
-	public SpaceToken Preloaded { get; set; }
+	public SpaceToken PreloadedSpaceToken { get; set; }
 
 	readonly public static AsyncLocal<bool> UsePreselect = new AsyncLocal<bool>(); // !! combine with other preferences into a 'preference' object.
 
 	/// <summary>
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 	/// </summary>
-	public Task<T> Select<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption {
-		ArgumentNullException.ThrowIfNull( originalDecision );
+	public Task<T> Select<T>( A.TypedDecision<T> decision ) where T : class {
+		ArgumentNullException.ThrowIfNull( decision );
 
 		if(_activeDecisionMaker != null) 
-			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{originalDecision.Prompt}], Previous:[{_activeDecisionMaker.Decision.Prompt}] ");
-
-		IDecisionPlus decision = originalDecision as IDecisionPlus;
+			throw new InvalidOperationException( $"Pending decision was not properly awaited. Current:[{decision.Prompt}], Previous:[{_activeDecisionMaker.Decision.Prompt}] ");
 
 		// Scenario 1 - No options => Auto-Select NULL
-		if(decision.Options.Length == 0) {
-			return Preloaded is not null
-				? throw new InvalidOperationException($"Preloaded {Preloaded} but that is now not an option.")
-				: Task.FromResult<T>( null );
-		}
+		if(decision.Options.Length == 0)
+			return PreloadedSpaceToken is null ? Task.FromResult<T>(null)
+				: throw new InvalidOperationException($"Preloaded {PreloadedSpaceToken} but that is now not an option.");
 
 		// Scenario 2 - Resolve Promise with preloaded value.
-		if(Preloaded != null) {
-			if( !decision.Options.Contains(Preloaded) )
-				throw new InvalidOperationException( $"Preloaded option {Preloaded.Text} not an option for "+decision.Prompt );
-			IOption preloaded = Preloaded;
-			Preloaded = null;
+		if(PreloadedSpaceToken != null) {
+			if( !decision.Options.Contains(PreloadedSpaceToken) )
+				throw new InvalidOperationException( $"Preloaded option {PreloadedSpaceToken} not an option for "+ decision.Prompt );
+			IOption preloaded = PreloadedSpaceToken;
+			PreloadedSpaceToken = null;
 			return Task.FromResult<T>( (T)preloaded );
 		}
 
 		// Scenario 3 - Auto-Select Single
 		if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
-			Log( new DecisionLogEntry( decision.Options[0], decision, true ) );
-			return Task.FromResult<T>( (T)decision.Options[0] );
+			Log( new DecisionLogEntry(decision.Options[0], decision, true ) );
+			return Task.FromResult<T>( decision.ConvertOptionToResult(decision.Options[0]) );
 		}
 
 		// Scenario 4 - Returns unresolved promise.
 		var promise = new TaskCompletionSource<T>();
-		var decisionMaker = new ActionHelper<T>( originalDecision, promise );
+		var decisionMaker = new ActionHelper<T>( decision, promise );
 		_activeDecisionMaker = decisionMaker;
 
 		// We are signalling this twice
@@ -161,16 +157,14 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	/// <summary>
 	/// Assigns one of the generic available options to the typed pending promise.
 	/// </summary>
-	class ActionHelper<T>( IDecisionPlus decision, TaskCompletionSource<T> promise ) : IDecisionMaker where T : class, IOption {
+	class ActionHelper<T>(A.TypedDecision<T> decision, TaskCompletionSource<T> promise ) : IDecisionMaker where T : class {
 		public IDecisionPlus Decision { get; } = decision;
 
-		public void Select( IOption selection ) {
-			if( TextOption.Done.Matches( selection ) || selection is not T tt )
-				promise.TrySetResult( null );
-			else if(Decision.Options.Contains( selection ))
-				promise.TrySetResult( tt );
+		public void Select( IOption option ) {
+			if( decision.TryGetResultFromOption(option,out T result) )
+				promise.TrySetResult( result );
 			else
-				promise.TrySetException( new System.Exception( $"{selection.Text} not found in options" ) );
+				promise.TrySetException( new System.Exception( $"{option.Text} not found in options" ) );
 		}
 
 		public void IssueException( Exception exception ) {

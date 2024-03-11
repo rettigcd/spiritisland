@@ -3,7 +3,7 @@
 public class OverseasTradeSeemsSafer : FearCardBase, IFearCard {
 
 	public const string Name = "Overseas Trade Seems Safer";
-	public string Text => Name;
+	string IOption.Text => Name;
 
 	[FearLevel( 1, "Defend 3 in all Coastal lands." )]
 	public Task Level1( GameState ctx )
@@ -24,7 +24,7 @@ public class OverseasTradeSeemsSafer : FearCardBase, IFearCard {
 			.In().EachActiveLand().Which( Is.Coastal )
 			.ActAsync( ctx );
 
-	static SpaceAction DoNotBuildCity => new SpaceAction( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( $"{Name}(city)", Human.City ) );
-	static SpaceAction DoNotBuild => new SpaceAction( "do not build city", ctx => ctx.Tokens.SkipAllBuilds( Name ) );
+	static SpaceAction DoNotBuildCity => new SpaceAction( "do not build city", ctx => ctx.Space.SkipAllBuilds( $"{Name}(city)", Human.City ) );
+	static SpaceAction DoNotBuild => new SpaceAction( "do not build city", ctx => ctx.Space.SkipAllBuilds( Name ) );
 
 }

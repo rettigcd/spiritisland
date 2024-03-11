@@ -35,9 +35,9 @@ public class PentUpCalamity {
 
 		while(options.Length > 0) {
 			// This is kind of special purpose
-			var removeTokenDecision = new A.SpaceToken(
+			var removeTokenDecision = new A.SpaceTokenDecision(
 				$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})", 
-				options.OnScopeTokens1(ctx.Space),
+				options.OnScopeTokens1(ctx.SpaceSpec),
 				Present.Done
 			);
 			var tokenToRemove = (await ctx.SelectAsync( removeTokenDecision ))?.Token;
@@ -70,14 +70,14 @@ public class PentUpCalamity {
 
 	static async Task RemoveToken( TargetSpaceCtx ctx, IToken tokenToRemove ) {
 		if(tokenToRemove is HumanToken invader)
-			await ctx.Tokens.Remove1StrifeFromAsync( invader, 1 );
+			await ctx.Space.Remove1StrifeFromAsync( invader, 1 );
 		else
 			await ctx.Remove( tokenToRemove, 1 );
 	}
 
 	static IToken[] GetRemovableTokens( TargetSpaceCtx ctx ) {
-		var options = ctx.Tokens.OfAnyTag( Token.Beast, Token.Disease, Token.Wilds ).ToList();
-		options.AddRange( ctx.Tokens.AllHumanTokens() );
+		var options = ctx.Space.OfAnyTag( Token.Beast, Token.Disease, Token.Wilds ).ToList();
+		options.AddRange( ctx.Space.AllHumanTokens() );
 		return options.Cast<IToken>().ToArray();
 	}
 

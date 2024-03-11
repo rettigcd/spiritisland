@@ -3,7 +3,7 @@
 public class Retreat : FearCardBase, IFearCard {
 
 	public const string Name = "Retreat";
-	public string Text => Name;
+	string IOption.Text => Name;
 
 	[FearLevel( 1, "Each player may Push up to 2 Explorer from an Inland land." )]
 	public Task Level1( GameState ctx ) {

@@ -3,12 +3,8 @@ namespace SpiritIsland.Maui;
 public partial class IslandView : ContentView, IDrawable {
 
 	public Tokens_ForIsland IslandTokens {
-		get {
-			return _tokens;
-		}
-		set {
-			_tokens = value;
-		}
+		get => _tokens;
+		set => _tokens = value;
 	}
 	Tokens_ForIsland _tokens = new Tokens_ForIsland();
 
@@ -58,7 +54,7 @@ public partial class IslandView : ContentView, IDrawable {
 	public void SyncTokensToGameState() {
 		if(_ovm is null) return;
 		foreach(SpaceWidget space in _spaces)
-			space.SyncVisibleTokensToSpaceState(_ovm);
+			space.SyncVisibleTokensToSpace(_ovm);
 	}
 
 	public void ReleaseTokens() {

@@ -134,7 +134,7 @@ public class WrappingLayout {
 	public Size Size => _size ?? throw new System.InvalidOperationException( "Size not finalized." );
 
 	public void Adjust( int deltaX, int deltaY ) {
-		foreach(var t in _tokens) { 
+		foreach(TokenPosition t in _tokenPositions) { 
 			t.Bounds.X+= deltaX;
 			t.Bounds.Y+= deltaY;
 		}
@@ -150,7 +150,7 @@ public class WrappingLayout {
 
 		// Draw Tokens
 		using(var imgCache = new ImgMemoryCache())
-			foreach(TokenPosition tp in layout._tokens)
+			foreach(TokenPosition tp in layout._tokenPositions)
 				graphics.DrawImage( imgCache.GetImage( tp.TokenImg ), tp.Bounds );
 
 
@@ -166,7 +166,7 @@ public class WrappingLayout {
 
 	#region private
 
-	readonly List<TokenPosition> _tokens = [];
+	readonly List<TokenPosition> _tokenPositions = [];
 	readonly Dictionary<FontStyle, List<TextPosition>> _texts = [];
 
 	// Generic layout
@@ -231,7 +231,7 @@ public class WrappingLayout {
 		_x += tokenSize.Width;
 
 		var imgToken = new TokenPosition( img, rect );
-		_tokens.Add( imgToken );
+		_tokenPositions.Add( imgToken );
 		_rowItems.Add( imgToken );
 	}
 

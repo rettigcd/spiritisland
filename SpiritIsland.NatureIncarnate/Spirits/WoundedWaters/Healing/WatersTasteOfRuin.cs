@@ -14,5 +14,5 @@ class WatersTasteOfRuin : IHealingCard {
 		// Replace Seeking a Path Towards Healing
 		spirit.StopHealing();
 	}
-	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.InnatePowers[0].Name == AfflictWithBloodThirst.Name;
+	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.InnatePowers[0].Title == AfflictWithBloodThirst.Name;
 }

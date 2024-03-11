@@ -150,7 +150,7 @@ public class RiverSurges_GrowthTests : BoardAGame {
 	[InlineData("Wash Away")]
 	[InlineData("Flash Floods")]
 	public void InsufficientEnergyToBuy(string cardName){
-		var card = _spirit.Hand.VerboseSingle(c=>c.Name == cardName);
+		var card = _spirit.Hand.VerboseSingle(c=>c.Title == cardName);
 		_spirit.Energy = card.Cost - 1;
 
 		// When:
@@ -176,7 +176,7 @@ public class RiverSurges_GrowthTests : BoardAGame {
 		_spirit.DiscardPile.Add(card);
 	}
 
-	PowerCard FindSpiritsAvailableCard(string cardName) => _spirit.Hand.VerboseSingle(c => c.Name == cardName);
+	PowerCard FindSpiritsAvailableCard(string cardName) => _spirit.Hand.VerboseSingle(c => c.Title == cardName);
 
 	#endregion
 

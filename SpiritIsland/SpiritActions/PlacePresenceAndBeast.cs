@@ -8,10 +8,10 @@ public class PlacePresenceAndBeast : SpiritAction {
 		TokenLocation from = await self.SelectSourcePresence();
 
 		var options = DefaultRangeCalculator.Singleton.GetSpaceOptions( self.Presence.Lands, new TargetCriteria( 3 ) );
-		Space to = await self.SelectAsync( A.Space.ToPlacePresence( options.Downgrade(), Present.Always, self.Presence.Token ) );
+		Space to = await self.SelectAsync( A.SpaceDecision.ToPlacePresence( options, Present.Always, self.Presence.Token ) );
 
 		await from.MoveToAsync(to);
-		await to.ScopeTokens.Beasts.AddAsync(1);
+		await to.Beasts.AddAsync(1);
 	}
 
 }

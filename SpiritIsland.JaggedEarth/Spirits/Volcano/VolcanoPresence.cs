@@ -3,7 +3,7 @@
 class VolcanoPresence( Spirit spirit, PresenceTrack t1, PresenceTrack t2 ) 
 	: SpiritPresence( spirit, t1, t2, new VolcanoToken( spirit ) ) 
 {
-	public override bool CanBePlacedOn( SpaceState s ) => ActionScope.Current.TerrainMapper.MatchesTerrain( s, Terrain.Mountain );
+	public override bool CanBePlacedOn( Space s ) => ActionScope.Current.TerrainMapper.MatchesTerrain( s, Terrain.Mountain );
 
 	static public ActionScopeValue<Space> SafeSpace = new( "Don't Destroy Presence On Space", (Space)default );
 
@@ -19,7 +19,7 @@ class VolcanoPresence( Spirit spirit, PresenceTrack t1, PresenceTrack t2 )
 public class VolcanoToken( Spirit spirit ) : SpiritPresenceToken(spirit), IModifyRemovingToken {
 
 	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
-		if( DestroysMyPresence( args ) && VolcanoPresence.SafeSpace.Value == args.From.Space )
+		if( DestroysMyPresence( args ) && VolcanoPresence.SafeSpace.Value == args.From )
 			args.Count = 0;
 	}
 

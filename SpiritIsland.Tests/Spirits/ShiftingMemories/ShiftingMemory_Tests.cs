@@ -30,13 +30,13 @@ public class ShiftingMemory_Tests {
 			//  And: Chooses to Play It by Forgetting it
 			u.NextDecision.HasPrompt( "Select action" ).HasOptions( "Play [Flash Floods] by paying 1,Play [Flash Floods] by forgetting it at end of turn,No Action" ).Choose( "Play [Flash Floods] by forgetting it at end of turn" ); ;
 		} ).ShouldComplete();
-		spirit.InPlay.Select(c=>c.Name).Join().ShouldBe("Flash Floods");
+		spirit.InPlay.Select(c=>c.Title).Join().ShouldBe("Flash Floods");
 	
 		// When: Time Passes
 		await gs.TriggerTimePasses();
 
 		// Then: Card is in Discard Hand( aka, not forgotten )
-		spirit.DiscardPile.Select(c=>c.Name).Join().ShouldBe("Flash Floods");
+		spirit.DiscardPile.Select(c=>c.Title).Join().ShouldBe("Flash Floods");
 	}
 
 }

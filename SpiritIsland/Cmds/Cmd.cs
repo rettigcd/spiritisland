@@ -16,14 +16,14 @@ public static partial class Cmd {
 	// Push
 	static public SpaceAction PushUpToNDahan( int count ) => new SpaceAction( $"Push up to {count} Dahan", ctx => ctx.PushUpToNDahan( count ) ).OnlyExecuteIf(ctx=>ctx.Dahan.Any );
 	static public SpaceAction PushNDahan(int count ) => new SpaceAction( $"Push {count} dahan", ctx => ctx.PushDahan( count ) ).OnlyExecuteIf( ctx=>ctx.Dahan.Any );
-	static public SpaceAction PushUpToNExplorers( int count ) => new SpaceAction( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Human.Explorer)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Explorer ) );
-	static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Human.Town)).OnlyExecuteIf( ctx=>ctx.Tokens.Has( Human.Town ) );
-	static public SpaceAction PushUpToNInvaders( int count, params ITokenClass[] classes ) => new SpaceAction( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Tokens.HasAny( classes ) );
-	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Human.Explorer_Town ) ).OnlyExecuteIf( ctx=>ctx.Tokens.HasAny( Human.Explorer_Town ) );
+	static public SpaceAction PushUpToNExplorers( int count ) => new SpaceAction( $"Push up to {count} Explorers", ctx => ctx.PushUpTo(count,Human.Explorer)).OnlyExecuteIf( ctx=>ctx.Space.Has( Human.Explorer ) );
+	static public SpaceAction PushUpToNTowns( int count ) => new SpaceAction( $"Push up to {count} Towns", ctx=>ctx.PushUpTo(count,Human.Town)).OnlyExecuteIf( ctx=>ctx.Space.Has( Human.Town ) );
+	static public SpaceAction PushUpToNInvaders( int count, params ITokenClass[] classes ) => new SpaceAction( $"Push up to {count} "+ classes.Select( c => c.Label ).Join( "/" ), ctx => ctx.PushUpTo( count, classes ) ).OnlyExecuteIf( ctx => ctx.Space.HasAny( classes ) );
+	static public SpaceAction PushExplorersOrTowns( int count ) => new SpaceAction( $"Push {count} explorers or towns", ctx => ctx.Push( count, Human.Explorer_Town ) ).OnlyExecuteIf( ctx=>ctx.Space.HasAny( Human.Explorer_Town ) );
 
 	// -- Add ---
 	static public SpaceAction AddHuman( int count, HumanTokenClass tokenClass, string suffixDescription = "" )
-		=> new SpaceAction( $"Add {tokenClass.ToCountString(count)}{suffixDescription}", ctx => ctx.Tokens.AddDefaultAsync(tokenClass, count ) );
+		=> new SpaceAction( $"Add {tokenClass.ToCountString(count)}{suffixDescription}", ctx => ctx.Space.AddDefaultAsync(tokenClass, count ) );
 	static public SpaceAction AddBlightedIslandBlight => new SpaceAction("Add 1 blight", ctx => ctx.AddBlight(1,AddReason.SpecialRule) );
 	static public SpaceAction AddWilds( int count ) => new SpaceAction( $"Add {count} Wilds.", ctx => ctx.Wilds.AddAsync(count) );
 	static public SpaceAction AddVitality( int count ) => new SpaceAction( $"Add {count} Vitality.", ctx => ctx.Vitality.AddAsync( count ) );
@@ -33,13 +33,13 @@ public static partial class Cmd {
 			$"Add {count} Strife to "+String.Join(",",tokenClasses.Select(x=>x.Label)), 
 			ctx => ctx.AddStrife( count, tokenClasses )
 		); 
-	static public SpaceAction Adjust1Token( string description, ISpaceEntity token ) => new SpaceAction( description, ctx => ctx.Tokens.Adjust(token,1) );
+	static public SpaceAction Adjust1Token( string description, ISpaceEntity token ) => new SpaceAction( description, ctx => ctx.Space.Adjust(token,1) );
 	// -- Screwy Strife Stuff --
 	static public BaseCmd<GameState> StrifePenalizesHealth => new BaseCmd<GameState>( "Invaders reduce Health per strife", ReduceHealthByStrife.Init );
 	static public SpaceAction EachStrifeDamagesInvader => new SpaceAction( "Invaders take 1 damage per strife", async ctx=>{ 
-		var tokens = ctx.Tokens.HumanOfAnyTag( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
+		var tokens = ctx.Space.HumanOfAnyTag( Human.Invader ).Where( x => 0 < x.StrifeCount ).ToArray();
 		foreach(var token in tokens) {
-			int count = ctx.Tokens[token];
+			int count = ctx.Space[token];
 			while(0 < count--)
 				await ctx.Invaders.ApplyDamageTo1(1,token);
 		}
@@ -58,13 +58,13 @@ public static partial class Cmd {
 		Func<ITokenClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
 		return new SpaceAction($"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast(", "," or "),
 			ctx => ctx.SourceSelector.AddGroup(count, tokenClasses).RemoveUpToN(ctx.Self)
-		).OnlyExecuteIf( x => x.Tokens.HasAny(tokenClasses));
+		).OnlyExecuteIf( x => x.Space.HasAny(tokenClasses));
 	}
 	static public SpaceAction RemoveNTokens( int count, params ITokenClass[] tokenClasses ) {
 		Func<ITokenClass, string> selector = count == 1 ? t => t.Label : t => t.Label + "s";
 		return new SpaceAction( $"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast( ", ", " or " ),
 			ctx => ctx.SourceSelector.AddGroup( count, tokenClasses ).RemoveN(ctx.Self)
-		).OnlyExecuteIf( x => x.Tokens.HasAny( tokenClasses ) );
+		).OnlyExecuteIf( x => x.Space.HasAny( tokenClasses ) );
 	}
 
 	// Removes "Up To"
@@ -75,12 +75,12 @@ public static partial class Cmd {
 		int remaining = calcMaxHealthToRemove(ctx);
 		HumanToken pick;
 		while(0 < remaining
-			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Tokens.InvaderTokens().OnScopeTokens1(ctx.Space), remaining )) )?.Token.AsHuman()) != null
+			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Space.InvaderTokens().OnScopeTokens1(ctx.SpaceSpec), remaining )) )?.Token.AsHuman()) != null
 		) {
 			await ctx.Remove( pick, 1 );
 			remaining -= pick.RemainingHealth;
 		}
-	} ).OnlyExecuteIf( ctx => ctx.Tokens.HasInvaders() );
+	} ).OnlyExecuteIf( ctx => ctx.Space.HasInvaders() );
 
 
 	// -- Destroy --
@@ -100,7 +100,7 @@ public static partial class Cmd {
 
 
 	// -- Destroy --
-	static public SpaceAction DestroyTown( int count ) => new SpaceAction($"Destroy {count} Towns", ctx=>ctx.Invaders.DestroyNOfClass(count,Human.Town)).OnlyExecuteIf(x=>x.Tokens.Has(Human.Town));
+	static public SpaceAction DestroyTown( int count ) => new SpaceAction($"Destroy {count} Towns", ctx=>ctx.Invaders.DestroyNOfClass(count,Human.Town)).OnlyExecuteIf(x=>x.Space.Has(Human.Town));
 
 	// -- Fear --
 	static public SpaceAction AddFear(int count) => new SpaceAction($"Add {count} Fear.", ctx => ctx.AddFear(count) );
@@ -108,16 +108,16 @@ public static partial class Cmd {
 	// -- Skip Invader Actions ==
 	static public SpaceAction Skip1Ravage(string causeName) => new SpaceAction(
 		"Skip 1 Ravage", 
-		ctx=>ctx.Tokens.SkipRavage(causeName,UsageDuration.SkipOneThisTurn)
+		ctx=>ctx.Space.SkipRavage(causeName,UsageDuration.SkipOneThisTurn)
 	);
 
-	static public SpaceAction SkipAllBuilds(string causeName) => new SpaceAction("Skip All Build", ctx=>ctx.Tokens.SkipAllBuilds(causeName) );
-	static public SpaceAction Skip1Build(string causeName) => new SpaceAction("Skip 1 Build", ctx=>ctx.Tokens.Skip1Build(causeName) );
+	static public SpaceAction SkipAllBuilds(string causeName) => new SpaceAction("Skip All Build", ctx=>ctx.Space.SkipAllBuilds(causeName) );
+	static public SpaceAction Skip1Build(string causeName) => new SpaceAction("Skip 1 Build", ctx=>ctx.Space.Skip1Build(causeName) );
 
 
 	static public SpaceAction Skip1InvaderAction(string causeName) => new SpaceAction(
 		"Skip 1 Invader Action",
-		ctx => ctx.Tokens.Skip1InvaderAction( causeName, ctx.Self )
+		ctx => ctx.Space.Skip1InvaderAction( causeName, ctx.Self )
 	);
 
 	// AND / OR
@@ -164,10 +164,10 @@ public static partial class Cmd {
 	);
 
 	static public class Skip {
-		static public SpaceAction Build( string name ) => new SpaceAction( "Stop the next Build", ctx => ctx.Tokens.Skip1Build( name ) );
-		static public SpaceAction Explore( string name ) => new SpaceAction( "Skip the next Explore", ctx => ctx.Tokens.Skip1Explore( name ) );
-		static public SpaceAction AllInvaderActions( string name ) => new SpaceAction( "Skip All Invader Actions", ctx => ctx.Tokens.SkipAllInvaderActions( name ) );
-		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Stop Invaders Ravage this Turn", ctx => { ctx.Tokens.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
+		static public SpaceAction Build( string name ) => new SpaceAction( "Stop the next Build", ctx => ctx.Space.Skip1Build( name ) );
+		static public SpaceAction Explore( string name ) => new SpaceAction( "Skip the next Explore", ctx => ctx.Space.Skip1Explore( name ) );
+		static public SpaceAction AllInvaderActions( string name ) => new SpaceAction( "Skip All Invader Actions", ctx => ctx.Space.SkipAllInvaderActions( name ) );
+		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Stop Invaders Ravage this Turn", ctx => { ctx.Space.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
 	static public SpiritAction ForgetPowerCard => new SpiritAction( "Forget Power card", spirit => spirit.ForgetACard() );
@@ -180,12 +180,12 @@ public static partial class Cmd {
 		=> new SpiritAction( "Push up to 1 Presence", async self => {
 
 			// Select source
-			var source = await self.SelectAsync( new A.SpaceToken( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
+			var source = await self.SelectAsync( new A.SpaceTokenDecision( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
 			if(source == null) return;
 
 			// Select destination
-			Space destination = await self.SelectAsync( A.Space.ToPushPresence( source.Space, source.Space.ScopeTokens.Adjacent.Downgrade(), Present.Always, source.Token ) );
-			await source.MoveTo( destination.ScopeTokens );
+			Space destination = await self.SelectAsync( A.SpaceDecision.ToPushPresence( source.Space, source.Space.Adjacent, Present.Always, source.Token ) );
+			await source.MoveTo( destination );
 
 			// Calback
 			if(callback != null)
@@ -194,7 +194,7 @@ public static partial class Cmd {
 
 	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) 
 		=> new SpiritAction( "Destroy 1 presence.", async self => {
-				SpaceToken spaceToken = await self.SelectAsync( A.SpaceToken.OfDeployedPresence( prompt, self ) );
+				SpaceToken spaceToken = await self.SelectAsync( A.SpaceTokenDecision.OfDeployedPresence( prompt, self ) );
 				await spaceToken.Destroy();
 			}
 		);
@@ -225,11 +225,11 @@ public static partial class Cmd {
 
 	static public SpiritAction PlacePresenceWithin( int range ) => new PlacePresence(range);
 
-	static public SpiritAction PlacePresenceOn( params SpaceState[] destinationOptions ) => new SpiritAction(
+	static public SpiritAction PlacePresenceOn( params Space[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
 		async self => {
 			TokenLocation from = await self.SelectSourcePresence();
-			Space to = await self.SelectAsync( A.Space.ToPlacePresence( destinationOptions.Downgrade(), Present.Always, from.Token ) );
+			Space to = await self.SelectAsync( A.SpaceDecision.ToPlacePresence( destinationOptions, Present.Always, from.Token ) );
 			await from.MoveToAsync(to);
 		} );
 
@@ -244,7 +244,7 @@ public static partial class Cmd {
 			var presenceToRemove = await self.SelectSourcePresence( Present.Always, "remove from game" ); // Come from track or board
 			await presenceToRemove.RemoveAsync( 1 ); // await self.Presence.TakeFromAsync( presenceToRemove );
 		} else {
-			SpaceToken presenceToRemove = await self.SelectAsync( new A.SpaceToken( "Select presence to remove from game.", self.Presence.Deployed, Present.Always ) );
+			SpaceToken presenceToRemove = await self.SelectAsync( new A.SpaceTokenDecision( "Select presence to remove from game.", self.Presence.Deployed, Present.Always ) );
 			await presenceToRemove.Remove();
 		}
 	}

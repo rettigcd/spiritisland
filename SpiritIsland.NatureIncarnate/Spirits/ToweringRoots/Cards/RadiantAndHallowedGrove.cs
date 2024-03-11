@@ -8,21 +8,21 @@ public class RadiantAndHallowedGrove {
 	static async public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 2 Fear if Invaders are present or adjacent.
-		var spaceState = ctx.Tokens;
-		if(spaceState.InOrAdjacentTo.Any( x => x.HasInvaders() ))
+		var space = ctx.Space;
+		if(space.InOrAdjacentTo.Any( x => x.HasInvaders() ))
 			ctx.AddFear( 2 );
 
 		// In both target and one adjacent land,
-		await InBothTargetAnd1Adjacent( ctx.Tokens )
+		await InBothTargetAnd1Adjacent( space )
 			// an Invader with Health less than or equal to the Terror Level.
 			.AddGroup( 1 + 1, AnInvaderWithHealthLessThanOrEqualToTerrorLevel() )
 			.RemoveUpToN( ctx.Self );
 	}
 
-	static SourceSelector InBothTargetAnd1Adjacent( SpaceState target ) {
+	static SourceSelector InBothTargetAnd1Adjacent( Space target ) {
 		bool removedFromAdjacent = false;
 		return new SourceSelector( target.InOrAdjacentTo )
-			.Track( st => removedFromAdjacent = (st.Space.ScopeTokens != target) )
+			.Track( st => removedFromAdjacent = (st.Space != target) )
 			.FilterSource( ss => !removedFromAdjacent || ss == target );
 	}
 

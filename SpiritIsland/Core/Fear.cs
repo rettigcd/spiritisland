@@ -61,14 +61,14 @@ public class Fear : IHaveMemento {
 		}
 	}
 
-	public void AddOnSpace( SpaceState tokens, int count, FearType fearType ) {
+	public void AddOnSpace( Space space, int count, FearType fearType ) {
 		if(count == 0) return;
 
 		Add( count );
 
-		var mods = tokens.Keys.OfType<IReactToLandFear>().ToArray();
+		var mods = space.Keys.OfType<IReactToLandFear>().ToArray();
 		foreach(IReactToLandFear mod in mods)
-			mod.HandleFearAdded( tokens, count, fearType );
+			mod.HandleFearAdded( space, count, fearType );
 	}
 
 	public void Add( int count ) {

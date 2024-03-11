@@ -9,7 +9,7 @@ class DrenchTheLandscape( DownpourDrenchesTheWorld _spirit, TerrainMapper _origi
 		"Spirit Actions and Special Rules treat your Sacredsite as Wetlands in addition to the printed terrain."
 	);
 
-	public override bool MatchesTerrain( SpaceState space, params Terrain[] options )
+	public override bool MatchesTerrain( Space space, params Terrain[] options )
 		=> _original.MatchesTerrain( space, options )
 		|| options.Contains( Terrain.Wetland ) && _spirit.Presence.IsSacredSite( space );
 

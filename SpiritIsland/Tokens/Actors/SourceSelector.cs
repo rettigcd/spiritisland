@@ -8,21 +8,21 @@ public class SourceSelector {
 
 	#region constructors
 	/// <summary> Tokens come from 1 space. </summary>
-	public SourceSelector( SpaceState sourceSpace ) {	_unfilteredSourceSpaces = [ sourceSpace ];	}
+	public SourceSelector( Space sourceSpace ) {	_unfilteredSourceSpaces = [ sourceSpace ];	}
 	/// <summary> Tokens come from 0..many spaces. </summary>
-	public SourceSelector( IEnumerable<SpaceState> sourceSpaces ) { _unfilteredSourceSpaces = sourceSpaces.ToArray(); }
+	public SourceSelector( IEnumerable<Space> sourceSpaces ) { _unfilteredSourceSpaces = sourceSpaces.ToArray(); }
 	#endregion constructors
 
 	public async IAsyncEnumerable<SpaceToken> GetEnumerator(
 		Spirit spirit, 
 		Func<PromptData,string> promptBuilder,
 		Present present, 
-		Space singleDestination=null,
+		SpaceSpec singleDestination=null,
 		int? maxCount = null
 	) {
 		int index = 0;
 		while(maxCount is null || index < maxCount.Value) {
-			A.SpaceToken decision = BuildDecision( promptBuilder, present, singleDestination, index, maxCount );
+			A.SpaceTokenDecision decision = BuildDecision( promptBuilder, present, singleDestination, index, maxCount );
 
 			// Select Token
 			SpaceToken source = await spirit.SelectAsync( decision );
@@ -35,12 +35,12 @@ public class SourceSelector {
 		}
 	}
 
-	public A.SpaceToken BuildDecision( Func<PromptData, string> promptBuilder, Present present, Space singleDestination, 
+	public A.SpaceTokenDecision BuildDecision( Func<PromptData, string> promptBuilder, Present present, SpaceSpec singleDestination, 
 		int index, int? maxCount // for the prompt
 	) {
 		SpaceToken[] options = GetSourceOptions();
 		string prompt = promptBuilder( new PromptData( _quota, options, index, maxCount ) );
-		return new A.SpaceToken( prompt, options, present )
+		return new A.SpaceTokenDecision( prompt, options, present )
 			.PointArrowTo( singleDestination );
 	}
 
@@ -80,7 +80,7 @@ public class SourceSelector {
 	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
 
 	/// <summary> Dynamically filter sources. - when sources may change over time. </summary>
-	public SourceSelector FilterSource( Func<SpaceState, bool> filterSource ) {
+	public SourceSelector FilterSource( Func<Space, bool> filterSource ) {
 		_filterSpace = filterSource;
 		return this;
 	}
@@ -118,24 +118,21 @@ public class SourceSelector {
 	#region protected methods
 
 	public virtual SpaceToken[] GetSourceOptions() {
-		//var options = new List<SpaceToken>();
-		//foreach(SpaceState sourceSpaceState in SourceSpaces)
-		//	options.AddRange( GetSourceOptionsOn1Space( sourceSpaceState ) );
-		var optionz = SourceSpaces
+		var options = SourceSpaces
 			.SelectMany( GetSourceOptionsOn1Space )
 			.ToList();
 
 		// User filter on SpaceTokens
 		foreach(Func<SpaceToken, bool> f in _filterSpaceToken)
-			optionz = optionz.Where(f).ToList();
+			options = options.Where(f).ToList();
 
-		return [..optionz];
+		return [..options];
 	}
 
-	protected IEnumerable<SpaceToken> GetSourceOptionsOn1Space( SpaceState sourceSpaceState ) 
-		=> _quota.GetSourceOptionsOn1Space( sourceSpaceState );
+	protected IEnumerable<SpaceToken> GetSourceOptionsOn1Space( Space sourceSpace ) 
+		=> _quota.GetSourceOptionsOn1Space( sourceSpace );
 
-	protected IEnumerable<SpaceState> SourceSpaces
+	protected IEnumerable<Space> SourceSpaces
 		=> _filterSpace == null ? _unfilteredSourceSpaces
 		: _unfilteredSourceSpaces.Where( _filterSpace );
 
@@ -147,8 +144,8 @@ public class SourceSelector {
 
 	Quota _quota = new Quota();
 
-	Func<SpaceState, bool> _filterSpace;
-	readonly public SpaceState[] _unfilteredSourceSpaces;
+	Func<Space, bool> _filterSpace;
+	readonly public Space[] _unfilteredSourceSpaces;
 
 	readonly List<Func<SpaceToken, bool>> _filterSpaceToken = [];
 
@@ -158,10 +155,10 @@ public class SourceSelector {
 
 static public class SelectFrom {
 	static public SourceSelector FromASingleLand( this SourceSelector ss ) {
-		Space source = null;
+		SpaceSpec source = null;
 		ss
-			.Track( spaceToken => source ??= spaceToken.Space )
-			.FilterSource( spaceState => source is null || spaceState.Space == source );
+			.Track( spaceToken => source ??= spaceToken.Space.SpaceSpec )
+			.FilterSource( space => source is null || space.SpaceSpec == source );
 		return ss;
 	}
 }
@@ -181,6 +178,6 @@ public class PromptData( Quota quota, SpaceToken[] options, int index, int? maxC
 	public readonly int? MaxCount = maxCount;
 	public int RemainingCount => MaxCount.Value - Index;
 
-	public string RemainingPartsStr => quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().ScopeTokens().ToArray() );
+	public string RemainingPartsStr => quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().ToArray() );
 }
 

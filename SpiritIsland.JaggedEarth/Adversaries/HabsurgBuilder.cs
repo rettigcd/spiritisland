@@ -13,13 +13,13 @@ class HabsurgBuilder : BuildEngine {
 	}
 
 	static async Task MigratoryHerders( InvaderCard card, GameState gameState ) {
-		SpaceState[] cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
+		Space[] cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
 		ActionScope actionScope = await ActionScope.Start(ActionCategory.Invader);// ??? !! should we reuse the original action?
 
 		// In each land matching a Build Card
-		foreach(SpaceState spaceState in cardDependentBuildSpaces) {
-			Spirit spirit = spaceState.Space.Boards[0].FindSpirit();
-			await spaceState.Gather( spirit )
+		foreach(Space space in cardDependentBuildSpaces) {
+			Spirit spirit = space.SpaceSpec.Boards[0].FindSpirit();
+			await space.Gather( spirit )
 				// Gather 1 Town 
 				.AddGroup( 1, Human.Town )
 				// from a land not matching a Build Card.
@@ -28,16 +28,16 @@ class HabsurgBuilder : BuildEngine {
 		}
 	}
 
-	public override Task Do1Build( GameState _, SpaceState spaceState ) 
+	public override Task Do1Build( GameState _, Space space ) 
 		=> ReplaceInlandCityWith2Towns 
-			? new HasburgSpaceBuilder().ActAsync( spaceState )
-			: new BuildOnceOnSpace_Default().ActAsync( spaceState );
+			? new HasburgSpaceBuilder().ActAsync( space )
+			: new BuildOnceOnSpace_Default().ActAsync( space );
 
 	class HasburgSpaceBuilder : BuildOnceOnSpace_Default {
 		public HasburgSpaceBuilder() : base() { }
 		protected override (int, HumanTokenClass) DetermineWhatToAdd() {  
 			var (count,tokenClass) = base.DetermineWhatToAdd();
-			return (tokenClass == Human.City && !_tokens.Space.IsCoastal && !_tokens.Space.IsOcean)
+			return (tokenClass == Human.City && !_space.SpaceSpec.IsCoastal && !_space.SpaceSpec.IsOcean)
 				? (2,Human.Town)
 				: (count,tokenClass);
 		}

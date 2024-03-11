@@ -1,11 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
 public class EnglandBuilder : BuildEngine {
-	public override bool ShouldBuildOnSpace( SpaceState spaceState ) {
-		return base.ShouldBuildOnSpace( spaceState )
-			|| IsAdjacentTo2OrMoreCitiesOrTowns( spaceState );
+	public override bool ShouldBuildOnSpace( Space space ) {
+		return base.ShouldBuildOnSpace( space )
+			|| IsAdjacentTo2OrMoreCitiesOrTowns( space );
 	}
-	static bool IsAdjacentTo2OrMoreCitiesOrTowns( SpaceState tokens ) => 2 <= tokens.Adjacent_ForInvaders.Sum( adj => CityTownCounts( adj ) );
-	static int CityTownCounts( SpaceState space ) => space.SumAny( Human.Town_City );
+	static bool IsAdjacentTo2OrMoreCitiesOrTowns( Space space ) => 2 <= space.Adjacent_ForInvaders.Sum( adj => CityTownCounts( adj ) );
+	static int CityTownCounts( Space space ) => space.SumAny( Human.Town_City );
 
 }

@@ -8,17 +8,17 @@ public class Ravage_Tests {
 		_gs = new GameState( _spirit, _board );
 		_gs.NewLogEntry += GameState_NewLogEntry;
 		// Do this after GameState has been initialized so that ActionScopes are initialized.
-		_tokens = _board[1].ScopeTokens;
+		_space = _board[1].ScopeSpace;
 	}
 
 	[Fact]
 	public async Task ExchangesFor_1E() {
 
 		// Given: 1 explorer
-		_tokens.InitDefault(Human.Explorer,1);
+		_space.InitDefault(Human.Explorer,1);
 
 		// When: ravaging
-		await _tokens.Ravage();//.ShouldComplete("ravage");
+		await _space.Ravage();//.ShouldComplete("ravage");
 
 		// Then: have only 1 exchange - attacker
 		_exchanges.Count.ShouldBe(1);
@@ -28,11 +28,11 @@ public class Ravage_Tests {
 	[Fact]
 	public async Task Normal_1E1D() {
 		// Given: 1 explorer, 1 Dahan
-		_tokens.InitDefault( Human.Explorer, 1 );
-		_tokens.InitDefault( Human.Dahan, 1 );
+		_space.InitDefault( Human.Explorer, 1 );
+		_space.InitDefault( Human.Dahan, 1 );
 
 		// When: ravaging
-		await _tokens.Ravage();//.ShouldComplete("ravage");
+		await _space.Ravage();//.ShouldComplete("ravage");
 
 		// Then: have only 1 exchange - attacker
 		_exchanges.Count.ShouldBe( 2 );
@@ -43,13 +43,13 @@ public class Ravage_Tests {
 	[Fact]
 	public async Task Ambush_2T2D() {
 		// Given: 2 towns, 2 dahan - 1 regular and 1 ambush, and 1 vitality
-		_tokens.InitDefault( Human.Town, 2 );
-		_tokens.InitDefault( Human.Dahan, 1 );
-		_tokens.Init( new HumanToken( Human.Dahan, 2 ).SetRavageOrder(RavageOrder.Ambush), 1 );
-		_tokens.Init( Token.Vitality, 1 ); // to prevent blight
+		_space.InitDefault( Human.Town, 2 );
+		_space.InitDefault( Human.Dahan, 1 );
+		_space.Init( new HumanToken( Human.Dahan, 2 ).SetRavageOrder(RavageOrder.Ambush), 1 );
+		_space.Init( Token.Vitality, 1 ); // to prevent blight
 
 		// When: ravaging
-		Task ravage = _tokens.Ravage();
+		Task ravage = _space.Ravage();
 		await ravage;
 		
 
@@ -69,7 +69,7 @@ public class Ravage_Tests {
 
 	readonly Spirit _spirit;
 	readonly Board _board;
-	readonly SpaceState _tokens;
+	readonly Space _space;
 	readonly GameState _gs;
 	readonly List<RavageExchange> _exchanges = [];
 

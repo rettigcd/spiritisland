@@ -23,7 +23,7 @@ namespace SpiritIslandCmd {
 
 			int pad = 0;
 			foreach(var o in cachedOptions){
-				if(o is IActionFactory factory) pad = Math.Max(pad,factory.Name.Length);
+				if(o is IActionFactory factory) pad = Math.Max(pad,factory.Title.Length);
 			}
 
 			dict = [];
@@ -36,7 +36,7 @@ namespace SpiritIslandCmd {
 				if(TextOption.Done.Matches(option)){
 					key = option.Text[..1].ToLower();
 					description = option.Text;
-				} else if(option is Space space) {
+				} else if(option is SpaceSpec space) {
 					key = space.Label.ToLower();
 					description = FormatSpace( space );
 				} else if(option is IHelpGrow gaf) {
@@ -66,7 +66,7 @@ namespace SpiritIslandCmd {
 		}
 		public string ToPrompt() => Prompt + descList.Select( d => "\r\n\t" + d ).Join( "" );
 
-		public string FormatSpace( Space space ) {
+		public string FormatSpace( SpaceSpec space ) {
 			var gameState = _game.GameState;
 			var deck = gameState.InvaderDeck;
 			var tokens = gameState.Tokens[space];
@@ -84,14 +84,14 @@ namespace SpiritIslandCmd {
 				.Join( "," );
 
 			// dahan
-			int dahanCount = space.ScopeTokens.Dahan.CountAll;
+			int dahanCount = space.ScopeSpace.Dahan.CountAll;
 			string dahan = (dahanCount > 0) ? ("D" + dahanCount) :"  ";
 
 			int blightCount = gameState.Tokens[ space ].Blight.Count;
 			string blight = (blightCount > 0) ? ("B" + blightCount) :"  ";
 
 			// presence
-			string pres = ActionScope.Current.Tokens.Where(_game.Spirit.Presence.IsOn).Select(x=>"P").Join(""); // !!! this is probably wrong - probably don't want ActionScope
+			string pres = ActionScope.Current.Spaces.Where(_game.Spirit.Presence.IsOn).Select(x=>"P").Join(""); // !!! this is probably wrong - probably don't want ActionScope
 			return $"{space.Label} {threat}\t{dahan}\t{details}\t{blight}\t{pres}";
 		}
 
@@ -111,7 +111,7 @@ namespace SpiritIslandCmd {
 			char unresolved = spirit.GetAvailableActions(speed).Contains(factory) ? '*' : ' ';
 			string cost = factory is PowerCard card ? card.Cost.ToString() : "-";
 
-			string name = Pad(factory.Name,nameWidth);
+			string name = Pad(factory.Title,nameWidth);
 			string text = $"{name}  ({speedChar}/{cost}) {unresolved}";
 
 			if(factory is PowerCard pc){

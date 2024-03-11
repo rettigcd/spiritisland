@@ -12,7 +12,7 @@ public class RitesOfTheLandsRejection_Tests {
 		var (user,ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
 
 		// Given: find a space with 1 explorer
-		var space = ActionScope.Current.Tokens_Unfiltered
+		var space = ActionScope.Current.Spaces_Unfiltered
 			.First( s => s.InvaderSummary() == "1E@1" );
 
 		//   And: add Dahan (because card requires it)
@@ -25,7 +25,7 @@ public class RitesOfTheLandsRejection_Tests {
 		user.PlaysCard( RitesOfTheLandsRejection.Name );
 		if(playsCard) {
 			user.SelectsFastAction( RitesOfTheLandsRejection.Name );
-			user.TargetsLand_IgnoreOptions( space.Space.Label );
+			user.TargetsLand_IgnoreOptions( space.SpaceSpec.Label );
 			user.AssertDecisionInfo( "Select Power Option", "[Stop build - 1 fear / (Dahan or T/C)],Push up to 3 Dahan" );
 		} else
 			//  And: done with fast (no more cards..)
@@ -45,7 +45,7 @@ public class RitesOfTheLandsRejection_Tests {
 		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
 
 		// Given: find a space with 1 explorer
-		SpaceState space = ActionScope.Current.Tokens_Unfiltered.First( s => s.InvaderSummary() == "1E@1" );
+		Space space = ActionScope.Current.Spaces_Unfiltered.First( s => s.InvaderSummary() == "1E@1" );
 		//   And: add Dahan (because card requires it)
 		space.Given_HasTokens("1D@2");
 		//   And: The build card appears twice
@@ -58,7 +58,7 @@ public class RitesOfTheLandsRejection_Tests {
 		//  And: purchase test card
 		user.PlaysCard( RitesOfTheLandsRejection.Name );
 		user.SelectsFastAction( RitesOfTheLandsRejection.Name );
-		user.Choose( space.Space.Label ); // target land
+		user.Choose( space.SpaceSpec.Label ); // target land
 		user.NextDecision.HasPrompt("Select Power Option").Choose("Stop build - 1 fear / (Dahan or T/C)" );
 
 		// Then: space should have a building

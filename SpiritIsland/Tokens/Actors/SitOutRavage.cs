@@ -7,13 +7,13 @@ static public class SitOutRavage {
 	/// </summary>
 	static public async Task SelectFightersAndSitThemOut( this SourceSelector sourceSelector, Spirit spirit ) {
 		CountDictionary<HumanToken> sitOuts = [];
-		HashSet<Space> targetSpaces = [];
+		HashSet<SpaceSpec> targetSpaces = [];
 
 		IAsyncEnumerable<SpaceToken> selectedTokens = sourceSelector
 			.ConfigOnlySelectEachOnce()
 			.GetEnumerator( spirit, Prompt.RemainingParts( "For Ravage, Sit Out" ), Present.Done );
 		await foreach(var st in selectedTokens) {
-			targetSpaces.Add(st.Space);
+			targetSpaces.Add(st.Space.SpaceSpec);
 			++sitOuts[st.Token.AsHuman()];
 		}
 
@@ -21,7 +21,7 @@ static public class SitOutRavage {
 			case 0: 
 				return;
 			case 1:
-				SitOutThisRavageAction( targetSpaces.Single().ScopeTokens, sitOuts );
+				SitOutThisRavageAction( targetSpaces.Single().ScopeSpace, sitOuts );
 				return;
 			default: 
 				throw new InvalidOperationException( "SelectFightersAndSitThemOut is only designed to work on 1 space at a time but this is targetting: " + string.Join( ",", targetSpaces ) );
@@ -32,7 +32,7 @@ static public class SitOutRavage {
 	/// <summary>
 	/// Sits out pre-selected tokens from the Count-Dictionary
 	/// </summary>
-	static public void SitOutThisRavageAction( SpaceState space, CountDictionary<HumanToken> sitOuts ) {
+	static public void SitOutThisRavageAction( Space space, CountDictionary<HumanToken> sitOuts ) {
 		foreach(var pair in sitOuts)
 			DontParticipateInRavageThisAction( space, pair.Key, pair.Value );
 	}
@@ -40,7 +40,7 @@ static public class SitOutRavage {
 	/// <summary>
 	/// Marks 1 Token Type as not-participating (and queues up restore at end of acction
 	/// </summary>
-	static void DontParticipateInRavageThisAction( SpaceState space, HumanToken humanToken, int countToNotParticipate ) {
+	static void DontParticipateInRavageThisAction( Space space, HumanToken humanToken, int countToNotParticipate ) {
 		var group = space.Humans( countToNotParticipate, humanToken );
 		group.Adjust( SitOut ); // migrates group to new token type
 		ActionScope.Current.AtEndOfThisAction( scope => group.Adjust( _ => humanToken ) );

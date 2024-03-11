@@ -12,7 +12,7 @@ public class LingeringPestilence_Tests {
 		GameState gameState = new GameState( self, boardA );
 
 		// Given: a space with presence
-		SpaceState space = gameState.Tokens[boardA[5]];
+		Space space = gameState.Tokens[boardA[5]];
 		self.Given_IsOn( space, 2 );
 
 		// When: a spirit power destroys presence
@@ -36,7 +36,7 @@ public class LingeringPestilence_Tests {
 		GameState gameState = new GameState( self, boardA );
 
 		// Given: a space with presence
-		SpaceState space = gameState.Tokens[boardA[5]];
+		Space space = gameState.Tokens[boardA[5]];
 		self.Given_IsOn( space, 2 );
 		//   And: invaders
 		space.Given_HasTokens("1C@3");
@@ -44,7 +44,7 @@ public class LingeringPestilence_Tests {
 		gameState.IslandWontBlight();
 
 		// When: the city ravages
-		await space.Space.When_Ravaging();
+		await space.SpaceSpec.When_Ravaging();
 
 		// Then: presence is destroyed
 		self.Presence.CountOn( space ).ShouldBe(1);

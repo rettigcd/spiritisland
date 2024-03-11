@@ -9,9 +9,9 @@ public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToke
 	/// Builds an Action that stops future dahan from being destroyed.
 	/// </summary>
 	public static Action<TargetSpaceCtx> DestroyFewer( int maxPerAction, int maxActionCount )
-		=> ctx => ctx.Tokens.Adjust( new DahanSaver( ctx.Tokens, maxPerAction, maxActionCount ), 1 );
+		=> ctx => ctx.Space.Adjust( new DahanSaver( ctx.Space, maxPerAction, maxActionCount ), 1 );
 
-	DahanSaver( SpaceState space, int maxPerAction, int maxActionCount ) :base() {
+	DahanSaver( Space space, int maxPerAction, int maxActionCount ) :base() {
 		_space = space;
 		_maxActionCount = maxActionCount;
 		_maxPerAction   = maxPerAction;
@@ -47,7 +47,7 @@ public class DahanSaver : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToke
 
 	#region readonly
 	readonly CountDictionary<ActionScope> _byAction = [];
-	readonly SpaceState _space;
+	readonly Space _space;
 	readonly int _maxActionCount;
 	readonly int _maxPerAction;
 	#endregion

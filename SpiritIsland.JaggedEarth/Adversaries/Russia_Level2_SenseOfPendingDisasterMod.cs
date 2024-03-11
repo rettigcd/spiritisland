@@ -7,7 +7,7 @@ class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRemovingTo
 
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		const string key = "A Sense of Pending Disaster";
-		SpaceState[] pushOptions;
+		Space[] pushOptions;
 		var scope = ActionScope.Current;
 		if(args.Token.Class == Human.Explorer     // Is explorer
 			&& args.Reason == RemoveReason.Destroyed // destroying
@@ -17,9 +17,9 @@ class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRemovingTo
 			--args.Count; // destroy one fewer
 			scope[key] = true; // don't save any more
 
-			Spirit spirit = scope.Owner ?? args.From.Space.Boards[0].FindSpirit();
-			Space destination = await spirit.SelectAsync( A.Space.ToPushToken( (IToken)args.Token, args.From.Space, pushOptions.Downgrade(), Present.Always ) );
-			await args.Token.MoveAsync( args.From.Space, destination );
+			Spirit spirit = scope.Owner ?? args.From.SpaceSpec.Boards[0].FindSpirit();
+			Space destination = await spirit.SelectAsync( A.SpaceDecision.ToPushToken( (IToken)args.Token, args.From, pushOptions, Present.Always ) );
+			await args.Token.MoveAsync( args.From, destination );
 		}
 	}
 

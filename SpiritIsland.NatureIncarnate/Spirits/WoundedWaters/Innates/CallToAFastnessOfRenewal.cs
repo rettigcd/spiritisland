@@ -13,7 +13,7 @@ public class CallToAFastnessOfRenewal {
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		return Cmd.Pick1(
 			Cmd.Defend(3),
-			new SpaceAction("Downgrade 1 Invader", ctx=>ReplaceInvader.Downgrade1(ctx.Self, ctx.Tokens,Present.Always,Human.Invader) )
+			new SpaceAction("Downgrade 1 Invader", ctx=>ReplaceInvader.Downgrade1(ctx.Self, ctx.Space,Present.Always,Human.Invader) )
 		).ActAsync(ctx);
 	}
 
@@ -23,8 +23,8 @@ public class CallToAFastnessOfRenewal {
 	[InnateTier( "1 sun,4 water,2 plant", "If at least 2 Dahan are present, Replace 1 Invader with 1 Dahan.", 3 )]
 	static public async Task Option4( TargetSpaceCtx ctx ){
 		if(2 <= ctx.Dahan.CountAll && ctx.HasInvaders) {
-			var invader = ctx.Tokens.BestInvaderToBeRidOf( Human.Invader );
-			await ctx.Tokens.ReplaceHumanAsync(invader,Human.Dahan);
+			var invader = ctx.Space.BestInvaderToBeRidOf( Human.Invader );
+			await ctx.Space.ReplaceHumanAsync(invader,Human.Dahan);
 		}
 	}
 

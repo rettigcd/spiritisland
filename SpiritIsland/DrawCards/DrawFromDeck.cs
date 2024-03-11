@@ -35,7 +35,7 @@ public static class DrawFromDeck {
 	/// RETURNS it.
 	/// </summary>
 	static public async Task<PowerCard> PickOutCard( this Spirit spirit, List<PowerCard> flipped ) {
-		string powerType = flipped.Select(x=>x.PowerType.Text ).Distinct().Join("/");
+		string powerType = flipped.Select(x=>x.PowerType.Name ).Distinct().Join("/");
 		PowerCard selectedCard = await spirit.SelectPowerCard( $"Select {powerType} Power Card", 1, flipped, CardUse.AddToHand, Present.Always );
 		flipped.Remove( selectedCard );
 		return selectedCard;

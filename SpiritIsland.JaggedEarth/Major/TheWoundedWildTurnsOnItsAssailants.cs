@@ -16,7 +16,7 @@ public class TheWoundedWildTurnsOnItsAssailants {
 		// (watch for invaders destroyed in this land)
 		int destroyed = 0;
 		// the only way a token will be removed, is if it is destroyed
-		ctx.Tokens.Adjust(new TokenRemovedHandler(args => destroyed++), 1 );
+		ctx.Space.Adjust(new TokenRemovedHandler(args => destroyed++), 1 );
 
 		// 1 damamge per blight/beast/wilds.
 		await ctx.DamageInvaders( ctx.Blight.Count + ctx.Beasts.Count + ctx.Wilds.Count );

@@ -45,23 +45,23 @@ public class InstrumentsOfTheirOwnRuin {
 		// they damage invaders in adjacent lands instead of dahan and the land.
 
 		// Get damage
-		int damageFromCenter = ctx.Tokens.InvaderTokens().OfType<HumanToken>()
+		int damageFromCenter = ctx.Space.InvaderTokens().OfType<HumanToken>()
 			.Where( x => x.StrifeCount > 0 )
-			.Sum( si => si.Attack * ctx.Tokens[si] );
+			.Sum( si => si.Attack * ctx.Space[si] );
 
 		// Calc Total Badlands damage available
-		var availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x.Space,x=>x.Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.
-		var activatedBadlandDamage = new CountDictionary<Space>(); // initializes when they do first damage in land, then used until depleated
+		CountDictionary<Space> availableBadlandDamage = ctx.Adjacent.ToDictionary(x=>x,x=>x.Badlands.Count).ToCountDict(); // captures # of badlands then sets to 0 once space is activated.
+		CountDictionary<Space> activatedBadlandDamage = []; // initializes when they do first damage in land, then used until depleated
 		bool HasDamage(Space space) => 0 < damageFromCenter || activatedBadlandDamage[space]>0;
 
 		// While any invaders && (damageFromStrifed>0 || )damage && any explorers
-		SpaceState[] spaceOptions;
-		while( (spaceOptions = ctx.Adjacent.Where( adj => adj.HasInvaders() && HasDamage( adj.Space ) ).ToArray()).Length > 0 ) {
+		Space[] spaceOptions;
+		while( (spaceOptions = ctx.Adjacent.Where( adj => adj.HasInvaders() && HasDamage( adj ) ).ToArray()).Length > 0 ) {
 			// select target invader
 			var invaderOptions = spaceOptions
-				.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1(ss.Space) )
+				.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1(ss.SpaceSpec) )
 				.ToArray();
-			var damagedInvader = await ctx.SelectAsync( new A.SpaceToken($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
+			var damagedInvader = await ctx.SelectAsync( new A.SpaceTokenDecision($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
 			if(damagedInvader == null) break;
 
 			if(0 < activatedBadlandDamage[damagedInvader.Space]) {
@@ -77,7 +77,7 @@ public class InstrumentsOfTheirOwnRuin {
 
 			// apply 1 damage to selected invader
 			// !Note - using shared UnitOfWork across spaces because it is a ravage on only 1 space
-			await damagedInvader.Space.ScopeTokens.Invaders
+			await damagedInvader.Space.Invaders
 				.ApplyDamageTo1( 1, damagedInvader.Token.AsHuman() );
 		}
 

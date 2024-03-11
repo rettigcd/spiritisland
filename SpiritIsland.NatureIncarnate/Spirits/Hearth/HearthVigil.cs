@@ -9,7 +9,7 @@ public class HearthVigil : Spirit {
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { HearthToken.Rooted, HearthToken.FortifyHeart, HearthToken.LoyalGuardian, };
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	static Track Energy0_GatherDahanBonus => new Track( "energy0" ) {
 		Energy = 0,
@@ -56,12 +56,12 @@ public class HearthVigil : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// 1 in highest numbered land with dahan
-		SpaceState[] tokens = board.Spaces.ScopeTokens().ToArray();
-		SpaceState highest = tokens.Last( t => t.Dahan.Any );
+		Space[] tokens = board.Spaces.ScopeTokens().ToArray();
+		Space highest = tokens.Last( t => t.Dahan.Any );
 		highest.Setup( Presence.Token, 1 );
 
 		// 2 in the lowest numbered land with at least 2 dahan
-		SpaceState lowest = tokens.First( t => 2 <= t.Dahan.CountAll);
+		Space lowest = tokens.First( t => 2 <= t.Dahan.CountAll);
 		lowest.Setup( Presence.Token, 2 );
 
 		// Add 1 dahan in each of those lands

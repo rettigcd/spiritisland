@@ -14,9 +14,9 @@ class WhyDontYouAndThemFight {
 
 	[InnateTier("3 fire","1 Invader and 1 dahan deal Damage to each other.",3)]
 	static public async Task Option3b(TargetSpaceCtx ctx ) {
-		var invaders = ctx.Tokens.InvaderTokens().ToArray();
+		var invaders = ctx.Space.InvaderTokens().ToArray();
 		if(invaders.Length == 0 || !ctx.Dahan.Any) return;
-		var decision = new A.SpaceToken( "Select invader to fight 1 dahan", invaders.OnScopeTokens1(ctx.Space), Present.Always );
+		var decision = new A.SpaceTokenDecision( "Select invader to fight 1 dahan", invaders.OnScopeTokens1(ctx.SpaceSpec), Present.Always );
 		var spaceInvader = (await ctx.SelectAsync(decision))?.Token.AsHuman();
 
 		// Calc Invader Damage
@@ -35,7 +35,7 @@ class WhyDontYouAndThemFight {
 
 	static async Task<(int,HumanToken)> GetDamageFromInvader( InvaderBinding invaderBinding, HumanToken invader ) {
 		return 0 < invader.StrifeCount
-			? (0,await invaderBinding.Tokens.Remove1StrifeFromAsync( invader, 1 )) 
+			? (0,await invaderBinding.Space.Remove1StrifeFromAsync( invader, 1 )) 
 			: (invader.Attack, invader);
 	}
 

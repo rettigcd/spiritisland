@@ -10,7 +10,7 @@ public class FavorsCalledDue {
 		await ctx.GatherUpToNDahan( 4 );
 
 		// if invaders are present and dahan now out numberthem, 3 fear
-		var invaderCount = ctx.Tokens.InvaderTotal();
+		var invaderCount = ctx.Space.InvaderTotal();
 		if(0 < invaderCount && invaderCount < ctx.Dahan.CountAll)
 			ctx.AddFear( 3 );
 

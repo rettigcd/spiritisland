@@ -12,9 +12,9 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 
 	public Spirit Self { get; } = _spirit;
 
-	public SpaceState Space => _spaceCounts.Keys
-		.Where( ss => SpiritIsland.Space.Exists(ss.Space) )
-		.SingleOrDefault() ?? NullSpace.ScopeTokens;
+	public Space Space => _spaceCounts.Keys
+		.Where( ss => SpiritIsland.SpaceSpec.Exists(ss.SpaceSpec) )
+		.SingleOrDefault() ?? NullSpace.ScopeSpace;
 
 	public bool IsPlaced => _spaceCounts.Count != 0;
 
@@ -24,7 +24,7 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 
 	public Img Img => Empowered ? _empowered: _notEmpowered;
 
-	public string Text => SpaceAbreviation;
+	string IOption.Text => SpaceAbreviation;
 
 	public string SpaceAbreviation => _abrev + (Empowered ? "+" : "-");
 
@@ -32,7 +32,7 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 
 
 	#region IEntityClass properties
-	string ITag.Label => $"{Self.Text} Incarna";
+	string ITag.Label => $"{Self.SpiritName} Incarna";
 
 	// Class & Token method
 	public bool HasTag(ITag tag) 
@@ -46,13 +46,13 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 		if(IsPlaced)
 			await this.MoveAsync(Space,destination);
 		else if(allowAdd)
-			await destination.ScopeTokens.AddAsync( this, 1 );
+			await destination.AddAsync( this, 1 );
 	}
 
 	void ITrackMySpaces.Clear() {
 		_spaceCounts.Clear();
 	}
-	void ITrackMySpaces.TrackAdjust(SpaceState space, int delta) {
+	void ITrackMySpaces.TrackAdjust(Space space, int delta) {
 		_spaceCounts[space] += delta;
 		if (1 < _spaceCounts.Count)
 			throw new Exception("Incarna is in 2 places at the same time!");
@@ -63,5 +63,5 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 	//		throw new Exception("Incarna is in 2 places at the same time!");
 	//}
 
-	readonly CountDictionary<SpaceState> _spaceCounts = [];
+	readonly CountDictionary<Space> _spaceCounts = [];
 }

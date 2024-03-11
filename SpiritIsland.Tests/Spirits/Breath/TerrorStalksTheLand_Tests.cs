@@ -12,12 +12,12 @@ public class TerrorStalksTheLand_Tests {
 
 	[Fact]
 	public async Task DamageLoanExplorer_AbductsIt() {
-		var tokens = _board[8].ScopeTokens;
+		var tokens = _board[8].ScopeSpace;
 		// Given: only 1 explorer on target space
 		tokens.InitDefault(Human.Explorer,1);
 		tokens.Summary.ShouldBe("1E@1");
 		//   And: SS on neighbor
-		_board[7].ScopeTokens.Init(_spirit.Presence.Token,2);
+		_board[7].ScopeSpace.Init(_spirit.Presence.Token,2);
 
 		// When: damaging Invader
 		await _spirit.When_ResolvingCard<RouseTheTreesAndStones>( u => {
@@ -30,18 +30,18 @@ public class TerrorStalksTheLand_Tests {
 		// Then: Explorer has been abducted.
 		tokens.Summary.ShouldBe("[none]");
 		//  And: Explorer is in Endless Dark
-		EndlessDark.Space.ScopeTokens.Summary.ShouldBe("1E@1");
+		EndlessDark.Space.ScopeSpace.Summary.ShouldBe("1E@1");
 
 	}
 
 	[Fact]
 	public async Task DamageLoanTown_AbductsIt() {
-		var tokens = _board[8].ScopeTokens;
+		var tokens = _board[8].ScopeSpace;
 		// Given: only 1 explorer on target space
 		tokens.InitDefault( Human.Town, 1 );
 		tokens.Summary.ShouldBe( "1T@2" );
 		//   And: SS on neighbor
-		_board[7].ScopeTokens.Init( _spirit.Presence.Token, 2 );
+		_board[7].ScopeSpace.Init( _spirit.Presence.Token, 2 );
 
 		// When: damaging Invader
 		await _spirit.When_ResolvingCard<RouseTheTreesAndStones>( u => {
@@ -53,7 +53,7 @@ public class TerrorStalksTheLand_Tests {
 		// Then: Explorer has been abducted.
 		tokens.Summary.ShouldBe( "[none]" );
 		//  And: Explorer is in Endless Dark
-		EndlessDark.Space.ScopeTokens.Summary.ShouldBe( "1T@2" );
+		EndlessDark.Space.ScopeSpace.Summary.ShouldBe( "1T@2" );
 
 	}
 

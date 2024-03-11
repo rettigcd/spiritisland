@@ -18,7 +18,7 @@ public class ExaltationOfEchoedSteps {
 		// spirit may push 1 of their presence to an adjacent land
 		await Cmd.PushUpTo1Presence( async ( from, to ) => {
 			// Bringing up to 1 Explorer / Town / Dahan / Beast.
-			await new TokenMover(spirit,"Bring", from.ScopeTokens, to.ScopeTokens)
+			await new TokenMover(spirit,"Bring", from, to)
 				.AddGroup( 1, Human.Explorer, Human.Town, Human.Dahan, Token.Beast )
 				.DoUpToN();
 			} )

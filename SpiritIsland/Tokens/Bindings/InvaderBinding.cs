@@ -1,20 +1,20 @@
 ﻿namespace SpiritIsland;
 
-public sealed class InvaderBinding( SpaceState tokens ) {
+public sealed class InvaderBinding( Space space ) {
 
 	#region constructor
 
 	#endregion
 
-	public readonly SpaceState Tokens = tokens;
+	public readonly Space Space = space;
 
 	#region Apply Damage To...
 
 	/// <summary> Not Badland-aware </summary>
 	public async Task ApplyDamageToEach( int individualDamage, params ITokenClass[] generic ) {
-		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
+		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return;
 
-		var invaders = Tokens.InvaderTokens()
+		var invaders = Space.InvaderTokens()
 			.OrderBy(x=>x.RemainingHealth) // do damaged first to clear them out
 			.ToArray();
 
@@ -23,7 +23,7 @@ public sealed class InvaderBinding( SpaceState tokens ) {
 			invaders = invaders.Where(t=>generic.Contains(t.HumanClass)).ToArray();
 
 		foreach(var invader in invaders)
-			for(int num = Tokens[invader]; num>0; --num) // can't use while this[invader]>0 because BoD doesn't actually destroy them.
+			for(int num = Space[invader]; num>0; --num) // can't use while this[invader]>0 because BoD doesn't actually destroy them.
 				await ApplyDamageTo1( individualDamage, invader );
 
 	}
@@ -31,21 +31,21 @@ public sealed class InvaderBinding( SpaceState tokens ) {
 	/// <summary> Not Badland-aware </summary>
 	/// <returns>(damage inflicted,damagedInvader)</returns>
 	public async Task<(int,HumanToken)> ApplyDamageTo1( int availableDamage, HumanToken originalInvader ) {
-		if(Tokens[originalInvader] < 1)
+		if(Space[originalInvader] < 1)
 			throw new InvalidOperationException( $"Cannot remove 1 {originalInvader} tokens because there aren't that many." );
 
-		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return (0,originalInvader);
+		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return (0,originalInvader);
 
 		//!!! can we clean this up
-		var damagedInvader = Tokens.GetNewDamagedToken( originalInvader, availableDamage );
+		var damagedInvader = Space.GetNewDamagedToken( originalInvader, availableDamage );
 
 		if(!damagedInvader.IsDestroyed) {
-			Tokens.Humans(1, originalInvader).Adjust(_ => damagedInvader);
+			Space.Humans(1, originalInvader).Adjust(_ => damagedInvader);
 			InvaderDamaged?.Invoke( originalInvader );
 		} else {
-			if(!Tokens.PreventsInvaderDamage()){ 
-				var result = await Tokens.RemoveAsync( originalInvader, 1, DestroyingFromDamage.TriggerReason );
-				Tokens.AddFear(
+			if(!Space.PreventsInvaderDamage()){ 
+				var result = await Space.RemoveAsync( originalInvader, 1, DestroyingFromDamage.TriggerReason );
+				Space.AddFear(
 					originalInvader.HumanClass.FearGeneratedWhenDestroyed * result.Count,
 					FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
 				);
@@ -64,20 +64,20 @@ public sealed class InvaderBinding( SpaceState tokens ) {
 	#region Destroy
 
 	public async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
-		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
+		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return;
 
-		var tokensToDestroy = Tokens.HumanOfAnyTag( tokenClasses ).ToArray();
+		var tokensToDestroy = Space.HumanOfAnyTag( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
-			await Tokens.DestroyAll( token );
+			await Space.DestroyAll( token );
 	}
 
 	public async Task DestroyNOfAnyClass( int count, params HumanTokenClass[] generics ) {
-		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return;
+		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return;
 
 		HumanToken[] invadersToDestroy;
 		while(
 			0 < count 
-			&& 0 < ( invadersToDestroy = [..Tokens.HumanOfAnyTag( generics )] ).Length
+			&& 0 < ( invadersToDestroy = [..Space.HumanOfAnyTag( generics )] ).Length
 		) {
 			var invader = invadersToDestroy
 				.OrderByDescending( x => x.FullHealth )
@@ -91,18 +91,18 @@ public sealed class InvaderBinding( SpaceState tokens ) {
 
 	// destroy CLASS
 	public async Task<int> DestroyNOfClass( int countToDestroy, HumanTokenClass invaderClass ) {
-		if(Tokens.ModsOfType<IStopInvaderDamage>().Any()) return 0;
+		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return 0;
 
-		countToDestroy = Math.Min( countToDestroy, Tokens.Sum( invaderClass ) );
+		countToDestroy = Math.Min( countToDestroy, Space.Sum( invaderClass ) );
 		int remaining = countToDestroy; // capture
 
 		while(0 < remaining) {
-			var next = Tokens.HumanOfTag( invaderClass )
+			var next = Space.HumanOfTag( invaderClass )
 				.OrderByDescending( x => x.FullHealth )
 				.ThenBy( x => x.StrifeCount )
 				.ThenBy( x => x.FullDamage )
 				.First();
-			int countOfTypeToDestroy = Math.Min( remaining, Tokens[next]);
+			int countOfTypeToDestroy = Math.Min( remaining, Space[next]);
 			await DestroyNTokens( next, countOfTypeToDestroy );
 			remaining -= countOfTypeToDestroy;
 		}
@@ -112,8 +112,8 @@ public sealed class InvaderBinding( SpaceState tokens ) {
 
 	// destroy TOKEN
 	public async Task DestroyNTokens( HumanToken invaderToDestroy, int countToDestroy ) {
-		if(Tokens.PreventsInvaderDamage()) return;
-		await Tokens.Destroy(invaderToDestroy, countToDestroy );
+		if(Space.PreventsInvaderDamage()) return;
+		await Space.Destroy(invaderToDestroy, countToDestroy );
 	}
 	#endregion Destroy
 
@@ -127,16 +127,16 @@ public sealed class InvaderBinding( SpaceState tokens ) {
 	/// Also, shouldn't be affected by Bringer overwriting 'Destroy' and 'Damage'
 	/// </remarks>
 	public async Task RemoveLeastDesirable( RemoveReason reason = RemoveReason.Removed, params ITokenClass[] removables ) {
-		if(Tokens.SumAny(removables) == 0) return;
+		if(Space.SumAny(removables) == 0) return;
 
-		var invaderToRemove = Tokens.BestInvaderToBeRidOf( removables );
+		var invaderToRemove = Space.BestInvaderToBeRidOf( removables );
 
 		if(invaderToRemove != null)
-			await Tokens.RemoveAsync( invaderToRemove, 1, reason );
+			await Space.RemoveAsync( invaderToRemove, 1, reason );
 	}
 
 	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.RemoveAsync( token, count, reason );
+		=> Space.RemoveAsync( token, count, reason );
 
 	#endregion
 

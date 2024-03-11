@@ -21,7 +21,7 @@ class RoilingWaters : IHealingCard {
 	class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAddedAsync {
 		readonly Spirit _spirit = spirit;
 
-		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// When your powers...
 			if(!_spirit.ActionIsMyPower) return;
 

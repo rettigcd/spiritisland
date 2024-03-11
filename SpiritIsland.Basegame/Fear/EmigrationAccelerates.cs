@@ -3,7 +3,7 @@
 public class EmigrationAccelerates : FearCardBase, IFearCard {
 
 	public const string Name = "Emigration Accelerates";
-	public string Text => Name;
+	string IOption.Text => Name;
 
 	[FearLevel( 1, "Each player removes 1 Explorer from a Coastal land." )]
 	public Task Level1( GameState ctx ) 

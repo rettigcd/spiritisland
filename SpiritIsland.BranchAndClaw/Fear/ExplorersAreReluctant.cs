@@ -31,14 +31,14 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 
 	public SkipLowestNumberedExplore() : base() {}
 
-	public Task<bool> Skip( SpaceState spaceState ) {
+	public Task<bool> Skip( Space space ) {
 		// Remove
-		spaceState.Adjust( this, -1 );
+		space.Adjust( this, -1 );
 		// Find Lowest space
 		if(_lowest == null) InitLowest();
 		// Return if this is the lowest
-		bool isLowestOnABoard = spaceState.Space.Boards
-			.Any( board => _lowest[board] == spaceState);
+		bool isLowestOnABoard = space.SpaceSpec.Boards
+			.Any( board => _lowest[board] == space);
 		return Task.FromResult( isLowestOnABoard );
 	}
 
@@ -54,5 +54,5 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 				.ToDictionary( brd => brd, brd => brd.Spaces.ScopeTokens().FirstOrDefault( card.MatchesCard ) );
 	}
 
-	Dictionary<Board, SpaceState> _lowest = null;
+	Dictionary<Board, Space> _lowest = null;
 }

@@ -26,10 +26,10 @@ public static class SpiritExtensions {
 
 	internal static Spirit Given_IsOnMany( this Spirit spirit, string presenceString ) {
 
-		Dictionary<string,SpaceState> lookupByLabel = ActionScope.Current.Tokens_Unfiltered
-			.ToDictionary(ss=>ss.Space.Label,s=>s);
+		Dictionary<string,Space> lookupByLabel = ActionScope.Current.Spaces_Unfiltered
+			.ToDictionary(ss=>ss.SpaceSpec.Label,s=>s);
 
-		SpaceState[] spaces = new SpaceState[presenceString.Length/2];
+		Space[] spaces = new Space[presenceString.Length/2];
 		for(int i=0;i*2<presenceString.Length;i++)
 			spaces[i] = lookupByLabel[presenceString.Substring(i*2,2)];
 
@@ -40,11 +40,11 @@ public static class SpiritExtensions {
 	}
 
 	/// <summary> Sets the # of Presence via .Init() </summary>
-	internal static Spirit Given_IsOn( this Spirit spirit, Space space, int count=1 )
-		=> spirit.Given_IsOn( space.ScopeTokens, count );
+	internal static Spirit Given_IsOn( this Spirit spirit, SpaceSpec space, int count=1 )
+		=> spirit.Given_IsOn( space.ScopeSpace, count );
 
 	/// <summary> Sets the # of Presence via .Init() </summary>
-	internal static Spirit Given_IsOn( this Spirit spirit, SpaceState ss, int count=1 ){
+	internal static Spirit Given_IsOn( this Spirit spirit, Space ss, int count=1 ){
 		ss.Init( spirit.Presence.Token, count );
 		return spirit;
 	}
@@ -62,7 +62,7 @@ public static class SpiritExtensions {
 	}
 
 	internal static PowerCard Given_PurchasedCard( this Spirit spirit, string cardName) {
-		var card = spirit.Hand.Single( c => c.Name == cardName );
+		var card = spirit.Hand.Single( c => c.Title == cardName );
 		spirit.PlayCard( card );
 		return card;
 	}
@@ -103,11 +103,11 @@ public static class SpiritExtensions {
 			spirit.PlayCard( card );
 	}
 
-	internal static Task When_TargetingSpace( this Spirit spirit, Space space, Action<TargetSpaceCtx> method )
+	internal static Task When_TargetingSpace( this Spirit spirit, SpaceSpec space, Action<TargetSpaceCtx> method )
 		=> spirit.ResolvePowerOnSpaceAsync(space, method.AsAsync() )
 			.ShouldComplete( method.Method.Name );
 
-	internal static Task When_TargetingSpace( this Spirit spirit, Space space, Func<TargetSpaceCtx,Task> methodAsync, Action<VirtualUser> userActions = null )
+	internal static Task When_TargetingSpace( this Spirit spirit, SpaceSpec space, Func<TargetSpaceCtx,Task> methodAsync, Action<VirtualUser> userActions = null )
 		=> spirit.ResolvePowerOnSpaceAsync( space, methodAsync )
 			.AwaitUser( userActions )
 			.ShouldComplete( methodAsync.Method.Name );
@@ -115,7 +115,7 @@ public static class SpiritExtensions {
 	/// <summary>
 	/// Like playing a card, but user doesn't have to pick the space because it is passed in.
 	/// </summary>
-	internal static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, Space space, Func<TargetSpaceCtx, Task> func ) {
+	internal static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, SpaceSpec space, Func<TargetSpaceCtx, Task> func ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
 		await func( spirit.Target( space ) );
 	}
@@ -138,8 +138,8 @@ public static class SpiritExtensions {
 	#region Assert
 
 	static public void Assert_HasCardAvailable( this Spirit spirit, string name ){
-		bool nameMatches( PowerCard card ) => string.Compare(name,card.Name,true) == 0;
-		Assert.True(spirit.Hand.Any( nameMatches ), $"Hand does not contain {name}.  Hand has "+spirit.Hand.Select(x=>x.Text).Join(",") );
+		bool nameMatches( PowerCard card ) => string.Compare(name,card.Title,true) == 0;
+		Assert.True(spirit.Hand.Any( nameMatches ), $"Hand does not contain {name}.  Hand has "+spirit.Hand.Select(x=>x.Title).Join(",") );
 	}
 
 	static public void Assert_AllCardsAvailableToPlay(this Spirit spirit, int expectedAvailableCount = 4) {
@@ -153,9 +153,9 @@ public static class SpiritExtensions {
 	}
 
 	static public void Assert_BoardPresenceIs( this Spirit spirit, string expected ) {
-		var actual = ActionScope.Current.Tokens_Existing
+		var actual = ActionScope.Current.Spaces_Existing
 			.Where( spirit.Presence.IsOn )
-			.Select(s=>s.Space.Label+":"+s[spirit.Presence.Token])
+			.Select(s=>s.SpaceSpec.Label+":"+s[spirit.Presence.Token])
 			.Order()
 			.Join(",");
 		Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
@@ -190,7 +190,7 @@ public static class SpiritExtensions {
 	}
 
 	static public TargetSpaceCtx TargetSpace( this Spirit self, string spaceLabel )
-		=> self.Target(ActionScope.Current.Tokens_Unfiltered.Downgrade().First( s => s.Label == spaceLabel ) );
+		=> self.Target(ActionScope.Current.Spaces_Unfiltered.First( s => s.SpaceSpec.Label == spaceLabel ) );
 
 	/// <summary> Constructs a VirtualUser and passes it to userActions. </summary>
 	internal static Action HandleDecisions(this Spirit spirit, Action<VirtualUser> userActions ) 

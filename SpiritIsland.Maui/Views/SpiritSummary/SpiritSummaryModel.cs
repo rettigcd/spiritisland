@@ -19,7 +19,7 @@ public class SpiritModel : ObservableModel {
 	public SpiritModel(Spirit spirit) {
 		_spirit = spirit;
 
-		Spirit = spirit.Text;
+		Spirit = spirit.SpiritName;
 		_energy = _spirit.Energy;
 		_energyPerTurn = _spirit.EnergyPerTurn;
 		_cardPlaysPerTurn = _spirit.NumberOfCardsPlayablePerTurn;

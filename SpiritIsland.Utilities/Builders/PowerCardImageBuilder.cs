@@ -52,7 +52,7 @@ public partial class PowerCardImageBuilder {
 		// Title
 		using(StringFormat center = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
 		using(Font titleFont = new Font( "Arial Narrow", 16f, FontStyle.Bold, GraphicsUnit.Pixel ))
-			graphics.DrawString( card.Name.ToUpper(), titleFont, Brushes.White, title, center );
+			graphics.DrawString( card.Title.ToUpper(), titleFont, Brushes.White, title, center );
 
 		// Image
 

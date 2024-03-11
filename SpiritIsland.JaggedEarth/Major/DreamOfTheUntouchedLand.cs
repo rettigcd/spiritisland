@@ -31,8 +31,8 @@ public class DreamOfTheUntouchedLand {
 			// add 2 beast, 2 wilds, 2 badlands
 			foreach(var token in new ISpaceEntity[] { Token.Beast, Token.Wilds, Token.Badlands})
 				for(int i = 0; i < 2; ++i)
-					(await ctx.Self.SelectSpaceAsync($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ),Present.Always ))
-						.ScopeTokens.Adjust(token,1);
+					(await ctx.Self.SelectSpaceAsync($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens(), Present.Always ))
+						.Adjust(token,1);
 			// and up to 2 presence (from any Spirits) anywhere on it.
 			// ??? Can spirits violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
@@ -73,8 +73,8 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 	public UsageCost Cost => UsageCost.Free;
 	public string Text => "Invaders Skip 1 Board";
 
-	public async Task<bool> Skip( SpaceState space ) {
-		return space.Space.Boards.Contains( await BoardToSkip() );
+	public async Task<bool> Skip( Space space ) {
+		return space.SpaceSpec.Boards.Contains( await BoardToSkip() );
 	}
 
 	async Task<Board> BoardToSkip() {
@@ -89,7 +89,7 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 		return _toSkip;
 	}
 
-	public void EndOfRoundCleanup( SpaceState tokens ) {
+	public void EndOfRoundCleanup( Space space ) {
 		_toSkip = null; // reset for next round.
 	}
 

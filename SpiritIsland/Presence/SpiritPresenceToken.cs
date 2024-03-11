@@ -9,14 +9,14 @@ public class SpiritPresenceToken
 
 	public SpiritPresenceToken(Spirit spirit) {
 		Self = spirit; 
-		SpaceAbreviation = Abreviate( Self.Text );
+		SpaceAbreviation = Abreviate( Self.SpiritName );
 	}
 
 	public Spirit Self { get; }
 
-	public Task AddTo( SpaceState spaceState ) => spaceState.AddAsync( this, 1 );
+	public Task AddTo( Space space ) => space.AddAsync( this, 1 );
 
-	public Task RemoveFrom( SpaceState spaceState ) => spaceState.RemoveAsync( this, 1 );
+	public Task RemoveFrom( Space space ) => space.RemoveAsync( this, 1 );
 
 	public string SpaceAbreviation { get; protected set; }
 
@@ -27,19 +27,19 @@ public class SpiritPresenceToken
 		_boardCounts.Clear();
 	}
 
-	void ITrackMySpaces.TrackAdjust(SpaceState space, int delta) {
+	void ITrackMySpaces.TrackAdjust(Space space, int delta) {
 		_spaceCounts[space] += delta;
-		foreach (var board in space.Space.Boards)
+		foreach (var board in space.SpaceSpec.Boards)
 			_boardCounts[board] += delta;
 	}
 
-	readonly CountDictionary<SpaceState> _spaceCounts = [];
+	readonly CountDictionary<Space> _spaceCounts = [];
 	readonly CountDictionary<Board> _boardCounts = []; // ? Is this necessary?  How many things use this?
 
 	public bool IsOnIsland => _boardCounts.Count != 0;
 
 	// public IEnumerable<Space> Spaces_Existing => _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
-	public IEnumerable<SpaceState> Spaces_Existing =>_spaceCounts.Keys.Where(ss => Space.Exists(ss.Space));
+	public IEnumerable<Space> Spaces_Existing =>_spaceCounts.Keys.Where(ss => SpaceSpec.Exists(ss.SpaceSpec));
 
 	/// <summary> Existing (non-statis) SppaceTokens </summary>
 	public IEnumerable<SpaceToken> Deployed => this.On( Spaces_Existing );
@@ -63,7 +63,7 @@ public class SpiritPresenceToken
 	/// <summary>
 	/// Override this to add behavior that IS NOT destroyed presenced.
 	/// </summary>
-	public virtual async Task HandleTokenRemovedAsync( SpaceState from,  ITokenRemovedArgs args ) {
+	public virtual async Task HandleTokenRemovedAsync( Space from,  ITokenRemovedArgs args ) {
 		if(args.Removed == this && args.Reason.IsDestroyingPresence()) {
 			await Self.Presence.Destroyed.Location.SinkAsync(this,args.Count,AddReason.AddedToCard);
 			await OnPresenceDestroyed( args );

@@ -10,7 +10,7 @@ public class StormSwath {
 		ctx.AddFear(2);
 
 		// in both origin land and target land: 1 damage to each invader.
-		var origin = await FindOriginLand( ctx );
+		Space origin = await FindOriginLand( ctx );
 		await ctx.DamageEachInvader(1);
 		await ctx.Target(origin).DamageEachInvader(1);
 
@@ -35,7 +35,7 @@ public class StormSwath {
 
 	static async Task<Space> SelectLandAdjacentToBoth( TargetSpaceCtx ctx, Space origin ) {
 
-		return await ctx.SelectAsync( new A.Space(
+		return await ctx.SelectAsync( new A.SpaceDecision(
 			"Select land for 1 damge to each invader",
 			ctx.Adjacent.Intersect( ctx.Target( origin ).Adjacent ),
 			Present.AutoSelectSingle
@@ -45,12 +45,12 @@ public class StormSwath {
 	static Task<Space> FindOriginLand( TargetSpaceCtx ctx ) {
 
 		var ssOptions = ctx.Self.FindTargettingSourcesFor(
-			ctx.Space,
+			ctx.SpaceSpec,
 			new TargetingSourceCriteria( TargetFrom.SacredSite ),
 			new TargetCriteria( 1 )
 		);
 
-		return ctx.SelectAsync( new A.Space( "Select Origin land",  ssOptions, Present.AutoSelectSingle ));
+		return ctx.SelectAsync( new A.SpaceDecision( "Select Origin land",  ssOptions, Present.AutoSelectSingle ));
 	}
 
 }

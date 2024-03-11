@@ -10,8 +10,8 @@ public class SlowDissolutionOfWill_Tests {
 		GameState gs = new GameState(spirit,board);
 
 		// Given: Spirit has presence on a7 and a8
-		board[7].ScopeTokens.Init(spirit.Presence.Token,1);
-		board[8].ScopeTokens.Init(spirit.Presence.Token,1);
+		board[7].ScopeSpace.Init(spirit.Presence.Token,1);
+		board[8].ScopeSpace.Init(spirit.Presence.Token,1);
 
 		// Given: Slow Dissolution of will played
 		await new SlowDissolutionOfWill().Immediately.ActAsync(gs)
@@ -31,12 +31,12 @@ public class SlowDissolutionOfWill_Tests {
 			});
 
 		//  Then: space does not appear in any BG-tracking properties
-		spirit.Presence.Lands.Select(x=>x.Space.Text).Join(",").ShouldBe("B7");
-		spirit.Presence.IsOn( board[8].ScopeTokens ).ShouldBeFalse();
-		spirit.Presence.CountOn( board[8].ScopeTokens ).ShouldBe(0);
-		board[8].ScopeTokens.Has(spirit.Presence).ShouldBeFalse();
+		spirit.Presence.Lands.Select(x=>x.SpaceSpec.Label).Join(",").ShouldBe("B7");
+		spirit.Presence.IsOn( board[8].ScopeSpace ).ShouldBeFalse();
+		spirit.Presence.CountOn( board[8].ScopeSpace ).ShouldBe(0);
+		board[8].ScopeSpace.Has(spirit.Presence).ShouldBeFalse();
 		spirit.Presence.Deployed
-			.Select(d=>d.Text )
+			.Select(d=>d.ToString() )
 			.Join(",")
 			.ShouldBe("RSiS on B7");
 

@@ -21,9 +21,9 @@ public class CallOnMidnightsDream {
 		var major = (await ctx.Self.DrawMajor(true)).Selected;
 
 		// If you Forget this (Call on Midnights Dream) Power,
-		var callOnMidnightsDreamCard = ctx.Self.InPlay.SingleOrDefault( x => x.Name == Name );
+		var callOnMidnightsDreamCard = ctx.Self.InPlay.SingleOrDefault( x => x.Title == Name );
 		string prompt = major.Cost <= ctx.Self.Energy + ctx.Dahan.CountAll 
-			? $"Forget '{Name} for +{ctx.Dahan.CountAll} energy and option to play {major.Name}."
+			? $"Forget '{Name} for +{ctx.Dahan.CountAll} energy and option to play {major.Title}."
 			: $"Forget '{Name} for +{ctx.Dahan.CountAll} energy.";
 		if(callOnMidnightsDreamCard != null // might have already been forgotten when picking a major card.
 			&& await ctx.Self.UserSelectsFirstText( prompt, "Yes, forget it.", "no thanks." )
@@ -35,7 +35,7 @@ public class CallOnMidnightsDream {
 			ctx.Self.Energy += ctx.Dahan.CountAll;
 
 			if( major.Cost <= ctx.Self.Energy
-				&& await ctx.Self.UserSelectsFirstText( $"Pay {major.Cost} to play {major.Name} immediately?", "Yes play it","no thanks" ) 
+				&& await ctx.Self.UserSelectsFirstText( $"Pay {major.Cost} to play {major.Title} immediately?", "Yes play it","no thanks" ) 
 			)
 				ctx.Self.PlayCard( major );
 

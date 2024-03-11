@@ -11,7 +11,7 @@ public class RadiatingTremors {
 
 		// You may Push any number of Quake
 		await ctx.SourceSelector
-			.AddGroup( ctx.Tokens[Token.Quake], Token.Quake )
+			.AddGroup( ctx.Space[Token.Quake], Token.Quake )
 			// dividing them as evenly as possible between adjacent lands.
 			.ConfigDestination( Distribute.Evenly )
 			.PushUpToN(ctx.Self);

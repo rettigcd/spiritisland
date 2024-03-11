@@ -350,8 +350,8 @@ public class BoardLayout {
 	public Bounds Bounds => _bounds ??= CalcBounds();
 	public XY Size => Bounds.Size;
 
-	public SpaceLayout ForSpace( Space space ) {
-		int index = space.Text[1] - 48;
+	public SpaceLayout ForSpace( SpaceSpec space ) {
+		int index = space.Label[1] - 48;
 		return _spaces[index];
 	}
 
@@ -522,12 +522,12 @@ class GenericBoard {
 /// </summary>
 public class IslandLayout {
 
-	public SpaceLayout GetLayoutFor( Space space ) {
-		if( space is Space1 s1 )
+	public SpaceLayout GetLayoutFor( SpaceSpec space ) {
+		if( space is SingleSpaceSpec s1 )
 			return this[s1.Board].ForSpace(s1);
 
-		if(space is MultiSpace ms) {
-			Space1[] spaces = ms.OrigSpaces;
+		if(space is MultiSpaceSpec ms) {
+			SingleSpaceSpec[] spaces = ms.OrigSpaces;
 			XY[] merged = GetLayoutFor( spaces[0] ).Corners;
 			for(int i = 1; i < spaces.Length; ++i)
 				merged = Polygons.JoinAdjacentPolgons( merged, GetLayoutFor(spaces[i]).Corners );

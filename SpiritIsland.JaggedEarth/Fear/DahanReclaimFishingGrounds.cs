@@ -35,9 +35,8 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	}
 
 	static async Task SpiritsActOnDifferentCostalLands( GameState gs, Func<TargetSpaceCtx, Task> act ) {
-		var options = ActionScope.Current.Tokens
+		var options = ActionScope.Current.Spaces
 			.Where(TerrainMapper.Current.IsCoastal)
-			.Downgrade()
 			.ToList();
 
 		foreach( var spirit in gs.Spirits ) {
@@ -45,7 +44,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 			Space space = await spirit.SelectSpaceAsync("1 damage per Dahan", options,Present.Always );
 			if( space != null) {
 				await act(spirit.Target(space));
-				options.Remove(space);
+				options.Remove(options.First(s => s == space));
 			}
 		}
 	}

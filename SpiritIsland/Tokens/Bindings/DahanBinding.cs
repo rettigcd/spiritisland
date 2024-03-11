@@ -1,25 +1,25 @@
 ﻿namespace SpiritIsland;
 
-public sealed class DahanBinding( SpaceState _tokens ) {
+public sealed class DahanBinding( Space _space ) {
 
 	#region All TokenCategory.Dahan, including Frozen/Stasis
 
 	/// <summary> Includes Frozen and dream dahan. </summary>
-	public bool Any => _tokens.Has( TokenCategory.Dahan );
-	public int CountAll => _tokens.Sum( TokenCategory.Dahan );
+	public bool Any => _space.Has( TokenCategory.Dahan );
+	public int CountAll => _space.Sum( TokenCategory.Dahan );
 
 	#endregion
 
 	/// <summary> The non-frozes,non-dreaming Tokens of various health and damage.</summary>
-	public HumanToken[] NormalKeys => _tokens.HumanOfTag( Human.Dahan );
+	public HumanToken[] NormalKeys => _space.HumanOfTag( Human.Dahan );
 
-	public void Init( int count ) => _tokens.InitDefault( Human.Dahan, count );
+	public void Init( int count ) => _space.InitDefault( Human.Dahan, count );
 
-	public void Adjust( ISpaceEntity token, int delta ) => _tokens.Adjust( token, delta );
+	public void Adjust( ISpaceEntity token, int delta ) => _space.Adjust( token, delta );
 
 	/// <summary> Adds a Token from the bag, or out of thin air. </summary>
 	public Task AddDefault( int count, AddReason reason = AddReason.Added )
-		=> _tokens.AddDefaultAsync( Human.Dahan, count, reason );
+		=> _space.AddDefaultAsync( Human.Dahan, count, reason );
 
 	#region Higher Level of Abstraction
 
@@ -38,7 +38,7 @@ public sealed class DahanBinding( SpaceState _tokens ) {
 			&& (mostHealthy = NormalKeys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
 		) {
 			// determine # to apply 1 damage to
-			int countToApply1DamageTo = Math.Min( remainingDamageToDahan, _tokens[mostHealthy] );
+			int countToApply1DamageTo = Math.Min( remainingDamageToDahan, _space[mostHealthy] );
 
 			// Damage 1 to specific token
 			await DamageNTokens( mostHealthy, countToApply1DamageTo, 1 );
@@ -57,7 +57,7 @@ public sealed class DahanBinding( SpaceState _tokens ) {
 			.ToArray();
 
 		foreach(var token in before)
-			await DamageNTokens( token, _tokens[token], 1 );
+			await DamageNTokens( token, _space[token], 1 );
 	}
 
 	/// <summary>Ravage - Applies Damage Efficiently To as many tokens of the given type as there are.</summary>
@@ -66,15 +66,15 @@ public sealed class DahanBinding( SpaceState _tokens ) {
 		// Destroy what can be destroyed
 		if(token.RemainingHealth <= remainingDamageToDahan) {
 			int countWeCouldDestroy = remainingDamageToDahan / token.RemainingHealth;
-			int countDestroyed = Math.Min( countWeCouldDestroy, _tokens[token] );
+			int countDestroyed = Math.Min( countWeCouldDestroy, _space[token] );
 			await DamageNTokens( token, countDestroyed, token.RemainingHealth );
 			remainingDamageToDahan -= countDestroyed * token.RemainingHealth;
 		}
 
 		// if there is still partial damage we can apply
-		if(0 < remainingDamageToDahan && 0 < _tokens[token]) {
+		if(0 < remainingDamageToDahan && 0 < _space[token]) {
 
-			// We should change 'Saved' dahan to Saved-Dahan class so that they don't show up in the above 0 < _tokens[token] check
+			// We should change 'Saved' dahan to Saved-Dahan class so that they don't show up in the above 0 < _space[token] check
 			// However, we are not currently doing that, so we need could land in here
 			// and still have more damage available than a full token can take
 			if( remainingDamageToDahan < token.RemainingHealth) {
@@ -96,12 +96,12 @@ public sealed class DahanBinding( SpaceState _tokens ) {
 
 	public async Task DamageNTokens( HumanToken originalToken, int tokenCountToReceiveDamage, int damagePerToken ) {
 
-		var notification = new DamagingTokens(_tokens) {  
+		var notification = new DamagingTokens(_space) {  
 			Token = originalToken, 
 			TokenCountToReceiveDamage = tokenCountToReceiveDamage, 
 			DamagePerToken = damagePerToken
 		};
-		var damageMods = _tokens.ModsOfType<IModifyDahanDamage>().ToArray();
+		var damageMods = _space.ModsOfType<IModifyDahanDamage>().ToArray();
 		foreach(IModifyDahanDamage mod in damageMods) 
 			mod.Modify( notification );
 		originalToken = notification.Token;
@@ -112,12 +112,12 @@ public sealed class DahanBinding( SpaceState _tokens ) {
 		// Not cleaning up the data because:
 		// we want the caller to know exactly how much damage they are doing before they call this method
 		// so that this method does not have to return any damage-used / damage-remaining results.
-		if(_tokens[originalToken] < tokenCountToReceiveDamage) 
-			throw new InvalidOperationException($"Can't damage {tokenCountToReceiveDamage} because there are only {_tokens[originalToken]} available {originalToken.HumanClass.Label}.");
+		if(_space[originalToken] < tokenCountToReceiveDamage) 
+			throw new InvalidOperationException($"Can't damage {tokenCountToReceiveDamage} because there are only {_space[originalToken]} available {originalToken.HumanClass.Label}.");
 		if(originalToken.RemainingHealth < damagePerToken)
 			throw new InvalidOperationException( $"Can't damage apply {damagePerToken} because they only have {originalToken.RemainingHealth}." );
 
-		await _tokens.Humans( tokenCountToReceiveDamage, originalToken )
+		await _space.Humans( tokenCountToReceiveDamage, originalToken )
 			.AdjustAsync( x => x.AddDamage( damagePerToken ) );
 	}
 
@@ -134,7 +134,7 @@ public sealed class DahanBinding( SpaceState _tokens ) {
 			.ToArray(); // least health first.
 		foreach(var token in before) {
 			// Destroy what can be destroyed
-			int destroyCountToApplyToThisToken = Math.Min( countToDestroy, _tokens[token] );
+			int destroyCountToApplyToThisToken = Math.Min( countToDestroy, _space[token] );
 			countToDestroy -= destroyCountToApplyToThisToken; // doesn't matter how many were actually destroyed.
 			await Destroy(destroyCountToApplyToThisToken, token);
 		}
@@ -145,21 +145,21 @@ public sealed class DahanBinding( SpaceState _tokens ) {
 	public async Task<int> Destroy( int count, HumanToken token ) {
 		// ! Running this through the Dahan.Destroy is unnessary since it is never overriden.
 		// However, this matches the Invader pattern which IS necessary due to Habsburg Durable tokens.
-		int x = Math.Min( count, _tokens[token] );
-		return await _tokens.Destroy(token, x );
+		int x = Math.Min( count, _space[token] );
+		return await _space.Destroy(token, x );
 	}
 
 	public async Task DestroyAll() {
 		foreach(HumanToken token in NormalKeys.ToArray())
-			await _tokens.DestroyAll( token );
+			await _space.DestroyAll( token );
 	}
 
 	#endregion
 
 }
 
-public class DamagingTokens( SpaceState on ) {
-	public SpaceState On { get; } = on;
+public class DamagingTokens( Space on ) {
+	public Space On { get; } = on;
 	public HumanToken Token { get; set; }
 	public int TokenCountToReceiveDamage { get; set; }
 	public int DamagePerToken { get; set; }

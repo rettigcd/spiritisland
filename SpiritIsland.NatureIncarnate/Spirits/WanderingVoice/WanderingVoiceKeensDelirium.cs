@@ -37,7 +37,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 		};
 	}
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{
 		new SpecialRule(
@@ -53,8 +53,8 @@ public class WanderingVoiceKeensDelirium : Spirit {
 	};
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
-		SpaceState s6 = board[6].ScopeTokens;
-		SpaceState s7 = board[7].ScopeTokens;
+		Space s6 = board[6].ScopeSpace;
+		Space s7 = board[7].ScopeSpace;
 		// incanra on land #6
 		s6.Init(Presence.Incarna,1);
 		// 1 presence in land #6

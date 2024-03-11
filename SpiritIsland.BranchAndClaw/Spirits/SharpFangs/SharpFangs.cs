@@ -7,7 +7,7 @@ public class SharpFangs : Spirit {
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("Ally of the Beasts", "Your presensee may move with beast.") } ;
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public SharpFangs():base(
 		spirit => new SpiritPresence( spirit,
@@ -35,7 +35,7 @@ public class SharpFangs : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 
-		var highestJungle = board.Spaces.Where(x => x.IsJungle).Last().ScopeTokens;
+		var highestJungle = board.Spaces.Where(x => x.IsJungle).Last().ScopeSpace;
 		highestJungle.Setup(Presence.Token,1);
 		highestJungle.Beasts.Init(1);
 

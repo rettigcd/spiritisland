@@ -15,7 +15,10 @@ public class BeliefTakesRoot_Tests {
 		_gameState.Fear.PushOntoDeck( new BeliefTakesRoot() );
 
 		_invaderCard = InvaderDeckBuilder.Level1Cards[0];
-		_ravageSpace = _gameState.Island.Boards[0].Spaces.Where( ((InvaderCard)_invaderCard).MatchesCard ).First();
+		_ravageSpace = _gameState.Island.Boards[0].Spaces
+			.Select(s=>_gameState.Tokens[s])
+			.Where( ((InvaderCard)_invaderCard).MatchesCard )
+			.First();
 	}
 	readonly Task<Log.FearCardRevealed> _fearCard;
 
@@ -35,8 +38,8 @@ public class BeliefTakesRoot_Tests {
 		await _invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
-		_ravageSpace.ScopeTokens.Dahan.CountAll.ShouldBe(0);
-		_gameState.Tokens[_ravageSpace].Blight.Any.ShouldBe(true);
+		_ravageSpace.Dahan.CountAll.ShouldBe(0);
+		_ravageSpace.Blight.Any.ShouldBe(true);
 	}
 
 	[Fact]
@@ -49,11 +52,11 @@ public class BeliefTakesRoot_Tests {
 		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, _ravageSpace.ScopeTokens.Dahan.CountAll );
+		Assert.Equal( 1, _ravageSpace.Dahan.CountAll );
 
 		//   And: 0 towns
 		_ravageSpace.Assert_HasInvaders("");
-		Assert.False( _gameState.Tokens[ _ravageSpace ].Blight.Any );
+		Assert.False( _ravageSpace.Blight.Any );
 
 	}
 
@@ -67,18 +70,18 @@ public class BeliefTakesRoot_Tests {
 		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
-		Assert.Equal( 1, _ravageSpace.ScopeTokens.Dahan.CountAll );
+		Assert.Equal( 1, _ravageSpace.Dahan.CountAll );
 
 		//   And: 0 towns
 		_ravageSpace.Assert_HasInvaders( "1T@2" );
-		Assert.True( _gameState.Tokens[ _ravageSpace ].Blight.Any );
+		Assert.True( _ravageSpace.Blight.Any );
 	}
 
 	void Given_DahanAndTownsInSpaceWithPresence(int desiredCount,int presenceCount) { 
 		// Add: dahan
-		_ravageSpace.ScopeTokens.Dahan.Init( desiredCount );
+		_ravageSpace.Dahan.Init( desiredCount );
 		// Add towns
-		_gameState.Tokens[_ravageSpace].AdjustDefault( Human.Town, desiredCount );
+		_ravageSpace.AdjustDefault( Human.Town, desiredCount );
 
 		//   And: Presence
 		while(presenceCount-->0)

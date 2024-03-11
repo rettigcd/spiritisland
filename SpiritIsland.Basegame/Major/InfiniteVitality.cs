@@ -17,7 +17,7 @@ public class InfiniteVitality {
 		if( await ctx.YouHave( "4 earth" )) {
 			// Dahan ignore damage and destruction effects.
 
-			ctx.Tokens.Init( new StopDahanDamageAndDestruction(Name), 1 );
+			ctx.Space.Init( new StopDahanDamageAndDestruction(Name), 1 );
 
 			// Remove 1 blight from target or adjacent
 			await RemoveBlightFromLandOrAdjacent( ctx );
@@ -27,8 +27,8 @@ public class InfiniteVitality {
 
 	static async Task RemoveBlightFromLandOrAdjacent( TargetSpaceCtx ctx ) {
 		// remove 1 blight from target or adjacent land
-		var blightedLands = ctx.Tokens.InOrAdjacentTo.Where( s=>s.Blight.Any ).ToArray();
-		var unblightLand = await ctx.SelectAsync( new A.Space( "Remove 1 blight from", blightedLands, Present.Always ));
+		var blightedLands = ctx.Space.InOrAdjacentTo.Where( s=>s.Blight.Any ).ToArray();
+		var unblightLand = await ctx.SelectAsync( new A.SpaceDecision( "Remove 1 blight from", blightedLands, Present.Always ));
 		if(unblightLand != null)
 			await ctx.Target( unblightLand ).RemoveBlight();
 	}

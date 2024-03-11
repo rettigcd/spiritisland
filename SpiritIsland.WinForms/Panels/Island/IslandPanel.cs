@@ -51,17 +51,17 @@ class IslandPanel : IPanel {
 
 		// Load all SpaceToken options into the Outstanding-SpaceToken collection.
 		_buttonContainer.ClearTransient();
-		if(_decision is A.SpaceToken spaceTokenDecision)
+		if(_decision is A.SpaceTokenDecision spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 		if(_decision is A.MyTokenOn tokenOnDecision)
 			_outstandingSpaceTokenOptions.UnionWith( tokenOnDecision.TokensOn.OfType<SpaceToken>() );
 
 		// As we draw the space, we pull matched SpaceTokens out of the collection and place in buttonContainer
-		foreach(SpaceState spaceState in ActionScope.Current.Tokens_Unfiltered) {  // !!! this is WRONG - just use GameState SpaceStaets.
+		foreach(Space space in ActionScope.Current.Spaces_Unfiltered) {  // !!! this is WRONG - just use GameState SpaceStaets.
 
-			var paintableSpace = WorldLayout.GetPaintable( spaceState.Space );
+			var paintableSpace = WorldLayout.GetPaintable( space.SpaceSpec );
 			// Init and paint
-			paintableSpace.Tokens = spaceState;
+			paintableSpace.Space = space;
 			paintableSpace.PaintAbove( graphics );
 
 			// record locations
@@ -87,7 +87,7 @@ class IslandPanel : IPanel {
 
 		// Spaces
 		_outstandingSpaceTokenOptions.Clear();
-		if(_decision is A.SpaceToken spaceTokenDecision)
+		if(_decision is A.SpaceTokenDecision spaceTokenDecision)
 			_outstandingSpaceTokenOptions.UnionWith( spaceTokenDecision.SpaceTokens );
 
 		// Tokens
@@ -117,7 +117,7 @@ class IslandPanel : IPanel {
 
 		//foreach(Board board in _ctx.GameState.Island.Boards)
 		//	DrawBoardSpacesOnly( graphics, board.Spaces_Unfiltered );
-		DrawBoardSpacesOnly( graphics, _ctx.GameState.Spaces_Unfiltered );
+		DrawBoardSpacesOnly( graphics, _ctx.GameState.SpaceSpecs_Unfiltered );
 	}
 
 	void MapWorldToScreen() {
@@ -139,7 +139,7 @@ class IslandPanel : IPanel {
 		}
 	}
 
-	void DrawBoardSpacesOnly( Graphics graphics, IEnumerable<Space> spaces ) {
+	void DrawBoardSpacesOnly( Graphics graphics, IEnumerable<SpaceSpec> spaces ) {
 		using Pen perimeterPen = new Pen( SpacePerimeterColor, 5f );
 
 		foreach(var space in spaces) {
@@ -162,7 +162,7 @@ class IslandPanel : IPanel {
 				GetPortPoint( arrow.To, arrow.Token )
 			);
 
-		Point GetPortPoint( Space space, IToken visibileTokens ) {
+		Point GetPortPoint( SpaceSpec space, IToken visibileTokens ) {
 			XY worldCoord = WorldLayout.InsidePoints( space ).GetPointFor( visibileTokens );
 			return _mapper.Map( worldCoord ).ToInts();
 		}
@@ -174,10 +174,10 @@ class IslandPanel : IPanel {
 
 	void InitButtonContainerToSpaceButtons() {
 		_buttonContainer.Clear();
-		foreach(SpaceState spaceState in ActionScope.Current.Tokens_Unfiltered) { // !!! Don't use ActionScope here, just use raw GameState.
-			SpaceLayout layout = WorldLayout.InsidePoints(spaceState.Space).SpaceLayout;
+		foreach(Space space in ActionScope.Current.Spaces_Unfiltered) { // !!! Don't use ActionScope here, just use raw GameState.
+			SpaceLayout layout = WorldLayout.InsidePoints(space.SpaceSpec).SpaceLayout;
 			SpaceButton button = new SpaceButton( layout, MapWorldToClientXY ); // Can't use _mapper.Map directly because it has not been initialized AND it might change.
-			_buttonContainer.Add( spaceState.Space, button );
+			_buttonContainer.Add( space.SpaceSpec, button );
 		}
 	}
 
@@ -191,7 +191,7 @@ class IslandPanel : IPanel {
 	// For Options that are SpaceTokens, calc and draw their rectangles
 	void AddButtonsForVirtualSpaceTokens() {
 		foreach(SpaceToken spaceToken in _outstandingSpaceTokenOptions) {
-			Point p = _mapper.Map( WorldLayout.InsidePoints( spaceToken.Space ).GetPointFor( spaceToken.Token ) ).ToInts();
+			Point p = _mapper.Map( WorldLayout.InsidePoints( spaceToken.Space.SpaceSpec ).GetPointFor( spaceToken.Token ) ).ToInts();
 			Rectangle rect = new Rectangle( p.X - _hotspotRadius, p.Y - _hotspotRadius, _hotspotRadius * 2, _hotspotRadius * 2 ); // !!! use token size, whatever that is.
 			_buttonContainer.AddTransientEnabled( spaceToken, new SpaceTokenButton( rect ) );
 		}

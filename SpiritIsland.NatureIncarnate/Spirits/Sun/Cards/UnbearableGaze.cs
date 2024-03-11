@@ -18,26 +18,25 @@ public class UnbearableGaze {
 
 	static async Task PushFromTargetOrOrigin( TargetSpaceCtx ctx, int max, params HumanTokenClass[] tokenClasses ) {
 
-		await new SourceSelector( FindOrigins( ctx ).Append( ctx.Tokens ).Distinct() )
+		await new SourceSelector( FindOrigins( ctx ).Append( ctx.Space ).Distinct() )
 			.AddGroup( max, tokenClasses )
 			.Config( FromTargetOrOrigin(ctx.Space) )
 			.PushN( ctx.Self );
 	}
 
-	static IEnumerable<SpaceState> FindOrigins( TargetSpaceCtx ctx )
+	static IEnumerable<Space> FindOrigins( TargetSpaceCtx ctx )
 		=> ctx.Self
 			.FindTargettingSourcesFor(
-				ctx.Space,
+				ctx.SpaceSpec,
 				new TargetingSourceCriteria( TargetFrom.SacredSite ),
 				new TargetCriteria( 1 )
 			);
 
-	static Action<SourceSelector> FromTargetOrOrigin( Space target ) {
-		SpaceState targetTokens = target.ScopeTokens;
+	static Action<SourceSelector> FromTargetOrOrigin( Space targetSpace ) {
 		return (ss) => {
 			Space? selectedOrigin = null;
-			ss.Track( from => { if(from.Space != target) selectedOrigin = from.Space; } );
-			ss.FilterSource( ss => ss == targetTokens || selectedOrigin == null || selectedOrigin == ss.Space );
+			ss.Track( from => { if(from.Space != targetSpace) selectedOrigin = from.Space; } );
+			ss.FilterSource( ss => ss == targetSpace || selectedOrigin == null || selectedOrigin == ss );
 		};
 	}
 

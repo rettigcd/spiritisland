@@ -13,7 +13,7 @@ public class BoardSpace_Tests {
 		Assert.Contains( space, spaces );
 	}
 
-	static Space1 MakeSpace(string name) => new(Terrain.None,name,null);
+	static SingleSpaceSpec MakeSpace(string name) => new(Terrain.None,name,null);
 
 	[Fact]
 	public void Adjacentcy_IsTransitive() {
@@ -29,9 +29,9 @@ public class BoardSpace_Tests {
 	[Fact]
 	public void MultipleNeighbors() {
 		// Given space has 2 neighbors
-		Space1 main = MakeSpace("N0");
-		Space1 neighbor1 = MakeSpace("N1");
-		Space1 neighbor2 = MakeSpace("N2");
+		SingleSpaceSpec main = MakeSpace("N0");
+		SingleSpaceSpec neighbor1 = MakeSpace("N1");
+		SingleSpaceSpec neighbor2 = MakeSpace("N2");
 		main.SetAdjacentToSpaces( neighbor1 );
 		main.SetAdjacentToSpaces( neighbor2 );
 
@@ -46,9 +46,9 @@ public class BoardSpace_Tests {
 		//Assert.Contains( neighbor1,  );
 	}
 
-	static IEnumerable<Space> SpacesExactly( Space space, int distance )
+	static IEnumerable<SpaceSpec> SpacesExactly( SpaceSpec space, int distance )
 		=> distance switch {
-			0 => new Space[] { space },
+			0 => new SpaceSpec[] { space },
 			1 => space.Adjacent_Existing,
 			_ => space.CalcDistances( distance ).Where( p => p.Value == distance ).Select( p => p.Key ),
 		};
@@ -111,7 +111,7 @@ public class BoardSpace_Tests {
 	//	Assert_BoardSpacesTouch( boardC[x], boardD[y] );
 	//}
 
-	static void Assert_BoardSpacesTouch( Space startingSpace, Space neighbor ) {
+	static void Assert_BoardSpacesTouch( SpaceSpec startingSpace, SpaceSpec neighbor ) {
 		Assert.Contains( neighbor, startingSpace.Adjacent_Existing );// , $"{a.Label} should touch {b.Label}" );
 	}
 
@@ -236,7 +236,7 @@ public class BoardSpace_Tests {
 
 	#region private
 
-	static void Assert_CanReachSpaceWithNHops( Space source, int distance, params Space[] needles ) {
+	static void Assert_CanReachSpaceWithNHops( SpaceSpec source, int distance, params SpaceSpec[] needles ) {
 		Assert.Equal( needles, SpacesExactly( source, distance ) );
 	}
 

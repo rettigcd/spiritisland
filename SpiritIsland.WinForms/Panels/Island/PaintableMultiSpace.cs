@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms.Panels.Island;
 
-class PaintableMultiSpace( MultiSpace ms, SpaceLayout layout ) : PaintableSpace( ms, layout ) {
+class PaintableMultiSpace( MultiSpaceSpec ms, SpaceLayout layout ) : PaintableSpace( ms, layout ) {
 
 	static Color MultiSpacePerimeterColor => Color.Gold;
 
@@ -16,7 +16,7 @@ class PaintableMultiSpace( MultiSpace ms, SpaceLayout layout ) : PaintableSpace(
 
 	#region Multi-Space drawing
 
-	public void DrawMultiSpace( Graphics graphics, MultiSpace multi ) {
+	public void DrawMultiSpace( Graphics graphics, MultiSpaceSpec multi ) {
 
 		using var pen = new Pen( MultiSpacePerimeterColor, 3f );
 
@@ -27,7 +27,7 @@ class PaintableMultiSpace( MultiSpace ms, SpaceLayout layout ) : PaintableSpace(
 		graphics.DrawClosedCurve( pen, points, .25f, FillMode.Alternate );
 	}
 
-	static LinearGradientBrush UseMultiSpaceBrush( MultiSpace multi ) {
+	static LinearGradientBrush UseMultiSpaceBrush( MultiSpaceSpec multi ) {
 		var brush = new LinearGradientBrush( new Rectangle( 0, 0, 30, 30 ), Color.Transparent, Color.Transparent, 45F );
 
 		var colors = multi.OrigSpaces
@@ -48,7 +48,7 @@ class PaintableMultiSpace( MultiSpace ms, SpaceLayout layout ) : PaintableSpace(
 		return brush;
 	}
 
-	static Color SpaceColor( Space space )
+	static Color SpaceColor( SpaceSpec space )
 		=> space.IsWetland ? Color.LightBlue
 		: space.IsSand ? Color.PaleGoldenrod
 		: space.IsMountain ? Color.Gray
@@ -58,5 +58,5 @@ class PaintableMultiSpace( MultiSpace ms, SpaceLayout layout ) : PaintableSpace(
 
 	#endregion Multi-Space drawing
 
-	readonly MultiSpace _ms = ms;
+	readonly MultiSpaceSpec _ms = ms;
 }

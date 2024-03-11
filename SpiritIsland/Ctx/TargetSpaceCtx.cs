@@ -1,14 +1,14 @@
 ﻿namespace SpiritIsland;
 
-public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
+public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	#region private fields
 	InvaderBinding _invadersRO;
 	BoundPresence_ForSpace _presence;
-	SpaceState _tokens;
+	Space _space;
 	#endregion
 
-	public Space Space { get; } = target ?? throw new ArgumentNullException( nameof( target ) );
+	public SpaceSpec SpaceSpec { get; } = target ?? throw new ArgumentNullException( nameof( target ) );
 
 	#region constructors
 
@@ -25,13 +25,14 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 	public Task<T> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
 		=> Self.SelectAsync<T>( originalDecision );
 
-	public TargetSpaceCtx Target( Space space ) => Self.Target( space );
+	public TargetSpaceCtx TargetSpec( SpaceSpec space ) => Self.Target( space ); // !!! OLD - remove
+	public TargetSpaceCtx Target( Space space ) => Self.Target(space.SpaceSpec);
 
 	#endregion
 
 	/// <summary> adds Target to Fear context </summary>
 	public void AddFear( int count ) {
-		Tokens.AddFear( count );
+		Space.AddFear( count );
 	}
 
 
@@ -51,26 +52,26 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 	}
 
 
-	public bool MatchesRavageCard => GameState.Current.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Tokens));
-	public bool MatchesBuildCard => GameState.Current.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Tokens));
+	public bool MatchesRavageCard => GameState.Current.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Space));
+	public bool MatchesBuildCard => GameState.Current.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Space));
 
-	public SpaceState Tokens => _tokens ??= Space.ScopeTokens;
+	public Space Space => _space ??= SpaceSpec.ScopeSpace;
 
 	#region Token Shortcuts
-	public void Defend(int defend) => Tokens.Defend.Add(defend);
-	public void Isolate() => Tokens.Isolate();
+	public void Defend(int defend) => Space.Defend.Add(defend);
+	public void Isolate() => Space.Isolate();
 
-	public BeastBinding Beasts              => Tokens.Beasts;
-	public TokenBinding Disease             => Tokens.Disease;
-	public TokenBinding Wilds               => Tokens.Wilds;
-	public TokenBinding Vitality            => Tokens.Vitality;
-	public TokenBinding Badlands			=> Tokens.Badlands;
-	public BlightTokenBinding Blight        => Tokens.Blight;
-	public DahanBinding Dahan    => Tokens.Dahan;
+	public BeastBinding Beasts              => Space.Beasts;
+	public TokenBinding Disease             => Space.Disease;
+	public TokenBinding Wilds               => Space.Wilds;
+	public TokenBinding Vitality            => Space.Vitality;
+	public TokenBinding Badlands			=> Space.Badlands;
+	public BlightTokenBinding Blight        => Space.Blight;
+	public DahanBinding Dahan    => Space.Dahan;
 	public Task AddDefault( HumanTokenClass tokenClass, int count, AddReason addReason = AddReason.Added )
-		=> Tokens.AddDefaultAsync( tokenClass, count, addReason );
+		=> Space.AddDefaultAsync( tokenClass, count, addReason );
 	public Task Remove( IToken token, int count, RemoveReason reason = RemoveReason.Removed )
-		=> Tokens.RemoveAsync( token, count, reason );
+		=> Space.RemoveAsync( token, count, reason );
 
 	#endregion
 
@@ -85,7 +86,7 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 				.AddGroup(max,tokenClass),
 			new DestinationSelector( Range( targetCriteria ) )
 				.Config( Distribute.ToASingleLand )
-				.Track( to => destination = to.Space )
+				.Track( to => destination = to )
 		).DoUpToN();
 
 		return destination;
@@ -95,7 +96,7 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 
 	public Task PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, Human.Dahan );
 
-	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
+	public Task<SpaceSpec[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
 
 	/// <returns>Spaces pushed too.</returns>
 	public async Task PushUpTo( int countToPush, params ITokenClass[] groups ) {
@@ -104,16 +105,16 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 			.PushUpToN(Self);
 	}
 
-	public async Task<Space[]> Push( int countToPush, params ITokenClass[] groups ) {
-		List<Space> destinations = [];
+	public async Task<SpaceSpec[]> Push( int countToPush, params ITokenClass[] groups ) {
+		List<SpaceSpec> destinations = [];
 		await SourceSelector
 			.AddGroup( countToPush, groups )
-			.ConfigDestination( d=>d.Track( to => destinations.Add(to.Space) ) )
+			.ConfigDestination( d=>d.Track( to => destinations.Add(to.SpaceSpec) ) )
 			.PushN( Self );
 		return destinations.Distinct().ToArray();
 	}
 
-	public SourceSelector SourceSelector => Tokens.SourceSelector;
+	public SourceSelector SourceSelector => Space.SourceSelector;
 
 	#endregion Push
 
@@ -132,20 +133,20 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 	public Task Gather( int countToGather, params ITokenClass[] groups )
 		=> Gatherer.AddGroup(countToGather,groups).DoN();
 
-	public TokenMover Gatherer => Tokens.Gather( Self );
+	public TokenMover Gatherer => Space.Gather( Self );
 
 	#endregion Gather
 
 	/// <summary> Use this for Power-Pushing, since Powers can push invaders into the ocean. </summary>
-	public IEnumerable<SpaceState> Adjacent => Tokens.Adjacent;
-	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(adj=>Target(adj.Space)); // !!! ??? should we really spin up TargetSpaceCtx for each of these?
+	public IEnumerable<Space> Adjacent => Space.Adjacent;
+	public IEnumerable<TargetSpaceCtx> AdjacentCtxs => Adjacent.Select(adj=>Target(adj)); // !!! ??? should we really spin up TargetSpaceCtx for each of these?
 
-	public IEnumerable<SpaceState> Range( int range ) => Range( new TargetCriteria( range ) );
+	public IEnumerable<Space> Range( int range ) => Range( new TargetCriteria( range ) );
 
 	/// <summary> Calculate Range using Power Range Calculator/Strategy. </summary>
-	public IEnumerable<SpaceState> Range( TargetCriteria targetCriteria ) 
+	public IEnumerable<Space> Range( TargetCriteria targetCriteria ) 
 		=> Self.PowerRangeCalc.GetSpaceOptions(
-			new SpaceState[] { Tokens },
+			new Space[] { Space },
 			targetCriteria
 		); // don't need to check .IsInPlay because TargetCriteria does that.
 
@@ -155,10 +156,10 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 	TerrainMapper _terrainMapper;
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
-	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
-	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Tokens, terrain);
-	public bool IsCoastal => TerrainMapper.IsCoastal( Tokens );
-	public bool IsInland => TerrainMapper.IsInland( Tokens );
+	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
+	public bool Is(Terrain terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
+	public bool IsCoastal => TerrainMapper.IsCoastal( Space );
+	public bool IsInland => TerrainMapper.IsInland( Space );
 	#endregion
 
 	public bool HasBlight => Blight.Any;
@@ -170,12 +171,12 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 
 	public int BlightOnSpace => Blight.Count;
 
-	public bool HasInvaders => Tokens.HasInvaders();
+	public bool HasInvaders => Space.HasInvaders();
 
-	public void ModifyRavage( Action<RavageBehavior> action ) => action( Tokens.RavageBehavior );
+	public void ModifyRavage( Action<RavageBehavior> action ) => action( Space.RavageBehavior );
 
 	// The current targets power
-	public InvaderBinding Invaders => _invadersRO ??= Tokens.Invaders;
+	public InvaderBinding Invaders => _invadersRO ??= Space.Invaders;
 
 	// Damage invaders in the current target space
 	// This called both from powers and from Fear
@@ -183,8 +184,8 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 		if(originalDamage == 0) return;
 
 		// Calculate Total Damage available
-		CombinedDamage combinedDamage = Tokens.CombinedDamageFor_Invaders( originalDamage );
-		int damageApplied = await Tokens.UserSelected_DamageInvadersAsync( Self, combinedDamage.Available, invaderTypesToDamage );
+		CombinedDamage combinedDamage = Space.CombinedDamageFor_Invaders( originalDamage );
+		int damageApplied = await Space.UserSelected_DamageInvadersAsync( Self, combinedDamage.Available, invaderTypesToDamage );
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -193,11 +194,11 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 		if(originalDamage == 0) return; // when no strifed invaders
 
 		HumanToken damageSourceToExclude = excludeSource ? damageSource : null;
-		HumanToken[] invadersToDamage() => Tokens.InvaderTokens().Where( t => t != damageSourceToExclude ).ToArray();
+		HumanToken[] invadersToDamage() => Space.InvaderTokens().Where( t => t != damageSourceToExclude ).ToArray();
 
 		// Calculate Total Damage available
-		CombinedDamage combinedDamage = Tokens.CombinedDamageFor_Invaders( originalDamage );
-		int damageApplied = await Tokens.UserSelected_ApplyDamageToSpecificTokenAsync( Self, combinedDamage.Available, damageSource, invadersToDamage );
+		CombinedDamage combinedDamage = Space.CombinedDamageFor_Invaders( originalDamage );
+		int damageApplied = await Space.UserSelected_ApplyDamageToSpecificTokenAsync( Self, combinedDamage.Available, damageSource, invadersToDamage );
 		combinedDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -205,8 +206,8 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 	public async Task DamageEachInvader( int individualDamage, ITokenClass[] tokenClasses ) {
 		await Invaders.ApplyDamageToEach( individualDamage, tokenClasses );
 
-		var bonusDamage = Tokens.CombinedDamageFor_Invaders();
-		int damageApplied = await Tokens.UserSelected_DamageInvadersAsync( Self, bonusDamage.Available, tokenClasses );
+		var bonusDamage = Space.CombinedDamageFor_Invaders();
+		int damageApplied = await Space.UserSelected_DamageInvadersAsync( Self, bonusDamage.Available, tokenClasses );
 		bonusDamage.TrackDamageDone( damageApplied );
 	}
 
@@ -217,15 +218,15 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 
 		// Find All Invaders
 		var invaders = new List<IToken>();
-		foreach(HumanToken token in Tokens.InvaderTokens())
-			for(int i = 0; i < Tokens[token]; ++i)
+		foreach(HumanToken token in Space.InvaderTokens())
+			for(int i = 0; i < Space[token]; ++i)
 				invaders.Add( token );
 
 		// Limit # to select
 		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.OnScopeTokens1(Space) ) );
+			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.OnScopeTokens1(SpaceSpec) ) );
 			if(st == null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
@@ -234,15 +235,15 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 				damagedInvaders.Add( damaged );
 		}
 
-		var combined = Tokens.CombinedDamageFor_Invaders();
-		int damageDone = await Tokens.UserSelected_ApplyDamageToSpecificTokensAsync( Self, damagedInvaders, combined.Available );
+		var combined = Space.CombinedDamageFor_Invaders();
+		int damageDone = await Space.UserSelected_ApplyDamageToSpecificTokensAsync( Self, damagedInvaders, combined.Available );
 		combined.TrackDamageDone(damageDone); 
 	}
 
 	public async Task DamageDahan( int damage ) {
 		if(damage == 0) return;
 
-		var totalDamage = Tokens.CombinedDamageFor_Dahan( damage );
+		var totalDamage = Space.CombinedDamageFor_Dahan( damage );
 		int applied = await Dahan.ApplyDamage_Inefficiently( totalDamage.Available );
 		totalDamage.TrackDamageDone( applied );
 	}
@@ -251,7 +252,7 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 	public async Task Apply1DamageToEachDahan() {
 
 		await Dahan.Apply1DamageToAll();
-		var moreDamage = Tokens.CombinedDamageFor_Dahan();
+		var moreDamage = Space.CombinedDamageFor_Dahan();
 		int applied = await Dahan.ApplyDamage_Inefficiently( moreDamage.Available );
 		moreDamage.TrackDamageDone( applied );
 	}
@@ -273,30 +274,30 @@ public class TargetSpaceCtx( Spirit self, Space target ) : IHaveASpirit {
 
 	// ! See base class for more Presence options
 
-	public bool IsSelfSacredSite => Self.Presence.IsSacredSite(Tokens);
+	public bool IsSelfSacredSite => Self.Presence.IsSacredSite(Space);
 
-	public int PresenceCount => Self.Presence.CountOn( Tokens );
+	public int PresenceCount => Self.Presence.CountOn( Space );
 
 	/// <summary> Spirit has presence on this space. </summary>
-	public bool IsPresent => Self.Presence.IsOn( Tokens );
+	public bool IsPresent => Self.Presence.IsOn( Space );
 
 	public async Task PlacePresenceHere() {
 		var from = await Self.SelectSourcePresence();
-		await from.MoveToAsync(Tokens);
+		await from.MoveToAsync(Space);
 	}
 
 	#endregion
 
-	/// <remarks> Simnple Helper - has access to: Spirit, SpaceState/Adjacent, Target() </remarks>
+	/// <remarks> Simnple Helper - has access to: Spirit, Space/Adjacent, Target() </remarks>
 	public async Task<TargetSpaceCtx> SelectAdjacentLandAsync( string prompt ) {
-		var space = await SelectAsync( new A.Space( prompt, Tokens.Adjacent, Present.Always ) );
+		var space = await SelectAsync( new A.SpaceDecision( prompt, Space.Adjacent, Present.Always ) );
 		return space != null ? Target( space )
 			: null;
 	}
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>
 	public ITokenClass[] AllPresenceTokens => GameState.Current.Spirits
-		.SelectMany(s=>s.Presence.TokensDeployedOn( Tokens ) )
+		.SelectMany(s=>s.Presence.TokensDeployedOn( Space ) )
 		.Select(x=>x.Class)
 		.ToArray();
 }

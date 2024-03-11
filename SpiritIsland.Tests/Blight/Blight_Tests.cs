@@ -16,7 +16,7 @@ public class Blight_Tests {
 		// Given:
 		gs.BlightCard.ShouldNotBeNull();
 		gs.BlightCard = new InvadersFindTheLandToTheirLiking();
-		BlightCard.Space.ScopeTokens.Init(Token.Blight,3);
+		BlightCard.Space.ScopeSpace.Init(Token.Blight,3);
 		gs.BlightCard.CardFlipped.ShouldBeFalse();
 
 		// When: Taking Blight from Card
@@ -40,7 +40,7 @@ public class Blight_Tests {
 		// Given: Blight Card will be "Promising Farmlands" (this card is easy to test...)
 		gs.BlightCard = new PromisingFarmlands();
 		//   And: We are on our last blight
-		BlightCard.Space.ScopeTokens.Init(Token.Blight,1);
+		BlightCard.Space.ScopeSpace.Init(Token.Blight,1);
 
 		//   And: Next ravage is Coastal
 		gs.InvaderDeck.Ravage.Cards.Add( InvaderCard.Stage2Costal() );
@@ -60,8 +60,8 @@ public class Blight_Tests {
 		}).ShouldComplete("Invader Phase");
 
 		// And: we have blight on both 1 & 2
-		board[1].ScopeTokens.Blight.Count.ShouldBe(1);
-		board[2].ScopeTokens.Blight.Count.ShouldBe(1);
+		board[1].ScopeSpace.Blight.Count.ShouldBe(1);
+		board[2].ScopeSpace.Blight.Count.ShouldBe(1);
 	}
 
 }

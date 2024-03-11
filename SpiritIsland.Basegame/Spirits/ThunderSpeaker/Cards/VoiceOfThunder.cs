@@ -8,7 +8,7 @@ public class VoiceOfThunder {
 
 		return ctx.SelectActionOption(
 			new SpaceAction("push up to 4 dahan", ctx => ctx.PushUpToNDahan( 4 ) ).OnlyExecuteIf( x=>x.Dahan.Any ),
-			new SpaceAction("2 fear", ctx => ctx.AddFear(2) ).OnlyExecuteIf( x=>x.Tokens.HasInvaders() )
+			new SpaceAction("2 fear", ctx => ctx.AddFear(2) ).OnlyExecuteIf( x=>x.Space.HasInvaders() )
 		);
 
 	}

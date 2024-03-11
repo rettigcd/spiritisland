@@ -43,7 +43,7 @@ public class PowerCardDeck_Tests {
 		var memento = deck.Memento;
 
 		//   And: draw first 4 cards
-		string originalFirstFourCards = deck.Flip(4).Select(c=>c.Name).Join(",");
+		string originalFirstFourCards = deck.Flip(4).Select(c=>c.Title).Join(",");
 		//   And: draw some more we don't care about
 		deck.Flip(4);
 
@@ -51,7 +51,7 @@ public class PowerCardDeck_Tests {
 		deck.Memento = memento;
 
 		//  Then: first 4 cards should be the same
-		deck.Flip(4).Select(c=>c.Name).Join(",").ShouldBe(originalFirstFourCards);
+		deck.Flip(4).Select(c=>c.Title).Join(",").ShouldBe(originalFirstFourCards);
 	}
 
 	#region Target-Space
@@ -202,7 +202,7 @@ public class PowerCardDeck_Tests {
 		cards.AddRange( refObject.ScanForMinors() );
 
 		foreach(var card in cards)
-			card.Name.ShouldNotBeNullOrEmpty();
+			card.Title.ShouldNotBeNullOrEmpty();
 
 	}
 

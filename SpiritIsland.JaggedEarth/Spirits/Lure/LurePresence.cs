@@ -14,6 +14,6 @@ public class LurePresence( Spirit spirit )
 	// could we do away with .IsInPlay?
 	// And would that be better than what we currently have
 	// AND - shouldn't this be on the Token and not on SpiritPresence?
-	public override bool CanBePlacedOn( SpaceState space ) => ActionScope.Current.TerrainMapper.IsInland( space );
+	public override bool CanBePlacedOn( Space space ) => ActionScope.Current.TerrainMapper.IsInland( space );
 
 }

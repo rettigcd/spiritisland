@@ -22,7 +22,7 @@ public class VanishSoftlyAwayForgottonByAll {
 		// if you have 3 moon, 3 air:
 		if( await ctx.YouHave("3 moon,3 air" )) {
 			// in any 2 lands with 4 or more invaders: remove 1 invader
-			var options = ActionScope.Current.Tokens.Where( s => 4 <= s.InvaderTotal() ).ToArray();
+			var options = ActionScope.Current.Spaces.Where( s => 4 <= s.InvaderTotal() ).ToArray();
 
 			await Cmd.RemoveInvaders(1)
 				.From().SpiritPickedLand().Which( Has.AtLeastN( 4, Human.Invader ) )
@@ -31,7 +31,7 @@ public class VanishSoftlyAwayForgottonByAll {
 		}
 	}
 
-	static HumanToken[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Tokens.InvaderTokens().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
+	static HumanToken[] DamagedInvaders( TargetSpaceCtx ctx ) => ctx.Space.InvaderTokens().Where(t => t.RemainingHealth < t.FullHealth).ToArray();
 
 
 	static SpaceAction RemoveInvader => new SpaceAction(
@@ -47,7 +47,7 @@ public class VanishSoftlyAwayForgottonByAll {
 	static SpaceAction RemoveAllDamagedInvaders => new SpaceAction(
 		"Remove all damaged invaders",
 		async ctx => { 
-			var tokens = ctx.Tokens;
+			var tokens = ctx.Space;
 			foreach(var t in DamagedInvaders( ctx ))
 				await ctx.Remove( t, tokens[t] );
 		}

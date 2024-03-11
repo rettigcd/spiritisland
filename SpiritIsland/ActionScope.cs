@@ -134,19 +134,19 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	
 	/// <summary> Called from Space.Tokens to get Tokens. </summary>
-	/// <remarks> Provides hook for spirits to modify the SpaceState object used for their actions.</remarks>
-	public SpaceState AccessTokens(Space space) => Upgrader( GameState.Tokens[space] );
+	/// <remarks> Provides hook for spirits to modify the Space object used for their actions.</remarks>
+	public Space AccessTokens(SpaceSpec space) => Upgrader( GameState.Tokens[space] );
 
 	/// <summary> Non-stasis + InPlay </summary>
-	public IEnumerable<SpaceState> Tokens => GameState.Spaces.Select(AccessTokens);
+	public IEnumerable<Space> Spaces => GameState.SpaceSpecs.Select(AccessTokens);
 	/// <summary> All Non-stasis (even not-in-play) </summary>
-	public IEnumerable<SpaceState> Tokens_Existing => GameState.Spaces_Existing.Select(AccessTokens);
-	public IEnumerable<SpaceState> Tokens_Unfiltered => GameState.Spaces_Unfiltered.Select(AccessTokens);
+	public IEnumerable<Space> Spaces_Existing => GameState.SpaceSpecs_Existing.Select(AccessTokens);
+	public IEnumerable<Space> Spaces_Unfiltered => GameState.SpaceSpecs_Unfiltered.Select(AccessTokens);
 
 
 	#region Anything that gets Configured by Spirit Actions
 
-	public Func<SpaceState, SpaceState> Upgrader {
+	public Func<Space, Space> Upgrader {
 		get { return _upgrader; }
 		set { _upgrader = value; }
 	}
@@ -212,7 +212,7 @@ public sealed class ActionScope : IAsyncDisposable {
 	#endregion
 
 	public override string ToString() {
-		return $"{Id} : {Category} : "+Owner?.Text??"";
+		return $"{Id} : {Category} : "+Owner?.SpiritName??"";
 	}
 
 	public async ValueTask DisposeAsync() {
@@ -242,7 +242,7 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	AsyncEvent<ActionScope> _endOfThisAciton;
 	TerrainMapper _terrainMapper;
-	Func<SpaceState, SpaceState> _upgrader = ss=>ss;
+	Func<Space, Space> _upgrader = ss=>ss;
 	Spirit _owner;
 	#endregion
 }

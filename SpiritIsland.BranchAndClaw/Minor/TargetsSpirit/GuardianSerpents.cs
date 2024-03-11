@@ -8,7 +8,7 @@ public class GuardianSerpents {
 
 		// Add 1 beast in one of target spirits lands
 		var space = await ctx.Other.SelectLandWithPresence("Select land to add beast (+defend 4 for SS)");
-		var tokens = space.ScopeTokens;
+		var tokens = space;
 		await tokens.Beasts.AddAsync(1);
 
 		// if target spirit has a SS in that land, defend 4 there

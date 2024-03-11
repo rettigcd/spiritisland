@@ -14,15 +14,15 @@ class ScotlandExploreEngine : ExploreEngine {
 		_specialExplore = [];// done with initial explore. the rest are special
 	}
 
-	protected override async Task AddToken( SpaceState tokens ) {
-		if( !tokens.Space.IsCoastal || _specialExplore == null)
-			await base.AddToken( tokens ); // do regular initial
-		else if(tokens.Space.Boards.All(board => _specialExplore[board] < 2) ) { // max of 2
+	protected override async Task AddToken( Space space ) {
+		if( !space.SpaceSpec.IsCoastal || _specialExplore == null)
+			await base.AddToken( space ); // do regular initial
+		else if(space.SpaceSpec.Boards.All(board => _specialExplore[board] < 2) ) { // max of 2
 			// Do special explore
-			await tokens.AddDefaultAsync( Human.Town, 1, AddReason.Explore );
-			foreach(var b in tokens.Space.Boards)
+			await space.AddDefaultAsync( Human.Town, 1, AddReason.Explore );
+			foreach(var b in space.SpaceSpec.Boards)
 				++_specialExplore[b];
-			ActionScope.Current.Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+tokens.Space.Text) );
+			ActionScope.Current.Log( new SpiritIsland.Log.Debug("Trading Port: Adding town to "+space.Label) );
 		}
 
 	}

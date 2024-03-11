@@ -6,10 +6,10 @@
 public class DamagePool( int _remaining ) {
 
 	#region static factories
-	static public DamagePool BadlandDamage( SpaceState ss, string groupName ) {
+	static public DamagePool BadlandDamage( Space ss, string groupName ) {
 		// Note - this locks in Badland Count the 1st time we do damage.  Adding badlands after that has no effect.
 		var actionScope = ActionScope.Current;
-		string key = "BadlandDamage_" + ss.Space.Label +"_" + groupName;
+		string key = "BadlandDamage_" + ss.SpaceSpec.Label +"_" + groupName;
 		if(actionScope.ContainsKey( key )) return (DamagePool)actionScope[key];
 		var pool = new DamagePool( ss.Badlands.Count );
 		actionScope[key] = pool;

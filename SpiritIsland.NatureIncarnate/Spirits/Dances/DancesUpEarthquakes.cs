@@ -120,7 +120,7 @@ public class DancesUpEarthquakes : Spirit {
 
 	}
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[]{
 		new SpecialRule("Begin a Dance of Decades", "Whenever you would play a Power Card, you may instead pay any amountof Energy onto the card to make it an impending card."),
@@ -146,10 +146,10 @@ public class DancesUpEarthquakes : Spirit {
 
 		// Add energy
 		foreach(PowerCard card in Impending)  // don't use CountDictionary keys because they will be empty for count=0
-			ImpendingEnergy[card.Name] += ImpendingEnergyPerRound;
+			ImpendingEnergy[card.Title] += ImpendingEnergyPerRound;
 
 		// remove any mature cards
-		var mature = Impending.Where( c => c.Cost <= ImpendingEnergy[c.Name] ).ToArray();
+		var mature = Impending.Where( c => c.Cost <= ImpendingEnergy[c.Title] ).ToArray();
 		foreach(PowerCard card in mature)
 			MoveMatureCard( card );
 	}
@@ -162,7 +162,7 @@ public class DancesUpEarthquakes : Spirit {
 	}
 
 	void MoveMatureCard( PowerCard card ) {
-		ImpendingEnergy[card.Name] = 0;
+		ImpendingEnergy[card.Title] = 0;
 		Impending.Remove( card );
 		InPlay.Add( card );
 		AddElements( card );
@@ -190,9 +190,9 @@ public class DancesUpEarthquakes : Spirit {
 		Impending.Add( card );
 
 		// add energy to card
-		int energyToAdd = await this.SelectNumber( $"Add pending energy to {card.Name}.", Math.Min(card.Cost-1, Energy), 0 );
+		int energyToAdd = await this.SelectNumber( $"Add pending energy to {card.Title}.", Math.Min(card.Cost-1, Energy), 0 );
 		Energy -= energyToAdd;
-		ImpendingEnergy[card.Name] += energyToAdd;
+		ImpendingEnergy[card.Title] += energyToAdd;
 
 		return true;
 	}

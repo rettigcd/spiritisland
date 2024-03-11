@@ -3,21 +3,21 @@
 public class BuildEngine {
 
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
-		ActionScope.Current.Log( new Log.InvaderActionEntry( "Building:" + card.Text ) );
+		ActionScope.Current.Log( new Log.InvaderActionEntry( "Building:" + card.Code ) );
 		AddBuildTokensMatchingCard( card, gameState );
 		await Build( gameState );
 	}
 
-	static protected SpaceState[] GetSpacesMatchingCard( InvaderCard card, GameState _ )
-		=> ActionScope.Current.Tokens.Where( card.MatchesCard ).ToArray();
+	static protected Space[] GetSpacesMatchingCard( InvaderCard card, GameState _ )
+		=> ActionScope.Current.Spaces.Where( card.MatchesCard ).ToArray();
 
 	void AddBuildTokensMatchingCard( InvaderCard card, GameState gameState ) {
 		var cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
 		var spacesMatchingCardCriteria = cardDependentBuildSpaces
 			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it
 			.ToArray();
-		foreach(SpaceState tokens in spacesMatchingCardCriteria)
-			tokens.Adjust( ModToken.DoBuild, tokens.Space.InvaderActionCount );
+		foreach(Space space in spacesMatchingCardCriteria)
+			space.Adjust( ModToken.DoBuild, space.SpaceSpec.InvaderActionCount );
 
 		// log any spaces that look like they should get built on but didn't
 		var noBuildsSpaceNames = cardDependentBuildSpaces   // Space that should be build on
@@ -33,38 +33,38 @@ public class BuildEngine {
 
 		// Scan for all Build Tokens - both Card-Build-Spaces plus any pre-existing DoBuilds
 		// ** May contain more than just Normal Build, due to rule/power that added extra ones.
-		var matchingSpacesWithBuildTokens = ActionScope.Current.Tokens
+		var matchingSpacesWithBuildTokens = ActionScope.Current.Spaces
 			.Where( tokens => 0 < tokens[ModToken.DoBuild] )
-			.OrderBy( tokens => tokens.Space.Label )
+			.OrderBy( tokens => tokens.SpaceSpec.Label )
 			.ToArray();
 
 		// Do Builds on each space
-		foreach(var spaceState in matchingSpacesWithBuildTokens)
-			await DoAllBuildsInSpace( gameState, spaceState );
+		foreach(var space in matchingSpacesWithBuildTokens)
+			await DoAllBuildsInSpace( gameState, space );
 
 	}
 
-	protected virtual async Task DoAllBuildsInSpace( GameState gameState, SpaceState spaceState ) {
-		int buildCounts = PullBuildTokens( spaceState );
+	protected virtual async Task DoAllBuildsInSpace( GameState gameState, Space space ) {
+		int buildCounts = PullBuildTokens( space );
 		while(0 < buildCounts--)
-			await Do1Build( gameState, spaceState );
+			await Do1Build( gameState, space );
 	}
 
-	static int PullBuildTokens( SpaceState tokens ) {
-		int buildCounts = tokens[ModToken.DoBuild];
-		tokens.Init( ModToken.DoBuild, 0 );
+	static int PullBuildTokens( Space space ) {
+		int buildCounts = space[ModToken.DoBuild];
+		space.Init( ModToken.DoBuild, 0 );
 		return buildCounts;
 	}
 
-	public virtual async Task Do1Build( GameState _, SpaceState spaceState ){
-		var builtToken = await new BuildOnceOnSpace_Default().ActAsync( spaceState );
+	public virtual async Task Do1Build( GameState _, Space space ){
+		var builtToken = await new BuildOnceOnSpace_Default().ActAsync( space );
 		if(builtToken is not null && BuildComplete is not null)
-			await BuildComplete(spaceState,builtToken);
+			await BuildComplete(space,builtToken);
 	}
 
-	public event Func<SpaceState,HumanToken,Task> BuildComplete;
+	public event Func<Space,HumanToken,Task> BuildComplete;
 
-	public virtual bool ShouldBuildOnSpace(SpaceState spaceState ) => spaceState.HasInvaders();
+	public virtual bool ShouldBuildOnSpace(Space space ) => space.HasInvaders();
 
 	public static readonly ActionScopeValue<HumanTokenClass> InvaderToAdd = new( "InvaderToBuild", (HumanTokenClass)null );
 

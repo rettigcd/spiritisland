@@ -26,13 +26,13 @@ class PaintableSpace {
 	/// <summary>
 	/// Must be set before PaintAbove is called.
 	/// </summary>
-	public SpaceState Tokens { get; set; }
+	public Space Space { get; set; }
 
 	public Dictionary<SpaceToken, Rectangle> Locations = [];
 
 	#region constructor
 
-	public PaintableSpace( Space space, SpaceLayout layout	) {
+	public PaintableSpace( SpaceSpec space, SpaceLayout layout	) {
 		_space = space;
 		_layout = layout;
 		_insidePoints = new ManageInternalPoints( _layout );
@@ -51,12 +51,12 @@ class PaintableSpace {
 
 		// Draw Label
 		PointF nameLocation = Mapper.Map( _insidePoints.NameLocation ).ToPointF();
-		graphics.DrawString( _space.Text, SystemFonts.MessageBoxFont, SpaceLabelBrush, nameLocation );
+		graphics.DrawString( _space.Label, SystemFonts.MessageBoxFont, SpaceLabelBrush, nameLocation );
 	}
 
 	public void PaintAbove( Graphics graphics ) {
 		// Init the Inside points and Locations
-		_insidePoints.Init( Tokens );
+		_insidePoints.Init( Space );
 		Locations.Clear();
 		// Do Paint
 		DoPaintAbove( graphics );
@@ -65,7 +65,7 @@ class PaintableSpace {
 	#region protected / private methods
 
 	protected virtual void DoPaintAbove( Graphics graphics ) {
-		var orderedTokens = Tokens.Keys.OfType<IToken>()
+		var orderedTokens = Space.Keys.OfType<IToken>()
 			.OrderBy( OrderTokens );
 
 		foreach(var token in orderedTokens)
@@ -120,7 +120,7 @@ class PaintableSpace {
 		}
 
 		// Sacred Site
-		if(token is SpiritPresenceToken presenceToken && presenceToken.Self.Presence.IsSacredSite( Tokens )) {
+		if(token is SpiritPresenceToken presenceToken && presenceToken.Self.Presence.IsSacredSite( Space )) {
 			const int inflationSize = 10;
 			rect.Inflate( inflationSize, inflationSize );
 			using var brush = new SolidBrush( Color.FromArgb( 100, SacredSiteColor ) );
@@ -135,11 +135,11 @@ class PaintableSpace {
 		PaintCount( graphics, token, rect );
 
 		// Record Location
-		Locations[token.On( Tokens )] = rect;
+		Locations[token.On( Space )] = rect;
 	}
 
 	void PaintCount( Graphics graphics, IToken token, Rectangle rect ) {
-		int count = Tokens[token];
+		int count = Space[token];
 		if(1 < count)
 			new SubScriptRect( "x" + count ).Paint( graphics, rect );
 	}
@@ -151,7 +151,7 @@ class PaintableSpace {
 	PointMapper _mapper;
 	int _iconWidth;
 
-	readonly Space _space;
+	readonly SpaceSpec _space;
 	readonly SpaceLayout _layout;
 	readonly public ManageInternalPoints _insidePoints;
 

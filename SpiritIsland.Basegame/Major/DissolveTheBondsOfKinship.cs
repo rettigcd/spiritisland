@@ -28,7 +28,7 @@ public class DissolveTheBondsOfKinship {
 			.PushN(ctx.Self);
 
 		static int GetAttackDamageFrom( TargetSpaceCtx ctx, HumanTokenClass cc ) {
-			return ctx.Tokens.HumanOfTag( cc ).Sum( t => ctx.Tokens[t] * t.Attack );
+			return ctx.Space.HumanOfTag( cc ).Sum( t => ctx.Space[t] * t.Attack );
 		}
 
 		static async Task ExplorersAndCityTownsDamageEachOther( TargetSpaceCtx ctx ) {
@@ -40,9 +40,9 @@ public class DissolveTheBondsOfKinship {
 	}
 
 	static async Task ReplaceDahanWithExplorer( TargetSpaceCtx ctx ) {
-		var oldDahan = ctx.Tokens.HumanOfTag( Human.Dahan )
+		var oldDahan = ctx.Space.HumanOfTag( Human.Dahan )
 			.OrderBy( x => x.RemainingHealth )
 			.FirstOrDefault();
-		await ctx.Tokens.ReplaceHumanAsync( oldDahan, Human.Explorer );
+		await ctx.Space.ReplaceHumanAsync( oldDahan, Human.Explorer );
 	}
 }

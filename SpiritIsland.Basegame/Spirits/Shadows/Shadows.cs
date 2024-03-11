@@ -3,7 +3,7 @@
 public class Shadows : Spirit {
 
 	public const string Name = "Shadows Flicker Like Flame";
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("Shadows of the Dahan", "Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range.") };
 
@@ -36,14 +36,14 @@ public class Shadows : Spirit {
 	) {
 		var space = await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
-		if( 0<Energy && !base.GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).Any( s => s.Space == space ) ) 
+		if( 0<Energy && !base.GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).Any( s => s == space ) ) 
 			--Energy;
 	
 		return space;
 	}
 
 
-	protected override IEnumerable<SpaceState> GetPowerTargetOptions(
+	protected override IEnumerable<Space> GetPowerTargetOptions(
 		GameState gameState,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
@@ -51,7 +51,7 @@ public class Shadows : Spirit {
 		var normalSpaces = base.GetPowerTargetOptions( gameState, sourceCriteria, targetCriteria );
 		return Energy <= 0 
 			? normalSpaces
-			: normalSpaces.Union(ActionScope.Current.Tokens.Where( s => s.Dahan.Any ) );
+			: normalSpaces.Union(ActionScope.Current.Spaces.Where( s => s.Dahan.Any ) );
 	}
 
 
@@ -59,8 +59,8 @@ public class Shadows : Spirit {
 
 		var higestJungle = board.Spaces.Last( s=>s.IsJungle );
 
-		higestJungle.ScopeTokens.Setup(Presence.Token,2 );
-		board[5].ScopeTokens.Setup(Presence.Token, 1);
+		higestJungle.ScopeSpace.Setup(Presence.Token,2 );
+		board[5].ScopeSpace.Setup(Presence.Token, 1);
 	}
 
 }

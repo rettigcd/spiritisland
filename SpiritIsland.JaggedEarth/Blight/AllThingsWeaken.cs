@@ -27,7 +27,7 @@ public class AllThingsWeaken : BlightCard {
 			}
 
 			// replace/update existing tokens
-			foreach(var ss in ActionScope.Current.Tokens) {
+			foreach(var ss in ActionScope.Current.Spaces) {
 				var humanTokenTypes = ss.AllHumanTokens()
 					.Where(x=>x.FullHealth > 1)
 					.OrderBy(x=>x.FullHealth)
@@ -43,7 +43,7 @@ public class AllThingsWeaken : BlightCard {
 		gs => { gs.AddIslandMod( new LandDamageBoost() ); }
 	);
 	class LandDamageBoost : BaseModEntity, IModifyLandDamage {
-		void IModifyLandDamage.ModifyLandDamage( SpaceState spaceState, ref int damage ){
+		void IModifyLandDamage.ModifyLandDamage( Space _, ref int damage ){
 			if(damage==1) damage = 2; // "If 1, push it up over the threshold
 		}
 	}
@@ -56,7 +56,7 @@ public class AllThingsWeaken : BlightCard {
 }
 
 class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
-	public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if(args.Added != Token.Blight) return;
 
 		// Destroy all presence in this land.
@@ -65,20 +65,20 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 			.ToArray();
 		foreach(IToken t in toDestroy)
 			await to.Destroy( t, to[t] );
-		ActionScope.Current.LogDebug( "All Things Weaken - destroyed all Presence/Beast on " + ((Space)args.To).Text );
+		ActionScope.Current.LogDebug( "All Things Weaken - destroyed all Presence/Beast on " + args.To.Text );
 
 		// Destroy 1 presence in adjacent land
 		var options = to.Adjacent_Existing
 			.SelectMany(
-				adj => adj.OfTag(TokenCategory.Presence).OnScopeTokens1(adj.Space)
+				adj => adj.OfTag(TokenCategory.Presence).OnScopeTokens1(adj.SpaceSpec)
 			)
 			.ToArray();
 
-		var decision = new A.SpaceToken( "Presence to destroy", options, Present.Always );
-		var token = await to.Space.Boards[0].FindSpirit().SelectAsync(decision);
+		var decision = new A.SpaceTokenDecision( "Presence to destroy", options, Present.Always );
+		var token = await to.SpaceSpec.Boards[0].FindSpirit().SelectAsync(decision);
 
 		if(token == null) return;
-		await token.Space.ScopeTokens.Destroy(token.Token, 1);
+		await token.Space.Destroy(token.Token, 1);
 		ActionScope.Current.LogDebug( "All Things Weaken - destroyed neighbor presence " + token );
 
 	}

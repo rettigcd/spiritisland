@@ -9,9 +9,9 @@ public class PlayCardForCost( Present present = Present.Always ) : IActionFactor
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 		=> speed == Phase.Fast || speed == Phase.Slow;
 
-	public string Name => "Play Card for Cost";
+	string IOption.Text => Title;
 
-	public string Text => Name;
+	public string Title => "Play Card for Cost";
 
 	public async Task ActivateAsync( Spirit self ) {
 

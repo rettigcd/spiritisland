@@ -11,9 +11,9 @@ public class RelentlessRepeater( PowerCard powerCard, Space space ) : IActionFac
 	readonly PowerCard _powerCard = powerCard;
 	readonly Space _space = space;
 
-	public string Name => $"Repeat {_powerCard.Name} on {_space.Text} for {_cost} energy.";
+	public string Title => $"Repeat {_powerCard.Title} on {_space.Label} for {_cost} energy.";
 
-	public string Text => Name;
+	public string Text => Title;
 
 	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => _cost <= spirit.Energy && _powerCard.CouldActivateDuring( speed, spirit );
 

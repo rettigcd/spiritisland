@@ -9,9 +9,9 @@ public class ScotlandRavageEngine : RavageEngine {
 	}
 
 	static async Task FuelInwardGrowth( InvaderCard card ) {
-		var spaces = ActionScope.Current.Tokens_Unfiltered
+		var spaces = ActionScope.Current.Spaces_Unfiltered
 			// to each Inland land
-			.Where( ss => !ss.Space.IsOcean && !ss.Space.IsCoastal )
+			.Where( ss => !ss.SpaceSpec.IsOcean && !ss.SpaceSpec.IsCoastal )
 			// that matches a Ravage card
 			.Where( card.MatchesCard )
 			// and is within 1 of town/city

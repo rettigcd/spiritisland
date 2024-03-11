@@ -8,7 +8,7 @@ public class SettleIntoHuntingGrounds_Tests {
 	[Fact]
 	public async Task CanFreezePresence() {
 		var (spirit,board) = Init();
-		SpaceState a5 = board[5].ScopeTokens;
+		Space a5 = board[5].ScopeSpace;
 
 		// Given: Presence on a5 and a6
 		a5.Given_HasTokens("1RSiS");
@@ -21,7 +21,7 @@ public class SettleIntoHuntingGrounds_Tests {
 	public async Task Disables_AllyOfTheDahan() {
 		Spirit spirit = new Thunderspeaker();
 		Board board = Board.BuildBoardA();
-		Space a1 = board[1];
+		SpaceSpec a1 = board[1];
 		GameState gameState = new GameState( spirit, board );
 
 		// Given: presence & Dahan on A1 
@@ -42,10 +42,10 @@ public class SettleIntoHuntingGrounds_Tests {
 		} );
 
 		//  Then: TS is still on A1
-		spirit.Presence.IsOn(a1.ScopeTokens).ShouldBeTrue();
+		spirit.Presence.IsOn(a1.ScopeSpace).ShouldBeTrue();
 
 		//   And: not on A2
-		spirit.Presence.IsOn(board[2].ScopeTokens).ShouldBeFalse();
+		spirit.Presence.IsOn(board[2].ScopeSpace).ShouldBeFalse();
 	}
 
 	[Trait( "SpecialRule", "Mists Shift and Flow" )]
@@ -75,8 +75,8 @@ public class SettleIntoHuntingGrounds_Tests {
 		Spirit spirit = new RiverSurges();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
-		Space a1 = board[1];
-		Space a2 = board[2];
+		SpaceSpec a1 = board[1];
+		SpaceSpec a2 = board[2];
 
 		// Given: spirit on A1 and A2
 		a1.Given_HasTokens("1RSiS");
@@ -91,7 +91,7 @@ public class SettleIntoHuntingGrounds_Tests {
 			u.NextDecision.HasPrompt("Select presence to move.").HasOptions("RSiS on A1").Choose("RSiS on A1");
 		} );
 		// But: spirit is still on A1 (doesn't move)
-		a1.ScopeTokens.Summary.ShouldBe("1RSiS");
+		a1.ScopeSpace.Summary.ShouldBe("1RSiS");
 	}
 
 	[Fact]
@@ -99,7 +99,7 @@ public class SettleIntoHuntingGrounds_Tests {
 		Spirit spirit = new RiverSurges();
 		Board board = Board.BuildBoardA();
 		GameState gameState = new GameState( spirit, board );
-		Space a1 = board[1];
+		SpaceSpec a1 = board[1];
 	
 		// Given: spirit on A1
 		a1.Given_HasTokens( "2RSiS" );
@@ -116,8 +116,8 @@ public class SettleIntoHuntingGrounds_Tests {
 		} );
 
 		// But: is not move placed
-		spirit.Presence.CountOn(a1.ScopeTokens).ShouldBe(2);
-		spirit.Presence.CountOn(board[5].ScopeTokens).ShouldBe(0);
+		spirit.Presence.CountOn(a1.ScopeSpace).ShouldBe(2);
+		spirit.Presence.CountOn(board[5].ScopeSpace).ShouldBe(0);
 
 
 

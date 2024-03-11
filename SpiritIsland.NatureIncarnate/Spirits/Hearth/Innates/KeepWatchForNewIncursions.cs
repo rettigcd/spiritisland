@@ -20,7 +20,7 @@ public class KeepWatchForNewIncursions {
 
 		// Once this turn, after Invaders are added or moved into target land,
 		// 1 Damage per Dahan in target land, to those added/moved Invaders only
-		ctx.Tokens.Adjust( new DamageNewInvadersOnce( ctx.Self ), 1 );
+		ctx.Space.Adjust( new DamageNewInvadersOnce( ctx.Self ), 1 );
 
 		return Task.CompletedTask;
 	}
@@ -33,7 +33,7 @@ public class KeepWatchForNewIncursions {
 		bool _used = false;
 		readonly Spirit _spirit = spirit;
 
-		public async Task HandleTokenAddedAsync( SpaceState to, ITokenAddedArgs args ) {
+		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			if(!_used
 				|| !args.Added.HasTag( TokenCategory.Invader )
 			) return;

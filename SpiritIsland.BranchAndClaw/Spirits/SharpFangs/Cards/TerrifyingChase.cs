@@ -10,13 +10,13 @@ public class TerrifyingChase {
 		// push another 2 explorers / towns / dahan pers beast in target land
 		int pushCount = 2 + 2 * ctx.Beasts.Count;
 
-		int startingInvaderCount = ctx.Tokens.InvaderTotal();
+		int startingInvaderCount = ctx.Space.InvaderTotal();
 
 		// first push invaders
 		await ctx.Push(pushCount, Human.Explorer_Town.Plus(Human.Dahan));
 
 		// if you pushed any invaders, 2 fear
-		if( ctx.Tokens.InvaderTotal() < startingInvaderCount )
+		if( ctx.Space.InvaderTotal() < startingInvaderCount )
 			ctx.AddFear(2);
 
 	}

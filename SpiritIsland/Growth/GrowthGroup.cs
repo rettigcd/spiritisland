@@ -17,10 +17,8 @@ public class GrowthGroup( params IActOn<Spirit>[] actions )
 
 	public IEnumerable<IHelpGrow> UserRuns => GrowthActions.Where( x => !x.AutoRun );
 
-	public string Text => ToString();
+	string IOption.Text => ToString();
 
-	public override string ToString() {
-		return GrowthActions.Select(a=>a.Name).Join(" / ");
-	}
+	public override string ToString() => GrowthActions.Select(a=>a.Title).Join(" / ");
 
 }

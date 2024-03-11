@@ -19,40 +19,40 @@ public partial class SweepIntoTheSea {
 
 	static async Task PushExplorersAndTownsTowardsOcean( TargetSpaceCtx ctx ) {
 		// push all explorers and town one land toward the nearest ocean
-		var closerSpace = (await SelectSpaceCloserToTheOcean( ctx )).Tokens;
+		var closerSpace = (await SelectSpaceCloserToTheOcean( ctx )).Space;
 		await PushAllTokensTo( ctx, closerSpace, Human.Explorer_Town );
 	}
 
 	static async Task<TargetSpaceCtx> SelectSpaceCloserToTheOcean( TargetSpaceCtx ctx ) {
-		var oceans = GameState.Current.Island.Boards.Select( b => b.Ocean.ScopeTokens );
+		var oceans = GameState.Current.Island.Boards.Select( b => b.Ocean.ScopeSpace );
 		var distanceFromOceans = new DistanceFromOceanCalculator()
 			.SetTargets( oceans )
 			.Calculate();
-		int curDistance = distanceFromOceans[ctx.Tokens];
+		int curDistance = distanceFromOceans[ctx.Space];
 
 		Space space = await ctx.Self.SelectAsync( 
-			new A.Space( "Push explorer/town towards ocean", 
-			ctx.Tokens.Adjacent.Where( tokens => distanceFromOceans[tokens] < curDistance ), 
+			new A.SpaceDecision( "Push explorer/town towards ocean", 
+			ctx.Space.Adjacent.Where( tokens => distanceFromOceans[tokens] < curDistance ), 
 			Present.Always 
 		) );
 		return space != null ? ctx.Target( space )
 			: null;
 	}
 
-	static async Task PushAllTokensTo( TargetSpaceCtx ctx, SpaceState destination, params HumanTokenClass[] groups ) {
+	static async Task PushAllTokensTo( TargetSpaceCtx ctx, Space destination, params HumanTokenClass[] groups ) {
 		// !!! This is supposed to be Push! not a Move - does it make a difference?
-		while(ctx.Tokens.HasAny( groups ))
-			await ctx.Tokens.HumanOfAnyTag( groups ).First().MoveAsync(ctx.Space,destination.Space);
+		while(ctx.Space.HasAny( groups ))
+			await ctx.Space.HumanOfAnyTag( groups ).First().MoveAsync(ctx.Space,destination);
 	}
 
 	#region DistanceFromOceanCalculator
 
 	class DistanceFromOceanCalculator {
 
-		readonly Queue<SpaceState> spacesLessThanLimit = new();
-		readonly Dictionary<SpaceState, int> shortestDistances = [];
+		readonly Queue<Space> spacesLessThanLimit = new();
+		readonly Dictionary<Space, int> shortestDistances = [];
 
-		public DistanceFromOceanCalculator SetTargets( IEnumerable<SpaceState> targets ) {
+		public DistanceFromOceanCalculator SetTargets( IEnumerable<Space> targets ) {
 			foreach(var target in targets) {
 				shortestDistances.Add( target, 0 );
 				spacesLessThanLimit.Enqueue( target );
@@ -78,7 +78,7 @@ public partial class SweepIntoTheSea {
 			return this;
 		}
 
-		public int this[SpaceState space] => shortestDistances[space];
+		public int this[Space space] => shortestDistances[space];
 
 	}
 	#endregion DistanceFromOceanCalculator

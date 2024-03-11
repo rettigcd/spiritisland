@@ -4,7 +4,7 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	public const string Name = "Lure of the Deep Wilderness";
 
-	public override string Text => Name;
+	public override string SpiritName => Name;
 
 	public override SpecialRule[] SpecialRules => new SpecialRule[] { LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule };
 
@@ -33,11 +33,11 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Put 3 presence on your starting board: 2 in land #8, and 1 in land #7.
-		board[8].ScopeTokens.Setup(Presence.Token, 2);
-		board[7].ScopeTokens.Setup(Presence.Token, 1);
+		board[8].ScopeSpace.Setup(Presence.Token, 2);
+		board[7].ScopeSpace.Setup(Presence.Token, 1);
 
 		// Add 1 beast to land #8
-		board[8].ScopeTokens.Beasts.Init(1);
+		board[8].ScopeSpace.Beasts.Init(1);
 	}
 
 }

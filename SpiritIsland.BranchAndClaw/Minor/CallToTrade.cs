@@ -22,7 +22,7 @@ public class CallToTrade {
 	}
 
 	static void FirstRavageBecomesABuild( TargetSpaceCtx ctx ) {
-		ctx.Tokens.Adjust( new ReplaceRavageWithBuild(), 1);
+		ctx.Space.Adjust( new ReplaceRavageWithBuild(), 1);
 	}
 
 	class ReplaceRavageWithBuild : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
@@ -33,7 +33,7 @@ public class CallToTrade {
 		public UsageCost Cost => UsageCost.Free;
 
 
-		public Task<bool> Skip( SpaceState space ) {
+		public Task<bool> Skip( Space space ) {
 			space.Adjust( this, -1 );
 
 			ActionScope.Current.Log(new Log.Debug($"{Name} - Stopping Ravage. Adding Build"));

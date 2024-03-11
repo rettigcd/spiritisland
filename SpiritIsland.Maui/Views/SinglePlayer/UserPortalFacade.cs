@@ -99,14 +99,14 @@ internal class UserPortalFacade : IUserPortal {
 /// </summary>
 class MoveBehavior( IUserPortal inner, A.Move move ) {
 	public IDecision GetSourceDecision() {
-		var st = new A.SpaceToken(
+		var st = new A.SpaceTokenDecision(
 			move.Prompt,
 			_moveOptions.Select( s => s.Source ).Distinct(),
 			_moveIsOptional ? Present.Done : Present.Always
 		);
 		var destinations = _moveOptions.Select( s => s.Destination ).Distinct().ToArray();
 		if(destinations.Length == 1)
-			st.PointArrowTo( destinations[0] );
+			st.PointArrowTo( destinations[0].SpaceSpec );
 		return st;
 	}
 
@@ -114,7 +114,7 @@ class MoveBehavior( IUserPortal inner, A.Move move ) {
 		if(option is SpaceToken source)
 			return HandleMoveSource( source, block );
 
-		if(option is Space destination) {
+		if(option is SpaceSpec destination) {
 			HandleMoveDestination( destination, block );
 			return null;
 		}
@@ -127,7 +127,7 @@ class MoveBehavior( IUserPortal inner, A.Move move ) {
 		throw new ArgumentException( "Part 2 of move should be a space" );
 	}
 
-	A.Space? HandleMoveSource( SpaceToken source, bool block ) {
+	A.SpaceDecision? HandleMoveSource( SpaceToken source, bool block ) {
 		// if only 1 destination - Auto-select it now (can't use Present.Auto in the ui)
 		Space[] destinationOptions = _moveOptions!
 			.Where( s => s.Source == source )
@@ -137,12 +137,12 @@ class MoveBehavior( IUserPortal inner, A.Move move ) {
 		if(destinationOptions.Length != 1) {
 			// Setup TO choice
 			_moveSource = source;
-			return new A.Space(
+			return new A.SpaceDecision(
 					"Move to",
 					destinationOptions,
 					Present.AutoSelectSingle // if they selected a source, don't let them cancel.
 				)
-				.ComingFrom( source.Space )
+				.ComingFrom( source.Space.SpaceSpec )
 				.ShowTokenLocation( source.Token );
 		} else {
 			// Auto-Select-Single
@@ -153,9 +153,9 @@ class MoveBehavior( IUserPortal inner, A.Move move ) {
 		}
 	}
 
-	void HandleMoveDestination( Space destination, bool block ) {
+	void HandleMoveDestination( SpaceSpec destination, bool block ) {
 		Move realOption = _moveOptions
-			.Single( s => s.Source == _moveSource && s.Destination == destination );
+			.Single( s => s.Source == _moveSource && s.Destination.SpaceSpec == destination );
 		inner.Choose( move, realOption, block );
 	}
 

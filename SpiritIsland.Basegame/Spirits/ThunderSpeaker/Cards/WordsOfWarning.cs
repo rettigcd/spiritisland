@@ -12,7 +12,7 @@ public class WordsOfWarning {
 		ctx.Defend(3);
 
 		// During Ravage, dahan in target land deal damage simultaneiously with invaders
-		ctx.Tokens.Init(new SimultaneousDefend(),1);
+		ctx.Space.Init(new SimultaneousDefend(),1);
 
 		return Task.CompletedTask;
 	}
@@ -21,7 +21,7 @@ public class WordsOfWarning {
 
 public class SimultaneousDefend : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
 
-	void IConfigRavages.Config( SpaceState space ) {
+	void IConfigRavages.Config( Space space ) {
 
 		// Token Reduces Attack of invaders by 1
 		foreach(HumanToken orig in space.HumanOfAnyTag( Human.Dahan ).ToArray())
@@ -35,7 +35,7 @@ public class SimultaneousDefend : BaseModEntity, IConfigRavages, IEndWhenTimePas
 
 	}
 
-	static void AdjustRavageOrder( SpaceState space, HumanToken orig, RavageOrder order ) {
+	static void AdjustRavageOrder( Space space, HumanToken orig, RavageOrder order ) {
 		space.Init( orig.SetRavageOrder( order ), space[orig] );
 		space.Init( orig, 0 );
 	}

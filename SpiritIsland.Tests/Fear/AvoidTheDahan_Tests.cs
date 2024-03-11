@@ -42,7 +42,7 @@ public class AvoidTheDahan_Tests {
 		Init();
 
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
+		spaceCtx.Space.Summary.ShouldBe( "2D@2" );
 
 		ActivateFearCard(new NullFearCard());
 
@@ -50,7 +50,7 @@ public class AvoidTheDahan_Tests {
 		await AcknowledgeFearCard( "Null Fear Card : 1 : x" );
 
 		_user.WaitForNext();
-		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1E@1" );
+		spaceCtx.Space.InvaderSummary().ShouldBe( "1E@1" );
 	}
 
 	[Trait( "Invaders", "Explore" )]
@@ -71,7 +71,7 @@ public class AvoidTheDahan_Tests {
 		GameState.Current.DisableBlightEffect();
 
 		var user = new VirtualTestUser( spirit );
-		var a7 = gs.Island.Boards[0][7].ScopeTokens;
+		var a7 = gs.Island.Boards[0][7].ScopeSpace;
 		a7.Summary.ShouldBe( "2D@2" );
 		ActivateFearCard( new AvoidTheDahan() ); // Invaders do not explore into lands with at least 2 dahan
 
@@ -93,15 +93,15 @@ public class AvoidTheDahan_Tests {
 		Init();
 
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Summary.ShouldBe( "2D@2" );
+		spaceCtx.Space.Summary.ShouldBe( "2D@2" );
 
 		ClearBlightAndDoNothingForARound();
 		_user.WaitForNext();
-		spaceCtx.Tokens.Summary.ShouldBe( "2D@2,1E@1" );
+		spaceCtx.Space.Summary.ShouldBe( "2D@2,1E@1" );
 
 		ClearBlightAndDoNothingForARound();
 		_user.WaitForNext();
-		spaceCtx.Tokens.Summary.ShouldBe( "2D@2,2E@1,1T@2" );
+		spaceCtx.Space.Summary.ShouldBe( "2D@2,2E@1,1T@2" );
 
 		// When: activating: 'Avoid the Dahan'
 		ActivateFearCard( new AvoidTheDahan() );
@@ -114,7 +114,7 @@ public class AvoidTheDahan_Tests {
 		// Explore should add an explorer (dahan are gone) => 3 explorers, 1 town, 1 city
 
 		_user.WaitForNext();
-		spaceCtx.Tokens.InvaderSummary().ShouldBe( "1C@3,1T@2,3E@1" );
+		spaceCtx.Space.InvaderSummary().ShouldBe( "1C@3,1T@2,3E@1" );
 
 	}
 
@@ -141,7 +141,7 @@ public class AvoidTheDahan_Tests {
 		ElevateTerrorLevelTo(2);
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Given_InitSummary( "3D@2,2T@2" );
+		spaceCtx.Space.Given_InitSummary( "3D@2,2T@2" );
 
 		// When: activating fear
 		_spirit.ClearAllBlight();
@@ -158,7 +158,7 @@ public class AvoidTheDahan_Tests {
 		// Build: Build city:	1B@1,1C@3,1D@2,1T@2
 		// Explore: +1			1B@1,1C@3,1D@2,1E@1,1T@2
 		_user.WaitForNext();
-		spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1D@2,1E@1,1T@2" );
+		spaceCtx.Space.Summary.ShouldBe( "1B,1C@3,1D@2,1E@1,1T@2" );
 	}
 
 	[Trait( "Invaders", "Build" )]
@@ -185,7 +185,7 @@ public class AvoidTheDahan_Tests {
 		ElevateTerrorLevelTo(2);
 		// Given: Dahan(2) outnumber town/city(0)  + 3 explorer (to enable build)
 		TargetSpaceCtx spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Given_InitSummary("2D@2,3E@1");
+		spaceCtx.Space.Given_InitSummary("2D@2,3E@1");
 
 		// When: activating fear
 		_user.Grows();
@@ -197,7 +197,7 @@ public class AvoidTheDahan_Tests {
 		// Build: 1 dahan out numbers town/cities (0), no build:  1B@1,1D@2,1E@1
 		// Explore: +1   1D@2,2E@1
 		_user.WaitForNext();
-		spaceCtx.Tokens.Summary.ShouldBe( "1B,1D@2,2E@1" );
+		spaceCtx.Space.Summary.ShouldBe( "1B,1D@2,2E@1" );
 	}
 
 	[Trait( "Invaders", "Build" )]
@@ -216,7 +216,7 @@ public class AvoidTheDahan_Tests {
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		_user.WaitForNext();
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Given_InitSummary( "3D@2,2T@2" );
+		spaceCtx.Space.Given_InitSummary( "3D@2,2T@2" );
 
 		// When: activating fear
 		ClearBlightAndDoNothingForARound();
@@ -230,7 +230,7 @@ public class AvoidTheDahan_Tests {
 		// Build: no build      1B@1,1D@2,1T@2
 		// Explore: +1			1B@1,1D@2,1E@1,1T@2
 		_user.WaitForNext();
-		spaceCtx.Tokens.Summary.ShouldBe( "1B,1D@2,1E@1,1T@2" );
+		spaceCtx.Space.Summary.ShouldBe( "1B,1D@2,1E@1,1T@2" );
 	}
 
 	[Trait( "Invaders", "Build" )]
@@ -248,7 +248,7 @@ public class AvoidTheDahan_Tests {
 
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Tokens.Given_InitSummary("1D@2,1T@2");
+		spaceCtx.Space.Given_InitSummary("1D@2,1T@2");
 
 		// When: activating fear
 		ClearBlightAndDoNothingForARound();
@@ -261,7 +261,7 @@ public class AvoidTheDahan_Tests {
 		// Build: build     1B@1,1C@3,1T@2
 		// Explore: +1		1B@1,1C@3,1E@1,1T@2
 		_ = _user.NextDecision; // wait for engine to catch up
-		spaceCtx.Tokens.Summary.ShouldBe( "1B,1C@3,1E@1,1T@2" );
+		spaceCtx.Space.Summary.ShouldBe( "1B,1C@3,1E@1,1T@2" );
 	}
 
 

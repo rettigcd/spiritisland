@@ -28,7 +28,7 @@ public class DownloadPowerPics_Tests {
 				using Image image = await x.GetPowerCardImage( card );
 			}
 			catch(HttpRequestException) {
-				failed.Add( card.Name );
+				failed.Add( card.Title );
 			}
 		}
 
@@ -50,7 +50,7 @@ public class DownloadPowerPics_Tests {
 		foreach(var spirit in spirits) {
 			using var bitmap = SpiritMarkerBuilder.BuildSpiritMarker( spirit, Img.Token_Presence, ResourceImages.Singleton);
 #pragma warning disable CA1416 // Validate platform compatibility
-			ImageDiskCache.SaveBmp(bitmap, $"{folder}\\{spirit.Text}_ps.png", ImageFormat.Png );
+			ImageDiskCache.SaveBmp(bitmap, $"{folder}\\{spirit.SpiritName}_ps.png", ImageFormat.Png );
 #pragma warning restore CA1416 // Validate platform compatibility
 //			ImageDiskCache.SaveBmp( bitmap, $"{folder}\\{spirit.Text}_loch.png", ImageFormat.Png );
 			//ImageDiskCache.SaveBmp( bitmap, $"{folder}\\{spirit.Text}.png", ImageFormat.Png );

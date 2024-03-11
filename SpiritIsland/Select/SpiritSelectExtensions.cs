@@ -24,10 +24,10 @@ static public class SpiritSelectExtensions {
 
 
 	static public async Task<Space> SelectDeployed( this Spirit self, string prompt )
-		=> (await self.SelectAsync( new A.SpaceToken( prompt, self.Presence.Deployed, Present.Always ) )).Space;
+		=> (await self.SelectAsync( new A.SpaceTokenDecision( prompt, self.Presence.Deployed, Present.Always ) )).Space;
 
 	static public Task<SpaceToken> SelectDeployedMovable( this Spirit self, string prompt )
-		=> self.SelectAsync( new A.SpaceToken( prompt, self.Presence.Movable, Present.Always ) );
+		=> self.SelectAsync( new A.SpaceTokenDecision( prompt, self.Presence.Movable, Present.Always ) );
 
 	// used for Fear / Growth / Generic / options that combine different types
 	static public Task<T> Select<T>( this Spirit spirit, string prompt, T[] options, Present present ) where T : class, IOption {
@@ -94,15 +94,10 @@ static public class SpiritSelectExtensions {
 	}
 
 	static public Task<Space> SelectLandWithPresence( this Spirit self, string prompt, string cancelText = null )
-		=> self.SelectAsync( new A.Space(prompt, self.Presence.Lands, cancelText ) );
+		=> self.SelectAsync( new A.SpaceDecision(prompt, self.Presence.Lands, cancelText ) );
 
-	static public async Task<Space> SelectSpaceAsync( this Spirit self, string prompt, IEnumerable<Space> options, Present present ) {
-		return await self.SelectAsync( new A.Space( prompt, options, present ) );
+	static public async Task<Space> SelectSpaceAsync(this Spirit self, string prompt, IEnumerable<Space> options, Present present) {
+		return await self.SelectAsync(new A.SpaceDecision(prompt, options, present));
 	}
-
-	static public async Task<Space> SelectSpaceAsync(this Spirit self, string prompt, IEnumerable<SpaceState> options, Present present) {
-		return await self.SelectAsync(new A.Space(prompt, options, present));
-	}
-
 
 }

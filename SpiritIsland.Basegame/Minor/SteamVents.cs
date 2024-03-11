@@ -15,7 +15,7 @@ public class SteamVents {
 			new SpaceAction(
 				"Destroy 1 town", 
 				ctx => ctx.Invaders.DestroyNOfClass( 1, Human.Town )
-			).OnlyExecuteIf( ctx.Tokens.Has(Human.Town) && await ctx.YouHave("3 earth") )
+			).OnlyExecuteIf( ctx.Space.Has(Human.Town) && await ctx.YouHave("3 earth") )
 		);
 	}
 

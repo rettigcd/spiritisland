@@ -42,7 +42,7 @@ class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
 	readonly Spirit _spirit = spirit;
 	readonly bool _allSpaces = allSpaces;
 
-	async Task IConfigRavagesAsync.ConfigAsync( SpaceState space ) {
+	async Task IConfigRavagesAsync.ConfigAsync( Space space ) {
 		int remainingGoEarlyCount = Math.Min( _dahanToGoEarly, space.Dahan.CountAll );
 		if(remainingGoEarlyCount != 0
 			&& _spirit.Presence.IsOn( space )
@@ -60,7 +60,7 @@ class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
 		}
 	}
 
-	static void MakeDahanGoFast( SpaceState space, ref int remainingGoEarlyCount ) {
+	static void MakeDahanGoFast( Space space, ref int remainingGoEarlyCount ) {
 		var goFastDahan = space.HumanOfTag( TokenCategory.Dahan )
 			// since Invaders kill Dahan with least health first, make them attack before they are destroyed.
 			.OrderBy( x => x.RemainingHealth )
@@ -73,7 +73,7 @@ class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
 	}
 	static HumanToken Ambush( HumanToken h ) => h.SetRavageOrder( RavageOrder.Ambush );
 
-	static void RestoreDahanSpeed( SpaceState space ) {
+	static void RestoreDahanSpeed( Space space ) {
 		ActionScope.Current.AtEndOfThisAction( scope => {
 			var tokensToRestore = space.HumanOfTag(TokenCategory.Dahan)
 				.Where( h => h.RavageOrder != RavageOrder.DahanTurn )
@@ -84,5 +84,5 @@ class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
 	}
 	static HumanToken RavageDuringDahanTurn(HumanToken token) => token.SetRavageOrder( RavageOrder.DahanTurn );
 
-	private async Task<bool> UserWantsToUseOnThisSpace( SpaceState space, int goEarlyCount ) => await _spirit.UserSelectsFirstText( $"Have {goEarlyCount} Dahan attack first on {space.Space.Text}?", "Yes, attack early", "No, save for another ravage." );
+	private async Task<bool> UserWantsToUseOnThisSpace( Space space, int goEarlyCount ) => await _spirit.UserSelectsFirstText( $"Have {goEarlyCount} Dahan attack first on {space.Label}?", "Yes, attack early", "No, save for another ravage." );
 }

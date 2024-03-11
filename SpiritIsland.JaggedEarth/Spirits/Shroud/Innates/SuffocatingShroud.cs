@@ -10,7 +10,7 @@ public class SuffocatingShroud {
 
 	[InnateTier("2 moon,3 air,2 water","For each adjacent land with your presence, 1 Damage to a different Invader.")]
 	static public Task Option2(TargetSpaceCtx ctx){ 
-		int count = ctx.Tokens.Adjacent.Count(a=>ctx.Target(a.Space).Presence.IsHere);
+		int count = ctx.Space.Adjacent.Count(a=>ctx.Target(a).Presence.IsHere);
 		return ctx.Apply1DamageToDifferentInvaders( count );
 	}
 

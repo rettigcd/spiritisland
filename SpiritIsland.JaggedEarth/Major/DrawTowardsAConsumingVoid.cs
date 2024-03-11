@@ -47,34 +47,34 @@ public class DrawTowardsAConsumingVoid {
 
 		// destroy 1 presence from each Spirit.
 		foreach(var spirit in GameState.Current.Spirits)
-			await ctx.Tokens.Destroy( spirit.Presence.Token, 1 );
+			await ctx.Space.Destroy( spirit.Presence.Token, 1 );
 
 		// Remove 2 beast
 		await ctx.Beasts.Remove( 2, RemoveReason.Removed );
 	}
 
-	static async Task MoveTokensFromAdjacentSpace( TargetSpaceCtx ctx, SpaceState adjState, params ITokenClass[] tokenGroups ) {
+	static async Task MoveTokensFromAdjacentSpace( TargetSpaceCtx ctx, Space adjState, params ITokenClass[] tokenGroups ) {
 		// move tokens
 		foreach(ITokenClass tokenGroup in tokenGroups) {
 			IToken tokenToGather = adjState.OfTag( tokenGroup )
 				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )
 				.FirstOrDefault();
 			if(tokenToGather != null)
-				await tokenToGather.MoveAsync(adjState.Space,ctx.Space);
+				await tokenToGather.MoveAsync(adjState,ctx.Space);
 		}
 
 		// Gather 1 presense
 
 		Spirit[] spirits = GameState.Current.Spirits;
-		var presenceOptions = spirits.SelectMany( s => s.Presence.Movable).WhereIsOn(new SpaceState[] { adjState } ).ToArray();
+		var presenceOptions = spirits.SelectMany( s => s.Presence.Movable).WhereIsOn(new Space[] { adjState } ).ToArray();
 
 		var movableSpiritsInSpace = spirits
 			.Where( s => adjState.Has(s.Presence) )
 			.ToArray();
 
 		if( 0<movableSpiritsInSpace.Length ) {
-			var tokenToGather = await ctx.SelectAsync( new A.SpaceToken("Select presence to move.", presenceOptions, Present.Always));
-			await tokenToGather.MoveTo( ctx.Tokens );
+			var tokenToGather = await ctx.SelectAsync( new A.SpaceTokenDecision("Select presence to move.", presenceOptions, Present.Always));
+			await tokenToGather.MoveTo( ctx.Space );
 		}
 	}
 }

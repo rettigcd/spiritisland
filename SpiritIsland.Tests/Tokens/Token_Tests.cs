@@ -2,7 +2,7 @@
 
 public class Token_Tests {
 
-	static bool IsInPlay(Space space) => !space.IsOcean;
+	static bool IsInPlay(SpaceSpec space) => !space.IsOcean;
 
 	[Fact]
 	public void SummariesAreUnique() {
@@ -33,20 +33,20 @@ public class Token_Tests {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC());
 
 		// Given: a space with no invaders
-		SpaceState spaceState = ActionScope.Current.Tokens_Unfiltered.First( s=>IsInPlay(s.Space) && !s.HasInvaders() );
+		Space space = ActionScope.Current.Spaces_Unfiltered.First( s=>IsInPlay(s.SpaceSpec) && !s.HasInvaders() );
 		//   And: 1 neighboring town
-		var neighbor = spaceState.Adjacent.First();
+		var neighbor = space.Adjacent.First();
 		neighbor.AdjustDefault( Human.Town, 1 );
 		//   And: 1 wilds there
-		spaceState.Wilds.Init(1);
+		space.Wilds.Init(1);
 
 		//  When: we explore there
-		await spaceState.Space.When_Exploring();
+		await space.SpaceSpec.When_Exploring();
 
 		//  Then: still no invaders
-		spaceState.HasInvaders().ShouldBeFalse("there should be no explorers in "+spaceState.Space.Label);
+		space.HasInvaders().ShouldBeFalse("there should be no explorers in "+space.SpaceSpec.Label);
 		//   And: no wilds here
-		(spaceState.Wilds.Count>0).ShouldBeFalse("wilds should be used up");
+		(space.Wilds.Count>0).ShouldBeFalse("wilds should be used up");
 
 	}
 
@@ -56,11 +56,11 @@ public class Token_Tests {
 		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
 
 		// Given: a space with ONLY 1 explorer
-		SpaceState space = ActionScope.Current.Tokens_Unfiltered.First( s => IsInPlay(s.Space) && !s.HasInvaders() ); // 0 invaders
+		Space space = ActionScope.Current.Spaces_Unfiltered.First( s => IsInPlay(s.SpaceSpec) && !s.HasInvaders() ); // 0 invaders
 		space.Given_HasTokens("1E@1,1Z");
 
 		//  When: we build there
-		await space.Space.When_Building();
+		await space.SpaceSpec.When_Building();
 
 		//  Then: still no towns (just original explorer)
 		space.Assert_HasInvaders( "1E@1" ); // "should be no town on "+space.Label

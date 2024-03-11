@@ -7,7 +7,7 @@ namespace SpiritIsland;
 /// Moves to an action that runs when TimePasses
 /// Added to 1st Spirits ActionFactory list until they use it.
 /// </summary>
-public class CommandBeasts( string name ) 
+public class CommandBeasts( string title ) 
 	: IActionFactory
 	, IRunWhenTimePasses
 	, IHaveMemento
@@ -16,7 +16,7 @@ public class CommandBeasts( string name )
 
 	#region ILogEntry
 	LogLevel ILogEntry.Level => LogLevel.Info;
-	string ILogEntry.Msg(LogLevel _) => $"Card Revealed: {Text} - {Desciption}";
+	string ILogEntry.Msg(LogLevel _) => $"Card Revealed: {Title} - {Desciption}";
 #pragma warning disable CA1822 // Mark members as static
 	public string Desciption => CommandBeastsOn1Space.InstructionText;
 #pragma warning restore CA1822 // Mark members as static
@@ -45,8 +45,8 @@ public class CommandBeasts( string name )
 
 	#endregion Static Setup
 
-	public string Name { get; } = name;
-	public string Text => Name;
+	string IOption.Text => Title;
+	public string Title { get; } = title;
 
 	public async Task ActivateAsync( Spirit _ ) {
 		_used = true;
@@ -109,13 +109,13 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 	public string Description => InstructionText;
 
-	public bool IsApplicable( TargetSpaceCtx ctx ) => _originalBeastCounts[ctx.Space] > 0;// use original, not current. Incase anything moved.
+	public bool IsApplicable( TargetSpaceCtx ctx ) => _originalBeastCounts[ctx.SpaceSpec] > 0;// use original, not current. Incase anything moved.
 
 	public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// The first space/time it is called on, init original Beast positions
-		_originalBeastCounts ??= ActionScope.Current.Tokens
-				.ToDictionary( s => s.Space, s => s.Beasts.Count )
+		_originalBeastCounts ??= ActionScope.Current.Spaces
+				.ToDictionary( s => s.SpaceSpec, s => s.Beasts.Count )
 				.ToCountDict();
 
 		// Using this order: Damage / Push / Fear(based on starting invaders)
@@ -125,7 +125,7 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 		bool startedWithInvaders = ctx.HasInvaders;
 
-		int count = _originalBeastCounts[ctx.Space];
+		int count = _originalBeastCounts[ctx.SpaceSpec];
 		if(count == 0) return;
 
 		// Damage
@@ -145,14 +145,14 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 	#region private
 
-	CountDictionary<Space> _originalBeastCounts;
+	CountDictionary<SpaceSpec> _originalBeastCounts;
 
 	static async Task<int> PartialDamageToInvaders( TargetSpaceCtx ctx, int damage ) {
 		if(damage == 0) return 0; // not necessary, just saves some cycles
 
 		int badlandCount = ctx.Badlands.Count;
 
-		CombinedDamage combinedDamage = ctx.Tokens.CombinedDamageFor_Invaders( damage );
+		CombinedDamage combinedDamage = ctx.Space.CombinedDamageFor_Invaders( damage );
 
 		int damageDone = await ctx.SourceSelector.AddAll( Human.Invader )
 			.DoDamageAsync( ctx.Self, combinedDamage.Available, Present.Done );

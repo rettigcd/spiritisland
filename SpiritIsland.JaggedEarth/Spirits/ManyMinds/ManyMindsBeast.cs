@@ -20,7 +20,7 @@ public class ManyMindsBeast( ManyMindsPresenceToken presenceToken )
 
 	public string SpaceAbreviation => Text;
 
-	public void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) {
+	public void HandleTokenAdded( Space to, ITokenAddedArgs args ) {
 		// If we added it, it came from somewhere and represented 2 presence.
 		if(args.Added == this) {
 			if(args.Reason != AddReason.MovedTo) throw new InvalidOperationException($"adding MM-Beast reason {args.Reason}");
@@ -28,7 +28,7 @@ public class ManyMindsBeast( ManyMindsPresenceToken presenceToken )
 		}
 	}
 
-	public async Task HandleTokenRemovedAsync( SpaceState from, ITokenRemovedArgs args ) {
+	public async Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
 		if(args.Removed != this) return;
 
 		// Page 28 of JE says that 'Removing' presence is treated the same as Destroying, just voluntary

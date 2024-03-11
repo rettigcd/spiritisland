@@ -37,7 +37,7 @@ public class SwirlAndSpill {
 			d.Track( async to => {
 				if(!used 
 					&& to.HasAny( Human.Town_City ) 
-					&& await self.UserSelectsFirstText("Downgrade All Towns/Cities on "+to.Space.Text, "Yes, Downgrade those suckers!", "No, let's ruin someone else's day." )
+					&& await self.UserSelectsFirstText("Downgrade All Towns/Cities on "+to.Label, "Yes, Downgrade those suckers!", "No, let's ruin someone else's day." )
 				) {
 					used = true;
 					await ReplaceInvader.DowngradeAll( self, to, Human.Town_City );

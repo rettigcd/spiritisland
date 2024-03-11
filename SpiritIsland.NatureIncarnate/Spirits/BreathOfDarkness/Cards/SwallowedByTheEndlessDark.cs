@@ -12,10 +12,10 @@ public class SwallowedByTheEndlessDark {
 		ctx.AddFear(2);
 
 		// Abduct 1 Explorer.
-		var options = ctx.Tokens.SpaceTokensOfTag(Human.Explorer);
-		SpaceToken explorer = await ctx.SelectAsync(new A.SpaceToken("Abduct Explorer",options,Present.Always));
+		var options = ctx.Space.SpaceTokensOfTag(Human.Explorer);
+		SpaceToken explorer = await ctx.SelectAsync(new A.SpaceTokenDecision("Abduct Explorer",options,Present.Always));
 		if(explorer != null)
-			await explorer.MoveTo(EndlessDark.Space.ScopeTokens);
+			await explorer.MoveTo(EndlessDark.Space.ScopeSpace);
 	}
 
 }

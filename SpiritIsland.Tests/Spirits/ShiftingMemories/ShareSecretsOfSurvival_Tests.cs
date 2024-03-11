@@ -38,7 +38,7 @@ public class ShareSecretsOfSurvival_Tests {
 		await space.When_Ravaging();
 
 		//  Then: expected dahan
-		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
+		ctx.Space.Summary.ShouldBe( expectedEndingTokens );
 	}
 
 	[Theory]
@@ -75,7 +75,7 @@ public class ShareSecretsOfSurvival_Tests {
 		await space.When_Ravaging();
 
 		//  Then: expected dahan
-		ctx.Tokens.Summary.ShouldBe( expectedEndingTokens );
+		ctx.Space.Summary.ShouldBe( expectedEndingTokens );
 	}
 
 	static void Play_ShareSecretsOfSurvival( TargetSpaceCtx ctx ) {

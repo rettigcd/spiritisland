@@ -13,7 +13,7 @@ public class ObserveTheEverChangingWorld {
 
 	[InnateTier("2 moon,1 air","Instead, after each of the next three Actions that change which pieces are in atarget land, Prepare 1 Element Marker.")]
 	static public Task Option2(TargetSpaceCtx ctx ) {
-		ctx.Tokens.Init( new ObserveWorldMod( ctx ), 3 );
+		ctx.Space.Init( new ObserveWorldMod( ctx ), 3 );
 		return Task.CompletedTask;
 	}
 
@@ -36,11 +36,11 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 
 	public Img Img => Token.Element.Img;
 
-	public void HandleTokenAdded( SpaceState to, ITokenAddedArgs args ) => Check( to );
+	public void HandleTokenAdded( Space to, ITokenAddedArgs args ) => Check( to );
 
-	public void HandleTokenRemoved( SpaceState from, ITokenRemovedArgs args ) => Check( from );
+	public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) => Check( from );
 
-	void Check( SpaceState space ) {
+	void Check( Space space ) {
 		var actionScope = ActionScope.Current;
 		if(    _appliedToTheseActions.Contains( actionScope ) // already did this action 
 			|| _tokenSummary == space.Summary   // no change in tokens
@@ -57,14 +57,14 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 		// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
 		actionScope.AtEndOfThisAction(async _ => {
 			space.Adjust( this, -1 );
-			await _spirit.PrepareElement( space.Space.Label );
+			await _spirit.PrepareElement( space.SpaceSpec.Label );
 		} );
 
 	}
 
 	#region private
 
-	string _tokenSummary = ctx.Tokens.Summary;
+	string _tokenSummary = ctx.Space.Summary;
 
 	readonly ShiftingMemoryOfAges _spirit = (ShiftingMemoryOfAges)ctx.Self;
 	readonly HashSet<ActionScope> _appliedToTheseActions = [];
