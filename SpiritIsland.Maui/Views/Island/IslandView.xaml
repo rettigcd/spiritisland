@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+		x:Class="SpiritIsland.Maui.IslandView">
+
+	<AbsoluteLayout Margin="0" x:Name="Abs">
+		<GraphicsView x:Name="IslandGraphicsView" 
+						  HeightRequest="240"
+						  AbsoluteLayout.LayoutBounds="0, 0, 390, 240" 
+						  StartInteraction="IslandGraphicsView_StartInteraction" >
+		</GraphicsView>
+	</AbsoluteLayout>
+
+</ContentView>

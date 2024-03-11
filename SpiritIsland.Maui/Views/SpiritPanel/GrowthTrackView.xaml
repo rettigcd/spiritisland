@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:si="clr-namespace:SpiritIsland.Maui"
+			 x:DataType="si:GrowthTrackModel"
+			 x:Class="SpiritIsland.Maui.GrowthTrackView">
+
+	<VerticalStackLayout>
+		<!-- Growth Groups -->
+		<FlexLayout Direction="Row" AlignItems="Stretch" Wrap="Wrap" BindableLayout.ItemsSource="{Binding Groups}" >
+			<BindableLayout.ItemTemplate>
+				<DataTemplate>
+					<si:GrowthGroupView BindingContext="{Binding .}" />
+				</DataTemplate>
+			</BindableLayout.ItemTemplate>
+		</FlexLayout>
+		<!-- Description -->
+		<Border>
+			<Label Text="{Binding Description}" Padding="3" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" FontSize="12" BackgroundColor="Beige" />
+		</Border>
+	</VerticalStackLayout>
+
+</ContentView>

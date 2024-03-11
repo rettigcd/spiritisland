@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="SpiritIsland.Maui.AppShell" 
+	   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	   xmlns:local="clr-namespace:SpiritIsland.Maui"
+	   FlyoutBehavior="Flyout"
+	   FlyoutIcon="hamburger.png"
+	   Title="Spirit Island">
+
+	<Shell.Resources>
+		<Style TargetType="Element" x:Key="Bob">
+			<Setter Property="Shell.ForegroundColor" Value="White" />
+			<Setter Property="Shell.TitleColor" Value="White" />
+			<Setter Property="Shell.BackgroundColor" Value="#006060" />
+			<Setter Property="Shell.DisabledColor" Value="Green" />
+			<Setter Property="Shell.UnselectedColor" Value="Orange" />
+		</Style>
+	</Shell.Resources>
+
+	<Shell.FlyoutHeader>
+		<Grid HeightRequest="50" BackgroundColor="DarkSlateBlue">
+			<Image Source="quake.png"/>
+		</Grid>
+	</Shell.FlyoutHeader>
+
+	<!-- New Game -->
+	<FlyoutItem Title="New Game" Icon="quake.png">
+		<ShellContent ContentTemplate="{DataTemplate local:NewGamePage}" Route="NewGame" Style="{StaticResource Bob}" />
+	</FlyoutItem>
+	
+	<!-- Game -->
+	<FlyoutItem Title="Game" Icon="quake.png">
+		<ShellContent Title="A" Icon="quake.png" ContentTemplate="{DataTemplate local:SinglePlayerGamePage}" Route="GamePage" Style="{StaticResource Bob}" />
+	</FlyoutItem>
+
+	<!-- MAIN page -->
+	<FlyoutItem Title="Main" Icon="quake.png">
+		<ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" Style="{StaticResource Bob}" />
+	</FlyoutItem>
+
+	<!-- TEST page -->
+	<FlyoutItem Title="Test Page" Icon="quake.png">
+		<ShellContent ContentTemplate="{DataTemplate local:TestPage}" Route="TestPage" Style="{StaticResource Bob}" />
+	</FlyoutItem>
+
+	<TabBar>
+		<Tab Title="Tab G" Icon="quake.png">
+			<ShellContent ContentTemplate="{DataTemplate local:SinglePlayerGamePage}" Route="Random-1" Style="{StaticResource Bob}" />
+		</Tab>
+		<Tab Title="Tab M" Icon="quake.png">
+			<ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="Random-2" Style="{StaticResource Bob}" />
+		</Tab>
+	</TabBar>
+
+
+</Shell>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:si="clr-namespace:SpiritIsland.Maui"
+			 x:Class="SpiritIsland.Maui.NewGamePage"
+			 Title="NewGamePage">
+
+	<ContentPage.Resources>
+		<si:SpiritToButtonImgConverter x:Key="btnImage" />
+	</ContentPage.Resources>
+
+	<Grid RowDefinitions="60,50,50,50,50,50,50,*">
+		
+		<!-- spirit -->
+		<VerticalStackLayout>
+			<HorizontalStackLayout>
+				<HorizontalStackLayout.GestureRecognizers>
+					<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" />
+				</HorizontalStackLayout.GestureRecognizers>
+				<Label Text="Select a Spirit" VerticalOptions="Center" TextColor="Gray" Margin="5,0,30,0" />
+				<Image x:Name="Spirit" Margin="2" HeightRequest="56" />
+			</HorizontalStackLayout>
+			<BoxView Color="Gray" Margin="0" HeightRequest="1" HorizontalOptions="Fill" />
+		</VerticalStackLayout>
+	
+		<!-- Board -->
+		<Picker x:Name="Board" Title="Select a Board" Grid.Row="1">
+			<Picker.ItemsSource>
+				<x:Array Type="{x:Type x:String}">
+					<x:String>A</x:String>
+					<x:String>B</x:String>
+					<x:String>C</x:String>
+					<x:String>D</x:String>
+					<x:String>E</x:String>
+					<x:String>F</x:String>
+				</x:Array>
+			</Picker.ItemsSource>
+		</Picker>
+
+		<!-- adversary -->
+		<Picker x:Name="Adversary" Title="Select an Adversary" SelectedIndexChanged="Adversary_SelectedIndexChanged" Grid.Row="2" />
+		<Picker x:Name="AdversaryLevel" Title="Select Adversary Difficulty" SelectedIndexChanged="AdversaryLevel_SelectedIndexChanged" Grid.Row="3" />
+
+		<!-- Command Beast -->
+		<HorizontalStackLayout HorizontalOptions="Center" Margin="10,0" Grid.Row="4" >
+			<Label Text="Command Beats" VerticalOptions="Center" />
+			<CheckBox x:Name="CommandBeast" IsChecked="true" />
+		</HorizontalStackLayout>
+
+
+		<Button x:Name="StartButton" Text="Start New Game" Clicked="Button_Clicked" IsEnabled="false" Margin="10,0" Grid.Row="5" />
+		<ActivityIndicator x:Name="Activity" IsRunning="False" Color="SkyBlue" Grid.Row="6" />
+
+		<!-- Spirits Overlays -->
+		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="Spirits" IsVisible="False" >
+			<VerticalStackLayout>
+				<!-- recent -->
+				<Label Text="Recent" />
+				<CollectionView x:Name="RecentSpirits" ItemsLayout="VerticalGrid,4">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="ImageSource" >
+							<Image Source="{Binding .}" WidthRequest="80" HeightRequest="80" Margin="4" />
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+				<!-- all -->
+				<Label Text="All Spirits" />
+				<CollectionView x:Name="ss" ItemsLayout="VerticalGrid,4">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="ImageSource" >
+							<Image 
+								Source="{Binding .,Converter={StaticResource btnImage}}" 
+								ClassId="{Binding .}"
+								WidthRequest="90" HeightRequest="75" Margin="5" >
+								<Image.Shadow><Shadow Brush="Black" Offset="5,5" Radius="40" Opacity="0.8" /></Image.Shadow>
+								<Image.GestureRecognizers><TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" /></Image.GestureRecognizers>
+							</Image>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+				<!-- all -->
+				<Button Text="Cancel" Clicked="Cancel_SpiritSelect" />
+			</VerticalStackLayout>
+		</ScrollView>
+
+	</Grid>
+</ContentPage>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:si="clr-namespace:SpiritIsland.Maui"
+			 x:Class="SpiritIsland.Maui.SinglePlayerGamePage"
+			 x:DataType="si:DecisionModel"
+			 Title="River on Board A">
+
+	<ContentPage.Resources>
+		<Color x:Key="PageControlTextColor">Blue</Color> <!-- I can bind to the BindingContext here - yay! -->
+		<!-- Put Converter References here too! -->
+	</ContentPage.Resources>
+
+	<Grid RowDefinitions="30,50,235,24,30,*">
+		
+		<!-- Invaders - Begin -->
+		<si:InvaderDeckView BindingContext="{Binding GameStatus}" Grid.Row="0" />
+
+		<!-- Spirit -->
+		<si:SpiritSummaryView 
+			x:Name="Bob"
+			BindingContext="{Binding SpiritSummary}" 
+			GrowthDetailsClicked="SpiritSummary_GrowthDetailsClicked" 
+			CardDetailsClicked="SpiritSummary_CardDetailsClicked" 
+			Grid.Row="1" />
+
+		<!-- Island -->
+		<si:IslandView x:Name="IV" Grid.Row="2" />
+
+		<!-- Game Over Info -->
+		<Label x:Name="GameOverInfo" IsVisible="false" HorizontalOptions="Center" 
+			   Text="bob"
+			   Padding="10,3"
+			   BackgroundColor="Blue"
+			   Grid.Row="3"
+		/>
+
+		<!-- Prompt -->
+		<Label x:Name="Prompt" Text="{Binding Prompt}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="3" />
+		<!-- Accept -->
+		<Button x:Name="Accept" Text="{Binding AcceptText}" 
+				HorizontalOptions="CenterAndExpand" Padding="20,0"
+				Clicked="OnAcceptClicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" />
+		<!-- Options -->
+		<ScrollView x:Name="OptionListWrapper" BackgroundColor="#ddf" VerticalOptions="StartAndExpand" Margin="10,3" Grid.Row="5" >
+			<FlexLayout x:Name="OptionList"  
+				Direction="Row" AlignItems="Stretch" Wrap="Wrap"
+				RadioButtonGroup.GroupName="DecisionOptions" RadioButtonGroup.SelectedValue="{Binding SelectedOption}"
+				JustifyContent="SpaceEvenly">
+			</FlexLayout>
+		</ScrollView>
+
+
+		<si:SpiritPanelView x:Name="SpiritPanel" IsVisible="False" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+
+		<si:CardsOverlay x:Name="Cards" IsVisible="False" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+
+	</Grid>
+	
+</ContentPage>

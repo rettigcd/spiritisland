@@ -1,0 +1,872 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+
+		<!-- Note for MacCatalyst:
+		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
+		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
+		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
+		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
+		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+
+		<OutputType>Exe</OutputType>
+		<RootNamespace>SpiritIsland.Maui</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Display name -->
+		<ApplicationTitle>SpiritIsland.Maui</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.spiritisland.maui</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\spirit_island.png" BaseSize="256,128" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\ghost_spirits.jpg" Color="#512BD4" BaseSize="256,256" />
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AndroidResource Remove="Services\**" />
+	  <AndroidResource Remove="Views\Pages\**" />
+	  <Compile Remove="Services\**" />
+	  <Compile Remove="Views\Pages\**" />
+	  <EmbeddedResource Remove="Services\**" />
+	  <EmbeddedResource Remove="Views\Pages\**" />
+	  <MauiCss Remove="Services\**" />
+	  <MauiCss Remove="Views\Pages\**" />
+	  <MauiXaml Remove="Services\**" />
+	  <MauiXaml Remove="Views\Pages\**" />
+	  <None Remove="Services\**" />
+	  <None Remove="Views\Pages\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Maui\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\AppIcon\spirit_island.png" />
+	  <None Remove="Resources\Images\badge\bdg_a_spread_of_rampant_green.png" />
+	  <None Remove="Resources\Images\badge\bdg_breath_of_darkness_down_your_spine.png" />
+	  <None Remove="Resources\Images\badge\bdg_bringer_of_dreams_and_nightmares.png" />
+	  <None Remove="Resources\Images\badge\bdg_dances_up_earthquakes.png" />
+	  <None Remove="Resources\Images\badge\bdg_downpour_drenches_the_world.png" />
+	  <None Remove="Resources\Images\badge\bdg_ember_eyed_behemoth.png" />
+	  <None Remove="Resources\Images\badge\bdg_finder_of_paths_unseen.png" />
+	  <None Remove="Resources\Images\badge\bdg_fractured_days_split_the_sky.png" />
+	  <None Remove="Resources\Images\badge\bdg_grinning_trickster_stirs_up_trouble.png" />
+	  <None Remove="Resources\Images\badge\bdg_hearth_vigil.png" />
+	  <None Remove="Resources\Images\badge\bdg_heart_of_the_wildfire.png" />
+	  <None Remove="Resources\Images\badge\bdg_keeper_of_the_forbidden_wilds.png" />
+	  <None Remove="Resources\Images\badge\bdg_lightnings_swift_strike.png" />
+	  <None Remove="Resources\Images\badge\bdg_lure_of_the_deep_wilderness.png" />
+	  <None Remove="Resources\Images\badge\bdg_many_minds_move_as_one.png" />
+	  <None Remove="Resources\Images\badge\bdg_oceans_hungry_grasp.png" />
+	  <None Remove="Resources\Images\badge\bdg_relentless_gaze_of_the_sun.png" />
+	  <None Remove="Resources\Images\badge\bdg_river_surges_in_sunlight.png" />
+	  <None Remove="Resources\Images\badge\bdg_serpent_slumbering_beneath_the_island.png" />
+	  <None Remove="Resources\Images\badge\bdg_shadows_flicker_like_flame.png" />
+	  <None Remove="Resources\Images\badge\bdg_sharp_fangs_behind_the_leaves.png" />
+	  <None Remove="Resources\Images\badge\bdg_shifting_memory_of_ages.png" />
+	  <None Remove="Resources\Images\badge\bdg_shroud_of_silent_mist.png" />
+	  <None Remove="Resources\Images\badge\bdg_starlight_seeks_its_form.png" />
+	  <None Remove="Resources\Images\badge\bdg_stones_unyielding_defiance.png" />
+	  <None Remove="Resources\Images\badge\bdg_thunderspeaker.png" />
+	  <None Remove="Resources\Images\badge\bdg_towering_roots_of_the_jungle.png" />
+	  <None Remove="Resources\Images\badge\bdg_vengeance_as_a_burning_plague.png" />
+	  <None Remove="Resources\Images\badge\bdg_vital_strength_of_the_earth.png" />
+	  <None Remove="Resources\Images\badge\bdg_volcano_looming_high.png" />
+	  <None Remove="Resources\Images\badge\bdg_wandering_voice_keens_delirium.png" />
+	  <None Remove="Resources\Images\badge\bdg_wounded_waters_bleeding.png" />
+	  <None Remove="Resources\Images\growth\accelerate_or_delay.png" />
+	  <None Remove="Resources\Images\growth\add_a_presence_or_disease.png" />
+	  <None Remove="Resources\Images\growth\add_or_move_incarna_to_presence.png" />
+	  <None Remove="Resources\Images\growth\add_presence_or_gain_major.png" />
+	  <None Remove="Resources\Images\growth\add_up_to_3_destroyed_presence___range_1z.png" />
+	  <None Remove="Resources\Images\growth\add_vitality_to_incarna.png" />
+	  <None Remove="Resources\Images\growth\all_pieces_escape.png" />
+	  <None Remove="Resources\Images\growth\discard_2_power_cards.png" />
+	  <None Remove="Resources\Images\growth\discard_a_power_card_with_fire.png" />
+	  <None Remove="Resources\Images\growth\draw_power_card_from_days_that_never_were.png" />
+	  <None Remove="Resources\Images\growth\empower_incarna.png" />
+	  <None Remove="Resources\Images\growth\energy_for_fire.png" />
+	  <None Remove="Resources\Images\growth\gain_1_energy.png" />
+	  <None Remove="Resources\Images\growth\gain_2_energy.png" />
+	  <None Remove="Resources\Images\growth\gain_2_energyx3z.png" />
+	  <None Remove="Resources\Images\growth\gain_3_energy.png" />
+	  <None Remove="Resources\Images\growth\gain_4_energy.png" />
+	  <None Remove="Resources\Images\growth\gain_9_energy.png" />
+	  <None Remove="Resources\Images\growth\gain_elements_air.png" />
+	  <None Remove="Resources\Images\growth\gain_elements_earth_earth.png" />
+	  <None Remove="Resources\Images\growth\gain_elements_moon.png" />
+	  <None Remove="Resources\Images\growth\gain_elements_sun.png" />
+	  <None Remove="Resources\Images\growth\gain_elements_water_water.png" />
+	  <None Remove="Resources\Images\growth\gain_energy_an_additional_time.png" />
+	  <None Remove="Resources\Images\growth\gain_energy_equal_to_card_plays.png" />
+	  <None Remove="Resources\Images\growth\gain_moon__air__or_plant.png" />
+	  <None Remove="Resources\Images\growth\gain_power_card.png" />
+	  <None Remove="Resources\Images\growth\gain_time_1_x2z.png" />
+	  <None Remove="Resources\Images\growth\gain_time_1_x3z.png" />
+	  <None Remove="Resources\Images\growth\gain_time_2z.png" />
+	  <None Remove="Resources\Images\growth\gather_1_presence_into_each_ocean.png" />
+	  <None Remove="Resources\Images\growth\gather_1_token.png" />
+	  <None Remove="Resources\Images\growth\ignore_range.png" />
+	  <None Remove="Resources\Images\growth\lose_1_energy.png" />
+	  <None Remove="Resources\Images\growth\lose_3_energy.png" />
+	  <None Remove="Resources\Images\growth\movepresence_1z.png" />
+	  <None Remove="Resources\Images\growth\movepresence_2z.png" />
+	  <None Remove="Resources\Images\growth\movepresence_3z.png" />
+	  <None Remove="Resources\Images\growth\movepresence_4z.png" />
+	  <None Remove="Resources\Images\growth\move_incarna_anywhere.png" />
+	  <None Remove="Resources\Images\growth\move_incarna___range_1z.png" />
+	  <None Remove="Resources\Images\growth\move_up_to_3_presence_together.png" />
+	  <None Remove="Resources\Images\growth\place_in_ocean.png" />
+	  <None Remove="Resources\Images\growth\place_presence.png" />
+	  <None Remove="Resources\Images\growth\place_presence_0z.png" />
+	  <None Remove="Resources\Images\growth\place_presence_0_mountain.png" />
+	  <None Remove="Resources\Images\growth\place_presence_1z.png" />
+	  <None Remove="Resources\Images\growth\place_presence_1_coastal.png" />
+	  <None Remove="Resources\Images\growth\place_presence_1_dahan.png" />
+	  <None Remove="Resources\Images\growth\place_presence_2z.png" />
+	  <None Remove="Resources\Images\growth\place_presence_2_dahan.png" />
+	  <None Remove="Resources\Images\growth\place_presence_2_jungleorwetland.png" />
+	  <None Remove="Resources\Images\growth\place_presence_2_townsorcitiesorblight.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3z.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3_beastorjungle.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3_dahan.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3_jungleorpresence.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3_mountainorpresence.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3_mountainorwetland.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3_no_blight.png" />
+	  <None Remove="Resources\Images\growth\place_presence_3_presenceorwilds.png" />
+	  <None Remove="Resources\Images\growth\place_presence_4_dahanorinvaders.png" />
+	  <None Remove="Resources\Images\growth\place_presence_4_inland.png" />
+	  <None Remove="Resources\Images\growth\place_presence_4_mountain.png" />
+	  <None Remove="Resources\Images\growth\place_presence_and_beast.png" />
+	  <None Remove="Resources\Images\growth\play_1_extra_card_this_turn.png" />
+	  <None Remove="Resources\Images\growth\play_2_extra_cards_this_turnx2z.png" />
+	  <None Remove="Resources\Images\growth\push_presence_from_ocean.png" />
+	  <None Remove="Resources\Images\growth\reclaim_1z.png" />
+	  <None Remove="Resources\Images\growth\reclaim_all.png" />
+	  <None Remove="Resources\Images\growth\reclaim_all_with_fire.png" />
+	  <None Remove="Resources\Images\growth\replace_presence_with_incarna.png" />
+	  <None Remove="Resources\Images\growth\z1_piece_escapes.png" />
+	  <None Remove="Resources\Images\growth\z2_pieces_escape.png" />
+	  <None Remove="Resources\Images\icons\build.png" />
+	  <None Remove="Resources\Images\icons\explore.png" />
+	  <None Remove="Resources\Images\icons\ravage.png" />
+	  <None Remove="Resources\Images\icons\salt_deposits.png" />
+	  <None Remove="Resources\Images\icons\ter_jungle.png" />
+	  <None Remove="Resources\Images\icons\ter_mountain.png" />
+	  <None Remove="Resources\Images\icons\ter_ocean.png" />
+	  <None Remove="Resources\Images\icons\ter_sands.png" />
+	  <None Remove="Resources\Images\icons\ter_wetland.png" />
+	  <None Remove="Resources\Images\icons\tl1.png" />
+	  <None Remove="Resources\Images\icons\tl2.png" />
+	  <None Remove="Resources\Images\icons\tl3.png" />
+	  <None Remove="Resources\Images\parts\another_spirit.png" />
+	  <None Remove="Resources\Images\parts\any.png" />
+	  <None Remove="Resources\Images\parts\any_spirit.png" />
+	  <None Remove="Resources\Images\parts\attr_.png" />
+	  <None Remove="Resources\Images\parts\attr_another_spirit.png" />
+	  <None Remove="Resources\Images\parts\attr_any.png" />
+	  <None Remove="Resources\Images\parts\attr_any_spirit.png" />
+	  <None Remove="Resources\Images\parts\attr_beast.png" />
+	  <None Remove="Resources\Images\parts\attr_blight.png" />
+	  <None Remove="Resources\Images\parts\attr_blight_invaders.png" />
+	  <None Remove="Resources\Images\parts\attr_cities.png" />
+	  <None Remove="Resources\Images\parts\attr_coastal.png" />
+	  <None Remove="Resources\Images\parts\attr_coastal_cities.png" />
+	  <None Remove="Resources\Images\parts\attr_coastal_wetland.png" />
+	  <None Remove="Resources\Images\parts\attr_dahan.png" />
+	  <None Remove="Resources\Images\parts\attr_disease.png" />
+	  <None Remove="Resources\Images\parts\attr_incarna.png" />
+	  <None Remove="Resources\Images\parts\attr_inland.png" />
+	  <None Remove="Resources\Images\parts\attr_invaders.png" />
+	  <None Remove="Resources\Images\parts\attr_jungle_mountain.png" />
+	  <None Remove="Resources\Images\parts\attr_jungle_no_blight.png" />
+	  <None Remove="Resources\Images\parts\attr_jungle_sands.png" />
+	  <None Remove="Resources\Images\parts\attr_jungle_wetland.png" />
+	  <None Remove="Resources\Images\parts\attr_mountain.png" />
+	  <None Remove="Resources\Images\parts\attr_mountain_sands.png" />
+	  <None Remove="Resources\Images\parts\attr_mountain_wetland.png" />
+	  <None Remove="Resources\Images\parts\attr_not_ocean.png" />
+	  <None Remove="Resources\Images\parts\attr_not_wetland.png" />
+	  <None Remove="Resources\Images\parts\attr_no_blight.png" />
+	  <None Remove="Resources\Images\parts\attr_no_invaders.png" />
+	  <None Remove="Resources\Images\parts\attr_sands_wetland.png" />
+	  <None Remove="Resources\Images\parts\attr_strife.png" />
+	  <None Remove="Resources\Images\parts\attr_towns_cities.png" />
+	  <None Remove="Resources\Images\parts\attr_yourself.png" />
+	  <None Remove="Resources\Images\parts\attr_z0z.png" />
+	  <None Remove="Resources\Images\parts\attr_z0_ss.png" />
+	  <None Remove="Resources\Images\parts\attr_z1z.png" />
+	  <None Remove="Resources\Images\parts\attr_z1_blight.png" />
+	  <None Remove="Resources\Images\parts\attr_z1_dahan.png" />
+	  <None Remove="Resources\Images\parts\attr_z1_jungle.png" />
+	  <None Remove="Resources\Images\parts\attr_z1_mountain.png" />
+	  <None Remove="Resources\Images\parts\attr_z1_sands.png" />
+	  <None Remove="Resources\Images\parts\attr_z1_ss.png" />
+	  <None Remove="Resources\Images\parts\attr_z1_wetland.png" />
+	  <None Remove="Resources\Images\parts\attr_z2z.png" />
+	  <None Remove="Resources\Images\parts\attr_z2_beast.png" />
+	  <None Remove="Resources\Images\parts\attr_z2_dahan.png" />
+	  <None Remove="Resources\Images\parts\attr_z2_mountain_jungle.png" />
+	  <None Remove="Resources\Images\parts\attr_z2_sands.png" />
+	  <None Remove="Resources\Images\parts\attr_z2_ss.png" />
+	  <None Remove="Resources\Images\parts\attr_z3z.png" />
+	  <None Remove="Resources\Images\parts\attr_z3_ss.png" />
+	  <None Remove="Resources\Images\parts\attr_z3_wetland.png" />
+	  <None Remove="Resources\Images\parts\attr_z_1z.png" />
+	  <None Remove="Resources\Images\parts\attr_z_2z.png" />
+	  <None Remove="Resources\Images\parts\attr_z_z.png" />
+	  <None Remove="Resources\Images\parts\beast.png" />
+	  <None Remove="Resources\Images\parts\blight.png" />
+	  <None Remove="Resources\Images\parts\blight_invaders.png" />
+	  <None Remove="Resources\Images\parts\cities.png" />
+	  <None Remove="Resources\Images\parts\coastal.png" />
+	  <None Remove="Resources\Images\parts\coastal_cities.png" />
+	  <None Remove="Resources\Images\parts\coastal_wetland.png" />
+	  <None Remove="Resources\Images\parts\cost_fast.png" />
+	  <None Remove="Resources\Images\parts\cost_slow.png" />
+	  <None Remove="Resources\Images\parts\dahan.png" />
+	  <None Remove="Resources\Images\parts\disease.png" />
+	  <None Remove="Resources\Images\parts\incarna.png" />
+	  <None Remove="Resources\Images\parts\inland.png" />
+	  <None Remove="Resources\Images\parts\invaders.png" />
+	  <None Remove="Resources\Images\parts\jungle_mountain.png" />
+	  <None Remove="Resources\Images\parts\jungle_no_blight.png" />
+	  <None Remove="Resources\Images\parts\jungle_sands.png" />
+	  <None Remove="Resources\Images\parts\jungle_wetland.png" />
+	  <None Remove="Resources\Images\parts\mountain.png" />
+	  <None Remove="Resources\Images\parts\mountain_sands.png" />
+	  <None Remove="Resources\Images\parts\mountain_wetland.png" />
+	  <None Remove="Resources\Images\parts\not_ocean.png" />
+	  <None Remove="Resources\Images\parts\not_wetland.png" />
+	  <None Remove="Resources\Images\parts\no_blight.png" />
+	  <None Remove="Resources\Images\parts\no_invaders.png" />
+	  <None Remove="Resources\Images\parts\sands_wetland.png" />
+	  <None Remove="Resources\Images\parts\strife.png" />
+	  <None Remove="Resources\Images\parts\towns_cities.png" />
+	  <None Remove="Resources\Images\parts\yourself.png" />
+	  <None Remove="Resources\Images\parts\z0z.png" />
+	  <None Remove="Resources\Images\parts\z0_ss.png" />
+	  <None Remove="Resources\Images\parts\z1z.png" />
+	  <None Remove="Resources\Images\parts\z1_blight.png" />
+	  <None Remove="Resources\Images\parts\z1_dahan.png" />
+	  <None Remove="Resources\Images\parts\z1_jungle.png" />
+	  <None Remove="Resources\Images\parts\z1_mountain.png" />
+	  <None Remove="Resources\Images\parts\z1_sands.png" />
+	  <None Remove="Resources\Images\parts\z1_ss.png" />
+	  <None Remove="Resources\Images\parts\z1_wetland.png" />
+	  <None Remove="Resources\Images\parts\z2z.png" />
+	  <None Remove="Resources\Images\parts\z2_beast.png" />
+	  <None Remove="Resources\Images\parts\z2_dahan.png" />
+	  <None Remove="Resources\Images\parts\z2_mountain_jungle.png" />
+	  <None Remove="Resources\Images\parts\z2_sands.png" />
+	  <None Remove="Resources\Images\parts\z2_ss.png" />
+	  <None Remove="Resources\Images\parts\z3z.png" />
+	  <None Remove="Resources\Images\parts\z3_ss.png" />
+	  <None Remove="Resources\Images\parts\z3_wetland.png" />
+	  <None Remove="Resources\Images\parts\z_1z.png" />
+	  <None Remove="Resources\Images\parts\z_2z.png" />
+	  <None Remove="Resources\Images\parts\z_z.png" />
+	  <None Remove="Resources\Images\presenceTrack\air_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\animal_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\any_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\discard_2_elements_for_card_play.png" />
+	  <None Remove="Resources\Images\presenceTrack\earth_any.png" />
+	  <None Remove="Resources\Images\presenceTrack\earth_card.png" />
+	  <None Remove="Resources\Images\presenceTrack\earth_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\empower.png" />
+	  <None Remove="Resources\Images\presenceTrack\energy0z.png" />
+	  <None Remove="Resources\Images\presenceTrack\fire_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\fire_plant.png" />
+	  <None Remove="Resources\Images\presenceTrack\five_reclaim_one.png" />
+	  <None Remove="Resources\Images\presenceTrack\gatherblight.png" />
+	  <None Remove="Resources\Images\presenceTrack\gather_1_dahan.png" />
+	  <None Remove="Resources\Images\presenceTrack\moon_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\moon_fire.png" />
+	  <None Remove="Resources\Images\presenceTrack\moveonepresence_png.png" />
+	  <None Remove="Resources\Images\presenceTrack\pay2forextraplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\pick_element.png" />
+	  <None Remove="Resources\Images\presenceTrack\plant_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\playextracardthisturn.png" />
+	  <None Remove="Resources\Images\presenceTrack\push1dahan.png" />
+	  <None Remove="Resources\Images\presenceTrack\push1towncity.png" />
+	  <None Remove="Resources\Images\presenceTrack\push_incarna.png" />
+	  <None Remove="Resources\Images\presenceTrack\reclaim_1_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\so1z.png" />
+	  <None Remove="Resources\Images\presenceTrack\so2z.png" />
+	  <None Remove="Resources\Images\presenceTrack\so3z.png" />
+	  <None Remove="Resources\Images\presenceTrack\so4z.png" />
+	  <None Remove="Resources\Images\presenceTrack\sun_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\sun_moon.png" />
+	  <None Remove="Resources\Images\presenceTrack\water_animal.png" />
+	  <None Remove="Resources\Images\presenceTrack\water_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\w_w.png" />
+	  <None Remove="Resources\Images\presenceTrack\z0_2z.png" />
+	  <None Remove="Resources\Images\presenceTrack\z0_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z12_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z1_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z1_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z1_moon_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z1_sun_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z2_air_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z2_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z2_cardplay_earth.png" />
+	  <None Remove="Resources\Images\presenceTrack\z2_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z2_fire_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z2_sun_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z2_water_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z3_animal_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z3_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z3_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z3_fire_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z3_plant_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_324_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_air_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_animal_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_any_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_cardplay_air.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z4_plant_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_air_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_any_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_fire_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_sun_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z6_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z6_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z7_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z8_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z9_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z_1_any.png" />
+	  <None Remove="Resources\Images\presenceTrack\z_1_card_play.png" />
+	  <None Remove="Resources\Images\presenceTrack\z_1_impending.png" />
+	  <None Remove="Resources\Images\presenceTrack\z_1__1_range.png" />
+	  <None Remove="Resources\Images\presenceTrack\z_2z.png" />
+	  <None Remove="Resources\Images\tokens\badlands.png" />
+	  <None Remove="Resources\Images\tokens\beast.png" />
+	  <None Remove="Resources\Images\tokens\card_play.png" />
+	  <None Remove="Resources\Images\tokens\coin.png" />
+	  <None Remove="Resources\Images\tokens\defend.png" />
+	  <None Remove="Resources\Images\tokens\disease.png" />
+	  <None Remove="Resources\Images\tokens\elements\air.png" />
+	  <None Remove="Resources\Images\tokens\elements\air_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\animal.png" />
+	  <None Remove="Resources\Images\tokens\elements\animal_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\any_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\earth.png" />
+	  <None Remove="Resources\Images\tokens\elements\earth_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\fire.png" />
+	  <None Remove="Resources\Images\tokens\elements\fire_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\moon.png" />
+	  <None Remove="Resources\Images\tokens\elements\moon_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\plant.png" />
+	  <None Remove="Resources\Images\tokens\elements\plant_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\sun.png" />
+	  <None Remove="Resources\Images\tokens\elements\sun_token.png" />
+	  <None Remove="Resources\Images\tokens\elements\water.png" />
+	  <None Remove="Resources\Images\tokens\elements\water_token.png" />
+	  <None Remove="Resources\Images\tokens\humans\city.png" />
+	  <None Remove="Resources\Images\tokens\humans\dahan.png" />
+	  <None Remove="Resources\Images\tokens\humans\explorer.png" />
+	  <None Remove="Resources\Images\tokens\humans\town.png" />
+	  <None Remove="Resources\Images\tokens\incarna\boddys.png" />
+	  <None Remove="Resources\Images\tokens\incarna\boddys_e.png" />
+	  <None Remove="Resources\Images\tokens\incarna\eeb.png" />
+	  <None Remove="Resources\Images\tokens\incarna\eeb_e.png" />
+	  <None Remove="Resources\Images\tokens\incarna\ll.png" />
+	  <None Remove="Resources\Images\tokens\incarna\ss.png" />
+	  <None Remove="Resources\Images\tokens\incarna\ss_e.png" />
+	  <None Remove="Resources\Images\tokens\incarna\trotj.png" />
+	  <None Remove="Resources\Images\tokens\incarna\trotj_e.png" />
+	  <None Remove="Resources\Images\tokens\incarna\tt.png" />
+	  <None Remove="Resources\Images\tokens\incarna\wvkd.png" />
+	  <None Remove="Resources\Images\tokens\incarna\wvkd_e.png" />
+	  <None Remove="Resources\Images\tokens\isolate.png" />
+	  <None Remove="Resources\Images\tokens\isolateorange.png" />
+	  <None Remove="Resources\Images\tokens\spirits\a_spread_of_rampant_green.png" />
+	  <None Remove="Resources\Images\tokens\spirits\breath_of_darkness_down_your_spine.png" />
+	  <None Remove="Resources\Images\tokens\spirits\bringer_of_dreams_and_nightmares.png" />
+	  <None Remove="Resources\Images\tokens\spirits\dances_up_earthquakes.png" />
+	  <None Remove="Resources\Images\tokens\spirits\downpour_drenches_the_world.png" />
+	  <None Remove="Resources\Images\tokens\spirits\ember_eyed_behemoth.png" />
+	  <None Remove="Resources\Images\tokens\spirits\finder_of_paths_unseen.png" />
+	  <None Remove="Resources\Images\tokens\spirits\grinning_trickster_stirs_up_trouble.png" />
+	  <None Remove="Resources\Images\tokens\spirits\hearth_vigil.png" />
+	  <None Remove="Resources\Images\tokens\spirits\heart_of_the_wildfire.png" />
+	  <None Remove="Resources\Images\tokens\spirits\keeper_of_the_forbidden_wilds.png" />
+	  <None Remove="Resources\Images\tokens\spirits\lightnings_swift_strike.png" />
+	  <None Remove="Resources\Images\tokens\spirits\lure_of_the_deep_wilderness.png" />
+	  <None Remove="Resources\Images\tokens\spirits\many_minds_move_as_one.png" />
+	  <None Remove="Resources\Images\tokens\spirits\oceans_hungry_grasp.png" />
+	  <None Remove="Resources\Images\tokens\spirits\relentless_gaze_of_the_sun.png" />
+	  <None Remove="Resources\Images\tokens\spirits\river_surges_in_sunlight.png" />
+	  <None Remove="Resources\Images\tokens\spirits\shadows_flicker_like_flame.png" />
+	  <None Remove="Resources\Images\tokens\spirits\sharp_fangs_behind_the_leaves.png" />
+	  <None Remove="Resources\Images\tokens\spirits\shifting_memory_of_ages.png" />
+	  <None Remove="Resources\Images\tokens\spirits\thunderspeaker.png" />
+	  <None Remove="Resources\Images\tokens\spirits\volcano_looming_high.png" />
+	  <None Remove="Resources\Images\tokens\strife.png" />
+	  <None Remove="Resources\Images\tokens\vitality.png" />
+	  <None Remove="Resources\Images\tokens\wilds.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\badge\bdg_a_spread_of_rampant_green.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_breath_of_darkness_down_your_spine.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_bringer_of_dreams_and_nightmares.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_dances_up_earthquakes.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_downpour_drenches_the_world.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_ember_eyed_behemoth.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_finder_of_paths_unseen.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_fractured_days_split_the_sky.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_grinning_trickster_stirs_up_trouble.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_hearth_vigil.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_heart_of_the_wildfire.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_keeper_of_the_forbidden_wilds.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_lightnings_swift_strike.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_lure_of_the_deep_wilderness.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_many_minds_move_as_one.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_oceans_hungry_grasp.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_relentless_gaze_of_the_sun.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_river_surges_in_sunlight.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_serpent_slumbering_beneath_the_island.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_shadows_flicker_like_flame.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_sharp_fangs_behind_the_leaves.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_shifting_memory_of_ages.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_shroud_of_silent_mist.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_starlight_seeks_its_form.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_stones_unyielding_defiance.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_thunderspeaker.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_towering_roots_of_the_jungle.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_vengeance_as_a_burning_plague.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_vital_strength_of_the_earth.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_volcano_looming_high.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_wandering_voice_keens_delirium.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_wounded_waters_bleeding.png" />
+	  <MauiImage Include="Resources\Images\growth\z1_piece_escapes.png" />
+	  <MauiImage Include="Resources\Images\growth\z2_pieces_escape.png" />
+	  <MauiImage Include="Resources\Images\growth\accelerate_or_delay.png" />
+	  <MauiImage Include="Resources\Images\growth\add_a_presence_or_disease.png" />
+	  <MauiImage Include="Resources\Images\growth\add_or_move_incarna_to_presence.png" />
+	  <MauiImage Include="Resources\Images\growth\add_presence_or_gain_major.png" />
+	  <MauiImage Include="Resources\Images\growth\add_up_to_3_destroyed_presence___range_1z.png" />
+	  <MauiImage Include="Resources\Images\growth\add_vitality_to_incarna.png" />
+	  <MauiImage Include="Resources\Images\growth\all_pieces_escape.png" />
+	  <MauiImage Include="Resources\Images\growth\discard_2_power_cards.png" />
+	  <MauiImage Include="Resources\Images\growth\discard_a_power_card_with_fire.png" />
+	  <MauiImage Include="Resources\Images\growth\draw_power_card_from_days_that_never_were.png" />
+	  <MauiImage Include="Resources\Images\growth\empower_incarna.png" />
+	  <MauiImage Include="Resources\Images\growth\energy_for_fire.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_1_energy.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_2_energy.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_2_energyx3z.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_3_energy.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_4_energy.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_9_energy.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_elements_air.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_elements_earth_earth.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_elements_moon.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_elements_sun.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_elements_water_water.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_energy_an_additional_time.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_energy_equal_to_card_plays.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_moon__air__or_plant.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_power_card.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_time_1_x2z.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_time_1_x3z.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_time_2z.png" />
+	  <MauiImage Include="Resources\Images\growth\gather_1_presence_into_each_ocean.png" />
+	  <MauiImage Include="Resources\Images\growth\gather_1_token.png" />
+	  <MauiImage Include="Resources\Images\growth\ignore_range.png" />
+	  <MauiImage Include="Resources\Images\growth\lose_1_energy.png" />
+	  <MauiImage Include="Resources\Images\growth\lose_3_energy.png" />
+	  <MauiImage Include="Resources\Images\growth\movepresence_1z.png" />
+	  <MauiImage Include="Resources\Images\growth\movepresence_2z.png" />
+	  <MauiImage Include="Resources\Images\growth\movepresence_3z.png" />
+	  <MauiImage Include="Resources\Images\growth\movepresence_4z.png" />
+	  <MauiImage Include="Resources\Images\growth\move_incarna_anywhere.png" />
+	  <MauiImage Include="Resources\Images\growth\move_incarna___range_1z.png" />
+	  <MauiImage Include="Resources\Images\growth\move_up_to_3_presence_together.png" />
+	  <MauiImage Include="Resources\Images\growth\place_in_ocean.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_0z.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_0_mountain.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_1z.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_1_coastal.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_1_dahan.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_2z.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_2_dahan.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_2_jungleorwetland.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_2_townsorcitiesorblight.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3z.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_beastorjungle.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_dahan.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_jungleorpresence.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_mountainorpresence.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_mountainorwetland.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_no_blight.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_presenceorwilds.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_4_dahanorinvaders.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_4_inland.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_4_mountain.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_and_beast.png" />
+	  <MauiImage Include="Resources\Images\growth\play_1_extra_card_this_turn.png" />
+	  <MauiImage Include="Resources\Images\growth\play_2_extra_cards_this_turnx2z.png" />
+	  <MauiImage Include="Resources\Images\growth\push_presence_from_ocean.png" />
+	  <MauiImage Include="Resources\Images\growth\reclaim_1z.png" />
+	  <MauiImage Include="Resources\Images\growth\reclaim_all.png" />
+	  <MauiImage Include="Resources\Images\growth\reclaim_all_with_fire.png" />
+	  <MauiImage Include="Resources\Images\growth\replace_presence_with_incarna.png" />
+	  <MauiImage Include="Resources\Images\icons\build.png" />
+	  <MauiImage Include="Resources\Images\icons\explore.png" />
+	  <MauiImage Include="Resources\Images\icons\ravage.png" />
+	  <MauiImage Include="Resources\Images\icons\salt_deposits.png" />
+	  <MauiImage Include="Resources\Images\icons\ter_jungle.png" />
+	  <MauiImage Include="Resources\Images\icons\ter_mountain.png" />
+	  <MauiImage Include="Resources\Images\icons\ter_ocean.png" />
+	  <MauiImage Include="Resources\Images\icons\ter_sands.png" />
+	  <MauiImage Include="Resources\Images\icons\ter_wetland.png" />
+	  <MauiImage Include="Resources\Images\icons\tl1.png" />
+	  <MauiImage Include="Resources\Images\icons\tl2.png" />
+	  <MauiImage Include="Resources\Images\icons\tl3.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_another_spirit.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_any.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_any_spirit.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_beast.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_blight.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_blight_invaders.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_cities.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_coastal.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_coastal_cities.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_coastal_wetland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_dahan.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_disease.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_incarna.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_inland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_invaders.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_jungle_mountain.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_jungle_no_blight.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_jungle_sands.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_jungle_wetland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_mountain.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_mountain_sands.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_mountain_wetland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_not_ocean.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_not_wetland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_no_blight.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_no_invaders.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_sands_wetland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_strife.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_towns_cities.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_yourself.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z0z.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z0_ss.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1z.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1_blight.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1_dahan.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1_jungle.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1_mountain.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1_sands.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1_ss.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z1_wetland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z2z.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z2_beast.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z2_dahan.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z2_mountain_jungle.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z2_sands.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z2_ss.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z3z.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z3_ss.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z3_wetland.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z_1z.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z_2z.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_z_z.png" />
+	  <MauiImage Include="Resources\Images\parts\cost_fast.png" />
+	  <MauiImage Include="Resources\Images\parts\cost_slow.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\air_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\animal_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\any_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\discard_2_elements_for_card_play.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\earth_any.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\earth_card.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\earth_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\empower.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\energy0z.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\fire_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\fire_plant.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\five_reclaim_one.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\gatherblight.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\gather_1_dahan.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\moon_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\moon_fire.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\moveonepresence_png.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\pay2forextraplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\pick_element.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\plant_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\playextracardthisturn.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\push1dahan.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\push1towncity.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\push_incarna.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\reclaim_1_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\so1z.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\so2z.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\so3z.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\so4z.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\sun_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\sun_moon.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\water_animal.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\water_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\w_w.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z0_2z.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z0_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z12_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z1_cardplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z1_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z1_moon_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z1_sun_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z2_air_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z2_cardplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z2_cardplay_earth.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z2_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z2_fire_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z2_sun_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z2_water_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z3_animal_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z3_cardplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z3_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z3_fire_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z3_plant_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_324_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_air_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_animal_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_any_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_cardplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_cardplay_air.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z4_plant_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_air_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_any_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_cardplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_fire_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_sun_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z6_cardplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z6_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z7_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z8_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z9_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z_1_any.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z_1_card_play.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z_1_impending.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z_1__1_range.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z_2z.png" />
+	  <MauiImage Include="Resources\Images\tokens\badlands.png" />
+	  <MauiImage Include="Resources\Images\tokens\beast.png" />
+	  <MauiImage Include="Resources\Images\tokens\card_play.png" />
+	  <MauiImage Include="Resources\Images\tokens\coin.png" />
+	  <MauiImage Include="Resources\Images\tokens\defend.png" />
+	  <MauiImage Include="Resources\Images\tokens\disease.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\air.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\air_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\animal.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\animal_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\any_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\earth.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\earth_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\fire.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\fire_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\moon.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\moon_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\plant.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\plant_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\sun.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\sun_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\water.png" />
+	  <MauiImage Include="Resources\Images\tokens\elements\water_token.png" />
+	  <MauiImage Include="Resources\Images\tokens\humans\city.png" />
+	  <MauiImage Include="Resources\Images\tokens\humans\dahan.png" />
+	  <MauiImage Include="Resources\Images\tokens\humans\explorer.png" />
+	  <MauiImage Include="Resources\Images\tokens\humans\town.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\boddys_e.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\boddys.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\eeb_e.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\eeb.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\ll.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\ss_e.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\ss.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\tt.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\trotj_e.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\trotj.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\wvkd_e.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\wvkd.png" />
+	  <MauiImage Include="Resources\Images\tokens\isolate.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\a_spread_of_rampant_green.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\breath_of_darkness_down_your_spine.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\bringer_of_dreams_and_nightmares.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\dances_up_earthquakes.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\downpour_drenches_the_world.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\ember_eyed_behemoth.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\finder_of_paths_unseen.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\grinning_trickster_stirs_up_trouble.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\heart_of_the_wildfire.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\hearth_vigil.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\keeper_of_the_forbidden_wilds.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\lightnings_swift_strike.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\lure_of_the_deep_wilderness.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\many_minds_move_as_one.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\oceans_hungry_grasp.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\relentless_gaze_of_the_sun.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\river_surges_in_sunlight.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\shadows_flicker_like_flame.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\sharp_fangs_behind_the_leaves.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\shifting_memory_of_ages.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\thunderspeaker.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\volcano_looming_high.png" />
+	  <MauiImage Include="Resources\Images\tokens\strife.png" />
+	  <MauiImage Include="Resources\Images\tokens\vitality.png" />
+	  <MauiImage Include="Resources\Images\tokens\wilds.png" />
+	  <MauiImage Include="Resources\Splash\ghost_spirits.jpg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="C:\Users\rettigcd\Desktop\spiritisland\SpiritIsland.Maui\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SpiritIsland.Basegame\SpiritIsland.Basegame.csproj" />
+	  <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
+	  <ProjectReference Include="..\SpiritIsland.FeatherAndFlame\SpiritIsland.FeatherAndFlame.csproj" />
+	  <ProjectReference Include="..\SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj" />
+	  <ProjectReference Include="..\SpiritIsland.NatureIncarnate\SpiritIsland.NatureIncarnate.csproj" />
+	  <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\Controls\FearDeck.xaml.cs">
+	    <DependentUpon>FearDeck.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Testing\TestPage.xaml.cs">
+	    <DependentUpon>TestPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\SpiritPanel\GrowthGroupView.xaml.cs">
+	    <DependentUpon>GrowthGroupView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\GameStatus\GameStatusView.xaml.cs">
+	    <DependentUpon>GameStatusView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\SpiritSummary\SpiritSummaryView.xaml.cs">
+	    <DependentUpon>SpiritSummaryView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\TokenLocation\TokenLocationView.xaml.cs">
+	    <DependentUpon>TokenLocationView.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\SinglePlayer\SinglePlayerGamePage.xaml.cs">
+	    <DependentUpon>SinglePlayerGamePage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\Cards\CardsOverlay.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Controls\BlightCard.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Cards\CardSlotView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Card\CardSummaryView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Card\CardView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Element\ElementDictView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Element\ElementView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Controls\FearPool.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Controls\FearDeck.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SpiritPanel\GrowthActionView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SpiritPanel\GrowthGroupView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SpiritPanel\GrowthTrackView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\GameStatus\GameStatusView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SpiritPanel\SpiritPanelView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Island\IslandView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SpiritSummary\SpiritSummaryView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Testing\TestPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SinglePlayer\SinglePlayerGamePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\NewGame\NewGamePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+</Project>

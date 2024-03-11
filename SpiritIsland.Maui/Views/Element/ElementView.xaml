@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:si="clr-namespace:SpiritIsland.Maui"
+			 x:DataType="si:ElementModel"
+			 x:Class="SpiritIsland.Maui.ElementView">
+
+	<ContentView.Resources>
+		<si:ElementToImageSourceConverter x:Key="elToImage" />
+		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
+	</ContentView.Resources>
+
+	<Grid ColumnDefinitions="5*,5*" RowDefinitions="4*,6*">
+		
+		<Grid.GestureRecognizers>
+			<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+		</Grid.GestureRecognizers>
+
+		<!-- Image -->
+		<Image Source="{Binding Element, Converter={StaticResource elToImage}}"
+				HorizontalOptions="Start" VerticalOptions="Start"
+				Grid.ColumnSpan="2" Grid.RowSpan="2" >
+		</Image>
+
+		<!-- Count -->
+		<Ellipse HorizontalOptions="Center" VerticalOptions="Center" 
+				IsVisible="{Binding Count,Converter={StaticResource showIfGreater},ConverterParameter=1}"
+				Stroke="Black" BackgroundColor="White" 
+				Grid.Column="1" Grid.Row="1" />
+		<Label
+			   FontSize="7" FontAttributes="Bold" 
+			   Text="{Binding Count,StringFormat='x{0}'}"
+			   IsVisible="{Binding Count,Converter={StaticResource showIfGreater},ConverterParameter=1}"
+			   HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"
+			   Grid.Column="1" Grid.Row="1" />
+
+		<!-- Is Option-->
+		<!-- <Ellipse Stroke="{Binding SelectColor}" StrokeThickness="2" /> -->
+
+	</Grid>
+
+</ContentView>

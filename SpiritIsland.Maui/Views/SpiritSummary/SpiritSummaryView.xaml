@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:si="clr-namespace:SpiritIsland.Maui"
+			 x:DataType="si:SpiritModel"
+			 x:Class="SpiritIsland.Maui.SpiritSummaryView ">
+
+	<ContentView.Resources>
+		<si:SpiritToButtonImgConverter x:Key="btnImage" />
+	</ContentView.Resources>
+
+	<HorizontalStackLayout Spacing="5" Padding="6,0">
+
+		<Image Source="{Binding Spirit, Converter={StaticResource btnImage}}">
+			<Image.GestureRecognizers>
+				<TapGestureRecognizer Tapped="Spirit_Clicked" />
+			</Image.GestureRecognizers>
+		</Image>
+		
+		<!-- Per Turn -->
+		<Frame MaximumHeightRequest="30" Padding="0" BackgroundColor="LightGray">
+			<HorizontalStackLayout Margin="5,2" Spacing="3">
+				<!-- Energy -->
+				<Grid MaximumHeightRequest="20" ToolTipProperties.Text="Energy / Turn">
+					<Image Source="coin.png" VerticalOptions="Center"  HorizontalOptions="Center" />
+					<Label x:Name="EnergyPerTurn" Text="{Binding EnergyPerTurn}" FontSize="10" FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center" />
+				</Grid>
+				<!-- Card -->
+				<Grid MaximumHeightRequest="20" ToolTipProperties.Text="Card Plays / Turn">
+					<Image Source="card_play.png" VerticalOptions="Center"  HorizontalOptions="Center" />
+					<Label x:Name="CardPlaysPerTurn" Text="{Binding CardPlaysPerTurn}" FontSize="10" FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center" />
+				</Grid>
+			</HorizontalStackLayout>
+		</Frame>
+
+		<!-- Placeable -->
+		<CollectionView x:Name="Placeables" ItemsSource="{Binding TrackPresence}" ItemsLayout="HorizontalList" MaximumHeightRequest="50">
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="si:TokenLocationModel" >
+					<Grid HeightRequest="50">
+						<!-- The Location -->
+						<Image Source="{Binding LocationImage}" Margin="0,10,0,0" />
+						<!-- The Token -->
+						<si:TokenLocationView Margin="0,0,0,20" BindingContext="{Binding .}" WidthRequest="30" />
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+
+		<!-- Energy -->
+		<Grid MaximumHeightRequest="30" ToolTipProperties.Text="Energy">
+			<Image Source="coin.png" VerticalOptions="Center"  HorizontalOptions="Center" />
+			<Label x:Name="Energy" Text="{Binding Energy}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"  HorizontalOptions="Center" />
+		</Grid>
+		
+		<!-- Elements -->
+		<si:ElementDictView BindingContext="{Binding Elements}" />
+
+		<Button Text="Cards" Padding="5,5" MaximumHeightRequest="30" Clicked="CardButton_Clicked"/>
+
+	</HorizontalStackLayout>
+	
+</ContentView>
