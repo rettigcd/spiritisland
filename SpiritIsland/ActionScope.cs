@@ -1,121 +1,121 @@
-﻿using System.ComponentModel;
-
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// A Spirit Island 'Action'
 /// </summary>
 public sealed class ActionScope : IAsyncDisposable {
 
-	#region ScopeContainer class
-
-	class ActionScopeContainer {
-		public ActionScopeContainer(GameState gameState) {
-			Id = Guid.NewGuid();
-
-			// Should only be called from
-			//	(a) GameState constructor and
-			//	(b) UI thread or Testing thread-context
-			Current = gameState.RootScope ?? new ActionScope( this, gameState );
-			StartOfActionHandlers = [];
-		}
-		readonly Guid Id;
-		public ActionScope Current; // default
-		public readonly List<IRunAtStartOfAction> StartOfActionHandlers;
-		public override string ToString() => Id.ToString();
-		public Task RunStartOfActionHandlers() {
-			IRunAtStartOfAction[] snapshop = [.. StartOfActionHandlers]; // so handlers can modify the List
-			return Task.WhenAll( snapshop.Select( x => x.Start( Current ) ) );
-
-		}
-	}
-
-	#endregion ScopeContainer class
-
 	#region static Container property
 
-	static ActionScopeContainer Container => _scopeContainer.Value ?? throw new InvalidOperationException( "ActionScope not initialized. Call ActionScope.Initialize() from root ExecutionContext." );
-	readonly static AsyncLocal<ActionScopeContainer> _scopeContainer = new AsyncLocal<ActionScopeContainer>(); // value gets shallow-copied into child calls and post-awaited states.
+	readonly static AsyncLocal<AsyncContainer<ActionScope>> _scopeContainer = new(); // value gets shallow-copied into child calls and post-awaited states.
+
+	class AsyncContainer<T>(T startingValue) {
+		public T Current = startingValue;
+	}
 
 	#endregion static Container property
 
-	#region Static Public
+	#region Start of Action Actions 
+
+	//	public static List<IRunAtStartOfAction> StartOfActionHandlers => Container.StartOfActionHandlers;
+	static public List<IRunAtStartOfAction> StartOfActionHandlers {
+		get {
+			var val = _stargOfActionHandlers.Value;
+			return val is not null ? val : (_stargOfActionHandlers.Value = []);
+		}
+	}
+	readonly static AsyncLocal<List<IRunAtStartOfAction>> _stargOfActionHandlers = new(); // value gets shallow-copied into child calls and post-awaited states.
+
+	static Task RunStartOfActionHandlers() {
+		IRunAtStartOfAction[] snapshop = [.. StartOfActionHandlers]; // so handlers can modify the List
+		return Task.WhenAll(snapshop.Select(x => x.Start(Current)));
+
+	}
+
+	#endregion Start of Action Actions
+
+	#region Static Public Init/Start methods
 
 	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
-	static public ActionScope Initialize(GameState gameState) {
-		_scopeContainer.Value = new ActionScopeContainer( gameState );
-		return _scopeContainer.Value.Current;
+	static public void Initialize( ActionScope rootSccope ) {
+		_scopeContainer.Value = new AsyncContainer<ActionScope>( rootSccope );
 	}
+
+	/// <summary> Starts Spirit Action </summary>
+	public static async Task<ActionScope> StartSpiritAction(ActionCategory cat, Spirit spirit) {
+		VerifyActionCategory(cat, true, nameof(StartSpiritAction));
+
+		ActionScope scope = new ActionScope(cat,spirit);
+		await RunStartOfActionHandlers(); // Outside constructor because it is ASYNC
+		return scope;
+	}
+
+	/// <summary> Starts a Non-Spirit action </summary>
+	public static async Task<ActionScope> Start(ActionCategory cat) {
+		VerifyActionCategory(cat, false, nameof(Start));
+
+		ActionScope scope = new ActionScope(cat);
+		await RunStartOfActionHandlers(); // Outside constructor because it is ASYNC
+		return scope;
+	}
+
+	/// <summary> For Testing only </summary>
+	public static ActionScope Start_NoStartActions(ActionCategory cat) => new ActionScope(cat);
+
+	#endregion Static Public Init/Start methods
+
+	#region static properties
 
 	// Good Reading on Execution Context and async/await
 	// https://devblogs.microsoft.com/pfxteam/executioncontext-vs-synchronizationcontext/
 	// https://stackoverflow.com/questions/39795286/does-async-await-increases-context-switching
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
-	public static ActionScope Current =>_scopeContainer?.Value?.Current; // returns null if no ActionScope
-	// public static ActionScope Current => Container.Current; // throws exception if no ActionScope
+	public static ActionScope Current => _scopeContainer?.Value?.Current; // returns null if no ActionScope
 
-	public static List<IRunAtStartOfAction> StartOfActionHandlers => Container.StartOfActionHandlers;
+	#endregion static properties
 
-	#endregion Static Public
+	#region public properties
+
+	public GameState GameState { get; }
+	public ActionCategory Category { get; }
+	public Func<Space, Space> Upgrader { get => _upgrader; set => _upgrader = value; }
+	/// <summary> Spirit (if any) that owns the action. Null for non-spirit actions. </summary>
+	public Spirit Owner { get => _owner; set => _owner = value; }
+	public Guid Id { get; }
+	/// <summary> Non-stasis + InPlay </summary>
+	public IEnumerable<Space> Spaces => GameState.SpaceSpecs.Select(AccessTokens);
+	/// <summary> All Non-stasis (even not-in-play) </summary>
+	public IEnumerable<Space> Spaces_Existing => GameState.SpaceSpecs_Existing.Select(AccessTokens);
+	public IEnumerable<Space> Spaces_Unfiltered => GameState.SpaceSpecs_Unfiltered.Select(AccessTokens);
+	public TerrainMapper TerrainMapper => _terrainMapper ??= (GameState?.GetTerrain(Category) ?? new TerrainMapper()); // If not GameState / configuration, use default
+
+	#endregion public properties
 
 	#region constructor
 
-	// The default / game-starting scope
-
-	/// <summary>
-	/// Root Scope
-	/// </summary>
-	/// <param name="container"></param>
-	ActionScope( ActionScopeContainer container, GameState gameState ) {
+	/// <summary> Root Scope </summary>
+	public ActionScope( GameState gameState ) {
 		Id = Guid.NewGuid();
-		_container = container;
 		Category = ActionCategory.Default;
-
-//		_neverCacheGameState = true; // !! Since it is a singleton, make usable across multiple execution contexts
 		GameState = gameState;
 	}
 
-	/// <summary> Called from ActionScope.Start( ActionCategory ) </summary>
-	ActionScope( ActionCategory actionCategory, ActionScopeContainer container ) {
+	ActionScope(ActionCategory actionCategory, Spirit spirit):this(actionCategory) {
+		Owner = spirit ?? throw new ArgumentNullException(nameof(spirit));
+		spirit.InitSpiritAction(this);
+	}
+
+	/// <summary> Spirit action </summary>
+	ActionScope(ActionCategory actionCategory) {
 		Id = Guid.NewGuid();
 		Category = actionCategory;
-		_container = container;
 
-		_old = _container.Current;
-		_container.Current = this;
+		AsyncContainer<ActionScope> container = _scopeContainer.Value; // grab containers
+		_old = container.Current;
+		container.Current = this;
 
 		GameState = _old.GameState;
-	}
-
-	public GameState GameState { get; }
-
-	/// <summary> For Testing only </summary>
-	public static ActionScope Start_NoStartActions( ActionCategory cat ) => new ActionScope( cat, Container );
-
-	/// <summary>
-	/// Starts a Non-Spirit action
-	/// </summary>
-	public static async Task<ActionScope> Start( ActionCategory cat ) {
-		VerifyActionCategory(cat,false,nameof(Start));
-
-		ActionScopeContainer container = Container;				// grab from ExecutionContext
-		ActionScope scope = new ActionScope( cat, container );  // start new (and assign current)
-		await container.RunStartOfActionHandlers();
-		return scope;
-	}
-
-	public static async Task<ActionScope> StartSpiritAction( ActionCategory cat, Spirit spirit ) {
-		VerifyActionCategory(cat,true,nameof(StartSpiritAction));
-
-		ActionScopeContainer container = Container;             // grab from ExecutionContext
-		ActionScope scope = new ActionScope( cat, container ) { // start new (and assign current)
-			Owner = spirit ?? throw new ArgumentNullException(nameof(spirit)),
-		};
-		spirit.InitSpiritAction(scope);
-
-		await container.RunStartOfActionHandlers();
-		return scope;
 	}
 
 	static void VerifyActionCategory( ActionCategory cat, bool expectedIsSpiritActin, string constructorName ) {
@@ -130,28 +130,9 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	#endregion
 
-	public ActionCategory Category { get; }
-
-	
 	/// <summary> Called from Space.Tokens to get Tokens. </summary>
 	/// <remarks> Provides hook for spirits to modify the Space object used for their actions.</remarks>
 	public Space AccessTokens(SpaceSpec space) => Upgrader( GameState.Tokens[space] );
-
-	/// <summary> Non-stasis + InPlay </summary>
-	public IEnumerable<Space> Spaces => GameState.SpaceSpecs.Select(AccessTokens);
-	/// <summary> All Non-stasis (even not-in-play) </summary>
-	public IEnumerable<Space> Spaces_Existing => GameState.SpaceSpecs_Existing.Select(AccessTokens);
-	public IEnumerable<Space> Spaces_Unfiltered => GameState.SpaceSpecs_Unfiltered.Select(AccessTokens);
-
-
-	#region Anything that gets Configured by Spirit Actions
-
-	public Func<Space, Space> Upgrader {
-		get { return _upgrader; }
-		set { _upgrader = value; }
-	}
-
-	#endregion
 
 	#region Non-Spirit Initialized Action Scoped data
 
@@ -177,39 +158,9 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	#endregion Non-Spirit Initialized Action Scoped data
 
-	public TerrainMapper TerrainMapper => _terrainMapper 
-		??= (GameState?.GetTerrain( Category ) ?? new TerrainMapper()); // If not GameState / configuration, use default
-
-	/// <summary>
-	/// Spirit (if any) that owns the action. Null for non-spirit actions.
-	/// </summary>
-	public Spirit Owner { 
-		get => _owner;
-		set { 
-		_owner = value; }
-	}
-
-	public Guid Id { get; }
-
 	public void Log(Log.ILogEntry entry ) => GameState.Log( entry );
+
 	public void LogDebug( string debugMsg ) => GameState.Log( new Log.Debug( debugMsg ) );
-
-	#region Debugging Action-Scope problems
-
-	//public void Log(string label ) {
-	//	lock(_locker) {
-	//		_log.Add(this.ToString()+" - " + label);
-	//	}
-	//}
-	//static public string[] GetLog() {
-	//	lock(_locker) {
-	//		return _log.ToArray();
-	//	}
-	//}
-	//readonly static object _locker = new object();
-	//readonly static List<string> _log = new List<string>();
-
-	#endregion
 
 	public override string ToString() {
 		return $"{Id} : {Category} : "+Owner?.SpiritName??"";
@@ -219,25 +170,26 @@ public sealed class ActionScope : IAsyncDisposable {
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
 
-		var current = _container.Current;
+		var current = _scopeContainer.Value.Current;
 		if(current != this) 
 			throw new Exception($"Error SI01: Disposing {Category}/{Id} but .Current is {current.Category}/{current.Id}");
-			// SI01 - Scenarios that cause this:
-			// 1) An ActionScope is missing a using and doesn't dispose of itself.
-			//    The parent goes to dispose of itself and finds the child still set as current
-			// 2) During testing... Parent ActionScope created on different thread than child ActionScope.
-			//    Exception occurs on Parent thread which tries to dispose bethrow bubbling up the exception
-			//    However, child ActionScope is still running and hasn't cleaned itself up yet.
-			// 3) The Container was initialized in a child execution context, not the root/parent context.
+		// SI01 - Scenarios that cause this:
+		// 1) An ActionScope is missing a using and doesn't dispose of itself.
+		//    The parent goes to dispose of itself and finds the child still set as current
+		// 2) During testing... Parent ActionScope created on different thread than child ActionScope.
+		//    Exception occurs on Parent thread which tries to dispose bethrow bubbling up the exception
+		//    However, child ActionScope is still running and hasn't cleaned itself up yet.
+		// 3) The Container was initialized in a child execution context, not the root/parent context.
 
-		_container.Current = _old;
+		_scopeContainer.Value.Current = _old;
 	}
 
 	public void AtEndOfThisAction(Func<ActionScope,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );
+
 	public void AtEndOfThisAction( Action<ActionScope> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );
 
 	#region private
-	readonly ActionScopeContainer _container;
+
 	readonly ActionScope _old;
 
 	AsyncEvent<ActionScope> _endOfThisAciton;

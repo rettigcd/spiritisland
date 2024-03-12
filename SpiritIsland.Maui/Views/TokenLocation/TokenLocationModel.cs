@@ -48,7 +48,7 @@ public class TokenLocationModel
 		}
 
 		if(tokenOn.Location is Track track) {
-			LocationImage = ImageCache.FromFile( track.Text.ToResourceName() );
+			LocationImage = ImageCache.FromFile( track.Code.ToResourceName() );
 		}
 
 		RefreshCountAndSS();

@@ -4,7 +4,8 @@ public class ActionScope_Tests {
 
 	[Fact]
 	public async Task Original_IsRestored() {
-		ActionScope.Initialize(new GameState(new RiverSurges(),Board.BuildBoardE()));
+		var gs = new GameState(new RiverSurges(), Board.BuildBoardE());
+		ActionScope.Initialize(gs.RootScope);
 		Guid childId; // grab later
 
 		// Given: we know the default/original action scope

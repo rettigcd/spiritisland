@@ -23,7 +23,8 @@ public sealed class GameState : IHaveMemento {
 	public GameState(Spirit[] spirits,Board[] boards, int gameNumber = 0 ){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");
 
-		RootScope = ActionScope.Initialize( this );
+		RootScope = new ActionScope(this);
+		ActionScope.Initialize(RootScope); // This must be called on all Execution Contexts 
 
 		Island = new Island( boards );
 		Spirits = spirits;

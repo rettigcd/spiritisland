@@ -43,9 +43,6 @@ public partial class SinglePlayerGamePage : ContentPage {
 		_gameState = _unstartedGame;
 		_unstartedGame = null;
 
-		//if(ActionScope.Current == null)
-		//	ActionScope.Initialize( _gameState );
-
 		// Setup the new game
 		_game = new SinglePlayerGame( _gameState ) {
 			LogExceptions = true,
@@ -142,6 +139,9 @@ public partial class SinglePlayerGamePage : ContentPage {
 
 	void Game_NewWaitingDecision( IDecision decision ) {
 		var gameState = _gameState!;
+
+		if(ActionScope.Current == null)
+			ActionScope.Initialize(gameState.RootScope);
 
 		// Update Prompt
 		_nextDecision = decision;

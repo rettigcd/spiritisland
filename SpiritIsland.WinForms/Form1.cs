@@ -204,7 +204,7 @@ public partial class Form1 : Form, IHaveOptions {
 
 	async Task TryStartGame() {
 		try{
-			ActionScope.Initialize(_game.GameState);
+			ActionScope.Initialize(_game.GameState.RootScope);
 			await _game.StartAsync();
 		} catch(Exception ex){
 			System.IO.File.WriteAllText(System.IO.Path.Combine(AppDataFolder.GetRootPath(),"exception.txt"), ex.ToString() );

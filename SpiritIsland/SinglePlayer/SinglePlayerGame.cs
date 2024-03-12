@@ -32,7 +32,7 @@ public class SinglePlayerGame {
 	/// </summary>
 	public void Start() {
 		// this MUST be called at least once on the UI thread so that we can query the GameState
-		ActionScope.Initialize( GameState );
+		ActionScope.Initialize( GameState.RootScope );
 		EngineTask = StartAsync();
 	}
 	public Task EngineTask { get; private set; }
