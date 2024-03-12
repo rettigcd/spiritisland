@@ -2,7 +2,16 @@
 
 namespace SpiritIsland;
 
-public class DecisionLogEntry( IOption _selection, IDecision _decision, bool _auto ) : ILogEntry {
+public class DecisionLogEntry : ILogEntry {
+
+	public DecisionLogEntry(IOption selection, IDecision decision, bool auto) {
+		ArgumentNullException.ThrowIfNull(selection,nameof(selection));
+		ArgumentNullException.ThrowIfNull(decision,nameof(decision));
+		_selection = selection;
+		_decision = decision;
+		_auto = auto;
+	}
+
 	public string Msg( LogLevel level ) {
 		// Fatal/Error/Warn/Info
 		if( level <= LogLevel.Info)
@@ -15,4 +24,9 @@ public class DecisionLogEntry( IOption _selection, IDecision _decision, bool _au
 	}
 
 	public LogLevel Level => LogLevel.Info;
+
+
+	readonly IOption _selection;
+	readonly IDecision _decision;
+	readonly bool _auto;
 }

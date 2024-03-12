@@ -37,6 +37,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	#region IUserPortal - Choose
 
 	public void Choose( IDecision _, IOption selection, bool block = true ) {
+		// ** UI-Thread **
 
 		var currentDecisionMaker = CacheNextDecision( null );
 		if(currentDecisionMaker == null) 
@@ -48,8 +49,6 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 		if(!currentDecision.Options.Contains( selection ))
 			throw new ArgumentException( selection.Text + " not found in options(" + currentDecision.Options.Select( x => x.Text ).Join( "," ) + ")" );
-
-		Log( new DecisionLogEntry( selection, currentDecision, false ) );
 
 		currentDecisionMaker.Select( selection ); // ####
 	}
@@ -85,7 +84,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	/// <summary>
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 	/// </summary>
-	public Task<T> Select<T>( A.TypedDecision<T> decision ) where T : class {
+	public async Task<T> Select<T>( A.TypedDecision<T> decision ) where T : class {
 		ArgumentNullException.ThrowIfNull( decision );
 
 		if(_activeDecisionMaker != null) 
@@ -93,7 +92,7 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 		// Scenario 1 - No options => Auto-Select NULL
 		if(decision.Options.Length == 0)
-			return PreloadedSpaceToken is null ? Task.FromResult<T>(null)
+			return PreloadedSpaceToken is null ? null
 				: throw new InvalidOperationException($"Preloaded {PreloadedSpaceToken} but that is now not an option.");
 
 		// Scenario 2 - Resolve Promise with preloaded value.
@@ -102,13 +101,15 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 				throw new InvalidOperationException( $"Preloaded option {PreloadedSpaceToken} not an option for "+ decision.Prompt );
 			IOption preloaded = PreloadedSpaceToken;
 			PreloadedSpaceToken = null;
-			return Task.FromResult<T>( (T)preloaded );
+
+			Log(new DecisionLogEntry( preloaded, decision, false));
+			return (T)preloaded;
 		}
 
 		// Scenario 3 - Auto-Select Single
 		if(decision.Options.Length == 1 && decision.AllowAutoSelect) {
 			Log( new DecisionLogEntry(decision.Options[0], decision, true ) );
-			return Task.FromResult<T>( decision.ConvertOptionToResult(decision.Options[0]) );
+			return decision.ConvertOptionToResult(decision.Options[0]);
 		}
 
 		// Scenario 4 - Returns unresolved promise.
@@ -124,15 +125,20 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 
 		// 2nd Signal - callback
 		// was BLOCKING - BAD, caused problems updating the UI thread.
-		// UI threads should wrap this in a Task.Run()...
+
 		NewWaitingDecision?.Invoke(decision);
 
-		return promise.Task;
+		T result = await promise.Task;
+		if(result != null)
+			Log(new DecisionLogEntry((IOption)result, decision, false));
+		return result;
 	}
 
 	#region selection log / private
 
 	void Log( DecisionLogEntry entry ) {
+		if(ActionScope.Current == null) throw new InvalidOperationException("Must have action scope");
+
 		DecisionMade?.Invoke(entry);
 		selections.Add( entry.Msg(LogLevel.Info) );
 	}
