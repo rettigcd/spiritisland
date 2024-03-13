@@ -2,9 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:si="clr-namespace:SpiritIsland.Maui"
+			 xmlns:sib="clr-namespace:SpiritIsland;assembly=SpiritIsland"
 			 x:Class="SpiritIsland.Maui.SinglePlayerGamePage"
 			 x:DataType="si:DecisionModel"
-			 Title="River on Board A">
+			 Title="{Binding Title}">
 
 	<ContentPage.Resources>
 		<Color x:Key="PageControlTextColor">Blue</Color> <!-- I can bind to the BindingContext here - yay! -->
@@ -25,7 +26,7 @@
 			Grid.Row="1" />
 
 		<!-- Island -->
-		<si:IslandView x:Name="IV" Grid.Row="2" />
+		<si:IslandView x:Name="IV" Grid.Row="2" Model="{Binding Island}" />
 
 		<!-- Game Over Info -->
 		<Label x:Name="GameOverInfo" IsVisible="false" HorizontalOptions="Center" 
@@ -40,20 +41,26 @@
 		<!-- Accept -->
 		<Button x:Name="Accept" Text="{Binding AcceptText}" 
 				HorizontalOptions="CenterAndExpand" Padding="20,0"
-				Clicked="OnAcceptClicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" />
+				Clicked="Accept_Clicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" />
 		<!-- Options -->
 		<ScrollView x:Name="OptionListWrapper" BackgroundColor="#ddf" VerticalOptions="StartAndExpand" Margin="10,3" Grid.Row="5" >
-			<FlexLayout x:Name="OptionList"  
-				Direction="Row" AlignItems="Stretch" Wrap="Wrap"
-				RadioButtonGroup.GroupName="DecisionOptions" RadioButtonGroup.SelectedValue="{Binding SelectedOption}"
-				JustifyContent="SpaceEvenly">
+			<FlexLayout x:Name="OptionList" BindableLayout.ItemsSource="{Binding Options}" 
+						Direction="Row" AlignItems="Stretch" Wrap="Wrap"
+						RadioButtonGroup.GroupName="DecisionOptions" RadioButtonGroup.SelectedValue="{Binding SelectedOption}"
+						JustifyContent="SpaceEvenly">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate x:DataType="si:OptionModel">
+						<RadioButton Value="{Binding Option}" Content="{Binding Text}" GroupName="DecisionOptions" />
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+
 			</FlexLayout>
 		</ScrollView>
 
 
-		<si:SpiritPanelView x:Name="SpiritPanel" IsVisible="False" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" IsVisible="{Binding IsVisible}" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
 
-		<si:CardsOverlay x:Name="Cards" IsVisible="False" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+		<si:CardsOverlay BindingContext="{Binding Cards}" IsVisible="{Binding IsVisible}" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
 
 	</Grid>
 	

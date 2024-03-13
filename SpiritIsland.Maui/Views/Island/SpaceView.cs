@@ -1,38 +1,29 @@
 ﻿//using Android.OS;
+
 namespace SpiritIsland.Maui;
+
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Graphics.Text;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
-public class SpaceWidget : OptionView {
 
-	public IOption Option => _spaceSpec;
+public class SpaceWidget {
+
+	public readonly ObservableCollection<TokenLocationModel> Tokens;
 
 	Color _glowColor = Colors.Transparent;
 
-	public OptionState State { 
-		get => _state;
-		set {
-			if(_state == value) return;
-			_state = value;
-
-			_glowColor = _state switch {
-				OptionState.Selected => Color.FromRgba( 0, 255, 0, 144 ),
-				OptionState.IsOption => Color.FromRgba( 255, 0, 0, 144 ),
-				_ => Colors.Transparent,
-			};
-
-			_graphicsView.Invalidate();
-		}
-	}
-
-	public Space Space { get; private set; }
+	public Space Space => _model.Space;
 
 	#region constructors
 
-	public SpaceWidget(Space space, SpaceLayout layout, PointMapper mapper, AbsoluteLayout abs, GraphicsView graphicsView ) {
-		_spaceSpec = space.SpaceSpec;
-		_layout = layout;
-		_insidePoints = new ManageInternalPoints( layout );
+	public SpaceWidget(SpaceModel model, PointMapper mapper, AbsoluteLayout abs, GraphicsView graphicsView ) {
+		_model = model;
+		Tokens = model.Tokens;
+		_spaceSpec = Space.SpaceSpec;
+
+		_insidePoints = new ManageInternalPoints( model.Layout );
 		_terrainColor = GetTerrainColor();
 
 		// mapper
@@ -43,10 +34,30 @@ public class SpaceWidget : OptionView {
 		_outter = _layout.Corners.Select( mapper.Map ).ToArray();
 		_inner = Polygons.InnerPoints( _outter, -GLOW_WIDTH );
 
-		_abs = abs;
+		_absLayout = abs;
 		_graphicsView = graphicsView;
 
-		Space = space;
+		Tokens.CollectionChanged += Tokens_CollectionChanged;
+
+		_insidePoints.Init(Space);
+
+		foreach (TokenLocationModel tlModel in model.Tokens)
+			FloatToken(_absLayout, tlModel);
+
+		model.PropertyChanged += Model_PropertyChanged;
+
+	}
+	public readonly SpaceModel _model;
+
+	void Model_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) {
+		if(e.PropertyName == nameof(_model.State) ) {
+			_glowColor = _model.State switch {
+				OptionState.Selected => Color.FromRgba(0, 255, 0, 144),
+				OptionState.IsOption => Color.FromRgba(255, 0, 0, 144),
+				_ => Colors.Transparent,
+			};
+			_graphicsView.Invalidate();
+		}
 	}
 
 	#endregion constructors
@@ -58,46 +69,15 @@ public class SpaceWidget : OptionView {
 		return Polygons.IsInside( cornersInScreenCoords, clientCoords.ToXY() );
 	}
 
-	public void Click() => SelectOptionCallback?.Invoke(Option,false);
-
-	public Action<IOption,bool>? SelectOptionCallback { get; set; }
+	public void Click() { 
+		_model.ClickCommand.Execute(null);
+	}
 
 	public TokenLocationView GetSpaceTokenView( SpaceToken st ) {
 		return st.Space.SpaceSpec != _spaceSpec ? throw new ArgumentException( "Wrong space" )
 			: _visibleTokens.TryGetValue( st.Token, out TokenLocationView? stv ) ? stv
 			: throw new ArgumentException( $"Token {st.Token} not found in {st.Space.SpaceSpec}" );
 	}
-
-	#region Floating background
-
-	//void InitBackgroundShape( XY[] points, AbsoluteLayout abs ) {
-	//	(_spaceShape, Rect bounds) = MakePathFromPoints( points );
-	//	// style
-	//	_spaceShape.BackgroundColor = GetTerrainColor();
-	//	_spaceShape.Stroke = Colors.Black;
-	//	// tap
-	//	TapGestureRecognizer tap = new TapGestureRecognizer();
-	//	tap.Tapped += Tap_Tapped;
-	//	_spaceShape.GestureRecognizers.Add( tap );
-	//	// add it
-	//	abs.Float( _spaceShape, bounds );
-	//}
-
-	//void InitGlow( XY[] points, AbsoluteLayout abs ) {
-	//	(_glow, Rect glowBounds) = MakePathFromPoints( points, _inner );
-	//	abs!.Float( _glow, glowBounds );
-	//}
-
-	//void InitLabel( AbsoluteLayout abs ) {
-	//	Point center = Mapper.Map( _layout.Center ).ToPoint();
-	//	Point topLeft = new Point( center.X - _iconWidth / 2, center.Y - _iconWidth / 2 );
-	//	_spaceLabel = new Label { Text = _space.Label, FontSize = 10f, TextColor = Colors.White };
-	//	abs.Float( _spaceLabel, new Rect( topLeft.X, topLeft.Y, _iconWidth, _iconWidth ) );
-	//}
-	// readonly Path? _spaceShape;
-	// Path? _glow;
-	// Label? _spaceLabel;
-	#endregion Floating background
 
 	public void DrawBackground( ICanvas canvas ) {
 
@@ -125,12 +105,6 @@ public class SpaceWidget : OptionView {
 			canvas.FillColor = _glowColor;
 			canvas.FillPath( path );
 		}
-
-		// Internal points
-		// DrawPoints( canvas, _insidePoints.InternalPoints, Colors.Blue );
-		// DrawPoints( canvas, _insidePoints.BorderPoints, Colors.Red );
-		// DrawPoints( canvas, _insidePoints.NamePoints, Colors.Green );
-
 
 		// Label
 		XY center = _mapper.Map( _insidePoints.NameLocation );
@@ -162,82 +136,48 @@ public class SpaceWidget : OptionView {
 		}
 	}
 
-	public void SyncVisibleTokensToSpace(OptionViewManager ovm) {
-
-		if(Space is null || _abs is null) return;
-		_insidePoints.Init( Space );
-
-		IToken[] orderedTokens = [ ..Space.Keys.OfType<IToken>().OrderBy( OrderTokens ) ];
-
-		// Do Remove
-		IToken[] toRemove = _visibleTokens.Keys.Except( orderedTokens ).ToArray();
-		foreach(var old in toRemove) {
-			var stv = _visibleTokens[old];
-			_abs.Children.Remove(stv);
-			_visibleTokens.Remove(old);
-			OptionView? ov = stv.BindingContext as OptionView;
-			if(ov is not null)
-				ovm.Remove(ov);
+	void Tokens_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+		switch( e.Action) {
+			case NotifyCollectionChangedAction.Add:
+				foreach (TokenLocationModel tlModel in e.NewItems!)
+					FloatToken(_absLayout, tlModel);
+				break;
+			case NotifyCollectionChangedAction.Remove:
+				foreach (TokenLocationModel tlModel in e.OldItems!) {
+					IToken token = tlModel.TokenLocation.Token;
+					TokenLocationView view = _visibleTokens[token];
+					_visibleTokens.Remove(token);
+					_absLayout.Children.Remove(view);
+				}
+				break;
+			case NotifyCollectionChangedAction.Reset:
+				if(Tokens.Count == 0) {
+					foreach(var oldView in _visibleTokens.Values)
+						_absLayout.Children.Remove(oldView);
+					_visibleTokens.Clear();
+				} else {
+					// !! what just happened.  What kind of reset did we get?
+				}
+				break;
+			default:
+				break;
 		}
-
-		// Refresh tokens neither added or removed. (Do this BEFORE we Add the new ones.)
-		var updateCount = orderedTokens.Intersect( _visibleTokens.Keys );
-		foreach(var update in updateCount)
-			_visibleTokens[update].Model!.RefreshCountAndSS();
-
-		// Do Add
-		IToken[] toAdd = orderedTokens.Except( _visibleTokens.Keys ).ToArray();
-//		string s = $"Ordered({orderedTokens.Length}) - Visible({_visibleTokens.Keys.Count()}) => ToAdd( {toAdd.Length} )";
-		foreach(IToken token in toAdd) {
-			TokenLocationView? stv = FloatToken(_abs,token);
-			if(stv is not null && stv.Model is not null)
-				ovm.Add(stv.Model);
-		}
-
-		static int OrderTokens( IToken t ) => t is not HumanToken human ? 0
-			: -human.FullHealth * 100       // healthy first
-				+ human.StrifeCount * 10   // minimum strife
-				+ human.RemainingHealth;     // most damaged
-
-	}
-
-	public void ReleaseViews(OptionViewManager ovm) {
-		if(_abs is null) return;
-		foreach(TokenLocationView view in _visibleTokens.Values) {
-			_abs.Remove( view );
-			if(view.Model is not null)
-				ovm.Remove( view.Model );
-		}
-		_visibleTokens.Clear();
-
-		//foreach(View? view in new View?[]{_spaceShape, _spaceLabel, _glow } )
-		//	if(view != null)
-		//		_abs.Remove(view);
-		//_spaceLabel = null;
-		//_spaceLabel = null;
-		//_glow = null;
 	}
 
 	#region private methods
 
-	TokenLocationView? FloatToken( AbsoluteLayout abs, IToken token ) {
-		if(token is not IAppearInSpaceAbreviation) return null;
+	TokenLocationView? FloatToken( AbsoluteLayout abs, TokenLocationModel tlModel ) {
 
-		// calc rect
-		XY center = _mapper.Map( _insidePoints.GetPointFor( token ) );
-		XY topLeft = new XY( center.X - _iconWidth / 2, center.Y - _iconWidth / 2 );
-
-		// build token
-		var st = new SpaceToken(Space, token);
-
-		var vm = new TokenLocationModel( st );
 		TokenLocationView view = new TokenLocationView { 
 			ZIndex = 2, 
-			BindingContext = vm
+			BindingContext = tlModel
 		};
 
 		// add
-		_visibleTokens[token] = view;
+		_visibleTokens[tlModel.TokenLocation.Token] = view;
+
+		XY center = _mapper.Map( _insidePoints.GetPointFor(tlModel.TokenLocation.Token) );// calc center
+		XY topLeft = new XY(center.X - _iconWidth / 2, center.Y - _iconWidth / 2);
 		abs.Float( view, new Rect( topLeft.X, topLeft.Y, _iconWidth, _iconWidth ) );
 		return view;
 	}
@@ -277,9 +217,8 @@ public class SpaceWidget : OptionView {
 	#region private fields
 
 	readonly int _iconWidth;
-	OptionState _state;
 
-	readonly AbsoluteLayout _abs;
+	readonly AbsoluteLayout _absLayout;
 	readonly GraphicsView _graphicsView;
 
 	readonly PointMapper _mapper;
@@ -287,7 +226,7 @@ public class SpaceWidget : OptionView {
 	readonly XY[] _inner;
 	readonly Dictionary<IToken, TokenLocationView> _visibleTokens = [];
 	readonly Color _terrainColor;
-	readonly SpaceLayout _layout;
+	SpaceLayout _layout => _model.Layout;
 	readonly ManageInternalPoints _insidePoints;
 	readonly SpaceSpec _spaceSpec;
 

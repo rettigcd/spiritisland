@@ -2,45 +2,44 @@ namespace SpiritIsland.Maui;
 
 public partial class IslandView : ContentView, IDrawable {
 
-	public Tokens_ForIsland IslandTokens {
-		get => _tokens;
-		set => _tokens = value;
-	}
-	Tokens_ForIsland _tokens = new Tokens_ForIsland();
+	// updating this triggers a ui update
+	//public string Spaces { get => (string)GetValue(SpacesProperty); set => SetValue(SpacesProperty, value); }
+	public static readonly BindableProperty ModelProperty = BindableProperty.Create(nameof(Model), typeof(IslandModel), typeof(IslandView), propertyChanged: (containingObj, oldValue, newValue) => { 
+		IslandView iv = (IslandView)containingObj;
+		iv.InitSpaces( oldValue as IslandModel, newValue as IslandModel );
+	});
 
-	public Board? Board { 
-		get => _board;
-		set {
-			_board = value;
-			if(_board is null) {
-				_boardLayout = null;
-				_spaces = [];
-			} else {
-				_boardLayout = BoardLayout.Get( _board.Name );
-				PointMapper mapper = CalcMapper( _boardLayout );
-				_spaces = _board.Spaces_Unfiltered
-					.Select(s=>new SpaceWidget(_tokens[s], _boardLayout.ForSpace(s), mapper, Abs, IslandGraphicsView ))
-					.ToArray();
-			}
-			RegisterSpaces();
-			SyncTokensToGameState();
+	public IslandModel? Model {
+		get => (IslandModel?)GetValue(ModelProperty);
+		set => SetValue(ModelProperty, value);
+	}
+
+	void InitSpaces(IslandModel? _, IslandModel? newValue) {
+		if( newValue == null ) {
+			_spaceWidgets = [];
+			return;
 		}
+		var mapper = CalcMapper(newValue._boardLayout);
+		_spaceWidgets = newValue._spaceModels
+			.Select(model => {
+				return new SpaceWidget(model, mapper, Abs, IslandGraphicsView);
+			})
+			.ToArray();
 	}
 
-	public OptionViewManager? Ovm { 
-		get => _ovm;
-		set {
-			_ovm = value;
-			RegisterSpaces();
-		}
-	}
-	OptionViewManager? _ovm;
+#pragma warning disable CA1822 // Mark members as static
+	PointMapper CalcMapper(BoardLayout boardLayout) {
+		// The following line is return width/height of -1
+		// Bounds screenBounds = new Bounds(0, 0, (float)IslandGraphicsView.Width, (float)IslandGraphicsView.Height);
+		Bounds screenBounds = new Bounds(0, 0, 390, 240);
 
-	void RegisterSpaces() {
-		if(_ovm is null || _spaces.Length == 0) return;
-		foreach(var space in _spaces)
-			_ovm.Add(space);
+		Bounds worldBounds = boardLayout!.Bounds;
+		return PointMapper.FromWorldToViewport(
+			worldBounds,
+			screenBounds.FitBoth(worldBounds.Size)
+		);
 	}
+#pragma warning restore CA1822 // Mark members as static
 
 	#region constructor
 
@@ -51,54 +50,33 @@ public partial class IslandView : ContentView, IDrawable {
 	
 	#endregion constructor
 
-	public void SyncTokensToGameState() {
-		if(_ovm is null) return;
-		foreach(SpaceWidget space in _spaces)
-			space.SyncVisibleTokensToSpace(_ovm);
-	}
+	#region private methods
 
-	public void ReleaseTokens() {
-		if (_ovm is null) return;
-		foreach (SpaceWidget space in _spaces)
-			space.ReleaseViews(_ovm);
-	}
-
-	#region private
-
-	SpaceWidget? GetSpaceUnderPoint( PointF point ) {
-		foreach(SpaceWidget space in _spaces) {
-			if(space.Contains( point ))
+	SpaceWidget? GetSpaceUnderPoint(PointF point) {
+		foreach (SpaceWidget space in _spaceWidgets) {
+			if (space.Contains(point))
 				return space;
 		}
 		return null;
 	}
 
-	void IslandGraphicsView_StartInteraction( object sender, TouchEventArgs e ) {
+	void IslandGraphicsView_StartInteraction(object sender, TouchEventArgs e) {
 		// if(1 < e.Touches.Length) return;
-		SpaceWidget? spaceWidget = GetSpaceUnderPoint( e.Touches[0] );
+		SpaceWidget? spaceWidget = GetSpaceUnderPoint(e.Touches[0]);
 		spaceWidget?.Click();
 	}
 
-	void IDrawable.Draw( ICanvas canvas, RectF dirtyRect ) {
-		if(_boardLayout == null) return;
-		if(_board == null) return;
-
-		foreach(var space in _spaces)
-			space.DrawBackground( canvas );
+	void IDrawable.Draw(ICanvas canvas, RectF dirtyRect) {
+		foreach (var space in _spaceWidgets)
+			space.DrawBackground(canvas);
 	}
 
-	static PointMapper CalcMapper( BoardLayout boardLayout ) {
-		Bounds screenBounds = new Bounds( 0, 0, 390, 240 );
-		Bounds worldBounds = boardLayout!.Bounds;
-		return PointMapper.FromWorldToViewport(
-			worldBounds,
-			screenBounds.FitBoth( worldBounds.Size )
-		);
-	}
+	#endregion private methods
 
-	Board? _board;
-	BoardLayout? _boardLayout;
-	SpaceWidget[] _spaces = [];
+	#region private fields
 
-	#endregion private
+	SpaceWidget[] _spaceWidgets = [];
+
+	#endregion private fields
+
 }

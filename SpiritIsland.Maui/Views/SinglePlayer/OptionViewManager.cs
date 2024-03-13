@@ -2,14 +2,31 @@
 
 public class OptionViewManager {
 
-	public DecisionModel DecisionModel => _decisionModel;
-
 	#region constructor
 
-	public OptionViewManager( DecisionModel decisionModel ) {
-		_decisionModel = decisionModel;
-		_decisionModel.PropertyChanged += Value_PropertyChanged;
+	public OptionViewManager() {}
+
+	void OnViewClicked(IOption option, bool submit) {
+		OptionSelected?.Invoke(option, submit);
 	}
+
+	public IOption? SelectedOption {
+		set {
+			// un-select the old
+			foreach (var sv in _selectedViews)
+				sv.State = OptionState.IsOption;
+			_selectedViews.Clear();
+
+			// select the current
+			if( value is not null && OptionLookup.TryGetValue(value, out List<OptionView>? ovl)) {
+				_selectedViews.AddRange(ovl);
+				foreach (var sv in _selectedViews)
+					sv.State = OptionState.Selected;
+			}
+		}
+	}
+
+	public event Action<IOption,bool>? OptionSelected;
 
 	#endregion
 
@@ -81,34 +98,6 @@ public class OptionViewManager {
 		ov.SelectOptionCallback = OnViewClicked;
 	}
 
-	#region private methods
-
-	void OnViewClicked(IOption option,bool submit) { 
-		_decisionModel.SelectedOption = option;
-		if(submit)
-			_decisionModel.Submit();
-	}
-
-	void Value_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) {
-		ArgumentNullException.ThrowIfNull(sender);
-		DecisionModel decision = (DecisionModel)sender;
-		if (e.PropertyName == nameof(DecisionModel.SelectedOption) ) {
-			// un-select the old
-			foreach(var sv in _selectedViews)
-				sv.State = OptionState.IsOption;
-			_selectedViews.Clear();
-
-			// select the current
-			if (decision.SelectedOption is not null && OptionLookup.TryGetValue(decision.SelectedOption, out List<OptionView>? ovl)) {
-				_selectedViews.AddRange(ovl);
-				foreach(var sv in _selectedViews)
-					sv.State = OptionState.Selected;
-			}
-		}
-	}
-
-	#endregion private methods
-
 	#region privatefields
 
 	IOption[] _options = []; // the options from the current decision - so when adding controls, can enable them for the current decision
@@ -116,7 +105,6 @@ public class OptionViewManager {
 	readonly List<OptionView> _enabledViews = []; // holds enabled controls so we can easily disable them when decision is made
 
 	readonly Dictionary<IOption, List<OptionView>> OptionLookup = []; // find controls
-	readonly DecisionModel _decisionModel; // sets selected option when user clicks on control
 	readonly Dictionary<object,List<OptionView>> _byOwner = [];
 	#endregion privatefields
 

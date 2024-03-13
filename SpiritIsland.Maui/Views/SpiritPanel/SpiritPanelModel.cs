@@ -2,6 +2,9 @@
 
 public class SpiritPanelModel : ObservableModel {
 
+	public bool IsVisible { get => _isVisible; set => SetProp(ref _isVisible,value); }
+	bool _isVisible;
+
 	public string SpiritName => _spirit.SpiritName;
 	public SpecialRuleModel[] SpecialRules { get; }
 	public InnateModel[] Innates { get; }

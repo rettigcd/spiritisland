@@ -33,7 +33,9 @@ public partial class SpiritPanelView : ContentView {
 
 	#endregion Drag-n-Drop Growth
 
-	private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e) {
-		IsVisible = false;
+	void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e) {
+		model.IsVisible = false;
 	}
+
+	SpiritPanelModel model => (SpiritPanelModel)BindingContext;
 }

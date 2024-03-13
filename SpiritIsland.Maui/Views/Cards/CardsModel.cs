@@ -6,6 +6,8 @@ public class CardsModel : ObservableModel1 {
 
 	#region Observalbe Properties
 
+	public bool IsVisible { get => GetStruct<bool>(); set => SetProp(value); }
+
 	public ObservableCollection<CardSlotModel> Misc { get; } = [];
 	public ObservableCollection<CardSlotModel> Played { get; } = [];
 	public ObservableCollection<CardSlotModel> Hand { get; } = [];
@@ -37,6 +39,7 @@ public class CardsModel : ObservableModel1 {
 		userPortal.NewWaitingDecision += (obj) => InitSlots(obj as A.PowerCard);
 
 		Elements = new ElementDictModel([]);
+//		IsVisible = false;
 
 		Show();
 	}

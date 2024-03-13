@@ -8,12 +8,16 @@ public partial class CardsOverlay : ContentView {
 
 	void Play_Clicked(object sender, EventArgs e) {
 		Model.AcceptCards();
-		IsVisible = false;
+		Hide();
 	}
 
 	void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e) {
 		Model.ResetDetails();
-		IsVisible = false;
+		Hide();
+	}
+
+	void Hide() {
+		Model.IsVisible = false;
 	}
 
 	CardsModel Model => (CardsModel)BindingContext;

@@ -73,6 +73,12 @@ public sealed class ActionScope : IAsyncDisposable {
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
 	public static ActionScope Current => _scopeContainer?.Value?.Current; // returns null if no ActionScope
 
+	public static void ThrowIfMissingCurrent(){
+		if (Current == null)
+			throw new InvalidOperationException("Can't sync tokens when current ActionScope is null.");
+	}
+
+
 	#endregion static properties
 
 	#region public properties
