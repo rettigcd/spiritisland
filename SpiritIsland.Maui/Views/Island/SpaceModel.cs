@@ -32,12 +32,25 @@ public class SpaceModel : ObservableModel, OptionView {
 		Sync();
 
 		ClickCommand = new Command(
-			execute: () => { SelectOptionCallback?.Invoke(Option,false); },
+			execute: () => { if (++_tapCount == 1) HandleClick(); },
 			canExecute: () => { return SelectOptionCallback != null; }
 		);
 	}
 
 	#endregion constructor
+
+	int _tapCount = 0;
+	async void HandleClick() {
+		await Task.Delay(400);
+		await MainThread.InvokeOnMainThreadAsync(() => {
+			switch (_tapCount) {
+				case 1: SelectOptionCallback?.Invoke(Option,false); break;
+				case 2: SelectOptionCallback?.Invoke(Option,true); break;
+				default: break;
+			}
+			_tapCount = 0;
+		});
+	}
 
 	public SpaceLayout Layout { get; }
 
