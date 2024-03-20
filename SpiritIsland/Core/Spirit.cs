@@ -248,6 +248,7 @@ public abstract partial class Spirit
 		int index = _availableActions.IndexOf( selectedActionFactory );
 		if(index == -1) 
 			throw new InvalidOperationException( $"Unable to remove ActionFactory {selectedActionFactory.Title} from Unresolved Actions because it is not there." );
+
 		_usedActions.Add(_availableActions[index]);
 		_availableActions.RemoveAt( index );
 
@@ -261,6 +262,7 @@ public abstract partial class Spirit
 		}
 
 		_availableActions.Add( factory );
+		_usedActions.Remove( factory ); // incase this is was a repeat
 	}
 
 	public virtual async Task TakeActionAsync(IActionFactory factory, Phase phase) {

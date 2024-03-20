@@ -3,7 +3,7 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 			 xmlns:si="clr-namespace:SpiritIsland.Maui"
-			 x:DataType="si:CardsModel"
+			 x:DataType="si:CardsOverlayModel"
 			 x:Class="SpiritIsland.Maui.CardsOverlay">
 
 	<ContentView.Resources>
@@ -16,24 +16,23 @@
 	<VerticalStackLayout Padding="10" BackgroundColor="#80808080">
 
 		<VerticalStackLayout.GestureRecognizers>
-			<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+			<TapGestureRecognizer Tapped="Background_Tapped" />
 		</VerticalStackLayout.GestureRecognizers>
 
-		<!-- Repeat / Misc -->
-		<Border BackgroundColor="DarkKhaki" Padding="3" StrokeShape="RoundRectangle 10,10,10,10" IsVisible="{Binding IsMisc}">
+		<!-- Played -->
+		<Border BackgroundColor="Teal" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
 			<VerticalStackLayout>
 
-				<Grid ColumnDefinitions="10*,30*" Margin="3">
-					<Label Text="Special Action" />
-					<Button Text="{Binding ButtonText}" Clicked="Play_Clicked" Grid.Column="1" 
-							HeightRequest="25" FontSize="12" 
-							HorizontalOptions="End" Padding="5,0" 
-							IsVisible="{Binding IsMisc}"
-							IsEnabled="{Binding ButtonIsEnabled}"
-							TextColor="White" />
-				</Grid>
+				<!-- Label / button Row -->
+				<Label Text="Played" Margin="10,0" FontSize="12" />
+				
+				<!-- Resolved -->
+				<CollectionView x:Name="Resolved" ItemsSource="{Binding Resolved}" Margin="3" >
 
-				<CollectionView ItemsSource="{Binding Misc}" ItemsLayout="VerticalGrid,2" Margin="3" >
+					<CollectionView.ItemsLayout>
+						<GridItemsLayout Orientation="Vertical" Span="2"/>
+					</CollectionView.ItemsLayout>
+
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="si:CardSlotModel" >
 							<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
@@ -41,32 +40,17 @@
 					</CollectionView.ItemTemplate>
 				</CollectionView>
 
-			</VerticalStackLayout>
-		</Border>
-
-		<!-- Played -->
-		<Border BackgroundColor="Teal" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
-			<VerticalStackLayout>
-
-				<!-- Label / button Row -->
-				<Grid ColumnDefinitions="30*,50*,30,20*" Margin="3">
-					<Label Text="Played" />
-
-					<!-- Energy -->
-					<Image Grid.Column="2" Source="coin.png" HeightRequest="25" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />
-					<Label Grid.Column="2" Text="{Binding RemainingEnergy}" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" FontAttributes="Bold" VerticalOptions="Center" />
-					
-					<!-- Elements -->
-					<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" />
-
-					<Button Text="{Binding ButtonText}" Clicked="Play_Clicked" Grid.Column="3" 
-							HeightRequest="25" FontSize="12" 
-							HorizontalOptions="End" Padding="5,0" 
-							IsVisible="{Binding IsPlaying}"
-							IsEnabled="{Binding ButtonIsEnabled}"
-							TextColor="White" />
+				<!-- Repeat ↓↓↓ -->
+				<Grid ColumnDefinitions="10*,30*" Margin="3" IsVisible="{Binding IsRepeating}" >
+					<Label Text="Repeat ↓↓↓" />
+					<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="1" 
+						HeightRequest="25" FontSize="12" 
+						HorizontalOptions="End" Padding="5,0" 
+						IsEnabled="{Binding ButtonIsEnabled}"
+						TextColor="White" />
 				</Grid>
 
+				<!-- Unresolved -->
 				<CollectionView x:Name="Played" ItemsSource="{Binding Played}" Margin="3" >
 
 					<CollectionView.ItemsLayout>
@@ -83,19 +67,31 @@
 			</VerticalStackLayout>
 		</Border>
 
+		<!-- Play ↑↑↑ (N) -->
+		<Grid ColumnDefinitions="25*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="27" Padding="3,0" IsVisible="{Binding IsPlaying}" >
+
+			<Label Text="Play ↑↑↑" VerticalOptions="Center" />
+
+			<!-- Elements -->
+			<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" BackgroundColor="Beige" />
+
+			<!-- Energy -->
+			<Image Grid.Column="2" Source="coin.png" HeightRequest="25" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />
+			<Label Grid.Column="2" Text="{Binding RemainingEnergy}" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" FontAttributes="Bold" VerticalOptions="Center" />
+
+			<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="3" 
+							HeightRequest="25" FontSize="12" 
+							HorizontalOptions="End" Padding="5,0" 
+							IsEnabled="{Binding ButtonIsEnabled}"
+							TextColor="White" />
+		</Grid>
+
+
 		<!-- Hand -->
 		<Border BackgroundColor="#D8D" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
 			<VerticalStackLayout>
 				<!-- Label / Button row -->
-				<Grid ColumnDefinitions="10*,30*" Margin="3">
-					<Label Text="Hand" />
-					<Button Text="{Binding ButtonText}" Clicked="Play_Clicked" Grid.Column="1" 
-							HeightRequest="25" FontSize="12" 
-							HorizontalOptions="End" Padding="5,0" 
-							IsVisible="{Binding IsAddingToHand}"
-							IsEnabled="{Binding ButtonIsEnabled}"
-							TextColor="White" />
-				</Grid>
+				<Label Text="Hand" Margin="10,0" FontSize="12" />
 
 				<CollectionView x:Name="Hand" ItemsSource="{Binding Hand}" Margin="3" >
 
@@ -112,6 +108,16 @@
 
 			</VerticalStackLayout>
 		</Border>
+
+		<!-- Add to Hand (Reclaim/Draw) ↑↑↑ -->
+		<Grid ColumnDefinitions="30*,40*" Margin="3" BackgroundColor="Beige" IsVisible="{Binding IsAddingToHand}" >
+			<Label Text="Add to Hand ↑↑↑" />			
+			<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="1" 
+					HeightRequest="25" FontSize="12" 
+					HorizontalOptions="End" Padding="5,0" 
+					IsEnabled="{Binding ButtonIsEnabled}"
+					TextColor="White" />
+		</Grid>
 
 		<!-- Draw -->
 		<Border BackgroundColor="DarkKhaki" Padding="3" StrokeShape="RoundRectangle 10,10,10,10" IsVisible="{Binding IsDrawing}">
@@ -137,8 +143,8 @@
 
 				<!-- Label / Button row -->
 				<Grid ColumnDefinitions="10*,30*" Margin="3">
-					<Label Text="Discarded" />
-					<Button Text="{Binding ButtonText}" Clicked="Play_Clicked" Grid.Column="1" 
+					<Label Text="Discarded" Margin="10,0" FontSize="12" />
+					<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="1" 
 							HeightRequest="25" FontSize="12" 
 							HorizontalOptions="End" Padding="5,0" 
 							IsVisible="{Binding IsDiscarding}"

@@ -6,12 +6,12 @@ public partial class CardsOverlay : ContentView {
 		InitializeComponent();
 	}
 
-	void Play_Clicked(object sender, EventArgs e) {
+	void Accept_Clicked(object sender, EventArgs e) {
 		Model.AcceptCards();
 		Hide();
 	}
 
-	void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e) {
+	void Background_Tapped(object sender, TappedEventArgs e) {
 		Model.ResetDetails();
 		Hide();
 	}
@@ -20,6 +20,6 @@ public partial class CardsOverlay : ContentView {
 		Model.IsVisible = false;
 	}
 
-	CardsModel Model => (CardsModel)BindingContext;
+	CardsOverlayModel Model => (CardsOverlayModel)BindingContext;
 
 }

@@ -17,7 +17,7 @@ public class DecisionModel : ObservableModel {
 
 	public SpiritPanelModel? SpiritPanel { get => _spiritPanelModel; set => SetProp(ref _spiritPanelModel, value); }
 
-	public CardsModel? Cards { get => _cardsModel; set => SetProp(ref _cardsModel, value); }
+	public CardsOverlayModel? Cards { get => _cardsModel; set => SetProp(ref _cardsModel, value); }
 
 	public GameStatusModel GameStatus { get => _gameStatus; set => SetProp(ref _gameStatus, value); }
 
@@ -47,7 +47,7 @@ public class DecisionModel : ObservableModel {
 
 	GameStatusModel _gameStatus;
 	SpiritPanelModel? _spiritPanelModel;
-	CardsModel? _cardsModel;
+	CardsOverlayModel? _cardsModel;
 	SpiritModel? _spiritSummary;
 	string _prompt = string.Empty;
 	IOption? _option;
@@ -170,7 +170,7 @@ public class DecisionModel : ObservableModel {
 		SpiritSummary = new SpiritModel(_game.Spirit);
 
 		// Cards
-		Cards = new CardsModel(_game.Spirit, _userPortal);
+		Cards = new CardsOverlayModel(_game.Spirit, _userPortal);
 		Cards.CardsSelected += CardsSelected;
 
 		// Spirit Panel

@@ -786,6 +786,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\Cards\CardsOverlayView.xaml.cs">
+	    <DependentUpon>CardsOverlayView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\Controls\FearDeck.xaml.cs">
 	    <DependentUpon>FearDeck.xaml</DependentUpon>
 	  </Compile>
@@ -810,7 +813,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\Cards\CardsOverlay.xaml">
+	  <MauiXaml Update="Views\Cards\CardsOverlayView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Controls\BlightCard.xaml">
