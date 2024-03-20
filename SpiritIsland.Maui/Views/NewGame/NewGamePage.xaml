@@ -51,15 +51,21 @@
 		<Button x:Name="StartButton" Text="Start New Game" Clicked="Button_Clicked" IsEnabled="false" Margin="10,0" Grid.Row="5" />
 		<ActivityIndicator x:Name="Activity" IsRunning="False" Color="SkyBlue" Grid.Row="6" />
 
-		<!-- Spirits Overlays -->
+		<!-- Spirits Overlay -->
 		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="Spirits" IsVisible="False" >
 			<VerticalStackLayout>
 				<!-- recent -->
 				<Label Text="Recent" />
 				<CollectionView x:Name="RecentSpirits" ItemsLayout="VerticalGrid,4">
 					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="ImageSource" >
-							<Image Source="{Binding .}" WidthRequest="80" HeightRequest="80" Margin="4" />
+						<DataTemplate>
+							<Image 
+								Source="{Binding .,Converter={StaticResource btnImage}}" ClassId="{Binding .}"
+								WidthRequest="90" HeightRequest="75" Margin="5">
+								<Image.GestureRecognizers>
+									<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+								</Image.GestureRecognizers>
+							</Image>
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
@@ -69,8 +75,7 @@
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="ImageSource" >
 							<Image 
-								Source="{Binding .,Converter={StaticResource btnImage}}" 
-								ClassId="{Binding .}"
+								Source="{Binding .,Converter={StaticResource btnImage}}" ClassId="{Binding .}"
 								WidthRequest="90" HeightRequest="75" Margin="5" >
 								<Image.Shadow><Shadow Brush="Black" Offset="5,5" Radius="40" Opacity="0.8" /></Image.Shadow>
 								<Image.GestureRecognizers><TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" /></Image.GestureRecognizers>

@@ -5,11 +5,24 @@ public partial class NewGamePage : ContentPage {
 	public NewGamePage() {
 		InitializeComponent();
 
+		// Spirits.
 		ss.ItemsSource = _builder.SpiritNames;
+		RecentSpirits.ItemsSource = SavedRecentSpirits;
 
 		Adversary.ItemsSource = (string[])["",.. _builder.AdversaryNames];
 		Board.ItemsSource = _availalbeBoards;
 	}
+
+	void SaveRecentSpirit( string spirit) {
+		string[] recentSpirits = [spirit, .. SavedRecentSpirits.Where(s => s != spirit).Take(3)];
+		RecentSpirits.ItemsSource = recentSpirits;
+		SavedRecentSpirits = recentSpirits;
+	}
+	string[] SavedRecentSpirits {
+		get => [..Preferences.Default.Get(RecentSpiritsKey, "").Split(",").Where(s => !string.IsNullOrEmpty(s))];
+		set => Preferences.Default.Set(RecentSpiritsKey,value.Join(","));
+	}
+	const string RecentSpiritsKey = "RecentSpirits";
 
 	#region Control Event Handlers
 
@@ -43,6 +56,10 @@ public partial class NewGamePage : ContentPage {
 		Activity.IsRunning = true;
 		await Task.Delay(500); // Let the UI show the Activity
 
+		// Spirit
+		string spirit = (string)Spirit.ClassId;
+		SaveRecentSpirit( spirit );
+
 		// Get Board (or randomize)
 		string board = (string)Board.SelectedItem;
 		if(string.IsNullOrEmpty( board ))
@@ -50,7 +67,7 @@ public partial class NewGamePage : ContentPage {
 
 		// Init Configuration
 		var gc = new GameConfiguration()
-			.ConfigSpirits( [(string)Spirit.ClassId] )
+			.ConfigSpirits( [spirit] )
 			.ConfigBoards( [board] )
 			.ConfigCommandBeasts( CommandBeast.IsChecked )
 			.ConfigAdversary( _adversary );
