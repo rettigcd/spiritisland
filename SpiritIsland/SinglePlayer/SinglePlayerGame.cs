@@ -3,7 +3,7 @@
 public class SinglePlayerGame {
 
 	/// <summary> The main interface that drives the UI</summary>
-	public IUserPortal UserPortal {get; set;}
+	public IGamePortal UserPortal {get; set;}
 
 	// Public for querying gamestate ad hoc
 	public GameState GameState { get; }
@@ -21,7 +21,7 @@ public class SinglePlayerGame {
 	public SinglePlayerGame(GameState gameState){
 		GameState = gameState;
 		Spirit = gameState.Spirits.Single(); // this player only handles single-player.
-		UserPortal = Spirit.Portal;
+		UserPortal = new GamePortal( Spirit.Portal );
 	}
 
 
@@ -45,30 +45,39 @@ public class SinglePlayerGame {
 			GameState.Phase = Phase.Init;
 			await Spirit.ResolveActions( GameState ); 
 
-			Dictionary<int,object> savedGameStates = [];
 			while(true) {
-				savedGameStates[GameState.RoundNumber] = ((IHaveMemento)GameState).Memento;
-				DateTime lastSaveTimeStamp= DateTime.Now;
+				SaveGameState();
 				try {
 					await Do1Round();
 				}
 				catch( RewindException rewind ) {
-					if(savedGameStates.TryGetValue( rewind.TargetRound, out object memento )) {
-						((IHaveMemento)GameState).Memento = memento;
-						foreach(int laterRounds in savedGameStates.Keys.Where(k=>k>rewind.TargetRound).ToArray())
-							savedGameStates.Remove(laterRounds);
-					}
+					RewindGameTo( rewind.TargetRound );
 				}
 			}
 		}
 		catch(GameOverException gameOver) {
-			this.GameState.Result = gameOver.Status;
+			GameState.Result = gameOver.Status;
 			GameState.Log( gameOver.Status );
 		}
 		catch(Exception ex) {
 			GameState.Log(new Log.ExceptionEntry( ex ) );
 		}
 
+	}
+
+	void SaveGameState() {
+		_savedGameStates[GameState.RoundNumber] = ((IHaveMemento)GameState).Memento;
+	}
+
+	void RewindGameTo( int targetRound ) {
+		if( !_savedGameStates.TryGetValue(targetRound, out object memento) ) return;
+
+		// Restore
+		((IHaveMemento)GameState).Memento = memento;
+
+		// Clear later rounds
+		foreach( int laterRounds in _savedGameStates.Keys.Where(k => targetRound < k ).ToArray())
+			_savedGameStates.Remove(laterRounds);
 	}
 
 	async Task Do1Round() {
@@ -96,5 +105,32 @@ public class SinglePlayerGame {
 	}
 
 	void LogRound() => GameState.Log( new Log.Round( GameState.RoundNumber ) );
- 		
+
+	readonly Dictionary<int, object> _savedGameStates = [];
+
+}
+
+/// <summary>
+/// Hides from the caler the nature of the game engine.  They don't know about throwing exceptions and cancelation tokens.
+/// </summary>
+public interface IGamePortal {
+	IDecisionPortal DecisionPortal { get; }
+	void RewindToRound( int targetRound );
+	void CancelGame();
+}
+
+public class GamePortal : IGamePortal {
+	public IDecisionPortal DecisionPortal => _inner;
+	readonly IUserPortalPlus _inner;
+	public GamePortal(IUserPortalPlus inner) {
+		_inner = inner;
+	}
+
+	public void RewindToRound( int targetRound) {
+		_inner.IssueException(new RewindException(targetRound));
+	}
+
+	public void CancelGame() {
+		_inner.IssueException(new GameOverException(new GameOverLogEntry(GameOverResult.Withdrawal, "User withdrew from game.")));
+	}
 }

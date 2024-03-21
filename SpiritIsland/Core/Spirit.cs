@@ -41,7 +41,7 @@ public abstract partial class Spirit
 
 	#region Gateway stuff
 
-	public IUserPortal Portal => _gateway;
+	public IUserPortalPlus Portal => _gateway;
 	public Task<T> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption => _gateway.Select<T>( decision );
 	public void PreSelect( SpaceToken st ) => _gateway.PreloadedSpaceToken = st;
 	readonly UserGateway _gateway;

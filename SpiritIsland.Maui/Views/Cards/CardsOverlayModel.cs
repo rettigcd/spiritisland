@@ -36,7 +36,7 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	public event Action<IOption[]>? CardsSelected;
 
-	public CardsOverlayModel( Spirit spirit, IUserPortal userPortal ) {
+	public CardsOverlayModel( Spirit spirit, IDecisionPortal userPortal ) {
 		_spirit = spirit;
 		userPortal.NewWaitingDecision += (obj) => InitSlotsForNewDecision(obj as A.PowerCard);
 		Elements = new ElementDictModel([]);

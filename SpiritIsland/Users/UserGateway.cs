@@ -2,7 +2,7 @@
 
 namespace SpiritIsland;
 
-sealed public class UserGateway : IUserPortal, IEnginePortal {
+sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 
 	#region IUserPortal - wait for next decision
 
@@ -56,20 +56,12 @@ sealed public class UserGateway : IUserPortal, IEnginePortal {
 	#endregion IUserPortal - Choose
 
 	/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
-	public void GoBackToBeginningOfRound( int targetRound ) {
-		var poppedDecisionMaker = CacheNextDecision( null );
+	public void IssueException( Exception exception ) {
+		IDecisionMaker poppedDecisionMaker = CacheNextDecision( null );
 		_activeDecisionMaker = null;
 		_userAccessedDecision = null;
-		poppedDecisionMaker.IssueException( new RewindException( targetRound ) );
+		poppedDecisionMaker.IssueException( exception );
 	}
-
-	public void Quit() {
-		var poppedDecisionMaker = CacheNextDecision( null );
-		_activeDecisionMaker = null;
-		_userAccessedDecision = null;
-		poppedDecisionMaker.IssueException( new GameOverException(new GameOverLogEntry(GameOverResult.Withdrawal, "User withdrew from game.")));
-	}
-
 
 	/// <remarks>
 	/// When there is no match, this gets set to null.

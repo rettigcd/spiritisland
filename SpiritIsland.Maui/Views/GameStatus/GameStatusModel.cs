@@ -1,9 +1,15 @@
 ﻿//using Android.OS;
 
 
+using SpiritIsland.SinglePlayer;
+using System.Windows.Input;
+
 namespace SpiritIsland.Maui;
 
 public class GameStatusModel : ObservableModel1 {
+
+	public int RewindableRound { get => GetStruct<int>(); set => SetProp(value); }
+	public ICommand RewindCommand { get; }
 
 	public string Phase { get => GetProp<string>(); set => SetProp(value); }
 
@@ -34,27 +40,32 @@ public class GameStatusModel : ObservableModel1 {
 
 	#endregion Fear - Observable
 
+	public GameStatusModel( SinglePlayerGame game ) {
+		var gs = game.GameState;
+		_deck = gs.InvaderDeck;
+		_fear = gs.Fear;
+		_blightPool = gs.Tokens[SpiritIsland.BlightCard.Space];
 
-	public GameStatusModel(InvaderDeck deck, Fear fear, Space blightPool) {
-		_deck = deck;
-		_fear = fear;
 		RavageImages = [];
 		BuildImages = [];
 
-		// Tokens[SpiritIsland.BlightCard.Space]
-		_blightPool = blightPool;
-
 		Phase = "";
-	}
 
-	public void Watch( IUserPortal _, GameState gameState ) {
-//		portal.NewWaitingDecision += (_) => UpdateObservables();
-		gameState.NewLogEntry += GameState_NewLogEntry;
-
-		// Init
+		game.GameState.NewLogEntry += GameState_NewLogEntry;
 		UpdatePhaseStuff(SpiritIsland.Phase.Init);
 		UpdateFear();
 		UpdateBlight();
+
+		RewindCommand = new Command(
+			execute: async () => {
+				if (0 < RewindableRound) {
+					// var a = await DisplayAlert("Question?", "Would you like to rewind to Round N?", "Yes", "No");
+					game.UserPortal.RewindToRound(RewindableRound);
+					--RewindableRound;
+				}
+			},
+			canExecute: () => true // 0 < RewindableRound
+		);
 	}
 
 	void GameState_NewLogEntry(Log.ILogEntry obj) {

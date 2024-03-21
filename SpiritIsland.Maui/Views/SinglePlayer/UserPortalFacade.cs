@@ -4,13 +4,13 @@
 /// Wraps the User Portal.
 /// Breaks down Moves into 2-step processes that are easier for UI to handle.
 /// </summary>
-internal class UserPortalFacade : IUserPortal {
+internal class UserPortalFacade : IDecisionPortal {
 
 	public event Action<IDecision>? NewWaitingDecision;
 
 	#region constructor
 
-	public UserPortalFacade(IUserPortal inner) {
+	public UserPortalFacade(IDecisionPortal inner) {
 		_inner = inner;
 		_inner.NewWaitingDecision += Inner_NewWaitingDecision;
 	}
@@ -76,8 +76,8 @@ internal class UserPortalFacade : IUserPortal {
 	public IDecision Next => _inner.Next; // !!! DO NOT USE this accept at very beginning.
 
 	// Commands
-	public void GoBackToBeginningOfRound( int targetRound )	=> _inner.GoBackToBeginningOfRound( targetRound );
-	public void Quit() => _inner.Quit();
+//	public void IssueException( Exception ex )	=> _inner.IssueException( ex );
+//	public void Quit(GameOverException ex) => _inner.Quit(ex);
 
 	// !!! What is the difference in these.
 	public bool WaitForNext( int ms ) => _inner.WaitForNext( ms );
@@ -88,7 +88,7 @@ internal class UserPortalFacade : IUserPortal {
 	#region private methods
 
 	MoveBehavior? _moveBehavior;
-	readonly IUserPortal _inner;
+	readonly IDecisionPortal _inner;
 
 	#endregion
 
@@ -97,7 +97,7 @@ internal class UserPortalFacade : IUserPortal {
 /// <summary>
 /// Splits up a Move Decision into Source/Destination.
 /// </summary>
-class MoveBehavior( IUserPortal inner, A.Move move ) {
+class MoveBehavior( IDecisionPortal inner, A.Move move ) {
 	public IDecision GetSourceDecision() {
 		var st = new A.SpaceTokenDecision(
 			move.Prompt,

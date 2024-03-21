@@ -270,7 +270,7 @@ public class VirtualUser( Spirit spirit ) {
 	#endregion
 
 	readonly protected Spirit _spirit = spirit;
-	readonly protected IUserPortal _userPortal = spirit.Portal;
+	readonly protected IDecisionPortal _userPortal = spirit.Portal;
 
 }
 

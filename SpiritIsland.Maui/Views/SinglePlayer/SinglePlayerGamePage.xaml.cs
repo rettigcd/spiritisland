@@ -1,6 +1,4 @@
 //using Android.OS;
-using SpiritIsland.SinglePlayer;
-using SpiritIsland.Basegame;
 using SpiritIsland.Log;
 
 namespace SpiritIsland.Maui;
@@ -33,14 +31,14 @@ public partial class SinglePlayerGamePage : ContentPage {
 		// Shut Down Old
 		_model?.ShutDownOld();
 
-		_model = new DecisionModel(_unstartedGame);
+		_model = new DecisionModel( _unstartedGame );
 		_unstartedGame = null;
 
 		_model.GameState.NewLogEntry += GameState_NewLogEntry;
 		BindingContext = _model;
 
 		// Start!
-		_model._game.Start();
+		_model.Start();
 	}
 
 	#endregion Start/Stop Game

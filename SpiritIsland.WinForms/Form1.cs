@@ -39,7 +39,7 @@ public partial class Form1 : Form, IHaveOptions {
 		}
 
 		_currentDecision = null;
-		_game.UserPortal.Choose( _currentDecision, option, false ); // If there is no decision to be made, just return
+		_game.UserPortal.DecisionPortal.Choose( _currentDecision, option, false ); // If there is no decision to be made, just return
 	
 	}
 
@@ -233,7 +233,7 @@ public partial class Form1 : Form, IHaveOptions {
 			return;
 		}
 
-		_game.UserPortal.GoBackToBeginningOfRound(targetRound);
+		_game.UserPortal.RewindToRound(targetRound);
 	}
 
 	void ReplaySameGameToolStripMenuItem_Click( object _, EventArgs _1 ) {

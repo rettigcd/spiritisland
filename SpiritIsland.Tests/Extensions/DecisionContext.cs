@@ -5,7 +5,7 @@ public class DecisionContext {
 
 	#region private
 
-	readonly IUserPortal _portal;
+	readonly IDecisionPortal _portal;
 	readonly IDecision _current;
 
 	#endregion
