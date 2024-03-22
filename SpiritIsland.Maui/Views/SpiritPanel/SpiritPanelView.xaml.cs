@@ -26,7 +26,7 @@ public partial class SpiritPanelView : ContentView {
 		model?.Select(true);
 		RestoreSpritBgColor();
 
-		IsVisible = false;
+		_model.IsVisible = false;
 	}
 #pragma warning restore IDE0051 // Remove unused private members
 
@@ -34,8 +34,8 @@ public partial class SpiritPanelView : ContentView {
 	#endregion Drag-n-Drop Growth
 
 	void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e) {
-		model.IsVisible = false;
+		_model.IsVisible = false;
 	}
 
-	SpiritPanelModel model => (SpiritPanelModel)BindingContext;
+	SpiritPanelModel _model => (SpiritPanelModel)BindingContext;
 }
