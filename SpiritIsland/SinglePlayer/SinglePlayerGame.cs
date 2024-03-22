@@ -51,7 +51,7 @@ public class SinglePlayerGame {
 					await Do1Round();
 				}
 				catch( RewindException rewind ) {
-					RewindGameTo( rewind.TargetRound );
+					RewindGameTo( rewind );
 				}
 			}
 		}
@@ -69,15 +69,18 @@ public class SinglePlayerGame {
 		_savedGameStates[GameState.RoundNumber] = ((IHaveMemento)GameState).Memento;
 	}
 
-	void RewindGameTo( int targetRound ) {
-		if( !_savedGameStates.TryGetValue(targetRound, out object memento) ) return;
+	void RewindGameTo( RewindException rex ) {
+		if( !_savedGameStates.TryGetValue(rex.TargetRound, out object memento) ) return;
 
 		// Restore
 		((IHaveMemento)GameState).Memento = memento;
 
 		// Clear later rounds
-		foreach( int laterRounds in _savedGameStates.Keys.Where(k => targetRound < k ).ToArray())
+		foreach( int laterRounds in _savedGameStates.Keys.Where(k => rex.TargetRound < k ).ToArray())
 			_savedGameStates.Remove(laterRounds);
+
+		// Do this last so anything that anything that triggers off of this, has new games state.
+		GameState.Log(rex);
 	}
 
 	async Task Do1Round() {

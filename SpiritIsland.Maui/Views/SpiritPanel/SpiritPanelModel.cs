@@ -2,16 +2,17 @@
 
 public class SpiritPanelModel : ObservableModel {
 
-	public bool IsVisible { get => _isVisible; set => SetProp(ref _isVisible,value); }
-	bool _isVisible;
-
 	public string SpiritName => _spirit.SpiritName;
 	public SpecialRuleModel[] SpecialRules { get; }
 	public InnateModel[] Innates { get; }
 
+	public bool IsVisible {
+		get => _isVisible;
+		set => SetProp(ref _isVisible, value);
+	}
+	public GrowthTrackModel GrowthTrack       { get => _growthTrack; private set => SetProp(ref _growthTrack, value); }
 	public TokenLocationModel[] EnergyTrack   { get => _energyTrack;       private set => SetProp(ref _energyTrack,value); }
 	public TokenLocationModel[] CardPlayTrack { get => _cardTrack;         private set => SetProp(ref _cardTrack, value ); }
-	public GrowthTrackModel GrowthTrack       { get => _growthTrack;       private set => SetProp(ref _growthTrack,value); }
 	public ElementDictModel Elements          { get => _elements;          private set => SetProp(ref _elements, value); }
 	public ElementDictModel SecondaryElements { get => _secondaryElements; private set => SetProp(ref _secondaryElements, value); }
 
@@ -53,23 +54,25 @@ public class SpiritPanelModel : ObservableModel {
 		ovm.AddRange(_growthTrack.Groups.SelectMany(grp => grp.Actions), this);
 		_ovm = ovm;
 
-		gsToWatch.NewLogEntry += GsToWatch_NewLogEntry;
+		gsToWatch.NewLogEntry += OnNewLogEntry;
 	}
 
 	#endregion constructor
 
-	public void Release() {
-		_ovm.RemoveByOwner(this);
-	}
-
 	#region updates
 
-	void GsToWatch_NewLogEntry(Log.ILogEntry obj) {
-		if (obj is TokenMovedArgs moved) {
+	void OnNewLogEntry(Log.ILogEntry obj) {
+		if( obj is TokenMovedArgs moved ) {
 			if (moved.From is Track src)
-				Find(src).RefreshCountAndSS();
+				FindInTracks(src).RefreshCountAndSS();
 			else if (moved.To is Track dst)
-				Find(dst).RefreshCountAndSS();
+				FindInTracks(dst).RefreshCountAndSS();
+		}
+		if( obj is RewindException) {
+			foreach(TokenLocationModel x in _energyTrack) 
+				x.RefreshCountAndSS();
+			foreach (TokenLocationModel x in _cardTrack) 
+				x.RefreshCountAndSS();
 		}
 		UpdateElements();
 	}
@@ -80,17 +83,16 @@ public class SpiritPanelModel : ObservableModel {
 			SecondaryElements = new ElementDictModel( _secondaryElementHolder.SecondaryElements );
 	}
 
-	TokenLocationModel Find(Track src) {
+	TokenLocationModel FindInTracks(Track src) {
 		return _energyTrack.FirstOrDefault(t => t.TokenLocation.Location == src)
 			?? _cardTrack.First(t => t.TokenLocation.Location == src);
 	}
-
-
 
 	#endregion updates
 
 	#region private fields
 
+	bool _isVisible;
 	GrowthTrackModel _growthTrack;
 	TokenLocationModel[] _energyTrack;
 	TokenLocationModel[] _cardTrack;
@@ -102,9 +104,4 @@ public class SpiritPanelModel : ObservableModel {
 	readonly Spirit _spirit;
 
 	#endregion
-}
-
-public class SpecialRuleModel( SpecialRule rule) {
-	public string Title => rule.Title;
-	public string Description => rule.Description;
 }

@@ -8,13 +8,14 @@
 	<ContentView.Resources>
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
 		<si:ElementToImageSourceConverter x:Key="elToImage" />
+		<si:PhaseToImageSourceConverter x:Key="phaseToImage" />
 		<si:FearLevelImageConverter x:Key="terrorLevel" />
 		<si:HighlightIfMatchConverter x:Key="currentPhase" />
 	</ContentView.Resources>
 	
 	<HorizontalStackLayout x:Name="InvaderRow" HorizontalOptions="CenterAndExpand">
 
-		<Grid>
+		<Grid IsVisible="{Binding RewindableRound, Converter={StaticResource showIfGreater},ConverterParameter=0 }">
 			<ImageButton Source="undo.png"
 					Command="{Binding RewindCommand}" 
 					Padding="0" 
@@ -23,18 +24,11 @@
 			<Label Text="{Binding RewindableRound}" HorizontalOptions="Center" VerticalOptions="Center" />
 		</Grid>
 		
-		<!-- Growth -->
-		<Border Stroke="{Binding Phase,Converter={StaticResource currentPhase},ConverterParameter=Growth}" StrokeThickness="3">
-			<Image Source="growth.png" HeightRequest="20" Margin="2" />
-		</Border>
-
-		<!-- Fast -->
-		<Border Stroke="{Binding Phase,Converter={StaticResource currentPhase},ConverterParameter=Fast}" StrokeThickness="3">
-			<Image Source="fast.png" HeightRequest="20" Margin="2" />
-		</Border>
+		<!-- Phase -->
+		<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="20" Margin="2" />
 
 		<!-- Fear -->
-		<Border Stroke="Transparent" StrokeThickness="3" >
+		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0">
 			<HorizontalStackLayout>
 				<Image Source="{Binding TerrorLevel,Converter={StaticResource terrorLevel}}" HeightRequest="20" Margin="2" />
 				<Grid>
@@ -48,7 +42,7 @@
 			</HorizontalStackLayout>
 		</Border>
 		<!-- Ravage -->
-		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0">
+		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0" Margin="10,0,0,0">
 			<HorizontalStackLayout>
 				<Image Source="ravage.png" HeightRequest="16" Margin="2" />
 				<CollectionView ItemsSource="{Binding RavageImages}" HeightRequest="20" >
@@ -76,7 +70,7 @@
 		</Border>
 
 		<!-- Explore -->
-		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0">
+		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0" Margin="0,0,5,0">
 			<HorizontalStackLayout>
 				<Image Source="explore.png" HeightRequest="16" Margin="2" />
 				<Grid>
@@ -85,11 +79,6 @@
 					<Label Text="{Binding RemainingInvaderDeckCards,StringFormat='x{0}'}" FontSize="10" HorizontalOptions="Center" VerticalOptions="End" TextColor="White" FontAttributes="Bold" />
 				</Grid>
 			</HorizontalStackLayout>
-		</Border>
-
-		<!-- Slow -->
-		<Border Stroke="{Binding Phase,Converter={StaticResource currentPhase},ConverterParameter=Slow}" StrokeThickness="3">
-			<Image Source="slow.png" HeightRequest="20" Margin="2" />
 		</Border>
 
 		<!-- Fear pool / Fear Deck -->
