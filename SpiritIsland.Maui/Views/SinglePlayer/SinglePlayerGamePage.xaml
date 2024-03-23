@@ -8,11 +8,10 @@
 			 Title="{Binding Title}">
 
 	<ContentPage.Resources>
-		<Color x:Key="PageControlTextColor">Blue</Color> <!-- I can bind to the BindingContext here - yay! -->
-		<!-- Put Converter References here too! -->
+		<si:SelectConverter x:Key="selectOne" />
 	</ContentPage.Resources>
 
-	<Grid RowDefinitions="30,50,235,24,30,*">
+	<Grid RowDefinitions="30,50,235,24,30,*,30">
 		
 		<!-- Invaders - Begin -->
 		<si:InvaderDeckView BindingContext="{Binding GameStatus}" Grid.Row="0" />
@@ -21,8 +20,6 @@
 		<si:SpiritSummaryView 
 			x:Name="Bob"
 			BindingContext="{Binding SpiritSummary}" 
-			GrowthDetailsClicked="SpiritSummary_GrowthDetailsClicked" 
-			CardDetailsClicked="SpiritSummary_CardDetailsClicked" 
 			Grid.Row="1" />
 
 		<!-- Island -->
@@ -57,10 +54,15 @@
 			</FlexLayout>
 		</ScrollView>
 
+		<Button Text="Cards" Padding="5,5" MaximumHeightRequest="30" Grid.Row="6" Command="{Binding ShowCards}" />
 
-		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" IsVisible="{Binding IsVisible}" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
-
-		<si:CardsOverlay BindingContext="{Binding Cards}" IsVisible="{Binding IsVisible}" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+		<!-- Overlays -->
+		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" 
+			IsVisible="{Binding Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Path=VisibleOverlay, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
+			Grid.Row="0" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+		<si:CardsOverlay BindingContext="{Binding Cards}" 
+			IsVisible="{Binding Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Path=VisibleOverlay, Converter={StaticResource selectOne},ConverterParameter=Cards}"
+			Grid.Row="1" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
 
 	</Grid>
 	

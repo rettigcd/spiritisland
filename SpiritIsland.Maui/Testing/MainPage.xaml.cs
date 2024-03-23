@@ -30,6 +30,4 @@ public partial class MainPage : ContentPage {
 		e.Data.Properties.Add("IsValidShape", true);
 	}
 
-	void Shape_Drop(object _, DropEventArgs e) {}
-
 }

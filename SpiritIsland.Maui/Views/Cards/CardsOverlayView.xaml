@@ -16,7 +16,7 @@
 	<VerticalStackLayout Padding="10" BackgroundColor="#80808080">
 
 		<VerticalStackLayout.GestureRecognizers>
-			<TapGestureRecognizer Tapped="Background_Tapped" />
+			<TapGestureRecognizer Command="{Binding CloseCommand}" />
 		</VerticalStackLayout.GestureRecognizers>
 
 		<!-- Played -->
@@ -43,7 +43,7 @@
 				<!-- Repeat ↓↓↓ -->
 				<Grid ColumnDefinitions="10*,30*" Margin="3" IsVisible="{Binding IsRepeating}" >
 					<Label Text="Repeat ↓↓↓" />
-					<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="1" 
+					<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
 						HeightRequest="25" FontSize="12" 
 						HorizontalOptions="End" Padding="5,0" 
 						IsEnabled="{Binding ButtonIsEnabled}"
@@ -79,7 +79,7 @@
 			<Image Grid.Column="2" Source="coin.png" HeightRequest="25" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />
 			<Label Grid.Column="2" Text="{Binding RemainingEnergy}" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" FontAttributes="Bold" VerticalOptions="Center" />
 
-			<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="3" 
+			<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="3" 
 							HeightRequest="25" FontSize="12" 
 							HorizontalOptions="End" Padding="5,0" 
 							IsEnabled="{Binding ButtonIsEnabled}"
@@ -112,7 +112,7 @@
 		<!-- Add to Hand (Reclaim/Draw) ↑↑↑ -->
 		<Grid ColumnDefinitions="30*,40*" Margin="3" BackgroundColor="Beige" IsVisible="{Binding IsAddingToHand}" >
 			<Label Text="Add to Hand ↑↑↑" />			
-			<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="1" 
+			<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
 					HeightRequest="25" FontSize="12" 
 					HorizontalOptions="End" Padding="5,0" 
 					IsEnabled="{Binding ButtonIsEnabled}"
@@ -144,7 +144,7 @@
 				<!-- Label / Button row -->
 				<Grid ColumnDefinitions="10*,30*" Margin="3">
 					<Label Text="Discarded" Margin="10,0" FontSize="12" />
-					<Button Text="{Binding ButtonText}" Clicked="Accept_Clicked" Grid.Column="1" 
+					<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
 							HeightRequest="25" FontSize="12" 
 							HorizontalOptions="End" Padding="5,0" 
 							IsVisible="{Binding IsDiscarding}"

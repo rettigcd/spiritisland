@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Input;
+
 namespace SpiritIsland.Maui;
 
 public class SpiritModel : ObservableModel {
@@ -14,15 +16,18 @@ public class SpiritModel : ObservableModel {
 
 	#endregion
 
+	public ICommand OpenSpiritPanel { get; }
+
 	#region constructor
 
-	public SpiritModel(Spirit spirit) {
+	public SpiritModel(Spirit spirit, ICommand openSpiritPanel) {
 		_spirit = spirit;
 
 		Spirit = spirit.SpiritName;
 		_energy = _spirit.Energy;
 		_energyPerTurn = _spirit.EnergyPerTurn;
 		_cardPlaysPerTurn = _spirit.NumberOfCardsPlayablePerTurn;
+		OpenSpiritPanel = openSpiritPanel;
 	}
 
 	#endregion constructor

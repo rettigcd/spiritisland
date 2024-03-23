@@ -27,20 +27,6 @@
 		<!-- Phase -->
 		<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="20" Margin="2" />
 
-		<!-- Fear -->
-		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0">
-			<HorizontalStackLayout>
-				<Image Source="{Binding TerrorLevel,Converter={StaticResource terrorLevel}}" HeightRequest="20" Margin="2" />
-				<Grid>
-					<Image IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=0}" Source="fear_back.png" HeightRequest="20" Margin="2" />
-					<Label IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=1}" 
-						   Text="{Binding ActivatedFearCards,StringFormat='x{0}'}" 
-						   FontSize="10" FontAttributes="Bold"
-						   HorizontalOptions="Center" VerticalOptions="Center" Padding="0,4" 
-						   TextColor="White" />
-				</Grid>
-			</HorizontalStackLayout>
-		</Border>
 		<!-- Ravage -->
 		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0" Margin="10,0,0,0">
 			<HorizontalStackLayout>
@@ -81,11 +67,25 @@
 			</HorizontalStackLayout>
 		</Border>
 
+
 		<!-- Fear pool / Fear Deck -->
+		<!-- Terror Level -->
+		<Image Source="{Binding TerrorLevel,Converter={StaticResource terrorLevel}}" HeightRequest="20" Margin="2" />
+		<!-- Activated Card -->
+		<Grid>
+			<Image IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=0}" Source="fear_back.png" HeightRequest="20" Margin="2" />
+			<Label IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=1}" 
+						   Text="{Binding ActivatedFearCards,StringFormat='x{0}'}" 
+						   FontSize="10" FontAttributes="Bold"
+						   HorizontalOptions="Center" VerticalOptions="Center" Padding="0,4" 
+						   TextColor="White" />
+		</Grid>
+		<!-- Deck -->
 		<Grid Margin="5,0,0,0">
 			<Image Source="fear_back.png" HeightRequest="24" />
 			<Label Text="{Binding RemainingCardsInTerrorLevel,StringFormat='x{0}'}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
 		</Grid>
+		<!-- Pool -->
 		<Grid>
 			<Image Source="fear.png" HeightRequest="24" />
 			<Label Text="{Binding FearPool}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />

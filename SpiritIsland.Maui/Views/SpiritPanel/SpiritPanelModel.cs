@@ -6,15 +6,13 @@ public class SpiritPanelModel : ObservableModel {
 	public SpecialRuleModel[] SpecialRules { get; }
 	public InnateModel[] Innates { get; }
 
-	public bool IsVisible {
-		get => _isVisible;
-		set => SetProp(ref _isVisible, value);
-	}
 	public GrowthTrackModel GrowthTrack       { get => _growthTrack; private set => SetProp(ref _growthTrack, value); }
 	public TokenLocationModel[] EnergyTrack   { get => _energyTrack;       private set => SetProp(ref _energyTrack,value); }
 	public TokenLocationModel[] CardPlayTrack { get => _cardTrack;         private set => SetProp(ref _cardTrack, value ); }
 	public ElementDictModel Elements          { get => _elements;          private set => SetProp(ref _elements, value); }
 	public ElementDictModel SecondaryElements { get => _secondaryElements; private set => SetProp(ref _secondaryElements, value); }
+
+	public event Action? RequestClose;
 
 	#region constructor
 
@@ -59,6 +57,10 @@ public class SpiritPanelModel : ObservableModel {
 
 	#endregion constructor
 
+	public void TryToClose() {
+		RequestClose?.Invoke();
+	}
+
 	#region updates
 
 	void OnNewLogEntry(Log.ILogEntry obj) {
@@ -92,7 +94,6 @@ public class SpiritPanelModel : ObservableModel {
 
 	#region private fields
 
-	bool _isVisible;
 	GrowthTrackModel _growthTrack;
 	TokenLocationModel[] _energyTrack;
 	TokenLocationModel[] _cardTrack;

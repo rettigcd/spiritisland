@@ -1,12 +1,11 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
 public class CardsOverlayModel : ObservableModel1 {
 
 	#region Observalbe Properties
-
-	public bool IsVisible { get => GetStruct<bool>(); set => SetProp(value); }
 
 	public ObservableCollection<CardSlotModel> Resolved { get; } = [];
 	public ObservableCollection<CardSlotModel> Played { get; } = [];
@@ -36,12 +35,25 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	public event Action<IOption[]>? CardsSelected;
 
+	public event Action? RequestClose;
+
+	public ICommand AcceptCardsCommand { get; }
+	public ICommand CloseCommand { get; }
+
+	#region constructor
+
 	public CardsOverlayModel( Spirit spirit, IDecisionPortal userPortal ) {
 		_spirit = spirit;
 		userPortal.NewWaitingDecision += (obj) => InitSlotsForNewDecision(obj as A.PowerCard);
 		Elements = new ElementDictModel([]);
 		Show();
+
+		CloseCommand = new Command( TryToClose );
+		AcceptCardsCommand = new Command( AcceptCards );
 	}
+
+	#endregion constructor
+
 
 	public IOption[] FindNew() {
 		var moved = MovedPowerCards.ToArray();
@@ -64,15 +76,14 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	}
 
-	public void AcceptCards() {
-		ResetDetails();
-		CardsSelected?.Invoke( FindNew() );
-//		SetAction("---"); // hides all
+	void AcceptCards() {
+		CardsSelected?.Invoke(FindNew());
+		TryToClose();
 	}
 
-	public void ResetDetails() {
-		Title = "";
-		Instructions = "";
+	void TryToClose() {
+		ResetDetails();
+		RequestClose?.Invoke();
 	}
 
 	#region private methods
@@ -175,6 +186,11 @@ public class CardsOverlayModel : ObservableModel1 {
 		InitDiscards();
 		InitDraw();
 		ResetDetails();
+	}
+
+	void ResetDetails() {
+		Title = "";
+		Instructions = "";
 	}
 
 	#region Init - Deck

@@ -13,25 +13,12 @@
 
 		<Image Source="{Binding Spirit, Converter={StaticResource btnImage}}">
 			<Image.GestureRecognizers>
-				<TapGestureRecognizer Tapped="Spirit_Clicked" />
+				<TapGestureRecognizer Command="{Binding OpenSpiritPanel}" />
 			</Image.GestureRecognizers>
 		</Image>
-		
-		<!-- Per Turn -->
-		<Frame MaximumHeightRequest="30" Padding="0" BackgroundColor="LightGray">
-			<HorizontalStackLayout Margin="5,2" Spacing="3">
-				<!-- Energy -->
-				<Grid MaximumHeightRequest="20" ToolTipProperties.Text="Energy / Turn">
-					<Image Source="coin.png" VerticalOptions="Center"  HorizontalOptions="Center" />
-					<Label x:Name="EnergyPerTurn" Text="{Binding EnergyPerTurn}" FontSize="10" FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center" />
-				</Grid>
-				<!-- Card -->
-				<Grid MaximumHeightRequest="20" ToolTipProperties.Text="Card Plays / Turn">
-					<Image Source="card_play.png" VerticalOptions="Center"  HorizontalOptions="Center" />
-					<Label x:Name="CardPlaysPerTurn" Text="{Binding CardPlaysPerTurn}" FontSize="10" FontAttributes="Bold" VerticalOptions="Center"  HorizontalOptions="Center" />
-				</Grid>
-			</HorizontalStackLayout>
-		</Frame>
+
+		<!-- Secondary Elements -->
+		<si:ElementDictView BindingContext="{Binding Elements}" />
 
 		<!-- Placeable -->
 		<CollectionView x:Name="Placeables" ItemsSource="{Binding TrackPresence}" ItemsLayout="HorizontalList" MaximumHeightRequest="50">
@@ -46,17 +33,6 @@
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
-
-		<!-- Energy -->
-		<Grid MaximumHeightRequest="30" ToolTipProperties.Text="Energy">
-			<Image Source="coin.png" VerticalOptions="Center"  HorizontalOptions="Center" />
-			<Label x:Name="Energy" Text="{Binding Energy}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center"  HorizontalOptions="Center" />
-		</Grid>
-		
-		<!-- Elements -->
-		<si:ElementDictView BindingContext="{Binding Elements}" />
-
-		<Button Text="Cards" Padding="5,5" MaximumHeightRequest="30" Clicked="CardButton_Clicked"/>
 
 	</HorizontalStackLayout>
 	

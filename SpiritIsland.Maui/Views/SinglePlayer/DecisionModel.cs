@@ -1,5 +1,6 @@
 ﻿//using Android.OS;
 using SpiritIsland.SinglePlayer;
+using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
@@ -15,6 +16,8 @@ public class DecisionModel : ObservableModel {
 	public CardsOverlayModel Cards      { get; }
 
 	#region Observable properties
+
+	public Overlay VisibleOverlay { get => _visibleOverlay; set => SetProp( ref _visibleOverlay, value ); }
 
 	public string Title {  get => _title; set => SetProp(ref _title,value); }
 
@@ -70,14 +73,16 @@ public class DecisionModel : ObservableModel {
 
 		var gs = _game.GameState;
 		_gameStatus = new GameStatusModel( _game );
-		SpiritSummary = new SpiritModel(_game.Spirit);
 
 		// Cards
 		Cards = new CardsOverlayModel(_game.Spirit, _userPortal);
 		Cards.CardsSelected += CardsSelected;
+		Cards.RequestClose += Overlay_RequestClose;
 
 		// Spirit Panel
+		SpiritSummary = new SpiritModel(_game.Spirit, new Command(()=>VisibleOverlay=Overlay.SpiritPanel));
 		SpiritPanel = new SpiritPanelModel(_game.Spirit, _ovm, gs);
+		SpiritPanel.RequestClose += Overlay_RequestClose;
 
 		_acceptText = "Accept";
 
@@ -97,9 +102,17 @@ public class DecisionModel : ObservableModel {
 		Island = new IslandModel(GameState.Island.Boards[0], GameState.Tokens, _ovm);
 		_title = _game.Spirit.SpiritName;
 
+		ShowCards = new Command( () => ShowCardPanel() );
+
+		OpenOverlay = new Command((p) => { VisibleOverlay = (Overlay)p; } );
+
 	}
 
 	#endregion constructor
+
+	public ICommand ShowCards { get; }
+
+	public ICommand OpenOverlay { get; }
 
 	public void Start() => _game.Start();
 
@@ -119,9 +132,25 @@ public class DecisionModel : ObservableModel {
 		return true;
 	}
 
-	public void ShowSpiritPanel(bool show = true) { SpiritPanel.IsVisible = show; }
 
-	public void ShowCardPanel(bool show = true) { Cards.IsVisible = show; }
+	//============================
+	// Overlays 
+	//============================
+
+	public void ShowSpiritPanel(bool show = true) { 
+		VisibleOverlay = show ? Overlay.SpiritPanel : Overlay.None;
+	}
+
+	public void ShowCardPanel(bool show = true) { 
+		VisibleOverlay = show ? Overlay.Cards : Overlay.None;
+	}
+
+	void Overlay_RequestClose() {
+		VisibleOverlay = Overlay.None;
+	}
+
+
+
 
 	public void ShutDownOld() {
 
@@ -188,6 +217,7 @@ public class DecisionModel : ObservableModel {
 	string _spaces = "";
 	string _title = "";
 	IDecision? _nextDecision;
+	Overlay _visibleOverlay = Overlay.None;
 
 	readonly SinglePlayerGame _game;
 	readonly internal UserPortalFacade _userPortal;
@@ -195,8 +225,4 @@ public class DecisionModel : ObservableModel {
 	readonly OptionViewManager _ovm;
 }
 
-/// <summary> Wrapper to make Text visibile for explicitly defined .Text interface property </summary>
-public class OptionModel(IOption option) {
-	public IOption Option { get; } = option; 
-	public string Text => Option.Text;
-}
+public enum Overlay { None, Cards, SpiritPanel, InvaderBoard }

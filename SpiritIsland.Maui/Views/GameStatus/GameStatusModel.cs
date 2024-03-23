@@ -11,7 +11,7 @@ public class GameStatusModel : ObservableModel1 {
 	public int RewindableRound { get => GetStruct<int>(); set => SetProp(value); }
 	public ICommand RewindCommand { get; }
 
-	public string Phase { get => GetProp<string>(); set => SetProp(value); }
+	public Phase Phase { get => GetStruct<Phase>(); set { SetProp(value); } }
 
 	#region Invader Cards - Observable
 
@@ -49,7 +49,7 @@ public class GameStatusModel : ObservableModel1 {
 		RavageImages = [];
 		BuildImages = [];
 
-		Phase = "";
+		Phase = gs.Phase;
 
 		game.GameState.NewLogEntry += GameState_NewLogEntry;
 		UpdatePhaseStuff(SpiritIsland.Phase.Init);
@@ -57,7 +57,7 @@ public class GameStatusModel : ObservableModel1 {
 		UpdateBlight();
 
 		RewindCommand = new Command(
-			execute: async () => {
+			execute: () => {
 				if (0 < RewindableRound) {
 					// var a = await DisplayAlert("Question?", "Would you like to rewind to Round N?", "Yes", "No");
 					game.UserPortal.RewindToRound(RewindableRound);
@@ -91,7 +91,7 @@ public class GameStatusModel : ObservableModel1 {
 
 	void UpdatePhaseStuff(Phase phase) {
 		// Phase
-		Phase = phase.ToString();
+		Phase = phase;
 		// Invaders
 		RavageImages = GetInvaderFlipped(_deck.Ravage.Cards);
 		BuildImages = GetInvaderFlipped(_deck.Build.Cards);

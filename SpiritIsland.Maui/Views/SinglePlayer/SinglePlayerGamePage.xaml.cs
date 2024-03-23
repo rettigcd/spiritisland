@@ -74,8 +74,9 @@ public partial class SinglePlayerGamePage : ContentPage {
 	#endregion Send/Receive Commands to game
 
 	void SpiritSummary_GrowthDetailsClicked( object sender, EventArgs e ) => _model?.ShowSpiritPanel();
-	void SpiritSummary_CardDetailsClicked(object sender, EventArgs e)     => _model?.ShowCardPanel();
 	void Accept_Clicked(object sender, EventArgs e)                       => _model?.Submit(); // !!! Replace with a command on the model
+
+	void SpiritSummary_CardDetailsClicked(object sender, EventArgs e) => _model?.ShowCardPanel();
 
 	DecisionModel? _model;
 

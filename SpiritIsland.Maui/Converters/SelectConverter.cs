@@ -5,7 +5,8 @@ namespace SpiritIsland.Maui;
 public class SelectConverter : IValueConverter {
 
 	public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
-		return value is CardUse cu && cu.ToString().Equals(parameter);
+		return value is CardUse cu ? cu.ToString().Equals(parameter)
+			: value is Overlay overlay && overlay.ToString().Equals(parameter);
 	}
 
 	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {

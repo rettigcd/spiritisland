@@ -112,28 +112,3 @@ public class SinglePlayerGame {
 	readonly Dictionary<int, object> _savedGameStates = [];
 
 }
-
-/// <summary>
-/// Hides from the caler the nature of the game engine.  They don't know about throwing exceptions and cancelation tokens.
-/// </summary>
-public interface IGamePortal {
-	IDecisionPortal DecisionPortal { get; }
-	void RewindToRound( int targetRound );
-	void CancelGame();
-}
-
-public class GamePortal : IGamePortal {
-	public IDecisionPortal DecisionPortal => _inner;
-	readonly IUserPortalPlus _inner;
-	public GamePortal(IUserPortalPlus inner) {
-		_inner = inner;
-	}
-
-	public void RewindToRound( int targetRound) {
-		_inner.IssueException(new RewindException(targetRound));
-	}
-
-	public void CancelGame() {
-		_inner.IssueException(new GameOverException(new GameOverLogEntry(GameOverResult.Withdrawal, "User withdrew from game.")));
-	}
-}

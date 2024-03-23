@@ -3,7 +3,8 @@
 static public class ImageCache {
 
 	static public ImageSource FromFile( string filename) {
-		if(_dict.TryGetValue(filename, out ImageSource? imageSource) ) return imageSource;
+		if(_dict.TryGetValue(filename, out ImageSource? imageSource) ) 
+			return imageSource;
 		var imgSrc = ImageSource.FromFile(filename);
 		_dict.Add(filename, imgSrc );
 		return imgSrc;
