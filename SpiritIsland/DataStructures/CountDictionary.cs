@@ -90,7 +90,8 @@ public class CountDictionary<K> : IDictionary<K,int> {
 	public Dictionary<K, int>.KeyCollection Keys => _inner.Keys;
 	ICollection<K> IDictionary<K, int>.Keys => _inner.Keys;
 	public ICollection<int> Values => _inner.Values;
-	public int Count => _inner.Count;
+	/// <summary> Gets the # of Keys. </summary>
+	public int Count => _inner.Count; // !!! rename this to KeyCount
 	public bool IsReadOnly => false;
 	public void Add( K key, int value ){ this[key]=value; }
 	public bool ContainsKey( K key ) => _inner.ContainsKey(key);

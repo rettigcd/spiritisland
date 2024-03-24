@@ -41,7 +41,7 @@ public class HearthVigil : Spirit {
 				new GainEnergy( 3 )
 			)
 		)
-		,PowerCard.For(typeof(RoilingBogAndSnaggingThorn))
+//		,PowerCard.For(typeof(RoilingBogAndSnaggingThorn))
 		,PowerCard.For(typeof(FavorsOfStoryAndSeason))
 		,PowerCard.For(typeof(SurroundedByTheDahan))
 		,PowerCard.For(typeof(CoordinatedRaid))

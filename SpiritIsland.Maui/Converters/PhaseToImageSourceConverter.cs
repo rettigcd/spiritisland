@@ -7,19 +7,14 @@ public class PhaseToImageSourceConverter : IValueConverter {
 		try {
 			if(value is Phase phase) 
 				value = phase.ToString();
-			if( value is string s) {
-				if(s == "Slow")
-					_lastWasSlow = true;
-				else if( _lastWasSlow) {
-				}
-				return ImageCache.FromFile( s.ToLower()+".png" );
-			}
-		} catch(Exception ex) {
+			if( value is string s)
+				return s.ToLower() + ".png";
+		}
+		catch (Exception ex) {
 		}
 		return (object?)null;
 
 	}
-	static bool _lastWasSlow;
 
 	public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
 		return Phase.None;

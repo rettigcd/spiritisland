@@ -135,28 +135,65 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public readonly CountDictionary<Element> PreparedElements = [];
 
-	public override async Task<bool> HasElement( CountDictionary<Element> subset, string description ) {
-		if( Elements.Contains( subset ) ) return true;
+	/// <remarks> Override to present user with all options at 1 time and let them pick once. </remarks>
+	public override async Task<IDrawableInnateTier> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
 
-		// Check if we have prepared element markers to fill the missing elements
-		if(PreparedElements.Count != 0) {
-			var missing = subset.Except(Elements.Elements);
-			if(PreparedElements.Contains(missing) && await this.UserSelectsFirstText($"Meet elemental threshold: "+subset.BuildElementString(), "Yes, use prepared elements", "No, I'll pass.")) {
+		var options = innateOptions
+			.Select(innateOption=>{
+				var missing = innateOption.Elements.Except(Elements.Elements);
+				return new { 
+					innateOption, 
+					missing,
+					prompt = FormatPrompt(missing, innateOption.Elements)
+				};
+			})
+			.Where( x => PreparedElements.Contains(x.missing) )
+			.ToArray();
 
-				Elements.Add(missing); // assign to this action so next check recognizes them
-				foreach(var pair in missing)
-					PreparedElements[pair.Key] -= pair.Value;
-
-				ActionScope.Current.AtEndOfThisAction( _ => {
-					foreach(var pair in missing)
-						Elements.Remove(pair.Key, pair.Value);
-				} );
-
-				return true;
-			}
+		static string FormatPrompt(CountDictionary<Element> missing, CountDictionary<Element> optionEls) {
+			string optionElsString = ElementStrings.BuildElementString(optionEls);
+			return missing.Count == 0
+				? $"Use existing => {optionElsString}"
+				: $"Prepare {ElementStrings.BuildElementString(missing)} => {optionElsString}";
 		}
 
-		return false;
+		if (options.Length == 0) return null;
+		if(options.Length == 1) return options[0].innateOption;
+
+		string choice = await this.SelectText("Select Innate Option", options.Select(x=>x.prompt).ToArray(), Present.Done);
+		var match = options.FirstOrDefault(o=>o.prompt == choice);
+		if(match == null) return null;
+
+		Elements.Add(match.missing); // assign to this action so next check recognizes them
+		foreach (var pair in match.missing)
+			PreparedElements[pair.Key] -= pair.Value;
+		
+		return match.innateOption;
+	}
+
+	public override async Task<bool> HasElement( CountDictionary<Element> subset, string description ) {
+		CountDictionary<Element> missing = subset.Except(Elements.Elements);
+		if( missing.Count == 0 ) return true;
+
+		// Check if we have prepared element markers to fill the missing elements
+		if (PreparedElements.Count == 0) return false;
+
+		string prompt = $"Meet elemental threshold: " + subset.BuildElementString();
+		if( !PreparedElements.Contains(missing) 
+			|| !await this.UserSelectsFirstText(prompt, $"Yes, use {ElementStrings.BuildElementString(missing)} prepared elements", "No, I'll pass.") 
+		) return false;
+
+		Elements.Add(missing); // assign to this action so next check recognizes them
+		foreach (var pair in missing)
+			PreparedElements[pair.Key] -= pair.Value;
+
+		ActionScope.Current.AtEndOfThisAction(_ => {
+			foreach (var pair in missing)
+				Elements.Remove(pair.Key, pair.Value);
+		});
+
+		return true;
+
 	}
 
 	protected override object CustomMementoValue { 
