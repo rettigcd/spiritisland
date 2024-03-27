@@ -21,7 +21,7 @@ public class DecisionModel : ObservableModel {
 
 	public string Title {  get => _title; set => SetProp(ref _title,value); }
 
-	public GameStatusModel GameStatus { get => _gameStatus; set => SetProp(ref _gameStatus, value); }
+	public InvaderBoardModel GameStatus { get => _gameStatus; set => SetProp(ref _gameStatus, value); }
 
 	public string Spaces { get => _spaces; set => SetProp(ref _spaces, value ); }
 
@@ -72,7 +72,7 @@ public class DecisionModel : ObservableModel {
 		_userPortal.NewWaitingDecision += Game_NewWaitingDecision;
 
 		var gs = _game.GameState;
-		_gameStatus = new GameStatusModel( _game );
+		_gameStatus = new InvaderBoardModel( _game );
 
 		// Cards
 		Cards = new CardsOverlayModel(_game.Spirit, _userPortal);
@@ -207,7 +207,7 @@ public class DecisionModel : ObservableModel {
 		AutoSelect();
 	}
 
-	GameStatusModel _gameStatus;
+	InvaderBoardModel _gameStatus;
 
 	string _prompt = string.Empty;
 	OptionModel[] _options = [];

@@ -2,7 +2,7 @@
 
 public abstract partial class Spirit 
 	: IOption
-	, IHaveASpirit // so all 'contexts' can you the same Picker and have a spirit to do the decision making.
+	, IHaveASpirit // so all 'contexts' can use the same Picker and have a spirit to do the decision making.
 	, IRunWhenTimePasses
 	, IHaveMemento 
 {
@@ -52,7 +52,7 @@ public abstract partial class Spirit
 
 	public readonly ElementMgr Elements;
 
-	public virtual bool CouldHaveElements( CountDictionary<Element> subset ) => Elements.CouldContain(subset);
+	public virtual ECouldHaveElements CouldHaveElements( CountDictionary<Element> subset ) => Elements.CouldContain(subset) ? ECouldHaveElements.Yes : ECouldHaveElements.No;
 	public virtual Task<bool> HasElement( CountDictionary<Element> subset, string description ) => Elements.ContainsAsync(subset, description);
 
 	/// <summary>
@@ -614,3 +614,5 @@ public class SpiritDeck {
 public interface IHaveSecondaryElements {
 	CountDictionary<Element> SecondaryElements { get; }
 }
+
+public enum ECouldHaveElements { No, Yes, AsPrepared }

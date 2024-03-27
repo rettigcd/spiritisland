@@ -58,7 +58,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	bool CouldBeTriggered( Spirit spirit ) {
 		return DrawableOptions
-			.Any(x=>spirit.CouldHaveElements(x.Elements));
+			.Any(x=>spirit.CouldHaveElements(x.Elements) != ECouldHaveElements.No);
 	}
 
 	bool CouldMatchPhase( Phase requestSpeed, Spirit spirit ) {

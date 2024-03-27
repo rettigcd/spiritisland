@@ -14,7 +14,7 @@
 	<Grid RowDefinitions="30,50,235,24,30,*,30">
 		
 		<!-- Invaders - Begin -->
-		<si:InvaderDeckView BindingContext="{Binding GameStatus}" Grid.Row="0" />
+		<si:InvaderBoardSummaryView BindingContext="{Binding GameStatus}" Grid.Row="0" />
 
 		<!-- Spirit -->
 		<si:SpiritSummaryView 
@@ -58,10 +58,10 @@
 
 		<!-- Overlays -->
 		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" 
-			IsVisible="{Binding Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Path=VisibleOverlay, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
+			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
 			Grid.Row="0" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
 		<si:CardsOverlay BindingContext="{Binding Cards}" 
-			IsVisible="{Binding Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Path=VisibleOverlay, Converter={StaticResource selectOne},ConverterParameter=Cards}"
+			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=Cards}"
 			Grid.Row="1" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
 
 	</Grid>

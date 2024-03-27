@@ -90,8 +90,10 @@ public class TokenLocationModel
 			Img.Beast => "beast.png",
 			Img.Vitality => "vitality.png",
 			Img.Badlands => "badlands.png",
+			Img.Isolate => "isolate.png",
 			Img.Wilds => "wilds.png",
 			Img.Defend => "defend.png",
+			Img.Token_Any => "any_token.png",
 			_ => "vitality.png" // ERROR - see if this ever happens.
 		};
 		return ImageCache.FromFile(filename);

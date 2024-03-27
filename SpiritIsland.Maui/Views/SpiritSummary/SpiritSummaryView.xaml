@@ -18,7 +18,11 @@
 		</Image>
 
 		<!-- Secondary Elements -->
-		<si:ElementDictView BindingContext="{Binding Elements}" />
+		<Grid RowDefinitions="1*,1*">
+			<si:ElementDictView BindingContext="{Binding Elements}" />
+			<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Row="1" />
+		</Grid>
+		
 
 		<!-- Placeable -->
 		<CollectionView x:Name="Placeables" ItemsSource="{Binding TrackPresence}" ItemsLayout="HorizontalList" MaximumHeightRequest="50">

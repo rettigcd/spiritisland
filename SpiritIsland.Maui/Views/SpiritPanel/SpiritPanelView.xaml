@@ -29,6 +29,9 @@
 			<!-- Growth Track -->
 			<si:GrowthTrackView x:Name="GrowthTrackView" BindingContext="{Binding GrowthTrack}" />
 
+			<Label Text="{Binding Energy, StringFormat='Energy: {0}'}"/>
+			<Label Text="{Binding Destroyed, StringFormat='Destroyed: {0}'}"/>
+
 			<!-- Energy -->
 			<CollectionView x:Name="EnergyTrackView" ItemsLayout="HorizontalList" MaximumHeightRequest="55" ItemsSource="{Binding EnergyTrack}" BackgroundColor="Beige" >
 				<CollectionView.ItemTemplate>
@@ -61,12 +64,11 @@
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 
+			<!-- Elements -->
 			<Grid ColumnDefinitions="80,*,*" BackgroundColor="Beige" Margin="0,5,0,0">
 				<Label Text="Elements" FontSize="12" FontAttributes="Bold,Italic" VerticalOptions="Center"/>
-				<!-- Elements -->
-				<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" Margin="0,2" />
-				<!-- Elements -->
-				<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Column="2" Margin="0,2" />
+				<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" Margin="10,2" />
+				<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Column="2" Margin="10,2" />
 			</Grid>
 		
 			<!-- Innates -->
@@ -87,7 +89,7 @@
 							<CollectionView ItemsSource="{Binding Tiers}"  >
 								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="si:InnateTierModel">
-										<Border Stroke="Black">
+										<Border Stroke="Black" BackgroundColor="{Binding BgColor}">
 											<Grid ColumnDefinitions="2*,8*">
 												<!-- Elements -->
 												<si:ElementDictView BindingContext="{Binding Elements}" />

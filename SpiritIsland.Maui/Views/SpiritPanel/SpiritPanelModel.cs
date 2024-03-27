@@ -6,9 +6,11 @@ public class SpiritPanelModel : ObservableModel {
 	public SpecialRuleModel[] SpecialRules { get; }
 	public InnateModel[] Innates { get; }
 
-	public GrowthTrackModel GrowthTrack       { get => _growthTrack; private set => SetProp(ref _growthTrack, value); }
+	public GrowthTrackModel GrowthTrack       { get => _growthTrack;       private set => SetProp(ref _growthTrack, value); }
 	public TokenLocationModel[] EnergyTrack   { get => _energyTrack;       private set => SetProp(ref _energyTrack,value); }
 	public TokenLocationModel[] CardPlayTrack { get => _cardTrack;         private set => SetProp(ref _cardTrack, value ); }
+	public int Energy                         { get => _energy;            private set => SetProp(ref _energy, value); }
+	public int Destroyed                      { get => _destroyed;         private set => SetProp(ref _destroyed, value); }
 	public ElementDictModel Elements          { get => _elements;          private set => SetProp(ref _elements, value); }
 	public ElementDictModel SecondaryElements { get => _secondaryElements; private set => SetProp(ref _secondaryElements, value); }
 
@@ -35,16 +37,17 @@ public class SpiritPanelModel : ObservableModel {
 			.Select(tp => new TokenLocationModel(tp))
 			.ToArray();
 
+		_energy = spirit.Energy;
+
 		// Elements
 		_secondaryElementHolder = _spirit as IHaveSecondaryElements;
 		UpdateElements();
 
 		// Innates
-		Innates = [ ..spirit.InnatePowers.Select(ip=>new InnateModel(ip)) ];
+		Innates = [ ..spirit.InnatePowers.Select(ip=>new InnateModel(ip,spirit)) ];
 
 		// Special Rules
 		SpecialRules = spirit.SpecialRules.Select(x=>new SpecialRuleModel(x)).ToArray();
-
 
 		// OVM
 		ovm.AddRange(_energyTrack, this);
@@ -53,6 +56,14 @@ public class SpiritPanelModel : ObservableModel {
 		_ovm = ovm;
 
 		gsToWatch.NewLogEntry += OnNewLogEntry;
+		spirit.Portal.NewWaitingDecision += Portal_NewWaitingDecision; // using this to trigger UI update, NOT to get decision info.
+	}
+
+	void Portal_NewWaitingDecision(IDecision obj) {
+		Energy = _spirit.Energy;
+		Destroyed = _spirit.Presence.Destroyed.Count;
+		UpdateElements();
+		UpdateInnates();
 	}
 
 	#endregion constructor
@@ -76,13 +87,16 @@ public class SpiritPanelModel : ObservableModel {
 			foreach (TokenLocationModel x in _cardTrack) 
 				x.RefreshCountAndSS();
 		}
-		UpdateElements();
 	}
 
 	void UpdateElements() {
 		Elements = new ElementDictModel(_spirit.Elements.Elements);
 		if(_secondaryElementHolder is not null)
 			SecondaryElements = new ElementDictModel( _secondaryElementHolder.SecondaryElements );
+	}
+	void UpdateInnates() {
+		foreach(var innate in Innates)
+			innate.Update();
 	}
 
 	TokenLocationModel FindInTracks(Track src) {
@@ -97,6 +111,8 @@ public class SpiritPanelModel : ObservableModel {
 	GrowthTrackModel _growthTrack;
 	TokenLocationModel[] _energyTrack;
 	TokenLocationModel[] _cardTrack;
+	int _energy;
+	int _destroyed;
 	ElementDictModel _elements = new ElementDictModel([]);
 	ElementDictModel _secondaryElements = new ElementDictModel([]);
 

@@ -12,6 +12,7 @@ public class SpiritModel : ObservableModel {
 	public int EnergyPerTurn                  { get => _energyPerTurn;    set => SetProp( ref _energyPerTurn, value);    } int _energyPerTurn;
 	public int CardPlaysPerTurn               { get => _cardPlaysPerTurn; set => SetProp( ref _cardPlaysPerTurn, value); } int _cardPlaysPerTurn;
 	public ElementDictModel Elements          { get => _elements;         set => SetProp( ref _elements, value);         } ElementDictModel _elements = new ElementDictModel([]);
+	public ElementDictModel SecondaryElements { get => _secondaryElements;         set => SetProp( ref _secondaryElements, value);         } ElementDictModel _secondaryElements = new ElementDictModel([]);
 	public TokenLocationModel[] TrackPresence { get => _trackPresence;    set => SetProp( ref _trackPresence, value);    } TokenLocationModel[] _trackPresence = [];
 
 	#endregion
@@ -37,8 +38,9 @@ public class SpiritModel : ObservableModel {
 		Energy = _spirit.Energy;
 		EnergyPerTurn = _spirit.EnergyPerTurn;
 		CardPlaysPerTurn = _spirit.NumberOfCardsPlayablePerTurn;
+		Elements = new ElementDictModel(_spirit.Elements.Elements);
 		if(_spirit is IHaveSecondaryElements ihse)
-		Elements = new ElementDictModel(ihse.SecondaryElements);
+			SecondaryElements = new ElementDictModel(ihse.SecondaryElements);
 
 		// Track Presence to Reveal
 		var revealed = _spirit.Presence.RevealOptions().ToArray();

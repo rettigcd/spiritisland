@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Maui;
+﻿using System.Windows.Input;
+
+namespace SpiritIsland.Maui;
 
 public class CardSlotModel : ObservableModel1 {
 
@@ -6,20 +8,26 @@ public class CardSlotModel : ObservableModel1 {
 
 	public bool HasCard      { get => GetStruct<bool>(); set => SetProp(value); }
 	public bool Selected     { get => GetStruct<bool>(); set => SetProp(value); }
-	public Color BorderColor { get => GetProp<Color>(); set => SetProp(value); }
+
 	public CardModel? Card   { 
-		get => GetNullableProp<CardModel>(); 
+		get => GetNullableProp<CardModel>();
 		set {
 			SetProp(value);
 			HasCard = value is not null;
-			BorderColor = value is not null && value.IsDraggable ? Colors.Red : Colors.DimGray;
 		}
 	}
 
+	public ICommand SelectCommand { get; }
+
 	#endregion Observable Properties
+
+	#region constructor
 
 	public CardSlotModel( CardModel? card=null ) {
 		Card = card;
+		SelectCommand = new Command( ()=> Selected = true );
 	}
+
+	#endregion constructor
 
 }

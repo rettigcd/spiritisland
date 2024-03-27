@@ -47,7 +47,7 @@
     <MauiXaml Update="Views\SpiritPanel\GrowthTrackView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Views\GameStatus\GameStatusView.xaml">
+    <MauiXaml Update="Views\InvaderBoard\InvaderBoardSummaryView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Views\SpiritPanel\SpiritPanelView.xaml">

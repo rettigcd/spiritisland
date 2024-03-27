@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents 1 Card
 /// </summary>
-public class CardModel : ObservableModel1 {
+public class CardModel : ObservableModel {
 
 	static public CardModel Null => _nullModel ??= new CardModel(PowerCard.For(typeof(Basegame.BoonOfVigor)));
 	static CardModel? _nullModel;
@@ -20,7 +20,15 @@ public class CardModel : ObservableModel1 {
 
 	#region observable properties
 
-	public bool IsDraggable { get => GetStruct<bool>(); set => SetProp(value); }
+	public Color BorderColor { get => _borderColor; private set => SetProp(ref _borderColor, value); }
+	public bool IsDraggable { get => _isDraggable; 
+		set { 
+			SetProp(ref _isDraggable,value);
+			BorderColor = _isDraggable ? Colors.Red : Colors.Transparent;
+		}
+	}
+	bool _isDraggable;
+	Color _borderColor = Colors.Transparent;
 
 	#endregion observable properties
 

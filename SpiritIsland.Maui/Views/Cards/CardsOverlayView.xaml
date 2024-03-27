@@ -13,176 +13,177 @@
 		</ResourceDictionary>
 	</ContentView.Resources>
 
-	<VerticalStackLayout Padding="10" BackgroundColor="#80808080">
+	<ScrollView>
+		<VerticalStackLayout Padding="10" BackgroundColor="#80808080">
 
-		<VerticalStackLayout.GestureRecognizers>
-			<TapGestureRecognizer Command="{Binding CloseCommand}" />
-		</VerticalStackLayout.GestureRecognizers>
+			<VerticalStackLayout.GestureRecognizers>
+				<TapGestureRecognizer Command="{Binding CloseCommand}" />
+			</VerticalStackLayout.GestureRecognizers>
 
-		<!-- Played -->
-		<Border BackgroundColor="Teal" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
-			<VerticalStackLayout>
+			<!-- Played -->
+			<Border BackgroundColor="Teal" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
+				<VerticalStackLayout>
 
-				<!-- Label / button Row -->
-				<Label Text="Played" Margin="10,0" FontSize="12" />
+					<!-- Label / button Row -->
+					<Label Text="Played" Margin="10,0" FontSize="12" />
 				
-				<!-- Resolved -->
-				<CollectionView x:Name="Resolved" ItemsSource="{Binding Resolved}" Margin="3" >
+					<!-- Resolved -->
+					<CollectionView x:Name="Resolved" ItemsSource="{Binding Resolved}" Margin="3" >
 
-					<CollectionView.ItemsLayout>
-						<GridItemsLayout Orientation="Vertical" Span="2"/>
-					</CollectionView.ItemsLayout>
+						<CollectionView.ItemsLayout>
+							<GridItemsLayout Orientation="Vertical" Span="2"/>
+						</CollectionView.ItemsLayout>
 
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="si:CardSlotModel" >
-							<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="si:CardSlotModel" >
+								<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
 
-				<!-- Repeat ↓↓↓ -->
-				<Grid ColumnDefinitions="10*,30*" Margin="3" IsVisible="{Binding IsRepeating}" >
-					<Label Text="Repeat ↓↓↓" />
-					<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
+					<!-- Repeat ↓↓↓ -->
+					<Grid ColumnDefinitions="10*,30*" Margin="3" IsVisible="{Binding IsRepeating}" >
+						<Label Text="Repeat ↓↓↓" />
+						<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
+							HeightRequest="25" FontSize="12" 
+							HorizontalOptions="End" Padding="5,0" 
+							IsEnabled="{Binding ButtonIsEnabled}"
+							TextColor="White" />
+					</Grid>
+
+					<!-- Unresolved -->
+					<CollectionView x:Name="Played" ItemsSource="{Binding Played}" Margin="3" >
+
+						<CollectionView.ItemsLayout>
+							<GridItemsLayout Orientation="Vertical" Span="2"/>
+						</CollectionView.ItemsLayout>
+
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="si:CardSlotModel" >
+								<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Play ↑↑↑ (N) -->
+			<Grid ColumnDefinitions="25*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="27" Padding="3,0" IsVisible="{Binding IsPlaying}" >
+
+				<Label Text="Play ↑↑↑" VerticalOptions="Center" />
+
+				<!-- Elements -->
+				<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" BackgroundColor="Beige" />
+
+				<!-- Energy -->
+				<Image Grid.Column="2" Source="coin.png" HeightRequest="25" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />
+				<Label Grid.Column="2" Text="{Binding RemainingEnergy}" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" FontAttributes="Bold" VerticalOptions="Center" />
+
+				<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="3" 
+								HeightRequest="25" FontSize="12" 
+								HorizontalOptions="End" Padding="5,0" 
+								IsEnabled="{Binding ButtonIsEnabled}"
+								TextColor="White" />
+			</Grid>
+
+
+			<!-- Hand -->
+			<Border BackgroundColor="#D8D" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
+				<VerticalStackLayout>
+					<!-- Label / Button row -->
+					<Label Text="Hand" Margin="10,0" FontSize="12" />
+
+					<CollectionView x:Name="Hand" ItemsSource="{Binding Hand}" Margin="3" >
+
+						<CollectionView.ItemsLayout>
+							<GridItemsLayout Orientation="Vertical" Span="2"/>
+						</CollectionView.ItemsLayout>
+
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="si:CardSlotModel" >
+								<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Add to Hand (Reclaim/Draw) ↑↑↑ -->
+			<Grid ColumnDefinitions="30*,40*" Margin="3" BackgroundColor="Beige" IsVisible="{Binding IsAddingToHand}" >
+				<Label Text="Add to Hand ↑↑↑" />			
+				<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
 						HeightRequest="25" FontSize="12" 
 						HorizontalOptions="End" Padding="5,0" 
 						IsEnabled="{Binding ButtonIsEnabled}"
 						TextColor="White" />
-				</Grid>
+			</Grid>
 
-				<!-- Unresolved -->
-				<CollectionView x:Name="Played" ItemsSource="{Binding Played}" Margin="3" >
+			<!-- Draw -->
+			<Border BackgroundColor="DarkKhaki" Padding="3" StrokeShape="RoundRectangle 10,10,10,10" IsVisible="{Binding IsDrawing}">
+				<VerticalStackLayout>
+					<Grid ColumnDefinitions="10*,30*" Margin="3">
+						<Label Text="Draw" />
+					</Grid>
 
-					<CollectionView.ItemsLayout>
-						<GridItemsLayout Orientation="Vertical" Span="2"/>
-					</CollectionView.ItemsLayout>
+					<CollectionView x:Name="Draw" ItemsSource="{Binding Draw}" ItemsLayout="VerticalGrid,2" Margin="3" >
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="si:CardSlotModel" >
+								<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
 
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="si:CardSlotModel" >
-							<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
+				</VerticalStackLayout>
+			</Border>
 
-			</VerticalStackLayout>
-		</Border>
+			<!-- Discarded -->
+			<Border BackgroundColor="Gray" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
+				<VerticalStackLayout>
 
-		<!-- Play ↑↑↑ (N) -->
-		<Grid ColumnDefinitions="25*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="27" Padding="3,0" IsVisible="{Binding IsPlaying}" >
-
-			<Label Text="Play ↑↑↑" VerticalOptions="Center" />
-
-			<!-- Elements -->
-			<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" BackgroundColor="Beige" />
-
-			<!-- Energy -->
-			<Image Grid.Column="2" Source="coin.png" HeightRequest="25" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />
-			<Label Grid.Column="2" Text="{Binding RemainingEnergy}" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" FontAttributes="Bold" VerticalOptions="Center" />
-
-			<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="3" 
-							HeightRequest="25" FontSize="12" 
-							HorizontalOptions="End" Padding="5,0" 
-							IsEnabled="{Binding ButtonIsEnabled}"
-							TextColor="White" />
-		</Grid>
-
-
-		<!-- Hand -->
-		<Border BackgroundColor="#D8D" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
-			<VerticalStackLayout>
-				<!-- Label / Button row -->
-				<Label Text="Hand" Margin="10,0" FontSize="12" />
-
-				<CollectionView x:Name="Hand" ItemsSource="{Binding Hand}" Margin="3" >
-
-					<CollectionView.ItemsLayout>
-						<GridItemsLayout Orientation="Vertical" Span="2"/>
-					</CollectionView.ItemsLayout>
-
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="si:CardSlotModel" >
-							<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-
-			</VerticalStackLayout>
-		</Border>
-
-		<!-- Add to Hand (Reclaim/Draw) ↑↑↑ -->
-		<Grid ColumnDefinitions="30*,40*" Margin="3" BackgroundColor="Beige" IsVisible="{Binding IsAddingToHand}" >
-			<Label Text="Add to Hand ↑↑↑" />			
-			<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
-					HeightRequest="25" FontSize="12" 
-					HorizontalOptions="End" Padding="5,0" 
-					IsEnabled="{Binding ButtonIsEnabled}"
-					TextColor="White" />
-		</Grid>
-
-		<!-- Draw -->
-		<Border BackgroundColor="DarkKhaki" Padding="3" StrokeShape="RoundRectangle 10,10,10,10" IsVisible="{Binding IsDrawing}">
-			<VerticalStackLayout>
-				<Grid ColumnDefinitions="10*,30*" Margin="3">
-					<Label Text="Draw" />
-				</Grid>
-
-				<CollectionView x:Name="Draw" ItemsSource="{Binding Draw}" ItemsLayout="VerticalGrid,2" Margin="3" >
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="si:CardSlotModel" >
-							<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-
-			</VerticalStackLayout>
-		</Border>
-
-		<!-- Discarded -->
-		<Border BackgroundColor="Gray" Padding="3" StrokeShape="RoundRectangle 10,10,10,10">
-			<VerticalStackLayout>
-
-				<!-- Label / Button row -->
-				<Grid ColumnDefinitions="10*,30*" Margin="3">
-					<Label Text="Discarded" Margin="10,0" FontSize="12" />
-					<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
-							HeightRequest="25" FontSize="12" 
-							HorizontalOptions="End" Padding="5,0" 
-							IsVisible="{Binding IsDiscarding}"
-							IsEnabled="{Binding ButtonIsEnabled}"
-							TextColor="White" />
-				</Grid>
+					<!-- Label / Button row -->
+					<Grid ColumnDefinitions="10*,30*" Margin="3">
+						<Label Text="Discarded" Margin="10,0" FontSize="12" />
+						<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
+								HeightRequest="25" FontSize="12" 
+								HorizontalOptions="End" Padding="5,0" 
+								IsVisible="{Binding IsDiscarding}"
+								IsEnabled="{Binding ButtonIsEnabled}"
+								TextColor="White" />
+					</Grid>
 				
-				<CollectionView x:Name="Discarded" ItemsSource="{Binding Discards}" ItemsLayout="VerticalGrid,2" >
-					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="si:CardSlotModel" >
-							<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
+					<CollectionView x:Name="Discarded" ItemsSource="{Binding Discards}" ItemsLayout="VerticalGrid,2" >
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="si:CardSlotModel" >
+								<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
 
-			</VerticalStackLayout>
-		</Border>
+				</VerticalStackLayout>
+			</Border>
 
 
-		<!-- Instructions -->
-		<Label Text="{Binding Title}" 
-			   IsVisible="{Binding Instructions,Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
-			   BackgroundColor="Beige"
-			   HorizontalOptions="Fill" 
-			   HorizontalTextAlignment="Center"
-			   Padding="0,10,0,0" Margin="5,5,5,0"
-			   FontAttributes="Bold" FontSize="18"
-		/>
-		<Label Text="{Binding Instructions}" 
-			   IsVisible="{Binding Instructions,Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
-			   LineBreakMode="WordWrap" 
-			   BackgroundColor="Beige"
-			   HorizontalOptions="Fill" 
-			   HorizontalTextAlignment="Center"
-			   Padding="10" Margin="5,0,5,5"
-			  />
+			<!-- Instructions -->
+			<Label Text="{Binding Title}" 
+				   IsVisible="{Binding Instructions,Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+				   BackgroundColor="Beige"
+				   HorizontalOptions="Fill" 
+				   HorizontalTextAlignment="Center"
+				   Padding="0,10,0,0" Margin="5,5,5,0"
+				   FontAttributes="Bold" FontSize="18"
+			/>
+			<Label Text="{Binding Instructions}" 
+				   IsVisible="{Binding Instructions,Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+				   LineBreakMode="WordWrap" 
+				   BackgroundColor="Beige"
+				   HorizontalOptions="Fill" 
+				   HorizontalTextAlignment="Center"
+				   Padding="10" Margin="5,0,5,5"
+				  />
 
-	</VerticalStackLayout>
-
+		</VerticalStackLayout>
+	</ScrollView>
 
 </ContentView>

@@ -70,6 +70,8 @@ public class CountDictionary<K> : IDictionary<K,int> {
 	public void AddRange(IEnumerable<K> items) { foreach(var item in items) ++this[item]; }
 	public void AddRange(IEnumerable<KeyValuePair<K,int>> items) { foreach(var pair in items) this[pair.Key] += pair.Value; }
 
+	public void RemoveRange(IEnumerable<KeyValuePair<K,int>> items) { foreach(var pair in items) this[pair.Key] -= pair.Value; }
+
 	public CountDictionary<K> Clone() {
 		var clone = new CountDictionary<K>();
 		foreach(var invader in Keys)

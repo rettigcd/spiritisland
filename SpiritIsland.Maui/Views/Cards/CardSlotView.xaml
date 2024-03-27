@@ -6,8 +6,7 @@
 			 x:DataType="si:CardSlotModel"
 			 x:Class="SpiritIsland.Maui.CardSlotView">
 
-	<Border StrokeShape="RoundRectangle 10,10,10,10" x:Name="DropArea" 
-			BackgroundColor="Gray" Stroke="{Binding BorderColor}" StrokeThickness="2">
+	<Border StrokeShape="RoundRectangle 10,10,10,10" x:Name="DropArea" BackgroundColor="Gray">
 		<Border.GestureRecognizers>
 			<DropGestureRecognizer AllowDrop="True" 
 				DragOver="DropGestureRecognizer_DragOver" 
@@ -18,8 +17,10 @@
 			<!-- Card -->
 			<si:CardSummaryView BindingContext="{Binding Card}" IsVisible="{Binding HasCard,Source={RelativeSource AncestorType={x:Type si:CardSlotModel}}}" >
 				<si:CardSummaryView.GestureRecognizers>
+					<!-- Drag -->
 					<DragGestureRecognizer DragStarting="DragGestureRecognizer_DragStarting" CanDrag="{Binding IsDraggable}" />
-					<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" NumberOfTapsRequired="1" />
+					<!-- Tap - show deatils -->
+					<TapGestureRecognizer Command="{Binding SelectCommand,Source={RelativeSource AncestorType={x:Type si:CardSlotModel}}}" NumberOfTapsRequired="1" />
 				</si:CardSummaryView.GestureRecognizers>
 			</si:CardSummaryView>
 		</Grid>

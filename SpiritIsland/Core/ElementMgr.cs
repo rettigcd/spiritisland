@@ -27,6 +27,7 @@ public class ElementMgr( Spirit _spirit ) {
 
 	/// <remarks> Prepared Elements </remarks>
 	public void Add( CountDictionary<Element> counts ) { Elements.AddRange(counts); }
+	public void Remove(CountDictionary<Element> counts) { Elements.RemoveRange(counts); }
 
 	public void Remove(Element el, int count) { Elements[el] -= count; }
 

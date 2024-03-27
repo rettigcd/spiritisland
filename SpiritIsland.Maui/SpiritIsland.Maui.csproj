@@ -798,8 +798,8 @@
 	  <Compile Update="Views\SpiritPanel\GrowthGroupView.xaml.cs">
 	    <DependentUpon>GrowthGroupView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\GameStatus\GameStatusView.xaml.cs">
-	    <DependentUpon>GameStatusView.xaml</DependentUpon>
+	  <Compile Update="Views\InvaderBoard\InvaderBoardSummaryView.xaml.cs">
+	    <DependentUpon>InvaderBoardSummaryView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\SpiritSummary\SpiritSummaryView.xaml.cs">
 	    <DependentUpon>SpiritSummaryView.xaml</DependentUpon>
@@ -849,7 +849,7 @@
 	  <MauiXaml Update="Views\SpiritPanel\GrowthTrackView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\GameStatus\GameStatusView.xaml">
+	  <MauiXaml Update="Views\InvaderBoard\InvaderBoardSummaryView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SpiritPanel\SpiritPanelView.xaml">

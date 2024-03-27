@@ -55,7 +55,4 @@ public partial class CardSlotView : ContentView {
 	}
 	#endregion Drag-n-Drop
 
-	void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e) {
-		Model.Selected = true;
-	}
 }

@@ -52,37 +52,42 @@ public partial class NewGamePage : ContentPage {
 
 	async void Button_Clicked( object sender, EventArgs e ) {
 
+		if( !MainThread.IsMainThread )
+			throw new Exception("not on main thread!");
+
 		StartButton.IsEnabled = false;
 		Activity.IsRunning = true;
-		await Task.Delay(500); // Let the UI show the Activity
 
 		// Spirit
-		string spirit = (string)Spirit.ClassId;
-		SaveRecentSpirit( spirit );
+		string spirit = Spirit.ClassId;
+		SaveRecentSpirit(spirit);
 
 		// Get Board (or randomize)
 		string board = (string)Board.SelectedItem;
-		if(string.IsNullOrEmpty( board ))
+		if (string.IsNullOrEmpty(board))
 			board = _availalbeBoards[(int)(DateTime.Now.Ticks % _availalbeBoards.Length)];
 
 		// Init Configuration
 		var gc = new GameConfiguration()
-			.ConfigSpirits( [spirit] )
-			.ConfigBoards( [board] )
-			.ConfigCommandBeasts( CommandBeast.IsChecked )
-			.ConfigAdversary( _adversary );
+			.ConfigSpirits([spirit])
+			.ConfigBoards([board])
+			.ConfigCommandBeasts(CommandBeast.IsChecked)
+			.ConfigAdversary(_adversary);
 		gc.ShuffleNumber = (int)DateTime.Now.Ticks;
 
-		SinglePlayerGamePage.QueueNewGame( _builder.BuildGame( gc ) );
+		SinglePlayerGamePage.QueueNewGame(_builder.BuildGame(gc));
 
 		await Shell.Current.GoToAsync("//GamePage");
 
-		// This releases the thread and lets the page load.  Then comes back and turns it off.  (I think).
-		Dispatcher.Dispatch(() => {
-			Activity.IsRunning = false;
-			StartButton.IsEnabled = true;
-		});
+		// After .GoToAsync returns, it may still take several seconds to render the board -
+		// keep showing the Spinner for 5 more seconds
+		await Task.Delay(5000);
+
+		Activity.IsRunning = false;
+		StartButton.IsEnabled = true;
+
 	}
+
 
 	#region private fields
 

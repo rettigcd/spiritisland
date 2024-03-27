@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
-public class GameStatusModel : ObservableModel1 {
+public class InvaderBoardModel : ObservableModel1 {
 
 	public int RewindableRound { get => GetStruct<int>(); set => SetProp(value); }
 	public ICommand RewindCommand { get; }
@@ -40,7 +40,7 @@ public class GameStatusModel : ObservableModel1 {
 
 	#endregion Fear - Observable
 
-	public GameStatusModel( SinglePlayerGame game ) {
+	public InvaderBoardModel( SinglePlayerGame game ) {
 		var gs = game.GameState;
 		_deck = gs.InvaderDeck;
 		_fear = gs.Fear;

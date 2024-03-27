@@ -24,6 +24,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 	};
 
 	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements => PreparedElements;
+	public readonly CountDictionary<Element> PreparedElements = [];
 
 	public ShiftingMemoryOfAges() 
 		:base(
@@ -100,16 +101,50 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		PreparedElements[Element.Earth]++;
 	}
 
-
-
-
-
-
 	public async Task PrepareElement(string context) {
 		// This is only used by Shifting Memories
 		var el = await this.SelectElementEx($"Prepare Element ({context})", ElementList.AllElements);
 		PreparedElements[el]++;
 	}
+
+	/// <remarks> Override to present user with all options at 1 time and let them pick once. </remarks>
+	public override async Task<IDrawableInnateTier> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
+
+		var options = innateOptions
+			.Select(innateOption => {
+				var missing = innateOption.Elements.Except(Elements.Elements);
+				return new {
+					innateOption,
+					missing,
+					prompt = FormatPrompt(missing, innateOption.Elements)
+				};
+			})
+			.Where(x => PreparedElements.Contains(x.missing))
+			.ToArray();
+
+		static string FormatPrompt(CountDictionary<Element> missing, CountDictionary<Element> optionEls) {
+			string optionElsString = ElementStrings.BuildElementString(optionEls);
+			return missing.Count == 0
+				? $"Use existing => {optionElsString}"
+				: $"Prepare {ElementStrings.BuildElementString(missing)} => {optionElsString}";
+		}
+
+		if (options.Length == 0) return null;
+		if (options.Length == 1) return options[0].innateOption;
+
+		string choice = await this.SelectText("Select Innate Option", options.Select(x => x.prompt).ToArray(), Present.Done);
+		var match = options.FirstOrDefault(o => o.prompt == choice);
+		if (match == null) return null;
+
+		// !!! BUG - should only be applied to this action, not all.  Remove at end of action
+		Elements.Add(match.missing); // assign to this action so next check recognizes them
+		foreach (var pair in match.missing)
+			PreparedElements[pair.Key] -= pair.Value;
+
+		return match.innateOption;
+	}
+
+	#region Elements
 
 	public async Task<CountDictionary<Element>> DiscardElements(int totalNumToRemove, string effect ) {
 		var discarded = new CountDictionary<Element>();
@@ -124,51 +159,11 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return discarded;
 	}
 
-
-
-	public override bool CouldHaveElements( CountDictionary<Element> subset ) {
-		var els = PreparedElements.Count != 0
-			? Elements.Elements.Union(PreparedElements) 
-			: Elements.Elements;
-		return els.Contains(subset);
-	}
-
-	public readonly CountDictionary<Element> PreparedElements = [];
-
-	/// <remarks> Override to present user with all options at 1 time and let them pick once. </remarks>
-	public override async Task<IDrawableInnateTier> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
-
-		var options = innateOptions
-			.Select(innateOption=>{
-				var missing = innateOption.Elements.Except(Elements.Elements);
-				return new { 
-					innateOption, 
-					missing,
-					prompt = FormatPrompt(missing, innateOption.Elements)
-				};
-			})
-			.Where( x => PreparedElements.Contains(x.missing) )
-			.ToArray();
-
-		static string FormatPrompt(CountDictionary<Element> missing, CountDictionary<Element> optionEls) {
-			string optionElsString = ElementStrings.BuildElementString(optionEls);
-			return missing.Count == 0
-				? $"Use existing => {optionElsString}"
-				: $"Prepare {ElementStrings.BuildElementString(missing)} => {optionElsString}";
-		}
-
-		if (options.Length == 0) return null;
-		if(options.Length == 1) return options[0].innateOption;
-
-		string choice = await this.SelectText("Select Innate Option", options.Select(x=>x.prompt).ToArray(), Present.Done);
-		var match = options.FirstOrDefault(o=>o.prompt == choice);
-		if(match == null) return null;
-
-		Elements.Add(match.missing); // assign to this action so next check recognizes them
-		foreach (var pair in match.missing)
-			PreparedElements[pair.Key] -= pair.Value;
-		
-		return match.innateOption;
+	public override ECouldHaveElements CouldHaveElements( CountDictionary<Element> subset ) {
+		CountDictionary<Element> missing = subset.Except(Elements.Elements);
+		return missing.Count == 0 ? ECouldHaveElements.Yes
+			: PreparedElements.Contains(missing) ? ECouldHaveElements.AsPrepared
+			: ECouldHaveElements.No;
 	}
 
 	public override async Task<bool> HasElement( CountDictionary<Element> subset, string description ) {
@@ -183,18 +178,16 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			|| !await this.UserSelectsFirstText(prompt, $"Yes, use {ElementStrings.BuildElementString(missing)} prepared elements", "No, I'll pass.") 
 		) return false;
 
-		Elements.Add(missing); // assign to this action so next check recognizes them
-		foreach (var pair in missing)
-			PreparedElements[pair.Key] -= pair.Value;
 
-		ActionScope.Current.AtEndOfThisAction(_ => {
-			foreach (var pair in missing)
-				Elements.Remove(pair.Key, pair.Value);
-		});
+		PreparedElements.RemoveRange(missing); // remove from prepared
+		Elements.Add(missing);	// add to Current
+		ActionScope.Current.AtEndOfThisAction(_ => Elements.Remove(missing) ); // remove from Current
 
 		return true;
 
 	}
+
+	#endregion Elements
 
 	protected override object CustomMementoValue { 
 		get => PreparedElements.ToArray();
