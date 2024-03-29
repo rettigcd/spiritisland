@@ -14,9 +14,9 @@ namespace SpiritIslandCmd {
 		readonly SinglePlayerGame _game;
 
 		public UiMap(SinglePlayerGame game ){
-			this._game=game;
+			_game=game;
 			var decisionProvider = game.UserPortal;
-			var decision = decisionProvider.Next;
+			var decision = decisionProvider.DecisionPortal.Next;
 			Prompt = decision.Prompt;
 			
 			var cachedOptions = decision.Options; // cache in case calculated on the fly

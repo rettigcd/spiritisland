@@ -9,6 +9,14 @@ public class DecisionModel : ObservableModel {
 	// * NOT USED - but required to Make child models compile
 	public bool IsVisible {get; set;}
 
+	#region Rewind / Phase - Observable
+	public ICommand RewindCommand { get; }
+	public int RewindableRound { get => _rewindableRound; set => SetProp(ref _rewindableRound, value); }
+	public Phase Phase { get => _phase; set { SetProp(ref _phase, value); } }
+	public int _rewindableRound;
+	public Phase _phase;
+	#endregion Rewind / Phase - Observable
+
 	public GameState GameState          { get; }
 	public IslandModel Island           { get; }
 	public SpiritModel SpiritSummary    { get; }
@@ -102,10 +110,27 @@ public class DecisionModel : ObservableModel {
 		Island = new IslandModel(GameState.Island.Boards[0], GameState.Tokens, _ovm);
 		_title = _game.Spirit.SpiritName;
 
+		_phase = gs.Phase;
+
+		gs.NewLogEntry += Gs_NewLogEntry;
+
 		ShowCards = new Command( () => ShowCardPanel() );
-
 		OpenOverlay = new Command((p) => { VisibleOverlay = (Overlay)p; } );
+		RewindCommand = new Command( DoRewind );
 
+	}
+
+	void Gs_NewLogEntry(Log.ILogEntry obj) {
+		if (obj is Log.Phase phaseEntry)
+			Phase = phaseEntry.phase;
+	}
+
+	void DoRewind() {
+		if (0 < RewindableRound) {
+			// var a = await DisplayAlert("Question?", "Would you like to rewind to Round N?", "Yes", "No");
+			_game.UserPortal.RewindToRound(RewindableRound);
+			--RewindableRound;
+		}
 	}
 
 	#endregion constructor
@@ -121,7 +146,7 @@ public class DecisionModel : ObservableModel {
 		if (_nextDecision is null) { AcceptText = "-- missing decision --"; return; }
 		if (SelectedOption is null) { AcceptText = "-no selection --"; return; }
 		_userPortal.Choose(_nextDecision, (IOption)SelectedOption);
-		_gameStatus.RewindableRound = _game.GameState.RoundNumber;
+		RewindableRound = _game.GameState.RoundNumber;
 	}
 
 	public bool AutoSelect() {
@@ -131,7 +156,6 @@ public class DecisionModel : ObservableModel {
 		_userPortal!.Choose(_nextDecision, select);
 		return true;
 	}
-
 
 	//============================
 	// Overlays 
@@ -148,8 +172,6 @@ public class DecisionModel : ObservableModel {
 	void Overlay_RequestClose() {
 		VisibleOverlay = Overlay.None;
 	}
-
-
 
 
 	public void ShutDownOld() {

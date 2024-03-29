@@ -6,71 +6,56 @@ using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
-public class InvaderBoardModel : ObservableModel1 {
-
-	public int RewindableRound { get => GetStruct<int>(); set => SetProp(value); }
-	public ICommand RewindCommand { get; }
-
-	public Phase Phase { get => GetStruct<Phase>(); set { SetProp(value); } }
+public class InvaderBoardModel : ObservableModel {
 
 	#region Invader Cards - Observable
 
-	public ImageSource[] RavageImages { get => GetProp<ImageSource[]>(); set => SetProp(value); }
-	public ImageSource[] BuildImages { get => GetProp<ImageSource[]>(); set => SetProp(value); }
-	public int InvaderStage { get => GetInt(); set => SetProp(value); }
-	public int RemainingInvaderDeckCards { get => GetInt(); set => SetProp(value); }
+	public ImageSource[] RavageImages { get => _ravageImages; set => SetProp(ref _ravageImages, value); }
+	public ImageSource[] BuildImages { get => _buildImages; set => SetProp(ref _buildImages,value); }
+	public int InvaderStage { get => _invaderStage; set => SetProp(ref _invaderStage,value); }
+	public int RemainingInvaderDeckCards { get => _remainingInvaderDeckCards; set => SetProp(ref _remainingInvaderDeckCards,value); }
+
+	ImageSource[] _ravageImages;
+	ImageSource[] _buildImages;
+	int _invaderStage;
+	int _remainingInvaderDeckCards;
 
 	#endregion Invader Cards - Observable
 
-	#region Fear - Observable
+	#region Fear / Blight - Observable
 
-	public int FearPool                    { get => GetInt(); set => SetProp(value); }
-	public int ActivatedFearCards          { get => GetInt(); set => SetProp(value); }
-	public int RemainingCardsInTerrorLevel { get => GetInt(); set => SetProp(value); }
-	public int TerrorLevel                 { 
-		get => GetInt(); 
-		set => SetProp(value);
-	}
+	public int FearPool                    { get => _fearPool; set => SetProp(ref _fearPool,value); }
+	public int ActivatedFearCards          { get => _activatedFearCards; set => SetProp(ref _activatedFearCards,value); }
+	public int RemainingCardsInTerrorLevel { get => _remainingCardsInTerrorLevel; set => SetProp(ref _remainingCardsInTerrorLevel,value); }
+	public int TerrorLevel                 { get => _terrorLevel; set => SetProp(ref _terrorLevel,value); }
+	public int BlightOnCard                { get => _blightOnCard; set => SetProp(ref _blightOnCard,value); }
 
-	public int BlightOnCard { get => GetInt(); set => SetProp(value); }
+	int _fearPool;
+	int _activatedFearCards;
+	int _remainingCardsInTerrorLevel;
+	int _terrorLevel;
+	int _blightOnCard;
 
-//	public int EarnedFear { get => GetInt(); set => SetProp(value); }
-//	public int FearPoolSize { get => GetInt(); set => SetProp(value); }
-//	public int[] FearCardsRemaining { get => GetProp<int[]>(); set => SetProp(value); }
-
-	#endregion Fear - Observable
+	#endregion Fear / Blight - Observable
 
 	public InvaderBoardModel( SinglePlayerGame game ) {
 		var gs = game.GameState;
 		_deck = gs.InvaderDeck;
 		_fear = gs.Fear;
 		_blightPool = gs.Tokens[SpiritIsland.BlightCard.Space];
-
-		RavageImages = [];
-		BuildImages = [];
-
-		Phase = gs.Phase;
+		_ravageImages = [];
+		_buildImages = [];
 
 		game.GameState.NewLogEntry += GameState_NewLogEntry;
-		UpdatePhaseStuff(SpiritIsland.Phase.Init);
+
+		UpdateInvaderCards();
 		UpdateFear();
 		UpdateBlight();
-
-		RewindCommand = new Command(
-			execute: () => {
-				if (0 < RewindableRound) {
-					// var a = await DisplayAlert("Question?", "Would you like to rewind to Round N?", "Yes", "No");
-					game.UserPortal.RewindToRound(RewindableRound);
-					--RewindableRound;
-				}
-			},
-			canExecute: () => true // 0 < RewindableRound
-		);
 	}
 
 	void GameState_NewLogEntry(Log.ILogEntry obj) {
-		if(obj is Log.Phase phaseEntry)
-			UpdatePhaseStuff(phaseEntry.phase);
+		if(obj is Log.Phase)
+			UpdateInvaderCards();
 		else if(obj is Log.BlightOnCardChanged)
 			UpdateBlight();
 		else if (obj is Log.FearGenerated)
@@ -78,20 +63,17 @@ public class InvaderBoardModel : ObservableModel1 {
 	}
 
 	void UpdateFear() {
-		// Fear
 		FearPool = _fear.PoolMax - _fear.EarnedFear;
 		ActivatedFearCards = _fear.ActivatedCards.Count;
-		RemainingCardsInTerrorLevel = _fear.CardsPerLevel.FirstOrDefault(x => x != 0);
 		TerrorLevel = _fear.TerrorLevel;
+		RemainingCardsInTerrorLevel = _fear.CardsPerLevel_Remaining.FirstOrDefault(x => x != 0);
 	}
 
 	void UpdateBlight() {
 		BlightOnCard = _blightPool[Token.Blight];
 	}
 
-	void UpdatePhaseStuff(Phase phase) {
-		// Phase
-		Phase = phase;
+	void UpdateInvaderCards() {
 		// Invaders
 		RavageImages = GetInvaderFlipped(_deck.Ravage.Cards);
 		BuildImages = GetInvaderFlipped(_deck.Build.Cards);

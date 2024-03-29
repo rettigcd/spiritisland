@@ -8,94 +8,77 @@
 	<ContentView.Resources>
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
 		<si:ElementToImageSourceConverter x:Key="elToImage" />
-		<si:PhaseToImageSourceConverter x:Key="phaseToImage" />
 		<si:FearLevelImageConverter x:Key="terrorLevel" />
 		<si:HighlightIfMatchConverter x:Key="currentPhase" />
 	</ContentView.Resources>
-	
-	<HorizontalStackLayout x:Name="InvaderRow" HorizontalOptions="CenterAndExpand">
 
-		<Grid IsVisible="{Binding RewindableRound, Converter={StaticResource showIfGreater},ConverterParameter=0 }">
-			<ImageButton Source="undo.png"
-					Command="{Binding RewindCommand}" 
-					Padding="0" 
-					Margin="5,0" 
-					HeightRequest="25" WidthRequest="30" />
-			<Label Text="{Binding RewindableRound}" HorizontalOptions="Center" VerticalOptions="Center" />
-		</Grid>
-		
-		<!-- Phase -->
-		<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="20" Margin="2" />
+	<Grid x:Name="InvaderRow" ColumnDefinitions="10*,10*,10*" RowDefinitions="20*,10*" BackgroundColor="Tan">
+		<!-- DarkKhaki -->
 
 		<!-- Ravage -->
-		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0" Margin="10,0,0,0">
-			<HorizontalStackLayout>
-				<Image Source="ravage.png" HeightRequest="16" Margin="2" />
-				<CollectionView ItemsSource="{Binding RavageImages}" HeightRequest="20" >
-					<CollectionView.ItemTemplate>
-						<DataTemplate>
-							<Image Source="{Binding .}" HeightRequest="20" VerticalOptions="Center" />
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</HorizontalStackLayout>
-		</Border>
+		<Image Source="ravage.png" HeightRequest="40" Margin="2" />
+		<CollectionView ItemsSource="{Binding RavageImages}" VerticalOptions="Center" >
+			<CollectionView.ItemTemplate>
+				<DataTemplate>
+					<Image Source="{Binding .}" HeightRequest="30" VerticalOptions="Center" />
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
 	
 		<!-- Build -->
-		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0">
-			<HorizontalStackLayout>
-				<Image Source="build.png" HeightRequest="16" Margin="2" />
-				<CollectionView ItemsSource="{Binding BuildImages}" HeightRequest="20" >
-					<CollectionView.ItemTemplate>
-						<DataTemplate>
-							<Image Source="{Binding .}" HeightRequest="20"  VerticalOptions="Center" />
-						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
-			</HorizontalStackLayout>
-		</Border>
+		<Image Source="build.png" HeightRequest="45" Margin="2" Grid.Column="1" />
+		<CollectionView ItemsSource="{Binding BuildImages}" VerticalOptions="Center" Grid.Column="1" >
+			<CollectionView.ItemTemplate>
+				<DataTemplate>
+					<Image Source="{Binding .}" HeightRequest="30"  VerticalOptions="Center" />
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
 
 		<!-- Explore -->
-		<Border Stroke="Transparent" StrokeThickness="3" BackgroundColor="#E0E0C0" Margin="0,0,5,0">
-			<HorizontalStackLayout>
-				<Image Source="explore.png" HeightRequest="16" Margin="2" />
-				<Grid>
-					<Image Source="inv_back.png" HeightRequest="24" />
-					<Label Text="{Binding InvaderStage}" FontSize="12" HorizontalOptions="Center" VerticalOptions="Start" TextColor="Red" FontAttributes="Bold" />
-					<Label Text="{Binding RemainingInvaderDeckCards,StringFormat='x{0}'}" FontSize="10" HorizontalOptions="Center" VerticalOptions="End" TextColor="White" FontAttributes="Bold" />
-				</Grid>
-			</HorizontalStackLayout>
-		</Border>
+		<Image Source="explore.png" HeightRequest="50" Margin="2" Grid.Column="2" />
+		<Grid Grid.Column="2" VerticalOptions="Center">
+			<Image Source="inv_back.png" HeightRequest="30" />
+			<Label Text="{Binding InvaderStage}" FontSize="12" HorizontalOptions="Center" VerticalOptions="Start" TextColor="Red" FontAttributes="Bold" />
+			<Label Text="{Binding RemainingInvaderDeckCards,StringFormat='x{0}'}" FontSize="10" HorizontalOptions="Center" VerticalOptions="End" TextColor="White" FontAttributes="Bold" />
+		</Grid>
 
+		<!-- Blight -->
+		<Grid Margin="6,0,0,0" Grid.Row="1" HorizontalOptions="Center">
+			<Image Source="blight.png" HeightRequest="18" />
+			<Label Text="{Binding BlightOnCard}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
+		</Grid>
 
 		<!-- Fear pool / Fear Deck -->
-		<!-- Terror Level -->
-		<Image Source="{Binding TerrorLevel,Converter={StaticResource terrorLevel}}" HeightRequest="20" Margin="2" />
+
+		<!-- Deck -->
+		<Grid Margin="0,0,8,0"  Grid.Row="1" Grid.Column="1" HorizontalOptions="End">
+			<Image Source="fear_back.png" HeightRequest="24" />
+			<Label Text="{Binding RemainingCardsInTerrorLevel,StringFormat='x{0}'}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
+		</Grid>
+
 		<!-- Activated Card -->
-		<Grid>
-			<Image IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=0}" Source="fear_back.png" HeightRequest="20" Margin="2" />
+		<Grid  Grid.Row="1" Grid.Column="2" HorizontalOptions="Start" Margin="10,0,0,0" >
+			<Image IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=0}" Source="fear_back.png" HeightRequest="24" />
 			<Label IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=1}" 
 						   Text="{Binding ActivatedFearCards,StringFormat='x{0}'}" 
 						   FontSize="10" FontAttributes="Bold"
 						   HorizontalOptions="Center" VerticalOptions="Center" Padding="0,4" 
 						   TextColor="White" />
 		</Grid>
-		<!-- Deck -->
-		<Grid Margin="5,0,0,0">
-			<Image Source="fear_back.png" HeightRequest="24" />
-			<Label Text="{Binding RemainingCardsInTerrorLevel,StringFormat='x{0}'}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
-		</Grid>
+
+		<!-- Terror Level -->
+		<Image Source="{Binding TerrorLevel,Converter={StaticResource terrorLevel}}" BackgroundColor="White"
+			   HorizontalOptions="End" 
+			   HeightRequest="20" Margin="0,0,8,0" 
+			   Grid.Row="1" Grid.Column="2" />
+
 		<!-- Pool -->
-		<Grid>
+		<Grid  Grid.Row="1" Grid.Column="1" HorizontalOptions="Start" Margin="8,0,0,0">
 			<Image Source="fear.png" HeightRequest="24" />
 			<Label Text="{Binding FearPool}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
 		</Grid>
-		<!-- Blight -->
-		<Grid Margin="6,0,0,0">
-			<Image Source="blight.png" HeightRequest="18" />
-			<Label Text="{Binding BlightOnCard}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
-		</Grid>
 
-	</HorizontalStackLayout>
+	</Grid>
 
 </ContentView>

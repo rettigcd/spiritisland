@@ -23,12 +23,12 @@ public class Fear : IHaveMemento {
 		Deck.Push( fearCard );
 	}
 
-	public int[] CardsPerLevel = [3, 3, 3]; // only adjusted during Setup - doesn't need saved to memento
+	public int[] CardsPerLevel_Initial = [3, 3, 3]; // only adjusted during Setup - doesn't need saved to memento
 
 	public int TerrorLevel {
 		get {
-			int level3Count = CardsPerLevel[2];
-			int level2Count = CardsPerLevel[1];
+			int level3Count = CardsPerLevel_Initial[2];
+			int level2Count = CardsPerLevel_Initial[1];
 			int ct = Deck.Count;
 			return (ct > level2Count + level3Count) ? 1
 				: ct > level3Count ? 2
@@ -39,7 +39,7 @@ public class Fear : IHaveMemento {
 
 	// This returns lowest Terror Level 1st
 	// When some missing, does not return that Terror Level
-	public int[] CardsPerLevelRemaining {
+	public int[] CardsPerLevel_Remaining {
 		get {
 			// int[] slots = [0,0,0];
 
@@ -52,9 +52,9 @@ public class Fear : IHaveMemento {
 			// return slots;
 
 			int remaining = Deck.Count;
-			int l3 = Math.Min( CardsPerLevel[2], remaining ); remaining -= l3;
-			int l2 = Math.Min( CardsPerLevel[1], remaining ); remaining -= l2;
-			int l1 = Math.Min( CardsPerLevel[0], remaining );
+			int l3 = Math.Min( CardsPerLevel_Initial[2], remaining ); remaining -= l3;
+			int l2 = Math.Min( CardsPerLevel_Initial[1], remaining ); remaining -= l2;
+			int l1 = Math.Min( CardsPerLevel_Initial[0], remaining );
 			return [l1,l2,l3];
 
 

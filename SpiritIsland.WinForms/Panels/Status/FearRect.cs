@@ -61,7 +61,7 @@ public class FearRect {
 		};
 		pool.Float( new RectRect(){ Fill = fillColor, WidthRatio = .7f }, 0f, y, numWidth,.3f);
 
-		 int[] remaining = fear.CardsPerLevelRemaining;
+		 int[] remaining = fear.CardsPerLevel_Remaining;
 		pool
 			.Float( new FearCardRect(fear.Deck.Peek(),0),numWidth,0f,cardWidth,1f )
 			.Float( new TextRect(remaining[0]), 0f, .03f, numWidth,.3f )

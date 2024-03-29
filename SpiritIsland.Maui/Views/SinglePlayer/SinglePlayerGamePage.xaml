@@ -9,38 +9,52 @@
 
 	<ContentPage.Resources>
 		<si:SelectConverter x:Key="selectOne" />
+		<si:PhaseToImageSourceConverter x:Key="phaseToImage" />
+		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
 	</ContentPage.Resources>
 
-	<Grid RowDefinitions="30,50,235,24,30,*,30">
-		
-		<!-- Invaders - Begin -->
-		<si:InvaderBoardSummaryView BindingContext="{Binding GameStatus}" Grid.Row="0" />
+	<Grid RowDefinitions="30,50,245,24,30,*,40" ColumnDefinitions="8*,30*,30*">
+
+		<!-- Undo / Rewind -->
+		<Grid IsVisible="{Binding RewindableRound, Converter={StaticResource showIfGreater},ConverterParameter=0 }" HorizontalOptions="Center" VerticalOptions="End">
+			<ImageButton Source="undo.png"
+					Command="{Binding RewindCommand}" 
+					Padding="0" 
+					HeightRequest="25" />
+			<Label Text="{Binding RewindableRound}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20" />
+		</Grid>
+
+		<!-- Phase -->
+		<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="25" Grid.Row="1" HorizontalOptions="Center" />
+
+		<!-- Invaders -->
+		<si:InvaderBoardSummaryView BindingContext="{Binding GameStatus}"
+									Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" />
 
 		<!-- Spirit -->
-		<si:SpiritSummaryView 
-			x:Name="Bob"
+		<si:SpiritSummaryView x:Name="Bob" BackgroundColor="Beige"
 			BindingContext="{Binding SpiritSummary}" 
-			Grid.Row="1" />
+			Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="1" />
 
 		<!-- Island -->
-		<si:IslandView x:Name="IV" Grid.Row="2" Model="{Binding Island}" />
+		<si:IslandView x:Name="IV" Grid.Row="2" Model="{Binding Island}" Grid.ColumnSpan="3" BackgroundColor="#0000a0" />
 
 		<!-- Game Over Info -->
 		<Label x:Name="GameOverInfo" IsVisible="false" HorizontalOptions="Center" 
 			   Text="bob"
 			   Padding="10,3"
 			   BackgroundColor="Blue"
-			   Grid.Row="3"
+			   Grid.Row="3" Grid.ColumnSpan="3"
 		/>
 
 		<!-- Prompt -->
-		<Label x:Name="Prompt" Text="{Binding Prompt}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="3" />
+		<Label x:Name="Prompt" Text="{Binding Prompt}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="3" Grid.ColumnSpan="3" />
 		<!-- Accept -->
 		<Button x:Name="Accept" Text="{Binding AcceptText}" 
 				HorizontalOptions="CenterAndExpand" Padding="20,0"
-				Clicked="Accept_Clicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" />
+				Clicked="Accept_Clicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" Grid.ColumnSpan="3" />
 		<!-- Options -->
-		<ScrollView x:Name="OptionListWrapper" BackgroundColor="#ddf" VerticalOptions="StartAndExpand" Margin="10,3" Grid.Row="5" >
+		<ScrollView x:Name="OptionListWrapper" BackgroundColor="#ddf" VerticalOptions="StartAndExpand" Margin="10,3" Grid.Row="5" Grid.ColumnSpan="3" >
 			<FlexLayout x:Name="OptionList" BindableLayout.ItemsSource="{Binding Options}" 
 						Direction="Row" AlignItems="Stretch" Wrap="Wrap"
 						RadioButtonGroup.GroupName="DecisionOptions" RadioButtonGroup.SelectedValue="{Binding SelectedOption}"
@@ -54,15 +68,15 @@
 			</FlexLayout>
 		</ScrollView>
 
-		<Button Text="Cards" Padding="5,5" MaximumHeightRequest="30" Grid.Row="6" Command="{Binding ShowCards}" />
+		<Button Text="Cards" Padding="5,5" Grid.Row="6" Grid.ColumnSpan="3" Command="{Binding ShowCards}" />
 
 		<!-- Overlays -->
 		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" 
 			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
-			Grid.Row="0" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+			Grid.Row="0" Grid.RowSpan="6" Grid.ColumnSpan="3" VerticalOptions="Fill" HorizontalOptions="Fill" />
 		<si:CardsOverlay BindingContext="{Binding Cards}" 
 			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=Cards}"
-			Grid.Row="1" Grid.RowSpan="6" VerticalOptions="Fill" HorizontalOptions="Fill" />
+			Grid.Row="1" Grid.RowSpan="6" Grid.ColumnSpan="3" VerticalOptions="Fill" HorizontalOptions="Fill" />
 
 	</Grid>
 	

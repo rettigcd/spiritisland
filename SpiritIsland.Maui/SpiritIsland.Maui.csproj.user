@@ -20,10 +20,10 @@
     <MauiXaml Update="Views\Cards\CardSlotView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Views\Card\CardSummaryView.xaml">
+    <MauiXaml Update="Views\Cards\CardSummaryView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Views\Card\CardView.xaml">
+    <MauiXaml Update="Views\Cards\CardView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Views\Element\ElementDictView.xaml">

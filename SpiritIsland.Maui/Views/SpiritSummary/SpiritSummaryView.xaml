@@ -9,28 +9,24 @@
 		<si:SpiritToButtonImgConverter x:Key="btnImage" />
 	</ContentView.Resources>
 
-	<HorizontalStackLayout Spacing="5" Padding="6,0">
+	<Grid ColumnDefinitions="2*,2*" RowDefinitions="1*,1*,3*" Padding="4">
+		<Grid.GestureRecognizers>
+			<TapGestureRecognizer Command="{Binding OpenSpiritPanel}" />
+		</Grid.GestureRecognizers>
 
-		<Image Source="{Binding Spirit, Converter={StaticResource btnImage}}">
-			<Image.GestureRecognizers>
-				<TapGestureRecognizer Command="{Binding OpenSpiritPanel}" />
-			</Image.GestureRecognizers>
-		</Image>
+		<Image Source="{Binding Spirit, Converter={StaticResource btnImage}}" Grid.RowSpan="3"/>
 
 		<!-- Secondary Elements -->
-		<Grid RowDefinitions="1*,1*">
-			<si:ElementDictView BindingContext="{Binding Elements}" />
-			<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Row="1" />
-		</Grid>
-		
+		<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" InputTransparent="True" />
+		<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Column="1" Grid.Row="1" InputTransparent="True" />
 
 		<!-- Placeable -->
-		<CollectionView x:Name="Placeables" ItemsSource="{Binding TrackPresence}" ItemsLayout="HorizontalList" MaximumHeightRequest="50">
+		<CollectionView x:Name="Placeables" ItemsSource="{Binding TrackPresence}" ItemsLayout="HorizontalList" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" >
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="si:TokenLocationModel" >
-					<Grid HeightRequest="50">
+					<Grid HeightRequest="45">
 						<!-- The Location -->
-						<Image Source="{Binding LocationImage}" Margin="0,10,0,0" />
+						<Image Source="{Binding LocationImage}" Margin="0,10,0,0" InputTransparent="True" />
 						<!-- The Token -->
 						<si:TokenLocationView Margin="0,0,0,20" BindingContext="{Binding .}" WidthRequest="30" />
 					</Grid>
@@ -38,6 +34,6 @@
 			</CollectionView.ItemTemplate>
 		</CollectionView>
 
-	</HorizontalStackLayout>
+	</Grid>
 	
 </ContentView>
