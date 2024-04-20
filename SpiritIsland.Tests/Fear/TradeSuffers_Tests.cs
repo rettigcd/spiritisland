@@ -6,7 +6,7 @@ public class TradeSuffers_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		var (user, spirit) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
+		var (user, spirit, _) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
 			var fear = gs.Fear;
 			AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
 			gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );

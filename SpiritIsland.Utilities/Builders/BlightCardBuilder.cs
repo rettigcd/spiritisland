@@ -5,7 +5,7 @@
 /// </summary>
 static class BlightCardBuilder {
 
-	static public Bitmap BuildBlighted( IBlightCard card ) {
+	static public Bitmap BuildBlighted( BlightCard card ) {
 		Bitmap bitmap = new( 7*64, 7*89 ); // std dim are 64mm x 89
 		Graphics graphics = Graphics.FromImage( bitmap );
 		graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;

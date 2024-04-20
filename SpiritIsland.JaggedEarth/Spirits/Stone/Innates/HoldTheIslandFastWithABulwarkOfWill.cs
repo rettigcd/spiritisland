@@ -5,13 +5,13 @@ class HoldTheIslandFastWithABulwarkOfWill {
 
 	[InnateTier("2 earth","When blight is added to one of your lands, you may pay 2 Energy per blight to take it from the box instead of the Blight Card.")]
 	static public Task Option1( Spirit self ) {
-		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(self,2), 1 );
+		ActionScope.Current.GameState.BlightCard.AddMod( new PayEnergyToTakeFromBox(self,2) );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier("4 earth","The cost is 1 Energy instead of 2")]
 	static public Task Option2( Spirit self ) {
-		GameState.Current.Tokens[BlightCard.Space].Init( new PayEnergyToTakeFromBox(self,1), 1 );
+		GameState.Current.BlightCard.AddMod( new PayEnergyToTakeFromBox(self,1) );
 		return Task.CompletedTask;
 	}
 
@@ -34,7 +34,7 @@ class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token != Token.Blight || 0 == args.Count ) return;
 		
-		var cause = BlightToken.ForThisAction.BlightFromCardTrigger;
+		var cause = BlightToken.ScopeConfig.BlightFromCardTrigger;
 		if( _spirit.Presence.IsOn( (Space)cause.To ) // was taken from space with presence
 		) {
 			bool takeFromBoxInstead = _cost <= _spirit.Energy

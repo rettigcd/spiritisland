@@ -65,10 +65,10 @@ public  class GameComponent_Tests {
 			.ToArray();
 	}
 
-	static IBlightCard[] FindBlightCards( Type assemblyType ) {
+	static BlightCard[] FindBlightCards( Type assemblyType ) {
 		return assemblyType.Assembly.GetTypes()
-			.Where( t => t.IsAssignableTo( typeof(IBlightCard) ))
-			.Select( t => (IBlightCard)System.Activator.CreateInstance(t) )
+			.Where( t => t.IsAssignableTo( typeof(BlightCard) ))
+			.Select( t => (BlightCard)System.Activator.CreateInstance(t) )
 			.ToArray();
 
 	}

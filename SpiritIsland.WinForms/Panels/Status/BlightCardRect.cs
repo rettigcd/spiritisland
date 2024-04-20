@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace SpiritIsland.WinForms;
 
-class BlightCardRect(IBlightCard _blightCard) : IPaintableRect {
+class BlightCardRect(BlightCard _blightCard) : IPaintableRect {
 
 	public float? WidthRatio => 5f/7f;
 	

@@ -92,10 +92,10 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 				&& args.Reason == AddReason.Ravage
 				// would cascade
 				&& 1 <= args.To.Blight.Count
-				&& BlightToken.ForThisAction.ShouldCascade
+				&& BlightToken.ScopeConfig.ShouldCascade
 			) {
 				// stop cascade
-				BlightToken.ForThisAction.ShouldCascade = false;
+				BlightToken.ScopeConfig.ShouldCascade = false;
 				// instead Upgrade 1 Explorer / Town( before dahan counterattack ).
 				ShouldUpgrade = true;
 			}

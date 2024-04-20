@@ -13,7 +13,7 @@ public class ParalyzingFright_Tests {
 	public void StopsAllInvaderActions() {
 		List<string> invaderLog = [];
 
-		var (user, self) = TestSpirit.StartGame( PowerCard.For(typeof(ParalyzingFright)), (Action<GameState>)((gs)=>{ 
+		var (user, self, _) = TestSpirit.StartGame( PowerCard.For(typeof(ParalyzingFright)), (Action<GameState>)((gs)=>{ 
 			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
 			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
 			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg() );

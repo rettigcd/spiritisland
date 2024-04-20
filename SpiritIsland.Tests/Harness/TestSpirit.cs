@@ -20,7 +20,7 @@ class TestSpirit( PowerCard powerCard )
 		this.Given_IsOn(space,2); 
 	}
 
-	static public (VirtualTestUser, Spirit) StartGame( 
+	static public (VirtualTestUser, Spirit, Task) StartGame( 
 		PowerCard powerCard, 
 		Action<GameState> modGameState = null 
 	) {
@@ -32,14 +32,14 @@ class TestSpirit( PowerCard powerCard )
 
 		gs.Initialize(); 
 
-		new SinglePlayer.SinglePlayerGame(gs).Start();
+		Task task = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
 
 		var user = new VirtualTestUser( spirit );
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
 
-		return (user,spirit);
+		return (user,spirit,task);
 	}
 
 }

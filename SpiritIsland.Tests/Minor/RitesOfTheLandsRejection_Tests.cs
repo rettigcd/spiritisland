@@ -9,7 +9,7 @@ public class RitesOfTheLandsRejection_Tests {
 	[InlineDataAttribute(true,"1E@1")]
 	public void SingleBuild(bool playsCard, string result) {
 
-		var (user,ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
+		var (user,ctx, _) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
 
 		// Given: find a space with 1 explorer
 		var space = ActionScope.Current.Spaces_Unfiltered
@@ -42,7 +42,7 @@ public class RitesOfTheLandsRejection_Tests {
 	[Fact]
 	public void Has2Builds_BothStopped() {
 
-		var (user, ctx) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
+		var (user, ctx, _) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
 
 		// Given: find a space with 1 explorer
 		Space space = ActionScope.Current.Spaces_Unfiltered.First( s => s.InvaderSummary() == "1E@1" );

@@ -11,7 +11,7 @@ public class FlockingRedTalons {
 		await DoIt(ctx);
 
 		// -If you have- 2 air,2 plant,3 beast:
-		if(await ctx.YouHave("2 air,2 plant,3 beast" )) {
+		if(await ctx.YouHave("2 air,2 plant,3 animal" )) {
 			// Repeat this Power on a different land within Range-3 of target land.
 			Space second = await ctx.Self.SelectAsync(new A.SpaceDecision("Repeat power on:", ctx.Space.Range(3).Where(x=>x!=ctx.Space),Present.Always));
 			if(second != null)

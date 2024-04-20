@@ -54,7 +54,7 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	public PowerCard[] BuildMinorCards() => _providers.SelectMany( p => p.MinorCards ).ToArray();
 	public PowerCard[] BuildMajorCards() => _providers.SelectMany( p => p.MajorCards ).ToArray();
 	public List<IFearCard> BuildFearCards() => _providers.SelectMany( p => p.FearCards ).ToList();
-	public List<IBlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
+	public List<BlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
 
 	public GameState BuildGame( GameConfiguration cfg ) {
 		Spirit[] spirits = BuildSpirits( cfg.Spirits );

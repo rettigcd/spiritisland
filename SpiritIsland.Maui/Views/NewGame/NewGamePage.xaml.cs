@@ -75,7 +75,8 @@ public partial class NewGamePage : ContentPage {
 			.ConfigAdversary(_adversary);
 		gc.ShuffleNumber = (int)DateTime.Now.Ticks;
 
-		SinglePlayerGamePage.QueueNewGame(_builder.BuildGame(gc));
+		var gameState = _builder.BuildGame(gc);
+		SinglePlayerGamePage.QueueNewGame( gameState );
 
 		await Shell.Current.GoToAsync("//GamePage");
 

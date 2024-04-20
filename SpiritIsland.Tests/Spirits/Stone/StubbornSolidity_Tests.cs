@@ -67,6 +67,7 @@ public class StubbornSolidity_Tests {
 		Spirit spirit = new StonesUnyieldingDefiance();
 		Board board = Board.BuildBoardA(); 
 		GameState gameState = new GameState(spirit,board);
+		gameState.BlightCard.OnGameStart( gameState );
 		gameState.IslandWontBlight();
 		Space space = gameState.Tokens[ board[5] ];
 

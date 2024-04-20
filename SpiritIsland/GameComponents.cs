@@ -8,7 +8,7 @@ public interface IGameComponentProvider {
 	PowerCard[] MinorCards { get; }
 	PowerCard[] MajorCards { get; }
 	IFearCard[] FearCards { get; }
-	IBlightCard[] BlightCards { get; }
+	BlightCard[] BlightCards { get; }
 
 	string[] AdversaryNames { get; }
 	IAdversary MakeAdversary( string adversaryName );

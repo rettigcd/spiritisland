@@ -20,7 +20,7 @@ class ScotlandCoastalBlightCheckToken
 		// After a Ravage Action adds Blight to a Coastal Land,
 		// add 1 Blight to that board's Ocean (without cascading).
 		if(args.Added == Token.Blight && args.Reason == AddReason.Ravage) {
-			BlightToken.ForThisAction.ShouldCascade = false;
+			BlightToken.ScopeConfig.ShouldCascade = false;
 			var space = to.SpaceSpec.Adjacent_Existing // Ocean is not in play here
 				.First( adj => adj.IsOcean ); // ignoring rule about ocean being on this board, just using adjacent
 			await space.ScopeSpace.Blight.AddAsync( 1, AddReason.Ravage );

@@ -31,7 +31,7 @@ static public class GameState_Extensions {
 		gs.AddIslandMod(new StopBlightEffects());
 	}
 
-	static public void IslandWontBlight( this GameState gameState ) => gameState.Tokens[BlightCard.Space].Init(Token.Blight,100);
+	static public void IslandWontBlight( this GameState gameState ) => gameState.BlightCard.InitBlight(100);
 
 	/// <summary> Replaces all Invader Cards with null-cards that don't ravage/build/explore</summary>
 	static public void DisableInvaderDeck( this GameState gs ) {
@@ -62,7 +62,7 @@ static public class GameState_Extensions {
 
 	class StopBlightEffects : BaseModEntity, IModifyAddingToken {
 		public void ModifyAdding( AddingTokenArgs args ) {
-			var config = BlightToken.ForThisAction;
+			var config = BlightToken.ScopeConfig;
 			config.ShouldCascade = false;
 			config.DestroyPresence = false;
 		}

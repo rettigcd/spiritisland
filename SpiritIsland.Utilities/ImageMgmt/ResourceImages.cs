@@ -144,7 +144,7 @@ public partial class ResourceImages
 		return bitmap;
 	}
 
-	public Bitmap GetBlightCard( IBlightCard card ) {
+	public Bitmap GetBlightCard( BlightCard card ) {
 		string key = "blight\\" + card.Name + ".png";
 		if(_cache.Contains( key )) return _cache.Get( key );
 

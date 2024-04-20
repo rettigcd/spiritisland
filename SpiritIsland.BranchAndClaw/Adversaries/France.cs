@@ -229,29 +229,37 @@ public class France : AdversaryBase, IAdversary {
 		InitFunc = (gameState,_) => {
 			// When you remove Blight from the board, put it here instead of onto the Blight Card.
 			// As soon as you have 3 Blight per player here, move it all back to the Blight Card.
-
-			async Task DoFranceStuff( ITokenRemovedArgs args ) {
-				if(args.Removed != Token.Blight || args.Reason.IsOneOf( RemoveReason.MovedFrom, RemoveReason.Replaced ) ) return;
-
-				BlightTokenBinding slowBlight = FrancePanel.ScopeSpace.Blight;
-				Space blightCard = BlightCard.Space.ScopeSpace;
-				// if adding this == 3 Blight per player
-				if(slowBlight.Count+1 == 3*gameState.Spirits.Length) {
-					// transfer slow blight to Blight card
-					await blightCard.AddAsync(Token.Blight,slowBlight.Count);
-					slowBlight.Init(0);
-				} else {
-					// intercept it and put it in Slow Blight
-					await blightCard.RemoveAsync(Token.Blight,1);
-					slowBlight.Adjust(1);
-				}
-			}
-
-			gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent(DoFranceStuff) );
-
+			gameState.BlightCard.AddMod( new SlowBlightMod(gameState) );
 		}
 	};
-	static readonly FakeSpace FrancePanel = new FakeSpace( "FranceAdversaryPanel" ); // stores slow blight - !!! save to memento
+
+	/// <summary>
+	/// Added to Blight Card. 
+	/// Intercepts blight being added to blight card.
+	/// Batches into 3/player before adding to card.
+	/// </summary>
+	class SlowBlightMod : BaseModEntity, IModifyAddingToken {
+		public SlowBlightMod(GameState gs) {
+			_tokens = gs.Tokens[FrancePanel].Blight;
+			_flushThreshold = gs.Spirits.Length * 3;
+		}
+		public void ModifyAdding(AddingTokenArgs args) {
+			// if this does not reach the flushing threshold
+			if (_tokens.Count + args.Count < _flushThreshold ) {
+				// store blight on France Panel as slow blight
+				_tokens.Adjust(args.Count);
+				args.Count = 0;
+			} else {
+				// we have reached the threshold
+				// return slow blight to the card.
+				args.Count += _tokens.Count;
+				_tokens.Init(0);
+			}
+		}
+		readonly int _flushThreshold;
+		readonly BlightTokenBinding _tokens;
+		static readonly FakeSpace FrancePanel = new FakeSpace("FranceAdversaryPanel"); // stores slow blight - !!! save to memento
+	}
 
 	#endregion Level 5 - Slow-Healing Ecosystem
 

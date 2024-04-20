@@ -62,7 +62,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new Unsettled(),
 	};
 
-	public IBlightCard[] BlightCards => new BlightCard[] {
+	public BlightCard[] BlightCards => new BlightCard[] {
 		new AttenuatedEssence(),
 		new BlightCorrodesTheSpirit(),
 		new BurnBrightestBeforeTheEnd(),

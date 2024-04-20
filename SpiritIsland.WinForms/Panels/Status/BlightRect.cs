@@ -7,7 +7,7 @@ public class BlightRect{
 	static public IPaintableRect GetBlightRect( GameState gameState ){
 
 		var card = gameState.BlightCard;
-		int count = gameState.Tokens[BlightCard.Space].Blight.Count;
+		int count = gameState.BlightCard.BlightCount;
 
 		// Determine # of blight / player
 		int approximateMaxBlightPerPlayer = 2 + 1; // Let's say 2 on the card + 1 on the board

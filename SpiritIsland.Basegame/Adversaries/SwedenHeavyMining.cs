@@ -11,7 +11,7 @@ class SwedenHeavyMining : BaseModEntity, IHandleTokenAddedAsync, IReactToLandDam
 		//	The additional Blight does not destroy Presence or cause cascades.
 		if(6 <= space[LandDamage.Token]) {
 
-			var config = BlightToken.ForThisAction;
+			var config = BlightToken.ScopeConfig;
 			config.DestroyPresence = false;
 			config.ShouldCascade = false;
 

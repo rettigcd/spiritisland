@@ -108,7 +108,11 @@ public static class ElementStrings {
 	}
 
 	public static Element ParseEl( string text ) {
-		return (Element)Enum.Parse( typeof( Element ), text, true );
+		try {
+			return (Element)Enum.Parse( typeof( Element ), text, true );
+		} catch( System.ArgumentException ex) {
+			throw new ArgumentException( $"Unable to parse element '{text}'.", ex );
+		}
 	}
 
 }

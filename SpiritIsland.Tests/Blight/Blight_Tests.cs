@@ -11,16 +11,15 @@ public class Blight_Tests {
 		Board board = Board.BuildBoardD();
 		GameState gs = new GameState(spirit,board);
 		Task<IslandBlighted> waitForBlightedIsland = gs.WatchForBlightedIsland();
+		gs.BlightCard = new InvadersFindTheLandToTheirLiking();
 		gs.Initialize();
 
 		// Given:
-		gs.BlightCard.ShouldNotBeNull();
-		gs.BlightCard = new InvadersFindTheLandToTheirLiking();
-		BlightCard.Space.ScopeSpace.Init(Token.Blight,3);
+		gs.BlightCard.InitBlight(3);
 		gs.BlightCard.CardFlipped.ShouldBeFalse();
 
 		// When: Taking Blight from Card
-		await gs.TakeBlightFromCard(3).AwaitUser( async (u) => {
+		await gs.BlightCard.TakeBlight(3).AwaitUser( async (u) => {
 			(await waitForBlightedIsland).Card.Text.ShouldBe( "Invaders Find the Land to Their Liking" );
 		} ).ShouldComplete("Taking Blight From Card");
 
@@ -35,12 +34,13 @@ public class Blight_Tests {
 		Board board = Board.BuildBoardC();
 		GameState gs = new GameState(spirit,board);
 		Task<IslandBlighted> waitForBlightedIsland = gs.WatchForBlightedIsland();
-		gs.Initialize();
 
 		// Given: Blight Card will be "Promising Farmlands" (this card is easy to test...)
 		gs.BlightCard = new PromisingFarmlands();
+		gs.Initialize();
+
 		//   And: We are on our last blight
-		BlightCard.Space.ScopeSpace.Init(Token.Blight,1);
+		gs.BlightCard.InitBlight(1);
 
 		//   And: Next ravage is Coastal
 		gs.InvaderDeck.Ravage.Cards.Add( InvaderCard.Stage2Costal() );

@@ -44,7 +44,7 @@ public class ScorchingConvergence {
 		// 3 Damage to Dahan.
 		await ctx.DamageDahan( 3 );
 		// Add 1 Blight without cascading.
-		BlightToken.ForThisAction.ShouldCascade = false;
+		BlightToken.ScopeConfig.ShouldCascade = false;
 		await ctx.AddBlight(1);
 	}
 

@@ -11,7 +11,6 @@ public class WordsOfWarning_Tests : ThunderCards  {
 		// gs.AddBlightSideEffect = (gs,space) => new AddBlightEffect { Cascade=false,DestroyPresence=false };
 		gs.DisableBlightEffect();
 
-
 		// Given: 2 dahan on a2
 		a[2].ScopeSpace.Dahan.Init(2);
 		// and: dahan on a4 so it doesn't auto-select the only target available

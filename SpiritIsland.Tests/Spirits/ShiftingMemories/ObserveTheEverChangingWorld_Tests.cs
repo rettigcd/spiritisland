@@ -35,6 +35,8 @@ public class ObserveTheEverChangingWorld_Tests {
 		//  When: triggers Observe the Ever-changing World (SUT) (level 2 Observe)
 		fxt.user.SelectsFastAction($"Learn the Invaders' Tactics,[{ObserveTheEverChangingWorld.Name}]");
 		fxt.user.TargetsLand(ObserveTheEverChangingWorld.Name,"[A5],A7,A8");
+		fxt.user.NextDecision.HasPromptPrefix($"Select Innate Option").Choose("Done");
+
 
 		//   And: is done with Fast
 		fxt.user.IsDoneWith(Phase.Fast);

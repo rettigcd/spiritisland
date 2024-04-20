@@ -124,7 +124,7 @@ public class HearthToken( Spirit spirit )
 		// if Dahan are present.
 		if(args.Token == Token.Blight && 0<args.To.Dahan.CountAll)
 			// Blight added in your lands does not destroy your presence
-			BlightToken.ForThisAction.DestroyPresence = false;
+			BlightToken.ScopeConfig.DestroyPresence = false;
 	}
 
 	#endregion Rooted in Community

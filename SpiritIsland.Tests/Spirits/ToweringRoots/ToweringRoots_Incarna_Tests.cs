@@ -50,7 +50,7 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		} );
 
 		// Then: Incarna is gone
-		_gs.Tokens.ToString().ShouldBe( "Island-Mods:[none] A2:1TRotJ A3:[none]" );
+		_gs.Tokens.ToString().ShouldBe( "Island-Mods:[none] BlightCard:[none] A2:1TRotJ A3:[none]" );
 
 		//  And: Destroyed Count is still 0
 		_spirit.Presence.Destroyed.Count.ShouldBe( 0 );

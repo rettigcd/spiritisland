@@ -22,27 +22,34 @@ public class InvaderBoardModel : ObservableModel {
 
 	#endregion Invader Cards - Observable
 
-	#region Fear / Blight - Observable
+	#region Fear - Observable
 
 	public int FearPool                    { get => _fearPool; set => SetProp(ref _fearPool,value); }
 	public int ActivatedFearCards          { get => _activatedFearCards; set => SetProp(ref _activatedFearCards,value); }
 	public int RemainingCardsInTerrorLevel { get => _remainingCardsInTerrorLevel; set => SetProp(ref _remainingCardsInTerrorLevel,value); }
 	public int TerrorLevel                 { get => _terrorLevel; set => SetProp(ref _terrorLevel,value); }
-	public int BlightOnCard                { get => _blightOnCard; set => SetProp(ref _blightOnCard,value); }
 
 	int _fearPool;
 	int _activatedFearCards;
 	int _remainingCardsInTerrorLevel;
 	int _terrorLevel;
+
+	#endregion Fear - Observable
+
+	#region Blight - Observable
+
+	public int BlightOnCard { get => _blightOnCard; set => SetProp(ref _blightOnCard, value); }
 	int _blightOnCard;
 
-	#endregion Fear / Blight - Observable
+	#endregion Blight - Observable
+
+	#region constructor
 
 	public InvaderBoardModel( SinglePlayerGame game ) {
 		var gs = game.GameState;
 		_deck = gs.InvaderDeck;
 		_fear = gs.Fear;
-		_blightPool = gs.Tokens[SpiritIsland.BlightCard.Space];
+		_blightPool = gs.BlightCard;
 		_ravageImages = [];
 		_buildImages = [];
 
@@ -52,6 +59,8 @@ public class InvaderBoardModel : ObservableModel {
 		UpdateFear();
 		UpdateBlight();
 	}
+
+	#endregion constructor
 
 	void GameState_NewLogEntry(Log.ILogEntry obj) {
 		if(obj is Log.Phase)
@@ -70,7 +79,7 @@ public class InvaderBoardModel : ObservableModel {
 	}
 
 	void UpdateBlight() {
-		BlightOnCard = _blightPool[Token.Blight];
+		BlightOnCard = _blightPool.BlightCount;
 	}
 
 	void UpdateInvaderCards() {
@@ -114,5 +123,5 @@ public class InvaderBoardModel : ObservableModel {
 
 	readonly InvaderDeck _deck;
 	readonly Fear _fear;
-	readonly Space _blightPool;
+	readonly SpiritIsland.BlightCard _blightPool;
 }

@@ -34,9 +34,11 @@ public sealed class GameState : IHaveMemento {
 		RoundNumber = 1;
 		Fear = new Fear( this );
 		Tokens = new Tokens_ForIsland();
+		BlightCard = new NullBlightCard(); // do AFTER Tokens.  auto-binds to the tokens to hold blight
 
 		AddTimePassesAction( Tokens );
 		AddTimePassesAction( Healer );
+
 
 	}
 	public int ShuffleNumber { get; } // used to generate different shuffle #s
@@ -97,8 +99,15 @@ public sealed class GameState : IHaveMemento {
 	public PowerCardDeck MinorCards { get; set; }
 	public readonly Healer Healer = new Healer();
 
-	public IBlightCard BlightCard = new NullBlightCard(); // Drawn Card
-	public List<IBlightCard> BlightCards = []; // Deck of Blight Cards
+	public List<BlightCard> BlightCards = []; // Deck of Blight Cards
+	public BlightCard BlightCard { 
+		get => _blightCard; 
+		set { 
+			_blightCard = value;
+			_blightCard.Bind(this);
+		}
+	}
+	BlightCard _blightCard;
 
 	public GameOverLogEntry Result = null;
 
@@ -119,32 +128,6 @@ public sealed class GameState : IHaveMemento {
 		set { _invaderDeck = value; }
 	}
 	InvaderDeck _invaderDeck;
-
-	#region Blight
-
-	/// <returns># of blight to remove from card</returns>
-	public async Task TakeBlightFromCard(int count) {
-		ArgumentOutOfRangeException.ThrowIfNegative(count);
-		var blightCard = Tokens[SpiritIsland.BlightCard.Space];
-
-		await blightCard.RemoveAsync(Token.Blight, count, RemoveReason.TakingFromCard); // stops from putting back on card
-
-		if (BlightCard != null && blightCard[Token.Blight] <= 0) {
-			ActionScope.Current.Log(new IslandBlighted(BlightCard));
-			await BlightCard.OnBlightDepleated(this);
-		}
-
-		Log(new BlightOnCardChanged());
-	}
-
-	public void blightOnCard_Add(int count)
-		=> Tokens[SpiritIsland.BlightCard.Space].Adjust(Token.Blight, count);
-
-	public IEnumerable<Space> CascadingBlightOptions( Space ss ) => ss.Adjacent_Existing
-		 .Where( x => !Terrain_ForBlight.MatchesTerrain( x, Terrain.Ocean ) // normal case,
-			 || Terrain_ForBlight.MatchesTerrain( x, Terrain.Wetland ) );
-
-	#endregion
 
 	public void AddIslandMod( BaseModEntity mod ) => Tokens.AddIslandMod( mod );
 

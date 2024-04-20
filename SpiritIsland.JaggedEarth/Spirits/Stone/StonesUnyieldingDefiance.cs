@@ -104,8 +104,8 @@ class BestowTheEnduranceOfBedrock( SpiritPresenceToken _token )
 	public void ModifyAdding( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight && args.To.Blight.Count <= args.To[_token]) {
 			// it does not cascade or destroy presence (yours or others').
-			BlightToken.ForThisAction.ShouldCascade = false;
-			BlightToken.ForThisAction.DestroyPresence = false;
+			BlightToken.ScopeConfig.ShouldCascade = false;
+			BlightToken.ScopeConfig.DestroyPresence = false;
 		}
 	}
 }

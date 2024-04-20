@@ -8,7 +8,7 @@ public abstract class StillHealthyBlightCard( string title, string description, 
 		gs.BlightCard = gs.BlightCards[0];
 		gs.BlightCards.RemoveAt(0);
 		// It comes into play already flipped
-		gs.BlightCard.OnBlightDepleated(gs);
+		_ = gs.BlightCard.OnBlightDepleated(gs); // !!!! this looks like a bug
 		ActionScope.Current.Log( new Log.IslandBlighted( gs.BlightCard ) );
 	}
 

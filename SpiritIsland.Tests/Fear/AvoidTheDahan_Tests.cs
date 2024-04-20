@@ -18,11 +18,12 @@ public class AvoidTheDahan_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		var (user, spirit) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
+		var (user, spirit, task) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
 			var fear = gs.Fear;
 			InitMountainThenAllSands( gs );
 			gs.NewLogEntry += (s) => log.Add(s.Msg());
 		} );
+		_engineTask = task;
 		_user = user;
 		_spirit = spirit;
 
@@ -32,6 +33,7 @@ public class AvoidTheDahan_Tests {
 
 	}
 	Task<FearCardRevealed> _waitForFearCard;
+	Task _engineTask;
 
 	#endregion
 

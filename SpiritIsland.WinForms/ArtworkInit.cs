@@ -31,7 +31,7 @@ class ArtworkInit( Label label ) {
 		PowerCard[] minors = builder.BuildMinorCards();
 
 		PowerCard[] uniques = builder.BuildSpirits( builder.SpiritNames ).SelectMany(s=>s.Hand).ToArray();
-		List<IBlightCard> blightCards = builder.BuildBlightCards();
+		List<BlightCard> blightCards = builder.BuildBlightCards();
 
 		_initTotal = fearCards.Count 
 			+ blightCards.Count
@@ -60,8 +60,8 @@ class ArtworkInit( Label label ) {
 		}
 	}
 
-	void BuildBlightCards( List<IBlightCard> blightCards ) {
-		foreach(IBlightCard blightCard in blightCards) {
+	void BuildBlightCards( List<BlightCard> blightCards ) {
+		foreach(BlightCard blightCard in blightCards) {
 			_initCurrent++;
 			try {
 				using Image img = ResourceImages.Singleton.GetBlightCard( blightCard );

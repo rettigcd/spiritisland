@@ -12,7 +12,7 @@ public sealed class ImmigrationSlows_Tests {
 	[Fact]
 	public async Task Level1_SkipBuildInLowestNumberedLand() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
-		var (user, spirit) = TestSpirit.StartGame(powerCard);
+		var (user, spirit, _) = TestSpirit.StartGame(powerCard);
 		_user = user; 
 		_spirit = spirit;
 		var gs = GameState.Current;
@@ -113,7 +113,7 @@ public sealed class ImmigrationSlows_Tests {
 	[Fact]
 	public async void Level3_DelayExplore1Round() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
-		var (user, spirit) = TestSpirit.StartGame(powerCard);
+		var (user, spirit, _) = TestSpirit.StartGame(powerCard);
 		_user = user;
 		_spirit = spirit;
 		var gs = GameState.Current;

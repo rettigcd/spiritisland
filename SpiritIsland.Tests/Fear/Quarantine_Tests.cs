@@ -9,7 +9,7 @@ public class Quarantine_Tests {
 
 	void Init() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
-		var (userLocal, spirit) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
+		var (userLocal, spirit, _) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
 			gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
 			_fearCardRevealed = gs.WatchForFearCard();
 			gs.InitTestInvaderDeck(

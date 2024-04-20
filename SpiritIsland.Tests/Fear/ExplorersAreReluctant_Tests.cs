@@ -5,7 +5,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	void Init() {
 		var powerCard = PowerCard.For(typeof(CallToTend));
 
-		var (user, spirit) = TestSpirit.StartGame( powerCard );
+		var (user, spirit, _) = TestSpirit.StartGame( powerCard );
 		_user = user;
 		_spirit = spirit;
 		var gs = GameState.Current;
