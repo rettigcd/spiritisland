@@ -13,7 +13,7 @@
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
 	</ContentPage.Resources>
 
-	<Grid RowDefinitions="30,50,245,24,30,*,40" ColumnDefinitions="8*,30*,30*">
+	<Grid RowDefinitions="30,50,245,24,30,*,40" ColumnDefinitions="8*,30*,40*">
 
 		<!-- Undo / Rewind -->
 		<Grid IsVisible="{Binding RewindableRound, Converter={StaticResource showIfGreater},ConverterParameter=0 }" HorizontalOptions="Center" VerticalOptions="End">

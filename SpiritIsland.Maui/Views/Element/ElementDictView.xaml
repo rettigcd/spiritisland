@@ -4,10 +4,10 @@
 			 xmlns:si="clr-namespace:SpiritIsland.Maui"
 			 x:Class="SpiritIsland.Maui.ElementDictView">
 
-	<CollectionView ItemsSource="{Binding Elements}" HeightRequest="20" ItemsLayout="VerticalGrid, 4" >
+	<CollectionView ItemsSource="{Binding Elements}" ItemsLayout="HorizontalList" >
 		<CollectionView.ItemTemplate>
 			<DataTemplate x:DataType="si:ElementModel" >
-				<si:ElementView HeightRequest="20" WidthRequest="20" />
+				<si:ElementView HeightRequest="15" />
 			</DataTemplate>
 		</CollectionView.ItemTemplate>
 	</CollectionView>

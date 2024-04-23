@@ -9,7 +9,7 @@
 		<si:SpiritToButtonImgConverter x:Key="btnImage" />
 	</ContentView.Resources>
 
-	<Grid ColumnDefinitions="2*,2*" RowDefinitions="1*,1*,3*" Padding="4">
+	<Grid ColumnDefinitions="2*,3*" RowDefinitions="15,15,*" Padding="4">
 		<Grid.GestureRecognizers>
 			<TapGestureRecognizer Command="{Binding OpenSpiritPanel}" />
 		</Grid.GestureRecognizers>
@@ -17,8 +17,8 @@
 		<Image Source="{Binding Spirit, Converter={StaticResource btnImage}}" Grid.RowSpan="3"/>
 
 		<!-- Secondary Elements -->
-		<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" InputTransparent="True" />
-		<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Column="1" Grid.Row="1" InputTransparent="True" />
+		<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" InputTransparent="True" HeightRequest="15" />
+		<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Column="1" Grid.Row="1" InputTransparent="True" HeightRequest="15" />
 
 		<!-- Placeable -->
 		<CollectionView x:Name="Placeables" ItemsSource="{Binding TrackPresence}" ItemsLayout="HorizontalList" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" >

@@ -10,7 +10,7 @@
 	</ContentView.Resources>
 	
 	<Border BackgroundColor="#452a15" StrokeShape="RoundRectangle 10,10,10,10" Padding="5" StrokeThickness="2" Stroke="{Binding BorderColor}" >
-		<Grid RowSpacing="0" RowDefinitions="20,20" ColumnDefinitions="15*,20*,20*,20*" >
+		<Grid RowSpacing="0" RowDefinitions="25,20" ColumnDefinitions="15*,20*,20*,20*" >
 
 			<Border Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="2" BackgroundColor="#7a4b24" 
 					StrokeShape="RoundRectangle 5,5,5,5" 
@@ -24,17 +24,17 @@
 			<Image x:Name="Speed" Source="{Binding Speed}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" />
 			<Label x:Name="Cost" Text="{Binding Cost}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontSize="14" />
 
+			<!-- Symbols -->
+			<Border BackgroundColor="Beige" Grid.Row="1" Grid.Column="1" />
+
 			<!-- Elements -->
-			<CollectionView ItemsSource="{Binding Elements}" Grid.Row="1" ItemsLayout="VerticalGrid,2" >
+			<CollectionView BackgroundColor="Beige" ItemsSource="{Binding Elements}" Grid.Row="1" Grid.ColumnSpan="2" ItemsLayout="HorizontalList" >
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="si:ElementModel" >
-						<Image Source="{Binding .,Converter={StaticResource elToImage}}" HeightRequest="10"/>
+						<Image Source="{Binding .,Converter={StaticResource elToImage}}" HeightRequest="15" Margin="2,0,0,0" />
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
-
-			<!-- Symbols -->
-			<Border BackgroundColor="Beige" Grid.Row="1" Grid.Column="1" />
 
 			<!-- Source / Range -->
 			<Border BackgroundColor="Beige" Grid.Row="1" Grid.Column="2" >

@@ -54,7 +54,6 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	#endregion constructor
 
-
 	public IOption[] FindNew() {
 		var moved = MovedPowerCards.ToArray();
 		List<IOption> options = moved
