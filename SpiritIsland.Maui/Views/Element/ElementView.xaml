@@ -10,7 +10,7 @@
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
 	</ContentView.Resources>
 
-	<Grid ColumnDefinitions="5*,5*" RowDefinitions="4*,6*">
+	<Grid ColumnDefinitions="4*,6*" RowDefinitions="4*,6*">
 		
 		<Grid.GestureRecognizers>
 			<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />

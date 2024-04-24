@@ -12,40 +12,40 @@
 		<si:HighlightIfMatchConverter x:Key="currentPhase" />
 	</ContentView.Resources>
 
-	<Grid x:Name="InvaderRow" ColumnDefinitions="10*,10*,10*" RowDefinitions="20*,10*" BackgroundColor="Tan">
+	<Grid x:Name="InvaderRow" ColumnDefinitions="12*,12*,10*,10*,20*" RowDefinitions="20*,10*" BackgroundColor="Tan">
 		<!-- DarkKhaki -->
 
 		<!-- Ravage -->
-		<Image Source="ravage.png" HeightRequest="40" Margin="2" />
-		<CollectionView ItemsSource="{Binding RavageImages}" VerticalOptions="Center" >
+		<Image Source="ravage.png" HeightRequest="40" Margin="2" Grid.ColumnSpan="2" />
+		<CollectionView ItemsSource="{Binding RavageImages}" VerticalOptions="Center" HorizontalOptions="Center" Grid.ColumnSpan="2" >
 			<CollectionView.ItemTemplate>
 				<DataTemplate>
-					<Image Source="{Binding .}" HeightRequest="30" VerticalOptions="Center" />
+					<Image Source="{Binding .}" HeightRequest="35" VerticalOptions="Center" />
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
 	
 		<!-- Build -->
-		<Image Source="build.png" HeightRequest="45" Margin="2" Grid.Column="1" />
-		<CollectionView ItemsSource="{Binding BuildImages}" VerticalOptions="Center" Grid.Column="1" >
+		<Image Source="build.png" HeightRequest="45" Margin="2" Grid.Column="2" Grid.ColumnSpan="2" />
+		<CollectionView ItemsSource="{Binding BuildImages}" VerticalOptions="Center" Grid.Column="2" Grid.ColumnSpan="2" >
 			<CollectionView.ItemTemplate>
 				<DataTemplate>
-					<Image Source="{Binding .}" HeightRequest="30"  VerticalOptions="Center" />
+					<Image Source="{Binding .}" HeightRequest="35"  VerticalOptions="Center" />
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
 
 		<!-- Explore -->
-		<Image Source="explore.png" HeightRequest="50" Margin="2" Grid.Column="2" />
-		<Grid Grid.Column="2" VerticalOptions="Center">
-			<Image Source="inv_back.png" HeightRequest="30" />
-			<Label Text="{Binding InvaderStage}" FontSize="12" HorizontalOptions="Center" VerticalOptions="Start" TextColor="Red" FontAttributes="Bold" />
+		<Image Source="explore.png" HeightRequest="50" Margin="2" Grid.Column="4" Grid.ColumnSpan="2" />
+		<Grid Grid.Column="4" Grid.ColumnSpan="2" VerticalOptions="Center">
+			<Image Source="inv_back.png" HeightRequest="35" />
+			<Label Text="{Binding InvaderStage}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Start" TextColor="Red" FontAttributes="Bold" />
 			<Label Text="{Binding RemainingInvaderDeckCards,StringFormat='x{0}'}" FontSize="10" HorizontalOptions="Center" VerticalOptions="End" TextColor="White" FontAttributes="Bold" />
 		</Grid>
 
 		<!-- Blight -->
-		<Grid Margin="6,0,0,0" Grid.Row="1" HorizontalOptions="Center">
-			<Image Source="blight.png" HeightRequest="18" />
+		<Grid Grid.Row="1" HorizontalOptions="Center" Grid.Column="4" Grid.ColumnSpan="2" >
+			<Image Source="blight.png" HeightRequest="20" />
 			<Label Text="{Binding BlightOnCard}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
 		</Grid>
 
@@ -58,7 +58,7 @@
 		</Grid>
 
 		<!-- Activated Card -->
-		<Grid  Grid.Row="1" Grid.Column="2" HorizontalOptions="Start" Margin="10,0,0,0" >
+		<Grid  Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" Margin="0,0,0,0" >
 			<Image IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=0}" Source="fear_back.png" HeightRequest="24" />
 			<Label IsVisible="{Binding ActivatedFearCards, Converter={StaticResource showIfGreater},ConverterParameter=1}" 
 						   Text="{Binding ActivatedFearCards,StringFormat='x{0}'}" 
@@ -69,12 +69,12 @@
 
 		<!-- Terror Level -->
 		<Image Source="{Binding TerrorLevel,Converter={StaticResource terrorLevel}}" BackgroundColor="White"
-			   HorizontalOptions="End" 
-			   HeightRequest="20" Margin="0,0,8,0" 
-			   Grid.Row="1" Grid.Column="2" />
+			   HorizontalOptions="Center" 
+			   HeightRequest="20" 
+			   Grid.Row="1" Grid.Column="3" />
 
 		<!-- Pool -->
-		<Grid  Grid.Row="1" Grid.Column="1" HorizontalOptions="Start" Margin="8,0,0,0">
+		<Grid  Grid.Row="1" Grid.Column="0" HorizontalOptions="Start" Margin="2,0,0,0">
 			<Image Source="fear.png" HeightRequest="24" />
 			<Label Text="{Binding FearPool}" FontSize="10" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White" FontAttributes="Bold" />
 		</Grid>
