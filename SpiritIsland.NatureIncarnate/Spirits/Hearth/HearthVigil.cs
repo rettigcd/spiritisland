@@ -11,11 +11,13 @@ public class HearthVigil : Spirit {
 
 	public override string SpiritName => Name;
 
-	static Track Energy0_GatherDahanBonus => new Track( "energy0" ) {
+	static Track Energy0_GatherDahanBonus => new Track( "0 energy, gather dahan" ) {
 		Energy = 0,
 		Icon = new IconDescriptor {
 			BackgroundImg = Img.Coin,
 			Text = "0",
+			Sub = new IconDescriptor { BackgroundImg = Img.Land_Gather_Dahan },
+			// BigSub = new IconDescriptor { BackgroundImg = Img.Land_Gather_Dahan },
 		},
 		Action = new Gather1Token(1,Human.Dahan), // !!! ??? implementation is optional, should it be required???
 	};

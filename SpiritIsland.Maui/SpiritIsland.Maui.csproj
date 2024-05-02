@@ -345,6 +345,7 @@
 	  <None Remove="Resources\Images\presenceTrack\w_w.png" />
 	  <None Remove="Resources\Images\presenceTrack\z0_2z.png" />
 	  <None Remove="Resources\Images\presenceTrack\z0_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z0_energy__gather_dahan.png" />
 	  <None Remove="Resources\Images\presenceTrack\z12_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z1_cardplay.png" />
 	  <None Remove="Resources\Images\presenceTrack\z1_energy.png" />
@@ -665,6 +666,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\w_w.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z0_2z.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z0_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z0_energy__gather_dahan.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z12_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z1_cardplay.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z1_energy.png" />
