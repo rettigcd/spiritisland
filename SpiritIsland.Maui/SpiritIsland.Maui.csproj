@@ -360,6 +360,7 @@
 	  <None Remove="Resources\Images\presenceTrack\z3_animal_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z3_cardplay.png" />
 	  <None Remove="Resources\Images\presenceTrack\z3_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z3_energy__prepare_el.png" />
 	  <None Remove="Resources\Images\presenceTrack\z3_fire_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z3_plant_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z4_324_energy.png" />
@@ -378,6 +379,7 @@
 	  <None Remove="Resources\Images\presenceTrack\z5_sun_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z6_cardplay.png" />
 	  <None Remove="Resources\Images\presenceTrack\z6_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z6_energy__prepare_el.png" />
 	  <None Remove="Resources\Images\presenceTrack\z7_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z8_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z9_energy.png" />
@@ -678,6 +680,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\z3_animal_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z3_cardplay.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z3_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z3_energy__prepare_el.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z3_fire_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z3_plant_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z4_324_energy.png" />
@@ -696,6 +699,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_sun_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z6_cardplay.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z6_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z6_energy__prepare_el.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z7_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z8_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z9_energy.png" />
