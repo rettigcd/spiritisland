@@ -10,6 +10,7 @@ public class CardsOverlayModel : ObservableModel1 {
 	public ObservableCollection<CardSlotModel> Resolved { get; } = [];
 	public ObservableCollection<CardSlotModel> Played { get; } = [];
 	public ObservableCollection<CardSlotModel> Hand { get; } = [];
+	/// <summary> Only appears when drawing cards. </summary>
 	public ObservableCollection<CardSlotModel> Draw { get; } = [];
 	public ObservableCollection<CardSlotModel> Discards { get; } = [];
 
@@ -87,19 +88,29 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	#region private methods
 
+	PowerCard[] _options = [];
+
+	/// <summary>
+	/// Updates the cards in each slot and their draggability.
+	/// Called each time a NewDecision comes in.
+	/// </summary>
+	/// <param name="powerCardSelection"></param>
 	void InitSlotsForNewDecision(A.PowerCard? powerCardSelection) {
 
 		if (powerCardSelection == null) {
+			_options = [];
 			Show();
 			UpdateElements();
 			SetAction("---");
 			return;
 		}
 
+		_options = powerCardSelection.CardOptions;
+
 		// setup model
 		Use = powerCardSelection.Use(powerCardSelection.CardOptions[0]); // !! Shifting Memories might return a Discard here for a Forget
 		int numberToSelect = powerCardSelection.NumberToSelect;
-		switch (Use) {
+		switch( Use ){
 
 			case CardUse.Play:
 				Elements = new ElementDictModel(_spirit.Elements.Elements);
@@ -129,14 +140,14 @@ public class CardsOverlayModel : ObservableModel1 {
 	// Action - Play
 	void Play(int playCount) {
 		InitPlay(playCount);
-		InitHand(0,true);
+		InitHand(0);
 		InitDiscards();
 		InitDraw();
 		SetAction("Play", playing: true);
 	}
 
 	void SetupRepeat(string action, int count = 1) {
-		InitPlay(count, true);
+		InitPlay(count);
 		InitHand();
 		InitDiscards();
 		InitDraw();
@@ -147,14 +158,14 @@ public class CardsOverlayModel : ObservableModel1 {
 	void AddToHand(int count,string actionType) {
 		InitPlay();
 		InitHand(count);
-		InitDiscards(0,actionType.Contains("Reclaim"));
+		InitDiscards(0);
 		InitDraw(actionType.Contains("Add"));
 		SetAction(actionType, addingToHand: true);
 	}
 
 	void Discard(int count) {
-		InitPlay(0,true);
-		InitHand(0,true);
+		InitPlay(0);
+		InitHand(0);
 		InitDiscards(count);
 		InitDraw();
 		SetAction("Discard", discarding: true);
@@ -194,60 +205,75 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	#region Init - Deck
 
-	void InitPlay(int emptySlots = 0, bool isResolvedDraggable=false) {
+	void InitPlay( int emptySlots=0 ) {
 		PowerCard[] resolvedCards = _spirit.UsedActions.OfType<PowerCard>().ToArray();
-		BuildSlots(Resolved, resolvedCards, 0, isResolvedDraggable);
-		BuildSlots(Played,   _spirit.InPlay.Except(resolvedCards), emptySlots, false);
+		BuildSlots(Resolved, resolvedCards, 0);
+		BuildSlots(Played,   _spirit.InPlay.Except(resolvedCards), emptySlots);
 	}
 
-	void InitHand(int emptySlots = 0, bool isDraggable=false) {
-		BuildSlots(Hand,_spirit.Hand, emptySlots, isDraggable);
+	void InitHand( int emptySlots = 0 ) {
+		BuildSlots( Hand,_spirit.Hand, emptySlots );
 	}
 
-	void InitDiscards(int emptySlots = 0,bool isDraggable=false) {
-		BuildSlots(Discards,_spirit.DiscardPile, emptySlots, isDraggable);
+	void InitDiscards( int emptySlots = 0 ) {
+		BuildSlots(Discards,_spirit.DiscardPile, emptySlots);
 	}
 
 	void InitDraw(bool isDraggable=false) {
 		IsDrawing = isDraggable;
-		BuildSlots(Draw, _spirit.DraftDeck, 0, isDraggable);
+		BuildSlots( Draw, _spirit.DraftDeck, 0 );
 	}
 
 	#endregion Init - Deck
 
-	void BuildSlots(ObservableCollection<CardSlotModel> collection, IEnumerable<PowerCard> preExisting, int desiredEmptySlots, bool isDraggable=false) {
+	void BuildSlots(ObservableCollection<CardSlotModel> observableCollection, IEnumerable<PowerCard> preExisting, int desiredEmptySlots) {
 
-		// Find Empty Slots
-		List<CardSlotModel> slotsToVacate = collection.Where(slot=>slot.Card is null || !preExisting.Contains(slot.Card.Card)).ToList();
+		// Identify Current Empty Slots
+		List<CardSlotModel> slotsToVacate = observableCollection
+			.Where(
+				slot=>slot.Card is null						// no card
+				|| !preExisting.Contains(slot.Card.Card)	// card should not be in this list
+			) 
+			.ToList();
+
+		// === Add new cards ===
 
 		// Add new Power Cards to the collection
-		foreach (var card in preExisting) {
-			CardSlotModel? match = collection.FirstOrDefault(slot=>slot.Card is not null && slot.Card.Card == card);
-			// update Pre-existing
+		foreach( PowerCard card in preExisting) {
+			bool isDraggable = _options.Contains(card);
+
+			// Determine if card is already observable
+			CardSlotModel? match = observableCollection.FirstOrDefault(slot=>slot.Card is not null && slot.Card.Card == card);
+
+			// If so, update its Draggable
 			if(match is not null) {
 				match.Card!.IsDraggable = isDraggable;
 				continue;
 			}
 
+			// Else: Insert it
 			var cardModel = new CardModel(card) { IsDraggable = isDraggable };
 			// Find place to insert it
-			if (1 < slotsToVacate.Count) {
+			if( 0 < slotsToVacate.Count ) {
 				slotsToVacate[0].Card = cardModel;
 				slotsToVacate.RemoveAt(0);
 			} else {
 				// create a new slot
 				var cardSlotModel = new CardSlotModel(cardModel);
 				cardSlotModel.PropertyChanged += CardSlot_PropertyChanged;
-				collection.Add(cardSlotModel);
+				observableCollection.Add(cardSlotModel);
 			}
 		}
 
-		// Reduce the vacate slots to match empty Slots
+		// === Updated Vacated Spots ===
+
+		// Reduce the vacated slots to match empty Slots
 		while( desiredEmptySlots < slotsToVacate.Count) {
-			collection.Remove(slotsToVacate[0]);
+			observableCollection.Remove(slotsToVacate[0]);
 			slotsToVacate.RemoveAt(0);
 		}
-		// remaining vacate slots should be vacated
+
+		// remaining vacated slots should be vacated
 		foreach(var vacateSlot in slotsToVacate) vacateSlot.Card = null;
 
 		// Add
@@ -255,13 +281,13 @@ public class CardsOverlayModel : ObservableModel1 {
 		while(0 < addEmptySlots-- ) {
 			var cardSlotModel = new CardSlotModel();
 			cardSlotModel.PropertyChanged += CardSlot_PropertyChanged;
-			collection.Add(cardSlotModel);
+			observableCollection.Add(cardSlotModel);
 		}
 
-		// track result
+		// === track result ===
 		if( desiredEmptySlots != 0 ) {
 			_preExistingDestinationCards = preExisting.ToArray();
-			_movedCardSlots = collection;
+			_movedCardSlots = observableCollection;
 		}
 	}
 
