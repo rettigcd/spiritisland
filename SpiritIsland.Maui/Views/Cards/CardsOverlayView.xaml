@@ -45,8 +45,8 @@
 					<Grid ColumnDefinitions="10*,30*" Margin="3" IsVisible="{Binding IsRepeating}" >
 						<Label Text="Repeat ↓↓↓" />
 						<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
-							HeightRequest="25" FontSize="12" 
-							HorizontalOptions="End" Padding="5,0" 
+							HeightRequest="35" FontSize="12" 
+							HorizontalOptions="End" Padding="15,0" 
 							IsEnabled="{Binding ButtonIsEnabled}"
 							TextColor="White" />
 					</Grid>
@@ -81,8 +81,8 @@
 				<Label Grid.Column="2" Text="{Binding RemainingEnergy}" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" FontAttributes="Bold" VerticalOptions="Center" />
 
 				<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="3" 
-								HeightRequest="25" FontSize="12" 
-								HorizontalOptions="End" Padding="5,0" 
+								HeightRequest="35" FontSize="12" 
+								HorizontalOptions="End" Padding="15,0" 
 								IsEnabled="{Binding ButtonIsEnabled}"
 								TextColor="White" />
 			</Grid>
@@ -114,8 +114,8 @@
 			<Grid ColumnDefinitions="30*,40*" Margin="3" BackgroundColor="Beige" IsVisible="{Binding IsAddingToHand}" >
 				<Label Text="Add to Hand ↑↑↑" />			
 				<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
-						HeightRequest="25" FontSize="12" 
-						HorizontalOptions="End" Padding="5,0" 
+						HeightRequest="35" FontSize="12" 
+						HorizontalOptions="End" Padding="15,0" 
 						IsEnabled="{Binding ButtonIsEnabled}"
 						TextColor="White" />
 			</Grid>
@@ -163,6 +163,32 @@
 
 				</VerticalStackLayout>
 			</Border>
+
+			<!-- Forgotten -->
+			<Border BackgroundColor="#444" Padding="3" StrokeShape="RoundRectangle 10,10,10,10" IsVisible="{Binding IsForgetting}">
+				<VerticalStackLayout>
+
+					<!-- Label / Button row -->
+					<Grid ColumnDefinitions="10*,30*" Margin="3">
+						<Label Text="Forgotten" Margin="10,0" FontSize="12" />
+						<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
+								HeightRequest="25" FontSize="12" 
+								HorizontalOptions="End" Padding="5,0" 
+								IsEnabled="{Binding ButtonIsEnabled}"
+								TextColor="White" />
+					</Grid>
+
+					<CollectionView x:Name="Forgotten" ItemsSource="{Binding Forgotten}" ItemsLayout="VerticalGrid,2" >
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="si:CardSlotModel" >
+								<si:CardSlotView WidthRequest="170" MinimumHeightRequest="50" BindingContext="{Binding .}" />
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
+
+				</VerticalStackLayout>
+			</Border>
+
 
 
 			<!-- Instructions -->

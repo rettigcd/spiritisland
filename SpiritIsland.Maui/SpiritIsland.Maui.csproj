@@ -84,6 +84,14 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\AppIcon\spirit_island.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_brandenburg_prussia.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_england.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_france.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_habsburg_mining_expedition.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_habsburg_monarchy.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_russia.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_scotland.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_sweden.png" />
 	  <None Remove="Resources\Images\badge\bdg_a_spread_of_rampant_green.png" />
 	  <None Remove="Resources\Images\badge\bdg_breath_of_darkness_down_your_spine.png" />
 	  <None Remove="Resources\Images\badge\bdg_bringer_of_dreams_and_nightmares.png" />
@@ -458,6 +466,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiImage Include="Resources\Images\adversaries\bdg_brandenburg_prussia.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_england.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_france.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_habsburg_mining_expedition.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_habsburg_monarchy.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_russia.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_scotland.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_sweden.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_a_spread_of_rampant_green.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_breath_of_darkness_down_your_spine.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_bringer_of_dreams_and_nightmares.png" />

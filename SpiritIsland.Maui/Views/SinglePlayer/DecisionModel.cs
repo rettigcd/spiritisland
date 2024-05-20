@@ -42,14 +42,17 @@ public class DecisionModel : ObservableModel {
 		get => _option;
 		set {
 			SetProp( ref _option, value );
-			if(value is not null) {
-				HasOptionReady = true;
-				AcceptText = ((IOption)value).Text;
-			} else {
-				HasOptionReady = false;
-				AcceptText = "Accept";
-			}
+			if(value is not null)
+				UpdateButton(((IOption)value).Text, true);
+			else
+				UpdateButton("Accept", false);
 		}
+	}
+
+	void UpdateButton(string buttonText, bool hasOptoinReady) {
+		AcceptText = buttonText;
+		HasOptionReady = hasOptoinReady;
+	
 	}
 
 	public OptionModel[] Options { get => _options; set => SetProp(ref _options, value); }
@@ -145,6 +148,9 @@ public class DecisionModel : ObservableModel {
 	public void Submit() {
 		if (_nextDecision is null) { AcceptText = "-- missing decision --"; return; }
 		if (SelectedOption is null) { AcceptText = "-no selection --"; return; }
+
+		UpdateButton("working...", false);
+
 		_userPortal.Choose(_nextDecision, (IOption)SelectedOption);
 		RewindableRound = _game.GameState.RoundNumber;
 	}

@@ -71,6 +71,7 @@ abstract public class AdversaryBase : IAdversary {
 
 public class AdversaryLevel( int _level, int _difficulty, int _fear1, int _fear2, int _fear3, string _title, string _description = "" ) {
 
+	public int Level => _level;
 	public int Difficulty { get; } = _difficulty;
 	public int[] FearCards { get; } = [_fear1, _fear2, _fear3];
 	public string Title { get; } = _title;

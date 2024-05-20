@@ -7,7 +7,7 @@
 
 	<ContentView.Resources>
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
-		<si:SpiritToButtonImgConverter x:Key="btnImage" />
+		<si:BadgeToImgConverter x:Key="btnImage" />
 	</ContentView.Resources>
 
 	<ScrollView>

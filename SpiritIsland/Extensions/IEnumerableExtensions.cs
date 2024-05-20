@@ -17,7 +17,8 @@ static public class IEnumerableExtensions {
 		return buf.ToString();
 	}
 
-	/// <summary> For Maui </summary>
+	/// <summary> Makes lowercase, Strips single quotes ('), and replaces non-digits with underscore (_) </summary>
+	/// <remarks> For Maui </remarks>
 	static public string ToResourceName( this string text, string suffix = "" ) {
 		var buf = new StringBuilder();
 		foreach(char c in text) {

@@ -10,9 +10,9 @@ public class CardsOverlayModel : ObservableModel1 {
 	public ObservableCollection<CardSlotModel> Resolved { get; } = [];
 	public ObservableCollection<CardSlotModel> Played { get; } = [];
 	public ObservableCollection<CardSlotModel> Hand { get; } = [];
-	/// <summary> Only appears when drawing cards. </summary>
-	public ObservableCollection<CardSlotModel> Draw { get; } = [];
+	public ObservableCollection<CardSlotModel> Draw { get; } = []; // only visible when drawing cards
 	public ObservableCollection<CardSlotModel> Discards { get; } = [];
+	public ObservableCollection<CardSlotModel> Forgotten { get; } = [];
 
 	public CardUse Use {				get => GetStruct<CardUse>();		private set => SetProp(value);	}
 
@@ -25,6 +25,7 @@ public class CardsOverlayModel : ObservableModel1 {
 	public bool IsPlaying {				get => GetStruct<bool>();			private set => SetProp(value);	}
 	public bool IsAddingToHand {		get => GetStruct<bool>();			private set => SetProp(value);	}
 	public bool IsDrawing {				get => GetStruct<bool>();			private set => SetProp(value);	}
+	public bool IsForgetting {			get => GetStruct<bool>();			private set => SetProp(value); }
 
 	public bool ButtonIsEnabled {		get => GetStruct<bool>();			private set => SetProp(value);	}
 	public string? ButtonText {			get => GetNullableProp<string>();	private set => SetProp(value);	}
@@ -47,7 +48,7 @@ public class CardsOverlayModel : ObservableModel1 {
 		_spirit = spirit;
 		userPortal.NewWaitingDecision += (obj) => InitSlotsForNewDecision(obj as A.PowerCard);
 		Elements = new ElementDictModel([]);
-		Show();
+		// InitStuff(); Show();
 
 		CloseCommand = new Command( TryToClose );
 		AcceptCardsCommand = new Command( AcceptCards );
@@ -90,6 +91,11 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	PowerCard[] _options = [];
 
+	int _numberToSelect = 0;
+	readonly CountDictionary<Destination> _destinations = [];
+
+	enum Destination { None, Resolved, Play, Hand, Draw, Discard, Forgotten }
+
 	/// <summary>
 	/// Updates the cards in each slot and their draggability.
 	/// Called each time a NewDecision comes in.
@@ -97,31 +103,40 @@ public class CardsOverlayModel : ObservableModel1 {
 	/// <param name="powerCardSelection"></param>
 	void InitSlotsForNewDecision(A.PowerCard? powerCardSelection) {
 
-		if (powerCardSelection == null) {
+		_destinations.Clear();
+
+		if( powerCardSelection == null) {
 			_options = [];
-			Show();
+			_numberToSelect = 0;
+			InitAllSections();
+			ResetDetails();
 			UpdateElements();
 			SetAction("---");
 			return;
 		}
 
+		// save options, destinations, and num-to-select
 		_options = powerCardSelection.CardOptions;
+		foreach(var card in _options )
+			AddDestinationCount(powerCardSelection.Use(card));
+		_numberToSelect = powerCardSelection.NumberToSelect;
 
 		// setup model
-		Use = powerCardSelection.Use(powerCardSelection.CardOptions[0]); // !! Shifting Memories might return a Discard here for a Forget
-		int numberToSelect = powerCardSelection.NumberToSelect;
+		Use = powerCardSelection.Use(_options[0]); // !! Shifting Memories might return a Discard here for a Forget
+		InitAllSections();
 		switch( Use ){
 
 			case CardUse.Play:
 				Elements = new ElementDictModel(_spirit.Elements.Elements);
 				RemainingEnergy = _spirit.Energy;
-				Play(numberToSelect); break;
+				SetAction("Play", playing: true); break;
 
-			case CardUse.AddToHand: AddToHand(numberToSelect, "Add"); break;
-			case CardUse.Reclaim: AddToHand(numberToSelect, "Reclaim"); break;
-			case CardUse.Discard: Discard(numberToSelect); break;
-			case CardUse.Repeat: SetupRepeat("Repeat", numberToSelect); break;
-			default: Show(); break;
+			case CardUse.AddToHand: SetAction("Add", addingToHand: true, isDrawing: true); break;
+			case CardUse.Reclaim:   SetAction("Reclaim", addingToHand:true, isDrawing: false); break;
+			case CardUse.Discard:   SetAction("Discard", discarding: true); break;
+			case CardUse.Forget:	SetAction("Forget", discarding: false); break;
+			case CardUse.Repeat:    SetAction("Repeat", repeating: true); break;
+			default: ResetDetails(); break;
 		}
 
 		if (powerCardSelection != null) {
@@ -137,45 +152,41 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	}
 
-	// Action - Play
-	void Play(int playCount) {
-		InitPlay(playCount);
-		InitHand(0);
-		InitDiscards();
-		InitDraw();
-		SetAction("Play", playing: true);
+	void AddDestinationCount(CardUse cardUse) {
+		var destination = cardUse switch {
+			CardUse.Play => Destination.Play,
+			CardUse.Repeat => Destination.Play,
+			CardUse.AddToHand => Destination.Hand,
+			CardUse.Reclaim => Destination.Hand,
+			CardUse.Discard => Destination.Discard,
+			CardUse.Forget => Destination.Forgotten,
+			//				CardUse.Gift,
+			//				CardUse.Impend,
+			//				CardUse.Accept   // Generic card use. (was "Other")
+			_ => Destination.None,
+		};
+		_destinations[destination]++;
 	}
 
-	void SetupRepeat(string action, int count = 1) {
-		InitPlay(count);
-		InitHand();
-		InitDiscards();
-		InitDraw();
-		SetAction(action, repeating: true);
+	void InitAllSections() {
+		PowerCard[] resolvedCards = _spirit.UsedActions.OfType<PowerCard>().ToArray();
+		var unresolved = _spirit.InPlay.Except(resolvedCards);
+
+		BuildSlots(Resolved, resolvedCards, Destination.Resolved);
+		BuildSlots(Played, unresolved, Destination.Play);
+		BuildSlots(Hand, _spirit.Hand, Destination.Hand); 
+		BuildSlots(Discards,_spirit.DiscardPile, Destination.Discard);
+		BuildSlots(Draw, _spirit.DraftDeck, Destination.Draw );
+		BuildSlots(Forgotten, [], Destination.Forgotten);
 	}
 
-	// Action - AddToHand
-	void AddToHand(int count,string actionType) {
-		InitPlay();
-		InitHand(count);
-		InitDiscards(0);
-		InitDraw(actionType.Contains("Add"));
-		SetAction(actionType, addingToHand: true);
-	}
-
-	void Discard(int count) {
-		InitPlay(0);
-		InitHand(0);
-		InitDiscards(count);
-		InitDraw();
-		SetAction("Discard", discarding: true);
-	}
 
 	void SetAction(string action, 
 		bool playing = false,
 		bool addingToHand = false,
 		bool discarding = false,
-		bool repeating = false
+		bool repeating = false,
+		bool isDrawing = false
 	) {
 		_action = action;
 		UpdateButtonTextCount(0);
@@ -184,49 +195,24 @@ public class CardsOverlayModel : ObservableModel1 {
 		IsAddingToHand = addingToHand;
 		IsDiscarding = discarding;
 		IsRepeating = repeating;
+		IsDrawing = isDrawing;
+		IsForgetting = _destinations[Destination.Forgotten] != 0;
 
 		ButtonIsEnabled = false; // at least initially it is.
 	}
 	string _action = "";
-
-	// Aciton - None / Show
-	void Show() {
-		InitPlay();
-		InitHand();
-		InitDiscards();
-		InitDraw();
-		ResetDetails();
-	}
 
 	void ResetDetails() {
 		Title = "";
 		Instructions = "";
 	}
 
-	#region Init - Deck
-
-	void InitPlay( int emptySlots=0 ) {
-		PowerCard[] resolvedCards = _spirit.UsedActions.OfType<PowerCard>().ToArray();
-		BuildSlots(Resolved, resolvedCards, 0);
-		BuildSlots(Played,   _spirit.InPlay.Except(resolvedCards), emptySlots);
-	}
-
-	void InitHand( int emptySlots = 0 ) {
-		BuildSlots( Hand,_spirit.Hand, emptySlots );
-	}
-
-	void InitDiscards( int emptySlots = 0 ) {
-		BuildSlots(Discards,_spirit.DiscardPile, emptySlots);
-	}
-
-	void InitDraw(bool isDraggable=false) {
-		IsDrawing = isDraggable;
-		BuildSlots( Draw, _spirit.DraftDeck, 0 );
-	}
-
-	#endregion Init - Deck
-
-	void BuildSlots(ObservableCollection<CardSlotModel> observableCollection, IEnumerable<PowerCard> preExisting, int desiredEmptySlots) {
+	void BuildSlots(
+		ObservableCollection<CardSlotModel> observableCollection, 
+		IEnumerable<PowerCard> preExisting, 
+		Destination destination
+	) {
+		int desiredEmptySlots = int.Min( _numberToSelect, _destinations[destination] );
 
 		// Identify Current Empty Slots
 		List<CardSlotModel> slotsToVacate = observableCollection
