@@ -74,7 +74,13 @@
 				<Label Text="Play ↑↑↑" VerticalOptions="Center" />
 
 				<!-- Elements -->
-				<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" BackgroundColor="Beige" />
+				<CollectionView ItemsSource="{Binding Elements}" ItemsLayout="HorizontalList" Grid.Column="1" BackgroundColor="Beige" >
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="si:ElementModel" >
+							<si:ElementView HeightRequest="24" />
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
 
 				<!-- Energy -->
 				<Image Grid.Column="2" Source="coin.png" HeightRequest="25" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />

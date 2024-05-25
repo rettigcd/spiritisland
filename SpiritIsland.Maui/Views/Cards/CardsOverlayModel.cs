@@ -18,7 +18,8 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	// Play
 	public int RemainingEnergy {		get => GetInt();					private set => SetProp(value);	}
-	public ElementDictModel Elements {  get => GetProp<ElementDictModel>(); private set => SetProp(value);	}
+	//public ElementDictModel Elements {  get => GetProp<ElementDictModel>(); private set => SetProp(value);	}
+	public ElementModel[]   Elements {  get => GetProp<ElementModel[]>(); private set => SetProp(value);	}
 
 	public bool IsRepeating {			get => GetStruct<bool>();			private set => SetProp(value);	}
 	public bool IsDiscarding {			get => GetStruct<bool>();			private set => SetProp(value);	}
@@ -47,7 +48,7 @@ public class CardsOverlayModel : ObservableModel1 {
 	public CardsOverlayModel( Spirit spirit, IDecisionPortal userPortal ) {
 		_spirit = spirit;
 		userPortal.NewWaitingDecision += (obj) => InitSlotsForNewDecision(obj as A.PowerCard);
-		Elements = new ElementDictModel([]);
+		Elements = [];
 		// InitStuff(); Show();
 
 		CloseCommand = new Command( TryToClose );
@@ -127,7 +128,7 @@ public class CardsOverlayModel : ObservableModel1 {
 		switch( Use ){
 
 			case CardUse.Play:
-				Elements = new ElementDictModel(_spirit.Elements.Elements);
+				Elements = ElementModel.FromDict( _spirit.Elements.Elements );
 				RemainingEnergy = _spirit.Energy;
 				SetAction("Play", playing: true); break;
 
@@ -305,10 +306,10 @@ public class CardsOverlayModel : ObservableModel1 {
 	}
 
 	void UpdateElements() {
-		var elements = _spirit.Elements.Elements.Clone();
+		CountDictionary<Element> elements = _spirit.Elements.Elements.Clone();
 		foreach (var card in MovedPowerCards)
 			elements.AddRange(card.Elements);
-		Elements = new ElementDictModel(elements);
+		Elements = ElementModel.FromDict(elements);
 	}
 
 	void UpdateButtonTextCount( int count ) {

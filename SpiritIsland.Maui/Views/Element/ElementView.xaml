@@ -23,16 +23,12 @@
 		</Image>
 
 		<!-- Count -->
-		<Ellipse HorizontalOptions="Center" VerticalOptions="Center" 
-				IsVisible="{Binding Count,Converter={StaticResource showIfGreater},ConverterParameter=1}"
-				Stroke="Black" BackgroundColor="White" 
-				Grid.Column="1" Grid.Row="1" />
 		<Label
-			   FontSize="7" FontAttributes="Bold" 
+			   FontSize="7" FontAttributes="Bold"
 			   Text="{Binding Count,StringFormat='x{0}'}"
 			   IsVisible="{Binding Count,Converter={StaticResource showIfGreater},ConverterParameter=1}"
 			   HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center"
-			   Grid.Column="1" Grid.Row="1" />
+			   Grid.Column="1" Grid.Row="1" BackgroundColor="White" />
 
 		<!-- Is Option-->
 		<!-- <Ellipse Stroke="{Binding SelectColor}" StrokeThickness="2" /> -->
