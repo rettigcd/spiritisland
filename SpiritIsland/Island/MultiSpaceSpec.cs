@@ -2,6 +2,20 @@
 
 public class MultiSpaceSpec : SpaceSpec {
 
+	public override SpaceLayout Layout {
+		get {
+			SingleSpaceSpec[] spaces = OrigSpaces;
+			XY[] corners = spaces[0].Layout.Corners;
+			for( int i = 1; i < spaces.Length; ++i )
+				corners = Polygons.JoinAdjacentPolgons(corners, spaces[i].Layout.Corners);
+			return new SpaceLayout(corners);
+		}
+	}
+
+	public override int InvaderActionCount => OrigSpaces.Sum(s => s.InvaderActionCount) / OrigSpaces.Length;
+
+	#region constructor
+
 	public MultiSpaceSpec(params SpaceSpec[] spaces)
 		:base( string.Join(":", CollectOrigSpaces(spaces).Select(p=>p.Label)) ) 
 	{
@@ -9,7 +23,7 @@ public class MultiSpaceSpec : SpaceSpec {
 		Boards = OrigSpaces.SelectMany(s=>s.Boards).Distinct().ToArray();
 	}
 
-	public override int InvaderActionCount => OrigSpaces.Sum(s=>s.InvaderActionCount) / OrigSpaces.Length;
+	#endregion
 
 	static SingleSpaceSpec[] CollectOrigSpaces( SpaceSpec[] spaces ) {
 		List<SingleSpaceSpec> parts = [];

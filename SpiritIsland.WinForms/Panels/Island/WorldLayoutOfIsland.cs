@@ -16,7 +16,7 @@ class WorldLayoutOfIsland {
 
 		foreach(var board in island.Boards)
 			foreach(var space in board.Spaces) {
-				var spaceLayout = _islandLayout.GetLayoutFor( space );
+				var spaceLayout = space.Layout;
 				var paintable = space is MultiSpaceSpec ms ? new PaintableMultiSpace(ms,spaceLayout) 
 					: new PaintableSpace(space,spaceLayout);
 				_paintables.Add( space, paintable );
@@ -35,7 +35,7 @@ class WorldLayoutOfIsland {
 
 	public PaintableSpace GetPaintable( SpaceSpec space ) {
 		if(!_paintables.TryGetValue( space, out PaintableSpace paintable )) {
-			var spaceLayout = _islandLayout.GetLayoutFor( space );
+			var spaceLayout = space.Layout;
 			paintable = space is MultiSpaceSpec ms ? new PaintableMultiSpace( ms, spaceLayout )
 				: new PaintableSpace( space, spaceLayout );
 			_paintables.Add( space, paintable );
@@ -61,8 +61,6 @@ class WorldLayoutOfIsland {
 	}
 
 	readonly Dictionary<SpaceSpec, PaintableSpace> _paintables = [];
-
-	readonly IslandLayout _islandLayout = new IslandLayout();
 
 	#endregion private
 }

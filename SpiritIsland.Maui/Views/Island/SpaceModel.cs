@@ -5,7 +5,11 @@ namespace SpiritIsland.Maui;
 
 public class SpaceModel : ObservableModel, OptionView {
 
+	/// <summary> The Space Name, Mods, and Tokens </summary>
 	public Space Space { get; }
+
+	/// <summary> Details about where it appears on the screen. </summary>
+	public SpaceLayout Layout { get; }
 
 	#region OptionView implementation
 
@@ -39,26 +43,10 @@ public class SpaceModel : ObservableModel, OptionView {
 
 	#endregion constructor
 
-	int _tapCount = 0;
-	async void HandleClick() {
-		await Task.Delay(400);
-		await MainThread.InvokeOnMainThreadAsync(() => {
-			switch (_tapCount) {
-				case 1: SelectOptionCallback?.Invoke(Option,false); break;
-				case 2: SelectOptionCallback?.Invoke(Option,true); break;
-				default: break;
-			}
-			_tapCount = 0;
-		});
-	}
-
-	public SpaceLayout Layout { get; }
-
 	public ICommand ClickCommand { get; }
 
-	readonly OptionViewManager _ovm;
-
 	/// <summary>
+	/// Sync the ViewModel to the (GameState:) Space
 	/// Adds / Removes tokens, registering and unregistering them with the OptionViewManager
 	/// </summary>
 	public void Sync() {
@@ -100,4 +88,19 @@ public class SpaceModel : ObservableModel, OptionView {
 		_ovm.RemoveRange(Tokens);
 		Tokens.Clear();
 	}
+
+	async void HandleClick() {
+		await Task.Delay(400);
+		await MainThread.InvokeOnMainThreadAsync(() => {
+			switch( _tapCount ) {
+				case 1: SelectOptionCallback?.Invoke(Option, false); break;
+				case 2: SelectOptionCallback?.Invoke(Option, true); break;
+				default: break;
+			}
+			_tapCount = 0;
+		});
+	}
+
+	readonly OptionViewManager _ovm;
+	int _tapCount = 0;
 }

@@ -16,6 +16,8 @@ public abstract class SpaceSpec
 		Label = label;
 	}
 
+	public abstract SpaceLayout Layout { get; }
+
 	public virtual Board[] Boards { get; protected set; }
 
 	string IOption.Text => Label;

@@ -12,15 +12,16 @@ public class SpaceLayout {
 	#region constructors
 	public SpaceLayout( params XY[] corners) {
 		Corners = corners;
-		Bounds = CalcBounds( corners );
+		Bounds = BoundsBuilder.ForPoints(corners);
 		Center = CalcCenterOfSpacePoints(Bounds);
 	}
 
 	#endregion constructors
+
 	public void ReMap( PointMapper mapper ) {
 		for(int i = 0; i < Corners.Length; ++i)
 			Corners[i] = mapper.Map( Corners[i] );
-		Bounds = CalcBounds( Corners );
+		Bounds = BoundsBuilder.ForPoints(Corners);
 		Center = CalcCenterOfSpacePoints(Bounds);
 	}
 
@@ -60,15 +61,5 @@ public class SpaceLayout {
 	static XY CalcCenterOfSpacePoints(Bounds rect)
 		=> new XY( rect.X + rect.Width * .5f, rect.Y + rect.Height * .5f );
 
-	static Bounds CalcBounds(XY[] corners) {
-		float maxX = -1000f, maxY = -1000f, minX = 1000f, minY = 1000f;
-		foreach(var p in corners) {
-			if(p.X < minX) minX = p.X;
-			if(p.Y < minY) minY = p.Y;
-			if(p.X > maxX) maxX = p.X;
-			if(p.Y > maxY) maxY = p.Y;
-		}
-		return new Bounds( minX, minY, maxX - minX, maxY - minY );
-	}
 	#endregion
 }

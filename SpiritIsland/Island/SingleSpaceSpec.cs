@@ -5,10 +5,6 @@
 /// </summary>
 public class SingleSpaceSpec( Terrain terrain, string label, string startingItems = "" ) : SpaceSpec(label) {
 
-	#region constructor
-
-	#endregion
-
 	public Board Board {
 		get { return _board; }
 		set {
@@ -18,14 +14,18 @@ public class SingleSpaceSpec( Terrain terrain, string label, string startingItem
 			Boards = [ value ];
 		}
 	}
-	Board _board;
+
 	public override int InvaderActionCount => _board.InvaderActionCount;
+
+	public override SpaceLayout Layout => _board.Layout.ForSpaceSpec(this);
+
+	public StartUpCounts StartUpCounts { get; } = new StartUpCounts(startingItems);
+
+	public Terrain NativeTerrain { get; set; } = terrain;
 
 	public override bool IsOneOf(params Terrain[] options) => options.Contains(NativeTerrain);
 
 	public override bool Is( Terrain terrain ) => NativeTerrain == terrain;
-
-	public StartUpCounts StartUpCounts { get; } = new StartUpCounts( startingItems );
 
 	public void InitTokens( Space space ) {
 		// ! Using 'Adjust' so they don't sqush stuff setup by Adversaries
@@ -37,6 +37,6 @@ public class SingleSpaceSpec( Terrain terrain, string label, string startingItem
 		space.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}
 
-	public Terrain NativeTerrain { get; set; } = terrain;
+	Board _board;
 
 }

@@ -1,6 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public partial class Board {
+#nullable enable
+
+public class Board {
 
 	#region factories
 
@@ -15,11 +17,11 @@ public partial class Board {
 			"D" => BuildBoardD( orientation ),
 			"E" => BuildBoardE( orientation ),
 			"F" => BuildBoardF( orientation ),
-			_ => null,
+			_ => throw new ArgumentException($"Unknown board '{boardName}'", nameof(boardName))
 		};
 	}
 
-	static public Board BuildBoardA(BoardOrientation orientation=null) {
+	static public Board BuildBoardA(BoardOrientation? orientation=null) {
 
 		Board board = new Board("A"
 			, orientation ?? BoardOrientation.Home
@@ -50,7 +52,7 @@ public partial class Board {
 		return board;
 	}
 
-	static public Board BuildBoardB( BoardOrientation orientation = null ) {
+	static public Board BuildBoardB( BoardOrientation? orientation = null ) {
 
 		Board board = new Board("B"
 			, orientation ?? BoardOrientation.Home
@@ -81,7 +83,7 @@ public partial class Board {
 		return board;
 	}
 
-	static public Board BuildBoardC( BoardOrientation orientation = null ) {
+	static public Board BuildBoardC( BoardOrientation? orientation = null ) {
 
 		var board = new Board("C"
 			, orientation ?? BoardOrientation.Home
@@ -112,7 +114,7 @@ public partial class Board {
 		return board;
 	}
 
-	static public Board BuildBoardD( BoardOrientation orientation = null ) {
+	static public Board BuildBoardD( BoardOrientation? orientation = null ) {
 		var board = new Board("D"
 			, orientation ?? BoardOrientation.Home
 			,new SingleSpaceSpec(Terrain.Ocean,   "D0")
@@ -142,7 +144,7 @@ public partial class Board {
 		return board;
 	}
 
-	static public Board BuildBoardE( BoardOrientation orientation = null ) {
+	static public Board BuildBoardE( BoardOrientation? orientation = null ) {
 
 		var board = new Board( "E"
 			, orientation ?? BoardOrientation.Home
@@ -173,7 +175,7 @@ public partial class Board {
 		return board;
 	}
 
-	static public Board BuildBoardF( BoardOrientation orientation = null ) {
+	static public Board BuildBoardF( BoardOrientation? orientation = null ) {
 
 		var board = new Board( "F"
 			, orientation ?? BoardOrientation.Home
@@ -216,25 +218,17 @@ public partial class Board {
 	/// <summary>All spaces, including the ones that are not in play and are in Stasis.</summary>
 	public IEnumerable<SpaceSpec> Spaces_Unfiltered => _spaces;
 
-	#region Add / Remove spaces from board
-	public void AddSpace( SpaceSpec space ) {
-		_spaces = _spaces.Union( new[] {space}).ToArray();
-	} // Weave togehter
-
-	/// <returns>Old adjacents</returns>
-	public SpaceSpec[] Remove( SpaceSpec space ) {
-		var oldAdj = space.Adjacent_Existing.ToArray();
-		space.Disconnect();
-		_spaces = _spaces.Where(s => s != space ).ToArray();
-		return oldAdj;
-	} // Weave together
-	#endregion
-
 	public int InvaderActionCount { get; set; } = 1;
 
 	public SpaceSpec Ocean => Spaces_Existing.Single( s => s.IsOcean );
 	
 	public SpaceSpec this[int index]{ get => _spaces[index]; }
+
+	public BoardSide[] Sides => _sides.ToArray();
+
+	public BoardOrientation Orientation { get; }
+
+	public BoardLayout Layout => _layout ??= BoardLayout.Get(Name);
 
 	#region constructor
 
@@ -267,9 +261,18 @@ public partial class Board {
 		_spaces[srcIndex].SetAdjacentToSpaces( neighborIndex.Select(i=>_spaces[i] ).ToArray());
 	}
 
-	public BoardSide[] Sides => _sides.ToArray();
+	/// <summary> Used by Weave Together... </summary>
+	public void AddSpace(SpaceSpec space) {
+		_spaces = _spaces.Union(new[] { space }).ToArray();
+	}
 
-	public BoardOrientation Orientation { get; }
+	/// <returns> Used by Weave Together... </returns>
+	public SpaceSpec[] Remove(SpaceSpec space) {
+		var oldAdj = space.Adjacent_Existing.ToArray();
+		space.Disconnect();
+		_spaces = _spaces.Where(s => s != space).ToArray();
+		return oldAdj;
+	}
 
 	BoardSide DefineSide( params int[] spaceIndexes ) {
 		var side = new BoardSide( this, spaceIndexes.Select( i => _spaces[i] ).ToArray() );
@@ -277,9 +280,12 @@ public partial class Board {
 		return side;
 	}
 
+	BoardLayout? _layout;
 	readonly List<BoardSide> _sides = [];
 	SpaceSpec[] _spaces;
 
 
 
 }
+
+#nullable disable

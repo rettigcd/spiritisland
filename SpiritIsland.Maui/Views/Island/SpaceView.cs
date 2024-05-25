@@ -207,7 +207,9 @@ public class SpaceWidget {
 		return (path, bounds);
 	}
 
-	Color GetTerrainColor() => _spaceSpec is SingleSpaceSpec s1 ? s1.NativeTerrain.GetColor() : Colors.White;
+	Color GetTerrainColor() => _spaceSpec is SingleSpaceSpec s1 
+		? s1.NativeTerrain.GetColor() 
+		: Colors.DarkSlateGray; // Multi-spaces & Endless Dark
 
 	void Tap_Tapped( object? sender, TappedEventArgs e ) {
 	}

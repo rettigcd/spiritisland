@@ -350,7 +350,7 @@ public class BoardLayout {
 	public Bounds Bounds => _bounds ??= CalcBounds();
 	public XY Size => Bounds.Size;
 
-	public SpaceLayout ForSpace( SpaceSpec space ) {
+	public SpaceLayout ForSpaceSpec( SpaceSpec space ) {
 		int index = space.Label[1] - 48;
 		return _spaces[index];
 	}
@@ -383,17 +383,10 @@ public class BoardLayout {
 	#region private member
 
 	Bounds CalcBounds() {
-		float minX = float.MaxValue;
-		float minY = float.MaxValue;
-		float maxX = float.MinValue;
-		float maxY = float.MinValue;
-		foreach(var p in Perimeter) {
-			if(p.X < minX) minX = p.X;
-			if(p.Y < minY) minY = p.Y;
-			if(p.X > maxX) maxX = p.X;
-			if(p.Y > maxY) maxY = p.Y;
-		}
-		return new Bounds( minX, minY, maxX - minX, maxY - minY );
+		var builder = new BoundsBuilder();
+		foreach(XY p in Perimeter)
+			builder.Include(p);
+		return builder.GetBounds();
 	}
 
 	// counter-clockwise, starting at origin
@@ -442,6 +435,38 @@ public class BoardLayout {
 	#endregion
 
 }
+
+/// <remarks>
+/// Not part of Bounds class because it is generic and we don't want to clutter it up.
+/// </remarks>
+public class BoundsBuilder {
+
+	static public Bounds ForPoints(XY[] corners) {
+		var builder = new BoundsBuilder();
+		foreach( var p in corners )
+			builder.Include(p);
+		return builder.GetBounds();
+	}
+
+	public void Include(Bounds b) {
+		Include(b.X,b.Y);
+		Include(b.Right,b.Bottom);
+	}
+	public void Include(XY p) => Include(p.X,p.Y);
+	public void Include(float x,float y) {
+		if( x < minX ) minX = x;
+		if( y < minY ) minY = y;
+		if( x > maxX ) maxX = x;
+		if( y > maxY ) maxY = y;
+	}
+	public Bounds GetBounds() => new Bounds(minX, minY, maxX - minX, maxY - minY);
+
+	float minX = float.MaxValue;
+	float minY = float.MaxValue;
+	float maxX = float.MinValue;
+	float maxY = float.MinValue;
+}
+
 
 
 class GenericBoard {
@@ -514,50 +539,5 @@ class GenericBoard {
 			(float)(orig.X * sinTheta + orig.Y * cosTheta)
 		);
 	}
-
-}
-
-/// <summary>
-/// Provides Layouts for Spaces and Boards for a given island.
-/// </summary>
-public class IslandLayout {
-
-	public SpaceLayout GetLayoutFor( SpaceSpec space ) {
-		if( space is SingleSpaceSpec s1 )
-			return this[s1.Board].ForSpace(s1);
-
-		if(space is MultiSpaceSpec ms) {
-			SingleSpaceSpec[] spaces = ms.OrigSpaces;
-			XY[] merged = GetLayoutFor( spaces[0] ).Corners;
-			for(int i = 1; i < spaces.Length; ++i)
-				merged = Polygons.JoinAdjacentPolgons( merged, GetLayoutFor(spaces[i]).Corners );
-			return new SpaceLayout( merged );
-		}
-
-		if(true) { // space == EndlessDark.Space
-			const float x = .1f;
-			const float y = .9f;
-			const float f = .2f;
-			return new SpaceLayout(
-				new XY( x + 0, y ),
-				new XY( x + f, y ),
-				new XY( x + f, y - f ),
-				new XY( x + 0, y - f )
-			);
-		}
-
-		throw new ArgumentException( "Unknown space type" );
-	}
-
-	public BoardLayout this[Board board] {
-		get {
-			if(_lookupBoardLayout.TryGetValue(board,out BoardLayout bl)) return bl;
-			var boardLayout = BoardLayout.Get( board.Name ).ReMap( board.Orientation.GetTransformMatrix() );
-			_lookupBoardLayout.Add(board, boardLayout );
-			return boardLayout;
-		}
-	}
-
-	readonly Dictionary<Board, BoardLayout> _lookupBoardLayout = [];
 
 }

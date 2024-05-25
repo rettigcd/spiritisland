@@ -121,6 +121,7 @@ public sealed class GameState : IHaveMemento {
 	public IEnumerable<SpaceSpec> SpaceSpecs => Island.Boards.SelectMany(b => b.Spaces).Distinct();
 	/// <summary> All Non-stasis (even not-in-play) </summary>
 	public IEnumerable<SpaceSpec> SpaceSpecs_Existing => Island.Boards.SelectMany(b => b.Spaces_Existing).Distinct();
+	/// <summary> Includes "Other" spaces like EndlessDark. </summary>
 	public IEnumerable<SpaceSpec> SpaceSpecs_Unfiltered => Island.Boards.SelectMany(b => b.Spaces_Unfiltered).Distinct().Union(OtherSpaces);
 
 	public InvaderDeck InvaderDeck { 
@@ -233,6 +234,7 @@ public sealed class GameState : IHaveMemento {
 			_mementos.Save( src.MinorCards );
 			_mementos.Save( src.InvaderDeck );
 			_mementos.Save( src.Fear );
+			_mementos.Save( src.BlightCard );
 			_mementos.Save( src.Island );
 			_mementos.Save( src.Tokens );
 			_mementos.Save( src._timePassesActions );
