@@ -2,8 +2,8 @@
 
 namespace SpiritIsland;
 
-public abstract class BlightCard 
-	: IOption			// !!! ??? Is this even necessary any more?
+public abstract class BlightCard : IHaveMemento
+	, IOption			// !!! ??? Is this even necessary any more?
 {
 	public string Name { get; }
 	public string Description { get; }
@@ -41,7 +41,7 @@ public abstract class BlightCard
 
 	public abstract IActOn<GameState> Immediately { get; }
 
-	#region Blight Tokens sitting on card
+	#region public Blight Tokens sitting on card
 
 	public void InitBlight(int count) {
 		_space.Init(Token.Blight, count);
@@ -77,11 +77,16 @@ public abstract class BlightCard
 		_space.Init(mod, 1);
 	}
 
-	#endregion Blight Tokens sitting on card
+	#endregion public Blight Tokens sitting on card
+
+	// We need to add be able to add mods to the blight card so we are storing state with the other Spaces
+	// The memento imp is only here to trigger BlightOnCardChanged event so UI knows to update.
+	public object Memento {
+		get => 0;
+		set => GameState.Current.Log(new BlightOnCardChanged());
+	}
 
 	#region private/protected
-
-	Space _space;
 
 	async Task Side1Depleted( GameState gs ) {
 		CardFlipped = true;
@@ -98,6 +103,8 @@ public abstract class BlightCard
 
 	protected virtual void Side2Depleted(GameState gameState) 
 		=> GameOverException.Lost( "Blighted Island-" + Name );
+
+	Space _space;
 
 	static readonly FakeSpace _spaceSpec = new FakeSpace("BlightCard"); // stores slow blight
 
