@@ -37,10 +37,10 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3 ), new PiecesEscape( 2 ) ),
 			new GrowthGroup( new PlacePresence( 1 ), new AddOrMoveIncarnaToPresence(), new PiecesEscape( 1 ), new GainEnergyEqualToCardPlays() )
 		)
-		, PowerCard.For(typeof(EmergeFromTheDreadNightWind))
-		, PowerCard.For(typeof(ReachFromTheInfiniteDarkness))
-		, PowerCard.For(typeof(SwallowedByTheEndlessDark))
-		, PowerCard.For(typeof(TerrorOfTheHunted))
+		, PowerCard.For(typeof(ReachFromTheInfiniteDarkness))	// fast
+		, PowerCard.For(typeof(SwallowedByTheEndlessDark))		// fast
+		, PowerCard.For(typeof(EmergeFromTheDreadNightWind))	// slow
+		, PowerCard.For(typeof(TerrorOfTheHunted))				// slow
 	) {
 
 		// Innates

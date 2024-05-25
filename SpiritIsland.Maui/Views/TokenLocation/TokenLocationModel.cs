@@ -94,6 +94,9 @@ public class TokenLocationModel
 			Img.Wilds => "wilds.png",
 			Img.Defend => "defend.png",
 			Img.Token_Any => "any_token.png",
+			// incarna
+			Img.BoDDYS_Incarna_Empowered => "boddys_e.png",
+			Img.BoDDYS_Incarna => "boddys.png",
 			_ => "vitality.png" // ERROR - see if this ever happens.
 		};
 		return ImageCache.FromFile(filename);
