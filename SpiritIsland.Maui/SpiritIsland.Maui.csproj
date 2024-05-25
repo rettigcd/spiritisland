@@ -226,6 +226,7 @@
 	  <None Remove="Resources\Images\parts\attr_coastal_wetland.png" />
 	  <None Remove="Resources\Images\parts\attr_dahan.png" />
 	  <None Remove="Resources\Images\parts\attr_disease.png" />
+	  <None Remove="Resources\Images\parts\attr_endlessdark.png" />
 	  <None Remove="Resources\Images\parts\attr_incarna.png" />
 	  <None Remove="Resources\Images\parts\attr_inland.png" />
 	  <None Remove="Resources\Images\parts\attr_invaders.png" />
@@ -604,6 +605,7 @@
 	  <MauiImage Include="Resources\Images\parts\attr_coastal_wetland.png" />
 	  <MauiImage Include="Resources\Images\parts\attr_dahan.png" />
 	  <MauiImage Include="Resources\Images\parts\attr_disease.png" />
+	  <MauiImage Include="Resources\Images\parts\attr_endlessdark.png" />
 	  <MauiImage Include="Resources\Images\parts\attr_incarna.png" />
 	  <MauiImage Include="Resources\Images\parts\attr_inland.png" />
 	  <MauiImage Include="Resources\Images\parts\attr_invaders.png" />

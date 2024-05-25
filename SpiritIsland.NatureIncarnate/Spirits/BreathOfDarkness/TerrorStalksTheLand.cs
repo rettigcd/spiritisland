@@ -5,7 +5,7 @@
 /// </summary>
 public class TerrorStalksTheLand( Space space ) : Space( space ) {
 
-	static public SpecialRule Rule => new SpecialRule( "Terror Stalks the Land", "You have an Incarna. You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to tThe Endless Dark.  When pieces Escape, Move them to a non-Ocean land with your Presence/Incarna.  If they have no legal land to move to, you lose.  When your Powers would directly damage or directly destroy the only Invader in a land, instead Abduct it." );
+	static public SpecialRule Rule => new SpecialRule( "Terror Stalks the Land", "You have an Incarna. You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to the Endless Dark.  When pieces Escape, Move them to a non-Ocean land with your Presence/Incarna.  If they have no legal land to move to, you lose.  When your Powers would directly damage or directly destroy the only Invader in a land, instead Abduct it." );
 
 	/// <remarks>Destroys using Space.Remove()</remarks>
 	public override async Task DestroySpace() {
@@ -13,24 +13,40 @@ public class TerrorStalksTheLand( Space space ) : Space( space ) {
 		await Invaders.DestroyAll( Human.Invader ); // eventually comes back to .Remove(...)
 	}
 
-	public override async Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs, Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public async override Task<int> UserSelected_DamageInvadersAsync(Spirit damagePicker, int damage, params ITokenClass[] allowedTypes) {
+		bool shouldAbduct = InvaderCount == 1
+			&& !PreviouslyDestroyed;
+
+		if( shouldAbduct ) {
+			await AbductInvader( InvaderTokens().First() );
+			return 0;
+		}
+
+		return await base.UserSelected_DamageInvadersAsync(damagePicker, damage, allowedTypes);
+	}
+
+	public override async Task<(ITokenRemovedArgs, Func<ITokenRemovedArgs, Task>)> 
+	SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		if(reason == DestroyingFromDamage.TriggerReason)
 			reason = RemoveReason.Destroyed;
 
-		if(reason != RemoveReason.Destroyed 
-			|| !token.HasTag(TokenCategory.Invader)
-			|| PreviouslyDestroyed
-			|| InvaderCount != 1
-		) {
-			return await base.SourceAsync( token, count, reason );
+		bool destroyingTheOnlyInvader = reason == RemoveReason.Destroyed
+			&& token.HasTag(TokenCategory.Invader)
+			&& !PreviouslyDestroyed
+			&& InvaderCount == 1;
+
+		if( destroyingTheOnlyInvader ) {
+			RemovingTokenCtx removedHandlers = RemovedHandlerSnapshop;
+			await AbductInvader(token.AsHuman());
+			return (
+				new TokenRemovedArgs(this, token, 1, RemoveReason.Abducted),
+				removedHandlers.NotifyRemoved
+			);
 		}
 
-		RemovingTokenCtx removedHandlers = RemovedHandlerSnapshop;
-		await AbductInvader( token.AsHuman() );
-		return (
-			new TokenRemovedArgs( this, token, 1, RemoveReason.Abducted ),
-			removedHandlers.NotifyRemoved
-		);
+		// Just do the normal thing.
+		return await base.SourceAsync(token, count, reason);
+
 	}
 
 	/// <remarks>

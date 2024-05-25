@@ -4,7 +4,7 @@
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
 /// Has same Scope as GameState (not bound to an ActionScope
 /// </summary>
-public class Space 
+public partial class Space 
 	: ISeeAllNeighbors<Space>
 	, ILocation // !!! we don't SpaceToken or TokenOn using this as a location, maybe we should remove this
 	, IOption
@@ -117,7 +117,7 @@ public class Space
 
     #endregion
 
-    #region Non-event Generationg Token Changes
+	#region Non-event Generationg Token Changes
 
 	/// <summary> Add or Remove tokens without generating events. </summary>
 	public void Adjust( IToken specific, int delta ) {
