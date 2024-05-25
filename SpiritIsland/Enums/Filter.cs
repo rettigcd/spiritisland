@@ -25,7 +25,7 @@ public static class Filter {
 	public const string Presence   = "Presence";
 	public const string Incarna    = "Incarna";
 	public const string Quake      = "Quake";
-	public const string EndlessDark = "EndlessDarkness";
+	public const string EndlessDark = "EndlessDark";
 
 	public const string NotWetland = "Not " + Wetland;
 	public const string NotOcean   = "Not " + Ocean;

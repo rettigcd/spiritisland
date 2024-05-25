@@ -115,7 +115,7 @@ public class SpaceCriteria {
 		// Presence
 		[Filter.Presence] = ( ctx ) => ctx.IsPresent,
 		[Filter.Incarna] = ( ctx ) => ctx.HasIncarna,
-		[Filter.EndlessDark] = ( ctx ) => ctx.Space.SpaceSpec.Label == "EndlessDark",
+		[Filter.EndlessDark] = ( ctx ) => ctx.Space.SpaceSpec.Label == "Endless Dark",
 
 		// Special
 		[Filter.TwoDahan]  = ( ctx ) => 2 <= ctx.Space.Dahan.CountAll,
