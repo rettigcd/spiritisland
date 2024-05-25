@@ -37,6 +37,8 @@ public partial class SinglePlayerGamePage : ContentPage {
 		_model.GameState.NewLogEntry += GameState_NewLogEntry;
 		BindingContext = _model;
 
+		ShowNewGame();
+
 		// Start!
 		_model.Start();
 	}
@@ -56,19 +58,27 @@ public partial class SinglePlayerGamePage : ContentPage {
 			await DisplayAlert( "Card Revealed", $"{cb.Title} - {cb.Desciption}", "OK"  );
 
 		else if( obj is GameOverLogEntry go) {
-
 			// !!! BIND this to a property so we can start new games
-			GameOverInfo.Text = go.ToString();
-			GameOverInfo.BackgroundColor = go.Result switch {
-				GameOverResult.Victory => Colors.LightGreen,
-				GameOverResult.Defeat => Colors.Pink,
-				_ => Colors.Pink,
-			};
-			GameOverInfo.IsVisible = true;
-			Prompt.IsVisible = Accept.IsVisible = OptionListWrapper.IsVisible = false;
+			ShowGameOver(go);
 		} else if( obj is Log.ExceptionEntry ) {
 
 		}
+	}
+
+	void ShowNewGame() {
+		GameOverInfo.IsVisible = false;
+		Prompt.IsVisible = Accept.IsVisible = OptionListWrapper.IsVisible = true;
+	}
+
+	void ShowGameOver(GameOverLogEntry go) {
+		GameOverInfo.Text = go.ToString();
+		GameOverInfo.BackgroundColor = go.Result switch {
+			GameOverResult.Victory => Colors.LightGreen,
+			GameOverResult.Defeat => Colors.Pink,
+			_ => Colors.Pink,
+		};
+		GameOverInfo.IsVisible = true;
+		Prompt.IsVisible = Accept.IsVisible = OptionListWrapper.IsVisible = false;
 	}
 
 	#endregion Send/Receive Commands to game

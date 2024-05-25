@@ -28,7 +28,7 @@
 		<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="25" Grid.Row="1" HorizontalOptions="Center" />
 
 		<!-- Invaders -->
-		<si:InvaderBoardSummaryView BindingContext="{Binding GameStatus}"
+		<si:InvaderBoardSummaryView BindingContext="{Binding InvaderBoard}"
 									Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" />
 
 		<!-- Spirit -->

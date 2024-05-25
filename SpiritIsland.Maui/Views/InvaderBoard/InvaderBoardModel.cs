@@ -62,6 +62,8 @@ public class InvaderBoardModel : ObservableModel {
 
 	#endregion constructor
 
+	#region private methods
+
 	void GameState_NewLogEntry(Log.ILogEntry obj) {
 		if(obj is Log.Phase)
 			UpdateInvaderCards();
@@ -91,8 +93,6 @@ public class InvaderBoardModel : ObservableModel {
 		// remove activated Fear
 		ActivatedFearCards = _fear.ActivatedCards.Count;
 	}
-
-	#region private methods
 
 	#endregion
 

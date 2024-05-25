@@ -19,7 +19,7 @@
 		<Image Source="ravage.png" HeightRequest="40" Margin="2" Grid.ColumnSpan="2" />
 		<CollectionView ItemsSource="{Binding RavageImages}" VerticalOptions="Center" HorizontalOptions="Center" Grid.ColumnSpan="2" >
 			<CollectionView.ItemTemplate>
-				<DataTemplate>
+				<DataTemplate x:DataType="ImageSource" >
 					<Image Source="{Binding .}" HeightRequest="35" VerticalOptions="Center" />
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
@@ -29,7 +29,7 @@
 		<Image Source="build.png" HeightRequest="45" Margin="2" Grid.Column="2" Grid.ColumnSpan="2" />
 		<CollectionView ItemsSource="{Binding BuildImages}" VerticalOptions="Center" Grid.Column="2" Grid.ColumnSpan="2" >
 			<CollectionView.ItemTemplate>
-				<DataTemplate>
+				<DataTemplate x:DataType="ImageSource" >
 					<Image Source="{Binding .}" HeightRequest="35"  VerticalOptions="Center" />
 				</DataTemplate>
 			</CollectionView.ItemTemplate>

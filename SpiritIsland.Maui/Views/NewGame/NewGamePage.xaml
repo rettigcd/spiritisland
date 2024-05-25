@@ -55,7 +55,7 @@
 		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="Spirits" IsVisible="False" >
 			<VerticalStackLayout>
 				<!-- recent -->
-				<Label Text="Recent" />
+				<Label x:Name="RecentSpiritsLabel" Text="Recent" />
 				<CollectionView x:Name="RecentSpirits" ItemsLayout="VerticalGrid,4">
 					<CollectionView.ItemTemplate>
 						<DataTemplate>
@@ -73,7 +73,7 @@
 				<Label Text="All Spirits" />
 				<CollectionView x:Name="allSpirits" ItemsLayout="VerticalGrid,4">
 					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="ImageSource" >
+						<DataTemplate x:DataType="x:String" >
 							<Grid HeightRequest="90">
 								<Image Source="{Binding .,Converter={StaticResource badgeImage}}" ClassId="{Binding .}"
 									   Margin="6">
@@ -98,7 +98,7 @@
 				<!-- collection of adversaries - all clickable -->
 				<CollectionView x:Name="allAdversaries" ItemsLayout="VerticalGrid,3">
 					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="ImageSource" >
+						<DataTemplate x:DataType="x:String" >
 							<Grid RowDefinitions="40*,20*" Margin="3" HeightRequest="95">
 								<Image Grid.Row="0"
 									Source="{Binding .,Converter={StaticResource badgeImage}}" 

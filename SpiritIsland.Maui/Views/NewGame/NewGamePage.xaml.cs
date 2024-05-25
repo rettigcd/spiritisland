@@ -8,6 +8,7 @@ public partial class NewGamePage : ContentPage {
 		// Spirits.
 		allSpirits.ItemsSource = _builder.SpiritNames;
 		RecentSpirits.ItemsSource = SavedRecentSpirits;
+		RecentSpiritsLabel.IsVisible = 0 < SavedRecentSpirits.Length;
 
 		allAdversaries.ItemsSource = _builder.AdversaryNames;
 
@@ -20,6 +21,7 @@ public partial class NewGamePage : ContentPage {
 		string[] recentSpirits = [spirit, .. SavedRecentSpirits.Where(s => s != spirit).Take(3)];
 		RecentSpirits.ItemsSource = recentSpirits;
 		SavedRecentSpirits = recentSpirits;
+		RecentSpiritsLabel.IsVisible = true;
 	}
 	string[] SavedRecentSpirits {
 		get => [..Preferences.Default.Get(RecentSpiritsKey, "").Split(",").Where(s => !string.IsNullOrEmpty(s))];

@@ -22,43 +22,37 @@ public class DecisionModel : ObservableModel {
 	public SpiritModel SpiritSummary    { get; }
 	public SpiritPanelModel SpiritPanel { get; }
 	public CardsOverlayModel Cards      { get; }
+	public ICommand ShowCards           { get; }
+	public ICommand OpenOverlay         { get; }
 
 	#region Observable properties
 
-	public Overlay VisibleOverlay { get => _visibleOverlay; set => SetProp( ref _visibleOverlay, value ); }
-
-	public string Title {  get => _title; set => SetProp(ref _title,value); }
-
-	public InvaderBoardModel GameStatus { get => _gameStatus; set => SetProp(ref _gameStatus, value); }
-
-	public string Spaces { get => _spaces; set => SetProp(ref _spaces, value ); }
-
-	public string Prompt {
-		get => _prompt;
-		set => SetProp(ref _prompt, value);
-	}
-
-	public IOption? SelectedOption {
-		get => _option;
-		set {
+	/// <summary> Indicates which overlay panel is visible (if any) </summary>
+	public Overlay VisibleOverlay       { get => _visibleOverlay; set => SetProp( ref _visibleOverlay, value ); }
+	/// <summary> Appears in the Title section of the page.  Should contain: spirit, game #, Adversary </summary>
+	public string Title                 { get => _title; set => SetProp(ref _title,value); }
+	public InvaderBoardModel InvaderBoard { get => _gameStatus; set => SetProp(ref _gameStatus, value); }
+	// public string Spaces                { get => _spaces; set => SetProp(ref _spaces, value ); }
+	/// <summary> Decision Prompt </summary>
+	public string Prompt                { get => _prompt; set => SetProp(ref _prompt, value); }
+	/// <summary> Current selected Option - the one that can be 'Accept'ed </summary>
+	public IOption? SelectedOption      { get => _option; set {
 			SetProp( ref _option, value );
 			if(value is not null)
 				UpdateButton(((IOption)value).Text, true);
 			else
 				UpdateButton("Accept", false);
-		}
-	}
+		} }
+	/// <summary> Decision Options </summary>
+	public OptionModel[] Options        { get => _options; set => SetProp(ref _options, value); }
+	public bool HasOptionReady          { get => _hasOptionReady; set => SetProp(ref _hasOptionReady, value); }
+	public string AcceptText            { get => _acceptText; set => SetProp(ref _acceptText, value); }
 
 	void UpdateButton(string buttonText, bool hasOptoinReady) {
 		AcceptText = buttonText;
 		HasOptionReady = hasOptoinReady;
 	
 	}
-
-	public OptionModel[] Options { get => _options; set => SetProp(ref _options, value); }
-
-	public bool HasOptionReady { get => _hasOptionReady; set => SetProp( ref _hasOptionReady, value ); }
-	public string AcceptText { get => _acceptText; set => SetProp( ref _acceptText, value); }
 
 	#endregion
 
@@ -110,7 +104,7 @@ public class DecisionModel : ObservableModel {
 				_ovm.SelectedOption = ((DecisionModel)sender!).SelectedOption;
 		};
 
-		Island = new IslandModel(GameState.Island.Boards[0], GameState.Tokens, _ovm);
+		Island = new IslandModel(GameState, _ovm);
 		_title = _game.Spirit.SpiritName;
 
 		_phase = gs.Phase;
@@ -137,10 +131,6 @@ public class DecisionModel : ObservableModel {
 	}
 
 	#endregion constructor
-
-	public ICommand ShowCards { get; }
-
-	public ICommand OpenOverlay { get; }
 
 	public void Start() => _game.Start();
 
@@ -242,7 +232,6 @@ public class DecisionModel : ObservableModel {
 	IOption? _option;
 	bool _hasOptionReady;
 	string _acceptText;
-	string _spaces = "";
 	string _title = "";
 	IDecision? _nextDecision;
 	Overlay _visibleOverlay = Overlay.None;

@@ -17,6 +17,7 @@ public class DireMetamorphosis{
 		// Add 1 badlands, 1 beast, 1 disease, 1 strife, 1 wilds, and 1 blight.
 		await ctx.Badlands.AddAsync(1);
 		await ctx.Beasts.AddAsync(1);
+		await ctx.Disease.AddAsync(1);
 		await ctx.AddStrife();
 		await ctx.Wilds.AddAsync(1);
 		await ctx.AddBlight(1);
