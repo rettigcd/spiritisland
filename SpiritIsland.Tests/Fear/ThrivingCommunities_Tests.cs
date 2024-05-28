@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests.Fear;
 
 public class ThrivingCommunities_Tests {
 

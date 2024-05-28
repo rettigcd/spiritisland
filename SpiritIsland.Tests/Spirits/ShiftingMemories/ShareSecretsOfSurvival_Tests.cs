@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests.Spirits.ShiftingMemoryNS;
 
 [Trait("Feature","DestroyFewerDahan")]
 public class ShareSecretsOfSurvival_Tests {

@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests.Spirits.ShiftingMemoryNS;
 
 public class ShiftingMemory_Tests {
 

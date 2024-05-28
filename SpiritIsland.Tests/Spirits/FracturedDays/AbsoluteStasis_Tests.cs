@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests.Spirits.FracturedDaysNS;
 
 public class AbsoluteStasis_Tests {
 

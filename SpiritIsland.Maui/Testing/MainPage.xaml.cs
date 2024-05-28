@@ -14,12 +14,21 @@ public partial class MainPage : ContentPage {
 			PowerCard.For(typeof(GrowthThroughSacrifice)),
 		];
 
-		var slots = cards.Select(card=>new CardSlotModel(new CardModel(card))).ToList();
-		for(int i=0;i<2;++i)
+		var slots = cards.Select(card => new CardSlotModel(new CardModel(card))).ToList();
+		for( int i = 0; i < 2; ++i )
 			slots.Add(new CardSlotModel());
 
 		Slots.ItemsSource = slots;
 
+		// ======
+		ReportOrientation();
+
+		DeviceDisplay.Current.MainDisplayInfoChanged += Current_MainDisplayInfoChanged;
+
+	}
+
+	void Current_MainDisplayInfoChanged(object? sender, DisplayInfoChangedEventArgs e) {
+		ReportOrientation();
 	}
 
 	void DragGestureRecognizer_DragStarting(object sender, DragStartingEventArgs e) {}
@@ -28,6 +37,12 @@ public partial class MainPage : ContentPage {
 
 	private void CircleDrag_Started(object sender, DragStartingEventArgs e) {
 		e.Data.Properties.Add("IsValidShape", true);
+		ReportOrientation();
+	}
+
+	private static void ReportOrientation() {
+		Shell.Current.DisplayAlert("Orientation", DeviceDisplay.Current.MainDisplayInfo.Orientation.ToString(), "Ok");
+		// IDeviceDislpay - add to use
 	}
 
 }

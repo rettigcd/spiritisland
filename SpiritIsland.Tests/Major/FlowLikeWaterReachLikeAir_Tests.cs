@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests.Major;
 
 public class FlowLikeWaterReachLikeAir_Tests {
 

@@ -68,7 +68,7 @@ public static partial class Cmd {
 	}
 
 	// Removes "Up To"
-	static public SpaceAction RemoveUpToNHealthOfInvaders(int health) => RemoveUpToVariableHealthOfInvaders($"Remove up to {health} worth of invaders.",_=>health);
+	static public SpaceAction RemoveUpToNHealthOfInvaders(int health) => RemoveUpToVariableHealthOfInvaders($"Remove up to {health} worth of Invaders",_=>health);
 
 	// Removes "Up To"
 	static public SpaceAction RemoveUpToVariableHealthOfInvaders(string description, Func<TargetSpaceCtx,int> calcMaxHealthToRemove) => new SpaceAction(description, async ctx=>{

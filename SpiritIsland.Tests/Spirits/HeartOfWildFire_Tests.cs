@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Spirits; 
+﻿namespace SpiritIsland.Tests.Spirits.HeartOfWildfireNS; 
 
 public class HeartOfWildFire_Tests {
 

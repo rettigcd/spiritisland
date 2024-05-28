@@ -257,9 +257,9 @@ public sealed class GameState : IHaveMemento {
 		readonly Dictionary<IHaveMemento,object> _mementos = [];
 	}
 
-    #endregion Memento
+	#endregion Memento
 
-    #region Hooks
+	#region Hooks
 
     public Task RunPreInvaderActions() => _preInvaderPhaseActions.Run(this);
 	public void AddPreInvaderPhaseAction(IRunBeforeInvaderPhase action) => _preInvaderPhaseActions.Add(action);

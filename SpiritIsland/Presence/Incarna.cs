@@ -7,16 +7,9 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 	, ITokenClass
 	, ITrackMySpaces
 {
-
 	static readonly FakeSpace NullSpace = new FakeSpace( "Incarna-Null-Space" ); // 1 null space for all Incarna
 
 	public Spirit Self { get; } = _spirit;
-
-	public Space Space => _spaceCounts.Keys
-		.Where( ss => SpiritIsland.SpaceSpec.Exists(ss.SpaceSpec) )
-		.SingleOrDefault() ?? NullSpace.ScopeSpace;
-
-	public bool IsPlaced => _spaceCounts.Count != 0;
 
 	public SpaceToken AsSpaceToken() => this.On(Space); // Assumes Space is not null.
 
@@ -30,8 +23,8 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 
 	public ITokenClass Class => this;
 
-
 	#region IEntityClass properties
+
 	string ITag.Label => $"{Self.SpiritName} Incarna";
 
 	// Class & Token method
@@ -41,27 +34,37 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 
 	#endregion
 
+	#region public Location (space) properties
+
+	public Space Space => _spaceCounts.Keys
+		.Where( ss => SpaceSpec.Exists(ss.SpaceSpec) )
+		.SingleOrDefault() ?? NullSpace.ScopeSpace;
+
+	public bool IsPlaced => _spaceCounts.Count != 0;
+
 	// !!! check that SpiritActions that Move/Add Invarna use this.
-	public async Task MoveTo( Space destination, bool allowAdd ) {
-		if(IsPlaced)
-			await this.MoveAsync(Space,destination);
-		else if(allowAdd)
-			await destination.AddAsync( this, 1 );
+	public async Task MoveTo(Space destination, bool allowAdd) {
+		if( IsPlaced )
+			await this.MoveAsync(Space, destination);
+		else if( allowAdd )
+			await destination.AddAsync(this, 1);
 	}
+
+	#endregion
+
+	#region ITrackMySpaces imp
 
 	void ITrackMySpaces.Clear() {
 		_spaceCounts.Clear();
 	}
+
 	void ITrackMySpaces.TrackAdjust(Space space, int delta) {
 		_spaceCounts[space] += delta;
 		if (1 < _spaceCounts.Count)
 			throw new Exception("Incarna is in 2 places at the same time!");
 	}
-	//void ITrackMySpaces.TrackAdjust( Space space, int delta ) {
-	//	_spaceCounts[space] += delta;
-	//	if(1 < _spaceCounts.Count)
-	//		throw new Exception("Incarna is in 2 places at the same time!");
-	//}
+
+	#endregion ITrackMySpaces imp
 
 	readonly CountDictionary<Space> _spaceCounts = [];
 }

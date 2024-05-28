@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests.Spirits.DownpourNS;
 
 public class DownPour_Tests {
 
