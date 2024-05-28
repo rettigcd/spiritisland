@@ -160,7 +160,7 @@ public partial class Space
 	}
 
 	/// <summary> Non-event setup. </summary>
-    public void Init( ISpaceEntity specific, int newValue ) {
+	public void Init( ISpaceEntity specific, int newValue ) {
 		int old = _counts[specific];
 		Adjust( specific, newValue-old ); // go through Adjust so that we keep ITrackMySpaces in sync
 	}
@@ -294,9 +294,9 @@ public partial class Space
 	public async Task<TokenReplacedArgs> ReplaceAsync(IToken oldToken, int newCount, IToken newToken) {
 		if(oldToken == null) return null;
 
-#pragma warning disable CA1859 // Use concrete types when possible for improved performance
+		#pragma warning disable CA1859 // Use concrete types when possible for improved performance
 		ILocation source = this;
-#pragma warning restore CA1859 // Use concrete types when possible for improved performance
+		#pragma warning restore CA1859 // Use concrete types when possible for improved performance
 
 		var (removed, removedHandler) = await source.SourceAsync( oldToken, 1, RemoveReason.Replaced );
 		if(removed.Count == 0) return TokenReplacedArgs.Null(this,oldToken,newToken);

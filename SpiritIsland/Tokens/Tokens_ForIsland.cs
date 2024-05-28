@@ -79,45 +79,56 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 			_dynamicTokens = src.Dynamic.Memento;
 			_doesNotExist = src._tokenCounts.Keys.Where(s=>!s.DoesExists).ToArray();
 		}
-		public void Restore( Tokens_ForIsland src ) {
+		public void Restore( Tokens_ForIsland dstSpaces ) {
+
+			// !!! BUG - If we are going to clear Trackable, then we need to Counts also
 
 			// Clear out the ITrackMySpaces so that .Adjust below will properly initialize
-			var trackable = src._tokenCounts.Values
+/*			var trackable = dstSpaces._tokenCounts.Values
 				.SelectMany(countDict=>countDict.Keys.OfType<ITrackMySpaces>())
 				.Distinct()
 				.ToArray();
 			foreach(ITrackMySpaces t in trackable) t.Clear();
+*/
 
 			// == Restore TokenCounts ==
-			// update existing
+			// 1st do all removal (so tokens that can only be in 1 place at a time don't get mad)
 			foreach (SpaceSpec spaceSpec in _tokenCounts.Keys) {
 				// stasis
 				spaceSpec.DoesExists = true; // when false, set below
 
 				// Token counts
-				Space space = src[spaceSpec];
-				CountDictionary<ISpaceEntity> savedCounts = _tokenCounts[spaceSpec];
-				// remove old types
-				foreach(var oldKey in space.Keys.Except(savedCounts.Keys).ToArray())
-					space.Init(oldKey,0);
-				// set current types
-				foreach (var (token,count) in savedCounts.Select(x=>(x.Key,x.Value))) {
-					space.Init(token, count);
-					if(token is ITrackMySpaces tms)
-						tms.TrackAdjust(space,count);
-				}
+				Space dstSpace = dstSpaces[spaceSpec];
+
+				// remove types we no longer need
+				foreach( ISpaceEntity oldKey in dstSpace.Keys.Except(_tokenCounts[spaceSpec].Keys).ToArray())
+					dstSpace.Init(oldKey,0);
 			}
-			// remove old
-			foreach(var remove in src._tokenCounts.Keys.Except(_tokenCounts.Keys).ToArray())
-				src._tokenCounts.Remove(remove);
+
+			// 2nd do all Add (so tokens that can only be in 1 place at a time don't get mad)
+			foreach( SpaceSpec spaceSpec in _tokenCounts.Keys ) {
+
+				// Token counts
+				Space dstSpace = dstSpaces[spaceSpec];
+
+				// set types we are restoring from backup.
+				foreach( var (token, count) in _tokenCounts[spaceSpec].Select(x => (x.Key, x.Value)) )
+					dstSpace.Init(token, count);
+
+			}
+
+			// For spaces that were added (like merged Multi-Space), remove the entire Space from the dictionary
+			foreach( SpaceSpec remove in dstSpaces._tokenCounts.Keys.Except(_tokenCounts.Keys).ToArray())
+				dstSpaces._tokenCounts.Remove(remove);
 
 			foreach(var space in _doesNotExist) space.DoesExists = false;
+
 			// Restore Defaults
-			src.TokenDefaults.Clear();
+			dstSpaces.TokenDefaults.Clear();
 			foreach(var pair in tokenDefaults)
-				src.TokenDefaults.Add(pair.Key,pair.Value);
+				dstSpaces.TokenDefaults.Add(pair.Key,pair.Value);
 			// Restore Dynamic tokens
-			src.Dynamic.Memento = _dynamicTokens;
+			dstSpaces.Dynamic.Memento = _dynamicTokens;
 		}
 		readonly Dictionary<SpaceSpec, CountDictionary<ISpaceEntity>> _tokenCounts = [];
 		readonly SpaceSpec[] _doesNotExist;

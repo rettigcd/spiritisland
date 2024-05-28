@@ -1,4 +1,7 @@
-﻿namespace SpiritIsland.Tests;
+﻿using SpiritIsland.NatureIncarnate;
+using System.Configuration;
+
+namespace SpiritIsland.Tests;
 
 public class Token_Tests {
 
@@ -66,6 +69,55 @@ public class Token_Tests {
 		space.Assert_HasInvaders( "1E@1" ); // "should be no town on "+space.Label
 		//   And: no disease here
 		space.Disease.Any.ShouldBeFalse( "disease should be used up" );
+
+	}
+
+	[Fact]
+	public async Task Incarna_CanMoveInTwoDirections() {
+		// The way Space Tracking *was* set up,
+		// This works (A3 => rewind => A8): 1st removes from A3, then adds to A8
+		// Does NOT work (A8 => rewind => A3):  1st add to A3 (ERROR - token is still on A8, must remove from A8 1st)
+
+		const string FirstPosition = "A3";
+		const string SecondPosition = "A8";
+
+		// Given: Game
+		var spirit = new BreathOfDarknessDownYourSpine();
+		var board = Boards.A;
+		var gameState = new GameState(spirit, board);
+		IHaveMemento mementoHolder = gameState;
+		gameState.Initialize();
+
+		//   And: Incarna saved at 1st location 
+		spirit.Incarna.Space.Label.ShouldBe( FirstPosition );
+		object firstSavedState = mementoHolder.Memento;
+
+		//   And: Incarna Moves to 2nd location and is saved
+		await new MoveIncarnaAnywhere().ActAsync(spirit).AwaitUser(u => { 
+			u.NextDecision.HasPrompt("Select space to place Incarna.").Choose(SecondPosition);
+		});
+		spirit.Incarna.Space.Label.ShouldBe(SecondPosition);
+		object secondSavedState = mementoHolder.Memento;
+
+		//   And: Incarna Moves back to 1st position
+		await new MoveIncarnaAnywhere().ActAsync(spirit).AwaitUser(u => {
+			u.NextDecision.HasPrompt("Select space to place Incarna.").Choose(FirstPosition);
+		});
+		spirit.Incarna.Space.Label.ShouldBe(FirstPosition);
+
+		// -- Test going from Low(A3) to High(A8) --
+
+		//  When: Rewind to 2nd position
+		mementoHolder.Memento = secondSavedState;
+		//  Then: Incarna back in 2nd position.
+		spirit.Incarna.Space.Label.ShouldBe( SecondPosition );
+
+		// -- Test going from High(A8) to Low(A3) --
+
+		//  When: Rewind to 1st position
+		mementoHolder.Memento = firstSavedState;
+		//  Then: Incarna back in 1st position.
+		spirit.Incarna.Space.Label.ShouldBe(FirstPosition);
 
 	}
 
