@@ -94,9 +94,21 @@ public class TokenLocationModel
 			Img.Wilds => "wilds.png",
 			Img.Defend => "defend.png",
 			Img.Token_Any => "any_token.png",
+
 			// incarna
+			Img.BoDDYS_Incarna           => "boddys.png",
 			Img.BoDDYS_Incarna_Empowered => "boddys_e.png",
-			Img.BoDDYS_Incarna => "boddys.png",
+			Img.EEB_Incarna              => "eeb.png",
+			Img.EEB_Incarna_Empowered    => "eeb_e.png",
+			Img.L_Incarna                => "ll.png",
+			Img.S_Incarna                => "ss.png",
+			Img.S_Incarna_Empowered      => "ss_e.png",
+			Img.TRotJ_Incarna            => "trotj.png",
+			Img.TRotJ_Incarna_Empowered  => "trotj_e.png",
+			Img.T_Incarna                => "tt.png",
+			Img.WVKD_Incarna             => "wvkd.png",
+			Img.WVKD_Incarna_Empowered   => "wvkd_e.png",
+
 			_ => "vitality.png" // ERROR - see if this ever happens.
 		};
 		return ImageCache.FromFile(filename);
