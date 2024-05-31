@@ -10,8 +10,8 @@
 		<si:ElementToImageSourceConverter x:Key="elToImage" />
 	</ContentView.Resources>
 	
-	<Border BackgroundColor="#452a15" StrokeShape="RoundRectangle 10,10,10,10" Padding="5" StrokeThickness="2" Stroke="{Binding BorderColor}" >
-		<Grid RowSpacing="0" RowDefinitions="25,20" ColumnDefinitions="15*,20*,20*,20*" >
+	<Border BackgroundColor="#452a15" StrokeShape="RoundRectangle 10,10,10,10" Padding="5" StrokeThickness="2" Stroke="{Binding BorderColor}" InputTransparent="True" >
+		<Grid RowSpacing="0" RowDefinitions="25,20" ColumnDefinitions="15*,20*,20*,20*" InputTransparent="True" >
 
 			<Border Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="2" BackgroundColor="#7a4b24" 
 					StrokeShape="RoundRectangle 5,5,5,5" 
