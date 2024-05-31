@@ -18,25 +18,34 @@
 			</VerticalStackLayout.GestureRecognizers>
 	
 			<!-- Spirit Image -->
-			<Grid WidthRequest="120" HeightRequest="120" >
+			<Grid HorizontalOptions="Fill" HeightRequest="260"  ColumnDefinitions="10*,20*" RowDefinitions="20*,10*,10*" >
 				<Grid.GestureRecognizers>
-					<DropGestureRecognizer AllowDrop="true" Drop="DropGestureRecognizer_Drop" DragOver="DropGestureRecognizer_DragOver" DragLeave="DropGestureRecognizer_DragLeave" />
+					<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
 				</Grid.GestureRecognizers>
-				<Ellipse x:Name="SpiritBackdrop" Stroke="#80FFFF00" StrokeThickness="0" ></Ellipse>
-				<Image Source="{Binding SpiritName,Converter={StaticResource btnImage}}" Margin="10" />
+				<!-- Spirit Image and Backglow -->
+				<Ellipse x:Name="SpiritBackdrop" Stroke="#80FFFF00" StrokeThickness="0" >
+				</Ellipse>
+				<Image x:Name="mySpirit" Source="{Binding SpiritName,Converter={StaticResource btnImage}}" Margin="10" >
+					<Image.GestureRecognizers>
+						<DropGestureRecognizer AllowDrop="true" Drop="DropGestureRecognizer_Drop" DragOver="DropGestureRecognizer_DragOver" DragLeave="DropGestureRecognizer_DragLeave" />
+						<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+					</Image.GestureRecognizers>
+				</Image>
+				<!-- Energy -->
+				<Image x:Name="myCoin" Source="coin.png"       Grid.Column="0" Grid.Row="1" InputTransparent="True"/>
+				<Label Text="{Binding Energy}" Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" FontSize="30" FontAttributes="Bold" InputTransparent="True" />
+				<!-- Destroyed -->
+				<Image Source="destroyed_presence.png" Grid.Row="2" InputTransparent="True" />
+				<Label Text="{Binding Destroyed}"              Grid.Row="2" HorizontalOptions="Center" VerticalOptions="Center" FontSize="30" TextColor="White" InputTransparent="True" />
+				<!-- Growth Tracks -->
+				<si:GrowthTrackView x:Name="GrowthTrackView" BindingContext="{Binding GrowthTrack}" Grid.Column="1" Grid.RowSpan="3" />
 			</Grid>
 
-			<!-- Growth Track -->
-			<si:GrowthTrackView x:Name="GrowthTrackView" BindingContext="{Binding GrowthTrack}" />
-
-			<Label Text="{Binding Energy, StringFormat='Energy: {0}'}"/>
-			<Label Text="{Binding Destroyed, StringFormat='Destroyed: {0}'}"/>
-
-			<!-- Energy -->
-			<CollectionView x:Name="EnergyTrackView" ItemsLayout="HorizontalList" MaximumHeightRequest="55" ItemsSource="{Binding EnergyTrack}" BackgroundColor="Beige" >
+			<!-- Energy Track -->
+			<CollectionView x:Name="EnergyTrackView" ItemsLayout="HorizontalList" ItemsSource="{Binding EnergyTrack}" BackgroundColor="Beige" >
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="si:TokenLocationModel" >
-						<Grid HeightRequest="60">
+						<Grid HeightRequest="75">
 							<!-- Track -->
 							<Image Source="{Binding LocationImage}" Margin="0,10,0,0" />
 							<!-- token -->
@@ -48,11 +57,11 @@
 				</CollectionView.ItemTemplate>
 			</CollectionView>
 
-			<!-- Card Plays -->
+			<!-- Card Plays Track -->
 			<CollectionView x:Name="CardTrackView" ItemsLayout="HorizontalList" ItemsSource="{Binding CardPlayTrack}" BackgroundColor="Beige">
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="si:TokenLocationModel" >
-						<Grid HeightRequest="60">
+						<Grid HeightRequest="75">
 							<!-- Track -->
 							<Image Source="{Binding LocationImage}" Margin="0,10,0,0" />
 							<!-- tokens -->
@@ -65,14 +74,14 @@
 			</CollectionView>
 
 			<!-- Elements -->
-			<Grid ColumnDefinitions="80,*,*" BackgroundColor="Beige" Margin="0,5,0,0">
+			<Grid ColumnDefinitions="80,*,*" BackgroundColor="Beige" Margin="0,5,0,0" InputTransparent="True">
 				<Label Text="Elements" FontSize="12" FontAttributes="Bold,Italic" VerticalOptions="Center"/>
 				<si:ElementDictView BindingContext="{Binding Elements}" Grid.Column="1" Margin="10,2" />
 				<si:ElementDictView BindingContext="{Binding SecondaryElements}" Grid.Column="2" Margin="10,2" />
 			</Grid>
 		
 			<!-- Innates -->
-			<CollectionView ItemsSource="{Binding Innates}" Margin="0,5,0,0">
+			<CollectionView ItemsSource="{Binding Innates}" Margin="0,5,0,0" InputTransparent="True">
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="si:InnateModel" >
 						<VerticalStackLayout BackgroundColor="Beige" Padding="5">
@@ -107,7 +116,7 @@
 			</CollectionView>
 		
 			<!-- Special Rules -->
-			<CollectionView ItemsSource="{Binding SpecialRules}" Margin="0,5,0,0">
+			<CollectionView ItemsSource="{Binding SpecialRules}" Margin="0,5,0,0" InputTransparent="True">
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="si:SpecialRuleModel">
 						<VerticalStackLayout BackgroundColor="Beige" Padding="5">

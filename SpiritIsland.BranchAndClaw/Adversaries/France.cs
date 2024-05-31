@@ -238,11 +238,7 @@ public class France : AdversaryBase, IAdversary {
 	/// Intercepts blight being added to blight card.
 	/// Batches into 3/player before adding to card.
 	/// </summary>
-	class SlowBlightMod : BaseModEntity, IModifyAddingToken {
-		public SlowBlightMod(GameState gs) {
-			_tokens = gs.Tokens[FrancePanel].Blight;
-			_flushThreshold = gs.Spirits.Length * 3;
-		}
+	class SlowBlightMod(GameState gs) : BaseModEntity, IModifyAddingToken {
 		public void ModifyAdding(AddingTokenArgs args) {
 			// if this does not reach the flushing threshold
 			if (_tokens.Count + args.Count < _flushThreshold ) {
@@ -256,8 +252,8 @@ public class France : AdversaryBase, IAdversary {
 				_tokens.Init(0);
 			}
 		}
-		readonly int _flushThreshold;
-		readonly BlightTokenBinding _tokens;
+		readonly int _flushThreshold = gs.Spirits.Length * 3;
+		readonly BlightTokenBinding _tokens = gs.Tokens[FrancePanel].Blight;
 		static readonly FakeSpace FrancePanel = new FakeSpace("FranceAdversaryPanel"); // stores slow blight - !!! save to memento
 	}
 
