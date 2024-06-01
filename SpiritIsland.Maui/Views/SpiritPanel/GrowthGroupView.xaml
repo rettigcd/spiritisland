@@ -7,11 +7,11 @@
 
 	<Border Stroke="Black" BackgroundColor="Beige"
 			StrokeShape="RoundRectangle 5,5,5,5" 
-			StrokeThickness="2" Padding="1,1" >
+			StrokeThickness="2" Padding="1,1" HorizontalOptions="Center" >
 		<CollectionView ItemsSource="{Binding Actions}" ItemsLayout="HorizontalList" >
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="si:GrowthActionModel" >
-					<si:GrowthActionView BindingContext="{Binding .}" HeightRequest="80" WidthRequest="60" Padding="2" />
+					<si:GrowthActionView BindingContext="{Binding .}" Padding="1" WidthRequest="56" />
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>

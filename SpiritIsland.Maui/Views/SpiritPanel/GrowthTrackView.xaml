@@ -15,9 +15,8 @@
 			</BindableLayout.ItemTemplate>
 		</FlexLayout>
 		<!-- Description -->
-		<Border>
-			<Label Text="{Binding Description}" Padding="3" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" FontSize="12" BackgroundColor="Beige" />
-		</Border>
+		<Label Text="{Binding Description}" Padding="3" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" FontSize="12" BackgroundColor="Beige" />
+
 	</VerticalStackLayout>
 
 </ContentView>

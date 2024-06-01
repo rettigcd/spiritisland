@@ -16,7 +16,7 @@
 			<DragGestureRecognizer DragStarting="DragGestureRecognizer_DragStarting" />
 		</Border.GestureRecognizers>
 		<!-- Image -->
-		<Image Source="{Binding ImageSource}" VerticalOptions="Center" BackgroundColor="Transparent" />
+		<Image Source="{Binding ImageSource}" VerticalOptions="Center" />
 	</Border>
 
 </ContentView>
