@@ -42,6 +42,22 @@ static public class IEnumerableExtensions {
 		return buf.ToString();
 	}
 
+	/// <summary>
+	/// Converts "Breath of Darkness Down Your Spine" to "BoDDYS"
+	/// </summary>
+	static public string AbbreviateSentence( this string text) {
+		return text.ToLower().Split(' ')
+			.Select( WordToFirstLetter )
+			.Join("");
+	}
+
+	static string WordToFirstLetter(string word) {
+		char first = word[0];
+		bool makeLower = " a and by for from in into of the to with ".Contains(" " + word + " ");
+		if(makeLower) first = char.ToUpper(first);
+		return first.ToString();
+	}
+
 	public static T VerboseSingle<T>(this IEnumerable<T> items, Func<T,bool> predicate){
 		var result = items.Where(predicate).ToList();
 		if( result.Count == 1 ) return result[0];

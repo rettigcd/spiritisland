@@ -8,6 +8,7 @@
 	<ContentView.Resources>
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
 		<si:BadgeToImgConverter x:Key="btnImage" />
+		<si:HasElementsConverter x:Key="hasElementsColor" />
 	</ContentView.Resources>
 
 	<ScrollView>
@@ -18,7 +19,7 @@
 			</VerticalStackLayout.GestureRecognizers>
 	
 			<!-- Spirit Image -->
-			<Grid HorizontalOptions="Fill" HeightRequest="260"  ColumnDefinitions="10*,20*" RowDefinitions="20*,10*,10*" >
+			<Grid HorizontalOptions="Fill" HeightRequest="260" ColumnDefinitions="10*,20*" RowDefinitions="20*,10*,10*" >
 				<Grid.GestureRecognizers>
 					<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
 				</Grid.GestureRecognizers>
@@ -38,7 +39,7 @@
 				<Image Source="destroyed_presence.png" Grid.Row="2" InputTransparent="True" />
 				<Label Text="{Binding Destroyed}"              Grid.Row="2" HorizontalOptions="Center" VerticalOptions="Center" FontSize="30" TextColor="White" InputTransparent="True" />
 				<!-- Growth Tracks -->
-				<si:GrowthTrackView x:Name="GrowthTrackView" BindingContext="{Binding GrowthTrack}" Grid.Column="1" Grid.RowSpan="3" />
+				<si:GrowthTrackView x:Name="GrowthTrackView" BindingContext="{Binding GrowthTrack}" Grid.Column="1" Grid.RowSpan="3" VerticalOptions="Fill" />
 			</Grid>
 
 			<!-- Energy Track -->
@@ -98,7 +99,7 @@
 							<CollectionView ItemsSource="{Binding Tiers}"  >
 								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="si:InnateTierModel">
-										<Border Stroke="Black" BackgroundColor="{Binding BgColor}">
+										<Border Stroke="Black" BackgroundColor="{Binding HasElementsStatus,Converter={StaticResource hasElementsColor}}">
 											<Grid ColumnDefinitions="2*,8*">
 												<!-- Elements -->
 												<si:ElementDictView BindingContext="{Binding Elements}" />

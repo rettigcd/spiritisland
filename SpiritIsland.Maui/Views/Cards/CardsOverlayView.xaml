@@ -69,9 +69,9 @@
 			</Border>
 
 			<!-- Play ↑↑↑ (N) -->
-			<Grid ColumnDefinitions="25*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="27" Padding="3,0" IsVisible="{Binding IsPlaying}" >
+			<Grid ColumnDefinitions="40*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="27" Padding="3,0" IsVisible="{Binding IsPlaying}" >
 
-				<Label Text="Play ↑↑↑" VerticalOptions="Center" />
+				<Label Text="{Binding InnateSummary}" VerticalOptions="Center" /> <!-- Play ↑↑↑ -->
 
 				<!-- Elements -->
 				<CollectionView ItemsSource="{Binding Elements}" ItemsLayout="HorizontalList" Grid.Column="1" BackgroundColor="Beige" >

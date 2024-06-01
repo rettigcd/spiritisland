@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿//using Foundation;
+using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
@@ -18,8 +20,8 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	// Play
 	public int RemainingEnergy {		get => GetInt();					private set => SetProp(value);	}
-	//public ElementDictModel Elements {  get => GetProp<ElementDictModel>(); private set => SetProp(value);	}
 	public ElementModel[]   Elements {  get => GetProp<ElementModel[]>(); private set => SetProp(value);	}
+	public string InnateSummary { get => GetProp<string>(); private set => SetProp(value); }
 
 	public bool IsRepeating {			get => GetStruct<bool>();			private set => SetProp(value);	}
 	public bool IsDiscarding {			get => GetStruct<bool>();			private set => SetProp(value);	}
@@ -47,13 +49,17 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	public CardsOverlayModel( Spirit spirit, IDecisionPortal userPortal ) {
 		_spirit = spirit;
+		_innates = [..spirit.InnatePowers.Select(ip=>new InnateStatus(ip,_spirit))];
 		userPortal.NewWaitingDecision += (obj) => InitSlotsForNewDecision(obj as A.PowerCard);
 		Elements = [];
+		InnateSummary = "aa";
 		// InitStuff(); Show();
 
 		CloseCommand = new Command( TryToClose );
 		AcceptCardsCommand = new Command( AcceptCards );
 	}
+
+	readonly InnateStatus[] _innates;
 
 	#endregion constructor
 
@@ -306,10 +312,25 @@ public class CardsOverlayModel : ObservableModel1 {
 	}
 
 	void UpdateElements() {
-		CountDictionary<Element> elements = _spirit.Elements.Elements.Clone();
+		CountDictionary<Element> elements = [];
+
+		// build card elements
 		foreach (var card in MovedPowerCards)
 			elements.AddRange(card.Elements);
+
+		// Calculate Innate summaries by passing CARD ELEMENTS only.
+		InnateSummary = _innates.Select(i => {
+			try {
+				return i.GetStatusString(elements);
+			} catch( Exception ex ) {
+				return "BB";
+			}
+		}).Join(" ");
+
+		// Add in spirit elements to show Total elements.
+		elements.AddRange(_spirit.Elements.Elements);
 		Elements = ElementModel.FromDict(elements);
+
 	}
 
 	void UpdateButtonTextCount( int count ) {
