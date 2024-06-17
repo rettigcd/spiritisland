@@ -54,7 +54,7 @@ static public class IEnumerableExtensions {
 	static string WordToFirstLetter(string word) {
 		char first = word[0];
 		bool makeLower = " a and by for from in into of the to with ".Contains(" " + word + " ");
-		if(makeLower) first = char.ToUpper(first);
+		if(!makeLower) first = char.ToUpper(first);
 		return first.ToString();
 	}
 
