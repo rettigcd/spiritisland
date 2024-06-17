@@ -27,7 +27,7 @@ public class TricksterTokens( Spirit spirit, Space src, bool runAtMax = false )
 	// A Real Flair for Discord
 	async Task Pay1EnergyToStrifeInRange1Land() {
 		var nearbyInvaders = _spirit.PowerRangeCalc.GetSpaceOptions( Adjacent, new TargetCriteria( 1 ) )
-			.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1( ss.SpaceSpec ) )
+			.SelectMany( ss => ss.InvaderTokens().On( ss ) )
 			.ToArray();
 		var invader2 = await _spirit.SelectAsync( new A.SpaceTokenDecision( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 != null) {

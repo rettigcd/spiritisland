@@ -12,9 +12,9 @@ public class EmpoweredAbduct : IActionFactory {
 	public async Task ActivateAsync( Spirit spirit ) {
 		var incarna = spirit.Incarna;
 		if(!incarna.IsPlaced) return;
-		var tokens = incarna.Space;
-		var options = tokens.HumanOfAnyTag( Human.Explorer_Town );
-		var invaderToAbduct = await spirit.SelectAsync(new A.SpaceTokenDecision("Select Invader to Abduct", options.OnScopeTokens1(tokens.SpaceSpec), Present.Done));
+		Space space = incarna.Space;
+		HumanToken[] options = space.HumanOfAnyTag( Human.Explorer_Town );
+		SpaceToken invaderToAbduct = await spirit.SelectAsync(new A.SpaceTokenDecision("Select Invader to Abduct", options.On(space), Present.Done));
 		if(invaderToAbduct == null) return;
 
 		await invaderToAbduct.MoveTo(EndlessDark.Space.ScopeSpace);
