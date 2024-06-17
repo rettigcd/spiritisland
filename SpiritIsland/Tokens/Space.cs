@@ -58,8 +58,8 @@ public partial class Space
 	public int SumAny( params ITag[] healthyInvaders ) => OfAnyTagEnumeration( healthyInvaders ).Sum( k => _counts[k] );
 
 	// -- IEnumerable<SpaceToken> --
-	public IEnumerable<SpaceToken> SpaceTokensOfTag( ITag tag ) => OfTagEnumeration(tag).OnScopeTokens1(SpaceSpec);
-	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).OnScopeTokens1(SpaceSpec);
+	public IEnumerable<SpaceToken> SpaceTokensOfTag( ITag tag ) => OfTagEnumeration(tag).On(this);
+	public IEnumerable<SpaceToken> SpaceTokensOfAnyTag( params ITag[] tag ) => OfAnyTagEnumeration( tag ).On(this);
 
 	// -- HumanToken[] --
 	public IEnumerable<HumanToken> AllHumanTokens() => OfType<HumanToken>();

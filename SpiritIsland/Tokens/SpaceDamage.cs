@@ -35,7 +35,7 @@ public partial class Space {
 		int done = 0;
 
 		while( 0 < additionalTotalDamage ) {
-			var st = await damagePicker.SelectAsync(An.Invader.ForBadlandDamage(additionalTotalDamage, invaders.OnScopeTokens1(SpaceSpec)));
+			var st = await damagePicker.SelectAsync(An.Invader.ForBadlandDamage(additionalTotalDamage, invaders.On(this)));
 			if( st == null ) break;
 			var invader = st.Token.AsHuman();
 			int index = invaders.IndexOf(invader);

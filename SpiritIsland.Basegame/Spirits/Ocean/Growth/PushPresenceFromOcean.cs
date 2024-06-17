@@ -15,7 +15,7 @@ public class PushPresenceFromOcean : SpiritAction {
 	}
 
 	static async Task PushPresence( Spirit self, Space srcTokens ) {
-		var presenceTokens = self.Presence.TokensDeployedOn( srcTokens ).OnScopeTokens1( srcTokens.SpaceSpec ).ToArray();
+		var presenceTokens = self.Presence.TokensDeployedOn( srcTokens ).On( srcTokens ).ToArray();
 		var token = await self.SelectAsync( new A.SpaceTokenDecision( "Select presence to push", presenceTokens, Present.AutoSelectSingle ) );
 
 		// #pushpresence

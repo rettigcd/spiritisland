@@ -70,7 +70,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
 		// Destroy 1 presence in adjacent land
 		var options = to.Adjacent_Existing
 			.SelectMany(
-				adj => adj.OfTag(TokenCategory.Presence).OnScopeTokens1(adj.SpaceSpec)
+				adj => adj.OfTag(TokenCategory.Presence).On(adj)
 			)
 			.ToArray();
 

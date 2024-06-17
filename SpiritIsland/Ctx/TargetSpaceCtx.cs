@@ -226,7 +226,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.OnScopeTokens1(SpaceSpec) ) );
+			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
 			if(st == null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );

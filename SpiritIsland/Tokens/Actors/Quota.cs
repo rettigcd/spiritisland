@@ -22,11 +22,8 @@ public class Quota {
 		? _sharedGroupCounts.Select( x => x.VerboseString( sourceSpaces ).ToString() ).Join( "/" )
 		: _sharedGroupCounts.Sum( q => q.CountToShow( sourceSpaces ) ).ToString();
 
-	public IEnumerable<SpaceToken> GetSourceOptionsOn1Space( 
-		Space sourceSpace
-	) {
-		return sourceSpace.OfAnyTag( RemainingTypes )
-			.OnScopeTokens1( sourceSpace.SpaceSpec );
+	public IEnumerable<SpaceToken> GetSourceOptionsOn1Space( Space sourceSpace ) {
+		return sourceSpace.OfAnyTag( RemainingTypes ).On( sourceSpace );
 	}
 
 

@@ -8,7 +8,7 @@ class SenslessRoamingTokens( Spirit spirit, Space ss ) : Space(ss) {
 		if( strifed.Token.HasAny(Human.Explorer_Town)) {
 			TokenMovedArgs moved = await strifed.PushAsync( _spirit, d=>d.ConfigAsOptional() );
 			if(moved != null)
-				strifed = moved.Added.OnScopeTokens( ((Space)moved.To).SpaceSpec );
+				strifed = moved.Added.On( (Space)moved.To );
 		}
 		return strifed;
 	}

@@ -29,7 +29,7 @@ public class HazardsSpreadAcrossTheIsland{
 		var candidates = ctx.Adjacent
 			.SelectMany( adjState => adjState.OfType<IToken>()
 				.Where( IsTokenOfInterest )
-				.OnScopeTokens1( adjState.SpaceSpec ) //.Select( token => new SpaceToken( adjState.Space, token ) )
+				.On( adjState ) //.Select( token => new SpaceToken( adjState.Space, token ) )
 			)
 			.GroupBy( s => s.Token )
 			.Select( grp => grp.First() )

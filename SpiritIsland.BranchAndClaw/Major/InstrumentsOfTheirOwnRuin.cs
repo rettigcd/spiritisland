@@ -59,7 +59,7 @@ public class InstrumentsOfTheirOwnRuin {
 		while( (spaceOptions = ctx.Adjacent.Where( adj => adj.HasInvaders() && HasDamage( adj ) ).ToArray()).Length > 0 ) {
 			// select target invader
 			var invaderOptions = spaceOptions
-				.SelectMany( ss => ss.InvaderTokens().OnScopeTokens1(ss.SpaceSpec) )
+				.SelectMany( ss => ss.InvaderTokens().On(ss) )
 				.ToArray();
 			var damagedInvader = await ctx.SelectAsync( new A.SpaceTokenDecision($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
 			if(damagedInvader == null) break;
