@@ -545,16 +545,19 @@ public abstract partial class Spirit
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		Space[] spaces = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).ToArray();
+		Space[] spaceOptions = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).ToArray();
 		
-		if(spaces.Length == 0) {
+		if(spaceOptions.Length == 0) {
 			ActionScope.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
 			return null;
 		}
 
-		var mySpace = preselect != null && UserGateway.UsePreselect.Value
-			? await preselect.PreSelect(this, spaces)
-			: await SelectAsync(new A.SpaceDecision(prompt, spaces, Present.Always));
+		if(spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle )
+			return spaceOptions[0];
+
+		Space mySpace = preselect != null && UserGateway.UsePreselect.Value
+			? await preselect.PreSelect(this, spaceOptions)
+			: await SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.Always));
 
 		return mySpace;
 	}

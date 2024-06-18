@@ -15,6 +15,8 @@ public class SpaceCriteria {
 		_filters = filters ?? throw new ArgumentNullException( nameof( filters ) );
 	}
 
+	public bool AutoSelectSingle => _filters.Length == 1 && _filters[0] == Filter.Incarna;
+
 	public bool Matches( Space state ) {
 
 		// since we are doing a MatchAny (OR), we need at least 1 criteria or it won't match anything

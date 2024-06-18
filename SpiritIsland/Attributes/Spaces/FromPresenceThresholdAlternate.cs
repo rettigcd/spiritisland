@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Allows an alternate target based on meeting Element threshold
+/// Modifies FromPresence to allows an alternate target if spirit meets Element threshold
 /// </summary>
 public class FromPresenceThresholdAlternate( int range, string target, string threshold, int altRange, string altTarget ) 
 	: FromPresenceAttribute(range,target)

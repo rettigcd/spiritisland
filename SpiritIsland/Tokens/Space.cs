@@ -257,12 +257,13 @@ public partial class Space
 	public Task<HumanToken> Remove1StrifeFromAsync( HumanToken invader, int tokenCount ) => AddRemoveStrifeAsync(invader,-1,tokenCount);
 
 	/// <returns>New invader</returns>
+	/// <param name="tokenCount">The # of tokens to apply change to.</param>
 	protected async Task<HumanToken> AddRemoveStrifeAsync( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
 
 		if(this[originalInvader] < tokenCount)
 			throw new ArgumentOutOfRangeException( $"collection does not contain {tokenCount} {originalInvader}" );
 
-		var replacement = await ReplaceAsync( originalInvader, tokenCount, originalInvader.AddStrife(strifeDelta) );
+		TokenReplacedArgs replacement = await ReplaceAsync( originalInvader, tokenCount, originalInvader.AddStrife(strifeDelta) );
 
 		return replacement.Added.AsHuman();
 	}

@@ -20,11 +20,12 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 
 	public override async Task<object> GetTargetCtx( string powerName, Spirit self ){
 
+		var targetCriteria = await GetCriteria(self);
 		Space space = await self.TargetsSpace( 
 			powerName+": Target Space", 
 			Preselect,
 			_sourceCriteria,
-			await GetCriteria( self )
+			targetCriteria
 		);
 		if(space == null) return null;
 		TargetSpaceCtx target = self.Target( space );

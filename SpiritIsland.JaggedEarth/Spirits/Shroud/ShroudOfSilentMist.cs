@@ -91,7 +91,7 @@ public class ShroudOfSilentMist : Spirit {
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
-		// we no-longer have a cood way to do this.
+		// we no-longer have a cool way to do this.
 		//if(!Presence.CanMove)
 		//	return await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
