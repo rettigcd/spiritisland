@@ -69,9 +69,9 @@
 			</Border>
 
 			<!-- Play ↑↑↑ (N) -->
-			<Grid ColumnDefinitions="40*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="27" Padding="3,0" IsVisible="{Binding IsPlaying}" >
+			<Grid ColumnDefinitions="40*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="50" Padding="3,0" IsVisible="{Binding IsPlaying}" >
 
-				<Label Text="{Binding InnateSummary}" VerticalOptions="Center" /> <!-- Play ↑↑↑ -->
+				<Label Text="{Binding InnateSummary}" VerticalOptions="Center" LineBreakMode="WordWrap" MaxLines="2" /> <!-- Play ↑↑↑ -->
 
 				<!-- Elements -->
 				<CollectionView ItemsSource="{Binding Elements}" ItemsLayout="HorizontalList" Grid.Column="1" BackgroundColor="Beige" >
@@ -151,7 +151,7 @@
 					<!-- Label / Button row -->
 					<Grid ColumnDefinitions="10*,30*" Margin="3">
 						<Label Text="Discarded" Margin="10,0" FontSize="12" />
-						<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
+						<Button Text="Discard" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
 								HeightRequest="25" FontSize="12" 
 								HorizontalOptions="End" Padding="5,0" 
 								IsVisible="{Binding IsDiscarding}"
@@ -177,7 +177,7 @@
 					<!-- Label / Button row -->
 					<Grid ColumnDefinitions="10*,30*" Margin="3">
 						<Label Text="Forgotten" Margin="10,0" FontSize="12" />
-						<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
+						<Button Text="Forget" Command="{Binding AcceptCardsCommand}" Grid.Column="1" 
 								HeightRequest="25" FontSize="12" 
 								HorizontalOptions="End" Padding="5,0" 
 								IsEnabled="{Binding ButtonIsEnabled}"

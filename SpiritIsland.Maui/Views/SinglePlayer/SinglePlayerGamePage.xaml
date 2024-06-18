@@ -68,7 +68,7 @@
 			</FlexLayout>
 		</ScrollView>
 
-		<Button Text="Cards" Padding="5,5" Grid.Row="6" Grid.ColumnSpan="3" Command="{Binding ShowCards}" />
+		<Button Text="{Binding Cards.Hand.Count,StringFormat='Cards ({0:F0})'}" Padding="5,5" Grid.Row="6" Grid.ColumnSpan="3" Command="{Binding ShowCards}" />
 
 		<!-- Overlays -->
 		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" 

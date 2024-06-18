@@ -33,19 +33,21 @@ public class PentUpCalamity {
 		bool hasBonus = await ctx.YouHave( "2 moon,3 fire" );
 		int returnCount = hasBonus ? System.Math.Min(2,options.Length) : 0;
 
-		while(options.Length > 0) {
+		while(0 < options.Length) {
 			// This is kind of special purpose
 			var removeTokenDecision = new A.SpaceTokenDecision(
-				$"Remove token for (1 fear,3 damage) total({removed.Count},{removed.Count * 3})", 
-				options.OnScopeTokens1(ctx.SpaceSpec),
+				$"Remove token for (1 fear,3 damage) total({removed.Count} fear,{removed.Count * 3} damage)", 
+				options.On(ctx.Space),
 				Present.Done
 			);
-			var tokenToRemove = (await ctx.SelectAsync( removeTokenDecision ))?.Token;
+			IToken tokenToRemove = (await ctx.SelectAsync( removeTokenDecision ))?.Token;
 			if(tokenToRemove == null) break;
 
 			// If bonus allowed us to return some
-			if(returnCount > 0)
+			if(0 < returnCount)
 				returnCount--;
+			else if(tokenToRemove is HumanToken human)
+				await ctx.Space.Remove1StrifeFromAsync(human,1);
 			else
 				await RemoveToken( ctx, tokenToRemove );
 
@@ -76,9 +78,9 @@ public class PentUpCalamity {
 	}
 
 	static IToken[] GetRemovableTokens( TargetSpaceCtx ctx ) {
-		var options = ctx.Space.OfAnyTag( Token.Beast, Token.Disease, Token.Wilds ).ToList();
-		options.AddRange( ctx.Space.AllHumanTokens() );
-		return options.Cast<IToken>().ToArray();
+		return ctx.Space.OfAnyTag( Token.Beast, Token.Disease, Token.Wilds ).Cast<IToken>()
+			.Union(ctx.Space.AllHumanTokens().Where(x => 0 < x.StrifeCount).Cast<IToken>())
+			.ToArray();
 	}
 
 }
