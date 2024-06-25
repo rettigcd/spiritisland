@@ -9,7 +9,7 @@ public class BoonOfResilientPower {
 	static async public Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// Target Spirit may Add 1 DestoryedPresence to one of your lands.
-		await new AddDestroyedPresence(0).RelativeTo(ctx.Self).ActAsync(ctx.Other);
+		await new AddDestroyedPresence().RelativeTo(ctx.Self).ActAsync(ctx.Other);
 
 		// If you Target yourself,
 		if(ctx.Self == ctx.Other)

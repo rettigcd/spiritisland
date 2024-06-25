@@ -15,7 +15,7 @@ public class SpaceCriteria {
 		_filters = filters ?? throw new ArgumentNullException( nameof( filters ) );
 	}
 
-	public bool AutoSelectSingle => _filters.Length == 1 && _filters[0] == Filter.Incarna;
+	public bool AutoSelectSingle => _filters.Length == 1 && _filters[0].Contains(Filter.Incarna); // May be "Invaders + Incarna"
 
 	public bool Matches( Space state ) {
 

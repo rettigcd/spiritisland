@@ -20,10 +20,12 @@ public class RadiantAndHallowedGrove {
 	}
 
 	static SourceSelector InBothTargetAnd1Adjacent( Space target ) {
-		bool removedFromAdjacent = false;
+		bool[] allow = [true,true];
+		int index(Space space) => space == target ? 0 : 1;
+
 		return new SourceSelector( target.InOrAdjacentTo )
-			.Track( st => removedFromAdjacent = (st.Space != target) )
-			.FilterSource( ss => !removedFromAdjacent || ss == target );
+			.Track( st => allow[index(st.Space)] = false )
+			.FilterSource( ss => allow[index(ss)] );
 	}
 
 	static HumanTokenClass[] AnInvaderWithHealthLessThanOrEqualToTerrorLevel() {

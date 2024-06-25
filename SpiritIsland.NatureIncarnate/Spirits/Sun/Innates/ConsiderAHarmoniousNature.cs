@@ -44,7 +44,7 @@ public class ConsiderAHarmoniousNature {
 			Present.Done
 		));
 		if(other != null)
-			await new AddDestroyedPresence( 0 ).RelativeTo( self ).ActAsync( other );
+			await new AddDestroyedPresence().RelativeTo( self ).ActAsync( other );
 		return other;
 	}
 

@@ -1,17 +1,27 @@
 ﻿namespace SpiritIsland;
 #nullable enable
 
-public class AddDestroyedPresence( int range ) : SpiritAction() {
+public class AddDestroyedPresence : SpiritAction {
 
 	#region constructors
 
+	/// <summary> Destroy presence must be within a certain range. </summary>
+	public AddDestroyedPresence(int range) {
+		Range = range;
+	}
+
+	/// <summary> Destroy presence to a spirits lands. </summary>
+	public AddDestroyedPresence() {
+		Range = null;
+	}
+
 	#endregion
 
-	public int Range { get; } = range;
+	public int? Range { get; }
 
 	public override string Description
 		=> $"Add{CountStr} Destroyed Presence{RangeStr}";
-	string RangeStr => Range == 0 ? "" : " - Range " + Range;
+	string RangeStr => (Range == null || Range == 0) ? "" : " - Range " + Range;
 	string CountStr => _present == Present.Done ? $" up to {NumToPlace}"
 		: NumToPlace != 1 ? $" {NumToPlace}"
 		: "";
@@ -42,16 +52,22 @@ public class AddDestroyedPresence( int range ) : SpiritAction() {
 
 	#endregion
 
-	public override async Task ActAsync( Spirit self ) {
-		Spirit placingSpirit = self;
+	IEnumerable<Space> SpacesFromSourceSpirit( Spirit sourceSpirit ) {
+		return Range.HasValue
+			? sourceSpirit.FindSpacesWithinRange(new TargetCriteria(Range.Value))
+			: sourceSpirit.Presence.Lands;
+	}
+
+	public override async Task ActAsync( Spirit placingSpirit) {
 		SpiritPresence presence = placingSpirit.Presence;
 		if(presence.Destroyed.Count == 0) return;
 
 		int maxToPlaceOnSpace = Math.Min( presence.Destroyed.Count, NumToPlace );
 
-		var destinationOptions = (_relativeSpirit ?? placingSpirit)
-			.FindSpacesWithinRange( new TargetCriteria( Range ) )
-			.Where( placingSpirit.Presence.CanBePlacedOn );
+		var sourceSpirit = _relativeSpirit ?? placingSpirit;
+		
+		IEnumerable<Space> destinationOptions = SpacesFromSourceSpirit(_relativeSpirit ?? placingSpirit)
+			.Where(placingSpirit.Presence.CanBePlacedOn);
 
 		Space dst = await placingSpirit.SelectAsync( A.SpaceDecision.ToPlaceDestroyedPresence(
 			destinationOptions,
