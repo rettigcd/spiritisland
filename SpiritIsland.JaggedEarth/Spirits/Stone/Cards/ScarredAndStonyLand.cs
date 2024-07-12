@@ -12,7 +12,7 @@ public class ScarredAndStonyLand {
 		await ctx.Badlands.AddAsync(1);
 
 		// Remove 1 blight in target land from the game. (It goes to the box, not the blight card)
-		await ctx.Blight.Remove(1, RemoveReason.Removed); // it does not go back to card
+		await ctx.Blight.Remove(1, RemoveReason.TakingFromCard); // HACK - We are not really taking it from the the card, but we want to make sure it does not go back to card
 	}
 
 }

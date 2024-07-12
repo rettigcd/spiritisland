@@ -244,3 +244,78 @@ public class StubbornSolidity_Tests {
 
 }
 
+
+public class LetThemBreakThemselves_Tests {
+
+	[Fact]
+	public async Task IncludesBadlands() {
+		// badlands included in damage
+		Spirit spirit = new StonesUnyieldingDefiance();
+		Board board = Board.BuildBoardA();
+		GameState gameState = new GameState(spirit, board);
+		Space space = gameState.Tokens[board[5]];
+
+		// Given: bunch of explorers
+		int startingExplorerCount = 6;
+		space.InitDefault(Human.Explorer, startingExplorerCount);
+
+		//   And: 1 badlands
+		space.Badlands.Init(1);
+
+		//   And: Played 2-damage version of Let-Them-Break-Themselves on space
+		await LetThemBreakThemselvesAgainstTheStone.TwoDamage(spirit.Target(space));
+
+		//  When: Ravaging
+		await space.Ravage().AwaitUser(user => {
+			for(int i=3;i>0;i--)
+				user.NextDecision.HasPrompt($"Damage ({i} remaining)").Choose("E@1 on A5");
+		});
+
+		//  Then: 2 innate damage + 1 badlands damage = 3 explorers should be removed.
+		int removedExplorers = startingExplorerCount - space.Sum(Human.Explorer);
+		removedExplorers.ShouldBe(3);
+	}
+
+	[Fact]
+	public async Task BadlandsUsedTwice() {
+		// badlands included in both:
+		// * Dahan counter attack (ravage action) AND
+		// * Break-Themselves-Against (sub spirit action)
+		Spirit spirit = new StonesUnyieldingDefiance();
+		Board board = Board.BuildBoardA();
+		GameState gameState = new GameState(spirit, board);
+		Space space = gameState.Tokens[board[5]];
+
+		// Given: bunch of explorers
+		int startingExplorerCount = 10;
+		space.InitDefault(Human.Explorer, startingExplorerCount);
+		//   And: 2 dahan
+		space.InitDefault(Human.Dahan, 2);
+		//   And: enough defend to allow 1 damage to land and dahan
+		//        which will trigger + 1 badland damage
+		//        resulting in 2 damage total to Dahan killing 1 of them
+		space.Init(Token.Defend,startingExplorerCount-1);
+		//   And: 1 badlands
+		space.Badlands.Init(1);
+		//   And: Played 2-damage version of Let-Them-Break-Themselves on space
+		await LetThemBreakThemselvesAgainstTheStone.TwoDamage(spirit.Target(space));
+
+		string bob1 = space.ToString();
+
+		//  When: Ravaging
+		await space.Ravage().AwaitUser(user => {
+			// Then: innate is triggered
+			for( int i = 3; i > 0; i-- )
+				user.NextDecision.HasPrompt($"Damage ({i} remaining)").Choose("E@1 on A5");
+		});
+
+		string bob2 = space.ToString();
+
+		//  Then: 2 innate damage + 1 badlands damage = 3 explorers should be removed.
+		int removedExplorers = startingExplorerCount - space.Sum(Human.Explorer);
+		const int damageFromDahanCounterAttack = /*dahan*/2 + /*badland*/1;
+		const int damageFromInnate             = /*innate*/2 + /*badland*/1;
+		removedExplorers.ShouldBe(damageFromDahanCounterAttack + damageFromInnate);
+	}
+}
+

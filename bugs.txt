@@ -1,4 +1,3 @@
-
 =====  Finder bugs  ====
 Reread this and see if anything is wrong: https://querki.net/raw/darker/spirit-island-faq/Open+the+Ways+%28Finder+of+Paths+Unseen%29
 Adjaceny seems to still work for Invaders, or maybe just coastal
@@ -13,8 +12,6 @@ The Move presence on the presence track is forced (is that correct?)
 
 Settle Into Hunting-Grounds
 	- implement "May" count as badlands and beast.
-
-
 
 
 Growth - Shifting Memories 2-elements for card play - doesn't always work

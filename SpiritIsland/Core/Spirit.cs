@@ -52,11 +52,11 @@ public abstract partial class Spirit
 
 	public readonly ElementMgr Elements;
 
-	public virtual ECouldHaveElements CouldHaveElements( CountDictionary<Element> subset ) => Elements.CouldContain(subset) ? ECouldHaveElements.Yes : ECouldHaveElements.No;
+	public virtual ECouldHaveElements CouldHaveElements( CountDictionary<Element> subset )      => Elements.CouldContain(subset) ? ECouldHaveElements.Yes : ECouldHaveElements.No;
 	public virtual Task<bool> HasElement( CountDictionary<Element> subset, string description ) => Elements.ContainsAsync(subset, description);
 
 	/// <summary>
-	/// Spirit determines which Option they can activate.
+	/// Spirit Selects which level of each Innate-Tier-Group they wish to activate
 	/// </summary>
 	/// <remarks>overriden by Shiftin Memories and Volcano</remarks>
 	public virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {

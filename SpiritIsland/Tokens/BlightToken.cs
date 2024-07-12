@@ -9,6 +9,9 @@ public class BlightToken( string label, char k, Img img )
 	/// <summary>
 	/// Triggers: Destroy presence, cascade, remove from Blight card
 	/// </summary>
+	/// <remarks>
+	/// Called when added to regular space AND when added to card.
+	/// </remarks>
 	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if (args.Added != this) return; // token-added event handler for blight only
 		if( !ShouldDoBlightAddedEffects(args.Reason) ) return;
@@ -55,7 +58,7 @@ public class BlightToken( string label, char k, Img img )
 				// RemoveReason.Replaced,  // acording to querki Replaced blight goes back to the card.
 			);
 		if( shouldReturnBlightToCard )
-			await  ActionScope.Current.GameState.BlightCard.ReturnBlight(1);
+			await ActionScope.Current.GameState.BlightCard.ReturnBlight(1);
 	}
 
 	public static BlightConfig ScopeConfig => Config.Value;

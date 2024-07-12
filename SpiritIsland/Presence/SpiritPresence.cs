@@ -4,12 +4,15 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 	#region constructors
 
+	/// <summary> Constructs a spirit with: normal Presence Token and no Incarna</summary>
 	public SpiritPresence( Spirit spirit,  IPresenceTrack energy, IPresenceTrack cardPlays )
 		:this(spirit,energy,cardPlays,new SpiritPresenceToken(spirit),null){ }
 
+	/// <summary> Constructs a spirit with: Special Presence Token </summary>
 	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token )
-		:this(spirit,energy,cardPlays,token,null){ }
+		:this(spirit,energy,cardPlays,token, incarna:null) { }
 
+	/// <summary> Constructs a spirit with: Incarna </summary>
 	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, Incarna incarna )
 		:this(spirit,energy,cardPlays,new SpiritPresenceToken(spirit),incarna) { }
 

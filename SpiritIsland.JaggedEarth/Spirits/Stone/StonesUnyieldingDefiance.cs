@@ -5,10 +5,12 @@ public class StonesUnyieldingDefiance : Spirit {
 	public const string Name = "Stone's Unyielding Defiance";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { 
-		new SpecialRule("Bestow the Endurance of BedRock", "When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destroy presence (yours or others')."), 
+	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+		BestowTheEnduranceOfBedrockPresenceToken.Rule,
 		new SpecialRule("Deep Layers Expposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.") 
 	};
+
+	#region special Tracks
 
 	static Track AddCardPlay => new Track( "PlayExtraCardThisTurn" ) { 
 		Action = new DrawMinorOnceAndPlayExtraCardThisTurn(),
@@ -41,11 +43,14 @@ public class StonesUnyieldingDefiance : Spirit {
 			Sub = new IconDescriptor { BackgroundImg = Img.Token_Earth }
 		}
 	};
+	
+	#endregion special Tracks
 
-public StonesUnyieldingDefiance() : base(
+	public StonesUnyieldingDefiance() : base(
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy2, Track.Energy3, AddCardPlay, Track.Energy4, AddCardPlay, Track.Energy6, AddCardPlay ),
-			new PresenceTrack( Track.Card1, Track.MkCard( Element.Earth ), Track.MkCard( Element.Earth ), EarthReclaim, EarthAndAny, Card2Earth )
+			new PresenceTrack( Track.Card1, Track.MkCard( Element.Earth ), Track.MkCard( Element.Earth ), EarthReclaim, EarthAndAny, Card2Earth ),
+			new BestowTheEnduranceOfBedrockPresenceToken( spirit )
 		)
 		, new GrowthTrack(
 			new GrowthGroup(
@@ -62,7 +67,7 @@ public StonesUnyieldingDefiance() : base(
 				new PlacePresence( 1 )
 			)
 		)
-		, PowerCard.For(typeof(JaggedShardsPushFromTheEarth))
+		,PowerCard.For(typeof(JaggedShardsPushFromTheEarth))
 		,PowerCard.For(typeof(PlowsShatterOnRockyGround))
 		,PowerCard.For(typeof(ScarredAndStonyLand))
 		,PowerCard.For(typeof(StubbornSolidity))
@@ -88,21 +93,21 @@ public StonesUnyieldingDefiance() : base(
 
 		(adjacentWithBlight ?? adjacentWithSand).Setup(Presence.Token,1);
 
-		// Bestow the Endurance of Bedrock
-		gameState.AddIslandMod(new BestowTheEnduranceOfBedrock( Presence.Token ));
 	}
 
 }
 
+public class BestowTheEnduranceOfBedrockPresenceToken : SpiritPresenceToken, IModifyAddingToken {
 
+	static public SpecialRule Rule => new SpecialRule(
+		"Bestow the Endurance of BedRock", 
+		"When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destroy presence (yours or others')."
+	);
 
-// !!! Instead of sticking this everywhere on the island, could just add it to the spirit token.
-class BestowTheEnduranceOfBedrock( SpiritPresenceToken _token ) 
-	: BaseModEntity
-	, IModifyAddingToken
-{
-	public void ModifyAdding( AddingTokenArgs args ) {
-		if(args.Token == Token.Blight && args.To.Blight.Count <= args.To[_token]) {
+	public BestowTheEnduranceOfBedrockPresenceToken(Spirit spirit) : base(spirit) {}
+
+	public void ModifyAdding(AddingTokenArgs args) {
+		if( args.Token == Token.Blight && args.To.Blight.Count < args.To[this] ) {
 			// it does not cascade or destroy presence (yours or others').
 			BlightToken.ScopeConfig.ShouldCascade = false;
 			BlightToken.ScopeConfig.DestroyPresence = false;
