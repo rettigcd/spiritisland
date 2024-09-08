@@ -48,7 +48,8 @@ public class TokenLocationModel
 		}
 
 		if(tokenOn.Location is Track track) {
-			LocationImage = ImageCache.FromFile( track.Code.ToResourceName() );
+			string bob = track.Code.ToResourceName();
+			LocationImage = ImageCache.FromFile( bob );
 		}
 
 		RefreshCountAndSS();
@@ -77,8 +78,9 @@ public class TokenLocationModel
 	}
 
 	static ImageSource GetHumanTokenMarker(HumanToken humanToken) {
-		return GetImgImage(humanToken.HumanClass.Img);
+		return GetImgImage(humanToken.Img);
 	}
+
 	static ImageSource GetImgImage(Img img) {
 		string filename = img switch {
 			Img.Dahan => "dahan.png",
@@ -108,6 +110,8 @@ public class TokenLocationModel
 			Img.T_Incarna                => "tt.png",
 			Img.WVKD_Incarna             => "wvkd.png",
 			Img.WVKD_Incarna_Empowered   => "wvkd_e.png",
+
+			Img.Dahan_Solid              => "dahan_solid.png",
 
 			_ => "vitality.png" // ERROR - see if this ever happens.
 		};

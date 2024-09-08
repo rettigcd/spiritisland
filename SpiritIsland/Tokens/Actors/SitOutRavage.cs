@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland;
 
 static public class SitOutRavage {
 

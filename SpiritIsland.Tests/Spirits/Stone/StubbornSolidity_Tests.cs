@@ -157,9 +157,7 @@ public class StubbornSolidity_Tests {
 			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
 
 			// Push - 3
-			user.NextDecision.HasPrompt( "Push up to (2)" )
-				.HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
-				.HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
 
 			user.NextDecision.HasPrompt( "Push up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
 				.HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
@@ -318,4 +316,3 @@ public class LetThemBreakThemselves_Tests {
 		removedExplorers.ShouldBe(damageFromDahanCounterAttack + damageFromInnate);
 	}
 }
-

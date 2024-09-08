@@ -52,7 +52,7 @@ public static class DecisionExtensions {
 			.ToArray();
 		return matchingChoices.Length switch {
 			1 => matchingChoices[0],
-			0 => throw new ArgumentException( $"option ({expectedChoiceText} not found in {decision.FormatDecision()}" ),
+			0 => throw new ArgumentException( $"option ({expectedChoiceText}) not found in ({decision.FormatDecision()})" ),
 			_ => throw new Exception( $"Multiple option CONTAIN '{expectedChoiceText}' in: " + decision.FormatDecision() )
 		};
 	}

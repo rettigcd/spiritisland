@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland;
 
 public class RavageParticipants(
 	CountDictionary<HumanToken> starting,

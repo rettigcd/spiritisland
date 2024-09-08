@@ -304,7 +304,6 @@ public abstract partial class Spirit
 
 	public int TempCardPlayBoost = 0;
 
-
 	#endregion
 
 	string IOption.Text => SpiritName;

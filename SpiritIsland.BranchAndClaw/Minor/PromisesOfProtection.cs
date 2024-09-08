@@ -8,7 +8,7 @@ public class PromisesOfProtection {
 
 		await ctx.GatherUpToNDahan( 2 );
 
-		await ctx.AdjustTokensHealthForRound( 2, Human.Dahan );
+		await ctx.Space.AdjustTokensHealthForRound( 2, Human.Dahan );
 
 	}
 

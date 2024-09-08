@@ -1,3 +1,8 @@
+=== Bugs ===
+Stone 
+	- Reveal presence during action, doesn't gain card.
+	- Rewind and redo place-precence, doesn't gain card.
+	- Stubborn Solidity needs visual reminder.
 
 === Grouping 1 ===
 

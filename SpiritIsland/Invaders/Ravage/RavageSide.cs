@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland;
+﻿namespace SpiritIsland.Invaders.Ravage;
 
 /// <summary>
 /// Is the token an attacker, defender, or non-participant.

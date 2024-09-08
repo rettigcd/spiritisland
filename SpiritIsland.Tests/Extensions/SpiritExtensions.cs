@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace SpiritIsland.Tests;
+﻿namespace SpiritIsland.Tests;
 
 public static class SpiritExtensions {
 
@@ -67,6 +65,10 @@ public static class SpiritExtensions {
 		return card;
 	}
 
+	/// <summary> Reveals Next slot on (energy or card) track. </summary>
+	internal static Task Given_RevealedNextAsync( this IPresenceTrack track) {
+		return track.RevealAsync(track.RevealOptions.First());
+	}
 
 	#endregion Given
 
@@ -171,12 +173,12 @@ public static class SpiritExtensions {
 		TimeSpan waitTime = TimeSpan.FromMilliseconds( ms );
 		try {
 			await task.WaitAsync( waitTime );
-		}catch(TimeoutException ex) {
+		} catch(TimeoutException ex) {
 			throw new Exception($"Operation {taskDescription} did not complete within {ms}mS.",ex);
 		}
 		if(task.IsCompletedSuccessfully) return;
 		if(task.Exception != null)
-			throw new Exception("Task through exception.", task.Exception);
+			throw new Exception("Task threw exception.", task.Exception);
 		throw new Exception( $"{taskDescription} did not complete in {waitTime}" );
 	}
 

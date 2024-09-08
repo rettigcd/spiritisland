@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.NatureIncarnate;
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland.NatureIncarnate;
 
 [InnatePower( Name )]
 [Fast, FromPresence( 1 )]

@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland.JaggedEarth;
 
 public class VoiceOfCommand {
 

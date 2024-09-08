@@ -96,7 +96,10 @@ public sealed class GameState : IHaveMemento {
 	public List<object> ReminderCards = []; // !!! Save to Memento
 
 	public PowerCardDeck MajorCards {get; set; }
-	public PowerCardDeck MinorCards { get; set; }
+	public PowerCardDeck MinorCards { 
+		get; 
+		set;
+	}
 	public readonly Healer Healer = new Healer();
 
 	public List<BlightCard> BlightCards = []; // Deck of Blight Cards

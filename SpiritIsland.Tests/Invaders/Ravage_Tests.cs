@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Tests.Invaders; 
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland.Tests.Invaders;
 
 public class Ravage_Tests {
 

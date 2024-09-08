@@ -99,7 +99,6 @@ ManyMinds - Set out-of-band toggle on beasts, at start of action, make smart cho
 * 2 spirit game (but still 1 player)
 
 == Architecture ==
-Run on Android
 Multiplayer Network Play
 
 == UI improvement ==

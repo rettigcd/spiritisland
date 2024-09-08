@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame;
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland.Basegame;
 
 public class WordsOfWarning {
 

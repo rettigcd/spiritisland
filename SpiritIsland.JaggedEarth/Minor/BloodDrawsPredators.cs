@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland.JaggedEarth;
-	
+
 public class BloodDrawsPredators{ 
 
 	const string Name = "Blood Draws Predators";

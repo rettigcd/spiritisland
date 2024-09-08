@@ -1,5 +1,11 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
+// Roots
+// S:	E Incarna in Town land
+// A:	F,B,A
+// B:	G,C,H
+// C:	D
+
 public class ToweringRootsOfTheJungle : Spirit {
 
 	public const string Name = "Towering Roots of the Jungle";

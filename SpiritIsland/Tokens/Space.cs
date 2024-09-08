@@ -442,7 +442,7 @@ public partial class Space
 
 	public void TimePasses() {
 		var keyArray = ModSnapshot;
-		foreach(var cleanup in keyArray.OfType<ISpaceEntityWithEndOfRoundCleanup>())
+		foreach(var cleanup in keyArray.OfType<ICleanupSpaceWhenTimePasses>())
 			cleanup.EndOfRoundCleanup( this );
 
 		// remove keys (this-space-only, no entities from Island Mods)

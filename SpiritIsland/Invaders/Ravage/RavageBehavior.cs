@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Configures Dahan and Invader behavior on a per-space bases.

@@ -1,5 +1,15 @@
 ﻿namespace SpiritIsland.Basegame;
 
+/*
+Board:
+	A - (S) Great
+	C - (A) OK - Can't get to C3 on Round 1 but that is ok because of Flash Flood
+	B - (A) OK - Might have to skip B1 to get to B4
+	E - (B) Not great - Must choose E4(wetland) or E5
+	F - (B) Not great - Can't access F1&F6 with SS until round 2.
+	D - (C) Bad - Can't reach town on round 1
+*/
+
 /// <summary> River Surges in Sunlight </summary>
 public class RiverSurges : Spirit {
 

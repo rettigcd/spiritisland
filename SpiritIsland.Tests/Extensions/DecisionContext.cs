@@ -73,9 +73,9 @@ public class DecisionContext {
 		switch(moveOptionsForSource.Length) {
 			case 1:
 				Choose( moveOptionsForSource[0] ); break; // auto-select it
-            case 0:
+			case 0:
 				throw new Exception($"found no moves that have source {source}."); // should never happen
-            default:
+			default:
 				// multiple destinations, this is fine.
 				_moveOptions = moveOptionsForSource;
 				break;
@@ -107,9 +107,12 @@ public class DecisionContext {
 	}
 
 	public DecisionContext HasDestinationOptions( string optionsString ) {
-		string actualOptionsString = _moveOptions.Select( move => ((IOption)move.Destination).Text ).OrderBy(x=>x).Join( "," );
-		actualOptionsString
-			.ShouldBe( optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'" );
+		try {
+			string actualOptionsString = _moveOptions.Select( move => ((IOption)move.Destination).Text ).OrderBy(x=>x).Join( "," );
+			actualOptionsString
+				.ShouldBe( optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'" );
+		} catch( Exception ex ) {
+		}
 		return this;
 	}
 

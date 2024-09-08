@@ -1,17 +1,25 @@
-﻿namespace SpiritIsland;
+﻿using SpiritIsland.Invaders.Ravage;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Base token for both Dahan and Invaders
 /// </summary>
 public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
 
+	#region constructors
+
 	/// <summary>
 	/// Constructs a Human Token with the expected Health from the HumanTokenClass.
 	/// </summary>
 	public HumanToken( HumanTokenClass tokenClass ):this(tokenClass,tokenClass.ExpectedHealthHint) {}
 
+	/// <summary>
+	/// Specifies the Health of this token
+	/// </summary>
 	public HumanToken( HumanTokenClass tokenClass, int rawFullHealth ) {
 		HumanClass = tokenClass;
+		Img = tokenClass.Img;
 		_rawFullHealth = rawFullHealth;
 		Damage = 0;
 		DreamDamage = 0;
@@ -24,8 +32,9 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		RavageSide = isDahan ? RavageSide.Defender : RavageSide.Attacker;
 	}
 
-	protected HumanToken( Props x ) {
+	protected HumanToken(Props x) {
 		HumanClass = x.Class;
+		Img = x.Img;
 		_rawFullHealth = x._rawFullHealth;
 
 		RavageOrder = x.RavageOrder;
@@ -36,14 +45,18 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		StrifeCount = x.StrifeCount;
 
 		_summaryString = HumanClass.Initial + "@" + RemainingHealth
-			+ (x.DreamDamage == 0 ? "" : new string( '~', DreamDamage ))
-			+ (x.StrifeCount == 0 ? "" : new string( '^', StrifeCount ));
+			+ (x.DreamDamage == 0 ? "" : new string('~', DreamDamage))
+			+ (x.StrifeCount == 0 ? "" : new string('^', StrifeCount));
 
 		Attack = x.Attack;
 	}
 
+	#endregion constructors
+
 	public HumanTokenClass HumanClass { get; }
 	public ITokenClass Class => HumanClass;
+
+	public Img Img { get; }
 
 	public bool HasTag(ITag tag) => HumanClass.HasTag( tag );
 
@@ -87,6 +100,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	public HumanToken SetAttack( int attack ) => Mutate( x=>x.Attack = attack );
 	public HumanToken SetRavageOrder( RavageOrder round) => Mutate(x=>x.RavageOrder = round );
 	public HumanToken SetRavageSide( RavageSide side ) => Mutate( x => x.RavageSide = side );
+	public HumanToken ChangeImg( Img newImg ) => Mutate( x => x.Img = newImg );
 
 	// For Dream a 1000 Deaths, make token not in the Invader TokenCategory
 	public HumanToken SwitchClass( HumanTokenClass newClass ) => Mutate( x=>x.Class = newClass );
@@ -103,8 +117,12 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	HumanToken Mutate(Action<Props> mod) {
 		Props x = GetProps();
 		mod( x );
-		return MakeNew( x );
+		return MakeNew(x);
 	}
+
+	// virtual so HabsburgDurableToken can return a HabsburgDurableToken instead of a HumanToken
+	protected virtual HumanToken MakeNew(Props x) => new HumanToken(x);
+
 	public class Props {
 		public HumanTokenClass Class;
 		public int _rawFullHealth;
@@ -114,9 +132,8 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		public int Attack;
 		public RavageOrder RavageOrder;
 		public RavageSide RavageSide;
+		public Img Img;
 	}
-
-	protected virtual HumanToken MakeNew( Props x ) => new HumanToken( x );
 
 	public Props GetProps() {
 		return new Props {
@@ -127,7 +144,8 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 			DreamDamage = DreamDamage,
 			Attack = Attack,
 			RavageOrder = RavageOrder,
-			RavageSide = RavageSide
+			RavageSide = RavageSide,
+			Img = Img
 		};
 	}
 
@@ -144,7 +162,8 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		+ 17 * StrifeCount
 		+ 19 * Attack
 		+ 23 * (int)RavageOrder
-		+ 29 * (int)RavageSide;
+		+ 29 * (int)RavageSide
+		+ 31 * (int)Img;
 
 	public override bool Equals( object obj ) => this.Equals( obj as HumanToken );
 
@@ -156,7 +175,8 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 			&& other.StrifeCount == StrifeCount
 			&& other.Attack == Attack
 			&& other.RavageOrder == RavageOrder
-			&& other.RavageSide == RavageSide;
+			&& other.RavageSide == RavageSide
+			&& other.Img == Img;
 	}
 
 	#endregion
@@ -168,8 +188,6 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	string IOption.Text => _summaryString;
 
 	public string SpaceAbreviation => _summaryString;
-
-	public Img Img => HumanClass.Img;
 
 	readonly string _summaryString;
 

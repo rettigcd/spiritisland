@@ -18,7 +18,7 @@
 			<si:CardSummaryView BindingContext="{Binding Card}" IsVisible="{Binding HasCard,Source={RelativeSource AncestorType={x:Type si:CardSlotModel}}}" >
 				<si:CardSummaryView.GestureRecognizers>
 					<!-- Drag -->
-					<DragGestureRecognizer DragStarting="DragGestureRecognizer_DragStarting" CanDrag="{Binding IsDraggable}" />
+					<DragGestureRecognizer DragStarting="DragGestureRecognizer_DragStarting" />
 					<!-- Tap - show deatils -->
 					<TapGestureRecognizer Command="{Binding SelectCommand,Source={RelativeSource AncestorType={x:Type si:CardSlotModel}}}" NumberOfTapsRequired="1" />
 				</si:CardSummaryView.GestureRecognizers>

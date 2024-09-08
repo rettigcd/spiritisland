@@ -1,5 +1,11 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+// Boards
+// S:	E,B,C
+// A:	F,H,G
+// B:	A,D
+
+
 public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public const string Name = "Shifting Memory Of Ages";
@@ -10,6 +16,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		new SpecialRule("Long Ages of Knowledge and Forgetfulness","When you would Forget a Power Card from your hand, you may instead discard it."),
 		new SpecialRule("Insights Into the World's Nature","Some of your Actions let you Prepare Element Markers, which are kept here until used.  Choose the Elements freely.  Each Element Marker spent grants 1 of that Element for a single Action.")
 	};
+
+	#region Presence Track Helpers
 
 	static Track Prepare(int energy){
 		return new Track( energy + " energy, prepare-El" ) {
@@ -28,8 +36,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		Icon = new IconDescriptor { BackgroundImg = Img.ShiftingMemory_Discard2Prep },
 	};
 
-	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements => PreparedElements;
-	public readonly CountDictionary<Element> PreparedElements = [];
+	#endregion Presence Track Helpers
+
+	#region constructor / initialization
 
 	public ShiftingMemoryOfAges() 
 		:base(
@@ -54,6 +63,21 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			InnatePower.For(typeof(ObserveTheEverChangingWorld))
 		];
 	}
+
+	protected override void InitializeInternal(Board board, GameState gameState) {
+		// Put 2 presence on your starting board in the highest-number land that is Sands or Mountain.
+		var space = board.Spaces.Last(x => x.IsOneOf(Terrain.Sands, Terrain.Mountain)).ScopeSpace;
+		space.Setup(Presence.Token, 2);
+
+		// Prepare 1 moon, 1 air, and 1 earth marker. (++ allows us to use SMOA for testing, where =1 overwrites testing values)
+		PreparedElements[Element.Moon]++;
+		PreparedElements[Element.Air]++;
+		PreparedElements[Element.Earth]++;
+	}
+
+	#endregion constructor / initialization
+
+	#region Forget Power changes
 
 	public override async Task<PowerCard> ForgetACard( IEnumerable<PowerCard> restrictedOptions = null, Present present = Present.Always ) {
 		IEnumerable<SingleCardUse> options = SingleCardUse.GenerateUses(CardUse.Discard,InPlay.Union( Hand ))
@@ -95,16 +119,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		throw new System.Exception("Can't find card to forget:"+card.Title);
 	}
 
-	protected override void InitializeInternal( Board board, GameState gameState ) {
-		// Put 2 presence on your starting board in the highest-number land that is Sands or Mountain.
-		var space = board.Spaces.Last( x => x.IsOneOf( Terrain.Sands, Terrain.Mountain ) ).ScopeSpace;
-		space.Setup(Presence.Token, 2);
+	#endregion Forget Power changes
 
-		// Prepare 1 moon, 1 air, and 1 earth marker. (++ allows us to use SMOA for testing, where =1 overwrites testing values)
-		PreparedElements[Element.Moon]++;
-		PreparedElements[Element.Air]++;
-		PreparedElements[Element.Earth]++;
-	}
+	#region Elements
 
 	public async Task PrepareElement(string context) {
 		// This is only used by Shifting Memories
@@ -127,29 +144,29 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			.Where(x => PreparedElements.Contains(x.missing))
 			.ToArray();
 
+		if( options.Length == 0 ) return null;
+		if( options.Length == 1 ) return options[0].innateOption;
+
+		string choice = await this.SelectText("Select Innate Option", options.Select(x => x.prompt).ToArray(), Present.Done);
+		var match = options.FirstOrDefault(o => o.prompt == choice);
+		if( match == null ) return null;
+
+		// !!! BUG - should only be applied to this action, not all.  Remove at end of action
+		Elements.Add(match.missing); // assign to this action so next check recognizes them
+		foreach( var pair in match.missing )
+			PreparedElements[pair.Key] -= pair.Value;
+
+		return match.innateOption;
+
 		static string FormatPrompt(CountDictionary<Element> missing, CountDictionary<Element> optionEls) {
 			string optionElsString = ElementStrings.BuildElementString(optionEls);
 			return missing.Count == 0
 				? $"Use existing => {optionElsString}"
 				: $"Prepare {ElementStrings.BuildElementString(missing)} => {optionElsString}";
 		}
-
-		if (options.Length == 0) return null;
-		if (options.Length == 1) return options[0].innateOption;
-
-		string choice = await this.SelectText("Select Innate Option", options.Select(x => x.prompt).ToArray(), Present.Done);
-		var match = options.FirstOrDefault(o => o.prompt == choice);
-		if (match == null) return null;
-
-		// !!! BUG - should only be applied to this action, not all.  Remove at end of action
-		Elements.Add(match.missing); // assign to this action so next check recognizes them
-		foreach (var pair in match.missing)
-			PreparedElements[pair.Key] -= pair.Value;
-
-		return match.innateOption;
 	}
 
-	#region Elements
+	public readonly CountDictionary<Element> PreparedElements = [];
 
 	public async Task<CountDictionary<Element>> DiscardElements(int totalNumToRemove, string effect ) {
 		var discarded = new CountDictionary<Element>();
@@ -191,6 +208,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		return true;
 
 	}
+
+	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements => PreparedElements;
 
 	#endregion Elements
 

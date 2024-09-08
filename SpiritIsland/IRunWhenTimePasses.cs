@@ -1,15 +1,18 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Can be added to GameState and runs during each TimePasses option.
+/// Non-Space related action that runs during TimePasses.
 /// </summary>
-public interface IRunWhenTimePasses : ISpaceEntity {
+public interface IRunWhenTimePasses {
+
 	/// <returns>If object should be Removed from the TimePasses</returns>
 	Task TimePasses( GameState gameState );
+
 	/// <summary> Indicates if action should be removed after running once. </summary>
 	bool RemoveAfterRun { get; }
 
 	TimePassesOrder Order { get; }
+
 }
 public enum TimePassesOrder { Early, Normal, Late }
 

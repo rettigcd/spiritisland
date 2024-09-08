@@ -1,5 +1,18 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+// Boards
+//S:	C Can pair up Dahan.Access Coast.Town in starting land.  C8 is only weekness. (C2>C4>C3)
+//S:	G Can pair up Dahan. (G2>G6>)
+
+//A:	D Can't get to D3, Dahan in Growth lands
+//A:	E E4 is prob, if comes up 1st need to play Plow share
+
+//B:	F Can't pair Dahan on F3
+//B:	A Can't pair Dahan on A6
+//B:	H Can't pair Dahan on H3
+//B:	B Can't pair Dahan on B1 (Worse board)
+
+
 public class StonesUnyieldingDefiance : Spirit {
 
 	public const string Name = "Stone's Unyielding Defiance";
@@ -12,8 +25,10 @@ public class StonesUnyieldingDefiance : Spirit {
 
 	#region special Tracks
 
-	static Track AddCardPlay => new Track( "PlayExtraCardThisTurn" ) { 
-		Action = new DrawMinorOnceAndPlayExtraCardThisTurn(),
+	static Track AddCardPlay => new Track("Energy+DrawMinor+CardPlay") {
+		OnRevealAsync = (track, spirit) => spirit.DrawMinor(),
+		Action = new PlayExtraCardThisTurn(1),
+
 		Icon = new IconDescriptor {
 			ContentImg = Img.CardPlayPlusN,
 			Text = "+1",

@@ -328,6 +328,7 @@
 	  <None Remove="Resources\Images\presenceTrack\earth_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\empower.png" />
 	  <None Remove="Resources\Images\presenceTrack\energy0z.png" />
+	  <None Remove="Resources\Images\presenceTrack\energy_drawminor_cardplay.png" />
 	  <None Remove="Resources\Images\presenceTrack\fire_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\fire_plant.png" />
 	  <None Remove="Resources\Images\presenceTrack\five_reclaim_one.png" />
@@ -339,7 +340,6 @@
 	  <None Remove="Resources\Images\presenceTrack\pay2forextraplay.png" />
 	  <None Remove="Resources\Images\presenceTrack\pick_element.png" />
 	  <None Remove="Resources\Images\presenceTrack\plant_energy.png" />
-	  <None Remove="Resources\Images\presenceTrack\playextracardthisturn.png" />
 	  <None Remove="Resources\Images\presenceTrack\push1dahan.png" />
 	  <None Remove="Resources\Images\presenceTrack\push1towncity.png" />
 	  <None Remove="Resources\Images\presenceTrack\push_incarna.png" />
@@ -424,6 +424,7 @@
 	  <None Remove="Resources\Images\tokens\elements\water_token.png" />
 	  <None Remove="Resources\Images\tokens\humans\city.png" />
 	  <None Remove="Resources\Images\tokens\humans\dahan.png" />
+	  <None Remove="Resources\Images\tokens\humans\dahan_solid.png" />
 	  <None Remove="Resources\Images\tokens\humans\explorer.png" />
 	  <None Remove="Resources\Images\tokens\humans\town.png" />
 	  <None Remove="Resources\Images\tokens\incarna\boddys.png" />
@@ -680,7 +681,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\pay2forextraplay.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\pick_element.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\plant_energy.png" />
-	  <MauiImage Include="Resources\Images\presenceTrack\playextracardthisturn.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\energy_drawminor_cardplay.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\push1dahan.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\push1towncity.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\push_incarna.png" />
@@ -765,6 +766,7 @@
 	  <MauiImage Include="Resources\Images\tokens\elements\water_token.png" />
 	  <MauiImage Include="Resources\Images\tokens\humans\city.png" />
 	  <MauiImage Include="Resources\Images\tokens\humans\dahan.png" />
+	  <MauiImage Include="Resources\Images\tokens\humans\dahan_solid.png" />
 	  <MauiImage Include="Resources\Images\tokens\humans\explorer.png" />
 	  <MauiImage Include="Resources\Images\tokens\humans\town.png" />
 	  <MauiImage Include="Resources\Images\tokens\incarna\boddys_e.png" />

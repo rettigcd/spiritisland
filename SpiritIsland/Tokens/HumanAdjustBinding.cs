@@ -3,9 +3,11 @@
 namespace SpiritIsland;
 
 /// <summary>
-/// Does not change the logical token in the space, but makes Property-adjustments to it.
+/// A Group of Tokens. Captures the Location,Type and # of tokens.
+/// Used primarily (only?) for adjusting / replacing them.
 /// </summary>
 /// <remarks>
+/// Does not change the logical token in the space, but makes Property-adjustments to it.
 /// Since the Tokens are immutable, instead of changing their properties, replaces with a new Token with desired properties.
 /// </remarks>
 public class HumanAdjustBinding {
@@ -25,7 +27,7 @@ public class HumanAdjustBinding {
 
 	#endregion constructors
 
-	#region public High-Level changes
+	#region Apply (High-Level) Adjustments (public)
 
 	/// <summary> Replaces (via adjust) HealthToken with new HealthTokens </summary>
 	/// <returns> The # of remaining Adjusted tokens. </returns>
@@ -35,15 +37,20 @@ public class HumanAdjustBinding {
 
 	public HumanAdjustment Heal() => Adjust( x=>x.Healthy );
 
-	#endregion public High-Level changes
+	#endregion Apply (High-Level) Adjustments (public)
 
+	#region Apply (Generic) Adjustment (public)
 
+	/// <summary>
+	/// Applies an adjustment to the tokens specified in the object
+	/// when the replacement tokens will not be destroyed.
+	/// </summary>
 	public HumanAdjustment Adjust( Func<HumanToken,HumanToken> adjustment ) {
 		if(_count == 0) return NoChange;
 		HumanToken newToken = adjustment( _token );
 		if(newToken == _token) return NoChange;
 
-		// Make change
+		// Apply change
 		_ss.Adjust( _token, -_count );
 		_ss.Adjust( newToken, _count );
 		var result = new HumanAdjustment( _count, _token, newToken );
@@ -53,7 +60,10 @@ public class HumanAdjustBinding {
 		return result;
 	}
 
-	/// <summary> Use when the new replaced token might be destroyed. </summary>
+	/// <summary> 
+	/// Applies an adjustment to the tokens specified in the object, 
+	/// when the new replaced token might be destroyed.
+	/// </summary>
 	public async Task<HumanAdjustment> AdjustAsync( Func<HumanToken, HumanToken> adjustment ) {
 		if(_count==0) return NoChange;
 		HumanToken newToken = adjustment( _token );
@@ -68,6 +78,8 @@ public class HumanAdjustBinding {
 		return result;
 	}
 
+	#endregion Apply (Generic) Adjustment (public)
+
 	#region private
 	HumanAdjustment NoChange => new HumanAdjustment(0,_token,_token);
 	readonly Space _ss;
@@ -78,6 +90,5 @@ public class HumanAdjustBinding {
 
 public record HumanAdjustment( int Count, HumanToken OldToken, HumanToken NewToken ) : ILogEntry {
 	public LogLevel Level => LogLevel.Debug;
-
 	public string Msg( LogLevel level ) => $"Replace {Count} {OldToken.SpaceAbreviation} with {NewToken.SpaceAbreviation}";
 }
