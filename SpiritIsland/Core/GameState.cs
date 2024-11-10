@@ -155,6 +155,7 @@ public sealed class GameState : IHaveMemento {
 
 	public void AddWinLossCheck( Action<GameState> action ) => WinLossChecks.Add( action );
 
+	/// <summary> Throws GameOverException when Win or Loss condition is met. </summary>
 	public void CheckWinLoss() {
 		foreach(Action<GameState> check in WinLossChecks)
 			check(this);

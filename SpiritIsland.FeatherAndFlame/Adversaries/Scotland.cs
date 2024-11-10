@@ -4,9 +4,24 @@ public class Scotland : AdversaryBase, IAdversary {
 
 	public const string Name = "Scotland";
 
-	public override AdversaryLossCondition LossCondition => TradeHub;
+	#region Additional Win/Loss condition
 
-	public override AdversaryLevel[] Levels => new AdversaryLevel[] {
+	public override AdversaryLossCondition LossCondition => new AdversaryLossCondition(
+		"Trade Hub: If the number of Coastal lands with City is ever greater than (2x # of boards), the Invaders win.",
+		TradeHubImp
+	);
+
+	static void TradeHubImp(GameState gameState) {
+		int coastalCityLandCount = ActionScope.Current.Spaces_Unfiltered
+			.Count(s => s.Has(Human.City) && s.SpaceSpec.IsCoastal);
+		if( 2*gameState.Island.Boards.Length < coastalCityLandCount )
+			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");
+	}
+
+	#endregion Additional Win/Loss condition
+
+
+	public override AdversaryLevel[] Levels => [
 		// Escalation
 		new AdversaryLevel(0, 1 , 3,3,3, "Ports Sprawl Outward", 
 			"On the single board with the most Coastal Town/City, add 1 Town to the N lands with the fewest Town (N = # of players.)" )
@@ -52,8 +67,8 @@ public class Scotland : AdversaryBase, IAdversary {
 		// Level 6
 		new AdversaryLevel(6, 10 , 6,6,4, "Exports Fuel Inward Growth", "After the Ravage step, add 1 Town to each Inland land that matches a Ravage card and is within 1 of town/city" ) {
 			InitFunc = (gameState,_) => gameState.InvaderDeck.Ravage.Engine = new ScotlandRavageEngine(),
-		},
-	};
+		}
+	];
 
 	#region Escalation - Ports Sprawl Outward
 
@@ -76,19 +91,4 @@ public class Scotland : AdversaryBase, IAdversary {
 
 	#endregion Escalation - Ports Sprawl Outward
 
-	#region Additional Win/Loss condition
-
-	static AdversaryLossCondition TradeHub => new AdversaryLossCondition(
-		"Trade Hub: If the number of Coastal lands with City is ever greater than (2 x # of boards), the Invaders win.",
-		TradeHubImp
-	);
-
-	static void TradeHubImp( GameState gameState ) {
-		int coastalCityLandCount = ActionScope.Current.Spaces_Unfiltered
-			.Count( s => s.Has( Human.City ) && s.SpaceSpec.IsCoastal );
-		if( gameState.Island.Boards.Length < coastalCityLandCount )
-			GameOverException.Lost($"Trade Hub - {coastalCityLandCount} coastal lands have cities.");
-	}
-
-	#endregion Additional Win/Loss condition
 }
