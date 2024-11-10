@@ -84,7 +84,7 @@ public sealed class Track( string code, params Element[] els )
 		Icon = new IconDescriptor { BackgroundImg = Img.Reclaim1 }
 	};
 
-	public static Track Energy5Reclaim1 => new Track( "5,reclaim1 energy" ) { 
+	public static Track Energy5Reclaim1 => new Track( "5 energy,reclaim 1" ) { 
 		Energy = 5, Action = new ReclaimN(),
 		Icon = new IconDescriptor { 
 			BackgroundImg = Img.Coin, Text = "5",
@@ -97,7 +97,7 @@ public sealed class Track( string code, params Element[] els )
 		Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = Img.Reclaim1 }
 	};
 
-	public static Track Card5Reclaim1 => new Track( "Five reclaim one" ){ 
+	public static Track Card5Reclaim1 => new Track( "5 cardplay,reclaim 1" ){ 
 		CardPlay=5, 
 		Action = new ReclaimN(),
 		Icon=new IconDescriptor { BackgroundImg = Img.CardPlay, Text="5", Sub = new IconDescriptor{ BackgroundImg = Img.Reclaim1 } },
