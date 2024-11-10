@@ -126,19 +126,24 @@ public partial class NewGamePage : ContentPage {
 
 	// Adversary Helpers
 	void InitAdversaryLevels(AdversaryConfig config) {
-		var adv = _builder.BuildAdversary(config);
+		IAdversary adv = _builder.BuildAdversary(config);
 
 		_adversaryLevels = adv.Levels
 			.Select(x => new MyAdversaryLevel(x))
 			.ToArray();
 
-		if( _adversaryConfig.Name == config.Name ) {
+		if( _adversaryConfig.Name == config.Name )
 			for( int i = 0; i <= _adversaryConfig.Level; ++i )
 				_adversaryLevels[i].ShadowColor = Colors.LightSteelBlue;
-		}
-		//_adversaryLevels[config.Level].ShadowColor = Colors.SteelBlue;
 
 		advLevel.ItemsSource = _adversaryLevels;
+
+		// Show / Hide loss condition.
+		if( adv.LossCondition is not null ) {
+			LossCondition.IsVisible = LossConditionHeader.IsVisible = true;
+			LossCondition.Text = adv.LossCondition.Description;
+		} else
+			LossCondition.IsVisible = LossConditionHeader.IsVisible = false;
 	}
 
 	void FocusAdversaryFlag(View view) {
@@ -152,7 +157,9 @@ public partial class NewGamePage : ContentPage {
 		_focusAdversaryFlag = null;
 	}
 
-	void ShowAdversaryLevels(bool show) { DifficultyLabel.IsVisible = advLevel.IsVisible = show; }
+	void ShowAdversaryLevels(bool show) { 
+		DifficultyLabel.IsVisible = advLevel.IsVisible = show;
+	}
 
 	#endregion Adversary Event Handlers
 
