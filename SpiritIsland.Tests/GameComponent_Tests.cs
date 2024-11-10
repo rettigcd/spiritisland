@@ -22,7 +22,6 @@ public  class GameComponent_Tests {
 		ValidateGameComponentProvider( new SpiritIsland.JaggedEarth.GameComponentProvider() );
 	}
 
-
 	static void ValidateGameComponentProvider( IGameComponentProvider provider ) {
 		Type assemblyType = provider.GetType();
 		FindSpiritNames( assemblyType ).ShouldAllBe( x => provider.SpiritNames.Contains( x ) );
@@ -72,6 +71,7 @@ public  class GameComponent_Tests {
 			.ToArray();
 
 	}
+
 /*
 	[Fact]
 	public void ScanForPrivateFields() {

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net8.0;net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -331,7 +331,6 @@
 	  <None Remove="Resources\Images\presenceTrack\energy_drawminor_cardplay.png" />
 	  <None Remove="Resources\Images\presenceTrack\fire_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\fire_plant.png" />
-	  <None Remove="Resources\Images\presenceTrack\five_reclaim_one.png" />
 	  <None Remove="Resources\Images\presenceTrack\gatherblight.png" />
 	  <None Remove="Resources\Images\presenceTrack\gather_1_dahan.png" />
 	  <None Remove="Resources\Images\presenceTrack\moon_energy.png" />
@@ -385,7 +384,9 @@
 	  <None Remove="Resources\Images\presenceTrack\z5_air_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_any_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_cardplay_reclaim_1z.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_energy.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_energy_reclaim_1z.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_fire_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_sun_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z6_cardplay.png" />
@@ -672,7 +673,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\energy0z.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\fire_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\fire_plant.png" />
-	  <MauiImage Include="Resources\Images\presenceTrack\five_reclaim_one.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_cardplay_reclaim_1z.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\gatherblight.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\gather_1_dahan.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\moon_energy.png" />
@@ -728,6 +729,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_any_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_cardplay.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_energy.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_energy_reclaim_1z.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_fire_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_sun_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z6_cardplay.png" />
@@ -918,6 +920,13 @@
 	  <MauiXaml Update="Views\NewGame\NewGamePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'!='net8.0'">
+		<Compile Remove="**\*.net.cs" />
+		<None Include="**\*.net.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Remove="**\net\**\*.cs" />
+		<None Include="**\net\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 
 </Project>
