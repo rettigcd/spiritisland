@@ -110,7 +110,9 @@
 									</DataTemplate>
 								</CollectionView.ItemTemplate>
 							</CollectionView>
-						
+
+							<Label x:Name="Instructions" Text="{Binding Instructions}" FontAttributes="Italic" FontSize="12" IsVisible="{Binding HasInstructions}" />
+
 						</VerticalStackLayout>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
