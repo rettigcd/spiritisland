@@ -189,13 +189,15 @@ public partial class NewGamePage : ContentPage {
 		gc.ShuffleNumber = (int)DateTime.Now.Ticks;
 
 		var gameState = _builder.BuildGame(gc);
-		SinglePlayerGamePage.QueueNewGame( gameState );
 
-		await Shell.Current.GoToAsync("//GamePage");
-
-		// After .GoToAsync returns, it may still take several seconds to render the board -
-		// keep showing the Spinner for 5 more seconds
-		await Task.Delay(5000);
+		// Set up the New Game Page
+		if(SinglePlayerGamePage.Current is not null )
+			SinglePlayerGamePage.Current.Dispose();
+		SinglePlayerGamePage.Current = new SinglePlayerGamePage( gameState );
+		NavigationPage.SetHasNavigationBar(SinglePlayerGamePage.Current, false);
+		MainPage.Current.ShowCurrentGameButton(true);
+		Navigation.InsertPageBefore(SinglePlayerGamePage.Current, this);
+		await Navigation.PopAsync();
 
 		Activity.IsRunning = false;
 		StartButton.IsEnabled = true;

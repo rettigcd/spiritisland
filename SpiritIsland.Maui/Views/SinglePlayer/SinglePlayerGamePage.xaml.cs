@@ -3,47 +3,22 @@ using SpiritIsland.Log;
 
 namespace SpiritIsland.Maui;
 
-public partial class SinglePlayerGamePage : ContentPage {
+public partial class SinglePlayerGamePage : ContentPage, IDisposable {
 
-	#region static
+	static public SinglePlayerGamePage? Current { get; set; }
 
-	static SinglePlayerGamePage? _singleton;	// chicken
-	static GameState? _unstartedGame;			// egg
 
-	static public void QueueNewGame(GameState unstartedGameState) {
-		_unstartedGame = unstartedGameState;	// set egg
-		_singleton?.TryStartGame();				// tests for chicken
-	}
-
-	#endregion static
-
-	public SinglePlayerGamePage() {
+	public SinglePlayerGamePage(GameState unstartedGame) {
 		InitializeComponent();
-		_singleton = this;			// set chicken
-		TryStartGame();				// tests for egg
-	}
 
-	#region Start/Stop Game
-
-	void TryStartGame() {
-		if(_unstartedGame is null) return;
-
-		// Shut Down Old
-		_model?.ShutDownOld();
-
-		_model = new DecisionModel( _unstartedGame );
-		_unstartedGame = null;
-
+		_model = new DecisionModel(unstartedGame);
 		_model.GameState.NewLogEntry += GameState_NewLogEntry;
 		BindingContext = _model;
-
-		ShowNewGame();
 
 		// Start!
 		_model.Start();
 	}
 
-	#endregion Start/Stop Game
 
 	#region Send/Receive Commands to game
 
@@ -63,11 +38,6 @@ public partial class SinglePlayerGamePage : ContentPage {
 		} else if( obj is Log.ExceptionEntry ) {
 
 		}
-	}
-
-	void ShowNewGame() {
-		GameOverInfo.IsVisible = false;
-		Prompt.IsVisible = Accept.IsVisible = OptionListWrapper.IsVisible = true;
 	}
 
 	void ShowGameOver(GameOverLogEntry go) {
@@ -91,6 +61,10 @@ public partial class SinglePlayerGamePage : ContentPage {
 
 	void SpiritSummary_CardDetailsClicked(object sender, EventArgs e) => _model?.ShowCardPanel();
 
-	DecisionModel? _model;
+	public void Dispose() {
+		_model.ShutDownOld();
+	}
+
+	readonly DecisionModel _model;
 
 }

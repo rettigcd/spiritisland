@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui;
-using Microsoft.Extensions.Logging;
 
 namespace SpiritIsland.Maui; 
 public static class MauiProgram {
@@ -16,10 +15,10 @@ public static class MauiProgram {
 				fonts.AddFont( "playsir-regular.otf", "PlaySirRegular" ); // invader cards
 			} );
 
-//		builder.Services.AddTransientPopup<GrowthPopup, GrowthModel>();
+		//		builder.Services.AddTransientPopup<GrowthPopup, GrowthModel>();
 
 #if DEBUG
-		builder.Logging.AddDebug();
+		Microsoft.Extensions.Logging.DebugLoggerFactoryExtensions.AddDebug(builder.Logging);
 #endif
 
 		return builder.Build();

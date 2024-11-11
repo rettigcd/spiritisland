@@ -5,25 +5,9 @@
 			 x:Class="SpiritIsland.Maui.MainPage">
 
 	<VerticalStackLayout>
-
-		<!-- Slots -->
-		<CollectionView x:Name="Slots" BackgroundColor="Blue" ItemsLayout="VerticalGrid,3" >
-			
-			<CollectionView.ItemTemplate>
-				<DataTemplate x:DataType="si:CardSlotModel" >
-					<si:CardSlotView WidthRequest="120" />
-				</DataTemplate>
-			</CollectionView.ItemTemplate>
-		</CollectionView>
-
-
-		<Label Text="The Gingham dog and calico cat, side by side on the table sat. Twas half past twelve and what do you think" 
-			   LineBreakMode="CharacterWrap"
-			   WidthRequest="300" HeightRequest="80"
-			   BackgroundColor="LightCoral" 
-			   HorizontalOptions="Center" 
-		/>
-
+		<Label Text="Welome to Spirit Island" FontSize="16" />
+		<Button x:Name="CurrentGameButton" Text="↩️ Current Game" Clicked="CurrentGameButton_Clicked" IsVisible="False" Margin="3" />
+		<Button x:Name="NewGameButton" Text="New Game" Clicked="NewGameButton_Clicked" Margin="3"/>
 	</VerticalStackLayout>
 	
 </ContentPage>

@@ -321,7 +321,7 @@ public class CardsOverlayModel : ObservableModel1 {
 		InnateSummary = _innates.Select(i => {
 			try {
 				return i.GetStatusString(elements);
-			} catch( Exception ex ) {
+			} catch {
 				return "BB";
 			}
 		}).Join(" ");
