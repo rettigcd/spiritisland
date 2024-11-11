@@ -2,19 +2,18 @@
 
 class ScotlandBuildEngine : BuildEngine {
 
-	public bool ShouldChartTheCoastline { get; set; }
-
 	public override bool ShouldBuildOnSpace( Space space ) 
 		=> base.ShouldBuildOnSpace( space ) || ChartTheCoastline( space );
 
 	bool ChartTheCoastline( Space space ) {
-		if( !ShouldChartTheCoastline ) return false;
-		bool isCharted = space.SpaceSpec.IsCoastal 
-			&& space.Adjacent.Any( adj => adj.Has( Human.City ) );
+
+		// Make sure space is not isolated.
+		bool isCharted = space.SpaceSpec.IsCoastal && space.IsConnected
+			&& space.Adjacent.Any( adj => adj.Has( Human.City ) && adj.IsConnected );
+
 		if( isCharted )
 			_chartedCoastland.Add(space.Label);
 		return isCharted;
-        
 	}
 
 	readonly HashSet<string> _chartedCoastland = [];

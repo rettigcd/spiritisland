@@ -8,8 +8,7 @@ public class Russia_Tests {
 	public void Level0_Escalation_AddExplorersToBeastSpaces() {
 
 		// Given: Russia, Level 0
-		var cfg = Given_RussiaLevel(0).ConfigBoards("A").ConfigSpirits(RiverSurges.Name);
-		GameState gameState = BuildGame(cfg);
+		GameState gameState = Given_RussiaSoloGame(0);
 		Board board = gameState.Island.Boards[0];
 
 		//  And: no explorers on 2 spaces
@@ -52,8 +51,7 @@ public class Russia_Tests {
 	public void Level0_Escalation_AddExplorersToOtherBoardBeastSpaces() {
 
 		// Given: Russia, Level 0 & 2 spirits
-		var cfg = Given_RussiaLevel(0).ConfigBoards( "A", "B" ).ConfigSpirits( RiverSurges.Name, LureOfTheDeepWilderness.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaLevel(0).ConfigBoards("A", "B").ConfigSpirits(RiverSurges.Name, LureOfTheDeepWilderness.Name).BuildGame();
 		Board board0 = gameState.Island.Boards[0];
 		Board board1 = gameState.Island.Boards[1];
 
@@ -103,8 +101,7 @@ public class Russia_Tests {
 	[Fact]
 	public async Task Level1_Placement_And2Damage() {
 		// Given: Russia, Level 1
-		var cfg = Given_RussiaLevel( 1 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(1);
 		Board board = gameState.Island.Boards[0];
 
 		//  Then: A7 should have get 1 beast and 1 explorer
@@ -124,13 +121,11 @@ public class Russia_Tests {
 
 	[Fact]
 	public async Task Level2_Ravage_SaveExplorer() {
-		var cfg = Given_RussiaLevel( 2 ).ConfigBoards("A").ConfigSpirits(RiverSurges.Name);
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(2);
 		Board boardA = gameState.Island.Boards[0];
 		Space a5 = gameState.Tokens[boardA[5]];
 		// Given: 2 explorers and 10 dahan on a space
 		a5.Given_HasTokens("10D@2,2E@1");
-var xxx = a5.Keys.ToArray();
 		//   And: no explorers on push-destination
 		Space a1 = gameState.Tokens[boardA[1]];
 		a1.Given_ClearAll();
@@ -151,8 +146,7 @@ var xxx = a5.Keys.ToArray();
 
 	[Fact]
 	public async Task Level2_PowerOnCoast_PushExplorerToLandOnly() {
-		var cfg = Given_RussiaLevel( 2 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(2);
 		Spirit spirit = gameState.Spirits[0];
 		Board boardA = gameState.Island.Boards[0];
 		Space a3 = gameState.Tokens[boardA[3]];
@@ -178,8 +172,7 @@ var xxx = a5.Keys.ToArray();
 
 	[Fact]
 	public async Task Level2_DestroyingAllExplorers_Pushes1() {
-		var cfg = Given_RussiaLevel( 2 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(2);
 		Board boardA = gameState.Island.Boards[0];
 		SpaceSpec a5 = boardA[5];
 
@@ -199,8 +192,7 @@ var xxx = a5.Keys.ToArray();
 
 	[Fact]
 	public async Task Level2_IsolateEliminatesDestinatoin() {
-		var cfg = Given_RussiaLevel( 2 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(2);
 		Board boardA = gameState.Island.Boards[0];
 		SpaceSpec a5 = boardA[5];
 
@@ -221,8 +213,7 @@ var xxx = a5.Keys.ToArray();
 
 	[Fact]
 	public async Task Level2_IsolateTargetPreventsPush() {
-		var cfg = Given_RussiaLevel( 2 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(2);
 		Board boardA = gameState.Island.Boards[0];
 		SpaceSpec a5 = boardA[5];
 
@@ -243,8 +234,7 @@ var xxx = a5.Keys.ToArray();
 
 	[Fact]
 	public void Level3_3InvadersRavage() {
-		var cfg = Given_RussiaLevel( 3 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(3);
 		Board boardA = gameState.Island.Boards[0];
 
 		// Given: an invader card from the current GameState
@@ -268,8 +258,7 @@ var xxx = a5.Keys.ToArray();
 
 	[Fact]
 	public async Task Level3_3InvadersDontBuildNorExplore() {
-		var cfg = Given_RussiaLevel( 3 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(3);
 		Board boardA = gameState.Island.Boards[0];
 
 		// Given: an invader card from the current GameState
@@ -297,8 +286,7 @@ var xxx = a5.Keys.ToArray();
 	[Fact]
 	public void Level5_InvaderCardsInFearDeck() {
 		// Given: russia-5
-		GameConfiguration cfg = Given_RussiaLevel( 5 ).ConfigBoards( "A" ).ConfigSpirits( RiverSurges.Name );
-		GameState gameState = BuildGame( cfg );
+		GameState gameState = Given_RussiaSoloGame(5);
 		List<InvaderCard> buildCards = gameState.InvaderDeck.Build.Cards;
 		int startingCount = buildCards.Count;
 		void ActivateCard() => gameState.Fear.Add( 4 );
@@ -324,6 +312,6 @@ var xxx = a5.Keys.ToArray();
 
 	// Level 6 - Not testing, I will never play it.
 
+	static GameState Given_RussiaSoloGame( int level ) => Given_RussiaLevel(level).ConfigBoards("A").ConfigSpirits(RiverSurges.Name).BuildGame();
 	static GameConfiguration Given_RussiaLevel( int level ) => new GameConfiguration { Adversary = new AdversaryConfig( Russia.Name, level ), ShuffleNumber = 1, };
-	static GameState BuildGame( GameConfiguration cfg ) => ConfigurableTestFixture.GameBuilder.BuildGame( cfg );
 }

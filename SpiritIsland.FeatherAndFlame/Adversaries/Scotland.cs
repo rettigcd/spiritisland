@@ -34,7 +34,7 @@ public class Scotland : AdversaryBase, IAdversary {
 		},
 
 		// Level 2
-		new AdversaryLevel(2, 4 , 4,4,3, "Seize Opportunity" ) {
+		new AdversaryLevel(2, 4 , 4,4,3, "Seize Opportunity", "During Setup, add 1 City to land #2." ) {
 			InitFunc = (gameState,_) => {
 				// Add 1 City to land #2
 				foreach(Board board in gameState.Island.Boards)
@@ -45,11 +45,11 @@ public class Scotland : AdversaryBase, IAdversary {
 
 		// Level 3
 		new AdversaryLevel(3,6 , 4,5,4, "Chart the Coastline", "In Coastal lands, Build Cards affect lands without Invaders, so long as there is an adjacent City." ) {
-			InitFunc = (gameState,_) => gameState.InvaderDeck.Build.Engine = new ScotlandBuildEngine { ShouldChartTheCoastline = true },
+			InitFunc = (gameState,_) => gameState.InvaderDeck.Build.Engine = new ScotlandBuildEngine(),
 		},
 
 		// Level 4
-		new AdversaryLevel(4, 7 , 5,5,4, "Ambition of a Minor Nation", "11-22-3-C2-3333" ).WithInvaderCardOrder("11-22-3-C-2-3333"), // !!! ??? is this order correct?
+		new AdversaryLevel(4, 7 , 5,5,4, "Ambition of a Minor Nation" ).WithInvaderCardOrder("11-22-3-C2-3333"),
 
 		// Level 5
 		new AdversaryLevel(5,8 , 5,6,4, "Runoff and Bilgewater", 

@@ -14,6 +14,7 @@ public class GameConfiguration {
 	public GameConfiguration ConfigSpirits(params string[] spirits ) { Spirits = spirits; return this; }
 	public GameConfiguration ConfigBoards( params string[] boards ) { Boards = boards; return this; }
 	public GameConfiguration ConfigCommandBeasts( bool cmdBeasts ) { CommandTheBeasts = cmdBeasts; return this; }
+	public GameConfiguration ConfigAdversary(string adversaryName, int level) { return ConfigAdversary(new AdversaryConfig(adversaryName, level)); }
 	public GameConfiguration ConfigAdversary( AdversaryConfig adversary ) {  Adversary = adversary; return this; }
 	#endregion
 }

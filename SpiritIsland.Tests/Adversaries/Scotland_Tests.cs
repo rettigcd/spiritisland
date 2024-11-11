@@ -6,8 +6,7 @@ public class Scotland_Tests {
 	public void TwoCoastalCities_IsNotLoss() {
 
 		// Given: Russia, Level 0
-		GameConfiguration cfg = Given_ScotlandLevel(0).ConfigBoards("A").ConfigSpirits(RiverSurges.Name);
-		GameState gameState = BuildGame(cfg);
+		GameState gameState = Given_ScotlandSoloGame(0);
 		Board board = gameState.Island.Boards[0];
 
 		//   And: Cities on 2 coastal spaces
@@ -22,9 +21,8 @@ public class Scotland_Tests {
 	[Fact]
 	public void ThreeCoastalCities_IsLoss() {
 
-		// Given: Russia, Level 0
-		GameConfiguration cfg = Given_ScotlandLevel(0).ConfigBoards("A").ConfigSpirits(RiverSurges.Name);
-		GameState gameState = BuildGame(cfg);
+		// Given: Scotland, Level 0
+		GameState gameState = Given_ScotlandSoloGame(0);
 		Board board = gameState.Island.Boards[0];
 
 		//   And: Cities on 2 coastal spaces
@@ -37,8 +35,40 @@ public class Scotland_Tests {
 		goex.Status.Result.ShouldBe(GameOverResult.Defeat);
 	}
 
+	[Theory]
+	[InlineData(false, false, true)]
+	[InlineData(true, false, false)]
+	[InlineData(false, true, false)]
+	public async Task EmptyCoastalLandsAdjacentToCity_Builds(bool buildSpaceIsolated, bool cityIsolated, bool doesBuild) {
+		// Given: Scotland, Level 3
+		GameState gameState = Given_ScotlandSoloGame(3);
+		Board board = gameState.Island.Boards[0];
+		Space a1 = board[1].ScopeSpace;
+		Space a2 = board[2].ScopeSpace;
 
-	static GameConfiguration Given_ScotlandLevel(int level) => new GameConfiguration { Adversary = new AdversaryConfig(Scotland.Name, level), ShuffleNumber = 1, };
-	static GameState BuildGame(GameConfiguration cfg) => ConfigurableTestFixture.GameBuilder.BuildGame(cfg);
+		//   And: Land 1 is empty
+		a1.Given_ClearTokens();
+		//   And: has an adjacent city (in Land 2)
+		a2.Given_InitSummary("1C@3");
+
+		//   And: Land 1 is (conditionally isolated)
+		if(buildSpaceIsolated) a1.Isolate();
+
+		//   And: Land 2 is (conditionally isolated)
+		if( cityIsolated ) a2.Isolate();
+
+		// When: building
+		var mountainCard = InvaderDeckBuilder.Level1Cards.Single(c => c.Code == "M");
+		await gameState.InvaderDeck.Build.ActivateCard(mountainCard, gameState);
+
+		// Then: there should/should no be a Town on A1
+		a1.Assert_HasInvaders(doesBuild ? "1T@2" : "");
+	}
+
+	static GameState Given_ScotlandSoloGame(int level) => new GameConfiguration()
+		.ConfigAdversary(Scotland.Name, level)
+		.ConfigBoards("A")
+		.ConfigSpirits(RiverSurges.Name)
+		.BuildGame();
 
 }

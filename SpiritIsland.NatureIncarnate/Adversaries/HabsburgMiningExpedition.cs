@@ -143,7 +143,7 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 	}
 
 	class RavageInMiningLandsDuringBuild : BuildEngine {
-		public override Task Do1Build( GameState gameState, Space space ) {
+		public override Task TryToDo1Build( GameState gameState, Space space ) {
 			return IsMiningLand(space) 
 				? space.Ravage() 
 				: new BuildOnceOnSpace_Default().ActAsync( space );

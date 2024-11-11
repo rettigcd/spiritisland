@@ -19,8 +19,7 @@ public class France_Tests {
 	[Fact]
 	public async Task Round4_TriggersMinorUprising(){
 		// Given: France
-		var cfg = Given_FranceLevel(2).ConfigBoards( "A" ).ConfigSpirits( Keeper.Name );
-		var gs = BuildGame(cfg);
+		var gs = Given_FranceSolotGame(2);
 
 		//   And: Round 4
 		for(int i=0;i<3;++i) await gs.TriggerTimePasses();
@@ -37,8 +36,7 @@ public class France_Tests {
 	[Fact]
 	public async Task AfterRewind_EscalationStillWorks(){
 		// Given: initialized card deck with France
-		var cfg = Given_FranceLevel(2).ConfigBoards( "A" ).ConfigSpirits( Keeper.Name );
-		var gs = BuildGame(cfg);
+		var gs = Given_FranceSolotGame(2);
 		gs.Initialize();
 
 		//   And: next card to Reveal has escalation
@@ -66,7 +64,6 @@ public class France_Tests {
 		u.NextDecision.HasPrompt("Select space to Add 1 Blight if Town/City. Add Town otherwise.").Choose("A8");
 	});
 
-	static GameConfiguration Given_FranceLevel( int level ) => new GameConfiguration { Adversary = new AdversaryConfig( France.Name, level ), ShuffleNumber = 1, };
-	static GameState BuildGame( GameConfiguration cfg ) => ConfigurableTestFixture.GameBuilder.BuildGame( cfg );
-
+	static GameState Given_FranceSolotGame(int level) => Given_FranceLevel(level).ConfigBoards("A").ConfigSpirits(Keeper.Name).BuildGame();
+	static GameConfiguration Given_FranceLevel( int level ) => new GameConfiguration{ ShuffleNumber=1 }.ConfigAdversary( France.Name, level );
 }

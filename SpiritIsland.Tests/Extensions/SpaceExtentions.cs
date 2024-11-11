@@ -4,7 +4,11 @@ namespace SpiritIsland.Tests;
 
 public static partial class SpaceExtentions {
 
+	#region Given_InitSummary("1T@2")
+
+	/// <summary> Inits all tokens listed so the summary will match. </summary>
 	public static void Given_InitSummary( this SpaceSpec space, string desiredSummary ) => space.ScopeSpace.Given_InitSummary(desiredSummary);
+
 	/// <summary> Inits all tokens listed so the summary will match. </summary>
 	public static void Given_InitSummary( this Space space, string desiredSummary ) {
 		CountDictionary<IToken> desiredTokens = ParseTokens( desiredSummary );
@@ -21,6 +25,10 @@ public static partial class SpaceExtentions {
 		space.Summary.ShouldBe( desiredSummary == "" ? "[none]" : desiredSummary );
 	}
 
+	#endregion Given_InitSummary("1T@2")
+
+	#region Given_HasTokens("2E@1")
+
 	/// <summary> Inits these tokens but leaves the non-listed alone. </summary>
 	static public Space Given_HasTokens( this SpaceSpec space, string tokenString ) => space.ScopeSpace.Given_HasTokens( tokenString );
 
@@ -33,6 +41,10 @@ public static partial class SpaceExtentions {
 		return space;
 	}
 
+	#endregion Given_HasTokens("2E@1")
+
+	#region Given_ClearTokens()
+
 	static public Space Given_ClearTokens( this SpaceSpec space ) 
 		=> space.ScopeSpace.Given_ClearTokens();
 
@@ -41,6 +53,8 @@ public static partial class SpaceExtentions {
 			space.Init(token, 0);
 		return space;
 	}
+
+	#endregion Given_ClearTokens()
 
 	static public Space Given_ClearInvaders( this Space space ){
 		foreach(IToken token in space.HumanOfTag(TokenCategory.Invader).ToArray())
@@ -120,11 +134,17 @@ public static partial class SpaceExtentions {
 
 	#endregion When Invader Explore/Build/Ravage
 
+	#region Assert_HasInvaders()
+
 	static public void Assert_HasInvaders( this SpaceSpec space, string expectedInvaderSummary )
 		=> space.ScopeSpace.Assert_HasInvaders(expectedInvaderSummary);
 
 	static public void Assert_HasInvaders( this Space space, string expectedInvaderSummary )
 		=> space.InvaderSummary().ShouldBe( expectedInvaderSummary );
+
+	#endregion Assert_HasInvaders()
+
+	#region Assert_DreamingInvaders("2E@1")
 
 	static public void Assert_DreamingInvaders( this SpaceSpec space, string expectedString )
 		=> space.ScopeSpace.Assert_DreamingInvaders( expectedString );
@@ -139,6 +159,8 @@ public static partial class SpaceExtentions {
 			.Join( "," );
 		dreamerSummary.ShouldBe( expectedString );
 	}
+
+	#endregion Assert_DreamingInvaders("2E@1")
 
 	static public string InvaderSummary( this Space space ) {
 		static int Order_CitiesTownsExplorers( HumanToken invader )

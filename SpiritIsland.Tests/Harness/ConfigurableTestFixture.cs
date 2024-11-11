@@ -24,6 +24,13 @@ namespace SpiritIsland.Tests;
 /// </summary>
 public class ConfigurableTestFixture {
 
+	static readonly public GameBuilder GameBuilder = new GameBuilder(
+		new Basegame.GameComponentProvider(),
+		new BranchAndClaw.GameComponentProvider(),
+		new FeatherAndFlame.GameComponentProvider(),
+		new JaggedEarth.GameComponentProvider()
+	);
+
 	#region Configurable Parts
 
 	public SpiritPresence Presence => Spirit.Presence;
@@ -61,17 +68,6 @@ public class ConfigurableTestFixture {
 		_board = _gameState.Island.Boards.Single();
 	}
 
-	static readonly public GameBuilder GameBuilder;
-
-	static ConfigurableTestFixture() {
-		var providers = new IGameComponentProvider[] {
-			new SpiritIsland.Basegame.GameComponentProvider(),
-			new SpiritIsland.BranchAndClaw.GameComponentProvider(),
-			new SpiritIsland.FeatherAndFlame.GameComponentProvider(),
-			new SpiritIsland.JaggedEarth.GameComponentProvider(),
-		};
-		GameBuilder = new GameBuilder( providers );
-	}
 	#endregion
 
 	/// <summary>
@@ -149,4 +145,11 @@ public class ConfigurableTestFixture {
 	}
 
 	#endregion
+}
+
+static public class GameConfiguration_Extensions {
+	/// <summary>
+	/// Uses ConfigurableTestFixture to construct the game.
+	/// </summary>
+	static public GameState BuildGame(this GameConfiguration cfg) => ConfigurableTestFixture.GameBuilder.BuildGame(cfg);
 }
