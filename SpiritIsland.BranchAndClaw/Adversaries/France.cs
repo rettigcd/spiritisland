@@ -49,11 +49,7 @@ public class France : AdversaryBase, IAdversary {
 
 	static AdversaryLevel Esc_DemandForNewCashCrops => new AdversaryLevel(0, 2 , 3,3,3, "Demand for New Cash Crops", 
 		"After Exploring, on each board, pick a land of the shown terrain.  If it has Town/City, add 1 Blight. Otherwise, add 1 Town."
-	) {
-		InitFunc = (gs,_) => {
-			gs.InvaderDeck.Explore.Engine.Escalation = DemandForNewCashCrops;
-		}
-	};
+	).WithEscalation(DemandForNewCashCrops);
 
 	public static async Task DemandForNewCashCrops( GameState gs ) {
 		// After Exploring, on each board, pick a land of the shown terrain.
@@ -268,7 +264,7 @@ public class France : AdversaryBase, IAdversary {
 		InitFunc = (gameState,_) => { 
 
 			// After resolving an Explore Card, on each board add 1 Explorer to a land without any. 
-			gameState.InvaderDeck.Explore.Engine.ExplorePhaseComplete += Cmd.AddHuman(1,Human.Explorer,$" ({Level6_Title})").To()
+			gameState.InvaderDeck.Explore.Engine.ExploreForCardComplete += Cmd.AddHuman(1,Human.Explorer,$" ({Level6_Title})").To()
 				.OneLandPerBoard().Which( Has.No(Human.Explorer) )
 				.ForEachBoard().ActAsync;
 

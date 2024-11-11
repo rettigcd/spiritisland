@@ -3,7 +3,7 @@
 public class ExploreEngine {
 
 	public Func<GameState, Task> Escalation;
-	public event Func<GameState,Task> ExplorePhaseComplete;
+	public event Func<GameState,Task> ExploreForCardComplete;
 	public event Func<Space,Task> ExploredSpace;
 
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
@@ -11,12 +11,11 @@ public class ExploreEngine {
 		Space[] tokenSpacesToExplore = PreExplore( card );
 		await ExplorePerMarker_ManySpaces_Stoppable( tokenSpacesToExplore, card.TriggersEscalation );
 
-
 		if( card.TriggersEscalation && Escalation != null )
 			await Escalation(gameState);
 
-		if(ExplorePhaseComplete is not null)
-			await ExplorePhaseComplete(gameState);
+		if(ExploreForCardComplete is not null)
+			await ExploreForCardComplete(gameState);
 	}
 
 	static protected Space[] PreExplore( InvaderCard card ) {
