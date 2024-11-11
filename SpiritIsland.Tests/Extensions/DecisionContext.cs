@@ -111,7 +111,7 @@ public class DecisionContext {
 			string actualOptionsString = _moveOptions.Select( move => ((IOption)move.Destination).Text ).OrderBy(x=>x).Join( "," );
 			actualOptionsString
 				.ShouldBe( optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'" );
-		} catch( Exception ex ) {
+		} catch( Exception ) {
 		}
 		return this;
 	}

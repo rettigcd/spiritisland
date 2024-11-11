@@ -1,3 +1,48 @@
+=========================
+
+UI - "Play" should be wide enough to dispoay all word
+UI - Adversary Level:"Escalation" are getting cut off at end
+UI - show Adversary flag & details during game play
+UI - Display Card Images
+UI - Display Icons in Text (card descriptions)
+UI - Landscape layout
+
+CONFIG - enter game #
+CONFIG - replay game
+CONFIG - When Game Over, be able to start new without closing APP
+
+SPIRITS - Horizon Spirits
+SPIRITS - Aspects (new spirits)
+
+MVVM threading best practices
+
+BUG - Indomitable claim boosted dahans health, when I tried to gather 1 of them, game crashed.
+BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.
+BUG - If no Dahan, strife does not come off invaders
+BUG - Russia/Lure - Lures sit-out explorers should prevent the 3-explorer combo from ravaging
+	Option - Change Lure's config ravage to run when spaces are being selected
+	Option - Russia adds token for 3 explorers that stops the ravage if explorers are sat out - BLAH!
+
+
+==== Maui questions / Problems ====
+
+
+Why is it better to show/hide popups instead of re-creating them?
+
+Slide-In - how to do it?
+
+MVVM threading - best practice
+	> When button click, model runs on UI thread
+	> when model has event, thread is marshaled to UI thread.
+
+
+Landscape vs Portrait - different Views?
+
+Derived types in an enumeratoins.
+
+When are pages torn down and rebuilt when switching pages?
+
+
 ==== What I learned ====
 Using execution context to create ActionScope unit-of-work
 Using execution context to store GameState to avoid passing to everything.
@@ -113,5 +158,4 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
-
 

@@ -2,18 +2,18 @@
 
 public class BuildEngine {
 
-	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
+	public virtual async Task ActivateCard( InvaderCard card ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Building:" + card.Code ) );
-		AddBuildTokensMatchingCard( card, gameState );
-		await Build( gameState );
+		AddBuildTokensMatchingCard( card );
+		await Build();
 	}
 
-	static protected Space[] GetSpacesMatchingCard( InvaderCard card, GameState _ )
+	static protected Space[] GetSpacesMatchingCard( InvaderCard card )
 		=> ActionScope.Current.Spaces.Where( card.MatchesCard ).ToArray();
 
 	// step 1 - Add Build Tokens in correct spot.
-	void AddBuildTokensMatchingCard( InvaderCard card, GameState gameState ) {
-		var cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
+	void AddBuildTokensMatchingCard( InvaderCard card ) {
+		var cardDependentBuildSpaces = GetSpacesMatchingCard( card );
 		var spacesMatchingCardCriteria = cardDependentBuildSpaces
 			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it
 			.ToArray();
@@ -31,7 +31,7 @@ public class BuildEngine {
 	}
 
 	// step 2 - Build where there are build tokens.
-	async Task Build( GameState gameState ) {
+	async Task Build() {
 
 		// Scan for all Build Tokens - both Card-Build-Spaces plus any pre-existing DoBuilds
 		// ** May contain more than just Normal Build, due to rule/power that added extra ones.
@@ -42,14 +42,14 @@ public class BuildEngine {
 
 		// Do Builds on each space
 		foreach(var space in matchingSpacesWithBuildTokens)
-			await DoAllBuildsInSpace( gameState, space );
+			await DoAllBuildsInSpace( space );
 
 	}
 
-	protected virtual async Task DoAllBuildsInSpace( GameState gameState, Space space ) {
+	protected virtual async Task DoAllBuildsInSpace( Space space ) {
 		int buildCounts = PullBuildTokens( space );
 		while(0 < buildCounts--)
-			await TryToDo1Build( gameState, space );
+			await TryToDo1Build( space );
 	}
 
 	/// <summary> Gets the Build tokens, then clears them. </summary>
@@ -60,7 +60,7 @@ public class BuildEngine {
 	}
 
 	/// <summary> Makes 1 attempt to build, may be stopped by Build-Stoppers </summary>
-	public virtual async Task TryToDo1Build( GameState _, Space space ){
+	public virtual async Task TryToDo1Build( Space space ){
 		var builtToken = await new BuildOnceOnSpace_Default().ActAsync( space );
 		if(builtToken is not null && BuildComplete is not null)
 			await BuildComplete(space,builtToken); // Trigger event

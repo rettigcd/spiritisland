@@ -4,16 +4,16 @@ class HabsurgBuilder : BuildEngine {
 
 	public bool ReplaceInlandCityWith2Towns { get; set; }
 
-	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
-		await base.ActivateCard( card, gameState );
+	public override async Task ActivateCard( InvaderCard card ) {
+		await base.ActivateCard( card );
 		
 		// Migratory Herders ( After the normal Build Step...)
-		await MigratoryHerders( card, gameState );
+		await MigratoryHerders( card );
 
 	}
 
-	static async Task MigratoryHerders( InvaderCard card, GameState gameState ) {
-		Space[] cardDependentBuildSpaces = GetSpacesMatchingCard( card, gameState );
+	static async Task MigratoryHerders( InvaderCard card ) {
+		Space[] cardDependentBuildSpaces = GetSpacesMatchingCard( card );
 		ActionScope actionScope = await ActionScope.Start(ActionCategory.Invader);// ??? !! should we reuse the original action?
 
 		// In each land matching a Build Card
@@ -28,7 +28,7 @@ class HabsurgBuilder : BuildEngine {
 		}
 	}
 
-	public override Task TryToDo1Build( GameState _, Space space ) 
+	public override Task TryToDo1Build( Space space ) 
 		=> ReplaceInlandCityWith2Towns 
 			? new HasburgSpaceBuilder().ActAsync( space )
 			: new BuildOnceOnSpace_Default().ActAsync( space );

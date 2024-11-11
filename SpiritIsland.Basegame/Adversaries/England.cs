@@ -82,7 +82,7 @@ public class England : AdversaryBase, IAdversary {
 	}
 
 	static SpaceAction Build => new SpaceAction( "Build (Escalation - Building Boom)", 
-		x => { var gs = GameState.Current; return gs.InvaderDeck.Build.Engine.TryToDo1Build(gs,x.Space); }
+		x => { return GameState.Current.InvaderDeck.Build.Engine.TryToDo1Build(x.Space); }
 	);
 
 	static CtxFilter<TargetSpaceCtx> Has_TheMostTownsAndCities => new CtxFilter<TargetSpaceCtx>(" has the most Town/City", HasTheMostTownsOrCities_Imp );

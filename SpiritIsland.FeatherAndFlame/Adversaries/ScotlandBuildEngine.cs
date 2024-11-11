@@ -18,8 +18,8 @@ class ScotlandBuildEngine : BuildEngine {
 
 	readonly HashSet<string> _chartedCoastland = [];
 
-	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
-		await base.ActivateCard( card, gameState );
+	public override async Task ActivateCard( InvaderCard card ) {
+		await base.ActivateCard( card );
 		if( _chartedCoastland.Count != 0) {
 			ActionScope.Current.Log(new SpiritIsland.Log.Debug("Charted Coastland: by building on "+_chartedCoastland.Order().Join(",")));
 			_chartedCoastland.Clear();

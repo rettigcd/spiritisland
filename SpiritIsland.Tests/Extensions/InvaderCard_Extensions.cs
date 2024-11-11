@@ -6,7 +6,7 @@ static class InvaderCard_Extensions {
 		=> new RavageEngine().ActivateCard( invaderCard, GameState.Current ).ShouldComplete( "Ravage" );
 
 	internal static Task When_Building( this InvaderCard invaderCard )
-		=> new BuildEngine().ActivateCard( invaderCard, GameState.Current ).ShouldComplete( "Build" );
+		=> new BuildEngine().ActivateCard( invaderCard ).ShouldComplete( "Build" );
 
 	internal static Task When_Exploring( this InvaderCard invaderCard )
 		=> new ExploreEngine().ActivateCard( invaderCard, GameState.Current ).ShouldComplete( "Explore" );
