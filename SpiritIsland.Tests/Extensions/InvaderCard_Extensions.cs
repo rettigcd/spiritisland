@@ -3,7 +3,7 @@
 static class InvaderCard_Extensions {
 
 	internal static Task When_Ravaging( this InvaderCard invaderCard )
-		=> new RavageEngine().ActivateCard( invaderCard, GameState.Current ).ShouldComplete( "Ravage" );
+		=> new RavageEngine().ActivateCard( invaderCard ).ShouldComplete( "Ravage" );
 
 	internal static Task When_Building( this InvaderCard invaderCard )
 		=> new BuildEngine().ActivateCard( invaderCard ).ShouldComplete( "Build" );

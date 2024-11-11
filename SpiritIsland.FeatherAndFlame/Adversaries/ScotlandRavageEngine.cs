@@ -1,9 +1,9 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
 public class ScotlandRavageEngine : RavageEngine {
-	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
+	public override async Task ActivateCard( InvaderCard card ) {
 
-		await base.ActivateCard( card, gameState );
+		await base.ActivateCard( card );
 		// After the Ravage step,
 		await FuelInwardGrowth( card );
 	}

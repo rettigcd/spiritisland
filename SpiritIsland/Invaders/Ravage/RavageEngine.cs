@@ -3,7 +3,7 @@
 public class RavageEngine {
 	protected virtual bool MatchesCardForRavage( InvaderCard card, Space space ) => card.MatchesCard( space );
 
-	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
+	public virtual async Task ActivateCard( InvaderCard card ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Ravaging:" + card.Code ) );
 		var ravageSpacesMatchingCard = ActionScope.Current.Spaces
 			.Where( ss => MatchesCardForRavage( card, ss ) )

@@ -12,10 +12,10 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 	}
 
 	// After Ravage, on each board where it added no Blight: In the land with the most Explorer( min. 1), add 1 Explorer and 1 Town.
-	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
+	public override async Task ActivateCard( InvaderCard card ) {
 		_token.PreRavage();
-		await base.ActivateCard( card, gameState );
-		await _token.PressureForFastProfit( gameState );
+		await base.ActivateCard( card );
+		await _token.PressureForFastProfit();
 	}
 
 	readonly RecordBlightAdded _token;
@@ -39,11 +39,11 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 			}
 		}
 
-		public async Task PressureForFastProfit( GameState gameState ) {
+		public async Task PressureForFastProfit() {
 			// Level 6
 			// After the Ravage Step of turn 2+,
 			// on each board where it added no Blight:
-			var boardsWithNoNewBlight = gameState.Island.Boards.Except( _receivedRavageBlight );
+			var boardsWithNoNewBlight = GameState.Current.Island.Boards.Except( _receivedRavageBlight );
 
 			// In the land with the most Explorer
 			static Space PickSpaceWithMostExplorers( Board board ) => board.Spaces.ScopeTokens()

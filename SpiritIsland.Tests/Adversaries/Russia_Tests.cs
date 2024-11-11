@@ -249,7 +249,7 @@ public class Russia_Tests {
 		a5.Given_ClearAll().Given_HasTokens("1D@2,3E@1");
 
 		//  When: card ravages (Can't do card.When_Ravaging because we are testing Russias replacement of the Engine)
-		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card, gameState ).Wait();
+		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card ).Wait();
 
 		//  Then: dahan is destroyed and land is blighted
 		a5.Summary.ShouldBe("1B,3E@1");
