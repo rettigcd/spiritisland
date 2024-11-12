@@ -4,6 +4,8 @@ public class Scotland : AdversaryBase, IAdversary {
 
 	public const string Name = "Scotland";
 
+	public Scotland():base(Name) { }
+
 	#region Additional Win/Loss condition
 
 	public override AdversaryLossCondition LossCondition => new AdversaryLossCondition(

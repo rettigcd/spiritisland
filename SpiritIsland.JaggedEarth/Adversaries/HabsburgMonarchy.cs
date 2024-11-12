@@ -4,6 +4,8 @@ public class HabsburgMonarchy : AdversaryBase, IAdversary {
 
 	public const string Name = "Habsburg Monarchy";
 
+	public HabsburgMonarchy():base(Name) { }
+
 	public override AdversaryLevel[] Levels => _levels;
 
 	public override AdversaryLossCondition LossCondition => new IrreperableDamage();

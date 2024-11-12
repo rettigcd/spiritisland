@@ -52,7 +52,7 @@ public partial class NewGamePage : ContentPage {
 	}
 
 	void SetCurrentSpirit(string spiritName) {
-		Spirit.Source = BadgeToImgConverter.NameToImage(spiritName);
+		Spirit.Source = NameToBadgeImgConverter.NameToImage(spiritName);
 		Spirit.ClassId = spiritName;
 	}
 

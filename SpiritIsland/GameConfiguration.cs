@@ -18,9 +18,3 @@ public class GameConfiguration {
 	public GameConfiguration ConfigAdversary( AdversaryConfig adversary ) {  Adversary = adversary; return this; }
 	#endregion
 }
-
-
-
-public record AdversaryConfig( string Name, int Level ) {
-	public static readonly AdversaryConfig NullAdversary = new AdversaryConfig("",0);
-}

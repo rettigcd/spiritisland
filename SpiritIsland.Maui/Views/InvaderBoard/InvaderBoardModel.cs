@@ -10,15 +10,19 @@ public class InvaderBoardModel : ObservableModel {
 
 	#region Invader Cards - Observable
 
+	public bool HasHighBuild { get => _hasHighBuild; set => SetProp(ref _hasHighBuild, value); }
+	public ImageSource[] HighBuildImages { get => _highBuildImages; set => SetProp(ref _highBuildImages, value); }
 	public ImageSource[] RavageImages { get => _ravageImages; set => SetProp(ref _ravageImages, value); }
 	public ImageSource[] BuildImages { get => _buildImages; set => SetProp(ref _buildImages,value); }
 	public int InvaderStage { get => _invaderStage; set => SetProp(ref _invaderStage,value); }
 	public int RemainingInvaderDeckCards { get => _remainingInvaderDeckCards; set => SetProp(ref _remainingInvaderDeckCards,value); }
 
+	ImageSource[] _highBuildImages;
 	ImageSource[] _ravageImages;
 	ImageSource[] _buildImages;
 	int _invaderStage;
 	int _remainingInvaderDeckCards;
+	bool _hasHighBuild;
 
 	#endregion Invader Cards - Observable
 
@@ -52,6 +56,7 @@ public class InvaderBoardModel : ObservableModel {
 		_blightPool = gs.BlightCard;
 		_ravageImages = [];
 		_buildImages = [];
+		_highBuildImages = [];
 
 		game.GameState.NewLogEntry += GameState_NewLogEntry;
 
@@ -90,6 +95,11 @@ public class InvaderBoardModel : ObservableModel {
 		BuildImages = GetInvaderFlipped(_deck.Build.Cards);
 		InvaderStage = _deck.InvaderStage;
 		RemainingInvaderDeckCards = _deck.UnrevealedCards.Count;
+
+		HasHighBuild = (_deck.ActiveSlots[0] != _deck.Ravage);
+		if(HasHighBuild)
+			HighBuildImages = GetInvaderFlipped(_deck.ActiveSlots[0].Cards);
+
 		// remove activated Fear
 		ActivatedFearCards = _fear.ActivatedCards.Count;
 	}

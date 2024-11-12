@@ -67,4 +67,7 @@ public partial class SinglePlayerGamePage : ContentPage, IDisposable {
 
 	readonly DecisionModel _model;
 
+	async void AdversaryButton_Clicked(object sender, EventArgs e) {
+		await DisplayAlert("Adversary", _model.GameState.Adversary.Describe(),"Close");
+	}
 }

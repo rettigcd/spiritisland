@@ -4,6 +4,8 @@ public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
 
 	public const string Name = "Habsburg Mining Expedition";
 	
+	public HabsburgMiningExpedition():base(Name) { }
+
 	public override AdversaryLevel[] Levels => _scenarioMods;
 
 	public override AdversaryLossCondition LossCondition => new LandStrippedBare();

@@ -1,5 +1,4 @@
-﻿//using Android.OS;
-using SpiritIsland.SinglePlayer;
+﻿using SpiritIsland.SinglePlayer;
 using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
@@ -9,14 +8,6 @@ public class DecisionModel : ObservableModel {
 	// * NOT USED - but required to Make child models compile
 	public bool IsVisible {get; set;}
 
-	#region Rewind / Phase - Observable
-	public ICommand RewindCommand { get; }
-	public int RewindableRound { get => _rewindableRound; set => SetProp(ref _rewindableRound, value); }
-	public Phase Phase { get => _phase; set { SetProp(ref _phase, value); } }
-	public int _rewindableRound;
-	public Phase _phase;
-	#endregion Rewind / Phase - Observable
-
 	public GameState GameState          { get; }
 	public IslandModel Island           { get; }
 	public SpiritModel SpiritSummary    { get; }
@@ -24,6 +15,16 @@ public class DecisionModel : ObservableModel {
 	public CardsOverlayModel Cards      { get; }
 	public ICommand ShowCards           { get; }
 	public ICommand OpenOverlay         { get; }
+	public string Adversary             { get; }
+	public bool HasAdversary => !string.IsNullOrWhiteSpace(Adversary);
+
+	#region Rewind / Phase - Observable
+	public ICommand RewindCommand { get; }
+	public int RewindableRound { get => _rewindableRound; set => SetProp(ref _rewindableRound, value); }
+	public Phase Phase { get => _phase; set { SetProp(ref _phase, value); } }
+	public int _rewindableRound;
+	public Phase _phase;
+	#endregion Rewind / Phase - Observable
 
 	#region Observable properties
 
@@ -89,6 +90,8 @@ public class DecisionModel : ObservableModel {
 		SpiritPanel = new SpiritPanelModel(_game.Spirit, _ovm, gs);
 		SpiritPanel.RequestClose += Overlay_RequestClose;
 
+		Adversary = gs.Adversary.AdvName;
+
 		_acceptText = "Accept";
 
 		// when OVM gets a select/submit, update IDecision Model
@@ -153,9 +156,7 @@ public class DecisionModel : ObservableModel {
 		return true;
 	}
 
-	//============================
 	// Overlays 
-	//============================
 
 	public void ShowSpiritPanel(bool show = true) { 
 		VisibleOverlay = show ? Overlay.SpiritPanel : Overlay.None;
@@ -168,7 +169,6 @@ public class DecisionModel : ObservableModel {
 	void Overlay_RequestClose() {
 		VisibleOverlay = Overlay.None;
 	}
-
 
 	public void ShutDownOld() {
 

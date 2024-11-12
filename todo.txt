@@ -1,31 +1,28 @@
 =========================
 
-UI - "Play" should be wide enough to dispoay all word
-UI - Adversary Level:"Escalation" are getting cut off at end
-UI - show Adversary flag & details during game play
-UI - Display Card Images
-UI - Display Icons in Text (card descriptions)
-UI - Landscape layout
+5	BUG - Russia/Lure - Lures sit-out explorers should prevent the 3-explorer combo from ravaging
+		Option - Change Lure's config ravage to run when spaces are being selected
+		Option - Russia adds token for 3 explorers that stops the ravage if explorers are sat out - BLAH!
+4	BUG - Indomitable claim boosted dahans health, when I tried to gather 1 of them, game crashed.
+4	BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.
 
-CONFIG - enter game #
-CONFIG - replay game
-CONFIG - When Game Over, be able to start new without closing APP
+4	UI - Landscape layout
+	UI - "Play" should be wide enough to display all word
+	UI - Adversary Level:"Escalation" are getting cut off at end
+	UI - Display Card Images
+	UI - Display Icons in Text (card descriptions)
 
-SPIRITS - Horizon Spirits
-SPIRITS - Aspects (new spirits)
+4	CONFIG - replay game
+	CONFIG - enter game #
 
-MVVM threading best practices
+	SPIRITS - Horizon Spirits
+	SPIRITS - Aspects (new spirits)
 
-BUG - Indomitable claim boosted dahans health, when I tried to gather 1 of them, game crashed.
-BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.
-BUG - If no Dahan, strife does not come off invaders
-BUG - Russia/Lure - Lures sit-out explorers should prevent the 3-explorer combo from ravaging
-	Option - Change Lure's config ravage to run when spaces are being selected
-	Option - Russia adds token for 3 explorers that stops the ravage if explorers are sat out - BLAH!
+	MVVM threading best practices
 
+4	BUG - If no Dahan, strife does not come off invaders
 
 ==== Maui questions / Problems ====
-
 
 Why is it better to show/hide popups instead of re-creating them?
 
@@ -158,4 +155,14 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
+
+
+
+
+
+Adversary
+Opt
+	- List of Adversary String
+	- List of 
+
 

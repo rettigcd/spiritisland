@@ -6,7 +6,7 @@
 			 Title="NewGamePage">
 
 	<ContentPage.Resources>
-		<si:BadgeToImgConverter x:Key="badgeImage" />
+		<si:NameToBadgeImgConverter x:Key="badgeImage" />
 	</ContentPage.Resources>
 
 	<Grid RowDefinitions="60,60,60,60,40,50,*">

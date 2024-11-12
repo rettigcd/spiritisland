@@ -56,6 +56,8 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	public List<IFearCard> BuildFearCards() => _providers.SelectMany( p => p.FearCards ).ToList();
 	public List<BlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
 
+	public int[] FearCardsPerLevel = [3, 3, 3];
+
 	public GameState BuildGame( GameConfiguration cfg ) {
 		Spirit[] spirits = BuildSpirits( cfg.Spirits );
 		Board[] boards = BuildBoards( cfg.Boards );
@@ -74,9 +76,10 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 
 		// Adversary
 		var adversary = BuildAdversary( cfg.Adversary );
+		gameState.Adversary = adversary;
 
 		// (1) Invader Deck
-		gameState.InvaderDeck = adversary.InvaderDeckBuilder.Build( invaderSeed ); // !!! Change this to (pre-Init) .ConfigBuilder(builder) so builder doesn't know what it is doing.
+		gameState.InvaderDeck = adversary.InvaderDeckBuilder.Build( invaderSeed );
 
 		// (2) Major Power Cards
 		gameState.MajorCards = new PowerCardDeck( BuildMajorCards(), majorSeed, PowerType.Major );
@@ -85,12 +88,13 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		gameState.MinorCards = new PowerCardDeck( BuildMinorCards(), minorSeed, PowerType.Minor );
 
 		// (4) Fear Cards
-		if(adversary.FearCardsPerLevel != null)
-			gameState.Fear.CardsPerLevel_Initial = adversary.FearCardsPerLevel;
+		adversary.AdjustFearCardCounts(FearCardsPerLevel); // !!! Use these to set GameState
+		gameState.Fear.CardsPerLevel_Initial = FearCardsPerLevel;
+
 		if(cfg.CommandTheBeasts)
 			gameState.Fear.CardsPerLevel_Initial[1]++; // Command the Beasts
 
-		// Fear Deck - ! this could be pushed into .Initialize if PreInitialize has access to deck.
+		// Fear Deck - ! this could be pushed into
 		var fearCards = BuildFearCards();
 		new Random( fearSeed ).Shuffle( fearCards );
 		gameState.Fear.Deck.Clear();
@@ -122,17 +126,15 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	class NullAdversary : IAdversary {
 		public int Level { get => 0; set { } } // ignore
 		public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
-
-		public int[] FearCardsPerLevel => new int[] { 3, 3, 3 };
-
-		public AdversaryLevel[] Levels => new AdversaryLevel[]{ new AdversaryLevel(0,0,3,3,3,"No Adversary","No Escalation") };
-
-		public IEnumerable<AdversaryLevel> ActiveLevels => Enumerable.Empty<AdversaryLevel>();
-
+		public int[] FearCardsPerLevel => [ 3, 3, 3 ];
+		public void AdjustFearCardCounts(int[] counts) { }
+		public AdversaryLevel[] Levels => [ new AdversaryLevel(0,0,3,3,3,"No Adversary","No Escalation") ];
+		public IEnumerable<AdversaryLevel> ActiveLevels => [];
 		public AdversaryLossCondition LossCondition => null;
-
+		public string AdvName => null;
 		public void AdjustPlacedTokens( GameState _ ) { }
 		public void Init( GameState _ ) { }
+		public string Describe() { return string.Empty;	}
 	}
 
 }

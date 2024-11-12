@@ -7,7 +7,7 @@
 
 	<ContentView.Resources>
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
-		<si:BadgeToImgConverter x:Key="btnImage" />
+		<si:NameToBadgeImgConverter x:Key="btnImage" />
 		<si:HasElementsConverter x:Key="hasElementsColor" />
 	</ContentView.Resources>
 

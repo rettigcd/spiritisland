@@ -10,51 +10,55 @@
 	<ContentPage.Resources>
 		<si:SelectConverter x:Key="selectOne" />
 		<si:PhaseToImageSourceConverter x:Key="phaseToImage" />
+		<si:NameToBadgeImgConverter x:Key="btnImage" />
 		<si:TrueIfGreaterConverter x:Key="showIfGreater" />
+		<si:NameToBadgeImgConverter x:Key="badgeImage" />
 	</ContentPage.Resources>
 
-	<Grid RowDefinitions="30,50,245,24,30,*,40" ColumnDefinitions="8*,30*,40*">
 
-		<!-- Undo / Rewind -->
-		<Grid IsVisible="{Binding RewindableRound, Converter={StaticResource showIfGreater},ConverterParameter=0 }" HorizontalOptions="Center" VerticalOptions="End">
-			<ImageButton Source="undo.png"
-					Command="{Binding RewindCommand}" 
-					Padding="0" 
-					HeightRequest="25" />
-			<Label Text="{Binding RewindableRound}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20" />
-		</Grid>
+	<Grid RowDefinitions="30,80,245,24,30,*,40" ColumnDefinitions="40*,40*">
+		<!-- Rows: 0(Rewind/phase) 1(invader cards/spirit) 2(island) 3(GameOver/Prompt) 4(Accept) 5(Options) 6(cards) -->
 
-		<!-- Phase -->
-		<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="25" Grid.Row="1" HorizontalOptions="Center" />
+		<HorizontalStackLayout Grid.ColumnSpan="2">
+			<!-- Undo / Rewind -->
+			<Grid IsVisible="{Binding RewindableRound, Converter={StaticResource showIfGreater},ConverterParameter=0 }" HorizontalOptions="Center" >
+				<ImageButton Source="undo.png" Command="{Binding RewindCommand}" Padding="0" HeightRequest="25" WidthRequest="40" />
+				<Label Text="{Binding RewindableRound}" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20" />
+			</Grid>
+
+			<!-- Phase -->
+			<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="25" Margin="10,0" Grid.Row="0" HorizontalOptions="Center" Grid.Column="1" />
+
+			<ImageButton Source="{Binding Adversary,Converter={StaticResource badgeImage}}" Margin="2,4" IsVisible="{Binding HasAdversary}" Clicked="AdversaryButton_Clicked" />
+		</HorizontalStackLayout>
 
 		<!-- Invaders -->
-		<si:InvaderBoardSummaryView BindingContext="{Binding InvaderBoard}"
-									Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" />
+		<si:InvaderBoardSummaryView BindingContext="{Binding InvaderBoard}" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" />
 
 		<!-- Spirit -->
 		<si:SpiritSummaryView x:Name="Bob" BackgroundColor="Beige"
 			BindingContext="{Binding SpiritSummary}" 
-			Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="1" />
+			Grid.Row="1" Grid.RowSpan="1" Grid.Column="1" Grid.ColumnSpan="1" />
 
 		<!-- Island -->
-		<si:IslandView x:Name="IV" Grid.Row="2" Model="{Binding Island}" Grid.ColumnSpan="3" BackgroundColor="#0000a0" />
+		<si:IslandView x:Name="IV" Grid.Row="2" Model="{Binding Island}" Grid.ColumnSpan="2" BackgroundColor="#0000a0" />
 
 		<!-- Game Over Info -->
 		<Label x:Name="GameOverInfo" IsVisible="false" HorizontalOptions="Center" 
 			   Text="bob"
 			   Padding="10,3"
 			   BackgroundColor="Blue"
-			   Grid.Row="3" Grid.ColumnSpan="3"
+			   Grid.Row="4" Grid.ColumnSpan="2"
 		/>
 
 		<!-- Prompt -->
-		<Label x:Name="Prompt" Text="{Binding Prompt}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="3" Grid.ColumnSpan="3" />
+		<Label x:Name="Prompt" Text="{Binding Prompt}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="3" Grid.ColumnSpan="2" />
 		<!-- Accept -->
 		<Button x:Name="Accept" Text="{Binding AcceptText}" HeightRequest="35" 
 				HorizontalOptions="CenterAndExpand" Padding="20,0"
-				Clicked="Accept_Clicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" Grid.ColumnSpan="3" />
+				Clicked="Accept_Clicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" Grid.ColumnSpan="2" />
 		<!-- Options -->
-		<ScrollView x:Name="OptionListWrapper" BackgroundColor="#ddf" VerticalOptions="StartAndExpand" Margin="10,3" Grid.Row="5" Grid.ColumnSpan="3" >
+		<ScrollView x:Name="OptionListWrapper" BackgroundColor="#ddf" VerticalOptions="StartAndExpand" Margin="10,3" Grid.Row="5" Grid.ColumnSpan="2" >
 			<FlexLayout x:Name="OptionList" BindableLayout.ItemsSource="{Binding Options}" 
 						Direction="Row" AlignItems="Stretch" Wrap="Wrap"
 						RadioButtonGroup.GroupName="DecisionOptions" RadioButtonGroup.SelectedValue="{Binding SelectedOption}"
@@ -68,15 +72,15 @@
 			</FlexLayout>
 		</ScrollView>
 
-		<Button Text="{Binding Cards.Hand.Count,StringFormat='Cards ({0:F0})'}" Padding="5,5" Grid.Row="6" Grid.ColumnSpan="3" Command="{Binding ShowCards}" />
+		<Button Text="{Binding Cards.Hand.Count,StringFormat='Cards ({0:F0})'}" Padding="5,5" Grid.Row="6" Grid.ColumnSpan="2" Command="{Binding ShowCards}" />
 
 		<!-- Overlays -->
 		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" 
 			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
-			Grid.Row="0" Grid.RowSpan="6" Grid.ColumnSpan="3" VerticalOptions="Fill" HorizontalOptions="Fill" />
+			Grid.Row="0" Grid.RowSpan="6" Grid.ColumnSpan="2" VerticalOptions="Fill" HorizontalOptions="Fill" />
 		<si:CardsOverlay BindingContext="{Binding Cards}" 
 			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=Cards}"
-			Grid.Row="1" Grid.RowSpan="6" Grid.ColumnSpan="3" VerticalOptions="Fill" HorizontalOptions="Fill" />
+			Grid.Row="1" Grid.RowSpan="6" Grid.ColumnSpan="2" VerticalOptions="Fill" HorizontalOptions="Fill" />
 
 	</Grid>
 	

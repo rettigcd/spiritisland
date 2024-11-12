@@ -4,6 +4,8 @@ public class BrandenburgPrussia : AdversaryBase, IAdversary {
 
 	public const string Name = "Brandenburg-Prussia";
 
+	public BrandenburgPrussia() : base(Name) { }
+
 	public override AdversaryLevel[] Levels => new AdversaryLevel[] {
 		// Escalation
 		new AdversaryLevel(_level:0, 1 , 3,3,3, "Land Rush", "On each board with Town/City, add 1 Town to a land withouth Towns." ).WithEscalation( LandRush ),

@@ -4,6 +4,8 @@ public class Sweden : AdversaryBase, IAdversary {
 
 	public const string Name = "Sweden";
 
+	public Sweden() : base(Name) { }
+
 	public override AdversaryLevel[] Levels => _levels;
 
 	readonly AdversaryLevel[] _levels = [

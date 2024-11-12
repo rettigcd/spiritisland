@@ -4,6 +4,8 @@ public class Russia : AdversaryBase, IAdversary {
 
 	public const string Name = "Russia";
 
+	public Russia() : base(Name) { }
+
 	public override AdversaryLevel[] Levels => _levels;
 
 	public override AdversaryLossCondition LossCondition => Russia_Level1_HuntersBringHomeShelAndHide.HuntersSwarmTheIsland;

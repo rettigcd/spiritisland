@@ -6,7 +6,7 @@
 			 x:Class="SpiritIsland.Maui.SpiritSummaryView ">
 
 	<ContentView.Resources>
-		<si:BadgeToImgConverter x:Key="btnImage" />
+		<si:NameToBadgeImgConverter x:Key="btnImage" />
 	</ContentView.Resources>
 
 	<Grid ColumnDefinitions="2*,1*,2*,1*" RowDefinitions="15*,15*" Padding="4">

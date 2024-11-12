@@ -4,6 +4,8 @@ public class England : AdversaryBase, IAdversary {
 
 	public const string Name = "England";
 
+	public England() : base(Name) { }
+
 	public override AdversaryLevel[] Levels => _levels;
 
 	public override AdversaryLossCondition LossCondition => ProudAndMightyCapital;

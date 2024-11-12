@@ -4,6 +4,8 @@ public class France : AdversaryBase, IAdversary {
 
 	public const string Name = "France";
 
+	public France() : base(Name) { }
+
 	public override AdversaryLossCondition LossCondition => new Loss_SprawlingPlantations();
 
 	public override AdversaryLevel[] Levels { get; } = [

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,25 +11,8 @@ class AdversaryRect(AdversaryConfig _adversary) : IPaintableRect, IClickableLoca
 	public Rectangle Bounds {get; private set;}
 
 	public void Click(){
-		var adv = ConfigureGameDialog.GameBuilder.BuildAdversary( _adversary );
-		var adjustments = adv.Levels;
-		var rows = new List<string> {
-			$"==== {_adversary.Name} - Level:{_adversary.Level} - Difficulty:{adjustments[_adversary.Level].Difficulty} ===="
-		};
-		// Loss
-		var lossCond = adv.LossCondition;
-		if(lossCond is not null){
-			rows.Add( $"\r\n-- Additional Loss Condition --" );
-			rows.Add( lossCond.Description );
-		}
-		// Levels
-		for(int i = 0; i <= _adversary.Level; ++i) {
-			var a = adjustments[i];
-			string label = i == 0 ? "Escalation: " : "Level:" + i;
-			rows.Add( $"\r\n-- {label} {a.Title} --" );
-			rows.Add( $"{a.Description}" );
-		}
-		MessageBox.Show( rows.Join( "\r\n" ) );
+		IAdversary adv = ConfigureGameDialog.GameBuilder.BuildAdversary( _adversary );
+		MessageBox.Show( adv.Describe() );
 	}
 	public bool Contains( Point point ) => Bounds.Contains(point);
 

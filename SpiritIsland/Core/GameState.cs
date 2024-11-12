@@ -85,6 +85,8 @@ public sealed class GameState : IHaveMemento {
 	public int RoundNumber { get; private set; }
 	public Phase Phase { get; set; }
 
+	public IAdversary Adversary { get; set; }
+
 	// == Components ==
 	public Fear Fear { get; }
 	public Island Island { get; set; }
