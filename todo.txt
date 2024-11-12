@@ -1,10 +1,8 @@
 =========================
 
-5	BUG - Russia/Lure - Lures sit-out explorers should prevent the 3-explorer combo from ravaging
-		Option - Change Lure's config ravage to run when spaces are being selected
-		Option - Russia adds token for 3 explorers that stops the ravage if explorers are sat out - BLAH!
 4	BUG - Indomitable claim boosted dahans health, when I tried to gather 1 of them, game crashed.
 4	BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.
+4	BUG - If no Dahan, strife does not come off invaders
 
 4	UI - Landscape layout
 	UI - "Play" should be wide enough to display all word
@@ -19,8 +17,6 @@
 	SPIRITS - Aspects (new spirits)
 
 	MVVM threading best practices
-
-4	BUG - If no Dahan, strife does not come off invaders
 
 ==== Maui questions / Problems ====
 
@@ -155,14 +151,3 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
-
-
-
-
-
-Adversary
-Opt
-	- List of Adversary String
-	- List of 
-
-
