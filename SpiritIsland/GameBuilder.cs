@@ -56,8 +56,6 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	public List<IFearCard> BuildFearCards() => _providers.SelectMany( p => p.FearCards ).ToList();
 	public List<BlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
 
-	public int[] FearCardsPerLevel = [3, 3, 3];
-
 	public GameState BuildGame( GameConfiguration cfg ) {
 		Spirit[] spirits = BuildSpirits( cfg.Spirits );
 		Board[] boards = BuildBoards( cfg.Boards );
@@ -88,8 +86,9 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		gameState.MinorCards = new PowerCardDeck( BuildMinorCards(), minorSeed, PowerType.Minor );
 
 		// (4) Fear Cards
-		adversary.AdjustFearCardCounts(FearCardsPerLevel); // !!! Use these to set GameState
-		gameState.Fear.CardsPerLevel_Initial = FearCardsPerLevel;
+		int[] fearCardsPerLevel = [3, 3, 3]; 
+		adversary.AdjustFearCardCounts(fearCardsPerLevel);
+		gameState.Fear.CardsPerLevel_Initial = fearCardsPerLevel;
 
 		if(cfg.CommandTheBeasts)
 			gameState.Fear.CardsPerLevel_Initial[1]++; // Command the Beasts

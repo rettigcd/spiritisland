@@ -2,12 +2,10 @@
 
 namespace SpiritIsland;
 
-/// <summary>
-/// Configures Dahan and Invader behavior on a per-space bases.
-/// </summary>
+/// <summary> Configures Dahan and Invader behavior on a per-space bases. </summary>
 public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
-	public static RavageBehavior DefaultBehavior => RavageBehavior._defaultRavageBehavior;
+	public static RavageBehavior DefaultBehavior => s_defaultRavageBehavior;
 
 	// Order / Who is damaged
 	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
@@ -91,7 +89,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 	}
 
 	// This is never modified. It is cloned and the clone is modified.
-	static public RavageBehavior GetDefault() => _defaultRavageBehavior.Clone();
-	static readonly RavageBehavior _defaultRavageBehavior = new RavageBehavior();
+	static public RavageBehavior GetDefault() => s_defaultRavageBehavior.Clone();
+	static readonly RavageBehavior s_defaultRavageBehavior = new RavageBehavior();
 
 }

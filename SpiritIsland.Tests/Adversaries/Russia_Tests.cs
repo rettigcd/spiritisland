@@ -233,7 +233,7 @@ public class Russia_Tests {
 	#region Level 3
 
 	[Fact]
-	public void Level3_3InvadersRavage() {
+	public async Task Level3_3InvadersRavage() {
 		GameState gameState = Given_RussiaSoloGame(3);
 		Board boardA = gameState.Island.Boards[0];
 
@@ -249,10 +249,43 @@ public class Russia_Tests {
 		a5.Given_ClearAll().Given_HasTokens("1D@2,3E@1");
 
 		//  When: card ravages (Can't do card.When_Ravaging because we are testing Russias replacement of the Engine)
-		gameState.InvaderDeck.Ravage.Engine.ActivateCard( card ).Wait();
+		await gameState.InvaderDeck.Ravage.Engine.ActivateCard( card );
 
 		//  Then: dahan is destroyed and land is blighted
 		a5.Summary.ShouldBe("1B,3E@1");
+
+	}
+
+	[Fact]
+	public async Task Level3_LureStops3InvadersRavage() {
+		GameState gameState = Given_RussiaLevel(3).ConfigBoards("B").ConfigSpirits(LureOfTheDeepWilderness.Name).BuildGame();
+		Board boardB = gameState.Island.Boards[0];
+
+		// Given: an invader card from the current GameState
+		var card = gameState.InvaderDeck.Explore.Cards.First();
+		card.Code.ShouldBe("J"); // jungle
+
+		//   And: a space that does not match the card
+		Space b5 = gameState.Tokens[boardB[5]];
+		card.MatchesCard(b5).ShouldBeFalse();
+
+		//   And: 3 explorers and 1 dahan on space
+		b5.Given_ClearAll().Given_HasTokens("1D@2,3E@1");
+
+		//   And: Lure has 1 on B5
+		gameState.Spirits[0].Given_IsOn(b5);
+
+		//   And: disable ravage on B8
+		boardB[8].Given_ClearTokens();
+
+		//  When: card ravages (Can't do card.When_Ravaging because we are testing Russias replacement of the Engine)
+		await gameState.InvaderDeck.Ravage.Engine.ActivateCard(card).AwaitUser(u => {
+			u.NextDecision.HasPrompt("For Ravage, Sit Out (2)").Choose("E@1 on B5");
+			u.NextDecision.HasPrompt("For Ravage, Sit Out (1)").Choose("E@1 on B5");
+		}).ShouldComplete();
+
+		//  Then: no ravage
+		b5.Summary.ShouldBe("1D@2,3E@1,1LotDW");
 
 	}
 

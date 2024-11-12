@@ -1,6 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public class RavageEngine {
+
 	protected virtual bool MatchesCardForRavage( InvaderCard card, Space space ) => card.MatchesCard( space );
 
 	public virtual async Task ActivateCard( InvaderCard card ) {

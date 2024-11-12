@@ -37,17 +37,21 @@ public static class SpiritExtensions {
 		return spirit;
 	}
 
-	/// <summary> Sets the # of Presence via .Init() </summary>
-	internal static Spirit Given_IsOn( this Spirit spirit, SpaceSpec space, int count=1 )
-		=> spirit.Given_IsOn( space.ScopeSpace, count );
+	#endregion Given (spirit presence setup)
+
+	#region spirit.Given_IsOn(space)
 
 	/// <summary> Sets the # of Presence via .Init() </summary>
-	internal static Spirit Given_IsOn( this Spirit spirit, Space ss, int count=1 ){
-		ss.Init( spirit.Presence.Token, count );
+	internal static Spirit Given_IsOn(this Spirit spirit, SpaceSpec space, int count = 1)
+		=> spirit.Given_IsOn(space.ScopeSpace, count);
+
+	/// <summary> Sets the # of Presence via .Init() </summary>
+	internal static Spirit Given_IsOn(this Spirit spirit, Space ss, int count = 1) {
+		ss.Init(spirit.Presence.Token, count);
 		return spirit;
 	}
 
-	#endregion Given (spirit presence setup)
+	#endregion spirit.Given_IsOn(space)
 
 	#region Given
 
