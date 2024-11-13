@@ -142,6 +142,7 @@ public partial class Space
 		// Do Adjustment
 		if(token is ITrackMySpaces selfTracker) 
 			AdjustTrackedToken( selfTracker, deltaCount );
+
 		_counts[token] += deltaCount;
 
 		if(token.IsDestroyed) {
@@ -333,6 +334,7 @@ public partial class Space
 	/// <returns>The move event, MAY contain Count=0</returns>
 	public async Task<(ITokenAddedArgs,Func<ITokenAddedArgs,Task>)> SinkAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
 		ArgumentOutOfRangeException.ThrowIfNegative( count );
+		ValidateNotDestroyed( token );
 
 		// Pre-Add check/adjust
 		var addingArgs = new AddingTokenArgs( token, count, this, addReason );

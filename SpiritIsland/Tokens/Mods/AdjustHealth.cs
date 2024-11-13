@@ -23,13 +23,31 @@ public class AdjustHealth(int _deltaHealth, params HumanTokenClass[] _tokenClass
 	// Remove (covers simple-remove AND move-out)
 	public async Task ModifyRemovingAsync(RemovingTokenArgs args) {
 		if( args.Token is HumanToken healthToken && _tokenClasses.Contains(args.Token.Class) ) {
-			// Downgrade the existing tokens health
-			// AND change what we are removing to be the downgraded token
-			// tokens being destroyed may reduce the count also.
-			var result = await args.From.Humans(args.Count, healthToken)
-				.AdjustHealthAsync(-_deltaHealth);
-			args.Token = result.NewToken;
-			args.Count = result.Count;
+			switch( args.Reason ) {
+				case RemoveReason.Abducted:
+				case RemoveReason.MovedFrom:
+					// Downgrade the existing tokens health
+					// AND change what we are removing to be the downgraded token
+					// tokens being destroyed may reduce the count also.
+					var result = await args.From.Humans(args.Count, healthToken)
+						.AdjustHealthAsync(-_deltaHealth);
+					args.Token = result.NewToken;
+					args.Count = result.Count;
+					if( ((HumanToken)args.Token).IsDestroyed )
+						args.Count = 0;
+					break;
+
+				case RemoveReason.Replaced:
+				case RemoveReason.Removed:
+				case RemoveReason.Destroyed:
+					// no change
+					break;
+
+				default:
+				case RemoveReason.UsedUp:
+				case RemoveReason.TakingFromCard: // should never be called
+					throw new Exception($"unexpected remove reason {args.Reason}");
+			}
 		}
 	}
 
