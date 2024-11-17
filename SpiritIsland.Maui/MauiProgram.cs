@@ -1,13 +1,17 @@
 ﻿using CommunityToolkit.Maui;
 
-namespace SpiritIsland.Maui; 
+namespace SpiritIsland.Maui;
+
 public static class MauiProgram {
+
 	public static MauiApp CreateMauiApp() {
+
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.RegisterServices()
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
+			.ConfigurePlatform()
 			.ConfigureFonts( fonts => {
 				fonts.AddFont( "OpenSans-Regular.ttf", "OpenSansRegular" );
 				fonts.AddFont( "OpenSans-Semibold.ttf", "OpenSansSemibold" );
@@ -25,7 +29,6 @@ public static class MauiProgram {
 	}
 
 	public static MauiAppBuilder RegisterServices( this MauiAppBuilder app ) {
-//		app.Services.AddSingleton<Models.GrowthModel>();
 		app.Services.AddSingleton<NewGamePage>();
 		app.Services.AddSingleton<SinglePlayerGamePage>();
 		return app;
