@@ -126,8 +126,8 @@ public class DecisionModel : ObservableModel {
 	}
 
 	void DoRewind() {
+		if(_game.GameState.Result is not null) return;
 		if (0 < RewindableRound) {
-			// var a = await DisplayAlert("Question?", "Would you like to rewind to Round N?", "Yes", "No");
 			_game.UserPortal.RewindToRound(RewindableRound);
 			--RewindableRound;
 		}
