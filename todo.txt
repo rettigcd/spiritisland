@@ -10,9 +10,12 @@
 	UI - "Play" should be wide enough to display all word
 	UI - Display Card Images
 	UI - Display Icons in Text (card descriptions)
+	BUG/UI - Display joined lands.
 
 4	CONFIG - replay game
 	CONFIG - enter game #
+
+	UI - Show game log
 
 	SPIRITS - Horizon Spirits
 	SPIRITS - Aspects (new spirits)

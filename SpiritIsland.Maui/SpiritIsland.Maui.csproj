@@ -887,9 +887,6 @@
 	  <Compile Update="Views\Controls\FearDeck.xaml.cs">
 	    <DependentUpon>FearDeck.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Testing\TestPage.xaml.cs">
-	    <DependentUpon>TestPage.xaml</DependentUpon>
-	  </Compile>
 	  <Compile Update="Views\SpiritPanel\GrowthGroupView.xaml.cs">
 	    <DependentUpon>GrowthGroupView.xaml</DependentUpon>
 	  </Compile>
@@ -954,9 +951,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SpiritSummary\SpiritSummaryView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Testing\TestPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Solo\SoloGamePage.xaml">

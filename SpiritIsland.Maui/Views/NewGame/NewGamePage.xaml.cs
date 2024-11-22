@@ -1,68 +1,47 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+
 namespace SpiritIsland.Maui;
 
 public partial class NewGamePage : ContentPage {
 
+	readonly NewGameModel _model;
+
 	public NewGamePage() {
 		InitializeComponent();
 
-		// Spirits.
-		allSpirits.ItemsSource = _builder.SpiritNames;
-		RecentSpirits.ItemsSource = SavedRecentSpirits;
-		RecentSpiritsLabel.IsVisible = 0 < SavedRecentSpirits.Length;
+		_model = new NewGameModel(_builder);
 
+		BindingContext = _model;
+
+		// Boards and adversaries
 		allAdversaries.ItemsSource = _builder.AdversaryNames;
-
 		Board.ItemsSource = _availalbeBoards;
 	}
-
-	#region private Save Recent Spirit stuff
-
-	void SaveRecentSpirit( string spirit) {
-		string[] recentSpirits = [spirit, .. SavedRecentSpirits.Where(s => s != spirit).Take(3)];
-		RecentSpirits.ItemsSource = recentSpirits;
-		SavedRecentSpirits = recentSpirits;
-		RecentSpiritsLabel.IsVisible = true;
-	}
-	static string[] SavedRecentSpirits {
-		get => [..Preferences.Default.Get(RecentSpiritsKey, "").Split(",").Where(s => !string.IsNullOrEmpty(s))];
-		set => Preferences.Default.Set(RecentSpiritsKey,value.Join(","));
-	}
-	const string RecentSpiritsKey = "RecentSpirits";
-
-	#endregion private Save Recent Spirit stuff
 
 	#region Spirit Event Handlers
 
 	// Show
 	void OpenSpiritDialog_Tapped(object sender, TappedEventArgs e) {
-		Spirits.IsVisible = true;
+		SpiritsPanel.IsVisible = true;
 	}
 
 	// Accept
 	void AcceptSpiritButton_Tapped(object sender, TappedEventArgs e) {
 		if( sender is not View view ) return;
-		SetCurrentSpirit(view.ClassId);
-		Spirits.IsVisible = false;
-		StartButton.IsEnabled = !string.IsNullOrEmpty(Spirit.ClassId);
+		_model.SelectedSpirit = view.ClassId;
+		SpiritsPanel.IsVisible = false;
+		StartButton.IsEnabled = !string.IsNullOrEmpty(_model.SelectedSpirit);
 	}
 
 	// Cancel
 	void Cancel_SpiritSelect(object sender, EventArgs e) {
-		Spirits.IsVisible = false;
+		SpiritsPanel.IsVisible = false;
 	}
 
-	void SetCurrentSpirit(string spiritName) {
-		Spirit.Source = NameToBadgeImgConverter.NameToImage(spiritName);
-		Spirit.ClassId = spiritName;
-	}
-
-	#endregion Spirit Event HAndlers
+	#endregion Spirit Event Handlers
 
 	#region Adversary Event Handlers
-	// =====  Adversaries  =====
-
-	// How it Works:
-	// 
 
 	const string NoAdversary = "None";
 	View? _focusAdversaryFlag = null;
@@ -172,8 +151,7 @@ public partial class NewGamePage : ContentPage {
 		Activity.IsRunning = true;
 
 		// Spirit
-		string spirit = Spirit.ClassId;
-		SaveRecentSpirit(spirit);
+		_model.SaveSelectedSpiritAsRecent();
 
 		// Get Board (or randomize)
 		string board = (string)Board.SelectedItem;
@@ -182,8 +160,8 @@ public partial class NewGamePage : ContentPage {
 
 		// Init Configuration
 		var gc = new GameConfiguration()
-			.ConfigSpirits([spirit])
-			.ConfigBoards([board])
+			.ConfigSpirits(_model.SelectedSpirit!)
+			.ConfigBoards(board)
 			.ConfigCommandBeasts(CommandBeast.IsChecked)
 			.ConfigAdversary(_adversaryConfig);
 		gc.ShuffleNumber = (int)DateTime.Now.Ticks;
@@ -219,13 +197,43 @@ public partial class NewGamePage : ContentPage {
 
 }
 
-public class MyAdversaryLevel(SpiritIsland.AdversaryLevel src) {
-	public int Level => src.Level;
-	public string LevelText => src.Level == 0 ? "Escalation" : $"Level {src.Level}";
-	public string Title => src.Title;
-	public string Description => src.Description;
+// Model
+class NewGameModel : ObservableModel {
 
-	public int Difficulty => src.Difficulty;
-//	public int[] FearCards => src.FearCards;
-	public Color ShadowColor { get; set; } = Colors.LightGray;
+	public ObservableCollection<string> RecentSpirits { get; }
+	public string[] AvailableSpirits { get; }
+	public string? SelectedSpirit { get => _selectedSpirit; set => SetProp(ref _selectedSpirit, value); } string? _selectedSpirit;
+
+	public NewGameModel(GameBuilder builder) {
+		RecentSpirits = new( SavedRecentSpirits );
+		RecentSpirits.CollectionChanged += (s,c) => SavedRecentSpirits = [.. RecentSpirits];
+		AvailableSpirits = builder.SpiritNames;
+	}
+
+	// Available Adversaries / Levels
+	// Selected Adversary / Level
+	// Action: Select Adversary & Level
+
+	// Available Boards
+	// Selected Board
+	// Action: Select Boards
+
+	// Selected Game #.
+	// Action: set game #
+
+	// StartGame
+
+	public void SaveSelectedSpiritAsRecent() {
+		var spirit = SelectedSpirit!;
+		RecentSpirits.Remove(spirit);
+		RecentSpirits.Insert(0, spirit);
+	}
+
+
+	static string[] SavedRecentSpirits {
+		get => [.. Preferences.Default.Get(RecentSpiritsKey, "").Split(",").Where(s => !string.IsNullOrEmpty(s))];
+		set => Preferences.Default.Set(RecentSpiritsKey, value.Join(","));
+	}
+	const string RecentSpiritsKey = "RecentSpirits";
+
 }

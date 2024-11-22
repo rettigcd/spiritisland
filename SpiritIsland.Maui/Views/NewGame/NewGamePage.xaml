@@ -3,10 +3,12 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:si="clr-namespace:SpiritIsland.Maui"
 			 x:Class="SpiritIsland.Maui.NewGamePage"
+ 			 x:DataType="si:NewGameModel"
 			 Title="NewGamePage">
 
 	<ContentPage.Resources>
-		<si:NameToBadgeImgConverter x:Key="badgeImage" />
+		<si:NameToBadgeImgConverter x:Key="nameImage" />
+		<si:NotEmptyConverter x:Key="notEmpty" />
 	</ContentPage.Resources>
 
 	<Grid RowDefinitions="60,60,60,60,40,50,*">
@@ -17,7 +19,7 @@
 				<TapGestureRecognizer Tapped="OpenSpiritDialog_Tapped" />
 			</HorizontalStackLayout.GestureRecognizers>
 			<Label Text="Select a Spirit" VerticalOptions="Center" TextColor="Gray" Margin="5,0,30,0" />
-			<Image x:Name="Spirit" Margin="2" HeightRequest="56" />
+			<Image Source="{Binding SelectedSpirit, Converter={StaticResource nameImage}}" Margin="2" HeightRequest="56" />
 		</HorizontalStackLayout>
 	
 		<!-- Board -->
@@ -52,15 +54,15 @@
 		<ActivityIndicator x:Name="Activity" IsRunning="False" Color="SkyBlue" Grid.Row="5" />
 
 		<!-- Spirits Overlay -->
-		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="Spirits" IsVisible="False" >
+		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="SpiritsPanel" IsVisible="False" >
 			<VerticalStackLayout>
 				<!-- recent -->
-				<Label x:Name="RecentSpiritsLabel" Text="Recent" />
-				<CollectionView x:Name="RecentSpirits" ItemsLayout="VerticalGrid,4">
+				<Label x:Name="RecentSpiritsLabel" Text="Recent" IsVisible="{Binding RecentSpirits, Converter={StaticResource notEmpty}}" />
+				<CollectionView x:Name="RecentSpirits" ItemsLayout="VerticalGrid,4" ItemsSource="{Binding RecentSpirits}">
 					<CollectionView.ItemTemplate>
 						<DataTemplate>
 							<Image 
-								Source="{Binding .,Converter={StaticResource badgeImage}}" ClassId="{Binding .}"
+								Source="{Binding .,Converter={StaticResource nameImage}}" ClassId="{Binding .}"
 								WidthRequest="90" HeightRequest="75" Margin="5">
 								<Image.GestureRecognizers>
 									<TapGestureRecognizer Tapped="AcceptSpiritButton_Tapped" />
@@ -71,11 +73,11 @@
 				</CollectionView>
 				<!-- all -->
 				<Label Text="All Spirits" />
-				<CollectionView x:Name="allSpirits" ItemsLayout="VerticalGrid,4">
+				<CollectionView x:Name="allSpirits" ItemsLayout="VerticalGrid,4" ItemsSource="{Binding AvailableSpirits}">
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="x:String" >
 							<Grid HeightRequest="90">
-								<Image Source="{Binding .,Converter={StaticResource badgeImage}}" ClassId="{Binding .}"
+								<Image Source="{Binding .,Converter={StaticResource nameImage}}" ClassId="{Binding .}"
 									   Margin="6">
 									<Image.Shadow><Shadow Brush="Black" Offset="5,5" Radius="25" Opacity="0.8" /></Image.Shadow>
 									<Image.GestureRecognizers><TapGestureRecognizer Tapped="AcceptSpiritButton_Tapped" /></Image.GestureRecognizers>
@@ -101,7 +103,7 @@
 						<DataTemplate x:DataType="x:String" >
 							<Grid RowDefinitions="40*,20*" Margin="3" HeightRequest="95">
 								<Image Grid.Row="0"
-									Source="{Binding .,Converter={StaticResource badgeImage}}" 
+									Source="{Binding .,Converter={StaticResource nameImage}}" 
 									   ClassId="{Binding .}"
 									WidthRequest="90" >
 									<Image.Shadow>

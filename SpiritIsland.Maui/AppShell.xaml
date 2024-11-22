@@ -38,11 +38,6 @@
 		<ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" Style="{StaticResource Bob}" />
 	</FlyoutItem>
 
-	<!-- TEST page -->
-	<FlyoutItem Title="Test Page" Icon="quake.png">
-		<ShellContent ContentTemplate="{DataTemplate local:TestPage}" Route="TestPage" Style="{StaticResource Bob}" />
-	</FlyoutItem>
-
 	<TabBar>
 		<Tab Title="Tab G" Icon="quake.png">
 			<ShellContent ContentTemplate="{DataTemplate local:SoloGamePage}" Route="Random-1" Style="{StaticResource Bob}" />
