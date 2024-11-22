@@ -90,6 +90,12 @@ public class PaintableRects_Tests {
 #pragma warning restore CA1416 // Validate platform compatibility
 	}
 
+	[Fact]
+	public void EmptyParams_IsNonNull() {
+		static void Foo(params int[] args) { Assert.NotNull(args); }
+		Foo();
+	}
+
 
 	static Rect BuildWidth(string s) => new Rect( string.IsNullOrEmpty(s) ? null : float.Parse(s) );
 	static Rect BuildHeight(string s) => new Rect( string.IsNullOrEmpty(s) ? null : 1/float.Parse(s) );

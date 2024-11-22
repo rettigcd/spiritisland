@@ -11,7 +11,7 @@ class RepeatWithTimeAttribute : RepeatAttribute {
 		this.UpTo = int.MaxValue;
 	}
 
-	public override IDrawableInnateTier[] Thresholds => System.Array.Empty<IDrawableInnateTier>();
+	public override IDrawableInnateTier[] ThresholdTiers => [];
 
 	public override IPowerRepeater GetRepeater() => new Repeater(UpTo);
 

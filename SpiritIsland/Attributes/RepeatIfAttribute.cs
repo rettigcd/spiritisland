@@ -5,18 +5,16 @@
 /// </summary>
 public class RepeatIfAttribute : RepeatAttribute {
 
-	public override IDrawableInnateTier[] Thresholds { get; }
+	public override IDrawableInnateTier[] ThresholdTiers { get; }
 
 	public RepeatIfAttribute(string elementThreshold, params string[] additionalThresholds) {
-		var repeats = new List<IDrawableInnateTier> {
-			new DrawableRepeatOption( elementThreshold, "Repeat this Power." )
-		};
-		if(additionalThresholds != null && additionalThresholds.Length>0)
-			repeats.AddRange( additionalThresholds.Select( t => new DrawableRepeatOption(t,"Repeat this Power again.") ) );
-		Thresholds = [.. repeats];
+		ThresholdTiers = [
+			new DrawableRepeatOption(elementThreshold, "Repeat this Power."),
+			.. additionalThresholds.Select( t => new DrawableRepeatOption(t,"Repeat this Power again.") )
+		];
 	}
 
-	public override IPowerRepeater GetRepeater() => new Repeater( Thresholds );
+	public override IPowerRepeater GetRepeater() => new Repeater( ThresholdTiers );
 
 	class Repeater( IDrawableInnateTier[] thresholds ) : IPowerRepeater {
 

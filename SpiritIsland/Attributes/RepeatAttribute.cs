@@ -2,7 +2,11 @@
 
 [AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
 public abstract class RepeatAttribute : Attribute {
-	public abstract IDrawableInnateTier[] Thresholds { get; }
+
+	/// <summary>
+	/// Displays Repeats as Element-Threshold Tiers.
+	/// </summary>
+	public abstract IDrawableInnateTier[] ThresholdTiers { get; }
 
 	public abstract IPowerRepeater GetRepeater();
 }

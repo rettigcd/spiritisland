@@ -1,12 +1,14 @@
 =========================
 
-4	BUG - Indomitable claim boosted dahans health, when I tried to gather 1 of them, game crashed.
+5	Major Threshold - make it optional.
+5	BUG - when game is over, disable Rewind.
+5	Spirit Details Page/View during configure-new-game.
+
 4	BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.
 4	BUG - If no Dahan, strife does not come off invaders
 
 4	UI - Landscape layout
 	UI - "Play" should be wide enough to display all word
-	UI - Adversary Level:"Escalation" are getting cut off at end
 	UI - Display Card Images
 	UI - Display Icons in Text (card descriptions)
 

@@ -38,8 +38,8 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 			.Select(x=>x.Attr)
 			.Cast<IDrawableInnateTier>()
 			.ToList();
-		if(this._repeatAttr!=null)
-			drawableOptions.AddRange( _repeatAttr.Thresholds );
+		if(_repeatAttr is not null)
+			drawableOptions.AddRange( _repeatAttr.ThresholdTiers );
 		DrawableOptions = drawableOptions;
 
 	}
