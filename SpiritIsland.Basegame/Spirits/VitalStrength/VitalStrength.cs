@@ -5,7 +5,7 @@ public class VitalStrength : Spirit {
 	public const string Name = "Vital Strength of the Earth";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { EarthsVitality.Rule } ;
+	public override SpecialRule[] SpecialRules => [EarthsVitality.Rule] ;
 
 	public VitalStrength():base(
 		spirit => new SpiritPresence( spirit,

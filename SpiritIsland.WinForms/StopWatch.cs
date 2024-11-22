@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace SpiritIsland.WinForms;
 
+partial /* => to make warning CsWinRT1028 go away */ 
 class StopWatch( string label ) : IDisposable {
 	readonly string label = label;
 	readonly DateTime start = DateTime.Now;

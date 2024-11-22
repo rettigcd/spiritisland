@@ -46,7 +46,7 @@ static public class GameState_Extensions {
 	static public string Msg( this ILogEntry logEntry ) => logEntry.Msg( LogLevel.Info );
 
 	static internal GameState Given_InitializedMinorDeck( this GameState gameState ) {
-		gameState.MinorCards = new PowerCardDeck( new List<PowerCard>() {
+		gameState.MinorCards = new PowerCardDeck( [
 			// 4 random cards good for 1 draw.
 			PowerCard.For(typeof(RainOfBlood)),
 			PowerCard.For(typeof(LureOfTheUnknown)),
@@ -56,7 +56,7 @@ static public class GameState_Extensions {
 			PowerCard.For(typeof(CallToIsolation)), // 2nd after Shuffle
 			PowerCard.For(typeof(CallToMigrate)),
 			PowerCard.For(typeof(Drought)),			// 1st after Shuffle
-		}, 1 );
+		], 1 );
 		return gameState;
 	}
 

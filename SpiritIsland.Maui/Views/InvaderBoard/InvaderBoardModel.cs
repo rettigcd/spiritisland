@@ -125,9 +125,9 @@ public class InvaderBoardModel : ObservableModel {
 		return [..imgs];
 	}
 
-	static string GetInvaderBackside(InvaderCard? card) {
-		return card is null ? "--" : $"Stage {card.InvaderStage}";
-	}
+	//static string GetInvaderBackside(InvaderCard? card) {
+	//	return card is null ? "--" : $"Stage {card.InvaderStage}";
+	//}
 
 	#endregion private Invader Card Helpers
 

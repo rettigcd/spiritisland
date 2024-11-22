@@ -44,7 +44,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 		);
 	}
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { FragmentsOfScatteredTime, DaysThatNeverWere };
+	public override SpecialRule[] SpecialRules => [FragmentsOfScatteredTime, DaysThatNeverWere];
 
 	public FracturedDaysSplitTheSky():base(
 		x=> new SpiritPresence( x,

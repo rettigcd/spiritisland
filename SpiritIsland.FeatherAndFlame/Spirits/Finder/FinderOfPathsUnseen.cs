@@ -6,7 +6,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { ResponsibilityToTheDead_Rule, OpenTheWays.Rule };
+	public override SpecialRule[] SpecialRules => [ResponsibilityToTheDead_Rule, OpenTheWays.Rule];
 
 	public GatewayToken GatewayToken;
 

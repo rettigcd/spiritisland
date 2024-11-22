@@ -37,4 +37,5 @@ public partial class SpiritPanelView : ContentView {
 	}
 
 	SpiritPanelModel _model => (SpiritPanelModel)BindingContext;
+
 }

@@ -2,10 +2,10 @@
 
 public class GameComponentProvider : IGameComponentProvider {
 
-	public string[] AdversaryNames => new string[]{
+	public string[] AdversaryNames => [
 		HabsburgMonarchy.Name,
 		Russia.Name,
-	};
+	];
 
 	public IAdversary MakeAdversary( string adversaryName ) => adversaryName switch {
 		HabsburgMonarchy.Name => new HabsburgMonarchy(),
@@ -25,7 +25,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[VengeanceAsABurningPlague.Name]       = typeof(VengeanceAsABurningPlague),
 		[VolcanoLoomingHigh.Name]              = typeof(VolcanoLoomingHigh),
 	};
-	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public string[] SpiritNames => [.. Spirits.Keys];
 	public Spirit MakeSpirit( string spiritName ) {
 		return Spirits.TryGetValue( spiritName, out Type spiritType ) 
 			? (Spirit)Activator.CreateInstance( spiritType )
@@ -94,16 +94,16 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(WeaveTogetherTheFabricOfPlace),
 	}.Select( PowerCard.For ).ToArray();
 
-	public IFearCard[] FearCards => new IFearCard[] {
+	public IFearCard[] FearCards => [
 		new BesetByManyTroubles(),
 		new DahanReclaimFishingGrounds(),
 		new FleeFromDangerousLands(),
 		new NervesFray(),
 		new SenseOfDread(),
 		new TheologicalStrife()
-	};
+	];
 
-	public BlightCard[] BlightCards => new BlightCard[] {
+	public BlightCard[] BlightCards => [
 		new AllThingsWeaken(),
 		new InvadersFindTheLandToTheirLiking(),
 		new PowerCorrodesTheSpirit(),
@@ -111,6 +111,6 @@ public class GameComponentProvider : IGameComponentProvider {
 		new ThrivingCommunitites(),
 		new UnnaturalProliferation(),
 		new UntendedLandCrumbles(),
-	};
+	];
 
 }

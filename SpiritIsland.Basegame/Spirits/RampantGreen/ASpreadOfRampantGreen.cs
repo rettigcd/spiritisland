@@ -6,10 +6,10 @@ public class ASpreadOfRampantGreen : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+	public override SpecialRule[] SpecialRules => [
 		ChokeTheLandWithGreen.Rule,
 		SteadyRegeneration
-	};
+	];
 
 	static SpecialRule SteadyRegeneration => new SpecialRule(
 		"Steady Regeneration",

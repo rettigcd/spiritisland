@@ -8,7 +8,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 	public const string Name = "Downpour Drenches The World";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {DrenchTheLandscape.Rule, PourDownPower.Rule };
+	public override SpecialRule[] SpecialRules => [DrenchTheLandscape.Rule, PourDownPower.Rule];
 
 	static Track MovePresence => new Track( "Moveonepresence.png" ) {
 		Action = new MovePresence( 1 ),

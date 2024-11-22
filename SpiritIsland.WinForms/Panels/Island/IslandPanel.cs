@@ -129,7 +129,7 @@ class IslandPanel : IPanel {
 		// Mapping part 2 set world-to-screen transform
 		_mapper = PointMapper.FromWorldToViewport( worldBounds.ToBounds(), _usedBoardScreenRect.ToBounds() );
 
-		_iconWidth = (int)(_mapper.UnitLength * .075f);//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
+		// _iconWidth = (int)(_mapper.UnitLength * .075f);//  gw_boardScreenRect.Width / 20; // !!! scale tokens based on board/space size, NOT widow size (for 2 boards, tokens are too big)
 	}
 
 	void CacheBackground_Invalidate() {
@@ -150,7 +150,7 @@ class IslandPanel : IPanel {
 
 	}
 
-	PointF MapWorldToClient( PointF world) => _mapper.Map(world.ToXY()).ToPointF();
+	// PointF MapWorldToClient( PointF world) => _mapper.Map(world.ToXY()).ToPointF();
 	XY MapWorldToClientXY( XY world ) => _mapper.Map( world );
 
 	void DrawArrows( Graphics graphics ) {
@@ -220,7 +220,6 @@ class IslandPanel : IPanel {
 
 	// World to Screen mapping.
 	PointMapper _mapper; // Maps from normallized space to Client space.
-	int _iconWidth;
 	const int _hotspotRadius = 40; // Radius when targetting space or virtual token
 
 	Rectangle _usedBoardScreenRect;
@@ -232,8 +231,8 @@ class IslandPanel : IPanel {
 
 
 	static Color SpacePerimeterColor => Color.Black;
-	static Brush SpaceLabelBrush => Brushes.White;
-	static Color SacredSiteColor => Color.Yellow;
+	// static Brush SpaceLabelBrush => Brushes.White;
+	// static Color SacredSiteColor => Color.Yellow;
 	static Color ArrowColor => Color.DeepSkyBlue;
 
 	#endregion

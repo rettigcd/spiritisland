@@ -12,10 +12,10 @@ public class EmberEyedBehemoth : Spirit {
 		{}
 	}
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+	public override SpecialRule[] SpecialRules => [
 		new SpecialRule("The Behemoth Rises","You have an Incarna.  Once/turn, during any phase, you may push it or Add/Move it to any of your Sacred Sites."),
 		UnrelentingStrikes_Rule
-	};
+	];
 
 	public EmberEyedBehemoth():base( 
 		spirit => new SpiritPresence(spirit,
@@ -50,7 +50,7 @@ public class EmberEyedBehemoth : Spirit {
 		,PowerCard.For(typeof(ExaltationOfGraspingRoots))
 	) {
 		_smash = new RepeatableInnatePower( typeof( SmashStompAndFlatten ) );
-		InnatePowers = new InnatePower[] { _smash };
+		InnatePowers = [_smash];
 		_behemoth = new TheBehemothRises();
 	}
 

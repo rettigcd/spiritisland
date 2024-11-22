@@ -23,7 +23,7 @@ public partial class NewGamePage : ContentPage {
 		SavedRecentSpirits = recentSpirits;
 		RecentSpiritsLabel.IsVisible = true;
 	}
-	string[] SavedRecentSpirits {
+	static string[] SavedRecentSpirits {
 		get => [..Preferences.Default.Get(RecentSpiritsKey, "").Split(",").Where(s => !string.IsNullOrEmpty(s))];
 		set => Preferences.Default.Set(RecentSpiritsKey,value.Join(","));
 	}
@@ -191,8 +191,7 @@ public partial class NewGamePage : ContentPage {
 		var gameState = _builder.BuildGame(gc);
 
 		// Set up the New Game Page
-		if(SoloGamePage.Current is not null )
-			SoloGamePage.Current.Dispose();
+		SoloGamePage.Current?.Dispose();
 		SoloGamePage.Current = new SoloGamePage( gameState );
 		NavigationPage.SetHasNavigationBar(SoloGamePage.Current, false);
 		MainPage.Current.ShowCurrentGameButton(true);

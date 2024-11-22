@@ -25,16 +25,16 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 			boards[i] = Board.BuildBoard( boardNames[i], layout[i] );
 		return boards;
 	}
-	static public BoardOrientation[] OneBoardLayout => new[] { BoardOrientation.Home };
-	static public BoardOrientation[] TwoBoardLayout => new[] { 
+	static public BoardOrientation[] OneBoardLayout => [BoardOrientation.Home];
+	static public BoardOrientation[] TwoBoardLayout => [ 
 		BoardOrientation.Home,
 		BoardOrientation.ToMatchSide( 0, BoardOrientation.Home.SideCoord(0))
-	};
-	static public BoardOrientation[] ThreeBoardLayout => new[] {
+	];
+	static public BoardOrientation[] ThreeBoardLayout => [
 		BoardOrientation.Home,
 		BoardOrientation.ToMatchSide( 0, BoardOrientation.Home.SideCoord(1)),
 		BoardOrientation.ToMatchSide( 1, BoardOrientation.Home.SideCoord(0))
-	};
+	];
 	static public BoardOrientation[] FourBoardLayout { get {
 		var bl = BoardOrientation.Home;
 		BoardOrientation tl = BoardOrientation.ToMatchSide( 0, bl.SideCoord(2));

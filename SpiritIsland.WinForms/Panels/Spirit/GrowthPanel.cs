@@ -4,7 +4,8 @@ using System.Linq;
 
 namespace SpiritIsland.WinForms;
 
-public sealed class GrowthPanel : IPanel , IDisposable {
+// partial => to make warning CsWinRT1028 go away.
+public sealed partial class GrowthPanel : IPanel , IDisposable {
 
 	public GrowthPanel( SharedCtx ctx ) {
 		_ctx = ctx;

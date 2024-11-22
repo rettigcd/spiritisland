@@ -1,7 +1,6 @@
 =========================
 
 5	Major Threshold - make it optional.
-5	BUG - when game is over, disable Rewind.
 5	Spirit Details Page/View during configure-new-game.
 
 4	BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.

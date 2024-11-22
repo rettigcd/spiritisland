@@ -7,7 +7,7 @@ public class HearthVigil : Spirit {
 
 	public const string Name = "Hearth Vigil";
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { HearthToken.Rooted, HearthToken.FortifyHeart, HearthToken.LoyalGuardian, };
+	public override SpecialRule[] SpecialRules => [HearthToken.Rooted, HearthToken.FortifyHeart, HearthToken.LoyalGuardian,];
 
 	public override string SpiritName => Name;
 
@@ -49,10 +49,10 @@ public class HearthVigil : Spirit {
 		,PowerCard.For(typeof(CoordinatedRaid))
 		,PowerCard.For(typeof(CallToVigilance))
 	){
-		InnatePowers = new InnatePower[]{
+		InnatePowers = [
 			InnatePower.For(typeof(WarnOfImpendingConflict)), 
 			InnatePower.For(typeof(KeepWatchForNewIncursions))
-		};
+		];
 
 	}
 

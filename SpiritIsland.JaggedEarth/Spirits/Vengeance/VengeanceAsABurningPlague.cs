@@ -39,11 +39,11 @@ public class VengeanceAsABurningPlague : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {  
+	public override SpecialRule[] SpecialRules => [  
 		TerrorOfASlowlyUnfoldingPlague.Rule,
 		LingeringPestilencePresenceToken.Rule,
 		WreakVengeanceForTheLandsCorruption.Rule
-	};
+	];
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		Presence.Destroyed.Count = 1; // 1 of your presence starts the game already Destroyed.

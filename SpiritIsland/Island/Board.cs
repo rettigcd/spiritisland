@@ -224,7 +224,7 @@ public class Board {
 	
 	public SpaceSpec this[int index]{ get => _spaces[index]; }
 
-	public BoardSide[] Sides => _sides.ToArray();
+	public BoardSide[] Sides => [.. _sides];
 
 	public BoardOrientation Orientation { get; }
 

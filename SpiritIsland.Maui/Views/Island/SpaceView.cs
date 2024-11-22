@@ -114,16 +114,16 @@ public class SpaceWidget {
 		DrawText( canvas, Space.SpaceSpec.Label, topLeft.X, topLeft.Y, _iconWidth, _iconWidth );
 	}
 
-	void DrawPoints( ICanvas canvas, XY[] points, Color color ) {
-		canvas.StrokeColor = color; 
-		canvas.StrokeSize = 2;
-		foreach(XY pt in points) {
-			var screen = _mapper.Map( pt );
-			canvas.DrawLine( screen.X - 1, screen.Y, screen.X + 1, screen.Y );
-		}
-	}
+	//void DrawPoints( ICanvas canvas, XY[] points, Color color ) {
+	//	canvas.StrokeColor = color; 
+	//	canvas.StrokeSize = 2;
+	//	foreach(XY pt in points) {
+	//		var screen = _mapper.Map( pt );
+	//		canvas.DrawLine( screen.X - 1, screen.Y, screen.X + 1, screen.Y );
+	//	}
+	//}
 
-	void DrawText( ICanvas canvas, string text, float x, float y, float w, float h ) {
+	void DrawText( ICanvas canvas, string text, float x, float y, float _/*w*/, float _1/*h*/ ) {
 
 		try{ 
 			ITextAttributes attr1 = new TextAttributes();
@@ -182,30 +182,30 @@ public class SpaceWidget {
 		return view;
 	}
 
-	(Path, Rect) MakePathFromPoints( XY[] outter, XY[]? inner = null ) {
-		var outterPathFigure = new PathFigure { StartPoint = outter[0].ToPoint(), IsClosed = true };
-		for(int j = 1; j < outter.Length; ++j)
-			outterPathFigure.Segments.Add( new LineSegment( outter[j].ToPoint() ) );
+	//static (Path, Rect) MakePathFromPoints( XY[] outter, XY[]? inner = null ) {
+	//	var outterPathFigure = new PathFigure { StartPoint = outter[0].ToPoint(), IsClosed = true };
+	//	for(int j = 1; j < outter.Length; ++j)
+	//		outterPathFigure.Segments.Add( new LineSegment( outter[j].ToPoint() ) );
 
-		float minX = outter.Min( x => x.X );
-		float minY = outter.Min( x => x.Y );
+	//	float minX = outter.Min( x => x.X );
+	//	float minY = outter.Min( x => x.Y );
 
-		PathFigure? innerPathFigure = null;
-		if(inner is not null) {
-			innerPathFigure = new PathFigure { StartPoint = inner[0].ToPoint(), IsClosed = true };
-			for(int j = 1; j < inner.Length; ++j)
-				innerPathFigure.Segments.Add( new LineSegment( inner[j].ToPoint() ) );
-		}
+	//	PathFigure? innerPathFigure = null;
+	//	if(inner is not null) {
+	//		innerPathFigure = new PathFigure { StartPoint = inner[0].ToPoint(), IsClosed = true };
+	//		for(int j = 1; j < inner.Length; ++j)
+	//			innerPathFigure.Segments.Add( new LineSegment( inner[j].ToPoint() ) );
+	//	}
 
-		var path = new Path {
-			Data = new PathGeometry( innerPathFigure is null ? [outterPathFigure] : [outterPathFigure, innerPathFigure] ),
-			Aspect = Stretch.Uniform,
-		};
+	//	var path = new Path {
+	//		Data = new PathGeometry( innerPathFigure is null ? [outterPathFigure] : [outterPathFigure, innerPathFigure] ),
+	//		Aspect = Stretch.Uniform,
+	//	};
 
-		// the -1s are because there is a 1 pixel offset from graphcs and canvas
-		var bounds = new Rect( minX -1, minY-1, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize );
-		return (path, bounds);
-	}
+	//	// the -1s are because there is a 1 pixel offset from graphcs and canvas
+	//	var bounds = new Rect( minX -1, minY-1, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize );
+	//	return (path, bounds);
+	//}
 
 	Color GetTerrainColor() => _spaceSpec is SingleSpaceSpec s1 
 		? s1.NativeTerrain.GetColor() 

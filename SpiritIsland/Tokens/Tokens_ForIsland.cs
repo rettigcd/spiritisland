@@ -49,7 +49,7 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 	/// </remarks>
 	public Space this[SpaceSpec space] => new Space( space, GetTokensCounts( space ), _islandMods.Keys, this );
 
-	CountDictionary<ISpaceEntity> GetTokensCounts( SpaceSpec key ) => _tokenCounts.Get( key, () => new CountDictionary<ISpaceEntity>() );
+	CountDictionary<ISpaceEntity> GetTokensCounts( SpaceSpec key ) => _tokenCounts.Get( key, () => [] );
 
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 

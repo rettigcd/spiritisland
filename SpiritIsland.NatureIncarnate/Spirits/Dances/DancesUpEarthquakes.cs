@@ -102,10 +102,10 @@ public class DancesUpEarthquakes : Spirit {
 	) {
 
 		// Innates
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(LandCreaksWithTension)),
 			InnatePower.For(typeof(EarthShuddersBuildingsFall))
-		};
+		];
 
 		Impending = [];
 		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = Impending } );
@@ -122,10 +122,10 @@ public class DancesUpEarthquakes : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{
+	public override SpecialRule[] SpecialRules => [
 		new SpecialRule("Begin a Dance of Decades", "Whenever you would play a Power Card, you may instead pay any amountof Energy onto the card to make it an impending card."),
 		new SpecialRule("Rhythmic Power Builds to a Cataclysmic Crescendo", "When you gain Energy from your Presence Track, also gain Impending-Energy onto each card made Impending on the previous turn. If any have enough energy, play it, discarding its energy. This costs no card plays.")
-	};
+	];
 
 	public override Task<PowerCard> ForgetACard( IEnumerable<PowerCard>? restrictedOptions = null, Present present = Present.Always ) 
 		=> base.ForgetACard( restrictedOptions, present );

@@ -30,7 +30,7 @@ public class RadiantAndHallowedGrove {
 
 	static HumanTokenClass[] AnInvaderWithHealthLessThanOrEqualToTerrorLevel() {
 		return GameState.Current.Fear.TerrorLevel switch {
-			1 => new HumanTokenClass[] { Human.Explorer },
+			1 => [Human.Explorer],
 			2 => Human.Explorer_Town,
 			_ => Human.Invader
 		};

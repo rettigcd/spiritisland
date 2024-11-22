@@ -4,24 +4,20 @@ public interface IRestoreable {
 	public void Restore();
 }
 
-public abstract class SpaceSpec 
-	: IOption 
+public abstract class SpaceSpec(string label)
+		: IOption 
 	, ISeeAllNeighbors<SpaceSpec>
 	, IEquatable<SpaceSpec>
 {
 
 	readonly List<SpaceSpec> adjacent = [];
 
-	protected SpaceSpec(string label) {
-		Label = label;
-	}
-
 	public abstract SpaceLayout Layout { get; }
 
 	public virtual Board[] Boards { get; protected set; }
 
 	string IOption.Text => Label;
-	public string Label { get; }
+	public string Label { get; } = label;
 
 	public bool IsSand => Is( Terrain.Sands );
 

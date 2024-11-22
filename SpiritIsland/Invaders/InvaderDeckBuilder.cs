@@ -2,29 +2,29 @@
 
 public class InvaderDeckBuilder( string _levels ) {
 
-	public static ImmutableList<InvaderCard> Level1Cards => ImmutableList.Create<InvaderCard>(
+	public static ImmutableList<InvaderCard> Level1Cards => [
 		InvaderCard.Stage1( Terrain.Jungle ),
 		InvaderCard.Stage1( Terrain.Wetland ),
 		InvaderCard.Stage1( Terrain.Sands ),
-		InvaderCard.Stage1( Terrain.Mountain )
-	);
+		InvaderCard.Stage1( Terrain.Mountain ),
+	];
 
-	public static ImmutableList<InvaderCard> Level2Cards => ImmutableList.Create<InvaderCard>(
+	public static ImmutableList<InvaderCard> Level2Cards => [
 		InvaderCard.Stage2( Terrain.Jungle ),
 		InvaderCard.Stage2( Terrain.Wetland ),
 		InvaderCard.Stage2( Terrain.Sands ),
 		InvaderCard.Stage2( Terrain.Mountain ),
-		InvaderCard.Stage2Costal()
-	);
+		InvaderCard.Stage2Costal(),
+	];
 
-	public static ImmutableList<InvaderCard> Level3Cards => ImmutableList.Create<InvaderCard>(
+	public static ImmutableList<InvaderCard> Level3Cards => [
 		InvaderCard.Stage3( Terrain.Jungle, Terrain.Sands ),
 		InvaderCard.Stage3( Terrain.Jungle, Terrain.Mountain ),
 		InvaderCard.Stage3( Terrain.Jungle, Terrain.Wetland ),
 		InvaderCard.Stage3( Terrain.Mountain, Terrain.Sands ),
 		InvaderCard.Stage3( Terrain.Mountain, Terrain.Wetland ),
-		InvaderCard.Stage3( Terrain.Sands, Terrain.Wetland )
-	);
+		InvaderCard.Stage3( Terrain.Sands, Terrain.Wetland ),
+	];
 
 	public readonly static InvaderDeckBuilder Default = new InvaderDeckBuilder( "111-2222-33333" );
 

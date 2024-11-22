@@ -23,7 +23,6 @@ public class AvoidTheDahan_Tests {
 			InitMountainThenAllSands( gs );
 			gs.NewLogEntry += (s) => log.Add(s.Msg());
 		} );
-		_engineTask = task;
 		_user = user;
 		_spirit = spirit;
 
@@ -33,7 +32,6 @@ public class AvoidTheDahan_Tests {
 
 	}
 	Task<FearCardRevealed> _waitForFearCard;
-	Task _engineTask;
 
 	#endregion
 

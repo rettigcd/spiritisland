@@ -4,7 +4,7 @@ public class LightningsSwiftStrike : Spirit {
 
 	public const string Name = "Lightning's Swift Strike";
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { new SpecialRule("SWIFTNESS OF LIGHTNING", "For every Simple air you have, you may use 1 Slow Power as if it were fast") };
+	public override SpecialRule[] SpecialRules => [new SpecialRule("SWIFTNESS OF LIGHTNING", "For every Simple air you have, you may use 1 Slow Power as if it were fast")];
 
 	public LightningsSwiftStrike():base(
 		spirit => new SpiritPresence( spirit,

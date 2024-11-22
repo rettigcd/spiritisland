@@ -35,7 +35,7 @@ public class PowerCard : TypedDecision<SI_PowerCard> {
 	/// <summary> If we select the given PowerCard, what are we going to do with it.  What is its use? </summary>
 	public CardUse Use( SI_PowerCard card ) => _cardUses[card];
 
-	public SI_PowerCard[] CardOptions => _cardUses.Keys.ToArray();
+	public SI_PowerCard[] CardOptions => [.. _cardUses.Keys];
 
 	readonly Dictionary<SI_PowerCard, CardUse> _cardUses = [];
 

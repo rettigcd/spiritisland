@@ -6,7 +6,7 @@ public class BrandenburgPrussia : AdversaryBase, IAdversary {
 
 	public BrandenburgPrussia() : base(Name) { }
 
-	public override AdversaryLevel[] Levels => new AdversaryLevel[] {
+	public override AdversaryLevel[] Levels => [
 		// Escalation
 		new AdversaryLevel(_level:0, 1 , 3,3,3, "Land Rush", "On each board with Town/City, add 1 Town to a land withouth Towns." ).WithEscalation( LandRush ),
 		// Level 1
@@ -21,7 +21,7 @@ public class BrandenburgPrussia : AdversaryBase, IAdversary {
 		new AdversaryLevel(_level:4, 7 , 4,4,3, "Agressive Timetable" ).WithInvaderCardOrder("11-3-222-3333"),
 		new AdversaryLevel(_level:5, 9 , 4,4,3, "Ruthlessly Efficent" ).WithInvaderCardOrder("1-3-222-3333"),
 		new AdversaryLevel(_level:6, 10, 4,4,4, "Terrifying Efficient").WithInvaderCardOrder("3-222-3333"),
-	};
+	];
 
 	#region LandRush - Escalation
 

@@ -221,7 +221,7 @@ public partial class Space
 	/// <summary> Existing & IsInPlay </summary>
 	public IEnumerable<Space> Adjacent => Adjacent_Existing.IsInPlay();
 
-	public IEnumerable<Space> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : Enumerable.Empty<Space>();
+	public IEnumerable<Space> Adjacent_ForInvaders => IsConnected ? Adjacent.Where( x => x.IsConnected ) : [];
 
 	public IEnumerable<Space> Range(int maxDistance) => this.CalcDistances( maxDistance ).Keys.IsInPlay();
 

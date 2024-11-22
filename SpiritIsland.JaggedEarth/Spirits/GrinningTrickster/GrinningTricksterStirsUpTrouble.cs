@@ -5,10 +5,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	public const string Name = "Grinning Trickster Stirs Up Trouble";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {  
+	public override SpecialRule[] SpecialRules => [  
 		TricksterTokens.ARealFlairForDiscord_Rule,  
 		CleaningUpMessesIsADrag
-	};
+	];
 
 	static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule(
 		"Cleaning up Messes is a Drag", 

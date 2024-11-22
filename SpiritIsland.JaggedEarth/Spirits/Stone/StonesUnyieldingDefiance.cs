@@ -18,10 +18,10 @@ public class StonesUnyieldingDefiance : Spirit {
 	public const string Name = "Stone's Unyielding Defiance";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+	public override SpecialRule[] SpecialRules => [
 		BestowTheEnduranceOfBedrockPresenceToken.Rule,
 		new SpecialRule("Deep Layers Expposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.") 
-	};
+	];
 
 	#region special Tracks
 
@@ -112,14 +112,15 @@ public class StonesUnyieldingDefiance : Spirit {
 
 }
 
-public class BestowTheEnduranceOfBedrockPresenceToken : SpiritPresenceToken, IModifyAddingToken {
+public class BestowTheEnduranceOfBedrockPresenceToken(Spirit spirit) 
+	: SpiritPresenceToken(spirit)
+	, IModifyAddingToken
+{
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Bestow the Endurance of BedRock", 
 		"When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destroy presence (yours or others')."
 	);
-
-	public BestowTheEnduranceOfBedrockPresenceToken(Spirit spirit) : base(spirit) {}
 
 	public void ModifyAdding(AddingTokenArgs args) {
 		if( args.Token == Token.Blight && args.To.Blight.Count < args.To[this] ) {

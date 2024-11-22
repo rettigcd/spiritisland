@@ -27,20 +27,20 @@ public class ToweringRootsOfTheJungle : Spirit {
 		, PowerCard.For(typeof(BoonOfResilientPower))
 	) {
 		// Innates
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(ShelterUnderToweringBranches)), 
 			InnatePower.For(typeof(RevokeSanctuaryAndCastOut))
-		};
+		];
 
 		PowerRangeCalc = new IncarnaRangeCalculator( this );
 	}
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{
+	public override SpecialRule[] SpecialRules => [
 		new SpecialRule("Enduring Vitality", "Some of your Actions Add Vitality Tokens."),
 		new SpecialRule("Heart-Tree Guards the Land", "You have an Incarna. Your Powers get +1 range if Incarna is in the origin land.  Invaders/Dahan/Beast can't be damaged or destroyed at Incarna.  Empower Encarna the first time it's in a land with 3 or more vitality.  Skip all Build Actions at empowered Incarna.")
-	};
+	];
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		var highestFirst = board.Spaces.Reverse().ScopeTokens().ToArray();

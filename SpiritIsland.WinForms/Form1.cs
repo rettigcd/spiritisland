@@ -125,7 +125,8 @@ public partial class Form1 : Form, IHaveOptions {
 		return btn;
 	}
 
-	class FontSizeCalculator(Control control) : IDisposable {
+	// partial => to make warning CsWinRT1028 go away.
+	partial class FontSizeCalculator(Control control) : IDisposable {
 		Graphics graphics = control.CreateGraphics();
 		readonly Font font = control.Font;
 

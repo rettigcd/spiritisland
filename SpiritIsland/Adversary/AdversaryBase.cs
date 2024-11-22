@@ -2,15 +2,9 @@
 
 namespace SpiritIsland;
 
-abstract public class AdversaryBase : IAdversary {
+abstract public class AdversaryBase(string name) : IAdversary {
 
-	public string AdvName { get; }
-
-	#region constructor
-	public AdversaryBase(string name) { 
-		AdvName = name;
-	}
-	#endregion constructor
+	public string AdvName { get; } = name;
 
 	// Get: Available Levels
 	public abstract AdversaryLevel[] Levels { get; }

@@ -144,7 +144,7 @@ public abstract partial class Spirit
 	public List<PowerCard> InPlay = [];		// paid for / played
 	public List<PowerCard> DiscardPile = []; // Cards are not transferred to discard pile until end of turn because we need to keep track of their elements.
 
-	public SpiritDeck[] Decks => decks.ToArray();
+	public SpiritDeck[] Decks => [.. decks];
 
 	// This is not part of Decks because these cards are transient and don't actually belong to the spirit.
 	public List<PowerCard> DraftDeck = [];   // The virtual deck the cards are in while they are being drawn/drafted

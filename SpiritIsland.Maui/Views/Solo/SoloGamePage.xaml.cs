@@ -6,7 +6,7 @@ namespace SpiritIsland.Maui;
 /// <summary>
 /// 1 Spirit / 1 Player
 /// </summary>
-public partial class SoloGamePage : ContentPage, IDisposable {
+public sealed partial class SoloGamePage : ContentPage, IDisposable {
 
 	// Keeps track of the current game so user can leave and come back to it.
 	// !!! Purhaps this would be better as a member variable of the main page.

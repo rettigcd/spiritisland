@@ -25,9 +25,9 @@ public class SerpentSlumbering : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+	public override SpecialRule[] SpecialRules => [
 		new SpecialRule("Deep Slumber","You start off limited to 5 presence on the tisland.  Raise this with your 'Absorb Essence' Power Card.  Each use covers the lowest revealed number; your presence limit is the lowest uncovered number.")
-	} ;
+	] ;
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Setup: put 1 presence on #5

@@ -8,6 +8,13 @@
 	<ApplicationIcon>Spirit Island.ico</ApplicationIcon>
 	<NeutralLanguage>en-US</NeutralLanguage>
 	<SupportedOSPlatformVersion>10.0.20348.0</SupportedOSPlatformVersion>
+
+	<!-- Disable Stupid warnings generated on IDisposable and INotify -->
+	<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
+
+	<!-- Bitmaps inplement generic WinRT interfaces which require generated unsafe blocks. -->
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  
   </PropertyGroup>
 
   <ItemGroup>

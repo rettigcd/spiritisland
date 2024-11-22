@@ -6,9 +6,9 @@ public class Keeper : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+	public override SpecialRule[] SpecialRules => [
 		new SpecialRule("Forbidden Ground","Any time you create a sacred site, push all dahan from that land.  Dahan events never move dahan to you sacred site but powers can do so.")
-	} ;
+	] ;
 
 	public Keeper():base(
 		spirit => new SpiritPresence( spirit,

@@ -11,7 +11,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[Keeper.Name] = typeof( Keeper ),
 		[SharpFangs.Name] = typeof( SharpFangs ),
 	};
-	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public string[] SpiritNames => [.. Spirits.Keys];
 	public Spirit MakeSpirit( string spiritName ) {
 		return Spirits.TryGetValue( spiritName, out Type spiritType ) 
 			? (Spirit)Activator.CreateInstance( spiritType )
@@ -79,7 +79,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(VolcanicEruption),
 	}.Select( PowerCard.For ).ToArray();
 
-	public IFearCard[] FearCards => new IFearCard[] {
+	public IFearCard[] FearCards => [
 		new DahanAttack(),
 		new DahanThreaten(),
 		new Demoralized(),
@@ -95,9 +95,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		new TooManyMonsters(),
 		new TreadCarefully(),
 		new Unrest(),
-	};
+	];
 
-	public BlightCard[] BlightCards => new BlightCard[] {
+	public BlightCard[] BlightCards => [
 		new AidFromLesserSpirits(),
 		new APallUponTheLand(),
 		new BackAgainstTheWall(),
@@ -105,6 +105,6 @@ public class GameComponentProvider : IGameComponentProvider {
 		new ErosionOfWill(),
 		new PromisingFarmlands(),
 		new TippingPoint(),
-	};
+	];
 
 }

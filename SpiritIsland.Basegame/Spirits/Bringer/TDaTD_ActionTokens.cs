@@ -150,7 +150,7 @@ public class TDaTD_ActionTokens( Space space )
 
 	static readonly ActionScopeValue<HashSet<Space>> SpacesWithDreamers = new( 
 		"SpacesWithDreamers", 
-		() => new HashSet<Space>()
+		() => []
 	);
 
 	#endregion

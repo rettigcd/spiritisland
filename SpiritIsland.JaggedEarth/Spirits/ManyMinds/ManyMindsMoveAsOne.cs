@@ -6,7 +6,7 @@ public partial class ManyMindsMoveAsOne : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{ FlyFastAsThought, AJoiningOfSwarmsAndFlocks };
+	public override SpecialRule[] SpecialRules => [FlyFastAsThought, AJoiningOfSwarmsAndFlocks];
 
 	static readonly SpecialRule AJoiningOfSwarmsAndFlocks = new SpecialRule(
 		"A Joining of Swarms and Flocks",

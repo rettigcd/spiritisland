@@ -31,15 +31,15 @@ public class WanderingVoiceKeensDelirium : Spirit {
         )
 	{
 
-		InnatePowers = new InnatePower[]{
+		InnatePowers = [
 			InnatePower.For(typeof(InscrutableJourneying)),
 			InnatePower.For(typeof(MindShatteringSong))
-		};
+		];
 	}
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{
+	public override SpecialRule[] SpecialRules => [
 		new SpecialRule(
 			"A Clarion Voice Given Form",
 			"You have an Incarna.  If empowered , it Isolates its land."
@@ -50,7 +50,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 			"In lands with or adjacent to Incarna: if Strife is present, Dahan do not participate in Ravage."
 		),
 		SenselessRoaming_Rule
-	};
+	];
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		Space s6 = board[6].ScopeSpace;

@@ -69,7 +69,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 			: throw new InvalidOperationException( "Cannot invoke spirit-based PowerCard using TargetSpaceCtx" );
 	}
 
-	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke( null, new object[] { ctx } );
+	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke( null, [ctx] );
 
 	#region private
 

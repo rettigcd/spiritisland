@@ -61,7 +61,7 @@ public class StubbornSolidityBehavior
 			ReplaceAll( space, solid, normal );
 	}
 
-	void ReplaceAll( Space space, HumanToken oldType, HumanToken newType) {
+	static void ReplaceAll( Space space, HumanToken oldType, HumanToken newType) {
 		int count = space[oldType];
 		if( count == 0 ) return;
 		space.Init(oldType, 0);
@@ -69,6 +69,6 @@ public class StubbornSolidityBehavior
 	}
 
 	// allows for multiple Dahan healths that may not heal at end of round.
-	Dictionary<HumanToken, HumanToken> _solidToNormalMap = new();
+	readonly Dictionary<HumanToken, HumanToken> _solidToNormalMap = [];
 
 }

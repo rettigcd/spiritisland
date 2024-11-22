@@ -8,32 +8,32 @@ public class GameComponentProvider : IGameComponentProvider {
 		[DownpourDrenchesTheWorld.Name] = typeof( DownpourDrenchesTheWorld ),
 		[FinderOfPathsUnseen.Name]      = typeof( FinderOfPathsUnseen ),
 	};
-	public string[] SpiritNames => Spirits.Keys.ToArray();
+	public string[] SpiritNames => [.. Spirits.Keys];
 	public Spirit MakeSpirit( string spiritName ) {
 		return Spirits.TryGetValue( spiritName, out Type value ) 
 			? (Spirit)Activator.CreateInstance( value )
 			: null;
 	}
 
-	public string[] AdversaryNames => new string[] { Scotland.Name };
+	public string[] AdversaryNames => [Scotland.Name];
 	public IAdversary MakeAdversary( string adversaryName ) => adversaryName switch {
 		Scotland.Name => new Scotland(),
 		_ => null
 	};
 
 
-	public PowerCard[] MinorCards => Array.Empty<PowerCard>();
+	public PowerCard[] MinorCards => [];
 
-	public PowerCard[] MajorCards => Array.Empty<PowerCard>();
+	public PowerCard[] MajorCards => [];
 
-	public IFearCard[] FearCards => new IFearCard[] {
+	public IFearCard[] FearCards => [
 		new AngryMobs(),
 		new CommunitiesInDisarray(),
 		new Depopulation(),
 		new MimicTheDahan(),
 		new SpreadingTimidity()
-	};
+	];
 
-	public BlightCard[] BlightCards => Array.Empty<BlightCard>();
+	public BlightCard[] BlightCards => [];
 
 }

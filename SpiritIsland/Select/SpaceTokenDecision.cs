@@ -31,7 +31,7 @@ public class SpaceTokenDecision : TypedDecision<SpaceToken>, IHaveArrows {
 	public SpaceSpec Destination { get; private set; }
 
 	public IEnumerable<Arrow> Arrows => Destination == null
-		? Enumerable.Empty<Arrow>()
+		? []
 		: SpaceTokens.Select( st => new Arrow { Token = st.Token, From = st.Space.SpaceSpec, To = Destination } );
 
 }

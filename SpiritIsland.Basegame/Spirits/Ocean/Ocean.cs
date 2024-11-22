@@ -4,7 +4,7 @@ public class Ocean : Spirit {
 
 	public const string Name = "Ocean's Hungry Grasp";
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { OceanInPlay, Drowning.Rule };
+	public override SpecialRule[] SpecialRules => [OceanInPlay, Drowning.Rule];
 
 	readonly SpecialRule OceanInPlay = new SpecialRule(
 		"Ocean In Play",

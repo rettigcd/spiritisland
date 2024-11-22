@@ -91,7 +91,7 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 	}
 
 	public IEnumerable<Arrow> Arrows => _source == null || Token == null
-		? Enumerable.Empty<Arrow>()
+		? []
 		: Options.OfType<SpaceSpec>().Select(dstSpace => new Arrow { Token = Token, From = _source, To = dstSpace });
 
 	// Only Set when we want to draw outgoing arrows

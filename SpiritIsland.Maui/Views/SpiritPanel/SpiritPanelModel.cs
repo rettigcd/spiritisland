@@ -53,7 +53,6 @@ public class SpiritPanelModel : ObservableModel {
 		ovm.AddRange(_energyTrack, this);
 		ovm.AddRange(_cardTrack, this);
 		ovm.AddRange(_growthTrack.Groups.SelectMany(grp => grp.Actions), this);
-		_ovm = ovm;
 
 		gsToWatch.NewLogEntry += OnNewLogEntry;
 		spirit.Portal.NewWaitingDecision += Portal_NewWaitingDecision; // using this to trigger UI update, NOT to get decision info.
@@ -117,7 +116,6 @@ public class SpiritPanelModel : ObservableModel {
 	ElementDictModel _secondaryElements = new ElementDictModel([]);
 
 	readonly IHaveSecondaryElements? _secondaryElementHolder;
-	readonly OptionViewManager _ovm;
 	readonly Spirit _spirit;
 
 	#endregion

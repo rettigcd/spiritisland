@@ -7,7 +7,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	public override string SpiritName => Name;
 
 	#region Special Rules
-	public override SpecialRule[] SpecialRules => _specialRules.ToArray();
+	public override SpecialRule[] SpecialRules => [.. _specialRules];
 	readonly List<SpecialRule> _specialRules = [ SeekingPath_Rule ];
 
 	static readonly SpecialRule SeekingPath_Rule = new SpecialRule( "Seeking a Path Towards Healing", "After playing cards: (a) Claim a Healing Marker matching whichever water/animal you have more of. (b) Claim a Healing card if you meet requirments, (c) destroy 1 presence or forget a power card." );
@@ -30,10 +30,10 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 		, PowerCard.For(typeof(WrackWithPainAndGrief))   // slow
 	) {
 
-		InnatePowers = new[] {
+		InnatePowers = [
 			InnatePower.For(typeof(SwirlAndSpill)),
 			InnatePower.For(typeof(SanguinaryTaint))
-		};
+		];
 
 	}
 

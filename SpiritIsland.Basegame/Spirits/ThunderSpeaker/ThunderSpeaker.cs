@@ -4,7 +4,7 @@ public class Thunderspeaker : Spirit {
 
 	public const string Name = "Thunderspeaker";
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { SwarnToVictory, AllyOfTheDahan } ;
+	public override SpecialRule[] SpecialRules => [SwarnToVictory, AllyOfTheDahan] ;
 
 	static readonly SpecialRule SwarnToVictory = new SpecialRule("Sworn To Victory","After a Ravage Action destroys 1 or more Dahan, for each Dahan Destroyed, Destroy 1 of your Presence within 1.");
 	static readonly SpecialRule AllyOfTheDahan = new SpecialRule("Ally of the Dahan","Your Presence may move with Dahan. (Whenever a Dahan moves from 1 of your lands to another land, you may move 1 Presence along with it.)");

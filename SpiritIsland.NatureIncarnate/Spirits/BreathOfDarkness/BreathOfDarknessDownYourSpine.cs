@@ -45,20 +45,20 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 	) {
 
 		// Innates
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(LeaveATrailOfDeathlySilence)),
 			InnatePower.For(typeof(LostInTheEndlessDark))
-		};
+		];
 
 		PowerRangeCalc = new ShadowTouchedRealm_RangeCalculator();
 	}
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{
+	public override SpecialRule[] SpecialRules => [
 		TerrorStalksTheLand.Rule,
 		ShadowTouchedRealm_RangeCalculator.Rule
-	};
+	];
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		var jungles = board.Spaces.Where(x=>x.IsJungle).ScopeTokens().ToArray();

@@ -12,7 +12,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[Ocean.Name]                 = typeof( Ocean ),
 		[Bringer.Name]               = typeof( Bringer ),
 	};
-	public string[] SpiritNames => SpiritTypes.Keys.ToArray();
+	public string[] SpiritNames => [.. SpiritTypes.Keys];
 	public Spirit MakeSpirit( string spiritName ) {
 		return SpiritTypes.TryGetValue( spiritName, out Type spiritType ) 
 			? (Spirit)Activator.CreateInstance( spiritType )
@@ -25,7 +25,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[Sweden.Name] = typeof( Sweden ),
 	};
 
-	public string[] AdversaryNames => AdversariesTypes.Keys.ToArray();
+	public string[] AdversaryNames => [.. AdversariesTypes.Keys];
 	public IAdversary MakeAdversary( string adversaryName ) => adversaryName != null && AdversariesTypes.TryGetValue( adversaryName, out Type adversaryType ) 
 		? (IAdversary) Activator.CreateInstance( adversaryType )
 			: null;
@@ -94,7 +94,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(WrapInWingsOfSunlight),
 	}.Select( PowerCard.For ).ToArray();
 
-	public IFearCard[] FearCards => new IFearCard[] {
+	public IFearCard[] FearCards => [
 		new AvoidTheDahan(),
 		new BeliefTakesRoot(),
 		new DahanEnheartened(),
@@ -110,11 +110,11 @@ public class GameComponentProvider : IGameComponentProvider {
 		new TallTalesOfSavagery(),
 		new TradeSuffers(),
 		new WaryOfTheInterior(),
-	};
+	];
 
-	public BlightCard[] BlightCards => new BlightCard[] {
+	public BlightCard[] BlightCards => [
 		new DownwardSpiral(),
 		new MemoryFadesToDust(),
-	};
+	];
 
 }

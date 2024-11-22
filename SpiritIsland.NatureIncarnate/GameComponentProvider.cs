@@ -13,7 +13,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[WanderingVoiceKeensDelirium.Name] = typeof( WanderingVoiceKeensDelirium ),
 	};
 
-	public string[] SpiritNames => SpiritTypes.Keys.ToArray();
+	public string[] SpiritNames => [.. SpiritTypes.Keys];
 	public Spirit? MakeSpirit( string spiritName ) {
 		return SpiritTypes.TryGetValue( spiritName, out Type? spiritType ) 
 			? (Spirit?)Activator.CreateInstance( spiritType )
@@ -24,7 +24,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		[HabsburgMiningExpedition.Name] = typeof( HabsburgMiningExpedition ),
 	};
 
-	public string[] AdversaryNames => AdversariesTypes.Keys.ToArray();
+	public string[] AdversaryNames => [.. AdversariesTypes.Keys];
 	public IAdversary? MakeAdversary( string adversaryName ) => adversaryName != null 
 		&& AdversariesTypes.TryGetValue( adversaryName, out Type? adversaryType ) 
 		? (IAdversary?)Activator.CreateInstance( adversaryType )
@@ -50,7 +50,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		typeof(PlagueShipsSailToDistantPorts),
 	}.Select( PowerCard.For ).ToArray();
 
-	public IFearCard[] FearCards => new IFearCard[] {
+	public IFearCard[] FearCards => [
 		new CivilUnrest(),
 		new DahanGainTheEdge(),
 		new DauntedByTheDahan(),
@@ -60,9 +60,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		new StrugglesOverFarmland(),
 		new SupplyChainsAbandoned(),
 		new Unsettled(),
-	};
+	];
 
-	public BlightCard[] BlightCards => new BlightCard[] {
+	public BlightCard[] BlightCards => [
 		new AttenuatedEssence(),
 		new BlightCorrodesTheSpirit(),
 		new BurnBrightestBeforeTheEnd(),
@@ -71,7 +71,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new SlowDissolutionOfWill(),
 		new TheBorderOfLifeAndDeath(),
 		new ThrivingCrops()
-	};
+	];
 
 }
 

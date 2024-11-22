@@ -47,7 +47,7 @@ public class TradeSuffers_Tests {
 		spaceCtx.Space.Summary.ShouldBe( "1B,1C@3,1E@1" );
 	}
 
-	private const string FearCard = "Trade Suffers : 1 : Invaders do not Build in lands with City.";
+	// private const string FearCard = "Trade Suffers : 1 : Invaders do not Build in lands with City.";
 
 	[Fact]
 	public async Task Level1_CityDestroyedDuringRavage_Build() {

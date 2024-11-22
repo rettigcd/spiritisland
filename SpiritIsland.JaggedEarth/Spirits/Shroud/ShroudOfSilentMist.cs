@@ -19,11 +19,11 @@ public class ShroudOfSilentMist : Spirit {
 	};
 
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{ 
+	public override SpecialRule[] SpecialRules => [ 
 		GatherPowerFromTheCoolAndDark, 
 		MistsShiftAndFlow.Rule, 
 		SlowAndSilentDeath.Rule,
-	};
+	];
 
 	public ShroudOfSilentMist():base(
 		spirit => new SpiritPresence( spirit,

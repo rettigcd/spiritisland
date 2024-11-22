@@ -380,7 +380,9 @@ internal class JsonDeserializer( string json ) {
 }
 
 /// <summary> Array of dynamic vaules. </summary>
-public class JsonArray : List<dynamic> { };
+// partial => to make warning CsWinRT1028 go away.
+public partial class JsonArray : List<dynamic> { };
 
 /// <summary> Dictionary of string / dynamic pairs. </summary>
-public class JsonObject : Dictionary<string, dynamic> { };
+// partial => to make warning CsWinRT1028 go away.
+public partial class JsonObject : Dictionary<string, dynamic> { };

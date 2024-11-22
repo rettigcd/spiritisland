@@ -47,10 +47,10 @@ public class HeartOfTheWildfire : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+	public override SpecialRule[] SpecialRules => [
 		BlazingPresence_Rule,
 		WildfireToken.DestructiveNature_Rule
-	};
+	];
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// in the hightest-numbered Sands on your starting board

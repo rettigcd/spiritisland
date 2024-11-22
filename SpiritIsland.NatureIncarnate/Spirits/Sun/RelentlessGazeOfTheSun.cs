@@ -6,9 +6,9 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] {
+	public override SpecialRule[] SpecialRules => [
 		RelentlessRepeater.Rule
-	};
+	];
 
 	public RelentlessGazeOfTheSun():base( 
 		spirit => new SunPresence(spirit)
@@ -32,10 +32,10 @@ public class RelentlessGazeOfTheSun : Spirit {
 		,PowerCard.For(typeof(WitherBodiesScarStones))
 		,PowerCard.For(typeof(FocusTheSunsRays))
 	) {
-		InnatePowers = new InnatePower[] {
+		InnatePowers = [
 			InnatePower.For(typeof(ScorchingConvergence)), 
 			InnatePower.For(typeof(ConsiderAHarmoniousNature))
-		};
+		];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

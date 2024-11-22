@@ -100,7 +100,7 @@ public class StarlightSeeksItsForm : Spirit {
 		"After revealing a snowflake, place 1 Element Marger of your choice on it.  That element is permanent and is constantly available."
 	);
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[]{ GrowthBegetsGrowth, SlowlyCoalescingNature };
+	public override SpecialRule[] SpecialRules => [GrowthBegetsGrowth, SlowlyCoalescingNature];
 
 
 	public StarlightSeeksItsForm():base(

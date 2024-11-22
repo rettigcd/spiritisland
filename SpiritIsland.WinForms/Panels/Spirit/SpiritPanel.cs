@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -7,7 +6,8 @@ using System.Windows.Forms;
 namespace SpiritIsland.WinForms;
 
 // new spirit Painter each time layout / size changes
-public sealed class SpiritPanel : IPanel, IDisposable {
+// partial => to make warning CsWinRT1028 go away.
+public sealed partial class SpiritPanel : IPanel, IDisposable {
 
 	public SpiritPanel( SharedCtx ctx ){
 		_ctx = ctx;

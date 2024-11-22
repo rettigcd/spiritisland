@@ -100,8 +100,8 @@ public class PaintableRects_Tests {
 	static Rect BuildWidth(string s) => new Rect( string.IsNullOrEmpty(s) ? null : float.Parse(s) );
 	static Rect BuildHeight(string s) => new Rect( string.IsNullOrEmpty(s) ? null : 1/float.Parse(s) );
 
-	static string Format(Rectangle r) => $"({r.X},{r.Y},{r.Width},{r.Height})"; 
-	static string Format(Rect r) => Format(r.Bounds);
+	// static string Format(Rectangle r) => $"({r.X},{r.Y},{r.Width},{r.Height})"; 
+	// static string Format(Rect r) => Format(r.Bounds);
 	static string FormatXW(Rect r) => $"({r.Bounds.X},{r.Bounds.Width})";
 	static string FormatYH(Rect r) => $"({r.Bounds.Y},{r.Bounds.Height})";
 

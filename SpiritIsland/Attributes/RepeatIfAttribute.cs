@@ -3,16 +3,12 @@
 /// <summary>
 /// Repeats an Innate Power if the elemental thresholds are met.
 /// </summary>
-public class RepeatIfAttribute : RepeatAttribute {
+public class RepeatIfAttribute(string elementThreshold, params string[] additionalThresholds) : RepeatAttribute {
 
-	public override IDrawableInnateTier[] ThresholdTiers { get; }
-
-	public RepeatIfAttribute(string elementThreshold, params string[] additionalThresholds) {
-		ThresholdTiers = [
+	public override IDrawableInnateTier[] ThresholdTiers { get; } = [
 			new DrawableRepeatOption(elementThreshold, "Repeat this Power."),
 			.. additionalThresholds.Select( t => new DrawableRepeatOption(t,"Repeat this Power again.") )
 		];
-	}
 
 	public override IPowerRepeater GetRepeater() => new Repeater( ThresholdTiers );
 

@@ -6,7 +6,7 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule };
+	public override SpecialRule[] SpecialRules => [LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule];
 
 	public LureOfTheDeepWilderness():base( 
 		x => new LurePresence(x)

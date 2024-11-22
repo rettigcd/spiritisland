@@ -2,24 +2,18 @@
 
 namespace SpiritIsland;
 
-public abstract class BlightCard : IHaveMemento
+public abstract class BlightCard(string name, string description, int side2BlightPerPlayer) 
+	: IHaveMemento
 	, IOption			// !!! ??? Is this even necessary any more?
 {
-	public string Name { get; }
-	public string Description { get; }
+	public string Name { get; } = name;
+	public string Description { get; } = description;
 	public bool CardFlipped { get; set; }
-	public int Side2BlightPerPlayer { get; }
+	public int Side2BlightPerPlayer { get; } = side2BlightPerPlayer;
 
 	public string Text => Name;
 
 	#region constructor
-
-	protected BlightCard(string name, string description, int side2BlightPerPlayer ) {
-		Name = name;
-		Description = description;
-		_startingBlightPerPlayer = 2;
-		Side2BlightPerPlayer = side2BlightPerPlayer;
-	}
 
 	#endregion constructor
 
@@ -108,7 +102,7 @@ public abstract class BlightCard : IHaveMemento
 
 	static readonly FakeSpace _spaceSpec = new FakeSpace("BlightCard"); // stores slow blight
 
-	readonly int _startingBlightPerPlayer;
+	readonly int _startingBlightPerPlayer = 2;
 
 	#endregion
 }

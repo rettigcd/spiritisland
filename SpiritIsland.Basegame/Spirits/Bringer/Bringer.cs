@@ -6,7 +6,7 @@ public class Bringer : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => new SpecialRule[] { TDaTD_ActionTokens.Rule };
+	public override SpecialRule[] SpecialRules => [TDaTD_ActionTokens.Rule];
 
 	public Bringer():base(
 		spirit => new SpiritPresence( spirit,
