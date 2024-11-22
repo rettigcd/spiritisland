@@ -3,37 +3,45 @@ using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
-public class DecisionModel : ObservableModel {
+public class SoloGameModel : ObservableModel {
 
 	// * NOT USED - but required to Make child models compile
 	public bool IsVisible {get; set;}
 
+	#region Models for child Views
+
 	public GameState GameState          { get; }
 	public IslandModel Island           { get; }
-	public SpiritModel SpiritSummary    { get; }
-	public SpiritPanelModel SpiritPanel { get; }
+	public SpiritSummaryModel SpiritSummary    { get; } // binding for summary panel
+	public SpiritPanelModel SpiritPanel { get; } // binding for spirit panel
 	public CardsOverlayModel Cards      { get; }
+
 	public ICommand ShowCards           { get; }
 	public ICommand OpenOverlay         { get; }
 	public string Adversary             { get; }
 	public bool HasAdversary => !string.IsNullOrWhiteSpace(Adversary);
 
+	#endregion Models for child Views
+
 	#region Rewind / Phase - Observable
+
 	public ICommand RewindCommand { get; }
 	public int RewindableRound { get => _rewindableRound; set => SetProp(ref _rewindableRound, value); }
 	public Phase Phase { get => _phase; set { SetProp(ref _phase, value); } }
-	public int _rewindableRound;
-	public Phase _phase;
+	int _rewindableRound;
+	Phase _phase;
+
 	#endregion Rewind / Phase - Observable
 
 	#region Observable properties
 
 	/// <summary> Indicates which overlay panel is visible (if any) </summary>
 	public Overlay VisibleOverlay       { get => _visibleOverlay; set => SetProp( ref _visibleOverlay, value ); }
+
 	/// <summary> Appears in the Title section of the page.  Should contain: spirit, game #, Adversary </summary>
 	public string Title                 { get => _title; set => SetProp(ref _title,value); }
 	public InvaderBoardModel InvaderBoard { get => _gameStatus; set => SetProp(ref _gameStatus, value); }
-	// public string Spaces                { get => _spaces; set => SetProp(ref _spaces, value ); }
+
 	/// <summary> Decision Prompt </summary>
 	public string Prompt                { get => _prompt; set => SetProp(ref _prompt, value); }
 	/// <summary> Current selected Option - the one that can be 'Accept'ed </summary>
@@ -49,17 +57,16 @@ public class DecisionModel : ObservableModel {
 	public bool HasOptionReady          { get => _hasOptionReady; set => SetProp(ref _hasOptionReady, value); }
 	public string AcceptText            { get => _acceptText; set => SetProp(ref _acceptText, value); }
 
-	void UpdateButton(string buttonText, bool hasOptoinReady) {
+	void UpdateButton(string buttonText, bool hasOptionReady) {
 		AcceptText = buttonText;
-		HasOptionReady = hasOptoinReady;
-	
+		HasOptionReady = hasOptionReady;
 	}
 
 	#endregion
 
 	#region constructor
 
-	public DecisionModel(GameState gameState) {
+	public SoloGameModel(GameState gameState) {
 		if (ActionScope.Current == null)
 			ActionScope.Initialize(gameState.RootScope);
 
@@ -86,7 +93,7 @@ public class DecisionModel : ObservableModel {
 		Cards.RequestClose += Overlay_RequestClose;
 
 		// Spirit Panel
-		SpiritSummary = new SpiritModel(_game.Spirit, new Command(()=>VisibleOverlay=Overlay.SpiritPanel));
+		SpiritSummary = new SpiritSummaryModel(_game.Spirit, new Command(()=>VisibleOverlay=Overlay.SpiritPanel));
 		SpiritPanel = new SpiritPanelModel(_game.Spirit, _ovm, gs);
 		SpiritPanel.RequestClose += Overlay_RequestClose;
 
@@ -104,7 +111,7 @@ public class DecisionModel : ObservableModel {
 		// notify OVM that user Selected option changed.
 		PropertyChanged += (sender, e) => {
 			if (e.PropertyName == nameof(SelectedOption))
-				_ovm.SelectedOption = ((DecisionModel)sender!).SelectedOption;
+				_ovm.SelectedOption = ((SoloGameModel)sender!).SelectedOption;
 		};
 
 		Island = new IslandModel(GameState, _ovm);

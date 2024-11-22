@@ -3,8 +3,8 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:si="clr-namespace:SpiritIsland.Maui"
 			 xmlns:sib="clr-namespace:SpiritIsland;assembly=SpiritIsland"
-			 x:Class="SpiritIsland.Maui.SinglePlayerGamePage"
-			 x:DataType="si:DecisionModel"
+			 x:Class="SpiritIsland.Maui.SoloGamePage"
+			 x:DataType="si:SoloGameModel"
 			 Title="{Binding Title}">
 
 	<ContentPage.Resources>
@@ -76,10 +76,10 @@
 
 		<!-- Overlays -->
 		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" 
-			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
+			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
 			Grid.Row="0" Grid.RowSpan="6" Grid.ColumnSpan="2" VerticalOptions="Fill" HorizontalOptions="Fill" />
 		<si:CardsOverlay BindingContext="{Binding Cards}" 
-			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:DecisionModel}}, Converter={StaticResource selectOne},ConverterParameter=Cards}"
+			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=Cards}"
 			Grid.Row="1" Grid.RowSpan="6" Grid.ColumnSpan="2" VerticalOptions="Fill" HorizontalOptions="Fill" />
 
 	</Grid>

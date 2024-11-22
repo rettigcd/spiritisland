@@ -899,8 +899,8 @@
 	  <Compile Update="Views\TokenLocation\TokenLocationView.xaml.cs">
 	    <DependentUpon>TokenLocationView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\SinglePlayer\SinglePlayerGamePage.xaml.cs">
-	    <DependentUpon>SinglePlayerGamePage.xaml</DependentUpon>
+	  <Compile Update="Views\Solo\SoloGamePage.xaml.cs">
+	    <DependentUpon>SoloGamePage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -956,7 +956,7 @@
 	  <MauiXaml Update="Testing\TestPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\SinglePlayer\SinglePlayerGamePage.xaml">
+	  <MauiXaml Update="Views\Solo\SoloGamePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\NewGame\NewGamePage.xaml">

@@ -30,7 +30,7 @@
 	
 	<!-- Game -->
 	<FlyoutItem Title="Game" Icon="quake.png">
-		<ShellContent Title="A" Icon="quake.png" ContentTemplate="{DataTemplate local:SinglePlayerGamePage}" Route="GamePage" Style="{StaticResource Bob}" />
+		<ShellContent Title="A" Icon="quake.png" ContentTemplate="{DataTemplate local:SoloGamePage}" Route="GamePage" Style="{StaticResource Bob}" />
 	</FlyoutItem>
 
 	<!-- MAIN page -->
@@ -45,7 +45,7 @@
 
 	<TabBar>
 		<Tab Title="Tab G" Icon="quake.png">
-			<ShellContent ContentTemplate="{DataTemplate local:SinglePlayerGamePage}" Route="Random-1" Style="{StaticResource Bob}" />
+			<ShellContent ContentTemplate="{DataTemplate local:SoloGamePage}" Route="Random-1" Style="{StaticResource Bob}" />
 		</Tab>
 		<Tab Title="Tab M" Icon="quake.png">
 			<ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="Random-2" Style="{StaticResource Bob}" />

@@ -191,12 +191,12 @@ public partial class NewGamePage : ContentPage {
 		var gameState = _builder.BuildGame(gc);
 
 		// Set up the New Game Page
-		if(SinglePlayerGamePage.Current is not null )
-			SinglePlayerGamePage.Current.Dispose();
-		SinglePlayerGamePage.Current = new SinglePlayerGamePage( gameState );
-		NavigationPage.SetHasNavigationBar(SinglePlayerGamePage.Current, false);
+		if(SoloGamePage.Current is not null )
+			SoloGamePage.Current.Dispose();
+		SoloGamePage.Current = new SoloGamePage( gameState );
+		NavigationPage.SetHasNavigationBar(SoloGamePage.Current, false);
 		MainPage.Current.ShowCurrentGameButton(true);
-		Navigation.InsertPageBefore(SinglePlayerGamePage.Current, this);
+		Navigation.InsertPageBefore(SoloGamePage.Current, this);
 		await Navigation.PopAsync();
 
 		Activity.IsRunning = false;

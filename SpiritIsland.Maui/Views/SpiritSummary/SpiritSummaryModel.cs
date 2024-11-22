@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
-public class SpiritModel : ObservableModel {
+public class SpiritSummaryModel : ObservableModel {
 
 	#region Observable Properties
 
@@ -21,7 +21,7 @@ public class SpiritModel : ObservableModel {
 
 	#region constructor
 
-	public SpiritModel(Spirit spirit, ICommand openSpiritPanel) {
+	public SpiritSummaryModel(Spirit spirit, ICommand openSpiritPanel) {
 		_spirit = spirit;
 
 		Spirit = spirit.SpiritName;

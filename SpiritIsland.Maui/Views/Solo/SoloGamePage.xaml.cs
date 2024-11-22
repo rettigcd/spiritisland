@@ -3,15 +3,19 @@ using SpiritIsland.Log;
 
 namespace SpiritIsland.Maui;
 
-public partial class SinglePlayerGamePage : ContentPage, IDisposable {
+/// <summary>
+/// 1 Spirit / 1 Player
+/// </summary>
+public partial class SoloGamePage : ContentPage, IDisposable {
 
-	static public SinglePlayerGamePage? Current { get; set; }
+	// Keeps track of the current game so user can leave and come back to it.
+	// !!! Purhaps this would be better as a member variable of the main page.
+	static public SoloGamePage? Current { get; set; }
 
-
-	public SinglePlayerGamePage(GameState unstartedGame) {
+	public SoloGamePage(GameState unstartedGame) {
 		InitializeComponent();
 
-		_model = new DecisionModel(unstartedGame);
+		_model = new SoloGameModel(unstartedGame);
 		_model.GameState.NewLogEntry += GameState_NewLogEntry;
 		BindingContext = _model;
 
@@ -65,7 +69,7 @@ public partial class SinglePlayerGamePage : ContentPage, IDisposable {
 		_model.ShutDownOld();
 	}
 
-	readonly DecisionModel _model;
+	readonly SoloGameModel _model;
 
 	async void AdversaryButton_Clicked(object sender, EventArgs e) {
 		await DisplayAlert("Adversary", _model.GameState.Adversary.Describe(),"Close");

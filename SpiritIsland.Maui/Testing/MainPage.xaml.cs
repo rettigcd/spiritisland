@@ -37,7 +37,7 @@ public partial class MainPage : ContentPage {
 	}
 
 	void CurrentGameButton_Clicked(object sender, EventArgs e) {
-		var gamePage = SinglePlayerGamePage.Current;
+		var gamePage = SoloGamePage.Current;
 		if(gamePage is null) return;
 		Navigation.PushAsync(gamePage);
 	}

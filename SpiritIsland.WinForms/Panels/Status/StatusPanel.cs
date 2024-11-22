@@ -1,5 +1,4 @@
-﻿using SpiritIsland.Log;
-using System;
+﻿using System;
 using System.Drawing;
 
 namespace SpiritIsland.WinForms;

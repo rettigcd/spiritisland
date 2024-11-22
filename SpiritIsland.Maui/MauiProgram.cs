@@ -30,7 +30,7 @@ public static class MauiProgram {
 
 	public static MauiAppBuilder RegisterServices( this MauiAppBuilder app ) {
 		app.Services.AddSingleton<NewGamePage>();
-		app.Services.AddSingleton<SinglePlayerGamePage>();
+		app.Services.AddSingleton<SoloGamePage>();
 		return app;
 	}
 
