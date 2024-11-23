@@ -23,6 +23,13 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 		_model.Start();
 	}
 
+	protected override bool OnBackButtonPressed() {
+		if(_model.VisibleOverlay != Overlay.None ) {
+			_model.VisibleOverlay = Overlay.None;
+			return true;
+		}
+		return base.OnBackButtonPressed();
+	}
 
 	#region Send/Receive Commands to game
 
@@ -57,13 +64,13 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 
 	#endregion Send/Receive Commands to game
 
-	void SpiritSummary_GrowthDetailsClicked( object sender, EventArgs e ) => _model?.ShowSpiritPanel();
+	void SpiritSummary_GrowthDetailsClicked( object sender, EventArgs e ) => _model.ShowSpiritPanel();
 	void Accept_Clicked(object sender, EventArgs e) { 
 		if(sender is not Button) return;
 		_model?.Submit(); // !!! Replace with a command on the model
 	}
 
-	void SpiritSummary_CardDetailsClicked(object sender, EventArgs e) => _model?.ShowCardPanel();
+	void SpiritSummary_CardDetailsClicked(object sender, EventArgs e) => _model.ShowCardPanel();
 
 	public void Dispose() {
 		_model.ShutDownOld();
