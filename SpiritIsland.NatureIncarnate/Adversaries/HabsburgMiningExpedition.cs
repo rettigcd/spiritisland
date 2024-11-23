@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class HabsburgMiningExpedition : AdversaryBase, IAdversary {
+public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "Habsburg Mining Expedition";
 	

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class England : AdversaryBase, IAdversary {
+public class England : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "England";
 
@@ -77,13 +77,13 @@ public class England : AdversaryBase, IAdversary {
 
 	static async Task BuildingBoom_Escalation( GameState gs ) {
 		// Building Boom: On each board with Town / City, Build in the land with the most Town / City
-		await Build
+		await Do1Build
 			.On().OneLandPerBoard().Which( Has_TheMostTownsAndCities )
 			.ForEachBoard().Which( BoardHas.TownOrCity )
 			.ActAsync( gs );
 	}
 
-	static SpaceAction Build => new SpaceAction( "Build (Escalation - Building Boom)", 
+	static SpaceAction Do1Build => new SpaceAction( "Build (Escalation - Building Boom)", 
 		x => { return GameState.Current.InvaderDeck.Build.Engine.TryToDo1Build(x.Space); }
 	);
 

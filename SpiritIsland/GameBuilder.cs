@@ -45,10 +45,15 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 #pragma warning restore CA1822 // Mark members as static
 
 	public IAdversary BuildAdversary( AdversaryConfig cfg ) {
-		var adversary = _providers.Select( p => p.MakeAdversary( cfg?.Name ) ).FirstOrDefault( x => x != null )
-			?? new NullAdversary();
-		adversary.Level = cfg?.Level ?? 0;
-		return adversary;
+		return cfg is null ? new NullAdversaryBuilder().Build(0)
+			: GetAdversaryBuilder(cfg.Name).Build(cfg.Level);
+	}
+
+	public IAdversaryBuilder GetAdversaryBuilder(string adversaryName) {
+		return _providers
+			.Select(p => p.MakeAdversary(adversaryName))
+			.FirstOrDefault(x => x != null)
+			?? new NullAdversaryBuilder();
 	}
 
 	public PowerCard[] BuildMinorCards() => _providers.SelectMany( p => p.MinorCards ).ToArray();
@@ -122,18 +127,10 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		return gameState;
 	}
 
-	class NullAdversary : IAdversary {
-		public int Level { get => 0; set { } } // ignore
-		public InvaderDeckBuilder InvaderDeckBuilder => InvaderDeckBuilder.Default;
-		public int[] FearCardsPerLevel => [ 3, 3, 3 ];
-		public void AdjustFearCardCounts(int[] counts) { }
-		public AdversaryLevel[] Levels => [ new AdversaryLevel(0,0,3,3,3,"No Adversary","No Escalation") ];
-		public IEnumerable<AdversaryLevel> ActiveLevels => [];
+	class NullAdversaryBuilder : IAdversaryBuilder {
+		public string Name => "No Adversary";
+		public AdversaryLevel[] Levels => [new AdversaryLevel(0,0,0,0,0,string.Empty)];
 		public AdversaryLossCondition LossCondition => null;
-		public string AdvName => null;
-		public void AdjustPlacedTokens( GameState _ ) { }
-		public void Init( GameState _ ) { }
-		public string Describe() { return string.Empty;	}
+		public IAdversary Build(int _) => new Adversary(this,0);
 	}
-
 }

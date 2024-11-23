@@ -16,7 +16,7 @@ public class GameComponentProvider : IGameComponentProvider {
 	}
 
 	public string[] AdversaryNames => [Scotland.Name];
-	public IAdversary MakeAdversary( string adversaryName ) => adversaryName switch {
+	public IAdversaryBuilder MakeAdversary( string adversaryName ) => adversaryName switch {
 		Scotland.Name => new Scotland(),
 		_ => null
 	};

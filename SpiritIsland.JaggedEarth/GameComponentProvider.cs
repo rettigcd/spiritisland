@@ -7,7 +7,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		Russia.Name,
 	];
 
-	public IAdversary MakeAdversary( string adversaryName ) => adversaryName switch {
+	public IAdversaryBuilder MakeAdversary( string adversaryName ) => adversaryName switch {
 		HabsburgMonarchy.Name => new HabsburgMonarchy(),
 		Russia.Name => new Russia(),
 		_ => null

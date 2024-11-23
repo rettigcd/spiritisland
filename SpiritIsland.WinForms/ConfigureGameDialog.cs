@@ -142,7 +142,7 @@ public partial class ConfigureGameDialog : Form {
 	void InitAdversaryLevels() {
 		_levelListBox.Enabled = true;
 		string adversary = _adversaryListBox.SelectedItem as string;
-		_adjustments = GameBuilder.BuildAdversary( new AdversaryConfig( adversary, 0 ) ).Levels;
+		_adjustments = GameBuilder.GetAdversaryBuilder( adversary ).Levels;
 
 		foreach(var level in _adjustments)
 			_levelListBox.Items.Add( level );

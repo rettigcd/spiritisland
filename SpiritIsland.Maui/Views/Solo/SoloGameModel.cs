@@ -97,7 +97,7 @@ public class SoloGameModel : ObservableModel {
 		SpiritPanel = new SpiritPanelModel(_game.Spirit, _ovm, gs);
 		SpiritPanel.RequestClose += Overlay_RequestClose;
 
-		Adversary = gs.Adversary.AdvName;
+		Adversary = gs.Adversary.Name;
 
 		_acceptText = "Accept";
 

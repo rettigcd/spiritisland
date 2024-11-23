@@ -25,9 +25,9 @@ public class GameComponentProvider : IGameComponentProvider {
 	};
 
 	public string[] AdversaryNames => [.. AdversariesTypes.Keys];
-	public IAdversary? MakeAdversary( string adversaryName ) => adversaryName != null 
+	public IAdversaryBuilder? MakeAdversary( string adversaryName ) => adversaryName != null 
 		&& AdversariesTypes.TryGetValue( adversaryName, out Type? adversaryType ) 
-		? (IAdversary?)Activator.CreateInstance( adversaryType )
+		? (IAdversaryBuilder?)Activator.CreateInstance( adversaryType )
 			: null;
 
 	public PowerCard[] MinorCards => new Type[] {

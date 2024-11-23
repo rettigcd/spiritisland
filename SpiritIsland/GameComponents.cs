@@ -11,5 +11,5 @@ public interface IGameComponentProvider {
 	BlightCard[] BlightCards { get; }
 
 	string[] AdversaryNames { get; }
-	IAdversary MakeAdversary( string adversaryName );
+	IAdversaryBuilder MakeAdversary( string adversaryName );
 }

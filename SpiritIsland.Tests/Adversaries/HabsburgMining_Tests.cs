@@ -11,7 +11,7 @@ public class HabsburgMining_Tests {
 			// Given: playing Habsburg Mining Expetition - Level 4
 			var board = Board.BuildBoardA();
 			var gs = new GameState(new RiverSurges(),board);
-			var adversary = new HabsburgMiningExpedition{ Level = 4 };
+			var adversary = new HabsburgMiningExpedition().Build(4);
 			// (1) Invader Deck
 			gs.InvaderDeck = adversary.InvaderDeckBuilder.Build( 0 );
 			gs.Initialize();
@@ -40,7 +40,7 @@ public class HabsburgMining_Tests {
 			// Given: playing Habsburg Mining Expetition - Level 4
 			var board = Board.BuildBoardA();
 			var gs = new GameState(new RiverSurges(),board);
-			var adversary = new HabsburgMiningExpedition{ Level = 4 };
+			var adversary = new HabsburgMiningExpedition().Build(4);
 			// (1) Invader Deck
 			gs.InvaderDeck = adversary.InvaderDeckBuilder.Build( 0 );
 			gs.Initialize();
@@ -69,7 +69,7 @@ public class HabsburgMining_Tests {
 			// Given: playing Habsburg Mining Expetition - Level 4
 			var board = Board.BuildBoardA();
 			var gs = new GameState(new RiverSurges(),board);
-			var adversary = new HabsburgMiningExpedition{ Level = 4 };
+			var adversary = new HabsburgMiningExpedition().Build(4);
 			// (1) Invader Deck
 			gs.InvaderDeck = adversary.InvaderDeckBuilder.Build( 0 );
 			gs.Initialize();

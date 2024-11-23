@@ -19,7 +19,7 @@ public class GameComponentProvider : IGameComponentProvider {
 	}
 
 	public string[] AdversaryNames => [ France.Name ];
-	public IAdversary MakeAdversary( string adversaryName ) => adversaryName == France.Name ? new France() : null;
+	public IAdversaryBuilder MakeAdversary( string adversaryName ) => adversaryName == France.Name ? new France() : null;
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(AbsorbCorruption),

@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class Russia : AdversaryBase, IAdversary {
+public class Russia : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "Russia";
 

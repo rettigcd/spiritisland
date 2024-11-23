@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw.Adversaries;
 
-public class France : AdversaryBase, IAdversary {
+public class France : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "France";
 

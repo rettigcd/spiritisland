@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class Sweden : AdversaryBase, IAdversary {
+public class Sweden : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "Sweden";
 

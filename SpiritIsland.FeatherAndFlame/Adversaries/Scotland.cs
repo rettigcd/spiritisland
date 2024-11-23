@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-public class Scotland : AdversaryBase, IAdversary {
+public class Scotland : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "Scotland";
 

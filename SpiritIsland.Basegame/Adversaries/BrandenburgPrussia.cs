@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-public class BrandenburgPrussia : AdversaryBase, IAdversary {
+public class BrandenburgPrussia : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "Brandenburg-Prussia";
 

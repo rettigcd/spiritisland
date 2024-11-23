@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class HabsburgMonarchy : AdversaryBase, IAdversary {
+public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 
 	public const string Name = "Habsburg Monarchy";
 
