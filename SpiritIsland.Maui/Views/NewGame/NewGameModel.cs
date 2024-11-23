@@ -7,11 +7,11 @@ class NewGameModel : ObservableModel {
 
 	// Spirit
 	public ObservableCollection<string> RecentSpirits { get; }
-	public string[] AvailableSpirits { get; }
+	public NamedModel[] AvailableSpirits { get; }
 	public string? SelectedSpirit { get => _selectedSpirit; set => SetProp(ref _selectedSpirit, value); }
 
 	// Adversary
-	public AdversaryFlagModel[] AvailableAdversaries { get; }
+	public NamedModel[] AvailableAdversaries { get; }
 	public AdversaryModel SelectedAdversary { get => _selectedAdversary; set => SetProp(ref _selectedAdversary, value); }
 	public AdversaryModel? FocusAdversary { 
 		get => _focusAdversary; 
@@ -20,11 +20,15 @@ class NewGameModel : ObservableModel {
 			HasFocusAdversary = value is not null;
 		}
 	}
-	public bool HasFocusAdversary { get => _hasFocusAdversary; private set => SetProp(ref _hasFocusAdversary, value); }
 	public Command EditAdversary { get; }
 	public Command EditAdversaryAccept { get; }
 	public Command EditAdversaryCancel { get; }
 	public Command NoAdversary { get; }
+	/// <summary> controls Adversary Panel visibility. </summary>
+	public bool HasFocusAdversary { get => _hasFocusAdversary; private set => SetProp(ref _hasFocusAdversary, value); }
+
+	// Boards
+	public string[] AvailalbeBoards { get; } = ["A", "B", "C", "D", "E", "F"];
 
 	#region constructors
 
@@ -32,7 +36,7 @@ class NewGameModel : ObservableModel {
 		_builder = builder;
 
 		// Spirits
-		AvailableSpirits = builder.SpiritNames;
+		AvailableSpirits = builder.SpiritNames.Select(ConstructSpirit).ToArray();
 		RecentSpirits = new( SavedRecentSpirits );
 		RecentSpirits.CollectionChanged += (s,c) => SavedRecentSpirits = [.. RecentSpirits];
 
@@ -45,8 +49,20 @@ class NewGameModel : ObservableModel {
 		NoAdversary = new Command(DoNoAdversary);
 	}
 
-	AdversaryFlagModel ConstructFlagModel(string name) {
-		var model = new AdversaryFlagModel(name);
+	NamedModel ConstructSpirit(string spiritName) {
+		var model = new NamedModel(spiritName);
+		model.RequestSelected += Spirit_RequestSelected;
+		return model;
+	}
+
+	void Spirit_RequestSelected(NamedModel model) {
+		SelectedSpirit = model.Name;
+		// Hide Spirit Panel
+		// Enable StartButton
+	}
+
+	NamedModel ConstructFlagModel(string name) {
+		var model = new NamedModel(name);
 		model.RequestSelected += AdversarySelected;
 		return model;
 	}
@@ -56,7 +72,7 @@ class NewGameModel : ObservableModel {
 	#region private Adversary methods
 
 	// Updates flags and sets FocusAdversary
-	void AdversarySelected(AdversaryFlagModel selectedAdversary) {
+	void AdversarySelected(NamedModel selectedAdversary) {
 		HighlightFlag(selectedAdversary.Name);
 		FocusAdversary = new AdversaryModel( _builder.GetAdversaryBuilder(selectedAdversary.Name) );
 	}
@@ -82,22 +98,13 @@ class NewGameModel : ObservableModel {
 
 	#endregion private Adversary methods
 
-
-	// Available Boards
-	// Selected Board
-	// Action: Select Boards
-	public string[] AvailalbeBoards { get; } = ["A", "B", "C", "D", "E", "F"];
-
-	// Selected Game #.
-	// Action: set game #
-
-	// StartGame
-
 	public void SaveSelectedSpiritAsRecent() {
 		var spirit = SelectedSpirit!;
 		RecentSpirits.Remove(spirit);
 		RecentSpirits.Insert(0, spirit);
 	}
+
+	#region private fields
 
 	static string[] SavedRecentSpirits {
 		get => [.. Preferences.Default.Get(RecentSpiritsKey, "").Split(",").Where(s => !string.IsNullOrEmpty(s))];
@@ -113,4 +120,5 @@ class NewGameModel : ObservableModel {
 	AdversaryModel? _focusAdversary;
 	bool _hasFocusAdversary;
 
+	#endregion private fields
 }

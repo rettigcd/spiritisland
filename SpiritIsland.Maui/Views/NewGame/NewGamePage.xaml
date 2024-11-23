@@ -4,7 +4,7 @@
 			 xmlns:si="clr-namespace:SpiritIsland.Maui"
 			 x:Class="SpiritIsland.Maui.NewGamePage"
  			 x:DataType="si:NewGameModel"
-			 Title="NewGamePage">
+			 Title="New Game Page"  IconImageSource="ter_wetland.png">
 
 	<ContentPage.Resources>
 		<si:NameToBadgeImgConverter x:Key="nameImage" />
@@ -86,11 +86,14 @@
 		<!-- Adversary Overlay -->
 		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" IsVisible="{Binding HasFocusAdversary}" >
 			<VerticalStackLayout>
-				<Label Text="Adversary" />
+				<HorizontalStackLayout Margin="0,0,0,10">
+					<ImageButton Source="back_arrow.png" Command="{Binding EditAdversaryCancel }" HeightRequest="18" />
+					<Label Text="Select Adversary" FontSize="18" />
+				</HorizontalStackLayout>
 				<!-- collection of adversaries - all clickable -->
 				<CollectionView x:Name="allAdversaries" ItemsLayout="VerticalGrid,3" ItemsSource="{Binding AvailableAdversaries}">
 					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="si:AdversaryFlagModel" >
+						<DataTemplate x:DataType="si:NamedModel" >
 							<Grid RowDefinitions="40*,20*" Margin="3" HeightRequest="95">
 								<Grid.GestureRecognizers> <TapGestureRecognizer Command="{Binding Select}" /></Grid.GestureRecognizers>
 								<Image Grid.Row="0" WidthRequest="90" Source="{Binding Name,Converter={StaticResource nameImage}}">
@@ -103,10 +106,9 @@
 				</CollectionView>
 
 				<!-- Accept / Cancel / None Buttons -->
-				<Grid ColumnDefinitions="5*,8*,5*" ColumnSpacing="5">
+				<Grid ColumnDefinitions="8*,8*" ColumnSpacing="5">
 					<Button Text="Accept" Command="{Binding EditAdversaryAccept}" />
 					<Button Grid.Column="1" Text="No Adversary" Command="{Binding NoAdversary}" />
-					<Button Grid.Column="2" Text="Cancel" Command="{Binding EditAdversaryCancel}" />
 				</Grid>
 
 				<!-- Loss Condition -->

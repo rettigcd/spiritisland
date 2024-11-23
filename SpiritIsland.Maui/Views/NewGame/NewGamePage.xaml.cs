@@ -12,6 +12,14 @@ public partial class NewGamePage : ContentPage {
 		BindingContext = _model;
 	}
 
+	protected override bool OnBackButtonPressed() {
+		if( _model.HasFocusAdversary ) {
+			_model.EditAdversaryCancel.Execute( null );
+			return true;
+		}
+		return base.OnBackButtonPressed();
+	}
+
 	#region Spirit Event Handlers
 
 	// Show

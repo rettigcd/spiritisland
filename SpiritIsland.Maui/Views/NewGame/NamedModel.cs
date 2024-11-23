@@ -1,6 +1,9 @@
 ﻿namespace SpiritIsland.Maui;
 
-class AdversaryFlagModel : ObservableModel {
+/// <summary>
+/// Good for Spirits and Adversaries
+/// </summary>
+class NamedModel : ObservableModel {
 
 	public string Name { get; }
 
@@ -18,9 +21,9 @@ class AdversaryFlagModel : ObservableModel {
 	/// <summary> View selects this Adversary </summary>
 	public Command Select { get; }
 	/// <summary> Tell the Parent model who was selected so it can set the correct flag as active. </summary>
-	public event Action<AdversaryFlagModel>? RequestSelected;
+	public event Action<NamedModel>? RequestSelected;
 
-	public AdversaryFlagModel(string name) {
+	public NamedModel(string name) {
 		Name = name;
 		Select = new Command(RequestSelect);
 	}
