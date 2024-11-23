@@ -14,9 +14,11 @@ public class ObservableModel : INotifyPropertyChanged {
 		) return;
 
 		field = newValue;
-		PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propName ) );
+		Notify( propName );
 	}
-
+	protected void Notify(string propName) {
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+	}
 }
 
 public class ObservableModel1 : INotifyPropertyChanged {

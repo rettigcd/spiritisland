@@ -16,14 +16,15 @@
 		<!-- spirit -->
 		<HorizontalStackLayout Margin="2" BackgroundColor="#eee">
 			<HorizontalStackLayout.GestureRecognizers>
-				<TapGestureRecognizer Tapped="OpenSpiritDialog_Tapped" />
+				<TapGestureRecognizer Command="{Binding EditSpirit}" />
 			</HorizontalStackLayout.GestureRecognizers>
 			<Label Text="Select a Spirit" VerticalOptions="Center" TextColor="Gray" Margin="5,0,30,0" />
 			<Image Source="{Binding SelectedSpirit, Converter={StaticResource nameImage}}" Margin="2" HeightRequest="56" />
 		</HorizontalStackLayout>
 	
 		<!-- Board -->
-		<Picker x:Name="Board" Title="Select a Board" Grid.Row="1" Margin="2" BackgroundColor="#eee" ItemsSource="{Binding AvailalbeBoards}"/>
+		<Picker x:Name="Board" Title="Select a Board" Grid.Row="1" Margin="2" BackgroundColor="#eee" 
+				ItemsSource="{Binding AvailalbeBoards}" SelectedItem="{Binding SelectedBoard}"/>
 
 		<!-- adversary -->
 		<HorizontalStackLayout Margin="2" BackgroundColor="#eee" Grid.Row="2">
@@ -31,33 +32,39 @@
 				<TapGestureRecognizer Command="{Binding EditAdversary}" />
 			</HorizontalStackLayout.GestureRecognizers>
 			<Image Source="{Binding SelectedAdversary.Name, Converter={StaticResource nameImage}}" VerticalOptions="Center" Margin="8" />
-			<Label Text="{Binding SelectedAdversary.Name}" VerticalOptions="Center" TextColor="Black" Margin="5,0,30,0" />
+			<Label Text="{Binding SelectedAdversary.Name}" VerticalOptions="Center" TextColor="Black" Margin="5,0,10,0" />
 			<Label Text="{Binding SelectedAdversary.TopLevel.LevelText}" VerticalOptions="Center" TextColor="Black" Margin="0" FontAttributes="Bold" />
-			<Label Text="{Binding SelectedAdversary.TopLevel.Title}" VerticalOptions="Center" TextColor="Black" Margin="5,0,30,0" />
+			<Label Text="{Binding SelectedAdversary.TopLevel.Title}" VerticalOptions="Center" TextColor="Black" Margin="5,0" />
 		</HorizontalStackLayout>
 
 		<!-- Command Beast -->
 		<HorizontalStackLayout HorizontalOptions="Center" Margin="10,0" Grid.Row="3" >
 			<Label Text="Command Beats" VerticalOptions="Center" />
-			<CheckBox x:Name="CommandBeast" IsChecked="true" />
+			<Switch IsToggled="{Binding CommandBeast}" />
 		</HorizontalStackLayout>
 
-		<Button x:Name="StartButton" Text="Start New Game" Clicked="StartButton_Clicked" IsEnabled="false" Margin="10,0" Grid.Row="4" />
+		<!-- Start Game -->
+		<Button Text="Start New Game" Command="{Binding CreateGame}" IsEnabled="{Binding CanStart}" Margin="10,0" Grid.Row="4" />
 		<ActivityIndicator x:Name="Activity" IsRunning="False" Color="SkyBlue" Grid.Row="5" />
 
 		<!-- Spirits Overlay -->
-		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="SpiritsPanel" IsVisible="False" >
+		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="SpiritsPanel" IsVisible="{Binding IsEditingSpirit}" >
 			<VerticalStackLayout>
+				<!-- Title / go back -->
+				<HorizontalStackLayout Margin="0,0,0,10">
+					<ImageButton Source="back_arrow.png" Command="{Binding EditSpiritCancel }" HeightRequest="18" />
+					<Label Text="Select Spirit" FontSize="18" />
+				</HorizontalStackLayout>
 				<!-- recent -->
 				<Label x:Name="RecentSpiritsLabel" Text="Recent" IsVisible="{Binding RecentSpirits, Converter={StaticResource notEmpty}}" />
 				<CollectionView x:Name="RecentSpirits" ItemsLayout="VerticalGrid,4" ItemsSource="{Binding RecentSpirits}">
 					<CollectionView.ItemTemplate>
-						<DataTemplate>
+						<DataTemplate x:DataType="si:NamedModel" >
 							<Image 
-								Source="{Binding .,Converter={StaticResource nameImage}}" ClassId="{Binding .}"
+								Source="{Binding Name,Converter={StaticResource nameImage}}" ClassId="{Binding .}"
 								WidthRequest="90" HeightRequest="75" Margin="5">
 								<Image.GestureRecognizers>
-									<TapGestureRecognizer Tapped="AcceptSpiritButton_Tapped" />
+									<TapGestureRecognizer Command="{Binding Select}" />
 								</Image.GestureRecognizers>
 							</Image>
 						</DataTemplate>
@@ -67,19 +74,16 @@
 				<Label Text="All Spirits" />
 				<CollectionView x:Name="allSpirits" ItemsLayout="VerticalGrid,4" ItemsSource="{Binding AvailableSpirits}">
 					<CollectionView.ItemTemplate>
-						<DataTemplate x:DataType="x:String" >
+						<DataTemplate x:DataType="si:NamedModel" >
 							<Grid HeightRequest="90">
-								<Image Source="{Binding .,Converter={StaticResource nameImage}}" ClassId="{Binding .}"
-									   Margin="6">
+								<Image Source="{Binding Name,Converter={StaticResource nameImage}}" ClassId="{Binding .}" Margin="6">
 									<Image.Shadow><Shadow Brush="Black" Offset="5,5" Radius="25" Opacity="0.8" /></Image.Shadow>
-									<Image.GestureRecognizers><TapGestureRecognizer Tapped="AcceptSpiritButton_Tapped" /></Image.GestureRecognizers>
+									<Image.GestureRecognizers><TapGestureRecognizer Command="{Binding Select}" /></Image.GestureRecognizers>
 								</Image>
 							</Grid>
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
-				<!-- all -->
-				<Button Text="Cancel" Clicked="Cancel_SpiritSelect" />
 			</VerticalStackLayout>
 		</ScrollView>
 
