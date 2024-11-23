@@ -34,6 +34,10 @@ class NewGameModel : ObservableModel {
 	public string[] AvailalbeBoards { get; } = ["A", "B", "C", "D", "E", "F"];
 	public string? SelectedBoard { get => _selectedBoard; set=>SetProp(ref _selectedBoard,value); }
 
+	// Game #
+	public string GameNumber { get => _gameNumber; set => SetProp(ref _gameNumber, value); }
+	string _gameNumber = "";
+
 	public bool CanStart { get => _canStart; set => SetProp(ref _canStart, value); }
 	public Command CreateGame { get; }
 
@@ -159,7 +163,7 @@ class NewGameModel : ObservableModel {
 			.ConfigBoards(board)
 			.ConfigCommandBeasts(CommandBeast) 
 			.ConfigAdversary(SelectedAdversary.ToConfig());
-		gc.ShuffleNumber = (int)DateTime.Now.Ticks;
+		gc.ShuffleNumber = !string.IsNullOrWhiteSpace(GameNumber) ? int.Parse(GameNumber) : (int)DateTime.Now.Ticks;
 
 		var gameState = _builder.BuildGame(gc);
 		NewGameCreated?.Invoke(gameState);

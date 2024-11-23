@@ -23,8 +23,10 @@
 		</HorizontalStackLayout>
 	
 		<!-- Board -->
-		<Picker x:Name="Board" Title="Select a Board" Grid.Row="1" Margin="2" BackgroundColor="#eee" 
-				ItemsSource="{Binding AvailalbeBoards}" SelectedItem="{Binding SelectedBoard}"/>
+		<Grid Grid.Row="1" ColumnDefinitions="2*,2*" >
+			<Picker x:Name="Board" Title="Select a Board" Margin="2" BackgroundColor="#eee" ItemsSource="{Binding AvailalbeBoards}" SelectedItem="{Binding SelectedBoard}" HorizontalOptions="Fill"/>
+			<Entry Grid.Column="1" Text="{Binding GameNumber}" Placeholder="Game #" MaxLength="10" Keyboard="Numeric"  HorizontalOptions="Fill"/>
+		</Grid>
 
 		<!-- adversary -->
 		<HorizontalStackLayout Margin="2" BackgroundColor="#eee" Grid.Row="2">
@@ -39,7 +41,7 @@
 
 		<!-- Command Beast -->
 		<HorizontalStackLayout HorizontalOptions="Center" Margin="10,0" Grid.Row="3" >
-			<Label Text="Command Beats" VerticalOptions="Center" />
+			<Label Text="Command Beasts" VerticalOptions="Center" HorizontalOptions="Fill" />
 			<Switch IsToggled="{Binding CommandBeast}" />
 		</HorizontalStackLayout>
 
