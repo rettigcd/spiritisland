@@ -86,6 +86,7 @@ class NewGameModel : ObservableModel {
 	// Available Boards
 	// Selected Board
 	// Action: Select Boards
+	public string[] AvailalbeBoards { get; } = ["A", "B", "C", "D", "E", "F"];
 
 	// Selected Game #.
 	// Action: set game #

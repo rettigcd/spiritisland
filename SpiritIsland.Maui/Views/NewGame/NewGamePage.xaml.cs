@@ -10,9 +10,6 @@ public partial class NewGamePage : ContentPage {
 		_model = new NewGameModel(_builder);
 
 		BindingContext = _model;
-
-		// Boards
-		Board.ItemsSource = _availalbeBoards;
 	}
 
 	#region Spirit Event Handlers
