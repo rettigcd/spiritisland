@@ -27,6 +27,9 @@ public class StranglingFirevine_Tests {
 		//   And: auto selecting origin land
 		//   And: explorers are destoryed
 
+		// Accept threshold
+		fxt.Choose("Yes");
+
 		//   And: apply normal damage
 		fxt.Choose( "T@2" );
 		fxt.Choose( "T@1" );

@@ -8,5 +8,5 @@ public abstract class RepeatAttribute : Attribute {
 	/// </summary>
 	public abstract IDrawableInnateTier[] ThresholdTiers { get; }
 
-	public abstract IPowerRepeater GetRepeater();
+	public abstract IPowerRepeater GetRepeater(bool isPowerCard);
 }

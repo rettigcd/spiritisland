@@ -20,7 +20,7 @@ public class RepeatForPeace : RepeatAttribute {
 
 	public override IDrawableInnateTier[] ThresholdTiers => [];
 
-	public override IPowerRepeater GetRepeater() => new Repeater();
+	public override IPowerRepeater GetRepeater(bool isPowerCard) => new Repeater();
 
 	class Repeater : IPowerRepeater {
 

@@ -188,7 +188,7 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			: ECouldHaveElements.No;
 	}
 
-	public override async Task<bool> HasElement( CountDictionary<Element> subset, string description ) {
+	public override async Task<bool> HasElement( CountDictionary<Element> subset, string description, ThresholdType _) {
 		CountDictionary<Element> missing = subset.Except(Elements.Elements);
 		if( missing.Count == 0 ) return true;
 

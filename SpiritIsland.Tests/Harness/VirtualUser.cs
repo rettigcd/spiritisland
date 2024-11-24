@@ -108,6 +108,10 @@ public class VirtualUser( Spirit spirit ) {
 			_userPortal.Choose( current, current.Options[0] );
 	}
 
+	public void AcceptsElementThreshold(bool accept = true) {
+		NextDecision.HasPrompt("Activate Element Threshold?").HasOptions("Yes,No").Choose(accept?"Yes":"No");
+	}
+
 	#endregion
 
 	public void PlaysCard( string cardName ) {

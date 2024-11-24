@@ -169,6 +169,8 @@ public class Volcano_Tests {
 			user.Choose( targetSpace.SpaceSpec );
 			user.NextDecision.HasPrompt( "Select Power Option" ).HasOptions( "Add Badland,Add Disease,Add Strife" ).Choose( "Add Disease" );
 
+			user.AcceptsElementThreshold();
+
 			//  Then: if the tower==target, then large range, else smaller range
 			user.NextDecision.HasPrompt( "Add Disease" ).HasOptions( expectedRangeOptions ).ChooseFirst();
 			user.NextDecision.HasPrompt( "Select land for 1 Damage" ).HasOptions( "A5,A6,A7" ).ChooseFirst(); // Adjacent, NOT Range

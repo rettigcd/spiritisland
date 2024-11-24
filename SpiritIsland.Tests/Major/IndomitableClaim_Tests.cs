@@ -52,6 +52,7 @@ public class IndomitableClaim_Tests {
 		user.SelectsFastAction( IndomitableClaim.Name );
 		user.TargetsLand_IgnoreOptions( spaceCtx.SpaceSpec.Label );
 		user.PullsPresenceFromTrack(self.Presence.Energy.RevealOptions.Single());
+		user.AcceptsElementThreshold();
 
 		// Then: nothing changed
 		spaceCtx.Space.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );

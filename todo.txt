@@ -1,10 +1,11 @@
 =========================
 
-5	Major Threshold - make it optional.
-5	Spirit Details Page/View during configure-new-game.
 
 4	BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.
 4	BUG - If no Dahan, strife does not come off invaders
+
+4	Spirit Details Page/View during configure-new-game.
+4	Spirit Hints (best boards, starting Growths, card plays)
 
 4	UI - Landscape layout
 	UI - "Play" should be wide enough to display all word
@@ -13,14 +14,11 @@
 	BUG/UI - Display joined lands.
 
 4	CONFIG - replay game
-	CONFIG - enter game #
 
 	UI - Show game log
 
 	SPIRITS - Horizon Spirits
 	SPIRITS - Aspects (new spirits)
-
-	MVVM threading best practices
 
 ==== Maui questions / Problems ====
 

@@ -92,7 +92,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 		await ActivateInnerAsync( spirit );
 		if( _repeatAttr != null) {
-			var repeater = _repeatAttr.GetRepeater();
+			var repeater = _repeatAttr.GetRepeater(false);
 			while( await repeater.ShouldRepeat( spirit ) )
 				await ActivateInnerAsync( spirit );
 		}
