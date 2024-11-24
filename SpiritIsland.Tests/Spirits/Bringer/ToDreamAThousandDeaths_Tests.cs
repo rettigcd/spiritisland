@@ -65,27 +65,33 @@ public class ToDreamAThousandDeaths_Tests {
 	[Fact]
 	public async Task KillingTown_GeneratesFear_PushesIt() {
 		const int count = 2;
+		var pushDestination = _board[5];
+		var targetSpace = _board[4];
+
 		// generate 2 fear per town destroyed,
 		// pushes town
 
-		// Given: 2 towns on A5
-		_board[5].Given_HasTokens($"{count}T@2");
-		//   And: nothing on A8
-		_board[8].Given_ClearTokens();
+		// Given: 2 towns on target
+		targetSpace.Given_HasTokens($"{count}T@2");
+		//   And: spirit can target the target space (JungleHungers requires presence in jungle at range-1
+		_spirit.Given_IsOn(_board[3]); // so 
+		//   And: nothing on PUSH-Destinatoin
+		pushDestination.Given_ClearTokens();
 
 		// When: destroying towns
-		await _spirit.When_TargetingSpace( _board[5], DestroyAllExplorersAndTownsAsync, (user)=>{
+		await _spirit.When_ResolvingCard<TheJungleHungers>( user => {
+			user.NextDecision.Choose(targetSpace.Label);
 			// Then: dream-death allows User pushes them
-			for(int i = 0; i < count; ++i)
-				user.PushSelectedTokenTo( "T@2", "A1,A4,A6,A7,[A8]" );
-		} );
+			for( int i = 0; i < count; ++i )
+				user.PushSelectedTokenTo("T@2", "A1,A2,A3,[A5]");
+		});
 
 		// And:4-fear
 		Assert_GeneratedFear( count * 2 );
 		// And: town on destination
-		_board[8].ScopeSpace.Summary.ShouldBe( $"{count}T@2" );
+		pushDestination.ScopeSpace.Summary.ShouldBe( $"{count}T@2" );
 		// And: not at origin
-		_board[5].Assert_HasInvaders("");
+		targetSpace.Assert_HasInvaders("");
 
 	}
 

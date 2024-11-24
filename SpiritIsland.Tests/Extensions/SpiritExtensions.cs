@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland.Tests;
 
+#nullable enable
+
 public static class SpiritExtensions {
 
 	#region Next Decision / Wait For Next
@@ -92,36 +94,36 @@ public static class SpiritExtensions {
 			.ShouldComplete( $"Growth option {option}" );
 	}
 
-	internal static Task When_ResolvingCard<T>( this Spirit spirit, Action<VirtualUser> userActions = null )
-		=> spirit.ResolvePower( PowerCard.For(typeof(T)) ).AwaitUser( userActions ).ShouldComplete( typeof( T ).Name );
+	/// <summary> Performs all ActionScope initialization with verbose ShouldComplete( power-name ) </summary>
+	/// <remarks>Target specificed via userActions.</remarks>
+	internal static Task When_ResolvingCard<T>( this Spirit spirit, Action<VirtualUser>? userActions = null)
+		=> spirit.TakeActionAsyncHelper(PowerCard.For(typeof(T)))
+			.AwaitUser( userActions ?? DoNothing )
+			.ShouldComplete( typeof( T ).Name );
 
-	internal static Task When_ResolvingInnate<T>( this Spirit spirit, Action<VirtualUser> userActions = null )
-		=> spirit.ResolvePower( InnatePower.For(typeof(T)) ).AwaitUser( userActions ).ShouldComplete( typeof( T ).Name );
+	/// <summary> Performs all ActionScope initialization with verbose ShouldComplete( power-name ) </summary>
+	/// <remarks>Target specificed via userActions.</remarks>
+	internal static Task When_ResolvingInnate<T>( this Spirit spirit, Action<VirtualUser>? userActions = null )
+		=> spirit.TakeActionAsyncHelper( InnatePower.For(typeof(T)) )
+			.AwaitUser( userActions ?? DoNothing )
+			.ShouldComplete( typeof( T ).Name );
 
-	internal static async Task ResolvePower( this Spirit spirit, IFlexibleSpeedActionFactory card ) {
+	/// <summary> Mimics Spirit.TakeActionAsync() without requiring card to be in Spirits Unresolved Action list. </summary>
+	static async Task TakeActionAsyncHelper( this Spirit spirit, IFlexibleSpeedActionFactory card ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
-		scope.Owner = spirit;
 		await card.ActivateAsync( spirit );
 	}
+	static void DoNothing(VirtualUser _) { } // plug-in stub for null userActions
 
 	internal static void When_PlayingCards( this Spirit spirit, params PowerCard[] cards ){
 		foreach(var card in cards)
 			spirit.PlayCard( card );
 	}
 
-	internal static Task When_TargetingSpace( this Spirit spirit, SpaceSpec space, Action<TargetSpaceCtx> method )
-		=> spirit.ResolvePowerOnSpaceAsync(space, method.AsAsync() )
-			.ShouldComplete( method.Method.Name );
-
-	internal static Task When_TargetingSpace( this Spirit spirit, SpaceSpec space, Func<TargetSpaceCtx,Task> methodAsync, Action<VirtualUser> userActions = null )
-		=> spirit.ResolvePowerOnSpaceAsync( space, methodAsync )
-			.AwaitUser( userActions )
-			.ShouldComplete( methodAsync.Method.Name );
-
 	/// <summary>
 	/// Like playing a card, but user doesn't have to pick the space because it is passed in.
 	/// </summary>
-	internal static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, SpaceSpec space, Func<TargetSpaceCtx, Task> func ) {
+	static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, SpaceSpec space, Func<TargetSpaceCtx, Task> func ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
 		await func( spirit.Target( space ) );
 	}
@@ -135,7 +137,7 @@ public static class SpiritExtensions {
 	/// Version 2 - Virtual User is generated from Spirit
 	/// </summary>
 	internal static Task AwaitUser( this Task task, Action<VirtualUser> userActions ) {
-		GameState.Current.Spirits[0].HandleDecisions(userActions)();
+		userActions(new VirtualUser(GameState.Current.Spirits[0]));
 		return task;
 	}
 
@@ -191,16 +193,12 @@ public static class SpiritExtensions {
 	internal static void Given_SlotsRevealed( this IPresenceTrack track, int revealedSpaces ) {
 		for(int i = 1; i < revealedSpaces; i++){
 			Track location = track.RevealOptions.First(); 
-			track.RevealAsync(location).Wait(); // $$$$
+			track.RevealAsync(location).Wait();
 		}
 	}
 
 	static public TargetSpaceCtx TargetSpace( this Spirit self, string spaceLabel )
 		=> self.Target(ActionScope.Current.Spaces_Unfiltered.First( s => s.SpaceSpec.Label == spaceLabel ) );
-
-	/// <summary> Constructs a VirtualUser and passes it to userActions. </summary>
-	internal static Action HandleDecisions(this Spirit spirit, Action<VirtualUser> userActions ) 
-		=> userActions == null ? ()=>{ } : () => userActions( new VirtualUser( spirit ) );
 
 	// !! Anything that needs to do this should use AsyncHandler<T>
 	// UNLESS it is a method group, then we need to supply both versions OR explicitly Cast it to its delegat

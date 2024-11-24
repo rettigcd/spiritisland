@@ -7,31 +7,31 @@ public class BlazingRenewal_Tests {
 	[Trait( "Presence", "RestrictedSpace" )]
 	[Trait( "SpecialRule", "OceanInPlay" )]
 	[Fact]
-	public void Ocean_CantPlacePresenceInland() {
-		CantPlacePresenceHere( new Ocean(), "A8" );
+	public Task Ocean_CantPlacePresenceInland() {
+		return CantPlacePresenceHere( new Ocean(), "A8" );
 	}
 
 	[Trait( "Presence", "RestrictedSpace" )]
 	[Trait( "SpecialRule", "HomeOfTheIslandsHeart" )]
 	[Fact]
-	public void Lure_CantPlacePresenceOnCoast() {
-		CantPlacePresenceHere( new LureOfTheDeepWilderness(), "A1" );
+	public Task Lure_CantPlacePresenceOnCoast() {
+		return CantPlacePresenceHere( new LureOfTheDeepWilderness(), "A1" );
 	}
 
 	[Trait( "Presence", "RestrictedSpace" )]
 	[Trait( "SpecialRule", VolcanoLoomingHigh.MountainHome )]
 	[Fact]
-	public void Volcano_CanOnlyBePlaceInMountains() {
-		CantPlacePresenceHere( new VolcanoLoomingHigh(), "A5" );
+	public Task Volcano_CanOnlyBePlaceInMountains() {
+		return CantPlacePresenceHere( new VolcanoLoomingHigh(), "A5" );
 	}
 
-	static void CantPlacePresenceHere( Spirit spirit, string restrictedSpace ) {
+	static Task CantPlacePresenceHere( Spirit spirit, string restrictedSpace ) {
 
 		var setup = new ConfigurableTestFixture {
 			Spirit = spirit
 		};
 
-		var space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Label == restrictedSpace )];
+		Space space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Label == restrictedSpace )];
 
 		// Given: presence on board
 		setup.Spirit.Given_IsOn( space, 2 );
@@ -41,10 +41,11 @@ public class BlazingRenewal_Tests {
 		setup.Spirit.Presence.Destroyed.Count = 2;
 
 		//  When: Card played
-		var task = BlazingRenewal.ActAsync( setup.TargetSelf );
-
-		// Then: we should not be able to pick restricted space
-		setup.Spirit.Portal.Next.FormatOptions().ShouldNotContain( restrictedSpace );
+		return BlazingRenewal.ActAsync( setup.TargetSelf).AwaitUser(u => {
+			// Then: we should not be able to pick restricted space
+			setup.Spirit.Portal.Next.FormatOptions().ShouldNotContain(restrictedSpace);
+			u.NextDecision.HasPrompt("Place up to 2 Destroyed Presence").ChooseFirst();
+		}).ShouldComplete();
 	}
 
 	#endregion

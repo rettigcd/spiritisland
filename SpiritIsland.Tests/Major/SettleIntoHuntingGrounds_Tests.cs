@@ -31,15 +31,13 @@ public class SettleIntoHuntingGrounds_Tests {
 		await spirit.When_ResolvingCard<SettleIntoHuntingGrounds>();
 
 		//  When: pushing dahan
-		await spirit.When_TargetingSpace( a1, CallToMigrate.ActAsync, u => {
-			u.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom( "D@2" ).MoveTo("A2","A2,A4,A5,A6");
-
-			u.NextDecision.HasPrompt( "Move presence with Dahan?" )
+		await CallToMigrate.ActAsync( spirit.Target(a1) ).AwaitUser( u => {
+			u.NextDecision.HasPrompt("Push up to (1)").MoveFrom("D@2").MoveTo("A2", "A2,A4,A5,A6");
+			u.NextDecision.HasPrompt("Move presence with Dahan?")
 				.HasOptions("Ts on A1,Done")
-				.Choose( "Ts on A1" );
-
-			//  Then: action completes without Thunderspeaker riding along.
-		} );
+				.Choose("Ts on A1");
+			// Then: action completes without Thunderspeaker riding along.
+		}).ShouldComplete();
 
 		//  Then: TS is still on A1
 		spirit.Presence.IsOn(a1.ScopeSpace).ShouldBeTrue();
@@ -86,10 +84,11 @@ public class SettleIntoHuntingGrounds_Tests {
 		await spirit.When_ResolvingCard<SettleIntoHuntingGrounds>();
 
 		// When: playing Draw into ever consuming void
-		await spirit.When_TargetingSpace( a2, DrawTowardsAConsumingVoid.ActAsync, u => {
+		await DrawTowardsAConsumingVoid.ActAsync( spirit.Target(a2) ).AwaitUser( u => {
 			// Then: we still have to select presence
 			u.NextDecision.HasPrompt("Select presence to move.").HasOptions("RSiS on A1").Choose("RSiS on A1");
-		} );
+		}).ShouldComplete();
+
 		// But: spirit is still on A1 (doesn't move)
 		a1.ScopeSpace.Summary.ShouldBe("1RSiS");
 	}

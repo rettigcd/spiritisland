@@ -330,6 +330,7 @@ public abstract partial class Spirit
 
 	#region Bind / Target helpers
 
+	/// <summary> Performs any action that is required at beginning of your action </summary>
 	public virtual void InitSpiritAction( ActionScope scope ) { }
 
 	/// <summary> Convenience method only. calls new SelfCtx(this) </summary>

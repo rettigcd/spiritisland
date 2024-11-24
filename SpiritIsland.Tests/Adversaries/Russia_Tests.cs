@@ -183,10 +183,11 @@ public class Russia_Tests {
 		a6.Given_ClearTokens();
 
 		// When destroying all explorers
-		await gameState.Spirits[0].When_TargetingSpace( a5, TheJungleHungers.ActAsync, ( user ) => {
+		await TheJungleHungers.ActAsync(gameState.Spirits[0].Target(a5)).AwaitUser(user => {
 			// Then: pushes 1
-			user.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( "A6" );
-		} );
+			user.NextDecision.HasPrompt("Push E@1 to").HasOptions("A1,A4,A6,A7,A8").Choose("A6");
+		}).ShouldComplete();
+
 		boardA[6].ScopeSpace.Summary.ShouldBe( "1E@1" );
 	}
 
@@ -205,10 +206,10 @@ public class Russia_Tests {
 		boardA[7].ScopeSpace.Init( Token.Isolate, 1 );
 
 		// When destroying all explorers
-		await gameState.Spirits[0].When_TargetingSpace( a5, TheJungleHungers.ActAsync, ( user ) => {
+		await TheJungleHungers.ActAsync( gameState.Spirits[0].Target(a5) ).AwaitUser( user => {
 			// Then: A7 is missing from push options
-			user.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A8" ).Choose( "A6" );
-		} );
+			user.NextDecision.HasPrompt("Push E@1 to").HasOptions("A1,A4,A6,A8").Choose("A6");
+		}).ShouldComplete();
 	}
 
 	[Fact]
@@ -223,9 +224,9 @@ public class Russia_Tests {
 		a5.ScopeSpace.Init( Token.Isolate, 1 );
 
 		// When destroying all explorers
-		await gameState.Spirits[0].When_TargetingSpace( a5, TheJungleHungers.ActAsync, ( user ) => {
+		await TheJungleHungers.ActAsync( gameState.Spirits[0].Target(a5) )
 			// Then: completes without pushing
-		} );
+			.ShouldComplete();
 	}
 
 	#endregion Level 2

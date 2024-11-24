@@ -5,7 +5,7 @@ public class ForestsOfLivingObsidian_Tests {
 	[Trait( "Token", "Badlands" )]
 	[Trait( "Feature", "Repeat" )]
 	[Fact]
-	public async Task Repeat_BadlandsWorksOnBothTargets() {
+	public Task Repeat_BadlandsWorksOnBothTargets() {
 		var fix = new ConfigurableTestFixture();
 		var space1 = fix.Board[3];
 		var space2 = fix.Board[8];
@@ -22,16 +22,16 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.InitTokens( space2, "3E@1,1T@2" );
 
 		// When: play card
-		var task = PowerCard.For(typeof(ForestsOfLivingObsidian)).ActivateAsync(fix.Spirit);
-		//  And: targeting space 1
-		fix.Choose(space1);
-		fix.Choose("T@1"); // Damage (1 remaining)
+		return PowerCard.For(typeof(ForestsOfLivingObsidian)).ActivateAsync(fix.Spirit).AwaitUser(u => {
+			//  And: targeting space 1
+			u.Choose(space1);
+			u.Choose("T@1"); // Damage (1 remaining)
 
-		//  And: targeting space 2
-		fix.Choose( space2 );
-		fix.Choose( "T@1" ); // Damage (1 remaining)
+			//  And: targeting space 2
+			u.Choose(space2);
+			u.Choose("T@1"); // Damage (1 remaining)
+		}).ShouldComplete();
 
-		await task.ShouldComplete();
 	}
 
 	[Trait( "Token", "Badlands" )]

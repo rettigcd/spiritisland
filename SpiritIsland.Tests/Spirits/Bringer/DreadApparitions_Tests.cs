@@ -9,17 +9,20 @@ public class DreadApparitions_Tests {
 	public async Task DirectFear_GeneratesDefend() {
 		Bringer spirit = new Bringer();
 		Board board = Board.BuildBoardA();
-		SpaceSpec a5 = board[5];
+		SpaceSpec targetSpace = board[5];
 		_ = new GameState( spirit, board );
 
 		// Given: DA run
-		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		// await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		spirit.Given_IsOn(targetSpace); 
+		targetSpace.Given_HasTokens("2T@2");
+		await spirit.When_ResolvingCard<DreadApparitions>(u=>u.Choose(targetSpace.Label));
 
 		// When: generating 2 fear
-		await spirit.When_TargetingSpace( a5, ctx=> ctx.AddFear(2) );
+		spirit.Target(targetSpace).AddFear(2);
 
 		// Then: also get 3 defend
-		a5.ScopeSpace.Defend.Count.ShouldBe( 2+1 );// +1 from D.A.
+		targetSpace.ScopeSpace.Defend.Count.ShouldBe( 2+1 );// +1 from D.A.
 	}
 
 	[Fact]
@@ -27,21 +30,26 @@ public class DreadApparitions_Tests {
 
 		Bringer spirit = new Bringer();
 		Board board = Board.BuildBoardA();
-		SpaceSpec a5 = board[5];
+		SpaceSpec targetSpace = board[5];
 		GameState gs = new GameState( spirit, board );
 		gs.DisableBlightEffect();
 
 		// Given: 
-		a5.Given_HasTokens("1T@2");
-		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		targetSpace.Given_HasTokens("1T@2");
+		spirit.Given_IsOn(targetSpace);
+		await spirit.When_ResolvingCard<DreadApparitions>(u => u.Choose(targetSpace.Label));
 
 		// When: destroying the town with Power
-		await spirit.When_TargetingSpace( a5, async ctx => await ctx.Invaders.DestroyNOfClass( 1, Human.Town ), (u) => {
-			u.NextDecision.HasPrompt( "Push T@2 to" ).Choose( "A4" );
-		} );
+		await using( await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit) ) {
+			await spirit.Target(targetSpace).Invaders.DestroyNOfClass(1, Human.Town).AwaitUser(user => {
+				user.NextDecision.HasPrompt("Push T@2 to").Choose("A4");
+			});
+		}
+
+		// InSpiritPowerScope
 
 		// Then: 2 fear should have triggered 2 defend
-		a5.ScopeSpace.Defend.Count.ShouldBe( 2+1 );
+		targetSpace.ScopeSpace.Defend.Count.ShouldBe( 2+1 );
 
 	}
 
@@ -50,20 +58,21 @@ public class DreadApparitions_Tests {
 	public async Task CityDamage_Generates5Defend() {
 		Spirit spirit = new Bringer();
 		Board board = Board.BuildBoardA();
-		SpaceSpec a5 = board[5];
+		SpaceSpec targetSpace = board[5];
 		GameState gs = new GameState( spirit, board );
 		gs.DisableBlightEffect();
 
 		// Given: City on A5
-		a5.Given_HasTokens("1C@3");
-		spirit.Given_IsOn(a5);
+		targetSpace.Given_HasTokens("1C@3");
+		spirit.Given_IsOn(targetSpace);
 		//  And: Spirit played Dread Apparitions on A5
-		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_ResolvingCard<DreadApparitions>(u => u.Choose(targetSpace.Label));
 
 		// When: destroying city
-		await spirit.When_TargetingSpace(a5, 
-			ctx => ctx.Invaders.DestroyNOfClass( 1, Human.City )
-		);
+		// await spirit.When_TargetingSpace(targetSpace, ctx => ctx.Invaders.DestroyNOfClass( 1, Human.City ) );
+		await using( await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit) ) {
+			await spirit.Target(targetSpace).Invaders.DestroyNOfAnyClass(1, Human.City);
+		}
 
 		// Then: 5 fear should have triggered 2 defend
 		board[5].ScopeSpace.Defend.Count.ShouldBe( 5+1 );// Dread Apparitions has 1 fear
@@ -75,9 +84,9 @@ public class DreadApparitions_Tests {
 
 		Bringer spirit = new Bringer();
 		Board board = Board.BuildBoardA();
-		SpaceSpec a5 = board[5];
+		SpaceSpec targetSpace = board[5];
 		GameState gs = new GameState( spirit, board );
-		Space space = a5.ScopeSpace;
+		Space space = targetSpace.ScopeSpace;
 		gs.DisableBlightEffect();
 		gs.IslandWontBlight();
 
@@ -86,7 +95,7 @@ public class DreadApparitions_Tests {
 		space.Given_HasTokens("1C@3,10D@2");
 		spirit.Given_IsOn(space);
 		//   And: used Dread Apparitions
-		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_ResolvingCard<DreadApparitions>(u => u.Choose(targetSpace.Label));
 
 		// When: dahan destroy the city
 		await space.SpaceSpec.When_Ravaging();
@@ -102,16 +111,20 @@ public class DreadApparitions_Tests {
 	[Fact]
 	public async Task FearInOtherLand_Generates0() {
 		Bringer spirit = new Bringer();
-		Board board = Board.BuildBoardA(); SpaceSpec a5 = board[5];
+		Board board = Board.BuildBoardA(); 
 		_ = new GameState( spirit, board );
+		var targetSpace = board[5];
+		var otherSpace = board[1];
 
 		// Given: has 1 city and lots of dahan
-		a5.ScopeSpace.Given_HasTokens("1C@3,10D@2");
+		targetSpace.ScopeSpace.Given_HasTokens("1C@3,10D@2");
+		//   And: spirit is withing range of targt space
+		spirit.Given_IsOn(targetSpace);
 		//   And: triggered DA
-		await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
+		await spirit.When_ResolvingCard<DreadApparitions>(u => u.Choose(targetSpace.Label));
 
 		// When: Power causes fear in a different land
-		await spirit.When_TargetingSpace( a5, ctx => board[1].ScopeSpace.AddFear(6) );
+		otherSpace.ScopeSpace.AddFear(5);
 
 		// Then: no defend bonus
 		board[5].ScopeSpace.Defend.Count.ShouldBe( 1+0 );// 1=>Dread Apparitions

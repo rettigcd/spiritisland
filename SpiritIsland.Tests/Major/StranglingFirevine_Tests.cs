@@ -22,23 +22,19 @@ public class StranglingFirevine_Tests {
 
 		//  When: activate card
 		var ctx = fxt.Spirit.Target( space );
-		var task = StranglingFirevine.ActAsync( ctx );
+		await StranglingFirevine.ActAsync( ctx).AwaitUser(user => {
+			//   And: auto selecting origin land
+			//   And: explorers are destoryed
 
-		//   And: auto selecting origin land
-		//   And: explorers are destoryed
-
-		// Accept threshold
-		fxt.Choose("Yes");
-
-		//   And: apply normal damage
-		fxt.Choose( "T@2" );
-		fxt.Choose( "T@1" );
-
-		//   And: apply escalation damage
-		fxt.Choose( "T@2" );
-		fxt.Choose( "T@1" );
-
-		await task.ShouldComplete();
+			// Accept threshold
+			fxt.Choose("Yes");
+			//   And: apply normal damage
+			fxt.Choose("T@2");
+			fxt.Choose("T@1");
+			//   And: apply escalation damage
+			fxt.Choose("T@2");
+			fxt.Choose("T@1");
+		}).ShouldComplete();
 
 		// Then: invaders destroyed, 1 wilds left behind.
 		fxt.GameState.Tokens[space].Summary.ShouldBe("1W");

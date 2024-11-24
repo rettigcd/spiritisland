@@ -39,8 +39,7 @@ public class Stone_Growth_Tests {
 		await spirit.Presence.Energy.Given_RevealedNextAsync();
 
 		// When: spirit plays Growth Through Sacrifice
-		var card = PowerCard.For(typeof(GrowthThroughSacrifice));
-		await spirit.ResolvePower(card).AwaitUser(u => {
+		await spirit.When_ResolvingCard<GrowthThroughSacrifice>().AwaitUser(u => {
 			u.NextDecision.HasPrompt("Select Presence to Destroy").Choose("SUD on A4");
 			u.NextDecision.HasPrompt("Select location to Remove Blight OR Add Presence").Choose("A1");
 			u.NextDecision.HasPrompt("Select Power Option").Choose("Add 1 presence to one of your lands");

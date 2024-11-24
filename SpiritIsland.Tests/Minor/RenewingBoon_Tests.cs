@@ -40,10 +40,12 @@ public class RenewingBoon_Tests {
 		//  And: blight on space
 		space.Blight.Init( 1 );
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit);
-		Task task = PowerCard.For(typeof(RenewingBoon)).ActivateAsync( spirit );
 
-		// And selecting restricted space
-		spirit.Portal.Choose( spirit.Portal.Next, space.SpaceSpec );
+		// When: playing Renewing boon
+		await PowerCard.For(typeof(RenewingBoon)).ActivateAsync( spirit ).AwaitUser( u => {
+			// And selecting restricted space
+			u.NextDecision.Choose(space.SpaceSpec);
+		}).ShouldComplete();
 
 		// Then: it should remove any blight...
 		space.Blight.Count.ShouldBe( 0 );

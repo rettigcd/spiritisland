@@ -9,7 +9,7 @@ public class InfiniteVitality_Tests {
 		var board = gs.Island.Boards[0];
 		var a5 = board[5].ScopeSpace;
 
-		// Given: 2Dahan In Land
+		// Given: 2 Dahan In Land
 		a5.Given_InitSummary("2D@2");
 
 		//   And: Infinite Vitality played on land
@@ -27,6 +27,7 @@ public class InfiniteVitality_Tests {
 		await ctx.PushDahan(1).AwaitUser(u => {
 			u.NextDecision.HasPrompt("Push (1)").Choose("D@4 on A5 => A1:[none]");
 		});
-		// Exception: We don't store dead counts.
+
+		//  Then: no exception
 	}
 }

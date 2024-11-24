@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Spirits.RampantGreen;
+﻿namespace SpiritIsland.Tests.Major;
 
 public class UnrelentingGrowth_Tests {
 
@@ -43,10 +43,10 @@ public class UnrelentingGrowth_Tests {
 		//  When: Card played
 		var task = UnrelentingGrowth.ActAsync( setup.TargetSelf );
 
+		if( task.IsCompleted ) return; // ocean has no options - so it completes
+
 		// Then: we should not be able to pick restricted space
-		if( !task.IsCompleted) { // ocean has no options - so it completes
-			setup.Spirit.Portal.Next.FormatOptions().ShouldNotContain( restrictedSpace );
-		}
+		setup.Spirit.Portal.Next.FormatOptions().ShouldNotContain(restrictedSpace);
 	}
 
 	#endregion
