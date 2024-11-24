@@ -1,11 +1,11 @@
 =========================
 
+5	UI - Add LOG so if we get strange behavior, we can view details AND/OR replay the game to investigate
 
-4	BUG - Veil the night's hunt & Flocking Red Talons - 1 damage to different invaders, allows damaging same invader.
-4	BUG - If no Dahan, strife does not come off invaders
-
-4	Spirit Details Page/View during configure-new-game.
-4	Spirit Hints (best boards, starting Growths, card plays)
+	SPIRIT - Eyes Watch from the Trees
+	SPIRIT - Fathomless Mud of the Swamp
+	SPIRIT - Ocean - Deeps
+	SPIRIT - River - Haven
 
 4	UI - Landscape layout
 	UI - "Play" should be wide enough to display all word
@@ -13,12 +13,59 @@
 	UI - Display Icons in Text (card descriptions)
 	BUG/UI - Display joined lands.
 
-4	CONFIG - replay game
+3	BUG - If no Dahan, strife does not come off invaders
 
-	UI - Show game log
+3	Spirit Details View during configure-new-game.
+
+3	CONFIG - replay game
+
+3	Spirit Hints (best boards, starting Growths, card plays)
 
 	SPIRITS - Horizon Spirits
+		Devouring Teeth Lurk Underfoot
+		Rising Heat of Stone and Sand
+		Sun-Bright Whirlwind
+
 	SPIRITS - Aspects (new spirits)
+		-- Love --
+		Fangs - Encircle
+		Memory - Mentor
+		Serpent - Locus
+		Wildfire - Transforming
+
+		-- Super fun --
+		Lightning - Sparking
+		Shadows - Dark Fire
+		Thunderspeaker - Warrior
+		Bringer - Violence
+		Keeper - Spreading Hostility
+		Shroud - Stranded
+
+		-- Improvement --
+		Earth - Nourishing
+		River - Travel
+		Rampant Green - Tangles
+		Memory - Intensify
+		Bringer - Enticing
+		Thunderspeaker - Tactician
+		Lightning - Pandemonium
+		Lightning - Wind
+
+		-- OK --
+		Lightning - Immense
+		Rampant Green - Regrowth
+		Shadows - Madness
+		Shadoes - Foreboding
+		Shadows - Amorphous
+		Shadows - Reach
+		Earth - Might
+
+		-- Down grade --
+		Earth - Resilience
+		River - Sunshine
+		Fangs - Enconstrained
+		Lure - Lair
+
 
 ==== Maui questions / Problems ====
 
