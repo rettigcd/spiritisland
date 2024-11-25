@@ -158,16 +158,20 @@ class NewGameModel : ObservableModel {
 			board = AvailalbeBoards[(int)(DateTime.Now.Ticks % AvailalbeBoards.Length)];
 
 		// Init Configuration
+		var advConfig = SelectedAdversary.ToConfig();
 		var gc = new GameConfiguration()
 			.ConfigSpirits(SelectedSpirit!)
 			.ConfigBoards(board)
 			.ConfigCommandBeasts(CommandBeast) 
-			.ConfigAdversary(SelectedAdversary.ToConfig());
+			.ConfigAdversary(advConfig);
 		gc.ShuffleNumber = !string.IsNullOrWhiteSpace(GameNumber) ? int.Parse(GameNumber) : (int)DateTime.Now.Ticks;
+
+		LastConfig = $"Spirit: {SelectedSpirit!} Board:{board} G#:{gc.ShuffleNumber} Adv:{advConfig.Name}-{advConfig.Level}";
 
 		var gameState = _builder.BuildGame(gc);
 		NewGameCreated?.Invoke(gameState);
 	}
+	public string LastConfig = "";
 	public event Action<GameState>? NewGameCreated;
 	#endregion Start
 

@@ -120,14 +120,6 @@ public static class SpiritExtensions {
 			spirit.PlayCard( card );
 	}
 
-	/// <summary>
-	/// Like playing a card, but user doesn't have to pick the space because it is passed in.
-	/// </summary>
-	static async Task ResolvePowerOnSpaceAsync( this Spirit spirit, SpaceSpec space, Func<TargetSpaceCtx, Task> func ) {
-		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
-		await func( spirit.Target( space ) );
-	}
-
 	#endregion When
 
 	#region Await ...

@@ -15,6 +15,7 @@ public class SoloGameModel : ObservableModel {
 	public SpiritSummaryModel SpiritSummary    { get; } // binding for summary panel
 	public SpiritPanelModel SpiritPanel { get; } // binding for spirit panel
 	public CardsOverlayModel Cards      { get; }
+	public LogModel Log                 { get; }
 
 	public ICommand ShowCards           { get; }
 	public ICommand OpenOverlay         { get; }
@@ -120,6 +121,9 @@ public class SoloGameModel : ObservableModel {
 		_phase = gs.Phase;
 
 		gs.NewLogEntry += Gs_NewLogEntry;
+
+		Log = new LogModel();
+		gs.NewLogEntry += Log.Gs_NewLogEntry;
 
 		ShowCards = new Command( () => ShowCardPanel() );
 		OpenOverlay = new Command((p) => { VisibleOverlay = (Overlay)p; } );

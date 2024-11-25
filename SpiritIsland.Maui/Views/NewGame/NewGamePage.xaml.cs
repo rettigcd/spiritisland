@@ -14,10 +14,18 @@ public partial class NewGamePage : ContentPage {
 	async void NewGameCreated( GameState gameState) {
 		// Set up the New Game Page
 		SoloGamePage.Current?.Dispose();
-		SoloGamePage.Current = new SoloGamePage(gameState);
+
+		// create new model
+		var soloGame = new SoloGameModel(gameState);
+		soloGame.Log.SpecifyGameConfig(_model.LastConfig);
+
+		// Setup page
+		SoloGamePage.Current = new SoloGamePage(soloGame);
 		NavigationPage.SetHasNavigationBar(SoloGamePage.Current, false);
 		MainPage.Current.ShowCurrentGameButton(true);
 		Navigation.InsertPageBefore(SoloGamePage.Current, this);
+
+		// navigate
 		await Navigation.PopAsync();
 	}
 

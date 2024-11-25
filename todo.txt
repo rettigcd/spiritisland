@@ -1,7 +1,5 @@
 =========================
 
-5	UI - Add LOG so if we get strange behavior, we can view details AND/OR replay the game to investigate
-
 	SPIRIT - Eyes Watch from the Trees
 	SPIRIT - Fathomless Mud of the Swamp
 	SPIRIT - Ocean - Deeps

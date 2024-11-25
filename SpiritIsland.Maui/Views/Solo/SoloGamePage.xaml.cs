@@ -12,10 +12,10 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 	// !!! Purhaps this would be better as a member variable of the main page.
 	static public SoloGamePage? Current { get; set; }
 
-	public SoloGamePage(GameState unstartedGame) {
+	public SoloGamePage(SoloGameModel model) {
 		InitializeComponent();
 
-		_model = new SoloGameModel(unstartedGame);
+		_model = model;
 		_model.GameState.NewLogEntry += GameState_NewLogEntry;
 		BindingContext = _model;
 
@@ -81,4 +81,8 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 	async void AdversaryButton_Clicked(object sender, EventArgs e) {
 		await DisplayAlert("Adversary", _model.GameState.Adversary.Describe(),"Close");
 	}
+
+	private void LogButton_Clicked(object sender, EventArgs e) {
+		Navigation.PushAsync( new LogView( _model.Log ) );
+    }
 }

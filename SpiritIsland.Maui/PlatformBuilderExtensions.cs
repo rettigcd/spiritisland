@@ -8,8 +8,7 @@ static public partial class PlatformBuilderExtensions {
 	static private partial void Configure( MauiAppBuilder builder);
 
 #if TEST_STUB
-	static private partial void Configure(MauiAppBuilder builder) {
-	}
+	static private partial void Configure(MauiAppBuilder builder) {}
 #endif
 
 }

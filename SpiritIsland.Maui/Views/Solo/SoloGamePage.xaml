@@ -29,7 +29,11 @@
 			<!-- Phase -->
 			<Image Source="{Binding Phase,Converter={StaticResource phaseToImage}}" HeightRequest="25" Margin="10,0" Grid.Row="0" HorizontalOptions="Center" Grid.Column="1" />
 
+			<!-- Adversary Flag -->
 			<ImageButton Source="{Binding Adversary,Converter={StaticResource badgeImage}}" Margin="2,4" IsVisible="{Binding HasAdversary}" Clicked="AdversaryButton_Clicked" />
+			
+			<!-- Log -->
+			<ImageButton Source="quake.png" Clicked="LogButton_Clicked" HeightRequest="25" />
 		</HorizontalStackLayout>
 
 		<!-- Invaders -->
