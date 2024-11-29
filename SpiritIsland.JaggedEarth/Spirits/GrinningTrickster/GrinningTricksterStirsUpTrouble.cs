@@ -5,11 +5,6 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	public const string Name = "Grinning Trickster Stirs Up Trouble";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [  
-		TricksterTokens.ARealFlairForDiscord_Rule,  
-		CleaningUpMessesIsADrag
-	];
-
 	static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule(
 		"Cleaning up Messes is a Drag", 
 		"After one of your Powers Removes blight, Destroy 1 of your presence.  Ignore this rule for Let's See What Happens."
@@ -39,6 +34,8 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 			InnatePower.For(typeof(LetsSeeWhatHappens)),
 			InnatePower.For(typeof(WhyDontYouAndThemFight))
 		];
+
+		SpecialRules = [TricksterTokens.ARealFlairForDiscord_Rule, CleaningUpMessesIsADrag];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

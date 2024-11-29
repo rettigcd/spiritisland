@@ -6,8 +6,6 @@ public class LureOfTheDeepWilderness : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule];
-
 	public LureOfTheDeepWilderness():base( 
 		x => new LurePresence(x)
 		, new GrowthTrack(
@@ -29,6 +27,7 @@ public class LureOfTheDeepWilderness : Spirit {
 			InnatePower.For(typeof(ForsakeSocietyToChaseAfterDreams)),
 			InnatePower.For(typeof(NeverHeardFromAgain))
 		];
+		SpecialRules = [LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

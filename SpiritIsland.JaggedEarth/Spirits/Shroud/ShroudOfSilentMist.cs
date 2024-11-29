@@ -18,13 +18,6 @@ public class ShroudOfSilentMist : Spirit {
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
 	};
 
-
-	public override SpecialRule[] SpecialRules => [ 
-		GatherPowerFromTheCoolAndDark, 
-		MistsShiftAndFlow.Rule, 
-		SlowAndSilentDeath.Rule,
-	];
-
 	public ShroudOfSilentMist():base(
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack(1, Track.Energy0,Track.Energy1,Track.WaterEnergy,Track.Energy2,Track.AirEnergy),
@@ -44,6 +37,7 @@ public class ShroudOfSilentMist : Spirit {
 			InnatePower.For(typeof(SuffocatingShroud)), 
 			InnatePower.For(typeof(LostInTheSwirlingHaze))
 		];
+		SpecialRules = [GatherPowerFromTheCoolAndDark, MistsShiftAndFlow.Rule, SlowAndSilentDeath.Rule];
 	}
 
 	bool _gainedCoolEnergyThisTurn = false;

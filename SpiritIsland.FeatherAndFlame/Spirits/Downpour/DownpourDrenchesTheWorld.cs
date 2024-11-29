@@ -8,8 +8,6 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 	public const string Name = "Downpour Drenches The World";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [DrenchTheLandscape.Rule, PourDownPower.Rule];
-
 	static Track MovePresence => new Track( "Moveonepresence.png" ) {
 		Action = new MovePresence( 1 ),
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
@@ -48,7 +46,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			InnatePower.For(typeof(RainAndMudSupressConflict)),
 			InnatePower.For(typeof(WaterNourishesLifesGrowth))
 		];
-
+		SpecialRules = [DrenchTheLandscape.Rule, PourDownPower.Rule];
 		_pourDownPower = new PourDownPower(this);
 
 	}

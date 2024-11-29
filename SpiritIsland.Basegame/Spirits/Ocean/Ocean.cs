@@ -4,8 +4,6 @@ public class Ocean : Spirit {
 
 	public const string Name = "Ocean's Hungry Grasp";
 
-	public override SpecialRule[] SpecialRules => [OceanInPlay, Drowning.Rule];
-
 	readonly SpecialRule OceanInPlay = new SpecialRule(
 		"Ocean In Play",
 		"You may add/move Presence into Oceans, but may not add/move Presence into Inland lands. On boards where you have 1 or more Presence, Oceans are treated as Coastal Wetlands for Spirit Powers/Special Rules and Blight. You Drown any Invaders or Dahan moved to those Oceans."
@@ -46,7 +44,7 @@ public class Ocean : Spirit {
 			InnatePower.For(typeof(OceanBreaksTheShore)),
 			InnatePower.For(typeof(PoundShipsToSplinters))
 		];
-
+		SpecialRules = [OceanInPlay, Drowning.Rule];
 	}
 
 	public override string SpiritName => Name;

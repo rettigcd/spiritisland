@@ -13,6 +13,12 @@ class NewGameModel : ObservableModel {
 	public Command EditSpiritCancel { get; }
 	public bool IsEditingSpirit { get => _isEditingSpirit; set => SetProp(ref _isEditingSpirit, value); }
 
+	// Aspects
+	public AspectConfigKey[] AvailableAspects { get=> _availableAspects; set=>SetProp(ref _availableAspects, value); }
+	AspectConfigKey[] _availableAspects = [];
+
+	public ObservableCollection<object> SelectedAspects { get; set; } = [];
+
 	// Adversary
 	public NamedModel[] AvailableAdversaries { get; }
 	public AdversaryModel SelectedAdversary { get => _selectedAdversary; set => SetProp(ref _selectedAdversary, value); }
@@ -84,7 +90,14 @@ class NewGameModel : ObservableModel {
 	#region Spirit methods
 
 	void SelectSpirit(NamedModel spiritNameModel) {
+		bool spiritChanged = SelectedSpirit != spiritNameModel.Name;
+
 		SelectedSpirit = spiritNameModel.Name;
+
+		if( spiritChanged ) {
+			AvailableAspects = [.. _builder.AspectNames.Where(c => c.Spirit == spiritNameModel.Name) ];
+		}
+
 		IsEditingSpirit = false;
 		CanStart = true;
 	}
@@ -161,6 +174,7 @@ class NewGameModel : ObservableModel {
 		var advConfig = SelectedAdversary.ToConfig();
 		var gc = new GameConfiguration()
 			.ConfigSpirits(SelectedSpirit!)
+			.ConfigAspects([.. SelectedAspects.Cast<AspectConfigKey>()])
 			.ConfigBoards(board)
 			.ConfigCommandBeasts(CommandBeast) 
 			.ConfigAdversary(advConfig);
@@ -196,4 +210,10 @@ class NewGameModel : ObservableModel {
 	);
 
 	#endregion private fields
+}
+
+public class TogglableModel : ObservableModel {
+	public required string Text { get; set; }
+	public bool Selected { get=>_selected; set=>SetProp(ref _selected,value); }
+	bool _selected;
 }

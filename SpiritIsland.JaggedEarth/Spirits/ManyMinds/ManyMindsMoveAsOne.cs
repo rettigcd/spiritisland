@@ -6,8 +6,6 @@ public partial class ManyMindsMoveAsOne : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [FlyFastAsThought, AJoiningOfSwarmsAndFlocks];
-
 	static readonly SpecialRule AJoiningOfSwarmsAndFlocks = new SpecialRule(
 		"A Joining of Swarms and Flocks",
 		"Your Sacred Sites may also count as beast. If something change a beast that is your presence, it affects 2 of your Presence there."
@@ -47,7 +45,7 @@ public partial class ManyMindsMoveAsOne : Spirit {
 			InnatePower.For(typeof(TheTeemingHostArrives)), 
 			InnatePower.For(typeof(BesetAndConfoundTheInvaders))
 		];
-
+		SpecialRules = [FlyFastAsThought, AJoiningOfSwarmsAndFlocks];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

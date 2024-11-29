@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:si="clr-namespace:SpiritIsland.Maui"
+			 xmlns:core="clr-namespace:SpiritIsland;assembly=SpiritIsland"
 			 x:Class="SpiritIsland.Maui.NewGamePage"
  			 x:DataType="si:NewGameModel"
 			 Title="New Game Page"  IconImageSource="ter_wetland.png">
@@ -11,46 +12,56 @@
 		<si:NotEmptyConverter x:Key="notEmpty" />
 	</ContentPage.Resources>
 
-	<Grid RowDefinitions="60,60,60,60,40,50,*">
-		
-		<!-- spirit -->
-		<HorizontalStackLayout Margin="2" BackgroundColor="#eee">
-			<HorizontalStackLayout.GestureRecognizers>
-				<TapGestureRecognizer Command="{Binding EditSpirit}" />
-			</HorizontalStackLayout.GestureRecognizers>
-			<Label Text="Select a Spirit" VerticalOptions="Center" TextColor="Gray" Margin="5,0,30,0" />
-			<Image Source="{Binding SelectedSpirit, Converter={StaticResource nameImage}}" Margin="2" HeightRequest="56" />
-		</HorizontalStackLayout>
-	
-		<!-- Board -->
-		<Grid Grid.Row="1" ColumnDefinitions="2*,2*" >
-			<Picker x:Name="Board" Title="Select a Board" Margin="2" BackgroundColor="#eee" ItemsSource="{Binding AvailalbeBoards}" SelectedItem="{Binding SelectedBoard}" HorizontalOptions="Fill"/>
-			<Entry Grid.Column="1" Text="{Binding GameNumber}" Placeholder="Game #" MaxLength="10" Keyboard="Numeric"  HorizontalOptions="Fill"/>
-		</Grid>
+	<Grid>
+		<VerticalStackLayout>
+			<!-- spirit -->
+			<HorizontalStackLayout Margin="2" BackgroundColor="#eee">
+				<HorizontalStackLayout.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding EditSpirit}" />
+				</HorizontalStackLayout.GestureRecognizers>
+				<Label Text="Select a Spirit" VerticalOptions="Center" TextColor="Gray" Margin="5,0,30,0" />
+				<Image Source="{Binding SelectedSpirit, Converter={StaticResource nameImage}}" Margin="2" HeightRequest="56" />
+			</HorizontalStackLayout>
+			
+			<!-- Aspects -->
+			<CollectionView BackgroundColor="#eee" ItemsSource="{Binding AvailableAspects}" SelectionMode="Multiple" ItemsLayout="HorizontalList" SelectedItems="{Binding SelectedAspects}" >
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="core:AspectConfigKey">
+						<Label Text="{Binding Aspect}" Margin="10,5"/>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+			
+			<!-- Board -->
+			<Grid ColumnDefinitions="2*,2*" >
+				<Picker x:Name="Board" Title="Select a Board" Margin="2" BackgroundColor="#eee" ItemsSource="{Binding AvailalbeBoards}" SelectedItem="{Binding SelectedBoard}" HorizontalOptions="Fill"/>
+				<Entry Grid.Column="1" Text="{Binding GameNumber}" Placeholder="Game #" MaxLength="10" Keyboard="Numeric"  HorizontalOptions="Fill"/>
+			</Grid>
 
-		<!-- adversary -->
-		<HorizontalStackLayout Margin="2" BackgroundColor="#eee" Grid.Row="2">
-			<HorizontalStackLayout.GestureRecognizers>
-				<TapGestureRecognizer Command="{Binding EditAdversary}" />
-			</HorizontalStackLayout.GestureRecognizers>
-			<Image Source="{Binding SelectedAdversary.Name, Converter={StaticResource nameImage}}" VerticalOptions="Center" Margin="8" />
-			<Label Text="{Binding SelectedAdversary.Name}" VerticalOptions="Center" TextColor="Black" Margin="5,0,10,0" />
-			<Label Text="{Binding SelectedAdversary.TopLevel.LevelText}" VerticalOptions="Center" TextColor="Black" Margin="0" FontAttributes="Bold" />
-			<Label Text="{Binding SelectedAdversary.TopLevel.Title}" VerticalOptions="Center" TextColor="Black" Margin="5,0" />
-		</HorizontalStackLayout>
+			<!-- adversary -->
+			<HorizontalStackLayout Margin="2" BackgroundColor="#eee" HeightRequest="40">
+				<HorizontalStackLayout.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding EditAdversary}" />
+				</HorizontalStackLayout.GestureRecognizers>
+				<Image Source="{Binding SelectedAdversary.Name, Converter={StaticResource nameImage}}" VerticalOptions="Center" Margin="8" />
+				<Label Text="{Binding SelectedAdversary.Name}" VerticalOptions="Center" TextColor="Black" Margin="5,0,10,0" />
+				<Label Text="{Binding SelectedAdversary.TopLevel.LevelText}" VerticalOptions="Center" TextColor="Black" Margin="0" FontAttributes="Bold" />
+				<Label Text="{Binding SelectedAdversary.TopLevel.Title}" VerticalOptions="Center" TextColor="Black" Margin="5,0" />
+			</HorizontalStackLayout>
 
-		<!-- Command Beast -->
-		<HorizontalStackLayout HorizontalOptions="Center" Margin="10,0" Grid.Row="3" >
-			<Label Text="Command Beasts" VerticalOptions="Center" HorizontalOptions="Fill" />
-			<Switch IsToggled="{Binding CommandBeast}" />
-		</HorizontalStackLayout>
+			<!-- Command Beast -->
+			<HorizontalStackLayout HorizontalOptions="Center" Margin="10,0">
+				<Label Text="Command Beasts" VerticalOptions="Center" HorizontalOptions="Fill" />
+				<Switch IsToggled="{Binding CommandBeast}" />
+			</HorizontalStackLayout>
 
-		<!-- Start Game -->
-		<Button Text="Start New Game" Command="{Binding CreateGame}" IsEnabled="{Binding CanStart}" Margin="10,0" Grid.Row="4" />
-		<ActivityIndicator x:Name="Activity" IsRunning="False" Color="SkyBlue" Grid.Row="5" />
+			<!-- Start Game -->
+			<Button Text="Start New Game" Command="{Binding CreateGame}" IsEnabled="{Binding CanStart}" Margin="10,0" />
+			<ActivityIndicator x:Name="Activity" IsRunning="False" Color="SkyBlue" />
+		</VerticalStackLayout>
 
 		<!-- Spirits Overlay -->
-		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="SpiritsPanel" IsVisible="{Binding IsEditingSpirit}" >
+		<ScrollView BackgroundColor="LightGray" Padding="10" Margin="10" x:Name="SpiritsPanel" IsVisible="{Binding IsEditingSpirit}" >
 			<VerticalStackLayout>
 				<!-- Title / go back -->
 				<HorizontalStackLayout Margin="0,0,0,10">
@@ -90,7 +101,7 @@
 		</ScrollView>
 
 		<!-- Adversary Overlay -->
-		<ScrollView Grid.RowSpan="8" BackgroundColor="LightGray" Padding="10" Margin="10" IsVisible="{Binding HasFocusAdversary}" >
+		<ScrollView BackgroundColor="LightGray" Padding="10" Margin="10" IsVisible="{Binding HasFocusAdversary}" >
 			<VerticalStackLayout>
 				<HorizontalStackLayout Margin="0,0,0,10">
 					<ImageButton Source="back_arrow.png" Command="{Binding EditAdversaryCancel }" HeightRequest="18" />

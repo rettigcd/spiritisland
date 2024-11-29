@@ -6,11 +6,6 @@ public class ASpreadOfRampantGreen : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [
-		ChokeTheLandWithGreen.Rule,
-		SteadyRegeneration
-	];
-
 	static SpecialRule SteadyRegeneration => new SpecialRule(
 		"Steady Regeneration",
 		"When adding Presence to the board via Growth, you may optionally use your destroyed Presence. If the island is Healthy, do so freely. If the island is Blighted, doing so costs 1 Energy per destroyed Presence you add."
@@ -47,6 +42,11 @@ public class ASpreadOfRampantGreen : Spirit {
 		InnatePowers = [
 			InnatePower.For(typeof(CreepersTearIntoMortar)),
 			InnatePower.For(typeof(AllEnvelopingGreen)),
+		];
+
+		SpecialRules = [
+			ChokeTheLandWithGreen.Rule,
+			SteadyRegeneration
 		];
 
 	}

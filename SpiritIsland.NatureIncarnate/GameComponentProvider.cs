@@ -2,33 +2,55 @@
 
 public class GameComponentProvider : IGameComponentProvider {
 
-	static Dictionary<string, Type> SpiritTypes => new() {
-		[ToweringRootsOfTheJungle.Name] = typeof( ToweringRootsOfTheJungle ),
-		[BreathOfDarknessDownYourSpine.Name] = typeof( BreathOfDarknessDownYourSpine ),
-		[HearthVigil.Name] = typeof( HearthVigil ),
-		[WoundedWatersBleeding.Name] = typeof( WoundedWatersBleeding ),
-		[DancesUpEarthquakes.Name] = typeof(DancesUpEarthquakes ),
-		[RelentlessGazeOfTheSun.Name] = typeof(RelentlessGazeOfTheSun ),
-		[EmberEyedBehemoth.Name] = typeof( EmberEyedBehemoth ),
-		[WanderingVoiceKeensDelirium.Name] = typeof( WanderingVoiceKeensDelirium ),
-	};
+	#region Spirits
 
 	public string[] SpiritNames => [.. SpiritTypes.Keys];
+
 	public Spirit? MakeSpirit( string spiritName ) {
 		return SpiritTypes.TryGetValue( spiritName, out Type? spiritType ) 
 			? (Spirit?)Activator.CreateInstance( spiritType )
 			: null;
 	}
 
-	static Dictionary<string, Type> AdversariesTypes => new() {
-		[HabsburgMiningExpedition.Name] = typeof( HabsburgMiningExpedition ),
+	static Dictionary<string, Type> SpiritTypes => new() {
+		[ToweringRootsOfTheJungle.Name] = typeof(ToweringRootsOfTheJungle),
+		[BreathOfDarknessDownYourSpine.Name] = typeof(BreathOfDarknessDownYourSpine),
+		[HearthVigil.Name] = typeof(HearthVigil),
+		[WoundedWatersBleeding.Name] = typeof(WoundedWatersBleeding),
+		[DancesUpEarthquakes.Name] = typeof(DancesUpEarthquakes),
+		[RelentlessGazeOfTheSun.Name] = typeof(RelentlessGazeOfTheSun),
+		[EmberEyedBehemoth.Name] = typeof(EmberEyedBehemoth),
+		[WanderingVoiceKeensDelirium.Name] = typeof(WanderingVoiceKeensDelirium),
 	};
 
+	#endregion Spirits
+
+	#region Aspects
+
+	public AspectConfigKey[] AspectNames => [];
+
+	public IAspect? MakeAspect(AspectConfigKey aspectName ) {
+		return null;
+	}
+
+	#endregion Aspects
+
+	#region Adversaries
+
 	public string[] AdversaryNames => [.. AdversariesTypes.Keys];
+
 	public IAdversaryBuilder? MakeAdversary( string adversaryName ) => adversaryName != null 
 		&& AdversariesTypes.TryGetValue( adversaryName, out Type? adversaryType ) 
 		? (IAdversaryBuilder?)Activator.CreateInstance( adversaryType )
 			: null;
+
+	static Dictionary<string, Type> AdversariesTypes => new() {
+		[HabsburgMiningExpedition.Name] = typeof(HabsburgMiningExpedition),
+	};
+
+	#endregion Adversaries
+
+	#region Cards
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(RoilingBogAndSnaggingThorn),
@@ -73,6 +95,6 @@ public class GameComponentProvider : IGameComponentProvider {
 		new ThrivingCrops()
 	];
 
+	#endregion Cards
+
 }
-
-

@@ -12,10 +12,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [
-		new SpecialRule("Long Ages of Knowledge and Forgetfulness","When you would Forget a Power Card from your hand, you may instead discard it."),
-		new SpecialRule("Insights Into the World's Nature","Some of your Actions let you Prepare Element Markers, which are kept here until used.  Choose the Elements freely.  Each Element Marker spent grants 1 of that Element for a single Action.")
-	];
+	static readonly SpecialRule LongAges = new SpecialRule("Long Ages of Knowledge and Forgetfulness", "When you would Forget a Power Card from your hand, you may instead discard it.");
+	static readonly SpecialRule Insights = new SpecialRule("Insights Into the World's Nature", "Some of your Actions let you Prepare Element Markers, which are kept here until used.  Choose the Elements freely.  Each Element Marker spent grants 1 of that Element for a single Action.");
 
 	#region Presence Track Helpers
 
@@ -62,6 +60,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 			InnatePower.For(typeof(LearnTheInvadersTactics)), 
 			InnatePower.For(typeof(ObserveTheEverChangingWorld))
 		];
+
+		SpecialRules = [LongAges, Insights];
 	}
 
 	protected override void InitializeInternal(Board board, GameState gameState) {

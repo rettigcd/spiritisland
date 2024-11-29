@@ -18,10 +18,7 @@ public class StonesUnyieldingDefiance : Spirit {
 	public const string Name = "Stone's Unyielding Defiance";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [
-		BestowTheEnduranceOfBedrockPresenceToken.Rule,
-		new SpecialRule("Deep Layers Expposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.") 
-	];
+	static readonly SpecialRule DeepLayers = new SpecialRule("Deep Layers Exposed to the Surface", "The first time you uncover each of your +1 Card Play presence spaces, gain a Minor Power.");
 
 	#region special Tracks
 
@@ -91,6 +88,7 @@ public class StonesUnyieldingDefiance : Spirit {
 			InnatePower.For(typeof(HoldTheIslandFastWithABulwarkOfWill)), 
 			InnatePower.For(typeof(LetThemBreakThemselvesAgainstTheStone))
 		];
+		SpecialRules = [BestowTheEnduranceOfBedrockPresenceToken.Rule, DeepLayers];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

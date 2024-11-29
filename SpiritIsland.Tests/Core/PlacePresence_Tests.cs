@@ -22,8 +22,6 @@ public class PlacePresence_Tests {
 
 	class TestSpirit : Spirit {
 
-		public override SpecialRule[] SpecialRules => throw new NotImplementedException();
-
 		public TestSpirit():base(
 			spirit => new SpiritPresence( spirit,
 				new PresenceTrack( Track.Energy0, Track.Energy0, Track.Energy0 ),

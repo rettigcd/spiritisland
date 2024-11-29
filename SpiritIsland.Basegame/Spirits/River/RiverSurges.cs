@@ -15,7 +15,7 @@ public class RiverSurges : Spirit {
 
 	public const string Name = "River Surges in Sunlight";
 
-	public override SpecialRule[] SpecialRules => [new SpecialRule("Rivers Domain", "Your presense in wetlands count as sacred.")];
+	static readonly SpecialRule RiversDomain = new SpecialRule("Rivers Domain", "Your presense in wetlands count as sacred.");
 
 	public override string SpiritName => Name;
 
@@ -45,10 +45,10 @@ public class RiverSurges : Spirit {
 		PowerCard.For(typeof(WashAway))
 	){
 		InnatePowers = [ InnatePower.For(typeof(MassiveFlooding)) ];
+		SpecialRules = [ RiversDomain ];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		board.Spaces.Reverse().First(s => s.IsWetland).ScopeSpace.Setup(Presence.Token, 1);
 	}
-
 }

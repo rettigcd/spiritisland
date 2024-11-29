@@ -26,7 +26,6 @@ public abstract partial class Spirit
 		Elements = new ElementMgr( this );
 	}
 
-
 	public void InitSpirit( Board board, GameState gameState ){
 		gameState.AddTimePassesAction(this);
 		_gateway.DecisionMade += (d) => ActionScope.Current.Log(d);
@@ -307,7 +306,7 @@ public abstract partial class Spirit
 	}
 	int _energy;
 
-	public SpiritPresence Presence {get;}
+	public SpiritPresence Presence {get;set;}
 	public Incarna Incarna => Presence.Incarna; // convenience shortcut
 
 	/// <summary> Energy gain per turn </summary>
@@ -322,7 +321,7 @@ public abstract partial class Spirit
 
 	public abstract string SpiritName { get; }
 
-	abstract public SpecialRule[] SpecialRules { get; }
+	public SpecialRule[] SpecialRules { get; set; }
 
 	public virtual InnatePower[] InnatePowers { get; set; } = [];
 

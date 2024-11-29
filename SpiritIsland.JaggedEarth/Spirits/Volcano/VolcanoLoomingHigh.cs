@@ -9,11 +9,7 @@ public class VolcanoLoomingHigh : Spirit {
 	public override string SpiritName => Name;
 
 	#region SpecialRules
-	public override SpecialRule[] SpecialRules => [
-		MountainHome_Rule,
-		CollapseInABlastOfLAvaAndSteam_Rule,
-		VolcanicPeaksTowerOverTheLandscape.Rule
-	];
+
 	static SpecialRule MountainHome_Rule => new SpecialRule( MountainHome, "Your presence may only be added/moved into Mountain.");
 	static SpecialRule CollapseInABlastOfLAvaAndSteam_Rule => new SpecialRule( CollapseInABlastOfLavaAndSteam,"When your presense is destroyed, in that land, deal 1 Damage per DestroyedPresence to both Invaders and to dahan.");
 	#endregion
@@ -37,6 +33,12 @@ public class VolcanoLoomingHigh : Spirit {
 		InnatePowers = [
 			InnatePower.For(typeof(ExplosiveEruption)), 
 			InnatePower.For(typeof(PoweredByTheFurnaceOfTheEarth))
+		];
+
+		SpecialRules = [
+			MountainHome_Rule,
+			CollapseInABlastOfLAvaAndSteam_Rule,
+			VolcanicPeaksTowerOverTheLandscape.Rule
 		];
 
 		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape(this);

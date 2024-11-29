@@ -5,7 +5,7 @@ public class Shadows : Spirit {
 	public const string Name = "Shadows Flicker Like Flame";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [new SpecialRule("Shadows of the Dahan", "Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range.")];
+	static readonly SpecialRule ShadowsOfTheDahan = new SpecialRule("Shadows of the Dahan", "Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range.");
 
 	public Shadows():base(
 		spirit => new SpiritPresence( spirit,
@@ -23,6 +23,7 @@ public class Shadows : Spirit {
 		PowerCard.For(typeof(ConcealingShadows))
 	) {
 		InnatePowers = [ InnatePower.For(typeof(DarknessSwallowsTheUnwary)) ];
+		SpecialRules = [ShadowsOfTheDahan];
 	}
 
 	/// <summary>

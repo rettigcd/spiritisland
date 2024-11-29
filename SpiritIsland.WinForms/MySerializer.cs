@@ -73,6 +73,7 @@ public static class MySerializer {
 		var result = new Dictionary<string, object> {
 			[SPIRIT] = item.Spirits[0], // !!! change format to save >1 spirits/boards
 			[BOARD] = item.Boards[0],
+			// !!! Missing Aspects
 			[SHUFFLENUMBER] = item.ShuffleNumber,
 			[ADVERSARY] = Prepare( item.Adversary ),
 			[TIMESTAMP] = Prepare( item.TimeStamp )

@@ -1,36 +1,59 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+#nullable enable
+
 public class GameComponentProvider : IGameComponentProvider {
+
+	#region Spirits
+
+	public string[] SpiritNames => [.. Spirits.Keys];
+
+	public Spirit? MakeSpirit(string spiritName) {
+		return Spirits.TryGetValue(spiritName, out Type? spiritType)
+			? (Spirit?)Activator.CreateInstance(spiritType)
+			: null;
+	}
+
+	static Dictionary<string, Type> Spirits => new() {
+		[FracturedDaysSplitTheSky.Name] = typeof(FracturedDaysSplitTheSky),
+		[GrinningTricksterStirsUpTrouble.Name] = typeof(GrinningTricksterStirsUpTrouble),
+		[LureOfTheDeepWilderness.Name] = typeof(LureOfTheDeepWilderness),
+		[ManyMindsMoveAsOne.Name] = typeof(ManyMindsMoveAsOne),
+		[ShiftingMemoryOfAges.Name] = typeof(ShiftingMemoryOfAges),
+		[ShroudOfSilentMist.Name] = typeof(ShroudOfSilentMist),
+		[StarlightSeeksItsForm.Name] = typeof(StarlightSeeksItsForm),
+		[StonesUnyieldingDefiance.Name] = typeof(StonesUnyieldingDefiance),
+		[VengeanceAsABurningPlague.Name] = typeof(VengeanceAsABurningPlague),
+		[VolcanoLoomingHigh.Name] = typeof(VolcanoLoomingHigh),
+	};
+
+	#endregion Spirits
+
+	#region Aspects
+
+	public AspectConfigKey[] AspectNames => [];
+	public IAspect? MakeAspect(AspectConfigKey aspectName) {
+		return null;
+	}
+
+	#endregion Aspects
+
+	#region Adversaries
 
 	public string[] AdversaryNames => [
 		HabsburgMonarchy.Name,
 		Russia.Name,
 	];
 
-	public IAdversaryBuilder MakeAdversary( string adversaryName ) => adversaryName switch {
+	public IAdversaryBuilder? MakeAdversary( string adversaryName ) => adversaryName switch {
 		HabsburgMonarchy.Name => new HabsburgMonarchy(),
 		Russia.Name => new Russia(),
 		_ => null
 	};
 
-	static Dictionary<string,Type> Spirits => new(){
-		[FracturedDaysSplitTheSky.Name]        = typeof( FracturedDaysSplitTheSky),
-		[GrinningTricksterStirsUpTrouble.Name] = typeof( GrinningTricksterStirsUpTrouble),
-		[LureOfTheDeepWilderness.Name]         = typeof(LureOfTheDeepWilderness),
-		[ManyMindsMoveAsOne.Name]              = typeof(ManyMindsMoveAsOne),
-		[ShiftingMemoryOfAges.Name]            = typeof(ShiftingMemoryOfAges),
-		[ShroudOfSilentMist.Name]              = typeof(ShroudOfSilentMist),
-		[StarlightSeeksItsForm.Name]           = typeof(StarlightSeeksItsForm),
-		[StonesUnyieldingDefiance.Name]        = typeof(StonesUnyieldingDefiance),
-		[VengeanceAsABurningPlague.Name]       = typeof(VengeanceAsABurningPlague),
-		[VolcanoLoomingHigh.Name]              = typeof(VolcanoLoomingHigh),
-	};
-	public string[] SpiritNames => [.. Spirits.Keys];
-	public Spirit MakeSpirit( string spiritName ) {
-		return Spirits.TryGetValue( spiritName, out Type spiritType ) 
-			? (Spirit)Activator.CreateInstance( spiritType )
-			:null;
-	}
+	#endregion Adversaries
+
+	#region Cards
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(BatsScoutForRaidsByDarkness),
@@ -112,5 +135,6 @@ public class GameComponentProvider : IGameComponentProvider {
 		new UnnaturalProliferation(),
 		new UntendedLandCrumbles(),
 	];
+	#endregion Cards
 
 }

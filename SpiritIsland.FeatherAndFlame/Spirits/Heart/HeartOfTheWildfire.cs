@@ -4,6 +4,8 @@ public class HeartOfTheWildfire : Spirit {
 
 	public const string Name = "Heart of the Wildfire";
 
+	public override string SpiritName => Name;
+
 	static Track FireAndPlantEnergy => new Track( "fire,plant", Element.Fire, Element.Plant ) {
 		Icon = new IconDescriptor {
 				BackgroundImg = Img.Coin,
@@ -43,14 +45,12 @@ public class HeartOfTheWildfire : Spirit {
 			InnatePower.For(typeof(FireStorm)),
 			InnatePower.For(typeof(TheBurnedLandRegrows))
 		];
+
+		SpecialRules = [
+			BlazingPresence_Rule,
+			WildfireToken.DestructiveNature_Rule
+		];
 	}
-
-	public override string SpiritName => Name;
-
-	public override SpecialRule[] SpecialRules => [
-		BlazingPresence_Rule,
-		WildfireToken.DestructiveNature_Rule
-	];
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// in the hightest-numbered Sands on your starting board

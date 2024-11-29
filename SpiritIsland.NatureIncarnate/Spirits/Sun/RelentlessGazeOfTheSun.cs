@@ -6,10 +6,6 @@ public class RelentlessGazeOfTheSun : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [
-		RelentlessRepeater.Rule
-	];
-
 	public RelentlessGazeOfTheSun():base( 
 		spirit => new SunPresence(spirit)
 		, new GrowthTrack(
@@ -36,6 +32,7 @@ public class RelentlessGazeOfTheSun : Spirit {
 			InnatePower.For(typeof(ScorchingConvergence)), 
 			InnatePower.For(typeof(ConsiderAHarmoniousNature))
 		];
+		SpecialRules = [RelentlessRepeater.Rule];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

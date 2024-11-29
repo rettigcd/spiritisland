@@ -12,8 +12,6 @@ class TestSpirit( PowerCard powerCard )
 {
 	public override string SpiritName => "Test Spirit";
 
-	public override SpecialRule[] SpecialRules => throw new NotImplementedException();
-
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Has sacred site on space 5
 		SpaceSpec space = board[5];

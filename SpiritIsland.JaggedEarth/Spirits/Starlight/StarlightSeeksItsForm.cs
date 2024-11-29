@@ -100,9 +100,6 @@ public class StarlightSeeksItsForm : Spirit {
 		"After revealing a snowflake, place 1 Element Marger of your choice on it.  That element is permanent and is constantly available."
 	);
 
-	public override SpecialRule[] SpecialRules => [GrowthBegetsGrowth, SlowlyCoalescingNature];
-
-
 	public StarlightSeeksItsForm():base(
 		spirit => new SpiritPresence( spirit,
 			new CompoundPresenceTrack(
@@ -134,7 +131,7 @@ public class StarlightSeeksItsForm : Spirit {
 			InnatePower.For(typeof(WoodSeeksGrowthHumansSeekFreedom)),
 			InnatePower.For(typeof(StarsBlazeInTheDaytimeSky))
 		];
-
+		SpecialRules = [GrowthBegetsGrowth, SlowlyCoalescingNature];
 	}
 
 	static async Task AssignNewElementToTrack( Spirit self, Track track ) {

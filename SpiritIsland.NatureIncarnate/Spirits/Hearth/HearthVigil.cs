@@ -7,8 +7,6 @@ public class HearthVigil : Spirit {
 
 	public const string Name = "Hearth Vigil";
 
-	public override SpecialRule[] SpecialRules => [HearthToken.Rooted, HearthToken.FortifyHeart, HearthToken.LoyalGuardian,];
-
 	public override string SpiritName => Name;
 
 	static Track Energy0_GatherDahanBonus => new Track( "0 energy, gather dahan" ) {
@@ -43,7 +41,6 @@ public class HearthVigil : Spirit {
 				new GainEnergy( 3 )
 			)
 		)
-//		,PowerCard.For(typeof(RoilingBogAndSnaggingThorn))
 		,PowerCard.For(typeof(FavorsOfStoryAndSeason))
 		,PowerCard.For(typeof(SurroundedByTheDahan))
 		,PowerCard.For(typeof(CoordinatedRaid))
@@ -53,7 +50,7 @@ public class HearthVigil : Spirit {
 			InnatePower.For(typeof(WarnOfImpendingConflict)), 
 			InnatePower.For(typeof(KeepWatchForNewIncursions))
 		];
-
+		SpecialRules = [HearthToken.Rooted, HearthToken.FortifyHeart, HearthToken.LoyalGuardian];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

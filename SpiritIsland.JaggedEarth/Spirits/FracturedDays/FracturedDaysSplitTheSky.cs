@@ -44,8 +44,6 @@ public class FracturedDaysSplitTheSky : Spirit {
 		);
 	}
 
-	public override SpecialRule[] SpecialRules => [FragmentsOfScatteredTime, DaysThatNeverWere];
-
 	public FracturedDaysSplitTheSky():base(
 		x=> new SpiritPresence( x,
 			new PresenceTrack(Track.Energy1, Track.Energy1 , Track.Energy2, Track.Energy2, Track.Energy2, Track.Energy2 ),
@@ -66,7 +64,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 		DtnwMajor = [];
 		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = DtnwMinor } );
 		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Major, Cards = DtnwMajor } );
-
+		SpecialRules = [FragmentsOfScatteredTime, DaysThatNeverWere];
 	}
 
 	OneOrTwoClass _randomizer;

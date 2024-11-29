@@ -2,6 +2,12 @@
 
 public class SerpentSlumbering : Spirit {
 
+	public const string Name = "Serpent Slumbering Beneath the Island";
+
+	public override string SpiritName => Name;
+
+	static readonly SpecialRule DeepSlumber = new SpecialRule("Deep Slumber", "You start off limited to 5 presence on the tisland.  Raise this with your 'Absorb Essence' Power Card.  Each use covers the lowest revealed number; your presence limit is the lowest uncovered number.");
+
 	public SerpentSlumbering() :base (
 		spirit => new SerpentPresence( spirit )
 		, new GrowthTrack( 2,
@@ -19,15 +25,9 @@ public class SerpentSlumbering : Spirit {
 			InnatePower.For(typeof(SerpentWakesInPower)),
 			InnatePower.For(typeof(SerpentRousesInAnger))
 		];
+
+		SpecialRules = [ DeepSlumber ];
 	}
-
-	public const string Name = "Serpent Slumbering Beneath the Island";
-
-	public override string SpiritName => Name;
-
-	public override SpecialRule[] SpecialRules => [
-		new SpecialRule("Deep Slumber","You start off limited to 5 presence on the tisland.  Raise this with your 'Absorb Essence' Power Card.  Each use covers the lowest revealed number; your presence limit is the lowest uncovered number.")
-	] ;
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// Setup: put 1 presence on #5

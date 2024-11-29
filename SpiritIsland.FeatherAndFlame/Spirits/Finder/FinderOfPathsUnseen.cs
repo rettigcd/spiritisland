@@ -6,8 +6,6 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [ResponsibilityToTheDead_Rule, OpenTheWays.Rule];
-
 	public GatewayToken GatewayToken;
 
 	#region constructor / initilization
@@ -44,6 +42,7 @@ public class FinderOfPathsUnseen : Spirit {
 			InnatePower.For(typeof(LayPathsTheyCannotHelpButWalk)),
 			InnatePower.For(typeof(CloseTheWays))
 		];
+		SpecialRules = [ResponsibilityToTheDead_Rule, OpenTheWays.Rule];
 		_openTheWays = new OpenTheWays();
 	}
 

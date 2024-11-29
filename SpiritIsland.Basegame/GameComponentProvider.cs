@@ -1,34 +1,66 @@
 ﻿namespace SpiritIsland.Basegame;
 
+#nullable enable
+
 public class GameComponentProvider : IGameComponentProvider {
 
-	static Dictionary<string, Type> SpiritTypes => new() {
-		[RiverSurges.Name]           = typeof( RiverSurges ),
-		[LightningsSwiftStrike.Name] = typeof( LightningsSwiftStrike ),
-		[VitalStrength.Name]         = typeof( VitalStrength ),
-		[Shadows.Name]               = typeof( Shadows ),
-		[ASpreadOfRampantGreen.Name] = typeof( ASpreadOfRampantGreen ),
-		[Thunderspeaker.Name]        = typeof( Thunderspeaker ),
-		[Ocean.Name]                 = typeof( Ocean ),
-		[Bringer.Name]               = typeof( Bringer ),
-	};
+	#region Spirits
+
 	public string[] SpiritNames => [.. SpiritTypes.Keys];
-	public Spirit MakeSpirit( string spiritName ) {
-		return SpiritTypes.TryGetValue( spiritName, out Type spiritType ) 
-			? (Spirit)Activator.CreateInstance( spiritType )
+
+	public Spirit? MakeSpirit( string spiritName ) {
+		return SpiritTypes.TryGetValue( spiritName, out Type? spiritType ) 
+			? (Spirit?)Activator.CreateInstance( spiritType )
 			: null;
 	}
 
-	static Dictionary<string, Type> AdversariesTypes => new() {
-		[BrandenburgPrussia.Name] = typeof( BrandenburgPrussia ),
-		[England.Name] = typeof( England ),
-		[Sweden.Name] = typeof( Sweden ),
+	static Dictionary<string, Type> SpiritTypes => new() {
+		[RiverSurges.Name] = typeof(RiverSurges),
+		[LightningsSwiftStrike.Name] = typeof(LightningsSwiftStrike),
+		[VitalStrength.Name] = typeof(VitalStrength),
+		[Shadows.Name] = typeof(Shadows),
+		[ASpreadOfRampantGreen.Name] = typeof(ASpreadOfRampantGreen),
+		[Thunderspeaker.Name] = typeof(Thunderspeaker),
+		[Ocean.Name] = typeof(Ocean),
+		[Bringer.Name] = typeof(Bringer),
 	};
 
+	#endregion Spirits
+
+	#region Aspects
+
+	public AspectConfigKey[] AspectNames => [
+		Haven.ConfigKey,
+		Sunshine.ConfigKey,
+		Travel.ConfigKey,
+	];
+
+	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
+		Haven.Name => new Haven(),
+		Sunshine.Name => new Sunshine(),
+		Travel.Name => new Travel(),
+		_ => null,
+	};
+
+	#endregion Aspects
+
+	#region Adversaries
+
 	public string[] AdversaryNames => [.. AdversariesTypes.Keys];
-	public IAdversaryBuilder MakeAdversary( string adversaryName ) => adversaryName != null && AdversariesTypes.TryGetValue( adversaryName, out Type adversaryType ) 
-		? (IAdversaryBuilder) Activator.CreateInstance( adversaryType )
+
+	public IAdversaryBuilder? MakeAdversary( string adversaryName ) => adversaryName != null && AdversariesTypes.TryGetValue( adversaryName, out Type? adversaryType ) 
+		? (IAdversaryBuilder?) Activator.CreateInstance( adversaryType )
 			: null;
+
+	static Dictionary<string, Type> AdversariesTypes => new() {
+		[BrandenburgPrussia.Name] = typeof(BrandenburgPrussia),
+		[England.Name] = typeof(England),
+		[Sweden.Name] = typeof(Sweden),
+	};
+
+	#endregion Adversaries
+
+	#region Cards
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(CallOfTheDahanWays),
@@ -116,5 +148,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new DownwardSpiral(),
 		new MemoryFadesToDust(),
 	];
+
+	#endregion Cards
 
 }

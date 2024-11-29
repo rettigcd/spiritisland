@@ -5,8 +5,6 @@ public class VitalStrength : Spirit {
 	public const string Name = "Vital Strength of the Earth";
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [EarthsVitality.Rule] ;
-
 	public VitalStrength():base(
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 ),
@@ -23,7 +21,7 @@ public class VitalStrength : Spirit {
 		PowerCard.For(typeof(DrawOfTheFruitfulEarth))
 	){
 		InnatePowers = [ InnatePower.For(typeof(GiftOfStrength)) ];
-
+		SpecialRules = [ EarthsVitality.Rule ];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

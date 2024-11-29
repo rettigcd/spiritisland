@@ -7,13 +7,8 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	public override string SpiritName => Name;
 
 	#region Special Rules
-	public override SpecialRule[] SpecialRules => [.. _specialRules];
-	readonly List<SpecialRule> _specialRules = [ SeekingPath_Rule ];
-
 	static readonly SpecialRule SeekingPath_Rule = new SpecialRule( "Seeking a Path Towards Healing", "After playing cards: (a) Claim a Healing Marker matching whichever water/animal you have more of. (b) Claim a Healing card if you meet requirments, (c) destroy 1 presence or forget a power card." );
-	public void AddSpecialRule(SpecialRule rule ) {
-		_specialRules.Add(rule);
-	}
+	public void AddSpecialRule(SpecialRule rule ) { SpecialRules = [..SpecialRules,rule]; }
 	#endregion
 
 	#region constructor / initilization
@@ -34,7 +29,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 			InnatePower.For(typeof(SwirlAndSpill)),
 			InnatePower.For(typeof(SanguinaryTaint))
 		];
-
+		SpecialRules = [SeekingPath_Rule];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -61,7 +56,7 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	public void StopHealing() { 
 		_seekHealing = false;
-		_specialRules.Remove( SeekingPath_Rule );
+		SpecialRules = SpecialRules.Where(x=>x!= SeekingPath_Rule).ToArray();
 	}
 	bool _seekHealing = true;
 
@@ -140,13 +135,13 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 			spirit.HealingMarkers[Element.Water] = _healingWatersMarkers;
 			spirit.HealingMarkers[Element.Animal] = _healingAnimalMarkers;
 			spirit.InnatePowers = _innates;
-			spirit._specialRules.Clear(); spirit._specialRules.AddRange( _rules );
+			spirit.SpecialRules = _rules;
 			spirit._seekHealing = _seekHealing;
 		}
 		readonly int _healingWatersMarkers = spirit.HealingMarkers[Element.Water];
 		readonly int _healingAnimalMarkers = spirit.HealingMarkers[Element.Animal];
 		readonly InnatePower[] _innates = (InnatePower[])spirit.InnatePowers.Clone();
-		readonly SpecialRule[] _rules = [.. spirit._specialRules];
+		readonly SpecialRule[] _rules = spirit.SpecialRules;
 		readonly bool _seekHealing = spirit._seekHealing;
 	}
 

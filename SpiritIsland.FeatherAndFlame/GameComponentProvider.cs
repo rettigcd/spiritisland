@@ -1,6 +1,18 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
+#nullable enable
+
 public class GameComponentProvider : IGameComponentProvider {
+
+	#region Spirits
+
+	public string[] SpiritNames => [.. Spirits.Keys];
+
+	public Spirit? MakeSpirit(string spiritName) {
+		return Spirits.TryGetValue(spiritName, out Type? value)
+			? (Spirit?)Activator.CreateInstance(value)
+			: null;
+	}
 
 	static Dictionary<string, Type> Spirits => new() {
 		[HeartOfTheWildfire.Name]       = typeof( HeartOfTheWildfire ),
@@ -8,19 +20,29 @@ public class GameComponentProvider : IGameComponentProvider {
 		[DownpourDrenchesTheWorld.Name] = typeof( DownpourDrenchesTheWorld ),
 		[FinderOfPathsUnseen.Name]      = typeof( FinderOfPathsUnseen ),
 	};
-	public string[] SpiritNames => [.. Spirits.Keys];
-	public Spirit MakeSpirit( string spiritName ) {
-		return Spirits.TryGetValue( spiritName, out Type value ) 
-			? (Spirit)Activator.CreateInstance( value )
-			: null;
-	}
+
+	#endregion Spirits
+
+	#region Aspects
+
+	public AspectConfigKey[] AspectNames => [];
+
+	public IAspect? MakeAspect(AspectConfigKey aspectName ) => null;
+
+	#endregion Aspects
+
+	#region Adversaries
 
 	public string[] AdversaryNames => [Scotland.Name];
-	public IAdversaryBuilder MakeAdversary( string adversaryName ) => adversaryName switch {
+
+	public IAdversaryBuilder? MakeAdversary( string adversaryName ) => adversaryName switch {
 		Scotland.Name => new Scotland(),
 		_ => null
 	};
 
+	#endregion Adversaries
+
+	#region Cards
 
 	public PowerCard[] MinorCards => [];
 
@@ -35,5 +57,7 @@ public class GameComponentProvider : IGameComponentProvider {
 	];
 
 	public BlightCard[] BlightCards => [];
+
+	#endregion Cards
 
 }

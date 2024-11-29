@@ -4,12 +4,33 @@ namespace SpiritIsland;
 public class GameBuilder( params IGameComponentProvider[] _providers ) {
 
 	public string[] SpiritNames => _providers.SelectMany(p => p.SpiritNames ).Order().ToArray();
+
+	public AspectConfigKey[] AspectNames => [.. _providers
+		.SelectMany(p => p.AspectNames )
+		.OrderBy(x=>x.Spirit).ThenBy(x=>x.Aspect)];
+
+	public AspectConfigKey[] AspectsFor(string spiritName) => [.. _providers
+		.SelectMany(p => p.AspectNames)
+		.Where(x=>x.Spirit==spiritName)
+		.OrderBy(x => x.Aspect)];
+
 	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames).Order().ToArray();
 
-	public Spirit[] BuildSpirits( params string[] spirits ) => spirits.Select(spirit 
-		=> _providers.Select( p => p.MakeSpirit( spirit ) ).FirstOrDefault( x => x != null )
-		?? throw new InvalidOperationException( $"Spirit named '{spirit}' not found." )
-	).ToArray();
+	public Spirit[] BuildSpirits( string[] spirits, AspectConfigKey[] aspectKeys = null) {
+		aspectKeys ??= [];
+		return spirits.Select(s => Build1Spirit(s, aspectKeys)).ToArray();
+	}
+
+	Spirit Build1Spirit(string spiritName, AspectConfigKey[] aspectKeys) {
+		var spirit = _providers.Select(p => p.MakeSpirit(spiritName)).FirstOrDefault(x => x != null) 
+			?? throw new InvalidOperationException($"Spirit named '{spiritName}' not found.");
+		foreach(var aspectKey in aspectKeys.Where(k=>k.Spirit == spiritName))
+			Build1Aspect(aspectKey).ModSpirit(spirit);
+		return spirit;
+	}
+
+	IAspect Build1Aspect(AspectConfigKey key) => _providers.Select(p => p.MakeAspect(key)).FirstOrDefault()
+		?? throw new ArgumentException($"Unable to build Aspect found for {key.Spirit}-{key.Aspect}");
 
 #pragma warning disable CA1822 // Mark members as static
 	public Board[] BuildBoards( params string[] boardNames ) {
@@ -62,7 +83,7 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	public List<BlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
 
 	public GameState BuildGame( GameConfiguration cfg ) {
-		Spirit[] spirits = BuildSpirits( cfg.Spirits );
+		Spirit[] spirits = BuildSpirits( cfg.Spirits, cfg.Aspects );
 		Board[] boards = BuildBoards( cfg.Boards );
 		var blightCards = BuildBlightCards();
 

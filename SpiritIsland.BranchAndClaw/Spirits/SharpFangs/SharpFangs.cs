@@ -4,8 +4,7 @@ public class SharpFangs : Spirit {
 
 	public const string Name = "Sharp Fangs Behind the Leaves";
 
-
-	public override SpecialRule[] SpecialRules => [new SpecialRule("Ally of the Beasts", "Your presensee may move with beast.")] ;
+	static readonly SpecialRule AllyOfTheBeasts = new SpecialRule("Ally of the Beasts", "Your presensee may move with beast.");
 
 	public override string SpiritName => Name;
 
@@ -30,7 +29,7 @@ public class SharpFangs : Spirit {
 			InnatePower.For(typeof(FrenziedAssult)),
 			InnatePower.For(typeof(RagingHunt)),
 		];
-
+		SpecialRules = [AllyOfTheBeasts];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

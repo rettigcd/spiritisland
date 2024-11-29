@@ -1,9 +1,8 @@
 =========================
 
-	SPIRIT - Eyes Watch from the Trees
-	SPIRIT - Fathomless Mud of the Swamp
+	SPIRIT - HORIZON - Eyes Watch from the Trees
+	SPIRIT - HORIZON - Fathomless Mud of the Swamp
 	SPIRIT - Ocean - Deeps
-	SPIRIT - River - Haven
 
 4	UI - Landscape layout
 	UI - "Play" should be wide enough to display all word
@@ -20,9 +19,9 @@
 3	Spirit Hints (best boards, starting Growths, card plays)
 
 	SPIRITS - Horizon Spirits
-		Devouring Teeth Lurk Underfoot
-		Rising Heat of Stone and Sand
-		Sun-Bright Whirlwind
+		HORIZON - Devouring Teeth Lurk Underfoot
+		HORIZON - Rising Heat of Stone and Sand
+		HORIZON - Sun-Bright Whirlwind
 
 	SPIRITS - Aspects (new spirits)
 		-- Love --
@@ -41,7 +40,6 @@
 
 		-- Improvement --
 		Earth - Nourishing
-		River - Travel
 		Rampant Green - Tangles
 		Memory - Intensify
 		Bringer - Enticing
@@ -60,7 +58,6 @@
 
 		-- Down grade --
 		Earth - Resilience
-		River - Sunshine
 		Fangs - Enconstrained
 		Lure - Lair
 

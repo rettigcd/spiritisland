@@ -6,9 +6,7 @@ public class Keeper : Spirit {
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [
-		new SpecialRule("Forbidden Ground","Any time you create a sacred site, push all dahan from that land.  Dahan events never move dahan to you sacred site but powers can do so.")
-	] ;
+	static readonly SpecialRule ForbiddenGround = new SpecialRule("Forbidden Ground","Any time you create a sacred site, push all dahan from that land.  Dahan events never move dahan to you sacred site but powers can do so.");
 
 	public Keeper():base(
 		spirit => new SpiritPresence( spirit,
@@ -32,6 +30,7 @@ public class Keeper : Spirit {
 			InnatePower.For(typeof(PunishThoseWhoTrespass)),
 			InnatePower.For(typeof(SpreadingWilds)),
 		];
+		SpecialRules = [ForbiddenGround];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ){

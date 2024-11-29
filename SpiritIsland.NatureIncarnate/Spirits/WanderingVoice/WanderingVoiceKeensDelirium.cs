@@ -28,29 +28,32 @@ public class WanderingVoiceKeensDelirium : Spirit {
 			PowerCard.For(typeof(TwistPerceptions)),
 			PowerCard.For(typeof(TurmoilsTouch)),
 			PowerCard.For(typeof(FrightfulKeening))
-        )
+		)
 	{
 
 		InnatePowers = [
 			InnatePower.For(typeof(InscrutableJourneying)),
 			InnatePower.For(typeof(MindShatteringSong))
 		];
+
+		SpecialRules = [
+			ClarionVoice,
+			SpreadTumult,
+			SenselessRoaming_Rule
+		];
 	}
 
 	public override string SpiritName => Name;
 
-	public override SpecialRule[] SpecialRules => [
-		new SpecialRule(
-			"A Clarion Voice Given Form",
-			"You have an Incarna.  If empowered , it Isolates its land."
-		),
-		new SpecialRule(
-			"Spread Tumult and Delusion",
-			"When your Actions add/move Incarna to a land with Invaders, Add 1 Strife in the destination land. " +
-			"In lands with or adjacent to Incarna: if Strife is present, Dahan do not participate in Ravage."
-		),
-		SenselessRoaming_Rule
-	];
+	static SpecialRule ClarionVoice => new SpecialRule(
+		"A Clarion Voice Given Form",
+		"You have an Incarna.  If empowered , it Isolates its land."
+	);
+	static SpecialRule SpreadTumult => new SpecialRule(
+		"Spread Tumult and Delusion",
+		"When your Actions add/move Incarna to a land with Invaders, Add 1 Strife in the destination land. " +
+		"In lands with or adjacent to Incarna: if Strife is present, Dahan do not participate in Ravage."
+	);
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		Space s6 = board[6].ScopeSpace;

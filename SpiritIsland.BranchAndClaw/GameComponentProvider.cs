@@ -1,25 +1,43 @@
-﻿using SpiritIsland.BranchAndClaw.Adversaries;
+﻿namespace SpiritIsland.BranchAndClaw;
 
-namespace SpiritIsland.BranchAndClaw;
+#nullable enable
 
 public class GameComponentProvider : IGameComponentProvider {
-	// Not using reflection because types inside this assembly are static
-	// AND
-	// It make start-up scanning slow
 
-	static Dictionary<string, Type> Spirits => new() {
-		[Keeper.Name] = typeof( Keeper ),
-		[SharpFangs.Name] = typeof( SharpFangs ),
-	};
+	#region Spirits
+
 	public string[] SpiritNames => [.. Spirits.Keys];
-	public Spirit MakeSpirit( string spiritName ) {
-		return Spirits.TryGetValue( spiritName, out Type spiritType ) 
-			? (Spirit)Activator.CreateInstance( spiritType )
+
+	public Spirit? MakeSpirit(string spiritName) {
+		return Spirits.TryGetValue( spiritName, out Type? spiritType ) 
+			? (Spirit?)Activator.CreateInstance( spiritType )
 			: null;
 	}
 
+	static Dictionary<string, Type> Spirits => new() {
+		[Keeper.Name] = typeof(Keeper),
+		[SharpFangs.Name] = typeof(SharpFangs),
+	};
+
+	#endregion Spirits
+
+	#region Aspects
+
+	public AspectConfigKey[] AspectNames => [];
+
+	public IAspect? MakeAspect(AspectConfigKey aspectName) => null;
+
+	#endregion Aspects
+
+	#region Adversaries
+
 	public string[] AdversaryNames => [ France.Name ];
-	public IAdversaryBuilder MakeAdversary( string adversaryName ) => adversaryName == France.Name ? new France() : null;
+
+	public IAdversaryBuilder? MakeAdversary( string adversaryName ) => adversaryName == France.Name ? new France() : null;
+
+	#endregion Adversaries
+
+	#region Cards
 
 	public PowerCard[] MinorCards => new Type[] {
 		typeof(AbsorbCorruption),
@@ -106,5 +124,7 @@ public class GameComponentProvider : IGameComponentProvider {
 		new PromisingFarmlands(),
 		new TippingPoint(),
 	];
+
+	#endregion Cards
 
 }
