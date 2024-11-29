@@ -2,17 +2,23 @@
 
 public sealed class DynamicTokens : IHaveMemento {
 
-	readonly Dictionary<ITokenClass, List<Func<Space, int>>> dict = [];
+	readonly Dictionary<ITokenClass, List<Func<Space, int>>> _dict = [];
 
-	public void Register( System.Func<Space, int> calcCountOnSpace, ITokenClass targetToken ) {
-		if(!dict.ContainsKey( targetToken ))
-			dict.Add( targetToken, [] );
-		dict[targetToken].Add( calcCountOnSpace );
+	public void Register( 
+		Func<Space, int> calcCountOnSpace, 
+		ITokenClass targetToken 
+	) {
+		if(!_dict.ContainsKey( targetToken ))
+			_dict.Add( targetToken, [] );
+		_dict[targetToken].Add( calcCountOnSpace );
 	}
 
 	public int GetDynamicTokenFor( Space space, TokenClassToken token )
-		=> dict.ContainsKey( token ) ? dict[token].Sum( x => x( space ) ) : 0;
-	public void Clear() => dict.Clear();
+		=> _dict.ContainsKey( token ) 
+			? _dict[token].Sum( x => x( space ) ) 
+			: 0;
+
+	public void Clear() => _dict.Clear();
 
 	object IHaveMemento.Memento {
 		get => new MyMemento( this );
@@ -21,11 +27,11 @@ public sealed class DynamicTokens : IHaveMemento {
 
 	class MyMemento( DynamicTokens _src ) {
 		public void Restore( DynamicTokens src ) {
-			src.dict.Clear();
+			src._dict.Clear();
 			foreach(var p in dict)
-				src.dict.Add(p.Key,p.Value);
+				src._dict.Add(p.Key,p.Value);
 		}
-		readonly Dictionary<ITokenClass, List<Func<Space, int>>> dict = _src.dict.ToDictionary( p => p.Key, p => p.Value );
+		readonly Dictionary<ITokenClass, List<Func<Space, int>>> dict = _src._dict.ToDictionary( p => p.Key, p => p.Value );
 	}
 
 

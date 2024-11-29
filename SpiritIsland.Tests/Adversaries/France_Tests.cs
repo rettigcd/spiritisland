@@ -1,6 +1,4 @@
-﻿using SpiritIsland.BranchAndClaw.Adversaries;
-
-namespace SpiritIsland.Tests.Adversaries;
+﻿namespace SpiritIsland.Tests.Adversaries;
 
 public class France_Tests {
 

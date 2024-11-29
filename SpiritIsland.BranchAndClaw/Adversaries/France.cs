@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.BranchAndClaw.Adversaries;
+﻿namespace SpiritIsland.BranchAndClaw;
 
 public class France : AdversaryBuilder, IAdversaryBuilder {
 
