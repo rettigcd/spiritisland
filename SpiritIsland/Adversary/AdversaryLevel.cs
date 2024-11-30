@@ -3,10 +3,10 @@
 public class AdversaryLevel( int _level, int _difficulty, int _fear1, int _fear2, int _fear3, string _title, string _description = "" ) {
 
 	public int Level => _level;
-	public int Difficulty { get; } = _difficulty;
-	public int[] FearCards { get; } = [_fear1, _fear2, _fear3];
-	public string Title { get; } = _title;
-	public string Description { get; private set; } = _description;
+	public int Difficulty => _difficulty;
+	public int[] FearCards => [_fear1, _fear2, _fear3];
+	public string Title => _title;
+	public string Description => _description;
 
 	#region public - called by GameConfig to setup game
 
@@ -37,8 +37,8 @@ public class AdversaryLevel( int _level, int _difficulty, int _fear1, int _fear2
 	}
 
 	public AdversaryLevel WithInvaderCardOrder( string levels ) {
-		if(0<Description.Length) Description += " ";
-		Description += $"Invader Deck: {levels}";
+		if(0<Description.Length) _description += " ";
+		_description += $"Invader Deck: {levels}";
 		InvaderDeckBuilder = new InvaderDeckBuilder( levels );
 		return this;
 	}

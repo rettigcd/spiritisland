@@ -172,15 +172,17 @@ class NewGameModel : ObservableModel {
 
 		// Init Configuration
 		var advConfig = SelectedAdversary.ToConfig();
+		AspectConfigKey[] aspects = [..SelectedAspects.Cast<AspectConfigKey>()];
 		var gc = new GameConfiguration()
 			.ConfigSpirits(SelectedSpirit!)
-			.ConfigAspects([.. SelectedAspects.Cast<AspectConfigKey>()])
+			.ConfigAspects(aspects)
 			.ConfigBoards(board)
 			.ConfigCommandBeasts(CommandBeast) 
 			.ConfigAdversary(advConfig);
 		gc.ShuffleNumber = !string.IsNullOrWhiteSpace(GameNumber) ? int.Parse(GameNumber) : (int)DateTime.Now.Ticks;
 
-		LastConfig = $"Spirit: {SelectedSpirit!} Board:{board} G#:{gc.ShuffleNumber} Adv:{advConfig.Name}-{advConfig.Level}";
+		var aspectsStr = aspects.Length == 0 ? "" : "-"+string.Join(",",aspects.Select(a=>a.Aspect));
+		LastConfig = $"Spirit:{SelectedSpirit!}{aspectsStr}, Board:{board}, G#:{gc.ShuffleNumber}, Adv:{advConfig.Name}-{advConfig.Level}";
 
 		var gameState = _builder.BuildGame(gc);
 		NewGameCreated?.Invoke(gameState);

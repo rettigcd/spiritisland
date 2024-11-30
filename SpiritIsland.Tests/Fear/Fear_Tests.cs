@@ -4,6 +4,7 @@ public class Fear_Tests {
 
 	readonly Spirit spirit;
 	readonly GameState gs;
+
 	public Fear_Tests() {
 		spirit = new RiverSurges();
 		gs = new GameState( spirit, Board.BuildBoardA() );

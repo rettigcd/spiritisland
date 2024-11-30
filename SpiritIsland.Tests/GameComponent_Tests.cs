@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests; 
+﻿namespace SpiritIsland.Tests;
 
 public  class GameComponent_Tests {
 
@@ -112,4 +112,3 @@ public  class GameComponent_Tests {
 */
 
 }
-

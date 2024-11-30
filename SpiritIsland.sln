@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		totest.txt = totest.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIslandCmd", "SpiritIslandCmd\SpiritIslandCmd.csproj", "{1728A953-E107-43E6-93AE-336E221D2747}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland", "SpiritIsland\SpiritIsland.csproj", "{194D99E5-BA90-4870-9CA0-482AFC4EAB6B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.WinForms", "SpiritIsland.WinForms\SpiritIsland.WinForms.csproj", "{AA682A20-CD08-4362-9E8F-1CB84947B8F0}"
@@ -31,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Utilities", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.NatureIncarnate", "SpiritIsland.NatureIncarnate\SpiritIsland.NatureIncarnate.csproj", "{21A52BA4-E71F-4252-A2D1-A8A869123BCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritIsland.Maui", "SpiritIsland.Maui\SpiritIsland.Maui.csproj", "{B2F4AA29-2CF5-4BA7-99B5-E18D9252629D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpiritIsland.Maui", "SpiritIsland.Maui\SpiritIsland.Maui.csproj", "{B2F4AA29-2CF5-4BA7-99B5-E18D9252629D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +41,6 @@ Global
 		{9BE61177-8535-4E7E-AE34-1C9C18D1AAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BE61177-8535-4E7E-AE34-1C9C18D1AAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BE61177-8535-4E7E-AE34-1C9C18D1AAEF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1728A953-E107-43E6-93AE-336E221D2747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1728A953-E107-43E6-93AE-336E221D2747}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1728A953-E107-43E6-93AE-336E221D2747}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1728A953-E107-43E6-93AE-336E221D2747}.Release|Any CPU.Build.0 = Release|Any CPU
 		{194D99E5-BA90-4870-9CA0-482AFC4EAB6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{194D99E5-BA90-4870-9CA0-482AFC4EAB6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{194D99E5-BA90-4870-9CA0-482AFC4EAB6B}.Release|Any CPU.ActiveCfg = Release|Any CPU

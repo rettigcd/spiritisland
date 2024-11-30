@@ -150,8 +150,10 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 
 	class NullAdversaryBuilder : IAdversaryBuilder {
 		public string Name => "No Adversary";
-		public AdversaryLevel[] Levels => [new AdversaryLevel(0,0,0,0,0,string.Empty)];
+		static public AdversaryLevel Level => new AdversaryLevel(_level: 0, _difficulty: 0, _fear1: 3, _fear2: 3, _fear3: 3, string.Empty);
+		public AdversaryLevel[] Levels => [Level];
 		public AdversaryLossCondition LossCondition => null;
-		public IAdversary Build(int _) => new Adversary(this,0);
+		public IAdversary Build(int _) => new Adversary(this, 0);
 	}
+
 }
