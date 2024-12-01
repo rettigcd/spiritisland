@@ -3,30 +3,16 @@
 [Collection("BaseGame Spirits")]
 public class BoonOfVigor_Tests {
 
-	GameState GameState;
-	PowerCard Card;
-	readonly Spirit Spirit;
-	readonly VirtualUser User;
-
-	public BoonOfVigor_Tests() {
-		Spirit = new RiverSurges();
-		User = new VirtualUser( Spirit );
-	}
-
 	[Fact]
 	public async Task BoonOfVigor_TargetSelf() {
 
-		GameState = new GameState( Spirit, Board.BuildBoardA() ) {
-			Phase = Phase.Fast
-		};
+		Spirit river = new RiverSurges();
+		GameState gs = new GameState( river, Board.BuildBoardA() );
 
-		Card = Spirit.Given_PurchasedCard( BoonOfVigor.Name );
-		Spirit.Assert_CardIsReady( Card, Phase.Fast );
-
-		await Card.ActivateAsync( Spirit ).ShouldComplete();
+		await river.When_ResolvingCard<BoonOfVigor>();
 
 		// Then: received 1 energy
-		Assert.Equal( 1, Spirit.Energy );
+		Assert.Equal( 1, river.Energy );
 
 	}
 
@@ -36,27 +22,25 @@ public class BoonOfVigor_Tests {
 	[InlineData( 10 )]
 	public async Task BoonOfVigor_TargetOther( int expectedEnergyBonus ) {
 
-		GameState = new GameState(
-			[Spirit, new LightningsSwiftStrike()],
-			[
-				Board.BuildBoardA(),
-				Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] )
-			]
-		) {
-			Phase = Phase.Fast
-		};
+		GameState gs = new GameConfiguration()
+			.ConfigSpirits(RiverSurges.Name,LightningsSwiftStrike.Name)
+			.ConfigBoards("A","B")
+			.BuildShell();
+
+		Spirit river = gs.Spirits[0];
+
 
 		//  That: purchase N cards
-		var otherSpirit = GameState.Spirits[1];
+		var otherSpirit = gs.Spirits[1];
 		Given_PurchasedFakePowercards(otherSpirit, expectedEnergyBonus);
 
 		//   And: Purchased Boon of Vigor
-		Card = Spirit.Given_PurchasedCard(BoonOfVigor.Name);
-		Spirit.Assert_CardIsReady(Card,Phase.Fast);
+		PowerCard Card = river.Given_PurchasedCard(BoonOfVigor.Name);
+		river.Assert_CardIsReady(Card,Phase.Fast);
 
-		Task t = Card.ActivateAsync( Spirit );
+		Task t = Card.ActivateAsync( river );
 
-		User.TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,[Lightning's Swift Strike]");
+		new VirtualUser(river).TargetsSpirit(BoonOfVigor.Name, "River Surges in Sunlight,[Lightning's Swift Strike]");
 
 		await t.ShouldComplete();
 

@@ -6,12 +6,14 @@ public class FieryVengeance_Tests {
 	[Fact]
 	public async Task FieryVengeance_BlightCausesBadlandDamage() {
 
-		// Given: 2 spirits (vengeance + 1)
-		Spirit vengeance = new VengeanceAsABurningPlague();
-		Spirit spirit2 = new RiverSurges();
-		Board board1 = Board.BuildBoardA();
-		Board board2 = Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] );
-		GameState gameState = new GameState( [ vengeance, spirit2 ], [ board1, board2 ] );
+		var gameState = new GameConfiguration()
+			.ConfigSpirits(VengeanceAsABurningPlague.Name,RiverSurges.Name)
+			.ConfigBoards("A","B")
+			.BuildShell();
+		Spirit vengeance = (VengeanceAsABurningPlague)gameState.Spirits[0];
+		Spirit spirit2 = (RiverSurges)gameState.Spirits[1];
+		Board board1 = gameState.Island.Boards[0];
+		Board board2 = gameState.Island.Boards[1];
 
 		//   And: spirit 2 presence, blight & town on a space
 		Space space = gameState.Tokens[board1[5]];
@@ -39,14 +41,17 @@ public class FieryVengeance_Tests {
 	[Fact]
 	public async Task FieryVengeance_NoDestroyedPresence_NoAction() {
 		// Given: 2 spirits (vengeance + 1)
-		Spirit vengeance = new VengeanceAsABurningPlague();
-		Spirit spirit2 = new RiverSurges();
-		Board board1 = Board.BuildBoardA();
-		Board board2 = Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] );
-		GameState gameState = new GameState( [ vengeance, spirit2 ], [ board1, board2 ] );
+		var gs = new GameConfiguration()
+			.ConfigSpirits(VengeanceAsABurningPlague.Name,RiverSurges.Name)
+			.ConfigBoards("A","B")
+			.BuildShell();
+		Spirit vengeance = (VengeanceAsABurningPlague)gs.Spirits[0];
+		Spirit spirit2 = (RiverSurges)gs.Spirits[1];
+		Board board1 = gs.Island.Boards[0];
+		Board board2 = gs.Island.Boards[1];
 
 		//   And: spirit 2 presence, blight & town on a space
-		Space space = gameState.Tokens[board1[5]];
+		Space space = gs.Tokens[board1[5]];
 		spirit2.Given_IsOn( space );
 		space.Given_HasTokens( "1T@2,1B" );
 

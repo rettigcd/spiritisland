@@ -34,6 +34,7 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 
 #pragma warning disable CA1822 // Mark members as static
 	public Board[] BuildBoards( params string[] boardNames ) {
+
 		BoardOrientation[] layout = boardNames.Length switch {
 			1 => OneBoardLayout,
 			2 => TwoBoardLayout,
@@ -82,13 +83,17 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	public List<IFearCard> BuildFearCards() => _providers.SelectMany( p => p.FearCards ).ToList();
 	public List<BlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
 
+	public GameState BuildShell( GameConfiguration cfg) {
+		Spirit[] spirits = BuildSpirits(cfg.Spirits, cfg.Aspects);
+		Board[] boards = BuildBoards(cfg.Boards);
+		return new GameState(spirits, boards, cfg.ShuffleNumber);
+	}
+
 	public GameState BuildGame( GameConfiguration cfg ) {
-		Spirit[] spirits = BuildSpirits( cfg.Spirits, cfg.Aspects );
-		Board[] boards = BuildBoards( cfg.Boards );
 		var blightCards = BuildBlightCards();
 
 		// GameState
-		var gameState = new GameState( spirits, boards, cfg.ShuffleNumber );
+		var gameState = BuildShell(cfg);
 
 		// Game # - Random Seeds (don't change this order or this will change game definition)
 		var randomizer = new Random( cfg.ShuffleNumber );

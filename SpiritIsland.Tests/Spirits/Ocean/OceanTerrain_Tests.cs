@@ -7,18 +7,25 @@ public class OceanTerrain_Tests {
 
 	#region private fields
 
-	readonly Ocean oceanSpirit = new Ocean();
-	readonly Board boardA = Board.BuildBoardA();
-	readonly Thunderspeaker primarySpirit = new Thunderspeaker();
-	readonly GameState gameState;
-	DecisionContext NextDecision => primarySpirit.NextDecision();
+	readonly Ocean _oceanSpirit;
+	readonly Board _boardA;
+	readonly Thunderspeaker _primarySpirit;
+	readonly GameState _gameState;
+
+	DecisionContext NextDecision => _primarySpirit.NextDecision();
 
 	#endregion
 
 	#region constructor
 
 	public OceanTerrain_Tests() {
-		gameState = Given_TwoSpiritGame();
+		_gameState = new GameConfiguration()
+			.ConfigSpirits(Thunderspeaker.Name,Ocean.Name)
+			.ConfigBoards("A","B")
+			.BuildGame();
+		_primarySpirit = (Thunderspeaker)_gameState.Spirits[0];
+		_oceanSpirit = (Ocean)_gameState.Spirits[1];
+		_boardA = _gameState.Island.Boards[0];
 	}
 
 	#endregion
@@ -32,7 +39,7 @@ public class OceanTerrain_Tests {
 		Given_PrimaryPresenceOnA2Only();
 
 		// When: Thundersepearker Activates a card that targets ANY-terrain Range-1 (Call To Guard - Range 1, Any land)
-		await primarySpirit.When_ResolvingCard<CallToGuard>( (user) => {
+		await _primarySpirit.When_ResolvingCard<CallToGuard>( (user) => {
 
 			// Then: Targetting does not inculde Ocean
 			user.NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose("A1");
@@ -54,7 +61,7 @@ public class OceanTerrain_Tests {
 		Given_OceanOnPrimaryBoard();
 
 		// When: Thundersepearker Activates a card that targets WETLANDS (Talons ofLightning - Range 1, M/W)
-		await primarySpirit.When_ResolvingCard<TalonsOfLightning>( (user) => {
+		await _primarySpirit.When_ResolvingCard<TalonsOfLightning>( (user) => {
 			// Then: Targetting options INCLUDES Ocean
 			user.NextDecision.HasOptions( "A0,A1,A2" ).Choose("A0");
 		} );
@@ -68,7 +75,7 @@ public class OceanTerrain_Tests {
 	[InlineData(false),InlineData(true)]
 	public async Task PushDahanIntoOcean(bool withOcean) {
 		// track starting energy
-		int oceanStartingEnergy = oceanSpirit.Energy;
+		int oceanStartingEnergy = _oceanSpirit.Energy;
 
 		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
@@ -82,8 +89,8 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that Pushes Dahan
 		// Call To Tend: Range 1, Dahan, Push up to 3 Dahan
-		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit); // required to signal it is a spirit power
-		await PowerCard.For(typeof(CallToTend)).ActivateAsync( primarySpirit ).AwaitUser( user => { 
+		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_primarySpirit); // required to signal it is a spirit power
+		await PowerCard.For(typeof(CallToTend)).ActivateAsync( _primarySpirit ).AwaitUser( user => { 
 
 			user.NextDecision.Choose("A2");	//  And: Targets A2 (that has a dahan on it)
 
@@ -92,7 +99,7 @@ public class OceanTerrain_Tests {
 			else
 				user.NextDecision.MoveFrom("D@2").MoveTo("A1","A1,A3,A4");
 
-			gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
+			_gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
 
 			// bring Thunderspeaker along
  			user.NextDecision.HasPrompt( "Move presence with Dahan?" ).HasOptions( "Ts,Done" ).Choose( "Ts" );
@@ -103,15 +110,15 @@ public class OceanTerrain_Tests {
 		if( withOcean ) {
 
 			// Then: This should destroy the dahan
-			var oceanSpace = gameState.Tokens[boardA[0]];
+			var oceanSpace = _gameState.Tokens[_boardA[0]];
 			oceanSpace.Summary.ShouldBe("1OHG,1Ts");
 			log.Single().ShouldBe("Drowning 1D@2 on A0");
 
 			//  And: and leave thunderspeaker in the ocean.
-			oceanSpace.Has(primarySpirit.Presence ).ShouldBeTrue();
+			oceanSpace.Has(_primarySpirit.Presence ).ShouldBeTrue();
 
 			// And should NOT adjust energy
-			oceanSpirit.Energy.ShouldBe(oceanStartingEnergy);
+			_oceanSpirit.Energy.ShouldBe(oceanStartingEnergy);
 		}
 
 
@@ -125,9 +132,9 @@ public class OceanTerrain_Tests {
 	[InlineData( true, "T@2", 2 )] // push 2 town => 4 health => 2 energy
 	public async Task PushInvadersIntoOcean( bool withOcean, string pushToken, int expectedEnergyGain ) {
 		// track starting energy
-		int oceanStartingEnergy = oceanSpirit.Energy;
+		int oceanStartingEnergy = _oceanSpirit.Energy;
 		var debugLog = new List<string>();
-		gameState.NewLogEntry += ( e ) => { if(e is Debug) debugLog.Add( e.Msg() ); };
+		_gameState.NewLogEntry += ( e ) => { if(e is Debug) debugLog.Add( e.Msg() ); };
 
 		// Given: 2-spirit-game with Thundersepearker on A and Ocean on B
 
@@ -135,7 +142,7 @@ public class OceanTerrain_Tests {
 			Given_OceanOnPrimaryBoard();
 
 		//   And: 2 towns and 2 explorers on space
-		Space a2 = gameState.Tokens[boardA[2]];
+		Space a2 = _gameState.Tokens[_boardA[2]];
 		a2.InitDefault( Human.Town, 2 );
 		a2.InitDefault( Human.Explorer, 2 );
 
@@ -144,8 +151,8 @@ public class OceanTerrain_Tests {
 
 		// When: Thundersepearker Activates a card that Pushes Explorers/Towns
 		// Land of Haunts And Embers: Range 2, Any, Push up to 2 Explorers/Towns
-		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,primarySpirit);
-		await PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( primarySpirit ).AwaitUser( user => {
+		await using ActionScope action = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_primarySpirit);
+		await PowerCard.For(typeof(LandOfHauntsAndEmbers)).ActivateAsync( _primarySpirit ).AwaitUser( user => {
 			//  And: Targets A2
 			user.NextDecision.Choose( a2.Label );
 
@@ -162,7 +169,7 @@ public class OceanTerrain_Tests {
 		} ).ShouldComplete();
 
 		// Then: ocean should have drown energy
-		oceanSpirit.Energy.ShouldBe( oceanStartingEnergy + expectedEnergyGain );
+		_oceanSpirit.Energy.ShouldBe( oceanStartingEnergy + expectedEnergyGain );
 		debugLog
 			.Count( x => x == $"Ocean gained 1 energy from cashing in 2 health of drowned invaders." )
 			.ShouldBe( expectedEnergyGain );
@@ -184,13 +191,13 @@ public class OceanTerrain_Tests {
 			Given_OceanOnPrimaryBoard();
 
 		//   And: blight on a2
-		Space a2 = gameState.Tokens[boardA[2]];
+		Space a2 = _gameState.Tokens[_boardA[2]];
 		a2.Blight.Init(1);
 		//   But: no dahan (don't want to trigger Thunderspeakers presence destruction
 		a2.Dahan.Init(0);
 
 		//  When: invaders ravage and cause blight
-		_ = boardA[2].ScopeSpace.Ravage();
+		_ = _boardA[2].ScopeSpace.Ravage();
 
 		// Then: we can/can't cascade into ocean
 		NextDecision
@@ -207,7 +214,7 @@ public class OceanTerrain_Tests {
 		Given_PrimaryPresenceOnA2Only();
 
 		// When: placing precense
-		_ = primarySpirit.DoGrowth( gameState );
+		_ = _primarySpirit.DoGrowth( _gameState );
 		NextDecision.Choose("Place Presence(1)");
 
 		//  And: take from card play
@@ -226,13 +233,13 @@ public class OceanTerrain_Tests {
 		Given_PrimaryPresenceOnA2Only(); // reduces # of Target options
 
 		//  And: spirit can use blazing renewal
-		primarySpirit.Energy = 5;
-		primarySpirit.Presence.Destroyed.Count = 1;
-		primarySpirit.AddActionFactory(PowerCard.For(typeof(BlazingRenewal)));
-		gameState.Phase = Phase.Fast;
+		_primarySpirit.Energy = 5;
+		_primarySpirit.Presence.Destroyed.Count = 1;
+		_primarySpirit.AddActionFactory(PowerCard.For(typeof(BlazingRenewal)));
+		_gameState.Phase = Phase.Fast;
 
 		// When: using a Power that places presence
-		var task = primarySpirit.ResolveActions(gameState);
+		var task = _primarySpirit.ResolveActions(_gameState);
 		IsActive(task);
 		Choose( "Blazing Renewal $5 (Fast)" );
 		IsActive( task );
@@ -253,14 +260,14 @@ public class OceanTerrain_Tests {
 			Given_OceanOnPrimaryBoard();
 
 		// Presence in Ocean
-		Given_PrimaryPresenceOnlyOn( boardA[0]);
+		Given_PrimaryPresenceOnlyOn( _boardA[0]);
 
 		// When: trying to use a card that targets out of a wetland
 		// Cleansing Floods (range 1 from wetland)
-		primarySpirit.Energy = 5;
-		primarySpirit.AddActionFactory(PowerCard.For(typeof(CleansingFloods)));
-		gameState.Phase = Phase.Slow;
-		await primarySpirit.ResolveActions( gameState ).AwaitUser((user)=> {
+		_primarySpirit.Energy = 5;
+		_primarySpirit.AddActionFactory(PowerCard.For(typeof(CleansingFloods)));
+		_gameState.Phase = Phase.Slow;
+		await _primarySpirit.ResolveActions( _gameState ).AwaitUser((user)=> {
 			user.Choose( "Cleansing Floods $5 (Slow)" );
 			if(withOcean) {
 				// Then: can target out of wetland
@@ -283,20 +290,20 @@ public class OceanTerrain_Tests {
 		Given_PrimaryPresenceOnA2Only();
 
 		// Given: Dahan and Town on A2
-		Space a2 = gameState.Tokens[boardA[2]];
+		Space a2 = _gameState.Tokens[_boardA[2]];
 		a2.InitDefault( Human.Dahan, 2 );
 		a2.InitDefault( Human.Town, 1 );
 
 		// Given: ocean in either A0 (saving dahan) or A1 (not saving)
-		SpaceSpec oceanSpace = savedByOcean ? boardA[0] : boardA[1];
-		oceanSpirit.Given_IsOn( gameState.Tokens[oceanSpace] );
+		SpaceSpec oceanSpace = savedByOcean ? _boardA[0] : _boardA[1];
+		_oceanSpirit.Given_IsOn( _gameState.Tokens[oceanSpace] );
 
 		// When: Tidal Boon is played (by Ocean)
-		gameState.Phase = Phase.Slow;
-		oceanSpirit.AddActionFactory( PowerCard.For(typeof(TidalBoon)) );
-		Task task = oceanSpirit.ResolveActions( gameState );
+		_gameState.Phase = Phase.Slow;
+		_oceanSpirit.AddActionFactory( PowerCard.For(typeof(TidalBoon)) );
+		Task task = _oceanSpirit.ResolveActions( _gameState );
 
-		oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
+		_oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
 		//  And: Pushes town into ocean
 		NextDecision.MoveFrom("T@2").MoveTo("A0","A0,A1,A3,A4");// Choose( "T@2" ); NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
 
@@ -308,7 +315,7 @@ public class OceanTerrain_Tests {
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
-			oceanSpirit.NextDecision()
+			_oceanSpirit.NextDecision()
 				.HasOptions( "A1,A2,A3,B1,B2,B3,Done" )
 				.Choose( "A1" );
 		}
@@ -318,7 +325,7 @@ public class OceanTerrain_Tests {
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
-			oceanSpirit.NextDecision()
+			_oceanSpirit.NextDecision()
 				.HasOptions( "A1,A2,A3,B1,B2,B3,Done" )
 				.Choose("A1");
 
@@ -329,32 +336,23 @@ public class OceanTerrain_Tests {
 		await task.ShouldComplete();
 
 		// Then: Ocean gets 1 energy (2 health / 2 players = 1 energy)
-		oceanSpirit.Energy.ShouldBe( 1 );
+		_oceanSpirit.Energy.ShouldBe( 1 );
 
 	}
 
 	#region private helper methods
 
-	GameState Given_TwoSpiritGame() {
-		GameState gameState = new GameState( 
-			[primarySpirit, oceanSpirit],
-			[boardA, Board.BuildBoardB( GameBuilder.TwoBoardLayout[1] )] 
-		);
-		gameState.Initialize();
-		return gameState;
-	}
+	void Given_OceanOnPrimaryBoard() => _oceanSpirit.Given_IsOn( _gameState.Tokens[_boardA[0]] ); // put ocean presence on primary's board, but not in the ocean
 
-	void Given_OceanOnPrimaryBoard() => oceanSpirit.Given_IsOn( gameState.Tokens[boardA[0]] ); // put ocean presence on primary's board, but not in the ocean
-
-	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( boardA[2] );
+	void Given_PrimaryPresenceOnA2Only() => Given_PrimaryPresenceOnlyOn( _boardA[2] );
 
 	void Given_PrimaryPresenceOnlyOn( SpaceSpec space ) {
-		foreach(Space ss in primarySpirit.Presence.Lands.ToArray())
-			primarySpirit.Given_IsOn( ss, 0 );
+		foreach(Space ss in _primarySpirit.Presence.Lands.ToArray())
+			_primarySpirit.Given_IsOn( ss, 0 );
 
 		// Add to
-		primarySpirit.Given_IsOn( gameState.Tokens[space] );
-		primarySpirit.Presence.Lands.SelectLabels().Join( "," ).ShouldBe( space.Label );
+		_primarySpirit.Given_IsOn( _gameState.Tokens[space] );
+		_primarySpirit.Presence.Lands.SelectLabels().Join( "," ).ShouldBe( space.Label );
 	}
 
 	
