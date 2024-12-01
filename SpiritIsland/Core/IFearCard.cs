@@ -2,14 +2,21 @@
 
 public interface IFearCard : IOption {
 
-	int? ActivatedTerrorLevel { get; set; }
+	int? ActivatedTerrorLevel { get; }
+
 	bool Flipped { get; set; } // set is for Memento use
+
 	/// <summary> Flips card face up and performs associated action. </summary>
 	Task ActAsync( int terrorLevel );
+
+	/// <param name="activation">1..3 or null to use ActivatedTerrorLevel</param>
+	string GetDescription(int? activation = null);
 }
 
 public abstract class FearCardBase {
+
 	public int? ActivatedTerrorLevel { get; set; }
+
 	public bool Flipped { 
 		get => _flipped;
 		set {
@@ -19,7 +26,6 @@ public abstract class FearCardBase {
 				ActionScope.Current.Log(new Log.FearCardRevealed((IFearCard)this)); // !!! after we remove Level1,2,3 from IFearCard, make FearCardBase implement this
 		}
 	}
-	bool _flipped;
 
 	public Task ActAsync( int terrorLevel) {
 		// show card to each user
@@ -29,29 +35,30 @@ public abstract class FearCardBase {
 		
 		return terrorLevel switch {
 			1 => Level1(gs),
-			2 => Level2(gs), // !!!  Add abstract virtual
-			3 => Level3(gs), // !!!  Add abstract virtual
+			2 => Level2(gs),
+			3 => Level3(gs),
 			_ => throw new ArgumentOutOfRangeException(nameof(terrorLevel)),
 		};
+	}
+
+	/// <param name="activation">1..3 or null to use ActivatedTerrorLevel</param>
+	public string GetDescription(int? activation=null) {
+		activation ??= ActivatedTerrorLevel.Value;
+		var memberName = "Level" + activation;
+
+		// This does not find interface methods declared as: void IFearCardOption.Level2(...)
+		var type = GetType();
+		var member = type.GetMethod(memberName)
+			?? throw new Exception(memberName + " not found on " + type.Name);
+
+		var attr = (FearLevelAttribute)member.GetCustomAttributes(typeof(FearLevelAttribute)).Single();
+		return attr.Description;
 	}
 
 	abstract public Task Level1( GameState gameState );
 	abstract public Task Level2(GameState gameState);
 	abstract public Task Level3(GameState gameState);
-}
 
-static public class IFearOptionsExtension {
-
-	static public string GetDescription( this IFearCard options, int activation ) {
-		var memberName = "Level" + activation;
-
-		// This does not find interface methods declared as: void IFearCardOption.Level2(...)
-		var member = options.GetType().GetMethod( memberName )
-			?? throw new Exception( memberName + " not found on " + options.GetType().Name );
-
-		var attr = (FearLevelAttribute)member.GetCustomAttributes( typeof( FearLevelAttribute ) ).Single();
-		string description = attr.Description;
-		return description;
-	}
+	bool _flipped;
 
 }
