@@ -33,6 +33,7 @@ public abstract class FearCardBase {
 		if(topCard != this)
 			throw new InvalidOperationException( "Fear card must be on top of deck to activate it." );
 		gameState.Fear.ActivatedCards.Push( topCard );
+		gameState.Fear.OnCardActivated(topCard);
 	}
 
 	public Task ActAsync( int terrorLevel) {

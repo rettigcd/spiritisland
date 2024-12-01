@@ -66,18 +66,10 @@ public class Russia : AdversaryBuilder, IAdversaryBuilder {
 		new AdversaryLevel(5, 9, 4,5,4, "Entrench in the Face of Fear",  
 			"Add Stage II Invader Card under 3rd Fear Card, and Stage III under 7th Fear Cards." ) {
 			InitFunc = (gameState,_) => {
-				// Modify Fear Card #3 and #7 to add Build Card
-				var hold = new Stack<IFearCard>();
-				var deck = gameState.Fear.Deck;
-				hold.Push( deck.Pop() ); // 1
-				hold.Push( deck.Pop() ); // 2
-				hold.Push( new RussiaFearCard( deck.Pop(), gameState.InvaderDeck.TakeNextUnused(2) ) ); // 3
-				hold.Push( deck.Pop() ); // 4
-				hold.Push( deck.Pop() ); // 5
-				hold.Push( deck.Pop() ); // 6
-				hold.Push( new RussiaFearCard( deck.Pop(), gameState.InvaderDeck.TakeNextUnused(3) ) ); // 7
-				while(0 < hold.Count)
-					deck.Push( hold.Pop() );
+				// Fear Card #3 and #7 add Build Card
+				IFearCard[] fearCards = gameState.Fear.Deck.ToArray();
+				gameState.Fear.CardActivated += new AddBuildWhenFearActivated(fearCards[3-1],gameState.InvaderDeck.TakeNextUnused(2)).WatchActivatedCard;
+				gameState.Fear.CardActivated += new AddBuildWhenFearActivated(fearCards[7-1],gameState.InvaderDeck.TakeNextUnused(3)).WatchActivatedCard;
 			}
 		},
 
@@ -87,6 +79,15 @@ public class Russia : AdversaryBuilder, IAdversaryBuilder {
 			InitFunc = (gameState,_) => gameState.InvaderDeck.Ravage.Engine = new Russia_Level6_PressureForFastProfitRavageEngine(gameState)
 		}
 	];
+
+	class AddBuildWhenFearActivated(IFearCard fearCard, InvaderCard invaderCard) {
+		public void WatchActivatedCard( IFearCard activatedFearCard) {
+			if(activatedFearCard == fearCard ) {
+				GameState.Current.InvaderDeck.Build.Cards.Add(invaderCard);
+				ActionScope.Current.LogDebug($"Entrenched in the Face of Fear: Adding invader card {invaderCard.Code} to Builds.");
+			}
+		}
+	}
 
 	#region Escalation
 

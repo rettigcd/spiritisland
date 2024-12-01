@@ -8,6 +8,10 @@ namespace SpiritIsland;
 /// </remarks>
 public class Fear : IHaveMemento {
 
+	public event Action<IFearCard> CardActivated;
+
+	public void OnCardActivated(IFearCard card) => CardActivated?.Invoke(card);
+
 	public Fear(GameState gs) {
 		_gs = gs;
 		PoolMax = gs.Spirits.Length * 4;

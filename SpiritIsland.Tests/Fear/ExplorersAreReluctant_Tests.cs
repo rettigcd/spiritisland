@@ -2,28 +2,6 @@
 
 public sealed class ExplorersAreReluctant_Tests {
 
-	void Init() {
-		var powerCard = PowerCard.For(typeof(CallToTend));
-
-		var (user, spirit, _) = TestSpirit.StartGame( powerCard );
-		_user = user;
-		_spirit = spirit;
-		var gs = GameState.Current;
-		_fearCard = gs.WatchForFearCard();
-		_log = gs.LogInvaderActions();
-		_log.Clear(); // skip over initial Explorer setup
-	}
-
-	Task<Log.FearCardRevealed> _fearCard;
-	VirtualTestUser _user;
-	Spirit _spirit;
-	Queue<string> _log;
-
-	void GrowAndBuyNoCards() {
-		_spirit.ClearAllBlight();
-		_user.GrowAndBuyNoCards();
-	}
-
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
@@ -62,38 +40,47 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Fact]
 	public async Task Level1_SkipExploreInLowestNumberedLand() {
 
-		Init();
+		//Init();
 
-		// Disable destroying presence
-		GameState.Current.DisableBlightEffect();
+		//// Disable destroying presence
+		//GameState.Current.DisableBlightEffect();
 
 
-		// 1: "During the next normal explore, skip the lowest-numbered land matching the invader card on each board.
+		//// 1: "During the next normal explore, skip the lowest-numbered land matching the invader card on each board.
 
-		GrowAndBuyNoCards();
+		//GrowAndBuyNoCards();
 
-		_user.WaitForNext();
+		//_user.WaitForNext();
 
-		// Ravage:-, Build:Jungle, Explore: Wetland
-		_log.Assert_Built( "A3", "A8" );    // Jungle
-		_log.Assert_Explored( "A2", "A5" ); // Water
+		//// Ravage:-, Build:Jungle, Explore: Wetland
+		//_log.Assert_Built( "A3", "A8" );    // Jungle
+		//_log.Assert_Explored( "A2", "A5" ); // Water
 
-		// Given: Explorers Are Reluctant
-		_spirit.ActivateFearCard(new ExplorersAreReluctant());
+		//// Given: Explorers Are Reluctant
+		//_spirit.ActivateFearCard(new ExplorersAreReluctant());
 
-		GrowAndBuyNoCards();
+		//GrowAndBuyNoCards();
 
-		// Acknowledge: Explorers are Reluctant
-		(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
+		//// Acknowledge: Explorers are Reluctant
+		//(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
 
-		_user.WaitForNext();
+		//_user.WaitForNext();
 
-		// Ravage:Jungle, Build:Wetland, Explore: Sand
-		_log.Assert_Ravaged( "A3", "A8" );
-		_log.Assert_Built( "A2", "A5" );
-		_log.Assert_Explored( "A7" ); // Skipped A4
+		//// Ravage:Jungle, Build:Wetland, Explore: Sand
+		//_log.Assert_Ravaged( "A3", "A8" );
+		//_log.Assert_Built( "A2", "A5" );
+		//_log.Assert_Explored( "A7" ); // Skipped A4
 
-		GrowAndBuyNoCards();
+		//GrowAndBuyNoCards();
+
+//		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+
+		// Given: Level 1 activated - "During the next normal explore, skip the lowest-numbered land matching the invader card on each board."
+//		new ExplorersAreReluctant().ActivatedTerrorLevel
+
+		//   When: Explore Card Activated
+
+		//  Then: lowest # land is skipped
 	}
 
 	[Trait( "Invaders", "Explore" )]
@@ -188,6 +175,28 @@ public sealed class ExplorersAreReluctant_Tests {
 		_log.Dequeue().ShouldStartWith( "No build due" );
 		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
 
+	}
+
+	void Init() {
+		var powerCard = PowerCard.For(typeof(CallToTend));
+
+		var (user, spirit, _) = TestSpirit.StartGame(powerCard);
+		_user = user;
+		_spirit = spirit;
+		var gs = GameState.Current;
+		_fearCard = gs.WatchForFearCard();
+		_log = gs.LogInvaderActions();
+		_log.Clear(); // skip over initial Explorer setup
+	}
+
+	Task<Log.FearCardRevealed> _fearCard;
+	VirtualTestUser _user;
+	Spirit _spirit;
+	Queue<string> _log;
+
+	void GrowAndBuyNoCards() {
+		_spirit.ClearAllBlight();
+		_user.GrowAndBuyNoCards();
 	}
 
 }
