@@ -4,13 +4,6 @@ public interface IFearCard : IOption {
 
 	int? ActivatedTerrorLevel { get; set; }
 	bool Flipped { get; set; } // set is for Memento use
-
-	/// <summary>
-	/// Pulls this card off of the top of the deck, and puts it on the 'Activated Cards' pile.
-	/// </summary>
-	/// <remarks>!!! This method should really be on the deck, not on the card.</remarks>
-	void Activate( GameState gameState );
-
 	/// <summary> Flips card face up and performs associated action. </summary>
 	Task ActAsync( int terrorLevel );
 }
@@ -27,14 +20,6 @@ public abstract class FearCardBase {
 		}
 	}
 	bool _flipped;
-
-	public virtual void Activate( GameState gameState ) {
-		var topCard = gameState.Fear.Deck.Pop();
-		if(topCard != this)
-			throw new InvalidOperationException( "Fear card must be on top of deck to activate it." );
-		gameState.Fear.ActivatedCards.Push( topCard );
-		gameState.Fear.OnCardActivated(topCard);
-	}
 
 	public Task ActAsync( int terrorLevel) {
 		// show card to each user

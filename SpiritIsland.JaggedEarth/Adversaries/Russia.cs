@@ -67,7 +67,7 @@ public class Russia : AdversaryBuilder, IAdversaryBuilder {
 			"Add Stage II Invader Card under 3rd Fear Card, and Stage III under 7th Fear Cards." ) {
 			InitFunc = (gameState,_) => {
 				// Fear Card #3 and #7 add Build Card
-				IFearCard[] fearCards = gameState.Fear.Deck.ToArray();
+				IFearCard[] fearCards = [.. gameState.Fear.Deck];
 				gameState.Fear.CardActivated += new AddBuildWhenFearActivated(fearCards[3-1],gameState.InvaderDeck.TakeNextUnused(2)).WatchActivatedCard;
 				gameState.Fear.CardActivated += new AddBuildWhenFearActivated(fearCards[7-1],gameState.InvaderDeck.TakeNextUnused(3)).WatchActivatedCard;
 			}

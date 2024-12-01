@@ -10,8 +10,6 @@ public class Fear : IHaveMemento {
 
 	public event Action<IFearCard> CardActivated;
 
-	public void OnCardActivated(IFearCard card) => CardActivated?.Invoke(card);
-
 	public Fear(GameState gs) {
 		_gs = gs;
 		PoolMax = gs.Spirits.Length * 4;
@@ -83,7 +81,9 @@ public class Fear : IHaveMemento {
 		while(PoolMax <= EarnedFear && Deck.Count != 0) {
 			EarnedFear -= PoolMax;
 
-			Deck.Peek().Activate( _gs );
+			var topCard = Deck.Pop();
+			ActivatedCards.Push(topCard);
+			CardActivated?.Invoke(topCard);
 		}
 		// ! Do NOT check for victory here and throw GameOverException(...)
 		// This is called inside PowerCard using Invoke() which converts exception to a TargetInvocationException which we don't want.
