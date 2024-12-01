@@ -79,7 +79,7 @@ public class StubbornSolidity_Tests {
 		await Play_StubbornSolidity_On( spirit, space );
 
 		//  When: Ravaging
-		await space.SpaceSpec.When_Ravaging();
+		await space.SpaceSpec.When_CardRavages();
 
 		//  Then: All 4 dahan remain
 		//   And: 10-4=6 points of damage to the land => Blight,

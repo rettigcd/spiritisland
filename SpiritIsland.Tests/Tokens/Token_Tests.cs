@@ -44,7 +44,7 @@ public class Token_Tests {
 		space.Wilds.Init(1);
 
 		//  When: we explore there
-		await space.SpaceSpec.When_Exploring();
+		await space.SpaceSpec.When_CardExplores();
 
 		//  Then: still no invaders
 		space.HasInvaders().ShouldBeFalse("there should be no explorers in "+space.SpaceSpec.Label);
@@ -63,7 +63,7 @@ public class Token_Tests {
 		space.Given_HasTokens("1E@1,1Z");
 
 		//  When: we build there
-		await space.SpaceSpec.When_Building();
+		await space.SpaceSpec.When_CardBuilds();
 
 		//  Then: still no towns (just original explorer)
 		space.Assert_HasInvaders( "1E@1" ); // "should be no town on "+space.Label

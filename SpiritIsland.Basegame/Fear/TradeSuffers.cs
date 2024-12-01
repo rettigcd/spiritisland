@@ -8,7 +8,7 @@ public class TradeSuffers : FearCardBase, IFearCard {
 	[FearLevel( 1, "Invaders do not Build in lands with City." )]
 	public override Task Level1( GameState ctx )
 		=> new SpaceAction("Invaders do not build", StopBuild)
-			.In().EachActiveLand().Which( Has.City )
+			.In().EachActiveLand()
 			.ActAsync( ctx );
 
 	[FearLevel( 2, "Each player may replace 1 Town with 1 Explorer in a Coastal land." )]

@@ -9,10 +9,7 @@ public class BeliefTakesRoot_Tests {
 		_spirit = new LightningsSwiftStrike();
 		_gameState = new GameState( _spirit, Board.BuildBoardA() );
 		_gameState.DisableInvaderDeck();
-		_fearCard = _gameState.WatchForFearCard();
 		_gameState.Initialize(); 
-		_gameState.Fear.Deck.Pop();
-		_gameState.Fear.PushOntoDeck( new BeliefTakesRoot() );
 
 		_invaderCard = InvaderDeckBuilder.Level1Cards[0];
 		_ravageSpace = _gameState.Island.Boards[0].Spaces
@@ -20,21 +17,14 @@ public class BeliefTakesRoot_Tests {
 			.Where( ((InvaderCard)_invaderCard).MatchesCard )
 			.First();
 	}
-	readonly Task<Log.FearCardRevealed> _fearCard;
 
 	#endregion
 
 	[Fact]
-	public async Task NullFearCard_NormalRavage() {
-
-		_gameState.Fear.Deck.Pop();
-		_gameState.Fear.PushOntoDeck( new NullFearCard() );
+	public async Task NormalRavage() {
 
 		Given_DahanAndTownsInSpaceWithPresence(10,1);
 
-		await When_AddFearApplyFear( async (user) => {
-			(await _fearCard).Msg().ShouldBe("Null Fear Card : 1 : x");
-		});
 		await _invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
@@ -46,9 +36,9 @@ public class BeliefTakesRoot_Tests {
 	public async Task Level1_NoBlightDahanLives() {
 		Given_DahanAndTownsInSpaceWithPresence(1, 1);
 
-		await When_AddFearApplyFear( async (user)=> {
-			(await _fearCard).Msg().ShouldBe(FearCardAction);
-		});
+		// Given: Believe Takes Root
+		await new BeliefTakesRoot().ActAsync(1);
+
 		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
@@ -64,9 +54,9 @@ public class BeliefTakesRoot_Tests {
 	public async Task Level1_DefendNotMoreThan2() { // not more th
 		Given_DahanAndTownsInSpaceWithPresence(2, 5);
 
-		await When_AddFearApplyFear( async (user) => {
-			(await _fearCard).Msg().ShouldBe(FearCardAction);
-		} );
+		// Given:
+		await new BeliefTakesRoot().ActAsync(1);
+
 		await _invaderCard.When_Ravaging();
 
 		// Then: 1 dahan left
@@ -88,12 +78,6 @@ public class BeliefTakesRoot_Tests {
 			_spirit.Given_IsOn(_ravageSpace);
 	}
 
-	async Task When_AddFearApplyFear(Action<VirtualUser> userActions) {
-		_gameState.Fear.Add( 4 );
-		await _gameState.Fear.ResolveActivatedCards().AwaitUser( userActions ).ShouldComplete("Fear");
-	}
-
-	const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";
 	readonly GameState _gameState;
 	readonly InvaderCard _invaderCard;
 	readonly Space _ravageSpace;

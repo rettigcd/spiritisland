@@ -154,7 +154,7 @@ public class Strife_Tests {
 		tokens.Dahan.Init( 1 );
 
 		//  When: we ravage there
-		await tokens.SpaceSpec.When_Ravaging();
+		await tokens.SpaceSpec.When_CardRavages();
 
 		//  Then: dahan survives
 		tokens.Dahan.CountAll.ShouldBe( 1, "dahan should survive due to strife on town" );

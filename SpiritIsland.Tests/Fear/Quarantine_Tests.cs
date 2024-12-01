@@ -2,25 +2,6 @@
 
 public class Quarantine_Tests {
 
-	readonly IFearCard card = new Quarantine();
-
-	void Init() {
-		var powerCard = PowerCard.For(typeof(CallToTend));
-		var (userLocal, spirit, _) = TestSpirit.StartGame( powerCard, (Action<GameState>)(gs => {
-			gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
-			_fearCardRevealed = gs.WatchForFearCard();
-			gs.InitTestInvaderDeck(
-				InvaderCard.Stage1( Terrain.Sands ), // not on coast
-				InvaderCard.Stage2Costal(),
-				InvaderCard.Stage1( Terrain.Jungle ),
-				InvaderCard.Stage1( Terrain.Wetland ) // one extra so we don't trigger 'Time runs out loss'
-			);
-		}) );
-		_user = userLocal;
-		_spirit = spirit;
-		_log.Clear(); // skip over initial Explorer setup
-	}
-
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Theory]

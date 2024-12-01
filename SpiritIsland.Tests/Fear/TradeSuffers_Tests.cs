@@ -8,46 +8,57 @@ public class TradeSuffers_Tests {
 		// or A4 (Sands-no dahan)
 		var (user, spirit, _) = TestSpirit.StartGame( PowerCard.For(typeof(RiversBounty)), gs => {
 			var fear = gs.Fear;
-			AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
+			InitMountainThenAllSands( gs );
 			gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );
 		} );
-		_user = user;
-		_spirit = spirit;
 	}
 
 	[Fact]
 	[Trait( "Invaders", "Build" )]
-	public void Level1_CityIsNotDamagedDuringRavage_NoBuild() {
-		Init();
+	public async Task Level1_CityPresent_NoBuild() {
 
-		// Disable destroying presence
-		GameState.Current.DisableBlightEffect();
+		var gs = new GameState(new RiverSurges(), Boards.B);
+		var b5 = gs.Island.Boards[0][5].ScopeSpace;
 
-		// Invaders do not Build in lands with City.
+		// Given: City on Space stops build
+		b5.Given_InitSummary("1C@3");
 
-		// Fill all Invaders spaces with the A7 card
-		ClearBlight_GrowAndBuyNoCards(); // All of Round 1 - stops at round 2
-		ClearBlight_GrowAndBuyNoCards(); // start of round 2
-		_user.WaitForNext();			 // start of round 3
+		//  When: Trade Suffers - Level 1
+		await new TradeSuffers().ActAsync(1);
 
-		ActivateFearCard( new TradeSuffers() );
+		//   And: builds
+		await b5.When_CardBuilds();
 
-		// Given: 1 city and nothing else
-		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Space.Given_InitSummary("1C@3");
+		//  Then: no town is built
+		b5.Summary.ShouldBe("1C@3");
 
-		// When: activating fear
-		ClearBlight_GrowAndBuyNoCards();
-		// Fear Card happends here.... FearCard;
-		_user.WaitForNext(); // start of round 4
-
-		// Ravage: no dahan, no change:			1B@1,1C@3
-		// Build: City present => no build		1B@1,1C@3
-		// Explore: +1							1B@1,1C@3,1E@1
-		spaceCtx.Space.Summary.ShouldBe( "1B,1C@3,1E@1" );
 	}
 
-	// private const string FearCard = "Trade Suffers : 1 : Invaders do not Build in lands with City.";
+	[Fact]
+	[Trait("Invaders", "Build")]
+	public async Task Level1_CityAddedAfterFear_NoBuild() {
+
+		// Tests that city is evaluated at Build Time, not at Fear time.
+
+		var gs = new GameState(new RiverSurges(), Boards.B);
+		var b5 = gs.Island.Boards[0][5].ScopeSpace;
+
+		// Given: No City on Space
+		b5.InitDefault(Human.City,0);
+
+		//   And: Trade Suffers - Level 1
+		await new TradeSuffers().ActAsync(1);
+
+		//  When: city is added after the fact.  (Like from a Blighted island during Ravage)
+		b5.InitDefault(Human.City, 1);
+
+		//   And: builds
+		await b5.When_CardBuilds();
+
+		//  Then: no town is built
+		b5.Summary.ShouldBe("1C@3");
+
+	}
 
 	[Fact]
 	public async Task Level1_CityDestroyedDuringRavage_Build() {
@@ -60,7 +71,7 @@ public class TradeSuffers_Tests {
 		GameState gs = new GameState( spirit, board ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
 		};
-		AvoidTheDahan_Tests.InitMountainThenAllSands( gs );
+		InitMountainThenAllSands( gs );
 		gs.NewLogEntry += ( s ) => _log.Add( s.Msg() );
 		gs.Initialize(); 
 
@@ -77,7 +88,8 @@ public class TradeSuffers_Tests {
 
 		// Round 3
 		//  And: Fear card is active and ready to flip
-		ActivateFearCard( new TradeSuffers() );
+		await new TradeSuffers().ActAsync(1);
+
 
 		// Given: 1 city and a enough dahan to kill the city but not the last explorer
 		Space space = board[7].ScopeSpace; // _ctx.TargetSpace( "A7" ).Tokens;
@@ -119,9 +131,12 @@ public class TradeSuffers_Tests {
 		fxt.GameState.Tokens[space].InvaderSummary().ShouldBe( "1C@3" );
 	}
 
-	void ClearBlight_GrowAndBuyNoCards() {
-		ClearBlight();
-		_user.GrowAndBuyNoCards();
+	static void InitMountainThenAllSands(GameState gs) {
+		var sand = InvaderCard.Stage1(Terrain.Sands);
+		gs.InitTestInvaderDeck(
+			InvaderCard.Stage1(Terrain.Mountain), // initial explorer in mountains
+			sand, sand, sand, sand, sand
+		);
 	}
 
 	static void ClearBlight() {
@@ -130,15 +145,6 @@ public class TradeSuffers_Tests {
 			space.Init( Token.Blight, 0 ); // Don't trigger events
 	}
 
-	static void ActivateFearCard(IFearCard fearCard) {
-		var fear = GameState.Current.Fear;
-		fear.Deck.Pop(); // remove old
-		fear.PushOntoDeck( fearCard );
-		fear.Add( fear.PoolMax );
-	}
-
-	VirtualTestUser _user;
-	Spirit _spirit;
 	readonly List<string> _log = [];
 
 }

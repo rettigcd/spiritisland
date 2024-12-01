@@ -98,7 +98,7 @@ public class DreadApparitions_Tests {
 		await spirit.When_ResolvingCard<DreadApparitions>(u => u.Choose(targetSpace.Label));
 
 		// When: dahan destroy the city
-		await space.SpaceSpec.When_Ravaging();
+		await space.SpaceSpec.When_CardRavages();
 
 		// Then: 2 fear from city
 		SpiritIsland.Fear fear = gs.Fear;

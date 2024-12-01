@@ -13,7 +13,7 @@ public class MesmerizedTranquility_Tests {
 		//   And: mesmerized played on that space
 		await MesmerizedTranquility.ActAsync(fxt.Spirit.Target(space)).ShouldComplete("Mesm Tranq");
 		//  When: we ravage there
-		await space.When_Ravaging();
+		await space.When_CardRavages();
 		// Then: dahan is not damaged. + 1 Isolate (and explorer is gone)
 		fxt.GameState.Tokens[space].Summary.ShouldBe("1D@2,1I");
 	}
@@ -29,7 +29,7 @@ public class MesmerizedTranquility_Tests {
 		await MesmerizedTranquility.ActAsync( fxt.Spirit.Target( space ) ).ShouldComplete( "Mesm Tranq1" );
 		await MesmerizedTranquility.ActAsync( fxt.Spirit.Target( space ) ).ShouldComplete( "Mesm Tranq2" );
 		//  When: we ravage there
-		await space.When_Ravaging();
+		await space.When_CardRavages();
 		// Then: dahan is not damaged. + 1 Isolate (and town is gone)
 		fxt.GameState.Tokens[space].Summary.ShouldBe( "1D@2,1I" );
 	}

@@ -116,15 +116,16 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		adversary.AdjustFearCardCounts(fearCardsPerLevel);
 		gameState.Fear.CardsPerLevel_Initial = fearCardsPerLevel;
 
-		if(cfg.CommandTheBeasts)
-			gameState.Fear.CardsPerLevel_Initial[1]++; // Command the Beasts
-
 		// Fear Deck - ! this could be pushed into
 		var fearCards = BuildFearCards();
 		new Random( fearSeed ).Shuffle( fearCards );
+		int neededFearCards = fearCardsPerLevel.Sum();
 		gameState.Fear.Deck.Clear();
-		for(int i = 0; i < gameState.Fear.CardsPerLevel_Initial.Sum(); ++i)
+		for(int i = 0; i < neededFearCards; ++i)
 			gameState.Fear.PushOntoDeck( fearCards[i] );
+
+		if( cfg.CommandTheBeasts )
+			gameState.Fear.CardsPerLevel_Initial[1]++; // Command the Beasts
 
 		// (5) Blight Cards
 		new Random( blightSeed ).Shuffle( blightCards );

@@ -18,7 +18,7 @@ public class Fear : IHaveMemento {
 
 	public void Init() {
 		while(Deck.Count < 9)
-			PushOntoDeck( new NullFearCard() );
+			Deck.Push( new NullFearCard() );
 	}
 
 	[Obsolete("Don't modify fear deck after it has been initialized")]

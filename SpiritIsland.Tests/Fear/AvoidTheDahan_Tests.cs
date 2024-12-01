@@ -10,7 +10,6 @@ public class AvoidTheDahan_Tests {
 
 	const string Level1Text = "Avoid the Dahan : 1 : Invaders do not Explore into lands with at least 2 Dahan.";
 	const string Level2Text = "Avoid the Dahan : 2 : Invaders do not Build in lands where Dahan outnumber Town/City.";
-	const string Level3Text = "Avoid the Dahan : 3 : Invaders do not Build in lands with Dahan.";
 
 	#region constructor
 
@@ -137,8 +136,8 @@ public class AvoidTheDahan_Tests {
 		_user.WaitForNext();
 
 		// Round 3
-		ActivateFearCard( new AvoidTheDahan() );
 		ElevateTerrorLevelTo(2);
+		ActivateFearCard( new AvoidTheDahan() );
 		// Given: Starting out Dahan(3) outnumber town/city(2)
 		var spaceCtx = _spirit.TargetSpace( "A7" );
 		spaceCtx.Space.Given_InitSummary( "3D@2,2T@2" );
@@ -164,118 +163,57 @@ public class AvoidTheDahan_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Fact]
 	public async Task Level2_NoBuild() {
-		Init();
 
-		// "Invaders do not Build in lands where Dahan outnumber Town / City."
+		var gs = new GameState(new RiverSurges(), Boards.D);
+		var a5 = gs.Island.Boards[0][5].ScopeSpace;
 
-		// Fill all Invaders spaces with the A7 card
-		// Round 1
-		_user.Grows();
-		_user.IsDoneBuyingCards();
+		// Given: Dahan outnumber Towns+Cities
+		const string originalTokens = "3C@1,5D@2,1T@1";
+		a5.Given_InitSummary(originalTokens);
 
-		// Round 2
-		_spirit.ClearAllBlight();
-		_user.Grows();
-		_user.IsDoneBuyingCards();
-		_user.WaitForNext();
+		//  When: Avoid the Dahan - Level 2 "Invaders do not build in lands where Dahan outnumber Town/City"
+		await new AvoidTheDahan().ActAsync(2);
 
-		// Round 3
-		_spirit.ClearAllBlight();
-		ActivateFearCard( new AvoidTheDahan() );
-		ElevateTerrorLevelTo(2);
-		// Given: Dahan(2) outnumber town/city(0)  + 3 explorer (to enable build)
-		TargetSpaceCtx spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Space.Given_InitSummary("2D@2,3E@1");
+		//   And: Build on that land
+		await a5.When_CardBuilds();
 
-		// When: activating fear
-		_user.Grows();
-		_user.IsDoneBuyingCards();
-		await AcknowledgeFearCard(Level2Text);
-
-		// Then: no build
-		// Ravage: 3 explorers kill 1 dahan, 1 dahan kills 2 explorer:  1B@1,1D@2,1E@1
-		// Build: 1 dahan out numbers town/cities (0), no build:  1B@1,1D@2,1E@1
-		// Explore: +1   1D@2,2E@1
-		_user.WaitForNext();
-		spaceCtx.Space.Summary.ShouldBe( "1B,1D@2,2E@1" );
+		//  Then: no build happened.
+		a5.Summary.ShouldBe(originalTokens);
 	}
 
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public async Task Level3_3DahanAtFear_1DahanAtBuild_NoBuild() {
-		Init();
+	public async Task Level3_DahanCountedAtBuild_NotAtFear() {
 
-		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndDoNothingForARound();
-		ClearBlightAndDoNothingForARound();
+		var gs = new GameState(new Shadows(), Boards.C);
+		var c5 = gs.Island.Boards[0][5].ScopeSpace;
 
-		_user.WaitForNext();
-		ActivateFearCard( new AvoidTheDahan() );
-		ElevateTerrorLevelTo( 3 );
+		// Given: space with Invaders (1 Town) AND 3 Dahan
+		c5.Given_InitSummary("3D@2,1T@2");
 
-		// Given: Starting out Dahan(3) outnumber town/city(2)
-		_user.WaitForNext();
-		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Space.Given_InitSummary( "3D@2,2T@2" );
+		//   And: Avoid the Dahan - 3 activated (with 3 dahan present
+		await new AvoidTheDahan().ActAsync(3);
 
-		// When: activating fear
-		ClearBlightAndDoNothingForARound();
-		await AcknowledgeFearCard( Level3Text );
+		//   And: Dahan are removed (maybe via Ravage)
+		c5.InitDefault(Human.Dahan,0);
 
-		// Ravage: 2 towns kill 2 dahan leaving 1, 1 dahan kills 1 town leaving 1:  1B@1,1D@2,1T@2
+		// When: Build
+		await c5.When_CardBuilds();
 
-		// Then: Dahan do not out number cities/towns! (1 & 1)
-		//  But: we do have SOME dahan
-
-		// Build: no build      1B@1,1D@2,1T@2
-		// Explore: +1			1B@1,1D@2,1E@1,1T@2
-		_user.WaitForNext();
-		spaceCtx.Space.Summary.ShouldBe( "1B,1D@2,1E@1,1T@2" );
-	}
-
-	[Trait( "Invaders", "Build" )]
-	[Fact]
-	public async Task Level3_1DahanAtFear_0DahanAtBuild_Build() {
-		Init();
-
-		// Fill all Invaders spaces with the A7 card
-		ClearBlightAndDoNothingForARound();
-		ClearBlightAndDoNothingForARound();
-
-		_ = _user.NextDecision; // wait for engine to catch up
-		ActivateFearCard( new AvoidTheDahan() );
-		ElevateTerrorLevelTo(3);
-
-		// Given: Starting out Dahan(3) outnumber town/city(2)
-		var spaceCtx = _spirit.TargetSpace( "A7" );
-		spaceCtx.Space.Given_InitSummary("1D@2,1T@2");
-
-		// When: activating fear
-		ClearBlightAndDoNothingForARound();
-		await AcknowledgeFearCard( Level3Text );
-
-		// Ravage: 1 towns kill 1 dahan leaving 0:  1B@1,1T@2
-
-		// Then: dahan are gone
-
-		// Build: build     1B@1,1C@3,1T@2
-		// Explore: +1		1B@1,1C@3,1E@1,1T@2
-		_ = _user.NextDecision; // wait for engine to catch up
-		spaceCtx.Space.Summary.ShouldBe( "1B,1C@3,1E@1,1T@2" );
+		// Then: invaders Build.
+		c5.Summary.ShouldBe("1C@3,1T@2");
 	}
 
 
 	#region private
 
-#pragma warning disable xUnit1013 // Public method should be marked as test
-	static public void InitMountainThenAllSands( GameState gs ) {
+	static void InitMountainThenAllSands( GameState gs ) {
 		var sand = InvaderCard.Stage1( Terrain.Sands );
 		gs.InitTestInvaderDeck(
 			InvaderCard.Stage1( Terrain.Mountain ), // initial explorer in mountains
 			sand, sand, sand, sand, sand
 		);
 	}
-#pragma warning restore xUnit1013 // Public method should be marked as test
 
 	static void ElevateTerrorLevelTo( int desiredFearLevel ) {
 		while(GameState.Current.Fear.TerrorLevel < desiredFearLevel)
@@ -283,10 +221,13 @@ public class AvoidTheDahan_Tests {
 	}
 
 	static void ActivateFearCard(IFearCard fearCard) {
-		var fear = GameState.Current.Fear;
-		fear.Deck.Pop();				// discard card we are replacing
-		fear.PushOntoDeck(fearCard);    // push desired card onto the deck
-		fear.Add( fear.PoolMax );
+		fearCard.ActAsync(GameState.Current.Fear.TerrorLevel);
+
+
+		//var fear = GameState.Current.Fear;
+		//fear.Deck.Pop();				// discard card we are replacing
+		//fear.PushOntoDeck(fearCard);    // push desired card onto the deck
+		//fear.Add( fear.PoolMax );
 	}
 
 

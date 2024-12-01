@@ -121,16 +121,20 @@ public static partial class SpaceExtentions {
 
 	#region When Invader Explore/Build/Ravage
 
-	static public InvaderCard BuildInvaderCard( this SpaceSpec space ) {
+	static public InvaderCard BuildInvaderCard(this Space space) => space.SpaceSpec.BuildInvaderCard();
+		static public InvaderCard BuildInvaderCard( this SpaceSpec space ) {
 		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
 		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 	}
 
-	static public Task When_Ravaging( this SpaceSpec space ) => space.BuildInvaderCard().When_Ravaging();
+	static public Task When_CardRavages( this Space space) => space.SpaceSpec.BuildInvaderCard().When_Ravaging();
+	static public Task When_CardRavages( this SpaceSpec space ) => space.BuildInvaderCard().When_Ravaging();
 
-	static public Task When_Building( this SpaceSpec space ) => space.BuildInvaderCard().When_Building();
+	static public Task When_CardBuilds(this Space space) => space.SpaceSpec.BuildInvaderCard().When_Building();
+	static public Task When_CardBuilds( this SpaceSpec space ) => space.BuildInvaderCard().When_Building();
 
-	static public Task When_Exploring( this SpaceSpec space ) => space.BuildInvaderCard().When_Exploring();
+	static public Task When_CardExplories(this Space space) => space.SpaceSpec.BuildInvaderCard().When_Exploring();
+	static public Task When_CardExplores( this SpaceSpec space ) => space.BuildInvaderCard().When_Exploring();
 
 	#endregion When Invader Explore/Build/Ravage
 

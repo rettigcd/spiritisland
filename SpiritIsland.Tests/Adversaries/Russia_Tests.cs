@@ -109,7 +109,7 @@ public class Russia_Tests {
 		a7.Summary.ShouldBe( "1A,2D@2,1E@1" ); // 1A is beast
 
 		//  When: Ravage on that space
-		await a7.SpaceSpec.When_Ravaging();
+		await a7.SpaceSpec.When_CardRavages();
 
 		//  Then: explorer did 2 damage and killed 1 dahan and created 1 blight and removed the Beast
 		a7.Summary.ShouldBe( "1B,1D@2" );
@@ -133,7 +133,7 @@ public class Russia_Tests {
 		//  When: ravage
 		//  Then: we push 1
 		Spirit spirit = gameState.Spirits[0];
-		await a5.SpaceSpec.When_Ravaging()
+		await a5.SpaceSpec.When_CardRavages()
 			.AwaitUser( u => u.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( a1.Label ) )
 			.ShouldComplete("Ravage");
 

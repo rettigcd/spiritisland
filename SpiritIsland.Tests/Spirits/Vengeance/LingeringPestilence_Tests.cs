@@ -44,7 +44,7 @@ public class LingeringPestilence_Tests {
 		gameState.IslandWontBlight();
 
 		// When: the city ravages
-		await space.SpaceSpec.When_Ravaging();
+		await space.SpaceSpec.When_CardRavages();
 
 		// Then: presence is destroyed
 		self.Presence.CountOn( space ).ShouldBe(1);

@@ -46,7 +46,7 @@ public class HeartOfWildFire_Tests {
 		tokens.InitDefault(Human.Town, 1);
 
 		// When: adding blight to space from ravage
-		await tokens.SpaceSpec.When_Ravaging();
+		await tokens.SpaceSpec.When_CardRavages();
 
 		// Then: presence should still be gone
 		spirit.Presence.IsOn(tokens).ShouldBeFalse();

@@ -22,9 +22,27 @@ var gameState = new GameConfiguration()
 	.ConfigSpirits(RiverSurges.Name)
 	.BuildGame()
 
-# Invaders Building
+# Invaders Cards
 
-## Flow:
+## Get a Card for a specific SPACE
+```
+var card1 = space.BuildInvaderCard(); // card will match other spaces also.
+var card2 = spaceSpec.BuildInvaderCard(); // card will match other spaces also.
+```
+## Get a Card for a specific TERRAIN
+```
+var terrainCard = InvaderDeckBuilder.Stage1( Terrain.Sand );
+var coast = InvaderDeckBuilder.Stage2Coastal;
+```
+
+DO NOT
+- Pull it from InvaderDeckBuilder.Level1Cards
+- Search the Deck until it matches land (gs.InvaderDeck.Unreavealed.First(x=>x.Matches(a1)))
+- Search the Deck until title matches
+
+## Build
+
+### Flow:
 - BuildSlot.ActivateCard( card )
 - Engine.ActivateCard( card )
 - Adds Build Tokens, then.. does builds.
@@ -38,7 +56,7 @@ await new BuildSlot().ActivateCard(
 	_gameState
 );
 ```
-# Invaders Ravaging
+## Ravaging
 
 Flow:
 	RavageSlot.ActivateCard( card )

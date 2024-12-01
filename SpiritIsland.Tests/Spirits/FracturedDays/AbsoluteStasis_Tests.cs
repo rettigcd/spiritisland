@@ -125,7 +125,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis( source.Label );
 
 		// When: Invaders Explore - destination
-		await destination.When_Exploring();
+		await destination.When_CardExplores();
 
 		//  Then: no explorers in Jungle spaces.
 		cfg.GameState.Tokens[destination].HumanOfTag(Human.Explorer).Length.ShouldBe( 0 );
@@ -146,7 +146,7 @@ public class AbsoluteStasis_Tests {
 		await Given_SpacePutInStasis( destination.Label );
 
 		// When: Invaders Explore - destination
-		await destination.When_Exploring();
+		await destination.When_CardExplores();
 
 		//  Then: no explorers in Jungle spaces.
 		cfg.GameState.Tokens[destination].HumanOfTag( Human.Explorer ).Length.ShouldBe( 0 );
@@ -167,7 +167,7 @@ public class AbsoluteStasis_Tests {
 		Assert_SpaceHasCountTokens(space, Human.Town, 0 );
 
 		// When: Invaders Build
-		await space.When_Building();
+		await space.When_CardBuilds();
 
 		//  Then: no explorers in Jungle spaces.
 		Assert_SpaceHasCountTokens( space, Human.Town, 0 );
@@ -188,7 +188,7 @@ public class AbsoluteStasis_Tests {
 		Assert_SpaceHasCountTokens( space, Human.Town, 0 );
 
 		// When: Invaders Ravage
-		await space.When_Ravaging();
+		await space.When_CardRavages();
 
 		//  Then: explorers and dahan unchanged
 		Assert_SpaceHasCountTokens( space, Human.Explorer, 1 );
