@@ -43,7 +43,9 @@ public static class Has {
 	static public XFilter Two2DahanAndCity => new XFilter( "has 2 dahan", ctx => 2 <= ctx.Space.Dahan.CountAll && ctx.Space.Has( Human.City ) );
 	static public XFilter DahanAndExplorers => new XFilter( "land with Dahan", x => x.Dahan.Any && x.Space.Has( Human.Explorer ) );
 	static public XFilter BeastDiseaseOr2Dahan => new XFilter( "land with beast, disease or at last 2 dahan", (TargetSpaceCtx spaceCtx ) => { var tokens = spaceCtx.Space; return tokens.Beasts.Any || tokens.Disease.Any || 2 <= tokens.Dahan.CountAll; } );
-	static public XFilter Disease => new XFilter( "disease", spaceCtx => spaceCtx.Space.Disease.Any && spaceCtx.Space.HasInvaders() );
+	static public XFilter Disease => new XFilter( "disease", spaceCtx => spaceCtx.Space.Disease.Any );
+
+	static public XFilter DiseaseAndInvaders => new XFilter("disease", spaceCtx => spaceCtx.Space.Disease.Any && spaceCtx.Space.HasInvaders());
 
 	static public XFilter DahanOrAdjacentTo( int adjacentDahanThreshold ) => new XFilter(
 		$"a land with dahan or adjacent to at least {adjacentDahanThreshold} dahan",

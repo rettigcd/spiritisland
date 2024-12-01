@@ -86,9 +86,9 @@ public class RampantGreen_GrowthTests : BoardAGame {
 	[InlineDataAttribute( 5, 2, "plant" )]
 	[InlineDataAttribute( 6, 2, "2 plant" )]
 	[InlineDataAttribute( 7, 3, "2 plant" )]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
-		fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+		return fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -99,9 +99,9 @@ public class RampantGreen_GrowthTests : BoardAGame {
 	[InlineDataAttribute(4,2)]
 	[InlineDataAttribute(5,3)]
 	[InlineDataAttribute(6,4)]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount){
+	public Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
 		var fixture = new ConfigurableTestFixture { Spirit = new ASpreadOfRampantGreen() };
-		fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		return fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
 }

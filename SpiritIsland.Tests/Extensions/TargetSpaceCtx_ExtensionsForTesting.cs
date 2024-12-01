@@ -8,19 +8,6 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 			space.Blight.Init(0); // don't trigger events
 	}
 
-	[Obsolete("Don't use fear.PushOntoDeck")]
-	public static void ActivateFearCard( this Spirit _, IFearCard fearCard ) {
-		var fear = GameState.Current.Fear;
-		fear.Deck.Pop();
-		fear.PushOntoDeck(fearCard);
-		fear.Add( fear.PoolMax );
-	}
-
-	public static void ElevateTerrorLevelTo( this Spirit _, int desiredFearLevel ) {
-		while(GameState.Current.Fear.TerrorLevel < desiredFearLevel)
-			GameState.Current.Fear.Deck.Pop();
-	}
-
 	#region Log Asserting
 
 	public static void Assert_Ravaged( this Queue<string> log, params string[] spaces ) {

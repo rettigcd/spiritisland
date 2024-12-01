@@ -126,9 +126,9 @@ public class Ocean_GrowthTests : BoardAGame {
 	[InlineDataAttribute(5,1,"moon water earth")]
 	[InlineDataAttribute(6,1,"moon 2 water earth")]
 	[InlineDataAttribute(7,2, "moon 2 water earth" )]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-		fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		return fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -139,9 +139,9 @@ public class Ocean_GrowthTests : BoardAGame {
 	[InlineDataAttribute(4,3)]
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,5)]
-	public void CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+	public Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-		fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		return fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
 	[Trait("Spirit","SetupAction")]

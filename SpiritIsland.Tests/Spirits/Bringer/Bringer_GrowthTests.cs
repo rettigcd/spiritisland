@@ -85,9 +85,9 @@ public class Bringer_GrowthTests : BoardAGame {
 	[InlineDataAttribute(5,4, "moon air" )]
 	[InlineDataAttribute(6,4, "moon air" )]
 	[InlineDataAttribute(7,5, "moon air" )]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
-		fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+		return fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -98,9 +98,9 @@ public class Bringer_GrowthTests : BoardAGame {
 	[InlineDataAttribute(4,3,"")]
 	[InlineDataAttribute(5,3,"")]
 	[InlineDataAttribute(6,3,"")]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
+	public Task CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
 		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
-		fixture.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, elements);
+		return fixture.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, elements);
 	}
 
 	void Assert_GainsFirstMinorCard() {

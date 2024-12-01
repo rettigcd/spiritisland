@@ -114,8 +114,8 @@ public class ConfigurableTestFixture {
 
 	#region Canned Tests
 
-	public void VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-		Spirit.Presence.Energy.Given_SlotsRevealed( revealedSpaces );
+	public async Task VerifyEnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+		await Spirit.Presence.Energy.Given_SlotsRevealed( revealedSpaces );
 		Spirit.EnergyPerTurn.ShouldBe( expectedEnergyGrowth );
 		Spirit.Elements.Summary(false).ShouldBe( elements );
 	}
@@ -123,8 +123,8 @@ public class ConfigurableTestFixture {
 	/// <summary>
 	/// Operates strictly with the Presence tracks.
 	/// </summary>
-	public void VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
-		Spirit.Presence.CardPlays.Given_SlotsRevealed( revealedSpaces );
+	public async Task VerifyCardTrack( int revealedSpaces, int expectedCardPlayCount, string elements ) {
+		await Spirit.Presence.CardPlays.Given_SlotsRevealed( revealedSpaces );
 		Spirit.NumberOfCardsPlayablePerTurn.ShouldBe( expectedCardPlayCount );
 		Spirit.Elements.Summary(false).ShouldBe( elements );
 	}

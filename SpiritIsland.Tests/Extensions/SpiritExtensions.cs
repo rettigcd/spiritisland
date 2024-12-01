@@ -182,10 +182,10 @@ public static class SpiritExtensions {
 
 	#endregion Assert
 
-	internal static void Given_SlotsRevealed( this IPresenceTrack track, int revealedSpaces ) {
+	internal static async Task Given_SlotsRevealed( this IPresenceTrack track, int revealedSpaces ) {
 		for(int i = 1; i < revealedSpaces; i++){
 			Track location = track.RevealOptions.First(); 
-			track.RevealAsync(location).Wait();
+			await track.RevealAsync(location);
 		}
 	}
 

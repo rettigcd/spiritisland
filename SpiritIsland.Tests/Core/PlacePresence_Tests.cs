@@ -99,7 +99,7 @@ public class PlacePresence_Tests {
 		ctx.GameState.Initialize();
 
 		// Given: spirit track is emptied up to an action Track (reclaim 1)
-		ctx.Spirit.Presence.CardPlays.Given_SlotsRevealed(4);
+		await ctx.Spirit.Presence.CardPlays.Given_SlotsRevealed(4);
 		//   And: the action would have an effect
 		ctx.Spirit.Given_HalfOfHandDiscarded();
 

@@ -16,22 +16,22 @@ public sealed class ExplorersAreReluctant_Tests {
 
 		// Disable destroying presence
 		GameState.Current.DisableBlightEffect();
-		_log = GameState.Current.LogInvaderActions();
-		_log.Clear(); // clear out initial Explorer setup
+		var log = GameState.Current.LogInvaderActions();
+		log.Clear(); // clear out initial Explorer setup
 
 		await InvaderPhase.ActAsync( gs );
-		_log.Assert_Built( "A3", "A8" );
-		_log.Assert_Explored( "A2", "A5" );
+		log.Assert_Built( "A3", "A8" );
+		log.Assert_Explored( "A2", "A5" );
 
 		await InvaderPhase.ActAsync( gs );
-		_log.Assert_Ravaged( "A3", "A8" );
-		_log.Assert_Built( "A2", "A5" );
-		_log.Assert_Explored( "A4", "A7" );
+		log.Assert_Ravaged( "A3", "A8" );
+		log.Assert_Built( "A2", "A5" );
+		log.Assert_Explored( "A4", "A7" );
 
 		await InvaderPhase.ActAsync( gs );
-		_log.Assert_Ravaged( "A2", "A5" );
-		_log.Assert_Built( "A4", "A7" );
-		_log.Assert_Explored( "A3", "A8" );
+		log.Assert_Ravaged( "A2", "A5" );
+		log.Assert_Built( "A4", "A7" );
+		log.Assert_Explored( "A3", "A8" );
 
 	}
 
@@ -40,47 +40,28 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Fact]
 	public async Task Level1_SkipExploreInLowestNumberedLand() {
 
-		//Init();
+		// Setup:
+		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		await gs.InvaderDeck.InitExploreSlotAsync();
+		var card = gs.InvaderDeck.Explore.Cards.First();
+		var matchingSpaces = gs.Spaces_Unfiltered.Where(card.MatchesCard).ToList();
+		var toSkip = matchingSpaces[0];
+		var toExplore = matchingSpaces[1];
 
-		//// Disable destroying presence
-		//GameState.Current.DisableBlightEffect();
+		// Given: town on both
+		toSkip.Given_InitSummary("1T@2");
+		toExplore.Given_InitSummary("1T@2");
 
+		//  When: Level 1 activated - "During the next normal explore, skip the lowest-numbered land matching the invader card on each board."
+		await new ExplorersAreReluctant().ActAsync(1);
 
-		//// 1: "During the next normal explore, skip the lowest-numbered land matching the invader card on each board.
-
-		//GrowAndBuyNoCards();
-
-		//_user.WaitForNext();
-
-		//// Ravage:-, Build:Jungle, Explore: Wetland
-		//_log.Assert_Built( "A3", "A8" );    // Jungle
-		//_log.Assert_Explored( "A2", "A5" ); // Water
-
-		//// Given: Explorers Are Reluctant
-		//_spirit.ActivateFearCard(new ExplorersAreReluctant());
-
-		//GrowAndBuyNoCards();
-
-		//// Acknowledge: Explorers are Reluctant
-		//(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
-
-		//_user.WaitForNext();
-
-		//// Ravage:Jungle, Build:Wetland, Explore: Sand
-		//_log.Assert_Ravaged( "A3", "A8" );
-		//_log.Assert_Built( "A2", "A5" );
-		//_log.Assert_Explored( "A7" ); // Skipped A4
-
-		//GrowAndBuyNoCards();
-
-//		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
-
-		// Given: Level 1 activated - "During the next normal explore, skip the lowest-numbered land matching the invader card on each board."
-//		new ExplorersAreReluctant().ActivatedTerrorLevel
-
-		//   When: Explore Card Activated
+		//   And: Explore Card Activated
+		await gs.InvaderDeck.Explore.Execute(gs);
 
 		//  Then: lowest # land is skipped
+		toSkip.Summary.ShouldBe("1T@2");
+		//   And: other was explored
+		toExplore.Summary.ShouldBe("1E@1,1T@2");
 	}
 
 	[Trait( "Invaders", "Explore" )]
@@ -88,115 +69,68 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Fact]
 	public async Task Level2_DelayExplore1Round() {
 
-		Init();
+		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.B );
+		gs.Initialize();
 
-		// Disable destroying presence
-		GameState.Current.DisableBlightEffect();
+		// Given: a card in the explore deck
+		var exploreCard = gs.InvaderDeck.Explore.Cards.Single();
 
-		// 2: Skip the next normal explore.  During the next invader phase, draw an adidtional explore card.
+		//  And: exactly 1 town on each matching space
+		var matches = gs.Spaces_Unfiltered.Where(exploreCard.MatchesCard).ToList();
+		foreach(var match in matches)
+			match.Given_InitSummary("1T@2");
 
-		// Card Advance #1 - Turn up first Explore Card
-		// Card Advance #2 - Advance Explore Card to Build
+		// When: Do Level-2: Skip the next normal explore.  During the next invader phase, draw an adidtional explore card.
+		await new ExplorersAreReluctant().ActAsync(2);
 
-		GrowAndBuyNoCards();
+		//  And: doing Invader phase
+		await gs.InvaderDeck.AdvanceAsync();
 
-		_user.WaitForNext();
-		_log.Assert_Built( "A3", "A8" );
-		_log.Assert_Explored( "A2", "A5" );
+		// Then: Neither Space was explored
+		foreach( var match in matches )
+			match.Summary.ShouldBe("1T@2");
 
-		// Card Advance #3 - End of 1st round
-
-		// Given: Explorers Are Reluctant
-		_spirit.ActivateFearCard( new ExplorersAreReluctant() );
-		//   And: Terror Level 2
-		_spirit.ElevateTerrorLevelTo( 2 );
-
-		GrowAndBuyNoCards();
-		(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
-
-		System.Threading.Thread.Sleep(5);
-
-		// Card Advance #4 - End of 2st round
-
-		_user.WaitForNext();
-		_log.Assert_Ravaged( "A3", "A8" );
-		_log.Assert_Built( "A2", "A5" );
-
-		GrowAndBuyNoCards();
-
-		_user.WaitForNext();
-		_log.Assert_Ravaged( "A2", "A5" );
-		_log.Assert_Explored( "A4", "A7" ); // A4 & A7 happen together with next
-		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
+		//  And: Explore deck still has original
+		gs.InvaderDeck.Explore.Cards.Contains(exploreCard).ShouldBeTrue();
+		//  And: 1 more
+		gs.InvaderDeck.Explore.Cards.Count.ShouldBe(2);
 
 	}
 
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public async Task Level3_DelayExplore1Round() {
+	public async Task Level3_SkipExplore1Round() {
 
-		Init();
+		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.B);
+		gs.Initialize();
 
-		// Disable destroying presence
-		GameState.Current.DisableBlightEffect();
+		// Given: a card in the explore deck
+		var exploreCard = gs.InvaderDeck.Explore.Cards.Single();
 
-		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
+		//  And: exactly 1 town on each matching space
+		var matches = gs.Spaces_Unfiltered.Where(exploreCard.MatchesCard).ToList();
+		foreach( var match in matches )
+			match.Given_InitSummary("1T@2");
 
-		// When Round 1 comes and goes
-		GrowAndBuyNoCards(); // Begin Round 1
-		_user.WaitForNext(); // End Round 1
+		// When: Do level-3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
+		await new ExplorersAreReluctant().ActAsync(3);
 
-		// Then:
-		_log.Assert_Built( "A3", "A8" );
-		_log.Assert_Explored( "A2", "A5" );
+		//  And: doing Invader phase
+		await gs.InvaderDeck.AdvanceAsync();
 
-		// Given: Explorers Are Reluctant
-		_spirit.ActivateFearCard(new ExplorersAreReluctant());
-		_spirit.ElevateTerrorLevelTo( 3 );
+		// Test!!!: And do the flag (escalation) if relavent...
 
-		// When Round 2 comes and goes
-		GrowAndBuyNoCards();
-		(await _fearCard).Card.Text.ShouldBe("Explorers are Reluctant");
-		_user.WaitForNext();
+		// Then: Neither Space was explored
+		foreach( var match in matches )
+			match.Summary.ShouldBe("1T@2");
 
-		// Then:
-		_log.Assert_Ravaged( "A3", "A8" );
-		_log.Assert_Built( "A2", "A5" );
-		_log.Assert_Explored(); // Skipped A4 & A7
+		//  And: Card moved to Build deck
+		gs.InvaderDeck.Build.Cards.Contains(exploreCard).ShouldBeTrue();
 
-		// When: Round 3 comes and goes
-		GrowAndBuyNoCards();
-		_user.WaitForNext();
+		//  And: 1 new card in explore slot
+		gs.InvaderDeck.Explore.Cards.Single().ShouldNotBe(exploreCard);
 
-		// Then:
-		_log.Assert_Ravaged( "A2", "A5" );
-		_log.Assert_Built(/*"A4", "A7"*/); // we are currently filtering out spaces that have no explorers so they don't show up here.
-		_log.Dequeue().ShouldStartWith( "No build due" );
-		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
-
-	}
-
-	void Init() {
-		var powerCard = PowerCard.For(typeof(CallToTend));
-
-		var (user, spirit, _) = TestSpirit.StartGame(powerCard);
-		_user = user;
-		_spirit = spirit;
-		var gs = GameState.Current;
-		_fearCard = gs.WatchForFearCard();
-		_log = gs.LogInvaderActions();
-		_log.Clear(); // skip over initial Explorer setup
-	}
-
-	Task<Log.FearCardRevealed> _fearCard;
-	VirtualTestUser _user;
-	Spirit _spirit;
-	Queue<string> _log;
-
-	void GrowAndBuyNoCards() {
-		_spirit.ClearAllBlight();
-		_user.GrowAndBuyNoCards();
 	}
 
 }

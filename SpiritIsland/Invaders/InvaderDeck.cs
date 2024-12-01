@@ -56,6 +56,9 @@ public class InvaderDeck : IHaveMemento {
 		await InitExploreSlotAsync();
 	}
 
+	/// <summary>
+	/// Moves 1 (or more) cards from the unrealed deck to the Explore deck.
+	/// </summary>
 	public async Task InitExploreSlotAsync() {
 		if(UnrevealedCards.Count == 0) return; // !!! Should this throw a GameOver(Loss) exception?
 		int count = _drawCount[0]; _drawCount.RemoveAt( 0 );

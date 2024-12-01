@@ -2,9 +2,6 @@
 
 public class Quarantine_Tests {
 
-	const string FearAck1 = "Quarantine : 1 : Explore does not affect Coastal lands.";
-	const string FearAck2 = "Quarantine : 2 : Explore does not affect Coastal lands. Lands with Disease are not a source of Invaders when exploring.";
-	const string FearAck3 = "Quarantine : 3 : Explore does not affect Coastal lands. Invaders do not act in lands with Disease.";
 	readonly IFearCard card = new Quarantine();
 
 	void Init() {
@@ -30,23 +27,32 @@ public class Quarantine_Tests {
 	[InlineData(false)] // 1st card is configed as coastal
 	[InlineData(true)]  // A1 A2 A3 are coastland and stopped by Fear
 	public async Task Level1_ExploreDoesNotAffectCoastland( bool activateFearCard ) {
-		Init();
 
-		// Given: Activate fear card
-		if(activateFearCard)
-			_spirit.ActivateFearCard( card );
 
-		GrowAndBuyNoCards();
+		// Setup:
+		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		await gs.InvaderDeck.InitExploreSlotAsync();
+		var card = gs.InvaderDeck.Explore.Cards.First();
+		var matchingSpaces = gs.Spaces_Unfiltered.Where(card.MatchesCard).ToList();
+		var coastal = matchingSpaces.Single(x=>x.SpaceSpec.IsCoastal);
+		var nonCoastal = matchingSpaces.Single(x => !x.SpaceSpec.IsCoastal);
 
-		if(activateFearCard)
-			(await _fearCardRevealed).Msg().ShouldBe(FearAck1);
+		// Given: town on both
+		coastal.Given_InitSummary("1T@2");
+		nonCoastal.Given_InitSummary("1T@2");
 
-		_user.WaitForNext();
-		_log.Assert_Built( "A4", "A7" ); // Sand
+		//  When: Level 1 activated - Explore does not affect Coastal lands
 		if( activateFearCard )
-			_log.Assert_Explored();
-		else
-			_log.Assert_Explored( "A1","A2","A3" );
+			await new Quarantine().ActAsync(1);
+
+		//   And: Explore Card Activated
+		await gs.InvaderDeck.Explore.Execute(gs);
+
+		//  Then: coastal down is skipped
+		coastal.Summary.ShouldBe(activateFearCard?"1T@2":"1E@1,1T@2");
+		//   And: other was explored
+		nonCoastal.Summary.ShouldBe("1E@1,1T@2");
+
 	}
 
 	[Trait( "Invaders", "Explore" )]
@@ -55,38 +61,37 @@ public class Quarantine_Tests {
 	[InlineData(false)]
 	[InlineData(true)]
 	public async Task Level2_ExploreDoesNotAffectCoastlandNorComeFromDiseasedSpots( bool activateFearCard ) {
-		Init();
 
-		// Skip over the coastal build
-		GrowAndBuyNoCards();
+		// Setup:
+		var board = Boards.A;
+		var gs = new GameState(new VitalStrength(),board);
+		var coastalJungle = board[3].ScopeSpace;
+		var inlandJungle = board[8].ScopeSpace;
 
-		_user.WaitForNext(); // start of Round 2
+		// Given: nothing on the coastal Jungle
+		coastalJungle.Given_InitSummary("");
 
-		// The only thing around A8 (a jungle) is a diseased town
-		_spirit.TargetSpace( "A5" ).Space.Given_InitSummary( "" );
-		_spirit.TargetSpace( "A6" ).Space.Given_InitSummary( "" );
-		_spirit.TargetSpace( "A7" ).Space.Given_InitSummary( "1T@2,1Z" ); // town & diZease
-		_spirit.TargetSpace( "A8" ).Space.Given_InitSummary( "" );
+		//   And: the only thing around A8 (a jungle) is a diseased town
+		board[5].Given_InitSummary("");
+		board[6].Given_InitSummary("");
+		board[7].Given_InitSummary("1T@2,1Z"); // town & diZease
+		inlandJungle.Given_InitSummary("");
 
-		// Given: Activate fear card
-		if(activateFearCard) {
-			_spirit.ActivateFearCard( card );
-			_spirit.ElevateTerrorLevelTo( 2 );
-		}
-		_log.Clear();
-
-		GrowAndBuyNoCards();
-
-		if(activateFearCard)
-			(await _fearCardRevealed).Msg().ShouldBe(FearAck2);
-
-		_user.WaitForNext();
-		_log.Assert_Ravaged("A4", "A7"); // Sand
-		_log.Assert_Built( "A1", "A2", "A3" ); // Costal
+		//   And: Played Quarentine-2
+		//     - Explore does not affect Coastal lands.
+		//     - Lands with Disease are not a source of Invaders when exploring.
 		if( activateFearCard )
-			_log.Assert_Explored(); // neither A3 (coastal) nor A8 (hanging off of Diseased town) explored
-		else
-			_log.Assert_Explored( "A3", "A8" );
+			await new Quarantine().ActAsync(2);
+
+		//  When: Exploring in the Jungle
+		await gs.InvaderDeck.UnrevealedCards.First(x=>x.MatchesCard(inlandJungle))
+			.When_Exploring();
+
+		//  Then: no inland explore
+		inlandJungle.Summary.ShouldBe(activateFearCard?"[none]":"1E@1");
+
+		//   And: no coastal explore
+		coastalJungle.Summary.ShouldBe(activateFearCard ? "[none]" : "1E@1");
 
 	}
 
@@ -96,47 +101,58 @@ public class Quarantine_Tests {
 	[InlineData(false)]
 	[InlineData(true)]
 	public async Task Level3_NoCoastalExplore_NoActionInDiseasedLands( bool activateFearCard ) {
-		Init();
 
-		// Skip over the coastal build
-		GrowAndBuyNoCards();
+		var board = Boards.A;
+		var gs = new GameState(new DownpourDrenchesTheWorld(),board);
+		var a4Sand = board[4].ScopeSpace;
+		var a7Sand = board[7].ScopeSpace;
+		var a1Coastal = board[1].ScopeSpace;
+		var a2Coastal = board[2].ScopeSpace;
+		var a3CoastalJungle = board[3].ScopeSpace;
+		var a8Jungle = board[8].ScopeSpace;
 
-		_ = _user.NextDecision; // wait for engine to catch up
+		// Given: Ravage lands (sand) have a disease, dahan, explorer
+		a4Sand.Given_InitSummary("1D@2,1E@1,1Z");
+		a7Sand.Given_InitSummary("1D@2,1E@1,1Z");
 
-		// Ravage lands (sand:A4 & A7) have a disease
-		// The only thing around A8 (a jungle) is a diseased town
-		_spirit.TargetSpace("A4").Space.Given_InitSummary("1E@1,1Z"); // diZease
-		_spirit.TargetSpace("A7").Space.Given_InitSummary("1E@1,1Z"); // diZease
-		// Build lands (Costal:A1..3) all have explorers, A1 has a disease too
-		_spirit.TargetSpace("A1").Space.Given_InitSummary("1E@1,1Z");
-		_spirit.TargetSpace("A2").Space.Given_InitSummary("1E@1");
-		_spirit.TargetSpace("A3").Space.Given_InitSummary("1E@1");
-		// Explore lands (jungle:A3 & A8) have a source (A3 is coastal, A8 is town in A5)
-		_spirit.TargetSpace("A5").Space.Given_InitSummary("1T@2");
-		_spirit.TargetSpace("A8").Space.Given_InitSummary("1Z");
+		//   And: Build lands (Costal:A1..3) all have explorers, (A1 has a disease too)
+		a1Coastal.Given_InitSummary("1E@1");  // Disease added to a1 below
+		a2Coastal.Given_InitSummary("1E@1");
+		a3CoastalJungle.Given_InitSummary("1E@1");
 
-		// Given: Activate fear card
-		if(activateFearCard) {
-			_spirit.ActivateFearCard( card );
-			_spirit.ElevateTerrorLevelTo(3);
-		}
+		// Explore lands (jungle:A3 & A8) have a source and disease
+		a1Coastal.Given_HasTokens("1Z"); // A3 is coastal so its source is the ocean
+		a8Jungle.Given_InitSummary("1Z"); // 
+		board[5].Given_InitSummary("1T@2"); // A8 source
 
-		_log.Clear();
-		GrowAndBuyNoCards();
-
+		// And: quarantine-3
+		//		if( activateFearCard )
 		if(activateFearCard)
-			(await _fearCardRevealed).Msg().ShouldBe( FearAck3 );
+			await new Quarantine().ActAsync(3);
 
-		_ = _user.NextDecision; // Wait for invader actions to finish
-		if( activateFearCard) {
-			_log.Assert_Ravaged();            // Sand (all hvae disease)
-			_log.Assert_Built( "A1: build stopped by Quarantine", "A2", "A3" );  // Coastal (A1 has disease)
-			_log.Assert_Explored();           // A3 is coastland, A8 has a disease
-		} else {
-			_log.Assert_Ravaged ("A4", "A7");         // Sand
-			_log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
-			_log.Assert_Explored( "A3", "A8" );
-		}
+		// When: Ravaging in the Sand
+		await gs.InvaderDeck.UnrevealedCards.First(x => x.MatchesCard(board[4]))
+			.When_Ravaging();
+
+		// Then: Ravage didn't happen in either space  (explorers are still around)
+		string expectedRavageResult = activateFearCard ? "1D@2,1E@1,1Z" : "1D@1,1Z";
+		a4Sand.Summary.ShouldBe(expectedRavageResult);
+		a7Sand.Summary.ShouldBe(expectedRavageResult);
+
+		// When: building on the coast
+		await InvaderCard.Stage2Costal().When_Building();
+
+		// Then: 1 Build didn't happened
+		a1Coastal.Summary.ShouldBe(activateFearCard?"1E@1,1Z": "1E@1"); // not here, disease!
+		a2Coastal.Summary.ShouldBe("1E@1,1T@2");       // this built
+		a3CoastalJungle.Summary.ShouldBe("1E@1,1T@2"); // this too!
+
+		// When: exploring Jungle
+		await gs.InvaderDeck.UnrevealedCards.First(x => x.MatchesCard(board[8])).When_Exploring();
+
+		// Then: No explore happend
+		a3CoastalJungle.Summary.ShouldBe(activateFearCard ? "1E@1,1T@2" : "2E@1,1T@2"); // original
+		a8Jungle.Summary.ShouldBe(activateFearCard ? "1Z" : "1E@1,1Z");
 
 	}
 

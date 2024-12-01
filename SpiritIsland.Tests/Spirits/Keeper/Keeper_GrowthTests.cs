@@ -173,9 +173,9 @@ public class Keeper_GrowthTests : BoardAGame {
 	[InlineDataAttribute( 6, 7, "sun plant" )]
 	[InlineDataAttribute( 7, 8, "sun plant" )]
 	[InlineDataAttribute( 8, 9, "sun plant" )]
-	public void EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
-		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Theory]
@@ -185,9 +185,9 @@ public class Keeper_GrowthTests : BoardAGame {
 	[InlineDataAttribute( 4, 3 )]
 	[InlineDataAttribute( 5, 4 )]
 	[InlineDataAttribute( 6, 5 )]
-	public void CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
+	public Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Keeper() };
-		fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
+		return fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 	}
 
 	void AddBlight( SpaceSpec space ) {

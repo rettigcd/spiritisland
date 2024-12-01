@@ -2,160 +2,108 @@
 
 public sealed class ImmigrationSlows_Tests {
 
-	const string FearAck1 = "Immigration Slows : 1 : During the next normal build, skip the lowest-numbered land matching the Invader card on each board.";
-	const string FearAck2 = "Immigration Slows : 2 : Skip the next normal Build. The Build card remains in place instead of shifting left.";
-	const string FearAck3 = "Immigration Slows : 3 : Skip the next normal Build. The Build card shifts left as usual.";
-	readonly IFearCard _fearCard = new ImmigrationSlows();
-
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public async Task Level1_SkipBuildInLowestNumberedLand() {
-		var powerCard = PowerCard.For(typeof(CallToTend));
-		var (user, spirit, _) = TestSpirit.StartGame(powerCard);
-		_user = user; 
-		_spirit = spirit;
-		var gs = GameState.Current;
-		_log = gs.LogInvaderActions();
-		var fearCard = gs.WatchForFearCard();
-		_log.Clear(); // skip over initial Explorer setup
 
+		// Setup:
+		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		await gs.InvaderDeck.InitExploreSlotAsync();
+		await gs.InvaderDeck.AdvanceAsync();
 
-		// 1: During the next normal build, skip the lowest-numbered land matching the invader card on each board.
+		// Given 1 build card
+		var card = gs.InvaderDeck.Build.Cards.Single();
 
-		GrowAndBuyNoCards();
-		_user.WaitForNext(); // start of round 2
+		//   And: 2 matching spaces
+		var matchingSpaces = gs.Spaces_Unfiltered.Where(card.MatchesCard).ToArray();
+		matchingSpaces.Length.ShouldBe(2);
+		var toSkip = matchingSpaces[0];
+		var toBuild = matchingSpaces[1];
 
-		_log.Assert_Built( "A3", "A8" );
-		_log.Assert_Explored( "A2", "A5" );
+		// Given: explorer on both
+		toSkip.Given_InitSummary("1E@1");
+		toBuild.Given_InitSummary("1E@1");
 
-		// Given: Explorers Are Reluctant
-		_spirit.ActivateFearCard( _fearCard );
-		GrowAndBuyNoCards();
-		(await fearCard).Msg().ShouldBe( FearAck1 ); // _user.AcknowledgesFearCard( FearAck1 );
-		_user.WaitForNext(); // start of round 3
+		//  When: Level 1 activated - During the next normal build, skip the lowest-numbered land matching the Invader card on each board.";
+		await new ImmigrationSlows().ActAsync(1);
 
-		_log.Assert_Ravaged( "A3", "A8" );
-		_log.Assert_Built( "A2: build stopped", "A5" ); // Skipped A2
-		_log.Assert_Explored( "A4", "A7" ); 
+		//   And: Build Slot Activated
+		await gs.InvaderDeck.Build.Execute(gs);
 
-		GrowAndBuyNoCards();
-		_user.WaitForNext(); // start of round 4
-
-		_log.Assert_Ravaged( "A2", "A5" );
-		_log.Assert_Built( "A4", "A7" );
-		_log.Assert_Explored( "A3", "A8" );
-
+		//  Then: lowest # land is skipped
+		toSkip.Summary.ShouldBe("1E@1");
+		//   And: other was built on 
+		toBuild.Summary.ShouldBe("1E@1,1T@2");
 	}
 
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
 	public async Task Level2_DelayBuild1Round() {
-		// 2: Skip the next normal build. The build card remains in place instead of shifting left.
-		// (_user, _ctx) = TestSpirit.StartGame(PowerCard.For<CallToTend>());
 
-		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
-		var gs = new GameState( spirit, Board.BuildBoardA() ) {
-			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
-		};
-		var fearCard = gs.WatchForFearCard();
-		gs.Initialize();   // Card #1 => Explore
-		GameState.Current.DisableBlightEffect();
-		_log = GameState.Current.LogInvaderActions();
-		_log.Clear(); // skip over initial Explorer setup
+		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		await gs.InvaderDeck.InitExploreSlotAsync();
+		await gs.InvaderDeck.AdvanceAsync();
 
-		// Round 1
-		await InvaderPhase.ActAsync(gs); // Card #2 - Advance to: Build then Explore
-		_log.Assert_Built( "A3", "A8" );
-		_log.Assert_Explored( "A2", "A5" );
-		_log.Clear();
+		// Given: a card in the build deck
+		var buildCard = gs.InvaderDeck.Build.Cards.Single();
 
-		// Given: Explorers Are Reluctant & Terror Level 2
-		ActivateFearCard( gs, _fearCard );
-		ElevateTerrorLevelTo( 2 );
+		//  And: exactly 1 explorer on each matching space
+		var matches = gs.Spaces_Unfiltered.Where(buildCard.MatchesCard).ToList();
+		foreach( var match in matches )
+			match.Given_InitSummary("1E@1");
 
-		// When #1: Do Invader phase
-		Task t = InvaderPhase.ActAsync(gs);
-		(await fearCard).Msg().ShouldBe( FearAck2 );
-		await t.ShouldComplete();
+		// When: Do Level-2: Skip the next normal Build. The Build card remains in place instead of shifting left.
+		await new ImmigrationSlows().ActAsync(2);
 
-		// Then #1: there was a Ravage & Explore but NO build
-		_log.Assert_Ravaged( "A3", "A8" );
-		_log.Assert_Explored("A4","A7");
-		_log.Clear();
+		//  And: doing Invader phase
+		await gs.InvaderDeck.AdvanceAsync();
 
-		// When #2: Do Invader phase again
-		await InvaderPhase.ActAsync(gs);
+		// Then: Neither Space was built on
+		foreach( var match in matches )
+			match.Summary.ShouldBe("1E@1");
 
-		// Then #2: we got 2 builds and an explore but no Ravage
-		_log.Assert_Built( "A2", "A5" ); // double up Builds
-		_log.Assert_Built( "A4", "A7" ); // double up Builds
-		_log.Assert_Explored( "A3", "A8" );
-
+		//  And: Build deck still has original
+		gs.InvaderDeck.Build.Cards.Contains(buildCard).ShouldBeTrue();
+		//  And: 1 more
+		gs.InvaderDeck.Build.Cards.Count.ShouldBe(2);
 	}
-
-	static void ActivateFearCard( GameState gs, IFearCard fearCard ) {
-		var fear = gs.Fear;
-		fear.Deck.Pop();
-		fear.PushOntoDeck(fearCard);
-		fear.Add( fear.PoolMax );
-	}
-
-	static void ElevateTerrorLevelTo( int desiredFearLevel ) {
-		while(GameState.Current.Fear.TerrorLevel < desiredFearLevel)
-			GameState.Current.Fear.Deck.Pop();
-	}
-
 
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public async void Level3_DelayExplore1Round() {
-		var powerCard = PowerCard.For(typeof(CallToTend));
-		var (user, spirit, _) = TestSpirit.StartGame(powerCard);
-		_user = user;
-		_spirit = spirit;
-		var gs = GameState.Current;
-		var fearCard = gs.WatchForFearCard();
-		_log = gs.LogInvaderActions();
-		_log.Clear(); // skip over initial Explorer setup
+	public async void Level3_SkipBuild1Round() {
 
-		// 3: Skip the next normal explore, but still reveal a card. Perform the flag if relavant. Cards shift left as usual.
+		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.B);
+		gs.Initialize();
+		var invaders = gs.InvaderDeck;
 
-		GrowAndBuyNoCards();
+		// Given: a card in the build deck
+		await invaders.AdvanceAsync();
+		var buildCard = invaders.Build.Cards.Single();
 
-		_user.WaitForNext();
-		_log.Assert_Built( "A3", "A8" );
-		_log.Assert_Explored( "A2", "A5" );
+		//  And: exactly 1 explorer on each matching space
+		var matches = gs.Spaces_Unfiltered.Where(buildCard.MatchesCard).ToList();
+		foreach( var match in matches )
+			match.Given_InitSummary("1E@1");
 
-		// Given: Explorers Are Reluctant
-		_spirit.ActivateFearCard( _fearCard );
-		_spirit.ElevateTerrorLevelTo( 3 );
+		// When: Do level-3: "Skip the next normal Build. The Build card shifts left as usual."
+		await new ImmigrationSlows().ActAsync(3);
 
-		GrowAndBuyNoCards();
-		(await fearCard).Msg().ShouldBe( FearAck3 );
+		//  And: doing Invader phase
+		await invaders.AdvanceAsync();
 
-		_user.WaitForNext();
-		_log.Assert_Ravaged( "A3", "A8" );
-		_log.Assert_Explored("A4", "A7");
+		// Then: Neither Space was built on
+		foreach( var match in matches )
+			match.Summary.ShouldBe("1E@1");
 
-		GrowAndBuyNoCards();
+		//  And: Card moved to Ravage deck
+		invaders.Ravage.Cards.Contains(buildCard).ShouldBeTrue();
 
-		_user.WaitForNext();
-		_log.Assert_Ravaged( "A2", "A5" );
-		_log.Assert_Built("A4", "A7"); // normal build
-		_log.Assert_Explored( "A3", "A8" ); // A4 & A7 happen together with next
+		//  And: 1 new card in explore slot
+		invaders.Build.Cards.Single().ShouldNotBe(buildCard);
 
-	}
-
-	VirtualTestUser _user;
-	Spirit _spirit;
-	Queue<string> _log;
-
-	void GrowAndBuyNoCards() {
-		_spirit.ClearAllBlight();
-		_user.GrowAndBuyNoCards();
 	}
 
 }

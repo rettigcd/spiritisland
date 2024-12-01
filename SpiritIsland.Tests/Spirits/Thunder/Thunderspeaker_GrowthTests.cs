@@ -68,9 +68,9 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 	[InlineDataAttribute(4,2, "fire air" )]
 	[InlineDataAttribute(5,2, "sun fire air" )]
 	[InlineDataAttribute(6,3, "sun fire air" )]
-	public void EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
+	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
-		fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -82,10 +82,10 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 	[InlineDataAttribute(5,3,1)]
 	[InlineDataAttribute(6,3,1)]
 	[InlineDataAttribute(7,4,1)]
-	public void CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
+	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
 		var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
-		fix.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
-		fix.VerifyReclaim1Count( reclaimCount );
+		await fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
+		fix.VerifyReclaim1Count(reclaimCount);
 	}
 
 }

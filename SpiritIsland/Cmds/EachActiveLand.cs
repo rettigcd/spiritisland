@@ -15,8 +15,8 @@ public class EachActiveLand( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 
 		foreach(Board board in gameState.Island.Boards) {
 			Spirit spirit = board.FindSpirit();
-			var unfiltered = board.Spaces.Select( spirit.Target );
-			var filtered = _landCriteria.Filter( unfiltered );
+			var unfiltered = board.Spaces.Select( spirit.Target ).ToArray();
+			var filtered = _landCriteria.Filter( unfiltered ).ToArray();
 			foreach(TargetSpaceCtx ss in filtered)
 				for(int i=0;i<board.InvaderActionCount;++i)
 					await _spaceAction.ActAsync( ss );
