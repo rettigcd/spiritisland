@@ -6,7 +6,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel("Invaders do not Explore into lands with at least 2 Dahan." )]
-	public Task Level1( GameState gs )
+	public override Task Level1( GameState gs )
 		=> StopExploreInLandsWithAtLeast2Dahan
 			.In().EachActiveLand()
 			.ActAsync( gs );
@@ -19,7 +19,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 	);
 
 	[FearLevel("Invaders do not Build in lands where Dahan outnumber Town/City." )]
-	public Task Level2( GameState gs )
+	public override Task Level2( GameState gs )
 		=> StopBuildWhereDahanOutnumberTownsCities
 			.In().EachActiveLand()
 			.ActAsync( gs );
@@ -33,7 +33,7 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 
 
 	[FearLevel("Invaders do not Build in lands with Dahan." )]
-	public Task Level3( GameState gs )
+	public override Task Level3( GameState gs )
 		=> DoNotBuildInLandsWithDahan
 			.In().EachActiveLand()
 			.ActAsync( gs );

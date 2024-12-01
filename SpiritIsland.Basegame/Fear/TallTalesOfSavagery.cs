@@ -6,7 +6,7 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each player removes 1 Explorer from a land with Dahan." )]
-	public Task Level1( GameState ctx )
+	public override Task Level1( GameState ctx )
 		=> Cmd.RemoveExplorers( 1 )
 			.From().SpiritPickedLand().Which( Has.DahanAndExplorers )
 			.ForEachSpirit()
@@ -14,14 +14,14 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 
 
 	[FearLevel( 2, "Each player removes 2 Explorer or 1 Town from a land with Dahan." )]
-	public Task Level2( GameState ctx )
+	public override Task Level2( GameState ctx )
 		=> Cmd.Pick1( Cmd.RemoveExplorers( 2 ), Cmd.RemoveTowns( 1 ) )
 			.From().SpiritPickedLand().Which( Has.DahanAndExplorerOrTown )
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
 	[FearLevel( 3, "Remove 2 Explorer or 1 Town from each land with Dahan. Then, remove 1 City from each land with at least 2 Dahan." )]
-	public Task Level3( GameState ctx )
+	public override Task Level3( GameState ctx )
 		=> Cmd.Multiple(
 			RemoveTownOr2Explorers.On().EachActiveLand().Which( Has.DahanAndExplorerOrTown ),
 			Cmd.RemoveCities( 1 ).On().EachActiveLand().Which( Has.Two2DahanAndCity )

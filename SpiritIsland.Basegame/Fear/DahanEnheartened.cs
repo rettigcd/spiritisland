@@ -6,7 +6,7 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each player may Push 1 Dahan from a land with Invaders or Gather 1 Dahan into a land with Invaders." )]
-	public async Task Level1( GameState ctx ) {
+	public override async Task Level1( GameState ctx ) {
 		await PushOrGather1
 			.In().SpiritPickedLand().Which( Has.Invaders )
 			.ForEachSpirit()
@@ -14,14 +14,14 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 	}
 
 	[FearLevel( 2, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage if Dahan are present." )]
-	public Task Level2( GameState ctx ) 
+	public override Task Level2( GameState ctx ) 
 		=> Gather2DahanThen1DamageIfDahan
 			.In().SpiritPickedLand().AllDifferent()
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player chooses a different land. In chosen lands: Gather up to 2 Dahan, then 1 Damage per Dahan present." )]
-	public Task Level3( GameState ctx )
+	public override Task Level3( GameState ctx )
 		=> Gather2DahanThenDamagePerDahan.In().SpiritPickedLand()
 			.AllDifferent()
 			.ForEachSpirit()

@@ -8,7 +8,7 @@ public class InvaderPhase {
 		await gs.RunPreInvaderActions();
 
 		// Fear
-		await gs.Fear.Apply();
+		await gs.Fear.ResolveActivatedCards();
 		gs.CheckWinLoss();
 
 		// Invaders Actions

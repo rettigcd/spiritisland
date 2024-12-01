@@ -37,7 +37,7 @@ public class Depopulation_Tests {
 		Given_FearLevelIs(3);
 
 		// When: Doing Invader phase (fear+ragage)
-		await _gameState.Fear.Apply()
+		await _gameState.Fear.ResolveActivatedCards()
 			.AwaitUser( async u => { 
 				// u.NextDecision.HasPrompt( "Activating Fear" ).HasOptions(  ).Choose( "Depopulation" );
 				(await _fearCard).Card.Text.ShouldBe("Depopulation");

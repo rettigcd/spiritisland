@@ -6,7 +6,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Each player chooses a different Coastal land with Dahan. In each: 1 Damage per Dahan." )]
-	public Task Level1( GameState ctx ) {
+	public override Task Level1( GameState ctx ) {
 
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			spaceCtx => spaceCtx.DamageInvaders( spaceCtx.Dahan.CountAll )
@@ -15,7 +15,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	}
 
 	[FearLevel(2, "Each player chooses a different Coastal land. In each: Gather up to 1 Dahan. 1 Damage per Dahan." )]
-	public Task Level2( GameState ctx ) { 
+	public override Task Level2( GameState ctx ) { 
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			async spaceCtx => {
 				await spaceCtx.GatherUpToNDahan( 1 );
@@ -25,7 +25,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 	}
 
 	[FearLevel(3, "Each player chooses a different Coastal land. In each: Gather up to 1 Dahan. 2 Damage per Dahan." )]
-	public Task Level3( GameState ctx ) {
+	public override Task Level3( GameState ctx ) {
 		return SpiritsActOnDifferentCostalLands( ctx, 
 			async spaceCtx => {
 				await spaceCtx.GatherUpToNDahan( 1 );

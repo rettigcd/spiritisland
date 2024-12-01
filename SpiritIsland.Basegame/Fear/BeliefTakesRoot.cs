@@ -6,13 +6,13 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( "Defend 2 in all lands with Presence." )]
-	public Task Level1( GameState gs ) 
+	public override Task Level1( GameState gs ) 
 		=> Cmd.Defend( 2 )
 			.On().EachActiveLand().Which( Has.AnySpiritPresence )
 			.ActAsync( gs );
 
 	[FearLevel( "Defend 2 in all lands with Presence. Each Spirit gains 1 Energy per Sacred Site they have in lands with Invaders." )]
-	public async Task Level2( GameState gs ) {
+	public override async Task Level2( GameState gs ) {
 		await Cmd.Defend( 2 )
 			.On().EachActiveLand().Which( Has.AnySpiritPresence )
 			.ActAsync( gs );
@@ -23,7 +23,7 @@ public class BeliefTakesRoot : FearCardBase, IFearCard {
 	}
 
 	[FearLevel( "Each player chooses a different land and removes up to 2 Health worth of Invaders per Presence there." )]
-	public Task Level3( GameState gs )
+	public override Task Level3( GameState gs )
 		=> Cmd.RemoveUpToVariableHealthOfInvaders( "Remove 2 Health worth of invaders per Presence there.", ctx => 2 * ctx.Presence.Count )
 			.From().SpiritPickedLand()
 			.ForEachSpirit()

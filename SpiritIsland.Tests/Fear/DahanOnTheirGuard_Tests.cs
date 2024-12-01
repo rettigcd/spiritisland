@@ -29,7 +29,7 @@ public class DahanOnTheirGuard_Tests {
 		Given_DahanAndTowns( 2, 2 );
 
 		// When: Doing Invader phase (fear+ragage)
-		await gameState.Fear.Apply().ShouldComplete( "fear");
+		await gameState.Fear.ResolveActivatedCards().ShouldComplete( "fear");
 		await invaderCard.When_Ravaging();
 
 		// Then: all dahan killed
@@ -46,7 +46,7 @@ public class DahanOnTheirGuard_Tests {
 		// When: Doing Invader phase (fear+ragage)
 
 		gameState.Fear.Add( 4 );
-		await gameState.Fear.Apply().AwaitUser( async (user) => {
+		await gameState.Fear.ResolveActivatedCards().AwaitUser( async (user) => {
 			(await _fearCard).Msg().ShouldBe("Dahan on their Guard : 1 : In each land, Defend 1 per Dahan.");
 		} ).ShouldComplete(DahanOnTheirGuard.Name);
 

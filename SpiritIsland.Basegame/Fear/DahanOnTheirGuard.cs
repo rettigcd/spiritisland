@@ -6,19 +6,19 @@ public class DahanOnTheirGuard : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "In each land, Defend 1 per Dahan." )]
-	public Task Level1( GameState ctx ) {
+	public override Task Level1( GameState ctx ) {
 		DefendIt( s => s.Dahan.CountAll );
 		return Task.CompletedTask;
 	}
 
 	[FearLevel( 2, "In each land with Dahan, Defend 1, plus an additional Defend 1 per Dahan." )]
-	public Task Level2( GameState ctx ) {
+	public override Task Level2( GameState ctx ) {
 		DefendIt( s => 1 + s.Dahan.CountAll );
 		return Task.CompletedTask;
 	}
 
 	[FearLevel( 3, "In each land, Defend 2 per Dahan." )]
-	public Task Level3( GameState ctx ) {
+	public override Task Level3( GameState ctx ) {
 		DefendIt( s => 2 * s.Dahan.CountAll );
 		return Task.CompletedTask;
 	}

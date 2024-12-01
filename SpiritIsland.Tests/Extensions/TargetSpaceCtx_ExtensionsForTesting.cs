@@ -8,6 +8,7 @@ internal static class TargetSpaceCtx_ExtensionsForTesting {
 			space.Blight.Init(0); // don't trigger events
 	}
 
+	[Obsolete("Don't use fear.PushOntoDeck")]
 	public static void ActivateFearCard( this Spirit _, IFearCard fearCard ) {
 		var fear = GameState.Current.Fear;
 		fear.Deck.Pop();

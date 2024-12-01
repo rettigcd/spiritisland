@@ -77,13 +77,16 @@ static public class GameState_Extensions {
 		return blightedSource.Task;
 	}
 
+	/// <summary>
+	/// Resolves when a FearCard is revealed.
+	/// </summary>
 	static public Task<FearCardRevealed> WatchForFearCard(this GameState gs) {
-		var blightedSource = new TaskCompletionSource<FearCardRevealed>();
+		var fearSource = new TaskCompletionSource<FearCardRevealed>();
 		gs.NewLogEntry += (entry) => {
 			if (entry is FearCardRevealed fcr)
-				blightedSource.TrySetResult(fcr);
+				fearSource.TrySetResult(fcr);
 		};
-		return blightedSource.Task;
+		return fearSource.Task;
 	}
 
 }

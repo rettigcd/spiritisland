@@ -15,7 +15,7 @@ public class Fear_Tests {
 	[Fact]
 	public void TriggerDirect() {
 		Given_EnoughFearToTriggerCard();
-		_ = gs.Fear.Apply(); // When
+		_ = gs.Fear.ResolveActivatedCards(); // When
 		Assert_PresentsFearToUser();
 	}
 

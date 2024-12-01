@@ -6,14 +6,14 @@ public class StrugglesOverFarmland : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "Each player Adds 1 Strife in a land with Blight." )]
-	public Task Level1( GameState gs )
+	public override Task Level1( GameState gs )
 		=> Cmd.AddStrife(1)
 			.In().SpiritPickedLand().Which( Has.Blight )
 			.ForEachSpirit()
 			.ActAsync( gs );
 
 	[FearLevel( 2, "Each player Adds 1 Strife to a Town or Adds 1 Strife in a land with Blight." )]
-	public Task Level2( GameState gs )
+	public override Task Level2( GameState gs )
 		=> Cmd.Pick1(
 			Cmd.AddStrife(1).In().SpiritPickedLand().Which( Has.Blight ),
 			Cmd.AddStrifeTo(1,Human.Town).In().SpiritPickedLand()
@@ -22,7 +22,7 @@ public class StrugglesOverFarmland : FearCardBase, IFearCard {
 			.ActAsync( gs );
 
 	[FearLevel( 3, "Each player Adds 1 Strife. In each land with Blight, 1 Invader with Strife does Damage to other Invaders." )]
-	public Task Level3( GameState gs )
+	public override Task Level3( GameState gs )
 		=> Cmd.Multiple(
 			Cmd.AddStrife(1).In().SpiritPickedLand().ForEachSpirit(),
 			StrifedInvaderDamagesOthers.In().EachActiveLand().Which(Has.Blight)

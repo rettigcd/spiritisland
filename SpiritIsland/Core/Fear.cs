@@ -71,6 +71,7 @@ public class Fear : IHaveMemento {
 			mod.HandleFearAdded( space, count, fearType );
 	}
 
+	/// <summary> Adds generated Fear to the fear pool </summary>
 	public void Add( int count ) {
 		if(count == 0) return;
 
@@ -88,39 +89,16 @@ public class Fear : IHaveMemento {
 	}
 
 	/// <summary>
-	/// Flips (resolves) all ActivatedCards
+	/// Flips and Acts() all 'ActivatedCards'
 	/// </summary>
-	/// <returns></returns>
-	/// <exception cref="ArgumentOutOfRangeException"></exception>
-	public async Task Apply() {
+	public async Task ResolveActivatedCards() {
 		while(0 < ActivatedCards.Count) {
 			IFearCard fearCard = ActivatedCards.Pop();
-
-			// show card to each user
-			fearCard.ActivatedTerrorLevel = TerrorLevel;
-
 			await using var actionScope = await ActionScope.Start(ActionCategory.Fear);
-			FlipFearCard( fearCard, true );
-
-			await (TerrorLevel switch {
-				1 => fearCard.Level1( _gs ),
-				2 => fearCard.Level2( _gs ),
-				3 => fearCard.Level3( _gs ),
-				_ => throw new ArgumentOutOfRangeException(),
-			});
-
+			await fearCard.ActAsync(TerrorLevel);
 			++ResolvedCardCount; // record discard cards (for England-6)
 		}
 	}
-
-#pragma warning disable CA1822 // Mark members as static
-#pragma warning disable IDE0060 // Remove unused parameter
-	public void FlipFearCard( IFearCard cardToFlip, bool activating = false ) {
-		cardToFlip.Flipped = true;
-		ActionScope.Current.Log( new FearCardRevealed( cardToFlip ) );
-	}
-#pragma warning restore IDE0060 // Remove unused parameter
-#pragma warning restore CA1822 // Mark members as static
 
 	public int ResolvedCardCount { get; private set; }
 

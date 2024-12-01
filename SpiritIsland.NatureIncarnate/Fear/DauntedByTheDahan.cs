@@ -6,14 +6,14 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "1 Fear / board with Invaders & Dahan. Invaders do -6 Damage (per land) during Ravage." )]
-	public Task Level1( GameState ctx ) 
+	public override Task Level1( GameState ctx ) 
 		=> Cmd.Multiple(
 			OneFearPerBoardWithInvadersAndDahan,
 			LessInvaderDamage
 		).ActAsync(ctx);
 
 	[FearLevel( 2, "1 Fear / board with Invaders & Dahan. Defend 3 in Dahan lands. Invaders do -6 Damage (per land)." )]
-	public Task Level2(	GameState ctx )
+	public override Task Level2(	GameState ctx )
 		=> Cmd.Multiple(
 			OneFearPerBoardWithInvadersAndDahan,
 			LessInvaderDamage,
@@ -21,7 +21,7 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 		).ActAsync(ctx);
 
 	[FearLevel( 3, "1 Fear / board with Invaders & Dahan. Defend 3 & Isolate Dahan lands. Invaders do -6 Damage (per land)." )]
-	public Task Level3( GameState ctx )
+	public override Task Level3( GameState ctx )
 		=> Cmd.Multiple(
 			OneFearPerBoardWithInvadersAndDahan,
 			LessInvaderDamage,

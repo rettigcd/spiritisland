@@ -90,7 +90,7 @@ public class BeliefTakesRoot_Tests {
 
 	async Task When_AddFearApplyFear(Action<VirtualUser> userActions) {
 		_gameState.Fear.Add( 4 );
-		await _gameState.Fear.Apply().AwaitUser( userActions ).ShouldComplete("Fear");
+		await _gameState.Fear.ResolveActivatedCards().AwaitUser( userActions ).ShouldComplete("Fear");
 	}
 
 	const string FearCardAction = "Belief takes Root : 1 : Defend 2 in all lands with Presence.";

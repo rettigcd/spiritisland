@@ -6,7 +6,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "Each player removes 1 Explorer from an Inland land." )]
-	public Task Level1( GameState ctx ) 
+	public override Task Level1( GameState ctx ) 
 		=> Cmd.RemoveExplorers(1)
 			.From().SpiritPickedLand().Which( Is.Inland )
 			.ByPickingToken( Human.Explorer )
@@ -14,7 +14,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.ActAsync(ctx);
 		
 	[FearLevel( 2, "Each player removes 1 Explorer/Town from an Inland land." )]
-	public Task Level2( GameState ctx )
+	public override Task Level2( GameState ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand().Which( Is.Inland )
 			.ByPickingToken( Human.Explorer_Town )
@@ -22,7 +22,7 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 
 	[FearLevel( 3, "Each player removes 1 Explorer/Town from any land." )]
-	public Task Level3( GameState ctx )
+	public override Task Level3( GameState ctx )
 		=> Cmd.RemoveExplorersOrTowns( 1 )
 			.From().SpiritPickedLand()
 			.ByPickingToken( Human.Explorer_Town )

@@ -6,17 +6,17 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel( 1, "City each deal -1 Damage during Ravage. Invaders do not heal Damage at the end of this turn." )]
-	public Task Level1( GameState ctx ) 
+	public override Task Level1( GameState ctx ) 
 		=> ReduceDamageAndDontHeal( 1, Human.City )
 		.ActAsync(ctx);
 
 	[FearLevel( 2, "Town/City each deal -1 Damage during Ravage. Invaders do not heal Damage at the end of this turn." )]
-	public Task Level2( GameState ctx )
+	public override Task Level2( GameState ctx )
 		=> ReduceDamageAndDontHeal( 1, Human.Town_City )
 		.ActAsync( ctx );
 
 	[FearLevel( 3, "Town/City each deal -2 Damage during Ravage. Invaders do not heal Damage at the end of this turn." )]
-	public Task Level3( GameState ctx )
+	public override Task Level3( GameState ctx )
 		=> ReduceDamageAndDontHeal( 2, Human.Town_City )
 		.ActAsync( ctx );
 

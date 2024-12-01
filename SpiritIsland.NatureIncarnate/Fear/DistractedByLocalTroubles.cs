@@ -6,23 +6,23 @@ public partial class DistractedByLocalTroubles : FearCardBase, IFearCard {
 	public string Text => Name;
 
 	[FearLevel(1, "On Each Board, in a land matching a Ravage Card: 1 Damage." )]
-	public Task Level1( GameState gs )
+	public override Task Level1( GameState gs )
 		=> Cmd.DamageInvaders(1)
 			.In().OneLandPerBoard().Which( Is.RavageCardMatch )
 			.ForEachBoard()
 			.ActAsync( gs );
 
 	[FearLevel( 2, "Invaders do -1 Damage per Damage they have taken. On Each Board, in a land matching a Ravage Card: 1 Damage each to up to 2 Invaders." )]
-	public Task Level2( GameState gs )
+	public override Task Level2( GameState gs )
 		=> Cmd.Multiple(
 			ReduceInvaderAttackByDamage,
 			OneDamageEachToUpTo2Invaders
 			.In().OneLandPerBoard().Which( Is.RavageCardMatch )
 			.ForEachBoard()
-        ).ActAsync( gs );
+		).ActAsync( gs );
 
 	[FearLevel( 3, "Invaders do -1 Damage per Damage they have taken. On Each Board, in two lands matching a Ravage Card: 2 Damage (per land)." )]
-	public Task Level3( GameState gs )	
+	public override Task Level3( GameState gs )	
 		=> Cmd.Multiple(
 			ReduceInvaderAttackByDamage,
 			Cmd.DamageInvaders(2)
