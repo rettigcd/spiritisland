@@ -1,18 +1,18 @@
 =========================
 
-	Testing - Create a SoloGame type that has 2 properties
-		.Board shortcut
-		.Spirit shortcut
-
 	SPIRIT - HORIZON - Eyes Watch from the Trees
 	SPIRIT - HORIZON - Fathomless Mud of the Swamp
 	SPIRIT - Ocean - Deeps
+
+5	BUG/UI - Display joined lands.
+3	BUG - on rewind, blight count isn't updated
+3	LOG - "Blight on Card chaanged" => Make more descriptive
+
 
 4	UI - Landscape layout
 	UI - "Play" should be wide enough to display all word
 	UI - Display Card Images
 	UI - Display Icons in Text (card descriptions)
-	BUG/UI - Display joined lands.
 
 3	BUG - If no Dahan, strife does not come off invaders
 

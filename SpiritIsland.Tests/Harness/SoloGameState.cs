@@ -22,6 +22,6 @@ public class SoloGameState(Spirit spirit, Board board)
 	public Board Board { get; } = board;
 	public Spirit Spirit { get; } = spirit;
 
-	static Spirit DefaultSpirit => new TestSpirit(PowerCard.For(typeof(IndomitableClaim)));
+	static Spirit DefaultSpirit => new TestSpirit();
 	static Board DefaultBoard => Boards.A;
 }

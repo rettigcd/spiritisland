@@ -96,7 +96,8 @@ public static partial class SpaceExtentions {
 			"D" => GetHumanToken( Human.Dahan    ),
 			"A" => Token.Beast,
 			"B" => Token.Blight,
-			"Z" => (DiseaseToken)Token.Disease,
+			"V" => Token.Vitality,
+			"Z" => Token.Disease,
 			_ => FindSpiritToken(),
 		};
 		int count = int.Parse( match.Groups[1].Value );
