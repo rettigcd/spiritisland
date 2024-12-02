@@ -346,6 +346,11 @@ public class Russia_Tests {
 
 	// Level 6 - Not testing, I will never play it.
 
-	static GameState Given_RussiaSoloGame( int level ) => Given_RussiaLevel(level).ConfigBoards("A").ConfigSpirits(RiverSurges.Name).BuildGame();
+	static GameState Given_RussiaSoloGame( int level ) 
+		=> Given_RussiaLevel(level)
+			.ConfigBoards("A")
+			.ConfigSpirits(RiverSurges.Name)
+			.BuildGame();
+
 	static GameConfiguration Given_RussiaLevel( int level ) => new GameConfiguration { Adversary = new AdversaryConfig( Russia.Name, level ), ShuffleNumber = 1, };
 }

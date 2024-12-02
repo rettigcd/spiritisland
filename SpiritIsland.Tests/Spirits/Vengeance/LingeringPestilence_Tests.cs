@@ -8,8 +8,8 @@ public class LingeringPestilence_Tests {
 	public async Task Powers_DoNotGenerateDisease() {
 
 		Spirit self = new VengeanceAsABurningPlague();
-		Board boardA = Board.BuildBoardA();
-		GameState gameState = new GameState( self, boardA );
+		Board boardA = Boards.A;
+		GameState gameState = new SoloGameState( self, boardA );
 
 		// Given: a space with presence
 		Space space = gameState.Tokens[boardA[5]];
@@ -31,23 +31,22 @@ public class LingeringPestilence_Tests {
 	[Fact]
 	public async Task Ravage_GeneratesDisease() {
 
-		Spirit self = new VengeanceAsABurningPlague();
-		Board boardA = Board.BuildBoardA();
-		GameState gameState = new GameState( self, boardA );
+		var gs = new SoloGameState(new VengeanceAsABurningPlague());
+		var boardA = gs.Board;
 
 		// Given: a space with presence
-		Space space = gameState.Tokens[boardA[5]];
-		self.Given_IsOn( space, 2 );
+		Space space = gs.Tokens[boardA[5]];
+		gs.Spirit.Given_IsOn( space, 2 );
 		//   And: invaders
 		space.Given_HasTokens("1C@3");
 		//   And: island won't bight
-		gameState.IslandWontBlight();
+		gs.IslandWontBlight();
 
 		// When: the city ravages
 		await space.SpaceSpec.When_CardRavages();
 
 		// Then: presence is destroyed
-		self.Presence.CountOn( space ).ShouldBe(1);
+		gs.Spirit.Presence.CountOn( space ).ShouldBe(1);
 
 		//  And: Disease was added
 		space.Disease.Count.ShouldBe(1);

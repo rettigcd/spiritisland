@@ -23,7 +23,7 @@ class TestSpirit( PowerCard powerCard )
 		Action<GameState> modGameState = null 
 	) {
 		var spirit = new TestSpirit( powerCard );
-		var gs = new GameState( spirit, Board.BuildBoardA() ) {
+		var gs = new SoloGameState( spirit ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
 		};
 		modGameState?.Invoke( gs );

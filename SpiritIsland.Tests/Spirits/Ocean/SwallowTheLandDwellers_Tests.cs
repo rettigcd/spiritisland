@@ -9,7 +9,7 @@ public class SwallowTheLandDwellers_Tests {
 		// Game with ocean-only
 		var fxt = new ConfigurableTestFixture {
 			Spirit = new Ocean(),
-			Board = Board.BuildBoardA()
+			Board = Boards.A
 		};
 		fxt.GameState.Initialize();
 		int startingEnergy = fxt.Spirit.Energy;

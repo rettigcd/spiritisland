@@ -56,7 +56,7 @@ public class Bringer_GrowthTests : BoardAGame {
 	public async Task PresenseOnPieces_Energy(){ // Growth Option 4
 
 		_board = LineBoard.MakeBoard();
-		_gameState = new GameState( _spirit, _board );
+		_gameState = new SoloGameState( _spirit, _board );
 
 		_spirit.Given_IsOn(_board[5]);
 		_board[6].ScopeSpace.Dahan.Init(1);

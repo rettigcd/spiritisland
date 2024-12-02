@@ -2,10 +2,10 @@
 
 public class SharpFangs_GrowthTests : BoardAGame {
 
-	readonly GameState gsbac;
+	readonly SoloGameState gsbac;
 
 	public SharpFangs_GrowthTests() : base( new SharpFangs() ) {
-		gsbac = new GameState( _spirit, _board );
+		gsbac = new SoloGameState( _spirit, _board );
 		_gameState = gsbac;
 		_gameState.Given_InitializedMinorDeck();
 

@@ -7,7 +7,7 @@ public class BoonOfVigor_Tests {
 	public async Task BoonOfVigor_TargetSelf() {
 
 		Spirit river = new RiverSurges();
-		GameState gs = new GameState( river, Board.BuildBoardA() );
+		GameState gs = new SoloGameState( river, Boards.A );
 
 		await river.When_ResolvingCard<BoonOfVigor>();
 

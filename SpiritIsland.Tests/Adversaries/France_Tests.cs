@@ -5,7 +5,7 @@ public class France_Tests {
 	[Fact]
 	public async Task TimePasses_AdvancesRoundNumber(){
 		// Testing this because Round # is how Slave Rebellion tracks when it is activated.
-		var gs = new GameState(new Thunderspeaker(),Board.BuildBoardE());
+		var gs = new SoloGameState();
 
 		for(int i=1;i<6;++i){
 			gs.RoundNumber.ShouldBe(i);

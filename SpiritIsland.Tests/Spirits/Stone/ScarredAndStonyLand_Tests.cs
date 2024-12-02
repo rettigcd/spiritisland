@@ -6,8 +6,8 @@ public class ScarredAndStonyLand_Tests {
 	public async Task RemovedBlight_GoesToBag() {
 		// blight DOES NOT goes back to card
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardC();
-		GameState gameState = new GameState(spirit, board);
+		Board board = Boards.C;
+		GameState gameState = new SoloGameState(spirit, board);
 		Space targetSpace = gameState.Tokens[board[5]];
 
 		// Given: 1 blight on space
@@ -29,8 +29,8 @@ public class ScarredAndStonyLand_Tests {
 	[Fact]
 	public async Task IncludesDamageFromBadlands() {
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardC();
-		GameState gameState = new GameState(spirit, board);
+		Board board = Boards.C;
+		GameState gameState = new SoloGameState(spirit, board);
 		Space targetSpace = gameState.Tokens[board[5]];
 
 		// Given: 1 blight on space

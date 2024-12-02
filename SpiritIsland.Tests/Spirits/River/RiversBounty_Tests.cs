@@ -15,10 +15,10 @@ public class RiversBounty_Tests {
 		_user = new VirtualUser( _spirit );
 
 		// A5 is the 'Y' land in the middle
-		_gameState = new GameState( _spirit, Board.BuildBoardA() );
+		_gameState = new SoloGameState( _spirit, Boards.A );
 
 		//   And: a game on Board-A
-		_board = Board.BuildBoardA();
+		_board = Boards.A;
 		_gameState.Island = new Island( _board );
 		_gameState.Phase = Phase.Slow;
 

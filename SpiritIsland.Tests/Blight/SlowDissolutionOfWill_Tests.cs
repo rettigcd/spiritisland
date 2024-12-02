@@ -5,9 +5,9 @@ public class SlowDissolutionOfWill_Tests {
 
 	[Fact]
 	public async Task RemovedPresence_RemovesBackgroundTracking() {
-		Spirit spirit = new RiverSurges();
-		Board board = Boards.B;
-		GameState gs = new GameState(spirit,board);
+		var gs = new SoloGameState(new RiverSurges(), Boards.B);
+		Spirit spirit = gs.Spirit;
+		Board board = gs.Board;
 
 		// Given: Spirit has presence on a7 and a8
 		board[7].ScopeSpace.Init(spirit.Presence.Token,1);

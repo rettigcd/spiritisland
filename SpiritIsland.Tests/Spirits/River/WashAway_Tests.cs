@@ -174,10 +174,10 @@ public class WashAway_Tests {
 
 	void Given_RiverPlayingWashAway(string startingPresence="A5") {
 		// A5 is the 'Y' land in the middle
-		_gameState = new GameState(_spirit,Boards.A);
+		_gameState = new SoloGameState(_spirit,Boards.A);
 
 		//   And: a game on Board-A
-		Board board = Board.BuildBoardA();
+		Board board = Boards.A;
 		_gameState.Island = new Island(board);
 
 		//   And: Presence on A5 (city/coastal)

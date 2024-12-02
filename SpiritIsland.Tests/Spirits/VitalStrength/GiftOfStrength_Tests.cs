@@ -13,7 +13,7 @@ public sealed class GiftOfStrength_Tests {
 
 		spirit = new VitalStrength();
 		var user = new VirtualUser( spirit );
-		var gs = new GameState( spirit, Board.BuildBoardA() );
+		var gs = new SoloGameState( spirit, Boards.A );
 		gs.Initialize();
 		new SinglePlayerGame(gs).Start();
 
@@ -59,7 +59,7 @@ public sealed class GiftOfStrength_Tests {
 	public async Task Replaying_SlowCards() {
 
 		spirit = new VitalStrength();
-		var gs = new GameState(spirit,Boards.A);
+		var gs = new SoloGameState(spirit,Boards.A);
 
 		// Given: spirit has enough elements to trigger GoS
 		spirit.Elements.Add(ElementStrings.Parse("1 sun,2 earth,2 plant"));

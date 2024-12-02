@@ -17,13 +17,13 @@ public class FlashFloods_Tests {
 	[Fact]
 	public async Task FlashFloods_Inland() {
 
-		_gameState = new GameState( _spirit, Board.BuildBoardA() ) {
+		_gameState = new SoloGameState( _spirit, Boards.A ) {
 			Phase = Phase.Fast
 		};
 
 
 		//   And: a game on Board-A
-		var board = Board.BuildBoardA();
+		var board = Boards.A;
 		_gameState.Island = new Island( board );
 
 		//   And: Presence on A2 (city/coastal)
@@ -57,8 +57,8 @@ public class FlashFloods_Tests {
 	public async Task FlashFloods_Costal() {
 		// Given: River
 		//   And: a game on Board-A
-		var board = Board.BuildBoardA();
-		_gameState = new GameState( _spirit, board ) {
+		var board = Boards.A;
+		_gameState = new SoloGameState( _spirit, board ) {
 			Phase = Phase.Fast
 		};
 		//   And: Presence on A2 (city/coastal)

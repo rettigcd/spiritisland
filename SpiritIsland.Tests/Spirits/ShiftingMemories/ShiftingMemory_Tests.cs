@@ -6,7 +6,7 @@ public class ShiftingMemory_Tests {
 	public async Task ForgettingCardAtEndOfTurn_DiscardsItInstead() {
 		var spirit = new ShiftingMemoryOfAges();
 		var board = Boards.D;
-		var gs = new GameState( spirit, board ) {
+		var gs = new SoloGameState( spirit, board ) {
 			MajorCards = new PowerCardDeck(
 				[ 
 					// instead of Majors, using cards I know well...

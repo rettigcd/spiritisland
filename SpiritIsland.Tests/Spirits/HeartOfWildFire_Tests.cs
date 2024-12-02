@@ -6,8 +6,8 @@ public class HeartOfWildFire_Tests {
 	[Fact]
 	public async Task BlightAddedDueToSpiritEffects_DoesNotDestroyPresence() {
 		Spirit spirit = new HeartOfTheWildfire();
-		Board boardB = Board.BuildBoardB();
-		var gs = new GameState( spirit, boardB );
+		Board boardB = Boards.B;
+		var gs = new SoloGameState( spirit, boardB );
 		gs.IslandWontBlight();
 
 		var space = boardB[8];
@@ -33,8 +33,8 @@ public class HeartOfWildFire_Tests {
 	[Fact]
 	public async Task BlightAddedFromRavage_DestroysPresence() {
 		Spirit spirit = new HeartOfTheWildfire();
-		Board boardB = Board.BuildBoardB();
-		var gs = new GameState( spirit, boardB );
+		Board boardB = Boards.B;
+		var gs = new SoloGameState( spirit, boardB );
 		gs.IslandWontBlight();
 
 		var space = boardB[8];

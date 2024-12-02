@@ -56,7 +56,7 @@ public partial class ConfigureGameDialog : Form {
 	void Init_BoardList() {
 		// boards
 		boardListBox.Items.Add( "[Random]" );
-		foreach(var availableBoard in Board.AvailableBoards)
+		foreach(var availableBoard in BoardFactory.AvailableBoards)
 			boardListBox.Items.Add( availableBoard );
 		boardListBox.SelectedIndex = 0;
 	}
@@ -96,7 +96,7 @@ public partial class ConfigureGameDialog : Form {
 
 	string SelectedBoard() {
 		return (boardListBox.SelectedIndex == 0)
-			? boardListBox.Items[1 + (int)(DateTime.Now.Ticks % Board.AvailableBoards.Length)] as string
+			? boardListBox.Items[1 + (int)(DateTime.Now.Ticks % BoardFactory.AvailableBoards.Length)] as string
 			: boardListBox.SelectedItem as string;
 	}
 

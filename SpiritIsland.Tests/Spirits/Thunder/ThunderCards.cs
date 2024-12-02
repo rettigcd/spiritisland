@@ -8,8 +8,8 @@ public class ThunderCards {
 		User = new VirtualUser( spirit );
 
 		// Given: empty board
-		a = Board.BuildBoardA();
-		gs = new GameState( spirit, a );
+		a = Boards.A;
+		gs = new SoloGameState( spirit, a );
 
 		// And: Spirit in spot 1
 		spirit.Given_IsOn( a[1] );

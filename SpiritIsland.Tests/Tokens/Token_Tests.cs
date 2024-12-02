@@ -33,7 +33,7 @@ public class Token_Tests {
 	[Trait("Token","Wilds")]
 	[Fact]
 	public async Task Wilds_Stops_Explore() {
-		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC());
+		var gs = new SoloGameState();
 
 		// Given: a space with no invaders
 		Space space = ActionScope.Current.Spaces_Unfiltered.First( s=>IsInPlay(s.SpaceSpec) && !s.HasInvaders() );
@@ -56,7 +56,7 @@ public class Token_Tests {
 	[Trait( "Token", "Disease" )]
 	[Fact]
 	public async Task Disease_Stops_Build() {
-		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
+		var gs = new SoloGameState();
 
 		// Given: a space with ONLY 1 explorer
 		Space space = ActionScope.Current.Spaces_Unfiltered.First( s => IsInPlay(s.SpaceSpec) && !s.HasInvaders() ); // 0 invaders
@@ -82,42 +82,40 @@ public class Token_Tests {
 		const string SecondPosition = "A8";
 
 		// Given: Game
-		var spirit = new BreathOfDarknessDownYourSpine();
-		var board = Boards.A;
-		var gameState = new GameState(spirit, board);
-		IHaveMemento mementoHolder = gameState;
-		gameState.Initialize();
+		var gs = new SoloGameState(new BreathOfDarknessDownYourSpine());
+		IHaveMemento mementoHolder = gs;
+		gs.Initialize();
 
 		//   And: Incarna saved at 1st location 
-		spirit.Incarna.Space.Label.ShouldBe( FirstPosition );
+		gs.Spirit.Incarna.Space.Label.ShouldBe( FirstPosition );
 		object firstSavedState = mementoHolder.Memento;
 
 		//   And: Incarna Moves to 2nd location and is saved
-		await new MoveIncarnaAnywhere().ActAsync(spirit).AwaitUser(u => { 
+		await new MoveIncarnaAnywhere().ActAsync(gs.Spirit).AwaitUser(u => { 
 			u.NextDecision.HasPrompt("Select space to place Incarna.").Choose(SecondPosition);
 		});
-		spirit.Incarna.Space.Label.ShouldBe(SecondPosition);
+		gs.Spirit.Incarna.Space.Label.ShouldBe(SecondPosition);
 		object secondSavedState = mementoHolder.Memento;
 
 		//   And: Incarna Moves back to 1st position
-		await new MoveIncarnaAnywhere().ActAsync(spirit).AwaitUser(u => {
+		await new MoveIncarnaAnywhere().ActAsync(gs.Spirit).AwaitUser(u => {
 			u.NextDecision.HasPrompt("Select space to place Incarna.").Choose(FirstPosition);
 		});
-		spirit.Incarna.Space.Label.ShouldBe(FirstPosition);
+		gs.Spirit.Incarna.Space.Label.ShouldBe(FirstPosition);
 
 		// -- Test going from Low(A3) to High(A8) --
 
 		//  When: Rewind to 2nd position
 		mementoHolder.Memento = secondSavedState;
 		//  Then: Incarna back in 2nd position.
-		spirit.Incarna.Space.Label.ShouldBe( SecondPosition );
+		gs.Spirit.Incarna.Space.Label.ShouldBe( SecondPosition );
 
 		// -- Test going from High(A8) to Low(A3) --
 
 		//  When: Rewind to 1st position
 		mementoHolder.Memento = firstSavedState;
 		//  Then: Incarna back in 1st position.
-		spirit.Incarna.Space.Label.ShouldBe(FirstPosition);
+		gs.Spirit.Incarna.Space.Label.ShouldBe(FirstPosition);
 
 	}
 

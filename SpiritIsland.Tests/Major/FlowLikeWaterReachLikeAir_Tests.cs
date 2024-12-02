@@ -7,8 +7,8 @@ public class FlowLikeWaterReachLikeAir_Tests {
 	public async Task CanBring_2TownDahanExplorer() {
 		// Setup
 		TestSpirit spirit = new TestSpirit(PowerCard.For(typeof(FlowLikeWaterReachLikeAir)));
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 
 		// Given: A5 has 3 Towns, Dahans, Explorers, & Presence(TS)
 		SpaceSpec a5 = board[5];
@@ -41,8 +41,8 @@ public class FlowLikeWaterReachLikeAir_Tests {
 	public async Task ExtendsRange2() {
 		// Setup
 		TestSpirit spirit = new TestSpirit( PowerCard.For(typeof(FlowLikeWaterReachLikeAir)) );
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 
 		// Given: Presence on A8 Presence(TS)
 		board[3].ScopeSpace.Given_HasTokens( "1TS" );

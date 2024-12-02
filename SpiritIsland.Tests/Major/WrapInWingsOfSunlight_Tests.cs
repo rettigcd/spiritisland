@@ -8,8 +8,8 @@ public class WrapInWingsOfSunlight_Tests {
 		// Setup
 		var spirit = new TestSpirit(PowerCard.For(typeof(WrapInWingsOfSunlight)));
 		var user = new VirtualUser( spirit );
-		var board = Board.BuildBoardA();
-		var gameState = new GameState( spirit, board );
+		var board = Boards.A;
+		var gameState = new SoloGameState( spirit, board );
 		gameState.DisableInvaderDeck();
 		gameState.Initialize();
 
@@ -47,8 +47,8 @@ public class WrapInWingsOfSunlight_Tests {
 		// Setup
 		var spirit = new TestSpirit(PowerCard.For(typeof(TerrifyingChase)));
 		var user = new VirtualUser( spirit );
-		var board = Board.BuildBoardA();
-		var gameState = new GameState( spirit, board );
+		var board = Boards.A;
+		var gameState = new SoloGameState( spirit, board );
 		gameState.DisableInvaderDeck();
 		gameState.Initialize();
 

@@ -16,9 +16,9 @@ public class TokenLocation_Tests {
 
 	[Fact]
 	public void RemembersInvaders() {
-		var board = Board.BuildBoardA();
+		var board = Boards.A;
 
-		GameState gs = new GameState(new RiverSurges(),board);
+		GameState gs = new SoloGameState(new RiverSurges(),board);
 		SpaceSpec a5 = board[5];
 		var layout = new ManageInternalPoints( BoardLayout.Get( "A" ).ForSpaceSpec( a5 ) );
 

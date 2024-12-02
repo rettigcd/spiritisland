@@ -157,16 +157,16 @@ public class Ocean_GrowthTests : BoardAGame {
 	void Given_IslandIsABC() {
 		// Given: 3-board island
 		_gameState.Island = new Island( 
-			Board.BuildBoardA( GameBuilder.FourBoardLayout[0] ), 
-			Board.BuildBoardB( GameBuilder.FourBoardLayout[1] ), 
-			Board.BuildBoardC( GameBuilder.FourBoardLayout[2] )
+			BoardFactory.BuildA( GameBuilder.FourBoardLayout[0] ), 
+			BoardFactory.BuildB( GameBuilder.FourBoardLayout[1] ), 
+			BoardFactory.BuildC( GameBuilder.FourBoardLayout[2] )
 		);
 	}
 
 	void Given_IslandAB() {
 		_gameState.Island = new Island( 
-			Board.BuildBoardA( GameBuilder.FourBoardLayout[0] ), 
-			Board.BuildBoardB( GameBuilder.FourBoardLayout[1] )
+			BoardFactory.BuildA( GameBuilder.FourBoardLayout[0] ), 
+			BoardFactory.BuildB( GameBuilder.FourBoardLayout[1] )
 		);
 	}
 

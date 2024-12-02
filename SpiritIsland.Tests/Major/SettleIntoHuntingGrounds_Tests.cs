@@ -20,9 +20,9 @@ public class SettleIntoHuntingGrounds_Tests {
 	[Fact]
 	public async Task Disables_AllyOfTheDahan() {
 		Spirit spirit = new Thunderspeaker();
-		Board board = Board.BuildBoardA();
+		Board board = Boards.A;
 		SpaceSpec a1 = board[1];
-		GameState gameState = new GameState( spirit, board );
+		GameState gameState = new SoloGameState( spirit, board );
 
 		// Given: presence & Dahan on A1 
 		a1.Given_HasTokens("1Ts,1D@2");
@@ -52,8 +52,8 @@ public class SettleIntoHuntingGrounds_Tests {
 	// [InlineData( true, "A1", "A1" )]    This is how we want to behave, but it will present all of the non-selectable options, not sure what happens if user selects non-selectable option.
 	public async Task DisablesMistsShiftAndFlow( bool playSettleIntoHuntingGround, string expectedTargetOptions, string pick ) {
 		Spirit spirit = new ShroudOfSilentMist();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 
 		// Given: presence in A1
 		board[1].Given_HasTokens( "1SoSM" );
@@ -71,8 +71,8 @@ public class SettleIntoHuntingGrounds_Tests {
 	[Fact]
 	public async Task ProtectsFromDrawingIntoTheVoid() {
 		Spirit spirit = new RiverSurges();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 		SpaceSpec a1 = board[1];
 		SpaceSpec a2 = board[2];
 
@@ -96,8 +96,8 @@ public class SettleIntoHuntingGrounds_Tests {
 	[Fact]
 	public async Task CantTakeFromBoard() {
 		Spirit spirit = new RiverSurges();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 		SpaceSpec a1 = board[1];
 	
 		// Given: spirit on A1
@@ -124,8 +124,8 @@ public class SettleIntoHuntingGrounds_Tests {
 
 	static (Spirit,Board) Init() {
 		RiverSurges spirit = new RiverSurges();
-		Board board = Board.BuildBoardA();
-		_ = new GameState(spirit,board);
+		Board board = Boards.A;
+		_ = new SoloGameState(spirit,board);
 		return (spirit,board);
 	}
 

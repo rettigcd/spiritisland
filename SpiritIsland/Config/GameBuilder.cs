@@ -44,7 +44,7 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		};
 		Board[] boards = new Board[boardNames.Length];
 		for(int i=0;i<boards.Length;++i)
-			boards[i] = Board.BuildBoard( boardNames[i], layout[i] );
+			boards[i] = BoardFactory.Build( boardNames[i], layout[i] );
 		return boards;
 	}
 	static public BoardOrientation[] OneBoardLayout => [BoardOrientation.Home];

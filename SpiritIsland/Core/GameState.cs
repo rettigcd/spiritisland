@@ -2,7 +2,7 @@
 
 namespace SpiritIsland;
 
-public sealed class GameState : IHaveMemento {
+public class GameState : IHaveMemento {
 
 	public static GameState Current => ActionScope.Current?.GameState;
 
@@ -13,12 +13,6 @@ public sealed class GameState : IHaveMemento {
 	public readonly ActionScope RootScope;
 
 	#region constructors
-
-	/// <summary>
-	/// Simplified constructor for single-player
-	/// </summary>
-	public GameState( Spirit spirit, Board board, int gameNumber = 0 ) 
-		: this([spirit], [board], gameNumber ) {}
 
 	public GameState(Spirit[] spirits,Board[] boards, int gameNumber = 0 ){
 		if(spirits.Length==0) throw new ArgumentException("Game must include at least 1 spirit");

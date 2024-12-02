@@ -17,7 +17,7 @@ public class TradeSuffers_Tests {
 	[Trait( "Invaders", "Build" )]
 	public async Task Level1_CityPresent_NoBuild() {
 
-		var gs = new GameState(new RiverSurges(), Boards.B);
+		var gs = new SoloGameState(new RiverSurges(), Boards.B);
 		var b5 = gs.Island.Boards[0][5].ScopeSpace;
 
 		// Given: City on Space stops build
@@ -40,7 +40,7 @@ public class TradeSuffers_Tests {
 
 		// Tests that city is evaluated at Build Time, not at Fear time.
 
-		var gs = new GameState(new RiverSurges(), Boards.B);
+		var gs = new SoloGameState(new RiverSurges(), Boards.B);
 		var b5 = gs.Island.Boards[0][5].ScopeSpace;
 
 		// Given: No City on Space
@@ -67,8 +67,8 @@ public class TradeSuffers_Tests {
 		// or A4 (Sands-no dahan)
 		TestSpirit spirit = new TestSpirit( PowerCard.For(typeof(RiversBounty)) );
 		var user = new VirtualTestUser( spirit );
-		Board board = Board.BuildBoardA();
-		GameState gs = new GameState( spirit, board ) {
+		Board board = Boards.A;
+		GameState gs = new SoloGameState( spirit, board ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
 		};
 		InitMountainThenAllSands( gs );

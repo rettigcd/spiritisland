@@ -115,7 +115,7 @@ public sealed class Island : IHaveMemento {
 		readonly BoardOrientation _orientation = _board.Orientation;
 		readonly int _invaderActionCount = _board.InvaderActionCount;
 		public Board Restore() {
-			var board = Board.BuildBoard( _name, _orientation ); // supplies spaces
+			var board = BoardFactory.Build( _name, _orientation ); // supplies spaces
 			board.InvaderActionCount = _invaderActionCount;
 			return board;
 		}

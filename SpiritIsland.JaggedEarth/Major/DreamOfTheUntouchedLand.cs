@@ -57,14 +57,14 @@ public class DreamOfTheUntouchedLand {
 		GameState gs = GameState.Current; // ??? could we pass this in?
 		var rand = new Random( gs.ShuffleNumber +56127);
 		// pick board
-		var boardsToChooseFrom = Board.AvailableBoards.Except( gs.Island.Boards.Select( b => b.Name ) ).ToList();
+		var boardsToChooseFrom = BoardFactory.AvailableBoards.Except( gs.Island.Boards.Select( b => b.Name ) ).ToList();
 		string boardName = boardsToChooseFrom[ rand.Next( boardsToChooseFrom.Count) ];
 
 		// pick orentation
 		var orientationOptions = gs.Island.AvailableConnections();
 		BoardOrientation orientation = orientationOptions[rand.Next( orientationOptions.Length)];
 
-		return Board.BuildBoard( boardName, orientation );
+		return BoardFactory.Build( boardName, orientation );
 	}
 
 }

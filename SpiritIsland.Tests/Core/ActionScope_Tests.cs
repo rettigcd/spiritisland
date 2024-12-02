@@ -4,7 +4,7 @@ public class ActionScope_Tests {
 
 	[Fact]
 	public async Task Original_IsRestored() {
-		var gs = new GameState(new RiverSurges(), Board.BuildBoardE());
+		var gs = new SoloGameState(); // Neither
 		ActionScope.Initialize(gs.RootScope);
 		Guid childId; // grab later
 

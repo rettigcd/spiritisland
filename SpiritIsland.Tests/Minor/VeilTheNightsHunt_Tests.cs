@@ -6,7 +6,7 @@ public class VeilTheNightsHunt_Tests {
 	public async Task SoloInvader_IsOnlyDamagedOnce() {
 		var board = Boards.A;
 		var spirit = new RiverSurges();
-		var gs = new GameState(spirit, board);
+		var gs = new SoloGameState(spirit, board);
 		var targetSpace = board[5].ScopeSpace;
 
 		// Given: 2 dahan & 1 town  (2 dahan would normally be able to damage 2 different items)

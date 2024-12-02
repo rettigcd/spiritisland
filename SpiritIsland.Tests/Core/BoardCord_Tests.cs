@@ -13,9 +13,7 @@ public class BoardCord_Tests {
 	[InlineData( 12, 0, 0, "[0,0][1,0][1,1][0,1]" )] // wrap back to 0
 	[InlineData( 0, 3, 3, "[3,3][4,3][4,4][3,4]" )]
 	public void BoardRotationAndOffset(int rotationTick, int d0, int d60, string expected) {
-		var board = Board.BuildBoardA(
-			new BoardOrientation( new BoardCoord( d0, d60 ), rotationTick )
-		);
+		var board = BoardFactory.BuildA( new BoardOrientation( new BoardCoord( d0, d60 ), rotationTick ) );
 		Assert_CornersShouldBe(board.Orientation, expected );
 	}
 
@@ -151,8 +149,8 @@ public class BoardCord_Tests {
 
 	[Fact]
 	public void TwoBoards_CannotOverlap() {
-		Board a = Board.BuildBoardA();
-		Board b = Board.BuildBoardB();
+		Board a = Boards.A;
+		Board b = Boards.B;
 		Should.Throw<Exception>(()=>new Island(a,b));
 	}
 
@@ -160,11 +158,11 @@ public class BoardCord_Tests {
 	public void TwoBoards_CannotHideOcean() {
 
 		// Given: board 1 in home positin
-		Board a = Board.BuildBoardA();
+		Board a = Boards.A;
 
 		//   And: board 2 rotated up 1 slot to hide board1's ocean
 		BoardOrientation orien = new BoardOrientation(BoardCoord.Origin,1);
-		Board b = Board.BuildBoardB(orien);
+		Board b = BoardFactory.BuildB(orien);
 
 		// When build the island
 		Island action() => new Island( a, b );

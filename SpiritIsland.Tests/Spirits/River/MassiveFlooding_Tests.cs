@@ -11,7 +11,7 @@ public class MassiveFlooding_Tests {
 	[Fact]
 	public void InsufficientElements() {
 		var spirit = new RiverSurges();
-		var gs = new GameState( spirit, Board.BuildBoardA() ) { Phase = Phase.Slow };
+		var gs = new SoloGameState( spirit, Boards.A ) { Phase = Phase.Slow };
 		new SinglePlayerGame(gs).Start();
 
 
@@ -33,8 +33,8 @@ public class MassiveFlooding_Tests {
 	[Fact]
 	public async Task Level1_Pushes1TownOrExplorer() { // 1-Sun, 2-Water
 		RiverSurges spirit = new RiverSurges();
-		Board board = Board.BuildBoardA();
-		GameState gs = new GameState( spirit, board ) { Phase = Phase.Slow };
+		Board board = Boards.A;
+		GameState gs = new SoloGameState( spirit, board ) { Phase = Phase.Slow };
 		SpaceSpec spaceSpec = board[5];
 		Space space = gs.Tokens[spaceSpec];
 		Space destination = space.Adjacent.Last();
@@ -68,7 +68,7 @@ public class MassiveFlooding_Tests {
 
 		Spirit spirit = new RiverSurges();
 		Board board = Boards.A;
-		var gs = new GameState(spirit,board);
+		var gs = new SoloGameState(spirit,board);
 		
 		// var fixture = new ConfigurableTestFixture();
 		var spaceSpec = board[5];
@@ -107,7 +107,7 @@ public class MassiveFlooding_Tests {
 	[Fact]
 	public void Level3_2DamageToEachInvader() { // 3 sun, 4 water, 1 earth
 		var spirit = new RiverSurges();
-		var gs = new GameState( spirit, Board.BuildBoardA() ) { Phase = Phase.Slow };
+		var gs = new SoloGameState( spirit, Boards.A ) { Phase = Phase.Slow };
 		new SinglePlayerGame(gs).Start();
 
 

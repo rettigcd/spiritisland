@@ -15,7 +15,7 @@ public class InvaderDeck_Tests {
 	}
 
 	public InvaderDeck_Tests(){
-		_board = Board.BuildBoardA();
+		_board = Boards.A;
 	}
 
 	readonly Board _board;
@@ -72,7 +72,7 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("W","A2,A5")]
 	[InlineDataAttribute("S","A4,A7")]
 	public void Level1CardTargets(string cardText,string expectedTargets){
-		var gs = new GameState(new RiverSurges(),_board);
+		var gs = new SoloGameState(new RiverSurges(),_board);
 		InvaderCard sut = InvaderDeckBuilder.Level1Cards.Single(c=>c.Code==cardText);
 		string[] targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
 		Assert.Equal(expectedTargets,targets.Join(","));
@@ -86,7 +86,7 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("2S","A4,A7")]
 	[InlineDataAttribute("Coastal","A1,A2,A3")]
 	public void Level2CardTargets(string cardText,string expectedTargets){
-		var gs = new GameState( new RiverSurges(), _board ); // Init Scope and GameBoard
+		var gs = new SoloGameState( new RiverSurges(), _board ); // Init Scope and GameBoard
 		var cards = InvaderDeckBuilder.Level2Cards.Where(c=>c.Code==cardText);
 		var sut = Assert.Single(cards);
 		var targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
@@ -101,7 +101,7 @@ public class InvaderDeck_Tests {
 	[InlineDataAttribute("M+W","A1,A2,A5,A6")]
 	[InlineDataAttribute("S+W","A2,A4,A5,A7")]
 	public void Level3CardTargets(string cardText,string expectedTargets){
-		var gs = new GameState( new RiverSurges(), _board ); // Init Scope and GameBoard
+		var gs = new SoloGameState( new RiverSurges(), _board ); // Init Scope and GameBoard
 		var cards = InvaderDeckBuilder.Level3Cards.Where(c=>c.Code==cardText);
 		var sut = Assert.Single(cards);
 		var targets = _board.Spaces.Where(sut.MatchesCard).Select(x=>x.Label).ToArray();
@@ -133,8 +133,8 @@ public class InvaderDeck_Tests {
 	[Fact]
 	public async Task NoTownsOrCities_HasStartingExplorer_ExploreCoast() {
 		// Given: game on Board A
-		var board = Board.BuildBoardA();
-		var gameState = new GameState( new RiverSurges(), board );
+		var board = Boards.A;
+		var gameState = new SoloGameState( new RiverSurges(), board );
 		//   And: explorer on target space
 		gameState.Tokens[ board[5] ].AdjustDefault(Human.Explorer,1);
 
@@ -166,8 +166,8 @@ public class InvaderDeck_Tests {
 	[InlineData( "A8", "C@1" )]
 	public async Task InOrNextToTown_ExploresTownSpace(string townSpaceLabel,string invaderKey) {
 		// Given: game on Board A
-		var board = Board.BuildBoardA();
-		var gameState = new GameState( new RiverSurges(), board );
+		var board = Boards.A;
+		var gameState = new SoloGameState( new RiverSurges(), board );
 
 		//   And: Town on or next to A5 (a wet land)
 		var sourceSpace = board.Spaces.Single(s=>s.Label==townSpaceLabel);
@@ -198,7 +198,7 @@ public class InvaderDeck_Tests {
 	[InlineData("C@1","1C@1,1T@2")]
 	public async Task BuildInSpaceWithAnyInvader(string preInvaders,string endingInvaderCount) {
 		// Given: game on Board A
-		_gameState = new GameState( new RiverSurges(), _board );
+		_gameState = new SoloGameState( new RiverSurges(), _board );
 		//   And: invader on every space
 		var startingInvader = Parse(preInvaders);
 		foreach(var space in _board.Spaces)
@@ -263,7 +263,7 @@ public class InvaderDeck_Tests {
 	[Theory]
 	[InlineData("3D@2,1E@1,1T@2","1B,1D@1,1D@2")]
 	public async Task Ravage(string startingUnits,string endingUnits) {
-		_gameState = new GameState( new RiverSurges(), _board );
+		_gameState = new SoloGameState( new RiverSurges(), _board );
 		_gameState.IslandWontBlight();
 		// Disable destroying presence
 		_gameState.DisableBlightEffect();

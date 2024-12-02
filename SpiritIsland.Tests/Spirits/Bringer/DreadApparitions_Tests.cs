@@ -8,9 +8,9 @@ public class DreadApparitions_Tests {
 	[Fact]
 	public async Task DirectFear_GeneratesDefend() {
 		Bringer spirit = new Bringer();
-		Board board = Board.BuildBoardA();
+		Board board = Boards.A;
 		SpaceSpec targetSpace = board[5];
-		_ = new GameState( spirit, board );
+		_ = new SoloGameState( spirit, board );
 
 		// Given: DA run
 		// await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
@@ -29,9 +29,9 @@ public class DreadApparitions_Tests {
 	public async Task TownDamage_Generates2Defend() {
 
 		Bringer spirit = new Bringer();
-		Board board = Board.BuildBoardA();
+		Board board = Boards.A;
 		SpaceSpec targetSpace = board[5];
-		GameState gs = new GameState( spirit, board );
+		GameState gs = new SoloGameState( spirit, board );
 		gs.DisableBlightEffect();
 
 		// Given: 
@@ -57,9 +57,9 @@ public class DreadApparitions_Tests {
 	[Fact]
 	public async Task CityDamage_Generates5Defend() {
 		Spirit spirit = new Bringer();
-		Board board = Board.BuildBoardA();
+		Board board = Boards.A;
 		SpaceSpec targetSpace = board[5];
-		GameState gs = new GameState( spirit, board );
+		GameState gs = new SoloGameState( spirit, board );
 		gs.DisableBlightEffect();
 
 		// Given: City on A5
@@ -83,9 +83,9 @@ public class DreadApparitions_Tests {
 	public async Task DahanDamage_Generates0() {
 
 		Bringer spirit = new Bringer();
-		Board board = Board.BuildBoardA();
+		Board board = Boards.A;
 		SpaceSpec targetSpace = board[5];
-		GameState gs = new GameState( spirit, board );
+		GameState gs = new SoloGameState( spirit, board );
 		Space space = targetSpace.ScopeSpace;
 		gs.DisableBlightEffect();
 		gs.IslandWontBlight();
@@ -111,8 +111,8 @@ public class DreadApparitions_Tests {
 	[Fact]
 	public async Task FearInOtherLand_Generates0() {
 		Bringer spirit = new Bringer();
-		Board board = Board.BuildBoardA(); 
-		_ = new GameState( spirit, board );
+		Board board = Boards.A; 
+		_ = new SoloGameState( spirit, board );
 		var targetSpace = board[5];
 		var otherSpace = board[1];
 

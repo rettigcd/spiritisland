@@ -1,6 +1,6 @@
-﻿using Xunit.Sdk;
+﻿
+namespace SpiritIsland.Tests.Core;
 
-namespace SpiritIsland.Tests.Core; 
 public class PlacePresence_Tests {
 
 	#region helper classes
@@ -14,8 +14,8 @@ public class PlacePresence_Tests {
 		public TestGameCtx(Spirit spirit){
 			Spirit = spirit;
 			User = new VirtualUser(Spirit);
-			Board = Board.BuildBoardA();
-			GameState = new GameState(Spirit, Board );
+			Board = Boards.A;
+			GameState = new SoloGameState(Spirit, Board );
 			GameState.Given_InitializedMinorDeck();
 		}
 	}

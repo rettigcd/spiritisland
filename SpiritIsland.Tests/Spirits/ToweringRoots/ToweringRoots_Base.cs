@@ -7,8 +7,8 @@ public class ToweringRoots_Base {
 	public ToweringRoots_Base() {
 		_spirit = new ToweringRootsOfTheJungle();
 		_presence = _spirit.Presence;
-		_board = Board.BuildBoardA();
-		_gs = new GameState( _spirit, _board );
+		_board = Boards.A;
+		_gs = new SoloGameState( _spirit, _board );
 	}
 
 	// Given: spirit with Incarna

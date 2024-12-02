@@ -8,8 +8,8 @@ public class ManyMinds_Tests {
 	[Trait( "Feature", "Gather" )]
 	public async Task GrowthGathering_HasRange2() {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
-		Board board = Board.BuildBoardA();
-		GameState gs = new GameState(spirit,board);
+		Board board = Boards.A;
+		GameState gs = new SoloGameState(spirit,board);
 
 		// Given: presence on A1
 		spirit.Given_IsOn( board[1] );
@@ -29,8 +29,8 @@ public class ManyMinds_Tests {
 	[Trait("Feature","Gather")]
 	public async Task PowerGathering_HasRange2() {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
-		Board board = Board.BuildBoardA();
-		GameState gs = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gs = new SoloGameState( spirit, board );
 
 		// Given: presence on A3
 		spirit.Given_IsOn( board[4] );
@@ -67,8 +67,8 @@ public class ManyMinds_Tests {
 	[Trait("Feature","Move")]
 	public async Task MovingMMBeast_Moves2Presence(int startingSrcPresence, int startingDstPresence, bool srcEndsWithBeast) {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
-		Board board = Board.BuildBoardA();
-		_ = new GameState( spirit, board );
+		Board board = Boards.A;
+		_ = new SoloGameState( spirit, board );
 		Space src = board[1].ScopeSpace;
 		Space dst = board[2].ScopeSpace;
 
@@ -96,8 +96,8 @@ public class ManyMinds_Tests {
 	[Trait( "Feature", "Move" )]
 	public async Task GuideTheWay_CantSwitchBeastsMidflight() {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
-		Board board = Board.BuildBoardA();
-		GameState gs = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gs = new SoloGameState( spirit, board );
 
 		// Given: 2 presence and 2 dahan on A1
 		spirit.Given_IsOn( board[1],2 );
@@ -135,8 +135,8 @@ public class ManyMinds_Tests {
 		// We don't want anyone accidentally putting it back
 
 		Spirit spirit = new ManyMindsMoveAsOne();
-		Board board = Board.BuildBoardA();
-		GameState gs = new GameState(spirit, board);
+		Board board = Boards.A;
+		GameState gs = new SoloGameState(spirit, board);
 
 		// Given: spirit on A5
 		spirit.Given_IsOn( board[5].ScopeSpace );

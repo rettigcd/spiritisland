@@ -7,7 +7,7 @@ public class TerrorStalksTheLand_Tests {
 	public TerrorStalksTheLand_Tests() {
 		_spirit = new BreathOfDarknessDownYourSpine();
 		_board = Boards.A;
-		_ = new GameState( _spirit, _board);
+		_ = new SoloGameState( _spirit, _board);
 	}
 
 	[Theory]

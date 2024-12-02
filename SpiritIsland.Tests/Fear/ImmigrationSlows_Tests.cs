@@ -8,7 +8,7 @@ public sealed class ImmigrationSlows_Tests {
 	public async Task Level1_SkipBuildInLowestNumberedLand() {
 
 		// Setup:
-		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		var gs = new SoloGameState();
 		await gs.InvaderDeck.InitExploreSlotAsync();
 		await gs.InvaderDeck.AdvanceAsync();
 
@@ -42,7 +42,7 @@ public sealed class ImmigrationSlows_Tests {
 	[Fact]
 	public async Task Level2_DelayBuild1Round() {
 
-		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		var gs = new SoloGameState();
 		await gs.InvaderDeck.InitExploreSlotAsync();
 		await gs.InvaderDeck.AdvanceAsync();
 
@@ -75,7 +75,7 @@ public sealed class ImmigrationSlows_Tests {
 	[Fact]
 	public async void Level3_SkipBuild1Round() {
 
-		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.B);
+		var gs = new SoloGameState();
 		gs.Initialize();
 		var invaders = gs.InvaderDeck;
 

@@ -4,9 +4,9 @@ public class Volcano_Tests {
 
 	static (VolcanoLoomingHigh, GameState, Board) Init() {
 		VolcanoLoomingHigh spirit = new VolcanoLoomingHigh();
-		Board board = Board.BuildBoardA();
+		Board board = Boards.A;
 
-		GameState gameState = new GameState( spirit, board );
+		GameState gameState = new SoloGameState( spirit, board );
 		return (spirit, gameState, board);
 	}
 

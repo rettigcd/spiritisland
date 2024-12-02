@@ -57,7 +57,7 @@ public class BoardSpace_Tests {
 
 	[Fact]
 	public void BoardA_Connectivity() {
-		var boardA = Board.BuildBoardA();
+		var boardA = Boards.A;
 
 		Assert_CanReachSpaceWithNHops( boardA[0], 0, boardA[0] );
 		Assert_CanReachSpaceWithNHops( boardA[0], 1, boardA[1], boardA[2], boardA[3] );
@@ -76,7 +76,7 @@ public class BoardSpace_Tests {
 	public void PlaceTiles() {
 
 		var tileD = Boards.D;
-		var tileB = Board.BuildBoardB( new BoardOrientation(new BoardCoord(0,1),0) );
+		var tileB = BoardFactory.BuildB( new BoardOrientation(new BoardCoord(0,1),0) );
 		_ = new Island(tileB,tileD);
 
 		Assert_BoardSpacesTouch( tileB[3], tileD[1] );
@@ -94,8 +94,8 @@ public class BoardSpace_Tests {
 	[Fact]
 	public void Island_2Boards() {
 		var layout = GameBuilder.TwoBoardLayout;
-		Board boardC = Board.BuildBoard( "C", layout[0] );
-		Board boardD = Board.BuildBoard( "D", layout[1] );
+		Board boardC = BoardFactory.Build( "C", layout[0] );
+		Board boardD = BoardFactory.Build( "D", layout[1] );
 
 		_ = new Island( boardC, boardD );
 
@@ -118,9 +118,9 @@ public class BoardSpace_Tests {
 	[Fact]
 	public void Island_3Boards(){
 		var layout = GameBuilder.ThreeBoardLayout;
-		Board b = Board.BuildBoard( "B", layout[0] );
-		Board c = Board.BuildBoard( "C", layout[2] );
-		Board d = Board.BuildBoard( "D", layout[1] );
+		Board b = BoardFactory.Build( "B", layout[0] );
+		Board c = BoardFactory.Build( "C", layout[2] );
+		Board d = BoardFactory.Build( "D", layout[1] );
 		var _ = new Island(b,c,d);
 
 		Assert_BoardSpacesTouch( b[3], c[8] );
@@ -144,10 +144,10 @@ public class BoardSpace_Tests {
 	[Fact]
 	public void Island_4Boards(){
 		var layout = GameBuilder.FourBoardLayout;
-		Board b = Board.BuildBoard( "B", layout[0] );
-		Board a = Board.BuildBoard( "A", layout[1] );
-		Board c = Board.BuildBoard( "C", layout[3] );
-		Board d = Board.BuildBoard( "D", layout[2] );
+		Board b = BoardFactory.Build( "B", layout[0] );
+		Board a = BoardFactory.Build( "A", layout[1] );
+		Board c = BoardFactory.Build( "C", layout[3] );
+		Board d = BoardFactory.Build( "D", layout[2] );
 
 		_ = new Island(a, b, c, d);
 
@@ -208,14 +208,8 @@ public class BoardSpace_Tests {
 	[InlineData("D7","TDD")]
 	[InlineData("D8","")]
 	public void StartingItems(string spaceLabel,string items){
-		var board = spaceLabel[..1] switch{
-			"A" => Board.BuildBoardA(),
-			"B" => Board.BuildBoardB(),
-			"C" => Board.BuildBoardC(),
-			"D" => Board.BuildBoardD(),
-			_ => null
-		};
-		var gameState = new GameState( new RiverSurges(), board );
+		var board = BoardFactory.Build( spaceLabel[..1] );
+		var gameState = new SoloGameState( board );
 		gameState.DisableInvaderDeck();
 		// When:
 		gameState.Initialize();

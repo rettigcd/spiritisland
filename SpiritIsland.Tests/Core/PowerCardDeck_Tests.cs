@@ -167,23 +167,21 @@ public class PowerCardDeck_Tests {
 	[InlineData(true)]
 	[InlineData( false )]
 	public void DrawingMajor_ForgetACard(bool drawDirect) {
-		var spirit = new RiverSurges();
-		var user = new VirtualUser(spirit);
 		var randomizer = new Random();
-		var gs = new GameState( spirit, Board.BuildBoardC() ) {
+		var gs = new SoloGameState() {
 			MajorCards = new PowerCardDeck( typeof(RiversBounty).ScanForMajors(), randomizer.Next(), PowerType.Major ),
 			MinorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMinors(), randomizer.Next(), PowerType.Minor )
 		};
 		gs.Initialize();
 
 		if(drawDirect) {
-			spirit.DrawMajor( true ).AwaitUser( user => {
+			gs.Spirit.DrawMajor( true ).AwaitUser( user => {
 				user.SelectMajorPowerCard();
 				user.SelectCardToForget();
 			} ).Wait(10);
 
 		}  else { 
-			spirit.Draw().AwaitUser( user => {
+			gs.Spirit.Draw().AwaitUser( user => {
 				user.SelectsMajorDeck();
 				user.SelectMajorPowerCard();
 				user.SelectCardToForget();

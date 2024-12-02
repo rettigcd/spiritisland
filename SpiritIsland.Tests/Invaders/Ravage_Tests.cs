@@ -6,8 +6,8 @@ public class Ravage_Tests {
 
 	public Ravage_Tests() {
 		_spirit = new RiverSurges();
-		_board = Board.BuildBoardA();
-		_gs = new GameState( _spirit, _board );
+		_board = Boards.A;
+		_gs = new SoloGameState( _spirit, _board );
 		_gs.NewLogEntry += GameState_NewLogEntry;
 		// Do this after GameState has been initialized so that ActionScopes are initialized.
 		_space = _board[1].ScopeSpace;

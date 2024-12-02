@@ -25,7 +25,7 @@ public class RenewingBoon_Tests {
 
 	static async Task CantPlacePresenceHere( Spirit spirit, string restrictedSpace ) {
 		// Given: Ocean
-		var gameState = new GameState( spirit, Board.BuildBoardA() );
+		var gameState = new SoloGameState( spirit, Boards.A );
 
 		//  And: a space that they can't place presence on
 		Space space = ActionScope.Current.Spaces.Single( x => x.Label == restrictedSpace );

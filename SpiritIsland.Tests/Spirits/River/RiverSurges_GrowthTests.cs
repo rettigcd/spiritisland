@@ -190,13 +190,13 @@ public class RiverSurges_GrowthTests : BoardAGame {
 	public void StartsOnHighestNumberedWetlands(string expectedStartingSpaces){
 		var river = new RiverSurges();
 		var board = expectedStartingSpaces[..1] switch {
-			"A" => Board.BuildBoardA( GameBuilder.FourBoardLayout[0] ),
-			"B" => Board.BuildBoardB( GameBuilder.FourBoardLayout[1] ),
-			"C" => Board.BuildBoardC( GameBuilder.FourBoardLayout[2] ),
-			"D" => Board.BuildBoardD( GameBuilder.FourBoardLayout[3] ),
+			"A" => BoardFactory.BuildA( GameBuilder.FourBoardLayout[0] ),
+			"B" => BoardFactory.BuildB( GameBuilder.FourBoardLayout[1] ),
+			"C" => BoardFactory.BuildC( GameBuilder.FourBoardLayout[2] ),
+			"D" => BoardFactory.BuildD( GameBuilder.FourBoardLayout[3] ),
 			_ => null,
 		};
-		_gameState = new GameState( river, board );
+		_gameState = new SoloGameState( river, board );
 		river.InitSpirit(board,_gameState);
 		Assert.Equal(expectedStartingSpaces,river.Presence.Lands.SelectLabels().Join(","));
 	}
@@ -214,7 +214,7 @@ public class RiverSurges_GrowthTests2 {
 		
 		var user = new VirtualUser( spirit );
 
-		var gs = new GameState( spirit, Board.BuildBoardA() );
+		var gs = new SoloGameState( spirit, Boards.A );
 		gs.Initialize();
 		new SinglePlayer.SinglePlayerGame(gs).Start();
 

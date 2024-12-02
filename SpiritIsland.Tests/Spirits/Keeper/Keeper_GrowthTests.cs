@@ -2,10 +2,10 @@
 
 public class Keeper_GrowthTests : BoardAGame {
 
-	readonly GameState gsbac;
+	readonly SoloGameState gsbac;
 
 	public Keeper_GrowthTests() : base( new Keeper() ) {
-		gsbac = new GameState( _spirit, _board );
+		gsbac = new SoloGameState( _spirit, _board );
 		_gameState = gsbac;
 		_gameState.Given_InitializedMinorDeck();
 	}

@@ -44,12 +44,12 @@ public class ConfigurableTestFixture {
 	Spirit _spirit;
 
 	public Board Board {
-		get => _board ??= Board.BuildBoardA();
+		get => _board ??= Boards.A;
 		set => Init( ref _board, value, nameof(_board) );
 	} 
 	Board _board;
 
-	public GameState GameState => _gameState ??= new GameState( Spirit, Board );
+	public GameState GameState => _gameState ??= new SoloGameState( Spirit, Board );
 	GameState _gameState;
 
 	/// <summary>
@@ -145,18 +145,4 @@ public class ConfigurableTestFixture {
 	}
 
 	#endregion
-}
-
-static public class GameConfiguration_Extensions {
-
-	/// <summary>
-	/// Uses ConfigurableTestFixture to construct the game.
-	/// </summary>
-	static public GameState BuildGame(this GameConfiguration cfg) => ConfigurableTestFixture.GameBuilder.BuildGame(cfg);
-
-	/// <summary>
-	/// Uses ConfigurableTestFixture to construct the game.
-	/// </summary>
-	static public GameState BuildShell(this GameConfiguration cfg) => ConfigurableTestFixture.GameBuilder.BuildShell(cfg);
-
 }

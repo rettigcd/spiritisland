@@ -9,8 +9,7 @@ public class HabsburgMining_Tests {
 		[Fact]
 		public async Task Explore_InLandsWith_FewerThan3(){
 			// Given: playing Habsburg Mining Expetition - Level 4
-			var board = Board.BuildBoardA();
-			var gs = new GameState(new RiverSurges(),board);
+			var gs = new SoloGameState(Boards.A);
 			var adversary = new HabsburgMiningExpedition().Build(4);
 			// (1) Invader Deck
 			gs.InvaderDeck = adversary.InvaderDeckBuilder.Build( 0 );
@@ -26,10 +25,10 @@ public class HabsburgMining_Tests {
 			sut.Code.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
-			board[4].Given_HasTokens("2E@1");
+			gs.Board[4].Given_HasTokens("2E@1");
 
 			//  And: A5 is a mining land
-			board[5].Given_HasTokens("3E@1");
+			gs.Board[5].Given_HasTokens("3E@1");
 
 			// Then: card should match every space but A5
 			ActionScope.Current.Spaces.Where( s=>sut.MatchesCard(s)).Select(ss=>ss.Label).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
@@ -38,8 +37,7 @@ public class HabsburgMining_Tests {
 		[Fact]
 		public async Task Build_InLandsWith_FewerThan3(){
 			// Given: playing Habsburg Mining Expetition - Level 4
-			var board = Board.BuildBoardA();
-			var gs = new GameState(new RiverSurges(),board);
+			var gs = new SoloGameState(Boards.A);
 			var adversary = new HabsburgMiningExpedition().Build(4);
 			// (1) Invader Deck
 			gs.InvaderDeck = adversary.InvaderDeckBuilder.Build( 0 );
@@ -55,10 +53,10 @@ public class HabsburgMining_Tests {
 			sut.Code.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
-			board[4].Given_HasTokens("2T@1");
+			gs.Board[4].Given_HasTokens("2T@1");
 
 			//  And: A5 is a mining land
-			board[5].Given_HasTokens("3E@1");
+			gs.Board[5].Given_HasTokens("3E@1");
 
 			// Then: card should match every space but A5
 			ActionScope.Current.Spaces.Where( s=>sut.MatchesCard(s)).Select(ss=>ss.Label).Join(",").ShouldBe("A1,A2,A3,A4,A6,A7,A8");
@@ -67,8 +65,7 @@ public class HabsburgMining_Tests {
 		[Fact]
 		public async Task Ravage_InLandsWith_3OrMore(){
 			// Given: playing Habsburg Mining Expetition - Level 4
-			var board = Board.BuildBoardA();
-			var gs = new GameState(new RiverSurges(),board);
+			var gs = new SoloGameState(Boards.A);
 			var adversary = new HabsburgMiningExpedition().Build(4);
 			// (1) Invader Deck
 			gs.InvaderDeck = adversary.InvaderDeckBuilder.Build( 0 );
@@ -84,13 +81,13 @@ public class HabsburgMining_Tests {
 			sut.Code.ShouldBe("Salt Deposits");
 
 			//  And: A4 is "almost" a mining land (but isn't)
-			board[4].Given_HasTokens("2T@1");
+			gs.Board[4].Given_HasTokens("2T@1");
 
 			//  And: A5 is a mining land
-			board[5].Given_HasTokens("3E@1");
+			gs.Board[5].Given_HasTokens("3E@1");
 
 			// Then: A5 should match, but nothing else
-			bool matches = sut.MatchesCard(board[5]);
+			bool matches = sut.MatchesCard(gs.Board[5]);
 			ActionScope.Current.Spaces.Where( s=>sut.MatchesCard(s)).Select(ss=>ss.Label).Join(",").ShouldBe("A5");
 		}
 

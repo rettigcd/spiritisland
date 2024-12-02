@@ -6,7 +6,7 @@ public class Stone_Growth_Tests {
 	public async Task Presence_Place_Draws_Cards() {
 		var spirit = new StonesUnyieldingDefiance();
 		var board = Boards.A;
-		var gs = new GameState(spirit, board) {
+		var gs = new SoloGameState(spirit, board) {
 			MinorCards = new PowerCardDeck(typeof(RiversBounty).ScanForMinors(), 1, PowerType.Minor)
 		};
 		gs.Initialize();
@@ -30,7 +30,7 @@ public class Stone_Growth_Tests {
 	public async Task GrowthThroughSacrifice_DrawsCard() {
 		var spirit = new StonesUnyieldingDefiance();
 		var board = Boards.A;
-		var gs = new GameState(spirit, board) {
+		var gs = new SoloGameState(spirit, board) {
 			MinorCards = new PowerCardDeck(typeof(RiversBounty).ScanForMinors(), 1, PowerType.Minor)
 		};
 		gs.Initialize();

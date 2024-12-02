@@ -9,9 +9,8 @@ public class Quarantine_Tests {
 	[InlineData(true)]  // A1 A2 A3 are coastland and stopped by Fear
 	public async Task Level1_ExploreDoesNotAffectCoastland( bool activateFearCard ) {
 
-
 		// Setup:
-		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		var gs = new SoloGameState();
 		await gs.InvaderDeck.InitExploreSlotAsync();
 		var card = gs.InvaderDeck.Explore.Cards.First();
 		var matchingSpaces = gs.Spaces_Unfiltered.Where(card.MatchesCard).ToList();
@@ -45,7 +44,7 @@ public class Quarantine_Tests {
 
 		// Setup:
 		var board = Boards.A;
-		var gs = new GameState(new VitalStrength(),board);
+		var gs = new SoloGameState(new VitalStrength(),board);
 		var coastalJungle = board[3].ScopeSpace;
 		var inlandJungle = board[8].ScopeSpace;
 
@@ -84,7 +83,7 @@ public class Quarantine_Tests {
 	public async Task Level3_NoCoastalExplore_NoActionInDiseasedLands( bool activateFearCard ) {
 
 		var board = Boards.A;
-		var gs = new GameState(new DownpourDrenchesTheWorld(),board);
+		var gs = new SoloGameState(new DownpourDrenchesTheWorld(),board);
 		var a4Sand = board[4].ScopeSpace;
 		var a7Sand = board[7].ScopeSpace;
 		var a1Coastal = board[1].ScopeSpace;
@@ -147,8 +146,8 @@ public class Quarantine_Tests {
 		// Not really for quarantine, just a general test without a home
 
 		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
-		Board board = Board.BuildBoardA();
-		GameState gs = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gs = new SoloGameState( spirit, board );
 		gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
 		gs.InitTestInvaderDeck(
 			InvaderCard.Stage1( Terrain.Sands ), // not on coast

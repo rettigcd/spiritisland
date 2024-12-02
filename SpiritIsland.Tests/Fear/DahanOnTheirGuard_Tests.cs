@@ -6,7 +6,7 @@ public class DahanOnTheirGuard_Tests {
 
 	public DahanOnTheirGuard_Tests() {
 		spirit = new LightningsSwiftStrike();
-		gameState = new GameState( spirit, Board.BuildBoardA() );
+		gameState = new SoloGameState( spirit,	Boards.A );
 		gameState.DisableInvaderDeck();
 		gameState.Initialize();
 

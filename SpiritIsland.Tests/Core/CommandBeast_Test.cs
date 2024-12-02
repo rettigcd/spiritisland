@@ -7,9 +7,7 @@ public class CommandBeast_Test
 	public async Task AfterUsing_CanRewindToStartOfRound(){
 
 		// Given: game using Command Beasts
-		var spirit = new RiverSurges();
-		var board = Board.BuildBoardA();
-		var gs = new GameState(spirit,board);
+		var gs = new SoloGameState(Boards.A);
 		CommandBeasts.Setup(gs);
 		gs.Initialize();
 
@@ -28,7 +26,7 @@ public class CommandBeast_Test
 		var round3Memento = ((IHaveMemento)gs).Memento;
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -37,7 +35,7 @@ public class CommandBeast_Test
 
 		//  Then: available to use in Round 3 again.
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 
 	}
 
@@ -45,9 +43,7 @@ public class CommandBeast_Test
 	public async Task AfterUsing_CanRewindToRound2() {
 
 		// Given: game using Command Beasts
-		var spirit = new RiverSurges();
-		var board = Board.BuildBoardA();
-		var gs = new GameState( spirit, board );
+		var gs = new SoloGameState();
 		CommandBeasts.Setup( gs );
 		gs.Initialize();
 
@@ -66,7 +62,7 @@ public class CommandBeast_Test
 
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
+		await gs.Spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -81,7 +77,7 @@ public class CommandBeast_Test
 		gs.RoundNumber.ShouldBe( 3 );
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
+		await gs.Spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
 
 
 	}
@@ -90,9 +86,7 @@ public class CommandBeast_Test
 	public async Task AfterUsingInRound4_AvailableInRound3(){
 
 		// Given: game using Command Beasts
-		var spirit = new RiverSurges();
-		var board = Board.BuildBoardA();
-		var gs = new GameState(spirit,board);
+		var gs = new SoloGameState(/*new RiverSurges(), Board.BuildBoardA()*/);
 		CommandBeasts.Setup(gs);
 		gs.Initialize();
 
@@ -114,7 +108,7 @@ public class CommandBeast_Test
 
 		//   And: Used in Fast
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -123,7 +117,7 @@ public class CommandBeast_Test
 
 		//  Then: available to use in Round 3 again.
 		gs.Phase = Phase.Fast;
-		await spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 
 	}
 

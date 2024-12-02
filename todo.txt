@@ -1,5 +1,9 @@
 =========================
 
+	Testing - Create a SoloGame type that has 2 properties
+		.Board shortcut
+		.Spirit shortcut
+
 	SPIRIT - HORIZON - Eyes Watch from the Trees
 	SPIRIT - HORIZON - Fathomless Mud of the Swamp
 	SPIRIT - Ocean - Deeps

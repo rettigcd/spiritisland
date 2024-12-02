@@ -74,8 +74,8 @@ public class Strife_Tests {
 	[Fact]
 	public async Task MoveStrife() {
 
-		Board board = Board.BuildBoardB();
-		GameState gs = new GameState( new Shadows(), board );
+		Board board = Boards.B;
+		GameState gs = new SoloGameState( new Shadows(), board );
 		SpaceSpec spaceSpec = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
 		Space space = gs.Tokens[spaceSpec];
 
@@ -104,8 +104,8 @@ public class Strife_Tests {
 	[InlineData( "1C@2^", "C@2^", "1C@2^^" )] // strifed city gets 2nd strife
 	[InlineData( "1C@3,1T@2", "1C@3,1T@2", "1C@3^,1T@2^" )] // strifed city gets 2nd strife
 	public async Task Add_Strife( string startingInvaders, string addTo, string endingInvaders ) {
-		var board = Board.BuildBoardB();
-		var gs = new GameState( new Shadows(), board );
+		var board = Boards.B;
+		var gs = new SoloGameState( new Shadows(), board );
 		var space = board.Spaces.Skip( 1 ).First( x => !gs.Tokens[x].HasAny() );
 		var counts = gs.Tokens[space];
 
@@ -141,7 +141,7 @@ public class Strife_Tests {
 
 	[Fact]
 	public async Task Strife_Stops_Ravage() {
-		var gs = new GameState( new Thunderspeaker(), Board.BuildBoardC() );
+		var gs = new SoloGameState();
 		var tokens = ActionScope.Current.Spaces_Unfiltered
 			.First( s => IsInPlay(s.SpaceSpec) && !s.HasInvaders() );
 

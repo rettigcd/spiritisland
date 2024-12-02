@@ -57,8 +57,8 @@ public class ObserveTheEverChangingWorld_Tests {
 		var tokens = new CountDictionary<ISpaceEntity>();
 
 		ShiftingMemoryOfAges spirit = new ShiftingMemoryOfAges();
-		Board board = Board.BuildBoardA();
-		_ = new GameState( spirit, board );
+		Board board = Boards.A;
+		_ = new SoloGameState( spirit, board );
 		TargetSpaceCtx ctx = spirit.Target( board[5] );
 
 		var el1 = new ObserveWorldMod( ctx );

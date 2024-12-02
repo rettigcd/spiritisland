@@ -65,8 +65,8 @@ public class StubbornSolidity_Tests {
 	[Fact]
 	public async Task LotsOfInvaders_DahanUnchanged_InvadersDamaged() {
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardA(); 
-		GameState gameState = new GameState(spirit,board);
+		Board board = Boards.A; 
+		GameState gameState = new SoloGameState(spirit,board);
 		gameState.BlightCard.OnGameStart( gameState );
 		gameState.IslandWontBlight();
 		Space space = gameState.Tokens[ board[5] ];
@@ -93,8 +93,8 @@ public class StubbornSolidity_Tests {
 	[Fact]
 	public async Task FrozenDahan_DontMove() {
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 		Space targetSpace = gameState.Tokens[board[8]];
 		Space adjacentSpace = gameState.Tokens[board[7]];
 
@@ -136,8 +136,8 @@ public class StubbornSolidity_Tests {
 	[Fact]
 	public async Task DahanMovedIn_BecomeFrozen() {
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 		Space targetSpace = gameState.Tokens[board[8]];
 		Space adjacentSpace = gameState.Tokens[board[7]];
 
@@ -181,8 +181,8 @@ public class StubbornSolidity_Tests {
 	[Fact]
 	public async Task ReplacingDahan_NoChange() {
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 		Space targetSpace = gameState.Tokens[board[5]];
 
 		// Given: dahan & presence
@@ -205,8 +205,8 @@ public class StubbornSolidity_Tests {
 	[Fact]
 	public async Task TargetingDetectsFrozenDahan() {
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState( spirit, board );
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState( spirit, board );
 		Space space = gameState.Tokens[board[5]];
 
 		// Given: dahan & presence
@@ -249,8 +249,8 @@ public class LetThemBreakThemselves_Tests {
 	public async Task IncludesBadlands() {
 		// badlands included in damage
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState(spirit, board);
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState(spirit, board);
 		Space space = gameState.Tokens[board[5]];
 
 		// Given: bunch of explorers
@@ -280,8 +280,8 @@ public class LetThemBreakThemselves_Tests {
 		// * Dahan counter attack (ravage action) AND
 		// * Break-Themselves-Against (sub spirit action)
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardA();
-		GameState gameState = new GameState(spirit, board);
+		Board board = Boards.A;
+		GameState gameState = new SoloGameState(spirit, board);
 		Space space = gameState.Tokens[board[5]];
 
 		// Given: bunch of explorers

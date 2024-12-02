@@ -5,8 +5,8 @@ public class BestoreTheEnduranceOfBedRock_Tests {
 	public async Task BlightOutnumbersPresence_CascadesAndDestroysPresence() {
 		// too few presences => Normal cascade and destory presence
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardC();
-		GameState gameState = new GameState(spirit, board);
+		Board board = Boards.C;
+		GameState gameState = new SoloGameState(spirit, board);
 		Space targetSpace = gameState.Tokens[board[5]];
 
 		// Setup: prevent game-over loss
@@ -31,8 +31,8 @@ public class BestoreTheEnduranceOfBedRock_Tests {
 	public async Task PresenceMatchesOrExceedsBlight_NoDestroyNorCascade() {
 		// too few presences => Normal cascade and destory presence
 		Spirit spirit = new StonesUnyieldingDefiance();
-		Board board = Board.BuildBoardC();
-		GameState gameState = new GameState(spirit, board);
+		Board board = Boards.C;
+		GameState gameState = new SoloGameState(spirit, board);
 		Space targetSpace = gameState.Tokens[board[5]];
 
 		// Given: starting blight is 1 less than presence

@@ -7,9 +7,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Fact]
 	public async Task NormalInvaderPhases() {
 
-		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
-
-		GameState gs = new GameState( spirit, Board.BuildBoardA() ) {
+		GameState gs = new SoloGameState( Boards.A ) {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
 		};
 		gs.Initialize(); 
@@ -41,7 +39,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	public async Task Level1_SkipExploreInLowestNumberedLand() {
 
 		// Setup:
-		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.A);
+		var gs = new SoloGameState(Boards.A);
 		await gs.InvaderDeck.InitExploreSlotAsync();
 		var card = gs.InvaderDeck.Explore.Cards.First();
 		var matchingSpaces = gs.Spaces_Unfiltered.Where(card.MatchesCard).ToList();
@@ -69,7 +67,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Fact]
 	public async Task Level2_DelayExplore1Round() {
 
-		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.B );
+		var gs = new SoloGameState( Boards.B );
 		gs.Initialize();
 
 		// Given: a card in the explore deck
@@ -102,7 +100,7 @@ public sealed class ExplorersAreReluctant_Tests {
 	[Fact]
 	public async Task Level3_SkipExplore1Round() {
 
-		var gs = new GameState(new ShiftingMemoryOfAges(), Boards.B);
+		var gs = new SoloGameState(Boards.B);
 		gs.Initialize();
 
 		// Given: a card in the explore deck

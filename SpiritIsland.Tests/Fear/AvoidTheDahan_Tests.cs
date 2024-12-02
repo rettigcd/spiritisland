@@ -59,8 +59,7 @@ public class AvoidTheDahan_Tests {
 		// On Board-A,
 		// use A7 (Sands-2 Dahan)
 		// or A4 (Sands-no dahan)
-		Spirit spirit = new TestSpirit( PowerCard.For(typeof(RiversBounty)) );
-		GameState gs = new GameState( spirit, Board.BuildBoardA() ) {
+		var gs = new SoloGameState() {
 			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
 		};
 		InitMountainThenAllSands( gs );
@@ -69,7 +68,6 @@ public class AvoidTheDahan_Tests {
 		_waitForFearCard = gs.WatchForFearCard();
 		GameState.Current.DisableBlightEffect();
 
-		var user = new VirtualTestUser( spirit );
 		var a7 = gs.Island.Boards[0][7].ScopeSpace;
 		a7.Summary.ShouldBe( "2D@2" );
 		ActivateFearCard( new AvoidTheDahan() ); // Invaders do not explore into lands with at least 2 dahan
@@ -164,7 +162,7 @@ public class AvoidTheDahan_Tests {
 	[Fact]
 	public async Task Level2_NoBuild() {
 
-		var gs = new GameState(new RiverSurges(), Boards.D);
+		var gs = new SoloGameState();
 		var a5 = gs.Island.Boards[0][5].ScopeSpace;
 
 		// Given: Dahan outnumber Towns+Cities
@@ -185,7 +183,7 @@ public class AvoidTheDahan_Tests {
 	[Fact]
 	public async Task Level3_DahanCountedAtBuild_NotAtFear() {
 
-		var gs = new GameState(new Shadows(), Boards.C);
+		var gs = new SoloGameState(Boards.C);
 		var c5 = gs.Island.Boards[0][5].ScopeSpace;
 
 		// Given: space with Invaders (1 Town) AND 3 Dahan

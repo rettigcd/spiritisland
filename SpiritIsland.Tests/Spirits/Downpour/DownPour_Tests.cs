@@ -10,7 +10,7 @@ public class DownPour_Tests {
 		
 		// Given: Downpour
 		fxt.Spirit = new DownpourDrenchesTheWorld();
-		fxt.Board = Board.BuildBoardD();
+		fxt.Board = Boards.D;
 		fxt.GameState.Initialize(); // 
 
 		// Given: 2 presence on non-wetland

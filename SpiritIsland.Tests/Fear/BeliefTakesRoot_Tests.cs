@@ -6,8 +6,8 @@ public class BeliefTakesRoot_Tests {
 	#region constructor
 
 	public BeliefTakesRoot_Tests() {
-		_spirit = new LightningsSwiftStrike();
-		_gameState = new GameState( _spirit, Board.BuildBoardA() );
+		_gameState = new SoloGameState();
+		_spirit = _gameState.Spirit;
 		_gameState.DisableInvaderDeck();
 		_gameState.Initialize(); 
 
@@ -78,7 +78,7 @@ public class BeliefTakesRoot_Tests {
 			_spirit.Given_IsOn(_ravageSpace);
 	}
 
-	readonly GameState _gameState;
+	readonly SoloGameState _gameState;
 	readonly InvaderCard _invaderCard;
 	readonly Space _ravageSpace;
 	readonly Spirit _spirit;

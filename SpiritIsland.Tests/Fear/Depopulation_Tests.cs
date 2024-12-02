@@ -9,8 +9,8 @@ public class Depopulation_Tests {
 	public Depopulation_Tests() {
 		_spirit = new LightningsSwiftStrike();
 		// _user = new VirtualUser( _spirit );
-		_board = Board.BuildBoardA();
-		_gameState = new GameState( _spirit, _board );
+		_board = Boards.A;
+		_gameState = new SoloGameState( _spirit, _board );
 		_gameState.DisableInvaderDeck();
 		_fearCard = _gameState.WatchForFearCard();
 		_gameState.Initialize();

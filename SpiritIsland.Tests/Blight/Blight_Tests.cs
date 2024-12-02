@@ -7,9 +7,7 @@ public class Blight_Tests {
 	[Trait("Blight","FlipCard")]
 	[Fact]
 	public async Task Taking3Blight_FlipsCard() {
-		Spirit spirit = new RiverSurges();
-		Board board = Board.BuildBoardD();
-		GameState gs = new GameState(spirit,board);
+		GameState gs = new SoloGameState(/*new RiverSurges(), Board.BuildBoardD()*/); // Neither
 		Task<IslandBlighted> waitForBlightedIsland = gs.WatchForBlightedIsland();
 		gs.BlightCard = new InvadersFindTheLandToTheirLiking();
 		gs.Initialize();
@@ -30,9 +28,7 @@ public class Blight_Tests {
 
 	[Fact]
 	public async Task TwoBlight_TriggerBlightedIslandOnce(){
-		Spirit spirit = new LureOfTheDeepWilderness(); // any will do
-		Board board = Board.BuildBoardC();
-		GameState gs = new GameState(spirit,board);
+		var gs = new SoloGameState(Boards.C); // Board
 		Task<IslandBlighted> waitForBlightedIsland = gs.WatchForBlightedIsland();
 
 		// Given: Blight Card will be "Promising Farmlands" (this card is easy to test...)
@@ -46,9 +42,9 @@ public class Blight_Tests {
 		gs.InvaderDeck.Ravage.Cards.Add( InvaderCard.Stage2Costal() );
 
 		//   And: Blight will Trigger on 2 Spaces.   (Town/City on C1/C2)
-		board[1].Given_InitSummary("1T@2");
-		board[2].Given_InitSummary("1C@3");
-		board[3].Given_InitSummary("");
+		gs.Board[1].Given_InitSummary("1T@2");
+		gs.Board[2].Given_InitSummary("1C@3");
+		gs.Board[3].Given_InitSummary("");
 
 		//  When: Ravaging causes 2 blights
 		await InvaderPhase.ActAsync(gs).AwaitUser(async user=>{
@@ -60,8 +56,8 @@ public class Blight_Tests {
 		}).ShouldComplete("Invader Phase");
 
 		// And: we have blight on both 1 & 2
-		board[1].ScopeSpace.Blight.Count.ShouldBe(1);
-		board[2].ScopeSpace.Blight.Count.ShouldBe(1);
+		gs.Board[1].ScopeSpace.Blight.Count.ShouldBe(1);
+		gs.Board[2].ScopeSpace.Blight.Count.ShouldBe(1);
 	}
 
 }

@@ -2,27 +2,25 @@
 
 public class Fear_Tests {
 
-	readonly Spirit spirit;
-	readonly GameState gs;
+	readonly GameState _gs;
 
 	public Fear_Tests() {
-		spirit = new RiverSurges();
-		gs = new GameState( spirit, Board.BuildBoardA() );
-		_fearCard = gs.WatchForFearCard();
+		_gs = new SoloGameState();
+		_fearCard = _gs.WatchForFearCard();
 	}
 	readonly Task<Log.FearCardRevealed> _fearCard;
 
 	[Fact]
 	public void TriggerDirect() {
 		Given_EnoughFearToTriggerCard();
-		_ = gs.Fear.ResolveActivatedCards(); // When
+		_ = _gs.Fear.ResolveActivatedCards(); // When
 		Assert_PresentsFearToUser();
 	}
 
 	[Fact]
 	public void TriggerAsPartofInvaderActions() {
 		Given_EnoughFearToTriggerCard();
-		_ = InvaderPhase.ActAsync( gs ); // When
+		_ = InvaderPhase.ActAsync( _gs ); // When
 		Assert_PresentsFearToUser();
 	}
 
@@ -32,7 +30,7 @@ public class Fear_Tests {
 	}
 
 	void Given_EnoughFearToTriggerCard() {
-		gs.Fear.Add( 4 );
+		_gs.Fear.Add( 4 );
 	}
 
 	async void Assert_PresentsFearToUser() {
