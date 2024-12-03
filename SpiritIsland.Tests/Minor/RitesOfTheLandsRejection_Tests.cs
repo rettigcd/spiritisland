@@ -5,66 +5,27 @@ public class RitesOfTheLandsRejection_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
 	[Theory]
-	[InlineDataAttribute(false,"1T@2,1E@1")]
-	[InlineDataAttribute(true,"1E@1")]
-	public void SingleBuild(bool playsCard, string result) {
+	[InlineData(false, 1, "1E@1,1T@2")] // Stops none
+	[InlineData(true, 1, "1E@1")] // Stops 1 build
+	[InlineData(true, 5, "1E@1")] // Stops all builds
+	public async void SingleBuild(bool playsCard, int numberOfbuilds, string result) {
 
-		var (user,ctx, _) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
+		var gs = new SoloGameState();
+		var space = gs.Board[6].ScopeSpace;
 
-		// Given: find a space with 1 explorer
-		var space = ActionScope.Current.Spaces_Unfiltered
-			.First( s => s.InvaderSummary() == "1E@1" );
+		// Given: 1 explorer on it
+		space.Given_InitSummary("1E@1");
 
-		//   And: add Dahan (because card requires it)
-		space.Dahan.Init(1);
+		//  When: Rites is played
+		if( playsCard )
+			await RitesOfTheLandsRejection.ActAsync(gs.Spirit.Target(space)); // No Dahan, Push-Dahan option not presented
 
-		// When: growing
-		user.Grows();
+		//   And: Build occurs
+		while( 0 < numberOfbuilds-- )
+			await space.When_CardBuilds();
 
-		//  And: purchase test card
-		user.PlaysCard( RitesOfTheLandsRejection.Name );
-		if(playsCard) {
-			user.SelectsFastAction( RitesOfTheLandsRejection.Name );
-			user.TargetsLand_IgnoreOptions( space.SpaceSpec.Label );
-			user.AssertDecisionInfo( "Select Power Option", "[Stop build - 1 fear / (Dahan or T/C)],Push up to 3 Dahan" );
-		} else
-			//  And: done with fast (no more cards..)
-			user.IsDoneWith( Phase.Fast );
-
-		// Then: space should have a building
-		user.WaitForNext();
-		space.InvaderSummary().ShouldBe( result );
-
-	}
-
-	[Trait( "Invaders", "Build" )]
-	[Trait( "Invaders", "Deck" )]
-	[Fact]
-	public void Has2Builds_BothStopped() {
-
-		var (user, ctx, _) = TestSpirit.StartGame( PowerCard.For(typeof(RitesOfTheLandsRejection)) );
-
-		// Given: find a space with 1 explorer
-		Space space = ActionScope.Current.Spaces_Unfiltered.First( s => s.InvaderSummary() == "1E@1" );
-		//   And: add Dahan (because card requires it)
-		space.Given_HasTokens("1D@2");
-		//   And: The build card appears twice
-		List<InvaderCard> buildCards = GameState.Current.InvaderDeck.Build.Cards;
-		buildCards.Add( buildCards[0] );
-
-		// When: growing
-		user.Grows();
-
-		//  And: purchase test card
-		user.PlaysCard( RitesOfTheLandsRejection.Name );
-		user.SelectsFastAction( RitesOfTheLandsRejection.Name );
-		user.Choose( space.SpaceSpec.Label ); // target land
-		user.NextDecision.HasPrompt("Select Power Option").Choose("Stop build - 1 fear / (Dahan or T/C)" );
-
-		// Then: space should have a building
-		user.WaitForNext();
-		space.InvaderSummary().ShouldBe( "1E@1" );
-
+		//  Then: expected invaders
+		space.Summary.ShouldBe(result);
 	}
 
 }
