@@ -123,7 +123,7 @@ public static partial class SpaceExtentions {
 	#region When Invader Explore/Build/Ravage
 
 	static public InvaderCard BuildInvaderCard(this Space space) => space.SpaceSpec.BuildInvaderCard();
-		static public InvaderCard BuildInvaderCard( this SpaceSpec space ) {
+	static public InvaderCard BuildInvaderCard( this SpaceSpec space ) {
 		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
 		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
 	}

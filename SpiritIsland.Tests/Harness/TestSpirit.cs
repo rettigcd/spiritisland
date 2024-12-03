@@ -5,7 +5,6 @@ class TestSpirit : Spirit {
 
 	public override string SpiritName => "Test Spirit";
 
-
 	#region constructors
 
 	/// <summary>

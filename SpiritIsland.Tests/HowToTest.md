@@ -70,7 +70,9 @@ Flow:
 
 
 # Set Spirit's Elements
-
+```
+spirit.Configure().Elements("3 moon,2 animal");
+```
 
 # Test a Power Card
 
