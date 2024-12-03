@@ -148,7 +148,8 @@ public class Quarantine_Tests {
 		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
 		Board board = Boards.A;
 		GameState gs = new SoloGameState( spirit, board );
-		gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) _log.Enqueue( s.Msg() ); };
+		Queue<string> log = new();
+		gs.NewLogEntry += ( s ) => { if(s is Log.InvaderActionEntry or Log.RavageEntry) log.Enqueue( s.Msg() ); };
 		gs.InitTestInvaderDeck(
 			InvaderCard.Stage1( Terrain.Sands ), // not on coast
 			InvaderCard.Stage2Costal(),
@@ -163,34 +164,17 @@ public class Quarantine_Tests {
 		if(skipARavage)
 			board[4].ScopeSpace.SkipRavage("Test");
 
-		_log.Clear();
+		log.Clear();
 		await InvaderPhase.ActAsync(gs); // Ravage in Sands, Build in Coastal, Explore jungle
 
 		// Then:
 		if(skipARavage)
-			_log.Assert_Ravaged ( "A7" );             // Sand - A4 skipped
+			log.Assert_Ravaged ( "A7" );             // Sand - A4 skipped
 		else
-			_log.Assert_Ravaged ( "A4", "A7" );       // Sand
+			log.Assert_Ravaged ( "A4", "A7" );       // Sand
 
-		_log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
-		_log.Assert_Explored( "A3", "A8" ); // Jungle
+		log.Assert_Built   ( "A1", "A2", "A3" ); // Costal
+		log.Assert_Explored( "A3", "A8" ); // Jungle
 	}
-
-
-
-	#region protected / private
-
-	protected Task<Log.FearCardRevealed> _fearCardRevealed;
-
-	protected VirtualTestUser _user;
-	protected Spirit _spirit;
-	protected Queue<string> _log = new();
-
-	protected void GrowAndBuyNoCards() {
-		_spirit.ClearAllBlight();
-		_user.GrowAndBuyNoCards();
-	}
-
-	#endregion
 
 }

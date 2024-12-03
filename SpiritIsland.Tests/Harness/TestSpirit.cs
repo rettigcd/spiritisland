@@ -1,15 +1,15 @@
 ﻿namespace SpiritIsland.Tests; 
-// Test spirit that has lots of energy and you can select the card they start with
 
+/// <summary>
+/// Used when the particular Spirit is not important.
+/// </summary>
 class TestSpirit : Spirit {
 
 	public override string SpiritName => "Test Spirit";
 
 	#region constructors
 
-	/// <summary>
-	/// Spirit with Energy and Card Plays, but unknown Cards
-	/// </summary>
+	/// <summary> Spirit with Energy and Card Plays, but unknown Cards </summary>
 	public TestSpirit()
 		: base(x => new SpiritPresence(x,
 					new TestPresenceTrack(Track.Energy5, Track.Energy9),
@@ -20,9 +20,7 @@ class TestSpirit : Spirit {
 		) {
 	}
 
-	/// <summary>
-	/// Spirit with a given card in their hand.
-	/// </summary>
+	/// <summary> Spirit with a given card in their hand. </summary>
 	public TestSpirit( PowerCard powerCard ) 
 		: base(x => new SpiritPresence(x,
 					new TestPresenceTrack(Track.Energy5, Track.Energy9),
@@ -50,48 +48,9 @@ class TestSpirit : Spirit {
 		this.Given_IsOn(space,2); 
 	}
 
-	[Obsolete("Use SoloGameState")]
-	static public (VirtualTestUser, Spirit, Task) StartGame( 
-		PowerCard powerCard, 
-		Action<GameState> modGameState = null 
-	) {
-		var spirit = new TestSpirit( powerCard );
-		var gs = new SoloGameState( spirit ) {
-			InvaderDeck = InvaderDeckBuilder.Default.Build() // Same order every time
-		};
-		modGameState?.Invoke( gs );
+	class TestPresenceTrack(params Track[] t) : PresenceTrack(t) {
+		public void OverrideTrack(int index, Track t) { _slots[index] = t; }
 
-		gs.Initialize(); 
-
-		Task task = new SinglePlayer.SinglePlayerGame(gs).StartAsync();
-
-		var user = new VirtualTestUser( spirit );
-
-		// Disable destroying presence
-		GameState.Current.DisableBlightEffect();
-
-		return (user,spirit,task);
 	}
 
 }
-
-public class TestPresenceTrack( params Track[] t ) : PresenceTrack( t ) {
-	public void OverrideTrack(int index, Track t) { _slots[index]=t;}
-
-}
-
-
-public class VirtualTestUser( Spirit spirit ) : VirtualUser( spirit ) {
-
-	/// <summary> Growth for Test Spirit </summary>
-	public void Grows() {
-		Growth_SelectAction( "Reclaim All" );
-	}
-
-	public void GrowAndBuyNoCards() {
-		Grows();
-		IsDoneBuyingCards();
-	}
-
-}
-

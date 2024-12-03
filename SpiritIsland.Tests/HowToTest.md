@@ -51,10 +51,9 @@ DO NOT
 
 ## Build on all spaces for a specific Invader Card
 ```
-await new BuildSlot().ActivateCard( 
-	InvaderDeckBuilder.Level1Cards.Single( c => c.Code == "S" ), 
-	_gameState
-);
+// see above for generating Invader Card for specific Terrain
+await invaderCard.When_Building();
+
 ```
 ## Ravaging
 
