@@ -24,13 +24,13 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 			.In().EachActiveLand()
 			.ActAsync( gs );
 
-	static SpaceAction StopBuildWhereDahanOutnumberTownsCities => new SpaceAction( "Stop Build if dahan outnumber towns/cities.",
-		ctx => {
-			var token = new SkipBuild_Custom( Name, true, ( space ) => space.SumAny( Human.Town_City ) < space.Dahan.CountAll );
-			ctx.Space.Adjust( token, 1 );
-		}
+	static SpaceAction StopBuildWhereDahanOutnumberTownsCities => new SpaceAction( 
+		"Stop Build if dahan outnumber towns/cities.",
+		ctx => ctx.Space.Adjust(new SkipBuild_Custom(Name, true, DahanOutnumberCities), 1 )
 	);
 
+	static bool DahanOutnumberCities( Space space )
+		=> space.SumAny(Human.Town_City) < space.Dahan.CountAll;
 
 	[FearLevel("Invaders do not Build in lands with Dahan." )]
 	public override Task Level3( GameState gs )
