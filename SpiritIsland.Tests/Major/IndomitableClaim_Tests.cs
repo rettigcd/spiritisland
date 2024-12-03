@@ -8,57 +8,36 @@ public class IndomitableClaim_Tests {
 	[Trait( "Invaders", "Explore" )]
 	[Trait( "Invaders", "Build" )]
 	[Fact]
-	public void StopsAllInvaderActions() {
-		List<string> invaderLog = [];
+	public async Task Threshold_StopsAllInvaderActions() {
 
-		var (user, self, _) = TestSpirit.StartGame( PowerCard.For(typeof(IndomitableClaim)), (Action<GameState>)((gs)=>{ 
-			var jungleCard = SpiritIsland.InvaderCard.Stage1( Terrain.Jungle);
-			gs.InitTestInvaderDeck( (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard, (InvaderCard)jungleCard );
-			gs.NewLogEntry += (s) => invaderLog.Add( s.Msg());
-		}) );
+		var gs = new SoloGameState();
+		var space = gs.Board[2].ScopeSpace;
 
-		// Given: there a ravage card
-		user.Grows();
-		user.IsDoneBuyingCards();
-		invaderLog.Clear();
-		user.WaitForNext();
+		// Given: a host of Dahan and Invaders
+		space.Given_InitSummary("1C@3,2D@2,5E@1,2T@2");
 
-		// and: there is a space that IS-RAVAGE AND BUILD (aka: Jungle - see above)
-		TargetSpaceCtx spaceCtx = ActionScope.Current.Spaces_Unfiltered
-			.Select( x=>self.Target(x.SpaceSpec) )
-			.Last( s => s.MatchesRavageCard && s.MatchesBuildCard ); // last stays away from city and ocean
-		invaderLog.Add("Selected target:"+spaceCtx.SpaceSpec.Label );
+		//   And: spirit has some elements
+		gs.Spirit.Configure().Elements("2 sun,3 earth");
 
-		// And: we have a presence in that land
-		self.Given_IsOn( spaceCtx.Space );
+		// When: card played
+		await IndomitableClaim.ActAsync(gs.Spirit.Target(space)).AwaitUser(user => {
+			user.NextDecision.HasPrompt("Select Presence to place").ChooseFirst();
+			user.NextDecision.HasPrompt("Activate Element Threshold?").Choose("Yes");
+		}).ShouldComplete(ParalyzingFright.Name);
 
-		//  And: it has 3 explorers
-		spaceCtx.Space.InitDefault( Human.Explorer, 3 );
-		spaceCtx.Space.InitDefault( Human.Town, 0 );
-		spaceCtx.Space.InitDefault( Human.City, 0 ); // if we had to advance cards, might have buit a city
-		spaceCtx.Space.InvaderSummary().ShouldBe( "3E@1", "Unable to init to 3 exploreres." );
-		//  And 2 dahan
-		spaceCtx.Dahan.Init(2);
+		//  And: Invaders: Ravage, Build, Explore
+		var card = space.BuildInvaderCard();
+		await card.When_Ravaging();
+		await card.When_Building();
+		await card.When_Exploring();
 
-		// When: grows and purchases card
-		user.Grows();
-		user.PlaysCard( IndomitableClaim.Name );
+		// Then: none of that happened.
+		space.Summary.ShouldBe("1C@3,2D@2,5E@1,20G,2T@2,1TS");
 
-		//  And: has enough elements to trigger the bonus
-		self.Elements[Element.Sun] = 2;
-		self.Elements[Element.Earth] = 3;
+		//  And: 4 fear were generated
+		int actualFear = gs.Fear.ActivatedCards.Count * 4 + gs.Fear.EarnedFear;
+		actualFear.ShouldBe(3);
 
-		//  When: Activates Card
-		user.SelectsFastAction( IndomitableClaim.Name );
-		user.TargetsLand_IgnoreOptions( spaceCtx.SpaceSpec.Label );
-		user.PullsPresenceFromTrack(self.Presence.Energy.RevealOptions.Single());
-		user.AcceptsElementThreshold();
-
-		// Then: nothing changed
-		spaceCtx.Space.InvaderSummary().ShouldBe( "3E@1", "should be same that we started with" );
-
-		// Make sure that we actually executed the Ravage Build / Explore Bit
-		invaderLog.Count(s=>s.Contains("Exploring")).ShouldBeGreaterThan(0);
 	}
 
 }
