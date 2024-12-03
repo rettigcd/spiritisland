@@ -117,7 +117,7 @@ public class PlacePresence_Tests {
 	/// <summary>
 	/// Creates a GameState with a spirit that has a PlacePresence(1,Any) growth
 	/// </summary>
-	SoloGameState Given_GsWithPlacePresenceSpirit()
+	static SoloGameState Given_GsWithPlacePresenceSpirit()
 		=> new SoloGameState(new TestSpirit(new PlacePresence(1, Filter.Any)));
 
 	#endregion helpers

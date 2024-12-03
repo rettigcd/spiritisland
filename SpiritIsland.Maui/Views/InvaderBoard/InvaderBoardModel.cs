@@ -62,7 +62,7 @@ public class InvaderBoardModel : ObservableModel {
 
 		UpdateInvaderCards();
 		UpdateFear();
-		UpdateBlight();
+		UpdateBlight(_blightPool.BlightCount);
 	}
 
 	#endregion constructor
@@ -72,8 +72,8 @@ public class InvaderBoardModel : ObservableModel {
 	void GameState_NewLogEntry(Log.ILogEntry obj) {
 		if(obj is Log.Phase)
 			UpdateInvaderCards();
-		else if(obj is Log.BlightOnCardChanged)
-			UpdateBlight();
+		else if(obj is Log.BlightOnCardChanged x)
+			UpdateBlight(x.NewCount);
 		else if (obj is Log.FearGenerated)
 			UpdateFear();
 	}
@@ -85,8 +85,8 @@ public class InvaderBoardModel : ObservableModel {
 		RemainingCardsInTerrorLevel = _fear.CardsPerLevel_Remaining.FirstOrDefault(x => x != 0);
 	}
 
-	void UpdateBlight() {
-		BlightOnCard = _blightPool.BlightCount;
+	void UpdateBlight(int count) {
+		BlightOnCard = count;
 	}
 
 	void UpdateInvaderCards() {

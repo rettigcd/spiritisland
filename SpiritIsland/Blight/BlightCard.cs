@@ -44,7 +44,7 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 	public async Task ReturnBlight(int count) {
 		// France slow-blight mod intercepts blight
 		await _space.AddAsync(Token.Blight, count, AddReason.AddedToCard); // AddedToCard prevents BlightToken.Adding from running
-		ActionScope.Current.Log(new BlightOnCardChanged());
+		ActionScope.Current.Log(new BlightOnCardChanged(_space[Token.Blight]));
 	}
 
 	public async Task TakeBlight(int count) {
@@ -62,7 +62,7 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 		}
 
 		scope ??= ActionScope.Current;
-		scope.Log(new BlightOnCardChanged());
+		scope.Log(new BlightOnCardChanged(_space[Token.Blight]));
 	}
 
 	public int BlightCount => _space.Blight.Count;
@@ -76,8 +76,8 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 	// We need to add be able to add mods to the blight card so we are storing state with the other Spaces
 	// The memento imp is only here to trigger BlightOnCardChanged event so UI knows to update.
 	public object Memento {
-		get => 0;
-		set => GameState.Current.Log(new BlightOnCardChanged());
+		get => _space[Token.Blight]; // save # of blight on card
+		set => GameState.Current.Log(new BlightOnCardChanged((int)value)); // Space initialization will set actural blight, just use saved value to do notification
 	}
 
 	#region private/protected
