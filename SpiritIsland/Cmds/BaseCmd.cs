@@ -16,7 +16,7 @@ public class BaseCmd<T> : IActOn<T> {
 
 	public BaseCmd( string description, Action<T> action ) {
 		Description = description;
-		_func = action.AsAsync();
+		_action = action;
 	}
 
 	/// <summary>
@@ -34,7 +34,11 @@ public class BaseCmd<T> : IActOn<T> {
 	public virtual string Description { get; }
 
 	/// <remarks>Virtual so that growth actions that inherit from SelfCmd can more easily define the execute</returns>
-	public virtual Task ActAsync( T ctx ) => _func( ctx );
+	public virtual Task ActAsync( T ctx) {
+		if ( _func is not null ) return _func(ctx);
+		_action(ctx);
+		return Task.CompletedTask;
+	}
 
 	#region Add/Read conditionals
 
@@ -65,6 +69,7 @@ public class BaseCmd<T> : IActOn<T> {
 
 	#region private
 	readonly Func<T,Task> _func;
+	readonly Action<T> _action;
 	Predicate<T> _isApplicable;
 	#endregion
 }

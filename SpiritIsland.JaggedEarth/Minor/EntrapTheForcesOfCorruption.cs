@@ -16,9 +16,10 @@ public class EntrapTheForcesOfCorruption{
 	}
 
 	class StopCascade : BaseModEntity, IEndWhenTimePasses, IModifyAddingToken {
-		public void ModifyAdding( AddingTokenArgs args ) {
+		public Task ModifyAddingAsync( AddingTokenArgs args ) {
 			if(args.Token == Token.Blight)
 				BlightToken.ScopeConfig.ShouldCascade = false;
+			return Task.CompletedTask;
 		}
 	}
 

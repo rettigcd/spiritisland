@@ -118,10 +118,11 @@ public class MarkedBeast : IToken
 	#endregion
 
 	#region Cannot be Removed from island
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// cannot be removed from the island.
 		if(args.Token==this && args.Reason != RemoveReason.MovedFrom)
 			args.Count = 0;
+		return Task.CompletedTask;
 	}
 	#endregion
 
@@ -148,8 +149,9 @@ public class MarkedBeast : IToken
 	#endregion
 
 	#region Track Token Space
-	void IHandleTokenAdded.HandleTokenAdded( Space to, ITokenAddedArgs args ) {
+	Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if(args.Added == this) _space = to;
+		return Task.CompletedTask;
 	}
 	#endregion
 

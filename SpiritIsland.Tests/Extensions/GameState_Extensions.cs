@@ -61,10 +61,11 @@ static public class GameState_Extensions {
 	}
 
 	class StopBlightEffects : BaseModEntity, IModifyAddingToken {
-		public void ModifyAdding( AddingTokenArgs args ) {
+		public Task ModifyAddingAsync( AddingTokenArgs args ) {
 			var config = BlightToken.ScopeConfig;
 			config.ShouldCascade = false;
 			config.DestroyPresence = false;
+			return Task.CompletedTask;
 		}
 	}
 

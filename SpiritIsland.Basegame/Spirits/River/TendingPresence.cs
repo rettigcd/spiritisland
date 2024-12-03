@@ -19,11 +19,13 @@ public class TendingPresence( Spirit spirit, IPresenceTrack t1, IPresenceTrack t
 		public bool IsTended(Space space) => 1 <= space[this]
 			&& 4 <= space.Sum(TokenCategory.Dahan);
 
-		void IHandleTokenAdded.HandleTokenAdded(Space to, ITokenAddedArgs args) {
+		Task IHandleTokenAdded.HandleTokenAddedAsync(Space to, ITokenAddedArgs args) {
 			// - Defend 1 - (Registers the dynamic defend the first time the token is added to a space)
-			if( _registered ) return;
-			GameState.Current.Tokens.Dynamic.ForGame.Register(s => IsTended(s) ? 1 : 0, SpiritIsland.Token.Defend);
-			_registered = true;
+			if( !_registered ) {
+				GameState.Current.Tokens.Dynamic.ForGame.Register(s => IsTended(s) ? 1 : 0, SpiritIsland.Token.Defend);
+				_registered = true;
+			}
+			return Task.CompletedTask;
 		}
 
 		bool _registered = false;

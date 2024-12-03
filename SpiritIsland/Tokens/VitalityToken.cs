@@ -2,7 +2,7 @@
 
 public class VitalityToken( string label, char k, Img img ) 
 	: TokenClassToken( label, k, img )
-	, IModifyAddingTokenAsync
+	, IModifyAddingToken
 {
 	public async Task ModifyAddingAsync( AddingTokenArgs args ) {
 		if( args.Token == Token.Blight		// adding blight

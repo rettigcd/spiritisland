@@ -38,16 +38,17 @@ public class InfiniteVitality {
 // Threshold token
 class StopDahanDamageAndDestruction( string _sourceName )
 	: IModifyDahanDamage
-	, IModifyRemovingToken 
+	, IModifyRemovingToken
 	, IEndWhenTimePasses
 {
 	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(args.Token.Class == Human.Dahan && args.Reason == RemoveReason.Destroyed) {
 			ActionScope.Current.Log( new Log.Debug( $"{_sourceName} stopping {args.Count} Dahan from being destroyed." ) );
 			args.Count = 0;
 		}
+		return Task.CompletedTask;
 	}
 
 }

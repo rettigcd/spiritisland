@@ -72,7 +72,7 @@ class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 		}
 	}
 
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(args.Token == Human.Dahan 
 			&& args.Reason == RemoveReason.Destroyed 
 			&& _spirit.ActionIsMyPower
@@ -80,11 +80,12 @@ class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.Count} Dahan Destruction on {args.From.Label}." ) );
 			args.Count = 0;
 		}
+		return Task.CompletedTask;
 	}
 }
 
 class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source ) 
-	: BaseModEntity, IModifyAddingTokenAsync, IEndWhenTimePasses
+	: BaseModEntity, IModifyAddingToken, IEndWhenTimePasses
 {
 	readonly Spirit _spirit = spirit;
 	readonly string _source = source;

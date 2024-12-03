@@ -13,8 +13,9 @@ public class BlightTokenBinding( Space space ) : TokenBinding( space, Token.Blig
 }
 
 class BlockBlightToken : IModifyAddingToken, IEndWhenTimePasses {
-	public void ModifyAdding( AddingTokenArgs args ) {
+	public Task ModifyAddingAsync( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight)
 			args.Count = 0;
+		return Task.CompletedTask;
 	}
 }

@@ -22,7 +22,7 @@ public class CallToGuard{
 		, (ctx) => ctx.Space.Adjust( new DamageNewInvaders(), 1 )
 	);
 
-	class DamageNewInvaders : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
+	class DamageNewInvaders : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
 		public Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args )
 			=> to.Invaders.ApplyDamageTo1( 1, args.Added.AsHuman() );
 	}

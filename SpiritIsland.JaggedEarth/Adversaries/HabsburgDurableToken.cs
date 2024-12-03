@@ -3,8 +3,8 @@
 // Durable Towns - Have +2 health, Destroy does 2 points of damage.
 class HabsburgDurableToken 
 	: HumanToken
-	, IModifyRemovingTokenAsync  // removing Durable, switch to normal
-	, IHandleTokenAddedAsync     // check for Blight, switch to normal
+	, IModifyRemovingToken  // removing Durable, switch to normal
+	, IHandleTokenAdded     // check for Blight, switch to normal
 
 {
 
@@ -26,7 +26,7 @@ class HabsburgDurableToken
 			// switch back to normal
 			await to.AllHumans( this ).AdjustAsync( _ => GetRestoreToken() );
 	}
-	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// If removing this (Durable) token from space
 		if(args.Token != this) return;
 

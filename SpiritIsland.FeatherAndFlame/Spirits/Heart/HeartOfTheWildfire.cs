@@ -72,7 +72,7 @@ public class HeartOfTheWildfire : Spirit {
 
 	class WildfireToken( Spirit spirit ) : SpiritPresenceToken(spirit)
 		, IModifyRemovingToken
-		, IHandleTokenAddedAsync
+		, IHandleTokenAdded
 	{
 
 		static public readonly SpecialRule DestructiveNature_Rule = new SpecialRule(
@@ -80,12 +80,13 @@ public class HeartOfTheWildfire : Spirit {
 			"Blight added due to Spirit Effects (Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your presence. (including cascades)"
 		);
 
-		void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+		Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presence. ( This includes cascades.)
 			if( DestroysMyPresence(args) && BlightAddedDueToSpiritEffects() ){
 				ActionScope.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));
 				args.Count = 0;
 			}
+			return Task.CompletedTask;
 		}
 
 		static bool BlightAddedDueToSpiritEffects() => !BlightToken.ScopeConfig.BlightFromCardTrigger.Reason

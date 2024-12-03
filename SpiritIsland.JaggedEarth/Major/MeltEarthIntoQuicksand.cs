@@ -31,7 +31,7 @@ public class MeltEarthIntoQuicksand {
 
 	}
 
-	class Quicksand : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
+	class Quicksand : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
 		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			if(args.Added.HasAny(TokenCategory.Invader,TokenCategory.Dahan))
 				await to.Destroy( args.Added, args.Count );

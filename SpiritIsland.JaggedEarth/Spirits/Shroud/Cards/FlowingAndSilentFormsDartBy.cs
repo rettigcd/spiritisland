@@ -22,9 +22,9 @@ public class FlowingAndSilentFormsDartBy {
 	/// <summary>
 	/// Allows presence to be pushed when it normally would be destroyed.
 	/// </summary>
-	class PushPresenceInsteadOfDestroy : IModifyRemovingTokenAsync, IEndWhenTimePasses {
+	class PushPresenceInsteadOfDestroy : IModifyRemovingToken, IEndWhenTimePasses {
 
-		async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
+		async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 			if( !args.Reason.IsDestroyingPresence()
 				|| args.Token is not SpiritPresenceToken spt 
 			) return;

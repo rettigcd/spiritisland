@@ -31,12 +31,13 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 		/// </summary>
 		readonly HashSet<Board> _receivedRavageBlight = [];
 
-		void IHandleTokenAdded.HandleTokenAdded( Space to, ITokenAddedArgs args ) {
+		Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			if(args.Added == Token.Blight
 				&& args.Reason == AddReason.Ravage
 			) {
 				_receivedRavageBlight.UnionWith( to.SpaceSpec.Boards ); // log
 			}
+			return Task.CompletedTask;
 		}
 
 		public async Task PressureForFastProfit() {

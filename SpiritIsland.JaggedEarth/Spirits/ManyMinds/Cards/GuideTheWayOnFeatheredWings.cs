@@ -41,11 +41,12 @@ public class GuideTheWayOnFeatheredWings {
 	}
 
 	class TrackBeastTokenMoved : BaseModEntity, IHandleTokenRemoved {
-		public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) {
+		public Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
 			if(args.Removed.Class == Token.Beast && args is TokenMovedArgs ){
 				BeastMoved = args.Removed;
 				from.Init(this,0);
 			}
+			return Task.CompletedTask;
 		}
 		public IToken BeastMoved { get; private set; }
 	}

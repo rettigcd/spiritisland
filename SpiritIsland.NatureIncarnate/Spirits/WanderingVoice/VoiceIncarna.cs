@@ -2,7 +2,7 @@
 
 public class VoiceIncarna( Spirit spirit ) 
 	: Incarna(spirit, "WVKD", Img.WVKD_Incarna, Img.WVKD_Incarna_Empowered )
-	, IIsolate, IHandleTokenAddedAsync
+	, IIsolate, IHandleTokenAdded
 {
 
 	// "A Clarion Voice Given Form"

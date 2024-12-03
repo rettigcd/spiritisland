@@ -33,14 +33,14 @@ public class BargainOfCoursingPaths {
 	/// </summary>
 	class CoursingPaths( Spirit spirit ) 
 		: TokenClassToken(Name,'>', Img.Land_Push_Dahan)
-		, IHandleTokenAddedAsync
+		, IHandleTokenAdded
 	{
 
 		const string Name = "Coursing Paths";
 
 		readonly Spirit _spirit = spirit;
 
-		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
+		async Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// Ongoing: After pieces are added or moved into the marked lands:
 
 			// move those pieces directly to any 1 land.

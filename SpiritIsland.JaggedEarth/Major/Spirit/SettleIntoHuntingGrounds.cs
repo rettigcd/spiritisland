@@ -35,13 +35,14 @@ class FreezePresence( string _name, SpiritPresence _presence ) : BaseModEntity
 	,IEndWhenTimePasses
 {
 
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(args.Token.HasTag(_presence) 
 			&& args.Reason.IsOneOf(RemoveReason.MovedFrom,RemoveReason.Abducted)
 		) {
 			ActionScope.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Label}"));
 			args.Count = 0;
 		}
+		return Task.CompletedTask;
 	}
 
 }

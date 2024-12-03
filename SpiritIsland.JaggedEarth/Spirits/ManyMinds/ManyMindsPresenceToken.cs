@@ -16,12 +16,14 @@ public class ManyMindsPresenceToken
 
 	#endregion
 
-	void IHandleTokenAdded.HandleTokenAdded( Space to, ITokenAddedArgs args ){
+	Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ){
 		UpdateBeastCount( args.Added, to );
+		return Task.CompletedTask;
 	}
 
-	void IHandleTokenRemoved.HandleTokenRemoved( Space from, ITokenRemovedArgs args ){
+	Task IHandleTokenRemoved.HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ){
 		UpdateBeastCount( args.Removed, from );
+		return Task.CompletedTask;
 	}
 
 	void UpdateBeastCount( ISpaceEntity token, Space ss ) {

@@ -21,9 +21,10 @@ public class GatewayToken : ISpaceEntity, IHandleTokenRemoved {
 	}
 
 	public Space GetLinked( Space end ) => end == _from ? _to : end == _to ? _from : null; // doesn't link.
-	public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) {
+	public Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
 		if(args.Removed == _presence && from[_presence] < 2)
 			ActionScope.Current.AtEndOfThisAction( _ => RemoveSelf() );
+		return Task.CompletedTask;
 	}
 
 	readonly SpiritPresenceToken _presence;

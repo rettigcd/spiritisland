@@ -6,7 +6,7 @@
 /// </summary>
 public class AdjustHealth(int _deltaHealth, params HumanTokenClass[] _tokenClasses)
 	: IModifyAddingToken
-	, IModifyRemovingTokenAsync
+	, IModifyRemovingToken
 	, ICleanupSpaceWhenTimePasses {
 
 	public async Task InitOn(Space space) {
@@ -15,9 +15,10 @@ public class AdjustHealth(int _deltaHealth, params HumanTokenClass[] _tokenClass
 	}
 
 	// Add (covers simple-add AND move-in)
-	public void ModifyAdding(AddingTokenArgs args) {
+	public Task ModifyAddingAsync(AddingTokenArgs args) {
 		if( args.Token is HumanToken healthToken && _tokenClasses.Contains(args.Token.Class) )
 			args.Token = healthToken.AddHealth(_deltaHealth);
+		return Task.CompletedTask;
 	}
 
 	// Remove (covers simple-remove AND move-out)

@@ -3,7 +3,7 @@
 /// <summary>
 /// Tracks Beast destroyed by adding ravage Blight
 /// </summary>
-class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAddedAsync {
+class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdded {
 
 	#region Loss Condition
 
@@ -24,7 +24,7 @@ class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdd
 
 	#endregion
 
-	async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
+	async Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if(args.Added == Token.Blight
 			&& args.Reason == AddReason.Ravage
 		) {

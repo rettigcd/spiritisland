@@ -3,7 +3,7 @@
 public class SpiritPresenceToken 
 	: IToken
 	, ITrackMySpaces 
-	, IHandleTokenRemovedAsync
+	, IHandleTokenRemoved
 	, IAppearInSpaceAbreviation
 {
 

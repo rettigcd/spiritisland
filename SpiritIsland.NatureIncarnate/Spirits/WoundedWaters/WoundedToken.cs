@@ -1,11 +1,11 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 class WoundedToken( Spirit spirit ) : SpiritPresenceToken( spirit ), IHandleTokenAdded {
-	public async void HandleTokenAdded( Space to, ITokenAddedArgs args ) {
-		// When your powers ...
-		if(!IsYourPowers) return;
 
-		await Serenity( to, args );
+	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
+		// When your powers ...
+		if( IsYourPowers ) 
+			await Serenity(to, args);
 	}
 
 	bool IsYourPowers{ get {

@@ -2,8 +2,8 @@
 
 public class BlightToken( string label, char k, Img img ) 
 	: TokenClassToken( label, k, img )
-	, IHandleTokenAddedAsync
-	, IHandleTokenRemovedAsync
+	, IHandleTokenAdded
+	, IHandleTokenRemoved
 {
 
 	/// <summary>

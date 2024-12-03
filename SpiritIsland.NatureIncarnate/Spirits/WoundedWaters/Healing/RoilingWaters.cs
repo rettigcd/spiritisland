@@ -18,10 +18,10 @@ class RoilingWaters : IHealingCard {
 
 	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.SpecialRules.Any(r=>r.Title==Name);
 
-	class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAddedAsync {
+	class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAdded {
 		readonly Spirit _spirit = spirit;
 
-		async Task IHandleTokenAddedAsync.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
+		async Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// When your powers...
 			if(!_spirit.ActionIsMyPower) return;
 

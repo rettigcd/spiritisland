@@ -2,7 +2,7 @@
 
 //	Level 1 - Heavy Mining: >=6 +1 blight
 //	The additional Blight does not destroy Presence or cause cascades.
-class SwedenHeavyMining : BaseModEntity, IHandleTokenAddedAsync, IReactToLandDamage {
+class SwedenHeavyMining : BaseModEntity, IHandleTokenAdded, IReactToLandDamage {
 
 	public bool MiningRush { get; set; }
 

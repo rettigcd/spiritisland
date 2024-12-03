@@ -16,7 +16,7 @@ public class ConfoundingMists {
 		);
 	}
 
-	class MistPusher( Spirit _spirit ) : BaseModEntity, IHandleTokenAddedAsync, IEndWhenTimePasses {
+	class MistPusher( Spirit _spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
 		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// each invader added to target land this turn may be immediatley pushed to any adjacent land
 			if(	args.Added.Class.IsOneOf(Human.Invader) 

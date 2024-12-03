@@ -39,19 +39,21 @@ public class StubbornSolidityBehavior
 		space.Init(this,1);
 	}
 
-	void IModifyAddingToken.ModifyAdding(AddingTokenArgs args) {
+	Task IModifyAddingToken.ModifyAddingAsync(AddingTokenArgs args) {
 		if( args.Token is HumanToken healthToken && healthToken.Class == Human.Dahan ) {
 			var stubbornDahan = MakeStubborn(healthToken);
 			_solidToNormalMap[stubbornDahan] = healthToken;
 			args.Token = stubbornDahan;
 		}
+		return Task.CompletedTask;
 	}
 
 	static HumanToken MakeStubborn(HumanToken healthToken) => healthToken.ChangeImg(Img.Dahan_Solid);
 
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(	args.Token.Class == Human.Dahan ) args.Count = 0;
 		ActionScope.Current.Log(new Log.Debug("Stuborn Solidity stopping Dahan from being changed."));
+		return Task.CompletedTask;
 	}
 
 	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;

@@ -17,7 +17,7 @@ public class SaveDahan : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToken
 		_maxPerAction = maxPerAction;
 	}
 
-	void IModifyRemovingToken.ModifyRemoving(RemovingTokenArgs args) {
+	Task IModifyRemovingToken.ModifyRemovingAsync(RemovingTokenArgs args) {
 		bool shouldReduce = args.Token.Class == Human.Dahan // Dahan
 			&& args.Reason == RemoveReason.Destroyed // Destroyed
 			&& (_byAction.Count < _maxActionCount || _byAction.ContainsKey(ActionScope.Current)); // can effect more action OR already added
@@ -42,7 +42,7 @@ public class SaveDahan : BaseModEntity, IEndWhenTimePasses, IModifyRemovingToken
 				}
 			}
 		}
-
+		return Task.CompletedTask;
 	}
 
 	#region readonly

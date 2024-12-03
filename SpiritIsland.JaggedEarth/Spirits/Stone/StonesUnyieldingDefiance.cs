@@ -120,11 +120,12 @@ public class BestowTheEnduranceOfBedrockPresenceToken(Spirit spirit)
 		"When blight is added to one of your lands, unless the blight then outnumbers your presence, it does not cascade or destroy presence (yours or others')."
 	);
 
-	public void ModifyAdding(AddingTokenArgs args) {
+	public Task ModifyAddingAsync(AddingTokenArgs args) {
 		if( args.Token == Token.Blight && args.To.Blight.Count < args.To[this] ) {
 			// it does not cascade or destroy presence (yours or others').
 			BlightToken.ScopeConfig.ShouldCascade = false;
 			BlightToken.ScopeConfig.DestroyPresence = false;
 		}
+		return Task.CompletedTask;
 	}
 }

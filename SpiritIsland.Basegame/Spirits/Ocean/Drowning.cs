@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAddedAsync {
+class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 
 	public static SpecialRule Rule => new SpecialRule(
 		"Drowning",

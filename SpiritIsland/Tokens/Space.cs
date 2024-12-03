@@ -358,11 +358,8 @@ public partial class Space
 	// callback used for ISinkTokens
 	async Task NotifyAddedAsync( ITokenAddedArgs args ) {
 		var tokens = ModSnapshot;
-		// Sync
-		foreach(IHandleTokenAdded handler in tokens.OfType<IHandleTokenAdded>())
-			handler.HandleTokenAdded( this, args );
 		// Async  (these must not be run in parallel because IDecision cannot handle it.)
-		foreach(IHandleTokenAddedAsync handler in tokens.OfType<IHandleTokenAddedAsync>())
+		foreach(IHandleTokenAdded handler in tokens.OfType<IHandleTokenAdded>())
 			await handler.HandleTokenAddedAsync( this, args );
 	}
 
@@ -419,12 +416,8 @@ public partial class Space
 
 	async Task ModifyRemoving( RemovingTokenArgs args ) {
 		var modArray = ModSnapshot;
-		// Sync
-		foreach(IModifyRemovingToken mod in modArray.OfType<IModifyRemovingToken>())
-			if(0 < args.Count)
-				mod.ModifyRemoving( args );
 		// Async - (must NOT do this in Parallel)
-		foreach(IModifyRemovingTokenAsync x in modArray.OfType<IModifyRemovingTokenAsync>())
+		foreach(IModifyRemovingToken x in modArray.OfType<IModifyRemovingToken>())
 			if(0 < args.Count)
 				await x.ModifyRemovingAsync( args );
 	}
@@ -433,11 +426,8 @@ public partial class Space
 
 	async Task ModifyAdding( AddingTokenArgs args ) {
 		var keyArray = ModSnapshot; 
-		foreach(var mod in keyArray.OfType<IModifyAddingToken>()) 
-			if(0 < args.Count)
-				mod.ModifyAdding( args );
 		// Sync - series, NOT parallel (IDecision can't manage them)
-		foreach(var mod in keyArray.OfType<IModifyAddingTokenAsync>())
+		foreach(var mod in keyArray.OfType<IModifyAddingToken>())
 			if(0 < args.Count)
 				await mod.ModifyAddingAsync( args );
 	}
@@ -525,11 +515,8 @@ public partial class Space
 /// </summary>
 public class RemovingTokenCtx( Space from, ISpaceEntity[] keyArray ) {
 	public async Task NotifyRemoved( ITokenRemovedArgs args ) {
-		// Sync
-		foreach(IHandleTokenRemoved handler in keyArray.OfType<IHandleTokenRemoved>())
-			handler.HandleTokenRemoved( from, args );
 		// Async
-		foreach(IHandleTokenRemovedAsync x in keyArray.OfType<IHandleTokenRemovedAsync>())
+		foreach(IHandleTokenRemoved x in keyArray.OfType<IHandleTokenRemoved>())
 			await x.HandleTokenRemovedAsync( from, args );
 	}
 }

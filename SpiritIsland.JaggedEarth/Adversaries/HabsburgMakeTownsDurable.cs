@@ -6,22 +6,24 @@ class HabsburgMakeTownsDurable
 	, IModifyAddingToken {
 	public HabsburgMakeTownsDurable(){ }
 
-	public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) {
+	public Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
 		// Level 4 - Durable / Herds Thrive
 		// If removing last blight from space
 		if(args.Removed == Token.Blight && !from.Blight.Any)
 			// Switch all towns to Durable
 			foreach(HumanToken t in from.HumanOfTag( Human.Town ))
 				from.AllHumans( t ).Adjust( MakeDurable );
+		return Task.CompletedTask;
 	}
 	static HumanToken MakeDurable(HumanToken x ) => new HabsburgDurableToken( x );
 
-	public void ModifyAdding( AddingTokenArgs args ) {
+	public Task ModifyAddingAsync( AddingTokenArgs args ) {
 		// Level 4 - Durable / Herds Thrive
 		// if adding a normal town to a space with no blight
 		if(args.Token.Class == Human.Town && !args.To.Blight.Any)
 			// change to durable
 			args.Token = new HabsburgDurableToken( args.Token.AsHuman() );
+		return Task.CompletedTask;
 	}
 }
 

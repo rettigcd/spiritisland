@@ -4,19 +4,21 @@ public class HearthToken( Spirit spirit )
 	: SpiritPresenceToken(spirit)
 	, IModifyAddingToken
 	, IHandleTokenAdded
-	, IModifyRemovingTokenAsync
-	, IHandleTokenRemovedAsync
+	, IModifyRemovingToken
+	, IHandleTokenRemoved
 {
-	void IModifyAddingToken.ModifyAdding( AddingTokenArgs args ) {
+	Task IModifyAddingToken.ModifyAddingAsync( AddingTokenArgs args ) {
 		RootedInCommunity_Adding( args );
 		Fortify_AddingDahan( args );
+		return Task.CompletedTask;
 	}
 
-	void IHandleTokenAdded.HandleTokenAdded( Space to, ITokenAddedArgs args ) {
+	Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		Fortify_AddedPresence( to, args );
+		return Task.CompletedTask;
 	}
 
-	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		await Foritfy_RemovingDahanAsync( args);
 	}
 

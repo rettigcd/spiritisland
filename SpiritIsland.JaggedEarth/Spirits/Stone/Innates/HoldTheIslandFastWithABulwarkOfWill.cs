@@ -28,10 +28,10 @@ class HoldTheIslandFastWithABulwarkOfWill {
 /// </summary>
 class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 	: BaseModEntity
-	, IModifyRemovingTokenAsync
+	, IModifyRemovingToken
 	, IEndWhenTimePasses
 {
-	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token != Token.Blight || 0 == args.Count ) return;
 		
 		var cause = BlightToken.ScopeConfig.BlightFromCardTrigger;
@@ -51,10 +51,10 @@ class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 
 class StopPresenceDestructionFromBlightOrEvents( Spirit _spirit ) 
 	: BaseModEntity
-	, IModifyRemovingTokenAsync
+	, IModifyRemovingToken
 	, IEndWhenTimePasses
 {
-	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token.HasTag(TokenCategory.Presence)
 			&& 1 <= _spirit.Energy
 			&& await _spirit.UserSelectsFirstText( "Blight Destroying Presence", "Pay 1 energy to save", "Pass" )

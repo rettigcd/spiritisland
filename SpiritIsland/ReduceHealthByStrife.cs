@@ -17,16 +17,18 @@ public class ReduceHealthByStrife
 		gameState.AddTimePassesAction(mod); // cleanup
 	}
 
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ){
-		if(args.Token is not HumanToken human || human.StrifeCount==0) return;
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ){
+		if(args.Token is not HumanToken human || human.StrifeCount==0) return Task.CompletedTask;
 		var adjustment = args.From.Humans(args.Count,human).Adjust(human=>human.AddHealth(human.StrifeCount));
 		args.Token = adjustment.NewToken;
+		return Task.CompletedTask;
 	}
 
-	void IModifyAddingToken.ModifyAdding( AddingTokenArgs args ){
-		if(args.Token is not HumanToken human || human.StrifeCount==0) return;
+	Task IModifyAddingToken.ModifyAddingAsync( AddingTokenArgs args ){
+		if(args.Token is not HumanToken human || human.StrifeCount==0 ) return Task.CompletedTask;
 		var damaged = human.AddHealth(-human.StrifeCount);
 		args.Token = damaged;
+		return Task.CompletedTask;
 	}
 
 	#region IRunWhenTimePasses imp

@@ -18,9 +18,10 @@ class VolcanoPresence( Spirit spirit, PresenceTrack t1, PresenceTrack t2 )
 
 public class VolcanoToken( Spirit spirit ) : SpiritPresenceToken(spirit), IModifyRemovingToken {
 
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( DestroysMyPresence( args ) && VolcanoPresence.SafeSpace.Value == args.From )
 			args.Count = 0;
+		return Task.CompletedTask;
 	}
 
 	protected override async Task OnPresenceDestroyed( ITokenRemovedArgs args ) {

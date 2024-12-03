@@ -55,7 +55,7 @@ public class AllThingsWeaken : BlightCard {
 
 }
 
-class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAddedAsync {
+class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAdded {
 	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if(args.Added != Token.Blight) return;
 

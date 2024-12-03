@@ -6,8 +6,8 @@
 /// </summary>
 class ScotlandCoastalBlightCheckToken 
 	: BaseModEntity
-	, IHandleTokenAddedAsync
-	, IModifyRemovingTokenAsync
+	, IHandleTokenAdded
+	, IModifyRemovingToken
 {
 
 	const string Name = "Runoff and Bilgewater";
@@ -28,7 +28,7 @@ class ScotlandCoastalBlightCheckToken
 		}
 	}
 
-	async Task IModifyRemovingTokenAsync.ModifyRemovingAsync( RemovingTokenArgs args ) {
+	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		// Treat the Ocean as a Coastal Wetland for this rule and for Blight removal/movement.
 
 		// Since we can't target a land differently when removing blight, 

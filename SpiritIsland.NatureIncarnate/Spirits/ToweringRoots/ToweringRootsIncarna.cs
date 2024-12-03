@@ -8,18 +8,20 @@ public class ToweringRootsIncarna( Spirit spirit )
 {
 	string ISkipBuilds.Text => SpaceAbreviation;
 
-	public void HandleTokenAdded( Space to, ITokenAddedArgs args ) {
+	public Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if( !Empowered && args.Added == Token.Vitality && to[Token.Vitality] == 3)
 			Empowered = true;
+		return Task.CompletedTask;
 	}
 
 	#region Don't damage Beasts
 
-	void IModifyRemovingToken.ModifyRemoving( RemovingTokenArgs args ) {
+	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(args.Reason == RemoveReason.Destroyed
 			&& args.Token.Class.IsOneOf( Token.Beast, Human.Dahan, Human.Explorer, Human.Town, Human.City )
 		)
 			args.Count = 0;
+		return Task.CompletedTask;
 	}
 
 	#endregion

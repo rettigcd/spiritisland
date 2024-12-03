@@ -82,11 +82,11 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 	/// <summary>
 	/// Replaces a Ravage-Blight-Cascade with an Invader upgrade
 	/// </summary>
-	class AvariceRewardedMod : BaseModEntity, IModifyAddingToken, IHandleTokenAddedAsync {
+	class AvariceRewardedMod : BaseModEntity, IModifyAddingToken, IHandleTokenAdded {
 
 		// !!! If there is another Mod that stops the cascade, it should run first so we don't trigger this effect.
 
-		public void ModifyAdding( AddingTokenArgs args ) {
+		public Task ModifyAddingAsync( AddingTokenArgs args ) {
 			if(
 				// When Blight added 
 				args.Token == Token.Blight
@@ -101,6 +101,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 				// instead Upgrade 1 Explorer / Town( before dahan counterattack ).
 				ShouldUpgrade = true;
 			}
+			return Task.CompletedTask;
 		}
 
 		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {

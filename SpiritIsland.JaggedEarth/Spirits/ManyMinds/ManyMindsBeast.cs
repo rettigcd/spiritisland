@@ -6,7 +6,7 @@
 ///  - simplifies Moving the Presence with the Presence-Beasts into the AddedTo space.
 /// </remarks>
 public class ManyMindsBeast( ManyMindsPresenceToken presenceToken ) 
-	: IToken, IHandleTokenAdded, IHandleTokenRemovedAsync, IAppearInSpaceAbreviation 
+	: IToken, IHandleTokenAdded, IHandleTokenRemoved, IAppearInSpaceAbreviation 
 {
 
 	readonly ManyMindsPresenceToken _presenceToken = presenceToken;
@@ -20,12 +20,13 @@ public class ManyMindsBeast( ManyMindsPresenceToken presenceToken )
 
 	public string SpaceAbreviation => Text;
 
-	public void HandleTokenAdded( Space to, ITokenAddedArgs args ) {
+	public Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		// If we added it, it came from somewhere and represented 2 presence.
 		if(args.Added == this) {
 			if(args.Reason != AddReason.MovedTo) throw new InvalidOperationException($"adding MM-Beast reason {args.Reason}");
 			to.Init( this, 1 ); // limit to max 1
 		}
+		return Task.CompletedTask;
 	}
 
 	public async Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {

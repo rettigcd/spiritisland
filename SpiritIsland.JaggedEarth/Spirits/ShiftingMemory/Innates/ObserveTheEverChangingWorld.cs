@@ -36,9 +36,9 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 
 	public Img Img => Token.Element.Img;
 
-	public void HandleTokenAdded( Space to, ITokenAddedArgs args ) => Check( to );
+	public Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) { Check( to ); return Task.CompletedTask; }
 
-	public void HandleTokenRemoved( Space from, ITokenRemovedArgs args ) => Check( from );
+	public Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) { Check( from ); return Task.CompletedTask; }
 
 	void Check( Space space ) {
 		var actionScope = ActionScope.Current;
