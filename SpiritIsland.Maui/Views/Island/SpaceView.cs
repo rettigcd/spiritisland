@@ -20,7 +20,6 @@ public class SpaceWidget {
 		_spaceSpec = Space.SpaceSpec;
 
 		_insidePoints = new ManageInternalPoints( model.Layout );
-		_terrainColor = GetTerrainColor();
 
 		// mapper
 		_mapper = mapper;
@@ -29,6 +28,8 @@ public class SpaceWidget {
 		// Boundary / perimeter
 		_outter = _layout.Corners.Select( mapper.Map ).ToArray();
 		_inner = Polygons.InnerPoints( _outter, -GLOW_WIDTH );
+
+		_terrainColor = GetTerrainColor(); // after _outter initialized so we can make 2nd ring
 
 		_absLayout = absLayout;
 		_graphicsView = graphicsView;
@@ -91,17 +92,13 @@ public class SpaceWidget {
 		canvas.StrokeColor = Colors.Black;
 		canvas.DrawPath( path );
 
-		// Glow
-		if(_glowColor != Colors.Transparent) {
-			points = _inner.Select( x => x.ToPointF() ).ToArray();
-			for(int j = points.Length - 1; 0 <= j; --j)
-				path.LineTo( points[j] );
-			path.LineTo( points[^1] );
+		// 2nd color
+		if(_secondColorInner is not null )
+			DrawWidePerimeter(canvas, path, _secondColorInner, _secondColor! );
 
-			// Fill
-			canvas.FillColor = _glowColor;
-			canvas.FillPath( path );
-		}
+		// Glow
+		if(_glowColor != Colors.Transparent)
+			DrawWidePerimeter(canvas, path, _inner, _glowColor);
 
 		// Label
 		XY center = _mapper.Map( _insidePoints.NameLocation );
@@ -110,6 +107,27 @@ public class SpaceWidget {
 		canvas.FontColor = Colors.White;
 		DrawText( canvas, Space.SpaceSpec.Label, topLeft.X, topLeft.Y, _iconWidth, _iconWidth );
 	}
+
+	static void DrawWidePerimeter(ICanvas canvas, PathF path, XY[] myInner, Color myColor) {
+
+		int startingSegments = path.Count;
+
+		var points2 = myInner.Select(x => x.ToPointF()).ToArray();
+		for( int j = points2.Length - 1; 0 <= j; --j )
+			path.LineTo(points2[j]);
+		path.LineTo(points2[^1]);
+
+		// Fill
+		canvas.FillColor = myColor;
+		canvas.FillPath(path);
+
+		path.RemoveAllSegmentsAfter(startingSegments);
+		if(path.Count != startingSegments)
+			throw new Exception($"{path.Count} <> {startingSegments}");
+	}
+
+	XY[]? _secondColorInner = null;
+	Color? _secondColor = null;
 
 	void DrawText( ICanvas canvas, string text, float x, float y, float _/*w*/, float _1/*h*/ ) {
 
@@ -171,9 +189,18 @@ public class SpaceWidget {
 		_visibleTokens.Remove(token);
 	}
 
-	Color GetTerrainColor() => _spaceSpec is SingleSpaceSpec s1 
-		? s1.NativeTerrain.GetColor() 
-		: Colors.DarkSlateGray; // Multi-spaces & Endless Dark
+	Color GetTerrainColor() {
+		if( _spaceSpec is SingleSpaceSpec s1 )
+			return s1.NativeTerrain.GetColor(); // Multi-spaces & Endless Dark
+
+		if( _spaceSpec is MultiSpaceSpec ms && ms.OrigSpaces.Length == 2 ) {
+			_secondColorInner = Polygons.InnerPoints(_outter, -GLOW_WIDTH*1.5f);
+			_secondColor = ms.OrigSpaces[0].NativeTerrain.GetColor();
+			return ms.OrigSpaces[1].NativeTerrain.GetColor();
+		}
+
+		return Colors.DarkSlateGray; // Multi-spaces & Endless Dark
+	}
 
 	void Tap_Tapped( object? sender, TappedEventArgs e ) {
 	}
