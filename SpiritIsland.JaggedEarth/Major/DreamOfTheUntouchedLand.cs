@@ -33,8 +33,9 @@ public class DreamOfTheUntouchedLand {
 				for(int i = 0; i < 2; ++i)
 					(await ctx.Self.SelectSpaceAsync($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens(), Present.Always ))
 						.Adjust(token,1);
+
 			// and up to 2 presence (from any Spirits) anywhere on it.
-			// ??? Can spirits violate their place-presence rules?
+			// !!! Make sure spirits don't violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
 				var spirit = await ctx.Self.SelectAsync(new A.Spirit("Spirit to add presence.", gs.Spirits));
 				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens().ToArray() )

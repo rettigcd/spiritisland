@@ -1,14 +1,16 @@
-﻿using System.Collections.ObjectModel;
-
-namespace SpiritIsland.Maui;
+﻿namespace SpiritIsland.Maui;
 
 public class IslandModel : ObservableModel {
 
-	public ObservableCollection<SpaceModel> Spaces { get; }
+	public record SpacesChangedEventArgs(SpaceModel[] Added, SpaceModel[] Removed );
+
+	public event Action<SpacesChangedEventArgs>? SpacesChanged;
+
+	public List<SpaceModel> Spaces { get; }
 
 	/// <summary>
 	/// Not observalbe.  Will never change unless Space collection changes.  
-	/// Watch Spaces to trigger for changes in WorldBounds
+	/// Watch SpacesAdded event to trigger for changes in WorldBounds
 	/// </summary>
 	public Bounds WorldBounds { get; set; }
 
@@ -31,7 +33,7 @@ public class IslandModel : ObservableModel {
 	#endregion constructor
 
 	/// <summary> Called when a new descision is available to Sync the view model to the GameState </summary>
-	public void Sync() {
+	public void SyncTokens() {
 		ActionScope.ThrowIfMissingCurrent();
 		foreach (SpaceModel spaceModel in Spaces )
 			spaceModel.Sync();
@@ -49,27 +51,33 @@ public class IslandModel : ObservableModel {
 	#region private methods
 
 	void GameState_NewLogEntry(Log.ILogEntry obj) {
-		if( obj is Log.LayoutChanged layoutChange ) UpdateLayout();
+		if( obj is Log.LayoutChanged ) UpdateExistingSpaces();
 	}
 
-	void UpdateLayout() {
+	void UpdateExistingSpaces() {
 
 		// Sync spaces
-		var spacesToAdd = GameState.Current.SpaceSpecs_Unfiltered.ToHashSet();
+		var specsToAdd = GameState.Current.SpaceSpecs_Unfiltered.ToHashSet();
+		var spacesRemoved = new List<SpaceModel>();
 
 		// Set new World Bounds BEFORE we update the Space collection.
-		WorldBounds = new BoundsBuilder( spacesToAdd.Select(x=>x.Layout.Bounds)).GetBounds();
+		WorldBounds = new BoundsBuilder( specsToAdd.Select(x=>x.Layout.Bounds)).GetBounds();
 
 		// Compare Old to New (and remove any that are old)
 		foreach( var current in Spaces.ToArray() ) {
-			if( spacesToAdd.Contains(current.Space.SpaceSpec) )
-				spacesToAdd.Remove(current.Space.SpaceSpec);
-			else
+			if( specsToAdd.Contains(current.Space.SpaceSpec) )
+				specsToAdd.Remove(current.Space.SpaceSpec);
+			else {
+				current.ClearTokens();
 				Spaces.Remove(current);
+				spacesRemoved.Add(current);
+			}
 		}
 		// Add which are actually new
-		foreach( var newSpaceSpec in spacesToAdd )
-			Spaces.Add(BuildSpaceModel(newSpaceSpec));
+		var spacesAdded = specsToAdd.Select(BuildSpaceModel).ToArray();
+		Spaces.AddRange(spacesAdded);
+		
+		SpacesChanged?.Invoke(new SpacesChangedEventArgs(spacesAdded, [.. spacesRemoved]));
 	}
 
 	#endregion private methods

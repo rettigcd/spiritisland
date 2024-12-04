@@ -6,7 +6,7 @@ public class WeaveTogetherTheFabricOfPlace {
 	[Instructions( "Target land and a land adjacent to it become a single land for this turn. (It has the terrain and land # of both lands. When this effect expires, divide pieces as you wish; all of them are considered moved.) -If you have- 4 Air: Isolate the joined land. If it has Invaders, 2 Fear, and remove up to 2 Invaders." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// target land and a land adjacent to it become a single land for this turn.
-		var other = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.SpaceSpec.Label} to.")).SpaceSpec;
+		var other = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.SpaceSpec.Label} to")).SpaceSpec;
 
 		MultiSpaceSpec multi = JoinSpaces( ctx.Self, ctx.SpaceSpec, other );
 
@@ -88,7 +88,8 @@ public class WeaveTogetherTheFabricOfPlace {
 		ITokenClass[] tokenClasses = fromSpace.OfType<IToken>()
 			.Select( x => x.Class ).Distinct()
 			.ToArray();
-		await toSpace.Gather( self )
+		// await toSpace.Gather(self)
+		await new TokenMover(self, $"Distribute tokens to un-woven {toSpace.Label}", fromSpace, toSpace)
 			.AddGroup( int.MaxValue, tokenClasses )
 			.ConfigSource(s=>s.FilterSource( ss => ss.SpaceSpec == from ))
 			.DoUpToN();

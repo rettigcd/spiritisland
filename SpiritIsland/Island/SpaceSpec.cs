@@ -5,7 +5,7 @@ public interface IRestoreable {
 }
 
 public abstract class SpaceSpec(string label)
-		: IOption 
+	: IOption 
 	, ISeeAllNeighbors<SpaceSpec>
 	, IEquatable<SpaceSpec>
 {
@@ -30,7 +30,7 @@ public abstract class SpaceSpec(string label)
 	public bool IsOcean => Is( Terrain.Ocean );
 	public bool IsDestroyed => Is( Terrain.Destroyed );
 
-	public bool IsCoastal { get; set; }
+	public bool IsCoastal { get; protected set; }
 
 	public override string ToString() => Label;
 

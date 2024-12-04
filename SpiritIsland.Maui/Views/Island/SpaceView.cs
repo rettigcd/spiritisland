@@ -1,26 +1,22 @@
 ﻿//using Android.OS;
 
-namespace SpiritIsland.Maui;
-
-using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Graphics.Text;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
+namespace SpiritIsland.Maui;
 
 public class SpaceWidget {
 
-	public readonly ObservableCollection<TokenLocationModel> Tokens;
-
-	Color _glowColor = Colors.Transparent;
-
-	public Space Space => _model.Space;
+	public Space Space => Model.Space;
 
 	#region constructors
 
-	public SpaceWidget(SpaceModel model, PointMapper mapper, AbsoluteLayout abs, GraphicsView graphicsView ) {
-		_model = model;
-		Tokens = model.Tokens;
+	/// <summary>
+	/// Will automatically Float new Tokens so don't create new ones for ones that already exist.
+	/// </summary>
+	public SpaceWidget(SpaceModel model, PointMapper mapper, AbsoluteLayout absLayout, GraphicsView graphicsView ) {
+		Model = model;
 		_spaceSpec = Space.SpaceSpec;
 
 		_insidePoints = new ManageInternalPoints( model.Layout );
@@ -34,30 +30,31 @@ public class SpaceWidget {
 		_outter = _layout.Corners.Select( mapper.Map ).ToArray();
 		_inner = Polygons.InnerPoints( _outter, -GLOW_WIDTH );
 
-		_absLayout = abs;
+		_absLayout = absLayout;
 		_graphicsView = graphicsView;
-
-		Tokens.CollectionChanged += Tokens_CollectionChanged;
 
 		_insidePoints.Init(Space);
 
 		foreach (TokenLocationModel tlModel in model.Tokens)
-			FloatToken(_absLayout, tlModel);
+			FloatToken(tlModel);
 
+		// events
+		model.Tokens.CollectionChanged += ModelTokens_CollectionChanged;
 		model.PropertyChanged += Model_PropertyChanged;
-
 	}
-	public readonly SpaceModel _model;
+	public readonly SpaceModel Model;
 
 	void Model_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) {
-		if(e.PropertyName == nameof(_model.State) ) {
-			_glowColor = _model.State switch {
-				OptionState.Selected => Color.FromRgba(0, 255, 0, 144),
-				OptionState.IsOption => Color.FromRgba(255, 0, 0, 144),
-				_ => Colors.Transparent,
-			};
-			_graphicsView.Invalidate();
-		}
+		if(e.PropertyName == nameof(Model.State) ) SpaceStateChanged();
+	}
+
+	void SpaceStateChanged() {
+		_glowColor = Model.State switch {
+			OptionState.Selected => Color.FromRgba(0, 255, 0, 144),
+			OptionState.IsOption => Color.FromRgba(255, 0, 0, 144),
+			_ => Colors.Transparent,
+		};
+		_graphicsView.Invalidate();
 	}
 
 	#endregion constructors
@@ -70,7 +67,7 @@ public class SpaceWidget {
 	}
 
 	public void Click() { 
-		_model.ClickCommand.Execute(null);
+		Model.ClickCommand.Execute(null);
 	}
 
 	public TokenLocationView GetSpaceTokenView( SpaceToken st ) {
@@ -114,19 +111,12 @@ public class SpaceWidget {
 		DrawText( canvas, Space.SpaceSpec.Label, topLeft.X, topLeft.Y, _iconWidth, _iconWidth );
 	}
 
-	//void DrawPoints( ICanvas canvas, XY[] points, Color color ) {
-	//	canvas.StrokeColor = color; 
-	//	canvas.StrokeSize = 2;
-	//	foreach(XY pt in points) {
-	//		var screen = _mapper.Map( pt );
-	//		canvas.DrawLine( screen.X - 1, screen.Y, screen.X + 1, screen.Y );
-	//	}
-	//}
-
 	void DrawText( ICanvas canvas, string text, float x, float y, float _/*w*/, float _1/*h*/ ) {
 
-		try{ 
-			ITextAttributes attr1 = new TextAttributes();
+		try{
+			//			Microsoft.Maui.Graphics.Text.ITextAttributes attr1 = new TextAttributes();
+			var attr1 = new TextAttributes();
+
 			IAttributedTextRun run1 = new AttributedTextRun( 0, 200, attr1 );
 			var text1 = new AttributedText( text, [run1] );
 			canvas.DrawText( text1, x, y, _iconWidth * 3, _iconWidth );
@@ -136,28 +126,22 @@ public class SpaceWidget {
 		}
 	}
 
-	void Tokens_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
+	void ModelTokens_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
 		switch( e.Action) {
 			case NotifyCollectionChangedAction.Add:
 				foreach (TokenLocationModel tlModel in e.NewItems!)
-					FloatToken(_absLayout, tlModel);
+					FloatToken(tlModel);
 				break;
 			case NotifyCollectionChangedAction.Remove:
-				foreach (TokenLocationModel tlModel in e.OldItems!) {
-					IToken token = tlModel.TokenLocation.Token;
-					TokenLocationView view = _visibleTokens[token];
-					_visibleTokens.Remove(token);
-					_absLayout.Children.Remove(view);
-				}
+				foreach (TokenLocationModel tlModel in e.OldItems!)
+					UnFloat(tlModel.TokenLocation.Token);
 				break;
 			case NotifyCollectionChangedAction.Reset:
-				if(Tokens.Count == 0) {
-					foreach(var oldView in _visibleTokens.Values)
-						_absLayout.Children.Remove(oldView);
-					_visibleTokens.Clear();
-				} else {
-					// !! what just happened.  What kind of reset did we get?
-				}
+				if(Model.Tokens.Count != 0) 
+					throw new InvalidOperationException("What just happened?  How did we get a reset and still have tokens?");
+				// On Reset, .OldItems is null, have to use our copy of the tokens
+				foreach( IToken token in _visibleTokens.Keys.ToArray() )
+					UnFloat(token);
 				break;
 			default:
 				break;
@@ -166,46 +150,26 @@ public class SpaceWidget {
 
 	#region private methods
 
-	TokenLocationView? FloatToken( AbsoluteLayout abs, TokenLocationModel tlModel ) {
+	void FloatToken( TokenLocationModel tlModel ) {
 
 		TokenLocationView view = new TokenLocationView { 
 			ZIndex = 2, 
 			BindingContext = tlModel
 		};
 
-		// add
+		// add to our lookup list
 		_visibleTokens[tlModel.TokenLocation.Token] = view;
 
+		// add to the View
 		XY center = _mapper.Map( _insidePoints.GetPointFor(tlModel.TokenLocation.Token) );// calc center
 		XY topLeft = new XY(center.X - _iconWidth / 2, center.Y - _iconWidth / 2);
-		abs.Float( view, new Rect( topLeft.X, topLeft.Y, _iconWidth, _iconWidth ) );
-		return view;
+		_absLayout.Float( view, new Rect( topLeft.X, topLeft.Y, _iconWidth, _iconWidth ) );
 	}
 
-	//static (Path, Rect) MakePathFromPoints( XY[] outter, XY[]? inner = null ) {
-	//	var outterPathFigure = new PathFigure { StartPoint = outter[0].ToPoint(), IsClosed = true };
-	//	for(int j = 1; j < outter.Length; ++j)
-	//		outterPathFigure.Segments.Add( new LineSegment( outter[j].ToPoint() ) );
-
-	//	float minX = outter.Min( x => x.X );
-	//	float minY = outter.Min( x => x.Y );
-
-	//	PathFigure? innerPathFigure = null;
-	//	if(inner is not null) {
-	//		innerPathFigure = new PathFigure { StartPoint = inner[0].ToPoint(), IsClosed = true };
-	//		for(int j = 1; j < inner.Length; ++j)
-	//			innerPathFigure.Segments.Add( new LineSegment( inner[j].ToPoint() ) );
-	//	}
-
-	//	var path = new Path {
-	//		Data = new PathGeometry( innerPathFigure is null ? [outterPathFigure] : [outterPathFigure, innerPathFigure] ),
-	//		Aspect = Stretch.Uniform,
-	//	};
-
-	//	// the -1s are because there is a 1 pixel offset from graphcs and canvas
-	//	var bounds = new Rect( minX -1, minY-1, AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize );
-	//	return (path, bounds);
-	//}
+	void UnFloat(IToken token) {
+		_absLayout.Children.Remove(_visibleTokens[token]);
+		_visibleTokens.Remove(token);
+	}
 
 	Color GetTerrainColor() => _spaceSpec is SingleSpaceSpec s1 
 		? s1.NativeTerrain.GetColor() 
@@ -218,6 +182,8 @@ public class SpaceWidget {
 
 	#region private fields
 
+	SpaceLayout _layout => Model.Layout;
+
 	readonly int _iconWidth;
 
 	readonly AbsoluteLayout _absLayout;
@@ -228,11 +194,11 @@ public class SpaceWidget {
 	readonly XY[] _inner;
 	readonly Dictionary<IToken, TokenLocationView> _visibleTokens = [];
 	readonly Color _terrainColor;
-	SpaceLayout _layout => _model.Layout;
 	readonly ManageInternalPoints _insidePoints;
 	readonly SpaceSpec _spaceSpec;
 
 	const float GLOW_WIDTH = 10f;
+	Color _glowColor = Colors.Transparent;
 
 	#endregion
 }

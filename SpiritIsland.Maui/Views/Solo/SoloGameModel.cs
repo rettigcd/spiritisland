@@ -223,7 +223,7 @@ public class SoloGameModel : ObservableModel {
 			ActionScope.Initialize(GameState.RootScope);
 
 		// Spaces = Spaces == "1" ? "0" : "1"; // IV.SyncTokensToGameState();
-		Island.Sync();
+		Island.SyncTokens();
 
 		if (AutoSelect()) return;
 

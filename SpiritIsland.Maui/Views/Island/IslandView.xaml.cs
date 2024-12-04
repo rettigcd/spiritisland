@@ -1,3 +1,5 @@
+using SpiritIsland.JaggedEarth;
+
 namespace SpiritIsland.Maui;
 
 public partial class IslandView : ContentView, IDrawable {
@@ -14,17 +16,36 @@ public partial class IslandView : ContentView, IDrawable {
 		set => SetValue(ModelProperty, value);
 	}
 
-	void InitSpaces(IslandModel? _, IslandModel? newModel) {
-		if( newModel == null ) {
-			_spaceWidgets = [];
-			return;
-		}
+	void InitSpaces(IslandModel? oldModel, IslandModel? newModel) {
+		if(oldModel is not null) 
+			throw new Exception("(Q1) How the hell are we replacing the Island model?");
+		if(newModel is null) 
+			throw new Exception("(Q2) Why the hell are we clearing out the model?");
+		//if( newModel == null ) { _spaceWidgets = []; return; }
+
+		newModel.SpacesChanged += Model_SpacesChanged;
 
 		var mapper = CalcMapper(newModel.WorldBounds);
 		_spaceWidgets = newModel.Spaces
 			.Select(model => new SpaceWidget(model, mapper, Abs, IslandGraphicsView))
 			.ToArray();
 	}
+
+	void Model_SpacesChanged(IslandModel.SpacesChangedEventArgs obj) {
+		var model = Model!;
+		var mapper = CalcMapper(model.WorldBounds);
+
+		_spaceWidgets = [
+			.. _spaceWidgets.Where(w=>!obj.Removed.Contains(w.Model)),
+			.. obj.Added.Select(model => new SpaceWidget(model, mapper, Abs, IslandGraphicsView))
+		];
+
+		//_spaceWidgets = model.Spaces
+		//	.Select(model => new SpaceWidget(model, mapper, Abs, IslandGraphicsView))
+		//	.ToArray();
+		IslandGraphicsView.Invalidate();
+	}
+
 
 	static PointMapper CalcMapper(Bounds worldBounds) {
 

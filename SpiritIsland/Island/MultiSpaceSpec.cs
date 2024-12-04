@@ -21,6 +21,11 @@ public class MultiSpaceSpec : SpaceSpec {
 	{
 		OrigSpaces = CollectOrigSpaces( spaces );
 		Boards = OrigSpaces.SelectMany(s=>s.Boards).Distinct().ToArray();
+
+		// Special case: If we are joining Ocean to anything, it is coastal.
+		// We have to do this hear because normal Adjacency check won't be able to detect ocean.
+		if(spaces.Any(x=>x.IsOcean) && spaces.Any(x=>!x.IsOcean))
+			IsCoastal = true;
 	}
 
 	#endregion
