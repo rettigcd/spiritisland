@@ -11,6 +11,8 @@ public class SpaceModel : ObservableModel, OptionView {
 	/// <summary> Details about where it appears on the screen. </summary>
 	public SpaceLayout Layout { get; }
 
+	public Bounds Bounds => Layout.Bounds;
+
 	#region OptionView implementation
 
 	public OptionState State { get => _state; set => SetProp(ref _state, value ); }

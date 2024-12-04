@@ -5,6 +5,11 @@
 	SPIRIT - Ocean - Deeps
 
 5	BUG/UI - Display joined lands.
+	Dream of the Untouched Land
+	Stasis
+	WeaveTogether the Fabric of Place
+	Cast Down into the Briny Deep
+	Log.LayoutChanged
 
 4	UI - Landscape layout
 	UI - "Play" should be wide enough to display all word

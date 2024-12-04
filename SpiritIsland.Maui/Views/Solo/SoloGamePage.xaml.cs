@@ -73,7 +73,7 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 	void SpiritSummary_CardDetailsClicked(object sender, EventArgs e) => _model.ShowCardPanel();
 
 	public void Dispose() {
-		_model.ShutDownOld();
+		_model.ShutDown();
 	}
 
 	readonly SoloGameModel _model;

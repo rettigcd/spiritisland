@@ -448,6 +448,17 @@ public class BoundsBuilder {
 		return builder.GetBounds();
 	}
 
+	#region constructors
+
+	public BoundsBuilder() { }
+
+	public BoundsBuilder(IEnumerable<Bounds> parts) {
+		foreach( var part in parts )
+			Include(part);
+	}
+
+	#endregion constructors
+
 	public void Include(Bounds b) {
 		Include(b.X,b.Y);
 		Include(b.Right,b.Bottom);

@@ -181,7 +181,8 @@ public class SoloGameModel : ObservableModel {
 		VisibleOverlay = Overlay.None;
 	}
 
-	public void ShutDownOld() {
+	/// <summary> Game is over, Dispose / Release everythins </summary>
+	public void ShutDown() {
 
 		// !!! This is essentially a .Dispose() and ideally we don't want to need to call it.
 
@@ -203,7 +204,6 @@ public class SoloGameModel : ObservableModel {
 	}
 
 	void Game_NewWaitingDecision(IDecision decision) {
-		var gameState = GameState!;
 
 		// Update Prompt
 		_nextDecision = decision;
@@ -220,7 +220,7 @@ public class SoloGameModel : ObservableModel {
 
 		// Board
 		if (ActionScope.Current == null)
-			ActionScope.Initialize(gameState.RootScope);
+			ActionScope.Initialize(GameState.RootScope);
 
 		// Spaces = Spaces == "1" ? "0" : "1"; // IV.SyncTokensToGameState();
 		Island.Sync();

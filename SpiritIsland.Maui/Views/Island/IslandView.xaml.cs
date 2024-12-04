@@ -19,17 +19,14 @@ public partial class IslandView : ContentView, IDrawable {
 			_spaceWidgets = [];
 			return;
 		}
-		// Assumes there is only 1 board.
+
 		var mapper = CalcMapper(newModel.WorldBounds);
-		_spaceWidgets = newModel._spaceModels
-			.Select(model => {
-				return new SpaceWidget(model, mapper, Abs, IslandGraphicsView);
-			})
+		_spaceWidgets = newModel.Spaces
+			.Select(model => new SpaceWidget(model, mapper, Abs, IslandGraphicsView))
 			.ToArray();
 	}
 
-#pragma warning disable CA1822 // Mark members as static
-	PointMapper CalcMapper(Bounds worldBounds) {
+	static PointMapper CalcMapper(Bounds worldBounds) {
 
 		// The following line is return width/height of -1
 		// Bounds screenBounds = new Bounds(0, 0, (float)IslandGraphicsView.Width, (float)IslandGraphicsView.Height);
@@ -40,7 +37,6 @@ public partial class IslandView : ContentView, IDrawable {
 			screenBounds.FitBoth(worldBounds.Size)
 		);
 	}
-#pragma warning restore CA1822 // Mark members as static
 
 	#region constructor
 
