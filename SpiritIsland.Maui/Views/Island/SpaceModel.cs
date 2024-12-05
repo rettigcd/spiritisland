@@ -12,6 +12,7 @@ public class SpaceModel : ObservableModel, OptionView {
 	public SpaceLayout Layout { get; }
 
 	public Bounds Bounds => Layout.Bounds;
+	public XY[] Corners => Layout.Corners; // for calculating optimal rotation
 
 	#region OptionView implementation
 

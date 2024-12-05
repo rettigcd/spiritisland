@@ -118,5 +118,3 @@ public static class FVector2Extensions {
 	}
 
 }
-
-

@@ -10,6 +10,8 @@ public class SpaceWidget {
 
 	public Space Space => Model.Space;
 
+	public readonly SpaceModel Model;
+
 	#region constructors
 
 	/// <summary>
@@ -18,16 +20,14 @@ public class SpaceWidget {
 	public SpaceWidget(SpaceModel model, PointMapper mapper, AbsoluteLayout absLayout, GraphicsView graphicsView ) {
 		Model = model;
 		_spaceSpec = Space.SpaceSpec;
-
-		_insidePoints = new ManageInternalPoints( model.Layout );
-
-		// mapper
 		_mapper = mapper;
+
+		_insidePoints = new ManageInternalPoints(model.Layout);
 		_iconWidth = (int)(mapper.UnitLength * _insidePoints.TokenSize);
 
 		// Boundary / perimeter
-		_outter = _layout.Corners.Select( mapper.Map ).ToArray();
-		_inner = Polygons.InnerPoints( _outter, -GLOW_WIDTH );
+		_outer = CalcOuter(_mapper, Model );
+		_inner = CalcInner( _outer );
 
 		_terrainColor = GetTerrainColor(); // after _outter initialized so we can make 2nd ring
 
@@ -43,7 +43,14 @@ public class SpaceWidget {
 		model.Tokens.CollectionChanged += ModelTokens_CollectionChanged;
 		model.PropertyChanged += Model_PropertyChanged;
 	}
-	public readonly SpaceModel Model;
+
+	static XY[] CalcOuter(PointMapper mapper, SpaceModel model)
+		=> model.Layout.Corners.Select(mapper.Map).ToArray();
+
+	static XY[] CalcInner(XY[] outer)	=> Polygons.InnerPoints( outer, -GLOW_WIDTH );
+
+	static XY[] Calc2ndInner(XY[] outer) => Polygons.InnerPoints(outer, -GLOW_WIDTH * 1.5f);
+
 
 	void Model_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) {
 		if(e.PropertyName == nameof(Model.State) ) SpaceStateChanged();
@@ -60,10 +67,31 @@ public class SpaceWidget {
 
 	#endregion constructors
 
+	/// <summary>
+	/// When Boards change orientation, their mapper needs updated.
+	/// </summary>
+	public void UpdateMapper(PointMapper mapper) {
+		_mapper = mapper;
+		_outer = CalcOuter(_mapper, Model);
+		_inner = CalcInner(_outer);
+		if(_secondColorInner is not null)
+			_secondColorInner = Calc2ndInner(_outer);
+
+		_insidePoints = new ManageInternalPoints(Model.Layout);
+		_iconWidth = (int)(mapper.UnitLength * _insidePoints.TokenSize);
+
+		// Move out tokens
+		foreach( TokenLocationView view in _visibleTokens.Values ) {
+			Rect rect = GetFloatPosition(view.Model);
+			_absLayout.UpdateFloat(view, rect);
+		}
+
+	}
+
 	public bool Contains( PointF clientCoords ) {
 		// !!! check Bounds in screen coords here TOO
 		// !!! don't recalc these every time...
-		XY[] cornersInScreenCoords = _layout.Corners.Select( _mapper.Map ).ToArray();
+		XY[] cornersInScreenCoords = Model.Layout.Corners.Select( _mapper.Map ).ToArray();
 		return Polygons.IsInside( cornersInScreenCoords, clientCoords.ToXY() );
 	}
 
@@ -80,7 +108,7 @@ public class SpaceWidget {
 	public void DrawBackground( ICanvas canvas ) {
 
 		// Outline
-		PointF[] points = _outter.Select( x => x.ToPointF() ).ToArray();
+		PointF[] points = _outer.Select( x => x.ToPointF() ).ToArray();
 		PathF path = new PathF();
 		path.MoveTo( points[^1] );
 		for(int j = 0; j < points.Length; j++)
@@ -126,9 +154,6 @@ public class SpaceWidget {
 			throw new Exception($"{path.Count} <> {startingSegments}");
 	}
 
-	XY[]? _secondColorInner = null;
-	Color? _secondColor = null;
-
 	void DrawText( ICanvas canvas, string text, float x, float y, float _/*w*/, float _1/*h*/ ) {
 
 		try{
@@ -170,8 +195,8 @@ public class SpaceWidget {
 
 	void FloatToken( TokenLocationModel tlModel ) {
 
-		TokenLocationView view = new TokenLocationView { 
-			ZIndex = 2, 
+		TokenLocationView view = new TokenLocationView {
+			ZIndex = 2,
 			BindingContext = tlModel
 		};
 
@@ -179,9 +204,15 @@ public class SpaceWidget {
 		_visibleTokens[tlModel.TokenLocation.Token] = view;
 
 		// add to the View
-		XY center = _mapper.Map( _insidePoints.GetPointFor(tlModel.TokenLocation.Token) );// calc center
+		Rect rect = GetFloatPosition(tlModel);
+		_absLayout.Float(view, rect);
+	}
+
+	private Rect GetFloatPosition(TokenLocationModel tlModel) {
+		XY center = _mapper.Map(_insidePoints.GetPointFor(tlModel.TokenLocation.Token));// calc center
 		XY topLeft = new XY(center.X - _iconWidth / 2, center.Y - _iconWidth / 2);
-		_absLayout.Float( view, new Rect( topLeft.X, topLeft.Y, _iconWidth, _iconWidth ) );
+		var rect = new Rect(topLeft.X, topLeft.Y, _iconWidth, _iconWidth);
+		return rect;
 	}
 
 	void UnFloat(IToken token) {
@@ -194,7 +225,7 @@ public class SpaceWidget {
 			return s1.NativeTerrain.GetColor(); // Multi-spaces & Endless Dark
 
 		if( _spaceSpec is MultiSpaceSpec ms && ms.OrigSpaces.Length == 2 ) {
-			_secondColorInner = Polygons.InnerPoints(_outter, -GLOW_WIDTH*1.5f);
+			_secondColorInner = Calc2ndInner(_outer);
 			_secondColor = ms.OrigSpaces[0].NativeTerrain.GetColor();
 			return ms.OrigSpaces[1].NativeTerrain.GetColor();
 		}
@@ -209,19 +240,18 @@ public class SpaceWidget {
 
 	#region private fields
 
-	SpaceLayout _layout => Model.Layout;
-
-	readonly int _iconWidth;
+	PointMapper _mapper; // not readonly, changes when boards are moved
+	XY[] _outer;
+	XY[] _inner;
+	XY[]? _secondColorInner = null;
+	Color? _secondColor = null;
+	ManageInternalPoints _insidePoints;
+	int _iconWidth;
 
 	readonly AbsoluteLayout _absLayout;
 	readonly GraphicsView _graphicsView;
-
-	readonly PointMapper _mapper;
-	readonly XY[] _outter;
-	readonly XY[] _inner;
 	readonly Dictionary<IToken, TokenLocationView> _visibleTokens = [];
 	readonly Color _terrainColor;
-	readonly ManageInternalPoints _insidePoints;
 	readonly SpaceSpec _spaceSpec;
 
 	const float GLOW_WIDTH = 10f;

@@ -2,8 +2,14 @@
 
 public class PointMapper {
 
-	static public PointMapper FromWorldToViewport( Bounds worldBounds, Bounds viewportRect ) {
+	public static PointMapper NullMapper => new PointMapper(new Matrix3D());
+
+	static public PointMapper FromWorldToViewport( Bounds worldBounds, Bounds viewportRect, int worldRotationDegrees = 0 ) {
 		Matrix3D transform = CalcWorldToScreenMatrix( worldBounds, viewportRect );
+		if(worldRotationDegrees != 0 ) {
+			// first rotate world coordinates
+			transform = RowVector.RotateDegrees(worldRotationDegrees) * transform;
+		}
 		return new PointMapper( transform );
 	}
 
@@ -12,15 +18,51 @@ public class PointMapper {
 		float scale = viewportRect.Height / worldRect.Height;
 
 		var islandBitmapMatrix
-			= RowVector.Translate( -worldRect.X, -worldRect.Y ) // translate to origin
-			* RowVector.Scale( scale, -scale ) // flip-y and scale
-			* RowVector.Translate( 0, viewportRect.Height ) // because 0,0 is at the bottom,left
-			* RowVector.Translate( viewportRect.X, viewportRect.Y ); // translate to viewport origin
+			// translate to origin
+			= RowVector.Translate( -worldRect.X, -worldRect.Y )
+			// scale to fit in ViewPort
+			* RowVector.Scale( scale, scale )
+			// flip it upside but keep it within the same range (0..Height)
+			* RowVector.Scale(1, -1)
+			* RowVector.Translate( 0, viewportRect.Height )
+			// translate to Viewport origin
+			* RowVector.Translate( viewportRect.X, viewportRect.Y );
 		return islandBitmapMatrix;
 	}
 
-	public readonly static PointMapper NullMapper = new PointMapper( new Matrix3D() );
+	static public PointMapper FitPointsInViewportHeight(Bounds viewport, IEnumerable<XY> points, params int[] allowedRotationDegrees) {
 
+		// Init to 0-Rotation, which is always allowed
+		int bestDegrees = 0;
+		Bounds bestWorldBounds = BoundsBuilder.ForPoints(points);
+
+		// Find the best angle to rotate the points so they have minumum height
+		foreach( int degrees in allowedRotationDegrees ) {
+			var candidatesPoints = points.Select(new PointMapper(RowVector.RotateDegrees(degrees)).Map);
+			Bounds testBounds = BoundsBuilder.ForPoints(candidatesPoints);
+			if( testBounds.Height < bestWorldBounds.Height ) {
+				bestDegrees = degrees;
+				bestWorldBounds = testBounds;
+			}
+		}
+
+		// calculate scaling Assuming height limited
+		float scale = viewport.Height / bestWorldBounds.Height;
+
+		var transformationMatrix
+			// rotate to the best angle
+			= RowVector.RotateDegrees(bestDegrees)
+			// translate to origin
+			* RowVector.Translate(-bestWorldBounds.X, -bestWorldBounds.Y)
+			// scale to fit in ViewPort
+			* RowVector.Scale(scale, scale)
+			// flip it upside but keep it within the same range (0..Height)
+			* RowVector.Scale(1, -1)
+			* RowVector.Translate(0, viewport.Height)
+			// translate to Viewport origin
+			* RowVector.Translate(viewport.X, viewport.Y);
+		return new PointMapper(transformationMatrix);
+	}
 
 	/// <param name="rowVectorMatrix">Matrix must be built for transformations on RowVectors</param>
 	public PointMapper(Matrix3D rowVectorMatrix) { 

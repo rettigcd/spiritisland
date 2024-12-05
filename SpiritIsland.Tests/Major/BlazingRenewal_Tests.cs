@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.Tests.Spirits.RampantGreen;
+﻿namespace SpiritIsland.Tests.Major;
 
 public class BlazingRenewal_Tests {
 

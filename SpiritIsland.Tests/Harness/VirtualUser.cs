@@ -8,6 +8,9 @@ public class VirtualUser( Spirit spirit ) {
 	public DecisionContext NextDecision => _spirit.NextDecision();
 	public void WaitForNext() => _spirit.WaitForNext();
 
+	public void StubGuess() {
+		throw new Exception(NextDecision.ToString()+";");
+	}
 	
 	// shortcuts for when we don't have to check prompt or available options
 	public void Choose(string option) => NextDecision.Choose(option);

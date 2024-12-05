@@ -1,4 +1,5 @@
 ﻿namespace SpiritIsland.Tests;
+
 public class Polygon_Tests {
 
 	[Theory]
@@ -18,7 +19,7 @@ public class Polygon_Tests {
 	[InlineData( "C,A,B,D", "D,F,E,C" )]
 	[InlineData( "C,A,B,D", "F,E,C,D" )]
 	[InlineData( "C,A,B,D", "E,C,D,F" )]
-	public void TwoBoxes(string poly1, string poly2) {
+	public void CanConnect_TwoBoxes(string poly1, string poly2) {
 		// B-D-F
 		// | | |
 		// A-C-E

@@ -27,10 +27,10 @@ public class BoardCord_Tests {
 	// Layout - when we align boards, the new boards move and have the correct corners.
 	[Fact]
 	public void JoiningSides2ToHome2() {
-		var orien = BoardOrientation.ToMatchSide( 2, BoardOrientation.Home.SideCoord( 2 ) );
-		Assert_CornersShouldBe( orien, "[1,2][0,2][0,1][1,1]" );
+		var orientation = BoardOrientation.ToMatchSide( 2, BoardOrientation.Home.SideCoord( 2 ) );
+		Assert_CornersShouldBe( orientation, "[1,2][0,2][0,1][1,1]" );
 
-		XY[] bCorners = GetCornerPoints(orien);
+		XY[] bCorners = GetCornerPoints(orientation);
 		// Then
 		bCorners[3].ShouldBe( 1.5f, BoardLayout.boardHeight );
 		bCorners[2].ShouldBe( 0.5f, BoardLayout.boardHeight );

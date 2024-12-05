@@ -321,7 +321,7 @@ public abstract partial class Spirit
 
 	public abstract string SpiritName { get; }
 
-	public SpecialRule[] SpecialRules { get; set; }
+	public SpecialRule[] SpecialRules { get; set; } = [];
 
 	public virtual InnatePower[] InnatePowers { get; set; } = [];
 

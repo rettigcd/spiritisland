@@ -35,8 +35,12 @@ public partial class IslandView : ContentView, IDrawable {
 		var model = Model!;
 		var mapper = CalcMapper(model.WorldBounds);
 
+		var widgetsWeAreKeeping = _spaceWidgets.Where(w => !obj.Removed.Contains(w.Model)).ToArray();
+		foreach(var widget in widgetsWeAreKeeping)
+			widget.UpdateMapper( mapper );
+
 		_spaceWidgets = [
-			.. _spaceWidgets.Where(w=>!obj.Removed.Contains(w.Model)),
+			.. widgetsWeAreKeeping,
 			.. obj.Added.Select(model => new SpaceWidget(model, mapper, Abs, IslandGraphicsView))
 		];
 
@@ -46,17 +50,18 @@ public partial class IslandView : ContentView, IDrawable {
 		IslandGraphicsView.Invalidate();
 	}
 
-
-	static PointMapper CalcMapper(Bounds worldBounds) {
+	PointMapper CalcMapper(Bounds notUsedworldBounds) {
 
 		// The following line is return width/height of -1
 		// Bounds screenBounds = new Bounds(0, 0, (float)IslandGraphicsView.Width, (float)IslandGraphicsView.Height);
 		Bounds screenBounds = new Bounds(0, 0, 390, 240);
 
-		return PointMapper.FromWorldToViewport(
-			worldBounds,
-			screenBounds.FitBoth(worldBounds.Size)
-		);
+		// Determine Rotation that creates the smallest height
+		var corners = Model!.Corners;
+
+		return PointMapper.FitPointsInViewportHeight(screenBounds, Model!.Corners, 30, 60, 90, 120, 150);
+		// screenBounds.FitBoth(bestWorldBounds.Size),
+
 	}
 
 	#region constructor

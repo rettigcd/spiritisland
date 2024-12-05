@@ -12,7 +12,9 @@ public class IslandModel : ObservableModel {
 	/// Not observalbe.  Will never change unless Space collection changes.  
 	/// Watch SpacesAdded event to trigger for changes in WorldBounds
 	/// </summary>
-	public Bounds WorldBounds { get; set; }
+	public Bounds WorldBounds { get; private set; }
+
+	public IEnumerable<XY> Corners => Spaces.SelectMany(x => x.Corners);
 
 	#region constructor
 
@@ -26,6 +28,7 @@ public class IslandModel : ObservableModel {
 		WorldBounds = CalcWorldBounds();
 
 		gameState.NewLogEntry += GameState_NewLogEntry;
+
 	}
 
 	SpaceModel BuildSpaceModel(SpaceSpec spec) => new SpaceModel(_tokens[spec], spec.Layout, _ovm);

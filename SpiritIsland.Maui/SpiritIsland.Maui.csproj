@@ -134,6 +134,7 @@
 	  <None Remove="Resources\Images\adversaries\bdg_france.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_habsburg_mining_expedition.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_habsburg_monarchy.png" />
+	  <None Remove="Resources\Images\adversaries\bdg_no_adversary.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_russia.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_scotland.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_sweden.png" />
@@ -530,6 +531,7 @@
 	  <MauiImage Include="Resources\Images\adversaries\bdg_france.png" />
 	  <MauiImage Include="Resources\Images\adversaries\bdg_habsburg_mining_expedition.png" />
 	  <MauiImage Include="Resources\Images\adversaries\bdg_habsburg_monarchy.png" />
+	  <MauiImage Include="Resources\Images\adversaries\bdg_no_adversary.png" />
 	  <MauiImage Include="Resources\Images\adversaries\bdg_russia.png" />
 	  <MauiImage Include="Resources\Images\adversaries\bdg_scotland.png" />
 	  <MauiImage Include="Resources\Images\adversaries\bdg_sweden.png" />

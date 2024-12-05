@@ -21,23 +21,38 @@ public class DreamOfTheUntouchedLand {
 		) {
 
 			// Add a random new island board next to target board ignore its setup icons.
-			Board newBoard = PickNewRandomBoard();
+			Board newBoard = PickNewRandomBoard(gs);
 
 			// Reconfigure 1-board island to 2-board island - !! only works if starting with 1 board
 			var existingBoard = gs.Island.Boards[0];
 
 			gs.Island.AddBoard( newBoard.Sides[0], existingBoard.Sides[0] );
 
+			//if( gs.Spirits.Length == 1  // SOLO GAME
+			//	&& true // added to side 0 or 2 - HOW DO WE DETERMINE THIS?
+			//) {
+			//	// rotate everything 120° Counter-Clockwise to bring Ocean to bottom.
+			//	var rotation = RowVector.RotateDegrees(120);
+			//	gs.Island.Boards[0].Layout.ReMap(rotation);
+			//	gs.Island.Boards[1].Layout.ReMap(rotation);
+
+			//	// TODO !!! - Instead of automatically doing 120, test 0°, 30°, 60°, 90°, 120° for minimal height
+
+			//}
+
+			// Notify board changed.
+			ActionScope.Current.Log(new Log.LayoutChanged($"{Name} added Board {newBoard.Name}"));
+
 			// add 2 beast, 2 wilds, 2 badlands
-			foreach(var token in new ISpaceEntity[] { Token.Beast, Token.Wilds, Token.Badlands})
+			foreach( var token in new TokenClassToken[] { Token.Beast, Token.Wilds, Token.Badlands})
 				for(int i = 0; i < 2; ++i)
-					(await ctx.Self.SelectSpaceAsync($"Add {token} to:", newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens(), Present.Always ))
+					(await ctx.Self.SelectSpaceAsync($"Add {token.Label} to:", newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens(), Present.Always ))
 						.Adjust(token,1);
 
 			// and up to 2 presence (from any Spirits) anywhere on it.
 			// !!! Make sure spirits don't violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
-				var spirit = await ctx.Self.SelectAsync(new A.Spirit("Spirit to add presence.", gs.Spirits));
+				var spirit = await ctx.Self.SelectAsync(new A.Spirit("Spirit to add presence.", gs.Spirits,Present.AutoSelectSingle));
 				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens().ToArray() )
 					.ActAsync(spirit);
 			}
@@ -45,18 +60,15 @@ public class DreamOfTheUntouchedLand {
 			// from now on Build Cards and "Each board / Each land" Adversary Actions skip 1 board.
 			gs.AddIslandMod( new InvadersSkip1Board() );
 
-			// Notify board changed.
-			ActionScope.Current.Log( new Log.LayoutChanged($"{Name} added Board {newBoard.Name}") );
-
 		}
 
 
 
 	}
 
-	static Board PickNewRandomBoard() {
-		GameState gs = GameState.Current; // ??? could we pass this in?
+	static Board PickNewRandomBoard(GameState gs) {
 		var rand = new Random( gs.ShuffleNumber +56127);
+
 		// pick board
 		var boardsToChooseFrom = BoardFactory.AvailableBoards.Except( gs.Island.Boards.Select( b => b.Name ) ).ToList();
 		string boardName = boardsToChooseFrom[ rand.Next( boardsToChooseFrom.Count) ];
@@ -64,8 +76,11 @@ public class DreamOfTheUntouchedLand {
 		// pick orentation
 		var orientationOptions = gs.Island.AvailableConnections();
 		BoardOrientation orientation = orientationOptions[rand.Next( orientationOptions.Length)];
+//		BoardOrientation orientation = BoardOrientation.ToMatchSide(0, BoardOrientation.Home.SideCoord(0));
 
-		return BoardFactory.Build( boardName, orientation );
+		var board = BoardFactory.Build(boardName, orientation);
+
+		return board;
 	}
 
 }
@@ -84,7 +99,7 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 		// Select board to skip for this round.
 		var gameState = GameState.Current;
 		Board[] boards = gameState.Island.Boards;
-		string boardToSkip = await gameState.Spirits[0].SelectText( "Select Board to skip all Invader actins", boards.Select( b => b.Name ).ToArray(), Present.Always );
+		string boardToSkip = await gameState.Spirits[0].SelectText( "Select Board to skip all Invader actions", boards.Select( b => b.Name ).ToArray(), Present.Always );
 		_toSkip = boards.First( b => b.Name == boardToSkip );
 
 		return _toSkip;

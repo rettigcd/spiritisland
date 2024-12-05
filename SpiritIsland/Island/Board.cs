@@ -21,7 +21,13 @@ public class Board {
 
 	public BoardOrientation Orientation { get; }
 
-	public BoardLayout Layout => _layout ??= BoardLayout.Get(Name);
+	public BoardLayout Layout => _layout ??= GetTransformedLayout();
+
+	BoardLayout GetTransformedLayout() {
+		var layout = BoardLayout.Get(Name);
+		layout.ReMap(Orientation.GetTransformMatrix());
+		return layout;
+	}
 
 	#region constructor
 

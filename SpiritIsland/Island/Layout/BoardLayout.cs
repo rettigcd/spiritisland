@@ -441,7 +441,7 @@ public class BoardLayout {
 /// </remarks>
 public class BoundsBuilder {
 
-	static public Bounds ForPoints(XY[] corners) {
+	static public Bounds ForPoints(IEnumerable<XY> corners) {
 		var builder = new BoundsBuilder();
 		foreach( var p in corners )
 			builder.Include(p);
