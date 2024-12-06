@@ -24,10 +24,10 @@
 			</HorizontalStackLayout>
 			
 			<!-- Aspects -->
-			<CollectionView BackgroundColor="#eee" ItemsSource="{Binding AvailableAspects}" SelectionMode="Multiple" ItemsLayout="HorizontalList" SelectedItems="{Binding SelectedAspects}" >
+			<CollectionView BackgroundColor="#eee" ItemsSource="{Binding AvailableAspects}" SelectionMode="Multiple" ItemsLayout="HorizontalList" SelectedItems="{Binding SelectedAspects}" MaximumHeightRequest="50" >
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="core:AspectConfigKey">
-						<Label Text="{Binding Aspect}" Margin="10,5"/>
+						<Label Text="{Binding Aspect}" Margin="10,5" BackgroundColor="Pink"/>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>
@@ -39,7 +39,7 @@
 			</Grid>
 
 			<!-- adversary -->
-			<HorizontalStackLayout Margin="2" BackgroundColor="#eee" HeightRequest="40">
+			<HorizontalStackLayout Margin="2" BackgroundColor="#eee" MaximumHeightRequest="40">
 				<HorizontalStackLayout.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding EditAdversary}" />
 				</HorizontalStackLayout.GestureRecognizers>

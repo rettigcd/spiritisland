@@ -39,11 +39,11 @@
 				<Image Source="destroyed_presence.png" Grid.Row="2" InputTransparent="True" />
 				<Label Text="{Binding Destroyed}"              Grid.Row="2" HorizontalOptions="Center" VerticalOptions="Center" FontSize="30" TextColor="White" InputTransparent="True" />
 				<!-- Growth Tracks -->
-				<si:GrowthTrackView x:Name="GrowthTrackView" BindingContext="{Binding GrowthTrack}" Grid.Column="1" Grid.RowSpan="3" VerticalOptions="Fill" />
+				<si:GrowthTrackView x:Name="GrowthTrackView" BindingContext="{Binding GrowthTrack}" Grid.Column="1" Grid.RowSpan="3" VerticalOptions="Fill" MaximumHeightRequest="150" />
 			</Grid>
 
 			<!-- Energy Track -->
-			<CollectionView x:Name="EnergyTrackView" ItemsLayout="HorizontalList" ItemsSource="{Binding EnergyTrack}" BackgroundColor="Beige" >
+			<CollectionView x:Name="EnergyTrackView" ItemsLayout="HorizontalList" ItemsSource="{Binding EnergyTrack}" BackgroundColor="Beige" MaximumHeightRequest="80" >
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="si:TokenLocationModel" >
 						<Grid HeightRequest="75">
@@ -59,7 +59,7 @@
 			</CollectionView>
 
 			<!-- Card Plays Track -->
-			<CollectionView x:Name="CardTrackView" ItemsLayout="HorizontalList" ItemsSource="{Binding CardPlayTrack}" BackgroundColor="Beige">
+			<CollectionView x:Name="CardTrackView" ItemsLayout="HorizontalList" ItemsSource="{Binding CardPlayTrack}" BackgroundColor="Beige" MaximumHeightRequest="80" >
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="si:TokenLocationModel" >
 						<Grid HeightRequest="75">

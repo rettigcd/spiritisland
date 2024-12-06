@@ -1,5 +1,3 @@
-using SpiritIsland.JaggedEarth;
-
 namespace SpiritIsland.Maui;
 
 public partial class IslandView : ContentView, IDrawable {

@@ -5,7 +5,7 @@
 			 x:Class="SpiritIsland.Maui.MainPage">
 
 	<VerticalStackLayout>
-		<Label Text="Welome to Spirit Island" FontSize="16" />
+		<Label Text="Welcome to Spirit Island" FontSize="16" HorizontalOptions="Center" Margin="10" />
 		<Button x:Name="CurrentGameButton" Text="↩️ Current Game" Clicked="CurrentGameButton_Clicked" IsVisible="False" Margin="3" />
 		<Button x:Name="NewGameButton" Text="New Game" Clicked="NewGameButton_Clicked" Margin="3"/>
 	</VerticalStackLayout>

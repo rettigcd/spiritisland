@@ -21,7 +21,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>SpiritIsland.Maui</ApplicationTitle>
+		<ApplicationTitle>Spirit Island</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.spiritisland.maui</ApplicationId>
@@ -85,7 +85,9 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\spirit_island.png" BaseSize="256,128" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png">
+		  <BaseSize>256,128</BaseSize>
+		</MauiIcon>
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\ghost_spirits.jpg" Color="#512BD4" BaseSize="256,256" />
@@ -128,7 +130,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\AppIcon\spirit_island.png" />
+	  <None Remove="Resources\AppIcon\appicon.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_brandenburg_prussia.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_england.png" />
 	  <None Remove="Resources\Images\adversaries\bdg_france.png" />
