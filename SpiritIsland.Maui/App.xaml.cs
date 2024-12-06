@@ -10,7 +10,7 @@ public partial class App : Application {
 	protected override Window CreateWindow(IActivationState? activationState) {
 		var mainPage = new MainPage();
 		NavigationPage.SetHasNavigationBar(mainPage, false);
-		MainPage = new NavigationPage(mainPage);
-		return base.CreateWindow(activationState);
+		return new Window(new NavigationPage(mainPage));
+
 	}
 }

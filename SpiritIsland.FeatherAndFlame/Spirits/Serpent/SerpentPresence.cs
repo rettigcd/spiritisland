@@ -22,11 +22,11 @@ public class SerpentPresence : SpiritPresence {
 	public override IEnumerable<TokenLocation> RevealOptions() {
 		if(MaxPresenceOnBoard == TotalOnIsland() ) yield break;
 
-		Track energyNext = Energy.RevealOptions.FirstOrDefault();
+		Track? energyNext = Energy.RevealOptions.FirstOrDefault();
 		if( energyNext != null && (energyNext != Track.EarthEnergy || CardPlays.Revealed.Count() == 4 ) )
 			yield return new TrackPresence(energyNext,Token);
 
-		Track cardNext = CardPlays.RevealOptions.FirstOrDefault();
+		Track? cardNext = CardPlays.RevealOptions.FirstOrDefault();
 		if( cardNext != null && cardNext != fakeEarth )  // don't let them select the fake earth
 			yield return new TrackPresence(cardNext,Token);
 

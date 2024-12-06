@@ -7,7 +7,7 @@ class ScotlandExploreEngine : ExploreEngine {
 	// Explore Cards add 1 Town instead of 1 Explorer.
 	// "Coastal Lands" Invader cards do this for maximum 2 lands per board.
 
-	CountDictionary<Board> _specialExplore = null;
+	CountDictionary<Board>? _specialExplore = null;
 
 	public override async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		await base.ActivateCard( card, gameState );

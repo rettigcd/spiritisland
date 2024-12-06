@@ -6,7 +6,7 @@ public class FinderOfPathsUnseen : Spirit {
 
 	public override string SpiritName => Name;
 
-	public GatewayToken GatewayToken;
+	public GatewayToken? GatewayToken;
 
 	#region constructor / initilization
 
@@ -114,8 +114,8 @@ public class FinderOfPathsUnseen : Spirit {
 	}
 
 	protected override object CustomMementoValue {
-		get => GatewayToken;
-		set => GatewayToken = (GatewayToken)value;
+		get => GatewayToken ?? new object();
+		set => GatewayToken = value as GatewayToken;
 	}
 
 	readonly OpenTheWays _openTheWays;

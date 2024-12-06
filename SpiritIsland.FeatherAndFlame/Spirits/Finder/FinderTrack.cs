@@ -27,7 +27,7 @@ public partial class FinderTrack : IPresenceTrack {
 
 	// ============================
 
-	public event Func<TrackRevealedArgs,Task> TrackRevealedAsync;
+	public event Func<TrackRevealedArgs,Task>? TrackRevealedAsync;
 
 	public void AddElementsTo( CountDictionary<Element> elements ) {
 		foreach(Track r in Revealed)
@@ -37,13 +37,13 @@ public partial class FinderTrack : IPresenceTrack {
 	// ============================
 
 	public bool Return( Track track ) {
-		bool found = _lookup.TryGetValue( track, out LinkedSlot linkedSlot );
-		if(found) linkedSlot.Hide();
+		bool found = _lookup.TryGetValue( track, out LinkedSlot? linkedSlot ) && linkedSlot is not null;
+		if(found) linkedSlot!.Hide();
 		return found;
 	}
 
 	public async Task<bool> RevealAsync( Track track ) {
-		if(!_lookup.TryGetValue( track, out LinkedSlot value )) return false;
+		if(!_lookup.TryGetValue( track, out LinkedSlot? value )) return false;
 		await value.RevealAsync();
 		if(TrackRevealedAsync is not null)
 			await TrackRevealedAsync(new TrackRevealedArgs( track ));
@@ -64,7 +64,7 @@ public partial class FinderTrack : IPresenceTrack {
 	}
 
 	class MyMemento {
-		public Dictionary<Track, SlotState> TrackStates;
+		public required Dictionary<Track, SlotState> TrackStates;
 	};
 
 #endregion
