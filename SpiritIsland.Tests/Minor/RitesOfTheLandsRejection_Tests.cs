@@ -8,7 +8,7 @@ public class RitesOfTheLandsRejection_Tests {
 	[InlineData(false, 1, "1E@1,1T@2")] // Stops none
 	[InlineData(true, 1, "1E@1")] // Stops 1 build
 	[InlineData(true, 5, "1E@1")] // Stops all builds
-	public async void SingleBuild(bool playsCard, int numberOfbuilds, string result) {
+	public async Task SingleBuild(bool playsCard, int numberOfbuilds, string result) {
 
 		var gs = new SoloGameState();
 		var space = gs.Board[6].ScopeSpace;
