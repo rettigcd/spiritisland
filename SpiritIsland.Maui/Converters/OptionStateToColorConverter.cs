@@ -2,6 +2,7 @@
 
 namespace SpiritIsland.Maui;
 
+[AcceptEmptyServiceProvider]
 public class OptionStateToColorConverter : IValueConverter {
 
 	public object? Convert(object? value, Type _, object? _1, CultureInfo _2) {

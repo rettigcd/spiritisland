@@ -64,7 +64,7 @@ public class PaintableRects_Tests {
 
 	[Fact]
 	public void ColorString_ParsesName(){
-		Color color = ColorString.Parse("Red");
+		System.Drawing.Color color = ColorString.Parse("Red");
 		color.R.ShouldBe((byte)255);
 		color.G.ShouldBe((byte)0);
 		color.B.ShouldBe((byte)0);
@@ -82,7 +82,7 @@ public class PaintableRects_Tests {
 		using var mgr = spec.GetResourceMgr(new Rectangle(0,0,100,100));
 #pragma warning disable CA1416 // Validate platform compatibility
 		Pen pen = mgr.Resource;
-		Color color = pen.Color;
+		System.Drawing.Color color = pen.Color;
 		color.R.ShouldBe((byte)255);
 		color.G.ShouldBe((byte)0);
 		color.B.ShouldBe((byte)0);

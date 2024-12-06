@@ -2,6 +2,7 @@
 
 namespace SpiritIsland.Maui;
 
+[AcceptEmptyServiceProvider]
 public class NameToBadgeImgConverter : IValueConverter {
 
 	public object? Convert(object? value, Type _, object? parameter, CultureInfo _1) {

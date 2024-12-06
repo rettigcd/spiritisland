@@ -79,7 +79,7 @@ public class Board {
 		return side;
 	}
 
-	BoardLayout? _layout;
+	BoardLayout _layout;
 	readonly List<BoardSide> _sides = [];
 	SpaceSpec[] _spaces;
 

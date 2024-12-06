@@ -25,7 +25,7 @@ public class DownloadPowerPics_Tests {
 		PowerCardResources x = ResourceImages.Singleton;
 		foreach(var card in cards) {
 			try {
-				using Image image = await x.GetPowerCardImage( card );
+				using System.Drawing.Image image = await x.GetPowerCardImage( card );
 			}
 			catch(HttpRequestException) {
 				failed.Add( card.Title );
@@ -50,7 +50,7 @@ public class DownloadPowerPics_Tests {
 		foreach(var spirit in spirits) {
 			using var bitmap = SpiritMarkerBuilder.BuildSpiritMarker( spirit, Img.Token_Presence, ResourceImages.Singleton);
 #pragma warning disable CA1416 // Validate platform compatibility
-			ImageDiskCache.SaveBmp(bitmap, $"{folder}\\{spirit.SpiritName}_ps.png", ImageFormat.Png );
+			ImageDiskCache.SaveBmp(bitmap, $"{folder}\\{spirit.SpiritName}_ps.png", System.Drawing.Imaging.ImageFormat.Png );
 #pragma warning restore CA1416 // Validate platform compatibility
 //			ImageDiskCache.SaveBmp( bitmap, $"{folder}\\{spirit.Text}_loch.png", ImageFormat.Png );
 			//ImageDiskCache.SaveBmp( bitmap, $"{folder}\\{spirit.Text}.png", ImageFormat.Png );
@@ -63,5 +63,31 @@ public class DownloadPowerPics_Tests {
 		card.Flipped = true;
 		using var img = ResourceImages.Singleton.GetInvaderCard(card);
 	}
+
+	[Theory]
+	[InlineData(0, 0, 0, "0 0 0")]            // black
+	[InlineData(128, 128, 128, "0 0 50")]    // gray
+	[InlineData(255, 255, 255, "0 0 100")]      // white
+	[InlineData(255, 0, 0, "0 100 50")]        // red
+	[InlineData(0, 255, 0, "120 100 50")]      // green
+	[InlineData(0, 0, 255, "240 100 50")]      // blue
+	[InlineData(255, 255, 0, "60 100 50")]     // yellow
+	[InlineData(0, 255, 255, "180 100 50")]    // cyan
+	[InlineData(255, 0, 255, "300 100 50")]    // magenta
+	[InlineData(0, 1, 1, "180 100 0")]          // almost black, had rounding error that blew up Hue
+	public void Rgb2Hsl_test(int red, int green, int blue, string expected) {
+		var orig = System.Drawing.Color.FromArgb(red, green, blue);
+
+		HSL hsl = HSL.FromRgb(orig);
+		hsl.ToString().ShouldBe(expected);
+
+		var result = hsl.ToRgb();
+
+		result.ToString().ShouldBe(orig.ToString());
+		result.R.ShouldBe(orig.R);
+		result.G.ShouldBe(orig.G);
+		result.B.ShouldBe(orig.B);
+	}
+
 
 }

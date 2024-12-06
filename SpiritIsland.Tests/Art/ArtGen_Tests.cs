@@ -36,7 +36,7 @@ public class ArtGen_Tests {
 			GrowthActionBuilder.GetGrowthPaintable( action.Cmd )
 				.Paint(graphics, bounds);
 			string filename = action.Cmd.Description.ToResourceName( ".png" );
-			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\growth\\"+filename, ImageFormat.Png );
+			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\growth\\"+filename, System.Drawing.Imaging.ImageFormat.Png );
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ArtGen_Tests {
 		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 		new ImgRect(slot.Icon).Paint(graphics, bounds);
 		string filename = slot.Code.ToResourceName(".png");
-		ImageDiskCache.SaveBmp(image, $"C:\\users\\rettigcd\\desktop\\track\\" + filename, ImageFormat.Png);
+		ImageDiskCache.SaveBmp(image, $"C:\\users\\rettigcd\\desktop\\track\\" + filename, System.Drawing.Imaging.ImageFormat.Png);
 	}
 
 	[Fact(Skip="too slow")]
@@ -206,7 +206,7 @@ public class ArtGen_Tests {
 	static async Task GenerateCards( IEnumerable<PowerCard> cards ) {
 		foreach(var card in cards) {
 			using Bitmap image = (Bitmap)await PowerCardImageBuilder.Build( card, ResourceImages.Singleton );
-			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Title}.png", ImageFormat.Png );
+			ImageDiskCache.SaveBmp( image, $"C:\\users\\rettigcd\\desktop\\cards\\{card.Title}.png", System.Drawing.Imaging.ImageFormat.Png );
 		}
 	}
 
@@ -223,7 +223,7 @@ public class ArtGen_Tests {
 		graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 		rect.Paint(graphics, bounds);
 		string filename = partText.ToResourceName(".png");
-		ImageDiskCache.SaveBmp(image, $"C:\\users\\rettigcd\\desktop\\parts\\attr_" + filename, ImageFormat.Png);
+		ImageDiskCache.SaveBmp(image, $"C:\\users\\rettigcd\\desktop\\parts\\attr_" + filename, System.Drawing.Imaging.ImageFormat.Png);
 	}
 
 

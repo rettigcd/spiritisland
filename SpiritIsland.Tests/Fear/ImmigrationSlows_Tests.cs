@@ -73,7 +73,7 @@ public sealed class ImmigrationSlows_Tests {
 	[Trait( "Invaders", "Build" )]
 	[Trait( "Invaders", "Deck" )]
 	[Fact]
-	public async void Level3_SkipBuild1Round() {
+	public async Task Level3_SkipBuild1Round() {
 
 		var gs = new SoloGameState();
 		gs.Initialize();

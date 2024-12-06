@@ -8,8 +8,7 @@
 
 	<ContentView.Resources>
 		<ResourceDictionary>
-			<toolkit:InvertedBoolConverter x:Key="InvertMe" />
-			<toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmptyConverter" />
+			<si:NotEmptyConverter x:Key="IsStringNotNullOrEmptyConverter" />
 		</ResourceDictionary>
 	</ContentView.Resources>
 

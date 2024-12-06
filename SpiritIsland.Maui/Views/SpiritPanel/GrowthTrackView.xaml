@@ -9,7 +9,7 @@
 		<!-- Growth Groups -->
 		<FlexLayout Direction="Row" AlignItems="Stretch" Wrap="Wrap" BindableLayout.ItemsSource="{Binding Groups}" >
 			<BindableLayout.ItemTemplate>
-				<DataTemplate>
+				<DataTemplate x:DataType="si:GrowthGroupModel" >
 					<si:GrowthGroupView BindingContext="{Binding .}" />
 				</DataTemplate>
 			</BindableLayout.ItemTemplate>
