@@ -105,8 +105,8 @@ class NewGameModel : ObservableModel {
 	void DoEditSpirit() { IsEditingSpirit = true; }
 	void DoEditSpiritCancel() { IsEditingSpirit = false; }
 
-	public void SaveSelectedSpiritAsRecent() {
-		string spirit = SelectedSpirit!;
+	void SaveSpiritAsRecent(string spirit) {
+
 		// Update Recents Collection
 		var recentSpiritModel = RecentSpirits.FirstOrDefault(x=>x.Name == spirit);
 		if(recentSpiritModel is not null)
@@ -115,7 +115,8 @@ class NewGameModel : ObservableModel {
 			recentSpiritModel = ConstructSpirit(spirit);
 		RecentSpirits.Insert(0, recentSpiritModel);
 		// Save
-		SavedRecentSpirits = [.. RecentSpirits.Select(x=>x.Name)];
+		SavedRecentSpirits = [.. RecentSpirits.Select(x=>x.Name).Take(4)];
+		
 	}
 
 	/// <summary> Saves/loads recent spirits from preferences. </summary>
@@ -163,7 +164,7 @@ class NewGameModel : ObservableModel {
 	#region Start
 	void DoStart() {
 		// Spirit
-		SaveSelectedSpiritAsRecent();
+		SaveSpiritAsRecent(SelectedSpirit!);
 
 		// Get Board (or randomize)
 		string? board = SelectedBoard;
@@ -215,10 +216,4 @@ class NewGameModel : ObservableModel {
 	);
 
 	#endregion private fields
-}
-
-public class TogglableModel : ObservableModel {
-	public required string Text { get; set; }
-	public bool Selected { get=>_selected; set=>SetProp(ref _selected,value); }
-	bool _selected;
 }
