@@ -3,7 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 		xmlns:si="clr-namespace:SpiritIsland.Maui"
 		x:DataType="si:TokenLocationModel"
-		x:Class="SpiritIsland.Maui.TokenLocationView">
+		x:Class="SpiritIsland.Maui.TokenLocationView"  InputTransparent="{Binding InputTransparent}">
 
 	<ContentView.Resources>
 		<si:OptionStateToColorConverter x:Key="optionState" />

@@ -54,7 +54,7 @@ public class SoloGameModel : ObservableModel {
 				UpdateButton("Accept", false);
 		} }
 	/// <summary> Decision Options </summary>
-	public OptionModel[] Options        { get => _options; set => SetProp(ref _options, value); }
+	public OptionModel[] Options        { get => _options; private set => SetProp(ref _options, value); }
 	public bool HasOptionReady          { get => _hasOptionReady; set => SetProp(ref _hasOptionReady, value); }
 	public string AcceptText            { get => _acceptText; set => SetProp(ref _acceptText, value); }
 
@@ -211,6 +211,7 @@ public class SoloGameModel : ObservableModel {
 		SelectedOption = null;
 
 		// Update Options
+		Options = []; // On Android, it seems to be re-using radio buttons that are already selected.  So clear it out so it doesn't reuse a checked radio button.
 		Options = _nextDecision.Options.Select(o => new OptionModel(o)).ToArray();
 
 		// Spirit

@@ -10,6 +10,25 @@
 	<ContentPage.Resources>
 		<si:NameToBadgeImgConverter x:Key="nameImage" />
 		<si:NotEmptyConverter x:Key="notEmpty" />
+
+		<Style TargetType="Label">
+			<Setter Property="VisualStateManager.VisualStateGroups">
+				<VisualStateGroupList>
+					<VisualStateGroup x:Name="CommonStates">
+						<VisualState x:Name="Normal" />
+						<VisualState x:Name="Selected">
+							<VisualState.Setters>
+								<!-- This is the background color of the button. -->
+								<Setter Property="Background" Value="LightBlue"/>
+								<!-- This seems to disable the surrounded highlight color. But comes back after the button is unselected -->
+								<Setter Property="BackgroundColor" Value="#eee" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateGroupList>
+			</Setter>
+		</Style>
+
 	</ContentPage.Resources>
 
 	<Grid>
@@ -24,10 +43,11 @@
 			</HorizontalStackLayout>
 			
 			<!-- Aspects -->
-			<CollectionView BackgroundColor="#eee" ItemsSource="{Binding AvailableAspects}" SelectionMode="Multiple" ItemsLayout="HorizontalList" SelectedItems="{Binding SelectedAspects}" MaximumHeightRequest="50" >
+			<CollectionView BackgroundColor="#eee" ItemsSource="{Binding AvailableAspects}" SelectionMode="Multiple" ItemsLayout="HorizontalList" SelectedItems="{Binding SelectedAspects}" 
+							MaximumHeightRequest="50" >
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="core:AspectConfigKey">
-						<Label Text="{Binding Aspect}" Margin="10,5" BackgroundColor="Pink"/>
+						<Label Text="{Binding Aspect}" Margin="5,0" MaximumHeightRequest="50" VerticalOptions="Center" Padding="15,5"/>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>

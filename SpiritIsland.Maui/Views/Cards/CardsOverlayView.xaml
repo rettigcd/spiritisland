@@ -68,7 +68,7 @@
 			</Border>
 
 			<!-- Play ↑↑↑ (N) -->
-			<Grid ColumnDefinitions="40*,60*,30,20*" Margin="3" BackgroundColor="Beige" HeightRequest="50" Padding="3,0" IsVisible="{Binding IsPlaying}" >
+			<Grid ColumnDefinitions="40*,60*,30,80" Margin="3" BackgroundColor="Beige" HeightRequest="50" Padding="3,0" IsVisible="{Binding IsPlaying}" >
 
 				<Label Text="{Binding InnateSummary}" VerticalOptions="Center" LineBreakMode="WordWrap" MaxLines="2" /> <!-- Play ↑↑↑ -->
 
@@ -76,18 +76,18 @@
 				<CollectionView ItemsSource="{Binding Elements}" ItemsLayout="HorizontalList" Grid.Column="1" BackgroundColor="Beige" >
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="si:ElementModel" >
-							<si:ElementView HeightRequest="24" />
+							<si:ElementView MaximumHeightRequest="30" VerticalOptions="Fill" />
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
 
 				<!-- Energy -->
-				<Image Grid.Column="2" Source="coin.png" HeightRequest="25" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />
+				<Image Grid.Column="2" Source="coin.png" HeightRequest="30" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" />
 				<Label Grid.Column="2" Text="{Binding RemainingEnergy}" IsVisible="{Binding IsPlaying}" HorizontalOptions="Center" FontAttributes="Bold" VerticalOptions="Center" />
 
 				<Button Text="{Binding ButtonText}" Command="{Binding AcceptCardsCommand}" Grid.Column="3" 
 								HeightRequest="35" FontSize="12" 
-								HorizontalOptions="End" Padding="15,0" 
+								HorizontalOptions="End" Padding="10,0" 
 								IsEnabled="{Binding ButtonIsEnabled}"
 								TextColor="White" />
 			</Grid>

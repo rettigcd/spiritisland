@@ -27,7 +27,7 @@
 				<DataTemplate x:DataType="si:TokenLocationModel" >
 					<Grid HeightRequest="35">
 						<!-- The Location -->
-						<Image Source="{Binding LocationImage}" Margin="0,5,0,0" InputTransparent="True" />
+						<Image Source="{Binding TrackImage}" Margin="0,15,0,0" InputTransparent="True" />
 						<!-- The Token -->
 						<si:TokenLocationView Margin="0,0,0,10" BindingContext="{Binding .}" WidthRequest="30" />
 					</Grid>

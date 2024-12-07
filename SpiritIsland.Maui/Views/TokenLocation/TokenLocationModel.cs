@@ -16,14 +16,22 @@ public class TokenLocationModel
 	public ImageSource TokenImage     { get; }
 	public string Damage              { get; }
 
-	// Display the Location
-//	public ImageSource? LocationImage { get; }
+	// NOT used by TokenLocationView but IS USED by collection in SpiritPanel
+	public ImageSource? TrackImage { get; }
 
 	#endregion Control-facing Observable Properties
 
 	#region OptionView imp
 
-	public OptionState State { get => _state; set => SetProp(ref _state, value); } OptionState _state = OptionState.Default;
+	public OptionState State { 
+		get => _state; 
+		set { SetProp(ref _state, value); InputTransparent = value == OptionState.Default; }
+		} OptionState _state = OptionState.Default;
+
+	public bool InputTransparent { 
+		get=>_inputTransparent; 
+		private set => SetProp(ref _inputTransparent, value);
+	} bool _inputTransparent = true;
 
 	public IOption Option => TokenLocation;
 
@@ -50,8 +58,9 @@ public class TokenLocationModel
 				: GetImgImage(token.Img);
 		Damage = tokenOn.Token.Badge;
 
-		//if(tokenOn.Location is Track track)
-		//	LocationImage = ImageCache.FromFile(track.Code.ToResourceName());
+		// Not used by the TokenLocationView, but IS used by collection in the SpiritPanel
+		if(tokenOn.Location is Track track)
+			TrackImage = ImageCache.FromFile(track.Code.ToResourceName());
 
 		RefreshCountAndSS();
 	}

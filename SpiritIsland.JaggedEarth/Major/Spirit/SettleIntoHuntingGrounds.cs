@@ -58,14 +58,13 @@ class FreezePresence( string _name, SpiritPresence _presence, IToken beast, ITok
 
 
 	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
-		if( args.Reason.IsOneOf(RemoveReason.MovedFrom, RemoveReason.Abducted)
-			&& (args.Token.HasTag(_presence) || args.Token == beast || args.Token == badland ))
-		) {
+		if( args.Reason.IsOneOf(RemoveReason.MovedFrom, RemoveReason.Abducted) && this.IsFrozen(args.Token) ) {
 			ActionScope.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Label}"));
 			args.Count = 0;
 		}
 		return Task.CompletedTask;
 	}
 
+	bool IsFrozen(IToken token) => token == badland || token == beast || token.HasTag(_presence);
 }
 

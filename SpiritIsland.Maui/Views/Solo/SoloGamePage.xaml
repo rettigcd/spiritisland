@@ -16,7 +16,7 @@
 	</ContentPage.Resources>
 
 
-	<Grid RowDefinitions="30,80,245,24,30,*,40" ColumnDefinitions="40*,40*">
+	<Grid RowDefinitions="30,80,245,50,45,*,40" ColumnDefinitions="40*,40*">
 		<!-- Rows: 0(Rewind/phase) 1(invader cards/spirit) 2(island) 3(GameOver/Prompt) 4(Accept) 5(Options) 6(cards) -->
 
 		<HorizontalStackLayout Grid.ColumnSpan="2">
@@ -56,10 +56,10 @@
 		/>
 
 		<!-- Prompt -->
-		<Label x:Name="Prompt" Text="{Binding Prompt}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="3" Grid.ColumnSpan="2" />
+		<Label x:Name="Prompt" Text="{Binding Prompt}" VerticalOptions="Center" HorizontalOptions="Center" Grid.Row="3" Grid.ColumnSpan="2" Margin="6,0" />
 		<!-- Accept -->
-		<Button x:Name="Accept" Text="{Binding AcceptText}" HeightRequest="35" 
-				HorizontalOptions="CenterAndExpand" Padding="20,0"
+		<Button x:Name="Accept" Text="{Binding AcceptText}" HeightRequest="35"
+				HorizontalOptions="CenterAndExpand" VerticalOptions="Center"  Padding="15,0"
 				Clicked="Accept_Clicked" IsEnabled="{Binding HasOptionReady}" Grid.Row="4" Grid.ColumnSpan="2" />
 		<!-- Options -->
 		<ScrollView x:Name="OptionListWrapper" BackgroundColor="#ddf" VerticalOptions="StartAndExpand" Margin="10,3" Grid.Row="5" Grid.ColumnSpan="2" >
@@ -69,20 +69,21 @@
 						JustifyContent="SpaceEvenly">
 				<BindableLayout.ItemTemplate>
 					<DataTemplate x:DataType="si:OptionModel">
-						<RadioButton Value="{Binding Option}" Content="{Binding Text}" GroupName="DecisionOptions" HeightRequest="35" />
+						<RadioButton Value="{Binding Option}" Content="{Binding Text}" GroupName="DecisionOptions" HeightRequest="30" VerticalOptions="Start" />
 					</DataTemplate>
 				</BindableLayout.ItemTemplate>
-
 			</FlexLayout>
+			<!--  <CollectionView ItemsSource="{Binding Monkeys}" ItemsLayout="VerticalGrid, 2">   -->
 		</ScrollView>
 
+		<!-- Show Cards -->
 		<Button Text="{Binding Cards.Hand.Count,StringFormat='Cards ({0:F0})'}" Padding="5,5" Grid.Row="6" Grid.ColumnSpan="2" Command="{Binding ShowCards}" />
 
 		<!-- Overlays -->
-		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}" 
+		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}"
 			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
 			Grid.Row="0" Grid.RowSpan="6" Grid.ColumnSpan="2" VerticalOptions="Fill" HorizontalOptions="Fill" />
-		<si:CardsOverlay BindingContext="{Binding Cards}" 
+		<si:CardsOverlay BindingContext="{Binding Cards}"
 			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=Cards}"
 			Grid.Row="1" Grid.RowSpan="6" Grid.ColumnSpan="2" VerticalOptions="Fill" HorizontalOptions="Fill" />
 

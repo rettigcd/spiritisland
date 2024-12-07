@@ -29,8 +29,16 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		return spirit;
 	}
 
-	IAspect Build1Aspect(AspectConfigKey key) => _providers.Select(p => p.MakeAspect(key)).FirstOrDefault()
-		?? throw new ArgumentException($"Unable to build Aspect found for {key.Spirit}-{key.Aspect}");
+	//IAspect Build1Aspect(AspectConfigKey key) => _providers.Select(p => p.MakeAspect(key)).FirstOrDefault()
+	//	?? throw new ArgumentException($"Unable to build Aspect found for [{key.Spirit}-{key.Aspect}]");
+
+	IAspect Build1Aspect(AspectConfigKey key) { 
+		foreach(var provider in _providers ) {
+			var aspect = provider.MakeAspect(key);
+			if(aspect is not null) return aspect;
+		}
+		throw new ArgumentException($"Unable to build Aspect found for [{key.Spirit}-{key.Aspect}]");
+	}
 
 #pragma warning disable CA1822 // Mark members as static
 	public Board[] BuildBoards( params string[] boardNames ) {
