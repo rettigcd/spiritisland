@@ -13,7 +13,7 @@ public class RavageParticipants(
 	/// <summary> The participants that deal damage. </summary>
 	readonly public CountDictionary<HumanToken> Active = active;
 
-	/// <summary> Damage dealt out to the other side. (less any Defend) </summary>
+	/// <summary> Damage dealt (EXCLUDING Badland Damage) out to the other side. (less any Defend) </summary>
 	public int DamageDealtOut;
 
 	public int DamageReceivedFromBadlands;
@@ -125,9 +125,8 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 			return;
 		}
 
-		int badlands = Space.Badlands.Count;
-		Attackers.DamageReceivedFromBadlands = badlands;
-		int remainingDamageToApply = Defenders.DamageDealtOut + badlands;
+		Attackers.DamageReceivedFromBadlands = Space.Badlands.Count;
+		int remainingDamageToApply = Defenders.DamageDealtOut + Attackers.DamageReceivedFromBadlands;
 
 		// ! must use current Attackers counts, because some have lost their strife so tokens are different than when they started.
 

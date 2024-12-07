@@ -2,10 +2,10 @@
 
 public class TokenBinding {
 
-	public IToken Default { get; }
+	public TokenClassToken Default { get; }
 
 	#region constructor
-	public TokenBinding( Space space, IToken token ) {
+	public TokenBinding( Space space, TokenClassToken token ) {
 		_space = space;
 		Default = token;
 	}
@@ -18,7 +18,7 @@ public class TokenBinding {
 
 	public bool Any => Count > 0;
 
-	public virtual int Count => _space[Default];
+	public virtual int Count => _space.Sum(Default); // _space[Default];
 
 	public void Init( int count ) => _space.Init( Default, count );
 
@@ -27,6 +27,7 @@ public class TokenBinding {
 	public virtual Task AddAsync( int count, AddReason reason = AddReason.Added )
 		=> _space.AddAsync( Default, count, reason );
 
+	// !!! This will try to remove the wrong token if we have a special non-default token
 	public virtual Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason = RemoveReason.Removed )
 		=> _space.RemoveAsync( Default, count, reason );
 

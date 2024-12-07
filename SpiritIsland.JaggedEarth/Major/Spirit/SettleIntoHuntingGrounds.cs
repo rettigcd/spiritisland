@@ -4,13 +4,15 @@ public class SettleIntoHuntingGrounds {
 
 	const string Name = "Settle Into Hunting-Grounds";
 
+	const string TokenBadge = "😀";
+
 	[MajorCard(Name,3,Element.Moon,Element.Fire,Element.Plant,Element.Animal), Fast, Yourself]
 	[Instructions( "Your Presence may count as Badlands and Beasts. (Decide per Presence, per action.) Your Presence cannot move. -If you have- 2 Plant, 3 Animal: 2 Fear and 2 Damage in one of your lands." ), Artist( Artists.MoroRogers )]
 	public static async Task ActAsync( Spirit self ) {
 
 		// Your presence may count as badlands and beast.
-		var presenceBeast = new TokenClassToken("Beast", 'A', Img.Beast, "😀");				// !!! Use the other tokens 
-		var presenceBadland = new TokenClassToken("Badlands", 'M', Img.Badlands, "😀");
+		var presenceBeast = new TokenVariety(Token.Beast, TokenBadge);
+		var presenceBadland = new TokenVariety(Token.Badlands, TokenBadge);
 
 		// !!! use these: public class TokenClassToken : IToken, IAppearInSpaceAbreviation
 		// var presenceBeast = new VarietyToken("Beast", 'A', Img.Beast, Token.Beast, "😀");

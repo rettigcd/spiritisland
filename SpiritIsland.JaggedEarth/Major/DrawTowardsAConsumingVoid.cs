@@ -54,7 +54,8 @@ public class DrawTowardsAConsumingVoid {
 	}
 
 	static async Task MoveTokensFromAdjacentSpace( TargetSpaceCtx ctx, Space adjState, params ITokenClass[] tokenGroups ) {
-		// move tokens
+
+		// Select 1 random token matching the TokenGroup and pull it in (without user input)
 		foreach(ITokenClass tokenGroup in tokenGroups) {
 			IToken tokenToGather = adjState.OfTag( tokenGroup )
 				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )

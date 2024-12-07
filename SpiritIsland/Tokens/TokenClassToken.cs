@@ -22,6 +22,12 @@ public class TokenClassToken : IToken, ITokenClass, IAppearInSpaceAbreviation {
 	//	Img = Img.None;	// invisible, does not appear on board
 	//}
 
+	#region IOption interface
+
+	string IOption.Text => Label;
+
+	#endregion IOption interface
+
 	#region Token
 
 	ITokenClass IToken.Class => this;
@@ -31,7 +37,6 @@ public class TokenClassToken : IToken, ITokenClass, IAppearInSpaceAbreviation {
 	public override string ToString() => _summary;
 
 	readonly string _summary;
-	string IOption.Text => Label;
 
 	public string SpaceAbreviation => _summary;
 

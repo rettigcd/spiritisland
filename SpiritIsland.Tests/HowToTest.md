@@ -4,15 +4,21 @@
 
 # Init Tokens on a Space
 
-a5.Given_InitSummary("2E@1") - sets all visible tokens
-a5.Given_HasToken("2E@1") - sets named tokens
-a5.Given_ClearTokens() - removes visible tokens
+```
+space.Given_InitSummary("2E@1") - sets all visible tokens
+space.Given_HasToken("2E@1") - sets named tokens
+space.Given_ClearTokens() - removes visible tokens
+```
 
 
 # Init Spirits presence on a Space
-	spirit.Given_IsOn(space)
-	spirit.Given_IsOn(space,2)
+	// Spirit-based
+	spirit.Given_IsOn(space);
+	spirit.Given_IsOn(space,count);
 
+	// Space-based
+	space.Given_HasTokens("1RSiS");
+	space.Init( spirit.Presence.Token, count );
 # Configure Game
 
 

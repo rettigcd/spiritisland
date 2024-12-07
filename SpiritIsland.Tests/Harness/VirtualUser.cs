@@ -8,7 +8,7 @@ public class VirtualUser( Spirit spirit ) {
 	public DecisionContext NextDecision => _spirit.NextDecision();
 	public void WaitForNext() => _spirit.WaitForNext();
 
-	public void StubGuess() {
+	public void StubChoice() {
 		throw new Exception(NextDecision.ToString()+";");
 	}
 	

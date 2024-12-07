@@ -25,7 +25,7 @@ public class InfiniteVitality_Tests {
 
 		//  When: push the damaged dahan out of the space
 		await ctx.PushDahan(1).AwaitUser(u => {
-			u.NextDecision.HasPrompt("Push (1)").Choose("D@4 on A5 => A1:[none]");
+			u.NextDecision.HasPrompt("Push (1)").Choose("D@4 on A5 => A1");
 		});
 
 		//  Then: no exception

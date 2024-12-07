@@ -14,6 +14,10 @@ public class SettleIntoHuntingGrounds_Tests {
 		a5.Given_HasTokens("1RSiS");
 
 		await spirit.When_ResolvingCard<SettleIntoHuntingGrounds>();
+
+		a5.Summary.ShouldBe("1A-😀,1M-😀,1RSiS");
+		a5.Sum(Token.Beast).ShouldBe(1);
+		a5.Sum(Token.Badlands).ShouldBe(1);
 	}
 
 	[Trait("SpecialRule","AllyOfTheDahan")]
@@ -73,8 +77,8 @@ public class SettleIntoHuntingGrounds_Tests {
 		Spirit spirit = new RiverSurges();
 		Board board = Boards.A;
 		GameState gameState = new SoloGameState( spirit, board );
-		SpaceSpec a1 = board[1];
-		SpaceSpec a2 = board[2];
+		Space a1 = board[1].ScopeSpace;
+		Space a2 = board[2].ScopeSpace;
 
 		// Given: spirit on A1 and A2
 		a1.Given_HasTokens("1RSiS");
@@ -90,8 +94,81 @@ public class SettleIntoHuntingGrounds_Tests {
 		}).ShouldComplete();
 
 		// But: spirit is still on A1 (doesn't move)
-		a1.ScopeSpace.Summary.ShouldBe("1RSiS");
+		a1.Summary.ShouldBe("1A-😀,1M-😀,1RSiS");
 	}
+
+	[Fact]
+	public async Task BeastIsFoundButDoesntMove() {
+		var gs = new SoloGameState();
+		var originalLand = gs.Board[7].ScopeSpace;
+
+		// Given: presence settles into a land 
+		gs.Spirit.Given_IsOn(originalLand);
+		await SettleIntoHuntingGrounds.ActAsync(gs.Spirit);
+		//   And: a real beast
+		originalLand.Init(Token.Beast,1);
+
+		// When: Softly beckoning from an adjacent land
+		var beckonedTo = gs.Board[8];
+		await SoftlyBeckonEverInward.ActAsync(gs.Spirit.Target(beckonedTo)).AwaitUser(async user => {
+			// Can gather the regular beast
+			user.NextDecision.HasPrompt("Gather up to (2)").HasOptions("Beast-😀 on A7 => A8,Beast on A7 => A8,Done").Choose("Beast on A7 => A8");
+			// And can see the special beast and select it
+			user.NextDecision.HasPrompt("Gather up to (1)").HasOptions("Beast-😀 on A7 => A8,Done").Choose("Beast-😀 on A7 => A8");
+		}).ShouldComplete("Softly Beckon");
+
+		// But only the regular beast moved
+		beckonedTo.ScopeSpace.Summary.ShouldBe("1A");
+		originalLand.Summary.ShouldBe("1A-😀,1M-😀,1TS");
+	}
+
+	[Fact]
+	public async Task BadlandDealsDamageDuringRavage() {
+		// pre-pressumes Spirit wants presence to be badlands here.
+
+		var gs = new SoloGameState();
+		var land = gs.Board[7].ScopeSpace;
+
+		// Given: presence settles into a land 
+		gs.Spirit.Given_IsOn(land);
+		await SettleIntoHuntingGrounds.ActAsync(gs.Spirit);
+
+		//   And: space has 1 Dahan and 1 explorer
+		land.Given_HasTokens("1D@2,1E@1");
+
+		//  When: ravaging in that land
+		await land.When_CardRavages();
+
+		//  Then: explorer kills dahan
+		land.Summary.ShouldBe("1A-😀,1E@1,1M-😀,1TS");
+	}
+
+	[Fact]
+	public async Task BadlandDealsDamageForSpiritPower() {
+		// pre-pressumes Spirit wants presence to be badlands here.
+
+		var gs = new SoloGameState();
+		var land = gs.Board[7].ScopeSpace;
+
+		// Given: presence settles into a land 
+		gs.Spirit.Given_IsOn(land);
+		await SettleIntoHuntingGrounds.ActAsync(gs.Spirit);
+
+		//   And: space has 1 City
+		land.InitDefault(Human.City,1);
+
+		//  When: ravaging in that land
+		await SwallowedByTheWilderness.ActAsync(gs.Spirit.Target(land)).AwaitUser(user => {
+			// 3 points of damage (1 Beast + 1 Badlands) = 2 initial points of damage +1 badlands effect boosts to 3
+			user.NextDecision.HasPrompt("Damage (3 remaining)").HasOptions("C@3 on A7").ChooseFirst();
+			user.NextDecision.HasPrompt("Damage (2 remaining)").HasOptions("C@2 on A7").ChooseFirst();
+			user.NextDecision.HasPrompt("Damage (1 remaining)").HasOptions("C@1 on A7").ChooseFirst();
+		}).ShouldComplete("Swallow by the wilderness");
+
+		//  Then: explorer kills dahan
+		land.Summary.ShouldBe("1A-😀,1M-😀,1TS");
+	}
+
 
 	[Fact]
 	public async Task CantTakeFromBoard() {
@@ -118,9 +195,10 @@ public class SettleIntoHuntingGrounds_Tests {
 		spirit.Presence.CountOn(a1.ScopeSpace).ShouldBe(2);
 		spirit.Presence.CountOn(board[5].ScopeSpace).ShouldBe(0);
 
-
-
 	}
+
+	//[Facts]
+	//public async Task 
 
 	static (Spirit,Board) Init() {
 		RiverSurges spirit = new RiverSurges();
