@@ -6,18 +6,21 @@
 /// <example>blight, defend, isolate, beast</example>
 public class TokenClassToken : IToken, ITokenClass, IAppearInSpaceAbreviation {
 
-	public TokenClassToken(string label, char initial, Img img) {
+	public string Badge { get; private set; }
+
+	public TokenClassToken(string label, char initial, Img img, string badge = null) {
 		Label = label;
 		_summary = initial.ToString();
 		Img = img;
+		Badge = badge ?? string.Empty;
 	}
 
 	/// <summary> Invisible token constructor </summary>
-	public TokenClassToken( string label ) {
-		Label = label;
-		_summary = "";			// invisible, does not appear in summary list
-		Img = Img.None;	// invisible, does not appear on board
-	}
+	//public TokenClassToken( string label ) {
+	//	Label = label;
+	//	_summary = "";	// invisible, does not appear in summary list
+	//	Img = Img.None;	// invisible, does not appear on board
+	//}
 
 	#region Token
 

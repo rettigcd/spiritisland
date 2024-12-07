@@ -7,5 +7,6 @@ public interface TokenLocation : IOption {
 	IToken Token { get; }
 	ILocation Location { get; }
 	int Count { get; }
+	/// <summary> Sprits Presences return this value.  Other tokens return false. </summary>
 	bool IsSacredSite { get; }
 }

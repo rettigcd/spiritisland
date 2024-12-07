@@ -53,6 +53,11 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	#endregion constructors
 
+	public string Badge => HasInterestingHealthValue ? RemainingHealth.ToString() : string.Empty;
+
+	bool HasInterestingHealthValue => 0 < FullDamage  // has damage
+		|| FullHealth != HumanClass.ExpectedHealthHint; // has unusuall full health value
+
 	public HumanTokenClass HumanClass { get; }
 	public ITokenClass Class => HumanClass;
 

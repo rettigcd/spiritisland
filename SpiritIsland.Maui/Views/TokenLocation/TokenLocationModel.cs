@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.Maui;
 
+/// <summary>
+/// Only shows the Token, but must know its location to generate the correct input command.
+/// </summary>
 public class TokenLocationModel
 	: ObservableModel, OptionView {
 
@@ -14,7 +17,7 @@ public class TokenLocationModel
 	public string Damage              { get; }
 
 	// Display the Location
-	public ImageSource? LocationImage { get; }
+//	public ImageSource? LocationImage { get; }
 
 	#endregion Control-facing Observable Properties
 
@@ -37,20 +40,18 @@ public class TokenLocationModel
 		TokenLocation = tokenOn;
 
 		// Separate Strife
-		if (tokenOn.Token is HumanToken ht){
+		var token = tokenOn.Token;
+		if ( token is HumanToken ht ) {
 			StrifeCount = ht.StrifeCount;
-			TokenImage = GetTokenImage( ht.HavingStrife(0) );
-			Damage = 0 < ht.FullDamage ? ht.FullDamage.ToString() : "";
-		} else {
-			StrifeCount = 0;
-			TokenImage = GetTokenImage(tokenOn.Token);
-			Damage = "";
-		}
+			TokenImage = GetImgImage(ht.Img);
+		} else
+			TokenImage = token is SpiritPresenceToken presenceToken
+				? ImageCache.FromFile(presenceToken.Self.SpiritName.ToResourceName(".png"))
+				: GetImgImage(token.Img);
+		Damage = tokenOn.Token.Badge;
 
-		if(tokenOn.Location is Track track) {
-			string bob = track.Code.ToResourceName();
-			LocationImage = ImageCache.FromFile( bob );
-		}
+		//if(tokenOn.Location is Track track)
+		//	LocationImage = ImageCache.FromFile(track.Code.ToResourceName());
 
 		RefreshCountAndSS();
 	}
@@ -63,23 +64,6 @@ public class TokenLocationModel
 	}
 
 	#region private static ImageSource
-
-	static ImageSource GetTokenImage(IToken baseToken) {
-		return baseToken is SpiritPresenceToken presenceToken ? GetSpiritImage(presenceToken.Self)
-			: baseToken is HumanToken ht ? GetHumanTokenMarker(ht)
-			//			: token.GetType().Name == "ManyMindsBeast" ? GetManyMindsBeast( "many-minds-beast.png", token.Img, 60, 40 )
-			//			: token.GetType().Name == "MarkedBeast" ? GetManyMindsBeast( "marked-beast.png", token.Img, 240, 20 )
-			: GetImgImage(baseToken.Img);
-	}
-
-	static ImageSource GetSpiritImage(Spirit spirit) {
-		string filename = spirit.SpiritName.ToResourceName(".png");
-		return ImageCache.FromFile(filename);
-	}
-
-	static ImageSource GetHumanTokenMarker(HumanToken humanToken) {
-		return GetImgImage(humanToken.Img);
-	}
 
 	static ImageSource GetImgImage(Img img) {
 		string filename = img switch {

@@ -9,13 +9,23 @@ public class SettleIntoHuntingGrounds {
 	public static async Task ActAsync( Spirit self ) {
 
 		// Your presence may count as badlands and beast.
-		var gs = GameState.Current;
-		gs.Tokens.Dynamic.ForRound.Register( self.Presence.CountOn, Token.Badlands );
-		gs.Tokens.Dynamic.ForRound.Register( self.Presence.CountOn, Token.Beast );
+		var presenceBeast = new TokenClassToken("Beast", 'A', Img.Beast, "😀");				// !!! Use the other tokens 
+		var presenceBadland = new TokenClassToken("Badlands", 'M', Img.Badlands, "😀");
+
+		// !!! use these: public class TokenClassToken : IToken, IAppearInSpaceAbreviation
+		// var presenceBeast = new VarietyToken("Beast", 'A', Img.Beast, Token.Beast, "😀");
+		// var presenceBadland = new VarietyToken("Badlands", 'M', Img.Badlands, Token.Badlands "😀");
+
+		foreach( var land in self.Presence.Lands ) {
+			int count = self.Presence.CountOn(land);
+			land.Adjust(presenceBeast, count);
+			land.Adjust(presenceBadland, count);
+		}
+		// your presence cannot move.
+		GameState.Current.Tokens.AddIslandMod( new FreezePresence( Name, self.Presence, presenceBeast, presenceBadland));
+
 		// (Decide per presence, per action) ... Not doing this bit exactly, both are always present, but can't be destroyed.
 
-		// your presence cannot move.
-		gs.Tokens.AddIslandMod( new FreezePresence( Name, self.Presence) );
 
 		// if you have 2 plant 3 animal:
 		if( await self.YouHave("2 plant,3 animal" )){
@@ -30,14 +40,26 @@ public class SettleIntoHuntingGrounds {
 
 }
 
-class FreezePresence( string _name, SpiritPresence _presence ) : BaseModEntity 
+class FreezePresence( string _name, SpiritPresence _presence, IToken beast, IToken badland ) : BaseModEntity 
 	,IModifyRemovingToken // Prevent presence from being moved.
-	,IEndWhenTimePasses
+	,IRunWhenTimePasses
 {
+	bool IRunWhenTimePasses.RemoveAfterRun => true;
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+	Task IRunWhenTimePasses.TimePasses(GameState gameState) {
+
+		foreach(var land in gameState.Spaces_Unfiltered ) {
+			land.Init(beast, 0);
+			land.Init(badland, 0 );
+		}
+
+		return Task.CompletedTask;
+	}
+
 
 	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
-		if(args.Token.HasTag(_presence) 
-			&& args.Reason.IsOneOf(RemoveReason.MovedFrom,RemoveReason.Abducted)
+		if( args.Reason.IsOneOf(RemoveReason.MovedFrom, RemoveReason.Abducted)
+			&& (args.Token.HasTag(_presence) || args.Token == beast || args.Token == badland ))
 		) {
 			ActionScope.Current.Log(new Log.Debug($"{_name} prevented {args.Token.Text} from moving from {args.From.Label}"));
 			args.Count = 0;

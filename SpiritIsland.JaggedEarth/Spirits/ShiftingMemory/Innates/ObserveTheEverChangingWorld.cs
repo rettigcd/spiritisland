@@ -30,6 +30,7 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 	, IEndWhenTimePasses // :sadface: I want this to live between rounds.
 {
 	ITokenClass IToken.Class => Token.Element;
+	string IToken.Badge => string.Empty;
 
 	public bool HasTag(ITag tag) => Token.Element.HasTag(tag);
 	public string Text => ObserveTheEverChangingWorld.Name;

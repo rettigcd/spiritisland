@@ -101,11 +101,12 @@ public class MarkedBeast : IToken
 	, IAppearInSpaceAbreviation
 	, IActionFactory
 {
+	string IToken.Badge => "🦏";
+
 	public MarkedBeast(Spirit controlSpirit) {
 		
 		// Each Slow phase: You may Push Marked Beast. 1 Fear and 2 Damage at Marked Beast
 		controlSpirit.EnergyCollected.Add( AddSlowPushToSpirit );
-
 	}
 
 	#region IToken stuff

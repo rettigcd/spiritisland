@@ -12,6 +12,8 @@ public class SpiritPresenceToken
 		SpaceAbreviation = Abreviate( Self.SpiritName );
 	}
 
+	string IToken.Badge => string.Empty;
+
 	public Spirit Self { get; }
 
 	public Task AddTo( Space space ) => space.AddAsync( this, 1 );

@@ -15,6 +15,8 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 
 	public bool Empowered { get; set; }
 
+	string IToken.Badge => Empowered ? "+" : string.Empty;
+
 	public Img Img => Empowered ? _empowered: _notEmpowered;
 
 	string IOption.Text => SpaceAbreviation;

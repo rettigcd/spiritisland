@@ -12,6 +12,7 @@ public class ManyMindsBeast( ManyMindsPresenceToken presenceToken )
 	readonly ManyMindsPresenceToken _presenceToken = presenceToken;
 
 	public Img Img => Img.Beast;
+	string IToken.Badge => "MM";
 
 	ITokenClass IToken.Class => Token.Beast;
 	bool IToken.HasTag( ITag tag ) => Token.Beast.HasTag( tag );

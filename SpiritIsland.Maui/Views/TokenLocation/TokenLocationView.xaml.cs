@@ -11,8 +11,6 @@ public partial class TokenLocationView : ContentView {
 		InitializeComponent();
 	}
 
-//	void TapGestureRecognizer_Tapped( object sender, TappedEventArgs e ) => Model?.Select();
-
 	// Copied from Growth
 	void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e) {
 		if (++_tapCount == 1)
