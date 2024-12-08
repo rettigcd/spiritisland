@@ -1,41 +1,25 @@
 ﻿namespace SpiritIsland.Basegame;
 
+/// <summary> Added to each Ocean to handle drowning </summary>
 class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
+
+	static public Drowner GetDrowner() => new Drowner();
 
 	public static SpecialRule Rule => new SpecialRule(
 		"Drowning",
 		"Destroy Drowned pieces.  At any time you may exchange [# of players] Health of these Invaders for 1 Energy."
 	);
 
+	#region IHandledTokenAdded
 
-	readonly Spirit _spirit = ocean;
-	int drownedInvaderHealthAccumulator = 0;
-
-	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
+	async Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 
 		if(args.Added is not HumanToken ht) return;
-		var gs = GameState.Current;
 
 		// If we are saving a dahan
-		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && to.Has( _spirit.Presence )) {
-			var moveOptions = gs.Island.Boards
-				.Select( x => x.Ocean )
-				.ScopeTokens()
-				.SelectMany( x => x.Adjacent )
-				.Distinct()
-				.ToArray();
-			// And Ocean chooses to save it
-			Space destination = await _spirit.SelectAsync( A.SpaceDecision.ToPushToken( args.Added, to, moveOptions, Present.Done ) );
-			if(destination != null) {
-				// Move them at the end of the Action. (Let everyone handle the move-event before we move them again)
-				ActionScope.Current.AtEndOfThisAction( async _ => {
-					//don't use original because that may or may not have been for a power.
-					await using ActionScope childAction = await ActionScope.Start(ActionCategory.Default);
-					await args.Added.MoveAsync(to,destination);
-				} );
-				return; // the move it, don't drown it
-			}
-		}
+		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && CanSaveDahanOnSpace(to) )
+			if( await SaveDahan(to, args) )
+				return;
 
 		// Drown them immediately
 		ActionScope.Current.Log( new Log.Debug( $"Drowning {args.Count}{ht.SpaceAbreviation} on {args.To.Text}" ) );
@@ -43,22 +27,73 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 
 		// Track drowned invaders' health
 		if(args.Added.HasTag(TokenCategory.Invader))
-			drownedInvaderHealthAccumulator += (ht.FullHealth * args.Count);
-		CashInDrownedHealthForEnergy( gs );
+			_drownedInvaderHealthAccumulator += (ht.FullHealth * args.Count);
 
+		CashInDrownedHealthForEnergy();
 	}
 
-	void CashInDrownedHealthForEnergy( GameState gs ) {
-		int spiritCount = gs.Spirits.Length;
-		int earnedEnergy = drownedInvaderHealthAccumulator / spiritCount;
+	#endregion IHandledTokenAdded
+
+	#region private methods
+
+	// Is this correct?  Does Ocean have to be in the ocean or can it just be on the board?
+	bool CanSaveDahanOnSpace( Space to ) => to.Has( _ocean.Presence );
+
+	async Task<bool> SaveDahan(Space to, ITokenAddedArgs args) {
+		
+		var destinationOptions = GameState.Current.Island.Boards
+			.Select(x => x.Ocean)
+			.ScopeTokens()
+			.SelectMany(x => x.Adjacent)
+			.Distinct()
+			.ToArray();
+
+		// And Ocean chooses to save them (may be more than 1)
+		// For now save them all to the same spot.
+		Space destination = await _ocean.SelectAsync(A.SpaceDecision.ToPushToken(args.Added, to, destinationOptions, Present.Done));
+		if( destination is null ) return false;
+
+		// Move all of them at the end of the Action. (Let everyone handle the move-event before we move them again)
+		ActionScope.Current.AtEndOfThisAction(async _ => {
+			//don't use original because that may or may not have been for a power.
+			await using ActionScope childAction = await ActionScope.Start(ActionCategory.Default);
+			await args.Added.MoveAsync(to, destination,args.Count);
+		});
+		return true;
+	}
+
+	void CashInDrownedHealthForEnergy() {
+		int earnedEnergy = _drownedInvaderHealthAccumulator / SpiritCount;
 		if(earnedEnergy == 0) return;
 
-		int cashedInHealth = spiritCount * earnedEnergy;
+		int cashedInHealth = SpiritCount * earnedEnergy;
 		ActionScope.Current.Log( new Log.Debug( $"Ocean gained {earnedEnergy} energy from cashing in {cashedInHealth} health of drowned invaders." ) );
 
 		// Update Ocean
-		drownedInvaderHealthAccumulator -= cashedInHealth;
-		_spirit.Energy += earnedEnergy;
+		_drownedInvaderHealthAccumulator -= cashedInHealth;
+		_ocean.Energy += earnedEnergy;
 	}
 
+	#endregion
+
+	#region private fields
+
+	int SpiritCount => _spiritCount ??= GameState.Current.Spirits.Length;
+	int? _spiritCount;
+
+	int _drownedInvaderHealthAccumulator = 0;
+
+	readonly Ocean _ocean = ocean;
+
+	#endregion
+}
+
+class Drowner {
+	public Drowner() {
+		_drowningSpace = GameState.Current.Spirits.Single(x => x is Ocean)
+			.Presence.Lands.First().SpaceSpec // find any space the ocean has presnece
+			.Boards[0].Ocean.ScopeSpace; // find the Ocean space on that board
+	}
+	public Task Drown(SpaceToken spaceToken, int count=1) => spaceToken.MoveTo(_drowningSpace,count);
+	readonly Space _drowningSpace;
 }

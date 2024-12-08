@@ -65,6 +65,7 @@ public class Ocean : Spirit {
 	}
 
 	// ! Hook for Tidal Boon
+	// !!! Move this all to the Drowning mod
 	static public void EnableSavingDahan() { ActionScope.Current[SaveDahan] = true; }
 	static public bool ShouldSaveDahan() => ActionScope.Current.ContainsKey( SaveDahan );
 	const string SaveDahan = "SaveDahanFromDrowning";

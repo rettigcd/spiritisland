@@ -21,7 +21,13 @@ public static class Token {
 	// Nature Incarnate
 	static readonly public TokenClassToken Vitality = new VitalityToken("Vitality", 'V', Img.Vitality );
 	static readonly public TokenClassToken Quake    = new TokenClassToken( "Quake", 'Q', Img.Quake );
+	static readonly public TokenClassToken Deeps = new TokenClassToken("Deeps", 'P', Img.Deeps);
 }
+
+// Available:           F   H I J K L   N O     R S T U V   X      
+// Used:      A B C D E   G           M     P Q           W   Y Z =
+
+
 
 public static class ModToken {
 	// Fake Tokens that are not visible.

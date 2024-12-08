@@ -129,6 +129,7 @@ public enum Img {
 	Badlands,
 	Vitality,
 	Quake,
+	Deeps,
 
 	Token_Sun,
 	Token_Moon,

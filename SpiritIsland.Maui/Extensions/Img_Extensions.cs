@@ -15,6 +15,7 @@ static public class Img_Extensions {
 			Img.Disease  => "disease.png",
 			Img.Beast    => "beast.png",
 			Img.Vitality => "vitality.png",
+			Img.Deeps    => "deeps.png",
 			Img.Badlands => "badlands.png",
 			Img.Wilds    => "wilds.png",
 			Img.Defend   => "defend.png",

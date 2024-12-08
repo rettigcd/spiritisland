@@ -21,6 +21,19 @@ static public class SpaceExtensions {
 	static public void AddFear( this Space space, int count, FearType fearType = FearType.Direct )
 		=> GameState.Current.Fear.AddOnSpace( space, count, fearType );
 
+	static public void TransferAllTokensTo( this Space from,  Space to, bool copyInvisible ) {
+		foreach( var key in from.Keys.ToArray() ) {
+			int count = from[key];
+			if( key is IToken ) {
+				// move visible
+				from.Adjust(key, -count);
+				to.Adjust(key, count);
+			} else if( copyInvisible )
+				// copy invisible (orig keep their invisible mods)
+				to.Adjust(key, count);
+		}
+	}
+
 
 	#region SetUp / Adjust
 

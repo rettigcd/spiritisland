@@ -84,6 +84,7 @@ public class TokenLocationModel
 			Img.Disease => "disease.png",
 			Img.Beast => "beast.png",
 			Img.Vitality => "vitality.png",
+			Img.Deeps => "deeps.png",
 			Img.Badlands => "badlands.png",
 			Img.Isolate => "isolate.png",
 			Img.Wilds => "wilds.png",

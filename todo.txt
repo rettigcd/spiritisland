@@ -2,7 +2,7 @@
 
 	SPIRIT - HORIZON - Eyes Watch from the Trees
 	SPIRIT - HORIZON - Fathomless Mud of the Swamp
-	SPIRIT - Ocean - Deeps
+	SPIRIT - Shroud - Stranded
 
 	UI - Cast Down into the Briny Deep - TEST
 
@@ -39,7 +39,6 @@
 		Thunderspeaker - Warrior
 		Bringer - Violence
 		Keeper - Spreading Hostility
-		Shroud - Stranded
 
 		-- Improvement --
 		Earth - Nourishing

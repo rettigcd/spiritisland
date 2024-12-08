@@ -458,6 +458,7 @@
 	  <None Remove="Resources\Images\tokens\beast.png" />
 	  <None Remove="Resources\Images\tokens\card_play.png" />
 	  <None Remove="Resources\Images\tokens\coin.png" />
+	  <None Remove="Resources\Images\tokens\deeps.png" />
 	  <None Remove="Resources\Images\tokens\defend.png" />
 	  <None Remove="Resources\Images\tokens\disease.png" />
 	  <None Remove="Resources\Images\tokens\elements\air.png" />
@@ -802,6 +803,7 @@
 	  <MauiImage Include="Resources\Images\tokens\beast.png" />
 	  <MauiImage Include="Resources\Images\tokens\card_play.png" />
 	  <MauiImage Include="Resources\Images\tokens\coin.png" />
+	  <MauiImage Include="Resources\Images\tokens\deeps.png" />
 	  <MauiImage Include="Resources\Images\tokens\defend.png" />
 	  <MauiImage Include="Resources\Images\tokens\disease.png" />
 	  <MauiImage Include="Resources\Images\tokens\elements\air.png" />

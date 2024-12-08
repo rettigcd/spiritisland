@@ -10,7 +10,7 @@ public abstract class SpaceSpec(string label)
 	, IEquatable<SpaceSpec>
 {
 
-	readonly List<SpaceSpec> adjacent = [];
+	readonly List<SpaceSpec> _adjacent = [];
 
 	public abstract SpaceLayout Layout { get; }
 
@@ -44,8 +44,12 @@ public abstract class SpaceSpec(string label)
 	public static bool Exists( SpaceSpec space ) => space.DoesExists;
 
 	#region Connectivity
+
 	/// <summary> Existing </summary>
-	public IEnumerable<SpaceSpec> Adjacent_Existing => adjacent.Where(Exists);
+	public IEnumerable<SpaceSpec> Adjacent => _adjacent;
+
+	/// <summary> Existing </summary>
+	public IEnumerable<SpaceSpec> Adjacent_Existing => _adjacent.Where(Exists);
 
 	public IEnumerable<SpaceSpec> Range( int maxDistance ) => this.CalcDistances( maxDistance ).Keys;
 
@@ -54,6 +58,7 @@ public abstract class SpaceSpec(string label)
 	/// <summary> If adjacent to ocean, sets is-coastal </summary>
 	public void SetAdjacentToSpaces( params SpaceSpec[] spaces ) {
 		foreach(var land in spaces) {
+			if(land == this) continue;
 			Connect( land );
 			land.Connect( this );
 		}
@@ -67,16 +72,17 @@ public abstract class SpaceSpec(string label)
 	#region Connect / Disconnect
 
 	void Connect( SpaceSpec adjacent ) {
-		this.adjacent.Add( adjacent );
+		if(adjacent == this) return; // lands are not adjacent to self
+		this._adjacent.Add( adjacent );
 		if(adjacent.IsOcean)
 			this.IsCoastal = true;
 	}
 	public void Disconnect() {
 		// Remove us from neighbors adjacent list
-		foreach(var a in adjacent)
-			a.adjacent.Remove( this );
+		foreach(var a in _adjacent)
+			a._adjacent.Remove( this );
 		// Remove neighbors from our list.
-		adjacent.Clear();
+		_adjacent.Clear();
 	}
 
 	class DisconnectSpaceResults : IRestoreable {

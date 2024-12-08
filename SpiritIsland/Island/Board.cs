@@ -13,7 +13,7 @@ public class Board {
 
 	public int InvaderActionCount { get; set; } = 1;
 
-	public SpaceSpec Ocean => Spaces_Existing.Single( s => s.IsOcean );
+	public SingleSpaceSpec Ocean => (SingleSpaceSpec)Spaces_Existing.Single( s => s.IsOcean );
 	
 	public SpaceSpec this[int index]{ get => _spaces[index]; }
 

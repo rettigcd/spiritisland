@@ -8,12 +8,12 @@ public class WeaveTogetherTheFabricOfPlace {
 		// target land and a land adjacent to it become a single land for this turn.
 		var other = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.SpaceSpec.Label} to")).SpaceSpec;
 
-		MultiSpaceSpec multi = JoinSpaces( ctx.Self, ctx.SpaceSpec, other );
+		Space multi = JoinSpaces( ctx.Self, ctx.SpaceSpec, other );
 
 		// if you have 4 air:
 		if(await ctx.YouHave( "4 air" )) {
 			// isolate the joined land.
-			var joinedCtx = ctx.TargetSpec( multi );
+			var joinedCtx = ctx.TargetSpec( multi.SpaceSpec );
 			joinedCtx.Isolate();
 			// If it has invaders,
 			if(joinedCtx.HasInvaders) {
@@ -26,39 +26,46 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static MultiSpaceSpec JoinSpaces( Spirit originalSelf, SpaceSpec space, SpaceSpec other ) {
+	static Space JoinSpaces( Spirit originalSelf, SpaceSpec spaceSpec, SpaceSpec otherSpec ) {
 
-		var gameState = GameState.Current;
+		var multiSpec = new MultiSpaceSpec(spaceSpec, otherSpec);
 
-		var multi = new MultiSpaceSpec( space, other );
-		MoveItemsOnSpace( other, multi, true );
-		MoveItemsOnSpace( space, multi, true );
+		var gs = GameState.Current;
+		Space space = gs.Tokens[spaceSpec];
+		Space other = gs.Tokens[otherSpec];
+		Space multi = gs.Tokens[multiSpec];
+
+		other.TransferAllTokensTo( multi, true );
+		space.TransferAllTokensTo( multi, true );
 
 		// Calculate Adjacents
-		List<SpaceSpec> adjacents = space.Adjacent_Existing.Union( other.Adjacent_Existing ).Distinct().Where(s=>s!=space&&s!=other).ToList();
+		List<SpaceSpec> adjacents = spaceSpec.Adjacent_Existing.Union( otherSpec.Adjacent_Existing )
+			.Distinct()
+			.Where(s=>s!=spaceSpec&&s!=otherSpec)
+			.ToList();
 
 		// Disconnect space
-		IRestoreable removeSpace = space.RemoveFromBoard();
-		IRestoreable removeOther = other.RemoveFromBoard();
+		IRestoreable removeSpace = spaceSpec.RemoveFromBoard();
+		IRestoreable removeOther = otherSpec.RemoveFromBoard();
 
 		// Add Multi
-		multi.AddToBoardsAndSetAdjacent( adjacents.Distinct() );
+		multiSpec.AddToBoardsAndSetAdjacent( adjacents );
 
-		ActionScope.Current.Log( new Log.LayoutChanged($"{space.Label} and {other.Label} were woven together") );
+		ActionScope.Current.Log( new Log.LayoutChanged($"{spaceSpec.Label} and {otherSpec.Label} were woven together") );
 
 		// When this effect expires
-		gameState.AddTimePassesAction( TimePassesAction.Once( 
+		gs.AddTimePassesAction( TimePassesAction.Once( 
 			async (gs) => {
-				MoveItemsOnSpace( multi, space, false );
-				multi.RemoveFromBoard();
+				multi.TransferAllTokensTo(space, false); // false => we left the Mod tokens on the original boards and they are still there.
+				multiSpec.RemoveFromBoard();
 				removeOther.Restore();
 				removeSpace.Restore();
 
-				ActionScope.Current.Log( new Log.LayoutChanged( $"{space.Label} and {other.Label} were split up." ) );
+				ActionScope.Current.Log( new Log.LayoutChanged( $"{spaceSpec.Label} and {otherSpec.Label} were split up." ) );
 
 				await DistributeVisibleTokens( originalSelf, space, other );
 
-				CopyNewModsToBoth( space, other, multi );
+				CopyNewModsToBoth( spaceSpec, otherSpec, multiSpec );
 			}
 		) );
 
@@ -78,11 +85,8 @@ public class WeaveTogetherTheFabricOfPlace {
 		}
 	}
 
-	static async Task DistributeVisibleTokens( Spirit self, SpaceSpec from, SpaceSpec to ) {
+	static async Task DistributeVisibleTokens( Spirit self, Space fromSpace, Space toSpace ) {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,self);
-
-		Space fromSpace = from.ScopeSpace;
-		Space toSpace = to.ScopeSpace;
 
 		// Distribute Tokens (All of them are considered moved.)
 		ITokenClass[] tokenClasses = fromSpace.OfType<IToken>()
@@ -91,7 +95,7 @@ public class WeaveTogetherTheFabricOfPlace {
 		// await toSpace.Gather(self)
 		await new TokenMover(self, $"Distribute tokens to un-woven {toSpace.Label}", fromSpace, toSpace)
 			.AddGroup( int.MaxValue, tokenClasses )
-			.ConfigSource(s=>s.FilterSource( ss => ss.SpaceSpec == from ))
+			.ConfigSource(s=>s.FilterSource( ss => ss == fromSpace ))
 			.DoUpToN();
 
 		// Move remaining onto themselves so they look moved.
@@ -99,21 +103,6 @@ public class WeaveTogetherTheFabricOfPlace {
 			.ToArray()
 			.Select( re => re.MoveAsync(fromSpace, fromSpace) )
 			.WhenAll();
-	}
-
-	static void MoveItemsOnSpace( SpaceSpec src, SpaceSpec dst, bool copyInvisible ) {
-		var srcTokens = src.ScopeSpace;
-		var dstTokens = dst.ScopeSpace;
-		foreach(var key in srcTokens.Keys.ToArray()) {
-			int count = srcTokens[key];
-			if(key is IToken) {
-				// move visible
-				srcTokens.Adjust(key, -count);
-				dstTokens.Adjust(key, count);
-			} else if( copyInvisible )
-				// copy invisible (orig keep their invisible mods)
-				dstTokens.Adjust(key, count);
-		}
 	}
 
 }

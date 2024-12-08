@@ -20,6 +20,7 @@ public static class Filter {
 	public const string Town       = "Towns";
 
 	public const string Disease    = "Disease";
+	public const string Deeps      = "Deeps";
 	public const string Wilds      = "Wilds";
 	public const string Beast      = "Beast";
 	public const string Presence   = "Presence";

@@ -17,7 +17,9 @@ public class SingleSpaceSpec( Terrain terrain, string label, string startingItem
 
 	public override int InvaderActionCount => _board.InvaderActionCount;
 
-	public override SpaceLayout Layout => _board.Layout.ForSpaceSpec(this);
+	override public SpaceLayout Layout => _spaceLayout ??= _board.Layout.ForSpaceSpec(this);
+	public void SetLayout(SpaceLayout layout) { _spaceLayout = Layout; }
+	SpaceLayout _spaceLayout;
 
 	public StartUpCounts StartUpCounts { get; } = new StartUpCounts(startingItems);
 

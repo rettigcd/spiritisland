@@ -109,6 +109,7 @@ public class SpaceCriteria {
 		[Filter.Beast] = ( ctx ) => ctx.Space.Beasts.Any,
 		[Filter.Wilds] = ( ctx ) => ctx.Space.Wilds.Any,
 		[Filter.Quake] = ( ctx ) => ctx.Space.Has(Token.Quake),
+		[Filter.Deeps] = (ctx) => ctx.Space.Has(Token.Deeps),
 
 		[Filter.Blight] = ( ctx ) => ctx.Space.Blight.Any,
 		[Filter.Strife] = ( ctx ) => ctx.Space.HasStrife,

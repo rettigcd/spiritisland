@@ -8,31 +8,26 @@ public class SwallowTheLandDwellers {
 	[Instructions( "Drown 1 Explorer, 1 Town, and 1 Dahan." ), Artist( Artists.JoshuaWright )]
 	static public async Task Act(TargetSpaceCtx ctx ) {
 
-		// "Drown 1 explorer, 1 town, 1 dahan"
+		// Drown 1 explorer, 1 town, and 1 dahan
+		var drowner = Drowning.GetDrowner();
 
-		// find Ocean's Hungry Grasp spirit
-		var ocean = ctx.Self as Ocean ?? GameState.Current.Spirits.Single(x=>x is Ocean);
+		// drown 1 explorer
+		HumanToken explorerToDrown = ctx.Space.HumanOfTag(Human.Explorer).OrderBy(x => x.StrifeCount).FirstOrDefault();
+		if( explorerToDrown != null )
+			await drowner.Drown(explorerToDrown.On(ctx.Space));
 
-		// find place to drown then
-		var drowningOcean = ocean.Presence.Lands.First().SpaceSpec // find any space the ocean has presnece
-			.Boards[0].Ocean.ScopeSpace; // find the Ocean space on that board
-
-		// drown 1 explorer, 1 town, and 1 dahan
-
-		// drown 1 explorer ( drop 1 explorer in the ocean to drown )
-		var explorerToDrown = ctx.Space.HumanOfTag(Human.Explorer).OrderBy(x=>x.StrifeCount).FirstOrDefault();
-		if(explorerToDrown != null)
-			await explorerToDrown.MoveAsync( ctx.Space,drowningOcean );
-
-		// drop town in the ocean to drown
-		var townToDrown = ctx.Space.HumanOfTag(Human.Town)
-			.OrderByDescending(x=>x.FullHealth) // items with most health - usually are all the same
-			.ThenBy(x=>x.Damage) // pick least damaged
-			.FirstOrDefault();
+		// Drown town
+		HumanToken townToDrown = PickTownToDrown(ctx);
 		if( townToDrown != null )
-			await townToDrown.MoveAsync(ctx.Space, drowningOcean);
+			await drowner.Drown(townToDrown.On(ctx.Space));
 
 		await ctx.Dahan.Destroy(1); // destroying dahan is the same as drowning them
 	}
 
+	static HumanToken PickTownToDrown(TargetSpaceCtx ctx) {
+		return ctx.Space.HumanOfTag(Human.Town)
+			.OrderByDescending(x => x.FullHealth) // items with most health - usually are all the same
+			.ThenBy(x => x.Damage) // pick least damaged
+			.FirstOrDefault();
+	}
 }

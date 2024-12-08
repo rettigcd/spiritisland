@@ -33,12 +33,14 @@ public class GameComponentProvider : IGameComponentProvider {
 		Haven.ConfigKey,
 		Sunshine.ConfigKey,
 		Travel.ConfigKey,
+		Deeps.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
 		Haven.Name => new Haven(),
 		Sunshine.Name => new Sunshine(),
 		Travel.Name => new Travel(),
+		Deeps.Name => new Deeps(),
 		_ => null,
 	};
 

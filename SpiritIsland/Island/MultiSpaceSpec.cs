@@ -2,15 +2,21 @@
 
 public class MultiSpaceSpec : SpaceSpec {
 
-	public override SpaceLayout Layout {
-		get {
-			SingleSpaceSpec[] spaces = OrigSpaces;
-			XY[] corners = spaces[0].Layout.Corners;
-			for( int i = 1; i < spaces.Length; ++i )
-				corners = Polygons.JoinAdjacentPolgons(corners, spaces[i].Layout.Corners);
-			return new SpaceLayout(corners);
-		}
+	#region Layout
+
+	/// <summary>
+	/// Lazy loading this. Not needed for most unit tests.
+	/// </summary>
+	public override SpaceLayout Layout => _layout ??= CalcLayout(OrigSpaces);
+	SpaceLayout _layout = null;
+	static public SpaceLayout CalcLayout(SpaceSpec[] spaces) {
+		XY[] corners = spaces[0].Layout.Corners;
+		for( int i = 1; i < spaces.Length; ++i )
+			corners = Polygons.JoinAdjacentPolgons(corners, spaces[i].Layout.Corners);
+		return new SpaceLayout(corners);
 	}
+
+	#endregion Layout
 
 	public override int InvaderActionCount => OrigSpaces.Sum(s => s.InvaderActionCount) / OrigSpaces.Length;
 
@@ -50,7 +56,6 @@ public class MultiSpaceSpec : SpaceSpec {
 			board.AddSpace( this );
 
 		SetAdjacentToSpaces( adjacents.ToArray() );
-
 	}
 
 }
