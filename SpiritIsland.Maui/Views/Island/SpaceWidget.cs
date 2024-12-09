@@ -81,10 +81,8 @@ public class SpaceWidget {
 		_iconWidth = (int)(mapper.UnitLength * _insidePoints.TokenSize);
 
 		// Move out tokens
-		foreach( TokenLocationView view in _visibleTokens.Values ) {
-			Rect rect = GetFloatPosition(view.Model);
-			_absLayout.UpdateFloat(view, rect);
-		}
+		foreach( TokenLocationView view in _visibleTokens.Values )
+			view.UpdatePosition(GetCenter(view.Model), _iconWidth );
 
 	}
 
@@ -195,24 +193,19 @@ public class SpaceWidget {
 
 	void FloatToken( TokenLocationModel tlModel ) {
 
-		TokenLocationView view = new TokenLocationView {
-			ZIndex = 2,
-			BindingContext = tlModel
-		};
+		TokenLocationView view = new TokenLocationView();
+		view.BindingContext = tlModel;
 
 		// add to our lookup list
 		_visibleTokens[tlModel.TokenLocation.Token] = view;
 
 		// add to the View
-		Rect rect = GetFloatPosition(tlModel);
-		_absLayout.Float(view, rect);
+		view.Float( _absLayout, GetCenter(tlModel), _iconWidth );
 	}
 
-	Rect GetFloatPosition(TokenLocationModel tlModel) {
-		XY center = _mapper.Map(_insidePoints.GetPointFor(tlModel.TokenLocation.Token));// calc center
-		XY topLeft = new XY(center.X - _iconWidth / 2, center.Y - _iconWidth / 2);
-		var rect = new Rect(topLeft.X, topLeft.Y, _iconWidth, _iconWidth);
-		return rect;
+	XY GetCenter(TokenLocationModel tlModel) {
+		return _mapper.Map(_insidePoints.GetPointFor(tlModel.TokenLocation.Token));
+		// calc center
 	}
 
 	void UnFloat(IToken token) {
