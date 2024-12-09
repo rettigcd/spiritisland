@@ -1,6 +1,8 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 // == Tokens ==
+// * Runs things at max.  (Pusher,Gatherer)
+// * Enables adding the extra strife. (this could pulled out)
 public class TricksterTokens( Spirit spirit, Space src, bool runAtMax = false ) 
 	: Space( src )
 {
@@ -45,7 +47,7 @@ public class TricksterTokens( Spirit spirit, Space src, bool runAtMax = false )
 public class TricksterBlight( Space space ) : BlightTokenBinding( space ) {
 	public override async Task<ITokenRemovedArgs> Remove( int count, RemoveReason reason = RemoveReason.Removed ) {
 		var self = ActionScope.Current.Owner ?? throw new InvalidOperationException( "Action Scope has no owner." );
-		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuckADrag( self, _space ); // feature envy?
+		await GrinningTricksterStirsUpTrouble.CleaningUpMessesIsSuchADrag( self, _space ); // feature envy?
 		return await base.Remove( count, reason );
 	}
 }

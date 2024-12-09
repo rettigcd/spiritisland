@@ -48,11 +48,11 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 
 	// Cleanup Up Messes is such a drag
 	public override async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
-		await CleaningUpMessesIsSuckADrag( ctx.Self, ctx.Space );
+		await CleaningUpMessesIsSuchADrag( ctx.Self, ctx.Space );
 		await base.RemoveBlight( ctx,count );
 	}
 
-	static public async Task CleaningUpMessesIsSuckADrag( Spirit spirit, Space space ) {
+	static public async Task CleaningUpMessesIsSuchADrag( Spirit spirit, Space space ) {
 		if(space.Blight.Any)
 			await Cmd.DestroyPresence( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" )
 				.ActAsync(spirit);

@@ -208,7 +208,7 @@ public class SpaceWidget {
 		_absLayout.Float(view, rect);
 	}
 
-	private Rect GetFloatPosition(TokenLocationModel tlModel) {
+	Rect GetFloatPosition(TokenLocationModel tlModel) {
 		XY center = _mapper.Map(_insidePoints.GetPointFor(tlModel.TokenLocation.Token));// calc center
 		XY topLeft = new XY(center.X - _iconWidth / 2, center.Y - _iconWidth / 2);
 		var rect = new Rect(topLeft.X, topLeft.Y, _iconWidth, _iconWidth);

@@ -29,14 +29,16 @@
 		<!-- Damage -->
 		<Label Text="{Binding Damage}" TextColor="Red" FontSize="10" Margin="3,3,5,5" BackgroundColor="Transparent" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Start" Padding="2,0" />
 
-		<!-- Count -->
-		<Label Text="{Binding Count, StringFormat='x{0}'}" 
-			   IsVisible="{Binding Count, Converter={StaticResource showIfGreater},ConverterParameter=1}" 
-			   HorizontalOptions="End" VerticalOptions="End" FontSize="8" FontAttributes="Bold" BackgroundColor="White" />
-		
 		<!-- Is Option-->
 		<Ellipse x:Name="OptionEllipse" StrokeThickness="2" Stroke="{Binding State,Converter={StaticResource optionState}}" 
 				 HeightRequest="10" VerticalOptions="Center" />
+
+		<!-- Count -->
+		<Label Text="{Binding Count, StringFormat='x{0}'}" Padding="1,0" TextColor="Black" BackgroundColor="White" ZIndex="10"
+			   IsVisible="{Binding Count, Converter={StaticResource showIfGreater},ConverterParameter=1}" 
+			   HorizontalOptions="End" VerticalOptions="End" FontSize="8" FontAttributes="Bold" Margin="0,0,0,0" LineBreakMode="WordWrap" > <!-- Also try TruncateHead -->
+		</Label>
+
 
 		<!-- NOTE: Does NOT show the Location Part. -->
 	</Grid>
