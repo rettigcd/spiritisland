@@ -61,20 +61,26 @@ public class LightningsSwiftStrike : Spirit {
 
 	}
 
-	public override Task TakeActionAsync( IActionFactory factory, Phase phase ) {
+	/// <summary>
+	/// Switches Slows (that could be fast) to fast so that they are found in the Avaialble actions.
+	/// </summary>
+	/// <param name="factory"></param>
+	/// <param name="phase"></param>
+	/// <returns></returns>
+	// public override Task ResolveUnresolvedActionAsync( IActionFactory factory, Phase phase ) {
 
-		// we can decrement any time a slow card is used,
-		// even during slow because we no longer care about this
-		if(phase == Phase.Fast
-			&& factory.CouldActivateDuring( Phase.Slow, this )
-			&& factory is IFlexibleSpeedActionFactory flexSpeedFactory
-		) {
-			++_usedAirForFastCount;
-			TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, GameState.Current );
-		}
+		//// we can decrement any time a slow card is used,
+		//// even during slow because we no longer care about this
+		//if(phase == Phase.Fast
+		//	&& factory.CouldActivateDuring( Phase.Slow, this )
+		//	&& factory is IFlexibleSpeedActionFactory flexSpeedFactory
+		//) {
+		//	++_usedAirForFastCount;
+		//	TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, GameState.Current );
+		//}
 
-		return base.TakeActionAsync(factory,phase);
-	}
+	//	return base.ResolveUnresolvedActionAsync(factory,phase);
+	//}
 
 	protected override object CustomMementoValue {
 		get => _usedAirForFastCount;

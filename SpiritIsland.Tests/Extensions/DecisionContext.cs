@@ -21,7 +21,7 @@ public class DecisionContext {
 	#endregion
 
 	public override string ToString() {
-		string options = string.Join(",",_current.Options.Select(x=>x.Text).OrderBy(x=>x));
+		string options = string.Join(",",_current.Options.Select(x=>x.Text));
 		return $".NextDecision.HasPrompt(\"{_current.Prompt}\").HasOptions(\"{options}\").Choose(\"?\")";
 	}
 

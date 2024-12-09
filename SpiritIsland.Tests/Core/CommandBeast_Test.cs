@@ -26,7 +26,7 @@ public class CommandBeast_Test
 		var round3Memento = ((IHaveMemento)gs).Memento;
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.SelectAndResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -35,7 +35,7 @@ public class CommandBeast_Test
 
 		//  Then: available to use in Round 3 again.
 		gs.Phase = Phase.Fast;
-		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.SelectAndResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 
 	}
 
@@ -62,7 +62,7 @@ public class CommandBeast_Test
 
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await gs.Spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
+		await gs.Spirit.SelectAndResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -77,7 +77,7 @@ public class CommandBeast_Test
 		gs.RoundNumber.ShouldBe( 3 );
 		//   And: Used in Fast Round of Round 3
 		gs.Phase = Phase.Fast;
-		await gs.Spirit.ResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
+		await gs.Spirit.SelectAndResolveActions( gs ).AwaitUser( UseCard ).ShouldComplete();
 
 
 	}
@@ -108,7 +108,7 @@ public class CommandBeast_Test
 
 		//   And: Used in Fast
 		gs.Phase = Phase.Fast;
-		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.SelectAndResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 		//   And: time passes
 		await gs.TriggerTimePasses();
 
@@ -117,7 +117,7 @@ public class CommandBeast_Test
 
 		//  Then: available to use in Round 3 again.
 		gs.Phase = Phase.Fast;
-		await gs.Spirit.ResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
+		await gs.Spirit.SelectAndResolveActions( gs ).AwaitUser(UseCard).ShouldComplete();
 
 	}
 

@@ -239,7 +239,7 @@ public class OceanTerrain_Tests {
 		_gameState.Phase = Phase.Fast;
 
 		// When: using a Power that places presence
-		var task = _primarySpirit.ResolveActions(_gameState);
+		var task = _primarySpirit.SelectAndResolveActions(_gameState);
 		IsActive(task);
 		Choose( "Blazing Renewal $5 (Fast)" );
 		IsActive( task );
@@ -267,7 +267,7 @@ public class OceanTerrain_Tests {
 		_primarySpirit.Energy = 5;
 		_primarySpirit.AddActionFactory(PowerCard.For(typeof(CleansingFloods)));
 		_gameState.Phase = Phase.Slow;
-		await _primarySpirit.ResolveActions( _gameState ).AwaitUser((user)=> {
+		await _primarySpirit.SelectAndResolveActions( _gameState ).AwaitUser((user)=> {
 			user.Choose( "Cleansing Floods $5 (Slow)" );
 			if(withOcean) {
 				// Then: can target out of wetland
@@ -301,7 +301,7 @@ public class OceanTerrain_Tests {
 		// When: Tidal Boon is played (by Ocean)
 		_gameState.Phase = Phase.Slow;
 		_oceanSpirit.AddActionFactory( PowerCard.For(typeof(TidalBoon)) );
-		Task task = _oceanSpirit.ResolveActions( _gameState );
+		Task task = _oceanSpirit.SelectAndResolveActions( _gameState );
 
 		_oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
 		//  And: Pushes town into ocean

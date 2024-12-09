@@ -43,7 +43,7 @@ public class SinglePlayerGame {
 		try {
 			// Handle any unresolved Initialization action - (ocean/beast)
 			GameState.Phase = Phase.Init;
-			await Spirit.ResolveActions( GameState ); 
+			await Spirit.SelectAndResolveActions( GameState ); 
 
 			while(true) {
 				SaveGameState();
@@ -91,13 +91,13 @@ public class SinglePlayerGame {
 		await Spirit.SelectAndPlayCardsFromHand();
 		
 		SetPhase( Phase.Fast );
-		await Spirit.ResolveActions( GameState );
+		await Spirit.SelectAndResolveActions( GameState );
 
 		SetPhase( Phase.Invaders );
 		await InvaderPhase.ActAsync( GameState );
 
 		SetPhase( Phase.Slow );
-		await Spirit.ResolveActions( GameState );
+		await Spirit.SelectAndResolveActions( GameState );
 
 		await GameState.TriggerTimePasses();
 	}

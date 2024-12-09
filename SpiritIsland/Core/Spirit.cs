@@ -108,44 +108,25 @@ public abstract partial class Spirit
 
 	}
 
-
 	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
 
-	public async Task ResolveActions( GameState gs ) {
+	/// <summary> Resolves Action for the current phase </summary>
+	public async Task SelectAndResolveActions( GameState gs ) {
 		Phase phase = gs.Phase;
-
-		while(GetAvailableActions( phase ).Any()
-			&& await ResolveAction( phase )
-		) { }
-
-	}
-
-	/// <summary> Resolves 1 Action for the given Phase </summary>
-	public async Task<bool> ResolveAction( Phase phase ) {
-
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
 
-		// -------------
-		// Select Actions to resolve
-		// -------------
-		IActionFactory[] options = this.GetAvailableActions( phase ).ToArray();
-		IActionFactory option = await this.SelectFactory( "Select " + phase + " to resolve", options, present );
-		if(option == null)
-			return false;
+		IActionFactory[] options = GetAvailableActions(phase).ToArray();
+		while( options.Any() ) {
+			IActionFactory option = await SelectAsync(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
+			if( option == null ) break;
 
-		// if user clicked a slow card that was made fast, // slow card won't be in the options
-		if(!options.Contains( option ))
-			// find the fast version of the slow card that was clicked
-			option = options.Cast<IActionFactory>()
-				.First( factory => factory == option );
+			await ResolveUnresolvedActionAsync(option, phase);
 
-		if(!options.Contains( option ))
-			throw new Exception( "Dude! - You selected something that wasn't an option" );
+			// next
+			options = GetAvailableActions(phase).ToArray();
+		}
 
-		await TakeActionAsync( option, phase );
-		return true;
 	}
-
 
 	#endregion
 
@@ -247,24 +228,6 @@ public abstract partial class Spirit
 		InPlay.Remove( cardToRemove );
 	}
 
-	/// <summary>
-	/// Removes it from the Unresolved-list
-	/// </summary>
-	public virtual void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory ) {
-		if(selectedActionFactory is InnatePower ip) { // Could reverse this and instead of listing the used, create a not-used list that we remove them from when used
-			_usedInnates.Add( ip );
-			return;
-		}
-
-		int index = _availableActions.IndexOf( selectedActionFactory );
-		if(index == -1) 
-			throw new InvalidOperationException( $"Unable to remove ActionFactory {selectedActionFactory.Title} from Unresolved Actions because it is not there." );
-
-		_usedActions.Add(_availableActions[index]);
-		_availableActions.RemoveAt( index );
-
-	}
-
 	public void AddActionFactory( IActionFactory factory ) {
 		// if we are manually restoring an innate power - like EEB
 		if(_usedInnates.Contains( factory )) {
@@ -276,12 +239,33 @@ public abstract partial class Spirit
 		_usedActions.Remove( factory ); // incase this is was a repeat
 	}
 
-	public virtual async Task TakeActionAsync(IActionFactory factory, Phase phase) {
+	/// <summary>
+	/// Starts ActionScope, marks as Resolved, Resolves, checks win/los
+	/// </summary>
+	public virtual async Task ResolveUnresolvedActionAsync(IActionFactory factory, Phase phase) {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );  
-			
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( this );
-		GameState.Current.CheckWinLoss(); // @@@
+		GameState.Current.CheckWinLoss();
+	}
+
+	/// <summary>
+	/// Removes it from the Unresolved-list
+	/// </summary>
+	// !!! Make this protected once we figure out how Fractured Day's Growth work without access to this.
+	public virtual void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory) {
+		if( selectedActionFactory is InnatePower ip ) { // Could reverse this and instead of listing the used, create a not-used list that we remove them from when used
+			_usedInnates.Add(ip);
+			return;
+		}
+
+		int index = _availableActions.IndexOf(selectedActionFactory);
+		if( index == -1 )
+			throw new InvalidOperationException($"Unable to remove ActionFactory {selectedActionFactory.Title} from Unresolved Actions because it is not there.");
+
+		_usedActions.Add(_availableActions[index]);
+		_availableActions.RemoveAt(index);
+
 	}
 
 	static ActionCategory GetActionCategoryForSpiritAction( Phase phase ) {
@@ -323,7 +307,7 @@ public abstract partial class Spirit
 
 	public SpecialRule[] SpecialRules { get; set; } = [];
 
-	public virtual InnatePower[] InnatePowers { get; set; } = [];
+	public InnatePower[] InnatePowers { get; set; } = [];
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 

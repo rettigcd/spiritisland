@@ -24,7 +24,7 @@ public class SwallowTheLandDwellers_Tests {
 		// When: we use Swallow the Land Dwellers
 		fxt.Spirit.AddActionFactory( PowerCard.For(typeof(SwallowTheLandDwellers)) );
 		fxt.GameState.Phase = Phase.Slow;
-		Task task = fxt.Spirit.ResolveActions( fxt.GameState );
+		Task task = fxt.Spirit.SelectAndResolveActions( fxt.GameState );
 
 		System.Threading.Thread.Sleep( 1 );
 		fxt.IsActive(task).Choose( SwallowTheLandDwellers.Name + " $0 (Slow)" );

@@ -20,7 +20,7 @@ public abstract partial class Spirit {
 					await InitSelectedGrowthOption( selectedAction );
 
 				// Go
-				await _spirit.TakeActionAsync( selectedAction, Phase.Growth );
+				await _spirit.ResolveUnresolvedActionAsync( selectedAction, Phase.Growth );
 
 				// Next
 				_availableNewGrowthOptions = _spirit.GetAvailableActions( Phase.Growth ).ToArray();
@@ -45,7 +45,7 @@ public abstract partial class Spirit {
 			// run auto-runs.
 			foreach(var autoAction in option.AutoRuns)
 				if(autoAction != selectedAction)
-					await _spirit.TakeActionAsync( autoAction, Phase.Growth );
+					await _spirit.ResolveUnresolvedActionAsync( autoAction, Phase.Growth );
 
 			_availableNewGrowthOptions = [];
 			_shouldInitNewGrowthOption = false;

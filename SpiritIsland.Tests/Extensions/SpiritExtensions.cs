@@ -211,7 +211,7 @@ public static class SpiritExtensions {
 			foreach(IHelpGrow action2 in option.UserRuns)
 				spirit.AddActionFactory( action2 );
 
-			await spirit.ResolveActions( gameState );
+			await spirit.SelectAndResolveActions( gameState );
 		}
 	}
 

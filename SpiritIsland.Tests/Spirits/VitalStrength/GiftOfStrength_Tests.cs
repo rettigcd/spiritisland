@@ -78,24 +78,36 @@ public sealed class GiftOfStrength_Tests {
 		//   And: phase is fast
 		gs.Phase = Phase.Fast;
 		//   And: resolves 1 FAST
-		await spirit.TakeActionAsync( cards[0], Phase.Fast );
+		await spirit.ResolveUnresolvedActionAsync( cards[0], Phase.Fast );
 
 		//  When: spirit resolves GoS on self  (during FAST)
-		await spirit.ResolveAction( Phase.Fast ).AwaitUser( user => {
-			user.NextDecision.Choose("Gift of Strength");
-		} );
+		await InnatePower.For(typeof(GiftOfStrength)).ActivateAsync(spirit);
+
 		//   And: phase is slow
 		gs.Phase = Phase.Slow;
-		//   And: resolves SLOW-1 card
-		await spirit.TakeActionAsync( cards[2], Phase.Slow );
 		
-		//  Then: the resolved slow is available to do again.
-		await spirit.ResolveAction( Phase.Slow ).AwaitUser( user => {
-			user.SelectsSlowAction( "Slow-0,Slow-2,[Replay Card (max cost:1)]" );
+		await spirit.SelectAndResolveActions(gs).AwaitUser(user => {
+
+			const string slow1 = "Slow-1 $1 (Slow)";
+
+			//   And: resolves SLOW-1 card
+			user.NextDecision.HasPrompt("Select Slow to resolve")
+				.HasOptions("Slow-0 $0 (Slow),Slow-1 $1 (Slow),Slow-2 $2 (Slow),Replay Card (max cost:1),Done")
+				.Choose(slow1);
+
+			// It is no longer available, but user can select to repeat it
+			user.NextDecision.HasPrompt("Select Slow to resolve")
+				.HasOptions("Slow-0 $0 (Slow),Slow-2 $2 (Slow),Replay Card (max cost:1),Done")
+				.Choose("Replay Card (max cost:1)");
 			user.NextDecision.HasPrompt( "Select card to repeat" ).HasOptions( "Slow-1 $1 (Slow),Done" )
-				.Choose( "Slow-1 $1 (Slow)" );
-		} ).ShouldComplete();
-		
+				.Choose(slow1);
+
+			//  Then: the resolved slow is available to do again.
+			user.NextDecision.HasPrompt("Select Slow to resolve").HasOptions("Slow-0 $0 (Slow),Slow-2 $2 (Slow),Slow-1 $1 (Slow),Done").Choose(slow1);
+
+			user.NextDecision.HasPrompt("Select Slow to resolve").Choose("Done");
+		}).ShouldComplete("Resolve Slow Actions");
+
 	}
 
 	// Replay-Action works in slow

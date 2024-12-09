@@ -110,7 +110,7 @@ public class SettleIntoHuntingGrounds_Tests {
 
 		// When: Softly beckoning from an adjacent land
 		var beckonedTo = gs.Board[8];
-		await SoftlyBeckonEverInward.ActAsync(gs.Spirit.Target(beckonedTo)).AwaitUser(async user => {
+		await SoftlyBeckonEverInward.ActAsync(gs.Spirit.Target(beckonedTo)).AwaitUser(user => {
 			// Can gather the regular beast
 			user.NextDecision.HasPrompt("Gather up to (2)").HasOptions("Beast-😀 on A7 => A8,Beast on A7 => A8,Done").Choose("Beast on A7 => A8");
 			// And can see the special beast and select it

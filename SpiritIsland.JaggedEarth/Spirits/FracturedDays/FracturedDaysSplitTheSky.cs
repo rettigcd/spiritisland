@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class FracturedDaysSplitTheSky : Spirit {
 
@@ -180,5 +178,95 @@ public class FracturedDaysSplitTheSky : Spirit {
 		readonly Random _randomizer = new Random( seed );
 	}
 
+	#region Repeater
 
+	/// <summary>
+	/// Manages a group Growth Actions that can be repeated N times:
+	///  - Restoring the repeatable actions when repeats remain
+	///  - Clearing out all repeatable actions when repeats are used up.
+	/// </summary>
+	/// <remarks>
+	/// Fractured Days Growth Option 2 & 3
+	/// </remarks>
+	public class ActionRepeater(int repeats) {
+
+		public readonly int _repeats = repeats;
+		public int _remainingRepeats;
+
+		#region constructor
+
+		#endregion
+
+		public void Register(IHelpGrow factory) {
+			_factories.Add(factory);
+		}
+
+		public void BeginAction() {
+			if( _remainingRepeats == 0 )
+				_remainingRepeats = _repeats;
+		}
+
+		public void EndAction(Spirit spirit) {
+			--_remainingRepeats;
+
+			if( 0 < _remainingRepeats )
+				RestoreActionFactoryToAvailableActions(spirit);
+			else
+				RemoveUnusedActions(spirit);
+		}
+
+		/// <summary>
+		/// Creates a Command that will count against the Repeater's max # of repeats.
+		/// </summary>
+		public SpiritAction BindSelfCmd(SpiritAction inner) => new RepeatableSelfCmd(inner, this);
+
+		#region private
+
+		void RestoreActionFactoryToAvailableActions(Spirit spirit) {
+			var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
+			foreach( var factory in _factories )
+				if( !remaining.Contains(factory) )
+					spirit.AddActionFactory(factory);
+		}
+
+		void RemoveUnusedActions(Spirit spirit) {
+			var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
+			foreach( var factory in _factories )
+				if( remaining.Contains(factory) )
+					spirit.RemoveFromUnresolvedActions(factory);
+		}
+
+		readonly List<IHelpGrow> _factories = [];
+
+		#endregion
+
+	}
+
+	/// <summary>
+	/// Created by ActionRepeater
+	/// Wraps another cmd and lets it be treated as a group and repeated.
+	/// </summary>
+	public class RepeatableSelfCmd : SpiritAction {
+
+		public SpiritAction Inner { get; }
+
+		internal RepeatableSelfCmd(SpiritAction inner, ActionRepeater repeater)
+			: base(inner.Description + "x" + repeater._repeats) {
+			Inner = inner;
+			_repeater = repeater;
+			repeater.Register(new SpiritGrowthAction(this));
+		}
+
+		public override async Task ActAsync(Spirit self) {
+			_repeater.BeginAction();
+			await Inner.ActAsync(self);
+			_repeater.EndAction(self);
+		}
+
+		readonly ActionRepeater _repeater;
+
+
+	}
+
+	#endregion
 }

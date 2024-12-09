@@ -2,17 +2,28 @@
 
 public static class ResolveOutOfPhaseAction {
 
+	/// <summary>
+	/// Selects an out-of-phase Action and Resolves it.
+	/// </summary>
 	public static async Task Execute( Spirit spirit ) {
-		var resultingSpeed = GameState.Current.Phase;
-		var originalSpeed = OriginalSpeed( resultingSpeed );
-		var changeableFactories = spirit.GetAvailableActions( originalSpeed ).OfType<IFlexibleSpeedActionFactory>().ToArray();
-		var prompt = Prompt( resultingSpeed );
 
-		IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await spirit.SelectFactory( prompt, changeableFactories, Present.Done );
+		var gs = GameState.Current;
+		var resultingSpeed = gs.Phase;
+		var cardsOriginalSpeed = OriginalSpeed( resultingSpeed );
+		var changeableFactories = spirit.GetAvailableActions( cardsOriginalSpeed ).OfType<IFlexibleSpeedActionFactory>().ToArray();
 
-		if(factory != null) {
-			TemporarySpeed.Override( factory, resultingSpeed, GameState.Current );
-			await spirit.TakeActionAsync( factory, resultingSpeed );
+		// Select the action.
+		IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await spirit.SelectAsync(new A.TypedDecision<IActionFactory>(
+			GetPrompt(resultingSpeed),
+			changeableFactories, 
+			Present.Done
+		));
+
+		if( factory != null) {
+			// Temporarily change its speed - is this necessary?
+			TemporarySpeed.Override( factory, resultingSpeed, gs );
+			// Resolve it.
+			await spirit.ResolveUnresolvedActionAsync( factory, resultingSpeed );
 		}
 	}
 
@@ -23,7 +34,7 @@ public static class ResolveOutOfPhaseAction {
 		_ => throw new System.ArgumentException( "can't toggle " + resultingSpeed, nameof( resultingSpeed ) )
 	};
 
-	static string Prompt( Phase resultingSpeed ) => resultingSpeed switch {
+	static string GetPrompt( Phase resultingSpeed ) => resultingSpeed switch {
 		Phase.Fast => "Select action to make fast.",
 		Phase.Slow => "Select action to make slow.",
 		Phase.FastOrSlow => "Select action to toggle fast/slow.",

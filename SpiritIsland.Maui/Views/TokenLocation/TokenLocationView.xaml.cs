@@ -53,7 +53,7 @@ public partial class TokenLocationView : ContentView {
 		_currentWidth = width;
 		XY topLeft = new XY(_center.X - width / 2, _center.Y - width / 2);
 		var bounds = new Rect(topLeft.X, topLeft.Y, width, width);
-		_absLayout.SetLayoutBounds(this, bounds);
+		_absLayout!.SetLayoutBounds(this, bounds);
 	}
 
 	#endregion Set Position / Size

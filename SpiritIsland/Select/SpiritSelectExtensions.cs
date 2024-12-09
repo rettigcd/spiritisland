@@ -45,10 +45,6 @@ static public class SpiritSelectExtensions {
 		return card;
 	}
 
-	static public Task<IActionFactory> SelectFactory( this Spirit spirit, string prompt, IActionFactory[] options, Present present = Present.Always ) {
-		return spirit.SelectAsync( new A.TypedDecision<IActionFactory>( prompt, options, present ) );
-	}
-
 	// wrapper - switches type to String
 	static public async Task<string> SelectText( this Spirit spirit, string prompt, string[] textOptions, Present present ) {
 		TextOption[] options = textOptions.Select( x => new TextOption( x ) ).ToArray();

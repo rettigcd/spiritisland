@@ -30,6 +30,7 @@
 		-- Love --
 		Fangs - Encircle
 		Memory - Mentor
+		Memory - Intensify
 		Serpent - Locus
 		Wildfire - Transforming
 
@@ -43,7 +44,6 @@
 		-- Improvement --
 		Earth - Nourishing
 		Rampant Green - Tangles
-		Memory - Intensify
 		Bringer - Enticing
 		Thunderspeaker - Tactician
 		Lightning - Pandemonium
@@ -197,3 +197,23 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
+
+
+
+
+
+spirit.RemoveFromUnresolvedActions()
+
+spirit.GetAvailableActions()
+	- Lightning
+	- Downpour
+	- Finder
+	- BreathOfDarkness
+
+
+Virtual
+	public GetAvaialbleActions()
+	public ResolveUnresolvedActionAsync()
+	RemoveFromUnresolvedActions()
+		public > protected
+	protected SelectAndPlayCardsFromHand_Inner

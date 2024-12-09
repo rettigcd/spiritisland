@@ -122,30 +122,30 @@ public class Volcano_Tests {
 		space.Summary.ShouldBe("1B,2E@1,2VLH");
 	}
 
-	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
-	[Trait( "Targeting", "Range" )]
-	[Fact(Skip = "Upon further reflection, Volcan should not get the range boost as the defend is a residual effect of the power, not the power itself.")]
-	public async Task PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
+	//[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
+	//[Trait( "Targeting", "Range" )]
+	//[Fact(Skip = "Upon further reflection, Volcan should not get the range boost as the defend is a residual effect of the power, not the power itself.")]
+	//public async Task PeeksTower_ExtendsRangeFor_BargainsOfPowerAndProtection() {
 
-		var (spirit, gameState, board) = Init();
-		Space targetSpace = gameState.Tokens[board[5]];
-		Space dahanSpace = gameState.Tokens[board[2]];
+	//	var (spirit, gameState, board) = Init();
+	//	Space targetSpace = gameState.Tokens[board[5]];
+	//	Space dahanSpace = gameState.Tokens[board[2]];
 
-		// Given: Enough Presence to trigger Tower rule
-		spirit.Given_IsOn( targetSpace, 5 );
-		//   And: dahan in target & dahan space
-		targetSpace.Given_HasTokens("2D@2");
-		dahanSpace.Given_HasTokens("2D@2");
+	//	// Given: Enough Presence to trigger Tower rule
+	//	spirit.Given_IsOn( targetSpace, 5 );
+	//	//   And: dahan in target & dahan space
+	//	targetSpace.Given_HasTokens("2D@2");
+	//	dahanSpace.Given_HasTokens("2D@2");
 
-		//  When: they destroying presence via Powercard
-		await spirit.When_ResolvingCard<BargainsOfPowerAndProtection>( (user) => {
-			user.NextDecision.HasPrompt( "Bargains of Power and Protection: Target Space" ).Choose( "A5" );
-			user.NextDecision.HasPrompt( "Select presence to remove from game." ).HasOptions( "VLH on A5" ).Choose( "VLH on A5" );
-		} );
+	//	//  When: they destroying presence via Powercard
+	//	await spirit.When_ResolvingCard<BargainsOfPowerAndProtection>( (user) => {
+	//		user.NextDecision.HasPrompt( "Bargains of Power and Protection: Target Space" ).Choose( "A5" );
+	//		user.NextDecision.HasPrompt( "Select presence to remove from game." ).HasOptions( "VLH on A5" ).Choose( "VLH on A5" );
+	//	} );
 
-		//  Then: range-2 item has a defend.
-		dahanSpace[Token.Defend].ShouldBe(2); // 1 per dahan
-	}
+	//	//  Then: range-2 item has a defend.
+	//	dahanSpace[Token.Defend].ShouldBe(2); // 1 per dahan
+	//}
 
 	[Trait( "Special Rule", VolcanicPeaksTowerOverTheLandscape.Name )] // Move to Card-test file.
 	[Trait( "Targeting", "Range" )]
