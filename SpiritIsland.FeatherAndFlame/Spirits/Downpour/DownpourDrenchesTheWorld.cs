@@ -1,6 +1,4 @@
-﻿using SpiritIsland.A;
-
-namespace SpiritIsland.FeatherAndFlame;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
 
 public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {

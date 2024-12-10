@@ -84,7 +84,7 @@ public abstract partial class Spirit
 
 	public GrowthTrack GrowthTrack { get; protected set; }
 
-	/// <remarks>Virtual so we can init stuff at beginning of turn if we need to.</remarks>
+	/// <remarks>So we can init stuff at beginning of turn if we need to.</remarks>
 	public virtual async Task DoGrowth(GameState gameState) {
 		await new DoGrowthClass(this,gameState).Execute();
 		await ApplyRevealedPresenceTrack();
@@ -120,7 +120,7 @@ public abstract partial class Spirit
 			IActionFactory option = await SelectAsync(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
 			if( option == null ) break;
 
-			await ResolveUnresolvedActionAsync(option, phase);
+			await ResolveActionAsync(option, phase);
 
 			// next
 			options = GetAvailableActions(phase).ToArray();
@@ -139,7 +139,7 @@ public abstract partial class Spirit
 	public SpiritDeck[] Decks => [.. decks];
 
 	// This is not part of Decks because these cards are transient and don't actually belong to the spirit.
-	public List<PowerCard> DraftDeck = [];   // The virtual deck the cards are in while they are being drawn/drafted
+	public List<PowerCard> DraftDeck = [];   // The deck the cards are in while they are being drawn/drafted
 
 	readonly protected List<SpiritDeck> decks = [];
 
@@ -149,26 +149,6 @@ public abstract partial class Spirit
 
 	// so spirits can replay used cards or collect them instead of discard
 	public IEnumerable<IActionFactory> UsedActions => _usedActions;
-
-	public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase speed) {
-		foreach(var action in AvailableActions) {
-			if( action.CouldActivateDuring( speed, this ) )
-				yield return action;
-		}
-	}
-
-	// Holds Fast and Slow actions,
-	// depends on Fast/Slow phase to only select the actions that are appropriate
-	protected IEnumerable<IActionFactory> AvailableActions { 
-		get {
-			foreach(IActionFactory action in _availableActions)
-				yield return action;
-
-			foreach(InnatePower innate in InnatePowers)
-				if( !_usedInnates.Contains( innate ) )
-					yield return innate;
-		}
-	}
 
 	public void Reclaim( PowerCard reclaimCard ) {
 		ArgumentNullException.ThrowIfNull( reclaimCard );
@@ -228,6 +208,30 @@ public abstract partial class Spirit
 		InPlay.Remove( cardToRemove );
 	}
 
+	#endregion
+
+	#region (Unresolved) Actions 
+
+	public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase speed) {
+		foreach( var action in AvailableActions ) {
+			if( action.CouldActivateDuring(speed, this) )
+				yield return action;
+		}
+	}
+
+	// Holds Fast and Slow actions,
+	// depends on Fast/Slow phase to only select the actions that are appropriate
+	protected IEnumerable<IActionFactory> AvailableActions {
+		get {
+			foreach( IActionFactory action in _availableActions )
+				yield return action;
+
+			foreach( InnatePower innate in InnatePowers )
+				if( !_usedInnates.Contains(innate) )
+					yield return innate;
+		}
+	}
+
 	public void AddActionFactory( IActionFactory factory ) {
 		// if we are manually restoring an innate power - like EEB
 		if(_usedInnates.Contains( factory )) {
@@ -242,7 +246,7 @@ public abstract partial class Spirit
 	/// <summary>
 	/// Starts ActionScope, marks as Resolved, Resolves, checks win/los
 	/// </summary>
-	public virtual async Task ResolveUnresolvedActionAsync(IActionFactory factory, Phase phase) {
+	public virtual async Task ResolveActionAsync(IActionFactory factory, Phase phase) {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );  
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( this );

@@ -45,9 +45,9 @@ public class RelentlessGazeOfTheSun : Spirit {
 	#region Relentless Punishment
 
 	/// <remarks>overriden to capture current power card being played</remarks>
-	public override async Task ResolveUnresolvedActionAsync( IActionFactory factory, Phase phase ) {
+	public override async Task ResolveActionAsync( IActionFactory factory, Phase phase ) {
 		_currentPowerCard = factory as PowerCard;
-		await base.ResolveUnresolvedActionAsync( factory, phase );
+		await base.ResolveActionAsync( factory, phase );
 		_currentPowerCard = null;
 	}
 

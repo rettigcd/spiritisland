@@ -229,6 +229,10 @@ public class FracturedDaysSplitTheSky : Spirit {
 					spirit.AddActionFactory(factory);
 		}
 
+		/// <summary>
+		/// Remove the 'other' non-used Actions that are part of this Repeater group.
+		/// </summary>
+		/// <param name="spirit"></param>
 		void RemoveUnusedActions(Spirit spirit) {
 			var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
 			foreach( var factory in _factories )

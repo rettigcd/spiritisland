@@ -7,59 +7,46 @@ class PourDownPower( DownpourDrenchesTheWorld _spirit ) : IRunWhenTimePasses {
 		"For each 2 water you have, during the Fast/Slow phase you may either: Gain 1 Energy; or Repeat a land-targeting Power Card by paying its cost again. (Max 5)"
 	);
 
-	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
-
-	#region PowerCard Props
-
-	//	public string Name => "Pour Down Power Across the Island";
-
-	//	string IOption.Text => $"{Name} ({Remaining})";
-
-	//	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Fast || speed == Phase.Slow;
-
-	//public Task ActivateAsync( SelfCtx ctx ) {
-	//	++usedWaterActions;
-	//	return Cmd.Pick1(
-	//		// Gain Energy
-	//		new ActionOption<SelfCtx>( "Gain 1 energy", x => x.Self.Energy++ ),
-	//		// Repeat Phase Card that is already played for cost.
-	//		new ActionOption<SelfCtx>( "Repeat card for Cost", x => new RepeatLandCardForCost().ActivateAsync( x ) )
-	//	).Execute( ctx );
-	//}
-
-	#endregion
-
-	#region Manager...
+	public int Remaining => _spirit.Elements.Get(Element.Water) / 2 - _usedWaterActions;
 
 	public IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
 
 		if((speed == Phase.Fast || speed == Phase.Slow) && Remaining > 0) {
-			yield return gainEnergy;
-			if(repeatCard.GetCardOptions(_spirit,speed).Length != 0)
-				yield return repeatCard;
+			yield return _gainEnergy;
+
+			// if played card, can now repeat it.
+			if(_repeatCard.GetCardOptions(_spirit,speed).Length != 0)
+				yield return _repeatCard;
 		}
 	}
+
 	public bool RemoveFromUnresolvedActions( IActionFactory selectedActionFactory ) {
-		if( selectedActionFactory != gainEnergy && selectedActionFactory != repeatCard)
+		if( selectedActionFactory != _gainEnergy && selectedActionFactory != _repeatCard)
 			return false;
-		++this.usedWaterActions;
+		++this._usedWaterActions;
 		return true;
 	}
 
-	public void Reset() { usedWaterActions = 0; }
+	public void Reset() { _usedWaterActions = 0; }
+
+	#region IRunWhenTimePasses imp
+
+	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+
+	bool IRunWhenTimePasses.RemoveAfterRun => false;
 
 	Task IRunWhenTimePasses.TimePasses( GameState gameStTate ){
 		Reset();
 		return Task.CompletedTask;
 	}
 
-	public int Remaining => _spirit.Elements.Get(Element.Water) / 2 - usedWaterActions;
+	#endregion IRunWhenTimePasses imp
 
-	bool IRunWhenTimePasses.RemoveAfterRun => false;
+	#region private fields
 
-	int usedWaterActions = 0;
-	readonly PourDownPowerGainEnergy gainEnergy = new PourDownPowerGainEnergy();
-	readonly RepeatLandCardForCost repeatCard = new RepeatLandCardForCost();
+	int _usedWaterActions = 0;
+	readonly PourDownPowerGainEnergy _gainEnergy = new PourDownPowerGainEnergy();
+	readonly RepeatLandCardForCost _repeatCard = new RepeatLandCardForCost();
 
 	#endregion
 }

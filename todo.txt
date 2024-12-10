@@ -213,7 +213,21 @@ spirit.GetAvailableActions()
 
 Virtual
 	public GetAvaialbleActions()
-	public ResolveUnresolvedActionAsync()
+	public ResolveActionAsync()
 	RemoveFromUnresolvedActions()
 		public > protected
 	protected SelectAndPlayCardsFromHand_Inner
+
+
+Option - Query # of Repeats left and remove it if we are out of repeats.
+	Can't Handle Removing other actions
+
+Option - Return Status of Keep / Remove
+	Can't Handle Removing other actions
+
+Option - Give Power access to Spirit so it can remove it and modify the list when run.
+	Spirits State is exposed
+	Most flexible.
+
+Option - Fractured Day Has 2 and 3 OR options
+	Simplest

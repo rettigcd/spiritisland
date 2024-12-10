@@ -23,7 +23,7 @@ public static class ResolveOutOfPhaseAction {
 			// Temporarily change its speed - is this necessary?
 			TemporarySpeed.Override( factory, resultingSpeed, gs );
 			// Resolve it.
-			await spirit.ResolveUnresolvedActionAsync( factory, resultingSpeed );
+			await spirit.ResolveActionAsync( factory, resultingSpeed );
 		}
 	}
 

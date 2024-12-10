@@ -78,7 +78,7 @@ public sealed class GiftOfStrength_Tests {
 		//   And: phase is fast
 		gs.Phase = Phase.Fast;
 		//   And: resolves 1 FAST
-		await spirit.ResolveUnresolvedActionAsync( cards[0], Phase.Fast );
+		await spirit.ResolveActionAsync( cards[0], Phase.Fast );
 
 		//  When: spirit resolves GoS on self  (during FAST)
 		await InnatePower.For(typeof(GiftOfStrength)).ActivateAsync(spirit);

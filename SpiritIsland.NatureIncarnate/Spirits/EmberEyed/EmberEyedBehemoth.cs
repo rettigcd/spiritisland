@@ -77,9 +77,9 @@ public class EmberEyedBehemoth : Spirit {
 		_smash.MaxUses = Incarna.Empowered ? 2 : 1;
 	}
 
-	public override async Task ResolveUnresolvedActionAsync( IActionFactory factory, Phase phase ) {
+	public override async Task ResolveActionAsync( IActionFactory factory, Phase phase ) {
 
-		await base.ResolveUnresolvedActionAsync( factory, phase );
+		await base.ResolveActionAsync( factory, phase );
 
 		if(factory is not IHaveDynamicUseCounts ihduc) return;
 
