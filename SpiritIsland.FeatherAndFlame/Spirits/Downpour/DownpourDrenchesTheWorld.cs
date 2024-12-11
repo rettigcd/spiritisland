@@ -45,34 +45,19 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			InnatePower.For(typeof(WaterNourishesLifesGrowth))
 		];
 		SpecialRules = [DrenchTheLandscape.Rule, PourDownPower.Rule];
-		_pourDownPower = new PourDownPower(this);
 
+		_pourDownPower = new PourDownPower(this);
+		AvailableActionMods.Add(_pourDownPower);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// 1 presence on lowest # wetlands
 		board.Spaces.First(x => x.IsWetland).ScopeSpace.Setup(Presence.Token, 1);
-		gameState.AddTimePassesAction( _pourDownPower );
 
 		gameState.ReplaceTerrain( old => {
 			var drenchTheLandscape = new DrenchTheLandscape( this, old );
 			return drenchTheLandscape;
 		}, ActionCategory.Spirit_Power, ActionCategory.Spirit_Growth, ActionCategory.Spirit_SpecialRule );
-	}
-
-	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
-		return base.GetAvailableActions( speed )
-			.Union( _pourDownPower.GetAvailableActions( speed ) );
-	}
-
-	public override void RemoveFromUnresolvedActions( IActionFactory selectedActionFactory ) {
-		if( !_pourDownPower.RemoveFromUnresolvedActions( selectedActionFactory ) )
-			base.RemoveFromUnresolvedActions(selectedActionFactory);
-	}
-
-	protected override object CustomMementoValue { 
-		get => base.CustomMementoValue;
-		set => _pourDownPower.Reset();
 	}
 
 	readonly PourDownPower _pourDownPower;

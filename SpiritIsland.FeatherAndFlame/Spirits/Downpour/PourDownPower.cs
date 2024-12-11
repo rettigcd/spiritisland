@@ -1,84 +1,73 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-class PourDownPower( DownpourDrenchesTheWorld _spirit ) : IRunWhenTimePasses {
+class PourDownPower : IModifyAvailableActions {
 
 	static public SpecialRule Rule => new SpecialRule(
 		"Pour Down Power Across the Island",
 		"For each 2 water you have, during the Fast/Slow phase you may either: Gain 1 Energy; or Repeat a land-targeting Power Card by paying its cost again. (Max 5)"
 	);
 
-	public int Remaining => _spirit.Elements.Get(Element.Water) / 2 - _usedWaterActions;
+	public int Remaining => TotalCount - UsedCounts;
 
-	public IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
+	#region constructor
 
-		if((speed == Phase.Fast || speed == Phase.Slow) && Remaining > 0) {
-			yield return _gainEnergy;
+	public PourDownPower(Spirit spirit) {
+		_spirit = spirit;
+	}
 
-			// if played card, can now repeat it.
-			if(_repeatCard.GetCardOptions(_spirit,speed).Length != 0)
-				yield return _repeatCard;
+	#endregion constructor
+
+	public void Modify(List<IActionFactory> orig, Phase phase) {
+		int remaining = Remaining;
+		if( 0 < remaining ) {
+			orig.Add(_a1);
+			orig.Add(_a2);
 		}
 	}
 
-	public bool RemoveFromUnresolvedActions( IActionFactory selectedActionFactory ) {
-		if( selectedActionFactory != _gainEnergy && selectedActionFactory != _repeatCard)
-			return false;
-		++this._usedWaterActions;
-		return true;
+	#region private
+
+	int UsedCounts => _spirit.UsedActions.Count(x => x == _a1 || x == _a2);
+	int TotalCount => _spirit.Elements.Get(Element.Water) / 2;
+
+	readonly RepeatLandCardForCost _a1 = new RepeatLandCardForCost();
+	readonly PourDownPowerGainEnergy _a2 = new PourDownPowerGainEnergy();
+	readonly Spirit _spirit;
+
+	#endregion private
+
+	#region Actions
+
+	class RepeatLandCardForCost(params string[] exclude) : RepeatCardForCost(exclude) {
+		public override string Title => $"Repeat Land Card (PDP)";
+
+		public override PowerCard[] GetCardOptions(Spirit self, Phase phase) {
+			return base.GetCardOptions(self, phase)
+				.Where(card => card.LandOrSpirit == LandOrSpirit.Land)
+				.ToArray();
+		}
 	}
 
-	public void Reset() { _usedWaterActions = 0; }
+	class PourDownPowerGainEnergy : IActionFactory {
 
-	#region IRunWhenTimePasses imp
+		#region PowerCard Props
 
-	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+		public string Title => "Gain 1 Energy (PDP)";
 
-	bool IRunWhenTimePasses.RemoveAfterRun => false;
+		public string Text => Title;
 
-	Task IRunWhenTimePasses.TimePasses( GameState gameStTate ){
-		Reset();
-		return Task.CompletedTask;
+		public bool CouldActivateDuring(Phase speed, Spirit spirit) => speed == Phase.Fast || speed == Phase.Slow;
+
+		public Task ActivateAsync(Spirit self) {
+			++self.Energy;
+			return Task.CompletedTask;
+		}
+
+
+		#endregion
+
 	}
 
-	#endregion IRunWhenTimePasses imp
-
-	#region private fields
-
-	int _usedWaterActions = 0;
-	readonly PourDownPowerGainEnergy _gainEnergy = new PourDownPowerGainEnergy();
-	readonly RepeatLandCardForCost _repeatCard = new RepeatLandCardForCost();
-
-	#endregion
-}
-
-public class RepeatLandCardForCost( params string[] exclude ) : RepeatCardForCost( exclude ) {
-	public override string Title => $"Repeat Land Card (PDP)";
-
-	public override PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
-		return base.GetCardOptions( self,phase )
-			.Where( card => card.LandOrSpirit == LandOrSpirit.Land )
-			.ToArray();
-	}
-}
-
-class PourDownPowerGainEnergy : IActionFactory {
-
-	#region PowerCard Props
-
-	public string Title => "Gain 1 Energy (PDP)";
-
-	public string Text => Title;
-
-	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Fast || speed == Phase.Slow;
-
-	public Task ActivateAsync( Spirit self ) {
-		++self.Energy;
-		return Task.CompletedTask;
-	}
-
-
-	#endregion
+	#endregion Actions
 
 }
-
-

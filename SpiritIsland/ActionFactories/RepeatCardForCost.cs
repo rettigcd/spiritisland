@@ -32,7 +32,6 @@ public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
 
 	}
 
-
 	public virtual PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
 		int maxCardCost = self.Energy;
 		PowerCard[] options = self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.
@@ -42,6 +41,7 @@ public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
 			.ToArray();
 		return options;
 	}
+
 }
 
 public class RepeatCheapestCardForCost( params string[] exclude ) : RepeatCardForCost(exclude) {
@@ -50,7 +50,7 @@ public class RepeatCheapestCardForCost( params string[] exclude ) : RepeatCardFo
 			.. base.GetCardOptions(self,phase)
 				.GroupBy( pc => pc.Cost )  // group with lowest cost
 				.OrderBy( grp => grp.Key )
-				.First()
+				.First() // all the cards in the 1st group
 		];
 	}
 }
