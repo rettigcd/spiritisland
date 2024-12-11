@@ -4,7 +4,7 @@ public enum TargetFrom {
 	None, 
 	Presence, 
 	SacredSite, 
-	SuperSacredSite,
+//	SuperSacredSite, //!!! is this still used for anything
 	Incarna,
 };
 
@@ -27,7 +27,7 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 		return from switch {
 			TargetFrom.Presence => presence.Lands,
 			TargetFrom.SacredSite => presence.SacredSites,
-			TargetFrom.SuperSacredSite => presence.SuperSacredSites,
+//			TargetFrom.SuperSacredSite => presence.SuperSacredSites,
 			TargetFrom.Incarna => presence is SpiritPresence sp && sp.Incarna.IsPlaced // !! Maybe IKnowSpiritLocations should have an IEnumerable<Space> InvarnaLocations;
 				? new Space[] { sp.Incarna.Space } 
 				: [],

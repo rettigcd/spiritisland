@@ -15,10 +15,10 @@ public class FromPresenceThresholdAlternate( int range, string target, string th
 	readonly CountDictionary<Element> _threshold = ElementStrings.Parse( threshold );
 	readonly TargetCriteriaFactory _altTarget = new TargetCriteriaFactory( altRange, altTarget );
 
-	protected override async Task<TargetCriteria> GetCriteria( Spirit self ) {
+	protected override async Task<TargetCriteria> ApplySpiritModsToGetTargetCriteria( Spirit self ) {
 		return await self.HasElement( _threshold, $"Target {_altTarget}", Spirit.ThresholdType.PowerCard )
 			? _altTarget.Bind(self)
-			: await base.GetCriteria( self );
+			: await base.ApplySpiritModsToGetTargetCriteria( self );
 	}
 
 }

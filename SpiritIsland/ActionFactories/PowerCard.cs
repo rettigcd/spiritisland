@@ -57,9 +57,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 
 	async Task ActivateInnerAsync( Spirit self ) {
-		LastTarget = await _targetAttr.GetTargetCtx( Title, self );
-		if(LastTarget != null) // Can't find a tar
-			await InvokeOnObjectCtx( LastTarget );
+		object target = await _targetAttr.GetTargetCtx(Title, self);
+		if( target is not null )
+			await InvokeOnObjectCtx(target);
 	}
 
 	/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
@@ -74,8 +74,6 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 	#region private
 
 	ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? _speedAttr;
-
-	public object LastTarget { get; private set; }
 
 	readonly SpeedAttribute _speedAttr;
 	readonly CardAttribute _cardAttr;

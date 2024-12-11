@@ -174,7 +174,7 @@ class MistsShiftAndFlow {
 		public IEnumerable<Space> Lands => _spirit.Presence.Lands;
 
 		public IEnumerable<Space> SacredSites => _spirit.Presence.SacredSites;
-		public IEnumerable<Space> SuperSacredSites => _spirit.Presence.SuperSacredSites;
+//		public IEnumerable<Space> SuperSacredSites => _spirit.Presence.SuperSacredSites;
 
 	}
 

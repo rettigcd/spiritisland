@@ -5,7 +5,10 @@
 /// </summary>
 public class RelentlessRepeater( PowerCard powerCard, Space space ) : IActionFactory {
 
-	static public SpecialRule Rule => new SpecialRule("Relentless Punishment","If you had at least 3 Presence in the origin land, you may Repeat a Power Card any number of times on the same target land(s) by paying its cost +1/previous use.");
+	static public SpecialRule Rule => new SpecialRule(
+		"Relentless Punishment",
+		"If you had at least 3 Presence in the origin land, you may Repeat a Power Card any number of times on the same target land(s) by paying its cost +1/previous use."
+	);
 
 	int _cost = powerCard.Cost + 1;
 	readonly PowerCard _powerCard = powerCard;

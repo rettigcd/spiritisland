@@ -29,30 +29,31 @@ public class Shadows : Spirit {
 	/// <summary>
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
 	/// </summary>
-	public override async Task<Space> TargetsSpace( 
+	public override async Task<(Space, Space[])> TargetsSpace( 
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria 
 	) {
-		var space = await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
+		var (space,sources) = await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
-		if( 0<Energy && !base.GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).Any( s => s == space ) ) 
+		if( 0<Energy && !base.GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).options.Any( s => s == space ) ) 
 			--Energy;
 	
-		return space;
+		return (space,sources);
 	}
 
 
-	protected override IEnumerable<Space> GetPowerTargetOptions(
+	protected override (Space[] sources, Space[] options) GetPowerTargetOptions(
 		GameState gameState,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		var normalSpaces = base.GetPowerTargetOptions( gameState, sourceCriteria, targetCriteria );
-		return Energy <= 0 
-			? normalSpaces
-			: normalSpaces.Union(ActionScope.Current.Spaces.Where( s => s.Dahan.Any ) );
+		var (sources,normalSpaces) = base.GetPowerTargetOptions( gameState, sourceCriteria, targetCriteria );
+		return (
+			sources,
+			Energy <= 0 ? normalSpaces : normalSpaces.Union(ActionScope.Current.Spaces.Where( s => s.Dahan.Any ) ).ToArray()
+		);
 	}
 
 

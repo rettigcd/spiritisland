@@ -37,7 +37,7 @@ class ScreamingDiseaseActionHandlers( Spirit _targetSpirit ) : IRunAtStartOfActi
 		bool add = !_used
 			&& endScope.Category == ActionCategory.Spirit_Power
 			&& endScope.Owner == _targetSpirit
-			&& (ss = TargetSpaceAttribute.TargettedSpace) != null
+			&& (ss = TargetSpaceAttribute.TargettedSpace?.space) != null
 			&& await _targetSpirit.UserSelectsFirstText( ScreamDiseaseIntoTheWind.Name + " (" + ss.SpaceSpec.Label + ")", "Yes, add 1 disease", "No thank you" );
 		if( add ) {
 			_used = true;

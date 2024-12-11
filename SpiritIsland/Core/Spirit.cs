@@ -7,6 +7,14 @@ public abstract partial class Spirit
 	, IHaveMemento 
 {
 
+	string IOption.Text => SpiritName;
+
+	public abstract string SpiritName { get; }
+
+	public SpecialRule[] SpecialRules { get; set; } = [];
+
+	public InnatePower[] InnatePowers { get; set; } = [];
+
 	#region constructor
 
 	public Spirit( Func<Spirit, SpiritPresence> initPresence, GrowthTrack growthTrack, params PowerCard[] initialCards ) {
@@ -108,8 +116,6 @@ public abstract partial class Spirit
 
 	}
 
-	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
-
 	/// <summary> Resolves Action for the current phase </summary>
 	public async Task SelectAndResolveActions( GameState gs ) {
 		Phase phase = gs.Phase;
@@ -129,6 +135,11 @@ public abstract partial class Spirit
 	}
 
 	#endregion
+
+	// Events
+	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
+	public event Action<IActionFactory> ActionActivated;
+
 
 	#region Cards
 
@@ -247,9 +258,14 @@ public abstract partial class Spirit
 	/// Starts ActionScope, marks as Resolved, Resolves, checks win/los
 	/// </summary>
 	public virtual async Task ResolveActionAsync(IActionFactory factory, Phase phase) {
-		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );  
+
+		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( this );
+
+		// Send event
+		ActionActivated?.Invoke(factory);
+
 		GameState.Current.CheckWinLoss();
 	}
 
@@ -283,7 +299,7 @@ public abstract partial class Spirit
 	}
 
 
-	#endregion
+	#endregion (Unresolved) Actions
 
 	#region presence
 
@@ -304,14 +320,6 @@ public abstract partial class Spirit
 	public int TempCardPlayBoost = 0;
 
 	#endregion
-
-	string IOption.Text => SpiritName;
-
-	public abstract string SpiritName { get; }
-
-	public SpecialRule[] SpecialRules { get; set; } = [];
-
-	public InnatePower[] InnatePowers { get; set; } = [];
 
 	protected abstract void InitializeInternal( Board board, GameState gameState );
 
@@ -538,27 +546,27 @@ public abstract partial class Spirit
 
 	/// <summary> Used EXCLUSIVELY For Targeting a PowerCard's Space </summary>
 	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
-	public virtual async Task<Space> TargetsSpace( 
+	public virtual async Task<(Space, Space[])> TargetsSpace( 
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
-		Space[] spaceOptions = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria ).ToArray();
+		var (sources,spaceOptions) = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria );
 		
 		if(spaceOptions.Length == 0) {
 			ActionScope.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
-			return null;
+			return (null,sources);
 		}
 
 		if(spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle )
-			return spaceOptions[0];
+			return (spaceOptions[0],sources);
 
 		Space mySpace = preselect != null && UserGateway.UsePreselect.Value
 			? await preselect.PreSelect(this, spaceOptions)
 			: await SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.Always));
 
-		return mySpace;
+		return (mySpace,sources);
 	}
 
 	public IEnumerable<Space> FindTargettingSourcesFor( SpaceSpec target, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {
@@ -577,16 +585,18 @@ public abstract partial class Spirit
 	}
 
 	// Helper for calling SourceCalc & RangeCalc, only for POWERS
-	protected virtual IEnumerable<Space> GetPowerTargetOptions(
+	protected virtual (Space[] sources, Space[] options) GetPowerTargetOptions(
 		GameState gameState,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
 	) {	
-		IEnumerable<Space> sources = sourceCriteria.GetSources(this);
+		var sources = sourceCriteria.GetSources(this).ToArray();
 
 		// Convert TargetCriteria to spaces and merge (distinct) them together.
-		return PowerRangeCalc.GetSpaceOptions( sources, targetCriteria )
-			.ToArray();
+		return (
+			sources,
+			PowerRangeCalc.GetSpaceOptions( sources, targetCriteria ).ToArray()
+		);
 	}
 
 	// Non-targetting, For Power, Range-From Presence finder

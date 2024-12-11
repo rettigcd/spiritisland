@@ -79,7 +79,7 @@ public class ShroudOfSilentMist : Spirit {
 
 	#endregion
 
-	public override async Task<Space> TargetsSpace( 
+	public override async Task<(Space, Space[])> TargetsSpace( 
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria, 
@@ -90,7 +90,7 @@ public class ShroudOfSilentMist : Spirit {
 		//	return await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
 
 		MistsShiftAndFlow x = new MistsShiftAndFlow(this,prompt,sourceCriteria,targetCriteria);
-		return await x.TargetAndFlow();
+		return (await x.TargetAndFlow(), []); // !!!
 	}
 
 	protected override object CustomMementoValue { 
