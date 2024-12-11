@@ -244,11 +244,6 @@ ApplyRevealedPresenceTracks_Inner
 
 
 GetAvailableActions
-	- Finder - adds Move-the-Ways action
 	- Lightnings Swift Strike - manages slows as fast
 
-RemoveFromUnresolvedActions
-	- Finder - handle extra Move-the-Ways resolving.
-
-2	Finder
 4	Lightning          - event "Selecting Actions", power-played event

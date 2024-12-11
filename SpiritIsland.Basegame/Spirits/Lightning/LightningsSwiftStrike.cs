@@ -1,6 +1,7 @@
-﻿namespace SpiritIsland.Basegame;
+﻿
+namespace SpiritIsland.Basegame;
 
-public class LightningsSwiftStrike : Spirit {
+public class LightningsSwiftStrike : Spirit, IModifyAvailableActions {
 
 	public const string Name = "Lightning's Swift Strike";
 
@@ -33,6 +34,8 @@ public class LightningsSwiftStrike : Spirit {
 
 		InnatePowers = [ InnatePower.For(typeof(ThunderingDestruction)) ];
 		SpecialRules = [SwiftnessOfLightning];
+
+		AvailableActionMods.Add(this);
 	}
 
 	public override string SpiritName => Name;
@@ -51,36 +54,11 @@ public class LightningsSwiftStrike : Spirit {
 	}
 	#endregion IRunWhenTimePasses
 
-	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
-
-		bool canMakeSlowFast = speed == Phase.Fast && _usedAirForFastCount < Elements.Get(Element.Air);
-
-		foreach(var h in AvailableActions)
-			if( h.CouldActivateDuring( speed, this ) || canMakeSlowFast && h.CouldActivateDuring(Phase.Slow,this) )
-				yield return h;
-
+	void IModifyAvailableActions.Modify(List<IActionFactory> orig, Phase phase) {
+		bool canMakeSlowFast = phase == Phase.Fast && _usedAirForFastCount < Elements.Get(Element.Air);
+		if( canMakeSlowFast )
+			orig.AddRange( AvailableActions.Where( slowAction => slowAction.CouldActivateDuring(Phase.Slow, this)));
 	}
-
-	/// <summary>
-	/// Switches Slows (that could be fast) to fast so that they are found in the Avaialble actions.
-	/// </summary>
-	/// <param name="factory"></param>
-	/// <param name="phase"></param>
-	/// <returns></returns>
-	// public override Task ResolveUnresolvedActionAsync( IActionFactory factory, Phase phase ) {
-
-		//// we can decrement any time a slow card is used,
-		//// even during slow because we no longer care about this
-		//if(phase == Phase.Fast
-		//	&& factory.CouldActivateDuring( Phase.Slow, this )
-		//	&& factory is IFlexibleSpeedActionFactory flexSpeedFactory
-		//) {
-		//	++_usedAirForFastCount;
-		//	TemporarySpeed.Override( flexSpeedFactory, Phase.Fast, GameState.Current );
-		//}
-
-	//	return base.ResolveUnresolvedActionAsync(factory,phase);
-	//}
 
 	protected override object CustomMementoValue {
 		get => _usedAirForFastCount;
