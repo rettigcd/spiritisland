@@ -2,7 +2,6 @@
 
 	SPIRIT - HORIZON - Eyes Watch from the Trees
 	SPIRIT - HORIZON - Fathomless Mud of the Swamp
-	SPIRIT - Shroud - Stranded
 
 	UI - Cast Down into the Briny Deep - TEST
 
@@ -197,53 +196,3 @@ provide insight as to what they have trouble with
 https://store.steampowered.com/news/app/1236720
 https://spiritislandwiki.com/index.php?title=Main_Page
 http://nerdroomsoftware.com/apps/SpiritGuide/spirits.php
-
-
-
-
-
-spirit.RemoveFromUnresolvedActions()
-
-spirit.GetAvailableActions()
-	- Lightning
-	- Downpour
-	- Finder
-	- BreathOfDarkness
-
-
-Virtual
-	public GetAvaialbleActions() - Growth / Spirits - Out of Phase
-	public ResolveActionAsync() - Growth / Spirits - OutOfPhase
-	RemoveFromUnresolvedActions()
-		public > protected
-	protected SelectAndPlayCardsFromHand_Inner
-
-
-Option - Query # of Repeats left and remove it if we are out of repeats.
-	Can't Handle Removing other actions
-
-Option - Return Status of Keep / Remove
-	Can't Handle Removing other actions
-
-Option - Give Power access to Spirit so it can remove it and modify the list when run.
-	Spirits State is exposed
-	Most flexible.
-
-Option - Fractured Day Has 2 and 3 OR options
-	Simplest
-
-
-DoGrowth
-	- Ember Eyed - reset _behemoth && _smash
-	- Renlentless Gaze - reset CollectEnergy2ndTime
-
-ApplyRevealedPresenceTracks_Inner
-	- Dances - could probably be moved to EnergyCollected event
-	- Relentless Gace - collects energy, could probably be moved to EnergyCollected event
-
-
-
-GetAvailableActions
-	- Lightnings Swift Strike - manages slows as fast
-
-4	Lightning          - event "Selecting Actions", power-played event

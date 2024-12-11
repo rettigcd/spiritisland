@@ -31,10 +31,13 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	#region Aspects
 
-	public AspectConfigKey[] AspectNames => [];
-	public IAspect? MakeAspect(AspectConfigKey aspectName) {
-		return null;
-	}
+	public AspectConfigKey[] AspectNames => [
+		Stranded.ConfigKey,
+	];
+	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
+		Stranded.Name => new Stranded(),
+		_ => null
+	};
 
 	#endregion Aspects
 

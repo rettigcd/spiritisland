@@ -32,7 +32,7 @@ class MistsShiftAndFlow {
 		CalculateSpaceGroups();
 	}
 
-	public async Task<Space> TargetAndFlow() {
+	public async Task<(Space, Space[])> TargetAndFlow() {
 		// When targeting a land with a Power,
 		// You may Gather 1 of your presence into the target or an adjacent land.
 		// This can enable you to meet Range and targeting requirements."
@@ -41,12 +41,12 @@ class MistsShiftAndFlow {
 		// Instead, we need to test the values that come back from CalcRange and see if they are actually Range(2) or adjacent.
 
 		Space target = await FindTarget();
-		if(target == null) return null;
-		if(CantFlowAndStillReach( target )) return target;
+		if(target == null) return (null, []);
+		if(CantFlowAndStillReach( target )) return (target, []);
 
 		await FlowPresence( target );
 
-		return target;
+		return (target, []);
 
 	}
 

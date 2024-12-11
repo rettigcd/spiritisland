@@ -79,19 +79,19 @@ public class ShroudOfSilentMist : Spirit {
 
 	#endregion
 
-	public override async Task<(Space, Space[])> TargetsSpace( 
+	public override Task<(Space, Space[])> TargetsSpace( 
 		string prompt,
 		IPreselect preselect,
 		TargetingSourceCriteria sourceCriteria, 
 		params TargetCriteria[] targetCriteria
 	) {
-		// we no-longer have a cool way to do this.
-		//if(!Presence.CanMove)
-		//	return await base.TargetsSpace( prompt, preselect, sourceCriteria, targetCriteria );
-
-		MistsShiftAndFlow x = new MistsShiftAndFlow(this,prompt,sourceCriteria,targetCriteria);
-		return (await x.TargetAndFlow(), []); // !!!
+		bool presenceIsFrozen = false;// !!! need to check if Presence.CanMove
+		return !EnableMistsShiftAndFlow || presenceIsFrozen
+			? base.TargetsSpace(prompt,preselect,sourceCriteria,targetCriteria)
+			: new MistsShiftAndFlow(this, prompt, sourceCriteria, targetCriteria).TargetAndFlow();
 	}
+
+	public bool EnableMistsShiftAndFlow { get; set; } = true;
 
 	protected override object CustomMementoValue { 
 		get => _gainedCoolEnergyThisTurn;
@@ -99,3 +99,4 @@ public class ShroudOfSilentMist : Spirit {
 	}
 
 }
+
