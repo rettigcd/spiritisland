@@ -18,7 +18,7 @@ class UnrelentingStrides : IModifyAvailableActions {
 
 	#endregion constructor
 
-	public void Modify(List<IActionFactory> orig) {
+	public void Modify(List<IActionFactory> orig, Phase _) {
 		// Determine if we make Unreleting Strides an option (by adding Behemoth)
 		if( BehemothUsed < (InnateUsed ? 1 : 2) )
 			orig.Add(_behemoth);

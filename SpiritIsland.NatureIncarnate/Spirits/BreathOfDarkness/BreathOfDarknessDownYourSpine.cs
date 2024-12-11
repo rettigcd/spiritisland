@@ -4,6 +4,8 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 
 	public const string Name = "Breath of Darkness Down Your Spine";
 
+	public override string SpiritName => Name;
+
 	#region Custom Presence
 
 	static Track EmpowerIncarnaTrack => new Track("Empower"){
@@ -31,7 +33,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy1, Track.Energy2, Track.MoonEnergy, Track.Energy3, EmpowerIncarnaTrack, Track.MkEnergy(4,Element.Animal), Track.MkEnergy(5,Element.Air) ),
 			new PresenceTrack( Track.Card2, MovePresence, Track.Card3, Track.MoonEnergy, Track.CardReclaim1, Card4Air ),
-			new Incarna(spirit,"BoDDyS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
+			new Incarna(spirit,"BoDDYS", Img.BoDDYS_Incarna_Empowered, Img.BoDDYS_Incarna ) { }
 		)
 		, new GrowthTrack(
 			new GrowthGroup( new ReclaimAll(), new GainPowerCard(), new MoveIncarnaAnywhere(), new PiecesEscape( int.MaxValue ) ),
@@ -56,9 +58,9 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		];
 
 		PowerRangeCalc = new ShadowTouchedRealm_RangeCalculator();
-	}
 
-	public override string SpiritName => Name;
+		AvailableActionMods.Add( new EnableEmpoweredAbductMod(this) );
+	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		var jungles = board.Spaces.Where(x=>x.IsJungle).ScopeTokens().ToArray();
@@ -71,41 +73,9 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		gameState.OtherSpaces.Add(EndlessDark.Space);
 	}
 
-	#region interface IRunWhenTimePasses imp
-
-	public override Task TimePasses( GameState gameState ) {
-		_usedEmpoweredAbduct = false;
-		return base.TimePasses( gameState );
-	}
-
-	#endregion interface IRunWhenTimePasses imp
-
-	public override void InitSpiritAction( ActionScope scope ) {
+	public override void InitSpiritAction(ActionScope scope) {
 		if( scope.Category == ActionCategory.Spirit_Power )
-			scope.Upgrader = x => new TerrorStalksTheLand( x );
+			scope.Upgrader = x => new TerrorStalksTheLand(x);
 	}
-
-	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
-		foreach(var action in base.GetAvailableActions( speed )) yield return action;
-		if( speed == Phase.Fast && Presence.Incarna.Empowered && !_usedEmpoweredAbduct )
-			yield return _ea;
-	}
-
-	static readonly EmpoweredAbduct _ea = new EmpoweredAbduct();
-	bool _usedEmpoweredAbduct;
-
-	public override void RemoveFromUnresolvedActions( IActionFactory selectedActionFactory ) { 
-		if(selectedActionFactory == _ea)
-			_usedEmpoweredAbduct = true;
-		else 
-			base.RemoveFromUnresolvedActions( selectedActionFactory );
-	}
-
-	protected override object CustomMementoValue { 
-		get => _usedEmpoweredAbduct;
-		set => _usedEmpoweredAbduct=(bool)value;
-	}
-
-	// !! Managing the 2nd _empowerAbduct separately from _availableActions is much harder than just stuffing it in _availabeActions would be.
 
 }

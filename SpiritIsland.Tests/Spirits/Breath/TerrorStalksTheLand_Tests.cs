@@ -7,7 +7,7 @@ public class TerrorStalksTheLand_Tests {
 	public TerrorStalksTheLand_Tests() {
 		_spirit = new BreathOfDarknessDownYourSpine();
 		_board = Boards.A;
-		_ = new SoloGameState( _spirit, _board);
+		_gameState = new SoloGameState( _spirit, _board);
 	}
 
 	[Theory]
@@ -39,7 +39,43 @@ public class TerrorStalksTheLand_Tests {
 	}
 
 
+	// Empowered Can abduct once
+	[Fact]
+	public async Task EmpoweredIncarna_CanAbductOnce() {
+		var space = _board[5].ScopeSpace;
+
+		// Given: Incarna, Town, Explorer on the same space
+		space.Given_InitSummary("1BoDDYS+,1E@1,1T@2");
+		space.Summary.ShouldBe("1BoDDYS+,1E@1,1T@2");
+
+		// When: doing fast
+		_gameState.Phase = Phase.Fast;
+		await _spirit.SelectAndResolveActions(_gameState).AwaitUser(user => {
+			// Then: can abduct once
+			user.NextDecision.HasPrompt("Select Fast to resolve").HasOptions("Abduct Explorer/Town,Done").ChooseFirst();
+			user.NextDecision.HasPrompt("Select Invader to Abduct").HasOptions("E@1 on A5,T@2 on A5,Done").ChooseFirst();
+			//  But: no more.  All done
+		}).ShouldComplete("Fast acitons");
+	}
+
+	// Not-Empowered, Cannot abduct at all.
+	[Fact]
+	public async Task NotEmpoweredIncarna_NoAbduct() {
+		var space = _board[5].ScopeSpace;
+
+		// Given: Incarna, Town, Explorer on the same space
+		space.Given_InitSummary("1BoDDYS-,1E@1,1T@2");
+		space.Summary.ShouldBe("1BoDDYS-,1E@1,1T@2");
+
+		// When: doing fast
+		_gameState.Phase = Phase.Fast;
+		// Then no abduct action presented
+		await _spirit.SelectAndResolveActions(_gameState).ShouldComplete("Fast acitons");
+	}
+
+
 	readonly Spirit _spirit;
 	readonly Board _board;
+	readonly GameState _gameState;
 
 }

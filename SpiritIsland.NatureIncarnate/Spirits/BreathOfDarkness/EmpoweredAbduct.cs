@@ -21,3 +21,19 @@ public class EmpoweredAbduct : IActionFactory {
 	}
 
 }
+
+/// <summary>
+/// Adds the Empowered Abduct action when appropriate
+/// </summary>
+class EnableEmpoweredAbductMod : IModifyAvailableActions {
+	readonly Spirit _spirit;
+	public EnableEmpoweredAbductMod(Spirit spirit) {
+		_spirit = spirit;
+	}
+	public void Modify(List<IActionFactory> orig, Phase phase) {
+		if( phase == Phase.Fast && _spirit.Presence.Incarna.Empowered && !_spirit.UsedActions.Contains(_empoweredAbduct) )
+			orig.Add(_empoweredAbduct);
+	}
+	static readonly EmpoweredAbduct _empoweredAbduct = new EmpoweredAbduct();
+}
+

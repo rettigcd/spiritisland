@@ -224,12 +224,12 @@ public abstract partial class Spirit
 
 	#region (Unresolved) Actions 
 
-	public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase speed) {
+	public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase phase) {
 		var activatable = AvailableActions
-			.Where(action => action.CouldActivateDuring(speed, this))
+			.Where(action => action.CouldActivateDuring(phase, this))
 			.ToList();
 		foreach( IModifyAvailableActions x in AvailableActionMods )
-			x.Modify(activatable);
+			x.Modify(activatable,phase);
 		return activatable;
 	}
 
@@ -618,7 +618,7 @@ public abstract partial class Spirit
 }
 
 public interface IModifyAvailableActions {
-	void Modify(List<IActionFactory> orig);
+	void Modify(List<IActionFactory> orig, Phase phase);
 }
 
 

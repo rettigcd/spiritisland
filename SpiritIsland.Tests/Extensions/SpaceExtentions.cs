@@ -103,17 +103,28 @@ public static partial class SpaceExtentions {
 		int count = int.Parse( match.Groups[1].Value );
 		return (count,token);
 
+		// Group[4] groups the '@' with the #.  Example:  @2
 		HumanToken GetHumanToken( HumanTokenClass tokenClass )
 			=> new HumanToken(tokenClass)
-				.AddDamage( tokenClass.ExpectedHealthHint-int.Parse( match.Groups[4].Value ) )
-				.AddStrife( match.Groups[5].Value.Length );
+				.AddDamage( tokenClass.ExpectedHealthHint-int.Parse( match.Groups[5].Value ) )
+				.AddStrife( match.Groups[6].Value.Length );
 
-		 SpiritPresenceToken FindSpiritToken() {
-			var spiritTokens = GameState.Current.Spirits.Select( s => s.Presence.Token ).ToArray();
-			SpiritPresenceToken match = spiritTokens.FirstOrDefault( t => t.SpaceAbreviation == abrev );
-			if(match is not null) return match;
-			string optionsStr = spiritTokens.Select(x=>x.SpaceAbreviation).Join(",");
-			throw new Exception( $"[{abrev}] not found in [{optionsStr}]" );
+		IToken FindSpiritToken() {
+			var spiritTokens = GameState.Current.Spirits.Select(s => s.Presence.Token).ToArray();
+			SpiritPresenceToken matchingPresence = spiritTokens.FirstOrDefault(t => t.SpaceAbreviation == abrev);
+			if( matchingPresence is null ) {
+				string optionsStr = spiritTokens.Select(x => x.SpaceAbreviation).Join(",");
+				throw new Exception($"[{abrev}] not found in [{optionsStr}]");
+			}
+
+			string plusMinus = match.Groups[3].Value;
+			if(plusMinus == "-") return matchingPresence.Self.Incarna;
+			if(plusMinus == "+" ) {
+				var incarna = matchingPresence.Self.Incarna;
+				incarna.Empowered = true;
+				return incarna;
+			}
+			return matchingPresence;
 		}
 
 	}
@@ -176,6 +187,6 @@ public static partial class SpaceExtentions {
 			.Join( "," );
 	}
 
-	[GeneratedRegex( @"(\d+)(\w+)(@(\d+)(\^*))?" )]
+	[GeneratedRegex( @"(\d+)(\w+)([+-])?(@(\d+)(\^*))?" )]
 	private static partial Regex TokenParserRegex();
 }
