@@ -271,7 +271,7 @@ public abstract partial class Spirit
 	/// Removes it from the Unresolved-list
 	/// </summary>
 	// !!! Make this protected once we figure out how Fractured Day's Growth work without access to this.
-	public virtual void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory) {
+	public void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory) {
 
 		_usedActions.Add(selectedActionFactory);
 

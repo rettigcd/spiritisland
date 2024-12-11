@@ -1,6 +1,7 @@
-﻿namespace SpiritIsland.FeatherAndFlame;
+﻿
+namespace SpiritIsland.FeatherAndFlame;
 
-public class FinderOfPathsUnseen : Spirit {
+public class FinderOfPathsUnseen : Spirit, IModifyAvailableActions {
 
 	public const string Name = "Finder Of Paths Unseen";
 
@@ -44,6 +45,7 @@ public class FinderOfPathsUnseen : Spirit {
 		];
 		SpecialRules = [ResponsibilityToTheDead_Rule, OpenTheWays.Rule];
 		_openTheWays = new OpenTheWays();
+		AvailableActionMods.Add(this);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -101,16 +103,9 @@ public class FinderOfPathsUnseen : Spirit {
 
 	#endregion Responsibility To The Dead
 
-	public override IEnumerable<IActionFactory> GetAvailableActions( Phase speed ) {
-		var normalActions = base.GetAvailableActions( speed ).ToList();
-		if(normalActions.Count != 0)
-			normalActions.Add( _openTheWays );
-		return normalActions;
-	}
-
-	public override void RemoveFromUnresolvedActions( IActionFactory selectedActionFactory ) {
-		if(selectedActionFactory != _openTheWays)
-			base.RemoveFromUnresolvedActions( selectedActionFactory );
+	void IModifyAvailableActions.Modify(List<IActionFactory> orig, Phase phase) {
+		if( orig.Count != 0 )
+			orig.Add(_openTheWays);
 	}
 
 	protected override object CustomMementoValue {
