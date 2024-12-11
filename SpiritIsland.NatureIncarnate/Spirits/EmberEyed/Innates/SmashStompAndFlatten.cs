@@ -8,6 +8,7 @@ public class SmashStompAndFlatten {
 
 	[InnateTier("2 fire,1 earth", "2 Damage.", 0 )]
 	static public Task Option1Async(TargetSpaceCtx ctx){
+		AddEmpoweredRepeat(ctx.Self);
 		return ctx.DamageInvaders(2);
 	}
 
@@ -27,6 +28,23 @@ public class SmashStompAndFlatten {
 	static public async Task Option4Async( TargetSpaceCtx ctx ) {
 		await ctx.DamageEachInvader( 2 );
 		await ctx.DamageDahan( 2 );
+	}
+
+	static void AddEmpoweredRepeat(Spirit spirit) {
+
+		// Hack!
+		// Normally Innates just live in the Innate List which get filtered out by the "Used-Innates' list.
+		// They don't go to the UsedAction list.
+
+		// Stick the 2nd use in the UnusedAction List where it won't get filtered out and we can track it.
+
+		int myCount = spirit.UsedActions.Count(x => x.Title == Name);
+
+		if( spirit.Incarna.Empowered 
+			&& spirit.UsedActions.Count(x=>x.Title==Name) == 1 // 2nd use not found in the UsedActions lists
+		) 
+			// Stick this innate power in the UnusedAction list.
+			spirit.AddActionFactory(spirit.InnatePowers.Single(x=>x.Title==Name));
 	}
 
 }

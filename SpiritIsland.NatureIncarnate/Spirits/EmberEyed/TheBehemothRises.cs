@@ -1,13 +1,21 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
 public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
+
+	static public readonly SpecialRule Rule = new SpecialRule(
+		"The Behemoth Rises", 
+		"You have an Incarna.  Once/turn, during any phase, you may push it or Add/Move it to any of your Sacred Sites."
+	);
+
 	const string Name = "The Behemoth Rises";
 
 	public int Used { get; set; }
 	public int MaxUses { get; set; }
 
+	public void Inc() { Used++; }
+
 	#region IActionFactory (explicit)
-	string IOption.Text => Name + (MaxUses == 1 ? "" : $"({Used+1} of {MaxUses})");
+	string IOption.Text => Name; // + (MaxUses == 1 ? "" : $"({Used+1})");
 	string IActionFactory.Title => Name;
 	bool IActionFactory.CouldActivateDuring( Phase speed, Spirit spirit ) => true;
 	# endregion IActionFactory (explicit)
@@ -39,5 +47,5 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 
 public interface IHaveDynamicUseCounts {
 	public int Used {get; set; }
-	public int MaxUses { get; set; }
+	public void Inc() { Used++; }
 }

@@ -212,8 +212,8 @@ spirit.GetAvailableActions()
 
 
 Virtual
-	public GetAvaialbleActions()
-	public ResolveActionAsync()
+	public GetAvaialbleActions() - Growth / Spirits - Out of Phase
+	public ResolveActionAsync() - Growth / Spirits - OutOfPhase
 	RemoveFromUnresolvedActions()
 		public > protected
 	protected SelectAndPlayCardsFromHand_Inner
@@ -231,3 +231,50 @@ Option - Give Power access to Spirit so it can remove it and modify the list whe
 
 Option - Fractured Day Has 2 and 3 OR options
 	Simplest
+
+
+DoGrowth
+	- Ember Eyed - reset _behemoth && _smash
+	- Renlentless Gaze - reset CollectEnergy2ndTime
+
+ApplyRevealedPresenceTracks_Inner
+	- Dances - could probably be moved to EnergyCollected event
+	- Relentless Gace - collects energy, could probably be moved to EnergyCollected event
+
+
+
+GetAvailableActions
+	- Breath of Darkness - extra incarna move - could probably be moved to EnergyCollected
+	- Downpour - manages Repeats
+	- Finder - adds Move-the-Ways action
+	- Lightnings Swift Strike - manages slows as fast
+
+ResolveActionAsync
+	- Emberer Eyed - updates Counts on _smash (repeatable action) and restores it - use this for Fractured Days growth
+
+RemoveFromUnresolvedActions
+	- Breath of Darkness - track used-empowered
+	- Downpour - manages the gain-energy / repeat card actions
+	- Finder - handle extra Move-the-Ways resolving.
+
+
+4	Lightning
+3	Downpour
+
+1	Breath of Darkness
+4	Ember Eyed
+2	Finder
+
+Method 1 - Provide extra Actions, then intercept when they get removed.
+
+Plan
+	- Event: Pre Cards - mod energy
+	- Event: Selecting available Actions (can check Element count here)
+	- Event: Played CardOnTarget
+	- Event: Removing Action / Cards remove themselves?
+
+Q: How to remove cards from used
+
+
+== Plan ==
+Add CardPlayedOnEvent / ActionTaken

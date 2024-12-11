@@ -1,6 +1,6 @@
 ﻿using SpiritIsland.NatureIncarnate;
 
-namespace SpiritIsland.Tests.Spirits.RelentlessGaze; 
+namespace SpiritIsland.Tests.Spirits.RelentlessGaze;
 public class RelentlessGaze_Tests {
 
 	[Trait("spirit","Relentless Gaze")]
@@ -100,6 +100,5 @@ public class RelentlessGaze_Tests {
 		// Then: they have normal energy (that matches Energy track of 2,sun)
 		spirit.Energy.ShouldBe(2);
 	}
-
 
 }

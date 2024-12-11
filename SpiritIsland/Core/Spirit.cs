@@ -139,6 +139,7 @@ public abstract partial class Spirit
 	// Events
 	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
 	public event Action<IActionFactory> ActionActivated;
+	public List<IModifyAvailableActions> AvailableActionMods = [];
 
 
 	#region Cards
@@ -155,8 +156,8 @@ public abstract partial class Spirit
 	readonly protected List<SpiritDeck> decks = [];
 
 	readonly List<IActionFactory> _availableActions = [];
-	readonly HashSet<IActionFactory> _usedActions = [];
-	readonly List<InnatePower>       _usedInnates = [];
+	readonly List<IActionFactory> _usedActions = [];
+	readonly protected List<InnatePower>       _usedInnates = [];
 
 	// so spirits can replay used cards or collect them instead of discard
 	public IEnumerable<IActionFactory> UsedActions => _usedActions;
@@ -224,10 +225,12 @@ public abstract partial class Spirit
 	#region (Unresolved) Actions 
 
 	public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase speed) {
-		foreach( var action in AvailableActions ) {
-			if( action.CouldActivateDuring(speed, this) )
-				yield return action;
-		}
+		var activatable = AvailableActions
+			.Where(action => action.CouldActivateDuring(speed, this))
+			.ToList();
+		foreach( IModifyAvailableActions x in AvailableActionMods )
+			x.Modify(activatable);
+		return activatable;
 	}
 
 	// Holds Fast and Slow actions,
@@ -238,26 +241,21 @@ public abstract partial class Spirit
 				yield return action;
 
 			foreach( InnatePower innate in InnatePowers )
-				if( !_usedInnates.Contains(innate) )
+				if( !InnateWasUsed(innate) )
 					yield return innate;
 		}
 	}
 
-	public void AddActionFactory( IActionFactory factory ) {
-		// if we are manually restoring an innate power - like EEB
-		if(_usedInnates.Contains( factory )) {
-			_usedInnates.Remove((InnatePower)factory);
-			return;
-		}
+	public bool InnateWasUsed(InnatePower innate) => _usedInnates.Contains(innate);
 
+	public void AddActionFactory( IActionFactory factory ) {
 		_availableActions.Add( factory );
-		_usedActions.Remove( factory ); // incase this is was a repeat
 	}
 
 	/// <summary>
 	/// Starts ActionScope, marks as Resolved, Resolves, checks win/los
 	/// </summary>
-	public virtual async Task ResolveActionAsync(IActionFactory factory, Phase phase) {
+	public async Task ResolveActionAsync(IActionFactory factory, Phase phase) {
 
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );
 		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
@@ -274,17 +272,21 @@ public abstract partial class Spirit
 	/// </summary>
 	// !!! Make this protected once we figure out how Fractured Day's Growth work without access to this.
 	public virtual void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory) {
+
+		_usedActions.Add(selectedActionFactory);
+
+		int index = _availableActions.IndexOf(selectedActionFactory);
+		if( index != -1 ) {
+			_availableActions.RemoveAt(index);
+			return;
+		}
+
 		if( selectedActionFactory is InnatePower ip ) { // Could reverse this and instead of listing the used, create a not-used list that we remove them from when used
 			_usedInnates.Add(ip);
 			return;
 		}
 
-		int index = _availableActions.IndexOf(selectedActionFactory);
-		if( index == -1 )
-			throw new InvalidOperationException($"Unable to remove ActionFactory {selectedActionFactory.Title} from Unresolved Actions because it is not there.");
-
-		_usedActions.Add(_availableActions[index]);
-		_availableActions.RemoveAt(index);
+		// throw new InvalidOperationException($"Unable to remove ActionFactory {selectedActionFactory.Title} from Unresolved Actions because it is not there.");
 
 	}
 
@@ -613,6 +615,10 @@ public abstract partial class Spirit
 
 	Spirit IHaveASpirit.Self => this;
 
+}
+
+public interface IModifyAvailableActions {
+	void Modify(List<IActionFactory> orig);
 }
 
 

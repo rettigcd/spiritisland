@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.NatureIncarnate;
+﻿
+namespace SpiritIsland.NatureIncarnate;
 
 public class EmberEyedBehemoth : Spirit {
 
@@ -11,8 +12,6 @@ public class EmberEyedBehemoth : Spirit {
 			: base( "Discard a Power Card with fire", spirit => spirit.Hand.Where( card => 0 < card.Elements[Element.Fire] ) ) 
 		{}
 	}
-
-	static readonly SpecialRule TheBehomothRises = new SpecialRule("The Behemoth Rises", "You have an Incarna.  Once/turn, during any phase, you may push it or Add/Move it to any of your Sacred Sites.");
 
 	public EmberEyedBehemoth():base( 
 		spirit => new SpiritPresence(spirit,
@@ -46,10 +45,12 @@ public class EmberEyedBehemoth : Spirit {
 		,PowerCard.For(typeof(SurgingLahar))
 		,PowerCard.For(typeof(ExaltationOfGraspingRoots))
 	) {
-		_smash = new RepeatableInnatePower( typeof( SmashStompAndFlatten ) );
-		InnatePowers = [_smash];
-		SpecialRules = [TheBehomothRises, UnrelentingStrikes_Rule];
-		_behemoth = new TheBehemothRises();
+		InnatePowers = [
+			InnatePower.For(typeof(SmashStompAndFlatten))
+		];
+		SpecialRules = [TheBehemothRises.Rule, UnrelentingStrides.Rule];
+
+		AvailableActionMods.Add(new UnrelentingStrides(this));
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
@@ -60,10 +61,6 @@ public class EmberEyedBehemoth : Spirit {
 	}
 
 	public override async Task DoGrowth( GameState gameState ) {
-		// Reset Behemoth before Growth so it can be used before growth
-		_behemoth.Used = 0; _behemoth.MaxUses = 2;
-		AddActionFactory( _behemoth );
-
 		await base.DoGrowth( gameState );
 
 		// Remove 4th growth after it has been used
@@ -71,62 +68,7 @@ public class EmberEyedBehemoth : Spirit {
 			GrowthTrack = new( GrowthTrack.Groups.Take( 3 ).ToArray() );
 			ActionScope.Current.Log( new Log.LayoutChanged( $"Fourth growth option removed from {Name}." ) );
 		}
-
-		// Reset Smash last, since it depends on Embpowered Incarna
-		_smash.Used = 0;
-		_smash.MaxUses = Incarna.Empowered ? 2 : 1;
 	}
-
-	public override async Task ResolveActionAsync( IActionFactory factory, Phase phase ) {
-
-		await base.ResolveActionAsync( factory, phase );
-
-		if(factory is not IHaveDynamicUseCounts ihduc) return;
-
-		// It is easier to Restore actions than it is to prevent their removal. (I tried it the other way - so I know.)
-		// If we were to prevent removal, we would either have to:
-		//	 1) reimpliment the innards of TakeActionAsync - violating encapsulation / duplication principles. OR
-		//	 2) override RemoveFromUnresolved...() to ignore the 'remove' call - which is super complicated because
-		//	    - the method Can't tell if we are calling it explicitly or due to action being used.
-
-		// Track and Restore Actions having Additional Uses
-		++ihduc.Used;
-		if(HasMoreUses( ihduc ))
-			AddActionFactory( factory );
-
-		Check_UnrelentingStrides();
-	}
-
-	#region Unrelenting Strides
-
-	static SpecialRule UnrelentingStrikes_Rule => new SpecialRule( 
-		"Unrelenting Strides", 
-		"On any turn that you don't use Innate Powers, you may use The Behemoth Rises an additional time." 
-	);
-
-	void Check_UnrelentingStrides() { // special rule
-
-		// Using Behemoth twice, removes remaining Smash
-		if(_behemoth.Used == 2                      // used tiwce
-			&& HasMoreUses( _smash )                // has remaining Smash
-		) RemoveFromUnresolvedActions( _smash );	// remove it
-
-		// Using Smash once, reduces limits remaining Bohemoth
-		if(_smash.Used == 1                         // used once
-			&& HasMoreUses( _behemoth )             // has remaining Bohemoth
-		) {
-			_behemoth.MaxUses = 1;                  // limit to 1
-			if(!HasMoreUses( _behemoth ))               // but no-longer has more
-				RemoveFromUnresolvedActions( _behemoth ); // must remove it
-		}
-	}
-
-	static bool HasMoreUses( IHaveDynamicUseCounts x ) => x.Used < x.MaxUses;
-
-	readonly RepeatableInnatePower _smash;
-	readonly TheBehemothRises _behemoth;
-
-	#endregion
 
 	protected override object CustomMementoValue { 
 		get => GrowthTrack.Groups;
@@ -141,3 +83,4 @@ public class EmberEyedBehemoth : Spirit {
 	}
 
 }
+
