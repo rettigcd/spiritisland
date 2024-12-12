@@ -1,10 +1,11 @@
 ﻿namespace SpiritIsland.Basegame;
 
-[InnatePower( "Ocean Breaks the Shore" ),Slow]
+[InnatePower( Name ),Slow]
 [FromPresence( 0, Filter.Coastal )]
 public class OceanBreaksTheShore {
 
-		
+	public const string Name = "Ocean Breaks the Shore";
+
 	[InnateTier( "2 water,1 earth","Drown 1 town." )]
 	static public Task Option1( TargetSpaceCtx ctx ) {
 		// drown 1 town

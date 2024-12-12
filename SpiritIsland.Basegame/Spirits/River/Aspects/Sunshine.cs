@@ -2,9 +2,11 @@
 
 public class Sunshine : IAspect {
 
-	static public AspectConfigKey ConfigKey => new AspectConfigKey(RiverSurges.Name, Name);
+	// https://spiritislandwiki.com/index.php?title=Sunshine
 
+	static public AspectConfigKey ConfigKey => new AspectConfigKey(RiverSurges.Name, Name);
 	public const string Name = "Sunshine";
+	public string[] Replaces => [BoonOfVigor.Name];
 
 	public void ModSpirit(Spirit spirit) {
 		// Remove Boon of Vigor

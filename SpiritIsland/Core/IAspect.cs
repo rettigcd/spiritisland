@@ -9,4 +9,5 @@ public record AspectConfigKey(string Spirit,string Aspect);
 
 public interface IAspect {
 	void ModSpirit( Spirit spirit );
+	string[] Replaces { get; }
 }

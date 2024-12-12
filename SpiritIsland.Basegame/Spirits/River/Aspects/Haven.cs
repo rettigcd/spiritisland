@@ -2,9 +2,11 @@
 
 public class Haven : IAspect {
 
-	static public AspectConfigKey ConfigKey => new AspectConfigKey(RiverSurges.Name,Name);
+	// https://spiritislandwiki.com/index.php?title=Haven
 
+	static public AspectConfigKey ConfigKey => new AspectConfigKey(RiverSurges.Name,Name);
 	public const string Name = "Haven";
+	public string[] Replaces => [MassiveFlooding.Name];
 
 	public void ModSpirit(Spirit spirit) {
 		// Replace Innate

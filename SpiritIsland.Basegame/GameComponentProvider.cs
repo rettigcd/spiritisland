@@ -43,6 +43,12 @@ public class GameComponentProvider : IGameComponentProvider {
 		Sparking.ConfigKey,
 		Wind.ConfigKey,
 		Immense.ConfigKey,
+		// Shadow
+		Amorphous.ConfigKey,
+		DarkFire.ConfigKey,
+		Foreboding.ConfigKey,
+		Madness.ConfigKey,
+		Reach.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
@@ -57,6 +63,12 @@ public class GameComponentProvider : IGameComponentProvider {
 		Sparking.Name => new Sparking(),
 		Wind.Name => new Wind(),
 		Immense.Name => new Immense(),
+		// Shadows
+		Amorphous.Name => new Amorphous(),
+		DarkFire.Name => new DarkFire(),
+		Foreboding.Name => new Foreboding(),
+		Madness.Name => new Madness(),
+		Reach.Name => new Reach(),
 		_ => null,
 	};
 

@@ -6,6 +6,7 @@ public class Sparking : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(LightningsSwiftStrike.Name, Name);
 	public const string Name = "Sparking";
+	public string[] Replaces => [ThunderingDestruction.Name];
 
 	public void ModSpirit(Spirit spirit) {
 		// Replaces	Innate Power: Thundering Destruction

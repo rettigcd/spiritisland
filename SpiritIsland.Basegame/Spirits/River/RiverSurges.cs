@@ -15,7 +15,8 @@ public class RiverSurges : Spirit {
 
 	public const string Name = "River Surges in Sunlight";
 
-	static readonly SpecialRule RiversDomain = new SpecialRule("Rivers Domain", "Your presense in wetlands count as sacred.");
+	public const string RiversDomain_Name = "Rivers Domain";
+	static readonly SpecialRule RiversDomain = new SpecialRule(RiversDomain_Name, "Your presense in wetlands count as sacred.");
 
 	public override string SpiritName => Name;
 

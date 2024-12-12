@@ -6,6 +6,7 @@ public class Wind : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(LightningsSwiftStrike.Name, Name);
 	public const string Name = "Wind";
+	public string[] Replaces => [SwiftnessOfLightning.Name];
 
 	public void ModSpirit(Spirit spirit) {
 		// Replaces	Special Rule: Swiftness of Lightning

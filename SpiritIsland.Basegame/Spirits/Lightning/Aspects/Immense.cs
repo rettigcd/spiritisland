@@ -6,6 +6,7 @@ public class Immense : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(LightningsSwiftStrike.Name, Name);
 	public const string Name = "Immense";
+	public string[] Replaces => [];
 
 	public void ModSpirit(Spirit spirit) {
 

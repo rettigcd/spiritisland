@@ -27,18 +27,6 @@
 
 	SPIRITS - Aspects (new spirits)
 
-		-- Super fun --
-		Lightning - Sparking
-		Lightning - Pandemonium
-		Lightning - Wind
-		Lightning - Immense
-
-		Shadows - Dark Fire
-		Shadows - Madness
-		Shadows - Foreboding
-		Shadows - Amorphous
-		Shadows - Reach
-
 		Thunderspeaker - Warrior
 		Thunderspeaker - Tactician
 

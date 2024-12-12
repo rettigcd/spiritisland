@@ -5,6 +5,7 @@ public class Pandemonium : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(LightningsSwiftStrike.Name, Name);
 	public const string Name = "Pandemonium";
+	public string[] Replaces => [ThunderingDestruction.Name];
 
 	public void ModSpirit(Spirit spirit) {
 		// Replaces Innate Power: Thundering Destruction

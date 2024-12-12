@@ -5,7 +5,10 @@ public class Shadows : Spirit {
 	public const string Name = "Shadows Flicker Like Flame";
 	public override string SpiritName => Name;
 
-	static readonly SpecialRule ShadowsOfTheDahan = new SpecialRule("Shadows of the Dahan", "Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range.");
+	public const string ShadowsOfTheDahan_Name = "Shadows of the Dahan";
+	static readonly SpecialRule ShadowsOfTheDahan = new SpecialRule(
+		ShadowsOfTheDahan_Name, 
+		"Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range.");
 
 	public Shadows():base(
 		spirit => new SpiritPresence( spirit,

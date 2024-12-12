@@ -2,9 +2,11 @@
 
 public class Travel : IAspect {
 
-	static public AspectConfigKey ConfigKey => new AspectConfigKey(RiverSurges.Name, Name);
+	// https://spiritislandwiki.com/index.php?title=Travel
 
+	static public AspectConfigKey ConfigKey => new AspectConfigKey(RiverSurges.Name, Name);
 	public const string Name = "Travel";
+	public string[] Replaces => [RiverSurges.RiversDomain_Name];
 
 	public void ModSpirit(Spirit spirit) {
 		if( spirit is not RiverSurges) throw new ArgumentException("Travel may only be applied to River.");
