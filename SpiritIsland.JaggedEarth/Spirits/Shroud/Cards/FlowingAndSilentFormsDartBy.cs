@@ -36,8 +36,10 @@ public class FlowingAndSilentFormsDartBy {
 			var dst = await spirit.SelectAsync( new A.SpaceDecision( "Instead of destroying, push presence to:", args.From.Adjacent, Present.Done ) );
 			if(dst == null) return;
 
-			while(0 < args.Count--)
+			while(0 < args.Count) {
+				--args.Count; // must be inside while to avoid setting to -1
 				await args.Token.MoveAsync(args.From,dst);
+			}
 		}
 	}
 

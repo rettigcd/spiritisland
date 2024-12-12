@@ -18,9 +18,10 @@ public class RemovingTokenArgs {
 
 	// Should never be negative.
 	public int Count {
-		get { return _count; }
+		get => _count;
 		set { 
-			if( value < 0 ) throw new ArgumentOutOfRangeException(nameof(Count),"Removing Count cannot be < 0");
+			if( value < 0 ) 
+				throw new ArgumentOutOfRangeException(nameof(Count),"Removing Count cannot be < 0");
 			_count = value;
 		}
 	}

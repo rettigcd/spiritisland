@@ -26,40 +26,49 @@
 		HORIZON - Sun-Bright Whirlwind
 
 	SPIRITS - Aspects (new spirits)
-		-- Love --
-		Fangs - Encircle
-		Memory - Mentor
-		Memory - Intensify
-		Serpent - Locus
-		Wildfire - Transforming
 
 		-- Super fun --
 		Lightning - Sparking
+		Lightning - Pandemonium
+		Lightning - Wind
+		Lightning - Immense
+
 		Shadows - Dark Fire
+		Shadows - Madness
+		Shadows - Foreboding
+		Shadows - Amorphous
+		Shadows - Reach
+
 		Thunderspeaker - Warrior
+		Thunderspeaker - Tactician
+
 		Bringer - Violence
+		Bringer - Enticing
+
+		Rampant Green - Tangles
+		Rampant Green - Regrowth
+
+		-- Love --
+		Fangs - Encircle
+		Fangs - Enconstrained
+
+		Memory - Mentor
+		Memory - Intensify
+
+		Serpent - Locus
+
+		Wildfire - Transforming
+
 		Keeper - Spreading Hostility
 
 		-- Improvement --
 		Earth - Nourishing
-		Rampant Green - Tangles
-		Bringer - Enticing
-		Thunderspeaker - Tactician
-		Lightning - Pandemonium
-		Lightning - Wind
+		Earth - Might
+		Earth - Resilience
 
 		-- OK --
-		Lightning - Immense
-		Rampant Green - Regrowth
-		Shadows - Madness
-		Shadoes - Foreboding
-		Shadows - Amorphous
-		Shadows - Reach
-		Earth - Might
 
 		-- Down grade --
-		Earth - Resilience
-		Fangs - Enconstrained
 		Lure - Lair
 
 
