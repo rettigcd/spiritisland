@@ -8,10 +8,11 @@ public sealed class Track( string code, params Element[] els )
 
 	#region static Factories
 
-	public static Track MkEnergy( int energy ) => new Track( energy + " energy" ) { 
+	public static Track MkEnergy( int energy ) => new Track( EnergyOnlyCode( energy ) ) { 
 		_energy = energy, 
 		Icon = new IconDescriptor{ BackgroundImg = Img.Coin, Text = energy.ToString() },
 	};
+	public static string EnergyOnlyCode(int energy) => energy + " energy";
 
 	public static Track MkEnergy( int energy, Element el, IconDescriptor sub=null ) 
 		=> new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
@@ -23,19 +24,27 @@ public sealed class Track( string code, params Element[] els )
 			}
 		};
 
-	public static Track MkEnergyElements( params Element[] els ) {
-		var track = new Track( els.Select( x => x.ToString() ).Join( "," ).ToLower() + " energy", els ) {
-			Icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = els[0].GetTokenImg() }
-		};
-		if(els.Length==2)
-			track.Icon.ContentImg2 = els[1].GetTokenImg();
-		return track;
+	public static Track MkEnergyElements( params Element[] els ) 
+		=> new Track(
+			BuildElementsCode(els), 
+			els
+		) { Icon = BuildElementsIcon(els) };
+
+	static string BuildElementsCode(Element[] els) => els.Select(x => x.ToString()).Join(",").ToLower() + " energy";
+
+	static IconDescriptor BuildElementsIcon(Element[] els) {
+		var icon = new IconDescriptor { BackgroundImg = Img.Coin, ContentImg = els[0].GetTokenImg() };
+		if( els.Length == 2 )
+			icon.ContentImg2 = els[1].GetTokenImg();
+		return icon;
 	}
 
-	public static Track MkCard(int plays) => new Track($"{plays} cardplay" ) { 
+	public static Track MkCard(int plays) => new Track(CardPlayOnlyCode(plays)) { 
 		CardPlay = plays,
 		Icon = new IconDescriptor { BackgroundImg = Img.CardPlay, Text = plays.ToString() }
 	};
+	public static string CardPlayOnlyCode(int plays) => plays + " cardplay";
+
 
 	public static Track MkCard( Element el ) => new Track( el.ToString().ToLower(), el ) {
 		Icon = new IconDescriptor { ContentImg = el.GetTokenImg() }
@@ -108,7 +117,7 @@ public sealed class Track( string code, params Element[] els )
 	#endregion static Factories
 
 	string IOption.Text => Code;
-	public readonly string Code = code;
+	public string Code { get; set; } = code;
 
 	public int? Energy { 
 		get => _energy;

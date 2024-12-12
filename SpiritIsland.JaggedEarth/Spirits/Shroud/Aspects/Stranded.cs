@@ -10,7 +10,7 @@ public class Stranded : IAspect {
 	public void ModSpirit(Spirit spirit) {
 		var shroud = (ShroudOfSilentMist)spirit;
 		shroud.EnableMistsShiftAndFlow = false;
-		shroud.AvailableActionMods.Add( new StrandedActions(shroud) );
+		shroud.Mods.Add( new StrandedActions(shroud) );
 		shroud.SpecialRules = [..shroud.SpecialRules.Where(x=>x != MistsShiftAndFlow.Rule), MistsSteadilyDrift, StrandedInTheShiftingMists];
 	}
 

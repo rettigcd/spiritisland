@@ -47,7 +47,7 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 		SpecialRules = [DrenchTheLandscape.Rule, PourDownPower.Rule];
 
 		_pourDownPower = new PourDownPower(this);
-		AvailableActionMods.Add(_pourDownPower);
+		Mods.Add(_pourDownPower);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

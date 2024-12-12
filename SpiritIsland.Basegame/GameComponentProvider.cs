@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame;
+﻿using SpiritIsland.Basegame.Spirits.Lightning.Aspects;
+
+namespace SpiritIsland.Basegame;
 
 #nullable enable
 
@@ -30,17 +32,31 @@ public class GameComponentProvider : IGameComponentProvider {
 	#region Aspects
 
 	public AspectConfigKey[] AspectNames => [
+		// River
 		Haven.ConfigKey,
 		Sunshine.ConfigKey,
 		Travel.ConfigKey,
+		// Ocean
 		Deeps.ConfigKey,
+		// Lightning
+		Pandemonium.ConfigKey,
+		Sparking.ConfigKey,
+		Wind.ConfigKey,
+		Immense.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
+		// River
 		Haven.Name => new Haven(),
 		Sunshine.Name => new Sunshine(),
 		Travel.Name => new Travel(),
+		// Ocean
 		Deeps.Name => new Deeps(),
+		// Lightning
+		Pandemonium.Name => new Pandemonium(),
+		Sparking.Name => new Sparking(),
+		Wind.Name => new Wind(),
+		Immense.Name => new Immense(),
 		_ => null,
 	};
 

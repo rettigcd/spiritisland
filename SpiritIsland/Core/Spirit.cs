@@ -138,9 +138,7 @@ public abstract partial class Spirit
 
 	// Events
 	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
-	public event Action<IActionFactory> ActionActivated;
-	public List<IModifyAvailableActions> AvailableActionMods = [];
-
+	public List<object> Mods = [];
 
 	#region Cards
 
@@ -224,18 +222,19 @@ public abstract partial class Spirit
 
 	#region (Unresolved) Actions 
 
-	public virtual IEnumerable<IActionFactory> GetAvailableActions(Phase phase) {
-		var activatable = AvailableActions
+	public IEnumerable<IActionFactory> GetAvailableActions(Phase phase) {
+		var activatable = AllActions
 			.Where(action => action.CouldActivateDuring(phase, this))
 			.ToList();
-		foreach( IModifyAvailableActions x in AvailableActionMods )
+		foreach( IModifyAvailableActions x in Mods.OfType<IModifyAvailableActions>() )
 			x.Modify(activatable,phase);
 		return activatable;
 	}
 
-	// Holds Fast and Slow actions,
-	// depends on Fast/Slow phase to only select the actions that are appropriate
-	protected IEnumerable<IActionFactory> AvailableActions {
+	/// <summary>
+	/// All Unfiltered Innates + AvailableActions
+	/// </summary>
+	public IEnumerable<IActionFactory> AllActions {
 		get {
 			foreach( IActionFactory action in _availableActions )
 				yield return action;
@@ -262,7 +261,8 @@ public abstract partial class Spirit
 		await factory.ActivateAsync( this );
 
 		// Send event
-		ActionActivated?.Invoke(factory);
+		foreach(var x in Mods.OfType<IHandleActivatedActions>() )
+			x.ActionActivated(factory);
 
 		GameState.Current.CheckWinLoss();
 	}
@@ -356,7 +356,7 @@ public abstract partial class Spirit
 	#region IRunWhenTimePasses imp
 
 	public bool RemoveAfterRun => false;
-	public virtual Task TimePasses( GameState gameState ) {
+	public virtual async Task TimePasses( GameState gameState ) {
 		// reset cards / powers
 		DiscardPile.AddRange( InPlay );
 		InPlay.Clear();
@@ -370,7 +370,12 @@ public abstract partial class Spirit
 		// Elements
 		InitElementsFromPresence();
 
-		return Task.CompletedTask;
+		var timePassesMods = Mods.OfType<IRunWhenTimePasses>().OrderBy(x => x.Order).ToArray();
+		foreach(var mod in timePassesMods ) {
+			await mod.TimePasses(gameState);
+			if(mod.RemoveAfterRun)
+				Mods.Remove(mod);
+		}
 	}
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
@@ -409,8 +414,9 @@ public abstract partial class Spirit
 
 
 	/// <summary> Plays card from hand for cost. </summary>
-	public async Task SelectAndPlayCardsFromHand( int? numberToPlay = null )
-		=> await SelectAndPlayCardsFromHand_Inner( numberToPlay ?? NumberOfCardsPlayablePerTurn );
+	public Task SelectAndPlayCardsFromHand( int? numberToPlay = null) {
+		return SelectAndPlayCardsFromHand_Inner( numberToPlay ?? NumberOfCardsPlayablePerTurn );
+	}
 
 	protected virtual async Task SelectAndPlayCardsFromHand_Inner( int remainingToPlay ) {
 		PowerCard[] powerCardOptions;
@@ -423,9 +429,14 @@ public abstract partial class Spirit
 
 	async Task<bool> SelectAndPlay1( PowerCard[] powerCardOptions, int remainingToPlay ) {
 		string prompt = $"Play power card (${Energy} / {remainingToPlay})";
-		var card = await this.SelectPowerCard( prompt, remainingToPlay, powerCardOptions, CardUse.Play, Present.Done );
+		PowerCard card = await this.SelectPowerCard( prompt, remainingToPlay, powerCardOptions, CardUse.Play, Present.Done );
 		if(card == null) return false;
+
 		PlayCard( card );
+
+		foreach( var mod in Mods.OfType<IHandleCardPlayed>() )
+			await mod.Handle(this,card);
+
 		return true;
 	}
 
@@ -617,8 +628,19 @@ public abstract partial class Spirit
 
 }
 
-public interface IModifyAvailableActions {
+
+// IHandleActivatedActions
+
+public interface IModifyAvailableActions { 
 	void Modify(List<IActionFactory> orig, Phase phase);
+}
+
+public interface IHandleActivatedActions {
+	void ActionActivated(IActionFactory factory);
+}
+
+public interface IHandleCardPlayed {
+	Task Handle(Spirit spirit, PowerCard card);
 }
 
 

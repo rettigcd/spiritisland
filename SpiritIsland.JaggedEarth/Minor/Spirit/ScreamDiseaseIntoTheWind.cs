@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
 public class ScreamDiseaseIntoTheWind{
 
@@ -13,41 +11,14 @@ public class ScreamDiseaseIntoTheWind{
 		RangeCalcRestorer.Save(ctx.Other);
 		RangeExtender.Extend( ctx.Other, 1 );
 
-		ActionScope.StartOfActionHandlers.Add( new ScreamingDiseaseActionHandlers(ctx.Other) );
+		RunSpaceActionOnceOnFutureTarget.Trigger(ctx.Other,AddDisease);
 
 		// (Hand them a disease token as a reminder.)
 		return Task.CompletedTask;
 	}
 
-}
+	static SpaceAction AddDisease => new SpaceAction(ScreamDiseaseIntoTheWind.Name,AddDiseaseImp);
 
-class ScreamingDiseaseActionHandlers( Spirit _targetSpirit ) : IRunAtStartOfAction {
-
-	public Task Start( ActionScope startingScope ) {
-		// Add to the end of EVERY Action this round.
-		if(_round == GameState.Current.RoundNumber)
-			startingScope.AtEndOfThisAction( EndOfRoundCheck );
-		else
-			ActionScope.StartOfActionHandlers.Remove( this );
-		return Task.CompletedTask;
-	}
-
-	async Task EndOfRoundCheck( ActionScope endScope ) {
-		Space ss=null;
-		bool add = !_used
-			&& endScope.Category == ActionCategory.Spirit_Power
-			&& endScope.Owner == _targetSpirit
-			&& (ss = TargetSpaceAttribute.TargettedSpace?.space) != null
-			&& await _targetSpirit.UserSelectsFirstText( ScreamDiseaseIntoTheWind.Name + " (" + ss.SpaceSpec.Label + ")", "Yes, add 1 disease", "No thank you" );
-		if( add ) {
-			_used = true;
-			await ss.Disease.AddAsync( 1 );
-		}
-	}
-
-	#region private 
-	readonly int _round = GameState.Current.RoundNumber;
-	bool _used = false;
-	#endregion
+	static Task AddDiseaseImp(TargetSpaceCtx ctx) => ctx.Space.Disease.AddAsync(1);
 
 }

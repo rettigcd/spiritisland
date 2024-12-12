@@ -32,9 +32,9 @@ public class RelentlessGazeOfTheSun : Spirit {
 			InnatePower.For(typeof(ScorchingConvergence)), 
 			InnatePower.For(typeof(ConsiderAHarmoniousNature))
 		];
-		SpecialRules = [RelentlessRepeater.Rule];
+		SpecialRules = [RelentlessPunishment.Rule];
 
-		ActionActivated += RelentlessGazeOfTheSun_ActionActivated;
+		Mods.Add(new RelentlessPunishment(this));
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
@@ -42,14 +42,6 @@ public class RelentlessGazeOfTheSun : Spirit {
 		var start = board.Spaces.First(s=>s.IsSand);
 		start.ScopeSpace.Setup(Presence.Token, 2);
 		start.ScopeSpace.Badlands.Init(1);
-	}
-
-	// Reletless Punishment
-	void RelentlessGazeOfTheSun_ActionActivated(IActionFactory factory) {
-		if(factory is not PowerCard powerCard) return;
-		var details = TargetSpaceAttribute.TargettedSpace;
-		if( details is not null && details.sources.Any(s=>Presence.CountOn(s)>=0) )
-			AddActionFactory(new RelentlessRepeater(powerCard, details.space));
 	}
 
 }

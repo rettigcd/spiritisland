@@ -45,7 +45,7 @@ public class FinderOfPathsUnseen : Spirit, IModifyAvailableActions {
 		];
 		SpecialRules = [ResponsibilityToTheDead_Rule, OpenTheWays.Rule];
 		_openTheWays = new OpenTheWays();
-		AvailableActionMods.Add(this);
+		Mods.Add(this);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

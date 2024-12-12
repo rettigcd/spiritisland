@@ -59,7 +59,7 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 
 		PowerRangeCalc = new ShadowTouchedRealm_RangeCalculator();
 
-		AvailableActionMods.Add( new EnableEmpoweredAbductMod(this) );
+		Mods.Add( new EnableEmpoweredAbductMod(this) );
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

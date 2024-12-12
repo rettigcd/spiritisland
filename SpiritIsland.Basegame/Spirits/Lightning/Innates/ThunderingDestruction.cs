@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-[InnatePower( ThunderingDestruction.Name),Slow]
+[InnatePower(Name),Slow]
 [FromSacredSite(1)]
 public class ThunderingDestruction {
 

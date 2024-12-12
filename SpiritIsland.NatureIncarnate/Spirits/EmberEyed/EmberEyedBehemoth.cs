@@ -50,7 +50,7 @@ public class EmberEyedBehemoth : Spirit {
 		];
 		SpecialRules = [TheBehemothRises.Rule, UnrelentingStrides.Rule];
 
-		AvailableActionMods.Add(new UnrelentingStrides(this));
+		Mods.Add(new UnrelentingStrides(this));
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
