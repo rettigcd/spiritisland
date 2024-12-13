@@ -14,10 +14,11 @@ public class StretchOutCoilsOfForebodingDread {
 	}
 
 	[InnateTier("1 moon", "After an Action generates Fear in target land, including from Destroying Towns/Cities: Push up to 1 Explorer per Fear / 1 Town per 2 Fear.")]
-	public static async Task Plus_Destroy2Explorers(TargetSpaceCtx ctx) {
+	public static Task Plus_Destroy2Explorers(TargetSpaceCtx ctx) {
 		// After an Action generates Fear in target land, (including from Destroying Towns/Cities):
 		// Push up to 1 Explorer per Fear / 1 Town per 2 Fear. (You may mix-and-match.)
-		await Task.CompletedTask;
+		ctx.Space.Init(new FearPushesInvaders(),1);
+		return Task.CompletedTask;
 	}
 
 	[InnateTier("2 fire", "1 fear")]
@@ -34,6 +35,40 @@ public class StretchOutCoilsOfForebodingDread {
 
 
 }
+
+class FearPushesInvaders : IReactToLandFear, IEndWhenTimePasses {
+	public Task HandleFearAddedAsync(Space space, int fearAdded, FearType fearType) {
+		if (space[this] == 1 ) {
+			ActionScope.Current.AtEndOfThisAction( (actionScope) => ApplyFear(actionScope,space) );
+		}
+		space.Adjust(this,fearAdded); // HACK
+		return Task.CompletedTask;
+	}
+
+	async Task ApplyFear(ActionScope scope, Space space) {
+		int pushFear = space[this] - 1; // HACK
+		space.Init(this, 1);
+
+		var spirit = scope.Owner;
+
+		// DO MOVE
+		HumanToken[] tokens = pushFear switch { 0 => [], 1 => space.HumanOfTag(Human.Explorer), _ => space.HumanOfAnyTag(Human.Explorer_Town) };
+		while( 0 < tokens.Length ) {
+			// Select token to push
+			var token = await spirit.SelectAsync(new A.SpaceTokenDecision($"{pushFear} fear - Push Invader",tokens.On(space), Present.Done ));
+			// if null; break
+			if(token is null) break;
+			
+			var destination = await spirit.SelectAsync(new A.SpaceDecision("Push to", space.Adjacent,Present.Always));
+			if(destination is null) break; // should not happen
+
+			pushFear -= token.Token.HasTag(Human.Town) ? 2 : 1;
+			await token.MoveToAsync(destination);
+		}
+		
+	}
+}
+
 
 class IncludeLand(Spirit spirit, ICalcRange previous, Space target) : DefaultRangeCalculator(previous) {
 	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
