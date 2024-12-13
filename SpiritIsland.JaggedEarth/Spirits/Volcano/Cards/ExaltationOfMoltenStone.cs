@@ -17,17 +17,16 @@ public class ExaltationOfMoltenStone {
 	}
 
 	static void ExtendRangeFromMountains( Spirit self ) {
-		RangeCalcRestorer.Save(self);
 		self.PowerRangeCalc = new ExtendRange1FromMountain( self.PowerRangeCalc );
 	}
 
-	class ExtendRange1FromMountain( ICalcRange _originalApi ) : DefaultRangeCalculator {
+	class ExtendRange1FromMountain( ICalcRange previous ) : DefaultRangeCalculator(previous) {
 		readonly TerrainMapper _powerTerrainMapper = ActionScope.Current.TerrainMapper;
 
 		public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
 			if( _powerTerrainMapper.MatchesTerrain(source, Terrain.Mountain) )
 				tc = tc.ExtendRange(1);
-			return _originalApi.GetTargetingRoute(source, tc);
+			return Previous.GetTargetingRoute(source, tc);
 		}
 
 	}

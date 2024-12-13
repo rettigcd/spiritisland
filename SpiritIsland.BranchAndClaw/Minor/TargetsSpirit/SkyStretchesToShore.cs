@@ -10,28 +10,20 @@ public class SkyStretchesToShore {
 		ctx.Other.AddActionFactory( new ResolveSlowDuringFast_OrViseVersa() );
 
 		// Target Spirit gains +3 range for targeting coastal lands only
-		RangeCalcRestorer.Save(ctx.Other);
-		_ = new SkyStretchesToShoreApi( ctx.Other ); // Auto-binds to spirit
+		ctx.Other.PowerRangeCalc = new SkyStretchesToShoreApi( ctx.Other );
 
 		return Task.CompletedTask;
 	}
 
 }
 
-class SkyStretchesToShoreApi : DefaultRangeCalculator {
-	public SkyStretchesToShoreApi( Spirit self ) {
-		// _self = self;
-		_orig = self.PowerRangeCalc;
-		self.PowerRangeCalc = this;
-	}
+class SkyStretchesToShoreApi(Spirit self) : DefaultRangeCalculator(self.PowerRangeCalc) {
 
 	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
-		var normal = _orig.GetTargetingRoute(source, tc);
-		var shore = _orig.GetTargetingRoute(source, tc.ExtendRange(3))._routes
+		var normal = Previous.GetTargetingRoute(source, tc);
+		var shore = Previous.GetTargetingRoute(source, tc.ExtendRange(3))._routes
 			.Where(x => x.target.SpaceSpec.IsCoastal);
 		return new TargetRoutes( normal._routes.Union(shore) );
 	}
 
-	// readonly Spirit _self;
-	readonly ICalcRange _orig;
 }

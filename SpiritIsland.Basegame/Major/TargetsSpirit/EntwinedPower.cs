@@ -1,6 +1,4 @@
-﻿using SpiritIsland.A;
-
-namespace SpiritIsland.Basegame;
+﻿namespace SpiritIsland.Basegame;
 
 public class EntwinedPower {
 
@@ -22,7 +20,7 @@ public class EntwinedPower {
 		// You gain one of the power Cards they did not keep.
 		ctx.Self.Hand.Add( 
 			await DrawFromDeck.PickOutCard( ctx.Self, [.. result.Rejected] )
-        );
+		);
 
 		// if you have 2 water, 4 plant, 
 		if(await ctx.YouHave("2 water,4 plant")) {
@@ -41,6 +39,26 @@ public class EntwinedPower {
 			dst.Hand.Add( myGift );
 			src.Hand.Remove( myGift );
 		}
+	}
+
+
+	class EntwinedPresenceSource : ITargetingSourceStrategy {
+
+		readonly Dictionary<SpiritPresence, ITargetingSourceStrategy> _olds;
+
+		public EntwinedPresenceSource(params Spirit[] spirits) {
+			_olds = spirits.ToDictionary(s => s.Presence, s => s.TargetingSourceStrategy);
+
+			foreach( Spirit spirit in spirits )
+				spirit.TargetingSourceStrategy = this;
+		}
+
+		public IEnumerable<Space> EvaluateFrom(IKnowSpiritLocations presence, TargetFrom from) {
+			return _olds
+				.SelectMany(p => p.Value.EvaluateFrom(p.Key, from))
+				.Distinct();
+		}
+
 	}
 
 }

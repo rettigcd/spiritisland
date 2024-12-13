@@ -18,7 +18,7 @@ public class ToweringRootsOfTheJungle : Spirit {
 		)
 		, new GrowthTrack(
 			new GrowthGroup( new ReclaimAll(), new PlacePresence( 0 ) ),
-			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ), new AddVitalityToIncarna() ),
+			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ), new EnduringVitality() ),
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3 ), new ReplacePresenceWithIncarna(), new GainEnergy( 1 ) )
 		)
 		, PowerCard.For(typeof(RadiantAndHallowedGrove))
@@ -26,19 +26,15 @@ public class ToweringRootsOfTheJungle : Spirit {
 		, PowerCard.For(typeof(BloomingOfTheRocksAndTrees))
 		, PowerCard.For(typeof(BoonOfResilientPower))
 	) {
-		// Innates
 		InnatePowers = [
 			InnatePower.For(typeof(ShelterUnderToweringBranches)), 
 			InnatePower.For(typeof(RevokeSanctuaryAndCastOut))
 		];
-		SpecialRules = [EnduringVitality, HeartTree];
-		PowerRangeCalc = new IncarnaRangeCalculator( this );
+		SpecialRules = [EnduringVitality.Rule, HeartTree.Rule];
+		PowerRangeCalc = new HeartTree( this );
 	}
 
 	public override string SpiritName => Name;
-
-	static readonly SpecialRule EnduringVitality = new SpecialRule("Enduring Vitality", "Some of your Actions Add Vitality Tokens.");
-	static readonly SpecialRule HeartTree = new SpecialRule("Heart-Tree Guards the Land", "You have an Incarna. Your Powers get +1 range if Incarna is in the origin land.  Invaders/Dahan/Beast can't be damaged or destroyed at Incarna.  Empower Encarna the first time it's in a land with 3 or more vitality.  Skip all Build Actions at empowered Incarna.");
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		var highestFirst = board.Spaces.Reverse().ScopeTokens().ToArray();

@@ -166,7 +166,7 @@ class MistsShiftAndFlowOnce {
 			.ToArray();
 	}
 
-	IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<Space> sources, TargetCriteria tc )
+	Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources, TargetCriteria tc )
 		=> _spirit.PowerRangeCalc.GetTargetingRoute_MultiSpace( sources, tc ).Targets;
 
 	// Shroud Helper - for easier testing Targetting

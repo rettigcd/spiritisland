@@ -287,8 +287,6 @@ public abstract partial class Spirit
 			return;
 		}
 
-		// throw new InvalidOperationException($"Unable to remove ActionFactory {selectedActionFactory.Title} from Unresolved Actions because it is not there.");
-
 	}
 
 	static ActionCategory GetActionCategoryForSpiritAction( Phase phase ) {
@@ -576,7 +574,16 @@ public abstract partial class Spirit
 	public ITargetingSourceStrategy TargetingSourceStrategy = new DefaultPowerSourceStrategy();
 
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
-	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
+	/// <remarks> RangeCals with .Previous will automaticaly be rolled back at end of Round.</remarks>
+	public ICalcRange PowerRangeCalc { 
+		get => _powerRangeCalc;
+		set {
+			_powerRangeCalc = value;
+			if( _powerRangeCalc.Previous is not null )
+				GameState.Current.AddTimePassesAction(new RollbackPowerRangeCalcToOriginal(this));
+		}
+	}
+	ICalcRange _powerRangeCalc= DefaultRangeCalculator.Singleton;
 
 	#endregion
 

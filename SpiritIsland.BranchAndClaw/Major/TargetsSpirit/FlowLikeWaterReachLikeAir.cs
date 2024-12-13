@@ -11,7 +11,6 @@ public class FlowLikeWaterReachLikeAir {
 	static async Task TargetActions( Spirit self, bool bringCityAndBlight ) {
 
 		// target spirit gets +2 range with all Powers.
-		RangeCalcRestorer.Save( self );
 		RangeExtender.Extend( self, 2 );
 
 		// Target spirit may push 1 of their presence to an adjacent land

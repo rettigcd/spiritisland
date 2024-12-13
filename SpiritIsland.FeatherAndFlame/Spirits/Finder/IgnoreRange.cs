@@ -5,7 +5,6 @@ public class ExtendRange( int extension )
 	, ICanAutoRun
 {
 	public override Task ActAsync( Spirit self ) {
-		RangeCalcRestorer.Save( self );
 		RangeExtender.Extend( self, _extension );
 		return Task.CompletedTask;
 	}
@@ -19,7 +18,6 @@ public class IgnoreRange : SpiritAction, ICanAutoRun {
 	public IgnoreRange() : base( $"Ignore Range" ) {}
 
 	public override Task ActAsync( Spirit self ) {
-		RangeCalcRestorer.Save( self );
 		RangeExtender.Extend( self, 256 );
 		return Task.CompletedTask;
 	}

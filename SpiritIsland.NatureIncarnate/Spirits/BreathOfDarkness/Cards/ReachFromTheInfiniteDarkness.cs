@@ -45,7 +45,6 @@ public class ReachFromTheInfiniteDarkness {
 
 	static void GrantRangeBonus( CountDictionary<Spirit> bonuses ) {
 		foreach(Spirit spirit in bonuses.Keys) {
-			RangeCalcRestorer.Save( spirit );
 			RangeExtender.Extend( spirit, bonuses[spirit] );
 		}
 	}
