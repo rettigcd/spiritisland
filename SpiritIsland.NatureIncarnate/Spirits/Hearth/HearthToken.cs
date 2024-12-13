@@ -22,8 +22,9 @@ public class HearthToken( Spirit spirit )
 		await Foritfy_RemovingDahanAsync( args);
 	}
 
-	public override async Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
-		await base.HandleTokenRemovedAsync( from, args );
+	public override async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
+		await base.HandleTokenRemovedAsync( args );
+		var from = (Space)args.From;
 		await Foritfy_RemovedPresenceAsync( args, from );
 		await LoyalGuardian_DahanMoved( args, from );
 	}

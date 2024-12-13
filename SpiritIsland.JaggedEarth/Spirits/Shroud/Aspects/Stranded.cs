@@ -11,12 +11,13 @@ public class Stranded : IAspect {
 
 	public void ModSpirit(Spirit spirit) {
 		spirit.Targetter = new Targetter(spirit); // removes MistsShiftAndFlow
-		spirit.Mods.Add( new StrandedActions(spirit) );
+		spirit.Mods.Add( new MistsSteadilyDrift(spirit) );
+		spirit.Mods.Add( new StrandedInTheShiftingMists(spirit) );
 
 		spirit.SpecialRules = [
 			..spirit.SpecialRules.Where(x=>x.Title != MistsShiftAndFlow.Name),
-			StrandedActions.MistsSteadilyDrift,
-			StrandedActions.StrandedInTheShiftingMists
+			MistsSteadilyDrift.Rule,
+			StrandedInTheShiftingMists.Rule
 		];
 	}
 

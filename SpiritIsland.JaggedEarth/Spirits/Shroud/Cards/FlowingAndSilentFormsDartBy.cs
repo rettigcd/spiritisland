@@ -8,7 +8,7 @@ public class FlowingAndSilentFormsDartBy {
 
 		// 2 fear if Invaders are present
 		if(ctx.HasInvaders)
-			ctx.AddFear( 2 );
+			await ctx.AddFear( 2 );
 
 		// When presence in target land would be Destroyed, its owner may, if possible instead Push that presence.
 		// (do it for all spirits, not just the ones currently here)

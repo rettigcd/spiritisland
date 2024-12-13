@@ -45,7 +45,7 @@ public sealed class InvaderBinding( Space space ) {
 		} else {
 			if(!Space.PreventsInvaderDamage()){ 
 				var result = await Space.RemoveAsync( originalInvader, 1, DestroyingFromDamage.TriggerReason );
-				Space.AddFear(
+				await Space.AddFear(
 					originalInvader.HumanClass.FearGeneratedWhenDestroyed * result.Count,
 					FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
 				);

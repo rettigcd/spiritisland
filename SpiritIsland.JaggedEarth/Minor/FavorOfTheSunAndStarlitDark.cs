@@ -13,7 +13,7 @@ public class FavorOfTheSunAndStarlitDark{
 
 		// If you have 2 sun: 1 fear
 		if(await ctx.YouHave("2 sun"))
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 	}
 
 }

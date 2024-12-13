@@ -10,7 +10,7 @@ public class SavageMawbeasts {
 		// if target is J/W, 1 fear & 1 damage
 		if(ctx.IsOneOf( Terrain.Jungle, Terrain.Wetland )) {
 			++damage;
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 		}
 
 		// If 3 animals +1 damage

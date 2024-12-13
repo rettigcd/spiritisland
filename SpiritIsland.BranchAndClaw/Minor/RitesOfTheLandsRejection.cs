@@ -8,13 +8,13 @@ public class RitesOfTheLandsRejection {
 	[Instructions( "Invaders do not Build in target land this turn. 1 Fear per Town / City or 1 Fear per Dahan, whichever is less. -or- Push up to 3 Dahan." ), Artist( Artists.JoshuaWright )]
 	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
-		static void StopBuild_FearForCitiesTownsAndDahan(TargetSpaceCtx ctx) {
+		static Task StopBuild_FearForCitiesTownsAndDahan(TargetSpaceCtx ctx) {
 			// Invaders Do not build in target land this turn
 			ctx.Space.SkipAllBuilds( Name );
 
 			// 1 fear per town/city OR 1 fear per dahan, whichever is less
 			int cityTownCount = ctx.Space.SumAny( Human.Town_City );
-			ctx.AddFear( Math.Min( ctx.Dahan.CountAll, cityTownCount ) );
+			return ctx.AddFear( Math.Min( ctx.Dahan.CountAll, cityTownCount ) );
 		}
 
 		return ctx.SelectActionOption(

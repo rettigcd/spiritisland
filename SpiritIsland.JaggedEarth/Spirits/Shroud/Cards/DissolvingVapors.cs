@@ -6,7 +6,7 @@ public class DissolvingVapors {
 	[Instructions( "1 Fear. 1 Damage to each Invader. 1 Damage to each Dahan." ), Artist( Artists.EmilyHancock )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 fear
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// 1 damage to each invader.
 		await ctx.DamageEachInvader(1);

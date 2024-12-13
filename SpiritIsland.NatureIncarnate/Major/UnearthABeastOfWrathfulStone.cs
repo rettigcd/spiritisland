@@ -23,7 +23,7 @@ public class UnearthABeastOfWrathfulStone {
 
 		async Task TriggeredAction(TargetSpaceCtx ctxx ) {
 			// 3 Fear.
-			ctx.AddFear(3);
+			await ctx.AddFear(3);
 
 			// 12 Damage.
 			await ctx.DamageInvaders( 12 );
@@ -37,7 +37,7 @@ public class UnearthABeastOfWrathfulStone {
 				.FilterSpaceToken( st => st.Token == beastToken )
 				.ConfigDestination(d=>d.Track( async to => {
 					// 1 Fear and 2 Damage in its land.
-					to.AddFear(1);
+					await to.AddFear(1);
 					await to.UserSelected_DamageInvadersAsync( ctxx.Self, 2 );
 				} ))
 				.PushN( ctx.Self );
@@ -143,7 +143,7 @@ public class MarkedBeast : IToken
 			.FilterSpaceToken(st=>st.Token==this)
 			.PushUpToN(self);
 		// 1 Fear and 2 Damage in its land.
-		_space!.AddFear( 1 ); // don't cache space-state, it might have moved
+		await _space!.AddFear( 1 ); // don't cache space-state, it might have moved
 		await _space.UserSelected_DamageInvadersAsync(self,2);
 	}
 

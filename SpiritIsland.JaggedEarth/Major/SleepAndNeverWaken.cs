@@ -26,7 +26,7 @@ public class SleepAndNeverWaken {
 			await RemoveExploreres( ctx, 6, ctx.Self.Presence.Lands.ToArray() );
 
 		// 1 fear per 2 explorer this Power Removes.
-		ctx.AddFear( removed / 2 );
+		await ctx.AddFear( removed / 2 );
 	}
 
 	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {

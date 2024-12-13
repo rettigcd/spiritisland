@@ -9,7 +9,7 @@ public class LostInTheEndlessDark {
 
 		// 1 fear per invader (max 4)
 		int fear = Math.Min( 4, edCtx.Space.SumAny( Human.Invader ) );
-		edCtx.AddFear(fear);
+		await edCtx.AddFear(fear);
 
 		// downgrade up to 1 Invader
 		await ReplaceInvader.Downgrade1(edCtx.Self, edCtx.Space, Present.Done,Human.Invader);
@@ -23,7 +23,7 @@ public class LostInTheEndlessDark {
 
 		// 1 fear per invader (max 4)
 		int fear = Math.Min( 4, edCtx.Space.SumAny( Human.Invader ) );
-		edCtx.AddFear( fear );
+		await edCtx.AddFear( fear );
 
 		// downgrade any # of invaders
 		await ReplaceInvader.DowngradeAll( edCtx.Self, edCtx.Space );

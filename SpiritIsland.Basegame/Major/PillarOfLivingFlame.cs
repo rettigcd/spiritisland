@@ -21,7 +21,7 @@ public class PillarOfLivingFlame {
 		if(ctx.IsOneOf( Terrain.Jungle, Terrain.Wetland ))
 			await ctx.AddBlight(1);
 
-		ctx.AddFear( fear );
+		await ctx.AddFear(fear);
 		await ctx.DamageInvaders( damage );
 
 	}

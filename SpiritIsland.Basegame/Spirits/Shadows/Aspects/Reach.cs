@@ -13,6 +13,8 @@ public class Reach : IAspect {
 	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
+		spirit.RemoveMod<ShadowsOfTheDahan>();
+
 	}
 
 }

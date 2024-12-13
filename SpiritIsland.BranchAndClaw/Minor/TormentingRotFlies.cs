@@ -13,10 +13,10 @@ public class TormentingRotFlies {
 
 	}
 
-	static public void AddFear( TargetSpaceCtx ctx ) {
+	static public Task AddFear( TargetSpaceCtx ctx ) {
 		int fearCount = 2;
 		if( ctx.Disease.Any ) fearCount++;
 		if( ctx.Blight.Count>0 ) fearCount++;
-		ctx.AddFear( fearCount );
+		return ctx.AddFear( fearCount );
 	}
 }

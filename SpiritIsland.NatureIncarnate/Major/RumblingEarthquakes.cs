@@ -12,7 +12,7 @@ public class RumblingEarthquakes {
 		// This Power ignores Health bonuses. - How the hell do we do this part?  What does this even mean?
 
 		// 3 Fear.
-		ctx.AddFear(3);
+		await ctx.AddFear(3);
 
 		// 6 Damage to Town/City only.
 		await ctx.DamageInvaders(6, Human.Town_City);

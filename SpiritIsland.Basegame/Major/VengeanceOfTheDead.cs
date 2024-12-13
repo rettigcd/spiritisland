@@ -8,12 +8,12 @@ public class VengeanceOfTheDead {
 	[Instructions( "3 Fear. After each effect that destroys Town / City / Dahan in target land, 1 Damage per Town / City / Dahan destroyed. -If you have- 3 Animal: Damage from this Power may be dealt into adjacent lands." ), Artist( Artists.KatBirmelin )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 3 fear
-		ctx.AddFear(3);
+		await ctx.AddFear(3);
 
 		var landsWeCanApplyTheDamageTo = new List<Space> { ctx.Space };
 
 		// After each effect that destroys...
-		async Task DealVengenceDamage( Space from, ITokenRemovedArgs args ) {
+		async Task DealVengenceDamage( ITokenRemovedArgs args ) {
 			if( !args.Reason.IsDestroy() ) return;
 			//  ...a town / city / dahan in target land
 			if( args.Removed.Class.IsOneOf( Human.Town_City.Plus( Human.Dahan ) ) )

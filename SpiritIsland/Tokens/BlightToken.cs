@@ -50,7 +50,7 @@ public class BlightToken( string label, char k, Img img )
 	/// <summary>
 	/// Triggers returning blight to card
 	/// </summary>
-	public async Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
+	public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		bool shouldReturnBlightToCard = args.Removed == Token.Blight
 			&& !args.Reason.IsOneOf(
 				RemoveReason.MovedFrom, // pushing / gathering blight

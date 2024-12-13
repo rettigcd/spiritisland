@@ -6,10 +6,10 @@ public class RoilingBogAndSnaggingThorn {
 
 	[MinorCard(Name,0,"moon,fire,water,plant"),Fast,FromSacredSite(1)]
 	[Instructions( "1 Fear. Isolate. Defend 2. 1 Dahan does not participate in Ravage." ), Artist( Artists.KatGuevara )]
-	static public Task ActAsync(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// Isolate.
 		ctx.Isolate();
@@ -20,7 +20,6 @@ public class RoilingBogAndSnaggingThorn {
 		// 1 Dahan does not participate in Ravage.
 		ctx.Space.Adjust(new DahanSitOutRavage(ctx.Self,1),1);
 
-		return Task.CompletedTask;
 	}
 
 }

@@ -10,8 +10,9 @@ public class BloodDrawsPredators{
 
 		// After the next time Invaders are Destroyed in target land:
 		TokenRemovedHandlerAsync mod = null; // initialized 1st so method can refer to it.
-		mod = new TokenRemovedHandlerAsync( async ( from, args ) => {
+		mod = new TokenRemovedHandlerAsync( async ( args ) => {
 			if(args.Reason != RemoveReason.Destroyed || !args.Removed.Class.IsOneOf(Human.Invader)) return;
+			Space from = (Space)args.From;
 			from.Adjust(mod,-1); // remove token
 
 			// Add 1 Beast,

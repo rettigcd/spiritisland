@@ -7,12 +7,12 @@ public class ManifestIncarnation {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 6 fear
-		ctx.AddFear(6);
+		await ctx.AddFear(6);
 
 		// +1 fear for each town/city and for each of your presence in target land.
 		int fearCount = ctx.Space.SumAny( Human.Town_City )
 			+ ctx.Presence.Count;
-		ctx.AddFear(fearCount);
+		await ctx.AddFear(fearCount);
 
 		// Remove 1 city, 1 town and 1 explorer.
 		await ctx.RemoveInvader(Human.City);

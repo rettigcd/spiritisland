@@ -7,7 +7,7 @@ public class LandOfHauntsAndEmbers {
 	static public async Task Act(TargetSpaceCtx ctx){
 
 		// 2 fear
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		// Push up to 2 explorer/towns
 		int pushCount = 2;
@@ -15,7 +15,7 @@ public class LandOfHauntsAndEmbers {
 		// if target has blight
 		if(ctx.HasBlight) {
 			// +2 fear
-			ctx.AddFear(2);
+			await ctx.AddFear(2);
 
 			// push up to 2 more explorers/towns
 			pushCount += 2;

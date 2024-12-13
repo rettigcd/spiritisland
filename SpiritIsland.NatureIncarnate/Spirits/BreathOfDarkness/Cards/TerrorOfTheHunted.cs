@@ -12,7 +12,7 @@ public class TerrorOfTheHunted {
 
 		// If Beast are present, 1 Fear and Add 1 Strife.
 		if(ctx.Beasts.Any) {
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 			++strifeCount;
 		}
 

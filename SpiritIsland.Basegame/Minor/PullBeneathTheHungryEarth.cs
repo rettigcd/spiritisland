@@ -6,21 +6,21 @@ public class PullBeneathTheHungryEarth {
 
 	[MinorCard(PullBeneathTheHungryEarth.Name,1,Element.Moon,Element.Water,Element.Earth),Slow,FromPresence(1,Filter.Any)]
 	[Instructions( "If target land has your Presence, 1 Fear and 1 Damage. If target land is Sands / Wetland, 1 Damage." ), Artist( Artists.NolanNasser )]
-	static public Task ActAsync(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		int damage = 0;
 
 		// If target land has your presence, 1 fear and 1 damage
 		if( ctx.Presence.IsHere ){
 			++damage;
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 		}
 
 		// If target land is Sand or Water, 1 damage
 		if(ctx.IsOneOf( Terrain.Sands, Terrain.Wetland ))
 			++damage;
 
-		return ctx.DamageInvaders(damage);
+		await ctx.DamageInvaders(damage);
 
 	}
 

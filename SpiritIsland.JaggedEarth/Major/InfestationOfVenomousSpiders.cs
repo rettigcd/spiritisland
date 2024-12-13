@@ -21,7 +21,7 @@ public class InfestationOfVenomousSpiders {
 		// For each beast,
 		int count = ctx.Beasts.Count;
 		// 1 fear (max 4) and
-		ctx.AddFear( System.Math.Min(4,count) );
+		await ctx.AddFear( System.Math.Min(4,count) );
 		for(int i = 0; i < count; ++i)
 			ctx.Space.Skip1InvaderAction( Name, ctx.Self, causeAdditionalDamage ); // !!! derive a new type instead of this alt-action nonsense
 	}

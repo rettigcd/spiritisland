@@ -6,13 +6,13 @@ public class VisionsOfFieryDoom {
 	[Instructions( "1 Fear. Push 1 Explorer / Town. -If you have- 2 Fire: +1 Fear." ), Artist( Artists.LucasDurham )]
 	static public async Task Act(TargetSpaceCtx ctx){
 		// 1 fear
-		ctx.AddFear( 1 );
+		await ctx.AddFear( 1 );
 
 		// Push 1 explorer/town
 		await ctx.Push( 1, Human.Explorer_Town );
 
 		if(await ctx.YouHave("2 fire"))
-			ctx.AddFear( 1 );
+			await ctx.AddFear( 1 );
 	}
 
 }

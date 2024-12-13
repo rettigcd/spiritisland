@@ -14,7 +14,7 @@ class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses {
 	/// <summary> Apply the Skip before the Heal takes place </summary>
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Early;
 
-	Task IRunWhenTimePasses.TimePasses( GameState gameState ){
+	async Task IRunWhenTimePasses.TimePasses( GameState gameState ){
 		var myLands = _spirit.Presence.Lands.ToArray();
 
 		// Invaders and dahan in your lands don't heal Damage.  
@@ -31,12 +31,11 @@ class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses {
 			.ToArray();
 		// 1 fear (max 5) per land of yours with Damaged Invaders.  
 		foreach(var land in myLandsWithWoundedInvaders.Take(5))
-			land.AddFear(1);
+			await land.AddFear(1);
 
 		// Gain 1 Energy per 3 lands of yours with Damaged Invaders.
 		_spirit.Energy += myLandsWithWoundedInvaders.Length / 3;
 
-		return Task.CompletedTask;
 	}
 }
 

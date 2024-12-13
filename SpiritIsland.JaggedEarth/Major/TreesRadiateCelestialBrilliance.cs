@@ -8,7 +8,7 @@ public class TreesRadiateCelestialBrilliance {
 	[Instructions( "3 Fear. Defend 6. Invaders skip the next build. (In target land this turn.) -If you have- 3 Sun, 2 Moon, 2 Plant: 1 Damage per Sun you have." ), Artist( Artists.ShawnDaley )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 3 fear.
-		ctx.AddFear(3);
+		await ctx.AddFear(3);
 		// Defend 6
 		ctx.Defend(6);
 

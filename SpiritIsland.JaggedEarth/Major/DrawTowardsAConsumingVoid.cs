@@ -41,7 +41,7 @@ public class DrawTowardsAConsumingVoid {
 			await MoveTokensFromAdjacentSpace( ctx, adjState, tokenGroups );
 
 		// 4 fear.  15 damage. 5 damage to dahan.
-		ctx.AddFear( 4 );
+		await ctx.AddFear(4);
 		await ctx.DamageInvaders( 15 );
 		await ctx.DamageDahan( 5 );
 

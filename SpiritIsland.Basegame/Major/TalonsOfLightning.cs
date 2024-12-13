@@ -7,7 +7,7 @@ public class TalonsOfLightning {
 	static public async Task ActionAsync( TargetSpaceCtx ctx ) {
 
 		// 3 fear
-		ctx.AddFear(3);
+		await ctx.AddFear(3);
 
 		// 5 damage
 		await ctx.DamageInvaders(5);

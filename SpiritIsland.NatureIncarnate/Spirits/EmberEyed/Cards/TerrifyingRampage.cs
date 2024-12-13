@@ -8,7 +8,7 @@ public class TerrifyingRampage {
 	[Instructions("1 Fear. 2 Invaders don't participate in Ravage - choose when Ravaging. Push 3 Dahan."), Artist(Artists.DavidMarkiwsky)]
 	static public async Task ActionAsync( TargetSpaceCtx ctx){
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 		// 2 Invaders don't participate in Ravage. (Choose when ravaging.)
 		ctx.Space.Adjust(new InvadersSitOut(
 			ctx.Self,

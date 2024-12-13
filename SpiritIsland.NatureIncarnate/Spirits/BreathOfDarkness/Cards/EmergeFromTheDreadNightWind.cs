@@ -11,7 +11,7 @@ public class EmergeFromTheDreadNightWind {
 		await ctx.Self.Incarna.MoveTo(ctx.Space, true);
 
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// If exactly 1 Invader is present,
 		if(ctx.Space.SumAny( Human.Invader ) == 1)

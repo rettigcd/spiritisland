@@ -377,7 +377,7 @@ public partial class Space
 
 		var result = await this.RemoveAsync( token, count, RemoveReason.Destroyed );
 		if(token is HumanToken ht )
-			this.AddFear(
+			await this.AddFear(
 				ht.HumanClass.FearGeneratedWhenDestroyed * result.Count,
 				FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
 			);
@@ -422,7 +422,7 @@ public partial class Space
 				await x.ModifyRemovingAsync( args );
 	}
 
-	protected RemovingTokenCtx RemovedHandlerSnapshop => new RemovingTokenCtx( this, ModSnapshot );
+	protected RemovingTokenCtx RemovedHandlerSnapshop => new RemovingTokenCtx( ModSnapshot );
 
 	async Task ModifyAdding( AddingTokenArgs args ) {
 		var keyArray = ModSnapshot; 
@@ -513,10 +513,10 @@ public partial class Space
 /// <summary>
 /// Captures the Mod tokens before they are removed, so their handlers can be invoked post-removal
 /// </summary>
-public class RemovingTokenCtx( Space from, ISpaceEntity[] keyArray ) {
+public class RemovingTokenCtx( ISpaceEntity[] keyArray ) {
 	public async Task NotifyRemoved( ITokenRemovedArgs args ) {
 		// Async
 		foreach(IHandleTokenRemoved x in keyArray.OfType<IHandleTokenRemoved>())
-			await x.HandleTokenRemovedAsync( from, args );
+			await x.HandleTokenRemovedAsync( args );
 	}
 }

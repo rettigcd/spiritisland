@@ -47,7 +47,7 @@ public class TransformToAMurderousDarkness {
 		await otherCtx.PushUpTo( total, Token.Badlands );
 
 		// 3 fear.
-		otherCtx.AddFear( 3 );
+		await otherCtx.AddFear( 3 );
 
 		// 3 damage per presence replaced
 		await otherCtx.DamageInvaders( total * 3 );

@@ -11,7 +11,7 @@ public class CallToVigilance {
 
 		// 2 Fear if Invaders are present.
 		if(ctx.HasInvaders)
-			ctx.AddFear(2);
+			await ctx.AddFear(2);
 
 		// For each Dahan in origin land, Push up to 1 Explorer/Town.
 		int pushCount = TargetSpaceAttribute.TargettedSpace.Sources

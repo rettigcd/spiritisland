@@ -6,7 +6,7 @@ public class TooNearTheJungle {
 	[Instructions( "1 Fear. Destroy 1 Explorer." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 		await ctx.Invaders.DestroyNOfAnyClass(1,Human.Explorer);
 	}
 

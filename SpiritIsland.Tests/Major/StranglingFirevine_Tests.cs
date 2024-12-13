@@ -52,7 +52,7 @@ public class ActionScopeTracker : BaseModEntity, IHandleTokenAdded, IHandleToken
 		return Task.CompletedTask;
 	}
 
-	Task IHandleTokenRemoved.HandleTokenRemovedAsync(Space from, SpiritIsland.ITokenRemovedArgs _) {
+	Task IHandleTokenRemoved.HandleTokenRemovedAsync( ITokenRemovedArgs _ ) {
 		_scopes.Add(ActionScope.Current);
 		return Task.CompletedTask;
 	}

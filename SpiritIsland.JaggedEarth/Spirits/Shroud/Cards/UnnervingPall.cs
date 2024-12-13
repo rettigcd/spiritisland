@@ -8,7 +8,7 @@ public class UnnervingPall {
 	[Instructions( "1 Fear. Up to 3 damaged Invaders do not participate in Ravage. -or- 1 Fear. Defend 1 per Presence you have in target land (when this Power is used)." ), Artist( Artists.EmilyHancock )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// up to 3 Damaged Invaders do not participate in Ravage.
 		var doNotParticipate = new SpaceAction(

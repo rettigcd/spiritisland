@@ -18,7 +18,7 @@ public class DarknessSwallowsTheUnwary {
 		// destroy 2 explorers (+1 fear/kill)
 		var grp = ctx.Invaders;
 		int destroyed = await grp.DestroyNOfClass( 2, Human.Explorer );
-		ctx.AddFear( destroyed );
+		await ctx.AddFear( destroyed );
 	}
 
 	[InnateTier("4 moon,3 fire,2 air","3 Damage. 1 fear per Invaders destroyed by this Damage.")]
@@ -30,7 +30,7 @@ public class DarknessSwallowsTheUnwary {
 		await ctx.DamageInvaders( 3 );
 		int endingCount = ctx.Invaders.Space.InvaderTotal();
 		int killed = startingCount - endingCount;
-		ctx.AddFear( killed );
+		await ctx.AddFear(killed);
 	}
 
 }

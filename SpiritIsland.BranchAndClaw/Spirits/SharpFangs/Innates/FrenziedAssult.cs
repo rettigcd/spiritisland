@@ -16,7 +16,7 @@ class FrenziedAssult {
 	}
 
 	static async Task Execute( TargetSpaceCtx ctx, int fear, int damage ) {
-		ctx.AddFear( fear );
+		await ctx.AddFear( fear );
 		await ctx.DamageInvaders( damage );
 		// remove 1 beast
 		await ctx.Beasts.Remove(1);

@@ -9,7 +9,7 @@ public class BlazingIntimidation {
 	[Instructions( "1 Fear. Push 2 Explorer/Town to a land without Incarna." ), Artist( Artists.DavidMarkiwsky )]
 	static public async Task ActionAsync(TargetSpaceCtx ctx) {
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// Push 2 Explorer/Town to a land without (your) Incarna.
 		await ctx.SourceSelector

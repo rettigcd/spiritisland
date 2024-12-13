@@ -19,7 +19,7 @@ public class DreadApparitions_Tests {
 		await spirit.When_ResolvingCard<DreadApparitions>(u=>u.Choose(targetSpace.Label));
 
 		// When: generating 2 fear
-		spirit.Target(targetSpace).AddFear(2);
+		await spirit.Target(targetSpace).AddFear(2);
 
 		// Then: also get 3 defend
 		targetSpace.ScopeSpace.Defend.Count.ShouldBe( 2+1 );// +1 from D.A.
@@ -124,7 +124,7 @@ public class DreadApparitions_Tests {
 		await spirit.When_ResolvingCard<DreadApparitions>(u => u.Choose(targetSpace.Label));
 
 		// When: Power causes fear in a different land
-		otherSpace.ScopeSpace.AddFear(5);
+		await otherSpace.ScopeSpace.AddFear(5);
 
 		// Then: no defend bonus
 		board[5].ScopeSpace.Defend.Count.ShouldBe( 1+0 );// 1=>Dread Apparitions

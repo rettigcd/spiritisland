@@ -6,7 +6,7 @@ public class SavageTransformation {
 	[Instructions( "2 Fear. Replace 1 Explorer with 1 Beasts. -If you have- 2 Moon, 3 Animal: Replace 1 additional Explorer with 1 Beasts in either target or adjacent land." ), Artist( Artists.LoicBelliau )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// 2 fear
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		// replace 1 explorer with 1 beast
 		await ReplaceExplorerWithBeast( ctx, 0 );

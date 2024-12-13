@@ -24,7 +24,7 @@ public class TheWoundedWildTurnsOnItsAssailants {
 		// if you have 2 fire, 3 air, 2 animal
 		if( await ctx.YouHave("2 fire,3 air,2 animal"))
 			// 2 fear per invader destroyed by this Power (max 8 fear)
-			ctx.AddFear( System.Math.Min( 8, destroyed*2));
+			await ctx.AddFear(System.Math.Min(8, destroyed * 2));
 
 	}
 

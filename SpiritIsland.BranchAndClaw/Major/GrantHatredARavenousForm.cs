@@ -12,7 +12,7 @@ public class GrantHatredARavenousForm {
 		int count = ctx.Space.AllHumanTokens().Sum(x=>x.StrifeCount * ctx.Space[x])
 			+ ctx.Blight.Count;
 		// 1 fear 
-		ctx.AddFear( count );
+		await ctx.AddFear(count);
 		// and 2 damage.
 		await ctx.DamageInvaders( count * 2 );
 

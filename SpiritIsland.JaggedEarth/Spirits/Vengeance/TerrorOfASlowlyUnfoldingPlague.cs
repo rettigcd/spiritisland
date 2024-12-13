@@ -20,7 +20,7 @@ public class TerrorOfASlowlyUnfoldingPlague( Spirit _spirit ) : BaseModEntity, I
 
 		if(getFear) {
 			args.Count = 0; // not removing
-			args.From.AddFear( 1 );
+			await args.From.AddFear( 1 );
 		}
 	}
 

@@ -8,7 +8,7 @@ internal class UnbearableDeluge {
 	[Instructions( "1 fear. Push 2 Dahan. Defend 3. If target land is Wetland, Isolate it." ), Artist( Artists.DamonWestenhofer )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// Push 2 Dahan.
 		await ctx.PushDahan(2);

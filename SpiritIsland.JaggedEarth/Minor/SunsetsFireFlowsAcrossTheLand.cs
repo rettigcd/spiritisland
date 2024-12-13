@@ -6,7 +6,7 @@ public class SunsetsFireFlowsAcrossTheLand{
 	[Instructions( "1 Fear. 1 Damage. You may pay 1 Energy to deal 1 Damage in an adjacent land." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 		// 1 damage.
 		await ctx.DamageInvaders(1);
 

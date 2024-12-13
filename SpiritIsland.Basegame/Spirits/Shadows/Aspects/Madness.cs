@@ -15,6 +15,8 @@ public class Madness : IAspect {
 	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
+		spirit.RemoveMod<ShadowsOfTheDahan>();
+
 	}
 
 }

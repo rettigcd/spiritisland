@@ -9,7 +9,7 @@ public class ThreateningFlames {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 2 fear
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		bool HasNoPresence(Space space) => !ctx.Self.Presence.IsOn(space);
 		if( ctx.Adjacent.Any( HasNoPresence ) )
@@ -20,7 +20,7 @@ public class ThreateningFlames {
 				.PushN(ctx.Self);
 		else
 			// If there are no such adjacent lands, +2 fear
-			ctx.AddFear(2);
+			await ctx.AddFear(2);
 
 	}
 

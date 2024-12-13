@@ -8,7 +8,7 @@ public class DevouringAnts {
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		// 1 fear
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		//  1 damage
 		int damage = 1;

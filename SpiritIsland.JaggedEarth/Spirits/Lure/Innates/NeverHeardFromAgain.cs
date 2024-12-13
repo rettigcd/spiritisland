@@ -24,7 +24,7 @@ public class NeverHeardFromAgain {
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		// 2 plant - destroy up to 2 explorer per badland/beast/disease/wilds
 		int destroyCount = await DestroyFromBadlandsBeastDiseaseWilds( ctx );
-		ctx.AddFear( CalcFearFromExplorerDeath( destroyCount ) );
+		await ctx.AddFear( CalcFearFromExplorerDeath( destroyCount ) );
 	}
 
 	[InnateTier("4 plant,1 animal","2 Damage",1)]
@@ -33,7 +33,7 @@ public class NeverHeardFromAgain {
 		await DestroyFromBadlandsBeastDiseaseWilds( ctx );
 		await ctx.DamageInvaders(2);
 		int destroyedExplorers = ctx.Space.Sum( Human.Explorer ) - preExplorerCount;
-		ctx.AddFear( CalcFearFromExplorerDeath( destroyedExplorers ) );
+		await ctx.AddFear(CalcFearFromExplorerDeath(destroyedExplorers));
 	}
 
 	static async Task<int> DestroyFromBadlandsBeastDiseaseWilds( TargetSpaceCtx ctx ) {

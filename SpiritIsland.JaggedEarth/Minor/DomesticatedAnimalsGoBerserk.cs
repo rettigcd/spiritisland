@@ -6,7 +6,7 @@ public class DomesticatedAnimalsGoBerserk{
 	[Instructions( "1 Fear. Defend 5. -If you have- 3 Moon: Add 1 Beasts." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// Defend 5.
 		ctx.Defend(5);

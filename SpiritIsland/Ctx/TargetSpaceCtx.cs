@@ -31,10 +31,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	#endregion
 
 	/// <summary> adds Target to Fear context </summary>
-	public void AddFear( int count ) {
-		Space.AddFear( count );
-	}
-
+	public Task AddFear(int count) => Space.AddFear(count);
 
 	// overridden by Trickster to Select-All - !!! Could be put on Spirit to make easier to override, then we could seal this class.
 	// !!! Check usages of Cmd.Pick1 and reroute through here for all Spirit Powers - so Trickster can do all.

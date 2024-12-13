@@ -20,7 +20,7 @@ public class OverenthusiasticArson {
 		// IF it provides fire:
 		if(card.Elements.Contains( Element.Fire )) {
 			// 1 fear
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 
 			// 2 damage,
 			await ctx.DamageInvaders(2);

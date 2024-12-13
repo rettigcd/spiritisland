@@ -30,8 +30,9 @@ public class ManyMindsBeast( ManyMindsPresenceToken presenceToken )
 		return Task.CompletedTask;
 	}
 
-	public async Task HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ) {
+	public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		if(args.Removed != this) return;
+		Space from = (Space)args.From;
 
 		// Page 28 of JE says that 'Removing' presence is treated the same as Destroying, just voluntary
 

@@ -52,7 +52,7 @@ public class PentUpCalamity {
 				await RemoveToken( ctx, tokenToRemove );
 
 			// Do fear now
-			ctx.AddFear( 1 );
+			await ctx.AddFear(1);
 			// do damage later
 			removed.Add(tokenToRemove);
 

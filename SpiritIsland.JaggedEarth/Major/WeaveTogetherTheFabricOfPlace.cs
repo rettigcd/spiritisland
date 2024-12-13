@@ -18,7 +18,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			// If it has invaders,
 			if(joinedCtx.HasInvaders) {
 				// 2 fear,
-				joinedCtx.AddFear( 2 );
+				await joinedCtx.AddFear( 2 );
 				// and Remove up to 2 invaders
 				await joinedCtx.Invaders.RemoveLeastDesirable();
 				await joinedCtx.Invaders.RemoveLeastDesirable();

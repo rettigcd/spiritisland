@@ -34,9 +34,9 @@ public class LightningTornSkiesIncitePandemonium {
 		return FearAndStrife(ctx, 4);
 	}
 
-	static Task FearAndStrife(TargetSpaceCtx ctx, int fearCount, int strifeCount=1) {
-		ctx.AddFear(fearCount);
-		return ctx.AddStrife(strifeCount);
+	static async Task FearAndStrife(TargetSpaceCtx ctx, int fearCount, int strifeCount=1) {
+		await ctx.AddFear(fearCount);
+		await ctx.AddStrife(strifeCount);
 	}
 
 }

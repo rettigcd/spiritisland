@@ -8,10 +8,10 @@ public class HereThereBeMonsters {
 		// you may push 1 explorer / town / dahan
 		await ctx.PushUpTo(1,Human.Explorer_Town.Plus(Human.Dahan));
 		// 2 fear
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 		// if target land has any beasts, 1 fear
 		if( ctx.Beasts.Any )
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 	}
 
 }

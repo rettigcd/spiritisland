@@ -12,17 +12,17 @@ public class MistsOfOblivion {
 
 		// 1 fear per town/city this power destroys (to a max of 4)
 		int mayDestroyed = 4;
-		void DoMists( ITokenRemovedArgs args ) {
+		async Task DoMists( ITokenRemovedArgs args ) {
 			if(0 < mayDestroyed
 				&& ActionScope.Current == originalScope
 				&& args.Reason == RemoveReason.Destroyed
 				&& args.Removed.Class.IsOneOf( Human.Town_City )
 			) {
-				ctx.AddFear( 1 );
+				await ctx.AddFear(1);
 				--mayDestroyed;
 			}
 		};
-		ctx.Space.Adjust( new TokenRemovedHandler( DoMists ), 1 );
+		ctx.Space.Adjust( new TokenRemovedHandlerAsync( DoMists ), 1 );
 
 		// 1 damage to each invader
 		await ctx.DamageEachInvader(1);

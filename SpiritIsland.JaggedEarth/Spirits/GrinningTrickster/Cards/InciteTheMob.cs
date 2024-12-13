@@ -17,7 +17,7 @@ public class InciteTheMob {
 
 		// 1 fear per invader this power destroyed. // ??? What if Bringer uses this?  Does nightmare death count as death
 		int killed = startingInvaderCount - ctx.Space.InvaderTotal();
-		ctx.AddFear( killed );
+		await ctx.AddFear(killed);
 
 	}
 

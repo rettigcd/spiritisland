@@ -10,20 +10,19 @@ public class DreadApparitions {
 		ctx.Space.Adjust( new ConvertFearToDefense(Name),1 );
 
 		// 1 fear
-		ctx.AddFear(1);
-
-		return Task.CompletedTask;
+		return ctx.AddFear(1);
 	}
 
 
 	// When powers generate fear in target land, defend 1 per fear.
 	class ConvertFearToDefense( string powerName ) : IReactToLandFear, IEndWhenTimePasses {
-		void IReactToLandFear.HandleFearAdded( Space space, int fearAdded, FearType fearType ) {
+		Task IReactToLandFear.HandleFearAddedAsync( Space space, int fearAdded, FearType fearType ) {
 			// (Fear from destroying town/cities does not.)
-			if(fearType == FearType.FromInvaderDestruction) return;
-
-			space.Defend.Add( fearAdded );
-			ActionScope.Current.Log( new Log.Debug( $"{fearAdded} Fear => +{fearAdded} Defend ({_powerName})" ) );
+			if( fearType != FearType.FromInvaderDestruction ) {
+				space.Defend.Add(fearAdded);
+				ActionScope.Current.Log(new Log.Debug($"{fearAdded} Fear => +{fearAdded} Defend ({_powerName})"));
+			}
+			return Task.CompletedTask;
 		}
 		readonly string _powerName = powerName;
 	}

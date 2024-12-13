@@ -139,7 +139,7 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 		// Fear
 		if(startedWithInvaders)
-			ctx.AddFear( count );
+			await ctx.AddFear( count );
 
 	}
 

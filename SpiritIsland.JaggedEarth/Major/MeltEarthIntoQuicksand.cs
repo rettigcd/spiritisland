@@ -7,7 +7,7 @@ public class MeltEarthIntoQuicksand {
 	[Instructions( "1 Fear. 2 Damage. Isolate target land. After Invaders / Dahan are Moved into target land, Destroy them.  -If you have- 2 Moon, 4 Water, 2 Earth: +4 Damage. Add 1 Badlands. Add 1 Wilds." ), Artist( Artists.LucasDurham )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// 2 damamge.
 		await ctx.DamageInvaders(2);

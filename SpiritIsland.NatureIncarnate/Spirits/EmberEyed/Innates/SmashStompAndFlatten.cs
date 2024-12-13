@@ -20,7 +20,7 @@ public class SmashStompAndFlatten {
 
 	[InnateTier( "4 fire,2 earth,1 plant", "1 Fear. 1 Damage.", 1 )]
 	static public async Task Option3Async(TargetSpaceCtx ctx){
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 		await ctx.DamageInvaders( 1 );
 	}
 

@@ -14,7 +14,7 @@ public class RavagedUndergrowthSlithersBackToLife {
 		if(result.Count == 1) await ctx.Wilds.AddAsync(1);
 
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// 3 Damage.
 		await ctx.DamageInvaders(3);

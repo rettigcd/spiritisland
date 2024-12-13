@@ -6,7 +6,7 @@ public class TheShoreSeethesWithHatred{
 	[Instructions( "1  Fear. Add 1 Badlands and 1 Wilds." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// add 1 badlands and 1 wilds
 		await ctx.Badlands.AddAsync(1);

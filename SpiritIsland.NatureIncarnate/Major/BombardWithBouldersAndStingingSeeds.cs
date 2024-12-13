@@ -9,7 +9,7 @@ public class BombardWithBouldersAndStingingSeeds {
 	[Instructions( "1 Fear. 2 Damage. Add 1 Badlands. -If you have- 2 air,2 earth,3 plant: 1 Fear. 2 Damage. Add 1 Wilds." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// 2 Damage.
 		await ctx.DamageInvaders(2);
@@ -20,7 +20,7 @@ public class BombardWithBouldersAndStingingSeeds {
 		// -If you have- 2 air,2 earth,3 plant:
 		if(await ctx.YouHave("2 air,2 earth,3 plant" )) {
 			// 1 Fear.
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 			// 2 Damage.
 			await ctx.DamageInvaders(2);
 			// Add 1 Wilds.

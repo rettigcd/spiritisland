@@ -13,9 +13,7 @@ public class AfflictWithBloodThirst {
 
 	[InnateTier( "1 fire,3 animal", "2 Fear if Invaders are present.", 1 )]
 	static public Task Option2( TargetSpaceCtx ctx ) {
-		if(ctx.HasInvaders)
-			ctx.AddFear(2);
-		return Task.CompletedTask;
+		return ctx.HasInvaders ? ctx.AddFear(2) : Task.CompletedTask;
 	}
 
 	[InnateTier( "1 sun,2 fire,4 animal", "1 Explorer and 1 Town/Dahan do Damage, to other Invaders only.", 2 )]

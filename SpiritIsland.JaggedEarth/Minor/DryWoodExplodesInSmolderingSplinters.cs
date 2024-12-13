@@ -21,7 +21,7 @@ public class DryWoodExplodesInSmolderingSplinters {
 		}
 
 		// 2 Fear.
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		// 1 Damage
 		await ctx.DamageInvaders(1);

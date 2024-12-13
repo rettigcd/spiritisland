@@ -7,7 +7,7 @@ public class PerilsOfTheDeepestIsland {
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// 1 fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// add 1 badlands.
 		await ctx.Badlands.AddAsync(1);

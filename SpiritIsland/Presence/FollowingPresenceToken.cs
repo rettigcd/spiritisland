@@ -8,14 +8,14 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 		_leaderClass = leaderClass;
 		SpaceAbreviation = "Ts";// to not conflict with Towns
 	}
-	public override async Task HandleTokenRemovedAsync(Space from, ITokenRemovedArgs args ) {
-		await base.HandleTokenRemovedAsync( from,args );
-		await TrackLeaderToken( from, args );
+	public override async Task HandleTokenRemovedAsync(ITokenRemovedArgs args ) {
+		await base.HandleTokenRemovedAsync( args );
+		await TrackLeaderToken( args );
 	}
 
-	async Task TrackLeaderToken( Space from, ITokenRemovedArgs args ) {
+	async Task TrackLeaderToken( ITokenRemovedArgs args ) {
 		if(args.Removed.Class == _leaderClass && args is ITokenMovedArgs moved)
-			await TryToFollow( from, moved );
+			await TryToFollow( (Space)args.From, moved );
 	}
 
 	async Task TryToFollow( Space from, ITokenMovedArgs args ) {

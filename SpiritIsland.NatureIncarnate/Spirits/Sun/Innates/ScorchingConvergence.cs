@@ -47,11 +47,10 @@ public class ScorchingConvergence {
 	public static Task Option3(TargetSpaceCtx ctx ) {
 		var actionScope = ActionScope.Current;
 		// 3 Fear if this Power destroyed only Invaders.
-		if(actionScope.SafeGet<string>(StartingInvaders) != GetSummary( ctx.Space, Human.Invader )
+		return actionScope.SafeGet<string>(StartingInvaders) != GetSummary( ctx.Space, Human.Invader )
 			&& actionScope.SafeGet<string>(StartingDahan) == GetSummary( ctx.Space, Human.Dahan )
-        )
-			ctx.AddFear( 3 );
-		return Task.CompletedTask;
+			? ctx.AddFear( 3 )
+			: Task.CompletedTask;
 	}
 
 	[InnateTier( "5 sun,3 fire,2 air", "1 Damage per remaining Presence of yours in target land." )]

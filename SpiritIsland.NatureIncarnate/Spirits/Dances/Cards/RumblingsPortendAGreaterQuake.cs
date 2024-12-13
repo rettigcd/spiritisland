@@ -9,7 +9,7 @@ public class RumblingsPortendAGreaterQuake {
 		// If you have at least as many Impending as Power Cards in play,
 		if(ctx.Self is DancesUpEarthquakes due && due.InPlay.Count <= due.Impending.Count) {
 			// 1 Fear
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 			// Add 1 Quake.
 			await ctx.Space.AddAsync(Token.Quake,1);
 		}

@@ -11,3 +11,10 @@ public interface IAspect {
 	void ModSpirit( Spirit spirit );
 	string[] Replaces { get; }
 }
+
+public static class AspectHelper_Extensoins {
+	static public void RemoveMod<T>(this Spirit spirit) {
+		var mod = spirit.Mods.OfType<T>().Single();
+		spirit.Mods.Remove(mod);
+	}
+}

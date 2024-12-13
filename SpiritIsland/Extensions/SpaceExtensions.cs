@@ -18,8 +18,8 @@ static public class SpaceExtensions {
 	static public Task DamageLand( this Space space, int totalLandDamage ) 
 		=> LandDamage.Add(space,totalLandDamage);
 
-	static public void AddFear( this Space space, int count, FearType fearType = FearType.Direct )
-		=> GameState.Current.Fear.AddOnSpace( space, count, fearType );
+	static public Task AddFear(this Space space, int count, FearType fearType = FearType.Direct)
+		=> GameState.Current.Fear.AddOnSpace(space, count, fearType);
 
 	static public void TransferAllTokensTo( this Space from,  Space to, bool copyInvisible ) {
 		foreach( var key in from.Keys.ToArray() ) {

@@ -9,7 +9,7 @@ public class UncannyMelting {
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		if(ctx.HasInvaders)
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 
 		if(ctx.HasBlight && ctx.IsOneOf( Terrain.Sands, Terrain.Wetland))
 			await ctx.RemoveBlight();

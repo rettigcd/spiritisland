@@ -19,7 +19,7 @@ public class IndomitableClaim {
 
 			// 3 fear if invaders are present,
 			if(ctx.HasInvaders)
-				ctx.AddFear(3);
+				await ctx.AddFear(3);
 
 			// Invaders skip all actions in target land this turn.
 			ctx.Space.SkipAllInvaderActions(Name);

@@ -34,7 +34,7 @@ public class AngryMobs : FearCardBase, IFearCard {
 		int explorersToAdd = Math.Min(town.RemainingHealth,2); // don't let Durable towns create 4
 		await ctx.Space.ReplaceAsync( town.AsHuman(), explorersToAdd, ctx.Space.GetDefault( Human.Explorer ) );
 
-		ctx.AddFear( 1 );
+		await ctx.AddFear( 1 );
 	}
 
 

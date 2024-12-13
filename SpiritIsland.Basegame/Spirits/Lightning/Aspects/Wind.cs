@@ -12,10 +12,8 @@ public class Wind : IAspect {
 		// Replaces	Special Rule: Swiftness of Lightning
 
 		// remove old
-		var swiftnessOfLightingTitle = SwiftnessOfLightning.Rule.Title;
-		spirit.SpecialRules = spirit.SpecialRules.Where(x => x.Title != swiftnessOfLightingTitle).ToArray();
-		var swiftnessOfLightingMod = spirit.Mods.OfType<SwiftnessOfLightning>().Single();
-		spirit.Mods.Remove(swiftnessOfLightingMod);
+		spirit.SpecialRules = spirit.SpecialRules.Where(x => x.Title != SwiftnessOfLightning.Name).ToArray();
+		spirit.RemoveMod<SwiftnessOfLightning>();
 
 		// add card
 		spirit.InnatePowers = [.. spirit.InnatePowers, InnatePower.For(typeof(ExaltationOfTheStormWind))];

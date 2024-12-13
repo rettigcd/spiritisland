@@ -14,7 +14,7 @@ public class SmotheringInfestation {
 
 		// if target land is J/W, 2 fear and 3 damage
 		if(ctx.IsOneOf( Terrain.Jungle, Terrain.Wetland )) {
-			ctx.AddFear(3);
+			await ctx.AddFear(3);
 			await ctx.DamageInvaders(3);
 		}
 

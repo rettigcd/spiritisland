@@ -7,11 +7,10 @@ public class StrikeLowWithSuddenFevers {
 	[SpiritCard(Name,2,Element.Fire,Element.Air,Element.Earth,Element.Animal), Fast, FromPresence(1,Filter.Disease) ]
 	[Instructions( "1 Fear. Invaders skip Ravage Actions." ), Artist( Artists.DamonWestenhofer )]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
-		// 1 fear.
-		ctx.AddFear(1);
 		// Invaders skip Ravage Actions.
 		ctx.Space.SkipRavage(Name);
-		return Task.CompletedTask;
+		// 1 fear.
+		return ctx.AddFear(1);
 	}
 
 }

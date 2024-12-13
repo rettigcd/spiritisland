@@ -21,8 +21,8 @@ public class ManyMindsPresenceToken
 		return Task.CompletedTask;
 	}
 
-	Task IHandleTokenRemoved.HandleTokenRemovedAsync( Space from, ITokenRemovedArgs args ){
-		UpdateBeastCount( args.Removed, from );
+	Task IHandleTokenRemoved.HandleTokenRemovedAsync( ITokenRemovedArgs args ){
+		UpdateBeastCount( args.Removed, (Space)args.From );
 		return Task.CompletedTask;
 	}
 

@@ -7,7 +7,7 @@ public class ShadowsOfTheBurningForest {
 	static public async Task Act(TargetSpaceCtx ctx){
 
 		// 2 fear
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		// if target is M/J, Push 1 explorer and 1 town
 		if(ctx.IsOneOf( Terrain.Mountain, Terrain.Jungle )) {

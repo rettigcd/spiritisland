@@ -18,7 +18,7 @@ public class UtterACurseOfDreadAndBone {
 			);
 
 		// then 2 fear. 1 damage.
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 		await ctx.DamageInvaders(1);
 
 		// if you have 3 moon 2 animal:

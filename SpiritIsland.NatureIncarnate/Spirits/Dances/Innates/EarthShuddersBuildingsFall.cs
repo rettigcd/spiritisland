@@ -21,7 +21,7 @@ public class EarthShuddersBuildingsFall {
 
 	static async Task QuakesCauseDamage( TargetSpaceCtx ctx, bool singleDamageToAll ) {
 		// 1 Fear.
-		ctx.AddFear( 1 );
+		await ctx.AddFear( 1 );
 
 		// In any # of lands with Quake:
 		var options = ActionScope.Current.Spaces.Where( x => x.Has( Token.Quake ) && x.HasAny( Human.Invader ) ).ToList();

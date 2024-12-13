@@ -10,7 +10,7 @@ public class RadiantAndHallowedGrove {
 		// 2 Fear if Invaders are present or adjacent.
 		var space = ctx.Space;
 		if(space.InOrAdjacentTo.Any( x => x.HasInvaders() ))
-			ctx.AddFear( 2 );
+			await ctx.AddFear( 2 );
 
 		// In both target and one adjacent land,
 		await InBothTargetAnd1Adjacent( space )

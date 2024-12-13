@@ -15,7 +15,7 @@ public class AnimatedWrackroot {
 
 	private static async Task FearAndExplorer( TargetSpaceCtx ctx ) {
 		// 1 fear
-		ctx.AddFear( 1 );
+		await ctx.AddFear(1);
 		// destroy 1 explorer
 		await ctx.Invaders.DestroyNOfClass( 1, Human.Explorer );
 	}

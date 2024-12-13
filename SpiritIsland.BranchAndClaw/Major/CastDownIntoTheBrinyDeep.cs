@@ -8,7 +8,7 @@ public class CastDownIntoTheBrinyDeep {
 	[Instructions( "6 Fear. Destroy all Invaders. -If you have- 2 Sun, 2 Moon, 4 Water, 4 Earth: Destroy the board containing target land and everything on that board. All destroyed Blight is removed from the game instead of being returned to the Blight Card." ), Artist( Artists.JasonBehnke )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		// 6 fear
-		ctx.AddFear(6);
+		await ctx.AddFear(6);
 		// destroy all invaders
 		await ctx.Invaders.DestroyAll(Human.Invader);
 

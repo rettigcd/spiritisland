@@ -20,7 +20,7 @@ public class EpidemicsRunRampant {
 	[InnateTier("3 water,3 fire,5 animal","+1 Damage per disease. 1 fear per disease (max 5). Remove 1 disease.")]
 	static public async Task Damage3( TargetSpaceCtx ctx ) {
 		await DiseaseDamagesInvaders( ctx, 2 );
-		ctx.AddFear( System.Math.Min(5,ctx.Disease.Count) );
+		await ctx.AddFear(System.Math.Min(5, ctx.Disease.Count));
 		await ctx.Disease.Remove(1, RemoveReason.Removed);
 	}
 	

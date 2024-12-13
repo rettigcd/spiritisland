@@ -1,26 +1,15 @@
-﻿
-namespace SpiritIsland.JaggedEarth;
+﻿namespace SpiritIsland.JaggedEarth;
 
-/// <summary>
-/// Adds the 2 special actions to the spirits available action list.
-/// </summary>
-class StrandedActions : IModifyAvailableActions {
+class MistsSteadilyDrift : IModifyAvailableActions {
 
-	// Combines both Rules
-
-	static public SpecialRule MistsSteadilyDrift => new SpecialRule(
+	static public SpecialRule Rule => new SpecialRule(
 		"Mists Steadily Drift",
 		"Up to twice during the Fast phase and up to twice during the Slow phase, Push 1 of your Presence."
 	);
 
-	static public SpecialRule StrandedInTheShiftingMists => new SpecialRule(
-		"Stranded in the Shifting Mist",
-		"Once each Fast phase, Isolate one of your lands."
-	);
-
 	#region constructor / init
 
-	public StrandedActions(Spirit spirit) {
+	public MistsSteadilyDrift(Spirit spirit) {
 		_spirit = spirit;
 
 		SpiritAction pushPresence = new SpiritAction("Push Presence", PushPresenceAsync);
@@ -45,7 +34,6 @@ class StrandedActions : IModifyAvailableActions {
 		switch( phase ) {
 			case Phase.Fast:
 				AddUpTo(orig, _pushFast, 2);
-				AddUpTo(orig, _isolate, 1);
 				break;
 			case Phase.Slow:
 				AddUpTo(orig, _pushSlow, 2);
@@ -61,12 +49,12 @@ class StrandedActions : IModifyAvailableActions {
 
 	#region private fields
 
-	// We can do better than this.
+	// 2 different copies so we can distinguish used-fast vs used-slow
 	readonly IActionFactory _pushFast;
 	readonly IActionFactory _pushSlow;
-	readonly IActionFactory _isolate = new SpiritGrowthAction( Cmd.Isolate.On().SpiritPickedLand().Which(Has.YourPresence), Phase.Fast );
 	readonly Spirit _spirit;
 
 	#endregion private fields
 
 }
+

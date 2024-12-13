@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland;
 
 public interface IReactToLandFear {
-	void HandleFearAdded( Space space, int fearAdded, FearType fearType );
+	Task HandleFearAddedAsync(Space space, int fearAdded, FearType fearType);
 }

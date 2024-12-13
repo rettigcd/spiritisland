@@ -8,7 +8,7 @@ public class Plaguebearers {
 
 		// 1 fear if invaders are present.
 		if(ctx.HasInvaders)
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 
 		// For each disease, Push 2 explorer / town / dahan.
 		await ctx.SourceSelector

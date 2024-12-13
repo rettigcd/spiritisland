@@ -45,7 +45,7 @@ public class ForsakeSocietyToChaseAfterDreams {
 
 		// If town/city remain, 1 fear.
 		if( ctx.Space.HasAny(Human.Town_City) )
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 	}
 
 }

@@ -10,7 +10,7 @@ public class InfestedAquifers {
 			new SpaceAction( "1 damage to each invader"
 				, ctx => ctx.DamageEachInvader( 1 )
 			).OnlyExecuteIf( x=>x.Disease.Any ),
-			new SpaceAction( "1 fear and 1 disease", ctx => { ctx.AddFear(1); ctx.Disease.AddAsync(1); return Task.CompletedTask; } )
+			new SpaceAction( "1 fear and 1 disease", async ctx => { await ctx.AddFear(1); await ctx.Disease.AddAsync(1); } )
 				.OnlyExecuteIf( x => x.IsOneOf(Terrain.Mountain,Terrain.Wetland) )
 		);
 	}

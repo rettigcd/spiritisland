@@ -64,15 +64,16 @@ public class Fear : IHaveMemento {
 		}
 	}
 
-	public void AddOnSpace( Space space, int count, FearType fearType ) {
-		if(count == 0) return;
+	public async Task AddOnSpace(Space space, int count, FearType fearType) {
+		if( count == 0 ) return;
 
-		Add( count );
+		Add(count);
 
 		var mods = space.Keys.OfType<IReactToLandFear>().ToArray();
-		foreach(IReactToLandFear mod in mods)
-			mod.HandleFearAdded( space, count, fearType );
+		foreach( IReactToLandFear mod in mods )
+			await mod.HandleFearAddedAsync(space, count, fearType);
 	}
+
 
 	/// <summary> Adds generated Fear to the fear pool </summary>
 	public void Add( int count ) {

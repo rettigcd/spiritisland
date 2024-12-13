@@ -20,7 +20,7 @@ public class SeaMonsters {
 		// IF invaders are present,
 		if(ctx.HasInvaders)
 			// 2 fear per beast (max 8 fear).
-			ctx.AddFear( System.Math.Min( 8, beasts.Count * 2 ) );
+			await ctx.AddFear(System.Math.Min(8, beasts.Count * 2));
 
 		int damage = 3 * beasts.Count // 3 damage per beast
 			+ ctx.Blight.Count; // 1 damage per blight

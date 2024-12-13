@@ -16,9 +16,9 @@ public class InflameTheFiresOfLife {
 
 	static SpaceAction FearAndStrife => new SpaceAction( "1 fear and 1 strife", FearAndStrife_Imp );
 
-	static Task FearAndStrife_Imp( TargetSpaceCtx ctx ) {
-		ctx.AddFear( 1 );
-		return ctx.AddStrife();
+	static async Task FearAndStrife_Imp( TargetSpaceCtx ctx ) {
+		await ctx.AddFear( 1 );
+		await ctx.AddStrife();
 	}
 
 

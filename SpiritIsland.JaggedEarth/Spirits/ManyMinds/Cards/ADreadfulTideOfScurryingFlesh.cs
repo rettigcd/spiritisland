@@ -13,7 +13,7 @@ public class ADreadfulTideOfScurryingFlesh {
 
 		// For each beast Removed,
 		// 2 fear
-		ctx.AddFear( 2*removed );
+		await ctx.AddFear(2 * removed);
 		// and skip one Invader Action
 		while(0<removed--)
 			ctx.Space.Skip1InvaderAction( Name, ctx.Self );

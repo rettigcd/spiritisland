@@ -13,9 +13,9 @@ public class BatsScoutForRaidsByDarkness{
 
 	static Task EachDahanDamagesTownOrCity(TargetSpaceCtx ctx ) => ctx.DamageInvaders(ctx.Dahan.CountAll,Human.Town_City);
 
-	static Task OneFearAndGatherUpTo2Dahan(TargetSpaceCtx ctx ) {
-		ctx.AddFear(1); 
-		return ctx.GatherUpToNDahan(2);
+	static async Task OneFearAndGatherUpTo2Dahan(TargetSpaceCtx ctx ) {
+		await ctx.AddFear(1); 
+		await ctx.GatherUpToNDahan(2);
 	}
 
 }

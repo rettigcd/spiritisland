@@ -65,7 +65,7 @@ public class SpiritPresenceToken
 	/// <summary>
 	/// Override this to add behavior that IS NOT destroyed presenced.
 	/// </summary>
-	public virtual async Task HandleTokenRemovedAsync( Space from,  ITokenRemovedArgs args ) {
+	public virtual async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		if(args.Removed == this && args.Reason.IsDestroyingPresence()) {
 			await Self.Presence.Destroyed.Location.SinkAsync(this,args.Count,AddReason.AddedToCard);
 			await OnPresenceDestroyed( args );

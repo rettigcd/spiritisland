@@ -7,14 +7,14 @@ public class TwistedFlowersMurmurUltimatums {
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		// 4 fear
-		ctx.AddFear(4);
+		await ctx.AddFear(4);
 			
 		// add 1 strife
 		await ctx.AddStrife();
 
 		// if you have 3moon, 2 air, 3 plant (before the terror level check)
 		if(await ctx.YouHave( "3 moon,2 air,3 plant" )) {
-			ctx.AddFear( 3 );
+			await ctx.AddFear( 3 );
 			await ctx.DamageInvaders( 3 );
 		}
 

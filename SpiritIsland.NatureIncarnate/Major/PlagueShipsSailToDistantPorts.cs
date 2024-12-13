@@ -9,7 +9,7 @@ public class PlagueShipsSailToDistantPorts {
 	[Instructions( "1 Fear. Add 4 Disease among Coastal lands other than target land.","2 fire,2 water,2 animal","Instead: 1 Fear. 3 Damage. Spirits may jointly spend 3 Energy/player (aided by removing Disease for 3 Energy each) to remove the top Fear Card." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 Fear.
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		await Cmd.Pick1( 
 			AddDisease, 

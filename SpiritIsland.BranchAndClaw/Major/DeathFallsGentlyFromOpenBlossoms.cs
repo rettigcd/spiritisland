@@ -15,7 +15,7 @@ public class DeathFallsGentlyFromOpenBlossoms {
 		// if 3 air and 3 plant:  
 		if( await ctx.YouHave("3 air,3 plant")) {
 			// 3 fear.
-			ctx.AddFear(3);
+			await ctx.AddFear(3);
 			// Add 1 disease to 2 adjacent lands with invaders.
 			var options = ctx.Space.Adjacent.Where( x => x.HasInvaders() );
 			for(int i = 0; i < 2; ++i) {

@@ -59,7 +59,7 @@ public class TDaTD_ActionTokens( Space space )
 		TDaTD_ActionTokens.RecordSpaceWithDreamers( this );
 
 		// Add fear
-		this.AddFear( adj.NewToken.HumanClass.FearGeneratedWhenDestroyed );
+		await this.AddFear( adj.NewToken.HumanClass.FearGeneratedWhenDestroyed );
 
 		// Push towns and explorers
 		var newToken = adj.NewToken;

@@ -22,8 +22,7 @@ public class ExplosiveEruption {
 	[ExplosiveInnateOption( "3 fire, 3 earth", 4, "Generate X fear.",1)]
 	static public Task Option2( TargetSpaceCtx ctx ) {
 		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction();
-		ctx.AddFear( destroyedCount );
-		return Task.CompletedTask;
+		return ctx.AddFear( destroyedCount );
 	}
 
 	[ExplosiveInnateOption( "4 fire, 2 air, 4 earth", 6, "In each land within range 1, 4 Damage.  Add 1 blight to target land; doing so does not Destroy your presence.",2)]

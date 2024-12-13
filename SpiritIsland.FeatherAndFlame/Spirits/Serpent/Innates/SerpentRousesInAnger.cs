@@ -22,7 +22,7 @@ public class SerpentRousesInAnger {
 		var els = ctx.Self.Elements;
 		int count = Math.Min( await els.GetAsync(Element.Moon), await els.GetAsync(Element.Earth)) / 2;
 		// 2 fear
-		ctx.AddFear( count*2 );
+		await ctx.AddFear( count*2 );
 		// you may Push 1 town from target land.
 		await ctx.PushUpTo( count, Human.Town );
 	}

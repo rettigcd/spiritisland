@@ -14,7 +14,7 @@ public class ThicketsEruptWithEveryTouchOfBreeze {
 		// if you have 3 plant,
 		if( await ctx.YouHave("3 plant" )) {
 			// 1 fear
-			ctx.AddFear(1);
+			await ctx.AddFear(1);
 			// +2 damage
 			await ctx.DamageInvaders(2);
 		}

@@ -7,7 +7,7 @@ public class ToweringWrath {
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		// 2 fear
-		ctx.AddFear( 2 );
+		await ctx.AddFear( 2 );
 
 		// for each of your SS in / adjacent to target land, 2 damage
 		int sacredSiteCount = ctx.Space.InOrAdjacentTo.Intersect( ctx.Self.Presence.SacredSites ).Count() ; // In/adjacent

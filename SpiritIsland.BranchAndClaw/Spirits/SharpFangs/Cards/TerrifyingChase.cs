@@ -17,7 +17,7 @@ public class TerrifyingChase {
 
 		// if you pushed any invaders, 2 fear
 		if( ctx.Space.InvaderTotal() < startingInvaderCount )
-			ctx.AddFear(2);
+			await ctx.AddFear(2);
 
 	}
 

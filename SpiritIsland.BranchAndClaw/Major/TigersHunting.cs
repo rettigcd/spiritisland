@@ -8,7 +8,7 @@ public class TigersHunting {
 	[Instructions( "2 Fear. Add 1 Beasts. Gather up to 1 Beasts. 1 Damage per Beasts. Push up to 2 Beasts. -If you have- 2 Sun, 2 Moon, 3 Animal: 1 Damage in an adjacent land without Blight, and +1 Damage per Beasts there." ), Artist( Artists.CariCorene )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 2 fear
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		// add 1 beast.
 		var beasts = ctx.Beasts;

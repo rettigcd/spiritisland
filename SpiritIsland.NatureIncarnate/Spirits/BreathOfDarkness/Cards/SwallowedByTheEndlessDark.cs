@@ -9,7 +9,7 @@ public class SwallowedByTheEndlessDark {
 	static async public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 2 Fear.
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		// Abduct 1 Explorer.
 		var options = ctx.Space.SpaceTokensOfTag(Human.Explorer);

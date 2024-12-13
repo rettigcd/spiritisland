@@ -17,14 +17,14 @@ public class SwirlAndSpill {
 
 	[InnateTier( "3 water,1 animal", "1 Fear. Push up to 2 Town/Presence/Beast.", 0 )]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
-		ctx.AddFear( 1 );
+		await ctx.AddFear( 1 );
 		await BuildTier2Source( ctx )
 			.PushUpToN( ctx.Self );
 	}
 
 	[InnateTier( "5 water,2 plant,2 animal", "In one land pushed into, Downgrade all Town and all City." )]
 	static public async Task Option3( TargetSpaceCtx ctx ) {
-		ctx.AddFear( 1 ); // from Tier-2
+		await ctx.AddFear( 1 ); // from Tier-2
 
 		await BuildTier2Source( ctx )
 			.ConfigDestination( InOneLandPushedInto_DowngradeAllTownsAndCities(ctx.Self) )

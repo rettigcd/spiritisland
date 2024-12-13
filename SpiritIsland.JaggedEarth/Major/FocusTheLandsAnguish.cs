@@ -21,7 +21,7 @@ public class FocusTheLandsAnguish {
 
 		// If this power Destroys any town/city, 5 fear.
 		if(calcUnits(ctx) > initialCount)
-			ctx.AddFear(5);
+			await ctx.AddFear(5);
 
 	}
 

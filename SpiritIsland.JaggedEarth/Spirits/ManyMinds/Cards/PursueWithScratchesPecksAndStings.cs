@@ -6,7 +6,7 @@ public class PursueWithScratchesPecksAndStings {
 	[Instructions( "1 Fear. For each Beasts past the first, Push 1 Explorer / Town." ), Artist( Artists.MoroRogers )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 fear
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 		// for each beast past the first, Push 1 explorer / town.
 		int pushCount = ctx.Beasts.Count-1;
 		if(0 < pushCount)

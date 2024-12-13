@@ -10,7 +10,7 @@ public class AcceleratedRot {
 
 		// 2 fear, 4 damage
 		int damageToInvaders = 4;
-		ctx.AddFear(2);
+		await ctx.AddFear(2);
 
 		if(await ctx.YouHave("3 sun,2 water,3 plant")){
 			// +5 damage, remove 1 blight

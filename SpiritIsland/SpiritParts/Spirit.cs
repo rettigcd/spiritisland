@@ -294,7 +294,7 @@ public abstract partial class Spirit
 			Phase.Init or
 			Phase.Growth => ActionCategory.Spirit_Growth,
 			Phase.Fast or
-			Phase.Slow => ActionCategory.Spirit_Power,
+			Phase.Slow => ActionCategory.Spirit_Power, // ! this is wrong. Some Special rules add actions during fast & slow that aren't Spirit powers. (Stranded)
 			_ => throw new InvalidOperationException(),
 		};
 	}

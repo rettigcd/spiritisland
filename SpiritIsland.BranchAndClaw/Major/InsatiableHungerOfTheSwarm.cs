@@ -19,7 +19,7 @@ public class InsatiableHungerOfTheSwarm {
 
 			// each beast deals:
 			// 1 fear
-			ctx.AddFear( beasts.Count );
+			await ctx.AddFear(beasts.Count);
 			// 2 damage to invaders
 			await ctx.DamageInvaders( beasts.Count * 2 );
 			// and 2 damage to dahan.

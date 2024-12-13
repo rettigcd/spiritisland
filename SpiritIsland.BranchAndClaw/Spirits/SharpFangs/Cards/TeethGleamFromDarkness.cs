@@ -6,7 +6,7 @@ public class TeethGleamFromDarkness {
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
 		await ctx.SelectActionOption(
-			new SpaceAction("1 fear, add 1 beast", ctx => { ctx.AddFear(1); ctx.Beasts.AddAsync(1); } ),
+			new SpaceAction("1 fear, add 1 beast", async ctx => { await ctx.AddFear(1); await ctx.Beasts.AddAsync(1); } ),
 			new SpaceAction("3 fear", ctx => ctx.AddFear(3) )
 				.OnlyExecuteIf( x => ctx.Space.HasInvaders() && x.Beasts.Any )
 		);

@@ -10,7 +10,7 @@ public class UnbearableGaze {
 	[Instructions( "1 Fear. Push 2 Explorer/Town from origin or target land  (or 1 Explorer/Town from each)." ), Artist( Artists.AgnieszkaDabrowiecka )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 		// 1 Fear.
-		ctx.AddFear( 1 );
+		await ctx.AddFear( 1 );
 
 		// Push 2 Explorer/Town from origin or target land  (or 1 Explorer/Town from each).
 		await PushFromTargetOrOrigin( ctx, 2, Human.Explorer_Town );

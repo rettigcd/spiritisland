@@ -6,7 +6,7 @@ public class WindsOfRustAndAtrophy {
 	[Instructions( "1 Fear and Defend 6. Replace 1 City with 1 Town or 1 Town with 1 Explorer. -If you have- 3 Air, 3 Water, 2 Animal: Repeat this Power." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 1 fear and defend 6
-		ctx.AddFear( 1 );
+		await ctx.AddFear(1);
 		ctx.Defend( 6 );
 
 		// replace 1 city with 1 town OR 1 town with 1 explorer

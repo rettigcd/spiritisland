@@ -7,7 +7,7 @@ public class MindShatteringSong {
 	[InnateTier("1 moon, 2 air","1 Fear per moon you have.",0)]
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		int moonCount = await ctx.Self.Elements.GetAsync(Element.Moon);
-		ctx.AddFear( moonCount );
+		await ctx.AddFear( moonCount );
 	}
 
 	[InnateTier("1 sun,2 air","1 Damage per sun you have to Invaders with Strife only.",1)]

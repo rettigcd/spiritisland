@@ -7,7 +7,7 @@ public class FlashFires {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// 1 fear
-		ctx.AddFear(1);
+		await ctx.AddFear(1);
 
 		// 1 damage
 		await ctx.DamageInvaders(1);
