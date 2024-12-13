@@ -7,10 +7,11 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	#region static Container property
 
-	readonly static AsyncLocal<AsyncContainer<ActionScope>> _scopeContainer = new(); // value gets shallow-copied into child calls and post-awaited states.
+	// value gets shallow-copied into child calls and post-awaited states.
+	public readonly static AsyncLocal<AsyncContainer> _scopeContainer = new();
 
-	class AsyncContainer<T>(T startingValue) {
-		public T Current = startingValue;
+	public class AsyncContainer(ActionScope startingValue) {
+		public ActionScope Current = startingValue;
 	}
 
 	#endregion static Container property
@@ -38,7 +39,7 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
 	static public void Initialize( ActionScope rootSccope ) {
-		_scopeContainer.Value = new AsyncContainer<ActionScope>( rootSccope );
+		_scopeContainer.Value = new AsyncContainer( rootSccope );
 	}
 
 	/// <summary> Starts Spirit Action </summary>
@@ -117,7 +118,7 @@ public sealed class ActionScope : IAsyncDisposable {
 		Id = Guid.NewGuid();
 		Category = actionCategory;
 
-		AsyncContainer<ActionScope> container = _scopeContainer.Value; // grab containers
+		AsyncContainer container = _scopeContainer.Value; // grab containers
 		_old = container.Current;
 		container.Current = this;
 

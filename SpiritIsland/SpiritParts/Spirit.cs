@@ -32,6 +32,7 @@ public abstract partial class Spirit
 		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.Discard, Cards = DiscardPile } );
 
 		Elements = new ElementMgr( this );
+		Targetter = new Targetter( this );
 	}
 
 	public void InitSpirit( Board board, GameState gameState ){
@@ -122,7 +123,7 @@ public abstract partial class Spirit
 		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
 
 		IActionFactory[] options = GetAvailableActions(phase).ToArray();
-		while( options.Any() ) {
+		while( 0 < options.Length ) {
 			IActionFactory option = await SelectAsync(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
 			if( option == null ) break;
 
@@ -545,7 +546,27 @@ public abstract partial class Spirit
 
 	#endregion
 
-	#region Tarteting / Range
+	#region Targeting / Range
+
+	/// <summary>
+	/// Finds Spaces within Range of Spirits Presence
+	/// </summary>
+	/// <remarks>
+	/// a) Selects correct range calculator (Default or Power)
+	/// b) provides PresenceLands
+	/// </remarks>
+	// Used by:
+	//		PlacePresence - Growth + Powers
+	//		AddDestroyedPresence - mostly powers, but also 2 Growth
+	//		Unrelenting Growth - Power
+	//		Bargains of Power - Power
+	//		Unleash a torrent - Power
+	public Space[] FindSpacesWithinRange( TargetCriteria targetCriteria ) {
+		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
+		return rangeCalculator.GetTargetingRoute_MultiSpace( Presence.Lands, targetCriteria ).Targets;
+	}
+
+	public Targetter Targetter;
 
 	/// <summary> 
 	/// Calculates Source for *TARGETING* *Powers* only.  
@@ -557,68 +578,6 @@ public abstract partial class Spirit
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
 	public ICalcRange PowerRangeCalc = new DefaultRangeCalculator();
 
-	/// <summary> Used EXCLUSIVELY For Targeting a PowerCard's Space </summary>
-	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
-	public virtual async Task<(Space, Space[])> TargetsSpace( 
-		string prompt,
-		IPreselect preselect,
-		TargetingSourceCriteria sourceCriteria,
-		params TargetCriteria[] targetCriteria
-	) {
-		var (sources,spaceOptions) = GetPowerTargetOptions( GameState.Current, sourceCriteria, targetCriteria );
-		
-		if(spaceOptions.Length == 0) {
-			ActionScope.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
-			return (null,sources);
-		}
-
-		if(spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle )
-			return (spaceOptions[0],sources);
-
-		Space mySpace = preselect != null && UserGateway.UsePreselect.Value
-			? await preselect.PreSelect(this, spaceOptions)
-			: await SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.Always));
-
-		return (mySpace,sources);
-	}
-
-	public IEnumerable<Space> FindTargettingSourcesFor( SpaceSpec target, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria ) {
-		return sourceCriteria.GetSources(this)
-			.Where(source => IsOriginFor(source,target,targetCriteria))
-			.ToArray();
-	}
-
-	/// <summary> Determines if target can be reached from the specified source given any of the TargetCriteria </summary>
-	/// <remarks>Used to find Origin lands</remarks>
-	public bool IsOriginFor( Space source, SpaceSpec target, params TargetCriteria[] targetCriteria ) {
-		var targetSpace = target.ScopeSpace;
-		return targetCriteria.Any( tc => 
-			PowerRangeCalc.GetSpaceOptions( source, tc ).Contains( targetSpace )
-		);
-	}
-
-	// Helper for calling SourceCalc & RangeCalc, only for POWERS
-	protected virtual (Space[] sources, Space[] options) GetPowerTargetOptions(
-		GameState gameState,
-		TargetingSourceCriteria sourceCriteria,
-		params TargetCriteria[] targetCriteria // allows different criteria at different ranges
-	) {	
-		var sources = sourceCriteria.GetSources(this).ToArray();
-
-		// Convert TargetCriteria to spaces and merge (distinct) them together.
-		return (
-			sources,
-			PowerRangeCalc.GetSpaceOptions( sources, targetCriteria ).ToArray()
-		);
-	}
-
-	// Non-targetting, For Power, Range-From Presence finder
-	public IEnumerable<Space> FindSpacesWithinRange( TargetCriteria targetCriteria ) {
-		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
-		return rangeCalculator
-			.GetSpaceOptions( Presence.Lands, targetCriteria );
-	}
-
 	#endregion
 
 	// Works like badlands.
@@ -626,21 +585,6 @@ public abstract partial class Spirit
 
 	Spirit IHaveASpirit.Self => this;
 
-}
-
-
-// IHandleActivatedActions
-
-public interface IModifyAvailableActions { 
-	void Modify(List<IActionFactory> orig, Phase phase);
-}
-
-public interface IHandleActivatedActions {
-	void ActionActivated(IActionFactory factory);
-}
-
-public interface IHandleCardPlayed {
-	Task Handle(Spirit spirit, PowerCard card);
 }
 
 

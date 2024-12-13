@@ -12,7 +12,7 @@ public class Madness : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(Shadows.Name, Name);
 	public const string Name = "Madness";
-	public string[] Replaces => [Shadows.ShadowsOfTheDahan_Name];
+	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
 	}

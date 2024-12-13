@@ -25,11 +25,11 @@ class SkyStretchesToShoreApi : DefaultRangeCalculator {
 		self.PowerRangeCalc = this;
 	}
 
-	public override IEnumerable<Space> GetSpaceOptions( Space source, TargetCriteria tc ) {
-		var normal = _orig.GetSpaceOptions( source, tc );
-		var shore = _orig.GetSpaceOptions( source, tc.ExtendRange( 3 ) )
-			.Where( x => x.SpaceSpec.IsCoastal );
-		return normal.Union( shore );
+	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
+		var normal = _orig.GetTargetingRoute(source, tc);
+		var shore = _orig.GetTargetingRoute(source, tc.ExtendRange(3))._routes
+			.Where(x => x.target.SpaceSpec.IsCoastal);
+		return new TargetRoutes( normal._routes.Union(shore) );
 	}
 
 	// readonly Spirit _self;

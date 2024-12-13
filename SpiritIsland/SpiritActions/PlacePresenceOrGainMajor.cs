@@ -1,12 +1,13 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class AddPresenceOrGainMajor : SpiritAction {
+/// <remarks>Growth Only</remarks>
+public class PlacePresenceOrGainMajor : SpiritAction {
 
-	public AddPresenceOrGainMajor():base( "Add Presence or Gain Major" ) { }
+	public PlacePresenceOrGainMajor():base( "Add Presence or Gain Major" ) { }
 
 	public override Task ActAsync( Spirit self ) {
 		return Cmd.Pick1(
-			Cmd.PlacePresenceWithin(2),
+			new PlacePresence(2),
 			DrawMajorWithoutForgetting
 		).ActAsync(self);
 	}

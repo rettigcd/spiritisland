@@ -1,9 +1,24 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+class MistsShiftAndFlow(Spirit spirit) : Targetter(spirit) {
+
+	public const string Name = "Mists Shift and Flow";
+	const string Description = "When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements.";
+	static public readonly SpecialRule Rule = new SpecialRule(Name, Description);
+
+	public override Task<TargetSpaceResults> TargetsSpace(string prompt, IPreselect preselect, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
+		bool presenceIsFrozen = false;// !!! need to check if Presence.CanMove
+		return presenceIsFrozen
+			? base.TargetsSpace(prompt, preselect, sourceCriteria, targetCriteria)
+			: new MistsShiftAndFlowOnce(_spirit, prompt, sourceCriteria, targetCriteria).TargetAndFlow();
+	}
+
+}
+
 /// <summary>
 /// New instance created for each Targetting action
 /// </summary>
-class MistsShiftAndFlow {
+class MistsShiftAndFlowOnce {
 
 	#region private fields
 
@@ -19,12 +34,7 @@ class MistsShiftAndFlow {
 
 	#endregion
 
-	static public readonly SpecialRule Rule = new SpecialRule(
-		"Mists Shift and Flow",
-		"When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements."
-	);
-
-	public MistsShiftAndFlow(Spirit self, string prompt, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria) {
+	public MistsShiftAndFlowOnce(Spirit self, string prompt, TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria) {
 		_spirit = (ShroudOfSilentMist)self;
 		_prompt = prompt ?? "Target Space.";
 		_sourceCriteria = sourceCriteria;
@@ -32,7 +42,7 @@ class MistsShiftAndFlow {
 		CalculateSpaceGroups();
 	}
 
-	public async Task<(Space, Space[])> TargetAndFlow() {
+	public async Task<TargetSpaceResults> TargetAndFlow() {
 		// When targeting a land with a Power,
 		// You may Gather 1 of your presence into the target or an adjacent land.
 		// This can enable you to meet Range and targeting requirements."
@@ -41,12 +51,12 @@ class MistsShiftAndFlow {
 		// Instead, we need to test the values that come back from CalcRange and see if they are actually Range(2) or adjacent.
 
 		Space target = await FindTarget();
-		if(target == null) return (null, []);
-		if(CantFlowAndStillReach( target )) return (target, []);
+		if(target == null) return null;
+		if(CantFlowAndStillReach( target )) return new TargetSpaceResults(target, []);
 
 		await FlowPresence( target );
 
-		return (target, []);
+		return new TargetSpaceResults(target, []); ;
 
 	}
 
@@ -157,7 +167,7 @@ class MistsShiftAndFlow {
 	}
 
 	IEnumerable<Space> GetTargetOptionsFromKnownSources( IEnumerable<Space> sources, TargetCriteria tc )
-		=> _spirit.PowerRangeCalc.GetSpaceOptions( sources, tc );
+		=> _spirit.PowerRangeCalc.GetTargetingRoute_MultiSpace( sources, tc ).Targets;
 
 	// Shroud Helper - for easier testing Targetting
 	class SpaceCounts : CountDictionary<Space>, IKnowSpiritLocations {

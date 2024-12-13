@@ -38,6 +38,8 @@ public class ShroudOfSilentMist : Spirit {
 			InnatePower.For(typeof(LostInTheSwirlingHaze))
 		];
 		SpecialRules = [GatherPowerFromTheCoolAndDark, MistsShiftAndFlow.Rule, SlowAndSilentDeath.Rule];
+
+		Targetter = new MistsShiftAndFlow(this);
 	}
 
 	bool _gainedCoolEnergyThisTurn = false;
@@ -79,24 +81,9 @@ public class ShroudOfSilentMist : Spirit {
 
 	#endregion
 
-	public override Task<(Space, Space[])> TargetsSpace( 
-		string prompt,
-		IPreselect preselect,
-		TargetingSourceCriteria sourceCriteria, 
-		params TargetCriteria[] targetCriteria
-	) {
-		bool presenceIsFrozen = false;// !!! need to check if Presence.CanMove
-		return !EnableMistsShiftAndFlow || presenceIsFrozen
-			? base.TargetsSpace(prompt,preselect,sourceCriteria,targetCriteria)
-			: new MistsShiftAndFlow(this, prompt, sourceCriteria, targetCriteria).TargetAndFlow();
-	}
-
-	public bool EnableMistsShiftAndFlow { get; set; } = true;
-
 	protected override object CustomMementoValue { 
 		get => _gainedCoolEnergyThisTurn;
 		set => _gainedCoolEnergyThisTurn = (bool)value;
 	}
 
 }
-

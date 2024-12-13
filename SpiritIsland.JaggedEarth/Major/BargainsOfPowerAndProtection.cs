@@ -27,7 +27,7 @@ public class BargainsOfPowerAndProtection {
 			// !! This is kind of slow to do for every space.
 			// ??? Is there some way we can cache this inside the UnitOfWork?
 
-			var match = _self.FindSpacesWithinRange( new TargetCriteria( 1 ) )
+			var match = _self.FindSpacesWithinRange(new TargetCriteria(1))
 				.FirstOrDefault( opt => opt.Equals(space) );
 			return match?.Dahan.CountAll ?? 0;
 		}

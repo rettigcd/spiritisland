@@ -44,11 +44,7 @@ public class StormSwath {
 
 	static Task<Space> FindOriginLand( TargetSpaceCtx ctx ) {
 
-		var ssOptions = ctx.Self.FindTargettingSourcesFor(
-			ctx.SpaceSpec,
-			new TargetingSourceCriteria( TargetFrom.SacredSite ),
-			new TargetCriteria( 1 )
-		);
+		var ssOptions = TargetSpaceAttribute.TargettedSpace.Sources;
 
 		return ctx.SelectAsync( new A.SpaceDecision( "Select Origin land",  ssOptions, Present.AutoSelectSingle ));
 	}

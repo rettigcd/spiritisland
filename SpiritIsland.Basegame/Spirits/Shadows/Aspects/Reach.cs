@@ -10,7 +10,7 @@ public class Reach : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(Shadows.Name, Name);
 	public const string Name = "Reach";
-	public string[] Replaces => [Shadows.ShadowsOfTheDahan_Name];
+	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
 	}

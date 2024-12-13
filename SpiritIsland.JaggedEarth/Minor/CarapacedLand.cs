@@ -23,7 +23,7 @@ public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
 
 	public override async Task<object> GetTargetCtx( string powerName, Spirit self ) {
 
-		var (space,_) = await self.TargetsSpace( powerName+": Target Space"
+		var target = await self.Targetter.TargetsSpace( powerName+": Target Space"
 			, preselect: null
 			, _sourceCriteria
 			, [
@@ -31,7 +31,7 @@ public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
 				new TargetCriteria( _range+1, self, Filter.Beast ) // extend 1 for beast
 			]
 		);
-		return space is null ? null : (object)self.Target(space);
+		return target is null ? null : (object)self.Target(target.Space);
 	}
 
 }

@@ -81,7 +81,7 @@ public class DancesUpEarthquakes : Spirit {
 			new PresenceTrack( Track.Card2, GatherDahan, MoonAndFire, AdditionalImpending, Track.EarthEnergy, Track.Card3, Track.Card4 )
 		)
 		, new GrowthTrack(
-			new GrowthGroup( new ReclaimAll(), new AddPresenceOrGainMajor() ),
+			new GrowthGroup( new ReclaimAll(), new PlacePresenceOrGainMajor() ),
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ) ),
 			new GrowthGroup( new PlacePresence( 3 ), new AccelerateOrDelay(), new ReclaimN( 1 ) )
 		)

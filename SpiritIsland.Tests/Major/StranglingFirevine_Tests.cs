@@ -21,20 +21,17 @@ public class StranglingFirevine_Tests {
 		fxt.Spirit.Given_IsOn( fxt.GameState.Tokens[fxt.Board[7]] );
 
 		//  When: activate card
-		var ctx = fxt.Spirit.Target( space );
-		await StranglingFirevine.ActAsync( ctx).AwaitUser(user => {
-			//   And: auto selecting origin land
-			//   And: explorers are destoryed
-
+		await fxt.Spirit.When_ResolvingCard<StranglingFirevine>(user=>{
+			user.NextDecision.HasPrompt("Strangling Firevine: Target Space").HasOptions("A5,A7,A8").Choose("A5");
 			// Accept threshold
-			fxt.Choose("Yes");
+			user.NextDecision.Choose("Yes");
 			//   And: apply normal damage
-			fxt.Choose("T@2");
-			fxt.Choose("T@1");
+			user.NextDecision.Choose("T@2");
+			user.NextDecision.Choose("T@1");
 			//   And: apply escalation damage
-			fxt.Choose("T@2");
-			fxt.Choose("T@1");
-		}).ShouldComplete();
+			user.NextDecision.Choose("T@2");
+			user.NextDecision.Choose("T@1");
+		});
 
 		// Then: invaders destroyed, 1 wilds left behind.
 		fxt.GameState.Tokens[space].Summary.ShouldBe("1W");

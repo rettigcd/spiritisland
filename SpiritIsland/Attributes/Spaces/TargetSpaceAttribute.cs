@@ -1,14 +1,15 @@
 ﻿namespace SpiritIsland;
 
 /// <param name="commaDelimitedRestrictFrom">null or comma-delimited Target</param>
-public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimitedRestrictFrom, int range, params string[] targetFilter ) : GeneratesContextAttribute {
+public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimitedRestrictFrom, int range, params string[] targetFilter ) 
+	: GeneratesContextAttribute
+{
 
 	#region ActionScope Targetted Details
-	/// <summary>
-	/// The space that was targetted (if any) and the targetting criteria used to get it.
-	/// </summary>
+	/// <summary> The space that was targetted (if any) and the targetting criteria used to get it. </summary>
 	public static TargetSpaceResults TargettedSpace => _targettedSpace.Value;
 	readonly static ActionScopeValue<TargetSpaceResults> _targettedSpace = new ActionScopeValue<TargetSpaceResults>("Targetted Space");
+
 	#endregion ActionScope Targetted Details
 
 	public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
@@ -28,16 +29,16 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 	public override async Task<object> GetTargetCtx( string powerName, Spirit self ){
 
 		TargetCriteria targetCriteria = await ApplySpiritModsToGetTargetCriteria(self);
-		(Space space, Space[] sources) = await self.TargetsSpace( 
+		var result = await self.Targetter.TargetsSpace( 
 			powerName+": Target Space", 
 			Preselect,
 			_sourceCriteria,
 			targetCriteria
 		);
-		if(space == null) return null;
-		TargetSpaceCtx target = self.Target( space );
+		if(result == null) return null;
+		TargetSpaceCtx target = self.Target( result.Space );
 		// Store ambient targetting Details in case anyone needs it.
-		_targettedSpace.Value = new TargetSpaceResults(target.Space, sources);
+		_targettedSpace.Value = result;
 		return target;
 	}
 
@@ -59,7 +60,5 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 	protected virtual Task<int> CalcRange(Spirit self) => Task.FromResult(_range);
 
 	#endregion protected fields
-
-	public record TargetSpaceResults(Space space, Space[] sources);
 
 }

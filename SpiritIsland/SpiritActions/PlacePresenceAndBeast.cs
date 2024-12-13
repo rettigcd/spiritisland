@@ -7,7 +7,7 @@ public class PlacePresenceAndBeast : SpiritAction {
 	public override async Task ActAsync( Spirit self ) {
 		TokenLocation from = await self.SelectSourcePresence();
 
-		var options = DefaultRangeCalculator.Singleton.GetSpaceOptions( self.Presence.Lands, new TargetCriteria( 3 ) );
+		var options = DefaultRangeCalculator.Singleton.GetTargetingRoute_MultiSpace( self.Presence.Lands, new TargetCriteria( 3 ) ).Targets;
 		Space to = await self.SelectAsync( A.SpaceDecision.ToPlacePresence( options, Present.Always, self.Presence.Token ) );
 
 		await from.MoveToAsync(to);

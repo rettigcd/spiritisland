@@ -10,7 +10,7 @@ public class Amorphous : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(Shadows.Name, Name);
 	public const string Name = "Amorphous";
-	public string[] Replaces => [Shadows.ShadowsOfTheDahan_Name];
+	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
 	}

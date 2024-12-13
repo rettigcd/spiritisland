@@ -1,5 +1,9 @@
 ﻿namespace SpiritIsland;
 
+/// <remarks>
+/// Used for Growth & Blight
+/// EXCEPT Cmd.PlacePresenceWithin( int range ) which is used for 2 Powers
+/// </remarks>
 public class PlacePresence : SpiritAction {
 
 	#region constructors

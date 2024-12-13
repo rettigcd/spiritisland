@@ -2,7 +2,9 @@
 
 public class StranglingFirevine {
 
-	[MajorCard( "Strangling Firevine", 4, Element.Fire, Element.Plant ), Slow, FromPresence( Filter.Sands, 1 )]
+	public const string Name = "Strangling Firevine";
+
+	[MajorCard( Name, 4, Element.Fire, Element.Plant ), Slow, FromPresence( Filter.Sands, 1 )]
 	[Instructions( "Destroy all Explorer. Add 1 Wilds. Add 1 Wilds in the originating Sands. 1 Damage per Wilds in / adjacent to target land. -If you have- 2 Fire, 3 Plant: +1 Damage per Wilds in / adjacent to target land." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
@@ -13,11 +15,7 @@ public class StranglingFirevine {
 		await ctx.Wilds.AddAsync(1);
 
 		// Add 1 wilds in the originating Sands. 
-		Space[] originatingOptions = ctx.Self.FindTargettingSourcesFor(
-			ctx.SpaceSpec, 
-			new TargetingSourceCriteria(TargetFrom.Presence,Filter.Sands), 
-			new TargetCriteria(1)
-		).ToArray();
+		Space[] originatingOptions = TargetSpaceAttribute.TargettedSpace.Sources;
 
 		Space original = await ctx.Self.SelectSpaceAsync("Select origination space", originatingOptions, Present.AutoSelectSingle)
 			?? throw new InvalidOperationException("Could not find required originating Sands with presence.");

@@ -6,32 +6,54 @@ public class ForestsOfLivingObsidian_Tests {
 	[Trait( "Feature", "Repeat" )]
 	[Fact]
 	public Task Repeat_BadlandsWorksOnBothTargets() {
-		var fix = new ConfigurableTestFixture();
-		var space1 = fix.Board[3];
-		var space2 = fix.Board[8];
+		// var fix = new ConfigurableTestFixture();
+
+		// Given: spirit with no SS
+		var gs = new SoloGameState(new LightningsSwiftStrike());
+
+		var a3 = gs.Board[3];
+		var a8 = gs.Board[8];
 
 		// Given: 2 sun, 3 fire, 3 earth
-		fix.InitElements("2 sun,3 fire,3 earth");
+		gs.Spirit.Configure().Elements("2 sun,3 fire,3 earth");
 
 		//  And: target land #1 has 1 presence, 3 explorers and 1 town
-		fix.InitPresence(space1,1);
-		fix.InitTokens(space1, "3E@1,1T@2");
+		gs.Spirit.Given_IsOn(a3);
+		a3.ScopeSpace.Given_HasTokens("3E@1,1T@2");
+		// fix.InitTokens(space1, "3E@1,1T@2");
 
 		//  And: target land #2 has the same (1 presence, 3 explorers and 1 town)
-		fix.InitPresence( space2, 1 );
-		fix.InitTokens( space2, "3E@1,1T@2" );
+		gs.Spirit.Given_IsOn(a8);
+		a8.ScopeSpace.Given_HasTokens("3E@1,1T@2");
+		//fix.InitPresence( space2, 1 );
+		//fix.InitTokens( space2, "3E@1,1T@2" );
 
 		// When: play card
-		return PowerCard.For(typeof(ForestsOfLivingObsidian)).ActivateAsync(fix.Spirit).AwaitUser(u => {
+		return gs.Spirit.When_ResolvingCard<ForestsOfLivingObsidian>(user => {
+
 			//  And: targeting space 1
-			u.Choose(space1);
-			u.Choose("T@1"); // Damage (1 remaining)
+			user.NextDecision.HasPrompt("Forests of Living Obsidian: Target Space").HasOptions("A3,A8").Choose("A3");
 
-			//  And: targeting space 2
-			u.Choose(space2);
-			u.Choose("T@1"); // Damage (1 remaining)
-		}).ShouldComplete();
+			// And: Does 1 damage to each invader (because there is no SS)
 
+			// Then: badlands asks user to select recipient of remaining badlans.
+			user.Choose("T@1"); // Damage (1 remaining)
+
+			//  And: Same on target 2
+			user.NextDecision.HasPrompt("Forests of Living Obsidian: Target Space").HasOptions("A3,A8").Choose("A8");
+			user.Choose("T@1"); // Damage (1 remaining)
+		});
+
+		//return PowerCard.For(typeof(ForestsOfLivingObsidian)).ActivateAsync(fix.Spirit).AwaitUser(u => {
+		//	u.NextDecision.HasPrompt("Forests of Living Obsidian: Target Space").HasOptions("A3,A8").Choose("A3");
+		//	u.StubChoice();
+		//	//  And: targeting space 1
+		//	u.Choose(space1);
+		//	u.Choose("T@1"); // Damage (1 remaining)
+		//	//  And: targeting space 2
+		//	u.Choose(space2);
+		//	u.Choose("T@1"); // Damage (1 remaining)
+		//}).ShouldComplete();
 	}
 
 	[Trait( "Token", "Badlands" )]

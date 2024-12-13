@@ -223,6 +223,7 @@ public static partial class Cmd {
 		}
 	});
 
+	// used by: 2 Powers
 	static public SpiritAction PlacePresenceWithin( int range ) => new PlacePresence(range);
 
 	static public SpiritAction PlacePresenceOn( params Space[] destinationOptions ) => new SpiritAction(

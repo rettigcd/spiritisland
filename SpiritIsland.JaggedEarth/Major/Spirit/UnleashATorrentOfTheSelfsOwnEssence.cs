@@ -41,7 +41,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 		if(damage == 0) return;
 
 		//  in a land at range-0
-		var options = self.FindSpacesWithinRange( new TargetCriteria( 0 ) );
+		var options = self.FindSpacesWithinRange(new TargetCriteria(0));
 		var land = await self.SelectAsync( new A.SpaceDecision( $"{damage} Damage", options,Present.Always ) );
 
 		self.Energy -= damage;

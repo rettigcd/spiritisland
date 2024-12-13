@@ -7,12 +7,7 @@ public class ScorchingConvergence {
 	[InnateTier("2 sun","Move all of your Presence from origin land directly to target land. 1 Damage to Town/City only.")]
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		// Move all of your Presence from origin land directly to target land.
-		var originOptions = ctx.Self
-			.FindTargettingSourcesFor(
-				ctx.SpaceSpec,
-				new TargetingSourceCriteria( TargetFrom.SacredSite ),
-				new TargetCriteria( 1 )
-			);
+		var originOptions = TargetSpaceAttribute.TargettedSpace.Sources;
 
 		await new TokenMover( ctx.Self, "Move",
 			new SourceSelector( originOptions ).FromASingleLand(),

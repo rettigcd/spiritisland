@@ -145,10 +145,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	/// <summary> Calculate Range using Power Range Calculator/Strategy. </summary>
 	public IEnumerable<Space> Range( TargetCriteria targetCriteria ) 
-		=> Self.PowerRangeCalc.GetSpaceOptions(
-			new Space[] { Space },
-			targetCriteria
-		); // don't need to check .IsInPlay because TargetCriteria does that.
+		=> Self.PowerRangeCalc.GetTargetingRoute( Space, targetCriteria ).Targets;
 
 	#region Terrain
 

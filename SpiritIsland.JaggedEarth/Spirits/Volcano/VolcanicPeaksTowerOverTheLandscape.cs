@@ -5,10 +5,10 @@ public class VolcanicPeaksTowerOverTheLandscape( Spirit _self ) : DefaultRangeCa
 	public const string Name = "Volcanic Peaks Tower Over the Landscape";
 	static public SpecialRule Rule => new SpecialRule( Name, "Your Power Cards gain +1 range if you have 3 or more presence in the origin land." );
 
-	public override IEnumerable<Space> GetSpaceOptions( Space source, TargetCriteria tc ) {
-		if(tc is not InnateTargetCriteria && 3 <= _self.Presence.CountOn( source ))
-			tc = tc.ExtendRange( 1 );
-		return base.GetSpaceOptions( source, tc );
+	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
+		if( tc is not InnateTargetCriteria && 3 <= _self.Presence.CountOn(source) )
+			tc = tc.ExtendRange(1);
+		return base.GetTargetingRoute(source, tc);
 	}
 
 	// This class could be used on All Innates to identify them as innates.

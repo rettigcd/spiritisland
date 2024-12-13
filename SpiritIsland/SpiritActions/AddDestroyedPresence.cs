@@ -1,6 +1,9 @@
 ﻿namespace SpiritIsland;
 #nullable enable
 
+/// <remarks>
+/// Used by Powers + Growth for Wounded Waters and Relentless Gaze
+/// </remarks>
 public class AddDestroyedPresence : SpiritAction {
 
 	#region constructors

@@ -22,14 +22,14 @@ public class RunSpaceActionOnceOnFutureTarget( Spirit spirit, SpaceAction spaceA
 
 	async Task EndOfRoundCheck( ActionScope endScope ) {
 
-		TargetSpaceAttribute.TargetSpaceResults targetLandDetails = null;
+		TargetSpaceResults targetLandDetails = null;
 		bool isCandidate = _used
 			&& endScope.Category == ActionCategory.Spirit_Power     // is power
 			&& endScope.Owner == spirit                      // matches spirit
 			&& (targetLandDetails = targetLandDetails = TargetSpaceAttribute.TargettedSpace) is not null;  // targetted land.
 		if( !isCandidate ) return;
 
-		Space ss = targetLandDetails.space;
+		Space ss = targetLandDetails.Space;
 		if( await spirit.UserSelectsFirstText($"Apply {spaceAction.Description} on ({ss.SpaceSpec.Label})", "Yes", "No thank you") ) {
 			_used = true;
 			await spaceAction.ActAsync(spirit.Target(ss));
