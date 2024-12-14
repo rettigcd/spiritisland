@@ -2,10 +2,14 @@
 
 class TravelOnRiversBack : SpiritAction {
 
-	static public SpecialRule Rule => new SpecialRule(
-		"Travel on the River's Back",
-		"After Growth, choose up to 2 Dahan among your lands. Move each of them to any land contiguously connected by your Presence."
-	);
+	public const string Name = "Travel on the River's Back";
+	const string RuleDescription = "After Growth, choose up to 2 Dahan among your lands. Move each of them to any land contiguously connected by your Presence.";
+	static public SpecialRule Rule => new SpecialRule( Name, RuleDescription );
+
+	static public void InitAspect(Spirit spirit) {
+		var old = spirit.Presence;
+		old.Energy.Slots.First().Action = new TravelOnRiversBack();
+	}
 
 	public TravelOnRiversBack() {}
 

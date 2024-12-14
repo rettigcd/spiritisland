@@ -3,9 +3,10 @@
 class ReachThroughEphemeralDistance(Spirit spirit) : Targetter(spirit), IRunWhenTimePasses {
 
 	public const string Name = "Reach Through Ephemeral Distance";
-	const string Description = "Once per turn, you may ignore Range.";
-	// This can be during Growth or for a Power - anything for which there's a Range arrow or the word "Range" is used.
+	const string Description = "Once per turn, you may ignore Range."; // This can be during Growth or for a Power - anything for which there's a Range arrow or the word "Range" is used.
 	static public SpecialRule Rule => new SpecialRule( Name, Description );
+
+	static public void InitAspect(Spirit spirit) { spirit.Targetter = new ReachThroughEphemeralDistance(spirit); }
 
 	/// <summary>
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space

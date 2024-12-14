@@ -1,8 +1,12 @@
 ﻿namespace SpiritIsland.Basegame;
 
-[InnatePower(DarknessSwallowsTheUnwary.Name), Fast]
+[InnatePower(Name), Fast]
 [FromPresence(2)]
 public class StretchOutCoilsOfForebodingDread {
+
+	static public void InitAspect(Spirit spirit){
+		spirit.InnatePowers = [.. spirit.InnatePowers, InnatePower.For(typeof(StretchOutCoilsOfForebodingDread))];
+	}
 
 	public const string Name = "Stretch Out Coils of Foreboding Dread";
 

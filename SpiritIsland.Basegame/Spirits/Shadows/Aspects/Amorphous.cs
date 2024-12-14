@@ -10,7 +10,8 @@ public class Amorphous : IAspect {
 
 	public void ModSpirit(Spirit spirit) {
 		ShadowsOfTheDahan.RemoveFrom(spirit);
-		spirit.Mods.Add(new ShadowsPartakeOfAmorphousSpace(spirit));
+		ShadowsPartakeOfAmorphousSpace.InitAspect(spirit);
+		spirit.SpecialRules = [ShadowsPartakeOfAmorphousSpace.Rule];
 	}
 
 }

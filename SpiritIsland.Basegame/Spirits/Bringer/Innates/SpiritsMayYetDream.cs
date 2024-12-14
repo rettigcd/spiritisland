@@ -36,7 +36,7 @@ public class SpiritsMayYetDream {
 	static public async Task Option2( TargetSpiritCtx ctx ) {
 		// Target spirit gains an element they have at least 1 of
 		var elOptions = ElementList.AllElements
-			.Where( el => ctx.Other.Elements.Elements.Contains(el) )
+			.Where( el => ctx.Other.Elements.Elements[el] > 0 )
 			.ToArray();
 		Element el = (await ctx.Other.SelectElementsEx(1, elOptions )).FirstOrDefault();
 		if(el != default)

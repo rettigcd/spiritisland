@@ -9,7 +9,7 @@ public class Haven : IAspect {
 	public string[] Replaces => [MassiveFlooding.Name];
 
 	public void ModSpirit(Spirit spirit) {
-		// Replace Innate
-		spirit.InnatePowers[0] = InnatePower.For(typeof(CallToASunlitHaven));
+
+		CallToASunlitHaven.InitAspect(spirit);
 	}
 }

@@ -14,8 +14,7 @@ public class Sunshine : IAspect {
 		if(boonCard is not null)
 			spirit.Hand.Remove(boonCard);
 
-		// Add new Innate
-		spirit.InnatePowers = [.. spirit.InnatePowers, InnatePower.For(typeof(BoonOfSunshinesPromise))];
+		BoonOfSunshinesPromise.InitAspect(spirit);
 
 		// Add 1 Energy
 		++spirit.Energy;

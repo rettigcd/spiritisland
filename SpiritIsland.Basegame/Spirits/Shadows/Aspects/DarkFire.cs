@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame;
+﻿
+
+namespace SpiritIsland.Basegame;
 
 public class DarkFire : IAspect {
 
@@ -6,23 +8,27 @@ public class DarkFire : IAspect {
 
 	// Setup Gain Unquenchable Flames(Minor Power)
 
-	// Special Rule 1
-	// Name Dark and Fire as One
-	// You may treat each Moon available to you as being Fire, or vice versa. (Choose during each Action for each Moon/Fire you have.)
-	// You may discard or Forget Powers that grant Moon to pay for Fire Choice Events, and vice versa.
-
-	// Special Rule 2
-	// Frightful Shadows Elude Destruction
-	// The first time each Action would destroy your Presence, you may Push 1 of those Presence instead of destroying it.
-
-	// Bonus Presence Track Icon   Fire(or Moon)
-
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(Shadows.Name, Name);
 	public const string Name = "Dark Fire";
 	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
+		// Remove
 		ShadowsOfTheDahan.RemoveFrom(spirit);
+
+		// Add
+		DarkAndFireAsOne.InitAspect(spirit);
+		FrightfulShadowsEludeDestruction.InitAspect(spirit);
+		AddBonusElementToPresenceTrack(spirit, Track.FireEnergy);
+
+		spirit.SpecialRules = [DarkAndFireAsOne.Rule, FrightfulShadowsEludeDestruction.Rule];
 	}
 
+	static void AddBonusElementToPresenceTrack(Spirit spirit,Track src) {
+		Track t = spirit.Presence.Energy.Slots.First();
+		// assuming Energy is 0...
+		t.Code = src.Code; 
+		t.Elements = src.Elements; 
+		t.Icon = src.Icon;
+	}
 }

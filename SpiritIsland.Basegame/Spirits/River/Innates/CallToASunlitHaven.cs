@@ -6,6 +6,8 @@ public class CallToASunlitHaven {
 	public const string Name = "Call to a Sunlit Haven";
 	const string Instructions = "E is the highest unconvered number on your Energy track.";
 
+	static public void InitAspect(Spirit spirit) => spirit.InnatePowers[0] = InnatePower.For(typeof(CallToASunlitHaven));
+
 	[InnateTier("1 sun,1 water", "Defend E.")]
 	static public Task Option1Async(TargetSpaceCtx ctx) {
 		int e = GetE(ctx);

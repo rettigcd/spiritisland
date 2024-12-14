@@ -10,7 +10,8 @@ public class Foreboding : IAspect {
 
 	public void ModSpirit(Spirit spirit) {
 		ShadowsOfTheDahan.RemoveFrom(spirit);
-		spirit.InnatePowers = [..spirit.InnatePowers, InnatePower.For(typeof(StretchOutCoilsOfForebodingDread))];
+		StretchOutCoilsOfForebodingDread.InitAspect(spirit);
+		spirit.SpecialRules = [];
 	}
 
 }

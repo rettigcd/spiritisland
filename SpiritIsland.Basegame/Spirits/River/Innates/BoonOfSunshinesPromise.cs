@@ -5,6 +5,11 @@ public class BoonOfSunshinesPromise {
 
 	public const string Name = "Boon of Sunshine's Promise";
 
+	static public void InitAspect(Spirit spirit) {
+		// Add new Innate
+		spirit.InnatePowers = [.. spirit.InnatePowers, InnatePower.For(typeof(BoonOfSunshinesPromise))];
+	}
+
 	[InnateTier("2 sun", "Target Spirit gains Energy equal to 1 less than the highest uncovered number on your Energy track.")]
 	static public Task Option1Async(TargetSpiritCtx ctx) {
 		// !!! If River play's a Bargain card that removes Energy/Turn, does that effect this?

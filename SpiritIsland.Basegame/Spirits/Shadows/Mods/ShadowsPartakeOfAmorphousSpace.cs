@@ -6,6 +6,8 @@ class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
 	const string Description = "During each Fast and each Slow phase, you may move 1 of your Presence to an adjacent land, or to a land with Dahan anywhere on the island.";
 	static public SpecialRule Rule => new SpecialRule( Name, Description );
 
+	static public void InitAspect(Spirit spirit) => spirit.Mods.Add(new ShadowsPartakeOfAmorphousSpace(spirit));
+
 	#region constructor / init
 
 	public ShadowsPartakeOfAmorphousSpace(Spirit spirit) {

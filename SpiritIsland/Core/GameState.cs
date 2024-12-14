@@ -250,6 +250,7 @@ public class GameState : IHaveMemento {
 
 			src.RoundNumber = _roundNumber;
 			src.BlightCard.CardFlipped = _isBlighted;
+			src.RoundScope.Clear();
 		}
 
 		readonly int _roundNumber;
@@ -261,19 +262,23 @@ public class GameState : IHaveMemento {
 
 	#region Hooks
 
-    public Task RunPreInvaderActions() => _preInvaderPhaseActions.Run(this);
+	public Task RunPreInvaderActions() => _preInvaderPhaseActions.Run(this);
 	public void AddPreInvaderPhaseAction(IRunBeforeInvaderPhase action) => _preInvaderPhaseActions.Add(action);
-    readonly PreInvaderPhaseActionList _preInvaderPhaseActions = new();
+	readonly PreInvaderPhaseActionList _preInvaderPhaseActions = new();
 
-    public Task RunPostInvaderActions() => _postInvaderPhaseActions.Run(this);
+	public Task RunPostInvaderActions() => _postInvaderPhaseActions.Run(this);
 	public void AddPostInvaderPhase(IRunAfterInvaderPhase action) => _postInvaderPhaseActions.Add(action);
-    readonly PostInvaderPhaseActionList _postInvaderPhaseActions = new();
+	readonly PostInvaderPhaseActionList _postInvaderPhaseActions = new();
 
+	public readonly Dictionary<string,object> RoundScope = [];
 
-    public Task RunTimePassesActions() => _timePassesActions.Run(this);
-    public void AddTimePassesAction( IRunWhenTimePasses action ) => _timePassesActions.Add(action);
+	public Task RunTimePassesActions() { 
+		RoundScope.Clear();
+		return _timePassesActions.Run(this);
+	}
+	public void AddTimePassesAction( IRunWhenTimePasses action ) => _timePassesActions.Add(action);
 	readonly TimePassesActionList _timePassesActions = new();
 
-    #endregion
+	#endregion
 
 }

@@ -18,7 +18,7 @@ public class OverenthusiasticArson {
 		_ = await ctx.Self.SelectPowerCard(OverenthusiasticArson.Name + " turned up:", 1, new PowerCard[] { card }, CardUse.Accept, Present.Always );
 
 		// IF it provides fire:
-		if(card.Elements.Contains( Element.Fire )) {
+		if( card.Elements.ContainsKey(Element.Fire) ) {
 			// 1 fear
 			await ctx.AddFear(1);
 

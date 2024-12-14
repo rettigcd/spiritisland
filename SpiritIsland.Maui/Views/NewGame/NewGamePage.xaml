@@ -47,7 +47,7 @@
 							MaximumHeightRequest="50" >
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="core:AspectConfigKey">
-						<Label Text="{Binding Aspect}" Margin="5,0" MaximumHeightRequest="50" VerticalOptions="Center" Padding="15,5"/>
+						<Label Text="{Binding Aspect}" Margin="5,0" MaximumHeightRequest="50" VerticalOptions="Center" Padding="5"/>
 					</DataTemplate>
 				</CollectionView.ItemTemplate>
 			</CollectionView>

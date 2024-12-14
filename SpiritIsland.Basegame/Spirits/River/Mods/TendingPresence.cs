@@ -4,10 +4,14 @@ public class TendingPresence( Spirit spirit, IPresenceTrack t1, IPresenceTrack t
 	: SpiritPresence( spirit, t1, t2, new TendingPresenceToken(spirit) )
 {
 
-	static public SpecialRule Rule => new SpecialRule(
-		"People Tend to the River, River Tends to the People",
-		"Your lands with 4 or more Dahan are considered Sacred Sites, and have Defend 1."
-	);
+	public const string Name = "People Tend to the River, River Tends to the People";
+	const string Description = "Your lands with 4 or more Dahan are considered Sacred Sites, and have Defend 1.";
+	static public SpecialRule Rule => new SpecialRule( Name, Description );
+
+	static public void InitAspect(Spirit spirit) {
+		var old = spirit.Presence;
+		spirit.Presence = new TendingPresence(spirit, old.Energy, old.CardPlays);
+	}
 
 	// - are considered Sacred Sites
 	public override bool IsSacredSite(Space space) => base.IsSacredSite(space)

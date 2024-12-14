@@ -5,8 +5,7 @@
 /// </summary>
 public class ManyMindsPresenceToken 
 	: SpiritPresenceToken
-	, IHandleTokenAdded
-	, IHandleTokenRemoved {
+	, IHandleTokenAdded {
 
 	#region constructor
 
@@ -21,9 +20,9 @@ public class ManyMindsPresenceToken
 		return Task.CompletedTask;
 	}
 
-	Task IHandleTokenRemoved.HandleTokenRemovedAsync( ITokenRemovedArgs args ){
+	public override async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ){
+		await base.HandleTokenRemovedAsync(args);
 		UpdateBeastCount( args.Removed, (Space)args.From );
-		return Task.CompletedTask;
 	}
 
 	void UpdateBeastCount( ISpaceEntity token, Space ss ) {

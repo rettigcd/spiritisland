@@ -2,10 +2,8 @@
 
 public class HearthToken( Spirit spirit ) 
 	: SpiritPresenceToken(spirit)
-	, IModifyAddingToken
-	, IHandleTokenAdded
-	, IModifyRemovingToken
-	, IHandleTokenRemoved
+	, IModifyAddingToken	, IHandleTokenAdded
+	, IModifyRemovingToken	, IHandleTokenRemoved
 {
 	Task IModifyAddingToken.ModifyAddingAsync( AddingTokenArgs args ) {
 		RootedInCommunity_Adding( args );

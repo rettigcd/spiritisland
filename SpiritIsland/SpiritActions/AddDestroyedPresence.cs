@@ -56,9 +56,7 @@ public class AddDestroyedPresence : SpiritAction {
 	#endregion
 
 	IEnumerable<Space> SpacesFromSourceSpirit( Spirit sourceSpirit ) {
-		return Range.HasValue
-			? sourceSpirit.FindSpacesWithinRange(new TargetCriteria(Range.Value))
-			: sourceSpirit.Presence.Lands;
+		return sourceSpirit.FindSpacesWithinRange(new TargetCriteria(Range??0));
 	}
 
 	public override async Task ActAsync( Spirit placingSpirit) {

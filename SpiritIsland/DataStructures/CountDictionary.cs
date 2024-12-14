@@ -38,11 +38,12 @@ public class CountDictionary<K> : IDictionary<K,int> {
 		}
 	}
 
-	public bool Contains( params K[] requiredElements ) => Contains( new CountDictionary<K>( requiredElements ) );
+	public bool Contains( K key ) => _inner.ContainsKey(key);
 
-	public bool Contains( IDictionary<K, int> needed ) {
-		return needed.All( pair => pair.Value <= this[pair.Key] );
+	public bool Contains( IDictionary<K, int> subset ) {
+		return subset.All( pair => pair.Value <= this[pair.Key] );
 	}
+
 
 	/// <summary>
 	/// Set-like operation.  Returns a new CountDictionary containing current items less other items

@@ -14,12 +14,9 @@ public class Travel : IAspect {
 		spirit.SpecialRules = [ TravelOnRiversBack.Rule, TendingPresence.Rule];
 
 		// Add Post-Growth Action (after precenses are placed).
-		var old = spirit.Presence;
-		old.Energy.Slots.First().Action = new TravelOnRiversBack();
+		TravelOnRiversBack.InitAspect(spirit);
 
-		// Replace Presene and Token
-		spirit.Presence = new TendingPresence(spirit, old.Energy, old.CardPlays);
-
+		TendingPresence.InitAspect(spirit);
 	}
 
 }

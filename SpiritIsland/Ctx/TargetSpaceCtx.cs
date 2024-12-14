@@ -79,9 +79,8 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		Space destination = null;
 
 		await new TokenMover(Self,"Move",
-			SourceSelector
-				.AddGroup(max,tokenClass),
-			new DestinationSelector( Range( targetCriteria ) )
+			sourceSelector: SourceSelector.AddGroup(max,tokenClass),
+			destinationSelector: new DestinationSelector( Range( targetCriteria ) )
 				.Config( Distribute.ToASingleLand )
 				.Track( to => destination = to )
 		).DoUpToN();

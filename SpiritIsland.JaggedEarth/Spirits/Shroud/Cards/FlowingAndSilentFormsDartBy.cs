@@ -26,12 +26,12 @@ public class FlowingAndSilentFormsDartBy {
 
 		async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 			if( !args.Reason.IsDestroyingPresence()
-				|| args.Token is not SpiritPresenceToken spt 
+				|| args.Token is not SpiritPresenceToken spiritPresenceToken 
 			) return;
 
-			Spirit spirit = spt.Self;
+			Spirit spirit = spiritPresenceToken.Self;
 
-			if( !args.From.Has(spirit.Presence) ) return;
+			if( !args.From.Has(spirit.Presence) ) return; // this should never happen.
 			
 			var dst = await spirit.SelectAsync( new A.SpaceDecision( "Instead of destroying, push presence to:", args.From.Adjacent, Present.Done ) );
 			if(dst == null) return;

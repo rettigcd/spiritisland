@@ -11,7 +11,9 @@ public class Reach : IAspect {
 	public void ModSpirit(Spirit spirit) {
 		ShadowsOfTheDahan.RemoveFrom(spirit);
 
-		spirit.Targetter = new ReachThroughEphemeralDistance(spirit);
+		ReachThroughEphemeralDistance.InitAspect(spirit);
+
+		spirit.SpecialRules = [ReachThroughEphemeralDistance.Rule];
 	}
 
 }
