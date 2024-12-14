@@ -8,6 +8,8 @@ class ShadowsOfTheDahan(Spirit spirit) : Targetter(spirit) {
 		"Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range."
 	);
 
+	static public void RemoveFrom(Spirit spirit) => spirit.Targetter = null;
+
 	/// <summary>
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
 	/// </summary>
@@ -20,15 +22,18 @@ class ShadowsOfTheDahan(Spirit spirit) : Targetter(spirit) {
 		// The spaces we picked
 		var target = await base.TargetsSpace(prompt, preselect, sourceCriteria, targetCriteria);
 
-		// If we targe
-		if( 0 < _spirit.Energy ) {
-			var normalSpaces = base.GetPowerTargetOptions(sourceCriteria, targetCriteria).Targets;
-			bool targettedAnEnergySpace = !normalSpaces.Contains(target.Space);
-			if( targettedAnEnergySpace )
-				--_spirit.Energy;
-		}
+		// If we target
+		if( 0 < _spirit.Energy 
+			&& TargettedDahanSpace(sourceCriteria, targetCriteria, target)
+		) --_spirit.Energy;
 
 		return target;
+	}
+
+	bool TargettedDahanSpace(TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetSpaceResults target) {
+		var normalSpaces = base.GetPowerTargetOptions(sourceCriteria, targetCriteria).Targets;
+		bool targettedAnEnergySpace = !normalSpaces.Contains(target.Space);
+		return targettedAnEnergySpace;
 	}
 
 	public override TargetRoutes GetPowerTargetOptions(TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {

@@ -33,17 +33,17 @@ public abstract partial class Spirit {
 
 		async Task InitSelectedGrowthOption( IActionFactory selectedAction ) {
 			// Find Growth Option
-			GrowthGroup option = _growthOptions.SingleOrDefault( o => o.GrowthActions.Contains( selectedAction ) );
+			GrowthGroup option = _growthOptions.SingleOrDefault( o => o.GrowthActionFactories.Contains( selectedAction ) );
 			if(option == null) return; // not one the Growth Actions, but came from somewhere else - may Behemoth Rise
 
 			_inst.MarkAsUsed( option );
 
 			// Add Action to spirit
-			foreach(IHelpGrow action in option.GrowthActions)
+			foreach(IHelpGrowActionFactory action in option.GrowthActionFactories)
 				_spirit._availableActions.Add( action );
 
 			// run auto-runs.
-			foreach(var autoAction in option.AutoRuns)
+			foreach(var autoAction in option.GrowthActionFactories.Where(x => x.AutoRun) )
 				if(autoAction != selectedAction)
 					await _spirit.ResolveActionAsync( autoAction, Phase.Growth );
 
@@ -54,7 +54,7 @@ public abstract partial class Spirit {
 		void AllowUserToSelectNewGrowthOptions() {
 			_growthOptions = _inst.RemainingOptions( _spirit.Energy );
 			_availableNewGrowthOptions = _growthOptions
-				.SelectMany( opt => opt.GrowthActions )
+				.SelectMany( opt => opt.GrowthActionFactories )
 				.ToArray();
 
 			_shouldInitNewGrowthOption = true;
@@ -62,7 +62,7 @@ public abstract partial class Spirit {
 
 		IActionFactory[] Consolidated => _availableNewGrowthOptions.Union(_spirit.GetAvailableActions(Phase.Growth)).ToArray();
 
-		bool HasGrowthActions => Consolidated.OfType<IHelpGrow>().Any();
+		bool HasGrowthActions => Consolidated.OfType<IHelpGrowActionFactory>().Any();
 
 		#region private fields
 

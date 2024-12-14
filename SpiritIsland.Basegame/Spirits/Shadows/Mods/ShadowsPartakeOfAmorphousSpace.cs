@@ -2,10 +2,9 @@
 
 class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
 
-	static public SpecialRule Rule => new SpecialRule(
-		"Shadows Partake of Amorphous Space",
-		"During each Fast and each Slow phase, you may move 1 of your Presence to an adjacent land, or to a land with Dahan anywhere on the island."
-	);
+	public const string Name = "Shadows Partake of Amorphous Space";
+	const string Description = "During each Fast and each Slow phase, you may move 1 of your Presence to an adjacent land, or to a land with Dahan anywhere on the island.";
+	static public SpecialRule Rule => new SpecialRule( Name, Description );
 
 	#region constructor / init
 

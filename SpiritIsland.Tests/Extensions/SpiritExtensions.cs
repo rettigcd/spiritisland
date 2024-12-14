@@ -201,18 +201,21 @@ public static class SpiritExtensions {
 		await using var action = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Growth, spirit );
 
 		// Auto run the auto-runs.
-		foreach(var autoAction in option.AutoRuns)
+		foreach(var autoAction in option.GrowthActionFactories.Where(x => x.AutoRun) )
 			await autoAction.ActivateAsync( spirit );
 
 		// If Option has only 1 Action, auto trigger it.
-		if(option.UserRuns.Count() == 1) {
-			await option.UserRuns.First().ActivateAsync( spirit );
+		var userRuns = option.UserRuns();
+		if( userRuns.Count() == 1) {
+			await userRuns.First().ActivateAsync( spirit );
 		} else {
-			foreach(IHelpGrow action2 in option.UserRuns)
+			foreach(IHelpGrowActionFactory action2 in userRuns )
 				spirit.AddActionFactory( action2 );
 
 			await spirit.SelectAndResolveActions( gameState );
 		}
 	}
+
+	static public IEnumerable<IHelpGrowActionFactory> UserRuns(this GrowthGroup grp) => grp.GrowthActionFactories.Where(x => !x.AutoRun );
 
 }

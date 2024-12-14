@@ -9,7 +9,7 @@ public class Amorphous : IAspect {
 	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
-		spirit.RemoveMod<ShadowsOfTheDahan>();
+		ShadowsOfTheDahan.RemoveFrom(spirit);
 		spirit.Mods.Add(new ShadowsPartakeOfAmorphousSpace(spirit));
 	}
 

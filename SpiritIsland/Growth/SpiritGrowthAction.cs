@@ -3,7 +3,7 @@
 /// <summary>
 /// Adds AutoRun to ActionFactory so Growth Commands can auto-run
 /// </summary>
-public interface IHelpGrow : IActionFactory {
+public interface IHelpGrowActionFactory : IActionFactory {
 	bool AutoRun { get; }
 }
 
@@ -13,14 +13,15 @@ public interface ICanAutoRun {}
 /// <summary>
 /// Wraps a SelfCmd turning it into a GrowthAction
 /// </summary>
-public class SpiritGrowthAction( IActOn<Spirit> cmd, Phase phase = Phase.Growth ) : IHelpGrow {
+public class SpiritGrowthAction( IActOn<Spirit> cmd, Phase phase = Phase.Growth ) : IHelpGrowActionFactory {
 	public readonly IActOn<Spirit> Cmd = cmd; // !!! switch to IActOn<Spirit>
 
-	string IActionFactory.Title => Cmd.Description;
 	string IOption.Text => Cmd.Description;
+
+	string IActionFactory.Title => Cmd.Description;
 	Task IActionFactory.ActivateAsync( Spirit self ) => Cmd.ActAsync( self );
 	bool IActionFactory.CouldActivateDuring( Phase speed, Spirit spirit ) => speed == phase;
-	bool IHelpGrow.AutoRun => Cmd is ICanAutoRun;
+	bool IHelpGrowActionFactory.AutoRun => Cmd is ICanAutoRun;
 }
 
 static public class SelfCmdExtender {

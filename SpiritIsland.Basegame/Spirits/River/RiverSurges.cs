@@ -53,16 +53,3 @@ public class RiverSurges : Spirit {
 		board.Spaces.Reverse().First(s => s.IsWetland).ScopeSpace.Setup(Presence.Token, 1);
 	}
 }
-
-[InnatePower(Name), Fast, AnySpirit]
-public class SychUp {
-
-	public const string Name = "Sych-Up";
-
-	[InnateTier("1 sun", "Target Spirit gains 5 of each element.")]
-	static public Task Option1Async(TargetSpiritCtx ctx) {
-		ctx.Other.Elements.Add(ElementStrings.Parse("5 sun,5 moon,5 fire,5 water,5 plant,5 earth,5 animal"));
-		return Task.CompletedTask;
-	}
-
-}

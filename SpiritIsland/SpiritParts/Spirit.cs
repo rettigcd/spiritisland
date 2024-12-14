@@ -32,7 +32,6 @@ public abstract partial class Spirit
 		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.Discard, Cards = DiscardPile } );
 
 		Elements = new ElementMgr( this );
-		Targetter = new Targetter( this );
 	}
 
 	public void InitSpirit( Board board, GameState gameState ){
@@ -564,7 +563,11 @@ public abstract partial class Spirit
 		return rangeCalculator.GetTargetingRoute_MultiSpace( Presence.Lands, targetCriteria ).Targets;
 	}
 
-	public Targetter Targetter;
+	public Targetter Targetter { 
+		get => _targetter ??= new Targetter(this); 
+		set => _targetter = value;
+	}
+	Targetter _targetter;
 
 	/// <summary> 
 	/// Calculates Source for *TARGETING* *Powers* only.  

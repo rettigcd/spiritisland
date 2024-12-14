@@ -7,7 +7,7 @@ public class GrowthGroupModel( GrowthGroup gg ) : ObservableModel {
 		private set => SetProp(ref _actions,value);
 	}
 
-	GrowthActionModel[] _actions = gg.GrowthActions
+	GrowthActionModel[] _actions = gg.GrowthActionFactories
 			.Select(a => new GrowthActionModel((SpiritGrowthAction)a))
 			.ToArray();
 }

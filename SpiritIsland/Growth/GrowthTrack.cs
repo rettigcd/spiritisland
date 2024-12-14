@@ -23,6 +23,8 @@ public class GrowthTrack {
 
 	public GrowthGroup[] Groups => groups.SelectMany(g=>g.Groups).ToArray();
 
+	public IEnumerable<IActOn<Spirit>> GrowthActions => Groups.SelectMany(g=>g.Actions);
+
 	public virtual IGrowthPhaseInstance GetInstance() => new GrowthPhaseInstance( groups );
 
 	#region private

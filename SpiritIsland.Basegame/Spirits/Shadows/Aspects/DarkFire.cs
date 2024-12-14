@@ -22,7 +22,7 @@ public class DarkFire : IAspect {
 	public string[] Replaces => [ShadowsOfTheDahan.Name];
 
 	public void ModSpirit(Spirit spirit) {
-		spirit.RemoveMod<ShadowsOfTheDahan>();
+		ShadowsOfTheDahan.RemoveFrom(spirit);
 	}
 
 }

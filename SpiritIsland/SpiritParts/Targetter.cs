@@ -14,26 +14,33 @@ public class Targetter(Spirit spirit) {
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
+		// Get Options
 		var routes = GetPowerTargetOptions(sourceCriteria, targetCriteria);
 		var spaceOptions = routes.Targets;
 
+		// 0
 		if( spaceOptions.Length == 0 ) {
 			ActionScope.Current.LogDebug($"{prompt} => No elligible spaces found!"); // show in debug window why nothing happened.
 			return null;
 		}
 
+		// 1
 		if( spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle )
 			return routes.MakeResult(spaceOptions[0]);
 
+		// multiple Choose
 		Space mySpace = preselect != null && UserGateway.UsePreselect.Value
 			? await preselect.PreSelect(_spirit, spaceOptions)
 			: await _spirit.SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.Always));
 
+		// return result.
 		return routes.MakeResult(mySpace);
 	}
 
 	public virtual TargetRoutes GetPowerTargetOptions(TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
+
 		var sources = sourceCriteria.GetSources(_spirit).ToArray();
+
 		return targetCriteria.Length switch {
 			0 => new TargetRoutes([]),
 			1 => _spirit.PowerRangeCalc.GetTargetingRoute_MultiSpace(sources, targetCriteria[0]),

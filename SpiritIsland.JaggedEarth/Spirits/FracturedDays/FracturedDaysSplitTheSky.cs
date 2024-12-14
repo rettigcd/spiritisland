@@ -197,7 +197,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 		#endregion
 
-		public void Register(IHelpGrow factory) {
+		public void Register(IHelpGrowActionFactory factory) {
 			_factories.Add(factory);
 		}
 
@@ -240,7 +240,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 					spirit.RemoveFromUnresolvedActions(factory);
 		}
 
-		readonly List<IHelpGrow> _factories = [];
+		readonly List<IHelpGrowActionFactory> _factories = [];
 
 		#endregion
 

@@ -4,7 +4,13 @@
 /// Used for Growth & Blight
 /// EXCEPT Cmd.PlacePresenceWithin( int range ) which is used for 2 Powers
 /// </remarks>
-public class PlacePresence : SpiritAction {
+public sealed class PlacePresence : SpiritAction {
+
+	public int? Range { get; }
+	public string FilterDescription { get; }
+	public string[] FilterEnums { get; }
+
+	public AsyncEvent<TokenMovedArgs> Placed = new();
 
 	#region constructors
 
@@ -28,25 +34,24 @@ public class PlacePresence : SpiritAction {
 
 	#endregion constructors
 
-
 	public override async Task ActAsync( Spirit self ) {
-		// From
-		TokenLocation from = await self.SelectSourcePresence();
-		IToken token = from.Token;
 
-		var toOptions = self.FindSpacesWithinRange( new TargetCriteriaFactory( Range ?? int.MaxValue, FilterEnums ).Bind( self ) )
+		TokenLocation from = await self.SelectSourcePresence();
+
+		TargetCriteria criteria = new TargetCriteriaFactory(Range ?? int.MaxValue, FilterEnums).Bind(self);
+
+		var toOptions = self.FindSpacesWithinRange( criteria )
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
+
 		if(toOptions.Length == 0)
 			return; // this can happen if Ocean is dragged way-inland and is no longer near an ocean or coast.
+
 		Space to = await self.SelectAsync( A.SpaceDecision.ToPlacePresence( toOptions, Present.Always, from.Token ) );
-		await from.MoveToAsync(to);
+		var result = await from.MoveToAsync(to);
+		await Placed.InvokeAsync( result );
 	}
 
 	static readonly string[] DefaultFilters = [ Filter.Any ];
-
-	public int? Range { get; }
-	public string FilterDescription { get; }
-	public string[] FilterEnums { get; }
 
 }

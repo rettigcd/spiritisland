@@ -10,15 +10,18 @@ public class GrowthGroup( params IActOn<Spirit>[] actions )
 	/// <summary> When negative, prevents growth option unless user has sufficient energy to satisfy </summary>
 	public int GainEnergy = 0;
 
-	public IHelpGrow[] GrowthActions { get; } = actions.Select( action => new SpiritGrowthAction( action ) ).ToArray();
+	/// <summary>
+	/// The things that get put in the spirits unUsedAction/factory list
+	/// </summary>
+	public IHelpGrowActionFactory[] GrowthActionFactories { get; } = actions.Select( action => new SpiritGrowthAction( action ) ).ToArray();
 
-
-	public IEnumerable<IHelpGrow> AutoRuns => GrowthActions.Where(x=>x.AutoRun);
-
-	public IEnumerable<IHelpGrow> UserRuns => GrowthActions.Where( x => !x.AutoRun );
+	/// <summary>
+	/// The simple Description/ActAsync commands
+	/// </summary>
+	public IActOn<Spirit>[] Actions => actions;
 
 	string IOption.Text => ToString();
 
-	public override string ToString() => GrowthActions.Select(a=>a.Title).Join(" / ");
+	public override string ToString() => GrowthActionFactories.Select(a=>a.Title).Join(" / ");
 
 }

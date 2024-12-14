@@ -19,7 +19,7 @@ public class Ocean_GrowthTests : BoardAGame {
 		Given_IslandIsABC();
 		_spirit.Given_IsOnMany( starting );
 
-		foreach(IHelpGrow action in _spirit.GrowthTrack.Groups[0].UserRuns)
+		foreach(IHelpGrowActionFactory action in _spirit.GrowthTrack.Groups[0].GrowthActionFactories.Where(x=>!x.AutoRun))
 			_spirit.AddActionFactory( action );
 
 		// since options are move source, key on that
@@ -28,7 +28,7 @@ public class Ocean_GrowthTests : BoardAGame {
 			.Select(s=>s.Split('>'))
 			.ToDictionary(a=>"OHG on "+a[0],a=>a[1]);
 
-		IHelpGrow gather = _spirit.GetAvailableActions(Phase.Growth)
+		IHelpGrowActionFactory gather = _spirit.GetAvailableActions(Phase.Growth)
 			.OfType<SpiritGrowthAction>()
 			.Where(x=>x.Cmd.Description == "Gather 1 Presence into EACH Ocean" ) // is GatherPresenceIntoOcean
 			.SingleOrDefault();
