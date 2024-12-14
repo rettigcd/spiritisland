@@ -13,7 +13,7 @@ class RepeatWithTimeAttribute : RepeatAttribute {
 
 	public override IDrawableInnateTier[] ThresholdTiers => [];
 
-	public override IPowerRepeater GetRepeater(bool isPowerCard) => new Repeater(UpTo);
+	public override IPowerRepeater GetRepeater() => new Repeater(UpTo);
 
 	class Repeater( int _max ) : IPowerRepeater {
 		int previousUse = 1; // assume when we repeat, we've already used it once.

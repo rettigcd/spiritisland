@@ -15,7 +15,10 @@ class InsightsIntoTheWorldsNature(Spirit spirit) : ElementMgr(spirit) {
 			: ECouldHaveElements.No;
 	}
 
-	public override async Task<bool> Has(CountDictionary<Element> subset, string description, ThresholdType _) {
+	public override async Task<bool> MeetThreshold(CountDictionary<Element> subset, string description ) {
+
+		// Ignores permission parameter.  If it requires using prepared elements, always asks.
+
 		CountDictionary<Element> missing = subset.Except(Elements);
 		if( missing.Count == 0 ) return true;
 
@@ -32,6 +35,19 @@ class InsightsIntoTheWorldsNature(Spirit spirit) : ElementMgr(spirit) {
 		ActionScope.Current.AtEndOfThisAction(_ => Remove(missing)); // remove from Current
 
 		return true;
+	}
+
+	public override async Task<int> CommitToCount(Element singleElement) {
+		int count = await base.CommitToCount(singleElement);
+		int prepaired = PreparedElements[singleElement];
+		if( prepaired == 0 ) return count;
+
+		int userSelected = await _spirit.SelectNumber($"Use prepaired to boost {singleElement} to", prepaired+count, count);
+		int numToUse = userSelected - count;
+		PreparedElements[singleElement] -= numToUse;
+		Elements[singleElement] += numToUse;
+		ActionScope.Current.AtEndOfThisAction(_ => Elements[singleElement] -= numToUse); // remove from Current
+		return userSelected;
 	}
 
 }

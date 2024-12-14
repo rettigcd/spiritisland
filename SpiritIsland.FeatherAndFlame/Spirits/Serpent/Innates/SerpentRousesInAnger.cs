@@ -9,7 +9,7 @@ public class SerpentRousesInAnger {
 	static public async Task Option1Async( TargetSpaceCtx ctx ) {
 		// For each fire & earth you have
 		var els = ctx.Self.Elements;
-		int count = Math.Min( await els.GetAsync(Element.Fire), await els.GetAsync(Element.Earth));
+		int count = Math.Min( await els.CommitToCount(Element.Fire), await els.CommitToCount(Element.Earth));
 		// 1 Damage to 1 town / city.
 		await ctx.Space.UserSelected_DamageInvadersAsync( ctx.Self, count, Human.Town_City );
 	}
@@ -20,7 +20,7 @@ public class SerpentRousesInAnger {
 
 		// For each 2 moon 2 earth you have
 		var els = ctx.Self.Elements;
-		int count = Math.Min( await els.GetAsync(Element.Moon), await els.GetAsync(Element.Earth)) / 2;
+		int count = Math.Min( await els.CommitToCount(Element.Moon), await els.CommitToCount(Element.Earth)) / 2;
 		// 2 fear
 		await ctx.AddFear( count*2 );
 		// you may Push 1 town from target land.

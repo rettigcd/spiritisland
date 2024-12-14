@@ -7,7 +7,7 @@ public class SpreadingWilds {
 	[InnateTier( "2 sun", "Push 1 explorer from target land per 2sun you have.", 0 )]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		// push 1 explorer from target land per 2 sun you have
-		await ctx.Push( await ctx.Self.Elements.GetAsync(Element.Sun)/2,Human.Explorer);
+		await ctx.Push( await ctx.Self.Elements.CommitToCount(Element.Sun)/2,Human.Explorer);
 	}
 
 	[InnateTier( "1 plant", "If target land has no explorer, add 1 wilds.", 1 )]

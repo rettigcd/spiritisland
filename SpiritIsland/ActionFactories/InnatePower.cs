@@ -92,7 +92,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 		await ActivateInnerAsync( spirit );
 		if( _repeatAttr != null) {
-			var repeater = _repeatAttr.GetRepeater(false);
+			var repeater = _repeatAttr.GetRepeater();
 			while( await repeater.ShouldRepeat( spirit ) )
 				await ActivateInnerAsync( spirit );
 		}
@@ -151,7 +151,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 	}
 
 	protected virtual async Task<bool> HasMetTierThreshold(Spirit spirit, IDrawableInnateTier option) {
-		return await spirit.Elements.Has(option.Elements, "Innate Tier", ThresholdType.Innate);
+		return await spirit.Elements.MeetThreshold(option.Elements, "Innate Tier" );
 	}
 
 	public object LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.

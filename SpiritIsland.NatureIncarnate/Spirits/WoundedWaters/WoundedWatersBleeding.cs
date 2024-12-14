@@ -71,12 +71,12 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 	async Task ClaimAHealingMarker() {
 
 		// !!! Instead of Asking separately, ask TOGETHER and let them pick (or not pick), Then just use .Get() without asking.
-		int water = Elements.Get(Element.Water);
-		int animal = Elements.Get(Element.Animal);
+		int water = Elements[Element.Water];
+		int animal = Elements[Element.Animal];
 		if(animal == water - 1) // if animal is 1 behind
-			animal = await Elements.GetAsync(Element.Animal); // ask if they want to make it a tie
+			animal = await Elements.CommitToCount(Element.Animal); // ask if they want to make it a tie
 		else if( water == animal - 1 )
-			water = await Elements.GetAsync(Element.Water);
+			water = await Elements.CommitToCount(Element.Water);
 
 		var elementToSelect = water < animal ? Element.Animal
 			: animal < water ? Element.Water

@@ -21,7 +21,7 @@ public class AbsorbEssence {
 
 		// Target spirit gains 1 ANY and 1 energy
 		ctx.Other.Energy += 1;
-		ctx.Other.Elements.Add(Element.Any);  // This is converted when it is needed.
+		ctx.Other.Elements[Element.Any]++;  // This is converted when it is needed.
 	}
 
 }

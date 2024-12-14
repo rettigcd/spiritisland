@@ -30,7 +30,7 @@ public class StarlightSeeksItsForm : Spirit {
 				OnRevealAsync = async (track,spirit) => {
 					Element el = await spirit.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 					track.Elements = [ el ];
-					spirit.Elements.Add(el);
+					spirit.Elements[el]++;
 					track.Icon.ContentImg = el.GetTokenImg();
 				}
 			};
@@ -137,7 +137,7 @@ public class StarlightSeeksItsForm : Spirit {
 	static async Task AssignNewElementToTrack( Spirit self, Track track ) {
 		var el = await self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 		track.Elements = [ el ];
-		self.Elements.Add(el);
+		self.Elements[el]++;
 		track.Icon.ContentImg = el.GetTokenImg();
 	}
 

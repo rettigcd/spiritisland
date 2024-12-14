@@ -27,6 +27,8 @@ public class ShiftingMemory_Tests {
 		await spirit.When_ResolvingCard<UnlockTheGatesOfDeepestPower>( u => {
 			//  And: Selects Major Card
 			u.NextDecision.HasPrompt( "Select spirit Power Card" ).HasOptions( "Wash Away $1 (Slow),Flash Floods $2 (Fast)" ).Choose( "Flash Floods $2 (Fast)" );;
+			//  And: activates threshold
+			u.NextDecision.HasPrompt("Activate Element Threshold?").HasOptions("Yes,No").Choose("Yes");
 			//  And: Chooses to Play It by Forgetting it
 			u.NextDecision.HasPrompt( "Select action" ).HasOptions( "Play [Flash Floods] by paying 1,Play [Flash Floods] by forgetting it at end of turn,No Action" ).Choose( "Play [Flash Floods] by forgetting it at end of turn" ); ;
 		} ).ShouldComplete();

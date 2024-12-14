@@ -7,13 +7,13 @@ public class FireStorm {
 	// Group 0
 	[InnateTier( "1 plant", "1 Damage per 2 fire you have.", 0 )]
 	static public async Task Option1( TargetSpaceCtx ctx ) {
-		int fireDamage = await ctx.Self.Elements.GetAsync(Element.Fire) / 2; // rounding down
+		int fireDamage = await ctx.Self.Elements.CommitToCount(Element.Fire) / 2; // rounding down
 		await DoFireDamageAsync( ctx, fireDamage );
 	}
 
 	[InnateTier( "3 plant", "Instead, 1 Damage per fire you have.", 0 )]
 	static public async Task Option2( TargetSpaceCtx ctx ) {
-		int fireDamage = await ctx.Self.Elements.GetAsync(Element.Fire);
+		int fireDamage = await ctx.Self.Elements.CommitToCount(Element.Fire);
 		await DoFireDamageAsync( ctx, fireDamage );
 	}
 

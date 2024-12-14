@@ -102,7 +102,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 		// (Source-1) Purchased / Active
 		if(InPlay.Contains( card )) {
-			foreach(var el in card.Elements) Elements.Remove(el.Key,el.Value);// lose elements from forgotten card
+
+			Elements.Remove(card.Elements); // lose elements from forgotten card
+
 			InPlay.Remove( card );
 			DiscardPile.Add( card );
 			return;

@@ -23,7 +23,7 @@ public class RepeatThenForgetPower : RepeatAttribute {
 
 	public override IDrawableInnateTier[] ThresholdTiers => [];
 
-	public override IPowerRepeater GetRepeater(bool isPowerCard) => new Repeater();
+	public override IPowerRepeater GetRepeater() => new Repeater();
 
 	class Repeater : IPowerRepeater {
 
@@ -39,7 +39,7 @@ public class RepeatThenForgetPower : RepeatAttribute {
 			self.ForgetThisCard( thisCard );
 
 			//  Gain 1 Moon.
-			self.Elements.Add(Element.Moon);
+			self.Elements[Element.Moon]++;
 
 			repeated = true;
 			return true;

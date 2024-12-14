@@ -20,7 +20,7 @@ public class GiftOfNaturesConnection{
 	static async Task GainEl( Spirit spirit, int count ) {
 		var el = await spirit.SelectElementEx($"Gain {count} of single element",ElementList.AllElements);
 		while(0<count--)
-			spirit.Elements.Add(el);
+			spirit.Elements[el]++;
 	}
 
 }

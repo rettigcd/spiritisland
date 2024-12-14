@@ -165,7 +165,7 @@ public class DancesUpEarthquakes : Spirit {
 		ImpendingEnergy[card.Title] = 0;
 		Impending.Remove( card );
 		InPlay.Add( card );
-		AddElements( card );
+		Elements.Add(card.Elements);
 		AddActionFactory( card );
 	}
 

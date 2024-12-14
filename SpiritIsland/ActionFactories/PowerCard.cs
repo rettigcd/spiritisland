@@ -46,7 +46,7 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 		await ActivateInnerAsync( self );
 		if(_repeatAttr != null) {
-			var repeater = _repeatAttr.GetRepeater(true);
+			var repeater = _repeatAttr.GetRepeater();
 			while(await repeater.ShouldRepeat( self )) {
 				await using var anotherScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,self);
 				await ActivateInnerAsync( self );

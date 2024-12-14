@@ -64,16 +64,11 @@ public class DiscardCards : SpiritAction {
 			.Single( deck => deck.Contains( card ) );
 		match.Remove( card );
 		if(match == self.InPlay)
-			RemoveCardElements( self, card );
+			self.Elements.Remove(card.Elements);
 
 		// add to discard
 		self.DiscardPile.Add( card );
 		return true;
-	}
-
-	static void RemoveCardElements( Spirit spirit, PowerCard card ) {
-		foreach(KeyValuePair<Element, int> el in card.Elements)
-			spirit.Elements.Remove( el.Key, el.Value );// lose elements from forgotten card
 	}
 
 	readonly Func<Spirit,IEnumerable<PowerCard>> _cardOptionSelector;

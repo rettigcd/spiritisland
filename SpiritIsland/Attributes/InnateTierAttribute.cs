@@ -33,7 +33,7 @@ public class InnateTierAttribute : Attribute, IDrawableInnateTier {
 
 	string IDrawableInnateTier.Text => Elements.BuildElementString() + " - " + Description;
 
-	public virtual bool IsActive( ElementMgr spiritElements ) => spiritElements.Contains( Elements );
+	public virtual bool IsActive( ElementMgr spiritElements ) => spiritElements.ContainsRaw( Elements );
 
 }
 

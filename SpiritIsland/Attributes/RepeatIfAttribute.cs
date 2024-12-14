@@ -10,15 +10,15 @@ public class RepeatIfAttribute(string elementThreshold, params string[] addition
 			.. additionalThresholds.Select( t => new DrawableRepeatOption(t,"Repeat this Power again.") )
 		];
 
-	public override IPowerRepeater GetRepeater(bool isPowerCard) => new Repeater( ThresholdTiers, isPowerCard );
+	public override IPowerRepeater GetRepeater() => new Repeater( ThresholdTiers );
 
-	class Repeater( IDrawableInnateTier[] thresholds, bool isPowerCard ) : IPowerRepeater {
+	class Repeater( IDrawableInnateTier[] thresholds ) : IPowerRepeater {
 
 		readonly List<IDrawableInnateTier> _thresholds = [.. thresholds];
 
 		public async Task<bool> ShouldRepeat( Spirit spirit ) {
 			foreach(var threshold in _thresholds) {
-				if( await spirit.Elements.Has( threshold.Elements, "Repeating", isPowerCard ? ThresholdType.Innate : ThresholdType.Innate ) ) {
+				if( await spirit.Elements.MeetThreshold(threshold.Elements, "Repeating") ) {
 					_thresholds.Remove(threshold);
 					return true;
 				}
@@ -37,5 +37,5 @@ public class DrawableRepeatOption( string thresholds, string description ) : IDr
 	string IDrawableInnateTier.Text => ThresholdString;
 
 	public string ThresholdString => Elements.BuildElementString();
-	public bool IsActive( ElementMgr activatedElements ) => activatedElements.Contains( Elements );
+	public bool IsActive( ElementMgr activatedElements ) => activatedElements.ContainsRaw( Elements );
 }

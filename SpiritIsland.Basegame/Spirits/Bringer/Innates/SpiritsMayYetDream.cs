@@ -40,7 +40,7 @@ public class SpiritsMayYetDream {
 			.ToArray();
 		Element el = (await ctx.Other.SelectElementsEx(1, elOptions )).FirstOrDefault();
 		if(el != default)
-			ctx.Other.Elements.Add(el);
+			ctx.Other.Elements[el]++;
 	}
 
 }

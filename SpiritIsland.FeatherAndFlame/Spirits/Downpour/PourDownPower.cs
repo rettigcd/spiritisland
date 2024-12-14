@@ -28,7 +28,7 @@ class PourDownPower : IModifyAvailableActions {
 	#region private
 
 	int UsedCounts => _spirit.UsedActions.Count(x => x == _a1 || x == _a2);
-	int TotalCount => _spirit.Elements.Get(Element.Water) / 2;
+	int TotalCount => _spirit.Elements[Element.Water] / 2;
 
 	readonly RepeatLandCardForCost _a1 = new RepeatLandCardForCost();
 	readonly PourDownPowerGainEnergy _a2 = new PourDownPowerGainEnergy();

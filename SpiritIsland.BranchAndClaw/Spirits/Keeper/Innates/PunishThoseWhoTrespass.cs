@@ -15,7 +15,7 @@ public class PunishThoseWhoTrespass {
 	static public async Task Option2( TargetSpaceCtx ctx ) {
 		// +1 damage per sunplant you have
 		var els = ctx.Self.Elements;
-		int damage = 2 + Math.Min( await els.GetAsync(Element.Sun), await els.GetAsync(Element.Plant) );
+		int damage = 2 + Math.Min( await els.CommitToCount(Element.Sun), await els.CommitToCount(Element.Plant) );
 		await ActAsync( ctx, damage );
 	}
 
@@ -24,7 +24,8 @@ public class PunishThoseWhoTrespass {
 		await ctx.Dahan.Destroy( 1 );
 
 		// 4 plant  split this power's damage however desired between target land and another 1 of your lands
-		int damageToTarget = await ctx.Self.Elements.GetAsync(Element.Plant) < 4 && 1<ctx.Self.Presence.Lands.Count()
+		int damageToTarget = await ctx.Self.Elements.MeetThreshold(ElementStrings.Parse("4 plant"),$"Apply {damage} damage in 2 lands")
+			&& 1<ctx.Self.Presence.Lands.Count()
 			? damage
 			: await ctx.Self.SelectNumber("Damage to apply to "+ctx.SpaceSpec.Label, damage );
 

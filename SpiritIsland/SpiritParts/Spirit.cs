@@ -182,8 +182,7 @@ public abstract partial class Spirit
 	}
 
 	void RemoveCardFromPlay( PowerCard cardToRemove ) {
-		foreach(var el in cardToRemove.Elements)
-			Elements.Remove(el.Key, el.Value);// lose elements from forgotten card
+		Elements.Remove(cardToRemove.Elements);  // lose elements from forgotten card
 		InPlay.Remove( cardToRemove );
 	}
 
@@ -422,14 +421,9 @@ public abstract partial class Spirit
 		Hand.Remove( card );
 		InPlay.Add( card );
 		Energy -= cost.Value;
-		AddElements( card );
+		Elements.Add(card.Elements);
 
 		AddActionFactory( card );
-	}
-
-	protected void AddElements( PowerCard card ) {
-		foreach(var el in card.Elements)
-			Elements.Add(el.Key,el.Value);
 	}
 
 	#endregion
