@@ -15,13 +15,10 @@ public class RiverSurges : Spirit {
 
 	public const string Name = "River Surges in Sunlight";
 
-	public const string RiversDomain_Name = "Rivers Domain";
-	static readonly SpecialRule RiversDomain = new SpecialRule(RiversDomain_Name, "Your presense in wetlands count as sacred.");
-
 	public override string SpiritName => Name;
 
 	public RiverSurges():base(
-		spirit => new RiverPresence( spirit,
+		spirit => new RiversDomain( spirit,
 			new PresenceTrack( Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5 )
 		),
@@ -46,7 +43,7 @@ public class RiverSurges : Spirit {
 		PowerCard.For(typeof(WashAway))
 	){
 		InnatePowers = [ InnatePower.For(typeof(MassiveFlooding)) ];
-		SpecialRules = [ RiversDomain ];
+		SpecialRules = [ RiversDomain.Rule ];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
