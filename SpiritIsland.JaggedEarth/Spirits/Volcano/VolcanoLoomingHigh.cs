@@ -24,14 +24,14 @@ public class VolcanoLoomingHigh : Spirit {
 			new GrowthGroup( new PlacePresence( 0, Filter.Mountain ), new PlacePresence( 0, Filter.Mountain ) ),
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 4, Filter.Mountain ), new PlayExtraCardThisTurn( 1 ), new GainEnergy( 2 ) )
 		)
-		, PowerCard.For(typeof(ExaltationOfMoltenStone))
+		,PowerCard.For(typeof(ExaltationOfMoltenStone))
 		,PowerCard.For(typeof(LavaFlows))
 		,PowerCard.For(typeof(PyroclasticBombardment))
 		,PowerCard.For(typeof(RainOfAsh))
 	) {
 
 		InnatePowers = [
-			InnatePower.For(typeof(ExplosiveEruption)), 
+			new ExplosiveInnate(typeof(ExplosiveEruption)), 
 			InnatePower.For(typeof(PoweredByTheFurnaceOfTheEarth))
 		];
 
@@ -42,7 +42,6 @@ public class VolcanoLoomingHigh : Spirit {
 		];
 
 		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape(this);
-		Elements = new ExplosiveHelper(this);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

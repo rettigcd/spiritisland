@@ -102,11 +102,17 @@ public static class SpiritExtensions {
 			.ShouldComplete( typeof( T ).Name );
 
 	/// <summary> Performs all ActionScope initialization with verbose ShouldComplete( power-name ) </summary>
-	/// <remarks>Target specificed via userActions.</remarks>
-	internal static Task When_ResolvingInnate<T>( this Spirit spirit, Action<VirtualUser>? userActions = null )
-		=> spirit.TakeActionAsyncHelper( InnatePower.For(typeof(T)) )
-			.AwaitUser( userActions ?? DoNothing )
-			.ShouldComplete( typeof( T ).Name );
+	/// <remarks>
+	/// Requires we are using actual spirit that has the named innate on it.
+	/// Target specificed via userActions.
+	/// </remarks>
+	internal static async Task When_ResolvingInnate(this Spirit spirit, string innateName, Action<VirtualUser> userActions) {
+		await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit);
+		var innate = spirit.InnatePowers.First(x => x.Title == innateName);
+		await innate.ActivateAsync(spirit)
+			.AwaitUser(userActions)
+			.ShouldComplete(innateName);
+	}
 
 	/// <summary> Mimics Spirit.TakeActionAsync() without requiring card to be in Spirits Unresolved Action list. </summary>
 	static async Task TakeActionAsyncHelper( this Spirit spirit, IFlexibleSpeedActionFactory card ) {

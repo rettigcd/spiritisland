@@ -1,7 +1,9 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-[InnatePower( "Revoke Sanctuary and Cast Out" ), Slow, FromSacredSite( 0, Filter.Invaders+"+"+Filter.Incarna )]
+[InnatePower( Name ), Slow, FromSacredSite( 0, Filter.Invaders+"+"+Filter.Incarna )]
 public class RevokeSanctuaryAndCastOut {
+
+	public const string Name = "Revoke Sanctuary and Cast Out";
 
 	[InnateTier( "1 sun,1 moon,2 plant", "1 Fear. Remove 1 Explorer/Town.", 0 )]
 	static public async Task Option1( TargetSpaceCtx ctx ) {

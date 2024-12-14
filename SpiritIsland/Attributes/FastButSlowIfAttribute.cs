@@ -8,7 +8,7 @@ public class FastButSlowIfAttribute( string triggerElements )
 
 	public override bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit ) {
 		return base.CouldBeActiveFor( requestSpeed, spirit )
-			|| requestSpeed == Phase.Slow && spirit.Elements.CouldHaveElements(_triggerElements) != ECouldHaveElements.No;
+			|| requestSpeed == Phase.Slow && spirit.Elements.CouldHave(_triggerElements) != ECouldHaveElements.No;
 	}
 
 }

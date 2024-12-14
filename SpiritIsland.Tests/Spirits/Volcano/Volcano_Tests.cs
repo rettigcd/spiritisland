@@ -239,7 +239,7 @@ public class Volcano_Tests {
 		spirit.Configure().Elements( "0 fire,0 earth" );
 
 		//  When: they trigger Explosive Erruption in target
-		await spirit.When_ResolvingInnate<ExplosiveEruption>( (user) => {
+		await spirit.When_ResolvingInnate(JaggedEarth.ExplosiveEruption.Name, (user) => {
 			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.SpaceSpec );
 			//   And: Destroy 2 presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "4,3,2,1,0" ).Choose( "2" );
@@ -277,7 +277,7 @@ public class Volcano_Tests {
 		spirit.Configure().Elements( "2 fire,2 earth" );
 
 		//  When: they trigger Explosive Erruption in target
-		await spirit.When_ResolvingInnate<ExplosiveEruption>( (user) => {
+		await spirit.When_ResolvingInnate(JaggedEarth.ExplosiveEruption.Name, (user) => {
 			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.SpaceSpec );
 			//   And: Destroy 2 presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "10,9,8,7,6,5,4,3,2,1,0" ).Choose( "2" );
@@ -333,7 +333,7 @@ public class Volcano_Tests {
 		gameState.IslandWontBlight();
 
 		// When: activate Innate
-		await spirit.When_ResolvingInnate<ExplosiveEruption>( (user) => {
+		await spirit.When_ResolvingInnate(JaggedEarth.ExplosiveEruption.Name, (user) => {
 			user.NextDecision.HasOptions( "A7,A8" ).Choose( targetSpace.SpaceSpec );
 			//  And: destroy presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "12,11,10,9,8,7,6,5,4,3,2,1,0" ).Choose( presenceDestroyed.ToString() );
@@ -393,6 +393,11 @@ public class Volcano_Tests {
 	// 1Powered By the Furnace of the Earth
 
 	#region private helpers
+
+	// We need a special "When" method to use custom InnatePower 
+	static Task When_ResolvingExplosiveErruption(Spirit spirit, Action<VirtualUser> userActions) {
+		return spirit.When_ResolvingInnate(JaggedEarth.ExplosiveEruption.Name, userActions);
+	}
 
 	static void ApplyDamageToExplorers( Spirit spirit, Task task, int expectedDamage, Space onSpace ) {
 		while(0 < expectedDamage) {

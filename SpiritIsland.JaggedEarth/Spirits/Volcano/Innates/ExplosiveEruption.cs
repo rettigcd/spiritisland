@@ -3,7 +3,7 @@
 [InnatePower(Name), Fast, Erruption]
 public class ExplosiveEruption {
 
-	const string Name = "Explosive Eruption";
+	public const string Name = "Explosive Eruption";
 
 	[ExplosiveInnateOption( "2 fire, 2 earth", 2, "In one land within range 1, X Damage",0)]
 	static public async Task Option1( TargetSpaceCtx ctx ) {

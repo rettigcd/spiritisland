@@ -8,7 +8,7 @@ public class InnateTierModel(IDrawableInnateTier tier,Spirit spirit) : Observabl
 	public ECouldHaveElements HasElementsStatus { get => _hasElementsStatus; private set => SetProp(ref _hasElementsStatus, value); }
 
 	internal void Update() {
-		HasElementsStatus = spirit.Elements.CouldHaveElements(tier.Elements);
+		HasElementsStatus = spirit.Elements.CouldHave(tier.Elements);
 	}
 
 	// Color _bgColor = Colors.Transparent;
@@ -18,7 +18,7 @@ public class InnateTierModel(IDrawableInnateTier tier,Spirit spirit) : Observabl
 
 public class InnateTierStatus(IDrawableInnateTier tier, Spirit spirit) {
 	public ECouldHaveElements CouldActivateWith( CountDictionary<Element> cardElements) {
-		return spirit.Elements.CouldHaveElements(tier.Elements.Except(cardElements));
+		return spirit.Elements.CouldHave(tier.Elements.Except(cardElements));
 	}
 }
 

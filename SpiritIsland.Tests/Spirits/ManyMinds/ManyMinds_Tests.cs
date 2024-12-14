@@ -150,7 +150,7 @@ public class ManyMinds_Tests {
 		//   And: A7: 2 Beasts AND Invaders
 		board[7].Given_HasTokens( "2A,2E@1" );
 
-		await spirit.When_ResolvingInnate<BesetAndConfoundTheInvaders>( (user) => {
+		await spirit.When_ResolvingInnate(BesetAndConfoundTheInvaders.Name, user => { 
 			// Then: only the space with both is targetable
 			user.NextDecision.HasPrompt( "Beset and Confound the Invaders: Target Space" ).HasOptions("A1,A7").Choose("A7");
 		} );

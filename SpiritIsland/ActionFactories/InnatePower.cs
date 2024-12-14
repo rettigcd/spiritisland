@@ -58,7 +58,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	bool CouldBeTriggered( Spirit spirit ) {
 		return DrawableOptions
-			.Any(x=>spirit.Elements.CouldHaveElements(x.Elements) != ECouldHaveElements.No);
+			.Any(x=>spirit.Elements.CouldHave(x.Elements) != ECouldHaveElements.No);
 	}
 
 	bool CouldMatchPhase( Phase requestSpeed, Spirit spirit ) {
@@ -125,7 +125,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		foreach(MethodTuple[] grp in _executionGroups) {
 
 			// Ask spirit which methods they can activate
-			var match = await self.Elements.SelectInnateTierToActivate( grp.Select(g=>g.Attr) );
+			var match = await SelectInnateTierToActivate(self, grp.Select(g=>g.Attr) );
 
 			// Find matching method and it to execute-list
 			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;
@@ -135,6 +135,24 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		return lastMethods;
 	}
 
+	// !!! Instead of putting this on Elements, it seems like it should go on the InnatePower instead.
+	// Overriden by:
+	//	* Shifting Memories
+	//	* Volcano
+	protected virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
+
+		// return await spirit.Elements.SelectInnateTierToActivate(innateOptions);
+
+		IDrawableInnateTier match = null;
+		foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
+			if( await HasMetTierThreshold(spirit, option) )
+				match = option;
+		return match;
+	}
+
+	protected virtual async Task<bool> HasMetTierThreshold(Spirit spirit, IDrawableInnateTier option) {
+		return await spirit.Elements.Has(option.Elements, "Innate Tier", ThresholdType.Innate);
+	}
 
 	public object LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
 

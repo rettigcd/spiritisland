@@ -17,30 +17,34 @@ public class ElementMgr( Spirit spirit ) {
 
 	/// <summary> Syntax Sugar - Used inside Power Cards </summary>
 	public Task<bool> YouHave(string elementString)
-		=> HasElement(ElementStrings.Parse(elementString), "Power Card Threshold", ThresholdType.PowerCard);
+		=> Has(ElementStrings.Parse(elementString), "Power Card Threshold", ThresholdType.PowerCard);
 
-	public virtual ECouldHaveElements CouldHaveElements(CountDictionary<Element> subset)
-		=> CouldContain(subset) ? ECouldHaveElements.Yes : ECouldHaveElements.No;
+	/// <summary>
+	/// Spirit has enough ANYs, Prepaired, choice, that they *COULD* meet the threshold if they chose.
+	/// </summary>
+	/// <param name="subset"></param>
+	/// <returns></returns>
+	public virtual ECouldHaveElements CouldHave(CountDictionary<Element> subset) {
+		CountDictionary<Element> missing = subset.Except(Elements);
 
-	// !!! Instead of putting this on Elements, it seems like it should go on the InnatePower instead.
-	// Overriden by:
-	//	* Shifting Memories
-	//	* Volcano
-	public virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
-		IDrawableInnateTier match = null;
-		foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
-			if( await HasElement(option.Elements, "Innate Tier", ThresholdType.Innate) )
-				match = option;
-		return match;
+		if( 0 < missing.Total )
+			foreach( Element multiElement in Elements.GetMultiElements() )
+				CouldApplyMultiToMissing(missing, multiElement);
+
+		return missing.Total == 0 ? ECouldHaveElements.Yes : ECouldHaveElements.No;
 	}
 
-	public virtual async Task<bool> HasElement(CountDictionary<Element> subset, string description, ThresholdType thresholdType)
+	/// <summary>
+	/// Asks Spirit to Commit to Elements.
+	/// * assigns Any elements
+	/// * picks between 2 elements
+	/// * for Shifting Memories, uses prepaired elements
+	/// </summary>
+	public virtual async Task<bool> Has(CountDictionary<Element> subset, string description, ThresholdType thresholdType)
 		=> await ContainsAsync(subset, description)
 		&& (thresholdType == ThresholdType.Innate || await _spirit.UserSelectsFirstText("Activate Element Threshold?", "Yes", "No"));
 
-
 	#endregion High Level New Stuff
-
 
 	#region Set (Init,Add,Remove)
 
@@ -66,7 +70,7 @@ public class ElementMgr( Spirit spirit ) {
 	#endregion Set (Init,Add,Remove)
 
 	/// <summary> Checks all elements that are available to spirit. </summary>
-	public virtual bool CouldContain( CountDictionary<Element> subset ) {
+	bool CouldContain( CountDictionary<Element> subset ) {
 
 		CountDictionary<Element> missing = subset.Except( Elements );
 
@@ -118,32 +122,24 @@ public class ElementMgr( Spirit spirit ) {
 				Elements[multi]--;
 				Elements[single]++;
 			}
-
-			//string multiStr = GetMultiStr( multi );
-			//if(await _spirit.UserSelectsFirstText( $"Use {multiStr} as {single}?", $"Yes, use {count} as {single}", "No thanks" )) {
-			//	// Convert from Multi to Single
-			//	Elements[multi] -= count;
-			//	Elements[single] += count;
-			//}
-
 		}
 		return Elements[single];
 	}
 
+	#region ContainsAsync Helpers
+
 	/// <summary>
 	/// Checks elements available, and commits them (like the 'Any' element)
 	/// </summary>
-	public virtual async Task<bool> ContainsAsync( CountDictionary<Element> subset, string usageDescription ) {
+	async Task<bool> ContainsAsync(CountDictionary<Element> subset, string usageDescription) {
 
 		// For normal spirits without Prepared Elements, this is the same as Could Have Elements
-		CountDictionary<Element> missing = subset.Except( Elements );
-		if(0 < missing.Count)
-			foreach(Element multi in Elements.GetMultiElements())
-				await ApplyMultiElementsToMissing( usageDescription, missing, multi );
+		CountDictionary<Element> missing = subset.Except(Elements);
+		if( 0 < missing.Count )
+			foreach( Element multi in Elements.GetMultiElements() )
+				await ApplyMultiElementsToMissing(usageDescription, missing, multi);
 		return missing.Count == 0;
 	}
-
-	#region ContainsAsync Helpers
 
 	async Task ApplyMultiElementsToMissing( string usageDescriptoin, CountDictionary<Element> missing, Element multi ) {
 		foreach(Element single in multi.SplitIntoSingles())

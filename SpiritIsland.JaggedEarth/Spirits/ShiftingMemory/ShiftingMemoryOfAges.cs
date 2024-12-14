@@ -58,8 +58,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		) {
 
 		InnatePowers = [
-			InnatePower.For(typeof(LearnTheInvadersTactics)), 
-			InnatePower.For(typeof(ObserveTheEverChangingWorld))
+			new UserSelectedInnatePower(typeof(LearnTheInvadersTactics)), 
+			new UserSelectedInnatePower(typeof(ObserveTheEverChangingWorld))
 		];
 
 		SpecialRules = [LongAges, InsightsIntoTheWorldsNature.Rule];
@@ -153,79 +153,6 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 	protected override object CustomMementoValue { 
 		get => PreparedElements.ToArray();
 		set => InitFromArray( PreparedElements, (KeyValuePair<Element, int>[])value );
-	}
-
-}
-
-class InsightsIntoTheWorldsNature(Spirit spirit) : ElementMgr(spirit) {
-
-	public const string Name = "Insights Into the World's Nature";
-	const string Description = "Some of your Actions let you Prepare Element Markers, which are kept here until used.  Choose the Elements freely.  Each Element Marker spent grants 1 of that Element for a single Action.";
-	static public SpecialRule Rule => new SpecialRule( Name, Description );
-
-	public readonly CountDictionary<Element> PreparedElements = [];
-
-	public override ECouldHaveElements CouldHaveElements(CountDictionary<Element> subset) {
-		CountDictionary<Element> missing = subset.Except(Elements);
-		return missing.Count == 0 ? ECouldHaveElements.Yes
-			: PreparedElements.Contains(missing) ? ECouldHaveElements.AsPrepared
-			: ECouldHaveElements.No;
-	}
-
-	public override async Task<bool> HasElement(CountDictionary<Element> subset, string description, ThresholdType _) {
-		CountDictionary<Element> missing = subset.Except(Elements);
-		if( missing.Count == 0 ) return true;
-
-		// Check if we have prepared element markers to fill the missing elements
-		if( PreparedElements.Count == 0 ) return false;
-
-		string prompt = $"Meet elemental threshold: " + subset.BuildElementString();
-		if( !PreparedElements.Contains(missing)
-			|| !await _spirit.UserSelectsFirstText(prompt, $"Yes, use {ElementStrings.BuildElementString(missing)} prepared elements", "No, I'll pass.")
-		) return false;
-
-		PreparedElements.RemoveRange(missing); // remove from prepared
-		Add(missing);  // add to Current
-		ActionScope.Current.AtEndOfThisAction(_ => Remove(missing)); // remove from Current
-
-		return true;
-	}
-
-	/// <remarks> Override to present user with all options at 1 time and let them pick once. </remarks>
-	public override async Task<IDrawableInnateTier> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
-
-		var options = innateOptions
-			.Select(innateOption => {
-				var missing = innateOption.Elements.Except(Elements);
-				return new {
-					innateOption,
-					missing,
-					prompt = FormatPrompt(missing, innateOption.Elements)
-				};
-			})
-			.Where(x => PreparedElements.Contains(x.missing))
-			.ToArray();
-
-		if( options.Length == 0 ) return null;
-		if( options.Length == 1 ) return options[0].innateOption;
-
-		string choice = await _spirit.SelectText("Select Innate Option", options.Select(x => x.prompt).ToArray(), Present.Done);
-		var match = options.FirstOrDefault(o => o.prompt == choice);
-		if( match == null ) return null;
-
-		// !!! BUG - should only be applied to this action, not all.  Remove at end of action
-		Add(match.missing); // assign to this action so next check recognizes them
-		foreach( var pair in match.missing )
-			PreparedElements[pair.Key] -= pair.Value;
-
-		return match.innateOption;
-
-		static string FormatPrompt(CountDictionary<Element> missing, CountDictionary<Element> optionEls) {
-			string optionElsString = ElementStrings.BuildElementString(optionEls);
-			return missing.Count == 0
-				? $"Use existing => {optionElsString}"
-				: $"Prepare {ElementStrings.BuildElementString(missing)} => {optionElsString}";
-		}
 	}
 
 }

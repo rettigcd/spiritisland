@@ -22,7 +22,7 @@ public class RevokeSanctuary_Tests : ToweringRoots_Base {
 		space.ScopeSpace.InitDefault(Human.Town,1);
 
 		// When we resolve Innate
-		await _spirit.When_ResolvingInnate<RevokeSanctuaryAndCastOut>( u => { 
+		await _spirit.When_ResolvingInnate(RevokeSanctuaryAndCastOut.Name, u => { 
 			u.NextDecision.HasPrompt( "Remove (1)" ).HasOptions( "T@2" ).Choose( "T@2" );
 		} ).ShouldComplete();
 		

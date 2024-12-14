@@ -1,7 +1,9 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-[InnatePower("Beset and Confound the Invaders"), Fast, FromPresence(2, Filter.Invaders )]
+[InnatePower(Name), Fast, FromPresence(2, Filter.Invaders )]
 public class BesetAndConfoundTheInvaders {
+
+	public const string Name = "Beset and Confound the Invaders";
 
 	[BesetInnateOption( "1 air,2 animal", 2, "2 fear and Defend 2")]
 	static public async Task Option1(TargetSpaceCtx ctx ) {
