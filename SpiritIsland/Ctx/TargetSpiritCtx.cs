@@ -13,7 +13,7 @@ public class TargetSpiritCtx( Spirit self, Spirit target ) : IHaveASpirit {
 
 	public virtual void AddFear( int count ) => Self.AddFear(count);
 
-	public Task<bool> YouHave( string elementString ) => Self.YouHave( elementString );
+	public Task<bool> YouHave( string elementString ) => Self.Elements.YouHave( elementString );
 
 	public TargetSpaceCtx Target( SpaceSpec space ) => Self.Target( space );
 	public TargetSpaceCtx Target( Space space) => Self.Target(space);

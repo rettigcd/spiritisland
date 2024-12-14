@@ -16,7 +16,7 @@ public class FromPresenceThresholdAlternate( int range, string target, string th
 	readonly TargetCriteriaFactory _altTarget = new TargetCriteriaFactory( altRange, altTarget );
 
 	protected override async Task<TargetCriteria> ApplySpiritModsToGetTargetCriteria( Spirit self ) {
-		return await self.HasElement( _threshold, $"Target {_altTarget}", Spirit.ThresholdType.PowerCard )
+		return await self.Elements.HasElement( _threshold, $"Target {_altTarget}", ThresholdType.PowerCard )
 			? _altTarget.Bind(self)
 			: await base.ApplySpiritModsToGetTargetCriteria( self );
 	}

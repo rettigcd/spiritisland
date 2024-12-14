@@ -3,12 +3,44 @@
 /// <summary>
 /// Manages current elements assigned to a Spirit
 /// </summary>
-public class ElementMgr( Spirit _spirit ) {
+public class ElementMgr( Spirit spirit ) {
+
+	protected readonly Spirit _spirit = spirit;
+
 	public CountDictionary<Element> Elements { get; set; } = [];
 
 	public int this[Element el] {
 		set { Elements[el] = value; }
 	}
+
+	#region High Level New Stuff
+
+	/// <summary> Syntax Sugar - Used inside Power Cards </summary>
+	public Task<bool> YouHave(string elementString)
+		=> HasElement(ElementStrings.Parse(elementString), "Power Card Threshold", ThresholdType.PowerCard);
+
+	public virtual ECouldHaveElements CouldHaveElements(CountDictionary<Element> subset)
+		=> CouldContain(subset) ? ECouldHaveElements.Yes : ECouldHaveElements.No;
+
+	// !!! Instead of putting this on Elements, it seems like it should go on the InnatePower instead.
+	// Overriden by:
+	//	* Shifting Memories
+	//	* Volcano
+	public virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
+		IDrawableInnateTier match = null;
+		foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
+			if( await HasElement(option.Elements, "Innate Tier", ThresholdType.Innate) )
+				match = option;
+		return match;
+	}
+
+	public virtual async Task<bool> HasElement(CountDictionary<Element> subset, string description, ThresholdType thresholdType)
+		=> await ContainsAsync(subset, description)
+		&& (thresholdType == ThresholdType.Innate || await _spirit.UserSelectsFirstText("Activate Element Threshold?", "Yes", "No"));
+
+
+	#endregion High Level New Stuff
+
 
 	#region Set (Init,Add,Remove)
 
@@ -142,4 +174,11 @@ public class ElementMgr( Spirit _spirit ) {
 
 	public string Summary(bool showOneCount=true) => Elements.BuildElementString(showOneCount);
 
+
+
+
+
 }
+
+
+public enum ThresholdType { None, PowerCard, Innate }

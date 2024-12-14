@@ -42,25 +42,12 @@ public class VolcanoLoomingHigh : Spirit {
 		];
 
 		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape(this);
+		Elements = new ExplosiveHelper(this);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
 		this.AddActionFactory(new PlacePresenceOnMountain().ToInit());
-	}
-
-	public override async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {
-
-		IDrawableInnateTier match = null;
-		int destroyedThisAction = VolcanoPresence.GetPresenceDestroyedThisAction();
-		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total )) {
-			if(option is ExplosiveInnateOptionAttribute ex && destroyedThisAction < ex.DestroyedPresenceThreshold)
-				continue;
-
-			if(await HasElement( option.Elements, "Innate Tier", ThresholdType.Innate ))
-				match = option;
-		}
-		return match;
 	}
 
 }

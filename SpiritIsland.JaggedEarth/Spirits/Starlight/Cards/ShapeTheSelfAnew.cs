@@ -8,7 +8,7 @@ public class ShapeTheSelfAnew {
 	public static async Task ActAsync( Spirit self ) {
 		// Gain a Minor Power.
 		// If you have 4 moon, You may gain a Major Power instead of a Minor Power.
-		if(await self.YouHave("4 moon"))
+		if(await self.Elements.YouHave("4 moon"))
 			await self.Draw();
 		else
 			await self.DrawMinor();

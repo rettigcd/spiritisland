@@ -55,38 +55,7 @@ public abstract partial class Spirit
 
 	#endregion
 
-	#region Elements
-
-	public readonly ElementMgr Elements;
-
-	/// <summary>
-	/// Used inside Power Cards
-	/// </summary>
-	public Task<bool> YouHave(string elementString)
-		=> HasElement(ElementStrings.Parse(elementString), "Power Card Threshold", ThresholdType.PowerCard);
-
-	public virtual ECouldHaveElements CouldHaveElements( CountDictionary<Element> subset )
-		=> Elements.CouldContain(subset) ? ECouldHaveElements.Yes : ECouldHaveElements.No;
-
-	public virtual async Task<bool> HasElement( CountDictionary<Element> subset, string description, ThresholdType thresholdType )
-		=> await Elements.ContainsAsync(subset, description)
-		&& (thresholdType == ThresholdType.Innate || await this.UserSelectsFirstText( "Activate Element Threshold?", "Yes", "No"));
-
-	public enum ThresholdType { None, PowerCard, Innate }
-
-	/// <summary>
-	/// Spirit Selects which level of each Innate-Tier-Group they wish to activate
-	/// </summary>
-	/// <remarks>overriden by Shiftin Memories and Volcano</remarks>
-	public virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate( IEnumerable<IDrawableInnateTier> innateOptions ) {
-		IDrawableInnateTier match = null;
-		foreach(var option in innateOptions.OrderBy( o => o.Elements.Total ))
-			if(await HasElement( option.Elements, "Innate Tier", ThresholdType.Innate ))
-				match = option;
-		return match;
-	}
-
-	#endregion
+	public ElementMgr Elements;
 
 	#region Growth
 

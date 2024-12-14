@@ -8,7 +8,7 @@ public class TransformativeSacrifice {
 	[AnySpirit]
 	[Instructions( "Target Spirit may Remove up to 3 Presence. For each removed Presence, Take a Minor Power and play it for free. -If you have- 2 moon,3 fire,2 plant: Before taking cards, they may also Remove 1 presence from their presence track to Take a Minor Power and play it." ), Artist( Artists.KatGuevara )]
 	static public async Task ActAsync(TargetSpiritCtx ctx){
-		bool hasElementThreshold = await ctx.Self.YouHave("2 moon,3 fire,2 plant");
+		bool hasElementThreshold = await ctx.Self.Elements.YouHave("2 moon,3 fire,2 plant");
 		await TargetSpiritAction( ctx.Other, hasElementThreshold );
 	}
 

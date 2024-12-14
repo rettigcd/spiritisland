@@ -30,9 +30,9 @@ public class SpreadingWilds {
 
 		protected override async Task<int> CalcRange( Spirit self ) => _range
 			// 3 plant    this power has +1 range
-			+ (await self.YouHave( "3 plant" ) ? 1 : 0)
+			+ (await self.Elements.YouHave( "3 plant" ) ? 1 : 0)
 			// 1 air      this power has +1 range
-			+ (await self.YouHave( "1 air" ) ? 1 : 0);
+			+ (await self.Elements.YouHave( "1 air" ) ? 1 : 0);
 	}
 
 }

@@ -241,7 +241,7 @@ public static partial class Cmd {
 
 	// not a command but I can't find anywhere to put it.
 	static public async Task PayPresenceForBargain( this Spirit self, string takeFromTrackElementThreshold ) {
-		if(await self.YouHave( takeFromTrackElementThreshold )) {
+		if(await self.Elements.YouHave( takeFromTrackElementThreshold )) {
 			var presenceToRemove = await self.SelectSourcePresence( Present.Always, "remove from game" ); // Come from track or board
 			await presenceToRemove.RemoveAsync( 1 ); // await self.Presence.TakeFromAsync( presenceToRemove );
 		} else {

@@ -30,7 +30,7 @@ public class SettleIntoHuntingGrounds {
 
 
 		// if you have 2 plant 3 animal:
-		if( await self.YouHave("2 plant,3 animal" )){
+		if( await self.Elements.YouHave("2 plant,3 animal" )){
 			// 2 fear and
 			self.AddFear(2);
 			// 2 damamge in one of your lands.

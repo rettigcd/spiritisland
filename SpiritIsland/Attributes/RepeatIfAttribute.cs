@@ -18,7 +18,7 @@ public class RepeatIfAttribute(string elementThreshold, params string[] addition
 
 		public async Task<bool> ShouldRepeat( Spirit spirit ) {
 			foreach(var threshold in _thresholds) {
-				if( await spirit.HasElement( threshold.Elements, "Repeating", isPowerCard ? Spirit.ThresholdType.Innate : Spirit.ThresholdType.Innate ) ) {
+				if( await spirit.Elements.HasElement( threshold.Elements, "Repeating", isPowerCard ? ThresholdType.Innate : ThresholdType.Innate ) ) {
 					_thresholds.Remove(threshold);
 					return true;
 				}

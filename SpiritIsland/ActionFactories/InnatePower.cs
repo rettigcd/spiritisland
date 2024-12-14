@@ -58,7 +58,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 
 	bool CouldBeTriggered( Spirit spirit ) {
 		return DrawableOptions
-			.Any(x=>spirit.CouldHaveElements(x.Elements) != ECouldHaveElements.No);
+			.Any(x=>spirit.Elements.CouldHaveElements(x.Elements) != ECouldHaveElements.No);
 	}
 
 	bool CouldMatchPhase( Phase requestSpeed, Spirit spirit ) {
@@ -125,7 +125,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		foreach(MethodTuple[] grp in _executionGroups) {
 
 			// Ask spirit which methods they can activate
-			var match = await self.SelectInnateTierToActivate( grp.Select(g=>g.Attr) );
+			var match = await self.Elements.SelectInnateTierToActivate( grp.Select(g=>g.Attr) );
 
 			// Find matching method and it to execute-list
 			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;

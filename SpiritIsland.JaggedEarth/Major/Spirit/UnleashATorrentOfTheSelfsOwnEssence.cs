@@ -13,7 +13,7 @@ public class UnleashATorrentOfTheSelfsOwnEssence {
 			ConvertEnergyToDamage,
 			// if you have 2 sun,3 fire: You may do both.
 			Cmd.Multiple( "Do Both", GainEnergy, ConvertEnergyToDamage )
-				.OnlyExecuteIf( await self.YouHave( "2 sun,3 fire" ) )
+				.OnlyExecuteIf( await self.Elements.YouHave( "2 sun,3 fire" ) )
 		).ActAsync(self);
 
 	}

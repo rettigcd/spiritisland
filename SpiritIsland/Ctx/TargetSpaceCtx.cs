@@ -20,7 +20,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	// ========== Parts from SelfCtx ===========
 
-	public Task<bool> YouHave( string elementString ) => Self.YouHave( elementString );
+	public Task<bool> YouHave( string elementString ) => Self.Elements.YouHave( elementString );
 
 	public Task<T> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
 		=> Self.SelectAsync<T>( originalDecision );
