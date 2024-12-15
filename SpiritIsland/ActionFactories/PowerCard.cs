@@ -14,10 +14,15 @@ public sealed class PowerCard : IPowerActionFactory {
 	}
 
 	static public PowerCard For(MethodInfo method) {
-		GeneratesContextAttribute contextGenerator = method.GetCustomAttributes<AnySpiritAttribute>().Cast<GeneratesContextAttribute>().FirstOrDefault()
-			?? method.GetCustomAttributes<TargetSpaceAttribute>().First();
+		var ctxFactory = method.GetCustomAttributes<GeneratesContextAttribute>().First();
+		if( ctxFactory is TargetSpaceAttribute tsa )
+			tsa.Preselect = method.GetCustomAttribute<PreselectAttribute>();
 		var cardDetails = method.GetCustomAttributes<CardAttribute>().VerboseSingle("Couldn't find CardAttribute on PowerCard targeting a space");
-		return new PowerCard(method, contextGenerator, cardDetails);
+		var speed       = method.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for " + method.DeclaringType.Name);
+		var repeater    = method.GetCustomAttribute<RepeatAttribute>();
+		var instructions = method.GetCustomAttribute<InstructionsAttribute>(false)?.Text ?? throw new InvalidOperationException("Missing Instructions attribute for " + method.DeclaringType.Name);
+		var artist = method.GetCustomAttribute<ArtistAttribute>(false)?.Artist ?? throw new InvalidOperationException("Missing Artist attribute for " + method.DeclaringType.Name);
+		return new PowerCard( method, ctxFactory, cardDetails, speed, repeater, instructions, artist );
 	}
 
 	#endregion static Factories
@@ -26,51 +31,52 @@ public sealed class PowerCard : IPowerActionFactory {
 
 	PowerCard( 
 		MethodBase methodBase, 
-		GeneratesContextAttribute targetAttr,
-		IHaveCardDetails cardDetails
+		ITargetCtxFactory targetCtxFactory,  // Range, Filter, Land/Spirit
+		IDisplayCardDetails cardDetails,     // Name, Cost, Elements, Card/Innate
+		IDisplaySpeedBehaviour speed,        // Speed (and speed behavior)
+		IHaveARepeater repeater,
+		string instructions,
+		string artist
 	) {
 		_methodBase = methodBase;
-		_targetAttr = targetAttr;
+		_targetCtxFactory = targetCtxFactory;
 		_cardDetails = cardDetails;
-		_speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
-		_repeatAttr = methodBase.GetCustomAttribute<RepeatAttribute>();
-
-		if(_targetAttr is TargetSpaceAttribute tsa )
-			tsa.Preselect = methodBase.GetCustomAttribute<PreselectAttribute>();
+		_speed = speed;
+		_repeatHolder = repeater;
+		Instructions = instructions;
+		Artist = artist;
 	}
 
 	#endregion
 
-	string IOption.Text        => $"{Title} ${Cost} ({Speed})";
-	public string Title         => _cardDetails.Name;
-	public Phase Speed  => _speedAttr.DisplaySpeed;
-	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
+	string IOption.Text   => $"{Title} ${Cost} ({Speed})";
+	public string Title   => _cardDetails.Name;
+	public Phase Speed    => _speed.DisplaySpeed;
 
 	// These are only used for drawing the cards.
-	public string Instructions => _methodBase.GetCustomAttribute<InstructionsAttribute>(false)?.Text ?? throw new InvalidOperationException( "Missing Instructions attribute for " + _methodBase.DeclaringType.Name );
-	public string Artist => _methodBase.GetCustomAttribute<ArtistAttribute>(false)?.Artist ?? throw new InvalidOperationException( "Missing Artist attribute for " + _methodBase.DeclaringType.Name );
+	public string Instructions { get; }
+	public string Artist { get; }
+	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke(null, [ctx]);
 
-	public string TargetFilter => _targetAttr.TargetFilterName;
+	public string TargetFilter => _targetCtxFactory.TargetFilterName;
 	/// <summary> Used by PowerCardImageManager to draw the range-text on the card. </summary>
-	public string RangeText => _targetAttr.RangeText;
+	public string RangeText => _targetCtxFactory.RangeText;
 
 	public int Cost            => _cardDetails.Cost;
 	public CountDictionary<Element> Elements  => _cardDetails.Elements;
 	public PowerType PowerType => _cardDetails.PowerType;
-	public Type MethodType     => _methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
-	public LandOrSpirit LandOrSpirit => _targetAttr.LandOrSpirit;
+	public LandOrSpirit LandOrSpirit => _targetCtxFactory.LandOrSpirit;
 
-	public bool CouldActivateDuring( Phase requestSpeed, Spirit spirit ){
-		return SpeedBehavior.CouldBeActiveFor(requestSpeed,spirit);
-	}
+	public bool CouldActivateDuring( Phase requestSpeed, Spirit spirit )
+		=> _speed.CouldBeActiveFor(requestSpeed,spirit);
 
 	public async Task ActivateAsync( Spirit self ) {
 		// Don't check speed here.  Slow card may have been made fast (Lightning's Swift Strike)
 
 		await ActivateInnerAsync( self );
-		if(_repeatAttr != null) {
-			var repeater = _repeatAttr.GetRepeater();
+		if(_repeatHolder != null) {
+			var repeater = _repeatHolder.GetRepeater();
 			while(await repeater.ShouldRepeat( self )) {
 				await using var anotherScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,self);
 				await ActivateInnerAsync( self );
@@ -81,31 +87,27 @@ public sealed class PowerCard : IPowerActionFactory {
 
 
 	async Task ActivateInnerAsync( Spirit self ) {
-		object target = await _targetAttr.GetTargetCtx(Title, self);
+		object target = await _targetCtxFactory.GetTargetCtx(Title, self);
 		if( target is not null )
 			await InvokeOnObjectCtx(target);
 	}
 
 	/// <remarks>Called directly from Let's See What Happens with special ContextBehavior</remarks>
 	public Task InvokeOn( TargetSpaceCtx ctx ) {
-		return _targetAttr.LandOrSpirit == LandOrSpirit.Land
+		return _targetCtxFactory.LandOrSpirit == LandOrSpirit.Land
 			? InvokeOnObjectCtx( ctx )
 			: throw new InvalidOperationException( "Cannot invoke spirit-based PowerCard using TargetSpaceCtx" );
 	}
 
-	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke( null, [ctx] );
-
 	#region private
 
-	ISpeedBehavior SpeedBehavior => _speedAttr;
-
-	readonly SpeedAttribute _speedAttr;
-	readonly IHaveCardDetails _cardDetails;
+	readonly IDisplaySpeedBehaviour _speed;
+	readonly IDisplayCardDetails _cardDetails;
 	readonly MethodBase _methodBase;
-	readonly RepeatAttribute _repeatAttr;
+	readonly IHaveARepeater _repeatHolder;
 
 	#endregion
 
-	readonly GeneratesContextAttribute _targetAttr;
+	readonly ITargetCtxFactory _targetCtxFactory;
 
 }

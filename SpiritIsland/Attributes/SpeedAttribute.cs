@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
 [AttributeUsage(AttributeTargets.Method|AttributeTargets.Class)]
-public class SpeedAttribute( Phase speed ) : Attribute, ISpeedBehavior {
-	public Phase DisplaySpeed { get; } = speed;
+public class SpeedAttribute( Phase speed ) : Attribute, IDisplaySpeedBehaviour {
+	public Phase DisplaySpeed => speed;
 	public virtual bool CouldBeActiveFor( Phase requestSpeed, Spirit _ ) {
 		return DisplaySpeed.IsOneOf( requestSpeed, Phase.FastOrSlow );
 	}
@@ -10,7 +10,9 @@ public class SpeedAttribute( Phase speed ) : Attribute, ISpeedBehavior {
 }
 
 public interface ISpeedBehavior {
-
 	public bool CouldBeActiveFor( Phase requestSpeed, Spirit spirit );
+}
 
+public interface IDisplaySpeedBehaviour : ISpeedBehavior {
+	public Phase DisplaySpeed { get; }
 }

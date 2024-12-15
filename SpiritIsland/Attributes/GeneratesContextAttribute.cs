@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public abstract class GeneratesContextAttribute : Attribute {
+public abstract class GeneratesContextAttribute : Attribute, ITargetCtxFactory {
 
 	public abstract Task<object> GetTargetCtx( string powerName, Spirit self );
 
@@ -12,3 +12,9 @@ public abstract class GeneratesContextAttribute : Attribute {
 
 }
 
+public interface ITargetCtxFactory {
+	Task<object> GetTargetCtx(string powerName, Spirit self);
+	string RangeText { get; }
+	string TargetFilterName { get; }
+	LandOrSpirit LandOrSpirit { get; }
+}
