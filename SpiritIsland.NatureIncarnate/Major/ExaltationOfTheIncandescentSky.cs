@@ -34,7 +34,7 @@ public class ExaltationOfTheIncandescentSky {
 
 	static async Task PlayCardMakeFastDoDamage(Spirit self) {
 		// play 1 Power Card by paying its cost
-		await new PlayCardForCost(Present.Done).ActivateAsync(self);
+		await new PlayCardForCost(Present.Done).ActAsync(self);
 
 		// make up to 2 of their Powers Fast this turn, and
 		self.AddActionFactory(new ResolveSlowDuringFast()); 

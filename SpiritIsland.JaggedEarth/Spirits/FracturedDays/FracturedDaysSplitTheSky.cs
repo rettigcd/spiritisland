@@ -248,7 +248,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 			: base(inner.Description + "x" + repeater._repeats) {
 			Inner = inner;
 			_repeater = repeater;
-			repeater.Register(new SpiritGrowthAction(this));
+			repeater.Register(new GrowthAction(this));
 		}
 
 		public override async Task ActAsync(Spirit self) {

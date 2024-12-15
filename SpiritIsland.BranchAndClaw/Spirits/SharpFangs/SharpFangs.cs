@@ -39,7 +39,7 @@ public class SharpFangs : Spirit {
 		highestJungle.Beasts.Init(1);
 
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
-		this.AddActionFactory(new PlacePresenceOnBeastLand().ToInit());
+		this.AddActionFactory(new PlacePresenceOnBeastLand().ToGrowth());
 	}
 
 }

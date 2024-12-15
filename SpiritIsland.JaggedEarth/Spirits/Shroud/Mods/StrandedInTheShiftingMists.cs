@@ -28,7 +28,7 @@ class StrandedInTheShiftingMists(Spirit spirit) : IModifyAvailableActions {
 	#region private fields
 
 	// We can do better than this.
-	readonly IActionFactory _isolate = new SpiritGrowthAction(Cmd.Isolate.On().SpiritPickedLand().Which(Has.YourPresence), Phase.Fast);
+	readonly IActionFactory _isolate = new GrowthAction(Cmd.Isolate.On().SpiritPickedLand().Which(Has.YourPresence), Phase.Fast);
 
 	#endregion private fields
 

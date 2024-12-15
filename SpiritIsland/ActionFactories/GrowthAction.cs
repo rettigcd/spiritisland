@@ -13,7 +13,7 @@ public interface ICanAutoRun {}
 /// <summary>
 /// Wraps a SelfCmd turning it into a GrowthAction
 /// </summary>
-public class SpiritGrowthAction( IActOn<Spirit> cmd, Phase phase = Phase.Growth ) : IHelpGrowActionFactory {
+public class GrowthAction( IActOn<Spirit> cmd, Phase phase = Phase.Growth ) : IHelpGrowActionFactory {
 	public readonly IActOn<Spirit> Cmd = cmd; // !!! switch to IActOn<Spirit>
 
 	string IOption.Text => Cmd.Description;
@@ -22,8 +22,4 @@ public class SpiritGrowthAction( IActOn<Spirit> cmd, Phase phase = Phase.Growth 
 	Task IActionFactory.ActivateAsync( Spirit self ) => Cmd.ActAsync( self );
 	bool IActionFactory.CouldActivateDuring( Phase speed, Spirit spirit ) => speed == phase;
 	bool IHelpGrowActionFactory.AutoRun => Cmd is ICanAutoRun;
-}
-
-static public class SelfCmdExtender {
-	static public SpiritGrowthAction ToInit( this SpiritAction cmd ) => new SpiritGrowthAction( cmd, Phase.Init );
 }

@@ -13,8 +13,8 @@ class MistsSteadilyDrift : IModifyAvailableActions {
 		_spirit = spirit;
 
 		SpiritAction pushPresence = new SpiritAction("Push Presence", PushPresenceAsync);
-		_pushFast = new SpiritGrowthAction(pushPresence, Phase.Fast);
-		_pushSlow = new SpiritGrowthAction(pushPresence, Phase.Slow);
+		_pushFast = new GrowthAction(pushPresence, Phase.Fast);
+		_pushSlow = new GrowthAction(pushPresence, Phase.Slow);
 	}
 
 	static async Task PushPresenceAsync(Spirit self) {

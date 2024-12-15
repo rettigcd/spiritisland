@@ -26,7 +26,7 @@ public class GrowthActionModel : ObservableModel, OptionView {
 
 	#region constructor
 
-	public GrowthActionModel(SpiritGrowthAction action) {
+	public GrowthActionModel(GrowthAction action) {
 		Option = action;
 		_description = action.Cmd.Description;
 		_imageSource = ImageCache.FromFile(_description.ToResourceName(".png") );

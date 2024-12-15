@@ -8,6 +8,6 @@ public class GrowthGroupModel( GrowthGroup gg ) : ObservableModel {
 	}
 
 	GrowthActionModel[] _actions = gg.GrowthActionFactories
-			.Select(a => new GrowthActionModel((SpiritGrowthAction)a))
+			.Select(a => new GrowthActionModel((GrowthAction)a))
 			.ToArray();
 }

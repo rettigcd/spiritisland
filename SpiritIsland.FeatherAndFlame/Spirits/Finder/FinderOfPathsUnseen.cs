@@ -57,7 +57,7 @@ public class FinderOfPathsUnseen : Spirit, IModifyAvailableActions {
 		if(gameState.Island.Boards.Length == 1)
 			board[1].ScopeSpace.Setup(Presence.Token, 1);
 		else 
-			AddActionFactory( new PlacePresenceOnSpace1().ToInit() ); // let user pick initial space
+			AddActionFactory( new PlacePresenceOnSpace1().ToGrowth() ); // let user pick initial space
 
 		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( ResponsibilityToTheDead_Handler ) );
 	}

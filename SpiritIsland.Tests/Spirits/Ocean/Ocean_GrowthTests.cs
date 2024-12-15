@@ -29,7 +29,7 @@ public class Ocean_GrowthTests : BoardAGame {
 			.ToDictionary(a=>"OHG on "+a[0],a=>a[1]);
 
 		IHelpGrowActionFactory gather = _spirit.GetAvailableActions(Phase.Growth)
-			.OfType<SpiritGrowthAction>()
+			.OfType<GrowthAction>()
 			.Where(x=>x.Cmd.Description == "Gather 1 Presence into EACH Ocean" ) // is GatherPresenceIntoOcean
 			.SingleOrDefault();
 

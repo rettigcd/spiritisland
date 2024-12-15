@@ -46,7 +46,7 @@ public class VolcanoLoomingHigh : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
-		this.AddActionFactory(new PlacePresenceOnMountain().ToInit());
+		this.AddActionFactory(new PlacePresenceOnMountain().ToGrowth());
 	}
 
 }

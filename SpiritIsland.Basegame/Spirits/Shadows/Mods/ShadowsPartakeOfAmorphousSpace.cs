@@ -14,8 +14,8 @@ class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
 		_spirit = spirit;
 
 		SpiritAction pushPresence = new SpiritAction("Push Presence", MovePresence);
-		_moveFast = new SpiritGrowthAction(pushPresence, Phase.Fast);
-		_moveSlow = new SpiritGrowthAction(pushPresence, Phase.Slow);
+		_moveFast = new GrowthAction(pushPresence, Phase.Fast);
+		_moveSlow = new GrowthAction(pushPresence, Phase.Slow);
 	}
 
 	static async Task MovePresence(Spirit self) {

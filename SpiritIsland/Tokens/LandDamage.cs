@@ -55,7 +55,7 @@ public class LandDamage
 		// React
 		var eventHandlers = space.Keys.OfType<IModifyBlightThreshold>().ToArray();
 		foreach( IModifyBlightThreshold handler in eventHandlers )
-			handler.ModifyLandsResilience(ref blightThreshold);
+			handler.ModifyLandsResilience(space, ref blightThreshold);
 		return blightThreshold;
 	}
 }

@@ -21,7 +21,7 @@ public class GatherTheScatteredLightOfStars {
 			}
 		}
 
-		self.AddActionFactory( new SpiritGrowthAction( new ReclaimN( reclaimCount ) ) );
+		self.AddActionFactory( new GrowthAction( new ReclaimN( reclaimCount ) ) );
 
 	}
 

@@ -499,7 +499,8 @@ public abstract partial class Spirit
 	#endregion
 
 	// Works like badlands.
-	public int BonusDamage { get; set; } // This is a hack for Flame's Fury
+	public int BonusDamage { get; set; } // This is a hack for Flame's Fury & Earth Moves With Vigor And Might
+	// !!! Make sure this is included in all Damage paths.  Make sure nothing skips over it by going directly to Space.DamageInvaders(...)
 
 	Spirit IHaveASpirit.Self => this;
 

@@ -19,7 +19,7 @@ public class EarthsVitality(Spirit spirit) : SpiritPresenceToken(spirit)
 		if(args.Added == this && args.To is Space space ) {
 			int current = space[this];
 			int previous = current - args.Count;
-			if( previous < 2 && 2<= current ) ) {
+			if( previous < 2 && 2<= current ) {
 				space.Defend.Add(3);
 			}
 		}
