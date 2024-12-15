@@ -25,8 +25,11 @@ public class Targetter(Spirit spirit) {
 		}
 
 		// 1
-		if( spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle )
-			return routes.MakeResult(spaceOptions[0]);
+		if( spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle ) {
+			// Make sure we still go through SelectAsync<> so we can trigger the selection-made event
+			var space = await _spirit.SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.AutoSelectSingle));
+			return routes.MakeResult(space);
+		}
 
 		// multiple Choose
 		Space mySpace = preselect != null && UserGateway.UsePreselect.Value

@@ -30,13 +30,11 @@ public class DarkAndFireAsOne(Spirit spirit):ElementMgr(spirit) {
 
 	/// <summary> Combines Moon and Fire counts into a new Dictionary </summary>
 	static CountDictionary<Element> CombineMoonAndFire(CountDictionary<Element> orig) {
-		var combined = new CountDictionary<Element>();
-		foreach(var pair in orig)
-			combined[CombinedElement(pair.Key)] += pair.Value;
+		var combined = orig.Clone();
+		combined[Element.Fire] += orig[Element.Moon];
+		combined[Element.Moon] = 0;
 		return combined;
 	}
-	static Element CombinedElement( Element orig ) => orig switch { Element.Moon or Element.Fire => MoonFire, _ => orig };
-	const Element MoonFire = Element.Moon | Element.Fire;
 
 	#endregion private
 

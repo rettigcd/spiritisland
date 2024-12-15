@@ -5,17 +5,14 @@
 
 	UI - Cast Down into the Briny Deep - TEST
 
-	== Aspects ==
-	Vital Strength - Flourish With Natures Strength
-	Vital Strength - Earth Moves With Vigor and Might
-	Shadow - ReachThroughEphemeralDistance
-
 	Replace Dynamic Defend with visible tokens.
 	Investigate if Bringer and Trickster's Special Rules can be implemented with Mod Tokens to simplify UI.
 
 4	UI - Landscape layout
 	UI - Display Card Images
 	UI - Display Icons in Text (card descriptions)
+	UI - Minor / Major deck
+	UI - Select Element
 
 3	BUG - If no Dahan, strife does not come off invaders
 

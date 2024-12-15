@@ -1,55 +1,65 @@
-﻿namespace SpiritIsland.Basegame;
+﻿
+namespace SpiritIsland.Basegame;
 
-class ReachThroughEphemeralDistance(Spirit spirit) : Targetter(spirit), IRunWhenTimePasses {
+class ReachThroughEphemeralDistance : DefaultRangeCalculator {
 
 	public const string Name = "Reach Through Ephemeral Distance";
 	const string Description = "Once per turn, you may ignore Range. (* Currently, this only works for targetting.)"; 
 	// This can be during Growth or for a Power - anything for which there's a Range arrow or the word "Range" is used.
 	static public SpecialRule Rule => new SpecialRule( Name, Description );
 
-	static public void InitAspect(Spirit spirit) { spirit.Targetter = new ReachThroughEphemeralDistance(spirit); }
-
-	/// <summary>
-	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
-	/// </summary>
-	public override async Task<TargetSpaceResults> TargetsSpace(
-		string prompt,
-		IPreselect preselect,
-		TargetingSourceCriteria sourceCriteria,
-		params TargetCriteria[] targetCriteria
-	) {
-		// The spaces we picked
-		var target = await base.TargetsSpace(prompt, preselect, sourceCriteria, targetCriteria);
-
-		// If we target
-		if( _used && _otherTargets.Contains(target.Space) ) {
-			_used = true;
-			_otherTargets = [];
-			GameState.Current.AddTimePassesAction(this);
-		}
-
-		return target;
+	static public void InitAspect(Spirit spirit) { 
+		var reach = new ReachThroughEphemeralDistance();
+		spirit.PowerRangeCalc = reach;
+		spirit.NonPowerRangeCalc = reach;
+		spirit.SelectionMade += reach.Spirit_SelectionMade;
 	}
 
-	public override TargetRoutes GetPowerTargetOptions(TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
-		var routes = base.GetPowerTargetOptions(sourceCriteria, targetCriteria);
-		if( !_used ) {
-			_otherTargets = ActionScope.Current.Spaces.Except(routes.Targets).ToArray();
-			routes.AddRoutes( routes.Sources.SelectMany(s=>_otherTargets.Select(t=>new TargetRoute(s,t))));
-		} else {
-			_otherTargets = [];
+	#region ICalcRange
+
+	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria targetCriteria) {
+		var routes = DefaultRangeCalculator.Singleton.GetTargetingRoute(source, targetCriteria);
+
+		var gs = GameState.Current;
+		if( ShouldAddBonusSpaces(gs) ) {
+			var moreTargets = gs.Spaces.Except(routes.Targets).ToArray();
+			_bonusTargets.AddRange(moreTargets);
+			routes.AddRoutes(routes.Sources.SelectMany(s => moreTargets.Select(t => new TargetRoute(s, t))));
 		}
 		return routes;
 	}
 
-	#region IRunWhenTimePasses
+	#endregion ICalcRange
 
-	bool IRunWhenTimePasses.RemoveAfterRun => true;
-	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
-	Task IRunWhenTimePasses.TimePasses(GameState _) { _used = false; return Task.CompletedTask; }
+	#region Spirit_SelectionMade
 
-	#endregion IRunWhenTimePasses
+	void Spirit_SelectionMade(object obj) {
+		if(obj is Space space )
+			CheckAndClear(space);
+		else if (obj is SpaceToken spaceToken)
+			CheckAndClear(spaceToken.Space);
+		else if (obj is Move move )
+			CheckAndClear(move.Source.Space,move.Destination);
+	}
 
-	bool _used;
-	Space[] _otherTargets = [];
+	void CheckAndClear(Space space1,Space space2=null) {
+
+		if( _bonusTargets.Contains(space1) || space2 is not null && _bonusTargets.Contains(space2) )
+			DisableBonusSpaces();
+
+		// Once they pick a space, clear the bonuses so they don't get charged
+		_bonusTargets.Clear();
+	}
+
+	#endregion Spirit_SelectionMade
+
+	#region private fields
+
+	static bool ShouldAddBonusSpaces(GameState gs) => !gs.RoundScope.ContainsKey(Name);
+	static void DisableBonusSpaces() { GameState.Current.RoundScope[Name] = true; }
+
+	readonly List<Space> _bonusTargets = [];
+
+	#endregion private fields
+
 }

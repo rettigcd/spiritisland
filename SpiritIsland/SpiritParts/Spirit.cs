@@ -51,7 +51,13 @@ public abstract partial class Spirit
 	#region Gateway stuff
 
 	public IUserPortalPlus Portal => _gateway;
-	public Task<T> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption => _gateway.Select<T>( decision );
+	public async Task<T> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption {
+		var selection = await _gateway.Select<T>(decision);
+		SelectionMade?.Invoke(selection);
+		return selection;
+	}
+	public event Action<object> SelectionMade; // hook for: Reach Through the Efemeral Distance
+
 	public void PreSelect( SpaceToken st ) => _gateway.PreloadedSpaceToken = st;
 	readonly UserGateway _gateway;
 
@@ -473,7 +479,7 @@ public abstract partial class Spirit
 	//		Bargains of Power - Power
 	//		Unleash a torrent - Power
 	public Space[] FindSpacesWithinRange( TargetCriteria targetCriteria ) {
-		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : DefaultRangeCalculator.Singleton;
+		ICalcRange rangeCalculator = ActionIsMyPower ? PowerRangeCalc : NonPowerRangeCalc;
 		return rangeCalculator.GetTargetingRoute_MultiSpace( Presence.Lands, targetCriteria ).Targets;
 	}
 
@@ -494,7 +500,9 @@ public abstract partial class Spirit
 				GameState.Current.AddTimePassesAction(new RollbackPowerRangeCalcToOriginal(this));
 		}
 	}
-	ICalcRange _powerRangeCalc= DefaultRangeCalculator.Singleton;
+	ICalcRange _powerRangeCalc = DefaultRangeCalculator.Singleton;
+
+	public ICalcRange NonPowerRangeCalc = DefaultRangeCalculator.Singleton;
 
 	#endregion
 
