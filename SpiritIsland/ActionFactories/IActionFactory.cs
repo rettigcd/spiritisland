@@ -11,13 +11,8 @@ public interface IActionFactory : IOption {
 
 }
 
-public interface IFlexibleSpeedActionFactory : IActionFactory {
-	Phase DisplaySpeed { get; }
-	/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
-	ISpeedBehavior OverrideSpeedBehavior { get; set; }
-
-	string TargetFilter { get; }
-
+public interface IPowerActionFactory : IActionFactory {
+	Phase Speed { get; }
 	string RangeText { get; }
-
+	string TargetFilter { get; }
 }

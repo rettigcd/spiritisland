@@ -42,7 +42,7 @@ public class CardModel : ObservableModel {
 		Cost = card.Cost.ToString();
 		Elements = ElementModel.FromDict( card.Elements ).Select(em=>em.Element).ToArray();
 		Instructions = card.Instructions;
-		Speed       = ImageCache.FromFile(card.DisplaySpeed switch { Phase.Fast => "cost_fast.png", Phase.Slow => "cost_slow.png", _ => "" });
+		Speed       = ImageCache.FromFile(card.Speed switch { Phase.Fast => "cost_fast.png", Phase.Slow => "cost_slow.png", _ => "" });
 		SourceRange = ImageCache.FromFile("attr_" + card.RangeText.ToResourceName(".png"));
 		Target      = ImageCache.FromFile("attr_" + card.TargetFilter.ToResourceName(".png"));
 	}

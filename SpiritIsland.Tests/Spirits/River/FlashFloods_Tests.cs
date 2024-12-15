@@ -41,7 +41,7 @@ public class FlashFloods_Tests {
 		_card = _spirit.Hand.Single( c => c.Title == FlashFloods.Name );
 		_spirit.Energy = _card.Cost;
 		_spirit.PlayCard( _card );
-		Assert.Contains( _card, _spirit.GetAvailableActions( _card.DisplaySpeed ).OfType<PowerCard>().ToList() ); // is fast
+		Assert.Contains( _card, _spirit.GetAvailableActions( _card.Speed ).OfType<PowerCard>().ToList() ); // is fast
 
 		// When:
 		await _card.ActivateAsync( _spirit ).AwaitUser( user => {
@@ -75,7 +75,7 @@ public class FlashFloods_Tests {
 		_card = _spirit.Hand.Single(c=>c.Title == FlashFloods.Name);
 		_spirit.Energy = _card.Cost;
 		_spirit.PlayCard( _card );
-		Assert.Contains(_card,_spirit.GetAvailableActions(_card.DisplaySpeed).OfType<PowerCard>().ToList()); // is fast
+		Assert.Contains(_card,_spirit.GetAvailableActions(_card.Speed).OfType<PowerCard>().ToList()); // is fast
 
 		await _card.ActivateAsync( _spirit ).AwaitUser( user => {
 			//  Select: A2

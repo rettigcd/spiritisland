@@ -1,13 +1,37 @@
 ﻿namespace SpiritIsland;
 
-public sealed class PowerCard : IFlexibleSpeedActionFactory {
+public sealed class PowerCard : IPowerActionFactory {
+
+	#region static Factories
+
+	static public PowerCard For(Type type) => For(FindMethod(type));
+
+	static MethodInfo FindMethod(Type type) {
+		// try static method (spirit / major / minor)
+		return type.GetMethods(BindingFlags.Public | BindingFlags.Static)
+			.Where(m => m.GetCustomAttributes<CardAttribute>().Count() == 1)
+			.VerboseSingle($"PowerCard {type.Name} missing static method with SpiritCard, MinorCard or MajorCard attribute");
+	}
+
+	static public PowerCard For(MethodInfo method) {
+		GeneratesContextAttribute contextGenerator = method.GetCustomAttributes<AnySpiritAttribute>().Cast<GeneratesContextAttribute>().FirstOrDefault()
+			?? method.GetCustomAttributes<TargetSpaceAttribute>().First();
+		var cardDetails = method.GetCustomAttributes<CardAttribute>().VerboseSingle("Couldn't find CardAttribute on PowerCard targeting a space");
+		return new PowerCard(method, contextGenerator, cardDetails);
+	}
+
+	#endregion static Factories
 
 	#region constructor
 
-	PowerCard( MethodBase methodBase, GeneratesContextAttribute targetAttr ) {
+	PowerCard( 
+		MethodBase methodBase, 
+		GeneratesContextAttribute targetAttr,
+		IHaveCardDetails cardDetails
+	) {
 		_methodBase = methodBase;
 		_targetAttr = targetAttr;
-		_cardAttr = methodBase.GetCustomAttributes<CardAttribute>().VerboseSingle( "Couldn't find CardAttribute on PowerCard targeting a space" );
+		_cardDetails = cardDetails;
 		_speedAttr = methodBase.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for "+methodBase.DeclaringType.Name);
 		_repeatAttr = methodBase.GetCustomAttribute<RepeatAttribute>();
 
@@ -17,9 +41,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 	#endregion
 
-	string IOption.Text        => $"{Title} ${Cost} ({DisplaySpeed})";
-	public string Title         => _cardAttr.Name;
-	public Phase DisplaySpeed  => _speedAttr.DisplaySpeed;
+	string IOption.Text        => $"{Title} ${Cost} ({Speed})";
+	public string Title         => _cardDetails.Name;
+	public Phase Speed  => _speedAttr.DisplaySpeed;
 	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
 	// These are only used for drawing the cards.
@@ -30,9 +54,9 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 	/// <summary> Used by PowerCardImageManager to draw the range-text on the card. </summary>
 	public string RangeText => _targetAttr.RangeText;
 
-	public int Cost            => _cardAttr.Cost;
-	public CountDictionary<Element> Elements  => _cardAttr.Elements;
-	public PowerType PowerType => _cardAttr.PowerType;
+	public int Cost            => _cardDetails.Cost;
+	public CountDictionary<Element> Elements  => _cardDetails.Elements;
+	public PowerType PowerType => _cardDetails.PowerType;
 	public Type MethodType     => _methodBase.DeclaringType; // for determining card namespace and Basegame, BranchAndClaw, etc
 
 	public LandOrSpirit LandOrSpirit => _targetAttr.LandOrSpirit;
@@ -73,37 +97,12 @@ public sealed class PowerCard : IFlexibleSpeedActionFactory {
 
 	#region private
 
-	ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? _speedAttr;
+	ISpeedBehavior SpeedBehavior => _speedAttr;
 
 	readonly SpeedAttribute _speedAttr;
-	readonly CardAttribute _cardAttr;
+	readonly IHaveCardDetails _cardDetails;
 	readonly MethodBase _methodBase;
 	readonly RepeatAttribute _repeatAttr;
-
-	#endregion
-
-	#region static
-
-	static public PowerCard For( Type type ) => For( FindMethod( type ) );
-
-	static MethodInfo FindMethod( Type type ) {
-		// try static method (spirit / major / minor)
-		return type.GetMethods( BindingFlags.Public | BindingFlags.Static )
-			.Where( m => m.GetCustomAttributes<CardAttribute>().Count() == 1 )
-			.VerboseSingle( $"PowerCard {type.Name} missing static method with SpiritCard, MinorCard or MajorCard attribute" );
-	}
-
-	static public PowerCard For( MethodInfo method ) {
-
-		// check if targets spirit
-		AnySpiritAttribute targetSpiritAttribute = method.GetCustomAttributes<AnySpiritAttribute>().FirstOrDefault();
-		if( targetSpiritAttribute != null )
-			return new PowerCard( method, targetSpiritAttribute );
-
-		// Must be target-land
-		TargetSpaceAttribute targetSpace = method.GetCustomAttributes<TargetSpaceAttribute>().FirstOrDefault();
-		return new PowerCard( method, targetSpace );
-	}
 
 	#endregion
 

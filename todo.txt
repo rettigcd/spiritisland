@@ -29,33 +29,22 @@
 
 	SPIRITS - Aspects (new spirits)
 
+		Rampant Green - Tangles
+		Rampant Green - Regrowth
+		Fangs - Encircle
+		Fangs - Enconstrained
+		Wildfire - Transforming
 		Thunderspeaker - Warrior
 		Thunderspeaker - Tactician
 
-		Bringer - Violence
 		Bringer - Enticing
-
-		Rampant Green - Tangles
-		Rampant Green - Regrowth
-
-		-- Love --
-		Fangs - Encircle
-		Fangs - Enconstrained
-
-		Keeper - Spreading Hostility
-
 		Memory - Mentor
-		Memory - Intensify
-
 		Serpent - Locus
 
-		Wildfire - Transforming
-
-
-		-- OK --
-
-		-- Down grade --
-		Lure - Lair
+		Bringer - Violence   (Challenge: Track Cards that have "Damage or Destroy on them")
+		Keeper - Spreading Hostility  (Modify Growth Track)
+		Lure - Lair   (Challenge: Modifying Setup)
+		Memory - Intensify    (Challenge: Hook into every action)
 
 
 ==== Maui questions / Problems ====

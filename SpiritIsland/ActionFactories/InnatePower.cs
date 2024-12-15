@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class InnatePower : IFlexibleSpeedActionFactory {
+public class InnatePower : IPowerActionFactory {
 
 	#region Constructors and factories
 
@@ -47,7 +47,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 	#endregion
 
 	#region Speed
-	public Phase DisplaySpeed => _speedAttr.DisplaySpeed;
+	public Phase Speed => _speedAttr.DisplaySpeed;
 	/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
 	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
@@ -65,7 +65,7 @@ public class InnatePower : IFlexibleSpeedActionFactory {
 		return SpeedBehavior.CouldBeActiveFor( requestSpeed, spirit );
 	}
 
-	ISpeedBehavior SpeedBehavior => OverrideSpeedBehavior ?? _speedAttr;
+	ISpeedBehavior SpeedBehavior => _speedAttr;
 
 	#endregion
 

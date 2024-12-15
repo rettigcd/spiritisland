@@ -2,7 +2,7 @@
 
 // Base Attribute type for Major / Minor / Spirit cards 
 [AttributeUsage(AttributeTargets.Method)]
-public class CardAttribute : Attribute {
+public class CardAttribute : Attribute, IHaveCardDetails {
 
 	protected CardAttribute(string name, int cost, PowerType type, CountDictionary<Element> elements){
 		Name = name;
@@ -16,4 +16,11 @@ public class CardAttribute : Attribute {
 	public CountDictionary<Element> Elements { get; }
 	public PowerType PowerType { get; }
 
+}
+
+public interface IHaveCardDetails {
+	public string Name { get; }
+	public int Cost { get; }
+	public CountDictionary<Element> Elements { get; }
+	public PowerType PowerType { get; }
 }

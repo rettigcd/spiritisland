@@ -5,26 +5,24 @@ public static class ResolveOutOfPhaseAction {
 	/// <summary>
 	/// Selects an out-of-phase Action and Resolves it.
 	/// </summary>
-	public static async Task Execute( Spirit spirit ) {
+	static public async Task Execute( Spirit spirit ) {
 
 		var gs = GameState.Current;
 		var resultingSpeed = gs.Phase;
 		var cardsOriginalSpeed = OriginalSpeed( resultingSpeed );
-		var changeableFactories = spirit.GetAvailableActions( cardsOriginalSpeed ).OfType<IFlexibleSpeedActionFactory>().ToArray();
+		var changeableFactories = spirit.GetAvailableActions( cardsOriginalSpeed )
+			.OfType<IPowerActionFactory>()
+			.ToArray();
 
 		// Select the action.
-		IFlexibleSpeedActionFactory factory = (IFlexibleSpeedActionFactory)await spirit.SelectAsync(new A.TypedDecision<IActionFactory>(
+		IPowerActionFactory factory = (IPowerActionFactory)await spirit.SelectAsync(new A.TypedDecision<IActionFactory>(
 			GetPrompt(resultingSpeed),
 			changeableFactories, 
 			Present.Done
 		));
 
-		if( factory != null) {
-			// Temporarily change its speed - is this necessary?
-			TemporarySpeed.Override( factory, resultingSpeed, gs );
-			// Resolve it.
+		if( factory != null)
 			await spirit.ResolveActionAsync( factory, resultingSpeed );
-		}
 	}
 
 	static Phase OriginalSpeed( Phase resultingSpeed ) => resultingSpeed switch {

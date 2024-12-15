@@ -7,6 +7,7 @@ public class UnrelentingGrowth {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		TargetSpaceCtx toCtx = await AddPresenceAndWilds( ctx.Other );
+		if(toCtx is null) return;
 
 		// if you have 3 sun, 3 plant
 		if(await ctx.YouHave( "3 sun,3 plant" )) {
@@ -31,6 +32,7 @@ public class UnrelentingGrowth {
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
 		var to = await self.SelectAsync( new A.SpaceDecision( "Where would you like to place your presence?", options, Present.Always ) );
+		if(to is null) return null;
 
 		// add wilds
 		var toCtx = self.Target( to );

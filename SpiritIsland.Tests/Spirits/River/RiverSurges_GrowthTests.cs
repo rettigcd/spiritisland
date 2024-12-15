@@ -138,7 +138,7 @@ public class RiverSurges_GrowthTests : BoardAGame {
 
 	protected void Assert_CardInActionListIf(PowerCard card) {
 
-		var unresolvedCards = _spirit.GetAvailableActions(card.DisplaySpeed)
+		var unresolvedCards = _spirit.GetAvailableActions(card.Speed)
 			.OfType<PowerCard>()
 			.ToArray();
 

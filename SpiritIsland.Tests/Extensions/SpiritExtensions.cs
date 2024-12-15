@@ -115,7 +115,7 @@ public static class SpiritExtensions {
 	}
 
 	/// <summary> Mimics Spirit.TakeActionAsync() without requiring card to be in Spirits Unresolved Action list. </summary>
-	static async Task TakeActionAsyncHelper( this Spirit spirit, IFlexibleSpeedActionFactory card ) {
+	static async Task TakeActionAsyncHelper( this Spirit spirit, IPowerActionFactory card ) {
 		await using ActionScope scope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, spirit );
 		await card.ActivateAsync( spirit );
 	}

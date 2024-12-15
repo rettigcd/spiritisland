@@ -9,7 +9,7 @@ public class SuddenAmbush_Tests : ThunderCards {
 	[Fact]
 	public void IsFastAndCost1() {
 		var suddenAmbush = PowerCard.For(typeof(SuddenAmbush));
-		suddenAmbush.DisplaySpeed.ShouldBe(Phase.Fast);
+		suddenAmbush.Speed.ShouldBe(Phase.Fast);
 		suddenAmbush.Cost.ShouldBe( 2 );
 	}
 

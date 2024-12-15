@@ -79,6 +79,12 @@ Flow:
 spirit.Configure().Elements("3 moon,2 animal");
 ```
 
+# Queue up IActionFactory
+Instead of adding to Hand and then Playing (which requires Energy)
+```
+spirit.AddActionFactory(slow);
+```
+
 # Test a Power Card
 
 ## Call Directly
