@@ -95,7 +95,7 @@ public class DancesUpEarthquakes : Spirit {
 		, PowerCard.For(typeof(RumblingsPortendAGreaterQuake))// fast,? - Play
 			// Impend - new major
 			// Impend - a minor
-        // Round 4
+		// Round 4
 		, PowerCard.For(typeof(InspireAWindingDance))		// slow     Play
 			// Play - new major
 			// Impend - remaining card
@@ -111,6 +111,8 @@ public class DancesUpEarthquakes : Spirit {
 
 		Impending = [];
 		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = Impending } );
+
+		Forget = new ForgetImpendingToo(this);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -126,9 +128,6 @@ public class DancesUpEarthquakes : Spirit {
 
 	static readonly SpecialRule BeginADance = new SpecialRule("Begin a Dance of Decades", "Whenever you would play a Power Card, you may instead pay any amountof Energy onto the card to make it an impending card.");
 	static readonly SpecialRule RhythmicPower = new SpecialRule("Rhythmic Power Builds to a Cataclysmic Crescendo", "When you gain Energy from your Presence Track, also gain Impending-Energy onto each card made Impending on the previous turn. If any have enough energy, play it, discarding its energy. This costs no card plays.");
-
-	public override Task<PowerCard> ForgetACard( IEnumerable<PowerCard>? restrictedOptions = null, Present present = Present.Always ) 
-		=> base.ForgetACard( restrictedOptions, present );
 
 	#region Impending Cards
 
@@ -197,9 +196,6 @@ public class DancesUpEarthquakes : Spirit {
 		return true;
 	}
 
-	protected override IEnumerable<PowerCard> GetForgetableCards()
-		=> base.GetForgetableCards().Union( Impending ).ToArray();
-
 	#endregion
 
 	#region Memento
@@ -225,4 +221,15 @@ public class DancesUpEarthquakes : Spirit {
 	}
 
 	#endregion Memento
+}
+
+class ForgetImpendingToo(Spirit s) : ForgettingStrategy(s) {
+
+	protected override IEnumerable<PowerCard> GetForgetableCards()
+		=> base.GetForgetableCards().Union(_due.Impending).ToArray();
+
+	//public override Task<PowerCard> ForgetACard(IEnumerable<PowerCard>? restrictedOptions = null, Present present = Present.Always)
+	//	=> base.ForgetACard(restrictedOptions, present);
+
+	DancesUpEarthquakes _due => (DancesUpEarthquakes)_spirit;
 }

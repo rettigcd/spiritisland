@@ -29,7 +29,7 @@ public class CallOnMidnightsDream {
 			&& await ctx.Self.UserSelectsFirstText( prompt, "Yes, forget it.", "no thanks." )
 		) {
 			// Forget Call On Midnight's dream
-			ctx.Self.ForgetThisCard( callOnMidnightsDreamCard );
+			ctx.Self.Forget.ThisCard( callOnMidnightsDreamCard );
 
 			// gain energy equal to dahan
 			ctx.Self.Energy += ctx.Dahan.CountAll;

@@ -1,13 +1,11 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class UserSelectedInnatePower : InnatePower {
-
-	public UserSelectedInnatePower(Type type):base(type) { }
+class UserSelectedInnatePower(Type type) : InnatePower(type) {
 
 	protected override async Task<IDrawableInnateTier> SelectInnateTierToActivate(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
 
 		// !!! THIS SHOULD BE Spirit AGNOSTIC and not know about Prepaired elements.
-		var insights = (InsightsIntoTheWorldsNature)spirit.Elements;
+		var preparedMgr = (PreparedElementMgr)spirit.Elements;
 
 		// Let user pick level
 		var options = innateOptions
@@ -19,7 +17,7 @@ class UserSelectedInnatePower : InnatePower {
 					prompt = FormatPrompt(missing, innateOption.Elements)
 				};
 			})
-			.Where(x => insights.PreparedElements.Contains(x.missing))
+			.Where(x => preparedMgr.PreparedElements.Contains(x.missing))
 			.ToArray();
 
 		if( options.Length == 0 ) return null;
@@ -31,9 +29,9 @@ class UserSelectedInnatePower : InnatePower {
 
 		// Assign to this action so next check recognizes them
 		// (!!! BUG - should only be applied to this action, not all.  Remove at end of action)
-		insights.Add(match.missing);
+		preparedMgr.Add(match.missing);
 		foreach( var pair in match.missing )
-			insights.PreparedElements[pair.Key] -= pair.Value;
+			preparedMgr.PreparedElements[pair.Key] -= pair.Value;
 
 		// return selected result
 		return match.innateOption;

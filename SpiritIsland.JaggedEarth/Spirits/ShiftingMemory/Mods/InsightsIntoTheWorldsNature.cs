@@ -1,12 +1,11 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class InsightsIntoTheWorldsNature(Spirit spirit) : ElementMgr(spirit) {
+class InsightsIntoTheWorldsNature(Spirit spirit) : PreparedElementMgr(spirit) {
 
 	public const string Name = "Insights Into the World's Nature";
-	const string Description = "Some of your Actions let you Prepare Element Markers, which are kept here until used.  Choose the Elements freely.  Each Element Marker spent grants 1 of that Element for a single Action.";
+	const string Description = "Some of your Actions let you Prepare Element Markers, which are kept here until used.  Choose the Elements freely."
+		+"  Each Element Marker spent grants 1 of that Element for a single Action.";
 	static public SpecialRule Rule => new SpecialRule( Name, Description );
-
-	public readonly CountDictionary<Element> PreparedElements = [];
 
 	public override ECouldHaveElements CouldHave(CountDictionary<Element> subset) {
 		CountDictionary<Element> missing = subset.Except(Elements);

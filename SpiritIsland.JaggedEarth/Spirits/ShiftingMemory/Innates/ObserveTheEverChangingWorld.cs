@@ -8,7 +8,7 @@ public class ObserveTheEverChangingWorld {
 	[InnateTier("1 moon","Prepare 1 Element Marker")]
 	static public Task Option1(TargetSpaceCtx ctx ) {
 		var smoa = (ShiftingMemoryOfAges)ctx.Self;
-		return smoa.PrepareElement(ObserveTheEverChangingWorld.Name);
+		return smoa.PreparedElementMgr.Prepare(ObserveTheEverChangingWorld.Name);
 	}
 
 	[InnateTier("2 moon,1 air","Instead, after each of the next three Actions that change which pieces are in atarget land, Prepare 1 Element Marker.")]
@@ -58,7 +58,7 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 		// https://boardgamegeek.com/thread/2399380/shifting-memory-observe-ever-changing-world
 		actionScope.AtEndOfThisAction(async _ => {
 			space.Adjust( this, -1 );
-			await _spirit.PrepareElement( space.SpaceSpec.Label );
+			await _spirit.PreparedElementMgr.Prepare( space.SpaceSpec.Label );
 		} );
 
 	}

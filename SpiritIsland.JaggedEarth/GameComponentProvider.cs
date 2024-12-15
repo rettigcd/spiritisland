@@ -32,10 +32,19 @@ public class GameComponentProvider : IGameComponentProvider {
 	#region Aspects
 
 	public AspectConfigKey[] AspectNames => [
+		// Shroud
 		Stranded.ConfigKey,
+		// Shifting Memories
+		Intensify.ConfigKey,
+		Mentor.ConfigKey,
 	];
+
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
+		// Shroud
 		Stranded.Name => new Stranded(),
+		// Shifting Memories
+		Intensify.Name => new Intensify(),
+		Mentor.Name => new Mentor(),
 		_ => null
 	};
 

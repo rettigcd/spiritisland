@@ -17,7 +17,7 @@ public class LetsSeeWhatHappens {
 		if(! await ctx.Self.UserSelectsFirstText( "Keep Card by forgetting another card?", "Yes, keep " + card.Title, "No, thank you." )) return;
 
 		ctx.Self.AddCardToHand( card );
-		await ctx.Self.ForgetACard();
+		await ctx.Self.Forget.ACard();
 
 		if(ctx.Self.Hand.Contains( card ))
 			ctx.Self.Energy++;

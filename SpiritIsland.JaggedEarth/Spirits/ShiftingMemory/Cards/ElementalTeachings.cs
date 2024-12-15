@@ -10,10 +10,10 @@ public class ElementalTeachings {
 		if(ctx.Self is not ShiftingMemoryOfAges smoa) return;
 
 		// Prepare 1 Element Marker.
-		await smoa.PrepareElement(ElementalTeachings.Name);
+		await smoa.PreparedElementMgr.Prepare(ElementalTeachings.Name);
 
 		// Discard up to 3 Element Markers.
-		var discarded = await smoa.DiscardElements(3,"Target Spirit");
+		var discarded = await smoa.PreparedElementMgr.DiscardElements(3,"Target Spirit");
 
 		// Target Spirit gains those Elements. (They can be any combination of elements)
 		ctx.Other.Elements.Add( discarded );

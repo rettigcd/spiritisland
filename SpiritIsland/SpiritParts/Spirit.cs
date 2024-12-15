@@ -32,6 +32,7 @@ public abstract partial class Spirit
 		decks.Add( new SpiritDeck { Type = SpiritDeck.DeckType.Discard, Cards = DiscardPile } );
 
 		Elements = new ElementMgr( this );
+		Forget = new ForgettingStrategy( this );
 	}
 
 	public void InitSpirit( Board board, GameState gameState ){
@@ -56,6 +57,7 @@ public abstract partial class Spirit
 	#endregion
 
 	public ElementMgr Elements;
+	public ForgettingStrategy Forget;
 
 	#region Growth
 
@@ -124,7 +126,7 @@ public abstract partial class Spirit
 
 	readonly List<IActionFactory> _availableActions = [];
 	readonly List<IActionFactory> _usedActions = [];
-	readonly protected List<InnatePower>       _usedInnates = [];
+	readonly protected List<InnatePower> _usedInnates = [];
 
 	// so spirits can replay used cards or collect them instead of discard
 	public IEnumerable<IActionFactory> UsedActions => _usedActions;
@@ -133,7 +135,7 @@ public abstract partial class Spirit
 		ArgumentNullException.ThrowIfNull( reclaimCard );
 		if(!DiscardPile.Remove( reclaimCard )) 
 			if(InPlay.Contains( reclaimCard )) {
-				RemoveCardFromPlay( reclaimCard );
+				Forget.RemoveCardFromPlay( reclaimCard );
 			} else
 				throw new InvalidOperationException( "Can't find the card to reclaim. Not in dicard nor in play" );
 		Hand.Add( reclaimCard );
@@ -151,39 +153,6 @@ public abstract partial class Spirit
 	public async Task Reclaim1FromDiscardOrPlayed() {
 		PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", 1, DiscardPile.Union(InPlay), CardUse.Reclaim, Present.Always );
 		Reclaim( cardToReclaim );
-	}
-
-	/// <summary> Forget USER SELECTED power card. </summary>
-	public virtual async Task<PowerCard> ForgetACard( IEnumerable<PowerCard> options = null, Present present = Present.Always ) {
-
-		options ??= GetForgetableCards();
-
-		PowerCard cardToForget = await this.SelectPowerCard( "Select power card to forget", 1, options, CardUse.Forget, present );
-		if( cardToForget != null )
-			ForgetThisCard( cardToForget );
-		return cardToForget;
-	}
-
-	protected virtual IEnumerable<PowerCard> GetForgetableCards() 
-		=> InPlay                 // in play
-			.Union( Hand )        // in Hand
-			.Union( DiscardPile ) // in Discard
-			.ToArray();
-
-	public virtual void ForgetThisCard( PowerCard cardToRemove ) {
-		// A card can be in one of 3 places
-		// (1) Purchased / Active
-		if(InPlay.Contains( cardToRemove ))
-			RemoveCardFromPlay( cardToRemove );
-		// (2) Unpurchased, still in hand
-		Hand.Remove( cardToRemove );
-		// (3) used, discarded
-		DiscardPile.Remove( cardToRemove );
-	}
-
-	void RemoveCardFromPlay( PowerCard cardToRemove ) {
-		Elements.Remove(cardToRemove.Elements);  // lose elements from forgotten card
-		InPlay.Remove( cardToRemove );
 	}
 
 	#endregion
@@ -370,7 +339,7 @@ public abstract partial class Spirit
 	protected virtual async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ) {
 		var card = await DrawFromDeck.DrawInner( this, deck, numberToDraw, numberToKeep );
 		if(forgetACard)
-			await this.ForgetACard();
+			await Forget.ACard();
 		return card;
 	}
 
@@ -561,12 +530,6 @@ public abstract partial class Spirit
 }
 
 
-public class SpiritDeck {
-	/// <remarks> Unused at present. anticipated future use.</remarks>
-	public DeckType Type { get; set; }
-	public List<PowerCard> Cards;
-	public enum DeckType { Hand, InPlay, Discard, DaysThatNeverWere_Major, DaysThatNeverWere_Minor, Other  };
-}
 
 public interface IHaveSecondaryElements {
 	CountDictionary<Element> SecondaryElements { get; }

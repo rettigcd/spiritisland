@@ -36,7 +36,7 @@ public class RepeatThenForgetPower : RepeatAttribute {
 
 			// Forget this Power Card
 			var thisCard = self.InPlay.Single( x => x.Title == PeaceOfTheNighttimeSky.Name );
-			self.ForgetThisCard( thisCard );
+			self.Forget.ThisCard( thisCard );
 
 			//  Gain 1 Moon.
 			self.Elements[Element.Moon]++;

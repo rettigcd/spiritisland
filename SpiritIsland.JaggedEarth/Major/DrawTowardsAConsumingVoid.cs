@@ -24,9 +24,9 @@ public class DrawTowardsAConsumingVoid {
 				&& await ctx.Self.UserSelectsFirstText("Forget a minor, major, and unique power to repeat?", "Yes! Draw Everything in!", "No, thank you.")
 			) {
 				// Forget a Minor Power, and a Major Power, and a unique Power
-				major.Remove( await ctx.Self.ForgetACard(major));
-				minor.Remove( await ctx.Self.ForgetACard(minor));
-				unique.Remove( await ctx.Self.ForgetACard(unique));
+				major.Remove( await ctx.Self.Forget.ACard(major));
+				minor.Remove( await ctx.Self.Forget.ACard(minor));
+				unique.Remove( await ctx.Self.Forget.ACard(unique));
 				// to perform the above effects again.
 				await PerformEffect( ctx );
 			}

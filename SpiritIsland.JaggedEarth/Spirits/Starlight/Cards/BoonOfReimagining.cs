@@ -7,7 +7,7 @@ public class BoonOfReimagining {
 	public static async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// Target Spirit may Forget a Power Card from hand or discard.
-		var powerCard = await ctx.Other.ForgetACard( null, Present.Done );
+		var powerCard = await ctx.Other.Forget.ACard( null, Present.Done );
 
 		// If they do, they draw 6 minor Power Cards and gain 2 of them.
 		if( powerCard != null )

@@ -4,7 +4,7 @@
 // used by: Unlock the Gates of Deepest power
 public class ForgetCard( Spirit _spirit, PowerCard _card ) {
 	public Task Forget( GameState _ ) {
-		_spirit.ForgetThisCard( _card );
+		_spirit.Forget.ThisCard( _card );
 		return Task.CompletedTask;
 	}
 }

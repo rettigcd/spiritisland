@@ -170,7 +170,7 @@ public static partial class Cmd {
 		static public SpaceAction AllRavages( string name ) => new SpaceAction( "Stop Invaders Ravage this Turn", ctx => { ctx.Space.SkipRavage( name, UsageDuration.SkipAllThisTurn ); } );
 	}
 
-	static public SpiritAction ForgetPowerCard => new SpiritAction( "Forget Power card", spirit => spirit.ForgetACard() );
+	static public SpiritAction ForgetPowerCard => new SpiritAction( "Forget Power card", spirit => spirit.Forget.ACard() );
 
 	// ========
 	// Presence
