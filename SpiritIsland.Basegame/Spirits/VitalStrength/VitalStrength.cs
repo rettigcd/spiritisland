@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.Basegame;
+﻿
+namespace SpiritIsland.Basegame;
 
 public class VitalStrength : Spirit {
 
@@ -8,7 +9,8 @@ public class VitalStrength : Spirit {
 	public VitalStrength():base(
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy6, Track.Energy7, Track.Energy8 ),
-			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 )
+			new PresenceTrack( Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.Card4 ),
+			new EarthsVitality(spirit)
 		),
 		new GrowthTrack(
 			new GrowthGroup( new ReclaimAll(), new PlacePresence( 2 ) ),
@@ -26,15 +28,6 @@ public class VitalStrength : Spirit {
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		InitPresence( board );
-		gs.Tokens.Dynamic.ForGame.Register( new EarthsVitality(this).DefendOnSpace, SpiritIsland.Token.Defend );
-	}
-
-	class EarthsVitality( Spirit spirit ) {
-		static public SpecialRule Rule => new SpecialRule("Earth's Vitality","Defend 3 in every land where you have sacred site.");
-		readonly SpiritPresence presence = spirit.Presence;
-
-		public int DefendOnSpace( Space space ) 
-			=> presence.IsSacredSite(space) ? 3 : 0;
 	}
 
 	void InitPresence( Board board ){

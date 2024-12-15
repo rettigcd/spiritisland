@@ -78,8 +78,8 @@ public static class HealthAdjustmentHelper_Extension {
 	/// <summary>
 	/// Initiates a health bonus in a given Space until the end of the round.
 	/// </summary>
-	static public async Task AdjustTokensHealthForRound( this Space space, int deltaHealth, params HumanTokenClass[] tokenClasses ) {
-		await new AdjustHealth(deltaHealth, tokenClasses).InitOn(space);
+	static public Task AdjustTokensHealthForRound( this Space space, int deltaHealth, params HumanTokenClass[] tokenClasses ) {
+		return new AdjustHealth(deltaHealth, tokenClasses).InitOn(space);
 	}
 
 }

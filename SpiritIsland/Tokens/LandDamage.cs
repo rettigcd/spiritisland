@@ -9,10 +9,12 @@ public class LandDamage
 {
 	public static readonly LandDamage Token = new LandDamage();
 
+	#region Static
+
 	/// <remarks>
 	/// Land damage is a special case of needing to trigger an event but is not a visible token.
 	/// 
-	/// Note - some mods could increate land damage from 0 +2 (Habsburg Monarchy)
+	/// Note - some mods could increase land damage from 0 +2 (Habsburg Monarchy)
 	/// </remarks>
 	static public async Task Add( Space space, int totalLandDamage ) {
 
@@ -31,15 +33,30 @@ public class LandDamage
 			await handler.HandleDamageAddedAsync( space, totalLandDamage );
 	}
 
+	#endregion Status
+
 	public async Task HandleDamageAddedAsync( Space space , int _ ) {
 
 		// Land Damage cleans itself up at end of Action
-		ActionScope.Current.AtEndOfThisAction( _ => { space.Init(this,0); } );
+		ActionScope.Current.AtEndOfThisAction(_ => { space.Init(this, 0); });
 
 		// Add Blight - Assumes Invaders only Damage land 1/action.
-		if( 2 <= space[this] )
-			await space.Blight.AddAsync( 1, AddReason.Ravage );
+		int currentDamage = space[this];
+		if( currentDamage <= 0 ) return;
+
+		int blightThreshold = GetBlightThreshold(space);
+
+		if( blightThreshold <= currentDamage )
+			await space.Blight.AddAsync(1, AddReason.Ravage);
 	}
 
+	static int GetBlightThreshold(Space space) {
+		int blightThreshold = 2;
+		// React
+		var eventHandlers = space.Keys.OfType<IModifyBlightThreshold>().ToArray();
+		foreach( IModifyBlightThreshold handler in eventHandlers )
+			handler.ModifyLandsResilience(ref blightThreshold);
+		return blightThreshold;
+	}
 }
 

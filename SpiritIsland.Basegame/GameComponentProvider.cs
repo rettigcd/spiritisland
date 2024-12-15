@@ -49,6 +49,10 @@ public class GameComponentProvider : IGameComponentProvider {
 		Foreboding.ConfigKey,
 		Madness.ConfigKey,
 		Reach.ConfigKey,
+		// Vital Strength
+		Might.ConfigKey,
+		Nourishing.ConfigKey,
+		Resilience.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
@@ -69,6 +73,10 @@ public class GameComponentProvider : IGameComponentProvider {
 		Foreboding.Name => new Foreboding(),
 		Madness.Name => new Madness(),
 		Reach.Name => new Reach(),
+		// Vital Strength
+		Might.Name => new Might(),
+		Nourishing.Name => new Nourishing(),
+		Resilience.Name => new Resilience(),
 		_ => null,
 	};
 

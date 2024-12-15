@@ -2,7 +2,7 @@
 
 public class AYearOfPerfectStillness {
 
-	const string Name = "A Year of Perfect Stillness";
+	public const string Name = "A Year of Perfect Stillness";
 
 	[SpiritCard( Name,3,Element.Sun,Element.Earth),Fast,FromPresence(1)]
 	[Instructions( "Invaders skip all Actions in target land this turn." ), Artist( Artists.SydniKruger )]

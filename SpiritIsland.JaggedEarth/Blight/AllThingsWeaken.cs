@@ -42,9 +42,9 @@ public class AllThingsWeaken : BlightCard {
 		"The land takes blight on 1 less Damage.", 
 		gs => { gs.AddIslandMod( new LandDamageBoost() ); }
 	);
-	class LandDamageBoost : BaseModEntity, IModifyLandDamage {
-		void IModifyLandDamage.ModifyLandDamage( Space _, ref int damage ){
-			if(damage==1) damage = 2; // "If 1, push it up over the threshold
+	class LandDamageBoost : BaseModEntity, IModifyBlightThreshold {
+		void IModifyBlightThreshold.ModifyLandsResilience(Space space, ref int landResilience) {
+			--landResilience;
 		}
 	}
 

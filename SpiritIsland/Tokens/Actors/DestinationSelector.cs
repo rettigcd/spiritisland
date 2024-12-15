@@ -23,7 +23,6 @@ public sealed class DestinationSelector {
 		Single = destArr.Length == 1 ? destArr[0].SpaceSpec : null;
 	}
 
-
 	public DestinationSelector( Func<SpaceToken, Space[]> getDestinationsFromSource ) {
 		_findUnfilteredFromSource = getDestinationsFromSource;
 		Single = null;
@@ -67,7 +66,7 @@ public sealed class DestinationSelector {
 		return destination.SpaceSpec;
 	}
 
-	public A.SpaceDecision GetDecision( string actionWord, SpaceToken sourceSpaceToken ) {
+	A.SpaceDecision GetDecision( string actionWord, SpaceToken sourceSpaceToken ) {
 		Space[] options = GetDestinationOptions( sourceSpaceToken );
 		A.SpaceDecision decision = new A.SpaceDecision( $"{actionWord} {sourceSpaceToken.Token.Text} to", options, _present )
 			.ComingFrom( sourceSpaceToken.Space.SpaceSpec )
@@ -103,7 +102,6 @@ public sealed class DestinationSelector {
 	readonly List<Func<Space, Task>> _onMoved = [];
 
 	#endregion
-
 
 	Func<IEnumerable<Space>, IEnumerable<Space>> _filterDestination = x => x;
 
