@@ -14,7 +14,7 @@ public class PoweredByTheFurnaceOfTheEarth {
 			&& await ctx.Self.UserSelectsFirstText("Spend 2 energy to gain a Power Card", "Yes", "No thank you.")
 		) {
 			ctx.Self.Energy -= 2;
-			await ctx.Self.Draw();
+			await ctx.Self.Draw.Card();
 		}
 	}
 

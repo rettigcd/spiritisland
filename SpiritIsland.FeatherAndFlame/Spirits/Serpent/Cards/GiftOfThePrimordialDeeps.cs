@@ -10,7 +10,7 @@ public class GiftOfThePrimordialDeeps {
 
 	static async Task TargetSpiritAction( Spirit other ) {
 		// target spirit gains a minor power.
-		var powerCard = (await other.DrawMinor()).Selected;
+		var powerCard = (await other.Draw.Minor()).Selected;
 
 		// Target spirit chooses to either:
 		await Cmd.Pick1(

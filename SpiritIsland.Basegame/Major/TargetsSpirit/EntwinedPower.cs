@@ -16,7 +16,7 @@ public class EntwinedPower {
 		}
 
 		// Target spirit gains a power Card.
-		var result = await ctx.Other.Draw();
+		var result = await ctx.Other.Draw.Card();
 		// You gain one of the power Cards they did not keep.
 		ctx.Self.Hand.Add( 
 			await DrawFromDeck.PickOutCard( ctx.Self, [.. result.Rejected] )

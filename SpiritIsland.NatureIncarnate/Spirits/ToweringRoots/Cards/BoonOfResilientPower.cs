@@ -14,10 +14,10 @@ public class BoonOfResilientPower {
 		// If you Target yourself,
 		if(ctx.Self == ctx.Other)
 			// gain a Major Power,
-			await ctx.Self.DrawMajor();
+			await ctx.Self.Draw.Major();
 		// Otherwise,
 		else
 		// target Spirit gains a Power Card.
-			await ctx.Other.Draw();
+			await ctx.Other.Draw.Card();
 	}
 }

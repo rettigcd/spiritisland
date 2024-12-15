@@ -9,9 +9,9 @@ public class ShapeTheSelfAnew {
 		// Gain a Minor Power.
 		// If you have 4 moon, You may gain a Major Power instead of a Minor Power.
 		if(await self.Elements.YouHave("4 moon"))
-			await self.Draw();
+			await self.Draw.Card();
 		else
-			await self.DrawMinor();
+			await self.Draw.Minor();
 
 		// You may Forget this Power Card to gain 3 Energy.
 		var thisCard = self.InPlay.SingleOrDefault( x => x.Title == ShapeTheSelfAnew.Name );

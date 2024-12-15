@@ -8,11 +8,6 @@ public class ShroudOfSilentMist : Spirit {
 
 	public override string SpiritName => Name;
 
-	static readonly SpecialRule GatherPowerFromTheCoolAndDark = new SpecialRule(
-		"Gather Power from the Cool and Dark",
-		"Once a turn, when you Gain a Power Card without fire, gain 1 Energy"
-	);
-
 	public static Track MovePresence => new Track( "Moveonepresence.png" ){ // Same as Downpour
 		Action = new MovePresence(1),
 		Icon = new IconDescriptor { BackgroundImg = Img.MovePresence }
@@ -37,12 +32,11 @@ public class ShroudOfSilentMist : Spirit {
 			InnatePower.For(typeof(SuffocatingShroud)), 
 			InnatePower.For(typeof(LostInTheSwirlingHaze))
 		];
-		SpecialRules = [GatherPowerFromTheCoolAndDark, MistsShiftAndFlow.Rule, SlowAndSilentDeath.Rule];
+		SpecialRules = [GatherPowerFromTheCoolAndDark.Rule, MistsShiftAndFlow.Rule, SlowAndSilentDeath.Rule];
 
 		Targetter = new MistsShiftAndFlow(this);
+		Draw = new GatherPowerFromTheCoolAndDark(this);
 	}
-
-	bool _gainedCoolEnergyThisTurn = false;
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 
@@ -54,36 +48,6 @@ public class ShroudOfSilentMist : Spirit {
 		// (b) highest # wetlands
 		board.Spaces.Where(s => s.IsWetland).Last().ScopeSpace.Setup(Presence.Token, 1);
 
-	}
-
-	#region IRunWhenTimePasses
-
-	public override async Task TimePasses( GameState gameState ) {
-		await base.TimePasses( gameState );
-		_gainedCoolEnergyThisTurn = false;
-	}
-	#endregion IRunWhenTimePasses
-
-	#region Draw Cards (Gather from the Cool And Dark)
-
-	protected override async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ) {
-		var result = await base.DrawInner( deck, numberToDraw, numberToKeep, forgetACard );
-		CheckForCoolEnergy( result.Selected );
-		return result;
-	}
-
-	void CheckForCoolEnergy(PowerCard card ) {
-		if(_gainedCoolEnergyThisTurn) return;
-		if(card.Elements[Element.Fire]>0) return;
-		Energy++;
-		_gainedCoolEnergyThisTurn = true;
-	}
-
-	#endregion
-
-	protected override object CustomMementoValue { 
-		get => _gainedCoolEnergyThisTurn;
-		set => _gainedCoolEnergyThisTurn = (bool)value;
 	}
 
 }

@@ -10,7 +10,7 @@ public class BoonOfGrowingPower {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// target spirit gains a power card
-		await ctx.Other.Draw();
+		await ctx.Other.Draw.Card();
 
 		// if you target another spirit, they also gain 1 energy
 		if(ctx.Other != ctx.Self)

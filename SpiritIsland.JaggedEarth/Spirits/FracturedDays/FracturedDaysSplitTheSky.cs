@@ -10,11 +10,6 @@ public class FracturedDaysSplitTheSky : Spirit {
 		"Many of your Powers require Time as an additional cost.  Spend it when you Resolve the Power. (Not when you play it.)  When you Gain1 Time, put 1 of your presence here from your presence track (or optinally, the island).  When you Spend 1 Time, return it to a presence track - or if you have to free spaces, Destroy it."
 	);
 
-	static readonly SpecialRule DaysThatNeverWere = new SpecialRule(
-		"Days that Never Were",
-		"Your 3rd Growth option lets you gain any one Power Card from a special set you create during Setup.  When you gain a Power Card any other way, you may add one unchosen card to this set."
-	);
-
 	static GrowthTrack BuildGrowthTrack() {
 		var g2Repeater = new ActionRepeater( 2 );
 		var g3Repeater = new ActionRepeater( 3 );
@@ -62,7 +57,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		DtnwMajor = [];
 		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Minor, Cards = DtnwMinor } );
 		decks.Add( new SpiritDeck{ Type = SpiritDeck.DeckType.DaysThatNeverWere_Major, Cards = DtnwMajor } );
-		SpecialRules = [FragmentsOfScatteredTime, DaysThatNeverWere];
+		Draw = new DaysThatNeverWere(this);
+		SpecialRules = [FragmentsOfScatteredTime, DaysThatNeverWere.Rule];
 	}
 
 	OneOrTwoClass _randomizer;
@@ -121,24 +117,18 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	public int Time { get; private set; }
 
-	protected override async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ){
-		var result = await base.DrawInner( deck, numberToDraw, numberToKeep, forgetACard );
-		await Keep1ForDaysThatNeverWere( result );
-		return result;
-	}
+	//async Task Keep1ForDaysThatNeverWere( DrawCardResult drawResult ) {
+	//	// select card to keep
+	//	var keep = await this.SelectPowerCard("Keep 1 card for Days That Never Were", 1, drawResult.Rejected, CardUse.AddToHand, Present.Always);
+	//	// remove it from the rejected group
+	//	drawResult.Rejected.Remove( keep );
 
-	async Task Keep1ForDaysThatNeverWere( DrawCardResult drawResult ) {
-		// select card to keep
-		var keep = await this.SelectPowerCard("Keep 1 card for Days That Never Were", 1, drawResult.Rejected, CardUse.AddToHand, Present.Always);
-		// remove it from the rejected group
-		drawResult.Rejected.Remove( keep );
-
-		// Add to Days-That-Never-Were decks
-		if( keep.PowerType == PowerType.Major)
-			this.DtnwMajor.Add( keep );
-		else
-			this.DtnwMinor.Add( keep );
-	}
+	//	// Add to Days-That-Never-Were decks
+	//	if( keep.PowerType == PowerType.Major)
+	//		this.DtnwMajor.Add( keep );
+	//	else
+	//		this.DtnwMinor.Add( keep );
+	//}
 
 	#region Custom Memento
 
@@ -269,8 +259,36 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 		readonly ActionRepeater _repeater;
 
-
 	}
 
 	#endregion
+}
+
+class DaysThatNeverWere(Spirit s) : DrawCardStrategy(s) {
+
+	public const string Name = "Days that Never Were";
+	const string Description = "Your 3rd Growth option lets you gain any one Power Card from a special set you create during Setup.  When you gain a Power Card any other way, you may add one unchosen card to this set.";
+	static public SpecialRule Rule => new SpecialRule(Name, Description);
+
+	protected override async Task<DrawCardResult> Inner(PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard) {
+		var result = await base.Inner(deck, numberToDraw, numberToKeep, forgetACard);
+		await Keep1ForDaysThatNeverWere(result);
+		return result;
+	}
+
+	// !! This is really just an event handler; - Could implement as an event instead of diriving a new class
+	async Task Keep1ForDaysThatNeverWere(DrawCardResult drawResult) {
+		FracturedDaysSplitTheSky fdstk = (FracturedDaysSplitTheSky)_spirit;
+
+		// select card to keep
+		var keep = await _spirit.SelectPowerCard("Keep 1 card for Days That Never Were", 1, drawResult.Rejected, CardUse.AddToHand, Present.Always);
+		// remove it from the rejected group
+		drawResult.Rejected.Remove(keep);
+
+		// Add to Days-That-Never-Were decks
+		if( keep.PowerType == PowerType.Major )
+			fdstk.DtnwMajor.Add(keep);
+		else
+			fdstk.DtnwMinor.Add(keep);
+	}
 }

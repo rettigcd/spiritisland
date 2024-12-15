@@ -16,7 +16,7 @@ public class GiftOfTheSparkingSky {
 	[InnateTier("2 fire, 2 air", "Target Spirit gains a Minor Power.")]
 	public static Task Destroy_TownOrCity(TargetSpiritCtx ctx) {
 		// Target Spirit gains a Minor Power.
-		return ctx.Other.DrawMinor(1);
+		return ctx.Other.Draw.Minor(1);
 	}
 
 	// 1 Sun 3 Fire 2 Air — 1 Sun, 3 Fire, 2 Air

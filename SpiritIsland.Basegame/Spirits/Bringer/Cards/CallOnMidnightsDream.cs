@@ -18,7 +18,7 @@ public class CallOnMidnightsDream {
 
 	static async Task DrawMajorOrGetEnergy( TargetSpaceCtx ctx ) {
 		// Gain a major power. (and forget a card)
-		var major = (await ctx.Self.DrawMajor(true)).Selected;
+		var major = (await ctx.Self.Draw.Major(true)).Selected;
 
 		// If you Forget this (Call on Midnights Dream) Power,
 		var callOnMidnightsDreamCard = ctx.Self.InPlay.SingleOrDefault( x => x.Title == Name );

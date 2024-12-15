@@ -7,7 +7,7 @@ public class UnlockTheGatesOfDeepestPower {
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
 		// target Spirit gains a major power by drawing 2 and keeping 1, without having to forget another power card
-		PowerCard card = (await ctx.Other.DrawMajor( false, 2 )).Selected;
+		PowerCard card = (await ctx.Other.Draw.Major( false, 2 )).Selected;
 
 		// if 2 of each element,
 		if(await ctx.YouHave("2 sun,2 moon,2 fire,2 air,2 water,2 earth,2 plant,2 animal" ))

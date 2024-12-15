@@ -33,6 +33,7 @@ public abstract partial class Spirit
 
 		Elements = new ElementMgr( this );
 		Forget = new ForgettingStrategy( this );
+		Draw = new DrawCardStrategy( this );
 	}
 
 	public void InitSpirit( Board board, GameState gameState ){
@@ -57,6 +58,7 @@ public abstract partial class Spirit
 	#endregion
 
 	public ElementMgr Elements;
+	public DrawCardStrategy Draw;
 	public ForgettingStrategy Forget;
 
 	#region Growth
@@ -267,8 +269,13 @@ public abstract partial class Spirit
 
 	/// <summary> Convenience method only. calls new SelfCtx(this) </summary>
 	public TargetSpaceCtx Target( SpaceSpec space ) => new TargetSpaceCtx( this, space );
-	public TargetSpaceCtx Target(Space space) => new TargetSpaceCtx(this, space.SpaceSpec);
+	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx(this, space.SpaceSpec);
 	public TargetSpiritCtx Target( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
+	public Targetter Targetter {
+		get => _targetter ??= new Targetter(this);
+		set => _targetter = value;
+	}
+	Targetter _targetter;
 
 	#region Temporary - Fear - until we can find a better home for it.
 
@@ -319,31 +326,6 @@ public abstract partial class Spirit
 	public void InitElementsFromPresence() {
 		Elements.Init( Presence.TrackElements );
 	}
-
-	// pluggable, draw power card
-	#region Draw Card
-
-	public async Task<DrawCardResult> Draw(Func<PowerCardDeck,Task<bool>> forgetCardForMajor = null) {
-		PowerCardDeck deck = await DrawFromDeck.SelectPowerCardDeck( this );
-		bool forget = (deck.PowerType == PowerType.Major) // is major
-			&& (forgetCardForMajor == null || await forgetCardForMajor( deck ));
-		return await DrawInner(deck, 4, 1, forget );
-	}
-
-	public Task<DrawCardResult> DrawMinor( int numberToDraw=4, int numberToKeep=1 )
-		=> DrawInner( GameState.Current.MinorCards, numberToDraw, numberToKeep, false );
-
-	public Task<DrawCardResult> DrawMajor( bool forgetCard = true, int numberToDraw=4, int numberToKeep=1 )
-		=> DrawInner( GameState.Current.MajorCards, numberToDraw, numberToKeep, forgetCard );
-
-	protected virtual async Task<DrawCardResult> DrawInner( PowerCardDeck deck, int numberToDraw, int numberToKeep, bool forgetACard ) {
-		var card = await DrawFromDeck.DrawInner( this, deck, numberToDraw, numberToKeep );
-		if(forgetACard)
-			await Forget.ACard();
-		return card;
-	}
-
-	#endregion
 
 	#region Play Cards
 
@@ -495,12 +477,6 @@ public abstract partial class Spirit
 		return rangeCalculator.GetTargetingRoute_MultiSpace( Presence.Lands, targetCriteria ).Targets;
 	}
 
-	public Targetter Targetter { 
-		get => _targetter ??= new Targetter(this); 
-		set => _targetter = value;
-	}
-	Targetter _targetter;
-
 	/// <summary> 
 	/// Calculates Source for *TARGETING* *Powers* only.  
 	/// Don't use it for non-power calculations.
@@ -528,8 +504,6 @@ public abstract partial class Spirit
 	Spirit IHaveASpirit.Self => this;
 
 }
-
-
 
 public interface IHaveSecondaryElements {
 	CountDictionary<Element> SecondaryElements { get; }

@@ -39,13 +39,13 @@ public class SerpentWakesInPower {
 		await Option2Async( self );
 
 		// Gain a Major Power without Forgetting.
-		await self.DrawMajor(false, 4);
+		await self.Draw.Major(false, 4);
 
 		// Other Spirits with 3 or more Absorbed Presence may do likewise."
 		var presence = (SerpentPresence)self.Presence;
 		var qualifyingSpirits = presence.AbsorbedPresences.GroupBy(x=>x).Where(grp=>3<=grp.Count()).Select(grp=>grp.Key);
 		foreach(var spirit in presence.AbsorbedPresences.Distinct())
-			await spirit.DrawMajor( false, 4 );
+			await spirit.Draw.Major( false, 4 );
 	}
 
 }

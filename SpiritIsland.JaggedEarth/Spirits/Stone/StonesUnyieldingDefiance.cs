@@ -23,7 +23,7 @@ public class StonesUnyieldingDefiance : Spirit {
 	#region special Tracks
 
 	static Track AddCardPlay => new Track("Energy+DrawMinor+CardPlay") {
-		OnRevealAsync = (track, spirit) => spirit.DrawMinor(),
+		OnRevealAsync = (track, spirit) => spirit.Draw.Minor(),
 		Action = new PlayExtraCardThisTurn(1),
 
 		Icon = new IconDescriptor {
