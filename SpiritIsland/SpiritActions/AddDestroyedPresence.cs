@@ -22,8 +22,7 @@ public class AddDestroyedPresence : SpiritAction {
 
 	public int? Range { get; }
 
-	public override string Description
-		=> $"Add{CountStr} Destroyed Presence{RangeStr}";
+	public override string Description => $"Add{CountStr} Destroyed Presence{RangeStr}";
 	string RangeStr => (Range == null || Range == 0) ? "" : " - Range " + Range;
 	string CountStr => _present == Present.Done ? $" up to {NumToPlace}"
 		: NumToPlace != 1 ? $" {NumToPlace}"
@@ -83,7 +82,7 @@ public class AddDestroyedPresence : SpiritAction {
 			: await placingSpirit.SelectNumber("How many presences would you like to place?", maxToPlaceOnSpace, 1);
 		if(numToPlace == 0 ) return;
 
-		await presence.Destroyed.MoveToAsync(dst);
+		await presence.Destroyed.MoveToAsync(dst,numToPlace);
 		//await presence.PlaceDestroyedAsync(maxToPlaceOnSpace, dst);
 		if( _placedCallback != null )
 			await _placedCallback(maxToPlaceOnSpace,dst.SpaceSpec);

@@ -78,7 +78,7 @@ class ErruptionAttribute : FromPresenceAttribute {
 	/// Override so we can return a custom criteria that flags this as an Innate Power so Volcano won't extend range.
 	/// </summary>
 	protected override async Task<TargetCriteria> ApplySpiritModsToGetTargetCriteria( Spirit self ) { 
-		return new VolcanicPeaksTowerOverTheLandscape.InnateTargetCriteria( await CalcRange( self ), self, _targetFilters );
+		return new VolcanicPeaksTowerOverTheLandscape.InnateTargetCriteria( await CalcRange( self ), self, _targetFilterOptions );
 	}
 }
 

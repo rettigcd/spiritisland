@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <param name="commaDelimitedRestrictFrom">null or comma-delimited Target</param>
-public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimitedRestrictFrom, int range, params string[] targetFilter ) 
+public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimitedRestrictFrom, int range, string[] targetFilterOptions ) 
 	: GeneratesContextAttribute
 {
 
@@ -16,7 +16,7 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 
 	public IPreselect Preselect { get; set; }
 
-	public override string TargetFilterName { get; } = 0 < targetFilter.Length ? string.Join( "/", targetFilter ) : "Any";
+	public override string TargetFilterName { get; } = 0 < targetFilterOptions.Length ? string.Join( "/", targetFilterOptions ) : "Any";
 
 	#region constructor
 
@@ -46,7 +46,7 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 
 	protected TargetingSourceCriteria _sourceCriteria => new TargetingSourceCriteria(from, _restrictFrom);
 	protected readonly string _restrictFrom = commaDelimitedRestrictFrom;
-	protected readonly string[] _targetFilters = targetFilter;
+	protected readonly string[] _targetFilterOptions = targetFilterOptions;
 	protected readonly int _range = range;
 
 
@@ -54,7 +54,7 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 	/// Apply Spirit modes to Card attributes to get actual TargetCriteria
 	/// </summary>
 	protected virtual async Task<TargetCriteria> ApplySpiritModsToGetTargetCriteria(Spirit self)
-		=> new TargetCriteria(await CalcRange(self), self, _targetFilters);
+		=> new TargetCriteria(await CalcRange(self), self, _targetFilterOptions);
 
 	/// <remarks>Hook so ExtendableRangeAttribute can increase range.</remarks>
 	protected virtual Task<int> CalcRange(Spirit self) => Task.FromResult(_range);

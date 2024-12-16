@@ -15,13 +15,13 @@ public class LightningsSwiftStrike : Spirit {
 			new GrowthGroup( new PlacePresence( 2 ), new PlacePresence( 0 ) ),
 			new GrowthGroup( new GainEnergy( 3 ), new PlacePresence( 1 ) )
 		),
-		PowerCard.For(typeof(HarbingersOfTheLightning)),
-		PowerCard.For(typeof(LightningsBoon)),
-		PowerCard.For(typeof(RagingStorm)),
-		PowerCard.For(typeof(ShatterHomesteads))
+		PowerCard.ForDecorated(HarbingersOfTheLightning.ActAsync),
+		PowerCard.ForDecorated(LightningsBoon.ActAsync),
+		PowerCard.ForDecorated(RagingStorm.ActAsync),
+		PowerCard.ForDecorated(ShatterHomesteads.ActAsync)
 	){
 
-		InnatePowers = [ InnatePower.For(typeof(ThunderingDestruction)) ];
+		InnatePowers = [InnatePower.For(typeof(ThunderingDestruction)) ];
 		SpecialRules = [SwiftnessOfLightning.Rule];
 
 		Mods.Add(new SwiftnessOfLightning(this));

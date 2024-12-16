@@ -15,7 +15,8 @@ public class TargetCriteria : SpaceCriteria {
 	}
 
 	/// <summary> For early binding Spirit dependent criteria </summary>
-	public TargetCriteria( int range, Spirit self, params string[] filters ) :base(self,filters) {
+	/// <param name="filterOptions">If filterOptions not empty, Space must match at least 1 of the Filters.</param>
+	public TargetCriteria( int range, Spirit self, params string[] filterOptions ) :base(self,filterOptions) {
 		Range = range;
 	}
 

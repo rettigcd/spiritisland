@@ -1,8 +1,9 @@
 ﻿namespace SpiritIsland.Basegame;
 
-[InnatePower( "Creepers Tear into Mortar" ),Slow, FromPresence( 0 )]
+[InnatePower( Name ),Slow, FromPresence( 0 )]
 [RepeatIf("2 moon,3 plant","3 moon,4 plant")]
 public class CreepersTearIntoMortar {
+	public const string Name = "Creepers Tear into Mortar";
 
 	[InnateTier( "1 moon,2 plant", "1 Damage to 1 town/city." )]
 	static public Task Option1Async( TargetSpaceCtx ctx ) {

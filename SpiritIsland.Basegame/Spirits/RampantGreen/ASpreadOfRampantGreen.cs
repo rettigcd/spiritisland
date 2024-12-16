@@ -6,13 +6,8 @@ public class ASpreadOfRampantGreen : Spirit {
 
 	public override string SpiritName => Name;
 
-	static SpecialRule SteadyRegeneration => new SpecialRule(
-		"Steady Regeneration",
-		"When adding Presence to the board via Growth, you may optionally use your destroyed Presence. If the island is Healthy, do so freely. If the island is Blighted, doing so costs 1 Energy per destroyed Presence you add."
-	);
-
 	public ASpreadOfRampantGreen():base(
-		spirit => new RampantGreenPresence( spirit ),
+		spirit => new SteadyRegeneration( spirit ),
 		new GrowthTrack(
 			new GrowthGroup( new PlacePresence( 2, Filter.Jungle, Filter.Wetland ) )
 		).Add( new GrowthPickGroups( 1,
@@ -32,10 +27,10 @@ public class ASpreadOfRampantGreen : Spirit {
 				new GainPowerCard()
 			)
 		) ),
-		PowerCard.For(typeof(FieldsChokedWithGrowth)),
-		PowerCard.For(typeof(GiftOfProliferation)),
-		PowerCard.For(typeof(OvergrowInANight)),
-		PowerCard.For(typeof(StemTheFlowOfFreshWater))
+		PowerCard.ForDecorated(FieldsChokedWithGrowth.ActAsync),
+		PowerCard.ForDecorated(GiftOfProliferation.ActAsync),
+		PowerCard.ForDecorated(OvergrowInANight.ActAsync),
+		PowerCard.ForDecorated(StemTheFlowOfFreshWater.ActAsync)
 	) {
 		// Special rules: steady regeneration
 
@@ -46,7 +41,7 @@ public class ASpreadOfRampantGreen : Spirit {
 
 		SpecialRules = [
 			ChokeTheLandWithGreen.Rule,
-			SteadyRegeneration
+			SteadyRegeneration.Rule
 		];
 
 	}

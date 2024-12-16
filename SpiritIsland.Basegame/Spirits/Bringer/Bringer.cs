@@ -21,10 +21,10 @@ public class Bringer : Spirit {
 			// add presense range Dahan or Invadors, +2 energy
 			new GrowthGroup( new GainEnergy( 2 ), new PlacePresence( 4, Filter.Dahan, Filter.Invaders ) )
 		)
-		, PowerCard.For(typeof(CallOnMidnightsDream))
-		,PowerCard.For(typeof(DreadApparitions))
-		,PowerCard.For(typeof(DreamsOfTheDahan))
-		,PowerCard.For(typeof(PredatoryNightmares))
+		,PowerCard.ForDecorated(CallOnMidnightsDream.ActAsync)
+		,PowerCard.ForDecorated(DreadApparitions.ActAsync)
+		,PowerCard.ForDecorated(DreamsOfTheDahan.ActAsync)
+		,PowerCard.ForDecorated(PredatoryNightmares.ActAsync)
 	) {
 
 		InnatePowers = [

@@ -8,7 +8,7 @@ public class SuddenAmbush {
 
 	[SpiritCard( SuddenAmbush.Name, 2, Element.Fire, Element.Air, Element.Animal ),Fast,FromPresence(1)]
 	[Instructions("You may Gather 1 Dahan. Each Dahan destroys 1 Explorer." ), Artist( Artists.LoicBelliau )]
-	static public async Task Act( TargetSpaceCtx ctx ) {
+	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// you may gather 1 dahan
 		await ctx.GatherUpToNDahan( 1 );

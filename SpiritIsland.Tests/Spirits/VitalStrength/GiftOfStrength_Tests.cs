@@ -26,10 +26,10 @@ public sealed class GiftOfStrength_Tests {
 
 		//  And: Earth has 4 cards
 		var cards = new PowerCard[] {
-			MakePowerCard( Slow0 ), // not played
-			MakePowerCard( Fast0 ), // not played
-			MakePowerCard( Fast1 ), // played - should appear
-			MakePowerCard( Fast2 )  // played - no - too expensive
+			PowerCard.ForDecorated( Slow0 ), // not played
+			PowerCard.ForDecorated( Fast0 ), // not played
+			PowerCard.ForDecorated( Fast1 ), // played - should appear
+			PowerCard.ForDecorated( Fast2 )  // played - no - too expensive
 		};
 		spirit.TempCardPlayBoost = cards.Length;
 		spirit.Hand.AddRange( cards );
@@ -66,10 +66,10 @@ public sealed class GiftOfStrength_Tests {
 		spirit.Energy = 20;
 		//  And: Earth has 4 cards
 		PowerCard[] cards = [
-			MakePowerCard( Fast0 ),
-			MakePowerCard( Slow0 ), 
-			MakePowerCard( Slow1 ), 
-			MakePowerCard( Slow2 )  
+			PowerCard.ForDecorated( Fast0 ),
+			PowerCard.ForDecorated( Slow0 ), 
+			PowerCard.ForDecorated( Slow1 ), 
+			PowerCard.ForDecorated( Slow2 )  
 		];
 		spirit.TempCardPlayBoost = cards.Length;
 		spirit.Hand.AddRange(cards);
@@ -114,8 +114,6 @@ public sealed class GiftOfStrength_Tests {
 	// In Slow, Replacy finds only Played-Slow
 	//  - ignores fast
 	//  - ignores unplayed-slow
-
-	static public PowerCard MakePowerCard( Func<TargetSpaceCtx,Task> d ) => PowerCard.For( d.Method );
 
 	[SpiritCard("Slow-0",0),Slow]
 	[FromPresence(Filter.Ocean,0)] // will skip the Target-Space step

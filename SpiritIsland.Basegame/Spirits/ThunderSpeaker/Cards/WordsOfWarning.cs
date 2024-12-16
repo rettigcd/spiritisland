@@ -8,7 +8,7 @@ public class WordsOfWarning {
 
 	[SpiritCard( WordsOfWarning.Name, 1, Element.Air, Element.Sun, Element.Animal ),Fast,FromPresence(1,Filter.Dahan)]
 	[Instructions("Defend 3. During Ravage, Dahan in target land deal damage simultaneously with Invaders."), Artist( Artists.LoicBelliau )]
-	static public Task Act( TargetSpaceCtx ctx ) {
+	static public Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// defend 3
 		ctx.Defend(3);

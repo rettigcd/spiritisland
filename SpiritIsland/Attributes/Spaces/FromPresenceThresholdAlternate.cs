@@ -8,7 +8,7 @@
 /// <param name="threshold">Element threshold that triggers alternate range/target</param>
 /// <param name="altRange">The range in effect if Elemental threshold reached.</param>
 /// <param name="altTarget">The Target in effect if Elemental threshold reached.</param>
-public class FromPresenceThresholdAlternate( int range, string target, string threshold, int altRange, string altTarget ) 
+public class FromPresenceThresholdAlternate( int range, string[] target, string threshold, int altRange, string[] altTarget ) 
 	: FromPresenceAttribute(range,target)
 {
 

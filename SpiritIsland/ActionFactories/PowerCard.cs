@@ -4,16 +4,19 @@ public sealed class PowerCard : IPowerActionFactory {
 
 	#region static Factories
 
-	static public PowerCard For(Type type) => For(FindMethod(type));
-
-	static MethodInfo FindMethod(Type type) {
-		// try static method (spirit / major / minor)
-		return type.GetMethods(BindingFlags.Public | BindingFlags.Static)
+	static public PowerCard For(Type type) {
+		MethodInfo method = type.GetMethods(BindingFlags.Public | BindingFlags.Static)
 			.Where(m => m.GetCustomAttributes<CardAttribute>().Count() == 1)
 			.VerboseSingle($"PowerCard {type.Name} missing static method with SpiritCard, MinorCard or MajorCard attribute");
+		return ForDecorated(method);
 	}
 
-	static public PowerCard For(MethodInfo method) {
+	static public PowerCard ForDecorated(Func<TargetSpaceCtx,Task> asyncAction){ return ForDecorated(asyncAction.Method); }
+
+	static public PowerCard ForDecorated(Func<TargetSpiritCtx,Task> asyncAction){ return ForDecorated(asyncAction.Method); }
+
+
+	static PowerCard ForDecorated(MethodInfo method) {
 		var ctxFactory = method.GetCustomAttributes<GeneratesContextAttribute>().First();
 		if( ctxFactory is TargetSpaceAttribute tsa )
 			tsa.Preselect = method.GetCustomAttribute<PreselectAttribute>();

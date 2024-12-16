@@ -37,10 +37,11 @@ public class RiverSurges : Spirit {
 				new PlacePresence( 2 )
 			)
 		),
-		PowerCard.For(typeof(BoonOfVigor)),
-		PowerCard.For(typeof(FlashFloods)),
-		PowerCard.For(typeof(RiversBounty)),
-		PowerCard.For(typeof(WashAway))
+		PowerCard.ForDecorated(BoonOfVigor.ActionAsync),
+		PowerCard.ForDecorated(FlashFloods.ActionAsync),
+		PowerCard.ForDecorated(RiversBounty.ActionAsync),
+		PowerCard.ForDecorated(WashAway.ActionAsync)
+
 	){
 		InnatePowers = [ InnatePower.For(typeof(MassiveFlooding)) ];
 		SpecialRules = [ RiversDomain.Rule ];

@@ -30,10 +30,10 @@ public class Thunderspeaker : Spirit {
 				new GainEnergy( 4 )
 			)
 		),
-		PowerCard.For(typeof(ManifestationOfPowerAndGlory)),
-		PowerCard.For(typeof(SuddenAmbush)),
-		PowerCard.For(typeof(VoiceOfThunder)),
-		PowerCard.For(typeof(WordsOfWarning))
+		PowerCard.ForDecorated(ManifestationOfPowerAndGlory.ActAsync),
+		PowerCard.ForDecorated(SuddenAmbush.ActAsync),
+		PowerCard.ForDecorated(VoiceOfThunder.ActAsync),
+		PowerCard.ForDecorated(WordsOfWarning.ActAsync)
 	) {
 
 		InnatePowers = [

@@ -6,7 +6,7 @@ public class ConcealingShadows {
 
 	[SpiritCard(Name,0,Element.Moon,Element.Air),Fast,FromPresence(0)]
 	[Instructions( "1 Fear. Dahan take no damage from Ravaging Invaders this turn." ), Artist( Artists.NolanNasser )]
-	static public async Task Act(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 1 fear
 		await ctx.AddFear(1);
 

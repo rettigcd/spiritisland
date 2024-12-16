@@ -6,7 +6,7 @@ public class SwallowTheLandDwellers {
 
 	[SpiritCard(Name,0,Element.Water,Element.Earth),Slow,FromPresence(0,Filter.Coastal)]
 	[Instructions( "Drown 1 Explorer, 1 Town, and 1 Dahan." ), Artist( Artists.JoshuaWright )]
-	static public async Task Act(TargetSpaceCtx ctx ) {
+	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
 		// Drown 1 explorer, 1 town, and 1 dahan
 		var drowner = Drowning.GetDrowner();

@@ -15,10 +15,10 @@ public class Shadows : Spirit {
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ) ),
 			new GrowthGroup( new PlacePresence( 3 ), new GainEnergy( 3 ) )
 		),
-		PowerCard.For(typeof(MantleOfDread)),
-		PowerCard.For(typeof(FavorsCalledDue)),
-		PowerCard.For(typeof(CropsWitherAndFade)),
-		PowerCard.For(typeof(ConcealingShadows))
+		PowerCard.ForDecorated(MantleOfDread.ActAsync),
+		PowerCard.ForDecorated(FavorsCalledDue.ActAsync),
+		PowerCard.ForDecorated(CropsWitherAndFade.ActAsync),
+		PowerCard.ForDecorated(ConcealingShadows.ActAsync)
 	) {
 		InnatePowers = [ InnatePower.For(typeof(DarknessSwallowsTheUnwary)) ];
 		SpecialRules = [ShadowsOfTheDahan.Rule];

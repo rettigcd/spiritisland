@@ -2,7 +2,7 @@
 
 public class TreacherousWaterways{ 
 
-	[MinorCard("Treacherous Waterways",0,Element.Fire,Element.Water,Element.Earth),Fast,FromPresence(1,Filter.Mountain, Filter.Wetland )]
+	[MinorCard("Treacherous Waterways",0,Element.Fire,Element.Water,Element.Earth),Fast,FromPresence(1,[Filter.Mountain, Filter.Wetland] )]
 	[Instructions( "Add 1 Wilds. -or- Push 1 Explorer." ), Artist( Artists.KatGuevara )]
 	static public Task ActAsync(TargetSpaceCtx ctx){
 		return ctx.SelectActionOption( 

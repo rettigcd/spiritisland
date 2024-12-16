@@ -35,10 +35,10 @@ public class Ocean : Spirit {
 				new PlacePresence( 1, Filter.Coastal )
 			)
 		),
-		PowerCard.For(typeof(CallOfTheDeeps)),
-		PowerCard.For(typeof(GraspingTide)),
-		PowerCard.For(typeof(SwallowTheLandDwellers)),
-		PowerCard.For(typeof(TidalBoon))
+		PowerCard.ForDecorated(CallOfTheDeeps.ActAsync),
+		PowerCard.ForDecorated(GraspingTide.ActAsync),
+		PowerCard.ForDecorated(SwallowTheLandDwellers.ActAsync),
+		PowerCard.ForDecorated(TidalBoon.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(OceanBreaksTheShore)),

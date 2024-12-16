@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.Basegame;
 
-[InnatePower("All Enveloping Green"),Fast]
+[InnatePower(Name),Fast]
 [FromSacredSite(1)]
 public class AllEnvelopingGreen {
+
+	public const string Name = "All Enveloping Green";
 
 	[InnateTier("1 water,3 plant","Defend 2.")]
 	static public Task Option1Async( TargetSpaceCtx ctx ) {

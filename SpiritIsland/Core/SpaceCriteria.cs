@@ -3,17 +3,12 @@
 /// <summary>
 /// Used for filtering Target: Sources & Destinations
 /// </summary>
-public class SpaceCriteria {
+/// <param name="self">Specifies the spirit to use when evaluating MyPresence filters.</param>
+/// <param name="filters">Space may match ANY of the filters specified.  If no filter specified, all spaces match.</param>
+public class SpaceCriteria(Spirit self, params string[] filters) {
 
 	/// <summary> Create a space-criteria that accepts everything. </summary>
-	public SpaceCriteria() {
-		_filters = [];
-		_self = null; // Don't need to bind spirit since no filters test for spirit.
-	}
-	public SpaceCriteria(Spirit self, params string[] filters) {
-		_self = self;
-		_filters = filters ?? throw new ArgumentNullException( nameof( filters ) );
-	}
+	public SpaceCriteria():this(null) {}
 
 	public bool AutoSelectSingle => _filters.Length == 1 && _filters[0].Contains(Filter.Incarna); // May be "Invaders + Incarna"
 
@@ -32,8 +27,8 @@ public class SpaceCriteria {
 	}
 
 	#region private
-	readonly protected Spirit _self;
-	readonly protected string[] _filters; // Any one of these filters can match.
+	readonly protected Spirit _self = self;
+	readonly protected string[] _filters = filters ?? throw new ArgumentNullException(nameof(filters)); // Any one of these filters can match.
 	TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
 	TerrainMapper _terrainMapper;
 	#endregion

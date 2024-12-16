@@ -6,7 +6,7 @@ public class HarbingersOfTheLightning {
 
 	[SpiritCard(Name,0,Element.Fire,Element.Air), Slow,FromPresence(1,Filter.Dahan)]
 	[Instructions( "Push up to 2 Dahan. 1 Fear if you pushed any Dahan into a land with Town / City" ), Artist( Artists.RockyHammer )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		List<Space> fearSpaces = [];
 

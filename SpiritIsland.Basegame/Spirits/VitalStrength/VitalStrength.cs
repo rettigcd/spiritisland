@@ -17,10 +17,10 @@ public class VitalStrength : Spirit {
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 0 ) ),
 			new GrowthGroup( new GainEnergy( 2 ), new PlacePresence( 1 ) )
 		),
-		PowerCard.For(typeof(GuardTheHealingLand)),
-		PowerCard.For(typeof(AYearOfPerfectStillness)),
-		PowerCard.For(typeof(RitualsOfDestruction)),
-		PowerCard.For(typeof(DrawOfTheFruitfulEarth))
+		PowerCard.ForDecorated(GuardTheHealingLand.ActAsync),
+		PowerCard.ForDecorated(AYearOfPerfectStillness.ActAsync),
+		PowerCard.ForDecorated(RitualsOfDestruction.ActAsync),
+		PowerCard.ForDecorated(DrawOfTheFruitfulEarth.ActAsync)
 	){
 		InnatePowers = [ InnatePower.For(typeof(GiftOfStrength)) ];
 		SpecialRules = [ EarthsVitality.Rule ];

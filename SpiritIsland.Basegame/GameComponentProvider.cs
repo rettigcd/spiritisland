@@ -1,4 +1,5 @@
 ﻿using SpiritIsland.Basegame.Spirits.Lightning.Aspects;
+using SpiritIsland.Basegame.Spirits.RampantGreen.Aspects;
 
 namespace SpiritIsland.Basegame;
 
@@ -53,6 +54,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		Might.ConfigKey,
 		Nourishing.ConfigKey,
 		Resilience.ConfigKey,
+		// A Spread of Rampant Green
+		Tangles.ConfigKey,
+		Regrowth.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
@@ -77,6 +81,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		Might.Name => new Might(),
 		Nourishing.Name => new Nourishing(),
 		Resilience.Name => new Resilience(),
+		// A Spread of Rampant Green
+		Tangles.Name => new Tangles(),
+		Regrowth.Name => new Regrowth(),
 		_ => null,
 	};
 
