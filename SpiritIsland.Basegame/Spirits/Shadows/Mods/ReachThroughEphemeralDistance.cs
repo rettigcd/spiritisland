@@ -42,7 +42,7 @@ class ReachThroughEphemeralDistance : DefaultRangeCalculator {
 			CheckAndClear(move.Source.Space,move.Destination);
 	}
 
-	void CheckAndClear(Space space1,Space space2=null) {
+	void CheckAndClear(Space space1,Space? space2=null) {
 
 		if( _bonusTargets.Contains(space1) || space2 is not null && _bonusTargets.Contains(space2) )
 			DisableBonusSpaces();

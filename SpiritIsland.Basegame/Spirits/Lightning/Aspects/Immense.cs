@@ -26,7 +26,7 @@ public class Immense : IAspect {
 		var any = Track.AnyEnergy;
 		int lastOrigCardPlays = -1;
 		foreach( Track t in spirit.Presence.CardPlays.Slots ) {
-			int orig = t.CardPlay.Value;
+			int orig = (int)t.CardPlay!; // all of Lightnings Card Plays have values
 			int newPlays = orig / 2;
 			// Half as many Card plays
 			t.CardPlay = newPlays; // round down

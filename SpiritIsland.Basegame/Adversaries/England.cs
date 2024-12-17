@@ -108,7 +108,7 @@ public class England : AdversaryBuilder, IAdversaryBuilder {
 		// Additional Loss Condition
 		// Proud & Mighty Capital: If 7 or more Town/City are ever in a single land, the Invaders win.
 		static bool IsCapital(Space s) => 7 <= s.SumAny( Human.Town_City );
-		Space capital = ActionScope.Current.Spaces_Unfiltered.FirstOrDefault( IsCapital );
+		Space? capital = ActionScope.Current.Spaces_Unfiltered.FirstOrDefault( IsCapital );
 		if( capital != null )
 			GameOverException.Lost($"{Name} on {capital.Label}");
 	}

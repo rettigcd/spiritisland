@@ -12,19 +12,19 @@ public class SwallowTheLandDwellers {
 		var drowner = Drowning.GetDrowner();
 
 		// drown 1 explorer
-		HumanToken explorerToDrown = ctx.Space.HumanOfTag(Human.Explorer).OrderBy(x => x.StrifeCount).FirstOrDefault();
-		if( explorerToDrown != null )
+		HumanToken? explorerToDrown = ctx.Space.HumanOfTag(Human.Explorer).OrderBy(x => x.StrifeCount).FirstOrDefault();
+		if( explorerToDrown is not null )
 			await drowner.Drown(explorerToDrown.On(ctx.Space));
 
 		// Drown town
-		HumanToken townToDrown = PickTownToDrown(ctx);
+		HumanToken? townToDrown = PickTownToDrown(ctx);
 		if( townToDrown != null )
 			await drowner.Drown(townToDrown.On(ctx.Space));
 
 		await ctx.Dahan.Destroy(1); // destroying dahan is the same as drowning them
 	}
 
-	static HumanToken PickTownToDrown(TargetSpaceCtx ctx) {
+	static HumanToken? PickTownToDrown(TargetSpaceCtx ctx) {
 		return ctx.Space.HumanOfTag(Human.Town)
 			.OrderByDescending(x => x.FullHealth) // items with most health - usually are all the same
 			.ThenBy(x => x.Damage) // pick least damaged

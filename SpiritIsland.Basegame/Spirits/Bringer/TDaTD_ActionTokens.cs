@@ -39,7 +39,7 @@ public class TDaTD_ActionTokens( Space space )
 	}
 
 	SpiritPresenceToken BringerPresence => _bringerPresence ??= ActionScope.Current.Owner.Presence.Token;
-	SpiritPresenceToken _bringerPresence;
+	SpiritPresenceToken? _bringerPresence;
 
 	async Task Destroy1Invader( HumanToken invaderToken ) {
 

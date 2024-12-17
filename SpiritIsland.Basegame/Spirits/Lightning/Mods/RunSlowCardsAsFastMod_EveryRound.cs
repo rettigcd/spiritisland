@@ -42,10 +42,10 @@ abstract class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyAvailabl
 	IActionFactory[] _slowAsFast = [];
 
 	int _usedCount {
-		get => GameState.Current.RoundScope.TryGetValue(UsedKey,out object val) ? (int)val : 0;
+		get => GameState.Current.RoundScope.TryGetValue(UsedKey,out object? val) ? (int)val! : 0;
 		set => GameState.Current.RoundScope[UsedKey] = value;
 	}
-	string UsedKey => _usedKey ??= "SlowAsFast:" + Guid.NewGuid().ToString(); string _usedKey;
+	string UsedKey => _usedKey ??= "SlowAsFast:" + Guid.NewGuid().ToString(); string? _usedKey;
 
 	#endregion private fields
 

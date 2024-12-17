@@ -6,7 +6,7 @@ public class LeadTheFuriousAssult {
 	public const string Name = "Lead the Furious Assult";
 
 	[DisplayOnly( "4 air", "This Power may be fast." )]
-	static public Task MayBeFastAsync(TargetSpaceCtx _ ) { return null; }
+	static public Task MayBeFastAsync(TargetSpaceCtx _ ) { return Task.CompletedTask; }
 
 
 	[InnateTier( "2 sun,1 fire", "Destroy 1 town for every 2 dahan in target land." )]

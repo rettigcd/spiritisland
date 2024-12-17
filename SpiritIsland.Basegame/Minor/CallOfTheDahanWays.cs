@@ -6,16 +6,14 @@ public class CallOfTheDahanWays {
 	[Instructions( "Replace 1 Explorer with 1 Dahan. -If you have- 2 Moon: You may instead replace 1 Town with 1 Dahan." ), Artist( Artists.LoicBelliau )]
 	static public async Task ActAsync(TargetSpaceCtx ctx){
 
-		HumanToken oldInvader = null;
-
 		// if you have 2 moon, you may instead replace 1 town with 1 dahan
-		if(ctx.Space.Has(Human.Town) && await ctx.YouHave("2 moon" ))
-			oldInvader = ctx.Space.HumanOfTag( Human.Town ).First();
-		else if(ctx.Space.Has( Human.Explorer ))
-			oldInvader = ctx.Space.HumanOfTag( Human.Explorer ).First();
+		HumanTokenClass[] tokenClasses = ctx.Space.Has(Human.Town) && await ctx.YouHave("2 moon")
+			? [Human.Town] 
+			: Human.Explorer_Town;
 
-		await ctx.Space.ReplaceHumanAsync( oldInvader, Human.Dahan );
-
+		HumanToken? oldInvader = ctx.Space.HumanOfAnyTag( tokenClasses ).FirstOrDefault();
+		if(oldInvader is not null)
+			await ctx.Space.ReplaceHumanAsync( oldInvader, Human.Dahan );
 	}
 
 }
