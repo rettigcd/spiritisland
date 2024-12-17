@@ -6,16 +6,13 @@ public class Wind : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(LightningsSwiftStrike.Name, Name);
 	public const string Name = "Wind";
-	public string[] Replaces => [SwiftnessOfLightning.Name];
+	public string[] Replaces => [SwiftnessOfLightning.Name]; // Exhaltation of StormWind
 
 	public void ModSpirit(Spirit spirit) {
 		// Replaces	Special Rule: Swiftness of Lightning
-
-		// remove old
-		spirit.SpecialRules = spirit.SpecialRules.Where(x => x.Title != SwiftnessOfLightning.Name).ToArray();
+		spirit.RemoveRule(SwiftnessOfLightning.Name);
 		spirit.RemoveMod<SwiftnessOfLightning>();
 
-		// add card
-		spirit.InnatePowers = [.. spirit.InnatePowers, InnatePower.For(typeof(ExaltationOfTheStormWind))];
+		spirit.AddInnate(InnatePower.For(typeof(ExaltationOfTheStormWind)));
 	}
 }

@@ -6,15 +6,10 @@ public class Sparking : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(LightningsSwiftStrike.Name, Name);
 	public const string Name = "Sparking";
-	public string[] Replaces => [ThunderingDestruction.Name];
+	public string[] Replaces => [ThunderingDestruction.Name, RagingStorm.Name];
 
 	public void ModSpirit(Spirit spirit) {
-		// Replaces	Innate Power: Thundering Destruction
-		spirit.InnatePowers[0] = InnatePower.For(typeof(GiftOfTheSparkingSky));
-		
-		// Replace Raging Storm with Smite the Land with Fulmination
-		var ragingStore = spirit.Hand.First(x=>x.Title==RagingStorm.Name);
-		spirit.Hand.Remove(ragingStore);
-		spirit.Hand.Add(PowerCard.For(typeof(SmiteTheLandWithFulmination)));
+		spirit.ReplaceInnate(ThunderingDestruction.Name, InnatePower.For(typeof(GiftOfTheSparkingSky)));
+		spirit.ReplaceCard(RagingStorm.Name, PowerCard.ForDecorated(SmiteTheLandWithFulmination.ActAsync));
 	}
 }

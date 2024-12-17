@@ -2,9 +2,9 @@
 
 public class SharpFangs : Spirit {
 
-	public const string Name = "Sharp Fangs Behind the Leaves";
+	// https://spiritislandwiki.com/index.php?title=Sharp_Fangs_Behind_the_Leaves
 
-	static readonly SpecialRule AllyOfTheBeasts = new SpecialRule("Ally of the Beasts", "Your presensee may move with beast.");
+	public const string Name = "Sharp Fangs Behind the Leaves";
 
 	public override string SpiritName => Name;
 
@@ -12,13 +12,15 @@ public class SharpFangs : Spirit {
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy1, Track.AnimalEnergy, Track.PlantEnergy, Track.Energy2, Track.AnimalEnergy, Track.Energy3, Track.Energy4 ),
 			new PresenceTrack( Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5Reclaim1 ),
-			new FollowingPresenceToken( spirit, Token.Beast )
+			new AllyOfTheBeasts(spirit)
 		),
 		new GrowthTrack( 2,
 			new GrowthGroup( new ReclaimAll(), new GainEnergy( -1 ), new GainPowerCard() ) { GainEnergy = -1 },
 			new GrowthGroup( new PlacePresence( 3, Filter.Beast, Filter.Jungle ) ),
 			new GrowthGroup( new GainPowerCard(), new GainEnergy( 1 ) ) { GainEnergy = 1 },
 			new GrowthGroup( new GainEnergy( 3 ) ) { GainEnergy = 3 }
+		).Add(
+			new GrowthPickGroups(new GrowthGroup(new CallForthPredators()))
 		),
 		PowerCard.For(typeof(PreyOnTheBuilders)),
 		PowerCard.For(typeof(TeethGleamFromDarkness)),
@@ -26,20 +28,24 @@ public class SharpFangs : Spirit {
 		PowerCard.For(typeof(TooNearTheJungle))
 	) {
 		InnatePowers = [
-			InnatePower.For(typeof(FrenziedAssult)),
-			InnatePower.For(typeof(RagingHunt)),
+			InnatePower.For(typeof(RangingHunt)), // Fast
+			InnatePower.For(typeof(FrenziedAssult)), // Slow
 		];
-		SpecialRules = [AllyOfTheBeasts];
+		SpecialRules = [AllyOfTheBeasts.Rules,CallForthPredators.Rule];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 
+		// Put 1 Presence and 1 Beasts on your starting board in the highest-numbered Jungle.
 		var highestJungle = board.Spaces.Where(x => x.IsJungle).Last().ScopeSpace;
 		highestJungle.Setup(Presence.Token,1);
-		highestJungle.Beasts.Init(1);
+		highestJungle.Beasts.Adjust(1);
 
-		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
-		this.AddActionFactory(new PlacePresenceOnBeastLand().ToGrowth());
+		// Put 1 Presence in a land of your choice with Beasts anywhere on the island.
+		if( SetupAction is not null ) // (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
+			AddActionFactory(SetupAction);
 	}
+
+	public IActionFactory SetupAction = new PlacePresenceOnBeastLand().ToGrowth();
 
 }

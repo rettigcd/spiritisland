@@ -23,9 +23,17 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	#region Aspects
 
-	public AspectConfigKey[] AspectNames => [];
+	public AspectConfigKey[] AspectNames => [
+		// Sharp Fangs
+		Encircle.ConfigKey,
+		Unconstrained.ConfigKey,
+	];
 
-	public IAspect? MakeAspect(AspectConfigKey aspectName) => null;
+	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
+		Encircle.Name => new Encircle(),
+		Unconstrained.Name => new Unconstrained(),
+		_ => null,
+	};
 
 	#endregion Aspects
 

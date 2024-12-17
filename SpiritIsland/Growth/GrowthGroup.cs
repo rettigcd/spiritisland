@@ -13,7 +13,8 @@ public class GrowthGroup( params IActOn<Spirit>[] actions )
 	/// <summary>
 	/// The things that get put in the spirits unUsedAction/factory list
 	/// </summary>
-	public IHelpGrowActionFactory[] GrowthActionFactories { get; } = actions.Select( action => new GrowthAction( action ) ).ToArray();
+	public IHelpGrowActionFactory[] GrowthActionFactories => _growthActionFactories ??= actions.Select( action => new GrowthAction( action ) ).ToArray();
+	IHelpGrowActionFactory[] _growthActionFactories = null;
 
 	/// <summary>
 	/// The simple Description/ActAsync commands

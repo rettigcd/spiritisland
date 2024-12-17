@@ -29,10 +29,6 @@
 
 	SPIRITS - Aspects (new spirits)
 
-		Rampant Green - Tangles
-		Rampant Green - Regrowth
-		Fangs - Encircle
-		Fangs - Enconstrained
 		Wildfire - Transforming
 		Thunderspeaker - Warrior
 		Thunderspeaker - Tactician

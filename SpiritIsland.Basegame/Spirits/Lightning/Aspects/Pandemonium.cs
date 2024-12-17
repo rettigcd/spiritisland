@@ -5,11 +5,10 @@ public class Pandemonium : IAspect {
 
 	static public AspectConfigKey ConfigKey => new AspectConfigKey(LightningsSwiftStrike.Name, Name);
 	public const string Name = "Pandemonium";
-	public string[] Replaces => [ThunderingDestruction.Name];
+	public string[] Replaces => [ThunderingDestruction.Name]; // with Lightning-Torn Skies
 
 	public void ModSpirit(Spirit spirit) {
-		// Replaces Innate Power: Thundering Destruction
-		spirit.InnatePowers[0] = InnatePower.For(typeof(LightningTornSkiesIncitePandemonium));
+		spirit.ReplaceInnate(ThunderingDestruction.Name, InnatePower.For(typeof(LightningTornSkiesIncitePandemonium)));
 	}
 }
 

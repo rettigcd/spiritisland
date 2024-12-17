@@ -15,8 +15,7 @@ public class Regrowth : IAspect {
 		spirit.Presence.Destroyed.Count += 13;
 
 		// Remove Steady Regeneration
-		var old = spirit.Presence;
-		spirit.Presence = new SpiritPresence(spirit, old.Energy, old.CardPlays, old.Token);
+		spirit.RemoveCustomPresence();
 
 		// Swap innates.
 		spirit.InnatePowers[1] = InnatePower.For(typeof(UnbelievableGrowth));
