@@ -22,9 +22,8 @@ public class StubbornSolidity {
 public class StubbornSolidityBehavior
 	: IModifyAddingToken
 	, IModifyRemovingToken
-	, IModifyDahanDamage
+	, IAdjustDamageToDahan
 	, ICleanupSpaceWhenTimePasses
-	, IEndWhenTimePasses
 {
 
 	public void InitOn( Space space) {
@@ -56,11 +55,12 @@ public class StubbornSolidityBehavior
 		return Task.CompletedTask;
 	}
 
-	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
+	void IAdjustDamageToDahan.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
-	void ICleanupSpaceWhenTimePasses.EndOfRoundCleanup(Space space) {
+	void ICleanupSpaceWhenTimePasses.CleanupSpace(Space space) {
 		foreach(var (solid,normal) in _solidToNormalMap.Select(p => (p.Key, p.Value)))
 			ReplaceAll( space, solid, normal );
+		space.Init(this,0);
 	}
 
 	static void ReplaceAll( Space space, HumanToken oldType, HumanToken newType) {

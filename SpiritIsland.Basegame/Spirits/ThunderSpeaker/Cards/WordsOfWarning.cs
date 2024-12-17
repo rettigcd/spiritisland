@@ -23,18 +23,18 @@ public class WordsOfWarning {
 
 public class SimultaneousDefend : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
 
-	void IConfigRavages.Config( Space space ) {
+	Task IConfigRavages.Config( Space space ) {
 
-		// Token Reduces Attack of invaders by 1
+		// Adjust dahan to go at same time as invaders
 		foreach(HumanToken orig in space.HumanOfAnyTag( Human.Dahan ).ToArray())
 			AdjustRavageOrder( space, orig, RavageOrder.InvaderTurn );
 
-		// At end of Action, invaders are are restored to original attack time.
+		// restore
 		ActionScope.Current.AtEndOfThisAction( scope => {
 			foreach(HumanToken orig in space.HumanOfAnyTag( Human.Dahan ).ToArray())
 				AdjustRavageOrder( space, orig, RavageOrder.DahanTurn );
 		} );
-
+		return Task.CompletedTask;
 	}
 
 	static void AdjustRavageOrder( Space space, HumanToken orig, RavageOrder order ) {

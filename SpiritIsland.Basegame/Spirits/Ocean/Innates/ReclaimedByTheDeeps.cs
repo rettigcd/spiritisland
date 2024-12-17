@@ -7,13 +7,13 @@ public class ReclaimedByTheDeeps {
 
 
 	[InnateTier("2 water", "1 Damage per Deeps to Town/City only.")]
-	static public Task Option1(TargetSpaceCtx ctx) {
+	static public Task DeepsDamage1(TargetSpaceCtx ctx) {
 		// 1 Damage per Deeps to Town/City only.
 		return ctx.DamageInvaders(ctx.Space[Token.Deeps]);
 	}
 
 	[InnateTier("4 water,2 earth", "If at least 3 deeps and no Town/City are present: Drown all Explorer/Dahan.  Push all but 2 Deeps. Target land permanently becomes the Ocean on its board.",1)]
-	static public async Task Option2(TargetSpaceCtx ctx) {
+	static public async Task Make3DeepsAnOcean(TargetSpaceCtx ctx) {
 		// If at least 3 deeps and no Town/City are present:
 		int deepsCount = ctx.Space[Token.Deeps];
 		if( 3 <= deepsCount && !ctx.Space.HasAny( Human.Town_City ) ) {
@@ -33,7 +33,7 @@ public class ReclaimedByTheDeeps {
 	}
 
 	[InnateTier("2 moon,3 water", "Repeat this power in target land or in a land with your Presense.",2)]
-	static public async Task Option3(TargetSpaceCtx ctx) {
+	static public async Task RepeatInLandWithPresence(TargetSpaceCtx ctx) {
 
 		// in target land or in a land with your Presense.
 		List<Space> spaces = [ctx.Space, .. ctx.Self.Presence.Lands];
@@ -50,8 +50,8 @@ public class ReclaimedByTheDeeps {
 
 		// Repeat this power
 		var newCtx = ctx.Target(repeatSpace);
-		await Option1(newCtx);
-		await Option2(newCtx);
+		await DeepsDamage1(newCtx);
+		await Make3DeepsAnOcean(newCtx);
 	}
 
 	static void MakeOcean(Space space) {

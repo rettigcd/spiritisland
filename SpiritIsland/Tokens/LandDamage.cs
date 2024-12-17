@@ -18,12 +18,6 @@ public class LandDamage
 	/// </remarks>
 	static public async Task Add( Space space, int totalLandDamage ) {
 
-		// Mod
-		IModifyLandDamage[] mods = space.Keys.OfType<IModifyLandDamage>().ToArray();
-		foreach(IModifyLandDamage mod in mods)
-			mod.ModifyLandDamage(space,ref totalLandDamage);
-		if(totalLandDamage <= 0) return;
-
 		// Apply
 		space.Adjust( LandDamage.Token, totalLandDamage );
 
@@ -53,8 +47,8 @@ public class LandDamage
 	static int GetBlightThreshold(Space space) {
 		int blightThreshold = 2;
 		// React
-		var eventHandlers = space.Keys.OfType<IModifyBlightThreshold>().ToArray();
-		foreach( IModifyBlightThreshold handler in eventHandlers )
+		var eventHandlers = space.Keys.OfType<IAdjustBlightThreshold>().ToArray();
+		foreach( IAdjustBlightThreshold handler in eventHandlers )
 			handler.ModifyLandsResilience(space, ref blightThreshold);
 		return blightThreshold;
 	}

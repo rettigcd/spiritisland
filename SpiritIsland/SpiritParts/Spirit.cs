@@ -117,7 +117,7 @@ public abstract partial class Spirit
 
 	// Events
 	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
-	public List<object> Mods = [];
+	public List<ISpiritMod> Mods = [];
 
 	#region Cards
 
@@ -318,12 +318,10 @@ public abstract partial class Spirit
 		// Elements
 		InitElementsFromPresence();
 
-		var timePassesMods = Mods.OfType<IRunWhenTimePasses>().OrderBy(x => x.Order).ToArray();
-		foreach(var mod in timePassesMods ) {
-			await mod.TimePasses(gameState);
-			if(mod.RemoveAfterRun)
-				Mods.Remove(mod);
-		}
+		var cleanupMods = Mods.OfType<ICleanupSpiritWhenTimePasses>().ToArray();
+		foreach(var mod in cleanupMods ) mod.CleanupSpirit(this);
+		var endingMods = Mods.OfType<IEndWhenTimePasses>().ToArray();
+		foreach(var mod in endingMods) Mods.Remove((ISpiritMod)mod);
 	}
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 
@@ -496,8 +494,14 @@ public abstract partial class Spirit
 		get => _powerRangeCalc;
 		set {
 			_powerRangeCalc = value;
-			if( _powerRangeCalc.Previous is not null )
-				GameState.Current.AddTimePassesAction(new RollbackPowerRangeCalcToOriginal(this));
+			if( _powerRangeCalc.Previous is not null ) {
+				GameState.Current.AddTimePassesAction(TimePassesAction.Once((gs) => {
+					ICalcRange cur = PowerRangeCalc;
+					while( cur.Previous is not null )
+						cur = cur.Previous;
+					_powerRangeCalc = cur;
+				}));
+			}
 		}
 	}
 	ICalcRange _powerRangeCalc = DefaultRangeCalculator.Singleton;

@@ -46,10 +46,10 @@ public class ExploreEngine {
 
 
 		foreach(var x in spacesWeExplore)
-			x.Adjust( ModToken.DoExplore, x.SpaceSpec.InvaderActionCount );
+			x.Adjust(InvaderActionToken.DoExplore, x.SpaceSpec.InvaderActionCount );
 
 		return ActionScope.Current.Spaces
-			.Where( x => x[ModToken.DoExplore] > 0 )
+			.Where( x => x[InvaderActionToken.DoExplore] > 0 )
 			.ToArray();
 	}
 
@@ -59,8 +59,8 @@ public class ExploreEngine {
 	}
 
 	async Task ExplorePerMarker_1Space_Stoppable( bool escalation, Space exploredSpace ) {
-		int markerCount = exploredSpace[ModToken.DoExplore];
-		exploredSpace.Init( ModToken.DoExplore, 0 );
+		int markerCount = exploredSpace[InvaderActionToken.DoExplore];
+		exploredSpace.Init(InvaderActionToken.DoExplore, 0 );
 		while(0 < markerCount--) {
 			await using ActionScope actionScope = await ActionScope.Start( ActionCategory.Invader );
 			await Explore_1Space_Stoppable( exploredSpace, escalation );

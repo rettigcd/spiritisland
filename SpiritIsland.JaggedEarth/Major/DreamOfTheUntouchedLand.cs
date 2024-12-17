@@ -105,7 +105,7 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 		return _toSkip;
 	}
 
-	public void EndOfRoundCleanup( Space space ) {
+	public void CleanupSpace( Space space ) {
 		_toSkip = null; // reset for next round.
 	}
 

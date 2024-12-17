@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface IHandleCardPlayed {
+public interface IHandleCardPlayed : ISpiritMod {
 	Task Handle(Spirit spirit, PowerCard card);
 }

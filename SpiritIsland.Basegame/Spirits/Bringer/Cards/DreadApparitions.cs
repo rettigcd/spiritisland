@@ -15,7 +15,7 @@ public class DreadApparitions {
 
 
 	// When powers generate fear in target land, defend 1 per fear.
-	class ConvertFearToDefense( string powerName ) : IReactToLandFear, IEndWhenTimePasses {
+	class ConvertFearToDefense( string powerName ) : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
 		Task IReactToLandFear.HandleFearAddedAsync( Space space, int fearAdded, FearType fearType ) {
 			// (Fear from destroying town/cities does not.)
 			if( fearType != FearType.FromInvaderDestruction ) {

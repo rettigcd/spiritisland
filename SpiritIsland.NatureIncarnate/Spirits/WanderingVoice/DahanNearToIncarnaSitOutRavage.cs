@@ -8,12 +8,13 @@ public class DahanNearToIncarnaSitOutRavage( Incarna incarna ) : BaseModEntity, 
 
 	readonly Incarna _incarna = incarna;
 
-	void IConfigRavages.Config( Space space ) {
+	Task IConfigRavages.Config( Space space ) {
 		if( _incarna.IsPlaced && space.InOrAdjacentTo.Contains(_incarna.Space)) {
 			var dahan = space.HumanOfTag(Human.Dahan)
 				.ToDictionary( x => x, x => space[x] )
 				.ToCountDict();
 			SitOutRavage.SitOutThisRavageAction(space, dahan);
 		}
+		return Task.CompletedTask;
 	}
 }

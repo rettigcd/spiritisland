@@ -19,16 +19,16 @@ public sealed class ActionScope : IAsyncDisposable {
 	#region Start of Action Actions 
 
 	//	public static List<IRunAtStartOfAction> StartOfActionHandlers => Container.StartOfActionHandlers;
-	static public List<IRunAtStartOfAction> StartOfActionHandlers {
+	static public List<IRunAtStartOfEveryAction> StartOfActionHandlers {
 		get {
 			var val = _stargOfActionHandlers.Value;
 			return val is not null ? val : (_stargOfActionHandlers.Value = []);
 		}
 	}
-	readonly static AsyncLocal<List<IRunAtStartOfAction>> _stargOfActionHandlers = new(); // value gets shallow-copied into child calls and post-awaited states.
+	readonly static AsyncLocal<List<IRunAtStartOfEveryAction>> _stargOfActionHandlers = new(); // value gets shallow-copied into child calls and post-awaited states.
 
 	static Task RunStartOfActionHandlers() {
-		IRunAtStartOfAction[] snapshop = [.. StartOfActionHandlers]; // so handlers can modify the List
+		IRunAtStartOfEveryAction[] snapshop = [.. StartOfActionHandlers]; // so handlers can modify the List
 		return Task.WhenAll(snapshop.Select(x => x.Start(Current)));
 
 	}

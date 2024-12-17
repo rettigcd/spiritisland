@@ -1,7 +1,7 @@
 ﻿
 namespace SpiritIsland.FeatherAndFlame;
 
-public class FinderOfPathsUnseen : Spirit, IModifyAvailableActions {
+public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 
 	public const string Name = "Finder Of Paths Unseen";
 

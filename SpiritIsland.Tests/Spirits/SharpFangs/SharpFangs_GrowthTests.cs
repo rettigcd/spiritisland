@@ -30,7 +30,8 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		await When_SharpFangsGrow( (_) => {
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
 			User_GrowthB_PlacePresence();
-		} );
+			Ignore_CallForthPredators();
+		});
 
 
 		_spirit.Assert_AllCardsAvailableToPlay( 4+1);  // A
@@ -38,6 +39,11 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		// Assert_HasPowerProgressionCard( 0 );   // A
 
 		_spirit.Assert_BoardPresenceIs( "A2:1,A3:1" );    // B
+	}
+
+	void Ignore_CallForthPredators() {
+		User.NextDecision.HasPrompt("Select Growth").HasOptions("Call Forth Predators").ChooseFirst();
+		User.NextDecision.HasPrompt("Replace 1 Presence with 1 Beast").Choose("Done");
 	}
 
 	[Fact]
@@ -50,7 +56,8 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		await When_SharpFangsGrow( (_) => {
 			User_GrowthC_DrawCard_GainEnergy(); // gain 1 energy before we spend it
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
-		} );
+			Ignore_CallForthPredators();
+		});
 
 		_spirit.Assert_AllCardsAvailableToPlay( 5 + 1 );  // A
 		_spirit.Assert_HasEnergy( 0 + 1 );            // A & C
@@ -68,7 +75,8 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		await When_SharpFangsGrow( (_) => {
 			User_GrowthD_GainEnergy();
 			User_GrowthA_ReclaimAll_Energy_DrawCard();
-		} );
+			Ignore_CallForthPredators();
+		});
 
 		_spirit.Assert_AllCardsAvailableToPlay( 5);      // A
 		// Assert_HasPowerProgressionCard( 0 );    // A
@@ -84,7 +92,8 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		await When_SharpFangsGrow( (_) => {
 			User_GrowthB_PlacePresence();
 			User_GrowthC_DrawCard_GainEnergy();
-		} );
+			Ignore_CallForthPredators();
+		});
 
 		// User.SkipsPresenceReplacementWithBeasts();
 
@@ -101,7 +110,8 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		await When_SharpFangsGrow( (_) => {
 			User_GrowthB_PlacePresence();
 			User_GrowthD_GainEnergy();
-		} );
+			Ignore_CallForthPredators();
+		});
 
 		_spirit.Assert_BoardPresenceIs( "A2:1,A3:1" );  // B
 		_spirit.Assert_HasEnergy( 3 + 1 );         // D
@@ -115,7 +125,8 @@ public class SharpFangs_GrowthTests : BoardAGame {
 		await When_SharpFangsGrow( (_) => {
 			User_GrowthC_DrawCard_GainEnergy();
 			User_GrowthD_GainEnergy();
-		} );
+			Ignore_CallForthPredators();
+		});
 
 		// Assert_HasPowerProgressionCard( 0 );    // C
 		_spirit.Assert_HasEnergy( 1 + 3 + 1 );     // C + D

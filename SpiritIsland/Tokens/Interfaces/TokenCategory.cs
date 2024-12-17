@@ -1,9 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface ITag {
-	string Label { get; }
-}
-
 /// <summary>
 /// Values that can be attached to Token to help more easily filter them.
 /// </summary>

@@ -5,13 +5,13 @@
 /// </summary>
 /// <param name="spirit"></param>
 /// <param name="spaceAction"></param>
-public class RunSpaceActionOnceOnFutureTarget( Spirit spirit, SpaceAction spaceAction ) : IRunAtStartOfAction {
+public class RunSpaceActionOnceOnFutureTarget( Spirit spirit, SpaceAction spaceAction ) : IRunAtStartOfEveryAction {
 
 	static public void Trigger( Spirit spirit, SpaceAction spaceAction) {
 		ActionScope.StartOfActionHandlers.Add(new RunSpaceActionOnceOnFutureTarget(spirit, spaceAction));
 	}
 
-	Task IRunAtStartOfAction.Start( ActionScope startingScope ) {
+	Task IRunAtStartOfEveryAction.Start( ActionScope startingScope ) {
 		// Add to the end of EVERY Action this round.
 		if(_invokedRound == GameState.Current.RoundNumber)
 			startingScope.AtEndOfThisAction( EndOfRoundCheck );
@@ -26,7 +26,7 @@ public class RunSpaceActionOnceOnFutureTarget( Spirit spirit, SpaceAction spaceA
 		bool isCandidate = _used
 			&& endScope.Category == ActionCategory.Spirit_Power     // is power
 			&& endScope.Owner == spirit                      // matches spirit
-			&& (targetLandDetails = targetLandDetails = TargetSpaceAttribute.TargettedSpace) is not null;  // targetted land.
+			&& (targetLandDetails = TargetSpaceAttribute.TargettedSpace) is not null;  // targetted land.
 		if( !isCandidate ) return;
 
 		Space ss = targetLandDetails.Space;

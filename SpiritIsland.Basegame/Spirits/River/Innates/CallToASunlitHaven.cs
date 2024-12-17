@@ -9,14 +9,14 @@ public class CallToASunlitHaven {
 	static public void InitAspect(Spirit spirit) => spirit.InnatePowers[0] = InnatePower.For(typeof(CallToASunlitHaven));
 
 	[InnateTier("1 sun,1 water", "Defend E.")]
-	static public Task Option1Async(TargetSpaceCtx ctx) {
+	static public Task DefendE(TargetSpaceCtx ctx) {
 		int e = GetE(ctx);
 		ctx.Defend( e );
 		return Task.CompletedTask;
 	}
 
 	[InnateTier("1 sun,2 water,1 earth", "In an adjacent land with your presence, Defend E.",1)]
-	static public async Task Option2Async(TargetSpaceCtx ctx) {
+	static public async Task InAdjacent_DefendE(TargetSpaceCtx ctx) {
 		int e = GetE(ctx);
 		var otherSpace = await ctx.Self.SelectSpaceAsync(
 			$"Defend {e}",
@@ -28,7 +28,7 @@ public class CallToASunlitHaven {
 	}
 
 	[InnateTier("1 sun,1 animal", "In target land or adjacent land with your presence, gather up to E Dahan.",2)]
-	static public async Task Option3Async(TargetSpaceCtx ctx) {
+	static public async Task GatherDahan(TargetSpaceCtx ctx) {
 		int e = GetE(ctx);
 		var otherSpace = await ctx.Self.SelectSpaceAsync(
 			$"Gather up to {e} Dahan",
@@ -40,7 +40,7 @@ public class CallToASunlitHaven {
 	}
 
 	[InnateTier("1 sun,1 water,2 plant", "Remove up to E Health worth of Invaders.",3)]
-	static public Task Option4Async(TargetSpaceCtx ctx) {
+	static public Task RemoveInvaders(TargetSpaceCtx ctx) {
 		int e = GetE(ctx);
 		return Cmd.RemoveUpToNHealthOfInvaders(e).ActAsync(ctx);
 	}

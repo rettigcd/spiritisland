@@ -1,6 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public class Reclaim1InsteadOfDiscard( Spirit spirit ) : IRunWhenTimePasses {
+
 	readonly PowerCard[] _purchased = [.. spirit.InPlay];
 
 	async Task IRunWhenTimePasses.TimePasses( GameState _ ) {

@@ -36,7 +36,7 @@ public class UnnervingPall {
 
 		readonly CountDictionary<HumanToken> _sitOuts = sitOuts;
 
-		void IConfigRavages.Config( Space space ) {
+		Task IConfigRavages.Config( Space space ) {
 
 			Dictionary<HumanToken,HumanToken> restore = [];
 
@@ -54,6 +54,7 @@ public class UnnervingPall {
 					space.AllHumans( sitOut ).Adjust( x => restore[x] );
 			} );
 
+			return Task.CompletedTask;
 		}
 	}
 }

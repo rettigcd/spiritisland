@@ -8,4 +8,3 @@ public interface ICalcRange {
 	/// </summary>
 	ICalcRange Previous { get; }
 }
-

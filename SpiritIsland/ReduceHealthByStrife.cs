@@ -1,5 +1,8 @@
 namespace SpiritIsland;
 
+/// <summary>
+/// Island-Wide mod that needs to do Island-Wide cleanup
+/// </summary>
 public class ReduceHealthByStrife
 	: BaseModEntity
 	, IModifyAddingToken

@@ -7,19 +7,19 @@ public class OceanBreaksTheShore {
 	public const string Name = "Ocean Breaks the Shore";
 
 	[InnateTier( "2 water,1 earth","Drown 1 town." )]
-	static public Task Option1( TargetSpaceCtx ctx ) {
+	static public Task Drown1Town( TargetSpaceCtx ctx ) {
 		// drown 1 town
 		return ctx.Invaders.DestroyNOfClass(1,Human.Town);
 	}
 
 	[InnateTier( "3 water,2 earth","You may instead Drown 1 city." )]
-	static public Task Option2( TargetSpaceCtx ctx ) {
+	static public Task OrDrown1City( TargetSpaceCtx ctx ) {
 		// instead drown 1 city
 		return ctx.Invaders.DestroyNOfAnyClass( 1, Human.Town_City );
 	}
 
 	[InnateTier( "4 water,3 earth", "Also, Drown 1 town/city." )]
-	static public Task Option3( TargetSpaceCtx ctx ) {
+	static public Task AndDrownAnotherTownOrCity( TargetSpaceCtx ctx ) {
 		// also drown 1 town or city
 		return ctx.Invaders.DestroyNOfAnyClass( 2, Human.Town_City );
 	}

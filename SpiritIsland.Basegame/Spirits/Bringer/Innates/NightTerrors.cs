@@ -7,19 +7,19 @@ public class NightTerrors {
 	public const string Name = "Night Terrors";
 
 	[InnateTier( "1 moon,1 air","1 fear." )]
-	static public Task Option1Async( TargetSpaceCtx ctx ) {
+	static public Task OneFear( TargetSpaceCtx ctx ) {
 		// 1 fear
 		return ctx.AddFear(1);
 	}
 
 	[InnateTier( "2 moon,1 air,1 animal", "+1 fear." )]
-	static public Task Option2Async( TargetSpaceCtx ctx ) {
+	static public Task TwoFear( TargetSpaceCtx ctx ) {
 		//+1 fear
 		return ctx.AddFear( 2 );
 	}
 
 	[InnateTier("3 moon,2 air,1 animal", "+1 fear." )]
-	static public Task Option3Async( TargetSpaceCtx ctx ) {
+	static public Task ThreeFear( TargetSpaceCtx ctx ) {
 		//+1 fear
 		return ctx.AddFear( 3 );
 	}

@@ -12,7 +12,7 @@ public sealed class InvaderBinding( Space space ) {
 
 	/// <summary> Not Badland-aware </summary>
 	public async Task ApplyDamageToEach( int individualDamage, params ITokenClass[] generic ) {
-		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return;
+		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return;
 
 		var invaders = Space.InvaderTokens()
 			.OrderBy(x=>x.RemainingHealth) // do damaged first to clear them out
@@ -34,7 +34,7 @@ public sealed class InvaderBinding( Space space ) {
 		if(Space[originalInvader] < 1)
 			throw new InvalidOperationException( $"Cannot remove 1 {originalInvader} tokens because there aren't that many." );
 
-		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return (0,originalInvader);
+		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return (0,originalInvader);
 
 		//!!! can we clean this up
 		var damagedInvader = Space.GetNewDamagedToken( originalInvader, availableDamage );
@@ -64,7 +64,7 @@ public sealed class InvaderBinding( Space space ) {
 	#region Destroy
 
 	public async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
-		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return;
+		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return;
 
 		var tokensToDestroy = Space.HumanOfAnyTag( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
@@ -72,7 +72,7 @@ public sealed class InvaderBinding( Space space ) {
 	}
 
 	public async Task DestroyNOfAnyClass( int count, params HumanTokenClass[] generics ) {
-		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return;
+		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return;
 
 		HumanToken[] invadersToDestroy;
 		while(
@@ -91,7 +91,7 @@ public sealed class InvaderBinding( Space space ) {
 
 	// destroy CLASS
 	public async Task<int> DestroyNOfClass( int countToDestroy, HumanTokenClass invaderClass ) {
-		if(Space.ModsOfType<IStopInvaderDamage>().Any()) return 0;
+		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return 0;
 
 		countToDestroy = Math.Min( countToDestroy, Space.Sum( invaderClass ) );
 		int remaining = countToDestroy; // capture

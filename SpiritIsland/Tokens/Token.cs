@@ -26,12 +26,3 @@ public static class Token {
 
 // Available:           F   H I J K L   N O     R S T U V   X      
 // Used:      A B C D E   G           M     P Q           W   Y Z =
-
-
-
-public static class ModToken {
-	// Fake Tokens that are not visible.
-	static readonly public InvaderActionToken DoExplore = new InvaderActionToken( "Explore" );
-	static readonly public InvaderActionToken DoBuild = new InvaderActionToken( "Build" );
-	static readonly public InvaderActionToken DoRavage = new InvaderActionToken( "Ravage" );
-}

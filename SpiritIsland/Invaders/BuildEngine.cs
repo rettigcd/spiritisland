@@ -18,7 +18,7 @@ public class BuildEngine {
 			.Where( ShouldBuildOnSpace )    // usually because it has invaders on it
 			.ToArray();
 		foreach(Space space in spacesMatchingCardCriteria)
-			space.Adjust( ModToken.DoBuild, space.SpaceSpec.InvaderActionCount );
+			space.Adjust(InvaderActionToken.DoBuild, space.SpaceSpec.InvaderActionCount );
 
 		// log any spaces that look like they should get built on but didn't
 		var noBuildsSpaceNames = cardDependentBuildSpaces   // Space that should be build on
@@ -36,7 +36,7 @@ public class BuildEngine {
 		// Scan for all Build Tokens - both Card-Build-Spaces plus any pre-existing DoBuilds
 		// ** May contain more than just Normal Build, due to rule/power that added extra ones.
 		var matchingSpacesWithBuildTokens = ActionScope.Current.Spaces
-			.Where( tokens => 0 < tokens[ModToken.DoBuild] )
+			.Where( tokens => 0 < tokens[InvaderActionToken.DoBuild] )
 			.OrderBy( tokens => tokens.SpaceSpec.Label )
 			.ToArray();
 
@@ -54,8 +54,8 @@ public class BuildEngine {
 
 	/// <summary> Gets the Build tokens, then clears them. </summary>
 	static int PullBuildTokens( Space space ) {
-		int buildCounts = space[ModToken.DoBuild];
-		space.Init( ModToken.DoBuild, 0 );
+		int buildCounts = space[InvaderActionToken.DoBuild];
+		space.Init( InvaderActionToken.DoBuild, 0 );
 		return buildCounts;
 	}
 

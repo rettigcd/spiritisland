@@ -52,12 +52,12 @@ public class RavageConfigToken( Action<Space> _setup, Action<Space> _teardown )
 	IConfigRavages, 
 	IEndWhenTimePasses
 {
-	void IConfigRavages.Config( Space space ) {
+	Task IConfigRavages.Config( Space space ) {
 		// Token Reduces Attack of invaders by 1
 		_setup( space );
 
 		// At end of Action, invaders are are restored to original.
 		ActionScope.Current.AtEndOfThisAction( _ => _teardown( space ) );
-
+		return Task.CompletedTask;
 	}
 }

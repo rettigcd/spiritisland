@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Non-Space related action that runs during TimePasses.
+/// Custom time-passes actions that are not scoped to a Space nor a Spirit
 /// </summary>
 public interface IRunWhenTimePasses {
 
@@ -18,19 +18,13 @@ public enum TimePassesOrder { Early, Normal, Late }
 
 public class TimePassesAction( Func<GameState, Task> _func, bool _remove, TimePassesOrder _order ) : IRunWhenTimePasses {
 
-	#region static factory methods
-
 	static public TimePassesAction Once( Func<GameState,Task> func, TimePassesOrder order = TimePassesOrder.Normal ) => new TimePassesAction( func, true, order );
 	static public TimePassesAction Once( Action<GameState> action, TimePassesOrder order = TimePassesOrder.Normal ) => new TimePassesAction( action.AsAsync(), true, order );
 
-	#endregion static factory methods
-
 	#region IRunWhenTimePasses Imp
 	bool IRunWhenTimePasses.RemoveAfterRun => _remove;
-	async Task IRunWhenTimePasses.TimePasses( GameState gameState ) { await _func( gameState ); }
+	Task IRunWhenTimePasses.TimePasses( GameState gameState ) => _func( gameState );
 	TimePassesOrder IRunWhenTimePasses.Order => _order;
-
 	#endregion IRunWhenTimePasses Imp
-	#region readonly private fields
-	#endregion readonly private fields
+
 }

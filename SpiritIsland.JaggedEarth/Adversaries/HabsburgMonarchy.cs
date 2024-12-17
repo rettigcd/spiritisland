@@ -72,11 +72,13 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 		}
 	];
 
-	class NeighborTownsCauseBonusLandDamage : BaseModEntity, IModifyLandDamage {
-		void IModifyLandDamage.ModifyLandDamage( Space space, ref int damage ){
-			bool hasNeighborTown = space.Adjacent.Any( s => s.Has( Human.Town ) );
-			if(hasNeighborTown)
-				damage += 2;
+	class NeighborTownsCauseBonusLandDamage : BaseModEntity, IConfigRavages {
+		public Task Config(Space space) {
+			var behavior = space.RavageBehavior;
+			Func<RavageExchange, int> old = behavior.GetDamageFromParticipatingAttackers;
+			behavior.GetDamageFromParticipatingAttackers = (exchange) => old(exchange) 
+				+ (exchange.Space.Adjacent.Any(s => s.Has(Human.Town)) ? 2 : 0);
+			return Task.CompletedTask;
 		}
 	}
 

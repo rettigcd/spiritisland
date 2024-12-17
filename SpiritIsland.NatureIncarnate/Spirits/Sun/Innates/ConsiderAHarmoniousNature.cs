@@ -59,13 +59,13 @@ public class ConsiderAHarmoniousNature {
 class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 	: BaseModEntity
 	, IModifyRemovingToken
-	, IModifyDahanDamage
+	, IAdjustDamageToDahan
 	, IEndWhenTimePasses
 {
 	readonly Spirit _spirit = spirit;
 	readonly string _source = source;
 
-	void IModifyDahanDamage.Modify( DamagingTokens args ) {
+	void IAdjustDamageToDahan.Modify( DamagingTokens args ) {
 		if(_spirit.ActionIsMyPower) {
 			ActionScope.Current.Log( new Log.Debug( $"{_source} prevented {args.TokenCountToReceiveDamage} Dahan from receiving {args.DamagePerToken} on {args.On.Label}." ) );
 			args.TokenCountToReceiveDamage = 0;

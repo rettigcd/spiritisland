@@ -42,10 +42,8 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			}
 
 		// Config the ravage
-		foreach(IConfigRavagesAsync configurer in data.Space.ModsOfType<IConfigRavagesAsync>().ToArray() )
-			await configurer.ConfigAsync( data.Space );
 		foreach(IConfigRavages configurer in data.Space.ModsOfType<IConfigRavages>().ToArray() )
-			configurer.Config( data.Space );
+			await configurer.Config( data.Space );
 
 		data.InvaderBinding = data.Space.Invaders;
 

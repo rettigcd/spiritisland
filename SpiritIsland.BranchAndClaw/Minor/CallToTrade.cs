@@ -39,7 +39,7 @@ public class CallToTrade {
 			ActionScope.Current.Log(new Log.Debug($"{Name} - Stopping Ravage. Adding Build"));
 
 			// Add Build
-			space.Adjust( ModToken.DoBuild, 1 );
+			space.Adjust(InvaderActionToken.DoBuild, 1 );
 			// Stop Ravage
 			return Task.FromResult(true);
 		}

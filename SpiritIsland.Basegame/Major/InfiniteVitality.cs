@@ -37,11 +37,12 @@ public class InfiniteVitality {
 
 // Threshold token
 class StopDahanDamageAndDestruction( string _sourceName )
-	: IModifyDahanDamage
+	: ISpaceEntity
+	, IAdjustDamageToDahan
 	, IModifyRemovingToken
 	, IEndWhenTimePasses
 {
-	void IModifyDahanDamage.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
+	void IAdjustDamageToDahan.Modify( DamagingTokens notification ) => notification.TokenCountToReceiveDamage = 0;
 
 	Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if(args.Token.Class == Human.Dahan && args.Reason == RemoveReason.Destroyed) {

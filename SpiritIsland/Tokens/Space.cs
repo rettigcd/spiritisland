@@ -435,11 +435,11 @@ public partial class Space
 	public void TimePasses() {
 		var keyArray = ModSnapshot;
 		foreach(var cleanup in keyArray.OfType<ICleanupSpaceWhenTimePasses>())
-			cleanup.EndOfRoundCleanup( this );
+			cleanup.CleanupSpace( this );
 
 		// remove keys (this-space-only, no entities from Island Mods)
 		foreach(var removeMe in OfType<IEndWhenTimePasses>().ToArray())
-			Init(removeMe,0);
+			Init((ISpaceEntity)removeMe,0);
 	}
 
 	//-------------
@@ -506,7 +506,7 @@ public partial class Space
 	string IOption.Text => SpaceSpec.Label;
 	public string Label => SpaceSpec.Label;
 
-	public bool PreventsInvaderDamage() => ModsOfType<IStopInvaderDamage>().Any();
+	public bool PreventsInvaderDamage() => ModsOfType<IAdjustDamageToInvaders>().Any();
 
 }
 

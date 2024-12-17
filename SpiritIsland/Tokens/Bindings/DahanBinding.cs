@@ -101,8 +101,8 @@ public sealed class DahanBinding( Space _space ) {
 			TokenCountToReceiveDamage = tokenCountToReceiveDamage, 
 			DamagePerToken = damagePerToken
 		};
-		var damageMods = _space.ModsOfType<IModifyDahanDamage>().ToArray();
-		foreach(IModifyDahanDamage mod in damageMods) 
+		var damageMods = _space.ModsOfType<IAdjustDamageToDahan>().ToArray();
+		foreach(IAdjustDamageToDahan mod in damageMods) 
 			mod.Modify( notification );
 		originalToken = notification.Token;
 		tokenCountToReceiveDamage = notification.TokenCountToReceiveDamage;

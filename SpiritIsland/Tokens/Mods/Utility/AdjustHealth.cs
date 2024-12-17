@@ -7,7 +7,8 @@
 public class AdjustHealth(int _deltaHealth, params HumanTokenClass[] _tokenClasses)
 	: IModifyAddingToken
 	, IModifyRemovingToken
-	, ICleanupSpaceWhenTimePasses {
+	, ICleanupSpaceWhenTimePasses
+{
 
 	public async Task InitOn(Space space) {
 		await AdjustHealth.AdjustHealthOfAll(space, _deltaHealth, _tokenClasses);
@@ -53,10 +54,10 @@ public class AdjustHealth(int _deltaHealth, params HumanTokenClass[] _tokenClass
 	}
 
 	// Cleanup
-	public void EndOfRoundCleanup(Space space) {
+	public void CleanupSpace(Space space) {
 		GameState.Current.Healer.HealSpace(space);
 		AdjustHealthOfAll(space, -_deltaHealth, _tokenClasses).Wait(); // This should be ok because tokens are healed.
-		space.Init(this, 0);
+		space.Init(this,0);
 	}
 
 	static public async Task AdjustHealthOfAll(Space space, int delta, params HumanTokenClass[] tokenClasses) {

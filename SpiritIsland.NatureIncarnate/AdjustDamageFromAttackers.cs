@@ -9,7 +9,7 @@ class AdjustDamageFromAttackers( Func<RavageExchange, int> damageAdjustment )
 
 	readonly Func<RavageExchange,int> _damageAdjustment = damageAdjustment;
 
-	public void Config( Space st ) {
+	public Task Config( Space st ) {
 		// ??? Could the ConfigureRavage handlers just mod the RavageBehavior?
 		RavageBehavior behavior = st.RavageBehavior;
 		Func<RavageExchange, int> old = st.RavageBehavior.GetDamageFromParticipatingAttackers;
@@ -18,6 +18,7 @@ class AdjustDamageFromAttackers( Func<RavageExchange, int> damageAdjustment )
 			int adjustment = _damageAdjustment(ravageExchange); 
 			return Math.Max(0,originalDamage + adjustment);
 		};
+		return Task.CompletedTask;
 	}
 }
 

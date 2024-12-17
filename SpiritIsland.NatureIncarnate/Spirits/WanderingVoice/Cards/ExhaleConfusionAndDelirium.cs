@@ -13,7 +13,7 @@ public class ExhaleConfusionAndDelirium {
 
 	class BlightedInvadersSitOutRavage : IConfigRavages, IEndWhenTimePasses {
 
-		void IConfigRavages.Config( Space space ) {
+		Task IConfigRavages.Config( Space space ) {
 			
 			var blightedCounts = space.AllHumanTokens()
 				.Where(x=>0<x.StrifeCount)
@@ -21,6 +21,7 @@ public class ExhaleConfusionAndDelirium {
 				.ToCountDict();
 
 			SitOutRavage.SitOutThisRavageAction(space, blightedCounts);
+			return Task.CompletedTask;
 		}
 	}
 

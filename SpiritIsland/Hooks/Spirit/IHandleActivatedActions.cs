@@ -1,5 +1,5 @@
 ﻿namespace SpiritIsland;
 
-public interface IHandleActivatedActions {
+public interface IHandleActivatedActions : ISpiritMod {
 	void ActionActivated(IActionFactory factory);
 }

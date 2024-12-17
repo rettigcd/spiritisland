@@ -9,9 +9,14 @@ public class EntwinedPower {
 
 		// You and other spirit share presence for targeting
 		if( ctx.Self != ctx.Other) {
-			var gs = GameState.Current;
-			gs.AddTimePassesAction( new SourceCalcRestorer( ctx.Self ) );
-			gs.AddTimePassesAction( new SourceCalcRestorer( ctx.Other ) );
+			// Save off to restore later
+			var selfOrig = ctx.Self.TargetingSourceStrategy;
+			var otherOrig = ctx.Other.TargetingSourceStrategy;
+			GameState.Current.AddTimePassesAction(TimePassesAction.Once((_) => {
+				ctx.Self.TargetingSourceStrategy = selfOrig;
+				ctx.Other.TargetingSourceStrategy = otherOrig;
+			}));
+			// set new
 			_ = new EntwinedPresenceSource( ctx.Self, ctx.Other ); // auto-binds to spirits
 		}
 
