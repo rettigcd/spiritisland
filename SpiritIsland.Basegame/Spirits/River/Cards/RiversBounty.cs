@@ -7,7 +7,7 @@ public class RiversBounty {
 	[SpiritCard(RiversBounty.Name, 0, Element.Sun,Element.Water,Element.Animal)]
 	[Slow, FromPresence(0)]
 	[Instructions( "Gather up to 2 Dahan. If there are now at least 2 Dahan, add 1 Dahan and gain 1 Energy." ), Artist( Artists.NolanNasser )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx) {
+	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		// Gather up to 2 Dahan
 		await ctx.GatherUpToNDahan( 2 );

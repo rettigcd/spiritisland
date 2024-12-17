@@ -20,10 +20,10 @@ public class Keeper : Spirit {
 			new GrowthGroup( new GainEnergy( 1 ), new PlacePresence( 3, Filter.Presence, Filter.Wilds ) ) { GainEnergy = 1 },
 			new GrowthGroup( new GainEnergy( -3 ), new GainPowerCard(), new PlacePresence( 3, Filter.NoBlight ) ) { GainEnergy = -3 }
 		),
-		PowerCard.For(typeof(BoonOfGrowingPower)),
-		PowerCard.For(typeof(RegrowFromRoots)),
-		PowerCard.For(typeof(SacrosanctWilderness)),
-		PowerCard.For(typeof(ToweringWrath))
+		PowerCard.ForDecorated(BoonOfGrowingPower.ActAsync),
+		PowerCard.ForDecorated(RegrowFromRoots.ActAsync),
+		PowerCard.ForDecorated(SacrosanctWilderness.ActAsync),
+		PowerCard.ForDecorated(ToweringWrath.ActAsync)
 	) {
 
 		InnatePowers = [

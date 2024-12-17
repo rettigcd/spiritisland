@@ -7,7 +7,7 @@ public class ExaltationOfGraspingRoots {
 	[SpiritCard(Name, 0, Element.Moon,Element.Fire,Element.Earth,Element.Plant)]
 	[Slow, AnotherSpirit]
 	[Instructions( "Target Spirit may Add 1 Wilds in one of their lands. You may do likewise." ), Artist( Artists.DavidMarkiwsky )]
-	static public async Task ActionAsync(TargetSpiritCtx ctx) {
+	static public async Task ActAsync(TargetSpiritCtx ctx) {
 		var addWilds = AddWildsIn1OfYourLands;
 
 		// Target Spirit may Add 1 Wilds in one of their lands.

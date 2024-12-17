@@ -22,10 +22,10 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 				new GrowthGroup( new GainPowerCard() ),
 				new GrowthGroup( new GainEnergyEqualToCardPlays() )
 			)
-			, PowerCard.For(typeof(ImpersonateAuthority))
-			,PowerCard.For(typeof(InciteTheMob))
-			,PowerCard.For(typeof(OverenthusiasticArson))
-			,PowerCard.For(typeof(UnexpectedTigers))
+			,PowerCard.ForDecorated(ImpersonateAuthority.ActAsync)
+			,PowerCard.ForDecorated(InciteTheMob.ActAsync)
+			,PowerCard.ForDecorated(OverenthusiasticArson.ActAsync)
+			,PowerCard.ForDecorated(UnexpectedTigers.ActAsync)
 		)
 	{
 

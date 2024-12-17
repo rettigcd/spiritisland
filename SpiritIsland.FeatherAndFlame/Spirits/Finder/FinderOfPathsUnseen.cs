@@ -32,12 +32,12 @@ public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 				new GainEnergy( 2 )
 			)
 		)
-		, PowerCard.For(typeof(AidFromTheSpiritSpeakers)) // fast - 2
-		, PowerCard.For(typeof(OfferPassageBetweenWorlds)) // fast - 1
-		, PowerCard.For(typeof(TravelersBoon)) // fast - 0
-		, PowerCard.For(typeof(WaysOfShoreAndHeartland)) // slow - 1
-		, PowerCard.For(typeof(ACircuitousAndWendingJourney)) // slow - 0
-		, PowerCard.For(typeof(PathsTiedByNature)) // slow - 0
+		, PowerCard.ForDecorated(AidFromTheSpiritSpeakers.ActAsync)		// fast - 2
+		, PowerCard.ForDecorated(OfferPassageBetweenWorlds.ActAsync)		// fast - 1
+		, PowerCard.ForDecorated(TravelersBoon.ActAsync)					// fast - 0
+		, PowerCard.ForDecorated(WaysOfShoreAndHeartland.ActAsync)		// slow - 1
+		, PowerCard.ForDecorated(ACircuitousAndWendingJourney.ActAsync)	// slow - 0
+		, PowerCard.ForDecorated(PathsTiedByNature.ActAsync)				// slow - 0
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(LayPathsTheyCannotHelpButWalk)),

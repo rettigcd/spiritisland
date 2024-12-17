@@ -35,10 +35,10 @@ public class HeartOfTheWildfire : Spirit {
 				new EnergyForFire()
 			)
 		)
-		, PowerCard.For(typeof(AsphyxiatingSmoke))
-		,PowerCard.For(typeof(FlashFires))
-		,PowerCard.For(typeof(ThreateningFlames))
-		,PowerCard.For(typeof(FlamesFury))
+		,PowerCard.ForDecorated(AsphyxiatingSmoke.ActAsync)
+		,PowerCard.ForDecorated(FlashFires.ActAsync)
+		,PowerCard.ForDecorated(ThreateningFlames.ActAsync)
+		,PowerCard.ForDecorated(FlamesFury.ActAsync)
 	) {
 
 		InnatePowers = [

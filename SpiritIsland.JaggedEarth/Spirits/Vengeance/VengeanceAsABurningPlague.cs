@@ -15,10 +15,10 @@ public class VengeanceAsABurningPlague : Spirit {
 			new GrowthGroup( new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ), new PlacePresence( 2, Filter.Town, Filter.City, Filter.Blight ) ),
 			new GrowthGroup( new GainPowerCard(), AddAPresenceOrDisease, new GainEnergy( 1 ) )
 		)
-		, PowerCard.For(typeof(FetidBreathSpreadsInfection))
-		,PowerCard.For(typeof(FieryVengeance))
-		,PowerCard.For(typeof(Plaguebearers))
-		,PowerCard.For(typeof(StrikeLowWithSuddenFevers))
+		,PowerCard.ForDecorated(FetidBreathSpreadsInfection.ActAsync)
+		,PowerCard.ForDecorated(FieryVengeance.ActAsync)
+		,PowerCard.ForDecorated(Plaguebearers.ActAsync)
+		,PowerCard.ForDecorated(StrikeLowWithSuddenFevers.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(EpidemicsRunRampant)), 

@@ -6,7 +6,7 @@ public class ExhaleConfusionAndDelirium {
 
 	[SpiritCard(Name, 0, Element.Sun,Element.Moon,Element.Air,Element.Animal),Fast,FromPresence(1,Filter.Strife)]
 	[Instructions("2 Fear. Invaders with Strife don't participate in Ravage."), Artist(Artists.EmilyHancock)]
-	static public async Task ActionAsync( TargetSpaceCtx ctx){
+	static public async Task ActAsync( TargetSpaceCtx ctx){
 		await ctx.AddFear(2);
 		ctx.Space.Init(new BlightedInvadersSitOutRavage(),1);
 	}

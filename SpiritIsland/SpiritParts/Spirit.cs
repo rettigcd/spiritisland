@@ -304,7 +304,7 @@ public abstract partial class Spirit
 	#region IRunWhenTimePasses imp
 
 	public bool RemoveAfterRun => false;
-	public virtual async Task TimePasses( GameState gameState ) {
+	public virtual Task TimePasses( GameState gameState ) {
 		// reset cards / powers
 		DiscardPile.AddRange( InPlay );
 		InPlay.Clear();
@@ -322,6 +322,7 @@ public abstract partial class Spirit
 		foreach(var mod in cleanupMods ) mod.CleanupSpirit(this);
 		var endingMods = Mods.OfType<IEndWhenTimePasses>().ToArray();
 		foreach(var mod in endingMods) Mods.Remove((ISpiritMod)mod);
+		return Task.CompletedTask;
 	}
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
 

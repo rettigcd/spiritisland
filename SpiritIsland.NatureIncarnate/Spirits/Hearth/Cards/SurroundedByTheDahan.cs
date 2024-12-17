@@ -7,7 +7,7 @@ public class SurroundedByTheDahan {
 	[SpiritCard(Name,0,Element.Moon,Element.Air,Element.Animal),Fast]
 	[FromPresence(0,Filter.Dahan)]
 	[Instructions( "2 Fear if Invaders are present. 1 Fear if Dahan outnumber Town/City. Isolate target land." ), Artist( Artists.AalaaYassin )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx) {
+	static public async Task ActAsync(TargetSpaceCtx ctx) {
 		// 2 Fear if Invaders are present.
 		if(ctx.HasInvaders)
 			await ctx.AddFear(2);

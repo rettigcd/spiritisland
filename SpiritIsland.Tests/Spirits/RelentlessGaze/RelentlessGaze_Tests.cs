@@ -12,7 +12,7 @@ public class RelentlessGaze_Tests {
 		var gs = new SoloGameState(spirit);
 
 		//   And: Spirit has Teaming Rivers in its hand
-		spirit.AddActionFactory(PowerCard.For(typeof(TeemingRivers)));
+		spirit.AddActionFactory(PowerCard.ForDecorated(TeemingRivers.ActAsync));
 
 		//   And: lots of energy
 		spirit.Energy=20;

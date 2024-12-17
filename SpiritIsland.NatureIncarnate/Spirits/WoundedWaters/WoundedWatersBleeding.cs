@@ -19,10 +19,10 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 			new GrowthGroup( new ReclaimAll(), new GainPowerCard(), new GainEnergy( 1 ) ),
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 2 ) )
 		)
-		, PowerCard.For(typeof(BoonOfCorruptedBlood))    // fast
-		, PowerCard.For(typeof(DrawToTheWatersEdge))     // fast
-		, PowerCard.For(typeof(BloodWaterAndBloodlust))  // slow
-		, PowerCard.For(typeof(WrackWithPainAndGrief))   // slow
+		, PowerCard.ForDecorated(BoonOfCorruptedBlood.ActAsync)    // fast
+		, PowerCard.ForDecorated(DrawToTheWatersEdge.ActAsync)     // fast
+		, PowerCard.ForDecorated(BloodWaterAndBloodlust.ActAsync)  // slow
+		, PowerCard.ForDecorated(WrackWithPainAndGrief.ActAsync)   // slow
 	) {
 
 		InnatePowers = [

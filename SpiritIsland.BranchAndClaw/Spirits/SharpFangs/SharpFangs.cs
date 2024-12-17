@@ -22,10 +22,10 @@ public class SharpFangs : Spirit {
 		).Add(
 			new GrowthPickGroups(new GrowthGroup(new CallForthPredators()))
 		),
-		PowerCard.For(typeof(PreyOnTheBuilders)),
-		PowerCard.For(typeof(TeethGleamFromDarkness)),
-		PowerCard.For(typeof(TerrifyingChase)),
-		PowerCard.For(typeof(TooNearTheJungle))
+		PowerCard.ForDecorated(PreyOnTheBuilders.ActAsync),
+		PowerCard.ForDecorated(TeethGleamFromDarkness.ActAsync),
+		PowerCard.ForDecorated(TerrifyingChase.ActAsync),
+		PowerCard.ForDecorated(TooNearTheJungle.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(RangingHunt)), // Fast

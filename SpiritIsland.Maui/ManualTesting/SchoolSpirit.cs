@@ -22,12 +22,12 @@ internal class SchoolSpirit : Spirit {
 					new TestPresenceTrack(Track.Card2, Track.Card2, Track.Card2, Track.Card2, Track.Card2)
 				)
 			, new GrowthTrack(new GrowthGroup(new ReclaimAll(),new PlacePresence(2)))
-			, PowerCard.For(typeof(InfiniteVitality))
-			, PowerCard.For(typeof(DreamOfTheUntouchedLand))
-			, PowerCard.For(typeof(WeaveTogetherTheFabricOfPlace))
-			, PowerCard.For(typeof(CastDownIntoTheBrinyDeep))
-			, PowerCard.For(typeof(UncannyMelting))
-			, PowerCard.For(typeof(SettleIntoHuntingGrounds))
+			, PowerCard.ForDecorated(InfiniteVitality.ActAsync)
+			, PowerCard.ForDecorated(DreamOfTheUntouchedLand.ActAsync)
+			, PowerCard.ForDecorated(WeaveTogetherTheFabricOfPlace.ActAsync)
+			, PowerCard.ForDecorated(CastDownIntoTheBrinyDeep.ActAsync)
+			, PowerCard.ForDecorated(UncannyMelting.ActAsync)
+			, PowerCard.ForDecorated(SettleIntoHuntingGrounds.ActAsync)
 		) {
 		Energy=20;
 		InnatePowers = [InnatePower.For(typeof(PepRally))];

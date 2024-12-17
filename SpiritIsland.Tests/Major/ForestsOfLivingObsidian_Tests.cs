@@ -72,7 +72,7 @@ public class ForestsOfLivingObsidian_Tests {
 		fix.InitTokens( space1, "3C@3" );
 
 		// When: play card
-		var task = PowerCard.For(typeof(ForestsOfLivingObsidian)).ActivateAsync( fix.Spirit );
+		var task = PowerCard.ForDecorated(ForestsOfLivingObsidian.ActAsync).ActivateAsync( fix.Spirit );
 		//  And: targeting space 1
 		fix.Choose( space1 );
 		fix.Choose( "C@2" ); // 3C@2 - Damage 1 of them (1 of 1)

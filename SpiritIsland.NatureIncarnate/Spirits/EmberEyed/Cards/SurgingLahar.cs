@@ -7,7 +7,7 @@ public class SurgingLahar {
 	[SpiritCard(Name, 2, Element.Fire, Element.Water,Element.Earth)]
 	[Slow, FromSacredSite(1)]
 	[Instructions( "2 Damage. If your Presence is present, Add 1 Badlands" ), Artist( Artists.DavidMarkiwsky )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 		// 2 Damage.
 		await ctx.DamageInvaders(2);
 		// If your Presence is present,

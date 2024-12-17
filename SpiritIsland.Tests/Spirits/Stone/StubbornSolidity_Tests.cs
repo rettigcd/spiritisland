@@ -218,7 +218,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that targets a Dahan space CallToTrade
 		await using ActionScope uow2 = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,spirit);
-		Task task = PowerCard.For(typeof(CallToTrade)).ActivateAsync(spirit);
+		Task task = PowerCard.ForDecorated(CallToTrade.ActAsync).ActivateAsync(spirit);
 
 		//  Then: can still target space with frozen dahan
 		task.IsCompleted.ShouldBeFalse();

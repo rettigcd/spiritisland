@@ -20,7 +20,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		spaceSpec.ScopeSpace.Given_HasTokens("1D@2");
 
 		//  When: play the card
-		await PowerCard.For(typeof(SkiesHeraldTheSeasonOfReturn)).ActivateAsync( fix.Spirit ).AwaitUser( u => { 
+		await PowerCard.ForDecorated(SkiesHeraldTheSeasonOfReturn.ActAsync).ActivateAsync( fix.Spirit ).AwaitUser( u => { 
 			// target space
 			u.NextDecision.Choose(spaceSpec);
 			// Then: Should Push Dahan (per keeper's Sacred Site)

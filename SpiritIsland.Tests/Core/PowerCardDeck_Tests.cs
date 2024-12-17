@@ -24,19 +24,19 @@ public class PowerCardDeck_Tests {
 	[Fact]
 	public void MementoRestoresDeck() {
 		PowerCardDeck deck = new PowerCardDeck(new PowerCard[] {
-			PowerCard.For(typeof(Drought)),
-			PowerCard.For(typeof(DevouringAnts)),
-			PowerCard.For(typeof(DriftDownIntoSlumber)),
-			PowerCard.For(typeof(EnticingSplendor)),
-			PowerCard.For(typeof(LureOfTheUnknown)),
-			PowerCard.For(typeof(NaturesResilience)),
-			PowerCard.For(typeof(PullBeneathTheHungryEarth)),
-			PowerCard.For(typeof(QuickenTheEarthsStruggles)),
-			PowerCard.For(typeof(RainOfBlood)),
-			PowerCard.For(typeof(SapTheStrengthOfMultitudes)),
-			PowerCard.For(typeof(SongOfSanctity)),
-			PowerCard.For(typeof(SteamVents)),
-			PowerCard.For(typeof(UncannyMelting)),
+			PowerCard.ForDecorated(Drought.ActAsync),
+			PowerCard.ForDecorated(DevouringAnts.ActAsync),
+			PowerCard.ForDecorated(DriftDownIntoSlumber.ActAsync),
+			PowerCard.ForDecorated(EnticingSplendor.ActAsync),
+			PowerCard.ForDecorated(LureOfTheUnknown.ActAsync),
+			PowerCard.ForDecorated(NaturesResilience.ActAsync),
+			PowerCard.ForDecorated(PullBeneathTheHungryEarth.ActAsync),
+			PowerCard.ForDecorated(QuickenTheEarthsStruggles.ActAsync),
+			PowerCard.ForDecorated(RainOfBlood.ActAsync),
+			PowerCard.ForDecorated(SapTheStrengthOfMultitudes.ActAsync),
+			PowerCard.ForDecorated(SongOfSanctity.ActAsync),
+			PowerCard.ForDecorated(SteamVents.ActAsync),
+			PowerCard.ForDecorated(UncannyMelting.ActAsync),
 		}, new Random().Next() );
 
 		// Given: saving state

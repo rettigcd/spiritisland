@@ -34,11 +34,11 @@ public partial class ManyMindsMoveAsOne : Spirit {
 				new GrowthGroup( new PlacePresence( 1 ), new PlacePresence( 0 ) ),
 				new GrowthGroup( new PlacePresenceAndBeast(), new GainEnergy( 1 ), new Gather1Token( 2, Token.Beast ) )
 			)
-			, PowerCard.For(typeof(ADreadfulTideOfScurryingFlesh))
-			, PowerCard.For(typeof(BoonOfSwarmingBedevilment))
-			, PowerCard.For(typeof(EverMultiplyingSwarm))
-			, PowerCard.For(typeof(GuideTheWayOnFeatheredWings))
-			, PowerCard.For(typeof(PursueWithScratchesPecksAndStings))
+			, PowerCard.ForDecorated(ADreadfulTideOfScurryingFlesh.ActAsync)
+			, PowerCard.ForDecorated(BoonOfSwarmingBedevilment.ActAsync)
+			, PowerCard.ForDecorated(EverMultiplyingSwarm.ActAsync)
+			, PowerCard.ForDecorated(GuideTheWayOnFeatheredWings.ActAsync)
+			, PowerCard.ForDecorated(PursueWithScratchesPecksAndStings.ActAsync)
 		) {
 
 		InnatePowers = [

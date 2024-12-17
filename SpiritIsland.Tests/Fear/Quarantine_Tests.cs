@@ -145,7 +145,7 @@ public class Quarantine_Tests {
 	public async Task SkipRavageWorks( bool skipARavage ) {
 		// Not really for quarantine, just a general test without a home
 
-		var spirit = new TestSpirit( PowerCard.For(typeof(CallToTend)) );
+		var spirit = new TestSpirit( PowerCard.ForDecorated(CallToTend.ActAsync) );
 		Board board = Boards.A;
 		GameState gs = new SoloGameState( spirit, board );
 		Queue<string> log = new();

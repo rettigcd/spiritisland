@@ -8,7 +8,7 @@ public class WashAway {
 	[Slow, FromPresence(1,Filter.Any)]
 //	[Preselect("Push up to (3)", "Explorer,Town", Present.Done )] // !!! Implements as Present.Always, need Present.Done option
 	[Instructions( "Push up to 3 Explorer / Town" ), Artist( Artists.NolanNasser )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 		await ctx.PushUpTo( 3, Human.Explorer_Town );
 	}
 

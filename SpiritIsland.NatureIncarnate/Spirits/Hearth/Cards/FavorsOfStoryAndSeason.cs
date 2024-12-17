@@ -6,7 +6,7 @@ public class FavorsOfStoryAndSeason {
 
 	[SpiritCard(FavorsOfStoryAndSeason.Name, 1, Element.Sun,Element.Earth,Element.Plant,Element.Animal),Fast,AnotherSpirit]
 	[Instructions("Target Spirit may Gather up to 3 Dahan into one of their lands. If they have at least 3 Dahan among their lands, they gain 1 Energy and may Reclaim 1 Power Card instead of discarding it at the end of turn."), Artist(Artists.AalaaYassin)]
-	static public async Task ActionAsync( TargetSpiritCtx ctx ){
+	static public async Task ActAsync( TargetSpiritCtx ctx ){
 		// Target Spirit may Gather up to 3 Dahan into one of their lands.
 		await Cmd.GatherUpToNDahan( 3 )
 			.To().SpiritPickedLand().Which( Has.YourPresence )

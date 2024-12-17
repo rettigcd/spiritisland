@@ -41,10 +41,10 @@ public class HearthVigil : Spirit {
 				new GainEnergy( 3 )
 			)
 		)
-		,PowerCard.For(typeof(FavorsOfStoryAndSeason))
-		,PowerCard.For(typeof(SurroundedByTheDahan))
-		,PowerCard.For(typeof(CoordinatedRaid))
-		,PowerCard.For(typeof(CallToVigilance))
+		,PowerCard.ForDecorated(FavorsOfStoryAndSeason.ActAsync)
+		,PowerCard.ForDecorated(SurroundedByTheDahan.ActAsync)
+		,PowerCard.ForDecorated(CoordinatedRaid.ActAsync)
+		,PowerCard.ForDecorated(CallToVigilance.ActAsync)
 	){
 		InnatePowers = [
 			InnatePower.For(typeof(WarnOfImpendingConflict)), 

@@ -79,10 +79,10 @@ public class StonesUnyieldingDefiance : Spirit {
 				new PlacePresence( 1 )
 			)
 		)
-		,PowerCard.For(typeof(JaggedShardsPushFromTheEarth))
-		,PowerCard.For(typeof(PlowsShatterOnRockyGround))
-		,PowerCard.For(typeof(ScarredAndStonyLand))
-		,PowerCard.For(typeof(StubbornSolidity))
+		,PowerCard.ForDecorated(JaggedShardsPushFromTheEarth.ActAsync)
+		,PowerCard.ForDecorated(PlowsShatterOnRockyGround.ActAsync)
+		,PowerCard.ForDecorated(ScarredAndStonyLand.ActAsync)
+		,PowerCard.ForDecorated(StubbornSolidity.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(HoldTheIslandFastWithABulwarkOfWill)), 

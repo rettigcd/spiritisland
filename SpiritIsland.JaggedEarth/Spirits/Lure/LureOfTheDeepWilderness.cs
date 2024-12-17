@@ -18,10 +18,10 @@ public class LureOfTheDeepWilderness : Spirit {
 				new GrowthGroup( new GainPowerCard() )
 			)
 		)
-		,PowerCard.For(typeof(GiftOfTheUntamedWild))
-		,PowerCard.For(typeof(PerilsOfTheDeepestIsland))
-		,PowerCard.For(typeof(SoftlyBeckonEverInward))
-		,PowerCard.For(typeof(SwallowedByTheWilderness))
+		,PowerCard.ForDecorated(GiftOfTheUntamedWild.ActAsync)
+		,PowerCard.ForDecorated(PerilsOfTheDeepestIsland.ActAsync)
+		,PowerCard.ForDecorated(SoftlyBeckonEverInward.ActAsync)
+		,PowerCard.ForDecorated(SwallowedByTheWilderness.ActAsync)
 	) {
 
 		InnatePowers = [

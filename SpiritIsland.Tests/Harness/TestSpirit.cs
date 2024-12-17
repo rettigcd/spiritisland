@@ -16,7 +16,7 @@ class TestSpirit : Spirit {
 					new TestPresenceTrack(Track.Card1, Track.Card2, Track.Card3)
 				)
 			, new GrowthTrack(new GrowthGroup(new ReclaimAll()))
-			, PowerCard.For(typeof(InfiniteVitality))
+			, PowerCard.ForDecorated(InfiniteVitality.ActAsync)
 		) {
 	}
 
@@ -37,7 +37,7 @@ class TestSpirit : Spirit {
 				new PresenceTrack(Track.Card1, Track.Card2, Track.Card3, Track.Card4, Track.Card5)
 				)
 			, new GrowthTrack( new GrowthGroup(growthOptions) )
-			, PowerCard.For(typeof(InfiniteVitality))
+			, PowerCard.ForDecorated(InfiniteVitality.ActAsync)
 		) { }
 
 	#endregion constructors

@@ -6,7 +6,7 @@ public class NaturesResilience {
 
 	[MinorCard(NaturesResilience.Name,1,Element.Earth,Element.Plant,Element.Animal),Fast,FromSacredSite(1)]
 	[Instructions( "Defend 6. -If you have- 2 Water: You may instead remove 1 Blight." ), Artist( Artists.JoshuaWright )]
-	static public async Task Act(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		await ctx.SelectActionOption(
 			new SpaceAction("Defend 6", ctx=>ctx.Defend(6)),

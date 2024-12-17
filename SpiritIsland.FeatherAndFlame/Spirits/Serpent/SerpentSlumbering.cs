@@ -16,10 +16,10 @@ public class SerpentSlumbering : Spirit {
 			new GrowthGroup( new GainEnergy( 4 ) ),
 			new GrowthGroup( new PlacePresence( 3, Filter.NoBlight ) )
 		)
-		, PowerCard.For(typeof(ElementalAegis))
-		,PowerCard.For(typeof(AbsorbEssence))
-		,PowerCard.For(typeof(GiftOfFlowingPower))
-		,PowerCard.For(typeof(GiftOfThePrimordialDeeps))	
+		,PowerCard.ForDecorated(ElementalAegis.ActAsync)
+		,PowerCard.ForDecorated(AbsorbEssence.ActAsync)
+		,PowerCard.ForDecorated(GiftOfFlowingPower.ActAsync)
+		,PowerCard.ForDecorated(GiftOfThePrimordialDeeps.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(SerpentWakesInPower)),

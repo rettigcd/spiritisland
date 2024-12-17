@@ -10,8 +10,8 @@ public class ShiftingMemory_Tests {
 			MajorCards = new PowerCardDeck(
 				[ 
 					// instead of Majors, using cards I know well...
-					PowerCard.For( typeof(FlashFloods) ),
-					PowerCard.For( typeof(WashAway) ),
+					PowerCard.ForDecorated(FlashFloods.ActAsync),
+					PowerCard.ForDecorated(WashAway.ActAsync),
 				],
 				1, PowerType.Major
 			)

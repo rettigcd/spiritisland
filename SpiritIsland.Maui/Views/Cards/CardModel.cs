@@ -5,7 +5,7 @@
 /// </summary>
 public class CardModel : ObservableModel {
 
-	static public CardModel Null => _nullModel ??= new CardModel(PowerCard.For(typeof(Basegame.BoonOfVigor)));
+	static public CardModel Null => _nullModel ??= new CardModel(PowerCard.ForDecorated(Basegame.BoonOfVigor.ActAsync));
 	static CardModel? _nullModel;
 
 	public string Title { get; }

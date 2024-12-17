@@ -7,7 +7,7 @@ public class TwistPerceptions {
 	[SpiritCard(Name,1,Element.Moon,Element.Air,Element.Animal),Slow]
 	[FromPresence(1,Filter.Invaders)]
 	[Instructions( "Add 1 Strife. You may Push the Invader you added Strife to." ), Artist( Artists.NolanNasser )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx) {
+	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		IAsyncEnumerable<SpaceToken> invadersToStrife = ctx.SourceSelector
 			.AddGroup(1,Human.Invader)

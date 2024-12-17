@@ -7,7 +7,7 @@ public class FrightfulKeening {
 	[SpiritCard(Name, 1, Element.Sun, Element.Fire, Element.Air)]
 	[Slow, FromIncarna]
 	[Instructions( "Push Incarna. If this pushes Incarna into a land with Invaders, 2 Fear there (before adding Strife)." ), Artist( Artists.EmilyHancock )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 		var incarna = ctx.Self.Incarna;
 		if( !incarna.IsPlaced ) return;
 

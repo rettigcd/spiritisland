@@ -24,10 +24,10 @@ public class VolcanoLoomingHigh : Spirit {
 			new GrowthGroup( new PlacePresence( 0, Filter.Mountain ), new PlacePresence( 0, Filter.Mountain ) ),
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 4, Filter.Mountain ), new PlayExtraCardThisTurn( 1 ), new GainEnergy( 2 ) )
 		)
-		,PowerCard.For(typeof(ExaltationOfMoltenStone))
-		,PowerCard.For(typeof(LavaFlows))
-		,PowerCard.For(typeof(PyroclasticBombardment))
-		,PowerCard.For(typeof(RainOfAsh))
+		,PowerCard.ForDecorated(ExaltationOfMoltenStone.ActAsync)
+		,PowerCard.ForDecorated(LavaFlows.ActAsync)
+		,PowerCard.ForDecorated(PyroclasticBombardment.ActAsync)
+		,PowerCard.ForDecorated(RainOfAsh.ActAsync)
 	) {
 
 		InnatePowers = [

@@ -6,7 +6,7 @@ public class OverenthusiasticArson {
 
 	[SpiritCard(OverenthusiasticArson.Name,1,Element.Fire,Element.Air), Fast, FromPresence(1)]
 	[Instructions( "Destroy 1 Town. Discard the top card of the Minor Power Deck. If it provides Fire: 1 Fear, 2 Damage, and add 1 Blight." ), Artist( Artists.JoshuaWright )]
-	static public async Task ActAsymc(TargetSpaceCtx ctx ) { 
+	static public async Task ActAsync(TargetSpaceCtx ctx ) { 
 
 		// Destroy 1 town
 		await ctx.Invaders.DestroyNOfClass(1,Human.Town);

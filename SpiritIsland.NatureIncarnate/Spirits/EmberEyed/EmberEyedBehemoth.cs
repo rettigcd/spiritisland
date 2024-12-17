@@ -40,10 +40,10 @@ public class EmberEyedBehemoth : Spirit {
 				new MoveOnlyIncarna( 1 )
 			)
 		)
-		, PowerCard.For(typeof(TerrifyingRampage))
-		,PowerCard.For(typeof(BlazingIntimidation))
-		,PowerCard.For(typeof(SurgingLahar))
-		,PowerCard.For(typeof(ExaltationOfGraspingRoots))
+		,PowerCard.ForDecorated(TerrifyingRampage.ActAsync)
+		,PowerCard.ForDecorated(BlazingIntimidation.ActAsync)
+		,PowerCard.ForDecorated(SurgingLahar.ActAsync)
+		,PowerCard.ForDecorated(ExaltationOfGraspingRoots.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(SmashStompAndFlatten))

@@ -86,17 +86,17 @@ public class DancesUpEarthquakes : Spirit {
 			new GrowthGroup( new PlacePresence( 3 ), new AccelerateOrDelay(), new ReclaimN( 1 ) )
 		)
 		// Round 1
-		, PowerCard.For(typeof(ResoundingFootfallsSowDismay)) // fast,3 - Impend
-		, PowerCard.For(typeof(GiftOfSeismicEnergy))          // fast,3 - Impend
+		, PowerCard.ForDecorated(ResoundingFootfallsSowDismay.ActAsync) // fast,3 - Impend
+		, PowerCard.ForDecorated(GiftOfSeismicEnergy.ActAsync)          // fast,3 - Impend
 		// Round 2
-		, PowerCard.For(typeof(ExaltationOfEchoedSteps))      // slow,? - Play 
-		, PowerCard.For(typeof(RadiatingTremors))             // slow,2 - Impend
+		, PowerCard.ForDecorated(ExaltationOfEchoedSteps.ActAsync)      // slow,? - Play 
+		, PowerCard.ForDecorated(RadiatingTremors.ActAsync)             // slow,2 - Impend
 		// Round 3
-		, PowerCard.For(typeof(RumblingsPortendAGreaterQuake))// fast,? - Play
+		, PowerCard.ForDecorated(RumblingsPortendAGreaterQuake.ActAsync)// fast,? - Play
 			// Impend - new major
 			// Impend - a minor
 		// Round 4
-		, PowerCard.For(typeof(InspireAWindingDance))		// slow     Play
+		, PowerCard.ForDecorated(InspireAWindingDance.ActAsync)		// slow     Play
 			// Play - new major
 			// Impend - remaining card
 	) {

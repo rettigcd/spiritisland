@@ -48,14 +48,14 @@ static public class GameState_Extensions {
 	static internal GameState Given_InitializedMinorDeck( this GameState gameState ) {
 		gameState.MinorCards = new PowerCardDeck( [
 			// 4 random cards good for 1 draw.
-			PowerCard.For(typeof(RainOfBlood)),
-			PowerCard.For(typeof(LureOfTheUnknown)),
-			PowerCard.For(typeof(SteamVents)),
-			PowerCard.For(typeof(CallOfTheDahanWays)),
-			PowerCard.For(typeof(CallToBloodshed)),	
-			PowerCard.For(typeof(CallToIsolation)), // 2nd after Shuffle
-			PowerCard.For(typeof(CallToMigrate)),
-			PowerCard.For(typeof(Drought)),			// 1st after Shuffle
+			PowerCard.ForDecorated(RainOfBlood.ActAsync),
+			PowerCard.ForDecorated(LureOfTheUnknown.ActAsync),
+			PowerCard.ForDecorated(SteamVents.ActAsync),
+			PowerCard.ForDecorated(CallOfTheDahanWays.ActAsync),
+			PowerCard.ForDecorated(CallToBloodshed.ActAsync),	
+			PowerCard.ForDecorated(CallToIsolation.ActAsync), // 2nd after Shuffle
+			PowerCard.ForDecorated(CallToMigrate.ActAsync),
+			PowerCard.ForDecorated(Drought.ActAsync),			// 1st after Shuffle
 		], 1 );
 		return gameState;
 	}

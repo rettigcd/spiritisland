@@ -6,7 +6,7 @@ public class BoonOfVigor {
 
 	[SpiritCard(BoonOfVigor.Name, 0, Element.Sun,Element.Water,Element.Plant),Fast,AnySpirit]
 	[Instructions( "If you target yourself, gain 1 Energy. If you target another Spirit, they gain 1 Energy per Power Card they played this turn."), Artist(Artists.NolanNasser)]
-	static public Task ActionAsync( TargetSpiritCtx ctx){
+	static public Task ActAsync( TargetSpiritCtx ctx){
 		if(ctx.Self == ctx.Other)
 			ctx.Self.Energy++;
 		else

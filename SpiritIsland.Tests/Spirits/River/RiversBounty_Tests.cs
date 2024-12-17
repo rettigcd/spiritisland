@@ -37,7 +37,7 @@ public class RiversBounty_Tests {
 
 	[Fact]
 	public void Stats() {
-		var card = PowerCard.For(typeof(RiversBounty));
+		var card = PowerCard.ForDecorated(RiversBounty.ActAsync);
 		card.Assert_CardStatus( 0, Phase.Slow, "sun water animal" );
 	}
 

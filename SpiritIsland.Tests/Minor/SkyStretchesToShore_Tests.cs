@@ -8,8 +8,8 @@ public class SkyStretchesToShore_Tests {
 		var gs = new SoloGameState();
 
 		// Given: spirit has a Range-1 slow card && SkyStreches to shore
-		var slow = PowerCard.For(typeof(GnawingRootbiters));
-		var sut = PowerCard.For(typeof(SkyStretchesToShore));
+		var slow = PowerCard.ForDecorated(GnawingRootbiters.ActAsync);
+		var sut = PowerCard.ForDecorated(SkyStretchesToShore.ActAsync);
 		gs.Spirit.AddActionFactory(slow);
 		gs.Spirit.AddActionFactory(sut);
 

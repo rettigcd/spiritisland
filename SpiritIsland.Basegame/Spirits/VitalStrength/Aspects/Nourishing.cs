@@ -14,7 +14,7 @@ public class Nourishing : IAspect {
 		// Replace A Year of Perfect Stillness with Voracious Growth(Minor Power)
 		for(int i=0; i<spirit.Hand.Count;++i)
 			if(spirit.Hand[i].Title == AYearOfPerfectStillness.Name)
-				spirit.Hand[i] = PowerCard.For(typeof(VoraciousGrowth));
+				spirit.Hand[i] = PowerCard.ForDecorated(VoraciousGrowth.ActAsync);
 
 		ImbueWithNourishingVitality.InitAspect(spirit);
 		FlourishWithNaturesStrength.InitAspect(spirit);

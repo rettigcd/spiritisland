@@ -7,7 +7,7 @@ public class TurmoilsTouch {
 	[SpiritCard(Name, 0, Element.Sun,Element.Moon,Element.Air,Element.Plant)]
 	[Slow, AnotherSpirit]
 	[Instructions( "Target Spirit may either pay 1 Enery or dicard a Power Card (from hand) to Take a Minor Power into their discard. You may do likewise." ), Artist( Artists.EmilyHancock )]
-	static public async Task ActionAsync(TargetSpiritCtx ctx) {
+	static public async Task ActAsync(TargetSpiritCtx ctx) {
 		await PayAndTakeCard( ctx.Other );
 		await PayAndTakeCard( ctx.Self );
 	}

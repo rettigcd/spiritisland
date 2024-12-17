@@ -6,7 +6,7 @@ public class WrapInWingsOfSunlight_Tests {
 	[Fact]
 	public async Task Move5() {
 		// Setup
-		var spirit = new TestSpirit(PowerCard.For(typeof(WrapInWingsOfSunlight)));
+		var spirit = new TestSpirit(PowerCard.ForDecorated(WrapInWingsOfSunlight.ActAsync));
 		var user = new VirtualUser( spirit );
 		var board = Boards.A;
 		var gameState = new SoloGameState( spirit, board );
@@ -45,7 +45,7 @@ public class WrapInWingsOfSunlight_Tests {
 	[Fact]
 	public async Task TerrifyingChase_PushDahan_NoBeast() {
 		// Setup
-		var spirit = new TestSpirit(PowerCard.For(typeof(TerrifyingChase)));
+		var spirit = new TestSpirit(PowerCard.ForDecorated(TerrifyingChase.ActAsync));
 		var user = new VirtualUser( spirit );
 		var board = Boards.A;
 		var gameState = new SoloGameState( spirit, board );

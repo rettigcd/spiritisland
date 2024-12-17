@@ -51,7 +51,7 @@ public class BoonOfVigor_Tests {
 
 	static void Given_PurchasedFakePowercards(Spirit otherSpirit, int expectedEnergyBonus) {
 		for (int i = 0; i < expectedEnergyBonus; ++i) {
-			var otherCard = PowerCard.For(typeof(SpiritIsland.Basegame.GiftOfLivingEnergy));
+			var otherCard = PowerCard.ForDecorated(GiftOfLivingEnergy.ActAsync);
 			otherSpirit.InPlay.Add(otherCard);
 			otherSpirit.AddActionFactory(otherCard);
 		}
@@ -60,7 +60,7 @@ public class BoonOfVigor_Tests {
 
 	[Fact]
 	public void BoonOfVigor_Stats() {
-		PowerCard.For(typeof(BoonOfVigor)).Assert_CardStatus( 0, Phase.Fast, "sun water plant" );
+		PowerCard.ForDecorated(BoonOfVigor.ActAsync).Assert_CardStatus( 0, Phase.Fast, "sun water plant" );
 	}
 
 }

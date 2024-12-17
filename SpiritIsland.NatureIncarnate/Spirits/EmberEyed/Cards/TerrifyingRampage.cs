@@ -6,7 +6,7 @@ public class TerrifyingRampage {
 
 	[SpiritCard(Name, 1, Element.Moon,Element.Fire,Element.Earth),Fast,FromPresence(1)]
 	[Instructions("1 Fear. 2 Invaders don't participate in Ravage - choose when Ravaging. Push 3 Dahan."), Artist(Artists.DavidMarkiwsky)]
-	static public async Task ActionAsync( TargetSpaceCtx ctx){
+	static public async Task ActAsync( TargetSpaceCtx ctx){
 		// 1 Fear.
 		await ctx.AddFear(1);
 		// 2 Invaders don't participate in Ravage. (Choose when ravaging.)

@@ -23,7 +23,7 @@ public class DownPour_Tests {
 		fxt.InitTokens(target,"1E@1");
 
 		// When: play card
-		var card = PowerCard.For(typeof(DarkSkiesLooseAStingingRain));
+		var card = PowerCard.ForDecorated(DarkSkiesLooseAStingingRain.ActAsync);
 		await using var actionScope = ActionScope.Start_NoStartActions( ActionCategory.Spirit_Growth );
 		Task task = card.ActivateAsync( fxt.Spirit );
 		task.IsCompletedSuccessfully.ShouldBeFalse();

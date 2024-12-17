@@ -30,10 +30,10 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 				new GrowthGroup( new PlacePresence( 1 ), new GainEnergy( 2 ) ),
 				new GrowthGroup( new GainEnergy( 9 ) )
 			)
-			,PowerCard.For(typeof(BoonOfAncientMemories))
-			,PowerCard.For(typeof(ElementalTeachings))
-			,PowerCard.For(typeof(ShareSecretsOfSurvival))
-			,PowerCard.For(typeof(StudyTheInvadersFears))
+			,PowerCard.ForDecorated(BoonOfAncientMemories.ActAsync)
+			,PowerCard.ForDecorated(ElementalTeachings.ActAsync)
+			,PowerCard.ForDecorated(ShareSecretsOfSurvival.ActAsync)
+			,PowerCard.ForDecorated(StudyTheInvadersFears.ActAsync)
 		) {
 
 		InnatePowers = [

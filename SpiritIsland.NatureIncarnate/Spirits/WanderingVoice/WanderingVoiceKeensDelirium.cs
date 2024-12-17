@@ -24,10 +24,10 @@ public class WanderingVoiceKeensDelirium : Spirit {
 				new GrowthGroup( new PlacePresence( 3 ), new PlacePresence( 1 ) ),
 				new GrowthGroup( new GainPowerCard(), new PlacePresence( 2 ), new GainEnergy( 1 ), new GainAllElements( Element.Air ) )
 			),
-			PowerCard.For(typeof(ExhaleConfusionAndDelirium)),
-			PowerCard.For(typeof(TwistPerceptions)),
-			PowerCard.For(typeof(TurmoilsTouch)),
-			PowerCard.For(typeof(FrightfulKeening))
+			PowerCard.ForDecorated(ExhaleConfusionAndDelirium.ActAsync),
+			PowerCard.ForDecorated(TwistPerceptions.ActAsync),
+			PowerCard.ForDecorated(TurmoilsTouch.ActAsync),
+			PowerCard.ForDecorated(FrightfulKeening.ActAsync)
 		)
 	{
 

@@ -42,7 +42,7 @@ public class RenewingBoon_Tests {
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit);
 
 		// When: playing Renewing boon
-		await PowerCard.For(typeof(RenewingBoon)).ActivateAsync( spirit ).AwaitUser( u => {
+		await PowerCard.ForDecorated(RenewingBoon.ActAsync).ActivateAsync( spirit ).AwaitUser( u => {
 			// And selecting restricted space
 			u.NextDecision.Choose(space.SpaceSpec);
 		}).ShouldComplete();

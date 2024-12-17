@@ -23,10 +23,10 @@ public class RelentlessGazeOfTheSun : Spirit {
 				new MovePresenceTogether()
 			)
 		) )
-		, PowerCard.For(typeof(BlindingGlare))
-		,PowerCard.For(typeof(UnbearableGaze))
-		,PowerCard.For(typeof(WitherBodiesScarStones))
-		,PowerCard.For(typeof(FocusTheSunsRays))
+		,PowerCard.ForDecorated(BlindingGlare.ActAsync)
+		,PowerCard.ForDecorated(UnbearableGaze.ActAsync)
+		,PowerCard.ForDecorated(WitherBodiesScarStones.ActAsync)
+		,PowerCard.ForDecorated(FocusTheSunsRays.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(ScorchingConvergence)), 

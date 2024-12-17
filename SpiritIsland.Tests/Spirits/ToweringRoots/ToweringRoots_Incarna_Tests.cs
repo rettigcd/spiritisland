@@ -153,10 +153,10 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 	public async Task MoveIncarna_AsPartOfPlacingPresence() {
 		_gs.MinorCards = new PowerCardDeck(
 			[
-				PowerCard.For(typeof(WeepForWhatIsLost)),
-				PowerCard.For(typeof(WeepForWhatIsLost)),
-				PowerCard.For(typeof(WeepForWhatIsLost)),
-				PowerCard.For(typeof(WeepForWhatIsLost))
+				PowerCard.ForDecorated(WeepForWhatIsLost.ActAsync),
+				PowerCard.ForDecorated(WeepForWhatIsLost.ActAsync),
+				PowerCard.ForDecorated(WeepForWhatIsLost.ActAsync),
+				PowerCard.ForDecorated(WeepForWhatIsLost.ActAsync)
 			],
 			2,
 			PowerType.Minor

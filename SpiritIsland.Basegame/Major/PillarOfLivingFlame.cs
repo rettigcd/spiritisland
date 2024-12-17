@@ -6,7 +6,7 @@ public class PillarOfLivingFlame {
 
 	[MajorCard( Name, 5,Element.Fire),Slow,FromSacredSite(2)]
 	[Instructions( "3 Fear. 5 Damage. If target land is Jungle / Wetland, add 1 Blight. -If you have- 4 Fire: +2 Fear and +5 Damage." ), Artist( Artists.JorgeRamos )]
-	static public async Task ActionAsync(TargetSpaceCtx ctx){
+	static public async Task ActAsync(TargetSpaceCtx ctx){
 
 		int fear = 3;
 		int damage = 5;

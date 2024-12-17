@@ -21,10 +21,10 @@ public class ToweringRootsOfTheJungle : Spirit {
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 1 ), new EnduringVitality() ),
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3 ), new ReplacePresenceWithIncarna(), new GainEnergy( 1 ) )
 		)
-		, PowerCard.For(typeof(RadiantAndHallowedGrove))
-		, PowerCard.For(typeof(EntwineTheFatesOfAll))
-		, PowerCard.For(typeof(BloomingOfTheRocksAndTrees))
-		, PowerCard.For(typeof(BoonOfResilientPower))
+		, PowerCard.ForDecorated(RadiantAndHallowedGrove.ActAsync)
+		, PowerCard.ForDecorated(EntwineTheFatesOfAll.ActAsync)
+		, PowerCard.ForDecorated(BloomingOfTheRocksAndTrees.ActAsync)
+		, PowerCard.ForDecorated(BoonOfResilientPower.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(ShelterUnderToweringBranches)), 

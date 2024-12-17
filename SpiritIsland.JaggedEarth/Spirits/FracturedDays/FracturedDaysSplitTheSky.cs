@@ -42,11 +42,11 @@ public class FracturedDaysSplitTheSky : Spirit {
 			new PresenceTrack(Track.Energy1, Track.Energy1 , Track.Energy2, Track.Energy2, Track.Energy2, Track.Energy2 ),
 			new PresenceTrack( Track.Card1, Track.Card1, Track.Card1, Track.Card2, Track.Card2, Track.Card3 )
 		)
-		, BuildGrowthTrack()
-		, PowerCard.For(typeof(AbsoluteStasis))
-		,PowerCard.For(typeof(BlurTheArcOfYears))
-		,PowerCard.For(typeof(PourTimeSideways))
-		,PowerCard.For(typeof(ThePastReturnsAgain))
+		,BuildGrowthTrack()
+		,PowerCard.ForDecorated(AbsoluteStasis.ActAsync)
+		,PowerCard.ForDecorated(BlurTheArcOfYears.ActAsync)
+		,PowerCard.ForDecorated(PourTimeSideways.ActAsync)
+		,PowerCard.ForDecorated(ThePastReturnsAgain.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(SlipTheFlowOfTime)),

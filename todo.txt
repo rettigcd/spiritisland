@@ -44,16 +44,16 @@
 
 ===== Clean Up =======
 
-5	Rename Innate Options Methods
-5	Stop using PowerCard.For(type)
+5	nullable enable
+
 5	Sharp Fangs > Icon
-5	Pull All Events & Mod-Interfaces together
 5	Simplify TokenMover
 
 4	Move general-purpose SpiritActions into a SpiritActions folder
 4	Move Extension methods into their own namespaces so user can opt-in
 4	Review Tests and get rid of the TestFixtureSetup
 
+3	Rename Innate Options Methods
 3	Setup-Action for spirit > Move to Spirit (Ocean & Fangs - give better name).
 3	Switch Empowered Incarna markers to use the '+' icon or indicate empowered.
 

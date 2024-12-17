@@ -35,10 +35,10 @@ public class DownpourDrenchesTheWorld : Spirit, IHaveSecondaryElements {
 			// Gain Power Card, Add a presence, Gain 1 Energy
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3 ), new GainEnergy( 1 ) )
 		)
-		,PowerCard.For(typeof(DarkSkiesLooseAStingingRain))
-		,PowerCard.For(typeof(FoundationsSinkIntoMud))
-		,PowerCard.For(typeof(GiftOfAbundance))
-		,PowerCard.For(typeof(UnbearableDeluge))
+		,PowerCard.ForDecorated(DarkSkiesLooseAStingingRain.ActAsync)
+		,PowerCard.ForDecorated(FoundationsSinkIntoMud.ActAsync)
+		,PowerCard.ForDecorated(GiftOfAbundance.ActAsync)
+		,PowerCard.ForDecorated(UnbearableDeluge.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(RainAndMudSupressConflict)),

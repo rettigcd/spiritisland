@@ -12,8 +12,8 @@ public sealed class PowerCard : IPowerActionFactory {
 	}
 
 	static public PowerCard ForDecorated(Func<TargetSpaceCtx,Task> asyncAction){ return ForDecorated(asyncAction.Method); }
-
 	static public PowerCard ForDecorated(Func<TargetSpiritCtx,Task> asyncAction){ return ForDecorated(asyncAction.Method); }
+	static public PowerCard ForDecorated(Func<Spirit, Task> asyncAction) { return ForDecorated(asyncAction.Method); }
 
 
 	static PowerCard ForDecorated(MethodInfo method) {

@@ -23,10 +23,10 @@ public class ShroudOfSilentMist : Spirit {
 			new GrowthGroup( new PlacePresence( 0 ), new PlacePresence( 0 ) ),
 			new GrowthGroup( new GainPowerCard(), new PlacePresence( 3, Filter.Mountain, Filter.Wetland ) )
 		)
-		, PowerCard.For(typeof(FlowingAndSilentFormsDartBy))
-		,PowerCard.For(typeof(UnnervingPall))
-		,PowerCard.For(typeof(DissolvingVapors))
-		,PowerCard.For(typeof(TheFogClosesIn))
+		,PowerCard.ForDecorated(FlowingAndSilentFormsDartBy.ActAsync)
+		,PowerCard.ForDecorated(UnnervingPall.ActAsync)
+		,PowerCard.ForDecorated(DissolvingVapors.ActAsync)
+		,PowerCard.ForDecorated(TheFogClosesIn.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(SuffocatingShroud)), 

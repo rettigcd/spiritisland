@@ -119,10 +119,10 @@ public class StarlightSeeksItsForm : Spirit {
 			new GrowthGroup( new GainEnergy( 1 ) ),
 			new GrowthGroup( new MovePresence( 3 ) )
 		)
-		,PowerCard.For(typeof(BoonOfReimagining))
-		,PowerCard.For(typeof(GatherTheScatteredLightOfStars))
-		,PowerCard.For(typeof(PeaceOfTheNighttimeSky))
-		,PowerCard.For(typeof(ShapeTheSelfAnew))
+		,PowerCard.ForDecorated(BoonOfReimagining.ActAsync)
+		,PowerCard.ForDecorated(GatherTheScatteredLightOfStars.ActAsync)
+		,PowerCard.ForDecorated(PeaceOfTheNighttimeSky.ActAsync)
+		,PowerCard.ForDecorated(ShapeTheSelfAnew.ActAsync)
 	) {
 		InnatePowers = [
 			InnatePower.For(typeof(AirMovesEarthEndures)),
