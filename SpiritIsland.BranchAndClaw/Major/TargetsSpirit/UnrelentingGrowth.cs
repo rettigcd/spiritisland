@@ -6,7 +6,7 @@ public class UnrelentingGrowth {
 	[Instructions( "Target Spirit adds 2 Presence and 1 Wilds to a land at 1 Range. -If you have- 3 Sun, 3 Plant: In that land, add 1 additional Wilds and remove 1 Blight. Target Spirit gains a Power Card." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync( TargetSpiritCtx ctx ) {
 
-		TargetSpaceCtx toCtx = await AddPresenceAndWilds( ctx.Other );
+		TargetSpaceCtx? toCtx = await AddPresenceAndWilds( ctx.Other );
 		if(toCtx is null) return;
 
 		// if you have 3 sun, 3 plant
@@ -23,7 +23,7 @@ public class UnrelentingGrowth {
 
 	}
 
-	static async Task<TargetSpaceCtx> AddPresenceAndWilds( Spirit self ) {
+	static async Task<TargetSpaceCtx?> AddPresenceAndWilds( Spirit self ) {
 
 		// target spirit adds 2 presence and 1 wilds to a land at range 1
 

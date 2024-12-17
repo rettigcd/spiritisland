@@ -35,7 +35,7 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 		// Remove
 		space.Adjust( this, -1 );
 		// Find Lowest space
-		if(_lowest == null) InitLowest();
+		_lowest ??= InitLowest();
 		// Return if this is the lowest
 		bool isLowestOnABoard = space.SpaceSpec.Boards
 			.Any( board => _lowest[board] == space);
@@ -46,13 +46,13 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 	public UsageCost Cost => UsageCost.Free;
 
 
-	void InitLowest() {
+	static Dictionary<Board, Space> InitLowest() {
 		GameState gameState = GameState.Current;
 		var card = gameState.InvaderDeck.Explore.Cards.FirstOrDefault();
-		_lowest = card == null ? []
+		return card == null ? []
 			: gameState.Island.Boards
-				.ToDictionary( brd => brd, brd => brd.Spaces.ScopeTokens().FirstOrDefault( card.MatchesCard ) );
+				.ToDictionary( brd => brd, brd => brd.Spaces.ScopeTokens().First( card.MatchesCard ) ); // ! assumes every board has at least 1 matching space
 	}
 
-	Dictionary<Board, Space> _lowest = null;
+	Dictionary<Board, Space>? _lowest = null;
 }

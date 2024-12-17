@@ -40,21 +40,21 @@ public class PentUpCalamity {
 				options.On(ctx.Space),
 				Present.Done
 			);
-			IToken tokenToRemove = (await ctx.SelectAsync( removeTokenDecision ))?.Token;
-			if(tokenToRemove == null) break;
+			SpaceToken spaceTokenToRemove = await ctx.SelectAsync( removeTokenDecision );
+			if(spaceTokenToRemove is null) break;
 
 			// If bonus allowed us to return some
 			if(0 < returnCount)
 				returnCount--;
-			else if(tokenToRemove is HumanToken human)
+			else if(spaceTokenToRemove.Token is HumanToken human)
 				await ctx.Space.Remove1StrifeFromAsync(human,1);
 			else
-				await RemoveToken( ctx, tokenToRemove );
+				await RemoveToken( ctx, spaceTokenToRemove.Token );
 
 			// Do fear now
 			await ctx.AddFear(1);
 			// do damage later
-			removed.Add(tokenToRemove);
+			removed.Add(spaceTokenToRemove.Token);
 
 			// Next
 			options = GetRemovableTokens( ctx );

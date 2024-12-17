@@ -46,6 +46,6 @@ public class SharpFangs : Spirit {
 			AddActionFactory(SetupAction);
 	}
 
-	public IActionFactory SetupAction = new PlacePresenceOnBeastLand().ToGrowth();
+	public IActionFactory? SetupAction = new PlacePresenceOnBeastLand().ToGrowth();
 
 }

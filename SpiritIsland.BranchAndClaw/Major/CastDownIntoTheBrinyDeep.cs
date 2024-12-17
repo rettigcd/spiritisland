@@ -61,11 +61,11 @@ public class CastDownIntoTheBrinyDeep {
 
 	static Space FindClosestInPlaySpace( Space space ) {
 		int range = 0;
-		Space target;
+		Space? target;
 		var mapper = TerrainMapper.Current;
 		do {
 			target = space.Range( ++range ).FirstOrDefault( mapper.IsInPlay );
 		}while(target == null && 20 < range);
-		return target;
+		return target ?? GameState.Current.Spaces.First(x=>x!=space); 
 	}
 }
