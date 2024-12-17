@@ -101,8 +101,8 @@ public class StonesUnyieldingDefiance : Spirit {
 		ss.Setup(Presence.Token,1);
 
 		// 1 in an adjacent land that has Blight(if possible) or is Sands(if not)
-		Space adjacentWithBlight = ss.Adjacent.FirstOrDefault(s=>s[SpiritIsland.Token.Blight]>0);
-		Space adjacentWithSand = ss.Adjacent.FirstOrDefault( s => s.SpaceSpec.IsSand );
+		Space? adjacentWithBlight = ss.Adjacent.FirstOrDefault(s=>s[Token.Blight]>0);
+		Space adjacentWithSand = ss.Adjacent.First( s => s.SpaceSpec.IsSand );
 
 		(adjacentWithBlight ?? adjacentWithSand).Setup(Presence.Token,1);
 

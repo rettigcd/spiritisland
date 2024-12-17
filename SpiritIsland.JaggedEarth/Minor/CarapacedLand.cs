@@ -21,7 +21,7 @@ public class Range0Or1ForTargetingBeast : FromPresenceAttribute {
 
 	public Range0Or1ForTargetingBeast() : base(0) {}
 
-	public override async Task<object> GetTargetCtx( string powerName, Spirit self ) {
+	public override async Task<object?> GetTargetCtx( string powerName, Spirit self ) {
 
 		var target = await self.Targetter.TargetsSpace( powerName+": Target Space"
 			, preselect: null

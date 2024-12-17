@@ -2,7 +2,7 @@
 
 class UserSelectedInnatePower(Type type) : InnatePower(type) {
 
-	protected override async Task<IDrawableInnateTier> SelectInnateTierToActivate(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
+	protected override async Task<IDrawableInnateTier?> SelectInnateTierToActivate(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
 
 		// !!! THIS SHOULD BE Spirit AGNOSTIC and not know about Prepaired elements.
 		var preparedMgr = (PreparedElementMgr)spirit.Elements;

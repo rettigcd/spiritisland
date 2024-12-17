@@ -10,7 +10,7 @@ public class TricksterTokens( Spirit spirit, Space src, bool runAtMax = false )
 	public override BlightTokenBinding Blight => new TricksterBlight(this);
 	public override TokenMover Gather( Spirit self ) => base.Gather( self ).RunAtMax( _runAtMax );
 
-	public override TokenMover Pusher( Spirit self, SourceSelector sourceSelector, DestinationSelector dst = null ) 
+	public override TokenMover Pusher( Spirit self, SourceSelector sourceSelector, DestinationSelector? dst = null ) 
 		=> base.Pusher( self, sourceSelector, dst )
 			.RunAtMax( _runAtMax );
 

@@ -6,7 +6,7 @@ class MistsShiftAndFlow(Spirit spirit) : Targetter(spirit) {
 	const string Description = "When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements.";
 	static public readonly SpecialRule Rule = new SpecialRule(Name, Description);
 
-	public override Task<TargetSpaceResults> TargetsSpace(string prompt, IPreselect preselect, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
+	public override Task<TargetSpaceResults?> TargetsSpace(string prompt, IPreselect preselect, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
 		bool presenceIsFrozen = false;// !!! need to check if Presence.CanMove
 		return presenceIsFrozen
 			? base.TargetsSpace(prompt, preselect, sourceCriteria, targetCriteria)
@@ -28,9 +28,9 @@ class MistsShiftAndFlowOnce {
 
 	readonly TargetCriteria[] _targetCriteria;
 
-	Space[] nonFlowTargets; // targets we can hit without flowing
-	Space[] flowRange; // where existing Presence can flow to
-	Space[] flowOnlyTargets; // targets that can only be hit by flowing
+	readonly Space[] _nonFlowTargets; // targets we can hit without flowing
+	readonly Space[] _flowRange; // where existing Presence can flow to
+	readonly Space[] _flowOnlyTargets; // targets that can only be hit by flowing
 
 	#endregion
 
@@ -39,10 +39,30 @@ class MistsShiftAndFlowOnce {
 		_prompt = prompt ?? "Target Space.";
 		_sourceCriteria = sourceCriteria;
 		_targetCriteria = targetCriteria;
-		CalculateSpaceGroups();
+
+		// Calculate Space Groups
+		var sources = _sourceCriteria.Filter(_spirit.TargetingSourceStrategy.EvaluateFrom(_spirit.Presence, _sourceCriteria.From));
+		_nonFlowTargets = GetTargetOptionsFromKnownSources(sources);
+		_flowRange = sources
+			.SelectMany(s => s.Range(2)).Distinct() // I think this is a gather thing also
+			.ToArray();
+
+		// Calculate new sources we could find
+		var flowedSources = _spirit.Presence.Lands
+			.SelectMany(p => p.Adjacent)
+			.Distinct()
+			.Except(sources); // exclude previously found sources
+		flowedSources = _sourceCriteria.Filter(flowedSources);
+		if( _sourceCriteria.From == TargetFrom.SacredSite )
+			flowedSources = flowedSources.Where(_spirit.Presence.IsOn); // the only way the new space is a SS, is if already had a presence here.
+
+		_flowOnlyTargets = GetTargetOptionsFromKnownSources(flowedSources)
+			.Intersect(_flowRange) // must be within range-2 in order to Gather into land adjacent to target land.
+			.Except(_nonFlowTargets)
+			.ToArray();
 	}
 
-	public async Task<TargetSpaceResults> TargetAndFlow() {
+	public async Task<TargetSpaceResults?> TargetAndFlow() {
 		// When targeting a land with a Power,
 		// You may Gather 1 of your presence into the target or an adjacent land.
 		// This can enable you to meet Range and targeting requirements."
@@ -51,7 +71,7 @@ class MistsShiftAndFlowOnce {
 		// Instead, we need to test the values that come back from CalcRange and see if they are actually Range(2) or adjacent.
 
 		Space target = await FindTarget();
-		if(target == null) return null;
+		if(target is null) return null;
 		if(CantFlowAndStillReach( target )) return new TargetSpaceResults(target, []);
 
 		await FlowPresence( target );
@@ -123,9 +143,9 @@ class MistsShiftAndFlowOnce {
 		return hitsTarget;
 	}
 
-	bool MustFlowToReach( Space target ) => flowOnlyTargets.Contains( target );
+	bool MustFlowToReach( Space target ) => _flowOnlyTargets.Contains( target );
 
-	bool CantFlowAndStillReach( Space target ) => nonFlowTargets.Contains( target ) && !flowRange.Contains( target );
+	bool CantFlowAndStillReach( Space target ) => _nonFlowTargets.Contains( target ) && !_flowRange.Contains( target );
 
 	async Task<Space> FindTarget() {
 		// ----------------
@@ -133,30 +153,8 @@ class MistsShiftAndFlowOnce {
 		// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 		// For small ranges, flow-targets will be larger.
 
-		var target = await _spirit.SelectAsync( new A.SpaceDecision( _prompt, nonFlowTargets.Union( flowOnlyTargets ), Present.Always ) );
+		var target = await _spirit.SelectAsync( new A.SpaceDecision( _prompt, _nonFlowTargets.Union( _flowOnlyTargets ), Present.Always ) );
 		return target;
-	}
-
-	void CalculateSpaceGroups() {
-		var sources = _sourceCriteria.Filter( _spirit.TargetingSourceStrategy.EvaluateFrom( _spirit.Presence, _sourceCriteria.From ) );
-		this.nonFlowTargets = GetTargetOptionsFromKnownSources( sources );
-		this.flowRange = sources
-			.SelectMany( s => s.Range( 2 ) ).Distinct() // I think this is a gather thing also
-			.ToArray();
-
-		// Calculate new sources we could find
-		var flowedSources = _spirit.Presence.Lands
-			.SelectMany( p => p.Adjacent )
-			.Distinct()
-			.Except( sources ); // exclude previously found sources
-		flowedSources = _sourceCriteria.Filter( flowedSources );
-		if(_sourceCriteria.From == TargetFrom.SacredSite)
-			flowedSources = flowedSources.Where( _spirit.Presence.IsOn ); // the only way the new space is a SS, is if already had a presence here.
-
-		this.flowOnlyTargets = GetTargetOptionsFromKnownSources( flowedSources )
-			.Intersect( flowRange ) // must be within range-2 in order to Gather into land adjacent to target land.
-			.Except( nonFlowTargets )
-			.ToArray();
 	}
 
 	Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources ) {

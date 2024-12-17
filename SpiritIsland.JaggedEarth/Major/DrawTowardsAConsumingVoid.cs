@@ -57,10 +57,10 @@ public class DrawTowardsAConsumingVoid {
 
 		// Select 1 random token matching the TokenGroup and pull it in (without user input)
 		foreach(ITokenClass tokenGroup in tokenGroups) {
-			IToken tokenToGather = adjState.OfTag( tokenGroup )
+			IToken? tokenToGather = adjState.OfTag( tokenGroup )
 				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )
 				.FirstOrDefault();
-			if(tokenToGather != null)
+			if(tokenToGather is not null)
 				await tokenToGather.MoveAsync(adjState,ctx.Space);
 		}
 

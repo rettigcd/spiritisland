@@ -7,16 +7,16 @@ class LongAgesOfKnowledgeAndForgetfulness(Spirit s) : ForgettingStrategy(s) {
 
 	static public SpecialRule Rule => new SpecialRule( Name, Description );
 
-	public override async Task<PowerCard> ACard(IEnumerable<PowerCard> restrictedOptions = null, Present present = Present.Always) {
+	public override async Task<PowerCard?> ACard(IEnumerable<PowerCard>? restrictedOptions = null, Present present = Present.Always) {
 		IEnumerable<SingleCardUse> options = SingleCardUse.GenerateUses(CardUse.Discard, _spirit.InPlay.Union(_spirit.Hand))
 			.Union(SingleCardUse.GenerateUses(CardUse.Forget, _spirit.DiscardPile))
 			.Where(u => restrictedOptions == null || restrictedOptions.Contains(u.Card));
 
 		var decision = new A.PowerCard("Select card to forget or discard", options, present);
-		PowerCard cardToForgetOrDiscard = await _spirit.SelectAsync(decision);
-		if( cardToForgetOrDiscard != null )
+		PowerCard? cardToForgetOrDiscard = await _spirit.SelectAsync(decision);
+		if( cardToForgetOrDiscard is not null )
 			ThisCard(cardToForgetOrDiscard);
-		return cardToForgetOrDiscard != null && !_spirit.DiscardPile.Contains(cardToForgetOrDiscard)
+		return cardToForgetOrDiscard is not null && !_spirit.DiscardPile.Contains(cardToForgetOrDiscard)
 			? cardToForgetOrDiscard // card not in discard pile, must have been forgotten
 			: null;
 	}

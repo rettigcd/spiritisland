@@ -109,5 +109,5 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 		_toSkip = null; // reset for next round.
 	}
 
-	Board _toSkip = null;
+	Board? _toSkip = null;
 }

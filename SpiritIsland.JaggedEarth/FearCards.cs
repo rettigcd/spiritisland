@@ -6,7 +6,7 @@ public class FearCards {
 
 		return typeof(FearCards).Assembly.GetTypes()
 			.Where( t => t.IsAssignableTo(typeof(BesetByManyTroubles) ) )
-			.Select( t => (IFearCard)System.Activator.CreateInstance(t) )
+			.Select( t => (IFearCard)(Activator.CreateInstance(t)!) )
 			.ToArray();
 
 	}

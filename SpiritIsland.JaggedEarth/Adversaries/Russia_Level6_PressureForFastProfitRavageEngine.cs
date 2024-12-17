@@ -47,13 +47,13 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 			var boardsWithNoNewBlight = GameState.Current.Island.Boards.Except( _receivedRavageBlight );
 
 			// In the land with the most Explorer
-			static Space PickSpaceWithMostExplorers( Board board ) => board.Spaces.ScopeTokens()
+			static Space? PickSpaceWithMostExplorers( Board board ) => board.Spaces.ScopeTokens()
 				.Where( ss => 0 < ss.Sum( Human.Explorer ) ) //  (min. of 1)
 				.OrderByDescending( ss => ss.Sum( Human.Explorer ) )
 				.FirstOrDefault();
-			var landsWithMostExplorers = boardsWithNoNewBlight
+			Space[] landsWithMostExplorers = boardsWithNoNewBlight
 				.Select( PickSpaceWithMostExplorers )
-				.Where( l => l != null )
+				.OfType<Space>() // filters nulls
 				.ToArray();
 
 			foreach(var land in landsWithMostExplorers) {

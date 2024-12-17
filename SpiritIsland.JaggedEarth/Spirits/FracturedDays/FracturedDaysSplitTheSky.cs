@@ -61,8 +61,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		SpecialRules = [FragmentsOfScatteredTime, DaysThatNeverWere.Rule];
 	}
 
-	OneOrTwoClass _randomizer;
-	public int OneOrTwo() => _randomizer.Next(); // access repeatable random # for Visions of Shifting Future
+	OneOrTwoClass? _randomizer;
+	public int OneOrTwo() => _randomizer!.Next(); // access repeatable random # for Visions of Shifting Future
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		_randomizer = new OneOrTwoClass( gs.ShuffleNumber + 2837 ); // 2837 so not using same shuffle as others
@@ -139,12 +139,12 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	class FracturedDaysMemento( FracturedDaysSplitTheSky _spirit ) {
 		public void Restore( FracturedDaysSplitTheSky spirit ) {
-			spirit._randomizer.Memento = _random;
+			spirit._randomizer!.Memento = _random;
 			spirit.Time = _time;
 			spirit.DtnwMinor.SetItems(_minor);
 			spirit.DtnwMajor.SetItems(_major);
 		}
-		readonly object _random = _spirit._randomizer.Memento;
+		readonly object _random = _spirit._randomizer!.Memento;
 		readonly int _time = _spirit.Time;
 		readonly PowerCard[] _minor = [.._spirit.DtnwMinor];
 		readonly PowerCard[] _major = [.._spirit.DtnwMajor];

@@ -9,11 +9,11 @@ public class BloodDrawsPredators{
 	static public Task ActAsync( TargetSpaceCtx ctx ){
 
 		// After the next time Invaders are Destroyed in target land:
-		TokenRemovedHandlerAsync mod = null; // initialized 1st so method can refer to it.
+		TokenRemovedHandlerAsync? mod = null; // initialized 1st so method can refer to it.
 		mod = new TokenRemovedHandlerAsync( async ( args ) => {
 			if(args.Reason != RemoveReason.Destroyed || !args.Removed.Class.IsOneOf(Human.Invader)) return;
 			Space from = (Space)args.From;
-			from.Adjust(mod,-1); // remove token
+			from.Adjust(mod!,-1); // remove token
 
 			// Add 1 Beast,
 			await ctx.Beasts.AddAsync( 1 );
@@ -21,7 +21,7 @@ public class BloodDrawsPredators{
 			// Then 1 Damage per Beast (max. 3 Damage)
 			await ctx.DamageInvaders( ctx.Beasts.Count );
 		} );
-		ctx.Space.Adjust( mod, 1 );
+		ctx.Space.Adjust( mod!, 1 );
 
 		return Task.CompletedTask;
 	}

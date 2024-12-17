@@ -5,7 +5,7 @@ class VolcanoPresence( Spirit spirit, PresenceTrack t1, PresenceTrack t2 )
 {
 	public override bool CanBePlacedOn( Space s ) => ActionScope.Current.TerrainMapper.MatchesTerrain( s, Terrain.Mountain );
 
-	static public ActionScopeValue<Space> SafeSpace = new( "Don't Destroy Presence On Space", (Space)default );
+	static public ActionScopeValue<Space?> SafeSpace = new( "Don't Destroy Presence On Space", (Space?)default );
 
 	#region Track Presence-Destroyed-This-Action
 	const string DestroyedPresenceCount = "DestroyedPresenceCount";
