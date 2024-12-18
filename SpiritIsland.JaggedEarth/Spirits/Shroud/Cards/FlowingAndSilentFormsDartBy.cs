@@ -34,7 +34,7 @@ public class FlowingAndSilentFormsDartBy {
 			if( !args.From.Has(spirit.Presence) ) return; // this should never happen.
 			
 			var dst = await spirit.SelectAsync( new A.SpaceDecision( "Instead of destroying, push presence to:", args.From.Adjacent, Present.Done ) );
-			if(dst == null) return;
+			if(dst is null) return;
 
 			while(0 < args.Count) {
 				--args.Count; // must be inside while to avoid setting to -1
@@ -45,17 +45,19 @@ public class FlowingAndSilentFormsDartBy {
 
 	static async Task GatherSomeonesPresence( TargetSpaceCtx ctx ) {
 		var adj = ctx.Space.Adjacent;
+
 		// Pick Spirit
 		Spirit[] spirits = GameState.Current.Spirits;
 		var nearbySpirits = spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
-		Spirit other = spirits.Length == 1 ? ctx.Self
+		Spirit? other = spirits.Length == 1 ? ctx.Self
 			: await ctx.SelectAsync( new A.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
+		if(other is null) return; // no spirit to gather
+
 		// Pick spot
 		var options = adj.Where(adj=>adj.Has(other.Presence));
+		var source = await ctx.SelectAsync( A.SpaceTokenDecision.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.SpaceSpec ) );
+		if(source is null) return; // in case they cancel / change their mind.
 
-		var source = await ctx.SelectAsync( A.SpaceTokenDecision.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.SpaceSpec ) );//
-
-		if(source == null) return;
 		// # to move
 		int numToMove = (1 < other.Presence.CountOn(source.Space) && await ctx.Self.UserSelectsFirstText("# of presence to gather", "2", "1"))
 			? 2

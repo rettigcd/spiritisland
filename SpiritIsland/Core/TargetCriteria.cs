@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary>
 /// Provides 2 services:
@@ -16,7 +17,7 @@ public class TargetCriteria : SpaceCriteria {
 
 	/// <summary> For early binding Spirit dependent criteria </summary>
 	/// <param name="filterOptions">If filterOptions not empty, Space must match at least 1 of the Filters.</param>
-	public TargetCriteria( int range, Spirit self, params string[] filterOptions ) :base(self,filterOptions) {
+	public TargetCriteria( int range, Spirit? self, params string[] filterOptions ) :base(self,filterOptions) {
 		Range = range;
 	}
 
@@ -50,5 +51,5 @@ public class TargetCriteriaFactory {
 		: new TargetCriteria(_range,spirit,_filters);
 
 	readonly int _range;
-	readonly string[] _filters;
+	readonly string[]? _filters;
 }

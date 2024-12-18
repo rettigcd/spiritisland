@@ -1,10 +1,11 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public interface IRestoreable {
 	public void Restore();
 }
 
-public abstract class SpaceSpec(string label)
+public abstract class SpaceSpec(string label, Board[] boards)
 	: IOption 
 	, ISeeAllNeighbors<SpaceSpec>
 	, IEquatable<SpaceSpec>
@@ -14,7 +15,7 @@ public abstract class SpaceSpec(string label)
 
 	public abstract SpaceLayout Layout { get; }
 
-	public virtual Board[] Boards { get; protected set; }
+	public virtual Board[] Boards => boards;
 
 	string IOption.Text => Label;
 	public string Label { get; } = label;
@@ -86,8 +87,8 @@ public abstract class SpaceSpec(string label)
 	}
 
 	class DisconnectSpaceResults : IRestoreable {
-		public SpaceSpec Space { get; set; }
-		public SpaceSpec[] OldAdjacents { get; set; }
+		public required SpaceSpec Space { get; set; }
+		public required SpaceSpec[] OldAdjacents { get; set; }
 
 		public void Restore() {
 			foreach(var board in Space.Boards) board.AddSpace( Space );
@@ -107,8 +108,8 @@ public abstract class SpaceSpec(string label)
 	#region override Equality
 	// Overriding so that when game is rewound and board state is restored, tokens from old spaces appear on new spaces.
 	public override int GetHashCode() => Label.GetHashCode();
-	public override bool Equals( object obj ) => Equals( obj as SpaceSpec );
-	public bool Equals( SpaceSpec other ) => other is not null && other.Label == Label;
+	public override bool Equals( object? obj ) => Equals( obj as SpaceSpec );
+	public bool Equals( SpaceSpec? other ) => other is not null && other.Label == Label;
 	static public bool operator==(SpaceSpec left, SpaceSpec right) => Object.ReferenceEquals(left,right) || left is not null && left.Equals( right );
 	static public bool operator!=(SpaceSpec left, SpaceSpec right) => !Object.ReferenceEquals( left, right ) && (left is null || !left.Equals( right ));
 	#endregion

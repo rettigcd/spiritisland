@@ -10,8 +10,8 @@ public class SolidifyEchoesOfMajestyPast {
 	static public async Task ActAsync(TargetSpiritCtx ctx){
 
 		// Choose one of target Spirit's lands.
-		Space center = await ctx.Self.SelectAsync(new A.SpaceDecision("Select Central Hub", ctx.Other.Presence.Lands,Present.Always));
-		if(center == null) return; // is this possible?
+		Space? center = await ctx.Self.SelectAsync(new A.SpaceDecision("Select Central Hub", ctx.Other.Presence.Lands,Present.Always));
+		if(center is null) return; // is this possible?
 
 		// In that land and each adjacent, Defend 3.
 		foreach(Space? space in center.Range(1))
@@ -20,8 +20,8 @@ public class SolidifyEchoesOfMajestyPast {
 		// They Add 1 DestroyedPresence to each adjacent land.
 		List<Space> spacesOptions = center.Adjacent_Existing.ToList();
 		while(0 < spacesOptions.Count && 0 < ctx.Other.Presence.Destroyed.Count) {
-			Space space = await ctx.Other.SelectAsync(new A.SpaceDecision("Place Destroyed Presence and Skip up to 1 Invader action", spacesOptions,Present.Always));
-			if(space == null) break;
+			Space? space = await ctx.Other.SelectAsync(new A.SpaceDecision("Place Destroyed Presence and Skip up to 1 Invader action", spacesOptions,Present.Always));
+			if(space is null) break;
 
 			await ctx.Other.Presence.Destroyed.MoveToAsync(space);
 			spacesOptions.Remove(space);

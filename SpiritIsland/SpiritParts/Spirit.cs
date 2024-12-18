@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public abstract partial class Spirit 
 	: IOption
@@ -51,12 +52,12 @@ public abstract partial class Spirit
 	#region Gateway stuff
 
 	public IUserPortalPlus Portal => _gateway;
-	public async Task<T> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption {
+	public async Task<T?> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption {
 		var selection = await _gateway.Select<T>(decision);
 		SelectionMade?.Invoke(selection);
 		return selection;
 	}
-	public event Action<object> SelectionMade; // hook for: Reach Through the Efemeral Distance
+	public event Action<object>? SelectionMade; // hook for: Reach Through the Efemeral Distance
 
 	public void PreSelect( SpaceToken st ) => _gateway.PreloadedSpaceToken = st;
 	readonly UserGateway _gateway;
@@ -102,8 +103,8 @@ public abstract partial class Spirit
 
 		IActionFactory[] options = GetAvailableActions(phase).ToArray();
 		while( 0 < options.Length ) {
-			IActionFactory option = await SelectAsync(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
-			if( option == null ) break;
+			IActionFactory? option = await SelectAsync(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
+			if( option is null ) break;
 
 			await ResolveActionAsync(option, phase);
 
@@ -277,11 +278,12 @@ public abstract partial class Spirit
 	public TargetSpaceCtx Target( SpaceSpec space ) => new TargetSpaceCtx( this, space );
 	public TargetSpaceCtx Target( Space space ) => new TargetSpaceCtx(this, space.SpaceSpec);
 	public TargetSpiritCtx Target( Spirit spirit ) => new TargetSpiritCtx( this, spirit );
+	public void ResetTargetter() => _targetter = null;
 	public Targetter Targetter {
 		get => _targetter ??= new Targetter(this);
 		set => _targetter = value;
 	}
-	Targetter _targetter;
+	Targetter? _targetter;
 
 	#region Temporary - Fear - until we can find a better home for it.
 
@@ -392,7 +394,7 @@ public abstract partial class Spirit
 	}
 
 	// Whatever this returns, get saved to the memento
-	protected virtual object CustomMementoValue {
+	protected virtual object? CustomMementoValue {
 		get { return null; }
 		set { }
 	}
@@ -443,7 +445,7 @@ public abstract partial class Spirit
 
 		readonly object _energyCollectedHooks = ((IHaveMemento)_spirit.EnergyCollected).Memento;
 		readonly int _bonusDamage = _spirit.BonusDamage;
-		readonly object _tag = _spirit.CustomMementoValue;
+		readonly object? _tag = _spirit.CustomMementoValue;
 	}
 	static public void InitFromArray( CountDictionary<Element> dict, KeyValuePair<Element, int>[] array ) {
 		dict.Clear();

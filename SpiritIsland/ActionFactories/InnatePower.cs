@@ -65,7 +65,7 @@ public class InnatePower : IPowerActionFactory {
 		return SpeedBehavior.CouldBeActiveFor( requestSpeed, spirit );
 	}
 
-	ISpeedBehavior SpeedBehavior => _speedAttr;
+	SpeedAttribute SpeedBehavior => _speedAttr;
 
 	#endregion
 

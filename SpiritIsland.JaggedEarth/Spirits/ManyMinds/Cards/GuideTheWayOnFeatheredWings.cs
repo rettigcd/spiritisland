@@ -18,8 +18,8 @@ public class GuideTheWayOnFeatheredWings {
 		ctx.Space.Init(tracker,1);
 
 		// move beast (1 of 2)
-		Space destination1 = await ctx.MoveTokensToSingleLand(1, new TargetCriteria( 1 ), Token.Beast );
-		if(destination1 == null) return;
+		Space? destination1 = await ctx.MoveTokensToSingleLand(1, new TargetCriteria( 1 ), Token.Beast );
+		if(destination1 is null) return;
 			
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.
 		// the beast / dahan may move to an adjacent land and then back.
@@ -30,9 +30,9 @@ public class GuideTheWayOnFeatheredWings {
 
 		// move beast (2 of 2)
 		var beastMoved = tracker.BeastMoved!; // !!! I'm not sure this is correct, just doing it to make null warnings go away
-		A.SpaceDecision selection = A.SpaceDecision.ForMoving( $"Move {beastMoved.Text} to", destination1.SpaceSpec, destination1.Adjacent, Present.Done, tracker.BeastMoved );
-		Space destination2 = await ctx.Self.SelectAsync( selection );
-		if(destination2 == null) return;
+		A.SpaceDecision selection = A.SpaceDecision.ForMoving( $"Move {beastMoved.Text} to", destination1.SpaceSpec, destination1.Adjacent, Present.Done, beastMoved);
+		Space? destination2 = await ctx.Self.SelectAsync( selection );
+		if(destination2 is null) return;
 		await beastMoved.MoveAsync(destCtx.Space, destination2);
 
 		var destCtx2 = ctx.Target( destination2 );

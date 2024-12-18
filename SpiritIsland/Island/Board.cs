@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class Board {
 
@@ -32,21 +33,19 @@ public class Board {
 	#region constructor
 
 	public Board(
-		string name, 
+		string name,
 		BoardOrientation orientation,
-		params SingleSpaceSpec[] spaces
-	){
+		params SSS[] spaces
+	) {
 		Name = name;
 		Orientation = orientation;
-		if(spaces.Length == 0)
+		if( spaces.Length == 0 )
 			throw new Exception("Each Board should have 9 spaces but this one has 0.");
 
 		// attach spaces
-		_spaces = spaces;
-		for(int i = 0; i < spaces.Length; ++i) {
-			SingleSpaceSpec space = spaces[i];
-			space.Board = this;
-		}
+		_spaces = spaces
+			.Select(s => new SingleSpaceSpec(s.terrain, s.label, this, s.startingItems))
+			.ToArray();
 	}
 
 	#endregion
@@ -79,7 +78,7 @@ public class Board {
 		return side;
 	}
 
-	BoardLayout _layout;
+	BoardLayout? _layout;
 	readonly List<BoardSide> _sides = [];
 	SpaceSpec[] _spaces;
 

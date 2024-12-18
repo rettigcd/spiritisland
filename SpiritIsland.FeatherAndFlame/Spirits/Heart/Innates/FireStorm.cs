@@ -37,8 +37,8 @@ public class FireStorm {
 		var invaderTokens = spacesWithPresenceAndBlight
 			.SelectMany( ss => ss.InvaderTokens().On(ss) );
 
-		while(fireDamage > 0 && invaderTokens.Any()) {
-			SpaceToken token = await ctx.SelectAsync( new A.SpaceTokenDecision($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always));
+		while(0 < fireDamage && invaderTokens.Any()) {
+			SpaceToken token = (await ctx.SelectAsync( new A.SpaceTokenDecision($"Apply fire damage. ({fireDamage} remaining)",invaderTokens,Present.Always)))!;
 			await ctx.Target(token.Space).Invaders.ApplyDamageTo1(1,token.Token.AsHuman());
 			--fireDamage;
 		}
@@ -55,6 +55,7 @@ public class FireStorm {
 		// In a land with blight and presence  (Select a space, not necessarily the one you targetted with power (I guess...)
 		var spacesWithPresenceAndBlight = ctx.Self.Presence.Lands.Where( s=>s.Blight.Any );
 		var space = await ctx.SelectAsync( new A.SpaceDecision($"Push all dahan, destroy invaders and beast, 1 blight",spacesWithPresenceAndBlight,Present.Always));
+		if(space is null) return; // should not happen
 		var spaceCtx = ctx.Target( space );
 
 		// Push all Dahan

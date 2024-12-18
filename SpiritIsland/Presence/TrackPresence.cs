@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary>
 /// A Presence Token on a particular Track(Slot)
@@ -13,7 +14,7 @@ public class TrackPresence( Track track, SpiritPresenceToken token ) : TokenLoca
 
 	#region GetHashCode/Equal
 	public override int GetHashCode() => Track.GetHashCode();
-	public override bool Equals( object obj ) => obj is TrackPresence tp && Track.Equals( tp.Track );
+	public override bool Equals( object? obj ) => obj is TrackPresence tp && Track.Equals( tp.Track );
 	#endregion
 
 	#region TokenLocation

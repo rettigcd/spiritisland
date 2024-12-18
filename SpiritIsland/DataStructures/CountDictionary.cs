@@ -1,11 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿#nullable enable
+using System.Diagnostics.CodeAnalysis;
 
 namespace SpiritIsland;
 
 /// <summary>
 /// Creates a dictionary of int Values that defaults to 0 when key not present.
 /// </summary>
-public class CountDictionary<K> : IDictionary<K,int> {
+public class CountDictionary<K> : IDictionary<K,int> where K:notnull {
 
 	#region constructor
 
@@ -20,7 +21,7 @@ public class CountDictionary<K> : IDictionary<K,int> {
 
 
 	public CountDictionary(Dictionary<K,int> inner){
-		this._inner = inner;
+		_inner = inner;
 		foreach(K key in _inner.Keys.ToArray())
 			if(_inner[key] == 0)
 				_inner.Remove(key);
@@ -115,7 +116,7 @@ public class CountDictionary<K> : IDictionary<K,int> {
 
 public static class ExtendDictionary {
 
-	static public CountDictionary<T> ToCountDict<T>(this Dictionary<T,int> inner)
+	static public CountDictionary<T> ToCountDict<T>(this Dictionary<T,int> inner) where T:notnull
 		=> new CountDictionary<T>(inner);
 
 	/// <summary>Gets all tokens that have a SpaceAbreviation</summary>

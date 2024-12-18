@@ -24,7 +24,7 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 
 		const string Name = "Sprawling Plantations";
 
-		public Loss_SprawlingPlantations():base( Name+": Before Setup, return all but 7 Town per player to the box. Invaders win if you ever cannot place a Town.", null ){}
+		public Loss_SprawlingPlantations():base( Name+": Before Setup, return all but 7 Town per player to the box. Invaders win if you ever cannot place a Town." ){}
 
 		public override void Init( GameState gs ) {
 			_maxTownCount = CountTowns() + 7 * gs.Spirits.Length;
@@ -117,7 +117,8 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 		int numToReplace = explorerCount - 1;
 		while(0 < numToReplace) {
 			var oldExplorer = space.HumanOfTag( Human.Explorer ).OrderByDescending( x => x.StrifeCount ).FirstOrDefault();
-			var replacement = await space.ReplaceHumanAsync( oldExplorer, Human.Town );
+			if(oldExplorer is null) break; // should not happen
+			TokenReplacedArgs replacement = await space.ReplaceHumanAsync( oldExplorer, Human.Town );
 
 			// next
 			numToReplace -= replacement.RemovedCount;
@@ -142,7 +143,7 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
 			var st = await boardCtx.Self.SelectAsync( new A.SpaceTokenDecision( "Add strife to town", options, Present.Always ) );
-			if(st != null)
+			if(st is not null)
 				await st.Add1StrifeToAsync();
 		} );
 
@@ -160,7 +161,7 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town_City );
 			for(int i = 0; i < 2; ++i) {
 				var st = await boardCtx.SelectAsync( new A.SpaceTokenDecision( $"Add strife ({i+1} of 2)", options, Present.Always ) );
-				if(st != null)
+				if(st is not null)
 					await st.Add1StrifeToAsync();
 			}
 		} );
@@ -170,7 +171,7 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
 			var st = await boardCtx.SelectAsync( new A.SpaceTokenDecision( "Destory a town", options, Present.Always ) );
-			if(st != null)
+			if(st is not null)
 				await st.Space.Destroy( st.Token, 1 );
 		} );
 

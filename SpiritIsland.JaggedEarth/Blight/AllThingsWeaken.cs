@@ -77,7 +77,7 @@ class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAdded {
 		var decision = new A.SpaceTokenDecision( "Presence to destroy", options, Present.Always );
 		var token = await to.SpaceSpec.Boards[0].FindSpirit().SelectAsync(decision);
 
-		if(token == null) return;
+		if(token is null) return;
 		await token.Space.Destroy(token.Token, 1);
 		ActionScope.Current.LogDebug( "All Things Weaken - destroyed neighbor presence " + token );
 

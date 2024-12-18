@@ -28,7 +28,7 @@ public class WeaveTogetherTheFabricOfPlace {
 
 	static Space JoinSpaces( Spirit originalSelf, SpaceSpec spaceSpec, SpaceSpec otherSpec ) {
 
-		var multiSpec = new MultiSpaceSpec(spaceSpec, otherSpec);
+		var multiSpec = MultiSpaceSpec.Build(spaceSpec, otherSpec);
 
 		var gs = GameState.Current;
 		Space space = gs.Tokens[spaceSpec];

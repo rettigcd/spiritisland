@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class MultiSpaceSpec : SpaceSpec {
 
@@ -8,7 +9,7 @@ public class MultiSpaceSpec : SpaceSpec {
 	/// Lazy loading this. Not needed for most unit tests.
 	/// </summary>
 	public override SpaceLayout Layout => _layout ??= CalcLayout(OrigSpaces);
-	SpaceLayout _layout = null;
+	SpaceLayout? _layout = null;
 	static public SpaceLayout CalcLayout(SpaceSpec[] spaces) {
 		XY[] corners = spaces[0].Layout.Corners;
 		for( int i = 1; i < spaces.Length; ++i )
@@ -22,15 +23,20 @@ public class MultiSpaceSpec : SpaceSpec {
 
 	#region constructor
 
-	public MultiSpaceSpec(params SpaceSpec[] spaces)
-		:base( string.Join(":", CollectOrigSpaces(spaces).Select(p=>p.Label)) ) 
-	{
-		OrigSpaces = CollectOrigSpaces( spaces );
-		Boards = OrigSpaces.SelectMany(s=>s.Boards).Distinct().ToArray();
+	static public MultiSpaceSpec Build( params SpaceSpec[] spaces) {
+		var origSpaces = CollectOrigSpaces(spaces);
+		string label = string.Join(":", origSpaces.Select(p => p.Label) );
+		var boards = origSpaces.SelectMany(bob => bob.Boards).Distinct().ToArray();
+		return new MultiSpaceSpec(origSpaces,label,boards);
+	}
 
+	MultiSpaceSpec( SingleSpaceSpec[] origSpaces, string label, Board[] boards )
+		:base( label, boards ) 
+	{
+		OrigSpaces = origSpaces;
 		// Special case: If we are joining Ocean to anything, it is coastal.
 		// We have to do this hear because normal Adjacency check won't be able to detect ocean.
-		if(spaces.Any(x=>x.IsOcean) && spaces.Any(x=>!x.IsOcean))
+		if(origSpaces.Any(x=>x.IsOcean) && origSpaces.Any(x=>!x.IsOcean))
 			IsCoastal = true;
 	}
 

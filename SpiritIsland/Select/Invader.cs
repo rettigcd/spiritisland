@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.An;
+﻿#nullable enable
+namespace SpiritIsland.An;
 using Orig_SpaceSpec = SpiritIsland.SpaceSpec;
 using IEnumerable_SpaceToken = IEnumerable<SpiritIsland.SpaceToken>;
 

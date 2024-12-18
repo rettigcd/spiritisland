@@ -108,9 +108,9 @@ public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 			orig.Add(_openTheWays);
 	}
 
-	protected override object CustomMementoValue {
+	protected override object? CustomMementoValue {
 		get => GatewayToken ?? new object();
-		set => GatewayToken = value as GatewayToken;
+		set => GatewayToken = (GatewayToken?)value;
 	}
 
 	readonly OpenTheWays _openTheWays;

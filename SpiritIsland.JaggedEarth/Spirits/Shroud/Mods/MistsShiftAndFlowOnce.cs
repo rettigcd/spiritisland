@@ -6,7 +6,7 @@ class MistsShiftAndFlow(Spirit spirit) : Targetter(spirit) {
 	const string Description = "When targeting a land with a Power, you may Gather 1 of your presence into the target or an adjacent land.  This can enable you to meet Range and targeting requirements.";
 	static public readonly SpecialRule Rule = new SpecialRule(Name, Description);
 
-	public override Task<TargetSpaceResults?> TargetsSpace(string prompt, IPreselect preselect, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
+	public override Task<TargetSpaceResults?> TargetsSpace(string prompt, IPreselect? preselect, TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {
 		bool presenceIsFrozen = false;// !!! need to check if Presence.CanMove
 		return presenceIsFrozen
 			? base.TargetsSpace(prompt, preselect, sourceCriteria, targetCriteria)
@@ -70,7 +70,7 @@ class MistsShiftAndFlowOnce {
 		// Note! We cannot trust our range parameter for actural range, because spirit may have received a range adjustment modifier.
 		// Instead, we need to test the values that come back from CalcRange and see if they are actually Range(2) or adjacent.
 
-		Space target = await FindTarget();
+		Space? target = await FindTarget();
 		if(target is null) return null;
 		if(CantFlowAndStillReach( target )) return new TargetSpaceResults(target, []);
 
@@ -89,7 +89,7 @@ class MistsShiftAndFlowOnce {
 			allowed.Select( a => a.AddedTo ).Distinct(),
 			MustFlowToReach( target ) ? Present.Always : Present.Done
 		) );
-		if(gatherDst == null) return;
+		if(gatherDst is null) return;
 
 		// Flow (Gather) - Source
 		var souceOptions = allowed
@@ -105,7 +105,7 @@ class MistsShiftAndFlowOnce {
 			to: gatherDst.SpaceSpec
 		);
 		var gatherSource = await _spirit.SelectAsync( decision );
-		if(gatherSource == null) return;
+		if(gatherSource is null) return;
 
 		await gatherSource.MoveTo( gatherDst );
 	}
@@ -147,14 +147,13 @@ class MistsShiftAndFlowOnce {
 
 	bool CantFlowAndStillReach( Space target ) => _nonFlowTargets.Contains( target ) && !_flowRange.Contains( target );
 
-	async Task<Space> FindTarget() {
+	Task<Space?> FindTarget() {
 		// ----------------
 		// -- Targetting --
 		// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 		// For small ranges, flow-targets will be larger.
 
-		var target = await _spirit.SelectAsync( new A.SpaceDecision( _prompt, _nonFlowTargets.Union( _flowOnlyTargets ), Present.Always ) );
-		return target;
+		return _spirit.SelectAsync( new A.SpaceDecision( _prompt, _nonFlowTargets.Union( _flowOnlyTargets ), Present.Always ) );
 	}
 
 	Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources ) {

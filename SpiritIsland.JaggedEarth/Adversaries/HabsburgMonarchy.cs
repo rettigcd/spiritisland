@@ -103,8 +103,9 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 			if(addSpaces.Length == 0) break;
 
 			var criteria = new A.SpaceDecision( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces, Present.Always );
-			var addSpace = await ctx.Self.SelectAsync( criteria );
-			await addSpace.AddDefaultAsync( Human.Town, 1, AddReason.Build );
+			Space? addSpace = await ctx.Self.SelectAsync( criteria );
+			if(addSpace is not null)
+				await addSpace.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 		}
 	}
 
@@ -125,7 +126,7 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 			var spaces = board.Spaces.ScopeTokens().ToArray();
 			// add 1 City to a Coastal land without City
 			var coastWithoutCity =  spaces.FirstOrDefault(s=>s.SpaceSpec.IsCoastal && s.Sum(Human.City)==0);
-			if( coastWithoutCity != null)
+			if( coastWithoutCity is not null)
 				newCitySpaces.Add( coastWithoutCity );
 
 			// and 1 Town to the 3 Inland lands with the fewest Blight

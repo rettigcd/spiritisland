@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.NatureIncarnate;
+﻿#nullable enable
+namespace SpiritIsland.NatureIncarnate;
 
 public class AddOrMoveIncarnaToPresence : SpiritAction {
 
@@ -7,7 +8,7 @@ public class AddOrMoveIncarnaToPresence : SpiritAction {
 	public override async Task ActAsync( Spirit self ) {
 
 		var space = await self.SelectAsync( new A.SpaceDecision( "Select space to place Incarna.", self.Presence.Lands, Present.Done ) );
-		if(space == null) return;
+		if(space is null) return;
 
 		// Move/Place Incarna
 		await self.Incarna.MoveTo(space,true);

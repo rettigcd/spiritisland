@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary>
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
@@ -242,8 +243,8 @@ public partial class Space
 
 	// Utter a Curse of Dread and Bone & Bargains of Power require these overrides:
 	public override int GetHashCode() => SpaceSpec.GetHashCode();
-	public override bool Equals( object obj ) => obj is Space other && other.SpaceSpec == SpaceSpec;
-	public static bool operator ==( Space ss1, Space ss2 ) => Object.ReferenceEquals( ss1, ss2) || (ss1 is not null &&  ss1.Equals(ss2));
+	public override bool Equals( object? obj ) => obj is Space other && other.SpaceSpec == SpaceSpec;
+	public static bool operator ==( Space ss1, Space ss2 ) => ReferenceEquals( ss1, ss2) || (ss1 is not null &&  ss1.Equals(ss2));
 	public static bool operator !=( Space ss1, Space ss2 ) => !(ss1==ss2);
 
 	#endregion
@@ -272,9 +273,7 @@ public partial class Space
 	/// <summary>
 	/// Replaces 1 Human type/class with another (1 to 1)
 	/// </summary>
-	/// <returns>null IF oldToken is null.</returns>
 	public async Task<TokenReplacedArgs> ReplaceHumanAsync(HumanToken oldToken, HumanTokenClass newTokenClass) {
-		if(oldToken == null) return null;
 
 		var newToken = GetDefault( newTokenClass );
 
@@ -294,7 +293,6 @@ public partial class Space
 
 	/// <returns>null if null oldToken passed in.</returns>
 	public async Task<TokenReplacedArgs> ReplaceAsync(IToken oldToken, int newCount, IToken newToken) {
-		if(oldToken == null) return null;
 
 		#pragma warning disable CA1859 // Use concrete types when possible for improved performance
 		ILocation source = this;
@@ -318,11 +316,8 @@ public partial class Space
 		=> AddAsync( GetDefault(tokenClass), count, addReason);
 
 	public async Task<ITokenAddedArgs> AddAsync( IToken token, int count, AddReason addReason = AddReason.Added ) {
-		var (addResult,notifier) = await SinkAsync( token, count, addReason );
-		if(addResult == null) return null;
-
+		(ITokenAddedArgs addResult, Func<ITokenAddedArgs, Task> notifier) = await SinkAsync( token, count, addReason );
 		await notifier( addResult );
-
 		return addResult;
 	}
 
@@ -452,7 +447,7 @@ public partial class Space
 	public virtual TokenMover Gather( Spirit self ) 
 		=> new TokenMover( self, "Gather", Adjacent, this );
 
-	public virtual TokenMover Pusher( Spirit self, SourceSelector sourceSelector, DestinationSelector dest = null ) 
+	public virtual TokenMover Pusher( Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null ) 
 		=> new TokenMover( self, "Push", sourceSelector, dest ?? PushDestinations );
 
 	public virtual DestinationSelector PushDestinations => DestinationSelector.Adjacent;

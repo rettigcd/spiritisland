@@ -43,6 +43,7 @@ public class DissolveTheBondsOfKinship {
 		var oldDahan = ctx.Space.HumanOfTag( Human.Dahan )
 			.OrderBy( x => x.RemainingHealth )
 			.FirstOrDefault();
-		await ctx.Space.ReplaceHumanAsync( oldDahan, Human.Explorer );
+		if(oldDahan is not null)
+			await ctx.Space.ReplaceHumanAsync( oldDahan, Human.Explorer );
 	}
 }

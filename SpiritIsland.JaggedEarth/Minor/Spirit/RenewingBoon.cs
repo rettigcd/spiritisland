@@ -10,7 +10,7 @@ public class RenewingBoon{
 		var spaceOptions = ctx.Self.Presence.Lands.Intersect( ctx.Other.Presence.Lands )
 			.ToArray();
 		var space = await ctx.Self.SelectAsync(new A.SpaceDecision("",spaceOptions,Present.Always));
-		if( space == null) return;
+		if( space is null) return;
 
 		// In that land: Remove 1 blight
 		await ctx.Target(space).RemoveBlight();

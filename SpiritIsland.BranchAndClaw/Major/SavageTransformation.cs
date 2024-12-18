@@ -22,8 +22,8 @@ public class SavageTransformation {
 		var options = origCtx.Space.Range( range )
 			.SelectMany( ss => ss.SpaceTokensOfTag( Human.Explorer ) );
 
-		SpaceToken spaceToken2 = await origCtx.Self.SelectAsync( new A.SpaceTokenDecision( "Replace additional with Beast", options, Present.Always ) );
-		if(spaceToken2 == null) return;
+		SpaceToken? spaceToken2 = await origCtx.Self.SelectAsync( new A.SpaceTokenDecision( "Replace additional with Beast", options, Present.Always ) );
+		if(spaceToken2 is null) return;
 
 		await spaceToken2.Space.ReplaceAsync( spaceToken2.Token, 1, Token.Beast );
 	}

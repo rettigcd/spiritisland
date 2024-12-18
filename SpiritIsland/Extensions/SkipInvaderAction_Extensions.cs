@@ -1,11 +1,12 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 static public class SkipInvaderAction_Extensions {
 
 	/// <summary>
 	/// Skips 1 invader action - which one is picked later.
 	/// </summary>
-	static public void Skip1InvaderAction( this Space ss, string label, Spirit actionPicker, Func<Space,Task> alternateAction = null ) { 
+	static public void Skip1InvaderAction( this Space ss, string label, Spirit actionPicker, Func<Space,Task>? alternateAction = null ) { 
 		ss.Adjust( new SkipAnyInvaderAction(label,actionPicker,alternateAction), 1 );
 	}
 

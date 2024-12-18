@@ -1,8 +1,9 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class ForgettingStrategy(Spirit spirit) {
 
-	public virtual async Task<PowerCard> ACard(IEnumerable<PowerCard> options = null, Present present = Present.Always) {
+	public virtual async Task<PowerCard?> ACard(IEnumerable<PowerCard>? options = null, Present present = Present.Always) {
 
 		options ??= GetForgetableCards();
 

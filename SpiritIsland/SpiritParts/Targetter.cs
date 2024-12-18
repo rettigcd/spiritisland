@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class Targetter(Spirit spirit) {
 
@@ -8,9 +9,9 @@ public class Targetter(Spirit spirit) {
 
 	/// <summary> Used EXCLUSIVELY For Targeting a PowerCard's Space </summary>
 	/// <remarks> This used as the hook for Shadow's Pay-1-to-target-land-with-dahan </remarks>
-	public virtual async Task<TargetSpaceResults> TargetsSpace(
+	public virtual async Task<TargetSpaceResults?> TargetsSpace(
 		string prompt,
-		IPreselect preselect,
+		IPreselect? preselect,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
@@ -27,17 +28,15 @@ public class Targetter(Spirit spirit) {
 		// 1
 		if( spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle ) {
 			// Make sure we still go through SelectAsync<> so we can trigger the selection-made event
-			var space = await _spirit.SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.AutoSelectSingle));
-			return routes.MakeResult(space);
+			Space? space = await _spirit.SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.AutoSelectSingle));
+			return space is null ? null : routes.MakeResult(space);
 		}
 
 		// multiple Choose
-		Space mySpace = preselect != null && UserGateway.UsePreselect.Value
+		Space? mySpace = preselect is not null && UserGateway.UsePreselect.Value
 			? await preselect.PreSelect(_spirit, spaceOptions)
 			: await _spirit.SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.Always));
-
-		// return result.
-		return routes.MakeResult(mySpace);
+		return mySpace is not null ? routes.MakeResult(mySpace) : null;
 	}
 
 	public virtual TargetRoutes GetPowerTargetOptions(TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {

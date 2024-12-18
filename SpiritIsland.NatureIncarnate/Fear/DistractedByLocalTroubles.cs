@@ -34,7 +34,7 @@ public partial class DistractedByLocalTroubles : FearCardBase, IFearCard {
 		var invadersToDamage = ctx.SourceSelector
 			.AddAll(Human.Invader)
 			.ConfigOnlySelectEachOnce()
-			.GetEnumerator(ctx.Self,Prompt.RemainingCount("Damage-1 each"),Present.Done,null,2);
+			.GetEnumerator(ctx.Self,Prompt.RemainingCount("Damage-1 each"), Present.Done, null, 2);
 		await foreach(var invader in invadersToDamage)
 			await ctx.Invaders.ApplyDamageTo1(1,invader.Token.AsHuman());
 

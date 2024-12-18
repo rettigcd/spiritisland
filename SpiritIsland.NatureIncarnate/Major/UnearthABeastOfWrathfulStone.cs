@@ -135,7 +135,7 @@ public class MarkedBeast : IToken
 	#region IActionFactory - push token every slow
 
 	void AddSlowPushToSpirit(Spirit s ) {
-		if(_space != null) // if the beast has been placed on the board.
+		if(_space is not null) // if the beast has been placed on the board.
 			s.AddActionFactory( this );
 	}
 

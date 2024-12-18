@@ -1,16 +1,13 @@
-﻿namespace SpiritIsland;
-
-#nullable enable
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class FakeSpace : SpaceSpec {
 
-	public FakeSpace(string name, SpaceLayout layout) : base(name) {
-		Boards = [];
+	public FakeSpace(string name, SpaceLayout layout) : base(name, []) {
 		_layout = layout;
 	}
 
-	public FakeSpace( string name ) : base( name ) {
-		Boards = [];
+	public FakeSpace( string name ) : base( name, [] ) {
 		_layout = null;
 	}
 

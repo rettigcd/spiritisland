@@ -1,11 +1,11 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	#region private fields
-	InvaderBinding _invadersRO;
-	BoundPresence_ForSpace _presence;
-	Space _space;
+	InvaderBinding? _invadersRO;
+	BoundPresence_ForSpace? _presence;
 	#endregion
 
 	public SpaceSpec SpaceSpec { get; } = target ?? throw new ArgumentNullException( nameof( target ) );
@@ -22,7 +22,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	public Task<bool> YouHave( string elementString ) => Self.Elements.YouHave( elementString );
 
-	public Task<T> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
+	public Task<T?> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
 		=> Self.SelectAsync<T>( originalDecision );
 
 	public TargetSpaceCtx TargetSpec( SpaceSpec space ) => Self.Target( space ); // !!! OLD - remove
@@ -53,6 +53,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	public bool MatchesBuildCard => GameState.Current.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Space));
 
 	public Space Space => _space ??= SpaceSpec.ScopeSpace;
+	Space? _space;
 
 	#region Token Shortcuts
 	public void Defend(int defend) => Space.Defend.Add(defend);
@@ -74,9 +75,9 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	// This is different than Push / Gather which ManyMinds adjusts, this is straight 'Move' that is not adjusted.
 	/// <returns>Destination</returns>
-	public async Task<Space> MoveTokensToSingleLand( int max, TargetCriteria targetCriteria, params ITokenClass[] tokenClass ) {
+	public async Task<Space?> MoveTokensToSingleLand( int max, TargetCriteria targetCriteria, params ITokenClass[] tokenClass ) {
 
-		Space destination = null;
+		Space? destination = null;
 
 		await new TokenMover(Self,"Move",
 			sourceSelector: SourceSelector.AddGroup(max,tokenClass),
@@ -146,7 +147,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	#region Terrain
 
 	TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
-	TerrainMapper _terrainMapper;
+	TerrainMapper? _terrainMapper;
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
 	public bool IsOneOf(params Terrain[] terrain) => TerrainMapper.MatchesTerrain(Space, terrain);
@@ -186,8 +187,10 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	public async Task StrifedDamageOtherInvaders( int originalDamage, HumanToken damageSource, bool excludeSource ) {
 		if(originalDamage == 0) return; // when no strifed invaders
 
-		HumanToken damageSourceToExclude = excludeSource ? damageSource : null;
-		HumanToken[] invadersToDamage() => Space.InvaderTokens().Where( t => t != damageSourceToExclude ).ToArray();
+		Func<HumanToken,bool> filterTokensToDamage = excludeSource 
+			? (t => t != damageSource) 
+			: (_ => true);
+		HumanToken[] invadersToDamage() => Space.InvaderTokens().Where(filterTokensToDamage).ToArray();
 
 		// Calculate Total Damage available
 		CombinedDamage combinedDamage = Space.CombinedDamageFor_Invaders( originalDamage );
@@ -220,7 +223,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
 			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
-			if(st == null) break;
+			if(st is null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
 			var (_, damaged) = await Invaders.ApplyDamageTo1( damagePerInvader, invader );
@@ -282,10 +285,9 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	#endregion
 
 	/// <remarks> Simnple Helper - has access to: Spirit, Space/Adjacent, Target() </remarks>
-	public async Task<TargetSpaceCtx> SelectAdjacentLandAsync( string prompt ) {
+	public async Task<TargetSpaceCtx?> SelectAdjacentLandAsync( string prompt ) {
 		var space = await SelectAsync( new A.SpaceDecision( prompt, Space.Adjacent, Present.Always ) );
-		return space != null ? Target( space )
-			: null;
+		return space is not null ? Target( space ) : null;
 	}
 
 	/// <remarks>This could be on GameState but everywhere it is used has access to TargetSpaceCtx and it is more convenient here.</remarks>

@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.A;
+﻿#nullable enable
+namespace SpiritIsland.A;
 
 // For Selecting Token from multiple spaces
 public class SpaceTokenDecision : TypedDecision<SpaceToken>, IHaveArrows {
@@ -23,14 +24,14 @@ public class SpaceTokenDecision : TypedDecision<SpaceToken>, IHaveArrows {
 
 	public SpaceToken[] SpaceTokens { get; }
 
-	public SpaceTokenDecision PointArrowTo( SpaceSpec destination ) {
+	public SpaceTokenDecision PointArrowTo( SpaceSpec? destination ) {
 		Destination = destination;
 		return this;
 	}
 
-	public SpaceSpec Destination { get; private set; }
+	public SpaceSpec? Destination { get; private set; }
 
-	public IEnumerable<Arrow> Arrows => Destination == null
+	public IEnumerable<Arrow> Arrows => Destination is null
 		? []
 		: SpaceTokens.Select( st => new Arrow { Token = st.Token, From = st.Space.SpaceSpec, To = Destination } );
 

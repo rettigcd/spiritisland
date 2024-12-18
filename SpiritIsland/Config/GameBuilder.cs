@@ -1,4 +1,4 @@
-﻿
+﻿#nullable enable
 namespace SpiritIsland;
 
 public class GameBuilder( params IGameComponentProvider[] _providers ) {
@@ -16,9 +16,8 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 
 	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames).Order().ToArray();
 
-	public Spirit[] BuildSpirits( string[] spirits, AspectConfigKey[] aspectKeys = null) {
-		aspectKeys ??= [];
-		return spirits.Select(s => Build1Spirit(s, aspectKeys)).ToArray();
+	public Spirit[] BuildSpirits( string[] spirits, AspectConfigKey[]? aspectKeys = null) {
+		return spirits.Select(s => Build1Spirit(s, aspectKeys ?? [])).ToArray();
 	}
 
 	Spirit Build1Spirit(string spiritName, AspectConfigKey[] aspectKeys) {
@@ -166,7 +165,7 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		public string Name => "No Adversary";
 		static public AdversaryLevel Level => new AdversaryLevel(_level: 0, _difficulty: 0, _fear1: 3, _fear2: 3, _fear3: 3, string.Empty);
 		public AdversaryLevel[] Levels => [Level];
-		public AdversaryLossCondition LossCondition => null;
+		public AdversaryLossCondition? LossCondition => null;
 		public IAdversary Build(int _) => new Adversary(this, 0);
 	}
 

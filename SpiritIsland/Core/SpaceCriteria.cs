@@ -1,11 +1,12 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary>
 /// Used for filtering Target: Sources & Destinations
 /// </summary>
 /// <param name="self">Specifies the spirit to use when evaluating MyPresence filters.</param>
 /// <param name="filters">Space may match ANY of the filters specified.  If no filter specified, all spaces match.</param>
-public class SpaceCriteria(Spirit self, params string[] filters) {
+public class SpaceCriteria(Spirit? self, params string[] filters) {
 
 	/// <summary> Create a space-criteria that accepts everything. </summary>
 	public SpaceCriteria():this(null) {}
@@ -27,15 +28,15 @@ public class SpaceCriteria(Spirit self, params string[] filters) {
 	}
 
 	#region private
-	readonly protected Spirit _self = self;
+	readonly protected Spirit? _self = self;
 	readonly protected string[] _filters = filters ?? throw new ArgumentNullException(nameof(filters)); // Any one of these filters can match.
 	TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
-	TerrainMapper _terrainMapper;
+	TerrainMapper? _terrainMapper;
 	#endregion
 
 	#region Bind all state together into a single object
 
-	class SpaceWithPresence( Space space, Spirit focusSpirit, TerrainMapper tm ) {
+	class SpaceWithPresence( Space space, Spirit? focusSpirit, TerrainMapper tm ) {
 
 		public Space Space { get; } = space;
 
@@ -59,8 +60,8 @@ public class SpaceCriteria(Spirit self, params string[] filters) {
 	#region static Filter Map
 
 	static bool Matches( string filterEnum, SpaceWithPresence state ) {
-		if(_lookup.TryGetValue( filterEnum, out Func<SpaceWithPresence, bool> value ))
-			return value( state );
+		if(_lookup.TryGetValue( filterEnum, out Func<SpaceWithPresence, bool>? value ))
+			return value!( state );
 
 		if(filterEnum.Contains( '+' )) {
 			var filter = new AllFilters( filterEnum );

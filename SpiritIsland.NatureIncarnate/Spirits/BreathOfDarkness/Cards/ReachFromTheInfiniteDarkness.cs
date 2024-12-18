@@ -20,7 +20,7 @@ public class ReachFromTheInfiniteDarkness {
 				Present.Done 
 			) );
 
-			if(presenceToAbduct == null) break;
+			if(presenceToAbduct is null) break;
 
 			// get consent
 			Spirit? otherSpirit = presenceToAbduct.Token is SpiritPresenceToken spt ? spt.Self 

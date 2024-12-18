@@ -196,7 +196,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 	static Task UpgradeExplorerOnEachLandAsync( GameState gs ) {
 		return new SpaceAction("Upgrade explorer (Mining Boom (I))", async x=>{
 			var token = await x.Self.SelectAsync(new A.SpaceTokenDecision("Select Explorer to Upgrade",x.Space.SpaceTokensOfTag(Human.Explorer),Present.Always));
-			if(token != null)
+			if(token is not null)
 				await ReplaceInvader.UpgradeSelectedInvader(x.Space,token.Token.AsHuman()); 
 		} )
 			.In().OneLandPerBoard().Which(Has.Token(Human.Explorer))
@@ -261,7 +261,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 		return new SpaceAction( "Upgrade explorer", async x => {
 			await new BuildOnceOnSpace_Default().ActAsync( x.Space );
 			var token = await x.Self.SelectAsync( new A.SpaceTokenDecision( "Select Explorer to Upgrade", x.Space.SpaceTokensOfTag( Human.Explorer ), Present.Always ) );
-			if(token != null)
+			if(token is not null)
 				await ReplaceInvader.UpgradeSelectedInvader( x.Space, token.Token.AsHuman() );
 		} )
 			.In().OneLandPerBoard().Which( Has.Token( Human.Explorer ) )

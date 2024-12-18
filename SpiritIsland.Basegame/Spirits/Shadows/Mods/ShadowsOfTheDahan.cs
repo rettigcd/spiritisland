@@ -8,14 +8,14 @@ class ShadowsOfTheDahan(Spirit spirit) : Targetter(spirit) {
 		"Whenever you use a power, you may pay 1 energy to target land with Dahan regardless of range."
 	);
 
-	static public void RemoveFrom(Spirit spirit) => spirit.Targetter = null;
+	static public void RemoveFrom(Spirit spirit) => spirit.ResetTargetter();
 
 	/// <summary>
 	/// Overriden so we can pay 1 energy for targetting out-of-range dahan space
 	/// </summary>
-	public override async Task<TargetSpaceResults> TargetsSpace(
+	public override async Task<TargetSpaceResults?> TargetsSpace(
 		string prompt,
-		IPreselect preselect,
+		IPreselect? preselect,
 		TargetingSourceCriteria sourceCriteria,
 		params TargetCriteria[] targetCriteria
 	) {
@@ -23,7 +23,8 @@ class ShadowsOfTheDahan(Spirit spirit) : Targetter(spirit) {
 		var target = await base.TargetsSpace(prompt, preselect, sourceCriteria, targetCriteria);
 
 		// If we target
-		if( 0 < _spirit.Energy 
+		if( target is not null 
+			&& 0 < _spirit.Energy 
 			&& TargettedDahanSpace(sourceCriteria, targetCriteria, target)
 		) --_spirit.Energy;
 
@@ -32,8 +33,7 @@ class ShadowsOfTheDahan(Spirit spirit) : Targetter(spirit) {
 
 	bool TargettedDahanSpace(TargetingSourceCriteria sourceCriteria, TargetCriteria[] targetCriteria, TargetSpaceResults target) {
 		var normalSpaces = base.GetPowerTargetOptions(sourceCriteria, targetCriteria).Targets;
-		bool targettedAnEnergySpace = !normalSpaces.Contains(target.Space);
-		return targettedAnEnergySpace;
+		return !normalSpaces.Contains(target.Space);
 	}
 
 	public override TargetRoutes GetPowerTargetOptions(TargetingSourceCriteria sourceCriteria, params TargetCriteria[] targetCriteria) {

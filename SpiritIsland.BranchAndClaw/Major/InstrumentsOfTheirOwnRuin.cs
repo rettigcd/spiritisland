@@ -62,7 +62,7 @@ public class InstrumentsOfTheirOwnRuin {
 				.SelectMany( ss => ss.InvaderTokens().On(ss) )
 				.ToArray();
 			var damagedInvader = await ctx.SelectAsync( new A.SpaceTokenDecision($"Instrument of Ruin Damage ({damageFromCenter}) remaining", invaderOptions,Present.Done) );
-			if(damagedInvader == null) break;
+			if(damagedInvader is null) break;
 
 			if(0 < activatedBadlandDamage[damagedInvader.Space]) {
 				// use badlands

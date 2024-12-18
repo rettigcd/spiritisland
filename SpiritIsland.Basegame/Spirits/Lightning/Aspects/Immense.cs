@@ -12,7 +12,6 @@ public class Immense : IAspect {
 
 		// Your top Presence track grants you twice as much Energy during the Spirit Phase.
 		// (Any ongoing modifiers are counted after doubling.)
-		var p = spirit.Presence;
 		foreach( Track t in spirit.Presence.Energy.Slots )
 			if( t.Energy.HasValue ) {
 				int newEnergy = t.Energy.Value * 2;

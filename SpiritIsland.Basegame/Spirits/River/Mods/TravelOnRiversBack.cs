@@ -18,7 +18,7 @@ class TravelOnRiversBack : SpiritAction {
 			var dahanOptions = spirit.Presence.Lands
 				.SelectMany(s => s.SpaceTokensOfTag(TokenCategory.Dahan));
 			var dahan = await spirit.SelectAsync(new A.SpaceTokenDecision($"Select Dahan to Move to contiguously presence-connected land. ({i} of 2)", dahanOptions, Present.Done));
-			if( dahan == null ) return;
+			if( dahan is null ) return;
 
 			HashSet<Space> destinationOptions = GetContiguoslyConnectedPresense(spirit, dahan.Space);
 			if( destinationOptions.Count == 0 ) continue;

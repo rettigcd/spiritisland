@@ -1,7 +1,8 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <param name="commaDelimitedRestrictFrom">null or comma-delimited Target</param>
-public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimitedRestrictFrom, int range, string[] targetFilterOptions ) 
+public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimitedRestrictFrom, int range, string[] targetFilterOptions ) 
 	: GeneratesContextAttribute
 {
 
@@ -14,7 +15,7 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 
 	public override LandOrSpirit LandOrSpirit => LandOrSpirit.Land;
 
-	public IPreselect Preselect { get; set; }
+	public IPreselect? Preselect { get; set; }
 
 	public override string TargetFilterName { get; } = 0 < targetFilterOptions.Length ? string.Join( "/", targetFilterOptions ) : "Any";
 
@@ -26,7 +27,7 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 
 	#endregion
 
-	public override async Task<object> GetTargetCtx( string powerName, Spirit self ){
+	public override async Task<object?> GetTargetCtx( string powerName, Spirit self ){
 
 		TargetCriteria targetCriteria = await ApplySpiritModsToGetTargetCriteria(self);
 		var result = await self.Targetter.TargetsSpace( 
@@ -45,7 +46,7 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string commaDelimit
 	#region protected fields
 
 	protected TargetingSourceCriteria _sourceCriteria => new TargetingSourceCriteria(from, _restrictFrom);
-	protected readonly string _restrictFrom = commaDelimitedRestrictFrom;
+	protected readonly string? _restrictFrom = commaDelimitedRestrictFrom;
 	protected readonly string[] _targetFilterOptions = targetFilterOptions;
 	protected readonly int _range = range;
 

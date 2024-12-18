@@ -1,7 +1,8 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <param name="Restrict">Comma-Delimited Target string constancts</param>
-public record TargetingSourceCriteria( TargetFrom From, string Restrict = null ) {
+public record TargetingSourceCriteria( TargetFrom From, string? Restrict = null ) {
 
 	public IEnumerable<Space> GetSources(Spirit spirit)
 		=> Filter(spirit.TargetingSourceStrategy.EvaluateFrom(spirit.Presence, From)).ToArray();

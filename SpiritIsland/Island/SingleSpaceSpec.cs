@@ -1,25 +1,21 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
+
+public record SSS( Terrain terrain, string label, string startingItems = "" );
+
 
 /// <summary>
 /// The Standard Space - represents 1 visible marked space.
 /// </summary>
-public class SingleSpaceSpec( Terrain terrain, string label, string startingItems = "" ) : SpaceSpec(label) {
+public class SingleSpaceSpec( Terrain terrain, string label, Board board, string startingItems = "" ) : SpaceSpec(label,[board]) {
 
-	public Board Board {
-		get { return _board; }
-		set {
-			if(_board != null) 
-				throw new InvalidOperationException( "cannot set board twice" );
-			_board = value;
-			Boards = [ value ];
-		}
-	}
+	public Board Board => _board;
 
 	public override int InvaderActionCount => _board.InvaderActionCount;
 
 	override public SpaceLayout Layout => _spaceLayout ??= _board.Layout.ForSpaceSpec(this);
-	public void SetLayout(SpaceLayout layout) { _spaceLayout = Layout; }
-	SpaceLayout _spaceLayout;
+	public void SetLayout(SpaceLayout layout) { _spaceLayout = layout; }
+	SpaceLayout? _spaceLayout;
 
 	public StartUpCounts StartUpCounts { get; } = new StartUpCounts(startingItems);
 
@@ -39,6 +35,6 @@ public class SingleSpaceSpec( Terrain terrain, string label, string startingItem
 		space.Blight.Adjust( initialCounts.Blight ); // don't use AddBlight because that pulls it from the card and triggers blighted island
 	}
 
-	Board _board;
+	readonly Board _board = board;
 
 }

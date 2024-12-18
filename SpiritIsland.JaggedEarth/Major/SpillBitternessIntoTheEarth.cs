@@ -37,7 +37,7 @@ public class SpillBitternessIntoTheEarth {
 		List<Space> options = spaces.ToList();
 		while(adjCount-- > 0 && options.Count > 0) {
 			var space = await self.SelectAsync( new A.SpaceDecision( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );
-			if(space == null) break;
+			if(space is null) break;
 			await action.ActAsync( self.Target(space) );
 			options.Remove( space );
 		}

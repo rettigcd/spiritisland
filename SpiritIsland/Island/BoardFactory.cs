@@ -23,15 +23,15 @@ static public class BoardFactory {
 
 		Board board = new Board("A"
 			, orientation ?? BoardOrientation.Home
-			, new SingleSpaceSpec(Terrain.Ocean, "A0")
-			, new SingleSpaceSpec(Terrain.Mountain, "A1") // 
-			, new SingleSpaceSpec(Terrain.Wetland, "A2", "CD")  // city, dahan
-			, new SingleSpaceSpec(Terrain.Jungle, "A3", "DD")   // 2 dahan
-			, new SingleSpaceSpec(Terrain.Sands, "A4", "B")     // blight
-			, new SingleSpaceSpec(Terrain.Wetland, "A5")
-			, new SingleSpaceSpec(Terrain.Mountain, "A6", "D") // 1 dahan
-			, new SingleSpaceSpec(Terrain.Sands, "A7", "DD")     // 2 dahan
-			, new SingleSpaceSpec(Terrain.Jungle, "A8", "T")   // town
+			, new SSS(Terrain.Ocean, "A0")
+			, new SSS(Terrain.Mountain, "A1") // 
+			, new SSS(Terrain.Wetland, "A2", "CD")  // city, dahan
+			, new SSS(Terrain.Jungle, "A3", "DD")   // 2 dahan
+			, new SSS(Terrain.Sands, "A4", "B")     // blight
+			, new SSS(Terrain.Wetland, "A5")
+			, new SSS(Terrain.Mountain, "A6", "D") // 1 dahan
+			, new SSS(Terrain.Sands, "A7", "DD")     // 2 dahan
+			, new SSS(Terrain.Jungle, "A8", "T")   // town
 		);
 
 		board.SetNeighbors(0, 1, 2, 3);
@@ -54,15 +54,15 @@ static public class BoardFactory {
 
 		Board board = new Board("B"
 			, orientation ?? BoardOrientation.Home
-			, new SingleSpaceSpec(Terrain.Ocean, "B0")
-			, new SingleSpaceSpec(Terrain.Wetland, "B1", "D")  // 1 dahan
-			, new SingleSpaceSpec(Terrain.Mountain, "B2", "C") // city
-			, new SingleSpaceSpec(Terrain.Sands, "B3", "DD")     // 2 dahan
-			, new SingleSpaceSpec(Terrain.Jungle, "B4", "B")   // blight
-			, new SingleSpaceSpec(Terrain.Sands, "B5")
-			, new SingleSpaceSpec(Terrain.Wetland, "B6", "T")  // 1 town
-			, new SingleSpaceSpec(Terrain.Mountain, "B7", "D") // 1 dahan
-			, new SingleSpaceSpec(Terrain.Jungle, "B8", "DD")   // 2 dahan
+			, new SSS(Terrain.Ocean, "B0")
+			, new SSS(Terrain.Wetland, "B1", "D")  // 1 dahan
+			, new SSS(Terrain.Mountain, "B2", "C") // city
+			, new SSS(Terrain.Sands, "B3", "DD")     // 2 dahan
+			, new SSS(Terrain.Jungle, "B4", "B")   // blight
+			, new SSS(Terrain.Sands, "B5")
+			, new SSS(Terrain.Wetland, "B6", "T")  // 1 town
+			, new SSS(Terrain.Mountain, "B7", "D") // 1 dahan
+			, new SSS(Terrain.Jungle, "B8", "DD")   // 2 dahan
 		);
 
 		board.SetNeighbors(0, 1, 2, 3);
@@ -85,15 +85,15 @@ static public class BoardFactory {
 
 		var board = new Board("C"
 			, orientation ?? BoardOrientation.Home
-			, new SingleSpaceSpec(Terrain.Ocean, "C0")
-			, new SingleSpaceSpec(Terrain.Jungle, "C1", "D")   // 1 dahan
-			, new SingleSpaceSpec(Terrain.Sands, "C2", "C")     // city
-			, new SingleSpaceSpec(Terrain.Mountain, "C3", "DD") // 2 dahan
-			, new SingleSpaceSpec(Terrain.Jungle, "C4")
-			, new SingleSpaceSpec(Terrain.Wetland, "C5", "DDB")  // 2 dahan, blight
-			, new SingleSpaceSpec(Terrain.Sands, "C6", "D")     // 1 dahan
-			, new SingleSpaceSpec(Terrain.Mountain, "C7", "T") // 1 town
-			, new SingleSpaceSpec(Terrain.Wetland, "C8")
+			, new SSS(Terrain.Ocean, "C0")
+			, new SSS(Terrain.Jungle, "C1", "D")   // 1 dahan
+			, new SSS(Terrain.Sands, "C2", "C")     // city
+			, new SSS(Terrain.Mountain, "C3", "DD") // 2 dahan
+			, new SSS(Terrain.Jungle, "C4")
+			, new SSS(Terrain.Wetland, "C5", "DDB")  // 2 dahan, blight
+			, new SSS(Terrain.Sands, "C6", "D")     // 1 dahan
+			, new SSS(Terrain.Mountain, "C7", "T") // 1 town
+			, new SSS(Terrain.Wetland, "C8")
 		);
 
 		board.SetNeighbors(0, 1, 2, 3);
@@ -115,15 +115,15 @@ static public class BoardFactory {
 	static public Board BuildD(BoardOrientation? orientation = null) {
 		var board = new Board("D"
 			, orientation ?? BoardOrientation.Home
-			, new SingleSpaceSpec(Terrain.Ocean, "D0")
-			, new SingleSpaceSpec(Terrain.Wetland, "D1", "DD")   // 2 dahan
-			, new SingleSpaceSpec(Terrain.Jungle, "D2", "CD")    // city, 1 dahan
-			, new SingleSpaceSpec(Terrain.Wetland, "D3")
-			, new SingleSpaceSpec(Terrain.Sands, "D4")
-			, new SingleSpaceSpec(Terrain.Mountain, "D5", "DB")  // 1 dahan, blight
-			, new SingleSpaceSpec(Terrain.Jungle, "D6")
-			, new SingleSpaceSpec(Terrain.Sands, "D7", "TDD")      // 1 town, 2 dahan
-			, new SingleSpaceSpec(Terrain.Mountain, "D8")
+			, new SSS(Terrain.Ocean, "D0")
+			, new SSS(Terrain.Wetland, "D1", "DD")   // 2 dahan
+			, new SSS(Terrain.Jungle, "D2", "CD")    // city, 1 dahan
+			, new SSS(Terrain.Wetland, "D3")
+			, new SSS(Terrain.Sands, "D4")
+			, new SSS(Terrain.Mountain, "D5", "DB")  // 1 dahan, blight
+			, new SSS(Terrain.Jungle, "D6")
+			, new SSS(Terrain.Sands, "D7", "TDD")      // 1 town, 2 dahan
+			, new SSS(Terrain.Mountain, "D8")
 		);
 
 		board.SetNeighbors(0, 1, 2, 3);
@@ -146,15 +146,15 @@ static public class BoardFactory {
 
 		var board = new Board("E"
 			, orientation ?? BoardOrientation.Home
-			, new SingleSpaceSpec(Terrain.Ocean, "E0")
-			, new SingleSpaceSpec(Terrain.Sands, "E1", "D")   // 1 dahan
-			, new SingleSpaceSpec(Terrain.Mountain, "E2", "C")    // city
-			, new SingleSpaceSpec(Terrain.Jungle, "E3", "DD")  // 2 dahan
-			, new SingleSpaceSpec(Terrain.Wetland, "E4", "B")      // 1 blight
-			, new SingleSpaceSpec(Terrain.Mountain, "E5", "D")  // 1 dahan
-			, new SingleSpaceSpec(Terrain.Sands, "E6")
-			, new SingleSpaceSpec(Terrain.Jungle, "E7", "T")      // 1 town
-			, new SingleSpaceSpec(Terrain.Wetland, "E8", "DD") // 2 dahan
+			, new SSS(Terrain.Ocean, "E0")
+			, new SSS(Terrain.Sands, "E1", "D")   // 1 dahan
+			, new SSS(Terrain.Mountain, "E2", "C")    // city
+			, new SSS(Terrain.Jungle, "E3", "DD")  // 2 dahan
+			, new SSS(Terrain.Wetland, "E4", "B")      // 1 blight
+			, new SSS(Terrain.Mountain, "E5", "D")  // 1 dahan
+			, new SSS(Terrain.Sands, "E6")
+			, new SSS(Terrain.Jungle, "E7", "T")      // 1 town
+			, new SSS(Terrain.Wetland, "E8", "DD") // 2 dahan
 		);
 
 		board.SetNeighbors(0, 1, 2, 3);
@@ -177,15 +177,15 @@ static public class BoardFactory {
 
 		var board = new Board("F"
 			, orientation ?? BoardOrientation.Home
-			, new SingleSpaceSpec(Terrain.Ocean, "F0")
-			, new SingleSpaceSpec(Terrain.Sands, "F1", "DD")
-			, new SingleSpaceSpec(Terrain.Jungle, "F2", "C")
-			, new SingleSpaceSpec(Terrain.Wetland, "F3", "D")
-			, new SingleSpaceSpec(Terrain.Mountain, "F4", "B")
-			, new SingleSpaceSpec(Terrain.Jungle, "F5", "D")
-			, new SingleSpaceSpec(Terrain.Mountain, "F6", "DD")
-			, new SingleSpaceSpec(Terrain.Wetland, "F7", "")
-			, new SingleSpaceSpec(Terrain.Sands, "F8", "T")
+			, new SSS(Terrain.Ocean, "F0")
+			, new SSS(Terrain.Sands, "F1", "DD")
+			, new SSS(Terrain.Jungle, "F2", "C")
+			, new SSS(Terrain.Wetland, "F3", "D")
+			, new SSS(Terrain.Mountain, "F4", "B")
+			, new SSS(Terrain.Jungle, "F5", "D")
+			, new SSS(Terrain.Mountain, "F6", "DD")
+			, new SSS(Terrain.Wetland, "F7", "")
+			, new SSS(Terrain.Sands, "F8", "T")
 		);
 
 		board.SetNeighbors(0, 1, 2, 3);
@@ -205,5 +205,3 @@ static public class BoardFactory {
 	}
 
 }
-
-#nullable disable

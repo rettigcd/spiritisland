@@ -20,7 +20,7 @@ public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceTok
 		) {
 
 			var dst = await Self.SelectAsync(new A.SpaceDecision("Instead of destroying, push presence to:", args.From.Adjacent, Present.Done));
-			if( dst == null ) return;
+			if( dst is null ) return;
 
 			--args.Count;
 			await args.Token.MoveAsync(args.From, dst);
@@ -28,7 +28,7 @@ public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceTok
 		}
 	}
 
-	bool UsedThisRound {
+	static bool UsedThisRound {
 		get => GameState.Current.RoundScope.ContainsKey(Name);
 		set => GameState.Current.RoundScope[Name] = true;
 	}

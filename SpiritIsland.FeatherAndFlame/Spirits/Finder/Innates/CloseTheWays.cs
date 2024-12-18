@@ -27,12 +27,13 @@ public class CloseTheWays {
 		bool previouslyRun = ActionScope.Current.ContainsKey( Name );
 		if(previouslyRun) {
 			// Target a New Space
-			TargetSpaceResults target = await ctx.Self.Targetter.TargetsSpace( "Target Additional Space To Close",
+			TargetSpaceResults? target = await ctx.Self.Targetter.TargetsSpace( "Target Additional Space To Close",
 				preselect: null,
 				new TargetingSourceCriteria(TargetFrom.Presence),
 				new TargetCriteria( 1 )
 			);
-			ctx = ctx.Target(target.Space);
+			if( target is not null )
+				ctx = ctx.Target(target.Space);
 		}
 		ActionScope.Current[Name] = true; // mark as ran
 

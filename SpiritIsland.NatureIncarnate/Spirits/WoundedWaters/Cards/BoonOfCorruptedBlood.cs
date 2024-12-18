@@ -19,7 +19,7 @@ public class BoonOfCorruptedBlood {
 			spirit.Presence.Lands, 
 			Present.Done
 		);
-		if(space==null) return;
+		if(space is null) return;
 
 		// 1 Damage 
 		// If you target another Spirit, in that land also:

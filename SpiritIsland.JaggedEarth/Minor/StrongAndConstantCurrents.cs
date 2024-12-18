@@ -56,13 +56,13 @@ public class StrongAndConstantCurrents{
 				new A.SpaceTokenDecision( "Select Dahan to move to/from "+ctx.Space.Label, coastalWithDahan, Present.Done )
 					.PointArrowTo( ctx.SpaceSpec )
 			);
-			if(selected == null) break;
+			if(selected is null) break;
 
 			// To:
-			Space destination = (selected.Space != ctx.Space) ? ctx.Space
+			Space? destination = (selected.Space != ctx.Space) ? ctx.Space
 				: await ctx.SelectAsync( A.SpaceDecision.ToPushToken( selected.Token, selected.Space, coastSpaces, Present.Always ) );
-
-			await selected.MoveTo( destination );
+			if( destination is not null)
+				await selected.MoveTo( destination );
 
 			count--;
 		}

@@ -9,12 +9,12 @@ public class ExplosiveEruption {
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction();
 
-		Space space = await ctx.Self.SelectAsync( new A.SpaceDecision(
+		Space? space = await ctx.Self.SelectAsync( new A.SpaceDecision(
 			$"Apply {destroyedCount} damage to",
 			ctx.Space.Range( 1 ),
 			Present.Always
 		) );
-		if( space == null ) return;
+		if( space is null ) return;
 
 		await ctx.Target( space ).DamageInvaders(destroyedCount );
 	}
@@ -62,14 +62,14 @@ class ErruptionAttribute : FromPresenceAttribute {
 	/// <summary>
 	/// Override, so we can destroy presence After targeting, prior to Tier-evaluation
 	/// </summary>
-	public override async Task<object> GetTargetCtx( string powerName, Spirit self ) {
+	public override async Task<object?> GetTargetCtx( string powerName, Spirit self ) {
 
-		var target = (TargetSpaceCtx)await base.GetTargetCtx( powerName, self );
-
-		int count = await target.Self.SelectNumber( "# of presence to destroy?", target.Presence.Count, 0 );
-
-		// Destroy them now
-		await target.Space.Destroy( self.Presence.Token, count );
+		var target = (TargetSpaceCtx?)await base.GetTargetCtx( powerName, self );
+		if( target is not null ) {
+			int count = await target.Self.SelectNumber( "# of presence to destroy?", target.Presence.Count, 0 );
+			// Destroy them now
+			await target.Space.Destroy( self.Presence.Token, count );
+		}
 
 		return target;
 	}

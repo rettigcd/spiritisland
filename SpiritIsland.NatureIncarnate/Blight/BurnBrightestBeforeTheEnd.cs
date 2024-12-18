@@ -26,7 +26,7 @@ public class BurnBrightestBeforeTheEnd : BlightCard {
 			// To
 			Space to = await self.SelectLandWithPresence("Place presence or Destroy it","Destroy it!");
 
-			if(to == null) {
+			if(to is null) {
 				// destroy
 				await from.RemoveAsync();
 				++self.Presence.Destroyed.Count;

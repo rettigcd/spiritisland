@@ -1,5 +1,5 @@
-﻿namespace SpiritIsland;
-#nullable enable
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <remarks>
 /// Used by Powers + Growth for Wounded Waters and Relentless Gaze
@@ -54,7 +54,7 @@ public class AddDestroyedPresence : SpiritAction {
 
 	#endregion
 
-	IEnumerable<Space> SpacesFromSourceSpirit( Spirit sourceSpirit ) {
+	Space[] SpacesFromSourceSpirit( Spirit sourceSpirit ) {
 		return sourceSpirit.FindSpacesWithinRange(new TargetCriteria(Range??0));
 	}
 
@@ -69,14 +69,14 @@ public class AddDestroyedPresence : SpiritAction {
 		IEnumerable<Space> destinationOptions = SpacesFromSourceSpirit(_relativeSpirit ?? placingSpirit)
 			.Where(placingSpirit.Presence.CanBePlacedOn);
 
-		Space dst = await placingSpirit.SelectAsync( A.SpaceDecision.ToPlaceDestroyedPresence(
+		Space? dst = await placingSpirit.SelectAsync( A.SpaceDecision.ToPlaceDestroyedPresence(
 			destinationOptions,
 			_present,
 			placingSpirit,
 			maxToPlaceOnSpace
 		) );
 
-		if(dst == null ) return;
+		if(dst is null ) return;
 
 		int numToPlace = _present == Present.Always ? maxToPlaceOnSpace
 			: await placingSpirit.SelectNumber("How many presences would you like to place?", maxToPlaceOnSpace, 1);

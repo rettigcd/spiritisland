@@ -9,10 +9,11 @@ public class InciteTheMob {
 		int startingInvaderCount = ctx.Space.InvaderTotal();
 
 		// 1 invader with strife deals damage to other invaders (not to each)
-		var strifedInvaderWithMostDamage = ctx.Space.InvaderTokens().OfType<HumanToken>()
+		HumanToken? strifedInvaderWithMostDamage = ctx.Space.InvaderTokens().OfType<HumanToken>()
 			.OrderByDescending( x => x.FullHealth )
 			.FirstOrDefault();
-		int damage = strifedInvaderWithMostDamage != null ? strifedInvaderWithMostDamage.FullHealth : 0;
+		if(strifedInvaderWithMostDamage is null) return;
+		int damage = strifedInvaderWithMostDamage.FullHealth;
 		await ctx.StrifedDamageOtherInvaders(damage, strifedInvaderWithMostDamage, ctx.Space[strifedInvaderWithMostDamage] == 1 );
 
 		// 1 fear per invader this power destroyed. // ??? What if Bringer uses this?  Does nightmare death count as death

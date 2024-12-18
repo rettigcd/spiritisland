@@ -21,7 +21,7 @@ public class ExaltationOfTheIncandescentSky {
 			int count = 4;
 			while(0 < count--) {
 				var space = await ctx.Self.SelectAsync(new A.SpaceDecision($"Skip Invader Action ({count+1} of 4)",spaceOptions,Present.Done));
-				if(space == null) break;
+				if(space is null) break;
 				spaceOptions.Remove(space);
 				// Skip 1 Invader Action.
 				space.Skip1InvaderAction(Name,ctx.Self);
@@ -41,8 +41,8 @@ public class ExaltationOfTheIncandescentSky {
 		self.AddActionFactory(new ResolveSlowDuringFast());
 
 		// do 3 Damage in one of their lands.
-		Space space = await self.SelectAsync(new A.SpaceDecision("Do 3 Damage in land",self.Presence.Lands,Present.Done));
-		if(space == null) return;
+		Space? space = await self.SelectAsync(new A.SpaceDecision("Do 3 Damage in land",self.Presence.Lands,Present.Done));
+		if(space is null) return;
 		await space.UserSelected_DamageInvadersAsync(self,3);
 	}
 }

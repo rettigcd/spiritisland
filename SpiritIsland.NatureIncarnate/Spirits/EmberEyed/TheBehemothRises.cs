@@ -37,7 +37,7 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 				.DoN();
 		} else {
 			Space? space = await self.SelectAsync( new A.SpaceDecision( "Select space to place Incarna.", eeb.Presence.SacredSites, Present.Done ) );
-			if(space == null) return;
+			if(space is null) return;
 			await space.AddAsync( incarna, 1 );
 		}
 	}

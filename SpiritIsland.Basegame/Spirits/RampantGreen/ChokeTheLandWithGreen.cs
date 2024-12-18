@@ -34,7 +34,7 @@ public class ChokeTheLandWithGreen( ASpreadOfRampantGreen _self )
 		if(_self.Energy < energyCost) return false;
 
 		var stop = await _self.SelectAsync( new A.SpaceDecision( $"Stop {actionDescription} on {space.Label} by destroying 1 presence", new Space[] { space }, Present.Done ) );
-		if(stop == null) return false;
+		if(stop is null) return false;
 
 		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_SpecialRule); // Special Rules! - it is the invader actions we are stopping
 		await stop.Destroy( this, 1 );

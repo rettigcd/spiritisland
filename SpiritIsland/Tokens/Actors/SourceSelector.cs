@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary>
 /// Presents user with ability to select from many *REMOVABLE* tokens on many spaces.
@@ -17,7 +18,7 @@ public class SourceSelector {
 		Spirit spirit, 
 		Func<PromptData,string> promptBuilder,
 		Present present, 
-		SpaceSpec singleDestination=null,
+		SpaceSpec? singleDestination = null,
 		int? maxCount = null
 	) {
 		int index = 0;
@@ -25,8 +26,8 @@ public class SourceSelector {
 			A.SpaceTokenDecision decision = BuildDecision( promptBuilder, present, singleDestination, index, maxCount );
 
 			// Select Token
-			SpaceToken source = await spirit.SelectAsync( decision );
-			if(source == null) break;
+			SpaceToken? source = await spirit.SelectAsync( decision );
+			if(source is null) break;
 
 			await NotifyAsync( source );
 
@@ -35,7 +36,7 @@ public class SourceSelector {
 		}
 	}
 
-	public A.SpaceTokenDecision BuildDecision( Func<PromptData, string> promptBuilder, Present present, SpaceSpec singleDestination, 
+	public A.SpaceTokenDecision BuildDecision( Func<PromptData, string> promptBuilder, Present present, SpaceSpec? singleDestination, 
 		int index, int? maxCount // for the prompt
 	) {
 		SpaceToken[] options = GetSourceOptions();
@@ -144,7 +145,7 @@ public class SourceSelector {
 
 	Quota _quota = new Quota();
 
-	Func<Space, bool> _filterSpace;
+	Func<Space, bool>? _filterSpace;
 	readonly public Space[] _unfilteredSourceSpaces;
 
 	readonly List<Func<SpaceToken, bool>> _filterSpaceToken = [];
@@ -155,7 +156,7 @@ public class SourceSelector {
 
 static public class SelectFrom {
 	static public SourceSelector FromASingleLand( this SourceSelector ss ) {
-		SpaceSpec source = null;
+		SpaceSpec? source = null;
 		ss
 			.Track( spaceToken => source ??= spaceToken.Space.SpaceSpec )
 			.FilterSource( space => source is null || space.SpaceSpec == source );
@@ -176,7 +177,7 @@ public class PromptData( Quota quota, SpaceToken[] options, int index, int? maxC
 
 	public readonly int Index = index;
 	public readonly int? MaxCount = maxCount;
-	public int RemainingCount => MaxCount.Value - Index;
+	public int RemainingCount => MaxCount.HasValue ? (MaxCount.Value - Index) : int.MaxValue;
 
 	public string RemainingPartsStr => quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().ToArray() );
 }

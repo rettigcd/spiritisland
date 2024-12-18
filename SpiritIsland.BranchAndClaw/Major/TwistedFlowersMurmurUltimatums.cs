@@ -22,7 +22,7 @@ public class TwistedFlowersMurmurUltimatums {
 		if(2 <= GameState.Current.Fear.TerrorLevel)
 			for(int i = 0; i < 2; ++i) {
 				var st = await ctx.SelectAsync( An.Invader.ToRemove( ctx.Space.InvaderTokens().On( ctx.Space) ) );
-				if(st == null) break;
+				if(st is null) break;
 				await ctx.Invaders.Remove( st.Token, 1 );
 			}
 

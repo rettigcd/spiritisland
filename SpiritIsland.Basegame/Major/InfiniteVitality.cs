@@ -29,7 +29,7 @@ public class InfiniteVitality {
 		// remove 1 blight from target or adjacent land
 		var blightedLands = ctx.Space.InOrAdjacentTo.Where( s=>s.Blight.Any ).ToArray();
 		var unblightLand = await ctx.SelectAsync( new A.SpaceDecision( "Remove 1 blight from", blightedLands, Present.Always ));
-		if(unblightLand != null)
+		if(unblightLand is not null)
 			await ctx.Target( unblightLand ).RemoveBlight();
 	}
 

@@ -42,7 +42,7 @@ public class DahanReclaimFishingGrounds : FearCardBase, IFearCard {
 		foreach( var spirit in gs.Spirits ) {
 			if(options.Count == 0) break;
 			Space space = await spirit.SelectSpaceAsync("1 damage per Dahan", options,Present.Always );
-			if( space != null) {
+			if( space is not null) {
 				await act(spirit.Target(space));
 				options.Remove(options.First(s => s == space));
 			}

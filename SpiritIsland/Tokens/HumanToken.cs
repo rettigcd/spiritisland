@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Invaders.Ravage;
+﻿#nullable enable
+using SpiritIsland.Invaders.Ravage;
 
 namespace SpiritIsland;
 
@@ -129,7 +130,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	protected virtual HumanToken MakeNew(Props x) => new HumanToken(x);
 
 	public class Props {
-		public HumanTokenClass Class;
+		public required HumanTokenClass Class;
 		public int _rawFullHealth;
 		public int Damage;
 		public int StrifeCount;
@@ -170,10 +171,10 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		+ 29 * (int)RavageSide
 		+ 31 * (int)Img;
 
-	public override bool Equals( object obj ) => this.Equals( obj as HumanToken );
+	public override bool Equals( object? obj ) => this.Equals( obj as HumanToken );
 
-	public bool Equals( HumanToken other ) {
-		return other != null
+	public bool Equals( HumanToken? other ) {
+		return other is not null
 			&& other.HumanClass == HumanClass
 			&& other._rawFullHealth == _rawFullHealth
 			&& other.Damage == Damage	

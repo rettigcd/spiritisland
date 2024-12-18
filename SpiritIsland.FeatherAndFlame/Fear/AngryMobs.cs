@@ -28,7 +28,7 @@ public class AngryMobs : FearCardBase, IFearCard {
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
 		var options = ctx.Space.HumanOfTag( Human.Town ).On( ctx.Space );
 		var st = await ctx.Self.SelectAsync( new A.SpaceTokenDecision( "Replace 1 Town with 2 Explorers", options, Present.Done ) );
-		if(st == null) return;
+		if(st is null) return;
 		HumanToken town = st.Token.AsHuman();
 
 		int explorersToAdd = Math.Min(town.RemainingHealth,2); // don't let Durable towns create 4

@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 static public class ReplaceInvader {
 
@@ -29,9 +30,9 @@ static public class ReplaceInvader {
 
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
 	/// <returns> Original token (before downgrade).</returns>
-	static async Task<HumanToken> Downgrade1Token( Spirit spirit, Space space, Present present, HumanToken[] options ) {
+	static async Task<HumanToken?> Downgrade1Token( Spirit spirit, Space space, Present present, HumanToken[] options ) {
 		var st = await spirit.SelectAsync( An.Invader.ToReplace( "downgrade", options.On(space), present ) );
-		if(st == null) return null;
+		if(st is null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
 		await DowngradeSelectedInvader( space, oldInvader );
@@ -65,9 +66,15 @@ static public class ReplaceInvader {
 
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
 	/// <returns> Original token (before upgrade).</returns>
-	static public async Task<HumanToken> Upgrade1Token( Spirit spirit, Space space, Present present, HumanToken[] options, string actionSuffix = "" ) {
+	static public async Task<HumanToken?> Upgrade1Token( 
+		Spirit spirit, 
+		Space space, 
+		Present present, 
+		HumanToken[] options, 
+		string actionSuffix = "" 
+	) {
 		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade" + actionSuffix, options.On( space ), present ) );
-		if(st == null) return null;
+		if(st is null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
 		await UpgradeSelectedInvader( space, oldInvader );
@@ -90,7 +97,7 @@ static public class ReplaceInvader {
 
 		var tokens = ctx.Space;
 		var st = await ctx.Self.SelectAsync( An.Invader.ToReplace("disolve", tokens.HumanOfTag( oldInvader ).On(ctx.Space) ) );
-		if(st == null) return;
+		if(st is null) return;
 		var tokenToRemove = st.Token.AsHuman();
 
 		int explorersToAdd = replaceCount - tokenToRemove.Damage; // ignore nightmare damage because it can't really destory stuff

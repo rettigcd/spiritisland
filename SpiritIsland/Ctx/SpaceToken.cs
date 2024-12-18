@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
 public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
@@ -46,12 +47,12 @@ public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
 
 	public override int GetHashCode() => Space.SpaceSpec.GetHashCode()-Token.GetHashCode();
 
-	public override bool Equals(object obj) => Equals(obj as SpaceToken);
+	public override bool Equals(object? obj) => Equals(obj as SpaceToken);
 
-	public bool Equals( SpaceToken other ) => other is not null  // Don't use .Equals() or == here
+	public bool Equals( SpaceToken? other ) => other is not null  // Don't use .Equals() or == here
 		&& other.Token == Token && other.Space == Space;
 
-	public static bool operator ==(SpaceToken st1, SpaceToken st2) 
+	public static bool operator ==(SpaceToken st1, SpaceToken? st2) 
 		=> st1 is null ? st2 is null : st1.Equals(st2);
     public static bool operator !=(SpaceToken st1, SpaceToken st2) => !(st1==st2);
 
