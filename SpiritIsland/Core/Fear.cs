@@ -21,7 +21,6 @@ public class Fear : IHaveMemento {
 			Deck.Push( new NullFearCard() );
 	}
 
-	[Obsolete("Don't modify fear deck after it has been initialized")]
 	public void PushOntoDeck( IFearCard fearCard ) {
 		Deck.Push( fearCard );
 	}

@@ -125,9 +125,9 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 	#region Memento
 
-	protected override object CustomMementoValue {
+	protected override object? CustomMementoValue {
 		get => new SavedCustomProps( this );
-		set => ((SavedCustomProps)value).Restore( this );
+		set => ((SavedCustomProps?)value)!.Restore( this );
 	}
 
 	class SavedCustomProps( WoundedWatersBleeding spirit ) {

@@ -28,8 +28,8 @@ public class APallUponTheLand : BlightCard {
 			if(spiritOptions.Length == 0) return;
 			var spirit = spiritOptions.Length == 1 ? spiritOptions[0]
 				: await boardCtx.SelectAsync( new A.Spirit( "Destroy 1 presence.", spiritOptions ) );
-			var spaceToken = await spirit.SelectAsync( new A.SpaceTokenDecision( "Select Presence to Destory"
-				, spirit.Presence.Deployed.WhereIsOn(boardCtx.Board.Spaces.ScopeTokens()), Present.Always ) );
+			var spaceToken = (await spirit.SelectAsync( new A.SpaceTokenDecision( "Select Presence to Destory"
+				, spirit.Presence.Deployed.WhereIsOn(boardCtx.Board.Spaces.ScopeTokens()), Present.Always ) ))!;
 			await spaceToken.Destroy();
 		} );
 

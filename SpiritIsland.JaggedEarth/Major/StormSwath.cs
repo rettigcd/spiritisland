@@ -35,18 +35,18 @@ public class StormSwath {
 
 	static async Task<Space> SelectLandAdjacentToBoth( TargetSpaceCtx ctx, Space origin ) {
 
-		return await ctx.SelectAsync( new A.SpaceDecision(
+		return (await ctx.SelectAsync( new A.SpaceDecision(
 			"Select land for 1 damge to each invader",
 			ctx.Adjacent.Intersect( ctx.Target( origin ).Adjacent ),
 			Present.AutoSelectSingle
-		) );
+		) ))!;
 	}
 
-	static Task<Space> FindOriginLand( TargetSpaceCtx ctx ) {
+	static async Task<Space> FindOriginLand( TargetSpaceCtx ctx ) {
 
 		var ssOptions = TargetSpaceAttribute.TargettedSpace.Sources;
 
-		return ctx.SelectAsync( new A.SpaceDecision( "Select Origin land",  ssOptions, Present.AutoSelectSingle ));
+		return (await ctx.SelectAsync( new A.SpaceDecision( "Select Origin land",  ssOptions, Present.AutoSelectSingle )))!;
 	}
 
 }

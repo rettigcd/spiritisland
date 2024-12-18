@@ -57,6 +57,14 @@ public abstract partial class Spirit
 		SelectionMade?.Invoke(selection);
 		return selection;
 	}
+
+	/// <summary>
+	/// Use ONLY for decisions that will ALWAYS return an option.
+	/// </summary>
+	public async Task<T> SelectAlwaysAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption {
+		return (await SelectAsync(decision))!;
+	}
+
 	public event Action<object>? SelectionMade; // hook for: Reach Through the Efemeral Distance
 
 	public void PreSelect( SpaceToken st ) => _gateway.PreloadedSpaceToken = st;

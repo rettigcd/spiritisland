@@ -18,13 +18,14 @@ public class BargainOfCoursingPaths {
 		// Now: Mark both target land and another with 2 or more Dahan.
 		var token = new CoursingPaths(ctx.Self);
 		ctx.Space.Init(token,1);
-		Space other = await SelectSecondSite( ctx );
+		Space? other = await SelectSecondSite( ctx );
 		other?.Init(token,1);
 
 	}
 
-	static Task<Space> SelectSecondSite( TargetSpaceCtx ctx ) {
+	static Task<Space?> SelectSecondSite( TargetSpaceCtx ctx ) {
 		Space[] options = ActionScope.Current.Spaces.Where( s => s != ctx.Space && 2 <= s.Dahan.CountAll ).ToArray();
+		if(options.Length == 0) return Task.FromResult<Space?>(null); // no other Dahan sites.
 		return ctx.Self.SelectAsync( new A.SpaceDecision( "Mark Second Space for Coursing", options, Present.Always ) );
 	}
 
@@ -59,7 +60,7 @@ public class BargainOfCoursingPaths {
 			if(scope.ContainsKey(key)) return (Space)scope[key];
 
 			// Pick brand new
-			Space destination = await _spirit.SelectAsync( new A.SpaceDecision( 
+			Space destination = await _spirit.SelectAlwaysAsync( new A.SpaceDecision( 
 				$"{Name}: Move {args.Count}{args.Added} from {args.To.Text} to:",
 				ActionScope.Current.Spaces,
 				Present.Always 

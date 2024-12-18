@@ -50,7 +50,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 
 		// And Ocean chooses to save them (may be more than 1)
 		// For now save them all to the same spot.
-		Space destination = await _ocean.SelectAsync(A.SpaceDecision.ToPushToken(args.Added, to, destinationOptions, Present.Done));
+		Space? destination = await _ocean.SelectAsync(A.SpaceDecision.ToPushToken(args.Added, to, destinationOptions, Present.Done));
 		if( destination is null ) return false;
 
 		// Move all of them at the end of the Action. (Let everyone handle the move-event before we move them again)

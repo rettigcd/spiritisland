@@ -10,7 +10,8 @@ public class HazardsSpreadAcrossTheIsland{
 		var candidates = FindHazardTokenInAdjacentLand( ctx );
 		if(candidates.Length == 0) return;
 
-		var tokenChoice = (await ctx.SelectAsync(new A.SpaceTokenDecision("Select hazard to add to "+ctx.SpaceSpec.Label, candidates, Present.Always))).Token;
+		var decision = new A.SpaceTokenDecision("Select hazard to add to "+ctx.SpaceSpec.Label, candidates, Present.Always);
+		var tokenChoice = (await ctx.SelectAsync(decision))!.Token;
 
 		// choosing disease costs 1 energy.
 		if( tokenChoice == Token.Disease )

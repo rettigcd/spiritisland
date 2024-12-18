@@ -24,9 +24,15 @@ public class DrawTowardsAConsumingVoid {
 				&& await ctx.Self.UserSelectsFirstText("Forget a minor, major, and unique power to repeat?", "Yes! Draw Everything in!", "No, thank you.")
 			) {
 				// Forget a Minor Power, and a Major Power, and a unique Power
-				major.Remove( await ctx.Self.Forget.ACard(major));
-				minor.Remove( await ctx.Self.Forget.ACard(minor));
-				unique.Remove( await ctx.Self.Forget.ACard(unique));
+				var c1 = await ctx.Self.Forget.ACard(major);
+				if(c1 is null) return;
+				var c2 = await ctx.Self.Forget.ACard(minor);
+				if( c2 is null) return;
+				var c3 = await ctx.Self.Forget.ACard(unique);
+				if( c3 is null) return;
+				major.Remove(c1);
+				minor.Remove(c2);
+				unique.Remove(c3);
 				// to perform the above effects again.
 				await PerformEffect( ctx );
 			}
@@ -74,7 +80,7 @@ public class DrawTowardsAConsumingVoid {
 			.ToArray();
 
 		if( 0<movableSpiritsInSpace.Length ) {
-			var tokenToGather = await ctx.SelectAsync( new A.SpaceTokenDecision("Select presence to move.", presenceOptions, Present.Always));
+			var tokenToGather = (await ctx.SelectAsync( new A.SpaceTokenDecision("Select presence to move.", presenceOptions, Present.Always)))!;
 			await tokenToGather.MoveTo( ctx.Space );
 		}
 	}

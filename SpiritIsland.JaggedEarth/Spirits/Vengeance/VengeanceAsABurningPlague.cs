@@ -37,7 +37,7 @@ public class VengeanceAsABurningPlague : Spirit {
 
 	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async self => {
 		var options = DefaultRangeCalculator.Singleton.GetTargetingRoute_MultiSpace(self.Presence.Lands, new TargetCriteria(1)).Targets;
-		Space to = await self.SelectAsync( new A.SpaceDecision( "Add a Disease", options, Present.Always ) );
+		Space to = (await self.SelectAsync( new A.SpaceDecision( "Add a Disease", options, Present.Always ) ))!;
 		await self.Target( to ).Disease.AddAsync( 1 );
 	} );
 

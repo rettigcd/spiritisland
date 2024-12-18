@@ -52,7 +52,7 @@ class ThePastReturnsAgain {
 				if(max == 0) continue;
 				var payOptions = new List<ItemOption<int>>();
 				int i = max; while(0 <= i) { payOptions.Add( new ItemOption<int>( i-- ) ); }
-				var x = await s.SelectAsync( new A.TypedDecision<ItemOption<int>>( $"Contribute Energy? ({remaining} of {total} outstanding)", payOptions, Present.Always ) );
+				var x = (await s.SelectAsync( new A.TypedDecision<ItemOption<int>>( $"Contribute Energy? ({remaining} of {total} outstanding)", payOptions, Present.Always ) ))!;
 				pledge[s] -= x.Item;
 				remaining -= x.Item;
 				if(remaining == 0) break;

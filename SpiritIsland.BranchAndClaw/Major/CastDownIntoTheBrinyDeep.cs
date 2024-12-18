@@ -65,7 +65,7 @@ public class CastDownIntoTheBrinyDeep {
 		var mapper = TerrainMapper.Current;
 		do {
 			target = space.Range( ++range ).FirstOrDefault( mapper.IsInPlay );
-		}while(target == null && 20 < range);
+		}while(target is null && 20 < range);
 		return target ?? GameState.Current.Spaces.First(x=>x!=space); 
 	}
 }

@@ -132,9 +132,9 @@ public class FracturedDaysSplitTheSky : Spirit {
 
 	#region Custom Memento
 
-	protected override object CustomMementoValue { 
+	protected override object? CustomMementoValue { 
 		get => new FracturedDaysMemento(this);
-		set => ((FracturedDaysMemento)value).Restore(this);
+		set { if(value is FracturedDaysMemento x) x.Restore(this); }
 	}
 
 	class FracturedDaysMemento( FracturedDaysSplitTheSky _spirit ) {

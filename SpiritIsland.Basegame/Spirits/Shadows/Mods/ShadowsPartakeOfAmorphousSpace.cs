@@ -23,9 +23,8 @@ class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
 		if(presenceToMove is null) return;
 
 		var d2 = presenceToMove.Space.Adjacent.Union( GameState.Current.Spaces.Where(s => s.Dahan.Any) );
-		Space destination = await self.SelectAsync(new A.SpaceDecision("Select destination for presence.", d2, Present.Always) );
-		if(destination is not null)
-			await presenceToMove.MoveTo(destination);
+		Space destination = await self.SelectAlwaysAsync(new A.SpaceDecision("Select destination for presence.", d2, Present.Always) );
+		await presenceToMove.MoveTo(destination);
 	}
 
 	#endregion constructor / init

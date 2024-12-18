@@ -64,9 +64,12 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	#endregion Elements
 
-	protected override object CustomMementoValue { 
+	protected override object? CustomMementoValue { 
 		get => PreparedElementMgr.PreparedElements.ToArray();
-		set => InitFromArray(PreparedElementMgr.PreparedElements, (KeyValuePair<Element, int>[])value );
+		set { 
+			if(value is KeyValuePair<Element,int>[] elDict ) 
+				InitFromArray(PreparedElementMgr.PreparedElements, elDict ); 
+		}
 	}
 
 }

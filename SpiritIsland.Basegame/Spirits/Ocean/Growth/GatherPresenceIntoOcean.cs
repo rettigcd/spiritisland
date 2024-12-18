@@ -5,29 +5,22 @@ public class GatherPresenceIntoOcean : SpiritAction {
 	public GatherPresenceIntoOcean():base( "Gather 1 Presence into EACH Ocean" ) { }
 	public override async Task ActAsync( Spirit self ) {
 
-		List<Space> gatherSpaces = self.Presence.Lands
-			.Where( p => p.SpaceSpec.IsCoastal )
-			.Select( p => p.Adjacent_Existing.Single( o => o.SpaceSpec.IsOcean ) ) // Ocean is not in Play during Growth
-			.Distinct()
-			.ToList();
+		Dictionary<Space, SpaceToken[]> oceans2 = GameState.Current.Island.Boards.Select(b=>b.Ocean.ScopeSpace)
+			.Select(o=> new { 
+				dst=o, 
+				src = self.Presence.Token.On( o.Adjacent.Where(self.Presence.IsOn) ).ToArray() 
+			})
+			.Where(x=>0<x.src.Length)
+			.ToDictionary(x=>x.dst,x=>x.src);
 
-		while(0 < gatherSpaces.Count){
-
-			Space currentTarget = gatherSpaces[0];
-
-			var source = await self.SelectAsync( new A.SpaceTokenDecision(
-				$"Select source of Presence to Gather into {currentTarget.SpaceSpec}"
-				, self.Presence.Deployed.Where( d => self.Presence.IsOn( d.Space ) )
+		foreach(var pair in oceans2){
+			var source = await self.SelectAlwaysAsync( new A.SpaceTokenDecision(
+				$"Select source of Presence to Gather into {pair.Key.SpaceSpec}"
+				, pair.Value
 				, Present.Always
 			));
-
-			// apply...
-			await source.MoveTo( currentTarget );
-
-			// next
-			gatherSpaces.RemoveAt( 0 );
-
-		} // while
+			await source.MoveTo( pair.Key );
+		}
 	}
 
 }

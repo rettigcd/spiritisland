@@ -70,10 +70,10 @@ public class EmberEyedBehemoth : Spirit {
 		}
 	}
 
-	protected override object CustomMementoValue { 
+	protected override object? CustomMementoValue { 
 		get => GrowthTrack.Groups;
 		set {
-			var options = (GrowthGroup[])value;
+			var options = (GrowthGroup[]?)value!;
 			if(options.Length != GrowthTrack.Groups.Length) {
 				GrowthTrack = new( options );
 				ActionScope.Current.Log( new Log.LayoutChanged( $"Rewind >> Restoring growth options for {Name}." ) );

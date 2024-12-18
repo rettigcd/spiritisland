@@ -24,7 +24,7 @@ class PredatorsArise() : SpiritAction( Name ){
 		int count = await spirit.SelectNumber("Number of Beasts to Deploy", _prepaired);
 		if(count == 0) return;
 
-		Space destination = await spirit.SelectAsync(new A.SpaceDecision($"Deploy {count} Beasts to", spirit.Presence.Lands,Present.Always));
+		Space? destination = await spirit.SelectAsync(new A.SpaceDecision($"Deploy {count} Beasts to", spirit.Presence.Lands,Present.Always));
 		if(destination is null) return; // should not happen.
 
 		_prepaired -= count;
