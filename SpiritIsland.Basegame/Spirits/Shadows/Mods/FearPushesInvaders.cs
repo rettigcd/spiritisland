@@ -1,10 +1,15 @@
 ﻿namespace SpiritIsland.Basegame;
 
+/// <summary>
+/// Mod used by Stretch Out Coils Of Foreboding Dread
+/// </summary>
 class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
+
 	public Task HandleFearAddedAsync(Space space, int fearAdded, FearType fearType) {
-		if (space[this] == 1 ) {
+
+		if (space[this] == 1 )
 			ActionScope.Current.AtEndOfThisAction( (actionScope) => ApplyFear(actionScope,space) );
-		}
+
 		space.Adjust(this,fearAdded); // HACK
 		return Task.CompletedTask;
 	}
@@ -13,7 +18,8 @@ class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
 		int pushFear = space[this] - 1; // HACK
 		space.Init(this, 1);
 
-		var spirit = scope.Owner;
+		// ! This is only called from within an Innate so always have an owner
+		var spirit = scope.Owner!;
 
 		// DO MOVE
 		HumanToken[] tokens = pushFear switch { 0 => [], 1 => space.HumanOfTag(Human.Explorer), _ => space.HumanOfAnyTag(Human.Explorer_Town) };

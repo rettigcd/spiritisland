@@ -20,8 +20,8 @@ public class SkyStretchesToShore {
 class SkyStretchesToShoreApi(Spirit self) : DefaultRangeCalculator(self.PowerRangeCalc) {
 
 	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
-		var normal = Previous.GetTargetingRoute(source, tc);
-		var shore = Previous.GetTargetingRoute(source, tc.ExtendRange(3))._routes
+		var normal = Previous!.GetTargetingRoute(source, tc);
+		var shore = Previous!.GetTargetingRoute(source, tc.ExtendRange(3))._routes
 			.Where(x => x.target.SpaceSpec.IsCoastal);
 		return new TargetRoutes( normal._routes.Union(shore) );
 	}

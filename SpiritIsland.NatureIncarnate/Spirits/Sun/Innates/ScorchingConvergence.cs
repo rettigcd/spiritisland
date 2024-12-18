@@ -7,7 +7,7 @@ public class ScorchingConvergence {
 	[InnateTier("2 sun","Move all of your Presence from origin land directly to target land. 1 Damage to Town/City only.")]
 	public static async Task Option1(TargetSpaceCtx ctx ) {
 		// Move all of your Presence from origin land directly to target land.
-		var originOptions = TargetSpaceAttribute.TargettedSpace.Sources;
+		var originOptions = TargetSpaceAttribute.TargettedSpace!.Sources;
 
 		await new TokenMover( ctx.Self, "Move",
 			new SourceSelector( originOptions ).FromASingleLand(),
@@ -47,8 +47,8 @@ public class ScorchingConvergence {
 	public static Task Option3(TargetSpaceCtx ctx ) {
 		var actionScope = ActionScope.Current;
 		// 3 Fear if this Power destroyed only Invaders.
-		return actionScope.SafeGet<string>(StartingInvaders) != GetSummary( ctx.Space, Human.Invader )
-			&& actionScope.SafeGet<string>(StartingDahan) == GetSummary( ctx.Space, Human.Dahan )
+		return actionScope.SafeGet(StartingInvaders,"") != GetSummary( ctx.Space, Human.Invader )
+			&& actionScope.SafeGet(StartingDahan,"") == GetSummary( ctx.Space, Human.Dahan )
 			? ctx.AddFear( 3 )
 			: Task.CompletedTask;
 	}

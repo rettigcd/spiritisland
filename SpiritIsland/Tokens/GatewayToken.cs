@@ -20,7 +20,7 @@ public class GatewayToken : ISpaceEntity, IHandleTokenRemoved {
 		_to.Init( this, 0 );
 	}
 
-	public Space GetLinked( Space end ) => end == _from ? _to : end == _to ? _from : null; // doesn't link.
+	public Space? GetLinked( Space end ) => end == _from ? _to : end == _to ? _from : null; // doesn't link.
 	public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		var from = (Space)args.From;
 		if(args.Removed == _presence && from[_presence] < 2)

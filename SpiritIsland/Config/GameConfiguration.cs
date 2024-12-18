@@ -1,12 +1,13 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class GameConfiguration {
 
-	public string[] Spirits;
-	public AspectConfigKey[] Aspects;
-	public string[] Boards;
+	public string[]? Spirits;
+	public AspectConfigKey[]? Aspects;
+	public string[]? Boards;
 	public int ShuffleNumber;
-	public AdversaryConfig Adversary;
+	public AdversaryConfig? Adversary;
 	public bool CommandTheBeasts;
 
 	public string AdversarySummary => Adversary == null ? "[none]" : $"{Adversary.Name} {Adversary.Level}";

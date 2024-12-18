@@ -2,7 +2,7 @@
 
 public class RavagingEventArgs( GameState _gs ) {
 	public GameState GameState { get; } = _gs;
-	public List<Space> Spaces;
+	public required List<Space> Spaces;
 	public void Skip1(Space space) => Spaces.Remove(space);
 }
 

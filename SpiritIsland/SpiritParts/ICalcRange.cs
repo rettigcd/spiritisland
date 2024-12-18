@@ -6,5 +6,5 @@ public interface ICalcRange {
 	/// <summary>
 	/// The previous one that we restore to when done with it.
 	/// </summary>
-	ICalcRange Previous { get; }
+	ICalcRange? Previous { get; }
 }

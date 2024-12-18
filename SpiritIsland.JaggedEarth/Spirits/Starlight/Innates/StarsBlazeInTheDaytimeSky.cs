@@ -15,7 +15,7 @@ class StarsBlazeInTheDaytimeSky{
 		// Reclaim up to 1 power card from play or your discard pile
 		var cards = self.InPlay.Union(self.DiscardPile).ToArray();
 		if(cards.Length == 0) return;
-		var card = await self.SelectPowerCard("Reclaim card", 1, cards, CardUse.Reclaim,Present.Always);
+		var card = (await self.SelectPowerCard("Reclaim card", 1, cards, CardUse.Reclaim,Present.Always))!;
 
 		self.Reclaim(card);	// reclaim it now
 

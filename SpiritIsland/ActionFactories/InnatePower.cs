@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class InnatePower : IPowerActionFactory {
 
@@ -7,13 +8,19 @@ public class InnatePower : IPowerActionFactory {
 	// don't use <T> because it generates a unique method for each (63+) types.
 	static public InnatePower For(Type actionType) => new InnatePower( actionType );
 
-	static GeneratesContextAttribute GetContextFromAttribute( Type actionType ) => actionType.GetCustomAttributes<GeneratesContextAttribute>().VerboseSingle( actionType.Name + " must have Single Target space or Target spirit attribute" );
+	static GeneratesContextAttribute GetContextFromAttribute( Type actionType ) 
+		=> actionType.GetCustomAttributes<GeneratesContextAttribute>()
+			.VerboseSingle( actionType.Name + " must have Single Target space or Target spirit attribute" );
+
+	static T GetRequiredAttribute<T>(Type type) where T:System.Attribute {
+		var attr = type.GetCustomAttribute<T>();
+		return attr ?? throw new InvalidOperationException($"Innate ({type.Name}) missing attribute [{typeof(T).Name}] InnatePo") ;
+	}
 
 	protected InnatePower(Type actionType){
 
-		_innatePowerAttr = actionType.GetCustomAttribute<InnatePowerAttribute>();
-		_speedAttr = actionType.GetCustomAttribute<SpeedAttribute>(false) 
-			?? throw new InvalidOperationException("Missing Speed attribute for "+actionType.Name);
+		_innatePowerAttr = GetRequiredAttribute<InnatePowerAttribute>(actionType);
+		_speedAttr = GetRequiredAttribute<SpeedAttribute>(actionType);
 		_targetAttr = GetContextFromAttribute( actionType );
 		_repeatAttr = actionType.GetCustomAttribute<RepeatAttribute>();
 
@@ -29,8 +36,8 @@ public class InnatePower : IPowerActionFactory {
 
 		_executionGroups = elementListByMethod
 			// filter first - so we only have groups that have matches
-			.Where( x => x.Attr.Group.HasValue )
-			.GroupBy( x => x.Attr.Group.Value )
+			.Where( x => x.Attr?.Group is not null )
+			.GroupBy( x => x.Attr!.Group! )
 			.Select( x => x.ToArray() )
 			.ToArray();
 
@@ -48,8 +55,9 @@ public class InnatePower : IPowerActionFactory {
 
 	#region Speed
 	public Phase Speed => _speedAttr.DisplaySpeed;
+
 	/// <summary> When set, overrides the speed attribute for everything except Display Speed </summary>
-	public ISpeedBehavior OverrideSpeedBehavior { get; set; }
+	//public ISpeedBehavior OverrideSpeedBehavior { get; set; }
 
 	public bool CouldActivateDuring( Phase phase, Spirit spirit ) {
 		return CouldBeTriggered( spirit )
@@ -113,7 +121,7 @@ public class InnatePower : IPowerActionFactory {
 
 		var objList = new object[] { LastTarget };
 		foreach(var method in lastMethods)
-			await (Task)method.Invoke( null, objList );
+			await (Task)method.Invoke( null, objList )!;
 
 	}
 
@@ -125,11 +133,11 @@ public class InnatePower : IPowerActionFactory {
 		foreach(MethodTuple[] grp in _executionGroups) {
 
 			// Ask spirit which methods they can activate
-			var match = await SelectInnateTierToActivate(self, grp.Select(g=>g.Attr) );
+			var match = await SelectInnateTierToActivate(self, grp.Select(g=>g.Attr!) );
 
 			// Find matching method and it to execute-list
-			MethodInfo method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;
-			if(method != null)
+			MethodInfo? method = grp.FirstOrDefault(g=>g.Attr==match)?.Method;
+			if(method is not null)
 				lastMethods.Add( method );
 		}
 		return lastMethods;
@@ -139,11 +147,11 @@ public class InnatePower : IPowerActionFactory {
 	// Overriden by:
 	//	* Shifting Memories
 	//	* Volcano
-	protected virtual async Task<IDrawableInnateTier> SelectInnateTierToActivate(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
+	protected virtual async Task<IDrawableInnateTier?> SelectInnateTierToActivate(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
 
 		// return await spirit.Elements.SelectInnateTierToActivate(innateOptions);
 
-		IDrawableInnateTier match = null;
+		IDrawableInnateTier? match = null;
 		foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
 			if( await HasMetTierThreshold(spirit, option) )
 				match = option;
@@ -154,17 +162,18 @@ public class InnatePower : IPowerActionFactory {
 		return await spirit.Elements.MeetThreshold(option.Elements, "Innate Tier" );
 	}
 
-	public object LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
+	public object? LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
 
 	readonly InnatePowerAttribute _innatePowerAttr;
 	readonly protected SpeedAttribute _speedAttr;
 	readonly GeneratesContextAttribute _targetAttr;
-	readonly RepeatAttribute _repeatAttr;
+	readonly RepeatAttribute? _repeatAttr;
 	readonly MethodTuple[][] _executionGroups;
 
+	//? WTH is this?
 	class MethodTuple( MethodInfo _m ) {
 		public MethodInfo Method { get; } = _m;
-		public InnateTierAttribute Attr { get; } = _m.GetCustomAttributes<InnateTierAttribute>().FirstOrDefault();
+		public InnateTierAttribute? Attr { get; } = _m.GetCustomAttributes<InnateTierAttribute>().FirstOrDefault();
 	}
 
 }

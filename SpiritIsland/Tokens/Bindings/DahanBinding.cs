@@ -32,7 +32,7 @@ public sealed class DahanBinding( Space _space ) {
 
 		int totalDamageUsed = 0;
 
-		HumanToken mostHealthy = null;
+		HumanToken? mostHealthy = null;
 		while(0 < remainingDamageToDahan
 			// find the most healthy dahan we have
 			&& (mostHealthy = NormalKeys.OrderByDescending( x => x.RemainingHealth ).FirstOrDefault()) != null // least health first.
@@ -160,7 +160,7 @@ public sealed class DahanBinding( Space _space ) {
 
 public class DamagingTokens( Space on ) {
 	public Space On { get; } = on;
-	public HumanToken Token { get; set; }
+	public required HumanToken Token { get; set; }
 	public int TokenCountToReceiveDamage { get; set; }
 	public int DamagePerToken { get; set; }
 }

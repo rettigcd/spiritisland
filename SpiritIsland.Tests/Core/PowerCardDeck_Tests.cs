@@ -37,7 +37,7 @@ public class PowerCardDeck_Tests {
 			PowerCard.ForDecorated(SongOfSanctity.ActAsync),
 			PowerCard.ForDecorated(SteamVents.ActAsync),
 			PowerCard.ForDecorated(UncannyMelting.ActAsync),
-		}, new Random().Next() );
+		}, new Random().Next(), PowerType.Minor );
 
 		// Given: saving state
 		var memento = deck.Memento;

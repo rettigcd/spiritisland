@@ -27,8 +27,8 @@ public class TransformativeSacrifice {
 		if( boostFromElementThreshold ){
 			// Before taking cards,
 			// they may also Remove 1 presence from their presence track to Take a Minor Power and play it.
-			TokenLocation presenceToRemove = await spirit.SelectTrackPresence(Present.Done, "remove from game for additional Minor."); // Come from track or board
-			if(presenceToRemove != null) {
+			TokenLocation? presenceToRemove = await spirit.SelectTrackPresence(Present.Done, "remove from game for additional Minor."); // Come from track or board
+			if(presenceToRemove is not null) {
 				await presenceToRemove.RemoveAsync();
 				++spirit.Presence.Destroyed.Count;
 				++destroyed;
@@ -36,7 +36,7 @@ public class TransformativeSacrifice {
 		}
 
 		// Show them all at once
-		DrawCardResult result = await DrawFromDeck.DrawInner(spirit,GameState.Current.MinorCards,destroyed,destroyed);
+		DrawCardResult result = await DrawFromDeck.DrawInner(spirit,GameState.Current.MinorCards!,destroyed,destroyed);
 		foreach(PowerCard? card in result.SelectedCards)
 			spirit.PlayCard(card,0 /* free */);
 

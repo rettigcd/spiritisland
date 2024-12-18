@@ -7,8 +7,8 @@ public class ForgettingStrategy(Spirit spirit) {
 
 		options ??= GetForgetableCards();
 
-		PowerCard cardToForget = await _spirit.SelectPowerCard("Select power card to forget", 1, options, CardUse.Forget, present);
-		if( cardToForget != null )
+		PowerCard? cardToForget = await _spirit.SelectPowerCard("Select power card to forget", 1, options, CardUse.Forget, present);
+		if( cardToForget is not null )
 			ThisCard(cardToForget);
 		return cardToForget;
 	}

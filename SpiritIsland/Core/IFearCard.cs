@@ -10,7 +10,7 @@ public interface IFearCard : IOption {
 	Task ActAsync( int terrorLevel );
 
 	/// <param name="activation">1..3 or null to use ActivatedTerrorLevel</param>
-	string GetDescription(int? activation = null);
+	string GetDescription(int activation);
 }
 
 public abstract class FearCardBase {
@@ -41,9 +41,7 @@ public abstract class FearCardBase {
 		};
 	}
 
-	/// <param name="activation">1..3 or null to use ActivatedTerrorLevel</param>
-	public string GetDescription(int? activation=null) {
-		activation ??= ActivatedTerrorLevel.Value;
+	public string GetDescription(int activation) {
 		var memberName = "Level" + activation;
 
 		// This does not find interface methods declared as: void IFearCardOption.Level2(...)
@@ -51,7 +49,7 @@ public abstract class FearCardBase {
 		var member = type.GetMethod(memberName)
 			?? throw new Exception(memberName + " not found on " + type.Name);
 
-		var attr = (FearLevelAttribute)member.GetCustomAttributes(typeof(FearLevelAttribute)).Single();
+		var attr = member.GetCustomAttributes<FearLevelAttribute>().Single();
 		return attr.Description;
 	}
 

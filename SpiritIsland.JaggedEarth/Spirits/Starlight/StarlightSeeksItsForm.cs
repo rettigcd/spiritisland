@@ -31,7 +31,7 @@ public class StarlightSeeksItsForm : Spirit {
 					Element el = await spirit.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 					track.Elements = [ el ];
 					spirit.Elements[el]++;
-					track.Icon.ContentImg = el.GetTokenImg();
+					track.Icon!.ContentImg = el.GetTokenImg();
 				}
 			};
 		}
@@ -138,7 +138,7 @@ public class StarlightSeeksItsForm : Spirit {
 		var el = await self.SelectElementEx( "Select permanent element for this slot.", ElementList.AllElements );
 		track.Elements = [ el ];
 		self.Elements[el]++;
-		track.Icon.ContentImg = el.GetTokenImg();
+		track.Icon!.ContentImg = el.GetTokenImg();
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

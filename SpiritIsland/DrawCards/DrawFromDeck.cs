@@ -3,8 +3,8 @@
 public static class DrawFromDeck {
 
 	static public async Task<PowerCardDeck> SelectPowerCardDeck( Spirit spirit ) {
-		PowerType powerType = await spirit.SelectAsync( new A.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
-		return powerType == PowerType.Minor ? GameState.Current.MinorCards : GameState.Current.MajorCards;
+		PowerType powerType = await spirit.SelectAlwaysAsync( new A.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
+		return powerType == PowerType.Minor ? GameState.Current.MinorCards! : GameState.Current.MajorCards!;
 	}
 
 	/// <summary>
@@ -36,7 +36,7 @@ public static class DrawFromDeck {
 	/// </summary>
 	static public async Task<PowerCard> PickOutCard( this Spirit spirit, List<PowerCard> flipped ) {
 		string powerType = flipped.Select(x=>x.PowerType.Name ).Distinct().Join("/");
-		PowerCard selectedCard = await spirit.SelectPowerCard( $"Select {powerType} Power Card", 1, flipped, CardUse.AddToHand, Present.Always );
+		PowerCard selectedCard = (await spirit.SelectPowerCard( $"Select {powerType} Power Card", 1, flipped, CardUse.AddToHand, Present.Always ))!;
 		flipped.Remove( selectedCard );
 		return selectedCard;
 	}

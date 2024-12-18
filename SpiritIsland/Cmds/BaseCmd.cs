@@ -27,7 +27,7 @@ public class BaseCmd<T> : IActOn<T> {
 	/// <summary>
 	/// Used for by derieved types that override Description and ActAsync()
 	/// </summary>
-	protected BaseCmd() {}
+	protected BaseCmd() { Description = "-empty-"; }
 
 	#endregion
 
@@ -36,7 +36,7 @@ public class BaseCmd<T> : IActOn<T> {
 	/// <remarks>Virtual so that growth actions that inherit from SelfCmd can more easily define the execute</returns>
 	public virtual Task ActAsync( T ctx) {
 		if ( _func is not null ) return _func(ctx);
-		_action(ctx);
+		_action!(ctx);
 		return Task.CompletedTask;
 	}
 
@@ -68,8 +68,8 @@ public class BaseCmd<T> : IActOn<T> {
 	#endregion
 
 	#region private
-	readonly Func<T,Task> _func;
-	readonly Action<T> _action;
-	Predicate<T> _isApplicable;
+	readonly Func<T,Task>? _func;
+	readonly Action<T>? _action;
+	Predicate<T>? _isApplicable;
 	#endregion
 }

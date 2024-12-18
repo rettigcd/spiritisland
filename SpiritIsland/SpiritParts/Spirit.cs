@@ -62,9 +62,9 @@ public abstract partial class Spirit
 		return selection;
 	}
 
-	public event Action<object>? SelectionMade; // hook for: Reach Through the Efemeral Distance
+	public event Action<object?>? SelectionMade; // hook for: Reach Through the Efemeral Distance
 
-	public void PreSelect( SpaceToken st ) => _gateway.PreloadedSpaceToken = st;
+	public void PreSelect( SpaceToken? st ) => _gateway.PreloadedSpaceToken = st;
 	readonly UserGateway _gateway;
 
 	#endregion
@@ -156,8 +156,8 @@ public abstract partial class Spirit
 	}
 
 	public async Task Reclaim1FromDiscard() {
-		PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", 1, DiscardPile, CardUse.Reclaim, Present.Always );
-		if( cardToReclaim != null )
+		PowerCard? cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", 1, DiscardPile, CardUse.Reclaim, Present.Always );
+		if( cardToReclaim is not null )
 			Reclaim( cardToReclaim );
 	}
 
@@ -165,8 +165,9 @@ public abstract partial class Spirit
 	/// Called mid-round.  If reclaiming card from hand, looses elements
 	/// </summary>
 	public async Task Reclaim1FromDiscardOrPlayed() {
-		PowerCard cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", 1, DiscardPile.Union(InPlay), CardUse.Reclaim, Present.Always );
-		Reclaim( cardToReclaim );
+		PowerCard? cardToReclaim = await this.SelectPowerCard( "Select card to reclaim.", 1, DiscardPile.Union(InPlay), CardUse.Reclaim, Present.Always );
+		if(cardToReclaim is not null )
+			Reclaim( cardToReclaim );
 	}
 
 	#endregion
@@ -358,8 +359,8 @@ public abstract partial class Spirit
 
 	async Task<bool> SelectAndPlay1( PowerCard[] powerCardOptions, int remainingToPlay ) {
 		string prompt = $"Play power card (${Energy} / {remainingToPlay})";
-		PowerCard card = await this.SelectPowerCard( prompt, remainingToPlay, powerCardOptions, CardUse.Play, Present.Done );
-		if(card == null) return false;
+		PowerCard? card = await this.SelectPowerCard( prompt, remainingToPlay, powerCardOptions, CardUse.Play, Present.Done );
+		if(card is null) return false;
 
 		PlayCard( card );
 

@@ -14,18 +14,16 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 	#region Configure
 
 	public NLandsPerBoard Which( CtxFilter<TargetSpaceCtx> spaceFilter ) { _landCriteria = spaceFilter; return this; }
+
 	public NLandsPerBoard ByPickingToken( params ITokenClass[] tokenClasses ) { 
-		_tokenFactory = GetTokensMatchingClass;
-		_firstPickTokenClasses = tokenClasses; 
+		_tokenFactory = x => x.Space.OfAnyTag(tokenClasses);
 		return this;
 	}
 
 	public NLandsPerBoard ByPickingToken( Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> tokenFactory ) {
 		_tokenFactory = tokenFactory;
-		_firstPickTokenClasses = null; // not usedtokenClasses;
 		return this;
 	}
-
 
 	#endregion
 
@@ -51,11 +49,11 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 			var filtered1 = LandCriteria.Filter( preFiltered ).ToArray();
 			if(preFiltered.Length == 0) return;
 
-			Space space = _tokenFactory != null
-				? await PickSpaceBySelectingToken( ctx.Self, filtered1 )
+			Space? space = _tokenFactory is not null
+				? await PickSpaceBySelectingToken( ctx.Self, filtered1, _tokenFactory)
 				: await ctx.Self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, filtered1.Select( x => x.Space ), Present.Always );
 
-			if(space == null) return; // no matching tokens
+			if(space is null) return; // no matching tokens
 
 			used.Add( space.SpaceSpec );
 
@@ -65,27 +63,23 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 
 	#region private
 
-	IEnumerable<IToken> GetTokensMatchingClass( TargetSpaceCtx x ) => x.Space.OfAnyTag( _firstPickTokenClasses );
-
-	async Task<Space> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions ) {
+	async Task<Space?> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions, Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> tokenFactory ) {
 
 		// Get options
-		Func<TargetSpaceCtx,IEnumerable<ISpaceEntity>> tokenFactory = GetTokensMatchingClass;
 		SpaceToken[] spaceTokenOptions = spaceOptions
 			.SelectMany( x => tokenFactory(x).Cast<IToken>().On(x.Space) )
 			.ToArray();
 
 		// Select
-		SpaceToken st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		SpaceToken? st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
 		self.PreSelect(st); // recording null is fine because when it probably means no space matches criteria and user won't be given an option anyway.
 
 		return st?.Space;
 	}
 
 	CtxFilter<TargetSpaceCtx> LandCriteria => _landCriteria ??= Is.AnyLand;
-	CtxFilter<TargetSpaceCtx> _landCriteria;
-	ITokenClass[] _firstPickTokenClasses;
-	Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>> _tokenFactory;
+	CtxFilter<TargetSpaceCtx>? _landCriteria;
+	Func<TargetSpaceCtx, IEnumerable<ISpaceEntity>>? _tokenFactory;
 
 	#endregion
 

@@ -18,7 +18,7 @@ public class RavageParticipants(
 
 	public int DamageReceivedFromBadlands;
 
-	public CountDictionary<HumanToken> Ending;
+	public CountDictionary<HumanToken>? Ending;
 
 }
 
@@ -90,7 +90,7 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 		// Defend Effect
 		if(0 < Defenders.Active.Count) { //	if(0 < damageFromDefenders) {
 			string bld = (0 < Attackers.DamageReceivedFromBadlands) ? $" plus {Attackers.DamageReceivedFromBadlands} badland damage" : string.Empty;
-			parts.Add( $"({Defenders.Active.TokenSummary()}) deal {Defenders.DamageDealtOut} damage{bld}, leaving {Attackers.Ending.TokenSummary()}." );
+			parts.Add( $"({Defenders.Active.TokenSummary()}) deal {Defenders.DamageDealtOut} damage{bld}, leaving {Attackers.Ending!.TokenSummary()}." );
 		}
 
 		return string.Join(" ",parts);
@@ -184,7 +184,7 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 			?? Pick_ItemClosestToDead( participatingInvaders.Keys );
 	}
 
-	static HumanToken Pick_HighestHealthThatIsKillable( IEnumerable<HumanToken> candidates, int availableDamage, bool pickUnstrifedFirst ) {
+	static HumanToken? Pick_HighestHealthThatIsKillable( IEnumerable<HumanToken> candidates, int availableDamage, bool pickUnstrifedFirst ) {
 		return candidates
 			.Where( specific => specific.RemainingHealth <= availableDamage ) // can be killed
 			.OrderBy( specific => pickUnstrifedFirst && specific.StrifeCount == 0 ? 0 : 1 )

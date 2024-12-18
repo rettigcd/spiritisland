@@ -58,12 +58,12 @@ public sealed class DestinationSelector {
 
 	#endregion public config
 
-	public async Task<SpaceSpec> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
+	public async Task<SpaceSpec?> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
 		A.SpaceDecision decision = GetDecision( actionWord, sourceSpaceToken );
-		Space destination = await spirit.SelectAsync( decision );
-		if(destination != null)
+		Space? destination = await spirit.SelectAsync( decision );
+		if(destination is not null)
 			await NotifyAsync( destination );
-		return destination.SpaceSpec;
+		return destination?.SpaceSpec;
 	}
 
 	A.SpaceDecision GetDecision( string actionWord, SpaceToken sourceSpaceToken ) {
@@ -80,7 +80,7 @@ public sealed class DestinationSelector {
 			.ToArray();
 	}
 
-	public SpaceSpec Single { get; }
+	public SpaceSpec? Single { get; }
 
 	#region Event / Callback
 

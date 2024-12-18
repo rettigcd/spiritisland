@@ -46,13 +46,13 @@ public class DreamOfTheUntouchedLand {
 			// add 2 beast, 2 wilds, 2 badlands
 			foreach( var token in new TokenClassToken[] { Token.Beast, Token.Wilds, Token.Badlands})
 				for(int i = 0; i < 2; ++i)
-					(await ctx.Self.SelectSpaceAsync($"Add {token.Label} to:", newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens(), Present.Always ))
+					(await ctx.Self.SelectSpaceAsync($"Add {token.Label} to:", newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens(), Present.Always ))!
 						.Adjust(token,1);
 
 			// and up to 2 presence (from any Spirits) anywhere on it.
 			// !!! Make sure spirits don't violate their place-presence rules?
 			for(int i = 0; i < 2; ++i) {
-				var spirit = await ctx.Self.SelectAsync(new A.Spirit("Spirit to add presence.", gs.Spirits,Present.AutoSelectSingle));
+				var spirit = await ctx.Self.SelectAlwaysAsync(new A.Spirit("Spirit to add presence.", gs.Spirits,Present.AutoSelectSingle));
 				await Cmd.PlacePresenceOn( newBoard.Spaces.Where( x => !x.IsOcean ).ScopeTokens().ToArray() )
 					.ActAsync(spirit);
 			}
@@ -99,7 +99,7 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 		// Select board to skip for this round.
 		var gameState = GameState.Current;
 		Board[] boards = gameState.Island.Boards;
-		string boardToSkip = await gameState.Spirits[0].SelectText( "Select Board to skip all Invader actions", boards.Select( b => b.Name ).ToArray(), Present.Always );
+		string boardToSkip = (await gameState.Spirits[0].SelectText( "Select Board to skip all Invader actions", boards.Select( b => b.Name ).ToArray(), Present.Always ))!;
 		_toSkip = boards.First( b => b.Name == boardToSkip );
 
 		return _toSkip;

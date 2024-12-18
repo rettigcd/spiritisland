@@ -8,13 +8,13 @@ static public class Push_Extensions {
 	/// Groups SourceSelector, DestinationConfig, and Bring Hook - allows to bind late
 	/// </summary>
 	public class MoverFactory {
-		public SourceSelector Selector;
-		public Action<DestinationSelector> DestinationConfigurer;
-		public Func<TokenMovedArgs,Task> OnMoved;
+		public SourceSelector? Selector;
+		public Action<DestinationSelector>? DestinationConfigurer;
+		public Func<TokenMovedArgs,Task>? OnMoved;
 		public MoverFactory Bring(Func<TokenMovedArgs,Task> onMoved ) {	OnMoved = onMoved; return this; }
 
-		public TokenMover Push(Spirit self,DestinationSelector dest=null) {
-			var pusher = Selector.ToPusher(self,dest);
+		public TokenMover Push(Spirit self,DestinationSelector? dest=null) {
+			var pusher = Selector!.ToPusher(self,dest);
 			if(DestinationConfigurer!=null) pusher.ConfigDestination(DestinationConfigurer);
 			if(OnMoved != null) pusher.Bring(OnMoved);
 			return pusher;
@@ -40,7 +40,7 @@ static public class Push_Extensions {
 
 	static public Task PushN( this SourceSelector ss, Spirit self ) => ss.ToPusher(self).DoN();
 
-	static public TokenMover ToPusher( this SourceSelector ss, Spirit spirit, DestinationSelector dest=null ) {
+	static public TokenMover ToPusher( this SourceSelector ss, Spirit spirit, DestinationSelector? dest=null ) {
 		return GameState.Current.Island.Boards[0][0].ScopeSpace	// this part is a HACK
 			.Pusher(spirit,ss,dest);
 	}
@@ -49,7 +49,7 @@ static public class Push_Extensions {
 
 	#region Pushing 1 Token
 	// Pushing 1 Specific Token
-	static public Task<TokenMovedArgs> PushAsync( this SpaceToken spaceToken, Spirit self, Action<DestinationSelector> configDestination=null ) {
+	static public Task<TokenMovedArgs?> PushAsync( this SpaceToken spaceToken, Spirit self, Action<DestinationSelector>? configDestination=null ) {
 		var destinations = spaceToken.Space.PushDestinations;
 		configDestination?.Invoke(destinations);
 		return spaceToken.MoveToAsync("Push",destinations,self);
@@ -59,14 +59,14 @@ static public class Push_Extensions {
 	/// After: (1) Select Source, 
 	/// Binds parts: (2) Select Destination and (3) DoMove together
 	/// </summary>
-	static public async Task<TokenMovedArgs> MoveToAsync( 
+	static public async Task<TokenMovedArgs?> MoveToAsync( 
 		this SpaceToken spaceToken,
 		string actionWord,
 		DestinationSelector destinationSelector,
 		Spirit self
 	) {
-		SpaceSpec destination = await destinationSelector.SelectDestination( self, actionWord, spaceToken );
-		return destination == null ? null
+		SpaceSpec? destination = await destinationSelector.SelectDestination( self, actionWord, spaceToken );
+		return destination is null ? null
 			: await spaceToken.MoveTo( destination.ScopeSpace );
 	}
 

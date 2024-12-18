@@ -34,7 +34,7 @@ public class TurmoilsTouch {
 
 	static async Task TakeMinorIntoDiscard( Spirit spirit ) {
 		// Draw into HAND
-		var card = (await DrawFromDeck.DrawInner(spirit,GameState.Current.MinorCards, 1, 1)).Selected;
+		var card = (await DrawFromDeck.DrawInner(spirit,GameState.Current.MinorCards!, 1, 1)).Selected;
 		// Move from HAND to Discard
 		spirit.Hand.Remove( card );
 		spirit.DiscardPile.Add( card );

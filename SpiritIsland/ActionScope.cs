@@ -1,20 +1,32 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary>
 /// A Spirit Island 'Action'
 /// </summary>
 public sealed class ActionScope : IAsyncDisposable {
 
-	#region static Container property
+	#region static AsyncContainer
 
-	// value gets shallow-copied into child calls and post-awaited states.
-	public readonly static AsyncLocal<AsyncContainer> _scopeContainer = new();
+	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
+	static public void Initialize(ActionScope rootSccope) {
+		_scopeContainer.Value = new ActionScopeContainer(rootSccope);
+	}
 
-	public class AsyncContainer(ActionScope startingValue) {
+	// This is not really the scope container (AsyncContainer).
+	// It is a pointer into the Synchronization Context that holds the container.
+	readonly static AsyncLocal<ActionScopeContainer> _scopeContainer = new();
+
+	// this is the actual scope container (AsyncContainer) and it will be null until ActionScope.Initialize is called;
+	// this gets shallow-copied into child calls and post-awaited states.
+	static ActionScopeContainer Container => _scopeContainer.Value 
+		?? throw new InvalidOperationException("Scope container not initialized.  Call ActionScope.Initialize(GameState.RootScope);");
+
+	public class ActionScopeContainer(ActionScope startingValue) {
 		public ActionScope Current = startingValue;
 	}
 
-	#endregion static Container property
+	#endregion AsyncContainer
 
 	#region Start of Action Actions 
 
@@ -36,11 +48,6 @@ public sealed class ActionScope : IAsyncDisposable {
 	#endregion Start of Action Actions
 
 	#region Static Public Init/Start methods
-
-	/// <summary> Call this from the root ExecutionContext to initialize. </summary>
-	static public void Initialize( ActionScope rootSccope ) {
-		_scopeContainer.Value = new AsyncContainer( rootSccope );
-	}
 
 	/// <summary> Starts Spirit Action </summary>
 	public static async Task<ActionScope> StartSpiritAction(ActionCategory cat, Spirit spirit) {
@@ -72,7 +79,7 @@ public sealed class ActionScope : IAsyncDisposable {
 	// https://stackoverflow.com/questions/39795286/does-async-await-increases-context-switching
 	// https://learn.microsoft.com/en-us/dotnet/api/system.threading.asynclocal-1?view=net-7.0
 	// https://nelsonparente.medium.com/a-little-riddle-with-asynclocal-1fd11322067f
-	public static ActionScope Current => _scopeContainer?.Value?.Current; // returns null if no ActionScope
+	public static ActionScope Current => Container.Current;
 
 	public static void ThrowIfMissingCurrent(){
 		if (Current == null)
@@ -88,7 +95,7 @@ public sealed class ActionScope : IAsyncDisposable {
 	public ActionCategory Category { get; }
 	public Func<Space, Space> Upgrader { get => _upgrader; set => _upgrader = value; }
 	/// <summary> Spirit (if any) that owns the action. Null for non-spirit actions. </summary>
-	public Spirit Owner { get => _owner; set => _owner = value; }
+	public Spirit? Owner { get => _owner; set => _owner = value; }
 	public Guid Id { get; }
 	/// <summary> Non-stasis + InPlay </summary>
 	public IEnumerable<Space> Spaces => GameState.SpaceSpecs.Select(AccessTokens);
@@ -118,7 +125,7 @@ public sealed class ActionScope : IAsyncDisposable {
 		Id = Guid.NewGuid();
 		Category = actionCategory;
 
-		AsyncContainer container = _scopeContainer.Value; // grab containers
+		ActionScopeContainer container = Container;
 		_old = container.Current;
 		container.Current = this;
 
@@ -141,29 +148,49 @@ public sealed class ActionScope : IAsyncDisposable {
 	/// <remarks> Provides hook for spirits to modify the Space object used for their actions.</remarks>
 	public Space AccessTokens(SpaceSpec space) => Upgrader( GameState.Tokens[space] );
 
+
+
 	#region Non-Spirit Initialized Action Scoped data
 
-	// Generic String / object dictionary to track action things
+	public bool ContainsKey(string key) => _dict is not null && _dict.ContainsKey(key);
 
-	public bool ContainsKey(string key) => _dict != null && _dict.ContainsKey( key );
-
-	public T SafeGet<T>(string key, T defaultValue=default) => ContainsKey(key) ? (T) this[key] : defaultValue;
-
-	public T SafeGet<T>( string key, Func<T> initFunc ) {  
-		if(ContainsKey( key )) return (T)this[key];
-		T newValue = initFunc();
-		this[key] = newValue;
-		return newValue;
+	public T SafeGet<T>(string key, Func<T> initializer) {
+		if( ContainsKey(key) )
+			return (T)_dict![key];
+		var initial = initializer()!;
+		SafeSet<T>(key, initial);
+		return initial;
 	}
+	public T SafeGet<T>(string key, T initialValue) {
+		if( ContainsKey(key) )
+			return (T)_dict![key];
+		SafeSet<T>(key, initialValue);
+		return initialValue;
+	}
+	public T? SafeGetNullable<T>(string key) where T : class { return ContainsKey(key) ? (T)_dict![key] : null; }
 
+	public void SafeSetNullable<T>(string key, T? value) {
+		if( value is null ) {
+			if( ContainsKey(key) )
+				_dict!.Remove(key);
+		} else
+			SafeSet<T>(key,value);
+	}
+	public void SafeSet<T>(string key, T value) { (_dict ??= [])[key] = value!; }
+
+	// NON-NULL!
 	public object this[string key]{
-		get => ContainsKey(key) ? _dict[key] : throw new InvalidOperationException($"{key} was not set");
-		set => (_dict??= [])[key] = value;
+		get => _dict is not null && _dict.TryGetValue(key, out object? obj) ? obj : throw new InvalidOperationException($"{key} was not set");
+		set => (_dict??=[])[key] = value;
 	}
+	void Remove(string key) { _dict?.Remove(key);}
 
-	Dictionary<string, object> _dict;
+	Dictionary<string, object>? _dict;
 
 	#endregion Non-Spirit Initialized Action Scoped data
+
+
+
 
 	public void Log(Log.ILogEntry entry ) => GameState.Log( entry );
 
@@ -177,7 +204,7 @@ public sealed class ActionScope : IAsyncDisposable {
 		if(_endOfThisAciton != null)
 			await _endOfThisAciton.InvokeAsync(this);
 
-		var current = _scopeContainer.Value.Current;
+		var current = Container.Current;
 		if(current != this) 
 			throw new Exception($"Error SI01: Disposing {Category}/{Id} but .Current is {current.Category}/{current.Id}");
 		// SI01 - Scenarios that cause this:
@@ -188,7 +215,7 @@ public sealed class ActionScope : IAsyncDisposable {
 		//    However, child ActionScope is still running and hasn't cleaned itself up yet.
 		// 3) The Container was initialized in a child execution context, not the root/parent context.
 
-		_scopeContainer.Value.Current = _old;
+		Container.Current = _old ?? throw new InvalidOperationException("Can't dispose of the root scope or we would have to call Initilize again to get it going.");
 	}
 
 	public void AtEndOfThisAction(Func<ActionScope,Task> action ) => (_endOfThisAciton ??= new AsyncEvent<ActionScope>()).Add( action );
@@ -197,11 +224,11 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	#region private
 
-	readonly ActionScope _old;
+	readonly ActionScope? _old;
 
-	AsyncEvent<ActionScope> _endOfThisAciton;
-	TerrainMapper _terrainMapper;
+	AsyncEvent<ActionScope>? _endOfThisAciton;
+	TerrainMapper? _terrainMapper;
 	Func<Space, Space> _upgrader = ss=>ss;
-	Spirit _owner;
+	Spirit? _owner;
 	#endregion
 }

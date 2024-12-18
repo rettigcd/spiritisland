@@ -99,7 +99,7 @@ static public class IEnumerableExtensions {
 	static public IEnumerable<T> Include<T>(this IEnumerable<T> orig, T addition ) {
 		bool addIt = true;
 		foreach(var item in orig){
-			if(item.Equals(addition)) addIt = false;
+			if(item is not null && item.Equals(addition)) addIt = false;
 			yield return item;
 		}
 		if(addIt)
@@ -118,18 +118,17 @@ static public class IEnumerableExtensions {
 	static public IEnumerable<T> Order<T>(this IEnumerable<T> src) => src.OrderBy(x => x);
 
 	public static Value Get<Key,Value>(this IDictionary<Key,Value> dict, Key key, Func<Value> newValueGenerator) {
-		if(dict.TryGetValue( key, out Value value )) return value;
+		if(dict.TryGetValue( key, out Value? value )) return value;
 		Value newValue = newValueGenerator();
 		dict.Add(key,newValue);
 		return newValue;
 	}
 
-	public static Value Get<Key, Value>( this IDictionary<Key, Value> dict, Key key, Value defaultValue = default ) {
-		if(dict.TryGetValue( key, out Value value )) return value;
-		Value newValue = defaultValue;
-		dict.Add( key, newValue );
-		return newValue;
-	}
-
+	//public static Value Get<Key, Value>( this IDictionary<Key, Value> dict, Key key, Value defaultValue = default ) {
+	//	if(dict.TryGetValue( key, out Value? value )) return value;
+	//	Value newValue = defaultValue;
+	//	dict.Add( key, newValue );
+	//	return newValue;
+	//}
 
 }

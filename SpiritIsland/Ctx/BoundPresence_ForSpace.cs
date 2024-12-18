@@ -20,7 +20,7 @@ public class BoundPresence_ForSpace( TargetSpaceCtx _ctx ) {
 	public async Task MoveHereFromAnywhere(int count) {
 		while(count > 0) {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable
-			var src = await _ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)");
+			var src = (await _ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)"))!;
 			if( src.Space.Has(_ctx.Self.Presence) )
 				await src.MoveTo( _ctx.Space );
 			count--;

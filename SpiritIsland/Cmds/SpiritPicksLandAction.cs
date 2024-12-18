@@ -20,11 +20,11 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 			var spaceOptions = LandCriteria.Filter( preFiltered ).ToArray();
 			if(spaceOptions.Length == 0) return;
 
-			Space space = _firstPickTokenClasses != null
-				? await PickSpaceBySelectingToken( self, spaceOptions )
+			Space? space = _firstPickTokenClasses is not null
+				? await PickSpaceBySelectingToken( self, spaceOptions, _firstPickTokenClasses)
 				: await self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
 
-			if(space == null) return;
+			if(space is null) return;
 
 			if(_chooseDifferentLands)
 				_disallowedSpaces.Add( space.SpaceSpec );
@@ -45,20 +45,20 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 
 	#region private
 
-	async Task<Space> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions ) {
+	async Task<Space?> PickSpaceBySelectingToken( Spirit self, TargetSpaceCtx[] spaceOptions, ITokenClass[] firstPickTokenClasses ) {
 		// Get options
-		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Space.SpaceTokensOfAnyTag( _firstPickTokenClasses );
+		IEnumerable<SpaceToken> GetSpaceTokens( TargetSpaceCtx x ) => x.Space.SpaceTokensOfAnyTag( firstPickTokenClasses );
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
-		SpaceToken st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		SpaceToken? st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
 		self.PreSelect(st);
 
 		return st?.Space;
 	}
 
 	string _diffString => _chooseDifferentLands ? "different " : "";
-	TargetSpaceCtxFilter _landCriteria;
+	TargetSpaceCtxFilter? _landCriteria;
 	readonly HashSet<SpaceSpec> _disallowedSpaces = [];
 
 	// configurable
@@ -66,7 +66,7 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 
 	Present _present = Present.Always;
 	bool _chooseDifferentLands = false;
-	ITokenClass[] _firstPickTokenClasses;
+	ITokenClass[]? _firstPickTokenClasses;
 	int _landsPerSpirit = 1;
 	#endregion
 }

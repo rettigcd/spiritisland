@@ -23,7 +23,7 @@ public sealed class InvaderCard : IOption {
 			await CardRevealed( GameState.Current );
 	}
 
-	public event Func<GameState,Task> CardRevealed;
+	public event Func<GameState,Task>? CardRevealed;
 
 	public int InvaderStage { get; }
 

@@ -52,7 +52,7 @@ public class PresenceTrack : IPresenceTrack {
 			await TrackRevealedAsync( new TrackRevealedArgs( track ));
 	}
 
-	public event Func<TrackRevealedArgs,Task> TrackRevealedAsync;
+	public event Func<TrackRevealedArgs,Task>? TrackRevealedAsync;
 
 	public virtual bool Return( Track track ) {
 		if(_slots[_revealedCount - 1] != track) return false;

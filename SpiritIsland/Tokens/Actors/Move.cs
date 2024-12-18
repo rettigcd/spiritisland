@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
 public class Move : IOption {
-	public SpaceToken Source;
-	public Space Destination;
+	public required SpaceToken Source;
+	public required Space Destination;
 	string IOption.Text => $"{Source} => {Destination.Label}";
 }
 

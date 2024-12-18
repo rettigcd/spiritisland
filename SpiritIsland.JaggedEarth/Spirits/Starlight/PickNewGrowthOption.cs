@@ -6,7 +6,7 @@ class PickNewGrowthOption( params GrowthGroup[] options ) {
 	readonly GrowthGroup[] _options = options;
 
 	public async Task ActivateAsync( Spirit self ) {
-		GrowthGroup option = (GrowthGroup)await self.Select( "Select New Growth Option", _options, Present.Always );
+		GrowthGroup option = await self.SelectAlwaysAsync( "Select New Growth Option", _options, Present.Always );
 		self.GrowthTrack.PickGroups.Single().Add( option ); // only works with spirits with a single pick-group
 		ActionScope.Current.Log( new SpiritIsland.Log.LayoutChanged( $"Starlight adds Growth Option {option}" ) );
 	}

@@ -26,7 +26,7 @@ public class ExaltationOfMoltenStone {
 		public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
 			if( _powerTerrainMapper.MatchesTerrain(source, Terrain.Mountain) )
 				tc = tc.ExtendRange(1);
-			return Previous.GetTargetingRoute(source, tc);
+			return Previous!.GetTargetingRoute(source, tc);
 		}
 
 	}

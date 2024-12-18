@@ -1,6 +1,9 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class BuildEngine {
+
+	public event Func<Space, HumanToken, Task>? BuildComplete;
 
 	public virtual async Task ActivateCard( InvaderCard card ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Building:" + card.Code ) );
@@ -66,13 +69,11 @@ public class BuildEngine {
 			await BuildComplete(space,builtToken); // Trigger event
 	}
 
-	public event Func<Space,HumanToken,Task> BuildComplete;
-
 	public virtual bool ShouldBuildOnSpace(Space space ) => space.HasInvaders();
 
 	/// <summary>
 	/// Makes Invader-to-Build visible to the current ActionScope
 	/// </summary>
-	static public readonly ActionScopeValue<HumanTokenClass> InvaderToAdd = new( "InvaderToBuild", (HumanTokenClass)null );
+	static public readonly ActionScopeValueNullable<HumanTokenClass> InvaderToAdd = new( "InvaderToBuild" );
 
 }

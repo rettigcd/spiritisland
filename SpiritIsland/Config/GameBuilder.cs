@@ -73,7 +73,7 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	}}
 #pragma warning restore CA1822 // Mark members as static
 
-	public IAdversary BuildAdversary( AdversaryConfig cfg ) {
+	public IAdversary BuildAdversary( AdversaryConfig? cfg ) {
 		return cfg is null ? new NullAdversaryBuilder().Build(0)
 			: GetAdversaryBuilder(cfg.Name).Build(cfg.Level);
 	}
@@ -91,6 +91,8 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	public List<BlightCard> BuildBlightCards() => _providers.SelectMany( p => p.BlightCards ).ToList();
 
 	public GameState BuildShell( GameConfiguration cfg) {
+		if(cfg.Spirits is null) throw new InvalidOperationException("missing Spirits");
+		if( cfg.Boards is null ) throw new InvalidOperationException("missing Boards");
 		Spirit[] spirits = BuildSpirits(cfg.Spirits, cfg.Aspects);
 		Board[] boards = BuildBoards(cfg.Boards);
 		return new GameState(spirits, boards, cfg.ShuffleNumber);

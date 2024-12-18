@@ -7,7 +7,7 @@ public class RangeExtender( int extension, ICalcRange originalApi ) : DefaultRan
 	}
 
 	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc)
-		=> Previous.GetTargetingRoute(source, tc.ExtendRange(_extension));
+		=> Previous!.GetTargetingRoute(source, tc.ExtendRange(_extension));
 
 	#region private 
 	readonly int _extension = extension;

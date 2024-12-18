@@ -1,8 +1,12 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary>
 /// Discards card from Hand. (defaults to being required)
 /// </summary>
+/// <remarks>
+/// Used by Downpour / Ember-Eyed as part of growth.
+/// </remarks>
 public class DiscardCards : SpiritAction {
 
 	/// <summary> 
@@ -32,23 +36,22 @@ public class DiscardCards : SpiritAction {
 	}
 
 	public override async Task ActAsync( Spirit self ) {
-		_discarded = [];
-		for(int i=0;i<_count;++i)
-			if( !await Discard1( self,i ) )
+		List<PowerCard> discarded = [];
+		int numToDiscard = Math.Min(_count, self.Hand.Count);
+		for( int i=0; i<numToDiscard; ++i )
+			if( !await Discard1( self,i, discarded) )
 				break;
-		Discarded = _discarded.AsReadOnly();
-		_discarded = null;
+		Discarded = discarded.AsReadOnly();
 	}
 
 	/// <summary>
 	/// After ActAsync, contains Discarded Cards.  
 	/// Before ActAsync, null
 	/// </summary>
-	public ReadOnlyCollection<PowerCard> Discarded { get; private set; }
-	List<PowerCard> _discarded;
+	public ReadOnlyCollection<PowerCard>? Discarded { get; private set; }
 
-	async Task<bool> Discard1( Spirit self, int index ) {
-		PowerCard card = await self.SelectAsync<PowerCard>( new A.PowerCard(
+	async Task<bool> Discard1( Spirit self, int index, List<PowerCard> discarded) {
+		PowerCard? card = await self.SelectAsync( new A.PowerCard(
 			$"Select card to discard ({index+1}of{_count})",
 			_count-index,
 			CardUse.Discard, _cardOptionSelector(self).ToArray(),
@@ -57,7 +60,7 @@ public class DiscardCards : SpiritAction {
 		) );
 		if(card == null) return false; // stop
 
-		_discarded.Add( card );
+		discarded.Add( card );
 
 		// Remove from inPlay or hand (should only be in hand...)
 		var match = new[] { self.InPlay, self.Hand }

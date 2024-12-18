@@ -48,5 +48,5 @@ public class BoardSide( Board _board, params SpaceSpec[] _orderedSpacesOnThisSid
 	}
 
 	readonly SpaceSpec[] _spacesOnThisSide = _orderedSpacesOnThisSide;
-	List<int> _breakPoints;
+	List<int> _breakPoints = [];
 }

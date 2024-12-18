@@ -25,7 +25,7 @@ public class Board {
 	public BoardLayout Layout => _layout ??= GetTransformedLayout();
 
 	BoardLayout GetTransformedLayout() {
-		var layout = BoardLayout.Get(Name);
+		var layout = BoardLayout.Get(Name)!;
 		layout.ReMap(Orientation.GetTransformMatrix());
 		return layout;
 	}

@@ -35,7 +35,7 @@ public class SinglePlayerGame {
 		ActionScope.Initialize( GameState.RootScope );
 		EngineTask = StartAsync();
 	}
-	public Task EngineTask { get; private set; }
+	public Task? EngineTask { get; private set; }
 
 	public async Task StartAsync() {
 
@@ -70,7 +70,7 @@ public class SinglePlayerGame {
 	}
 
 	void RewindGameTo( RewindException rex ) {
-		if( !_savedGameStates.TryGetValue(rex.TargetRound, out object memento) ) return;
+		if( !_savedGameStates.TryGetValue(rex.TargetRound, out object? memento) ) return;
 
 		// Restore
 		((IHaveMemento)GameState).Memento = memento;

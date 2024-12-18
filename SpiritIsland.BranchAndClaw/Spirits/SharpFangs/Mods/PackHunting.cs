@@ -6,7 +6,7 @@ public class PackHunting : DefaultRangeCalculator {
 	static public SpecialRule Rule => new SpecialRule(Name, Description);
 
 	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
-		TargetRoutes routes = Previous.GetTargetingRoute(source, tc);
+		TargetRoutes routes = Previous!.GetTargetingRoute(source, tc);
 		routes.AddRoutes(
 			Previous.GetTargetingRoute(source, tc.ExtendRange(1))._routes
 				.Where(x => x.target.Beasts.Any)

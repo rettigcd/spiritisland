@@ -29,7 +29,7 @@ class ThePastReturnsAgain {
 		// You can't swap cards that don't exist.
 		if(options.Length == 0) return;
 
-		var oldCard = await self.SelectAsync( new A.TypedDecision<InvaderCard>(
+		var oldCard = await self.SelectAlwaysAsync( new A.TypedDecision<InvaderCard>(
 			"Select card to return to top of Invader deck", options, Present.Always
 		) );
 

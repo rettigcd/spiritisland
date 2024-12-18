@@ -4,7 +4,7 @@ namespace SpiritIsland;
 
 public class GameState : IHaveMemento {
 
-	public static GameState Current => ActionScope.Current?.GameState;
+	public static GameState Current => ActionScope.Current!.GameState;
 
 	/// <summary>
 	/// Caches the root ActionScope created when GameState constructed,
@@ -79,7 +79,7 @@ public class GameState : IHaveMemento {
 	public int RoundNumber { get; private set; }
 	public Phase Phase { get; set; }
 
-	public IAdversary Adversary { get; set; }
+	public IAdversary? Adversary { get; set; } // Set later to the None advrsary
 
 	// == Components ==
 	public Fear Fear { get; }
@@ -91,11 +91,8 @@ public class GameState : IHaveMemento {
 	public List<SpaceSpec> OtherSpaces = []; // Currently only used for EndlessDarkness
 	public List<object> ReminderCards = []; // !!! Save to Memento
 
-	public PowerCardDeck MajorCards {get; set; }
-	public PowerCardDeck MinorCards { 
-		get; 
-		set;
-	}
+	public PowerCardDeck? MajorCards {get; set; } // !!! set later
+	public PowerCardDeck? MinorCards {get; set;	} // !!! set later
 	public readonly Healer Healer = new Healer();
 
 	public List<BlightCard> BlightCards = []; // Deck of Blight Cards
@@ -106,11 +103,11 @@ public class GameState : IHaveMemento {
 			_blightCard.Bind(this);
 		}
 	}
-	BlightCard _blightCard;
+	BlightCard _blightCard = new NullBlightCard(); // !!!
 
-	public GameOverLogEntry Result = null;
+	public GameOverLogEntry? Result = null;
 
-	public event Action<ILogEntry> NewLogEntry; // API
+	public event Action<ILogEntry>? NewLogEntry; // API
 
 	public IEnumerable<Space> Spaces => SpaceSpecs.Select(s => Tokens[s]);
 	public IEnumerable<Space> Spaces_Existing => SpaceSpecs_Existing.Select(s => Tokens[s]);
@@ -127,7 +124,7 @@ public class GameState : IHaveMemento {
 		get { return _invaderDeck ??= InvaderDeckBuilder.Default.Build(); }
 		set { _invaderDeck = value; }
 	}
-	InvaderDeck _invaderDeck;
+	InvaderDeck? _invaderDeck;
 
 	public void AddIslandMod( BaseModEntity mod ) => Tokens.AddIslandMod( mod );
 
@@ -211,7 +208,7 @@ public class GameState : IHaveMemento {
 	readonly Dictionary<ActionCategory,TerrainMapper> _terrains = [];
 	public TerrainMapper Terrain_ForBlight = new TerrainMapper(); // This is ONLY called for blight inside gamestate.
 
-	public TerrainMapper GetTerrain( ActionCategory cat ) => _terrains.TryGetValue( cat, out TerrainMapper value ) ? value : DefaultTerrain;
+	public TerrainMapper GetTerrain( ActionCategory cat ) => _terrains.TryGetValue( cat, out TerrainMapper? value ) ? value : DefaultTerrain;
 
 	public void ReplaceTerrain(Func<TerrainMapper,TerrainMapper> replacer, params ActionCategory[] cats ) {
 		foreach(var cat in cats)
@@ -230,8 +227,8 @@ public class GameState : IHaveMemento {
 	class MyMemento {
 		public MyMemento(GameState src) {
 			_mementos.SaveMany( src.Spirits );
-			_mementos.Save( src.MajorCards );
-			_mementos.Save( src.MinorCards );
+			_mementos.Save( src.MajorCards! );
+			_mementos.Save( src.MinorCards! );
 			_mementos.Save( src.InvaderDeck );
 			_mementos.Save( src.Fear );
 			_mementos.Save( src.BlightCard );

@@ -9,7 +9,12 @@ public class Targeting_Tests {
 		gs.Board[3].Given_InitSummary("1TS");
 		gs.Board[8].Given_InitSummary("1TS");
 
-		ActionScope.AsyncContainer container = ActionScope._scopeContainer.Value;
+		// Given: has the ActionScope Container
+		Type type = typeof(ActionScope);
+		FieldInfo info = type.GetField("_scopeContainer", BindingFlags.NonPublic | BindingFlags.Static);
+		var holder = (AsyncLocal <ActionScope.ActionScopeContainer>)info.GetValue(null);
+		ActionScope.ActionScopeContainer container = holder.Value;
+
 		ActionScope scope1 = container.Current;
 
 		await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, gs.Spirit);

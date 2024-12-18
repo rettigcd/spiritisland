@@ -44,7 +44,7 @@ public class StormSwath {
 
 	static async Task<Space> FindOriginLand( TargetSpaceCtx ctx ) {
 
-		var ssOptions = TargetSpaceAttribute.TargettedSpace.Sources;
+		var ssOptions = TargetSpaceAttribute.TargettedSpace!.Sources;
 
 		return await ctx.Self.SelectAlwaysAsync( new A.SpaceDecision( "Select Origin land",  ssOptions, Present.AutoSelectSingle ));
 	}

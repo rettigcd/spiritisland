@@ -1,4 +1,5 @@
-﻿using SpiritIsland.Log;
+﻿#nullable enable
+using SpiritIsland.Log;
 
 namespace SpiritIsland;
 
@@ -6,9 +7,9 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 
 	#region IUserPortal - wait for next decision
 
-	public IDecision Next => CacheNextDecision( null )?.Decision;
-	public IDecision Current => CacheNextDecision( 0 )?.Decision;
-	public event Action<IDecision> NewWaitingDecision;
+	public IDecision? Next => CacheNextDecision( null )?.Decision;
+	public IDecision? Current => CacheNextDecision( 0 )?.Decision;
+	public event Action<IDecision>? NewWaitingDecision;
 	public bool WaitForNext( int ms ) => CacheNextDecision( ms ) != null;
 	public bool WaitForNextDecision( int milliseconds ) { // !!!
 		if(_signal.WaitOne( milliseconds )) {
@@ -18,8 +19,11 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 		return false;
 	}
 
-	IDecisionMaker CacheNextDecision( int? waitMs ) {
-		if(_userAccessedDecision == null) {
+	/// <summary>
+	/// Will wait a certain period of time for non-null, then returns null.
+	/// </summary>
+	IDecisionMaker? CacheNextDecision( int? waitMs ) {
+		if(_userAccessedDecision is null) {
 			WaitForSignal( waitMs );
 			_userAccessedDecision = _activeDecisionMaker;
 		}
@@ -57,10 +61,10 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 
 	/// <summary> Generates an exception in the engine that resets it back to beginning. </summary>
 	public void IssueException( Exception exception ) {
-		IDecisionMaker poppedDecisionMaker = CacheNextDecision( null );
+		IDecisionMaker? poppedDecisionMaker = CacheNextDecision( null );
 		_activeDecisionMaker = null;
 		_userAccessedDecision = null;
-		poppedDecisionMaker.IssueException( exception );
+		poppedDecisionMaker?.IssueException( exception ); // !!! Might not Issue Exception if no decision ever shows up
 	}
 
 	/// <remarks>
@@ -69,14 +73,14 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 	/// Whatever criteria prevented them from having a match, will also prevent having any matches 
 	/// and this will not be referenced/used.
 	/// </remarks>
-	public SpaceToken PreloadedSpaceToken { get; set; }
+	public SpaceToken? PreloadedSpaceToken { get; set; }
 
 	readonly public static AsyncLocal<bool> UsePreselect = new AsyncLocal<bool>(); // !! combine with other preferences into a 'preference' object.
 
 	/// <summary>
 	/// Caller presents a decision to the Gateway and waits for the gateway to return an choice.
 	/// </summary>
-	public async Task<T> Select<T>( A.TypedDecision<T> decision ) where T : class {
+	public async Task<T?> Select<T>( A.TypedDecision<T> decision ) where T : class {
 		ArgumentNullException.ThrowIfNull( decision );
 
 		if(_activeDecisionMaker != null) 
@@ -88,7 +92,7 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 				: throw new InvalidOperationException($"Preloaded {PreloadedSpaceToken} but that is now not an option.");
 
 		// Scenario 2 - Resolve Promise with preloaded value.
-		if(PreloadedSpaceToken != null) {
+		if(PreloadedSpaceToken is not null) {
 			if( !decision.Options.Contains(PreloadedSpaceToken) )
 				throw new InvalidOperationException( $"Preloaded option {PreloadedSpaceToken} not an option for "+ decision.Prompt );
 			IOption preloaded = PreloadedSpaceToken;
@@ -105,7 +109,7 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 		}
 
 		// Scenario 4 - Returns unresolved promise.
-		var promise = new TaskCompletionSource<T>();
+		var promise = new TaskCompletionSource<T?>();
 		var decisionMaker = new ActionHelper<T>( decision, promise );
 		_activeDecisionMaker = decisionMaker;
 
@@ -120,8 +124,8 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 
 		NewWaitingDecision?.Invoke(decision);
 
-		T result = await promise.Task;
-		if(result != null)
+		T? result = await promise.Task;
+		if(result is not null)
 			Log(new DecisionLogEntry((IOption)result, decision, false));
 		return result;
 	}
@@ -135,12 +139,15 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 		selections.Add( entry.Msg(LogLevel.Info) );
 	}
 
-	public event Action<DecisionLogEntry> DecisionMade;
+	public event Action<DecisionLogEntry>? DecisionMade;
 	public readonly List<string> selections = [];
 
 	readonly AutoResetEvent _signal = new AutoResetEvent( false );
-	IDecisionMaker _activeDecisionMaker;
-	IDecisionMaker _userAccessedDecision;
+	#pragma warning disable CA1859
+	// I can't set this to the <T> it described because it is generic
+	IDecisionMaker? _activeDecisionMaker;
+	#pragma warning restore CA1859
+	IDecisionMaker? _userAccessedDecision;
 
 	#endregion
 
@@ -155,11 +162,11 @@ sealed public class UserGateway : IUserPortalPlus, IEnginePortal {
 	/// <summary>
 	/// Assigns one of the generic available options to the typed pending promise.
 	/// </summary>
-	class ActionHelper<T>(A.TypedDecision<T> decision, TaskCompletionSource<T> promise ) : IDecisionMaker where T : class {
+	class ActionHelper<T>(A.TypedDecision<T> decision, TaskCompletionSource<T?> promise ) : IDecisionMaker where T : class {
 		public IDecisionPlus Decision { get; } = decision;
 
 		public void Select( IOption option ) {
-			if( decision.TryGetResultFromOption(option,out T result) )
+			if( decision.TryGetResultFromOption(option,out T? result) )
 				promise.TrySetResult( result );
 			else
 				promise.TrySetException( new System.Exception( $"{option.Text} not found in options" ) );

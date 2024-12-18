@@ -36,9 +36,9 @@ public class SerpentPresence : SpiritPresence {
 
 	public int MaxPresenceOnBoard => new int[]{5,7,8,10,11,12,13 }[AbsorbedPresences.Count];
 
-	protected override object CustomMementoValue {
+	protected override object? CustomMementoValue {
 		get => AbsorbedPresences.ToArray();
-		set { AbsorbedPresences.SetItems( (Spirit[])value ); }
+		set { AbsorbedPresences.SetItems( (Spirit[]?)value! ); }
 	}
 
 

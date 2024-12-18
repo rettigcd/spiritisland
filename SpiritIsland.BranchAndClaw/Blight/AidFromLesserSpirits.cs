@@ -9,12 +9,12 @@ public class AidFromLesserSpirits : BlightCard {
 		new BaseCmd<GameState>("Distribute N+1 cards to players that can play for free each round.", async gs => {
 
 			// Draw 1 minor power card per player plus 1 more.
-			var cards = gs.MinorCards.Flip(gs.Spirits.Length+1);
+			var cards = gs.MinorCards!.Flip(gs.Spirits.Length+1);
 			foreach(var spirit in gs.Spirits ){
 
 				// Give 1 to each spirit.
 				// (can't use TakeCard because that adds it to hand.)
-				PowerCard card = await spirit.SelectPowerCard("Pick card to play every turn for free.", 1, cards, CardUse.AddToHand, Present.Always);
+				PowerCard card = (await spirit.SelectPowerCard("Pick card to play every turn for free.", 1, cards, CardUse.AddToHand, Present.Always))!;
 				cards.Remove(card);
 
 				// They may be used every turn as if played, but cost no card plays/energy.

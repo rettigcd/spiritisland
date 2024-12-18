@@ -79,7 +79,7 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 	readonly SoloGameModel _model;
 
 	async void AdversaryButton_Clicked(object sender, EventArgs e) {
-		await DisplayAlert("Adversary", _model.GameState.Adversary.Describe(),"Close");
+		await DisplayAlert("Adversary", _model.GameState.Adversary!.Describe(),"Close");
 	}
 
 	private void LogButton_Clicked(object sender, EventArgs e) {

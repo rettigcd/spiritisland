@@ -19,7 +19,7 @@ public partial class Space {
 		int damageInflicted = 0;
 		while( 0 < damage && (options = AllHumanTokens().Intersect(allowedTypes()).ToArray()).Length > 0 ) {
 			var st = await damagePicker.SelectAsync(An.Invader.ForAggregateDamageFromSource(SpaceSpec, source, options, damage, Present.Always));
-			if( st == null ) break;
+			if( st is null ) break;
 			var invaderToDamage = st.Token.AsHuman();
 			await Invaders.ApplyDamageTo1(1, invaderToDamage);
 			--damage;
@@ -36,7 +36,7 @@ public partial class Space {
 
 		while( 0 < additionalTotalDamage ) {
 			var st = await damagePicker.SelectAsync(An.Invader.ForBadlandDamage(additionalTotalDamage, invaders.On(this)));
-			if( st == null ) break;
+			if( st is null ) break;
 			var invader = st.Token.AsHuman();
 			int index = invaders.IndexOf(invader);
 			var (_, moreDamagedToken) = await Invaders.ApplyDamageTo1(1, invader);

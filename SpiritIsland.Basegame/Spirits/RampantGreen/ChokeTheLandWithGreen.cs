@@ -23,8 +23,10 @@ public class ChokeTheLandWithGreen( ASpreadOfRampantGreen _self )
 	}
 
 	string ISkipBuilds.Text => SpaceAbreviation;
-	async Task<bool> ISkipBuilds.Skip( Space space )
-		=> await SkipInvaderAction( space, $"build of {BuildEngine.InvaderToAdd.Value.Label}" );
+	Task<bool> ISkipBuilds.Skip( Space space) {
+		HumanTokenClass buildInvader = BuildEngine.InvaderToAdd.Value!;
+		return SkipInvaderAction( space, $"build of {buildInvader.Label}" );
+	}
 
 	async Task<bool> SkipInvaderAction( Space space, string actionDescription ) {
 		if(!IsSacredSite( space )) return false;

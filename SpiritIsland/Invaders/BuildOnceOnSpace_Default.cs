@@ -10,7 +10,7 @@
 public class BuildOnceOnSpace_Default { 
 
 	/// <returns>HumanToken or null.</returns>
-	public async Task<HumanToken> ActAsync( Space space ) {
+	public async Task<HumanToken?> ActAsync( Space space ) {
 		_space = space;
 		await using var actionScope = await ActionScope.Start(ActionCategory.Invader);
 
@@ -35,13 +35,13 @@ public class BuildOnceOnSpace_Default {
 	}
 
 	protected virtual (int,HumanTokenClass) DetermineWhatToAdd() {
-		int townCount = _space.Sum( Human.Town );
-		int cityCount = _space.Sum( Human.City );
+		int townCount = _space!.Sum( Human.Town );
+		int cityCount = _space!.Sum( Human.City );
 		HumanTokenClass invaderToAdd = cityCount < townCount ? Human.City : Human.Town;
 		int countToAdd = 1;
 		return (countToAdd, invaderToAdd);
 	}
 
-	protected Space _space;
+	protected Space? _space;
 
 }

@@ -9,7 +9,7 @@ public class BoardLayout {
 
 	#region Static Builders
 
-	static public BoardLayout Get( string name )
+	static public BoardLayout? Get( string name )
 		=> name switch {
 			"A" => BoardA(),
 			"B" => BoardB(),
@@ -341,7 +341,7 @@ public class BoardLayout {
 	/// <summary>
 	/// The current locations of this boards perimeter in the (0,0,1.5,.866) coordinate system
 	/// </summary>
-	public XY[] Perimeter {get;private set;} // counter-clockwise, starting at origin
+	required public XY[] Perimeter {get;set;} // counter-clockwise, starting at origin
 	
 	/// <summary>
 	/// The current locations of this boards corners in the (0,0,1.5,.866) coordinate system
@@ -398,7 +398,7 @@ public class BoardLayout {
 	];
 
 	Bounds? _bounds;
-	SpaceLayout[] _spaces;
+	required public SpaceLayout[] _spaces;
 
 	#endregion
 

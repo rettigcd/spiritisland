@@ -19,7 +19,7 @@ class FlourishWithNaturesStrength(Spirit spirit) : DrawCardStrategy(spirit) {
 		var gs = GameState.Current;
 		if(deck == gs.MajorCards)
 			// gain a Minor Power.
-			await base.Inner(gs.MinorCards,4,1,false);
+			await base.Inner(gs.MinorCards!,4,1,false);
 
 		return result;
 	}

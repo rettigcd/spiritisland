@@ -4,7 +4,7 @@ public sealed class PowerCardDeck : IHaveMemento {
 
 	#region constructor
 
-	public PowerCardDeck(IList<PowerCard> cards, int seed, PowerType powerType = default) {
+	public PowerCardDeck(IList<PowerCard> cards, int seed, PowerType powerType) {
 		PowerType = powerType;
  		_randomizer = new Random(seed);
 			

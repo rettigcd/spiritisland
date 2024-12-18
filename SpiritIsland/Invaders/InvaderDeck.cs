@@ -13,7 +13,7 @@ public class InvaderDeck : IHaveMemento {
 		_unrevealedCards = cards;
 		_leftOverCards = leftOver;
 		InitNumberOfCardsToDraw();
-		ActiveSlots = [ Ravage, Build, Explore ];
+		_activeSlots = [ Ravage, Build, Explore ];
 	}
 
 	void InitNumberOfCardsToDraw() {

@@ -20,11 +20,11 @@ public class BurnBrightestBeforeTheEnd : BlightCard {
 		async self => {
 			// From
 			// IOption from = (IOption)await self.SelectAsync( A.TrackSlot.ToReveal( "Select Presence to Place or Destroy", self ) );
-			TokenLocation from = await self.SelectTrackPresence( Present.Always, "to Place or Destroy");
-			if(from == null) return; // ??? !!! is this optional?
+			TokenLocation? from = await self.SelectTrackPresence( Present.Always, "to Place or Destroy");
+			if(from is null) return; // ??? !!! is this optional?
 
 			// To
-			Space to = await self.SelectLandWithPresence("Place presence or Destroy it","Destroy it!");
+			Space to = (await self.SelectLandWithPresence("Place presence or Destroy it","Destroy it!"))!;
 
 			if(to is null) {
 				// destroy

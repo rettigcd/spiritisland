@@ -45,8 +45,6 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		foreach(IConfigRavages configurer in data.Space.ModsOfType<IConfigRavages>().ToArray() )
 			await configurer.Config( data.Space );
 
-		data.InvaderBinding = data.Space.Invaders;
-
 		try {
 			await RavageSequence( this, data );
 
@@ -55,7 +53,6 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 		finally {
 			if(scope != null) {
 				await scope.DisposeAsync();
-				data.InvaderBinding = null;
 			}
 		}
 	}

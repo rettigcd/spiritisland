@@ -15,13 +15,12 @@ public static class ResolveOutOfPhaseAction {
 			.ToArray();
 
 		// Select the action.
-		IPowerActionFactory factory = (IPowerActionFactory)await spirit.SelectAsync(new A.TypedDecision<IActionFactory>(
-			GetPrompt(resultingSpeed),
+		IPowerActionFactory? factory = (IPowerActionFactory ? )await spirit.SelectAsync(new A.TypedDecision<IActionFactory>( GetPrompt(resultingSpeed),
 			changeableFactories, 
 			Present.Done
 		));
 
-		if( factory != null)
+		if( factory is not null)
 			await spirit.ResolveActionAsync( factory, resultingSpeed );
 	}
 

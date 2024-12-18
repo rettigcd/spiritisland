@@ -21,7 +21,8 @@ public class GrowthThroughSacrifice {
 		// Note - not strictly following rules - altering to allow presence in any spot that has presence.
 		// Presence placed in an illegal land will allow adding more there, although it technically shouldn't.
 		string joinStr = doBoth ? "AND" : "OR";
-		var space = await other.SelectLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" );
+		var space = (await other.SelectLandWithPresence( $"Select location to Remove Blight {joinStr} Add Presence" ))!;
+
 		var spaceCtx = other.Target(space);
 
 		var removeBlight = new SpaceAction( "Remove 1 blight from one of your lands", spaceCtx => spaceCtx.RemoveBlight() );

@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
@@ -16,7 +17,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, Incarna incarna )
 		:this(spirit,energy,cardPlays,new SpiritPresenceToken(spirit),incarna) { }
 
-	SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token, Incarna incarna ) {
+	SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token, Incarna? incarna ) {
 		Self = spirit;
 
 		Energy = energy;
@@ -70,7 +71,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	// ------------------------------
 	public IEnumerable<IActOn<Spirit>> RevealedActions => Revealed
 		.Select( x => x.Action )
-		.Where( x => x != null );
+		.OfType<IActOn<Spirit>>();
 
 	public CountDictionary<Element> TrackElements {
 		get {
@@ -210,17 +211,17 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 			src.CustomMementoValue = _tag;
 		}
 
-		static int FirstEnergyTrackValue( SpiritPresence src ) => src.Energy.Revealed.First().Energy.Value; // The first one should always have an energy value.
+		static int FirstEnergyTrackValue( SpiritPresence src ) => src.Energy.Revealed.First().Energy!.Value; // The first one should always have an energy value.
 
 		readonly object _energyTrack = _src.Energy.Memento;
 		readonly object _cardPlaysTrack = _src.CardPlays.Memento;
-		readonly object _tag = _src.CustomMementoValue;
+		readonly object? _tag = _src.CustomMementoValue;
 		readonly int _destroyed = _src.Destroyed.Count;
 		readonly int _lowestTrackEnergy = FirstEnergyTrackValue( _src );
 		readonly bool _incarnaEmpowered = _src.Incarna.Empowered;
 	}
 
-	protected virtual object CustomMementoValue {
+	protected virtual object? CustomMementoValue {
 		get { return null; }
 		set { }
 	}

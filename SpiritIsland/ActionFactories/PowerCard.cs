@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public sealed class PowerCard : IPowerActionFactory {
 
@@ -17,14 +18,15 @@ public sealed class PowerCard : IPowerActionFactory {
 
 
 	static PowerCard ForDecorated(MethodInfo method) {
+		var name = method.DeclaringType!.Name;
 		var ctxFactory = method.GetCustomAttributes<GeneratesContextAttribute>().First();
 		if( ctxFactory is TargetSpaceAttribute tsa )
 			tsa.Preselect = method.GetCustomAttribute<PreselectAttribute>();
 		var cardDetails = method.GetCustomAttributes<CardAttribute>().VerboseSingle("Couldn't find CardAttribute on PowerCard targeting a space");
-		var speed       = method.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for " + method.DeclaringType.Name);
+		SpeedAttribute speed = method.GetCustomAttribute<SpeedAttribute>(false) ?? throw new InvalidOperationException("Missing Speed attribute for " + name);
 		var repeater    = method.GetCustomAttribute<RepeatAttribute>();
-		var instructions = method.GetCustomAttribute<InstructionsAttribute>(false)?.Text ?? throw new InvalidOperationException("Missing Instructions attribute for " + method.DeclaringType.Name);
-		var artist = method.GetCustomAttribute<ArtistAttribute>(false)?.Artist ?? throw new InvalidOperationException("Missing Artist attribute for " + method.DeclaringType.Name);
+		var instructions = method.GetCustomAttribute<InstructionsAttribute>(false)?.Text ?? throw new InvalidOperationException("Missing Instructions attribute for " + name);
+		var artist = method.GetCustomAttribute<ArtistAttribute>(false)?.Artist ?? throw new InvalidOperationException("Missing Artist attribute for " + name);
 		return new PowerCard( method, ctxFactory, cardDetails, speed, repeater, instructions, artist );
 	}
 
@@ -37,7 +39,7 @@ public sealed class PowerCard : IPowerActionFactory {
 		ITargetCtxFactory targetCtxFactory,  // Range, Filter, Land/Spirit
 		IDisplayCardDetails cardDetails,     // Name, Cost, Elements, Card/Innate
 		IDisplaySpeedBehaviour speed,        // Speed (and speed behavior)
-		IHaveARepeater repeater,
+		IHaveARepeater? repeater,
 		string instructions,
 		string artist
 	) {
@@ -59,7 +61,7 @@ public sealed class PowerCard : IPowerActionFactory {
 	// These are only used for drawing the cards.
 	public string Instructions { get; }
 	public string Artist { get; }
-	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke(null, [ctx]);
+	Task InvokeOnObjectCtx(object ctx) => (Task)_methodBase.Invoke(null, [ctx])!;
 
 	public string TargetFilter => _targetCtxFactory.TargetFilterName;
 	/// <summary> Used by PowerCardImageManager to draw the range-text on the card. </summary>
@@ -90,7 +92,7 @@ public sealed class PowerCard : IPowerActionFactory {
 
 
 	async Task ActivateInnerAsync( Spirit self ) {
-		object target = await _targetCtxFactory.GetTargetCtx(Title, self);
+		object? target = await _targetCtxFactory.GetTargetCtx(Title, self);
 		if( target is not null )
 			await InvokeOnObjectCtx(target);
 	}
@@ -107,7 +109,7 @@ public sealed class PowerCard : IPowerActionFactory {
 	readonly IDisplaySpeedBehaviour _speed;
 	readonly IDisplayCardDetails _cardDetails;
 	readonly MethodBase _methodBase;
-	readonly IHaveARepeater _repeatHolder;
+	readonly IHaveARepeater? _repeatHolder;
 
 	#endregion
 

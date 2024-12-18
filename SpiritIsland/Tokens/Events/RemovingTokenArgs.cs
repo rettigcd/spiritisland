@@ -14,7 +14,7 @@ public class RemovingTokenArgs {
 	public RemoveReason Reason { get; }
 
 	// modifiable
-	public IToken Token { get; set; }
+	public required IToken Token { get; set; }
 
 	// Should never be negative.
 	public int Count {

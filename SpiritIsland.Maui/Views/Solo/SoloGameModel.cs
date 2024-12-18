@@ -98,7 +98,7 @@ public class SoloGameModel : ObservableModel {
 		SpiritPanel = new SpiritPanelModel(_game.Spirit, _ovm, gs);
 		SpiritPanel.RequestClose += Overlay_RequestClose;
 
-		Adversary = gs.Adversary.Name;
+		Adversary = gs.Adversary!.Name;
 
 		_acceptText = "Accept";
 
@@ -198,7 +198,7 @@ public class SoloGameModel : ObservableModel {
 
 		// Quit the game and wait a bit
 		_game.UserPortal.CancelGame();
-		if (!_game.EngineTask.Wait(500)) {
+		if (!_game.EngineTask!.Wait(500)) {
 			// !!! log that the task did not complete
 		}
 	}

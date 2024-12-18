@@ -30,7 +30,7 @@ public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
 
 	#endregion IOption.Text config
 
-	public Task<TokenMovedArgs> MoveTo( Space destination, int count=1 )
+	public Task<TokenMovedArgs?> MoveTo( Space destination, int count=1 )
 		=> this.Token.MoveAsync(Space,destination,count);
 
 	public bool Exists => 0 < Count;

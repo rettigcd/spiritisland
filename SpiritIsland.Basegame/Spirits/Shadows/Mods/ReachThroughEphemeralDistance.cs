@@ -33,7 +33,7 @@ class ReachThroughEphemeralDistance : DefaultRangeCalculator {
 
 	#region Spirit_SelectionMade
 
-	void Spirit_SelectionMade(object obj) {
+	void Spirit_SelectionMade(object? obj) {
 		if(obj is Space space )
 			CheckAndClear(space);
 		else if (obj is SpaceToken spaceToken)

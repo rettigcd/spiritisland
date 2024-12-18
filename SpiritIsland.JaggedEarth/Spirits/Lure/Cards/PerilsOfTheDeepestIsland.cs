@@ -15,7 +15,7 @@ public class PerilsOfTheDeepestIsland {
 		// Add 1 beast within 1 range.
 		IEnumerable<Space> options = ctx.Range(1);
 
-		var space = await ctx.Self.SelectSpaceAsync("Add beast", options,Present.Always);
+		var space = (await ctx.Self.SelectSpaceAsync("Add beast", options,Present.Always))!;
 
 		await space.Beasts.AddAsync(1);
 

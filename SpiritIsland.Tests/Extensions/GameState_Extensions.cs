@@ -56,7 +56,7 @@ static public class GameState_Extensions {
 			PowerCard.ForDecorated(CallToIsolation.ActAsync), // 2nd after Shuffle
 			PowerCard.ForDecorated(CallToMigrate.ActAsync),
 			PowerCard.ForDecorated(Drought.ActAsync),			// 1st after Shuffle
-		], 1 );
+		], 1, PowerType.Minor);
 		return gameState;
 	}
 

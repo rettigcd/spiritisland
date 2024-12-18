@@ -51,7 +51,7 @@ static public class SpaceExtensions {
 	#region Invader
 
 	/// <summary> Gets the invader we most want to be rid of. </summary>
-	static public HumanToken BestInvaderToBeRidOf( this Space ss, ITag[] tags ) {
+	static public HumanToken? BestInvaderToBeRidOf( this Space ss, ITag[] tags ) {
 		return ss.OfAnyTag( tags )
 			.Cast<HumanToken>()
 			.OrderByDescending( g => g.FullHealth )

@@ -1,5 +1,5 @@
-﻿namespace SpiritIsland;
-
+﻿#nullable enable
+namespace SpiritIsland;
 
 public sealed class Track( string code, params Element[] els )
 	: IOption 
@@ -14,7 +14,7 @@ public sealed class Track( string code, params Element[] els )
 	};
 	public static string EnergyOnlyCode(int energy) => energy + " energy";
 
-	public static Track MkEnergy( int energy, Element el, IconDescriptor sub=null ) 
+	public static Track MkEnergy( int energy, Element el, IconDescriptor? sub=null ) 
 		=> new Track( energy+","+ el.ToString().ToLower() + " energy", el ) { 
 			_energy = energy,
 			Icon = new IconDescriptor { 
@@ -123,20 +123,20 @@ public sealed class Track( string code, params Element[] els )
 		get => _energy;
 		set { 
 			_energy = value;
-			if(Icon != null) Icon.Text = Math.Max(0,_energy.Value).ToString();
+			if(Icon != null) Icon.Text = _energy.HasValue ? Math.Max(0,_energy.Value).ToString() : "";
 		}
 	}
 
 	public Element[] Elements { get; set; } = els;
 	public int? CardPlay { get; set; }
 
-	public IconDescriptor Icon { get; set; }
+	public IconDescriptor? Icon { get; set; }
 
 	/// <summary> Executed after Energy is collected. (optional) </summary>
-	public IActOn<Spirit> Action { get; set; }
+	public IActOn<Spirit>? Action { get; set; }
 
 	/// <summary> Executed when track is revealed. (optional) </summary>
-	public Func<Track,Spirit,Task> OnRevealAsync;
+	public Func<Track,Spirit,Task>? OnRevealAsync;
 
 	/// <summary> Adds Track's elements to the dictionary. </summary>
 	public void AddElementsTo( CountDictionary<Element> elements ) {
@@ -163,7 +163,7 @@ public sealed class Track( string code, params Element[] els )
 	Task<(ITokenAddedArgs, Func<ITokenAddedArgs, Task>)> ILocation.SinkAsync( IToken token, int count, AddReason addReason ) 
 		=> throw new NotImplementedException();
 
-	public event Func<Track,Task> SourcedTokenAsync;
+	public event Func<Track,Task>? SourcedTokenAsync;
 
 	#endregion Generic Move / ISource/ISink tokens
 

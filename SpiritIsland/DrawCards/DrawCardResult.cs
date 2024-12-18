@@ -2,7 +2,7 @@
 
 public class DrawCardResult( PowerType _powerType ) {
 	public PowerType PowerType { get; } = _powerType;
-	public PowerCard[] SelectedCards;
+	public required PowerCard[] SelectedCards;
 	public PowerCard Selected => SelectedCards.Single();
-	public List<PowerCard> Rejected;
+	public List<PowerCard>? Rejected;
 }

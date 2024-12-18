@@ -10,19 +10,19 @@ public class DamagePool( int _remaining ) {
 		// Note - this locks in Badland Count the 1st time we do damage.  Adding badlands after that has no effect.
 		var actionScope = ActionScope.Current;
 		string key = "BadlandDamage_" + ss.SpaceSpec.Label +"_" + groupName;
-		if(actionScope.ContainsKey( key )) return (DamagePool)actionScope[key];
+		if(actionScope.ContainsKey( key )) return actionScope.SafeGetNullable<DamagePool>(key)!;
 		var pool = new DamagePool( ss.Badlands.Count );
-		actionScope[key] = pool;
+		actionScope.SafeSet(key,pool);
 		return pool;
 	}
 
 	static public DamagePool SpiritsBonusDamage() {
 		// Note - this locks in Badland Count the 1st time we do damage.  Adding badlands after that has no effect.
-		var actionScope = ActionScope.Current;
+		ActionScope actionScope = ActionScope.Current;
 		string key = "BonusDamage";
-		if(actionScope.ContainsKey( key )) return (DamagePool)actionScope[key];
-		var pool = new DamagePool( actionScope?.Owner?.BonusDamage ?? 0 );
-		actionScope[key] = pool;
+		if(actionScope.ContainsKey( key )) return actionScope.SafeGetNullable<DamagePool>(key)!;
+		var pool = new DamagePool( actionScope.Owner?.BonusDamage ?? 0 );
+		actionScope.SafeSet(key,pool);
 		return pool;
 	}
 

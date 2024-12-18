@@ -12,16 +12,17 @@ public class SlowDissolutionOfWill : BlightCard {
 	public override IActOn<GameState> Immediately => Cmd.Multiple( 
 		new BaseCmd<Spirit>( ChooseTokenPrompt, ChooseToken ).ForEachSpirit(), 
 		new BaseCmd<Spirit>( ReplacePrompt, DoReplace ).ForEachSpirit().AtTheStartOfEachInvaderPhase()
-    );
+	);
 
 	async Task ChooseToken(Spirit spirit) 
-		=> _replacements[spirit] = await spirit.Select<IToken>(ChooseTokenPrompt,[Token.Badlands, Token.Beast, Token.Wilds ],Present.Always);
+		=> _replacements[spirit] = await spirit.SelectAlwaysAsync( new A.TypedDecision<IToken>(ChooseTokenPrompt, [Token.Badlands, Token.Beast, Token.Wilds], Present.Always));
+
 
 	async Task DoReplace(Spirit spirit ) {
 		var replacement = _replacements[spirit];
-		Space space = await spirit.SelectDeployed("Replace Presence with " + replacement.Text );
-		await space.Destroy(spirit.Presence.Token,1);
-		await space.AddAsync(replacement,1);
+		SpaceToken spaceToken = await spirit.SelectDeployed("Replace Presence with " + replacement.Text );
+		await spaceToken.Destroy(); // .Destroy(spirit.Presence.Token,1);
+		await spaceToken.Space.AddAsync(replacement,1);
 	}
 
 	readonly Dictionary<Spirit,IToken> _replacements = [];

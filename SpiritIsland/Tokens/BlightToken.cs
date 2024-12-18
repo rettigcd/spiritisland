@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class BlightToken( string label, char k, Img img ) 
 	: TokenClassToken( label, k, img )
@@ -32,10 +33,14 @@ public class BlightToken( string label, char k, Img img )
 		if (to.Blight.Count != 1 && config.ShouldCascade) {
 
 			var terrain = gs.Terrain_ForBlight;
-			var cascadeOptions = to.Adjacent_Existing.Where(x => !terrain.MatchesTerrain(x, Terrain.Ocean) // normal case,
-			 || terrain.MatchesTerrain(x, Terrain.Wetland));
+			var cascadeOptions = to.Adjacent_Existing
+				.Where(x => !terrain.MatchesTerrain(x, Terrain.Ocean) // normal case,
+					|| terrain.MatchesTerrain(x, Terrain.Wetland)
+				)
+				.ToArray();
+			if(cascadeOptions.Length == 0) return; // no adjacents to cascade to
 
-			Space cascadeTo = await gs.Spirits[0].SelectAsync(A.SpaceDecision.ForMoving(
+			Space cascadeTo = await gs.Spirits[0].SelectAlwaysAsync(A.SpaceDecision.ForMoving(
 				$"Cascade blight from {to.SpaceSpec.Label} to",
 				to.SpaceSpec,
 				cascadeOptions,
@@ -92,7 +97,7 @@ public class BlightToken( string label, char k, Img img )
 
 public class BlightConfig {
 
-	public ITokenAddedArgs BlightFromCardTrigger;
+	public ITokenAddedArgs? BlightFromCardTrigger;
 
 	public bool ShouldCascade = true;
 	public bool TakeFromCard = true;

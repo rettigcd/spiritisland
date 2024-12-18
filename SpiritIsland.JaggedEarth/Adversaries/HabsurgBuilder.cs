@@ -37,7 +37,7 @@ class HabsurgBuilder : BuildEngine {
 		public HasburgSpaceBuilder() : base() { }
 		protected override (int, HumanTokenClass) DetermineWhatToAdd() {  
 			var (count,tokenClass) = base.DetermineWhatToAdd();
-			return (tokenClass == Human.City && !_space.SpaceSpec.IsCoastal && !_space.SpaceSpec.IsOcean)
+			return (tokenClass == Human.City && !_space!.SpaceSpec.IsCoastal && !_space.SpaceSpec.IsOcean)
 				? (2,Human.Town)
 				: (count,tokenClass);
 		}

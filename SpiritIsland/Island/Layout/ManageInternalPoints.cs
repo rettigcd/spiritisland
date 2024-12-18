@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿
+namespace SpiritIsland;
 
 // Tracks unique locations internal to a polygon
 public class ManageInternalPoints {
@@ -16,8 +17,8 @@ public class ManageInternalPoints {
 			.OrderByDescending( layout.FindDistanceFromBorder )
 			.First();
 
-		XY[] allPoints = null;
-		XY[] internalPoints = null;
+		XY[]? allPoints = null;
+		XY[]? internalPoints = null;
 
 		const float tokenSizeScale = 1.5f;
 		float stepSize = .1f; // .06 is plenty
@@ -206,7 +207,7 @@ public class ManageInternalPoints {
 			return true;
 		}
 
-		public bool AssignNextSlot( IToken visibleToken, Space space= null ) {
+		public bool AssignNextSlot( IToken visibleToken, Space? space= null ) {
 			int? index = FindNextSlot(space);
 			if(!index.HasValue) return false;
 			AssignToken( visibleToken, index.Value );
@@ -239,18 +240,18 @@ public class ManageInternalPoints {
 			return bestIndex;
 		}
 
-		int? FindNextSlot( Space space = null ) {
+		int? FindNextSlot( Space? space = null ) {
 
 			// Prefer free slots
 			for(int i = 0; i < _myTokens.Length; i++)
 				if(_myTokens[i] is null)
 					return i;
 
-			if(space != null)
+			if(space is not null)
 				// Find old spot that is now available
 				for(int i = 0; i < _myTokens.Length; i++) {
-					IToken token = _myTokens[i];
-					if(space[token] == 0) {
+					IToken? token = _myTokens[i];
+					if(token is not null && space[token] == 0) {
 						_myTokens[i] = null;
 						return i;
 					}
@@ -268,8 +269,8 @@ public class ManageInternalPoints {
 			}
 		}
 
-		readonly object _locker = new object();
-		readonly IToken[] _myTokens = new IToken[_points.Length];
+		readonly Lock _locker = new Lock();
+		readonly IToken?[] _myTokens = new IToken[_points.Length];
 
 		public XY[] Points => _points;
 	}

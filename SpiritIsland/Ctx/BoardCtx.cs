@@ -12,8 +12,8 @@ public class BoardCtx( Board _board ) : IHaveASpirit {
 
 	//  =========  Parts from SelfCtx  ==============
 
-	public Task<T> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
-		=> Self.SelectAsync<T>( originalDecision );
+	public Task<T?> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
+		=> Self.SelectAsync<T>(originalDecision);
 
 	public TargetSpaceCtx Target( SpaceSpec space ) => Self.Target( space );
 	public TargetSpaceCtx Target( Space space) => Self.Target(space);

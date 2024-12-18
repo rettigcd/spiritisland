@@ -8,7 +8,7 @@ public class TokenClassToken : IToken, ITokenClass, IAppearInSpaceAbreviation {
 
 	public string Badge { get; private set; }
 
-	public TokenClassToken(string label, char initial, Img img, string badge = null) {
+	public TokenClassToken(string label, char initial, Img img, string? badge = null) {
 		Label = label;
 		_summary = initial.ToString();
 		Img = img;

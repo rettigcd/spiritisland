@@ -12,7 +12,7 @@ public interface IDecisionPortal {
 	bool WaitForNextDecision(int milliseconds);
 
 	/// <summary> Waits for the Next Decision to arrive, then returns it. </summary>
-	IDecision Next { get; }
+	IDecision? Next { get; }
 	event Action<IDecision> NewWaitingDecision;
 
 	#endregion Waiting for Next Decision
@@ -33,6 +33,6 @@ public interface IUserPortalPlus : IDecisionPortal {
 /// The API that the engine uses to present decisions to the user.
 /// </summary>
 public interface IEnginePortal {
-	Task<T> Select<T>( A.TypedDecision<T> originalDecision ) where T : class;
+	Task<T?> Select<T>( A.TypedDecision<T> originalDecision ) where T : class;
 }
 

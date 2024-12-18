@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class AdversaryLevel( int _level, int _difficulty, int _fear1, int _fear2, int _fear3, string _title, string _description = "" ) {
 
@@ -22,12 +23,12 @@ public class AdversaryLevel( int _level, int _difficulty, int _fear1, int _fear2
 	/// <summary> Called after gameState.Initialize() </summary>
 	public void Adjust( GameState gs, IAdversary adversary ) => AdjustFunc?.Invoke( gs, adversary );
 
-	public InvaderDeckBuilder InvaderDeckBuilder { get; private set; }
+	public InvaderDeckBuilder? InvaderDeckBuilder { get; private set; }
 
 	#endregion public - called by GameConfig to setup game
 
-	public Action<GameState, IAdversary> InitFunc { get; set; }
-	public Action<GameState, IAdversary> AdjustFunc { get; set; }
+	public Action<GameState, IAdversary>? InitFunc { get; set; }
+	public Action<GameState, IAdversary>? AdjustFunc { get; set; }
 
 	#region public WithXXX() to setup config
 
@@ -58,7 +59,7 @@ public class AdversaryLevel( int _level, int _difficulty, int _fear1, int _fear2
 
 	#region private 
 
-	Func<GameState, Task> _escalation;
+	Func<GameState, Task>? _escalation;
 
 	#endregion
 }

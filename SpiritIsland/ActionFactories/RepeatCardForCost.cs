@@ -24,7 +24,7 @@ public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
 		PowerCard[] options = GetCardOptions( self, GameState.Current.Phase );
 		if(options.Length == 0) return;
 
-		PowerCard powerCard = await self.SelectPowerCard( "Select card to repeat", 1, options, CardUse.Repeat, Present.Always );
+		PowerCard? powerCard = await self.SelectPowerCard( "Select card to repeat", 1, options, CardUse.Repeat, Present.Always );
 		if(powerCard == null) return;
 
 		self.Energy -= powerCard.Cost;

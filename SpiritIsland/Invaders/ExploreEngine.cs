@@ -1,10 +1,11 @@
-﻿namespace SpiritIsland;
+﻿#nullable enable
+namespace SpiritIsland;
 
 public class ExploreEngine {
 
-	public Func<GameState, Task> Escalation;
-	public event Func<GameState,Task> ExploreForCardComplete;
-	public event Func<Space,Task> ExploredSpace;
+	public Func<GameState, Task>? Escalation;
+	public event Func<GameState,Task>? ExploreForCardComplete;
+	public event Func<Space,Task>? ExploredSpace;
 
 	public virtual async Task ActivateCard( InvaderCard card, GameState gameState ) {
 		ActionScope.Current.Log( new Log.InvaderActionEntry( "Exploring:" + card.Code ) );

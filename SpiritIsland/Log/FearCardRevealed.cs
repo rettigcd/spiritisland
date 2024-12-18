@@ -7,7 +7,7 @@ public class FearCardRevealed(IFearCard card) : ILogEntry {
 
 	public string GetInstructions() {
 		if( Card.ActivatedTerrorLevel.HasValue )
-			return $"{Card.ActivatedTerrorLevel.Value} : {Card.GetDescription()}";
+			return $"{Card.ActivatedTerrorLevel.Value} : {Card.GetDescription(Card.ActivatedTerrorLevel.Value)}";
 
 		// Show all Levels
 		List<string> parts = [];

@@ -80,8 +80,8 @@ public class FracturedDaysSplitTheSky : Spirit {
 		int cardsToDraw = 2 < spiritCount 
 			? 4  // Deal 4 Minor and Major Powers face -
 			: 6; // in a 1 or 2 - player game, instead deal 6 of each.
-		DtnwMinor.AddRange( gs.MinorCards.Flip( cardsToDraw ) );
-		DtnwMajor.AddRange( gs.MajorCards.Flip( cardsToDraw ) );
+		DtnwMinor.AddRange( gs.MinorCards!.Flip( cardsToDraw ) );
+		DtnwMajor.AddRange( gs.MajorCards!.Flip( cardsToDraw ) );
 
 		// In a 1 - board game, gain 1 Time.
 		if( gs.Spirits.Length == 1 )
@@ -281,9 +281,9 @@ class DaysThatNeverWere(Spirit s) : DrawCardStrategy(s) {
 		FracturedDaysSplitTheSky fdstk = (FracturedDaysSplitTheSky)_spirit;
 
 		// select card to keep
-		var keep = await _spirit.SelectPowerCard("Keep 1 card for Days That Never Were", 1, drawResult.Rejected, CardUse.AddToHand, Present.Always);
+		var keep = (await _spirit.SelectPowerCard("Keep 1 card for Days That Never Were", 1, drawResult.Rejected!, CardUse.AddToHand, Present.Always))!;
 		// remove it from the rejected group
-		drawResult.Rejected.Remove(keep);
+		drawResult.Rejected!.Remove(keep);
 
 		// Add to Days-That-Never-Were decks
 		if( keep.PowerType == PowerType.Major )

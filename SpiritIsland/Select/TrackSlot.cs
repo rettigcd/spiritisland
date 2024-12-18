@@ -21,7 +21,7 @@ public class TrackSlot : TypedDecision<Track> {
 	static public TrackSlot ToCover( SpiritIsland.Spirit spirit )
 		=> new TrackSlot( "Select Destination to return presence", spirit.Presence.CoverOptions );
 
-	TrackSlot( string prompt, IEnumerable<Track> trackOptions, string cancelOption = null )
+	TrackSlot( string prompt, IEnumerable<Track> trackOptions, string? cancelOption = null )
 		: base( prompt, trackOptions, cancelOption ) {
 	}
 

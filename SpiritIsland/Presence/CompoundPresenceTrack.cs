@@ -32,7 +32,7 @@ public class CompoundPresenceTrack( params IPresenceTrack[] parts )
 			await TrackRevealedAsync( new TrackRevealedArgs(track));
 	}
 
-	public event Func<TrackRevealedArgs,Task> TrackRevealedAsync;
+	public event Func<TrackRevealedArgs,Task>? TrackRevealedAsync;
 
 	public bool Return( Track track ) {
 		return _parts.Any(part=>part.Return(track));

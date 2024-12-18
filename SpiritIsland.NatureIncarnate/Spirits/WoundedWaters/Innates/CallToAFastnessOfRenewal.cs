@@ -23,7 +23,7 @@ public class CallToAFastnessOfRenewal {
 	[InnateTier( "1 sun,4 water,2 plant", "If at least 2 Dahan are present, Replace 1 Invader with 1 Dahan.", 3 )]
 	static public async Task Option4( TargetSpaceCtx ctx ){
 		if(2 <= ctx.Dahan.CountAll && ctx.HasInvaders) {
-			var invader = ctx.Space.BestInvaderToBeRidOf( Human.Invader );
+			var invader = ctx.Space.BestInvaderToBeRidOf( Human.Invader )!;
 			await ctx.Space.ReplaceHumanAsync(invader,Human.Dahan);
 		}
 	}

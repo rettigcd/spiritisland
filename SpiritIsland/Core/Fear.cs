@@ -8,7 +8,7 @@ namespace SpiritIsland;
 /// </remarks>
 public class Fear : IHaveMemento {
 
-	public event Action<IFearCard> CardActivated;
+	public event Action<IFearCard>? CardActivated;
 
 	public Fear(GameState gs) {
 		_gs = gs;

@@ -63,14 +63,13 @@ public sealed class Island : IHaveMemento {
 			.Select(grp=>grp.Key)
 			.ToArray();
 
-		var boardList = Boards.Select(b=>b.Orientation).ToList();
-		boardList.Insert(0, null);
+		List<BoardOrientation> orig = Boards.Select(b=>b.Orientation).ToList();
 
 		return openSides
 			.SelectMany(side => boardSideIndex.Select(i=>BoardOrientation.ToMatchSide(i,side) ))
 			.Where(newOrient=> {
-				boardList[0] = newOrient;
-				return !HasOverlap(boardList) && !HidesAnOcean(boardList);
+				BoardOrientation[] tmplistForComparing = [newOrient, ..orig];
+				return !HasOverlap(tmplistForComparing) && !HidesAnOcean(tmplistForComparing);
 			} )
 			.ToArray();
 	}

@@ -29,7 +29,7 @@ static public class Distribute {
 	/// Not necessary when there is only 1 destination to start with.
 	/// </summary>
 	static public void ToASingleLand( DestinationSelector d ) {
-		SpaceSpec destination = null;
+		SpaceSpec? destination = null;
 		d.Track( to => destination ??= to.SpaceSpec );
 		d.FilterDestination( space => destination is null || space.SpaceSpec == destination );
 	}

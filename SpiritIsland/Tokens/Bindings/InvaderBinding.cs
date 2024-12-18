@@ -57,7 +57,7 @@ public sealed class InvaderBinding( Space space ) {
 	}
 
 	// The invader Before it was damaged.
-	public event Action<HumanToken> InvaderDamaged;
+	public event Action<HumanToken>? InvaderDamaged;
 
 	#endregion
 

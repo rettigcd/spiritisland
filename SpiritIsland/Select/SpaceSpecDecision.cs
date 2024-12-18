@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.A;
 
+// !!!! THIS WHOLE CLASS probably needs to be removed.
+// Superceeded by Move.
+
 /// <summary> Decision that selects a space. </summary>
 /// <remarks> Renamed from Select.Space to avoid class name confusion. </remarks>
 public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
@@ -47,7 +50,7 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 		_spaces = spaces.ToArray();
 	}
 
-	public SpaceDecision(string prompt, IEnumerable<Space> spaces, string cancelText)
+	public SpaceDecision(string prompt, IEnumerable<Space> spaces, string? cancelText)
 		: base(prompt, spaces.Select(x => x.SpaceSpec).OrderBy(x => x.Label), cancelText) {
 		_spaces = spaces.ToArray();
 	}
@@ -77,7 +80,7 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 	///		pushing/moving/placing: presence, 
 	///		pushing/moving: tokens 
 	///	</remarks>
-	public IToken Token {
+	public IToken? Token {
 		get;
 		private set;
 	}
@@ -90,12 +93,12 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 		return this;
 	}
 
-	public IEnumerable<Arrow> Arrows => _source == null || Token == null
+	public IEnumerable<Arrow> Arrows => _source is null || Token is null
 		? []
 		: Options.OfType<SpaceSpec>().Select(dstSpace => new Arrow { Token = Token, From = _source, To = dstSpace });
 
 	// Only Set when we want to draw outgoing arrows
-	SpaceSpec _source;
+	SpaceSpec? _source;
 
 	#endregion config: Arrows
 

@@ -1,5 +1,5 @@
-﻿namespace SpiritIsland;
-
+﻿#nullable enable
+namespace SpiritIsland;
 
 /// <summary> A presence token that follows other tokens around. (Thunderspeaker & Sharp Fangs) </summary>
 public class FollowingPresenceToken : SpiritPresenceToken {
@@ -29,7 +29,7 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 		string prompt = "Move presence with " + args.Removed.Class.Label + "?";
 		while(0 < maxThatCanMove--) {
 			var source = await Self.SelectAsync( A.SpaceTokenDecision.ToCollect( prompt, new SpaceToken[] { this.On( from ) }, Present.Done, to.SpaceSpec ) );
-			if(source != null)
+			if(source is not null)
 				await this.MoveAsync(from,to);
 		}
 	}

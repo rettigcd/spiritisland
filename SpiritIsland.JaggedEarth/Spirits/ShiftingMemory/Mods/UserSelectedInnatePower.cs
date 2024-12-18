@@ -23,9 +23,9 @@ class UserSelectedInnatePower(Type type) : InnatePower(type) {
 		if( options.Length == 0 ) return null;
 		if( options.Length == 1 ) return options[0].innateOption;
 
-		string choice = await spirit.SelectText("Select Innate Option", options.Select(x => x.prompt).ToArray(), Present.Done);
+		string? choice = await spirit.SelectText("Select Innate Option", options.Select(x => x.prompt).ToArray(), Present.Done);
 		var match = options.FirstOrDefault(o => o.prompt == choice);
-		if( match == null ) return null;
+		if( match is null ) return null;
 
 		// Assign to this action so next check recognizes them
 		// (!!! BUG - should only be applied to this action, not all.  Remove at end of action)

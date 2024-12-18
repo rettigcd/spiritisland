@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.A;
+﻿#nullable enable
+namespace SpiritIsland.A;
 
 public class TypedDecision<T> : IDecisionPlus where T:class {
 
@@ -35,7 +36,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class {
 	public TypedDecision(
 		string prompt,
 		IEnumerable<IOption> options,
-		string cancelPrompt = null
+		string? cancelPrompt = null
 	){
 
 		var optionList = options.ToList();
@@ -48,7 +49,7 @@ public class TypedDecision<T> : IDecisionPlus where T:class {
 
 	}
 
-	public bool TryGetResultFromOption( IOption option, out T t ) {
+	public bool TryGetResultFromOption( IOption option, out T? t ) {
 		if( TextOption.Done.Matches(option)) {
 			t = null;
 			return true;

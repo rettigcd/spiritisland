@@ -23,7 +23,7 @@ public sealed class TheBorderOfLifeAndDeath : StillHealthyBlightCard {
 		async spirit => {
 			var action = new DiscardCards(1).ConfigAsOptional();
 			await action.ActAsync(spirit);
-			if(action.Discarded.Count != 0)
+			if(action.Discarded!.Count != 0)
 				spirit.Energy++;
 		}
 	);

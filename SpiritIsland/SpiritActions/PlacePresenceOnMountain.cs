@@ -10,7 +10,7 @@ public class PlacePresenceOnMountain : SpiritAction { // Similar to SharpFang in
 
 		// Put 1 presence on your starting board in a mountain of your choice.
 		var options = GameState.Current.Spaces.Where( space=>space.SpaceSpec.IsMountain );
-		var space = await self.SelectAsync(A.SpaceDecision.ToPlacePresence(options, Present.Always,self.Presence.Token));
+		var space = await self.SelectAlwaysAsync(A.SpaceDecision.ToPlacePresence(options, Present.Always,self.Presence.Token));
 		await self.Presence.Token.AddTo(space);
 		await space.AddDefaultAsync( Token.Badlands, 1);
 

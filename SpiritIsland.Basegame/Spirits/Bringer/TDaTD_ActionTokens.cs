@@ -27,7 +27,7 @@ public class TDaTD_ActionTokens( Space space )
 		return (
 			new TokenRemovedArgs(this, token,0,reason), // nothing removed
 			_=>Task.CompletedTask
-        );
+		);
 	}
 
 
@@ -38,7 +38,7 @@ public class TDaTD_ActionTokens( Space space )
 		return countToDestroy;
 	}
 
-	SpiritPresenceToken BringerPresence => _bringerPresence ??= ActionScope.Current.Owner.Presence.Token;
+	SpiritPresenceToken BringerPresence => _bringerPresence ??= ActionScope.Current.Owner!.Presence.Token;
 	SpiritPresenceToken? _bringerPresence;
 
 	async Task Destroy1Invader( HumanToken invaderToken ) {
@@ -65,7 +65,7 @@ public class TDaTD_ActionTokens( Space space )
 		var newToken = adj.NewToken;
 		if(newToken.HumanClass != DreamingCity) {
 			var options = Adjacent;
-			Space? destination = await ActionScope.Current.Owner.SelectAlwaysAsync( A.SpaceDecision.ToPushToken( newToken, this, options, Present.Always ) );
+			Space? destination = await ActionScope.Current.Owner!.SelectAlwaysAsync( A.SpaceDecision.ToPushToken( newToken, this, options, Present.Always ) );
 			if(destination is not null){
 				await newToken.MoveAsync(this,destination); // there is no Push(Token), so this will have to do.
 				RecordSpaceWithDreamers( destination );

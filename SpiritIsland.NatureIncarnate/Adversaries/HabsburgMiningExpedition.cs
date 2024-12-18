@@ -122,7 +122,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 
 		// Records should-upgrade in the ActionScope since we cannot detect it once we stop the cascade.
 		static bool ShouldUpgrade {
-			get => ActionScope.Current.SafeGet<bool>( Key );
+			get => ActionScope.Current.SafeGet( Key, false );
 			set => ActionScope.Current[Key] = value;
 		}
 		const string Key = "Avarice Rewarded";

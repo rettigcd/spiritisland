@@ -34,7 +34,7 @@ class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		if( args.Token != Token.Blight || 0 == args.Count ) return;
 		
-		var cause = BlightToken.ScopeConfig.BlightFromCardTrigger;
+		var cause = BlightToken.ScopeConfig.BlightFromCardTrigger!;
 		if( _spirit.Presence.IsOn( (Space)cause.To ) // was taken from space with presence
 		) {
 			bool takeFromBoxInstead = _cost <= _spirit.Energy

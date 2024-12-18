@@ -61,7 +61,7 @@ public class Quota {
 		.ToArray();
 
 	readonly List<QuotaGroup> _sharedGroupCounts = []; // the # we push from each group
-	ITokenClass[] _remainingTypes;
+	ITokenClass[]? _remainingTypes;
 	bool _beVerbose = false;
 
 	class QuotaGroup {

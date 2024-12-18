@@ -8,8 +8,8 @@ public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimi
 
 	#region ActionScope Targetted Details
 	/// <summary> The space that was targetted (if any) and the targetting criteria used to get it. </summary>
-	public static TargetSpaceResults TargettedSpace => _targettedSpace.Value;
-	readonly static ActionScopeValue<TargetSpaceResults> _targettedSpace = new ActionScopeValue<TargetSpaceResults>("Targetted Space");
+	public static TargetSpaceResults? TargettedSpace => _targettedSpace.Value; // must be nullable so action can detect IF a space was targetted in a round.
+	readonly static ActionScopeValueNullable<TargetSpaceResults> _targettedSpace = new ActionScopeValueNullable<TargetSpaceResults>("Targetted Space");
 
 	#endregion ActionScope Targetted Details
 

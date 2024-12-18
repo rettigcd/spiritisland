@@ -54,7 +54,7 @@ public sealed class TokenMover(
 			if(move == null) break;
 
 			// Do Move
-			TokenMovedArgs tokenMoved = await move.Source.MoveTo( move.Destination );
+			TokenMovedArgs tokenMoved = (await move.Source.MoveTo( move.Destination ))!;
 
 			// Notify/Update Source
 			await sourceSelector.NotifyAsync( move.Source );
@@ -63,7 +63,7 @@ public sealed class TokenMover(
 		}
 	}
 
-	async Task<Move> GetMoveDecision(Present present) {
+	async Task<Move?> GetMoveDecision(Present present) {
 
 		var sourcePromptBuilder = Prompt.RemainingParts( present == Present.Always ? actionWord : actionWord + " up to" );
 		A.SpaceTokenDecision srcDecision = sourceSelector.BuildDecision( sourcePromptBuilder, present, destinationSelector.Single, 0, null );
@@ -112,7 +112,7 @@ public sealed class TokenMover(
 
 static public class Move_Extension { 
 
-	static public async Task<TokenMovedArgs> MoveAsync( this IToken token, ILocation from, ILocation to, int count=1 ) {
+	static public async Task<TokenMovedArgs?> MoveAsync( this IToken token, ILocation from, ILocation to, int count=1 ) {
 		// Current implementation favors:
 		//		switching token types prior to Add/Remove so events handlers don't switch token type
 		//		perfoming the add/remove action After the Adding/Removing modifications
@@ -162,6 +162,6 @@ static public class Move_Extension {
 	static public Task<ITokenRemovedArgs> RemoveAsync( this TokenLocation tokenOn, int count=1, RemoveReason reason = RemoveReason.Removed )
 		=> tokenOn.Location.RemoveAsync(tokenOn.Token,count,reason);
 		
-	static public Task<TokenMovedArgs> MoveToAsync( this TokenLocation tokenOn, ILocation destination, int count=1 )
+	static public Task<TokenMovedArgs?> MoveToAsync( this TokenLocation tokenOn, ILocation destination, int count=1 )
 		=> tokenOn.Token.MoveAsync(tokenOn.Location,destination,count);
 }

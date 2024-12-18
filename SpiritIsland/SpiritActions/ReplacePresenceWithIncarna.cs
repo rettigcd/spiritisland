@@ -7,7 +7,7 @@ public class ReplacePresenceWithIncarna : SpiritAction {
 	public override async Task ActAsync( Spirit self ) {
 		// Remove presnece
 		var spaceToken = await self.SelectAsync( A.SpaceTokenDecision.OfDeployedPresence( "Select presence to replace with Incarna.", self, Present.Done ) );
-		if(spaceToken == null ) return;
+		if(spaceToken is null ) return;
 
 		await spaceToken.Destroy();
 

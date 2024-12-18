@@ -214,8 +214,10 @@ public partial class Space
 			foreach(var space in SpaceSpec.Adjacent_Existing)
 				yield return space.ScopeSpace;
 
-			foreach(var gateway in OfType<GatewayToken>())
-				yield return gateway.GetLinked(this);
+			foreach(var gateway in OfType<GatewayToken>() ) {
+				Space? linked = gateway.GetLinked(this);
+				if(linked is not null) yield return linked;
+			}
 		}
 	}
 

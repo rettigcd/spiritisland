@@ -10,7 +10,7 @@ public class TravelersBoon {
 		Spirit other = ctx.Other;
 
 		// Select destination
-		Space destination = await other.SelectSpaceAsync("Move up to 3 of your presence to:", ctx.Self.Presence.Lands, Present.Always );
+		Space destination = (await other.SelectSpaceAsync("Move up to 3 of your presence to:", ctx.Self.Presence.Lands, Present.Always ))!;
 		// Select presence to pull in
 		await new TokenMover(ctx.Self,"Move", other.Presence.Lands, destination)
 			.AddGroup( 3, other.Presence.Deployed.Select( x => x.Token.Class ).Distinct().ToArray() )

@@ -14,7 +14,7 @@ public class ShatteredFragmentsOfPower : BlightCard {
 	static public IActOn<GameState> SpiritsGainMajorAndEnergy() => new BaseCmd<GameState>( 
 		$"Draw 1 Major Power Card per Spirit plus 2 more. Each Spirit Takes 1 and gains 2 Energy.",
 		async gs => {
-			var majors = gs.MajorCards.Flip(gs.Spirits.Length+2);
+			var majors = gs.MajorCards!.Flip(gs.Spirits.Length+2);
 			foreach(var spirit in gs.Spirits) {
 				// Major
 				PowerCard card = await spirit.PickOutCard(majors);

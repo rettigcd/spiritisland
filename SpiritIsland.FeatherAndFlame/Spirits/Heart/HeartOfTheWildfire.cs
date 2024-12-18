@@ -82,15 +82,15 @@ public class HeartOfTheWildfire : Spirit {
 
 		Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 			// Blight added due to Spirit effects( Powers, Special Rules, Scenario-based Rituals, etc) does not destroy your Presence. ( This includes cascades.)
-			if( DestroysMyPresence(args) && BlightAddedDueToSpiritEffects() ){
+			var addedBlight = BlightToken.ScopeConfig.BlightFromCardTrigger;
+			if( DestroysMyPresence(args) 
+				&& (addedBlight is null || !addedBlight.Reason.IsOneOf(AddReason.Ravage, AddReason.BlightedIsland, AddReason.None))
+			) {
 				ActionScope.Current.Log(new Log.Debug($"Blight added due do Spirit effects does not destroy Wildfire presence."));
 				args.Count = 0;
 			}
 			return Task.CompletedTask;
 		}
-
-		static bool BlightAddedDueToSpiritEffects() => !BlightToken.ScopeConfig.BlightFromCardTrigger.Reason
-			.IsOneOf( AddReason.Ravage, AddReason.BlightedIsland, AddReason.None );
 
 		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			if(args.Added != this) return;

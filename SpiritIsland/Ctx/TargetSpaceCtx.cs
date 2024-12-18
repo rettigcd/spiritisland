@@ -39,9 +39,9 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 			.Where( opt => opt != null && opt.IsApplicable( this ) )
 			.ToArray();
 
-		string text = await Self.SelectText( "Select Power Option", applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
+		string? text = await Self.SelectText( "Select Power Option", applicable.Select( a => a.Description ).ToArray(), Present.AutoSelectSingle );
 
-		if(text != null && text != TextOption.Done.Text) {
+		if(text is not null && text != TextOption.Done.Text) {
 			var selectedOption = applicable.Single( a => a.Description == text );
 			await selectedOption.ActAsync( this );
 		}

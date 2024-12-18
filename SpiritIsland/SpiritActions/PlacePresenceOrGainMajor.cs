@@ -13,7 +13,7 @@ public class PlacePresenceOrGainMajor : SpiritAction {
 	}
 
 	static SpiritAction DrawMajorWithoutForgetting => new SpiritAction( "Draw Major without Forgetting",
-		self => DrawFromDeck.DrawInner( self, GameState.Current.MajorCards, 1, 1 )
+		self => DrawFromDeck.DrawInner( self, GameState.Current.MajorCards!, 1, 1 )
 	);
 
 }

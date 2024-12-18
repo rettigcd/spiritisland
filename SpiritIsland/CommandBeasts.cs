@@ -109,14 +109,9 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 	public string Description => InstructionText;
 
-	public bool IsApplicable( TargetSpaceCtx ctx ) => _originalBeastCounts[ctx.SpaceSpec] > 0;// use original, not current. Incase anything moved.
+	public bool IsApplicable( TargetSpaceCtx ctx ) => OriginalBeastCounts[ctx.SpaceSpec] > 0;// use original, not current. Incase anything moved.
 
 	public async Task ActAsync( TargetSpaceCtx ctx ) {
-
-		// The first space/time it is called on, init original Beast positions
-		_originalBeastCounts ??= ActionScope.Current.Spaces
-				.ToDictionary( s => s.SpaceSpec, s => s.Beasts.Count )
-				.ToCountDict();
 
 		// Using this order: Damage / Push / Fear(based on starting invaders)
 		//	Pro:	Assists user. Can use as much damage as desired (this is probably top priority) and not worry about using fear prior to killing explorers.
@@ -125,7 +120,7 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 		bool startedWithInvaders = ctx.HasInvaders;
 
-		int count = _originalBeastCounts[ctx.SpaceSpec];
+		int count = OriginalBeastCounts[ctx.SpaceSpec];
 		if(count == 0) return;
 
 		// Damage
@@ -145,7 +140,11 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 	#region private
 
-	CountDictionary<SpaceSpec> _originalBeastCounts;
+	CountDictionary<SpaceSpec> OriginalBeastCounts => _originalBeastCounts 
+		??= ActionScope.Current.Spaces
+				.ToDictionary(s => s.SpaceSpec, s => s.Beasts.Count)
+				.ToCountDict();
+	CountDictionary<SpaceSpec>? _originalBeastCounts;
 
 	static async Task<int> PartialDamageToInvaders( TargetSpaceCtx ctx, int damage ) {
 		if(damage == 0) return 0; // not necessary, just saves some cycles

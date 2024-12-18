@@ -18,8 +18,8 @@ public class DefaultRangeCalculator : ICalcRange {
 	public virtual TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc)
 		=> new TargetRoutes( source.Range(tc.Range).Where(tc.Matches).Select(target=>new TargetRoute(source,target)) );
 
-	public ICalcRange Previous => _previous;
-	readonly ICalcRange _previous;
+	public ICalcRange? Previous => _previous;
+	readonly ICalcRange? _previous;
 
 	static public readonly ICalcRange Singleton = new DefaultRangeCalculator();
 

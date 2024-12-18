@@ -2,9 +2,9 @@
 using Orig_Space = SpiritIsland.SpaceSpec;
 
 public class Arrow {
-	public IToken Token;
-	public Orig_Space From;
-	public Orig_Space To;
+	public required IToken Token;
+	public required Orig_Space From;
+	public required Orig_Space To;
 }
 
 public interface IHaveArrows {

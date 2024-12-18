@@ -47,9 +47,9 @@ public sealed class PlacePresence : SpiritAction {
 		if(toOptions.Length == 0)
 			return; // this can happen if Ocean is dragged way-inland and is no longer near an ocean or coast.
 
-		Space to = await self.SelectAsync( A.SpaceDecision.ToPlacePresence( toOptions, Present.Always, from.Token ) );
+		Space to = await self.SelectAlwaysAsync( A.SpaceDecision.ToPlacePresence( toOptions, Present.Always, from.Token ) );
 		var result = await from.MoveToAsync(to);
-		await Placed.InvokeAsync( result );
+		await Placed.InvokeAsync( result! );
 	}
 
 	static readonly string[] DefaultFilters = [ Filter.Any ];
