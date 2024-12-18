@@ -13,10 +13,10 @@ class PourTimeSideways {
 		await frac.SpendTime( 3 );
 
 		// Move 1 of your presence to a different land with your presence.
-		var src = (await self.SelectAsync( new A.SpaceTokenDecision("Move presence from:", self.Presence.Deployed, Present.Always ) ))!;
+		var src = await self.SelectAlwaysAsync( new A.SpaceTokenDecision("Move presence from:", self.Presence.Deployed, Present.Always ) );
 		if(!src.Space.Has(self.Presence)) return; // !!?? is this necessary?
 		IEnumerable<Space> dstOptions = self.Presence.Lands.Where( s => s != src.Space );
-		Space dst = (await self.SelectAsync( A.SpaceDecision.ForMoving( "Move presence to:", src.Space.SpaceSpec, dstOptions, Present.Always, src.Token ) ))!;
+		Space dst = await self.SelectAlwaysAsync( A.SpaceDecision.ForMoving( "Move presence to:", src.Space.SpaceSpec, dstOptions, Present.Always, src.Token ) );
 		await src.MoveTo(dst);
 		var srcBoards = src.Space.SpaceSpec.Boards;
 		if(srcBoards.Intersect(dst.SpaceSpec.Boards).Any()) return;

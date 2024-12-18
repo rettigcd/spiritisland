@@ -18,7 +18,7 @@ class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRemovingTo
 			scope[key] = true; // don't save any more
 
 			Spirit spirit = scope.Owner ?? args.From.SpaceSpec.Boards[0].FindSpirit();
-			Space destination = (await spirit.SelectAsync( A.SpaceDecision.ToPushToken( (IToken)args.Token, args.From, pushOptions, Present.Always ) ))!;
+			Space destination = await spirit.SelectAlwaysAsync( A.SpaceDecision.ToPushToken( (IToken)args.Token, args.From, pushOptions, Present.Always ) );
 			await args.Token.MoveAsync( args.From, destination );
 		}
 	}

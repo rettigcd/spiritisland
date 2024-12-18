@@ -69,7 +69,7 @@ public class Thunderspeaker : Spirit {
 		SpaceToken[] Intersect() => Presence.Deployed.Where(x=>spaces.Contains(x.Space)).ToArray(); // Ravage Only, not dependent on PowerRangeCalculator
 
 		while(numToDestroy-->0 && (options=Intersect()).Length > 0) {
-			SpaceToken spaceToken = (await SelectAsync( new A.SpaceTokenDecision( prompt, options, Present.Always ) ))!;
+			SpaceToken spaceToken = await SelectAlwaysAsync( new A.SpaceTokenDecision( prompt, options, Present.Always ) );
 			await spaceToken.Destroy();
 		}
 

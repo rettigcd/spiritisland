@@ -22,8 +22,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	public Task<bool> YouHave( string elementString ) => Self.Elements.YouHave( elementString );
 
-	public Task<T?> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption 
-		=> Self.SelectAsync<T>( originalDecision );
+	// public Task<T?> SelectAsync<T>( A.TypedDecision<T> originalDecision ) where T : class, IOption => Self.SelectAsync<T>( originalDecision );
 
 	public TargetSpaceCtx TargetSpec( SpaceSpec space ) => Self.Target( space ); // !!! OLD - remove
 	public TargetSpaceCtx Target( Space space ) => Self.Target(space.SpaceSpec);
@@ -222,7 +221,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var st = await SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
+			var st = await Self.SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
 			if(st is null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
@@ -284,9 +283,9 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	#endregion
 
-	/// <remarks> Simnple Helper - has access to: Spirit, Space/Adjacent, Target() </remarks>
+	/// <remarks> Simple Helper - has access to: Spirit, Space/Adjacent, Target() </remarks>
 	public async Task<TargetSpaceCtx?> SelectAdjacentLandAsync( string prompt ) {
-		var space = await SelectAsync( new A.SpaceDecision( prompt, Space.Adjacent, Present.Always ) );
+		var space = await Self.SelectAsync( new A.SpaceDecision( prompt, Space.Adjacent, Present.Always ) );
 		return space is not null ? Target( space ) : null;
 	}
 

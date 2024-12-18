@@ -117,7 +117,7 @@ public class Russia : AdversaryBuilder, IAdversaryBuilder {
 			for(int i = 0; i < 2; ++i) {
 				await using ActionScope actionScope = await ActionScope.Start(ActionCategory.Adversary);
 				var criteria = new A.SpaceDecision( $"Escalation - Add Explorer for board {board.Name} ({i + 1} of 2)", addSpaces, Present.Always );
-				Space addSpace = (await spirit.SelectAsync( criteria ))!;
+				Space addSpace = await spirit.SelectAlwaysAsync( criteria );
 				await addSpace.AddDefaultAsync( Human.Explorer, 1, AddReason.Explore );
 			}
 		}

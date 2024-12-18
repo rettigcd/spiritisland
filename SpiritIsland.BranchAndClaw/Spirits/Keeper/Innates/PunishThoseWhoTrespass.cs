@@ -33,11 +33,11 @@ public class PunishThoseWhoTrespass {
 
 		int remainingDamage = damage - damageToTarget;
 		if(0 < remainingDamage) {
-			Space secondaryTarget = (await ctx.SelectAsync(new A.SpaceDecision(
+			Space secondaryTarget = await ctx.Self.SelectAlwaysAsync(new A.SpaceDecision(
 				$"Apply {remainingDamage} reamaining damage"
 				,ctx.Self.Presence.Lands
 				, Present.Always
-			)))!;
+			));
 			await ctx.Target(secondaryTarget).DamageInvaders(remainingDamage);
 		}
 

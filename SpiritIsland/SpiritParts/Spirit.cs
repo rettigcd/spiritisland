@@ -52,17 +52,14 @@ public abstract partial class Spirit
 	#region Gateway stuff
 
 	public IUserPortalPlus Portal => _gateway;
+
+	/// <summary> Use ONLY for decisions that will ALWAYS return an option. </summary>
+	public async Task<T> SelectAlwaysAsync<T>(A.TypedDecision<T> decision) where T : class, IOption => (await SelectAsync(decision))!;
+
 	public async Task<T?> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption {
 		var selection = await _gateway.Select<T>(decision);
 		SelectionMade?.Invoke(selection);
 		return selection;
-	}
-
-	/// <summary>
-	/// Use ONLY for decisions that will ALWAYS return an option.
-	/// </summary>
-	public async Task<T> SelectAlwaysAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption {
-		return (await SelectAsync(decision))!;
 	}
 
 	public event Action<object>? SelectionMade; // hook for: Reach Through the Efemeral Distance

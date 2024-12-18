@@ -32,8 +32,9 @@ public class InsatiableHungerOfTheSwarm {
 
 		// if you have 2 air, 4 animal, repeat power on adjacent land.
 		if(await ctx.YouHave("2 air,4 animal")) {
-			var adjCtx = (await ctx.SelectAdjacentLandAsync("Apply power to adjacent land"))!;
-			await ApplyPowerOnTarget( adjCtx );
+			var adjCtx = await ctx.SelectAdjacentLandAsync("Apply power to adjacent land");
+			if(adjCtx is not null)
+				await ApplyPowerOnTarget( adjCtx );
 		}
 	}
 

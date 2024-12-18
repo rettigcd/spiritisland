@@ -29,11 +29,11 @@ public class FireAndFlood {
 			.ToArray();
 
 		// 2nd target options, range 2 from Possible SSs
-		return (await ctx.SelectAsync( new A.SpaceDecision( "Select space to target.", ctx.Range(2), Present.Always ) ))!;
+		return await ctx.Self.SelectAlwaysAsync( new A.SpaceDecision( "Select space to target.", ctx.Range(2), Present.Always ) );
 	}
 
 	static async Task Apply3DamageInOneOfThese( TargetSpaceCtx ctx, Space secondTarget, string damageType ) {
-		var space = (await ctx.SelectAsync( new A.SpaceDecision( "Apply 3 " + damageType + " damage to", new Space[] { ctx.Space, secondTarget }, Present.Always ) ))!;
+		var space = await ctx.Self.SelectAlwaysAsync( new A.SpaceDecision( "Apply 3 " + damageType + " damage to", new Space[] { ctx.Space, secondTarget }, Present.Always ) );
 		await ctx.Target( space ).DamageInvaders( 3 );
 	}
 

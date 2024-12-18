@@ -11,17 +11,18 @@ public class HazardsSpreadAcrossTheIsland{
 		if(candidates.Length == 0) return;
 
 		var decision = new A.SpaceTokenDecision("Select hazard to add to "+ctx.SpaceSpec.Label, candidates, Present.Always);
-		var tokenChoice = (await ctx.SelectAsync(decision))!.Token;
+		var spaceTokenChoice = await ctx.Self.SelectAlwaysAsync(decision);
+		var token = spaceTokenChoice.Token;
 
 		// choosing disease costs 1 energy.
-		if( tokenChoice == Token.Disease )
+		if( token == Token.Disease )
 			ctx.Self.Energy--;
 
 		// Add 1 of that type of token to target land.
-		if( tokenChoice is HumanToken ht && 0 < ht.StrifeCount )
+		if( token is HumanToken ht && 0 < ht.StrifeCount )
 			await ctx.AddStrife();
 		else
-			await ctx.Space.AddAsync( tokenChoice,1);
+			await ctx.Space.AddAsync( token,1);
 	}
 
 	static SpaceToken[] FindHazardTokenInAdjacentLand( TargetSpaceCtx ctx ) {

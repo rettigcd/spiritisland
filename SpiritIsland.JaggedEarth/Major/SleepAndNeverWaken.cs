@@ -39,7 +39,7 @@ public class SleepAndNeverWaken {
 		while( count-- > 0 
 			&& (options=CalcOptions()).Length > 0 
 		) {
-			var spaceToken = await ctx.SelectAsync( new A.SpaceTokenDecision($"Select Explorer to remove. ({count+1} remaining)", options, Present.Done));
+			var spaceToken = await ctx.Self.SelectAsync( new A.SpaceTokenDecision($"Select Explorer to remove. ({count+1} remaining)", options, Present.Done));
 			if(spaceToken is null ) break;
 			await ctx.Target(spaceToken.Space).Remove(spaceToken.Token,1);
 		}

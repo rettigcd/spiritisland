@@ -11,7 +11,7 @@ public class FieryVengeance {
 		if(destroyed.Count == 0) return;
 
 		// 1 fear and 1 damage in one of target Spirit's lands.
-		var space = (await ctx.Other.SelectAsync(new A.SpaceDecision("1 fear + 1 damage", ctx.Other.Presence.Lands, Present.Always)))!;
+		var space = await ctx.Other.SelectAlwaysAsync(new A.SpaceDecision("1 fear + 1 damage", ctx.Other.Presence.Lands, Present.Always));
 		var spaceCtx = ctx.Other.Target(space);
 		await spaceCtx.AddFear(1);
 		await spaceCtx.DamageInvaders(1);

@@ -40,7 +40,7 @@ public class PentUpCalamity {
 				options.On(ctx.Space),
 				Present.Done
 			);
-			SpaceToken? spaceTokenToRemove = await ctx.SelectAsync( removeTokenDecision );
+			SpaceToken? spaceTokenToRemove = await ctx.Self.SelectAsync( removeTokenDecision );
 			if(spaceTokenToRemove is null) break;
 
 			// If bonus allowed us to return some

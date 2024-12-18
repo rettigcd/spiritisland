@@ -75,7 +75,7 @@ public static partial class Cmd {
 		int remaining = calcMaxHealthToRemove(ctx);
 		HumanToken pick;
 		while(0 < remaining
-			&& (pick = (await ctx.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Space.InvaderTokens().On(ctx.Space), remaining )) )?.Token.AsHuman()) != null
+			&& (pick = (await ctx.Self.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Space.InvaderTokens().On(ctx.Space), remaining )) )?.Token.AsHuman()) != null
 		) {
 			await ctx.Remove( pick, 1 );
 			remaining -= pick.RemainingHealth;

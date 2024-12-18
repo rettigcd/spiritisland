@@ -6,9 +6,11 @@ public class WeaveTogetherTheFabricOfPlace {
 	[Instructions( "Target land and a land adjacent to it become a single land for this turn. (It has the terrain and land # of both lands. When this effect expires, divide pieces as you wish; all of them are considered moved.) -If you have- 4 Air: Isolate the joined land. If it has Invaders, 2 Fear, and remove up to 2 Invaders." ), Artist( Artists.JoshuaWright )]
 	public static async Task ActAsync(TargetSpaceCtx ctx ) {
 		// target land and a land adjacent to it become a single land for this turn.
-		var other = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.SpaceSpec.Label} to"))!.SpaceSpec;
+		TargetSpaceCtx? otherCtx = (await ctx.SelectAdjacentLandAsync( $"Join {ctx.SpaceSpec.Label} to"));
+		if(otherCtx is null) return; // can't weave together if no adjacent land.
+		var otherSpec=otherCtx.SpaceSpec;
 
-		Space multi = JoinSpaces( ctx.Self, ctx.SpaceSpec, other );
+		Space multi = JoinSpaces( ctx.Self, ctx.SpaceSpec, otherSpec );
 
 		// if you have 4 air:
 		if(await ctx.YouHave( "4 air" )) {

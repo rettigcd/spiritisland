@@ -50,12 +50,12 @@ public class FlowingAndSilentFormsDartBy {
 		Spirit[] spirits = GameState.Current.Spirits;
 		var nearbySpirits = spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
 		Spirit? other = spirits.Length == 1 ? ctx.Self
-			: await ctx.SelectAsync( new A.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
+			: await ctx.Self.SelectAsync( new A.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
 		if(other is null) return; // no spirit to gather
 
 		// Pick spot
 		var options = adj.Where(adj=>adj.Has(other.Presence));
-		var source = await ctx.SelectAsync( A.SpaceTokenDecision.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.SpaceSpec ) );
+		var source = await ctx.Self.SelectAsync( A.SpaceTokenDecision.ToCollect( "Gather presence", other.Presence.Movable.WhereIsOn(adj), Present.Done, ctx.SpaceSpec ) );
 		if(source is null) return; // in case they cancel / change their mind.
 
 		// # to move
