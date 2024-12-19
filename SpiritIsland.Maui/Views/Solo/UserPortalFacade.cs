@@ -114,7 +114,7 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 		if(option is SpaceToken source)
 			return HandleMoveSource( source, block );
 
-		if(option is SpaceSpec destination) {
+		if(option is Space destination) {
 			HandleMoveDestination( destination, block );
 			return null;
 		}
@@ -153,9 +153,9 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 		}
 	}
 
-	void HandleMoveDestination( SpaceSpec destination, bool block ) {
+	void HandleMoveDestination( Space destination, bool block ) {
 		Move realOption = _moveOptions
-			.Single( s => s.Source == _moveSource && s.Destination.SpaceSpec == destination );
+			.Single( s => s.Source == _moveSource && s.Destination == destination );
 		inner.Choose( move, realOption, block );
 	}
 
