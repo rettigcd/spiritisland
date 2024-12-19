@@ -15,10 +15,8 @@ public class StranglingFirevine {
 		await ctx.Wilds.AddAsync(1);
 
 		// Add 1 wilds in the originating Sands. 
-		Space[] originatingOptions = TargetSpaceAttribute.TargettedSpace!.Sources;
 
-		Space original = await ctx.Self.Select("Select origination space", originatingOptions, Present.AutoSelectSingle)
-			?? throw new InvalidOperationException("Could not find required originating Sands with presence.");
+		Space original = await ctx.Self.SelectAlways("Select origination space", TargetSpaceAttribute.TargettedSpace!.Sources, true);
 		await original.Wilds.AddAsync(1);
 
 		// 1 damage per wilds in / adjacent to target land.

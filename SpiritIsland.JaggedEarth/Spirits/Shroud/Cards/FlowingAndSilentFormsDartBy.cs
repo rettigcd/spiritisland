@@ -2,7 +2,9 @@
 
 public class FlowingAndSilentFormsDartBy {
 
-	[SpiritCard("Flowing and Silent Forms Dart By",0, Element.Moon,Element.Air,Element.Water), Fast, FromPresence(0) ]
+	const string Name = "Flowing and Silent Forms Dart By";
+
+	[SpiritCard(Name,0, Element.Moon,Element.Air,Element.Water), Fast, FromPresence(0) ]
 	[Instructions( "2 Fear if Invaders are present. When Presence in target land would be Destroyed, its owner may, if possible, instead Push that Presence. You may Gather 1 Presence / Sacred Site of another Spirit (with their permission)." ), Artist( Artists.EmilyHancock )]
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
@@ -50,7 +52,7 @@ public class FlowingAndSilentFormsDartBy {
 		Spirit[] spirits = GameState.Current.Spirits;
 		var nearbySpirits = spirits.Where( s => adj.Any( s.Presence.IsOn ) ).ToArray();
 		Spirit? other = spirits.Length == 1 ? ctx.Self
-			: await ctx.Self.Select( new A.Spirit( "Flowing and Silent Forms Dart By", nearbySpirits ) );
+			: await ctx.Self.Select( Prompts.TargetSpirit(Name), nearbySpirits, Present.Done );
 		if(other is null) return; // no spirit to gather
 
 		// Pick spot

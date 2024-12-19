@@ -20,8 +20,7 @@ public class BurnBrightestBeforeTheEnd : BlightCard {
 		async self => {
 			// From
 			TokenLocation? from = await self.Select( Prompts.SelectPresenceTo("to Place or Destroy"), self.Presence.RevealOptions(), Present.Always );
-
-			if( from is null) return; // ??? !!! is this optional?
+			if( from is null) return; // Spirit might not have any more presence on track.
 
 			// To
 			Space? to = await self.Select("Place presence or Destroy it", self.Presence.Lands, "Destroy it!");

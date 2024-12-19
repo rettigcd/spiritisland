@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public abstract partial class Spirit 
 	: IOption

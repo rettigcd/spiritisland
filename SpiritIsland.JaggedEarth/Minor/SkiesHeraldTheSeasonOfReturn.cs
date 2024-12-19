@@ -13,8 +13,8 @@ public class SkiesHeraldTheSeasonOfReturn{
 			.Where( spirit => ctx.SpaceSpec.Boards.Any(spirit.Presence.IsOn) )
 			.ToArray();
 
-		var other = await ctx.Self.Select(new A.Spirit(Name,spiritOptions,Present.AutoSelectSingle) );
-		if(other != null)
+		var other = await ctx.Self.Select("Select Spirit to add Destroyed Presence", spiritOptions, Present.AutoSelectSingle );
+		if(other is not null)
 			await ctx.Self.Target( other ).Other.Target(ctx.SpaceSpec).Presence.PlaceDestroyedHere();
 
 		// Gather up to 2 dahan.
