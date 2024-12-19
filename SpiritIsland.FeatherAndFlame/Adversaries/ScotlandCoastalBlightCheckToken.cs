@@ -56,7 +56,7 @@ class ScotlandCoastalBlightCheckToken
 			Present.Always
 		);
 
-		var spaceToken = await spirit.SelectAsync( selectionCriteria );
+		var spaceToken = await spirit.Select( selectionCriteria );
 		if(spaceToken is null) return; // should not happen
 		if(spaceToken.Space == args.From) return; // they are going with the original
 

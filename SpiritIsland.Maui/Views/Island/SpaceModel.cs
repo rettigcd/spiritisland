@@ -19,7 +19,7 @@ public class SpaceModel : ObservableModel, OptionView {
 	public OptionState State { get => _state; set => SetProp(ref _state, value ); }
 	OptionState _state = OptionState.Default;
 
-	public IOption Option => Space.SpaceSpec;
+	public IOption Option => Space; // .SpaceSpec;
 
 	public Action<IOption, bool>? SelectOptionCallback { set; private get; }
 

@@ -5,10 +5,10 @@ public class PlacePresenceAndBeast : SpiritAction {
 	public PlacePresenceAndBeast():base( "Place Presence and Beast" ) { }
 
 	public override async Task ActAsync( Spirit self ) {
-		TokenLocation from = await self.SelectSourcePresence();
+		TokenLocation from = await self.SelectAlways(Prompts.SelectPresenceTo(), self.DeployablePresence());
 
 		var options = DefaultRangeCalculator.Singleton.GetTargetingRoute_MultiSpace( self.Presence.Lands, new TargetCriteria( 3 ) ).Targets;
-		Space to = await self.SelectAlwaysAsync( A.SpaceDecision.ToPlacePresence( options, Present.Always, self.Presence.Token ) );
+		Space to = await self.SelectAlways( A.SpaceDecision.ToPlacePresence( options, Present.Always, self.Presence.Token ) );
 
 		await from.MoveToAsync(to);
 		await to.Beasts.AddAsync(1);

@@ -19,7 +19,7 @@ public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceTok
 			&& !UsedThisRound
 		) {
 
-			var dst = await Self.SelectAsync(new A.SpaceDecision("Instead of destroying, push presence to:", args.From.Adjacent, Present.Done));
+			var dst = await Self.Select(new A.SpaceDecision("Instead of destroying, push presence to:", args.From.Adjacent, Present.Done));
 			if( dst is null ) return;
 
 			--args.Count;

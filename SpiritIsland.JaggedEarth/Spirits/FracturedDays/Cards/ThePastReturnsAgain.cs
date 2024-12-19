@@ -29,9 +29,7 @@ class ThePastReturnsAgain {
 		// You can't swap cards that don't exist.
 		if(options.Length == 0) return;
 
-		var oldCard = await self.SelectAlwaysAsync( new A.TypedDecision<InvaderCard>(
-			"Select card to return to top of Invader deck", options, Present.Always
-		) );
+		var oldCard = await self.SelectAlways( "Select card to return to top of Invader deck", options );
 
 		// Replace New with Old
 		deck.Explore.Cards[0] = oldCard;
@@ -52,7 +50,7 @@ class ThePastReturnsAgain {
 				if(max == 0) continue;
 				var payOptions = new List<ItemOption<int>>();
 				int i = max; while(0 <= i) { payOptions.Add( new ItemOption<int>( i-- ) ); }
-				var x = await spirit.SelectAlwaysAsync( new A.TypedDecision<ItemOption<int>>( $"Contribute Energy? ({remaining} of {total} outstanding)", payOptions, Present.Always ) );
+				var x = await spirit.SelectAlways( $"Contribute Energy? ({remaining} of {total} outstanding)", payOptions );
 				pledge[spirit] -= x.Item;
 				remaining -= x.Item;
 				if(remaining == 0) break;

@@ -10,11 +10,10 @@ public class HeartOfWildFire_Tests {
 		var gs = new SoloGameState( spirit, boardB );
 		gs.IslandWontBlight();
 
-		var space = boardB[8];
-		var tokens = space.ScopeSpace;
+		var space = boardB[8].ScopeSpace;
 
 		// Given: presence on B8
-		tokens.Init(spirit.Presence.Token,1);
+		space.Init(spirit.Presence.Token,1);
 
 		// When: adding blight to space via spirit powers
 		//await using var scope = await ActionScope.Start(ActionCategory.Spirit_Power);
@@ -24,9 +23,9 @@ public class HeartOfWildFire_Tests {
 		} );
 
 		// Then: presence should still be there
-		tokens[spirit.Presence.Token].ShouldBe(1);
+		space[spirit.Presence.Token].ShouldBe(1);
 		// and make sure we added blight
-		tokens.Blight.Count.ShouldBe(1);
+		space.Blight.Count.ShouldBe(1);
 	}
 
 	[Trait( "Blight", "Destroy Presence" )]

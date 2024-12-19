@@ -162,7 +162,7 @@ public static class SpiritExtensions {
 		var actual = ActionScope.Current.Spaces_Existing
 			.Where( spirit.Presence.IsOn )
 			.Select(s=>s.SpaceSpec.Label+":"+s[spirit.Presence.Token])
-			.Order()
+			.OrderBy(x=>x)
 			.Join(",");
 		Assert.Equal(expected, actual); // , Is.EqualTo(expected),"Presence in wrong place");
 	}

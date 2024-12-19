@@ -75,7 +75,7 @@ public static partial class Cmd {
 		int remaining = calcMaxHealthToRemove(ctx);
 		HumanToken? pick;
 		while(0 < remaining
-			&& (pick = (await ctx.Self.SelectAsync( An.Invader.ToRemoveByHealth( ctx.Space.InvaderTokens().On(ctx.Space), remaining )) )?.Token.AsHuman()) is not null
+			&& (pick = (await ctx.Self.Select( An.Invader.ToRemoveByHealth( ctx.Space.InvaderTokens().On(ctx.Space), remaining )) )?.Token.AsHuman()) is not null
 		) {
 			await ctx.Remove( pick, 1 );
 			remaining -= pick.RemainingHealth;
@@ -179,11 +179,11 @@ public static partial class Cmd {
 		=> new SpiritAction( "Push up to 1 Presence", async self => {
 
 			// Select source
-			var source = await self.SelectAsync( new A.SpaceTokenDecision( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
+			var source = await self.Select( new A.SpaceTokenDecision( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
 			if(source is null) return;
 
 			// Select destination
-			Space destination = await self.SelectAlwaysAsync( A.SpaceDecision.ToPushPresence( source.Space, source.Space.Adjacent, Present.Always, source.Token ) );
+			Space destination = await self.SelectAlways( A.SpaceDecision.ToPushPresence( source.Space, source.Space.Adjacent, Present.Always, source.Token ) );
 			await source.MoveTo( destination );
 
 			// Calback
@@ -193,7 +193,7 @@ public static partial class Cmd {
 
 	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) 
 		=> new SpiritAction( "Destroy 1 presence.", async self => {
-				SpaceToken spaceToken = await self.SelectAlwaysAsync( A.SpaceTokenDecision.OfDeployedPresence( prompt, self ) );
+				SpaceToken spaceToken = await self.SelectAlways( A.SpaceTokenDecision.OfDeployedPresence( prompt, self ) );
 				await spaceToken.Destroy();
 			}
 		);
@@ -215,7 +215,7 @@ public static partial class Cmd {
 	static public SpiritAction ReturnUpToNDestroyedToTrack( int count ) => new SpiritAction("Return up to N Destroyed Presence to Track", async self => {
 		count = Math.Max( count, self.Presence.Destroyed.Count );
 		while(count > 0) {
-			var dst = await self.SelectAsync( A.TrackSlot.ToCover( self ) );
+			var dst = await self.Select( A.TrackSlot.ToCover( self ) );
 			if(dst == null) break;
 			await self.Presence.Destroyed.MoveToAsync( dst );
 			--count;
@@ -228,8 +228,9 @@ public static partial class Cmd {
 	static public SpiritAction PlacePresenceOn( params Space[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
 		async self => {
-			TokenLocation from = (await self.SelectSourcePresence())!;
-			Space to = await self.SelectAlwaysAsync( A.SpaceDecision.ToPlacePresence( destinationOptions, Present.Always, from.Token ) );
+			TokenLocation from = await self.SelectAlways( Prompts.SelectPresenceTo(), self.DeployablePresence() );
+
+			Space to = await self.SelectAlways( A.SpaceDecision.ToPlacePresence( destinationOptions, Present.Always, from.Token ) );
 			await from.MoveToAsync(to);
 		} );
 
@@ -241,10 +242,10 @@ public static partial class Cmd {
 	// not a command but I can't find anywhere to put it.
 	static public async Task PayPresenceForBargain( this Spirit self, string takeFromTrackElementThreshold ) {
 		if(await self.Elements.YouHave( takeFromTrackElementThreshold )) {
-			var presenceToRemove = (await self.SelectSourcePresence( Present.Always, "remove from game" ))!; // Come from track or board
+			var presenceToRemove = await self.SelectAlways(Prompts.SelectPresenceTo("remove from game"), self.DeployablePresence());
 			await presenceToRemove.RemoveAsync( 1 ); // await self.Presence.TakeFromAsync( presenceToRemove );
 		} else {
-			SpaceToken presenceToRemove = await self.SelectAlwaysAsync( new A.SpaceTokenDecision( "Select presence to remove from game.", self.Presence.Deployed, Present.Always ) );
+			SpaceToken presenceToRemove = await self.SelectAlways( "Select presence to remove from game.", self.Presence.Deployed );
 			await presenceToRemove.Remove();
 		}
 	}

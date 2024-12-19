@@ -9,7 +9,7 @@ public class ExplosiveEruption {
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		int destroyedCount = VolcanoPresence.GetPresenceDestroyedThisAction();
 
-		Space? space = await ctx.Self.SelectAsync( new A.SpaceDecision(
+		Space? space = await ctx.Self.Select( new A.SpaceDecision(
 			$"Apply {destroyedCount} damage to",
 			ctx.Space.Range( 1 ),
 			Present.Always

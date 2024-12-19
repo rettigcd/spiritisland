@@ -16,7 +16,7 @@ public class SpiritsMayYetDream {
 		NameCards( displayOptions, lookupByText, "Active", fear.ActivatedCards );
 		NameCards( displayOptions, lookupByText, "Future", fear.Deck );
 
-		TextOption positionToShow = await ctx.Self.SelectAlwaysAsync( "Select fear to reveal", displayOptions.ToArray(), Present.Always );
+		TextOption positionToShow = await ctx.Self.SelectAlways( "Select fear to reveal", displayOptions );
 		lookupByText[positionToShow].Flipped = true;
 
 	}

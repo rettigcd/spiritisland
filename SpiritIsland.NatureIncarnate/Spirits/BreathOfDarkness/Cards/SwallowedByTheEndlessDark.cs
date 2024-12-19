@@ -13,7 +13,7 @@ public class SwallowedByTheEndlessDark {
 
 		// Abduct 1 Explorer.
 		var options = ctx.Space.SpaceTokensOfTag(Human.Explorer);
-		SpaceToken? explorer = await ctx.Self.SelectAsync(new A.SpaceTokenDecision("Abduct Explorer",options,Present.Always));
+		SpaceToken? explorer = await ctx.Self.Select(new A.SpaceTokenDecision("Abduct Explorer",options,Present.Always));
 		if(explorer is not null)
 			await explorer.MoveTo(EndlessDark.Space.ScopeSpace);
 	}

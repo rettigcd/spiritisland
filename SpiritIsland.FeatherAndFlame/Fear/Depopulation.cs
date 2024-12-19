@@ -33,7 +33,7 @@ public class Depopulation : FearCardBase, IFearCard {
 	static SpaceAction DownGradeCityOrRemoveTown => new SpaceAction("Remove 1 Town, or Replace 1 City with 1 Town", async ctx => {
 		const string prompt = "Select City to downgrade or Town to remove";
 		var options = ctx.Space.HumanOfAnyTag( Human.Town_City );
-		var invader = await ctx.Self.SelectAsync(new A.SpaceTokenDecision(prompt, options.On( ctx.Space ),Present.Always));
+		var invader = await ctx.Self.Select(new A.SpaceTokenDecision(prompt, options.On( ctx.Space ),Present.Always));
 		if(invader is null) return;
 		if(invader.Token.HasTag(Human.City))
 			await ReplaceInvader.DowngradeSelectedInvader(ctx.Space,(HumanToken)invader.Token);

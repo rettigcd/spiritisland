@@ -36,7 +36,7 @@ public sealed class PlacePresence : SpiritAction {
 
 	public override async Task ActAsync( Spirit self ) {
 
-		TokenLocation from = await self.SelectSourcePresence();
+		TokenLocation from = await self.SelectAlways(Prompts.SelectPresenceTo(), self.DeployablePresence());
 
 		TargetCriteria criteria = new TargetCriteriaFactory(Range ?? int.MaxValue, FilterEnums).Bind(self);
 
@@ -47,7 +47,7 @@ public sealed class PlacePresence : SpiritAction {
 		if(toOptions.Length == 0)
 			return; // this can happen if Ocean is dragged way-inland and is no longer near an ocean or coast.
 
-		Space to = await self.SelectAlwaysAsync( A.SpaceDecision.ToPlacePresence( toOptions, Present.Always, from.Token ) );
+		Space to = await self.SelectAlways( A.SpaceDecision.ToPlacePresence( toOptions, Present.Always, from.Token ) );
 		var result = await from.MoveToAsync(to);
 		await Placed.InvokeAsync( result! );
 	}

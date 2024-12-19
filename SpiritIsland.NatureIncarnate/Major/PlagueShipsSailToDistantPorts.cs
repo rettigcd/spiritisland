@@ -22,7 +22,7 @@ public class PlagueShipsSailToDistantPorts {
 		// Add 4 Disease among Coastal lands other than target land.
 		Space[] options = ActionScope.Current.Spaces.Where(s=>s.SpaceSpec.IsCoastal && s.SpaceSpec != ctx.SpaceSpec).ToArray();
 		for(int i=0;i<4;++i) {
-			Space? space = await ctx.Self.SelectAsync(new A.SpaceDecision($"Add Disease ({i+1} of 4)",options,Present.Always));
+			Space? space = await ctx.Self.Select(new A.SpaceDecision($"Add Disease ({i+1} of 4)",options,Present.Always));
 			if(space is not null)
 				await space.Disease.AddAsync(1);
 		}
@@ -42,7 +42,7 @@ public class PlagueShipsSailToDistantPorts {
 			IEnumerable<SpaceToken> diseaseTokens = ActionScope.Current.Spaces.SelectMany( ss => ss.SpaceTokensOfTag( Token.Disease ) );
 			IEnumerable<Spirit> spiritsWithEnergy = gs.Spirits.Where(s=>0<s.Energy);
 			// !!! Spirits should decide for themselves if they want pay, not card player
-			IOption? option = await ctx.Self.SelectAsync(new A.TypedDecision<IOption>(
+			IOption? option = await ctx.Self.Select(new A.TypedDecision<IOption>(
 				$"Pay {cost} to remove Fear Card (1/Spirit 3/Disease)",
 				diseaseTokens.Cast<IOption>().Union(spiritsWithEnergy.Cast<IOption>()),
 				Present.Done

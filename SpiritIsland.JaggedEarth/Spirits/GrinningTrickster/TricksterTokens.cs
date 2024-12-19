@@ -31,7 +31,7 @@ public class TricksterTokens( Spirit spirit, Space src, bool runAtMax = false )
 		var nearbyInvaders = _spirit.PowerRangeCalc.GetTargetingRoute_MultiSpace( Adjacent, new TargetCriteria( 1 ) ).Targets
 			.SelectMany( ss => ss.InvaderTokens().On( ss ) )
 			.ToArray();
-		var invader2 = await _spirit.SelectAsync( new A.SpaceTokenDecision( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
+		var invader2 = await _spirit.Select( new A.SpaceTokenDecision( "Add additional strife for 1 energy", nearbyInvaders, Present.Done ) );
 		if(invader2 is not null) {
 			--_spirit.Energy;
 			var tokens2 = (TricksterTokens)invader2.Space; // need to cast in order to access non-cascading protected member .AddRemoveStrife()

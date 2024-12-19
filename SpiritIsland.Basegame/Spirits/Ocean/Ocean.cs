@@ -57,7 +57,7 @@ public class Ocean : Spirit {
 		// Place in Ocean
 		board.Ocean.ScopeSpace.Setup(Presence.Token,1);
 
-		AddActionFactory( new PlacePresenceInCostal().ToGrowth() );
+		AddActionFactory( new AddBagPresenceToCostal().ToGrowth() );
 
 		var drownMod = new Drowning(this);
 		foreach(Board b in gameState.Island.Boards)

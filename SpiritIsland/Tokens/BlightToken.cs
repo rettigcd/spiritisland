@@ -40,9 +40,9 @@ public class BlightToken( string label, char k, Img img )
 				.ToArray();
 			if(cascadeOptions.Length == 0) return; // no adjacents to cascade to
 
-			Space cascadeTo = await gs.Spirits[0].SelectAlwaysAsync(A.SpaceDecision.ForMoving(
+			Space cascadeTo = await gs.Spirits[0].SelectAlways(A.SpaceDecision.ForMoving(
 				$"Cascade blight from {to.SpaceSpec.Label} to",
-				to.SpaceSpec,
+				to,
 				cascadeOptions,
 				Present.Always,
 				Token.Blight

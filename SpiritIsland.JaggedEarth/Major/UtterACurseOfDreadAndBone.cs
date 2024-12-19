@@ -37,19 +37,19 @@ public class UtterACurseOfDreadAndBone {
 	static int BlightInOrAdjacent( TargetSpaceCtx ctx ) => ctx.Range(1).Sum(s=>s.Blight.Count);
 
 	static async Task AddTokenToLandWithinRange( TargetSpaceCtx ctx, IToken token, int range ) {
-		Space? space = await ctx.Self.SelectAlwaysAsync( new A.SpaceDecision( $"Add {token.Class.Label}", ctx.Range( range ), Present.Always ) );
+		Space space = await ctx.Self.SelectAlways( $"Add {token.Class.Label}", ctx.Range( range ) );
 		await space.AddAsync(token, 1);
 	}
 
 
 	static async Task AddStrifeToLandWithinRange( TargetSpaceCtx ctx, int range ) {
-		var space = await ctx.Self.SelectAlwaysAsync(new A.SpaceDecision("Add Strife", ctx.Range(range), Present.Always));
+		var space = await ctx.Self.SelectAlways("Add Strife", ctx.Range(range));
 		await ctx.Target(space).AddStrife();
 	}
 
 	static async Task DamageAdjacentLand( TargetSpaceCtx ctx ) {
 		// !! could make this a single SpaceToken step.
-		var space = await ctx.Self.SelectAlwaysAsync(new A.SpaceDecision("Select land for 1 Damage", ctx.Adjacent, Present.Always));
+		var space = await ctx.Self.SelectAlways("Select land for 1 Damage", ctx.Adjacent);
 		await ctx.Target(space).DamageInvaders(1);
 	}
 

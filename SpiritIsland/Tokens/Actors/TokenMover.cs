@@ -70,9 +70,10 @@ public sealed class TokenMover(
 
 		// Drag and Drop way
 		Move[] options = sourceSelector.GetSourceOptions()
-			.SelectMany( s => destinationSelector.GetDestinationOptions(s).Select(d=>new Move {Source=s,Destination=d } ))
+			.BuildMoves(destinationSelector.GetDestinationOptions)
 			.ToArray();
-		return await self.SelectAsync(new A.Move(srcDecision.Prompt,options,present));
+
+		return await self.Select(new A.MoveDecision(srcDecision.Prompt,options,present));
 
 	}
 

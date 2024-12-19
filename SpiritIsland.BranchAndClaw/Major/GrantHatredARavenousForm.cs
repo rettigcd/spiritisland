@@ -27,7 +27,7 @@ public class GrantHatredARavenousForm {
 				.Where(s => s.HasInvaders())
 				.ToList();
 			for(int i = 0; 0<tokenSpaces.Count && i<3; ++i) {
-				var space = await ctx.Self.SelectAsync(new A.SpaceDecision("Add Strife", tokenSpaces, Present.Done));
+				var space = await ctx.Self.Select(new A.SpaceDecision("Add Strife", tokenSpaces, Present.Done));
 				if(space is null) break;
 				await ctx.Target(space).AddStrife();
 				tokenSpaces.Remove(space);

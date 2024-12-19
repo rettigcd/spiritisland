@@ -5,6 +5,13 @@
 
 	UI - Cast Down into the Briny Deep - TEST
 
+5	Change SpaceDecision .Move .Push methods to use Move options
+5	Bag - could create a space on the board to represent the bag - contain blight, Beast, Wilds, etc
+5	Destroyed presence is as location.
+5	Placing / Destroying presence is a simple Move to/from those locations.
+
+3	Elements could go in the "Bad" space.  Other options could be mapped by selecting one of the tokens in the bag space.
+
 5	Cleanup All the SelectAsync<> variants.
 
 	Replace Dynamic Defend with visible tokens.

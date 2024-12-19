@@ -21,7 +21,7 @@ public partial class SweepIntoTheSea {
 			.Calculate();
 		int curDistance = distanceFromOceans[ctx.Space];
 
-		return await ctx.Self.SelectAsync( 
+		return await ctx.Self.Select( 
 			new A.SpaceDecision( "Push explorer/town towards ocean", 
 			ctx.Space.Adjacent.Where( tokens => distanceFromOceans[tokens] < curDistance ), 
 			Present.Always 

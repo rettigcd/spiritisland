@@ -16,12 +16,12 @@ public class GiftOfTheUntamedWild {
 	}
 
 	static async Task Add1WildsToOneOfYourLands( Spirit self ) {
-		var space = (await self.SelectSpaceAsync("Add 1 Wilds",self.Presence.Lands,Present.Always ))!;
+		var space = await self.SelectAlways("Add 1 Wilds",self.Presence.Lands);
 		await space.Wilds.AddAsync(1);
 	}
 
 	static async Task Replace1PresenceWith1Disease( Spirit self ) {
-		var spaceToken = await self.SelectDeployed("Replace Presence with 1 disease");
+		var spaceToken = await self.SelectAlways("Replace Presence with 1 disease", self.Presence.Deployed);
 		await spaceToken.RemoveAsync(); // !!! upgrade to handle Incarna presence
 		await spaceToken.Space.Disease.AddAsync(1);
 	}

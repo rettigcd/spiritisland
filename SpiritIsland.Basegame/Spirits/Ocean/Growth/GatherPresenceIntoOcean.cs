@@ -14,11 +14,7 @@ public class GatherPresenceIntoOcean : SpiritAction {
 			.ToDictionary(x=>x.dst,x=>x.src);
 
 		foreach(var pair in oceans2){
-			var source = await self.SelectAlwaysAsync( new A.SpaceTokenDecision(
-				$"Select source of Presence to Gather into {pair.Key.SpaceSpec}"
-				, pair.Value
-				, Present.Always
-			));
+			var source = await self.SelectAlways( $"Select source of Presence to Gather into {pair.Key.SpaceSpec}", pair.Value );
 			await source.MoveTo( pair.Key );
 		}
 	}

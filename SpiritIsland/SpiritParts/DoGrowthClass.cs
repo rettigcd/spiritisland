@@ -14,7 +14,7 @@ public abstract partial class Spirit {
 
 			while(HasGrowthActions) {
 				// Select
-				IActionFactory selectedAction = (await _spirit.SelectGrowth( PROMPT, Consolidated, Present.Always ))!;
+				IActionFactory selectedAction = await _spirit.SelectAlways(new A.GrowthDecision(PROMPT, Consolidated, Present.Always));
 
 				if(_shouldInitNewGrowthOption)
 					await InitSelectedGrowthOption( selectedAction );

@@ -60,7 +60,7 @@ public sealed class DestinationSelector {
 
 	public async Task<SpaceSpec?> SelectDestination( Spirit spirit, string actionWord, SpaceToken sourceSpaceToken ) {
 		A.SpaceDecision decision = GetDecision( actionWord, sourceSpaceToken );
-		Space? destination = await spirit.SelectAsync( decision );
+		Space? destination = await spirit.Select( decision );
 		if(destination is not null)
 			await NotifyAsync( destination );
 		return destination?.SpaceSpec;
@@ -69,7 +69,7 @@ public sealed class DestinationSelector {
 	A.SpaceDecision GetDecision( string actionWord, SpaceToken sourceSpaceToken ) {
 		Space[] options = GetDestinationOptions( sourceSpaceToken );
 		A.SpaceDecision decision = new A.SpaceDecision( $"{actionWord} {sourceSpaceToken.Token.Text} to", options, _present )
-			.ComingFrom( sourceSpaceToken.Space.SpaceSpec )
+			.ComingFrom( sourceSpaceToken.Space )
 			.ShowTokenLocation( sourceSpaceToken.Token );
 		return decision;
 	}

@@ -9,7 +9,7 @@ public class CallForthPredators()
 	static public SpecialRule Rule => new SpecialRule(Name, Description1);
 
 	static async Task MyActAsync(Spirit spirit) {
-		var token = await spirit.SelectAsync( new A.SpaceTokenDecision("Replace 1 Presence with 1 Beast", spirit.Presence.Deployed, Present.Done ) );
+		var token = await spirit.Select( new A.SpaceTokenDecision("Replace 1 Presence with 1 Beast", spirit.Presence.Deployed, Present.Done ) );
 		if( token is null ) return;
 		await token.Space.ReplaceAsync(token.Token,1, Token.Beast);
 	}

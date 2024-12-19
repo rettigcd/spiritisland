@@ -19,11 +19,11 @@ class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
 	}
 
 	static async Task MovePresence(Spirit self) {
-		var presenceToMove = await self.SelectAsync( new A.SpaceTokenDecision("Select Presence to move.",self.Presence.Deployed,Present.Done) );
+		var presenceToMove = await self.Select( new A.SpaceTokenDecision("Select Presence to move.",self.Presence.Deployed,Present.Done) );
 		if(presenceToMove is null) return;
 
 		var d2 = presenceToMove.Space.Adjacent.Union( GameState.Current.Spaces.Where(s => s.Dahan.Any) );
-		Space destination = await self.SelectAlwaysAsync(new A.SpaceDecision("Select destination for presence.", d2, Present.Always) );
+		Space destination = await self.SelectAlways("Select destination for presence.", d2 );
 		await presenceToMove.MoveTo(destination);
 	}
 

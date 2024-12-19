@@ -3,7 +3,7 @@
 public static class DrawFromDeck {
 
 	static public async Task<PowerCardDeck> SelectPowerCardDeck( Spirit spirit ) {
-		PowerType powerType = await spirit.SelectAlwaysAsync( new A.DeckToDrawFrom( PowerType.Minor, PowerType.Major ) );
+		PowerType powerType = await spirit.SelectAlways( Prompts.SelectDeck, [PowerType.Minor, PowerType.Major] );
 		return powerType == PowerType.Minor ? GameState.Current.MinorCards! : GameState.Current.MajorCards!;
 	}
 

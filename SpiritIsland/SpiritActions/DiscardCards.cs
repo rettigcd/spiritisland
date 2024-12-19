@@ -51,7 +51,7 @@ public class DiscardCards : SpiritAction {
 	public ReadOnlyCollection<PowerCard>? Discarded { get; private set; }
 
 	async Task<bool> Discard1( Spirit self, int index, List<PowerCard> discarded) {
-		PowerCard? card = await self.SelectAsync( new A.PowerCard(
+		PowerCard? card = await self.Select( new A.PowerCard(
 			$"Select card to discard ({index+1}of{_count})",
 			_count-index,
 			CardUse.Discard, _cardOptionSelector(self).ToArray(),

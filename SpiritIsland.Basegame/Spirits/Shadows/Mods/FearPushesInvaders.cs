@@ -25,11 +25,11 @@ class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
 		HumanToken[] tokens = pushFear switch { 0 => [], 1 => space.HumanOfTag(Human.Explorer), _ => space.HumanOfAnyTag(Human.Explorer_Town) };
 		while( 0 < tokens.Length ) {
 			// Select token to push
-			var token = await spirit.SelectAsync(new A.SpaceTokenDecision($"{pushFear} fear - Push Invader",tokens.On(space), Present.Done ));
+			var token = await spirit.Select(new A.SpaceTokenDecision($"{pushFear} fear - Push Invader",tokens.On(space), Present.Done ));
 			// if null; break
 			if(token is null) break;
 			
-			var destination = await spirit.SelectAsync(new A.SpaceDecision("Push to", space.Adjacent,Present.Always));
+			var destination = await spirit.Select(new A.SpaceDecision("Push to", space.Adjacent,Present.Always));
 			if(destination is null) break; // should not happen
 
 			pushFear -= token.Token.HasTag(Human.Town) ? 2 : 1;

@@ -1,66 +1,40 @@
-﻿#nullable enable
-namespace SpiritIsland; 
+﻿namespace SpiritIsland; 
+
+static public class Prompts {
+	static public string SelectPresenceTo(string actionPhrase = "place") => $"Select Presence to {actionPhrase}";
+	public const string SelectDeck = "Which type do you wish to draw";
+	static public string TargetSpirit(string powerName) => powerName + ": Target Spirit";
+}
 
 static public class SpiritSelectExtensions {
 
-	/// <summary> Tries Presence Tracks first, then fails over to placed-presence on Island </summary>
-	/// <returns>Track or SpaceToken</returns>
-	static public async Task<TokenLocation> SelectSourcePresence( this Spirit self, Present present = Present.Always, string actionPhrase = "place" ) {
-		string prompt = $"Select Presence to {actionPhrase}";
-
-		var options = self.Presence.RevealOptions().ToList();
-		options.AddRange( self.Presence.Deployed );
-		return await self.SelectAlwaysAsync( new A.MyTokenOn(prompt,options,present) );
-	}
-
-	static public async Task<TokenLocation?> SelectTrackPresence( this Spirit self, Present present = Present.Always, string actionPhrase = "place" ) {
-		string prompt = $"Select Presence to {actionPhrase}";
-
-		//return (IOption)await self.SelectAsync( A.TrackSlot.ToRevealOrTakeFromBoard( prompt, self ) )
-		//	?? await self.SelectAsync( new A.SpaceToken( prompt, self.Presence.Deployed, Present.Always ) );
-
-		var options = self.Presence.RevealOptions().ToList();
-		return await self.SelectAsync( new A.TypedDecision<TokenLocation>(prompt,options,present) );
-	}
-
-
-	static public async Task<SpaceToken> SelectDeployed( this Spirit self, string prompt )
-		=> await self.SelectAlwaysAsync( new A.SpaceTokenDecision( prompt, self.Presence.Deployed, Present.Always ) );
-
-	static public Task<SpaceToken?> SelectDeployedMovable( this Spirit self, string prompt )
-		=> self.SelectAsync( new A.SpaceTokenDecision( prompt, self.Presence.Movable, Present.Always ) );
-
-	// used for Fear / Growth / Generic / options that combine different types
-	static public Task<T?> SelectAsync<T>( this Spirit spirit, string prompt, T[] options, Present present ) where T : class, IOption {
-		return spirit.SelectAsync( new A.TypedDecision<T>( prompt, options, present ) );
-	}
-
-	// This is nicer syntax
-	static public async Task<T> SelectAlwaysAsync<T>(this Spirit spirit, string prompt, T[] options, Present present) where T : class, IOption
-		=> (await spirit.SelectAsync(prompt,options,present))!;
-
-	static public Task<IActionFactory?> SelectGrowth(this Spirit spirit, string prompt, IActionFactory[] options, Present present) {
-		return spirit.SelectAsync(new A.GrowthDecision(prompt, options, present));
-	}
+	// == token location options ==
+	static public IEnumerable<TokenLocation> DeployablePresence(this Spirit self ) => [.. self.Presence.RevealOptions(), .. self.Presence.Deployed];
+	// SpaceToken		spirit.Presence.Deployed
+	// SpaceToken		spirit.Presence.Movable
+	// Space			self.Presence.Lands
 
 	static public async Task<PowerCard?> SelectPowerCard( this Spirit spirit, string prompt, int num, IEnumerable<PowerCard> options, CardUse cardUse, Present present ) {
 		spirit.DraftDeck.AddRange( options.Except( spirit.Decks.SelectMany( x => x.Cards ) ) );
-		PowerCard? card = await spirit.SelectAsync( new A.PowerCard( prompt, num, cardUse, options.ToArray(), present ) );
+		PowerCard? card = await spirit.Select( new A.PowerCard( prompt, num, cardUse, options.ToArray(), present ) );
 		spirit.DraftDeck.Clear();
 		return card;
 	}
 
 	// wrapper - switches type to String
 	static public async Task<string?> SelectText( this Spirit spirit, string prompt, string[] textOptions, Present present ) {
-		TextOption[] options = textOptions.Select( x => new TextOption( x ) ).ToArray();
-		var selection = await spirit.SelectAsync( prompt, options, present );
+		var selection = await spirit.Select( 
+			prompt,
+			textOptions.Select(x => new TextOption(x)),
+			present
+		);
 		return selection?.Text;
 	}
 
 
 	// switches type to Element
 	public static async Task<Element> SelectElementEx( this Spirit spirit, string prompt, IEnumerable<Element> elements, Present present = Present.Always ) {
-		var selection = await spirit.SelectAsync( new An.Element( prompt, elements, present ) );
+		var selection = await spirit.Select( new An.Element( prompt, elements, present ) );
 		return selection is ItemOption<Element> el ? el.Item : Element.None;
 	}
 
@@ -92,16 +66,6 @@ static public class SpiritSelectExtensions {
 		if(numToMove.Count == 1) return int.Parse(numToMove[0]);
 		string x = (await spirit.SelectText( prompt, [..numToMove], Present.Always ))!;
 		return int.Parse( x );
-	}
-
-	static public Task<Space?> SelectLandWithPresence( this Spirit self, string prompt, string? cancelText = null )
-		=> self.SelectAsync( new A.SpaceDecision(prompt, self.Presence.Lands, cancelText ) );
-
-	static public async Task<Space> SelectLandWithPresenceAlways(this Spirit self, string prompt)
-		=> (await self.SelectAsync(new A.SpaceDecision(prompt, self.Presence.Lands, null)))!;
-
-	static public async Task<Space?> SelectSpaceAsync(this Spirit self, string prompt, IEnumerable<Space> options, Present present) {
-		return await self.SelectAsync(new A.SpaceDecision(prompt, options, present));
 	}
 
 }

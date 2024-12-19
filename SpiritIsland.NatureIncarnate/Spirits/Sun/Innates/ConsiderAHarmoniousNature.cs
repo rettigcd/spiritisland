@@ -38,7 +38,7 @@ public class ConsiderAHarmoniousNature {
 
 	/// <returns>Selected Spirit</returns>
 	static async Task<Spirit?> AddAnotherSpiritsDestroyedPresenceToYourLand( Spirit self ) {
-		Spirit? other = await self.SelectAsync(new A.TypedDecision<Spirit>(
+		Spirit? other = await self.Select(new A.TypedDecision<Spirit>(
 			"Choose spirit to Add Destroyed Presence to one of your lands.", 
 			GameState.Current.Spirits.Where(s=>s!=self),
 			Present.Done

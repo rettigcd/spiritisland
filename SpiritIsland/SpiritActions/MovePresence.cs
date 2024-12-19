@@ -6,12 +6,12 @@ public class MovePresence( int _range ) : SpiritAction( $"MovePresence({_range})
 
 	public override async Task ActAsync( Spirit self ) {
 		// From
-		var src = await self.SelectAsync( new A.SpaceTokenDecision( "Move presence from:", self.Presence.Movable, Present.Done ) );
+		var src = await self.Select( new A.SpaceTokenDecision( "Move presence from:", self.Presence.Movable, Present.Done ) );
 		if(src is null) return;
 
 		// To
 		var dstOptions = src.Space.Range(Range); // this is ok, since it is a Growth action, not a power action
-		var dst = await self.SelectAlwaysAsync( A.SpaceDecision.ForMoving( "Move presence to:", src.Space.SpaceSpec, dstOptions, Present.Always, src.Token ) );
+		var dst = await self.SelectAlways( A.SpaceDecision.ForMoving( "Move presence to:", src.Space, dstOptions, Present.Always, src.Token ) );
 
 		// Move
 		await src.MoveTo( dst );

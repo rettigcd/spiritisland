@@ -94,10 +94,12 @@ public class FracturedDaysSplitTheSky : Spirit {
 	public async Task GainTime( int count ) {
 		while(0 < count) {
 
-			string selectPrompt = $"convert to Time ({count} remaining).";
+			var from = await this.SelectAlways(
+				Prompts.SelectPresenceTo($"convert to Time ({count} remaining)."),
+				this.DeployablePresence()
+			);
 
-			var from = await this.SelectSourcePresence( Present.Done, selectPrompt ); // Come from track or board
-			if(from == null) break; // !!! is this optional or not ???
+			if( from == null) break; // !!! is this optional or not ???
 
 			await from.RemoveAsync();
 			Time++;
@@ -107,7 +109,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 	}
 
 	public async Task SpendTime( int count ) {
-		var hide = await SelectAsync( A.TrackSlot.ToCover( this ) );
+		var hide = await Select( A.TrackSlot.ToCover( this ) );
 
 		Time -= count;
 		if(hide != null)

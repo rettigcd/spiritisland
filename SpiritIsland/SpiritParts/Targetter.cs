@@ -28,14 +28,14 @@ public class Targetter(Spirit spirit) {
 		// 1
 		if( spaceOptions.Length == 1 && targetCriteria.Length == 1 && targetCriteria[0].AutoSelectSingle ) {
 			// Make sure we still go through SelectAsync<> so we can trigger the selection-made event
-			Space? space = await _spirit.SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.AutoSelectSingle));
+			Space? space = await _spirit.Select(new A.SpaceDecision(prompt, spaceOptions, Present.AutoSelectSingle));
 			return space is null ? null : routes.MakeResult(space);
 		}
 
 		// multiple Choose
 		Space? mySpace = preselect is not null && UserGateway.UsePreselect.Value
 			? await preselect.PreSelect(_spirit, spaceOptions)
-			: await _spirit.SelectAsync(new A.SpaceDecision(prompt, spaceOptions, Present.Always));
+			: await _spirit.Select(new A.SpaceDecision(prompt, spaceOptions, Present.Always));
 		return mySpace is not null ? routes.MakeResult(mySpace) : null;
 	}
 

@@ -38,7 +38,7 @@ public class DreamOfTheUntouchedLand_Tests {
 		Neighbors(gs.Board[4]).ShouldBe("A1,A2,A3,A5,F3,F4");
 		Neighbors(gs.Board[5]).ShouldBe("A1,A4,A6,A7,A8,F3");
 		Neighbors(gs.Board[7]).ShouldBe("A5,A8,F3");
-		string Neighbors(SpaceSpec space) => space.Adjacent_Existing.Select(x => x.Label).Order().Join(",");
+		static string Neighbors(SpaceSpec space) => space.Adjacent_Existing.Select(x => x.Label).OrderBy(x=>x).Join(",");
 	}
 
 }

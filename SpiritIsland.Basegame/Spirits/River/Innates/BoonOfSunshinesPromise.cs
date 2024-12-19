@@ -28,7 +28,7 @@ public class BoonOfSunshinesPromise {
 		var blightTokens = ctx.Other.Presence.Lands
 			.Where(s => s.Blight.Any && s.Dahan.Any)
 			.Select(s=>new SpaceToken(s,Token.Blight));
-		var blightToken = await ctx.Other.SelectAsync(new A.SpaceTokenDecision("Select Blight to Remove", blightTokens, Present.Done));
+		var blightToken = await ctx.Other.Select(new A.SpaceTokenDecision("Select Blight to Remove", blightTokens, Present.Done));
 		if(blightToken is not null ) {
 			await blightToken.Remove(); // non-generic
 			// await blightToken.RemoveAsync(); // generic method

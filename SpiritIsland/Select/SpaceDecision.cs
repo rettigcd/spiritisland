@@ -9,13 +9,18 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 
 	#region Moving (existing) SpaceTokens
 
+	// !!! Replace all ToPush, ForMoving with Move Options
+
+	// !!! Step 1 - replace this with Move
 	static public SpaceDecision ToPushPresence(Space source, IEnumerable<Space> destinationOptions, Present present, IToken presenceToken)
-		=> SpaceDecision.ForMoving("Push Presence to", source.SpaceSpec, destinationOptions, present, presenceToken);
+		=> SpaceDecision.ForMoving("Push Presence to", source, destinationOptions, present, presenceToken);
 
+	// !!! Step 2 - replace this with Move
 	static public SpaceDecision ToPushToken(IToken token, Space source, IEnumerable<Space> destinationOptions, Present present)
-		=> SpaceDecision.ForMoving("Push " + token.Text + " to", source.SpaceSpec, destinationOptions, present, token);
+		=> SpaceDecision.ForMoving("Push " + token.Text + " to", source, destinationOptions, present, token);
 
-	static public SpaceDecision ForMoving(string prompt, SpaceSpec source, IEnumerable<Space> spaces, Present present, IToken tokenToAddToTarget)
+	// !!! Step 3 - replace this with Move
+	static public SpaceDecision ForMoving(string prompt, Space source, IEnumerable<Space> spaces, Present present, IToken tokenToAddToTarget)
 		=> new SpaceDecision(prompt, spaces, present)
 			.ComingFrom(source)
 			.ShowTokenLocation(tokenToAddToTarget);
@@ -46,23 +51,16 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 
 	/// <remarks> Convenience method - downgrades Space to Spaces</remarks>
 	public SpaceDecision(string prompt, IEnumerable<Space> spaces, Present present)
-		: base(prompt, spaces.Select(x => x.SpaceSpec).OrderBy(x => x.Label), present) {
-		_spaces = spaces.ToArray();
+		: base(prompt, spaces.OrderBy(x => x.Label), present) {
 	}
 
 	public SpaceDecision(string prompt, IEnumerable<Space> spaces, string? cancelText)
-		: base(prompt, spaces.Select(x => x.SpaceSpec).OrderBy(x => x.Label), cancelText) {
-		_spaces = spaces.ToArray();
+		: base(prompt, spaces.OrderBy(x => x.Label), cancelText) {
 	}
 
 	#endregion
 
-	readonly Space[] _spaces;
-
-	public override Space ConvertOptionToResult(IOption option) {
-		SpaceSpec ss = (SpaceSpec)option;
-		return _spaces.First(s=>s.SpaceSpec== ss);
-	}
+	public override Space ConvertOptionToResult(IOption option) { return (Space)option; }
 
 	#region config: Token circle
 
@@ -88,17 +86,17 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 	#endregion config: Token circle
 
 	#region config: Arrows
-	public SpaceDecision ComingFrom(SpaceSpec source) {
+	public SpaceDecision ComingFrom(Space source) {
 		_source = source;
 		return this;
 	}
 
 	public IEnumerable<Arrow> Arrows => _source is null || Token is null
 		? []
-		: Options.OfType<SpaceSpec>().Select(dstSpace => new Arrow { Token = Token, From = _source, To = dstSpace });
+		: Options.OfType<Space>().Select(dstSpace => new Arrow { Token = Token, From = _source.SpaceSpec, To = dstSpace.SpaceSpec });
 
 	// Only Set when we want to draw outgoing arrows
-	SpaceSpec? _source;
+	Space? _source;
 
 	#endregion config: Arrows
 

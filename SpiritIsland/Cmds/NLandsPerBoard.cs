@@ -51,7 +51,7 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 
 			Space? space = _tokenFactory is not null
 				? await PickSpaceBySelectingToken( ctx.Self, filtered1, _tokenFactory)
-				: await ctx.Self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, filtered1.Select( x => x.Space ), Present.Always );
+				: await ctx.Self.Select( "Select space to " + _spaceAction.Description, filtered1.Select( x => x.Space ), Present.Always );
 
 			if(space is null) return; // no matching tokens
 
@@ -71,7 +71,7 @@ public class NLandsPerBoard( IActOn<TargetSpaceCtx> _spaceAction, string _prepos
 			.ToArray();
 
 		// Select
-		SpaceToken? st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		SpaceToken? st = await self.Select( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
 		self.PreSelect(st); // recording null is fine because when it probably means no space matches criteria and user won't be given an option anyway.
 
 		return st?.Space;

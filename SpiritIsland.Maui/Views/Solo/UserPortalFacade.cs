@@ -42,7 +42,7 @@ internal class UserPortalFacade : IDecisionPortal {
 		Task.Run( () => { 
 
 			// !!! 
-			if(decision is A.Move move) {
+			if(decision is A.MoveDecision move) {
 				// Move
 				_moveBehavior = new MoveBehavior( _inner, move );
 				decision = _moveBehavior.GetSourceDecision();
@@ -73,7 +73,7 @@ internal class UserPortalFacade : IDecisionPortal {
 	// Not implementing this because:
 	//	* it is troublesome for the 2-part move bit
 	//	* it is blocking.
-	public IDecision Next => _inner.Next; // !!! DO NOT USE this accept at very beginning.
+	public IDecision? Next => _inner.Next; // !!! DO NOT USE this accept at very beginning.
 
 	// Commands
 //	public void IssueException( Exception ex )	=> _inner.IssueException( ex );
@@ -97,7 +97,7 @@ internal class UserPortalFacade : IDecisionPortal {
 /// <summary>
 /// Splits up a Move Decision into Source/Destination.
 /// </summary>
-class MoveBehavior( IDecisionPortal inner, A.Move move ) {
+class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 	public IDecision GetSourceDecision() {
 		var st = new A.SpaceTokenDecision(
 			move.Prompt,
@@ -142,7 +142,7 @@ class MoveBehavior( IDecisionPortal inner, A.Move move ) {
 					destinationOptions,
 					Present.AutoSelectSingle // if they selected a source, don't let them cancel.
 				)
-				.ComingFrom( source.Space.SpaceSpec )
+				.ComingFrom( source.Space )
 				.ShowTokenLocation( source.Token );
 		} else {
 			// Auto-Select-Single

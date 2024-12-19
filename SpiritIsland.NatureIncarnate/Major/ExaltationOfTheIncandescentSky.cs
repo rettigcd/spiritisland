@@ -20,7 +20,7 @@ public class ExaltationOfTheIncandescentSky {
 			var spaceOptions = ActionScope.Current.Spaces.ToList();
 			int count = 4;
 			while(0 < count--) {
-				var space = await ctx.Self.SelectAsync(new A.SpaceDecision($"Skip Invader Action ({count+1} of 4)",spaceOptions,Present.Done));
+				var space = await ctx.Self.Select(new A.SpaceDecision($"Skip Invader Action ({count+1} of 4)",spaceOptions,Present.Done));
 				if(space is null) break;
 				spaceOptions.Remove(space);
 				// Skip 1 Invader Action.
@@ -41,7 +41,7 @@ public class ExaltationOfTheIncandescentSky {
 		self.AddActionFactory(new ResolveSlowDuringFast());
 
 		// do 3 Damage in one of their lands.
-		Space? space = await self.SelectAsync(new A.SpaceDecision("Do 3 Damage in land",self.Presence.Lands,Present.Done));
+		Space? space = await self.Select(new A.SpaceDecision("Do 3 Damage in land",self.Presence.Lands,Present.Done));
 		if(space is null) return;
 		await space.UserSelected_DamageInvadersAsync(self,3);
 	}

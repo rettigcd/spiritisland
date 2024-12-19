@@ -114,7 +114,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
 		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
-			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.SpaceSpec );
+			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace );
 			// Gather - 3
 			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ); // ! This is showing (2) because there are only 2 there.
 			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
@@ -151,7 +151,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that Gathers and Pushes - Call to Migrate
 		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
-			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace.SpaceSpec );
+			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace );
 			//   And: outside dahan are gathered
 			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
 			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
@@ -194,7 +194,7 @@ public class StubbornSolidity_Tests {
 
 		//  When: Playing card that replaces Dahan - Dissolve the Bonds of Kinship
 		await spirit.When_ResolvingCard<DissolveTheBondsOfKinship>((user)=> {
-			user.NextDecision.HasPrompt( DissolveTheBondsOfKinship.Name + ": Target Space" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( targetSpace.SpaceSpec );
+			user.NextDecision.HasPrompt( DissolveTheBondsOfKinship.Name + ": Target Space" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( targetSpace );
 		} );
 
 		//  Then: Dahan are still there (not replaced)

@@ -23,7 +23,7 @@ public class PreselectAttribute( string prompt, string classString, Present pres
 			.SelectMany( ss => ss.SpaceTokensOfAnyTag( _tokenClasses ) )
 			.ToArray();
 
-		SpaceToken? st = await spirit.SelectAsync( new A.SpaceTokenDecision( prompt, spaceTokenOptions, present ) );
+		SpaceToken? st = await spirit.Select( new A.SpaceTokenDecision( prompt, spaceTokenOptions, present ) );
 		spirit.PreSelect(st);
 		return st?.Space;
 	}

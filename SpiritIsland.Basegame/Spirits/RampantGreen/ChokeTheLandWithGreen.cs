@@ -35,7 +35,7 @@ public class ChokeTheLandWithGreen( ASpreadOfRampantGreen _self )
 		int energyCost = gs.BlightCard.CardFlipped ? 1 : 0;
 		if(_self.Energy < energyCost) return false;
 
-		var stop = await _self.SelectAsync( new A.SpaceDecision( $"Stop {actionDescription} on {space.Label} by destroying 1 presence", new Space[] { space }, Present.Done ) );
+		var stop = await _self.Select( new A.SpaceDecision( $"Stop {actionDescription} on {space.Label} by destroying 1 presence", new Space[] { space }, Present.Done ) );
 		if(stop is null) return false;
 
 		await using var actionScope = await ActionScope.Start(ActionCategory.Spirit_SpecialRule); // Special Rules! - it is the invader actions we are stopping

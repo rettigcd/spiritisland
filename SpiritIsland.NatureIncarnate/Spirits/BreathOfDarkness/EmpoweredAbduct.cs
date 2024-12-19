@@ -14,7 +14,7 @@ public class EmpoweredAbduct : IActionFactory {
 		if(!incarna.IsPlaced) return;
 		Space space = incarna.Space;
 		HumanToken[] options = space.HumanOfAnyTag( Human.Explorer_Town );
-		SpaceToken? invaderToAbduct = await spirit.SelectAsync(new A.SpaceTokenDecision("Select Invader to Abduct", options.On(space), Present.Done));
+		SpaceToken? invaderToAbduct = await spirit.Select(new A.SpaceTokenDecision("Select Invader to Abduct", options.On(space), Present.Done));
 		if(invaderToAbduct is null) return;
 
 		await invaderToAbduct.MoveTo(EndlessDark.Space.ScopeSpace);

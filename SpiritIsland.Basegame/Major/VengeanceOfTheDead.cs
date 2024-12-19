@@ -31,7 +31,7 @@ public class VengeanceOfTheDead {
 
 	static async Task DistributeDamageToLands( TargetSpaceCtx ctx, List<Space> newDamageLands, int additionalDamage ) {
 		Space[] targetLandOptions  = newDamageLands.Where( s => s.HasInvaders() ).ToArray();
-		var newLand = await ctx.Self.SelectAsync( new A.SpaceDecision( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions, Present.Always ));
+		var newLand = await ctx.Self.Select( new A.SpaceDecision( $"Apply up to {additionalDamage} vengeanance damage in:", targetLandOptions, Present.Always ));
 		if(newLand is not null)
 			await ctx.Target( newLand ).DamageInvaders( 1 );
 	}

@@ -28,7 +28,7 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 		// If we used 'Push', user would click on Destination instead of Source
 		string prompt = "Move presence with " + args.Removed.Class.Label + "?";
 		while(0 < maxThatCanMove--) {
-			var source = await Self.SelectAsync( A.SpaceTokenDecision.ToCollect( prompt, new SpaceToken[] { this.On( from ) }, Present.Done, to.SpaceSpec ) );
+			var source = await Self.Select( A.SpaceTokenDecision.ToCollect( prompt, new SpaceToken[] { this.On( from ) }, Present.Done, to.SpaceSpec ) );
 			if(source is not null)
 				await this.MoveAsync(from,to);
 		}

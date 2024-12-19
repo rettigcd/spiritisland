@@ -26,7 +26,7 @@ public class SourceSelector {
 			A.SpaceTokenDecision decision = BuildDecision( promptBuilder, present, singleDestination, index, maxCount );
 
 			// Select Token
-			SpaceToken? source = await spirit.SelectAsync( decision );
+			SpaceToken? source = await spirit.Select( decision );
 			if(source is null) break;
 
 			await NotifyAsync( source );

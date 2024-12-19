@@ -16,10 +16,10 @@ public class PushPresenceFromOcean : SpiritAction {
 
 	static async Task PushPresence( Spirit self, Space srcTokens ) {
 		var presenceTokens = self.Presence.TokensDeployedOn( srcTokens ).On( srcTokens ).ToArray();
-		var token = await self.SelectAlwaysAsync( new A.SpaceTokenDecision( "Select presence to push", presenceTokens, Present.AutoSelectSingle ) );
+		var token = await self.SelectAlways( "Select presence to push", presenceTokens, true );
 
 		// #pushpresence
-		Space destination = await self.SelectAlwaysAsync( A.SpaceDecision.ToPushPresence(srcTokens, srcTokens.Adjacent, Present.Always, token.Token ) );
+		Space destination = await self.SelectAlways( A.SpaceDecision.ToPushPresence(srcTokens, srcTokens.Adjacent, Present.Always, token.Token ) );
 
 		// apply...
 		await token.MoveTo( destination );

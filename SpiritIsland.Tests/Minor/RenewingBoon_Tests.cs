@@ -44,7 +44,7 @@ public class RenewingBoon_Tests {
 		// When: playing Renewing boon
 		await PowerCard.ForDecorated(RenewingBoon.ActAsync).ActivateAsync( spirit ).AwaitUser( u => {
 			// And selecting restricted space
-			u.NextDecision.Choose(space.SpaceSpec);
+			u.NextDecision.Choose(space);
 		}).ShouldComplete();
 
 		// Then: it should remove any blight...

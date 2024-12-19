@@ -27,7 +27,7 @@ public class AngryMobs : FearCardBase, IFearCard {
 
 	static async Task Level1_MayReplace1TownWith2ExplorersAndGain1Fear( TargetSpaceCtx ctx ) {
 		var options = ctx.Space.HumanOfTag( Human.Town ).On( ctx.Space );
-		var st = await ctx.Self.SelectAsync( new A.SpaceTokenDecision( "Replace 1 Town with 2 Explorers", options, Present.Done ) );
+		var st = await ctx.Self.Select( new A.SpaceTokenDecision( "Replace 1 Town with 2 Explorers", options, Present.Done ) );
 		if(st is null) return;
 		HumanToken town = st.Token.AsHuman();
 

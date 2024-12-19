@@ -3,7 +3,7 @@ namespace SpiritIsland;
 
 public class GameBuilder( params IGameComponentProvider[] _providers ) {
 
-	public string[] SpiritNames => _providers.SelectMany(p => p.SpiritNames ).Order().ToArray();
+	public string[] SpiritNames => [.. _providers.SelectMany(p => p.SpiritNames ).OrderBy(x=>x)];
 
 	public AspectConfigKey[] AspectNames => [.. _providers
 		.SelectMany(p => p.AspectNames )
@@ -14,7 +14,7 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 		.Where(x=>x.Spirit==spiritName)
 		.OrderBy(x => x.Aspect)];
 
-	public string[] AdversaryNames => _providers.SelectMany(p => p.AdversaryNames).Order().ToArray();
+	public string[] AdversaryNames => [.. _providers.SelectMany(p => p.AdversaryNames).OrderBy(x=>x)];
 
 	public Spirit[] BuildSpirits( string[] spirits, AspectConfigKey[]? aspectKeys = null) {
 		return spirits.Select(s => Build1Spirit(s, aspectKeys ?? [])).ToArray();

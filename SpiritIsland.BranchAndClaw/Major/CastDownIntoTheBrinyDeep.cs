@@ -17,7 +17,7 @@ public class CastDownIntoTheBrinyDeep {
 			// Pick board
 			// (from querki, if space has multiple boards, user selects.)
 			var boards = ctx.SpaceSpec.Boards;
-			var options = boards.Select(b=>b.Name).Order().ToArray();
+			var options = boards.Select(b=>b.Name).OrderBy(x=>x).ToArray();
 			string name = (await ctx.Self.SelectText("Pick Board To Destroy",options,Present.AutoSelectSingle))!;
 			var board = boards.Single(b=>b.Name == name);
 

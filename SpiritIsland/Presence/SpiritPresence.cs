@@ -169,13 +169,13 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 
 	/// <summary> Existing Spaces </summary>
 	/// <remarks> Determining presence locations does NOT require Tokens so default type is Space. </remarks>
-	public IEnumerable<Space> Lands => Incarna.IsPlaced
-		? Token.Spaces_Existing.Include( Incarna.Space )
+	public IEnumerable<Space> Lands => Incarna.IsPlaced 
+		? new HashSet<Space>([.. Token.Spaces_Existing, Incarna.Space]).OrderBy(x=>x)
 		: Token.Spaces_Existing;
 
 
 	public IEnumerable<SpaceToken> Deployed => Incarna.IsPlaced 
-		? Token.Deployed.Include( Incarna.AsSpaceToken() )
+		? [..Token.Deployed, Incarna.AsSpaceToken() ]
 		: Token.Deployed;
 
 	public IEnumerable<SpaceToken> Movable => Deployed;

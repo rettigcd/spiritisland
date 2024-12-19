@@ -13,7 +13,7 @@ class LongAgesOfKnowledgeAndForgetfulness(Spirit s) : ForgettingStrategy(s) {
 			.Where(u => restrictedOptions == null || restrictedOptions.Contains(u.Card));
 
 		var decision = new A.PowerCard("Select card to forget or discard", options, present);
-		PowerCard? cardToForgetOrDiscard = await _spirit.SelectAsync(decision);
+		PowerCard? cardToForgetOrDiscard = await _spirit.Select(decision);
 		if( cardToForgetOrDiscard is not null )
 			ThisCard(cardToForgetOrDiscard);
 		return cardToForgetOrDiscard is not null && !_spirit.DiscardPile.Contains(cardToForgetOrDiscard)

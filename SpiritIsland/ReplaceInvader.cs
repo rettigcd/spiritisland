@@ -31,7 +31,7 @@ static public class ReplaceInvader {
 	/// <summary> Offers Specific tokens, instead of token classes. </summary>
 	/// <returns> Original token (before downgrade).</returns>
 	static async Task<HumanToken?> Downgrade1Token( Spirit spirit, Space space, Present present, HumanToken[] options ) {
-		var st = await spirit.SelectAsync( An.Invader.ToReplace( "downgrade", options.On(space), present ) );
+		var st = await spirit.Select( An.Invader.ToReplace( "downgrade", options.On(space), present ) );
 		if(st is null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
@@ -73,7 +73,7 @@ static public class ReplaceInvader {
 		HumanToken[] options, 
 		string actionSuffix = "" 
 	) {
-		var st = await spirit.SelectAsync( An.Invader.ToReplace( "upgrade" + actionSuffix, options.On( space ), present ) );
+		var st = await spirit.Select( An.Invader.ToReplace( "upgrade" + actionSuffix, options.On( space ), present ) );
 		if(st is null) return null;
 		HumanToken oldInvader = st.Token.AsHuman();
 
@@ -96,7 +96,7 @@ static public class ReplaceInvader {
 	public static async Task DisolveInvaderIntoExplorers( TargetSpaceCtx ctx, HumanTokenClass oldInvader, int replaceCount ) {
 
 		var tokens = ctx.Space;
-		var st = await ctx.Self.SelectAsync( An.Invader.ToReplace("disolve", tokens.HumanOfTag( oldInvader ).On(ctx.Space) ) );
+		var st = await ctx.Self.Select( An.Invader.ToReplace("disolve", tokens.HumanOfTag( oldInvader ).On(ctx.Space) ) );
 		if(st is null) return;
 		var tokenToRemove = st.Token.AsHuman();
 

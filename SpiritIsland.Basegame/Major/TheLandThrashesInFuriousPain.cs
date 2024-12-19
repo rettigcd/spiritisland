@@ -19,7 +19,7 @@ public class TheLandThrashesInFuriousPain {
 		// if you have 3 moon 3 earth
 		if(await ctx.YouHave("3 moon,3 earth")) {
 			// repeat on an adjacent land.
-			var alsoTarget = await ctx.Self.SelectAsync( new A.SpaceDecision( "Select additional land to receive blight damage", ctx.Space.Adjacent, Present.Always));
+			var alsoTarget = await ctx.Self.Select( new A.SpaceDecision( "Select additional land to receive blight damage", ctx.Space.Adjacent, Present.Always));
 			if(alsoTarget is null) return; // isolated land has no adjacent
 			await DamageLandFromBlight( ctx.Target( alsoTarget ) );
 		}

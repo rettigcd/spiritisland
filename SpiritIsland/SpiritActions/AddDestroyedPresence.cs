@@ -69,7 +69,7 @@ public class AddDestroyedPresence : SpiritAction {
 		IEnumerable<Space> destinationOptions = SpacesFromSourceSpirit(_relativeSpirit ?? placingSpirit)
 			.Where(placingSpirit.Presence.CanBePlacedOn);
 
-		Space? dst = await placingSpirit.SelectAsync( A.SpaceDecision.ToPlaceDestroyedPresence(
+		Space? dst = await placingSpirit.Select( A.SpaceDecision.ToPlaceDestroyedPresence(
 			destinationOptions,
 			_present,
 			placingSpirit,

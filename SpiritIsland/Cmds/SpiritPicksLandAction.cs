@@ -22,7 +22,7 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 
 			Space? space = _firstPickTokenClasses is not null
 				? await PickSpaceBySelectingToken( self, spaceOptions, _firstPickTokenClasses)
-				: await self.SelectSpaceAsync( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
+				: await self.Select( "Select space to " + _spaceAction.Description, spaceOptions.Select( x => x.Space ), _present );
 
 			if(space is null) return;
 
@@ -51,7 +51,7 @@ public class SpiritPicksLandAction( IActOn<TargetSpaceCtx> _spaceAction, string 
 		SpaceToken[] spaceTokenOptions = spaceOptions.SelectMany( GetSpaceTokens ).ToArray();
 
 		// Select
-		SpaceToken? st = await self.SelectAsync( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
+		SpaceToken? st = await self.Select( new A.SpaceTokenDecision( "Select token for " + _spaceAction.Description, spaceTokenOptions, Present.Always ) );
 		self.PreSelect(st);
 
 		return st?.Space;

@@ -45,7 +45,7 @@ public class ReclaimedByTheDeeps {
 					|| townCityCount == 0 && 3<=deeps;  // would trigger Option 2
 			});
 			
-		var repeatSpace = await ctx.Self.SelectSpaceAsync("Repeate power", options, Present.Done);
+		var repeatSpace = await ctx.Self.Select("Repeate power", options, Present.Done);
 		if(repeatSpace is null ) return;
 
 		// Repeat this power

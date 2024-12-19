@@ -9,8 +9,8 @@ public class TargetSpaceResults(Space space, Space[] sources) {
 public record TargetRoute(Space source,Space target);
 
 public class TargetRoutes(IEnumerable<TargetRoute> routes) {
-	public Space[] Targets => _routes.Select(r=>r.target).Distinct().ToArray();
-	public Space[] Sources => _routes.Select(r => r.source).Distinct().ToArray();
+	public Space[] Targets => [.. _routes.Select(r=>r.target).Distinct().OrderBy(x=>x.Label)];
+	public Space[] Sources => [.. _routes.Select(r => r.source).Distinct().OrderBy(x=>x.Label)];
 	public Space[] SourcesFor(Space target) => _routes.Where(x=>x.target == target).Select(x=>x.source).ToArray();
 	public TargetRoute[] _routes = [.. routes];
 

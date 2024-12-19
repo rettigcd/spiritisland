@@ -103,7 +103,7 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 			if(addSpaces.Length == 0) break;
 
 			var criteria = new A.SpaceDecision( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces, Present.Always );
-			Space? addSpace = await ctx.Self.SelectAsync( criteria );
+			Space? addSpace = await ctx.Self.Select( criteria );
 			if(addSpace is not null)
 				await addSpace.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 		}

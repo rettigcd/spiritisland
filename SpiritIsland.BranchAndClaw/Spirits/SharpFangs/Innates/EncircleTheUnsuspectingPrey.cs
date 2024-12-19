@@ -10,11 +10,11 @@ class EncircleTheUnsuspectingPrey {
 		// You may Gather 1 Beasts into target or an adjacent land. If you do, 1 Damage in that land.
 		HashSet<Space> dstOptions = ctx.Space.InOrAdjacentTo.ToHashSet();
 		
-		var moveOptions = ctx.Space.Range(2).Where(s=>s.Beasts.Any)
-			.SelectMany(s=>s.Adjacent.Intersect(dstOptions).Select(to=> new Move{ Source=new SpaceToken(s,Token.Beast), Destination=to }))
+		var moveOptions = Token.Beast.On( ctx.Space.Range(2).Where(s=>s.Beasts.Any) )
+			.BuildMoves(s=>s.Space.Adjacent.Intersect(dstOptions))
 			.ToArray();
 
-		var move = await ctx.Self.SelectAsync(new A.Move("Gather Beast", moveOptions, Present.Done));
+		var move = await ctx.Self.Select(new A.MoveDecision("Gather Beast", moveOptions, Present.Done));
 		if( move is null) return;
 		await move.Source.MoveTo(move.Destination);
 		await ctx.Target(move.Destination).DamageInvaders(1);

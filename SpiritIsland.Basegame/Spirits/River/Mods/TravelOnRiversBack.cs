@@ -17,13 +17,13 @@ class TravelOnRiversBack : SpiritAction {
 		for( int i = 1; i <= 2; ++i ) {
 			var dahanOptions = spirit.Presence.Lands
 				.SelectMany(s => s.SpaceTokensOfTag(TokenCategory.Dahan));
-			var dahan = await spirit.SelectAsync(new A.SpaceTokenDecision($"Select Dahan to Move to contiguously presence-connected land. ({i} of 2)", dahanOptions, Present.Done));
+			var dahan = await spirit.Select(new A.SpaceTokenDecision($"Select Dahan to Move to contiguously presence-connected land. ({i} of 2)", dahanOptions, Present.Done));
 			if( dahan is null ) return;
 
 			HashSet<Space> destinationOptions = GetContiguoslyConnectedPresense(spirit, dahan.Space);
 			if( destinationOptions.Count == 0 ) continue;
 
-			var destination = await spirit.SelectSpaceAsync("Move Dahan to.", destinationOptions, Present.Done);
+			var destination = await spirit.Select("Move Dahan to.", destinationOptions, Present.Done);
 			if( destination is not null )
 				await dahan.MoveToAsync(destination);
 		}

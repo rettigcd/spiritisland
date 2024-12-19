@@ -22,7 +22,7 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 		//  When: play the card
 		await PowerCard.ForDecorated(SkiesHeraldTheSeasonOfReturn.ActAsync).ActivateAsync( fix.Spirit ).AwaitUser( u => { 
 			// target space
-			u.NextDecision.Choose(spaceSpec);
+			u.NextDecision.Choose(space);
 			// Then: Should Push Dahan (per keeper's Sacred Site)
 			u.NextDecision.HasPrompt("Push (1)").MoveFrom("D@2").MoveTo(dahanDestination.Label);
 			//  And: May Gather up to 2 dahan (per the card)

@@ -221,7 +221,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		var damagedInvaders = new List<IToken>();
 		count = System.Math.Min( count, invaders.Count );
 		while(count-- > 0) {
-			var st = await Self.SelectAsync( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
+			var st = await Self.Select( An.Invader.ForIndividualDamage( damagePerInvader, invaders.On(Space) ) );
 			if(st is null) break;
 			HumanToken invader = st.Token.AsHuman();
 			invaders.Remove( invader );
@@ -277,7 +277,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	public bool IsPresent => Self.Presence.IsOn( Space );
 
 	public async Task PlacePresenceHere() {
-		var from = await Self.SelectSourcePresence();
+		var from = await Self.SelectAlways(Prompts.SelectPresenceTo(), Self.DeployablePresence());
 		await from.MoveToAsync(Space);
 	}
 
@@ -285,7 +285,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	/// <remarks> Simple Helper - has access to: Spirit, Space/Adjacent, Target() </remarks>
 	public async Task<TargetSpaceCtx?> SelectAdjacentLandAsync( string prompt ) {
-		var space = await Self.SelectAsync( new A.SpaceDecision( prompt, Space.Adjacent, Present.Always ) );
+		var space = await Self.Select( new A.SpaceDecision( prompt, Space.Adjacent, Present.Always ) );
 		return space is not null ? Target( space ) : null;
 	}
 

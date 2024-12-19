@@ -7,7 +7,7 @@ class WoodSeeksGrowthHumansSeekFreedom {
 	static public async Task Option1( TargetSpaceCtx ctx ) {
 		var spiritOptions = GameState.Current.Spirits.Where( s=> s.Presence.IsOn( ctx.Space ) ).ToArray();
 		if(spiritOptions.Length > 0) return;
-		var spirit = await ctx.Self.SelectAsync(new A.Spirit("Select spirit to gain a power card", spiritOptions));
+		var spirit = await ctx.Self.Select(new A.Spirit("Select spirit to gain a power card", spiritOptions));
 		if(spirit is null) return;
 
 		await ctx.Self.Target( spirit ).Other.Draw.Card();

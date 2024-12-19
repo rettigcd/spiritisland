@@ -142,7 +142,7 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 		"Add a strife to a town"
 		, async boardCtx => {
 			SpaceToken[] options = boardCtx.Board.FindTokens( Human.Town );
-			var st = await boardCtx.Self.SelectAsync( new A.SpaceTokenDecision( "Add strife to town", options, Present.Always ) );
+			var st = await boardCtx.Self.Select( new A.SpaceTokenDecision( "Add strife to town", options, Present.Always ) );
 			if(st is not null)
 				await st.Add1StrifeToAsync();
 		} );

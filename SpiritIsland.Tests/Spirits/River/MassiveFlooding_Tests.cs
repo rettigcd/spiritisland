@@ -48,7 +48,7 @@ public class MassiveFlooding_Tests {
 
 		//  When: activate innate
 		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => { 
-			user.NextDecision.Choose( spaceSpec );
+			user.NextDecision.Choose( space );
 			user.NextDecision.MoveFrom("T@2").MoveTo(destination.Label);
 		} ).ShouldComplete();
 
@@ -80,15 +80,15 @@ public class MassiveFlooding_Tests {
 		//   And: Spirit has enough elements to trigger Level-2 of Massive Flooding
 		spirit.Elements.Add( ElementStrings.Parse("3 water,2 sun") );
 		//   And: target has 1 city, 4 towns, 5 explorers
-		var tokens = spaceSpec.ScopeSpace;
-		tokens.InitDefault(Human.City,1);
-		tokens.InitDefault(Human.Town,4);
-		tokens.InitDefault(Human.Explorer,5);
+//		var space = spaceSpec.ScopeSpace;
+		space.InitDefault(Human.City,1);
+		space.InitDefault(Human.Town,4);
+		space.InitDefault(Human.Explorer,5);
 		// fixture.InitTokens( space, "1C@3,4T@2,5E@1");
 
 		//  When: activate innate
 		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => {
-			user.NextDecision.HasPrompt("Massive Flooding: Target Space").Choose( spaceSpec ); // target space
+			user.NextDecision.HasPrompt("Massive Flooding: Target Space").Choose( space ); // target space
 			user.NextDecision.HasPrompt("Damage (2 remaining)").Choose( "T@2" ); // 1st damage
 			user.NextDecision.HasPrompt("Damage (1 remaining)").Choose( "T@1" ); // 2nd damage
 

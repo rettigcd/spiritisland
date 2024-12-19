@@ -13,14 +13,17 @@ public class BoundPresence_ForSpace( TargetSpaceCtx _ctx ) {
 		=> _self.Presence.Destroyed.MoveToAsync(_ctx.Space,count);
 
 	public async Task PlaceHere() {
-		var from = await _self.SelectSourcePresence();
+		var from =  await _self.SelectAlways(
+			Prompts.SelectPresenceTo(),
+			_self.DeployablePresence()
+		);
 		await from.MoveToAsync(_ctx.Space);
 	}
 
 	public async Task MoveHereFromAnywhere(int count) {
 		while(count > 0) {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable
-			var src = (await _ctx.Self.SelectDeployedMovable($"Select presence to move. ({count} remaining)"))!;
+			var src = await _ctx.Self.SelectAlways($"Select presence to move. ({count} remaining)", _ctx.Self.Presence.Movable);
 			if( src.Space.Has(_ctx.Self.Presence) )
 				await src.MoveTo( _ctx.Space );
 			count--;

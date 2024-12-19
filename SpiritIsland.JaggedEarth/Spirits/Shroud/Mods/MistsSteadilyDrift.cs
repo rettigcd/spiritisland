@@ -19,10 +19,10 @@ class MistsSteadilyDrift : IModifyAvailableActions {
 
 	static async Task PushPresenceAsync(Spirit self) {
 		var pushSpaces = self.Presence.Lands.ToArray();
-		var token = await self.SelectAsync(new A.SpaceTokenDecision("Select presence to push", self.Presence.Deployed, Present.AutoSelectSingle));
+		var token = await self.Select(new A.SpaceTokenDecision("Select presence to push", self.Presence.Deployed, Present.AutoSelectSingle));
 		if(token is null) return;
 		// #pushpresence
-		Space? destination = await self.SelectAsync(A.SpaceDecision.ToPushPresence(token.Space, token.Space.Adjacent, Present.Always, token.Token));
+		Space? destination = await self.Select(A.SpaceDecision.ToPushPresence(token.Space, token.Space.Adjacent, Present.Always, token.Token));
 		if(destination is null) return;
 		// apply...
 		await token.MoveTo(destination);

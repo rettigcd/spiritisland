@@ -15,12 +15,13 @@ public class SlowDissolutionOfWill : BlightCard {
 	);
 
 	async Task ChooseToken(Spirit spirit) 
-		=> _replacements[spirit] = await spirit.SelectAlwaysAsync( new A.TypedDecision<IToken>(ChooseTokenPrompt, [Token.Badlands, Token.Beast, Token.Wilds], Present.Always));
+		=> _replacements[spirit] = await spirit.SelectAlways( ChooseTokenPrompt, [Token.Badlands, Token.Beast, Token.Wilds] );
 
 
 	async Task DoReplace(Spirit spirit ) {
 		var replacement = _replacements[spirit];
-		SpaceToken spaceToken = await spirit.SelectDeployed("Replace Presence with " + replacement.Text );
+		SpaceToken spaceToken = await spirit.SelectAlways("Replace Presence with " + replacement.Text, spirit.Presence.Deployed);
+
 		await spaceToken.Destroy(); // .Destroy(spirit.Presence.Token,1);
 		await spaceToken.Space.AddAsync(replacement,1);
 	}

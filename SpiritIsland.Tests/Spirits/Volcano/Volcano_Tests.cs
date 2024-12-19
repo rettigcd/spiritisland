@@ -166,7 +166,7 @@ public class Volcano_Tests {
 
 		//  When: Utter a curse
 		await spirit.When_ResolvingCard<UtterACurseOfDreadAndBone>( (user) => {
-			user.Choose( targetSpace.SpaceSpec );
+			user.Choose( targetSpace );
 			user.NextDecision.HasPrompt( "Select Power Option" ).HasOptions( "Add Badland,Add Disease,Add Strife" ).Choose( "Add Disease" );
 
 			user.AcceptsElementThreshold();
@@ -219,7 +219,7 @@ public class Volcano_Tests {
 
 		//  When: Perils of the Deepest Island
 		await spirit.When_ResolvingCard<PerilsOfTheDeepestIsland>( (user) => {
-			user.Choose( space.SpaceSpec );
+			user.Choose( space );
 
 			//  Then: range is adjusted for adding beasts
 			user.NextDecision.HasPrompt( "Add beast" ).HasOptions( expectedRangeOptions ).ChooseFirst();
@@ -240,7 +240,7 @@ public class Volcano_Tests {
 
 		//  When: they trigger Explosive Erruption in target
 		await spirit.When_ResolvingInnate(JaggedEarth.ExplosiveEruption.Name, (user) => {
-			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.SpaceSpec );
+			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space );
 			//   And: Destroy 2 presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "4,3,2,1,0" ).Choose( "2" );
 
@@ -278,14 +278,14 @@ public class Volcano_Tests {
 
 		//  When: they trigger Explosive Erruption in target
 		await spirit.When_ResolvingInnate(JaggedEarth.ExplosiveEruption.Name, (user) => {
-			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space.SpaceSpec );
+			user.NextDecision.HasPrompt( "Explosive Eruption: Target Space" ).Choose( space );
 			//   And: Destroy 2 presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "10,9,8,7,6,5,4,3,2,1,0" ).Choose( "2" );
 			//   And: damage invaders in target
 			ApplyDamageToExplorers( spirit, null, 2 + badlandsCount, space );
 
 			//  Then: VolcanicPeaksTowerOverTheLandscape does not extend range to A2 & A3
-			user.NextDecision.HasPrompt( "Apply 2 damage to" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( adjacent.SpaceSpec );
+			user.NextDecision.HasPrompt( "Apply 2 damage to" ).HasOptions( "A1,A4,A5,A6,A7,A8" ).Choose( adjacent );
 			//   And: damages invaders in adjacent
 			ApplyDamageToExplorers( spirit, null, 2 + badlandsCount, adjacent );
 		} );
@@ -334,7 +334,7 @@ public class Volcano_Tests {
 
 		// When: activate Innate
 		await spirit.When_ResolvingInnate(JaggedEarth.ExplosiveEruption.Name, (user) => {
-			user.NextDecision.HasOptions( "A7,A8" ).Choose( targetSpace.SpaceSpec );
+			user.NextDecision.HasOptions( "A7,A8" ).Choose( targetSpace );
 			//  And: destroy presence
 			user.NextDecision.HasPrompt( "# of presence to destroy?" ).HasOptions( "12,11,10,9,8,7,6,5,4,3,2,1,0" ).Choose( presenceDestroyed.ToString() );
 
@@ -344,7 +344,7 @@ public class Volcano_Tests {
 			}
 			//  And: Level 1
 			if(2 <= presenceDestroyed) {
-				user.NextDecision.HasPrompt( $"Apply {presenceDestroyed} damage to" ).HasOptions( "A5,A6,A7,A8" ).Choose( adjBlight.SpaceSpec );
+				user.NextDecision.HasPrompt( $"Apply {presenceDestroyed} damage to" ).HasOptions( "A5,A6,A7,A8" ).Choose( adjBlight );
 				ApplyDamageToExplorers( spirit, null, presenceDestroyed, adjBlight );
 			}
 			//  And: Level 2

@@ -18,7 +18,7 @@ public class CallToASunlitHaven {
 	[InnateTier("1 sun,2 water,1 earth", "In an adjacent land with your presence, Defend E.",1)]
 	static public async Task InAdjacent_DefendE(TargetSpaceCtx ctx) {
 		int e = GetE(ctx);
-		var otherSpace = await ctx.Self.SelectSpaceAsync(
+		var otherSpace = await ctx.Self.Select(
 			$"Defend {e}",
 			ctx.Adjacent.Where(ctx.Self.Presence.IsOn),
 			Present.Always
@@ -30,7 +30,7 @@ public class CallToASunlitHaven {
 	[InnateTier("1 sun,1 animal", "In target land or adjacent land with your presence, gather up to E Dahan.",2)]
 	static public async Task GatherDahan(TargetSpaceCtx ctx) {
 		int e = GetE(ctx);
-		var otherSpace = await ctx.Self.SelectSpaceAsync(
+		var otherSpace = await ctx.Self.Select(
 			$"Gather up to {e} Dahan",
 			ctx.Range(1).Where(ctx.Self.Presence.IsOn),
 			Present.Always

@@ -7,7 +7,7 @@ public class AnySpiritAttribute : GeneratesContextAttribute {
 	public override async Task<object?> GetTargetCtx( string powerName, Spirit self ) {
 		var spirits = GameState.Current.Spirits;
 		Spirit target = spirits.Length == 1 ? self
-			: await self.SelectAlwaysAsync( new A.Spirit( powerName, spirits ) );
+			: await self.SelectAlways( Prompts.TargetSpirit(powerName), spirits );
 
 		return self.Target( target );
 	}
@@ -26,7 +26,7 @@ public class AnotherSpiritAttribute : AnySpiritAttribute {
 	public override async Task<object?> GetTargetCtx( string powerName,  Spirit self ) {
 		var spirits = GameState.Current.Spirits;
 		Spirit target = spirits.Length == 1 ? self
-			: await self.SelectAlwaysAsync( new A.Spirit( powerName, spirits.Where(s=>s!=self), Present.AutoSelectSingle ));
+			: await self.SelectAlways( powerName, spirits.Where(s=>s!=self), true );
 		return self.Target( target );
 	}
 	public override string TargetFilterName => TargetFilterText;

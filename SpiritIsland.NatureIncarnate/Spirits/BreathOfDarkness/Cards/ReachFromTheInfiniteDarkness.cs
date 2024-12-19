@@ -14,7 +14,7 @@ public class ReachFromTheInfiniteDarkness {
 		while(0 < remaining) {
 
 			// select presence
-			var presenceToAbduct = await self.SelectAsync( 
+			var presenceToAbduct = await self.Select( 
 				new A.SpaceTokenDecision( $"Abduct Presence for +1 Range for all powers ({remaining} remaining)", 
 				GameState.Current.Spirits.SelectMany(s=>s.Presence.Deployed),
 				Present.Done 

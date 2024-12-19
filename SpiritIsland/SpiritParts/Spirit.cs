@@ -53,14 +53,9 @@ public abstract partial class Spirit
 
 	public IUserPortalPlus Portal => _gateway;
 
-	/// <summary> Use ONLY for decisions that will ALWAYS return an option. </summary>
-	public async Task<T> SelectAlwaysAsync<T>(A.TypedDecision<T> decision) where T : class, IOption => (await SelectAsync(decision))!;
 
-	public async Task<T?> SelectAsync<T>( A.TypedDecision<T> decision ) where T : class, IOption {
-		var selection = await _gateway.Select<T>(decision);
-		SelectionMade?.Invoke(selection);
-		return selection;
-	}
+
+
 
 	public event Action<object?>? SelectionMade; // hook for: Reach Through the Efemeral Distance
 
@@ -68,6 +63,36 @@ public abstract partial class Spirit
 	readonly UserGateway _gateway;
 
 	#endregion
+
+	#region Select
+
+
+	// Required
+	public async Task<T> SelectAlways<T>(string prompt, IEnumerable<T> options, bool autoSelectSingle = false) where T : class, IOption
+		=> (await Select(prompt, options, autoSelectSingle ? Present.AutoSelectSingle : Present.Always))!;
+
+	// Required - Don't use
+	public async Task<T> SelectAlways<T>(A.TypedDecision<T> decision) where T : class, IOption => (await Select(decision))!;
+
+	// Optional
+	public Task<T?> Select<T>(string prompt, IEnumerable<T> options, Present present) where T : class, IOption {
+		return Select(new A.TypedDecision<T>(prompt, options.Distinct(), present));
+	}
+
+	// Optional
+	public Task<T?> Select<T>(string prompt, IEnumerable<T> options, string cancelText) where T : class, IOption {
+		return Select(new A.TypedDecision<T>(prompt, options.Distinct(), cancelText));
+	}
+
+	// Optional
+	public async Task<T?> Select<T>(A.TypedDecision<T> decision) where T : class, IOption {
+		var selection = await _gateway.Select<T>(decision);
+		SelectionMade?.Invoke(selection);
+		return selection;
+	}
+
+
+	#endregion Select
 
 	public ElementMgr Elements;
 	public DrawCardStrategy Draw;
@@ -108,7 +133,7 @@ public abstract partial class Spirit
 
 		IActionFactory[] options = GetAvailableActions(phase).ToArray();
 		while( 0 < options.Length ) {
-			IActionFactory? option = await SelectAsync(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
+			IActionFactory? option = await Select(new A.TypedDecision<IActionFactory>("Select " + phase + " to resolve", options, present));
 			if( option is null ) break;
 
 			await ResolveActionAsync(option, phase);

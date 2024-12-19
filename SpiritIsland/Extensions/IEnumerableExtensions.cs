@@ -91,20 +91,8 @@ static public class IEnumerableExtensions {
 
 	static public bool IsDestroyingPresence( this RemoveReason reason ) => reason.IsOneOf( RemoveReason.Destroyed, RemoveReason.Replaced, RemoveReason.Removed );
 
+
 	static public void SetItems<T>(this List<T> list, params T[] items ) { list.Clear(); list.AddRange(items);}
-
-	static public void SetItems<T>(this HashSet<T> hashSet, params T[] items ) { hashSet.Clear(); foreach(var item in items) hashSet.Add(item);}
-
-	/// <summary> Includes an item on the end IF it is not already there. </summary>
-	static public IEnumerable<T> Include<T>(this IEnumerable<T> orig, T addition ) {
-		bool addIt = true;
-		foreach(var item in orig){
-			if(item is not null && item.Equals(addition)) addIt = false;
-			yield return item;
-		}
-		if(addIt)
-			yield return addition;
-	}
 
 	/// <summary>
 	/// [0] => top of stack, [^1] => bottom of stack
@@ -115,7 +103,6 @@ static public class IEnumerableExtensions {
 			stack.Push(saved[i]);
 	}
 
-	static public IEnumerable<T> Order<T>(this IEnumerable<T> src) => src.OrderBy(x => x);
 
 	public static Value Get<Key,Value>(this IDictionary<Key,Value> dict, Key key, Func<Value> newValueGenerator) {
 		if(dict.TryGetValue( key, out Value? value )) return value;
@@ -123,12 +110,5 @@ static public class IEnumerableExtensions {
 		dict.Add(key,newValue);
 		return newValue;
 	}
-
-	//public static Value Get<Key, Value>( this IDictionary<Key, Value> dict, Key key, Value defaultValue = default ) {
-	//	if(dict.TryGetValue( key, out Value? value )) return value;
-	//	Value newValue = defaultValue;
-	//	dict.Add( key, newValue );
-	//	return newValue;
-	//}
 
 }

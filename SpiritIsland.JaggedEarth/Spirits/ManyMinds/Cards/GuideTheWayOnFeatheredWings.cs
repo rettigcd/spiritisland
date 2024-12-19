@@ -30,8 +30,8 @@ public class GuideTheWayOnFeatheredWings {
 
 		// move beast (2 of 2)
 		var beastMoved = tracker.BeastMoved!; // !!! I'm not sure this is correct, just doing it to make null warnings go away
-		A.SpaceDecision selection = A.SpaceDecision.ForMoving( $"Move {beastMoved.Text} to", destination1.SpaceSpec, destination1.Adjacent, Present.Done, beastMoved);
-		Space? destination2 = await ctx.Self.SelectAsync( selection );
+		A.SpaceDecision selection = A.SpaceDecision.ForMoving( $"Move {beastMoved.Text} to", destination1, destination1.Adjacent, Present.Done, beastMoved);
+		Space? destination2 = await ctx.Self.Select( selection );
 		if(destination2 is null) return;
 		await beastMoved.MoveAsync(destCtx.Space, destination2);
 
