@@ -13,9 +13,9 @@ class PourTimeSideways {
 		await frac.SpendTime( 3 );
 
 		// Move 1 of your presence to a different land with your presence.
-		var moveOptions = self.Presence.Deployed.SelectMany(from=>self.Presence.Lands
-			.Select(to=>new Move{ Source=from, Destination=to }
-		)).Where(m=>m.Source.Space != m.Destination)
+		var moveOptions = self.Presence.Deployed
+			.BuildMoves(x=>self.Presence.Lands)
+			.Where(m=>m.Source.Space != m.Destination)
 			.OrderBy(m=>m.Source.Space.Label)
 			.ThenBy(m=>m.Destination.Label);
 

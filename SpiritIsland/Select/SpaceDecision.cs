@@ -11,10 +11,6 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 
 	// !!! Replace all ToPush, ForMoving with Move Options
 
-	// !!! Step 1 - replace this with Move
-	static public SpaceDecision ToPushPresence(Space source, IEnumerable<Space> destinationOptions, Present present, IToken presenceToken)
-		=> SpaceDecision.ForMoving("Push Presence to", source, destinationOptions, present, presenceToken);
-
 	// !!! Step 2 - replace this with Move
 	static public SpaceDecision ToPushToken(IToken token, Space source, IEnumerable<Space> destinationOptions, Present present)
 		=> SpaceDecision.ForMoving("Push " + token.Text + " to", source, destinationOptions, present, token);

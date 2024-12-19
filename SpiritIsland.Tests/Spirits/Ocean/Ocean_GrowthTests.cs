@@ -110,7 +110,9 @@ public class Ocean_GrowthTests : BoardAGame {
 			user.SelectsMinorDeck();
 			user.SelectMinorPowerCard();
 
-			user.PushesPresenceFromOcean( "A1,[A2],A3" );
+//			user.PushesPresenceFromOcean( "A1,[A2],A3" );
+			user.AssertDecisionInfo("Select Growth to resolve", "Push Presence from Ocean");
+			user.NextDecision.HasPrompt("Select Presence to push").HasOptions("OHG on A0 => A1,OHG on A0 => A2,OHG on A0 => A3").Choose("OHG on A0 => A2");
 		} );
 
 		Assert_GainsFirstMinorCard();

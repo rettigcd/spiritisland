@@ -16,7 +16,7 @@ class EncircleTheUnsuspectingPrey {
 
 		var move = await ctx.Self.Select(new A.MoveDecision("Gather Beast", moveOptions, Present.Done));
 		if( move is null) return;
-		await move.Source.MoveTo(move.Destination);
+		await move.Apply();
 		await ctx.Target(move.Destination).DamageInvaders(1);
 	}
 

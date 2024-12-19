@@ -67,13 +67,8 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 		// When: moving/pushing presence
 		await _spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( u => {
 			u.NextDecision.HasPrompt( "Select Presence to push." )
-				.HasOptions( "TRotJ on A2,TRotJ- on A3,Done" )
-				.Choose( "TRotJ- on A3" );
-
-			// Clean up
-			u.NextDecision.HasPrompt( "Push Presence to" )
-				.HasOptions( "A2,A4" )
-				.Choose( "A2" );
+				.HasOptions("TRotJ on A2 => A1,TRotJ on A2 => A3,TRotJ on A2 => A4,TRotJ- on A3 => A2,TRotJ- on A3 => A4,Done")
+				.Choose("TRotJ- on A3 => A2");
 		} );
 
 	}

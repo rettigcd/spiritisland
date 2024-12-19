@@ -18,14 +18,9 @@ class MistsSteadilyDrift : IModifyAvailableActions {
 	}
 
 	static async Task PushPresenceAsync(Spirit self) {
-		var pushSpaces = self.Presence.Lands.ToArray();
-		var token = await self.Select(new A.SpaceTokenDecision("Select presence to push", self.Presence.Deployed, Present.AutoSelectSingle));
-		if(token is null) return;
-		// #pushpresence
-		Space? destination = await self.Select(A.SpaceDecision.ToPushPresence(token.Space, token.Space.Adjacent, Present.Always, token.Token));
-		if(destination is null) return;
-		// apply...
-		await token.MoveTo(destination);
+		Move? move = await self.Select("Select presence to push", self.Presence.Deployed.BuildMoves(x=>x.Space.Adjacent), Present.Done );
+		if(move is not null)
+			await move.Apply();
 	}
 
 	#endregion constructor / init

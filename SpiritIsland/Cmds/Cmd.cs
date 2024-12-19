@@ -178,17 +178,24 @@ public static partial class Cmd {
 	static public SpiritAction PushUpTo1Presence( Func<Space, Space, Task>? callback = null ) 
 		=> new SpiritAction( "Push up to 1 Presence", async self => {
 
-			// Select source
-			var source = await self.Select( new A.SpaceTokenDecision( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
-			if(source is null) return;
+			var moves = self.Presence.Movable.BuildMoves(source=>source.Space.Adjacent);
 
-			// Select destination
-			Space destination = await self.SelectAlways( A.SpaceDecision.ToPushPresence( source.Space, source.Space.Adjacent, Present.Always, source.Token ) );
-			await source.MoveTo( destination );
+			var move = await self.Select("Select Presence to push.", moves, Present.Done);
+
+			if(move is null) return;
+			await move.Apply();
+
+			//// Select source
+			//var source = await self.Select( new A.SpaceTokenDecision( "Select Presence to push.", self.Presence.Movable, Present.Done ) );
+			//if(source is null) return;
+
+			//// Select destination
+			//Space destination = await self.SelectAlways( A.SpaceDecision.ToPushPresence( source.Space, source.Space.Adjacent, Present.Always, source.Token ) );
+			//await source.MoveTo( destination );
 
 			// Calback
 			if(callback is not null)
-				await callback( source.Space, destination );
+				await callback( move.Source.Space, move.Destination );
 		});
 
 	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) 

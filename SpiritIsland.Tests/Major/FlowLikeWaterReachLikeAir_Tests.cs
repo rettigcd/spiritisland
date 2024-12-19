@@ -21,8 +21,9 @@ public class FlowLikeWaterReachLikeAir_Tests {
 		await spirit.When_ResolvingCard<FlowLikeWaterReachLikeAir>( (user) => {
 			//  And: Can bring 2 of each
 			// !!! this should be implemented as a Push
-			user.NextDecision .HasPrompt( "Select Presence to push." ).HasOptions( "TS,Done" ).Choose( "TS" );
-			user.AssertDecisionInfo( "Push Presence to", "[A1],A4,A6,A7,A8" );
+			user.NextDecision .HasPrompt( "Select Presence to push." )
+				.HasOptions("TS on A5 => A1,TS on A5 => A4,TS on A5 => A6,TS on A5 => A7,TS on A5 => A8,Done")
+				.Choose("TS on A5 => A1");
 
 			user.NextDecision.HasPrompt( "Bring up to (6)" ).MoveFrom("D@2","D@2,E@1,T@2,Done");
 			user.NextDecision.HasPrompt( "Bring up to (5)" ).MoveFrom("D@2","D@2,E@1,T@2,Done");

@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
 public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
