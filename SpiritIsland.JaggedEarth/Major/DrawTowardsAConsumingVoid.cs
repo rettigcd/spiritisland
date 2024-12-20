@@ -67,7 +67,7 @@ public class DrawTowardsAConsumingVoid {
 				.OrderByDescending( x => x is HumanToken ht ? ht.RemainingHealth : 0 )
 				.FirstOrDefault();
 			if(tokenToGather is not null)
-				await tokenToGather.MoveAsync(adjState,ctx.Space);
+				await tokenToGather.On(adjState).MoveTo(ctx.Space);
 		}
 
 		// Gather 1 presense

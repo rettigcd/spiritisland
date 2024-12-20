@@ -36,7 +36,7 @@ public sealed class PlacePresence : SpiritAction {
 
 	public override async Task ActAsync( Spirit self ) {
 
-		TokenLocation from = await self.SelectAlways(Prompts.SelectPresenceTo(), self.DeployablePresence());
+		ITokenLocation from = await self.SelectAlways(Prompts.SelectPresenceTo(), self.DeployablePresence());
 
 		TargetCriteria criteria = new TargetCriteriaFactory(Range ?? int.MaxValue, FilterEnums).Bind(self);
 

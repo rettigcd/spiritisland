@@ -38,8 +38,12 @@ class ReachThroughEphemeralDistance : DefaultRangeCalculator {
 			CheckAndClear(space);
 		else if (obj is SpaceToken spaceToken)
 			CheckAndClear(spaceToken.Space);
-		else if (obj is Move move && move.Source is Space moveSource )
-			CheckAndClear(moveSource, move.Destination);
+		else if (obj is Move move ) {
+			if( move.From is Space fromSpace )
+				CheckAndClear(fromSpace);
+			if( move.Destination is Space toSpace )
+				CheckAndClear(toSpace);
+		}
 	}
 
 	void CheckAndClear(Space space1,Space? space2=null) {

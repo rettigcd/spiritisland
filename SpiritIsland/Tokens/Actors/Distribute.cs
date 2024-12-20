@@ -6,11 +6,11 @@
 static public class Distribute {
 
 	static public void Evenly( DestinationSelector d ) {
-		CountDictionary<SpaceSpec> placed = [];
-		d.Track( to => placed[to.SpaceSpec]++ );
+		CountDictionary<Space> placed = [];
+		d.Track( to => placed[to]++ );
 		d.FilterDestinationGroup( sss => {
-			int min = sss.Sum( ss => placed[ss.SpaceSpec] );
-			return sss.Where( ss => placed[ss.SpaceSpec] == min );
+			int min = sss.Sum( ss => placed[ss] );
+			return sss.Where( ss => placed[ss] == min );
 		});
 	}
 
@@ -29,9 +29,9 @@ static public class Distribute {
 	/// Not necessary when there is only 1 destination to start with.
 	/// </summary>
 	static public void ToASingleLand( DestinationSelector d ) {
-		SpaceSpec? destination = null;
-		d.Track( to => destination ??= to.SpaceSpec );
-		d.FilterDestination( space => destination is null || space.SpaceSpec == destination );
+		Space? destination = null;
+		d.Track( to => destination ??= to );
+		d.FilterDestination( space => destination is null || space == destination );
 	}
 
 	/// <summary>
@@ -53,8 +53,8 @@ static public class Distribute {
 			var pushedToLands = new HashSet<Space>();
 			d.Track(async to => {
 				if(pushedToLands.Contains(to)) return;
-				pushedToLands.Add(to);
-				await pushedActionAsync(to);
+				pushedToLands.Add((Space)to);
+				await pushedActionAsync((Space)to);
 			} );
 		};
 	}

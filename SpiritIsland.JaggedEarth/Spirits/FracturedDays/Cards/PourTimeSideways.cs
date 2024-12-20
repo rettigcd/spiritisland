@@ -17,7 +17,7 @@ class PourTimeSideways {
 			.BuildMoves(x=>self.Presence.Lands)
 			.Where(m => !ReferenceEquals( m.Source.Location, m.Destination))
 			.OrderBy(m=>((Space)(m.Source.Location)).Label)
-			.ThenBy(m=>m.Destination.Label)
+			.ThenBy(m=>m.Destination.Text)
 			.ToArray();
 		if(moveOptions.Length == 0) return;
 		
@@ -27,18 +27,18 @@ class PourTimeSideways {
 
 		Space source = (Space)move.Source.Location;
 		var srcBoards = source.SpaceSpec.Boards;
-		if(srcBoards.Intersect(move.Destination.SpaceSpec.Boards).Any()) return;
+		if(srcBoards.Intersect(((Space)move.Destination).SpaceSpec.Boards).Any()) return;
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.
 		foreach(var board in srcBoards)
 			if(0<board.InvaderActionCount) --board.InvaderActionCount;
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.
-		foreach(var board in move.Destination.SpaceSpec.Boards)
+		foreach(var board in ((Space)move.Destination).SpaceSpec.Boards)
 			++board.InvaderActionCount;
 
 		GameState.Current.AddTimePassesAction( TimePassesAction.Once( gs => {
-			foreach(var b in move.Destination.SpaceSpec.Boards.Union( srcBoards ))
+			foreach(var b in ((Space)move.Destination).SpaceSpec.Boards.Union( srcBoards ))
 				b.InvaderActionCount = 1;
 		}));
 	}

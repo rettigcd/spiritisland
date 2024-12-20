@@ -92,7 +92,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	public Task PushUpToNDahan( int countToPush ) => PushUpTo( countToPush, Human.Dahan );
 
-	public Task<SpaceSpec[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
+	public Task<Space[]> PushDahan( int countToPush ) => Push( countToPush, Human.Dahan );
 
 	/// <returns>Spaces pushed too.</returns>
 	public async Task PushUpTo( int countToPush, params ITokenClass[] groups ) {
@@ -101,11 +101,11 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 			.PushUpToN(Self);
 	}
 
-	public async Task<SpaceSpec[]> Push( int countToPush, params ITokenClass[] groups ) {
-		List<SpaceSpec> destinations = [];
+	public async Task<Space[]> Push( int countToPush, params ITokenClass[] groups ) {
+		List<Space> destinations = [];
 		await SourceSelector
 			.AddGroup( countToPush, groups )
-			.ConfigDestination( d=>d.Track( to => destinations.Add(to.SpaceSpec) ) )
+			.ConfigDestination( d=>d.Track( to => destinations.Add(to) ) )
 			.PushN( Self );
 		return destinations.Distinct().ToArray();
 	}

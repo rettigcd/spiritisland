@@ -47,7 +47,7 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 	// !!! check that SpiritActions that Move/Add Invarna use this.
 	public async Task MoveTo(Space destination, bool allowAdd) {
 		if( IsPlaced )
-			await this.MoveAsync(Space, destination);
+			await this.On(Space).MoveTo(destination);
 		else if( allowAdd )
 			await destination.AddAsync(this, 1);
 	}

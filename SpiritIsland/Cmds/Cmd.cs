@@ -175,7 +175,7 @@ public static partial class Cmd {
 	// Presence
 	// ========
 
-	static public SpiritAction PushUpTo1Presence( Func<Space, Space, Task>? callback = null ) 
+	static public SpiritAction PushUpTo1Presence( Func<Space, ILocation, Task>? callback = null ) 
 		=> new SpiritAction( "Push up to 1 Presence", async self => {
 
 			var moves = self.Presence.Movable.BuildMoves(source=>source.Space.Adjacent);
@@ -235,7 +235,7 @@ public static partial class Cmd {
 	static public SpiritAction PlacePresenceOn( params Space[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
 		async self => {
-			TokenLocation from = await self.SelectAlways( Prompts.SelectPresenceTo(), self.DeployablePresence() );
+			ITokenLocation from = await self.SelectAlways( Prompts.SelectPresenceTo(), self.DeployablePresence() );
 
 			Space to = await self.SelectAlways( A.SpaceDecision.ToPlacePresence( destinationOptions, Present.Always, from.Token ) );
 			await from.MoveToAsync(to);

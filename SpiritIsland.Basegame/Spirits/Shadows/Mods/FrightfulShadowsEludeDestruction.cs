@@ -23,7 +23,7 @@ public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceTok
 			if( dst is null ) return;
 
 			--args.Count;
-			await args.Token.MoveAsync(args.From, dst);
+			await args.Token.On(args.From).MoveTo(dst);
 			UsedThisRound = true;
 		}
 	}

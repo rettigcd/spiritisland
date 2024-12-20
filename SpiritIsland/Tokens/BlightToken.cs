@@ -44,7 +44,7 @@ public class BlightToken( string label, char k, Img img )
 				$"Cascade blight from {to.SpaceSpec.Label} to", 
 				new SpaceToken(to,Token.Blight).BuildMoves(cascadeOptions)
 			);
-			await cascade.Destination.Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
+			await ((Space)cascade.Destination).Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}

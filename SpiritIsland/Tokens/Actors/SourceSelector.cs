@@ -59,7 +59,7 @@ public class SourceSelector {
 		// Tokens will still be where they started, so we need to
 		// manually track how many have been used and
 		// not allow selection when used up
-		Dictionary<TokenLocation,int> unused = [];
+		Dictionary<ITokenLocation,int> unused = [];
 		Track( st => {
 			// first time - init total
 			if(!unused.ContainsKey(st)) unused.Add(st,st.Count);
@@ -94,24 +94,24 @@ public class SourceSelector {
 
 	#region Event / Callback
 
-	public SourceSelector Track( Action<TokenLocation> onMoved ) {
+	public SourceSelector Track( Action<ITokenLocation> onMoved ) {
 		_onSelected.Add( ( x ) => { onMoved( x ); return Task.CompletedTask; } );
 		return this;
 	}
 
-	public SourceSelector Track( Func<TokenLocation, Task> onMoved ) {
+	public SourceSelector Track( Func<ITokenLocation, Task> onMoved ) {
 		_onSelected.Add( onMoved );
 		return this;
 	}
 
-	public async Task NotifyAsync( TokenLocation selected ) {
+	public async Task NotifyAsync( ITokenLocation selected ) {
 		_quota.MarkTokenUsed( selected.Token );
 
-		foreach(Func<TokenLocation, Task> onSelected in _onSelected)
+		foreach(Func<ITokenLocation, Task> onSelected in _onSelected)
 			await onSelected( selected );
 	}
 
-	readonly List<Func<TokenLocation, Task>> _onSelected = [];
+	readonly List<Func<ITokenLocation, Task>> _onSelected = [];
 
 	#endregion
 

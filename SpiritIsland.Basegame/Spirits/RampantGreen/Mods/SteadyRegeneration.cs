@@ -12,7 +12,7 @@ public class SteadyRegeneration( Spirit spirit )
 	static public SpecialRule Rule => new SpecialRule(Name,Description);
 
 
-	public override IEnumerable<TokenLocation> RevealOptions() {
+	public override IEnumerable<ITokenLocation> RevealOptions() {
 		return CanAddFromDestroyed() ? base.RevealOptions().Append( Destroyed )
 			: base.RevealOptions();
 	}

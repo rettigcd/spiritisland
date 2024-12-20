@@ -31,7 +31,7 @@ public partial class SweepIntoTheSea {
 	static async Task PushAllTokensTo( TargetSpaceCtx ctx, Space destination, params HumanTokenClass[] groups ) {
 		// !!! This is supposed to be Push! not a Move - does it make a difference?
 		while(ctx.Space.HasAny( groups ))
-			await ctx.Space.HumanOfAnyTag( groups ).First().MoveAsync(ctx.Space,destination);
+			await ctx.Space.HumanOfAnyTag( groups ).First().On(ctx.Space).MoveTo(destination);
 	}
 
 	#region DistanceFromOceanCalculator

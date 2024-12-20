@@ -27,10 +27,11 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 		// Using 'Gather' here so user can click on existing Presence in Source
 		// If we used 'Push', user would click on Destination instead of Source
 		string prompt = "Move presence with " + args.Removed.Class.Label + "?";
+		var st = this.On( from );
 		while(0 < maxThatCanMove--) {
-			var source = await Self.Select( A.SpaceTokenDecision.ToCollect( prompt, new SpaceToken[] { this.On( from ) }, Present.Done, to.SpaceSpec ) );
+			var source = await Self.Select( A.SpaceTokenDecision.ToCollect( prompt, [st], Present.Done, to.SpaceSpec ) );
 			if(source is not null)
-				await this.MoveAsync(from,to);
+				await st.MoveTo(to);
 		}
 	}
 

@@ -25,7 +25,7 @@ public class HarbingersOfTheLightning {
 			bool addedFear = false;
 			d.Track( to => {
 				if(!addedFear && to.HasAny( classes )) {
-					fearSpaces.Add( to );
+					fearSpaces.Add(to);
 					addedFear = true;
 				}
 			} );

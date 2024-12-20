@@ -37,8 +37,9 @@ public class UnearthABeastOfWrathfulStone {
 				.FilterSpaceToken( st => st.Token == beastToken )
 				.ConfigDestination(d=>d.Track( async to => {
 					// 1 Fear and 2 Damage in its land.
-					await to.AddFear(1);
-					await to.UserSelected_DamageInvadersAsync( ctxx.Self, 2 );
+					Space toSpace = (Space)to;
+					await toSpace.AddFear(1);
+					await toSpace.UserSelected_DamageInvadersAsync( ctxx.Self, 2 );
 				} ))
 				.PushN( ctx.Self );
 		}

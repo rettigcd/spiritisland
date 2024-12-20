@@ -9,7 +9,7 @@ static public class Prompts {
 static public class SpiritSelectExtensions {
 
 	// == token location options ==
-	static public IEnumerable<TokenLocation> DeployablePresence(this Spirit self ) => [.. self.Presence.RevealOptions(), .. self.Presence.Deployed];
+	static public IEnumerable<ITokenLocation> DeployablePresence(this Spirit self ) => [.. self.Presence.RevealOptions(), .. self.Presence.Deployed];
 	// SpaceToken		spirit.Presence.Deployed
 	// SpaceToken		spirit.Presence.Movable
 	// Space			self.Presence.Lands

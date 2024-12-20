@@ -17,7 +17,7 @@ class EncircleTheUnsuspectingPrey {
 		var move = await ctx.Self.Select(new A.MoveDecision("Gather Beast", moveOptions, Present.Done));
 		if( move is null) return;
 		await move.Apply();
-		await ctx.Target(move.Destination).DamageInvaders(1);
+		await ctx.Target((Space)move.Destination).DamageInvaders(1);
 	}
 
 	[InnateTier("1 moon,3 animal", "If at least 2 Beasts are within 1 Range(of target land), 1 Damage.",1)]

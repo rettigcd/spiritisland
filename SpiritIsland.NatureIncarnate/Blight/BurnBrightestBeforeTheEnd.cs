@@ -19,7 +19,7 @@ public class BurnBrightestBeforeTheEnd : BlightCard {
 		$"Place or Destroy 1 Presence from your Presence Tracks",
 		async self => {
 			// From
-			TokenLocation? from = await self.Select( Prompts.SelectPresenceTo("to Place or Destroy"), self.Presence.RevealOptions(), Present.Always );
+			ITokenLocation? from = await self.Select( Prompts.SelectPresenceTo("to Place or Destroy"), self.Presence.RevealOptions(), Present.Always );
 			if( from is null) return; // Spirit might not have any more presence on track.
 
 			// To

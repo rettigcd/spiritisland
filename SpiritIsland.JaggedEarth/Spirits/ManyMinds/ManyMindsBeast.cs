@@ -39,7 +39,7 @@ public class ManyMindsBeast( ManyMindsPresenceToken presenceToken )
 		if(args.Reason.IsDestroyingPresence())
 			await from.Destroy( _presenceToken, 2 );
 		else if( args is ITokenMovedArgs movedArgs && movedArgs.To is Space to) {
-			await _presenceToken.MoveAsync(from,to,2);
+			await _presenceToken.On(from).MoveTo(to,2);
 		} else
 			throw new InvalidOperationException( "MM SS Beast should never be UsedUp nor .None" );
 

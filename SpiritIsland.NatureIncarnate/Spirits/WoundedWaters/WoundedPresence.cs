@@ -37,7 +37,7 @@ public class WoundedPresence : SpiritPresence {
 			await CardPlays.RevealAsync(CardPlays.RevealOptions.First());
 	}
 
-	public override IEnumerable<TokenLocation> RevealOptions() { 
+	public override IEnumerable<ITokenLocation> RevealOptions() { 
 		return Energy.Revealed.Count() < 4 
 			? Energy.RevealOptions.Select(t=>new TrackPresence(t,Token)) // only show Energy track
 			: base.RevealOptions(); // show both tracks

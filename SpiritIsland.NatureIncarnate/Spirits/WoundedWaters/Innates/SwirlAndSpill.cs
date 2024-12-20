@@ -35,6 +35,7 @@ public class SwirlAndSpill {
 		return d=>{
 			bool used = false;
 			d.Track( async to => {
+				Space toSpace = (Space)to;
 				if(!used 
 					&& to.HasAny( Human.Town_City ) 
 					&& await self.UserSelectsFirstText("Downgrade All Towns/Cities on "+to.Label, "Yes, Downgrade those suckers!", "No, let's ruin someone else's day." )

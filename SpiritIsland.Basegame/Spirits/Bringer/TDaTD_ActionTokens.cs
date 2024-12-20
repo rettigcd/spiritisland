@@ -68,7 +68,7 @@ public class TDaTD_ActionTokens( Space space )
 			var move = await ActionScope.Current.Owner!.Select("Push dreaming Invader", newToken.On(this).BuildMoves(Adjacent), Present.Always);
 			if(move is not null){
 				await move.Apply(); // there is no Push(Token), so this will have to do.
-				RecordSpaceWithDreamers( move.Destination );
+				RecordSpaceWithDreamers( (Space)move.Destination );
 			}
 		}
 

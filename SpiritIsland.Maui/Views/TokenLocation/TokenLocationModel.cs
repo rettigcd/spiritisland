@@ -42,7 +42,7 @@ public class TokenLocationModel : ObservableModel, OptionView {
 
 	#region constructor
 
-	public TokenLocationModel(TokenLocation tokenOn) {
+	public TokenLocationModel(ITokenLocation tokenOn) {
 		ArgumentNullException.ThrowIfNull(tokenOn, nameof(tokenOn));
 		TokenLocation = tokenOn;
 
@@ -113,7 +113,7 @@ public class TokenLocationModel : ObservableModel, OptionView {
 
 	#endregion private static ImageSource
 
-	public readonly TokenLocation TokenLocation;
+	public readonly ITokenLocation TokenLocation;
 }
 
 

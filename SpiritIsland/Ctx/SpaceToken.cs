@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <param name="showSpaceInTextDescription">If all of the tokens are on the same space, don't show it in the text.</param>
-public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
+public class SpaceToken : ITokenLocation, IEquatable<SpaceToken> {
 
 	#region constructor / deconstructor
 
@@ -21,7 +21,7 @@ public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
 
 	public Space Space { get; }
 	public IToken Token { get; }
-	ILocation TokenLocation.Location => Space;
+	ILocation ITokenLocation.Location => Space;
 
 	#region IOption.Text config
 
@@ -29,8 +29,8 @@ public class SpaceToken : TokenLocation, IEquatable<SpaceToken> {
 
 	#endregion IOption.Text config
 
-	public Task<TokenMovedArgs?> MoveTo( Space destination, int count=1 )
-		=> this.Token.MoveAsync(Space,destination,count);
+	public Task<TokenMovedArgs?> MoveTo( ILocation destination, int count=1 )
+		=> new Move(this,destination).Apply(count);
 
 	public bool Exists => 0 < Count;
 	public int Count => Space[Token];

@@ -49,7 +49,7 @@ public class BargainOfCoursingPaths {
 			if(destination == to) return;
 
 			ActionScope.Current.Log( new Log.Debug( $"{Name} moving {args.Count} {args.Added} from {args.To.Text} to {destination.Label}" ) );
-			await args.Added.MoveAsync(to,destination,args.Count);
+			await args.Added.On(to).MoveTo(destination,args.Count);
 		}
 
 		async Task<Space> GetDestination( ITokenAddedArgs args ) {

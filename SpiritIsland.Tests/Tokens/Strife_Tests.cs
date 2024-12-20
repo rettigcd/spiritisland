@@ -87,7 +87,7 @@ public class Strife_Tests {
 		Space destination = gs.Tokens[spaceSpec.Adjacent_Existing.First( IsInPlay )];
 
 		// When: move
-		await strifedTown.MoveAsync(space, destination ).ShouldComplete("moving token");
+		await strifedTown.On(space).MoveTo(destination ).ShouldComplete("moving token");
 
 		// Then:
 		space.InvaderSummary().ShouldBe( "1T@2" );

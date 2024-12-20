@@ -36,8 +36,8 @@ public class SpaceTokenDecision : TypedDecision<SpaceToken>, IHaveArrows {
 
 }
 
-public class MyTokenOn( string prompt, IEnumerable<TokenLocation> options, Present presenct ) 
-	: TypedDecision<TokenLocation>( prompt, options, presenct )
+public class MyTokenOn( string prompt, IEnumerable<ITokenLocation> options, Present presenct ) 
+	: TypedDecision<ITokenLocation>( prompt, options, presenct )
 {
-	public TokenLocation[] TokensOn { get; } = options.ToArray();
+	public ITokenLocation[] TokensOn { get; } = options.ToArray();
 }

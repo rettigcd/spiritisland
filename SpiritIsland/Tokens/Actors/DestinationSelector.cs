@@ -84,22 +84,23 @@ public sealed class DestinationSelector {
 
 	#region Event / Callback
 
+	/// <summary> Tracking is only available for spaces. </summary>
 	public DestinationSelector Track( Action<Space> onDestinationSelected ) {
-		_onMoved.Add( (x)=>{ onDestinationSelected(x); return Task.CompletedTask; } );
+		_onMoved.Add( (x)=>{ if(x is Space space) onDestinationSelected(space); return Task.CompletedTask; } );
 		return this;
 	}
 
-	public DestinationSelector Track( Func<Space,Task> onDestinationSelected ) {
+	public DestinationSelector Track( Func<ILocation,Task> onDestinationSelected ) {
 		_onMoved.Add(onDestinationSelected);
 		return this;
 	}
 
-	public async Task NotifyAsync( Space destination ) {
+	public async Task NotifyAsync( ILocation destination ) {
 		foreach(var onMoved in _onMoved)
 			await onMoved( destination );
 	}
 
-	readonly List<Func<Space, Task>> _onMoved = [];
+	readonly List<Func<ILocation, Task>> _onMoved = [];
 
 	#endregion
 

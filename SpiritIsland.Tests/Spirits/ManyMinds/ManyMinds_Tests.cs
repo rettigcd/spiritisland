@@ -81,7 +81,7 @@ public class ManyMinds_Tests {
 
 		//  When: moving
 		IToken beast = src.OfTag(Token.Beast).First();
-		await beast.MoveAsync( src,dst ).ShouldComplete("move best");
+		await beast.On(src).MoveTo( dst ).ShouldComplete("move best");
 
 		// Then
 		spirit.Presence.CountOn(src).ShouldBe( startingSrcPresence-2 );

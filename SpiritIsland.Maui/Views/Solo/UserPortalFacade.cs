@@ -102,7 +102,7 @@ internal class UserPortalFacade : IDecisionPortal {
 class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 	public IDecision GetSourceDecision() {
 
-		var st = new TypedDecision<TokenLocation>(
+		var st = new TypedDecision<ITokenLocation>(
 			move.Prompt,
 			_moveOptions.Select( s => s.Source ).Distinct(),
 			_moveIsOptional ? Present.Done : Present.Always
@@ -117,7 +117,7 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 	}
 
 	public IDecision? Handle(IOption option, bool block) {
-		if(option is TokenLocation source)
+		if(option is ITokenLocation source)
 			return HandleMoveSource( source, block );
 
 		if(option is Space destination) {
@@ -133,9 +133,9 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 		throw new ArgumentException( "Part 2 of move should be a space" );
 	}
 
-	A.SpaceDecision? HandleMoveSource( TokenLocation source, bool block ) {
+	TypedDecision<ILocation>? HandleMoveSource( ITokenLocation source, bool block ) {
 		// if only 1 destination - Auto-select it now (can't use Present.Auto in the ui)
-		Space[] destinationOptions = _moveOptions!
+		ILocation[] destinationOptions = _moveOptions!
 			.Where( s => s.Source == source )
 			.Select( s => s.Destination )
 			.Distinct()
@@ -143,7 +143,7 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 		if(destinationOptions.Length != 1) {
 			// Setup TO choice
 			_moveSource = source;
-			return new A.SpaceDecision(
+			return new TypedDecision<ILocation>(
 					"Move to",
 					destinationOptions,
 					Present.AutoSelectSingle // if they selected a source, don't let them cancel.
@@ -162,11 +162,11 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 
 	void HandleMoveDestination( Space destination, bool block ) {
 		Move realOption = _moveOptions
-			.Single( s => s.Source == _moveSource && s.Destination == destination );
+			.Single( s => s.Source == _moveSource && destination.Equals(s.Destination) );
 		inner.Choose( move, realOption, block );
 	}
 
-	TokenLocation? _moveSource = null;
+	ITokenLocation? _moveSource = null;
 	readonly Move[] _moveOptions = move.Options.OfType<Move>().ToArray();
 	readonly bool _moveIsOptional = move.Options.Any( x => x == TextOption.Done );
 }

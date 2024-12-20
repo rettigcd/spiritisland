@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public class DestroyedPresence( SpiritPresenceToken token ) : TokenLocation {
+public class DestroyedPresence( SpiritPresenceToken token ) : ITokenLocation {
 	public IToken Token { get; } = token;
 	public ILocation Location => DestroyedPresencePile.Singleton;
 
@@ -8,6 +8,6 @@ public class DestroyedPresence( SpiritPresenceToken token ) : TokenLocation {
 
 	public int Count { get; set; }
 
-	bool TokenLocation.IsSacredSite => false;
+	bool ITokenLocation.IsSacredSite => false;
 }
 

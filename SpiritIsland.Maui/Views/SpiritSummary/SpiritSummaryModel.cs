@@ -53,7 +53,7 @@ public class SpiritSummaryModel : ObservableModel {
 	}
 
 
-	TokenLocation[] _oldRevealed = [];
+	ITokenLocation[] _oldRevealed = [];
 
 	readonly Spirit _spirit;
 }

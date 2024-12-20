@@ -19,9 +19,9 @@ public static class DecisionExtensions {
 	// For Moves (Both ends must be on a Space)
 	static public SpaceToken FindSourceChoice( this IDecision decision, string expectedChoiceText ) {
 		Move[] moves = decision.Options.OfType<Move>().ToArray();
-		TokenLocation[] spaceTokenSources = moves.Select(m=>m.Source).Distinct().ToArray();
+		ITokenLocation[] spaceTokenSources = moves.Select(m=>m.Source).Distinct().ToArray();
 		bool isSingleLandSource = spaceTokenSources.Select(x=>x.Location).Distinct().Count() == 1;
-		bool matcher(TokenLocation st) => st.ToString().Contains(expectedChoiceText);
+		bool matcher(ITokenLocation st) => st.ToString().Contains(expectedChoiceText);
 		var matchingSources = spaceTokenSources.Where( matcher ).ToArray();
 		switch(matchingSources.Length) {
 			case 1: return (SpaceToken)matchingSources[0];
