@@ -20,7 +20,7 @@ public class WaterEatsAwayTheDeepRootsOfEarth{
 
 		for(int i = 0; i < count; i++) {
 			var options = GameState.Current.Spaces.Where(TerrainMapper.Current.IsCoastal).Except(used).ToArray();
-			var space = await ctx.Self.Select(new A.SpaceDecision($"Add additional Deeps ({i+1} of {count})", options, Present.Done));
+			var space = await ctx.Self.Select($"Add additional Deeps ({i + 1} of {count})", options, Present.Done);
 			if( space is null ) break;
 			await ctx.Space.AddAsync(Token.Deeps, 1);
 			used.Add(space);

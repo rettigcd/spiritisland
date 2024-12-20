@@ -84,11 +84,7 @@ class MistsShiftAndFlowOnce {
 		List<MistMove> allowed = FindFlowsThatAllowUsToHitTarget( target );
 
 		// Flow (Gather) - Destination (To)
-		var gatherDst = await _spirit.Select( new A.SpaceDecision(
-			"Flow (gather) presence to:",
-			allowed.Select( a => a.AddedTo ).Distinct(),
-			MustFlowToReach( target ) ? Present.Always : Present.Done
-		) );
+		var gatherDst = await _spirit.Select( "Flow (gather) presence to:", allowed.Select( a => a.AddedTo ).Distinct(), MustFlowToReach( target ) ? Present.Always : Present.Done );
 		if(gatherDst is null) return;
 
 		// Flow (Gather) - Source
@@ -153,7 +149,7 @@ class MistsShiftAndFlowOnce {
 		// For large ranges, normal targetting will prevail becaue mists can only extend range if they flow adjacent
 		// For small ranges, flow-targets will be larger.
 
-		return _spirit.Select( new A.SpaceDecision( _prompt, _nonFlowTargets.Union( _flowOnlyTargets ), Present.Always ) );
+		return _spirit.Select(_prompt, _nonFlowTargets.Union(_flowOnlyTargets), Present.Always);
 	}
 
 	Space[] GetTargetOptionsFromKnownSources( IEnumerable<Space> sources ) {

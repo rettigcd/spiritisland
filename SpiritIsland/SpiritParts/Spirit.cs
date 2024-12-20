@@ -75,6 +75,8 @@ public abstract partial class Spirit
 
 	// Optional
 	public Task<T?> Select<T>(string prompt, IEnumerable<T> options, Present present) where T : class, IOption {
+		if(options is IEnumerable<Space>)
+			options = options.OrderBy(o=>o.Text);
 		return Select(new A.TypedDecision<T>(prompt, options.Distinct(), present));
 	}
 

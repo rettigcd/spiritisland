@@ -35,7 +35,7 @@ public class FlowingAndSilentFormsDartBy {
 
 			if( !args.From.Has(spirit.Presence) ) return; // this should never happen.
 			
-			var dst = await spirit.Select( new A.SpaceDecision( "Instead of destroying, push presence to:", args.From.Adjacent, Present.Done ) );
+			var dst = await spirit.Select("Instead of destroying, push presence to:", args.From.Adjacent, Present.Done );
 			if(dst is null) return;
 
 			while(0 < args.Count) {

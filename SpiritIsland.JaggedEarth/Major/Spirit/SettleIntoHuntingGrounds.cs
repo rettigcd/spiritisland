@@ -34,7 +34,7 @@ public class SettleIntoHuntingGrounds {
 			// 2 fear and
 			self.AddFear(2);
 			// 2 damamge in one of your lands.
-			var space = await self.Select( new A.SpaceDecision("2 damage", self.Presence.Lands, Present.Always ));
+			var space = await self.Select( "2 damage", self.Presence.Lands, Present.Always );
 			if( space is not null )
 				await self.Target(space).DamageInvaders( 2 );
 		}

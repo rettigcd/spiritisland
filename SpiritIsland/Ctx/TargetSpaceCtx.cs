@@ -285,7 +285,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	/// <remarks> Simple Helper - has access to: Spirit, Space/Adjacent, Target() </remarks>
 	public async Task<TargetSpaceCtx?> SelectAdjacentLandAsync( string prompt ) {
-		var space = await Self.Select( new A.SpaceDecision( prompt, Space.Adjacent, Present.Always ) );
+		var space = await Self.Select( prompt, Space.Adjacent, Present.Always );
 		return space is not null ? Target( space ) : null;
 	}
 

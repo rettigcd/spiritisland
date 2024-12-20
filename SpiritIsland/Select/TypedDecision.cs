@@ -62,5 +62,5 @@ public class TypedDecision<T> : IDecisionPlus where T:class {
 		return false;
 	}
 
-	public virtual T ConvertOptionToResult( IOption option ) => (T)option;
+	public T ConvertOptionToResult( IOption option ) => (T)option;
 }

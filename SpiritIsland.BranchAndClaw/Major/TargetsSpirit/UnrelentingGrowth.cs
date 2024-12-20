@@ -31,7 +31,7 @@ public class UnrelentingGrowth {
 		var options = self.FindSpacesWithinRange(new TargetCriteria(1))
 			.Where( self.Presence.CanBePlacedOn )
 			.ToArray();
-		var to = await self.Select( new A.SpaceDecision( "Where would you like to place your presence?", options, Present.Always ) );
+		var to = await self.Select("Where would you like to place your presence?", options, Present.Always);
 		if(to is null) return null;
 
 		// add wilds

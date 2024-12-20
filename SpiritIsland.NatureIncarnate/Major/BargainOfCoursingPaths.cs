@@ -26,7 +26,7 @@ public class BargainOfCoursingPaths {
 	static Task<Space?> SelectSecondSite( TargetSpaceCtx ctx ) {
 		Space[] options = ActionScope.Current.Spaces.Where( s => s != ctx.Space && 2 <= s.Dahan.CountAll ).ToArray();
 		if(options.Length == 0) return Task.FromResult<Space?>(null); // no other Dahan sites.
-		return ctx.Self.Select( new A.SpaceDecision( "Mark Second Space for Coursing", options, Present.Always ) );
+		return ctx.Self.Select( "Mark Second Space for Coursing", options, Present.Always );
 	}
 
 	/// <summary>

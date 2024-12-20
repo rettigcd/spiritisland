@@ -29,7 +29,7 @@ class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
 			// if null; break
 			if(token is null) break;
 			
-			var destination = await spirit.Select(new A.SpaceDecision("Push to", space.Adjacent,Present.Always));
+			var destination = await spirit.Select("Push to", space.Adjacent,Present.Always);
 			if(destination is null) break; // should not happen
 
 			pushFear -= token.Token.HasTag(Human.Town) ? 2 : 1;

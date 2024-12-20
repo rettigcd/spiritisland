@@ -54,7 +54,7 @@ public class FireStorm {
 	static public async Task Option4( TargetSpaceCtx ctx ) {
 		// In a land with blight and presence  (Select a space, not necessarily the one you targetted with power (I guess...)
 		var spacesWithPresenceAndBlight = ctx.Self.Presence.Lands.Where( s=>s.Blight.Any );
-		var space = await ctx.Self.Select( new A.SpaceDecision($"Push all dahan, destroy invaders and beast, 1 blight",spacesWithPresenceAndBlight,Present.Always));
+		var space = await ctx.Self.Select($"Push all dahan, destroy invaders and beast, 1 blight", spacesWithPresenceAndBlight, Present.Always);
 		if(space is null) return; // should not happen
 		var spaceCtx = ctx.Target( space );
 

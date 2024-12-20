@@ -22,7 +22,7 @@ public class PlagueShipsSailToDistantPorts {
 		// Add 4 Disease among Coastal lands other than target land.
 		Space[] options = ActionScope.Current.Spaces.Where(s=>s.SpaceSpec.IsCoastal && s.SpaceSpec != ctx.SpaceSpec).ToArray();
 		for(int i=0;i<4;++i) {
-			Space? space = await ctx.Self.Select(new A.SpaceDecision($"Add Disease ({i+1} of 4)",options,Present.Always));
+			Space? space = await ctx.Self.Select($"Add Disease ({i+1} of 4)",options,Present.Always);
 			if(space is not null)
 				await space.Disease.AddAsync(1);
 		}

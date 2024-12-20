@@ -22,10 +22,10 @@ public partial class SweepIntoTheSea {
 		int curDistance = distanceFromOceans[ctx.Space];
 
 		return await ctx.Self.Select( 
-			new A.SpaceDecision( "Push explorer/town towards ocean", 
+			"Push explorer/town towards ocean", 
 			ctx.Space.Adjacent.Where( tokens => distanceFromOceans[tokens] < curDistance ), 
 			Present.Always 
-		) );
+		);
 	}
 
 	static async Task PushAllTokensTo( TargetSpaceCtx ctx, Space destination, params HumanTokenClass[] groups ) {

@@ -7,7 +7,7 @@ public class AddOrMoveIncarnaToPresence : SpiritAction {
 
 	public override async Task ActAsync( Spirit self ) {
 
-		var space = await self.Select( new A.SpaceDecision( "Select space to place Incarna.", self.Presence.Lands, Present.Done ) );
+		var space = await self.Select( "Select space to place Incarna.", self.Presence.Lands, Present.Done );
 		if(space is null) return;
 
 		// Move/Place Incarna

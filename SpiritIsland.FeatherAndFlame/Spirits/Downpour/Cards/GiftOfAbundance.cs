@@ -25,7 +25,7 @@ internal class GiftOfAbundance {
 		if(presenceTarget == null ) return;
 
 		var spaceOptions = presenceTarget.Presence.Lands.Where(isWetland);
-		var space = await presenceTarget.Select( new A.SpaceDecision("Restore 1 destroyed presence", spaceOptions, Present.Always ) );
+		var space = await presenceTarget.Select("Restore 1 destroyed presence", spaceOptions, Present.Always);
 		if( space is not null )
 			await presenceTarget.Target(space).Presence.PlaceDestroyedHere();
 	}

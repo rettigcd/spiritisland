@@ -32,11 +32,11 @@ class SwedenHeavyMining : BaseModEntity, IHandleTokenAdded, IReactToLandDamage {
 
 				var spirit = to.SpaceSpec.Boards[0].FindSpirit();
 
-				Space? selection = await spirit.Select( new A.SpaceDecision( 
+				Space? selection = await spirit.Select(
 					"Mining Rush: Place Town", 
 					noBuildAdjacents,
 					Present.Always
-				) );
+				);
 				if(selection is not null) {
 					await selection.AddDefaultAsync( Human.Town, 1 );
 					ActionScope.Current.LogDebug( $"Mining Rush: Blight on {((IOption)args.To).Text} caused +1 Town on {selection.Label}." );

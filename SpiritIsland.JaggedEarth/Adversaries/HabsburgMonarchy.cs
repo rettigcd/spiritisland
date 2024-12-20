@@ -102,8 +102,7 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 			var addSpaces = spaces.Where( x => x.SumAny( Token.Blight, Human.Town ) == 0 ).ToArray();
 			if(addSpaces.Length == 0) break;
 
-			var criteria = new A.SpaceDecision( $"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces, Present.Always );
-			Space? addSpace = await ctx.Self.Select( criteria );
+			Space? addSpace = await ctx.Self.Select($"Escalation - Add 1 Town to board {ctx.Board.Name} ({i + 1} of {townsToAdd})", addSpaces, Present.Always);
 			if(addSpace is not null)
 				await addSpace.AddDefaultAsync( Human.Town, 1, AddReason.Build );
 		}

@@ -36,7 +36,7 @@ public class SpillBitternessIntoTheEarth {
 	static async Task TakeActionInUpToNLands( Spirit self, int adjCount, IEnumerable<Space> spaces, BaseCmd<TargetSpaceCtx> action ) {
 		List<Space> options = spaces.ToList();
 		while(adjCount-- > 0 && options.Count > 0) {
-			var space = await self.Select( new A.SpaceDecision( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done ) );
+			var space = await self.Select( $"{action.Description} ({adjCount + 1} remaining)", options, Present.Done );
 			if(space is null) break;
 			await action.ActAsync( self.Target(space) );
 			options.Remove( space );
