@@ -21,10 +21,18 @@ public class DreamOfTheUntouchedLand_Tests {
 			u.NextDecision.HasPrompt("Add Wilds to:").HasOptions("F1,F2,F3,F4,F5,F6,F7,F8").Choose("F4");
 			u.NextDecision.HasPrompt("Add Badlands to:").HasOptions("F1,F2,F3,F4,F5,F6,F7,F8").Choose("F5");
 			u.NextDecision.HasPrompt("Add Badlands to:").HasOptions("F1,F2,F3,F4,F5,F6,F7,F8").Choose("F6");
-			u.NextDecision.HasPrompt("Select Presence to place").ChooseFirst();
-			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("F1,F2,F3,F4,F5,F6,F7,F8").Choose("F5");
-			u.NextDecision.HasPrompt("Select Presence to place").ChooseFirst();
-			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("F1,F2,F3,F4,F5,F6,F7,F8").Choose("F6");
+
+//			u.NextDecision.HasPrompt("Select Presence to place").ChooseFirst();
+//			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("F1,F2,F3,F4,F5,F6,F7,F8").Choose("F5");
+			u.NextDecision.HasPrompt("Select Presence to place")
+				.HasFromOptions("9 energy,2 cardplay").ChooseFrom("9 energy")
+				.HasToOptions("F1,F2,F3,F4,F5,F6,F7,F8").ChooseTo("F5");
+
+			//u.NextDecision.HasPrompt("Select Presence to place").ChooseFirst();
+			//u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("F1,F2,F3,F4,F5,F6,F7,F8").Choose("F6");
+			u.NextDecision.HasPrompt("Select Presence to place")
+				.HasFromOptions("2 cardplay,TS on F5").ChooseFrom("2 cardplay")
+				.HasToOptions("F1,F2,F3,F4,F5,F6,F7,F8").ChooseTo("F6");
 		});
 
 		// Then: 2 boards

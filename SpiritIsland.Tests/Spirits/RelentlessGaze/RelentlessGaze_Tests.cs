@@ -56,8 +56,7 @@ public class RelentlessGaze_Tests {
 			// And Places Presence
 			user.NextDecision.HasPrompt(selectGrowth).HasOptions(pp+","+notUsed+","+x2Energy+","+m3).Choose(pp);
 			// Revealing the 2-energy slot
-			user.NextDecision.HasPrompt("Select Presence to place").Choose("2,sun energy");
-			user.NextDecision.Choose("A5");
+			user.NextDecision.ChooseFrom("2,sun energy").ChooseTo("A5");
 			// And Chooses x2 energy
 			user.NextDecision.HasPrompt(selectGrowth).HasOptions(notUsed+","+x2Energy+","+m3).Choose(x2Energy);
 			// And finishes out growth (we don't care about this)
@@ -89,8 +88,7 @@ public class RelentlessGaze_Tests {
 			// And Places Presence
 			user.NextDecision.HasPrompt(selectGrowth).HasOptions(pp + "," + reclaim + "," + addDestroyed + "," + notUsed).Choose(pp);
 			// Revealing the 2-energy slot
-			user.NextDecision.HasPrompt("Select Presence to place").Choose("2,sun energy");
-			user.NextDecision.Choose("A5");
+			user.NextDecision.HasPrompt("Select Presence to place").ChooseFrom("2,sun energy").ChooseTo("A5");
 
 			// And chooses place up to 3 destroyed presence
 			user.NextDecision.HasPrompt(selectGrowth).HasOptions(reclaim + "," + addDestroyed + "," + notUsed).Choose(addDestroyed);

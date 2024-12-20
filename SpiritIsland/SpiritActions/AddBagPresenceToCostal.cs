@@ -9,7 +9,7 @@ public class AddBagPresenceToCostal : SpiritAction {
 	// ! Can't use normal PlacePresence, because it must be range-1, range 0 not allowed.
 	public override async Task ActAsync( Spirit self ) {
 		IEnumerable<Space> options = self.Presence.Lands.First().Adjacent_Existing;
-		var space = await self.SelectAlways( A.SpaceDecision.ToPlacePresence( options, Present.Always, self.Presence.Token ) );
+		Space space = await self.SelectAlways("Add presence to", options);
 		await self.Presence.Token.AddTo( space );
 	}
 

@@ -13,8 +13,9 @@ public class Finder_Tests : BoardAGame {
 
 		// When: Finder places presence
 		await new PlacePresence(1).ActAsync(_spirit).AwaitUser( u=>{
-			u.NextDecision.HasPrompt("Select Presence to place").HasOptions("sun energy,earth energy,FoPU on A3,FoPU on A1").Choose("sun energy");
-			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6").Choose("A2");
+			u.NextDecision.HasPrompt("Select Presence to place")
+				//.HasOptions("sun energy,earth energy,FoPU on A3,FoPU on A1") => "A1,A2,A3,A4,A5,A6"
+				.Choose("sun energy => A2");
 		}).ShouldComplete();
 
 		// Then: Sun Energy Slot should be revealed
@@ -40,9 +41,8 @@ public class Finder_Tests : BoardAGame {
 	async Task Do_Growth2( string fromTrack, string destination ){
 		await _spirit.DoGrowth(_gameState).AwaitUser( u=>{
 			u.NextDecision.HasPrompt("Select Growth").Choose("Place Presence(1)");
-			u.NextDecision.HasPrompt("Select Presence to place").Choose(fromTrack);
-			u.NextDecision.HasPrompt("Where would you like to place your presence?").Choose(destination);
-			// Other option is +1 card play - autoselected
+			u.NextDecision.HasPrompt("Select Presence to place")
+				.Choose($"{fromTrack} => {destination}");
 		}).ShouldComplete();
 	}
 }

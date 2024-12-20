@@ -32,11 +32,10 @@ class SwedenHeavyMining : BaseModEntity, IHandleTokenAdded, IReactToLandDamage {
 
 				var spirit = to.SpaceSpec.Boards[0].FindSpirit();
 
-				Space? selection = await spirit.Select( A.SpaceDecision.ToPlaceToken( 
+				Space? selection = await spirit.Select( new A.SpaceDecision( 
 					"Mining Rush: Place Town", 
 					noBuildAdjacents,
-					Present.Always, 
-					to.GetDefault( Human.Town ) 
+					Present.Always
 				) );
 				if(selection is not null) {
 					await selection.AddDefaultAsync( Human.Town, 1 );

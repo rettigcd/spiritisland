@@ -21,7 +21,7 @@ public class ManyMinds_Tests {
 			user.Choose( "A1" );
 
 			// Then: can gather beast 2 spaces away
-			user.NextDecision.MoveFrom( "Beast" );
+			user.NextDecision.ChooseFrom( "Beast" );
 		} );
 	}
 
@@ -44,7 +44,7 @@ public class ManyMinds_Tests {
 
 			// Implemented as a Push
 			user.NextDecision.HasPrompt( "Select space to Gather a Beast" ).Choose( "A1" );
-			user.NextDecision.HasPrompt( "Gather up to (1)" ).MoveFrom( "Beast" );
+			user.NextDecision.HasPrompt( "Gather up to (1)" ).ChooseFrom( "Beast" );
 
 			// Implemented as a Gather
 			// spirit.NextDecision().HasPrompt("").Choose( "A1" );
@@ -52,8 +52,7 @@ public class ManyMinds_Tests {
 
 			// Cleanup
 			user.NextDecision.Choose( "Place Presence and Beast" );
-			user.NextDecision.HasPrompt( "Select Presence to place" ).Choose( "1 energy" );
-			user.NextDecision.Choose( "A1" );
+			user.NextDecision.HasPrompt( "Select Presence to place" ).ChooseFrom( "1 energy" ).ChooseTo( "A1" );
 		} );
 
 	}
@@ -111,10 +110,10 @@ public class ManyMinds_Tests {
 		await spirit.When_ResolvingCard<GuideTheWayOnFeatheredWings>( (user) => {
 			user.Choose( "A1" );
 
-			user.NextDecision.HasPrompt("Move Beast (1 of 2)").MoveFrom( "SS-Beast" ).MoveTo("A5");
+			user.NextDecision.HasPrompt("Move Beast (1 of 2)").ChooseFrom( "SS-Beast" ).ChooseTo("A5");
 			//user.NextDecision.HasPrompt( "Move SS-Beast to" ).Choose( "A5" );
-			user.NextDecision.HasPrompt( "Move up to (2)" ).MoveFrom( "D@2" );
-			user.NextDecision.HasPrompt( "Move up to (1)" ).MoveFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (2)" ).ChooseFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (1)" ).ChooseFrom( "D@2" );
 
 			// Then: only original SS-Beast is available for 2nd step. (the other Beast token is not an option)
 			user.NextDecision.HasPrompt("Move Beast (2 of 2)")
@@ -122,8 +121,8 @@ public class ManyMinds_Tests {
 				.Choose("SS-Beast on A5 => A7");
 
 			// Cleanup
-			user.NextDecision.HasPrompt( "Move up to (2)" ).MoveFrom( "D@2" );
-			user.NextDecision.HasPrompt( "Move up to (1)" ).MoveFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (2)" ).ChooseFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (1)" ).ChooseFrom( "D@2" );
 		} );
 
 		//  And: Final slot has 2 presence, 2 dahan, and 1 beast

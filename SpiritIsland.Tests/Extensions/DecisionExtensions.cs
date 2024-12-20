@@ -17,16 +17,16 @@ public static class DecisionExtensions {
 		?? throw new ArgumentOutOfRangeException( nameof( choicePrefix ), $"sequence [{decision.FormatOptions()}]does not contain option: {choicePrefix}" );
 
 	// For Moves (Both ends must be on a Space)
-	static public SpaceToken FindSourceChoice( this IDecision decision, string expectedChoiceText ) {
+	static public ITokenLocation FindSourceChoice( this IDecision decision, string expectedChoiceText ) {
 		Move[] moves = decision.Options.OfType<Move>().ToArray();
 		ITokenLocation[] spaceTokenSources = moves.Select(m=>m.Source).Distinct().ToArray();
 		bool isSingleLandSource = spaceTokenSources.Select(x=>x.Location).Distinct().Count() == 1;
-		bool matcher(ITokenLocation st) => st.ToString().Contains(expectedChoiceText);
+		bool matcher(ITokenLocation st) => st.Text.Contains(expectedChoiceText);
 		var matchingSources = spaceTokenSources.Where( matcher ).ToArray();
 		switch(matchingSources.Length) {
-			case 1: return (SpaceToken)matchingSources[0];
+			case 1: return matchingSources[0];
 			case 0: {
-					string msg = $"option ({expectedChoiceText} not found in {decision.FormatDecision()}";
+					string msg = $"option ({expectedChoiceText}) not found in {decision.FormatDecision()}";
 					throw new ArgumentException( msg );
 				}
 			default:

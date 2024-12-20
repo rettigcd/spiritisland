@@ -10,7 +10,7 @@ public record Move(ITokenLocation Source, ILocation Destination) : IOption {
 	public IToken Token => Source.Token;
 	public ILocation From => Source.Location;
 
-	string IOption.Text => $"{Source} => {Destination.Text}";
+	string IOption.Text => $"{Source.Text} => {Destination.Text}";
 
 	public async Task<TokenMovedArgs?> Apply(int count = 1) {
 
@@ -50,12 +50,23 @@ public record Move(ITokenLocation Source, ILocation Destination) : IOption {
 }
 
 static public class MoveExtensions {
+
+	// Not Generic
 	static public IEnumerable<Move> BuildMoves(this IEnumerable<SpaceToken> sources, Func<SpaceToken,IEnumerable<Space>> getMoveOptions) {
 		return sources
-			.SelectMany(s => getMoveOptions(s).Select(d => new Move(s,d)))
+			.SelectMany(st => getMoveOptions(st).Select(d => new Move(st,d)))
 			.ToArray();
 	}
-	static public IEnumerable<Move> BuildMoves(this SpaceToken source, IEnumerable<Space> destinationOptions) {
+
+	// Generic
+	static public IEnumerable<Move> BuildMoves(this IEnumerable<ITokenLocation> sources, Func<ITokenLocation, IEnumerable<Space>> getMoveOptions) {
+		return sources
+			.SelectMany(s => getMoveOptions(s).Select(d => new Move(s, d)))
+			.ToArray();
+	}
+
+
+	static public IEnumerable<Move> BuildMoves(this ITokenLocation source, IEnumerable<Space> destinationOptions) {
 		return destinationOptions.Select(dst => new Move(source, dst));
 	}
 }

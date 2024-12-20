@@ -7,28 +7,6 @@
 /// <remarks> Renamed from Select.Space to avoid class name confusion. </remarks>
 public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 
-	static public SpaceDecision ToPlacePresence(IEnumerable<Space> options, Present present, IToken tokenToAdd)
-		=> new SpaceDecision("Where would you like to place your presence?", options, present)
-			.ShowTokenLocation(tokenToAdd);
-
-	static public SpaceDecision ToPlaceDestroyedPresence(IEnumerable<Space> options, Present present, SpiritIsland.Spirit spirit, int? count = null)
-		// make sure caller has pre-filtered spaces using:  .Where( spirit.Presence.CanBePlacedOn )
-		=> new SpaceDecision(
-				!count.HasValue
-					? $"Place Destroyed Presence"
-				: present == Present.Always
-					? $"Place up to {count.Value} Destroyed Presence"
-				: $"Place {count.Value} Destroyed Presence",
-				options,
-				present
-			).ShowTokenLocation(spirit.Presence.Token);
-
-	static public SpaceDecision ToPlaceToken(string prompt, IEnumerable<Space> options, Present present, IToken tokenToAdd)
-		=> new SpaceDecision(prompt, options, present)
-			.ShowTokenLocation(tokenToAdd);
-
-	#region constructors
-
 	/// <remarks> Convenience method - downgrades Space to Spaces</remarks>
 	public SpaceDecision(string prompt, IEnumerable<Space> spaces, Present present)
 		: base(prompt, spaces.OrderBy(x => x.Label), present) {
@@ -37,8 +15,6 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 	public SpaceDecision(string prompt, IEnumerable<Space> spaces, string? cancelText)
 		: base(prompt, spaces.OrderBy(x => x.Label), cancelText) {
 	}
-
-	#endregion constructors
 
 	public override Space ConvertOptionToResult(IOption option) { return (Space)option; }
 

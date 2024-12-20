@@ -72,10 +72,10 @@ public class RiversBounty_Tests {
 			u.NextDecision.HasTargetSpacePrompt( RiversBounty.Name ).HasOptions( "A4" ).Choose( "A4" );
 			if(0<dahanToGather)
 				u.NextDecision.HasPrompt($"Gather up to ({dahanToGather})")
-					.HasSourceOptions("D@2,Done").MoveFrom("D@2");
+					.HasFromOptions("D@2,Done").ChooseFrom("D@2");
 			if(1<dahanToGather)
 				u.NextDecision.HasPrompt("Gather up to (1)")
-					.HasSourceOptions("D@2,Done").MoveFrom("D@2");
+					.HasFromOptions("D@2,Done").ChooseFrom("D@2");
 		} ).ShouldComplete();
 
 		Assert_DahanCount( target, endingCount );
@@ -99,8 +99,8 @@ public class RiversBounty_Tests {
 
 		await _card.ActivateAsync( _spirit ).AwaitUser( user => {
 			user.TargetsLand( RiversBounty.Name, "A4" );
-			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom("D@2 on A1","D@2 on A1,D@2 on A2,Done");
-			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@2","D@2,Done");
+			user.NextDecision.HasPrompt("Gather up to (2)").ChooseFrom("D@2 on A1","D@2 on A1,D@2 on A2,Done");
+			user.NextDecision.HasPrompt("Gather up to (1)").ChooseFrom("D@2","D@2,Done");
 		} ).ShouldComplete();
 
 		Assert_DahanCount( target, 3 );
@@ -120,8 +120,8 @@ public class RiversBounty_Tests {
 
 		await _spirit.When_ResolvingCard<RiversBounty>( u => {
 			u.NextDecision.HasTargetSpacePrompt( RiversBounty.Name ).HasOptions( "A4" ).Choose( "A4" );
-			u.NextDecision.HasPrompt("Gather up to (2)").MoveFrom("D@1 on A1","D@1 on A1,D@1 on A2,Done");
-			u.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@1","D@1,Done");
+			u.NextDecision.HasPrompt("Gather up to (2)").ChooseFrom("D@1 on A1","D@1 on A1,D@1 on A2,Done");
+			u.NextDecision.HasPrompt("Gather up to (1)").ChooseFrom("D@1","D@1,Done");
 		} ).ShouldComplete();
 
 
@@ -141,8 +141,8 @@ public class RiversBounty_Tests {
 
 		await _spirit.When_ResolvingCard<RiversBounty>( u => {
 			u.NextDecision.HasTargetSpacePrompt( RiversBounty.Name ).HasOptions( "A4,A8" ).Choose( "A4" );
-			u.NextDecision.HasPrompt("Gather up to (2)").MoveFrom("D@2","D@2,Done");
-			u.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@2","D@2,Done");
+			u.NextDecision.HasPrompt("Gather up to (2)").ChooseFrom("D@2","D@2,Done");
+			u.NextDecision.HasPrompt("Gather up to (1)").ChooseFrom("D@2","D@2,Done");
 		} ).ShouldComplete();
 
 		Assert_DahanCount( _board[4], 3 );

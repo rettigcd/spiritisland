@@ -56,8 +56,8 @@ public class WashAway_Tests {
 
 		await _card.ActivateAsync( _spirit ).AwaitUser( u => {
 			u.NextDecision.HasPrompt("Wash Away: Target Space").Choose(targetSpace.Label);
-			u.NextDecision.HasPrompt("Push up to (1)").MoveFrom(tokenToPush, tokenToPush + ",Done" )
-				.MoveTo("A2","A1,A2,A3,A5");
+			u.NextDecision.HasPrompt("Push up to (1)").ChooseFrom(tokenToPush, tokenToPush + ",Done" )
+				.ChooseTo("A2","A1,A2,A3,A5");
 		} ).ShouldComplete();
 
 		// check that explore was moved
@@ -85,7 +85,7 @@ public class WashAway_Tests {
 			.AwaitUser( user => {
 				user.NextDecision.HasPrompt("Wash Away: Target Space").Choose("A2");
 				// Can't push into ocean
-				user.NextDecision.MoveFrom("E@1","E@1,Done").MoveTo("A3","A1,A3,A4");
+				user.NextDecision.ChooseFrom("E@1","E@1,Done").ChooseTo("A3","A1,A3,A4");
 			} );
 
 	}
@@ -109,8 +109,8 @@ public class WashAway_Tests {
 
 		await _spirit.When_ResolvingCard<WashAway>( u => {
 			u.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
-			u.NextDecision.HasPrompt( "Push up to (2)" ).MoveFrom("E@1","E@1,T@2,Done" ).MoveTo("A2","A1,A2,A3,A5");
-			u.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom("T@2","T@2,Done" ).MoveTo("A3","A1,A2,A3,A5");
+			u.NextDecision.HasPrompt( "Push up to (2)" ).ChooseFrom("E@1","E@1,T@2,Done" ).ChooseTo("A2","A1,A2,A3,A5");
+			u.NextDecision.HasPrompt( "Push up to (1)" ).ChooseFrom("T@2","T@2,Done" ).ChooseTo("A3","A1,A2,A3,A5");
 		} ).ShouldComplete();
 
 		// check that explore was moved
@@ -136,7 +136,7 @@ public class WashAway_Tests {
 
 		await _card.ActivateAsync( _spirit ).AwaitUser(user=>{ 
 			user.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
-			user.NextDecision.HasPrompt( "Push up to (1)" ).MoveFrom("T@1","T@1,Done").MoveTo("A2","A1,A2,A3,A5");
+			user.NextDecision.HasPrompt( "Push up to (1)" ).ChooseFrom("T@1","T@1,Done").ChooseTo("A2","A1,A2,A3,A5");
 		}).ShouldComplete();
 
 		// check that explore was moved
@@ -160,9 +160,9 @@ public class WashAway_Tests {
 		//  When: activating card
 		await _card.ActivateAsync( _spirit ).AwaitUser( user => { 
 			user.NextDecision.HasPrompt( "Wash Away: Target Space").Choose("A4");
-			user.NextDecision.HasPrompt("Push up to (3)").MoveFrom("E@1","E@1,Done").MoveTo("A2","A1,A2,A3,A5");
-			user.NextDecision.HasPrompt("Push up to (2)").MoveFrom("E@1","E@1,Done").MoveTo("A3","A1,A2,A3,A5");
-			user.NextDecision.HasPrompt("Push up to (1)").MoveFrom("E@1","E@1,Done").MoveTo("A5","A1,A2,A3,A5");
+			user.NextDecision.HasPrompt("Push up to (3)").ChooseFrom("E@1","E@1,Done").ChooseTo("A2","A1,A2,A3,A5");
+			user.NextDecision.HasPrompt("Push up to (2)").ChooseFrom("E@1","E@1,Done").ChooseTo("A3","A1,A2,A3,A5");
+			user.NextDecision.HasPrompt("Push up to (1)").ChooseFrom("E@1","E@1,Done").ChooseTo("A5","A1,A2,A3,A5");
 		} ).ShouldComplete();
 
 		// check that explore was moved

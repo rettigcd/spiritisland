@@ -10,6 +10,8 @@ public sealed class PlacePresence : SpiritAction {
 	public string FilterDescription { get; }
 	public string[] FilterEnums { get; }
 
+	// Hook for Madness aspect.
+	// Alternative: place a IHandleTokensPlaced mod in the Spirits Mod Bucket and call it.
 	public AsyncEvent<TokenMovedArgs> Placed = new();
 
 	#region constructors
@@ -35,21 +37,22 @@ public sealed class PlacePresence : SpiritAction {
 	#endregion constructors
 
 	public override async Task ActAsync( Spirit self ) {
-
-		ITokenLocation from = await self.SelectAlways(Prompts.SelectPresenceTo(), self.DeployablePresence());
-
-		TargetCriteria criteria = new TargetCriteriaFactory(Range ?? int.MaxValue, FilterEnums).Bind(self);
-
-		var toOptions = self.FindSpacesWithinRange( criteria )
-			.Where( self.Presence.CanBePlacedOn )
-			.ToArray();
-
-		if(toOptions.Length == 0)
+		Space[] toOptions = GetDestinationOptions(self);
+		if( toOptions.Length == 0 )
 			return; // this can happen if Ocean is dragged way-inland and is no longer near an ocean or coast.
 
-		Space to = await self.SelectAlways( A.SpaceDecision.ToPlacePresence( toOptions, Present.Always, from.Token ) );
-		var result = await from.MoveToAsync(to);
-		await Placed.InvokeAsync( result! );
+		var move = await self.SelectAlways(Prompts.SelectPresenceTo(), self.DeployablePresence().BuildMoves(_ => toOptions).ToArray());
+		var result = await move.Apply();
+
+		await Placed.InvokeAsync(result!);
+	}
+
+	Space[] GetDestinationOptions(Spirit self) {
+		TargetCriteria criteria = new TargetCriteriaFactory(Range ?? int.MaxValue, FilterEnums).Bind(self);
+		var toOptions = self.FindSpacesWithinRange(criteria)
+			.Where(self.Presence.CanBePlacedOn)
+			.ToArray();
+		return toOptions;
 	}
 
 	static readonly string[] DefaultFilters = [ Filter.Any ];

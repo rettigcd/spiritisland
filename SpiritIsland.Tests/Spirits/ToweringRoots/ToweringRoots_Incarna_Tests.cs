@@ -170,11 +170,8 @@ public class ToweringRoots_Incarna_Tests : ToweringRoots_Base {
 				.HasOptions( "Place Presence(1),Add Vitality to Incarna" )
 				.Choose( "Place Presence(1)" );
 			user.NextDecision.HasPrompt( "Select Presence to place" )
-				.HasOptions( "2 energy,2 cardplay,TRotJ-" )
-				.Choose( "TRotJ-" );
-			user.NextDecision.HasPrompt( "Where would you like to place your presence?" )
-				.HasOptions( "A1,A2,A3,A4" )
-				.Choose( "A4" );
+				.HasFromOptions("2 energy,2 cardplay,TRotJ- on A2").ChooseFrom("TRotJ- on A2")
+				.HasToOptions( "A1,A2,A3,A4" ).ChooseTo( "A4" );
 			user.NextDecision.HasPrompt( "Select Growth to resolve" )
 				.HasOptions( "Add Vitality to Incarna" )
 				.Choose( "Add Vitality to Incarna" );

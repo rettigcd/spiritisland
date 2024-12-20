@@ -60,12 +60,12 @@ public class DecisionContext {
 		return this;
 	}
 
-	/// <summary>
-	/// Shortcut helper for .HasSourceOptions(...).ChooseSource(...)
-	/// </summary>
-	public DecisionContext MoveFrom( string optionText, string sourceOptions = null ) {
+	#endregion
+
+	#region Move
+	public DecisionContext ChooseFrom( string optionText, string sourceOptions = null ) {
 		if(sourceOptions is not null)
-			HasSourceOptions(sourceOptions);
+			HasFromOptions(sourceOptions);
 
 		// Handle 'Done'
 		if(optionText == TextOption.Done.Text ) {
@@ -88,9 +88,9 @@ public class DecisionContext {
 		return this;
 	}
 
-	public void MoveTo( string optionText, string destinationOptions = null ) {
+	public void ChooseTo( string optionText, string destinationOptions = null ) {
 		if(destinationOptions is not null)
-			HasDestinationOptions(destinationOptions);
+			HasToOptions(destinationOptions);
 
 		var dst = _moveOptions.Single(m=>((IOption)m.Destination).Text == optionText);
 		Choose( dst );
@@ -99,29 +99,30 @@ public class DecisionContext {
 	Move[] _moveOptions; // for selected source
 
 	// For use with Move
-	public DecisionContext HasSourceOptions( string optionsString ) {
+	public DecisionContext HasFromOptions(string optionsString) {
 		var moves = _current.Options.OfType<Move>().ToArray();
-		bool fromSingle = moves.Select(m=>m.Source.Location).Distinct().Count() == 1;
+		bool fromSingle = moves.Select(m => m.Source.Location).Distinct().Count() == 1;
 		string actualOptionsString = _current.Options
-			.Select( x => x is Move move ? (fromSingle ? move.Source.Token.Text : move.Source.ToString()) : x.Text )
+			.Select(x => x is Move move ? (fromSingle ? move.Source.Token.Text : move.Source.Text) : x.Text)
 			.Distinct()
-			.Join( "," );
+			.Join(",");
 		actualOptionsString
-			.ShouldBe( optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'" );
+			.ShouldBe(optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'");
 		return this;
 	}
 
-	public DecisionContext HasDestinationOptions( string optionsString ) {
+	public DecisionContext HasToOptions(string optionsString) {
 		try {
-			string actualOptionsString = _moveOptions.Select( move => ((IOption)move.Destination).Text ).OrderBy(x=>x).Join( "," );
+			string actualOptionsString = _moveOptions.Select(move => ((IOption)move.Destination).Text).OrderBy(x => x).Join(",");
 			actualOptionsString
-				.ShouldBe( optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'" );
-		} catch( Exception ) {
+				.ShouldBe(optionsString, $"For decision '{_current.Prompt}', expected '{optionsString}' did not match actual '{actualOptionsString}'");
+		}
+		catch( Exception ) {
 		}
 		return this;
 	}
 
-	#endregion
+	#endregion Move
 
 	#region misc assertions
 

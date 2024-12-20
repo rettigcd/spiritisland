@@ -44,7 +44,7 @@ public class BlazingRenewal_Tests {
 		return BlazingRenewal.ActAsync( setup.TargetSelf).AwaitUser(u => {
 			// Then: we should not be able to pick restricted space
 			setup.Spirit.Portal.Next.FormatOptions().ShouldNotContain(restrictedSpace);
-			u.NextDecision.HasPrompt("Place up to 2 Destroyed Presence").ChooseFirst();
+			u.NextDecision.HasPrompt("Place 2 Destroyed Presence").ChooseFirst();
 		}).ShouldComplete();
 	}
 

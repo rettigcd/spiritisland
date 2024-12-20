@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <remarks>
 /// Used by Powers + Growth for Wounded Waters and Relentless Gaze
@@ -47,7 +46,7 @@ public class AddDestroyedPresence : SpiritAction {
 	}
 
 	/// <summary> Adds a callback to be called when/if destroyed presence is placed. </summary>
-	public AddDestroyedPresence WhenPlacedTrigger( Func<int, SpaceSpec, Task> callback ) {
+	public AddDestroyedPresence WhenPlacedTrigger( Func<int, Space, Task> callback ) {
 		_placedCallback = callback;
 		return this;
 	}
@@ -60,36 +59,27 @@ public class AddDestroyedPresence : SpiritAction {
 
 	public override async Task ActAsync( Spirit placingSpirit) {
 		SpiritPresence presence = placingSpirit.Presence;
-		if(presence.Destroyed.Count == 0) return;
+		int maxToPlaceOnSpace = Math.Min(presence.Destroyed.Count, NumToPlace);
+		if( maxToPlaceOnSpace == 0) return;
 
-		int maxToPlaceOnSpace = Math.Min( presence.Destroyed.Count, NumToPlace );
+		// Must Place max if possible. (when used by Blazing Renewal)
 
-		var sourceSpirit = _relativeSpirit ?? placingSpirit;
-		
-		IEnumerable<Space> destinationOptions = SpacesFromSourceSpirit(_relativeSpirit ?? placingSpirit)
-			.Where(placingSpirit.Presence.CanBePlacedOn);
+		// destination
+		var destinationOptions = SpacesFromSourceSpirit(_relativeSpirit ?? placingSpirit)
+			.Where(placingSpirit.Presence.CanBePlacedOn)
+			.ToArray();
+		if(destinationOptions.Length == 0) return;
 
-		Space? dst = await placingSpirit.Select( A.SpaceDecision.ToPlaceDestroyedPresence(
-			destinationOptions,
-			_present,
-			placingSpirit,
-			maxToPlaceOnSpace
-		) );
+		var move = await placingSpirit.SelectAlways($"Place {maxToPlaceOnSpace} Destroyed Presence", presence.Destroyed.BuildMoves(destinationOptions) );
 
-		if(dst is null ) return;
+		await move.Apply(maxToPlaceOnSpace);
 
-		int numToPlace = _present == Present.Always ? maxToPlaceOnSpace
-			: await placingSpirit.SelectNumber("How many presences would you like to place?", maxToPlaceOnSpace, 1);
-		if(numToPlace == 0 ) return;
-
-		await presence.Destroyed.MoveToAsync(dst,numToPlace);
-		//await presence.PlaceDestroyedAsync(maxToPlaceOnSpace, dst);
-		if( _placedCallback != null )
-			await _placedCallback(maxToPlaceOnSpace,dst.SpaceSpec);
+		if( _placedCallback is not null && move.Destination is Space dstSpace )
+			await _placedCallback(maxToPlaceOnSpace, dstSpace);
 	}
 
 	public int NumToPlace { get; private set; } = 1; // default to placing 1
 	Present _present = Present.Always; // defaults to being required
 	Spirit? _relativeSpirit = null;
-	Func<int,SpaceSpec,Task>? _placedCallback;
+	Func<int,Space,Task>? _placedCallback;
 }

@@ -88,8 +88,14 @@ public class Ocean_GrowthTests : BoardAGame {
 		Given_IslandAB();
 
 		await _spirit.When_Growing( 1, (user) => {
-			user.PlacesPresenceInOcean( "Place in Ocean,[Place in Ocean]", "[moon energy],2 cardplay", "[A0],B0" );
-			user.PlacesPresenceInOcean( "Place in Ocean", "[water energy],2 cardplay,OHG", "A0,[B0]" );
+			user.NextDecision.ChooseFirst(); // multiple "Place In Ocean" options
+			user.NextDecision.HasFromOptions("moon energy,2 cardplay").ChooseFrom("moon energy")
+				.HasToOptions("A0,B0").ChooseTo("A0");
+			//user.PlacesPresenceInOcean( "Place in Ocean,[Place in Ocean]", "[moon energy],2 cardplay", "[A0],B0" );
+			user.NextDecision.Choose("Place in Ocean");
+			user.NextDecision.HasFromOptions("water energy,2 cardplay,OHG on A0").ChooseFrom("water energy")
+				.HasToOptions("A0,B0").ChooseTo("B0");
+//			user.PlacesPresenceInOcean( "Place in Ocean", "[water energy],2 cardplay,OHG", "A0,[B0]" );
 		} );
 
 		_spirit.Assert_HasEnergy( 1 );

@@ -24,9 +24,9 @@ public class SkiesHeraldTheSeasonOfReturn_Tests {
 			// target space
 			u.NextDecision.Choose(space);
 			// Then: Should Push Dahan (per keeper's Sacred Site)
-			u.NextDecision.HasPrompt("Push (1)").MoveFrom("D@2").MoveTo(dahanDestination.Label);
+			u.NextDecision.HasPrompt("Push (1)").ChooseFrom("D@2").ChooseTo(dahanDestination.Label);
 			//  And: May Gather up to 2 dahan (per the card)
-			u.NextDecision.HasPrompt("Gather up to (1)").MoveFrom("D@2");
+			u.NextDecision.HasPrompt("Gather up to (1)").ChooseFrom("D@2");
 		}).ShouldComplete();
 
 	}

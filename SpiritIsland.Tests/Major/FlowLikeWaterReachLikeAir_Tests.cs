@@ -25,12 +25,12 @@ public class FlowLikeWaterReachLikeAir_Tests {
 				.HasOptions("TS on A5 => A1,TS on A5 => A4,TS on A5 => A6,TS on A5 => A7,TS on A5 => A8,Done")
 				.Choose("TS on A5 => A1");
 
-			user.NextDecision.HasPrompt( "Bring up to (6)" ).MoveFrom("D@2","D@2,E@1,T@2,Done");
-			user.NextDecision.HasPrompt( "Bring up to (5)" ).MoveFrom("D@2","D@2,E@1,T@2,Done");
-			user.NextDecision.HasPrompt( "Bring up to (4)" ).MoveFrom("E@1","E@1,T@2,Done");
-			user.NextDecision.HasPrompt( "Bring up to (3)" ).MoveFrom("E@1","E@1,T@2,Done");
-			user.NextDecision.HasPrompt( "Bring up to (2)" ).MoveFrom("T@2","T@2,Done");
-			user.NextDecision.HasPrompt( "Bring up to (1)" ).MoveFrom("T@2","T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (6)" ).ChooseFrom("D@2","D@2,E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (5)" ).ChooseFrom("D@2","D@2,E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (4)" ).ChooseFrom("E@1","E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (3)" ).ChooseFrom("E@1","E@1,T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (2)" ).ChooseFrom("T@2","T@2,Done");
+			user.NextDecision.HasPrompt( "Bring up to (1)" ).ChooseFrom("T@2","T@2,Done");
 		} );
 
 		// Then: target 2 of each

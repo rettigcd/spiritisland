@@ -19,10 +19,8 @@ public class GiftOfProliferation_Tests {
 
 		//  When: Card played
 		await GiftOfProliferation.ActAsync( setup.TargetSelf ).AwaitUser( user => {
-			// From
-			user.NextDecision.HasPrompt("Select Presence to place").HasOptions("moon energy,2 cardplay,OHG").Choose("moon energy");
 			// will not ask where to place because there is no valid place
-		} ).ShouldComplete();
+		}).ShouldComplete();
 
 	}
 
@@ -40,12 +38,12 @@ public class GiftOfProliferation_Tests {
 
 		//  When: Card played
 		await GiftOfProliferation.ActAsync( setup.TargetSelf ).AwaitUser( user => {
-			// From
-			user.NextDecision.HasPrompt("Select Presence to place")
-				.HasOptions("2 energy,2 cardplay,LotDW")
-				.Choose("2 energy");
 			// Then: Does not contain coast/A1 as destination
-			user.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A4,A5,A6").Choose("A4");
+			user.NextDecision.HasPrompt("Select Presence to place")
+				.HasFromOptions("2 energy,2 cardplay,LotDW on A1")
+				.ChooseFrom("2 energy")
+				.HasToOptions("A4,A5,A6")
+				.ChooseTo("A4");
 			// will not ask where to place because there is no valid place
 		} ).ShouldComplete();
 
@@ -65,14 +63,12 @@ public class GiftOfProliferation_Tests {
 
 		//  When: Card played
 		await GiftOfProliferation.ActAsync( setup.TargetSelf ).AwaitUser( user => {
-			// From
-			user.NextDecision.HasPrompt("Select Presence to place")
-				.HasOptions("2 energy,fire,VLH")
-				.Choose("2 energy");
 			// Then: does not contain non-mountain(A5) presence
-			user.NextDecision.HasPrompt("Where would you like to place your presence?")
-				.HasOptions("A1,A6")
-				.Choose("A1");
+			user.NextDecision.HasPrompt("Select Presence to place")
+				.HasFromOptions("2 energy,fire,VLH on A5")
+				.ChooseFrom("2 energy")
+				.HasToOptions("A1,A6")
+				.ChooseTo("A1");
 		} ).ShouldComplete();
 	}
 

@@ -22,8 +22,8 @@ public class TigersHunting_Tests {
 			user.Choose("E@1");
 			// push up to 2 beasts
 			user.NextDecision.HasPrompt("Push up to (1)")
-				.HasSourceOptions("Beast,Done").MoveFrom("Beast")
-				.HasDestinationOptions("A1,A4,A6,A7,A8").MoveTo("A7");
+				.HasFromOptions("Beast,Done").ChooseFrom("Beast")
+				.HasToOptions("A1,A4,A6,A7,A8").ChooseTo("A7");
 		}).ShouldComplete();	
 
 		// Then everything was a single action. 

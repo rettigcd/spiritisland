@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 

@@ -95,9 +95,9 @@ public class OceanTerrain_Tests {
 			user.NextDecision.Choose("A2");	//  And: Targets A2 (that has a dahan on it)
 
 			if(withOcean)
-				user.NextDecision.MoveFrom("D@2").MoveTo("A0","A0,A1,A3,A4");
+				user.NextDecision.ChooseFrom("D@2").ChooseTo("A0","A0,A1,A3,A4");
 			else
-				user.NextDecision.MoveFrom("D@2").MoveTo("A1","A1,A3,A4");
+				user.NextDecision.ChooseFrom("D@2").ChooseTo("A1","A1,A3,A4");
 
 			_gameState.NewLogEntry += (e) => { if( e is Debug ) log.Add( e.Msg() ); };
 
@@ -158,9 +158,9 @@ public class OceanTerrain_Tests {
 
 			for(int i=0; i < 2; ++i) {
 				// When: Push 1st invadere - Town
-				user.NextDecision.MoveFrom( pushToken )
+				user.NextDecision.ChooseFrom( pushToken )
 				// Then: ocean is/is-not an option
-					.MoveTo( 
+					.ChooseTo( 
 						withOcean ? "A0" : "A1",
 						withOcean ? "A0,A1,A3,A4" : "A1,A3,A4"
 					);
@@ -222,11 +222,12 @@ public class OceanTerrain_Tests {
 		_ = _primarySpirit.DoGrowth( _gameState );
 		NextDecision.Choose("Place Presence(1)");
 
-		//  And: take from card play
-		NextDecision.Choose( "2 cardplay");
+		NextDecision.ChooseFrom("2 cardplay").HasToOptions("A1,A2,A3,A4").ChooseTo("A1");
 
-		// Then: ocean is not in option list
-		NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose( "A1" ); // close out action thread
+		////  And: take from card play
+		//NextDecision.Choose( "2 cardplay");
+		//// Then: ocean is not in option list
+		//NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose( "A1" ); // close out action thread
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
@@ -310,10 +311,10 @@ public class OceanTerrain_Tests {
 
 		_oceanSpirit.NextDecision().ChooseFirstThatStartsWith( TidalBoon.Name );
 		//  And: Pushes town into ocean
-		NextDecision.MoveFrom("T@2").MoveTo("A0","A0,A1,A3,A4");// Choose( "T@2" ); NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
+		NextDecision.ChooseFrom("T@2").ChooseTo("A0","A0,A1,A3,A4");// Choose( "T@2" ); NextDecision.HasOptions( "A0,A1,A3,A4" ).Choose( "A0" );
 
 		// When: Pushes 1st Dahan into Ocean
-		NextDecision.MoveFrom("D@2").MoveTo("A0","A0,A1,A3,A4");// Choose( "D@2" ); Choose( "A0" );
+		NextDecision.ChooseFrom("D@2").ChooseTo("A0","A0,A1,A3,A4");// Choose( "D@2" ); Choose( "A0" );
 
 		// Thunderspeaker goes along
 		Choose( "Ts" );
@@ -327,7 +328,7 @@ public class OceanTerrain_Tests {
 		}
 
 		// When: Pushes 2nd dahan into Ocean
-		NextDecision.MoveFrom( "D@2" ).MoveTo( "A0" );
+		NextDecision.ChooseFrom( "D@2" ).ChooseTo( "A0" );
 
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now

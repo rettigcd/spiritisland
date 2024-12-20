@@ -80,8 +80,10 @@ public class PlacePresence_Tests {
 
 		// When: user places presence from that space
 		await new PlacePresence(2).ActAsync(gs.Spirit).AwaitUser(u=>{
-			u.NextDecision.HasPrompt("Select Presence to place").HasOptions("2 energy,reclaim 1,RSiS on A5").Choose("reclaim 1");
-			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
+			u.NextDecision.HasPrompt("Select Presence to place")
+				// .HasOptions("2 energy,reclaim 1,RSiS on A5")
+				.Choose("reclaim 1 => A8");
+			//u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
 			// Then: Reclaim does not trigger.
 			// No user prompt presented.
 		}).ShouldComplete();
@@ -103,8 +105,9 @@ public class PlacePresence_Tests {
 
 		// When: user places presence from that space
 		await new PlacePresence(2).ActAsync(gs.Spirit).AwaitUser(u=>{
-			u.NextDecision.HasPrompt("Select Presence to place").HasOptions("air energy,2 cardplay,Ts on A3,Ts on A7").Choose("air energy");
-			u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
+			u.NextDecision.HasPrompt("Select Presence to place")
+			.Choose("air energy => A8");
+			//u.NextDecision.HasPrompt("Where would you like to place your presence?").HasOptions("A1,A2,A3,A4,A5,A6,A7,A8").Choose("A8");
 		}).ShouldComplete();
 
 		// Then: Air is activated

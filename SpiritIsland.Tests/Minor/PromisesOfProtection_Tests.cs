@@ -22,8 +22,8 @@ public class PromisesOfProtection_Tests {
 
 		// When: playing card
 		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( user => { 
-			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom( selectDahanFromSource );
-			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom( selectDahanFromSource );
+			user.NextDecision.HasPrompt("Gather up to (2)").ChooseFrom( selectDahanFromSource );
+			user.NextDecision.HasPrompt("Gather up to (1)").ChooseFrom( selectDahanFromSource );
 		} ).ShouldComplete();
 
 		// Test 2
@@ -33,8 +33,8 @@ public class PromisesOfProtection_Tests {
 
 		// Brought in 2 more dahan
 		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( user => {
-			user.NextDecision.HasPrompt("Gather up to (2)").MoveFrom( selectDahanFromSource );
-			user.NextDecision.HasPrompt("Gather up to (1)").MoveFrom( selectDahanFromSource );
+			user.NextDecision.HasPrompt("Gather up to (2)").ChooseFrom( selectDahanFromSource );
+			user.NextDecision.HasPrompt("Gather up to (1)").ChooseFrom( selectDahanFromSource );
 		} ).ShouldComplete();
 
 		// Then: All (6) should have 6 health.

@@ -17,8 +17,7 @@ public class Stone_Growth_Tests {
 		// When: user places precence during growth.
 		await spirit.DoGrowth(gs).AwaitUser(u => {
 			u.NextDecision.HasPrompt("Select Growth").Choose("Place Presence(2)");
-			u.NextDecision.HasPrompt("Select Presence to place").Choose("Energy+DrawMinor+CardPlay");
-			u.NextDecision.HasPrompt("Where would you like to place your presence?").Choose("A1");
+			u.NextDecision.HasPrompt("Select Presence to place").ChooseFrom("Energy+DrawMinor+CardPlay").ChooseTo("A1");
 			// Then: user draws power card
 			u.NextDecision.HasPrompt("Select minor Power Card").Choose("Uncanny Melting $1 (Slow)");
 		}).ShouldComplete();

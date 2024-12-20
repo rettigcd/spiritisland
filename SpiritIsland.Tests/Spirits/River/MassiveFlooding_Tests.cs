@@ -49,7 +49,7 @@ public class MassiveFlooding_Tests {
 		//  When: activate innate
 		await MassiveFloodingPower.ActivateAsync( spirit ).AwaitUser( user => { 
 			user.NextDecision.Choose( space );
-			user.NextDecision.MoveFrom("T@2").MoveTo(destination.Label);
+			user.NextDecision.ChooseFrom("T@2").ChooseTo(destination.Label);
 		} ).ShouldComplete();
 
 		// Then: target has remaining invaders
@@ -92,9 +92,9 @@ public class MassiveFlooding_Tests {
 			user.NextDecision.HasPrompt("Damage (2 remaining)").Choose( "T@2" ); // 1st damage
 			user.NextDecision.HasPrompt("Damage (1 remaining)").Choose( "T@1" ); // 2nd damage
 
-			user.NextDecision.HasPrompt("Push up to (3)").MoveFrom( "T@2", "T@2,E@1,Done" ).MoveTo( destination.Label );
-			user.NextDecision.HasPrompt("Push up to (2)").MoveFrom( "T@2", "T@2,E@1,Done" ).MoveTo( destination.Label );
-			user.NextDecision.HasPrompt("Push up to (1)").MoveFrom( "E@1", "T@2,E@1,Done" ).MoveTo( destination.Label );
+			user.NextDecision.HasPrompt("Push up to (3)").ChooseFrom( "T@2", "T@2,E@1,Done" ).ChooseTo( destination.Label );
+			user.NextDecision.HasPrompt("Push up to (2)").ChooseFrom( "T@2", "T@2,E@1,Done" ).ChooseTo( destination.Label );
+			user.NextDecision.HasPrompt("Push up to (1)").ChooseFrom( "E@1", "T@2,E@1,Done" ).ChooseTo( destination.Label );
 		} ).ShouldComplete();
 
 		// Then: target has remaining invaders

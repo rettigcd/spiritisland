@@ -235,10 +235,8 @@ public static partial class Cmd {
 	static public SpiritAction PlacePresenceOn( params Space[] destinationOptions ) => new SpiritAction(
 		"Place Presence",
 		async self => {
-			ITokenLocation from = await self.SelectAlways( Prompts.SelectPresenceTo(), self.DeployablePresence() );
-
-			Space to = await self.SelectAlways( A.SpaceDecision.ToPlacePresence( destinationOptions, Present.Always, from.Token ) );
-			await from.MoveToAsync(to);
+			var move = await self.SelectAlways(Prompts.SelectPresenceTo(), self.DeployablePresence().BuildMoves(_ => destinationOptions).ToArray());
+			await move.Apply();
 		} );
 
 	static public SpiritAction Reclaim1CardInsteadOfDiscarding => new SpiritAction( "Reclaims 1 card instead of discarding it", self => {

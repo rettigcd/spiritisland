@@ -36,7 +36,7 @@ public class SettleIntoHuntingGrounds_Tests {
 
 		//  When: pushing dahan
 		await CallToMigrate.ActAsync( spirit.Target(a1) ).AwaitUser( u => {
-			u.NextDecision.HasPrompt("Push up to (1)").MoveFrom("D@2").MoveTo("A2", "A2,A4,A5,A6");
+			u.NextDecision.HasPrompt("Push up to (1)").ChooseFrom("D@2").ChooseTo("A2", "A2,A4,A5,A6");
 			u.NextDecision.HasPrompt("Move presence with Dahan?")
 				.HasOptions("Ts on A1,Done")
 				.Choose("Ts on A1");

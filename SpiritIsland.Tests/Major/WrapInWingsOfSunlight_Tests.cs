@@ -27,13 +27,13 @@ public class WrapInWingsOfSunlight_Tests {
 		// When: playing Card 
 		await spirit.When_ResolvingCard<WrapInWingsOfSunlight>((user)=> {
 			user.Choose(src.Label);
-			user.NextDecision.HasPrompt( "Move up to (5)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
-				.HasDestinationOptions( "A1,A2,A3,A4,A5,A6,A7,A8" ).MoveTo( dst.Label );
+			user.NextDecision.HasPrompt( "Move up to (5)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" )
+				.HasToOptions( "A1,A2,A3,A4,A5,A6,A7,A8" ).ChooseTo( dst.Label );
 
-			user.NextDecision.HasPrompt( "Move up to (4)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ); // pick remaining tokens
-			user.NextDecision.HasPrompt( "Move up to (3)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
-			user.NextDecision.HasPrompt( "Move up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
-			user.NextDecision.HasPrompt( "Move up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (4)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" ); // pick remaining tokens
+			user.NextDecision.HasPrompt( "Move up to (3)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (2)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Move up to (1)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" );
 		} );
 
 		// Then: target 2 of each
@@ -71,11 +71,11 @@ public class WrapInWingsOfSunlight_Tests {
 			user.Choose(src.Label);
 			//  And: bringing 2 of each
 			user.NextDecision.HasPrompt("Push (2)")
-				.HasSourceOptions("D@2,E@1,T@2").MoveFrom("D@2")
-				.HasDestinationOptions("A1,A4,A6,A7,A8").MoveTo(dst.Label);
+				.HasFromOptions("D@2,E@1,T@2").ChooseFrom("D@2")
+				.HasToOptions("A1,A4,A6,A7,A8").ChooseTo(dst.Label);
 			user.NextDecision.HasPrompt("Push (1)")
-				.HasSourceOptions("D@2,E@1,T@2").MoveFrom("D@2")
-				.HasDestinationOptions("A1,A4,A6,A7,A8").MoveTo(dst.Label);
+				.HasFromOptions("D@2,E@1,T@2").ChooseFrom("D@2")
+				.HasToOptions("A1,A4,A6,A7,A8").ChooseTo(dst.Label);
 		} );
 
 		// Then: target 2 of each

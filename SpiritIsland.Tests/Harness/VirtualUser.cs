@@ -83,18 +83,20 @@ public class VirtualUser( Spirit spirit ) {
 	}
 
 	public void PlacePresenceLocations( Track source, string placeOptions ) {
-		// !!! placeOptions Is not validating against Actual Options
+		string[] expectedOptions = placeOptions.Split(';');
 
-		// Source
-		PullsPresenceFromTrack( source );
+		ILocation location = source;
+		NextDecision.Choose($"{location.Text} => {expectedOptions[0]}");
 
-		// place on board - first option
-		string[] expectedOptions = placeOptions.Split( ';' );
-		var destinationDecision = _userPortal.Next;
-		var actualOptions = destinationDecision.Options;
-		var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] ) 
-			?? throw new System.ArgumentOutOfRangeException( nameof( placeOptions ), $"'{expectedOptions[0]}' not found in " + actualOptions.Select( o => o.Text ).Join( "," ) );
-		NextDecision.Choose( choice );
+		//// Source
+		//PullsPresenceFromTrack( source );
+
+		//// place on board - first option
+		//var destinationDecision = _userPortal.Next;
+		//var actualOptions = destinationDecision.Options;
+		//var choice = actualOptions.SingleOrDefault( o => o.Text == expectedOptions[0] ) 
+		//	?? throw new System.ArgumentOutOfRangeException( nameof( placeOptions ), $"'{expectedOptions[0]}' not found in " + actualOptions.Select( o => o.Text ).Join( "," ) );
+		//NextDecision.Choose( choice );
 	}
 
 	public void PullsPresenceFromTrack( Track source ) {
@@ -229,8 +231,8 @@ public class VirtualUser( Spirit spirit ) {
 	public void GathersOptionalToken( string token ) {
 		var (options,choice) = SplitOptionsAndChoice( token );
 		NextDecision
-			.HasSourceOptions( options+",Done" )
-			.MoveFrom( choice );
+			.HasFromOptions( options+",Done" )
+			.ChooseFrom( choice );
 	}
 
 	public void SelectsMajorDeck() => AssertDecisionInfo( "Which type do you wish to draw", "minor,[major]");

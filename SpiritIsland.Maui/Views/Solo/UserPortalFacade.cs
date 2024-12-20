@@ -44,7 +44,7 @@ internal class UserPortalFacade : IDecisionPortal {
 		Task.Run( () => { 
 
 			// !!! 
-			if(decision is A.MoveDecision move) {
+			if(decision is TypedDecision<Move> move ) {
 				// Move
 				_moveBehavior = new MoveBehavior( _inner, move );
 				decision = _moveBehavior.GetSourceDecision();
@@ -99,7 +99,7 @@ internal class UserPortalFacade : IDecisionPortal {
 /// <summary>
 /// Splits up a Move Decision into Source/Destination.
 /// </summary>
-class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
+class MoveBehavior( IDecisionPortal inner, TypedDecision<Move> move ) {
 	public IDecision GetSourceDecision() {
 
 		var st = new TypedDecision<ITokenLocation>(
@@ -120,7 +120,7 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 		if(option is ITokenLocation source)
 			return HandleMoveSource( source, block );
 
-		if(option is Space destination) {
+		if(option is ILocation destination) {
 			HandleMoveDestination( destination, block );
 			return null;
 		}
@@ -135,17 +135,16 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 
 	TypedDecision<ILocation>? HandleMoveSource( ITokenLocation source, bool block ) {
 		// if only 1 destination - Auto-select it now (can't use Present.Auto in the ui)
-		ILocation[] destinationOptions = _moveOptions!
-			.Where( s => s.Source == source )
-			.Select( s => s.Destination )
+		_destinationOptions = _moveOptions
+			.Where( s => s.Source.Equals( source ) )
 			.Distinct()
 			.ToArray();
-		if(destinationOptions.Length != 1) {
+
+		if( _destinationOptions.Length != 1) {
 			// Setup TO choice
-			_moveSource = source;
 			return new TypedDecision<ILocation>(
 					"Move to",
-					destinationOptions,
+					_destinationOptions.Select(s => s.Destination),
 					Present.AutoSelectSingle // if they selected a source, don't let them cancel.
 				)
 				// .ComingFrom( source.Space )
@@ -153,20 +152,18 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 				;
 		} else {
 			// Auto-Select-Single
-			Move singleMove = _moveOptions.Single( s => s.Source == source && s.Destination == destinationOptions[0] );
-			// false - trigger inner
-			inner.Choose( move, singleMove, block );
+			inner.Choose( move, _destinationOptions[0], block );
 			return null;
 		}
 	}
 
-	void HandleMoveDestination( Space destination, bool block ) {
-		Move realOption = _moveOptions
-			.Single( s => s.Source == _moveSource && destination.Equals(s.Destination) );
+	void HandleMoveDestination( ILocation destination, bool block ) {
+		Move realOption = _destinationOptions!.Single( s => destination.Equals(s.Destination) );
 		inner.Choose( move, realOption, block );
 	}
 
-	ITokenLocation? _moveSource = null;
+	Move[]? _destinationOptions = null;
+
 	readonly Move[] _moveOptions = move.Options.OfType<Move>().ToArray();
 	readonly bool _moveIsOptional = move.Options.Any( x => x == TextOption.Done );
 }

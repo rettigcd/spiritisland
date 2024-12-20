@@ -116,13 +116,13 @@ public class StubbornSolidity_Tests {
 		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
 			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace );
 			// Gather - 3
-			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ); // ! This is showing (2) because there are only 2 there.
-			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
-			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" ); // ! This is showing (2) because there are only 2 there.
+			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" );
 			// Push
-			user.NextDecision.HasPrompt( "Push up to (3)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
-			user.NextDecision.HasPrompt( "Push up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
-			user.NextDecision.HasPrompt( "Push up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (3)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" ).HasToOptions( "A5,A6,A7" ).ChooseTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (2)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" ).HasToOptions( "A5,A6,A7" ).ChooseTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (1)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" ).HasToOptions( "A5,A6,A7" ).ChooseTo( "A5" );
 		} );
 
 		//  Then: Dahan are still there (not replaced)
@@ -153,17 +153,17 @@ public class StubbornSolidity_Tests {
 		await spirit.When_ResolvingCard<CallToMigrate>( (user) => {
 			user.NextDecision.HasPrompt( CallToMigrate.Name + ": Target Space" ).HasOptions( "A5,A6,A7,A8" ).Choose( targetSpace );
 			//   And: outside dahan are gathered
-			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
-			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (2)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" );
+			user.NextDecision.HasPrompt( "Gather up to (1)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" );
 
 			// Push - 3
-			user.NextDecision.HasPrompt( "Push up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" ).HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (2)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" ).HasToOptions( "A5,A6,A7" ).ChooseTo( "A5" );
 
-			user.NextDecision.HasPrompt( "Push up to (2)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
-				.HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (2)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" )
+				.HasToOptions( "A5,A6,A7" ).ChooseTo( "A5" );
 
-			user.NextDecision.HasPrompt( "Push up to (1)" ).HasSourceOptions( "D@2,Done" ).MoveFrom( "D@2" )
-				.HasDestinationOptions( "A5,A6,A7" ).MoveTo( "A5" );
+			user.NextDecision.HasPrompt( "Push up to (1)" ).HasFromOptions( "D@2,Done" ).ChooseFrom( "D@2" )
+				.HasToOptions( "A5,A6,A7" ).ChooseTo( "A5" );
 
 		} );
 
