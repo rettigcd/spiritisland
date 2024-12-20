@@ -18,7 +18,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 
 		// If we are saving a dahan
 		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && CanSaveDahanOnSpace(to) )
-			if( await SaveDahan(to, args) )
+			if( await SaveDahan(args) )
 				return;
 
 		// Drown them immediately
@@ -39,7 +39,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 	// Is this correct?  Does Ocean have to be in the ocean or can it just be on the board?
 	bool CanSaveDahanOnSpace( Space to ) => to.Has( _ocean.Presence );
 
-	async Task<bool> SaveDahan(Space to, ITokenAddedArgs args) {
+	async Task<bool> SaveDahan(ITokenAddedArgs args) {
 
 		var destinationOptions = GameState.Current.Island.Boards
 			.Select(x => x.Ocean)

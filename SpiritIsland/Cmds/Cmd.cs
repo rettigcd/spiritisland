@@ -181,8 +181,8 @@ public static partial class Cmd {
 			var moves = self.Presence.Movable.BuildMoves(source=>source.Space.Adjacent);
 
 			var move = await self.Select("Select Presence to push.", moves, Present.Done);
-
 			if(move is null) return;
+
 			await move.Apply();
 
 			//// Select source
@@ -195,7 +195,7 @@ public static partial class Cmd {
 
 			// Calback
 			if(callback is not null)
-				await callback( move.Source.Space, move.Destination );
+				await callback( (Space)move.Source.Location, move.Destination );
 		});
 
 	static public SpiritAction DestroyPresence( string prompt = "Select Presence to Destroy" ) 

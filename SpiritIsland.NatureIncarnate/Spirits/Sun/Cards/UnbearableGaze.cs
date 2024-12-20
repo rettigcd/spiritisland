@@ -27,7 +27,7 @@ public class UnbearableGaze {
 	static Action<SourceSelector> FromTargetOrOrigin( Space targetSpace ) {
 		return (ss) => {
 			Space? selectedOrigin = null;
-			ss.Track( from => { if(from.Space != targetSpace) selectedOrigin = from.Space; } );
+			ss.Track( from => { if(!from.Location.Equals(targetSpace)) selectedOrigin = (Space)from.Location; } );
 			ss.FilterSource( ss => ss == targetSpace || selectedOrigin is null || selectedOrigin == ss );
 		};
 	}

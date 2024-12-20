@@ -74,7 +74,7 @@ public class DecisionContext {
 		}
 		var source = _current.FindSourceChoice(optionText);
 		// If only 1 destination, auto-select it.
-		Move[] moveOptionsForSource = _current.Options.OfType<Move>().Where(m=>m.Source == source).ToArray();
+		Move[] moveOptionsForSource = _current.Options.OfType<Move>().Where(m=>ReferenceEquals(m.Source, source)).ToArray();
 		switch(moveOptionsForSource.Length) {
 			case 1:
 				Choose( moveOptionsForSource[0] ); break; // auto-select it
@@ -101,7 +101,7 @@ public class DecisionContext {
 	// For use with Move
 	public DecisionContext HasSourceOptions( string optionsString ) {
 		var moves = _current.Options.OfType<Move>().ToArray();
-		bool fromSingle = moves.Select(m=>m.Source.Space.SpaceSpec).Distinct().Count() == 1;
+		bool fromSingle = moves.Select(m=>m.Source.Location).Distinct().Count() == 1;
 		string actualOptionsString = _current.Options
 			.Select( x => x is Move move ? (fromSingle ? move.Source.Token.Text : move.Source.ToString()) : x.Text )
 			.Distinct()

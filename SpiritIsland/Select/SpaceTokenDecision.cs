@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland.A;
+﻿namespace SpiritIsland.A;
 
 // For Selecting Token from multiple spaces
 public class SpaceTokenDecision : TypedDecision<SpaceToken>, IHaveArrows {

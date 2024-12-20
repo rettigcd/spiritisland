@@ -15,14 +15,18 @@ class PourTimeSideways {
 		// Move 1 of your presence to a different land with your presence.
 		var moveOptions = self.Presence.Deployed
 			.BuildMoves(x=>self.Presence.Lands)
-			.Where(m=>m.Source.Space != m.Destination)
-			.OrderBy(m=>m.Source.Space.Label)
-			.ThenBy(m=>m.Destination.Label);
+			.Where(m => !ReferenceEquals( m.Source.Location, m.Destination))
+			.OrderBy(m=>((Space)(m.Source.Location)).Label)
+			.ThenBy(m=>m.Destination.Label)
+			.ToArray();
+		if(moveOptions.Length == 0) return;
+		
 
 		var move = await self.SelectAlways( "Move presence:", moveOptions );
-		await move.Source.MoveTo(move.Destination);
+		await move.Apply();
 
-		var srcBoards = move.Source.Space.SpaceSpec.Boards;
+		Space source = (Space)move.Source.Location;
+		var srcBoards = source.SpaceSpec.Boards;
 		if(srcBoards.Intersect(move.Destination.SpaceSpec.Boards).Any()) return;
 
 		// On the board moved from: During the Invader Phase, Resolve Invader and "Each board / Each land..." Actions one fewer time.

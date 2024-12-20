@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Maui;
+﻿using SpiritIsland.A;
+
+namespace SpiritIsland.Maui;
 
 /// <summary>
 /// Wraps the User Portal.
@@ -99,19 +101,23 @@ internal class UserPortalFacade : IDecisionPortal {
 /// </summary>
 class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 	public IDecision GetSourceDecision() {
-		var st = new A.SpaceTokenDecision(
+
+		var st = new TypedDecision<TokenLocation>(
 			move.Prompt,
 			_moveOptions.Select( s => s.Source ).Distinct(),
 			_moveIsOptional ? Present.Done : Present.Always
 		);
-		var destinations = _moveOptions.Select( s => s.Destination ).Distinct().ToArray();
-		if(destinations.Length == 1)
-			st.PointArrowTo( destinations[0].SpaceSpec );
+
+		// If this is a gather and there is only 1 target, draw arrow to forced destination
+		//var destinations = _moveOptions.Select( s => s.Destination ).Distinct().ToArray();
+		//if(destinations.Length == 1)
+		//	st.PointArrowTo( destinations[0].SpaceSpec );
+
 		return st;
 	}
 
 	public IDecision? Handle(IOption option, bool block) {
-		if(option is SpaceToken source)
+		if(option is TokenLocation source)
 			return HandleMoveSource( source, block );
 
 		if(option is Space destination) {
@@ -127,7 +133,7 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 		throw new ArgumentException( "Part 2 of move should be a space" );
 	}
 
-	A.SpaceDecision? HandleMoveSource( SpaceToken source, bool block ) {
+	A.SpaceDecision? HandleMoveSource( TokenLocation source, bool block ) {
 		// if only 1 destination - Auto-select it now (can't use Present.Auto in the ui)
 		Space[] destinationOptions = _moveOptions!
 			.Where( s => s.Source == source )
@@ -142,8 +148,9 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 					destinationOptions,
 					Present.AutoSelectSingle // if they selected a source, don't let them cancel.
 				)
-				.ComingFrom( source.Space )
-				.ShowTokenLocation( source.Token );
+				// .ComingFrom( source.Space )
+				//.ShowTokenLocation( source.Token )
+				;
 		} else {
 			// Auto-Select-Single
 			Move singleMove = _moveOptions.Single( s => s.Source == source && s.Destination == destinationOptions[0] );
@@ -159,7 +166,7 @@ class MoveBehavior( IDecisionPortal inner, A.MoveDecision move ) {
 		inner.Choose( move, realOption, block );
 	}
 
-	SpaceToken? _moveSource = null;
+	TokenLocation? _moveSource = null;
 	readonly Move[] _moveOptions = move.Options.OfType<Move>().ToArray();
 	readonly bool _moveIsOptional = move.Options.Any( x => x == TextOption.Done );
 }

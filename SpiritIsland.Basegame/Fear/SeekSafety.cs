@@ -51,7 +51,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 		int sourceCount=0;
 		await source.SourceSelector
 			.AddGroup( 1, Human.Explorer )
-			.Track(s=>sourceCount = buildingCounts[s.Space] )
+			.Track(tl => sourceCount = buildingCounts[(Space)tl.Location] )
 			.ConfigDestination( ds=>ds.FilterDestination( dst => sourceCount < buildingCounts[dst] ) )
 			.PushUpToN( self );
 

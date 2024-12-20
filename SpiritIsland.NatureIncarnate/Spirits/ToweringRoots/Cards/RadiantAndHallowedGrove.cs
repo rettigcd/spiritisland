@@ -24,7 +24,7 @@ public class RadiantAndHallowedGrove {
 		int index(Space space) => space == target ? 0 : 1;
 
 		return new SourceSelector( target.InOrAdjacentTo )
-			.Track( st => allow[index(st.Space)] = false )
+			.Track( st => allow[index((Space)st.Location)] = false )
 			.FilterSource( ss => allow[index(ss)] );
 	}
 

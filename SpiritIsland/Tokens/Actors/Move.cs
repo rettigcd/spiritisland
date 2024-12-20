@@ -1,8 +1,13 @@
 ﻿namespace SpiritIsland;
 
-public record Move(SpaceToken Source, Space Destination) : IOption {
-	public Task<TokenMovedArgs> Apply(int count=1) => Source.MoveTo(Destination,1);
+/// <summary>
+/// This is a Move Command
+/// </summary>
+/// <param name="Source"></param>
+/// <param name="Destination"></param>
+public record Move(TokenLocation Source, Space Destination) : IOption {
 	string IOption.Text => $"{Source} => {Destination.Label}";
+	public Task<TokenMovedArgs?> Apply(int count = 1) => Source.Token.MoveAsync(Source.Location,Destination,count);
 }
 
 static public class MoveExtensions {

@@ -48,18 +48,20 @@ public sealed class TokenMover(
 
 	async Task NewWay( Present present ) {
 
-		while(true) {
+		var move = await GetMoveDecision(present);
 
-			var move = await GetMoveDecision(present);
-			if(move == null) break;
+		while( move is not null) {
+			// Notify/Update Source
+			await sourceSelector.NotifyAsync(move.Source);
+			await destinationSelector.NotifyAsync(move.Destination);
 
 			// Do Move
-			TokenMovedArgs tokenMoved = (await move.Source.MoveTo( move.Destination ))!;
+			TokenMovedArgs? tokenMoved = await move.Apply(1);
+			if( tokenMoved != null )
+				await NotifyAsync( tokenMoved );
 
-			// Notify/Update Source
-			await sourceSelector.NotifyAsync( move.Source );
-			await destinationSelector.NotifyAsync( move.Destination );
-			await NotifyAsync( tokenMoved );
+			// next
+			move = await GetMoveDecision(present);
 		}
 	}
 

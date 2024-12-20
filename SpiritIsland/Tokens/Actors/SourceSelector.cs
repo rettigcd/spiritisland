@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <summary>
 /// Presents user with ability to select from many *REMOVABLE* tokens on many spaces.
@@ -60,7 +59,7 @@ public class SourceSelector {
 		// Tokens will still be where they started, so we need to
 		// manually track how many have been used and
 		// not allow selection when used up
-		Dictionary<SpaceToken,int> unused = [];
+		Dictionary<TokenLocation,int> unused = [];
 		Track( st => {
 			// first time - init total
 			if(!unused.ContainsKey(st)) unused.Add(st,st.Count);
@@ -95,24 +94,24 @@ public class SourceSelector {
 
 	#region Event / Callback
 
-	public SourceSelector Track( Action<SpaceToken> onMoved ) {
+	public SourceSelector Track( Action<TokenLocation> onMoved ) {
 		_onSelected.Add( ( x ) => { onMoved( x ); return Task.CompletedTask; } );
 		return this;
 	}
 
-	public SourceSelector Track( Func<SpaceToken, Task> onMoved ) {
+	public SourceSelector Track( Func<TokenLocation, Task> onMoved ) {
 		_onSelected.Add( onMoved );
 		return this;
 	}
 
-	public async Task NotifyAsync( SpaceToken selected ) {
+	public async Task NotifyAsync( TokenLocation selected ) {
 		_quota.MarkTokenUsed( selected.Token );
 
-		foreach(Func<SpaceToken, Task> onSelected in _onSelected)
+		foreach(Func<TokenLocation, Task> onSelected in _onSelected)
 			await onSelected( selected );
 	}
 
-	readonly List<Func<SpaceToken, Task>> _onSelected = [];
+	readonly List<Func<TokenLocation, Task>> _onSelected = [];
 
 	#endregion
 
@@ -156,10 +155,10 @@ public class SourceSelector {
 
 static public class SelectFrom {
 	static public SourceSelector FromASingleLand( this SourceSelector ss ) {
-		SpaceSpec? source = null;
+		ILocation? source = null;
 		ss
-			.Track( spaceToken => source ??= spaceToken.Space.SpaceSpec )
-			.FilterSource( space => source is null || space.SpaceSpec == source );
+			.Track( spaceToken => source ??= spaceToken.Location )
+			.FilterSource( space => source is null || space.Equals(source) );
 		return ss;
 	}
 }
