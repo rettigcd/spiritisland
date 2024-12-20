@@ -110,13 +110,16 @@ public class ManyMinds_Tests {
 		// When: playing Guide the Way on Feathered Wings
 		await spirit.When_ResolvingCard<GuideTheWayOnFeatheredWings>( (user) => {
 			user.Choose( "A1" );
-			user.NextDecision.HasPrompt( "Move up to (1)" ).MoveFrom( "SS-Beast" ).MoveTo("A5");
+
+			user.NextDecision.HasPrompt("Move Beast (1 of 2)").MoveFrom( "SS-Beast" ).MoveTo("A5");
 			//user.NextDecision.HasPrompt( "Move SS-Beast to" ).Choose( "A5" );
 			user.NextDecision.HasPrompt( "Move up to (2)" ).MoveFrom( "D@2" );
 			user.NextDecision.HasPrompt( "Move up to (1)" ).MoveFrom( "D@2" );
 
 			// Then: only original SS-Beast is available for 2nd step. (the other Beast token is not an option)
-			user.NextDecision.HasPrompt( "Move SS-Beast to" ).Choose( "A7" );
+			user.NextDecision.HasPrompt("Move Beast (2 of 2)")
+				.HasOptions("SS-Beast on A5 => A1,SS-Beast on A5 => A4,SS-Beast on A5 => A6,SS-Beast on A5 => A7,SS-Beast on A5 => A8,Done")
+				.Choose("SS-Beast on A5 => A7");
 
 			// Cleanup
 			user.NextDecision.HasPrompt( "Move up to (2)" ).MoveFrom( "D@2" );

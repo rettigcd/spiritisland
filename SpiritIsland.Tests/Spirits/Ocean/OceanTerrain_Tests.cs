@@ -200,9 +200,14 @@ public class OceanTerrain_Tests {
 		_ = _boardA[2].ScopeSpace.Ravage();
 
 		// Then: we can/can't cascade into ocean
-		NextDecision
-			.HasOptions( withOcean ? "A0,A1,A3,A4" : "A1,A3,A4" )
-			.Choose( withOcean ? "A0" : "A1" );
+		if(withOcean)
+			NextDecision
+				.HasOptions( "Blight on A2 => A0,Blight on A2 => A1,Blight on A2 => A3,Blight on A2 => A4" )
+				.Choose("Blight on A2 => A4");
+		else
+			NextDecision
+				.HasOptions( "Blight on A2 => A1,Blight on A2 => A3,Blight on A2 => A4")
+				.Choose("Blight on A2 => A4");
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
@@ -316,8 +321,9 @@ public class OceanTerrain_Tests {
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
 			_oceanSpirit.NextDecision()
-				.HasOptions( "A1,A2,A3,B1,B2,B3,Done" )
-				.Choose( "A1" );
+				.HasPrompt("Save Dahan from Drowning")
+				.HasOptions("D@2 on A0 => A1,D@2 on A0 => A2,D@2 on A0 => A3,D@2 on A0 => B1,D@2 on A0 => B2,D@2 on A0 => B3,Done")
+				.Choose("D@2 on A0 => A1");
 		}
 
 		// When: Pushes 2nd dahan into Ocean
@@ -326,8 +332,8 @@ public class OceanTerrain_Tests {
 		if(savedByOcean) {
 			// Ocean should decide if it is going to save them now
 			_oceanSpirit.NextDecision()
-				.HasOptions( "A1,A2,A3,B1,B2,B3,Done" )
-				.Choose("A1");
+				.HasOptions("D@2 on A0 => A1,D@2 on A0 => A2,D@2 on A0 => A3,D@2 on A0 => B1,D@2 on A0 => B2,D@2 on A0 => B3,Done")
+				.Choose("D@2 on A0 => A1");
 
 			// End of Action - Thunder speaker exits ocean
 			Choose( "Ts" );

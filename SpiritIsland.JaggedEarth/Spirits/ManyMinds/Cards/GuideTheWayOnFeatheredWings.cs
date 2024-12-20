@@ -13,44 +13,25 @@ public class GuideTheWayOnFeatheredWings {
 
 	static public async Task MoveBeastAndFriends(TargetSpaceCtx ctx ) {
 
-		// track which beast moves
-		var tracker = new TrackBeastTokenMoved();
-		ctx.Space.Init(tracker,1);
+		var move1 = await ctx.Self.Select("Move Beast (1 of 2)", ctx.Space.OfTag(Token.Beast).On(ctx.Space).BuildMoves(x=>ctx.Space.Adjacent), Present.Done );
+		if(move1 is null) return;
+		await move1.Apply();
 
-		// move beast (1 of 2)
-		Space? destination1 = await ctx.MoveTokensToSingleLand(1, new TargetCriteria( 1 ), Token.Beast );
-		if(destination1 is null) return;
-			
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.
 		// the beast / dahan may move to an adjacent land and then back.
-		var destCtx = ctx.Target(destination1);
-		await TokenMover.SingleDestination(destCtx, ctx.Space)
-			.AddGroup(2,Human.Dahan)
+		await TokenMover.SingleDestination(ctx.Target(move1.Destination), ctx.Space)
+			.AddGroup(2, Human.Dahan)
 			.DoUpToN();
 
-		// move beast (2 of 2)
-		var beastMoved = tracker.BeastMoved!; // !!! I'm not sure this is correct, just doing it to make null warnings go away
-		A.SpaceDecision selection = A.SpaceDecision.ForMoving( $"Move {beastMoved.Text} to", destination1, destination1.Adjacent, Present.Done, beastMoved);
-		Space? destination2 = await ctx.Self.Select( selection );
-		if(destination2 is null) return;
-		await beastMoved.MoveAsync(destCtx.Space, destination2);
+		var move2 = await ctx.Self.Select("Move Beast (2 of 2)", new SpaceToken(move1.Destination,move1.Source.Token).BuildMoves(move1.Destination.Adjacent), Present.Done );
+		if(move2 is null) return;
+		await move2.Apply();
 
-		var destCtx2 = ctx.Target( destination2 );
-		await TokenMover.SingleDestination(destCtx2, destCtx.Space)
-			.AddGroup( 2, Human.Dahan )
+		// As it moves, up to 2 dahan may move with it, for part or all of the way.
+		// the beast / dahan may move to an adjacent land and then back.
+		await TokenMover.SingleDestination(ctx.Target(move2.Destination), move1.Destination)
+			.AddGroup(2, Human.Dahan)
 			.DoUpToN();
-	}
-
-	class TrackBeastTokenMoved : BaseModEntity, IHandleTokenRemoved {
-		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
-			if(args.Removed.Class == Token.Beast && args is TokenMovedArgs ){
-				BeastMoved = args.Removed;
-				Space from = (Space)args.From;
-				from.Init(this,0);
-			}
-			return Task.CompletedTask;
-		}
-		public IToken? BeastMoved { get; private set; }
 	}
 
 }

@@ -40,14 +40,11 @@ public class BlightToken( string label, char k, Img img )
 				.ToArray();
 			if(cascadeOptions.Length == 0) return; // no adjacents to cascade to
 
-			Space cascadeTo = await gs.Spirits[0].SelectAlways(A.SpaceDecision.ForMoving(
-				$"Cascade blight from {to.SpaceSpec.Label} to",
-				to,
-				cascadeOptions,
-				Present.Always,
-				Token.Blight
-			));
-			await cascadeTo.Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
+			var cascade = await gs.Spirits[0].SelectAlways(
+				$"Cascade blight from {to.SpaceSpec.Label} to", 
+				new SpaceToken(to,Token.Blight).BuildMoves(cascadeOptions)
+			);
+			await cascade.Destination.Blight.AddAsync(1, args.Reason); // Cascading blight shares original blights reason.
 		}
 
 	}

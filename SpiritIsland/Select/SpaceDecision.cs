@@ -7,24 +7,6 @@
 /// <remarks> Renamed from Select.Space to avoid class name confusion. </remarks>
 public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 
-	#region Moving (existing) SpaceTokens
-
-	// !!! Replace all ToPush, ForMoving with Move Options
-
-	// !!! Step 2 - replace this with Move
-	static public SpaceDecision ToPushToken(IToken token, Space source, IEnumerable<Space> destinationOptions, Present present)
-		=> SpaceDecision.ForMoving("Push " + token.Text + " to", source, destinationOptions, present, token);
-
-	// !!! Step 3 - replace this with Move
-	static public SpaceDecision ForMoving(string prompt, Space source, IEnumerable<Space> spaces, Present present, IToken tokenToAddToTarget)
-		=> new SpaceDecision(prompt, spaces, present)
-			.ComingFrom(source)
-			.ShowTokenLocation(tokenToAddToTarget);
-
-	#endregion Moving (existing) SpaceTokens
-
-	#region Placing (new) Token
-
 	static public SpaceDecision ToPlacePresence(IEnumerable<Space> options, Present present, IToken tokenToAdd)
 		=> new SpaceDecision("Where would you like to place your presence?", options, present)
 			.ShowTokenLocation(tokenToAdd);
@@ -45,6 +27,8 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 		=> new SpaceDecision(prompt, options, present)
 			.ShowTokenLocation(tokenToAdd);
 
+	#region constructors
+
 	/// <remarks> Convenience method - downgrades Space to Spaces</remarks>
 	public SpaceDecision(string prompt, IEnumerable<Space> spaces, Present present)
 		: base(prompt, spaces.OrderBy(x => x.Label), present) {
@@ -54,7 +38,7 @@ public class SpaceDecision : TypedDecision<Space>, IHaveArrows {
 		: base(prompt, spaces.OrderBy(x => x.Label), cancelText) {
 	}
 
-	#endregion
+	#endregion constructors
 
 	public override Space ConvertOptionToResult(IOption option) { return (Space)option; }
 

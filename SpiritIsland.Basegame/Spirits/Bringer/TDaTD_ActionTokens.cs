@@ -64,11 +64,11 @@ public class TDaTD_ActionTokens( Space space )
 		// Push towns and explorers
 		var newToken = adj.NewToken;
 		if(newToken.HumanClass != DreamingCity) {
-			var options = Adjacent;
-			Space? destination = await ActionScope.Current.Owner!.SelectAlways( A.SpaceDecision.ToPushToken( newToken, this, options, Present.Always ) );
-			if(destination is not null){
-				await newToken.MoveAsync(this,destination); // there is no Push(Token), so this will have to do.
-				RecordSpaceWithDreamers( destination );
+
+			var move = await ActionScope.Current.Owner!.Select("Push dreaming Invader", newToken.On(this).BuildMoves(Adjacent), Present.Always);
+			if(move is not null){
+				await move.Apply(); // there is no Push(Token), so this will have to do.
+				RecordSpaceWithDreamers( move.Destination );
 			}
 		}
 

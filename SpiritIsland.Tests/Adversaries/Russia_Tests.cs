@@ -133,9 +133,11 @@ public class Russia_Tests {
 		//  When: ravage
 		//  Then: we push 1
 		Spirit spirit = gameState.Spirits[0];
-		await a5.SpaceSpec.When_CardRavages()
-			.AwaitUser( u => u.NextDecision.HasPrompt( "Push E@1 to" ).HasOptions( "A1,A4,A6,A7,A8" ).Choose( a1.Label ) )
-			.ShouldComplete("Ravage");
+		await a5.SpaceSpec.When_CardRavages().AwaitUser( u => {
+			u.NextDecision.HasPrompt("Pending Disaster-Push Explorer")
+				.HasOptions("E@1 on A5 => A1,E@1 on A5 => A4,E@1 on A5 => A6,E@1 on A5 => A7,E@1 on A5 => A8")
+				.Choose("E@1 on A5 => A1");
+		} ).ShouldComplete("Ravage");
 
 		//   And: explorer should be on destination
 		a1.Summary.ShouldBe("1E@1");
@@ -157,11 +159,15 @@ public class Russia_Tests {
 		destination.Given_ClearAll();
 		//  When: power destroys
 		await using var actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,spirit);
-		Task t = TheJungleHungers.ActAsync( spirit.Target(a3.SpaceSpec) );
-		//  Then: we push 1 explorer to a Land-space (not A0-ocean)
-		t.IsCompleted.ShouldBeFalse();
-		spirit.NextDecision().HasPrompt( "Push E@1 to" ).HasOptions( "A2,A4" ).Choose( destination.Label );
-		t.IsCompleted.ShouldBeTrue();
+		await TheJungleHungers.ActAsync( spirit.Target(a3.SpaceSpec) ).AwaitUser( user => {
+
+			//  Then: we push 1 explorer to a Land-space (not A0-ocean)
+			//spirit.NextDecision().HasPrompt("Push E@1 to").HasOptions("A2,A4").Choose(destination.Label);
+			user.NextDecision.HasPrompt("Pending Disaster-Push Explorer")
+				.HasOptions("E@1 on A3 => A2,E@1 on A3 => A4")
+				.Choose("E@1 on A3 => A4");
+
+		}).ShouldComplete();
 
 		//   And: explorer should be on destination
 		destination.Summary.ShouldBe( "1E@1" );
@@ -185,7 +191,9 @@ public class Russia_Tests {
 		// When destroying all explorers
 		await TheJungleHungers.ActAsync(gameState.Spirits[0].Target(a5)).AwaitUser(user => {
 			// Then: pushes 1
-			user.NextDecision.HasPrompt("Push E@1 to").HasOptions("A1,A4,A6,A7,A8").Choose("A6");
+			user.NextDecision.HasPrompt("Pending Disaster-Push Explorer")
+				.HasOptions("E@1 on A5 => A1,E@1 on A5 => A4,E@1 on A5 => A6,E@1 on A5 => A7,E@1 on A5 => A8")
+				.Choose("E@1 on A5 => A6");
 		}).ShouldComplete();
 
 		boardA[6].ScopeSpace.Summary.ShouldBe( "1E@1" );
@@ -208,7 +216,9 @@ public class Russia_Tests {
 		// When destroying all explorers
 		await TheJungleHungers.ActAsync( gameState.Spirits[0].Target(a5) ).AwaitUser( user => {
 			// Then: A7 is missing from push options
-			user.NextDecision.HasPrompt("Push E@1 to").HasOptions("A1,A4,A6,A8").Choose("A6");
+			user.NextDecision.HasPrompt("Pending Disaster-Push Explorer")
+				.HasOptions("E@1 on A5 => A1,E@1 on A5 => A4,E@1 on A5 => A6,E@1 on A5 => A8")
+				.Choose("E@1 on A5 => A6");
 		}).ShouldComplete();
 	}
 

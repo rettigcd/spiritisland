@@ -42,7 +42,9 @@ public class DreadApparitions_Tests {
 		// When: destroying the town with Power
 		await using( await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit) ) {
 			await spirit.Target(targetSpace).Invaders.DestroyNOfClass(1, Human.Town).AwaitUser(user => {
-				user.NextDecision.HasPrompt("Push T@2 to").Choose("A4");
+				user.NextDecision.HasPrompt("Push dreaming Invader")
+					.HasOptions("T@2 on A5 => A1,T@2 on A5 => A4,T@2 on A5 => A6,T@2 on A5 => A7,T@2 on A5 => A8")
+					.Choose("T@2 on A5 => A4");
 			});
 		}
 

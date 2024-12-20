@@ -48,8 +48,11 @@ public class ToDreamAThousandDeaths_Tests {
 		await powerCardActionAsync( MakeFreshPowerCtx( scope ) )
 			.AwaitUser( user => {
 				// Then: dream-death allows User pushes them
-				for(int i = 0; i < count; ++i)
-					user.PushSelectedTokenTo( "E@1", "A1,A4,A6,[A7],A8" );
+				for(int i = 0; i < count; ++i ) {
+					user.NextDecision.HasPrompt("Push dreaming Invader")
+						.HasOptions("E@1 on A5 => A1,E@1 on A5 => A4,E@1 on A5 => A6,E@1 on A5 => A7,E@1 on A5 => A8")
+						.Choose("E@1 on A5 => A7");
+				}
 			} ).ShouldComplete(method);
 
 		// And: 0-fear
@@ -83,7 +86,9 @@ public class ToDreamAThousandDeaths_Tests {
 			user.NextDecision.Choose(targetSpace.Label);
 			// Then: dream-death allows User pushes them
 			for( int i = 0; i < count; ++i )
-				user.PushSelectedTokenTo("T@2", "A1,A2,A3,[A5]");
+				user.NextDecision.HasPrompt("Push dreaming Invader")
+					.HasOptions("T@2 on A4 => A1,T@2 on A4 => A2,T@2 on A4 => A3,T@2 on A4 => A5")
+					.Choose("T@2 on A4 => A5");
 		});
 
 		// And:4-fear

@@ -40,7 +40,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 	bool CanSaveDahanOnSpace( Space to ) => to.Has( _ocean.Presence );
 
 	async Task<bool> SaveDahan(Space to, ITokenAddedArgs args) {
-		
+
 		var destinationOptions = GameState.Current.Island.Boards
 			.Select(x => x.Ocean)
 			.ScopeTokens()
@@ -50,14 +50,16 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 
 		// And Ocean chooses to save them (may be more than 1)
 		// For now save them all to the same spot.
-		Space? destination = await _ocean.Select(A.SpaceDecision.ToPushToken(args.Added, to, destinationOptions, Present.Done));
-		if( destination is null ) return false;
+		var moves = new SpaceToken((Space)args.To,args.Added).BuildMoves(destinationOptions);
+		var move = await _ocean.Select("Save Dahan from Drowning",moves, Present.Done);
+		if( move is null) return false;
+
 
 		// Move all of them at the end of the Action. (Let everyone handle the move-event before we move them again)
 		ActionScope.Current.AtEndOfThisAction(async _ => {
 			//don't use original because that may or may not have been for a power.
 			await using ActionScope childAction = await ActionScope.Start(ActionCategory.Default);
-			await args.Added.MoveAsync(to, destination,args.Count);
+			await move.Apply(args.Count);
 		});
 		return true;
 	}

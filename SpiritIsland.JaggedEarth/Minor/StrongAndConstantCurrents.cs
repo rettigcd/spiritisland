@@ -44,26 +44,17 @@ public class StrongAndConstantCurrents{
 		Space[] coastSpaces = ActionScope.Current.Spaces
 			.Where( TerrainMapper.Current.IsCoastal )
 			.ToArray();
+		var nonTargetCoastal = coastSpaces.Except([ctx.Space]).ToArray();
 
 		while(0 < count) {
 
-			SpaceToken[] coastalWithDahan = coastSpaces
-				.SelectMany( x => x.SpaceTokensOfTag(Human.Dahan) )
-				.ToArray();
+			var moves = coastSpaces.SelectMany(x => x.SpaceTokensOfTag(Human.Dahan))
+				.BuildMoves(st => st.Space == ctx.Space ? nonTargetCoastal : [ctx.Space]);
 
-			// From
-			var selected = await ctx.Self.Select( 
-				new A.SpaceTokenDecision( "Select Dahan to move to/from "+ctx.Space.Label, coastalWithDahan, Present.Done )
-					.PointArrowTo( ctx.SpaceSpec )
-			);
-			if(selected is null) break;
+			var move = await ctx.Self.Select("Move Dahan between target and Coastal", moves, Present.Done );
+			if( move is null) break;
 
-			// To:
-			Space? destination = (selected.Space != ctx.Space) ? ctx.Space
-				: await ctx.Self.Select( A.SpaceDecision.ToPushToken( selected.Token, selected.Space, coastSpaces, Present.Always ) );
-			if( destination is not null)
-				await selected.MoveTo( destination );
-
+			await move.Apply();
 			count--;
 		}
 	}
