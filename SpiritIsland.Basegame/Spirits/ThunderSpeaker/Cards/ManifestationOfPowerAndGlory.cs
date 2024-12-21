@@ -1,10 +1,10 @@
-﻿using System.Xml;
-
-namespace SpiritIsland.Basegame;
+﻿namespace SpiritIsland.Basegame;
 
 public class ManifestationOfPowerAndGlory {
 
-	[SpiritCard( "Manifestation of Power and Glory", 3, Element.Sun, Element.Fire, Element.Air ),Slow,FromPresence(0,Filter.Dahan)]
+	public const string Name = "Manifestation of Power and Glory";
+
+	[SpiritCard( Name, 3, Element.Sun, Element.Fire, Element.Air ),Slow,FromPresence(0,Filter.Dahan)]
 	[Instructions( "1 Fear. Each Dahan deals damage equal to the number of your Presence in target land." ), Artist( Artists.LoicBelliau )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 

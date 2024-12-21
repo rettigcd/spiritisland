@@ -101,7 +101,7 @@ public abstract partial class Spirit
 
 	#region Growth
 
-	public GrowthTrack GrowthTrack { get; protected set; }
+	public GrowthTrack GrowthTrack { get; set; }
 
 	/// <remarks>So we can init stuff at beginning of turn if we need to.</remarks>
 	public virtual async Task DoGrowth(GameState gameState) {
@@ -130,7 +130,7 @@ public abstract partial class Spirit
 	/// <summary> Resolves Action for the current phase </summary>
 	public async Task SelectAndResolveActions( GameState gs ) {
 		Phase phase = gs.Phase;
-		Present present = phase == Phase.Growth ? Present.Always : Present.Done;
+		Present present = phase switch{ Phase.Growth or Phase.Init => Present.Always, _ => Present.Done };
 
 		IActionFactory[] options = GetAvailableActions(phase).ToArray();
 		while( 0 < options.Length ) {

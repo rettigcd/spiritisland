@@ -7,11 +7,6 @@
 
 5	Change SpaceDecision .Move .Push methods to use Move options
 5	Bag - could create a space on the board to represent the bag - contain blight, Beast, Wilds, etc
-5	Destroyed presence is as location.
-5	Placing / Destroying presence is a simple Move to/from those locations.
-
-3	Elements could go in the "Bad" space.  Other options could be mapped by selecting one of the tokens in the bag space.
-
 5	Cleanup All the SelectAsync<> variants.
 
 	Replace Dynamic Defend with visible tokens.
@@ -24,6 +19,25 @@
 	UI - Select Element
 
 3	BUG - If no Dahan, strife does not come off invaders
+
+== Other Hooks ==
+		public class BuildEngine {
+			public event Func<Space, HumanToken, Task>? BuildComplete;
+		}
+		public class ExploreEngine {
+			public event Func<GameState,Task>? ExploreForCardComplete;
+			public event Func<Space,Task>? ExploredSpace;
+		}
+		public class Fear : IHaveMemento {
+			public event Action<IFearCard>? CardActivated;
+		}
+		public class InvaderCard{
+			CardRevealed
+		}
+
+		public InvaderBinding{
+			event InvaderDamaged
+		}
 
 3	Spirit Details View during configure-new-game.
 
@@ -39,8 +53,6 @@
 	SPIRITS - Aspects (new spirits)
 
 		Wildfire - Transforming
-		Thunderspeaker - Warrior
-		Thunderspeaker - Tactician
 
 		Bringer - Enticing
 		Memory - Mentor

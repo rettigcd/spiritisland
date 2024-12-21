@@ -31,6 +31,12 @@ public static class AspectHelper_Extensoins {
 		}
 	}
 
+	static public void ReplaceIncarna(this Spirit spirit, Incarna newIncarna) {
+		var old = spirit.Presence;
+		spirit.Presence = new SpiritPresence(spirit,old.Energy,old.CardPlays,old.Token,newIncarna);
+	}
+
+
 	static public void ReplaceCard(this Spirit spirit, string oldCardName, PowerCard newCard) {
 		for( int i = 0; i < spirit.Hand.Count; ++i ) {
 			if( spirit.Hand[i].Title == oldCardName ) {
@@ -46,7 +52,6 @@ public static class AspectHelper_Extensoins {
 			}
 		}
 	}
-
 
 	static public void AddInnate(this Spirit spirit, InnatePower newInnate) {
 		spirit.InnatePowers = [.. spirit.InnatePowers, newInnate];

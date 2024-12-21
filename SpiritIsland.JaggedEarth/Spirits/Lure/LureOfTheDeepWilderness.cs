@@ -7,8 +7,7 @@ public class LureOfTheDeepWilderness : Spirit {
 	public override string SpiritName => Name;
 
 	public LureOfTheDeepWilderness():base( 
-		x => new LurePresence(x)
-
+		x => new HomeOfTheIslandsHeart(x)
 		, new GrowthTrack(
 			new GrowthGroup( new ReclaimAll(), new GainEnergy( 1 ) ),
 			new GrowthGroup( new PlacePresence( 4, Filter.Inland ) )
@@ -28,7 +27,7 @@ public class LureOfTheDeepWilderness : Spirit {
 			InnatePower.For(typeof(ForsakeSocietyToChaseAfterDreams)),
 			InnatePower.For(typeof(NeverHeardFromAgain))
 		];
-		SpecialRules = [LurePresence.PlacementRule, EnthrallTheForeignExplorers.Rule];
+		SpecialRules = [HomeOfTheIslandsHeart.PlacementRule, EnthrallTheForeignExplorers.Rule];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {

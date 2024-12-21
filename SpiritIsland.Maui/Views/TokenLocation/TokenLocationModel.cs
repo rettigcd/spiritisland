@@ -100,7 +100,7 @@ public class TokenLocationModel : ObservableModel, OptionView {
 			Img.S_Incarna_Empowered      => "ss_e.png",
 			Img.TRotJ_Incarna            => "trotj.png",
 			Img.TRotJ_Incarna_Empowered  => "trotj_e.png",
-			Img.T_Incarna                => "tt.png",
+			Img.Ts_Incarna                => "ts.png",
 			Img.WVKD_Incarna             => "wvkd.png",
 			Img.WVKD_Incarna_Empowered   => "wvkd_e.png",
 

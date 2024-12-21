@@ -26,7 +26,7 @@ public static class Filter {
 	public const string Presence   = "Presence";
 	public const string Incarna    = "Incarna";
 	public const string Quake      = "Quake";
-	public const string EndlessDark = "EndlessDark";
+	public const string EndlessDark= "EndlessDark";
 
 	public const string NotWetland = "Not " + Wetland;
 	public const string NotOcean   = "Not " + Ocean;
@@ -37,4 +37,5 @@ public static class Filter {
 	public const string TwoBeasts  = "2 " + Beast;
 	public const string CoastalCity = Coastal+"+"+City;
 	public const string BlightAndInvaders = Blight+"+"+Invaders;
+	public const string DahanAndIncarna   = Dahan+"+"+Incarna;
 }

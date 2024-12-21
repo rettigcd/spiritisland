@@ -8,7 +8,7 @@ public class Gain1Element( params Element[] elementOptions )
 
 	public override string Description => "Gain " + ElementOptions
 		.Select( x => x.ToString() )
-		.Join_WithLast(", ", ", or " );
+		.Join_WithLast(", ", " or " );
 
 	public override async Task ActAsync( Spirit self ) {
 		var element = ElementOptions.Length == 1 ? ElementOptions[0]

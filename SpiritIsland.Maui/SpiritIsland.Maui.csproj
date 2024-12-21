@@ -204,10 +204,10 @@
 	  <None Remove="Resources\Images\growth\gain_elements_earth_earth.png" />
 	  <None Remove="Resources\Images\growth\gain_elements_moon.png" />
 	  <None Remove="Resources\Images\growth\gain_elements_sun.png" />
+	  <None Remove="Resources\Images\growth\gain_elements_sun_fire.png" />
 	  <None Remove="Resources\Images\growth\gain_elements_water_water.png" />
 	  <None Remove="Resources\Images\growth\gain_energy_an_additional_time.png" />
 	  <None Remove="Resources\Images\growth\gain_energy_equal_to_card_plays.png" />
-	  <None Remove="Resources\Images\growth\gain_moon__air__or_plant.png" />
 	  <None Remove="Resources\Images\growth\gain_power_card.png" />
 	  <None Remove="Resources\Images\growth\gain_time_1_x2z.png" />
 	  <None Remove="Resources\Images\growth\gain_time_1_x3z.png" />
@@ -496,7 +496,6 @@
 	  <None Remove="Resources\Images\tokens\incarna\ss_e.png" />
 	  <None Remove="Resources\Images\tokens\incarna\trotj.png" />
 	  <None Remove="Resources\Images\tokens\incarna\trotj_e.png" />
-	  <None Remove="Resources\Images\tokens\incarna\tt.png" />
 	  <None Remove="Resources\Images\tokens\incarna\wvkd.png" />
 	  <None Remove="Resources\Images\tokens\incarna\wvkd_e.png" />
 	  <None Remove="Resources\Images\tokens\isolate.png" />
@@ -580,6 +579,7 @@
 	  <MauiImage Include="Resources\Images\badge\bdg_volcano_looming_high.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_wandering_voice_keens_delirium.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_wounded_waters_bleeding.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_sun_or_fire.png" />
 	  <MauiImage Include="Resources\Images\growth\z1_piece_escapes.png" />
 	  <MauiImage Include="Resources\Images\growth\z2_pieces_escape.png" />
 	  <MauiImage Include="Resources\Images\growth\accelerate_or_delay.png" />
@@ -607,7 +607,7 @@
 	  <MauiImage Include="Resources\Images\growth\gain_elements_water_water.png" />
 	  <MauiImage Include="Resources\Images\growth\gain_energy_an_additional_time.png" />
 	  <MauiImage Include="Resources\Images\growth\gain_energy_equal_to_card_plays.png" />
-	  <MauiImage Include="Resources\Images\growth\gain_moon__air__or_plant.png" />
+	  <MauiImage Include="Resources\Images\growth\gain_moon__air_or_plant.png" />
 	  <MauiImage Include="Resources\Images\growth\gain_power_card.png" />
 	  <MauiImage Include="Resources\Images\growth\gain_time_1_x2z.png" />
 	  <MauiImage Include="Resources\Images\growth\gain_time_1_x3z.png" />
@@ -839,7 +839,7 @@
 	  <MauiImage Include="Resources\Images\tokens\incarna\ll.png" />
 	  <MauiImage Include="Resources\Images\tokens\incarna\ss_e.png" />
 	  <MauiImage Include="Resources\Images\tokens\incarna\ss.png" />
-	  <MauiImage Include="Resources\Images\tokens\incarna\tt.png" />
+	  <MauiImage Include="Resources\Images\tokens\incarna\ts.png" />
 	  <MauiImage Include="Resources\Images\tokens\incarna\trotj_e.png" />
 	  <MauiImage Include="Resources\Images\tokens\incarna\trotj.png" />
 	  <MauiImage Include="Resources\Images\tokens\incarna\wvkd_e.png" />

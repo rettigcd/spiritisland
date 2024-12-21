@@ -13,7 +13,7 @@ public class Thunderspeaker : Spirit {
 		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy1, Track.AirEnergy, Track.Energy2, Track.FireEnergy, Track.SunEnergy, Track.Energy3 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card3, Track.Card4 ),
-			new FollowingPresenceToken( spirit, Human.Dahan )
+			new FollowingPresenceToken( spirit, Human.Dahan, "Ts" )
 		),
 		new GrowthTrack(
 			new GrowthGroup(

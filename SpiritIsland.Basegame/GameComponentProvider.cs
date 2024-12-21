@@ -57,6 +57,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		// A Spread of Rampant Green
 		Tangles.ConfigKey,
 		Regrowth.ConfigKey,
+		// Thunderspeaker
+		Warrior.ConfigKey,
+		Tactician.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
@@ -84,6 +87,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		// A Spread of Rampant Green
 		Tangles.Name => new Tangles(),
 		Regrowth.Name => new Regrowth(),
+		// Thunderspeaker
+		Warrior.Name => new Warrior(),
+		Tactician.Name => new Tactician(),
 		_ => null,
 	};
 

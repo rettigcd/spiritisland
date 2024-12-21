@@ -16,7 +16,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, Incarna incarna )
 		:this(spirit,energy,cardPlays,new SpiritPresenceToken(spirit),incarna) { }
 
-	SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token, Incarna? incarna ) {
+	public SpiritPresence( Spirit spirit, IPresenceTrack energy, IPresenceTrack cardPlays, SpiritPresenceToken token, Incarna? incarna ) {
 		Self = spirit;
 
 		Energy = energy;

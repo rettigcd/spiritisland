@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace SpiritIsland.FeatherAndFlame;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
 public class ThreateningFlames {
 

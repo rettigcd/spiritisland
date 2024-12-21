@@ -154,7 +154,7 @@ public enum Img {
 	L_Incarna,
 	S_Incarna,
 	S_Incarna_Empowered,
-	T_Incarna,
+	Ts_Incarna,
 	TRotJ_Incarna,
 	TRotJ_Incarna_Empowered,
 	WVKD_Incarna,

@@ -1,5 +1,8 @@
 ﻿namespace SpiritIsland.Basegame;
 
+/// <summary>
+/// Makes space with 4 or more Dahan a Sacred Site
+/// </summary>
 public class TendingPresence( Spirit spirit, IPresenceTrack t1, IPresenceTrack t2 )
 	: SpiritPresence( spirit, t1, t2, new TendingPresenceToken(spirit) )
 {
