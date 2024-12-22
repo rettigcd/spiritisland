@@ -14,18 +14,28 @@ class TravelOnRiversBack : SpiritAction {
 	public TravelOnRiversBack() {}
 
 	public override async Task ActAsync(Spirit spirit) {
-		for( int i = 1; i <= 2; ++i ) {
-			var dahanOptions = spirit.Presence.Lands
-				.SelectMany(s => s.SpaceTokensOfTag(TokenCategory.Dahan));
-			var dahan = await spirit.Select(new A.SpaceTokenDecision($"Select Dahan to Move to contiguously presence-connected land. ({i} of 2)", dahanOptions, Present.Done));
-			if( dahan is null ) return;
+		var dahanOptions = spirit.Presence.Lands
+			.SelectMany(s => s.SpaceTokensOfTag(TokenCategory.Dahan))
+			.ToList();
 
-			HashSet<Space> destinationOptions = GetContiguoslyConnectedPresense(spirit, dahan.Space);
+		for( int i = 1; i <= 2; ++i ) {
+			var dahanToMove = await spirit.Select(new A.SpaceTokenDecision($"Select Dahan to Move to contiguously presence-connected land. ({i} of 2)", dahanOptions, Present.Done));
+			if( dahanToMove is null ) return;
+
+			HashSet<Space> destinationOptions = GetContiguoslyConnectedPresense(spirit, dahanToMove.Space);
 			if( destinationOptions.Count == 0 ) continue;
 
 			var destination = await spirit.Select("Move Dahan to.", destinationOptions, Present.Done);
-			if( destination is not null )
-				await dahan.MoveToAsync(destination);
+			if( destination is not null ) {
+				// If this was last one in source, remove it.
+				if(dahanToMove.Count == 1)
+					dahanOptions.Remove(dahanToMove); // we moved it once to where we needed it, no need to move it again
+
+				await dahanToMove.MoveToAsync(destination);
+
+				// IF they moved a token somewhere, then they don't want to remove it from there, so remove that option.
+				dahanOptions.Remove(dahanToMove.Token.On(destination));
+			}
 		}
 	}
 

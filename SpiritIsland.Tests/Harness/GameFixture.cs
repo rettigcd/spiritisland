@@ -36,7 +36,7 @@ class GameFixture {
 
 
 		user = new VirtualUser(spirit);
-		new SinglePlayer.SinglePlayerGame(gameState).Start(); // Start the game 1st, (Initialize will wipe custome invader counts)
+		new SinglePlayer.SoloGame(gameState).Start(); // Start the game 1st, (Initialize will wipe custome invader counts)
 		return this;
 	}
 

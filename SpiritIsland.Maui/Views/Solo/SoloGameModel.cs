@@ -76,7 +76,7 @@ public class SoloGameModel : ObservableModel {
 		_ovm = new OptionViewManager();
 
 		// Setup the new game
-		_game = new SinglePlayerGame(GameState) {
+		_game = new SoloGame(GameState) {
 			LogExceptions = true,
 			EnablePreselects = true,
 		};
@@ -248,7 +248,7 @@ public class SoloGameModel : ObservableModel {
 	IDecision? _nextDecision;
 	Overlay _visibleOverlay = Overlay.None;
 
-	readonly SinglePlayerGame _game;
+	readonly SoloGame _game;
 	readonly internal UserPortalFacade _userPortal;
 	readonly HashSet<IOption> _preSelectedOptions = [];
 	readonly OptionViewManager _ovm;

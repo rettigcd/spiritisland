@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.SinglePlayer;
 
-public class SinglePlayerGame {
+public class SoloGame {
 
 	/// <summary> The main interface that drives the UI</summary>
 	public IGamePortal UserPortal {get; set;}
@@ -18,7 +18,7 @@ public class SinglePlayerGame {
 
 	#region constructor 
 
-	public SinglePlayerGame(GameState gameState){
+	public SoloGame(GameState gameState){
 		GameState = gameState;
 		Spirit = gameState.Spirits.Single(); // this player only handles single-player.
 		UserPortal = new GamePortal( Spirit.Portal );

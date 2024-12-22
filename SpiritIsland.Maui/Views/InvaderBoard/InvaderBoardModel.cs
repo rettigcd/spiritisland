@@ -49,7 +49,7 @@ public class InvaderBoardModel : ObservableModel {
 
 	#region constructor
 
-	public InvaderBoardModel( SinglePlayerGame game ) {
+	public InvaderBoardModel( SoloGame game ) {
 		var gs = game.GameState;
 		_deck = gs.InvaderDeck;
 		_fear = gs.Fear;

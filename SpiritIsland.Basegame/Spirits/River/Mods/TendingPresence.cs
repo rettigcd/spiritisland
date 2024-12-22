@@ -20,22 +20,46 @@ public class TendingPresence( Spirit spirit, IPresenceTrack t1, IPresenceTrack t
 	public override bool IsSacredSite(Space space) => base.IsSacredSite(space)
 		|| ((TendingPresenceToken)Token).IsTended(space);
 
-	class TendingPresenceToken(Spirit spirit) : SpiritPresenceToken(spirit), IHandleTokenAdded {
+	class TendingPresenceToken(Spirit spirit) : SpiritPresenceToken(spirit), IHandleTokenAdded, IHandleTokenRemoved {
 
 		// Your lans with 4 or more Dahan....
 		public bool IsTended(Space space) => 1 <= space[this]
 			&& 4 <= space.Sum(TokenCategory.Dahan);
 
 		Task IHandleTokenAdded.HandleTokenAddedAsync(Space to, ITokenAddedArgs args) {
-			// - Defend 1 - (Registers the dynamic defend the first time the token is added to a space)
-			if( !_registered ) {
-				GameState.Current.Tokens.Dynamic.ForGame.Register(s => IsTended(s) ? 1 : 0, SpiritIsland.Token.Defend);
-				_registered = true;
-			}
+			if(args.To is Space space)
+				Update(space);
 			return Task.CompletedTask;
 		}
 
-		bool _registered = false;
+		public override Task HandleTokenRemovedAsync(ITokenRemovedArgs args) {
+			if(args.From is Space space)
+				Update(space);
+			return base.HandleTokenRemovedAsync(args);
+		}
+
+		void Update(Space space) {
+			int desiredDefend = 0 < space[this] && 4 <= space.Sum(TokenCategory.Dahan)
+				? 1
+				: 0;
+			space.Init(defendToken, desiredDefend);
+		}
+
+		MyDefend defendToken = new MyDefend();
+
+		class MyDefend : IToken {
+			public Img Img => Img.Defend;
+			public ITokenClass Class => SpiritIsland.Token.Defend;
+
+			public string Badge => string.Empty;
+
+			public string Text => "";
+
+			public bool HasTag(ITag tag) {
+				return tag == SpiritIsland.Token.Defend;
+			}
+		}
+
 	}
 
 }
