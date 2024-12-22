@@ -25,9 +25,16 @@ public class GameComponentProvider : IGameComponentProvider {
 
 	#region Aspects
 
-	public AspectConfigKey[] AspectNames => [];
+	public AspectConfigKey[] AspectNames => [
+		// Heart of the Wildfire
+		Transforming.Key,
+	];
 
-	public IAspect? MakeAspect(AspectConfigKey aspectName ) => null;
+	public IAspect? MakeAspect(AspectConfigKey aspectName ) => aspectName.Aspect switch {
+		// Heart of the Wildfire
+		Transforming.Name => new Transforming(),
+		_ => null,
+	};
 
 	#endregion Aspects
 

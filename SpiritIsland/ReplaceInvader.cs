@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 static public class ReplaceInvader {
 
@@ -39,15 +38,16 @@ static public class ReplaceInvader {
 		return oldInvader;
 	}
 
-	public static async Task DowngradeSelectedInvader( Space space, HumanToken oldInvader ) {
+	public static async Task<HumanToken?> DowngradeSelectedInvader( Space space, HumanToken oldInvader ) {
 
 		// Explorers just get removed
 		if(oldInvader.HumanClass == Human.Explorer) {
 			space.Adjust( oldInvader, -1 );
-			return;
+			return null;
 		}
 
-		await space.ReplaceHumanAsync( oldInvader, DowngradeType( oldInvader.HumanClass ) );
+		TokenReplacedArgs replaced = await space.ReplaceHumanAsync( oldInvader, DowngradeType( oldInvader.HumanClass ) );
+		return replaced.Added.AsHuman();
 	}
 
 	static HumanTokenClass DowngradeType( HumanTokenClass orig ) => orig == Human.City ? Human.Town

@@ -52,8 +52,6 @@
 
 	SPIRITS - Aspects (new spirits)
 
-		Wildfire - Transforming
-
 		Bringer - Enticing
 		Memory - Mentor
 		Serpent - Locus

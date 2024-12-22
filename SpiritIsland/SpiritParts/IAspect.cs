@@ -36,6 +36,11 @@ public static class AspectHelper_Extensoins {
 		spirit.Presence = new SpiritPresence(spirit,old.Energy,old.CardPlays,old.Token,newIncarna);
 	}
 
+	static public void ReplacePresenceToken(this Spirit spirit, SpiritPresenceToken token) {
+		var old = spirit.Presence;
+		spirit.Presence = new SpiritPresence(spirit, old.Energy, old.CardPlays, token, old.Incarna);
+	}
+
 
 	static public void ReplaceCard(this Spirit spirit, string oldCardName, PowerCard newCard) {
 		for( int i = 0; i < spirit.Hand.Count; ++i ) {

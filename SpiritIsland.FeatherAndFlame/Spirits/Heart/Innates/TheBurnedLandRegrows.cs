@@ -1,8 +1,10 @@
 ﻿namespace SpiritIsland.FeatherAndFlame;
 
-[InnatePower( "The Burned Land Regrows" ),Slow]
+[InnatePower( Name ),Slow]
 [FromPresence(0,Filter.Blight)]
 public class TheBurnedLandRegrows {
+
+	public const string Name = "The Burned Land Regrows";
 
 	[InnateTier( "4 fire,1 plant", "If target land has 2 blight or more, remove 1 blight." )]
 	static public async Task Option1( TargetSpaceCtx ctx ) { 
