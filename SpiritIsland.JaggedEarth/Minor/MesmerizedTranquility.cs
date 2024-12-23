@@ -12,7 +12,7 @@ public class MesmerizedTranquility{
 		// RavageBehavior cfg = ctx.Tokens.RavageBehavior;
 		// Func<Space, HumanToken, int> old = cfg.AttackDamageFrom1;
 		// cfg.AttackDamageFrom1 = (ss,t) => Math.Max(0, old(ss,t)-1);
-		ctx.Space.Adjust( new ReduceInvaderAttackBy1(1,Human.Invader), 1 );
+		ctx.Space.Adjust( new ReduceAttack(1,Human.Invader), 1 );
 
 		return Task.CompletedTask;
 	}

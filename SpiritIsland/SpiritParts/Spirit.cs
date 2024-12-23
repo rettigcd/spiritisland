@@ -381,6 +381,8 @@ public abstract partial class Spirit
 			&& await SelectAndPlay1( powerCardOptions, remainingToPlay )
 		)
 			--remainingToPlay;
+
+		PowerCard[] GetPowerCardOptions() => [.. Hand.Where(c => c.Cost <= Energy)];
 	}
 
 	async Task<bool> SelectAndPlay1( PowerCard[] powerCardOptions, int remainingToPlay ) {
@@ -395,11 +397,6 @@ public abstract partial class Spirit
 
 		return true;
 	}
-
-	// Helper for SelectAndPlayCardsFromHand
-	PowerCard[] GetPowerCardOptions() => Hand
-		.Where( c => c.Cost <= Energy )
-		.ToArray();
 
 	public void PlayCard( PowerCard card, int? cost = null ) {
 		if(!cost.HasValue) cost = card.Cost;

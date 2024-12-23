@@ -60,6 +60,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		// Thunderspeaker
 		Warrior.ConfigKey,
 		Tactician.ConfigKey,
+		// Bringer
+		Enticing.ConfigKey,
+		Violence.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
@@ -90,6 +93,9 @@ public class GameComponentProvider : IGameComponentProvider {
 		// Thunderspeaker
 		Warrior.Name => new Warrior(),
 		Tactician.Name => new Tactician(),
+		// Bringer
+		Enticing.Name => new Enticing(),
+		Violence.Name => new Violence(),
 		_ => null,
 	};
 

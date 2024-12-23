@@ -144,10 +144,16 @@ public class TDaTD_ActionTokens( Space space )
 
 	#region static DreamTokens
 
-	static public readonly HumanTokenClass DreamingCity = new HumanTokenClass( "City(Dreaming)", "Cities(Dreaming)", TokenCategory.Invader, 5, Img.City, 3, TokenVariant.Dreaming );
-	static public readonly HumanTokenClass DreamingTown = new HumanTokenClass( "Town(Dreaming)", "Towns(Dreaming)", TokenCategory.Invader, 2, Img.Town, 2, TokenVariant.Dreaming );
-	static public readonly HumanTokenClass DreamingExplorer = new HumanTokenClass( "Explorer(Dreaming)", "Explorers(Dreaming)", TokenCategory.Invader, 0, Img.Explorer, 1, TokenVariant.Dreaming );
+	// lazy init so we can change fear values during setup
+	static HumanTokenClass DreamingExplorer => _dreamingExplorer ??= new HumanTokenClass("Explorer(Dreaming)", "Explorers(Dreaming)", TokenCategory.Invader, DreamFear[0], Img.Explorer, 1, TokenVariant.Dreaming);
+	static HumanTokenClass DreamingTown => _dreamingTown ??= new HumanTokenClass( "Town(Dreaming)", "Towns(Dreaming)", TokenCategory.Invader, DreamFear[1], Img.Town, 2, TokenVariant.Dreaming );
+	static HumanTokenClass DreamingCity => _dreamingCity ??= new HumanTokenClass("City(Dreaming)", "Cities(Dreaming)", TokenCategory.Invader, DreamFear[2], Img.City, 3, TokenVariant.Dreaming);
 
+	static HumanTokenClass? _dreamingExplorer;
+	static HumanTokenClass? _dreamingTown;
+	static HumanTokenClass? _dreamingCity;
+
+	public static int[] DreamFear { get; set; } = [0,2,5];
 	#endregion
 
 	static readonly ActionScopeValue<HashSet<Space>> SpacesWithDreamers = new( 

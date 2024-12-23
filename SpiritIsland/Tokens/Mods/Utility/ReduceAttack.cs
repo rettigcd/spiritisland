@@ -1,6 +1,11 @@
 ﻿namespace SpiritIsland;
 
-public class ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classesToReduce ) 
+/// <summary>
+/// Before Ravage begins, reduces Human attack, then restores it immediately following the Ravage
+/// </summary>
+/// <param name="reduce"></param>
+/// <param name="classesToReduce"></param>
+public class ReduceAttack( int reduce, params HumanTokenClass[] classesToReduce ) 
 	: BaseModEntity, IConfigRavages, IEndWhenTimePasses
 {
 	readonly int _reduce = reduce;
@@ -20,7 +25,7 @@ public class ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classe
 			AdjustAttack( space, orig, -reduce );
 		}
 
-		// At end of Action, invaders are are restored to original attack.
+		// At end of Ravage, invaders are are restored to original attack.
 		ActionScope.Current.AtEndOfThisAction( scope => {
 			// Restore original attacks
 			HumanToken[] endingInvaders = [..space.HumanOfAnyTag( reducedClasses.Keys.ToArray() )];
@@ -32,7 +37,7 @@ public class ReduceInvaderAttackBy1( int reduce, params HumanTokenClass[] classe
 	}
 
 	static void AdjustAttack( Space space, HumanToken orig, int adjust ) {
-		space.Init( orig.SetAttack( orig.Attack + adjust ), space[orig] );
+		space.Init( orig.SetAttack( Math.Max(0,orig.Attack + adjust) ), space[orig] );
 		space.Init( orig, 0 );
 	}
 }

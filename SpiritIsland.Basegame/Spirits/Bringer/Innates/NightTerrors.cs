@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Basegame;
 
-[InnatePower( NightTerrors.Name ),Fast]
+[InnatePower( Name ),Fast]
 [FromPresence( 0, Filter.Invaders )]
 public class NightTerrors {
 

@@ -52,11 +52,7 @@
 
 	SPIRITS - Aspects (new spirits)
 
-		Bringer - Enticing
 		Memory - Mentor
-		Serpent - Locus
-
-		Bringer - Violence   (Challenge: Track Cards that have "Damage or Destroy on them")
 		Keeper - Spreading Hostility  (Modify Growth Track)
 		Lure - Lair   (Challenge: Modifying Setup)
 		Memory - Intensify    (Challenge: Hook into every action)

@@ -2,7 +2,9 @@
 
 public class DreamsOfTheDahan {
 
-	[SpiritCard("Dreams of the Dahan",0,Element.Moon,Element.Air), Fast, FromPresence(2)]
+	public const string Name = "Dreams of the Dahan";
+
+	[SpiritCard(Name,0,Element.Moon,Element.Air), Fast, FromPresence(2)]
 	[Instructions("Gather up to 2 Dahan. -or- If target land has Town / City, 1 Fear for each Dahan, to a maximum of 3 Fear."),Artist( Artists.ShaneTyree)]
 	static public Task ActAsync(TargetSpaceCtx ctx ) {
 		return ctx.SelectActionOption(
