@@ -10,8 +10,6 @@
 /// </summary>
 public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
 
-	readonly protected string[] exclude = exclude;
-
 	public bool CouldActivateDuring( Phase speed, Spirit _ ) 
 		=> speed == Phase.Fast || speed == Phase.Slow;
 
@@ -35,12 +33,14 @@ public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
 	public virtual PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
 		int maxCardCost = self.Energy;
 		PowerCard[] options = self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.
-			.Where( card => !exclude.Contains(card.Title) )
+			.Where( card => !_exclude.Contains(card.Title) )
 			.Where( card => card.CouldActivateDuring( phase, self ) )
 			.Where( card => card.Cost <= maxCardCost )
 			.ToArray();
 		return options;
 	}
+
+	readonly protected string[] _exclude = exclude;
 
 }
 

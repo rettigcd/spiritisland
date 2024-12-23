@@ -4,8 +4,12 @@ public class PreparedElementMgr(Spirit spirit) : ElementMgr(spirit) {
 
 	public readonly CountDictionary<Element> PreparedElements = [];
 
-	public async Task Prepare(string context) {
-		var el = await _spirit.SelectElementEx($"Prepare Element ({context})", ElementList.AllElements);
+	public Task Prepare(string context) {
+		return Prepare(context, ElementList.AllElements);
+	}
+
+	public async Task Prepare(string context, Element[] elementOptions) {
+		var el = await _spirit.SelectElementEx($"Prepare Element ({context})", elementOptions);
 		PreparedElements[el]++;
 	}
 

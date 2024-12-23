@@ -11,7 +11,7 @@ public class Mentor : IAspect {
 
 	public void ModSpirit(Spirit spirit) {
 
-		spirit.InnatePowers[1] = InnatePower.For(typeof(ShareMentorshipAndExpertise));
+		spirit.ReplaceInnate( ObserveTheEverChangingWorld.Name, InnatePower.For(typeof(ShareMentorshipAndExpertise)));
 		PastTeachingsSpringForthUnbidden.InitAspect(spirit);
 
 		spirit.SpecialRules = [PastTeachingsSpringForthUnbidden.Rule];
