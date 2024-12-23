@@ -2,7 +2,9 @@
 	
 public class AbsorbEssence {
 
-	[SpiritCard("Absorb Essence",2,Element.Moon, Element.Fire, Element.Water, Element.Earth),Fast,AnotherSpirit]
+	public const string Name = "Absorb Essence";
+
+	[SpiritCard(Name,2,Element.Moon, Element.Fire, Element.Water, Element.Earth),Fast,AnotherSpirit]
 	[Instructions( "Gain 3 Energy. Move 1 of target Spirit's Presence from the board to your \"Deep Slumber\" track. Absorbed Presence cannot be returned to play. Target Spirit gains 1 Any and 1 Energy." ), Artist( Artists.JorgeRamos )]
 	static public async Task ActAsync(TargetSpiritCtx ctx) {
 		// gain 3 energy.
@@ -15,8 +17,8 @@ public class AbsorbEssence {
 
 		// move 1 of target spirit's presence from the board to your 'Deep Slumber' track.
 		// Absorbed presence cannot be returned to play.
-		var spaceToken = await ctx.Other.SelectAlways(Prompts.SelectPresenceTo("absorbed"), ctx.Other.Presence.Deployed);
-		await ctx.Other.Presence.Token.RemoveFrom(spaceToken.Space); // !!! maybe should allow Incarna here too.
+		var spaceToken = await ctx.Other.SelectAlways(Prompts.SelectPresenceTo("absorb"), ctx.Other.Presence.Deployed);
+		await spaceToken.RemoveAsync(1);
 		serpentPresence.AbsorbedPresences.Add(ctx.Other);
 
 		// Target spirit gains 1 ANY and 1 energy

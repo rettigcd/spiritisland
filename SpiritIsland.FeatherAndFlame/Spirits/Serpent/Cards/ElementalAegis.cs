@@ -2,7 +2,9 @@
 
 public class ElementalAegis {
 
-	[SpiritCard("Elemental Aegis",1,Element.Fire,Element.Water,Element.Earth),Fast,FromPresence(0)]
+	public const string Name = "Elemental Aegis";
+
+	[SpiritCard(Name,1,Element.Fire,Element.Water,Element.Earth),Fast,FromPresence(0)]
 	[Instructions( "Defend 2 in target land and all adjacent lands. For every Presence on your \"Deep Slumber\" track, Defend 1 in target land and all adjacent lands." ), Artist( Artists.JorgeRamos )]
 	public static Task ActAsync(TargetSpaceCtx ctx ) {
 

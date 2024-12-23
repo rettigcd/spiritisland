@@ -28,11 +28,15 @@ public class GameComponentProvider : IGameComponentProvider {
 	public AspectConfigKey[] AspectNames => [
 		// Heart of the Wildfire
 		Transforming.Key,
+		// Serpent
+		Locus.Key,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName ) => aspectName.Aspect switch {
 		// Heart of the Wildfire
 		Transforming.Name => new Transforming(),
+		// Serpent
+		Locus.Name => new Locus(),
 		_ => null,
 	};
 

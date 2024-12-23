@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SpiritIsland.FeatherAndFlame;
+﻿namespace SpiritIsland.FeatherAndFlame;
 
 [InnatePower( SerpentWakesInPower.Name ), Slow, Yourself]
 public class SerpentWakesInPower {

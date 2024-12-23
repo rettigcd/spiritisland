@@ -20,7 +20,7 @@ public class WanderingVoiceKeensDelirium : Spirit {
 				new VoiceIncarna(spirit)
 			),
 			new GrowthTrack(
-				new GrowthGroup( new ReclaimAll(), new AddOrMoveIncarnaToPresence(), new GainEnergy( 1 ) ),
+				new GrowthGroup( new ReclaimAll(), new MoveIncarnaToPresence(), new GainEnergy( 1 ) ),
 				new GrowthGroup( new PlacePresence( 3 ), new PlacePresence( 1 ) ),
 				new GrowthGroup( new GainPowerCard(), new PlacePresence( 2 ), new GainEnergy( 1 ), new GainAllElements( Element.Air ) )
 			),
