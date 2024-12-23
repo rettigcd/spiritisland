@@ -5,10 +5,9 @@ class EnthrallTheForeignExplorers( Spirit self )
 	, IConfigRavages
 {
 
-	static public readonly SpecialRule Rule = new SpecialRule( 
-		"Enthrall the Foreign Explorers", 
-		"For each of your presence in a land, ignore up to 2 explorer during the Ravage Step and any Ravage Action."
-	);
+	public const string Name = "Enthrall the Foreign Explorers";
+	const string Description = "For each of your presence in a land, ignore up to 2 explorer during the Ravage Step and any Ravage Action.";
+	static public readonly SpecialRule Rule = new SpecialRule( Name, Description );
 
 	async Task IConfigRavages.Config( Space space ) {
 		await space.SourceSelector

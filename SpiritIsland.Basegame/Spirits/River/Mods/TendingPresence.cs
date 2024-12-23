@@ -14,6 +14,7 @@ public class TendingPresence( Spirit spirit, IPresenceTrack t1, IPresenceTrack t
 	static public void InitAspect(Spirit spirit) {
 		var old = spirit.Presence;
 		spirit.Presence = new TendingPresence(spirit, old.Energy, old.CardPlays);
+		spirit.RemoveMod<RiversDomain>();
 	}
 
 	// - are considered Sacred Sites

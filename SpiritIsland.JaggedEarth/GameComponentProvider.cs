@@ -37,6 +37,8 @@ public class GameComponentProvider : IGameComponentProvider {
 		// Shifting Memories
 		Intensify.ConfigKey,
 		Mentor.ConfigKey,
+		// Lure
+		Lair.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
@@ -45,6 +47,8 @@ public class GameComponentProvider : IGameComponentProvider {
 		// Shifting Memories
 		Intensify.Name => new Intensify(),
 		Mentor.Name => new Mentor(),
+		// Lure
+		Lair.Name => new Lair(),
 		_ => null
 	};
 

@@ -134,7 +134,7 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	/// </summary>
 	virtual public bool CanBePlacedOn( Space space ) => ActionScope.Current.TerrainMapper.IsInPlay( space );
 
-	virtual public bool IsSacredSite( Space space ) => 2 <= CountOn(space);
+	virtual public bool IsSacredSite( Space space ) => 2 <= CountOn(space) || Self.Mods.OfType<ICreateSacredSites>().Any(mod=>mod.IsSacredSite(space));
 
 	public bool IsOn( Space space ) => 0 < space[Token] || HasIncarna(space);
 

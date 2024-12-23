@@ -4,9 +4,10 @@ static public class ReplaceInvader {
 
 	#region Downgrade
 
-	public static async Task Downgrade1( Spirit spirit, Space space, Present present, params HumanTokenClass[] groups ) {
+	public static async Task<bool> Downgrade1( Spirit spirit, Space space, Present present, params HumanTokenClass[] groups ) {
 		HumanToken[] options = space.HumanOfAnyTag( groups );
-		await Downgrade1Token( spirit, space, present, options );
+		var result = await Downgrade1Token( spirit, space, present, options );
+		return result != null;
 	}
 
 	public static async Task DowngradeAll( Spirit self, Space space, params HumanTokenClass[] groups ) {

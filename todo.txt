@@ -52,7 +52,6 @@
 
 	SPIRITS - Aspects (new spirits)
 
-		Lure - Lair   (Challenge: Modifying Setup)
 		Memory - Mentor
 		Memory - Intensify    (Challenge: Hook into every action)
 

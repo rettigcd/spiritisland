@@ -18,7 +18,7 @@ public class RiverSurges : Spirit {
 	public override string SpiritName => Name;
 
 	public RiverSurges():base(
-		spirit => new RiversDomain( spirit,
+		spirit => new SpiritPresence( spirit,
 			new PresenceTrack( Track.Energy1, Track.Energy2, Track.Energy2, Track.Energy3, Track.Energy4, Track.Energy4, Track.Energy5 ),
 			new PresenceTrack( Track.Card1, Track.Card2, Track.Card2, Track.Card3, Track.CardReclaim1, Track.Card4, Track.Card5 )
 		),
@@ -44,6 +44,7 @@ public class RiverSurges : Spirit {
 
 	){
 		InnatePowers = [ InnatePower.For(typeof(MassiveFlooding)) ];
+		Mods.Add( new RiversDomain(this) );
 		SpecialRules = [ RiversDomain.Rule ];
 	}
 

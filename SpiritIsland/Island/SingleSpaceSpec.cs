@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public record SSS( Terrain terrain, string label, string startingItems = "" );
 
@@ -7,7 +6,9 @@ public record SSS( Terrain terrain, string label, string startingItems = "" );
 /// <summary>
 /// The Standard Space - represents 1 visible marked space.
 /// </summary>
-public class SingleSpaceSpec( Terrain terrain, string label, Board board, string startingItems = "" ) : SpaceSpec(label,[board]) {
+public class SingleSpaceSpec( Terrain terrain, string label, Board board, string startingItems = "" ) 
+	: SpaceSpec(label,[board])
+{
 
 	public Board Board => _board;
 
