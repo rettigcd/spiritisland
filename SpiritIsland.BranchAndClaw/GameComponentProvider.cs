@@ -1,7 +1,5 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-#nullable enable
-
 public class GameComponentProvider : IGameComponentProvider {
 
 	#region Spirits
@@ -27,11 +25,15 @@ public class GameComponentProvider : IGameComponentProvider {
 		// Sharp Fangs
 		Encircle.ConfigKey,
 		Unconstrained.ConfigKey,
+		// Keeper
+		SpreadingHostility.ConfigKey,
 	];
 
 	public IAspect? MakeAspect(AspectConfigKey aspectName) => aspectName.Aspect switch {
 		Encircle.Name => new Encircle(),
 		Unconstrained.Name => new Unconstrained(),
+		// Keeper
+		SpreadingHostility.Name => new SpreadingHostility(),
 		_ => null,
 	};
 

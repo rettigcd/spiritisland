@@ -52,9 +52,8 @@
 
 	SPIRITS - Aspects (new spirits)
 
-		Memory - Mentor
-		Keeper - Spreading Hostility  (Modify Growth Track)
 		Lure - Lair   (Challenge: Modifying Setup)
+		Memory - Mentor
 		Memory - Intensify    (Challenge: Hook into every action)
 
 ===== Clean Up =======
