@@ -15,8 +15,8 @@ public interface IAspect {
 public static class AspectHelper_Extensoins {
 
 	static public void RemoveMod<T>(this Spirit spirit) where T:ISpiritMod {
-		var mod = spirit.Mods.OfType<T>().Single();
-		spirit.Mods.Remove(mod);
+		var modToRemove = spirit.Mods.OfType<T>().Single();
+		spirit.Mods.Remove(modToRemove);
 	}
 
 	static public void RemoveRule(this Spirit spirit, string ruleTitle) {

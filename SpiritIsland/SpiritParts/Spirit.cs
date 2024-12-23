@@ -54,8 +54,6 @@ public abstract partial class Spirit
 
 
 
-
-
 	public event Action<object?>? SelectionMade; // hook for: Reach Through the Efemeral Distance
 
 	public void PreSelect( SpaceToken? st ) => _gateway.PreloadedSpaceToken = st;
@@ -149,7 +147,7 @@ public abstract partial class Spirit
 
 	// Events
 	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
-	public List<ISpiritMod> Mods = [];
+	public ModBucket Mods = new ModBucket();
 
 	#region Cards
 
@@ -354,8 +352,7 @@ public abstract partial class Spirit
 
 		var cleanupMods = Mods.OfType<ICleanupSpiritWhenTimePasses>().ToArray();
 		foreach(var mod in cleanupMods ) mod.CleanupSpirit(this);
-		var endingMods = Mods.OfType<IEndWhenTimePasses>().ToArray();
-		foreach(var mod in endingMods) Mods.Remove((ISpiritMod)mod);
+		foreach(var mod in Mods.OfType<IEndWhenTimePasses>().ToArray()) Mods.Remove((ISpiritMod)mod);
 		return Task.CompletedTask;
 	}
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
