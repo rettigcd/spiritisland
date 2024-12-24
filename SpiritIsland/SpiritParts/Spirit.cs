@@ -40,6 +40,8 @@ public abstract partial class Spirit
 		gameState.AddTimePassesAction(this);
 		_gateway.DecisionMade += (d) => ActionScope.Current.Log(d);
 		InitializeInternal(board,gameState);
+		foreach(var init in Mods.OfType<IInitializeSpirit>().ToArray())
+			init.Initialize();
 	}
 
 	public void AddCardToHand( PowerCard card ){
@@ -62,7 +64,6 @@ public abstract partial class Spirit
 	#endregion
 
 	#region Select
-
 
 	// Required
 	public async Task<T> SelectAlways<T>(string prompt, IEnumerable<T> options, bool autoSelectSingle = false) where T : class, IOption

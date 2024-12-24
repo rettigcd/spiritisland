@@ -4,11 +4,17 @@ public partial class Space {
 
 	// !!! Make sure that everything that calls this should NOT be including Badland damage
 	/// <returns>Damage inflicted.</returns>
-	public virtual Task<int> UserSelected_DamageInvadersAsync(Spirit damagePicker, int damage, params ITokenClass[] allowedTypes) {
+	public virtual async Task<int> UserSelected_DamageInvadersAsync(Spirit damagePicker, int damage, params ITokenClass[] allowedTypes) {
 		if( allowedTypes.Length == 0 ) allowedTypes = Human.Invader;
-		return SourceSelector
+
+		var args = new DamageFromSpiritPowers { Space = this, Classes = allowedTypes, Damage = damage };
+		var mods = ModsOfType<IModifyDamageFromSpiritPowers>().ToArray();
+		foreach(var mod in mods )
+			await mod.ModifyDamage(args);
+
+		return await SourceSelector
 			.AddAll(allowedTypes)
-			.DoDamageAsync(damagePicker, damage, Present.Always);
+			.DoDamageAsync(damagePicker, args.Damage, Present.Always);
 	}
 
 	// This is needed when strifed invaders ravage OTHER tokens. Need to be able to exclude specific token

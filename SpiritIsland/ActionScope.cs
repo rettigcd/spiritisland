@@ -30,7 +30,6 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	#region Start of Action Actions 
 
-	//	public static List<IRunAtStartOfAction> StartOfActionHandlers => Container.StartOfActionHandlers;
 	static public List<IRunAtStartOfEveryAction> StartOfActionHandlers {
 		get {
 			var val = _stargOfActionHandlers.Value;
@@ -40,9 +39,9 @@ public sealed class ActionScope : IAsyncDisposable {
 	readonly static AsyncLocal<List<IRunAtStartOfEveryAction>> _stargOfActionHandlers = new(); // value gets shallow-copied into child calls and post-awaited states.
 
 	static Task RunStartOfActionHandlers() {
-		IRunAtStartOfEveryAction[] snapshop = [.. StartOfActionHandlers]; // so handlers can modify the List
-		return Task.WhenAll(snapshop.Select(x => x.Start(Current)));
-
+		var handlers = _stargOfActionHandlers.Value;
+		return handlers is null ? Task.CompletedTask 
+			: Task.WhenAll(handlers.Select(x => x.Start(Current)).ToArray());
 	}
 
 	#endregion Start of Action Actions

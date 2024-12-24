@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland.Basegame;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace SpiritIsland.Basegame;
 
 /// <summary>
 /// Makes space with 4 or more Dahan a Sacred Site
@@ -46,21 +48,7 @@ public class TendingPresence( Spirit spirit, IPresenceTrack t1, IPresenceTrack t
 			space.Init(defendToken, desiredDefend);
 		}
 
-		MyDefend defendToken = new MyDefend();
-
-		class MyDefend : IToken {
-			public Img Img => Img.Defend;
-			public ITokenClass Class => SpiritIsland.Token.Defend;
-
-			public string Badge => string.Empty;
-
-			public string Text => "";
-
-			public bool HasTag(ITag tag) {
-				return tag == SpiritIsland.Token.Defend;
-			}
-		}
-
+		readonly TokenVariety defendToken = new TokenVariety(SpiritIsland.Token.Defend, "💧");
 	}
 
 }

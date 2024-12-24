@@ -39,7 +39,7 @@ public class UnearthABeastOfWrathfulStone {
 					// 1 Fear and 2 Damage in its land.
 					Space toSpace = (Space)to;
 					await toSpace.AddFear(1);
-					await toSpace.UserSelected_DamageInvadersAsync( ctxx.Self, 2 );
+					await ctxx.Self.Target(toSpace).DamageInvaders(2);
 				} ))
 				.PushN( ctx.Self );
 		}
@@ -150,7 +150,7 @@ public class MarkedBeast : IToken
 			.PushUpToN(self);
 		// 1 Fear and 2 Damage in its land.
 		await _space!.AddFear( 1 ); // don't cache space-state, it might have moved
-		await _space.UserSelected_DamageInvadersAsync(self,2);
+		await self.Target(_space).DamageInvaders(2);
 	}
 
 	#endregion

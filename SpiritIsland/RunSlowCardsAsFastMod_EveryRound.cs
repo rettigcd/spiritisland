@@ -1,10 +1,10 @@
 ﻿
-namespace SpiritIsland.Basegame;
+namespace SpiritIsland;
 
 /// <summary>
 /// Mod that inserts Slow cards into the ActionList during EACH Fast phase.
 /// </summary>
-abstract class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyAvailableActions, IHandleActivatedActions {
+abstract public class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyAvailableActions, IHandleActivatedActions {
 
 	#region IModifyAvailableActions
 

@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 /// <param name="commaDelimitedRestrictFrom">null or comma-delimited Target</param>
 public abstract class TargetSpaceAttribute( TargetFrom from, string? commaDelimitedRestrictFrom, int range, string[] targetFilterOptions ) 

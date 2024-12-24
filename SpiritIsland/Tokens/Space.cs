@@ -255,7 +255,10 @@ public partial class Space
 
 
 
-	public virtual async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) => (await AddRemoveStrifeAsync( invader, 1, 1 )).On(this);
+	public virtual async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) { 
+		var token = await AddRemoveStrifeAsync( invader, 1, 1 );
+		return token.On(this);
+	}
 
 	public Task<HumanToken> Remove1StrifeFromAsync( HumanToken invader, int tokenCount ) => AddRemoveStrifeAsync(invader,-1,tokenCount);
 

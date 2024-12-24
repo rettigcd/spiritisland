@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 

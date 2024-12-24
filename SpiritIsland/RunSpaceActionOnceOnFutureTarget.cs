@@ -3,8 +3,6 @@
 /// <summary>
 /// Runs the provide action on a space targeted by the spirit during the current round.
 /// </summary>
-/// <param name="spirit"></param>
-/// <param name="spaceAction"></param>
 public class RunSpaceActionOnceOnFutureTarget( Spirit spirit, SpaceAction spaceAction ) : IRunAtStartOfEveryAction {
 
 	static public void Trigger( Spirit spirit, SpaceAction spaceAction) {
