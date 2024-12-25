@@ -117,7 +117,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 
 	//Sun: +1 Strife    (2 of 2)
 	async Task IHandleTokenAdded.HandleTokenAddedAsync(Space to, ITokenAddedArgs args) {
-		if( args is TokenReplacedArgs re && re.Removed is HumanToken pre && re.Added is HumanToken post && post.StrifeCount == pre.StrifeCount + 1 ) {
+		if( args.IsStrifeAdded() && smoa.ActionIsMyPower ) {
 			int boost = await DoBoost(Element.Sun, "Strife", 1);
 			if( boost != 0 )
 				await to.SourceSelector.AddGroup(1, Human.Invader).StrifeAll(smoa); // Marking Sun Element as used will prevent looping.

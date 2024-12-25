@@ -481,16 +481,6 @@ public abstract partial class Spirit
 
 	#endregion
 
-	#region Power Plug-ins
-
-	// Overriden by Trickster because it costs them presence
-	public virtual async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
-		if(ctx.Blight.Any)
-			await ctx.Blight.Remove( count );
-	}
-
-	#endregion
-
 	#region Targeting / Range
 
 	/// <summary>

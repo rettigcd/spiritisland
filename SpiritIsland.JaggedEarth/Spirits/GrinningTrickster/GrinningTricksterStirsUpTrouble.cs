@@ -5,11 +5,6 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 	public const string Name = "Grinning Trickster Stirs Up Trouble";
 	public override string SpiritName => Name;
 
-	static readonly SpecialRule CleaningUpMessesIsADrag = new SpecialRule(
-		"Cleaning up Messes is a Drag", 
-		"After one of your Powers Removes blight, Destroy 1 of your presence.  Ignore this rule for Let's See What Happens."
-	);
-
 	public GrinningTricksterStirsUpTrouble()
 		:base(
 			x => new SpiritPresence( x,
@@ -35,7 +30,7 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 			InnatePower.For(typeof(WhyDontYouAndThemFight))
 		];
 
-		SpecialRules = [TricksterTokens.ARealFlairForDiscord_Rule, CleaningUpMessesIsADrag];
+		SpecialRules = [ARealFlairForDiscord.Rule, CleaningUpMessesIsADrag.Rule];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
@@ -44,25 +39,9 @@ public class GrinningTricksterStirsUpTrouble : Spirit {
 		// and in land #4
 		board[4].ScopeSpace.Setup(Presence.Token, 1);
 
+		// !!! Need an easier way to only apply island-wide mods when is Spirits-own-action
+		gs.AddIslandMod( new CleaningUpMessesIsADrag(this) );
+		gs.AddIslandMod( new ARealFlairForDiscord(this) );
 	}
-
-	// Cleanup Up Messes is such a drag
-	public override async Task RemoveBlight( TargetSpaceCtx ctx, int count=1 ) {
-		await CleaningUpMessesIsSuchADrag( ctx.Self, ctx.Space );
-		await base.RemoveBlight( ctx,count );
-	}
-
-	static public async Task CleaningUpMessesIsSuchADrag( Spirit spirit, Space space ) {
-		if(space.Blight.Any)
-			await Cmd.DestroyPresence( $"{CleaningUpMessesIsADrag.Title} Destroy presence for blight cleanup" )
-				.ActAsync(spirit);
-	}
-
-	public override void InitSpiritAction( ActionScope scope ) {
-		if( scope.Category == ActionCategory.Spirit_Power )
-			scope.Upgrader = x => new TricksterTokens( this, x );
-	}
-
 
 }
-

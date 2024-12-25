@@ -5,6 +5,14 @@
 
 	UI - Cast Down into the Briny Deep - TEST
 
+	Bringer > Push instead of destroy			MOVER
+	Trickster > Run at Max (Push/Gather)		MOVER
+	ManyMinds > Gather / Push extend range		MOVER
+	Breath of Darkness > If a single invader is destroyed, instead gets abducted.	REMOVING TOKEN
+	Wandering voice > Push strifed explorer		ADD-Strife
+	Vengence > Treat Blight as Badlands      (HARD)
+
+
 5	Change SpaceDecision .Move .Push methods to use Move options
 5	Bag - could create a space on the board to represent the bag - contain blight, Beast, Wilds, etc
 5	Cleanup All the SelectAsync<> variants.
@@ -21,23 +29,23 @@
 3	BUG - If no Dahan, strife does not come off invaders
 
 == Other Hooks ==
-		public class BuildEngine {
-			public event Func<Space, HumanToken, Task>? BuildComplete;
-		}
-		public class ExploreEngine {
-			public event Func<GameState,Task>? ExploreForCardComplete;
-			public event Func<Space,Task>? ExploredSpace;
-		}
-		public class Fear : IHaveMemento {
-			public event Action<IFearCard>? CardActivated;
-		}
-		public class InvaderCard{
-			CardRevealed
-		}
+	public class BuildEngine {
+		public event Func<Space, HumanToken, Task>? BuildComplete;
+	}
+	public class ExploreEngine {
+		public event Func<GameState,Task>? ExploreForCardComplete;
+		public event Func<Space,Task>? ExploredSpace;
+	}
+	public class Fear : IHaveMemento {
+		public event Action<IFearCard>? CardActivated;
+	}
+	public class InvaderCard{
+		CardRevealed
+	}
 
-		public InvaderBinding{
-			event InvaderDamaged
-		}
+	public InvaderBinding{
+		event InvaderDamaged
+	}
 
 3	Spirit Details View during configure-new-game.
 

@@ -12,4 +12,10 @@ public static class Strifing_Extensions {
 			await before.Add1StrifeToAsync();
 	}
 
+	static public bool IsStrifeAdded(this ITokenAddedArgs args)
+		=> args is TokenReplacedArgs re
+			&& re.Removed is HumanToken pre
+			&& re.Added is HumanToken post
+			&& post.StrifeCount == pre.StrifeCount + 1;
+
 }
