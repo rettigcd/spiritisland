@@ -8,7 +8,7 @@ public partial class Space {
 		if( allowedTypes.Length == 0 ) allowedTypes = Human.Invader;
 
 		var args = new DamageFromSpiritPowers { Space = this, Classes = allowedTypes, Damage = damage };
-		var mods = ModsOfType<IModifyDamageFromSpiritPowers>().ToArray();
+		var mods = ModsOfType<IAdjustDamageToInvaders_FromSpiritPowers>().ToArray();
 		foreach(var mod in mods )
 			await mod.ModifyDamage(args);
 

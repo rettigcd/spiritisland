@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IModifyDamageFromSpiritPowers, IModifyRemovingToken {
+class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IAdjustDamageToInvaders_FromSpiritPowers, IModifyRemovingToken {
 
 	public const string Name = "Terror Stalks the Land";
 	const string Description = "You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to the Endless Dark."
@@ -9,7 +9,7 @@ class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IModifyDamageFromSpiri
 	static public SpecialRule Rule => new SpecialRule(Name, Description);
 
 
-	Task IModifyDamageFromSpiritPowers.ModifyDamage(DamageFromSpiritPowers args) {
+	Task IAdjustDamageToInvaders_FromSpiritPowers.ModifyDamage(DamageFromSpiritPowers args) {
 		if( spirit.ActionIsMyPower ) {
 			var invaders = args.Space.HumanOfTag(TokenCategory.Invader);
 			if( invaders.Length == 1 ) {

@@ -21,8 +21,8 @@ public partial class Violence : IAspect {
 		spirit.ReplaceCard(DreamsOfTheDahan.Name, PowerCard.ForDecorated(BatsScoutForRaidsByDarkness));
 
 		// "When To Dream a Thousand Deaths generates Fear, generate +1 Fear per affected Explorer/Town (to 1/3/5 Fear for Explorers/Towns/Cities, respectively)."
-		TDaTD_ActionTokens.DreamFear[0] = 1;
-		TDaTD_ActionTokens.DreamFear[1] = 3;
+		ToDreamAThousandDeaths.DreamFear[0] = 1;
+		ToDreamAThousandDeaths.DreamFear[1] = 3;
 
 		spirit.SpecialRules = [..spirit.SpecialRules, Rule];
 	}

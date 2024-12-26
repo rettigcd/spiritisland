@@ -42,27 +42,40 @@ public class ToDreamAThousandDeaths_Tests {
 		// Given: 2 explorers
 		tokens.Given_InitSummary("2E@1");
 
+		List<string> log = [];
+
 		// When: damaging / destroying each invader
 		await using ActionScope scope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power,_spirit);
 		Func<TargetSpaceCtx,Task> powerCardActionAsync = (method switch { "damage" => OneDamageToEachAsync, "destroy" => DestroyAllExplorersAndTownsAsync, _ => throw new Exception(nameof(method)) });
 		await powerCardActionAsync( MakeFreshPowerCtx( scope ) )
 			.AwaitUser( user => {
+				log.Add( IslandState() );
 				// Then: dream-death allows User pushes them
 				for(int i = 0; i < count; ++i ) {
-					user.NextDecision.HasPrompt("Push dreaming Invader")
-						.HasOptions("E@1 on A5 => A1,E@1 on A5 => A4,E@1 on A5 => A6,E@1 on A5 => A7,E@1 on A5 => A8")
-						.Choose("E@1 on A5 => A7");
+					user.NextDecision.HasPrompt("Push E@1 to")
+						//.HasFromOptions("E@1").ChooseFrom("E@1")
+						//.HasToOptions("A1,A4,A6,A7,A8").ChooseFrom("A7");
+						.HasOptions("A1,A4,A6,A7,A8").Choose("A7");
+					log.Add(IslandState());
 				}
 			} ).ShouldComplete(method);
 
 		// And: 0-fear
 		Assert_GeneratedFear( 0 );
 
+		log.Add(IslandState());
+
 		//  and: explorer on destination
 		var gs = GameState.Current;
-		_board[7].Assert_DreamingInvaders( $"{count}E@1" );
+		_board[7].Assert_HasInvaders( $"{count}E@1" );
 		//  and: not at origin
 		_board[5].Assert_HasInvaders("");
+	}
+
+	static string IslandState() {
+		return GameState.Current.Spaces_Unfiltered.OrderBy(x=>x.Label)
+			.Select( x=>x.ToString() )
+			.Join(", ");
 	}
 
 	[Fact]
@@ -86,9 +99,10 @@ public class ToDreamAThousandDeaths_Tests {
 			user.NextDecision.Choose(targetSpace.Label);
 			// Then: dream-death allows User pushes them
 			for( int i = 0; i < count; ++i )
-				user.NextDecision.HasPrompt("Push dreaming Invader")
-					.HasOptions("T@2 on A4 => A1,T@2 on A4 => A2,T@2 on A4 => A3,T@2 on A4 => A5")
-					.Choose("T@2 on A4 => A5");
+				user.NextDecision.HasPrompt("Push T@2 to")
+					// .HasFromOptions("T@2 on A4").ChooseFrom("T@2 on A4")
+					// .HasToOptions("A1,A2,A3,A5").ChooseTo("A5");
+					.HasOptions("A1,A2,A3,A5").Choose("A5");
 		});
 
 		// And:4-fear
@@ -165,12 +179,12 @@ public class ToDreamAThousandDeaths_Tests {
 			// Then: 0-fear
 			Assert_GeneratedFear( 1 * 5 ); // city only destroyed once
 
-			//  And: Dreaming City with partial damage still there
-			tokens[TDaTD_ActionTokens.ToggleDreamer(StdTokens.City1) ].ShouldBe( 1 );
+			// Current implementation - Destroyed City is removed until end of action.
 		}
 
 		// But: after scope done, original is restored
 		tokens[StdTokens.City1].ShouldBe( 1 );
+
 	}
 
 	static void Assert_GeneratedFear( int expectedFearCount ) {

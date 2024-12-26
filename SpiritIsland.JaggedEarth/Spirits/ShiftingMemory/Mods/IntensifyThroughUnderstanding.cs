@@ -5,7 +5,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	: BaseModEntity
 	, IModifyRemovingToken
 	, IModifyAddingToken
-	, IModifyDamageFromSpiritPowers
+	, IAdjustDamageToInvaders_FromSpiritPowers
 	, IHandleTokenAdded
 	, IHandleSpaceDefended
 	// Init
@@ -139,13 +139,13 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	}
 
 
-	bool IsUsed(Element el) {
+	static bool IsUsed(Element el) {
 		var scope = ActionScope.Current;
 		return scope.ContainsKey(Key) && ((HashSet<Element>)scope[Key]).Contains(el);
 	}
 
-	void MarkUsed(Element el) {
-		ActionScope.Current.SafeGet<HashSet<Element>>(Key, () => new HashSet<Element>()).Add(el);
+	static void MarkUsed(Element el) {
+		ActionScope.Current.SafeGet<HashSet<Element>>(Key, () => []).Add(el);
 	}
 
 	const string Key = "Used-Elements-Intensify";
@@ -154,7 +154,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 
 	void IHandleSpaceDefended.OnDefend(Space space, int defendCount) {
 		//Earth: Defend +2								MOD - with Defend help
-		if( smoa.ActionIsMyPower && 0 < smoa.PreparedElementMgr.PreparedElements[Element.Earth] ) {
+		if( _spirit.ActionIsMyPower && 0 < _spirit.PreparedElementMgr.PreparedElements[Element.Earth] ) {
 			ActionScope.Current.AtEndOfThisAction(async scope => {
 				if( HasPreparedElement(Element.Earth) ) {
 					int boost = await DoBoost(Element.Earth, "Defend", space.Defend.Count, 2);

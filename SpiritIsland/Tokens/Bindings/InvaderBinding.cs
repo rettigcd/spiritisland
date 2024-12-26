@@ -12,7 +12,7 @@ public sealed class InvaderBinding( Space space ) {
 
 	/// <summary> Not Badland-aware </summary>
 	public async Task ApplyDamageToEach( int individualDamage, params ITokenClass[] generic ) {
-		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return;
+		if(Space.ModsOfType<IAdjustDamageToInvaders_ByStoppingIt>().Any()) return;
 
 		var invaders = Space.InvaderTokens()
 			.OrderBy(x=>x.RemainingHealth) // do damaged first to clear them out
@@ -34,37 +34,36 @@ public sealed class InvaderBinding( Space space ) {
 		if(Space[originalInvader] < 1)
 			throw new InvalidOperationException( $"Cannot remove 1 {originalInvader} tokens because there aren't that many." );
 
-		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return (0,originalInvader);
+		if(Space.ModsOfType<IAdjustDamageToInvaders_ByStoppingIt>().Any()) return (0,originalInvader);
 
 		//!!! can we clean this up
 		var damagedInvader = Space.GetNewDamagedToken( originalInvader, availableDamage );
 
 		if(!damagedInvader.IsDestroyed) {
 			Space.Humans(1, originalInvader).Adjust(_ => damagedInvader);
-			InvaderDamaged?.Invoke( originalInvader );
+
+			var damagedHandlers = Space.ModsOfType<IHandleInvaderDamaged>().ToArray();
+			foreach( IHandleInvaderDamaged handler in damagedHandlers)
+				handler.HandleDamage(originalInvader, damagedInvader, Space);
+
 		} else {
-			if(!Space.PreventsInvaderDamage()){ 
-				var result = await Space.RemoveAsync( originalInvader, 1, DestroyingFromDamage.TriggerReason );
-				await Space.AddFear(
-					originalInvader.HumanClass.FearGeneratedWhenDestroyed * result.Count,
-					FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
-				);
-			}
+			var result = await Space.RemoveAsync( originalInvader, 1, DestroyingFromDamage.TriggerReason );
+			await Space.AddFear(
+				originalInvader.HumanClass.FearGeneratedWhenDestroyed * result.Count,
+				FearType.FromInvaderDestruction // this is the destruction that Dread Apparitions ignores.
+			);
 		}
 
 		int damageInflicted = originalInvader.RemainingHealth - damagedInvader.RemainingHealth;
 		return (damageInflicted, damagedInvader);
 	}
 
-	// The invader Before it was damaged.
-	public event Action<HumanToken>? InvaderDamaged;
-
 	#endregion
 
 	#region Destroy
 
 	public async Task DestroyAll( params HumanTokenClass[] tokenClasses ) {
-		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return;
+		if(Space.ModsOfType<IAdjustDamageToInvaders_ByStoppingIt>().Any()) return;
 
 		var tokensToDestroy = Space.HumanOfAnyTag( tokenClasses ).ToArray();
 		foreach(var token in tokensToDestroy)
@@ -72,7 +71,7 @@ public sealed class InvaderBinding( Space space ) {
 	}
 
 	public async Task DestroyNOfAnyClass( int count, params HumanTokenClass[] generics ) {
-		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return;
+		if(Space.ModsOfType<IAdjustDamageToInvaders_ByStoppingIt>().Any()) return;
 
 		HumanToken[] invadersToDestroy;
 		while(
@@ -91,7 +90,7 @@ public sealed class InvaderBinding( Space space ) {
 
 	// destroy CLASS
 	public async Task<int> DestroyNOfClass( int countToDestroy, HumanTokenClass invaderClass ) {
-		if(Space.ModsOfType<IAdjustDamageToInvaders>().Any()) return 0;
+		if(Space.ModsOfType<IAdjustDamageToInvaders_ByStoppingIt>().Any()) return 0;
 
 		countToDestroy = Math.Min( countToDestroy, Space.Sum( invaderClass ) );
 		int remaining = countToDestroy; // capture
@@ -100,7 +99,7 @@ public sealed class InvaderBinding( Space space ) {
 			var next = Space.HumanOfTag( invaderClass )
 				.OrderByDescending( x => x.FullHealth )
 				.ThenBy( x => x.StrifeCount )
-				.ThenBy( x => x.FullDamage )
+				.ThenBy( x => x.Damage )
 				.First();
 			int countOfTypeToDestroy = Math.Min( remaining, Space[next]);
 			await DestroyNTokens( next, countOfTypeToDestroy );

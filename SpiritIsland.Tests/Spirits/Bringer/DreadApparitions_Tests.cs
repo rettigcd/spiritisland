@@ -32,6 +32,7 @@ public class DreadApparitions_Tests {
 		Board board = Boards.A;
 		SpaceSpec targetSpace = board[5];
 		GameState gs = new SoloGameState( spirit, board );
+		gs.AddIslandMod(new ToDreamAThousandDeaths(spirit)); // Initialized
 		gs.DisableBlightEffect();
 
 		// Given: 
@@ -40,13 +41,13 @@ public class DreadApparitions_Tests {
 		await spirit.When_ResolvingCard<DreadApparitions>(u => u.Choose(targetSpace.Label));
 
 		// When: destroying the town with Power
-		await using( await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit) ) {
-			await spirit.Target(targetSpace).Invaders.DestroyNOfClass(1, Human.Town).AwaitUser(user => {
-				user.NextDecision.HasPrompt("Push dreaming Invader")
-					.HasOptions("T@2 on A5 => A1,T@2 on A5 => A4,T@2 on A5 => A6,T@2 on A5 => A7,T@2 on A5 => A8")
-					.Choose("T@2 on A5 => A4");
-			});
-		}
+		await using var actionScope = await ActionScope.StartSpiritAction(ActionCategory.Spirit_Power, spirit);
+		await spirit.Target(targetSpace).Invaders.DestroyNOfClass(1, Human.Town).AwaitUser(user => {
+			user.NextDecision.HasPrompt("Push T@2 to")
+				.HasOptions("A1,A4,A6,A7,A8")
+				.Choose("A4");
+
+		});
 
 		// InSpiritPowerScope
 
@@ -60,8 +61,10 @@ public class DreadApparitions_Tests {
 	public async Task CityDamage_Generates5Defend() {
 		Spirit spirit = new Bringer();
 		Board board = Boards.A;
+
 		SpaceSpec targetSpace = board[5];
 		GameState gs = new SoloGameState( spirit, board );
+		gs.AddIslandMod(new ToDreamAThousandDeaths(spirit)); // Initialized
 		gs.DisableBlightEffect();
 
 		// Given: City on A5

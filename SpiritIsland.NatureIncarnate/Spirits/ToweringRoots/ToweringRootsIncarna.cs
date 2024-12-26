@@ -3,7 +3,7 @@
 public class ToweringRootsIncarna( Spirit spirit )
 	: Incarna(spirit, "TRotJ", Img.TRotJ_Incarna_Empowered, Img.TRotJ_Incarna )
 	, IHandleTokenAdded	// Empowers if it meets 3 vitality
-	, IAdjustDamageToInvaders, IAdjustDamageToDahan, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
+	, IAdjustDamageToInvaders_ByStoppingIt, IAdjustDamageToDahan, IModifyRemovingToken	// Stop damage to dahan,invaders,beast
 	, ISkipBuilds
 {
 	string ISkipBuilds.Text => SpaceAbreviation;

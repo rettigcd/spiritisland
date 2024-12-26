@@ -24,7 +24,7 @@ public sealed class Healer : IRunWhenTimePasses {
 
 		void HealGroup( HumanTokenClass group ) {
 			foreach(HumanToken humanToken in space.HumanOfTag( group ).ToArray())
-				if(0<humanToken.FullDamage)
+				if(0<humanToken.Damage)
 					space.AllHumans(humanToken).Adjust(x=>x.Healthy);
 		}
 

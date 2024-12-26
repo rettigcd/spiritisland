@@ -97,10 +97,10 @@ public partial class Space
 	public BeastBinding Beasts => new ( this, Token.Beast );
 	public TokenBinding Disease => new ( this, Token.Disease );
 	public TokenBinding Wilds => new ( this, Token.Wilds );
-	public virtual TokenBinding Badlands => new ( this, Token.Badlands );
+	public TokenBinding Badlands => new ( this, Token.Badlands );
 	public DahanBinding Dahan => new DahanBinding( this );
 	public TokenBinding Vitality => new( this, Token.Vitality );
-	public virtual InvaderBinding Invaders => new InvaderBinding( this );
+	public InvaderBinding Invaders => new InvaderBinding( this );
 
 	#endregion
 
@@ -281,7 +281,7 @@ public partial class Space
 
 		var newToken = GetDefault( newTokenClass );
 
-		newToken = newToken.AddDamage( oldToken.Damage, oldToken.DreamDamage );
+		newToken = newToken.AddDamage( oldToken.Damage );
 		if(newToken.HasTag(TokenCategory.Invader))
 			newToken = newToken.AddStrife(oldToken.StrifeCount);
 
@@ -505,7 +505,7 @@ public partial class Space
 	string IOption.Text => SpaceSpec.Label;
 	public string Label => SpaceSpec.Label;
 
-	public bool PreventsInvaderDamage() => ModsOfType<IAdjustDamageToInvaders>().Any();
+	public bool PreventsInvaderDamage() => ModsOfType<IAdjustDamageToInvaders_ByStoppingIt>().Any();
 
 }
 

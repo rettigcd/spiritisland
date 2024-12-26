@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public interface IModifyDamageFromSpiritPowers {
+public interface IAdjustDamageToInvaders_FromSpiritPowers {
 	Task ModifyDamage(DamageFromSpiritPowers args);
 }
 
@@ -9,4 +9,3 @@ public class DamageFromSpiritPowers {
 	public int Damage;
 	public required ITokenClass[] Classes;
 }
-

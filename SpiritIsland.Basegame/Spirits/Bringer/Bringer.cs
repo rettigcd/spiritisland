@@ -32,7 +32,7 @@ public class Bringer : Spirit {
 			InnatePower.For(typeof(NightTerrors))
 		];
 
-		SpecialRules = [ TDaTD_ActionTokens.Rule ];
+		SpecialRules = [ ToDreamAThousandDeaths.Rule ];
 	}
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
@@ -40,11 +40,7 @@ public class Bringer : Spirit {
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
 		var space = startingIn.ScopeSpace;
 		space.Setup( Presence.Token, 2 );
-	}
-
-	public override void InitSpiritAction( ActionScope scope ) {
-		if( scope.Category == ActionCategory.Spirit_Power )
-			scope.Upgrader = x => new TDaTD_ActionTokens(x);
+		gs.AddIslandMod(new ToDreamAThousandDeaths(this));
 	}
 
 }

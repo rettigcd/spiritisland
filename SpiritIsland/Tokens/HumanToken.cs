@@ -1,5 +1,4 @@
-﻿#nullable enable
-using SpiritIsland.Invaders.Ravage;
+﻿using SpiritIsland.Invaders.Ravage;
 
 namespace SpiritIsland;
 
@@ -23,7 +22,6 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		Img = tokenClass.Img;
 		_rawFullHealth = rawFullHealth;
 		Damage = 0;
-		DreamDamage = 0;
 		StrifeCount = 0;
 		_summaryString = HumanClass.Initial + "@" + RemainingHealth;
 		Attack = rawFullHealth;
@@ -42,11 +40,9 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		RavageSide = x.RavageSide;
 
 		Damage = x.Damage;
-		DreamDamage = x.DreamDamage;
 		StrifeCount = x.StrifeCount;
 
-		_summaryString = HumanClass.Initial + "@" + RemainingHealth
-			+ (x.DreamDamage == 0 ? "" : new string('~', DreamDamage))
+		_summaryString = HumanClass.Initial + "@" + RemainingHealth 
 			+ (x.StrifeCount == 0 ? "" : new string('^', StrifeCount));
 
 		Attack = x.Attack;
@@ -56,7 +52,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	public string Badge => HasInterestingHealthValue ? RemainingHealth.ToString() : string.Empty;
 
-	bool HasInterestingHealthValue => 0 < FullDamage  // has damage
+	bool HasInterestingHealthValue => 0 < Damage  // has damage
 		|| FullHealth != HumanClass.ExpectedHealthHint; // has unusuall full health value
 
 	public HumanTokenClass HumanClass { get; }
@@ -74,16 +70,12 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	public int Attack { get; }
 
-	public int DreamDamage { get; }
-
 	public RavageOrder RavageOrder { get; }
 	public RavageSide RavageSide {get;}
-	
-	public int FullDamage => Damage + DreamDamage;
 
 	public int StrifeCount { get; }
 
-	public bool IsDestroyed => FullHealth <= FullDamage;
+	public bool IsDestroyed => FullHealth <= Damage;
 
 	#region Token mutation generators
 
@@ -96,11 +88,9 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 			: Mutate( x => x.StrifeCount = strifeCount );
 	}
 
-	public HumanToken AddDamage( int damage, int nightmareDamage=0 ) {
+	public HumanToken AddDamage( int damage ) {
 		int newDamage = Math.Min( Damage + damage, _rawFullHealth ); // Give regular damage priority
-		// only allow nightmare damage to take up whatever remaining health is available
-		int newNightmareDamage = Math.Min( nightmareDamage + DreamDamage, _rawFullHealth-newDamage );
-		return Mutate( x=>{ x.Damage=newDamage; x.DreamDamage = newNightmareDamage; } );
+		return Mutate( x=>{ x.Damage=newDamage; } );
 	}
 
 	public HumanToken SetAttack( int attack ) => Mutate( x=>x.Attack = attack );
@@ -108,10 +98,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 	public HumanToken SetRavageSide( RavageSide side ) => Mutate( x => x.RavageSide = side );
 	public HumanToken ChangeImg( Img newImg ) => Mutate( x => x.Img = newImg );
 
-	// For Dream a 1000 Deaths, make token not in the Invader TokenCategory
-	public HumanToken SwitchClass( HumanTokenClass newClass ) => Mutate( x=>x.Class = newClass );
-
-	public HumanToken Healthy => Mutate( x=> { x.Damage=0; x.DreamDamage=0; } );
+	public HumanToken Healthy => Mutate( x=> { x.Damage=0; } );
 
 	public HumanToken AddHealth( int delta ) {
 		int newHealth = Math.Max(1, _rawFullHealth + delta );
@@ -134,7 +121,6 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		public int _rawFullHealth;
 		public int Damage;
 		public int StrifeCount;
-		public int DreamDamage;
 		public int Attack;
 		public RavageOrder RavageOrder;
 		public RavageSide RavageSide;
@@ -147,7 +133,6 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 			_rawFullHealth = _rawFullHealth,
 			Damage = Damage,
 			StrifeCount = StrifeCount,
-			DreamDamage = DreamDamage,
 			Attack = Attack,
 			RavageOrder = RavageOrder,
 			RavageSide = RavageSide,
@@ -164,12 +149,11 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 		// not using 2,3,5 because those are all valid values.
 		+ 7 * _rawFullHealth	// Do NOT use FullHealth because that might change based on HealthPenalty
 		+ 11 * Damage
-		+ 13 * DreamDamage
-		+ 17 * StrifeCount
-		+ 19 * Attack
-		+ 23 * (int)RavageOrder
-		+ 29 * (int)RavageSide
-		+ 31 * (int)Img;
+		+ 13 * StrifeCount
+		+ 17 * Attack
+		+ 19 * (int)RavageOrder
+		+ 23 * (int)RavageSide
+		+ 29 * (int)Img;
 
 	public override bool Equals( object? obj ) => this.Equals( obj as HumanToken );
 
@@ -187,7 +171,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	#endregion
 
-	public int RemainingHealth => FullHealth - FullDamage;
+	public int RemainingHealth => FullHealth - Damage;
 
 	public override string ToString() => _summaryString;
 
