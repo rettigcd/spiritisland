@@ -8,7 +8,6 @@
 	Bringer > Push instead of destroy			MOVER
 	Trickster > Run at Max (Push/Gather)		MOVER
 	ManyMinds > Gather / Push extend range		MOVER
-	Breath of Darkness > If a single invader is destroyed, instead gets abducted.	REMOVING TOKEN
 	Wandering voice > Push strifed explorer		ADD-Strife
 	Vengence > Treat Blight as Badlands      (HARD)
 

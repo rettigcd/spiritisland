@@ -71,11 +71,8 @@ public class BreathOfDarknessDownYourSpine : Spirit {
 		jungles[1].Init( Presence.Token, 1 );
 
 		gameState.OtherSpaces.Add(EndlessDark.Space);
-	}
-
-	public override void InitSpiritAction(ActionScope scope) {
-		if( scope.Category == ActionCategory.Spirit_Power )
-			scope.Upgrader = x => new TerrorStalksTheLand(x);
+		
+		gameState.AddIslandMod(new TerrorStalksTheLand(this));
 	}
 
 }
