@@ -32,6 +32,13 @@ static public class SitOutRavage {
 
 	}
 
+	static public void AllSitOutThisRavageAction( Space space, HumanTokenClass tokenClass) {
+		var humans = space.HumanOfTag(tokenClass)
+			.ToDictionary(x => x, x => space[x])
+			.ToCountDict();
+		SitOutThisRavageAction(space,humans);
+	}
+
 	/// <summary>
 	/// Sits out pre-selected tokens from the Count-Dictionary
 	/// </summary>

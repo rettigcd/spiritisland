@@ -34,3 +34,9 @@ space.Init(new MyMod(), 1);
 GameState.Current.AddTimePassesAction( TimePassesAction.Once( gs => self.Forget.ThisCard( card ), TimePassesOrder.Early ) );
 ```
 
+# Movement
+## Push a single token
+```
+await spaceToken.PushAsync(self);
+
+```
