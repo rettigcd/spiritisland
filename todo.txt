@@ -5,10 +5,6 @@
 
 	UI - Cast Down into the Briny Deep - TEST
 
-	Trickster > Run at Max (Push/Gather)		MOVER
-	ManyMinds > Gather / Push extend range		MOVER
-
-
 5	Change SpaceDecision .Move .Push methods to use Move options
 5	Bag - could create a space on the board to represent the bag - contain blight, Beast, Wilds, etc
 5	Cleanup All the SelectAsync<> variants.

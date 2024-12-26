@@ -1,5 +1,15 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
+public class FlyFastAsThought : ISpiritMod, IConfigureMyActions {
+	public const string Name = "Fly Fast as Thought";
+	const string Description = "When you Gather or Push Beast, they may come from or go to lands up to 2 distant.";
+	static public SpecialRule Rule => new SpecialRule( Name, Description );
+
+	void IConfigureMyActions.Configure(Spirit spirit, ActionScope actionScope) {
+		actionScope.MoverFactory = new ManyMindsMover();
+	}
+}
+
 class ManyMindsMover : IMoverFactory {
 
 	// Same as default...

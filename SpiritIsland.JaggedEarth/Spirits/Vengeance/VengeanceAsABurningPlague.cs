@@ -28,8 +28,9 @@ public class VengeanceAsABurningPlague : Spirit {
 		SpecialRules = [
 			TerrorOfASlowlyUnfoldingPlague.Rule,
 			LingeringPestilencePresenceToken.Rule,
-			WreakVengeanceForTheLandsCorruption_Rule
+			WreakVengeananceForTheLandsCorruption.Rule
 		];
+		Mods.Add(new WreakVengeananceForTheLandsCorruption());
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
@@ -63,18 +64,6 @@ public class VengeanceAsABurningPlague : Spirit {
 	#endregion Custom Growth actions
 
 	#region Wreak Vengeance for the Land's Corruption
-
-	static SpecialRule WreakVengeanceForTheLandsCorruption_Rule => new SpecialRule(
-		"Wreak Vengeance for the Land's Corruption",
-		"Your actions treat blight on the island as also being badlands"
-	);
-
-	public override void InitSpiritAction( ActionScope scope ) {
-		if( scope.Category == ActionCategory.Spirit_Power ) {
-			Token.Blight.BonusTag = Token.Badlands;
-			scope.AtEndOfThisAction(action=> Token.Blight.BonusTag = null);
-		}
-	}
 
 	#endregion Wreak Vengeance for the Land's Corruption
 

@@ -45,7 +45,7 @@ public sealed class TokenMover(
 
 	async Task NewWay( Present present ) {
 
-		var move = await GetMoveDecision(present);
+		Move? move = await GetMoveDecision(present);
 
 		while( move is not null) {
 			// Notify/Update Source
@@ -60,21 +60,39 @@ public sealed class TokenMover(
 			// next
 			move = await GetMoveDecision(present);
 		}
+
+		// Intensify Hook
+		if(DoEndStuff is not null)
+			await DoEndStuff(_ranOutOfOptions,_firstMove!,self);
 	}
+
+	public event Func<bool, Move[], Spirit, Task>? DoEndStuff;
 
 	async Task<Move?> GetMoveDecision(Present present) {
 
 		var sourcePromptBuilder = Prompt.RemainingParts( present == Present.Always ? actionWord : actionWord + " up to" );
-		A.SpaceTokenDecision srcDecision = sourceSelector.BuildDecision( sourcePromptBuilder, present, destinationSelector.Single, 0, null );
+
+		string prompt = sourcePromptBuilder( sourceSelector.PromptData( 0, null ) );
 
 		// Drag and Drop way
 		Move[] options = sourceSelector.GetSourceOptions()
 			.BuildMoves(destinationSelector.GetDestinationOptions)
 			.ToArray();
 
-		return await self.Select(new A.MoveDecision(srcDecision.Prompt,options,present));
+		if(_firstMove == null)
+			_firstMove = options;
+
+		if(options.Length == 0 ) {
+			_ranOutOfOptions = true;
+			return null;
+		}
+
+		return await self.Select(new A.MoveDecision(prompt,options,present));
 
 	}
+
+	Move[]? _firstMove = null; // Hook/Helper for Intensify
+	bool _ranOutOfOptions = false; // Hook/Helper for Intensify
 
 	#region Config
 

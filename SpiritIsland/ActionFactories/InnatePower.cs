@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class InnatePower : IPowerActionFactory {
 
@@ -82,7 +81,7 @@ public class InnatePower : IPowerActionFactory {
 	public string Title {get;}
 
 	string IOption.Text => IOption_Text; // non-overridable, hiding IOption.Text so it isn't used for non IOption stuff
-	virtual protected string IOption_Text => Title; // allow Dirived types to add additional info
+	protected string IOption_Text => Title; // allow Dirived types to add additional info
 
 	public string TargetFilter => _targetAttr.TargetFilterName;
 
@@ -107,7 +106,7 @@ public class InnatePower : IPowerActionFactory {
 	}
 
 
-	protected virtual async Task ActivateInnerAsync( Spirit self ) {
+	protected async Task ActivateInnerAsync( Spirit self ) {
 
 		// Do this 1st so Volcano can destroy its presence before we evaluate our options
 		LastTarget = await _targetAttr.GetTargetCtx( Title, self );
@@ -143,24 +142,27 @@ public class InnatePower : IPowerActionFactory {
 		return lastMethods;
 	}
 
-	// !!! Instead of putting this on Elements, it seems like it should go on the InnatePower instead.
 	// Overriden by:
 	//	* Shifting Memories
 	//	* Volcano
 	protected virtual async Task<IDrawableInnateTier?> SelectInnateTierToActivate(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
-
-		// return await spirit.Elements.SelectInnateTierToActivate(innateOptions);
-
-		IDrawableInnateTier? match = null;
-		foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
-			if( await HasMetTierThreshold(spirit, option) )
-				match = option;
-		return match;
+		return await spirit.Elements.SelectInnateTierToActivate(innateOptions);
 	}
 
-	protected virtual async Task<bool> HasMetTierThreshold(Spirit spirit, IDrawableInnateTier option) {
-		return await spirit.Elements.MeetThreshold(option.Elements, "Innate Tier" );
-	}
+	//// Overriden by:
+	////	* Shifting Memories
+	////	* Volcano
+	//static async Task<IDrawableInnateTier?> SelectInnateTierToActivate1(Spirit spirit, IEnumerable<IDrawableInnateTier> innateOptions) {
+
+	//	// return await spirit.Elements.SelectInnateTierToActivate(innateOptions);
+
+	//	IDrawableInnateTier? match = null;
+	//	foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
+	//		if( await HasMetTierThreshold(spirit, option) )
+	//			match = option;
+	//	return match;
+	//}
+
 
 	public object? LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
 

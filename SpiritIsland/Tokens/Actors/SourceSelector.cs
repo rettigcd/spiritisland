@@ -35,9 +35,9 @@ public class SourceSelector {
 		}
 	}
 
-	public A.SpaceTokenDecision BuildDecision( Func<PromptData, string> promptBuilder, Present present, SpaceSpec? singleDestination, 
-		int index, int? maxCount // for the prompt
-	) {
+	public PromptData PromptData(int index, int? maxCount) => new PromptData(_quota, GetSourceOptions(), index, maxCount);
+
+	public A.SpaceTokenDecision BuildDecision( Func<PromptData, string> promptBuilder, Present present, SpaceSpec? singleDestination, int index, int? maxCount ) {
 		SpaceToken[] options = GetSourceOptions();
 		string prompt = promptBuilder( new PromptData( _quota, options, index, maxCount ) );
 		return new A.SpaceTokenDecision( prompt, options, present )

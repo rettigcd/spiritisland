@@ -99,6 +99,20 @@ public class ElementMgr( Spirit spirit ) {
 		return Elements[single];
 	}
 
+	public virtual async Task<IDrawableInnateTier?> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
+		IDrawableInnateTier? match = null;
+		foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
+			if( await spirit.Elements.HasMetTierThreshold(option) )
+				match = option;
+		return match;
+	}
+
+
+	public virtual async Task<bool> HasMetTierThreshold(IDrawableInnateTier option) {
+		return await MeetThreshold(option.Elements, "Innate Tier");
+	}
+
+
 	#region CommitToMany Helpers (private)
 
 	static string GetMultiStr( Element multi ) => multi.SplitIntoSingles().Select( x => x.ToString() ).Join( "/" );

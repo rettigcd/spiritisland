@@ -12,7 +12,7 @@ public class Intensify : IAspect {
 	public void ModSpirit(Spirit spirit) {
 
 		// !!! Bonus: Moon, Any
-		
+
 		IntensifyThroughUnderstanding.InitAspect(spirit);
 
 		spirit.SpecialRules = [IntensifyThroughUnderstanding.Rule];

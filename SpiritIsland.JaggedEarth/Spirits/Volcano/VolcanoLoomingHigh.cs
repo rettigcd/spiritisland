@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿
+namespace SpiritIsland.JaggedEarth;
 
 public class VolcanoLoomingHigh : Spirit {
 
@@ -31,7 +32,7 @@ public class VolcanoLoomingHigh : Spirit {
 	) {
 
 		InnatePowers = [
-			new ExplosiveInnate(typeof(ExplosiveEruption)), 
+			InnatePower.For(typeof(ExplosiveEruption)), 
 			InnatePower.For(typeof(PoweredByTheFurnaceOfTheEarth))
 		];
 
@@ -41,12 +42,22 @@ public class VolcanoLoomingHigh : Spirit {
 			VolcanicPeaksTowerOverTheLandscape.Rule
 		];
 
+		Elements = new ElementAndDestroyedPresenceMgr(this);
 		PowerRangeCalc = new VolcanicPeaksTowerOverTheLandscape(this);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		// init special growth (note - we don't want this growth in Unit tests, so only add it if we call InitializeInternal())
-		this.AddActionFactory(new AddBagPresenceToMountain().ToGrowth());
+		AddActionFactory(new AddBagPresenceToMountain().ToGrowth());
+	}
+
+
+	public class ElementAndDestroyedPresenceMgr(Spirit spirit) : ElementMgr(spirit) {
+		public override Task<bool> HasMetTierThreshold(IDrawableInnateTier option) {
+			return (option is not ExplosiveInnateOptionAttribute explosiveAttribute || explosiveAttribute.DestroyedPresenceThreshold <= VolcanoPresence.GetPresenceDestroyedThisAction())
+				? base.HasMetTierThreshold(option)
+				: Task.FromResult(false);
+		}
 	}
 
 }

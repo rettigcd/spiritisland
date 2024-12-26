@@ -241,9 +241,49 @@ public interface IMoverFactory {
 	DestinationSelector PushDestinations { get; }
 }
 
-class DefaultMoverFactory : IMoverFactory {
-	public TokenMover Gather(Spirit self, Space space) => new TokenMover(self, "Gather", space.Adjacent, space);
-	public TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null)
-		=> new TokenMover(self, "Push", sourceSelector, dest ?? DestinationSelector.Adjacent);
-	public DestinationSelector PushDestinations => DestinationSelector.Adjacent;
+public class DefaultMoverFactory : IMoverFactory {
+
+	public virtual TokenMover Gather(Spirit self, Space space) 
+		=> new Builder().FromAdjacents(space).ToSpaces(space).Build(self, "Gather");
+
+	public virtual TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null)
+		=> new Builder().From(sourceSelector).To(dest ?? DestinationSelector.Adjacent).Build(self,"Push");
+
+	public virtual DestinationSelector PushDestinations => DestinationSelector.Adjacent;
+
+
+
+	class Builder {
+		public Builder From(SourceSelector ss) { _sourceSelector = ss; return this; }
+		public Builder FromSpaces(params IEnumerable<Space> spaces) { _sourceSelector = new SourceSelector(spaces); return this; }
+		public Builder FromAdjacents(Space centralSpace) {  _sourceSelector = new SourceSelector(centralSpace.Adjacent); return this;}
+
+		public Builder To(DestinationSelector ds) { _destinationSelector = ds; return this; }
+		public Builder ToSpaces( params IEnumerable<Space> destination ) { _destinationSelector = new DestinationSelector(destination); return this; }
+		public Builder ToAdjacents(Space centralSpace) {  _destinationSelector = new DestinationSelector(centralSpace.Adjacent); return this; }
+
+		public TokenMover Build(Spirit spirit, string action) => new TokenMover(spirit,action,_sourceSelector!,_destinationSelector!);
+
+		SourceSelector? _sourceSelector;
+		DestinationSelector? _destinationSelector;
+	}
+
+}
+
+public class BobMoverFactory : DefaultMoverFactory {
+
+	public override TokenMover Gather(Spirit self, Space space) {
+		var mover = base.Gather(self,space);
+
+		
+
+		return mover;
+	}
+		
+
+	public override TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null) {
+		var mover = base.Pusher(self,sourceSelector,dest);
+		return mover;
+	}
+
 }

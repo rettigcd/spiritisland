@@ -37,8 +37,8 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 		) {
 
 		InnatePowers = [
-			new UserSelectedInnatePower(typeof(LearnTheInvadersTactics)), 
-			new UserSelectedInnatePower(typeof(ObserveTheEverChangingWorld))
+			InnatePower.For(typeof(LearnTheInvadersTactics)),
+			InnatePower.For(typeof(ObserveTheEverChangingWorld))
 		];
 
 		SpecialRules = [LongAgesOfKnowledgeAndForgetfulness.Rule, InsightsIntoTheWorldsNature.Rule];

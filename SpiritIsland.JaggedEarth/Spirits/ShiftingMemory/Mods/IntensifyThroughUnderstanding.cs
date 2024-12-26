@@ -1,20 +1,24 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
 class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
-	// Island Mod
+	// Island Mods
 	: BaseModEntity
-	, IModifyRemovingToken
-	, IModifyAddingToken
-	, IAdjustDamageToInvaders_FromSpiritPowers
-	, IHandleTokenAdded
-	, IHandleSpaceDefended
+	, IModifyRemovingToken						// Moon
+	, IModifyAddingToken						// Sun (badland), Plant, Animal
+	, IAdjustDamageToInvaders_FromSpiritPowers	// Fire
+	, IHandleTokenAdded							// Sun (strife)
+	, IHandleSpaceDefended						// Earth
+	// Spirit actions
+	, IModifyAvailableActions					// Air
+	, IHandleActivatedActions					// Air
+	// Action-Components
+	, IMoverFactory								// Water
 	// Init
 	, IInitializeSpirit
-	// Air
-	, IModifyAvailableActions
-	, IHandleActivatedActions
-
+	, IConfigureMyActions
 {
+
+	// https://spiritislandwiki.com/index.php?title=Intensify
 
 	#region Rule
 
@@ -39,11 +43,37 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 		spirit.Mods.Add(new IntensifyThroughUnderstanding((ShiftingMemoryOfAges)spirit));
 	}
 
-	#region Initialize Spirit (after game exists)
-	public void Initialize() {
-		GameState.Current.AddIslandMod(this);
+	#region Water
+
+	DestinationSelector IMoverFactory.PushDestinations => _default.PushDestinations;
+
+	TokenMover IMoverFactory.Gather(Spirit self, Space space) {
+		var mover = _default.Gather(self, space);
+		mover.DoEndStuff += Mover_DoEndStuff;
+		return mover;
 	}
-	#endregion
+
+	TokenMover IMoverFactory.Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null) {
+		var mover = _default.Pusher(self, sourceSelector, dest);
+		mover.DoEndStuff += Mover_DoEndStuff;
+		return mover;
+	}
+
+	async Task Mover_DoEndStuff(bool ranOutOfOption, Move[] arg2, Spirit arg3) {
+		if( !ranOutOfOption ) return;
+		if( _spirit.PreparedElementMgr.PreparedElements[Element.Water] == 0 ) return;
+
+		var options = arg2.Where(m => 0 < m.Source.Count).ToArray();
+		if( options.Length == 0 ) return;
+
+		var move = await _spirit.Select("Boost 1 more move with Water element?", options, Present.Done);
+		if( move is null ) return;
+		_spirit.PreparedElementMgr.PreparedElements[Element.Water]--;
+		await move.Apply();
+	}
+	readonly DefaultMoverFactory _default = new();
+
+	#endregion Water
 
 	#region Air
 	void IModifyAvailableActions.Modify(List<IActionFactory> orig, Phase phase) {
@@ -76,7 +106,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	#endregion Air
 
 	#region Other elements
-	public async Task ModifyAddingAsync(AddingTokenArgs args) {
+	async Task IModifyAddingToken.ModifyAddingAsync(AddingTokenArgs args) {
 		if( (args.Reason == AddReason.AddedToCard || args.Reason == AddReason.AsReplacement)
 			&& _spirit.ActionIsMyPower
 		) {
@@ -103,13 +133,13 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 		}
 	}
 
-	public async Task ModifyDamage(DamageFromSpiritPowers args) {
+	async Task IAdjustDamageToInvaders_FromSpiritPowers.ModifyDamage(DamageFromSpiritPowers args) {
 		//Fire: +1 Damage
 		args.Damage += await DoBoost(Element.Fire, "Damage", args.Damage);
 
 	}
 
-	public async Task ModifyRemovingAsync(RemovingTokenArgs args) {
+	async Task IModifyRemovingToken.ModifyRemovingAsync(RemovingTokenArgs args) {
 		//Moon: Remove/Replace +1 piece
 		if( args.Reason == RemoveReason.Removed || args.Reason == RemoveReason.Replaced )
 			args.Count += await DoBoost(Element.Moon, $"{args.Reason} {args.Token.Text}", args.Count);
@@ -166,5 +196,14 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 
 	#endregion Other elements
 
-}
+	#region Initialize Spirit (after game exists)
+	void IInitializeSpirit.Initialize() {
+		GameState.Current.AddIslandMod(this); // everything but Air & Water
+	}
+	void IConfigureMyActions.Configure(Spirit spirit, ActionScope actionScope) {
+		actionScope.MoverFactory = this; // water
+	}
 
+	#endregion
+
+}
