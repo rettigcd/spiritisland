@@ -18,7 +18,7 @@ public class TokenBinding {
 
 	public bool Any => Count > 0;
 
-	public virtual int Count => _space.Sum(Default); // _space[Default];
+	public virtual int Count => _space.Sum(Default);
 
 	public void Init( int count ) => _space.Init( Default, count );
 

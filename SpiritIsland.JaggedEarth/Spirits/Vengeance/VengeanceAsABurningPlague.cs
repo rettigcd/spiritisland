@@ -3,6 +3,7 @@
 public class VengeanceAsABurningPlague : Spirit {
 
 	public const string Name = "Vengeance as a Burning Plague";
+	public override string SpiritName => Name;
 
 	public VengeanceAsABurningPlague() : base(
 		spirit => new SpiritPresence( spirit,
@@ -27,22 +28,9 @@ public class VengeanceAsABurningPlague : Spirit {
 		SpecialRules = [
 			TerrorOfASlowlyUnfoldingPlague.Rule,
 			LingeringPestilencePresenceToken.Rule,
-			WreakVengeanceForTheLandsCorruption.Rule
+			WreakVengeanceForTheLandsCorruption_Rule
 		];
 	}
-	static SpiritAction AddAPresenceOrDisease => new SpiritAction(
-		"Add a Presence or Disease", 
-		self => Cmd.Pick1( AddDiseaseAtRange1, new PlacePresence( 1 ) ).ActAsync( self ) 
-	);
-
-	static SpiritAction AddDiseaseAtRange1 => new SpiritAction( "Add a Disease - Range 1", async self => {
-		var options = DefaultRangeCalculator.Singleton.GetTargetingRoute_MultiSpace(self.Presence.Lands, new TargetCriteria(1)).Targets;
-		Space to = await self.SelectAlways( "Add a Disease", options );
-		await self.Target( to ).Disease.AddAsync( 1 );
-	} );
-
-
-	public override string SpiritName => Name;
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {
 		Presence.Destroyed.Count = 1; // 1 of your presence starts the game already Destroyed.
@@ -59,10 +47,35 @@ public class VengeanceAsABurningPlague : Spirit {
 		gameState.AddIslandMod( new TerrorOfASlowlyUnfoldingPlague(this) );
 	}
 
+	#region Custom Growth actions
+
+	static SpiritAction AddAPresenceOrDisease => new SpiritAction(
+		"Add a Presence or Disease",
+		self => Cmd.Pick1(AddDiseaseAtRange1, new PlacePresence(1)).ActAsync(self)
+	);
+
+	static SpiritAction AddDiseaseAtRange1 => new SpiritAction("Add a Disease - Range 1", async self => {
+		var options = DefaultRangeCalculator.Singleton.GetTargetingRoute_MultiSpace(self.Presence.Lands, new TargetCriteria(1)).Targets;
+		Space to = await self.SelectAlways("Add a Disease", options);
+		await self.Target(to).Disease.AddAsync(1);
+	});
+
+	#endregion Custom Growth actions
+
+	#region Wreak Vengeance for the Land's Corruption
+
+	static SpecialRule WreakVengeanceForTheLandsCorruption_Rule => new SpecialRule(
+		"Wreak Vengeance for the Land's Corruption",
+		"Your actions treat blight on the island as also being badlands"
+	);
+
 	public override void InitSpiritAction( ActionScope scope ) {
-		if( scope.Category == ActionCategory.Spirit_Power )
-			scope.Upgrader = (ss) => new VengeanceSpace( ss );
+		if( scope.Category == ActionCategory.Spirit_Power ) {
+			Token.Blight.BonusTag = Token.Badlands;
+			scope.AtEndOfThisAction(action=> Token.Blight.BonusTag = null);
+		}
 	}
 
+	#endregion Wreak Vengeance for the Land's Corruption
 
 }

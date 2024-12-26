@@ -56,7 +56,10 @@ public class SpiritPresenceToken
 	string IOption.Text => SpaceAbreviation;
 	Img IToken.Img => Img.Icon_Presence;
 	ITokenClass IToken.Class => Self.Presence;
-	public bool HasTag( ITag tag ) => ((ITokenClass)Self.Presence).HasTag(tag);
+	public bool HasTag( ITag tag) {
+		return tag == Self.Presence
+			|| tag == TokenCategory.Presence;
+	}
 
 	#endregion
 

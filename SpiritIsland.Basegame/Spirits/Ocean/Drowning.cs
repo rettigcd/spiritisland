@@ -17,7 +17,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 		if(args.Added is not HumanToken ht) return;
 
 		// If we are saving a dahan
-		if(ht.HumanClass.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && CanSaveDahanOnSpace(to) )
+		if(ht.HasTag(TokenCategory.Dahan) && Ocean.ShouldSaveDahan() && CanSaveDahanOnSpace(to) )
 			if( await SaveDahan(args) )
 				return;
 

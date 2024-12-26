@@ -44,7 +44,7 @@ public class TDaTD_ActionTokens( Space space )
 	async Task Destroy1Invader( HumanToken invaderToken ) {
 
 		// for everything BUT normal invaders, we do nothing
-		if(!invaderToken.HumanClass.HasTag(TokenCategory.Invader)) return; 
+		if(!invaderToken.HasTag(TokenCategory.Invader)) return; 
 		if(invaderToken.HumanClass.Variant != TokenVariant.Default) return;
 
 		// Normal Invaders - Push
@@ -128,14 +128,12 @@ public class TDaTD_ActionTokens( Space space )
 		.AddDamage( 0, -human.DreamDamage ); // remove nightmare damage
 
 	static public HumanTokenClass ToggleDreamingClass( HumanTokenClass tokenClass ) {
-		if(tokenClass.HasTag( TokenCategory.Invader )) {
-			if(tokenClass == Human.Explorer) return DreamingExplorer;
-			if(tokenClass == Human.Town) return DreamingTown;
-			if(tokenClass == Human.City) return DreamingCity;
-			if(tokenClass == DreamingExplorer) return Human.Explorer;
-			if(tokenClass == DreamingTown) return Human.Town;
-			if(tokenClass == DreamingCity) return Human.City;
-		}
+		if(tokenClass == Human.Explorer) return DreamingExplorer;
+		if(tokenClass == Human.Town) return DreamingTown;
+		if(tokenClass == Human.City) return DreamingCity;
+		if(tokenClass == DreamingExplorer) return Human.Explorer;
+		if(tokenClass == DreamingTown) return Human.Town;
+		if(tokenClass == DreamingCity) return Human.City;
 		throw new ArgumentException( $"{tokenClass} is not explorer, town, or city." );
 	}
 

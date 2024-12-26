@@ -187,8 +187,8 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	#region ITokenClass Imp
 	
 	string ITag.Label => "Presence";
-	bool ITokenClass.HasTag( ITag tag ) => tag == this // Spirit.Presence acts like the class for the Spirit
-		|| tag == TokenCategory.Presence; // !! Should be on Incarna Also
+	//bool ITokenClass.HasTag( ITag tag ) => tag == this // Spirit.Presence acts like the class for the Spirit
+	//	|| tag == TokenCategory.Presence; // !! Should be on Incarna Also
 	#endregion ITokenClass Imp
 
 	#region Memento

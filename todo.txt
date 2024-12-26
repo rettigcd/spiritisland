@@ -8,8 +8,6 @@
 	Bringer > Push instead of destroy			MOVER
 	Trickster > Run at Max (Push/Gather)		MOVER
 	ManyMinds > Gather / Push extend range		MOVER
-	Wandering voice > Push strifed explorer		ADD-Strife
-	Vengence > Treat Blight as Badlands      (HARD)
 
 
 5	Change SpaceDecision .Move .Push methods to use Move options

@@ -59,7 +59,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	void IHandleActivatedActions.ActionActivated(IActionFactory factory) {
 		if( _slowAsFast.Contains(factory) ) {
 			++_usedCount;
-			--smoa.PreparedElementMgr.PreparedElements[Element.Air];
+			--_spirit.PreparedElementMgr.PreparedElements[Element.Air];
 		}
 	}
 
@@ -78,7 +78,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	#region Other elements
 	public async Task ModifyAddingAsync(AddingTokenArgs args) {
 		if( (args.Reason == AddReason.AddedToCard || args.Reason == AddReason.AsReplacement)
-			&& smoa.ActionIsMyPower
+			&& _spirit.ActionIsMyPower
 		) {
 			//Animal: Add +1 Disease or +1 Beasts
 			if( args.Token.HasAny(Token.Disease, Token.Beast) )
@@ -117,21 +117,21 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 
 	//Sun: +1 Strife    (2 of 2)
 	async Task IHandleTokenAdded.HandleTokenAddedAsync(Space to, ITokenAddedArgs args) {
-		if( args.IsStrifeAdded() && smoa.ActionIsMyPower ) {
+		if( args.IsStrifeAdded() && _spirit.ActionIsMyPower ) {
 			int boost = await DoBoost(Element.Sun, "Strife", 1);
 			if( boost != 0 )
-				await to.SourceSelector.AddGroup(1, Human.Invader).StrifeAll(smoa); // Marking Sun Element as used will prevent looping.
+				await to.SourceSelector.AddGroup(1, Human.Invader).StrifeAll(_spirit); // Marking Sun Element as used will prevent looping.
 		}
 	}
 
 	// Max 1 / Action
 	async Task<int> DoBoost(Element el, string itemToBoost, int start, int delta = 1) {
-		if( smoa.ActionIsMyPower
+		if( _spirit.ActionIsMyPower
 			&& HasPreparedElement(el)
 			&& !IsUsed(el)
-			&& await smoa.UserSelectsFirstText($"Boost {itemToBoost} from {start} to {start + delta}? (costs 1 {el})", "Yes, boost it!", "No thanks")
+			&& await _spirit.UserSelectsFirstText($"Boost {itemToBoost} from {start} to {start + delta}? (costs 1 {el})", "Yes, boost it!", "No thanks")
 		) {
-			--smoa.PreparedElementMgr.PreparedElements[el];
+			--_spirit.PreparedElementMgr.PreparedElements[el];
 			MarkUsed(el);
 			return delta;
 		}
@@ -150,7 +150,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 
 	const string Key = "Used-Elements-Intensify";
 
-	bool HasPreparedElement(Element el) => 0 < smoa.PreparedElementMgr.PreparedElements[el];
+	bool HasPreparedElement(Element el) => 0 < _spirit.PreparedElementMgr.PreparedElements[el];
 
 	void IHandleSpaceDefended.OnDefend(Space space, int defendCount) {
 		//Earth: Defend +2								MOD - with Defend help

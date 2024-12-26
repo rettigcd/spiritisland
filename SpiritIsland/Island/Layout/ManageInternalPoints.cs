@@ -91,7 +91,7 @@ public class ManageInternalPoints {
 
 		// invader groups
 		var groups = allTokens.AllHumanTokens()
-			.Where(x=>x.HumanClass.HasTag(TokenCategory.Invader))
+			.Where(x=>x.HasTag(TokenCategory.Invader))
 			.GroupBy(x=>x.HumanClass)
 			.ToArray();
 		foreach(var group in groups)

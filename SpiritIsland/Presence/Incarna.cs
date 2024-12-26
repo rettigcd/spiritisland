@@ -30,9 +30,12 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 	string ITag.Label => $"{Self.SpiritName} Incarna";
 
 	// Class & Token method
-	public bool HasTag(ITag tag) 
-		=> tag == this || tag == TokenCategory.Incarna // Is: This Incarna token or any Incarna
-		|| ((ITokenClass)Self.Presence).HasTag(tag);   // Acts as Spirit Presence and/or belongs to this spirit.
+	public bool HasTag(ITag tag) {
+		return tag == this 
+			|| tag == TokenCategory.Incarna // Is: This Incarna token or any Incarna
+			|| tag == Self.Presence
+			|| tag == TokenCategory.Presence;
+	}
 
 	#endregion
 

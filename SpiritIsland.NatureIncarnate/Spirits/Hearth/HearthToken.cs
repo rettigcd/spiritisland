@@ -63,7 +63,7 @@ public class HearthToken( Spirit spirit )
 
 	const int _deltaHealth = 4;
 
-	static bool BonusAppliesToThis(HumanToken token) => token.HumanClass.HasTag(TokenCategory.Dahan);
+	static bool BonusAppliesToThis(HumanToken token) => token.HasTag(TokenCategory.Dahan);
 
 	void Fortify_AddedPresence( Space to, ITokenAddedArgs args ) {
 		// Adding presence where there wasn't any before.

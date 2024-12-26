@@ -217,7 +217,7 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 		// When damaging defenders, it is ok to damage the explorers first.
 		// https://querki.net/u/darker/spirit-island-faq/#!Voice+of+Command 
 		var participatingExplorers = defenders.Keys
-			.Where( k => k.HumanClass.HasAny( Human.Invader ) )
+			.Where( k => k.HasAny( Human.Invader ) )
 			.OfType<HumanToken>()
 			.OrderByDescending( x => x.RemainingHealth ) // kill lowest health first (must be efficient)
 			.ThenBy( x => x.StrifeCount ) // non strifed first

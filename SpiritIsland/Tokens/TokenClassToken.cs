@@ -4,50 +4,43 @@
 /// Token that implements its own IEntity.Class
 /// </summary>
 /// <example>blight, defend, isolate, beast</example>
-public class TokenClassToken : IToken, ITokenClass, IAppearInSpaceAbreviation {
-
-	public string Badge { get; private set; }
-
-	public TokenClassToken(string label, char initial, Img img, string? badge = null) {
-		Label = label;
-		_summary = initial.ToString();
-		Img = img;
-		Badge = badge ?? string.Empty;
-	}
-
-	/// <summary> Invisible token constructor </summary>
-	//public TokenClassToken( string label ) {
-	//	Label = label;
-	//	_summary = "";	// invisible, does not appear in summary list
-	//	Img = Img.None;	// invisible, does not appear on board
-	//}
+public class TokenClassToken(string label, char spaceAbrev, Img img, string? badge = null) : IToken, ITokenClass, IAppearInSpaceAbreviation {
 
 	#region IOption interface
 
-	string IOption.Text => Label;
+	string IOption.Text => label;
 
 	#endregion IOption interface
 
 	#region Token
 
+	public Img Img => img;
 	ITokenClass IToken.Class => this;
+	string IToken.Badge => _badge;
+	public bool HasTag(ITag tag) => tag == this || tag == BonusTag;
 
-	public Img Img { get; }
+	public ITag? BonusTag = null; // Hook for treating some things as other things
 
-	public override string ToString() => _summary;
+	readonly string _badge = badge ?? string.Empty;
 
-	readonly string _summary;
+	#endregion Token
 
-	public string SpaceAbreviation => _summary;
+	#region ITokenClass
 
-	#endregion
+	public string Label => label;
 
-	#region TokenGroup
+//	bool ITokenClass.HasTag(ITag tag) => HasTag_Internal(tag);
 
-	public string Label { get; }
+	#endregion ITokenClass
 
-	public bool HasTag( ITag tag ) => tag == this;
+	#region IAppearInSpaceAbreviation
 
-	#endregion
+	string IAppearInSpaceAbreviation.SpaceAbreviation => _spaceAbrev;
+
+	#endregion IAppearInSpaceAbreviation
+
+	public override string ToString() => _spaceAbrev;
+
+	readonly string _spaceAbrev = spaceAbrev.ToString();
 
 }
