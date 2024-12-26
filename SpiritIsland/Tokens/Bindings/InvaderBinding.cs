@@ -37,7 +37,7 @@ public sealed class InvaderBinding( Space space ) {
 		if(Space.ModsOfType<IAdjustDamageToInvaders_ByStoppingIt>().Any()) return (0,originalInvader);
 
 		//!!! can we clean this up
-		var damagedInvader = Space.GetNewDamagedToken( originalInvader, availableDamage );
+		var damagedInvader = originalInvader.AddDamage(availableDamage);
 
 		if(!damagedInvader.IsDestroyed) {
 			Space.Humans(1, originalInvader).Adjust(_ => damagedInvader);

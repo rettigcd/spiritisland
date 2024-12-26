@@ -58,7 +58,9 @@ public partial class ManyMindsMoveAsOne : Spirit {
 	}
 
 	public override void InitSpiritAction( ActionScope scope ) {
-		ActionScope.Current.Upgrader = x => new ManyMindTokens( x );
+
+		ActionScope.Current.MoverFactory = new ManyMindsMover();
+//		ActionScope.Current.Upgrader = x => new ManyMindTokens( x );
 	}
 
 }

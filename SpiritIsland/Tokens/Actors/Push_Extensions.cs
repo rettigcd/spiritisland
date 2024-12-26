@@ -41,8 +41,7 @@ static public class Push_Extensions {
 	static public Task PushN( this SourceSelector ss, Spirit self ) => ss.ToPusher(self).DoN();
 
 	static public TokenMover ToPusher( this SourceSelector ss, Spirit spirit, DestinationSelector? dest=null ) {
-		return GameState.Current.Island.Boards[0][0].ScopeSpace	// this part is a HACK
-			.Pusher(spirit,ss,dest);
+		return ActionScope.Current.MoverFactory.Pusher(spirit, ss, dest);
 	}
 
 	#endregion Simple Push - no Config / no Bring
@@ -50,7 +49,7 @@ static public class Push_Extensions {
 	#region Pushing 1 Token
 	// Pushing 1 Specific Token
 	static public Task<TokenMovedArgs?> PushAsync( this SpaceToken spaceToken, Spirit self, Action<DestinationSelector>? configDestination=null ) {
-		var destinations = spaceToken.Space.PushDestinations;
+		var destinations = ActionScope.Current.MoverFactory.PushDestinations;
 		configDestination?.Invoke(destinations);
 		return spaceToken.MoveToAsync("Push",destinations,self);
 	}

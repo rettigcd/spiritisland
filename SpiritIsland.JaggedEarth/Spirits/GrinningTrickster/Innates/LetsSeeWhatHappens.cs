@@ -34,7 +34,7 @@ public class LetsSeeWhatHappens {
 		// Use immediately. All 'up to' instructions must be used at max and 'OR's treated as 'AND's "
 		await using var maxScope = await ActionScope.Start(ActionCategory.Spirit_Power);
 		maxScope.Owner = ctx.Self;
-		maxScope.Upgrader = (x) => new TricksterTokens(x);
+		maxScope.MoverFactory = new TrickesterMoverFactory();
 
 		await card.InvokeOn( new LetsSeeWhatHappensCtx( ctx ) );
 		return card;
@@ -46,6 +46,15 @@ public class LetsSeeWhatHappens {
 			card = GameState.Current.MinorCards!.FlipNext(); 
 		} while(card.LandOrSpirit != LandOrSpirit.Land);
 		return card;
+	}
+
+
+	// * Runs things at max.  (Pusher,Gatherer)
+	class TrickesterMoverFactory : IMoverFactory {
+		public TokenMover Gather(Spirit self, Space space) => new TokenMover(self, "Gather", space.Adjacent, space).RunAtMax(true);
+		public TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null)
+			=> new TokenMover(self, "Push", sourceSelector, dest ?? DestinationSelector.Adjacent).RunAtMax(true);
+		public DestinationSelector PushDestinations => DestinationSelector.Adjacent;
 	}
 
 }

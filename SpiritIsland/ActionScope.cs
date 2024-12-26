@@ -92,7 +92,13 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	public GameState GameState { get; }
 	public ActionCategory Category { get; }
-	public Func<Space, Space> Upgrader { get => _upgrader; set => _upgrader = value; }
+
+	public IMoverFactory MoverFactory {
+		get => _moverFactory ??= new DefaultMoverFactory();
+		set => _moverFactory = value;
+	}
+	IMoverFactory? _moverFactory;
+
 	/// <summary> Spirit (if any) that owns the action. Null for non-spirit actions. </summary>
 	public Spirit? Owner { get => _owner; set => _owner = value; }
 	public Guid Id { get; }
@@ -145,9 +151,7 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	/// <summary> Called from Space.Tokens to get Tokens. </summary>
 	/// <remarks> Provides hook for spirits to modify the Space object used for their actions.</remarks>
-	public Space AccessTokens(SpaceSpec space) => Upgrader( GameState.Tokens[space] );
-
-
+	public Space AccessTokens(SpaceSpec space) => GameState.Tokens[space];
 
 	#region Non-Spirit Initialized Action Scoped data
 
@@ -227,7 +231,19 @@ public sealed class ActionScope : IAsyncDisposable {
 
 	AsyncEvent<ActionScope>? _endOfThisAciton;
 	TerrainMapper? _terrainMapper;
-	Func<Space, Space> _upgrader = ss=>ss;
 	Spirit? _owner;
 	#endregion
+}
+
+public interface IMoverFactory {
+	TokenMover Gather(Spirit self, Space space);
+	TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null);
+	DestinationSelector PushDestinations { get; }
+}
+
+class DefaultMoverFactory : IMoverFactory {
+	public TokenMover Gather(Spirit self, Space space) => new TokenMover(self, "Gather", space.Adjacent, space);
+	public TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null)
+		=> new TokenMover(self, "Push", sourceSelector, dest ?? DestinationSelector.Adjacent);
+	public DestinationSelector PushDestinations => DestinationSelector.Adjacent;
 }

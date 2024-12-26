@@ -4,7 +4,7 @@ public partial class Space {
 
 	// !!! Make sure that everything that calls this should NOT be including Badland damage
 	/// <returns>Damage inflicted.</returns>
-	public virtual async Task<int> UserSelected_DamageInvadersAsync(Spirit damagePicker, int damage, params ITokenClass[] allowedTypes) {
+	public async Task<int> UserSelected_DamageInvadersAsync(Spirit damagePicker, int damage, params ITokenClass[] allowedTypes) {
 		if( allowedTypes.Length == 0 ) allowedTypes = Human.Invader;
 
 		var args = new DamageFromSpiritPowers { Space = this, Classes = allowedTypes, Damage = damage };

@@ -19,7 +19,7 @@ class HabsurgBuilder : BuildEngine {
 		// In each land matching a Build Card
 		foreach(Space space in cardDependentBuildSpaces) {
 			Spirit spirit = space.SpaceSpec.Boards[0].FindSpirit();
-			await space.Gather( spirit )
+			await ActionScope.Current.MoverFactory.Gather(spirit, space)
 				// Gather 1 Town 
 				.AddGroup( 1, Human.Town )
 				// from a land not matching a Build Card.

@@ -9,9 +9,6 @@ public sealed class TokenMover(
 
 	#region Static Factories
 
-	/// <summary> Routes to Gatherer on the Space (because that is overridable by Spirit powers) </summary>
-	static public TokenMover Gather( Spirit self, Space destination ) => destination.Gather(self);
-
 	static public TokenMover SingleDestination( TargetSpaceCtx ctx, params Space[] sources ) => new TokenMover( ctx.Self, "Move", sources, ctx.Space );
 
 	#endregion

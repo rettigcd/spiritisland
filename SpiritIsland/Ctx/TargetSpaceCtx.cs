@@ -128,7 +128,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	public Task Gather( int countToGather, params ITokenClass[] groups )
 		=> Gatherer.AddGroup(countToGather,groups).DoN();
 
-	public TokenMover Gatherer => Space.Gather( Self );
+	public TokenMover Gatherer => ActionScope.Current.MoverFactory.Gather(Self, Space);
 
 	#endregion Gather
 

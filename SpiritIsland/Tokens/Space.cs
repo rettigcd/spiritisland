@@ -4,7 +4,7 @@
 /// Wraps: Space, Token-Counts on that space, API to publish token-changed events.
 /// Has same Scope as GameState (not bound to an ActionScope
 /// </summary>
-public partial class Space 
+public sealed partial class Space 
 	: ISeeAllNeighbors<Space>
 	, ILocation // !!! we don't SpaceToken or TokenOn using this as a location, maybe we should remove this
 	, IOption
@@ -17,14 +17,6 @@ public partial class Space
 		_counts = counts;
 		_islandMods = islandMods;
 		_api = tokenApi;
-	}
-
-	/// <summary> Clone / copy constructor </summary>
-	protected Space( Space src ) {
-		SpaceSpec = src.SpaceSpec;
-		_counts = src._counts;
-		_islandMods = src._islandMods;
-		_api = src._api;
 	}
 
 	#endregion
@@ -71,8 +63,8 @@ public partial class Space
 	public IToken[] OfAnyTag( params ITag[] tags ) => OfAnyTagEnumeration( tags ).ToArray();
 
 	// -- IEnumerable<IToken> --
-	protected IEnumerable<IToken> OfTagEnumeration( ITag tag ) => OfType<IToken>().Where( token => token.HasTag(tag) );
-	protected IEnumerable<IToken> OfAnyTagEnumeration( params ITag[] classes ) => OfType<IToken>().Where( token => token.HasAny(classes) );
+	IEnumerable<IToken> OfTagEnumeration( ITag tag ) => OfType<IToken>().Where( token => token.HasTag(tag) );
+	IEnumerable<IToken> OfAnyTagEnumeration( params ITag[] classes ) => OfType<IToken>().Where( token => token.HasAny(classes) );
 
 	// .OfType<> 
 	public IEnumerable<T> ModsOfType<T>() => Keys.Union( _islandMods ).OfType<T>();
@@ -113,7 +105,7 @@ public partial class Space
 
 	readonly CountDictionary<ISpaceEntity> _counts;
 	readonly IEnumerable<ISpaceEntity> _islandMods;
-	protected readonly IIslandTokenApi _api;
+	readonly IIslandTokenApi _api;
 
     #endregion
 
@@ -255,7 +247,7 @@ public partial class Space
 
 
 
-	public virtual async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) { 
+	public async Task<SpaceToken> Add1StrifeToAsync( HumanToken invader ) { 
 		var token = await AddRemoveStrifeAsync( invader, 1, 1 );
 		return token.On(this);
 	}
@@ -264,7 +256,7 @@ public partial class Space
 
 	/// <returns>New invader</returns>
 	/// <param name="tokenCount">The # of tokens to apply change to.</param>
-	protected async Task<HumanToken> AddRemoveStrifeAsync( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
+	async Task<HumanToken> AddRemoveStrifeAsync( HumanToken originalInvader, int strifeDelta, int tokenCount ) {
 
 		if(this[originalInvader] < tokenCount)
 			throw new ArgumentOutOfRangeException( $"collection does not contain {tokenCount} {originalInvader}" );
@@ -365,10 +357,6 @@ public partial class Space
 	public Task<int> DestroyAll( HumanToken humanToken )
 		=> Destroy( humanToken, this[humanToken] );
 
-	protected virtual Task<int> DestroyNInvaders( HumanToken invaderToDestroy, int countToDestroy ) {
-		return this.Destroy( invaderToDestroy, countToDestroy );
-	}
-
 	// Convenience only
 	public async Task<int> Destroy( IToken token, int count ) {
 		if(this[token] < count)
@@ -384,7 +372,7 @@ public partial class Space
 	}
 
 	/// <summary> Triggers IModifyRemoving but does NOT publish TokenRemovedArgs. </summary>
-	public virtual async Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
+	public async Task<(ITokenRemovedArgs,Func<ITokenRemovedArgs,Task>)> SourceAsync( IToken token, int count, RemoveReason reason = RemoveReason.Removed ) {
 		count = System.Math.Min( count, this[token] );
 
 		RemovingTokenCtx removedHandlers = RemovedHandlerSnapshop;
@@ -421,7 +409,7 @@ public partial class Space
 				await x.ModifyRemovingAsync( args );
 	}
 
-	protected RemovingTokenCtx RemovedHandlerSnapshop => new RemovingTokenCtx( ModSnapshot );
+	RemovingTokenCtx RemovedHandlerSnapshop => new RemovingTokenCtx( ModSnapshot );
 
 	async Task ModifyAdding( AddingTokenArgs args ) {
 		var keyArray = ModSnapshot; 
@@ -444,18 +432,6 @@ public partial class Space
 	//-------------
 	#endregion Mods
 
-	public virtual HumanToken GetNewDamagedToken( HumanToken invaderToken, int availableDamage )
-		=> invaderToken.AddDamage( availableDamage );
-
-
-	public virtual TokenMover Gather( Spirit self ) 
-		=> new TokenMover( self, "Gather", Adjacent, this );
-
-	public virtual TokenMover Pusher( Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null ) 
-		=> new TokenMover( self, "Push", sourceSelector, dest ?? PushDestinations );
-
-	public virtual DestinationSelector PushDestinations => DestinationSelector.Adjacent;
-
 	#region Ravage
 
 	/// <summary> Does 1 potential Ravage (if no stopper tokens) </summary>
@@ -474,7 +450,7 @@ public partial class Space
 
 	#endregion
 
-	public virtual async Task DestroySpace() {
+	public async Task DestroySpace() {
 
 		// Destroy Invaders
 		await Invaders.DestroyAll( Human.Invader );

@@ -22,7 +22,7 @@ class ARealFlairForDiscord(Spirit spirit) : BaseModEntity, IHandleTokenAdded {
 		Used = true; // stop reentry
 
 		--spirit.Energy;
-		var tokens2 = (TricksterTokens)invader2.Space; // need to cast in order to access non-cascading protected member .AddRemoveStrife()
+		var tokens2 = invader2.Space; // need to cast in order to access non-cascading protected member .AddRemoveStrife()
 		await tokens2.Add1StrifeToAsync(invader2.Token.AsHuman());
 	}
 

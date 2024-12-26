@@ -1,36 +1,37 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public partial class ManyMindsMoveAsOne {
+class ManyMindsMover : IMoverFactory {
 
-	class ManyMindTokens( Space src ) : Space( src ) {
-		public override TokenMover Gather( Spirit self ) 
-			=> new TokenMover( self, "Gather", 
-				new BeastSourceSelector( this ), 
-				new DestinationSelector( this )
-			);
+	// Same as default...
+	public TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null)
+		=> new TokenMover(self, "Push", sourceSelector, dest ?? DestinationSelector.Adjacent);
 
-		public override DestinationSelector PushDestinations => new DestinationSelector(  ExtendBeastBy1 );
+	// Different
+	public TokenMover Gather(Spirit self, Space space) => new TokenMover(self, "Gather",
+		new BeastSourceSelector(space),
+		new DestinationSelector(space)
+	);
 
-		static Space[] ExtendBeastBy1( SpaceToken st ) {
-			int range = st.Token.Class == Token.Beast ? 2 : 1; // Compare Class, not Token so we get all beasts
-			return st.Space.Range( range ).ToArray();
-		}
+	// Different
+	public DestinationSelector PushDestinations => new DestinationSelector(ExtendBeastBy1);
 
+	static Space[] ExtendBeastBy1(SpaceToken st) {
+		int range = st.Token.Class == Token.Beast ? 2 : 1; // Compare Class, not Token so we get all beasts
+		return st.Space.Range(range).ToArray();
 	}
 
-}
-
-class BeastSourceSelector( Space destination ) 
-	: SourceSelector( destination.Adjacent ) 
-{
-	public override SpaceToken[] GetSourceOptions() {
-		var items = new List<SpaceToken>();
-		foreach(var group in RemainingTypes) {
-			int range = group == Token.Beast ? 2 : 1;
-			foreach(var space in _destination.Range( range )) // gather, not Range
-				items.AddRange( GetSourceOptionsOn1Space(space) );
+	class BeastSourceSelector(Space destination)
+		: SourceSelector(destination.Adjacent) {
+		public override SpaceToken[] GetSourceOptions() {
+			var items = new List<SpaceToken>();
+			foreach( var group in RemainingTypes ) {
+				int range = group == Token.Beast ? 2 : 1;
+				foreach( var space in _destination.Range(range) ) // gather, not Range
+					items.AddRange(GetSourceOptionsOn1Space(space));
+			}
+			return [.. items];
 		}
-		return [.. items];
+		readonly Space _destination = destination;
 	}
-	readonly Space _destination = destination;
+
 }

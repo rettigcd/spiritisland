@@ -1,7 +1,5 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-#nullable enable
-
 public class GameComponentProvider : IGameComponentProvider {
 
 	#region Spirits
