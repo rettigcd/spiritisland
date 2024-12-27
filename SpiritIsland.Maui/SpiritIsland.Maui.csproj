@@ -154,8 +154,11 @@
 	  <None Remove="Resources\Images\badge\bdg_breath_of_darkness_down_your_spine.png" />
 	  <None Remove="Resources\Images\badge\bdg_bringer_of_dreams_and_nightmares.png" />
 	  <None Remove="Resources\Images\badge\bdg_dances_up_earthquakes.png" />
+	  <None Remove="Resources\Images\badge\bdg_devouring_teeth_lurk_underfoot.png" />
 	  <None Remove="Resources\Images\badge\bdg_downpour_drenches_the_world.png" />
 	  <None Remove="Resources\Images\badge\bdg_ember_eyed_behemoth.png" />
+	  <None Remove="Resources\Images\badge\bdg_eyes_watch_from_the_trees.png" />
+	  <None Remove="Resources\Images\badge\bdg_fathomless_mud_of_the_swamp.png" />
 	  <None Remove="Resources\Images\badge\bdg_finder_of_paths_unseen.png" />
 	  <None Remove="Resources\Images\badge\bdg_fractured_days_split_the_sky.png" />
 	  <None Remove="Resources\Images\badge\bdg_grinning_trickster_stirs_up_trouble.png" />
@@ -167,6 +170,7 @@
 	  <None Remove="Resources\Images\badge\bdg_many_minds_move_as_one.png" />
 	  <None Remove="Resources\Images\badge\bdg_oceans_hungry_grasp.png" />
 	  <None Remove="Resources\Images\badge\bdg_relentless_gaze_of_the_sun.png" />
+	  <None Remove="Resources\Images\badge\bdg_rising_heat_of_stone_and_sand.png" />
 	  <None Remove="Resources\Images\badge\bdg_river_surges_in_sunlight.png" />
 	  <None Remove="Resources\Images\badge\bdg_serpent_slumbering_beneath_the_island.png" />
 	  <None Remove="Resources\Images\badge\bdg_shadows_flicker_like_flame.png" />
@@ -175,6 +179,7 @@
 	  <None Remove="Resources\Images\badge\bdg_shroud_of_silent_mist.png" />
 	  <None Remove="Resources\Images\badge\bdg_starlight_seeks_its_form.png" />
 	  <None Remove="Resources\Images\badge\bdg_stones_unyielding_defiance.png" />
+	  <None Remove="Resources\Images\badge\bdg_sun_bright_whirlwind.png" />
 	  <None Remove="Resources\Images\badge\bdg_thunderspeaker.png" />
 	  <None Remove="Resources\Images\badge\bdg_towering_roots_of_the_jungle.png" />
 	  <None Remove="Resources\Images\badge\bdg_vengeance_as_a_burning_plague.png" />
@@ -442,7 +447,9 @@
 	  <None Remove="Resources\Images\presenceTrack\z5_air_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_any_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_cardplay.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_cardplay_fire.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_cardplay_reclaim_1z.png" />
+	  <None Remove="Resources\Images\presenceTrack\z5_cardplay_sun.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_energy.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_energy_reclaim_1z.png" />
 	  <None Remove="Resources\Images\presenceTrack\z5_fire_energy.png" />
@@ -504,8 +511,11 @@
 	  <None Remove="Resources\Images\tokens\spirits\breath_of_darkness_down_your_spine.png" />
 	  <None Remove="Resources\Images\tokens\spirits\bringer_of_dreams_and_nightmares.png" />
 	  <None Remove="Resources\Images\tokens\spirits\dances_up_earthquakes.png" />
+	  <None Remove="Resources\Images\tokens\spirits\devouring_teeth_lurk_underfoot.png" />
 	  <None Remove="Resources\Images\tokens\spirits\downpour_drenches_the_world.png" />
 	  <None Remove="Resources\Images\tokens\spirits\ember_eyed_behemoth.png" />
+	  <None Remove="Resources\Images\tokens\spirits\eyes_watch_from_the_trees.png" />
+	  <None Remove="Resources\Images\tokens\spirits\fathomless_mud_of_the_swamp.png" />
 	  <None Remove="Resources\Images\tokens\spirits\finder_of_paths_unseen.png" />
 	  <None Remove="Resources\Images\tokens\spirits\fractured_days_split_the_sky.png" />
 	  <None Remove="Resources\Images\tokens\spirits\grinning_trickster_stirs_up_trouble.png" />
@@ -517,6 +527,7 @@
 	  <None Remove="Resources\Images\tokens\spirits\many_minds_move_as_one.png" />
 	  <None Remove="Resources\Images\tokens\spirits\oceans_hungry_grasp.png" />
 	  <None Remove="Resources\Images\tokens\spirits\relentless_gaze_of_the_sun.png" />
+	  <None Remove="Resources\Images\tokens\spirits\rising_heat_of_stone_and_sand.png" />
 	  <None Remove="Resources\Images\tokens\spirits\river_surges_in_sunlight.png" />
 	  <None Remove="Resources\Images\tokens\spirits\serpent_slumbering_beneath_the_island.png" />
 	  <None Remove="Resources\Images\tokens\spirits\shadows_flicker_like_flame.png" />
@@ -525,6 +536,7 @@
 	  <None Remove="Resources\Images\tokens\spirits\shroud_of_silent_mist.png" />
 	  <None Remove="Resources\Images\tokens\spirits\starlight_seeks_its_form.png" />
 	  <None Remove="Resources\Images\tokens\spirits\stones_unyielding_defiance.png" />
+	  <None Remove="Resources\Images\tokens\spirits\sun_bright_whirlwind.png" />
 	  <None Remove="Resources\Images\tokens\spirits\thunderspeaker.png" />
 	  <None Remove="Resources\Images\tokens\spirits\towering_roots_of_the_jungle.png" />
 	  <None Remove="Resources\Images\tokens\spirits\vengeance_as_a_burning_plague.png" />
@@ -551,8 +563,11 @@
 	  <MauiImage Include="Resources\Images\badge\bdg_breath_of_darkness_down_your_spine.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_bringer_of_dreams_and_nightmares.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_dances_up_earthquakes.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_devouring_teeth_lurk_underfoot.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_downpour_drenches_the_world.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_ember_eyed_behemoth.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_eyes_watch_from_the_trees.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_fathomless_mud_of_the_swamp.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_finder_of_paths_unseen.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_fractured_days_split_the_sky.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_grinning_trickster_stirs_up_trouble.png" />
@@ -564,6 +579,7 @@
 	  <MauiImage Include="Resources\Images\badge\bdg_many_minds_move_as_one.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_oceans_hungry_grasp.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_relentless_gaze_of_the_sun.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_rising_heat_of_stone_and_sand.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_river_surges_in_sunlight.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_serpent_slumbering_beneath_the_island.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_shadows_flicker_like_flame.png" />
@@ -572,6 +588,7 @@
 	  <MauiImage Include="Resources\Images\badge\bdg_shroud_of_silent_mist.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_starlight_seeks_its_form.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_stones_unyielding_defiance.png" />
+	  <MauiImage Include="Resources\Images\badge\bdg_sun_bright_whirlwind.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_thunderspeaker.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_towering_roots_of_the_jungle.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_vengeance_as_a_burning_plague.png" />
@@ -580,6 +597,8 @@
 	  <MauiImage Include="Resources\Images\badge\bdg_wandering_voice_keens_delirium.png" />
 	  <MauiImage Include="Resources\Images\badge\bdg_wounded_waters_bleeding.png" />
 	  <MauiImage Include="Resources\Images\growth\gain_sun_or_fire.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_3_mountainorsands.png" />
+	  <MauiImage Include="Resources\Images\growth\place_presence_4z.png" />
 	  <MauiImage Include="Resources\Images\growth\z1_piece_escapes.png" />
 	  <MauiImage Include="Resources\Images\growth\z2_pieces_escape.png" />
 	  <MauiImage Include="Resources\Images\growth\accelerate_or_delay.png" />
@@ -733,6 +752,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\energy0z.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\fire_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\fire_plant.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_cardplay_fire.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_cardplay_reclaim_1z.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\gatherblight.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\gather_1_dahan.png" />
@@ -788,6 +808,7 @@
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_air_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_any_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_cardplay.png" />
+	  <MauiImage Include="Resources\Images\presenceTrack\z5_cardplay_sun.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_energy.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_energy_reclaim_1z.png" />
 	  <MauiImage Include="Resources\Images\presenceTrack\z5_fire_energy.png" />
@@ -849,8 +870,11 @@
 	  <MauiImage Include="Resources\Images\tokens\spirits\breath_of_darkness_down_your_spine.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\bringer_of_dreams_and_nightmares.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\dances_up_earthquakes.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\devouring_teeth_lurk_underfoot.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\downpour_drenches_the_world.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\ember_eyed_behemoth.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\eyes_watch_from_the_trees.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\fathomless_mud_of_the_swamp.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\finder_of_paths_unseen.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\fractured_days_split_the_sky.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\grinning_trickster_stirs_up_trouble.png" />
@@ -862,6 +886,7 @@
 	  <MauiImage Include="Resources\Images\tokens\spirits\many_minds_move_as_one.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\oceans_hungry_grasp.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\relentless_gaze_of_the_sun.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\rising_heat_of_stone_and_sand.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\river_surges_in_sunlight.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\serpent_slumbering_beneath_the_island.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\shadows_flicker_like_flame.png" />
@@ -870,6 +895,7 @@
 	  <MauiImage Include="Resources\Images\tokens\spirits\shroud_of_silent_mist.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\starlight_seeks_its_form.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\stones_unyielding_defiance.png" />
+	  <MauiImage Include="Resources\Images\tokens\spirits\sun_bright_whirlwind.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\thunderspeaker.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\towering_roots_of_the_jungle.png" />
 	  <MauiImage Include="Resources\Images\tokens\spirits\vengeance_as_a_burning_plague.png" />
@@ -891,6 +917,7 @@
 	  <ProjectReference Include="..\SpiritIsland.Basegame\SpiritIsland.Basegame.csproj" />
 	  <ProjectReference Include="..\SpiritIsland.BranchAndClaw\SpiritIsland.BranchAndClaw.csproj" />
 	  <ProjectReference Include="..\SpiritIsland.FeatherAndFlame\SpiritIsland.FeatherAndFlame.csproj" />
+	  <ProjectReference Include="..\SpiritIsland.Horizons\SpiritIsland.Horizons.csproj" />
 	  <ProjectReference Include="..\SpiritIsland.JaggedEarth\SpiritIsland.JaggedEarth.csproj" />
 	  <ProjectReference Include="..\SpiritIsland.NatureIncarnate\SpiritIsland.NatureIncarnate.csproj" />
 	  <ProjectReference Include="..\SpiritIsland\SpiritIsland.csproj" />

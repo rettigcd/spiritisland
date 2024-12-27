@@ -98,6 +98,7 @@ public sealed class ActionScope : IAsyncDisposable {
 		set => _moverFactory = value;
 	}
 	IMoverFactory? _moverFactory;
+	public IDefendSpaces Defender { get; set; } = DefaultDefender.Singleton;
 
 	/// <summary> Spirit (if any) that owns the action. Null for non-spirit actions. </summary>
 	public Spirit? Owner { get => _owner; set => _owner = value; }
@@ -193,8 +194,6 @@ public sealed class ActionScope : IAsyncDisposable {
 	#endregion Non-Spirit Initialized Action Scoped data
 
 
-
-
 	public void Log(Log.ILogEntry entry ) => GameState.Log( entry );
 
 	public void LogDebug( string debugMsg ) => GameState.Log( new Log.Debug( debugMsg ) );
@@ -270,20 +269,13 @@ public class DefaultMoverFactory : IMoverFactory {
 
 }
 
-public class BobMoverFactory : DefaultMoverFactory {
+public interface IDefendSpaces {
+	void Defend(Space space, int defense);
+}
 
-	public override TokenMover Gather(Spirit self, Space space) {
-		var mover = base.Gather(self,space);
-
-		
-
-		return mover;
+public class DefaultDefender : IDefendSpaces {
+	static public readonly DefaultDefender Singleton = new DefaultDefender();
+	void IDefendSpaces.Defend(Space space, int defense) {
+		space.Defend.Add(defense);
 	}
-		
-
-	public override TokenMover Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null) {
-		var mover = base.Pusher(self,sourceSelector,dest);
-		return mover;
-	}
-
 }

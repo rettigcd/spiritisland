@@ -10,38 +10,41 @@
 public class BuildOnceOnSpace_Default { 
 
 	/// <returns>HumanToken or null.</returns>
-	public async Task<HumanToken?> ActAsync( Space space ) {
-		_space = space;
+	public virtual async Task<HumanToken?> ActAsync( Space space ) {
 		await using var actionScope = await ActionScope.Start(ActionCategory.Invader);
 
 		// Determine type to build
-		var (countToAdd, invaderToAdd) = DetermineWhatToAdd();
+		var (countToAdd, invaderToAdd) = DetermineWhatToAdd(space);
 		BuildEngine.InvaderToAdd.Value = invaderToAdd;
 
 		// Check for Stoppers
-		var buildStoppers = _space.ModsOfType<ISkipBuilds>()
+		var buildStoppers = space.ModsOfType<ISkipBuilds>()
 			.OrderBy( t => t.Cost ) // cheapest first
 			.ToArray();
 		foreach(ISkipBuilds stopper in buildStoppers)
-			if(await stopper.Skip( _space )){
-				ActionScope.Current.Log( new Log.InvaderActionEntry( $"{_space.SpaceSpec.Label}: build stopped by {stopper.Text}" ) );
+			if(await stopper.Skip( space )){
+				ActionScope.Current.Log( new Log.InvaderActionEntry( $"{space.SpaceSpec.Label}: build stopped by {stopper.Text}" ) );
 				return null;// "build stopped by " + stopper.Text;
 			}
 
 		// build it
-		var added = await _space.AddDefaultAsync( invaderToAdd, countToAdd, AddReason.Build );
-		ActionScope.Current.Log( new Log.InvaderActionEntry( $"{_space.SpaceSpec.Label}: {added.Added.Class.Label}" ) );
+		var added = await space.AddDefaultAsync( invaderToAdd, countToAdd, AddReason.Build );
+		ActionScope.Current.Log( new Log.InvaderActionEntry( $"{space.SpaceSpec.Label}: {added.Added.Class.Label}" ) );
 		return added.Added.AsHuman();
 	}
 
-	protected virtual (int,HumanTokenClass) DetermineWhatToAdd() {
-		int townCount = _space!.Sum( Human.Town );
-		int cityCount = _space!.Sum( Human.City );
+	public Func<Space,(int,HumanTokenClass)> BuildUnitPicker = DefaultBuildUnitsPicker;
+
+	protected (int,HumanTokenClass) DetermineWhatToAdd(Space space) {
+		return BuildUnitPicker(space);
+	}
+
+	static public (int, HumanTokenClass) DefaultBuildUnitsPicker(Space space) {
+		int townCount = space!.Sum(Human.Town);
+		int cityCount = space!.Sum(Human.City);
 		HumanTokenClass invaderToAdd = cityCount < townCount ? Human.City : Human.Town;
 		int countToAdd = 1;
 		return (countToAdd, invaderToAdd);
 	}
-
-	protected Space? _space;
-
 }
+

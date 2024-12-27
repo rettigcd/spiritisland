@@ -1,5 +1,10 @@
 ﻿namespace SpiritIsland;
 
+/// <summary>
+/// Scoped to a single ActionScope.  Don't reuse between action scopes.
+/// </summary>
+/// <param name="self"></param>
+/// <param name="target"></param>
 public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	#region private fields
@@ -46,7 +51,6 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		}
 	}
 
-
 	public bool MatchesRavageCard => GameState.Current.InvaderDeck.Ravage.Cards.Any(c=>c.MatchesCard(Space));
 	public bool MatchesBuildCard => GameState.Current.InvaderDeck.Build.Cards.Any(c=>c.MatchesCard(Space));
 
@@ -54,7 +58,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	Space? _space;
 
 	#region Token Shortcuts
-	public void Defend(int defend) => Space.Defend.Add(defend);
+	public void Defend(int defend) => Scope.Defender.Defend( Space, defend );
 	public void Isolate() => Space.Isolate();
 
 	public BeastBinding Beasts              => Space.Beasts;
@@ -128,7 +132,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	public Task Gather( int countToGather, params ITokenClass[] groups )
 		=> Gatherer.AddGroup(countToGather,groups).DoN();
 
-	public TokenMover Gatherer => ActionScope.Current.MoverFactory.Gather(Self, Space);
+	public TokenMover Gatherer => Scope.MoverFactory.Gather(Self, Space);
 
 	#endregion Gather
 
@@ -144,7 +148,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	#region Terrain
 
-	TerrainMapper TerrainMapper => _terrainMapper ??= ActionScope.Current.TerrainMapper;
+	TerrainMapper TerrainMapper => _terrainMapper ??= Scope.TerrainMapper;
 	TerrainMapper? _terrainMapper;
 
 	/// <summary> The effective Terrain for powers. Will be Wetland for Ocean when Oceans-Hungry-Grasp is on board </summary>
@@ -293,4 +297,11 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		.SelectMany(s=>s.Presence.TokensDeployedOn( Space ) )
 		.Select(x=>x.Class)
 		.ToArray();
+
+	#region ActionScope
+
+	ActionScope Scope => _scope ??= ActionScope.Current;
+	ActionScope? _scope;
+
+	#endregion ActionScope
 }

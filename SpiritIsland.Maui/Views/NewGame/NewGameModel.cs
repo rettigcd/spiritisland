@@ -212,7 +212,8 @@ class NewGameModel : ObservableModel {
 		new BranchAndClaw.GameComponentProvider(),
 		new FeatherAndFlame.GameComponentProvider(),
 		new JaggedEarth.GameComponentProvider(),
-		new NatureIncarnate.GameComponentProvider()
+		new NatureIncarnate.GameComponentProvider(),
+		new Horizons.GameComponentProvider()
 	);
 
 	#endregion private fields

@@ -10,7 +10,7 @@ public sealed class PlacePresence : SpiritAction {
 	public string FilterDescription { get; }
 	public string[] FilterEnums { get; }
 
-	// Hook for Madness aspect.
+	// Hook for Madness aspect && Sun-Bright Whilwind growth
 	// Alternative: place a IHandleTokensPlaced mod in the Spirits Mod Bucket and call it.
 	public AsyncEvent<TokenMovedArgs> Placed = new();
 

@@ -15,7 +15,7 @@ public class SolidifyEchoesOfMajestyPast {
 
 		// In that land and each adjacent, Defend 3.
 		foreach(Space? space in center.Range(1))
-			space.Defend.Add(3);
+			ctx.Self.Target(space).Defend(3);
 
 		// They Add 1 DestroyedPresence to each adjacent land.
 		List<Space> spacesOptions = center.Adjacent_Existing.ToList();

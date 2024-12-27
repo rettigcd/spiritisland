@@ -171,6 +171,7 @@ public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanTok
 
 	#endregion
 
+	/// <summary> FullHealth-Damage </summary>
 	public int RemainingHealth => FullHealth - Damage;
 
 	public override string ToString() => _summaryString;

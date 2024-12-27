@@ -53,7 +53,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 		return mover;
 	}
 
-	TokenMover IMoverFactory.Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest = null) {
+	TokenMover IMoverFactory.Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest) {
 		var mover = _default.Pusher(self, sourceSelector, dest);
 		mover.DoEndStuff += Mover_DoEndStuff;
 		return mover;

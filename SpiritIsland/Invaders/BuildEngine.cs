@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace SpiritIsland;
+﻿namespace SpiritIsland;
 
 public class BuildEngine {
 
@@ -63,11 +62,14 @@ public class BuildEngine {
 	}
 
 	/// <summary> Makes 1 attempt to build, may be stopped by Build-Stoppers </summary>
-	public virtual async Task TryToDo1Build( Space space ){
-		var builtToken = await new BuildOnceOnSpace_Default().ActAsync( space );
+	public async Task TryToDo1Build( Space space ){
+		var builtToken = await OneSpacebuilder.ActAsync( space );
+		// publish event
 		if(builtToken is not null && BuildComplete is not null)
 			await BuildComplete(space,builtToken); // Trigger event
 	}
+
+	public BuildOnceOnSpace_Default OneSpacebuilder = new BuildOnceOnSpace_Default();
 
 	public virtual bool ShouldBuildOnSpace(Space space ) => space.HasInvaders();
 

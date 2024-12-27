@@ -2,8 +2,6 @@
 
 class HabsurgBuilder : BuildEngine {
 
-	public bool ReplaceInlandCityWith2Towns { get; set; }
-
 	public override async Task ActivateCard( InvaderCard card ) {
 		await base.ActivateCard( card );
 		
@@ -25,21 +23,6 @@ class HabsurgBuilder : BuildEngine {
 				// from a land not matching a Build Card.
 				.ConfigSource(s=>s.FilterSource( ss => !cardDependentBuildSpaces.Contains( ss ) ) )
 				.DoN();
-		}
-	}
-
-	public override Task TryToDo1Build( Space space ) 
-		=> ReplaceInlandCityWith2Towns 
-			? new HasburgSpaceBuilder().ActAsync( space )
-			: new BuildOnceOnSpace_Default().ActAsync( space );
-
-	class HasburgSpaceBuilder : BuildOnceOnSpace_Default {
-		public HasburgSpaceBuilder() : base() { }
-		protected override (int, HumanTokenClass) DetermineWhatToAdd() {  
-			var (count,tokenClass) = base.DetermineWhatToAdd();
-			return (tokenClass == Human.City && !_space!.SpaceSpec.IsCoastal && !_space.SpaceSpec.IsOcean)
-				? (2,Human.Town)
-				: (count,tokenClass);
 		}
 	}
 }

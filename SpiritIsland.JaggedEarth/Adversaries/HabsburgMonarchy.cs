@@ -42,7 +42,8 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 				foreach(Space space in spaces)
 					space.Setup( Human.Town, 1 );
 
-				((HabsurgBuilder)gameState.InvaderDeck.Build.Engine).ReplaceInlandCityWith2Towns = true; 
+				gameState.InvaderDeck.Build.Engine.OneSpacebuilder.BuildUnitPicker = DetermineWhatToBuild;
+
 			},
 		},
 
@@ -71,6 +72,14 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 			}
 		}
 	];
+
+	public static (int, HumanTokenClass) DetermineWhatToBuild(Space space) {
+		var (count, tokenClass) = BuildOnceOnSpace_Default.DefaultBuildUnitsPicker(space);
+		return (tokenClass == Human.City && !space!.SpaceSpec.IsCoastal && !space.SpaceSpec.IsOcean)
+			? (2, Human.Town)
+			: (count, tokenClass);
+	}
+
 
 	class NeighborTownsCauseBonusLandDamage : BaseModEntity, IConfigRavages {
 		public Task Config(Space space) {

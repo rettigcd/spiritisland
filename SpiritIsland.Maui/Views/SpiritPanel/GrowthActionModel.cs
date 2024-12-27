@@ -3,7 +3,10 @@
 public class GrowthActionModel : ObservableModel, OptionView {
 
 	#region observalbe properties
-	public ImageSource ImageSource { get => _imageSource; set => SetProp(ref _imageSource,value); }  ImageSource _imageSource;
+	public ImageSource ImageSource { 
+		get => _imageSource; 
+		set => SetProp(ref _imageSource,value); 
+	}  ImageSource _imageSource;
 	public string Description      { get => _description; set => SetProp(ref _description, value); } string _description;
 	#endregion observalbe properties
 

@@ -102,7 +102,7 @@ public class ElementMgr( Spirit spirit ) {
 	public virtual async Task<IDrawableInnateTier?> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
 		IDrawableInnateTier? match = null;
 		foreach( var option in innateOptions.OrderBy(o => o.Elements.Total) )
-			if( await spirit.Elements.HasMetTierThreshold(option) )
+			if( await _spirit.Elements.HasMetTierThreshold(option) )
 				match = option;
 		return match;
 	}

@@ -75,7 +75,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 			gs.AddIslandMod(new DiseaseStopsRavageInMiningLands());
 
 			// During the Build Step, Build Cards cause Ravage Actions( instead of Build Actions ).
-			gs.InvaderDeck.Build.Engine = new RavageInMiningLandsDuringBuild();
+			gs.InvaderDeck.Build.Engine.OneSpacebuilder = new MiningLandsBuilder();
 		}
 	};
 
@@ -145,13 +145,15 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 
 	}
 
-	class RavageInMiningLandsDuringBuild : BuildEngine {
-		public override Task TryToDo1Build( Space space ) {
-			return IsMiningLand(space) 
-				? space.Ravage() 
-				: new BuildOnceOnSpace_Default().ActAsync( space );
+	class MiningLandsBuilder : BuildOnceOnSpace_Default {
+		public override async Task<HumanToken?> ActAsync(Space space) {
+			if( !IsMiningLand(space) )
+				return await base.ActAsync(space);
+			await space.Ravage();
+			return null;
 		}
 	}
+
 	#endregion Level 1
 
 	#region Level 2

@@ -12,7 +12,7 @@ public class GuardianSerpents {
 
 		// if target spirit has a SS in that land, defend 4 there
 		if( ctx.Other.Presence.IsSacredSite(space) )
-			space.Defend.Add(4);
+			ctx.Self.Target(space).Defend(4);
 	}
 
 }

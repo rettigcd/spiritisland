@@ -14,7 +14,6 @@ Board:
 public class RiverSurges : Spirit {
 
 	public const string Name = "River Surges in Sunlight";
-
 	public override string SpiritName => Name;
 
 	public RiverSurges():base(

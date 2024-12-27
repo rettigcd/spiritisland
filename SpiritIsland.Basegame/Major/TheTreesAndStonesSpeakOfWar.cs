@@ -16,7 +16,7 @@ public class TheTreesAndStonesSpeakOfWar {
 			// you may push up to 2 dahan
 			await ctx.SourceSelector
 				.AddGroup( 2, Human.Dahan )
-				.ConfigDestination( Distribute.OnEachDestinationLand( to => to.Defend.Add(2) ) )
+				.ConfigDestination( Distribute.OnEachDestinationLand( to => ctx.Self.Target(to).Defend(2) ) )
 				.PushUpToN(ctx.Self );
 		}
 

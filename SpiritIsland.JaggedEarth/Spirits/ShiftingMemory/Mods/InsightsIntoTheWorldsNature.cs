@@ -52,12 +52,12 @@ class InsightsIntoTheWorldsNature(Spirit spirit) : PreparedElementMgr(spirit) {
 	public override async Task<IDrawableInnateTier?> SelectInnateTierToActivate(IEnumerable<IDrawableInnateTier> innateOptions) {
 
 		// !!! THIS SHOULD BE Spirit AGNOSTIC and not know about Prepaired elements.
-		var preparedMgr = (PreparedElementMgr)spirit.Elements;
+		var preparedMgr = (PreparedElementMgr)_spirit.Elements;
 
 		// Let user pick level
 		var options = innateOptions
 			.Select(innateOption => {
-				var missing = innateOption.Elements.Except(spirit.Elements.Elements);
+				var missing = innateOption.Elements.Except(_spirit.Elements.Elements);
 				return new {
 					innateOption,
 					missing,
