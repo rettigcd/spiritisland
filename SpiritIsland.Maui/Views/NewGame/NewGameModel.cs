@@ -180,10 +180,12 @@ class NewGameModel : ObservableModel {
 			.ConfigBoards(board)
 			.ConfigCommandBeasts(CommandBeast) 
 			.ConfigAdversary(advConfig);
-		gc.ShuffleNumber = !string.IsNullOrWhiteSpace(GameNumber) ? int.Parse(GameNumber) : (int)DateTime.Now.Ticks;
+		gc.ShuffleNumber = !string.IsNullOrWhiteSpace(GameNumber) 
+			? int.Parse(GameNumber) 
+			: (int)(((ulong)DateTime.Now.Ticks)%1000000000); // between 0 and 999,999,999
 
 		var aspectsStr = aspects.Length == 0 ? "" : "-"+string.Join(",",aspects.Select(a=>a.Aspect));
-		LastConfig = $"Spirit:{SelectedSpirit!}{aspectsStr}, Board:{board}, G#:{gc.ShuffleNumber}, Adv:{advConfig.Name}-{advConfig.Level}";
+		LastConfig = $"Spirit:{SelectedSpirit!}{aspectsStr}, Board:{board}, G#:{gc.ShuffleNumber:000 000 000}, Adv:{advConfig.Name}-{advConfig.Level}";
 
 		var gameState = _builder.BuildGame(gc);
 		NewGameCreated?.Invoke(gameState);

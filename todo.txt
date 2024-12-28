@@ -1,76 +1,74 @@
-=========================
+=====  API Cleanup  =====
 
-	SPIRIT - HORIZON - Eyes Watch from the Trees
-	SPIRIT - HORIZON - Fathomless Mud of the Swamp
+4	Move has prompt for both: select token & destination.
+4	Replace Dynamic Defend with visible tokens.
+4	Badlands as Damage Mod - See if Badlands can be made a MOD instead of special case it is.
+4	Spirit-Damage - See if bonus spirit damage (Heart of Wildfire) can me turned into a SpaceMod
+4	Create a Island-Wide-Mod bucket inside ActionScope that goes away at end of Action.  or maybe IEndWhenActionEnds
+4	BoundedPresence in TargetSpaceCtx - how is it used
+4	Space methods - clean up so easier to understand.
+3	Add Bonus tags to elements to support "can-be-counted-as"
+3	Simplify TokenMover
+3	Hooks - Review all and see if any are redundant / should be moved
+2	Move general-purpose SpiritActions into a SpiritActions folder
+2	Move Extension methods into their own namespaces so user can opt-in
+2	Switch Empowered Incarna markers to use the '+' icon or indicate empowered.
 
-	UI - Cast Down into the Briny Deep - TEST
+=====  Test Cleanup  =====
 
-5	Change SpaceDecision .Move .Push methods to use Move options
-5	Bag - could create a space on the board to represent the bag - contain blight, Beast, Wilds, etc
-5	Cleanup All the SelectAsync<> variants.
+4	Review Tests and get rid of the TestFixtureSetup
 
-	Replace Dynamic Defend with visible tokens.
-	Investigate if Bringer and Trickster's Special Rules can be implemented with Mod Tokens to simplify UI.
+=====  UI Improvement  =====
+
+5	UI - Minor / Major deck
+5	UI - Select Element
+5	UI - Increase size of elements in Innate Options
+5	UI - Fix the x4 bug for tokens on spaces
+5	UI - Drag and drop!
 
 4	UI - Landscape layout
 	UI - Display Card Images
 	UI - Display Icons in Text (card descriptions)
-	UI - Minor / Major deck
-	UI - Select Element
 
-3	BUG - If no Dahan, strife does not come off invaders
+3	Spirit Details View during configure-new-game.
+
+=====  Missing Feature  =====
+
+5	Boards G & H
+	Scenarios
+	Events
+	Tokens for Horizon spirits.
+	CONFIG - replay game
+	Spirit Hints (best boards, starting Growths, card plays)
+	Project that generates Artwork
+
+=====  Known Bugs  =====
+
+5	BUG - If no Dahan, strife does not come off invaders
+
+=====  Needs Tests  =====
+
+	UI - Cast Down into the Briny Deep - TEST
+
+=============================
 
 == Other Hooks ==
-	public class BuildEngine {
+	public class BuildEngine { 
 		public event Func<Space, HumanToken, Task>? BuildComplete;
 	}
 	public class ExploreEngine {
 		public event Func<GameState,Task>? ExploreForCardComplete;
 		public event Func<Space,Task>? ExploredSpace;
 	}
-	public class Fear : IHaveMemento {
-		public event Action<IFearCard>? CardActivated;
-	}
 	public class InvaderCard{
 		CardRevealed
 	}
-
+	public class Fear : IHaveMemento {
+		public event Action<IFearCard>? CardActivated;
+	}
 	public InvaderBinding{
 		event InvaderDamaged
 	}
-
-3	Spirit Details View during configure-new-game.
-
-3	CONFIG - replay game
-
-3	Spirit Hints (best boards, starting Growths, card plays)
-
-	SPIRITS - Horizon Spirits
-		HORIZON - Devouring Teeth Lurk Underfoot
-		HORIZON - Rising Heat of Stone and Sand
-		HORIZON - Sun-Bright Whirlwind
-
-	SPIRITS - Aspects (new spirits)
-
-		Memory - Mentor
-		Memory - Intensify    (Challenge: Hook into every action)
-
-===== Clean Up =======
-
-5	nullable enable
-
-5	Sharp Fangs > Icon
-5	Simplify TokenMover
-
-4	Move general-purpose SpiritActions into a SpiritActions folder
-4	Move Extension methods into their own namespaces so user can opt-in
-4	Review Tests and get rid of the TestFixtureSetup
-
-3	Rename Innate Options Methods
-3	Setup-Action for spirit > Move to Spirit (Ocean & Fangs - give better name).
-3	Switch Empowered Incarna markers to use the '+' icon or indicate empowered.
-
-2	Remove Dynamic Defends
 
 ==== Maui questions / Problems ====
 
@@ -81,7 +79,6 @@ Slide-In - how to do it?
 MVVM threading - best practice
 	> When button click, model runs on UI thread
 	> when model has event, thread is marshaled to UI thread.
-
 
 Landscape vs Portrait - different Views?
 
@@ -111,6 +108,16 @@ Text + Action<T> creates SpiritActions and SpaceActions.  Commands that act on a
 In tests:  Start an async method, make the UI calls, then await the Task to complete before checking stuff.
 
 async in parallel can choke off threads - xUnit - limit # of tests running in parallel using Collections
+
+Events allow us to NOT have to derive new types.  Use events to Augment behaviour.  Override to change it.
+
+When diriving a new type, ALL methods should be changed or else the feature you are changing could be a smaller object. Like Interface Segregation princile.
+
+Mod Buckets are like Events on Steriods and let us add/remove them in groups.
+
+Commands vs Actions 
+	- Commands don't have an .Execute method.  They are more like method calls or Args parameters that invoke somethine else to actually perform the requested command.
+	- Actions DO have an .Execute method.  They are pre-defined and not up to interpretation.
 
 ==== Notes to Developers ====
 When the game throws an exception, it will appear in the game Log.   Don't click a UI option again or it will lock up and you can't see it.
