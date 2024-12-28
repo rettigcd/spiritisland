@@ -34,7 +34,7 @@
 				 HeightRequest="10" VerticalOptions="Center" />
 
 		<!-- Count -->
-		<Label Text="{Binding Count, StringFormat='x{0}'}" Padding="1,0" TextColor="Black" BackgroundColor="White" ZIndex="10"
+		<Label Text="{Binding Count, StringFormat='x{0}'}" Padding="2,0" TextColor="Black" BackgroundColor="White" ZIndex="10"
 			   IsVisible="{Binding Count, Converter={StaticResource showIfGreater},ConverterParameter=1}" 
 			   HorizontalOptions="End" VerticalOptions="End" FontSize="8" FontAttributes="Bold" Margin="0,0,0,0" LineBreakMode="WordWrap" > <!-- Also try TruncateHead -->
 		</Label>

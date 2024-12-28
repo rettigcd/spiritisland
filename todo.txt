@@ -22,10 +22,9 @@
 
 5	UI - Minor / Major deck
 5	UI - Select Element
-5	UI - Increase size of elements in Innate Options
-5	UI - Fix the x4 bug for tokens on spaces
 5	UI - Drag and drop!
 
+4	Custom Tokens for Horizon spirits.
 4	UI - Landscape layout
 	UI - Display Card Images
 	UI - Display Icons in Text (card descriptions)
@@ -37,7 +36,9 @@
 5	Boards G & H
 	Scenarios
 	Events
-	Tokens for Horizon spirits.
+
+=====  Possible Bonuses / Nice to haves  =====
+
 	CONFIG - replay game
 	Spirit Hints (best boards, starting Growths, card plays)
 	Project that generates Artwork

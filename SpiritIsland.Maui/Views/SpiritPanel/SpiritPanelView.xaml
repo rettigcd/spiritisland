@@ -98,14 +98,17 @@
 							<CollectionView ItemsSource="{Binding Tiers}"  >
 								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="si:InnateTierModel">
+										
+										<!-- 1 Tier -->
 										<Border Stroke="Black" BackgroundColor="{Binding HasElementsStatus,Converter={StaticResource hasElementsColor}}">
-											<Grid ColumnDefinitions="2*,8*">
+											<Grid ColumnDefinitions="3*,9*">
 												<!-- Elements -->
-												<si:ElementDictView BindingContext="{Binding Elements}" />
+												<si:ElementDictView BindingContext="{Binding Elements}" MinimumHeightRequest="20" />
 												<!-- Description -->
 												<Label Text="{Binding Description}" Grid.Column="1" FontSize="12" />
 											</Grid>
 										</Border>
+										
 									</DataTemplate>
 								</CollectionView.ItemTemplate>
 							</CollectionView>
