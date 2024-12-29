@@ -37,7 +37,7 @@ class NewGameModel : ObservableModel {
 	public bool HasFocusAdversary { get => _hasFocusAdversary; private set => SetProp(ref _hasFocusAdversary, value); }
 
 	// Boards
-	public string[] AvailalbeBoards { get; } = ["A", "B", "C", "D", "E", "F"];
+	public string[] AvailalbeBoards { get; } = ["A", "B", "C", "D", "E", "F", "G", "H"];
 	public string? SelectedBoard { get => _selectedBoard; set=>SetProp(ref _selectedBoard,value); }
 
 	// Game #

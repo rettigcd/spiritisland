@@ -15,6 +15,8 @@ static public class BoardFactory {
 			"D" => BuildD(orientation),
 			"E" => BuildE(orientation),
 			"F" => BuildF(orientation),
+			"G" => BuildG(orientation),
+			"H" => BuildH(orientation),
 			_ => throw new ArgumentException($"Unknown board '{boardName}'", nameof(boardName))
 		};
 	}
@@ -203,5 +205,69 @@ static public class BoardFactory {
 
 		return board;
 	}
+
+	static public Board BuildG(BoardOrientation? orientation = null) {
+
+		var board = new Board("G"
+			, orientation ?? BoardOrientation.Home
+			, new SSS(Terrain.Ocean, "G0")
+			, new SSS(Terrain.Mountain, "G1", "DD")
+			, new SSS(Terrain.Wetland, "G2", "C")
+			, new SSS(Terrain.Sands, "G3", "D")
+			, new SSS(Terrain.Wetland, "G4", "D")
+			, new SSS(Terrain.Sands, "G5", "B")
+			, new SSS(Terrain.Jungle, "G6", "")
+			, new SSS(Terrain.Jungle, "G7", "DD")
+			, new SSS(Terrain.Mountain, "G8", "T")
+		);
+
+		board.SetNeighbors(0, 1, 2, 3);
+		board.SetNeighbors(1, 2, 6);
+		board.SetNeighbors(2, 3, 4, 5, 6);
+		board.SetNeighbors(3, 4);
+		board.SetNeighbors(4, 5, 7);
+		board.SetNeighbors(5, 6, 7, 8);
+		board.SetNeighbors(6, 8);
+		board.SetNeighbors(7, 8);
+
+		board.DefineSide(7, 4, 3).BreakAt(1, 5);  // Side 0  Same as Board B
+		board.DefineSide(8, 7).BreakAt(5);        // Side 1   !!! Break At value is probably wrong. Might be 7?
+		board.DefineSide(1, 6, 8).BreakAt(5, 9); // Side 2   Same as Board E
+
+		return board;
+	}
+
+	static public Board BuildH(BoardOrientation? orientation = null) {
+
+		var board = new Board("H"
+			, orientation ?? BoardOrientation.Home
+			, new SSS(Terrain.Ocean, "H0")
+			, new SSS(Terrain.Jungle, "H1", "D")
+			, new SSS(Terrain.Sands, "H2", "C")
+			, new SSS(Terrain.Mountain, "H3", "D")
+			, new SSS(Terrain.Mountain, "H4", "")
+			, new SSS(Terrain.Jungle, "H5", "B")
+			, new SSS(Terrain.Wetland, "H6", "DD")
+			, new SSS(Terrain.Wetland, "H7", "T")
+			, new SSS(Terrain.Sands, "H8", "DD")
+		);
+
+		board.SetNeighbors(0, 1, 2, 3);
+		board.SetNeighbors(1, 2, 6, 8);
+		board.SetNeighbors(2, 3, 5, 6);
+		board.SetNeighbors(3, 4, 5);
+		board.SetNeighbors(4, 5, 7);
+		board.SetNeighbors(5, 6, 7);
+		board.SetNeighbors(6, 7, 8);
+		board.SetNeighbors(7, 8);
+
+		board.DefineSide(7, 4, 3).BreakAt(1, 5);  // Side 0  !!! WRONG
+		board.DefineSide(8, 7).BreakAt(5);        // Side 1  !!! WRONG
+		board.DefineSide(1, 6, 8).BreakAt(5, 9); // Side 2   !!! WRONG
+
+		return board;
+	}
+
+
 
 }
