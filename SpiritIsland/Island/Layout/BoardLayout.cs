@@ -351,20 +351,23 @@ public class BoardLayout {
 		XY _126 = new(.65f, .63f);
 		XY _234 = new(.46f, .23f);
 		XY _245 = new(.6f,  .3f);
-		XY _256 = new(.65f, .55f);
+		XY _256 = new(.65f, .50f);
 		XY _457 = new(.88f, .30f);
-		XY _568 = new(1.05f, .60f);
+		XY _568 = new(1.08f, .60f);
 		XY _578 = new(1.10f, .45f);
 
+		XY _16 = new(.9f, .75f); // style point
+		XY _68 = new(1.2f, .8f); // style point
+
 		XY[] g0Points = [_01, _012, _023, _03, _0];
-		XY[] g1Points = [_01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _126, _012];
+		XY[] g1Points = [_01, topLeftCorner, top[0], top[1], top[2], top[3], top[4], _16, _126, _012];
 		XY[] g2Points = [_012, _126, _256, _245, _234, _023];
 		XY[] g3Points = [_03, _023, _234, bot[7], bot[6], bot[5], bot[4], bot[3], bot[2], bot[1], bot[0], origin];
 		XY[] g4Points = [bot[11], bot[10], bot[9], bot[8], bot[7], _234, _245, _457];
 		XY[] g5Points = [_256, _568, _578, _457, _245];
-		XY[] g6Points = [top[4], top[5], top[6], top[7], top[8], _568, _256, _126];
+		XY[] g6Points = [top[4], top[5], top[6], top[7], top[8], _68, _568, _256, _126, _16];
 		XY[] g7Points = [bottomRightCorner, bot[11], _457, _578, rig[6], rig[7], rig[8], rig[9], rig[10], rig[11]];
-		XY[] g8Points = [top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _578, _568];
+		XY[] g8Points = [top[8], top[9], top[10], top[11], topRightCorner, rig[0], rig[1], rig[2], rig[3], rig[4], rig[5], rig[6], _578, _568, _68];
 
 		var layout = new BoardLayout {
 			Perimeter = MakePerimeter_CCW(_03, _0, _01),

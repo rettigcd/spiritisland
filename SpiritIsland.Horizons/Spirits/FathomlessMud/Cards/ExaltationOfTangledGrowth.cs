@@ -14,7 +14,7 @@ public class ExaltationOfTangledGrowth {
 	}
 
 	static async Task PayToDrawCard(Spirit spirit, int energyRequired) {
-		if( 1 <= spirit.Energy 
+		if( energyRequired <= spirit.Energy 
 			&& await spirit.UserSelectsFirstText($"Pay {energyRequired} energy to gain Power Card", "Yes", "No") 
 		) {
 			spirit.Energy -= energyRequired;
