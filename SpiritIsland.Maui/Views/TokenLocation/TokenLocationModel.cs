@@ -3,7 +3,7 @@
 /// <summary>
 /// Only shows the Token, but must know its location to generate the correct input command.
 /// </summary>
-public class TokenLocationModel : ObservableModel, OptionView {
+public class TokenLocationModel : ObservableModel, IOptionModel {
 
 	#region Control-facing Observable Properties
 

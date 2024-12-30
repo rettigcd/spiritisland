@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
-public class SpaceModel : ObservableModel, OptionView {
+public class SpaceModel : ObservableModel, IOptionModel {
 
 	/// <summary> The Space Name, Mods, and Tokens </summary>
 	public Space Space { get; }

@@ -18,7 +18,7 @@ public class OptionViewManager {
 			_selectedViews.Clear();
 
 			// select the current
-			if( value is not null && OptionLookup.TryGetValue(value, out List<OptionView>? ovl)) {
+			if( value is not null && OptionLookup.TryGetValue(value, out List<IOptionModel>? ovl)) {
 				_selectedViews.AddRange(ovl);
 				foreach (var sv in _selectedViews)
 					sv.State = OptionState.Selected;
@@ -30,23 +30,23 @@ public class OptionViewManager {
 
 	#endregion
 
-	public void AddRange(IEnumerable<OptionView> optionViews, object? owner=null) {
-		foreach(OptionView ov in optionViews)
+	public void AddRange(IEnumerable<IOptionModel> optionModels, object? owner=null) {
+		foreach(IOptionModel ov in optionModels)
 			Add(ov,owner);
 	}
 
 	/// <summary> Register an OptionView so it get selected/option state changes /// </summary>
-	public void Add(OptionView optionView, object? owner=null){
+	public void Add(IOptionModel optionView, object? owner=null){
 		// Add
 		IOption option = optionView.Option;
-		if(OptionLookup.TryGetValue(option,out List<OptionView>? ovl))
+		if(OptionLookup.TryGetValue(option,out List<IOptionModel>? ovl))
 			ovl.Add(optionView);
 		else
 			OptionLookup.Add(optionView.Option, [optionView]);
 
 		// owner
 		if(owner is not null)
-			if( _byOwner.TryGetValue(owner,out List<OptionView>? optionViews) )
+			if( _byOwner.TryGetValue(owner,out List<IOptionModel>? optionViews) )
 				optionViews.Add(optionView);
 			else
 				_byOwner.Add(owner, [optionView]);
@@ -57,19 +57,19 @@ public class OptionViewManager {
 	}
 
 	public void RemoveByOwner(object owner) {
-		if( !_byOwner.TryGetValue(owner, out List<OptionView>? optionViews)) return;
+		if( !_byOwner.TryGetValue(owner, out List<IOptionModel>? optionViews)) return;
 		RemoveRange(optionViews);
 		_byOwner.Remove(owner);
 	}
 
-	public void RemoveRange(IEnumerable<OptionView> optionViews) {
-		foreach (OptionView ov in optionViews)
+	public void RemoveRange(IEnumerable<IOptionModel> optionViews) {
+		foreach (IOptionModel ov in optionViews)
 			Remove(ov);
 	}
 
-	public void Remove(OptionView ov) {
+	public void Remove(IOptionModel ov) {
 		IOption option = ov.Option;
-		List<OptionView> ovl = OptionLookup[option];
+		List<IOptionModel> ovl = OptionLookup[option];
 		ovl.Remove(ov);
 		if(ovl.Count == 0)
 			OptionLookup.Remove(option);
@@ -77,8 +77,9 @@ public class OptionViewManager {
 
 	/// <summary> Updates OptionViews .State property based on current decision. </summary>
 	public void SyncOptionStatesToDecision( IDecision decision ) {
+
 		// Clear old
-		foreach (OptionView optionView in _enabledViews) {
+		foreach (IOptionModel optionView in _enabledViews) {
 			optionView.State = OptionState.Default;
 			optionView.SelectOptionCallback = null;
 		}
@@ -86,13 +87,13 @@ public class OptionViewManager {
 
 		// Add new
 		_options = decision.Options;
-		foreach (var option in _options)
-			if (OptionLookup.TryGetValue(option, out List<OptionView>? ovl))
+		foreach( var option in _options )
+			if( OptionLookup.TryGetValue(option, out List<IOptionModel>? ovl) )
 				foreach(var ov in ovl)
 					EnableView(ov);
 	}
 
-	void EnableView(OptionView ov) {
+	void EnableView(IOptionModel ov) {
 		ov.State = OptionState.IsOption;
 		_enabledViews.Add(ov);
 		ov.SelectOptionCallback = OnViewClicked;
@@ -101,11 +102,11 @@ public class OptionViewManager {
 	#region privatefields
 
 	IOption[] _options = []; // the options from the current decision - so when adding controls, can enable them for the current decision
-	readonly List<OptionView> _selectedViews = []; // currently selected control
-	readonly List<OptionView> _enabledViews = []; // holds enabled controls so we can easily disable them when decision is made
+	readonly List<IOptionModel> _selectedViews = []; // currently selected control
+	readonly List<IOptionModel> _enabledViews = []; // holds enabled controls so we can easily disable them when decision is made
 
-	readonly Dictionary<IOption, List<OptionView>> OptionLookup = []; // find controls
-	readonly Dictionary<object,List<OptionView>> _byOwner = [];
+	readonly Dictionary<IOption, List<IOptionModel>> OptionLookup = []; // find controls
+	readonly Dictionary<object,List<IOptionModel>> _byOwner = [];
 	#endregion privatefields
 
 }

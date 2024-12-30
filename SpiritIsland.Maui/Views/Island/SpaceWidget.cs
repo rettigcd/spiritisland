@@ -193,8 +193,9 @@ public class SpaceWidget {
 
 	void FloatToken( TokenLocationModel tlModel ) {
 
-		TokenLocationView view = new TokenLocationView();
-		view.BindingContext = tlModel;
+		TokenLocationView view = new TokenLocationView {
+			BindingContext = tlModel
+		};
 
 		// add to our lookup list
 		_visibleTokens[tlModel.TokenLocation.Token] = view;

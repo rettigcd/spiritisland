@@ -1,8 +1,4 @@
-﻿//using Android.OS;
-
-
-using SpiritIsland.SinglePlayer;
-using System.Windows.Input;
+﻿using SpiritIsland.SinglePlayer;
 
 namespace SpiritIsland.Maui;
 

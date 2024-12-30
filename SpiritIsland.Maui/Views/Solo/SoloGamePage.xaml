@@ -76,12 +76,23 @@
 			<!--  <CollectionView ItemsSource="{Binding Monkeys}" ItemsLayout="VerticalGrid, 2">   -->
 		</ScrollView>
 
+		<CollectionView ItemsSource="{Binding ElementOptions}" ItemsLayout="VerticalGrid,8" Grid.Row="2" Grid.ColumnSpan="2" 
+						VerticalOptions="Center" Margin="10"
+						IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=Elements}"
+			>
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="si:ElementOptionModel" >
+					<si:ElementOptionView BindingContext="{Binding .}" />
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+
 		<!-- Show Cards -->
 		<Button Text="{Binding Cards.Hand.Count,StringFormat='Cards ({0:F0})'}" Padding="5,5" Grid.Row="6" Grid.ColumnSpan="2" Command="{Binding ShowCards}" />
 
 		<!-- Overlays -->
 		<si:SpiritPanelView BindingContext="{Binding SpiritPanel}"
-			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"  
+			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=SpiritPanel}"
 			Grid.Row="0" Grid.RowSpan="6" Grid.ColumnSpan="2" VerticalOptions="Fill" HorizontalOptions="Fill" />
 		<si:CardsOverlay BindingContext="{Binding Cards}"
 			IsVisible="{Binding Path=VisibleOverlay, Source={RelativeSource AncestorType={x:Type si:SoloGameModel}}, Converter={StaticResource selectOne},ConverterParameter=Cards}"

@@ -70,8 +70,6 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 		_model?.Submit(); // !!! Replace with a command on the model
 	}
 
-	void SpiritSummary_CardDetailsClicked(object sender, EventArgs e) => _model.ShowCardPanel();
-
 	public void Dispose() {
 		_model.ShutDown();
 	}
@@ -82,7 +80,7 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 		await DisplayAlert("Adversary", _model.GameState.Adversary!.Describe(),"Close");
 	}
 
-	private void LogButton_Clicked(object sender, EventArgs e) {
+	void LogButton_Clicked(object sender, EventArgs e) {
 		Navigation.PushAsync( new LogView( _model.Log ) );
-    }
+	}
 }

@@ -30,7 +30,8 @@ static public class Img_Extensions {
 			Img.Icon_Plant   => "plant.png",
 			Img.Icon_Sun     => "sun.png",
 			Img.Icon_Water   => "water.png",
-			Img.Token_Air    => "air.png",
+
+			Img.Token_Air    => "air_token.png",
 			Img.Token_Animal => "animal_token.png",
 			Img.Token_Earth  => "earth_token.png",
 			Img.Token_Fire   => "fire_token.png",

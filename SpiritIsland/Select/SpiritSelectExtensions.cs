@@ -32,12 +32,6 @@ static public class SpiritSelectExtensions {
 	}
 
 
-	// switches type to Element
-	public static async Task<Element> SelectElementEx( this Spirit spirit, string prompt, IEnumerable<Element> elements, Present present = Present.Always ) {
-		var selection = await spirit.Select( new An.Element( prompt, elements, present ) );
-		return selection is ItemOption<Element> el ? el.Item : Element.None;
-	}
-
 	/// <remarks>Elemental Boon, Spirits May Yet Dream, Select AnyElement</remarks>
 	static public async Task<Element[]> SelectElementsEx( this Spirit spirit, int totalToGain, params Element[] elements ) {
 		var selected = new List<Element>();
@@ -49,6 +43,12 @@ static public class SpiritSelectExtensions {
 			available.Remove( el );
 		}
 		return [..selected];
+	}
+
+	// switches type to Element
+	public static async Task<Element> SelectElementEx(this Spirit spirit, string prompt, IEnumerable<Element> elements, Present present = Present.Always) {
+		var selection = await spirit.Select(new An.Element(prompt, elements, present));
+		return selection is ItemOption<Element> el ? el.Item : Element.None;
 	}
 
 

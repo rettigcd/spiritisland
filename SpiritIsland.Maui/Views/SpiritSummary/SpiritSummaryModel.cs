@@ -33,7 +33,8 @@ public class SpiritSummaryModel : ObservableModel {
 
 	#endregion constructor
 
-	public void Update(OptionViewManager ovm) {
+	public void SyncModelToGameState(OptionViewManager ovm) {
+
 		// Update properties to trigger notification
 		Energy = _spirit.Energy;
 		EnergyPerTurn = _spirit.EnergyPerTurn;

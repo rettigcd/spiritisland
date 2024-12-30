@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Maui;
 
-public class GrowthActionModel : ObservableModel, OptionView {
+public class GrowthActionModel : ObservableModel, IOptionModel {
 
 	#region observalbe properties
 	public ImageSource ImageSource { 

@@ -1,5 +1,6 @@
 ﻿namespace SpiritIsland.Maui;
 
+/// <summary> Displays the # of 1 element. </summary>
 public class ElementModel : ObservableModel {
 
 	#region Static factory
@@ -13,19 +14,17 @@ public class ElementModel : ObservableModel {
 
 	#region Observable properties 
 
-	public Element Element   { get => _element; set => SetProp( ref _element, value ); }
-	public int Count         { get => _count;   set => SetProp( ref _count,   value ); } 
-//	public Color SelectColor { get => _color;   set => SetProp( ref _color,   value ); }
+	// !!! Can these just be Readonly instead of observable?
+	public Element Element   { get => _element; private set => SetProp( ref _element, value ); }
+	public int Count         { get => _count;   private set => SetProp( ref _count,   value ); } 
 
 	#endregion Observable properties 
 
 	public ElementModel(Element el,int count=0) {
 		Element = el;
 		Count = count;
-//		SelectColor = Colors.Transparent;
 	}
 
 	Element _element;
 	int _count;
-	// Color _color;
 }

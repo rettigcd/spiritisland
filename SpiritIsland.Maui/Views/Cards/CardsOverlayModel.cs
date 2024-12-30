@@ -41,7 +41,10 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	public event Action? RequestClose;
 
+	/// <summary> Called from Play/Discard/Forget buttons to accept Cards as they have been moved around. </summary>
 	public ICommand AcceptCardsCommand { get; }
+
+	/// <summary> Close the Panel </summary>
 	public ICommand CloseCommand { get; }
 
 	#region constructor

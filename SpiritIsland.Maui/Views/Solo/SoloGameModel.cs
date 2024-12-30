@@ -1,4 +1,6 @@
-﻿using SpiritIsland.SinglePlayer;
+﻿using SpiritIsland.A;
+using SpiritIsland.An;
+using SpiritIsland.SinglePlayer;
 using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
@@ -8,40 +10,43 @@ public class SoloGameModel : ObservableModel {
 	// * NOT USED - but required to Make child models compile
 	public bool IsVisible {get; set;}
 
-	#region Models for child Views
+	#region Models for child Views (don't change)
 
-	public GameState GameState          { get; }
-	public IslandModel Island           { get; }
-	public SpiritSummaryModel SpiritSummary    { get; } // binding for summary panel
-	public SpiritPanelModel SpiritPanel { get; } // binding for spirit panel
-	public CardsOverlayModel Cards      { get; }
-	public LogModel Log                 { get; }
-
-	public ICommand ShowCards           { get; }
-	public ICommand OpenOverlay         { get; }
-	public string Adversary             { get; }
+	public GameState GameState            { get; }
+	public IslandModel Island             { get; }
+	public SpiritSummaryModel SpiritSummary { get; } // binding for summary panel
+	public SpiritPanelModel SpiritPanel   { get; } // binding for spirit panel
+	public CardsOverlayModel Cards        { get; }
+	public LogModel Log                   { get; }
+	public string Adversary               { get; }
+	/// <summary> Appears in the Title section of the page.  Should contain: spirit, game #, Adversary </summary>
+	public string Title                   { get; }
+	public InvaderBoardModel InvaderBoard { get; }
 	public bool HasAdversary => !string.IsNullOrWhiteSpace(Adversary);
+
+	public ElementOptionModel[] ElementOptions { get; }
 
 	#endregion Models for child Views
 
-	#region Rewind / Phase - Observable
+	#region Commands
 
+	public ICommand ShowCards { get; }
+	public ICommand OpenOverlay { get; }
 	public ICommand RewindCommand { get; }
+
+	#endregion Commands
+
+	#region Rewind / Round
+
 	public int RewindableRound { get => _rewindableRound; set => SetProp(ref _rewindableRound, value); }
-	public Phase Phase { get => _phase; set { SetProp(ref _phase, value); } }
-	int _rewindableRound;
-	Phase _phase;
+	public Phase Phase { get => _phase; private set { SetProp(ref _phase, value); } }
 
-	#endregion Rewind / Phase - Observable
+	#endregion Rewind / Round
 
-	#region Observable properties
+	#region User Decision: Prompt/Selected Choice/etc
 
 	/// <summary> Indicates which overlay panel is visible (if any) </summary>
 	public Overlay VisibleOverlay       { get => _visibleOverlay; set => SetProp( ref _visibleOverlay, value ); }
-
-	/// <summary> Appears in the Title section of the page.  Should contain: spirit, game #, Adversary </summary>
-	public string Title                 { get => _title; set => SetProp(ref _title,value); }
-	public InvaderBoardModel InvaderBoard { get => _gameStatus; set => SetProp(ref _gameStatus, value); }
 
 	/// <summary> Decision Prompt </summary>
 	public string Prompt                { get => _prompt; set => SetProp(ref _prompt, value); }
@@ -49,7 +54,7 @@ public class SoloGameModel : ObservableModel {
 	public IOption? SelectedOption      { get => _option; set {
 			SetProp( ref _option, value );
 			if(value is not null)
-				UpdateButton(((IOption)value).Text, true);
+				UpdateButton(value.Text, true);
 			else
 				UpdateButton("Accept", false);
 		} }
@@ -63,7 +68,7 @@ public class SoloGameModel : ObservableModel {
 		HasOptionReady = hasOptionReady;
 	}
 
-	#endregion
+	#endregion User Decision: Prompt/Selected Choice/etc
 
 	#region constructor
 
@@ -73,8 +78,6 @@ public class SoloGameModel : ObservableModel {
 
 		GameState = gameState;
 
-		_ovm = new OptionViewManager();
-
 		// Setup the new game
 		_game = new SoloGame(GameState) {
 			LogExceptions = true,
@@ -82,11 +85,13 @@ public class SoloGameModel : ObservableModel {
 		};
 
 		// Wire up Game Notifications
+		_ovm = new OptionViewManager();
 		_userPortal = new UserPortalFacade(_game.UserPortal.DecisionPortal);
 		_userPortal.NewWaitingDecision += Game_NewWaitingDecision;
 
-		var gs = _game.GameState;
-		_gameStatus = new InvaderBoardModel( _game );
+		// child Models
+		InvaderBoard = new InvaderBoardModel( _game );
+		Adversary = gameState.Adversary!.Name;
 
 		// Cards
 		Cards = new CardsOverlayModel(_game.Spirit, _userPortal);
@@ -95,15 +100,29 @@ public class SoloGameModel : ObservableModel {
 
 		// Spirit Panel
 		SpiritSummary = new SpiritSummaryModel(_game.Spirit, new Command(()=>VisibleOverlay=Overlay.SpiritPanel));
-		SpiritPanel = new SpiritPanelModel(_game.Spirit, _ovm, gs);
+		SpiritPanel = new SpiritPanelModel(_game.Spirit, _ovm, gameState);
 		SpiritPanel.RequestClose += Overlay_RequestClose;
 
-		Adversary = gs.Adversary!.Name;
+		Island = new IslandModel(GameState, _ovm);
+		Title = _game.Spirit.SpiritName;
+		Phase = gameState.Phase;
+
+		ElementOptions = ElementList.AllElements
+			.Select(x=>new ElementOptionModel(x))
+			.ToArray();
+		_ovm.AddRange(ElementOptions);
+
+
 
 		_acceptText = "Accept";
 
 		// when OVM gets a select/submit, update IDecision Model
 		_ovm.OptionSelected += (option, submit) => {
+
+			if( MainThread.IsMainThread ) {
+				int i = 0;
+			}
+
 			SelectedOption = option;
 			if (submit)
 				Submit();
@@ -115,15 +134,10 @@ public class SoloGameModel : ObservableModel {
 				_ovm.SelectedOption = ((SoloGameModel)sender!).SelectedOption;
 		};
 
-		Island = new IslandModel(GameState, _ovm);
-		_title = _game.Spirit.SpiritName;
-
-		_phase = gs.Phase;
-
-		gs.NewLogEntry += Gs_NewLogEntry;
+		gameState.NewLogEntry += Gs_NewLogEntry;
 
 		Log = new LogModel();
-		gs.NewLogEntry += Log.Gs_NewLogEntry;
+		gameState.NewLogEntry += Log.Gs_NewLogEntry;
 
 		ShowCards = new Command( () => ShowCardPanel() );
 		OpenOverlay = new Command((p) => { VisibleOverlay = (Overlay)p; } );
@@ -173,7 +187,7 @@ public class SoloGameModel : ObservableModel {
 		VisibleOverlay = show ? Overlay.SpiritPanel : Overlay.None;
 	}
 
-	public void ShowCardPanel(bool show = true) { 
+	void ShowCardPanel(bool show = true) { 
 		VisibleOverlay = show ? Overlay.Cards : Overlay.None;
 	}
 
@@ -215,7 +229,7 @@ public class SoloGameModel : ObservableModel {
 		Options = _nextDecision.Options.Select(o => new OptionModel(o)).ToArray();
 
 		// Spirit
-		SpiritSummary?.Update(_ovm);
+		SpiritSummary.SyncModelToGameState(_ovm);
 
 		_ovm.SyncOptionStatesToDecision(decision);
 
@@ -230,6 +244,7 @@ public class SoloGameModel : ObservableModel {
 
 		if (_nextDecision is A.GrowthDecision) ShowSpiritPanel();
 		if (_nextDecision is A.PowerCard) ShowCardPanel();
+		if (_nextDecision is TypedDecision<ElementOption>) VisibleOverlay = Overlay.Elements;
 	}
 
 	void CardsSelected(IOption[] options) {
@@ -237,14 +252,14 @@ public class SoloGameModel : ObservableModel {
 		AutoSelect();
 	}
 
-	InvaderBoardModel _gameStatus;
-
 	string _prompt = string.Empty;
 	OptionModel[] _options = [];
 	IOption? _option;
 	bool _hasOptionReady;
 	string _acceptText;
-	string _title = "";
+	int _rewindableRound;
+	Phase _phase;
+
 	IDecision? _nextDecision;
 	Overlay _visibleOverlay = Overlay.None;
 
@@ -254,4 +269,4 @@ public class SoloGameModel : ObservableModel {
 	readonly OptionViewManager _ovm;
 }
 
-public enum Overlay { None, Cards, SpiritPanel, InvaderBoard }
+public enum Overlay { None, Cards, SpiritPanel, InvaderBoard, Elements }

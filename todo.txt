@@ -1,3 +1,6 @@
+5	BUG - If no Dahan, strife does not come off invaders
+5	UI - Minor / Major deck
+
 =====  API Cleanup  =====
 
 4	Move has prompt for both: select token & destination.
@@ -21,7 +24,6 @@
 =====  UI Improvement  =====
 
 5	UI - Minor / Major deck
-5	UI - Select Element
 5	UI - Drag and drop!
 
 4	Custom Tokens for Horizon spirits.

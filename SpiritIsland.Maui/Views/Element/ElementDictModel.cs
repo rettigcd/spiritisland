@@ -1,7 +1,14 @@
 ﻿namespace SpiritIsland.Maui;
 
+/// <summary>
+/// Converts a CountDictionary of Elements to a form easily displayed in the view.
+/// </summary>
+/// <param name="elementsDict"></param>
 public class ElementDictModel( CountDictionary<Element> elementsDict ) : IEquatable<ElementDictModel> {
 
+	/// <summary>
+	/// Collection that the View can easily display.
+	/// </summary>
 	public ElementModel[] Elements { get; } = ElementModel.FromDict(elementsDict);
 
 	#region GetHashCode / Equals

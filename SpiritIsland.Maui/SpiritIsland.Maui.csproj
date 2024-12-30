@@ -966,6 +966,9 @@
 	  <MauiXaml Update="Views\Element\ElementDictView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Element\ElementOptionView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Element\ElementView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

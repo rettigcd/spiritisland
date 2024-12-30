@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.Maui;
 
-public interface OptionView {
+public interface IOptionModel {
 	OptionState State { get; set; }
 	/// <summary> The user option this view represents </summary>
 	IOption Option { get; }
