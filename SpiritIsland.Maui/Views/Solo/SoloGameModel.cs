@@ -94,8 +94,8 @@ public class SoloGameModel : ObservableModel {
 		Adversary = gameState.Adversary!.Name;
 
 		// Cards
-		Cards = new CardsOverlayModel(_game.Spirit, _userPortal);
-		Cards.CardsSelected += CardsSelected;
+		Cards = new CardsOverlayModel(_game.Spirit, _userPortal, _ovm);
+		Cards.OptionsSelected += CardsSelected;
 		Cards.RequestClose += Overlay_RequestClose;
 
 		// Spirit Panel
@@ -243,7 +243,7 @@ public class SoloGameModel : ObservableModel {
 		if (AutoSelect()) return;
 
 		if (_nextDecision is A.GrowthDecision) ShowSpiritPanel();
-		if (_nextDecision is A.PowerCard) ShowCardPanel();
+		if (_nextDecision is A.PowerCard || _nextDecision is TypedDecision<PowerType>) ShowCardPanel();
 		if (_nextDecision is TypedDecision<ElementOption>) VisibleOverlay = Overlay.Elements;
 	}
 

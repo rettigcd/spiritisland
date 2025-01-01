@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace SpiritIsland.Maui;
+﻿namespace SpiritIsland.Maui;
 
 static public class Img_Extensions {
 

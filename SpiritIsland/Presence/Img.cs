@@ -20,8 +20,10 @@ public enum Img {
 	Reclaim1,
 	Land_Push_Dahan,
 	GainCard,
-	Icon_Major,
 	MovePresence,
+
+	Deck_Major,
+	Deck_Minor,
 
 	RangeArrow,
 	MoveArrow,

@@ -1,12 +1,11 @@
-﻿//using Foundation;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace SpiritIsland.Maui;
 
 public class CardsOverlayModel : ObservableModel1 {
 
-	#region Observalbe Properties
+	#region Observable Properties
 
 	public ObservableCollection<CardSlotModel> Resolved { get; } = [];
 	public ObservableCollection<CardSlotModel> Played { get; } = [];
@@ -14,6 +13,10 @@ public class CardsOverlayModel : ObservableModel1 {
 	public ObservableCollection<CardSlotModel> Draw { get; } = []; // only visible when drawing cards
 	public ObservableCollection<CardSlotModel> Discards { get; } = [];
 	public ObservableCollection<CardSlotModel> Forgotten { get; } = [];
+
+	public ObservableCollection<DeckModel> Decks { get; } = [];
+	public DeckModel MajorDeck { get; }
+	public DeckModel MinorDeck { get; }
 
 	public CardUse Use {				get => GetStruct<CardUse>();		private set => SetProp(value);	}
 
@@ -37,7 +40,7 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	#endregion Observalbe Properties
 
-	public event Action<IOption[]>? CardsSelected;
+	public event Action<IOption[]>? OptionsSelected;
 
 	public event Action? RequestClose;
 
@@ -49,23 +52,26 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	#region constructor
 
-	public CardsOverlayModel( Spirit spirit, IDecisionPortal userPortal ) {
+	public CardsOverlayModel( Spirit spirit, IDecisionPortal userPortal, OptionViewManager ovm ) {
 		_spirit = spirit;
 		_innates = [..spirit.InnatePowers.Select(ip=>new InnateStatus(ip,_spirit))];
-		userPortal.NewWaitingDecision += (obj) => InitSlotsForNewDecision(obj as A.PowerCard);
+		userPortal.NewWaitingDecision += InitModelsForNewDecision;
 		Elements = [];
 		InnateSummary = "aa";
 		// InitStuff(); Show();
 
 		CloseCommand = new Command( TryToClose );
 		AcceptCardsCommand = new Command( AcceptCards );
-	}
 
-	readonly InnateStatus[] _innates;
+		MajorDeck = new DeckModel(PowerType.Major,"major.png");
+		MinorDeck = new DeckModel(PowerType.Minor, "minor.png");
+		ovm.Add(MajorDeck);
+		ovm.Add(MinorDeck);
+	}
 
 	#endregion constructor
 
-	public IOption[] FindNew() {
+	IOption[] FindNew() {
 		var moved = MovedPowerCards.ToArray();
 		List<IOption> options = moved
 			.Cast<IOption>()
@@ -86,8 +92,10 @@ public class CardsOverlayModel : ObservableModel1 {
 
 	}
 
+	#region private methods
+
 	void AcceptCards() {
-		CardsSelected?.Invoke(FindNew());
+		OptionsSelected?.Invoke(FindNew());
 		TryToClose();
 	}
 
@@ -96,14 +104,9 @@ public class CardsOverlayModel : ObservableModel1 {
 		RequestClose?.Invoke();
 	}
 
-	#region private methods
-
-	PowerCard[] _options = [];
-
-	int _numberToSelect = 0;
-	readonly CountDictionary<Destination> _destinations = [];
-
-	enum Destination { None, Resolved, Play, Hand, Draw, Discard, Forgotten }
+	void InitModelsForNewDecision(IDecision obj) {
+		InitSlotsForNewDecision(obj as A.PowerCard);
+	}
 
 	/// <summary>
 	/// Updates the cards in each slot and their draggability.
@@ -189,7 +192,6 @@ public class CardsOverlayModel : ObservableModel1 {
 		BuildSlots(Forgotten, [], Destination.Forgotten);
 	}
 
-
 	void SetAction(string action, 
 		bool playing = false,
 		bool addingToHand = false,
@@ -209,7 +211,6 @@ public class CardsOverlayModel : ObservableModel1 {
 
 		ButtonIsEnabled = false; // at least initially it is.
 	}
-	string _action = "";
 
 	void ResetDetails() {
 		Title = "";
@@ -364,6 +365,14 @@ public class CardsOverlayModel : ObservableModel1 {
 	#endregion private methods
 
 	#region private fields
+
+	readonly InnateStatus[] _innates;
+
+	string _action = "";
+	PowerCard[] _options = [];
+	int _numberToSelect = 0;
+	readonly CountDictionary<Destination> _destinations = [];
+	enum Destination { None, Resolved, Play, Hand, Draw, Discard, Forgotten }
 
 	CardSlotModel? _focusCard;
 
