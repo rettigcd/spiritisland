@@ -121,7 +121,7 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 	public async Task DamageAttackers() {
 		
 		if(Defenders.DamageDealtOut == 0) {
-			Attackers.Ending = Attackers.Starting;
+			Attackers.Ending = await FromEachStrifed_RemoveOneStrife(this);
 			return;
 		}
 
@@ -151,7 +151,7 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 		Attackers.Ending = remaningAttackers;
 	}
 
-	/// <returns>New attacker finvaders</returns>
+	/// <returns>New attacker invaders</returns>
 	static async Task<CountDictionary<HumanToken>> FromEachStrifed_RemoveOneStrife( RavageExchange rex ) {
 
 		CountDictionary<HumanToken> participatingInvaders = rex.Attackers.Starting;

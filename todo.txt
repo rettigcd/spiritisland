@@ -1,5 +1,3 @@
-5	BUG - If no Dahan, strife does not come off invaders
-
 =====  API Cleanup  =====
 
 4	Move has prompt for both: select token & destination.
@@ -41,10 +39,6 @@
 	CONFIG - replay game
 	Spirit Hints (best boards, starting Growths, card plays)
 	Project that generates Artwork
-
-=====  Known Bugs  =====
-
-5	BUG - If no Dahan, strife does not come off invaders
 
 =====  Needs Tests  =====
 

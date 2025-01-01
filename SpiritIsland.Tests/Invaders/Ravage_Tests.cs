@@ -62,6 +62,22 @@ public class Ravage_Tests {
 		_exchanges[2].ToString().ShouldBe( "defend: (1D@2) deal 2 damage, leaving [none]." );
 	}
 
+	[Fact]
+	public async Task NoDahan_StrifeComesOff() {
+		// Given: no dahan to fight.
+
+		//   And: 1 explorer with strife
+		_space.Init( _space.GetDefault(Human.Explorer).AddStrife(1),1);
+
+		// When: ravaging
+		await _space.Ravage();//.ShouldComplete("ravage");
+
+		// Then: strife is gone
+		// _exchanges.Count.ShouldBe(1);
+		// _exchanges[0].ToString().ShouldBe("attack: (1E@1) deal 1 damage to defenders ([none]) destroying 0 of them.");
+		_space.Summary.ShouldBe("1E@1");
+	}
+
 	void GameState_NewLogEntry( Log.ILogEntry e ) {
 		if( e is Log.RavageEntry re)
 			_exchanges.AddRange( re.Exchange );
