@@ -12,11 +12,10 @@ public sealed partial class Space
 
 	#region constructor
 
-	public Space( SpaceSpec space, CountDictionary<ISpaceEntity> counts, IEnumerable<ISpaceEntity> islandMods, IIslandTokenApi tokenApi ) {
+	public Space( SpaceSpec space, CountDictionary<ISpaceEntity> counts, IEnumerable<ISpaceEntity> islandMods ) {
 		SpaceSpec = space;
 		_counts = counts;
 		_islandMods = islandMods;
-		_api = tokenApi;
 	}
 
 	#endregion
@@ -24,13 +23,8 @@ public sealed partial class Space
 	public SpaceSpec SpaceSpec { get; }
 
 	public int this[ISpaceEntity specific] {
-		get {
-			// We do temporarily store Destroyed, then immediatly Remove/Destroy them
-			int count = _counts[specific];
-			if( specific is TokenClassToken ut )
-				count += _api.GetDynamicTokensFor(this, ut);
-			return count;
-		}
+		// We do temporarily store Destroyed, then immediatly Remove/Destroy them
+		get => _counts[specific];
 	}
 
 	public IEnumerable<ISpaceEntity> Keys => _counts.Keys; // !! This won't list virtual (defend) tokens
@@ -105,9 +99,8 @@ public sealed partial class Space
 
 	readonly CountDictionary<ISpaceEntity> _counts;
 	readonly IEnumerable<ISpaceEntity> _islandMods;
-	readonly IIslandTokenApi _api;
 
-    #endregion
+	#endregion
 
 	#region Non-event Generationg Token Changes
 
@@ -164,7 +157,7 @@ public sealed partial class Space
 	public void AdjustDefault( HumanTokenClass tokenClass, int delta ) 
 		=> Adjust( GetDefault( tokenClass ), delta );
 
-	public HumanToken GetDefault( ITokenClass tokenClass ) => _api.GetDefault( tokenClass );
+	public HumanToken GetDefault( ITokenClass tokenClass ) => GameState.Current.Tokens.GetDefault( tokenClass );
 
 	#endregion
 

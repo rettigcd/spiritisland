@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHaveMemento {
+public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 
 	public Tokens_ForIsland() {
 
@@ -32,11 +32,8 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 
 	bool IRunWhenTimePasses.RemoveAfterRun => false;
 	Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
-		Dynamic.ForRound.Clear();
-
 		foreach(var pair in _tokenCounts)
-			new Space( pair.Key, pair.Value, _islandMods.Keys, this ).TimePasses();
-
+			new Space( pair.Key, pair.Value, _islandMods.Keys ).TimePasses();
 		return Task.CompletedTask;
 	}
 
@@ -47,16 +44,11 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 	/// Spirit Actions should not call this directly but rather go through Space.Tokens => ActionScope.AccessTokens()
 	/// UI or Test stuff that is outside of an ActionScope, may use this directly.
 	/// </remarks>
-	public Space this[SpaceSpec space] => new Space( space, GetTokensCounts( space ), _islandMods.Keys, this );
+	public Space this[SpaceSpec space] => new Space( space, GetTokensCounts( space ), _islandMods.Keys );
 
 	CountDictionary<ISpaceEntity> GetTokensCounts( SpaceSpec key ) => _tokenCounts.Get( key, () => [] );
 
 	TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
-
-	public int GetDynamicTokensFor( Space space, TokenClassToken token ) 
-		=> Dynamic.GetTokensFor( space, token );
-
-	public readonly DualDynamicTokens Dynamic = new DualDynamicTokens();
 
 	#region Memento
 
@@ -64,7 +56,6 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 		get => new MyMemento( this );
 		set {
 			((MyMemento)value).Restore( this );
-			Dynamic.ForRound.Clear();
 		}
 	}
 
@@ -75,8 +66,6 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 				_tokenCounts[space] = countsDict.Clone();
 			// Save Defaults
 			tokenDefaults = src.TokenDefaults.ToDictionary(p=>p.Key,p=>p.Value);
-			// dynamicTokens_ForGame
-			_dynamicTokens = src.Dynamic.Memento;
 			_doesNotExist = src._tokenCounts.Keys.Where(s=>!s.DoesExists).ToArray();
 		}
 		public void Restore( Tokens_ForIsland dstSpaces ) {
@@ -127,13 +116,10 @@ public sealed class Tokens_ForIsland : IIslandTokenApi, IRunWhenTimePasses, IHav
 			dstSpaces.TokenDefaults.Clear();
 			foreach(var pair in tokenDefaults)
 				dstSpaces.TokenDefaults.Add(pair.Key,pair.Value);
-			// Restore Dynamic tokens
-			dstSpaces.Dynamic.Memento = _dynamicTokens;
 		}
 		readonly Dictionary<SpaceSpec, CountDictionary<ISpaceEntity>> _tokenCounts = [];
 		readonly SpaceSpec[] _doesNotExist;
 		readonly Dictionary<ITokenClass, HumanToken> tokenDefaults = [];
-		readonly object _dynamicTokens;
 	}
 
 	#endregion Memento

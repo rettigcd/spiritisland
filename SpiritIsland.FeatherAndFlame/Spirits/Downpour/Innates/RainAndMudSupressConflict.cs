@@ -42,7 +42,8 @@ internal class RainAndMudSupressConflict {
 	static public void MakeThingsMuddy( Spirit self ) {
 		var gs = GameState.Current;
 		// Each of your Presence grants Defend 1
-		gs.Tokens.Dynamic.ForRound.Register( sp => sp[self.Presence.Token], Token.Defend );
+		DynamicToken.Defend(self.Presence.CountOn, "💦");
+
 		// lowers Dahan counterattack damage by 1
 		gs.AddIslandMod( new MudToken( self, 1 ) );
 		MarkAsUsed();

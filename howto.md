@@ -23,8 +23,7 @@ Remove only, no additional cleanup
 class MyMod : ISpaceEntity, IEndWhenTimePasses {...}
 space.Init(new MyMod(), 1);
 ```
-With additional cleanup
-
+With cleanup, but does not remove.
 ```
 class MyMod : ISpaceEntity, ICleanupSpaceWhenTimePasses{...}
 space.Init(new MyMod(), 1);

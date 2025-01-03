@@ -42,9 +42,7 @@ public class TendingPresence( Spirit spirit, IPresenceTrack t1, IPresenceTrack t
 		}
 
 		void Update(Space space) {
-			int desiredDefend = 0 < space[this] && 4 <= space.Sum(TokenCategory.Dahan)
-				? 1
-				: 0;
+			int desiredDefend = IsTended(space) ? 1 : 0;
 			space.Init(defendToken, desiredDefend);
 		}
 

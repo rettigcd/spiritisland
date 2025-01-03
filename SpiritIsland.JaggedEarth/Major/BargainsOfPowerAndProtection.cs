@@ -1,4 +1,5 @@
-﻿namespace SpiritIsland.JaggedEarth;
+﻿
+namespace SpiritIsland.JaggedEarth;
 
 public class BargainsOfPowerAndProtection {
 
@@ -9,28 +10,68 @@ public class BargainsOfPowerAndProtection {
 		// if you have 3 sun 2 water 2 earth: the presence instead comes from your presence track.
 		await ctx.Self.PayPresenceForBargain( "3 sun,2 water,2 earth" );
 
-		// From now on: Each dahan within range of 1 of your presence provides
-		// Defend 1 in its land,
-		GameState.Current.Tokens.Dynamic.ForGame.Register( new Range1DahanDefend1( ctx.Self ).DefendOn, Token.Defend );
-
+		// From now on: Each dahan within range of 1 of your presence provides Defend 1 in its land
+		GameState.Current.AddIslandMod(new EachDahanAtRange1Defend1(ctx.Self));
+	
 		// and you gain 1 less Energy each turn.
 		ctx.Self.Presence.AdjustEnergyTrackDueToBargain(-1);
 
 		// (this effect stacks if used multiple times.)
 	}
 
-	class Range1DahanDefend1( Spirit self ) {
-		readonly Spirit _self = self;
+	// From now on: Each dahan within range of 1 of your presence provides Defend 1 in its land
+	class EachDahanAtRange1Defend1( Spirit self )
+		: BaseModEntity
+		, IHandleTokenAdded, IHandleTokenRemoved {
 
-		public int DefendOn( Space space ) {
-
-			// !! This is kind of slow to do for every space.
-			// ??? Is there some way we can cache this inside the UnitOfWork?
-
-			var match = _self.FindSpacesWithinRange(new TargetCriteria(1))
-				.FirstOrDefault( opt => opt.Equals(space) );
-			return match?.Dahan.CountAll ?? 0;
+		Task IHandleTokenAdded.HandleTokenAddedAsync(Space to, ITokenAddedArgs args) {
+			if( IsPresence(args.Added) ) Presence_Added(args);
+			if( IsDahan(args.Added) ) Dahan_Added(args);
+			return Task.CompletedTask;
 		}
+
+		Task IHandleTokenRemoved.HandleTokenRemovedAsync(ITokenRemovedArgs args) {
+			if( IsPresence( args.Removed ) ) Presence_Removed(args);
+			if( IsDahan( args.Removed ) ) Dahan_Removed(args);
+			return Task.CompletedTask;
+		}
+
+		void Presence_Added(ITokenAddedArgs args) {
+			if( args.TokenIsNew() && args.To is Space space ) // new presence
+				foreach( var other in space.Range(1) )
+					Update(other);
+		}
+
+		void Presence_Removed(ITokenRemovedArgs args) {
+			if( args.From is not Space space ) return;
+			if( args.TokenIsRetired() )
+				foreach( var other in space.Range(1) )
+					if( other.Dahan.Any && !HasPresenceWithinRange(other) )
+						other.Init(_myDefend, 0);
+		}
+
+		void Dahan_Added(ITokenAddedArgs args) {
+			if( args.To is not Space space ) return;
+			if( space[_myDefend] > 0    // previously defended
+				|| args.TokenIsNew() && HasPresenceWithinRange(space) // has presence within 1
+			) Update(space);
+		}
+
+		void Dahan_Removed(ITokenRemovedArgs args) {
+			if( args.From is Space space && space[_myDefend] > 0 )
+				Update(space);
+		}
+
+		bool IsPresence(IToken token) => token == self.Presence.Token;
+		bool IsDahan(IToken token) => token.HasTag(Human.Dahan);
+		bool HasPresenceWithinRange(Space space) => space.Range(1).Any(self.Presence.IsOn);
+
+		void Update(Space space) {
+			space.Init(_myDefend, space.Dahan.CountAll);
+		}
+
+		readonly TokenVariety _myDefend = new TokenVariety(Token.Defend, "💪");
 	}
+
 
 }
