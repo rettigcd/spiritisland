@@ -119,10 +119,6 @@ public class SoloGameModel : ObservableModel {
 		// when OVM gets a select/submit, update IDecision Model
 		_ovm.OptionSelected += (option, submit) => {
 
-			if( MainThread.IsMainThread ) {
-				int i = 0;
-			}
-
 			SelectedOption = option;
 			if (submit)
 				Submit();

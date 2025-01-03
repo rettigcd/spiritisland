@@ -128,27 +128,22 @@ static public class Polygons {
 	/// </summary>
 	static public XY ExtendCornerRight( XY prev, XY corner, XY next, float distanceFromEdge ) {
 
-		try {
+		// arrows to next and previous points
+		XY forward = (next - corner).ToUnit(); // points away from CUR
+		XY back = (prev - corner).ToUnit(); // points away from CUR
+											// direction to go to be inside
+		XY go = (forward + back);
+		// if points are in a straight line, go will be 0, correct it by turning 90 from forward direction.
+		if(go.LengthSquared() < 0.00001f)
+			go = new XY( forward.Y, -forward.X );
+		else if(0 < (corner.X - prev.X) * (next.Y - prev.Y) - (corner.Y - prev.Y) * (next.X - prev.X))
+			go = -go;
 
-			// arrows to next and previous points
-			XY forward = (next - corner).ToUnit(); // points away from CUR
-			XY back = (prev - corner).ToUnit(); // points away from CUR
-											 // direction to go to be inside
-			XY go = (forward + back);
-			// if points are in a straight line, go will be 0, correct it by turning 90 from forward direction.
-			if(go.LengthSquared() < 0.00001f)
-				go = new XY( forward.Y, -forward.X );
-			else if(0 < (corner.X - prev.X) * (next.Y - prev.Y) - (corner.Y - prev.Y) * (next.X - prev.X))
-				go = -go;
-
-			XY backNinety = new XY( -back.Y, back.X );
-			var goUnit = go.ToUnit();
-			float cos = backNinety.Dot( goUnit );
-			float goScale = distanceFromEdge / cos;
-			return corner + goUnit * goScale;
-		} catch(Exception e) {
-			throw;
-		}
+		XY backNinety = new XY( -back.Y, back.X );
+		var goUnit = go.ToUnit();
+		float cos = backNinety.Dot( goUnit );
+		float goScale = distanceFromEdge / cos;
+		return corner + goUnit * goScale;
 	}
 
 }

@@ -26,10 +26,6 @@ public class BaseOptionModel : ObservableModel, IOptionModel {
 	async void OnTapped(object obj) {
 		if( ++_tapCount != 1 ) return;
 
-		if( MainThread.IsMainThread ) {
-			int j = 22;
-		}
-
 		await Task.Delay(400);
 		await MainThread.InvokeOnMainThreadAsync(() => {
 			switch( _tapCount ) {

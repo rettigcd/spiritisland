@@ -85,7 +85,7 @@ public sealed partial class Space
 	#region Token-Type Sub-groups
 
 	public BlightTokenBinding Blight => new BlightTokenBinding( this );
-	public IDefendTokenBinding Defend => new DefendTokenBinding( this );
+	public DefendTokenBinding Defend => new DefendTokenBinding( this );
 	public BeastBinding Beasts => new ( this, Token.Beast );
 	public TokenBinding Disease => new ( this, Token.Disease );
 	public TokenBinding Wilds => new ( this, Token.Wilds );

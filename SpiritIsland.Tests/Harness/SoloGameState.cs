@@ -10,7 +10,7 @@ public class SoloGameState(Spirit spirit, Board board)
 {
 	#region constructors
 
-	/// <summary> When you don't care about the Spirit nor the Board </summary>
+	/// <summary> When you don't care about the Spirit nor the Board (Defaults to Board-A) </summary>
 	public SoloGameState() : this( DefaultSpirit, DefaultBoard ) { }
 	/// <summary> When you care about the Spirit only. </summary>
 	public SoloGameState(Spirit spirit) : this(spirit, DefaultBoard) { }

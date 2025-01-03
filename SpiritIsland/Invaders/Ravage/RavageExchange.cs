@@ -2,26 +2,6 @@
 
 namespace SpiritIsland;
 
-public class RavageParticipants(
-	CountDictionary<HumanToken> starting,
-	CountDictionary<HumanToken> active
-) {
-
-	/// <summary> Anyone that can receive damage. </summary>
-	readonly public CountDictionary<HumanToken> Starting = starting;
-
-	/// <summary> The participants that deal damage. </summary>
-	readonly public CountDictionary<HumanToken> Active = active;
-
-	/// <summary> Damage dealt (EXCLUDING Badland Damage) out to the other side. (less any Defend) </summary>
-	public int DamageDealtOut;
-
-	public int DamageReceivedFromBadlands;
-
-	public CountDictionary<HumanToken>? Ending;
-
-}
-
 /// <summary> Creates a Custom Ravage Exchange. </summary>
 public class RavageExchange( Space space, RavageOrder order, RavageParticipants attackers, RavageParticipants defenders ) {
 
@@ -96,7 +76,6 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 		return string.Join(" ",parts);
 	}
 
-
 	/// <summary> Defend has already been applied. </summary>
 	public void GetDamageInflictedByAttackers( RavageBehavior behavior ) {
 
@@ -151,6 +130,90 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 		Attackers.Ending = remaningAttackers;
 	}
 
+	public async Task DamageDefenders() {
+
+		// Start with Damage from attackers
+		if( Attackers.DamageDealtOut == 0 ) return;
+
+		// Add Badlands damage
+		Defenders.DamageReceivedFromBadlands = Space.Badlands.Count;
+		int damageToApply = Attackers.DamageDealtOut + Defenders.DamageReceivedFromBadlands; // to defenders
+
+		var defenders = Defenders.Starting.Clone();
+
+		// Damage helping Invaders
+		// When damaging defenders, it is ok to damage the explorers first.
+		// https://querki.net/u/darker/spirit-island-faq/#!Voice+of+Command 
+		var participatingExplorers = defenders.Keys
+			.Where(k => k.HasAny(Human.Invader))
+			.OfType<HumanToken>()
+			.OrderByDescending(x => x.RemainingHealth) // kill lowest health first (must be efficient)
+			.ThenBy(x => x.StrifeCount) // non strifed first
+			.ToArray();
+		if( participatingExplorers.Length > 0 ) {
+			foreach( var token in participatingExplorers ) {
+				int tokensToDestroy = Math.Min(Defenders.Starting[token], damageToApply / token.RemainingHealth);
+				// destroy real tokens
+				await Space.Invaders.DestroyNTokens(token, tokensToDestroy);
+				// update our defenders count
+				defenders[token] -= tokensToDestroy;
+				damageToApply -= tokensToDestroy * token.RemainingHealth;
+			}
+		}
+
+		// !! if we had cities / towns helping with defend, we would want to apply partial damage to them here.
+
+		//		if( Tokens.ModsOfType<IStopDahanDamage>().Any() ) return;
+
+		// Dahan
+		var damagableDahan = defenders.Keys
+			.Cast<HumanToken>()
+			.Where(k => k.HumanClass == Human.Dahan) // Normal only, filters out frozen/sleeping
+			.OrderBy(t => t.RemainingHealth) // kill damaged dahan first
+			.ThenBy(x => x.RavageOrder) // but if 2 have same health, pick the one that has already attacked
+			.ToArray();
+
+		var dahan = Space.Dahan;
+
+		foreach( var dahanToken in damagableDahan ) {
+
+			// 1st - Destroy weekest dahan first
+			int tokensToDestroy = Math.Min(
+				Defenders.Starting[dahanToken],
+				damageToApply / dahanToken.RemainingHealth // rounds down
+			);
+			if( 0 < tokensToDestroy ) {
+
+				int removed = await dahan.Destroy(tokensToDestroy, dahanToken);
+
+				// use up damage
+				damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
+
+				DahanDestroyed += removed;
+				defenders[dahanToken] -= removed;
+			}
+			// damage real tokens
+
+			// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
+			if( 0 < defenders[dahanToken] && 0 < damageToApply ) {
+
+				int remainingDamage = await dahan.ApplyDamageToAll_Efficiently(damageToApply, dahanToken); // this will never destroy token
+
+				// update our defenders count
+				if( remainingDamage < Attackers.DamageDealtOut ) { // if we actually did damage
+																   // !!! not sure this is 100% correct - if dahan can't be damaged, shouldn't do this update below
+					++defenders[dahanToken.AddDamage(damageToApply)];
+					--defenders[dahanToken];
+				}
+				damageToApply = 0;
+			}
+
+		}
+
+		Defenders.Ending = defenders;
+
+	}
+
 	/// <returns>New attacker invaders</returns>
 	static async Task<CountDictionary<HumanToken>> FromEachStrifed_RemoveOneStrife( RavageExchange rex ) {
 
@@ -201,89 +264,5 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 	}
 
 	#endregion
-
-	public async Task DamageDefenders() {
-		
-		// Start with Damage from attackers
-		if(Attackers.DamageDealtOut == 0) return;
-
-		// Add Badlands damage
-		Defenders.DamageReceivedFromBadlands = Space.Badlands.Count;
-		int damageToApply = Attackers.DamageDealtOut + Defenders.DamageReceivedFromBadlands; // to defenders
-
-		var defenders = Defenders.Starting.Clone();
-
-		// Damage helping Invaders
-		// When damaging defenders, it is ok to damage the explorers first.
-		// https://querki.net/u/darker/spirit-island-faq/#!Voice+of+Command 
-		var participatingExplorers = defenders.Keys
-			.Where( k => k.HasAny( Human.Invader ) )
-			.OfType<HumanToken>()
-			.OrderByDescending( x => x.RemainingHealth ) // kill lowest health first (must be efficient)
-			.ThenBy( x => x.StrifeCount ) // non strifed first
-			.ToArray();
-		if(participatingExplorers.Length > 0) {
-			foreach(var token in participatingExplorers) {
-				int tokensToDestroy = Math.Min( Defenders.Starting[token], damageToApply / token.RemainingHealth );
-				// destroy real tokens
-				await Space.Invaders.DestroyNTokens( token, tokensToDestroy );
-				// update our defenders count
-				defenders[token] -= tokensToDestroy;
-				damageToApply -= tokensToDestroy * token.RemainingHealth;
-			}
-		}
-
-		// !! if we had cities / towns helping with defend, we would want to apply partial damage to them here.
-
-		//		if( Tokens.ModsOfType<IStopDahanDamage>().Any() ) return;
-
-		// Dahan
-		var damagableDahan = defenders.Keys
-			.Cast<HumanToken>()
-			.Where( k => k.HumanClass == Human.Dahan ) // Normal only, filters out frozen/sleeping
-			.OrderBy( t => t.RemainingHealth ) // kill damaged dahan first
-			.ThenBy( x => x.RavageOrder ) // but if 2 have same health, pick the one that has already attacked
-			.ToArray();
-
-		var dahan = Space.Dahan;
-
-		foreach(var dahanToken in damagableDahan) {
-
-			// 1st - Destroy weekest dahan first
-			int tokensToDestroy = Math.Min(
-				Defenders.Starting[dahanToken],
-				damageToApply / dahanToken.RemainingHealth // rounds down
-			);
-			if(0 < tokensToDestroy) {
-
-				int removed = await dahan.Destroy( tokensToDestroy, dahanToken );
-
-				// use up damage
-				damageToApply -= tokensToDestroy * dahanToken.RemainingHealth;
-
-				DahanDestroyed += removed;
-				defenders[dahanToken] -= removed;
-			}
-			// damage real tokens
-
-			// 2nd - if we no longer have enougth to destroy this token, apply damage all the damage that remains
-			if(0 < defenders[dahanToken] && 0 < damageToApply) {
-
-				int remainingDamage = await dahan.ApplyDamageToAll_Efficiently( damageToApply, dahanToken ); // this will never destroy token
-
-				// update our defenders count
-				if(remainingDamage < Attackers.DamageDealtOut) { // if we actually did damage
-																// !!! not sure this is 100% correct - if dahan can't be damaged, shouldn't do this update below
-					++defenders[dahanToken.AddDamage( damageToApply )];
-					--defenders[dahanToken];
-				}
-				damageToApply = 0;
-			}
-
-		}
-
-		Defenders.Ending = defenders;
-
-	}
 
 }

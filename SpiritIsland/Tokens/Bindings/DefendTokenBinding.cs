@@ -1,8 +1,8 @@
 ﻿namespace SpiritIsland;
 
-public class DefendTokenBinding( Space _space ) : IDefendTokenBinding {
+public class DefendTokenBinding( Space _space ) {
 
-	public int Count => _space[Token.Defend];
+	public int Count => _space.Sum(Token.Defend); // _space[Token.Defend];
 
 	public void Add( int count ) {
 		_space.Adjust( Token.Defend, count ); // this should NOT trigger NORMAL token-added event
