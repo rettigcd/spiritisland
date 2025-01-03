@@ -6,8 +6,7 @@ public class HumanTokenClass(
 	TokenCategory _categoryTag, 
 	int _fearGeneratedWhenDestroyed, 
 	Img _img, 
-	int _expectedHealth, 
-	TokenVariant _variant = default
+	int _expectedHealth
 ) 
 	: ITokenClass
 	, ITag
@@ -23,8 +22,6 @@ public class HumanTokenClass(
 
 	public Img Img { get; } = _img;
 
-	public TokenVariant Variant { get; } = _variant;
-
 	/// <summary> 3 for cities, 2 for towns/dahan, 1 for explorers. </summary>
 	/// <remarks> Helps UI display the health when different than expected </remarks>
 	public int ExpectedHealthHint { get; } = _expectedHealth;
@@ -33,10 +30,4 @@ public class HumanTokenClass(
 
 	public string ToCountString( int count ) => (count == 1 ? $"1 {_singular}" : $"{count} {_plural}");
 
-}
-
-public enum TokenVariant {
-	Default,
-	Dreaming,
-	Frozen
 }

@@ -160,24 +160,6 @@ public static partial class SpaceExtentions {
 
 	#endregion Assert_HasInvaders()
 
-	#region Assert_DreamingInvaders("2E@1")
-
-	static public void Assert_DreamingInvaders( this SpaceSpec space, string expectedString )
-		=> space.ScopeSpace.Assert_DreamingInvaders( expectedString );
-
-	static public void Assert_DreamingInvaders( this Space space, string expectedString ) {
-		static int Order_CitiesTownsExplorers( HumanToken invader )
-			=> -(invader.FullHealth * 10 + invader.RemainingHealth);
-		string dreamerSummary = space.HumanOfTag(TokenCategory.Invader)
-			.Where( x => x.HumanClass.Variant == TokenVariant.Dreaming )
-			.OrderBy( Order_CitiesTownsExplorers )
-			.Select( invader => space[invader] + invader.ToString() )
-			.Join( "," );
-		dreamerSummary.ShouldBe( expectedString );
-	}
-
-	#endregion Assert_DreamingInvaders("2E@1")
-
 	static public string InvaderSummary( this Space space ) {
 		static int Order_CitiesTownsExplorers( HumanToken invader )
 			=> -(invader.FullHealth * 10 + invader.RemainingHealth);

@@ -1,7 +1,6 @@
 =====  API Cleanup  =====
 
 4	Move has prompt for both: select token & destination.
-4	Replace Dynamic Defend with visible tokens.
 4	Badlands as Damage Mod - See if Badlands can be made a MOD instead of special case it is.
 4	Spirit-Damage - See if bonus spirit damage (Heart of Wildfire) can me turned into a SpaceMod
 4	Create a Island-Wide-Mod bucket inside ActionScope that goes away at end of Action.  or maybe IEndWhenActionEnds
