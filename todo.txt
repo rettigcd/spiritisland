@@ -1,10 +1,11 @@
 =====  API Cleanup  =====
 
-4	Move has prompt for both: select token & destination.
 4	Badlands as Damage Mod - See if Badlands can be made a MOD instead of special case it is.
 4	Spirit-Damage - See if bonus spirit damage (Heart of Wildfire) can me turned into a SpaceMod
-4	Create a Island-Wide-Mod bucket inside ActionScope that goes away at end of Action.  or maybe IEndWhenActionEnds
 4	BoundedPresence in TargetSpaceCtx - how is it used
+
+4	Move has prompt for both: select token & destination.
+4	Create a Island-Wide-Mod bucket inside ActionScope that goes away at end of Action.  or maybe IEndWhenActionEnds
 4	Space methods - clean up so easier to understand.
 3	Add Bonus tags to elements to support "can-be-counted-as"
 3	Simplify TokenMover
@@ -12,10 +13,6 @@
 2	Move general-purpose SpiritActions into a SpiritActions folder
 2	Move Extension methods into their own namespaces so user can opt-in
 2	Switch Empowered Incarna markers to use the '+' icon or indicate empowered.
-
-=====  Test Cleanup  =====
-
-4	Review Tests and get rid of the TestFixtureSetup
 
 =====  UI Improvement  =====
 

@@ -118,7 +118,8 @@ public abstract partial class Spirit
 		// Energy
 		Energy += EnergyPerTurn;
 		await EnergyCollected.InvokeAsync(this);
-		// ! Elements were added when the round started.
+
+		// Elements from the Presence Tracks were added when the round started.
 
 		// Do actions AFTER energy and elements have been added - in case playing ManyMindsMoveAsOne - Pay 2 for power card.
 		foreach(var action in Presence.RevealedActions)

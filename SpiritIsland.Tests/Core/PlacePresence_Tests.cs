@@ -67,7 +67,7 @@ public class PlacePresence_Tests {
 		gs.Initialize();
 
 		// Given: spirit track is emptied up to an action Track (reclaim 1)
-		await gs.Spirit.Presence.CardPlays.Given_SlotsRevealed(4);
+		await gs.Spirit.Presence.CardPlays.Given_SlotsAreRevealed(4);
 		//   And: the action would have an effect
 		gs.Spirit.Given_HalfOfHandDiscarded();
 

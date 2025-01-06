@@ -8,7 +8,6 @@ public class PowerCardDeck_Tests {
 	[InlineData( AssemblyType.JaggedEarth,33)]
 	public void MinorCount(string edition, int expectedCount) {
 		var minorCards = AssemblyType.GetEditionType(edition).ScanForMinors();
-		// minorCards.Length.ShouldBe( 36 ); // Basegame
 		minorCards.Length.ShouldBeGreaterThanOrEqualTo( expectedCount );
 	}
 
@@ -169,9 +168,10 @@ public class PowerCardDeck_Tests {
 	public async Task DrawingMajor_ForgetACard(bool drawDirect) {
 		var randomizer = new Random();
 		var gs = new SoloGameState() {
-			MajorCards = new PowerCardDeck( typeof(RiversBounty).ScanForMajors(), randomizer.Next(), PowerType.Major ),
-			MinorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMinors(), randomizer.Next(), PowerType.Minor )
+			MajorCards = new PowerCardDeck( typeof(RiversBounty).ScanForMajors(), randomizer.Next(), PowerType.Major )
+//			MinorCards = new PowerCardDeck( typeof( RiversBounty ).ScanForMinors(), randomizer.Next(), PowerType.Minor )
 		};
+		gs.InitMinorDeck();
 		gs.Initialize();
 
 		if(drawDirect) {

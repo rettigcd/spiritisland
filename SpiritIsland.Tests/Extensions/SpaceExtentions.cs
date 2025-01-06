@@ -136,7 +136,9 @@ public static partial class SpaceExtentions {
 	static public InvaderCard BuildInvaderCard(this Space space) => space.SpaceSpec.BuildInvaderCard();
 	static public InvaderCard BuildInvaderCard( this SpaceSpec space ) {
 		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.Is );
-		return terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
+		var card = terrain != Terrain.Ocean ? InvaderCard.Stage1( terrain ) : throw new ArgumentException( "Can't invade oceans" );
+		card.Flipped = true;
+		return card;
 	}
 
 	static public Task When_CardRavages( this Space space) => space.SpaceSpec.BuildInvaderCard().When_Ravaging();

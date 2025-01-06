@@ -7,18 +7,19 @@ public class PromisesOfProtection_Tests {
 	public async Task PromisesOfProtection_IsStackable() {
 
 		// Setup
-		var fxt = new ConfigurableTestFixture();
-		var targetSpace = fxt.Board[5];
+		var gs = new SoloGameState();
+
+		var targetSpace = gs.Board[5];
 		var dahanSource = targetSpace.Adjacent_Existing.First();
 		var selectDahanFromSource = "D@2";
-		var ctx = fxt.Spirit.Target( targetSpace );
+		var ctx = gs.Spirit.Target( targetSpace );
 
 		// Test 1
 
 		// Given: target spaces starts with 2 dahan
-		fxt.InitTokens(targetSpace, "2D@2");
+		targetSpace.Given_HasTokens("2D@2");
 		//  And: adjacent dahan source has 4
-		fxt.InitTokens(dahanSource, "4D@2");
+		dahanSource.Given_HasTokens("4D@2");
 
 		// When: playing card
 		await PromisesOfProtection.ActAsync( ctx ).AwaitUser( user => { 
@@ -43,7 +44,7 @@ public class PromisesOfProtection_Tests {
 		// Test 3
 
 		// When round over
-		await fxt.GameState.TriggerTimePasses();
+		await gs.TriggerTimePasses();
 
 		// Then all (6) should have 2 health
 		ctx.Space.Summary.ShouldBe("6D@2");

@@ -9,16 +9,16 @@ public class GiftOfProliferation_Tests {
 	[Fact]
 	public async Task Ocean_CantPlacePresenceInland() {
 
-		var setup = new ConfigurableTestFixture { Spirit = new Ocean() };
+		var gs = new SoloGameState(new Ocean());
 
-		var nonPlacableSpace = setup.GameState.Tokens[ setup.Board[8] ];
+		var nonPlacableSpace = gs.Tokens[ gs.Board[8] ];
 
 		// Given: presence on board
-		setup.Spirit.Given_IsOn( nonPlacableSpace, 2 );
+		gs.Spirit.Given_IsOn( nonPlacableSpace, 2 );
 		nonPlacableSpace.Init( Token.Blight, 0 );
 
 		//  When: Card played
-		await GiftOfProliferation.ActAsync( setup.TargetSelf ).AwaitUser( user => {
+		await GiftOfProliferation.ActAsync( gs.Spirit.Target(gs.Spirit) ).AwaitUser( user => {
 			// will not ask where to place because there is no valid place
 		}).ShouldComplete();
 
@@ -28,16 +28,17 @@ public class GiftOfProliferation_Tests {
 	[Trait( "SpecialRule", "HomeOfTheIslandsHeart" )]
 	[Fact]
 	public async Task Lure_CantPlacePresenceOnCoast() {
-		var setup = new ConfigurableTestFixture { Spirit = new LureOfTheDeepWilderness() };
+		var gs = new SoloGameState(new LureOfTheDeepWilderness());
+		var spirit = gs.Spirit;
 
-		var nonPlacableSpace = setup.GameState.Tokens[ setup.Board[1] ];
+		var nonPlacableSpace = gs.Tokens[ gs.Board[1] ];
 
 		// Given: presence on board
-		setup.Spirit.Given_IsOn( nonPlacableSpace, 2 );
+		spirit.Given_IsOn( nonPlacableSpace, 2 );
 		nonPlacableSpace.Init( Token.Blight, 0 );
 
 		//  When: Card played
-		await GiftOfProliferation.ActAsync( setup.TargetSelf ).AwaitUser( user => {
+		await GiftOfProliferation.ActAsync( spirit.Target(spirit) ).AwaitUser( user => {
 			// Then: Does not contain coast/A1 as destination
 			user.NextDecision.HasPrompt("Select Presence to place")
 				.HasFromOptions("2 energy,2 cardplay,LotDW on A1")
@@ -53,16 +54,16 @@ public class GiftOfProliferation_Tests {
 	[Trait( "SpecialRule", VolcanoLoomingHigh.MountainHome )]
 	[Fact]
 	public async Task Volcano_CanOnlyBePlaceInMountains() {
-		var setup = new ConfigurableTestFixture { Spirit = new VolcanoLoomingHigh() };
-
-		var space = setup.GameState.Tokens[setup.Board[5]];
+		var gs = new SoloGameState(new VolcanoLoomingHigh());
+		var space = gs.Tokens[gs.Board[5]];
 
 		// Given: presence on board
-		setup.Spirit.Given_IsOn( space, 2 );
+		var spirit = gs.Spirit;
+		spirit.Given_IsOn( space, 2 );
 		space.Init( Token.Blight, 0 );
 
 		//  When: Card played
-		await GiftOfProliferation.ActAsync( setup.TargetSelf ).AwaitUser( user => {
+		await GiftOfProliferation.ActAsync( spirit.Target(spirit) ).AwaitUser( user => {
 			// Then: does not contain non-mountain(A5) presence
 			user.NextDecision.HasPrompt("Select Presence to place")
 				.HasFromOptions("2 energy,fire,VLH on A5")

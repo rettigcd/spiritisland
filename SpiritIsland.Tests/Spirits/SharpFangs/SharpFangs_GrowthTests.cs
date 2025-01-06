@@ -133,37 +133,36 @@ public class SharpFangs_GrowthTests : BoardAGame {
 	}
 
 	[Theory]
-	[InlineDataAttribute( 1, 1, "" )]
-	[InlineDataAttribute( 2, 1, "animal" )]
-	[InlineDataAttribute( 3, 1, "plant animal" )]
-	[InlineDataAttribute( 4, 2, "plant animal" )]
-	[InlineDataAttribute( 5, 2, "plant 2 animal" )]
-	[InlineDataAttribute( 6, 3, "plant 2 animal" )]
-	[InlineDataAttribute( 7, 4, "plant 2 animal" )]
+	[InlineData( 1, 1, "" )]
+	[InlineData( 2, 1, "animal" )]
+	[InlineData( 3, 1, "plant animal" )]
+	[InlineData( 4, 2, "plant animal" )]
+	[InlineData( 5, 2, "plant 2 animal" )]
+	[InlineData( 6, 3, "plant 2 animal" )]
+	[InlineData( 7, 4, "plant 2 animal" )]
 	public Task EnergyTrack( int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		return fix.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+		return new SharpFangs().VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Theory]
-	[InlineDataAttribute( 1, 2, 0 )]
-	[InlineDataAttribute( 2, 2, 0 )]
-	[InlineDataAttribute( 3, 3, 0 )]
-	[InlineDataAttribute( 4, 3, 1 )]
-	[InlineDataAttribute( 5, 4, 1 )]
-	[InlineDataAttribute( 6, 5, 2 )]
+	[InlineData( 1, 2, 0 )]
+	[InlineData( 2, 2, 0 )]
+	[InlineData( 3, 3, 0 )]
+	[InlineData( 4, 3, 1 )]
+	[InlineData( 5, 4, 1 )]
+	[InlineData( 6, 5, 2 )]
 	public async Task CardTrack( int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
-		var fix = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		await fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
-		fix.VerifyReclaim1Count(reclaimCount);
+		var spirit = new SharpFangs();
+		await spirit.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
+		spirit.Presence.RevealedActions.OfType<ReclaimN>().Count().ShouldBe(reclaimCount);
 	}
 
 	[Trait( "Spirit", "SetupAction" )]
 	[Fact]
 	public void HasSetUp() {
-		var fxt = new ConfigurableTestFixture { Spirit = new SharpFangs() };
-		fxt.GameState.Initialize();
-		fxt.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
+		var gs = new SoloGameState(new SharpFangs());
+		gs.Initialize();
+		gs.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
 	}
 
 	async Task When_SharpFangsGrow(Action<VirtualUser> userAction) {

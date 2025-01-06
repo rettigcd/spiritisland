@@ -62,30 +62,29 @@ public class Thunderspeaker_GrowthTests : BoardAGame{
 
 	[Trait("Presence","EnergyTrack")]
 	[Theory]
-	[InlineDataAttribute(1,1,"")]
-	[InlineDataAttribute(2,1,"air")]
-	[InlineDataAttribute(3,2,"air")]
-	[InlineDataAttribute(4,2, "fire air" )]
-	[InlineDataAttribute(5,2, "sun fire air" )]
-	[InlineDataAttribute(6,3, "sun fire air" )]
+	[InlineData(1,1,"")]
+	[InlineData(2,1,"air")]
+	[InlineData(3,2,"air")]
+	[InlineData(4,2, "fire air" )]
+	[InlineData(5,2, "sun fire air" )]
+	[InlineData(6,3, "sun fire air" )]
 	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-		var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
-		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		return new Thunderspeaker().VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Trait("Presence","CardTrack")]
 	[Theory]
-	[InlineDataAttribute(1,1,0)]
-	[InlineDataAttribute(2,2,0)]
-	[InlineDataAttribute(3,2,0)]
-	[InlineDataAttribute(4,3,0)]
-	[InlineDataAttribute(5,3,1)]
-	[InlineDataAttribute(6,3,1)]
-	[InlineDataAttribute(7,4,1)]
+	[InlineData(1,1,0)]
+	[InlineData(2,2,0)]
+	[InlineData(3,2,0)]
+	[InlineData(4,3,0)]
+	[InlineData(5,3,1)]
+	[InlineData(6,3,1)]
+	[InlineData(7,4,1)]
 	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, int reclaimCount ) {
-		var fix = new ConfigurableTestFixture { Spirit = new Thunderspeaker() };
-		await fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
-		fix.VerifyReclaim1Count(reclaimCount);
+		var spirit = new Thunderspeaker();
+		await spirit.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
+		spirit.Presence.RevealedActions.OfType<ReclaimN>().Count().ShouldBe(reclaimCount);
 	}
 
 }

@@ -60,31 +60,30 @@ public class ForestsOfLivingObsidian_Tests {
 	[Trait( "Feature", "Repeat" )]
 	[Fact]
 	public async Task Repeat_BadlandsWorksOnSameTargetTwice() {
-		var fix = new ConfigurableTestFixture();
-		var space1 = fix.Board[3];
-		var space = fix.GameState.Tokens[space1];
+		var gs = new SoloGameState(new RiverSurges());
+		var space1 = gs.Board[3];
+		var space = gs.Tokens[space1];
 
 		// Given: 2 sun, 3 fire, 3 earth
-		fix.InitElements( "2 sun,3 fire,3 earth" );
+		gs.Spirit.Configure().Elements( "2 sun,3 fire,3 earth" );
 
 		//  And: target land has 1 presence, 2 Cities
-		fix.Spirit.Given_IsOn( space );
-		fix.InitTokens( space1, "3C@3" );
+		gs.Spirit.Given_IsOn( space );
+		space1.Given_HasTokens("3C@3");
 
 		// When: play card
-		var task = PowerCard.ForDecorated(ForestsOfLivingObsidian.ActAsync).ActivateAsync( fix.Spirit );
-		//  And: targeting space 1
-		fix.Choose( space1 );
-		fix.Choose( "C@2" ); // 3C@2 - Damage 1 of them (1 of 1)
+		await PowerCard.ForDecorated(ForestsOfLivingObsidian.ActAsync).ActivateAsync( gs.Spirit ).AwaitUser(user => {
+			//  And: targeting space 1
+			user.NextDecision.Choose(space1.Label);
+			user.NextDecision.Choose("C@2"); // 3C@2 - Damage 1 of them (1 of 1)
 
-		//  And: targeting space 1 a 2nd time
-		fix.Choose( space1 );// Should Kill the 1C@1, and reduce the 2C@2 to 2C@1
-		fix.Choose( "C@1" ); // Kill 1st City
-		fix.Choose( "C@1" ); // Kill 2nd City
-		await task.ShouldComplete();
+			//  And: targeting space 1 a 2nd time
+			user.NextDecision.Choose(space1.Label);// Should Kill the 1C@1, and reduce the 2C@2 to 2C@1
+			user.NextDecision.Choose("C@1"); // Kill 1st City
+			user.NextDecision.Choose("C@1"); // Kill 2nd City
+		}).ShouldComplete();
+
 		space.Summary.ShouldBe( "2M,1RSiS" );
-
-		task.IsCompletedSuccessfully.ShouldBeTrue();
 	}
 
 }

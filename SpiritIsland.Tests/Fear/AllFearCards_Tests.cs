@@ -53,7 +53,7 @@ public class AllFearCards_Tests {
 		descriptiondProblem.Join("\r\n").ShouldBeEmpty(title);
 	}
 
-	public static IEnumerable<object[]> FearCards => ConfigurableTestFixture.GameBuilder.BuildFearCards()
+	public static IEnumerable<object[]> FearCards => TestGames.GameBuilder.BuildFearCards()
 		// Split into parts that can be serialized so they appear as separate tests
 		// https://stackoverflow.com/questions/30574322/memberdata-tests-show-up-as-one-test-instead-of-many
 		.Select(c=>new object[]{ c.Text, new string[] { c.GetDescription(1), c.GetDescription(2), c.GetDescription(3) } });

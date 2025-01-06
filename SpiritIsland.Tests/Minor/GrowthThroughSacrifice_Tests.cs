@@ -4,46 +4,49 @@ public class GrowthThroughSacrifice_Tests {
 
 	[Trait("Presence","TrackElements")]
 	[Fact]
-	public void RevealedTokens_GainElements() {
-		var fixture = new ConfigurableTestFixture();
-		SpaceSpec space = fixture.Board[3];
+	public async Task RevealedTokens_GainElements() {
+		var spirit = new Thunderspeaker();
+		var gs = new SoloGameState(spirit, Boards.A);
+		Space space = gs.Board[3].ScopeSpace;
+		IOption airEnergy = Track.AirEnergy;
 
 		// Given: Spirit's next track has an element on it (energy-air because it is Thunderspeaker)
-		fixture.Spirit = new Thunderspeaker();
-		Track airEnergy = Track.AirEnergy;
 
 		//   And: has no air elements
-		fixture.Spirit.Elements.Summary().ShouldBe("");
+		spirit.Elements.Summary().ShouldBe("");
 		//   And: 2 presence on board
-		fixture.Spirit.Given_IsOn( fixture.GameState.Tokens[space], 2 );
+		spirit.Given_IsOn( space, 2 );
 
 		//  When: Card played
-		_ = GrowthThroughSacrifice.ActAsync( fixture.TargetSelf );
-		fixture.Choose( "Ts" ); // select presence to destroy
-		fixture.Choose( space ); // select location to add presence / remove blight
-		fixture.Choose( "Add 1 presence to one of your lands" );
-		fixture.Choose( airEnergy ); // take presence from cardplay track
+		await GrowthThroughSacrifice.ActAsync( spirit.Target(spirit) ).AwaitUser(user => {
+			user.NextDecision.Choose("Ts"); // select presence to destroy
+			user.NextDecision.Choose(space.Label); // select location to add presence / remove blight
+			user.NextDecision.Choose("Add 1 presence to one of your lands");
+			user.NextDecision.Choose(airEnergy.Text); // take presence from cardplay track
+		}).ShouldComplete();
 
 		//  Then: Spirit gains element
-		fixture.Spirit.Elements.Summary().ShouldBe( "1 air" );
+		spirit.Elements.Summary().ShouldBe( "1 air" );
 	}
 
 	[Fact]
-	public void RemovesBlight() {
-		var setup = new ConfigurableTestFixture();
+	public async Task RemovesBlight() {
+		var gs = new SoloGameState();
 
-		var space = setup.GameState.Tokens[setup.Board[3]];
+		var space = gs.Tokens[gs.Board[3]];
 
 		// Given: 1 blight on board where presence is
-		setup.Spirit.Given_IsOn( space, 2 );
+		gs.Spirit.Given_IsOn( space, 2 );
+		var spirit = gs.Spirit;
 		space.Init(Token.Blight,1);
 		space.Blight.Count.ShouldBe( 1 );
 
 		//  When: Card played
-		_ = GrowthThroughSacrifice.ActAsync( setup.TargetSelf );
-		setup.Choose( "RSiS" ); // select presence to destroy
-		setup.Choose( space.SpaceSpec ); // select location to add presence / remove blight
-		setup.Choose( "Remove 1 blight from one of your lands" );
+		await GrowthThroughSacrifice.ActAsync( spirit.Target(spirit) ).AwaitUser(user => {
+			user.NextDecision.Choose("TS"); // select presence to destroy
+			user.NextDecision.Choose(space.Label); // select location to add presence / remove blight
+			user.NextDecision.Choose("Remove 1 blight from one of your lands");
+		}).ShouldComplete();
 
 		//  Then: Spirit gains element
 		space.Blight.Count.ShouldBe(0);
@@ -75,19 +78,19 @@ public class GrowthThroughSacrifice_Tests {
 
 	static async void CantPlacePresenceHere( Spirit spirit, string restrictedSpace ) {
 
-		var setup = new ConfigurableTestFixture { Spirit = spirit };
+		var gs = new SoloGameState(spirit);
 
-		var space = setup.GameState.Tokens[setup.Board.Spaces.Single(s=>s.Label==restrictedSpace)];
+		var space = gs.Tokens[gs.Board.Spaces.Single(s=>s.Label==restrictedSpace)];
 
 		// Given: presence on board
-		setup.Spirit.Given_IsOn( space, 2 );
+		gs.Spirit.Given_IsOn( space, 2 );
 		space.Init( Token.Blight, 0 );
 
 		//  When: Card played
-		await GrowthThroughSacrifice.ActAsync( setup.TargetSelf).AwaitUser((u) => {
+		await GrowthThroughSacrifice.ActAsync( spirit.Target(spirit) ).AwaitUser(user => {
 			//		setup.Choose( spirit.Presence.Token.SpaceAbreviation + " on " + space.Space ); // select presence to destroy
-			setup.Choose(spirit.Presence.Token.SpaceAbreviation); // select presence to destroy
-			setup.Choose(space.SpaceSpec); // select location to add presence / remove blight
+			user.NextDecision.Choose(spirit.Presence.Token.SpaceAbreviation); // select presence to destroy
+			user.NextDecision.Choose(space.Label); // select location to add presence / remove blight
 		}).ShouldComplete();
 
 	}

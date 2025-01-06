@@ -1,21 +1,24 @@
-﻿using System;
-using SpiritIsland.NatureIncarnate;
+﻿using SpiritIsland.NatureIncarnate;
 
 namespace SpiritIsland.Tests.Fear;
 
 public class DistractedByLocalTroubles_Tests {
 
 	[Fact]
-	public async Task CanKill2Explorers(){
+	public async Task CanKill2ExplorersOnRavageSpace(){
 
-		var fix = new ConfigurableTestFixture();
-		SpaceSpec ravageSpace = fix.GameState.Island.Boards[0][5];
-		fix.InitRavageCard( ravageSpace.BuildInvaderCard() );
+		var gs = new SoloGameState();
+
+		// Given: ravaging on space5
+		SpaceSpec ravageSpace = gs.Board[5];
+		// fix.InitRavageCard( ravageSpace.BuildInvaderCard() );
+		gs.InvaderDeck.Ravage.Cards.Add(ravageSpace.BuildInvaderCard() );
+
 
 		// Given: ravage space has 2 explorers
-		fix.InitTokens(ravageSpace, "2E@1");
+		ravageSpace.Given_HasTokens("2E@1");
 
-		var tokens = fix.GameState.Tokens[ravageSpace];
+		var tokens = gs.Tokens[ravageSpace];
 
 		// When: activeate fear card - level 2
 		await new DistractedByLocalTroubles().When_InvokingLevel(2, (user) => {

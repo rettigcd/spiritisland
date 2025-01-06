@@ -135,8 +135,7 @@ public class Ocean_GrowthTests : BoardAGame {
 	[InlineDataAttribute(6,1,"moon 2 water earth")]
 	[InlineDataAttribute(7,2, "moon 2 water earth" )]
 	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-		return fixture.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
+		return new Ocean().VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, elements );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -148,16 +147,15 @@ public class Ocean_GrowthTests : BoardAGame {
 	[InlineDataAttribute(5,4)]
 	[InlineDataAttribute(6,5)]
 	public Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
-		var fixture = new ConfigurableTestFixture { Spirit = new Ocean() };
-		return fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		return new Ocean().VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
 	[Trait("Spirit","SetupAction")]
 	[Fact]
 	public void HasSetUp() {
-		var fxt = new ConfigurableTestFixture { Spirit = new Ocean() };
-		fxt.GameState.Initialize();
-		fxt.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
+		var gs = new SoloGameState( new Ocean(), Boards.A );
+		gs.Initialize();
+		gs.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
 	}
 
 	#region private helper methos

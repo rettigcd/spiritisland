@@ -24,14 +24,15 @@ public class ShareSecretsOfSurvival_Tests {
 	[InlineData( "3D@1,1T@2", "1B,1D@1,2D@2" )]
 	[InlineData( "2D@2,1C@3,1T@2,1E@1", "1B,2D@2,1T@2" )]
 	public async Task Destroy2Fewer_EachTime(string startingTokens, string expectedEndingTokens ) {
-		var fxt = new ConfigurableTestFixture();
-		var space = fxt.Board[5];
+		var gs = new SoloGameState();
+
+		var space = gs.Board[5];
 		// Given: # of Dahan and Towns
-		fxt.InitTokens( space, startingTokens );
+		space.Given_HasTokens( startingTokens );
 		//   And: Island won't blight
-		fxt.GameState.IslandWontBlight();
+		gs.IslandWontBlight();
 		//   And: played ShareSecretsOfSurvival
-		var ctx = fxt.Spirit.Target( space );
+		var ctx = gs.Spirit.Target( space );
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage
@@ -60,15 +61,14 @@ public class ShareSecretsOfSurvival_Tests {
 	[InlineData( "3D@1,1T@2", "1B,1D@1,2D@2" )]
 	[InlineData( "2D@2,1C@3,1T@2,1E@1", "1B,2D@2,1T@2" )]
 	public async Task Destroy2Fewer_NextTime( string startingTokens, string expectedEndingTokens ) {
+		var gs = new SoloGameState();
 
-
-		var fxt = new ConfigurableTestFixture();
-		var space = fxt.Board[5];
+		var space = gs.Board[5];
 		// Given: # of Dahan and Towns
-		fxt.InitTokens( space, startingTokens );
-		fxt.GameState.IslandWontBlight();
+		space.Given_HasTokens(startingTokens);
+		gs.IslandWontBlight();
 		//   And: played ShareSecretsOfSurvival
-		var ctx = fxt.Spirit.Target( space );
+		var ctx = gs.Spirit.Target( space );
 		Play_ShareSecretsOfSurvival( ctx );
 
 		//  When: ravage

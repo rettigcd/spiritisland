@@ -78,29 +78,27 @@ public class Bringer_GrowthTests : BoardAGame {
 
 	[Trait("Presence","EnergyTrack")]
 	[Theory]
-	[InlineDataAttribute(1,2,"")]
-	[InlineDataAttribute(2,2,"air")]
-	[InlineDataAttribute(3,3,"air")]
-	[InlineDataAttribute(4,3, "moon air" )]
-	[InlineDataAttribute(5,4, "moon air" )]
-	[InlineDataAttribute(6,4, "moon air" )]
-	[InlineDataAttribute(7,5, "moon air" )]
+	[InlineData(1,2,"")]
+	[InlineData(2,2,"air")]
+	[InlineData(3,3,"air")]
+	[InlineData(4,3, "moon air" )]
+	[InlineData(5,4, "moon air" )]
+	[InlineData(6,4, "moon air" )]
+	[InlineData(7,5, "moon air" )]
 	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth, string elements ) {
-		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
-		return fixture.VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
+		return new Bringer().VerifyEnergyTrack(revealedSpaces, expectedEnergyGrowth, elements);
 	}
 
 	[Trait("Presence","CardTrack")]
 	[Theory]
-	[InlineDataAttribute(1,2,"")]
-	[InlineDataAttribute(2,2,"")]
-	[InlineDataAttribute(3,2,"")]
-	[InlineDataAttribute(4,3,"")]
-	[InlineDataAttribute(5,3,"")]
-	[InlineDataAttribute(6,3,"")]
+	[InlineData(1,2,"")]
+	[InlineData(2,2,"")]
+	[InlineData(3,2,"")]
+	[InlineData(4,3,"")]
+	[InlineData(5,3,"")]
+	[InlineData(6,3,"")]
 	public Task CardTrack(int revealedSpaces, int expectedCardPlayCount, string elements){
-		var fixture = new ConfigurableTestFixture { Spirit = new Bringer() };
-		return fixture.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, elements);
+		return new Bringer().VerifyCardTrack(revealedSpaces, expectedCardPlayCount, elements);
 	}
 
 	void Assert_GainsFirstMinorCard() {

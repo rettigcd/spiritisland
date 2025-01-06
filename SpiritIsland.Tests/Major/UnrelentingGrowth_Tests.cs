@@ -27,26 +27,24 @@ public class UnrelentingGrowth_Tests {
 
 	static void CantPlacePresenceHere( Spirit spirit, string restrictedSpace ) {
 
-		var setup = new ConfigurableTestFixture {
-			Spirit = spirit
-		};
+		var gs = new SoloGameState(spirit);
 
-		var space = setup.GameState.Tokens[setup.Board.Spaces.Single( s => s.Label == restrictedSpace )];
+		var space = gs.Tokens[gs.Board.Spaces.Single( s => s.Label == restrictedSpace )];
 
 		// Given: presence on board
-		setup.Spirit.Given_IsOn( space, 2 );
+		gs.Spirit.Given_IsOn( space, 2 );
 		space.Init( Token.Blight, 0 );
 
 		//  And: 2 destroyed presence
-		setup.Spirit.Presence.Destroyed.Count = 2;
+		gs.Spirit.Presence.Destroyed.Count = 2;
 
 		//  When: Card played
-		var task = UnrelentingGrowth.ActAsync( setup.TargetSelf );
+		var task = UnrelentingGrowth.ActAsync( spirit.Target(spirit) );
 
 		if( task.IsCompleted ) return; // ocean has no options - so it completes
 
 		// Then: we should not be able to pick restricted space
-		setup.Spirit.Portal.Next.FormatOptions().ShouldNotContain(restrictedSpace);
+		gs.Spirit.Portal.Next.FormatOptions().ShouldNotContain(restrictedSpace);
 	}
 
 	#endregion

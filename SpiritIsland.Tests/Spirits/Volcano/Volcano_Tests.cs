@@ -17,9 +17,9 @@ public class Volcano_Tests {
 	[Trait( "Spirit", "SetupAction" )]
 	[Fact]
 	public void HasSetUp() {
-		var fxt = new ConfigurableTestFixture { Spirit = new VolcanoLoomingHigh() };
-		fxt.GameState.Initialize();
-		fxt.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
+		var gs =  new SoloGameState(new VolcanoLoomingHigh());
+		gs.Initialize();
+		gs.Spirit.GetAvailableActions( Phase.Init ).Count().ShouldBe( 1 );
 	}
 
 	[Theory]

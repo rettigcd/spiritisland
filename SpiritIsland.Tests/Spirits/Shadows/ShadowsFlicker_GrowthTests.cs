@@ -51,28 +51,26 @@ public class ShadowsFlicker_GrowthTests : BoardAGame {
 
 	[Trait("Presence","EnergyTrack")]
 	[Theory]
-	[InlineDataAttribute(1,0)]
-	[InlineDataAttribute(2,1)]
-	[InlineDataAttribute(3,3)]
-	[InlineDataAttribute(4,4)]
-	[InlineDataAttribute(5,5)]
-	[InlineDataAttribute(6,6)]
+	[InlineData(1,0)]
+	[InlineData(2,1)]
+	[InlineData(3,3)]
+	[InlineData(4,4)]
+	[InlineData(5,5)]
+	[InlineData(6,6)]
 	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ){
-		var fix = new ConfigurableTestFixture { Spirit = new Shadows() };
-		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		return new Shadows().VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
 	[Theory]
-	[InlineDataAttribute(1,1)]
-	[InlineDataAttribute(2,2)]
-	[InlineDataAttribute(3,3)]
-	[InlineDataAttribute(4,3)]
-	[InlineDataAttribute(5,4)]
-	[InlineDataAttribute(6,5)]
+	[InlineData(1,1)]
+	[InlineData(2,2)]
+	[InlineData(3,3)]
+	[InlineData(4,3)]
+	[InlineData(5,4)]
+	[InlineData(6,5)]
 	public Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
-		var fix = new ConfigurableTestFixture { Spirit = new Shadows() };
-		return fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
+		return new Shadows().VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
 	}
 
 }

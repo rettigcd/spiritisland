@@ -80,8 +80,7 @@ public class RiverSurges_GrowthTests : BoardAGame {
 	[InlineDataAttribute(6,4)]
 	[InlineDataAttribute(7,5)]
 	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth ) {
-		var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
-		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		return new RiverSurges().VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -94,9 +93,9 @@ public class RiverSurges_GrowthTests : BoardAGame {
 	[InlineDataAttribute(6,4,true)]
 	[InlineDataAttribute(7,5,true)]
 	public async Task CardTrack(int revealedSpaces, int expectedCardPlayCount, bool canReclaim1 ) {
-		var fix = new ConfigurableTestFixture { Spirit = new RiverSurges() };
-		await fix.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
-		fix.VerifyReclaim1Count(canReclaim1 ? 1 : 0);
+		var spirit = new RiverSurges();
+		await spirit.VerifyCardTrack(revealedSpaces, expectedCardPlayCount, "");
+		spirit.Presence.RevealedActions.OfType<ReclaimN>().Count().ShouldBe(canReclaim1 ? 1 : 0);
 	}
 
 	#endregion

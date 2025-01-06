@@ -68,8 +68,7 @@ public class Lightning_GrowthTests : BoardAGame{
 	[InlineDataAttribute(7,4)]
 	[InlineDataAttribute(8,5)]
 	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
-		var fixture = new ConfigurableTestFixture { Spirit = new LightningsSwiftStrike() };
-		return fixture.VerifyEnergyTrack(revealedSpaces,expectedEnergyGrowth,"");
+		return new LightningsSwiftStrike().VerifyEnergyTrack(revealedSpaces,expectedEnergyGrowth,"");
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -80,8 +79,7 @@ public class Lightning_GrowthTests : BoardAGame{
 	[InlineDataAttribute(4,5)]
 	[InlineDataAttribute(5,6)]
 	public Task CardTrack( int revealedSpaces, int expectedCardPlayCount ) {
-		var fixture = new ConfigurableTestFixture { Spirit = new LightningsSwiftStrike() };
-		return fixture.VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
+		return new LightningsSwiftStrike().VerifyCardTrack( revealedSpaces, expectedCardPlayCount, "" );
 	}
 
 

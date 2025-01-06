@@ -10,20 +10,17 @@ public class MassiveFlooding_Tests {
 	// Not enought elements -> nothing
 	[Fact]
 	public void InsufficientElements() {
-		var spirit = new RiverSurges();
-		var gs = new SoloGameState( spirit, Boards.A ) { Phase = Phase.Slow };
+		var gs = new SoloGameState(new RiverSurges(), Boards.A ) { Phase = Phase.Slow };
 		new SoloGame(gs).Start();
 
-
-		var fixture = new ConfigurableTestFixture();
 		var innatePower = MassiveFloodingPower;
 
 		// Given: spirit does not have enough elements to trigger anything
 		//   And: should not be activatable
-		innatePower.CouldActivateDuring( Phase.Slow, fixture.Spirit ).ShouldBeFalse();
+		innatePower.CouldActivateDuring( Phase.Slow, gs.Spirit ).ShouldBeFalse();
 
 		//  When: but if we try anyway
-		var task = innatePower.ActivateAsync( fixture.Spirit );
+		var task = innatePower.ActivateAsync( gs.Spirit );
 
 		//  Then: it is complete and nothing happens.
 		task.IsCompleted.ShouldBeTrue();
@@ -105,27 +102,23 @@ public class MassiveFlooding_Tests {
 	}
 
 	[Fact]
-	public void Level3_2DamageToEachInvader() { // 3 sun, 4 water, 1 earth
-		var spirit = new RiverSurges();
-		var gs = new SoloGameState( spirit, Boards.A ) { Phase = Phase.Slow };
-		new SoloGame(gs).Start();
+	public async Task Level3_2DamageToEachInvader() { // 3 sun, 4 water, 1 earth
+		var gs = new SoloGameState(new RiverSurges(), Boards.A ) { Phase = Phase.Slow };
 
-
-
-		var fixture = new ConfigurableTestFixture();
-		var spaceSpec = fixture.Board[5];
-		var space = fixture.GameState.Tokens[spaceSpec];
+		var spaceSpec = gs.Board[5];
+		var space = gs.Tokens[spaceSpec];
 
 		// Given: spirit has a sacred site adjacent to the target space (range-1)
-		fixture.Spirit.Given_IsOn( space.Adjacent.First(), 2 );
+		gs.Spirit.Given_IsOn( space.Adjacent.First(), 2 );
 		//   And: Spirit has enough elements to trigger Level-3 of Massive Flooding
-		fixture.InitElements( "3 sun,4 water,1 earth" );
+		gs.Spirit.Configure().Elements( "3 sun,4 water,1 earth" );
 		//   And: target has 1 city, 4 towns, 5 explorers
-		fixture.InitTokens( spaceSpec, "1C@3,4T@2,5E@1" );
+		spaceSpec.Given_HasTokens("1C@3,4T@2,5E@1");
 
 		//  When: activate innate
-		_ = MassiveFloodingPower.ActivateAsync( fixture.Spirit );
-		fixture.Choose( spaceSpec ); // target space
+		await MassiveFloodingPower.ActivateAsync(gs.Spirit).AwaitUser(user => {
+			user.NextDecision.Choose(spaceSpec.Label); // target space
+		}).ShouldComplete();
 
 		// Then: target has remaining invaders
 		space.Summary.ShouldBe( "1C@1" );

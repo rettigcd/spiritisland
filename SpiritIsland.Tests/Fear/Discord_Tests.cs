@@ -7,10 +7,10 @@ public class Discord_Tests {
 	[Fact]
 	public async Task Level3_StrifedInvadersDamageEachOther() {
 
-		var fxt = new ConfigurableTestFixture();
+		var gs = new SoloGameState();
 		// Given: City and Town
-		var space = fxt.Board[6];
-		fxt.InitTokens( space, "1C@3,1T@2" );
+		var space = gs.Board[6];
+		space.Given_HasTokens( "1C@3,1T@2" );
 
 		// When:
 		await new Discord().When_InvokingLevel( 3, (user) => {
@@ -22,7 +22,7 @@ public class Discord_Tests {
 		} );
 
 		// Then: city destroys 2 explorers, leaving 1
-		fxt.GameState.Tokens[space].InvaderSummary().ShouldBe( "1C@3^" );
+		gs.Tokens[space].InvaderSummary().ShouldBe( "1C@3^" );
 
 	}
 

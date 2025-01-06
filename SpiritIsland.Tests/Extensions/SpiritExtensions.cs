@@ -188,7 +188,23 @@ public static class SpiritExtensions {
 
 	#endregion Assert
 
-	internal static async Task Given_SlotsRevealed( this IPresenceTrack track, int revealedSpaces ) {
+	static public async Task VerifyEnergyTrack(this Spirit spirit, int revealedSpaces, int expectedEnergyGrowth, string elements) {
+		await spirit.Presence.Energy.Given_SlotsAreRevealed(revealedSpaces);
+		spirit.EnergyPerTurn.ShouldBe(expectedEnergyGrowth);
+		spirit.Elements.Summary(false).ShouldBe(elements);
+	}
+
+	/// <summary>
+	/// Operates strictly with the Presence tracks.
+	/// </summary>
+	static public async Task VerifyCardTrack(this Spirit spirit, int revealedSpaces, int expectedCardPlayCount, string elements) {
+		await spirit.Presence.CardPlays.Given_SlotsAreRevealed(revealedSpaces);
+		spirit.NumberOfCardsPlayablePerTurn.ShouldBe(expectedCardPlayCount);
+		spirit.Elements.Summary(false).ShouldBe(elements);
+	}
+
+	/// <summary> Reveals the slots. </summary>
+	internal static async Task Given_SlotsAreRevealed( this IPresenceTrack track, int revealedSpaces ) {
 		for(int i = 1; i < revealedSpaces; i++){
 			Track location = track.RevealOptions.First(); 
 			await track.RevealAsync(location);

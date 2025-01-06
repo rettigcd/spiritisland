@@ -4,19 +4,19 @@ public class TigersHunting_Tests {
 
 	[Fact]
 	public async Task SingleAction() {
-		var fixture = new ConfigurableTestFixture();
+		var gs = new SoloGameState();
 
 		var tracker = new ActionScopeTracker();
-		fixture.GameState.AddIslandMod( tracker );
+		gs.AddIslandMod( tracker );
 		const int expectedScopeCoung = 1;
 
 		// Given: space 5
-		var space = fixture.GameState.Island.Boards[0][5];
+		var space = gs.Island.Boards[0][5];
 		//   And: 1 explorer
-		fixture.InitTokens(space,"1E@1");
+		space.Given_HasTokens("1E@1");
 
 		//  When: activate card
-		await TigersHunting.ActAsync( fixture.Spirit.Target( space ) ).AwaitUser( user => {
+		await TigersHunting.ActAsync( gs.Spirit.Target( space ) ).AwaitUser( user => {
 			// 1 beast is added
 			// 1 damage -> destroys explorer
 			user.Choose("E@1");

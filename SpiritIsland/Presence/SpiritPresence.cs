@@ -68,6 +68,12 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	// ------------------------------
 	// ----  Aggregate Track  -------
 	// ------------------------------
+	
+	
+	/// <summary>
+	/// Presence track Actions associated with revealed slots.  
+	/// Executed each Spirit Phase immediately after energy is gained.
+	/// </summary>
 	public IEnumerable<IActOn<Spirit>> RevealedActions => Revealed
 		.Select( x => x.Action )
 		.OfType<IActOn<Spirit>>();

@@ -8,6 +8,9 @@ namespace SpiritIsland.Tests;
 public class SoloGameState(Spirit spirit, Board board) 
 	: GameState([spirit], [board], 0)
 {
+	public Board Board { get; } = board;
+	public Spirit Spirit { get; } = spirit;
+
 	#region constructors
 
 	/// <summary> When you don't care about the Spirit nor the Board (Defaults to Board-A) </summary>
@@ -19,8 +22,8 @@ public class SoloGameState(Spirit spirit, Board board)
 
 	#endregion constructors
 
-	public Board Board { get; } = board;
-	public Spirit Spirit { get; } = spirit;
+	public void InitMinorDeck() => MinorCards = new PowerCardDeck(typeof(RiversBounty).ScanForMinors(), 1, PowerType.Minor);
+	public void InitMajorDeck() => MajorCards = new PowerCardDeck(typeof(RiversBounty).ScanForMajors(), 1, PowerType.Major);
 
 	static Spirit DefaultSpirit => new TestSpirit();
 	static Board DefaultBoard => Boards.A;

@@ -58,8 +58,7 @@ public class VitalStrength_GrowthTests : BoardAGame {
 	[InlineDataAttribute(5,7)]
 	[InlineDataAttribute(6,8)]
 	public Task EnergyTrack(int revealedSpaces, int expectedEnergyGrowth) {
-		var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
-		return fix.VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
+		return new VitalStrength().VerifyEnergyTrack( revealedSpaces, expectedEnergyGrowth, "" );
 	}
 
 	[Trait("Presence","CardTrack")]
@@ -71,8 +70,7 @@ public class VitalStrength_GrowthTests : BoardAGame {
 	[InlineDataAttribute(5,3)]
 	[InlineDataAttribute(6,4)]
 	public Task CardTrack(int revealedSpaces, int expectedCardPlayCount){
-		var fix = new ConfigurableTestFixture { Spirit = new VitalStrength() };
-		return fix.VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
+		return new VitalStrength().VerifyCardTrack(revealedSpaces,expectedCardPlayCount,"");
 	}
 
 }

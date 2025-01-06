@@ -6,9 +6,8 @@ public class Stone_Growth_Tests {
 	public async Task Presence_Place_Draws_Cards() {
 		var spirit = new StonesUnyieldingDefiance();
 		var board = Boards.A;
-		var gs = new SoloGameState(spirit, board) {
-			MinorCards = new PowerCardDeck(typeof(RiversBounty).ScanForMinors(), 1, PowerType.Minor)
-		};
+		var gs = new SoloGameState(spirit, board);
+		gs.InitMinorDeck();
 		gs.Initialize();
 
 		// Given: first energy already revealed
