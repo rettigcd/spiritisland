@@ -23,9 +23,11 @@ public class InspireTheReleaseOfStolenLands {
 			await ctx.RemoveBlight();
 			// then Remove 1 Explorer, 1 Town, and 1 City from a land within Range 1.
 			await new SourceSelector(ctx.Self.PowerRangeCalc.GetTargetingRoute(ctx.Space,new TargetCriteria(1)).Targets)
-				.AddGroup(1,Human.Explorer)
-				.AddGroup(1,Human.Town)
-				.AddGroup(1,Human.City)
+				.UseQuota(new Quota()
+					.AddGroup(1,Human.Explorer)
+					.AddGroup(1,Human.Town)
+					.AddGroup(1,Human.City)
+				)
 				.FromASingleLand()
 				.RemoveN(ctx.Self);
 		}

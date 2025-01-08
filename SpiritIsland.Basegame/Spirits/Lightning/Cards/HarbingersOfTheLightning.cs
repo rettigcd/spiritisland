@@ -12,7 +12,7 @@ public class HarbingersOfTheLightning {
 
 		// Push up to 2 dahan.
 		await ctx.SourceSelector
-			.AddGroup(2,Human.Dahan)
+			.UseQuota(new Quota().AddGroup(2,Human.Dahan))
 			.ConfigDestination( AddFearIfPushedTo(Human.Town_City,fearSpaces) )
 			.PushUpToN(ctx.Self );
 

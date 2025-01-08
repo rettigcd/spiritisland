@@ -15,7 +15,7 @@ public class TheTreesAndStonesSpeakOfWar {
 		if( await ctx.YouHave("2 sun, 2 earth, 2 plant")) {
 			// you may push up to 2 dahan
 			await ctx.SourceSelector
-				.AddGroup( 2, Human.Dahan )
+				.UseQuota(new Quota().AddGroup( 2, Human.Dahan ))
 				.ConfigDestination( Distribute.OnEachDestinationLand( to => ctx.Self.Target(to).Defend(2) ) )
 				.PushUpToN(ctx.Self );
 		}

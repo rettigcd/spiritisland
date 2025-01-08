@@ -17,8 +17,7 @@ public class MantleOfDread {
 
 		// Push Town / Explorer
 		await pushLand.SourceSelector
-			.AddGroup(1,Human.Town)
-			.AddGroup(1,Human.Explorer)
+			.UseQuota(new Quota().AddGroup(1,Human.Town).AddGroup(1,Human.Explorer))
 			.PushUpToN(ctx.Self);
 			
 	}

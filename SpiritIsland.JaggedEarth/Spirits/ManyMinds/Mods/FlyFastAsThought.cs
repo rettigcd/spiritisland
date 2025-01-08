@@ -18,7 +18,7 @@ class ManyMindsMover : IMoverFactory {
 
 	// Different
 	public TokenMover Gather(Spirit self, Space space) => new TokenMover(self, "Gather",
-		new BeastSourceSelector(space),
+		new GatherBeastSourceSelector(space),
 		new DestinationSelector(space)
 	);
 
@@ -30,16 +30,22 @@ class ManyMindsMover : IMoverFactory {
 		return st.Space.Range(range).ToArray();
 	}
 
-	class BeastSourceSelector(Space destination)
-		: SourceSelector(destination.Adjacent) {
+	// to ONLY be used for "Gather"
+	class GatherBeastSourceSelector(Space destination) : SourceSelector(Adjacent2(destination))
+	{
+		// Extend range to 2
+		static IEnumerable<Space> Adjacent2(Space space) {
+			Dictionary<Space, int> distances = space.CalcDistances(2);
+			distances.Remove(space);
+			return distances.Keys;
+		}
+
 		public override SpaceToken[] GetSourceOptions() {
-			var items = new List<SpaceToken>();
-			foreach( var group in RemainingTypes ) {
-				int range = group == Token.Beast ? 2 : 1;
-				foreach( var space in _destination.Range(range) ) // gather, not Range
-					items.AddRange(GetSourceOptionsOn1Space(space));
-			}
-			return [.. items];
+			var adj = new HashSet<Space>(_destination.Adjacent);
+			return base.GetSourceOptions()
+				// limit everything but beasts to Adjacent
+				.Where(t=>t.Token.HasTag(Token.Beast) || adj.Contains(t.Space) )
+				.ToArray();
 		}
 		readonly Space _destination = destination;
 	}

@@ -19,8 +19,10 @@ public class ViolentWindstorms {
 		await ctx.AddFear(1);
 		// Push up to 2 Explorer/Town.
 		await ctx.SourceSelector
-			.AddGroup(1, Human.Explorer) // from Tier-1
-			.AddGroup(2, Human.Explorer_Town)
+			.UseQuota(new Quota()
+				.AddGroup(1, Human.Explorer) // from Tier-1
+				.AddGroup(2, Human.Explorer_Town)
+			)
 			.PushUpToN(ctx.Self);
 	}
 
@@ -30,8 +32,10 @@ public class ViolentWindstorms {
 		await ctx.AddFear(1);
 		List<Space> destinations = [];
 		await ctx.SourceSelector
-			.AddGroup(1, Human.Explorer) // from Tier-1
-			.AddGroup(2, Human.Explorer_Town)
+			.UseQuota(new Quota()
+				.AddGroup(1, Human.Explorer) // from Tier-1
+				.AddGroup(2, Human.Explorer_Town)
+			)
 			.Track(x => {if(x.Location is Space space) destinations.Add(space); } )
 			.PushUpToN(ctx.Self);
 		foreach(var dest in destinations)

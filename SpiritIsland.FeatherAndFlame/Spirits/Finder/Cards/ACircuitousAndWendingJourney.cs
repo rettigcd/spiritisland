@@ -19,7 +19,7 @@ public class ACircuitousAndWendingJourney {
 
 	static void AddHalf( SourceSelector source, Space space, params ITokenClass[] groups ) {
 		int count = (space.SumAny( groups )+1) / 2; // +1 causes rounds up
-		source.AddGroup( count, groups );
+		source.UseQuota(new Quota().AddGroup( count, groups ));
 	}
 
 }

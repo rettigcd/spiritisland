@@ -11,7 +11,7 @@ class EnthrallTheForeignExplorers( Spirit self )
 
 	async Task IConfigRavages.Config( Space space ) {
 		await space.SourceSelector
-			.AddGroup( Self.Presence.CountOn( space ) * 2, Human.Explorer )
+			.UseQuota(new Quota().AddGroup( Self.Presence.CountOn( space ) * 2, Human.Explorer ))
 			.SelectFightersAndSitThemOut( Self );
 	}
 

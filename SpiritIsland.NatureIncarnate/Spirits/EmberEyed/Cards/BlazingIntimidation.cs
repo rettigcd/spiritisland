@@ -13,7 +13,7 @@ public class BlazingIntimidation {
 
 		// Push 2 Explorer/Town to a land without (your) Incarna.
 		await ctx.SourceSelector
-			.AddGroup(2,Human.Explorer_Town)
+			.UseQuota(new Quota().AddGroup(2,Human.Explorer_Town))
 			.ConfigDestination( d=>d.FilterDestination( ss => ss != ctx.Self.Incarna.Space ) )
 			.PushN(ctx.Self);
 	}

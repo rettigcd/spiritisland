@@ -96,7 +96,7 @@ public class WeaveTogetherTheFabricOfPlace {
 			.ToArray();
 		// await toSpace.Gather(self)
 		await new TokenMover(self, $"Distribute tokens to un-woven {toSpace.Label}", fromSpace, toSpace)
-			.AddGroup( int.MaxValue, tokenClasses )
+			.UseQuota(new Quota().AddGroup( int.MaxValue, tokenClasses ))
 			.ConfigSource(s=>s.FilterSource( ss => ss == fromSpace ))
 			.DoUpToN();
 

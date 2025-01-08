@@ -33,7 +33,7 @@ public class UnearthABeastOfWrathfulStone {
 
 			// You may Push that Beast.
 			await ctx.SourceSelector
-				.AddGroup( 1, Token.Beast )
+				.UseQuota(new Quota().AddGroup( 1, Token.Beast ))
 				.FilterSpaceToken( st => st.Token == beastToken )
 				.ConfigDestination(d=>d.Track( async to => {
 					// 1 Fear and 2 Damage in its land.
@@ -145,7 +145,7 @@ public class MarkedBeast : IToken
 
 	public async Task ActivateAsync( Spirit self ) {
 		await _space!.SourceSelector
-			.AddGroup(1,Token.Beast)
+			.UseQuota(new Quota().AddGroup(1,Token.Beast))
 			.FilterSpaceToken(st=>st.Token==this)
 			.PushUpToN(self);
 		// 1 Fear and 2 Damage in its land.

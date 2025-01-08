@@ -7,10 +7,13 @@
 public class SourceSelector {
 
 	#region constructors
+
 	/// <summary> Tokens come from 1 space. </summary>
 	public SourceSelector( Space sourceSpace ) {	_unfilteredSourceSpaces = [ sourceSpace ];	}
+
 	/// <summary> Tokens come from 0..many spaces. </summary>
 	public SourceSelector( IEnumerable<Space> sourceSpaces ) { _unfilteredSourceSpaces = sourceSpaces.ToArray(); }
+
 	#endregion constructors
 
 	public async IAsyncEnumerable<SpaceToken> GetEnumerator(
@@ -35,11 +38,11 @@ public class SourceSelector {
 		}
 	}
 
-	public PromptData PromptData(int index, int? maxCount) => new PromptData(_quota, GetSourceOptions(), index, maxCount);
+	public PromptData PromptData(int index, int? maxCount) => new PromptData(_quota!, GetSourceOptions(), index, maxCount);
 
 	public A.SpaceTokenDecision BuildDecision( Func<PromptData, string> promptBuilder, Present present, SpaceSpec? singleDestination, int index, int? maxCount ) {
 		SpaceToken[] options = GetSourceOptions();
-		string prompt = promptBuilder( new PromptData( _quota, options, index, maxCount ) );
+		string prompt = promptBuilder( new PromptData( _quota!, options, index, maxCount ) );
 		return new A.SpaceTokenDecision( prompt, options, present )
 			.PointArrowTo( singleDestination );
 	}
@@ -49,12 +52,8 @@ public class SourceSelector {
 	//	public SourceSelector Config( Func<SourceSelector,SourceSelector> configuration ) { configuration(this); return this;}
 	public SourceSelector Config( Action<SourceSelector> configuration ) { configuration(this); return this;}
 
-	/// <summary>
-	/// Tracks starting invaders and only allows each to be selected once.
-	/// </summary>
-	/// <remarks>
-	/// Used primarily for damage or when not removing tokens.
-	/// </remarks>
+	/// <summary> Tracks starting invaders and only allows each to be selected once. </summary>
+	/// <remarks> Used primarily for damage or when not removing tokens. </remarks>
 	public SourceSelector ConfigOnlySelectEachOnce(){
 		// Tokens will still be where they started, so we need to
 		// manually track how many have been used and
@@ -71,13 +70,11 @@ public class SourceSelector {
 		return this;
 	}
 
-
-	/// <summary> Specifies 1 or more tokens that may be selected - must be called at least once for GetSource to present any results.</summary>
-	public SourceSelector AddGroup( int count, params ITokenClass[] classes ) { _quota.AddGroup( count, classes ); return this; }
-
-	public SourceSelector AddAll( params ITokenClass[] classes ) { _quota.AddAll( classes ); return this; }
-
-	public SourceSelector UseQuota( Quota quota ) { _quota = quota; return this; }
+	public SourceSelector UseQuota( Quota quota ) { 
+		if(_quota is not null) throw new InvalidOperationException("Cannot set Quota twice");
+		_quota = quota; 
+		return this;
+	}
 
 	/// <summary> Dynamically filter sources. - when sources may change over time. </summary>
 	public SourceSelector FilterSource( Func<Space, bool> filterSource ) {
@@ -105,7 +102,7 @@ public class SourceSelector {
 	}
 
 	public async Task NotifyAsync( ITokenLocation selected ) {
-		_quota.MarkTokenUsed( selected.Token );
+		_quota!.MarkTokenUsed( selected.Token );
 
 		foreach(Func<ITokenLocation, Task> onSelected in _onSelected)
 			await onSelected( selected );
@@ -130,7 +127,7 @@ public class SourceSelector {
 	}
 
 	protected IEnumerable<SpaceToken> GetSourceOptionsOn1Space( Space sourceSpace ) 
-		=> _quota.GetSourceOptionsOn1Space( sourceSpace );
+		=> _quota!.GetSourceOptionsOn1Space( sourceSpace );
 
 	protected IEnumerable<Space> SourceSpaces
 		=> _filterSpace == null ? _unfilteredSourceSpaces
@@ -138,11 +135,9 @@ public class SourceSelector {
 
 	#endregion
 
-	public ITokenClass[] RemainingTypes => _quota.RemainingTypes;
-
 	#region private 
 
-	Quota _quota = new Quota();
+	IQuota? _quota;
 
 	Func<Space, bool>? _filterSpace;
 	readonly public Space[] _unfilteredSourceSpaces;
@@ -150,34 +145,5 @@ public class SourceSelector {
 	readonly List<Func<SpaceToken, bool>> _filterSpaceToken = [];
 
 	#endregion private
-}
-
-
-static public class SelectFrom {
-	static public SourceSelector FromASingleLand( this SourceSelector ss ) {
-		ILocation? source = null;
-		ss
-			.Track( spaceToken => source ??= spaceToken.Location )
-			.FilterSource( space => source is null || space.Equals(source) );
-		return ss;
-	}
-}
-
-public class Prompt {
-	/// <summary> Does not require MaxCount  </summary>
-	static public Func<PromptData,string> RemainingParts(string prefix) => (x) => $"{prefix} ({x.RemainingPartsStr})";
-	/// <summary> Requires non-null MaxCount  </summary>
-	static public Func<PromptData,string> RemainingCount(string prefix) => (x) => $"{prefix} ({x.RemainingCount} remaining)";
-	/// <summary> Requires non-null MaxCount  </summary>
-	static public Func<PromptData,string> XofY(string prefix) => (x) => $"{prefix} ({x.Index+1} of {x.MaxCount})";
-}
-
-public class PromptData( Quota quota, SpaceToken[] options, int index, int? maxCount = 0 ) {
-
-	public readonly int Index = index;
-	public readonly int? MaxCount = maxCount;
-	public int RemainingCount => MaxCount.HasValue ? (MaxCount.Value - Index) : int.MaxValue;
-
-	public string RemainingPartsStr => quota.RemainingTokenDescriptionOn( options.Select( st => st.Space ).Distinct().ToArray() );
 }
 

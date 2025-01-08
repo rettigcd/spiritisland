@@ -82,7 +82,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		Space? destination = null;
 
 		await new TokenMover(Self,"Move",
-			sourceSelector: SourceSelector.AddGroup(max,tokenClass),
+			sourceSelector: SourceSelector.UseQuota(new Quota().AddGroup(max, tokenClass)),
 			destinationSelector: new DestinationSelector( Range( targetCriteria ) )
 				.Config( Distribute.ToASingleLand )
 				.Track( to => destination = to )
@@ -100,14 +100,14 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	/// <returns>Spaces pushed too.</returns>
 	public async Task PushUpTo( int countToPush, params ITokenClass[] groups ) {
 		await SourceSelector
-			.AddGroup( countToPush, groups )
+			.UseQuota(new Quota().AddGroup( countToPush, groups ))
 			.PushUpToN(Self);
 	}
 
 	public async Task<Space[]> Push( int countToPush, params ITokenClass[] groups ) {
 		List<Space> destinations = [];
 		await SourceSelector
-			.AddGroup( countToPush, groups )
+			.UseQuota(new Quota().AddGroup( countToPush, groups ))
 			.ConfigDestination( d=>d.Track( to => destinations.Add(to) ) )
 			.PushN( Self );
 		return destinations.Distinct().ToArray();
@@ -127,10 +127,10 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 		=> Gather( countToGather, Human.Dahan);
 
 	public Task GatherUpTo( int countToGather, params ITokenClass[] groups )
-		=> Gatherer.AddGroup(countToGather, groups).DoUpToN();
+		=> Gatherer.UseQuota(new Quota().AddGroup(countToGather, groups)).DoUpToN();
 
 	public Task Gather( int countToGather, params ITokenClass[] groups )
-		=> Gatherer.AddGroup(countToGather,groups).DoN();
+		=> Gatherer.UseQuota(new Quota().AddGroup(countToGather,groups)).DoN();
 
 	public TokenMover Gatherer => Scope.MoverFactory.Gather(Self, Space);
 
@@ -260,7 +260,7 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 	/// <param name="groups">Option: if null/empty, no filtering</param>
 	public async Task AddStrife( int strifeCount, params HumanTokenClass[] groups ) {
 		if( groups.Length == 0) groups = Human.Invader;
-		await SourceSelector.AddGroup( strifeCount, groups ).StrifeAll(Self);
+		await SourceSelector.UseQuota(new Quota().AddGroup( strifeCount, groups )).StrifeAll(Self);
 	}
 
 	public Task RemoveInvader( ITokenClass group, RemoveReason reason = RemoveReason.Removed ) => Invaders.RemoveLeastDesirable( reason, group );

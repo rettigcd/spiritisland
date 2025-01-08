@@ -16,7 +16,7 @@ class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingToken {
 				?? args.From.SpaceSpec.Boards.First().FindSpirit();
 
 			await args.From.SourceSelector
-				.AddGroup(args.Count,Human.Explorer)
+				.UseQuota(new Quota().AddGroup(args.Count,Human.Explorer))
 				.Track( _ => --args.Count )
 				.PushN(spirit);
 		}

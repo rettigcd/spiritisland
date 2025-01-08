@@ -32,7 +32,7 @@ public class EarthShuddersBuildingsFall {
 
 			var spaceCtx = ctx.Target( space );
 			if(singleDamageToAll)
-				await spaceCtx.Invaders.ApplyDamageToEach(1);
+				await spaceCtx.DamageEachInvader(1);
 			// 2 Damage per Quake, to Town/City only.
 			await spaceCtx.DamageInvaders( spaceCtx.Space[Token.Quake] * 2 );
 			// Remove 1 Quake.

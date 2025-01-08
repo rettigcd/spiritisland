@@ -15,7 +15,7 @@ public class VigorOfTheBreakingDawn {
 
 			// you may push up to 2 dahan.
 			await ctx.SourceSelector
-				.AddGroup(2,Human.Dahan)
+				.UseQuota(new Quota().AddGroup(2,Human.Dahan))
 				.ConfigDestination( Distribute.OnEachDestinationLand( async to => {
 					pushedToLands.Add(to);
 					await DahanDeal2DamageEach( ctx.Target( to ) );

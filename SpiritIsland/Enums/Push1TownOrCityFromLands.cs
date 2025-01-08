@@ -6,7 +6,7 @@ public class Push1TownOrCityFromLands : SpiritAction {
 
 	public override async Task ActAsync( Spirit self ) {
 		await new SourceSelector( self.Presence.Lands )
-			.AddGroup(1,Human.Town_City)
+			.UseQuota(new Quota().AddGroup(1,Human.Town_City))
 			.PushN( self );
 	}
 }

@@ -8,8 +8,10 @@ public class WrackWithPainAndGrief {
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 		await ctx.AddFear(2);
 		await ctx.SourceSelector
-			.AddGroup(1,Human.Explorer)
-			.AddGroup(1,Human.Town)
+			.UseQuota(new Quota()
+				.AddGroup(1,Human.Explorer)
+				.AddGroup(1,Human.Town)
+			)
 			.PushN(ctx.Self);
 	}
 

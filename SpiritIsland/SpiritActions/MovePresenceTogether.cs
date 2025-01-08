@@ -8,7 +8,7 @@ public class MovePresenceTogether : SpiritAction {
 
 		await new TokenMover(self,"Move",
 			new SourceSelector(self.Presence.Lands)
-				.AddGroup(3,self.Presence)
+				.UseQuota(new Quota().AddGroup(3,self.Presence))
 				.FromASingleLand(),
 			new DestinationSelector( st => st.Space.Range(3) )
 				.Config( Distribute.ToASingleLand )

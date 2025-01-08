@@ -10,7 +10,7 @@ public class TwistPerceptions {
 	static public async Task ActAsync(TargetSpaceCtx ctx) {
 
 		IAsyncEnumerable<SpaceToken> invadersToStrife = ctx.SourceSelector
-			.AddGroup(1,Human.Invader)
+			.UseQuota(new Quota().AddGroup(1,Human.Invader))
 			.PromptForStrifingAll(ctx.Self);
 
 		await foreach(var invader in invadersToStrife) {

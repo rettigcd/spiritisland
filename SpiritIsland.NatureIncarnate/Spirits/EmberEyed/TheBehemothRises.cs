@@ -33,7 +33,7 @@ public class TheBehemothRises : IActionFactory, IHaveDynamicUseCounts {
 					// to SS or adjacents
 					eeb.Presence.SacredSites.Union(from.Adjacent_Existing).Distinct().ToArray()
 				)
-				.AddAll(incarna)
+				.UseQuota(new Quota().AddAll(incarna))
 				.DoN();
 		} else {
 			Space? space = await self.Select( "Select space to place Incarna.", eeb.Presence.SacredSites, Present.Done );

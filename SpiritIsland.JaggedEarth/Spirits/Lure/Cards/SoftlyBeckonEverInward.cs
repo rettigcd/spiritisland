@@ -6,17 +6,19 @@ public class SoftlyBeckonEverInward {
 	[Instructions( "Gather up to 2 Explorer. Gather up to 2 Town. Gather up to 2 Beasts. Gather up to 2 Dahan." ), Artist( Artists.JoshuaWright )]
 	static public async Task ActAsync(TargetSpaceCtx ctx ) {
 
-		await ctx.Gatherer
+		var quota = new Quota()
 			// gather up to 2 explorers
-			.AddGroup(2,Human.Explorer)
+			.AddGroup(2, Human.Explorer)
 			// gather up to 2 towns
-			.AddGroup(2,Human.Town)
+			.AddGroup(2, Human.Town)
 			// gather up to 2 beast
-			.AddGroup(2,Token.Beast)
+			.AddGroup(2, Token.Beast)
 			// gather up to 2 dahan
-			.AddGroup(2,Human.Dahan)
-			.DoUpToN();
+			.AddGroup(2, Human.Dahan);
 
+		await ctx.Gatherer
+			.UseQuota(quota)
+			.DoUpToN();
 	}
 
 }

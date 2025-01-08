@@ -29,6 +29,11 @@
 
 	Scenarios
 	Events
+	Multiplayer 
+		- When selecting a token, Change Select-Token to lock the token on the server side until end of action.  If token is unavailable, remove from list and represent options.
+		- Allow to query server for updated options.
+		- Lock token when selected, not when made an option.
+
 
 =====  Possible Bonuses / Nice to haves  =====
 

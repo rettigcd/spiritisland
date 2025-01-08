@@ -39,7 +39,7 @@ public class ForsakeSocietyToChaseAfterDreams {
 
 		// Push to new land
 		await ctx.SourceSelector
-			.AddGroup(invader.RemainingHealth, Human.Explorer)
+			.UseQuota(new Quota().AddGroup(invader.RemainingHealth, Human.Explorer))
 			.ConfigDestination(d=>d.FilterDestination( ctx.Self.Presence.IsOn ))
 			.PushUpToN(ctx.Self);
 

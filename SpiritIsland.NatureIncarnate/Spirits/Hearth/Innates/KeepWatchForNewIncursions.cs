@@ -10,7 +10,7 @@ public class KeepWatchForNewIncursions {
 	[InnateTier( "1 animal", "Gather up to 2 Dahan, from your lands only.", 0 )]
 	static public Task Option1Async( TargetSpaceCtx ctx ) {
 		return ctx.Gatherer
-			.AddGroup(2,Human.Dahan)
+			.UseQuota(new Quota().AddGroup(2,Human.Dahan))
 			.ConfigSource(s=>s.FilterSource(ctx.Self.Presence.IsOn))
 			.DoUpToN();
 	}

@@ -20,7 +20,7 @@ public class BlightCorrodesTheSpirit : BlightCard {
 		$"Destroy 1 presence", 
 		ctx => ctx.Space.SourceSelector
 			// !!! If .AddGroup took Tags instead of ITokenClass, we could just flag it all with TokenCategory.SpiritPresence
-			.AddGroup(1,GameState.Current.Spirits.Select(s=>s.Presence).ToArray())
+			.UseQuota(new Quota().AddGroup(1,GameState.Current.Spirits.Select(s=>s.Presence).ToArray()))
 			.DestroyN(ctx.Self,Present.Always)
 	);
 

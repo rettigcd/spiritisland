@@ -32,7 +32,7 @@ public partial class DistractedByLocalTroubles : FearCardBase, IFearCard {
 
 	static SpaceAction OneDamageEachToUpTo2Invaders => new SpaceAction("1 Damage each to up to 2 Invaders", async ctx=>{ 
 		var invadersToDamage = ctx.SourceSelector
-			.AddAll(Human.Invader)
+			.UseQuota(new Quota().AddAll(Human.Invader))
 			.ConfigOnlySelectEachOnce()
 			.GetEnumerator(ctx.Self,Prompt.RemainingCount("Damage-1 each"), Present.Done, null, 2);
 		await foreach(var invader in invadersToDamage)

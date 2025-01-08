@@ -10,7 +10,7 @@ public class ScatterToTheWinds {
 		// Choose up to 5 Explorer/Town/Dahan.
 		// Push them to as many different lands as possible.
 		return ctx.SourceSelector
-			.AddGroup(5, Human.Explorer, Human.Town,Human.Dahan)
+			.UseQuota(new Quota().AddGroup(5, Human.Explorer, Human.Town,Human.Dahan))
 			.ConfigDestination(Distribute.ToAsManyLandsAsPossible)
 			.PushN(ctx.Self);
 	}

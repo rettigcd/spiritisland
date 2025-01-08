@@ -27,7 +27,7 @@ public class UnnervingPall {
 
 	static async Task SelectUpTo3DamagedInvadersToNotParticipate( TargetSpaceCtx ctx ) {
 		await ctx.SourceSelector
-			.AddGroup(3,Human.Invader)
+			.UseQuota(new Quota().AddGroup(3,Human.Invader))
 			.FilterSpaceToken(st => 0<((HumanToken)st.Token).Damage ) // is damaged
 			.SelectFightersAndSitThemOut(ctx.Self);
 	}

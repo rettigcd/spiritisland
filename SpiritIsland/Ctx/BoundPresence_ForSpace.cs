@@ -3,23 +3,26 @@
 public class BoundPresence_ForSpace( TargetSpaceCtx _ctx ) {
 	readonly Spirit _self = _ctx.Self;
 
+	// 1
 	public bool IsSelfSacredSite => _self.Presence.IsSacredSite(_ctx.Space);
 
+	// 6
 	public bool IsHere       => _self.Presence.IsOn( _ctx.Space );
 
+	// 5
 	public int Count => _self.Presence.CountOn( _ctx.Space );
 
+	// 4
 	public Task PlaceDestroyedHere( int count = 1 )
 		=> _self.Presence.Destroyed.MoveToAsync(_ctx.Space,count);
 
+	// 1
 	public async Task PlaceHere() {
-		var from =  await _self.SelectAlways(
-			Prompts.SelectPresenceTo(),
-			_self.DeployablePresence()
-		);
+		var from =  await _self.SelectAlways( Prompts.SelectPresenceTo(), _self.DeployablePresence() );
 		await from.MoveToAsync(_ctx.Space);
 	}
 
+	// 1
 	public async Task MoveHereFromAnywhere(int count) {
 		while(count > 0) {
 			// !! cleanup - have SelectDeployed have a version, that only selects moveable

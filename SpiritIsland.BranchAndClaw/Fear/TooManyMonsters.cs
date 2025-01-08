@@ -27,15 +27,16 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 
 	Task Remove_Level2( TargetSpaceCtx ctx ) {
-		var remover = ctx.SourceSelector.AddGroup( 1, Human.Explorer );
-		if(ctx.Beasts.Any) remover.AddGroup( 1, Human.Town );
-		return remover.RemoveN( ctx.Self );
+		var quota = new Quota().AddGroup(1, Human.Explorer);
+		if( ctx.Beasts.Any ) quota.AddGroup(1, Human.Town);
+		return ctx.SourceSelector.UseQuota(quota)
+			.RemoveN( ctx.Self );
 	}
 
 	Task Remove_Level3( TargetSpaceCtx ctx ) {
 		SourceSelector ss = ctx.Beasts.Any
-			? ctx.SourceSelector.AddGroup( 2, Human.Explorer ).AddGroup( 2, Human.Town )
-			: ctx.SourceSelector.AddGroup( 1, Human.Explorer_Town );
+			? ctx.SourceSelector.UseQuota(new Quota().AddGroup( 2, Human.Explorer ).AddGroup( 2, Human.Town ))
+			: ctx.SourceSelector.UseQuota(new Quota().AddGroup( 1, Human.Explorer_Town ));
 		return ss.RemoveN(ctx.Self);
 	}
 

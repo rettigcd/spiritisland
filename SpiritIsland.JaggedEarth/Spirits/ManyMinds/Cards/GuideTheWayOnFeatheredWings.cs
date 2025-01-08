@@ -20,7 +20,7 @@ public class GuideTheWayOnFeatheredWings {
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.
 		// the beast / dahan may move to an adjacent land and then back.
 		await TokenMover.SingleDestination(ctx.Target((Space)move1.Destination), ctx.Space)
-			.AddGroup(2, Human.Dahan)
+			.UseQuota(new Quota().AddGroup(2, Human.Dahan))
 			.DoUpToN();
 
 		var stop1 = (Space)move1.Destination;
@@ -31,7 +31,7 @@ public class GuideTheWayOnFeatheredWings {
 		// As it moves, up to 2 dahan may move with it, for part or all of the way.
 		// the beast / dahan may move to an adjacent land and then back.
 		await TokenMover.SingleDestination(ctx.Target((Space)move2.Destination), stop1)
-			.AddGroup(2, Human.Dahan)
+			.UseQuota(new Quota().AddGroup(2, Human.Dahan))
 			.DoUpToN();
 	}
 

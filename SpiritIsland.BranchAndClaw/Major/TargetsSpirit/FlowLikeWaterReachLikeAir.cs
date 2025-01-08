@@ -20,19 +20,18 @@ public class FlowLikeWaterReachLikeAir {
 
 	static async Task PullPiecesAlong( Spirit self, bool bringCityAndBlight, Space from, Space to ) {
 
-		var mover = new TokenMover( self, "Bring", from, to );
-
 		// bringing up to 2 explorers, 2 towns and 2 dahan along with it.
-		mover.AddGroup( 2, Human.Explorer );
-		mover.AddGroup( 2, Human.Town );
-		mover.AddGroup( 2, Human.Dahan );
+		var quota = new Quota()
+			.AddGroup(2, Human.Explorer)
+			.AddGroup(2, Human.Town)
+			.AddGroup(2, Human.Dahan);
 
 		// if you hvae 2 air, 2 water, the moved presence may also bring along up to 2 cities and up to 2 blight.
-		if(bringCityAndBlight) {
-			mover.AddGroup( 2, Human.City );
-			mover.AddGroup( 2, Token.Blight );
-		}
+		if(bringCityAndBlight)
+			quota.AddGroup( 2, Human.City ).AddGroup( 2, Token.Blight );
 
-		await mover.DoUpToN();
+		await new TokenMover(self, "Bring", from, to)
+			.UseQuota(quota)
+			.DoUpToN();
 	}
 }

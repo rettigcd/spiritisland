@@ -19,7 +19,7 @@ public class ExaltationOfEchoedSteps {
 		await Cmd.PushUpTo1Presence( async ( from, to ) => {
 			// Bringing up to 1 Explorer / Town / Dahan / Beast.
 			await new TokenMover(spirit,"Bring", from, (Space)to)
-				.AddGroup( 1, Human.Explorer, Human.Town, Human.Dahan, Token.Beast )
+				.UseQuota(new Quota().AddGroup( 1, Human.Explorer, Human.Town, Human.Dahan, Token.Beast ))
 				.DoUpToN();
 			} )
 			.ActAsync( spirit );

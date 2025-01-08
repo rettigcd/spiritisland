@@ -30,8 +30,10 @@ public class ASingleAluringLair(Spirit spirit) : Incarna(spirit, "L", Img.L_Inca
 	public Task Config(Space space) {
 		// 6 Explorers and 3 Dahan at your Incarna don't participate in Ravage. (They don't deal Damage or take Damage.
 		return space.SourceSelector
-			.AddGroup(6, Human.Explorer)
-			.AddGroup(3, Human.Dahan)
+			.UseQuota(new Quota()
+				.AddGroup(6, Human.Explorer)
+				.AddGroup(3, Human.Dahan)
+			)
 			.SelectFightersAndSitThemOut(Self,Present.Always);
 	}
 

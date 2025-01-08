@@ -16,7 +16,7 @@ public class TransformativeSacrifice {
 
 		// Target Spirit may Remove up to 3 Presence.
 		var tokensToDestroy = new SourceSelector(spirit.Presence.Lands)
-			.AddGroup(3,spirit.Presence)
+			.UseQuota(new Quota().AddGroup(3,spirit.Presence))
 			.GetEnumerator(spirit,Prompt.RemainingCount($"Destroy up to 3 to Take Minor and Play it for free."),Present.Done);
 		int destroyed = 0;
 		await foreach(SpaceToken? spaceToken in tokensToDestroy) {

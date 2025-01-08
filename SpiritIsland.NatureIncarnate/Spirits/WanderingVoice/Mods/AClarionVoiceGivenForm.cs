@@ -22,7 +22,7 @@ public class AClarionVoiceGivenForm( Spirit spirit )
 		if(args.Added == this && to.HasInvaders())
 			// Add 1 Strife in the destination land
 			await to.SourceSelector
-				.AddGroup(1,Human.Invader)
+				.UseQuota(new Quota().AddGroup(1,Human.Invader))
 				.StrifeAll(Self);
 	}
 

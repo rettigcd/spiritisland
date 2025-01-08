@@ -26,13 +26,13 @@ public class FlockingRedTalons {
 
 		// Move up to 2 Beast within Range-3 to target land.
 		await new TokenMover(ctx.Self,"Move",ctx.Space.Range(3),ctx.Space)
-			.AddGroup(2,Token.Beast)
+			.UseQuota(new Quota().AddGroup(2,Token.Beast))
 			.DoUpToN();
 
 		// For each Beast present, choose a different Invader, 1 Damage to each of those.
 		int beastCount = ctx.Space.Beasts.Count;
 		await ctx.SourceSelector
-			.AddAll(Human.Invader)
+			.UseQuota(new Quota().AddAll(Human.Invader))
 			.ConfigOnlySelectEachOnce()
 			.DoDamageAsync(ctx.Self,beastCount,Present.Always);
 

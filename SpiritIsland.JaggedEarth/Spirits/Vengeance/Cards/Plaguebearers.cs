@@ -12,7 +12,7 @@ public class Plaguebearers {
 
 		// For each disease, Push 2 explorer / town / dahan.
 		await ctx.SourceSelector
-			.AddGroup( ctx.Disease.Count, Human.Explorer_Town.Plus(Human.Dahan) )
+			.UseQuota(new Quota().AddGroup( ctx.Disease.Count, Human.Explorer_Town.Plus(Human.Dahan) ))
 			.Bring( Bring.FromAnywhere(ctx.Self,new Quota().AddGroup(1,Token.Disease) ) )
 			.PushN(ctx.Self);
 

@@ -32,8 +32,10 @@ public class RavagedUndergrowthSlithersBackToLife {
 			foreach(var space in ctx.Space.Range(1).Where(t=>0<t.Wilds.Count).ToArray())
 				// Push 1 Explorer and 1 Town
 				await space.SourceSelector
-					.AddGroup(1,Human.Explorer)
-					.AddGroup(1,Human.Town)
+					.UseQuota(new Quota()
+						.AddGroup(1,Human.Explorer)
+						.AddGroup(1,Human.Town)
+					)
 					// to lands without Wilds.
 					.ConfigDestination(d=>d.FilterDestination(ss=>ss.Wilds.Count==0))
 					.PushN(ctx.Self);

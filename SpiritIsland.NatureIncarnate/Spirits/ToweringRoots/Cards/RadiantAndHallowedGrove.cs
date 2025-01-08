@@ -15,7 +15,7 @@ public class RadiantAndHallowedGrove {
 		// In both target and one adjacent land,
 		await InBothTargetAnd1Adjacent( space )
 			// an Invader with Health less than or equal to the Terror Level.
-			.AddGroup( 1 + 1, AnInvaderWithHealthLessThanOrEqualToTerrorLevel() )
+			.UseQuota(new Quota().AddGroup( 1 + 1, AnInvaderWithHealthLessThanOrEqualToTerrorLevel() ))
 			.RemoveUpToN( ctx.Self );
 	}
 

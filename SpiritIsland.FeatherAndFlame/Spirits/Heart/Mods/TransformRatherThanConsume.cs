@@ -41,8 +41,10 @@ public class TransformRatherThanConsume(Spirit spirit) : DestructiveNature(spiri
 		var explorer = await space.AddDefaultAsync(Human.Explorer, 1, AddReason.AsReplacement);
 		// Push both Invaders.
 		await space.SourceSelector
-			.AddGroup(1, downgraded!.AsHuman().HumanClass) // !! not exactly correct, need to use exact token, not its class.
-			.AddGroup(1, explorer.Added.AsHuman().HumanClass)
+			.UseQuota(new Quota()
+				.AddGroup(1, downgraded!.AsHuman().HumanClass) // !! not exactly correct, need to use exact token, not its class.
+				.AddGroup(1, explorer.Added.AsHuman().HumanClass)
+			)
 			.PushN(Self);
 	}
 }

@@ -20,7 +20,7 @@ public class EmergeFromTheDreadNightWind {
 		else // otherwise
 			// Push up to 2 Explorer / Town to different lands.
 			await ctx.SourceSelector
-				.AddGroup( 2, Human.Explorer_Town )
+				.UseQuota(new Quota().AddGroup( 2, Human.Explorer_Town ))
 				.ConfigDestination( Distribute.ToAsManyLandsAsPossible )
 				.PushUpToN( ctx.Self );
 

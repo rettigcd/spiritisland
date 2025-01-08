@@ -46,7 +46,7 @@ public class HearthToken( Spirit spirit )
 	async Task BringUpToAllPresence( Space from, IEnumerable<Space> destinationOptions ) {
 
 		await new TokenMover( Self, "Bring",
-			from.SourceSelector.AddAll( Self.Presence ),
+			from.SourceSelector.UseQuota(new Quota().AddAll( Self.Presence )),
 			new DestinationSelector( destinationOptions )
 		).DoUpToN();
 

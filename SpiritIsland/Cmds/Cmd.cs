@@ -57,13 +57,13 @@ public static partial class Cmd {
 	static public SpaceAction RemoveUpToNTokens(int count,params ITokenClass[] tokenClasses) {
 		Func<ITokenClass,string> selector = count==1 ? t=>t.Label : t=>t.Label+"s";
 		return new SpaceAction($"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast(", "," or "),
-			ctx => ctx.SourceSelector.AddGroup(count, tokenClasses).RemoveUpToN(ctx.Self)
+			ctx => ctx.SourceSelector.UseQuota(new Quota().AddGroup(count, tokenClasses)).RemoveUpToN(ctx.Self)
 		).OnlyExecuteIf( x => x.Space.HasAny(tokenClasses));
 	}
 	static public SpaceAction RemoveNTokens( int count, params ITokenClass[] tokenClasses ) {
 		Func<ITokenClass, string> selector = count == 1 ? t => t.Label : t => t.Label + "s";
 		return new SpaceAction( $"Remove {count} " + tokenClasses.Select( selector ).Join_WithLast( ", ", " or " ),
-			ctx => ctx.SourceSelector.AddGroup( count, tokenClasses ).RemoveN(ctx.Self)
+			ctx => ctx.SourceSelector.UseQuota(new Quota().AddGroup( count, tokenClasses )).RemoveN(ctx.Self)
 		).OnlyExecuteIf( x => x.Space.HasAny( tokenClasses ) );
 	}
 

@@ -150,7 +150,7 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 		if( args.IsStrifeAdded() && _spirit.ActionIsMyPower ) {
 			int boost = await DoBoost(Element.Sun, "Strife", 1);
 			if( boost != 0 )
-				await to.SourceSelector.AddGroup(1, Human.Invader).StrifeAll(_spirit); // Marking Sun Element as used will prevent looping.
+				await to.SourceSelector.UseQuota(new Quota().AddGroup(1, Human.Invader)).StrifeAll(_spirit); // Marking Sun Element as used will prevent looping.
 		}
 	}
 

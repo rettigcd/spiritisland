@@ -13,8 +13,10 @@ public class RainOfAsh {
 
 		// Push 2 dahan and 2 explorer / town to land(s) without your presence.
 		await ctx.SourceSelector
-			.AddGroup( 2, Human.Explorer_Town )
-			.AddGroup( 2, Human.Dahan )
+			.UseQuota(new Quota()
+				.AddGroup( 2, Human.Explorer_Town )
+				.AddGroup( 2, Human.Dahan )
+			)
 			.ConfigDestination(d=>d.FilterDestination( s => !ctx.Self.Presence.IsOn(s) ))
 			.PushN(ctx.Self);
 	}

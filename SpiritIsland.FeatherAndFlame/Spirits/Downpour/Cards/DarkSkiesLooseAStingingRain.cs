@@ -12,8 +12,10 @@ public class DarkSkiesLooseAStingingRain {
 
 		// Push up to 1 explorer and up to 2 dahan
 		return ctx.SourceSelector
-			.AddGroup(1,Human.Explorer)
-			.AddGroup(2,Human.Dahan)
+			.UseQuota(new Quota()
+				.AddGroup(1,Human.Explorer)
+				.AddGroup(2,Human.Dahan)
+			)
 			.PushUpToN( ctx.Self );
 	}
 

@@ -8,7 +8,7 @@ public class PiecesEscape( int count = int.MaxValue )
 		var classes = space.ClassesPresent;
 		if(0 < classes.Length)
 			await new TokenMover(self,"Escape",space,self.Presence.Lands.ToArray())
-				.AddGroup( NumToEscape, classes) // throws exception if no classes
+				.UseQuota(new Quota().AddGroup( NumToEscape, classes)) // throws exception if no classes
 				.DoN();
 	}
 	public int NumToEscape { get; } = count;

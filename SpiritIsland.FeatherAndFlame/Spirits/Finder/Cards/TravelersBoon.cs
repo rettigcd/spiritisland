@@ -13,7 +13,7 @@ public class TravelersBoon {
 		Space destination = await other.SelectAlways("Move up to 3 of your presence to:", ctx.Self.Presence.Lands);
 		// Select presence to pull in
 		await new TokenMover(ctx.Self,"Move", other.Presence.Lands, destination)
-			.AddGroup( 3, other.Presence.Deployed.Select( x => x.Token.Class ).Distinct().ToArray() )
+			.UseQuota(new Quota().AddGroup( 3, other.Presence.Deployed.Select( x => x.Token.Class ).Distinct().ToArray() ))
 			// They may move up to 1 Invader, 1 dahan, and 1 beast along with their presence.
 			// ( total, not for each presence).
 			.Bring( Bring.FromAnywhere(ctx.Self,new Quota()

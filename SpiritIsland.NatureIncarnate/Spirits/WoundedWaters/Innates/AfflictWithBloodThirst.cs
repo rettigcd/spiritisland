@@ -45,8 +45,10 @@ public class AfflictWithBloodThirst {
 	static public async Task Option4( TargetSpaceCtx ctx ) {
 		int beastCount = ctx.Beasts.Count;
 		await ctx.SourceSelector
-			.AddGroup(beastCount,Human.Explorer)
-			.AddGroup(beastCount,Human.Town,Human.Dahan)
+			.UseQuota(new Quota()
+				.AddGroup(beastCount,Human.Explorer)
+				.AddGroup(beastCount,Human.Town,Human.Dahan)
+			)
 			.PushN(ctx.Self);
 	}
 

@@ -19,7 +19,7 @@ public class UnbearableGaze {
 	static async Task PushFromTargetOrOrigin( TargetSpaceCtx ctx, int max, params HumanTokenClass[] tokenClasses ) {
 
 		await new SourceSelector(TargetSpaceAttribute.TargettedSpace!.Sources.Append( ctx.Space ).Distinct() )
-			.AddGroup( max, tokenClasses )
+			.UseQuota(new Quota().AddGroup( max, tokenClasses ))
 			.Config( FromTargetOrOrigin(ctx.Space) )
 			.PushN( ctx.Self );
 	}

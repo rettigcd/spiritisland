@@ -19,7 +19,7 @@ class HabsurgBuilder : BuildEngine {
 			Spirit spirit = space.SpaceSpec.Boards[0].FindSpirit();
 			await ActionScope.Current.MoverFactory.Gather(spirit, space)
 				// Gather 1 Town 
-				.AddGroup( 1, Human.Town )
+				.UseQuota(new Quota().AddGroup( 1, Human.Town ))
 				// from a land not matching a Build Card.
 				.ConfigSource(s=>s.FilterSource( ss => !cardDependentBuildSpaces.Contains( ss ) ) )
 				.DoN();

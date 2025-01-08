@@ -34,7 +34,9 @@ public class DahanSitOutRavage( Spirit picker, int countToSitOut ) : BaseModEnti
 
 	async Task IConfigRavages.Config( Space space ) {
 
-		var ss = space.SourceSelector.AddGroup(_countToSitOut,Human.Dahan).ConfigOnlySelectEachOnce();
+		var ss = space.SourceSelector.UseQuota(new Quota()
+			.AddGroup(_countToSitOut,Human.Dahan))
+			.ConfigOnlySelectEachOnce();
 
 		CountDictionary<HumanToken> counts =  [];
 

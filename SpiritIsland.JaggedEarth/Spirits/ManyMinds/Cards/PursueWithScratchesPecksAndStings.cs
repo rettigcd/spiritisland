@@ -11,7 +11,7 @@ public class PursueWithScratchesPecksAndStings {
 		int pushCount = ctx.Beasts.Count-1;
 		if(0 < pushCount)
 			await ctx.SourceSelector
-				.AddGroup(pushCount,Human.Explorer_Town)
+				.UseQuota(new Quota().AddGroup(pushCount,Human.Explorer_Town))
 				.PushUpToN(ctx.Self);
 	}
 

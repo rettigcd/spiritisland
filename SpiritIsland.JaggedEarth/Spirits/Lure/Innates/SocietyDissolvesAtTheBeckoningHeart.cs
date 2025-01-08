@@ -19,9 +19,10 @@ public class SocietyDissolvesAtTheBeckoningHeart {
 	static public Task Option2(TargetSpaceCtx ctx) {
 		// Gather 1 Explorer/Town and 1 Dahan.
 		return ctx.Gatherer
-			.AddGroup(1,Human.Explorer_Town)
-			.AddGroup(1,Human.Dahan)
-			.DoN();
+			.UseQuota(new Quota()
+				.AddGroup(1,Human.Explorer_Town)
+				.AddGroup(1,Human.Dahan)
+			).DoN();
 	}
 
 	[InnateTier("4 moon,1 air", "Once for every 6 Explorers/Dahan present (at your Incarna): Gather any Invader within Range equal to the amount of Air you have one land towards your Incarna.", 2)]

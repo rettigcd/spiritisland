@@ -22,8 +22,7 @@ public class TidalBoon {
 		// and may push 1 town and up to 2 dahan from one of their lands.
 		await new SourceSelector( other.Presence.Lands )
 			.FromASingleLand()
-			.AddGroup(1,Human.Town)
-			.AddGroup(2,Human.Dahan)
+			.UseQuota(new Quota().AddGroup(1,Human.Town).AddGroup(2,Human.Dahan))
 			.PushUpToN(other);
 	}
 

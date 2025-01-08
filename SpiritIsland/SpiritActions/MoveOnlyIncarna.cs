@@ -15,7 +15,7 @@ public class MoveOnlyIncarna( int range )
 
 		var space = incarna.Space;
 		await new TokenMover(self,"Move",space,space.Range(Range).ToArray())
-			.AddGroup( 1, incarna )
+			.UseQuota(new Quota().AddGroup( 1, incarna ))
 			.DoUpToN();
 	}
 

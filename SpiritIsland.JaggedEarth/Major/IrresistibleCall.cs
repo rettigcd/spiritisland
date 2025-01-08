@@ -10,10 +10,12 @@ public class IrresistibleCall {
 
 		// Gather 5 town, 5 dahan, 5 beast, and 15 explorer.
 		await ctx.Gatherer
-			.AddGroup(5,Human.Town)
-			.AddGroup(5,Human.Dahan)
-			.AddGroup(5,Token.Beast)
-			.AddGroup(15,Human.Explorer)
+			.UseQuota(new Quota()
+				.AddGroup(5,Human.Town)
+				.AddGroup(5,Human.Dahan)
+				.AddGroup(5,Token.Beast)
+				.AddGroup(15,Human.Explorer)
+			)
 			.DoN();
 
 		// if you have 2 sun, 3 air, 2 plant:

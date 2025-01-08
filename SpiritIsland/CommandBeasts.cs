@@ -128,7 +128,7 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 		// Push
 		await ctx.SourceSelector
-			.AddGroup( count, Token.Beast )
+			.UseQuota(new Quota().AddGroup( count, Token.Beast ))
 			.Track( _ => --count )
 			.PushUpToN( ctx.Self );
 
@@ -153,7 +153,7 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 		CombinedDamage combinedDamage = ctx.Space.CombinedDamageFor_Invaders( damage );
 
-		int damageDone = await ctx.SourceSelector.AddAll( Human.Invader )
+		int damageDone = await ctx.SourceSelector.UseQuota(new Quota().AddAll( Human.Invader ))
 			.DoDamageAsync( ctx.Self, combinedDamage.Available, Present.Done );
 
 		combinedDamage.TrackDamageDone( damageDone );

@@ -7,7 +7,7 @@ public class Push1DahanFromLands : SpiritAction {
 
 	public override async Task ActAsync( Spirit self ) {
 		await new SourceSelector( self.Presence.Lands )
-			.AddGroup(1,Human.Dahan)
+			.UseQuota(new Quota().AddGroup(1,Human.Dahan))
 			.PushN( self );
 	}
 }

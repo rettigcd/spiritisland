@@ -23,7 +23,7 @@ public class DissolveTheBondsOfKinship {
 
 		// Push all explorers from target land to as many different lands as possible
 		await ctx.SourceSelector
-			.AddGroup( int.MaxValue, Human.Explorer )
+			.UseQuota(new Quota().AddGroup( int.MaxValue, Human.Explorer ))
 			.ConfigDestination( Distribute.ToAsManyLandsAsPossible )
 			.PushN(ctx.Self);
 

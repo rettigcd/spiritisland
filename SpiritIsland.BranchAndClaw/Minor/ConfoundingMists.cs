@@ -23,7 +23,7 @@ public class ConfoundingMists {
 				&& args.Reason.IsOneOf( AddReason.Added, AddReason.MovedTo, AddReason.Explore, AddReason.Build )
 			)
 				await to.SourceSelector
-					.AddGroup(1,args.Added.Class)
+					.UseQuota(new Quota().AddGroup(1,args.Added.Class))
 					.PushN( _spirit );
 		}
 	}

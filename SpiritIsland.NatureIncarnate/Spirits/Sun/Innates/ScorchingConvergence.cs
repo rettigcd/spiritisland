@@ -13,7 +13,7 @@ public class ScorchingConvergence {
 			new SourceSelector( originOptions ).FromASingleLand(),
 			new DestinationSelector( ctx.Space )
 		)
-			.AddAll( ctx.Self.Presence )
+			.UseQuota(new Quota().AddAll( ctx.Self.Presence ))
 			.DoN();
 
 		// record Starting Invaders / Dahan

@@ -12,8 +12,7 @@ public class ShadowsOfTheBurningForest {
 		// if target is M/J, Push 1 explorer and 1 town
 		if(ctx.IsOneOf( Terrain.Mountain, Terrain.Jungle )) {
 			await ctx.SourceSelector
-				.AddGroup( 1, Human.Town )
-				.AddGroup( 1, Human.Explorer )
+				.UseQuota(new Quota().AddGroup( 1, Human.Town ).AddGroup( 1, Human.Explorer ))
 				.PushN(ctx.Self);
 		}
 

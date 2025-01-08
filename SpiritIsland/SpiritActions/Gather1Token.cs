@@ -16,7 +16,12 @@ public class Gather1Token( int _range, ITokenClass _tokenToGather, Present _pres
 
 		// !!! simplify this using SourceSelector
 		var isInRange = new TargetSpaceCtxFilter( "is in range", x => options.Contains( x.Space ) );
-		await new SpaceAction( "Gather a " + _tokenToGather.Label, ctx => ctx.Gatherer.AddGroup( 1, _tokenToGather ).DoN(_present) )
+		await new SpaceAction( 
+			"Gather a " + _tokenToGather.Label, 
+			ctx => ctx.Gatherer
+				.UseQuota(new Quota().AddGroup( 1, _tokenToGather ))
+				.DoN(_present)
+		)
 			.From().SpiritPickedLand()
 			.Which( isInRange )
 			.ActAsync( self );

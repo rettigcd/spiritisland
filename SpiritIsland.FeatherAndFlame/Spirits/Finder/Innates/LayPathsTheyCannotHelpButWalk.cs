@@ -25,7 +25,7 @@ public class LayPathsTheyCannotHelpButWalk {
 
 	static void AddHalf( SourceSelector ss, Space space, params ITokenClass[] groups ) {
 		int count = space.SumAny(groups) / 2; // half rounded down.
-		ss.AddGroup(count,groups);
+		ss.UseQuota(new Quota().AddGroup(count,groups));
 	}
 
 
