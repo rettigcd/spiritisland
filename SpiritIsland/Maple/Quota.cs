@@ -19,9 +19,9 @@ public class Quota : IQuota {
 		return sourceSpace.OfAnyTag(RemainingTypes).On(sourceSpace);
 	}
 
-	public void MarkTokenUsed(IToken token) {
+	public void MarkTokenUsed(ITokenLocation tl) {
 
-		var match = _quotaGroups.First(group => group.Matches(token));
+		var match = _quotaGroups.First(group => group.Matches(tl.Token));
 
 		match.UsedOne();
 		if( !match.HasMore )

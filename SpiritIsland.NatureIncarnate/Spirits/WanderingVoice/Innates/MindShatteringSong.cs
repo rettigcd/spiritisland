@@ -12,11 +12,10 @@ public class MindShatteringSong {
 
 	[InnateTier("1 sun,2 air","1 Damage per sun you have to Invaders with Strife only.",1)]
 	public static async Task Option2(TargetSpaceCtx ctx ) {
-		var ss = ctx.SourceSelector
+		await ctx.SourceSelector
 			.UseQuota(new Quota().AddAll(Human.Invader))
-			.FilterSpaceToken( st => 0 < st.Token.AsHuman().StrifeCount );
-		await ss
-			.DoDamageAsync( ctx.Self, await ctx.Self.Elements.CommitToCount(Element.Sun), Present.Always );
+			.FilterSpaceToken(st => 0 < st.Token.AsHuman().StrifeCount)
+			.DoDamageAsync_Old( ctx.Self, await ctx.Self.Elements.CommitToCount(Element.Sun), Present.Always );
 	}
 
 	[InnateTier("1 sun,1 moon,4 air","For each sun moon pair you have, Destroy 1 Invader with Strife.",2)]

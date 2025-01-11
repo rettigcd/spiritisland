@@ -33,8 +33,8 @@ public class FlockingRedTalons {
 		int beastCount = ctx.Space.Beasts.Count;
 		await ctx.SourceSelector
 			.UseQuota(new Quota().AddAll(Human.Invader))
-			.ConfigOnlySelectEachOnce()
-			.DoDamageAsync(ctx.Self,beastCount,Present.Always);
+			.ConfigOnlySelectEachOnce() // !!! This is the special BIT
+			.DoDamageAsync_Old(ctx.Self,beastCount,Present.Always);
 
 		// Push 1 Explorer/Town per Beast.
 		await ctx.Push(beastCount,Human.Explorer_Town);

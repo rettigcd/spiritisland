@@ -136,7 +136,6 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	async Task IAdjustDamageToInvaders_FromSpiritPowers.ModifyDamage(DamageFromSpiritPowers args) {
 		//Fire: +1 Damage
 		args.Damage += await DoBoost(Element.Fire, "Damage", args.Damage);
-
 	}
 
 	async Task IModifyRemovingToken.ModifyRemovingAsync(RemovingTokenArgs args) {

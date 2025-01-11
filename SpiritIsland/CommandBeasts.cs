@@ -153,8 +153,11 @@ public class CommandBeastsOn1Space : IActOn<TargetSpaceCtx> {
 
 		CombinedDamage combinedDamage = ctx.Space.CombinedDamageFor_Invaders( damage );
 
-		int damageDone = await ctx.SourceSelector.UseQuota(new Quota().AddAll( Human.Invader ))
+		var quota = new DamageQuota_NoMods(combinedDamage.Available);
+		await ctx.SourceSelector
+			.UseQuota( quota )
 			.DoDamageAsync( ctx.Self, combinedDamage.Available, Present.Done );
+		int damageDone = quota.AppliedDamage;
 
 		combinedDamage.TrackDamageDone( damageDone );
 

@@ -17,7 +17,6 @@ class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IAdjustDamageToInvader
 				return invaders[0].On(args.Space).MoveTo(EndlessDark.Space.ScopeSpace);
 			}
 		}
-
 		return Task.CompletedTask;
 	}
 

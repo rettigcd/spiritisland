@@ -70,7 +70,7 @@ public class SourceSelector {
 		return this;
 	}
 
-	public SourceSelector UseQuota( Quota quota ) { 
+	public SourceSelector UseQuota( IQuota quota ) { 
 		if(_quota is not null) throw new InvalidOperationException("Cannot set Quota twice");
 		_quota = quota; 
 		return this;
@@ -102,7 +102,7 @@ public class SourceSelector {
 	}
 
 	public async Task NotifyAsync( ITokenLocation selected ) {
-		_quota!.MarkTokenUsed( selected.Token );
+		_quota!.MarkTokenUsed( selected );
 
 		foreach(Func<ITokenLocation, Task> onSelected in _onSelected)
 			await onSelected( selected );
