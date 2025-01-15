@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: CI
+    #runs-on: ubuntu-22.04
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore Workloads
+        run: dotnet workload restore
+
+      - name: Build with dotnet
+        run: dotnet build -f net9.0 --configuration Release
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+
