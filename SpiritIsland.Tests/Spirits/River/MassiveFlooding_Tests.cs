@@ -5,13 +5,14 @@ namespace SpiritIsland.Tests.Spirits.River;
 [Collection("BaseGame Spirits")]
 public class MassiveFlooding_Tests {
 
+	static InnatePower MassiveFloodingPower => InnatePower.For(typeof(MassiveFlooding));
+
 	public MassiveFlooding_Tests():base(){}
 
 	// Not enought elements -> nothing
 	[Fact]
 	public void InsufficientElements() {
 		var gs = new SoloGameState(new RiverSurges(), Boards.A ) { Phase = Phase.Slow };
-		new SoloGame(gs).Start();
 
 		var innatePower = MassiveFloodingPower;
 
@@ -56,8 +57,6 @@ public class MassiveFlooding_Tests {
 		destination.Summary.ShouldBe( "1T@2" );
 
 	}
-
-	static InnatePower MassiveFloodingPower => InnatePower.For(typeof(MassiveFlooding));
 
 	[Trait("Feature","Push")]
 	[Fact]

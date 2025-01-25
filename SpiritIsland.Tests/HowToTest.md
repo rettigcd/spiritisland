@@ -74,16 +74,39 @@ Flow:
 							> do RavageSequence()
 
 
-# Set Spirit's Elements
+# Configure Spirit
+
+## Set Spirit's Elements
 ```
 spirit.Configure().Elements("3 moon,2 animal");
 ```
 
-# Queue up IActionFactory
+## Reveal Presence Track
+
+```
+await spirit.Presence.CardPlays.Given_SlotsAreRevealed(3);
+```
+
+## Actions
+The Active/Resolved state of Actions are tracked in 2 ways:
+1) Non-Innate Actions are Active when they are in the AvailableActions
+2) Innate Actions are Active until they are added to the Used-Innates list.
+
+### Make IActionFactory _Active_
 Instead of adding to Hand and then Playing (which requires Energy)
 ```
-spirit.AddActionFactory(slow);
+spirit.AddActionFactory( card );
 ```
+### Mark IActionFactory as _Used_
+```
+spirit.MarkAsResolved( card );
+```
+### Resolve an Active action
+Also marks it as _Used_.
+```
+spirit.ResolveActionAsync(cards[2], Phase.Fast);
+```
+
 
 # Test a Power Card
 

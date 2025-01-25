@@ -35,6 +35,7 @@ public class SoloGame {
 		ActionScope.Initialize( GameState.RootScope );
 		EngineTask = StartAsync();
 	}
+
 	public Task? EngineTask { get; private set; }
 
 	public async Task StartAsync() {

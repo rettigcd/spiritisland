@@ -12,8 +12,11 @@ public class PowerCard : TypedDecision<SI_PowerCard> {
 	public PowerCard(string prompt, int numberToSelect, CardUse cardUse, SI_PowerCard[] cardOptions, Present present ) 
 		: base( prompt, cardOptions, present )
 	{
-		foreach(var option in cardOptions)
-			_cardUses.Add(option,cardUse);
+		foreach( SI_PowerCard cardOption in cardOptions ) {
+			if(_cardUses.ContainsKey(cardOption))
+				throw new Exception($"{cardOption.Title} appears multiple times.");
+			_cardUses.Add(cardOption,cardUse);
+		}
 		NumberToSelect = numberToSelect;
 	}
 

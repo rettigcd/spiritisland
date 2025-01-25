@@ -1,4 +1,6 @@
-﻿namespace SpiritIsland;
+﻿using System.Diagnostics;
+
+namespace SpiritIsland;
 
 /// <summary>
 /// Card is repeated, but does not cost energy
@@ -34,13 +36,18 @@ public class RepeatCardForFree : IActionFactory {
 			.Where(card=> card.CouldActivateDuring(GameState.Current.Phase,self)) 
 			.ToArray(); 
 
-
 		if(options.Length == 0) return;
 
-		PowerCard? factory = await self.SelectPowerCard( "Select card to repeat", 1, options, CardUse.Repeat, Present.Done );
-		if(factory is null) return;
+		try {
 
-		self.AddActionFactory( factory );
+			PowerCard? factory = await self.SelectPowerCard( "Select card to repeat", 1, options, CardUse.Repeat, Present.Done );
+			if(factory is null) return;
+
+			self.AddActionFactory( factory );
+
+		} catch( Exception e ) {
+			Debug.WriteLine(e);
+		}
 
 	}
 

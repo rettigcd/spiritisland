@@ -229,7 +229,7 @@ public class FracturedDaysSplitTheSky : Spirit {
 			var remaining = spirit.GetAvailableActions(Phase.Growth).ToArray();
 			foreach( var factory in _factories )
 				if( remaining.Contains(factory) )
-					spirit.RemoveFromUnresolvedActions(factory);
+					spirit.MarkAsResolved(factory);
 		}
 
 		readonly List<IHelpGrowActionFactory> _factories = [];

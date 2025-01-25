@@ -4,30 +4,24 @@ public class StubbornSolidity_Tests {
 
 	[Trait("Invaders","Ravage")]
 	[Fact]
-	public void NoDahan_NoDefend() {
-		var fxt = new GameFixture()
-			.WithSpirit(new StonesUnyieldingDefiance())
-			.Start();
+	public async Task NoDahan_NoDefend() {
+
+		var gs = new SoloGameState();
 
 		// Given: a space to ravage on.
-		var space = fxt.board[5];
-		var tokens = fxt.gameState.Tokens[space];
-		fxt.InitRavageCard( space );
-
-		//   And: no dahan
-		tokens.InitDefault(Human.Dahan, 0);
-
+		var space = gs.Board[6].ScopeSpace;
+		//   And: Dahan on space
+		space.InitDefault(Human.Dahan, 0);
 		//   And: enough explorers to cause blight
-		tokens.InitDefault(Human.Explorer, 2);
+		space.InitDefault(Human.Explorer, 2);
+		//   And: Stuborn Solidity played on space
+		await StubbornSolidity.ActAsync(gs.Spirit.Target(space));
 
-		//  When: Card Played  (grow,select card,play card)
-		//   And: Invader actions proceed
-		Stone_Grows( fxt );
-		BuysAndUses( fxt, StubbornSolidity.Name );
-		fxt.user.WaitForNext();
+		//  When: ravaing on that space
+		await space.Ravage();
 
-		//  Then: Blight
-		tokens.Blight.Count.ShouldBe( 1 );
+		//  Then: blight = 1
+		space.Blight.Count.ShouldBe(1);
 	}
 
 	[Trait("Feature","Frozen")]
@@ -35,29 +29,24 @@ public class StubbornSolidity_Tests {
 	[Theory]
 	[InlineData(1)]
 	[InlineData(2)]
-	public void Dahan_Defends1Each_NoBlight(int dahanCount) {
-		var fxt = new GameFixture()
-			.WithSpirit(new StonesUnyieldingDefiance())
-			.Start();
+	public async Task Dahan_Defends1Each_NoBlight(int dahanCount) {
+
+		var gs = new SoloGameState();
 
 		// Given: a space to ravage on.
-		var space = fxt.board[5]; // a5
-		var tokens = fxt.gameState.Tokens[space];
-		fxt.InitRavageCard( space );
-
-		//   And: dahan in space
-		tokens.InitDefault(Human.Dahan, dahanCount);
-
+		var space = gs.Board[6].ScopeSpace;
+		//   And: Dahan on space
+		space.InitDefault(Human.Dahan, dahanCount);
 		//   And: enough explorers to cause blight
-		tokens.InitDefault(Human.Explorer, 2);
+		space.InitDefault(Human.Explorer, 2);
+		//   And: Stuborn Solidity played on space
+		await StubbornSolidity.ActAsync(gs.Spirit.Target(space));
 
-		//  When: Card Played  (grow,select card,play card)
-		//   And: Invader actions proceed
-		Stone_Grows( fxt );
-		BuysAndUses( fxt, StubbornSolidity.Name );
+		//  When: ravaing on that space
+		await space.Ravage();
 
 		//  Then: No blight
-		tokens.Blight.Count.ShouldBe( 0 );
+		space.Blight.Count.ShouldBe( 0 );
 	}
 
 	[Trait( "Feature", "Frozen" )]
@@ -227,17 +216,6 @@ public class StubbornSolidity_Tests {
 
 	static Task Play_StubbornSolidity_On( Spirit spirit, Space targetSpace ) {
 		return StubbornSolidity.ActAsync( spirit.Target( targetSpace.SpaceSpec ) ).ShouldComplete(StubbornSolidity.Name);
-	}
-
-	static void BuysAndUses( GameFixture fxt, string cardName ) {
-		fxt.user.PlaysCard( cardName );
-		fxt.user.SelectsFastAction( cardName );
-		fxt.user.TargetsLand( cardName, "A1,A2,A3,A4,[A5],A6" );
-	}
-
-	static void Stone_Grows( GameFixture fxt ) {
-		fxt.user.Growth_SelectAction( "Place Presence(2)" );
-		fxt.user.Growth_PlacesPresence( "energy>A1;A2;A3;A4;[A5];A6;A7;A8" );
 	}
 
 }

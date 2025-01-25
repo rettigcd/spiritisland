@@ -5,82 +5,50 @@ public class Badlands_Tests {
 
 	[Trait("Invaders","Ravage")]
 	[Fact]
-	public void NoInvaderDamageToDahan_NoBadlandDamageToDahan() {
-		var fxt = new GameFixture()
-			.Start();
+	public async Task NoInvaderDamageToDahan_NoBadlandDamageToDahan() {
 
-		// Given: a space to ravage on.
-		var space = fxt.board[5];
-		var tokens = fxt.gameState.Tokens[space];
-		fxt.InitRavageCard( space );
+		var gs = new SoloGameState();
 
-		// And: disable ravage on A2 which has the same space
-		fxt.gameState.Tokens[fxt.board[2]].SkipRavage("test");
+		// Given a space to ravage on.
+		var space = gs.Board[7].ScopeSpace;
 
 		//  And: 1 bad lands, 1 explorer, 1 dahan, 1 defend
-		tokens.Badlands.Init(1);
-		tokens.InitDefault( Human.Explorer, 1 );
-		tokens.InitDefault( Human.Dahan, 1 );
-		tokens.Beasts.Init( 0 );
-		tokens.Defend.Add(1);
-		tokens.Summary.ShouldBe("1D@2,1E@1,1G,1M,2TS");
+		space.Badlands.Init(1);
+		space.InitDefault(Human.Explorer, 1);
+		space.InitDefault(Human.Dahan, 1);
+		space.Beasts.Init(0);
+		space.Defend.Add(1);
+		space.Summary.ShouldBe("1D@2,1E@1,1G,1M");
 
-		// When: Grow, Skip Buy, then Ravage
-		fxt.user.Growth_SelectAction( "Reclaim All" );
-		fxt.user.IsDoneBuyingCards();
+		// When: ravage
+		await space.Ravage();
 
-		//  Then: ravage happened
-		fxt.user.WaitForNext();
-		fxt.gameState.RoundNumber.ShouldBe(2);
-		fxt.exchanges.Count.ShouldBe(2);
-		var ravage = fxt.exchanges[0];
-
-		tokens.Dahan.CountAll.ShouldBe(1);
-
-		//   And: no damage applied to dahan
-		ravage.Attackers.DamageDealtOut.ShouldBe(0);
-		ravage.DahanDestroyed.ShouldBe(0);
-		ravage.Defenders.Starting.Total.ShouldBe(1);
-
+		// Then: no damage to dahan
+		space.Summary.ShouldBe("1D@2,1G,1M");
 	}
 
 	[Trait("Invaders","Ravage")]
 	[Fact]
-	public void InvaderDamageToDahan_BadlandDamageToDahan() {
-		var fxt = new GameFixture().Start();
+	public async Task InvaderDamageToDahan_BadlandDamageToDahan() {
+
+		var gs = new SoloGameState();
 
 		// Given: a space to ravage on.
-		var space = fxt.board[5];
-		var tokens = fxt.gameState.Tokens[space];
-		fxt.InitRavageCard( space );
-
-		// And: disable ravage on A2 which has the same space
-		fxt.gameState.Tokens[fxt.board[2]].SkipRavage("test");
+		var space = gs.Board[7].ScopeSpace;
 
 		//  And: 1 bad lands, 1 explorer, 1 dahan
-		tokens.Badlands.Init(1);
-		tokens.InitDefault( Human.Explorer, 1);
-		tokens.InitDefault(Human.Dahan, 1);
-		tokens.Beasts.Init(0);
-		tokens.Summary.ShouldBe( "1D@2,1E@1,1M,2TS" );
+		space.Badlands.Init(1);
+		space.InitDefault(Human.Explorer, 1);
+		space.InitDefault(Human.Dahan, 1);
+		space.Beasts.Init(0);
+		space.Summary.ShouldBe("1D@2,1E@1,1M");
 
-		// When: Grow, Skip Buy, then Ravage
-		fxt.user.Growth_SelectAction( "Reclaim All" );
-		fxt.user.IsDoneBuyingCards();
+		// When: ravage
+		await space.Ravage();
 
-		//  Then: ravage happened
-		fxt.user.WaitForNext();
-		fxt.gameState.RoundNumber.ShouldBe(2);
-		fxt.exchanges.Count.ShouldBe(1);
-		var ravage = fxt.exchanges[0];
-
-		//   And: 1 explorer damage
-		ravage.Attackers.DamageDealtOut.ShouldBe(1);
-
+		// Then: 1 explorer damage
 		//   and: dahan destroyed,  1 explorer + 1 badland damage = 2 damage, destroying 1 dahan
-		tokens.Dahan.CountAll.ShouldBe(0);
-		ravage.DahanDestroyed.ShouldBe(1);
-
+		space.Summary.ShouldBe("1E@1,1M");
 	}
 
 }

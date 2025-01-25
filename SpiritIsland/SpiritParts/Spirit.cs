@@ -201,12 +201,16 @@ public abstract partial class Spirit
 	#region (Unresolved) Actions 
 
 	public IEnumerable<IActionFactory> GetAvailableActions(Phase phase) {
-		var activatable = AllActions
+
+		var activatableList = AllActions
 			.Where(action => action.CouldActivateDuring(phase, this))
 			.ToList();
+
+		// Modify the list of actions that are available
 		foreach( IModifyAvailableActions x in Mods.OfType<IModifyAvailableActions>() )
-			x.Modify(activatable,phase);
-		return activatable;
+			x.Modify(activatableList,phase);
+
+		return activatableList;
 	}
 
 	/// <summary>
@@ -235,7 +239,7 @@ public abstract partial class Spirit
 	public async Task ResolveActionAsync(IActionFactory factory, Phase phase) {
 
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( GetActionCategoryForSpiritAction(phase), this );
-		RemoveFromUnresolvedActions( factory ); // removing first, so action can restore it if desired
+		MarkAsResolved( factory ); // removing first, so action can restore it if desired
 		await factory.ActivateAsync( this );
 
 		// Send event
@@ -249,7 +253,7 @@ public abstract partial class Spirit
 	/// Removes it from the Unresolved-list
 	/// </summary>
 	// !!! Make this protected once we figure out how Fractured Day's Growth work without access to this.
-	public void RemoveFromUnresolvedActions(IActionFactory selectedActionFactory) {
+	public void MarkAsResolved(IActionFactory selectedActionFactory) {
 
 		_usedActions.Add(selectedActionFactory);
 
@@ -340,7 +344,8 @@ public abstract partial class Spirit
 
 	#region IRunWhenTimePasses imp
 
-	public bool RemoveAfterRun => false;
+	bool IRunWhenTimePasses.RemoveAfterRun => false;
+
 	public virtual Task TimePasses( GameState gameState ) {
 		// reset cards / powers
 		DiscardPile.AddRange( InPlay );

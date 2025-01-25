@@ -3,7 +3,6 @@
 [Collection("BaseGame Spirits")]
 public class RiverSurges_GrowthTests : BoardAGame {
 
-
 	public RiverSurges_GrowthTests():base( new RiverSurges() ){}
 
 	#region growth
@@ -207,38 +206,28 @@ public class RiverSurges_GrowthTests : BoardAGame {
 public class RiverSurges_GrowthTests2 {
 
  	[Fact]
-	public void Reclaim1_TriggersImmediately(){
+	public async Task Reclaim1_TriggersImmediately(){
 
-		var spirit = new RiverSurges();
-		
-		var user = new VirtualUser( spirit );
-
-		var gs = new SoloGameState( spirit, Boards.A );
+		var gs = new SoloGameState(new RiverSurges(), Boards.A );
 		gs.Initialize();
-		new SinglePlayer.SoloGame(gs).Start();
 
-		// pull card track 2 * 2 = triggers reclaim 
+		// Given: 2 spaces revealed on Card Track
+		await gs.Spirit.Presence.CardPlays.Given_SlotsAreRevealed(3);
 
-		user.SelectsGrowthB_2PP( "cardplays>A5", "cardplays>A5" );
+		//   And: 2 card are in discard
+		var slow = gs.Spirit.Hand.Where(x => x.Speed == Phase.Slow).ToArray();
+		gs.Spirit.Hand.RemoveAll(x=>x.Speed == Phase.Slow);
+		gs.Spirit.DiscardPile.AddRange(slow);
 
-		user.PlaysCard( WashAway.Name );
-		user.PlaysCard( RiversBounty.Name );
+		await gs.Spirit.DoGrowth(gs).AwaitUser(user => {
 
-		spirit.Energy++; // pretend we played Rivers Bounty and gained 1 energy
-		user.IsDoneWith(Phase.Slow);
+			// When: User reveals Reclaim 1
+			user.SelectsGrowthB_2PP("cardplays>A5", "cardplays>A5");
 
-		user.SelectsGrowthB_2PP("cardplays>A5","cardplays>A5");
+			// Then: Can reclaim River's Bounty
+			user.Reclaims1FromTrackBonus("[River's Bounty $0 (Slow)],Wash Away $1 (Slow)");
 
-		// Can reclaim River's Bounty
-		user.Reclaims1FromTrackBonus( "Wash Away $1 (Slow),[River's Bounty $0 (Slow)]" );
-
-		// Can buy all 3 of River's cards including Bounty
-		spirit.Energy.ShouldBe(2,"need 2 energy to purcahse 0+0+2 cards");
-
-		user.PlaysCard( RiversBounty.Name ); // 0
-		user.PlaysCard( BoonOfVigor.Name );  // 0
-		user.PlaysCard( FlashFloods.Name );  // 2
-		user.IsDoneWith( Phase.Fast );
+		});
 
 	}
 

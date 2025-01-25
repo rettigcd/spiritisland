@@ -1,6 +1,4 @@
-﻿using SpiritIsland.SinglePlayer;
-
-namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
+﻿namespace SpiritIsland.Tests.Spirits.VitalStrengthNS;
 
 [Collection("BaseGame Spirits")]
 public sealed class GiftOfStrength_Tests {
@@ -9,44 +7,34 @@ public sealed class GiftOfStrength_Tests {
 
 	[Fact]
 	[Trait("something","repeat card")]
-	public void Replaying_FastCards() {
+	public async Task Replaying_FastCards() {
 
 		spirit = new VitalStrength();
-		var user = new VirtualUser( spirit );
 		var gs = new SoloGameState( spirit, Boards.A );
-		gs.Initialize();
-		new SoloGame(gs).Start();
 
-		// Given: Earth has enough elements to trigger GOS
-		user.SelectsGrowthA_Reclaim_PP2();
-		user.WaitForNext();
-		spirit.Elements[Element.Sun] = 1;
-		spirit.Elements[Element.Earth] = 2;
-		spirit.Elements[Element.Plant] = 2;
+		// Given: Spirit has lots of energy
+		spirit.Energy = 20;
+		//   And: Phase is Fast
+		gs.Phase = Phase.Fast;
+		//   And: Spirit has already resolved fast w/ cost=1
+		var fast1 = PowerCard.ForDecorated( Fast1 );
+		spirit.MarkAsResolved(fast1);
+		//   And: resolved fast w/ cost=2
+		var fast2 = PowerCard.ForDecorated(Fast2);
+		spirit.MarkAsResolved(fast2);
 
-		//  And: Earth has 4 cards
-		var cards = new PowerCard[] {
-			PowerCard.ForDecorated( Slow0 ), // not played
-			PowerCard.ForDecorated( Fast0 ), // not played
-			PowerCard.ForDecorated( Fast1 ), // played - should appear
-			PowerCard.ForDecorated( Fast2 )  // played - no - too expensive
-		};
-		spirit.TempCardPlayBoost = cards.Length;
-		spirit.Hand.AddRange( cards );
-		PlayCards( cards );
-		user.IsDoneBuyingCards();
+		//  When: Spirit resolves GoS on Self
+		await GiftOfStrength.Option1( spirit.Target(spirit) );
 
-		//  And: already played 2 fast cards (cost 1 & 2)
-		user.SelectsFastAction( "Fast-0,[Fast-1],Fast-2,Gift of Strength" );
-		user.SelectsFastAction( "Fast-0,[Fast-2],Gift of Strength" );
+		//   And: chooses card to
+		await spirit.SelectAndResolveActions(gs).AwaitUser(user => {
+			user.NextDecision.HasPrompt("Select Fast to resolve").HasOptions("Replay Card (max cost:1),Done").Choose("Replay Card (max cost:1)");
+			//  Then: Spirit can replay ONLY the Fast-1 card.
+			user.NextDecision.HasPrompt("Select card to repeat").HasOptions("Fast-1 $1 (Fast),Done").Choose("Fast-1 $1 (Fast)");
 
-		// When: user applies 'Gift of Strength' to self
-		user.SelectsFastAction( "Fast-0,[Gift of Strength]" );
-
-		// Then: user can replay ONLY the played: Fast-1 card.
-		user.SelectsFastAction( "Fast-0,[Replay Card (max cost:1)]" );
-		spirit.NextDecision().HasPrompt( "Select card to repeat" ).HasOptions( "Fast-1 $1 (Fast),Done" )
-			.Choose( "Fast-1 $1 (Fast)" );
+			// cleanup...
+			user.NextDecision.HasPrompt("Select Fast to resolve").HasOptions("Fast-1 $1 (Fast),Done").Choose("Done");
+		}).ShouldComplete();
 	}
 
 	void PlayCards( PowerCard[] cards ) {

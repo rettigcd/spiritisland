@@ -3,53 +3,25 @@
 public class ObserveTheEverChangingWorld_Tests {
 
 	[Fact]
-	public void RevealedTokens_GainElements() {
+	public async Task RevealedTokens_GainElements() {
 
-		var fxt = new GameFixture()
-			.WithSpirit(new ShiftingMemoryOfAges())
-			.Start();
+		var spirit = new ShiftingMemoryOfAges();
+		var gs = new SoloGameState(spirit, Boards.A);
+		gs.Initialize();
 
-		// Given: a space that will ravage and lose tokens
-		TargetSpaceCtx space = fxt.TargetSpace("A5");
-		space.Space.AdjustDefault(Human.Explorer,1);
-		space.Space.Dahan.Init(2);
-		var terrain = new[] { Terrain.Wetland, Terrain.Sands, Terrain.Jungle, Terrain.Mountain }.First( space.SpaceSpec.Is );
-		fxt.InitRavageCard( terrain);
-		//   But: will not build nor explore
-		fxt.gameState.InvaderDeck.Build.Cards.Clear();
-		fxt.gameState.InvaderDeck.Explore.Cards.Clear();
+		// Given: enough elements to trigger level-1 innate
+		spirit.Configure().Elements("1 moon");
+		//   And: no prepared water
+		spirit.PreparedElementMgr[Element.Water].ShouldBe(0);
 
-		//  And: user grows (+9 energy)
-		fxt.user.Growth_SelectAction("Gain 9 Energy");
-		fxt.spirit.InitElementsFromPresence();
-		fxt.spirit.GetAvailableActions(Phase.Fast).Count().ShouldBe(1);
+		// When: triggers Observe the Ever-changing World (SUT) (level 1 Observe)
+		await spirit.InnatePowers[1].ActivateAsync(spirit).AwaitUser(user => {
+			user.NextDecision.HasPrompt("Observe the Ever-Changing World: Target Space").HasOptions("A5,A7,A8").Choose("A5");
+			user.NextDecision.HasPrompt("Select Innate Option").HasOptions("Use existing => 1 moon,Prepare 1 moon 1 air => 2 moon 1 air,Done").Choose("Use existing => 1 moon");
+			user.NextDecision.HasPrompt("Prepare Element (Observe the Ever-Changing World)").HasOptions("Sun,Moon,Fire,Air,Water,Earth,Plant,Animal").Choose("Water");
+		}).ShouldComplete();
 
-		//   And: enough elements to trigger level-2 innate  (2 moon,1 air)
-		fxt.spirit.Elements[Element.Moon] = 2;
-		fxt.spirit.Elements[Element.Air] = 1;
-		fxt.spirit.Elements.Summary().ShouldBe("2 moon 1 air");
-
-		// Buy slow card (so we don't wrap to next turn)
-		fxt.user.PlaysCard(BoonOfAncientMemories.Name);
-
-		//  When: triggers Observe the Ever-changing World (SUT) (level 2 Observe)
-		fxt.user.SelectsFastAction($"Learn the Invaders' Tactics,[{ObserveTheEverChangingWorld.Name}]");
-		fxt.user.TargetsLand(ObserveTheEverChangingWorld.Name,"[A5],A7,A8");
-		fxt.user.NextDecision.HasPromptPrefix($"Select Innate Option").Choose("Done");
-
-
-		//   And: is done with Fast
-		fxt.user.IsDoneWith(Phase.Fast);
-
-		var dec = fxt.spirit.Portal.Next;
-
-		if(dec.Prompt == "Select Slow to resolve") {
-			_ = dec.ToString();
-		} else
-			//  Then: Asks user to prepare element
-			fxt.user.AssertDecisionInfo("Prepare Element (A5)","Sun,Moon,Fire,Air,Water,[Earth],Plant,Animal");
-
-		fxt.gameState.Phase.ShouldBe(Phase.Slow); // !! sometime BG thread doesn't get all the way to slow and errors out on Invaders, need to wait on BG thread.
+		spirit.PreparedElementMgr.PreparedElements[Element.Water].ShouldBe(1);
 	}
 
 	[Fact]

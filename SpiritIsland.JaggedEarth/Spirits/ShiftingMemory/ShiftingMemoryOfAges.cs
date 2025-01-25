@@ -59,6 +59,9 @@ public class ShiftingMemoryOfAges : Spirit, IHaveSecondaryElements {
 
 	#region Elements
 
+	/// <summary>
+	/// Casts .Elements to PreparedElementMgr
+	/// </summary>
 	public PreparedElementMgr PreparedElementMgr => (PreparedElementMgr)Elements;
 	CountDictionary<Element> IHaveSecondaryElements.SecondaryElements => PreparedElementMgr.PreparedElements;
 
