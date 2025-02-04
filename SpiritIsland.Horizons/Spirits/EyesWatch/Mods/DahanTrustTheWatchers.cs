@@ -7,7 +7,8 @@ class DahanTrustTheWatchers(Spirit spirit) : IDefendSpaces {
 	static public SpecialRule Rule => new SpecialRule(Name, Description);
 
 	void IDefendSpaces.Defend(Space space, int defense) {
-		if(Used) return;
+		space.Defend.Add(defense);
+		if( Used) return;
 		ActionScope.Current.AtEndOfThisAction(scope => spirit.Target(space).GatherUpToNDahan(1) );
 		Used = true;
 	}

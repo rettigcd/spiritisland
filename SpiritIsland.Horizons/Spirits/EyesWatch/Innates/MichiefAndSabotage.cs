@@ -28,6 +28,7 @@ public class MichiefAndSabotage {
 
 	static Task FearAndDefend(TargetSpaceCtx ctx, int fear, int defend) {
 		ctx.Defend(defend);
+		var bob = ctx.Space.ToString();
 		return ctx.AddFear(fear);
 	}
 }

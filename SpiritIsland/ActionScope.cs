@@ -250,8 +250,6 @@ public class DefaultMoverFactory : IMoverFactory {
 
 	public virtual DestinationSelector PushDestinations => DestinationSelector.Adjacent;
 
-
-
 	class Builder {
 		public Builder From(SourceSelector ss) { _sourceSelector = ss; return this; }
 		public Builder FromSpaces(params IEnumerable<Space> spaces) { _sourceSelector = new SourceSelector(spaces); return this; }
@@ -269,6 +267,10 @@ public class DefaultMoverFactory : IMoverFactory {
 
 }
 
+/// <summary>
+/// Provides a hook to react to Defends added to spaces.
+/// </summary>
+// TODO!!!: replace with a sync DefendAdded event handler.
 public interface IDefendSpaces {
 	void Defend(Space space, int defense);
 }
