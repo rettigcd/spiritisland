@@ -14,12 +14,6 @@ static class InvaderCard_Extensions {
 	internal static Task When_InvokingLevel( this IFearCard card, int level, Action<VirtualUser> userActions = null ) {
 		userActions ??= (_)=>{};
 		return card.ActAsync(level).AwaitUser(userActions).ShouldComplete($"{card.GetType().Name}-{level}");
-		//return (level switch {
-		//	1 => card.Level1( GameState.Current ),
-		//	2 => card.Level2( GameState.Current ),
-		//	3 => card.Level3( GameState.Current ),
-		//	_ => throw new ArgumentOutOfRangeException( nameof( level ) )
-		//}).AwaitUser( userActions ).ShouldComplete($"{card.GetType().Name}-{level}");
 	}
 
 }

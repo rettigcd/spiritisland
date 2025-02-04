@@ -38,7 +38,7 @@
 				<HorizontalStackLayout.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding EditSpirit}" />
 				</HorizontalStackLayout.GestureRecognizers>
-				<Label Text="Select a Spirit" VerticalOptions="Center" TextColor="Gray" Margin="5,0,30,0" />
+				<Label Text="Select a Spirit" FontFamily="MaterialIcons-Regular.ttf#Material Icons"  VerticalOptions="Center" TextColor="Gray" Margin="5,0,30,0" />
 				<Image Source="{Binding SelectedSpirit, Converter={StaticResource nameImage}}" Margin="2" HeightRequest="56" />
 			</HorizontalStackLayout>
 			

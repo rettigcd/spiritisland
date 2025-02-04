@@ -7,7 +7,7 @@ public class VoiceOfCommand_Tests {
 	public async Task DuringRavage_ExplorersDefend() {
 		Spirit spirit = new RiverSurges();
 		Board board = Boards.A;
-		_ = new SoloGameState(spirit,board);
+		var gs = new SoloGameState(spirit, board);
 		var space = board[7].ScopeSpace;
 
 		// Given: Voice of Command played on space

@@ -180,7 +180,7 @@ public class OceanTerrain_Tests {
 	[Theory]
 	[InlineData(true)]
 	[InlineData(false)]
-	public void CascadingBlight(bool withOcean ) {
+	public async Task CascadingBlight(bool withOcean ) {
 		// with blight in A2 already
 		// Ravage in a2 (already has city)
 
@@ -191,43 +191,47 @@ public class OceanTerrain_Tests {
 			Given_OceanOnPrimaryBoard();
 
 		//   And: blight on a2
-		Space a2 = _gameState.Tokens[_boardA[2]];
+		Space a2 = _boardA[2].ScopeSpace;
 		a2.Blight.Init(1);
+
+		//   But: no blight on A4
+		_boardA[4].ScopeSpace.Blight.Init(0);
+
 		//   But: no dahan (don't want to trigger Thunderspeakers presence destruction
 		a2.Dahan.Init(0);
 
 		//  When: invaders ravage and cause blight
-		_ = _boardA[2].ScopeSpace.Ravage();
+		await a2.Ravage().AwaitUser(user => {
 
-		// Then: we can/can't cascade into ocean
-		if(withOcean)
-			NextDecision
-				.HasOptions( "Blight on A2 => A0,Blight on A2 => A1,Blight on A2 => A3,Blight on A2 => A4" )
-				.Choose("Blight on A2 => A4");
-		else
-			NextDecision
-				.HasOptions( "Blight on A2 => A1,Blight on A2 => A3,Blight on A2 => A4")
-				.Choose("Blight on A2 => A4");
+			// Then: we can/can't cascade into ocean
+			if( withOcean )
+				NextDecision
+					.HasOptions("Blight on A2 => A0,Blight on A2 => A1,Blight on A2 => A3,Blight on A2 => A4")
+					.Choose("Blight on A2 => A4");
+			else
+				NextDecision
+					.HasOptions("Blight on A2 => A1,Blight on A2 => A3,Blight on A2 => A4")
+					.Choose("Blight on A2 => A4");
+
+		}).ShouldComplete();
+
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]
 	[Fact]
-	public void OtherSpirits_CannotGrowInOcean() {
+	public async Task OtherSpirits_CannotGrowInOcean() {
 		// Given: With/Without Ocean on board
 		Given_OceanOnPrimaryBoard();
 
 		Given_PrimaryPresenceOnA2Only();
 
 		// When: placing precense
-		_ = _primarySpirit.DoGrowth( _gameState );
-		NextDecision.Choose("Place Presence(1)");
+		await _primarySpirit.DoGrowth( _gameState).AwaitUser(user => {
+			user.NextDecision.Choose("Place Presence(1)");
+			// Then: ocean is not in option list
+			user.NextDecision.ChooseFrom("2 cardplay").HasToOptions("A1,A2,A3,A4").ChooseTo("A1");
+		});
 
-		NextDecision.ChooseFrom("2 cardplay").HasToOptions("A1,A2,A3,A4").ChooseTo("A1");
-
-		////  And: take from card play
-		//NextDecision.Choose( "2 cardplay");
-		//// Then: ocean is not in option list
-		//NextDecision.HasOptions( "A1,A2,A3,A4" ).Choose( "A1" ); // close out action thread
 	}
 
 	[Trait( "SpecialRule", "OceanInPlay" )]

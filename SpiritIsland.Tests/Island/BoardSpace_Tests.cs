@@ -149,7 +149,7 @@ public class BoardSpace_Tests {
 		Board c = BoardFactory.Build( "C", layout[3] );
 		Board d = BoardFactory.Build( "D", layout[2] );
 
-		_ = new Island(a, b, c, d);
+		var island = new Island(a, b, c, d);
 
 		Assert_BoardSpacesTouch( a[3], b[1] );
 		Assert_BoardSpacesTouch( a[3], b[6] );

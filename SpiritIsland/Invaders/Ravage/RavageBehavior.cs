@@ -26,6 +26,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	/// <summary> Executes up to 1 potential Ravage </summary>
 	public async Task Exec( Space space ) {
+
 		RavageData data = new RavageData( space );
 
 		var scope = await ActionScope.Start( ActionCategory.Invader ); // start scope before Stoppers run
@@ -55,6 +56,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 				await scope.DisposeAsync();
 			}
 		}
+
 	}
 
 	static async Task RavageSequence_Default( RavageBehavior behavior, RavageData data ) {

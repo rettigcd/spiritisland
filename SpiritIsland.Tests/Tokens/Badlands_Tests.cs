@@ -51,4 +51,10 @@ public class Badlands_Tests {
 		space.Summary.ShouldBe("1E@1,1M");
 	}
 
+
+	[Fact]
+	public void Threads() {
+		Thread.CurrentThread.IsBackground.ShouldBeTrue();
+	}
+
 }

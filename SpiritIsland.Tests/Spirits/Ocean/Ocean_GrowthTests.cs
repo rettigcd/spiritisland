@@ -15,7 +15,7 @@ public class Ocean_GrowthTests : BoardAGame {
 	[InlineData("A1A2","A1>A0","A0:1,A2:1",1)]    // need to define which presence to move
 	[InlineData("A1A2","A2>A0","A0:1,A1:1",1)]    // need to define which presence to move
 	[InlineData("A1A2B1C1C2","A2>A0,B1>B0,C1>C0","A0:1,A1:1,B0:1,C0:1,C2:1",3)]    // need to define which presence to move
-	public void ReclaimGather_GatherParts(string starting, string select, string ending, int gatherCounts) {
+	public async Task ReclaimGather_GatherParts(string starting, string select, string ending, int gatherCounts) {
 		Given_IslandIsABC();
 		_spirit.Given_IsOnMany( starting );
 
@@ -34,14 +34,14 @@ public class Ocean_GrowthTests : BoardAGame {
 			.SingleOrDefault();
 
 		if(gather != null){
-			_ = gather.ActivateAsync( _spirit );
-			while(0 < gatherCounts--) {
-				var options = _spirit.Portal.Next.Options
-					.Where( option => moveBySrc.ContainsKey( option.Text ) )
-					.ToArray();
-				var source = options.First();
-				_spirit.Portal.Choose( _spirit.Portal.Next, source );
-			}
+			await gather.ActivateAsync( _spirit).AwaitUser(user => {
+				while( 0 < gatherCounts-- ) {
+					var source = _spirit.Portal.Next.Options
+						//.Where(option => moveBySrc.ContainsKey(option.Text))
+						.First(option => moveBySrc.ContainsKey(option.Text));
+					user.NextDecision.Choose(source);
+				}
+			});
 		}
 
 		// Then: nothing to gather

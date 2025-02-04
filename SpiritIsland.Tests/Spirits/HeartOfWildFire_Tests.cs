@@ -17,7 +17,6 @@ public class HeartOfWildFire_Tests {
 
 		// When: adding blight to space via spirit powers
 		//await using var scope = await ActionScope.Start(ActionCategory.Spirit_Power);
-		//_ = LandOfHauntsAndEmbers.Act(spirit.BindMyPowers().Target(space)); // nothing to push
 		await spirit.When_ResolvingCard<LandOfHauntsAndEmbers>( (user) => { 
 			user.Choose(space);
 		} );

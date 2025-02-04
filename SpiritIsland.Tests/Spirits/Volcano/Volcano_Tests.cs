@@ -49,7 +49,7 @@ public class Volcano_Tests {
 
 	[Trait( "SpecialRule", VolcanicPeaksTowerOverTheLandscape.Name )]
 	[Fact]
-	public void Growth_DoesntGetRangeExtension() {
+	public async Task Growth_DoesntGetRangeExtension() {
 		// Your Power Cards gain +1 Range if you have 3 or more Presence in the origin land.
 
 		// Given: Volcano
@@ -62,10 +62,15 @@ public class Volcano_Tests {
 		spirit.Given_IsOn( gameState.Tokens[a6], 3 );
 
 		// When: Activating Growth Range-0 presence
-		_ = spirit.DoGrowth(gameState);
-		spirit.NextDecision().HasPrompt("select growth").ChooseFirst( "Place Presence(0,Mountain)" );
-		// Then only option available is A6 (range-0)
-		spirit.NextDecision().HasPrompt( "Select Presence to place" ).ChooseFrom( "2 energy" ).HasToOptions( a6.Label );
+		await spirit.DoGrowth(gameState).AwaitUser(user => {
+			user.NextDecision.HasPrompt("select growth").ChooseFirst("Place Presence(0,Mountain)");
+			// Then only option available is A6 (range-0)
+			user.NextDecision.HasPrompt("Select Presence to place").ChooseFrom("2 energy").HasToOptions(a6.Label);
+
+			// Finish it out...
+			user.NextDecision.HasPrompt("Select Growth").HasOptions("Place Presence(0,Mountain)").ChooseFirst();
+			user.NextDecision.HasPrompt("Select Presence to place").HasOptions("earth energy => A6,fire => A6,VLH on A6 => A6").ChooseFirst();
+		}).ShouldComplete();
 	}
 
 	[Trait( "Special Rule", VolcanoLoomingHigh.CollapseInABlastOfLavaAndSteam )]

@@ -21,10 +21,6 @@ public class MesmerizedTranquility_Tests {
 	[Trait( "Invaders", "Ravage" )]
 	[Fact]
 	public async Task PlayedTwice_TownsDoNoDamage() {
-		//var fxt = new ConfigurableTestFixture();
-		//_ = fxt.GameState;
-		//var spirit = fxt.Spirit;
-		//var board = fxt.Board;
 
 		var gs = new SoloGameState();
 		var spirit = gs.Spirit;

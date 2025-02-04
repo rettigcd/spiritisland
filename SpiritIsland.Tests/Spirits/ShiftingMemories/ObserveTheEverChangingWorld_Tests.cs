@@ -30,7 +30,7 @@ public class ObserveTheEverChangingWorld_Tests {
 
 		ShiftingMemoryOfAges spirit = new ShiftingMemoryOfAges();
 		Board board = Boards.A;
-		_ = new SoloGameState( spirit, board );
+		var gs = new SoloGameState( spirit, board );
 		TargetSpaceCtx ctx = spirit.Target( board[5] );
 
 		var el1 = new ObserveWorldMod( ctx );

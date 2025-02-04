@@ -67,7 +67,7 @@ public class ManyMinds_Tests {
 	public async Task MovingMMBeast_Moves2Presence(int startingSrcPresence, int startingDstPresence, bool srcEndsWithBeast) {
 		ManyMindsMoveAsOne spirit = new ManyMindsMoveAsOne();
 		Board board = Boards.A;
-		_ = new SoloGameState( spirit, board );
+		var gs = new SoloGameState( spirit, board );
 		Space src = board[1].ScopeSpace;
 		Space dst = board[2].ScopeSpace;
 

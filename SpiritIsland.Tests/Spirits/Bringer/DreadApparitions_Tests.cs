@@ -10,7 +10,7 @@ public class DreadApparitions_Tests {
 		Bringer spirit = new Bringer();
 		Board board = Boards.A;
 		SpaceSpec targetSpace = board[5];
-		_ = new SoloGameState( spirit, board );
+		var gs = new SoloGameState( spirit, board );
 
 		// Given: DA run
 		// await spirit.When_TargetingSpace( a5, DreadApparitions.ActAsync );
@@ -117,7 +117,7 @@ public class DreadApparitions_Tests {
 	public async Task FearInOtherLand_Generates0() {
 		Bringer spirit = new Bringer();
 		Board board = Boards.A; 
-		_ = new SoloGameState( spirit, board );
+		var gs = new SoloGameState( spirit, board );
 		var targetSpace = board[5];
 		var otherSpace = board[1];
 

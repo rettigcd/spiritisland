@@ -203,7 +203,7 @@ public class SettleIntoHuntingGrounds_Tests {
 	static (Spirit,Board) Init() {
 		RiverSurges spirit = new RiverSurges();
 		Board board = Boards.A;
-		_ = new SoloGameState(spirit,board);
+		var gs = new SoloGameState(spirit,board);
 		return (spirit,board);
 	}
 

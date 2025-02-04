@@ -11,16 +11,16 @@ public class Fear_Tests {
 	readonly Task<Log.FearCardRevealed> _fearCard;
 
 	[Fact]
-	public void TriggerDirect() {
+	public async Task TriggerDirect() {
 		Given_EnoughFearToTriggerCard();
-		_ = _gs.Fear.ResolveActivatedCards(); // When
+		await _gs.Fear.ResolveActivatedCards(); // When
 		Assert_PresentsFearToUser();
 	}
 
 	[Fact]
-	public void TriggerAsPartofInvaderActions() {
+	public async Task TriggerAsPartofInvaderActions() {
 		Given_EnoughFearToTriggerCard();
-		_ = InvaderPhase.ActAsync( _gs ); // When
+		await InvaderPhase.ActAsync( _gs ); // When
 		Assert_PresentsFearToUser();
 	}
 
