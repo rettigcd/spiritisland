@@ -52,8 +52,21 @@
 	  <DefineConstants>$(DefineConstants);TEST_STUB</DefineConstants>
 	</PropertyGroup>
 
+	<!-- Android Build Configurations -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
-	  <DebugType>embedded</DebugType>
+		<DebugType>embedded</DebugType>
+		<AndroidPackageFormats>apk</AndroidPackageFormats>
+<!-- 
+		https://learn.microsoft.com/en-us/dotnet/android/building-apps/build-properties
+
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<AndroidKeyStore>False</AndroidKeyStore>
+
+		<AndroidUseAapt2>True</AndroidUseAapt2>
+		<AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+		<ApplicationId>com.rettigcd.spiritisland</ApplicationId>
+	    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+-->		
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
