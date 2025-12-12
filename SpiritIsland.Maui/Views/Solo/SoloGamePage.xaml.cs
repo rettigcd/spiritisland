@@ -35,13 +35,13 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 
 	async void GameState_NewLogEntry( Log.ILogEntry obj ) {
 		if( obj is FearCardRevealed fcr)
-			await DisplayAlert(fcr.Card.Text,fcr.GetInstructions(),"OK");
+			await DisplayAlertAsync(fcr.Card.Text,fcr.GetInstructions(),"OK");
 
 		else if( obj is IslandBlighted islandBlighted )
-			await DisplayAlert(islandBlighted.Card.Text, islandBlighted.Card.Description, "OK" );
+			await DisplayAlertAsync(islandBlighted.Card.Text, islandBlighted.Card.Description, "OK" );
 
 		else if( obj is CommandBeasts cb)
-			await DisplayAlert( "Card Revealed", $"{cb.Title} - {cb.Desciption}", "OK"  );
+			await DisplayAlertAsync( "Card Revealed", $"{cb.Title} - {cb.Desciption}", "OK"  );
 
 		else if( obj is GameOverLogEntry go) {
 			// !!! BIND this to a property so we can start new games
@@ -77,7 +77,7 @@ public sealed partial class SoloGamePage : ContentPage, IDisposable {
 	readonly SoloGameModel _model;
 
 	async void AdversaryButton_Clicked(object sender, EventArgs e) {
-		await DisplayAlert("Adversary", _model.GameState.Adversary!.Describe(),"Close");
+		await DisplayAlertAsync("Adversary", _model.GameState.Adversary!.Describe(),"Close");
 	}
 
 	void LogButton_Clicked(object sender, EventArgs e) {

@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland;
 
+#nullable enable
+
 public static class DrawFromDeck {
 
 	static public async Task<PowerCardDeck> SelectPowerCardDeck( Spirit spirit ) {

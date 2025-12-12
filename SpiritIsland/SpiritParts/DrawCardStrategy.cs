@@ -1,5 +1,7 @@
 ﻿namespace SpiritIsland;
 
+#nullable enable
+
 public class DrawCardStrategy(Spirit spirit) {
 
 	public async Task<DrawCardResult> Card(Func<PowerCardDeck, Task<bool>>? forgetCardForMajor = null) {

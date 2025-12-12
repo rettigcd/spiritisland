@@ -26,7 +26,7 @@ public partial class MainPage : ContentPage {
 	}
 
 	static void ReportOrientation() {
-		// Shell.Current.DisplayAlert("Orientation", DeviceDisplay.Current.MainDisplayInfo.Orientation.ToString(), "Ok");
+		// Shell.Current.DisplayAlertAsync("Orientation", DeviceDisplay.Current.MainDisplayInfo.Orientation.ToString(), "Ok");
 		// IDeviceDislpay - add to use
 	}
 

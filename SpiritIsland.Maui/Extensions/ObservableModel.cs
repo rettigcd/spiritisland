@@ -4,6 +4,12 @@ using System.Runtime.CompilerServices;
 
 namespace SpiritIsland.Maui;
 
+/// <summary>
+/// </summary>
+/// <remarks>
+/// Requires private backing fields
+/// Usage: 	public bool Selected { get=>_selected; set=>SetProp(ref _selected,value); }
+/// </remarks>
 public class ObservableModel : INotifyPropertyChanged {
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -21,6 +27,10 @@ public class ObservableModel : INotifyPropertyChanged {
 	}
 }
 
+/// <remarks>
+/// Uses a private dictionary for backing fields
+/// Usage: 	public bool Selected { get => GetStruct&lt;bool&gt;(); set => SetProp(value); }
+/// </remarks>
 public class ObservableModel1 : INotifyPropertyChanged {
 
 	public event PropertyChangedEventHandler? PropertyChanged;

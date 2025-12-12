@@ -91,7 +91,9 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 	public string Text => "Invaders Skip 1 Board";
 
 	public async Task<bool> Skip( Space space ) {
-		return space.SpaceSpec.Boards.Contains( await BoardToSkip() );
+		var board = await BoardToSkip();
+		var boards = space.SpaceSpec.Boards;
+		return boards.Contains( board );
 	}
 
 	async Task<Board> BoardToSkip() {

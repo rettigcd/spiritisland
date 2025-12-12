@@ -26,7 +26,7 @@ public class StrugglesOverFarmland : FearCardBase, IFearCard {
 		=> Cmd.Multiple(
 			Cmd.AddStrife(1).In().SpiritPickedLand().ForEachSpirit(),
 			StrifedInvaderDamagesOthers.In().EachActiveLand().Which(Has.Blight)
-        )
+		)
 			.ActAsync( gs );
 
 	static SpaceAction StrifedInvaderDamagesOthers => new SpaceAction("1 Invader with Strife does Damage to other Invaders.", 
