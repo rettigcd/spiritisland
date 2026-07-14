@@ -9,11 +9,6 @@ public class TokenBinding {
 		_space = space;
 		Default = token;
 	}
-
-	public TokenBinding( TokenBinding src ) {
-		_space = src._space;
-		Default = src.Default;
-	}
 	#endregion
 
 	public bool Any => Count > 0;
@@ -50,10 +45,6 @@ public class BeastBinding {
 	public BeastBinding( Space space, TokenClassToken defaultToken ) {
 		_space = space;
 		_uniqueToken = defaultToken;
-	}
-	public BeastBinding( BeastBinding src ) {
-		_space = src._space;
-		_uniqueToken = src._uniqueToken;
 	}
 	#endregion
 

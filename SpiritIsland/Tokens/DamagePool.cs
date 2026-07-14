@@ -36,7 +36,4 @@ public class DamagePool( int _remaining ) {
 
 	public int Remaining => _remaining;
 
-	#region private
-	#endregion
-
 }

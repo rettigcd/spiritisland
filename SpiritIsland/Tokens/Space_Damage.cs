@@ -2,21 +2,6 @@
 
 public partial class Space {
 
-	///// <returns>Damage inflicted.</returns>
-	//public async Task<int> UserSelected_DamageInvadersAsync(Spirit damagePicker, int damage, params ITokenClass[] allowedTypes) {
-	//	if( allowedTypes.Length == 0 ) allowedTypes = Human.Invader;
-
-	//	// Adjust Damage from mods.
-	//	var args = new DamageFromSpiritPowers { Space = this, Classes = allowedTypes, Damage = damage };
-	//	var mods = ModsOfType<IAdjustDamageToInvaders_FromSpiritPowers>().ToArray();
-	//	foreach(var mod in mods )
-	//		await mod.ModifyDamage(args);
-
-	//	return await SourceSelector
-	//		.AddAll(allowedTypes)
-	//		.DoDamageAsync(damagePicker, args.Damage, Present.Always);
-	//}
-
 	// This is needed when strifed invaders ravage OTHER tokens. Need to be able to exclude specific token
 	public async Task<int> UserSelected_ApplyDamageToSpecificTokenAsync(Spirit damagePicker, int damage, HumanToken source, Func<HumanToken[]> allowedTypes) {
 		if( damage == 0 ) return 0;

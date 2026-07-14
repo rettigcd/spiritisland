@@ -6,7 +6,7 @@
 /// </summary>
 public sealed partial class Space 
 	: ISeeAllNeighbors<Space>
-	, ILocation // !!! we don't SpaceToken or TokenOn using this as a location, maybe we should remove this
+	, ILocation // used as the Location for SpaceToken/TokenOn (see SpaceToken.Location)
 	, IOption
 {
 
@@ -187,8 +187,6 @@ public sealed partial class Space
 	public int InvaderTotal() => InvaderTokens().Sum( i => _counts[i] );
 
 	#endregion
-
-	// public int AttackDamageFrom1( HumanToken ht ) => ht.Attack;
 
 	#region Adjacent Properties
 
