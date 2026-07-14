@@ -4,7 +4,7 @@
 /// Token that implements its own IEntity.Class
 /// </summary>
 /// <example>blight, defend, isolate, beast</example>
-public class TokenClassToken(string label, char spaceAbrev, Img img, string? badge = null) : IToken, ITokenClass, IAppearInSpaceAbreviation {
+public class TokenClassToken(string label, char spaceAbrev, Img img, string? badge = null) : IToken, ITokenClass {
 
 	#region IOption interface
 
@@ -17,6 +17,7 @@ public class TokenClassToken(string label, char spaceAbrev, Img img, string? bad
 	public Img Img => img;
 	ITokenClass IToken.Class => this;
 	string IToken.Badge => _badge;
+	string IToken.SpaceAbreviation => _spaceAbrev;
 	public bool HasTag(ITag tag) => tag == this || tag == BonusTag;
 
 	public ITag? BonusTag = null; // Hook for treating some things as other things
@@ -29,15 +30,7 @@ public class TokenClassToken(string label, char spaceAbrev, Img img, string? bad
 
 	public string Label => label;
 
-//	bool ITokenClass.HasTag(ITag tag) => HasTag_Internal(tag);
-
 	#endregion ITokenClass
-
-	#region IAppearInSpaceAbreviation
-
-	string IAppearInSpaceAbreviation.SpaceAbreviation => _spaceAbrev;
-
-	#endregion IAppearInSpaceAbreviation
 
 	public override string ToString() => _spaceAbrev;
 

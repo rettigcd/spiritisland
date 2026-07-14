@@ -1,9 +1,8 @@
 ﻿namespace SpiritIsland;
 
 #nullable enable
-public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _empowered ) 
+public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _empowered )
 	: IToken
-	, IAppearInSpaceAbreviation
 	, ITokenClass
 	, ITrackMySpaces
 {

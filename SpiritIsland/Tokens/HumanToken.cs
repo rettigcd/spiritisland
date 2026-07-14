@@ -5,7 +5,7 @@ namespace SpiritIsland;
 /// <summary>
 /// Base token for both Dahan and Invaders
 /// </summary>
-public class HumanToken : IToken, IAppearInSpaceAbreviation, IEquatable<HumanToken> {
+public class HumanToken : IToken, IEquatable<HumanToken> {
 
 	#region constructors
 

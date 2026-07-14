@@ -31,6 +31,7 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 {
 	ITokenClass IToken.Class => Token.Element;
 	string IToken.Badge => string.Empty;
+	string IToken.SpaceAbreviation => "SMoA-Elem";
 
 	public bool HasTag(ITag tag) => Token.Element.HasTag(tag);
 	public string Text => ObserveTheEverChangingWorld.Name;

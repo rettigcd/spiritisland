@@ -47,7 +47,7 @@ public class AJoiningOfSwarmsAndFlocks : SpiritPresenceToken, IHandleTokenAdded 
 ///  - simplifies Moving the Presence with the Presence-Beasts into the AddedTo space.
 /// </remarks>
 public class ManyMindsBeast(AJoiningOfSwarmsAndFlocks presenceToken)
-	: IToken, IHandleTokenAdded, IHandleTokenRemoved, IAppearInSpaceAbreviation {
+	: IToken, IHandleTokenAdded, IHandleTokenRemoved {
 
 	readonly AJoiningOfSwarmsAndFlocks _presenceToken = presenceToken;
 

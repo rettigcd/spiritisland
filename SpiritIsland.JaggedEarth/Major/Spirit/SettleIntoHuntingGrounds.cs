@@ -14,7 +14,7 @@ public class SettleIntoHuntingGrounds {
 		var presenceBeast = new TokenVariety(Token.Beast, TokenBadge);
 		var presenceBadland = new TokenVariety(Token.Badlands, TokenBadge);
 
-		// !!! use these: public class TokenClassToken : IToken, IAppearInSpaceAbreviation
+		// !!! use these: public class TokenClassToken : IToken
 		// var presenceBeast = new VarietyToken("Beast", 'A', Img.Beast, Token.Beast, "😀");
 		// var presenceBadland = new VarietyToken("Badlands", 'M', Img.Badlands, Token.Badlands "😀");
 

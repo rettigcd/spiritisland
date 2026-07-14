@@ -104,7 +104,6 @@ class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> tri
 public class MarkedBeast : IToken
 	, IModifyRemovingToken
 	, IHandleTokenAdded
-	, IAppearInSpaceAbreviation
 	, IActionFactory
 {
 	string IToken.Badge => "🦏";

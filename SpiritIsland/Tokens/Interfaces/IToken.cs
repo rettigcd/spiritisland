@@ -9,6 +9,8 @@ public interface IToken : ISpaceEntity, IOption {
 	bool HasTag(ITag tag);
 	/// <summary> 1 or 2 letters that appear on the Token to help identify which variety it is.  (Dahan/Invader Health, Beast variants, Incarna powered up/down) </summary>
 	string Badge { get; }
+	/// <summary> The text to display when showing a summary of the tokens in a space. </summary>
+	string SpaceAbreviation { get; }
 }
 
 public static class ITokenExtensions {

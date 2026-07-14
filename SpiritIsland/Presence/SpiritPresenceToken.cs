@@ -1,10 +1,9 @@
 ﻿namespace SpiritIsland;
 
-public class SpiritPresenceToken 
+public class SpiritPresenceToken
 	: IToken
-	, ITrackMySpaces 
+	, ITrackMySpaces
 	, IHandleTokenRemoved
-	, IAppearInSpaceAbreviation
 {
 
 	public SpiritPresenceToken(Spirit spirit) {
