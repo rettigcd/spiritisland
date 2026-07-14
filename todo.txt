@@ -1,3 +1,5 @@
+Save state by serializing it.  Allow undo last action instead of whole round.
+
 =====  API Cleanup  =====
 
 4	Badlands as Damage Mod - See if Badlands can be made a MOD instead of special case it is.
@@ -16,7 +18,12 @@
 
 =====  UI Improvement  =====
 
+5	Stone's innates in the card view wrap
+5	red hot spot markers are squished
+
 5	UI - Drag and drop!
+
+4	Slide-In - how to do it?
 
 4	Custom Tokens for Horizon spirits.
 4	UI - Landscape layout
