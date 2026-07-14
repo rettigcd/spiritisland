@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public class TokenRemovedHandlerAsync(Func<ITokenRemovedArgs, Task> handler)
-	: BaseModEntity()
+	: BaseModEntity
 	, IEndWhenTimePasses
 	, IHandleTokenRemoved
 {
@@ -16,7 +16,7 @@ public class TokenRemovedHandlerAsync_Persistent(Func<ITokenRemovedArgs, Task> _
 }
 
 public class TokenRemovedHandler(Action<ITokenRemovedArgs> _handler)
-	: BaseModEntity()
+	: BaseModEntity
 	, IEndWhenTimePasses
 	, IHandleTokenRemoved
 {

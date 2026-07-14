@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops either 1 or ALL builds. </summary>
-public class SkipBuild(string label, UsageDuration duration, params ITokenClass[] stoppedTokenClasses) : BaseModEntity(), IEndWhenTimePasses, ISkipBuilds {
+public class SkipBuild(string label, UsageDuration duration, params ITokenClass[] stoppedTokenClasses) : BaseModEntity, IEndWhenTimePasses, ISkipBuilds {
 
 	readonly ITokenClass[] _stoppedClasses = stoppedTokenClasses.Length > 0 ? stoppedTokenClasses : Human.Town_City;
 

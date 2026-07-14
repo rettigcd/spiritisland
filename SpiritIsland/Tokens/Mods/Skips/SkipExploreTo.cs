@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary> Stops either 1 or ALL explores </summary>
-public class SkipExploreTo(bool skipAll = false) : BaseModEntity(), IEndWhenTimePasses, ISkipExploreTo {
+public class SkipExploreTo(bool skipAll = false) : BaseModEntity, IEndWhenTimePasses, ISkipExploreTo {
 	public virtual Task<bool> Skip(Space space) {
 		if( !skipAll )
 			space.Adjust(this, -1); // remove this token

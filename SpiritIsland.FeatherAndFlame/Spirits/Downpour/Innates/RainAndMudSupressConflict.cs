@@ -60,7 +60,7 @@ internal class RainAndMudSupressConflict {
 
 
 class MudToken( Spirit _self, int _count ) 
-	: BaseModEntity(), IEndWhenTimePasses, IConfigRavages {
+	: BaseModEntity, IEndWhenTimePasses, IConfigRavages {
 	Task IConfigRavages.Config( Space space ) {
 		space.RavageBehavior.AttackersDefend += _self.Presence.CountOn( space ) * _count;
 		return Task.CompletedTask;

@@ -15,7 +15,7 @@ public class SwelteringExhaustion {
 }
 
 public class SkipRavageOrBuild(string label, Spirit spirit)
-	: BaseModEntity()
+	: BaseModEntity
 	, IEndWhenTimePasses
 	, ISkipRavages
 	, ISkipBuilds {

@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 sealed public class SkipBuild_Custom(string label, bool stopAll, Func<Space, bool> func)
-	: BaseModEntity(), IEndWhenTimePasses, ISkipBuilds {
+	: BaseModEntity, IEndWhenTimePasses, ISkipBuilds {
 
 	/// <summary> Used by skips to determine which skip to use. </summary>
 	public UsageCost Cost => UsageCost.Free;

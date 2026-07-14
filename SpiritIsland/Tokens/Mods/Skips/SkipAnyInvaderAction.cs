@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 public class SkipAnyInvaderAction(string label, Spirit spirit, Func<Space, Task>? alternativeAction = null)
-	: BaseModEntity() // !!! could add this to Space for simplicity
+	: BaseModEntity // !!! could add this to Space for simplicity
 	, IEndWhenTimePasses
 	, ISkipRavages
 	, ISkipBuilds

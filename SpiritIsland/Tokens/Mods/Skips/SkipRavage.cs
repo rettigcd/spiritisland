@@ -2,7 +2,7 @@
 
 /// <summary> Stops 1 Ravage. </summary>
 public class SkipRavage(string label, UsageDuration duration = UsageDuration.SkipOneThisTurn)
-	: BaseModEntity(), IEndWhenTimePasses, ISkipRavages {
+	: BaseModEntity, IEndWhenTimePasses, ISkipRavages {
 
 	/// <summary> So we can log what it was that stopped the ravage. </summary>
 	public string SourceLabel { get; } = label;
