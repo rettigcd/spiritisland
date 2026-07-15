@@ -42,7 +42,7 @@ internal class RainAndMudSupressConflict {
 	static public void MakeThingsMuddy( Spirit self ) {
 		var gs = GameState.Current;
 		// Each of your Presence grants Defend 1
-		DynamicToken.Defend(self.Presence.CountOn, "💦");
+		gs.AddIslandMod( new PresenceCountDefend(self.Presence, "💦") );
 
 		// lowers Dahan counterattack damage by 1
 		gs.AddIslandMod( new MudToken( self, 1 ) );
@@ -59,10 +59,11 @@ internal class RainAndMudSupressConflict {
 }
 
 
-class MudToken( Spirit _self, int _count ) 
+public class MudToken( Spirit _self, int _count )
 	: BaseModEntity, IEndWhenTimePasses, IConfigRavages {
 	Task IConfigRavages.Config( Space space ) {
 		space.RavageBehavior.AttackersDefend += _self.Presence.CountOn( space ) * _count;
 		return Task.CompletedTask;
 	}
+
 }

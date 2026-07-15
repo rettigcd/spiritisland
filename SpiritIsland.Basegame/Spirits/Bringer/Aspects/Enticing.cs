@@ -8,7 +8,10 @@ public class Enticing : IAspect {
 	public const string Name = "Enticing";
 	public string[] Replaces => [NightTerrors.Name];
 
+	static InnatePower NewInnate => InnatePower.For(typeof(EnticingAndLullingDreams));
+	public InnatePower[] NewInnates => [NewInnate];
+
 	public void ModSpirit(Spirit spirit) {
-		spirit.ReplaceInnate(NightTerrors.Name,InnatePower.For(typeof(EnticingAndLullingDreams)));
+		spirit.ReplaceInnate(NightTerrors.Name,NewInnate);
 	}
 }

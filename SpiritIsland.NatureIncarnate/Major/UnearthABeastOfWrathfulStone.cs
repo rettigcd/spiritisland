@@ -17,33 +17,10 @@ public class UnearthABeastOfWrathfulStone {
 			: Token.Beast;
 
 		// After the next Invader Phase with no Ravage/Build Actions in target land:
-		var noRavageOrBuildTrigger = new TriggerAfterNoRavageOrBuild( ctx.Self, TriggeredAction );
+		var noRavageOrBuildTrigger = new TriggerAfterNoRavageOrBuild( ctx.Self, ctx, beastToken );
 		ctx.Space.Adjust(noRavageOrBuildTrigger,1);
 		GameState.Current.AddPostInvaderPhase( noRavageOrBuildTrigger );
 
-		async Task TriggeredAction(TargetSpaceCtx ctxx ) {
-			// 3 Fear.
-			await ctx.AddFear(3);
-
-			// 12 Damage.
-			await ctx.DamageInvaders( 12 );
-
-			// Add 1 Beast. (either normal or the marked one)
-			await ctx.Space.AddAsync( beastToken, 1 );
-
-			// You may Push that Beast.
-			await ctx.SourceSelector
-				.UseQuota(new Quota().AddGroup( 1, Token.Beast ))
-				.FilterSpaceToken( st => st.Token == beastToken )
-				.ConfigDestination(d=>d.Track( async to => {
-					// 1 Fear and 2 Damage in its land.
-					Space toSpace = (Space)to;
-					await toSpace.AddFear(1);
-					await ctxx.Self.Target(toSpace).DamageInvaders(2);
-				} ))
-				.PushN( ctx.Self );
-		}
-		
 	}
 
 }
@@ -52,15 +29,14 @@ public class UnearthABeastOfWrathfulStone {
 /// Sits on a space waiting for there to be no Ravage nor build,
 /// Then adds the correct beast token.
 /// </summary>
-class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> triggeredAction ) 
+public class TriggerAfterNoRavageOrBuild( Spirit spirit, TargetSpaceCtx ctx, IToken beastToken )
 	: ISpaceEntity
 	, ISkipBuilds
 	, IConfigRavages
 	, IRunAfterInvaderPhase
 {
-	
+
 	readonly Spirit _spirit = spirit;
-	readonly Func<TargetSpaceCtx,Task> _triggeredAction = triggeredAction;
 	bool _hadRavageOrBuild;
 
 
@@ -84,7 +60,7 @@ class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> tri
 		Space space = ActionScope.Current.Spaces.Single( ss => 0 < ss[this] );
 		// Do action
 		await using ActionScope actionScope = await ActionScope.StartSpiritAction( ActionCategory.Spirit_Power, _spirit );
-		await _triggeredAction( _spirit.Target( space.SpaceSpec ) );
+		await TriggeredAction( _spirit.Target( space.SpaceSpec ) );
 
 		// Remove
 		_remove = true; // ??? what happens if we put 2 of these down?
@@ -93,25 +69,44 @@ class TriggerAfterNoRavageOrBuild( Spirit spirit, Func<TargetSpaceCtx, Task> tri
 	bool IRunAfterInvaderPhase.RemoveAfterRun => _remove;
 	bool _remove = false;
 	#endregion IRunAfterInvaderPhase imp
+
+	async Task TriggeredAction( TargetSpaceCtx ctxx ) {
+		// 3 Fear.
+		await ctx.AddFear(3);
+
+		// 12 Damage.
+		await ctx.DamageInvaders( 12 );
+
+		// Add 1 Beast. (either normal or the marked one)
+		await ctx.Space.AddAsync( beastToken, 1 );
+
+		// You may Push that Beast.
+		await ctx.SourceSelector
+			.UseQuota(new Quota().AddGroup( 1, Token.Beast ))
+			.FilterSpaceToken( st => st.Token == beastToken )
+			.ConfigDestination(d=>d.Track( async to => {
+				// 1 Fear and 2 Damage in its land.
+				Space toSpace = (Space)to;
+				await toSpace.AddFear(1);
+				await ctxx.Self.Target(toSpace).DamageInvaders(2);
+			} ))
+			.PushN( ctx.Self );
+	}
+
 }
 
 /// <summary>
 /// Beast created from Unearth-a-Beast-of-wrathful-stone
 /// </summary>
-/// <remarks>
-/// Is both the Beast-token AND is the ActionFactory that pushes it each slow phase.
-/// </remarks>
 public class MarkedBeast : IToken
 	, IModifyRemovingToken
 	, IHandleTokenAdded
-	, IActionFactory
 {
 	string IToken.Badge => "🦏";
 
 	public MarkedBeast(Spirit controlSpirit) {
-		
 		// Each Slow phase: You may Push Marked Beast. 1 Fear and 2 Damage at Marked Beast
-		controlSpirit.EnergyCollected.Add( AddSlowPushToSpirit );
+		controlSpirit.Mods.Add( new MarkedBeastMover( controlSpirit, this ) );
 	}
 
 	#region IToken stuff
@@ -132,37 +127,45 @@ public class MarkedBeast : IToken
 	}
 	#endregion
 
-	#region IActionFactory - push token every slow
-
-	void AddSlowPushToSpirit(Spirit s ) {
-		if(_space is not null) // if the beast has been placed on the board.
-			s.AddActionFactory( this );
-	}
-
-	string IActionFactory.Title => "Push Marked Beast";
-	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Slow;
-
-	public async Task ActivateAsync( Spirit self ) {
-		await _space!.SourceSelector
-			.UseQuota(new Quota().AddGroup(1,Token.Beast))
-			.FilterSpaceToken(st=>st.Token==this)
-			.PushUpToN(self);
-		// 1 Fear and 2 Damage in its land.
-		await _space!.AddFear( 1 ); // don't cache space-state, it might have moved
-		await self.Target(_space).DamageInvaders(2);
-	}
-
-	#endregion
-
 	#region Track Token Space
 	Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
-		if(args.Added == this) _space = to;
+		if(args.Added == this) SpaceSpec = to.SpaceSpec;
 		return Task.CompletedTask;
 	}
 	#endregion
 
-	#region private fields
-	Space? _space;
-	#endregion
+	public SpaceSpec? SpaceSpec { get; private set; }
+
+}
+
+/// <summary>
+/// Each Slow phase: pushes the Marked Beast. 1 Fear and 2 Damage at its (possibly new) land.
+/// </summary>
+class MarkedBeastMover( Spirit controlSpirit, MarkedBeast beast ) : IActionFactory, IModifyAvailableActions {
+
+	void IModifyAvailableActions.Modify( List<IActionFactory> orig, Phase phase ) {
+		if( phase == Phase.Slow
+			&& beast.SpaceSpec is not null // if the beast has been placed on the board.
+			&& !controlSpirit.UsedActions.Any( x => x == this ) // once per round
+		)
+			orig.Add( this );
+	}
+
+	string IActionFactory.Title => "Push Marked Beast";
+	string IOption.Text => "Push Marked Beast";
+	public bool CouldActivateDuring( Phase speed, Spirit spirit ) => speed == Phase.Slow;
+
+	public async Task ActivateAsync( Spirit self ) {
+		var scope = ActionScope.Current;
+		await scope.AccessTokens( beast.SpaceSpec! ).SourceSelector
+			.UseQuota(new Quota().AddGroup(1,Token.Beast))
+			.FilterSpaceToken(st=>st.Token==beast)
+			.PushUpToN(self);
+		// 1 Fear and 2 Damage in its land.
+		Space space = scope.AccessTokens( beast.SpaceSpec! ); // don't cache space-state, it might have moved
+		await space.AddFear( 1 );
+		await self.Target(space).DamageInvaders(2);
+	}
+
 
 }

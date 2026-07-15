@@ -26,4 +26,6 @@ public class Quarantine : FearCardBase, IFearCard {
 		)
 		.ActAsync( ctx );
 
+	
+
 }

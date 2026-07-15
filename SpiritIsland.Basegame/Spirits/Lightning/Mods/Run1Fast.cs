@@ -14,4 +14,5 @@ class Run1SlowNonMajorAsFast(Spirit spirit) : RunSlowCardsAsFastMod_EveryRound(s
 
 	static bool IsNonMajor(IActionFactory slowAction) => slowAction is not PowerCard pc || pc.PowerType != PowerType.Major;
 
+
 }

@@ -30,5 +30,7 @@ public class CivilUnrest : FearCardBase, IFearCard {
 			Cmd.EachStrifeDamagesInvader.In().EachActiveLand()
         ).ActAsync( ctx );
 
+	
+
 }
 

@@ -18,9 +18,9 @@ class Russia_Level6_PressureForFastProfitRavageEngine : Russia_Level3_Competitio
 		await _token.PressureForFastProfit();
 	}
 
-	readonly RecordBlightAdded _token;
+	RecordBlightAdded _token;
 
-	class RecordBlightAdded : BaseModEntity, IHandleTokenAdded {
+	public class RecordBlightAdded : BaseModEntity, IHandleTokenAdded {
 
 		public void PreRavage() {
 			_receivedRavageBlight.Clear();

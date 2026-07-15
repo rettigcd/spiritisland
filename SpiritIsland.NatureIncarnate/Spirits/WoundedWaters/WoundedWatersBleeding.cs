@@ -92,16 +92,19 @@ public class WoundedWatersBleeding : Spirit, IHaveSecondaryElements {
 
 		card.Claim(this);
 		if(GrowthTrack.Groups.Length == 2) {
-			var thirdGrowth = new GrowthGroup(
-				new PlacePresence(3),
-				new GainEnergy(3),
-				new AddDestroyedPresence( 1 )
-			);
-			GrowthTrack = new( [.. GrowthTrack.Groups, thirdGrowth] );
+			GrowthTrack = new( [.. GrowthTrack.Groups, ThirdGrowthGroup] );
 			ActionScope.Current.Log(new Log.LayoutChanged($"Third growth added to {Name}"));
 		}
 
 	}
+
+	/// <summary> Factored out of ClaimAHealingCard so RestoreCustomStateFromJson can rebuild the exact
+	/// same group without duplicating its definition. </summary>
+	static GrowthGroup ThirdGrowthGroup => new(
+		new PlacePresence(3),
+		new GainEnergy(3),
+		new AddDestroyedPresence( 1 )
+	);
 
 	async Task DestroyPresenceOrForgetCard() {
 		await Cmd.Pick1(

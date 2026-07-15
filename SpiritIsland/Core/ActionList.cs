@@ -4,6 +4,8 @@ public abstract class ActionList<T> : IHaveMemento {
 
 	public virtual void Add(T action) => _actions.Add(action);
 
+	public IReadOnlyList<T> Actions => _actions;
+
 	public async Task Run( GameState gs ){
 		for(int i = 0; i < _actions.Count; ++i ) {
 			T action = _actions[i];
@@ -30,6 +32,7 @@ public abstract class ActionList<T> : IHaveMemento {
 	}
 
 	record MyMemento(T[] actions, Dictionary<IHaveMemento,object> mementos );
+
 }
 
 public class PreInvaderPhaseActionList : ActionList<IRunBeforeInvaderPhase> {

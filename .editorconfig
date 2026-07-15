@@ -13,6 +13,12 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 # CA1016: Assemblies should have a version #
 dotnet_diagnostic.CA1016.severity = none
 
+# CA2255: 'ModuleInitializer' attribute should not be used in library code
+# Used intentionally, dozens of times, for ISpaceEntity/ISerializableSpaceEntity self-registration
+# (SpaceEntitySerialization.Register) - each type registers its own JSON reader on assembly load,
+# so core code never needs a hardcoded list of every type defined in every expansion project.
+dotnet_diagnostic.CA2255.severity = none
+
 #### Indentation ####
 
 # Indentation and spacing

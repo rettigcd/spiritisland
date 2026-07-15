@@ -1,7 +1,7 @@
 ﻿namespace SpiritIsland;
 
 /// <summary>
-/// Wraps a SelfCmd turning it into a GrowthAction
+/// Wraps a SelfCmd turning it into a GrowthAction that can be triggered during Fast OR Slow
 /// </summary>
 public class FastSlowAction(IActOn<Spirit> cmd) : IActionFactory {
 

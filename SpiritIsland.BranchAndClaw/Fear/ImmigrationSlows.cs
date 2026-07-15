@@ -37,4 +37,6 @@ public class ImmigrationSlows : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
+	
+
 }

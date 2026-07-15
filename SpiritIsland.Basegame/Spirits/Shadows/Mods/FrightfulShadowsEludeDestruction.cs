@@ -2,7 +2,7 @@
 
 namespace SpiritIsland.Basegame;
 
-public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceToken(spirit), IModifyRemovingToken {
+public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceToken(spirit), IModifyRemovingToken, ISpiritMod, ICleanupSpiritWhenTimePasses {
 
 	public const string Name = "Frightful Shadows Elude Destruction";
 	const string Description = "The first time each Action would destroy your Presence, you may Push 1 of those Presence instead of destroying it.";
@@ -10,12 +10,16 @@ public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceTok
 
 	static public void InitAspect(Spirit spirit) {
 		var old = spirit.Presence;
-		spirit.Presence = new SpiritPresence(spirit, old.Energy, old.CardPlays, new FrightfulShadowsEludeDestruction(spirit));
+		var token = new FrightfulShadowsEludeDestruction(spirit);
+		spirit.Presence = new SpiritPresence(spirit, old.Energy, old.CardPlays, token);
+		// Not otherwise in spirit.Mods (it's the Presence token, dispatched via Space token events instead) 
+		// - added here solely so ICleanupSpiritWhenTimePasses resets UsedThisRound each round.
+		spirit.Mods.Add(token);
 	}
 
 	async Task IModifyRemovingToken.ModifyRemovingAsync(RemovingTokenArgs args) {
-		if(args.Token == this 
-			&& args.Reason.IsDestroyingPresence() 
+		if(args.Token == this
+			&& args.Reason.IsDestroyingPresence()
 			&& !UsedThisRound
 		) {
 
@@ -28,9 +32,8 @@ public class FrightfulShadowsEludeDestruction(Spirit spirit) : SpiritPresenceTok
 		}
 	}
 
-	static bool UsedThisRound {
-		get => GameState.Current.RoundScope.ContainsKey(Name);
-		set => GameState.Current.RoundScope[Name] = true;
-	}
+	bool UsedThisRound;
+
+	void ICleanupSpiritWhenTimePasses.CleanupSpirit( Spirit spirit ) => UsedThisRound = false;
 
 }

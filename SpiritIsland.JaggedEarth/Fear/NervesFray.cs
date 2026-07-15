@@ -32,4 +32,6 @@ public class NervesFray : FearCardBase, IFearCard {
 		ctx.Fear.Add( ctx.Spirits.Length );
 	}
 
+	
+
 }

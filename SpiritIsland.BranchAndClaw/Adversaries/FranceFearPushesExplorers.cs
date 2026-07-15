@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.BranchAndClaw;
 
-class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingToken {
+public class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingToken {
 
 	// Fear Card effects never remove Explorer. If one would, you may instead Push that Explorer.
 	public async Task ModifyRemovingAsync( RemovingTokenArgs args ) {
@@ -21,4 +21,5 @@ class FranceFearPushesExplorers : BaseModEntity, IModifyRemovingToken {
 				.PushN(spirit);
 		}
 	}
+
 }

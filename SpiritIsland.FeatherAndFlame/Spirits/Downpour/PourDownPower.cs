@@ -36,9 +36,10 @@ class PourDownPower : IModifyAvailableActions {
 
 	#endregion private
 
+
 	#region Actions
 
-	class RepeatLandCardForCost(params string[] exclude) : RepeatCardForCost(exclude) {
+	class RepeatLandCardForCost(string exclude = "") : RepeatCardForCost(exclude) {
 		public override string Title => $"Repeat Land Card (PDP)";
 
 		public override PowerCard[] GetCardOptions(Spirit self, Phase phase) {

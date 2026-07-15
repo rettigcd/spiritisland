@@ -8,8 +8,12 @@ public class Deeps : IAspect {
 	public const string Name = "Deeps";
 	public string[] Replaces => [OceanBreaksTheShore.Name];
 
+	static InnatePower NewInnate0 => InnatePower.For(typeof(WaterEatsAwayTheDeepRootsOfEarth));
+	static InnatePower NewInnate1 => InnatePower.For(typeof(ReclaimedByTheDeeps));
+	public InnatePower[] NewInnates => [NewInnate0, NewInnate1];
+
 	public void ModSpirit(Spirit spirit) {
-		spirit.InnatePowers[0] = InnatePower.For(typeof(WaterEatsAwayTheDeepRootsOfEarth));
-		spirit.InnatePowers[1] = InnatePower.For(typeof(ReclaimedByTheDeeps));
+		spirit.InnatePowers[0] = NewInnate0;
+		spirit.InnatePowers[1] = NewInnate1;
 	}
 }

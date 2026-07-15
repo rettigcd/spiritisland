@@ -13,10 +13,14 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 
 	static SpaceAction StopExploreInLandsWithAtLeast2Dahan => new SpaceAction( "Stop Explore if 2 dahan",
 		ctx => {
-			var token = new SkipExploreTo_Custom( true, ( space ) => 2 <= space.Dahan.CountAll );
+			var token = new StopExploreIn2DahanLands();
 			ctx.Space.Adjust( token, 1 );
 		}
 	);
+
+	public class StopExploreIn2DahanLands() : SkipExploreTo_Custom(true) {
+		protected override bool ShouldSkip(Space space) => 2 <= space.Dahan.CountAll;
+	}
 
 	[FearLevel("Invaders do not Build in lands where Dahan outnumber Town/City." )]
 	public override Task Level2( GameState gs )
@@ -24,13 +28,15 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 			.In().EachActiveLand()
 			.ActAsync( gs );
 
-	static SpaceAction StopBuildWhereDahanOutnumberTownsCities => new SpaceAction( 
+	static SpaceAction StopBuildWhereDahanOutnumberTownsCities => new SpaceAction(
 		"Stop Build if dahan outnumber towns/cities.",
-		ctx => ctx.Space.Adjust(new SkipBuild_Custom(Name, true, DahanOutnumberCities), 1 )
+		ctx => ctx.Space.Adjust(new StopBuildWhereDahanOutnumber(), 1 )
 	);
 
-	static bool DahanOutnumberCities( Space space )
-		=> space.SumAny(Human.Town_City) < space.Dahan.CountAll;
+	public class StopBuildWhereDahanOutnumber() : SkipBuild_Custom(Name, true) {
+		protected override bool ShouldSkip(Space space)
+			=> space.SumAny(Human.Town_City) < space.Dahan.CountAll;
+	}
 
 	[FearLevel("Invaders do not Build in lands with Dahan." )]
 	public override Task Level3( GameState gs )
@@ -40,10 +46,13 @@ public class AvoidTheDahan : FearCardBase, IFearCard {
 
 	static SpaceAction DoNotBuildInLandsWithDahan => new SpaceAction( "Stop Build in lands with Dahan",
 		ctx => {
-			var token = new SkipBuild_Custom( Name, true, ( space ) => space.Dahan.Any );
+			var token = new StopBuildInDahanLands();
 			ctx.Space.Adjust( token, 1 );
 		}
 	);
 
+	public class StopBuildInDahanLands() : SkipBuild_Custom(Name, true) {
+		protected override bool ShouldSkip(Space space) => space.Dahan.Any;
+	}
 
 }

@@ -11,4 +11,5 @@ public class AddBagPresenceOn1Space : SpiritAction {
 		await self.Presence.Token.AddTo(space);
 	}
 
+
 }

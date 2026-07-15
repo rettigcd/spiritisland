@@ -2,6 +2,11 @@
 
 public class EmpoweredAbduct : IActionFactory {
 
+	// Shared process-wide (stateless, parameterless) rather than one per spirit - EnableEmpoweredAbductMod
+	// compares spirit.UsedActions against this exact reference, so restoring _usedActions must resolve
+	// back to this same singleton, not construct a fresh, reference-distinct instance.
+	public static readonly EmpoweredAbduct Singleton = new EmpoweredAbduct();
+
 	public string Title => "Abduct Explorer/Town";
 
 	public string Text => Title;
@@ -28,10 +33,9 @@ public class EmpoweredAbduct : IActionFactory {
 class EnableEmpoweredAbductMod(Spirit spirit) : IModifyAvailableActions {
 
 	public void Modify(List<IActionFactory> orig, Phase phase) {
-		if( phase == Phase.Fast && spirit.Presence.Incarna.Empowered && !spirit.UsedActions.Contains(_empoweredAbduct) )
-			orig.Add(_empoweredAbduct);
+		if( phase == Phase.Fast && spirit.Presence.Incarna.Empowered && !spirit.UsedActions.Contains(EmpoweredAbduct.Singleton) )
+			orig.Add(EmpoweredAbduct.Singleton);
 	}
 
-	static readonly EmpoweredAbduct _empoweredAbduct = new EmpoweredAbduct();
 }
 

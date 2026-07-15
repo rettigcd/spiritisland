@@ -44,4 +44,9 @@ public class FollowingPresenceToken : SpiritPresenceToken {
 
 	public List<ITokenMovedArgs> FollowedMoves => ActionScope.Current.SafeGet<List<ITokenMovedArgs>>(Key, () => []);
 	string Key => "FollowedMoves-" + SpaceAbreviation;
+
+	// _leaderClass/SpaceAbreviation are readonly, fixed once at spirit construction (Thunderspeaker/
+	// Sharp Fangs always build this with the same leaderClass) - deterministically reproduced by
+	// reconstructing the spirit, same as GrowthTrack/InnatePowers, so the inherited base ToJson (just
+	// Self) is enough; no override/registration of its own needed.
 }

@@ -10,6 +10,9 @@ public partial class Violence : IAspect {
 	public const string Name = "Violence";
 	public string[] Replaces => [];
 
+	static PowerCard NewCard => PowerCard.ForDecorated(BatsScoutForRaidsByDarkness);
+	public PowerCard[] NewCards => [NewCard];
+
 	public void ModSpirit(Spirit spirit) {
 		// Gain 1 Energy
 		spirit.Energy++;
@@ -18,11 +21,14 @@ public partial class Violence : IAspect {
 		spirit.Presence.Energy.Slots.First().Action = new SpiritAction("Play Damage Cards", SelectAndPlayDamageCardsFromHand);
 
 		// Replace Dreams of the Dahan with Bats Scout for Raids by Darkness.
-		spirit.ReplaceCard(DreamsOfTheDahan.Name, PowerCard.ForDecorated(BatsScoutForRaidsByDarkness));
+		spirit.ReplaceCard(DreamsOfTheDahan.Name, NewCard);
 
 		// "When To Dream a Thousand Deaths generates Fear, generate +1 Fear per affected Explorer/Town (to 1/3/5 Fear for Explorers/Towns/Cities, respectively)."
-		ToDreamAThousandDeaths.DreamFear[0] = 1;
-		ToDreamAThousandDeaths.DreamFear[1] = 3;
+		// Writes into this spirit's own DreamMod (already constructed in Bringer's constructor, which runs
+		// before ModSpirit) rather than a process-wide static, so this can't leak into other Bringers.
+		var bringer = (Bringer)spirit;
+		bringer.DreamMod.DreamFear[0] = 1;
+		bringer.DreamMod.DreamFear[1] = 3;
 
 		spirit.SpecialRules = [..spirit.SpecialRules, Rule];
 	}

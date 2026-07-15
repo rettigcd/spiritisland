@@ -29,4 +29,6 @@ public class Isolation : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
+	
+
 }

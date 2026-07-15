@@ -79,6 +79,7 @@ public class InvaderDeck : IHaveMemento {
 
 	#endregion
 
+
 	#region Memento
 
 	public virtual object Memento {

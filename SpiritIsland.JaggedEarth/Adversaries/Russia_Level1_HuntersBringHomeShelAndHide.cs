@@ -3,7 +3,7 @@
 /// <summary>
 /// Tracks Beast destroyed by adding ravage Blight
 /// </summary>
-class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdded {
+public class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdded {
 
 	#region Loss Condition
 
@@ -38,4 +38,5 @@ class Russia_Level1_HuntersBringHomeShelAndHide : BaseModEntity, IHandleTokenAdd
 	}
 
 	static readonly public FakeSpace AdversaryCard = new FakeSpace( "Russia Adv Card" );
+
 }

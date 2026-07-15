@@ -36,6 +36,7 @@ public abstract class InvaderSlot( string label ) : IHaveMemento {
 
 	public abstract Task ActivateCard( InvaderCard card, GameState gameState);
 
+
 	object IHaveMemento.Memento {
 		get => new MyMemento(this);
 		set => ((MyMemento)value).Restore(this);

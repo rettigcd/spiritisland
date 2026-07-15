@@ -29,4 +29,6 @@ class FleeThePestilentLand : FearCardBase, IFearCard {
 		).ForEachSpirit()
 		.ActAsync(ctx);
 
+	
+
 }

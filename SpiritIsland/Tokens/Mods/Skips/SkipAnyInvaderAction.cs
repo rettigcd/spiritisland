@@ -1,13 +1,12 @@
 ﻿namespace SpiritIsland;
 
-public class SkipAnyInvaderAction(string label, Spirit spirit, Func<Space, Task>? alternativeAction = null)
-	: BaseModEntity // !!! could add this to Space for simplicity
+public class SkipAnyInvaderAction(string label, Spirit spirit)
+	: BaseModEntity
 	, IEndWhenTimePasses
 	, ISkipRavages
 	, ISkipBuilds
 	, ISkipExploreTo {
 
-	readonly Func<Space, Task>? _alternativeAction = alternativeAction;
 	readonly Spirit _spirit = spirit;
 
 	/// <summary> Used by skips to determine which skip to use. </summary>
@@ -26,9 +25,10 @@ public class SkipAnyInvaderAction(string label, Spirit spirit, Func<Space, Task>
 			return false;
 
 		space.Adjust(this, -1);
-		if( _alternativeAction is not null )
-			await _alternativeAction(space);
+		await AfterStop(space);
 		return true;
 	}
+
+	protected virtual Task AfterStop(Space space) => Task.CompletedTask;
 
 }

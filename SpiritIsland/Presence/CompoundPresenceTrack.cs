@@ -52,9 +52,10 @@ public class CompoundPresenceTrack( params IPresenceTrack[] parts )
 				compound._parts[i].Memento = parts[i];
 		}
 		readonly object[] parts = src._parts.Select( s => s.Memento ).ToArray();
-			
+
 	}
 
 	#endregion
+
 
 }

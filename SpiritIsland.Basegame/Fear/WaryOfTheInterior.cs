@@ -28,4 +28,6 @@ public class WaryOfTheInterior : FearCardBase, IFearCard {
 			.ByPickingToken( Human.Explorer_Town )
 			.ForEachSpirit()
 			.ActAsync( ctx );
+
+	
 }

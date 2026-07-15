@@ -24,8 +24,9 @@ public class TerrorOfASlowlyUnfoldingPlague( Spirit _spirit ) : BaseModEntity, I
 		}
 	}
 
-	static bool IsDiseaseStoppingBuild( RemovingTokenArgs args ) 
+	static bool IsDiseaseStoppingBuild( RemovingTokenArgs args )
 		=> args.Token.HasTag( Token.Disease )
 		&& args.Reason == RemoveReason.UsedUp
 		&& args.Count == 1;
+
 }

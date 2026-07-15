@@ -17,4 +17,6 @@ public class Demoralized : FearCardBase, IFearCard {
 	public override Task Level3( GameState ctx )
 		=> Cmd.Defend( 2 ).In().EachActiveLand().ActAsync( ctx );
 
+	
+
 }

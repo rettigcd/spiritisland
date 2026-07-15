@@ -17,7 +17,11 @@ public class SkyStretchesToShore {
 
 }
 
-class SkyStretchesToShoreApi(Spirit self) : DefaultRangeCalculator(self.PowerRangeCalc) {
+class SkyStretchesToShoreApi : DefaultRangeCalculator {
+
+	public SkyStretchesToShoreApi( Spirit self ) : base( self.PowerRangeCalc ) => _self = self;
+
+	readonly Spirit _self;
 
 	public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {
 		var normal = Previous!.GetTargetingRoute(source, tc);

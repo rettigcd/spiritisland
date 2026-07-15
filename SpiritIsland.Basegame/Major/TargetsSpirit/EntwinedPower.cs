@@ -12,10 +12,7 @@ public class EntwinedPower {
 			// Save off to restore later
 			var selfOrig = ctx.Self.TargetingSourceStrategy;
 			var otherOrig = ctx.Other.TargetingSourceStrategy;
-			GameState.Current.AddTimePassesAction(TimePassesAction.Once((_) => {
-				ctx.Self.TargetingSourceStrategy = selfOrig;
-				ctx.Other.TargetingSourceStrategy = otherOrig;
-			}));
+			GameState.Current.AddTimePassesAction( new RestoreTargetingSourceStrategy( ctx.Self, selfOrig, ctx.Other, otherOrig ) );
 			// set new
 			_ = new EntwinedPresenceSource( ctx.Self, ctx.Other ); // auto-binds to spirits
 		}
@@ -47,12 +44,12 @@ public class EntwinedPower {
 	}
 
 
-	class EntwinedPresenceSource : ITargetingSourceStrategy {
+	internal class EntwinedPresenceSource : ITargetingSourceStrategy {
 
-		readonly Dictionary<SpiritPresence, ITargetingSourceStrategy> _olds;
+		readonly Dictionary<Spirit, ITargetingSourceStrategy> _olds;
 
 		public EntwinedPresenceSource(params Spirit[] spirits) {
-			_olds = spirits.ToDictionary(s => s.Presence, s => s.TargetingSourceStrategy);
+			_olds = spirits.ToDictionary(s => s, s => s.TargetingSourceStrategy);
 
 			foreach( Spirit spirit in spirits )
 				spirit.TargetingSourceStrategy = this;
@@ -60,8 +57,25 @@ public class EntwinedPower {
 
 		public IEnumerable<Space> EvaluateFrom(IKnowSpiritLocations presence, TargetFrom from) {
 			return _olds
-				.SelectMany(p => p.Value.EvaluateFrom(p.Key, from))
+				.SelectMany(p => p.Value.EvaluateFrom(p.Key.Presence, from))
 				.Distinct();
+		}
+
+	}
+
+	/// <summary>
+	/// Rolls back the TargetingSourceStrategy override EntwinedPresenceSource set, restoring each
+	/// spirit's pre-entwined strategy.
+	/// </summary>
+	internal class RestoreTargetingSourceStrategy( Spirit self, ITargetingSourceStrategy selfOrig, Spirit other, ITargetingSourceStrategy otherOrig )
+		: IRunWhenTimePasses {
+
+		bool IRunWhenTimePasses.RemoveAfterRun => true;
+		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+		Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+			self.TargetingSourceStrategy = selfOrig;
+			other.TargetingSourceStrategy = otherOrig;
+			return Task.CompletedTask;
 		}
 
 	}

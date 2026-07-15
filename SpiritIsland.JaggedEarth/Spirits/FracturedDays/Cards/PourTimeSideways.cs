@@ -34,13 +34,22 @@ class PourTimeSideways {
 			if(0<board.InvaderActionCount) --board.InvaderActionCount;
 
 		// On the board moved to: During the Invader Phase, Resolve Invader and "Each board / Each Land..." Actions one more time.
-		foreach(var board in ((Space)move.Destination).SpaceSpec.Boards)
+		Board[] destBoards = ((Space)move.Destination).SpaceSpec.Boards;
+		foreach(var board in destBoards)
 			++board.InvaderActionCount;
 
-		GameState.Current.AddTimePassesAction( TimePassesAction.Once( gs => {
-			foreach(var b in ((Space)move.Destination).SpaceSpec.Boards.Union( srcBoards ))
-				b.InvaderActionCount = 1;
-		}));
+		GameState.Current.AddTimePassesAction( new ResetInvaderActionCounts( [.. srcBoards.Union( destBoards )] ) );
+	}
+
+	internal class ResetInvaderActionCounts( Board[] boards ) : IRunWhenTimePasses {
+
+		bool IRunWhenTimePasses.RemoveAfterRun => true;
+		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+		Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+			foreach(var b in boards) b.InvaderActionCount = 1;
+			return Task.CompletedTask;
+		}
+
 	}
 
 }

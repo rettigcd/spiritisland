@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class HabsburgMakeTownsDurable
+public class HabsburgMakeTownsDurable
 	:  BaseModEntity
 	, IHandleTokenRemoved
 	, IModifyAddingToken {
@@ -26,6 +26,7 @@ class HabsburgMakeTownsDurable
 			args.Token = new HabsburgDurableToken( args.Token.AsHuman() );
 		return Task.CompletedTask;
 	}
+
 }
 
 

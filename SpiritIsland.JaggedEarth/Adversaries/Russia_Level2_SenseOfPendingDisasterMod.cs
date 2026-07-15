@@ -3,7 +3,7 @@
 /// <summary>
 /// Pushes an explorer instead of destroying it.
 /// </summary>
-class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRemovingToken {
+public class Russia_Level2_SenseOfPendingDisasterMod : BaseModEntity, IModifyRemovingToken {
 
 	async Task IModifyRemovingToken.ModifyRemovingAsync( RemovingTokenArgs args ) {
 		const string key = "A Sense of Pending Disaster";

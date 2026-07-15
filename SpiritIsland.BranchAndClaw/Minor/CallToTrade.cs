@@ -25,7 +25,7 @@ public class CallToTrade {
 		ctx.Space.Adjust( new ReplaceRavageWithBuild(), 1);
 	}
 
-	class ReplaceRavageWithBuild : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
+	public class ReplaceRavageWithBuild : BaseModEntity, IEndWhenTimePasses, ISkipRavages {
 
 		public ReplaceRavageWithBuild() : base() { }
 
@@ -43,6 +43,7 @@ public class CallToTrade {
 			// Stop Ravage
 			return Task.FromResult(true);
 		}
+
 	}
 
 }

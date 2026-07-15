@@ -12,7 +12,7 @@ public class BlightTokenBinding( Space space ) : TokenBinding( space, Token.Blig
 
 }
 
-class BlockBlightToken : ISpaceEntity, IModifyAddingToken, IEndWhenTimePasses {
+public class BlockBlightToken : ISpaceEntity, IModifyAddingToken, IEndWhenTimePasses {
 	public Task ModifyAddingAsync( AddingTokenArgs args ) {
 		if(args.Token == Token.Blight)
 			args.Count = 0;

@@ -127,6 +127,7 @@ public class GameState : IHaveMemento {
 	InvaderDeck? _invaderDeck;
 
 	public void AddIslandMod( BaseModEntity mod ) => Tokens.AddIslandMod( mod );
+	public void RemoveIslandMod( BaseModEntity mod ) => Tokens.RemoveIslandMod( mod );
 
 	public void AddToAllActiveSpaces( BaseModEntity mod ) {
 		foreach(var space in Spaces_Existing)
@@ -277,5 +278,6 @@ public class GameState : IHaveMemento {
 	readonly TimePassesActionList _timePassesActions = new();
 
 	#endregion
+
 
 }

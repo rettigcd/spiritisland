@@ -36,4 +36,6 @@ public class Scapegoats : FearCardBase, IFearCard {
 			await ctx.Invaders.DestroyAll( Human.Explorer );
 			await ctx.Invaders.DestroyNOfClass( ctx.Space.Sum( Human.City ), Human.Town );
 	});
+
+	
 }

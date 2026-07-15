@@ -10,4 +10,5 @@ public class AddBagPresenceToBeastLand : SpiritAction {
 		await self.Presence.Token.AddTo( space );
 	}
 
+
 }

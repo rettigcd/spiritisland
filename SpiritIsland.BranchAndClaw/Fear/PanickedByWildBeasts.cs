@@ -25,4 +25,6 @@ public class PanickedByWildBeasts : FearCardBase, IFearCard {
 			Cmd.Skip.AllInvaderActions( Name ).In().EachActiveLand().Which( Has.Beast )
 		).ActAsync( ctx );
 
+	
+
 }

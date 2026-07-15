@@ -13,4 +13,6 @@ public class PromisingFarmlands : BlightCard {
 			.To().OneLandPerBoard().Which( Has.InlandWithNoTownOrCity )
 	);
 
+	
+
 }

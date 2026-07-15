@@ -54,6 +54,7 @@ public sealed class PowerCardDeck : IHaveMemento {
 
 	#endregion
 
+
 	#region private
 
 	void ReshuffleDiscardDeck() {
@@ -62,6 +63,10 @@ public sealed class PowerCardDeck : IHaveMemento {
 		_discards.Clear();
 	}
 
+	// Its seed is never captured by ToJson/RestoreFromJson (nor MyMemento) - accepted, deliberate drift,
+	// not an oversight. A reshuffle after a JSON restore won't reproduce what the original unbroken run
+	// would have shuffled to, but in practice a reshuffle this deck cares about is rare enough that it's
+	// never actually been observed - not worth the complexity of threading Random's state through JSON.
 	readonly Random _randomizer;
 	readonly Stack<PowerCard> _cards = new Stack<PowerCard>();
 	readonly List<PowerCard> _discards;

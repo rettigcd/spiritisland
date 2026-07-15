@@ -65,5 +65,7 @@ public class SeekSafety : FearCardBase, IFearCard {
 		ITokenClass[] invadersToGatherArray = [.. invadersToGather];
 		await destCtx.GatherUpTo( 1, invadersToGatherArray );
 	}
+
 	
+
 }

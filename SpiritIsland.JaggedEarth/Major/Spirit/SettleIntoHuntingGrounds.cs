@@ -42,7 +42,7 @@ public class SettleIntoHuntingGrounds {
 
 }
 
-class FreezePresence( string _name, SpiritPresence _presence, IToken beast, IToken badland ) : BaseModEntity 
+public class FreezePresence( string _name, SpiritPresence _presence, IToken beast, IToken badland ) : BaseModEntity
 	,IModifyRemovingToken // Prevent presence from being moved.
 	,IRunWhenTimePasses
 {
@@ -68,5 +68,6 @@ class FreezePresence( string _name, SpiritPresence _presence, IToken beast, ITok
 	}
 
 	bool IsFrozen(IToken token) => token == badland || token == beast || token.HasTag(_presence);
+
 }
 

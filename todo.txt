@@ -72,6 +72,27 @@ Save state by serializing it.  Allow undo last action instead of whole round.
 		event InvaderDamaged
 	}
 
+==== Spirit Island Multi-player ====
+
+Architecture
+	Option - run game engine in local App or WebComponent.
+	Option - save state before every user action and suspend waiting for user action.
+	Option - have engine running on the server.
+
+Avoiding Problems
+	Option - lock spaces - 
+	Option - lock individual tokens.
+	Option - lock token types. - Dahan/beast, Invaders/blight, Disease/strife/wilds/badlands/vitality, major/minor cards
+
+Resolving Problems
+	by timestamp - first wins
+	by order - round robin players - whoever won last, looses next
+
+Syncing
+	- record the moves
+	- if you loose a collision, try to replay the moves.
+	- send strings of selections between runners.
+
 ==== Maui questions / Problems ====
 
 Why is it better to show/hide popups instead of re-creating them?

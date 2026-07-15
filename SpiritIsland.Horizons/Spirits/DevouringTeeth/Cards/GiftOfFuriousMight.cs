@@ -14,13 +14,13 @@ public class GiftOfFuriousMight {
 
 }
 
-class OneTimeDamageBoost(Spirit spirit, int damageBoost) : BaseModEntity
+public class OneTimeDamageBoost(Spirit spirit, int damageBoost) : BaseModEntity
 	, IAdjustDamageToInvaders_FromSpiritPowers
-	, IEndWhenTimePasses // uses RoundScope to not run again for this round, then auto remove at end of round.
+	, IEndWhenTimePasses // fallback cleanup for the "never used this round" case - RemoveIslandMod below handles the "used" case immediately.
 {
 	Task IAdjustDamageToInvaders_FromSpiritPowers.ModifyDamage(DamageFromSpiritPowers args) {
 
-		if( spirit.ActionIsMyPower && !UsedThisRound ) {
+		if( spirit.ActionIsMyPower ) {
 			var damagedSpaces = SpacesDamagedThisAction;
 			if(damagedSpaces.Count() == 0 )
 				ActionScope.Current.AtEndOfThisAction(ApplyExtraDamage);
@@ -39,7 +39,10 @@ class OneTimeDamageBoost(Spirit spirit, int damageBoost) : BaseModEntity
 		if( spaces.Any(s=>s.HasInvaders())
 			&& await spirit.UserSelectsFirstText($"Apply 3 additional Damage in {spaceDesc}?", $"Yes boost it by {damageBoost}", "No thank you")
 		) {
-			UsedThisRound = true;
+			// Removing from island mods means ModifyDamage simply won't fire again this round - no
+			// separate "used" flag needed. Declining (the "No thank you" branch) leaves this mod in
+			// place, so a later action this round can still offer the boost.
+			GameState.Current.RemoveIslandMod(this);
 
 			await new SourceSelector(spaces)
 				.UseQuota(new DamageQuota_NoMods(3, Human.Invader))
@@ -48,15 +51,9 @@ class OneTimeDamageBoost(Spirit spirit, int damageBoost) : BaseModEntity
 
 	}
 
-	/// <summary> Round-Scoped </summary>
-	bool UsedThisRound { 
-		get => GameState.Current.RoundScope.ContainsKey(_key);
-		set => GameState.Current.RoundScope[_key] = true; 
-	}
-
 	/// <summary> Action-Scoped spaces that received damage. </summary>
 	List<Space> SpacesDamagedThisAction {
-		get { 
+		get {
 			var scope = ActionScope.Current;
 			if( scope.ContainsKey(_key) ) return (List < Space > )scope[_key];
 			var list = new List<Space>();
@@ -66,6 +63,5 @@ class OneTimeDamageBoost(Spirit spirit, int damageBoost) : BaseModEntity
 	}
 
 	readonly string _key = "Damage-Boost-" + Guid.NewGuid().ToString();
-
 
 }

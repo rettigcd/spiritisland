@@ -37,4 +37,6 @@ public class TallTalesOfSavagery : FearCardBase, IFearCard {
 			await invaders.RemoveLeastDesirable( RemoveReason.Removed, Human.Explorer );
 	}
 
+	
+
 }

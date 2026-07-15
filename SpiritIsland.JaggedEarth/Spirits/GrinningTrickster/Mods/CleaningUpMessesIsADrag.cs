@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class CleaningUpMessesIsADrag(Spirit spirit) : BaseModEntity, IHandleTokenRemoved {
+public class CleaningUpMessesIsADrag(Spirit spirit) : BaseModEntity, IHandleTokenRemoved {
 
 	#region rule
 	public const string Name = "Cleaning up Messes is a Drag";
@@ -18,6 +18,5 @@ class CleaningUpMessesIsADrag(Spirit spirit) : BaseModEntity, IHandleTokenRemove
 		}
 		return Task.CompletedTask;
 	}
-
 
 }

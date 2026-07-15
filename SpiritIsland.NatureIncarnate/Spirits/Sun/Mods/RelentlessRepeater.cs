@@ -27,4 +27,5 @@ public class RelentlessRepeater( PowerCard powerCard, Space space ) : IActionFac
 		self.AddActionFactory( this );
 	}
 
+
 }

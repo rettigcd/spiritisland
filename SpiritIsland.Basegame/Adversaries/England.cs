@@ -117,12 +117,13 @@ public class England : AdversaryBuilder, IAdversaryBuilder {
 
 	#region Level 3 - High Immegration
 
-	public class HighImmegrationSlot( int level ) 
-		: BuildSlot("High Immigration")
+	public class HighImmegrationSlot( int level )
+		: BuildSlot(SlotLabel)
 		, IRunWhenTimePasses
-	{
-		
-		readonly bool _repeatWhenNoFearResolved = level == 6;
+		{
+		const string SlotLabel = "High Immigration";
+
+		bool _repeatWhenNoFearResolved = level == 6;
 		int lastCountOfFearCardsResolved = 0;
 
 		public override async Task Execute( GameState gs ) {
@@ -159,6 +160,7 @@ public class England : AdversaryBuilder, IAdversaryBuilder {
 		bool IRunWhenTimePasses.RemoveAfterRun => _removeAfterRun;
 		bool _removeAfterRun = false;
 		#endregion IRunWhenTimePasses
+
 	}
 
 	#endregion Level 3 - High Immegration

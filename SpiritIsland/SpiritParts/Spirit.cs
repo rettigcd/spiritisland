@@ -151,6 +151,11 @@ public abstract partial class Spirit
 	public AsyncEvent<Spirit> EnergyCollected = new AsyncEvent<Spirit>();
 	public ModBucket Mods = new ModBucket();
 
+	// Recorded by GameBuilder.Build1Spirit as each aspect is applied - nothing else currently remembers
+	// which aspects a spirit was built with. Not yet consumed by anything; kept for a future Spirit.Mods
+	// restore-by-replay path (docs/GameSerialization-Roadmap.md).
+	public List<AspectConfigKey> AppliedAspects = [];
+
 	#region Cards
 
 	public List<PowerCard> Hand = [];	    // in hand
@@ -360,6 +365,15 @@ public abstract partial class Spirit
 		// Elements
 		InitElementsFromPresence();
 
+		// Roll back a temporary PowerRangeCalc override (one with a .Previous) at end of round - see
+		// the PowerRangeCalc setter's remarks below.
+		if( _powerRangeCalc.Previous is not null ) {
+			ICalcRange cur = _powerRangeCalc;
+			while( cur.Previous is not null )
+				cur = cur.Previous;
+			_powerRangeCalc = cur;
+		}
+
 		var cleanupMods = Mods.OfType<ICleanupSpiritWhenTimePasses>().ToArray();
 		foreach(var mod in cleanupMods ) mod.CleanupSpirit(this);
 		foreach(var mod in Mods.OfType<IEndWhenTimePasses>().ToArray()) Mods.Remove((ISpiritMod)mod);
@@ -490,6 +504,7 @@ public abstract partial class Spirit
 
 	#endregion
 
+
 	#region Targeting / Range
 
 	/// <summary>
@@ -518,20 +533,10 @@ public abstract partial class Spirit
 	public ITargetingSourceStrategy TargetingSourceStrategy = new DefaultPowerSourceStrategy();
 
 	/// <summary> Calculates the Range for *Powers* only.  Don't use it for non-power calculations. </summary>
-	/// <remarks> RangeCals with .Previous will automaticaly be rolled back at end of Round.</remarks>
-	public ICalcRange PowerRangeCalc { 
+	/// <remarks> RangeCals with .Previous are automatically rolled back at end of Round - see TimePasses above.</remarks>
+	public ICalcRange PowerRangeCalc {
 		get => _powerRangeCalc;
-		set {
-			_powerRangeCalc = value;
-			if( _powerRangeCalc.Previous is not null ) {
-				GameState.Current.AddTimePassesAction(TimePassesAction.Once((gs) => {
-					ICalcRange cur = PowerRangeCalc;
-					while( cur.Previous is not null )
-						cur = cur.Previous;
-					_powerRangeCalc = cur;
-				}));
-			}
-		}
+		set => _powerRangeCalc = value;
 	}
 	ICalcRange _powerRangeCalc = DefaultRangeCalculator.Singleton;
 

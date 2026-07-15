@@ -14,9 +14,9 @@ public class TheWoundedWildTurnsOnItsAssailants {
 		await ctx.GatherUpTo(2,Token.Beast);
 
 		// (watch for invaders destroyed in this land)
-		int destroyed = 0;
 		// the only way a token will be removed, is if it is destroyed
-		ctx.Space.Adjust(new TokenRemovedHandler(args => destroyed++), 1 );
+		var destroyedCounter = new CountDestroyedTokens();
+		ctx.Space.Adjust(destroyedCounter, 1 );
 
 		// 1 damamge per blight/beast/wilds.
 		await ctx.DamageInvaders( ctx.Blight.Count + ctx.Beasts.Count + ctx.Wilds.Count );
@@ -24,8 +24,16 @@ public class TheWoundedWildTurnsOnItsAssailants {
 		// if you have 2 fire, 3 air, 2 animal
 		if( await ctx.YouHave("2 fire,3 air,2 animal"))
 			// 2 fear per invader destroyed by this Power (max 8 fear)
-			await ctx.AddFear(System.Math.Min(8, destroyed * 2));
+			await ctx.AddFear(System.Math.Min(8, destroyedCounter.Count * 2));
 
+	}
+
+	public class CountDestroyedTokens : BaseModEntity, IHandleTokenRemoved {
+		public int Count { get; private set; }
+		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
+			Count++;
+			return Task.CompletedTask;
+		}
 	}
 
 }

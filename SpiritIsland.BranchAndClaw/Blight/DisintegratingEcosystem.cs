@@ -15,4 +15,6 @@ public class DisintegratingEcosystem : BlightCard {
 				Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( Has.TownOrCity )
 			)
 		);
+
+	
 }

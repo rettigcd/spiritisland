@@ -6,8 +6,8 @@ static public class SkipInvaderAction_Extensions {
 	/// <summary>
 	/// Skips 1 invader action - which one is picked later.
 	/// </summary>
-	static public void Skip1InvaderAction( this Space ss, string label, Spirit actionPicker, Func<Space,Task>? alternateAction = null ) { 
-		ss.Adjust( new SkipAnyInvaderAction(label,actionPicker,alternateAction), 1 );
+	static public void Skip1InvaderAction( this Space ss, string label, Spirit actionPicker ) {
+		ss.Adjust( new SkipAnyInvaderAction(label,actionPicker), 1 );
 	}
 
 	static public void SkipAllInvaderActions( this Space ss, string label ) {

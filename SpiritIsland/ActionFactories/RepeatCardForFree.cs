@@ -9,11 +9,6 @@ public class RepeatCardForFree : IActionFactory {
 
 	#region constructors
 
-	/// <summary> Replay any discard card for free. </summary>
-	public RepeatCardForFree() {
-		this.maxCost = int.MaxValue;
-	}
-
 	/// <summary> Replay discard card for free limited by maxCost. </summary>
 	public RepeatCardForFree( int maxCost ) {
 		this.maxCost = maxCost;
@@ -53,4 +48,5 @@ public class RepeatCardForFree : IActionFactory {
 
 
 	readonly int maxCost;
+
 }

@@ -28,14 +28,23 @@ public static partial class Cmd {
 	static public EachSpirit ForEachSpirit( this IActOn<Spirit> action ) => new EachSpirit(action);
 
 	// At specific times
-	static public GameStateAction AtTheStartOfNextRound( this GameStateAction cmd ) => new BaseCmd<GameState>(
+
+	/// <summary>
+	/// `tag` identifies which caller's stateless command graph this is - see `NextRoundCommandRegistry`.
+	/// Every caller must also register a matching factory via `NextRoundCommandRegistry.Register(tag, ...)`
+	/// (typically in its own `[ModuleInitializer]`) building the exact same `cmd` this method is given.
+	/// </summary>
+	static public GameStateAction AtTheStartOfNextRound( this GameStateAction cmd, string tag ) => new BaseCmd<GameState>(
 		"At the start of next round, " + cmd.Description,
-		gs => gs.AddTimePassesAction( TimePassesAction.Once( cmd.ActAsync ) ) // There are no actions here, just game reconfig
+		gs => gs.AddTimePassesAction( new NextRoundCommand( tag ) ) // There are no actions here, just game reconfig
 	);
 
-	static public GameStateAction AtTheStartOfEachInvaderPhase( this GameStateAction cmd ) => new BaseCmd<GameState>(
-		"At the start of each Invader Phase, " + cmd.Description,
-		gs => gs.AddPreInvaderPhaseAction( BeforeInvaderPhase.Each(_ => cmd.ActAsync( gs ) ) )
-	);
+	internal class NextRoundCommand( string tag ) : IRunWhenTimePasses {
+
+		bool IRunWhenTimePasses.RemoveAfterRun => true;
+		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+		Task IRunWhenTimePasses.TimePasses( GameState gameState ) => NextRoundCommandRegistry.Get( tag ).ActAsync( gameState );
+
+	}
 
 }

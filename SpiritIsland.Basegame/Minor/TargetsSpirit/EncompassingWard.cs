@@ -11,9 +11,13 @@ public class EncompassingWard {
 		// defend 2 in every land where spirit has presence
 		// defend should move with presence
 		// https://querki.net/u/darker/spirit-island-faq/#!.7w4ganu
-		DynamicToken.Defend(space => 0 < space[ctx.Other.Presence.Token] ? 2 : 0, "🛡️");
+		GameState.Current.AddIslandMod( new DefendWherePresent(ctx.Other.Presence, 2, "🛡️") );
 
 		return Task.CompletedTask;
+	}
+
+	public class DefendWherePresent( SpiritPresence presence, int amount, string badge ) : DefendToken(badge) {
+		protected override int GetCount( Space space ) => 0 < space[presence.Token] ? amount : 0;
 	}
 
 }

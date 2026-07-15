@@ -71,4 +71,5 @@ public class Incarna( Spirit _spirit, string _abrev, Img _notEmpowered, Img _emp
 	#endregion ITrackMySpaces imp
 
 	readonly CountDictionary<Space> _spaceCounts = [];
+
 }

@@ -29,7 +29,7 @@ public class KeepWatchForNewIncursions {
 	/// Once this turn, after Invaders are added or moved into target land,
 	/// 1 Damage per Dahan in target land, to those added/moved Invaders only
 	/// </summary>
-	class DamageNewInvadersOnce( Spirit spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
+	public class DamageNewInvadersOnce( Spirit spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
 		bool _used = false;
 		readonly Spirit _spirit = spirit;
 
@@ -53,6 +53,7 @@ public class KeepWatchForNewIncursions {
 			_used = true;
 
 		}
+
 	}
 
 

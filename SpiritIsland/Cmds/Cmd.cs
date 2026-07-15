@@ -155,11 +155,11 @@ public static partial class Cmd {
 	// Save Dahan
 	static public SpaceAction NextTimeDestroy2FewerDahan => new SpaceAction( // !! needs tests
 		"The next time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
-		SaveDahan.DestroyFewer( 2, 1 )
+		SaveDahan.DestroyFewer( 2, false )
 	);
 	static public SpaceAction EachTimeDestroy2FewerDahan => new SpaceAction(
 		"Each time dahan would be destroyed in target land, Destroy 2 fewer dahan.",
-		SaveDahan.DestroyFewer( 2, int.MaxValue )
+		SaveDahan.DestroyFewer( 2, true )
 	);
 
 	static public class Skip {

@@ -38,4 +38,5 @@ public sealed class Healer : IRunWhenTimePasses {
 	readonly HashSet<Space> _skipInvadersOn = [];
 	readonly HashSet<Space> _skipDahanOn = [];
 
+
 }

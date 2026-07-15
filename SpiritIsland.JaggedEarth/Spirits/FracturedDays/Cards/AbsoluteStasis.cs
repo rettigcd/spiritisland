@@ -15,15 +15,26 @@ public class AbsoluteStasis {
 		await frac.SpendTime(1);
 
 		// Until the end of the slow phase, target land and everything in it cease to exist for all purposes except checking victory/defeat.
-			
+
 		ctx.SpaceSpec.DoesExists = false;
 
 		// you cannot target into, out of, or through where the land was.
 
 		// --------
-		// Restore 
+		// Restore
 		// --------
-		GameState.Current.AddTimePassesAction( TimePassesAction.Once( gs => ctx.SpaceSpec.DoesExists = true ) );
+		GameState.Current.AddTimePassesAction( new RestoreSpaceExistence( ctx.SpaceSpec ) );
+
+	}
+
+	internal class RestoreSpaceExistence( SpaceSpec spaceSpec ) : IRunWhenTimePasses {
+
+		bool IRunWhenTimePasses.RemoveAfterRun => true;
+		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+		Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+			spaceSpec.DoesExists = true;
+			return Task.CompletedTask;
+		}
 
 	}
 

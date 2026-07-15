@@ -92,5 +92,6 @@ class BlisteringHeat(Spirit spirit) : SpiritPresenceToken(spirit)
 
 	#endregion
 
+
 	HashSet<HumanToken> _downgradedTokens = [];
 }

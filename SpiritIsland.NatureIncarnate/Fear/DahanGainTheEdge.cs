@@ -26,5 +26,7 @@ public class DahanGainTheEdge : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( gs );
 
+	
+
 }
 

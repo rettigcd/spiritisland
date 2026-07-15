@@ -166,6 +166,7 @@ public class InnatePower : IPowerActionFactory {
 
 	public object? LastTarget { get; private set; } // for use in a power-action event, would be better to have ActAsync just return it.
 
+
 	readonly InnatePowerAttribute _innatePowerAttr;
 	readonly protected SpeedAttribute _speedAttr;
 	readonly GeneratesContextAttribute _targetAttr;

@@ -41,6 +41,8 @@ public class Depopulation : FearCardBase, IFearCard {
 			await ctx.Space.RemoveAsync(invader.Token,1);
 	} );
 
+	
+
 }
 
 

@@ -8,9 +8,4 @@ static public class SpiritAction_Extensions {
 	static public GrowthAction ToGrowth( this SpiritAction cmd ) 
 		=> new GrowthAction( cmd, Phase.Init );
 
-	/// <summary>
-	/// Convert SpiritAction to Fast/SlowAction
-	/// </summary>
-	static public FastSlowAction ToFastSlow( this SpiritAction cmd ) 
-		=> new FastSlowAction(cmd);
 }

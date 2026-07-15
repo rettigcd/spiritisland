@@ -36,7 +36,7 @@ public class WarnOfImpendingConflict {
 /// <summary>
 /// Ravage-Config - (some or all) of the Dahan attack before invaders.
 /// </summary>
-class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false ) 
+class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
 	: BaseModEntity, IConfigRavages, IEndWhenTimePasses
 {
 
@@ -87,4 +87,5 @@ class WarnToken( Spirit spirit, int dahanToGoEarly, bool allSpaces = false )
 	static HumanToken RavageDuringDahanTurn(HumanToken token) => token.SetRavageOrder( RavageOrder.DahanTurn );
 
 	private async Task<bool> UserWantsToUseOnThisSpace( Space space, int goEarlyCount ) => await _spirit.UserSelectsFirstText( $"Have {goEarlyCount} Dahan attack first on {space.Label}?", "Yes, attack early", "No, save for another ravage." );
+
 }

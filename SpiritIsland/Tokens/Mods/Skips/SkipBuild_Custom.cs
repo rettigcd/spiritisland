@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland;
 
-sealed public class SkipBuild_Custom(string label, bool stopAll, Func<Space, bool> func)
+public abstract class SkipBuild_Custom(string label, bool stopAll)
 	: BaseModEntity, IEndWhenTimePasses, ISkipBuilds {
 
 	/// <summary> Used by skips to determine which skip to use. </summary>
@@ -11,7 +11,8 @@ sealed public class SkipBuild_Custom(string label, bool stopAll, Func<Space, boo
 	public Task<bool> Skip(Space space) {
 		if( !stopAll )
 			space.Adjust(this, -1);
-		return _func(space);
+		return Task.FromResult(ShouldSkip(space));
 	}
-	readonly Func<Space, Task<bool>> _func = (ss) => Task.FromResult(func(ss));
+
+	protected abstract bool ShouldSkip(Space space);
 }

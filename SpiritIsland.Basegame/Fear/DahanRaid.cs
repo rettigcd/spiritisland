@@ -29,4 +29,6 @@ public class DahanRaid : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
+	
+
 }

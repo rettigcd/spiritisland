@@ -22,7 +22,7 @@ public class ObserveTheEverChangingWorld {
 /// <summary>
 /// Reminder Token that sits on a space and generates a Prepared Element for each action (up to 3) that the tokens change in that space.
 /// </summary>
-public class ObserveWorldMod( TargetSpaceCtx ctx ) 
+public class ObserveWorldMod( TargetSpaceCtx ctx )
 	: ISpaceEntity
 	, IToken
 	, IHandleTokenAdded
@@ -44,7 +44,7 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 
 	void Check( Space space ) {
 		var actionScope = ActionScope.Current;
-		if(    _appliedToTheseActions.Contains( actionScope ) // already did this action 
+		if(    actionScope.ContainsKey( _key ) // already did this action
 			|| _tokenSummary == space.Summary   // no change in tokens
 		)
 			return;
@@ -52,7 +52,7 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 		if(actionScope == default)
 			throw new InvalidOperationException( "Can't use default action-scope" );
 
-		_appliedToTheseActions.Add( actionScope ); // limit to 1 change per action
+		actionScope.SafeSet( _key, true ); // limit to 1 change per action
 		_tokenSummary = space.Summary;
 
 		// This web page states SMOA shouldn't get the element until after the Action completes.
@@ -69,9 +69,8 @@ public class ObserveWorldMod( TargetSpaceCtx ctx )
 	string _tokenSummary = ctx.Space.Summary;
 
 	readonly ShiftingMemoryOfAges _spirit = (ShiftingMemoryOfAges)ctx.Self;
-	readonly HashSet<ActionScope> _appliedToTheseActions = [];
+	readonly string _key = "ObserveWorldMod-" + Guid.NewGuid().ToString();
 
 	#endregion
-
 
 }

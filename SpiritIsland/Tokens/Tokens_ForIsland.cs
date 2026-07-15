@@ -28,6 +28,12 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 
 	public void AddIslandMod( BaseModEntity token ) { ++_islandMods[token]; }
 
+	// Decrements rather than zeroing - CountDictionary's indexer already removes the key once it
+	// hits 0, and the inverse of AddIslandMod's ++ is --, not "reset to whatever count happened to
+	// be there." No current caller adds the same instance more than once, but this stays correct if
+	// one ever does.
+	public void RemoveIslandMod( BaseModEntity token ) { --_islandMods[token]; }
+
 	#region IRunWhenTimePasses imp
 
 	bool IRunWhenTimePasses.RemoveAfterRun => false;
@@ -123,6 +129,7 @@ public sealed class Tokens_ForIsland : IRunWhenTimePasses, IHaveMemento {
 	}
 
 	#endregion Memento
+
 
 	public override string ToString() => _tokenCounts
 		.Select(p=>p.Key+":"+p.Value.TokenSummary())

@@ -59,7 +59,7 @@ public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 		else 
 			AddActionFactory( new AddBagPresenceOn1Space().ToGrowth() ); // let user pick initial space
 
-		gameState.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( ResponsibilityToTheDead_Handler ) );
+		gameState.AddIslandMod( new ResponsibilityToTheDeadMod( this ) );
 	}
 
 	#endregion
@@ -99,6 +99,10 @@ public class FinderOfPathsUnseen : Spirit, ISpiritMod, IModifyAvailableActions {
 
 		}
 		return Task.CompletedTask;
+	}
+
+	public class ResponsibilityToTheDeadMod( FinderOfPathsUnseen spirit ) : BaseModEntity, IHandleTokenRemoved {
+		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) => spirit.ResponsibilityToTheDead_Handler( args );
 	}
 
 	#endregion Responsibility To The Dead

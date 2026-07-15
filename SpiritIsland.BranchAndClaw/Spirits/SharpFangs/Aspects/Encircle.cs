@@ -12,6 +12,9 @@ public class Encircle : IAspect {
 		RangingHunt.Name, // with Encircle the Unsuspecting Prey
 	];
 
+	static InnatePower NewInnate => InnatePower.For(typeof(EncircleTheUnsuspectingPrey));
+	public InnatePower[] NewInnates => [NewInnate];
+
 	public void ModSpirit(Spirit spirit) {
 		// Replace Ally with PackHunting
 		spirit.RemovePresenceToken(); // Ally of the Beasts
@@ -19,7 +22,7 @@ public class Encircle : IAspect {
 		spirit.SpecialRules[0] = PackHunting.Rule;
 
 		// Replace Ranging Hunt with Encircle
-		spirit.ReplaceInnate(RangingHunt.Name, InnatePower.For(typeof(EncircleTheUnsuspectingPrey)));
+		spirit.ReplaceInnate(RangingHunt.Name, NewInnate);
 	}
 
 }

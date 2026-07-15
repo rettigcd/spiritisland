@@ -13,11 +13,16 @@ public class Warrior : IAspect {
 	public const string Name = "Warrior";
 	public string[] Replaces => [LeadTheFuriousAssult.Name,ManifestationOfPowerAndGlory.Name];
 
+	static InnatePower NewInnate => InnatePower.For(typeof(LeadTheWarriorsToBattle));
+	public InnatePower[] NewInnates => [NewInnate];
+	static PowerCard NewCard => PowerCard.ForDecorated(CallToBloodshed.ActAsync);
+	public PowerCard[] NewCards => [NewCard];
+
 	public void ModSpirit(Spirit spirit) {
-		spirit.ReplaceInnate(LeadTheFuriousAssult.Name,InnatePower.For(typeof(LeadTheWarriorsToBattle)));
-		spirit.ReplaceCard(ManifestationOfPowerAndGlory.Name,PowerCard.ForDecorated(CallToBloodshed.ActAsync));
+		spirit.ReplaceInnate(LeadTheFuriousAssult.Name,NewInnate);
+		spirit.ReplaceCard(ManifestationOfPowerAndGlory.Name,NewCard);
 		spirit.ReplaceIncarna(new WarriorSpiritsRaidingParty(spirit));
-		spirit.AddActionFactory(new SpiritAction("Place Incarna", WarriorSpiritsRaidingParty.PlaceIncarna).ToGrowth());
+		spirit.AddActionFactory(new WarriorSpiritsRaidingParty.PlaceIncarna().ToGrowth());
 		spirit.SpecialRules = [..spirit.SpecialRules, WarriorSpiritsRaidingParty.Rule];
 	}
 }

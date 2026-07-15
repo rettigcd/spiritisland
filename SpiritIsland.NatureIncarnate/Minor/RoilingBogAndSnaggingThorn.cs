@@ -47,4 +47,5 @@ public class DahanSitOutRavage( Spirit picker, int countToSitOut ) : BaseModEnti
 			SitOutRavage.SitOutThisRavageAction(space, counts);
 
 	}
+
 }

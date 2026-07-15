@@ -80,7 +80,7 @@ public class RavageExchange( Space space, RavageOrder order, RavageParticipants 
 	public void GetDamageInflictedByAttackers( RavageBehavior behavior ) {
 
 		// CurrentAttackers
-		int rawDamageFromAttackers = behavior.GetDamageFromParticipatingAttackers( this );
+		int rawDamageFromAttackers = behavior.CalculateDamageFromParticipatingAttackers( this );
 
 		// Defend
 		Defend = Space.Defend.Count;

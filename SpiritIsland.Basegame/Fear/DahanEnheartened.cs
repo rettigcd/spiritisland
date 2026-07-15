@@ -40,4 +40,6 @@ public class DahanEnheartened : FearCardBase, IFearCard {
 		await ctx.DamageInvaders( ctx.Dahan.CountAll );
 	} );
 
+	
+
 }

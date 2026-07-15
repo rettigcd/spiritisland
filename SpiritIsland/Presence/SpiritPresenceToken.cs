@@ -7,7 +7,7 @@ public class SpiritPresenceToken
 {
 
 	public SpiritPresenceToken(Spirit spirit) {
-		Self = spirit; 
+		Self = spirit;
 		SpaceAbreviation = Abreviate( Self.SpiritName );
 	}
 
@@ -25,19 +25,16 @@ public class SpiritPresenceToken
 
 	void ITrackMySpaces.Clear() {
 		_spaceCounts.Clear();
-		_boardCounts.Clear();
 	}
 
 	void ITrackMySpaces.TrackAdjust(Space space, int delta) {
 		_spaceCounts[space] += delta;
-		foreach (var board in space.SpaceSpec.Boards)
-			_boardCounts[board] += delta;
 	}
 
 	readonly CountDictionary<Space> _spaceCounts = [];
-	readonly CountDictionary<Board> _boardCounts = []; // ? Is this necessary?  How many things use this?
 
-	public bool IsOnIsland => _boardCounts.Count != 0;
+	/// <summary> True if on any Space belonging to a Board. (Off-island holding spaces like the Destroyed track don't count.) </summary>
+	public bool IsOnIsland => _spaceCounts.Keys.Any( space => space.SpaceSpec.Boards.Length != 0 );
 
 	// public IEnumerable<Space> Spaces_Existing => _spaceCounts.Keys.Where(SpiritIsland.Space.Exists);
 	public IEnumerable<Space> Spaces_Existing =>_spaceCounts.Keys.Where(ss => SpaceSpec.Exists(ss.SpaceSpec));
@@ -45,7 +42,7 @@ public class SpiritPresenceToken
 	/// <summary> Existing (non-statis) SppaceTokens </summary>
 	public IEnumerable<SpaceToken> Deployed => this.On( Spaces_Existing );
 
-	public bool IsOn( Board board ) => 0 < _boardCounts[board];
+	public bool IsOn( Board board ) => _spaceCounts.Keys.Any( space => space.SpaceSpec.Boards.Contains(board) );
 
 	#endregion Space Tracking
 

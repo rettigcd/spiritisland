@@ -4,7 +4,7 @@ namespace SpiritIsland;
 /// <summary>
 /// Mod that inserts Slow cards into the ActionList during EACH Fast phase.
 /// </summary>
-abstract public class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyAvailableActions, IHandleActivatedActions {
+abstract public class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyAvailableActions, IHandleActivatedActions, ICleanupSpiritWhenTimePasses {
 
 	#region IModifyAvailableActions
 
@@ -25,9 +25,12 @@ abstract public class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyA
 			++_usedCount;
 	}
 
+	void ICleanupSpiritWhenTimePasses.CleanupSpirit( Spirit spirit ) => _usedCount = 0;
+
 	#region protected
 
 	protected abstract int AllowedCount { get; }
+
 
 	protected virtual bool EvaluateAction(IActionFactory slowAction) {
 		return slowAction.CouldActivateDuring(Phase.Slow, _spirit);
@@ -41,11 +44,7 @@ abstract public class RunSlowCardsAsFastMod_EveryRound(Spirit spirit) : IModifyA
 
 	IActionFactory[] _slowAsFast = [];
 
-	int _usedCount {
-		get => GameState.Current.RoundScope.TryGetValue(UsedKey,out object? val) ? (int)val! : 0;
-		set => GameState.Current.RoundScope[UsedKey] = value;
-	}
-	string UsedKey => _usedKey ??= "SlowAsFast:" + Guid.NewGuid().ToString(); string? _usedKey;
+	int _usedCount;
 
 	#endregion private fields
 

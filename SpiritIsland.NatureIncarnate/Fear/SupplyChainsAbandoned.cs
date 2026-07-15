@@ -32,6 +32,7 @@ public class SupplyChainsAbandoned : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync( gs );
 
+	
 
 }
 

@@ -33,4 +33,6 @@ public class AidFromLesserSpirits : BlightCard {
 
 		} );
 
+	
+
 }

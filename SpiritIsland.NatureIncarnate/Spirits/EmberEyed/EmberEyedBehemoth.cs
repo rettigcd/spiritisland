@@ -70,7 +70,7 @@ public class EmberEyedBehemoth : Spirit {
 		}
 	}
 
-	protected override object? CustomMementoValue { 
+	protected override object? CustomMementoValue {
 		get => GrowthTrack.Groups;
 		set {
 			var options = (GrowthGroup[]?)value!;

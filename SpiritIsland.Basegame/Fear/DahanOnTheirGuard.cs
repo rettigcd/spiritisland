@@ -28,4 +28,6 @@ public class DahanOnTheirGuard : FearCardBase, IFearCard {
 			space.Defend.Add( calcDefense( space ) );
 	}
 
+	
+
 }

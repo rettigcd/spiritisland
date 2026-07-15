@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class ARealFlairForDiscord(Spirit spirit) : BaseModEntity, IHandleTokenAdded {
+public class ARealFlairForDiscord(Spirit spirit) : BaseModEntity, IHandleTokenAdded {
 
 	public const string Name = "A Real Flair for Discord";
 	const string Description = "After one of your Powers adds strife in a land, you may pay 1 Energy to add 1 strife within Range-1 of that land.";
@@ -31,6 +31,7 @@ class ARealFlairForDiscord(Spirit spirit) : BaseModEntity, IHandleTokenAdded {
 		get => ActionScope.Current.ContainsKey( Name );
 		set => ActionScope.Current[ Name ] = true; // assumes value is true
 	}
+
 }
 
 // !!! Need an easier way to only apply island-wide mods when is Spirits-own-action

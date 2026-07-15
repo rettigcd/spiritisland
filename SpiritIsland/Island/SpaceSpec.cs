@@ -86,7 +86,7 @@ public abstract class SpaceSpec(string label, Board[] boards)
 		_adjacent.Clear();
 	}
 
-	class DisconnectSpaceResults : IRestoreable {
+	public class DisconnectSpaceResults : IRestoreable {
 		public required SpaceSpec Space { get; set; }
 		public required SpaceSpec[] OldAdjacents { get; set; }
 

@@ -44,4 +44,8 @@ public class ChokeTheLandWithGreen( ASpreadOfRampantGreen _self )
 
 		return true;
 	}
+
+	// No override/registration of its own needed - no extra state beyond Self, so
+	// SpiritPresenceToken's shared base ToJson/reader (resolving via the spirit's own
+	// Presence.Token) already covers this.
 }

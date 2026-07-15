@@ -34,4 +34,6 @@ public class APallUponTheLand : BlightCard {
 			await spaceToken.Destroy();
 		} );
 
+	
+
 }

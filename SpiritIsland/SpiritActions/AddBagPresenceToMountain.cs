@@ -23,4 +23,5 @@ public class AddBagPresenceToMountain : SpiritAction { // Similar to SharpFang i
 			await targetCtx.PushDahan(targetCtx.Dahan.CountAll);
 	}
 
+
 }

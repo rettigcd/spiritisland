@@ -169,8 +169,6 @@ public class TargetSpaceCtx( Spirit self, SpaceSpec target ) : IHaveASpirit {
 
 	public bool HasInvaders => Space.HasInvaders();
 
-	public void ModifyRavage( Action<RavageBehavior> action ) => action( Space.RavageBehavior );
-
 	// The current targets power
 	public InvaderBinding Invaders => _invadersRO ??= Space.Invaders;
 

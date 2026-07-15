@@ -10,6 +10,13 @@ public record AspectConfigKey(string Spirit,string Aspect);
 public interface IAspect {
 	void ModSpirit( Spirit spirit );
 	string[] Replaces { get; }
+
+	// Declarative counterpart to ModSpirit's ReplaceCard/ReplaceInnate calls - lets registry seeding
+	// (GameComponentProviderSeeding) discover aspect-exclusive cards/innates without constructing a
+	// spirit or invoking ModSpirit at all. Aspects that introduce one should back both this and their
+	// ModSpirit call from the same value (see Pandemonium.NewInnate) so they can't drift apart.
+	PowerCard[] NewCards => [];
+	InnatePower[] NewInnates => [];
 }
 
 public static class AspectHelper_Extensoins {

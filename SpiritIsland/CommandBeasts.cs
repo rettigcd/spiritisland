@@ -7,7 +7,7 @@ namespace SpiritIsland;
 /// Moves to an action that runs when TimePasses
 /// Added to 1st Spirits ActionFactory list until they use it.
 /// </summary>
-public class CommandBeasts( string title ) 
+public class CommandBeasts( string title )
 	: IActionFactory
 	, IRunWhenTimePasses
 	, IHaveMemento
@@ -80,6 +80,7 @@ public class CommandBeasts( string title )
 	}
 
 	#endregion IHaveMemento
+
 
 	#region private
 

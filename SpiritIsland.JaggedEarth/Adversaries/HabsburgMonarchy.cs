@@ -81,14 +81,16 @@ public class HabsburgMonarchy : AdversaryBuilder, IAdversaryBuilder {
 	}
 
 
-	class NeighborTownsCauseBonusLandDamage : BaseModEntity, IConfigRavages {
+	public class NeighborTownsCauseBonusLandDamage : BaseModEntity, IConfigRavages, IAdjustAttackerDamage {
 		public Task Config(Space space) {
-			var behavior = space.RavageBehavior;
-			Func<RavageExchange, int> old = behavior.GetDamageFromParticipatingAttackers;
-			behavior.GetDamageFromParticipatingAttackers = (exchange) => old(exchange) 
-				+ (exchange.Space.Adjacent.Any(s => s.Has(Human.Town)) ? 2 : 0);
+			var adjusters = space.RavageBehavior.DamageAdjusters;
+			if( !adjusters.Contains(this) )
+				adjusters.Add(this);
 			return Task.CompletedTask;
 		}
+		public int Adjust(RavageExchange rex, int runningTotal)
+			=> runningTotal + (rex.Space.Adjacent.Any(s => s.Has(Human.Town)) ? 2 : 0);
+
 	}
 
 	#region Escalation
@@ -184,13 +186,14 @@ class IrreperableDamage : AdversaryLossCondition {
 			GameOverException.Lost( $"Irreparable Damage - {badBlightCount} blight were added from 8+ land damage." );
 	}
 
-	class TrackBadRavageBlight : BaseModEntity, IReactToLandDamage {
+	public class TrackBadRavageBlight : BaseModEntity, IReactToLandDamage {
 		Task IReactToLandDamage.HandleDamageAddedAsync( Space space, int count ) {
 			bool shouldAddBadBadBlight = 8 <= space[LandDamage.Token];
 			if(shouldAddBadBadBlight)
 				_fakeBadBlightSpace.ScopeSpace.Adjust( Token.Blight, 1 );
 			return Task.CompletedTask;
 		}
+
 	}
 
 	// not a real space, just used for counting blight.   And auto-saves in GameState for rewind.

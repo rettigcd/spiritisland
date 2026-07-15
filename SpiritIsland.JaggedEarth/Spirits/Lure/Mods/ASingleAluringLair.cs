@@ -38,4 +38,5 @@ public class ASingleAluringLair(Spirit spirit) : Incarna(spirit, "L", Img.L_Inca
 	}
 
 	bool ICreateSacredSites.IsSacredSite(Space space) => Space == space;
+
 }

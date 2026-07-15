@@ -8,9 +8,14 @@ public class Tangles : IAspect {
 	public const string Name = "Tangles";
 	public string[] Replaces => [CreepersTearIntoMortar.Name,GiftOfProliferation.Name];
 
+	static InnatePower NewInnate => InnatePower.For(typeof(ImpenetrableTanglesOfGreenery));
+	public InnatePower[] NewInnates => [NewInnate];
+	static PowerCard NewCard => PowerCard.ForDecorated(BelligerentAndAggressiveCrops.ActAsync);
+	public PowerCard[] NewCards => [NewCard];
+
 	public void ModSpirit(Spirit spirit) {
-		spirit.ReplaceInnate(CreepersTearIntoMortar.Name, InnatePower.For(typeof(ImpenetrableTanglesOfGreenery)));
-		spirit.ReplaceCard(GiftOfProliferation.Name, PowerCard.ForDecorated(BelligerentAndAggressiveCrops.ActAsync));
+		spirit.ReplaceInnate(CreepersTearIntoMortar.Name, NewInnate);
+		spirit.ReplaceCard(GiftOfProliferation.Name, NewCard);
 	}
 
 }

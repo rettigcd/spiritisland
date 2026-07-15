@@ -4,16 +4,18 @@ public class AllThingsWeaken : BlightCard {
 
 	public AllThingsWeaken():base("All Things Weaken", "Ongoing, starting next turn: Invaders and dahan have -1 Health (min.1). The land takes blight on 1 less Damage (normally 1). When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.", 3) {}
 
-	public override IActOn<GameState> Immediately => 
+	public override IActOn<GameState> Immediately =>
 		// Ongoing, starting next turn:
-		Cmd.AtTheStartOfNextRound( Cmd.Multiple<GameState>(
-			// Invaders and Dahan have -1 Health (min, 1).
-			ReduceTokenHealthBy1,
-			// The land takes blight on 1 less Damage (normally 1).
-			TakeBlightOn1LessDamage,
-			// When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.
-			AddBlightDestroyesPresence
-		));
+		BuildAtTheStartOfNextRoundCmd().AtTheStartOfNextRound( nameof( AllThingsWeaken ) );
+
+	static IActOn<GameState> BuildAtTheStartOfNextRoundCmd() => Cmd.Multiple<GameState>(
+		// Invaders and Dahan have -1 Health (min, 1).
+		ReduceTokenHealthBy1,
+		// The land takes blight on 1 less Damage (normally 1).
+		TakeBlightOn1LessDamage,
+		// When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.
+		AddBlightDestroyesPresence
+	);
 
 	static BaseCmd<GameState> ReduceTokenHealthBy1 => 
 
@@ -42,20 +44,25 @@ public class AllThingsWeaken : BlightCard {
 		"The land takes blight on 1 less Damage.", 
 		gs => { gs.AddIslandMod( new LandDamageBoost() ); }
 	);
-	class LandDamageBoost : BaseModEntity, IAdjustBlightThreshold {
+	public class LandDamageBoost : BaseModEntity, IAdjustBlightThreshold {
 		void IAdjustBlightThreshold.ModifyLandsResilience(Space space, ref int landResilience) {
 			--landResilience;
 		}
 	}
 
 	static BaseCmd<GameState> AddBlightDestroyesPresence => new BaseCmd<GameState>(
-		"When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.", 
+		"When you add blight, it Destroys all presence/beast in that land and 1 presence (total) in an adjacent land.",
 		gs => gs.AddIslandMod( new DestroyerOfBeastsAndPresence() )
 	);
 
+	[ModuleInitializer]
+	internal static void RegisterSerialization() {
+		NextRoundCommandRegistry.Register( nameof( AllThingsWeaken ), BuildAtTheStartOfNextRoundCmd );
+	}
+
 }
 
-class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAdded {
+public class DestroyerOfBeastsAndPresence : BaseModEntity, IHandleTokenAdded {
 	public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 		if(args.Added != Token.Blight) return;
 

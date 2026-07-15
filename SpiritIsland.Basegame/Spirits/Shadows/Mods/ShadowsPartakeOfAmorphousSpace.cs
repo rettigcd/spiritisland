@@ -48,6 +48,7 @@ class ShadowsPartakeOfAmorphousSpace : IModifyAvailableActions {
 	}
 	#endregion IModifyAvailableActions imp
 
+
 	#region private fields
 
 	// 2 different copies so we can distinguish used-fast vs used-slow

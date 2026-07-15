@@ -12,10 +12,16 @@ class WarriorSpiritsRaidingParty : Incarna, IHandleTokenRemoved {
 
 	#region Setup Action
 
-	static public async Task PlaceIncarna(Spirit spirit) {
-		SpaceToken token = await spirit.SelectAlways("Select Presence to replace with Incarna + Dahan", spirit.Presence.Deployed);
-		await token.Space.Dahan.AddDefault(1,AddReason.AsReplacement);
-		await token.Space.ReplaceAsync(token.Token,1,spirit.Incarna);
+	public class PlaceIncarna : SpiritAction {
+
+		public PlaceIncarna() : base("Place Incarna") { }
+
+		public override async Task ActAsync(Spirit spirit) {
+			SpaceToken token = await spirit.SelectAlways("Select Presence to replace with Incarna + Dahan", spirit.Presence.Deployed);
+			await token.Space.Dahan.AddDefault(1,AddReason.AsReplacement);
+			await token.Space.ReplaceAsync(token.Token,1,spirit.Incarna);
+		}
+
 	}
 
 	#endregion Setup Action

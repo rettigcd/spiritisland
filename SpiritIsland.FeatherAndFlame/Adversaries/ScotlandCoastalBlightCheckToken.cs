@@ -4,7 +4,7 @@
 /// Causes Blight added to Coastland adds to Ocean also (without cascading)
 /// And when spirit removes blight from Coastland, can alternatively remove from Ocean space.
 /// </summary>
-class ScotlandCoastalBlightCheckToken 
+public class ScotlandCoastalBlightCheckToken
 	: BaseModEntity
 	, IHandleTokenAdded
 	, IModifyRemovingToken
@@ -67,4 +67,5 @@ class ScotlandCoastalBlightCheckToken
 		await spaceToken.Space.RemoveAsync(spaceToken.Token, 1);
 
 	}
+
 }

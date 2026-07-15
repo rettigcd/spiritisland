@@ -50,4 +50,6 @@ public class AngryMobs : FearCardBase, IFearCard {
 
 	static bool Has2OrMoreExplorers( TargetSpaceCtx ss ) => 2 <= ss.Space.Sum( Human.Explorer );
 
+	
+
 }

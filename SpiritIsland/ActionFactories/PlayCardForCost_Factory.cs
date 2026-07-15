@@ -3,7 +3,7 @@
 /// <summary>
 /// A card in spirit's Hand, may be Played (triggering its elements to be added)
 /// </summary>
-public class PlayCardForCost(Present present = Present.Always, int tax=0) 
+public class PlayCardForCost(Present present = Present.Always, int tax=0)
 	: SpiritAction("Play Card for Cost") {
 
 	public override async Task ActAsync(Spirit self) {
@@ -18,5 +18,6 @@ public class PlayCardForCost(Present present = Present.Always, int tax=0)
 		self.PlayCard(powerCard);
 		self.Energy -= tax;
 	}
+
 
 }

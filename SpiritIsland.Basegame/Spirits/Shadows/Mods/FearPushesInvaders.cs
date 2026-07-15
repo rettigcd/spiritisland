@@ -3,7 +3,7 @@
 /// <summary>
 /// Mod used by Stretch Out Coils Of Foreboding Dread
 /// </summary>
-class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
+public class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
 
 	public Task HandleFearAddedAsync(Space space, int fearAdded, FearType fearType) {
 
@@ -35,6 +35,7 @@ class FearPushesInvaders : ISpaceEntity, IReactToLandFear, IEndWhenTimePasses {
 			pushFear -= token.Token.HasTag(Human.Town) ? 2 : 1;
 			await token.MoveToAsync(destination);
 		}
-		
+
 	}
+
 }

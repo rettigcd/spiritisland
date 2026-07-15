@@ -47,8 +47,8 @@ public class WeaveTogetherTheFabricOfPlace {
 			.ToList();
 
 		// Disconnect space
-		IRestoreable removeSpace = spaceSpec.RemoveFromBoard();
-		IRestoreable removeOther = otherSpec.RemoveFromBoard();
+		var removeSpace = (SpaceSpec.DisconnectSpaceResults)spaceSpec.RemoveFromBoard();
+		var removeOther = (SpaceSpec.DisconnectSpaceResults)otherSpec.RemoveFromBoard();
 
 		// Add Multi
 		multiSpec.AddToBoardsAndSetAdjacent( adjacents );
@@ -56,22 +56,49 @@ public class WeaveTogetherTheFabricOfPlace {
 		ActionScope.Current.Log( new Log.LayoutChanged($"{spaceSpec.Label} and {otherSpec.Label} were woven together") );
 
 		// When this effect expires
-		gs.AddTimePassesAction( TimePassesAction.Once( 
-			async (gs) => {
-				multi.TransferAllTokensTo(space, false); // false => we left the Mod tokens on the original boards and they are still there.
-				multiSpec.RemoveFromBoard();
-				removeOther.Restore();
-				removeSpace.Restore();
-
-				ActionScope.Current.Log( new Log.LayoutChanged( $"{spaceSpec.Label} and {otherSpec.Label} were split up." ) );
-
-				await DistributeVisibleTokens( originalSelf, space, other );
-
-				CopyNewModsToBoth( spaceSpec, otherSpec, multiSpec );
-			}
-		) );
+		gs.AddTimePassesAction( new UnweaveSpaces( originalSelf, spaceSpec, removeSpace.OldAdjacents, otherSpec, removeOther.OldAdjacents ) );
 
 		return multi;
+	}
+
+	/// <summary>
+	/// Replaces the old TimePassesAction.Once(...) closure - docs/GameSerialization-Roadmap.md's hook
+	/// action lists section. Most of what the closure captured (multi/space/other/multiSpec) is cheaply
+	/// re-derivable from spaceSpec/otherSpec alone (MultiSpaceSpec.Build is deterministic, gs.Tokens[spec]
+	/// is just a view) - the only real state is the Spirit plus each side's identity and OldAdjacents.
+	///
+	/// Identity resolution: while the weave is active, spaceSpec/otherSpec are detached from their
+	/// Board's own space list (RemoveFromBoard took them out), so ctx.SpaceSpecByLabel can't find them
+	/// directly. The *joined* space is still normally attached though, so it resolves fine - and
+	/// MultiSpaceSpec.OrigSpaces on that live object already holds direct references to the original,
+	/// fully-valid SingleSpaceSpecs. Serializing each side as its set of underlying single-space labels
+	/// (rather than assuming exactly one) also covers re-weaving an already-merged land: if a side has
+	/// more than one label, it's rebuilt via MultiSpaceSpec.Build from the matching OrigSpaces entries.
+	/// </summary>
+	internal class UnweaveSpaces( Spirit self, SpaceSpec spaceSpec, SpaceSpec[] spaceOldAdjacents, SpaceSpec otherSpec, SpaceSpec[] otherOldAdjacents )
+		: IRunWhenTimePasses {
+
+		bool IRunWhenTimePasses.RemoveAfterRun => true;
+		TimePassesOrder IRunWhenTimePasses.Order => TimePassesOrder.Normal;
+
+		async Task IRunWhenTimePasses.TimePasses( GameState gameState ) {
+			var multiSpec = MultiSpaceSpec.Build( spaceSpec, otherSpec );
+			Space space = gameState.Tokens[spaceSpec];
+			Space other = gameState.Tokens[otherSpec];
+			Space multi = gameState.Tokens[multiSpec];
+
+			multi.TransferAllTokensTo( space, false ); // false => we left the Mod tokens on the original boards and they are still there.
+			multiSpec.RemoveFromBoard();
+			new SpaceSpec.DisconnectSpaceResults { Space = otherSpec, OldAdjacents = otherOldAdjacents }.Restore();
+			new SpaceSpec.DisconnectSpaceResults { Space = spaceSpec, OldAdjacents = spaceOldAdjacents }.Restore();
+
+			ActionScope.Current.Log( new Log.LayoutChanged( $"{spaceSpec.Label} and {otherSpec.Label} were split up." ) );
+
+			await DistributeVisibleTokens( self, space, other );
+
+			CopyNewModsToBoth( spaceSpec, otherSpec, multiSpec );
+		}
+
 	}
 
 	static void CopyNewModsToBoth( SpaceSpec space, SpaceSpec other, MultiSpaceSpec multi ) {

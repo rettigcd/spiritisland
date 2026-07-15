@@ -14,7 +14,7 @@ public class AJoiningOfSwarmsAndFlocks : SpiritPresenceToken, IHandleTokenAdded 
 	#region constructor
 
 	public AJoiningOfSwarmsAndFlocks(Spirit spirit):base(spirit) {
-		_beastToken = new ManyMindsBeast(this);
+		_beastToken = new ManyMindsBeast(spirit);
 	}
 
 	#endregion
@@ -38,6 +38,13 @@ public class AJoiningOfSwarmsAndFlocks : SpiritPresenceToken, IHandleTokenAdded 
 	#region private fields
 	readonly ManyMindsBeast _beastToken;
 	#endregion
+
+	// No override/registration of its own needed - SpiritPresenceToken's base ToJson (shared fixed
+	// tag + Self) resolves this back to the spirit's own already-existing Presence.Token instance
+	// (with its already-tracked _beastToken intact), which is actually *better* than the old
+	// per-type registration this replaced: that one reconstructed a fresh instance via `new
+	// AJoiningOfSwarmsAndFlocks(spirit)`, rebuilding a disconnected _beastToken rather than reusing
+	// the one already tracked on the board.
 }
 
 
@@ -46,10 +53,10 @@ public class AJoiningOfSwarmsAndFlocks : SpiritPresenceToken, IHandleTokenAdded 
 ///  - it simplifies selecting Beasts vs Presence-Beasts
 ///  - simplifies Moving the Presence with the Presence-Beasts into the AddedTo space.
 /// </remarks>
-public class ManyMindsBeast(AJoiningOfSwarmsAndFlocks presenceToken)
+public class ManyMindsBeast(Spirit spirit)
 	: IToken, IHandleTokenAdded, IHandleTokenRemoved {
 
-	readonly AJoiningOfSwarmsAndFlocks _presenceToken = presenceToken;
+	AJoiningOfSwarmsAndFlocks PresenceToken => (AJoiningOfSwarmsAndFlocks)spirit.Presence.Token;
 
 	public Img Img => Img.Beast;
 	string IToken.Badge => "MM";
@@ -77,11 +84,12 @@ public class ManyMindsBeast(AJoiningOfSwarmsAndFlocks presenceToken)
 		// Page 28 of JE says that 'Removing' presence is treated the same as Destroying, just voluntary
 
 		if( args.Reason.IsDestroyingPresence() )
-			await from.Destroy(_presenceToken, 2);
+			await from.Destroy(PresenceToken, 2);
 		else if( args is ITokenMovedArgs movedArgs && movedArgs.To is Space to ) {
-			await _presenceToken.On(from).MoveTo(to, 2);
+			await PresenceToken.On(from).MoveTo(to, 2);
 		} else
 			throw new InvalidOperationException("MM SS Beast should never be UsedUp nor .None");
 
 	}
+
 }

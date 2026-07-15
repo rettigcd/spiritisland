@@ -18,7 +18,7 @@ public class LetThemBreakThemselvesAgainstTheStone {
 
 }
 
-class BreakThemselvesMod( Spirit _spirit, bool _shouldAddHalfInvaderDamage ) 
+class BreakThemselvesMod( Spirit _spirit, bool _shouldAddHalfInvaderDamage )
 	: BaseModEntity
 	, IEndWhenTimePasses
 	, IReactToLandDamage
@@ -29,4 +29,5 @@ class BreakThemselvesMod( Spirit _spirit, bool _shouldAddHalfInvaderDamage )
 
 		await _spirit.Target(space).DamageInvaders( damage ); // includes Badland damage
 	}
+
 }

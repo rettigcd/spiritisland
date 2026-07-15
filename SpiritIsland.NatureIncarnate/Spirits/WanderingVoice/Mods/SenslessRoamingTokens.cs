@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-class SenselessRoaming(Spirit spirit) : BaseModEntity, IHandleTokenAdded {
+public class SenselessRoaming(Spirit spirit) : BaseModEntity, IHandleTokenAdded {
 
 	#region Name/Rule
 	public const string Name = "Senseless Roaming";

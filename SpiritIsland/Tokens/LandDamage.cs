@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents Ravage Damage done to Land.
 /// </summary>
-public class LandDamage 
+public class LandDamage
 	: ISpaceEntity
 	, IReactToLandDamage
 {

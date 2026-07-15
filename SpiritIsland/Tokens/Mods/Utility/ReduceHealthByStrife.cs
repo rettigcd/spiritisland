@@ -46,7 +46,7 @@ public class ReduceHealthByStrife
 				space.AllHumans(invader).Adjust(x=>x.AddHealth(x.StrifeCount));
 		return Task.CompletedTask;
 	}
-	
+
 	#endregion IRunWhenTimePasses imp
 
 }

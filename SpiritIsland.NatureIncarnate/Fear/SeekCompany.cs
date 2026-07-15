@@ -30,6 +30,7 @@ public class SeekCompany : FearCardBase, IFearCard {
 			.ForEachBoard()
 			.ActAsync( gs );
 
+	
 
 }
 

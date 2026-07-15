@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IAdjustDamageToInvaders_FromSpiritPowers, IModifyRemovingToken {
+public class TerrorStalksTheLand(Spirit spirit) : BaseModEntity, IAdjustDamageToInvaders_FromSpiritPowers, IModifyRemovingToken {
 
 	public const string Name = "Terror Stalks the Land";
 	const string Description = "You may Abduct 1 Explorer / Town at empowered Incarna each Fast Phase. To Abduct a piece, Move it to the Endless Dark."

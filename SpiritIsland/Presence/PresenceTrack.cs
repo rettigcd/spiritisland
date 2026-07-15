@@ -80,6 +80,7 @@ public class PresenceTrack : IPresenceTrack {
 
 	#endregion
 
+
 	protected Track[] _slots;
 	int _revealedCount;
 

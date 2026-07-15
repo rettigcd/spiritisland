@@ -69,6 +69,7 @@ public partial class FinderTrack : IPresenceTrack {
 
 #endregion
 
+
 	public enum SlotState {
 		Hidden_Not_Revealable,
 		Hidden_But_Revealable,

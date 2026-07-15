@@ -9,9 +9,12 @@ public class Mentor : IAspect {
 
 	public string[] Replaces => [LongAgesOfKnowledgeAndForgetfulness.Name];
 
+	static InnatePower NewInnate => InnatePower.For(typeof(ShareMentorshipAndExpertise));
+	public InnatePower[] NewInnates => [NewInnate];
+
 	public void ModSpirit(Spirit spirit) {
 
-		spirit.ReplaceInnate( ObserveTheEverChangingWorld.Name, InnatePower.For(typeof(ShareMentorshipAndExpertise)));
+		spirit.ReplaceInnate( ObserveTheEverChangingWorld.Name, NewInnate);
 		PastTeachingsSpringForthUnbidden.InitAspect(spirit);
 
 		spirit.SpecialRules = [PastTeachingsSpringForthUnbidden.Rule];

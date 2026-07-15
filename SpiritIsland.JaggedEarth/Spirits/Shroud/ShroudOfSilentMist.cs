@@ -35,7 +35,11 @@ public class ShroudOfSilentMist : Spirit {
 		SpecialRules = [GatherPowerFromTheCoolAndDark.Rule, MistsShiftAndFlow.Rule, SlowAndSilentDeath.Rule];
 
 		Targetter = new MistsShiftAndFlow(this);
-		Draw = new GatherPowerFromTheCoolAndDark(this);
+		var draw = new GatherPowerFromTheCoolAndDark(this);
+		Draw = draw;
+		// Not otherwise in Mods (dispatched via Draw instead) - added here solely so
+		// ICleanupSpiritWhenTimePasses resets its "used this round" flag each round.
+		Mods.Add(draw);
 	}
 
 	protected override void InitializeInternal( Board board, GameState gameState ) {

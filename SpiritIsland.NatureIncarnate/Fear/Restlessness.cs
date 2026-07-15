@@ -26,5 +26,7 @@ public class Restlessness : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( gs );
 
+	
+
 }
 

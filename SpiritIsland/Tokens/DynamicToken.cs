@@ -3,19 +3,14 @@
 /// <summary>
 /// Island Mod that adds/removes a token based on some dynamic value - THIS ROUND ONLY
 /// </summary>
-public class DynamicToken(Func<Space, int> getCount, TokenVariety dynamicToken) 
+public abstract class DynamicToken(TokenVariety dynamicToken)
 	: BaseModEntity
 	, IHandleTokenAdded, IHandleTokenRemoved
 	, ICleanupSpaceWhenTimePasses
-	, IEndWhenTimePasses 
+	, IEndWhenTimePasses
 {
 
-	static public void Defend(Func<Space, int> getCount, string defendBadge) {
-		GameState.Current.AddIslandMod(new DynamicToken(
-			getCount,
-			new TokenVariety(Token.Defend, defendBadge)
-		));
-	}
+	protected abstract int GetCount(Space space);
 
 	Task IHandleTokenAdded.HandleTokenAddedAsync(Space to, ITokenAddedArgs args) => Update(args.To);
 
@@ -27,7 +22,7 @@ public class DynamicToken(Func<Space, int> getCount, TokenVariety dynamicToken)
 
 	Task Update(ILocation location) {
 		if( location is Space space )
-			SetTokenCount(space, getCount(space));
+			SetTokenCount(space, GetCount(space));
 		return Task.CompletedTask;
 	}
 

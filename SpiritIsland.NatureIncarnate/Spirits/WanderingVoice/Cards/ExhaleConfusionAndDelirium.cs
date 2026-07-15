@@ -11,10 +11,10 @@ public class ExhaleConfusionAndDelirium {
 		ctx.Space.Init(new BlightedInvadersSitOutRavage(),1);
 	}
 
-	class BlightedInvadersSitOutRavage : IConfigRavages, IEndWhenTimePasses {
+	public class BlightedInvadersSitOutRavage : IConfigRavages, IEndWhenTimePasses {
 
 		Task IConfigRavages.Config( Space space ) {
-			
+
 			var blightedCounts = space.AllHumanTokens()
 				.Where(x=>0<x.StrifeCount)
 				.ToDictionary( x => x, x => space[x] )
@@ -23,6 +23,7 @@ public class ExhaleConfusionAndDelirium {
 			SitOutRavage.SitOutThisRavageAction(space, blightedCounts);
 			return Task.CompletedTask;
 		}
+
 	}
 
 }

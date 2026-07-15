@@ -8,21 +8,8 @@ public class MistsOfOblivion {
 	[Instructions( "1 Fear per Town / City this Power destroys (to a maximum of 4). 1 Damage to each Invader. -If you have- 2 Moon, 3 Air, 2 Water: 3 Damage." ), Artist( Artists.NolanNasser )]
 	static public async Task ActAsync( TargetSpaceCtx ctx ) {
 
-		var originalScope = ActionScope.Current;
-
 		// 1 fear per town/city this power destroys (to a max of 4)
-		int mayDestroyed = 4;
-		async Task DoMists( ITokenRemovedArgs args ) {
-			if(0 < mayDestroyed
-				&& ActionScope.Current == originalScope
-				&& args.Reason == RemoveReason.Destroyed
-				&& args.Removed.Class.IsOneOf( Human.Town_City )
-			) {
-				await ctx.AddFear(1);
-				--mayDestroyed;
-			}
-		};
-		ctx.Space.Adjust( new TokenRemovedHandlerAsync( DoMists ), 1 );
+		ctx.Space.Adjust( new FearOnTownCityDestroy( ctx ), 1 );
 
 		// 1 damage to each invader
 		await ctx.DamageEachInvader(1);
@@ -31,6 +18,30 @@ public class MistsOfOblivion {
 		if(await ctx .YouHave("2 moon,3 air,2 water"))
 			// 3 damage
 			await ctx.DamageInvaders(3);
+	}
+
+	public class FearOnTownCityDestroy : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved {
+
+		public FearOnTownCityDestroy( TargetSpaceCtx ctx ) {
+			_ctx = ctx;
+			// only applies within this action - remove self once it ends
+			ActionScope.Current.AtEndOfThisAction( _ => ctx.Space.Adjust( this, -1 ) );
+		}
+
+		readonly TargetSpaceCtx _ctx;
+		int _mayDestroy = 4;
+
+		public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
+			if(0 < _mayDestroy
+				&& args.Reason == RemoveReason.Destroyed
+				&& args.Removed.Class.IsOneOf( Human.Town_City )
+			) {
+				int fearToGrant = Math.Min( _mayDestroy, args.Count );
+				await _ctx.AddFear( fearToGrant );
+				_mayDestroy -= fearToGrant;
+			}
+		}
+
 	}
 
 }

@@ -25,5 +25,6 @@ public class Panic : FearCardBase, IFearCard {
 			Cmd.StrifePenalizesHealth
 		).ActAsync( ctx );
 
+	
 
 }

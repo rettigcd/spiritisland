@@ -22,6 +22,8 @@ public class SpreadingTimidity : FearCardBase, IFearCard {
 		.In().SpiritPickedLand().AllDifferent()
 		.ForEachSpirit()
 		.ActAsync( ctx );
+
+	
 }
 
 

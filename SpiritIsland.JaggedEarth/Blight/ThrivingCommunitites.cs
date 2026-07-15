@@ -23,4 +23,6 @@ public class ThrivingCommunitites : BlightCard {
 
 	} ).OnlyExecuteIf( x => x.Space.HasAny( Human.Explorer_Town ) );
 
+	
+
 }

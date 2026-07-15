@@ -10,21 +10,17 @@ public class TerrifyingRampage {
 		// 1 Fear.
 		await ctx.AddFear(1);
 		// 2 Invaders don't participate in Ravage. (Choose when ravaging.)
-		ctx.Space.Adjust(new InvadersSitOut(
-			ctx.Self,
-			new Quota().AddGroup(2,Human.Invader)
-		),1);
+		ctx.Space.Adjust(new InvadersSitOut(ctx.Self),1);
 		await ctx.PushDahan(3);
 	}
 
-	class InvadersSitOut( Spirit invaderPicker, Quota quota ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
+	public class InvadersSitOut( Spirit invaderPicker ) : BaseModEntity, IConfigRavages, IEndWhenTimePasses {
 
 		readonly Spirit _invaderPicker = invaderPicker;
-		readonly Quota _quota = quota;
 
 		async Task IConfigRavages.Config( Space space ) {
 			await space.SourceSelector
-				.UseQuota( _quota )
+				.UseQuota( new Quota().AddGroup(2,Human.Invader) )
 				.SelectFightersAndSitThemOut( _invaderPicker );
 		}
 

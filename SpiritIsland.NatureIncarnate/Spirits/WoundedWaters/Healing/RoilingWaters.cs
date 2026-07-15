@@ -4,7 +4,10 @@ class RoilingWaters : IHealingCard {
 	const string Name = "Roiling Waters";
 	public string Text => Name;
 
-	static readonly SpecialRule Rule = new SpecialRule(Name, "When your Powers add or move Beast into a land, you may do 1 Damage there per added or moved Beast. When your Powers add or move any number of Dahan into a land, you may do 1 Damage there (max once per Power)" );
+	/// <summary> internal, not private - WoundedWatersBleeding.RestoreCustomStateFromJson re-adds this
+	/// directly (without replaying Claim()'s whole effect, which would double-add the island Mod below)
+	/// when restoring a spirit that already claimed this card. </summary>
+	internal static readonly SpecialRule Rule = new SpecialRule(Name, "When your Powers add or move Beast into a land, you may do 1 Damage there per added or moved Beast. When your Powers add or move any number of Dahan into a land, you may do 1 Damage there (max once per Power)" );
 
 	public bool MeetsRequirement( WoundedWatersBleeding spirit )
 		=> 2 <= spirit.HealingMarkers[Element.Animal]
@@ -18,7 +21,7 @@ class RoilingWaters : IHealingCard {
 
 	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.SpecialRules.Any(r=>r.Title==Name);
 
-	class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAdded {
+	public class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAdded {
 		readonly Spirit _spirit = spirit;
 
 		async Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {

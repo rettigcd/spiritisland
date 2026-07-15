@@ -11,12 +11,8 @@ public class SleepAndNeverWaken {
 		ctx.Space.SkipAllInvaderActions( Name );
 
 		// Track # of exlorers removed.
-		int removed = 0;
-		void CountDestroyedExplorers( ITokenRemovedArgs args ) {
-			if(args.Removed.Class == Human.Explorer)
-				removed += args.Count;
-		}
-		ctx.Space.Adjust( new TokenRemovedHandler(CountDestroyedExplorers), 1 );
+		var removedCounter = new CountDestroyedExplorers();
+		ctx.Space.Adjust( removedCounter, 1 );
 
 		// remove up to 2 explorer.
 		await Cmd.RemoveExplorers(2).ActAsync(ctx);
@@ -26,7 +22,16 @@ public class SleepAndNeverWaken {
 			await RemoveExploreres( ctx, 6, ctx.Self.Presence.Lands.ToArray() );
 
 		// 1 fear per 2 explorer this Power Removes.
-		await ctx.AddFear( removed / 2 );
+		await ctx.AddFear( removedCounter.Count / 2 );
+	}
+
+	public class CountDestroyedExplorers : BaseModEntity, IHandleTokenRemoved {
+		public int Count { get; private set; }
+		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
+			if(args.Removed.Class == Human.Explorer)
+				Count += args.Count;
+			return Task.CompletedTask;
+		}
 	}
 
 	static async Task RemoveExploreres( TargetSpaceCtx ctx, int count, params Space[] fromSpaces ) {

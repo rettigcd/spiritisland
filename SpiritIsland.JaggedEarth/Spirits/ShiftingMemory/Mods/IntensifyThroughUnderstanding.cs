@@ -1,21 +1,21 @@
-﻿namespace SpiritIsland.JaggedEarth;
+namespace SpiritIsland.JaggedEarth;
 
-class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
-	// Island Mods
+/// <summary>
+/// Intensify Through Understanding - Shifting Memory of Ages' special rule, Island Mod half
+/// (Moon/Sun/Fire/Plant/Animal/Earth). Split from the Air/Water half (see IntensifyAirWater)
+/// because they live in different registries: this one is an Island Mod, dispatched via the
+/// Island Mods token dictionary, so it's a plain Spirit reference and can be serialized like
+/// any other single-Spirit ISpaceEntity. Air/Water modify action availability/movement, which
+/// are only dispatched via Spirit.Mods.OfType&lt;T&gt;() - there's no restoration mechanism for
+/// Spirit.Mods today (same gap as MarkedBeastMover), so that half stays out of this catalog.
+/// </summary>
+public class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 	: BaseModEntity
 	, IModifyRemovingToken						// Moon
 	, IModifyAddingToken						// Sun (badland), Plant, Animal
 	, IAdjustDamageToInvaders_FromSpiritPowers	// Fire
 	, IHandleTokenAdded							// Sun (strife)
 	, IHandleSpaceDefended						// Earth
-	// Spirit actions
-	, IModifyAvailableActions					// Air
-	, IHandleActivatedActions					// Air
-	// Action-Components
-	, IMoverFactory								// Water
-	// Init
-	, IInitializeSpirit
-	, IConfigureMyActions
 {
 
 	// https://spiritislandwiki.com/index.php?title=Intensify
@@ -31,7 +31,8 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 		+" • Water: Move +1 piece"
 		+" • Earth: Defend +2"
 		+" • Plant: Add +2 Wilds or +2 Destroyed Presence"
-		+" • Animal: Add +1 Disease or +1 Beasts";
+		+" • Animal: Add +1 Disease or +1 Beasts"
+		+"Bonus: 1 Moon, 1 Any";
 	static public SpecialRule Rule => new SpecialRule(Name, Description);
 
 	#endregion Rule
@@ -40,72 +41,11 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 		spirit.Elements = new PreparedElementMgr(spirit);
 
 		// You may spend Element Markers to modify your Actions (max. 1 of each Marker per Action)
-		spirit.Mods.Add(new IntensifyThroughUnderstanding((ShiftingMemoryOfAges)spirit));
-	}
-
-	#region Water
-
-	DestinationSelector IMoverFactory.PushDestinations => _default.PushDestinations;
-
-	TokenMover IMoverFactory.Gather(Spirit self, Space space) {
-		var mover = _default.Gather(self, space);
-		mover.DoEndStuff += Mover_DoEndStuff;
-		return mover;
-	}
-
-	TokenMover IMoverFactory.Pusher(Spirit self, SourceSelector sourceSelector, DestinationSelector? dest) {
-		var mover = _default.Pusher(self, sourceSelector, dest);
-		mover.DoEndStuff += Mover_DoEndStuff;
-		return mover;
-	}
-
-	async Task Mover_DoEndStuff(bool ranOutOfOption, Move[] arg2, Spirit arg3) {
-		if( !ranOutOfOption ) return;
-		if( _spirit.PreparedElementMgr.PreparedElements[Element.Water] == 0 ) return;
-
-		var options = arg2.Where(m => 0 < m.Source.Count).ToArray();
-		if( options.Length == 0 ) return;
-
-		var move = await _spirit.Select("Boost 1 more move with Water element?", options, Present.Done);
-		if( move is null ) return;
-		_spirit.PreparedElementMgr.PreparedElements[Element.Water]--;
-		await move.Apply();
-	}
-	readonly DefaultMoverFactory _default = new();
-
-	#endregion Water
-
-	#region Air
-	void IModifyAvailableActions.Modify(List<IActionFactory> orig, Phase phase) {
-		bool canMakeSlowFast = phase == Phase.Fast && _usedCount < Math.Min(_spirit.PreparedElementMgr.PreparedElements[Element.Air], 1);
-		if( !canMakeSlowFast ) return;
-
-		_slowAsFast = _spirit.AllActions.Where(slowAction => slowAction.CouldActivateDuring(Phase.Slow, _spirit))
-			.Except(orig) // in case another mod added slow-as-fast, don't re-add it.
-			.ToArray();
-		orig.AddRange(_slowAsFast);
-	}
-
-	void IHandleActivatedActions.ActionActivated(IActionFactory factory) {
-		if( _slowAsFast.Contains(factory) ) {
-			++_usedCount;
-			--_spirit.PreparedElementMgr.PreparedElements[Element.Air];
-		}
+		spirit.Mods.Add(new IntensifyAirWater((ShiftingMemoryOfAges)spirit));
 	}
 
 	readonly protected ShiftingMemoryOfAges _spirit = smoa;
 
-
-	IActionFactory[] _slowAsFast = [];
-
-	int _usedCount {
-		get => GameState.Current.RoundScope.TryGetValue(UsedKey, out object? val) ? (int)val! : 0;
-		set => GameState.Current.RoundScope[UsedKey] = value;
-	}
-	string UsedKey => _usedKey ??= "SlowAsFast:" + Guid.NewGuid().ToString(); string? _usedKey;
-	#endregion Air
-
-	#region Other elements
 	async Task IModifyAddingToken.ModifyAddingAsync(AddingTokenArgs args) {
 		if( (args.Reason == AddReason.AddedToCard || args.Reason == AddReason.AsReplacement)
 			&& _spirit.ActionIsMyPower
@@ -192,17 +132,5 @@ class IntensifyThroughUnderstanding(ShiftingMemoryOfAges smoa)
 			});
 		}
 	}
-
-	#endregion Other elements
-
-	#region Initialize Spirit (after game exists)
-	void IInitializeSpirit.Initialize() {
-		GameState.Current.AddIslandMod(this); // everything but Air & Water
-	}
-	void IConfigureMyActions.Configure(Spirit spirit, ActionScope actionScope) {
-		actionScope.MoverFactory = this; // water
-	}
-
-	#endregion
 
 }

@@ -26,4 +26,6 @@ public class Unrest : FearCardBase, IFearCard {
 				Cmd.StrifePenalizesHealth
 			)
 			.ActAsync( ctx );
+
+	
 }

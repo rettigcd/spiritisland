@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class GatherPowerFromTheCoolAndDark(Spirit s) : DrawCardStrategy(s) {
+class GatherPowerFromTheCoolAndDark(Spirit s) : DrawCardStrategy(s), ISpiritMod, ICleanupSpiritWhenTimePasses {
 
 	public const string Name = "Gather Power from the Cool and Dark";
 	const string Description = "Once a turn, when you Gain a Power Card without fire, gain 1 Energy";
@@ -14,11 +14,15 @@ class GatherPowerFromTheCoolAndDark(Spirit s) : DrawCardStrategy(s) {
 
 	// ! This is just an Event - could switch this to Event driven instead of inheritance driven.
 	void CheckForCoolEnergy(PowerCard card) {
-		Dictionary<string, object> roundScope = GameState.Current.RoundScope;
-		if(roundScope.ContainsKey(Name)) return; // check if used
+		if(_usedThisRound) return;
 		if( card.Elements[Element.Fire] > 0 ) return;
 		_spirit.Energy++;
-		roundScope[Name] = true; // mark as used
+		_usedThisRound = true;
 	}
+
+	bool _usedThisRound;
+
+	void ICleanupSpiritWhenTimePasses.CleanupSpirit( Spirit spirit ) => _usedThisRound = false;
+
 
 }

@@ -56,7 +56,7 @@ public class ConsiderAHarmoniousNature {
 
 }
 
-class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
+public class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 	: BaseModEntity
 	, IModifyRemovingToken
 	, IAdjustDamageToDahan
@@ -82,9 +82,10 @@ class MyPowersDontDamageDahanThisRound( Spirit spirit, string source )
 		}
 		return Task.CompletedTask;
 	}
+
 }
 
-class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source ) 
+public class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source )
 	: BaseModEntity, IModifyAddingToken, IEndWhenTimePasses
 {
 	readonly Spirit _spirit = spirit;
@@ -99,4 +100,5 @@ class DestroyPresenceInsteadOfAddingBlight( Spirit spirit, string source )
 			args.Count = 0;
 		}
 	}
+
 }

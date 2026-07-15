@@ -13,4 +13,6 @@ public class TippingPoint : BlightCard {
 			Cmd.DestroyPresence(3)
 		);
 
+	
+
 }

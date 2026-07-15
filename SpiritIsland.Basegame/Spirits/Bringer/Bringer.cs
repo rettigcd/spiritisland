@@ -33,14 +33,21 @@ public class Bringer : Spirit {
 		];
 
 		SpecialRules = [ ToDreamAThousandDeaths.Rule ];
+
+		// Constructed here (rather than in InitializeInternal) so that aspects' ModSpirit - which runs
+		// right after this constructor completes, but before InitializeInternal/GameState exist - has an
+		// instance to write spirit-scoped overrides into (see Violence.ModSpirit).
+		DreamMod = new ToDreamAThousandDeaths( this );
 	}
+
+	public ToDreamAThousandDeaths DreamMod { get; }
 
 	protected override void InitializeInternal( Board board, GameState gs ) {
 		// Setup: 2 presense in highest numbered sands
 		var startingIn = board.Spaces.Where(x=>x.IsSand).Last();
 		var space = startingIn.ScopeSpace;
 		space.Setup( Presence.Token, 2 );
-		gs.AddIslandMod(new ToDreamAThousandDeaths(this));
+		gs.AddIslandMod( DreamMod );
 	}
 
 }

@@ -20,7 +20,10 @@ public class ExaltationOfMoltenStone {
 		self.PowerRangeCalc = new ExtendRange1FromMountain( self.PowerRangeCalc );
 	}
 
-	class ExtendRange1FromMountain( ICalcRange previous ) : DefaultRangeCalculator(previous) {
+	internal class ExtendRange1FromMountain( ICalcRange previous ) : DefaultRangeCalculator(previous) {
+		// Re-fetched fresh from the current scope, not serialized - ActionScope.Current.TerrainMapper is
+		// deterministic game/scenario config (ActionScope.cs: GameState?.GetTerrain(Category)), not
+		// per-instance user data, so reconstructing this normally already gets the right value.
 		readonly TerrainMapper _powerTerrainMapper = ActionScope.Current.TerrainMapper;
 
 		public override TargetRoutes GetTargetingRoute(Space source, TargetCriteria tc) {

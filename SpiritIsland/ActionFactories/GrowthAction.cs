@@ -16,6 +16,9 @@ public interface ICanAutoRun {}
 public class GrowthAction( IActOn<Spirit> cmd, Phase phase = Phase.Growth ) : IHelpGrowActionFactory {
 	public readonly IActOn<Spirit> Cmd = cmd; // !!! switch to IActOn<Spirit>
 
+	/// <summary> Exposed for serialization (see Spirit.SerializeGrowthAction's ad-hoc-instance fallback) - not otherwise needed outside CouldActivateDuring. </summary>
+	public Phase Phase => phase;
+
 	string IOption.Text => Cmd.Description;
 
 	string IActionFactory.Title => Cmd.Description;

@@ -11,7 +11,7 @@ public class DefaultPowerSourceStrategy : ITargetingSourceStrategy {
 			TargetFrom.Presence => presence.Lands,
 			TargetFrom.SacredSite => presence.SacredSites,
 			TargetFrom.Incarna => presence is SpiritPresence sp && sp.Incarna.IsPlaced // !! Maybe IKnowSpiritLocations should have an IEnumerable<Space> InvarnaLocations;
-				? new Space[] { sp.Incarna.Space } 
+				? new Space[] { sp.Incarna.Space }
 				: [],
 			_ => throw new ArgumentException( "Invalid presence source " + from ),
 		};

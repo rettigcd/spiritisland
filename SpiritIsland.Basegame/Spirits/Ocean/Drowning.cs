@@ -88,6 +88,7 @@ class Drowning( Ocean ocean ) : BaseModEntity, IHandleTokenAdded {
 	readonly Ocean _ocean = ocean;
 
 	#endregion
+
 }
 
 class Drowner {

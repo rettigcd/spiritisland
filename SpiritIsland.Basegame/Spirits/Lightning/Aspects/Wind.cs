@@ -8,11 +8,14 @@ public class Wind : IAspect {
 	public const string Name = "Wind";
 	public string[] Replaces => [SwiftnessOfLightning.Name]; // Exhaltation of StormWind
 
+	static InnatePower NewInnate => InnatePower.For(typeof(ExaltationOfTheStormWind));
+	public InnatePower[] NewInnates => [NewInnate];
+
 	public void ModSpirit(Spirit spirit) {
 		// Replaces	Special Rule: Swiftness of Lightning
 		spirit.RemoveRule(SwiftnessOfLightning.Name);
 		spirit.RemoveMod<SwiftnessOfLightning>();
 
-		spirit.AddInnate(InnatePower.For(typeof(ExaltationOfTheStormWind)));
+		spirit.AddInnate(NewInnate);
 	}
 }

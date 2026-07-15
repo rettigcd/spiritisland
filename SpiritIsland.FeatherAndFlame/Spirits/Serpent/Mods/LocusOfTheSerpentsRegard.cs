@@ -21,7 +21,7 @@ class LocusOfTheSerpentsRegard : IHandleCardPlayed {
 	}
 
 	// New Targetting Source Strategy
-	class IncludeSerpentsIncarna(ITargetingSourceStrategy old,Spirit serpent) : ITargetingSourceStrategy {
+	internal class IncludeSerpentsIncarna(ITargetingSourceStrategy old,Spirit serpent) : ITargetingSourceStrategy {
 		public IEnumerable<Space> EvaluateFrom(IKnowSpiritLocations presence, TargetFrom from) {
 			var normal = old.EvaluateFrom(presence, from).ToList();
 			if( serpent.Incarna.IsPlaced && from switch {
@@ -32,6 +32,7 @@ class LocusOfTheSerpentsRegard : IHandleCardPlayed {
 			}
 			return normal;
 		}
+
 	}
 
 }

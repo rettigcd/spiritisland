@@ -36,7 +36,7 @@ public class InfiniteVitality {
 }
 
 // Threshold token
-class StopDahanDamageAndDestruction( string _sourceName )
+public class StopDahanDamageAndDestruction( string _sourceName )
 	: ISpaceEntity
 	, IAdjustDamageToDahan
 	, IModifyRemovingToken

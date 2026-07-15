@@ -1,18 +1,23 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public sealed class TheBorderOfLifeAndDeath : StillHealthyBlightCard {
+public sealed class TheBorderOfLifeAndDeath : StillHealthyBlightCard, IRunBeforeInvaderPhase {
 
 	public TheBorderOfLifeAndDeath():base(
-		"The Border of Life and Death", 
-		"Now and Each Invader Phase (until this card is replaced): Each Spirit with at least 2 Presence on the island Destroys 1 Presence and may discard a Power Card to gain 1 Energy", 
+		"The Border of Life and Death",
+		"Now and Each Invader Phase (until this card is replaced): Each Spirit with at least 2 Presence on the island Destroys 1 Presence and may discard a Power Card to gain 1 Energy",
 		1
 	) {}
 
-	public override IActOn<GameState> Immediately 
+	public override IActOn<GameState> Immediately
 		=> Cmd.Multiple(
 			CardAction,
-			CardAction.AtTheStartOfEachInvaderPhase()
+			RunAtTheStartOfEachInvadorPhase(this)
 		);
+
+	bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
+
+	Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState )
+		=> CardAction.ActAsync( gameState );
 
 	static IActOn<GameState> CardAction => DiscardPowerCardForEnergy
 		.ForEachSpirit()

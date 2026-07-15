@@ -14,16 +14,23 @@ public class InfestationOfVenomousSpiders {
 		await ctx.GatherUpTo(1, Token.Beast);
 
 		// if you have 2 air 2 earth 3 animal: after this power causes invaders to skip an action, 4 damage.
-		Func<Space,Task>? causeAdditionalDamage = await ctx.YouHave("2 air,2 earth,3 animal")
-			? (Space space) => ctx.Target(space).DamageInvaders(4) // this correctly uses Bringers ctx to do Dream damage
-			: null;
+		bool causesAdditionalDamage = await ctx.YouHave("2 air,2 earth,3 animal");
 
 		// For each beast,
 		int count = ctx.Beasts.Count;
 		// 1 fear (max 4) and
 		await ctx.AddFear( System.Math.Min(4,count) );
-		for(int i = 0; i < count; ++i)
-			ctx.Space.Skip1InvaderAction( Name, ctx.Self, causeAdditionalDamage ); // !!! derive a new type instead of this alt-action nonsense
+		for(int i = 0; i < count; ++i) {
+			if( causesAdditionalDamage )
+				ctx.Space.Adjust( new SkipAndDamageInvaders(Name, ctx.Self, ctx), 1 );
+			else
+				ctx.Space.Skip1InvaderAction( Name, ctx.Self );
+		}
+	}
+
+	// this correctly uses Bringers ctx to do Dream damage
+	public class SkipAndDamageInvaders( string label, Spirit spirit, TargetSpaceCtx ctx ) : SkipAnyInvaderAction( label, spirit ) {
+		protected override Task AfterStop( Space space ) => ctx.Target(space).DamageInvaders(4);
 	}
 
 }

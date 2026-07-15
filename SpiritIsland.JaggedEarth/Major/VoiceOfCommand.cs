@@ -23,41 +23,39 @@ public class VoiceOfCommand {
 		ctx.Defend(2);
 
 		// During Ravage Actions, explorer fight alongside dahan. (Deal/take Damage at the same time, and to/from the same source.)
-//		var cfg = ctx.Tokens.RavageBehavior;
-//		cfg.IsAttacker = (token) => token.Class.IsOneOf( Human.Town_City );
-//		cfg.IsDefender = (token) => token.Class.IsOneOf( Human.Explorer, Human.Dahan);
-		ctx.Space.Init(new RavageConfigToken(
-			space => {
-				foreach(HumanToken orig in space.HumanOfTag( Human.Explorer ).ToArray()) {
-					AdjustRavageSide( space, orig, RavageSide.Defender, RavageOrder.DahanTurn );
-				}
-			},
-			space => {
-				foreach(HumanToken orig in space.HumanOfAnyTag( Human.Explorer ).ToArray())
-					AdjustRavageSide( space, orig, RavageSide.Attacker, RavageOrder.InvaderTurn );
-			}
-		),1);
+		ctx.Space.Init(new RavageConfigToken(), 1);
 
 	}
+
+}
+
+public class RavageConfigToken
+	: BaseModEntity
+	, IConfigRavages
+	, IEndWhenTimePasses
+{
+	Task IConfigRavages.Config( Space space ) {
+		// Explorer fights alongside Dahan (defender) during the Ravage.
+		Setup( space );
+
+		// At end of Action, invaders are are restored to original.
+		ActionScope.Current.AtEndOfThisAction( _ => Teardown( space ) );
+		return Task.CompletedTask;
+	}
+
+	static void Setup( Space space ) {
+		foreach(HumanToken orig in space.HumanOfTag( Human.Explorer ).ToArray())
+			AdjustRavageSide( space, orig, RavageSide.Defender, RavageOrder.DahanTurn );
+	}
+
+	static void Teardown( Space space ) {
+		foreach(HumanToken orig in space.HumanOfAnyTag( Human.Explorer ).ToArray())
+			AdjustRavageSide( space, orig, RavageSide.Attacker, RavageOrder.InvaderTurn );
+	}
+
 	static void AdjustRavageSide( Space space, HumanToken orig, RavageSide side, RavageOrder order ) {
 		space.Init( orig.SetRavageSide( side ).SetRavageOrder( order ), space[orig] );
 		space.Init( orig, 0 );
 	}
 
-
-}
-
-public class RavageConfigToken( Action<Space> _setup, Action<Space> _teardown ) 
-	: BaseModEntity, 
-	IConfigRavages, 
-	IEndWhenTimePasses
-{
-	Task IConfigRavages.Config( Space space ) {
-		// Token Reduces Attack of invaders by 1
-		_setup( space );
-
-		// At end of Action, invaders are are restored to original.
-		ActionScope.Current.AtEndOfThisAction( _ => _teardown( space ) );
-		return Task.CompletedTask;
-	}
 }

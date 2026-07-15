@@ -41,4 +41,6 @@ public class TheologicalStrife : FearCardBase, IFearCard {
 			.In().SpiritPickedLand().Which( Has.YourPresence ).ByPickingToken( Human.Invader )
 			.ForEachSpirit();
 
+	
+
 }

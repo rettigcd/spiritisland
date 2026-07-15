@@ -9,9 +9,12 @@ public class Unconstrained : IAspect {
 
 	public string[] Replaces => [CallForthPredators.Name];
 
+	static InnatePower NewInnate => InnatePower.For(typeof(RangingHuntOnBlight));
+	public InnatePower[] NewInnates => [NewInnate];
+
 	public void ModSpirit(Spirit spirit) {
 		// Upgrade Ranging Hunt
-		spirit.ReplaceInnate(RangingHunt.Name, InnatePower.For(typeof(RangingHuntOnBlight)));
+		spirit.ReplaceInnate(RangingHunt.Name, NewInnate);
 
 		// !!! Do not Add a Beasts as part of Spirit Setup.
 		((SharpFangs)spirit).SetupAction = null;

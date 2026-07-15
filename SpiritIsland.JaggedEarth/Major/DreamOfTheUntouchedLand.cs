@@ -86,7 +86,7 @@ public class DreamOfTheUntouchedLand {
 
 }
 
-class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExploreTo, ICleanupSpaceWhenTimePasses {
+public class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExploreTo, ICleanupSpaceWhenTimePasses {
 	public UsageCost Cost => UsageCost.Free;
 	public string Text => "Invaders Skip 1 Board";
 
@@ -113,4 +113,5 @@ class InvadersSkip1Board : BaseModEntity, ISkipRavages, ISkipBuilds, ISkipExplor
 	}
 
 	Board? _toSkip = null;
+
 }

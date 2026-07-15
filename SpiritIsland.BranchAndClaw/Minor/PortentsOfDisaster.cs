@@ -11,17 +11,21 @@ public class PortentsOfDisaster {
 		await ctx.AddFear(2);
 
 		// The next time an invader is destroyed in target land this turn, 1 fear
-		bool addFear = true;
-		async Task Add1MoreFearForFirstDestroyedInvader( ITokenRemovedArgs args ) {
-			if( addFear 
+		ctx.Space.Adjust( new Add1FearForFirstDestroyedInvader(ctx), 1 );
+
+	}
+
+	public class Add1FearForFirstDestroyedInvader( TargetSpaceCtx ctx ) : BaseModEntity, IEndWhenTimePasses, IHandleTokenRemoved {
+		bool _addFear = true;
+		public async Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
+			if( _addFear
 				&& args.Reason.IsDestroy()
 				&& args.Removed.HasTag(TokenCategory.Invader)
 			){ // !! create an override .IsInvader()
 				await ctx.AddFear(1);
-				addFear = false;
+				_addFear = false;
 			}
 		}
-		ctx.Space.Adjust( new TokenRemovedHandlerAsync( Add1MoreFearForFirstDestroyedInvader ), 1 );
 
 	}
 

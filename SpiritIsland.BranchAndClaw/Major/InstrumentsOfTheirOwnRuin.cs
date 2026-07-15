@@ -27,8 +27,14 @@ public class InstrumentsOfTheirOwnRuin {
 	}
 
 	static Task DuringRavage_InvadersDamageInvadersInAdjacentLandsInsteadOfDahan( TargetSpaceCtx ctx ) {
-		ctx.ModifyRavage( cfg => cfg.RavageSequence = ( _, _ ) => RavageSequence_DamageInvadersInAdjacentLand(ctx ) );
+		ctx.Space.RavageBehavior.SequenceSteps.Add( new DamageInvadersInAdjacentLands(ctx) );
 		return Task.CompletedTask;
+	}
+
+	public class DamageInvadersInAdjacentLands( TargetSpaceCtx ctx ) : IRavageSequenceStep {
+		public Task Execute( RavageBehavior behavior, RavageData data, Func<Task> next )
+			=> RavageSequence_DamageInvadersInAdjacentLand( ctx );
+			// never calls next() - fully replaces the ravage, matching original behavior
 	}
 
 	static async Task RavageSequence_DamageInvadersInAdjacentLand( TargetSpaceCtx ctx ) { 

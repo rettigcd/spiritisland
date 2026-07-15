@@ -8,9 +8,9 @@
 /// <summary>
 /// A card already in Play, may be Activated an additional time. (no new elements)
 /// </summary>
-public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
+public class RepeatCardForCost( string exclude = "" ) : IActionFactory {
 
-	public bool CouldActivateDuring( Phase speed, Spirit _ ) 
+	public bool CouldActivateDuring( Phase speed, Spirit _ )
 		=> speed == Phase.Fast || speed == Phase.Slow;
 
 	string IOption.Text => Title;
@@ -33,18 +33,19 @@ public class RepeatCardForCost( params string[] exclude ) : IActionFactory {
 	public virtual PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
 		int maxCardCost = self.Energy;
 		PowerCard[] options = self.UsedActions.OfType<PowerCard>() // can't use Discard pile because those cards are from prior rounds.
-			.Where( card => !_exclude.Contains(card.Title) )
+			.Where( card => card.Title != _exclude )
 			.Where( card => card.CouldActivateDuring( phase, self ) )
 			.Where( card => card.Cost <= maxCardCost )
 			.ToArray();
 		return options;
 	}
 
-	readonly protected string[] _exclude = exclude;
+	readonly protected string _exclude = exclude;
+
 
 }
 
-public class RepeatCheapestCardForCost( params string[] exclude ) : RepeatCardForCost(exclude) {
+public class RepeatCheapestCardForCost( string exclude = "" ) : RepeatCardForCost(exclude) {
 	public override PowerCard[] GetCardOptions( Spirit self, Phase phase ) {
 		return [
 			.. base.GetCardOptions(self,phase)
@@ -53,4 +54,6 @@ public class RepeatCheapestCardForCost( params string[] exclude ) : RepeatCardFo
 				.First() // all the cards in the 1st group
 		];
 	}
+
+
 }

@@ -27,5 +27,7 @@ public class ShatteredFragmentsOfPower : BlightCard {
 		}
 	);
 
+	
+
 }
 

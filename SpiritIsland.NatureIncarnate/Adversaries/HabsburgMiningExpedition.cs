@@ -1,4 +1,4 @@
-﻿namespace SpiritIsland.NatureIncarnate;
+namespace SpiritIsland.NatureIncarnate;
 
 public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 
@@ -15,7 +15,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 	#region Loss Condition
 
 	/// <summary> Runs a Win/Loss check at End-of-Fast/Beginning-Of-Invader </summary>
-	class LandStrippedBare : AdversaryLossCondition, IRunBeforeInvaderPhase {
+	internal class LandStrippedBare : AdversaryLossCondition, IRunBeforeInvaderPhase {
 		public LandStrippedBare() : base( "Land Stripped Bare: At the end of the Fasticon.png Phase, the Invaders win if any land has at least 8 total Invaders/Blight (combined).", null ) { }
 
 		public override void Init( GameState gs ) {
@@ -34,6 +34,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 			}
 			return Task.CompletedTask;
 		}
+
 		#endregion IRunBeforeInvaderPhase
 	}
 
@@ -82,7 +83,7 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 	/// <summary>
 	/// Replaces a Ravage-Blight-Cascade with an Invader upgrade
 	/// </summary>
-	class AvariceRewardedMod : BaseModEntity, IModifyAddingToken, IHandleTokenAdded {
+	public class AvariceRewardedMod : BaseModEntity, IModifyAddingToken, IHandleTokenAdded {
 
 		// !!! If there is another Mod that stops the cascade, it should run first so we don't trigger this effect.
 
@@ -128,9 +129,10 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 		const string Key = "Avarice Rewarded";
 
 		#endregion
+
 	}
 
-	class DiseaseStopsRavageInMiningLands : BaseModEntity, ISkipRavages {
+	public class DiseaseStopsRavageInMiningLands : BaseModEntity, ISkipRavages {
 		public UsageCost Cost => UsageCost.Something;
 
 		public async Task<bool> Skip( Space space ) {
@@ -228,6 +230,8 @@ public class HabsburgMiningExpedition : AdversaryBuilder, IAdversaryBuilder {
 		protected override IEnumerable<InvaderCard> SelectLevel2Cards() {
 			return _levelsString.Contains( 'S' ) ? Level2SansCoastal : base.SelectLevel2Cards();
 		}
+
+		
 
 	}
 	

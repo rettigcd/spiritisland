@@ -28,4 +28,6 @@ public class EmigrationAccelerates : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
+	
+
 }

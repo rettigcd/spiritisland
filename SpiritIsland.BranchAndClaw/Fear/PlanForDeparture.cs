@@ -28,4 +28,6 @@ public class PlanForDeparture : FearCardBase, IFearCard {
 		)
 		.ActAsync( ctx );
 
+	
+
 }

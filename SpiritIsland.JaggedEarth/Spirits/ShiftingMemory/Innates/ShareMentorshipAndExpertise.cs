@@ -66,8 +66,9 @@ public class ShareMentorshipAndExpertise {
 
 }
 
-public class RepeatSpecificCardForCost(PowerCard card) : RepeatCardForCost([]) {
+public class RepeatSpecificCardForCost(PowerCard card) : RepeatCardForCost() {
 	public override PowerCard[] GetCardOptions(Spirit self, Phase phase) {
 		return base.GetCardOptions(self, phase).Where(x => x == card).ToArray();
 	}
+
 }

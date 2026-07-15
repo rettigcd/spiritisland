@@ -89,6 +89,7 @@ public sealed class Island : IHaveMemento {
 		ValidateAccessibleOceans();
 	}
 
+
 	#region Memento
 
 	object IHaveMemento.Memento {
@@ -101,6 +102,7 @@ public sealed class Island : IHaveMemento {
 	class MyMemento( Island _src ) {
 		public void Restore( Island src ) {
 			src.Boards = boards.Select( b => b.Restore() ).ToArray();
+			src.ConnectSides(); // re-establish cross-board adjacency on the freshly-rebuilt Board objects - previously skipped (an oversight, not deliberate; see FromJson's remarks)
 			foreach(SingleSpaceSpec space in src.Boards.SelectMany(b=>b.Spaces_Unfiltered).OfType<SingleSpaceSpec>())
 				space.NativeTerrain = nativeTerrain[space.Label];
 		}

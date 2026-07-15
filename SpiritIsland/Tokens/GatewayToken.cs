@@ -4,23 +4,30 @@
 /// <remarks> Must be in Engine project so that Memento can save/restore it.</remarks>
 public class GatewayToken : ISpaceEntity, IHandleTokenRemoved {
 
-	readonly Space _from;
-	readonly Space _to;
+	readonly SpaceSpec _from;
+	readonly SpaceSpec _to;
 
 	public GatewayToken( SpiritPresenceToken presence, Space from, Space to ) {
 		_presence = presence;
-		_from = from;
-		_to = to;
+		_from = from.SpaceSpec;
+		_to = to.SpaceSpec;
 		// Add self
-		_from.Init( this, 1 );
-		_to.Init( this, 1 );
+		from.Init( this, 1 );
+		to.Init( this, 1 );
 	}
 	public void RemoveSelf() {
-		_from.Init( this, 0 );
-		_to.Init( this, 0 );
+		var scope = ActionScope.Current;
+		scope.AccessTokens(_from).Init( this, 0 );
+		scope.AccessTokens(_to).Init( this, 0 );
 	}
 
-	public Space? GetLinked( Space end ) => end == _from ? _to : end == _to ? _from : null; // doesn't link.
+	public Space? GetLinked( Space end ) {
+		var scope = ActionScope.Current;
+		return end.SpaceSpec == _from ? scope.AccessTokens(_to)
+			: end.SpaceSpec == _to ? scope.AccessTokens(_from)
+			: null; // doesn't link.
+	}
+
 	public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) {
 		var from = (Space)args.From;
 		if(args.Removed == _presence && from[_presence] < 2)

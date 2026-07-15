@@ -37,5 +37,6 @@ class SlowAndSilentDeath( ShroudOfSilentMist spirit ) : IRunWhenTimePasses {
 		_spirit.Energy += myLandsWithWoundedInvaders.Length / 3;
 
 	}
+
 }
 

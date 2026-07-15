@@ -16,4 +16,6 @@ public class BackAgainstTheWall : BlightCard {
 		spirit.TempCardPlayBoost++;
 	}
 
+	
+
 }

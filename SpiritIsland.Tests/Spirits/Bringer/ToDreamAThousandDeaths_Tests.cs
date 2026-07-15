@@ -193,4 +193,21 @@ public class ToDreamAThousandDeaths_Tests {
 		actualGeneratedFear.ShouldBe(expectedFearCount,"fear countis wrong");
 	}
 
+	[Fact]
+	public void ViolenceAspect_OverridesDreamFear_OnlyOnItsOwnSpirit() {
+		// Given: 2 separate Bringers
+		var plain = new Bringer();
+		var violent = new Bringer();
+
+		// When: Violence applied to only 1 of them
+		new Violence().ModSpirit( violent );
+
+		// Then: only that spirit's own DreamMod is overridden ...
+		violent.DreamMod.DreamFear[0].ShouldBe( 1 );
+		violent.DreamMod.DreamFear[1].ShouldBe( 3 );
+		//  ... the other Bringer (and any future one) is unaffected - not a process-wide static.
+		plain.DreamMod.DreamFear[0].ShouldBe( 0 );
+		plain.DreamMod.DreamFear[1].ShouldBe( 2 );
+	}
+
 }

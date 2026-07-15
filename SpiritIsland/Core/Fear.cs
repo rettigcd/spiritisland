@@ -117,6 +117,7 @@ public class Fear : IHaveMemento {
 	// - events -
 	readonly GameState _gs;
 
+
 	#region Memento
 
 	object IHaveMemento.Memento {

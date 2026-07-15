@@ -4,7 +4,9 @@
 // When doing Damage, Track initial state + Damage
 public class ToDreamAThousandDeaths(Spirit spirit) : BaseModEntity, IHandleInvaderDamaged, IModifyRemovingToken {
 
-	public static int[] DreamFear { get; set; } = [0, 2, 5];
+	// Spirit-scoped (not static): Violence.ModSpirit overrides this on the Bringer instance being built,
+	// and each Bringer's own DreamMod must hold its own override rather than a value shared process-wide.
+	public int[] DreamFear = [0, 2, 5];
 
 	public const string Name = "To Dream a Thousand Deaths";
 	const string Description = "Your Powers never cause Damage, nor can they Destroy anything other than your own Presence. When your Powers would Destroy Invaders, instead generate 0/2/5 Fear and Pushes Explorers/Towns";

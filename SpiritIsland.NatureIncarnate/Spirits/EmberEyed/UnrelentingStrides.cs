@@ -41,4 +41,5 @@ class UnrelentingStrides : IModifyAvailableActions {
 
 	#endregion private
 
+
 }

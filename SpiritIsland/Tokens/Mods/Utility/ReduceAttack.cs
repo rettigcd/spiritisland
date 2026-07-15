@@ -5,7 +5,7 @@
 /// </summary>
 /// <param name="reduce"></param>
 /// <param name="classesToReduce"></param>
-public class ReduceAttack( int reduce, params HumanTokenClass[] classesToReduce ) 
+public class ReduceAttack( int reduce, params HumanTokenClass[] classesToReduce )
 	: BaseModEntity, IConfigRavages, IEndWhenTimePasses
 {
 	readonly int _reduce = reduce;

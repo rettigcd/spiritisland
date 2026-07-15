@@ -13,6 +13,7 @@ public class ResolveSlowDuringFast_OrViseVersa : IActionFactory {
 
 	public Task ActivateAsync(Spirit self) => ResolveOutOfPhaseAction.Execute( self );
 
+
 }
 
 /// <summary>
@@ -27,6 +28,7 @@ public class ResolveSlowDuringFast : IActionFactory {
 	public string Title => "Resolve Slow Action";
 
 	public Task ActivateAsync( Spirit self ) => ResolveOutOfPhaseAction.Execute( self );
+
 
 }
 

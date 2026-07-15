@@ -7,20 +7,35 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 
 	public static RavageBehavior DefaultBehavior => s_defaultRavageBehavior;
 
-	// Order / Who is damaged
-	public Func<RavageBehavior, RavageData, Task> RavageSequence = RavageSequence_Default;
+	/// <summary> Registered by mods that override the Order / Who is damaged. Last-registered runs outermost, same as the old delegate-wrapping order. </summary>
+	public List<IRavageSequenceStep> SequenceSteps = [];
 
-	// Gets the Aggregate damage from attackers. (default action does this by calling AttackDamageFrom1)
-	// !! This can be removed if we slap a Town-Tracking token on every space Which updates a 'NeighboringTownsToken' that does damage.
-	public Func<RavageExchange,int> GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers_Default;
+	/// <summary> Registered by mods that adjust attacker damage (e.g. neighboring towns, blight cards). Applied in registration order. </summary>
+	public List<IAdjustAttackerDamage> DamageAdjusters = [];
 
 	public int AttackersDefend = 0; // reduces the damage inflicted by the defenders onto the attackers.  Not exactly correct, but close
 
+	public int CalculateDamageFromParticipatingAttackers( RavageExchange rex ) {
+		int total = GetDamageFromParticipatingAttackers_Default( rex );
+		foreach( IAdjustAttackerDamage adjuster in DamageAdjusters )
+			total = adjuster.Adjust( rex, total );
+		return total;
+	}
+
+	async Task RunSequence( RavageData data ) {
+		Func<Task> next = () => RavageSequence_Default( this, data );
+		foreach( IRavageSequenceStep step in SequenceSteps ) {
+			var current = next; // capture, so each iteration wraps its own inner chain
+			next = () => step.Execute( this, data, current );
+		}
+		await next();
+	}
+
 	public RavageBehavior Clone() {
 		return new RavageBehavior {
-			RavageSequence                      = RavageSequence,
-			GetDamageFromParticipatingAttackers = GetDamageFromParticipatingAttackers,
-			AttackersDefend                     = AttackersDefend
+			SequenceSteps   = [.. SequenceSteps],
+			DamageAdjusters = [.. DamageAdjusters],
+			AttackersDefend = AttackersDefend
 		};
 	}
 
@@ -47,7 +62,7 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 			await configurer.Config( data.Space );
 
 		try {
-			await RavageSequence( this, data );
+			await RunSequence( data );
 
 			ActionScope.Current.Log( new Log.RavageEntry( [..data.Result] ) );
 		}
@@ -89,4 +104,14 @@ public sealed class RavageBehavior : ISpaceEntity, IEndWhenTimePasses {
 	static public RavageBehavior GetDefault() => s_defaultRavageBehavior.Clone();
 	static readonly RavageBehavior s_defaultRavageBehavior = new RavageBehavior();
 
+}
+
+/// <summary> Registers with RavageBehavior.DamageAdjusters to adjust attacker damage during a Ravage. </summary>
+public interface IAdjustAttackerDamage {
+	int Adjust( RavageExchange rex, int runningTotal );
+}
+
+/// <summary> Registers with RavageBehavior.SequenceSteps to override how a Ravage plays out. Call next() to defer to whatever would have run otherwise. </summary>
+public interface IRavageSequenceStep {
+	Task Execute( RavageBehavior behavior, RavageData data, Func<Task> next );
 }

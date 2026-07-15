@@ -32,6 +32,7 @@ public class CommunitiesInDisarray : FearCardBase, IFearCard {
 		}
 	);
 
+	
 
 }
 

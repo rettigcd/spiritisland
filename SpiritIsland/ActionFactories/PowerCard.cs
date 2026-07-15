@@ -113,6 +113,7 @@ public sealed class PowerCard : IPowerActionFactory {
 
 	#endregion
 
+
 	readonly ITargetCtxFactory _targetCtxFactory;
 
 }

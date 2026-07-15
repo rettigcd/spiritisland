@@ -1,19 +1,23 @@
 ﻿namespace SpiritIsland.NatureIncarnate;
 
-public class BlightCorrodesTheSpirit : BlightCard {
+public class BlightCorrodesTheSpirit : BlightCard, IRunBeforeInvaderPhase {
 
 	public BlightCorrodesTheSpirit()
-		:base("Blight Corrodes the Spirit", 
-			"Each Invader Phase: On Each Board, Destroy 1 Presence in a land with Blight.", 
+		:base("Blight Corrodes the Spirit",
+			"Each Invader Phase: On Each Board, Destroy 1 Presence in a land with Blight.",
 			4
-		) 
+		)
 	{}
 
-	public override IActOn<GameState> Immediately 
+	public override IActOn<GameState> Immediately => RunAtTheStartOfEachInvadorPhase(this);
+
+	bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
+
+	Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState )
 		=> DestroyAnySpiritPresence()
 			.In().OneLandPerBoard().Which(Has.Blight)
 			.ForEachBoard()
-			.AtTheStartOfEachInvaderPhase();
+			.ActAsync( gameState );
 
 	// !!! Also, this needs converted into a collaborative process so that each spirit makes its own destroy decision.
 	static public SpaceAction DestroyAnySpiritPresence() => new SpaceAction( 
@@ -24,5 +28,6 @@ public class BlightCorrodesTheSpirit : BlightCard {
 			.DestroyN(ctx.Self,Present.Always)
 	);
 
+	
 
 }

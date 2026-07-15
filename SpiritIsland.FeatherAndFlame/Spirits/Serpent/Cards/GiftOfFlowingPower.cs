@@ -14,7 +14,9 @@ public class GiftOfFlowingPower {
 
 		return Cmd.Pick1(
 			// Play another Power Card by paying its cost
-			new SpiritAction( "Play another Power Card by paying its cost", spirit => spirit.AddActionFactory( new PlayCardForCost().ToFastSlow() ) ),
+			new SpiritAction( "Play another Power Card by paying its cost", spirit => spirit.AddActionFactory( 
+				new FastSlowAction(new PlayCardForCost())
+			) ),
 			// OR Gains 1 fire and 1 water.
 			new SpiritAction( "Gain 1 fire and 1 water", spirit => spirit.Elements.Add( Element.Fire, Element.Water ) ),
 			// Or nothing (optional)

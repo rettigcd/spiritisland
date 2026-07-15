@@ -1,19 +1,21 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-public class UntendedLandCrumbles : BlightCard {
+public class UntendedLandCrumbles : BlightCard, IRunBeforeInvaderPhase {
 
 	public UntendedLandCrumbles():base("Untended Land Crumbles", "Each Invader Phase: On Each Board: Add 1 blight to a land adjacent to blight. Spirits may prevent this on any/all boards; each board to be protected requires jointly paying 3 Energy or destroying 1 presence from that board.", 4) {}
 
-	public override IActOn<GameState> Immediately 
-		=> Cmd.AtTheStartOfEachInvaderPhase(
-			Cmd.ForEachBoard(
-				Cmd.Pick1(
-					AddBlightAdjacentToBligtht,		// Add 1 blight to a land adjacent to blight.
-					JointlyPayEnergy( 3 ),			// Spirits may prevent this on each boards by jointly paying 3 energy
-					JointlyDestroyPresenceOnBoard	// or destroying 1 presence from that board.
-				)
+	public override IActOn<GameState> Immediately => RunAtTheStartOfEachInvadorPhase(this);
+
+	bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
+
+	Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState )
+		=> Cmd.ForEachBoard(
+			Cmd.Pick1(
+				AddBlightAdjacentToBligtht,		// Add 1 blight to a land adjacent to blight.
+				JointlyPayEnergy( 3 ),			// Spirits may prevent this on each boards by jointly paying 3 energy
+				JointlyDestroyPresenceOnBoard	// or destroying 1 presence from that board.
 			)
-		);
+		).ActAsync( gameState );
 
 	static IActOn<BoardCtx> AddBlightAdjacentToBligtht =>
 		Cmd.AddBlightedIslandBlight.To().OneLandPerBoard().Which( Is.AdjacentToBlight );
@@ -46,10 +48,12 @@ public class UntendedLandCrumbles : BlightCard {
 			var spirit = await ctx.Self.SelectAlways("Spirit to Destroy 1 presence", spiritOptions);
 			await Cmd.DestroyPresence().ActAsync( spirit );
 		}
-	).OnlyExecuteIf( ctx => 
+	).OnlyExecuteIf( ctx =>
 		GameState.Current.Spirits
 			.Any( s => s.Presence.IsOn( ctx.Board ) )
-			
+
 	);
+
+	
 
 }

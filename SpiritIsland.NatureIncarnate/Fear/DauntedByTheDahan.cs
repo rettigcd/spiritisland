@@ -42,8 +42,14 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 
 	static IActOn<GameState> LessInvaderDamage => new BaseCmd<GameState>(
 		"Attacker do -6 Damage per land.",
-		gs => gs.Tokens.AddIslandMod(new AdjustDamageFromAttackers( _=> -6 ))
+		gs => gs.Tokens.AddIslandMod(new ReduceAttackBy6Mod())
 	);
+
+	public class ReduceAttackBy6Mod : AdjustDamageFromAttackers {
+		protected override int GetAdjustment( RavageExchange ravageExchange ) => -6;
+
+		
+	}
 
 	static IActOn<GameState> DahanDefend3 => new BaseCmd<GameState>(
 		"Each land with Dahan, Defend 3",
@@ -62,6 +68,8 @@ public class DauntedByTheDahan : FearCardBase, IFearCard {
 					ss.Isolate();
 		}
 	);
+
+	
 
 }
 

@@ -13,4 +13,5 @@ public class AddBagPresenceToCostal : SpiritAction {
 		await self.Presence.Token.AddTo( space );
 	}
 
+
 }

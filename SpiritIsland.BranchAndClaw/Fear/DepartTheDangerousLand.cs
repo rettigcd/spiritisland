@@ -26,4 +26,6 @@ class DepartTheDangerousLand : FearCardBase, IFearCard {
 			.ForEachSpirit()
 			.ActAsync( ctx );
 
+	
+
 }

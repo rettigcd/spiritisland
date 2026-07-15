@@ -25,6 +25,8 @@ public class ExplorersAreReluctant : FearCardBase, IFearCard {
 		return Task.CompletedTask;
 	}
 
+	
+
 }
 
 sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasses, ISkipExploreTo {
@@ -38,7 +40,7 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 		_lowest ??= InitLowest();
 		// Return if this is the lowest
 		bool isLowestOnABoard = space.SpaceSpec.Boards
-			.Any( board => _lowest[board] == space);
+			.Any( board => _lowest[board] == space.SpaceSpec);
 		return Task.FromResult( isLowestOnABoard );
 	}
 
@@ -46,13 +48,14 @@ sealed public class SkipLowestNumberedExplore : BaseModEntity, IEndWhenTimePasse
 	public UsageCost Cost => UsageCost.Free;
 
 
-	static Dictionary<Board, Space> InitLowest() {
+	static Dictionary<Board, SpaceSpec> InitLowest() {
 		GameState gameState = GameState.Current;
 		var card = gameState.InvaderDeck.Explore.Cards.FirstOrDefault();
 		return card == null ? []
 			: gameState.Island.Boards
-				.ToDictionary( brd => brd, brd => brd.Spaces.ScopeTokens().First( card.MatchesCard ) ); // ! assumes every board has at least 1 matching space
+				.ToDictionary( brd => brd, brd => brd.Spaces.ScopeTokens().First( card.MatchesCard ).SpaceSpec ); // ! assumes every board has at least 1 matching space
 	}
 
-	Dictionary<Board, Space>? _lowest = null;
+	Dictionary<Board, SpaceSpec>? _lowest = null;
+
 }

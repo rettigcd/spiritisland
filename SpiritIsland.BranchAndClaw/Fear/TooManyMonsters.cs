@@ -40,4 +40,6 @@ public class TooManyMonsters : FearCardBase, IFearCard {
 		return ss.RemoveN(ctx.Self);
 	}
 
+	
+
 }

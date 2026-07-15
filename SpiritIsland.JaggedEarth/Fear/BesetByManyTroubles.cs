@@ -23,4 +23,6 @@ public class BesetByManyTroubles : FearCardBase, IFearCard {
 		=> Cmd.Defend(3)
 			.In().EachActiveLand().Which( Has.AnyBacTokenOrAdjacentTo(1) )
 			.ActAsync( ctx );
+
+	
 }

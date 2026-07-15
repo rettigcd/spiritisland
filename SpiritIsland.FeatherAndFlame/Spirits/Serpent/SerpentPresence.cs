@@ -41,5 +41,4 @@ public class SerpentPresence : SpiritPresence {
 		set { AbsorbedPresences.SetItems( (Spirit[]?)value! ); }
 	}
 
-
 }

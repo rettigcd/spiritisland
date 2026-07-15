@@ -26,4 +26,6 @@ public class SenseOfDread : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 	}
 
+	
+
 }

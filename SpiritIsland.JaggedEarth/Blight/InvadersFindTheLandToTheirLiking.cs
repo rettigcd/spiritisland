@@ -20,4 +20,6 @@ public class InvadersFindTheLandToTheirLiking : StillHealthyBlightCard {
 			gs.Fear.PoolMax += fearCount;
 		});
 
+	
+
 }

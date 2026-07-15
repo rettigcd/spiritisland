@@ -20,7 +20,7 @@ public class BargainsOfPowerAndProtection {
 	}
 
 	// From now on: Each dahan within range of 1 of your presence provides Defend 1 in its land
-	class EachDahanAtRange1Defend1( Spirit self )
+	public class EachDahanAtRange1Defend1( Spirit self )
 		: BaseModEntity
 		, IHandleTokenAdded, IHandleTokenRemoved {
 
@@ -71,6 +71,7 @@ public class BargainsOfPowerAndProtection {
 		}
 
 		readonly TokenVariety _myDefend = new TokenVariety(Token.Defend, "💪");
+
 	}
 
 

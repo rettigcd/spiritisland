@@ -37,4 +37,5 @@ class Run1SlowPushOrGatherAsFast(Spirit spirit) : RunSlowCardsAsFastMod_EveryRou
 		return s.Contains("push") || s.Contains("gather");
 	}
 
+
 }

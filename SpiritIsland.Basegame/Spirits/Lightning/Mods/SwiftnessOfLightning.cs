@@ -11,4 +11,6 @@ sealed class SwiftnessOfLightning(Spirit spirit) : RunSlowCardsAsFastMod_EveryRo
 	static public readonly SpecialRule Rule = new SpecialRule( Name, Description );
 
 	protected override int AllowedCount => _spirit.Elements[Element.Air];
+
+
 }

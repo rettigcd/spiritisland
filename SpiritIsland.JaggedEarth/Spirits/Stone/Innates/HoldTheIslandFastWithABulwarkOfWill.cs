@@ -49,7 +49,7 @@ class PayEnergyToTakeFromBox( Spirit _spirit, int _cost )
 
 }
 
-class StopPresenceDestructionFromBlightOrEvents( Spirit _spirit ) 
+class StopPresenceDestructionFromBlightOrEvents( Spirit _spirit )
 	: BaseModEntity
 	, IModifyRemovingToken
 	, IEndWhenTimePasses

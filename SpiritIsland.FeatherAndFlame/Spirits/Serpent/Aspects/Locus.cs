@@ -9,13 +9,18 @@ public class Locus : IAspect {
 	static public AspectConfigKey Key => new AspectConfigKey(SerpentSlumbering.Name, Name);
 	public string[] Replaces => [SerpentWakesInPower.Name];
 
+	static PowerCard NewCard => PowerCard.ForDecorated(PullBeneathTheHungryEarth);
+	public PowerCard[] NewCards => [NewCard];
+	static InnatePower NewInnate => InnatePower.For(typeof(StrengthOfTheWakingIsland));
+	public InnatePower[] NewInnates => [NewInnate];
+
 	public void ModSpirit(Spirit spirit) {
 		// Replace Elemental Aegis with Pull Beneath the Hungry EarthPull Beneath the Hungry Earth (Minor Power).
-		spirit.ReplaceCard(ElementalAegis.Name,PowerCard.ForDecorated(PullBeneathTheHungryEarth));
+		spirit.ReplaceCard(ElementalAegis.Name,NewCard);
 
 		// Put your Incarna and the Presence from the Fire Element space of your Presence track on your starting board in land #5.
 		spirit.ReplaceIncarna(new Incarna(spirit,"ss",Img.S_Incarna, Img.S_Incarna_Empowered)); // !!! wrong! - Incarna needs "Can be counted as badlands"
-		spirit.AddActionFactory(new SpiritAction("Place Incarna and Fire Energy", PlaceIncarnaAndFireEnergy_Setup).ToGrowth());
+		spirit.AddActionFactory(new PlaceIncarnaAndFireEnergy().ToGrowth());
 
 		// Locus of the Serpent's Regard
 		// Spirits with absorbed Presence can use your Presence at your Incarna for targeting.
@@ -27,16 +32,22 @@ public class Locus : IAspect {
 		// Bonus Presence Track Icon   Add/Move your Incarna to a Land with your Presence
 		spirit.Presence.Energy.Slots.First().Action = new MoveIncarnaToPresence(false);
 
-		spirit.ReplaceInnate( SerpentWakesInPower.Name, InnatePower.For(typeof(StrengthOfTheWakingIsland)) );
+		spirit.ReplaceInnate( SerpentWakesInPower.Name, NewInnate );
 
 		spirit.SpecialRules = [..spirit.SpecialRules, LocusOfTheSerpentsRegard.Rule];
 	}
 
 
-	static public Task PlaceIncarnaAndFireEnergy_Setup(Spirit spirit) {
-		var space5 = GameState.Current.Island.Boards[0][5].ScopeSpace;
-		space5.Init(spirit.Incarna, 1);
-		return new Move( new TrackPresence( spirit.Presence.Energy.RevealOptions.First(), spirit.Presence.Token), space5 ).Apply();
+	internal class PlaceIncarnaAndFireEnergy : SpiritAction {
+
+		public PlaceIncarnaAndFireEnergy() : base("Place Incarna and Fire Energy") { }
+
+		public override Task ActAsync(Spirit spirit) {
+			var space5 = GameState.Current.Island.Boards[0][5].ScopeSpace;
+			space5.Init(spirit.Incarna, 1);
+			return new Move( new TrackPresence( spirit.Presence.Energy.RevealOptions.First(), spirit.Presence.Token), space5 ).Apply();
+		}
+
 	}
 
 

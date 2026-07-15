@@ -1,6 +1,6 @@
 ﻿namespace SpiritIsland.JaggedEarth;
 
-class EnthrallTheForeignExplorers( Spirit self ) 
+public class EnthrallTheForeignExplorers( Spirit self )
 	: SpiritPresenceToken(self)
 	, IConfigRavages
 {
@@ -14,5 +14,9 @@ class EnthrallTheForeignExplorers( Spirit self )
 			.UseQuota(new Quota().AddGroup( Self.Presence.CountOn( space ) * 2, Human.Explorer ))
 			.SelectFightersAndSitThemOut( Self );
 	}
+
+	// No override/registration of its own needed - no extra state beyond Self, so
+	// SpiritPresenceToken's shared base ToJson/reader (resolving via the spirit's own
+	// Presence.Token) already covers this.
 
 }

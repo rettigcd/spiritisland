@@ -76,6 +76,7 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 		set => GameState.Current.Log(new BlightOnCardChanged((int)value)); // Space initialization will set actural blight, just use saved value to do notification
 	}
 
+
 	#region private/protected
 
 	async Task Side1Depleted( GameState gs ) {
@@ -90,6 +91,12 @@ public abstract class BlightCard(string name, string description, int side2Bligh
 			await immediately.ActAsync( gs );
 		}
 	}
+
+	// helper method to cleanup Immediately()
+	protected IActOn<GameState> RunAtTheStartOfEachInvadorPhase(IRunBeforeInvaderPhase action)
+		=> new BaseCmd<GameState>( "At the start of each Invader Phase, " + Description,
+			gs => gs.AddPreInvaderPhaseAction( action )
+		);
 
 	protected virtual void Side2Depleted(GameState gameState) 
 		=> GameOverException.Lost( "Blighted Island-" + Name );

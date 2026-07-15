@@ -26,7 +26,11 @@ public class TradeSuffers : FearCardBase, IFearCard {
 			.ActAsync( ctx );
 
 	static void StopBuild( TargetSpaceCtx ctx ) {
-		ctx.Space.Adjust( new SkipBuild_Custom( Name, true, ( space ) => space.HasAny( Human.City ) ), 1);
+		ctx.Space.Adjust( new StopBuildInCityLands(), 1);
+	}
+
+	public class StopBuildInCityLands() : SkipBuild_Custom(Name, true) {
+		protected override bool ShouldSkip(Space space) => space.HasAny(Human.City);
 	}
 
 }

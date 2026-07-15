@@ -41,13 +41,18 @@ public partial class DistractedByLocalTroubles : FearCardBase, IFearCard {
 	});
 
 	static BaseCmd<GameState> ReduceInvaderAttackByDamage => new BaseCmd<GameState>(
-		"Invaders do -1 Attack / Damage", 
-		gs=>gs.Tokens.AddIslandMod(new AdjustDamageFromAttackers( ReduceAttackByReceivedDamage ) )
+		"Invaders do -1 Attack / Damage",
+		gs=>gs.Tokens.AddIslandMod(new ReduceAttackByReceivedDamageMod() )
 	);
 
-	static int ReduceAttackByReceivedDamage( RavageExchange ravageExchange )
-		=> - ravageExchange.Attackers.Active.Sum(pair => Math.Min(pair.Key.Attack,pair.Key.Damage) * pair.Value );
+	public class ReduceAttackByReceivedDamageMod : AdjustDamageFromAttackers {
+		protected override int GetAdjustment( RavageExchange ravageExchange )
+			=> - ravageExchange.Attackers.Active.Sum(pair => Math.Min(pair.Key.Attack,pair.Key.Damage) * pair.Value );
 
+		
+	}
+
+	
 
 }
 

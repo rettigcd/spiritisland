@@ -9,6 +9,8 @@ public class Regrowth : IAspect {
 	public const string Name = "Regrowth";
 	public string[] Replaces => [SteadyRegeneration.Name, AllEnvelopingGreen.Name];
 
+	static InnatePower NewInnate => InnatePower.For(typeof(UnbelievableGrowth));
+	public InnatePower[] NewInnates => [NewInnate];
 
 	public void ModSpirit(Spirit spirit) {
 		// add 13 Destroyed Presence
@@ -18,7 +20,7 @@ public class Regrowth : IAspect {
 		spirit.RemoveCustomPresence();
 
 		// Swap innates.
-		spirit.InnatePowers[1] = InnatePower.For(typeof(UnbelievableGrowth));
+		spirit.InnatePowers[1] = NewInnate;
 
 		spirit.SpecialRules = [.. spirit.SpecialRules.Where(x => x.Title != SteadyRegeneration.Name)];
 	}

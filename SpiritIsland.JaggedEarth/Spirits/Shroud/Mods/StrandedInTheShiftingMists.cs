@@ -25,6 +25,7 @@ class StrandedInTheShiftingMists(Spirit spirit) : IModifyAvailableActions {
 
 	#endregion IModifyAvailableActions imp
 
+
 	#region private fields
 
 	// We can do better than this.

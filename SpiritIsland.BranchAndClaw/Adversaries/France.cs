@@ -125,14 +125,14 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 		}
 	}
 
-	class SlaveRebellion : IRunBeforeInvaderPhase {
+	internal class SlaveRebellion : IRunBeforeInvaderPhase {
 		bool IRunBeforeInvaderPhase.RemoveAfterRun => false;
 		async Task IRunBeforeInvaderPhase.BeforeInvaderPhase( GameState gameState) {
 
 			// if we put it under 3 cards, it will be every 4th card.
 			if(gameState.RoundNumber % 4 == 0){
 				await using var actionScope = await ActionScope.Start( ActionCategory.Adversary );
-				BaseCmd<BoardCtx> cmd = (gameState.InvaderDeck.InvaderStage < 3) ? SmallUprising : Rebellion;			
+				BaseCmd<BoardCtx> cmd = (gameState.InvaderDeck.InvaderStage < 3) ? SmallUprising : Rebellion;
 				await cmd.ForEachBoard().ActAsync( gameState );
 			}
 		}
@@ -237,7 +237,7 @@ public class France : AdversaryBuilder, IAdversaryBuilder {
 	/// Intercepts blight being added to blight card.
 	/// Batches into 3/player before adding to card.
 	/// </summary>
-	class SlowBlightMod(GameState gs) : BaseModEntity, IModifyAddingToken {
+	public class SlowBlightMod(GameState gs) : BaseModEntity, IModifyAddingToken {
 		public Task ModifyAddingAsync(AddingTokenArgs args) {
 			// if this does not reach the flushing threshold
 			if (_tokens.Count + args.Count < _flushThreshold ) {

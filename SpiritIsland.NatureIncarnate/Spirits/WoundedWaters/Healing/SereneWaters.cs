@@ -7,7 +7,10 @@ class SereneWaters : IHealingCard {
 
 	const string Name = "Serene Waters";
 
-	static SpecialRule Rule => new SpecialRule(Name, "When your Powers: add/move any # of (A) Invaders or (B) Dahan into your lands, you may Downgrade 1 Invaders. (max 1/Power per A & B).");
+	/// <summary> internal, not private - WoundedWatersBleeding.RestoreCustomStateFromJson re-adds this
+	/// directly (without replaying Claim()'s whole effect, which would double-add the island Mod below)
+	/// when restoring a spirit that already claimed this card. </summary>
+	internal static SpecialRule Rule => new SpecialRule(Name, "When your Powers: add/move any # of (A) Invaders or (B) Dahan into your lands, you may Downgrade 1 Invaders. (max 1/Power per A & B).");
 
 	public string Text => Name;
 
@@ -24,7 +27,7 @@ class SereneWaters : IHealingCard {
 
 	public bool IsClaimed( WoundedWatersBleeding spirit ) => spirit.SpecialRules.Any( r => r.Title == Name );
 
-	class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAdded {
+	public class Mod( Spirit spirit ) : BaseModEntity, IHandleTokenAdded {
 		readonly Spirit _spirit = spirit;
 
 		async Task IHandleTokenAdded.HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
@@ -53,6 +56,7 @@ class SereneWaters : IHealingCard {
 			}
 
 		}
+
 	}
 
 }

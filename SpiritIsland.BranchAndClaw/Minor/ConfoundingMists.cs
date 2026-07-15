@@ -16,16 +16,17 @@ public class ConfoundingMists {
 		);
 	}
 
-	class MistPusher( Spirit _spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
+	public class MistPusher( Spirit _spirit ) : BaseModEntity, IHandleTokenAdded, IEndWhenTimePasses {
 		public async Task HandleTokenAddedAsync( Space to, ITokenAddedArgs args ) {
 			// each invader added to target land this turn may be immediatley pushed to any adjacent land
-			if(	args.Added.Class.IsOneOf(Human.Invader) 
+			if(	args.Added.Class.IsOneOf(Human.Invader)
 				&& args.Reason.IsOneOf( AddReason.Added, AddReason.MovedTo, AddReason.Explore, AddReason.Build )
 			)
 				await to.SourceSelector
 					.UseQuota(new Quota().AddGroup(1,args.Added.Class))
 					.PushN( _spirit );
 		}
+
 	}
 
 }

@@ -50,9 +50,12 @@ public class Thunderspeaker : Spirit {
 		mostDahanSpots[1].Setup(Presence.Token, 1);
 
 		// Special Rules - Sworn to Victory - For each dahan stroyed by invaders ravaging a land, destroy 1 of your presense within 1
-		gs.AddIslandMod( new TokenRemovedHandlerAsync_Persistent( DestroyNearbyPresence ) );
+		gs.AddIslandMod( new DestroyNearbyPresenceOnDahanDestroyed( this ) );
 
+	}
 
+	public class DestroyNearbyPresenceOnDahanDestroyed( Thunderspeaker spirit ) : BaseModEntity, IHandleTokenRemoved {
+		public Task HandleTokenRemovedAsync( ITokenRemovedArgs args ) => spirit.DestroyNearbyPresence( args );
 	}
 
 	async Task DestroyNearbyPresence( ITokenRemovedArgs args ) {

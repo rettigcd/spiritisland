@@ -232,4 +232,5 @@ public class SpiritPresence : IKnowSpiritLocations, ITokenClass, IHaveMemento {
 	}
 
 	#endregion
+
 }

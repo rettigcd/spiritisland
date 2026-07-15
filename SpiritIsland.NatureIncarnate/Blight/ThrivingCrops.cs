@@ -16,4 +16,6 @@ public sealed class ThrivingCrops : StillHealthyBlightCard {
 	static SpaceAction DoBuild => new SpaceAction("Build", async ctx=>{
 		await GameState.Current.InvaderDeck.Build.Engine.TryToDo1Build(ctx.Space);
 	});
+
+	
 }

@@ -27,4 +27,6 @@ public class DahanThreaten : FearCardBase, IFearCard {
 			Cmd.OneDamagePerDahan.In().EachActiveLand().Which( Has.Strife )
 		).ActAsync( ctx );
 
+	
+
 }

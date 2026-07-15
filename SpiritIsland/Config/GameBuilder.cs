@@ -23,8 +23,10 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 	Spirit Build1Spirit(string spiritName, AspectConfigKey[] aspectKeys) {
 		var spirit = _providers.Select(p => p.MakeSpirit(spiritName)).FirstOrDefault(x => x != null) 
 			?? throw new InvalidOperationException($"Spirit named '{spiritName}' not found.");
-		foreach(var aspectKey in aspectKeys.Where(k=>k.Spirit == spiritName))
+		foreach(var aspectKey in aspectKeys.Where(k=>k.Spirit == spiritName)) {
 			Build1Aspect(aspectKey).ModSpirit(spirit);
+			spirit.AppliedAspects.Add(aspectKey);
+		}
 		return spirit;
 	}
 
@@ -161,14 +163,6 @@ public class GameBuilder( params IGameComponentProvider[] _providers ) {
 			CommandBeasts.Setup( gameState );
 
 		return gameState;
-	}
-
-	class NullAdversaryBuilder : IAdversaryBuilder {
-		public string Name => "No Adversary";
-		static public AdversaryLevel Level => new AdversaryLevel(_level: 0, _difficulty: 0, _fear1: 3, _fear2: 3, _fear3: 3, string.Empty);
-		public AdversaryLevel[] Levels => [Level];
-		public AdversaryLossCondition? LossCondition => null;
-		public IAdversary Build(int _) => new Adversary(this, 0);
 	}
 
 }
